@@ -150,13 +150,6 @@
     return tr;
   }
 
-  function escapeHtml(s) {
-    if (s == null) return '';
-    var div = document.createElement('div');
-    div.textContent = s;
-    return div.innerHTML;
-  }
-
   function escapeAttr(s) {
     if (s == null) return '';
     return String(s)

@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../core.php';
 header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, OPTIONS');
@@ -17,14 +18,7 @@ $status = $_GET['status'] ?? '';
 $action = $_GET['action'] ?? 'report';
 
 // Veriyi yükle
-$dataFile = __DIR__ . '/../data/data.json';
-if (!file_exists($dataFile)) {
-    http_response_code(500);
-    echo json_encode(['success' => false, 'message' => 'Veri dosyası bulunamadı!'], JSON_UNESCAPED_UNICODE);
-    exit;
-}
-
-$data = json_decode(file_get_contents($dataFile), true);
+$data = loadData();
 if (!$data) {
     http_response_code(500);
     echo json_encode(['success' => false, 'message' => 'Veri okunamadı!'], JSON_UNESCAPED_UNICODE);

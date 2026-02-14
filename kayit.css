@@ -186,7 +186,7 @@ input[type="number"].form-input {
 .form-input:focus, 
 select:focus,
 textarea.form-input:focus {
-    border: 1px solid rgba(225, 6, 27, 0.35); 
+    border: 1px solid rgba(var(--theme-color-rgb), 0.35); 
     box-shadow: none; 
     outline: none;
 }
@@ -195,17 +195,17 @@ textarea.form-input:focus {
 .form-input.field-error,
 select.field-error,
 .form-section-inline.field-error {
-    border-color: #e1061b !important;
+    border-color: var(--theme-color) !important;
     border-width: 1px !important;
-    box-shadow: 0 0 4px rgba(225, 6, 27, 0.4) !important;
+    box-shadow: 0 0 4px rgba(var(--theme-color-rgb), 0.4) !important;
 }
 
 /* Radio button gruplarÄ± iÃ§in Ã¶zel stil */
 .form-section-inline.field-error .radio-group {
-    border: 1px solid #e1061b;
+    border: 1px solid var(--theme-color);
     border-radius: 6px;
     padding: 4px;
-    box-shadow: 0 0 4px rgba(225, 6, 27, 0.4);
+    box-shadow: 0 0 4px rgba(var(--theme-color-rgb), 0.4);
 }
 
 /* Autofill (Otomatik Tamamlama) Stilleri - Beyaz Arka PlanÄ± Ã–nle */
@@ -519,11 +519,11 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
 }
 
-.radio-btn:not(.active).hover-red:hover { background: rgba(225, 6, 27, 0.12) !important; border-color: rgba(225, 6, 27, 0.45) !important; }
+.radio-btn:not(.active).hover-red:hover { background: rgba(var(--theme-color-rgb), 0.12) !important; border-color: rgba(var(--theme-color-rgb), 0.45) !important; }
 .radio-btn:not(.active).hover-green:hover { background: rgba(74, 222, 128, 0.12) !important; border-color: rgba(74, 222, 128, 0.45) !important; }
 .radio-btn:focus { outline: none; }
-.radio-btn.active { background: rgba(225, 6, 27, 0.20); border-color: #e1061b; color: #e0e0e0; }
-.radio-btn.active:not(.green):hover, .radio-btn.active:not(.green):focus { background: rgba(225, 6, 27, 0.25); border-color: #e1061b; box-shadow: none; outline: none; }
+.radio-btn.active { background: rgba(var(--theme-color-rgb), 0.20); border-color: var(--theme-color); color: #e0e0e0; }
+.radio-btn.active:not(.green):hover, .radio-btn.active:not(.green):focus { background: rgba(var(--theme-color-rgb), 0.25); border-color: var(--theme-color); box-shadow: none; outline: none; }
 .radio-btn.active.green { background: rgba(74, 222, 128, 0.18); border-color: rgba(74, 222, 128, 0.85); color: #4ade80; }
 .radio-btn.active.green:hover, .radio-btn.active.green:focus { background: rgba(74, 222, 128, 0.22); border-color: rgba(74, 222, 128, 0.85); box-shadow: none; outline: none; }
 
@@ -562,10 +562,10 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
 
 .btn-save { justify-self: center; margin: 0 auto; border: 1px solid rgba(40, 167, 69, 0.5); color: #28a745; }
 .btn-save:hover { background: rgba(40, 167, 69, 0.15); }
-.btn-cancel { justify-self: center; margin: 0 auto; border: 1px solid rgba(225, 6, 27, 0.5); color: #e1061b; }
-.btn-cancel:hover { background: rgba(225, 6, 27, 0.15); }
+.btn-cancel { justify-self: center; margin: 0 auto; border: 1px solid rgba(var(--theme-color-rgb), 0.5); color: var(--theme-color); }
+.btn-cancel:hover { background: rgba(var(--theme-color-rgb), 0.15); }
 
-.modal-column-left { padding-right: 10px; padding-left: 0; border-right: 1px solid rgba(225, 6, 27, 0.28); box-shadow: 10px 0 18px -18px rgba(225, 6, 27, 0.45); }
+.modal-column-left { padding-right: 10px; padding-left: 0; border-right: 1px solid rgba(var(--theme-color-rgb), 0.28); box-shadow: 10px 0 18px -18px rgba(var(--theme-color-rgb), 0.45); }
 .modal-column-right { padding-left: 10px; padding-right: 0; }
 
 /* === MOBÄ°L Ã–ZEL === */
@@ -591,7 +591,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     }
     
     .radio-btn.active {
-        border-color: #e1061b !important; /* Aktif radio daha belirgin */
+        border-color: var(--theme-color) !important; /* Aktif radio daha belirgin */
         color: #ffffff !important;
     }
     
@@ -600,7 +600,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     }
     
     .vehicle-type-btn.active {
-        border-color: #e1061b !important; /* Aktif taşıt tipi daha belirgin */
+        border-color: var(--theme-color) !important; /* Aktif taşıt tipi daha belirgin */
     }
     
     /* Kayıt modalı mobil: overlay konumu (style-core ile aynı, taşıtlar gibi kendi dosyasında) */
@@ -658,7 +658,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     textarea.form-input { font-size: 13px; }
     
     .modal-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
-    .modal-column-left { padding-right: 8px; padding-left: 0; border-right: 1px solid rgba(225, 6, 27, 0.28); }
+    .modal-column-left { padding-right: 8px; padding-left: 0; border-right: 1px solid rgba(var(--theme-color-rgb), 0.28); }
     .modal-column-right { padding-left: 8px; padding-right: 0; overflow: hidden; }
     .modal-column-right .form-section { margin-bottom: 8px; }
 
@@ -939,7 +939,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
 }
 
 .tramer-date-input.field-error {
-    border-color: #e1061b;
+    border-color: var(--theme-color);
 }
 
 .tramer-add-btn,
@@ -968,9 +968,9 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
 }
 
 .tramer-remove-btn:hover {
-    background: rgba(225, 6, 27, 0.2);
-    border-color: #e1061b;
-    color: #e1061b;
+    background: rgba(var(--theme-color-rgb), 0.2);
+    border-color: var(--theme-color);
+    color: var(--theme-color);
 }
 
 /* === BOYA PARÃ‡ALARI SVG STÄ°LLERÄ° === */
@@ -1026,7 +1026,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
 }
 
 .boya-legend-dot.degisen {
-    background: #e1061b;
+    background: var(--theme-color);
 }
 
 #boya-parts-container .car-part {

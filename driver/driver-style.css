@@ -298,7 +298,7 @@
   border: none;
   border-radius: 12px;
   padding: 20px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2), 0 4px 16px rgba(225, 6, 27, 0.08);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2), 0 4px 16px rgba(var(--theme-color-rgb), 0.08);
 }
 
 /* İlk kart: Kullanıcı Paneli ile plaka arası 12px */
@@ -357,16 +357,16 @@
   padding: 10px 16px;
   margin-bottom: 12px;
   background: transparent !important;
-  border: 1px solid rgba(225, 6, 27, 0.6);
+  border: 1px solid rgba(var(--theme-color-rgb), 0.6);
   border-radius: 8px;
-  color: #e1061b;
+  color: var(--theme-color);
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   transition: background 0.2s, color 0.2s, border-color 0.2s;
 }
 .driver-olay-ekle-btn:hover {
-  background: rgba(225, 6, 27, 0.15) !important;
+  background: rgba(var(--theme-color-rgb), 0.15) !important;
 }
 
 /* Olay Ekle menü modal */
@@ -393,11 +393,11 @@
   border-color: rgba(255, 255, 255, 0.5);
 }
 .driver-event-menu-btn-kaza {
-  border-color: #e1061b;
-  color: #e1061b;
+  border-color: var(--theme-color);
+  color: var(--theme-color);
 }
 .driver-event-menu-btn-kaza:hover {
-  background: rgba(225, 6, 27, 0.1);
+  background: rgba(var(--theme-color-rgb), 0.1);
 }
 
 /* Event modalleri: radio butonları */
@@ -424,7 +424,7 @@
 .driver-radio-btn[data-value="yok"],
 .driver-radio-btn[data-group="anahtar"].active[data-value="yok"],
 .driver-radio-btn[data-group="lastik"].active[data-value="yok"] {
-  color: #e1061b;
+  color: var(--theme-color);
 }
 .driver-radio-btn[data-value="evet"],
 .driver-radio-btn[data-group="utts"].active[data-value="evet"] {
@@ -432,7 +432,7 @@
 }
 .driver-radio-btn[data-value="hayir"],
 .driver-radio-btn[data-group="utts"].active[data-value="hayir"] {
-  color: #e1061b;
+  color: var(--theme-color);
 }
 .driver-radio-btn.active {
   text-decoration: underline;
@@ -482,7 +482,7 @@
   margin-left: 0;
   background: transparent;
   border: none;
-  color: #e1061b;
+  color: var(--theme-color);
   cursor: pointer;
   transition: color 0.2s, opacity 0.2s;
 }
@@ -587,7 +587,7 @@
   background: #0f1418 !important;
   background-color: #0f1418 !important;
   border: none !important;
-  box-shadow: inset 0 0 0 0.5px rgba(225, 6, 27, 0.85) !important;
+  box-shadow: inset 0 0 0 0.5px rgba(var(--theme-color-rgb), 0.85) !important;
   border-radius: 8px;
   color: var(--txt);
   font-size: 16px;
@@ -603,7 +603,7 @@
 .vehicle-card .form-group input:focus,
 .vehicle-card .form-group textarea:focus {
   outline: none;
-  box-shadow: inset 0 0 0 0.5px #e1061b !important;
+  box-shadow: inset 0 0 0 0.5px var(--theme-color) !important;
 }
 
 /* KM ve Ekstra Not: gri çerçeve, tıklayınca kırmızı */
@@ -613,7 +613,7 @@
 }
 .vehicle-card .form-group input.driver-km-input:focus,
 .vehicle-card .form-group textarea.driver-ekstra-not:focus {
-  box-shadow: inset 0 0 0 0.5px #e1061b !important;
+  box-shadow: inset 0 0 0 0.5px var(--theme-color) !important;
 }
 
 .vehicle-card .form-group textarea {
@@ -698,8 +698,8 @@
 .driver-report-btn:hover,
 .driver-report-btn:focus,
 .driver-report-btn:active {
-  border-color: #e1061b;
-  background: rgba(225, 6, 27, 0.08) !important;
+  border-color: var(--theme-color);
+  background: rgba(var(--theme-color-rgb), 0.08) !important;
   color: var(--theme-color);
 }
 
@@ -708,19 +708,19 @@
 }
 
 .driver-report-btn-kaza {
-  border-color: rgba(225, 6, 27, 0.85) !important;
+  border-color: rgba(var(--theme-color-rgb), 0.85) !important;
 }
 
 .driver-report-btn-kaza:hover,
 .driver-report-btn-kaza:focus,
 .driver-report-btn-kaza:active {
-  border-color: #e1061b !important;
+  border-color: var(--theme-color) !important;
 }
 
 .driver-report-item:has(.driver-report-block-kaza.show) .driver-report-btn-kaza {
-  border-color: #e1061b !important;
-  background: rgba(225, 6, 27, 0.12) !important;
-  color: #e1061b !important;
+  border-color: var(--theme-color) !important;
+  background: rgba(var(--theme-color-rgb), 0.12) !important;
+  color: var(--theme-color) !important;
 }
 
 /* Bakım Bildir: aktifken (panel açık veya hover/focus) yeşil */
@@ -1215,7 +1215,7 @@
 .driver-modal .form-group input:focus,
 .driver-modal .form-group textarea:focus {
   outline: none;
-  box-shadow: inset 0 0 0 0.5px #e1061b !important;
+  box-shadow: inset 0 0 0 0.5px var(--theme-color) !important;
 }
 
 .driver-modal .form-group textarea {
@@ -1487,7 +1487,7 @@
   border-top: 0.7px solid rgba(128, 128, 128, 0.5) !important;
   border-left: 0.5px solid rgba(255, 255, 255, 0.20) !important;
   border-right: 0.5px solid rgba(255, 255, 255, 0.20) !important;
-  box-shadow: 0 -10px 20px rgba(225, 6, 27, 0.16) !important;
+  box-shadow: 0 -10px 20px rgba(var(--theme-color-rgb), 0.16) !important;
   box-sizing: border-box !important;
 }
 
@@ -1521,7 +1521,7 @@
   height: 12.5px !important;
   width: auto !important;
   opacity: 0.4 !important;
-  filter: drop-shadow(0 0 6px rgba(225, 6, 27, 0.4)) !important;
+  filter: drop-shadow(0 0 6px rgba(var(--theme-color-rgb), 0.4)) !important;
   transform: scaleX(1.1) !important;
   transition: opacity 1s ease !important;
 }
@@ -1569,7 +1569,7 @@
   justify-content: flex-start;
   padding: 6px 16px;
   box-sizing: border-box;
-  color: rgba(225, 6, 27, 0.55);
+  color: rgba(var(--theme-color-rgb), 0.55);
   text-decoration: none;
   font-size: 14px;
   font-weight: 500;
@@ -1601,7 +1601,7 @@
   transition: color 0.2s;
 }
 .management-system-link-inner:hover {
-  color: #e1061b;
+  color: var(--theme-color);
 }
 .management-system-link-arrow {
   flex-shrink: 0;
@@ -1653,7 +1653,7 @@
   }
   .login-page #app-footer.login-footer {
     padding-bottom: max(20px, env(safe-area-inset-bottom, 0)) !important;
-    box-shadow: 0 -9px 22px rgba(225, 6, 27, 0.35) !important;
+    box-shadow: 0 -9px 22px rgba(var(--theme-color-rgb), 0.35) !important;
     border-top: 1px solid rgba(128, 128, 128, 0.5) !important;
     border-left: none !important;
     border-right: none !important;
@@ -1708,7 +1708,7 @@
   background: #0f1418 !important;
   background-color: #0f1418 !important;
   border: none !important;
-  box-shadow: inset 0 0 0 0.5px rgba(225, 6, 27, 0.85) !important;
+  box-shadow: inset 0 0 0 0.5px rgba(var(--theme-color-rgb), 0.85) !important;
   border-radius: 8px;
   color: var(--txt);
   font-size: 16px;
@@ -1724,8 +1724,8 @@
 .login-form .form-group input:-webkit-autofill,
 .login-form .form-group input:-webkit-autofill:hover,
 .login-form .form-group input:-webkit-autofill:focus {
-  -webkit-box-shadow: 0 0 0 30px #0f1418 inset, inset 0 0 0 0.5px rgba(225, 6, 27, 0.85) !important;
-  box-shadow: inset 0 0 0 0.5px rgba(225, 6, 27, 0.85) !important;
+  -webkit-box-shadow: 0 0 0 30px #0f1418 inset, inset 0 0 0 0.5px rgba(var(--theme-color-rgb), 0.85) !important;
+  box-shadow: inset 0 0 0 0.5px rgba(var(--theme-color-rgb), 0.85) !important;
   -webkit-text-fill-color: var(--txt) !important;
   background: #0f1418 !important;
   background-color: #0f1418 !important;
@@ -1736,12 +1736,12 @@
 /* İlk yükleme / boş / invalid durumda da ince kırmızı çerçeve (beyaz fallback önleme) */
 .login-form .form-group input:invalid,
 .login-form .form-group input:placeholder-shown {
-  box-shadow: inset 0 0 0 0.5px rgba(225, 6, 27, 0.85) !important;
+  box-shadow: inset 0 0 0 0.5px rgba(var(--theme-color-rgb), 0.85) !important;
 }
 
 .login-form .form-group input:focus {
   outline: none;
-  box-shadow: inset 0 0 0 0.5px #e1061b !important;
+  box-shadow: inset 0 0 0 0.5px var(--theme-color) !important;
 }
 
 .login-form .form-group input::placeholder {
@@ -1775,12 +1775,12 @@
   background: #0f1418 !important;
   background-color: #0f1418 !important;
   border: none !important;
-  box-shadow: inset 0 0 0 0.5px rgba(225, 6, 27, 0.6) !important;
+  box-shadow: inset 0 0 0 0.5px rgba(var(--theme-color-rgb), 0.6) !important;
   border-radius: 4px;
 }
 .login-page .form-group-checkbox input[type="checkbox"]:checked {
   background: #0f1418 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e1061b' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E") center/55% no-repeat !important;
-  box-shadow: inset 0 0 0 0.5px #e1061b !important;
+  box-shadow: inset 0 0 0 0.5px var(--theme-color) !important;
 }
 
 .error-message {
@@ -1878,7 +1878,7 @@
   box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.38) !important;
 }
 .vehicle-card .form-group input.driver-km-input:focus {
-  box-shadow: inset 0 0 0 0.5px #e1061b !important;
+  box-shadow: inset 0 0 0 0.5px var(--theme-color) !important;
   color: rgba(255, 255, 255, 0.7) !important;
   -webkit-text-fill-color: rgba(255, 255, 255, 0.7) !important;
 }
@@ -1920,7 +1920,7 @@
 /* Kaza paneli input/textarea: odakta kırmızı çerçeve, metin beyaz */
 .vehicle-card .form-group input.driver-kaza-input:focus,
 .vehicle-card .form-group textarea.driver-kaza-textarea:focus {
-  box-shadow: inset 0 0 0 0.5px #e1061b !important;
+  box-shadow: inset 0 0 0 0.5px var(--theme-color) !important;
   color: var(--txt) !important;
   -webkit-text-fill-color: var(--txt) !important;
   outline: none !important;
@@ -2011,7 +2011,7 @@
   .dashboard-page #app-footer {
     background: #080d16 !important;
     border-top: 1px solid rgba(128, 128, 128, 0.5) !important;
-    box-shadow: 0 -9px 22px rgba(225, 6, 27, 0.35) !important;
+    box-shadow: 0 -9px 22px rgba(var(--theme-color-rgb), 0.35) !important;
   }
 
   /* Ana başlık çerçevesi – mobilde border + kırmızı ışıklar (login ile uyumlu) */
@@ -2020,7 +2020,7 @@
     border-right-width: 1.2px !important;
   }
   .dashboard-page .hero {
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45), 0 4px 24px rgba(225, 6, 27, 0.18) !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45), 0 4px 24px rgba(var(--theme-color-rgb), 0.18) !important;
   }
 
   /* Çerçevelere yan boşluk – elemanlar çerçeveye yakın */
@@ -2092,7 +2092,7 @@
     border-color: rgba(74, 222, 128, 0.7) !important;
   }
   .dashboard-page .driver-report-btn-kaza {
-    border-color: rgba(225, 6, 27, 0.85) !important;
+    border-color: rgba(var(--theme-color-rgb), 0.85) !important;
   }
   .dashboard-page .driver-report-block .form-group input:not(:focus),
   .dashboard-page .driver-report-block .form-group textarea:not(:focus) {
@@ -2257,7 +2257,7 @@
   .login-page #app-footer.login-footer {
     min-height: 0 !important;
     padding-bottom: 0 !important;
-    box-shadow: 0 -9px 22px rgba(225, 6, 27, 0.35) !important;
+    box-shadow: 0 -9px 22px rgba(var(--theme-color-rgb), 0.35) !important;
     border-top: 1px solid rgba(128, 128, 128, 0.5) !important;
     border-left: none !important;
     border-right: none !important;
@@ -2377,7 +2377,7 @@
     border-top: 1.2px solid var(--border-red-tech) !important;
     border-left: 1px solid var(--border-red-tech) !important;
     border-right: 1px solid var(--border-red-tech) !important;
-    box-shadow: 0 2px 14px rgba(225, 6, 27, 0.1) !important;
+    box-shadow: 0 2px 14px rgba(var(--theme-color-rgb), 0.1) !important;
     min-height: calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important;
     min-height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important;
     max-width: 100% !important;

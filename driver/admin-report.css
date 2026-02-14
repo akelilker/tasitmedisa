@@ -475,7 +475,7 @@ body.admin-report-page::-webkit-scrollbar {
 }
 
 .report-table tr.row-warning td {
-  color: #e1061b;
+  color: var(--theme-color);
 }
 
 .report-table .action-cell button {
@@ -556,7 +556,7 @@ body.admin-report-page::-webkit-scrollbar {
 }
 
 .report-table .cell-icon.cell-no {
-  color: #e1061b;
+  color: var(--theme-color);
 }
 
 /* --- Bekleyen talepler --- */
@@ -660,7 +660,7 @@ body.admin-report-page::-webkit-scrollbar {
   border-top: 0.7px solid rgba(128, 128, 128, 0.5);
   border-left: 0.5px solid rgba(255, 255, 255, 0.2);
   border-right: 0.5px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 -10px 20px rgba(225, 6, 27, 0.16);
+  box-shadow: 0 -10px 20px rgba(var(--theme-color-rgb), 0.16);
   z-index: 1000;
 }
 
@@ -673,7 +673,7 @@ body.admin-report-page::-webkit-scrollbar {
   height: 12.5px;
   width: auto;
   opacity: 0.4;
-  filter: drop-shadow(0 0 6px rgba(225, 6, 27, 0.4));
+  filter: drop-shadow(0 0 6px rgba(var(--theme-color-rgb), 0.4));
 }
 
 .admin-footer .version,
@@ -930,7 +930,7 @@ body.admin-report-page::-webkit-scrollbar {
     border-top: 1.2px solid var(--border-red-tech) !important;
     border-left: 1px solid var(--border-red-tech) !important;
     border-right: 1px solid var(--border-red-tech) !important;
-    box-shadow: 0 2px 14px rgba(225, 6, 27, 0.1) !important;
+    box-shadow: 0 2px 14px rgba(var(--theme-color-rgb), 0.1) !important;
     min-height: calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important;
     min-height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important;
     max-width: 100% !important;

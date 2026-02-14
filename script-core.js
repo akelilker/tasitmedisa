@@ -61,6 +61,23 @@ document.addEventListener('click', (e) => {
 });
 
 /* =========================================
+   UTILITY FUNCTIONS (Global - DRY)
+   ========================================= */
+window.escapeHtml = function(text) {
+  if (text == null || text === '') return '';
+  var div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+};
+
+window.formatNumber = function(num) {
+  if (num == null || num === '' || num === '-') return '-';
+  var numStr = String(num).replace(/[^\d]/g, '');
+  if (!numStr) return '-';
+  return numStr.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+};
+
+/* =========================================
    MODAL MANAGER (Global)
    ========================================= */
 // Footer dim kontrolü fonksiyonu (Global)

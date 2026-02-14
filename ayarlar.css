@@ -77,7 +77,7 @@
 /* EVET butonu (kırmızı) - 1. buton */
 #cache-confirm-modal .modal-body button:first-child:hover {
     font-size: 15px !important;
-    background: rgba(225, 6, 27, 0.08) !important; /* Çok hafif kırmızı dolgu */
+    background: rgba(var(--theme-color-rgb), 0.08) !important; /* Çok hafif kırmızı dolgu */
 }
 
 /* HAYIR butonu (yeşil) - 2. buton */
@@ -131,7 +131,7 @@
 
 #tescil-tarih-confirm-modal .modal-body button:first-child:hover {
     font-size: 15px !important;
-    background: rgba(225, 6, 27, 0.08) !important;
+    background: rgba(var(--theme-color-rgb), 0.08) !important;
 }
 
 #tescil-tarih-confirm-modal .modal-body button:last-child:hover {
@@ -179,7 +179,7 @@
 }
 
 #tescil-tarih-input-modal #tescil-tarih-input.field-error {
-    border-color: #e1061b;
+    border-color: var(--theme-color);
 }
 
 /* Tescil Tarihi Input Overlay (gg kısmını kırmızı göstermek için) */
@@ -202,7 +202,7 @@
 }
 
 .tescil-tarih-overlay .tescil-day {
-    color: #e1061b !important;
+    color: var(--theme-color) !important;
 }
 
 /* Input'un metnini overlay ile uyumlu yapmak için input'u görünür bırak, overlay üstte */
@@ -249,7 +249,7 @@
 
 .tescil-tarih-vazgec-btn:hover {
     font-size: 15px !important;
-    background: rgba(225, 6, 27, 0.08) !important;
+    background: rgba(var(--theme-color-rgb), 0.08) !important;
 }
 
 /* Olay Ekle + içindeki tüm modallar: style-core default (500px, tam yükseklik) */
@@ -272,7 +272,7 @@
 /* Tarihçe Tab Stilleri */
 .history-tab.active {
     color: #e0e0e0 !important;
-    border-bottom-color: #e1061b !important;
+    border-bottom-color: var(--theme-color) !important;
 }
 
 .history-tab {
@@ -571,11 +571,11 @@
 } 
 
 .settings-dropdown .cache-clear-btn {
-  border: 1px solid rgba(225, 6, 27, 0.5) !important;
+  border: 1px solid rgba(var(--theme-color-rgb), 0.5) !important;
   overflow: visible !important; /* Hover'da metin büyüsün, kesilmesin */
 }
 .settings-dropdown .cache-clear-btn:hover {
-  border-color: rgba(225, 6, 27, 0.7) !important;
+  border-color: rgba(var(--theme-color-rgb), 0.7) !important;
   font-size: 17px !important;
 }
 
@@ -604,7 +604,7 @@
     cursor: pointer;
 }
 .action-btn.edit:hover { border-color: #dda410; color: #dda410; }
-.action-btn.delete:hover { border-color: #e1061b; color: #e1061b; }
+.action-btn.delete:hover { border-color: var(--theme-color); color: var(--theme-color); }
 
 .settings-add-btn {
     width: 100%;
@@ -784,8 +784,8 @@ input.settings-form-input:-moz-autofill,
   border-color: rgba(255, 255, 255, 0.35);
 }
 .user-vehicles-trigger.user-vehicles-trigger-open {
-  border-color: var(--theme-color, #e1061b);
-  box-shadow: 0 0 0 1px var(--theme-color, #e1061b);
+  border-color: var(--theme-color);
+  box-shadow: 0 0 0 1px var(--theme-color);
 }
 .user-vehicles-dropdown {
   position: absolute;
@@ -889,8 +889,8 @@ input.settings-form-input:-moz-autofill,
 /* DÜZELTME: Daha ince çerçeve (0.3px) */
 .settings-btn-cancel {
     background: transparent;
-    border: 0.3px solid #e1061b; 
-    color: #e1061b;
+    border: 0.3px solid var(--theme-color); 
+    color: var(--theme-color);
     padding: 0;
     border-radius: 6px;
     cursor: pointer;
@@ -917,8 +917,8 @@ input.settings-form-input:-moz-autofill,
 /* Sil Butonu - Daha ince çerçeve (0.3px) */
 .settings-btn-delete {
     background: transparent;
-    border: 0.3px solid #e1061b; 
-    color: #e1061b;
+    border: 0.3px solid var(--theme-color); 
+    color: var(--theme-color);
     padding: 0;
     border-radius: 6px;
     cursor: pointer;
@@ -938,7 +938,7 @@ input.settings-form-input:-moz-autofill,
 }
 .settings-btn-delete:hover { 
     transform: scale(1.05); /* Sadece transform, font-size sabit */
-    background: rgba(225, 6, 27, 0.1);
+    background: rgba(var(--theme-color-rgb), 0.1);
 }
 
 /* Alt Menü */
@@ -1097,7 +1097,7 @@ input.settings-form-input:-moz-autofill,
 }
 
 .settings-action-btn.edit:hover { color: #dda410; transform: scale(1.1); }
-.settings-action-btn.delete:hover { color: #e1061b; transform: scale(1.1); }
+.settings-action-btn.delete:hover { color: var(--theme-color); transform: scale(1.1); }
 
 /* === DETAY GÖRÜNÜMÜ === */
 .settings-detail-view { padding: 16px; }
@@ -1183,14 +1183,14 @@ input.settings-form-input:-moz-autofill,
     
     /* Vazgeç butonu - KIRMIZI çerçeve + KIRMIZI metin */
     .settings-btn-cancel {
-        border-color: #e1061b !important;
-        color: #e1061b !important;
+        border-color: var(--theme-color) !important;
+        color: var(--theme-color) !important;
     }
     
     /* Sil butonu - KIRMIZI çerçeve + KIRMIZI metin */
     .settings-btn-delete {
-        border-color: #e1061b !important;
-        color: #e1061b !important;
+        border-color: var(--theme-color) !important;
+        color: var(--theme-color) !important;
     }
     
     .form-input {
@@ -1454,14 +1454,14 @@ input.settings-form-input:-moz-autofill,
         height: 30px !important;
         font-size: 11px !important;
         line-height: 1 !important;
-        border: 1px solid rgba(225, 6, 27, 0.5) !important;
-        color: #e1061b !important;
+        border: 1px solid rgba(var(--theme-color-rgb), 0.5) !important;
+        color: var(--theme-color) !important;
         border-radius: 8px !important;
         font-weight: 400 !important;
     }
     #branch-form-modal .settings-btn-cancel:hover,
     #user-form-modal .settings-btn-cancel:hover {
-        background: rgba(225, 6, 27, 0.15) !important;
+        background: rgba(var(--theme-color-rgb), 0.15) !important;
         font-size: 11px !important;
     }
     #branch-form-modal .settings-btn-delete,

@@ -860,12 +860,6 @@
     // YARDIMCI FONKSİYONLAR
     // ========================================
   
-    function escapeHtml(text) {
-      const div = document.createElement('div');
-      div.textContent = text;
-      return div.innerHTML;
-    }
-  
     function formatDate(isoString) {
       if (!isoString) return '-';
       const date = new Date(isoString);

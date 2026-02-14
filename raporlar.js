@@ -1068,13 +1068,6 @@
     };
 
     // Yardımcı fonksiyonlar
-    function formatNumber(value) {
-        if (!value) return '-';
-        const numStr = String(value).replace(/[^\d]/g, '');
-        if (!numStr) return '-';
-        return numStr.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-    }
-
     function formatDate(dateStr) {
         if (!dateStr) return '-';
         try {
@@ -1815,20 +1808,6 @@
         const month = String(date.getMonth() + 1).padStart(2, '0');
         const year = date.getFullYear();
         return `${day}/${month}/${year}`;
-    }
-    
-    // Sayı formatı helper
-    function formatNumber(num) {
-        if (!num || num === '-') return '-';
-        const numStr = String(num).replace(/\./g, '');
-        return numStr.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-    }
-
-    // HTML Escape Helper
-    function escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
     }
 
     // Global Event Listeners (ESC ve Overlay click)

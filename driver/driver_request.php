@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../core.php';
 header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST, OPTIONS');
@@ -8,25 +9,6 @@ header('Access-Control-Allow-Headers: Content-Type, Authorization');
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit;
-}
-
-// Token doğrulama
-function validateToken() {
-    $headers = getallheaders();
-    $authHeader = $headers['Authorization'] ?? '';
-    
-    if (empty($authHeader)) {
-        return null;
-    }
-    
-    $token = str_replace('Bearer ', '', $authHeader);
-    $decoded = json_decode(base64_decode($token), true);
-    
-    if (!$decoded || !isset($decoded['exp']) || $decoded['exp'] < time()) {
-        return null;
-    }
-    
-    return $decoded;
 }
 
 // Token doğrula
@@ -79,14 +61,7 @@ if ($yeniKazaAciklama !== null && strlen($yeniKazaAciklama) > 500) {
 }
 
 // Veriyi yükle
-$dataFile = __DIR__ . '/../data/data.json';
-if (!file_exists($dataFile)) {
-    http_response_code(500);
-    echo json_encode(['success' => false, 'message' => 'Veri dosyası bulunamadı!'], JSON_UNESCAPED_UNICODE);
-    exit;
-}
-
-$data = json_decode(file_get_contents($dataFile), true);
+$data = loadData();
 if (!$data) {
     http_response_code(500);
     echo json_encode(['success' => false, 'message' => 'Veri okunamadı!'], JSON_UNESCAPED_UNICODE);
@@ -163,7 +138,7 @@ $talepData = [
 $data['duzeltme_talepleri'][] = $talepData;
 
 // Veriyi kaydet
-file_put_contents($dataFile, json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT), LOCK_EX);
+saveData($data);
 
 // Başarılı yanıt
 echo json_encode([
