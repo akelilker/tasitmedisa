@@ -873,7 +873,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         margin-top: -2px !important; /* genel +1px kuralına göre 3px yukarı */
     }
     #vehicle-modal .modal-body .modal-columns {
-        align-items: flex-start;
+        align-items: stretch;
         margin-bottom: 6px !important;
     }
     #vehicle-modal .modal-body .modal-column-left,
@@ -882,7 +882,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         flex-direction: column;
     }
     #vehicle-modal .modal-body .modal-column-left .form-section-inline:nth-of-type(4) {
-        margin-top: 0;
+        margin-top: auto;
     }
     /* Tramer/Boya container form-section: gizliyken boşluk bırakma (denge için) */
     #vehicle-modal .modal-body .modal-column-left .form-section:has(#tramer-records-container),
