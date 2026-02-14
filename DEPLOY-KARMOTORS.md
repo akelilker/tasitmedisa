@@ -57,6 +57,12 @@ Deploy script veya GitHub Actions kullanıyorsan hedef path’i canlı klasörle
 
 ---
 
+## apple-touch-icon
+
+Manifest ve HTML **apple-touch-icon.svg** kullanıyor. Tarayıcı bazen otomatik `apple-touch-icon.png` isteyebilir; 404’ü kapatmak için `docker/nginx-proxy.conf` içinde `.png` → `.svg` redirect’i tanımlı (sunucuda bu config kullanılsın).
+
+---
+
 ## Dosya Yapısı (örnek)
 
 ```
