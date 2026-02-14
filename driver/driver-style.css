@@ -264,16 +264,14 @@
   box-sizing: border-box;
   min-height: 0;
 }
-.driver-user-plate-row-full {
-  width: 100%;
+.driver-user-plate-in-panel {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  align-items: center;
-  text-align: center;
-  justify-content: center;
+  align-items: flex-start;
+  text-align: left;
   flex-shrink: 0;
-  margin-top: -10px;
+  margin-bottom: 8px;
 }
 .driver-panels-inner {
   display: flex;
@@ -319,10 +317,9 @@
   gap: 6px;
   position: relative;
 }
-.driver-left-panel .driver-plate-dropdown,
-.driver-user-plate-row-full .driver-plate-dropdown {
-  left: 50%;
-  transform: translateX(-50%);
+.driver-left-panel .driver-plate-dropdown {
+  left: 0;
+  transform: none;
   top: 100%;
   margin-top: 4px;
 }
