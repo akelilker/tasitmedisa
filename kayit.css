@@ -882,7 +882,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         flex-direction: column;
     }
     #vehicle-modal .modal-body .modal-column-left .form-section-inline:nth-of-type(4) {
-        margin-top: auto;
+        margin-top: 0;
     }
     /* Notlar: Boya/Değişen ile alt çerçeve hizalı (her ikisi sütunun altına yapışır) */
     #vehicle-modal .modal-body .modal-column-right .form-section:has(#vehicle-notes) {
