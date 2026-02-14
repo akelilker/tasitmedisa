@@ -339,13 +339,18 @@
             </div>
         `;
 
-        // Mobilde sol ok ve Detay Ekleme satırını header altındaki slota klonla
+        // Sol ok + Detay Ekleme satırını ve menüyü header slotuna taşı (menü butonun hemen altında açılsın)
         const headerActions = document.getElementById('reports-list-header-actions');
         if (headerActions) {
             const firstRow = listContainer.querySelector('.stok-controls-row-1');
+            const menu = document.getElementById('stok-detail-menu');
             if (firstRow) {
                 headerActions.innerHTML = '';
-                headerActions.appendChild(firstRow.cloneNode(true));
+                const wrap = document.createElement('div');
+                wrap.className = 'stok-detail-add-wrap';
+                wrap.appendChild(firstRow.cloneNode(true));
+                if (menu) wrap.appendChild(menu);
+                headerActions.appendChild(wrap);
                 headerActions.setAttribute('aria-hidden', 'false');
             }
         }
