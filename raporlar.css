@@ -822,7 +822,7 @@ margin-top: 12px !important;
 }
 /* Row-2: export + tarih (detay menü header’da, buton altında) */
 #stok-list-container .stok-list-top-controls > .stok-controls-row-1 { order: 0; }
-#stok-list-container .stok-list-top-controls > .stok-controls-row-2 { order: 2 !important; margin-top: -16px !important; padding-top: 14px !important; display: flex !important; flex-wrap: wrap !important; justify-content: space-between !important; align-items: flex-end !important; gap: 6px; }
+#stok-list-container .stok-list-top-controls > .stok-controls-row-2 { order: 2 !important; margin-top: 8px !important; padding-top: 14px !important; display: flex !important; flex-wrap: wrap !important; justify-content: space-between !important; align-items: flex-end !important; gap: 6px; }
 #stok-list-container .stok-controls-row-2 > .stok-export-controls { order: 0; }
 #stok-list-container .stok-controls-row-2 > .stok-date-range-controls { order: 0; }
 #stok-list-container .stok-controls-row-2 .stok-export-controls { padding-bottom: 0 !important; margin-bottom: 0 !important; align-items: flex-end !important; }
@@ -852,6 +852,17 @@ height: auto;
 min-height: 0;
 justify-content: flex-start;
 }
+/* Masaüstü: sütun başlıkları +1pt; tüm metin/sayılar marka ile aynı punto; çerçeveye 2px */
+.stok-list-header-cell { font-size: 13px !important; padding: 2px !important; }
+.stok-list-cell { font-size: 13px !important; padding: 2px !important; color: #b5b9c0; }
+.stok-list-header-cell[data-col="sira"],
+.stok-list-cell[data-col="sira"],
+.stok-list-header-cell[data-col="yil"],
+.stok-list-cell[data-col="yil"],
+.stok-list-header-cell[data-col="km"],
+.stok-list-cell[data-col="km"] { padding: 2px !important; }
+.stok-list-cell[data-col="marka"] { padding: 2px !important; }
+.stok-sort-icon { font-size: 10px !important; }
 }
 
 /* Masaüstü: İki satırlık layout */
@@ -867,7 +878,7 @@ width: 100%;
 display: flex;
 justify-content: flex-end;
 width: 100%;
-margin-top: -28px; /* Bir satır yukarı alındı - tarih alanları row-1 ile aynı hizada */
+margin-top: 0;
 }
 
 .stok-back-btn {
