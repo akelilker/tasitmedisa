@@ -1455,11 +1455,14 @@
   overflow-x: hidden !important;
 }
 
+/* Login content-wrap: anasayfa ile aynı hizalama (padding, safe-area) */
 .login-page .content-wrap {
   flex: 1 1 auto !important;
   min-height: 0 !important;
   min-width: 0 !important;
-  padding-top: 0 !important;
+  padding: 4px !important;
+  padding-top: max(12px, env(safe-area-inset-top)) !important;
+  padding-bottom: 16px !important;
   overflow-x: hidden !important;
   overflow-y: auto !important;
   scrollbar-width: none !important;
@@ -1553,10 +1556,10 @@
   opacity: 0.7 !important;
 }
 
-/* Yönetim Sistemi linki - footer üstünde, sola yaslı (giriş + panel) */
+/* Yönetim Sistemi linki - footer üstünde, sola yaslı (anasayfa Kullanıcı Paneli ile aynı 3px aşağı) */
 .management-system-link {
   position: fixed;
-  bottom: calc(var(--app-footer-height, 44px) + 4px - 6px);
+  bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0) + 9px);
   left: 50%;
   transform: translateX(calc(-50% - 3px));
   max-width: 500px;
@@ -1587,6 +1590,7 @@
 
 @media (min-width: 769px) {
   .management-system-link {
+    bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0) + 3px);
     font-size: 13px;
     transform: translateX(calc(-50% - 8px));
   }
