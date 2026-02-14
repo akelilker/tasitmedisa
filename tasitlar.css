@@ -1942,7 +1942,7 @@
     /* Mobil: Marka/Model daraltıldı (3.5fr -> 2.5fr), Şube gösteriliyor, Tip gizli (5 sütun) */
     grid-template-columns: 40px 70px 2.5fr 60px 2fr !important; /* Yılı, Plaka, Marka/Model, KM, Şube */
     gap: 4px !important; /* Masaüstü ile aynı */
-    padding: 5px 1px !important; /* Çerçeveye 1px kalacak; dikey yükseklik metne göre */
+    padding: 1px !important; /* Çerçeveye 1px kalacak; karakterler alanı 1px’e kadar kullansın */
     min-height: 0 !important; /* Satır yüksekliği metne göre ayarlansın */
     align-items: center !important;
     border-bottom: 1px solid rgba(255,255,255,0.08) !important; /* Masaüstü ile aynı */
@@ -1962,7 +1962,7 @@
     display: grid !important;
     grid-template-columns: 40px 70px 2.5fr 60px 2fr !important; /* Marka/Model daraltıldı, Şube gösteriliyor, Tip gizli */
     gap: 4px !important; /* Masaüstü ile aynı */
-    padding: 5px 1px 4px 1px !important; /* Çerçeveye 1px kalacak */
+    padding: 1px !important; /* Çerçeveye 1px kalacak; hücreler yatay/dikey 1px boşluk */
     margin-bottom: 4px !important; /* Masaüstü ile aynı */
     border-bottom: 1px solid rgba(255,255,255,0.12) !important; /* Masaüstü ile aynı */
     background: #080d16 !important;
