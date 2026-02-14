@@ -100,11 +100,16 @@
     flex: 1 1 auto; 
     overflow-y: auto;
     overflow-x: hidden;
-    padding: 0 16px 0 16px; /* padding-top: 0 (baÅŸlÄ±k altÄ± boÅŸluk kaldÄ±rÄ±ldÄ±) */
+    padding: 0 16px 0 16px; /* padding-top: 0 (başlık altı boşluk kaldırıldı) */
     scrollbar-width: none;
     min-height: 0; 
     display: flex;
     flex-direction: column;
+}
+/* Mobil: scroll yukarı kaydığında aşağı zıplama (bounce) olmasın */
+#vehicle-modal .modal-body {
+    overscroll-behavior: none;
+    overscroll-behavior-y: none;
 }
 
 /* 2 KOLONLU YAPI */
@@ -615,6 +620,11 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         touch-action: pan-y !important;
         overscroll-behavior: none !important;
         overscroll-behavior-x: none !important;
+    }
+    /* İçerik yukarı kaydığında aşağı zıplamasın (mobil bounce kapatma) */
+    #vehicle-modal .modal-body {
+        overscroll-behavior: none !important;
+        overscroll-behavior-y: none !important;
     }
 
     #vehicle-modal.modal-overlay::before {

@@ -223,7 +223,7 @@
             <div class="vt-left"></div>
             <div class="vt-right">
                 <div id="v-search-container" class="v-search-container">
-                    <input type="text" id="v-search-input" class="v-search-input" placeholder="Tüm Taşıtlarda Ara..." oninput="handleSearch(this.value)">
+                    <input type="text" id="v-search-input" class="v-search-input" placeholder="Plaka, marka, kullanıcı ara..." oninput="handleSearch(this.value)">
                 </div>
                 <button class="vt-icon-btn search-toggle-btn" onclick="toggleSearchBox('global')" title="Genel Arama">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></svg>
@@ -244,7 +244,7 @@
             </div>
             <div class="vt-right">
                 <div id="v-search-container" class="v-search-container">
-                    <input type="text" id="v-search-input" class="v-search-input" placeholder="Bu listede ara..." oninput="handleSearch(this.value)">
+                    <input type="text" id="v-search-input" class="v-search-input" placeholder="Plaka, marka, kullanıcı ara..." oninput="handleSearch(this.value)">
                 </div>
                 <button class="vt-icon-btn search-toggle-btn" onclick="toggleSearchBox('local')" title="Ara">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></svg>
@@ -410,10 +410,11 @@
         vehicles = vehicles.filter(v => v.satildiMi !== true);
     }
 
-    // 2. Metin Araması
+    // 2. Metin Araması (plaka, marka/model, yıl, kullanıcı)
     if (query) {
         const q = query.toLowerCase();
         vehicles = vehicles.filter(v => 
+            (v.plate && v.plate.toLowerCase().includes(q)) ||
             (v.brandModel && v.brandModel.toLowerCase().includes(q)) ||
             (v.year && v.year.includes(q)) ||
             (v.tahsisKisi && v.tahsisKisi.toLowerCase().includes(q))
@@ -1030,6 +1031,7 @@
           const all = readVehicles();
           const q = val.toLowerCase();
           const filtered = all.filter(v => 
+            (v.plate && v.plate.toLowerCase().includes(q)) ||
             (v.brandModel && v.brandModel.toLowerCase().includes(q)) ||
             (v.tahsisKisi && v.tahsisKisi.toLowerCase().includes(q))
           );

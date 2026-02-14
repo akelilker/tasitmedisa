@@ -394,6 +394,8 @@ gap: 8px;
 align-content: start;
 justify-content: center;
 margin-bottom: 16px;
+padding-top: 6px;
+padding-bottom: 6px;
 }
 
 .stok-branch-card {
