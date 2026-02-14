@@ -295,7 +295,7 @@
     };
 
     window.closeAllModals = function() {
-        document.querySelectorAll('.tasitlar-modal-overlay olay-ekle-modal, .tasitlar-modal-overlay.olay-ekle-modal').forEach(m => {
+        document.querySelectorAll('.tasitlar-modal-overlay .olay-ekle-modal, .tasitlar-modal-overlay.olay-ekle-modal').forEach(m => {
             m.style.display = 'none';
             m.classList.remove('active');
         });
@@ -303,6 +303,21 @@
         if (menu) {
             menu.style.display = 'none';
             menu.classList.remove('active');
+        }
+        const detailModal = document.getElementById('vehicle-detail-modal');
+        if (detailModal) {
+            detailModal.style.display = 'none';
+            detailModal.classList.remove('active');
+        }
+        const historyModal = document.getElementById('vehicle-history-modal');
+        if (historyModal) {
+            historyModal.style.display = 'none';
+            historyModal.classList.remove('active');
+        }
+        const vehiclesModal = document.getElementById('vehicles-modal');
+        if (vehiclesModal) {
+            vehiclesModal.style.display = 'flex';
+            requestAnimationFrame(() => vehiclesModal.classList.add('active'));
         }
         if (window.updateFooterDim) window.updateFooterDim();
     };
