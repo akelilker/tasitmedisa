@@ -1,11 +1,12 @@
 <?php
+require_once __DIR__ . '/core.php';
 header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
 header('Cache-Control: no-cache, no-store, must-revalidate');
 header('Pragma: no-cache');
 header('Expires: 0');
 
-$dataFile = __DIR__ . '/data/data.json';
+$dataFile = getDataFilePath();
 
 // Dosya yoksa boş veri yapısı döndür
 if (!file_exists($dataFile)) {

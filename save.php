@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/core.php';
 header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
 
@@ -9,8 +10,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-$dataDir = __DIR__ . '/data';
-$dataFile = $dataDir . '/data.json';
+$dataDir = dirname(getDataFilePath());
+$dataFile = getDataFilePath();
 
 // data klasörü yoksa oluştur
 if (!is_dir($dataDir)) {

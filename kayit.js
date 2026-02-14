@@ -48,10 +48,8 @@
    * formatNumberWithSeparator("abc") -> ""
    */
   function formatNumberWithSeparator(value) {
-    // Sayıları binlik ayırıcı ile formatla
-    const numericValue = value.replace(/[^\d]/g, '');
-    if (!numericValue) return '';
-    return numericValue.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    if (!value || String(value).trim() === '') return '';
+    return window.formatNumber(value);
   }
 
   // --- Tramer Kayıt Fonksiyonları ---

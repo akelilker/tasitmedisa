@@ -158,8 +158,8 @@
     flex-direction: column;
     gap: 0; /* BÃ¶lÃ¼mler arasÄ± boÅŸluk padding ile kontrol edilecek (12px â†’ 0) */
     padding-right: 2px; /* KÄ±rmÄ±zÄ± Ã§izgi ile arasÄ±ndaki boÅŸluk (toplam 4px iÃ§in: 2px) */
-    border-right: 1px solid rgba(225, 6, 27, 0.28);
-    box-shadow: 10px 0 18px -18px rgba(225, 6, 27, 0.45);
+    border-right: 1px solid rgba(var(--theme-color-rgb), 0.28);
+    box-shadow: 10px 0 18px -18px rgba(var(--theme-color-rgb), 0.45);
     min-width: 0; /* Flex item'in kÃ¼Ã§Ã¼lmesine izin ver */
     box-sizing: border-box; /* Border'Ä± geniÅŸliÄŸe dahil et */
 }
@@ -243,7 +243,7 @@
 }
 
 .detail-user-empty {
-    color: #e1061b !important;
+    color: var(--theme-color) !important;
     font-weight: 600;
     cursor: pointer;
     text-decoration: none;
@@ -251,7 +251,7 @@
 
 /* detail-row-value ile birlikte kullanÄ±ldÄ±ÄŸÄ±nda kÄ±rmÄ±zÄ± renk */
 .detail-row-value.detail-user-empty {
-    color: #e1061b !important;
+    color: var(--theme-color) !important;
     font-size: 12px !important; /* 13px - 0.5px = 12.5px â†’ 12px */
     white-space: nowrap !important; /* Tek satÄ±rda kal */
 }
@@ -311,7 +311,7 @@
 }
 
 .date-warning-red {
-    color: #e1061b !important;
+    color: var(--theme-color) !important;
 }
 
 /* === TRAMER KAYITLARI DETAY MODAL STÄ°LLERÄ° === */
@@ -493,13 +493,13 @@
     transform: scale(1);
 }
 .vt-icon-btn:hover { 
-    color: #e1061b !important; /* KÄ±rmÄ±zÄ± renk */
+    color: var(--theme-color) !important; /* KÄ±rmÄ±zÄ± renk */
     background: transparent !important; /* Arka plan yok */
     border: none !important; /* Ã‡erÃ§eve yok */
     border-radius: 0 !important;
     transform: scale(1.2); /* Ä°konlar bÃ¼yÃ¼sÃ¼n */
 }
-.vt-icon-btn.active { color: #e1061b; }
+.vt-icon-btn.active { color: var(--theme-color); }
 
 /* Masaüstü: sol ok ve etiket 6px yukarı; sütun başlıkları +1px, beyaza yakın renk */
 @media (min-width: 641px) {
@@ -609,7 +609,7 @@
     background: transparent;
 }
 #filter-dropdown .filter-dropdown-btn.active {
-    color: #e1061b;
+    color: var(--theme-color);
     font-weight: 600;
 }
 
@@ -635,7 +635,7 @@
     outline: none;
     height: 28px; /* Toolbar iÃ§inde ortalanmÄ±ÅŸ yÃ¼kseklik */
 }
-.search-input:focus { border-color: #e1061b; }
+.search-input:focus { border-color: var(--theme-color); }
 
 /* Toolbar içinde açılır arama kutusu (büyüteç yanında) */
 .v-search-container {
@@ -666,7 +666,7 @@
     box-sizing: border-box;
 }
 .v-search-input:focus {
-    border-color: #e1061b;
+    border-color: var(--theme-color);
 }
 .v-search-input::placeholder {
     color: #666;
@@ -1255,12 +1255,12 @@
 .view-list .list-info span { font-size: 11px; color: #888; }
 
 .branch-card.unassigned-branch-card {
-    border-color: rgba(225, 6, 27, 0.5) !important;
+    border-color: rgba(var(--theme-color-rgb), 0.5) !important;
 }
 
 .branch-card.unassigned-branch-card .branch-name,
 .branch-card.unassigned-branch-card .branch-count {
-    color: #e1061b !important;
+    color: var(--theme-color) !important;
 }
 
 /* Tahsis Edilmemiş Taşıtlar — tema uyumlu; metinler kırmızı (hem mobil hem masaüstü) */
@@ -1271,7 +1271,7 @@
 .view-card .card.unassigned-vehicle-card .card-plate,
 .view-card .card.unassigned-vehicle-card .card-brand-model,
 .view-card .card.unassigned-vehicle-card .card-third-line {
-    color: #e1061b !important;
+    color: var(--theme-color) !important;
 }
 
 .view-list .list-item.unassigned-vehicle-card {
@@ -1281,7 +1281,7 @@
 /* Sadece Şube sütunundaki "Tahsis Edilmemiş" metni kırmızı; satırın geri kalanı normal */
 #vehicles-modal .view-list .list-item.unassigned-vehicle-card .list-cell.list-branch,
 .view-list .list-item.unassigned-vehicle-card .list-cell.list-branch {
-    color: #e1061b !important;
+    color: var(--theme-color) !important;
 }
 
 .list-actions {
@@ -1311,7 +1311,7 @@
 }
 
 .list-action-btn.edit:hover { color: #dda410; background: rgba(221, 164, 16, 0.1); transform: scale(1.1); }
-.list-action-btn.delete:hover { color: #e1061b; background: rgba(225, 6, 27, 0.1); transform: scale(1.1); }
+.list-action-btn.delete:hover { color: var(--theme-color); background: rgba(var(--theme-color-rgb), 0.1); transform: scale(1.1); }
 
 /* === ÅžUBE ATAMA FORMU === */
 .detail-branch-assign {
@@ -1378,7 +1378,7 @@
 .assign-select:focus {
   outline: none;
   border-color: rgba(255, 255, 255, 0.5);
-  box-shadow: 0 0 8px rgba(225, 6, 27, 0.3);
+  box-shadow: 0 0 8px rgba(var(--theme-color-rgb), 0.3);
 }
 
 .assign-select option {
@@ -1421,9 +1421,9 @@
 .assign-cancel-btn {
   padding: 8px 32px;
   background: transparent;
-  border: 1px solid rgba(225, 6, 27, 0.4);
+  border: 1px solid rgba(var(--theme-color-rgb), 0.4);
   border-radius: 6px;
-  color: #e1061b;
+  color: var(--theme-color);
   font-weight: 600;
   font-size: 13px;
   cursor: pointer;
@@ -1432,16 +1432,16 @@
 }
 
 .assign-cancel-btn:hover {
-  background: rgba(225, 6, 27, 0.1);
-  border-color: #e1061b;
-  box-shadow: 0 0 12px rgba(225, 6, 27, 0.3);
+  background: rgba(var(--theme-color-rgb), 0.1);
+  border-color: var(--theme-color);
+  box-shadow: 0 0 12px rgba(var(--theme-color-rgb), 0.3);
 }
 
 /* Åžubeye Tahsis Etmek Ä°Ã§in Butonu - Toolbar iÃ§inde, Ã§erÃ§evesiz */
 .detail-assign-button-frameless {
   background: transparent;
   border: none;
-  color: #e1061b;
+  color: var(--theme-color);
   font-weight: 600;
   font-size: 13px;
   padding: 0;
@@ -1457,7 +1457,7 @@
 }
 
 .detail-assign-button-frameless:hover {
-  color: #e1061b;
+  color: var(--theme-color);
   animation: none; /* Hover'da animasyonu durdur */
   transform: scale(1.05);
 }
@@ -1465,11 +1465,11 @@
 @keyframes blink-red-text {
   0%, 100% {
     opacity: 1;
-    color: #e1061b;
+    color: var(--theme-color);
   }
   50% {
     opacity: 0.5;
-    color: rgba(225, 6, 27, 0.7);
+    color: rgba(var(--theme-color-rgb), 0.7);
   }
 }
 
@@ -1538,7 +1538,7 @@
     padding: 5px 8px 5px 0 !important; /* +1px dikey (Olay ekle butonu) */
     background: transparent !important;
     border: none !important; /* Ã‡erÃ§eve kaldÄ±rÄ±ldÄ± */
-    color: #e1061b;
+    color: var(--theme-color);
     border-radius: 0;
     cursor: pointer;
     font-weight: 600;
@@ -1563,7 +1563,7 @@
 }
 
 .detail-brand-year-row .history-add-event-btn:hover {
-    color: #e1061b; /* Renk deÄŸiÅŸmesin, aynÄ± kÄ±rmÄ±zÄ± kalacak */
+    color: var(--theme-color); /* Renk deÄŸiÅŸmesin, aynÄ± kÄ±rmÄ±zÄ± kalacak */
     transform: scale(1.08); /* GÃ¶rsel olarak bÃ¼yÃ¼t (sayfa kÄ±pÄ±rdamasÄ±n diye transform kullanÄ±ldÄ±) */
 }
 
@@ -1782,7 +1782,7 @@
     color: #888 !important; /* Gri renk */
   }
   .detail-row-value.detail-user-empty {
-    color: #e1061b !important;
+    color: var(--theme-color) !important;
     font-size: 18px !important; /* +1 punto â†’ 16px */
     white-space: nowrap !important; /* Mobilde tek satÄ±rda kal */
   }
@@ -2122,7 +2122,7 @@
   }
   #vehicles-modal .view-list .list-item.unassigned-vehicle-card .list-cell.list-branch,
   .view-list .list-item.unassigned-vehicle-card .list-cell.list-branch {
-    color: #e1061b !important;
+    color: var(--theme-color) !important;
   }
   .list-header-row .list-cell.list-branch {
     display: flex !important;

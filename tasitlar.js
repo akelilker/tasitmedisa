@@ -1159,13 +1159,6 @@
       renderVehicles(document.getElementById('v-search-input')?.value || '');
   };
 
-  function escapeHtml(text) {
-    if (!text) return '';
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-  }
-  
   function formatDateShort(dateStr) {
     if (!dateStr) return '';
     const parts = dateStr.split('-');
@@ -1203,15 +1196,6 @@
     }
     
     return { class: '', days: diffDays };
-  }
-
-  /**
-   * Sayıları binlik ayırıcı ile formatlar (örn: 1000 → "1.000")
-   */
-  function formatNumber(num) {
-    if (!num || num === '-') return '-';
-    const numStr = String(num).replace(/\./g, ''); // Mevcut noktaları temizle
-    return numStr.replace(/\B(?=(\d{3})+(?!\d))/g, '.'); // Binlik ayırıcı ekle
   }
 
   /**

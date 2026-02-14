@@ -3,21 +3,13 @@
  * Aylık kullanıcı raporu CSV (Excel uyumlu) export.
  * GET period (varsayılan: bu ay). UTF-8 BOM, başlık: Kullanıcı, Taşıt, Plaka, KM, Bakım, Kaza, Kayıt Tarihi.
  */
+require_once __DIR__ . '/../core.php';
 header('Content-Type: text/csv; charset=utf-8');
 header('Content-Disposition: attachment; filename="kullanici_raporu_' . date('Y-m-d') . '.csv"');
 header('Access-Control-Allow-Origin: *');
 
 $period = $_GET['period'] ?? date('Y-m');
-$dataFile = __DIR__ . '/../data/data.json';
-
-if (!file_exists($dataFile)) {
-    http_response_code(500);
-    echo "\xEF\xBB\xBF"; // BOM
-    echo "Hata;Veri dosyası bulunamadı\n";
-    exit;
-}
-
-$data = json_decode(file_get_contents($dataFile), true);
+$data = loadData();
 if (!$data) {
     http_response_code(500);
     echo "\xEF\xBB\xBF";

@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../core.php';
 header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST, OPTIONS');
@@ -28,14 +29,7 @@ if ($action !== 'approve' && $action !== 'reject') {
 }
 
 // Veriyi yükle
-$dataFile = __DIR__ . '/../data/data.json';
-if (!file_exists($dataFile)) {
-    http_response_code(500);
-    echo json_encode(['success' => false, 'message' => 'Veri dosyası bulunamadı!'], JSON_UNESCAPED_UNICODE);
-    exit;
-}
-
-$data = json_decode(file_get_contents($dataFile), true);
+$data = loadData();
 if (!$data) {
     http_response_code(500);
     echo json_encode(['success' => false, 'message' => 'Veri okunamadı!'], JSON_UNESCAPED_UNICODE);
@@ -112,7 +106,7 @@ if ($action === 'approve') {
 }
 
 // Veriyi kaydet
-if (file_put_contents($dataFile, json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT), LOCK_EX) === false) {
+if (!saveData($data)) {
     http_response_code(500);
     echo json_encode(['success' => false, 'message' => 'Kayıt sırasında hata oluştu!'], JSON_UNESCAPED_UNICODE);
     exit;

@@ -214,7 +214,7 @@ border-bottom: 2px solid transparent;
 
 .tab-btn.active {
 color: #fff;
-border-bottom: 2px solid #e1061b;
+border-bottom: 2px solid var(--theme-color);
 background: rgba(255, 255, 255, 0.02);
 }
 
@@ -268,8 +268,8 @@ background: rgba(255, 165, 0, 0.05);
 }
 
 .report-card.danger {
-border-color: rgba(225, 6, 27, 0.3);
-background: rgba(225, 6, 27, 0.05);
+border-color: rgba(var(--theme-color-rgb), 0.3);
+background: rgba(var(--theme-color-rgb), 0.05);
 }
 
 .report-card.info {
@@ -313,7 +313,7 @@ outline: none;
 
 .report-filters select:focus,
 .search-box-wrapper input:focus {
-border-color: #e1061b;
+border-color: var(--theme-color);
 }
 
 .report-filters select option {
@@ -379,7 +379,7 @@ font-weight: 500;
 }
 
 .status-red {
-background: rgba(225, 6, 27, 0.2);
+background: rgba(var(--theme-color-rgb), 0.2);
 color: #ffcccc;
 }
 
@@ -463,8 +463,8 @@ z-index: 10;
 }
 
 .stok-branch-card.active {
-border-color: #e1061b;
-background: rgba(225, 6, 27, 0.1);
+border-color: var(--theme-color);
+background: rgba(var(--theme-color-rgb), 0.1);
 }
 
 /* Taşıtlar .branch-name ile birebir aynı */
@@ -624,7 +624,7 @@ color: #999;
 }
 
 .stok-sort-icon.active {
-color: #e1061b;
+color: var(--theme-color);
 }
 
 /* Taşıtlar listesi formatı: grid, gap */
@@ -1115,7 +1115,7 @@ margin: 0 !important;
 }
 
 .stok-date-input:focus {
-border-color: #e1061b;
+border-color: var(--theme-color);
 }
 
 .stok-export-controls {
@@ -1218,7 +1218,7 @@ box-sizing: border-box;
 }
 
 .stok-search-input:focus {
-border-color: #e1061b;
+border-color: var(--theme-color);
 }
 
 .stok-search-input::placeholder {
@@ -1445,7 +1445,7 @@ margin-bottom: 8px;
 .kullanici-event-type {
 font-size: 12px;
 font-weight: 700;
-color: #e1061b;
+color: var(--theme-color);
 text-transform: uppercase;
 }
 
