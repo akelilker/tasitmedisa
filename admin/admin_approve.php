@@ -112,7 +112,11 @@ if ($action === 'approve') {
 }
 
 // Veriyi kaydet
-file_put_contents($dataFile, json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT), LOCK_EX);
+if (file_put_contents($dataFile, json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT), LOCK_EX) === false) {
+    http_response_code(500);
+    echo json_encode(['success' => false, 'message' => 'Kayıt sırasında hata oluştu!'], JSON_UNESCAPED_UNICODE);
+    exit;
+}
 
 // Başarılı yanıt
 $message = $action === 'approve' ? 'Talep onaylandı, veri güncellendi!' : 'Talep reddedildi!';
