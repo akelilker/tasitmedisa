@@ -1594,9 +1594,13 @@ padding-top: 2px !important;
 #stok-list-container .stok-list-top-controls {
 padding-top: 0 !important;
 }
-/* Mobilde header-altı slot: buton altı dikey boşluk azaltıldı */
+/* Mobilde header-altı slot: buton altı dikey boşluk */
 #reports-modal .reports-list-header-actions:not(:empty) {
 padding: 6px 2px 4px 2px !important;
+}
+/* Mobil: Detay menüsü açıkken alt boşluk – BAŞLANGIÇ T./BİTİŞ T. ile üst üste binmeyi önle */
+#reports-modal:has(.stok-detail-menu-open) .reports-list-header-actions {
+padding-bottom: 16px !important;
 }
 .stok-controls-row-1 {
 display: flex;
