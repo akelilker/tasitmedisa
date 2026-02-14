@@ -804,10 +804,10 @@ margin-top: 0 !important; /* -28px kesiliyordu, sıfırlandı */
 .report-view {
 padding: 1px 0;
 }
-/* Sol ok + Detay Ekleme satırı modal başlığına daha yakın */
+/* Sol ok + Detay Ekleme satırı modal başlığına daha yakın; altında 12px dikey boşluk */
 #reports-modal .reports-list-header-actions:not(:empty) {
 padding-top: 4px !important;
-padding-bottom: 0 !important;
+padding-bottom: 12px !important;
 }
 #reports-body:has(#stok-list-container .stok-list-top-controls) {
 padding-top: 1px !important;
