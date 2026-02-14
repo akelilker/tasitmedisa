@@ -440,14 +440,15 @@
             : '<svg class="sort-icon active" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 15l4 4 4-4"/></svg>';
         };
         
-        // Sütun başlık tanımları
+        // Sütun başlık tanımları (mobilde Kullanıcı → Kull.)
+        const isMobile = window.innerWidth <= 640;
         const columnDefs = {
           'year': { label: 'Yılı', class: 'list-year' },
           'plate': { label: 'Plaka', class: 'list-plate' },
           'brand': { label: 'Marka / Model', class: 'list-brand' },
           'km': { label: 'Km', class: 'list-km' },
           'type': { label: 'Taşıt Tipi', class: 'list-type' },
-          'user': { label: 'Kullanıcı', class: 'list-user' },
+          'user': { label: isMobile ? 'Kull.' : 'Kullanıcı', class: 'list-user' },
           'branch': { label: 'Şube', class: 'list-branch' }
         };
         
