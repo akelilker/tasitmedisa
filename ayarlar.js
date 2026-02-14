@@ -1281,4 +1281,10 @@
       read: readUsers,
       write: writeUsers
     };
+
+    window.__medisaVehiclesStorage = {
+      key: VEHICLES_KEY,
+      read: readVehicles,
+      write: writeVehicles
+    };
   })();

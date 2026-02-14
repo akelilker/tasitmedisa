@@ -415,6 +415,24 @@ document.addEventListener('DOMContentLoaded', async function() {
     }));
 });
 
+// Ortak veri okuyucu (tasitlar.js ve raporlar.js tek kaynaktan okusun)
+function getMedisaVehicles() {
+    if (window.appData && Array.isArray(window.appData.tasitlar)) return window.appData.tasitlar;
+    try { return JSON.parse(localStorage.getItem('medisa_vehicles_v1') || '[]'); } catch { return []; }
+}
+function getMedisaBranches() {
+    if (window.appData && Array.isArray(window.appData.branches)) return window.appData.branches;
+    try { return JSON.parse(localStorage.getItem('medisa_branches_v1') || '[]'); } catch { return []; }
+}
+function getMedisaUsers() {
+    if (window.appData && Array.isArray(window.appData.users)) return window.appData.users;
+    try { return JSON.parse(localStorage.getItem('medisa_users_v1') || '[]'); } catch { return []; }
+}
+
+window.getMedisaVehicles = getMedisaVehicles;
+window.getMedisaBranches = getMedisaBranches;
+window.getMedisaUsers = getMedisaUsers;
+
 // Export fonksiyonları
 window.loadDataFromServer = loadDataFromServer;
 window.saveDataToServer = saveDataToServer;

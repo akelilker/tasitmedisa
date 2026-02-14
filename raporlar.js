@@ -3,29 +3,20 @@
    ========================================= */
 
 (function() {
-    // --- Veri Okuma Yardımcıları ---
+    // Veri okuma: data-manager ortak getter (tek kaynak), yoksa localStorage
     function getVehicles() {
-        try { 
-            return JSON.parse(localStorage.getItem("medisa_vehicles_v1")) || []; 
-        } catch { 
-            return []; 
-        }
+        if (typeof window.getMedisaVehicles === 'function') return window.getMedisaVehicles();
+        try { return JSON.parse(localStorage.getItem("medisa_vehicles_v1") || "[]"); } catch { return []; }
     }
-    
+
     function getBranches() {
-        try { 
-            return JSON.parse(localStorage.getItem("medisa_branches_v1")) || []; 
-        } catch { 
-            return []; 
-        }
+        if (typeof window.getMedisaBranches === 'function') return window.getMedisaBranches();
+        try { return JSON.parse(localStorage.getItem("medisa_branches_v1") || "[]"); } catch { return []; }
     }
-    
+
     function getUsers() {
-        try { 
-            return JSON.parse(localStorage.getItem("medisa_users_v1")) || []; 
-        } catch { 
-            return []; 
-        }
+        if (typeof window.getMedisaUsers === 'function') return window.getMedisaUsers();
+        try { return JSON.parse(localStorage.getItem("medisa_users_v1") || "[]"); } catch { return []; }
     }
 
     // --- STOK Görünümü State ---
