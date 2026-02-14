@@ -386,16 +386,13 @@ background: rgba(74, 222, 128, 0.2);
 color: #ccffdd;
 }
 
-/* === STOK SEKME GRID YAPISI === */
+/* === STOK SEKME GRID YAPISI (Taşıtlar .branch-grid ile aynı) === */
 .stok-branch-grid {
 display: flex;
 flex-wrap: wrap;
 gap: 8px;
 align-content: start;
 justify-content: center;
-margin-bottom: 16px;
-padding-top: 6px;
-padding-bottom: 6px;
 }
 
 .stok-branch-card {
@@ -424,7 +421,7 @@ box-sizing: border-box;
 border-color: rgba(255, 255, 255, 0.30);
 }
 
-/* Masaüstü hover: Taşıtlar kutularıyla aynı (hafif büyüme, sağa sola kayma yok) */
+/* Masaüstü hover: Taşıtlar kutularıyla aynı */
 @media (hover: hover) and (pointer: fine) {
 .stok-branch-card:hover {
 border-color: rgba(255, 255, 255, 0.6);
@@ -432,7 +429,30 @@ transform: scale(1.04);
 transform-origin: center;
 z-index: 5;
 }
+.stok-branch-card:hover .stok-branch-name,
+.stok-branch-card:hover .stok-branch-count {
+transform: none;
+}
 .stok-branch-card.all-card:hover {
+border-color: rgba(255, 255, 255, 0.6);
+transform: scale(1.06);
+transform-origin: center;
+z-index: 10;
+}
+}
+/* Mobil active: Taşıtlar ile aynı */
+@media (hover: none) {
+.stok-branch-card:active {
+border-color: rgba(255, 255, 255, 0.6);
+transform: scale(1.04);
+transform-origin: center;
+z-index: 5;
+}
+.stok-branch-card:active .stok-branch-name,
+.stok-branch-card:active .stok-branch-count {
+transform: none;
+}
+.stok-branch-card.all-card:active {
 border-color: rgba(255, 255, 255, 0.6);
 transform: scale(1.06);
 transform-origin: center;
@@ -445,16 +465,34 @@ border-color: #e1061b;
 background: rgba(225, 6, 27, 0.1);
 }
 
+/* Taşıtlar .branch-name ile birebir aynı */
 .stok-branch-name {
 font-size: 13px;
-font-weight: 600;
-color: #e0e0e0;
-margin-bottom: 4px;
+font-weight: 700;
+color: #f0f0f0;
+text-transform: uppercase;
+margin-bottom: 2px;
+line-height: 1.1;
+width: 100%;
+white-space: normal;
+word-break: break-word;
+transition: transform 0.2s ease;
+display: block;
+min-height: 2.2em;
+max-height: 2.2em;
+overflow: hidden;
+text-overflow: clip;
 }
 
+/* Taşıtlar .branch-count ile birebir aynı */
 .stok-branch-count {
 font-size: 12px;
 color: #888;
+background: transparent;
+padding: 0;
+border-radius: 0;
+transition: transform 0.2s ease;
+font-weight: 500;
 }
 
 /* === STOK LİSTE GÖRÜNÜMÜ === */

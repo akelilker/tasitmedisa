@@ -805,9 +805,9 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         margin-top: 1px !important;
         margin-bottom: 1px !important;
     }
-    /* Taşıt Tipi: etiket–ikon dikey aralık tam 2px (masaüstü düzeltme) */
+    /* Taşıt Tipi: etiket–ikon dikey aralık 2px azaltıldı (0px) */
     #vehicle-modal .modal-body .modal-column-left .form-section-inline:first-child .form-label {
-        margin-bottom: 2px !important;
+        margin-bottom: 0 !important;
         padding-bottom: 0 !important;
     }
     
@@ -848,10 +848,10 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         height: 19px !important;
         margin-bottom: 3px !important;
     }
-    /* Masaüstü: ilk satır (Taşıt Tipi / Sigorta) başlıktan uzaklaşsın; ikon–Plaka arası 3px azalt */
+    /* Masaüstü: ilk satır (Taşıt Tipi / Sigorta); ikon–Plaka arası 2px daha az */
     #vehicle-modal .modal-body .modal-column-left .form-section-inline:first-child {
         margin-top: -7px;
-        margin-bottom: 4px !important;
+        margin-bottom: 2px !important;
     }
     /* Masaüstü: Sigorta etiketi Taşıt Tipi etiketiyle aynı hizaya gelsin */
     #vehicle-modal .modal-body .modal-column-right .form-section:first-child {
