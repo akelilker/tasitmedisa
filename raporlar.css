@@ -814,7 +814,7 @@ padding-top: 1px !important;
 }
 /* Detay kapalıyken: Detay Ekleme ile BAŞLANGIÇ T. arası tam 12px (view/row-2 boşlukları sıfırlanır) */
 #reports-modal:not(:has(.stok-detail-menu-open)) #reports-body:has(#stok-list-container .stok-list-top-controls) {
-padding-top: 12px !important;
+padding-top: 1px !important;
 }
 #reports-modal:not(:has(.stok-detail-menu-open)) #view-stok:has(#stok-list-container .stok-list-top-controls) {
 padding-top: 0 !important;
