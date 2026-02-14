@@ -20,6 +20,7 @@
     padding-right: 0 !important;
     padding-bottom: 0 !important;
     height: 100vh;
+    height: 100dvh;
     overflow: hidden !important;
     touch-action: pan-y !important;
 }
@@ -53,6 +54,7 @@
     width: 100%;
     max-width: 500px;
     height: calc(100vh - max(12px, env(safe-area-inset-top)) - 54px);
+    height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 54px);
     background: rgba(0, 0, 0, 0.85);
     backdrop-filter: blur(5px);
     z-index: -1;
@@ -906,7 +908,7 @@
 
 .view-list .list-item {
     display: grid;
-    grid-template-columns: 40px 70px 3.5fr 60px 65px 2fr !important;
+    grid-template-columns: 40px 70px 3.5fr 60px 65px 1.5fr 2fr !important; /* + Kullanıcı sütunu */
     gap: 4px !important;
     align-items: center;
     padding: 4px 4px 4px 4px;
@@ -959,7 +961,7 @@
 
 .list-header-row {
     display: grid;
-    grid-template-columns: 40px 70px 3.5fr 60px 65px 2fr !important;
+    grid-template-columns: 40px 70px 3.5fr 60px 65px 1.5fr 2fr !important; /* + Kullanıcı sütunu */
     gap: 4px !important;
     align-items: center;
     padding: 6px 4px 4px 4px;
@@ -1049,6 +1051,14 @@
     text-align: center !important;
     padding-left: 2px !important;
     padding-right: 2px !important;
+}
+
+.list-header-row .list-cell.list-user,
+.view-list .list-cell.list-user {
+    justify-content: center !important;
+    text-align: center !important;
+    text-overflow: ellipsis !important;
+    overflow: hidden !important;
 }
 
 .list-header-row .list-cell.list-branch {
@@ -1958,10 +1968,10 @@
     display: grid !important;
     /* Masaüstü: 40px 70px 3.5fr 60px 65px 2fr (Yılı, Plaka, Marka/Model, KM, Tip, Şube) */
     /* Mobil: Marka/Model daraltıldı (3.5fr -> 2.5fr), Şube gösteriliyor, Tip gizli (5 sütun) */
-    grid-template-columns: 40px 70px 2.5fr 60px 2fr !important; /* Yılı, Plaka, Marka/Model, KM, Şube */
+    grid-template-columns: 40px 70px 2.5fr 60px 1.5fr 2fr !important; /* Yılı, Plaka, Marka/Model, KM, Kullanıcı, Şube */
     gap: 4px !important; /* Masaüstü ile aynı */
-    padding: 1px !important; /* Çerçeveye 1px kalacak; karakterler alanı 1px’e kadar kullansın */
-    min-height: 0 !important; /* Satır yüksekliği metne göre ayarlansın */
+    padding: 6px 1px !important; /* Dikey boşluk artırıldı */
+    min-height: 48px !important; /* Satırlara minimum yükseklik – rahat okunabilirlik */
     align-items: center !important;
     border-bottom: 1px solid rgba(255,255,255,0.08) !important; /* Masaüstü ile aynı */
     background: rgba(255,255,255,0.01) !important; /* Masaüstü ile aynı */
@@ -1978,9 +1988,9 @@
   /* Başlık Satırı - Masaüstü referans alınarak uyarlandı */
   .list-header-row {
     display: grid !important;
-    grid-template-columns: 40px 70px 2.5fr 60px 2fr !important; /* Marka/Model daraltıldı, Şube gösteriliyor, Tip gizli */
+    grid-template-columns: 40px 70px 2.5fr 60px 1.5fr 2fr !important; /* Marka/Model daraltıldı, Kullanıcı eklendi, Tip gizli */
     gap: 4px !important; /* Masaüstü ile aynı */
-    padding: 1px !important; /* Çerçeveye 1px kalacak; hücreler yatay/dikey 1px boşluk */
+    padding: 6px 4px !important; /* Dikey boşluk artırıldı – hücrelerle uyum */
     margin-bottom: 4px !important; /* Masaüstü ile aynı */
     border-bottom: 1px solid rgba(255,255,255,0.12) !important; /* Masaüstü ile aynı */
     background: #080d16 !important;
@@ -2007,10 +2017,10 @@
     display: flex !important;
     align-items: center !important;
     justify-content: center !important; /* Masaüstü ile aynı */
-    line-height: 1.3 !important; /* Masaüstü ile aynı */
+    line-height: 1.4 !important; /* 1.3 → 1.4 – satır aralığı rahat */
     min-width: 0 !important;
     border-right: 1px solid rgba(255, 255, 255, 0.1) !important; /* Masaüstü ile aynı */
-    padding: 1px !important; /* Çerçeveye 1px kalana kadar alan kullanılsın */
+    padding: 6px 4px !important; /* Dikey boşluk artırıldı – göz yorgunluğu azaltıldı */
     overflow: hidden !important;
   }
 
@@ -2022,10 +2032,10 @@
     white-space: normal !important;
     word-break: break-word !important;
     overflow-wrap: break-word !important;
-    line-height: 1.3 !important; /* Masaüstü ile aynı */
+    line-height: 1.4 !important; /* 1.3 → 1.4 – satır aralığı rahat */
     display: -webkit-box !important;
-    -webkit-line-clamp: 2 !important;
-    line-clamp: 2 !important;
+    -webkit-line-clamp: 3 !important; /* 2 → 3 satıra çıkabilir */
+    line-clamp: 3 !important;
     -webkit-box-orient: vertical !important;
     overflow: hidden !important;
     text-overflow: clip !important;
@@ -2069,6 +2079,17 @@
     justify-content: center !important; /* Masaüstü ile aynı */
     padding: 1px 6px !important; /* Dikey 1px, yatay 6px */
     min-width: 0 !important;
+  }
+
+  /* Kullanıcı sütunu - mobil */
+  .view-list .list-cell.list-user,
+  .list-header-row .list-cell.list-user {
+    display: flex !important;
+    justify-content: center !important;
+    text-align: center !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
   }
 
   /* Tek satır hücreler - Masaüstü referans alınarak uyarlandı */
@@ -2167,10 +2188,11 @@
     padding: 1px !important; /* Çerçeveye 1px */
   } 
 
-  /* Mobil: overlay yüksekliği top-bottom ile (footer ile 8px boşluk style-core'da) */
+  /* Mobil: overlay yüksekliği top-bottom ile (footer ile 10px boşluk style-core'da) */
   .tasitlar-modal-overlay {
     height: auto !important;
     max-height: calc(100vh - var(--modal-gap-above-footer) - var(--app-footer-height) - env(safe-area-inset-bottom, 0)) !important;
+    max-height: calc(100dvh - var(--modal-gap-above-footer) - var(--app-footer-height) - env(safe-area-inset-bottom, 0)) !important;
   }
   /* Ortak mobil container + iOS PWA: style-core.css (.modal-overlay .modal-container) */
   #vehicles-modal .modal-header h2 { 

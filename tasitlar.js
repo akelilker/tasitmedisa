@@ -54,7 +54,7 @@
   let currentFilter = 'az'; // 'az' | 'newest' | 'oldest' | 'type' (liste filtre dropdown)
   
   // Sütun Sıralaması State
-  let vehicleColumnOrder = ['year', 'plate', 'brand', 'km', 'type', 'branch']; // Varsayılan sıralama
+  let vehicleColumnOrder = ['year', 'plate', 'brand', 'km', 'type', 'user', 'branch']; // Varsayılan sıralama
   
   // Sütun sıralamasını localStorage'dan yükle
   function loadVehicleColumnOrder() {
@@ -63,7 +63,7 @@
       if (saved) {
         const parsed = JSON.parse(saved);
         // Tüm sütunların mevcut olduğunu kontrol et
-        const allColumns = ['year', 'plate', 'brand', 'km', 'type', 'branch'];
+        const allColumns = ['year', 'plate', 'brand', 'km', 'type', 'user', 'branch'];
         const validOrder = parsed.filter(col => allColumns.includes(col));
         // Eksik sütunları ekle
         allColumns.forEach(col => {
@@ -74,7 +74,7 @@
         vehicleColumnOrder = validOrder;
       }
     } catch (e) {
-      vehicleColumnOrder = ['year', 'plate', 'brand', 'km', 'type', 'branch'];
+      vehicleColumnOrder = ['year', 'plate', 'brand', 'km', 'type', 'user', 'branch'];
     }
   }
   
@@ -447,6 +447,7 @@
           'brand': { label: 'Marka / Model', class: 'list-brand' },
           'km': { label: 'Km', class: 'list-km' },
           'type': { label: 'Taşıt Tipi', class: 'list-type' },
+          'user': { label: 'Kullanıcı', class: 'list-user' },
           'branch': { label: 'Şube', class: 'list-branch' }
         };
         
@@ -538,6 +539,13 @@
                 case 'type':
                   cellContent = escapeHtml(vehicleTypeLabel);
                   cellClass = 'list-type';
+                  break;
+                case 'user':
+                  const users = readUsers();
+                  const assignedUser = v.assignedUserId ? users.find(u => u.id === v.assignedUserId) : null;
+                  const userName = assignedUser?.isim || v.tahsisKisi || '-';
+                  cellContent = escapeHtml(userName);
+                  cellClass = 'list-user';
                   break;
                 case 'branch':
                   cellContent = escapeHtml(branchLabel);
@@ -3289,6 +3297,7 @@
       'brand': 'list-brand',
       'km': 'list-km',
       'type': 'list-type',
+      'user': 'list-user',
       'branch': 'list-branch'
     };
     return classMap[columnKey] || '';
