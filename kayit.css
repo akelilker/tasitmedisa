@@ -102,7 +102,7 @@
     flex: 1 1 auto; 
     overflow-y: auto;
     overflow-x: hidden;
-    padding: 0 16px 0 16px; /* padding-top: 0 (başlık altı boşluk kaldırıldı) */
+    padding: 0 12px 0 12px; /* sol/sağ azaltıldı (gereksiz boşluk) */
     scrollbar-width: none;
     min-height: 0; 
     display: flex;
@@ -186,7 +186,7 @@ input[type="number"].form-input {
 .form-input:focus, 
 select:focus,
 textarea.form-input:focus {
-    border: 1px solid rgba(var(--theme-color-rgb), 0.35); 
+    border: 1px solid var(--theme-color); 
     box-shadow: none; 
     outline: none;
 }
@@ -731,11 +731,11 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     
     .modal-column-right .form-section-inline .form-label { width: 100%; margin-bottom: 2px; font-size: 15px !important; height: auto; }
     .modal-column-right .form-section-inline .radio-group { width: 100%; justify-content: space-between; gap: 3px; padding: 0; }
+    .modal-column-left .form-section-inline .radio-btn,
     .modal-column-right .form-section-inline .radio-btn { flex: 1 1 0; min-width: 0; padding: 0 6px; font-size: 11px; height: 26px; }
     
     .radio-btn { height: 26px; min-width: 48px; font-size: 12px; padding: 0 8px; }
     .modal-column-left .form-section-inline .radio-group { justify-content: space-between; width: 100%; padding: 0; gap: 3px; }
-    .modal-column-left .form-section-inline .radio-btn { flex: 1 1 0; min-width: 0; }
     
     .form-buttons { display: grid; grid-template-columns: 1fr 1fr; padding: 8px 0; gap: 10px; width: 100%; margin-top: 6px; margin-bottom: 10px; }
     .form-buttons .btn-save, .form-buttons .btn-cancel { height: 32px; font-size: 15px; width: 100%; max-width: none; justify-self: stretch; margin: 0; }
@@ -796,7 +796,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     }
     #vehicle-modal .modal-body .form-section { margin-bottom: 4px !important; }
     .modal-column-left .form-section:nth-child(5) {
-        margin-bottom: 8px !important;
+        margin-bottom: 10px !important;
     }
     .form-buttons { padding: 1px 1px; margin-top: 2px; }
     #vehicle-modal .modal-body .form-buttons { margin-top: 2px !important; }
@@ -826,9 +826,9 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-body .modal-column-right .form-section:first-child {
         margin-top: 0;
     }
-    /* Km – Şanzıman Tipi arası +3px (masaüstü düzeltme) */
+    /* Km – Şanzıman Tipi arası (masaüstü düzeltme) */
     #vehicle-modal .modal-body .modal-column-left .form-section-inline:nth-of-type(2) {
-        margin-top: 5px !important;
+        margin-top: 6px !important;
     }
     /* Şanzıman Tipi – Tramer Kaydı arası +3px (masaüstü düzeltme) */
     #vehicle-modal .modal-body .modal-column-left .form-section-inline:nth-of-type(3) {
