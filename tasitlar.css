@@ -1976,14 +1976,14 @@
     box-sizing: border-box !important;
   }
 
-  /* Liste başlıkları +1pt (mobil: 13px) */
+  /* Liste başlıkları +1pt (mobil: 14px) */
   .list-header-row .list-cell {
-    font-size: 13px !important;
+    font-size: 14px !important;
     padding-left: 1px !important;
     padding-right: 1px !important; /* Çerçeveye 1px */
   }
   .view-list .list-cell {
-    font-size: 15px !important; /* +1pt daha (14→15), tüm metin ve sayılar 1pt büyük */
+    font-size: 16px !important; /* +1 punto (15→16), tüm metin ve sayılar 1pt büyük */
     font-weight: 500 !important; /* Masaüstü ile aynı */
     color: #e0e0e0 !important; /* Masaüstü ile aynı */
     display: flex !important;
@@ -1998,7 +1998,7 @@
 
   /* Marka/Model - Masaüstü referans alınarak uyarlandı */
   .view-list .list-cell.list-brand {
-    font-size: inherit !important; /* 15px - mobil +1pt */
+    font-size: inherit !important; /* 16px - mobil +1pt */
     font-weight: inherit !important; /* 500 - masaüstü ile aynı */
     text-align: center !important; /* Masaüstü ile aynı */
     white-space: normal !important;
@@ -2019,7 +2019,7 @@
 
   /* Plaka - Masaüstü referans alınarak uyarlandı */
   .view-list .list-cell.list-plate {
-    font-size: inherit !important; /* 15px - mobil +1pt */
+    font-size: inherit !important; /* 16px - mobil +1pt */
     font-weight: inherit !important; /* 500 - masaüstü ile aynı */
     color: #fff !important; /* Masaüstü ile aynı */
     justify-content: center !important; /* Masaüstü ile aynı */
@@ -2047,7 +2047,7 @@
   /* KM - Masaüstü referans alınarak uyarlandı */
   .view-list .list-cell.list-km {
     color: #9aa3b1 !important; /* Masaüstü ile aynı */
-    font-size: inherit !important; /* 15px - mobil +1pt */
+    font-size: inherit !important; /* 16px - mobil +1pt */
     justify-content: center !important; /* Masaüstü ile aynı */
     padding: 1px 6px !important; /* Dikey 1px, yatay 6px */
     min-width: 0 !important;
@@ -2089,9 +2089,9 @@
     display: flex !important;
   }
 
-  /* Başlık Hücreleri - sütun başlıkları açık gri, mobil +1pt (13px / 14px) */
+  /* Başlık Hücreleri - sütun başlıkları açık gri, mobil +1pt (14px / 15px) */
   .list-header-row .list-cell {
-    font-size: 13px !important; /* +1pt (12→13) */
+    font-size: 14px !important; /* +1pt (13→14) */
     font-weight: 600 !important; /* Masaüstü ile aynı */
     letter-spacing: 0.3px !important; /* Masaüstü ile aynı */
     text-transform: uppercase !important; /* Masaüstü ile aynı */
@@ -2108,7 +2108,7 @@
   }
 
   .list-header-row .list-cell span {
-    font-size: 14px !important; /* +1pt (13→14), tüm metin 1pt büyük */
+    font-size: 15px !important; /* +1pt (14→15), tüm metin 1pt büyük */
     font-weight: 700 !important; /* Masaüstü ile aynı */
     text-transform: uppercase !important; /* Masaüstü ile aynı */
     color: #b5b9c0 !important; /* Açık gri */
