@@ -1190,6 +1190,20 @@
   
         // 2. SUNUCUYA YÜKLEME BAŞARILI - ŞİMDİ TEMİZLE
         localStorage.clear();
+
+        // Service Worker önbelleğini de temizle (eski JS/CSS yüklenmesin)
+        if ('caches' in window) {
+          try {
+            const names = await caches.keys();
+            await Promise.all(names.map((name) => caches.delete(name)));
+          } catch (_) {}
+        }
+        if (navigator.serviceWorker && navigator.serviceWorker.getRegistration) {
+          try {
+            const reg = await navigator.serviceWorker.getRegistration();
+            if (reg) await reg.unregister();
+          } catch (_) {}
+        }
         
         window.showInfoModal('Veriler Sunucuya Yedeklendi Ve Tarayıcı Belleği Temizlendi!\n\nSayfa Yenilenecek.');
         
