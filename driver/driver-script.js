@@ -69,16 +69,21 @@ if (document.getElementById('login-form')) {
         /* Sayfa yönleniyor, aşağıdaki event listener'lar bir kez çalışacak; dashboard açılınca sorun olmaz */
     }
 
-    /* Beni Hatırla kutusunun son halini göster (token yoksa veya redirect olmadıysa) */
+    var usernameInput = document.getElementById('username');
+    var passwordInput = document.getElementById('password');
+
+    /* Beni Hatırla: checkbox + kayıtlı kullanıcı adı/şifre doldur */
     var rememberCheckbox = document.getElementById('remember');
     if (rememberCheckbox && localStorage.getItem('driver_remember_me') === '1') {
         rememberCheckbox.checked = true;
+        var savedUser = localStorage.getItem('driver_saved_username');
+        var savedPass = localStorage.getItem('driver_saved_password');
+        if (usernameInput && savedUser) usernameInput.value = savedUser;
+        if (passwordInput && savedPass) passwordInput.value = savedPass;
     }
 
     /* Mobilde sayfa açılışında klavye açılmasın - readonly ile engelliyoruz.
        Kullanıcı inputa tıkladığında readonly kaldır, yazabilsin. */
-    var usernameInput = document.getElementById('username');
-    var passwordInput = document.getElementById('password');
     function removeReadonlyOnFocus(el) {
       if (el && el.hasAttribute && el.hasAttribute('readonly')) {
         el.removeAttribute('readonly');
@@ -119,9 +124,17 @@ if (document.getElementById('login-form')) {
             
             if (data.success) {
                 if (remember) {
-                    try { localStorage.setItem('driver_remember_me', '1'); } catch (e) {}
+                    try {
+                        localStorage.setItem('driver_remember_me', '1');
+                        localStorage.setItem('driver_saved_username', username);
+                        localStorage.setItem('driver_saved_password', password);
+                    } catch (e) {}
                 } else {
-                    try { localStorage.removeItem('driver_remember_me'); } catch (e) {}
+                    try {
+                        localStorage.removeItem('driver_remember_me');
+                        localStorage.removeItem('driver_saved_username');
+                        localStorage.removeItem('driver_saved_password');
+                    } catch (e) {}
                 }
                 var tokenToStore = data.token && typeof data.token === 'string' ? data.token : null;
                 if (tokenToStore) {
