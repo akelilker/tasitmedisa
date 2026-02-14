@@ -428,8 +428,8 @@ function buildDriverActionArea(vehicle, existingRecord, bakimVar, kazaVar, opts)
     return `
         <div class="driver-action-area-inner" data-vehicle-id="${vid}">
             <div class="driver-action-group">
-                <button type="button" class="driver-action-btn${kmBtnClass}" data-action="km" onclick="focusKmInput('${vid}')">Km Bildir</button>
-                <div class="driver-input-form driver-km-form-wrap">
+                <button type="button" class="driver-action-btn${kmBtnClass}" data-action="km" onclick="toggleDriverActionBlock('km','${vid}')">Km Bildir</button>
+                <div id="km-block-${vid}" class="driver-input-form driver-km-form-wrap driver-action-block">
                     <div class="form-group driver-km-form">
                         <label for="km-${vid}">Güncel KM</label>
                         <div class="driver-km-input-wrap">
@@ -440,8 +440,8 @@ function buildDriverActionArea(vehicle, existingRecord, bakimVar, kazaVar, opts)
                 </div>
             </div>
             <div class="driver-action-group">
-                <button type="button" class="driver-action-btn" data-action="kaza" onclick="toggleAndScrollToBlock('kaza','${vid}')">Kaza Bildir</button>
-                <div id="kaza-block-${vid}" class="driver-report-block driver-report-block-kaza ${kazaVar ? 'show' : ''}">
+                <button type="button" class="driver-action-btn" data-action="kaza" onclick="toggleDriverActionBlock('kaza','${vid}')">Kaza Bildir</button>
+                <div id="kaza-block-${vid}" class="driver-report-block driver-report-block-kaza driver-action-block">
                     <div class="form-group"><label for="kaza-tarih-${vid}">Kaza Tarihi</label><input type="date" id="kaza-tarih-${vid}" class="driver-kaza-input" value="${kazaTarih}"></div>
                     <div class="form-group"><label for="kaza-detay-${vid}">Açıklama</label><textarea id="kaza-detay-${vid}" class="driver-report-textarea-auto driver-kaza-textarea" rows="1" placeholder="Kaza açıklamasını yazın..." maxlength="500">${kazaAciklama}</textarea></div>
                     <div class="form-group"><label for="kaza-tutar-${vid}">Hasar Tutarı (TL)</label><input type="text" id="kaza-tutar-${vid}" class="driver-kaza-input" placeholder="5.000" inputmode="numeric"></div>
@@ -449,8 +449,8 @@ function buildDriverActionArea(vehicle, existingRecord, bakimVar, kazaVar, opts)
                 </div>
             </div>
             <div class="driver-action-group">
-                <button type="button" class="driver-action-btn" data-action="bakim" onclick="toggleAndScrollToBlock('bakim','${vid}')">Bakım Bildir</button>
-                <div id="bakim-block-${vid}" class="driver-report-block driver-report-block-bakim ${bakimVar ? 'show' : ''}">
+                <button type="button" class="driver-action-btn" data-action="bakim" onclick="toggleDriverActionBlock('bakim','${vid}')">Bakım Bildir</button>
+                <div id="bakim-block-${vid}" class="driver-report-block driver-report-block-bakim driver-action-block">
                     <div class="form-group"><label for="bakim-tarih-${vid}">Bakım Tarihi</label><input type="date" id="bakim-tarih-${vid}" class="driver-bakim-input" value="${bakimTarih}"></div>
                     <div class="form-group"><label for="bakim-detay-${vid}">Açıklama</label><textarea id="bakim-detay-${vid}" class="driver-report-textarea-auto driver-bakim-textarea" rows="1" placeholder="Bakım detayını yazın..." maxlength="500">${bakimAciklama}</textarea></div>
                     <div class="form-group"><label for="bakim-servis-${vid}">İşlemi Yapan Servis</label><input type="text" id="bakim-servis-${vid}" class="driver-bakim-input" placeholder="Servis adı"></div>
@@ -524,12 +524,44 @@ function buildDriverInputForm(vehicle, existingRecord, bakimVar, kazaVar) {
     `;
 }
 
-window.focusKmInput = function(vehicleId) {
-    const input = document.getElementById('km-' + vehicleId);
-    if (input) {
-        input.focus();
-        input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+window.toggleDriverActionBlock = function(type, vehicleId) {
+    const vid = String(vehicleId);
+    const inner = document.querySelector('.driver-action-area-inner[data-vehicle-id="' + vid + '"]');
+    if (!inner) return;
+    const blocks = { km: inner.querySelector('#km-block-' + vid), kaza: document.getElementById('kaza-block-' + vid), bakim: document.getElementById('bakim-block-' + vid) };
+    const target = type === 'km' ? blocks.km : (type === 'kaza' ? blocks.kaza : blocks.bakim);
+    if (!target) return;
+    const isShown = target.classList.contains('show');
+    inner.querySelectorAll('.driver-action-block').forEach(function(b) { if (b) b.classList.remove('show'); });
+    if (!isShown) {
+        target.classList.add('show');
+        if (type === 'kaza') {
+            const dateEl = document.getElementById('kaza-tarih-' + vid);
+            if (dateEl && !dateEl.value) dateEl.value = new Date().toISOString().split('T')[0];
+            const container = document.getElementById('kaza-kaporta-' + vid);
+            if (container && !container.querySelector('svg')) {
+                let boyaliParcalar = {};
+                try { const raw = container.getAttribute('data-boyali-parcalar'); if (raw) boyaliParcalar = JSON.parse(raw); } catch (e) {}
+                initDriverKaporta(vid, boyaliParcalar);
+            }
+        }
+        if (type === 'bakim') {
+            const dateEl = document.getElementById('bakim-tarih-' + vid);
+            if (dateEl && !dateEl.value) dateEl.value = new Date().toISOString().split('T')[0];
+        }
+        if (type === 'km') {
+            setTimeout(function() {
+                const inp = document.getElementById('km-' + vid);
+                if (inp) { inp.focus(); inp.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+            }, 50);
+        } else {
+            target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
     }
+};
+
+window.focusKmInput = function(vehicleId) {
+    toggleDriverActionBlock('km', vehicleId);
 };
 
 function buildSlidingWarnings(vehicles, records) {

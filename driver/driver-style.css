@@ -238,7 +238,7 @@
   flex: 1;
   min-width: 0;
   overflow: hidden;
-  font-size: 12px;
+  font-size: 13px;
   color: var(--theme-color);
   text-align: center;
   white-space: nowrap;
@@ -260,7 +260,7 @@
   max-width: 500px;
   margin: 0 auto;
   padding: 8px 12px 16px;
-  gap: 10px;
+  gap: 4px;
   box-sizing: border-box;
   min-height: 0;
 }
@@ -268,11 +268,12 @@
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 8px;
   align-items: center;
   text-align: center;
   justify-content: center;
   flex-shrink: 0;
+  margin-top: -10px;
 }
 .driver-panels-inner {
   display: flex;
@@ -287,7 +288,7 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  border-right: 1px solid var(--theme-color);
+  border-right: 0.5px solid var(--theme-color);
   padding-right: 12px;
 }
 .driver-right-panel {
@@ -306,7 +307,7 @@
   text-align: center;
 }
 .driver-user-plate-row .driver-user-name {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--txt);
   overflow: hidden;
@@ -326,7 +327,7 @@
   margin-top: 4px;
 }
 .driver-current-plaka {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
   color: var(--txt);
 }
@@ -350,7 +351,7 @@
 .driver-info-item {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 0;
   text-align: left;
 }
 .driver-info-item .label {
@@ -434,10 +435,12 @@
   margin-top: 4px;
   padding-left: 0;
 }
-.driver-action-group .driver-report-block.show {
+.driver-action-group .driver-report-block.show,
+.driver-action-group .driver-action-block.show {
   display: block;
 }
-.driver-action-group .driver-report-block:not(.show) {
+.driver-action-group .driver-report-block:not(.show),
+.driver-action-group .driver-action-block:not(.show) {
   display: none;
 }
 .driver-action-footer {
@@ -466,7 +469,8 @@
 }
 #driver-input-area .form-group input,
 .driver-action-area .form-group input {
-  padding: 5px 16px;
+  padding: 1px 16px;
+  min-height: 28px;
 }
 #driver-input-area .form-group input:focus,
 #driver-input-area .form-group textarea:focus,
@@ -546,7 +550,7 @@
     padding: 0;
     font-size: 12px;
   }
-  .driver-info-item { gap: 1px; }
+  .driver-info-item { gap: 0; }
   .driver-info-item .label { font-size: 10px; }
   .driver-info-item .value { font-size: 12px; }
   .driver-action-btn { padding: 8px 10px; font-size: 12px; }
