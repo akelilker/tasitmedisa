@@ -659,39 +659,6 @@
 }
 #vehicles-modal .modal-body::-webkit-scrollbar { display: none; }
 
-/* Şube seçim ekranı (taşıtlar modalı ilk açıldığında) */
-.branch-select-list {
-    padding: 12px 0;
-}
-.branch-select-title {
-    color: #999;
-    font-size: 13px;
-    margin: 0 0 12px 0;
-    text-align: center;
-}
-.branch-select-item {
-    display: block;
-    width: 100%;
-    text-align: left;
-    padding: 12px 16px;
-    margin-bottom: 6px;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 8px;
-    color: #e0e0e0;
-    font-size: 15px;
-    cursor: pointer;
-    transition: border-color 0.2s, background 0.2s;
-}
-.branch-select-item:hover {
-    background: rgba(255,255,255,0.08);
-    border-color: rgba(255,255,255,0.25);
-}
-.branch-select-item:active {
-    background: rgba(225, 6, 27, 0.15);
-    border-color: rgba(225, 6, 27, 0.4);
-}
-
 /* === GRID (ÅžUBELER) === */
 .branch-grid { 
     display: flex;

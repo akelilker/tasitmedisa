@@ -86,8 +86,7 @@ font-size: 20px;
 #reports-modal .modal-body {
 flex: 1;
 overflow-y: auto;
-padding: 16px;
-padding-bottom: 40px; /* Chrome fix: Logoların kesilmemesi için artırıldı */
+padding: 16px 2px 40px 2px;
 color: #ccc;
 /* scrollbar gizleme: style-core.css’teki .modal-body kuralı kullanılır */
 }
@@ -103,7 +102,7 @@ background: transparent;
 display: flex;
 flex-shrink: 0;
 align-items: center;
-padding: 8px 16px;
+padding: 8px 2px;
 background: transparent;
 }
 #reports-modal .reports-list-header-actions .stok-controls-row-1 {
@@ -459,9 +458,12 @@ background: rgba(128, 128, 128, 0.5);
 
 .stok-list-table {
 width: 100%;
-min-width: 800px;
 border-collapse: separate;
 border-spacing: 0;
+}
+/* Detay sütunları varken min-width ile yatay scroll; yokken ekrana sığar */
+.stok-list-container[data-has-detail-columns="true"] .stok-list-table {
+min-width: 800px;
 }
 
 .stok-list-header {
@@ -478,12 +480,12 @@ display: grid;
 background: rgba(255, 255, 255, 0.03);
 gap: 4px;
 align-items: center;
-padding: 4px 2px;
+padding: 2px 2px;
 border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .stok-list-header-cell {
-padding: 2px 1px;
+padding: 1px 2px;
 font-size: clamp(9px, 1.2vw, 12px);
 font-weight: 700;
 color: #888;
@@ -561,9 +563,9 @@ display: grid;
 border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 transition: background 0.2s;
 gap: 4px;
-min-height: 32px;
+min-height: 28px;
 align-items: center;
-padding: 4px 2px;
+padding: 2px 2px;
 background: rgba(255, 255, 255, 0.01);
 }
 
@@ -572,7 +574,7 @@ background: rgba(255, 255, 255, 0.04);
 }
 
 .stok-list-cell {
-padding: 2px 1px;
+padding: 1px 2px;
 font-size: clamp(9px, 1.2vw, 12px);
 color: #b5b9c0;
 text-align: center;
@@ -593,18 +595,36 @@ border-right: none;
 .stok-list-header-cell[data-col="sira"],
 .stok-list-cell[data-col="sira"] {
 justify-content: center;
-padding: 2px 1px;
+padding: 1px 2px;
 }
 
-.stok-list-header-cell[data-col="sube"],
+/* Şube: 2 satıra inebilir */
+.stok-list-header-cell[data-col="sube"] {
+justify-content: center;
+white-space: normal;
+word-break: break-word;
+overflow-wrap: break-word;
+-webkit-line-clamp: 2;
+line-clamp: 2;
+}
 .stok-list-cell[data-col="sube"] {
 justify-content: center;
+text-align: center;
+white-space: normal;
+word-break: break-word;
+overflow-wrap: break-word;
+display: -webkit-box;
+-webkit-line-clamp: 2;
+line-clamp: 2;
+-webkit-box-orient: vertical;
+overflow: hidden;
+text-overflow: clip;
 }
 
 .stok-list-header-cell[data-col="yil"],
 .stok-list-cell[data-col="yil"] {
 justify-content: center;
-padding: 4px 2px;
+padding: 1px 2px;
 }
 
 /* Marka: ikinci satıra inebilir (Taşıtlar list-brand gibi) */
@@ -629,7 +649,7 @@ line-clamp: 2;
 -webkit-box-orient: vertical;
 overflow: hidden;
 text-overflow: clip;
-padding: 2px 1px;
+padding: 1px 2px;
 }
 
 .stok-list-header-cell[data-col="plaka"],
@@ -648,7 +668,7 @@ justify-content: center;
 .stok-list-header-cell[data-col="km"],
 .stok-list-cell[data-col="km"] {
 justify-content: center;
-padding: 4px 2px;
+padding: 1px 2px;
 }
 
 /* Detay sütunları */
@@ -686,8 +706,8 @@ justify-content: center;
 justify-content: center;
 }
 
-/* Tek satır hücreler: metin taşmasın */
-.stok-list-cell:not([data-col="marka"]) {
+/* Tek satır hücreler: metin taşmasın (marka ve sube 2 satıra inebilir) */
+.stok-list-cell:not([data-col="marka"]):not([data-col="sube"]) {
 white-space: nowrap;
 text-overflow: ellipsis;
 }
@@ -1459,11 +1479,11 @@ width: 100% !important;
 
 .stok-list-header-cell {
 font-size: clamp(10px, 2.5vw, 13px) !important;
-padding: 4px 2px !important;
+padding: 2px 3px !important;
 }
 .stok-list-cell {
 font-size: clamp(10px, 2.5vw, 13px) !important;
-padding: 4px 2px !important;
+padding: 2px 3px !important;
 }
 
 /* Grid sütunları - taşma önleme */
@@ -1494,7 +1514,7 @@ margin-top: 6px !important;
 }
 /* Mobilde header-altı slot: buton altı dikey boşluk azaltıldı */
 #reports-modal .reports-list-header-actions:not(:empty) {
-padding: 6px 16px 4px 16px !important;
+padding: 6px 2px 4px 2px !important;
 }
 .stok-controls-row-1 {
 display: flex;
@@ -1656,12 +1676,21 @@ flex-shrink: 0;
 flex: 1;
 min-height: 0;
 overflow-y: auto;
-overflow-x: auto;
 -webkit-overflow-scrolling: touch;
 margin-top: 8px;
 contain: layout;
 padding-bottom: 16px;
 box-sizing: border-box;
+}
+/* Temel görünüm: yatay scroll yok */
+#stok-list-container:has(.stok-list-top-controls) > .stok-list-container:not([data-has-detail-columns="true"]) {
+overflow-x: hidden;
+}
+/* Detay sütunları varken: yatay kaydırma */
+#stok-list-container:has(.stok-list-top-controls) > .stok-list-container[data-has-detail-columns="true"] {
+overflow-x: auto;
+scrollbar-width: thin;
+scrollbar-color: rgba(128, 128, 128, 0.35) transparent;
 }
 #stok-list-container:has(.stok-list-top-controls) > .stok-list-container .stok-list-header {
 position: sticky;
@@ -1680,8 +1709,8 @@ background: #080d16;
 
 /* Mobilde tam genişlik kullanım, yatayda alt çerçeve hizalı */
 #reports-modal .modal-body {
-padding-left: 8px !important;
-padding-right: 8px !important;
+padding-left: 2px !important;
+padding-right: 2px !important;
 box-sizing: border-box !important;
 }
 #view-stok:has(#stok-list-container .stok-list-top-controls) {
@@ -1689,8 +1718,8 @@ box-sizing: border-box !important;
 max-width: 100% !important;
 }
 #reports-modal .reports-list-header-actions {
-padding-left: 8px !important;
-padding-right: 8px !important;
+padding-left: 2px !important;
+padding-right: 2px !important;
 width: 100% !important;
 box-sizing: border-box !important;
 }
