@@ -72,23 +72,24 @@
             </div>
 
             <div id="driver-two-panel" class="driver-two-panel" style="display: none;">
-                <aside class="driver-left-panel">
-                    <div class="driver-user-plate-row">
-                        <span id="driver-user-name" class="driver-user-name"></span>
-                        <div class="driver-plate-dropdown-row">
-                            <span id="driver-current-plaka" class="driver-current-plaka"></span>
-                            <button type="button" id="driver-plate-trigger" class="driver-plate-trigger" aria-label="Taşıt seç" style="display: none;">
-                                <span class="driver-plate-chevron">▾</span>
-                            </button>
-                            <div id="driver-plate-dropdown" class="driver-plate-dropdown" role="listbox" style="display:none"></div>
-                        </div>
+                <div class="driver-user-plate-row driver-user-plate-row-full">
+                    <span id="driver-user-name" class="driver-user-name"></span>
+                    <div class="driver-plate-dropdown-row">
+                        <span id="driver-current-plaka" class="driver-current-plaka"></span>
+                        <button type="button" id="driver-plate-trigger" class="driver-plate-trigger" aria-label="Taşıt seç" style="display: none;">
+                            <span class="driver-plate-chevron">▾</span>
+                        </button>
+                        <div id="driver-plate-dropdown" class="driver-plate-dropdown" role="listbox" style="display:none"></div>
                     </div>
-                    <div id="driver-vehicle-info" class="driver-vehicle-info"></div>
-                </aside>
-                <main class="driver-right-panel">
-                    <div id="driver-action-buttons" class="driver-action-buttons"></div>
-                    <div id="driver-input-area" class="driver-input-area"></div>
-                </main>
+                </div>
+                <div class="driver-panels-inner">
+                    <aside class="driver-left-panel">
+                        <div id="driver-vehicle-info" class="driver-vehicle-info"></div>
+                    </aside>
+                    <main class="driver-right-panel">
+                        <div id="driver-action-area" class="driver-action-area"></div>
+                    </main>
+                </div>
             </div>
         </main>
 

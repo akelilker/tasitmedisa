@@ -255,14 +255,31 @@
 /* --- İKİ PANELLİ LAYOUT --- */
 .driver-two-panel {
   display: flex !important;
-  flex-direction: row;
+  flex-direction: column;
   width: 100%;
   max-width: 500px;
   margin: 0 auto;
   padding: 8px 12px 16px;
-  gap: 12px;
+  gap: 10px;
   box-sizing: border-box;
   min-height: 0;
+}
+.driver-user-plate-row-full {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.driver-panels-inner {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  min-height: 0;
+  gap: 12px;
 }
 .driver-left-panel {
   flex: 0 0 40%;
@@ -301,9 +318,10 @@
   gap: 6px;
   position: relative;
 }
-.driver-left-panel .driver-plate-dropdown {
-  left: 0;
-  transform: none;
+.driver-left-panel .driver-plate-dropdown,
+.driver-user-plate-row-full .driver-plate-dropdown {
+  left: 50%;
+  transform: translateX(-50%);
   top: 100%;
   margin-top: 4px;
 }
@@ -392,9 +410,47 @@
 .driver-input-area {
   min-height: 0;
 }
+
+/* Aksiyon alanı: buton + form/blok yatayda yan yana (her grup buton altında form) */
+.driver-action-area {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-height: 0;
+}
+.driver-action-area-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.driver-action-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+.driver-action-group:last-child { margin-bottom: 0; }
+.driver-action-group .driver-report-block {
+  margin-top: 4px;
+  padding-left: 0;
+}
+.driver-action-group .driver-report-block.show {
+  display: block;
+}
+.driver-action-group .driver-report-block:not(.show) {
+  display: none;
+}
+.driver-action-footer {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+
 /* Input tema uyumu - koyu arka plan */
 #driver-input-area .form-group input,
-#driver-input-area .form-group textarea {
+#driver-input-area .form-group textarea,
+.driver-action-area .form-group input,
+.driver-action-area .form-group textarea {
   width: 100%;
   padding: 8px 16px;
   background: #0f1418 !important;
@@ -408,32 +464,42 @@
   transition: box-shadow 0.2s;
   box-sizing: border-box;
 }
-#driver-input-area .form-group input {
+#driver-input-area .form-group input,
+.driver-action-area .form-group input {
   padding: 5px 16px;
 }
 #driver-input-area .form-group input:focus,
-#driver-input-area .form-group textarea:focus {
+#driver-input-area .form-group textarea:focus,
+.driver-action-area .form-group input:focus,
+.driver-action-area .form-group textarea:focus {
   outline: none;
   box-shadow: inset 0 0 0 0.5px var(--theme-color) !important;
 }
 #driver-input-area .form-group input.driver-km-input,
-#driver-input-area .form-group textarea.driver-ekstra-not {
+#driver-input-area .form-group textarea.driver-ekstra-not,
+.driver-action-area .form-group input.driver-km-input,
+.driver-action-area .form-group textarea.driver-ekstra-not {
   box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.38) !important;
 }
 #driver-input-area .form-group input.driver-km-input:focus,
-#driver-input-area .form-group textarea.driver-ekstra-not:focus {
+#driver-input-area .form-group textarea.driver-ekstra-not:focus,
+.driver-action-area .form-group input.driver-km-input:focus,
+.driver-action-area .form-group textarea.driver-ekstra-not:focus {
   box-shadow: inset 0 0 0 0.5px var(--theme-color) !important;
 }
-#driver-input-area .form-group textarea.driver-ekstra-not {
+#driver-input-area .form-group textarea.driver-ekstra-not,
+.driver-action-area .form-group textarea.driver-ekstra-not {
   min-height: 1.1em;
   height: 1.1em;
   resize: none;
   color: rgba(255, 255, 255, 0.7) !important;
 }
-#driver-input-area .form-group textarea.driver-ekstra-not::placeholder {
+#driver-input-area .form-group textarea.driver-ekstra-not::placeholder,
+.driver-action-area .form-group textarea.driver-ekstra-not::placeholder {
   color: rgba(255, 255, 255, 0.18) !important;
 }
-#driver-input-area .form-group label {
+#driver-input-area .form-group label,
+.driver-action-area .form-group label {
   display: block;
   margin-bottom: 6px;
   font-size: 13px;
@@ -441,16 +507,20 @@
   color: var(--muted);
 }
 #driver-input-area .driver-report-block .form-group input,
-#driver-input-area .driver-report-block .form-group textarea {
+#driver-input-area .driver-report-block .form-group textarea,
+.driver-action-area .driver-report-block .form-group input,
+.driver-action-area .driver-report-block .form-group textarea {
   background: #0f1418 !important;
   background-color: #0f1418 !important;
   color: var(--txt);
 }
-#driver-input-area .driver-km-input-wrap {
+#driver-input-area .driver-km-input-wrap,
+.driver-action-area .driver-km-input-wrap {
   position: relative;
   width: 100%;
 }
-#driver-input-area .driver-km-fake-placeholder {
+#driver-input-area .driver-km-fake-placeholder,
+.driver-action-area .driver-km-fake-placeholder {
   position: absolute;
   left: 16px;
   top: 50%;
@@ -469,6 +539,7 @@
     padding: 6px 8px 12px;
     gap: 8px;
   }
+  .driver-panels-inner { gap: 8px; }
   .driver-left-panel { flex: 0 0 35%; }
   .driver-right-panel { flex: 1; }
   .driver-vehicle-info {
