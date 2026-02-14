@@ -7,35 +7,23 @@
   const VEHICLES_KEY = "medisa_vehicles_v1";
   const USERS_KEY = "medisa_users_v1";
 
-  // Veri Okuma Fallback (Ayarlar.js yüklenemezse diye)
+  // Veri okuma: önce data-manager ortak getter, yoksa storage/localStorage
   function readBranches() {
-    if (window.__medisaBranchesStorage) {
-        return window.__medisaBranchesStorage.read();
-    }
-    try {
-        const raw = localStorage.getItem(BRANCHES_KEY);
-        return raw ? JSON.parse(raw) : [];
-    } catch { return []; }
+    if (typeof window.getMedisaBranches === 'function') return window.getMedisaBranches();
+    if (window.__medisaBranchesStorage) return window.__medisaBranchesStorage.read();
+    try { return JSON.parse(localStorage.getItem(BRANCHES_KEY) || '[]'); } catch { return []; }
   }
 
   function readVehicles() {
-    if (window.__medisaVehiclesStorage) {
-        return window.__medisaVehiclesStorage.read();
-    }
-    try {
-        const raw = localStorage.getItem(VEHICLES_KEY);
-        return raw ? JSON.parse(raw) : [];
-    } catch { return []; }
+    if (typeof window.getMedisaVehicles === 'function') return window.getMedisaVehicles();
+    if (window.__medisaVehiclesStorage) return window.__medisaVehiclesStorage.read();
+    try { return JSON.parse(localStorage.getItem(VEHICLES_KEY) || '[]'); } catch { return []; }
   }
 
   function readUsers() {
-    if (window.__medisaUsersStorage) {
-        return window.__medisaUsersStorage.read();
-    }
-    try {
-        const raw = localStorage.getItem(USERS_KEY);
-        return raw ? JSON.parse(raw) : [];
-    } catch { return []; }
+    if (typeof window.getMedisaUsers === 'function') return window.getMedisaUsers();
+    if (window.__medisaUsersStorage) return window.__medisaUsersStorage.read();
+    try { return JSON.parse(localStorage.getItem(USERS_KEY) || '[]'); } catch { return []; }
   }
 
   function writeVehicles(arr) {
@@ -3164,7 +3152,7 @@
           ? 'rgba(225, 6, 27, 0.6)' 
           : 'rgba(255, 140, 0, 0.6)';
         
-        html += `<button onclick="openVehiclesView(); setTimeout(() => { const vehicles = window.__medisaVehiclesStorage ? window.__medisaVehiclesStorage.read() : JSON.parse(localStorage.getItem('medisa_vehicles_v1') || '[]'); const v = vehicles.find(v => v.plate === '${escapeHtml(notif.plate)}'); if (v) showVehicleDetail(v.id); }, 100);" style="width: 100%; padding: 12px; background: transparent; border: 1px solid ${borderColor}; color: #ccc; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 13px; text-align: left; margin-bottom: 4px; transition: all 0.2s ease;" class="notification-item ${notif.warningClass}-border">
+        html += `<button onclick="openVehiclesView(); setTimeout(() => { const vehicles = window.getMedisaVehicles ? window.getMedisaVehicles() : JSON.parse(localStorage.getItem('medisa_vehicles_v1') || '[]'); const v = vehicles.find(v => v.plate === '${escapeHtml(notif.plate)}'); if (v) showVehicleDetail(v.id); }, 100);" style="width: 100%; padding: 12px; background: transparent; border: 1px solid ${borderColor}; color: #ccc; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 13px; text-align: left; margin-bottom: 4px; transition: all 0.2s ease;" class="notification-item ${notif.warningClass}-border">
           <div style="font-weight: 600; color: #fff; margin-bottom: 4px; text-align: center;">${escapeHtml(notif.plate)}</div>
           <div style="font-size: 11px; color: #999; margin-bottom: 4px; text-align: center;">${escapeHtml(notif.brandModel)}</div>
           <div style="font-size: 11px; text-align: center; margin-bottom: 4px;">

@@ -1,5 +1,6 @@
 # cPanel Git deploy: repo içeriğini public_html/medisa dizinine kopyala
 # Hedef path sunucudaki kullanıcı adına göre (karmotor) ayarlı
+# Yeni root dosyası (js/css/html vb.) eklediğinizde tasks altındaki ilgili cp satırına ekleyin
 ---
 deployment:
   tasks:

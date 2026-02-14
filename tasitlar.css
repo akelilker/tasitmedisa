@@ -445,6 +445,24 @@
     display: none;
 }
 
+/* Olay modalları: ortak "Olay Ekle" geri çubuğu (tek class, tekrar yok) */
+.olay-ekle-back-bar {
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.olay-ekle-back-bar .olay-ekle-back-btn {
+    background: transparent;
+    border: none;
+    color: #ccc;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0;
+}
+
 .vt-back-btn {
     background: transparent;
     border: none;
