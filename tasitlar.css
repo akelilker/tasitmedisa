@@ -484,7 +484,7 @@
 /* Masaüstü: sol ok ve etiket 6px yukarı; sütun başlıkları +1px, beyaza yakın renk */
 @media (min-width: 641px) {
   #vehicles-modal .vt-left {
-    margin-top: -6px;
+    margin-top: -48px;
   }
   /* Taşıt detay modalı: sol ok 8px yukarı (masaüstü) */
   #vehicle-detail-modal .vehicle-detail-toolbar .detail-back-btn {
