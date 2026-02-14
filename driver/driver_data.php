@@ -27,14 +27,31 @@ if (!$data) {
     exit;
 }
 
-// Taşıt objesini sürücü response formatına dönüştür
-function buildVehicleForDriver($tasit) {
+// Taşıt objesini sürücü response formatına dönüştür (sol panel + uyarılar için)
+function buildVehicleForDriver($tasit, $branches = []) {
+    $branchId = $tasit['branchId'] ?? null;
+    $branchName = '';
+    if ($branchId && is_array($branches)) {
+        foreach ($branches as $b) {
+            if (isset($b['id']) && (string)$b['id'] === (string)$branchId) {
+                $branchName = $b['name'] ?? '';
+                break;
+            }
+        }
+    }
+    $guncelKm = $tasit['guncelKm'] ?? $tasit['km'] ?? null;
     return [
         'id' => $tasit['id'],
         'plaka' => $tasit['plaka'] ?? $tasit['plate'] ?? '',
         'marka' => $tasit['marka'] ?? $tasit['brand'] ?? '',
         'model' => $tasit['model'] ?? '',
-        'tip' => $tasit['tip'] ?? 'otomobil',
+        'tip' => $tasit['tip'] ?? $tasit['vehicleType'] ?? 'otomobil',
+        'year' => $tasit['year'] ?? $tasit['yil'] ?? '',
+        'branchId' => $branchId,
+        'branchName' => $branchName,
+        'guncelKm' => $guncelKm,
+        'sigortaDate' => $tasit['sigortaDate'] ?? '',
+        'kaskoDate' => $tasit['kaskoDate'] ?? '',
         'boya' => $tasit['boya'] ?? '',
         'boyaliParcalar' => $tasit['boyaliParcalar'] ?? [],
         'anahtar' => $tasit['anahtar'] ?? '',
@@ -62,12 +79,13 @@ if (!$user) {
 }
 
 // Atanmış araçları bul (tek kaynak: tasit.assignedUserId)
+$branches = $data['branches'] ?? [];
 $vehicles = [];
 $tasitlar = $data['tasitlar'] ?? [];
 foreach ($tasitlar as $tasit) {
     $assignedUserId = $tasit['assignedUserId'] ?? null;
     if ($assignedUserId !== null && (string)$assignedUserId === (string)$user['id']) {
-        $vehicles[] = buildVehicleForDriver($tasit);
+        $vehicles[] = buildVehicleForDriver($tasit, $branches);
     }
 }
 // Eski format yedek: zimmetli_araclar varsa ve assignedUserId ile araç bulunamadıysa kullanılabilir
@@ -76,7 +94,7 @@ if (count($vehicles) === 0 && !empty($user['zimmetli_araclar'])) {
     foreach ($zimmetliAraclar as $aracId) {
         foreach ($tasitlar as $tasit) {
             if (isset($tasit['id']) && (string)$tasit['id'] === (string)$aracId) {
-                $vehicles[] = buildVehicleForDriver($tasit);
+                $vehicles[] = buildVehicleForDriver($tasit, $branches);
                 break;
             }
         }

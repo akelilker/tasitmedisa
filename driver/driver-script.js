@@ -43,6 +43,8 @@ let currentRecordId = null;
 let allHistoryRecords = [];
 let allHistoryVehicles = [];
 let currentDriverEventVehicleId = null;
+let currentPeriod = '';
+let selectedVehicleId = null;
 
 /* =========================================
    LOGIN SAYFASI
@@ -176,7 +178,7 @@ if (document.getElementById('login-form')) {
    DASHBOARD SAYFASI
    ========================================= */
 
-if (document.getElementById('vehicles-list')) {
+if (document.getElementById('driver-two-panel')) {
     window.addEventListener('DOMContentLoaded', async () => {
         await loadDashboard();
     });
@@ -209,12 +211,8 @@ async function loadDashboard() {
         currentUser = data.user;
         allHistoryRecords = data.records || [];
         allHistoryVehicles = data.vehicles || [];
-        const userNameEl = document.getElementById('driver-user-name');
-        if (userNameEl && currentUser && currentUser.isim) {
-            userNameEl.textContent = currentUser.isim;
-        }
+        currentPeriod = data.current_period || '';
         
-        const currentPeriod = data.current_period;
         document.getElementById('loading-spinner').style.display = 'none';
         
         if (data.vehicles.length === 0) {
@@ -222,59 +220,291 @@ async function loadDashboard() {
             return;
         }
         
-        const container = document.getElementById('vehicles-list');
-        container.innerHTML = '';
+        document.getElementById('driver-two-panel').style.display = 'flex';
         const vehicles = data.vehicles;
         const records = data.records;
-
+        selectedVehicleId = selectedVehicleId || (vehicles[0] && vehicles[0].id);
+        
+        renderLeftPanel(vehicles, records);
+        renderRightPanel(vehicles, records);
+        renderSlidingWarning(vehicles, records);
+        
         if (vehicles.length > 1) {
-            const wrap = document.createElement('div');
-            wrap.className = 'driver-multi-vehicle-wrap';
-            const first = vehicles[0];
-            wrap.innerHTML = `
-                <div class="driver-plate-row">
-                    <h3 id="driver-current-plaka" class="driver-current-plaka">${first.plaka}</h3>
-                    <button type="button" class="driver-plate-trigger" onclick="toggleDriverPlateDropdown(event)" aria-label="Taşıt seç" title="Diğer taşıtlar">
-                        <span class="driver-plate-chevron" aria-hidden="true">▾</span>
-                    </button>
-                    <div id="driver-plate-dropdown" class="driver-plate-dropdown" role="listbox" style="display:none"></div>
-                </div>
-                <div class="driver-cards-inner"></div>
-            `;
-            const cardsInner = wrap.querySelector('.driver-cards-inner');
-            vehicles.forEach((vehicle, index) => {
-                const card = createVehicleCard(vehicle, records, currentPeriod);
-                card.setAttribute('data-vehicle-id', vehicle.id);
-                if (index > 0) card.classList.add('driver-card-hidden');
-                cardsInner.appendChild(card);
-            });
-            container.appendChild(wrap);
-            const dropdown = document.getElementById('driver-plate-dropdown');
-            const currentPlakaEl = document.getElementById('driver-current-plaka');
-            dropdown.innerHTML = vehicles.map(v => `<div class="driver-plate-dropdown-item" role="option" data-vehicle-id="${v.id}" tabindex="0">${v.plaka}${v.marka || v.model ? ' – ' + [v.marka, v.model].filter(Boolean).join(' ') : ''}</div>`).join('');
-            dropdown.querySelectorAll('.driver-plate-dropdown-item').forEach(item => {
-                item.addEventListener('click', function () {
-                    const vehicleId = this.getAttribute('data-vehicle-id');
-                    selectDriverVehicle(vehicleId, vehicles, currentPlakaEl, wrap);
-                    dropdown.style.display = 'none';
-                });
-            });
-            document.addEventListener('click', function closePlateDropdown(ev) {
-                if (wrap.contains(ev.target)) return;
-                dropdown.style.display = 'none';
-            });
-        } else {
-            vehicles.forEach(vehicle => {
-                const card = createVehicleCard(vehicle, records, currentPeriod);
-                container.appendChild(card);
-            });
+            const trigger = document.getElementById('driver-plate-trigger');
+            if (trigger) trigger.style.display = '';
+            setupPlateDropdown(vehicles);
         }
+        
         setupEkstraNotAutoResize();
         setupKmInputs();
         
     } catch (error) {
         console.error('Veri yükleme hatası:', error);
         alert('Veriler yüklenemedi! Lütfen sayfayı yenileyin.');
+    }
+}
+
+function getSelectedVehicle() {
+    return allHistoryVehicles.find(v => String(v.id) === String(selectedVehicleId));
+}
+
+function getExistingRecord(vehicleId) {
+    return (allHistoryRecords || []).find(r => 
+        String(r.arac_id) === String(vehicleId) && r.donem === currentPeriod
+    );
+}
+
+function checkDateWarningsDriver(dateStr) {
+    if (!dateStr) return { class: '', days: null };
+    const date = new Date(dateStr + 'T00:00:00');
+    if (isNaN(date.getTime())) return { class: '', days: null };
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    date.setHours(0, 0, 0, 0);
+    const diffDays = Math.ceil((date - today) / (1000 * 60 * 60 * 24));
+    if (diffDays < 0) return { class: 'date-warning-red', days: diffDays };
+    if (diffDays <= 3) return { class: 'date-warning-red', days: diffDays };
+    if (diffDays <= 21) return { class: 'date-warning-orange', days: diffDays };
+    return { class: '', days: diffDays };
+}
+
+function renderLeftPanel(vehicles, records) {
+    const vehicle = getSelectedVehicle();
+    if (!vehicle) return;
+    
+    const userNameEl = document.getElementById('driver-user-name');
+    if (userNameEl && currentUser && currentUser.isim) {
+        userNameEl.textContent = currentUser.isim;
+    }
+    
+    const plakaEl = document.getElementById('driver-current-plaka');
+    if (plakaEl) plakaEl.textContent = vehicle.plaka;
+    
+    const existingRecord = getExistingRecord(vehicle.id);
+    const kmVal = vehicle.guncelKm || (existingRecord && existingRecord.guncel_km) || '-';
+    const kmFormatted = (kmVal !== '-' && kmVal != null) ? String(kmVal).replace(/\B(?=(\d{3})+(?!\d))/g, '.') : '-';
+    
+    const sigortaW = checkDateWarningsDriver(vehicle.sigortaDate);
+    const kaskoW = checkDateWarningsDriver(vehicle.kaskoDate);
+    const muayeneW = checkDateWarningsDriver(vehicle.muayeneDate);
+    
+    const tipLabels = { 'otomobil': 'Otomobil', 'kamyonet': 'Kamyonet', 'minibus': 'Minibüs', 'otobus': 'Otobüs', 'kamyon': 'Kamyon', 'tir': 'TIR', 'traktor': 'Traktör' };
+    const tipLabel = tipLabels[vehicle.tip] || vehicle.tip || '-';
+    const anahtarLabel = (vehicle.anahtar === 'var') ? (vehicle.anahtarNerede || 'Var') : 'Yoktur.';
+    const lastikLabel = (vehicle.lastikDurumu === 'var') ? (vehicle.lastikAdres || 'Var') : 'Yoktur.';
+    const uttsLabel = vehicle.uttsTanimlandi ? 'Evet' : 'Hayır';
+    
+    const infoEl = document.getElementById('driver-vehicle-info');
+    if (infoEl) {
+        infoEl.innerHTML = `
+            <div class="driver-info-item"><span class="label">Şube</span><span class="value">${escapeHtmlDriver(vehicle.branchName || '-')}</span></div>
+            <div class="driver-info-item"><span class="label">Taşıt Tipi</span><span class="value">${escapeHtmlDriver(tipLabel)}</span></div>
+            <div class="driver-info-item"><span class="label">Üretim Yılı</span><span class="value">${escapeHtmlDriver(vehicle.year || '-')}</span></div>
+            <div class="driver-info-item"><span class="label">KM</span><span class="value">${escapeHtmlDriver(kmFormatted)}</span></div>
+            <div class="driver-info-item"><span class="label">Sigorta Bitiş</span><span class="value ${sigortaW.class}">${formatDriverDate(vehicle.sigortaDate) || '-'}</span></div>
+            <div class="driver-info-item"><span class="label">Kasko Bitiş</span><span class="value ${kaskoW.class}">${formatDriverDate(vehicle.kaskoDate) || '-'}</span></div>
+            <div class="driver-info-item"><span class="label">Muayene Bitiş</span><span class="value ${muayeneW.class}">${formatDriverDate(vehicle.muayeneDate) || '-'}</span></div>
+            <div class="driver-info-item"><span class="label">Yedek Anahtar</span><span class="value">${escapeHtmlDriver(anahtarLabel)}</span></div>
+            <div class="driver-info-item"><span class="label">Lastik Durumu</span><span class="value">${escapeHtmlDriver(lastikLabel)}</span></div>
+            <div class="driver-info-item"><span class="label">UTTS</span><span class="value">${escapeHtmlDriver(uttsLabel)}</span></div>
+        `;
+    }
+}
+
+function escapeHtmlDriver(t) {
+    if (t == null || t === '') return '';
+    const d = document.createElement('div');
+    d.textContent = t;
+    return d.innerHTML;
+}
+
+function setupPlateDropdown(vehicles) {
+    const dropdown = document.getElementById('driver-plate-dropdown');
+    const currentPlakaEl = document.getElementById('driver-current-plaka');
+    const trigger = document.getElementById('driver-plate-trigger');
+    if (!dropdown || !currentPlakaEl || !trigger) return;
+    
+    dropdown.innerHTML = vehicles.map(v => 
+        `<div class="driver-plate-dropdown-item" role="option" data-vehicle-id="${v.id}" tabindex="0">${escapeHtmlDriver(v.plaka)}${(v.marka || v.model) ? ' – ' + escapeHtmlDriver([v.marka, v.model].filter(Boolean).join(' ')) : ''}</div>`
+    ).join('');
+    
+    dropdown.querySelectorAll('.driver-plate-dropdown-item').forEach(item => {
+        item.addEventListener('click', function() {
+            selectedVehicleId = this.getAttribute('data-vehicle-id');
+            currentPlakaEl.textContent = getSelectedVehicle().plaka;
+            dropdown.style.display = 'none';
+            loadDashboard();
+        });
+    });
+    
+    trigger.onclick = function(ev) {
+        ev.stopPropagation();
+        const isOpen = dropdown.style.display === 'block';
+        dropdown.style.display = isOpen ? 'none' : 'block';
+    };
+    
+    document.addEventListener('click', function closePlate(ev) {
+        if (!ev.target.closest('.driver-plate-dropdown-row')) dropdown.style.display = 'none';
+    });
+}
+
+function renderRightPanel(vehicles, records) {
+    const vehicle = getSelectedVehicle();
+    if (!vehicle) return;
+    
+    const actionsEl = document.getElementById('driver-action-buttons');
+    const inputEl = document.getElementById('driver-input-area');
+    if (!actionsEl || !inputEl) return;
+    
+    const vid = String(vehicle.id);
+    actionsEl.innerHTML = `
+        <button type="button" class="driver-action-btn" data-action="km" onclick="focusKmInput('${vid}')">Km Bildir</button>
+        <button type="button" class="driver-action-btn" data-action="sigorta" onclick="openDriverEventModal('sigorta','${vid}')">Trafik Sigortası Yenileme</button>
+        <button type="button" class="driver-action-btn" data-action="kasko" onclick="openDriverEventModal('kasko','${vid}')">Kasko Yenileme</button>
+        <button type="button" class="driver-action-btn" data-action="muayene" onclick="openDriverEventModal('muayene','${vid}')">Muayene Yenileme</button>
+        <button type="button" class="driver-action-btn" data-action="anahtar" onclick="openDriverEventModal('anahtar','${vid}')">Anahtar Durumu Bildir</button>
+        <button type="button" class="driver-action-btn" data-action="lastik" onclick="openDriverEventModal('lastik','${vid}')">Lastik Durumu Bildir</button>
+    `;
+    
+    const existingRecord = getExistingRecord(vehicle.id);
+    const bakimVar = existingRecord && (existingRecord.bakim_durumu || (existingRecord.bakim_aciklama || '').trim());
+    const kazaVar = existingRecord && (existingRecord.kaza_durumu || (existingRecord.kaza_aciklama || '').trim());
+    
+    inputEl.innerHTML = buildDriverInputForm(vehicle, existingRecord, bakimVar, kazaVar);
+    
+    const kaportaContainer = document.getElementById('kaza-kaporta-' + vid);
+    if (kaportaContainer && vehicle) {
+        initKaportaForDriver(kaportaContainer, vehicle);
+    }
+}
+
+function buildDriverInputForm(vehicle, existingRecord, bakimVar, kazaVar) {
+    const vid = vehicle.id;
+    const today = new Date().toISOString().split('T')[0];
+    return `
+        <div class="driver-input-form" data-vehicle-id="${vid}">
+            <div class="form-group driver-km-form">
+                <label for="km-${vid}">Güncel KM</label>
+                <div class="driver-km-input-wrap">
+                    <span class="driver-km-fake-placeholder" id="km-placeholder-${vid}">Örn: 45230</span>
+                    <input type="text" id="km-${vid}" class="driver-km-input" inputmode="numeric" pattern="[0-9]*" maxlength="8" data-vehicle-id="${vid}" value="${existingRecord ? existingRecord.guncel_km : ''}" required autocomplete="off" aria-label="Güncel kilometre">
+                </div>
+            </div>
+            <div class="driver-report-actions">
+                <div class="driver-report-item">
+                    <button type="button" class="driver-report-btn driver-report-btn-bakim" onclick="toggleReportBlock('bakim', ${vid})">
+                        <span class="driver-report-btn-icon" aria-hidden="true">🛠</span>
+                        <span class="driver-report-btn-text">Bakım Bildir</span>
+                    </button>
+                    <div id="bakim-block-${vid}" class="driver-report-block driver-report-block-bakim ${bakimVar ? 'show' : ''}">
+                        <div class="form-group"><label for="bakim-tarih-${vid}">Bakım Tarihi</label><input type="date" id="bakim-tarih-${vid}" class="driver-bakim-input" value="${existingRecord && existingRecord.bakim_tarih ? existingRecord.bakim_tarih : today}"></div>
+                        <div class="form-group"><label for="bakim-detay-${vid}">Açıklama</label><textarea id="bakim-detay-${vid}" class="driver-report-textarea-auto driver-bakim-textarea" rows="1" placeholder="Bakım detayını yazın..." maxlength="500">${existingRecord ? (existingRecord.bakim_aciklama || '') : ''}</textarea></div>
+                        <div class="form-group"><label for="bakim-servis-${vid}">İşlemi Yapan Servis</label><input type="text" id="bakim-servis-${vid}" class="driver-bakim-input" placeholder="Servis adı"></div>
+                        <div class="form-group"><label for="bakim-kisi-${vid}">Taşıtı Bakıma Götüren Kişi</label><input type="text" id="bakim-kisi-${vid}" class="driver-bakim-input" placeholder="Kişi adı"></div>
+                        <div class="form-group"><label for="bakim-km-${vid}">Km</label><input type="text" id="bakim-km-${vid}" class="driver-bakim-input" placeholder="50.000" inputmode="numeric"></div>
+                        <div class="form-group"><label for="bakim-tutar-${vid}">Tutar (TL)</label><input type="text" id="bakim-tutar-${vid}" class="driver-bakim-input" placeholder="2.500" inputmode="numeric"></div>
+                    </div>
+                </div>
+                <div class="driver-report-item">
+                    <button type="button" class="driver-report-btn driver-report-btn-kaza" onclick="toggleReportBlock('kaza', ${vid})">
+                        <span class="driver-report-btn-icon" aria-hidden="true">💥</span>
+                        <span class="driver-report-btn-text">Kaza Bildir</span>
+                    </button>
+                    <div id="kaza-block-${vid}" class="driver-report-block driver-report-block-kaza ${kazaVar ? 'show' : ''}">
+                        <div class="form-group"><label for="kaza-tarih-${vid}">Kaza Tarihi</label><input type="date" id="kaza-tarih-${vid}" class="driver-kaza-input" value="${existingRecord && existingRecord.kaza_tarih ? existingRecord.kaza_tarih : today}"></div>
+                        <div class="form-group"><label for="kaza-detay-${vid}">Açıklama</label><textarea id="kaza-detay-${vid}" class="driver-report-textarea-auto driver-kaza-textarea" rows="1" placeholder="Kaza açıklamasını yazın..." maxlength="500">${existingRecord ? (existingRecord.kaza_aciklama || '') : ''}</textarea></div>
+                        <div class="form-group"><label for="kaza-tutar-${vid}">Hasar Tutarı (TL)</label><input type="text" id="kaza-tutar-${vid}" class="driver-kaza-input" placeholder="5.000" inputmode="numeric"></div>
+                        <div class="form-group"><label class="driver-kaporta-label">Hasar gören parçaları işaretleyin (isteğe bağlı)</label><div id="kaza-kaporta-${vid}" class="driver-kaporta-container" data-vehicle-id="${vid}" data-boyali-parcalar='${JSON.stringify(vehicle.boyaliParcalar || {})}'></div></div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group driver-ekstra-not-form">
+                <label for="not-${vid}">Not</label>
+                <textarea id="not-${vid}" class="driver-ekstra-not" rows="1" placeholder="Varsa Belirtin.." maxlength="500">${existingRecord ? existingRecord.ekstra_not : ''}</textarea>
+            </div>
+            <button type="button" onclick="saveVehicleData(${vid})" class="btn-save" id="btn-save-${vid}">Bildir</button>
+            <div id="status-${vid}" class="status-message"></div>
+        </div>
+    `;
+}
+
+window.focusKmInput = function(vehicleId) {
+    const input = document.getElementById('km-' + vehicleId);
+    if (input) {
+        input.focus();
+        input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+};
+
+function buildSlidingWarnings(vehicles, records) {
+    const warnings = [];
+    const today = new Date();
+    const dayOfMonth = today.getDate();
+    const isFirstOfMonth = dayOfMonth === 1;
+    let needsKmWarning = false;
+    
+    for (const v of vehicles) {
+        const existingRecord = records.find(r => String(r.arac_id) === String(v.id) && r.donem === currentPeriod);
+        const hasKmThisMonth = existingRecord && existingRecord.guncel_km != null && String(existingRecord.guncel_km).trim() !== '';
+        if (isFirstOfMonth || !hasKmThisMonth) needsKmWarning = true;
+        const checkDate = (dateStr, label) => {
+            if (!dateStr) return;
+            const w = checkDateWarningsDriver(dateStr);
+            if (w.class && w.days != null) {
+                let msg;
+                if (w.days < 0) msg = v.plaka + ' Plakalı Taşıtın ' + label + ' Tarihi ' + Math.abs(w.days) + ' Gün Geçmiştir';
+                else msg = v.plaka + ' Plakalı Taşıtın ' + label + ' Tarihine ' + w.days + ' Gün Kalmıştır';
+                warnings.push({ text: msg, plaka: v.plaka });
+            }
+        };
+        checkDate(v.muayeneDate, 'Muayene');
+        checkDate(v.sigortaDate, 'Sigorta');
+        checkDate(v.kaskoDate, 'Kasko');
+    }
+    if (needsKmWarning) {
+        warnings.unshift({ text: 'Güncel Km Bildirmeniz Gerekmektedir', plaka: '' });
+    }
+    return warnings;
+}
+
+let slidingWarningInterval = null;
+
+function renderSlidingWarning(vehicles, records) {
+    const el = document.getElementById('driver-sliding-warning');
+    if (!el) return;
+    
+    if (slidingWarningInterval) {
+        clearInterval(slidingWarningInterval);
+        slidingWarningInterval = null;
+    }
+    
+    const warnings = buildSlidingWarnings(vehicles, records);
+    if (warnings.length === 0) {
+        el.innerHTML = '';
+        el.className = 'driver-sliding-warning';
+        return;
+    }
+    
+    const texts = warnings.map(w => w.text);
+    let cycleCount = 0;
+    let idx = 0;
+    
+    function showNext() {
+        el.textContent = texts[idx];
+        el.className = 'driver-sliding-warning' + (cycleCount >= 3 ? ' driver-warning-pulse' : '');
+        idx = (idx + 1) % texts.length;
+        if (idx === 0) {
+            cycleCount++;
+        }
+    }
+    
+    showNext();
+    slidingWarningInterval = setInterval(showNext, 5000);
+}
+
+function initKaportaForDriver(container, vehicle) {
+    if (typeof initKaporta === 'function') {
+        initKaporta(container, vehicle);
     }
 }
 
@@ -435,7 +665,7 @@ function createVehicleCard(vehicle, records, currentPeriod) {
 }
 
 function setupKmInputs() {
-    document.querySelectorAll('.vehicle-card input.driver-km-input').forEach(input => {
+    document.querySelectorAll('.vehicle-card input.driver-km-input, #driver-input-area input.driver-km-input').forEach(input => {
         var ph = input.parentElement && input.parentElement.querySelector('.driver-km-fake-placeholder');
         function togglePlaceholder() {
             if (ph) ph.style.visibility = (input.value || document.activeElement === input) ? 'hidden' : 'visible';
@@ -460,7 +690,7 @@ function setupKmInputs() {
 }
 
 function setupEkstraNotAutoResize() {
-    document.querySelectorAll('.vehicle-card textarea.driver-ekstra-not').forEach(ta => {
+    document.querySelectorAll('.vehicle-card textarea.driver-ekstra-not, #driver-input-area textarea.driver-ekstra-not').forEach(ta => {
         function resize() {
             ta.style.height = 'auto';
             ta.style.height = ta.scrollHeight + 'px';
@@ -468,7 +698,7 @@ function setupEkstraNotAutoResize() {
         ta.addEventListener('input', resize);
         resize();
     });
-    document.querySelectorAll('.vehicle-card textarea.driver-report-textarea-auto').forEach(ta => {
+    document.querySelectorAll('.vehicle-card textarea.driver-report-textarea-auto, #driver-input-area textarea.driver-report-textarea-auto').forEach(ta => {
         function resize() {
             ta.style.height = 'auto';
             ta.style.height = ta.scrollHeight + 'px';
@@ -494,7 +724,9 @@ window.openDriverEventMenu = function(vehicleId) {
         { id: 'anahtar', label: 'Yedek Anahtar Bilgisi Güncelle' },
         { id: 'lastik', label: 'Yazlık/Kışlık Lastik Durumu Güncelle' },
         { id: 'utts', label: 'UTTS Bilgisi Güncelle' },
-        { id: 'muayene', label: 'Muayene Bilgisi Güncelle' }
+        { id: 'muayene', label: 'Muayene Bilgisi Güncelle' },
+        { id: 'sigorta', label: 'Trafik Sigortası Yenileme' },
+        { id: 'kasko', label: 'Kasko Yenileme' }
     ];
     var safeId = String(vehicleId).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
     list.innerHTML = events.map(function(e) {
@@ -523,11 +755,11 @@ window.handleDriverEventChoice = function(type, vehicleId) {
     } else if (type === 'bakim') {
         toggleReportBlock('bakim', vehicleId);
         const block = document.getElementById('bakim-block-' + vehicleId);
-        if (block) block.closest('.vehicle-card')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        if (block) (block.closest('.vehicle-card') || block.closest('#driver-input-area'))?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     } else if (type === 'kaza') {
         toggleReportBlock('kaza', vehicleId);
         const block = document.getElementById('kaza-block-' + vehicleId);
-        if (block) block.closest('.vehicle-card')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        if (block) (block.closest('.vehicle-card') || block.closest('#driver-input-area'))?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     } else {
         openDriverEventModal(type, vehicleId);
     }
@@ -539,7 +771,7 @@ window.openDriverEventModal = function(type, vehicleId) {
     const modal = document.getElementById(modalId);
     if (!modal) return;
     if (type === 'anahtar') {
-        const vehicle = allHistoryVehicles.find(function(v) { return v.id === vehicleId; });
+        const vehicle = allHistoryVehicles.find(function(v) { return String(v.id) === String(vehicleId); });
         const wrap = document.getElementById('driver-anahtar-detay-wrap');
         const detay = document.getElementById('driver-anahtar-detay');
         const btns = document.querySelectorAll('#driver-anahtar-modal .driver-radio-btn');
@@ -553,7 +785,7 @@ window.openDriverEventModal = function(type, vehicleId) {
         }
         setupDriverEventRadioHandlers('anahtar', wrap, detay);
     } else if (type === 'lastik') {
-        const vehicle = allHistoryVehicles.find(function(v) { return v.id === vehicleId; });
+        const vehicle = allHistoryVehicles.find(function(v) { return String(v.id) === String(vehicleId); });
         const wrap = document.getElementById('driver-lastik-adres-wrap');
         const adres = document.getElementById('driver-lastik-adres');
         const btns = document.querySelectorAll('#driver-lastik-modal .driver-radio-btn');
@@ -567,7 +799,7 @@ window.openDriverEventModal = function(type, vehicleId) {
         }
         setupDriverEventRadioHandlers('lastik', wrap, adres);
     } else if (type === 'utts') {
-        const vehicle = allHistoryVehicles.find(function(v) { return v.id === vehicleId; });
+        const vehicle = allHistoryVehicles.find(function(v) { return String(v.id) === String(vehicleId); });
         const btns = document.querySelectorAll('#driver-utts-modal .driver-radio-btn');
         const evet = vehicle && vehicle.uttsTanimlandi;
         btns.forEach(function(b) {
@@ -576,6 +808,20 @@ window.openDriverEventModal = function(type, vehicleId) {
     } else if (type === 'muayene') {
         const input = document.getElementById('driver-muayene-tarih');
         if (input) input.value = new Date().toISOString().split('T')[0];
+    } else if (type === 'sigorta') {
+        const input = document.getElementById('driver-sigorta-tarih');
+        if (input) input.value = new Date().toISOString().split('T')[0];
+        ['firma', 'acente', 'iletisim'].forEach(f => {
+            const el = document.getElementById('driver-sigorta-' + f);
+            if (el) el.value = '';
+        });
+    } else if (type === 'kasko') {
+        const input = document.getElementById('driver-kasko-tarih');
+        if (input) input.value = new Date().toISOString().split('T')[0];
+        ['firma', 'acente', 'iletisim'].forEach(f => {
+            const el = document.getElementById('driver-kasko-' + f);
+            if (el) el.value = '';
+        });
     }
     modal.classList.add('show');
 };
@@ -623,6 +869,30 @@ window.saveDriverEvent = async function(type) {
             return;
         }
         data = { tarih: tarih };
+    } else if (type === 'sigorta') {
+        const tarih = document.getElementById('driver-sigorta-tarih')?.value.trim() || '';
+        if (!tarih) {
+            alert('Tarih zorunludur!');
+            return;
+        }
+        data = {
+            tarih: tarih,
+            firma: document.getElementById('driver-sigorta-firma')?.value.trim() || '',
+            acente: document.getElementById('driver-sigorta-acente')?.value.trim() || '',
+            iletisim: document.getElementById('driver-sigorta-iletisim')?.value.trim() || ''
+        };
+    } else if (type === 'kasko') {
+        const tarih = document.getElementById('driver-kasko-tarih')?.value.trim() || '';
+        if (!tarih) {
+            alert('Tarih zorunludur!');
+            return;
+        }
+        data = {
+            tarih: tarih,
+            firma: document.getElementById('driver-kasko-firma')?.value.trim() || '',
+            acente: document.getElementById('driver-kasko-acente')?.value.trim() || '',
+            iletisim: document.getElementById('driver-kasko-iletisim')?.value.trim() || ''
+        };
     }
     try {
         const res = await fetch(API_BASE + 'driver_event.php', {

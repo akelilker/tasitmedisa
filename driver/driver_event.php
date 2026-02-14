@@ -49,7 +49,7 @@ $aracId = isset($input['arac_id']) ? (is_numeric($input['arac_id']) ? intval($in
 $eventType = trim($input['event_type'] ?? '');
 $data = $input['data'] ?? [];
 
-$allowedTypes = ['anahtar', 'lastik', 'utts', 'muayene'];
+$allowedTypes = ['anahtar', 'lastik', 'utts', 'muayene', 'sigorta', 'kasko'];
 if (!in_array($eventType, $allowedTypes, true)) {
     echo json_encode(['success' => false, 'message' => 'Geçersiz olay tipi!'], JSON_UNESCAPED_UNICODE);
     exit;
@@ -160,6 +160,42 @@ switch ($eventType) {
         $eventBase['type'] = 'muayene-guncelle';
         $eventBase['date'] = $tarih;
         $eventBase['data'] = ['bitisTarihi' => $bitisTarihi];
+        break;
+
+    case 'sigorta':
+        $tarih = trim($data['tarih'] ?? '');
+        if ($tarih === '') {
+            echo json_encode(['success' => false, 'message' => 'Sigorta tarihi zorunludur!'], JSON_UNESCAPED_UNICODE);
+            exit;
+        }
+        $bitisTarihi = addYears($tarih, 1);
+        $vehicle['sigortaDate'] = $bitisTarihi;
+        $eventBase['type'] = 'sigorta-guncelle';
+        $eventBase['date'] = $tarih;
+        $eventBase['data'] = [
+            'bitisTarihi' => $bitisTarihi,
+            'firma' => trim($data['firma'] ?? ''),
+            'acente' => trim($data['acente'] ?? ''),
+            'iletisim' => trim($data['iletisim'] ?? '')
+        ];
+        break;
+
+    case 'kasko':
+        $tarih = trim($data['tarih'] ?? '');
+        if ($tarih === '') {
+            echo json_encode(['success' => false, 'message' => 'Kasko tarihi zorunludur!'], JSON_UNESCAPED_UNICODE);
+            exit;
+        }
+        $bitisTarihi = addYears($tarih, 1);
+        $vehicle['kaskoDate'] = $bitisTarihi;
+        $eventBase['type'] = 'kasko-guncelle';
+        $eventBase['date'] = $tarih;
+        $eventBase['data'] = [
+            'bitisTarihi' => $bitisTarihi,
+            'firma' => trim($data['firma'] ?? ''),
+            'acente' => trim($data['acente'] ?? ''),
+            'iletisim' => trim($data['iletisim'] ?? '')
+        ];
         break;
 
     default:
