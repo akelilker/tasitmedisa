@@ -995,7 +995,49 @@
       }
     };
   
-    // — YEDEKTEN GERİ YÜKLE (Import) —
+    // — SON YEDEKTEN GERİ YÜKLE (medisa_server_backup - önbellek temizleme sonrası) —
+    window.restoreFromLastBackup = function restoreFromLastBackup() {
+      try {
+        const raw = localStorage.getItem('medisa_server_backup');
+        if (!raw) {
+          alert('Son yedek bulunamadı.');
+          return;
+        }
+        const backup = JSON.parse(raw);
+        if (!backup.branches || !backup.users || !backup.vehicles) {
+          alert('Geçersiz yedek formatı.');
+          return;
+        }
+        const dateStr = backup.upload_date ? new Date(backup.upload_date).toLocaleString('tr-TR') : 'Bilinmiyor';
+        const message = `Yedek Tarihi: ${dateStr}\n\n` +
+          `Şubeler: ${backup.branches.length}\n` +
+          `Kullanıcılar: ${backup.users.length}\n` +
+          `Taşıtlar: ${backup.vehicles.length}\n\n` +
+          `Mevcut veriler silinecek. Emin misiniz?`;
+        if (!confirm(message)) return;
+        writeBranches(backup.branches);
+        writeUsers(backup.users);
+        localStorage.setItem(VEHICLES_KEY, JSON.stringify(backup.vehicles));
+        const existingApp = window.appData || {};
+        const restoredBlob = {
+          tasitlar: backup.vehicles,
+          kayitlar: existingApp.kayitlar || [],
+          branches: backup.branches,
+          users: backup.users,
+          ayarlar: existingApp.ayarlar || { sirketAdi: 'Medisa', yetkiliKisi: '', telefon: '', eposta: '' },
+          sifreler: existingApp.sifreler || []
+        };
+        localStorage.setItem('medisa_data_v1', JSON.stringify(restoredBlob));
+        sessionStorage.setItem('medisa_just_restored', '1');
+        window.appData = restoredBlob;
+        alert('Yedek başarıyla geri yüklendi!\n\nSayfa yenilenecek.');
+        setTimeout(() => window.location.reload(), 500);
+      } catch (err) {
+        alert('Yedek okunamadı: ' + (err.message || 'Bilinmeyen hata'));
+      }
+    };
+
+    // — YEDEKTEN GERİ YÜKLE (Import - dosyadan) —
     window.importData = function importData() {
       try {
         const input = document.createElement('input');
@@ -1081,7 +1123,7 @@
       }
     };
   
-    // — SUNUCUYA YÜKLE (Simülasyon - Backend gelene kadar) —
+    // — YEDEKLEME (Önbellek temizlemeden önce kesinlikle yapılır) —
     async function uploadToServer() {
       try {
         const branches = readBranches();
@@ -1095,17 +1137,9 @@
           upload_date: new Date().toISOString()
         };
   
-        // Backend gelene kadar localStorage'a kaydediyoruz
+        // Yedek localStorage'a kaydedilir (clear sonrası korunacak)
         localStorage.setItem('medisa_server_backup', JSON.stringify(backup));
-        
-        // Simüle: 80% başarı, 20% hata
-        const success = Math.random() > 0.2;
-        
-        if (success) {
-          return { success: true, message: 'Veriler sunucuya yüklendi.' };
-        } else {
-          return { success: false, message: 'Sunucu bağlantı hatası!' };
-        }
+        return { success: true, message: 'Veriler yedeklendi.' };
   
       } catch (error) {
         return { success: false, message: error.message };
@@ -1178,7 +1212,7 @@
   
       try {
         // 1. ÖNCE SUNUCUYA YEDEKLEME YAP (ilerisi için hazır)
-        window.showInfoModal('Veriler Sunucuya Yedekleniyor...');
+        window.showInfoModal('Veriler Yedekleniyor...');
         const result = await uploadToServer();
   
         if (!result.success) {
@@ -1188,24 +1222,12 @@
           return;
         }
   
-        // 2. SUNUCUYA YÜKLEME BAŞARILI - ŞİMDİ TEMİZLE
-        localStorage.clear();
-
-        // Service Worker önbelleğini de temizle (eski JS/CSS yüklenmesin)
-        if ('caches' in window) {
-          try {
-            const names = await caches.keys();
-            await Promise.all(names.map((name) => caches.delete(name)));
-          } catch (_) {}
-        }
-        if (navigator.serviceWorker && navigator.serviceWorker.getRegistration) {
-          try {
-            const reg = await navigator.serviceWorker.getRegistration();
-            if (reg) await reg.unregister();
-          } catch (_) {}
-        }
+        // 2. YEDEKLEME BAŞARILI - Sadece uygulama verilerini temizle (medisa_server_backup korunur)
+        [BRANCHES_KEY, USERS_KEY, VEHICLES_KEY].forEach(k => localStorage.removeItem(k));
+        // Diğer uygulama state anahtarlarını da temizle
+        ['vehicle_column_order', 'stok_active_columns', 'stok_column_order', 'stok_base_column_order'].forEach(k => localStorage.removeItem(k));
         
-        window.showInfoModal('Veriler Sunucuya Yedeklendi Ve Tarayıcı Belleği Temizlendi!\n\nSayfa Yenilenecek.');
+        window.showInfoModal('Veriler Yedeklendi Ve Tarayıcı Belleği Temizlendi!\n\nYedek korundu. Geri yüklemek için Ayarlar > Veri Yönetimi > Son Yedekten Geri Yükle kullanın.\n\nSayfa Yenilenecek.');
         
         // 3. Sayfayı yenile
         setTimeout(() => {

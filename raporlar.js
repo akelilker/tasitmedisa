@@ -32,6 +32,9 @@
     let stokCurrentBranchId = null; // null = grid görünümü, 'all' = tümü listesi, 'id' = şube listesi
     let stokSortState = {}; // { columnKey: 'asc' | 'desc' | null }
     
+    // --- Rapor Sekmesi State ---
+    let activeReportsTab = 'stok'; // 'stok' | 'kullanici'
+    
     // --- KULLANICI Görünümü State ---
     let kullaniciCurrentBranchId = null; // null = grid görünümü, 'all' = tümü listesi, 'id' = şube listesi
     let kullaniciSearchTerm = ''; // Arama terimi
@@ -98,10 +101,33 @@
         if (modal) {
             loadStokColumnState(); // Aktif sütunları yükle
             stokCurrentBranchId = null; // Grid görünümüne dön
-            renderStokView(); // Rapor görünümünü render et
+            kullaniciCurrentBranchId = null;
+            activeReportsTab = 'stok';
+            switchReportTab('stok'); // Sekme UI + içerik render
             modal.style.display = 'flex';
             requestAnimationFrame(() => modal.classList.add('active'));
             document.body.classList.add('modal-open');
+        }
+    };
+
+    window.switchReportTab = function(tab) {
+        activeReportsTab = tab;
+        const viewStok = document.getElementById('view-stok');
+        const viewKullanici = document.getElementById('view-kullanici');
+        const tabStok = document.getElementById('reports-tab-stok');
+        const tabKullanici = document.getElementById('reports-tab-kullanici');
+        if (tab === 'stok') {
+            if (viewStok) { viewStok.classList.add('active'); }
+            if (viewKullanici) { viewKullanici.classList.remove('active'); }
+            if (tabStok) { tabStok.classList.add('active'); }
+            if (tabKullanici) { tabKullanici.classList.remove('active'); }
+            renderStokView();
+        } else {
+            if (viewStok) { viewStok.classList.remove('active'); }
+            if (viewKullanici) { viewKullanici.classList.add('active'); }
+            if (tabStok) { tabStok.classList.remove('active'); }
+            if (tabKullanici) { tabKullanici.classList.add('active'); }
+            renderKullaniciView();
         }
     };
 
@@ -257,6 +283,7 @@
         const today = new Date();
         const todayStr = `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear()}`;
         const todayInputValue = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+        const hasDetailColumns = Object.values(stokActiveColumns).some(Boolean);
         
         listContainer.innerHTML = `
             <div class="stok-list-top-controls">
@@ -300,7 +327,7 @@
                     </div>
                 </div>
             </div>
-            <div class="stok-list-container">
+            <div class="stok-list-container" ${hasDetailColumns ? 'data-has-detail-columns="true"' : ''}>
                 <table class="stok-list-table">
                     <thead class="stok-list-header">
                         ${headerRow}
@@ -408,12 +435,12 @@
         adjustStokMarkaFontSizes();
     }
 
-    // Marka hücreleri: taşma durumunda font küçült (Taşıtlar formatı)
+    // Marka hücreleri: 2 satır taşması durumunda font küçült (öncelik satır kırmada)
     function adjustStokMarkaFontSizes() {
         const listContainer = document.getElementById('stok-list-container');
         if (!listContainer) return;
         const brandCells = listContainer.querySelectorAll('.stok-list-cell[data-col="marka"]');
-        const minFontSize = 9;
+        const minFontSize = 11; /* Daha yüksek: satır kırma öncelikli */
         const baseFontSize = 12;
         brandCells.forEach(cell => {
             if (cell.offsetHeight === 0) return; /* Gizli container'da çalışmasın */
@@ -439,6 +466,37 @@
         }
     }
 
+    // Sütun genişliklerini hesapla (7 sütun: fr ile sığar; 8+ sütun: sabit px, önceki genişlikler korunur)
+    function getColumnWidths(allColumns) {
+        const hasDetail = allColumns.length > 7;
+
+        if (hasDetail) {
+            // Sabit px: temel sütunlar ekrana sığdıklarındaki orana yakın (~496px tablo)
+            const basePx = {
+                'sira': 34, 'sube': 82, 'yil': 41, 'marka': 136,
+                'plaka': 68, 'sanziman': 61, 'km': 54
+            };
+            const detailPx = {
+                'sigorta': 72, 'kasko': 72, 'muayene': 72, 'kredi': 56,
+                'lastik': 56, 'utts': 52, 'takip': 56, 'tramer': 52,
+                'boya': 56, 'kullanici': 72, 'tescil': 72
+            };
+            return allColumns.map(col => {
+                const w = basePx[col.key] ?? detailPx[col.key] ?? 64;
+                return w + 'px';
+            }).join(' ');
+        }
+
+        // Sadece temel: fr ile ekrana sığar
+        const columnWidths = {
+            'sira': 'minmax(28px, 0.5fr)', 'sube': 'minmax(48px, 1.2fr)',
+            'yil': 'minmax(40px, 0.6fr)', 'marka': 'minmax(60px, 2fr)',
+            'plaka': 'minmax(56px, 1fr)', 'sanziman': 'minmax(56px, 0.9fr)',
+            'km': 'minmax(48px, 0.8fr)'
+        };
+        return allColumns.map(col => columnWidths[col.key] || '80px').join(' ');
+    }
+
     // Sütun başlık satırı oluştur
     function createStokHeaderRow() {
         const baseColumns = [
@@ -450,7 +508,7 @@
             { key: 'sanziman', sortable: true },
             { key: 'km', sortable: true }
         ];
-        
+
         const detailColumns = [
             { key: 'sigorta', sortable: true },
             { key: 'kasko', sortable: true },
@@ -464,16 +522,16 @@
             { key: 'kullanici', sortable: true },
             { key: 'tescil', sortable: true }
         ];
-        
+
         // Tüm sütunları birleştir (temel + aktif detay)
         const allColumns = [];
-        
+
         // Temel sütunları sıraya göre ekle
         stokBaseColumnOrder.forEach(colKey => {
             const col = baseColumns.find(c => c.key === colKey);
             if (col) allColumns.push(col);
         });
-        
+
         // Aktif detay sütunlarını sıraya göre ekle
         if (stokColumnOrder.length > 0) {
             stokColumnOrder.forEach(colKey => {
@@ -496,10 +554,13 @@
                 }
             });
         }
-        
+
         let columns = allColumns;
-        
-        return `<tr class="stok-list-header-row">${columns.map(col => {
+
+        // Grid sütun genişliklerini hesapla
+        const gridTemplateColumns = getColumnWidths(columns);
+
+        return `<tr class="stok-list-header-row" style="grid-template-columns: ${gridTemplateColumns}">${columns.map(col => {
             const sortState = stokSortState[col.key] || null;
             const sortIcon = sortState === 'asc' ? '↑' : sortState === 'desc' ? '↓' : '↕';
             const sortClass = sortState ? 'active' : '';
@@ -545,7 +606,7 @@
     function createStokDataRow(vehicle, rowNum, branches) {
         const branch = vehicle.branchId ? branches.find(b => b.id === vehicle.branchId) : null;
         const branchName = branch ? branch.name : '-';
-        
+
         // Base cell'leri stokBaseColumnOrder sırasına göre oluştur
         const baseCellData = {
             'sira': rowNum,
@@ -556,12 +617,12 @@
             'sanziman': vehicle.transmission === 'manuel' ? 'Manuel' : vehicle.transmission === 'otomatik' ? 'Otomatik' : '-',
             'km': vehicle.km ? formatNumber(vehicle.km) : '-'
         };
-        
+
         const baseCells = stokBaseColumnOrder.map(key => ({
             key: key,
             value: baseCellData[key] || '-'
         }));
-        
+
         const detailCells = [
             { key: 'sigorta', value: vehicle.sigortaDate ? formatDate(vehicle.sigortaDate) : '-' },
             { key: 'kasko', value: vehicle.kaskoDate ? formatDate(vehicle.kaskoDate) : '-' },
@@ -573,11 +634,11 @@
             { key: 'tramer', value: vehicle.tramer === 'var' ? 'Var' : vehicle.tramer === 'yok' ? 'Yok' : '-' },
             { key: 'boya', value: vehicle.boya === 'var' ? 'Var' : vehicle.boya === 'yok' ? 'Yok' : '-' },
             { key: 'kullanici', value: getVehicleUser(vehicle) },
-            { key: 'tescil', value: vehicle.tescilDate ? formatDate(vehicle.tescilDate) : '-' }
+            { key: 'tescil', value: vehicle.tescilTarihi ? formatDate(vehicle.tescilTarihi) : '-' }
         ];
-        
+
         let cells = [...baseCells];
-        
+
         // Aktif detay sütunlarını sıraya göre ekle
         if (stokColumnOrder.length > 0) {
             // Kaydedilmiş sıraya göre ekle
@@ -601,8 +662,12 @@
                 }
             });
         }
-        
-        return `<tr class="stok-list-row">${cells.map(cell => 
+
+        // Grid sütun genişliklerini hesapla (header ile aynı sütun yapısı)
+        const columnKeys = cells.map(c => ({ key: c.key }));
+        const gridTemplateColumns = getColumnWidths(columnKeys);
+
+        return `<tr class="stok-list-row" style="grid-template-columns: ${gridTemplateColumns}">${cells.map(cell =>
             `<td class="stok-list-cell" data-col="${cell.key}">${escapeHtml(cell.value)}</td>`
         ).join('')}</tr>`;
     }
@@ -1125,7 +1190,7 @@
                 case 'tramer': value = vehicle.tramer === 'var' ? 'Var' : vehicle.tramer === 'yok' ? 'Yok' : '-'; break;
                 case 'boya': value = vehicle.boya === 'var' ? 'Var' : vehicle.boya === 'yok' ? 'Yok' : '-'; break;
                 case 'kullanici': value = getVehicleUser(vehicle); break;
-                case 'tescil': value = vehicle.tescilDate ? formatDate(vehicle.tescilDate) : '-'; break;
+                case 'tescil': value = vehicle.tescilTarihi ? formatDate(vehicle.tescilTarihi) : '-'; break;
             }
         }
         return value;
@@ -1299,7 +1364,7 @@
                             value = getVehicleUser(vehicle);
                             break;
                         case 'tescil':
-                            value = vehicle.tescilDate ? formatDate(vehicle.tescilDate) : '-';
+                            value = vehicle.tescilTarihi ? formatDate(vehicle.tescilTarihi) : '-';
                             break;
                     }
                 }

@@ -145,29 +145,34 @@ document.addEventListener('DOMContentLoaded', () => {
   bodyObserver.observe(document.body, { childList: true, subtree: true });
 });
 
-// Modal açma fonksiyonlarını override et (Global Erişim için)
+// Modal açma fonksiyonları: tasitlar.js ve raporlar.js kendi openVehiclesView/openReportsView tanımlar
+// (şube seçimi, renderBranchDashboard vb.). Burada sadece fallback - modüller yüklenmezse.
 (function() {
-  window.openVehiclesView = function() { 
-    const modal = document.getElementById('vehicles-modal');
-    if (modal) {
-      modal.style.display = 'flex';
-      requestAnimationFrame(() => {
-        modal.classList.add('active');
-        setTimeout(() => window.updateFooterDim(), 100); // Footer'ı güncelle
-      });
-    }
-  };
+  if (!window.openVehiclesView) {
+    window.openVehiclesView = function() { 
+      const modal = document.getElementById('vehicles-modal');
+      if (modal) {
+        modal.style.display = 'flex';
+        requestAnimationFrame(() => {
+          modal.classList.add('active');
+          setTimeout(() => window.updateFooterDim(), 100);
+        });
+      }
+    };
+  }
   
-  window.openReportsView = function() {
-    const modal = document.getElementById('reports-modal');
-    if (modal) {
-      modal.style.display = 'flex';
-      requestAnimationFrame(() => {
-        modal.classList.add('active');
-        setTimeout(() => window.updateFooterDim(), 100); // Footer'ı güncelle
-      });
-    }
-  };
+  if (!window.openReportsView) {
+    window.openReportsView = function() {
+      const modal = document.getElementById('reports-modal');
+      if (modal) {
+        modal.style.display = 'flex';
+        requestAnimationFrame(() => {
+          modal.classList.add('active');
+          setTimeout(() => window.updateFooterDim(), 100);
+        });
+      }
+    };
+  }
   
   window.closeVehiclesModal = function() {
     const modal = document.getElementById('vehicles-modal');
@@ -175,7 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
       modal.classList.remove('active');
       setTimeout(() => {
         modal.style.display = 'none';
-        setTimeout(() => window.updateFooterDim(), 100); // Footer'ı güncelle
+        setTimeout(() => window.updateFooterDim(), 100);
       }, 300);
     }
   };
@@ -186,7 +191,7 @@ document.addEventListener('DOMContentLoaded', () => {
       modal.classList.remove('active');
       setTimeout(() => {
         modal.style.display = 'none';
-        setTimeout(() => window.updateFooterDim(), 100); // Footer'ı güncelle
+        setTimeout(() => window.updateFooterDim(), 100);
       }, 300);
     }
   };
