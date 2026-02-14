@@ -179,8 +179,14 @@ if (document.getElementById('login-form')) {
    ========================================= */
 
 if (document.getElementById('driver-two-panel')) {
-    window.addEventListener('DOMContentLoaded', async () => {
-        await loadDashboard();
+    const run = () => { loadDashboard(); };
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', run);
+    } else {
+        run();
+    }
+    window.addEventListener('pageshow', function(ev) {
+        if (ev.persisted) run();
     });
 }
 
