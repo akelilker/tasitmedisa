@@ -219,6 +219,16 @@
                             <div class="form-section">
                                 <div id="tramer-records-container" style="display:none; margin-top:6px;"></div>
                             </div>
+                            <div class="form-section-inline">
+                                <label class="form-label" for="boya-var">Boya / Değişen</label>
+                                <div class="radio-group">
+                                    <button type="button" id="boya-var" class="radio-btn" data-value="var">Var</button>
+                                    <button type="button" class="radio-btn" data-value="yok">Yok</button>
+                                </div>
+                            </div>
+                            <div class="form-section">
+                                <div id="boya-parts-container" style="display:none; margin-top:6px;"></div>
+                            </div>
                         </div>
 
                         <div class="modal-column-right">
@@ -266,26 +276,9 @@
                                 <label class="form-label" for="vehicle-price">Taşıtın Alım Bedeli</label>
                                 <input type="text" id="vehicle-price" class="form-input" placeholder="150.000 TL" inputmode="numeric">
                             </div>
-                        </div>
-
-                        <div class="form-last-row">
-                            <div class="form-last-row-left">
-                                <div class="form-section-inline">
-                                    <label class="form-label" for="boya-var">Boya / Değişen</label>
-                                    <div class="radio-group">
-                                        <button type="button" id="boya-var" class="radio-btn" data-value="var">Var</button>
-                                        <button type="button" class="radio-btn" data-value="yok">Yok</button>
-                                    </div>
-                                </div>
-                                <div class="form-section">
-                                    <div id="boya-parts-container" style="display:none; margin-top:6px;"></div>
-                                </div>
-                            </div>
-                            <div class="form-last-row-right">
-                                <div class="form-section">
-                                    <label class="form-label" for="vehicle-notes">Notlar</label>
-                                    <textarea id="vehicle-notes" class="form-input notes-auto-expand" rows="1" placeholder="Ek bilgiler..."></textarea>
-                                </div>
+                            <div class="form-section">
+                                <label class="form-label" for="vehicle-notes">Notlar</label>
+                                <textarea id="vehicle-notes" class="form-input notes-auto-expand" rows="1" placeholder="Ek bilgiler..."></textarea>
                             </div>
                         </div>
                     </div>
