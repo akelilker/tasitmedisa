@@ -409,6 +409,7 @@ border: 1px solid rgba(255, 255, 255, 0.30);
 border-radius: 8px;
 padding: 4px;
 text-align: center;
+will-change: transform;
 cursor: pointer;
 transition: border-color 0.2s, box-shadow 0.2s;
 display: flex;
@@ -423,12 +424,19 @@ box-sizing: border-box;
 border-color: rgba(255, 255, 255, 0.30);
 }
 
-/* Hover sadece gerçek hover destekleyen cihazlarda (mobilde yapışan hover = büyümüş kutu görünümü olmasın) */
-@media (hover: hover) {
+/* Masaüstü hover: Taşıtlar kutularıyla aynı (hafif büyüme, sağa sola kayma yok) */
+@media (hover: hover) and (pointer: fine) {
 .stok-branch-card:hover {
 border-color: rgba(255, 255, 255, 0.6);
-transform: scale(1.1);
+transform: scale(1.04);
+transform-origin: center;
 z-index: 5;
+}
+.stok-branch-card.all-card:hover {
+border-color: rgba(255, 255, 255, 0.6);
+transform: scale(1.06);
+transform-origin: center;
+z-index: 10;
 }
 }
 
