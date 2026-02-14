@@ -527,10 +527,6 @@ html { overflow-x: hidden; }
   #app-footer.dimmed.delayed .brand img {
     opacity: 0.5 !important;
   }
-  /* Menü buton metinleri masaüstünde tertemiz (sis yok) */
-  .menu-btn .ttl {
-    text-shadow: none !important;
-  }
 }
 
 .view-section { display: none; }
