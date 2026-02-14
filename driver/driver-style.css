@@ -270,6 +270,8 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+  border-right: 1px solid var(--theme-color);
+  padding-right: 12px;
 }
 .driver-right-panel {
   flex: 1;
@@ -283,6 +285,8 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
+  align-items: center;
+  text-align: center;
 }
 .driver-user-plate-row .driver-user-name {
   font-size: 13px;
@@ -322,25 +326,24 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
-  font-size: 12px;
-  padding: 8px 10px;
-  background: rgba(15, 20, 24, 0.6);
-  border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: 13px;
+  padding: 0;
 }
 .driver-info-item {
   display: flex;
   flex-direction: column;
-  gap: 1px;
+  gap: 2px;
+  text-align: left;
 }
 .driver-info-item .label {
   color: rgba(255, 255, 255, 0.5);
-  font-size: 10px;
+  font-size: 11px;
   text-transform: uppercase;
 }
 .driver-info-item .value {
   color: var(--txt);
   word-break: break-word;
+  font-size: 13px;
 }
 .driver-info-item .value.date-warning-red { color: #ef4444; }
 .driver-info-item .value.date-warning-orange { color: #f97316; }
@@ -365,9 +368,99 @@
   border-color: rgba(255, 255, 255, 0.5);
   color: #fff;
 }
+.driver-action-btn.saved {
+  border-color: #22c55e;
+  color: #22c55e;
+}
+.driver-action-btn.saved:hover {
+  border-color: #4ade80;
+  color: #4ade80;
+}
+.driver-action-btn.warning {
+  border-color: #ef4444;
+  color: #ef4444;
+}
+.driver-action-btn.warning:hover {
+  border-color: #f87171;
+  color: #f87171;
+}
+.driver-info-item.saved .label,
+.driver-info-item.saved .value {
+  color: #22c55e;
+}
 
 .driver-input-area {
   min-height: 0;
+}
+/* Input tema uyumu - koyu arka plan */
+#driver-input-area .form-group input,
+#driver-input-area .form-group textarea {
+  width: 100%;
+  padding: 8px 16px;
+  background: #0f1418 !important;
+  background-color: #0f1418 !important;
+  border: none !important;
+  box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.38) !important;
+  border-radius: 8px;
+  color: var(--txt);
+  font-size: 16px;
+  font-family: inherit;
+  transition: box-shadow 0.2s;
+  box-sizing: border-box;
+}
+#driver-input-area .form-group input {
+  padding: 5px 16px;
+}
+#driver-input-area .form-group input:focus,
+#driver-input-area .form-group textarea:focus {
+  outline: none;
+  box-shadow: inset 0 0 0 0.5px var(--theme-color) !important;
+}
+#driver-input-area .form-group input.driver-km-input,
+#driver-input-area .form-group textarea.driver-ekstra-not {
+  box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.38) !important;
+}
+#driver-input-area .form-group input.driver-km-input:focus,
+#driver-input-area .form-group textarea.driver-ekstra-not:focus {
+  box-shadow: inset 0 0 0 0.5px var(--theme-color) !important;
+}
+#driver-input-area .form-group textarea.driver-ekstra-not {
+  min-height: 1.1em;
+  height: 1.1em;
+  resize: none;
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+#driver-input-area .form-group textarea.driver-ekstra-not::placeholder {
+  color: rgba(255, 255, 255, 0.18) !important;
+}
+#driver-input-area .form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+}
+#driver-input-area .driver-report-block .form-group input,
+#driver-input-area .driver-report-block .form-group textarea {
+  background: #0f1418 !important;
+  background-color: #0f1418 !important;
+  color: var(--txt);
+}
+#driver-input-area .driver-km-input-wrap {
+  position: relative;
+  width: 100%;
+}
+#driver-input-area .driver-km-fake-placeholder {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  font-size: 16px;
+  font-family: inherit;
+  color: rgba(255, 255, 255, 0.12) !important;
+  line-height: 1;
+  white-space: nowrap;
 }
 
 /* Mobil: 35/65, compact, etiket alt satırda */
@@ -379,10 +472,12 @@
   .driver-left-panel { flex: 0 0 35%; }
   .driver-right-panel { flex: 1; }
   .driver-vehicle-info {
-    padding: 6px 8px;
-    font-size: 11px;
+    padding: 0;
+    font-size: 12px;
   }
-  .driver-info-item .label { font-size: 9px; }
+  .driver-info-item { gap: 1px; }
+  .driver-info-item .label { font-size: 10px; }
+  .driver-info-item .value { font-size: 12px; }
   .driver-action-btn { padding: 8px 10px; font-size: 12px; }
   .driver-user-plate-row .driver-user-name { font-size: 12px; }
   .driver-current-plaka { font-size: 14px; }
@@ -803,11 +898,13 @@
 }
 
 /* YENİ BUTONLAR (Bakım/Kaza Bildir) – alt alta eşit genişlik (KM input ile uyumlu) */
-.driver-report-actions {
+.driver-report-actions,
+.driver-report-blocks {
   display: flex;
   flex-direction: column;
   align-items: stretch;
   gap: 12px;
+  margin-bottom: 12px;
 }
 
 .driver-report-item {

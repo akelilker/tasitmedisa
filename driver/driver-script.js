@@ -289,6 +289,13 @@ function renderLeftPanel(vehicles, records) {
     const existingRecord = getExistingRecord(vehicle.id);
     const kmVal = vehicle.guncelKm || (existingRecord && existingRecord.guncel_km) || '-';
     const kmFormatted = (kmVal !== '-' && kmVal != null) ? String(kmVal).replace(/\B(?=(\d{3})+(?!\d))/g, '.') : '-';
+    const needsKmWarning = (() => {
+        const dayOfMonth = new Date().getDate();
+        const isFirstOfMonth = dayOfMonth === 1;
+        const hasKmThisMonth = existingRecord && existingRecord.guncel_km != null && String(existingRecord.guncel_km).trim() !== '';
+        return isFirstOfMonth || !hasKmThisMonth;
+    })();
+    const kmClass = needsKmWarning ? 'date-warning-red' : '';
     
     const sigortaW = checkDateWarningsDriver(vehicle.sigortaDate);
     const kaskoW = checkDateWarningsDriver(vehicle.kaskoDate);
@@ -299,6 +306,13 @@ function renderLeftPanel(vehicles, records) {
     const anahtarLabel = (vehicle.anahtar === 'var') ? (vehicle.anahtarNerede || 'Var') : 'Yoktur.';
     const lastikLabel = (vehicle.lastikDurumu === 'var') ? (vehicle.lastikAdres || 'Var') : 'Yoktur.';
     const uttsLabel = vehicle.uttsTanimlandi ? 'Evet' : 'Hayır';
+    const hasKmSaved = !needsKmWarning;
+    const sigortaSaved = !!(vehicle.sigortaDate && vehicle.sigortaDate.trim());
+    const kaskoSaved = !!(vehicle.kaskoDate && vehicle.kaskoDate.trim());
+    const muayeneSaved = !!(vehicle.muayeneDate && vehicle.muayeneDate.trim());
+    const anahtarSaved = !!(vehicle.anahtar && String(vehicle.anahtar).trim());
+    const lastikSaved = !!(vehicle.lastikDurumu && String(vehicle.lastikDurumu).trim());
+    const uttsSaved = vehicle.uttsTanimlandi === true || vehicle.uttsTanimlandi === false;
     
     const infoEl = document.getElementById('driver-vehicle-info');
     if (infoEl) {
@@ -306,13 +320,13 @@ function renderLeftPanel(vehicles, records) {
             <div class="driver-info-item"><span class="label">Şube</span><span class="value">${escapeHtmlDriver(vehicle.branchName || '-')}</span></div>
             <div class="driver-info-item"><span class="label">Taşıt Tipi</span><span class="value">${escapeHtmlDriver(tipLabel)}</span></div>
             <div class="driver-info-item"><span class="label">Üretim Yılı</span><span class="value">${escapeHtmlDriver(vehicle.year || '-')}</span></div>
-            <div class="driver-info-item"><span class="label">KM</span><span class="value">${escapeHtmlDriver(kmFormatted)}</span></div>
-            <div class="driver-info-item"><span class="label">Sigorta Bitiş</span><span class="value ${sigortaW.class}">${formatDriverDate(vehicle.sigortaDate) || '-'}</span></div>
-            <div class="driver-info-item"><span class="label">Kasko Bitiş</span><span class="value ${kaskoW.class}">${formatDriverDate(vehicle.kaskoDate) || '-'}</span></div>
-            <div class="driver-info-item"><span class="label">Muayene Bitiş</span><span class="value ${muayeneW.class}">${formatDriverDate(vehicle.muayeneDate) || '-'}</span></div>
-            <div class="driver-info-item"><span class="label">Yedek Anahtar</span><span class="value">${escapeHtmlDriver(anahtarLabel)}</span></div>
-            <div class="driver-info-item"><span class="label">Lastik Durumu</span><span class="value">${escapeHtmlDriver(lastikLabel)}</span></div>
-            <div class="driver-info-item"><span class="label">UTTS</span><span class="value">${escapeHtmlDriver(uttsLabel)}</span></div>
+            <div class="driver-info-item ${hasKmSaved ? 'saved' : ''}"><span class="label">KM</span><span class="value ${kmClass}">${escapeHtmlDriver(kmFormatted)}</span></div>
+            <div class="driver-info-item ${sigortaSaved ? 'saved' : ''}"><span class="label">Sigorta Bitiş</span><span class="value ${sigortaW.class}">${formatDriverDate(vehicle.sigortaDate) || '-'}</span></div>
+            <div class="driver-info-item ${kaskoSaved ? 'saved' : ''}"><span class="label">Kasko Bitiş</span><span class="value ${kaskoW.class}">${formatDriverDate(vehicle.kaskoDate) || '-'}</span></div>
+            <div class="driver-info-item ${muayeneSaved ? 'saved' : ''}"><span class="label">Muayene Bitiş</span><span class="value ${muayeneW.class}">${formatDriverDate(vehicle.muayeneDate) || '-'}</span></div>
+            <div class="driver-info-item ${anahtarSaved ? 'saved' : ''}"><span class="label">Yedek Anahtar</span><span class="value">${escapeHtmlDriver(anahtarLabel)}</span></div>
+            <div class="driver-info-item ${lastikSaved ? 'saved' : ''}"><span class="label">Lastik Durumu</span><span class="value">${escapeHtmlDriver(lastikLabel)}</span></div>
+            <div class="driver-info-item ${uttsSaved ? 'saved' : ''}"><span class="label">UTTS</span><span class="value">${escapeHtmlDriver(uttsLabel)}</span></div>
         `;
     }
 }
@@ -363,16 +377,37 @@ function renderRightPanel(vehicles, records) {
     if (!actionsEl || !inputEl) return;
     
     const vid = String(vehicle.id);
+    const existingRecord = getExistingRecord(vehicle.id);
+    const needsKmWarning = (() => {
+        const dayOfMonth = new Date().getDate();
+        const isFirstOfMonth = dayOfMonth === 1;
+        const hasKmThisMonth = existingRecord && existingRecord.guncel_km != null && String(existingRecord.guncel_km).trim() !== '';
+        return isFirstOfMonth || !hasKmThisMonth;
+    })();
+    const hasKmSaved = !needsKmWarning;
+    const sigortaW = checkDateWarningsDriver(vehicle.sigortaDate);
+    const kaskoW = checkDateWarningsDriver(vehicle.kaskoDate);
+    const muayeneW = checkDateWarningsDriver(vehicle.muayeneDate);
+    const sigortaSaved = !!(vehicle.sigortaDate && vehicle.sigortaDate.trim());
+    const kaskoSaved = !!(vehicle.kaskoDate && vehicle.kaskoDate.trim());
+    const muayeneSaved = !!(vehicle.muayeneDate && vehicle.muayeneDate.trim());
+    const anahtarSaved = !!(vehicle.anahtar && String(vehicle.anahtar).trim());
+    const lastikSaved = !!(vehicle.lastikDurumu && String(vehicle.lastikDurumu).trim());
+    const kmBtnClass = (hasKmSaved ? ' saved' : '') + (needsKmWarning ? ' warning' : '');
+    const sigortaBtnClass = (sigortaSaved ? ' saved' : '') + (sigortaW.class ? ' warning' : '');
+    const kaskoBtnClass = (kaskoSaved ? ' saved' : '') + (kaskoW.class ? ' warning' : '');
+    const muayeneBtnClass = (muayeneSaved ? ' saved' : '') + (muayeneW.class ? ' warning' : '');
     actionsEl.innerHTML = `
-        <button type="button" class="driver-action-btn" data-action="km" onclick="focusKmInput('${vid}')">Km Bildir</button>
-        <button type="button" class="driver-action-btn" data-action="sigorta" onclick="openDriverEventModal('sigorta','${vid}')">Trafik Sigortası Yenileme</button>
-        <button type="button" class="driver-action-btn" data-action="kasko" onclick="openDriverEventModal('kasko','${vid}')">Kasko Yenileme</button>
-        <button type="button" class="driver-action-btn" data-action="muayene" onclick="openDriverEventModal('muayene','${vid}')">Muayene Yenileme</button>
-        <button type="button" class="driver-action-btn" data-action="anahtar" onclick="openDriverEventModal('anahtar','${vid}')">Anahtar Durumu Bildir</button>
-        <button type="button" class="driver-action-btn" data-action="lastik" onclick="openDriverEventModal('lastik','${vid}')">Lastik Durumu Bildir</button>
+        <button type="button" class="driver-action-btn${kmBtnClass}" data-action="km" onclick="focusKmInput('${vid}')">Km Bildir</button>
+        <button type="button" class="driver-action-btn" data-action="kaza" onclick="toggleAndScrollToBlock('kaza','${vid}')">Kaza Bildir</button>
+        <button type="button" class="driver-action-btn" data-action="bakim" onclick="toggleAndScrollToBlock('bakim','${vid}')">Bakım Bildir</button>
+        <button type="button" class="driver-action-btn${sigortaBtnClass}" data-action="sigorta" onclick="openDriverEventModal('sigorta','${vid}')">Trafik Sigortası Yenileme</button>
+        <button type="button" class="driver-action-btn${kaskoBtnClass}" data-action="kasko" onclick="openDriverEventModal('kasko','${vid}')">Kasko Yenileme</button>
+        <button type="button" class="driver-action-btn${muayeneBtnClass}" data-action="muayene" onclick="openDriverEventModal('muayene','${vid}')">Muayene Yenileme</button>
+        <button type="button" class="driver-action-btn${anahtarSaved ? ' saved' : ''}" data-action="anahtar" onclick="openDriverEventModal('anahtar','${vid}')">Anahtar Durumu Bildir</button>
+        <button type="button" class="driver-action-btn${lastikSaved ? ' saved' : ''}" data-action="lastik" onclick="openDriverEventModal('lastik','${vid}')">Lastik Durumu Bildir</button>
     `;
     
-    const existingRecord = getExistingRecord(vehicle.id);
     const bakimVar = existingRecord && (existingRecord.bakim_durumu || (existingRecord.bakim_aciklama || '').trim());
     const kazaVar = existingRecord && (existingRecord.kaza_durumu || (existingRecord.kaza_aciklama || '').trim());
     
@@ -396,32 +431,20 @@ function buildDriverInputForm(vehicle, existingRecord, bakimVar, kazaVar) {
                     <input type="text" id="km-${vid}" class="driver-km-input" inputmode="numeric" pattern="[0-9]*" maxlength="8" data-vehicle-id="${vid}" value="${existingRecord ? existingRecord.guncel_km : ''}" required autocomplete="off" aria-label="Güncel kilometre">
                 </div>
             </div>
-            <div class="driver-report-actions">
-                <div class="driver-report-item">
-                    <button type="button" class="driver-report-btn driver-report-btn-bakim" onclick="toggleReportBlock('bakim', ${vid})">
-                        <span class="driver-report-btn-icon" aria-hidden="true">🛠</span>
-                        <span class="driver-report-btn-text">Bakım Bildir</span>
-                    </button>
-                    <div id="bakim-block-${vid}" class="driver-report-block driver-report-block-bakim ${bakimVar ? 'show' : ''}">
-                        <div class="form-group"><label for="bakim-tarih-${vid}">Bakım Tarihi</label><input type="date" id="bakim-tarih-${vid}" class="driver-bakim-input" value="${existingRecord && existingRecord.bakim_tarih ? existingRecord.bakim_tarih : today}"></div>
-                        <div class="form-group"><label for="bakim-detay-${vid}">Açıklama</label><textarea id="bakim-detay-${vid}" class="driver-report-textarea-auto driver-bakim-textarea" rows="1" placeholder="Bakım detayını yazın..." maxlength="500">${existingRecord ? (existingRecord.bakim_aciklama || '') : ''}</textarea></div>
-                        <div class="form-group"><label for="bakim-servis-${vid}">İşlemi Yapan Servis</label><input type="text" id="bakim-servis-${vid}" class="driver-bakim-input" placeholder="Servis adı"></div>
-                        <div class="form-group"><label for="bakim-kisi-${vid}">Taşıtı Bakıma Götüren Kişi</label><input type="text" id="bakim-kisi-${vid}" class="driver-bakim-input" placeholder="Kişi adı"></div>
-                        <div class="form-group"><label for="bakim-km-${vid}">Km</label><input type="text" id="bakim-km-${vid}" class="driver-bakim-input" placeholder="50.000" inputmode="numeric"></div>
-                        <div class="form-group"><label for="bakim-tutar-${vid}">Tutar (TL)</label><input type="text" id="bakim-tutar-${vid}" class="driver-bakim-input" placeholder="2.500" inputmode="numeric"></div>
-                    </div>
+            <div class="driver-report-blocks">
+                <div id="bakim-block-${vid}" class="driver-report-block driver-report-block-bakim ${bakimVar ? 'show' : ''}">
+                    <div class="form-group"><label for="bakim-tarih-${vid}">Bakım Tarihi</label><input type="date" id="bakim-tarih-${vid}" class="driver-bakim-input" value="${existingRecord && existingRecord.bakim_tarih ? existingRecord.bakim_tarih : today}"></div>
+                    <div class="form-group"><label for="bakim-detay-${vid}">Açıklama</label><textarea id="bakim-detay-${vid}" class="driver-report-textarea-auto driver-bakim-textarea" rows="1" placeholder="Bakım detayını yazın..." maxlength="500">${existingRecord ? (existingRecord.bakim_aciklama || '') : ''}</textarea></div>
+                    <div class="form-group"><label for="bakim-servis-${vid}">İşlemi Yapan Servis</label><input type="text" id="bakim-servis-${vid}" class="driver-bakim-input" placeholder="Servis adı"></div>
+                    <div class="form-group"><label for="bakim-kisi-${vid}">Taşıtı Bakıma Götüren Kişi</label><input type="text" id="bakim-kisi-${vid}" class="driver-bakim-input" placeholder="Kişi adı"></div>
+                    <div class="form-group"><label for="bakim-km-${vid}">Km</label><input type="text" id="bakim-km-${vid}" class="driver-bakim-input" placeholder="50.000" inputmode="numeric"></div>
+                    <div class="form-group"><label for="bakim-tutar-${vid}">Tutar (TL)</label><input type="text" id="bakim-tutar-${vid}" class="driver-bakim-input" placeholder="2.500" inputmode="numeric"></div>
                 </div>
-                <div class="driver-report-item">
-                    <button type="button" class="driver-report-btn driver-report-btn-kaza" onclick="toggleReportBlock('kaza', ${vid})">
-                        <span class="driver-report-btn-icon" aria-hidden="true">💥</span>
-                        <span class="driver-report-btn-text">Kaza Bildir</span>
-                    </button>
-                    <div id="kaza-block-${vid}" class="driver-report-block driver-report-block-kaza ${kazaVar ? 'show' : ''}">
-                        <div class="form-group"><label for="kaza-tarih-${vid}">Kaza Tarihi</label><input type="date" id="kaza-tarih-${vid}" class="driver-kaza-input" value="${existingRecord && existingRecord.kaza_tarih ? existingRecord.kaza_tarih : today}"></div>
-                        <div class="form-group"><label for="kaza-detay-${vid}">Açıklama</label><textarea id="kaza-detay-${vid}" class="driver-report-textarea-auto driver-kaza-textarea" rows="1" placeholder="Kaza açıklamasını yazın..." maxlength="500">${existingRecord ? (existingRecord.kaza_aciklama || '') : ''}</textarea></div>
-                        <div class="form-group"><label for="kaza-tutar-${vid}">Hasar Tutarı (TL)</label><input type="text" id="kaza-tutar-${vid}" class="driver-kaza-input" placeholder="5.000" inputmode="numeric"></div>
-                        <div class="form-group"><label class="driver-kaporta-label">Hasar gören parçaları işaretleyin (isteğe bağlı)</label><div id="kaza-kaporta-${vid}" class="driver-kaporta-container" data-vehicle-id="${vid}" data-boyali-parcalar='${JSON.stringify(vehicle.boyaliParcalar || {})}'></div></div>
-                    </div>
+                <div id="kaza-block-${vid}" class="driver-report-block driver-report-block-kaza ${kazaVar ? 'show' : ''}">
+                    <div class="form-group"><label for="kaza-tarih-${vid}">Kaza Tarihi</label><input type="date" id="kaza-tarih-${vid}" class="driver-kaza-input" value="${existingRecord && existingRecord.kaza_tarih ? existingRecord.kaza_tarih : today}"></div>
+                    <div class="form-group"><label for="kaza-detay-${vid}">Açıklama</label><textarea id="kaza-detay-${vid}" class="driver-report-textarea-auto driver-kaza-textarea" rows="1" placeholder="Kaza açıklamasını yazın..." maxlength="500">${existingRecord ? (existingRecord.kaza_aciklama || '') : ''}</textarea></div>
+                    <div class="form-group"><label for="kaza-tutar-${vid}">Hasar Tutarı (TL)</label><input type="text" id="kaza-tutar-${vid}" class="driver-kaza-input" placeholder="5.000" inputmode="numeric"></div>
+                    <div class="form-group"><label class="driver-kaporta-label">Hasar gören parçaları işaretleyin (isteğe bağlı)</label><div id="kaza-kaporta-${vid}" class="driver-kaporta-container" data-vehicle-id="${vid}" data-boyali-parcalar='${JSON.stringify(vehicle.boyaliParcalar || {})}'></div></div>
                 </div>
             </div>
             <div class="form-group driver-ekstra-not-form">
@@ -919,7 +942,13 @@ window.saveDriverEvent = async function(type) {
     }
 };
 
-// Blok Aç/Kapa
+// Blok Aç/Kapa (aksiyon butonlarından çağrılır)
+window.toggleAndScrollToBlock = function(type, vehicleId) {
+    toggleReportBlock(type, vehicleId);
+    const block = document.getElementById(type + '-block-' + vehicleId);
+    if (block) (block.closest('.vehicle-card') || block.closest('#driver-input-area'))?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+};
+
 window.toggleReportBlock = function(type, vehicleId) {
     const block = document.getElementById(`${type}-block-${vehicleId}`);
     if (!block) return;
