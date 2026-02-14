@@ -434,6 +434,11 @@
     margin-right: 0;
     padding: 16px;
 }
+/* Şube / Kullanıcı Yönetimi: Yeni Şube/Kullanıcı + kutular 2 satır yukarı */
+#branch-modal .modal-body > div,
+#user-modal .modal-body > div {
+    margin-top: -24px;
+}
 
 /* Veri Yönetimi Butonları */
 .data-management-text-btn {
@@ -958,6 +963,16 @@ input.settings-form-input:-moz-autofill,
     align-content: start;
     /* 1-5 kart arası yatayda ortalanmış görünsün */
     justify-content: center;
+}
+/* Şube Yönetimi: şube kutularına yukarı ve aşağı 6px */
+#branch-modal #branch-list {
+    padding-top: 6px;
+    padding-bottom: 6px;
+}
+/* Kullanıcı Yönetimi: kullanıcı kutularına yukarı ve aşağı 6px */
+#user-modal #user-list {
+    padding-top: 6px;
+    padding-bottom: 6px;
 }
 
 .settings-card {
