@@ -50,7 +50,7 @@
   margin-top: 0 !important; /* Negatif margin üst etiketleri kırpıyordu, sıfırlandı */
 }
 
-/* Sol/sağ içerikler alta stack; son satırda Boya/Değişen | Notlar yatay hizalı */
+/* Boya/Değişen ile Notlar alt hizası: sol sütun flex, son blok alta yapışır */
 /* Modal Header */
 #vehicle-modal .modal-header {
     background: linear-gradient(180deg, rgba(255, 0, 0, 0.30) 0%, rgba(255, 0, 0, 0.22) 25%, rgba(255, 0, 0, 0.16) 50%, rgba(255, 0, 0, 0.10) 75%, transparent 100%);
@@ -112,42 +112,14 @@
     overscroll-behavior-y: none;
 }
 
-/* STACK YAPI: Sol ve sağ içerikler alta, son satır (Boya/Değişen | Notlar) yatay hizalı */
+/* 2 KOLONLU YAPI */
 .modal-columns {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); 
     gap: 0; 
     margin-top: -8px;
     margin-bottom: 4px;
-    align-items: stretch;
-}
-
-/* Son satır: Boya/Değişen ile Notlar yatayda aynı satırda hizalı */
-.form-last-row {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    gap: 10px;
-    margin-top: 8px;
-    margin-bottom: 4px;
-    align-items: end;
-}
-
-.form-last-row-left {
-    padding-right: 10px;
-    border-right: 1px solid rgba(225, 6, 27, 0.28);
-}
-
-.form-last-row-right {
-    padding-left: 0;
-}
-
-.form-last-row .form-section-inline {
-    margin-bottom: 6px;
-}
-
-.form-last-row .form-section:has(#boya-parts-container) {
-    margin-top: 0;
-    margin-bottom: 0;
+    align-items: start; 
 }
 
 /* Sol ve saÄŸ sÃ¼tun ilk elemanlarÄ± */
@@ -591,8 +563,8 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
 .btn-cancel { justify-self: center; margin: 0 auto; border: 1px solid rgba(225, 6, 27, 0.5); color: #e1061b; }
 .btn-cancel:hover { background: rgba(225, 6, 27, 0.15); }
 
-.modal-column-left { padding-right: 0; padding-left: 0; border-right: none; }
-.modal-column-right { padding-left: 0; padding-right: 0; border-top: 1px solid rgba(225, 6, 27, 0.28); padding-top: 8px; margin-top: 4px; }
+.modal-column-left { padding-right: 10px; padding-left: 0; border-right: 1px solid rgba(225, 6, 27, 0.28); box-shadow: 10px 0 18px -18px rgba(225, 6, 27, 0.45); }
+.modal-column-right { padding-left: 10px; padding-right: 0; }
 
 /* === MOBÄ°L Ã–ZEL === */
 @media (max-width: 640px) {
@@ -682,11 +654,9 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     .modal-close { font-size: 21px; }
     textarea.form-input { font-size: 13px; }
     
-    .modal-columns { display: flex; flex-direction: column; gap: 0; }
-    .modal-column-left { padding-right: 0; padding-left: 0; border-right: none; }
-    .modal-column-right { padding-left: 0; padding-right: 0; overflow: visible; border-top: 1px solid rgba(225, 6, 27, 0.28); padding-top: 10px; margin-top: 6px; }
-    .form-last-row { grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
-    .form-last-row-left { padding-right: 8px; }
+    .modal-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+    .modal-column-left { padding-right: 8px; padding-left: 0; border-right: 1px solid rgba(225, 6, 27, 0.28); }
+    .modal-column-right { padding-left: 8px; padding-right: 0; overflow: hidden; }
     .modal-column-right .form-section { margin-bottom: 8px; }
 
     .modal-column-left .form-section-inline:first-child { flex-direction: column; align-items: flex-start; gap: 0 !important; margin-bottom: 11px; }
@@ -770,7 +740,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     .vehicle-type-btn.active img { filter: brightness(1.0) sepia(1) hue-rotate(70deg) saturate(2) opacity(0.85) drop-shadow(0 0 3px rgba(74,222,128,0.5)); }
     
     /* Notlar inputu alt çerçeve boşluğu */
-    .form-last-row-right .form-section:has(#vehicle-notes) {
+    .modal-column-right .form-section:has(#vehicle-notes) {
         margin-bottom: 12px;
     }
     
@@ -903,9 +873,13 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         display: flex;
         flex-direction: column;
     }
-    /* Son satır: Boya/Değişen ve Notlar alt hizalı */
-    #vehicle-modal .modal-body .form-last-row {
-        align-items: end;
+    #vehicle-modal .modal-body .modal-column-left .form-section-inline:nth-of-type(4) {
+        margin-top: auto;
+    }
+    /* Notlar: diğer alanlardan ayrılmasın (sayfa uzayınca en alta yapışmasın) */
+    #vehicle-modal .modal-body .modal-column-right .form-section:has(#vehicle-notes) {
+        margin-top: 0;
+        margin-bottom: 0;
     }
     #vehicle-modal .modal-body .form-buttons {
         margin-top: 2px !important;
