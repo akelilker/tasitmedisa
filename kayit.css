@@ -873,7 +873,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         margin-top: -2px !important; /* genel +1px kuralına göre 3px yukarı */
     }
     #vehicle-modal .modal-body .modal-columns {
-        align-items: stretch;
+        align-items: flex-start;
         margin-bottom: 6px !important;
     }
     #vehicle-modal .modal-body .modal-column-left,
