@@ -669,10 +669,10 @@ html { overflow-x: hidden; }
   pointer-events: none;
 }
 
-/* Kullanıcı Paneli linki - footer üstünde, sağa yaslı */
+/* Kullanıcı Paneli linki - footer üstünde, sağa yaslı (3px aşağı) */
 .user-panel-link {
   position: fixed;
-  bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0) + 12px);
+  bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0) + 9px);
   left: 50%;
   transform: translateX(-50%);
   max-width: 500px;
@@ -692,7 +692,7 @@ html { overflow-x: hidden; }
 }
 @media (min-width: 769px) {
   .user-panel-link {
-    bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0) + 6px);
+    bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0) + 3px);
     font-size: 13px;
     padding: 2px 12px;
     transform: translateX(calc(-50% + 5px));
