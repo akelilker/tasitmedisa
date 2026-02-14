@@ -354,12 +354,12 @@
   text-align: left;
 }
 .driver-info-item .label {
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--txt);
   font-size: 11px;
   text-transform: uppercase;
 }
 .driver-info-item .value {
-  color: var(--txt);
+  color: rgba(255, 255, 255, 0.5);
   word-break: break-word;
   font-size: 13px;
 }
@@ -504,7 +504,7 @@
   margin-bottom: 6px;
   font-size: 13px;
   font-weight: 600;
-  color: var(--muted);
+  color: var(--txt);
 }
 #driver-input-area .driver-report-block .form-group input,
 #driver-input-area .driver-report-block .form-group textarea,
@@ -666,11 +666,11 @@
   margin-bottom: 0;
 }
 .driver-info-label {
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--txt);
   margin-right: 4px;
 }
 .driver-info-value {
-  color: var(--txt);
+  color: rgba(255, 255, 255, 0.5);
 }
 
 /* Olay Ekle butonu */
@@ -899,7 +899,7 @@
   margin-bottom: 6px;
   font-size: 13px;
   font-weight: 600;
-  color: var(--muted);
+  color: var(--txt);
 }
 
 .vehicle-card .form-group input,
@@ -1517,7 +1517,7 @@
   margin-bottom: 6px;
   font-size: 13px;
   font-weight: 600;
-  color: var(--muted);
+  color: var(--txt);
 }
 
 .driver-modal .form-group input,
