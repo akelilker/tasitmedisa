@@ -228,8 +228,164 @@
 /* Scroll alanı öğelerinde üst çizgi yok */
 .driver-scroll-area #loading-spinner,
 .driver-scroll-area .driver-vehicles-list,
+.driver-scroll-area .driver-two-panel,
 .driver-scroll-area .driver-empty-state {
   border-top: none !important;
+}
+
+/* --- KAYAN UYARI (Tarihçe ile Çıkış arasında) --- */
+.driver-sliding-warning {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  font-size: 12px;
+  color: var(--theme-color);
+  text-align: center;
+  white-space: nowrap;
+  padding: 0 8px;
+}
+.driver-sliding-warning.driver-warning-pulse {
+  animation: driver-warning-pulse 1s ease-in-out 3;
+}
+@keyframes driver-warning-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* --- İKİ PANELLİ LAYOUT --- */
+.driver-two-panel {
+  display: flex !important;
+  flex-direction: row;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 8px 12px 16px;
+  gap: 12px;
+  box-sizing: border-box;
+  min-height: 0;
+}
+.driver-left-panel {
+  flex: 0 0 40%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.driver-right-panel {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.driver-user-plate-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.driver-user-plate-row .driver-user-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--txt);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.driver-plate-dropdown-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+}
+.driver-left-panel .driver-plate-dropdown {
+  left: 0;
+  transform: none;
+  top: 100%;
+  margin-top: 4px;
+}
+.driver-current-plaka {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--txt);
+}
+.driver-plate-trigger {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 2px;
+}
+.driver-plate-trigger:hover { color: var(--txt); }
+.driver-plate-chevron { font-size: 12px; }
+
+.driver-vehicle-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  padding: 8px 10px;
+  background: rgba(15, 20, 24, 0.6);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+.driver-info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.driver-info-item .label {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 10px;
+  text-transform: uppercase;
+}
+.driver-info-item .value {
+  color: var(--txt);
+  word-break: break-word;
+}
+.driver-info-item .value.date-warning-red { color: #ef4444; }
+.driver-info-item .value.date-warning-orange { color: #f97316; }
+
+.driver-action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.driver-action-btn {
+  background: transparent !important;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: var(--txt);
+  padding: 10px 12px;
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: border-color 0.2s, color 0.2s;
+}
+.driver-action-btn:hover {
+  border-color: rgba(255, 255, 255, 0.5);
+  color: #fff;
+}
+
+.driver-input-area {
+  min-height: 0;
+}
+
+/* Mobil: 35/65, compact, etiket alt satırda */
+@media (max-width: 640px) {
+  .driver-two-panel {
+    padding: 6px 8px 12px;
+    gap: 8px;
+  }
+  .driver-left-panel { flex: 0 0 35%; }
+  .driver-right-panel { flex: 1; }
+  .driver-vehicle-info {
+    padding: 6px 8px;
+    font-size: 11px;
+  }
+  .driver-info-item .label { font-size: 9px; }
+  .driver-action-btn { padding: 8px 10px; font-size: 12px; }
+  .driver-user-plate-row .driver-user-name { font-size: 12px; }
+  .driver-current-plaka { font-size: 14px; }
 }
 
 .driver-btn-logout {

@@ -38,7 +38,7 @@
 
             <div class="driver-below-hero">
                 <div class="driver-below-hero-row">
-                    <button type="button" onclick="showHistory()" class="driver-btn-history" title="Geçmiş Kayıtlarım" aria-label="Geçmiş Kayıtlarım">
+                    <button type="button" onclick="showHistory()" class="driver-btn-history" title="Tarihçe" aria-label="Tarihçe">
                         <svg class="driver-btn-history-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                             <polyline points="14 2 14 8 20 8"></polyline>
@@ -47,7 +47,7 @@
                             <polyline points="10 9 9 9 8 9"></polyline>
                         </svg>
                     </button>
-                    <span id="driver-user-name" class="driver-user-name-center"></span>
+                    <div id="driver-sliding-warning" class="driver-sliding-warning" aria-live="polite"></div>
                     <button type="button" onclick="logout()" class="driver-btn-logout" title="Çıkış" aria-label="Çıkış">
                         <svg class="driver-btn-logout-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
@@ -65,12 +65,30 @@
                 <p>Veriler yükleniyor...</p>
             </div>
 
-            <div id="vehicles-list" class="driver-vehicles-list"></div>
-
             <div id="empty-state" class="driver-empty-state" style="display: none;">
                 <div class="driver-empty-icon">🚗</div>
                 <h3>Zimmetli Taşıt Bulunamadı</h3>
                 <p>Size Atanmış Taşıt Bulunmamaktadır. Lütfen Yöneticinizle İletişime Geçin.</p>
+            </div>
+
+            <div id="driver-two-panel" class="driver-two-panel" style="display: none;">
+                <aside class="driver-left-panel">
+                    <div class="driver-user-plate-row">
+                        <span id="driver-user-name" class="driver-user-name"></span>
+                        <div class="driver-plate-dropdown-row">
+                            <span id="driver-current-plaka" class="driver-current-plaka"></span>
+                            <button type="button" id="driver-plate-trigger" class="driver-plate-trigger" aria-label="Taşıt seç" style="display: none;">
+                                <span class="driver-plate-chevron">▾</span>
+                            </button>
+                            <div id="driver-plate-dropdown" class="driver-plate-dropdown" role="listbox" style="display:none"></div>
+                        </div>
+                    </div>
+                    <div id="driver-vehicle-info" class="driver-vehicle-info"></div>
+                </aside>
+                <main class="driver-right-panel">
+                    <div id="driver-action-buttons" class="driver-action-buttons"></div>
+                    <div id="driver-input-area" class="driver-input-area"></div>
+                </main>
             </div>
         </main>
 
@@ -269,12 +287,76 @@
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="driver-muayene-tarih" style="color: #ccc; font-size: 14px;">Yaptırılan Tarih (gg.aa.yyyy):</label>
+                        <label for="driver-muayene-tarih" style="color: #ccc; font-size: 14px;">Yaptırılan Tarih:</label>
                         <input type="date" id="driver-muayene-tarih" class="form-input" style="width: 100%;">
                     </div>
                     <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
                         <button type="button" class="btn-submit" onclick="saveDriverEvent('muayene')">Kaydet</button>
                         <button type="button" class="driver-modal-btn-secondary" onclick="closeDriverEventModal('muayene')">Vazgeç</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sigorta Yenileme Modal -->
+        <div id="driver-sigorta-modal" class="driver-modal modal-overlay" onclick="if(event.target === this) closeDriverEventModal('sigorta');">
+            <div class="driver-modal-content modal-container" onclick="event.stopPropagation();">
+                <div class="modal-header">
+                    <h2>TRAFİK SİGORTASI YENİLEME</h2>
+                    <button type="button" onclick="closeDriverEventModal('sigorta')" class="modal-close" aria-label="Kapat"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="driver-sigorta-tarih" style="color: #ccc; font-size: 14px;">Yenileme / Başlangıç Tarihi:</label>
+                        <input type="date" id="driver-sigorta-tarih" class="form-input" style="width: 100%;">
+                    </div>
+                    <div class="form-group">
+                        <label for="driver-sigorta-firma" style="color: #ccc; font-size: 14px;">Firma (isteğe bağlı):</label>
+                        <input type="text" id="driver-sigorta-firma" class="form-input" placeholder="Sigorta firması" style="width: 100%;">
+                    </div>
+                    <div class="form-group">
+                        <label for="driver-sigorta-acente" style="color: #ccc; font-size: 14px;">Acente (isteğe bağlı):</label>
+                        <input type="text" id="driver-sigorta-acente" class="form-input" placeholder="Acente adı" style="width: 100%;">
+                    </div>
+                    <div class="form-group">
+                        <label for="driver-sigorta-iletisim" style="color: #ccc; font-size: 14px;">İletişim (isteğe bağlı):</label>
+                        <input type="text" id="driver-sigorta-iletisim" class="form-input" placeholder="Telefon / e-posta" style="width: 100%;">
+                    </div>
+                    <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
+                        <button type="button" class="btn-submit" onclick="saveDriverEvent('sigorta')">Kaydet</button>
+                        <button type="button" class="driver-modal-btn-secondary" onclick="closeDriverEventModal('sigorta')">Vazgeç</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Kasko Yenileme Modal -->
+        <div id="driver-kasko-modal" class="driver-modal modal-overlay" onclick="if(event.target === this) closeDriverEventModal('kasko');">
+            <div class="driver-modal-content modal-container" onclick="event.stopPropagation();">
+                <div class="modal-header">
+                    <h2>KASKO YENİLEME</h2>
+                    <button type="button" onclick="closeDriverEventModal('kasko')" class="modal-close" aria-label="Kapat"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="driver-kasko-tarih" style="color: #ccc; font-size: 14px;">Yenileme / Başlangıç Tarihi:</label>
+                        <input type="date" id="driver-kasko-tarih" class="form-input" style="width: 100%;">
+                    </div>
+                    <div class="form-group">
+                        <label for="driver-kasko-firma" style="color: #ccc; font-size: 14px;">Firma (isteğe bağlı):</label>
+                        <input type="text" id="driver-kasko-firma" class="form-input" placeholder="Kasko firması" style="width: 100%;">
+                    </div>
+                    <div class="form-group">
+                        <label for="driver-kasko-acente" style="color: #ccc; font-size: 14px;">Acente (isteğe bağlı):</label>
+                        <input type="text" id="driver-kasko-acente" class="form-input" placeholder="Acente adı" style="width: 100%;">
+                    </div>
+                    <div class="form-group">
+                        <label for="driver-kasko-iletisim" style="color: #ccc; font-size: 14px;">İletişim (isteğe bağlı):</label>
+                        <input type="text" id="driver-kasko-iletisim" class="form-input" placeholder="Telefon / e-posta" style="width: 100%;">
+                    </div>
+                    <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
+                        <button type="button" class="btn-submit" onclick="saveDriverEvent('kasko')">Kaydet</button>
+                        <button type="button" class="driver-modal-btn-secondary" onclick="closeDriverEventModal('kasko')">Vazgeç</button>
                     </div>
                 </div>
             </div>
