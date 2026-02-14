@@ -46,7 +46,7 @@
 /* Kayıt modalı: container ölçüleri style-core.css'te; burada sadece içerik düzeni */
 #vehicle-modal .modal-body {
   min-height: 0;
-  padding-top: 6px !important; /* Üst etiketler kesilmesin (0 yerine 6px) */
+  padding: 6px 12px 12px 12px !important; /* style-core .modal-overlay .modal-body 20px'i override */
 }
 #vehicle-modal .modal-body .modal-columns {
   margin-top: 0 !important; /* Negatif margin üst etiketleri kırpıyordu, sıfırlandı */
@@ -290,6 +290,10 @@ input[type="date"]:focus::-webkit-datetime-edit {
 input[type="date"].has-value,
 input[type="date"]:focus { 
     color: #888; 
+}
+input[type="date"].form-input:focus {
+    border-color: var(--theme-color) !important;
+    outline: none !important;
 }
 
 .date-placeholder {
