@@ -40,7 +40,7 @@ if (file_exists($dataFile)) {
 }
 
 // Veriyi kaydet
-$result = file_put_contents($dataFile, $input);
+$result = file_put_contents($dataFile, $input, LOCK_EX);
 if ($result === false) {
     http_response_code(500);
     echo json_encode(['error' => 'Veri kaydedilemedi']);
