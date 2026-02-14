@@ -830,9 +830,9 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-body .modal-column-right .form-section:first-child {
         margin-top: 0;
     }
-    /* Km – Şanzıman Tipi arası (masaüstü düzeltme) */
+    /* Km – Şanzıman Tipi arası (2px yukarı kaydırıldı) */
     #vehicle-modal .modal-body .modal-column-left .form-section-inline:nth-of-type(2) {
-        margin-top: 6px !important;
+        margin-top: 4px !important;
     }
     /* Şanzıman Tipi – Tramer Kaydı arası +3px; Tramer – Boya arası 2px azaltıldı */
     #vehicle-modal .modal-body .modal-column-left .form-section-inline:nth-of-type(3) {
