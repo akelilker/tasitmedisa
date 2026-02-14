@@ -1,5 +1,7 @@
 /* =========================================
    TAŞIT KAYIT MODÜLÜ
+   Araç kimliği/geçmişi (km, kaza, yedek anahtar, lastik vb.) hem bu formdan
+   hem olay modallarından aynı vehicle objesine yazılır; taşıt detayı bu objeden okur.
    ========================================= */
 
 (function () {
