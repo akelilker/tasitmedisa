@@ -1,0 +1,10 @@
+# cPanel Git deploy: repo içeriğini public_html/medisa dizinine kopyala
+# Hedef path sunucudaki kullanıcı adına göre (karmotor) ayarlı
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/karmotor/public_html/medisa
+    - /bin/cp -R admin driver docker icon scripts $DEPLOYPATH/ 2>/dev/null || true
+    - /bin/cp -R data $DEPLOYPATH/ 2>/dev/null || true
+    - /bin/cp index.html load.php save.php asset.php manifest.json sw.js $DEPLOYPATH/ 2>/dev/null || true
+    - /bin/cp script-core.js data-manager.js tasitlar.js tasitlar.css kayit.js kayit.css raporlar.js raporlar.css ayarlar.js ayarlar.css style-core.css $DEPLOYPATH/ 2>/dev/null || true
