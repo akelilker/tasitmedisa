@@ -4,12 +4,13 @@
 #   docker-compose up -d
 #
 # Erişim:
-#   - Direkt: http://karmotors.com.tr:8080
-#   - Nginx reverse proxy: https://karmotors.com.tr (docker/nginx-proxy.conf)
+#   - Direkt: http://localhost:8080
+#   - Nginx reverse proxy ile /medisa: https://karmotors.com.tr/medisa/ (docker/nginx-proxy.conf)
 #
-# Konum:
-#   - Kök: karmotors.com.tr/  → .htaccess RewriteBase / olmalı
-#   - Alt dizin: karmotors.com.tr/medisa/ → Varsayılan (RewriteBase /medisa/)
+# Canlı adres: https://karmotors.com.tr/medisa/
+# Uygulama hem /medisa hem /tasitmedisa path'ini destekler (data-manager.js, sw.js, script-core.js).
+# Nginx'te location /medisa/ kullanılıyorsa container her zaman kökte (/) serve eder;
+# tarayıcı path'i /medisa/ olduğu için API base otomatik /medisa/ olur.
 
 version: '3.8'
 

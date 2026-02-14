@@ -64,16 +64,54 @@
         return null;
     }
 
-    // --- Taşıt listesi render ---
-    function renderVehiclesList() {
+    // Seçili şube (liste görünümü için). '' = Tümü
+    let vehiclesModalSelectedBranchId = '';
+
+    // --- Şube seçim ekranı (modal ilk açıldığında) ---
+    function renderBranchSelection() {
         const container = document.getElementById('vehicles-modal-content');
         if (!container) return;
 
+        const branches = getBranches();
+        const vehicles = getVehicles().filter(v => !v.satildiMi);
+
+        const items = [];
+        items.push('<div class="branch-select-list"><p class="branch-select-title">Şube seçin</p>');
+        items.push('<button type="button" class="branch-select-item" data-branch-id="" onclick="window.showVehiclesForBranch(this.getAttribute(\'data-branch-id\')||\'\')">Tümü</button>');
+        branches.forEach(b => {
+            const count = vehicles.filter(v => v.branchId === b.id).length;
+            const label = (b.name || '-') + (count >= 0 ? ' (' + count + ')' : '');
+            items.push('<button type="button" class="branch-select-item" data-branch-id="' + escapeHtml(b.id || '') + '" onclick="window.showVehiclesForBranch(this.getAttribute(\'data-branch-id\')||\'\')">' + escapeHtml(label) + '</button>');
+        });
+        items.push('</div>');
+        container.innerHTML = items.join('');
+    }
+
+    // Şube seçildikten sonra taşıt listesini göster (global erişim için)
+    window.showVehiclesForBranch = function(branchId) {
+        vehiclesModalSelectedBranchId = branchId || '';
+        renderVehiclesList(branchId);
+    };
+
+    // --- Taşıt listesi render (isteğe bağlı şube filtresi) ---
+    function renderVehiclesList(optionalBranchId) {
+        const container = document.getElementById('vehicles-modal-content');
+        if (!container) return;
+
+        const branchId = optionalBranchId !== undefined ? optionalBranchId : vehiclesModalSelectedBranchId;
         const vehicles = getVehicles();
         const branches = getBranches();
 
         const branchNames = {};
         branches.forEach(b => { branchNames[b.id] = b.name || '-'; });
+
+        let filtered = vehicles.filter(v => !v.satildiMi);
+        if (branchId) {
+            filtered = filtered.filter(v => v.branchId === branchId);
+        }
+
+        const selectedBranchName = branchId ? (branchNames[branchId] || 'Şube') : 'Tümü';
+        const backBtn = '<div class="vehicles-toolbar"><div class="vt-left"><button type="button" class="vt-back-btn" onclick="window.showBranchSelectionInVehiclesModal()" title="Şube değiştir"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button><span class="active-branch-title">' + escapeHtml(selectedBranchName) + '</span></div></div>';
 
         const header = `
             <div class="list-header-row">
@@ -86,8 +124,7 @@
             </div>
         `;
 
-        const rows = vehicles
-            .filter(v => !v.satildiMi)
+        const rows = filtered
             .map((v, i) => {
                 const kmDisplay = formatKm(v.guncelKm || v.km);
                 const tip = v.vehicleType === 'otomobil' ? 'Otomobil' : v.vehicleType === 'minivan' ? 'Küçük Ticari' : v.vehicleType === 'kamyon' ? 'Büyük Ticari' : '-';
@@ -105,13 +142,18 @@
             })
             .join('');
 
-        container.innerHTML = `<div class="view-list">${header}${rows}</div>`;
+        container.innerHTML = backBtn + '<div class="view-list">' + header + rows + '</div>';
     }
 
-    // --- openVehiclesView override: render + aç ---
+    // Modal içinde tekrar şube seçim ekranına dön (global erişim)
+    window.showBranchSelectionInVehiclesModal = function() {
+        renderBranchSelection();
+    };
+
+    // --- openVehiclesView override: önce şube seçimi, sonra modal aç ---
     const _openVehiclesView = window.openVehiclesView;
     window.openVehiclesView = function() {
-        renderVehiclesList();
+        renderBranchSelection();
         if (_openVehiclesView) _openVehiclesView();
     };
 
