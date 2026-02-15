@@ -763,9 +763,9 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
 
 /* === MASAÃœSTÃœ OPTÄ°MÄ°ZASYONLARI === */
 @media (min-width: 641px) {
-    /* Tam görünürlük: modal body padding kısaltıldı */
+    /* Tam görünürlük + Taşıt Tipi kesilme: üst padding 10px, alt 6px */
     #vehicle-modal .modal-body {
-        padding: 4px 12px 8px 12px !important;
+        padding: 10px 12px 6px 12px !important;
     }
     .form-input, select {
         border-width: 1.1px !important;
@@ -823,6 +823,10 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         margin-top: 1px !important;
         margin-bottom: 1px !important;
     }
+    /* Sağ grid: Sigorta Bitiş Tarihi hariç etiketlerden önce 1px (first-child 0) */
+    #vehicle-modal .modal-body .modal-column-right .form-section:first-child .form-label {
+        margin-top: 0 !important;
+    }
     /* Taşıt Tipi: etiket–ikon dikey aralık sıfır (masaüstü) */
     #vehicle-modal .modal-body .modal-column-left .form-section-inline:first-child .form-label {
         margin: 0 !important;
@@ -838,11 +842,11 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     
     #vehicle-modal .modal-body .form-section,
     #vehicle-modal .modal-body .form-section-inline {
-        margin-top: 2px;
+        margin-top: 1px;
     }
     #vehicle-modal .modal-body .modal-column-right .form-section,
     #vehicle-modal .modal-body .modal-column-right .form-section-inline {
-        margin-top: 1px;
+        margin-top: 0;
     }
     #vehicle-modal .modal-body .modal-column-left .form-section-inline:first-child,
     #vehicle-modal .modal-body .modal-column-right .form-section:first-child {
@@ -859,6 +863,10 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     }
     #vehicle-modal .modal-body .modal-column-right .form-section:nth-of-type(3) {
         margin-bottom: 6px;
+    }
+    /* Muayene Bitiş Tarihi – Yedek Anahtar arası 5px */
+    #vehicle-modal .modal-body .modal-column-right .form-section:has(#vehicle-muayene-date) {
+        margin-bottom: 5px !important;
     }
     #vehicle-modal .modal-body .modal-column-right .form-section-inline:first-of-type:has(.radio-group) .form-label {
         align-self: center;
@@ -917,6 +925,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-body .form-buttons {
         padding: 0 0 6px 0;
         margin-top: 0 !important;
+        flex-shrink: 0;
         align-items: flex-end;
     }
     /* Taşıtın Alım Bedeli ve Notlar inputları masaüstünde 2px dar */
