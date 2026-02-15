@@ -1,3 +1,4 @@
+git checkout tasittakipdosya-eri-im-kontrol-358a
 name: Auto Deploy to cPanel (FTP)
 
 on:
