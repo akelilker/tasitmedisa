@@ -2197,6 +2197,12 @@
     max-height: calc(100vh - var(--modal-gap-above-footer) - var(--app-footer-height) - env(safe-area-inset-bottom, 0)) !important;
     max-height: calc(100dvh - var(--modal-gap-above-footer) - var(--app-footer-height) - env(safe-area-inset-bottom, 0)) !important;
   }
+  /* iOS PWA: çentik (notch) alanı için üst padding (base kuralındaki padding-top:0'ı ezer) */
+  @media (display-mode: standalone) {
+    .tasitlar-modal-overlay {
+      padding-top: env(safe-area-inset-top) !important;
+    }
+  }
   /* Ortak mobil container + iOS PWA: style-core.css (.modal-overlay .modal-container) */
   #vehicles-modal .modal-header h2 { 
     font-size: 21px !important; /* 20px + 1 punto (1px) */
