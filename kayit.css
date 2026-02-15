@@ -933,6 +933,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     }
     #vehicle-modal .modal-body .modal-column-right .form-section:has(#vehicle-branch-select) {
         margin-top: 2px;
+        margin-bottom: 4px !important;
     }
     /* Tahsis Edilen Şube etiketi: 3px yukarı */
     #vehicle-modal .modal-body .modal-column-right .form-section:has(#vehicle-branch-select) .form-label {
@@ -961,6 +962,13 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-body .modal-column-right .form-section:has(#vehicle-notes) {
         margin-top: auto;
         margin-bottom: 0;
+        flex: 1;
+        min-height: 70px;
+    }
+    /* Masaüstü: Notlar textarea yüksekliği */
+    #vehicle-modal .modal-body #vehicle-notes {
+        min-height: 64px !important;
+        height: auto !important;
     }
     #vehicle-modal .modal-body .form-buttons {
         padding: 0 0 6px 0;
