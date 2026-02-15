@@ -680,9 +680,19 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     .modal-body .form-label { font-size: 15px; margin-bottom: 0; }
     
     /* Sağ grid: etiket ile açıklama/input arası dikey boşluk 0 */
+    #vehicle-modal .modal-column-right .form-section,
+    #vehicle-modal .modal-column-right .form-section-inline {
+        display: flex;
+        flex-direction: column;
+        gap: 0 !important;
+    }
     #vehicle-modal .modal-column-right .form-section .form-label,
     #vehicle-modal .modal-column-right .form-section-inline .form-label {
-        margin-bottom: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        padding-bottom: 0 !important;
+        line-height: 1.2 !important;
+        height: auto !important;
     }
     #vehicle-modal .modal-column-left .form-section-inline:has(.radio-group) .form-label {
         margin-bottom: 0 !important;
