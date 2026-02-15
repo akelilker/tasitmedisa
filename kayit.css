@@ -679,12 +679,15 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     .form-section { margin-bottom: 8px; }
     .modal-body .form-label { font-size: 15px; margin-bottom: 0; }
     
-    /* Sağ grid: etiket ile açıklama/input arası dikey boşluk 1px */
+    /* Sağ grid: etiket ile açıklama/input arası 3px; bölümler arası +1px */
+    #vehicle-modal .modal-column-right .form-section {
+        margin-bottom: 9px !important;
+    }
     #vehicle-modal .modal-column-right .form-section,
     #vehicle-modal .modal-column-right .form-section-inline {
         display: flex;
         flex-direction: column;
-        gap: 1px !important;
+        gap: 3px !important;
         align-items: stretch;
     }
     /* Base .form-section:first-child .form-label override - mobil */
@@ -722,12 +725,12 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     
     .form-input { height: 26px; font-size: 13px; padding: 4px 8px; }
     
-    /* Tarih inputları: iç yükseklik diğer inputlarla aynı (26px) */
+    /* Tarih inputları: iç dikey yükseklik +2px (28px), sağ tarafı uzatmak için */
     .modal-body input[type="date"].form-input { 
-        height: 26px; 
+        height: 28px; 
         color: #888; 
         font-size: 13px; 
-        padding: 4px 28px 4px 8px !important; 
+        padding: 5px 28px 5px 8px !important; 
         min-width: 0;
         width: calc(100% - 2px); 
         max-width: calc(100% - 2px);
@@ -750,7 +753,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     .modal-column-right .form-section-inline,
     .modal-column-right .form-section-inline:has(.radio-group),
     .modal-column-right .form-section-inline:first-of-type:has(.radio-group),
-    .modal-column-right .form-section-inline:has([data-group="kredi"]) { flex-direction: column; align-items: flex-start; gap: 0; margin-bottom: 6px; height: auto; margin-top: 0; }
+    .modal-column-right .form-section-inline:has([data-group="kredi"]) { flex-direction: column; align-items: flex-start; gap: 3px !important; margin-bottom: 7px; height: auto; margin-top: 0; }
     
     .modal-column-right .form-section-inline .form-label { width: 100%; margin-bottom: 0; font-size: 15px !important; height: auto; }
     .modal-column-right .form-section-inline .radio-group { width: 100%; justify-content: space-between; gap: 3px; padding: 0; }
