@@ -1600,9 +1600,13 @@ padding-top: 0 !important;
 #reports-modal .reports-list-header-actions:not(:empty) {
 padding: 6px 2px 4px 2px !important;
 }
-/* Mobil: Detay menüsü açıkken alt boşluk – BAŞLANGIÇ T./BİTİŞ T. ile üst üste binmeyi önle */
+/* Mobil: Detay menüsü akışta olsun – liste ve kontroller aşağı kaysın (üst üste binmesin) */
+#reports-modal .stok-detail-add-wrap .stok-detail-menu {
+position: static !important;
+margin-top: 8px;
+}
 #reports-modal:has(.stok-detail-menu-open) .reports-list-header-actions {
-padding-bottom: 16px !important;
+padding-bottom: 8px !important;
 }
 .stok-controls-row-1 {
 display: flex;
