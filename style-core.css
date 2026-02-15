@@ -508,6 +508,10 @@ html { overflow-x: hidden; }
 
 /* Masaüstünde container'ın %45'i + metin ortalı */
 @media (min-width: 641px) {
+  /* Ana başlık: 2px aşağı (base translateY(-2px) → 0) */
+  .hero h1 {
+    transform: translateY(0);
+  }
   .settings-dropdown {
     width: 45%; /* Masaüstünde container'ın %45'i */
     max-width: 225px;
