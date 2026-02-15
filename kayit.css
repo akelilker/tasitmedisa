@@ -664,6 +664,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     .modal-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
     .modal-column-left { padding-right: 8px; padding-left: 0; border-right: 1px solid rgba(var(--theme-color-rgb), 0.28); }
     .modal-column-right { padding-left: 8px; padding-right: 0; overflow: hidden; }
+    #vehicle-modal .modal-column-right { display: flex; flex-direction: column; min-height: 0; }
     .modal-column-right .form-section { margin-bottom: 8px; }
 
     .modal-column-left .form-section-inline:first-child { flex-direction: column; align-items: flex-start; gap: 0 !important; margin-bottom: 11px; }
@@ -679,9 +680,23 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     .form-section { margin-bottom: 8px; }
     .modal-body .form-label { font-size: 15px; margin-bottom: 0; }
     
-    /* Sağ grid: etiket ile açıklama/input arası 3px; bölümler arası +1px */
+    /* Sağ grid: etiket-input 3px; bölümler arası 7px (denge için) */
     #vehicle-modal .modal-column-right .form-section {
-        margin-bottom: 9px !important;
+        margin-bottom: 7px !important;
+    }
+    /* Tahsis–Notlar arası daraltıldı (7px) */
+    #vehicle-modal .modal-column-right .form-section:has(#vehicle-branch-select) {
+        margin-bottom: 6px !important;
+    }
+    /* Notlar: kalan alanı doldur, üst-alt eşitlik */
+    #vehicle-modal .modal-column-right .form-section:has(#vehicle-notes) {
+        flex: 1;
+        min-height: 60px;
+        margin-bottom: 0 !important;
+    }
+    #vehicle-modal .modal-column-right .form-section:has(#vehicle-notes) textarea {
+        flex: 1;
+        min-height: 56px;
     }
     #vehicle-modal .modal-column-right .form-section,
     #vehicle-modal .modal-column-right .form-section-inline {
@@ -768,10 +783,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     
     .vehicle-type-btn.active img { filter: brightness(1.0) sepia(1) hue-rotate(70deg) saturate(2) opacity(0.85) drop-shadow(0 0 3px rgba(74,222,128,0.5)); }
     
-    /* Notlar inputu alt çerçeve boşluğu */
-    .modal-column-right .form-section:has(#vehicle-notes) {
-        margin-bottom: 12px;
-    }
+    /* Notlar: flex ile alta yayılır, alt boşluk dolar */
     
     /* Sol taraftaki Boya DeÄŸiÅŸen butonlarÄ± alt hizalamasÄ± - saÄŸ taraftaki form-section'lar ile eÅŸit */
     .modal-column-left .form-section-inline:not(:first-child) {
