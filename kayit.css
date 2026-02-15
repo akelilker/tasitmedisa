@@ -683,6 +683,9 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .form-section-inline .form-label {
         margin-bottom: 2px !important;
     }
+    #vehicle-modal .modal-column-left .form-section-inline:has(.radio-group) .form-label {
+        margin-bottom: 0 !important;
+    }
     #vehicle-modal .form-section,
     #vehicle-modal .form-section-inline {
         margin-top: 6px;
@@ -722,8 +725,8 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     .modal-body input[type="date"].form-input::-webkit-calendar-picker-indicator { right: 4px !important; transform: translateY(-50%) !important; }
     .date-placeholder { left: 4px; font-size: 11px; }
     
-    .form-section-inline:has(.radio-group) { flex-direction: column; align-items: flex-start; gap: 4px; margin-bottom: 10px; }
-    .form-section-inline:has(.radio-group) .form-label { margin-bottom: 2px; width: 100%; }
+    .form-section-inline:has(.radio-group) { flex-direction: column; align-items: flex-start; gap: 0; margin-bottom: 10px; }
+    .form-section-inline:has(.radio-group) .form-label { margin-bottom: 0; width: 100%; }
     .form-section-inline:has(.radio-group) .radio-group { width: auto; justify-content: flex-start; gap: 3px; }
     /* Taşıt Tipi: etiket–ikon arası sıfır (gap 4px ezmesin) */
     .modal-column-left .form-section-inline:first-child { gap: 0 !important; }
