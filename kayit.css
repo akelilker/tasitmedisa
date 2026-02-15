@@ -679,15 +679,15 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     .form-section { margin-bottom: 8px; }
     .modal-body .form-label { font-size: 15px; margin-bottom: 0; }
     
-    /* Sağ grid: etiket ile açıklama/input arası dikey boşluk 0 */
+    /* Sağ grid: etiket ile açıklama/input arası dikey boşluk 1px */
     #vehicle-modal .modal-column-right .form-section,
     #vehicle-modal .modal-column-right .form-section-inline {
         display: flex;
         flex-direction: column;
-        gap: 0 !important;
+        gap: 1px !important;
         align-items: stretch;
     }
-    /* Base .form-section:first-child .form-label (margin-bottom:4px) override - mobil */
+    /* Base .form-section:first-child .form-label override - mobil */
     #vehicle-modal .modal-column-right .form-section .form-label,
     #vehicle-modal .modal-column-right .form-section:first-child .form-label,
     #vehicle-modal .modal-column-right .form-section-inline .form-label {
@@ -697,13 +697,6 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         height: auto !important;
         min-height: 0 !important;
         display: block !important;
-    }
-    /* Input/select/textarea/radio: üstten çek (line-height half-leading telafisi) */
-    #vehicle-modal .modal-column-right .form-section .form-input,
-    #vehicle-modal .modal-column-right .form-section select,
-    #vehicle-modal .modal-column-right .form-section textarea,
-    #vehicle-modal .modal-column-right .form-section-inline .radio-group {
-        margin-top: -3px !important;
     }
     #vehicle-modal .modal-column-left .form-section-inline:has(.radio-group) .form-label {
         margin-bottom: 0 !important;
