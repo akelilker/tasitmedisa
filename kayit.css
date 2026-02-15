@@ -790,6 +790,13 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         height: 24px !important;
         padding: 5px 8px !important;
     }
+    /* Masaüstü: Input/select/textarea focus - kırmızı çerçeve (Kasko ile aynı) */
+    #vehicle-modal .modal-body .form-input:focus,
+    #vehicle-modal .modal-body select:focus,
+    #vehicle-modal .modal-body textarea.form-input:focus {
+        border-color: var(--theme-color) !important;
+        border-width: 1px !important;
+    }
     #vehicle-modal .modal-header { 
         height: 60px !important;
         padding: 2px 20px !important;
@@ -800,7 +807,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     }
     #vehicle-modal .modal-body .form-section { margin-bottom: 4px !important; }
     .modal-column-left .form-section:nth-child(5) {
-        margin-bottom: 10px !important;
+        margin-bottom: 12px !important; /* 10px → 12px (+2px Km–Şanzıman arası) */
     }
     .form-buttons { padding: 1px 1px; margin-top: 2px; }
     #vehicle-modal .modal-body .form-buttons { margin-top: 2px !important; }
