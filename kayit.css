@@ -677,11 +677,12 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     .vehicle-type-btn[data-type="minivan"] { width: 36px; height: 26px; }
 
     .form-section { margin-bottom: 8px; }
-    .modal-body .form-label { font-size: 15px; margin-bottom: 2px; }
+    .modal-body .form-label { font-size: 15px; margin-bottom: 0; }
     
-    #vehicle-modal .form-section .form-label,
-    #vehicle-modal .form-section-inline .form-label {
-        margin-bottom: 2px !important;
+    /* Sağ grid: etiket ile açıklama/input arası dikey boşluk 0 */
+    #vehicle-modal .modal-column-right .form-section .form-label,
+    #vehicle-modal .modal-column-right .form-section-inline .form-label {
+        margin-bottom: 0 !important;
     }
     #vehicle-modal .modal-column-left .form-section-inline:has(.radio-group) .form-label {
         margin-bottom: 0 !important;
@@ -707,11 +708,12 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     
     .form-input { height: 26px; font-size: 13px; padding: 4px 8px; }
     
+    /* Tarih inputları: iç yükseklik diğer inputlarla aynı (26px) */
     .modal-body input[type="date"].form-input { 
-        height: 20px; 
+        height: 26px; 
         color: #888; 
-        font-size: 11px; 
-        padding: 2px 20px 2px 4px !important; 
+        font-size: 13px; 
+        padding: 4px 28px 4px 8px !important; 
         min-width: 0;
         width: calc(100% - 2px); 
         max-width: calc(100% - 2px);
@@ -734,9 +736,9 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     .modal-column-right .form-section-inline,
     .modal-column-right .form-section-inline:has(.radio-group),
     .modal-column-right .form-section-inline:first-of-type:has(.radio-group),
-    .modal-column-right .form-section-inline:has([data-group="kredi"]) { flex-direction: column; align-items: flex-start; gap: 4px; margin-bottom: 6px; height: auto; margin-top: 0; }
+    .modal-column-right .form-section-inline:has([data-group="kredi"]) { flex-direction: column; align-items: flex-start; gap: 0; margin-bottom: 6px; height: auto; margin-top: 0; }
     
-    .modal-column-right .form-section-inline .form-label { width: 100%; margin-bottom: 2px; font-size: 15px !important; height: auto; }
+    .modal-column-right .form-section-inline .form-label { width: 100%; margin-bottom: 0; font-size: 15px !important; height: auto; }
     .modal-column-right .form-section-inline .radio-group { width: 100%; justify-content: space-between; gap: 3px; padding: 0; }
     .modal-column-left .form-section-inline .radio-btn,
     .modal-column-right .form-section-inline .radio-btn { flex: 1 1 0; min-width: 0; padding: 0 6px; font-size: 11px; height: 26px; }
