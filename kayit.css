@@ -763,6 +763,10 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
 
 /* === MASAÃœSTÃœ OPTÄ°MÄ°ZASYONLARI === */
 @media (min-width: 641px) {
+    /* Tam görünürlük: modal body padding kısaltıldı */
+    #vehicle-modal .modal-body {
+        padding: 4px 12px 8px 12px !important;
+    }
     .form-input, select {
         border-width: 1.1px !important;
         border-color: rgba(255, 255, 255, 0.28) !important; /* Biraz daha parlak gri (0.20 -> 0.28) */
@@ -819,19 +823,26 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         margin-top: 1px !important;
         margin-bottom: 1px !important;
     }
-    /* Taşıt Tipi: etiket–ikon dikey aralık 2px azaltıldı (0px) */
+    /* Taşıt Tipi: etiket–ikon dikey aralık sıfır (masaüstü) */
     #vehicle-modal .modal-body .modal-column-left .form-section-inline:first-child .form-label {
+        margin: 0 !important;
+        padding: 0 !important;
         margin-bottom: 0 !important;
         padding-bottom: 0 !important;
+        line-height: 1;
+        display: block;
+    }
+    #vehicle-modal .modal-body .modal-column-left .form-section-inline:first-child .vehicle-type-group {
+        margin-top: -10px !important;
     }
     
     #vehicle-modal .modal-body .form-section,
     #vehicle-modal .modal-body .form-section-inline {
-        margin-top: 3px;
+        margin-top: 2px;
     }
     #vehicle-modal .modal-body .modal-column-right .form-section,
     #vehicle-modal .modal-body .modal-column-right .form-section-inline {
-        margin-top: 2px;
+        margin-top: 1px;
     }
     #vehicle-modal .modal-body .modal-column-left .form-section-inline:first-child,
     #vehicle-modal .modal-body .modal-column-right .form-section:first-child {
@@ -881,7 +892,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     }
     #vehicle-modal .modal-body .modal-columns {
         align-items: stretch;
-        margin-bottom: 6px !important;
+        margin-bottom: 2px !important;
     }
     #vehicle-modal .modal-body .modal-column-left,
     #vehicle-modal .modal-body .modal-column-right {
@@ -904,7 +915,8 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         margin-bottom: 0;
     }
     #vehicle-modal .modal-body .form-buttons {
-        margin-top: 2px !important;
+        padding: 0 0 6px 0;
+        margin-top: 0 !important;
         align-items: flex-end;
     }
     /* Taşıtın Alım Bedeli ve Notlar inputları masaüstünde 2px dar */
