@@ -691,12 +691,14 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     /* Notlar: kalan alanı doldur, üst-alt eşitlik */
     #vehicle-modal .modal-column-right .form-section:has(#vehicle-notes) {
         flex: 1;
-        min-height: 60px;
+        min-height: 80px;
         margin-bottom: 0 !important;
     }
+    #vehicle-modal #vehicle-notes,
     #vehicle-modal .modal-column-right .form-section:has(#vehicle-notes) textarea {
-        flex: 1;
-        min-height: 56px;
+        flex: 1 !important;
+        min-height: 72px !important;
+        height: auto !important;
     }
     #vehicle-modal .modal-column-right .form-section,
     #vehicle-modal .modal-column-right .form-section-inline {
