@@ -676,7 +676,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     .modal-column-right .form-section { margin-bottom: 8px; }
 
     .modal-column-left .form-section-inline:first-child { flex-direction: column; align-items: flex-start; gap: 0 !important; margin-bottom: 11px; }
-    .modal-column-left .form-section-inline:first-child .vehicle-type-group { width: 100%; justify-content: center; align-items: flex-end; flex-wrap: nowrap; max-width: 100%; margin-top: -14px !important; padding-top: 0; gap: 22px; }
+    .modal-column-left .form-section-inline:first-child .vehicle-type-group { width: 100%; justify-content: center; align-items: flex-end; flex-wrap: nowrap; max-width: 100%; margin-top: -16px !important; padding-top: 0; gap: 22px; }
     .vehicle-type-group { width: 100%; justify-content: center; align-items: flex-end; flex-wrap: nowrap; max-width: 100%; margin-top: 0; padding-top: 0; gap: 24px; }
     .modal-column-left .form-section-inline:first-child .form-label { margin-bottom: 0 !important; padding-bottom: 0; line-height: 1; }
     
@@ -717,8 +717,16 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     }
     /* Base .form-section:first-child .form-label override - mobil */
     #vehicle-modal .modal-column-right .form-section .form-label,
-    #vehicle-modal .modal-column-right .form-section:first-child .form-label,
     #vehicle-modal .modal-column-right .form-section-inline .form-label {
+        margin: 1px 0 0 0 !important; /* Etiketlerden önce 1px boşluk */
+        padding: 0 !important;
+        line-height: 1 !important;
+        height: auto !important;
+        min-height: 0 !important;
+        display: block !important;
+    }
+    /* Sigorta Bitiş Tarihi (ilk etiket) hariç */
+    #vehicle-modal .modal-column-right .form-section:first-child .form-label {
         margin: 0 !important;
         padding: 0 !important;
         line-height: 1 !important;
