@@ -676,14 +676,14 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     .modal-column-right .form-section { margin-bottom: 8px; }
 
     .modal-column-left .form-section-inline:first-child { flex-direction: column; align-items: flex-start; gap: 0 !important; margin-bottom: 5px; }
-    .modal-column-left .form-section-inline:first-child .vehicle-type-group { width: 100%; justify-content: center; align-items: flex-end; flex-wrap: nowrap; max-width: 100%; margin-top: -16px !important; padding-top: 0; gap: 22px; }
+    .modal-column-left .form-section-inline:first-child .vehicle-type-group { width: 100%; justify-content: center; align-items: flex-end; flex-wrap: nowrap; max-width: 100%; margin-top: -19px !important; padding-top: 0; gap: 22px; }
     .vehicle-type-group { width: 100%; justify-content: center; align-items: flex-end; flex-wrap: nowrap; max-width: 100%; margin-top: 0; padding-top: 0; gap: 24px; }
     .modal-column-left .form-section-inline:first-child .form-label { margin-bottom: 0 !important; padding-bottom: 0; line-height: 1; }
     
-    .vehicle-type-btn[data-type="kamyon"] { width: 40px; height: 28px; }
+    .vehicle-type-btn[data-type="kamyon"] { width: 42px; height: 30px; }
     .vehicle-type-btn[data-type="kamyon"] img { width: 100%; height: 100%; object-fit: contain; object-position: bottom center; }
-    .vehicle-type-btn[data-type="otomobil"] { width: 42px; height: 40px; }
-    .vehicle-type-btn[data-type="minivan"] { width: 34px; height: 24px; }
+    .vehicle-type-btn[data-type="otomobil"] { width: 44px; height: 42px; }
+    .vehicle-type-btn[data-type="minivan"] { width: 36px; height: 26px; }
 
     .form-section { margin-bottom: 8px; }
     .modal-body .form-label { font-size: 15px; margin-bottom: 0; }
@@ -782,6 +782,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         overflow: hidden;
         -webkit-appearance: none;
         appearance: none;
+        text-align: center;
     }
     
     /* Sağ kolon tarih inputları: +1px dikey yükseklik (29px) */
@@ -790,10 +791,11 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         width: 100%; 
         max-width: 100%; 
         margin-right: 0; 
-        padding-right: 20px !important; 
+        padding-right: 20px !important;
+        text-align: center;
     }
     .modal-body input[type="date"].form-input::-webkit-calendar-picker-indicator { right: 4px !important; transform: translateY(-50%) !important; }
-    .date-placeholder { left: 4px; font-size: 11px; }
+    .date-placeholder { left: 50%; transform: translateX(-50%); font-size: 11px; text-align: center; }
     
     .form-section-inline:has(.radio-group) { flex-direction: column; align-items: flex-start; gap: 0; margin-bottom: 10px; }
     .form-section-inline:has(.radio-group) .form-label { margin-bottom: 0; width: 100%; }
