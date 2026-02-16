@@ -718,7 +718,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     /* Base .form-section:first-child .form-label override - mobil */
     #vehicle-modal .modal-column-right .form-section .form-label,
     #vehicle-modal .modal-column-right .form-section-inline .form-label {
-        margin: 1px 0 0 0 !important; /* Etiketlerden önce 1px boşluk */
+        margin: 2px 0 0 0 !important; /* Etiketlerden önce 2px boşluk (1px artırıldı) */
         padding: 0 !important;
         line-height: 1 !important;
         height: auto !important;
@@ -758,6 +758,17 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     
     .form-input { height: 26px; font-size: 13px; padding: 4px 8px; }
     
+    /* Sağ kolon inputları: +1px dikey yükseklik (27px) */
+    #vehicle-modal .modal-column-right .form-input:not(textarea),
+    #vehicle-modal .modal-column-right select {
+        height: 27px !important;
+    }
+    
+    /* Sağ kolon textarea: min-height +1px */
+    #vehicle-modal .modal-column-right textarea.form-input {
+        min-height: 73px !important;
+    }
+    
     /* Tarih inputları: iç dikey yükseklik +2px (28px), sağ tarafı uzatmak için */
     .modal-body input[type="date"].form-input { 
         height: 28px; 
@@ -773,7 +784,14 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         appearance: none;
     }
     
-    .modal-column-right input[type="date"].form-input { width: 100%; max-width: 100%; margin-right: 0; padding-right: 20px !important; }
+    /* Sağ kolon tarih inputları: +1px dikey yükseklik (29px) */
+    #vehicle-modal .modal-column-right input[type="date"].form-input { 
+        height: 29px !important;
+        width: 100%; 
+        max-width: 100%; 
+        margin-right: 0; 
+        padding-right: 20px !important; 
+    }
     .modal-body input[type="date"].form-input::-webkit-calendar-picker-indicator { right: 4px !important; transform: translateY(-50%) !important; }
     .date-placeholder { left: 4px; font-size: 11px; }
     
@@ -791,13 +809,13 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     .modal-column-right .form-section-inline .form-label { width: 100%; margin-bottom: 0; font-size: 15px !important; height: auto; }
     .modal-column-right .form-section-inline .radio-group { width: 100%; justify-content: space-between; gap: 3px; padding: 0; }
     .modal-column-left .form-section-inline .radio-btn,
-    .modal-column-right .form-section-inline .radio-btn { flex: 1 1 0; min-width: 0; padding: 0 6px; font-size: 11px; height: 26px; }
+    .modal-column-right .form-section-inline .radio-btn { flex: 1 1 0; min-width: 0; padding: 0 6px; font-size: 11px; height: 27px; }
     
-    .radio-btn { height: 26px; min-width: 48px; font-size: 12px; padding: 0 8px; }
+    .radio-btn { height: 27px; min-width: 48px; font-size: 12px; padding: 0 8px; }
     .modal-column-left .form-section-inline .radio-group { justify-content: space-between; width: 100%; padding: 0; gap: 3px; }
     
     .form-buttons { display: grid; grid-template-columns: 1fr 1fr; padding: 8px 0; gap: 10px; width: 100%; margin-top: 6px; margin-bottom: 10px; }
-    .form-buttons .btn-save, .form-buttons .btn-cancel { height: 32px; font-size: 15px; width: 100%; max-width: none; justify-self: stretch; margin: 0; }
+    .form-buttons .btn-save, .form-buttons .btn-cancel { height: 33px; font-size: 15px; width: 100%; max-width: none; justify-self: stretch; margin: 0; }
     
     .vehicle-type-btn.active img { filter: brightness(1.0) sepia(1) hue-rotate(70deg) saturate(2) opacity(0.85) drop-shadow(0 0 3px rgba(74,222,128,0.5)); }
     
