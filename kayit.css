@@ -901,18 +901,18 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-body .modal-column-right .form-section:nth-of-type(3) {
         margin-bottom: 6px;
     }
-    /* Kasko – Muayene arası +2px */
+    /* Kasko – Muayene arası +4px */
     #vehicle-modal .modal-body .modal-column-right .form-section:has(#vehicle-kasko-date) {
-        margin-bottom: 6px !important;
+        margin-bottom: 8px !important;
     }
     /* Muayene Bitiş Tarihi – Yedek Anahtar arası 8px */
     #vehicle-modal .modal-body .modal-column-right .form-section:has(#vehicle-muayene-date) {
         margin-bottom: 8px !important;
     }
-    /* Sağ kolon Var/Yok satır yüksekliği (+2px eklendi) */
+    /* Sağ kolon Var/Yok satır yüksekliği (+4px eklendi) */
     #vehicle-modal .modal-body .modal-column-right .form-section-inline:has(.radio-group) {
         height: auto;
-        margin-bottom: 6px !important;
+        margin-bottom: 8px !important;
     }
     /* Masaüstü: ilk satır (Taşıt Tipi / Sigorta); ikon–Plaka arası */
     #vehicle-modal .modal-body .modal-column-left .form-section-inline:first-child {
@@ -925,7 +925,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     }
     #vehicle-modal .modal-body .modal-column-right .form-section:has(#vehicle-branch-select) {
         margin-top: 2px;
-        margin-bottom: 6px !important;
+        margin-bottom: 8px !important;
     }
     /* Tahsis Edilen Şube etiketi: 3px yukarı */
     #vehicle-modal .modal-body .modal-column-right .form-section:has(#vehicle-branch-select) .form-label {
