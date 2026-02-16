@@ -854,18 +854,21 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-body .btn-save,
     #vehicle-modal .modal-body .btn-cancel { height: 28px !important; font-size: 11px; }
     
-    #vehicle-modal .modal-body .form-section .form-label,
-    #vehicle-modal .modal-body .form-section-inline .form-label {
+    /* Sol grid: etiketler 1px (sağ grid ayrı kurallarla aşağıda) */
+    #vehicle-modal .modal-body .modal-column-left .form-section .form-label,
+    #vehicle-modal .modal-body .modal-column-left .form-section-inline .form-label {
         margin-top: 1px !important;
         margin-bottom: 1px !important;
     }
-    /* Sağ grid: Sigorta hariç etiketlerden önce 1px (first-child 0) */
+    /* Sağ grid: Sigorta hariç etiketlerden önce 3px (first-child 0) – genel kural sağa uygulanmaz, sadece bu kurallar geçerli */
     #vehicle-modal .modal-body .modal-column-right .form-section:first-child .form-label {
         margin-top: 0 !important;
+        margin-bottom: 1px !important;
     }
     #vehicle-modal .modal-body .modal-column-right .form-section:not(:first-child) .form-label,
     #vehicle-modal .modal-body .modal-column-right .form-section-inline .form-label {
-        margin-top: 1px !important;
+        margin-top: 3px !important;
+        margin-bottom: 1px !important;
     }
     /* Taşıt Tipi: etiket–ikon dikey aralık sıfır (masaüstü) */
     #vehicle-modal .modal-body .modal-column-left .form-section-inline:first-child .form-label {
