@@ -925,6 +925,14 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         height: 19px !important;
         margin-bottom: 3px !important;
     }
+    /* Sağ kolon Var/Yok tuşları sağa yaslanmasın, etiketin yanında kalsın (sol hizalı) */
+    #vehicle-modal .modal-body .modal-column-right .form-section-inline:has(.radio-group) .radio-group {
+        position: static;
+        transform: none;
+        right: auto;
+        top: auto;
+        justify-content: flex-start;
+    }
     /* Masaüstü: ilk satır (Taşıt Tipi / Sigorta); ikon–Plaka arası 2px daha az */
     #vehicle-modal .modal-body .modal-column-left .form-section-inline:first-child {
         margin-top: -7px;
