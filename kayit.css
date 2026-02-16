@@ -811,6 +811,11 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     .modal-column-left .form-section-inline .radio-btn,
     .modal-column-right .form-section-inline .radio-btn { flex: 1 1 0; min-width: 0; padding: 0 6px; font-size: 11px; height: 27px; }
     
+    /* Şanzıman tipi butonları: -1px yükseklik */
+    .modal-column-left .form-section-inline:nth-of-type(2) .radio-btn {
+        height: 26px !important;
+    }
+    
     .radio-btn { height: 27px; min-width: 48px; font-size: 12px; padding: 0 8px; }
     .modal-column-left .form-section-inline .radio-group { justify-content: space-between; width: 100%; padding: 0; gap: 3px; }
     
