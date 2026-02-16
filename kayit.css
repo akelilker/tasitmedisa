@@ -954,22 +954,6 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-body .modal-column-left .form-section-inline:nth-of-type(4) {
         margin-top: auto;
     }
-    /* Boya/Değişen satırı: sağ kenar sağ kolonun bitişiyle aynı hizada (masaüstü) */
-    #vehicle-modal .modal-body .modal-column-left {
-        overflow: visible;
-    }
-    #vehicle-modal .modal-body .modal-column-left .form-section-inline:has(#boya-var) {
-        position: relative;
-        width: calc(200% + 20px);
-        max-width: calc(200% + 20px);
-        box-sizing: border-box;
-    }
-    #vehicle-modal .modal-body .modal-column-left .form-section-inline:has(#boya-var) .radio-group {
-        position: absolute;
-        right: 0;
-        top: 50%;
-        transform: translateY(-50%);
-    }
     /* Tramer/Boya container form-section: gizliyken boşluk bırakma (denge için) */
     #vehicle-modal .modal-body .modal-column-left .form-section:has(#tramer-records-container),
     #vehicle-modal .modal-body .modal-column-left .form-section:has(#boya-parts-container) {
