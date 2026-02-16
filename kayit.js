@@ -737,11 +737,15 @@
     if (tramerContainer) {
       tramerContainer.style.display = 'none';
       tramerContainer.innerHTML = ''; // Tüm satırları temizle
+      const tramerSection = tramerContainer.closest('.form-section');
+      if (tramerSection) tramerSection.classList.remove('tramer-records-visible');
     }
     const boyaContainer = document.getElementById('boya-parts-container');
     if (boyaContainer) {
       boyaContainer.style.display = 'none';
       boyaContainer.innerHTML = ''; // SVG'yi temizle
+      const formSection = boyaContainer.closest('.form-section');
+      if (formSection) formSection.classList.remove('boya-parts-visible');
     }
     ["anahtar-nerede", "kredi-detay"].forEach(id => {
       const el = document.getElementById(id);
@@ -960,6 +964,8 @@
         const container = document.getElementById('tramer-records-container');
         if (container) {
           container.style.display = 'block';
+          const formSection = container.closest('.form-section');
+          if (formSection) formSection.classList.add('tramer-records-visible');
           // Yeni format (tramerRecords) varsa onu kullan, yoksa eski format (tramerDetay)
           if (vehicle.tramerRecords && vehicle.tramerRecords.length > 0) {
             loadTramerRecords(vehicle.tramerRecords);
@@ -987,7 +993,8 @@
         const container = document.getElementById('boya-parts-container');
         if (container) {
           container.style.display = 'block';
-          // SVG'yi yükle ve parça durumlarını yükle
+          const formSection = container.closest('.form-section');
+          if (formSection) formSection.classList.add('boya-parts-visible');
           initBoyaPartsSVG();
           // SVG yüklendikten sonra durumları yükle (setTimeout ile biraz bekle)
           setTimeout(() => {
@@ -1667,15 +1674,15 @@
         if (isTramer) {
           const container = document.getElementById('tramer-records-container');
           if (container) {
+            const formSection = container.closest('.form-section');
             if (btn.dataset.value === "var") {
               container.style.display = "block";
-              // Eğer container boşsa ilk satırı ekle
-              if (container.children.length === 0) {
-                addTramerRecordRow();
-              }
+              if (formSection) formSection.classList.add('tramer-records-visible');
+              if (container.children.length === 0) addTramerRecordRow();
             } else {
               container.style.display = "none";
-              container.innerHTML = ''; // Tüm satırları temizle
+              container.innerHTML = '';
+              if (formSection) formSection.classList.remove('tramer-records-visible');
             }
           }
           return; // Tramer için özel mantık uygulandı, genel mantığa geçme
@@ -1687,13 +1694,14 @@
         if (isBoya) {
           const container = document.getElementById('boya-parts-container');
           if (container) {
+            const formSection = container.closest('.form-section');
             if (btn.dataset.value === "var") {
               container.style.display = "block";
-              // SVG'yi yükle ve başlat
+              if (formSection) formSection.classList.add('boya-parts-visible');
               initBoyaPartsSVG();
             } else {
               container.style.display = "none";
-              // SVG'yi temizleme (bir sonraki açılışta tekrar yüklenecek)
+              if (formSection) formSection.classList.remove('boya-parts-visible');
             }
           }
           return; // Boya için özel mantık uygulandı, genel mantığa geçme
