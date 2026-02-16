@@ -994,9 +994,14 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         margin-top: 2px;
         margin-bottom: 8px !important;
     }
-    /* Tahsis Edilen Şube etiketi: 3px yukarı */
+    /* Tahsis Edilen Şube etiketi: 3px yukarı; etiket altı 1px */
     #vehicle-modal .modal-body .modal-column-right .form-section:has(#vehicle-branch-select) .form-label {
         margin-top: -2px !important; /* genel +1px kuralına göre 3px yukarı */
+        margin-bottom: 1px !important;
+    }
+    /* Notlar etiketi altı 1px */
+    #vehicle-modal .modal-body .modal-column-right .form-section:has(#vehicle-notes) .form-label {
+        margin-bottom: 1px !important;
     }
     #vehicle-modal .modal-body .modal-columns {
         align-items: stretch;
