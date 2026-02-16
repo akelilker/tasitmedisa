@@ -977,6 +977,10 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         height: auto;
         margin-bottom: 8px !important;
     }
+    /* Yedek Anahtar satırı: üst 3px boşluk */
+    #vehicle-modal .modal-body .modal-column-right .form-section-inline:has(#yedek-anahtar-var) {
+        margin-top: 3px !important;
+    }
     /* Masaüstü: ilk satır (Taşıt Tipi / Sigorta); ikon–Plaka arası 4px daraltıldı */
     #vehicle-modal .modal-body .modal-column-left .form-section-inline:first-child {
         margin-top: -7px;
