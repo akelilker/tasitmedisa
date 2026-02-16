@@ -1011,9 +1011,9 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-body .modal-column-right .form-section:has(#vehicle-notes) .form-label {
         margin-bottom: 1px !important;
     }
-    /* Grid içeriğe göre yükseklik; açılır alanlar açılınca alt öğeler aşağı kayar, modal-body scroll olur */
+    /* Grid içeriğe göre yükseklik; her kolon kendi içeriği kadar (sol sağa uymaz, sağ sola uymaz) */
     #vehicle-modal .modal-body .modal-columns {
-        align-items: stretch;
+        align-items: start;
         margin-top: -5px !important;
         margin-bottom: 2px !important;
     }
@@ -1031,9 +1031,17 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         margin-top: auto !important;
         margin-bottom: 0 !important;
     }
-    /* Tramer/Boya container form-section: gizliyken flex içinde kesin 0 alan kaplaması */
-    #vehicle-modal .modal-body .modal-column-left .form-section:has(#tramer-records-container),
-    #vehicle-modal .modal-body .modal-column-left .form-section:has(#boya-parts-container) {
+    /* Tramer/Boya container: sadece açık değilken 0 alan (JS .tramer-records-visible / .boya-parts-visible ekler) */
+    #vehicle-modal .modal-body .modal-column-left .form-section:has(#tramer-records-container):not(.tramer-records-visible) {
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+        padding: 0 !important;
+        min-height: 0;
+        height: 0;
+        overflow: hidden;
+        flex: 0 0 0;
+    }
+    #vehicle-modal .modal-body .modal-column-left .form-section:has(#boya-parts-container):not(.boya-parts-visible) {
         margin-top: 0 !important;
         margin-bottom: 0 !important;
         padding: 0 !important;
