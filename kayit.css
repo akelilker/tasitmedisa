@@ -1011,11 +1011,8 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-body .modal-column-right .form-section:has(#vehicle-notes) .form-label {
         margin-bottom: 1px !important;
     }
-    /* Grid kalan yüksekliği alır; tek satır 1fr ile iki kolon eşit yükseklikte (Boya/Notlar alt hiza). 3px yukarı: Kaydet/Vazgeç kesilmesin */
+    /* Grid içeriğe göre yükseklik; açılır alanlar açılınca alt öğeler aşağı kayar, modal-body scroll olur */
     #vehicle-modal .modal-body .modal-columns {
-        flex: 1 1 0;
-        min-height: 0;
-        grid-template-rows: minmax(0, 1fr);
         align-items: stretch;
         margin-top: -5px !important;
         margin-bottom: 2px !important;
@@ -1025,14 +1022,6 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         display: flex;
         flex-direction: column;
         align-self: stretch;
-        overflow-y: auto;
-        min-height: 0;
-        scrollbar-width: none;
-        -ms-overflow-style: none;
-    }
-    #vehicle-modal .modal-body .modal-column-left::-webkit-scrollbar,
-    #vehicle-modal .modal-body .modal-column-right::-webkit-scrollbar {
-        display: none;
     }
     #vehicle-modal .modal-body .modal-column-right {
         min-width: 0;
