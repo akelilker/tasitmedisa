@@ -900,21 +900,25 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-body .modal-column-right .form-section:nth-of-type(3) {
         margin-bottom: 6px;
     }
-    /* Muayene Bitiş Tarihi – Yedek Anahtar arası 5px */
+    /* Muayene Bitiş Tarihi – Yedek Anahtar arası 8px (eski 5px + 3px) */
     #vehicle-modal .modal-body .modal-column-right .form-section:has(#vehicle-muayene-date) {
-        margin-bottom: 5px !important;
+        margin-bottom: 8px !important;
     }
     /* Masaüstü: Var/Yok satırları – etiket yanında, normal akışta */
     #vehicle-modal .modal-body .modal-column-right .form-section-inline:has(.radio-group) {
         display: flex;
         align-items: center;
+        justify-content: flex-start;
         height: auto;
         margin-bottom: 4px;
     }
-    /* Masaüstü: ilk satır (Taşıt Tipi / Sigorta); ikon–Plaka arası 2px daha az */
+    #vehicle-modal .modal-body .modal-column-right .form-section-inline:has(.radio-group) .radio-group {
+        justify-content: flex-start;
+    }
+    /* Masaüstü: ilk satır (Taşıt Tipi / Sigorta); ikon–Plaka arası */
     #vehicle-modal .modal-body .modal-column-left .form-section-inline:first-child {
         margin-top: -7px;
-        margin-bottom: 2px !important;
+        margin-bottom: -1px !important;
     }
     /* Masaüstü: Sigorta etiketi Taşıt Tipi etiketiyle aynı hizaya gelsin */
     #vehicle-modal .modal-body .modal-column-right .form-section:first-child {
