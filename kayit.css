@@ -734,6 +734,11 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         min-height: 0 !important;
         display: block !important;
     }
+    /* Tahsis Edilen Şube ve Notlar: etiket altı 1px (önceki margin shorthand’i ezer) */
+    #vehicle-modal .modal-column-right .form-section:has(#vehicle-branch-select) .form-label,
+    #vehicle-modal .modal-column-right .form-section:has(#vehicle-notes) .form-label {
+        margin-bottom: 1px !important;
+    }
     #vehicle-modal .modal-column-left .form-section-inline:has(.radio-group) .form-label {
         margin-bottom: 0 !important;
     }
