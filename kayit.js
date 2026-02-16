@@ -1854,6 +1854,18 @@
           }
         });
     }
+
+    // Kredi detay Auto-Expand (max 4 satır)
+    const krediDetayArea = document.getElementById("kredi-detay");
+    if (krediDetayArea) {
+        krediDetayArea.addEventListener('input', function() {
+            this.style.height = 'auto';
+            const maxHeight = 72; // 4 satır
+            const newHeight = Math.min(this.scrollHeight, maxHeight);
+            this.style.height = newHeight + 'px';
+            this.style.overflow = this.scrollHeight > maxHeight ? 'auto' : 'hidden';
+        });
+    }
     
     // Initialize branch select
     populateBranchSelect();
