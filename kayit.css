@@ -936,23 +936,24 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         top: auto !important;
         justify-content: flex-start !important;
     }
-    /* Yedek Anahtar ve Kredi/Rehin Var/Yok: etiket sabit, butonlar dikey hizalı; satır ekran içinde kalsın (taşma yok) */
+    /* Sağ kolon Var/Yok: etiket yanında butonlar, satır taşmasın */
     #vehicle-modal .modal-body .modal-column-right .form-section-inline:has(.radio-group) {
         min-width: 0;
         max-width: 100%;
+        gap: 10px;
+        align-items: center;
     }
     #vehicle-modal .modal-body .modal-column-right .form-section-inline:has(.radio-group) .form-label {
-        min-width: 8.5em;
         flex: 0 0 auto;
     }
     #vehicle-modal .modal-body .modal-column-right .form-section-inline:has(.radio-group) .radio-group {
+        flex: 0 0 auto;
         min-width: 0;
-        flex: 1 1 auto;
-        max-width: 100%;
+        gap: 6px;
     }
     #vehicle-modal .modal-body .modal-column-right .form-section-inline:has(.radio-group) .radio-btn {
-        min-width: 40px;
-        flex: 0 1 auto;
+        flex: 0 0 auto;
+        min-width: 44px;
         padding: 0 6px;
         font-size: 10px;
     }
