@@ -1011,12 +1011,13 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-body .modal-column-right .form-section:has(#vehicle-notes) .form-label {
         margin-bottom: 1px !important;
     }
-    /* Grid kalan yüksekliği alır; tek satır 1fr ile iki kolon eşit yükseklikte (Boya/Notlar alt hiza) */
+    /* Grid kalan yüksekliği alır; tek satır 1fr ile iki kolon eşit yükseklikte (Boya/Notlar alt hiza). 3px yukarı: Kaydet/Vazgeç kesilmesin */
     #vehicle-modal .modal-body .modal-columns {
         flex: 1 1 0;
         min-height: 0;
         grid-template-rows: minmax(0, 1fr);
         align-items: stretch;
+        margin-top: -3px !important;
         margin-bottom: 2px !important;
     }
     #vehicle-modal .modal-body .modal-column-left,
