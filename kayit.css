@@ -1172,7 +1172,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     background: transparent;
     border: none;
     border-radius: 0;
-    color: #e0e0e0;
+    color: var(--green);
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -1185,7 +1185,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
 .tramer-remove-btn:hover {
     background: transparent;
     border: none;
-    color: var(--theme-color);
+    color: var(--green);
     opacity: 1;
     transform: scale(1.15);
 }
