@@ -1008,6 +1008,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-body .modal-column-right .form-section:has(#vehicle-notes) .form-label {
         margin-bottom: 1px !important;
     }
+    /* İki sütun eşit yükseklikte; alt hiza (Boya/Notlar) için zorunlu */
     #vehicle-modal .modal-body .modal-columns {
         align-items: stretch;
         margin-bottom: 2px !important;
@@ -1016,6 +1017,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-body .modal-column-right {
         display: flex;
         flex-direction: column;
+        align-self: stretch;
     }
     #vehicle-modal .modal-body .modal-column-right {
         min-width: 0;
@@ -1034,6 +1036,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         min-height: 0;
         height: 0;
         overflow: hidden;
+        flex: 0 0 0;
     }
     /* Notlar ile Boya/Değişen aynı satırda: sağ sütun son blok alta itilir. min-width:0 ile yükseklik artınca sola taşma önlenir. */
     #vehicle-modal .modal-body .modal-column-right .form-section:has(#vehicle-notes) {
