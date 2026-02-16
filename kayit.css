@@ -925,37 +925,41 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         height: 19px !important;
         margin-bottom: 3px !important;
     }
-    /* Sağ kolon Var/Yok: sağa yaslanmasın; satır sol hizalı, tuşlar etiketin yanında (global position:absolute ezilsin) */
-    #vehicle-modal .modal-body .modal-column-right .form-section-inline:has(.radio-group) {
+    /* Var/Yok satırları: tek final hizalama (sol+sağ aynı davranış) */
+    #vehicle-modal .modal-body .form-section-inline:has(.radio-group) {
+        align-items: center !important;
         justify-content: flex-start !important;
+        gap: 10px !important;
     }
-    #vehicle-modal .modal-body .modal-column-right .form-section-inline:has(.radio-group) .radio-group {
+    #vehicle-modal .modal-body .form-section-inline:has(.radio-group) .form-label {
+        margin: 0 !important;
+        flex: 0 0 auto;
+        align-self: center;
+    }
+    #vehicle-modal .modal-body .form-section-inline:has(.radio-group) .radio-group {
         position: static !important;
         transform: none !important;
         right: auto !important;
         top: auto !important;
-        justify-content: flex-start !important;
-    }
-    /* Sağ kolon Var/Yok: etiket yanında butonlar, satır taşmasın */
-    #vehicle-modal .modal-body .modal-column-right .form-section-inline:has(.radio-group) {
-        min-width: 0;
-        max-width: 100%;
-        gap: 10px;
+        margin: 0 !important;
+        display: flex;
         align-items: center;
-    }
-    #vehicle-modal .modal-body .modal-column-right .form-section-inline:has(.radio-group) .form-label {
-        flex: 0 0 auto;
-    }
-    #vehicle-modal .modal-body .modal-column-right .form-section-inline:has(.radio-group) .radio-group {
+        justify-content: flex-start !important;
+        gap: 6px;
         flex: 0 0 auto;
         min-width: 0;
-        gap: 6px;
     }
-    #vehicle-modal .modal-body .modal-column-right .form-section-inline:has(.radio-group) .radio-btn {
+    #vehicle-modal .modal-body .form-section-inline:has(.radio-group) .radio-btn {
         flex: 0 0 auto;
         min-width: 44px;
         padding: 0 6px;
         font-size: 10px;
+    }
+    #vehicle-modal .modal-body .modal-column-right .form-section-inline:has(.radio-group),
+    #vehicle-modal .modal-body .modal-column-right .form-section-inline:first-of-type:has(.radio-group),
+    #vehicle-modal .modal-body .modal-column-right .form-section-inline:has([data-group="kredi"]) {
+        height: auto !important;
+        margin-bottom: 6px !important;
     }
     /* Masaüstü: ilk satır (Taşıt Tipi / Sigorta); ikon–Plaka arası 2px daha az */
     #vehicle-modal .modal-body .modal-column-left .form-section-inline:first-child {
