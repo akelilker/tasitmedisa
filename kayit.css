@@ -904,16 +904,19 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-body .modal-column-right .form-section:has(#vehicle-muayene-date) {
         margin-bottom: 8px !important;
     }
-    /* Masaüstü: Var/Yok satırları – etiket yanında, normal akışta */
+    /* Masaüstü: Var/Yok satırları – etiket yanında, butonlar dikeyde hizalı */
+    #vehicle-modal .modal-body .form-section-inline:has(.radio-group) {
+        justify-content: flex-start !important;
+        gap: 12px !important;
+    }
+    #vehicle-modal .modal-body .form-section-inline:has(.radio-group) .radio-group {
+        justify-content: flex-start !important;
+        gap: 6px;
+    }
+    /* Sağ kolon Var/Yok satır yüksekliği */
     #vehicle-modal .modal-body .modal-column-right .form-section-inline:has(.radio-group) {
-        display: flex;
-        align-items: center;
-        justify-content: flex-start;
         height: auto;
         margin-bottom: 4px;
-    }
-    #vehicle-modal .modal-body .modal-column-right .form-section-inline:has(.radio-group) .radio-group {
-        justify-content: flex-start;
     }
     /* Masaüstü: ilk satır (Taşıt Tipi / Sigorta); ikon–Plaka arası */
     #vehicle-modal .modal-body .modal-column-left .form-section-inline:first-child {
@@ -969,7 +972,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     }
     #vehicle-modal .modal-body .form-buttons {
         padding: 0 0 6px 0;
-        margin-top: 0 !important;
+        margin-top: 3px !important;
         flex-shrink: 0;
         align-items: flex-end;
     }
