@@ -936,6 +936,11 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         top: auto !important;
         justify-content: flex-start !important;
     }
+    /* Yedek Anahtar ve Kredi/Rehin Var/Yok: etiket genişliği sabit, butonlar dikeyde hizalı */
+    #vehicle-modal .modal-body .modal-column-right .form-section-inline:has(.radio-group) .form-label {
+        min-width: 11.5em;
+        flex: 0 0 auto;
+    }
     /* Masaüstü: ilk satır (Taşıt Tipi / Sigorta); ikon–Plaka arası 2px daha az */
     #vehicle-modal .modal-body .modal-column-left .form-section-inline:first-child {
         margin-top: -7px;
@@ -972,16 +977,16 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         margin-bottom: 0 !important;
         min-height: 0;
     }
-    /* Notlar ile Boya/Değişen aynı satırda: sağ sütun son blok alta itilir */
+    /* Notlar ile Boya/Değişen aynı satırda: sağ sütun son blok alta itilir. Alttaki açıklık: bu bloktaki min-height + flex:1 + modal-body padding-bottom + form-buttons padding. */
     #vehicle-modal .modal-body .modal-column-right .form-section:has(#vehicle-notes) {
         margin-top: auto;
         margin-bottom: 0;
         flex: 1;
-        min-height: 70px;
+        min-height: 42px;
     }
     /* Masaüstü: Notlar textarea yüksekliği */
     #vehicle-modal .modal-body #vehicle-notes {
-        min-height: 64px !important;
+        min-height: 40px !important;
         height: auto !important;
     }
     #vehicle-modal .modal-body .form-buttons {
