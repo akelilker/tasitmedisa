@@ -488,15 +488,8 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     align-items: center; 
 }
 
-.modal-column-right .form-section-inline:has([data-group="kredi"]) .radio-group { justify-content: flex-end; margin-left: 0px; }
-.modal-column-right .form-section-inline:has(.radio-group) { position: relative; }
-.modal-column-right .form-section-inline:has(.radio-group) .radio-group { position: absolute; right: 0; top: 50%; transform: translateY(-50%); }
-
-.modal-column-right .form-section-inline:has(.radio-group) { align-items: center; margin-top: 0px; margin-bottom: 5px; height: 21px; display: flex; }
-.modal-column-right .form-section-inline:first-of-type:has(.radio-group) { margin-bottom: 5px; margin-top: 0px; height: 21px; }
-.modal-column-right .form-section-inline:has([data-group="kredi"]) { margin-top: 0px; margin-bottom: 5px; height: 21px; align-items: center; }
+/* Sağ kolon Var/Yok: global hizalama kuralları masaüstü bloğunda */
 .modal-column-right .form-section-inline:has([data-group="kredi"]) .form-label { font-size: 12px; }
-.modal-column-right .form-section-inline:has([data-group="kredi"]) .radio-group { margin-top: 0px; margin-bottom: 0px; align-items: center; }
 
 .modal-column-right .form-section:has(#anahtar-nerede) { margin: 0; padding: 0; min-height: 0; transition: height 0.2s ease, margin 0.2s ease, padding 0.2s ease; }
 .modal-column-right .form-section.input-visible { height: auto; overflow: visible; margin-top: 8px; margin-bottom: 8px; }
@@ -911,55 +904,12 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-body .modal-column-right .form-section:has(#vehicle-muayene-date) {
         margin-bottom: 5px !important;
     }
-    #vehicle-modal .modal-body .modal-column-right .form-section-inline:first-of-type:has(.radio-group) .form-label {
-        align-self: center;
-    }
+    /* Masaüstü: Var/Yok satırları – etiket yanında, normal akışta */
     #vehicle-modal .modal-body .modal-column-right .form-section-inline:has(.radio-group) {
-        height: 19px !important;
-        margin-bottom: 3px !important;
-    }
-    #vehicle-modal .modal-body .modal-column-right .form-section-inline:first-of-type:has(.radio-group) {
-        margin-bottom: 0 !important;
-    }
-    #vehicle-modal .modal-body .modal-column-right .form-section-inline:has([data-group="kredi"]) {
-        height: 19px !important;
-        margin-bottom: 3px !important;
-    }
-    /* Var/Yok satırları: tek final hizalama (sol+sağ aynı davranış) */
-    #vehicle-modal .modal-body .form-section-inline:has(.radio-group) {
-        align-items: center !important;
-        justify-content: flex-start !important;
-        gap: 10px !important;
-    }
-    #vehicle-modal .modal-body .form-section-inline:has(.radio-group) .form-label {
-        margin: 0 !important;
-        flex: 0 0 auto;
-        align-self: center;
-    }
-    #vehicle-modal .modal-body .form-section-inline:has(.radio-group) .radio-group {
-        position: static !important;
-        transform: none !important;
-        right: auto !important;
-        top: auto !important;
-        margin: 0 !important;
         display: flex;
         align-items: center;
-        justify-content: flex-start !important;
-        gap: 6px;
-        flex: 0 0 auto;
-        min-width: 0;
-    }
-    #vehicle-modal .modal-body .form-section-inline:has(.radio-group) .radio-btn {
-        flex: 0 0 auto;
-        min-width: 44px;
-        padding: 0 6px;
-        font-size: 10px;
-    }
-    #vehicle-modal .modal-body .modal-column-right .form-section-inline:has(.radio-group),
-    #vehicle-modal .modal-body .modal-column-right .form-section-inline:first-of-type:has(.radio-group),
-    #vehicle-modal .modal-body .modal-column-right .form-section-inline:has([data-group="kredi"]) {
-        height: auto !important;
-        margin-bottom: 6px !important;
+        height: auto;
+        margin-bottom: 4px;
     }
     /* Masaüstü: ilk satır (Taşıt Tipi / Sigorta); ikon–Plaka arası 2px daha az */
     #vehicle-modal .modal-body .modal-column-left .form-section-inline:first-child {
