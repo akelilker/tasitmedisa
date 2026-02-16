@@ -347,6 +347,16 @@ textarea.notes-auto-expand {
     max-width: 100%;
 }
 
+/* Kredi detay: resize ve scrollbar görünmesin (içerik 4 satıra kadar auto-expand, taşarsa wheel ile kayar) */
+#kredi-detay {
+    resize: none;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+#kredi-detay::-webkit-scrollbar {
+    display: none;
+}
+
 textarea.form-input::-webkit-scrollbar { width: 8px; }
 textarea.form-input::-webkit-scrollbar-track { background: transparent; }
 textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 4px; }
