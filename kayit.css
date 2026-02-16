@@ -873,7 +873,8 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         display: block;
     }
     #vehicle-modal .modal-body .modal-column-left .form-section-inline:first-child .vehicle-type-group {
-        margin-top: -10px !important;
+        margin-top: -12px !important;
+        gap: 27px !important;
     }
     
     #vehicle-modal .modal-body .form-section,
