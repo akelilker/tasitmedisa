@@ -492,9 +492,11 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
 .modal-column-right .form-section-inline:has([data-group="kredi"]) .form-label { font-size: 12px; }
 
 .modal-column-right .form-section:has(#anahtar-nerede) { margin: 0; padding: 0; min-height: 0; transition: height 0.2s ease, margin 0.2s ease, padding 0.2s ease; }
+.modal-column-right .form-section:has(#kredi-detay) { margin: 0; padding: 0; min-height: 0; transition: height 0.2s ease, margin 0.2s ease, padding 0.2s ease; }
 .modal-column-right .form-section.input-visible { height: auto; overflow: visible; margin-top: 8px; margin-bottom: 8px; }
 .modal-column-right .form-section:has(#kredi-detay).input-visible { margin-top: 8px; }
 .modal-column-right .form-section:has(#anahtar-nerede):not(.input-visible) { height: 0; overflow: hidden; margin: 0; padding: 0; }
+.modal-column-right .form-section:has(#kredi-detay):not(.input-visible) { height: 0; overflow: hidden; margin: 0; padding: 0; }
 
 .radio-btn {
     width: 48px; 
@@ -578,6 +580,13 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         background: rgba(255, 255, 255, 0.05) !important; /* Arka plan biraz daha açık */
     }
     
+    /* Input focus - kırmızı çerçeve */
+    .form-input:focus,
+    select:focus,
+    textarea.form-input:focus {
+        border-color: var(--theme-color) !important; /* Kırmızı çerçeve */
+    }
+    
     .form-input::placeholder {
         color: rgba(255, 255, 255, 0.5) !important; /* Placeholder daha görünür */
     }
@@ -587,9 +596,15 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         color: rgba(255, 255, 255, 0.8) !important; /* Radio buton metni daha parlak */
     }
     
-    .radio-btn.active {
-        border-color: var(--theme-color) !important; /* Aktif radio daha belirgin */
+    .radio-btn.active:not(.green) {
+        border-color: var(--theme-color) !important; /* Aktif radio daha belirgin (kırmızı) */
         color: #ffffff !important;
+    }
+    
+    .radio-btn.active.green {
+        border-color: rgba(74, 222, 128, 0.85) !important; /* Yeşil aktif butonlar için yeşil çerçeve */
+        background: rgba(74, 222, 128, 0.18) !important;
+        color: #4ade80 !important;
     }
     
     .vehicle-type-btn {
