@@ -818,10 +818,26 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         padding-top: 5px !important;
         padding-bottom: 5px !important;
     }
-    #vehicle-modal .modal-body textarea.notes-auto-expand {
-        min-height: 24px !important;
+    /* Sağ kolon inputları: +2px dikey yükseklik (22→24px, textarea 24→26px) */
+    #vehicle-modal .modal-body .modal-column-right .form-input,
+    #vehicle-modal .modal-body .modal-column-right select {
         height: 24px !important;
-        padding: 5px 8px !important;
+        padding-top: 5px !important;
+        padding-bottom: 5px !important;
+    }
+    #vehicle-modal .modal-body .modal-column-right input[type="date"].form-input {
+        height: 24px !important;
+        padding-top: 5px !important;
+        padding-bottom: 5px !important;
+    }
+    #vehicle-modal .modal-body .modal-column-right textarea.form-input {
+        padding-top: 6px !important;
+        padding-bottom: 6px !important;
+    }
+    #vehicle-modal .modal-body textarea.notes-auto-expand {
+        min-height: 26px !important;
+        height: 26px !important;
+        padding: 6px 8px !important;
     }
     /* Masaüstü: Input/select/textarea focus - kırmızı çerçeve (Kasko ile aynı) */
     #vehicle-modal .modal-body .form-input:focus,
