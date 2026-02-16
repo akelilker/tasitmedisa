@@ -355,7 +355,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     align-items: center;
     justify-content: space-between;
     gap: 16px;
-    margin-bottom: 7px;
+    margin-bottom: 4px;
 }
 
 .modal-column-left .form-section-inline:not(:first-child) {
@@ -675,7 +675,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-column-right { display: flex; flex-direction: column; min-height: 0; }
     .modal-column-right .form-section { margin-bottom: 8px; }
 
-    .modal-column-left .form-section-inline:first-child { flex-direction: column; align-items: flex-start; gap: 0 !important; margin-bottom: 11px; }
+    .modal-column-left .form-section-inline:first-child { flex-direction: column; align-items: flex-start; gap: 0 !important; margin-bottom: 8px; }
     .modal-column-left .form-section-inline:first-child .vehicle-type-group { width: 100%; justify-content: center; align-items: flex-end; flex-wrap: nowrap; max-width: 100%; margin-top: -16px !important; padding-top: 0; gap: 22px; }
     .vehicle-type-group { width: 100%; justify-content: center; align-items: flex-end; flex-wrap: nowrap; max-width: 100%; margin-top: 0; padding-top: 0; gap: 24px; }
     .modal-column-left .form-section-inline:first-child .form-label { margin-bottom: 0 !important; padding-bottom: 0; line-height: 1; }
