@@ -148,7 +148,7 @@
 
 .form-label {
     display: block;
-    font-size: 13px; 
+    font-size: 12px; 
     font-weight: 600;
     color: #cccccc; 
     margin-bottom: 0px; 
@@ -161,7 +161,7 @@
     border: 1.1px solid rgba(255, 255, 255, 0.20);
     border-radius: 6px;
     color: #888;
-    font-size: 10px;
+    font-size: 9px;
     height: 20px; 
     box-sizing: border-box;
     outline: none; 
@@ -401,7 +401,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     align-items: flex-end;
     justify-content: center;
     flex-wrap: nowrap; 
-    gap: 28px; 
+    gap: 22px; 
     margin-top: 0px;
     margin-bottom: 0px;
     padding-top: 0px;
@@ -411,16 +411,16 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     max-width: 100%; 
 }
 
-/* Taşıt Tipi: etiket–ikon arası dikey boşluk sıfır; simgeler %97 oranında */
+/* Taşıt Tipi: etiket–ikon arası dikey boşluk sıfır; simgeler %88 oranında (ekrana sığdırma) */
 .modal-column-left .form-section-inline:first-child .vehicle-type-group {
     margin: 0;
     margin-top: -6px !important;
     padding: 0;
     width: 100%;
-    gap: 28px;
+    gap: 22px;
     flex-wrap: nowrap;
     max-width: 100%;
-    transform: scale(0.97);
+    transform: scale(0.88);
     transform-origin: center top;
 }
 
@@ -451,10 +451,10 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     position: relative;
 }
 
-.vehicle-type-btn[data-type="otomobil"] { width: 44px; height: 42px; margin-bottom: 0px; }
+.vehicle-type-btn[data-type="otomobil"] { width: 40px; height: 38px; margin-bottom: 0px; }
 .vehicle-type-btn[data-type="otomobil"] img { object-position: bottom center; }
-.vehicle-type-btn[data-type="minivan"] { width: 28px; height: 18px; }
-.vehicle-type-btn[data-type="kamyon"] { width: 40px; height: 28px; padding-top: 2px; }
+.vehicle-type-btn[data-type="minivan"] { width: 26px; height: 17px; }
+.vehicle-type-btn[data-type="kamyon"] { width: 36px; height: 26px; padding-top: 2px; }
 .vehicle-type-btn[data-type="kamyon"] img { object-position: bottom center; transform: scale(0.95); transform-origin: bottom center; }
 
 .vehicle-type-btn:hover { background: transparent; border: none; }
@@ -488,20 +488,15 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     align-items: center; 
 }
 
-.modal-column-right .form-section-inline:has([data-group="kredi"]) .radio-group { justify-content: flex-end; margin-left: 0px; }
-.modal-column-right .form-section-inline:has(.radio-group) { position: relative; }
-.modal-column-right .form-section-inline:has(.radio-group) .radio-group { position: absolute; right: 0; top: 50%; transform: translateY(-50%); }
-
-.modal-column-right .form-section-inline:has(.radio-group) { align-items: center; margin-top: 0px; margin-bottom: 5px; height: 21px; display: flex; }
-.modal-column-right .form-section-inline:first-of-type:has(.radio-group) { margin-bottom: 5px; margin-top: 0px; height: 21px; }
-.modal-column-right .form-section-inline:has([data-group="kredi"]) { margin-top: 0px; margin-bottom: 5px; height: 21px; align-items: center; }
+/* Sağ kolon Var/Yok: global hizalama kuralları masaüstü bloğunda */
 .modal-column-right .form-section-inline:has([data-group="kredi"]) .form-label { font-size: 12px; }
-.modal-column-right .form-section-inline:has([data-group="kredi"]) .radio-group { margin-top: 0px; margin-bottom: 0px; align-items: center; }
 
 .modal-column-right .form-section:has(#anahtar-nerede) { margin: 0; padding: 0; min-height: 0; transition: height 0.2s ease, margin 0.2s ease, padding 0.2s ease; }
+.modal-column-right .form-section:has(#kredi-detay) { margin: 0; padding: 0; min-height: 0; transition: height 0.2s ease, margin 0.2s ease, padding 0.2s ease; }
 .modal-column-right .form-section.input-visible { height: auto; overflow: visible; margin-top: 8px; margin-bottom: 8px; }
 .modal-column-right .form-section:has(#kredi-detay).input-visible { margin-top: 8px; }
 .modal-column-right .form-section:has(#anahtar-nerede):not(.input-visible) { height: 0; overflow: hidden; margin: 0; padding: 0; }
+.modal-column-right .form-section:has(#kredi-detay):not(.input-visible) { height: 0; overflow: hidden; margin: 0; padding: 0; }
 
 .radio-btn {
     width: 48px; 
@@ -585,6 +580,13 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         background: rgba(255, 255, 255, 0.05) !important; /* Arka plan biraz daha açık */
     }
     
+    /* Input focus - kırmızı çerçeve */
+    .form-input:focus,
+    select:focus,
+    textarea.form-input:focus {
+        border-color: var(--theme-color) !important; /* Kırmızı çerçeve */
+    }
+    
     .form-input::placeholder {
         color: rgba(255, 255, 255, 0.5) !important; /* Placeholder daha görünür */
     }
@@ -594,9 +596,15 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         color: rgba(255, 255, 255, 0.8) !important; /* Radio buton metni daha parlak */
     }
     
-    .radio-btn.active {
-        border-color: var(--theme-color) !important; /* Aktif radio daha belirgin */
+    .radio-btn.active:not(.green) {
+        border-color: var(--theme-color) !important; /* Aktif radio daha belirgin (kırmızı) */
         color: #ffffff !important;
+    }
+    
+    .radio-btn.active.green {
+        border-color: rgba(74, 222, 128, 0.85) !important; /* Yeşil aktif butonlar için yeşil çerçeve */
+        background: rgba(74, 222, 128, 0.18) !important;
+        color: #4ade80 !important;
     }
     
     .vehicle-type-btn {
@@ -668,14 +676,14 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     .modal-column-right .form-section { margin-bottom: 8px; }
 
     .modal-column-left .form-section-inline:first-child { flex-direction: column; align-items: flex-start; gap: 0 !important; margin-bottom: 11px; }
-    .modal-column-left .form-section-inline:first-child .vehicle-type-group { width: 100%; justify-content: center; align-items: flex-end; flex-wrap: nowrap; max-width: 100%; margin-top: -14px !important; padding-top: 0; gap: 24px; }
+    .modal-column-left .form-section-inline:first-child .vehicle-type-group { width: 100%; justify-content: center; align-items: flex-end; flex-wrap: nowrap; max-width: 100%; margin-top: -16px !important; padding-top: 0; gap: 22px; }
     .vehicle-type-group { width: 100%; justify-content: center; align-items: flex-end; flex-wrap: nowrap; max-width: 100%; margin-top: 0; padding-top: 0; gap: 24px; }
     .modal-column-left .form-section-inline:first-child .form-label { margin-bottom: 0 !important; padding-bottom: 0; line-height: 1; }
     
-    .vehicle-type-btn[data-type="kamyon"] { width: 42px; height: 30px; }
+    .vehicle-type-btn[data-type="kamyon"] { width: 40px; height: 28px; }
     .vehicle-type-btn[data-type="kamyon"] img { width: 100%; height: 100%; object-fit: contain; object-position: bottom center; }
-    .vehicle-type-btn[data-type="otomobil"] { width: 46px; height: 44px; }
-    .vehicle-type-btn[data-type="minivan"] { width: 36px; height: 26px; }
+    .vehicle-type-btn[data-type="otomobil"] { width: 42px; height: 40px; }
+    .vehicle-type-btn[data-type="minivan"] { width: 34px; height: 24px; }
 
     .form-section { margin-bottom: 8px; }
     .modal-body .form-label { font-size: 15px; margin-bottom: 0; }
@@ -709,8 +717,16 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     }
     /* Base .form-section:first-child .form-label override - mobil */
     #vehicle-modal .modal-column-right .form-section .form-label,
-    #vehicle-modal .modal-column-right .form-section:first-child .form-label,
     #vehicle-modal .modal-column-right .form-section-inline .form-label {
+        margin: 2px 0 0 0 !important; /* Etiketlerden önce 2px boşluk (1px artırıldı) */
+        padding: 0 !important;
+        line-height: 1 !important;
+        height: auto !important;
+        min-height: 0 !important;
+        display: block !important;
+    }
+    /* Sigorta Bitiş Tarihi (ilk etiket) hariç */
+    #vehicle-modal .modal-column-right .form-section:first-child .form-label {
         margin: 0 !important;
         padding: 0 !important;
         line-height: 1 !important;
@@ -742,6 +758,17 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     
     .form-input { height: 26px; font-size: 13px; padding: 4px 8px; }
     
+    /* Sağ kolon inputları: +1px dikey yükseklik (27px) */
+    #vehicle-modal .modal-column-right .form-input:not(textarea),
+    #vehicle-modal .modal-column-right select {
+        height: 27px !important;
+    }
+    
+    /* Sağ kolon textarea: min-height +1px */
+    #vehicle-modal .modal-column-right textarea.form-input {
+        min-height: 73px !important;
+    }
+    
     /* Tarih inputları: iç dikey yükseklik +2px (28px), sağ tarafı uzatmak için */
     .modal-body input[type="date"].form-input { 
         height: 28px; 
@@ -757,7 +784,14 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         appearance: none;
     }
     
-    .modal-column-right input[type="date"].form-input { width: 100%; max-width: 100%; margin-right: 0; padding-right: 20px !important; }
+    /* Sağ kolon tarih inputları: +1px dikey yükseklik (29px) */
+    #vehicle-modal .modal-column-right input[type="date"].form-input { 
+        height: 29px !important;
+        width: 100%; 
+        max-width: 100%; 
+        margin-right: 0; 
+        padding-right: 20px !important; 
+    }
     .modal-body input[type="date"].form-input::-webkit-calendar-picker-indicator { right: 4px !important; transform: translateY(-50%) !important; }
     .date-placeholder { left: 4px; font-size: 11px; }
     
@@ -775,13 +809,13 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     .modal-column-right .form-section-inline .form-label { width: 100%; margin-bottom: 0; font-size: 15px !important; height: auto; }
     .modal-column-right .form-section-inline .radio-group { width: 100%; justify-content: space-between; gap: 3px; padding: 0; }
     .modal-column-left .form-section-inline .radio-btn,
-    .modal-column-right .form-section-inline .radio-btn { flex: 1 1 0; min-width: 0; padding: 0 6px; font-size: 11px; height: 26px; }
+    .modal-column-right .form-section-inline .radio-btn { flex: 1 1 0; min-width: 0; padding: 0 6px; font-size: 11px; height: 27px; }
     
-    .radio-btn { height: 26px; min-width: 48px; font-size: 12px; padding: 0 8px; }
+    .radio-btn { height: 27px; min-width: 48px; font-size: 12px; padding: 0 8px; }
     .modal-column-left .form-section-inline .radio-group { justify-content: space-between; width: 100%; padding: 0; gap: 3px; }
     
     .form-buttons { display: grid; grid-template-columns: 1fr 1fr; padding: 8px 0; gap: 10px; width: 100%; margin-top: 6px; margin-bottom: 10px; }
-    .form-buttons .btn-save, .form-buttons .btn-cancel { height: 32px; font-size: 15px; width: 100%; max-width: none; justify-self: stretch; margin: 0; }
+    .form-buttons .btn-save, .form-buttons .btn-cancel { height: 33px; font-size: 15px; width: 100%; max-width: none; justify-self: stretch; margin: 0; }
     
     .vehicle-type-btn.active img { filter: brightness(1.0) sepia(1) hue-rotate(70deg) saturate(2) opacity(0.85) drop-shadow(0 0 3px rgba(74,222,128,0.5)); }
     
@@ -825,10 +859,26 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         padding-top: 5px !important;
         padding-bottom: 5px !important;
     }
-    #vehicle-modal .modal-body textarea.notes-auto-expand {
-        min-height: 24px !important;
+    /* Sağ kolon inputları: +2px dikey yükseklik (22→24px, textarea 24→26px) */
+    #vehicle-modal .modal-body .modal-column-right .form-input,
+    #vehicle-modal .modal-body .modal-column-right select {
         height: 24px !important;
-        padding: 5px 8px !important;
+        padding-top: 5px !important;
+        padding-bottom: 5px !important;
+    }
+    #vehicle-modal .modal-body .modal-column-right input[type="date"].form-input {
+        height: 24px !important;
+        padding-top: 5px !important;
+        padding-bottom: 5px !important;
+    }
+    #vehicle-modal .modal-body .modal-column-right textarea.form-input {
+        padding-top: 6px !important;
+        padding-bottom: 6px !important;
+    }
+    #vehicle-modal .modal-body textarea.notes-auto-expand {
+        min-height: 26px !important;
+        height: 26px !important;
+        padding: 6px 8px !important;
     }
     /* Masaüstü: Input/select/textarea focus - kırmızı çerçeve (Kasko ile aynı) */
     #vehicle-modal .modal-body .form-input:focus,
@@ -854,18 +904,21 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-body .btn-save,
     #vehicle-modal .modal-body .btn-cancel { height: 28px !important; font-size: 11px; }
     
-    #vehicle-modal .modal-body .form-section .form-label,
-    #vehicle-modal .modal-body .form-section-inline .form-label {
+    /* Sol grid: etiketler 1px (sağ grid ayrı kurallarla aşağıda) */
+    #vehicle-modal .modal-body .modal-column-left .form-section .form-label,
+    #vehicle-modal .modal-body .modal-column-left .form-section-inline .form-label {
         margin-top: 1px !important;
         margin-bottom: 1px !important;
     }
-    /* Sağ grid: Sigorta hariç etiketlerden önce 2px (first-child 0) */
+    /* Sağ grid: Sigorta hariç etiketlerden önce 1px (first-child 0) */
     #vehicle-modal .modal-body .modal-column-right .form-section:first-child .form-label {
         margin-top: 0 !important;
+        margin-bottom: 1px !important;
     }
     #vehicle-modal .modal-body .modal-column-right .form-section:not(:first-child) .form-label,
     #vehicle-modal .modal-body .modal-column-right .form-section-inline .form-label {
-        margin-top: 2px !important;
+        margin-top: 1px !important;
+        margin-bottom: 1px !important;
     }
     /* Taşıt Tipi: etiket–ikon dikey aralık sıfır (masaüstü) */
     #vehicle-modal .modal-body .modal-column-left .form-section-inline:first-child .form-label {
@@ -877,7 +930,8 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         display: block;
     }
     #vehicle-modal .modal-body .modal-column-left .form-section-inline:first-child .vehicle-type-group {
-        margin-top: -10px !important;
+        margin-top: -12px !important;
+        gap: 27px !important;
     }
     
     #vehicle-modal .modal-body .form-section,
@@ -904,28 +958,23 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-body .modal-column-right .form-section:nth-of-type(3) {
         margin-bottom: 6px;
     }
-    /* Muayene Bitiş Tarihi – Yedek Anahtar arası 5px */
+    /* Kasko – Muayene arası +4px */
+    #vehicle-modal .modal-body .modal-column-right .form-section:has(#vehicle-kasko-date) {
+        margin-bottom: 8px !important;
+    }
+    /* Muayene Bitiş Tarihi – Yedek Anahtar arası 8px */
     #vehicle-modal .modal-body .modal-column-right .form-section:has(#vehicle-muayene-date) {
-        margin-bottom: 5px !important;
+        margin-bottom: 8px !important;
     }
-    #vehicle-modal .modal-body .modal-column-right .form-section-inline:first-of-type:has(.radio-group) .form-label {
-        align-self: center;
-    }
+    /* Sağ kolon Var/Yok satır yüksekliği (+4px eklendi) */
     #vehicle-modal .modal-body .modal-column-right .form-section-inline:has(.radio-group) {
-        height: 19px !important;
-        margin-bottom: 3px !important;
+        height: auto;
+        margin-bottom: 8px !important;
     }
-    #vehicle-modal .modal-body .modal-column-right .form-section-inline:first-of-type:has(.radio-group) {
-        margin-bottom: 0 !important;
-    }
-    #vehicle-modal .modal-body .modal-column-right .form-section-inline:has([data-group="kredi"]) {
-        height: 19px !important;
-        margin-bottom: 3px !important;
-    }
-    /* Masaüstü: ilk satır (Taşıt Tipi / Sigorta); ikon–Plaka arası 2px daha az */
+    /* Masaüstü: ilk satır (Taşıt Tipi / Sigorta); ikon–Plaka arası */
     #vehicle-modal .modal-body .modal-column-left .form-section-inline:first-child {
         margin-top: -7px;
-        margin-bottom: 2px !important;
+        margin-bottom: -1px !important;
     }
     /* Masaüstü: Sigorta etiketi Taşıt Tipi etiketiyle aynı hizaya gelsin */
     #vehicle-modal .modal-body .modal-column-right .form-section:first-child {
@@ -933,7 +982,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     }
     #vehicle-modal .modal-body .modal-column-right .form-section:has(#vehicle-branch-select) {
         margin-top: 2px;
-        margin-bottom: 4px !important;
+        margin-bottom: 8px !important;
     }
     /* Tahsis Edilen Şube etiketi: 3px yukarı */
     #vehicle-modal .modal-body .modal-column-right .form-section:has(#vehicle-branch-select) .form-label {
@@ -948,8 +997,10 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         display: flex;
         flex-direction: column;
     }
-    #vehicle-modal .modal-body .modal-column-left .form-section-inline:nth-of-type(4) {
-        margin-top: auto;
+    /* Boya/Değişen: satır en altta kalsın (Notlar hizası bozulmasın) */
+    #vehicle-modal .modal-body .modal-column-left .form-section-inline:has(#boya-var) {
+        margin-top: auto !important;
+        margin-bottom: 0 !important;
     }
     /* Tramer/Boya container form-section: gizliyken boşluk bırakma (denge için) */
     #vehicle-modal .modal-body .modal-column-left .form-section:has(#tramer-records-container),
@@ -958,21 +1009,21 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         margin-bottom: 0 !important;
         min-height: 0;
     }
-    /* Notlar ile Boya/Değişen aynı satırda: sağ sütun son blok alta itilir */
+    /* Notlar ile Boya/Değişen aynı satırda: sağ sütun son blok alta itilir. Alttaki açıklık: bu bloktaki min-height + flex:1 + modal-body padding-bottom + form-buttons padding. */
     #vehicle-modal .modal-body .modal-column-right .form-section:has(#vehicle-notes) {
         margin-top: auto;
         margin-bottom: 0;
         flex: 1;
-        min-height: 70px;
+        min-height: 42px;
     }
     /* Masaüstü: Notlar textarea yüksekliği */
     #vehicle-modal .modal-body #vehicle-notes {
-        min-height: 64px !important;
+        min-height: 40px !important;
         height: auto !important;
     }
     #vehicle-modal .modal-body .form-buttons {
         padding: 0 0 6px 0;
-        margin-top: 0 !important;
+        margin-top: 6px !important;
         flex-shrink: 0;
         align-items: flex-end;
     }
@@ -983,10 +1034,10 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         max-width: calc(100% - 2px);
     }
     
-    .vehicle-type-btn { width: 38px; height: 26px; padding: 0; }
-    .vehicle-type-btn[data-type="otomobil"] { width: 44px; height: 42px; }
-    .vehicle-type-btn[data-type="minivan"] { width: 32px; height: 22px; }
-    .vehicle-type-btn[data-type="kamyon"] { width: 46px; height: 33px; padding-top: 2px; }
+    .vehicle-type-btn { width: 34px; height: 24px; padding: 0; }
+    .vehicle-type-btn[data-type="otomobil"] { width: 40px; height: 38px; }
+    .vehicle-type-btn[data-type="minivan"] { width: 28px; height: 20px; }
+    .vehicle-type-btn[data-type="kamyon"] { width: 42px; height: 30px; padding-top: 2px; }
     .vehicle-type-btn[data-type="kamyon"] img { object-position: bottom center; transform: scale(0.95); transform-origin: bottom center; }
 }
 
