@@ -1974,8 +1974,8 @@
     /* Mobil: Yılı daraltıldı, Kullanıcı genişletildi */
     grid-template-columns: 32px 70px 2.4fr 60px 1.8fr 2fr !important; /* Yılı, Plaka, Marka/Model, KM, Kullanıcı, Şube */
     gap: 4px !important; /* Masaüstü ile aynı */
-    padding: 6px 1px !important; /* Dikey boşluk artırıldı */
-    min-height: 48px !important; /* Satırlara minimum yükseklik – rahat okunabilirlik */
+    padding: 4px 1px !important; /* Dikey boşluk 2px azaltıldı */
+    min-height: 46px !important; /* Satırlara minimum yükseklik 2px azaltıldı */
     align-items: center !important;
     border-bottom: 1px solid rgba(255,255,255,0.08) !important; /* Masaüstü ile aynı */
     background: rgba(255,255,255,0.01) !important; /* Masaüstü ile aynı */
@@ -1994,7 +1994,7 @@
     display: grid !important;
     grid-template-columns: 32px 70px 2.4fr 60px 1.8fr 2fr !important; /* Yılı daraltıldı, Kullanıcı genişletildi */
     gap: 4px !important; /* Masaüstü ile aynı */
-    padding: 6px 4px !important; /* Dikey boşluk artırıldı – hücrelerle uyum */
+    padding: 4px 4px !important; /* Dikey boşluk 2px azaltıldı */
     margin-bottom: 4px !important; /* Masaüstü ile aynı */
     border-bottom: 1px solid rgba(255,255,255,0.12) !important; /* Masaüstü ile aynı */
     background: #080d16 !important;
@@ -2024,7 +2024,7 @@
     line-height: 1.4 !important; /* 1.3 → 1.4 – satır aralığı rahat */
     min-width: 0 !important;
     border-right: 1px solid rgba(255, 255, 255, 0.1) !important; /* Masaüstü ile aynı */
-    padding: 6px 4px !important; /* Dikey boşluk artırıldı – göz yorgunluğu azaltıldı */
+    padding: 4px 4px !important; /* Dikey boşluk 2px azaltıldı */
     overflow: hidden !important;
   }
 
