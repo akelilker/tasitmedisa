@@ -1025,24 +1025,27 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         margin-top: auto !important;
         margin-bottom: 0 !important;
     }
-    /* Tramer/Boya container form-section: gizliyken boşluk bırakma (denge için) */
+    /* Tramer/Boya container form-section: gizliyken flex içinde kesin 0 alan kaplaması */
     #vehicle-modal .modal-body .modal-column-left .form-section:has(#tramer-records-container),
     #vehicle-modal .modal-body .modal-column-left .form-section:has(#boya-parts-container) {
         margin-top: 0 !important;
         margin-bottom: 0 !important;
+        padding: 0 !important;
         min-height: 0;
+        height: 0;
+        overflow: hidden;
     }
     /* Notlar ile Boya/Değişen aynı satırda: sağ sütun son blok alta itilir. min-width:0 ile yükseklik artınca sola taşma önlenir. */
     #vehicle-modal .modal-body .modal-column-right .form-section:has(#vehicle-notes) {
         margin-top: auto;
         margin-bottom: 0;
         flex: 1;
-        min-height: 42px;
+        min-height: 54px;
         min-width: 0;
     }
-    /* Masaüstü: Notlar textarea yüksekliği */
+    /* Masaüstü: Notlar textarea yüksekliği (Boya/Değişen alt çerçevesiyle hizalı) */
     #vehicle-modal .modal-body #vehicle-notes {
-        min-height: 40px !important;
+        min-height: 52px !important;
         height: auto !important;
     }
     #vehicle-modal .modal-body .form-buttons {
