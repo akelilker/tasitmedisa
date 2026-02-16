@@ -961,7 +961,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     }
     #vehicle-modal .modal-body .form-buttons {
         padding: 0 0 6px 0;
-        margin-top: 3px !important;
+        margin-top: 6px !important;
         flex-shrink: 0;
         align-items: flex-end;
     }
