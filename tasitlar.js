@@ -462,10 +462,18 @@
         };
         
         html += '<div class="list-header-row">';
-        // Sıralamaya göre sütun başlıklarını render et
+        // Sıralamaya göre sütun başlıklarını render et (mobilde Marka/Model ve Taşıt Tipi iki satır)
         vehicleColumnOrder.forEach(columnKey => {
           const def = columnDefs[columnKey];
           if (def) {
+            let labelHtml;
+            if (isMobile && columnKey === 'brand') {
+              labelHtml = '<span class="header-first-line">Marka /</span><span class="header-second-line">Model</span>';
+            } else if (isMobile && columnKey === 'type') {
+              labelHtml = '<span class="header-first-line">Taşıt</span><span class="header-second-line">Tipi</span>';
+            } else {
+              labelHtml = `<span>${escapeHtml(def.label)}</span>`;
+            }
             html += `
               <div class="list-cell ${def.class} sortable-header" 
                    data-col="${columnKey}"
@@ -477,7 +485,7 @@
                    ondragleave="handleVehicleColumnDragLeave(event)"
                    ondragend="handleVehicleColumnDragEnd(event)"
                    onclick="handleColumnSort('${columnKey}')">
-                <span>${def.label}</span>${getSortIcon(columnKey)}
+                ${labelHtml}${getSortIcon(columnKey)}
               </div>
             `;
           }
