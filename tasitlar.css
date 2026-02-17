@@ -1066,7 +1066,7 @@
     align-items: center;
     padding: 6px 2px 4px 2px;
     margin-bottom: 4px;
-    border-bottom: 1px solid rgba(255,255,255,0.12);
+    border-bottom: 1px solid rgba(255,255,255,0.22);
     background: #080d16 !important; /* Modal arka plan rengiyle aynı - şeffaflık sorunu çözülsün */
     backdrop-filter: blur(8px) !important; /* Blur efekti - içerik altından geçerken daha iyi görünüm */
     -webkit-backdrop-filter: blur(8px) !important; /* Safari desteği */
@@ -2119,7 +2119,7 @@
     gap: 4px !important; /* Masaüstü ile aynı */
     padding: 4px 4px !important; /* Dikey boşluk 2px azaltıldı */
     margin-bottom: 4px !important; /* Masaüstü ile aynı */
-    border-bottom: 1px solid rgba(255,255,255,0.12) !important; /* Masaüstü ile aynı */
+    border-bottom: 1px solid rgba(255,255,255,0.22) !important;
     background: #080d16 !important;
     backdrop-filter: blur(8px) !important;
     -webkit-backdrop-filter: blur(8px) !important;
