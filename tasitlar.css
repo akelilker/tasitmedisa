@@ -358,11 +358,7 @@
 #vehicle-detail-modal .muayene-detail-tooltip.visible[hidden] {
     display: block !important;
 }
-#vehicle-detail-modal .muayene-detail-exclamation:hover + .muayene-detail-tooltip-wrap .muayene-detail-tooltip,
-#vehicle-detail-modal .muayene-detail-exclamation:focus + .muayene-detail-tooltip-wrap .muayene-detail-tooltip,
-#vehicle-detail-modal .muayene-detail-tooltip-wrap:hover .muayene-detail-tooltip {
-    display: block !important;
-}
+/* Tooltip görünürlüğü JS ile (mouseover/mouseout + gecikmeli kapatma); hover kuralları kaldırıldı */
 #vehicle-detail-modal .muayene-detail-tooltip-link {
     background: none;
     border: none;
