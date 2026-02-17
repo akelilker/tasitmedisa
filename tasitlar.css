@@ -114,13 +114,13 @@
 /* Marka/Model - yatayda ortalanmÄ±ÅŸ (tarihÃ§e butonu toolbar'a taÅŸÄ±ndÄ±) */
 .detail-brand-year-row {
     display: flex;
-    justify-content: space-between; /* Olay Ekle solda, TarihÃ§e saÄŸda */
+    justify-content: space-between; /* Olay Ekle solda, Tarihçe sağda */
     align-items: center;
     width: 100%;
-    margin-top: 0 !important; /* Plaka ile arasÄ± 4px (detail-plate'in margin-bottom'u yeterli) */
+    margin-top: -4px !important; /* Olay Ekle + Tarihçe 4px yukarı */
     position: relative;
     padding-left: 0; /* Sol taraftan padding yok */
-    padding-right: 0; /* SaÄŸ taraftan padding yok */
+    padding-right: 0; /* Sağ taraftan padding yok */
 }
 
 .detail-brand-year {
