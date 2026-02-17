@@ -1348,7 +1348,7 @@ input.settings-form-input:-moz-autofill,
         box-sizing: border-box !important;
     }
 
-    /* ESKİ KOD TEMİZLİĞİ: Ok işaretini kaldır */
+    /* Dropdown alt menü ok işareti kapalı */
     .settings-dropdown .has-submenu::after,
     .settings-dropdown .has-submenu::before {
         display: none !important;
