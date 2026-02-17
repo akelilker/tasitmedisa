@@ -1752,10 +1752,12 @@
     padding: 4px 8px;
     flex-shrink: 0; /* SaÄŸda sabit kalÄ±r */
     z-index: 2; /* Marka/model'in Ã¼stÃ¼nde (1'den 2'ye yÃ¼kseltildi) */
+    transition: color 0.2s ease, font-size 0.2s ease;
 }
 
 .detail-brand-year-row .history-btn-minimal:hover {
     color: #fff;
+    font-size: 16px; /* Hover'da metin de büyüsün (15px → 16px) */
 }
 
 .detail-brand-year-row .history-btn-minimal svg {
@@ -2485,6 +2487,9 @@
   #vehicle-detail-modal .detail-brand-year-row .history-btn-minimal {
     font-size: 16px !important;
     color: var(--form-label-color) !important;
+  }
+  #vehicle-detail-modal .detail-brand-year-row .history-btn-minimal:hover {
+    font-size: 17px !important;
   }
 
   /* Olay Ekle menü: sol ok + etiket mobilde 6px yukarı */
