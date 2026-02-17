@@ -958,10 +958,10 @@
     text-overflow: ellipsis !important;
 }
 
-/* Liste container: başlığın altında kalsın, kayarken üzerine taşmasın; sütun başlıklarından itibaren bir zerre yukarı */
+/* Liste container: başlığın altında kalsın, kayarken üzerine taşmasın; sütun başlıkları + altındaki öğeler 3px yukarı */
 #vehicles-modal .modal-body .view-list {
     position: relative;
-    margin-top: -8px;
+    margin-top: -11px;
     isolation: isolate;
 }
 
