@@ -1782,8 +1782,9 @@
             e.preventDefault();
             e.stopPropagation();
             
-            radioBtns.forEach(b => b.classList.remove('active'));
+            radioBtns.forEach(b => { b.classList.remove('active', 'green'); });
             this.classList.add('active');
+            if (this.dataset.value === 'var') this.classList.add('green');
             
             if (this.dataset.value === 'var') {
               if (detayWrapper) detayWrapper.style.display = 'block';
@@ -1805,8 +1806,9 @@
             e.preventDefault();
             e.stopPropagation();
             
-            radioBtns.forEach(b => b.classList.remove('active'));
+            radioBtns.forEach(b => { b.classList.remove('active', 'green'); });
             this.classList.add('active');
+            if (this.dataset.value === 'var') this.classList.add('green');
             
             if (this.dataset.value === 'var') {
               if (detayWrapper) detayWrapper.style.display = 'block';
@@ -1829,7 +1831,7 @@
           if (vehicle.lastikDurumu === 'var') {
             const varBtn = Array.from(radioBtns).find(btn => btn.dataset.value === 'var');
             if (varBtn) {
-              varBtn.classList.add('active');
+              varBtn.classList.add('active', 'green');
               if (adresWrapper) adresWrapper.style.display = 'block';
               if (adresInput && vehicle.lastikAdres) adresInput.value = vehicle.lastikAdres;
             }
@@ -1848,8 +1850,9 @@
             e.preventDefault();
             e.stopPropagation();
             
-            radioBtns.forEach(b => b.classList.remove('active'));
+            radioBtns.forEach(b => { b.classList.remove('active', 'green'); });
             this.classList.add('active');
+            if (this.dataset.value === 'var') this.classList.add('green');
             
             if (this.dataset.value === 'var') {
               if (adresWrapper) adresWrapper.style.display = 'block';

@@ -643,9 +643,14 @@
     box-sizing: border-box;
   }
 
-  /* Olay Ekle modalları – masaüstü: etiket+input yatayda ortada, etiket metni sola yaslı; input 425px; Kaydet/Vazgeç 190px, ince */
-  .olay-ekle-modal .modal-body > div > div:has(label) {
-    max-width: 425px;
+  /* Olay Ekle modalları – masaüstü: içerik buton satırı genişliği (390px), çerçeve ile 1px boşluk */
+  .olay-ekle-modal .modal-body {
+    padding-left: 1px !important;
+    padding-right: 1px !important;
+  }
+  .olay-ekle-modal .modal-body > div > div:has(label),
+  .olay-ekle-modal .modal-body > div > div:has(.modal-btn-cancel) {
+    max-width: 390px;
     margin-left: auto;
     margin-right: auto;
     width: 100%;
@@ -656,15 +661,15 @@
   .olay-ekle-modal .modal-body .form-input,
   .olay-ekle-modal .modal-body select,
   .olay-ekle-modal .modal-body textarea {
-    max-width: 425px !important;
+    max-width: 390px !important;
     box-sizing: border-box;
-    min-height: 35px !important;
+    min-height: 23px !important;
     font-size: 12px !important;
   }
   .olay-ekle-modal .modal-body input.form-input,
   .olay-ekle-modal .modal-body select {
-    height: 35px !important;
-    min-height: 35px !important;
+    height: 30px !important;
+    min-height: 23px !important;
   }
   .olay-ekle-modal .modal-body .modal-btn-cancel,
   .olay-ekle-modal .modal-body .modal-btn-confirm {
@@ -672,6 +677,45 @@
     font-weight: 400 !important;
     border-width: 0.2px !important;
     padding: 6px 12px !important;
+  }
+  .olay-ekle-modal .modal-body .modal-btn-cancel:hover {
+    border-width: 1px !important;
+    background: rgba(40, 167, 69, 0.15) !important;
+  }
+  .olay-ekle-modal .modal-body .modal-btn-confirm:hover {
+    border-width: 1px !important;
+    background: rgba(var(--theme-color-rgb, 225, 6, 27), 0.15) !important;
+  }
+  /* Etiket+input grupları arası 3px */
+  .olay-ekle-modal .modal-body > div:first-of-type {
+    gap: 3px !important;
+  }
+  /* Evet/Hayır, Var/Yok: etiket + radio grubu aynı satırda */
+  .olay-ekle-modal .modal-body > div > div:has(.radio-group) {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 8px !important;
+  }
+  .olay-ekle-modal .modal-body > div > div:has(.radio-group) label {
+    margin-bottom: 0 !important;
+    flex-shrink: 0 !important;
+  }
+  /* Input focus: ince kırmızı çerçeve (kayıt modalı gibi) */
+  .olay-ekle-modal .modal-body .form-input:focus,
+  .olay-ekle-modal .modal-body select:focus,
+  .olay-ekle-modal .modal-body textarea.form-input:focus {
+    border: 1px solid var(--theme-color) !important;
+    outline: none !important;
+    box-shadow: none !important;
+  }
+  /* Olay Ekle (14 modal): sol ok 2px büyük, geri çubuğu 6px yukarı */
+  .olay-ekle-modal .olay-ekle-back-bar {
+    margin-top: -6px !important;
+  }
+  .olay-ekle-modal .olay-ekle-back-btn svg {
+    width: 18px !important;
+    height: 18px !important;
   }
 }
 
@@ -1766,23 +1810,45 @@
     gap: 24px !important;
   }
   
-  /* Yedek Anahtar, Kredi, Lastik ModallarÄ± - Var/Yok ButonlarÄ± Stili */
+  /* Olay Ekle (14 modal): Var/Yok, Evet/Hayır – ince çerçeve, renkler, seçili yarı saydam */
   .olay-ekle-modal .radio-btn {
     background: transparent !important;
-    border: none !important;
-    padding: 0 !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: 4px !important;
+    padding: 4px 10px !important;
     font-size: 14px !important;
-    font-weight: 600 !important;
+    font-weight: 400 !important;
     cursor: pointer !important;
-    transition: font-size 0.2s ease !important;
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease !important;
   }
-  
-  .olay-ekle-modal .radio-btn:hover {
-    font-size: 16px !important; /* Metin bÃ¼yÃ¼yebilir */
+  .olay-ekle-modal .radio-btn.hover-green {
+    color: #4ade80 !important;
+    border-color: rgba(74, 222, 128, 0.85) !important;
   }
-  
+  .olay-ekle-modal .radio-btn.hover-red {
+    color: var(--theme-color) !important;
+    border-color: rgba(var(--theme-color-rgb), 0.5) !important;
+  }
+  .olay-ekle-modal .radio-btn:not(.active).hover-green:hover {
+    background: rgba(74, 222, 128, 0.12) !important;
+    border-color: rgba(74, 222, 128, 0.45) !important;
+  }
+  .olay-ekle-modal .radio-btn:not(.active).hover-red:hover {
+    background: rgba(var(--theme-color-rgb), 0.12) !important;
+    border-color: rgba(var(--theme-color-rgb), 0.45) !important;
+  }
+  .olay-ekle-modal .radio-btn.active {
+    background: rgba(var(--theme-color-rgb), 0.20) !important;
+    border-color: var(--theme-color) !important;
+    color: #e0e0e0 !important;
+  }
+  .olay-ekle-modal .radio-btn.active.green {
+    background: rgba(74, 222, 128, 0.18) !important;
+    border-color: rgba(74, 222, 128, 0.85) !important;
+    color: #4ade80 !important;
+  }
   .olay-ekle-modal .radio-group {
-    justify-content: flex-start !important; /* Sola yaslÄ± */
+    justify-content: flex-start !important;
   }
   
   .detail-row-label { font-size: 14px; color: var(--form-label-color); }
@@ -2032,19 +2098,8 @@
     height: 32px !important;
   }
 
-  /* --- MODAL BAÅžLIKLARI (UZUN BAÅžLIKLI MODALLAR) --- */
-  /* Genel çözüm: Tüm uzun başlıklı modallar için header overflow düzeltmesi */
-  #lastik-guncelle-modal .modal-header,
-  #kullanici-atama-modal .modal-header,
-  #takip-cihaz-guncelle-modal .modal-header {
-    height: auto !important;
-    padding: 8px 36px !important;
-    min-height: 50px !important; /* Minimum yükseklik koru */
-  }
-  
-  #lastik-guncelle-modal .modal-header h2,
-  #kullanici-atama-modal .modal-header h2,
-  #takip-cihaz-guncelle-modal .modal-header h2 {
+  /* Olay Ekle (14 modal): ortak header/h2 – uzun başlıklar satır kırar */
+  .olay-ekle-modal .modal-header h2 {
     width: 100% !important;
     text-align: center !important;
     white-space: normal !important;
@@ -2052,26 +2107,11 @@
     padding: 0 30px !important;
     word-wrap: break-word !important;
     overflow-wrap: break-word !important;
-    font-size: 17px !important; /* Yazlık/Kışlık başlık X butonu altında kalmaması için küçült */
   }
-  
   /* Olay ekle modalları sol ok/kapat ikonu 20px→24px */
   .olay-ekle-modal .modal-close svg {
     width: 24px !important;
     height: 24px !important;
-  }
-  
-  #lastik-guncelle-modal .modal-close,
-  #kullanici-atama-modal .modal-close,
-  #takip-cihaz-guncelle-modal .modal-close {
-    position: absolute !important;
-    right: 15px !important;
-    top: 50% !important;
-    transform: translateY(-50%) !important;
-    z-index: 10 !important;
-    background: rgba(8, 13, 22, 0.8) !important;
-    border-radius: 4px !important;
-    padding: 4px !important;
   }
 
   /* --- TARÄ°HÃ‡E MODAL --- */
