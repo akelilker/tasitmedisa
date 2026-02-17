@@ -175,7 +175,7 @@ background: none !important;
 #reports-modal .back-label {
 font-size: 14px;
 font-weight: 600;
-color: #ccc;
+color: var(--form-label-color);
 }
 /* Row-1: sol ok ile metin ayni satirda */
 #reports-modal .reports-list-header-actions .stok-controls-row-1,
@@ -286,7 +286,7 @@ margin-bottom: 2px;
 
 .report-card .label {
 font-size: 11px;
-color: #aaa;
+color: var(--form-label-color);
 letter-spacing: 0.5px;
 text-transform: uppercase;
 }
@@ -1405,7 +1405,7 @@ margin-bottom: 0;
 
 .kullanici-detail-label {
 font-size: 12px;
-color: #888;
+color: var(--form-label-color);
 font-weight: 600;
 }
 
@@ -1480,7 +1480,7 @@ color: #ffffff !important;
 font-size: 21px;
 }
 .report-card .label {
-color: rgba(255, 255, 255, 0.85) !important;
+color: var(--form-label-color) !important;
 font-size: 11px;
 }
 .stok-branch-item {

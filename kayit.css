@@ -150,7 +150,7 @@
     display: block;
     font-size: 12px; 
     font-weight: 600;
-    color: #cccccc; 
+    color: var(--form-label-color); 
     margin-bottom: 0px; 
 }
 
@@ -584,7 +584,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
 @media (max-width: 640px) {
     /* ✨ MOBİL KONTRAST ARTIRMA ✨ */
     .form-label {
-        color: #ffffff !important; /* Daha parlak beyaz */
+        color: var(--form-label-color) !important;
     }
     
     .form-input {
