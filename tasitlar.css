@@ -606,16 +606,15 @@
     color: #e8e8e8;
     opacity: 1;
   }
+  /* Tüm sütun başlıkları aynı font boyutu (Kullanıcı küçülüyorsa hepsi aynı) */
   #vehicles-modal .list-header-row .list-cell span {
     font-size: clamp(10px, 1.6vw, 13px) !important;
     color: #f0f0f0 !important;
   }
-  #vehicles-modal .list-header-row .list-cell.list-brand .sortable-header span {
-    font-size: 9px !important;
-    color: #f0f0f0 !important;
-  }
+  #vehicles-modal .list-header-row .list-cell.list-brand .sortable-header span,
   #vehicles-modal .list-header-row .list-cell.list-user span {
-    font-size: clamp(8px, 1.2vw, 12px) !important;
+    font-size: clamp(10px, 1.6vw, 13px) !important;
+    color: #f0f0f0 !important;
   }
   /* Taşıt listesi: ilk satır arka plan ve dikey hizalama (masaüstü) */
   #vehicles-modal .view-list .list-item:first-child {
@@ -1164,9 +1163,15 @@
 .view-list .list-cell.list-user {
     justify-content: center !important;
     text-align: center !important;
-    text-overflow: ellipsis !important;
-    overflow: hidden !important;
     min-width: 0 !important;
+}
+/* Kullanıcı veri hücresi: sığmazsa en fazla 1.5pt küçülsün, olmazsa ikinci satıra insın */
+.view-list .list-cell.list-user {
+    font-size: clamp(10px, 1.5vw, 12px) !important;
+    white-space: normal !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+    overflow: visible !important;
 }
 /* Kullanıcı sütun başlığı: dar kolonda küçülsün ve gerekirse satır kırılsın */
 .list-header-row .list-cell.list-user {
@@ -1174,8 +1179,9 @@
     word-break: break-word;
     overflow-wrap: break-word;
 }
+/* Kullanıcı başlığı da diğerleriyle aynı punto */
 .list-header-row .list-cell.list-user span {
-    font-size: clamp(8px, 1.2vw, 12px) !important;
+    font-size: clamp(10px, 1.6vw, 12px) !important;
 }
 
 .list-header-row .list-cell.list-branch {
@@ -1263,7 +1269,7 @@
     max-width: 100% !important; /* Icon absolute olduğu için 100% kullanabiliriz */
     min-width: 0 !important;
     display: block !important; /* Block - wrap için daha iyi */
-    font-size: 8px !important; /* Sabit küçük font - dar sütunlarda kesinlikle sığsın */
+    font-size: clamp(10px, 1.6vw, 12px) !important; /* Diğer başlıklarla aynı punto */
     line-height: 1.15 !important;
     padding: 0 14px 0 0 !important; /* Sağda icon için yer bırak */
 }
@@ -2204,7 +2210,7 @@
     min-width: 0 !important;
   }
 
-  /* Kullanıcı sütunu - mobil: tahsis edilmemiş alt satıra inebilsin */
+  /* Kullanıcı sütunu - mobil: isim sığmazsa en fazla 1.5pt küçülsün, gerekirse alt satıra insın */
   .view-list .list-cell.list-user,
   .list-header-row .list-cell.list-user {
     display: flex !important;
@@ -2215,6 +2221,9 @@
     word-break: break-word !important;
     overflow-wrap: break-word !important;
     overflow: visible !important;
+  }
+  .view-list .list-cell.list-user {
+    font-size: clamp(14px, 4vw, 16px) !important; /* 16px'ten en fazla ~1.5pt küçülebilir */
   }
 
   /* Tek satır hücreler - list-brand, list-branch, list-user wrap edebilir */
@@ -2301,6 +2310,11 @@
     justify-content: center !important; /* Masaüstü ile aynı */
     align-items: center !important;
     min-width: 0 !important;
+  }
+  /* Mobil: Marka/Model ve Taşıt Tipi başlığı iki satır – ikinci kısım alt satırda */
+  .list-header-row .list-cell.list-brand .header-second-line,
+  .list-header-row .list-cell.list-type .header-second-line {
+    display: block !important;
   }
 
   .list-header-row .list-cell.list-plate {
