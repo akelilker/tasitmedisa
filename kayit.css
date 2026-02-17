@@ -808,7 +808,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     .modal-body input[type="date"].form-input::-webkit-datetime-edit { font-size: 11px !important; }
     .modal-body input[type="date"].form-input::-webkit-datetime-edit-fields-wrapper { padding: 0; }
     
-    /* Sağ kolon tarih inputları: +1px dikey (29px), gg.aa.yyyy sığsın */
+    /* Sağ kolon tarih inputları: +1px dikey (29px), gg.aa.yyyy kutudan taşmasın */
     #vehicle-modal .modal-column-right input[type="date"].form-input { 
         height: 29px !important;
         font-size: 11px !important;
@@ -816,10 +816,13 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         max-width: 100%; 
         margin-right: 0; 
         padding-right: 24px !important;
-        padding-left: 6px !important;
+        padding-left: 10px !important;
         text-align: center;
+        overflow: hidden;
+        box-sizing: border-box;
     }
-    #vehicle-modal .modal-column-right input[type="date"].form-input::-webkit-datetime-edit { font-size: 11px !important; }
+    #vehicle-modal .modal-column-right input[type="date"].form-input::-webkit-datetime-edit { font-size: 11px !important; max-width: 100%; box-sizing: border-box; }
+    #vehicle-modal .modal-column-right input[type="date"].form-input::-webkit-datetime-edit-fields-wrapper { padding: 0 2px; box-sizing: border-box; }
     .modal-body input[type="date"].form-input::-webkit-calendar-picker-indicator { right: 4px !important; transform: translateY(-50%) !important; }
     .date-placeholder { left: 50%; transform: translateX(-50%); font-size: 11px; text-align: center; }
     
