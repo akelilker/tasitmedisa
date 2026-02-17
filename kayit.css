@@ -299,11 +299,19 @@ input[type="date"].form-input:focus {
 .date-placeholder {
     position: absolute;
     left: 8px;
-    color: #666; 
+    color: #666;
     pointer-events: none;
     font-size: 10px;
-    z-index: 100; 
+    z-index: 100;
     font-family: inherit;
+}
+
+/* Kasko ve Muayene (sağ kolon) tarih placeholder'ı kutu içinde yatayda ortalı – masaüstü + mobil */
+#vehicle-modal .modal-column-right .date-placeholder,
+#vehicle-modal .muayene-input-wrap .date-placeholder {
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    text-align: center;
 }
 
 .form-section:has(input[type="date"]) {
@@ -527,17 +535,23 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
 .muayene-date-section.muayene-no-type-warning .muayene-exclamation {
     display: block;
 }
-.muayene-date-section.muayene-no-type-warning #vehicle-muayene-date,
-.muayene-date-section.muayene-no-type-warning #vehicle-muayene-date::-webkit-datetime-edit {
-    border-color: var(--theme-color) !important;
-    color: var(--theme-color) !important;
-}
 .muayene-date-section.muayene-no-type-warning #vehicle-muayene-date {
+    border-color: var(--theme-color) !important;
     box-shadow: 0 0 4px rgba(var(--theme-color-rgb), 0.4) !important;
     padding-left: 14px !important;
 }
+.muayene-date-section.muayene-no-type-warning #vehicle-muayene-date:not(.has-value):not(:focus)::-webkit-datetime-edit {
+    color: transparent !important;
+}
+.muayene-date-section.muayene-no-type-warning #vehicle-muayene-date.has-value::-webkit-datetime-edit,
+.muayene-date-section.muayene-no-type-warning #vehicle-muayene-date:focus::-webkit-datetime-edit {
+    color: var(--theme-color) !important;
+}
 .muayene-date-section.muayene-no-type-warning #vehicle-muayene-date::-webkit-datetime-edit-fields-wrapper {
     padding-left: 0;
+}
+.muayene-date-section.muayene-no-type-warning .date-placeholder {
+    color: var(--theme-color) !important;
 }
 .muayene-tooltip-wrap {
     position: absolute;

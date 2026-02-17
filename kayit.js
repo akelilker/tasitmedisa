@@ -799,7 +799,9 @@
     // Eğer placeholder zaten varsa, kaldır
     const existing = input.parentElement.querySelector('.date-placeholder');
     if (existing) existing.remove();
-    
+
+    if (input.value) input.classList.add('has-value');
+
     // Mobil kontrolü
     const isMobile = window.innerWidth <= 640;
     const leftValue = isMobile ? '4px' : '8px';
