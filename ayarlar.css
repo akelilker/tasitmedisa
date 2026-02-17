@@ -1399,24 +1399,35 @@ input.settings-form-input:-moz-autofill,
     #branch-form-modal .modal-body #branch-form,
     #user-form-modal .modal-body #user-form.user-form-inner {
         padding: 0 !important;
-    }
-    #branch-form-modal .modal-body .form-section .form-label,
-    #user-form-modal .modal-body .form-section .form-label {
-        margin-top: 2px !important;
-        margin-bottom: 2px !important;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
     #branch-form-modal .modal-body .form-section,
     #user-form-modal .modal-body .form-section {
+        max-width: 375px;
+        width: 100%;
+        margin-left: auto;
+        margin-right: auto;
         margin-top: 4px;
     }
     #branch-form-modal .modal-body .form-section:first-child,
     #user-form-modal .modal-body .form-section:first-child {
         margin-top: 0;
     }
+    #branch-form-modal .modal-body .form-section .form-label,
+    #user-form-modal .modal-body .form-section .form-label {
+        margin-top: 2px !important;
+        margin-bottom: 2px !important;
+        font-size: 15px !important;
+        text-align: center;
+    }
     #branch-form-modal .modal-body .form-input,
     #user-form-modal .modal-body .form-input,
     #branch-form-modal .modal-body select.form-input,
     #user-form-modal .modal-body select.form-input {
+        width: 375px;
+        max-width: 375px;
         height: 24px !important;
         padding-top: 5px !important;
         padding-bottom: 5px !important;
