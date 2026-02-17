@@ -221,7 +221,7 @@
     display: block;
     font-size: 14px; /* +1pt (13px â†' 14px) */
     font-weight: 600;
-    color: #cccccc; /* KayÄ±t modundaki form-label ile aynÄ± */
+    color: var(--form-label-color);
     margin-bottom: 0; /* KayÄ±t modundaki form-label ile aynÄ± */
     line-height: 1.4; /* Value ile aynÄ± line-height */
 }
@@ -324,7 +324,7 @@
 .detail-label {
     font-size: 14px;
     font-weight: 600;
-    color: #aaa;
+    color: var(--form-label-color);
     margin-bottom: 8px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -1652,7 +1652,7 @@
     justify-content: flex-start !important; /* Sola yaslÄ± */
   }
   
-  .detail-row-label { font-size: 14px; color: #d4d4d4; }
+  .detail-row-label { font-size: 14px; color: var(--form-label-color); }
   .detail-row-value { font-size: 15px; }
 
   /* Åžube Atama Mobil */
@@ -1676,7 +1676,7 @@
 @media (max-width: 640px) {
   /* ✨ MOBİL KONTRAST ARTIRMA ✨ */
   .detail-row-label {
-    color: rgba(255, 255, 255, 0.9) !important; /* Label daha parlak */
+    color: var(--form-label-color) !important;
   }
   
   .detail-row-value {

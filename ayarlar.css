@@ -652,7 +652,7 @@
 
 /* Formlar */
 .settings-form-section { margin-bottom: 12px; }
-.settings-form-label { display: block; font-size: 13px; /* 1px büyütüldü */ color: #ccc; margin-bottom: 4px; }
+.settings-form-label { display: block; font-size: 13px; /* 1px büyütüldü */ color: var(--form-label-color); margin-bottom: 4px; }
 .settings-form-input, .settings-form-select {
     width: 100%;
     padding: 8px;
@@ -1151,7 +1151,7 @@ input.settings-form-input:-moz-autofill,
     border-radius: 6px;
 }
 
-.settings-detail-label { font-size: 13px; font-weight: 600; color: #888; }
+.settings-detail-label { font-size: 13px; font-weight: 600; color: var(--form-label-color); }
 .settings-detail-value { font-size: 14px; font-weight: 600; color: #e0e0e0; text-align: right; }
 .settings-detail-item { font-size: 16px; font-weight: 600; color: #e0e0e0; padding: 0; margin: 0; text-align: left; line-height: 1.2; }
 
@@ -1203,7 +1203,7 @@ input.settings-form-input:-moz-autofill,
     }
     
     .form-label {
-        color: rgba(255, 255, 255, 0.9) !important; /* Label daha parlak */
+        color: var(--form-label-color) !important;
     }
     
     /* Modal başlıkları mobilde 1.5 punto büyüt */
