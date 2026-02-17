@@ -245,9 +245,17 @@
                                 <label class="form-label" for="vehicle-kasko-date">Kasko Bitiş Tarihi</label>
                                 <input type="date" id="vehicle-kasko-date" class="form-input" inputmode="numeric">
                             </div>
-                            <div class="form-section">
+                            <div class="form-section muayene-date-section">
                                 <label class="form-label" for="vehicle-muayene-date">Muayene Bitiş Tarihi</label>
-                                <input type="date" id="vehicle-muayene-date" class="form-input" inputmode="numeric">
+                                <div class="muayene-date-row">
+                                    <span id="muayene-no-type-exclamation" class="muayene-exclamation" aria-hidden="true" title="Taşıt tipi seçilmedi">!</span>
+                                    <div class="muayene-tooltip-wrap">
+                                        <div id="muayene-no-type-tooltip" class="muayene-tooltip" role="tooltip" hidden>
+                                            Taşıt Tipi Seçilmediğinden, Muayene Bitiş Tarihi Hatalı Gözükebilir. Seçim Yapmak İçin <button type="button" class="muayene-tooltip-link" id="muayene-tooltip-tiklayiniz">Tıklayınız</button>.
+                                        </div>
+                                    </div>
+                                    <input type="date" id="vehicle-muayene-date" class="form-input" inputmode="numeric">
+                                </div>
                             </div>
                             <div class="form-section-inline">
                                 <label class="form-label" for="yedek-anahtar-var">Yedek Anahtar</label>
@@ -288,6 +296,27 @@
                         <button class="btn-save" onclick="saveVehicleRecord()">Kaydet</button>
                         <button class="btn-cancel" onclick="closeVehicleModal()">Vazgeç</button>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="vehicle-type-picker-overlay" class="vehicle-type-picker-overlay" aria-hidden="true" style="display: none;">
+            <div class="vehicle-type-picker-backdrop"></div>
+            <div class="vehicle-type-picker-box">
+                <h3 class="vehicle-type-picker-title">Taşıt Tipi Seçin</h3>
+                <div class="vehicle-type-picker-options">
+                    <button type="button" class="vehicle-type-picker-option" data-type="otomobil">
+                        <img src="icon/otomobil.svg" alt="Otomobil">
+                        <span class="vehicle-type-picker-label">Otomobil/ SUV</span>
+                    </button>
+                    <button type="button" class="vehicle-type-picker-option" data-type="minivan">
+                        <img src="icon/kucuk-ticari.svg" alt="Küçük Ticari">
+                        <span class="vehicle-type-picker-label">Küçük Ticari</span>
+                    </button>
+                    <button type="button" class="vehicle-type-picker-option" data-type="kamyon">
+                        <img src="icon/buyuk-ticari.svg" alt="Büyük Ticari">
+                        <span class="vehicle-type-picker-label">Büyük Ticari</span>
+                    </button>
                 </div>
             </div>
         </div>

@@ -754,6 +754,26 @@
 
     updateModalTitle("TAŞIT KAYIT İŞLEMLERİ");
     populateBranchSelect();
+
+    // Muayene taşıt tipi uyarısı: picker ve tooltip kapat, uyarı durumunu güncelle
+    const pickerOverlay = document.getElementById('vehicle-type-picker-overlay');
+    if (pickerOverlay) pickerOverlay.style.display = 'none';
+    const tooltipEl = document.getElementById('muayene-no-type-tooltip');
+    if (tooltipEl) { tooltipEl.classList.remove('visible'); tooltipEl.hidden = true; }
+    updateMuayeneNoTypeWarning();
+  }
+
+  /**
+   * Taşıt tipi seçili değilse Muayene Bitiş Tarihi satırına .muayene-no-type-warning ekler, seçiliyse kaldırır.
+   */
+  function updateMuayeneNoTypeWarning() {
+    const modal = getModal();
+    if (!modal) return;
+    const section = modal.querySelector('.muayene-date-section');
+    if (!section) return;
+    const hasType = !!modal.querySelector('.vehicle-type-btn.active');
+    if (hasType) section.classList.remove('muayene-no-type-warning');
+    else section.classList.add('muayene-no-type-warning');
   }
 
   // --- Date Placeholder Helper ---
@@ -1084,6 +1104,7 @@
         setupDatePlaceholder(input);
       });
       updateRadioButtonHover();
+      updateMuayeneNoTypeWarning();
     });
 
     // Taşıtlar modalını kapat
@@ -1732,8 +1753,63 @@
         btn.addEventListener("click", () => {
              $all(".vehicle-type-btn", getModal()).forEach(b => b.classList.remove("active"));
              btn.classList.add("active");
+             updateMuayeneNoTypeWarning();
         });
     });
+
+    // Muayene taşıt tipi uyarısı: ünlem tıklama (mobil tooltip), Tıklayınız → picker, picker seçim
+    const muayeneExclamation = document.getElementById('muayene-no-type-exclamation');
+    const muayeneTooltip = document.getElementById('muayene-no-type-tooltip');
+    const muayeneTiklayiniz = document.getElementById('muayene-tooltip-tiklayiniz');
+    const pickerOverlay = document.getElementById('vehicle-type-picker-overlay');
+    const pickerBackdrop = pickerOverlay && pickerOverlay.querySelector('.vehicle-type-picker-backdrop');
+    const pickerOptions = pickerOverlay && pickerOverlay.querySelectorAll('.vehicle-type-picker-option');
+
+    if (muayeneExclamation && muayeneTooltip) {
+      muayeneExclamation.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        const visible = muayeneTooltip.classList.toggle('visible');
+        muayeneTooltip.hidden = !visible;
+      });
+      document.addEventListener('click', function closeTooltipOutside(e) {
+        if (!muayeneTooltip.classList.contains('visible')) return;
+        if (muayeneTooltip.contains(e.target) || muayeneExclamation.contains(e.target)) return;
+        muayeneTooltip.classList.remove('visible');
+        muayeneTooltip.hidden = true;
+      });
+    }
+    if (muayeneTiklayiniz && pickerOverlay && muayeneTooltip) {
+      muayeneTiklayiniz.addEventListener('click', function(e) {
+        e.preventDefault();
+        muayeneTooltip.classList.remove('visible');
+        muayeneTooltip.hidden = true;
+        pickerOverlay.style.display = 'flex';
+        pickerOverlay.setAttribute('aria-hidden', 'false');
+      });
+    }
+    if (pickerBackdrop) {
+      pickerBackdrop.addEventListener('click', function() {
+        pickerOverlay.style.display = 'none';
+        pickerOverlay.setAttribute('aria-hidden', 'true');
+      });
+    }
+    if (pickerOverlay && pickerOptions && pickerOptions.length) {
+      pickerOptions.forEach(opt => {
+        opt.addEventListener('click', function() {
+          const type = this.getAttribute('data-type');
+          const modal = getModal();
+          const formBtn = modal && modal.querySelector('.vehicle-type-btn[data-type="' + type + '"]');
+          if (formBtn) {
+            $all('.vehicle-type-btn', modal).forEach(b => b.classList.remove('active'));
+            formBtn.classList.add('active');
+            updateMuayeneNoTypeWarning();
+          }
+          pickerOverlay.style.display = 'none';
+          pickerOverlay.setAttribute('aria-hidden', 'true');
+        });
+      });
+    }
 
     // Plaka - Büyük harfe çevir ve hata sınıfını kaldır
     const plateInput = document.getElementById("vehicle-plate");

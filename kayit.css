@@ -491,6 +491,163 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
 .vehicle-type-btn:hover:not(.active) img { filter: brightness(1.0) grayscale(0) sepia(1) hue-rotate(70deg) saturate(1.5); transform: scale(1.08); }
 .vehicle-type-btn.active:hover img { filter: brightness(1.4) grayscale(0) sepia(1) hue-rotate(70deg) saturate(1.5) drop-shadow(0 0 6px rgba(74,222,128,0.6)); }
 
+/* Muayene Bitiş Tarihi – Taşıt tipi seçilmedi uyarısı */
+.muayene-date-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    position: relative;
+}
+.muayene-exclamation {
+    display: none;
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--theme-color);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1;
+    align-items: center;
+    justify-content: center;
+    cursor: help;
+    font-family: inherit;
+}
+.muayene-date-section.muayene-no-type-warning .muayene-exclamation {
+    display: flex;
+}
+.muayene-date-section.muayene-no-type-warning #vehicle-muayene-date,
+.muayene-date-section.muayene-no-type-warning #vehicle-muayene-date::-webkit-datetime-edit {
+    border-color: var(--theme-color) !important;
+    color: var(--theme-color) !important;
+}
+.muayene-date-section.muayene-no-type-warning #vehicle-muayene-date {
+    box-shadow: 0 0 4px rgba(var(--theme-color-rgb), 0.4) !important;
+}
+.muayene-date-row #vehicle-muayene-date {
+    flex: 1;
+    min-width: 0;
+}
+.muayene-tooltip-wrap {
+    position: absolute;
+    left: 0;
+    top: 100%;
+    margin-top: 4px;
+    z-index: 10;
+    pointer-events: none;
+}
+.muayene-date-section.muayene-no-type-warning .muayene-tooltip-wrap {
+    pointer-events: auto;
+}
+.muayene-date-row .muayene-tooltip-wrap {
+    left: 0;
+}
+.muayene-tooltip {
+    display: none;
+    max-width: 280px;
+    padding: 8px 10px;
+    background: var(--card-bg, #1a1f2e);
+    border: 1px solid rgba(var(--theme-color-rgb), 0.4);
+    border-radius: 8px;
+    font-size: 12px;
+    line-height: 1.4;
+    color: #e0e0e0;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    white-space: normal;
+    pointer-events: auto;
+}
+.muayene-tooltip.visible {
+    display: block !important;
+}
+.muayene-date-section.muayene-no-type-warning .muayene-exclamation:hover + .muayene-tooltip-wrap .muayene-tooltip,
+.muayene-date-section.muayene-no-type-warning .muayene-exclamation:focus + .muayene-tooltip-wrap .muayene-tooltip,
+.muayene-date-section.muayene-no-type-warning .muayene-tooltip-wrap:hover .muayene-tooltip {
+    display: block !important;
+}
+.muayene-tooltip-link {
+    background: none;
+    border: none;
+    padding: 0;
+    color: #5b9bd5;
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: inherit;
+    font-family: inherit;
+}
+.muayene-tooltip-link:hover {
+    color: #7ab3e8;
+}
+
+/* Taşıt tipi seçim ekranı (overlay) */
+.vehicle-type-picker-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 10002;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    pointer-events: auto;
+}
+.vehicle-type-picker-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(4px);
+}
+.vehicle-type-picker-box {
+    position: relative;
+    background: var(--card-bg, #1a1f2e);
+    border: 1px solid rgba(var(--theme-color-rgb), 0.35);
+    border-radius: 12px;
+    padding: 24px;
+    max-width: 360px;
+    width: 100%;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+}
+.vehicle-type-picker-title {
+    margin: 0 0 20px 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #e8e8e8;
+    text-align: center;
+}
+.vehicle-type-picker-options {
+    display: flex;
+    justify-content: center;
+    gap: 28px;
+    flex-wrap: wrap;
+}
+.vehicle-type-picker-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 10px;
+    cursor: pointer;
+    color: #e0e0e0;
+    transition: border-color 0.2s, background 0.2s;
+}
+.vehicle-type-picker-option:hover {
+    border-color: rgba(var(--theme-color-rgb), 0.6);
+    background: rgba(var(--theme-color-rgb), 0.08);
+}
+.vehicle-type-picker-option img {
+    width: 44px;
+    height: auto;
+    max-height: 38px;
+    object-fit: contain;
+    object-position: bottom center;
+}
+.vehicle-type-picker-label {
+    font-size: 11px;
+    color: rgba(255,255,255,0.85);
+}
+
 /* RADIO BUTONLAR */
 .radio-group { 
     display: flex; 
