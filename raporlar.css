@@ -558,7 +558,7 @@ border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 padding: 1px 2px;
 font-size: clamp(9px, 1.2vw, 12px);
 font-weight: 700;
-color: #888;
+color: var(--form-label-color);
 text-transform: uppercase;
 text-align: center;
 white-space: nowrap;
@@ -881,6 +881,11 @@ justify-content: flex-start;
 .stok-list-cell[data-col="km"] { padding: 2px !important; }
 .stok-list-cell[data-col="marka"] { padding: 2px !important; }
 .stok-sort-icon { font-size: 10px !important; }
+/* Masaüstü: tarih etiketleri uzun metin */
+#stok-list-container .stok-controls-row-2 label[for="stok-date-start"] { font-size: 0 !important; line-height: 0 !important; }
+#stok-list-container .stok-controls-row-2 label[for="stok-date-start"]::before { content: "Başlangıç Tarihi"; font-size: 13px !important; line-height: 1.3; color: var(--form-label-color); display: block; }
+#stok-list-container .stok-controls-row-2 label[for="stok-date-end"] { font-size: 0 !important; line-height: 0 !important; }
+#stok-list-container .stok-controls-row-2 label[for="stok-date-end"]::before { content: "Bitiş Tarihi"; font-size: 13px !important; line-height: 1.3; color: var(--form-label-color); display: block; }
 }
 
 /* Masaüstü: İki satırlık layout */
@@ -985,7 +990,7 @@ margin-top: 0;
 
 .stok-date-input-group label {
 font-size: 10px;
-color: #888;
+color: var(--form-label-color);
 font-weight: 600;
 text-transform: uppercase;
 text-align: center; /* Etiketleri ortala */
