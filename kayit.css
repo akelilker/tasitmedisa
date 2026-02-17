@@ -262,6 +262,17 @@ select option:active {
     color: #fff;
 }
 
+/* Tahsis Edilen Şube: "Seçiniz" yatayda ortalı ve soluk */
+#vehicle-branch-select {
+    text-align: center;
+}
+#vehicle-branch-select option[value=""] {
+    color: rgba(255, 255, 255, 0.4);
+}
+#vehicle-branch-select.branch-placeholder {
+    color: rgba(255, 255, 255, 0.45);
+}
+
 .form-input::placeholder { color: #555; opacity: 0.7; }
 
 input[type="date"].form-input {
