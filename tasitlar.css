@@ -429,6 +429,9 @@
     flex-shrink: 0;
     position: relative;
     border-bottom: none !important;
+    border-top-left-radius: var(--modal-radius);
+    border-top-right-radius: var(--modal-radius);
+    border-top: 0.5px solid rgba(255, 255, 255, 0.35);
 }
 
 /* Tarihçe modalı – sekme başlıkları yatayda ortalı (tüm viewport’lar) */
@@ -1070,7 +1073,7 @@
     z-index: 0;
     /* Başlık z-index: 1000 ile üstte kalsın, satırlar altında kaysın */
     cursor: pointer;
-    min-height: 30px;
+    min-height: 44px; /* İlk satır diğerleriyle aynı hizada görünsün (30→44) */
     transition: background 0.2s ease;
 }
 
