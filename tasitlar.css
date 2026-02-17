@@ -1061,6 +1061,7 @@
     position: relative;
     margin-top: -11px;
     isolation: isolate;
+    z-index: 0;
 }
 
 .list-header-row {
@@ -1080,6 +1081,7 @@
     top: 0 !important; /* Scroll alanı üstü = toolbar hemen altı */
     z-index: 1000 !important; /* Çok yüksek z-index - kesinlikle en üstte */
     isolation: isolate !important; /* Yeni stacking context - içerik altından geçmesin */
+    transform: translateZ(0);
 }
 
 .list-header-row .list-cell {
@@ -2123,6 +2125,7 @@
     top: 0 !important; /* Scroll alanı üstü = toolbar hemen altı */
     z-index: 1000 !important;
     isolation: isolate !important;
+    transform: translateZ(0);
     width: 100% !important;
     box-sizing: border-box !important;
   }
