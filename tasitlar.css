@@ -504,11 +504,14 @@
 /* Masaüstü: sol ok ve etiket 6px yukarı; sütun başlıkları +1px, beyaza yakın renk */
 @media (min-width: 641px) {
   #vehicles-modal .vt-left {
-    margin-top: -48px;
+    margin-top: -54px;
   }
   /* Taşıt detay modalı: sol ok 8px yukarı (masaüstü) */
   #vehicle-detail-modal .vehicle-detail-toolbar .detail-back-btn {
     margin-top: -8px;
+  }
+  #vehicle-detail-modal .vehicle-detail-toolbar .active-branch-title {
+    margin-top: -6px;
   }
   #vehicles-modal .list-header-row .list-cell {
     font-size: 12px;
@@ -1543,7 +1546,7 @@
     border-radius: 0;
     cursor: pointer;
     font-weight: 600;
-    font-size: 13.5px; /* 1pt bÃ¼yÃ¼tÃ¼ldÃ¼ (11px â†’ 12px) */
+    font-size: 15px; /* 1pt bÃ¼yÃ¼tÃ¼ldÃ¼ (11px â†’ 12px) */
     display: flex !important; /* GÃ¶rÃ¼nÃ¼rlÃ¼ÄŸÃ¼ garantile */
     align-items: center;
     gap: 0; /* Gap kaldÄ±rÄ±ldÄ±, metin iÃ§inde boÅŸluk var */
@@ -1575,7 +1578,7 @@
     align-items: center;
     gap: 4px; /* Ä°kon ve metin arasÄ± boÅŸluk */
     color: #ccc;
-    font-size: 13.5px; /* 1pt bÃ¼yÃ¼tÃ¼ldÃ¼ (11px â†’ 12px) */
+    font-size: 15px; /* 1pt bÃ¼yÃ¼tÃ¼ldÃ¼ (11px â†’ 12px) */
     padding: 4px 8px;
     flex-shrink: 0; /* SaÄŸda sabit kalÄ±r */
     z-index: 2; /* Marka/model'in Ã¼stÃ¼nde (1'den 2'ye yÃ¼kseltildi) */
