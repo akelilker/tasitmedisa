@@ -1000,9 +1000,9 @@ padding-top: 2px; /* Üst kesilme önleme */
 
 .stok-date-input {
 background: #151515;
-border: 1px solid #333;
+border: 1px solid rgba(255, 255, 255, 0.28);
 color: #ccc !important;
-padding: 1.2px 32px 1.2px 8px; /* Sağ padding takvim simgesi için */
+padding: 1.2px 30px 1.2px 6px; /* Yatayda 2px daraltıldı; sağ padding takvim için */
 border-radius: 6px;
 font-size: 13px;
 outline: none;
@@ -1703,11 +1703,12 @@ text-align: center !important;
 height: 32px !important;
 min-height: 32px !important;
 line-height: 32px !important;
-padding: 0 30px 0 8px !important;
+padding: 0 28px 0 6px !important;
 box-sizing: border-box !important;
 width: 100% !important;
 overflow: hidden !important;
 text-overflow: ellipsis !important;
+border-color: rgba(255, 255, 255, 0.28) !important;
 }
 #stok-date-start,
 #stok-date-end {
