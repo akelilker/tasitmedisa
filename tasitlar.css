@@ -488,7 +488,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 16px;
+    padding: 0 16px 0 3px; /* Sol ok + etiket sol çerçeveye 3px */
     position: relative !important; /* Arama kutusunun buraya gÃ¶re konumlanmasÄ± iÃ§in */
     z-index: 10;
     flex-shrink: 0;
@@ -1903,9 +1903,9 @@
     border-color: rgba(255, 255, 255, 0.5) !important; /* Hover'da daha belirgin */
   }
   
-  /* Sol ok sola yasla – toolbar sol padding azalt */
+  /* Sol ok + etiket sol çerçeveye 3px (mobil) */
   .vehicles-toolbar {
-    padding-left: 4px !important;
+    padding-left: 3px !important;
   }
   /* --- MODAL GERİ/BÜYÜTEÇ BUTONLARI BÜYÜT --- */
   .vt-back-btn, .vehicle-detail-toolbar .detail-back-btn {
