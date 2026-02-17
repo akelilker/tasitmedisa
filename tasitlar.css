@@ -526,6 +526,9 @@
     font-size: 9px !important;
     color: #f0f0f0 !important;
   }
+  #vehicles-modal .list-header-row .list-cell.list-user span {
+    font-size: clamp(8px, 1.2vw, 12px) !important;
+  }
 
   /* Şube Değişikliği modal – masaüstü: etiket-input arası 3px, input yüksekliği 106% (100→106) */
   #sube-degisiklik-modal .modal-body .sube-degisiklik-label {
@@ -1062,6 +1065,16 @@
     text-align: center !important;
     text-overflow: ellipsis !important;
     overflow: hidden !important;
+    min-width: 0 !important;
+}
+/* Kullanıcı sütun başlığı: dar kolonda küçülsün ve gerekirse satır kırılsın */
+.list-header-row .list-cell.list-user {
+    white-space: normal !important;
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+.list-header-row .list-cell.list-user span {
+    font-size: clamp(8px, 1.2vw, 12px) !important;
 }
 
 .list-header-row .list-cell.list-branch {
