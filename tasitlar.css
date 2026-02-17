@@ -1915,6 +1915,10 @@
   .vehicles-toolbar {
     padding-left: 3px !important;
   }
+  /* Taşıt detay toolbar sol 4px */
+  #vehicle-detail-modal .vehicle-detail-toolbar {
+    padding-left: 4px !important;
+  }
   /* --- MODAL GERİ/BÜYÜTEÇ BUTONLARI BÜYÜT --- */
   .vt-back-btn, .vehicle-detail-toolbar .detail-back-btn {
     padding: 10px !important;
@@ -2024,6 +2028,7 @@
     overflow-x: hidden !important; /* SaÄŸa sola kaymayÄ± engelle */
     touch-action: pan-y !important; /* Sadece dikey kaydÄ±rma */
     overscroll-behavior-x: none !important; /* Yatay overscroll'u engelle */
+    isolation: isolate; /* Liste baslik sticky icerigi gizlesin */
   }
   
   /* --- BRANCH GRID & CARDS --- */
@@ -2076,8 +2081,8 @@
   }
 
   .olay-ekle-modal .modal-body label {
-    font-size: 18.5px !important; /* +1.5pt; sağ yaslı */
-    text-align: right !important;
+    font-size: 18.5px !important;
+    text-align: left !important;
   }
 
   .olay-ekle-modal .modal-body .form-input,
@@ -2468,6 +2473,11 @@
     flex-wrap: wrap !important;
     justify-content: center !important;
   }
+  #kaza-kaporta-container {
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+  }
 
   #detail-boya-container .boya-legend {
     flex-direction: row !important;
@@ -2493,14 +2503,14 @@
 
   /* Taşıt detay: Olay Ekle ve Tarihçe metni mobilde 1pt büyük; Tarihçe rengi etiket beyazı */
   #vehicle-detail-modal .detail-brand-year-row .history-add-event-btn {
-    font-size: 16px !important;
+    font-size: 17px !important;
   }
   #vehicle-detail-modal .detail-brand-year-row .history-btn-minimal {
-    font-size: 16px !important;
+    font-size: 17px !important;
     color: var(--form-label-color) !important;
   }
   #vehicle-detail-modal .detail-brand-year-row .history-btn-minimal:hover {
-    font-size: 17px !important;
+    font-size: 18px !important;
   }
 
   /* Olay Ekle menü: sol ok + etiket mobilde 6px yukarı */
