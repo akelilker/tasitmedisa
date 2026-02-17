@@ -994,6 +994,13 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         border-color: var(--theme-color) !important;
         border-width: 1px !important;
     }
+    /* Tahsis Edilen Şube: masaüstünde arka plan diğer inputlarla aynı */
+    #vehicle-modal .modal-body select {
+        background-color: #0d131f !important;
+    }
+    #vehicle-modal .modal-body select:focus {
+        background-color: #0d131f !important;
+    }
     #vehicle-modal .modal-header { 
         height: 60px !important;
         padding: 2px 20px !important;
