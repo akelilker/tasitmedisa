@@ -26,6 +26,7 @@ body::-webkit-scrollbar,
   --modal-footer-reserve: calc(var(--app-footer-height) + var(--modal-footer-gap));
 
   /* --- MODAL ORTAK (tek yerden yönetim) --- */
+  /* Dikey için vw KULLANMA: vw = viewport genişliği. Dikey için vh/dvh veya px. */
   --modal-bg: #080d16;
   --modal-max-width: 500px;
   --modal-radius: 10px;
@@ -511,6 +512,10 @@ html { overflow-x: hidden; }
 
 /* Masaüstünde container'ın %45'i + metin ortalı */
 @media (min-width: 641px) {
+  /* Masaüstü (1920 vb.): alttaki boşluğu azalt – modal–footer arası 6px */
+  :root {
+    --modal-gap-above-footer: 6px;
+  }
   /* Ana başlık: 2px aşağı (base translateY(-2px) → 0) */
   .hero h1 {
     transform: translateY(0);
