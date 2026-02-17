@@ -31,6 +31,15 @@
     pointer-events: auto !important; /* Aktif olduğunda tıklamaları al */
 }
 
+/* Şube kartı hover üstten kesilmesin – taşıtlar modalında overflow serbest */
+#vehicles-modal.tasitlar-modal-overlay.active,
+#vehicles-modal.tasitlar-modal-overlay.open {
+    overflow: visible !important;
+}
+#vehicles-modal .modal-container {
+    overflow: visible !important;
+}
+
 /* Vehicle Detail Modal: scroll modal-body'de, yan taşmaya izin (ortak kurallar style-core'da) */
 #vehicle-detail-modal .modal-container {
     overflow: hidden !important;
