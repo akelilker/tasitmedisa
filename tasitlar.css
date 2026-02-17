@@ -482,7 +482,7 @@
 
 /* === DÄ°NAMÄ°K TOOLBAR === */
 .vehicles-toolbar {
-    height: 44px;
+    height: 40px;
     background: #080d16;
     border-bottom: none; 
     display: flex;
@@ -607,7 +607,7 @@
   }
   /* Taşıt listesi: sekme başlıkları 3px yukarı (masaüstü) */
   #vehicles-modal .list-header-row {
-    margin-top: -3px !important;
+    margin-top: -1px !important;
   }
   #vehicles-modal .list-header-row .list-cell {
     font-size: 12px;
