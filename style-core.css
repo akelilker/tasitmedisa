@@ -35,7 +35,7 @@ body::-webkit-scrollbar,
 
   /* --- KIRMIZI ÇERÇEVE AYARLARI --- */
   /* Çerçeve Rengi (0.6 = %60 Görünürlük) */
-  --border-red-tech: rgba(var(--theme-color-rgb), 0.3);
+  --border-red-tech: rgba(var(--theme-color-rgb), 0.4);
   /* Işık Efekti (0.25 = %25 Parlaklık) */
   --red-glow-subtle: rgba(var(--theme-color-rgb), 0.12);
 
