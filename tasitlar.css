@@ -1056,7 +1056,7 @@
     position: relative;
     margin-top: -11px;
     isolation: isolate;
-    z-index: 0;
+    z-index: -1;
 }
 
 .list-header-row {
@@ -1074,9 +1074,10 @@
     box-sizing: border-box;
     position: sticky !important; /* Başlık sabit kalacak */
     top: 0 !important; /* Scroll alanı üstü = toolbar hemen altı */
-    z-index: 1000 !important; /* Çok yüksek z-index - kesinlikle en üstte */
+    z-index: 9999 !important; /* Başlık her zaman en üstte, kayarken içerik arkada kalsın */
     isolation: isolate !important; /* Yeni stacking context - içerik altından geçmesin */
     transform: translateZ(0);
+    box-shadow: 0 2px 0 0 #080d16; /* Alt çizgi gibi gölge - içeriğin aradan görünmesini keser */
 }
 
 .list-header-row .list-cell {
@@ -2125,9 +2126,10 @@
     -webkit-backdrop-filter: blur(8px) !important;
     position: sticky !important;
     top: 0 !important; /* Scroll alanı üstü = toolbar hemen altı */
-    z-index: 1000 !important;
+    z-index: 9999 !important;
     isolation: isolate !important;
     transform: translateZ(0);
+    box-shadow: 0 2px 0 0 #080d16 !important;
     width: 100% !important;
     box-sizing: border-box !important;
   }
