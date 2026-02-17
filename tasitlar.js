@@ -1376,11 +1376,16 @@
     const kaskoDisplay = formatDateForDisplay(kaskoDate);
     html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Kasko Bitiş Tarihi</span><span class="detail-row-colon">:</span></div><span class="detail-row-value ${kaskoWarning.class}"> ${escapeHtml(kaskoDisplay || '-')}</span></div>`;
     
-    // Muayene bitiş tarihi
+    // Muayene bitiş tarihi (taşıt tipi yoksa uyarı + tooltip + Tıklayınız)
     const muayeneDate = vehicle.muayeneDate || '';
     const muayeneWarning = checkDateWarnings(muayeneDate);
     const muayeneDisplay = formatDateForDisplay(muayeneDate);
-    html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Muayene Bitiş Tarihi</span><span class="detail-row-colon">:</span></div><span class="detail-row-value ${muayeneWarning.class}"> ${escapeHtml(muayeneDisplay || '-')}</span></div>`;
+    const noVehicleType = !vehicle.vehicleType || !vehicle.vehicleType.trim();
+    if (noVehicleType) {
+      html += `<div class="detail-row detail-row-inline detail-row-muayene-no-type"><div class="detail-row-header"><span class="detail-row-label">Muayene Bitiş Tarihi</span><span class="detail-row-colon">:</span></div><span class="detail-row-value detail-muayene-value-wrap ${muayeneWarning.class}"> ${escapeHtml(muayeneDisplay || '-')} <span class="muayene-detail-exclamation" aria-hidden="true" title="Taşıt tipi seçilmedi">!</span><span class="muayene-detail-tooltip-wrap"><span class="muayene-detail-tooltip" role="tooltip" hidden>Taşıt Tipi Seçilmediğinden, Muayene Bitiş Tarihi Hatalı Gözükebilir. Seçim Yapmak İçin <button type="button" class="muayene-detail-tooltip-link">Tıklayınız</button>.</span></span></span></div>`;
+    } else {
+      html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Muayene Bitiş Tarihi</span><span class="detail-row-colon">:</span></div><span class="detail-row-value ${muayeneWarning.class}"> ${escapeHtml(muayeneDisplay || '-')}</span></div>`;
+    }
     
     // Yedek Anahtar
     const anahtar = vehicle.anahtar || '';
@@ -3301,5 +3306,51 @@
 
   // kayit.js deleteVehicle sonrası liste yenilemesi için global erişim
   window.renderVehicles = renderVehicles;
+
+  // Taşıt detay: muayene satırında ünlem (tooltip toggle) ve Tıklayınız (picker aç)
+  document.addEventListener('click', function(e) {
+    const modal = e.target.closest('#vehicle-detail-modal');
+    if (!modal) return;
+    const exclamation = e.target.closest('.muayene-detail-exclamation');
+    const link = e.target.closest('.muayene-detail-tooltip-link');
+    if (exclamation) {
+      e.preventDefault();
+      e.stopPropagation();
+      const wrap = exclamation.closest('.detail-muayene-value-wrap');
+      const tooltip = wrap && wrap.querySelector('.muayene-detail-tooltip');
+      if (tooltip) {
+        const visible = tooltip.classList.toggle('visible');
+        tooltip.hidden = !visible;
+      }
+      return;
+    }
+    if (link) {
+      e.preventDefault();
+      e.stopPropagation();
+      const wrap = link.closest('.detail-muayene-value-wrap');
+      const tooltip = wrap && wrap.querySelector('.muayene-detail-tooltip');
+      if (tooltip) {
+        tooltip.classList.remove('visible');
+        tooltip.hidden = true;
+      }
+      const vehicleId = window.currentDetailVehicleId;
+      if (vehicleId) {
+        window.vehicleTypePickerFromDetail = vehicleId;
+        const picker = document.getElementById('vehicle-type-picker-overlay');
+        if (picker) {
+          picker.style.display = 'flex';
+          picker.setAttribute('aria-hidden', 'false');
+        }
+      }
+      return;
+    }
+    // Dışarı tıklanınca tooltip kapat
+    if (!e.target.closest('.muayene-detail-tooltip-wrap') && !e.target.closest('.muayene-detail-exclamation')) {
+      modal.querySelectorAll('.muayene-detail-tooltip.visible').forEach(function(t) {
+        t.classList.remove('visible');
+        t.hidden = true;
+      });
+    }
+  });
 
 })();

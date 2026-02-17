@@ -307,8 +307,7 @@ input[type="date"].form-input:focus {
 }
 
 /* Kasko ve Muayene (sağ kolon) tarih placeholder'ı kutu içinde yatayda ortalı – masaüstü + mobil */
-#vehicle-modal .modal-column-right .date-placeholder,
-#vehicle-modal .muayene-input-wrap .date-placeholder {
+#vehicle-modal .modal-column-right .date-placeholder {
     left: 50% !important;
     transform: translateX(-50%) !important;
     text-align: center;
@@ -498,110 +497,6 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
 .vehicle-type-btn.active img { filter: brightness(0.85) sepia(1) hue-rotate(70deg) saturate(1.5) opacity(0.7); }
 .vehicle-type-btn:hover:not(.active) img { filter: brightness(1.0) grayscale(0) sepia(1) hue-rotate(70deg) saturate(1.5); transform: scale(1.08); }
 .vehicle-type-btn.active:hover img { filter: brightness(1.4) grayscale(0) sepia(1) hue-rotate(70deg) saturate(1.5) drop-shadow(0 0 6px rgba(74,222,128,0.6)); }
-
-/* Muayene Bitiş Tarihi – Taşıt tipi seçilmedi uyarısı */
-.muayene-date-row {
-    display: flex;
-    align-items: stretch;
-    position: relative;
-}
-.muayene-input-wrap {
-    position: relative;
-    flex: 1;
-    min-width: 0;
-}
-.muayene-input-wrap #vehicle-muayene-date {
-    width: 100%;
-    min-width: 0;
-}
-.muayene-exclamation {
-    display: none;
-    position: absolute;
-    left: 50px;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    color: var(--theme-color);
-    font-size: 16px;
-    font-weight: 700;
-    line-height: 1;
-    cursor: help;
-    font-family: inherit;
-    z-index: 1;
-    pointer-events: auto;
-    background: none;
-    border: none;
-    padding: 0;
-}
-.muayene-date-section.muayene-no-type-warning .muayene-exclamation {
-    display: block;
-}
-.muayene-date-section.muayene-no-type-warning #vehicle-muayene-date {
-    border-color: var(--theme-color) !important;
-    box-shadow: 0 0 4px rgba(var(--theme-color-rgb), 0.4) !important;
-    padding-left: 14px !important;
-}
-.muayene-date-section.muayene-no-type-warning #vehicle-muayene-date:not(.has-value):not(:focus)::-webkit-datetime-edit {
-    color: transparent !important;
-}
-.muayene-date-section.muayene-no-type-warning #vehicle-muayene-date.has-value::-webkit-datetime-edit,
-.muayene-date-section.muayene-no-type-warning #vehicle-muayene-date:focus::-webkit-datetime-edit {
-    color: var(--theme-color) !important;
-}
-.muayene-date-section.muayene-no-type-warning #vehicle-muayene-date::-webkit-datetime-edit-fields-wrapper {
-    padding-left: 0;
-}
-.muayene-date-section.muayene-no-type-warning .date-placeholder {
-    color: var(--theme-color) !important;
-}
-.muayene-tooltip-wrap {
-    position: absolute;
-    left: 0;
-    top: 100%;
-    margin-top: 4px;
-    z-index: 10;
-    pointer-events: none;
-}
-.muayene-date-section.muayene-no-type-warning .muayene-tooltip-wrap {
-    pointer-events: auto;
-}
-.muayene-input-wrap .muayene-tooltip-wrap {
-    left: 0;
-}
-.muayene-tooltip {
-    display: none;
-    max-width: 280px;
-    padding: 8px 10px;
-    background: var(--card-bg, #1a1f2e);
-    border: 1px solid rgba(var(--theme-color-rgb), 0.4);
-    border-radius: 8px;
-    font-size: 12px;
-    line-height: 1.4;
-    color: #e0e0e0;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-    white-space: normal;
-    pointer-events: auto;
-}
-.muayene-tooltip.visible {
-    display: block !important;
-}
-.muayene-date-section.muayene-no-type-warning .muayene-exclamation:hover + .muayene-tooltip-wrap .muayene-tooltip,
-.muayene-date-section.muayene-no-type-warning .muayene-exclamation:focus + .muayene-tooltip-wrap .muayene-tooltip,
-.muayene-date-section.muayene-no-type-warning .muayene-tooltip-wrap:hover .muayene-tooltip {
-    display: block !important;
-}
-.muayene-tooltip-link {
-    background: none;
-    border: none;
-    padding: 0;
-    color: #5b9bd5;
-    text-decoration: underline;
-    cursor: pointer;
-    font-size: inherit;
-    font-family: inherit;
-}
-.muayene-tooltip-link:hover {
-    color: #7ab3e8;
-}
 
 /* Taşıt tipi seçim ekranı (overlay) */
 .vehicle-type-picker-overlay {
@@ -1006,10 +901,6 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-column-right input[type="date"].form-input::-webkit-datetime-edit-fields-wrapper { padding: 0 2px; box-sizing: border-box; }
     .modal-body input[type="date"].form-input::-webkit-calendar-picker-indicator { right: 4px !important; transform: translateY(-50%) !important; }
     .date-placeholder { left: 50%; transform: translateX(-50%); font-size: 11px; text-align: center; }
-    /* Muayene uyarı: mobilde de 14px alan, ünlem aynı mantıkla ortada */
-    #vehicle-modal .modal-body .modal-column-right .muayene-date-section.muayene-no-type-warning #vehicle-muayene-date {
-        padding-left: 14px !important;
-    }
     
     .form-section-inline:has(.radio-group) { flex-direction: column; align-items: flex-start; gap: 0; margin-bottom: 10px; }
     .form-section-inline:has(.radio-group) .form-label { margin-bottom: 0; width: 100%; }
@@ -1184,7 +1075,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         margin-top: 3px !important;
         margin-bottom: 8px !important;
     }
-    /* Muayene Bitiş Tarihi – Yedek Anahtar arası 8px */
+    /* Muayene Bitiş Tarihi – Yedek Anahtar arası 8px (form-section: label + input) */
     #vehicle-modal .modal-body .modal-column-right .form-section:has(#vehicle-muayene-date) {
         margin-bottom: 8px !important;
     }
