@@ -587,10 +587,12 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         color: var(--form-label-color) !important;
     }
     
-    .form-input {
+    .form-input,
+    select.form-input,
+    select {
         color: #ffffff !important; /* Input metni beyaz */
         border-color: rgba(255, 255, 255, 0.4) !important; /* Border daha görünür */
-        background: rgba(255, 255, 255, 0.05) !important; /* Arka plan biraz daha açık */
+        background: rgba(255, 255, 255, 0.02) !important; /* Beyaz sis yoğunluğu azaltıldı (0.05 → 0.02) */
     }
     
     /* Input focus - kırmızı çerçeve */
@@ -607,6 +609,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     .radio-btn {
         border-color: rgba(255, 255, 255, 0.4) !important; /* Radio buton border daha görünür */
         color: rgba(255, 255, 255, 0.8) !important; /* Radio buton metni daha parlak */
+        background: rgba(255, 255, 255, 0.02) !important; /* Beyaz sis yoğunluğu azaltıldı */
     }
     
     .radio-btn.active:not(.green) {
@@ -787,12 +790,12 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         min-height: 73px !important;
     }
     
-    /* Tarih inputları: iç dikey yükseklik +2px (28px), sağ tarafı uzatmak için */
+    /* Tarih inputları: gg.aa.yyyy kutudan taşmasın – font küçük, overflow gizli */
     .modal-body input[type="date"].form-input { 
         height: 28px; 
         color: #888; 
-        font-size: 13px; 
-        padding: 5px 28px 5px 8px !important; 
+        font-size: 11px !important; 
+        padding: 5px 28px 5px 6px !important; 
         min-width: 0;
         width: calc(100% - 2px); 
         max-width: calc(100% - 2px);
@@ -802,16 +805,21 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         appearance: none;
         text-align: center;
     }
+    .modal-body input[type="date"].form-input::-webkit-datetime-edit { font-size: 11px !important; }
+    .modal-body input[type="date"].form-input::-webkit-datetime-edit-fields-wrapper { padding: 0; }
     
-    /* Sağ kolon tarih inputları: +1px dikey yükseklik (29px) */
+    /* Sağ kolon tarih inputları: +1px dikey (29px), gg.aa.yyyy sığsın */
     #vehicle-modal .modal-column-right input[type="date"].form-input { 
         height: 29px !important;
+        font-size: 11px !important;
         width: 100%; 
         max-width: 100%; 
         margin-right: 0; 
-        padding-right: 20px !important;
+        padding-right: 24px !important;
+        padding-left: 6px !important;
         text-align: center;
     }
+    #vehicle-modal .modal-column-right input[type="date"].form-input::-webkit-datetime-edit { font-size: 11px !important; }
     .modal-body input[type="date"].form-input::-webkit-calendar-picker-indicator { right: 4px !important; transform: translateY(-50%) !important; }
     .date-placeholder { left: 50%; transform: translateX(-50%); font-size: 11px; text-align: center; }
     
