@@ -517,11 +517,11 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
 .muayene-exclamation {
     display: none;
     position: absolute;
-    left: 7px;
+    left: 50px;
     top: 50%;
     transform: translate(-50%, -50%);
     color: var(--theme-color);
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 700;
     line-height: 1;
     cursor: help;
