@@ -1826,14 +1826,14 @@
   
   /* Mobil modal-body padding */
   #vehicles-modal .modal-body {
-    padding: 0 8px 40px 8px !important; /* 16px â†’ 8px */
+    padding: 10px 8px 40px 8px !important; /* 16px â†’ 8px */
     overflow-x: hidden !important; /* SaÄŸa sola kaymayÄ± engelle */
     touch-action: pan-y !important; /* Sadece dikey kaydÄ±rma */
     overscroll-behavior-x: none !important; /* Yatay overscroll'u engelle */
   }
   
   /* --- BRANCH GRID & CARDS --- */
-  .branch-grid { gap: 6px; }
+  .branch-grid { gap: 2px; }
   .branch-card { 
     padding: 3px; 
     width: clamp(90px, 26vw, 104px);
