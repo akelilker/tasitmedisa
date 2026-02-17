@@ -541,24 +541,34 @@ position: sticky;
 top: 0;
 background: #080d16;
 z-index: 10;
-border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+border-bottom: 1px solid rgba(255, 255, 255, 0.22);
+box-shadow: 0 2px 0 0 #080d16;
+backdrop-filter: blur(8px);
+-webkit-backdrop-filter: blur(8px);
 }
 
-/* Taşıtlar listesi formatı: grid, gap, esnek sütunlar */
+/* Taşıtlar listesi formatı: grid, gap, arka plan, çizgi */
 .stok-list-header-row {
 display: grid;
-background: rgba(255, 255, 255, 0.03);
+background: #080d16;
 gap: 4px;
 align-items: center;
-padding: 2px 2px;
-border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+padding: 6px 2px 4px 2px;
+margin-bottom: 4px;
+border-bottom: 1px solid rgba(255, 255, 255, 0.22);
+box-shadow: 0 2px 0 0 #080d16;
+backdrop-filter: blur(8px);
+-webkit-backdrop-filter: blur(8px);
 }
 
+/* Taşıtlar başlık formatı: font, renk, birlikte küçülme (clamp) */
 .stok-list-header-cell {
-padding: 1px 2px;
-font-size: clamp(9px, 1.2vw, 12px);
-font-weight: 700;
-color: var(--form-label-color);
+padding: 4px;
+font-size: 11px;
+font-weight: 600;
+letter-spacing: 0.3px;
+color: #8b93a1;
+opacity: 0.8;
 text-transform: uppercase;
 text-align: center;
 white-space: nowrap;
@@ -588,6 +598,12 @@ border-right: 2px solid #4ade80;
 background: rgba(74, 222, 128, 0.1);
 }
 
+/* Tüm sütun başlıkları aynı clamp – küçülünce hepsi birlikte küçülsün (Taşıtlar gibi) */
+.stok-list-header-cell .stok-header-text {
+font-size: clamp(10px, 1.6vw, 12px) !important;
+font-weight: 700 !important;
+color: #999 !important;
+}
 .stok-header-text {
 flex: 1;
 text-align: center;
@@ -870,8 +886,9 @@ height: auto;
 min-height: 0;
 justify-content: flex-start;
 }
-/* Masaüstü: sütun başlıkları +1pt; tüm metin/sayılar marka ile aynı punto; çerçeveye 2px */
-.stok-list-header-cell { font-size: 13px !important; padding: 2px !important; }
+/* Masaüstü: Taşıtlar başlık formatı – 12px, beyaza yakın renk, birlikte küçülme (clamp 13px) */
+.stok-list-header-cell { font-size: 12px !important; color: #e8e8e8 !important; opacity: 1 !important; padding: 4px !important; }
+.stok-list-header-cell .stok-header-text { font-size: clamp(10px, 1.6vw, 13px) !important; color: #f0f0f0 !important; }
 .stok-list-cell { font-size: 13px !important; padding: 2px !important; color: #b5b9c0; }
 .stok-list-header-cell[data-col="sira"],
 .stok-list-cell[data-col="sira"],
