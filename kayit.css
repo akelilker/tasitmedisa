@@ -494,28 +494,38 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
 /* Muayene Bitiş Tarihi – Taşıt tipi seçilmedi uyarısı */
 .muayene-date-row {
     display: flex;
-    align-items: center;
-    gap: 6px;
+    align-items: stretch;
     position: relative;
+}
+.muayene-input-wrap {
+    position: relative;
+    flex: 1;
+    min-width: 0;
+}
+.muayene-input-wrap #vehicle-muayene-date {
+    width: 100%;
+    min-width: 0;
 }
 .muayene-exclamation {
     display: none;
-    flex-shrink: 0;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: var(--theme-color);
-    color: #fff;
+    position: absolute;
+    left: 2px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--theme-color);
     font-size: 14px;
     font-weight: 700;
     line-height: 1;
-    align-items: center;
-    justify-content: center;
     cursor: help;
     font-family: inherit;
+    z-index: 1;
+    pointer-events: auto;
+    background: none;
+    border: none;
+    padding: 0;
 }
 .muayene-date-section.muayene-no-type-warning .muayene-exclamation {
-    display: flex;
+    display: block;
 }
 .muayene-date-section.muayene-no-type-warning #vehicle-muayene-date,
 .muayene-date-section.muayene-no-type-warning #vehicle-muayene-date::-webkit-datetime-edit {
@@ -524,10 +534,10 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
 }
 .muayene-date-section.muayene-no-type-warning #vehicle-muayene-date {
     box-shadow: 0 0 4px rgba(var(--theme-color-rgb), 0.4) !important;
+    padding-left: 14px !important;
 }
-.muayene-date-row #vehicle-muayene-date {
-    flex: 1;
-    min-width: 0;
+.muayene-date-section.muayene-no-type-warning #vehicle-muayene-date::-webkit-datetime-edit-fields-wrapper {
+    padding-left: 0;
 }
 .muayene-tooltip-wrap {
     position: absolute;
@@ -540,7 +550,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
 .muayene-date-section.muayene-no-type-warning .muayene-tooltip-wrap {
     pointer-events: auto;
 }
-.muayene-date-row .muayene-tooltip-wrap {
+.muayene-input-wrap .muayene-tooltip-wrap {
     left: 0;
 }
 .muayene-tooltip {
