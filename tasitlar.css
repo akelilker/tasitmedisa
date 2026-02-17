@@ -227,6 +227,7 @@
 }
 
 .detail-row-value {
+    font-family: inherit;
     font-size: 14px; /* +1pt (13px â†’ 13px */
     color: #888; /* KayÄ±t modundaki form-input ile aynÄ± (#ccc â†’ #888) */
     line-height: 1.4;
