@@ -809,7 +809,7 @@ padding: 1px 0;
 /* Sol ok + Detay Ekleme satırı modal başlığına daha yakın; altında 12px dikey boşluk */
 #reports-modal .reports-list-header-actions:not(:empty) {
 padding-top: 4px !important;
-padding-bottom: 12px !important;
+padding-bottom: 4px !important;
 }
 #reports-body:has(#stok-list-container .stok-list-top-controls) {
 padding-top: 0 !important;
@@ -1599,7 +1599,7 @@ padding-top: 0 !important;
 }
 /* Mobilde header-altı slot: buton altı dikey boşluk */
 #reports-modal .reports-list-header-actions:not(:empty) {
-padding: 6px 2px 4px 2px !important;
+padding: 6px 1px 4px 2px !important;
 }
 /* Mobil: Detay menüsü akışta olsun – liste ve kontroller aşağı kaysın (üst üste binmesin) */
 #reports-modal .stok-detail-add-wrap .stok-detail-menu {
