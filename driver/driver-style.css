@@ -352,7 +352,7 @@
   text-align: left;
 }
 .driver-info-item .label {
-  color: var(--txt);
+  color: var(--form-label-color);
   font-size: 11px;
   text-transform: uppercase;
 }
@@ -504,6 +504,7 @@
   display: block;
   margin-bottom: 6px;
   font-size: 13px;
+  color: var(--form-label-color);
   font-weight: 600;
   color: var(--txt);
 }
@@ -899,6 +900,7 @@
   display: block;
   margin-bottom: 6px;
   font-size: 13px;
+  color: var(--form-label-color);
   font-weight: 600;
   color: var(--txt);
 }
@@ -1098,6 +1100,7 @@
   text-align: center;
   display: block;
   margin-bottom: 2px;
+  color: var(--form-label-color);
 }
 .driver-report-block-bakim .form-group input.driver-bakim-input,
 .driver-report-block-bakim .form-group textarea.driver-bakim-textarea {
@@ -1112,6 +1115,7 @@
   text-align: center;
   display: block;
   margin-bottom: 2px;
+  color: var(--form-label-color);
 }
 .driver-report-block-kaza .form-group input.driver-kaza-input,
 .driver-report-block-kaza .form-group textarea.driver-kaza-textarea {
@@ -1517,6 +1521,7 @@
   display: block;
   margin-bottom: 6px;
   font-size: 13px;
+  color: var(--form-label-color);
   font-weight: 600;
   color: var(--txt);
 }
@@ -2023,7 +2028,7 @@
   margin-bottom: 8px;
   font-size: 14px;
   font-weight: 600;
-  color: var(--muted);
+  color: var(--form-label-color);
 }
 
 .login-form .form-group input {
@@ -2089,7 +2094,7 @@
 
 .form-group-checkbox label {
   font-size: 14px;
-  color: var(--muted);
+  color: var(--form-label-color);
   cursor: pointer;
 }
 
