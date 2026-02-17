@@ -87,6 +87,15 @@
     }
   }
 
+  // Liste Marka/Model: kelimelerin sadece ilk harfi büyük (title case)
+  function toTitleCase(str) {
+    if (!str || str === '-') return str;
+    return str.split(/\s+/).map(function(w) {
+      if (!w) return w;
+      return w.charAt(0).toLocaleUpperCase('tr-TR') + w.slice(1).toLocaleLowerCase('tr-TR');
+    }).join(' ');
+  }
+
   // Global Detail Vehicle ID (HTML onclick erişimi için)
   window.currentDetailVehicleId = null;
 
@@ -505,7 +514,7 @@
             return `
               <div class="card${unassignedClass}" onclick="event.stopPropagation(); showVehicleDetail('${v.id}');">
                 <div class="card-plate">${escapeHtml(plate)}${satildiSpan}</div>
-                <div class="card-brand-model" title="${escapeHtml(brandModel)}">${escapeHtml(brandModel)}</div>
+                <div class="card-brand-model" title="${escapeHtml(brandModel)}">${escapeHtml(toTitleCase(brandModel))}</div>
                 ${thirdLineHtml}
               </div>
             `;
@@ -530,7 +539,7 @@
                   cellClass = 'list-plate';
                   break;
                 case 'brand':
-                  cellContent = escapeHtml(brandModel) + satildiSpan;
+                  cellContent = escapeHtml(toTitleCase(brandModel)) + satildiSpan;
                   cellClass = 'list-brand';
                   break;
                 case 'km':
