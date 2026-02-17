@@ -1405,7 +1405,7 @@ input.settings-form-input:-moz-autofill,
     }
     #branch-form-modal .modal-body .form-section,
     #user-form-modal .modal-body .form-section {
-        max-width: 375px;
+        max-width: 374px;
         width: 100%;
         margin-left: auto;
         margin-right: auto;
@@ -1426,8 +1426,8 @@ input.settings-form-input:-moz-autofill,
     #user-form-modal .modal-body .form-input,
     #branch-form-modal .modal-body select.form-input,
     #user-form-modal .modal-body select.form-input {
-        width: 375px;
-        max-width: 375px;
+        width: 374px;
+        max-width: 374px;
         height: 24px !important;
         padding-top: 5px !important;
         padding-bottom: 5px !important;
@@ -1447,6 +1447,8 @@ input.settings-form-input:-moz-autofill,
     }
     #branch-form-modal .settings-btn-save,
     #user-form-modal .settings-btn-save {
+        width: 182px;
+        min-width: 182px;
         height: 30px !important;
         font-size: 11px !important;
         line-height: 1 !important;
@@ -1462,6 +1464,8 @@ input.settings-form-input:-moz-autofill,
     }
     #branch-form-modal .settings-btn-cancel,
     #user-form-modal .settings-btn-cancel {
+        width: 182px;
+        min-width: 182px;
         height: 30px !important;
         font-size: 11px !important;
         line-height: 1 !important;
