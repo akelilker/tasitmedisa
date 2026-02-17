@@ -1488,11 +1488,12 @@
         
         const partNames = getKaportaPartNames();
         
-        // Önce TÜM parçaları koyu gri yap (varsayılan orijinal renk)
+        // Önce TÜM parçaları gri yap (varsayılan orijinal renk – çok az daha açık ton)
+        const defaultGray = '#757575';
         const allParts = svgClone.querySelectorAll('path[id]');
         allParts.forEach(part => {
-          part.setAttribute('fill', '#666666');
-          part.style.fill = '#666666';
+          part.setAttribute('fill', defaultGray);
+          part.style.fill = defaultGray;
         });
         
         // Mevcut durumları uygula ve hover tooltip ekle
@@ -1509,8 +1510,8 @@
               part.setAttribute('fill', '#e1061b');
               part.style.fill = '#e1061b';
             } else {
-              part.setAttribute('fill', '#666666');
-              part.style.fill = '#666666';
+              part.setAttribute('fill', defaultGray);
+              part.style.fill = defaultGray;
             }
             
             // Hover tooltip ekle (parça ismi ve durumu)
@@ -2053,10 +2054,11 @@
         svgClone.style.transform = 'rotate(90deg)';
         svgClone.style.transformOrigin = 'center center';
         
+        const defaultGrayKaza = '#959595'; /* Araç simgesi gri – çok az daha açık ton */
         const allParts = svgClone.querySelectorAll('path[id]');
         allParts.forEach(part => {
-          part.setAttribute('fill', '#888888');
-          part.style.fill = '#888888';
+          part.setAttribute('fill', defaultGrayKaza);
+          part.style.fill = defaultGrayKaza;
         });
         
         // Mevcut durumları uygula (readonly)
@@ -2072,8 +2074,8 @@
               part.setAttribute('fill', '#e1061b');
               part.style.fill = '#e1061b';
             } else {
-              part.setAttribute('fill', '#888888');
-              part.style.fill = '#888888';
+              part.setAttribute('fill', defaultGrayKaza);
+              part.style.fill = defaultGrayKaza;
             }
             part.style.pointerEvents = 'none';
             part.style.opacity = '0.7';
@@ -2109,8 +2111,8 @@
               } else {
                 // Üçüncü tık: Geri boyasız (temiz)
                 this.dataset.state = 'boyasiz';
-                this.setAttribute('fill', '#888888');
-                this.style.fill = '#888888';
+                this.setAttribute('fill', defaultGrayKaza);
+                this.style.fill = defaultGrayKaza;
               }
             });
           }
