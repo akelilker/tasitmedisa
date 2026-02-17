@@ -1380,7 +1380,8 @@
     const muayeneDate = vehicle.muayeneDate || '';
     const muayeneWarning = checkDateWarnings(muayeneDate);
     const muayeneDisplay = formatDateForDisplay(muayeneDate);
-    const noVehicleType = !vehicle.vehicleType || !vehicle.vehicleType.trim();
+    const vt = vehicle.hasOwnProperty('vehicleType') ? vehicle.vehicleType : undefined;
+    const noVehicleType = vt === undefined || vt === null || (typeof vt === 'string' && !vt.trim());
     if (noVehicleType) {
       html += `<div class="detail-row detail-row-inline detail-row-muayene-no-type"><div class="detail-row-header"><span class="detail-row-label">Muayene Bitiş Tarihi</span><span class="detail-row-colon">:</span></div><span class="detail-row-value detail-muayene-value-wrap ${muayeneWarning.class}"> ${escapeHtml(muayeneDisplay || '-')} <span class="muayene-detail-exclamation" aria-hidden="true" title="Taşıt tipi seçilmedi">!</span><span class="muayene-detail-tooltip-wrap"><span class="muayene-detail-tooltip" role="tooltip" hidden>Taşıt Tipi Seçilmediğinden, Muayene Bitiş Tarihi Hatalı Gözükebilir. Seçim Yapmak İçin <button type="button" class="muayene-detail-tooltip-link">Tıklayınız</button>.</span></span></span></div>`;
     } else {

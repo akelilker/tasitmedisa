@@ -315,17 +315,19 @@
 }
 
 /* Taşıt detay: Muayene Bitiş Tarihi – taşıt tipi seçilmedi uyarısı (ünlem + tooltip) */
-#vehicle-detail-modal .detail-muayene-value-wrap {
+#vehicle-detail-modal .detail-row-muayene-no-type .detail-muayene-value-wrap {
     position: relative;
     display: inline;
 }
-#vehicle-detail-modal .muayene-detail-exclamation {
+#vehicle-detail-modal .detail-row-muayene-no-type .muayene-detail-exclamation {
     color: var(--theme-color);
     font-size: 16px;
     font-weight: 700;
     cursor: help;
     margin-left: 4px;
     user-select: none;
+    display: inline;
+    visibility: visible;
 }
 #vehicle-detail-modal .muayene-detail-tooltip-wrap {
     position: absolute;
@@ -349,6 +351,10 @@
     white-space: normal;
 }
 #vehicle-detail-modal .muayene-detail-tooltip.visible {
+    display: block !important;
+}
+/* [hidden] UA kuralını ez: JS ile visible yapıldığında kesin görünsün */
+#vehicle-detail-modal .muayene-detail-tooltip.visible[hidden] {
     display: block !important;
 }
 #vehicle-detail-modal .muayene-detail-exclamation:hover + .muayene-detail-tooltip-wrap .muayene-detail-tooltip,
@@ -2407,17 +2413,17 @@
     margin-top: -6px !important;
   }
 
-  /* --- EVENT MENU LIST MOBİL --- */
+  /* --- EVENT MENU LIST MOBİL --- (spesifik seçici: .modal-body button kuralını ezer) */
   #event-menu-list {
     align-items: flex-end !important; /* Mobilde sağa yaslı */
   }
-  #event-menu-list button {
-    text-align: right !important; /* Mobilde metin sağa yaslı */
-    width: calc(100% - 20px) !important; /* Mobilde de sağ ve soldan 10px daralt */
+  #event-menu-modal .modal-body #event-menu-list button {
+    text-align: right !important;
+    width: calc(100% - 20px) !important;
     max-width: calc(100% - 20px) !important;
-    margin: 0 !important; /* Mobilde margin sıfırla (flex-end hizalaması için) */
-    font-size: 18px !important; /* 1.5 punto büyük (16px → 18px) */
+    margin: 0 !important;
+    font-size: 18px !important;
     padding-top: 14px !important;
-    padding-bottom: 14px !important; /* Dikey yükseklik ~%15 artış (12px → 14px) */
+    padding-bottom: 14px !important;
   }
 }
