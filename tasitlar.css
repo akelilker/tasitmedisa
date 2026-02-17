@@ -314,6 +314,62 @@
     color: var(--theme-color) !important;
 }
 
+/* Taşıt detay: Muayene Bitiş Tarihi – taşıt tipi seçilmedi uyarısı (ünlem + tooltip) */
+#vehicle-detail-modal .detail-muayene-value-wrap {
+    position: relative;
+    display: inline;
+}
+#vehicle-detail-modal .muayene-detail-exclamation {
+    color: var(--theme-color);
+    font-size: 16px;
+    font-weight: 700;
+    cursor: help;
+    margin-left: 4px;
+    user-select: none;
+}
+#vehicle-detail-modal .muayene-detail-tooltip-wrap {
+    position: absolute;
+    left: 0;
+    top: 100%;
+    margin-top: 4px;
+    z-index: 10;
+    pointer-events: auto;
+}
+#vehicle-detail-modal .muayene-detail-tooltip {
+    display: none;
+    max-width: 280px;
+    padding: 8px 10px;
+    background: var(--card-bg, #1a1f2e);
+    border: 1px solid rgba(var(--theme-color-rgb), 0.4);
+    border-radius: 8px;
+    font-size: 12px;
+    line-height: 1.4;
+    color: #e0e0e0;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    white-space: normal;
+}
+#vehicle-detail-modal .muayene-detail-tooltip.visible {
+    display: block !important;
+}
+#vehicle-detail-modal .muayene-detail-exclamation:hover + .muayene-detail-tooltip-wrap .muayene-detail-tooltip,
+#vehicle-detail-modal .muayene-detail-exclamation:focus + .muayene-detail-tooltip-wrap .muayene-detail-tooltip,
+#vehicle-detail-modal .muayene-detail-tooltip-wrap:hover .muayene-detail-tooltip {
+    display: block !important;
+}
+#vehicle-detail-modal .muayene-detail-tooltip-link {
+    background: none;
+    border: none;
+    padding: 0;
+    color: #5b9bd5;
+    text-decoration: underline;
+    cursor: pointer;
+    font-size: inherit;
+    font-family: inherit;
+}
+#vehicle-detail-modal .muayene-detail-tooltip-link:hover {
+    color: #7ab3e8;
+}
+
 /* === TRAMER KAYITLARI DETAY MODAL STÄ°LLERÄ° === */
 .detail-section {
     margin-top: 20px;
