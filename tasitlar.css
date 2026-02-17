@@ -1617,6 +1617,10 @@
     height: 14px; /* Dikeyde kÃ¼Ã§Ã¼ltÃ¼ldÃ¼ (16px â†’ 14px) */
     flex-shrink: 0;
 }
+.detail-brand-year-row .history-btn-minimal:hover svg {
+    transform: scale(1.08);
+    transform-origin: center center;
+}
 
 /* Event Menu List Hover Efektleri - Sadece Metin BÃ¼yÃ¼yecek */
 #event-menu-list {
