@@ -806,7 +806,7 @@ margin-top: 0 !important; /* -28px kesiliyordu, sıfırlandı */
 .report-view {
 padding: 1px 0;
 }
-/* Sol ok + Detay Ekleme satırı modal başlığına daha yakın; altında 12px dikey boşluk */
+/* Sol ok + Detay Ekleme satırı modal başlığına daha yakın; altında 4px dikey boşluk */
 #reports-modal .reports-list-header-actions:not(:empty) {
 padding-top: 4px !important;
 padding-bottom: 4px !important;
@@ -814,7 +814,7 @@ padding-bottom: 4px !important;
 #reports-body:has(#stok-list-container .stok-list-top-controls) {
 padding-top: 0 !important;
 }
-/* Detay kapalıyken: Detay Ekleme ile BAŞLANGIÇ T. arası tam 12px (view/row-2 boşlukları sıfırlanır) */
+/* Detay kapalıyken: Detay Ekleme ile BAŞLANGIÇ T. arası 4px (view/row-2 boşlukları sıfırlanır) */
 #reports-modal:not(:has(.stok-detail-menu-open)) #reports-body:has(#stok-list-container .stok-list-top-controls) {
 padding-top: 0 !important;
 }
@@ -823,7 +823,7 @@ padding-top: 0 !important;
 }
 #reports-modal:not(:has(.stok-detail-menu-open)) #stok-list-container .stok-list-top-controls > .stok-controls-row-2 {
 margin-top: 0 !important;
-padding-top: 0 !important; /* ezen 14px kaldır; aralık sadece header padding-bottom 12px */
+padding-top: 0 !important; /* ezen 14px kaldır; aralık sadece header padding-bottom 4px */
 }
 /* Detay menüsü açılınca alttaki içerik aşağı kaysın (menü akışta, overlay değil) */
 #reports-modal .stok-detail-add-wrap .stok-detail-menu {
