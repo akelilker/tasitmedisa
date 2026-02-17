@@ -1842,7 +1842,7 @@
   .olay-ekle-modal .radio-btn.active {
     background: rgba(var(--theme-color-rgb), 0.20) !important;
     border-color: var(--theme-color) !important;
-    color: #e0e0e0 !important;
+    color: var(--theme-color) !important; /* Hayır/Yok seçilince metin kırmızı */
   }
   .olay-ekle-modal .radio-btn.active.green {
     background: rgba(74, 222, 128, 0.18) !important;
