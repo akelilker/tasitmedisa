@@ -2027,6 +2027,16 @@
   };
 
   /**
+   * Olay menüsünden taşıt detay ekranına dön (event-menu-modal içindeki "Taşıt Detay" butonu)
+   */
+  window.backToVehicleDetail = function() {
+    closeEventMenuModal();
+    if (window.currentDetailVehicleId) {
+      showVehicleDetail(window.currentDetailVehicleId);
+    }
+  };
+
+  /**
    * Kaza modal'ında boya şemasını render et (readonly mevcut, yeni hasarlar eklenebilir)
    */
   function renderBoyaSchemaKaza(vehicle, container) {
