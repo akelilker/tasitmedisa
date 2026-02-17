@@ -1610,7 +1610,6 @@
 
 .detail-brand-year-row .history-btn-minimal:hover {
     color: #fff;
-    transform: scale(1.08); /* GÃ¶rsel olarak bÃ¼yÃ¼t (sayfa kÄ±pÄ±rdamasÄ±n diye transform kullanÄ±ldÄ±) */
 }
 
 .detail-brand-year-row .history-btn-minimal svg {
