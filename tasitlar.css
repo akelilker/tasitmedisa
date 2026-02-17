@@ -516,7 +516,7 @@
     opacity: 1;
   }
   #vehicles-modal .list-header-row .list-cell span {
-    font-size: 13px !important;
+    font-size: clamp(10px, 1.6vw, 13px) !important;
     color: #f0f0f0 !important;
   }
   #vehicles-modal .list-header-row .list-cell.list-brand .sortable-header span {
@@ -911,14 +911,14 @@
     grid-template-columns: 32px 70px 3.2fr 60px 65px 1.8fr 2fr !important; /* Yılı daraltıldı, Kullanıcı genişletildi */
     gap: 4px !important;
     align-items: center;
-    padding: 4px 2px 4px 2px;
+    padding: 2px 2px 2px 2px;
     border-bottom: 1px solid rgba(255,255,255,0.08);
     background: rgba(255,255,255,0.01);
     position: relative;
     z-index: 0;
     /* Başlık z-index: 1000 ile üstte kalsın, satırlar altında kaysın */
     cursor: pointer;
-    min-height: 32px;
+    min-height: 30px;
     transition: background 0.2s ease;
 }
 
@@ -1001,7 +1001,7 @@
 }
 
 .list-header-row .list-cell span {
-    font-size: 12px !important;
+    font-size: clamp(10px, 1.6vw, 12px) !important;
     font-weight: 700 !important;
     text-transform: uppercase;
     color: #999 !important;
@@ -1245,6 +1245,7 @@
     padding-left: 2px !important;
     padding-right: 2px !important;
     min-width: 0;
+    text-transform: capitalize;
 }
 
 .view-list .list-item:last-child {
