@@ -1912,7 +1912,37 @@
             this.style.overflow = this.scrollHeight > maxHeight ? 'auto' : 'hidden';
         });
     }
-    
+
+    // Enter ile input'lar arasında dolaşma (kayıt formu)
+    (function setupEnterKeyNavigation() {
+      const modal = getModal();
+      if (!modal) return;
+
+      function isVisible(el) {
+        if (!el || !el.offsetParent) return false;
+        const s = window.getComputedStyle(el);
+        return s.display !== 'none' && s.visibility !== 'hidden';
+      }
+
+      function getFocusables() {
+        const raw = $all('input:not([type="hidden"]):not([disabled]), select:not([disabled]), textarea:not([disabled])', modal);
+        return raw.filter(isVisible);
+      }
+
+      modal.addEventListener('keydown', function(e) {
+        if (e.key !== 'Enter') return;
+        const target = e.target;
+        if (!target.matches('input, select, textarea')) return;
+        if (target.tagName === 'TEXTAREA') return; // textarea'da Enter = yeni satır
+        e.preventDefault();
+        const list = getFocusables();
+        const idx = list.indexOf(target);
+        if (idx === -1) return;
+        const next = list[idx + 1];
+        if (next) next.focus();
+      });
+    })();
+
     // Initialize branch select
     populateBranchSelect();
   });
