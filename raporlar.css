@@ -1533,20 +1533,21 @@ gap: 10px;
 .report-filters select,
 .search-box-wrapper input { font-size: 15px !important; }
 
-/* Stok grid + liste */
-.stok-branch-grid { gap: 6px; }
+/* Stok grid + liste – Taşıtlar kutuları ile aynı (gap 2px, clamp boyut, 15px font) */
+.stok-branch-grid { gap: 2px; }
 .stok-branch-card {
-width: calc((100% - (2 * 6px)) / 3);
-max-width: calc((100% - (2 * 6px)) / 3);
-flex: 0 0 calc((100% - (2 * 6px)) / 3);
+width: clamp(90px, 26vw, 104px);
+max-width: clamp(90px, 26vw, 104px);
+flex: 0 0 clamp(90px, 26vw, 104px);
 padding: 3px;
+aspect-ratio: 1 / 1;
 }
 /* Mobil: hover büyümesi olmasın (ilk açılışta bir kutu büyümüş kalmasın) */
 .stok-branch-card:not(.active) {
 transform: none !important;
 }
-.stok-branch-name { font-size: 14px; }
-.stok-branch-count { font-size: 13px; }
+.stok-branch-name { font-size: 15px; }
+.stok-branch-count { font-size: 15px; }
 
 /* MOBİL LİSTE - TÜM SÜTUNLAR EKRANA SIGMALI (SCROLL YOK!) */
 .stok-list-table {
