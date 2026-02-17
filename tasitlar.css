@@ -2364,7 +2364,13 @@
     justify-content: center !important; /* Kaporta şeması yatayda ortalanmış */
     gap: 12px !important;
   }
-  
+  /* Taşıt detay: kaporta ekspertiz mobilde yatay (legend + SVG yan yana) */
+  #detail-boya-container {
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+  }
+
   #detail-boya-container .boya-legend {
     flex-direction: row !important;
     gap: 12px !important;
@@ -2387,6 +2393,20 @@
   .detail-plate { margin-top: 0 !important; }
   .detail-brand-year-row { padding-top: 6px !important; }
 
+  /* Taşıt detay: Olay Ekle ve Tarihçe metni mobilde 1pt büyük; Tarihçe rengi etiket beyazı */
+  #vehicle-detail-modal .detail-brand-year-row .history-add-event-btn {
+    font-size: 16px !important;
+  }
+  #vehicle-detail-modal .detail-brand-year-row .history-btn-minimal {
+    font-size: 16px !important;
+    color: var(--form-label-color) !important;
+  }
+
+  /* Olay Ekle menü: sol ok + etiket mobilde 6px yukarı */
+  #event-menu-modal .olay-ekle-back-bar {
+    margin-top: -6px !important;
+  }
+
   /* --- EVENT MENU LIST MOBİL --- */
   #event-menu-list {
     align-items: flex-end !important; /* Mobilde sağa yaslı */
@@ -2396,7 +2416,7 @@
     width: calc(100% - 20px) !important; /* Mobilde de sağ ve soldan 10px daralt */
     max-width: calc(100% - 20px) !important;
     margin: 0 !important; /* Mobilde margin sıfırla (flex-end hizalaması için) */
-    font-size: 16px !important; /* 1.5 punto büyük (clamp kuralını ezer) */
+    font-size: 18px !important; /* 1.5 punto büyük (16px → 18px) */
     padding-top: 14px !important;
     padding-bottom: 14px !important; /* Dikey yükseklik ~%15 artış (12px → 14px) */
   }
