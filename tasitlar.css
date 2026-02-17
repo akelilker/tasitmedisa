@@ -1056,7 +1056,7 @@
     position: relative;
     margin-top: -11px;
     isolation: isolate;
-    z-index: -1;
+    z-index: 0;
 }
 
 .list-header-row {

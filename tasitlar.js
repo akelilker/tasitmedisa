@@ -421,10 +421,34 @@
       // 3. Sıralama
       vehicles = applyFilter(vehicles);
 
-      // 4. HTML
+      // 4. HTML – boş liste: liste görünümünde başlıkları koru, tek satırda mesaj göster
       if (vehicles.length === 0) {
           const emptyMsg = (activeBranchId === '__archive__') ? 'Arşivde kayıt bulunamadı.' : 'Kayıt bulunamadı.';
-          listContainer.innerHTML = `<div style="text-align:center; padding:40px; color:#666">${emptyMsg}</div>`;
+          if (viewMode === 'list') {
+            loadVehicleColumnOrder();
+            const isMobile = window.innerWidth <= 640;
+            const columnDefs = {
+              'year': { label: 'Yılı', class: 'list-year' },
+              'plate': { label: 'Plaka', class: 'list-plate' },
+              'brand': { label: 'Marka / Model', class: 'list-brand' },
+              'km': { label: 'Km', class: 'list-km' },
+              'type': { label: 'Taşıt Tipi', class: 'list-type' },
+              'user': { label: isMobile ? 'Kull.' : 'Kullanıcı', class: 'list-user' },
+              'branch': { label: 'Şube', class: 'list-branch' }
+            };
+            let emptyHtml = '<div class="list-header-row">';
+            vehicleColumnOrder.forEach(columnKey => {
+              const def = columnDefs[columnKey];
+              if (def) {
+                const labelHtml = (isMobile && columnKey === 'brand') ? '<span class="header-first-line">Marka /</span><span class="header-second-line">Model</span>' : (isMobile && columnKey === 'type') ? '<span class="header-first-line">Taşıt</span><span class="header-second-line">Tipi</span>' : `<span>${escapeHtml(def.label)}</span>`;
+                emptyHtml += `<div class="list-cell ${def.class} sortable-header" data-col="${columnKey}">${labelHtml}</div>`;
+              }
+            });
+            emptyHtml += '</div><div class="view-list view-list-empty"><div class="list-item list-item-empty" style="grid-column: 1 / -1; justify-content: center; padding: 24px;"><span style="color:#666;">' + escapeHtml(emptyMsg) + '</span></div></div>';
+            listContainer.innerHTML = emptyHtml;
+          } else {
+            listContainer.innerHTML = `<div style="text-align:center; padding:40px; color:#666">${emptyMsg}</div>`;
+          }
           return;
       }
 
