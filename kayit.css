@@ -481,7 +481,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     pointer-events: none;
     object-fit: contain; 
     object-position: bottom center; 
-    filter: brightness(0.6) grayscale(0.3);
+    filter: brightness(0.72) grayscale(0.3); /* Masaüstü: grinin çok az daha açık tonu */
     transition: filter 0.2s ease, transform 0.2s ease;
     margin: 0;
     padding: 0;
