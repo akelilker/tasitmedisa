@@ -523,6 +523,17 @@
   #vehicle-detail-modal .detail-plate-row {
     margin-bottom: 2px !important;
   }
+  /* Plakadan itibaren 3px yukarı; marka/model–bilgiler arası 3px az (masaüstü) */
+  #vehicle-detail-modal #vehicle-detail-content {
+    padding-top: 11px !important;
+  }
+  #vehicle-detail-modal .vehicle-detail-columns {
+    margin-top: 13px !important;
+  }
+  /* Tarihçe modal: sol ok ve Taşıt Detayları etiketi 8px yukarı (masaüstü) */
+  #vehicle-history-modal .modal-container > div:nth-child(2) {
+    margin-top: -8px;
+  }
   #vehicles-modal .list-header-row .list-cell {
     font-size: 12px;
     color: #e8e8e8;
