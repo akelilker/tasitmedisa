@@ -517,9 +517,9 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
 .muayene-exclamation {
     display: none;
     position: absolute;
-    left: 2px;
+    left: 7px;
     top: 50%;
-    transform: translateY(-50%);
+    transform: translate(-50%, -50%);
     color: var(--theme-color);
     font-size: 14px;
     font-weight: 700;
@@ -1006,6 +1006,10 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-column-right input[type="date"].form-input::-webkit-datetime-edit-fields-wrapper { padding: 0 2px; box-sizing: border-box; }
     .modal-body input[type="date"].form-input::-webkit-calendar-picker-indicator { right: 4px !important; transform: translateY(-50%) !important; }
     .date-placeholder { left: 50%; transform: translateX(-50%); font-size: 11px; text-align: center; }
+    /* Muayene uyarı: mobilde de 14px alan, ünlem aynı mantıkla ortada */
+    #vehicle-modal .modal-body .modal-column-right .muayene-date-section.muayene-no-type-warning #vehicle-muayene-date {
+        padding-left: 14px !important;
+    }
     
     .form-section-inline:has(.radio-group) { flex-direction: column; align-items: flex-start; gap: 0; margin-bottom: 10px; }
     .form-section-inline:has(.radio-group) .form-label { margin-bottom: 0; width: 100%; }
