@@ -615,9 +615,17 @@
     if (titleElement) titleElement.textContent = title;
   }
 
+  /** Tahsis Edilen Şube select'inde "Seçiniz" iken soluk görünüm için sınıfı günceller */
+  function syncBranchSelectPlaceholder() {
+    const select = document.getElementById("vehicle-branch-select");
+    if (!select) return;
+    if (select.value === "") select.classList.add("branch-placeholder");
+    else select.classList.remove("branch-placeholder");
+  }
+
   /**
    * Şube dropdown listesini localStorage'dan okunan şubelerle doldurur
-   * 
+   *
    * @param {string} [selectedId=""] - Seçili olarak gösterilecek şube ID'si (opsiyonel)
    * 
    * Mantık:
@@ -666,6 +674,7 @@
       
       // Select'in kendisine de stil ekle
       select.style.backgroundColor = "transparent";
+      syncBranchSelectPlaceholder();
     } catch (error) {
       // Hata durumunda sessizce çık, dropdown boş kalabilir
     }
@@ -727,7 +736,10 @@
 
     // Reset Selects & Buttons
     const branchSelect = document.getElementById("vehicle-branch-select");
-    if (branchSelect) branchSelect.value = '';
+    if (branchSelect) {
+      branchSelect.value = '';
+      syncBranchSelectPlaceholder();
+    }
     
     $all(".vehicle-type-btn", modal).forEach(btn => btn.classList.remove("active"));
     $all(".radio-btn", modal).forEach(btn => btn.classList.remove("active", "green"));
@@ -1945,5 +1957,7 @@
 
     // Initialize branch select
     populateBranchSelect();
+    const branchSelectEl = document.getElementById("vehicle-branch-select");
+    if (branchSelectEl) branchSelectEl.addEventListener("change", syncBranchSelectPlaceholder);
   });
 })();
