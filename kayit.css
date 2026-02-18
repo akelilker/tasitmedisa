@@ -943,7 +943,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     
     /* Notlar: flex ile alta yayılır, alt boşluk dolar */
     
-    /* Sol taraftaki Boya Değişen butonları alt hizalamasÄ± - sağ taraftaki form-section'lar ile eÅŸit */
+    /* Sol taraftaki Boya Değişen butonları alt hizalaması - sağ taraftaki form-section'lar ile eşit */
     .modal-column-left .form-section-inline:not(:first-child) {
         margin-bottom: 6px !important;
     }
@@ -953,7 +953,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     .modal-column-left .form-section-inline:not(:first-child) .radio-group { justify-content: flex-end; margin-left: auto; }
 }
 
-/* === MASAÜSTÜ OPTÄ°MÄ°ZASYONLARI === */
+/* === MASAÜSTÜ OPTİMİZASYONLARI === */
 @media (min-width: 641px) {
     /* Tam görünürlük + Taşıt Tipi kesilme: üst padding 10px, alt 6px */
     #vehicle-modal .modal-body {
