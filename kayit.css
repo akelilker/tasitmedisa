@@ -1,5 +1,5 @@
 /* =========================================
-   TAÅžIT KAYIT FORMU - FINAL (PWA FIX & DESKTOP 52PX)
+   TAŞIT KAYIT FORMU - FINAL (PWA FIX & DESKTOP 52PX)
    ========================================= */
 
 /* Modal Overlay */
@@ -25,7 +25,7 @@
     display: flex !important;
 }
 
-/* Karartma Efekti (MasaÃ¼stÃ¼ Ä°Ã§in) */
+/* Karartma Efekti (Masaüstü İçin) */
 #vehicle-modal.modal-overlay::before {
     content: '';
     position: absolute;
@@ -124,7 +124,7 @@
     align-items: start; 
 }
 
-/* Sol ve saÄŸ sÃ¼tun ilk elemanlarÄ± */
+/* Sol ve sağ sütun ilk elemanları */
 .modal-column-left .form-section-inline:first-child,
 .modal-column-right .form-section:first-child {
     margin-top: 0;
@@ -191,7 +191,7 @@ textarea.form-input:focus {
     outline: none;
 }
 
-/* Zorunlu Alan Hata Stili - KÄ±rmÄ±zÄ± Ã‡erÃ§eve */
+/* Zorunlu Alan Hata Stili - Kırmızı Çerçeve */
 .form-input.field-error,
 select.field-error,
 .form-section-inline.field-error {
@@ -200,7 +200,7 @@ select.field-error,
     box-shadow: 0 0 4px rgba(var(--theme-color-rgb), 0.4) !important;
 }
 
-/* Radio button gruplarÄ± iÃ§in Ã¶zel stil */
+/* Radio button grupları için özel stil */
 .form-section-inline.field-error .radio-group {
     border: 1px solid var(--theme-color);
     border-radius: 6px;
@@ -208,7 +208,7 @@ select.field-error,
     box-shadow: 0 0 4px rgba(var(--theme-color-rgb), 0.4);
 }
 
-/* Autofill (Otomatik Tamamlama) Stilleri - Beyaz Arka PlanÄ± Ã–nle */
+/* Autofill (Otomatik Tamamlama) Stilleri - Beyaz Arka Planı Önle */
 input.form-input:-webkit-autofill,
 input.form-input:-webkit-autofill:hover,
 input.form-input:-webkit-autofill:focus,
@@ -222,7 +222,7 @@ input.form-input:-webkit-autofill:active {
     transition: background-color 5000s ease-in-out 0s, color 5000s ease-in-out 0s !important;
 }
 
-/* Firefox iÃ§in autofill */
+/* Firefox için autofill */
 input.form-input:-moz-autofill {
     background-color: #0d131f !important;
     color: #888 !important;
@@ -287,12 +287,12 @@ input[type="date"] {
     position: relative;
 }
 
-/* Tarih placeholder gÃ¶rÃ¼nÃ¼rlÃ¼ÄŸÃ¼ iÃ§in dÃ¼zeltme */
+/* Tarih placeholder görünürlüğü için düzeltme */
 input[type="date"]:not(.has-value):not(:focus)::-webkit-datetime-edit {
     color: transparent;
 }
 
-/* DeÄŸer varsa veya odaklanÄ±lmÄ±ÅŸsa gÃ¶rÃ¼nÃ¼r yap */
+/* Değer varsa veya odaklanılmışsa görünür yap */
 input[type="date"].has-value::-webkit-datetime-edit,
 input[type="date"]:focus::-webkit-datetime-edit {
     color: inherit;
@@ -379,7 +379,7 @@ textarea.form-input::-webkit-scrollbar { width: 8px; }
 textarea.form-input::-webkit-scrollbar-track { background: transparent; }
 textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.2); border-radius: 4px; }
 
-/* TAÅžIT TÄ°PÄ° Ä°KONLARI */
+/* TAŞIT TİPİ İKONLARI */
 .form-section-inline {
     display: flex;
     flex-direction: row; 
@@ -401,7 +401,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     margin-bottom: 8px; 
 }
 
-/* Sadece TaÅŸÄ±t Tipi iÃ§in Ã¶zel ayar */
+/* Sadece Taşıt Tipi için özel ayar */
 .modal-column-left .form-section-inline:first-child {
     flex-direction: column; 
     align-items: flex-start; 
@@ -668,7 +668,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
 .modal-column-left { padding-right: 10px; padding-left: 0; border-right: 1px solid rgba(var(--theme-color-rgb), 0.28); box-shadow: 10px 0 18px -18px rgba(var(--theme-color-rgb), 0.45); }
 .modal-column-right { padding-left: 10px; padding-right: 0; }
 
-/* === MOBÄ°L Ã–ZEL === */
+/* === MOBİL ÖZEL === */
 @media (max-width: 640px) {
     /* ✨ MOBİL KONTRAST ARTIRMA ✨ */
     .form-label {
@@ -943,7 +943,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     
     /* Notlar: flex ile alta yayılır, alt boşluk dolar */
     
-    /* Sol taraftaki Boya DeÄŸiÅŸen butonlarÄ± alt hizalamasÄ± - saÄŸ taraftaki form-section'lar ile eÅŸit */
+    /* Sol taraftaki Boya Değişen butonları alt hizalaması - sağ taraftaki form-section'lar ile eşit */
     .modal-column-left .form-section-inline:not(:first-child) {
         margin-bottom: 6px !important;
     }
@@ -953,7 +953,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     .modal-column-left .form-section-inline:not(:first-child) .radio-group { justify-content: flex-end; margin-left: auto; }
 }
 
-/* === MASAÃœSTÃœ OPTÄ°MÄ°ZASYONLARI === */
+/* === MASAÜSTÜ OPTİMİZASYONLARI === */
 @media (min-width: 641px) {
     /* Tam görünürlük + Taşıt Tipi kesilme: üst padding 10px, alt 6px */
     #vehicle-modal .modal-body {
@@ -963,7 +963,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         border-width: 1.1px !important;
         border-color: rgba(255, 255, 255, 0.28) !important; /* Biraz daha parlak gri (0.20 -> 0.28) */
         color: #e6e6e6 !important; /* Daha parlak metin (#d1d1d1 -> #e6e6e6) */
-        -webkit-font-smoothing: antialiased; /* Font yumuÅŸatma (netlik) */
+        -webkit-font-smoothing: antialiased; /* Font yumuşatma (netlik) */
         -moz-osx-font-smoothing: grayscale;
     }
     #vehicle-modal .modal-body .form-input,
@@ -1212,7 +1212,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
 
 /* iOS PWA modal margin: style-core.css (.modal-overlay .modal-container) */
 
-/* === TRAMER KAYITLARI STÄ°LLERÄ° === */
+/* === TRAMER KAYITLARI STİLLERİ === */
 #tramer-records-container {
     margin-top: 6px;
     display: none;
@@ -1301,21 +1301,21 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     transform: scale(1.15);
 }
 
-/* === BOYA PARÃ‡ALARI SVG STÄ°LLERÄ° === */
+/* === BOYA PARÇALARI SVG STİLLERİ === */
 #boya-parts-container {
     margin-top: 6px;
     display: none;
     width: 100%;
     padding: 0;
     background: transparent !important; /* Arka plan yok */
-    border: none !important; /* Ã‡erÃ§eve yok */
+    border: none !important; /* Çerçeve yok */
     border-radius: 0;
     box-sizing: border-box;
 }
 
 #boya-parts-container svg {
-    width: 123px; /* %88 kÃ¼Ã§Ã¼ltÃ¼ldÃ¼: 140 -> 123 */
-    height: 185px; /* %88 kÃ¼Ã§Ã¼ltÃ¼ldÃ¼: 210 -> 185 */
+    width: 123px; /* %88 küçültüldü: 140 -> 123 */
+    height: 185px; /* %88 küçültüldü: 210 -> 185 */
     display: block;
     margin: 0 auto;
 }
