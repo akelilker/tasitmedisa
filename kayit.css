@@ -248,8 +248,7 @@ select:focus {
 }
 
 select option,
-select.form-input option,
-#vehicle-branch-select option {
+select.form-input option {
     background-color: #080d16;
     color: #e0e0e0;
 }
@@ -262,12 +261,69 @@ select option:active {
     color: #fff;
 }
 
-/* Tahsis Edilen Şube: "Seçiniz" yatayda ortalı ve soluk */
-#vehicle-branch-select {
-    text-align: center;
+/* Tahsis Edilen Şube: custom dropdown (gizli select + trigger + liste) */
+.vehicle-branch-dropdown-wrap {
+    position: relative;
 }
-#vehicle-branch-select option[value=""] {
-    color: rgba(255, 255, 255, 0.4);
+#vehicle-modal #vehicle-branch-select {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip-path: inset(50%) !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+.vehicle-branch-trigger {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    cursor: pointer;
+    text-align: center;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23888' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    padding-right: 28px;
+}
+.vehicle-branch-trigger.placeholder {
+    color: rgba(255, 255, 255, 0.38) !important;
+}
+.vehicle-branch-trigger:focus {
+    border-color: var(--theme-color) !important;
+    outline: none;
+}
+.vehicle-branch-list {
+    display: none;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    margin-top: 4px;
+    background: #0f1418;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 10;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+.vehicle-branch-list.open {
+    display: block;
+}
+.vehicle-branch-option {
+    padding: 8px 10px;
+    font-size: 14px;
+    color: #e0e0e0;
+    cursor: pointer;
+}
+.vehicle-branch-option:hover {
+    background: rgba(var(--theme-color-rgb), 0.22);
+    color: #e0e0e0;
+}
+.vehicle-branch-option.selected {
+    background: rgba(var(--theme-color-rgb), 0.12);
 }
 #vehicle-modal #vehicle-branch-select.branch-placeholder {
     color: rgba(255, 255, 255, 0.38) !important;
@@ -1009,22 +1065,12 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         border-color: var(--theme-color) !important;
         border-width: 1px !important;
     }
-    /* Tahsis Edilen Şube: masaüstünde arka plan diğer inputlarla aynı */
+    /* Tahsis Edilen Şube: masaüstünde arka plan diğer inputlarla aynı (diğer sayfa select'leri) */
     #vehicle-modal .modal-body select {
         background-color: #0d131f !important;
     }
     #vehicle-modal .modal-body select:focus {
         background-color: #0d131f !important;
-    }
-    /* Tahsis Edilen Şube listesi: metin 1pt büyük, hover temaya uygun (açık mavi yerine kırmızı ton) */
-    #vehicle-modal #vehicle-branch-select option {
-        font-size: 14px;
-    }
-    #vehicle-modal #vehicle-branch-select option:hover,
-    #vehicle-modal #vehicle-branch-select option:focus,
-    #vehicle-modal #vehicle-branch-select option:active {
-        background: rgba(var(--theme-color-rgb), 0.22) !important;
-        color: #e0e0e0 !important;
     }
     #vehicle-modal .modal-header { 
         height: 60px !important;

@@ -615,12 +615,19 @@
     if (titleElement) titleElement.textContent = title;
   }
 
-  /** Tahsis Edilen Şube select'inde "Seçiniz" iken soluk görünüm için sınıfı günceller */
+  /** Tahsis Edilen Şube: select placeholder sınıfı + custom trigger metni ve placeholder sınıfı */
   function syncBranchSelectPlaceholder() {
     const select = document.getElementById("vehicle-branch-select");
     if (!select) return;
     if (select.value === "") select.classList.add("branch-placeholder");
     else select.classList.remove("branch-placeholder");
+    const trigger = document.getElementById("vehicle-branch-trigger");
+    if (trigger) {
+      const opt = select.options[select.selectedIndex];
+      trigger.textContent = opt ? opt.textContent : "Seçiniz";
+      if (select.value === "") trigger.classList.add("placeholder");
+      else trigger.classList.remove("placeholder");
+    }
   }
 
   /**
@@ -642,41 +649,52 @@
       if (!select) return;
 
       const branches = readBranches();
-    
-    // İlk option'ı oluştur
-    const firstOpt = document.createElement("option");
-    firstOpt.value = "";
-    firstOpt.textContent = "Seçiniz";
-    firstOpt.style.backgroundColor = "#0b0f12";
-    firstOpt.style.color = "#e0e0e0";
+
+      const firstOpt = document.createElement("option");
+      firstOpt.value = "";
+      firstOpt.textContent = "Seçiniz";
       select.innerHTML = "";
       select.appendChild(firstOpt);
 
       if (branches.length === 0) {
-          const opt = document.createElement("option");
-          opt.disabled = true;
-          opt.text = "Önce Şube Ekleyiniz";
-          opt.style.backgroundColor = "#0b0f12";
-          opt.style.color = "#e0e0e0";
-          select.add(opt);
-          return;
+        const opt = document.createElement("option");
+        opt.disabled = true;
+        opt.text = "Önce Şube Ekleyiniz";
+        select.add(opt);
+        buildVehicleBranchDropdownList();
+        syncBranchSelectPlaceholder();
+        return;
       }
 
       branches.forEach(b => {
-          const opt = document.createElement("option");
-          opt.value = b.id;
-          opt.textContent = b.name;
-          opt.style.backgroundColor = "#0b0f12";
-          opt.style.color = "#e0e0e0";
-          if (b.id === selectedId) opt.selected = true;
-          select.appendChild(opt);
+        const opt = document.createElement("option");
+        opt.value = b.id;
+        opt.textContent = b.name;
+        if (b.id === selectedId) opt.selected = true;
+        select.appendChild(opt);
       });
-      
-      // Select'in kendisine de stil ekle
-      select.style.backgroundColor = "transparent";
+
+      buildVehicleBranchDropdownList();
       syncBranchSelectPlaceholder();
     } catch (error) {
       // Hata durumunda sessizce çık, dropdown boş kalabilir
+    }
+  }
+
+  /** Tahsis Edilen Şube custom liste: select option'larından liste div'ini doldurur */
+  function buildVehicleBranchDropdownList() {
+    const select = document.getElementById("vehicle-branch-select");
+    const listEl = document.getElementById("vehicle-branch-list");
+    if (!select || !listEl) return;
+    listEl.innerHTML = "";
+    for (let i = 0; i < select.options.length; i++) {
+      const opt = select.options[i];
+      const div = document.createElement("div");
+      div.className = "vehicle-branch-option";
+      div.textContent = opt.textContent;
+      if (!opt.disabled) div.setAttribute("data-value", opt.value);
+      if (opt.selected) div.classList.add("selected");
+      listEl.appendChild(div);
     }
   }
 
@@ -1071,9 +1089,11 @@
     }
 
     // Şube
-    if (vehicle.branchId) {
-      const branchSelect = document.getElementById("vehicle-branch-select");
-      if (branchSelect) branchSelect.value = vehicle.branchId;
+    const branchSelect = document.getElementById("vehicle-branch-select");
+    if (branchSelect) {
+      if (vehicle.branchId) branchSelect.value = vehicle.branchId;
+      syncBranchSelectPlaceholder();
+      buildVehicleBranchDropdownList();
     }
 
     // Fiyat ve Notlar
@@ -1955,9 +1975,49 @@
       });
     })();
 
-    // Initialize branch select
+    // Initialize branch select and custom dropdown
     populateBranchSelect();
     const branchSelectEl = document.getElementById("vehicle-branch-select");
     if (branchSelectEl) branchSelectEl.addEventListener("change", syncBranchSelectPlaceholder);
+
+    const branchTrigger = document.getElementById("vehicle-branch-trigger");
+    const branchList = document.getElementById("vehicle-branch-list");
+    const branchWrap = document.querySelector(".vehicle-branch-dropdown-wrap");
+    if (branchTrigger && branchList) {
+      branchTrigger.addEventListener("click", function () {
+        const isOpen = branchList.classList.contains("open");
+        if (isOpen) {
+          branchList.classList.remove("open");
+          branchTrigger.setAttribute("aria-expanded", "false");
+          branchList.setAttribute("aria-hidden", "true");
+        } else {
+          branchList.classList.add("open");
+          branchTrigger.setAttribute("aria-expanded", "true");
+          branchList.setAttribute("aria-hidden", "false");
+        }
+      });
+      document.addEventListener("click", function (ev) {
+        if (!branchList.classList.contains("open")) return;
+        if (branchWrap && branchWrap.contains(ev.target)) return;
+        branchList.classList.remove("open");
+        branchTrigger.setAttribute("aria-expanded", "false");
+        branchList.setAttribute("aria-hidden", "true");
+      });
+      branchList.addEventListener("click", function (ev) {
+        const option = ev.target.closest(".vehicle-branch-option");
+        if (!option || !option.hasAttribute("data-value")) return;
+        const value = option.getAttribute("data-value");
+        branchSelectEl.value = value;
+        branchList.querySelectorAll(".vehicle-branch-option").forEach(function (o) { o.classList.remove("selected"); });
+        option.classList.add("selected");
+        branchTrigger.textContent = option.textContent;
+        if (value === "") branchTrigger.classList.add("placeholder"); else branchTrigger.classList.remove("placeholder");
+        branchList.classList.remove("open");
+        branchTrigger.setAttribute("aria-expanded", "false");
+        branchList.setAttribute("aria-hidden", "true");
+        syncBranchSelectPlaceholder();
+        branchSelectEl.dispatchEvent(new Event("change"));
+      });
+    }
   });
 })();
