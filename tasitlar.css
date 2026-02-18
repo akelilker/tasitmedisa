@@ -867,6 +867,30 @@
 }
 #vehicles-modal .modal-body::-webkit-scrollbar { display: none; }
 
+/* Liste görünümü: scroll sadece liste gövdesinde (başlık scroll dışında – taşma olmaz) */
+#vehicles-modal .modal-body:has(.vehicles-list-scroll) {
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: 0;
+}
+#vehicles-modal-content:has(.vehicles-list-scroll) {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    margin-top: -2px; /* Başlıklar 2px yukarı; listedeki sızma üstte kesilir */
+}
+.vehicles-list-scroll {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+.vehicles-list-scroll::-webkit-scrollbar { display: none; }
+
 /* === GRID (ŞUBELER) === */
 .branch-grid { 
     display: flex;
@@ -1140,11 +1164,15 @@
 #vehicles-modal .modal-body .view-list {
     position: relative;
     margin-top: -11px;
-    z-index: -1; /* Başlığın arkasında kalır; kaydırma sırasında içerik başlık üstüne taşmaz */
+    z-index: -1; /* Başlığın arkasında kalır (scroll sarmalayıcı yoksa) */
     isolation: isolate;
 }
+/* Scroll sarmalayıcı içindeyse örtüşme yok, margin sıfır */
+#vehicles-modal .vehicles-list-scroll .view-list {
+    margin-top: 0 !important;
+}
 
-/* İçerik alanı: başlık ile liste aynı stacking context'te; başlık kesin önde olsun */
+/* İçerik alanı: başlık ile liste aynı stacking context'te (scroll sarmalayıcı yoksa) */
 #vehicles-modal #vehicles-modal-content {
     position: relative;
     isolation: isolate;
@@ -1158,15 +1186,24 @@
     padding: 2px 2px; /* metin–çerçeve arası dikey 2px */
     margin-bottom: 4px;
     border-bottom: 1px solid rgba(255,255,255,0.22);
-    background: #080d16 !important; /* Opak arka plan - kayarken alt içerik görünmesin */
+    background: #080d16 !important; /* Opak arka plan */
     width: 100%;
     box-sizing: border-box;
-    position: sticky !important; /* Başlık sabit kalacak */
-    top: 0 !important; /* Scroll alanı üstü = toolbar hemen altı */
-    z-index: 10 !important; /* Başlık her zaman en üstte (view-list z-index: -1 ile arkada) */
+    position: sticky !important; /* Başlık sabit (scroll modal-body'deyken) */
+    top: 0 !important;
+    z-index: 10 !important;
     isolation: isolate !important;
-    transform: translateZ(0); /* Kendi katmanında çizilsin */
-    box-shadow: 0 2px 0 0 #080d16; /* Alt çizgi - içeriğin aradan görünmesini keser */
+    transform: translateZ(0);
+    box-shadow: 0 2px 0 0 #080d16;
+}
+/* Liste scroll sarmalayıcı varken başlık scroll dışında – sticky gerekmez */
+#vehicles-modal-content:has(.vehicles-list-scroll) .list-header-row {
+    position: static !important;
+    top: auto !important;
+    z-index: auto !important;
+    transform: none;
+    box-shadow: none;
+    flex-shrink: 0;
 }
 
 .list-header-row .list-cell {
