@@ -102,7 +102,7 @@
     min-height: fit-content; /* Ä°Ã§eriÄŸe gÃ¶re yÃ¼kseklik */
     height: auto; /* Ä°Ã§eriÄŸe gÃ¶re yÃ¼kseklik */
     margin-top: -17px !important; /* Plaka 3px yukarı */ /* YukarÄ± kaydÄ±rÄ±ldÄ± */
-    margin-bottom: 5px !important; /* Plaka-marka arası 5px */ /* YarÄ± yarÄ±ya dÃ¼ÅŸÃ¼rÃ¼ldÃ¼ (4px â†’ 2px) */
+    margin-bottom: 3px !important; /* Plaka-marka arası 3px */ /* YarÄ± yarÄ±ya dÃ¼ÅŸÃ¼rÃ¼ldÃ¼ (4px â†’ 2px) */
     position: relative; /* Absolute "Olay Ekle" butonu iÃ§in gerekli */
     z-index: 1;
 }
@@ -452,6 +452,7 @@
 #vehicle-history-modal #history-tabs .history-tab {
     text-align: center;
     justify-content: center;
+    padding-bottom: 1px !important; /* Sekme metni ile altındaki yatay çizgi arası 1px */
 }
 
 #vehicles-modal .modal-header h2,
@@ -2464,7 +2465,6 @@
   }
   
   /* --- KAPORTA ŞEMASI MOBİL --- */
-  #detail-boya-container,
   #kaza-kaporta-container {
     flex-direction: column !important;
     align-items: center !important;
@@ -2514,7 +2514,9 @@
   #vehicle-detail-content { padding-top: 24px !important; }
   .detail-plate-row { margin-top: -13px !important; }
   .detail-plate { margin-top: 0 !important; }
-  .detail-brand-year-row { padding-top: 0 !important; margin-top: -6px !important; }
+  .detail-brand-year-row { padding-top: 0 !important; margin-top: 0 !important; }
+  /* Marka/model ikinci satıra inerse iki satır arası 1px */
+  .detail-brand-year { line-height: calc(1em + 1px) !important; }
 
   /* Taşıt detay: Olay Ekle ve Tarihçe mobilde +1pt (17px, hover 18px); Tarihçe rengi etiket beyazı */
   #vehicle-detail-modal .detail-brand-year-row .history-add-event-btn {
