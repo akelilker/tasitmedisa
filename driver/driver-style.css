@@ -13,6 +13,18 @@
   display: none;
 }
 
+/* --- Overflow: yatay taşma yok; giriş ve panel sayfaları --- */
+body.login-page,
+body.dashboard-page {
+  overflow-x: hidden !important;
+}
+/* Modal açıkken arka plan scroll kilitlensin (sadece modal içi kayar) */
+body.driver-modal-open {
+  overflow: hidden !important;
+  position: fixed;
+  width: 100%;
+}
+
 /* --- DASHBOARD SAYFA YAPISI --- */
 .dashboard-page {
   min-height: 100vh;
@@ -60,6 +72,7 @@
 }
 
 .driver-content-wrap {
+  overflow-x: hidden;
   scrollbar-width: none;
   -ms-overflow-style: none;
   padding-bottom: 24px;
@@ -371,7 +384,7 @@
 .driver-info-item {
   display: flex;
   flex-direction: row;
-  align-items: baseline;
+  align-items: flex-start;
   gap: 6px;
   text-align: left;
 }
@@ -384,12 +397,14 @@
 .driver-info-item .label::after {
   content: ':';
   margin-left: 2px;
+  margin-right: 2px; /* Etiket ile açıklama arası ":" sonrası 2px boşluk */
 }
 .driver-info-item .value {
   color: rgba(255, 255, 255, 0.5);
   word-break: break-word;
   font-size: 13px;
   min-width: 0;
+  margin-top: 1px; /* Açıklama alt satıra inince etiket ile dikey 1px */
 }
 .driver-info-item .value.date-warning-red { color: #ef4444; }
 .driver-info-item .value.date-warning-orange { color: #f97316; }
@@ -403,6 +418,10 @@
   padding-left: 6px;
   margin-left: -6px;
 }
+
+/* Kullanıcı paneli sol panel: tüm metinler +1pt (masaüstü) */
+.driver-left-panel .driver-info-item .label { font-size: 12px; }
+.driver-left-panel .driver-info-item .value { font-size: 14px; }
 
 .driver-action-buttons {
   display: flex;
@@ -1415,6 +1434,7 @@
 .driver-modal .modal-body {
   flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
   min-height: 0;
   padding: 20px;
 }
@@ -1451,12 +1471,14 @@
   width: 100%;
   max-width: 500px;
   height: calc(100vh - max(12px, env(safe-area-inset-top)) - 54px);
+  height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 54px);
   background: rgba(0, 0, 0, 0.85);
   backdrop-filter: blur(5px);
   z-index: -1;
   pointer-events: none;
 }
 
+/* Taşıtlar modali ile aynı: genişlik 500px, çerçeve, footer 54px boşluk */
 #history-modal .driver-modal-content,
 #history-modal .modal-container,
 #edit-request-modal .driver-modal-content,
@@ -1469,7 +1491,9 @@
   max-width: 500px;
   margin: max(12px, env(safe-area-inset-top)) auto 54px auto;
   height: calc(100vh - max(12px, env(safe-area-inset-top)) - 54px);
+  height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 54px);
   max-height: calc(100vh - max(12px, env(safe-area-inset-top)) - 54px);
+  max-height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 54px);
   overflow: hidden;
   overflow-x: hidden; /* Yatay kayma engelle */
   display: flex;
@@ -2389,6 +2413,13 @@
     box-shadow: 0 -9px 22px rgba(var(--theme-color-rgb), 0.35) !important;
   }
 
+  /* Plaka listesi: mobilde gri, temaya uygun (history-vehicle-dropdown ile aynı ton) */
+  .driver-plate-dropdown {
+    background: #1e242a !important;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+  }
+
   /* Ana başlık çerçevesi – mobilde border + kırmızı ışıklar (login ile uyumlu) */
   .dashboard-page .driver-header-fixed {
     border-left-width: 1.2px !important;
@@ -2559,6 +2590,20 @@
   }
   .dashboard-page .btn-edit-request {
     font-size: 16px !important;
+  }
+  /* Sol panel (etiket/değer, plaka, kullanıcı adı) +1pt */
+  .dashboard-page .driver-left-panel .driver-info-item .label {
+    font-size: 11px !important;
+  }
+  .dashboard-page .driver-left-panel .driver-info-item .value {
+    font-size: 13px !important;
+  }
+  .dashboard-page .driver-left-panel .driver-current-plaka {
+    font-size: 15px !important;
+  }
+  .dashboard-page .driver-left-panel .driver-user-name,
+  .dashboard-page .driver-user-plate-in-panel .driver-user-name {
+    font-size: 13px !important;
   }
   #history-modal .modal-header h2,
   #edit-request-modal .modal-header h2 {

@@ -46,6 +46,13 @@ let currentDriverEventVehicleId = null;
 let currentPeriod = '';
 let selectedVehicleId = null;
 
+/** Modal açıkken body scroll kilitlensin (sadece modal içi kayar) */
+function updateDriverModalBodyClass() {
+  var open = document.querySelector('.driver-modal.show');
+  if (open) document.body.classList.add('driver-modal-open');
+  else document.body.classList.remove('driver-modal-open');
+}
+
 /* =========================================
    LOGIN SAYFASI
    ========================================= */
@@ -866,12 +873,14 @@ window.openDriverEventMenu = function(vehicleId) {
         return '<button type="button" class="driver-event-menu-btn' + (isKaza ? ' driver-event-menu-btn-kaza' : '') + '" onclick="handleDriverEventChoice(\'' + e.id + '\', \'' + safeId + '\')">' + e.label + '</button>';
     }).join('');
     modal.classList.add('show');
+    updateDriverModalBodyClass();
 };
 
 window.closeDriverEventMenu = function() {
     const modal = document.getElementById('driver-event-menu-modal');
     if (modal) modal.classList.remove('show');
     currentDriverEventVehicleId = null;
+    updateDriverModalBodyClass();
 };
 
 window.handleDriverEventChoice = function(type, vehicleId) {
@@ -954,6 +963,7 @@ window.openDriverEventModal = function(type, vehicleId) {
         });
     }
     modal.classList.add('show');
+    updateDriverModalBodyClass();
 };
 
 function setupDriverEventRadioHandlers(group, detailWrap, detailInput) {
@@ -975,6 +985,7 @@ window.closeDriverEventModal = function(type) {
     const modal = document.getElementById('driver-' + type + '-modal');
     if (modal) modal.classList.remove('show');
     currentDriverEventVehicleId = null;
+    updateDriverModalBodyClass();
 };
 
 window.saveDriverEvent = async function(type) {
@@ -1328,6 +1339,7 @@ window.showHistory = function() {
     if (trigger) trigger.classList.remove('history-vehicle-trigger-open');
     renderHistoryList();
     document.getElementById('history-modal').classList.add('show');
+    updateDriverModalBodyClass();
 };
 
 window.toggleHistoryVehicleDropdown = function(ev) {
@@ -1409,6 +1421,7 @@ function renderHistoryList() {
 
 window.closeHistory = function() {
     document.getElementById('history-modal').classList.remove('show');
+    updateDriverModalBodyClass();
 };
 
 // Düzeltme talebi
@@ -1424,11 +1437,13 @@ window.showEditRequest = function(recordId) {
     document.getElementById('new-kaza').value = record.kaza_durumu ? (record.kaza_aciklama || '') : '';
     document.getElementById('edit-reason').value = '';
     document.getElementById('edit-request-modal').classList.add('show');
+    updateDriverModalBodyClass();
 };
 
 window.closeEditRequest = function() {
     document.getElementById('edit-request-modal').classList.remove('show');
     currentRecordId = null;
+    updateDriverModalBodyClass();
 };
 
 window.submitEditRequest = async function() {
