@@ -222,14 +222,44 @@
 
 /* Boya şeması container – masaüstünde sol grid içinde, mobilde columns altında */
 #detail-boya-container {
-    margin-top: 4px;
-    padding-top: 0;
-    margin-bottom: 0;
-    overflow: visible;
-    width: 100%;
+    width: 100% !important;
+    min-height: 180px;
+    margin: 15px 0 !important;
+    padding: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    overflow: visible !important;
+}
+
+/* Şemayı saran kutu */
+.kaporta-schema-wrapper {
+    display: block !important;
+    margin: 0 auto !important;
+    position: relative !important;
+}
+
+/* Renk açıklamaları */
+.boya-legend {
+    margin-top: 15px !important;
+    display: flex !important;
+    gap: 15px !important;
+    justify-content: center !important;
+}
+.boya-legend-item {
     display: flex;
     align-items: center;
-    justify-content: center;
+    gap: 5px;
+    font-size: 11px;
+    color: #aaa;
+}
+.boya-legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    flex-shrink: 0;
 }
 
 /* Kaporta renk açıklaması: Kaporta Durumu'nun 3px altında, yan yana */

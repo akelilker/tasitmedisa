@@ -1490,90 +1490,109 @@
   function renderBoyaSchemaDetail(vehicle) {
     const container = document.getElementById('detail-boya-container');
     if (!container) return;
-    
-    // SVG'yi yükle ve mevcut durumları göster
+
     fetch('icon/kaporta.svg')
       .then(res => res.text())
       .then(svgText => {
         const parser = new DOMParser();
         const svgDoc = parser.parseFromString(svgText, 'image/svg+xml');
         const svg = svgDoc.querySelector('svg');
-        
+
         if (!svg) return;
-        
-        // Container: ortalı flex (SVG yatay gösterim)
+
         container.innerHTML = '';
-        container.style.display = 'flex';
-        container.style.alignItems = 'center';
-        container.style.justifyContent = 'center';
 
-        // SVG wrapper: landscape görüntü için (90deg döndürülmüş SVG'yi doğru layout box'a yerleştir)
-        // ViewBox 282.84×419.73 (dikey). Landscape: w=220, h=148; SVG öncesi: 148×220
-        const svgW = 148;   // SVG pre-rotation width
-        const svgH = 220;   // SVG pre-rotation height
-        const wW = 220;     // wrapper visual width  (landscape)
-        const wH = 148;     // wrapper visual height (landscape)
-        const topOff = Math.round((wH - svgH) / 2);  // -36px
-        const leftOff = Math.round((wW - svgW) / 2); //  36px
+        // Şemanın görünmesini istediğin genişlik (Landscape/Yatay hali)
+        const targetWidth = 240;
 
+        // Orijinal SVG dikey (148x220). Döndürünce oranlar değişiyor.
+        // Yeni yükseklik oranını koruyarak hesapla (240 * (148/220) ~ 160px)
+        const targetHeight = Math.round(targetWidth * (148 / 220));
+
+        // SVG'nin ham boyutları
+        const svgOrgWidth = 148;
+        const svgOrgHeight = 220;
+
+        // Wrapper oluştur (Şemayı tutacak kutu)
         const svgWrapper = document.createElement('div');
-        svgWrapper.style.cssText = `width:${wW}px;height:${wH}px;position:relative;overflow:visible;flex-shrink:0;`;
+        svgWrapper.className = 'kaporta-schema-wrapper';
+        svgWrapper.style.cssText = `
+            width: ${targetWidth}px;
+            height: ${targetHeight}px;
+            position: relative;
+            overflow: visible;
+            flex-shrink: 0;
+            margin: 0 auto;
+        `;
 
-        // SVG'yi container'a ekle
+        // SVG'yi hazırla
         const svgClone = svg.cloneNode(true);
+        svgClone.setAttribute('width', String(svgOrgWidth));
+        svgClone.setAttribute('height', String(svgOrgHeight));
+
+        // SVG'yi döndür ve wrapper'ın tam ortasına oturt
+        const topOff = (targetHeight - svgOrgHeight) / 2;
+        const leftOff = (targetWidth - svgOrgWidth) / 2;
+
+        svgClone.style.cssText = `
+            display: block;
+            position: absolute;
+            top: ${topOff}px;
+            left: ${leftOff}px;
+            transform-origin: center center;
+            transform: rotate(90deg) scale(${targetWidth / svgOrgHeight});
+        `;
+
         svgWrapper.appendChild(svgClone);
         container.appendChild(svgWrapper);
 
-        // Boyutları ayarla ve 90 derece döndür (wrapper içinde doğru konumlanmış)
-        svgClone.setAttribute('width', String(svgW));
-        svgClone.setAttribute('height', String(svgH));
-        svgClone.style.cssText = `width:${svgW}px;height:${svgH}px;display:block;transform:rotate(90deg);transform-origin:center center;position:absolute;top:${topOff}px;left:${leftOff}px;`;
-        
+        // --- RENKLENDİRME ---
         const partNames = getKaportaPartNames();
-        
-        // Önce TÜM parçaları gri yap (varsayılan orijinal renk – çok az daha açık ton)
         const defaultGray = '#757575';
+
         const allParts = svgClone.querySelectorAll('path[id]');
         allParts.forEach(part => {
           part.setAttribute('fill', defaultGray);
           part.style.fill = defaultGray;
         });
-        
-        // Mevcut durumları uygula ve hover tooltip ekle
+
         const boyaliParcalar = vehicle.boyaliParcalar || {};
         Object.keys(boyaliParcalar).forEach(partId => {
           const state = boyaliParcalar[partId];
           const part = svgClone.querySelector(`#${partId}`);
           if (part) {
-            // Renk uygula
             if (state === 'boyali') {
               part.setAttribute('fill', '#28a745');
               part.style.fill = '#28a745';
             } else if (state === 'degisen') {
               part.setAttribute('fill', '#e1061b');
               part.style.fill = '#e1061b';
-            } else {
-              part.setAttribute('fill', defaultGray);
-              part.style.fill = defaultGray;
             }
-            
-            // Hover tooltip ekle (parça ismi ve durumu)
             const partName = partNames[partId] || partId;
             const stateLabel = state === 'boyali' ? 'Boyalı' : state === 'degisen' ? 'Değişen' : 'Orijinal';
             part.setAttribute('title', `${partName} - ${stateLabel}`);
-            part.style.cursor = 'pointer';
+            part.style.cursor = 'help';
           }
         });
-        
-        // boyaliParcalar'da olmayan parçalara da tooltip ekle
+
         allParts.forEach(part => {
           const partId = part.getAttribute('id');
-          if (partId && !boyaliParcalar[partId]) {
+          if (!boyaliParcalar[partId]) {
             const partName = partNames[partId] || partId;
             part.setAttribute('title', `${partName} - Orijinal`);
-            part.style.cursor = 'pointer';
+            part.style.cursor = 'help';
           }
         });
+
+        // --- LEGEND ---
+        const legend = document.createElement('div');
+        legend.className = 'boya-legend';
+        legend.innerHTML = `
+          <div class="boya-legend-item"><span class="boya-legend-dot" style="background:#757575;"></span> Orijinal</div>
+          <div class="boya-legend-item"><span class="boya-legend-dot" style="background:#28a745;"></span> Boyalı</div>
+          <div class="boya-legend-item"><span class="boya-legend-dot" style="background:#e1061b;"></span> Değişen</div>
+        `;
+        container.appendChild(legend);
       })
       .catch(err => {
         console.error('SVG yükleme hatası:', err);
