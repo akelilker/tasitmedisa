@@ -2484,18 +2484,17 @@
   }
   
   #detail-boya-container svg {
-    width: auto !important;
-    max-width: 58% !important;
-    height: auto !important;
-    transform: translateY(5px) rotate(0deg) !important; /* Mobilde dikey + 5px aşağı */
+    width: 100px !important;
+    height: 158px !important;
+    transform: rotate(90deg) !important;
     transform-origin: center !important;
-    flex-shrink: 1 !important;
-    margin-left: 0 !important; /* Sola kaydÄ±rmayÄ± kaldÄ±r */
+    flex-shrink: 0 !important;
+    margin: -29px 29px !important; /* Rotation layout/visual farkı (29px) telafi */
   }
 
   /* Detay modal plaka ve baÅŸlÄ±klar toolbar altÄ±nda kalmasÄ±n */
   #vehicle-detail-content { padding-top: 24px !important; }
-  .detail-plate-row { margin-top: -13px !important; } /* Plaka 3px yukarı */
+  .detail-plate-row { margin-top: -13px !important; margin-bottom: 0 !important; } /* Plaka 3px yukarı, marka arası 1px */
   .detail-plate { margin-top: 0 !important; }
   .detail-brand-year-row { padding-top: 1px !important; }
 
