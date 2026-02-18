@@ -163,7 +163,7 @@
                 </p>
                 <div class="form-group">
                     <label for="new-km">Yeni KM Değeri</label>
-                    <input type="number" id="new-km" placeholder="Örn: 54230">
+                    <input type="number" id="new-km" placeholder="Örn: 54230" inputmode="numeric" pattern="[0-9]*">
                 </div>
                 <p class="driver-current-km">
                     Mevcut Bakım: <strong id="current-bakim">-</strong>
@@ -322,7 +322,7 @@
                     </div>
                     <div class="form-group">
                         <label for="driver-sigorta-iletisim" style="color: #ccc; font-size: 14px;">İletişim (isteğe bağlı):</label>
-                        <input type="text" id="driver-sigorta-iletisim" class="form-input" placeholder="Telefon / e-posta" style="width: 100%;">
+                        <input type="text" id="driver-sigorta-iletisim" class="form-input" placeholder="Telefon / e-posta" inputmode="tel" style="width: 100%;">
                     </div>
                     <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
                         <button type="button" class="btn-submit" onclick="saveDriverEvent('sigorta')">Kaydet</button>
@@ -354,7 +354,7 @@
                     </div>
                     <div class="form-group">
                         <label for="driver-kasko-iletisim" style="color: #ccc; font-size: 14px;">İletişim (isteğe bağlı):</label>
-                        <input type="text" id="driver-kasko-iletisim" class="form-input" placeholder="Telefon / e-posta" style="width: 100%;">
+                        <input type="text" id="driver-kasko-iletisim" class="form-input" placeholder="Telefon / e-posta" inputmode="tel" style="width: 100%;">
                     </div>
                     <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
                         <button type="button" class="btn-submit" onclick="saveDriverEvent('kasko')">Kaydet</button>
