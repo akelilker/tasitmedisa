@@ -267,11 +267,11 @@
 .driver-user-plate-in-panel {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 3px;       /* Plaka üstü: kullanıcı adı – plaka arası 3px */
   align-items: flex-start;
   text-align: left;
   flex-shrink: 0;
-  margin-bottom: 8px;
+  margin-bottom: 4px; /* Plaka altı: plaka – araç bilgisi arası 4px */
 }
 .driver-panels-inner {
   display: flex;
@@ -333,10 +333,15 @@
   border: none;
   color: var(--muted);
   cursor: pointer;
-  padding: 2px;
+  padding: 6px; /* Tıklanabilir alan 1.6x (100→160) */
+  min-width: 28px;
+  min-height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 .driver-plate-trigger:hover { color: var(--txt); }
-.driver-plate-chevron { font-size: 12px; }
+.driver-plate-chevron { font-size: 19px; } /* 100→160 (1.6x): 12px → 19px */
 
 .driver-vehicle-info {
   display: flex;
@@ -815,7 +820,7 @@
   opacity: 0.95;
 }
 .driver-plate-chevron {
-  font-size: 21px;
+  font-size: 34px; /* 100→160 (1.6x): 21px → 34px */
   line-height: 1;
 }
 .driver-plate-dropdown {
