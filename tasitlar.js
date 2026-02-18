@@ -696,7 +696,7 @@
   window.showVehicleDetail = function(vehicleId) {
     const runDetail = () => {
       const vehicles = readVehicles();
-      const vehicle = vehicles.find(v => v.id === vehicleId);
+      const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
       if (!vehicle) {
         alert("Taşıt bulunamadı!");
         return;
@@ -985,7 +985,7 @@
     
     // Taşıtı güncelle
     const vehicles = readVehicles();
-    const vehicle = vehicles.find(v => v.id === vehicleId);
+    const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
     if (!vehicle) return;
     
     vehicle.branchId = branchId;
@@ -1710,7 +1710,7 @@ function renderVehicleDetailLeft(vehicle) {
       // Modal'a göre özel işlemler
       if (type === 'kaza') {
         // Kaza modal'ında mevcut boya şemasını göster (readonly) ve varsayılan kullanıcı
-        const vehicle = readVehicles().find(v => v.id === (vehicleId || window.currentDetailVehicleId));
+        const vehicle = readVehicles().find(v => String(v.id) === String(vehicleId || window.currentDetailVehicleId));
         if (vehicle) {
           const container = document.getElementById('kaza-kaporta-container');
           if (container) {
@@ -1773,7 +1773,7 @@ function renderVehicleDetailLeft(vehicle) {
           addOpt.value = '__add_user__';
           addOpt.textContent = '+ Yeni Kullanıcı Ekle';
           selectEl.appendChild(addOpt);
-          const vehicle = readVehicles().find(v => v.id === (vehicleId || window.currentDetailVehicleId));
+          const vehicle = readVehicles().find(v => String(v.id) === String(vehicleId || window.currentDetailVehicleId));
           if (vehicle?.assignedUserId) {
             selectEl.value = vehicle.assignedUserId;
           } else {
@@ -1876,7 +1876,7 @@ function renderVehicleDetailLeft(vehicle) {
         const adresInput = document.getElementById('lastik-adres-event');
         
         // Mevcut değerleri yükle
-        const vehicle = readVehicles().find(v => v.id === (vehicleId || window.currentDetailVehicleId));
+        const vehicle = readVehicles().find(v => String(v.id) === String(vehicleId || window.currentDetailVehicleId));
         if (vehicle) {
           if (vehicle.lastikDurumu === 'var') {
             const varBtn = Array.from(radioBtns).find(btn => btn.dataset.value === 'var');
@@ -1916,7 +1916,7 @@ function renderVehicleDetailLeft(vehicle) {
       } else if (type === 'utts') {
         // UTTS modal'ında mevcut değeri yükle (click handler HTML onclick ile)
         const radioBtns = modal.querySelectorAll('.radio-btn');
-        const vehicle = readVehicles().find(v => v.id === (vehicleId || window.currentDetailVehicleId));
+        const vehicle = readVehicles().find(v => String(v.id) === String(vehicleId || window.currentDetailVehicleId));
         radioBtns.forEach(b => b.classList.remove('active'));
         if (vehicle) {
           const durum = vehicle.uttsTanimlandi ? 'evet' : 'hayir';
@@ -1929,7 +1929,7 @@ function renderVehicleDetailLeft(vehicle) {
       } else if (type === 'takip') {
         // Takip Cihaz modal'ında mevcut değeri yükle (click handler HTML onclick ile)
         const radioBtns = modal.querySelectorAll('.radio-btn');
-        const vehicle = readVehicles().find(v => v.id === (vehicleId || window.currentDetailVehicleId));
+        const vehicle = readVehicles().find(v => String(v.id) === String(vehicleId || window.currentDetailVehicleId));
         radioBtns.forEach(b => b.classList.remove('active'));
         if (vehicle) {
           const durum = vehicle.takipCihaziMontaj ? 'evet' : 'hayir';
@@ -1943,7 +1943,7 @@ function renderVehicleDetailLeft(vehicle) {
         // Bakım modal'ında varsayılan kişi
         const bakimKisiInput = document.getElementById('bakim-kisi');
         if (bakimKisiInput) {
-          const vehicle = readVehicles().find(v => v.id === (vehicleId || window.currentDetailVehicleId));
+          const vehicle = readVehicles().find(v => String(v.id) === String(vehicleId || window.currentDetailVehicleId));
           if (vehicle?.tahsisKisi) {
             bakimKisiInput.value = vehicle.tahsisKisi;
           }
@@ -1952,7 +1952,7 @@ function renderVehicleDetailLeft(vehicle) {
         // Km modal'ında input'u temizle ve mevcut km'yi göster (opsiyonel)
         const kmInput = document.getElementById('km-guncelle-input');
         if (kmInput) {
-          const vehicle = readVehicles().find(v => v.id === (vehicleId || window.currentDetailVehicleId));
+          const vehicle = readVehicles().find(v => String(v.id) === String(vehicleId || window.currentDetailVehicleId));
           // Mevcut güncel km varsa göster, yoksa boş bırak
           const currentKm = vehicle?.guncelKm || '';
           kmInput.value = currentKm ? formatNumber(currentKm) : '';
@@ -1977,7 +1977,7 @@ function renderVehicleDetailLeft(vehicle) {
               });
               
               const freshRadioBtns = modal.querySelectorAll('.radio-btn');
-              const vehicle = readVehicles().find(v => v.id === (vehicleId || window.currentDetailVehicleId));
+              const vehicle = readVehicles().find(v => String(v.id) === String(vehicleId || window.currentDetailVehicleId));
               
               // Mevcut değeri yükle
               if (type === 'utts') {
@@ -2266,7 +2266,7 @@ function renderVehicleDetailLeft(vehicle) {
     }
     
     const vehicles = readVehicles();
-    const vehicle = vehicles.find(v => v.id === vehicleId);
+    const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
     if (!vehicle) return;
     
     if (!vehicle.events) vehicle.events = [];
@@ -2326,7 +2326,7 @@ function renderVehicleDetailLeft(vehicle) {
     }
     
     const vehicles = readVehicles();
-    const vehicle = vehicles.find(v => v.id === vehicleId);
+    const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
     if (!vehicle) return;
     
     if (!vehicle.events) vehicle.events = [];
@@ -2434,7 +2434,7 @@ function renderVehicleDetailLeft(vehicle) {
     }
     
     const vehicles = readVehicles();
-    const vehicle = vehicles.find(v => v.id === vehicleId);
+    const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
     if (!vehicle) return;
     
     if (!vehicle.events) vehicle.events = [];
@@ -2494,7 +2494,7 @@ function renderVehicleDetailLeft(vehicle) {
     }
     
     const vehicles = readVehicles();
-    const vehicle = vehicles.find(v => v.id === vehicleId);
+    const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
     if (!vehicle) return;
     
     if (!vehicle.events) vehicle.events = [];
@@ -2542,7 +2542,7 @@ function renderVehicleDetailLeft(vehicle) {
     }
     
     const vehicles = readVehicles();
-    const vehicle = vehicles.find(v => v.id === vehicleId);
+    const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
     if (!vehicle) return;
     
     if (!vehicle.events) vehicle.events = [];
@@ -2585,7 +2585,7 @@ function renderVehicleDetailLeft(vehicle) {
     const detay = durum === 'var' ? (document.getElementById('anahtar-detay-event')?.value.trim() || '') : '';
     
     const vehicles = readVehicles();
-    const vehicle = vehicles.find(v => v.id === vehicleId);
+    const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
     if (!vehicle) return;
     
     if (!vehicle.events) vehicle.events = [];
@@ -2624,7 +2624,7 @@ function renderVehicleDetailLeft(vehicle) {
     const detay = durum === 'var' ? (document.getElementById('kredi-detay-event')?.value.trim() || '') : '';
     
     const vehicles = readVehicles();
-    const vehicle = vehicles.find(v => v.id === vehicleId);
+    const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
     if (!vehicle) return;
     
     if (!vehicle.events) vehicle.events = [];
@@ -2673,7 +2673,7 @@ function renderVehicleDetailLeft(vehicle) {
     }
     
     const vehicles = readVehicles();
-    const vehicle = vehicles.find(v => v.id === vehicleId);
+    const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
     if (!vehicle) return;
     
     if (!vehicle.events) vehicle.events = [];
@@ -2718,7 +2718,7 @@ function renderVehicleDetailLeft(vehicle) {
     const durum = activeBtn?.dataset.value === 'evet' ? true : false;
     
     const vehicles = readVehicles();
-    const vehicle = vehicles.find(v => v.id === vehicleId);
+    const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
     if (!vehicle) return;
     
     if (!vehicle.events) vehicle.events = [];
@@ -2754,7 +2754,7 @@ function renderVehicleDetailLeft(vehicle) {
     const durum = activeBtn?.dataset.value === 'evet' ? true : false;
     
     const vehicles = readVehicles();
-    const vehicle = vehicles.find(v => v.id === vehicleId);
+    const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
     if (!vehicle) return;
     
     if (!vehicle.events) vehicle.events = [];
@@ -2791,7 +2791,7 @@ function renderVehicleDetailLeft(vehicle) {
     const adres = durum === 'var' ? (document.getElementById('lastik-adres-event')?.value.trim() || '') : '';
     
     const vehicles = readVehicles();
-    const vehicle = vehicles.find(v => v.id === vehicleId);
+    const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
     if (!vehicle) return;
     
     if (!vehicle.events) vehicle.events = [];
@@ -2837,7 +2837,7 @@ function renderVehicleDetailLeft(vehicle) {
     }
     
     const vehicles = readVehicles();
-    const vehicle = vehicles.find(v => v.id === vehicleId);
+    const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
     if (!vehicle) return;
     
     if (!vehicle.events) vehicle.events = [];
@@ -2885,7 +2885,7 @@ function renderVehicleDetailLeft(vehicle) {
     }
 
     const vehicles = readVehicles();
-    const vehicle = vehicles.find(v => v.id === vehicleId);
+    const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
     if (!vehicle) return;
 
     if (!vehicle.events) vehicle.events = [];
@@ -2954,7 +2954,7 @@ function renderVehicleDetailLeft(vehicle) {
     }
     
     const vehicles = readVehicles();
-    const vehicle = vehicles.find(v => v.id === vehicleId);
+    const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
     if (!vehicle) return;
     
     if (!vehicle.events) vehicle.events = [];
@@ -3024,7 +3024,7 @@ function renderVehicleDetailLeft(vehicle) {
     if (!contentEl) return;
     
     const vehicles = readVehicles();
-    const vehicle = vehicles.find(v => v.id === vid);
+    const vehicle = vehicles.find(v => String(v.id) === String(vid));
     if (!vehicle) return;
     
     const events = vehicle.events || [];
