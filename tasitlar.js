@@ -1385,19 +1385,28 @@
       `<span class="detail-kaporta-legend-item"><span class="detail-kaporta-dot" style="background:#e1061b;"></span>D</span>` +
       `</div>`;
 
+    const isMobile = window.innerWidth <= 640;
+
+    if (!isMobile) {
+      // Masaüstü: container sol grid içinde kalır (eski davranış)
+      html += `<div id="detail-boya-container"></div>`;
+    }
+
     leftEl.innerHTML = html;
 
-    // Boya şeması container'ı .vehicle-detail-columns'ın DIŞINA (altına) yerleştir
-    const vehicleDetailContent = document.getElementById('vehicle-detail-content');
-    const columnsDiv = vehicleDetailContent && vehicleDetailContent.querySelector('.vehicle-detail-columns');
-    const existingBoyaContainer = document.getElementById('detail-boya-container');
-    if (existingBoyaContainer) existingBoyaContainer.remove();
-    const boyaContainer = document.createElement('div');
-    boyaContainer.id = 'detail-boya-container';
-    if (columnsDiv && columnsDiv.parentNode) {
-      columnsDiv.parentNode.insertBefore(boyaContainer, columnsDiv.nextSibling);
-    } else if (vehicleDetailContent) {
-      vehicleDetailContent.appendChild(boyaContainer);
+    // Mobilde: container'ı .vehicle-detail-columns'ın DIŞINA (altına) taşı
+    if (isMobile) {
+      const vehicleDetailContent = document.getElementById('vehicle-detail-content');
+      const columnsDiv = vehicleDetailContent && vehicleDetailContent.querySelector('.vehicle-detail-columns');
+      const existingBoyaContainer = document.getElementById('detail-boya-container');
+      if (existingBoyaContainer) existingBoyaContainer.remove();
+      const boyaContainer = document.createElement('div');
+      boyaContainer.id = 'detail-boya-container';
+      if (columnsDiv && columnsDiv.parentNode) {
+        columnsDiv.parentNode.insertBefore(boyaContainer, columnsDiv.nextSibling);
+      } else if (vehicleDetailContent) {
+        vehicleDetailContent.appendChild(boyaContainer);
+      }
     }
 
     // Boya şemasını render et (her zaman, boya/değişen olmasa bile)
@@ -1508,13 +1517,16 @@
         container.style.justifyContent = 'center';
 
         // SVG wrapper: landscape görüntü için (90deg döndürülmüş SVG'yi doğru layout box'a yerleştir)
-        // ViewBox 282.84×419.73 (dikey). Landscape: w=220, h=148; SVG öncesi: 148×220
-        const svgW = 148;   // SVG pre-rotation width
-        const svgH = 220;   // SVG pre-rotation height
-        const wW = 220;     // wrapper visual width  (landscape)
-        const wH = 148;     // wrapper visual height (landscape)
-        const topOff = Math.round((wH - svgH) / 2);  // -36px
-        const leftOff = Math.round((wW - svgW) / 2); //  36px
+        // ViewBox 282.84×419.73 (dikey).
+        // Masaüstü: sol grid içinde, eski boyut – w=158, h=100 (SVG pre: 100×158)
+        // Mobil: columns altında tam genişlik –  w=220, h=148 (SVG pre: 148×220)
+        const isMobileRender = window.innerWidth <= 640;
+        const svgW = isMobileRender ? 148 : 100;   // SVG pre-rotation width
+        const svgH = isMobileRender ? 220 : 158;   // SVG pre-rotation height
+        const wW   = isMobileRender ? 220 : 158;   // wrapper visual width  (landscape)
+        const wH   = isMobileRender ? 148 : 100;   // wrapper visual height (landscape)
+        const topOff  = Math.round((wH - svgH) / 2); // masaüstü: -29px, mobil: -36px
+        const leftOff = Math.round((wW - svgW) / 2); // masaüstü:  29px, mobil:  36px
 
         const svgWrapper = document.createElement('div');
         svgWrapper.style.cssText = `width:${wW}px;height:${wH}px;position:relative;overflow:visible;flex-shrink:0;`;
