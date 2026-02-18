@@ -2171,7 +2171,7 @@
     grid-template-columns: 32px 70px 2.4fr 60px 1.8fr 2fr !important; /* Yılı, Plaka, Marka/Model, KM, Kullanıcı, Şube */
     gap: 4px !important; /* Masaüstü ile aynı */
     padding: 4px 1px !important; /* Dikey boşluk 2px azaltıldı */
-    min-height: 46px !important; /* Satırlara minimum yükseklik 2px azaltıldı */
+    min-height: 44px !important; /* Masaüstü ile aynı – ilk satır diğerleriyle aynı hizada */
     align-items: center !important;
     border-bottom: 1px solid rgba(255,255,255,0.08) !important; /* Masaüstü ile aynı */
     background: rgba(255,255,255,0.01) !important; /* Masaüstü ile aynı */
@@ -2350,8 +2350,9 @@
     justify-content: center !important; /* Masaüstü ile aynı */
   }
 
+  /* Başlık metinleri viewport küçülünce birlikte küçülsün (masaüstü clamp mantığı mobil) */
   .list-header-row .list-cell span {
-    font-size: 15px !important; /* +1pt (14→15), tüm metin 1pt büyük */
+    font-size: clamp(11px, 2.5vw, 15px) !important;
     font-weight: 700 !important; /* Masaüstü ile aynı */
     text-transform: uppercase !important; /* Masaüstü ile aynı */
     color: #b5b9c0 !important; /* Açık gri */
