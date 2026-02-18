@@ -2196,11 +2196,12 @@
     background: rgba(255,255,255,0.04) !important; /* Masaüstü ile aynı */
   }
 
-  /* Başlık Satırı - Masaüstü referans alınarak uyarlandı */
+  /* Başlık Satırı - Mobil: büyüklük ve satıra geçme masaüstü ile uyumlu */
   .list-header-row {
     display: grid !important;
     grid-template-columns: 32px 70px 2.4fr 60px 1.8fr 2fr !important; /* Yılı daraltıldı, Kullanıcı genişletildi */
     gap: 4px !important; /* Masaüstü ile aynı */
+    align-items: center !important; /* İki satırlı başlıklar dikey ortada */
     padding: 4px 4px !important; /* Dikey boşluk 2px azaltıldı */
     margin-bottom: 4px !important; /* Masaüstü ile aynı */
     border-bottom: 1px solid rgba(255,255,255,0.22) !important;
@@ -2362,9 +2363,9 @@
     justify-content: center !important; /* Masaüstü ile aynı */
   }
 
-  /* Başlık metinleri viewport küçülünce birlikte küçülsün (masaüstü clamp mantığı mobil) */
+  /* Başlık metinleri: mobilde okunaklı min 12px, viewport ile en fazla 15px */
   .list-header-row .list-cell span {
-    font-size: clamp(11px, 2.5vw, 15px) !important;
+    font-size: clamp(12px, 2.5vw, 15px) !important;
     font-weight: 700 !important; /* Masaüstü ile aynı */
     text-transform: uppercase !important; /* Masaüstü ile aynı */
     color: #b5b9c0 !important; /* Açık gri */
@@ -2394,10 +2395,18 @@
     align-items: center !important;
     min-width: 0 !important;
   }
-  /* Mobil: Marka/Model ve Taşıt Tipi başlığı iki satır – ikinci kısım alt satırda */
-  .list-header-row .list-cell.list-brand .header-second-line,
+  /* Mobil: Marka/Model iki satır – "Marka /" üstte, "Model" altta (satıra geçme) */
+  .list-header-row .list-cell.list-brand .header-first-line,
+  .list-header-row .list-cell.list-brand .header-second-line {
+    display: block !important;
+    text-align: center !important;
+    line-height: 1.25 !important;
+  }
+  .list-header-row .list-cell.list-type .header-first-line,
   .list-header-row .list-cell.list-type .header-second-line {
     display: block !important;
+    text-align: center !important;
+    line-height: 1.25 !important;
   }
 
   .list-header-row .list-cell.list-plate {
