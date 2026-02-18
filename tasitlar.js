@@ -1286,123 +1286,120 @@
   }
 
   /**
-   * Sol kolon render (Taşıt özellikleri)
-   */
-  function renderVehicleDetailLeft(vehicle) {
-    const leftEl = document.querySelector('#vehicle-detail-content .vehicle-detail-left');
-    if (!leftEl) return;
-    
-    let html = '';
-    
-    // Kullanıcı
-    const users = readUsers();
-    const assignedUserId = vehicle.assignedUserId || '';
-    const assignedUser = assignedUserId ? users.find(u => u.id === assignedUserId) : null;
-    const assignedUserName = (assignedUser && assignedUser.name) ? assignedUser.name : (vehicle.tahsisKisi || '');
-    
-    // Kullanıcı varsa (assignedUserId var veya tahsisKisi var) normal göster, yoksa kırmızı link göster
-    if (assignedUserId || (assignedUserName && assignedUserName.trim())) {
+   * /**
+ * Sol kolon render (Taşıt özellikleri + Kaporta Şeması)
+ */
+function renderVehicleDetailLeft(vehicle) {
+  const leftEl = document.querySelector('#vehicle-detail-content .vehicle-detail-left');
+  if (!leftEl) return;
+
+  let html = '';
+
+  // Kullanıcı
+  const users = readUsers();
+  const assignedUserId = vehicle.assignedUserId || '';
+  const assignedUser = assignedUserId ? users.find(u => u.id === assignedUserId) : null;
+  const assignedUserName = (assignedUser && assignedUser.name) ? assignedUser.name : (vehicle.tahsisKisi || '');
+
+  if (assignedUserId || (assignedUserName && assignedUserName.trim())) {
       const displayName = escapeHtml(assignedUserName).replace(/ /g, '&nbsp;');
       html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Kullanıcı</span><span class="detail-row-colon">:</span></div><span class="detail-row-value detail-user-value"> ${displayName}</span></div>`;
-    } else {
+  } else {
       html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Kullanıcı</span><span class="detail-row-colon">:</span></div><span class="detail-row-value detail-user-empty" onclick="event.stopPropagation(); if (window.currentDetailVehicleId) openEventModal('kullanici', window.currentDetailVehicleId);"> Kullanıcı Eklemek İçin +</span></div>`;
-    }
+  }
 
-    // Şube
-    const branches = readBranches();
-    const branchId = vehicle.branchId || '';
-    const branchName = branchId
-      ? (branches.find(b => b.id === branchId)?.name || '')
-      : 'Tahsis Edilmemiş';
-    html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Şube</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(branchName)}</span></div>`;
+  // Şube
+  const branches = readBranches();
+  const branchId = vehicle.branchId || '';
+  const branchName = branchId ?
+      (branches.find(b => b.id === branchId)?.name || '') :
+      'Tahsis Edilmemiş';
+  html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Şube</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(branchName)}</span></div>`;
 
-    // Taşıt Tipi
-    const vehicleType = vehicle.vehicleType || '';
-    html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Taşıt Tipi</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(getVehicleTypeLabel(vehicleType))}</span></div>`;
-    
-    // Üretim Yılı
-    const year = vehicle.year || '';
-    html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Üretim Yılı</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(year)}</span></div>`;
-    
-    // Km gösterimi - guncelKm varsa "Km: ***", yoksa "Km (Alındığı Tarih): ***"
-    if (vehicle.guncelKm) {
+  // Taşıt Tipi
+  const vehicleType = vehicle.vehicleType || '';
+  html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Taşıt Tipi</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(getVehicleTypeLabel(vehicleType))}</span></div>`;
+
+  // Üretim Yılı
+  const year = vehicle.year || '';
+  html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Üretim Yılı</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(year)}</span></div>`;
+
+  // Km
+  if (vehicle.guncelKm) {
       const formattedKm = formatNumber(vehicle.guncelKm);
       html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Km</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(formattedKm)}</span></div>`;
-    } else {
+  } else {
       const km = vehicle.km || '';
       const formattedKm = km ? formatNumber(km) : '';
       html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Km (Alındığı Tarih)</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(formattedKm || '-')}</span></div>`;
-    }
-    
-    // Şanzıman
-    const transmission = vehicle.transmission || '';
-    const transmissionLabel = transmission === 'otomatik' ? 'Otomatik' : transmission === 'manuel' ? 'Manuel' : '';
-    html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Şanzıman</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(transmissionLabel)}</span></div>`;
-    
-    // Tramer Kaydı
-    if (vehicle.tramer === 'var' && vehicle.tramerRecords && vehicle.tramerRecords.length > 0) {
-      // Tramer "var" ise alt satırda kayıtlar (label+colon üstte, value altta)
+  }
+
+  // Şanzıman
+  const transmission = vehicle.transmission || '';
+  const transmissionLabel = transmission === 'otomatik' ? 'Otomatik' : transmission === 'manuel' ? 'Manuel' : '';
+  html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Şanzıman</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(transmissionLabel)}</span></div>`;
+
+  // Tramer Kaydı
+  if (vehicle.tramer === 'var' && vehicle.tramerRecords && vehicle.tramerRecords.length > 0) {
       html += `<div class="detail-row detail-row-block"><div class="detail-row-header"><span class="detail-row-label">Tramer Kaydı</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> `;
       vehicle.tramerRecords.forEach((record, index) => {
-        if (index > 0) html += '<br>';
-        html += `${escapeHtml(record.date)} - ${escapeHtml(record.amount)}`;
+          if (index > 0) html += '<br>';
+          html += `${escapeHtml(record.date)} - ${escapeHtml(record.amount)}`;
       });
-      
-      // Toplam hesapla
+
       let total = 0;
       vehicle.tramerRecords.forEach(record => {
-        const amountStr = record.amount.replace(/\./g, '').replace(',', '.').replace('TL', '').trim();
-        const amount = parseFloat(amountStr) || 0;
-        total += amount;
+          const amountStr = record.amount.replace(/\./g, '').replace(',', '.').replace('TL', '').trim();
+          const amount = parseFloat(amountStr) || 0;
+          total += amount;
       });
-      
+
       if (vehicle.tramerRecords.length > 1) {
-        const totalFixed = total.toFixed(2);
-        const totalParts = totalFixed.split('.');
-        const totalInteger = totalParts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-        const totalFormatted = `${totalInteger},${totalParts[1]}TL`;
-        html += `<br><strong>Olmak Üzere Toplam ${totalFormatted}</strong>`;
+          const totalFixed = total.toFixed(2);
+          const totalParts = totalFixed.split('.');
+          const totalInteger = totalParts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+          const totalFormatted = `${totalInteger},${totalParts[1]}TL`;
+          html += `<br><strong>Olmak Üzere Toplam ${totalFormatted}</strong>`;
       }
       html += `</span></div>`;
-    } else {
-      // Tramer "yok" ise aynı satırda "Yoktur" göster
+  } else {
       html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Tramer Kaydı</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> Yoktur.</span></div>`;
-    }
-    
-    // Kaporta Durumu
-    html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Kaporta Durumu</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> `;
-    if (vehicle.boya === 'var' && vehicle.boyaliParcalar) {
-      html += 'Aşağıdaki şemada belirtilmiştir.';
-    } else {
-      html += 'Yoktur.';
-    }
-    html += `</span></div>`;
+  }
 
-    // Renk açıklaması: Kaporta Durumu'nun 3px altında, sol grid içinde, yan yana
-    html += `<div class="detail-kaporta-legend">` +
+  // Kaporta Durumu (Legend eklendi)
+  html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Kaporta Durumu</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> `;
+  if (vehicle.boya === 'var' && vehicle.boyaliParcalar) {
+      html += 'Aşağıdaki şemada belirtilmiştir.';
+  } else {
+      html += 'Yoktur.';
+  }
+  html += `</span></div>`;
+
+  // Renk açıklaması (Küçük Legend)
+  html += `<div class="detail-kaporta-legend">` +
       `<span class="detail-kaporta-legend-item"><span class="detail-kaporta-dot" style="background:#757575;"></span>O</span>` +
       `<span class="detail-kaporta-legend-item"><span class="detail-kaporta-dot" style="background:#28a745;"></span>B</span>` +
       `<span class="detail-kaporta-legend-item"><span class="detail-kaporta-dot" style="background:#e1061b;"></span>D</span>` +
       `</div>`;
 
-    leftEl.innerHTML = html;
+  // HTML'i sol kolona bas
+  leftEl.innerHTML = html;
 
-    // Boya şeması container'ı .vehicle-detail-columns'ın DIŞINA (altına) yerleştir
-    const vehicleDetailContent = document.getElementById('vehicle-detail-content');
-    const columnsDiv = vehicleDetailContent && vehicleDetailContent.querySelector('.vehicle-detail-columns');
-    const existingBoyaContainer = document.getElementById('detail-boya-container');
-    if (existingBoyaContainer) existingBoyaContainer.remove();
-    const boyaContainer = document.createElement('div');
-    boyaContainer.id = 'detail-boya-container';
-    if (columnsDiv && columnsDiv.parentNode) {
-      columnsDiv.parentNode.insertBefore(boyaContainer, columnsDiv.nextSibling);
-    } else if (vehicleDetailContent) {
-      vehicleDetailContent.appendChild(boyaContainer);
-    }
+  // --- ŞEMA EKLEME: Sol kolonun içine ekliyoruz ---
+  // Önce eskisi varsa temizle
+  const existingBoyaContainer = document.getElementById('detail-boya-container');
+  if (existingBoyaContainer) existingBoyaContainer.remove();
 
-    // Boya şemasını render et (her zaman, boya/değişen olmasa bile)
-    renderBoyaSchemaDetail(vehicle);
-  }
+  // Yeni container oluştur
+  const boyaContainer = document.createElement('div');
+  boyaContainer.id = 'detail-boya-container';
+
+  // LeftEl içine append et
+  leftEl.appendChild(boyaContainer);
+
+  // Boya şemasını render et
+  renderBoyaSchemaDetail(vehicle);
+}
 
   /**
    * Sağ kolon render (Tarihler, Anahtar, Kredi, UTTS, Takip Cihazı)
