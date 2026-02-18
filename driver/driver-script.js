@@ -413,7 +413,9 @@ function buildDriverActionArea(vehicle, existingRecord, bakimVar, kazaVar, opts)
     const vid = opts.vid || vehicle.id;
     const today = new Date().toISOString().split('T')[0];
     const esc = (s) => (s == null ? '' : String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'));
-    const kmVal = existingRecord ? esc(existingRecord.guncel_km || '') : '';
+    /* Son güncellenen km: taşıt guncelKm (kayıt sonrası) veya mevcut dönem kaydı */
+    const lastKm = vehicle.guncelKm != null ? vehicle.guncelKm : (existingRecord && existingRecord.guncel_km != null ? existingRecord.guncel_km : '');
+    const kmVal = esc(String(lastKm));
     const bakimTarih = existingRecord && existingRecord.bakim_tarih ? existingRecord.bakim_tarih : today;
     const kazaTarih = existingRecord && existingRecord.kaza_tarih ? existingRecord.kaza_tarih : today;
     const bakimAciklama = existingRecord ? esc(existingRecord.bakim_aciklama || '') : '';
@@ -495,7 +497,7 @@ function buildDriverInputForm(vehicle, existingRecord, bakimVar, kazaVar) {
                 <label for="km-${vid}">Güncel KM</label>
                 <div class="driver-km-input-wrap">
                     <span class="driver-km-fake-placeholder" id="km-placeholder-${vid}">Örn: 45230</span>
-                    <input type="text" id="km-${vid}" class="driver-km-input" inputmode="numeric" pattern="[0-9]*" maxlength="8" data-vehicle-id="${vid}" value="${existingRecord ? existingRecord.guncel_km : ''}" required autocomplete="off" aria-label="Güncel kilometre">
+                    <input type="text" id="km-${vid}" class="driver-km-input" inputmode="numeric" pattern="[0-9]*" maxlength="8" data-vehicle-id="${vid}" value="${(vehicle.guncelKm != null ? vehicle.guncelKm : (existingRecord && existingRecord.guncel_km != null ? existingRecord.guncel_km : ''))}" required autocomplete="off" aria-label="Güncel kilometre">
                 </div>
             </div>
             <div class="driver-report-blocks">
@@ -708,7 +710,7 @@ function createVehicleCard(vehicle, records, currentPeriod) {
                        pattern="[0-9]*"
                        maxlength="8"
                        data-vehicle-id="${vehicle.id}"
-                       value="${existingRecord ? existingRecord.guncel_km : ''}"
+                       value="${(vehicle.guncelKm != null ? vehicle.guncelKm : (existingRecord && existingRecord.guncel_km != null ? existingRecord.guncel_km : ''))}"
                        required
                        autocomplete="off"
                        aria-label="Güncel kilometre">
