@@ -271,10 +271,14 @@
                                 <textarea class="form-input" rows="2" placeholder="Detay Ekleyin" style="display:none;" id="kredi-detay"></textarea>
                             </div>
                             <div class="form-section">
-                                <label class="form-label" for="vehicle-branch-select">Tahsis Edilen Şube</label>
-                                <select id="vehicle-branch-select" class="form-input">
-                                    <option value="">Seçiniz</option>
-                                </select>
+                                <label class="form-label" for="vehicle-branch-trigger" id="vehicle-branch-label">Tahsis Edilen Şube</label>
+                                <div class="vehicle-branch-dropdown-wrap">
+                                    <select id="vehicle-branch-select" class="form-input" aria-hidden="true" tabindex="-1">
+                                        <option value="">Seçiniz</option>
+                                    </select>
+                                    <div id="vehicle-branch-trigger" class="vehicle-branch-trigger form-input placeholder" tabindex="0" role="combobox" aria-expanded="false" aria-haspopup="listbox" aria-controls="vehicle-branch-list" aria-labelledby="vehicle-branch-label">Seçiniz</div>
+                                    <div id="vehicle-branch-list" class="vehicle-branch-list" role="listbox" aria-hidden="true"></div>
+                                </div>
                             </div>
                             <div class="form-section">
                                 <label class="form-label" for="vehicle-notes">Notlar</label>
