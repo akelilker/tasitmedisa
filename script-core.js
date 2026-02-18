@@ -130,6 +130,18 @@ window.updateFooterDim = function() {
   }
 }
 
+/** Taşıt Detay'a dön - tasitlar.js override eder; yoksa modalları kapat (fallback) */
+window.backToVehicleDetail = function() {
+  if (typeof window.closeEventMenuModal === 'function') {
+    window.closeEventMenuModal();
+    if (window.currentDetailVehicleId && typeof window.showVehicleDetail === 'function') {
+      window.showVehicleDetail(window.currentDetailVehicleId);
+    }
+  } else if (typeof window.closeAllModals === 'function') {
+    window.closeAllModals();
+  }
+};
+
 document.addEventListener('DOMContentLoaded', () => {
   // Sayfa yüklendiğinde footer animasyonunu başlat
   startFooterAnimation();
