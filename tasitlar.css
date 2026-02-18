@@ -220,13 +220,19 @@
     color: inherit;
 }
 
-/* Boya ÅŸemasÄ± container - Ã¼st satÄ±rdan boÅŸluk kaldÄ±rÄ±ldÄ± */
+/* Boya şeması container – üst satırdan boşluk kaldırıldı */
 #detail-boya-container {
-    margin-top: -18px !important; /* detail-row ile arasÄ±ndaki boÅŸluÄŸu kaldÄ±r */
+    margin-top: -18px !important; /* detail-row ile arasındaki boşluğu kaldır */
     padding-top: 0 !important;
     margin-bottom: 0 !important;
-    overflow: visible !important; /* SVG'nin taÅŸmasÄ±na izin ver */
-    width: 100%; /* Tam geniÅŸlik */
+    overflow: visible !important; /* SVG'nin taşmasına izin ver */
+    width: 100%; /* Tam genişlik */
+}
+/* Masaüstü: O/B/D legend dikey (mobilde CSS media ile yatay) */
+@media (min-width: 641px) {
+  #detail-boya-container .boya-legend {
+    flex-direction: column;
+  }
 }
 
 /* BoyalÄ± ve DeÄŸiÅŸen ParÃ§a satÄ±rÄ±ndan sonraki boÅŸluÄŸu kaldÄ±r */
@@ -2034,6 +2040,9 @@
   #vehicles-modal .modal-body .view-list {
     isolation: isolate !important;
     position: relative !important;
+    width: 100% !important;
+    min-width: 0 !important; /* Grid satırların viewport içinde kalıp wrap etmesi için */
+    max-width: 100% !important;
   }
   
   /* --- BRANCH GRID & CARDS --- */
@@ -2172,6 +2181,8 @@
     gap: 4px !important; /* Masaüstü ile aynı */
     padding: 4px 1px !important; /* Dikey boşluk 2px azaltıldı */
     min-height: 44px !important; /* Masaüstü ile aynı – ilk satır diğerleriyle aynı hizada */
+    min-width: 0 !important; /* İçerik sığmayınca ikinci satıra düşsün, yatay taşma olmasın */
+    width: 100% !important;
     align-items: center !important;
     border-bottom: 1px solid rgba(255,255,255,0.08) !important; /* Masaüstü ile aynı */
     background: rgba(255,255,255,0.01) !important; /* Masaüstü ile aynı */
@@ -2203,6 +2214,7 @@
     transform: translateZ(0);
     box-shadow: 0 2px 0 0 #080d16 !important;
     width: 100% !important;
+    min-width: 0 !important; /* Liste genişliğiyle uyumlu */
     box-sizing: border-box !important;
   }
 
