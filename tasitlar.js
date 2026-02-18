@@ -1450,6 +1450,13 @@ function renderVehicleDetailLeft(vehicle) {
     const takipCihazi = vehicle.takipCihaziMontaj ? 'Evet' : 'Hayır';
     html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Taşıt Takip</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(takipCihazi)}</span></div>`;
     
+    // Sürücü notu (kullanıcı panelinden; son kayıt)
+    const sonNot = vehicle.sonEkstraNot || '';
+    const sonNotDonem = vehicle.sonEkstraNotDonem || '';
+    const notDisplay = sonNot ? escapeHtml(sonNot) : '-';
+    const notDonemDisplay = sonNotDonem ? ` (${escapeHtml(sonNotDonem)})` : '';
+    html += `<div class="detail-row detail-row-block"><div class="detail-row-header"><span class="detail-row-label">Sürücü Notu</span><span class="detail-row-colon">:</span></div><span class="detail-row-value">${notDisplay}${notDonemDisplay}</span></div>`;
+    
     rightEl.innerHTML = html;
   }
 
@@ -3062,7 +3069,7 @@ function renderVehicleDetailLeft(vehicle) {
       }
     } else if (tabType === 'sube') {
       const branches = readBranches();
-      const subeEvents = events.filter(e => e.type === 'sube-degisiklik' || e.type === 'kullanici-atama' || e.type === 'sigorta-guncelle' || e.type === 'kasko-guncelle' || e.type === 'muayene-guncelle' || e.type === 'anahtar-guncelle' || e.type === 'kredi-guncelle' || e.type === 'lastik-guncelle' || e.type === 'satis');
+      const subeEvents = events.filter(e => e.type === 'sube-degisiklik' || e.type === 'kullanici-atama' || e.type === 'sigorta-guncelle' || e.type === 'kasko-guncelle' || e.type === 'muayene-guncelle' || e.type === 'anahtar-guncelle' || e.type === 'kredi-guncelle' || e.type === 'lastik-guncelle' || e.type === 'utts-guncelle' || e.type === 'takip-cihaz-guncelle' || e.type === 'not-guncelle' || e.type === 'satis');
       if (subeEvents.length === 0) {
         html = '<div style="text-align: center; color: #888; padding: 20px;">Şube/Kullanıcı geçmişi bulunmamaktadır.</div>';
       } else {
@@ -3078,6 +3085,9 @@ function renderVehicleDetailLeft(vehicle) {
           else if (event.type === 'anahtar-guncelle') label = 'Anahtar Güncelleme';
           else if (event.type === 'kredi-guncelle') label = 'Kredi/Rehin Güncelleme';
           else if (event.type === 'lastik-guncelle') label = 'Yazlık/Kışlık Lastik Durumu Güncelleme';
+          else if (event.type === 'utts-guncelle') label = 'UTTS Güncelleme';
+          else if (event.type === 'takip-cihaz-guncelle') label = 'Taşıt Takip Cihazı Güncelleme';
+          else if (event.type === 'not-guncelle') label = 'Sürücü Notu';
           else if (event.type === 'satis') label = 'Satış/Pert';
           
           let descText = escapeHtml(label);
@@ -3089,6 +3099,9 @@ function renderVehicleDetailLeft(vehicle) {
             const yeni = event.data?.yeniSubeAdi || branches.find(b => b.id === event.data?.yeniSubeId)?.name || '-';
             const eski = event.data?.eskiSubeAdi || branches.find(b => b.id === event.data?.eskiSubeId)?.name || '';
             descText += ` - ${escapeHtml(yeni)}${eski ? ` (${escapeHtml(eski)})` : ''}`;
+          } else if (event.type === 'not-guncelle' && event.data?.not) {
+            const notStr = String(event.data.not);
+            descText += notStr.length > 40 ? ` - ${escapeHtml(notStr.slice(0, 40))}…` : ` - ${escapeHtml(notStr)}`;
           }
           html += `<div class="history-item history-item-sube" style="padding: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
             <div style="font-weight: 600; color: #e0e0e0; font-size: 12px; margin-bottom: 4px;">${escapeHtml(event.date)} - ${descText}</div>
