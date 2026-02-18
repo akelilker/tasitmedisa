@@ -81,7 +81,7 @@
 /* === DETAY İÇERİK === */
 #vehicle-detail-content {
     padding: 20px;
-    padding-top: 14px !important; /* Plaka satırının margin-top negatif değerini karşılamak için (0px â†’ 14px) */
+    padding-top: 14px !important; /* Plaka satırının margin-top negatif değerini karşılamak için (0px → 14px) */
     padding-bottom: 20px;
     padding-left: 20px;
     padding-right: 20px;
@@ -102,7 +102,7 @@
     min-height: fit-content; /* İçeriğe göre yükseklik */
     height: auto; /* İçeriğe göre yükseklik */
     margin-top: -17px !important; /* Plaka 3px yukarı */ /* Yukarı kaydırıldı */
-    margin-bottom: 3px !important; /* Plaka-marka arası 3px */ /* Yarı yarıya düşürüldü (4px â†’ 2px) */
+    margin-bottom: 3px !important; /* Plaka-marka arası 3px */ /* Yarı yarıya düşürüldü (4px → 2px) */
     position: relative; /* Absolute "Olay Ekle" butonu için gerekli */
     z-index: 1;
 }
@@ -155,7 +155,7 @@
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    font-size: 12px; /* 1pt büyütüldü (11px â†’ 12px varsayılan body font-size'a göre) */
+    font-size: 12px; /* 1pt büyütüldü (11px → 12px varsayılan body font-size'a göre) */
 }
 .history-btn-minimal:hover { color: #fff; }
 .history-btn-minimal svg { display: block; }
@@ -163,7 +163,7 @@
 /* === İKİ KOLONLU LAYOUT === */
 .vehicle-detail-columns {
     display: flex;
-    gap: 10px; /* Kolonlar arası boşluk (20px â†’ 10px) */
+    gap: 10px; /* Kolonlar arası boşluk (20px → 10px) */
     width: 100%;
     margin-top: 16px; /* Marka/Model'den sonra 16px boşluk */
     align-items: flex-start; /* Üstten hizalama */
@@ -173,7 +173,7 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 0; /* Bölümler arası boşluk padding ile kontrol edilecek (12px â†’ 0) */
+    gap: 0; /* Bölümler arası boşluk padding ile kontrol edilecek (12px → 0) */
     padding-right: 2px; /* Kırmızı çizgi ile arasındaki boşluk (toplam 4px için: 2px) */
     border-right: 1px solid rgba(var(--theme-color-rgb), 0.28);
     box-shadow: 10px 0 18px -18px rgba(var(--theme-color-rgb), 0.45);
@@ -185,7 +185,7 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 0; /* Bölümler arası boşluk padding ile kontrol edilecek (12px â†’ 0) */
+    gap: 0; /* Bölümler arası boşluk padding ile kontrol edilecek (12px → 0) */
     padding-left: 2px; /* Kırmızı çizgi ile arasındaki boşluk (toplam 4px için: 2px) */
     min-width: 0; /* Flex item'in küçülmesine izin ver */
     box-sizing: border-box; /* Padding'i genişliğe dahil et */
@@ -195,8 +195,8 @@
     display: flex;
     flex-direction: row;
     align-items: baseline;
-    gap: 4px; /* Daha da azaltıldı (1px â†’ 0.5px) */
-    padding: 2px 0; /* 2px üst, 2px alt (4px 0 â†’ 2px 0) */
+    gap: 4px; /* Daha da azaltıldı (1px → 0.5px) */
+    padding: 2px 0; /* 2px üst, 2px alt (4px 0 → 2px 0) */
     border-bottom: none; /* Yatay çizgiler kaldırıldı */
     min-width: 0;
     flex-wrap: wrap;
@@ -251,8 +251,8 @@
 
 .detail-row-value {
     font-family: inherit;
-    font-size: 14px; /* +1pt (13px â†’ 13px */
-    color: #888; /* Kayıt modundaki form-input ile aynı (#ccc â†’ #888) */
+    font-size: 14px; /* +1pt (13px → 13px */
+    color: #888; /* Kayıt modundaki form-input ile aynı (#ccc → #888) */
     line-height: 1.4;
     word-wrap: break-word; /* Uzun kelimeleri kır */
     overflow-wrap: break-word; /* Modern tarayıcılar için */
@@ -276,7 +276,7 @@
 /* detail-row-value ile birlikte kullanıldığında kırmÄ±zÄ± renk */
 .detail-row-value.detail-user-empty {
     color: var(--theme-color) !important;
-    font-size: 12px !important; /* 13px - 0.5px = 12.5px â†’ 12px */
+    font-size: 12px !important; /* 13px - 0.5px = 12.5px → 12px */
     white-space: nowrap !important; /* Tek satırda kal */
 }
 
@@ -1667,7 +1667,7 @@
 
 /* Detay Modal Toolbar - Büyüteç satırı gibi */
 .vehicle-detail-toolbar {
-  height: 24px; /* 8px daha azaltıldı (32px â†’ 24px) */
+  height: 24px; /* 8px daha azaltıldı (32px → 24px) */
   min-height: 24px; /* Minimum yükseklik */
   background: transparent !important; /* Arka plan rengi kaldırıldı */
   border-bottom: none; 
@@ -1715,7 +1715,7 @@
   border: none;
   color: #999;
   cursor: pointer;
-  padding: 2px; /* Toolbar yüksekliği azaltıldığı için padding düşürüldü (4px â†’ 2px) */
+  padding: 2px; /* Toolbar yüksekliği azaltıldığı için padding düşürüldü (4px → 2px) */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1734,7 +1734,7 @@
     border-radius: 0;
     cursor: pointer;
     font-weight: 600;
-    font-size: 15px; /* 1pt büyütüldü (11px â†’ 12px) */
+    font-size: 15px; /* 1pt büyütüldü (11px → 12px) */
     display: flex !important; /* Görünürlüğü garantile */
     align-items: center;
     gap: 0; /* Gap kaldırıldı, metin içinde boşluk var */
@@ -1766,7 +1766,7 @@
     align-items: center;
     gap: 4px; /* İkon ve metin arası boşluk */
     color: #ccc;
-    font-size: 15px; /* 1pt büyütüldü (11px â†’ 12px) */
+    font-size: 15px; /* 1pt büyütüldü (11px → 12px) */
     padding: 4px 8px;
     flex-shrink: 0; /* Sağda sabit kalır */
     z-index: 2; /* Marka/model'in üstünde (1'den 2'ye yükseltildi) */
@@ -1780,7 +1780,7 @@
 
 .detail-brand-year-row .history-btn-minimal svg {
     width: 16px;
-    height: 14px; /* Dikeyde küçültüldü (16px â†’ 14px) */
+    height: 14px; /* Dikeyde küçültüldü (16px → 14px) */
     flex-shrink: 0;
 }
 .detail-brand-year-row .history-btn-minimal:hover svg {
@@ -1812,7 +1812,7 @@
 
 #event-menu-list button:hover {
   outline-color: rgba(255, 255, 255, 0.4);
-  font-weight: 700 !important; /* 14px â†’ 15px */
+  font-weight: 700 !important; /* 14px → 15px */
 }
 
 /* Kaza Modalı - Kaporta Şeması Yatayda Ortalı */
@@ -1975,10 +1975,10 @@
   /* --- TAŞIT DETAY MODAL --- */
   /* Taşıt detay toolbar kesilme sorunu */
   #vehicle-detail-content {
-    padding-top: 20px !important; /* 14px â†’ 20px */
+    padding-top: 20px !important; /* 14px → 20px */
   }
   .detail-plate-row {
-    margin-top: -13px !important; /* Plaka 3px yukarı (mobil) */ /* -14px â†’ -10px */
+    margin-top: -13px !important; /* Plaka 3px yukarı (mobil) */ /* -14px → -10px */
   }
   
   /* Taşıt detay: layout base + container query ile; mobilde de yatay alan varsa yan yana */
@@ -2010,7 +2010,7 @@
   }
   .detail-row-value.detail-user-empty {
     color: var(--theme-color) !important;
-    font-size: 18px !important; /* +1 punto â†’ 16px */
+    font-size: 18px !important; /* +1 punto → 16px */
     white-space: nowrap !important; /* Mobilde tek satırda kal */
   }
   .detail-plate {
@@ -2031,7 +2031,7 @@
   
   /* Mobil modal-body padding */
   #vehicles-modal .modal-body {
-    padding: 10px 8px 40px 8px !important; /* 16px â†’ 8px */
+    padding: 10px 8px 40px 8px !important; /* 16px → 8px */
     overflow-x: hidden !important; /* Sağa sola kaymayı engelle */
     touch-action: pan-y !important; /* Sadece dikey kaydırma */
     overscroll-behavior-x: none !important; /* Yatay overscroll'u engelle */
@@ -2434,7 +2434,7 @@
   /* Ortak mobil container + iOS PWA: style-core.css (.modal-overlay .modal-container) */
   #vehicles-modal .modal-header h2 { 
     font-size: 21px !important; /* 20px + 1 punto (1px) */
-    letter-spacing: 0.2em !important; /* Harfler arası boşluk artırıldı (0.15em â†’ 0.2em) */
+    letter-spacing: 0.2em !important; /* Harfler arası boşluk artırıldı (0.15em → 0.2em) */
   }
   .tasitlar-modal-overlay .modal-close { font-size: 21px; }
   
