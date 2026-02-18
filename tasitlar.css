@@ -2028,7 +2028,11 @@
     overflow-x: hidden !important; /* SaÄŸa sola kaymayÄ± engelle */
     touch-action: pan-y !important; /* Sadece dikey kaydÄ±rma */
     overscroll-behavior-x: none !important; /* Yatay overscroll'u engelle */
-    isolation: isolate; /* Liste baslik sticky icerigi gizlesin */
+    isolation: isolate !important;
+  }
+  #vehicles-modal .modal-body .view-list {
+    isolation: isolate !important;
+    position: relative !important;
   }
   
   /* --- BRANCH GRID & CARDS --- */
@@ -2506,13 +2510,13 @@
     margin-left: 0 !important; /* Sola kaydÄ±rmayÄ± kaldÄ±r */
   }
 
-  /* Detay modal plaka ve baÅŸlÄ±klar toolbar altÄ±nda kalmasÄ±n */
+  /* Detay modal plaka ve başlıklar toolbar altında kalmasın; Olay Ekle/Tarihçe plakaya yakın (mobil) */
   #vehicle-detail-content { padding-top: 24px !important; }
-  .detail-plate-row { margin-top: -13px !important; } /* Plaka 3px yukarı */
+  .detail-plate-row { margin-top: -13px !important; }
   .detail-plate { margin-top: 0 !important; }
-  .detail-brand-year-row { padding-top: 1px !important; }
+  .detail-brand-year-row { padding-top: 0 !important; margin-top: -6px !important; }
 
-  /* Taşıt detay: Olay Ekle ve Tarihçe metni mobilde 1pt büyük; Tarihçe rengi etiket beyazı */
+  /* Taşıt detay: Olay Ekle ve Tarihçe mobilde +1pt (17px, hover 18px); Tarihçe rengi etiket beyazı */
   #vehicle-detail-modal .detail-brand-year-row .history-add-event-btn {
     font-size: 17px !important;
   }
