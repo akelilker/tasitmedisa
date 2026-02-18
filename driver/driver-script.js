@@ -325,7 +325,7 @@ function renderLeftPanel(vehicles, records) {
             <div class="driver-info-item"><span class="label">Muayene Bitiş</span><span class="value ${muayeneW.class}">${formatDriverDate(vehicle.muayeneDate) || '-'}</span></div>
             <div class="driver-info-item ${anahtarSaved ? 'saved' : ''}"><span class="label">Yedek Anahtar</span><span class="value">${escapeHtmlDriver(anahtarLabel)}</span></div>
             <div class="driver-info-item ${lastikSaved ? 'saved' : ''}"><span class="label">Lastik Durumu</span><span class="value">${escapeHtmlDriver(lastikLabel)}</span></div>
-            <div class="driver-info-item ${uttsSaved ? 'saved' : ''}"><span class="label">UTTS</span><span class="value">${escapeHtmlDriver(uttsLabel)}</span></div>
+            <div class="driver-info-item"><span class="label">UTTS</span><span class="value">${escapeHtmlDriver(uttsLabel)}</span></div>
         `;
     }
 }
@@ -394,9 +394,9 @@ function renderRightPanel(vehicles, records) {
     const anahtarSaved = !!(vehicle.anahtar && String(vehicle.anahtar).trim());
     const lastikSaved = !!(vehicle.lastikDurumu && String(vehicle.lastikDurumu).trim());
     const kmBtnClass = (hasKmSaved ? ' saved' : '') + (needsKmWarning ? ' warning' : '');
-    const sigortaBtnClass = (sigortaSaved ? ' saved' : '') + (sigortaW.class ? ' warning' : '');
-    const kaskoBtnClass = (kaskoSaved ? ' saved' : '') + (kaskoW.class ? ' warning' : '');
-    const muayeneBtnClass = (muayeneSaved ? ' saved' : '') + (muayeneW.class ? ' warning' : '');
+    const sigortaBtnClass = sigortaW.class ? ' warning' : '';
+    const kaskoBtnClass = kaskoW.class ? ' warning' : '';
+    const muayeneBtnClass = muayeneW.class ? ' warning' : '';
     
     areaEl.innerHTML = buildDriverActionArea(vehicle, existingRecord, bakimVar, kazaVar, {
         kmBtnClass, sigortaBtnClass, kaskoBtnClass, muayeneBtnClass, anahtarSaved, lastikSaved, vid
