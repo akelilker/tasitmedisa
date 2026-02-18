@@ -237,6 +237,7 @@
 .kaporta-schema-wrapper {
     display: block !important;
     margin: 0 auto !important;
+    margin-top: -5px !important; /* Şemayı 5px yukarı kaydır */
     position: relative !important;
 }
 
