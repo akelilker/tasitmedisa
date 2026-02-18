@@ -861,7 +861,7 @@
     flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
-    padding: 10px 8px 12px 8px; /* Üst 10px: şube kartı hover'da üst çerçeve kesilmesin */
+    padding: 18px 8px 12px 8px; /* Üst 18px: şube kartı hover'da scale ile üst çerçeve kesilmesin */
     scrollbar-width: none;
     -ms-overflow-style: none;
 }
