@@ -384,14 +384,13 @@ body.driver-modal-open {
 .driver-info-item {
   display: flex;
   flex-direction: row;
-  align-items: flex-start;
+  align-items: baseline;
   gap: 6px;
   text-align: left;
 }
 .driver-info-item .label {
   color: var(--txt);
   font-size: 11px;
-  text-transform: uppercase;
   flex-shrink: 0;
 }
 .driver-info-item .label::after {
@@ -608,9 +607,9 @@ body.driver-modal-open {
     padding: 0;
     font-size: 12px;
   }
-  .driver-info-item { gap: 0; }
+  .driver-info-item { gap: 0; flex-wrap: wrap; }
   .driver-info-item .label { font-size: 10px; }
-  .driver-info-item .value { font-size: 12px; }
+  .driver-info-item .value { font-size: 12px; flex-basis: 100%; margin-top: 1px; }
   .driver-action-btn { padding: 8px 10px; font-size: 12px; }
   .driver-user-plate-row .driver-user-name { font-size: 12px; }
   .driver-current-plaka { font-size: 14px; }
