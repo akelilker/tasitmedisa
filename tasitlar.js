@@ -125,7 +125,7 @@
   // Taşıt listesi tıklama delegasyonu (card/list-item tıklanınca detay aç) - tek seferlik
   if (modalContent && !modalContent._vehicleClickBound) {
     modalContent._vehicleClickBound = true;
-    modalContent.addEventListener('click', function(e) {
+    function handleVehicleRowClick(e) {
       const card = e.target.closest('.card');
       const listItem = e.target.closest('.list-item');
       if (listItem && listItem.classList.contains('list-item-empty')) return;
@@ -137,7 +137,9 @@
           window.showVehicleDetail(row.dataset.vehicleId);
         }
       }
-    });
+    }
+    modalContent.addEventListener('click', handleVehicleRowClick);
+    modalContent.addEventListener('touchend', handleVehicleRowClick, { passive: false });
   }
 
   // Toolbar Container Oluştur (Eğer yoksa)
