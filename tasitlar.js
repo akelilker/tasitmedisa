@@ -1492,11 +1492,11 @@
         const isMobile = window.innerWidth <= 640;
         container.style.justifyContent = isMobile ? 'center' : 'flex-start'; /* Mobilde yatay ortala */
         
-        // Renk açıklaması ekle (sola, dikey - sadece kısaltma harfler, küçük)
+        // Renk açıklaması ekle (mobilde yatay O/B/D, masaüstünde dikey)
         const legend = document.createElement('div');
         legend.className = 'boya-legend';
         legend.style.display = 'flex';
-        legend.style.flexDirection = 'column'; /* Alt alta */
+        legend.style.flexDirection = isMobile ? 'row' : 'column';
         legend.style.gap = '4px'; /* Daha az boşluk */
         legend.style.fontSize = '2px'; /* Harfler 2px */
         legend.style.color = '#aaa';
@@ -2991,9 +2991,9 @@
           const tutarStr = event.data?.tutar ? `Tutar: ${escapeHtml(event.data.tutar)}` : '';
           const ekStr = [kmStr, tutarStr].filter(Boolean).join(' | ');
           html += `<div class="history-item" style="padding: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
-            <div style="font-weight: 600; color: #e0e0e0; margin-bottom: 4px;">${escapeHtml(event.date)}</div>
-            <div style="color: #aaa; font-size: 13px;">${escapeHtml(event.data?.islemler || '')}</div>
-            <div style="color: #888; font-size: 12px; margin-top: 4px;">Servis: ${escapeHtml(event.data?.servis || '-')} | Kişi: ${escapeHtml(event.data?.kisi || '-')}${ekStr ? ' | ' + ekStr : ''}</div>
+            <div style="font-weight: 600; color: #e0e0e0; font-size: 12px; margin-bottom: 4px;">${escapeHtml(event.date)}</div>
+            <div style="color: #aaa; font-size: 12px;">${escapeHtml(event.data?.islemler || '')}</div>
+            <div style="color: #aaa; font-size: 12px; margin-top: 4px;">Servis: ${escapeHtml(event.data?.servis || '-')} | Kişi: ${escapeHtml(event.data?.kisi || '-')}${ekStr ? ' | ' + ekStr : ''}</div>
           </div>`;
         });
       }
@@ -3005,7 +3005,7 @@
       } else {
         kazaEvents.forEach(event => {
           const hasarStr = event.data?.hasarTutari ? ` | Hasar Tutarı: ${escapeHtml(event.data.hasarTutari)}` : '';
-          const aciklamaHtml = event.data?.aciklama ? `<div style="color: #aaa; font-size: 13px; margin-top: 4px;">${escapeHtml(event.data.aciklama)}</div>` : '';
+          const aciklamaHtml = event.data?.aciklama ? `<div style="color: #aaa; font-size: 12px; margin-top: 4px;">${escapeHtml(event.data.aciklama)}</div>` : '';
           let parcalarHtml = '';
           const hasarParcalari = event.data?.hasarParcalari;
           if (hasarParcalari && typeof hasarParcalari === 'object' && Object.keys(hasarParcalari).length > 0) {
@@ -3019,11 +3019,11 @@
             const parts = [];
             if (boyaliList.length) parts.push(`Boyalı: ${boyaliList.join(', ')}`);
             if (degisenList.length) parts.push(`Değişen: ${degisenList.join(', ')}`);
-            if (parts.length) parcalarHtml = `<div style="color: #aaa; font-size: 13px; margin-top: 4px;">${escapeHtml(parts.join(' | '))}</div>`;
+            if (parts.length) parcalarHtml = `<div style="color: #aaa; font-size: 12px; margin-top: 4px;">${escapeHtml(parts.join(' | '))}</div>`;
           }
           html += `<div class="history-item" style="padding: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
-            <div style="font-weight: 600; color: #e0e0e0; margin-bottom: 4px;">${escapeHtml(event.date)}</div>
-            <div style="color: #aaa; font-size: 13px;">Kullanıcı: ${escapeHtml(event.data?.surucu || '-')}${hasarStr}</div>
+            <div style="font-weight: 600; color: #e0e0e0; font-size: 12px; margin-bottom: 4px;">${escapeHtml(event.date)}</div>
+            <div style="color: #aaa; font-size: 12px;">Kullanıcı: ${escapeHtml(event.data?.surucu || '-')}${hasarStr}</div>
             ${parcalarHtml}
             ${aciklamaHtml}
           </div>`;
@@ -3077,7 +3077,7 @@
             descText += ` - ${escapeHtml(yeni)}${eski ? ` (${escapeHtml(eski)})` : ''}`;
           }
           html += `<div class="history-item history-item-sube" style="padding: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
-            <div style="margin-bottom: 4px;"><span class="history-date">${escapeHtml(event.date)}</span> - <span class="history-desc">${descText}</span></div>
+            <div style="font-weight: 600; color: #e0e0e0; font-size: 12px; margin-bottom: 4px;">${escapeHtml(event.date)} - ${descText}</div>
             ${detailHtml}
           </div>`;
         });
