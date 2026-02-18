@@ -237,10 +237,16 @@ async function loadDashboard() {
         const vehicles = data.vehicles;
         const records = data.records;
         selectedVehicleId = selectedVehicleId || (vehicles[0] && vehicles[0].id);
+        if (!getSelectedVehicle() && vehicles && vehicles.length) {
+            selectedVehicleId = vehicles[0].id;
+        }
         
         renderLeftPanel(vehicles, records);
         renderRightPanel(vehicles, records);
         renderSlidingWarning(vehicles, records);
+        
+        var actionArea = document.getElementById('driver-action-area');
+        if (actionArea) actionArea.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         
         if (vehicles.length > 1) {
             const trigger = document.getElementById('driver-plate-trigger');
@@ -355,9 +361,14 @@ function setupPlateDropdown(vehicles) {
     ).join('');
     
     dropdown.querySelectorAll('.driver-plate-dropdown-item').forEach(item => {
-        item.addEventListener('click', function() {
-            selectedVehicleId = this.getAttribute('data-vehicle-id');
-            currentPlakaEl.textContent = getSelectedVehicle().plaka;
+        item.addEventListener('click', function(ev) {
+            ev.preventDefault();
+            ev.stopPropagation();
+            const vid = this.getAttribute('data-vehicle-id');
+            if (vid == null || vid === '') return;
+            selectedVehicleId = vid;
+            const sel = getSelectedVehicle();
+            if (sel) currentPlakaEl.textContent = sel.plaka;
             dropdown.style.display = 'none';
             loadDashboard();
         });
@@ -462,6 +473,11 @@ function buildDriverActionArea(vehicle, existingRecord, bakimVar, kazaVar, opts)
                     <div class="form-group"><label for="kaza-detay-${vid}">Açıklama</label><textarea id="kaza-detay-${vid}" class="driver-report-textarea-auto driver-kaza-textarea" rows="1" placeholder="Kaza açıklamasını yazın..." maxlength="500">${kazaAciklama}</textarea></div>
                     <div class="form-group"><label for="kaza-tutar-${vid}">Hasar Tutarı (TL)</label><input type="text" id="kaza-tutar-${vid}" class="driver-kaza-input" placeholder="5.000" inputmode="numeric"></div>
                     <div class="form-group"><label class="driver-kaporta-label">Hasar gören parçaları işaretleyin (isteğe bağlı)</label><div id="kaza-kaporta-${vid}" class="driver-kaporta-container" data-vehicle-id="${vid}" data-boyali-parcalar='${JSON.stringify(vehicle.boyaliParcalar || {})}'></div></div>
+                    <div class="driver-form-actions">
+                        <button type="button" class="btn-driver-bildir" onclick="submitDriverAction('kaza','${vid}')">Bildir</button>
+                        <button type="button" class="btn-driver-vazgec" onclick="cancelDriverActionForm('kaza','${vid}')">Vazgeç</button>
+                    </div>
+                    <div class="driver-success-msg" id="kaza-success-${vid}">Bildirildi</div>
                 </div>
             </div>
             <div class="driver-action-group">
@@ -473,6 +489,11 @@ function buildDriverActionArea(vehicle, existingRecord, bakimVar, kazaVar, opts)
                     <div class="form-group"><label for="bakim-kisi-${vid}">Taşıtı Bakıma Götüren Kişi</label><input type="text" id="bakim-kisi-${vid}" class="driver-bakim-input" placeholder="Kişi adı"></div>
                     <div class="form-group"><label for="bakim-km-${vid}">Km</label><input type="text" id="bakim-km-${vid}" class="driver-bakim-input" placeholder="50.000" inputmode="numeric"></div>
                     <div class="form-group"><label for="bakim-tutar-${vid}">Tutar (TL)</label><input type="text" id="bakim-tutar-${vid}" class="driver-bakim-input" placeholder="2.500" inputmode="numeric"></div>
+                    <div class="driver-form-actions">
+                        <button type="button" class="btn-driver-bildir" onclick="submitDriverAction('bakim','${vid}')">Bildir</button>
+                        <button type="button" class="btn-driver-vazgec" onclick="cancelDriverActionForm('bakim','${vid}')">Vazgeç</button>
+                    </div>
+                    <div class="driver-success-msg" id="bakim-success-${vid}">Bildirildi</div>
                 </div>
             </div>
             <div class="driver-action-group">
@@ -552,7 +573,7 @@ window.toggleDriverActionBlock = function(type, vehicleId) {
     inner.querySelectorAll('.driver-action-block').forEach(function(b) { if (b) b.classList.remove('show'); });
     if (!isShown) {
         target.classList.add('show');
-        if (type === 'km') inner.classList.add('driver-km-open');
+        if (type === 'km' || type === 'kaza' || type === 'bakim') inner.classList.add('driver-km-open');
         if (type === 'kaza') {
             const dateEl = document.getElementById('kaza-tarih-' + vid);
             if (dateEl && !dateEl.value) dateEl.value = new Date().toISOString().split('T')[0];
@@ -583,10 +604,117 @@ window.focusKmInput = function(vehicleId) {
 };
 
 window.cancelKmForm = function(vid) {
+    cancelDriverActionForm('km', vid);
+};
+
+window.cancelDriverActionForm = function(type, vid) {
     const inner = document.querySelector('.driver-action-area-inner[data-vehicle-id="' + vid + '"]');
-    const block = document.getElementById('km-block-' + vid);
+    const blockId = type === 'km' ? 'km-block-' + vid : (type === 'kaza' ? 'kaza-block-' + vid : 'bakim-block-' + vid);
+    const block = document.getElementById(blockId);
     if (block) block.classList.remove('show');
     if (inner) inner.classList.remove('driver-km-open');
+};
+
+window.submitDriverAction = async function(type, vid) {
+    if (type === 'km') {
+        submitKmOnly(vid);
+        return;
+    }
+    var guncelKmEl = document.getElementById('km-' + vid);
+    var guncelKm = guncelKmEl ? parseInt(String(guncelKmEl.value).replace(/\D/g, ''), 10) : 0;
+    if (!guncelKm || guncelKm <= 0) {
+        var rec = getExistingRecord(vid);
+        if (rec != null && rec.guncel_km != null) guncelKm = parseInt(String(rec.guncel_km).replace(/\D/g, ''), 10);
+    }
+    if (!guncelKm || guncelKm <= 0) {
+        alert('Lütfen geçerli bir KM değeri girin (Km alanı veya mevcut kayıt).');
+        if (guncelKmEl) guncelKmEl.focus();
+        return;
+    }
+    var btnBildir, btnVazgec, formActions, successMsg;
+    if (type === 'kaza') {
+        var kazaAciklama = (document.getElementById('kaza-detay-' + vid) || {}).value.trim();
+        if (!kazaAciklama) {
+            alert('Kaza bildirimi için açıklama girin.');
+            return;
+        }
+        btnBildir = document.querySelector('#kaza-block-' + vid + ' .btn-driver-bildir');
+        btnVazgec = document.querySelector('#kaza-block-' + vid + ' .btn-driver-vazgec');
+        formActions = document.querySelector('#kaza-block-' + vid + ' .driver-form-actions');
+        successMsg = document.getElementById('kaza-success-' + vid);
+    } else {
+        var bakimAciklama = (document.getElementById('bakim-detay-' + vid) || {}).value.trim();
+        if (!bakimAciklama) {
+            alert('Bakım bildirimi için açıklama girin.');
+            return;
+        }
+        btnBildir = document.querySelector('#bakim-block-' + vid + ' .btn-driver-bildir');
+        btnVazgec = document.querySelector('#bakim-block-' + vid + ' .btn-driver-vazgec');
+        formActions = document.querySelector('#bakim-block-' + vid + ' .driver-form-actions');
+        successMsg = document.getElementById('bakim-success-' + vid);
+    }
+    if (btnBildir) btnBildir.disabled = true;
+    if (btnVazgec) btnVazgec.disabled = true;
+    var payload = {
+        arac_id: parseInt(vid, 10),
+        guncel_km: guncelKm,
+        bakim_durumu: type === 'bakim' ? 1 : 0,
+        bakim_aciklama: type === 'bakim' ? (document.getElementById('bakim-detay-' + vid) || {}).value.trim() : '',
+        bakim_tarih: type === 'bakim' ? (document.getElementById('bakim-tarih-' + vid) || {}).value : '',
+        bakim_servis: type === 'bakim' ? ((document.getElementById('bakim-servis-' + vid) || {}).value || '').trim() : '',
+        bakim_kisi: type === 'bakim' ? ((document.getElementById('bakim-kisi-' + vid) || {}).value || '').trim() : '',
+        bakim_km: type === 'bakim' ? ((document.getElementById('bakim-km-' + vid) || {}).value || '').trim() : '',
+        bakim_tutar: type === 'bakim' ? ((document.getElementById('bakim-tutar-' + vid) || {}).value || '').trim() : '',
+        kaza_durumu: type === 'kaza' ? 1 : 0,
+        kaza_aciklama: type === 'kaza' ? (document.getElementById('kaza-detay-' + vid).value.trim()) : '',
+        kaza_tarih: type === 'kaza' ? (document.getElementById('kaza-tarih-' + vid).value || '') : '',
+        kaza_hasar_tutari: type === 'kaza' ? ((document.getElementById('kaza-tutar-' + vid) || {}).value || '').trim() : '',
+        boya_parcalar: '{}',
+        ekstra_not: (document.getElementById('not-' + vid) || {}).value || ''
+    };
+    if (type === 'kaza') {
+        var boyaParcalar = {};
+        var kaportaContainer = document.getElementById('kaza-kaporta-' + vid);
+        if (kaportaContainer) {
+            kaportaContainer.querySelectorAll('svg path[id]').forEach(function(part) {
+                var partId = part.getAttribute('id');
+                if (partId === 'araba-govde') return;
+                var state = part.dataset.state;
+                if (state === 'boyali' || state === 'degisen') boyaParcalar[partId] = state;
+            });
+        }
+        payload.boya_parcalar = JSON.stringify(boyaParcalar);
+    }
+    try {
+        var response = await fetch(API_BASE + 'driver_save.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + currentToken },
+            body: JSON.stringify(payload)
+        });
+        var data = await response.json();
+        if (data.success) {
+            if (formActions) formActions.style.display = 'none';
+            if (successMsg) successMsg.classList.add('show');
+            setTimeout(function() {
+                var block = document.getElementById((type === 'kaza' ? 'kaza-block-' : 'bakim-block-') + vid);
+                var inner = document.querySelector('.driver-action-area-inner[data-vehicle-id="' + vid + '"]');
+                if (block) block.classList.remove('show');
+                if (inner) inner.classList.remove('driver-km-open');
+                if (formActions) formActions.style.display = '';
+                if (successMsg) successMsg.classList.remove('show');
+                var actionBtn = inner ? inner.querySelector('.driver-action-btn[data-action="' + type + '"]') : null;
+                if (actionBtn) actionBtn.classList.add('saved');
+            }, 2000);
+        } else {
+            alert(data.message || 'Kayıt yapılamadı.');
+        }
+    } catch (err) {
+        console.error('Bildirim kaydetme hatası:', err);
+        alert('Bağlantı hatası.');
+    } finally {
+        if (btnBildir) btnBildir.disabled = false;
+        if (btnVazgec) btnVazgec.disabled = false;
+    }
 };
 
 window.submitKmOnly = async function(vid) {
@@ -987,6 +1115,8 @@ window.handleDriverEventChoice = function(type, vehicleId) {
 
 window.openDriverEventModal = function(type, vehicleId) {
     currentDriverEventVehicleId = vehicleId;
+    const inner = document.querySelector('.driver-action-area-inner[data-vehicle-id="' + String(vehicleId) + '"]');
+    if (inner) inner.classList.add('driver-modal-open');
     const modalId = 'driver-' + type + '-modal';
     const modal = document.getElementById(modalId);
     if (!modal) return;
@@ -1063,6 +1193,11 @@ function setupDriverEventRadioHandlers(group, detailWrap, detailInput) {
 }
 
 window.closeDriverEventModal = function(type) {
+    const vid = currentDriverEventVehicleId;
+    if (vid) {
+        const inner = document.querySelector('.driver-action-area-inner[data-vehicle-id="' + String(vid) + '"]');
+        if (inner) inner.classList.remove('driver-modal-open');
+    }
     const modal = document.getElementById('driver-' + type + '-modal');
     if (modal) modal.classList.remove('show');
     currentDriverEventVehicleId = null;

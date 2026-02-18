@@ -501,17 +501,22 @@ body.driver-modal-open {
   display: none;
 }
 .driver-action-footer {
-  margin-top: 8px;
-  padding-top: 8px;
-  border-top: 1px solid rgba(255,255,255,0.1);
+  margin-top: 3px;
+  padding-top: 0;
 }
 
 /* Km (veya tek aksiyon) açıkken sadece o grubu göster */
 .driver-action-area-inner.driver-km-open .driver-action-group {
   display: none;
 }
-.driver-action-area-inner.driver-km-open .driver-action-group:has(.driver-action-block.show) {
+.driver-action-area-inner.driver-km-open .driver-action-group:has(.driver-action-block.show),
+.driver-action-area-inner.driver-km-open .driver-action-group:has(.driver-report-block.show) {
   display: flex;
+}
+
+/* Modal açıkken panel butonları gizle */
+.driver-action-area-inner.driver-modal-open .driver-action-group {
+  display: none;
 }
 
 /* Km blok içi: Bildir / Vazgeç */
@@ -531,28 +536,66 @@ body.driver-modal-open {
   border: 1px solid;
   transition: background 0.2s, border-color 0.2s, color 0.2s;
 }
-.driver-km-form-actions .btn-km-bildir {
-  background: rgba(34, 197, 94, 0.15);
+.driver-km-form-actions .btn-km-bildir,
+.driver-form-actions .btn-driver-bildir {
+  background: transparent;
   border-color: rgba(34, 197, 94, 0.6);
   color: #22c55e;
 }
-.driver-km-form-actions .btn-km-bildir:hover {
-  background: rgba(34, 197, 94, 0.25);
-  border-color: #22c55e;
-}
-.driver-km-form-actions .btn-km-vazgec {
+.driver-km-form-actions .btn-km-bildir:hover,
+.driver-form-actions .btn-driver-bildir:hover {
   background: transparent;
-  border-color: rgba(255, 255, 255, 0.35);
-  color: var(--txt);
+  border-color: #22c55e;
+  color: #22c55e;
 }
-.driver-km-form-actions .btn-km-vazgec:hover {
-  border-color: rgba(255, 255, 255, 0.55);
-  background: rgba(255, 255, 255, 0.06);
+.driver-km-form-actions .btn-km-vazgec,
+.driver-form-actions .btn-driver-vazgec {
+  background: transparent;
+  border-color: var(--theme-color, #e1061b);
+  color: var(--theme-color, #e1061b);
+}
+.driver-km-form-actions .btn-km-vazgec:hover,
+.driver-form-actions .btn-driver-vazgec:hover {
+  background: transparent;
+  border-color: #ff3d4a;
+  color: #ff3d4a;
 }
 .driver-km-form-actions .btn-km-bildir:disabled,
-.driver-km-form-actions .btn-km-vazgec:disabled {
+.driver-km-form-actions .btn-km-vazgec:disabled,
+.driver-form-actions .btn-driver-bildir:disabled,
+.driver-form-actions .btn-driver-vazgec:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+/* Kaza/Bakım blokları: Bildir / Vazgeç (Km ile aynı görünüm) */
+.driver-form-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+.driver-form-actions .btn-driver-bildir,
+.driver-form-actions .btn-driver-vazgec {
+  flex: 1;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid;
+  transition: border-color 0.2s, color 0.2s;
+}
+.driver-success-msg {
+  display: none;
+  margin-top: 12px;
+  padding: 12px;
+  text-align: center;
+  font-weight: 600;
+  color: #22c55e;
+  font-size: 16px;
+}
+.driver-success-msg.show {
+  display: block;
 }
 
 .driver-km-success-msg {
@@ -906,6 +949,15 @@ body.driver-modal-open {
 .driver-modal-btn-secondary:hover {
   border-color: rgba(255, 255, 255, 0.5);
   color: var(--txt);
+}
+.driver-modal .driver-modal-btn-secondary {
+  border-color: var(--theme-color, #e1061b);
+  color: var(--theme-color, #e1061b);
+  background: transparent;
+}
+.driver-modal .driver-modal-btn-secondary:hover {
+  border-color: #ff3d4a;
+  color: #ff3d4a;
 }
 
 /* Birden fazla araç: plaka satırı + sağda işaret (dropdown), liste plaka altında/ortada */
