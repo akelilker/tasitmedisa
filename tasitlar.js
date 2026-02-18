@@ -665,6 +665,11 @@
               }
           });
       }
+      
+      // Mobil: sütun başlıklarına touch ile sürükle-bırak (yer değiştirme)
+      if (viewMode === 'list') {
+          attachVehicleColumnTouchListeners(listContainer);
+      }
     } catch (error) {
       console.error('renderVehicles hatası:', error);
       if (modalContent) {
@@ -3398,6 +3403,81 @@ function renderVehicleDetailLeft(vehicle) {
       'branch': 'list-branch'
     };
     return classMap[columnKey] || '';
+  }
+
+  // Mobil: sütun başlığı touch ile sürükle-bırak state
+  let touchColumnDrag = { active: false, columnKey: null, startX: 0, startY: 0, dragging: false, lastDropTarget: null };
+
+  function attachVehicleColumnTouchListeners(container) {
+    const headerCells = container.querySelectorAll('.list-header-row .list-cell[data-col]');
+    if (!headerCells.length) return;
+    headerCells.forEach(function(cell) {
+      const columnKey = cell.getAttribute('data-col');
+      if (!columnKey) return;
+      cell.addEventListener('touchstart', function(e) {
+        if (e.touches.length !== 1) return;
+        touchColumnDrag.active = true;
+        touchColumnDrag.columnKey = columnKey;
+        touchColumnDrag.startX = e.touches[0].clientX;
+        touchColumnDrag.startY = e.touches[0].clientY;
+        touchColumnDrag.dragging = false;
+        touchColumnDrag.lastDropTarget = null;
+        const allRows = container.querySelectorAll('.list-item');
+        allRows.forEach(function(row) {
+          const c = row.querySelector('.list-cell.' + getColumnClass(columnKey));
+          if (c) c.style.opacity = '0.5';
+        });
+        cell.style.opacity = '0.5';
+      }, { passive: true });
+      cell.addEventListener('touchmove', function(e) {
+        if (!touchColumnDrag.active || e.touches.length !== 1) return;
+        const x = e.touches[0].clientX;
+        const y = e.touches[0].clientY;
+        const dx = Math.abs(x - touchColumnDrag.startX);
+        const dy = Math.abs(y - touchColumnDrag.startY);
+        if (!touchColumnDrag.dragging && (dx > 10 || dy > 10)) {
+          touchColumnDrag.dragging = true;
+        }
+        if (touchColumnDrag.dragging) {
+          e.preventDefault();
+          const under = document.elementFromPoint(x, y);
+          const headerCell = under && under.closest('.list-header-row .list-cell[data-col]');
+          const targetKey = headerCell ? headerCell.getAttribute('data-col') : null;
+          container.querySelectorAll('.list-header-row .list-cell').forEach(function(c) {
+            c.classList.toggle('drag-over', c === headerCell && targetKey && targetKey !== touchColumnDrag.columnKey);
+          });
+          touchColumnDrag.lastDropTarget = (targetKey && targetKey !== touchColumnDrag.columnKey) ? targetKey : null;
+        }
+      }, { passive: false });
+      function endTouch() {
+        if (!touchColumnDrag.active) return;
+        const sourceKey = touchColumnDrag.columnKey;
+        const targetKey = touchColumnDrag.lastDropTarget;
+        container.querySelectorAll('.list-header-row .list-cell').forEach(function(c) {
+          c.style.opacity = '1';
+          c.classList.remove('drag-over');
+        });
+        container.querySelectorAll('.list-item .list-cell').forEach(function(c) {
+          c.style.opacity = '1';
+        });
+        touchColumnDrag.active = false;
+        touchColumnDrag.columnKey = null;
+        touchColumnDrag.dragging = false;
+        touchColumnDrag.lastDropTarget = null;
+        if (sourceKey && targetKey) {
+          const draggedIndex = vehicleColumnOrder.indexOf(sourceKey);
+          const targetIndex = vehicleColumnOrder.indexOf(targetKey);
+          if (draggedIndex !== -1 && targetIndex !== -1) {
+            vehicleColumnOrder.splice(draggedIndex, 1);
+            vehicleColumnOrder.splice(targetIndex, 0, sourceKey);
+            saveVehicleColumnOrder();
+            renderVehicles();
+          }
+        }
+      }
+      cell.addEventListener('touchend', endTouch, { passive: true });
+      cell.addEventListener('touchcancel', endTouch, { passive: true });
+    });
   }
 
   // kayit.js deleteVehicle sonrası liste yenilemesi için global erişim

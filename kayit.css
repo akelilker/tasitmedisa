@@ -1016,6 +1016,16 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-body select:focus {
         background-color: #0d131f !important;
     }
+    /* Tahsis Edilen Şube listesi: metin 1pt büyük, hover temaya uygun (açık mavi yerine kırmızı ton) */
+    #vehicle-modal #vehicle-branch-select option {
+        font-size: 14px;
+    }
+    #vehicle-modal #vehicle-branch-select option:hover,
+    #vehicle-modal #vehicle-branch-select option:focus,
+    #vehicle-modal #vehicle-branch-select option:active {
+        background: rgba(var(--theme-color-rgb), 0.22) !important;
+        color: #e0e0e0 !important;
+    }
     #vehicle-modal .modal-header { 
         height: 60px !important;
         padding: 2px 20px !important;
