@@ -1492,11 +1492,10 @@
         const isMobile = window.innerWidth <= 640;
         container.style.justifyContent = isMobile ? 'center' : 'flex-start'; /* Mobilde yatay ortala */
         
-        // Renk açıklaması ekle (mobilde yatay O/B/D, masaüstünde dikey)
+        // Renk açıklaması ekle (yön CSS media query ile: mobilde yatay, masaüstünde dikey)
         const legend = document.createElement('div');
         legend.className = 'boya-legend';
         legend.style.display = 'flex';
-        legend.style.flexDirection = isMobile ? 'row' : 'column';
         legend.style.gap = '4px'; /* Daha az boşluk */
         legend.style.fontSize = '2px'; /* Harfler 2px */
         legend.style.color = '#aaa';
