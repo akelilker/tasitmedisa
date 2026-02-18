@@ -1377,12 +1377,29 @@
       html += 'Yoktur.';
     }
     html += `</span></div>`;
-    
-    // Boya şeması (her zaman göster)
-    html += `<div id="detail-boya-container"></div>`;
-    
+
+    // Renk açıklaması: Kaporta Durumu'nun 3px altında, sol grid içinde, yan yana
+    html += `<div class="detail-kaporta-legend">` +
+      `<span class="detail-kaporta-legend-item"><span class="detail-kaporta-dot" style="background:#757575;"></span>O</span>` +
+      `<span class="detail-kaporta-legend-item"><span class="detail-kaporta-dot" style="background:#28a745;"></span>B</span>` +
+      `<span class="detail-kaporta-legend-item"><span class="detail-kaporta-dot" style="background:#e1061b;"></span>D</span>` +
+      `</div>`;
+
     leftEl.innerHTML = html;
-    
+
+    // Boya şeması container'ı .vehicle-detail-columns'ın DIŞINA (altına) yerleştir
+    const vehicleDetailContent = document.getElementById('vehicle-detail-content');
+    const columnsDiv = vehicleDetailContent && vehicleDetailContent.querySelector('.vehicle-detail-columns');
+    const existingBoyaContainer = document.getElementById('detail-boya-container');
+    if (existingBoyaContainer) existingBoyaContainer.remove();
+    const boyaContainer = document.createElement('div');
+    boyaContainer.id = 'detail-boya-container';
+    if (columnsDiv && columnsDiv.parentNode) {
+      columnsDiv.parentNode.insertBefore(boyaContainer, columnsDiv.nextSibling);
+    } else if (vehicleDetailContent) {
+      vehicleDetailContent.appendChild(boyaContainer);
+    }
+
     // Boya şemasını render et (her zaman, boya/değişen olmasa bile)
     renderBoyaSchemaDetail(vehicle);
   }
@@ -1473,100 +1490,109 @@
   function renderBoyaSchemaDetail(vehicle) {
     const container = document.getElementById('detail-boya-container');
     if (!container) return;
-    
+
     fetch('icon/kaporta.svg')
       .then(res => res.text())
       .then(svgText => {
         const parser = new DOMParser();
         const svgDoc = parser.parseFromString(svgText, 'image/svg+xml');
         const svg = svgDoc.querySelector('svg');
-        
+
         if (!svg) return;
-        
-        // Container'ı flex yap (legend sola, SVG sağa)
-          container.innerHTML = '';
-          container.style.display = 'flex';
-          container.style.alignItems = 'center'; /* Dikeyde şema yüksekliğine ortalı */
-          container.style.gap = '20px'; /* Legend ile SVG arası boşluk artırıldı (12px → 20px) */
-          const isMobile = window.innerWidth <= 640;
-          container.style.justifyContent = isMobile ? 'center' : 'flex-start'; /* Mobilde yatay ortala */
-          
-          // Renk açıklaması ekle (yön CSS media query ile: mobilde yatay, masaüstünde dikey)
-          const legend = document.createElement('div');
-          legend.className = 'boya-legend';
-          legend.style.display = 'flex';
-          legend.style.gap = '4px'; /* Daha az boşluk */
-          legend.style.fontSize = '2px'; /* Harfler 2px */
-          legend.style.color = '#aaa';
-          legend.style.transform = 'translateY(-8px)'; /* Tüm legend'i yukarı kaydır (gap'i etkilemez) */
-          legend.innerHTML = `
-            <div class="boya-legend-item" style="display: flex; align-items: center; gap: 4px;"><span class="boya-legend-dot" style="background: #666666; width: 4px; height: 4px; border-radius: 50%; display: inline-block; flex-shrink: 0;"></span> O</div>
-            <div class="boya-legend-item" style="display: flex; align-items: center; gap: 4px;"><span class="boya-legend-dot" style="background: #28a745; width: 4px; height: 4px; border-radius: 50%; display: inline-block; flex-shrink: 0;"></span> B</div>
-            <div class="boya-legend-item" style="display: flex; align-items: center; gap: 4px;"><span class="boya-legend-dot" style="background: #e1061b; width: 4px; height: 4px; border-radius: 50%; display: inline-block; flex-shrink: 0;"></span> D</div>
-          `;
-          container.appendChild(legend);
-          
-          // SVG'yi container'a ekle (sağa)
-          const svgClone = svg.cloneNode(true);
-          container.appendChild(svgClone);
-          
-          // Boyutları ayarla ve 90 derece döndür (yatay genişlik 8px artırıldı)
-          svgClone.setAttribute('width', '100');
-          svgClone.setAttribute('height', '158'); /* 150px + 8px = 158px (döndürülmüş yatay genişlik) */
-          svgClone.style.width = '100px';
-          svgClone.style.height = '158px';
-          svgClone.style.display = 'block';
-          svgClone.style.transform = 'rotate(90deg)'; /* 90 derece yan çevir */
-          svgClone.style.transformOrigin = 'center center'; /* Dönme merkezi */
-          svgClone.style.flexShrink = '0'; /* Legend ile çakışmasını önle */
-          svgClone.style.marginLeft = isMobile ? '0' : '10px'; /* Mobilde ortada kalsın */
-          svgClone.style.position = 'relative'; /* Görünürlük için */
-          
-          const partNames = getKaportaPartNames();
-        
-        // Önce TÜM parçaları gri yap (varsayılan orijinal renk – çok az daha açık ton)
+
+        container.innerHTML = '';
+
+        // Şemanın görünmesini istediğin genişlik (Landscape/Yatay hali)
+        const targetWidth = 240;
+
+        // Orijinal SVG dikey (148x220). Döndürünce oranlar değişiyor.
+        // Yeni yükseklik oranını koruyarak hesapla (240 * (148/220) ~ 160px)
+        const targetHeight = Math.round(targetWidth * (148 / 220));
+
+        // SVG'nin ham boyutları
+        const svgOrgWidth = 148;
+        const svgOrgHeight = 220;
+
+        // Wrapper oluştur (Şemayı tutacak kutu)
+        const svgWrapper = document.createElement('div');
+        svgWrapper.className = 'kaporta-schema-wrapper';
+        svgWrapper.style.cssText = `
+            width: ${targetWidth}px;
+            height: ${targetHeight}px;
+            position: relative;
+            overflow: visible;
+            flex-shrink: 0;
+            margin: 0 auto;
+        `;
+
+        // SVG'yi hazırla
+        const svgClone = svg.cloneNode(true);
+        svgClone.setAttribute('width', String(svgOrgWidth));
+        svgClone.setAttribute('height', String(svgOrgHeight));
+
+        // SVG'yi döndür ve wrapper'ın tam ortasına oturt
+        const topOff = (targetHeight - svgOrgHeight) / 2;
+        const leftOff = (targetWidth - svgOrgWidth) / 2;
+
+        svgClone.style.cssText = `
+            display: block;
+            position: absolute;
+            top: ${topOff}px;
+            left: ${leftOff}px;
+            transform-origin: center center;
+            transform: rotate(90deg) scale(${targetWidth / svgOrgHeight});
+        `;
+
+        svgWrapper.appendChild(svgClone);
+        container.appendChild(svgWrapper);
+
+        // --- RENKLENDİRME ---
+        const partNames = getKaportaPartNames();
         const defaultGray = '#757575';
+
         const allParts = svgClone.querySelectorAll('path[id]');
         allParts.forEach(part => {
           part.setAttribute('fill', defaultGray);
           part.style.fill = defaultGray;
         });
-        
-        // Mevcut durumları uygula ve hover tooltip ekle
+
         const boyaliParcalar = vehicle.boyaliParcalar || {};
         Object.keys(boyaliParcalar).forEach(partId => {
           const state = boyaliParcalar[partId];
           const part = svgClone.querySelector(`#${partId}`);
           if (part) {
-            // Renk uygula
             if (state === 'boyali') {
               part.setAttribute('fill', '#28a745');
               part.style.fill = '#28a745';
             } else if (state === 'degisen') {
               part.setAttribute('fill', '#e1061b');
               part.style.fill = '#e1061b';
-            } else {
-              part.setAttribute('fill', defaultGray);
-              part.style.fill = defaultGray;
             }
-            
-            // Hover tooltip ekle (parça ismi ve durumu)
             const partName = partNames[partId] || partId;
             const stateLabel = state === 'boyali' ? 'Boyalı' : state === 'degisen' ? 'Değişen' : 'Orijinal';
             part.setAttribute('title', `${partName} - ${stateLabel}`);
-            part.style.cursor = 'pointer';
+            part.style.cursor = 'help';
           }
         });
-        
-        // boyaliParcalar'da olmayan parçalara da tooltip ekle
+
         allParts.forEach(part => {
           const partId = part.getAttribute('id');
-          if (partId && !boyaliParcalar[partId]) {
+          if (!boyaliParcalar[partId]) {
             const partName = partNames[partId] || partId;
             part.setAttribute('title', `${partName} - Orijinal`);
-            part.style.cursor = 'pointer';
+            part.style.cursor = 'help';
           }
         });
+
+        // --- LEGEND ---
+        const legend = document.createElement('div');
+        legend.className = 'boya-legend';
+        legend.innerHTML = `
+          <div class="boya-legend-item"><span class="boya-legend-dot" style="background:#757575;"></span> Orijinal</div>
+          <div class="boya-legend-item"><span class="boya-legend-dot" style="background:#28a745;"></span> Boyalı</div>
+          <div class="boya-legend-item"><span class="boya-legend-dot" style="background:#e1061b;"></span> Değişen</div>
+        `;
+        container.appendChild(legend);
       })
       .catch(err => {
         console.error('SVG yükleme hatası:', err);
