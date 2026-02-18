@@ -466,7 +466,7 @@
                 emptyHtml += `<div class="list-cell ${def.class} sortable-header" data-col="${columnKey}">${labelHtml}</div>`;
               }
             });
-            emptyHtml += '</div><div class="view-list view-list-empty"><div class="list-item list-item-empty" style="grid-column: 1 / -1; justify-content: center; padding: 24px;"><span style="color:#666;">' + escapeHtml(emptyMsg) + '</span></div></div>';
+            emptyHtml += '</div><div class="vehicles-list-scroll"><div class="view-list view-list-empty"><div class="list-item list-item-empty" style="grid-column: 1 / -1; justify-content: center; padding: 24px;"><span style="color:#666;">' + escapeHtml(emptyMsg) + '</span></div></div></div>';
             listContainer.innerHTML = emptyHtml;
           } else {
             listContainer.innerHTML = `<div style="text-align:center; padding:40px; color:#666">${emptyMsg}</div>`;
@@ -537,6 +537,7 @@
           }
         });
         html += '</div>';
+        html += '<div class="vehicles-list-scroll">';
       }
       html += `<div class="view-${viewMode}${extraClass}">` + vehicles.map(v => {
         // Plaka (1. satır - tek satır maksimum)
@@ -627,7 +628,7 @@
               </div>
             `;
         }
-    }).join('') + '</div>';
+    }).join('') + '</div>' + (viewMode === 'list' ? '</div>' : '') + '';
 
       listContainer.innerHTML = html;
       
