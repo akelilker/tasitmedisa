@@ -2010,7 +2010,7 @@
     font-size: 21px !important; /* +1 punto daha (sadece mobil) */
   }
   .detail-brand-year {
-    font-size: 20px !important; /* +1 punto daha (sadece mobil) */
+    font-size: 19px !important; /* +1 punto daha (sadece mobil) */
   }
   .detail-label {
     font-size: 19px !important; /* +1 punto daha (sadece mobil) */
@@ -2448,7 +2448,7 @@
   }
   
   .detail-plate { font-size: 22px !important; margin-top: -8px !important; margin-bottom: 0 !important; }
-  .detail-brand-year { font-size: 20px !important; margin-top: 2px !important; margin-bottom: 4px !important; }
+  .detail-brand-year { font-size: 19px !important; margin-top: 0 !important; margin-bottom: 4px !important; }
   .detail-row { padding: 4px 0; gap: 1px; }
   
   /* Taşıt detay modal başlık +1 punto daha (sadece mobil) */
@@ -2467,8 +2467,16 @@
     justify-content: center !important; /* Kaporta şeması yatayda ortalanmış */
     gap: 12px !important;
   }
-  /* Taşıt detay: kaporta ekspertiz mobilde yatay (legend + SVG yan yana) */
+  /* Taşıt detay: kaporta ekspertiz mobilde yatay (legend + SVG yan yana, sol grid içinde) */
   #detail-boya-container {
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+  }
+  #kaza-kaporta-container {
     flex-direction: row !important;
     flex-wrap: wrap !important;
     justify-content: center !important;
@@ -2484,14 +2492,17 @@
     gap: 12px !important;
     transform: none !important;
     font-size: 12px !important; /* +1 punto daha (sadece mobil) */
+    margin-top: 2px !important; /* O/B/D renk açıklamaları 2px aşağı */
+    flex-shrink: 0 !important;
   }
   
   #detail-boya-container svg {
     width: auto !important;
-    max-width: 90% !important;
+    max-width: 58% !important;
     height: auto !important;
     transform: translateY(5px) rotate(0deg) !important; /* Mobilde dikey + 5px aşağı */
     transform-origin: center !important;
+    flex-shrink: 1 !important;
     margin-left: 0 !important; /* Sola kaydÄ±rmayÄ± kaldÄ±r */
   }
 
@@ -2499,7 +2510,7 @@
   #vehicle-detail-content { padding-top: 24px !important; }
   .detail-plate-row { margin-top: -13px !important; } /* Plaka 3px yukarı */
   .detail-plate { margin-top: 0 !important; }
-  .detail-brand-year-row { padding-top: 6px !important; }
+  .detail-brand-year-row { padding-top: 1px !important; }
 
   /* Taşıt detay: Olay Ekle ve Tarihçe metni mobilde 1pt büyük; Tarihçe rengi etiket beyazı */
   #vehicle-detail-modal .detail-brand-year-row .history-add-event-btn {
