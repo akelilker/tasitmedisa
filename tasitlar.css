@@ -262,32 +262,6 @@
     flex-shrink: 0;
 }
 
-/* Kaporta renk açıklaması: Kaporta Durumu'nun 3px altında, yan yana */
-.detail-kaporta-legend {
-    display: flex;
-    flex-direction: row;
-    gap: 8px;
-    margin-top: 3px;
-    align-items: center;
-    position: relative;
-    z-index: 2;
-}
-.detail-kaporta-legend-item {
-    display: flex;
-    align-items: center;
-    gap: 3px;
-    font-size: 10px;
-    color: #aaa;
-    line-height: 1;
-}
-.detail-kaporta-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    display: inline-block;
-    flex-shrink: 0;
-}
-
 .detail-row-label {
     display: block;
     font-size: 14px; /* +1pt (13px → 14px) */

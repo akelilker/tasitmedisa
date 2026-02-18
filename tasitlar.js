@@ -1390,7 +1390,7 @@ function renderVehicleDetailLeft(vehicle) {
   // LeftEl içine append et
   leftEl.appendChild(boyaContainer);
 
-  // Boya şemasını render et
+  // Boya şemasını render et (içinde SVG + tam açıklama Orijinal/Boyalı/Değişen; O/B/D kısaltması yok)
   renderBoyaSchemaDetail(vehicle);
 }
 
@@ -1574,7 +1574,7 @@ function renderVehicleDetailLeft(vehicle) {
           }
         });
 
-        // --- LEGEND ---
+        // --- LEGEND: tam açıklama (Orijinal, Boyalı, Değişen) – O/B/D kısaltması yok
         const legend = document.createElement('div');
         legend.className = 'boya-legend';
         legend.innerHTML = `
