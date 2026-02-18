@@ -2509,7 +2509,7 @@
   }
   /* Taşıt detay: kaporta ekspertiz mobilde yatay (legend + SVG yan yana, sol grid içinde) */
   #detail-boya-container {
-    margin-top: 28px !important; /* Şema mobilde "Kaporta Durumu" metninden daha aşağıda */
+    margin-top: 36px !important; /* Şema mobilde "Kaporta Durumu" metninden daha aşağıda */
     justify-content: center !important;
     overflow: visible !important;
   }
