@@ -2536,8 +2536,8 @@
   }
   
   #detail-boya-container svg {
-    width: 100px !important;
-    height: 158px !important;
+    width: 96px !important;  /* Yatayda 4px küçült (100 → 96) */
+    height: 152px !important; /* Dikeyde 6px küçült (158 → 152) */
     transform: rotate(90deg) !important;
     transform-origin: center !important;
     flex-shrink: 0 !important;
