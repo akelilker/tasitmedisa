@@ -1960,6 +1960,10 @@
   }
   .active-branch-title {
     font-size: 16.5px !important; /* Mobil aynı kalsın */
+    margin-top: -4px !important; /* Sol etiket 4px yukarı */
+  }
+  #vehicle-detail-modal .vehicle-detail-toolbar .detail-back-btn {
+    margin-top: -4px !important; /* Sol ok 4px yukarı */
   }
   
   .modal-overlay .modal-container {
@@ -2509,7 +2513,7 @@
   }
   /* Taşıt detay: kaporta ekspertiz mobilde yatay (legend + SVG yan yana, sol grid içinde) */
   #detail-boya-container {
-    margin-top: 50px !important; /* Şema mobilde "Kaporta Durumu" metninden daha aşağıda */
+    margin-top: 54px !important; /* Şema mobilde "Kaporta Durumu" metninden daha aşağıda */
     justify-content: center !important;
     overflow: visible !important;
   }
