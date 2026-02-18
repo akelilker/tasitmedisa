@@ -1538,7 +1538,7 @@ function renderVehicleDetailLeft(vehicle) {
 
         // --- RENKLENDİRME ---
         const partNames = getKaportaPartNames();
-        const defaultGray = '#757575';
+        const defaultGray = '#9a9a9a'; /* Kaporta şeması orijinal parça – açık ton */
 
         const allParts = svgClone.querySelectorAll('path[id]');
         allParts.forEach(part => {
@@ -1552,11 +1552,11 @@ function renderVehicleDetailLeft(vehicle) {
           const part = svgClone.querySelector(`#${partId}`);
           if (part) {
             if (state === 'boyali') {
-              part.setAttribute('fill', '#28a745');
-              part.style.fill = '#28a745';
+              part.setAttribute('fill', '#5cb85c');
+              part.style.fill = '#5cb85c';
             } else if (state === 'degisen') {
-              part.setAttribute('fill', '#e1061b');
-              part.style.fill = '#e1061b';
+              part.setAttribute('fill', '#e85868');
+              part.style.fill = '#e85868';
             }
             const partName = partNames[partId] || partId;
             const stateLabel = state === 'boyali' ? 'Boyalı' : state === 'degisen' ? 'Değişen' : 'Orijinal';
@@ -1578,9 +1578,9 @@ function renderVehicleDetailLeft(vehicle) {
         const legend = document.createElement('div');
         legend.className = 'boya-legend';
         legend.innerHTML = `
-          <div class="boya-legend-item"><span class="boya-legend-dot" style="background:#757575;"></span> Orijinal</div>
-          <div class="boya-legend-item"><span class="boya-legend-dot" style="background:#28a745;"></span> Boyalı</div>
-          <div class="boya-legend-item"><span class="boya-legend-dot" style="background:#e1061b;"></span> Değişen</div>
+          <div class="boya-legend-item"><span class="boya-legend-dot" style="background:#9a9a9a;"></span> Orijinal</div>
+          <div class="boya-legend-item"><span class="boya-legend-dot" style="background:#5cb85c;"></span> Boyalı</div>
+          <div class="boya-legend-item"><span class="boya-legend-dot" style="background:#e85868;"></span> Değişen</div>
         `;
         container.appendChild(legend);
       })
