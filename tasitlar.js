@@ -485,6 +485,7 @@
     const isAllView = (activeBranchId === 'all');
     const extraClass = (viewMode === 'list' && isAllView) ? ' is-all-view' : '';
       let html = '';
+      const gridStr = viewMode === 'list' ? getVehicleColumnWidths(vehicleColumnOrder) : '';
       if (viewMode === 'list') {
         const getSortIcon = (column) => {
           if (sortColumn !== column) {
@@ -506,7 +507,6 @@
           'user': { label: isMobile ? 'Kull.' : 'Kullanıcı', class: 'list-user' },
           'branch': { label: 'Şube', class: 'list-branch' }
         };
-        const gridStr = getVehicleColumnWidths(vehicleColumnOrder);
         html += '<div class="list-header-row" style="grid-template-columns: ' + gridStr + '">';
         // Sıralamaya göre sütun başlıklarını render et (mobilde Marka/Model ve Taşıt Tipi iki satır)
         vehicleColumnOrder.forEach(columnKey => {
