@@ -122,6 +122,24 @@
   // DOM Elements
   const modalContent = document.getElementById('vehicles-modal-content');
   
+  // Taşıt listesi tıklama delegasyonu (card/list-item tıklanınca detay aç) - tek seferlik
+  if (modalContent && !modalContent._vehicleClickBound) {
+    modalContent._vehicleClickBound = true;
+    modalContent.addEventListener('click', function(e) {
+      const card = e.target.closest('.card');
+      const listItem = e.target.closest('.list-item');
+      if (listItem && listItem.classList.contains('list-item-empty')) return;
+      const row = card || listItem;
+      if (row && row.dataset && row.dataset.vehicleId) {
+        e.stopPropagation();
+        e.preventDefault();
+        if (typeof window.showVehicleDetail === 'function') {
+          window.showVehicleDetail(row.dataset.vehicleId);
+        }
+      }
+    });
+  }
+
   // Toolbar Container Oluştur (Eğer yoksa)
   function ensureToolbar() {
     const modalContainer = document.querySelector('#vehicles-modal .modal-container');
@@ -567,7 +585,7 @@
             // Üçüncü satır boşsa div'i render etme
             const thirdLineHtml = thirdLine ? `<div class="card-third-line" title="${escapeHtml(thirdLine)}">${escapeHtml(thirdLine)}</div>` : '';
             return `
-              <div class="card${unassignedClass}" onclick="event.stopPropagation(); showVehicleDetail('${v.id}');">
+              <div class="card${unassignedClass}" data-vehicle-id="${v.id != null ? String(v.id).replace(/"/g, '&quot;') : ''}" style="cursor:pointer">
                 <div class="card-plate">${escapeHtml(plate)}${satildiSpan}</div>
                 <div class="card-brand-model" title="${escapeHtml(brandModel)}">${escapeHtml(toTitleCase(brandModel))}</div>
                 ${thirdLineHtml}
@@ -623,7 +641,7 @@
             });
             
             return `
-              <div class="list-item${unassignedClass}" style="grid-template-columns: ${gridStr}" onclick="event.stopPropagation(); showVehicleDetail('${v.id}');">
+              <div class="list-item${unassignedClass}" data-vehicle-id="${v.id != null ? String(v.id).replace(/"/g, '&quot;') : ''}" style="grid-template-columns: ${gridStr}; cursor:pointer">
                 ${cellHtml}
               </div>
             `;
@@ -1103,10 +1121,10 @@
             (v.tahsisKisi && v.tahsisKisi.toLowerCase().includes(q))
           );
           
-          // Sonuçları Liste Modunda Göster
+          // Sonuçları Liste Modunda Göster (tıklanınca detay açılsın - event delegation ile)
           let html = `<div style="padding:10px; color:#aaa; font-size:12px;">GENEL ARAMA SONUÇLARI (${filtered.length})</div>`;
           html += `<div class="view-list">` + filtered.map(v => `
-              <div class="list-item">
+              <div class="list-item" data-vehicle-id="${v.id != null ? String(v.id).replace(/"/g, '&quot;') : ''}" style="cursor:pointer">
                 <div class="list-info">
                   <h4>${escapeHtml(v.brandModel)}</h4>
                   <span>${v.year} • ${v.tahsisKisi || 'Boşta'}</span>
