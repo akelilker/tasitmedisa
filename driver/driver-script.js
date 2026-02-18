@@ -438,13 +438,21 @@ function buildDriverActionArea(vehicle, existingRecord, bakimVar, kazaVar, opts)
             <div class="driver-action-group">
                 <button type="button" class="driver-action-btn${kmBtnClass}" data-action="km" onclick="toggleDriverActionBlock('km','${vid}')">Km Bildir</button>
                 <div id="km-block-${vid}" class="driver-input-form driver-km-form-wrap driver-action-block">
-                    <div class="form-group driver-km-form">
-                        <label for="km-${vid}">Güncel KM</label>
-                        <div class="driver-km-input-wrap">
-                            <span class="driver-km-fake-placeholder" id="km-placeholder-${vid}">Örn: 45230</span>
-                            <input type="text" id="km-${vid}" class="driver-km-input" inputmode="numeric" pattern="[0-9]*" maxlength="8" data-vehicle-id="${vid}" value="${kmVal}" required autocomplete="off" aria-label="Güncel kilometre">
+                    <div class="driver-km-form-content">
+                        <div class="form-group driver-km-form">
+                            <label for="km-${vid}">Güncel KM</label>
+                            <div class="driver-km-input-wrap">
+                                <span class="driver-km-fake-placeholder" id="km-placeholder-${vid}">Örn: 45230</span>
+                                <input type="text" id="km-${vid}" class="driver-km-input" inputmode="numeric" pattern="[0-9]*" maxlength="8" data-vehicle-id="${vid}" value="${kmVal}" required autocomplete="off" aria-label="Güncel kilometre">
+                            </div>
+                        </div>
+                        <div class="driver-km-form-actions">
+                            <button type="button" class="btn-km-bildir" onclick="submitKmOnly('${vid}')">Bildir</button>
+                            <button type="button" class="btn-km-vazgec" onclick="cancelKmForm('${vid}')">Vazgeç</button>
                         </div>
                     </div>
+                    <div class="driver-km-success-msg" id="km-success-${vid}">Bildirildi</div>
+                    <div class="driver-km-error" id="km-error-${vid}"></div>
                 </div>
             </div>
             <div class="driver-action-group">
@@ -540,9 +548,11 @@ window.toggleDriverActionBlock = function(type, vehicleId) {
     const target = type === 'km' ? blocks.km : (type === 'kaza' ? blocks.kaza : blocks.bakim);
     if (!target) return;
     const isShown = target.classList.contains('show');
+    inner.classList.remove('driver-km-open');
     inner.querySelectorAll('.driver-action-block').forEach(function(b) { if (b) b.classList.remove('show'); });
     if (!isShown) {
         target.classList.add('show');
+        if (type === 'km') inner.classList.add('driver-km-open');
         if (type === 'kaza') {
             const dateEl = document.getElementById('kaza-tarih-' + vid);
             if (dateEl && !dateEl.value) dateEl.value = new Date().toISOString().split('T')[0];
@@ -570,6 +580,77 @@ window.toggleDriverActionBlock = function(type, vehicleId) {
 
 window.focusKmInput = function(vehicleId) {
     toggleDriverActionBlock('km', vehicleId);
+};
+
+window.cancelKmForm = function(vid) {
+    const inner = document.querySelector('.driver-action-area-inner[data-vehicle-id="' + vid + '"]');
+    const block = document.getElementById('km-block-' + vid);
+    if (block) block.classList.remove('show');
+    if (inner) inner.classList.remove('driver-km-open');
+};
+
+window.submitKmOnly = async function(vid) {
+    const kmEl = document.getElementById('km-' + vid);
+    const km = kmEl ? parseInt(String(kmEl.value).replace(/\D/g, ''), 10) : 0;
+    if (!km || km <= 0) {
+        alert('Lütfen geçerli bir KM değeri girin!');
+        if (kmEl) kmEl.focus();
+        return;
+    }
+    const btnBildir = document.querySelector('#km-block-' + vid + ' .btn-km-bildir');
+    const btnVazgec = document.querySelector('#km-block-' + vid + ' .btn-km-vazgec');
+    const formContent = document.querySelector('#km-block-' + vid + ' .driver-km-form-content');
+    const successMsg = document.getElementById('km-success-' + vid);
+    const errorEl = document.getElementById('km-error-' + vid);
+    if (errorEl) { errorEl.classList.remove('show'); errorEl.textContent = ''; }
+    if (btnBildir) btnBildir.disabled = true;
+    if (btnVazgec) btnVazgec.disabled = true;
+    try {
+        const response = await fetch(API_BASE + 'driver_save.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + currentToken },
+            body: JSON.stringify({
+                arac_id: parseInt(vid, 10),
+                guncel_km: km,
+                bakim_durumu: 0,
+                bakim_aciklama: '',
+                bakim_tarih: '',
+                bakim_servis: '',
+                bakim_kisi: '',
+                bakim_km: '',
+                bakim_tutar: '',
+                kaza_durumu: 0,
+                kaza_aciklama: '',
+                kaza_tarih: '',
+                kaza_hasar_tutari: '',
+                boya_parcalar: '{}',
+                ekstra_not: ''
+            })
+        });
+        const data = await response.json();
+        if (data.success) {
+            if (formContent) formContent.style.display = 'none';
+            if (successMsg) successMsg.classList.add('show');
+            setTimeout(function() {
+                const block = document.getElementById('km-block-' + vid);
+                const inner = document.querySelector('.driver-action-area-inner[data-vehicle-id="' + vid + '"]');
+                if (block) block.classList.remove('show');
+                if (inner) inner.classList.remove('driver-km-open');
+                if (formContent) formContent.style.display = '';
+                if (successMsg) successMsg.classList.remove('show');
+                const kmBtn = inner ? inner.querySelector('.driver-action-btn[data-action="km"]') : null;
+                if (kmBtn) kmBtn.classList.add('saved');
+            }, 2000);
+        } else {
+            if (errorEl) { errorEl.textContent = data.message || 'Kayıt yapılamadı.'; errorEl.classList.add('show'); }
+        }
+    } catch (err) {
+        console.error('Km kaydetme hatası:', err);
+        if (errorEl) { errorEl.textContent = 'Bağlantı hatası.'; errorEl.classList.add('show'); }
+    } finally {
+        if (btnBildir) btnBildir.disabled = false;
+        if (btnVazgec) btnVazgec.disabled = false;
+    }
 };
 
 function buildSlidingWarnings(vehicles, records) {
