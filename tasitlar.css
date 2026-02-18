@@ -1127,6 +1127,7 @@
     cursor: pointer;
     min-height: 32px;
     transition: background 0.2s ease;
+    touch-action: manipulation; /* Mobilde 300ms gecikme kalkar, tap daha hızlı tepki verir */
 }
 
 .view-list .list-item:hover {
