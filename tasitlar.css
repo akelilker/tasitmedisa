@@ -775,7 +775,7 @@
   }
 }
 
-/* === ARAMA KUTUSU: toolbar satırında, sağdan sola açılır â€” simgeleri kapatmaz === */
+/* === ARAMA KUTUSU: toolbar satırında, sağdan sola açılır — simgeleri kapatmaz === */
 /* Arama: .v-search-container toolbar içinde */
 
 /* === FİLTRE DROPDOWN MENÜSÜ === */
@@ -2531,7 +2531,7 @@
     justify-content: center !important; /* Kaporta şeması yatayda ortalanmış */
     gap: 12px !important;
   }
-  /* Taşıt detay: kaporta ekspertiz mobilde yatay şema (columns altında tam genişlik) */
+  /* Taşıt detay: kaporta ekspertiz mobilde yatay (legend + SVG yan yana, sol grid içinde) */
   #detail-boya-container {
     margin-top: 8px !important;
     justify-content: center !important;
@@ -2539,24 +2539,40 @@
   }
   #kaza-kaporta-container {
     flex-direction: row !important;
-    flex-wrap: wrap !important;
-    justify-content: center !important;
+    flex-wrap: nowrap !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
   }
   #kaza-kaporta-container {
     flex-direction: row !important;
     flex-wrap: wrap !important;
     justify-content: center !important;
   }
+  #kaza-kaporta-container {
+    flex-direction: row !important;
+    gap: 12px !important;
+    transform: none !important;
+    font-size: 12px !important; /* +1 punto daha (sadece mobil) */
+    margin-top: 2px !important; /* O/B/D renk açıklamaları 2px aşağı */
+    flex-shrink: 0 !important;
+  }
+  
+  #detail-boya-container svg {
+    width: 100px !important;
+    height: 158px !important;
+    transform: rotate(90deg) !important;
+    transform-origin: center !important;
+    flex-shrink: 0 !important;
+    margin: -29px 29px !important; /* Rotation layout/visual farkı (29px) telafi */
+  }
 
-  /* Yatay şemada SVG inline style'ı yeterli – CSS override'a gerek yok */
-
-  /* Detay modal plaka ve başlıklar toolbar altında kalmasın; Olay Ekle/Tarihçe plakaya yakın (mobil) */
+  /* Detay modal plaka ve başlıklar toolbar altında kalmasın */
   #vehicle-detail-content { padding-top: 24px !important; }
-  .detail-plate-row { margin-top: -13px !important; }
+  .detail-plate-row { margin-top: -13px !important; margin-bottom: 0 !important; } /* Plaka 3px yukarı, marka arası 1px */
   .detail-plate { margin-top: 0 !important; }
-  .detail-brand-year-row { padding-top: 0 !important; margin-top: 0 !important; }
-  /* Marka/model ikinci satıra inerse iki satır arası 1px */
-  .detail-brand-year { line-height: calc(1em + 1px) !important; }
+  .detail-brand-year-row { padding-top: 1px !important; }
 
   /* Taşıt detay: Olay Ekle ve Tarihçe mobilde +1pt (17px, hover 18px); Tarihçe rengi etiket beyazı */
   #vehicle-detail-modal .detail-brand-year-row .history-add-event-btn {
