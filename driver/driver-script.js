@@ -285,6 +285,8 @@ function renderLeftPanel(vehicles, records) {
     
     const plakaEl = document.getElementById('driver-current-plaka');
     if (plakaEl) plakaEl.textContent = vehicle.plaka;
+    const subtitleEl = document.getElementById('driver-plate-subtitle');
+    if (subtitleEl) subtitleEl.textContent = [vehicle.marka, vehicle.model].filter(Boolean).join(' ') || '';
     
     const existingRecord = getExistingRecord(vehicle.id);
     const kmVal = vehicle.guncelKm || (existingRecord && existingRecord.guncel_km) || '-';
@@ -301,8 +303,6 @@ function renderLeftPanel(vehicles, records) {
     const kaskoW = checkDateWarningsDriver(vehicle.kaskoDate);
     const muayeneW = checkDateWarningsDriver(vehicle.muayeneDate);
     
-    const tipLabels = { 'otomobil': 'Otomobil', 'kamyonet': 'Kamyonet', 'minibus': 'Minibüs', 'otobus': 'Otobüs', 'kamyon': 'Kamyon', 'tir': 'TIR', 'traktor': 'Traktör' };
-    const tipLabel = tipLabels[vehicle.tip] || vehicle.tip || '-';
     const anahtarLabel = (vehicle.anahtar === 'var') ? (vehicle.anahtarNerede || 'Var') : 'Yoktur.';
     const lastikLabel = (vehicle.lastikDurumu === 'var') ? (vehicle.lastikAdres || 'Var') : 'Yoktur.';
     const uttsLabel = vehicle.uttsTanimlandi ? 'Evet' : 'Hayır';
@@ -318,12 +318,11 @@ function renderLeftPanel(vehicles, records) {
     if (infoEl) {
         infoEl.innerHTML = `
             <div class="driver-info-item"><span class="label">Şube</span><span class="value">${escapeHtmlDriver(vehicle.branchName || '-')}</span></div>
-            <div class="driver-info-item"><span class="label">Taşıt Tipi</span><span class="value">${escapeHtmlDriver(tipLabel)}</span></div>
             <div class="driver-info-item"><span class="label">Üretim Yılı</span><span class="value">${escapeHtmlDriver(vehicle.year || '-')}</span></div>
             <div class="driver-info-item ${hasKmSaved ? 'saved' : ''}"><span class="label">KM</span><span class="value ${kmClass}">${escapeHtmlDriver(kmFormatted)}</span></div>
-            <div class="driver-info-item ${sigortaSaved ? 'saved' : ''}"><span class="label">Sigorta Bitiş</span><span class="value ${sigortaW.class}">${formatDriverDate(vehicle.sigortaDate) || '-'}</span></div>
-            <div class="driver-info-item ${kaskoSaved ? 'saved' : ''}"><span class="label">Kasko Bitiş</span><span class="value ${kaskoW.class}">${formatDriverDate(vehicle.kaskoDate) || '-'}</span></div>
-            <div class="driver-info-item ${muayeneSaved ? 'saved' : ''}"><span class="label">Muayene Bitiş</span><span class="value ${muayeneW.class}">${formatDriverDate(vehicle.muayeneDate) || '-'}</span></div>
+            <div class="driver-info-item"><span class="label">Sigorta Bitiş</span><span class="value ${sigortaW.class}">${formatDriverDate(vehicle.sigortaDate) || '-'}</span></div>
+            <div class="driver-info-item"><span class="label">Kasko Bitiş</span><span class="value ${kaskoW.class}">${formatDriverDate(vehicle.kaskoDate) || '-'}</span></div>
+            <div class="driver-info-item"><span class="label">Muayene Bitiş</span><span class="value ${muayeneW.class}">${formatDriverDate(vehicle.muayeneDate) || '-'}</span></div>
             <div class="driver-info-item ${anahtarSaved ? 'saved' : ''}"><span class="label">Yedek Anahtar</span><span class="value">${escapeHtmlDriver(anahtarLabel)}</span></div>
             <div class="driver-info-item ${lastikSaved ? 'saved' : ''}"><span class="label">Lastik Durumu</span><span class="value">${escapeHtmlDriver(lastikLabel)}</span></div>
             <div class="driver-info-item ${uttsSaved ? 'saved' : ''}"><span class="label">UTTS</span><span class="value">${escapeHtmlDriver(uttsLabel)}</span></div>
@@ -620,7 +619,8 @@ function renderSlidingWarning(vehicles, records) {
     let idx = 0;
     
     function showNext() {
-        el.textContent = texts[idx];
+        const text = texts[idx];
+        el.innerHTML = '<span class="driver-warning-icon" aria-hidden="true">⚠</span> ' + escapeHtmlDriver(text);
         el.className = 'driver-sliding-warning' + (cycleCount >= 3 ? ' driver-warning-pulse' : '');
         idx = (idx + 1) % texts.length;
         if (idx === 0) {
