@@ -173,7 +173,7 @@ foreach ($data['arac_aylik_hareketler'] as $kayit) {
     }
 }
 
-// Kayıt verisi
+// Kayıt verisi (aylık özet + taşıt detay senkronu için ek alanlar)
 $kayitData = [
     'id' => $existingIndex >= 0 ? $data['arac_aylik_hareketler'][$existingIndex]['id'] : $newId,
     'arac_id' => $aracId,
@@ -183,9 +183,15 @@ $kayitData = [
     'bakim_durumu' => $bakimDurumu,
     'bakim_aciklama' => $bakimAciklama,
     'bakim_tarih' => $bakimTarih,
+    'bakim_servis' => $bakimServis,
+    'bakim_kisi' => $bakimKisi,
+    'bakim_km' => $bakimKm,
+    'bakim_tutar' => $bakimTutar,
     'kaza_durumu' => $kazaDurumu,
     'kaza_aciklama' => $kazaAciklama,
     'kaza_tarih' => $kazaTarih,
+    'kaza_hasar_tutari' => $kazaHasarTutari,
+    'boya_parcalar' => !empty($boyaParcalar) ? json_encode($boyaParcalar) : '',
     'ekstra_not' => $ekstraNot,
     'kayit_tarihi' => $existingIndex >= 0 ? $data['arac_aylik_hareketler'][$existingIndex]['kayit_tarihi'] : date('c'),
     'guncelleme_tarihi' => date('c'),
@@ -273,6 +279,22 @@ if (is_array($tasitlar)) {
                 'date' => $eventDate,
                 'timestamp' => date('c'),
                 'data' => $kazaData
+            ]);
+        }
+        // Son not: taşıt detayda görünsün (günlük defter)
+        $tasitlar[$idx]['sonEkstraNot'] = $ekstraNot;
+        $tasitlar[$idx]['sonEkstraNotDonem'] = $donem;
+        if ($ekstraNot !== '') {
+            array_unshift($tasitlar[$idx]['events'], [
+                'id' => (string)(time() . $idx . 'n'),
+                'type' => 'not-guncelle',
+                'date' => date('Y-m-d'),
+                'timestamp' => date('c'),
+                'data' => [
+                    'not' => $ekstraNot,
+                    'donem' => $donem,
+                    'surucu' => $kullaniciAdi
+                ]
             ]);
         }
         break;
