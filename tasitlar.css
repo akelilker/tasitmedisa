@@ -2531,36 +2531,42 @@
     justify-content: center !important; /* Kaporta şeması yatayda ortalanmış */
     gap: 12px !important;
   }
-
-  /* Boya şeması container - Sol kolon içi uyumlu */
-#detail-boya-container {
-  width: 100% !important;
-  margin-top: 10px !important;    /* Üst boşluk azaltıldı */
-  margin-bottom: 5px !important;  /* Alt boşluk azaltıldı */
-  padding: 0 !important;
+  /* Taşıt detay: kaporta ekspertiz mobilde yatay (legend + SVG yan yana, sol grid içinde) */
+  #detail-boya-container {
+    margin-top: 8px !important;
+    justify-content: center !important;
+    overflow: visible !important;
+  }
+  #kaza-kaporta-container {
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+  }
+  #kaza-kaporta-container {
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+  }
+  #kaza-kaporta-container {
+    flex-direction: row !important;
+    gap: 12px !important;
+    transform: none !important;
+    font-size: 12px !important; /* +1 punto daha (sadece mobil) */
+    margin-top: 2px !important; /* O/B/D renk açıklamaları 2px aşağı */
+    flex-shrink: 0 !important;
+  }
   
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important; /* Ortala */
-  justify-content: flex-start !important;
-  
-  overflow: visible !important;
-  min-height: auto !important;    /* Sabit yükseklik yerine auto */
-}
-
-/* Şema wrapper */
-.kaporta-schema-wrapper {
-  display: block !important;
-  margin: 0 auto !important;      /* Ortala */
-  position: relative !important;
-  /* Zoom/Scale yapıldığı için margin-bottom gerekebilir, duruma göre ayarlarsın */
-  margin-bottom: -30px !important; /* Döndürmeden kaynaklı alt boşluğu al */
-}
-
-/* Renk açıklamaları (Legend) - Büyük olanı gizle */
-#detail-boya-container .boya-legend {
-  display: none !important; 
-}
+  #detail-boya-container svg {
+    width: 100px !important;
+    height: 158px !important;
+    transform: rotate(90deg) !important;
+    transform-origin: center !important;
+    flex-shrink: 0 !important;
+    margin: -29px 29px !important; /* Rotation layout/visual farkı (29px) telafi */
+  }
 
   /* Detay modal plaka ve başlıklar toolbar altında kalmasın */
   #vehicle-detail-content { padding-top: 24px !important; }
