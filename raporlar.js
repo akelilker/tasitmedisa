@@ -462,7 +462,8 @@
         }
     }
 
-    // Sütun genişliklerini hesapla (7 sütun: fr ile sığar; 8+ sütun: sabit px, önceki genişlikler korunur)
+    // Sütun genişliklerini hesapla (key bazlı: sürükle-bırak sonrası genişlik doğru sütunla kalır)
+    // 7 sütun: fr ile sığar; 8+ sütun: sabit px
     function getColumnWidths(allColumns) {
         const hasDetail = allColumns.length > 7;
 

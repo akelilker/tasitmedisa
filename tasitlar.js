@@ -87,6 +87,20 @@
     }
   }
 
+  // Grid genişlikleri sütun kimliğine göre (sürükle-bırak sonrası genişlik doğru sütunla kalsın)
+  function getVehicleColumnWidths(columnOrder) {
+    const widthMap = {
+      'year': '32px',
+      'plate': '70px',
+      'brand': '3.2fr',
+      'km': '60px',
+      'type': '65px',
+      'user': '1.8fr',
+      'branch': '2fr'
+    };
+    return columnOrder.map(key => widthMap[key] || '1fr').join(' ');
+  }
+
   // Liste Marka/Model: kelimelerin sadece ilk harfi büyük (title case)
   function toTitleCase(str) {
     if (!str || str === '-') return str;
@@ -426,6 +440,7 @@
           const emptyMsg = (activeBranchId === '__archive__') ? 'Arşivde kayıt bulunamadı.' : 'Kayıt bulunamadı.';
           if (viewMode === 'list') {
             loadVehicleColumnOrder();
+            const gridStr = getVehicleColumnWidths(vehicleColumnOrder);
             const isMobile = window.innerWidth <= 640;
             const columnDefs = {
               'year': { label: 'Yılı', class: 'list-year' },
@@ -436,7 +451,7 @@
               'user': { label: isMobile ? 'Kull.' : 'Kullanıcı', class: 'list-user' },
               'branch': { label: 'Şube', class: 'list-branch' }
             };
-            let emptyHtml = '<div class="list-header-row">';
+            let emptyHtml = '<div class="list-header-row" style="grid-template-columns: ' + gridStr + '">';
             vehicleColumnOrder.forEach(columnKey => {
               const def = columnDefs[columnKey];
               if (def) {
@@ -484,8 +499,8 @@
           'user': { label: isMobile ? 'Kull.' : 'Kullanıcı', class: 'list-user' },
           'branch': { label: 'Şube', class: 'list-branch' }
         };
-        
-        html += '<div class="list-header-row">';
+        const gridStr = getVehicleColumnWidths(vehicleColumnOrder);
+        html += '<div class="list-header-row" style="grid-template-columns: ' + gridStr + '">';
         // Sıralamaya göre sütun başlıklarını render et (mobilde Marka/Model ve Taşıt Tipi iki satır)
         vehicleColumnOrder.forEach(columnKey => {
           const def = columnDefs[columnKey];
@@ -600,7 +615,7 @@
             });
             
             return `
-              <div class="list-item${unassignedClass}" onclick="event.stopPropagation(); showVehicleDetail('${v.id}');">
+              <div class="list-item${unassignedClass}" style="grid-template-columns: ${gridStr}" onclick="event.stopPropagation(); showVehicleDetail('${v.id}');">
                 ${cellHtml}
               </div>
             `;
