@@ -783,14 +783,14 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     .modal-column-right .form-section { margin-bottom: 8px; }
 
     .modal-column-left .form-section-inline:first-child { flex-direction: column; align-items: flex-start; gap: 0 !important; margin-bottom: 5px; }
-    .modal-column-left .form-section-inline:first-child .vehicle-type-group { width: 100%; justify-content: center; align-items: flex-end; flex-wrap: nowrap; max-width: 100%; margin-top: -19px !important; padding-top: 0; gap: 26px; }
+    .modal-column-left .form-section-inline:first-child .vehicle-type-group { width: 100%; justify-content: center; align-items: flex-end; flex-wrap: nowrap; max-width: 100%; margin-top: -21px !important; padding-top: 0; gap: 26px; }
     .vehicle-type-group { width: 100%; justify-content: center; align-items: flex-end; flex-wrap: nowrap; max-width: 100%; margin-top: 0; padding-top: 0; gap: 28px; }
     .modal-column-left .form-section-inline:first-child .form-label { margin-bottom: 0 !important; padding-bottom: 0; line-height: 1; }
     
-    .vehicle-type-btn[data-type="kamyon"] { width: 44px; height: 32px; }
+    .vehicle-type-btn[data-type="kamyon"] { width: 46px; height: 34px; }
     .vehicle-type-btn[data-type="kamyon"] img { width: 100%; height: 100%; object-fit: contain; object-position: bottom center; }
-    .vehicle-type-btn[data-type="otomobil"] { width: 46px; height: 44px; }
-    .vehicle-type-btn[data-type="minivan"] { width: 38px; height: 28px; }
+    .vehicle-type-btn[data-type="otomobil"] { width: 48px; height: 46px; }
+    .vehicle-type-btn[data-type="minivan"] { width: 40px; height: 30px; }
 
     .form-section { margin-bottom: 8px; }
     .modal-body .form-label { font-size: 15px; margin-bottom: 0; }
@@ -1203,10 +1203,10 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         box-sizing: border-box !important;
     }
     
-    .vehicle-type-btn { width: 34px; height: 24px; padding: 0; }
-    .vehicle-type-btn[data-type="otomobil"] { width: 40px; height: 38px; }
-    .vehicle-type-btn[data-type="minivan"] { width: 28px; height: 20px; }
-    .vehicle-type-btn[data-type="kamyon"] { width: 42px; height: 30px; padding-top: 2px; }
+    .vehicle-type-btn { width: 36px; height: 26px; padding: 0; }
+    .vehicle-type-btn[data-type="otomobil"] { width: 42px; height: 40px; }
+    .vehicle-type-btn[data-type="minivan"] { width: 30px; height: 22px; }
+    .vehicle-type-btn[data-type="kamyon"] { width: 44px; height: 32px; padding-top: 2px; }
     .vehicle-type-btn[data-type="kamyon"] img { object-position: bottom center; transform: scale(0.95); transform-origin: bottom center; }
 }
 
