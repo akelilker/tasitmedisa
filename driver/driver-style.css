@@ -392,6 +392,7 @@ body.driver-modal-open {
   color: var(--txt);
   font-size: 11px;
   flex-shrink: 0;
+  text-transform: none; /* Etiketler JS'teki Title Case ile görünsün */
 }
 .driver-info-item .label::after {
   content: ':';
@@ -505,6 +506,77 @@ body.driver-modal-open {
   border-top: 1px solid rgba(255,255,255,0.1);
 }
 
+/* Km (veya tek aksiyon) açıkken sadece o grubu göster */
+.driver-action-area-inner.driver-km-open .driver-action-group {
+  display: none;
+}
+.driver-action-area-inner.driver-km-open .driver-action-group:has(.driver-action-block.show) {
+  display: flex;
+}
+
+/* Km blok içi: Bildir / Vazgeç */
+.driver-km-form-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+.driver-km-form-actions .btn-km-bildir,
+.driver-km-form-actions .btn-km-vazgec {
+  flex: 1;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+.driver-km-form-actions .btn-km-bildir {
+  background: rgba(34, 197, 94, 0.15);
+  border-color: rgba(34, 197, 94, 0.6);
+  color: #22c55e;
+}
+.driver-km-form-actions .btn-km-bildir:hover {
+  background: rgba(34, 197, 94, 0.25);
+  border-color: #22c55e;
+}
+.driver-km-form-actions .btn-km-vazgec {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.35);
+  color: var(--txt);
+}
+.driver-km-form-actions .btn-km-vazgec:hover {
+  border-color: rgba(255, 255, 255, 0.55);
+  background: rgba(255, 255, 255, 0.06);
+}
+.driver-km-form-actions .btn-km-bildir:disabled,
+.driver-km-form-actions .btn-km-vazgec:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.driver-km-success-msg {
+  display: none;
+  margin-top: 12px;
+  padding: 12px;
+  text-align: center;
+  font-weight: 600;
+  color: #22c55e;
+  font-size: 16px;
+}
+.driver-km-success-msg.show {
+  display: block;
+}
+.driver-km-error {
+  display: none;
+  margin-top: 8px;
+  font-size: 13px;
+  color: #ef4444;
+}
+.driver-km-error.show {
+  display: block;
+}
+
 /* Input tema uyumu - koyu arka plan */
 #driver-input-area .form-group input,
 #driver-input-area .form-group textarea,
@@ -608,7 +680,7 @@ body.driver-modal-open {
     font-size: 12px;
   }
   .driver-info-item { gap: 0; flex-wrap: wrap; }
-  .driver-info-item .label { font-size: 10px; }
+  .driver-info-item .label { font-size: 10px; text-transform: none; }
   .driver-info-item .value { font-size: 12px; flex-basis: 100%; margin-top: 1px; }
   .driver-action-btn { padding: 8px 10px; font-size: 12px; }
   .driver-user-plate-row .driver-user-name { font-size: 12px; }
@@ -2593,6 +2665,7 @@ body.driver-modal-open {
   /* Sol panel (etiket/değer, plaka, kullanıcı adı) +1pt */
   .dashboard-page .driver-left-panel .driver-info-item .label {
     font-size: 11px !important;
+    text-transform: none !important;
   }
   .dashboard-page .driver-left-panel .driver-info-item .value {
     font-size: 13px !important;
