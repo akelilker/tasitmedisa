@@ -1140,8 +1140,14 @@
 #vehicles-modal .modal-body .view-list {
     position: relative;
     margin-top: -11px;
+    z-index: -1; /* Başlığın arkasında kalır; kaydırma sırasında içerik başlık üstüne taşmaz */
     isolation: isolate;
-    z-index: 0;
+}
+
+/* İçerik alanı: başlık ile liste aynı stacking context'te; başlık kesin önde olsun */
+#vehicles-modal #vehicles-modal-content {
+    position: relative;
+    isolation: isolate;
 }
 
 .list-header-row {
@@ -1152,17 +1158,15 @@
     padding: 2px 2px; /* metin–çerçeve arası dikey 2px */
     margin-bottom: 4px;
     border-bottom: 1px solid rgba(255,255,255,0.22);
-    background: #080d16 !important; /* Modal arka plan rengiyle aynı - şeffaflık sorunu çözülsün */
-    backdrop-filter: blur(8px) !important; /* Blur efekti - içerik altından geçerken daha iyi görünüm */
-    -webkit-backdrop-filter: blur(8px) !important; /* Safari desteği */
+    background: #080d16 !important; /* Opak arka plan - kayarken alt içerik görünmesin */
     width: 100%;
     box-sizing: border-box;
     position: sticky !important; /* Başlık sabit kalacak */
     top: 0 !important; /* Scroll alanı üstü = toolbar hemen altı */
-    z-index: 9999 !important; /* Başlık her zaman en üstte, kayarken içerik arkada kalsın */
-    isolation: isolate !important; /* Yeni stacking context - içerik altından geçmesin */
-    transform: translateZ(0);
-    box-shadow: 0 2px 0 0 #080d16; /* Alt çizgi gibi gölge - içeriğin aradan görünmesini keser */
+    z-index: 10 !important; /* Başlık her zaman en üstte (view-list z-index: -1 ile arkada) */
+    isolation: isolate !important;
+    transform: translateZ(0); /* Kendi katmanında çizilsin */
+    box-shadow: 0 2px 0 0 #080d16; /* Alt çizgi - içeriğin aradan görünmesini keser */
 }
 
 .list-header-row .list-cell {
