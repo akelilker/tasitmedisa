@@ -1375,13 +1375,6 @@ function renderVehicleDetailLeft(vehicle) {
   }
   html += `</span></div>`;
 
-  // Renk açıklaması (Küçük Legend)
-  html += `<div class="detail-kaporta-legend">` +
-      `<span class="detail-kaporta-legend-item"><span class="detail-kaporta-dot" style="background:#757575;"></span>O</span>` +
-      `<span class="detail-kaporta-legend-item"><span class="detail-kaporta-dot" style="background:#28a745;"></span>B</span>` +
-      `<span class="detail-kaporta-legend-item"><span class="detail-kaporta-dot" style="background:#e1061b;"></span>D</span>` +
-      `</div>`;
-
   // HTML'i sol kolona bas
   leftEl.innerHTML = html;
 
