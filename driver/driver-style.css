@@ -370,19 +370,26 @@
 }
 .driver-info-item {
   display: flex;
-  flex-direction: column;
-  gap: 0;
+  flex-direction: row;
+  align-items: baseline;
+  gap: 6px;
   text-align: left;
 }
 .driver-info-item .label {
   color: var(--txt);
   font-size: 11px;
   text-transform: uppercase;
+  flex-shrink: 0;
+}
+.driver-info-item .label::after {
+  content: ':';
+  margin-left: 2px;
 }
 .driver-info-item .value {
   color: rgba(255, 255, 255, 0.5);
   word-break: break-word;
   font-size: 13px;
+  min-width: 0;
 }
 .driver-info-item .value.date-warning-red { color: #ef4444; }
 .driver-info-item .value.date-warning-orange { color: #f97316; }
