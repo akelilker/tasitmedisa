@@ -89,16 +89,22 @@
 
   // Grid genişlikleri sütun kimliğine göre (sürükle-bırak sonrası genişlik doğru sütunla kalsın)
   function getVehicleColumnWidths(columnOrder) {
-    const widthMap = {
-      'year': '32px',
-      'plate': '70px',
-      'brand': '3.2fr',
-      'km': '60px',
-      'type': '65px',
-      'user': '1.8fr',
-      'branch': '2fr'
-    };
-    return columnOrder.map(key => widthMap[key] || '1fr').join(' ');
+    const defaultCols = '32px 70px 3.2fr 60px 65px 1.8fr 2fr';
+    try {
+      if (!columnOrder || !Array.isArray(columnOrder) || columnOrder.length === 0) return defaultCols;
+      const widthMap = {
+        'year': '32px',
+        'plate': '70px',
+        'brand': '3.2fr',
+        'km': '60px',
+        'type': '65px',
+        'user': '1.8fr',
+        'branch': '2fr'
+      };
+      return columnOrder.map(key => widthMap[key] || '1fr').join(' ');
+    } catch (e) {
+      return defaultCols;
+    }
   }
 
   // Liste Marka/Model: kelimelerin sadece ilk harfi büyük (title case)
@@ -404,6 +410,7 @@
       const listContainer = modalContent; // Direkt content'e basıyoruz
       // Veri Çek
       let vehicles = readVehicles();
+      if (!Array.isArray(vehicles)) vehicles = [];
 
     // 1. Arşiv veya Şube Filtresi
     if (activeBranchId === '__archive__') {
@@ -659,6 +666,7 @@
           });
       }
     } catch (error) {
+      console.error('renderVehicles hatası:', error);
       if (modalContent) {
         modalContent.innerHTML = '<div style="text-align:center; padding:40px; color:#666">Bir hata oluştu. Lütfen sayfayı yenileyin.</div>';
       }
