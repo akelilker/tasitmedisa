@@ -223,7 +223,7 @@
 /* Boya şeması container – masaüstünde sol grid içinde, mobilde columns altında */
 #detail-boya-container {
     width: 100% !important;
-    min-height: 150px;
+    min-height: 0; /* Küçülmeye izin ver; içerik yüksekliğine göre */
     margin: 5px -12px !important;
     padding: 0 !important;
     display: flex !important;
