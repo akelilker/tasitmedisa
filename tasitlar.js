@@ -1500,7 +1500,7 @@ function renderVehicleDetailLeft(vehicle) {
         container.innerHTML = '';
 
         // Şemanın görünmesini istediğin genişlik (Landscape/Yatay hali)
-        const targetWidth = 200;
+        const targetWidth = 180;
 
         // Orijinal SVG dikey (148x220). Döndürünce oranlar değişiyor.
         // Yeni yükseklik oranını koruyarak hesapla (240 * (148/220) ~ 160px)
