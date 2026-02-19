@@ -2043,7 +2043,15 @@
     overscroll-behavior: none !important;
     overscroll-behavior-x: none !important;
   }
-  
+
+  /* Olay Ekle modalları mobil: style-core ile uyumlu (overlay doldur, footer boşluk overlay'da) */
+  .olay-ekle-modal .modal-container {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    height: 100% !important;
+    max-height: 100% !important;
+  }
+
   .modal-overlay .modal-header h2 {
     font-size: 19px !important; /* 18px + 1 punto (sadece mobil) */
     color: #ffffff !important; /* Başlık tam beyaz */
