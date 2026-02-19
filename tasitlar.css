@@ -1168,9 +1168,10 @@
     z-index: -1; /* Başlığın arkasında kalır (scroll sarmalayıcı yoksa) */
     isolation: isolate;
 }
-/* Scroll sarmalayıcı içindeyse örtüşme yok, margin sıfır */
+/* Scroll sarmalayıcı içindeyse örtüşme yok, margin sıfır; z-index tıklamaların ulaşması için */
 #vehicles-modal .vehicles-list-scroll .view-list {
     margin-top: 0 !important;
+    z-index: 0 !important;
 }
 
 /* İçerik alanı: başlık ile liste aynı stacking context'te (scroll sarmalayıcı yoksa) */
