@@ -45,6 +45,10 @@ let allHistoryVehicles = [];
 let currentDriverEventVehicleId = null;
 let currentPeriod = '';
 let selectedVehicleId = null;
+/** Bu oturumda (ekran kapanana kadar) son bildirilen aksiyon: { action, vehicleId }. Sayfa kapanınca temizlenir. */
+let lastCompletedActionInSession = null;
+
+window.addEventListener('pagehide', function() { lastCompletedActionInSession = null; });
 
 /** Modal açıkken body scroll kilitlensin (sadece modal içi kayar) */
 function updateDriverModalBodyClass() {
@@ -412,13 +416,18 @@ function renderRightPanel(vehicles, records) {
     const muayeneSaved = !!(vehicle.muayeneDate && vehicle.muayeneDate.trim());
     const anahtarSaved = !!(vehicle.anahtar && String(vehicle.anahtar).trim());
     const lastikSaved = !!(vehicle.lastikDurumu && String(vehicle.lastikDurumu).trim());
-    const kmBtnClass = (hasKmSaved ? ' saved' : '') + (needsKmWarning ? ' warning' : '');
-    const sigortaBtnClass = sigortaW.class ? ' warning' : '';
-    const kaskoBtnClass = kaskoW.class ? ' warning' : '';
-    const muayeneBtnClass = muayeneW.class ? ' warning' : '';
-    
+    const sessionMatch = (action) => lastCompletedActionInSession && lastCompletedActionInSession.action === action && String(lastCompletedActionInSession.vehicleId) === vid;
+    const kmBtnClass = sessionMatch('km') ? ' saved' : (needsKmWarning ? ' warning' : (hasKmSaved ? ' data-entered' : ''));
+    const kazaBtnClass = sessionMatch('kaza') ? ' saved' : (kazaVar ? ' data-entered' : '');
+    const bakimBtnClass = sessionMatch('bakim') ? ' saved' : (bakimVar ? ' data-entered' : '');
+    const sigortaBtnClass = sessionMatch('sigorta') ? ' saved' : (sigortaW.class ? ' warning' : (sigortaSaved ? ' data-entered' : ''));
+    const kaskoBtnClass = sessionMatch('kasko') ? ' saved' : (kaskoW.class ? ' warning' : (kaskoSaved ? ' data-entered' : ''));
+    const muayeneBtnClass = sessionMatch('muayene') ? ' saved' : (muayeneW.class ? ' warning' : (muayeneSaved ? ' data-entered' : ''));
+    const anahtarBtnClass = sessionMatch('anahtar') ? ' saved' : (anahtarSaved ? ' data-entered' : '');
+    const lastikBtnClass = sessionMatch('lastik') ? ' saved' : (lastikSaved ? ' data-entered' : '');
+
     areaEl.innerHTML = buildDriverActionArea(vehicle, existingRecord, bakimVar, kazaVar, {
-        kmBtnClass, sigortaBtnClass, kaskoBtnClass, muayeneBtnClass, anahtarSaved, lastikSaved, vid
+        kmBtnClass, kazaBtnClass, bakimBtnClass, sigortaBtnClass, kaskoBtnClass, muayeneBtnClass, anahtarBtnClass, lastikBtnClass, vid
     });
     
     const kaportaContainer = document.getElementById('kaza-kaporta-' + vid);
@@ -440,11 +449,13 @@ function buildDriverActionArea(vehicle, existingRecord, bakimVar, kazaVar, opts)
     const kazaAciklama = existingRecord ? esc(existingRecord.kaza_aciklama || '') : '';
     const ekstraNot = existingRecord ? esc(existingRecord.ekstra_not || '') : '';
     const kmBtnClass = opts.kmBtnClass || '';
+    const kazaBtnClass = opts.kazaBtnClass || '';
+    const bakimBtnClass = opts.bakimBtnClass || '';
     const sigortaBtnClass = opts.sigortaBtnClass || '';
     const kaskoBtnClass = opts.kaskoBtnClass || '';
     const muayeneBtnClass = opts.muayeneBtnClass || '';
-    const anahtarSaved = opts.anahtarSaved ? ' saved' : '';
-    const lastikSaved = opts.lastikSaved ? ' saved' : '';
+    const anahtarBtnClass = opts.anahtarBtnClass || '';
+    const lastikBtnClass = opts.lastikBtnClass || '';
     return `
         <div class="driver-action-area-inner" data-vehicle-id="${vid}">
             <div class="driver-action-group">
@@ -468,7 +479,7 @@ function buildDriverActionArea(vehicle, existingRecord, bakimVar, kazaVar, opts)
                 </div>
             </div>
             <div class="driver-action-group">
-                <button type="button" class="driver-action-btn" data-action="kaza" onclick="toggleDriverActionBlock('kaza','${vid}')">Kaza Bildir</button>
+                <button type="button" class="driver-action-btn${kazaBtnClass}" data-action="kaza" onclick="toggleDriverActionBlock('kaza','${vid}')">Kaza Bildir</button>
                 <div id="kaza-block-${vid}" class="driver-report-block driver-report-block-kaza driver-action-block">
                     <div class="form-group"><label for="kaza-tarih-${vid}">Kaza Tarihi</label><input type="date" id="kaza-tarih-${vid}" class="driver-kaza-input" value="${kazaTarih}"></div>
                     <div class="form-group"><label for="kaza-detay-${vid}">Açıklama</label><textarea id="kaza-detay-${vid}" class="driver-report-textarea-auto driver-kaza-textarea" rows="1" placeholder="Kaza açıklamasını yazın..." maxlength="500">${kazaAciklama}</textarea></div>
@@ -482,7 +493,7 @@ function buildDriverActionArea(vehicle, existingRecord, bakimVar, kazaVar, opts)
                 </div>
             </div>
             <div class="driver-action-group">
-                <button type="button" class="driver-action-btn" data-action="bakim" onclick="toggleDriverActionBlock('bakim','${vid}')">Bakım Bildir</button>
+                <button type="button" class="driver-action-btn${bakimBtnClass}" data-action="bakim" onclick="toggleDriverActionBlock('bakim','${vid}')">Bakım Bildir</button>
                 <div id="bakim-block-${vid}" class="driver-report-block driver-report-block-bakim driver-action-block">
                     <div class="form-group"><label for="bakim-tarih-${vid}">Bakım Tarihi</label><input type="date" id="bakim-tarih-${vid}" class="driver-bakim-input" value="${bakimTarih}"></div>
                     <div class="form-group"><label for="bakim-detay-${vid}">Açıklama</label><textarea id="bakim-detay-${vid}" class="driver-report-textarea-auto driver-bakim-textarea" rows="1" placeholder="Bakım detayını yazın..." maxlength="500">${bakimAciklama}</textarea></div>
@@ -534,7 +545,7 @@ function buildDriverActionArea(vehicle, existingRecord, bakimVar, kazaVar, opts)
                 </div>
             </div>
             <div class="driver-action-group">
-                <button type="button" class="driver-action-btn${anahtarSaved}" data-action="anahtar" onclick="toggleDriverActionBlock('anahtar','${vid}')">Anahtar Durumu Bildir</button>
+                <button type="button" class="driver-action-btn${anahtarBtnClass}" data-action="anahtar" onclick="toggleDriverActionBlock('anahtar','${vid}')">Anahtar Durumu Bildir</button>
                 <div id="anahtar-block-${vid}" class="driver-report-block driver-report-block-anahtar driver-action-block">
                     <div class="form-group">
                         <label style="color:#ccc;font-size:14px;display:block;margin-bottom:8px;">Durum:</label>
@@ -554,7 +565,7 @@ function buildDriverActionArea(vehicle, existingRecord, bakimVar, kazaVar, opts)
                 </div>
             </div>
             <div class="driver-action-group">
-                <button type="button" class="driver-action-btn${lastikSaved}" data-action="lastik" onclick="toggleDriverActionBlock('lastik','${vid}')">Lastik Durumu Bildir</button>
+                <button type="button" class="driver-action-btn${lastikBtnClass}" data-action="lastik" onclick="toggleDriverActionBlock('lastik','${vid}')">Lastik Durumu Bildir</button>
                 <div id="lastik-block-${vid}" class="driver-report-block driver-report-block-lastik driver-action-block">
                     <div class="form-group">
                         <label style="color:#ccc;font-size:14px;display:block;margin-bottom:8px;">Durum:</label>
@@ -776,6 +787,7 @@ window.submitDriverAction = async function(type, vid) {
         });
         var data = await response.json();
         if (data.success) {
+            lastCompletedActionInSession = { action: type, vehicleId: vid };
             if (formActions) formActions.style.display = 'none';
             if (successMsg) successMsg.classList.add('show');
             setTimeout(function() {
@@ -841,6 +853,7 @@ window.submitKmOnly = async function(vid) {
         });
         const data = await response.json();
         if (data.success) {
+            lastCompletedActionInSession = { action: 'km', vehicleId: vid };
             if (formContent) formContent.style.display = 'none';
             if (successMsg) successMsg.classList.add('show');
             setTimeout(function() {
@@ -1360,6 +1373,7 @@ window.saveDriverEventFromBlock = async function(type, vehicleId) {
         });
         const result = await res.json();
         if (result.success) {
+            lastCompletedActionInSession = { action: type, vehicleId: vehicleId };
             cancelDriverActionForm(type, vehicleId);
             await loadDashboard();
         } else {
