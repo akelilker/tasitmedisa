@@ -760,6 +760,8 @@
             v.assignedUserId = savedUserId;
             const u = users.find(u => u.id === savedUserId);
             if (u && v.tahsisKisi !== undefined) v.tahsisKisi = u.name || '';
+            // Taşıtta şube yoksa, kullanıcının şubesini otomatik ata (şube kullanıcıda zorunlu)
+            if (u && !v.branchId && u.branchId) v.branchId = u.branchId;
           }
         });
         writeVehicles(vehicles);
