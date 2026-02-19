@@ -97,7 +97,7 @@
 /* === DETAY İÇERİK === */
 #vehicle-detail-content {
     padding: 20px;
-    padding-top: 14px !important; /* Plaka satırının margin-top negatif değerini karşılamak için (0px → 14px) */
+    padding-top: 28px !important; /* Plaka üstten kesilmesin: negatif margin-top için yeterli üst boşluk */
     padding-bottom: 20px;
     padding-left: 18px; /* Container çerçevelerine 2px boşluk (16px → 18px) */
     padding-right: 18px;
@@ -237,7 +237,7 @@
     color: inherit;
 }
 
-/* Boya şeması container – masaüstünde sol grid içinde, mobilde columns altında */
+/* Boya şeması container – grid alanında kolonların altında tam genişlik; sol yaslı, sağ kenar Yoktur "r" hizalı */
 #detail-boya-container {
     width: 100% !important;
     min-height: 180px;
@@ -245,16 +245,20 @@
     padding: 0 !important;
     display: flex !important;
     flex-direction: column !important;
-    align-items: center !important;
+    align-items: flex-start !important;
     justify-content: center !important;
     overflow: visible !important;
+    box-sizing: border-box !important;
 }
 
-/* Şemayı saran kutu */
+/* Şemayı saran kutu: sol yaslı, sağ kenar Yoktur metninin "r" harfine dikeyde paralel (max-width ile oranlanır) */
 .kaporta-schema-wrapper {
     display: block !important;
-    margin: 0 auto !important;
+    margin: 0 !important;
+    margin-right: auto !important;
     position: relative !important;
+    max-width: calc(100% - 1.2em) !important;
+    box-sizing: border-box !important;
 }
 
 /* Renk açıklamaları */
@@ -279,13 +283,21 @@
     flex-shrink: 0;
 }
 
-/* Şemayı saran kutu */
+/* Şemayı saran kutu (detay dışında 170px; detayda JS ile Yoktur "r" hizası) */
 .kaporta-schema-wrapper {
-    width: 170px !important;
+    width: 170px;
     display: block !important;
-    margin: 0 auto !important;
+    margin: 0 auto;
     margin-top: 5px !important; /* Şemayı 5px yukarı kaydır */
     position: relative !important;
+}
+#detail-boya-container .kaporta-schema-wrapper {
+    margin: 0 !important;
+    margin-right: auto !important;
+    margin-top: 5px !important;
+}
+#detail-boya-container .boya-legend {
+    justify-content: flex-start !important;
 }
 
 /* Renk açıklamaları – şemadan 3px altında */
@@ -680,9 +692,9 @@
   #vehicle-detail-modal .detail-plate-row {
     margin-bottom: 2px !important;
   }
-  /* Plakadan itibaren 3px yukarı; marka/model–bilgiler arası 3px az (masaüstü) */
+  /* Plaka üstten kesilmesin (masaüstü) */
   #vehicle-detail-modal #vehicle-detail-content {
-    padding-top: 11px !important;
+    padding-top: 24px !important;
   }
   #vehicle-detail-modal .vehicle-detail-columns {
     margin-top: 13px !important;
@@ -2565,7 +2577,7 @@
   }
   
   /* --- DETAY MODAL SCROLL & PADDING --- */
-  #vehicle-detail-content { padding-top: 2px !important; }
+  #vehicle-detail-content { padding-top: 28px !important; } /* Plaka üstten kesilmesin */
   #vehicle-detail-modal .modal-body { 
     overflow-y: auto !important;
     overflow-x: hidden !important; /* Sağa sola kaymayı engelle */
@@ -2654,8 +2666,8 @@
     margin: -29px 29px !important; /* Rotation layout/visual farkı (29px) telafi */
   }
 
-  /* Detay modal plaka ve başlıklar toolbar altında kalmasın */
-  #vehicle-detail-content { padding-top: 24px !important; }
+  /* Detay modal plaka ve başlıklar toolbar altında kalmasın, plaka üstten kesilmesin */
+  #vehicle-detail-content { padding-top: 28px !important; }
   .detail-plate-row { margin-top: -13px !important; margin-bottom: 0 !important; } /* Plaka 3px yukarı, marka arası 1px */
   .detail-plate { margin-top: 0 !important; }
   .detail-brand-year-row { padding-top: 1px !important; }
