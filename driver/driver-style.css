@@ -13,6 +13,46 @@
   display: none;
 }
 
+/* --- Splash ekranı – link/PWA ile açılışta 3 sn --- */
+.driver-splash {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.4s ease;
+}
+.driver-splash.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+.driver-splash-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+.driver-splash-logo {
+  width: var(--hero-logo-width, 69px);
+  height: auto;
+  object-fit: contain;
+  filter: brightness(0.88);
+}
+.driver-splash-title {
+  font-size: clamp(16px, 4.5vw, 24px);
+  font-weight: 800;
+  letter-spacing: clamp(1px, 0.5vw, 4px);
+  text-transform: uppercase;
+  margin: 0;
+  background: linear-gradient(to bottom, #c2d4df 0%, #ffffff 40%, #9aadba 52%, #d6e0e8 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-family: 'Source Sans 3', sans-serif;
+}
+
 /* --- Overflow: yatay taşma yok; giriş ve panel sayfaları --- */
 body.login-page,
 body.dashboard-page {
