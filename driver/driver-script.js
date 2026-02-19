@@ -498,19 +498,80 @@ function buildDriverActionArea(vehicle, existingRecord, bakimVar, kazaVar, opts)
                 </div>
             </div>
             <div class="driver-action-group">
-                <button type="button" class="driver-action-btn${sigortaBtnClass}" data-action="sigorta" onclick="openDriverEventModal('sigorta','${vid}')">Trafik Sigortası Yenileme</button>
+                <button type="button" class="driver-action-btn${sigortaBtnClass}" data-action="sigorta" onclick="toggleDriverActionBlock('sigorta','${vid}')">Trafik Sigortası Yenileme</button>
+                <div id="sigorta-block-${vid}" class="driver-report-block driver-report-block-sigorta driver-action-block">
+                    <div class="form-group"><label for="driver-sigorta-tarih-${vid}">Yenileme / Başlangıç Tarihi</label><input type="date" id="driver-sigorta-tarih-${vid}" class="form-input" style="width:100%"></div>
+                    <div class="form-group"><label for="driver-sigorta-firma-${vid}">Firma (isteğe bağlı)</label><input type="text" id="driver-sigorta-firma-${vid}" class="form-input" placeholder="Sigorta firması" style="width:100%"></div>
+                    <div class="form-group"><label for="driver-sigorta-acente-${vid}">Acente (isteğe bağlı)</label><input type="text" id="driver-sigorta-acente-${vid}" class="form-input" placeholder="Acente adı" style="width:100%"></div>
+                    <div class="form-group"><label for="driver-sigorta-iletisim-${vid}">İletişim (isteğe bağlı)</label><input type="text" id="driver-sigorta-iletisim-${vid}" class="form-input" placeholder="Telefon / e-posta" inputmode="tel" style="width:100%"></div>
+                    <div class="driver-form-actions">
+                        <button type="button" class="btn-driver-bildir" onclick="saveDriverEventFromBlock('sigorta','${vid}')">Bildir</button>
+                        <button type="button" class="btn-driver-vazgec" onclick="cancelDriverActionForm('sigorta','${vid}')">Vazgeç</button>
+                    </div>
+                </div>
             </div>
             <div class="driver-action-group">
-                <button type="button" class="driver-action-btn${kaskoBtnClass}" data-action="kasko" onclick="openDriverEventModal('kasko','${vid}')">Kasko Yenileme</button>
+                <button type="button" class="driver-action-btn${kaskoBtnClass}" data-action="kasko" onclick="toggleDriverActionBlock('kasko','${vid}')">Kasko Yenileme</button>
+                <div id="kasko-block-${vid}" class="driver-report-block driver-report-block-kasko driver-action-block">
+                    <div class="form-group"><label for="driver-kasko-tarih-${vid}">Yenileme / Başlangıç Tarihi</label><input type="date" id="driver-kasko-tarih-${vid}" class="form-input" style="width:100%"></div>
+                    <div class="form-group"><label for="driver-kasko-firma-${vid}">Firma (isteğe bağlı)</label><input type="text" id="driver-kasko-firma-${vid}" class="form-input" placeholder="Kasko firması" style="width:100%"></div>
+                    <div class="form-group"><label for="driver-kasko-acente-${vid}">Acente (isteğe bağlı)</label><input type="text" id="driver-kasko-acente-${vid}" class="form-input" placeholder="Acente adı" style="width:100%"></div>
+                    <div class="form-group"><label for="driver-kasko-iletisim-${vid}">İletişim (isteğe bağlı)</label><input type="text" id="driver-kasko-iletisim-${vid}" class="form-input" placeholder="Telefon / e-posta" inputmode="tel" style="width:100%"></div>
+                    <div class="driver-form-actions">
+                        <button type="button" class="btn-driver-bildir" onclick="saveDriverEventFromBlock('kasko','${vid}')">Bildir</button>
+                        <button type="button" class="btn-driver-vazgec" onclick="cancelDriverActionForm('kasko','${vid}')">Vazgeç</button>
+                    </div>
+                </div>
             </div>
             <div class="driver-action-group">
-                <button type="button" class="driver-action-btn${muayeneBtnClass}" data-action="muayene" onclick="openDriverEventModal('muayene','${vid}')">Muayene Yenileme</button>
+                <button type="button" class="driver-action-btn${muayeneBtnClass}" data-action="muayene" onclick="toggleDriverActionBlock('muayene','${vid}')">Muayene Yenileme</button>
+                <div id="muayene-block-${vid}" class="driver-report-block driver-report-block-muayene driver-action-block">
+                    <div class="form-group"><label for="driver-muayene-tarih-${vid}">Yaptırılan Tarih</label><input type="date" id="driver-muayene-tarih-${vid}" class="form-input" style="width:100%"></div>
+                    <div class="driver-form-actions">
+                        <button type="button" class="btn-driver-bildir" onclick="saveDriverEventFromBlock('muayene','${vid}')">Bildir</button>
+                        <button type="button" class="btn-driver-vazgec" onclick="cancelDriverActionForm('muayene','${vid}')">Vazgeç</button>
+                    </div>
+                </div>
             </div>
             <div class="driver-action-group">
-                <button type="button" class="driver-action-btn${anahtarSaved}" data-action="anahtar" onclick="openDriverEventModal('anahtar','${vid}')">Anahtar Durumu Bildir</button>
+                <button type="button" class="driver-action-btn${anahtarSaved}" data-action="anahtar" onclick="toggleDriverActionBlock('anahtar','${vid}')">Anahtar Durumu Bildir</button>
+                <div id="anahtar-block-${vid}" class="driver-report-block driver-report-block-anahtar driver-action-block">
+                    <div class="form-group">
+                        <label style="color:#ccc;font-size:14px;display:block;margin-bottom:8px;">Durum:</label>
+                        <div class="driver-radio-group" data-group="anahtar" data-vid="${vid}">
+                            <button type="button" class="driver-radio-btn active" data-value="var" data-group="anahtar">Var</button>
+                            <button type="button" class="driver-radio-btn" data-value="yok" data-group="anahtar">Yok</button>
+                        </div>
+                    </div>
+                    <div id="driver-anahtar-detay-wrap-${vid}" class="form-group" style="display:none">
+                        <label for="driver-anahtar-detay-${vid}" style="color:#ccc;font-size:14px;">Açıklama:</label>
+                        <input type="text" id="driver-anahtar-detay-${vid}" class="form-input" placeholder="Anahtar nerede?" style="width:100%">
+                    </div>
+                    <div class="driver-form-actions">
+                        <button type="button" class="btn-driver-bildir" onclick="saveDriverEventFromBlock('anahtar','${vid}')">Bildir</button>
+                        <button type="button" class="btn-driver-vazgec" onclick="cancelDriverActionForm('anahtar','${vid}')">Vazgeç</button>
+                    </div>
+                </div>
             </div>
             <div class="driver-action-group">
-                <button type="button" class="driver-action-btn${lastikSaved}" data-action="lastik" onclick="openDriverEventModal('lastik','${vid}')">Lastik Durumu Bildir</button>
+                <button type="button" class="driver-action-btn${lastikSaved}" data-action="lastik" onclick="toggleDriverActionBlock('lastik','${vid}')">Lastik Durumu Bildir</button>
+                <div id="lastik-block-${vid}" class="driver-report-block driver-report-block-lastik driver-action-block">
+                    <div class="form-group">
+                        <label style="color:#ccc;font-size:14px;display:block;margin-bottom:8px;">Durum:</label>
+                        <div class="driver-radio-group" data-group="lastik" data-vid="${vid}">
+                            <button type="button" class="driver-radio-btn" data-value="var" data-group="lastik">Var</button>
+                            <button type="button" class="driver-radio-btn active" data-value="yok" data-group="lastik">Yok</button>
+                        </div>
+                    </div>
+                    <div id="driver-lastik-adres-wrap-${vid}" class="form-group" style="display:none">
+                        <label for="driver-lastik-adres-${vid}" style="color:#ccc;font-size:14px;">Adres:</label>
+                        <input type="text" id="driver-lastik-adres-${vid}" class="form-input" placeholder="Lastik adresi" style="width:100%">
+                    </div>
+                    <div class="driver-form-actions">
+                        <button type="button" class="btn-driver-bildir" onclick="saveDriverEventFromBlock('lastik','${vid}')">Bildir</button>
+                        <button type="button" class="btn-driver-vazgec" onclick="cancelDriverActionForm('lastik','${vid}')">Vazgeç</button>
+                    </div>
+                </div>
             </div>
             <div class="driver-action-group driver-action-footer">
                 <div class="form-group driver-ekstra-not-form">
