@@ -46,9 +46,21 @@
     overflow-x: visible !important;
 }
 
-/* Olay Ekle 14 modal: çerçeve yatayda kısa kalmasın */
+/* Olay Ekle 14 modal: history-modal ile aynı yapı (540px, footer 54px, çerçeve) */
 .olay-ekle-modal .modal-container {
     max-width: 540px !important;
+    width: 100%;
+    background: var(--modal-bg) !important;
+    border: 0.5px solid rgba(255, 255, 255, 0.35) !important;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.9) !important;
+    border-radius: var(--modal-radius) !important;
+    margin: max(12px, env(safe-area-inset-top)) auto 54px auto !important;
+    height: calc(100vh - max(12px, env(safe-area-inset-top)) - 54px) !important;
+    height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 54px) !important;
+    max-height: calc(100vh - max(12px, env(safe-area-inset-top)) - 54px) !important;
+    max-height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 54px) !important;
+    overflow: hidden;
+    overflow-x: hidden;
 }
 
 /* === MODAL ÖZEL FARKLAR === */
@@ -477,6 +489,17 @@
     text-align: center;
     justify-content: center;
     padding-bottom: 1px !important; /* Sekme metni ile altındaki yatay çizgi arası 1px */
+}
+
+/* Tarihçe içerik: tarih/etiket = kayıt modalı etiket rengi, metin = taşıtlar gri */
+#vehicle-history-modal .history-item-date {
+    color: var(--form-label-color);
+}
+#vehicle-history-modal .history-item-body {
+    color: #ccc;
+}
+#vehicle-history-modal .history-empty-msg {
+    color: #ccc;
 }
 
 #vehicles-modal .modal-header h2,
