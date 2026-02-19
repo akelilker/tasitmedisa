@@ -26,15 +26,6 @@
     try { return JSON.parse(localStorage.getItem(USERS_KEY) || '[]'); } catch { return []; }
   }
 
-  /** Tarihçe içerikleri: kelime başı büyük; tamamı büyük kelime (soyisim vb.) aynen kalır */
-  function toTitleCase(str) {
-    if (str == null || String(str).trim() === '') return str;
-    return String(str).trim().split(/\s+/).map(function(word) {
-      if (word === word.toUpperCase() && word.length > 0) return word;
-      return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-    }).join(' ');
-  }
-
   function writeVehicles(arr) {
     if (window.__medisaVehiclesStorage) {
         window.__medisaVehiclesStorage.write(arr);
@@ -568,6 +559,7 @@
         html += '</div>';
         html += '<div class="vehicles-list-scroll">';
       }
+      const users = readUsers();
       html += `<div class="view-${viewMode}${extraClass}">` + vehicles.map(v => {
         // Plaka (1. satır - tek satır maksimum)
         const plate = v.plate || '-';
@@ -636,7 +628,6 @@
                   cellClass = 'list-type';
                   break;
                 case 'user':
-                  const users = readUsers();
                   const assignedUser = v.assignedUserId ? users.find(u => u.id === v.assignedUserId) : null;
                   const userName = assignedUser?.isim || v.tahsisKisi || '-';
                   cellContent = escapeHtml(userName);
@@ -926,7 +917,6 @@
       const assignDiv = document.createElement('div');
       assignDiv.className = 'detail-branch-assign';
       
-      // GÜNCELLENDİ: Dropdown'a disabled selected ve placeholder metni eklendi
       assignDiv.innerHTML = `
         <div class="assign-toggle" onclick="toggleBranchAssign()">+ Şubeye Tahsis Et</div>
         <div class="assign-form" id="assign-form" style="display: none;">
@@ -1014,17 +1004,34 @@
       return;
     }
     
-    // Taşıtı güncelle
     const vehicles = readVehicles();
     const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
     if (!vehicle) return;
     
+    const branches = readBranches();
+    const eskiSubeId = vehicle.branchId || '';
+    const eskiSube = branches.find(b => b.id === eskiSubeId);
+    const yeniSube = branches.find(b => b.id === branchId);
+    
+    if (!vehicle.events) vehicle.events = [];
+    vehicle.events.unshift({
+      id: Date.now().toString(),
+      type: 'sube-degisiklik',
+      date: formatDateForDisplay(new Date()),
+      timestamp: new Date().toISOString(),
+      data: {
+        eskiSubeId: eskiSubeId,
+        yeniSubeId: branchId,
+        eskiSubeAdi: eskiSube?.name || '',
+        yeniSubeAdi: yeniSube?.name || ''
+      }
+    });
+    
     vehicle.branchId = branchId;
     writeVehicles(vehicles);
     
-    // Modalı kapat ve listeyi yenile
     closeVehicleDetailModal();
-    renderBranchDashboard(); // Ana ekrana dön
+    renderBranchDashboard();
   };
 
   // --- Tüm Modalları Kapat ---
@@ -1131,6 +1138,7 @@
           const filtered = all.filter(v => 
             (v.plate && v.plate.toLowerCase().includes(q)) ||
             (v.brandModel && v.brandModel.toLowerCase().includes(q)) ||
+            (v.year && String(v.year).includes(q)) ||
             (v.tahsisKisi && v.tahsisKisi.toLowerCase().includes(q))
           );
           
@@ -1386,6 +1394,10 @@ function renderVehicleDetailLeft(vehicle) {
   const year = vehicle.year || '';
   html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Üretim Yılı</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(year)}</span></div>`;
 
+  // Tescil Tarihi
+  const tescilTarihi = vehicle.tescilTarihi || '';
+  html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Tescil Tarihi</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(tescilTarihi || '-')}</span></div>`;
+
   // Km
   if (vehicle.guncelKm) {
       const formattedKm = formatNumber(vehicle.guncelKm);
@@ -1400,6 +1412,10 @@ function renderVehicleDetailLeft(vehicle) {
   const transmission = vehicle.transmission || '';
   const transmissionLabel = transmission === 'otomatik' ? 'Otomatik' : transmission === 'manuel' ? 'Manuel' : '';
   html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Şanzıman</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(transmissionLabel)}</span></div>`;
+
+  // Alım Bedeli
+  const price = vehicle.price || '';
+  html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Alım Bedeli</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(price || '-')}</span></div>`;
 
   // Tramer Kaydı
   if (vehicle.tramer === 'var' && vehicle.tramerRecords && vehicle.tramerRecords.length > 0) {
@@ -1512,6 +1528,10 @@ function renderVehicleDetailLeft(vehicle) {
     const takipCihazi = vehicle.takipCihaziMontaj ? 'Evet' : 'Hayır';
     html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Taşıt Takip</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(takipCihazi)}</span></div>`;
     
+    // Notlar (kayıt formundan)
+    const notes = vehicle.notes || '';
+    html += `<div class="detail-row detail-row-block"><div class="detail-row-header"><span class="detail-row-label">Notlar</span><span class="detail-row-colon">:</span></div><span class="detail-row-value">${notes ? escapeHtml(notes) : '-'}</span></div>`;
+
     // Sürücü notu (kullanıcı panelinden; son kayıt)
     const sonNot = vehicle.sonEkstraNot || '';
     const sonNotDonem = vehicle.sonEkstraNotDonem || '';
