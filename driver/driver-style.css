@@ -291,7 +291,7 @@ body.driver-modal-open {
 .driver-user-plate-in-panel {
   display: flex;
   flex-direction: column;
-  gap: 3px;       /* Plaka üstü: kullanıcı adı – plaka arası 3px */
+  gap: 2px;       /* Plaka ile marka/model arası 2px */
   align-items: flex-start;
   text-align: left;
   flex-shrink: 0;
@@ -335,6 +335,7 @@ body.driver-modal-open {
   overflow: hidden;
   text-overflow: ellipsis;
   margin-right: 28px;
+  display: block;
 }
 /* Panel: isim ve marka/model ortada, plaka alanı kadar sola kaydırılmış */
 .driver-user-plate-in-panel .driver-user-name,
@@ -349,7 +350,9 @@ body.driver-modal-open {
 }
 .driver-user-plate-in-panel .driver-plate-subtitle {
   font-size: 15px; /* 1 punto büyük */
-  margin-top: 1px; /* plakanın 1px altında */
+  margin-top: 0;
+  text-align: center;
+  align-self: center;
 }
 .driver-plate-dropdown-row {
   display: flex;
@@ -642,7 +645,7 @@ body.driver-modal-open {
 .driver-action-area .form-group input,
 .driver-action-area .form-group textarea {
   width: 100%;
-  padding: 8px 16px;
+  padding: 6px 16px;
   background: #0f1418 !important;
   background-color: #0f1418 !important;
   border: none !important;
@@ -656,8 +659,8 @@ body.driver-modal-open {
 }
 #driver-input-area .form-group input,
 .driver-action-area .form-group input {
-  padding: 1px 16px;
-  min-height: 28px;
+  padding: 0 16px;
+  min-height: 26px;
 }
 #driver-input-area .form-group input:focus,
 #driver-input-area .form-group textarea:focus,
@@ -915,6 +918,19 @@ body.driver-modal-open {
 }
 
 /* Event modalleri: radio butonları */
+.driver-radio-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+.driver-radio-label {
+  display: inline;
+  margin-bottom: 0;
+  margin-right: 0;
+  color: #ccc;
+  font-size: 14px;
+}
 .driver-radio-group {
   display: flex;
   gap: 12px;
@@ -923,7 +939,7 @@ body.driver-modal-open {
 .driver-radio-btn {
   background: transparent;
   border: none;
-  padding: 0;
+  padding: 0 4px;
   cursor: pointer;
   font-weight: 600;
   font-size: 16px;
@@ -1330,8 +1346,8 @@ body.driver-modal-open {
 
 /* Bakım/Kaza Açıklama: varsayılan 1 satır, içerik uzadıkça otomatik büyür, kesilme yok */
 .driver-report-block .form-group textarea.driver-report-textarea-auto {
-  min-height: 2.2em;
-  height: 2.2em;
+  min-height: 2em;
+  height: 2em;
   resize: none;
   scrollbar-width: none;
   -ms-overflow-style: none;
