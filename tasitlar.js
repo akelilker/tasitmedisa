@@ -26,6 +26,15 @@
     try { return JSON.parse(localStorage.getItem(USERS_KEY) || '[]'); } catch { return []; }
   }
 
+  /** Tarihçe içerikleri: kelime başı büyük; tamamı büyük kelime (soyisim vb.) aynen kalır */
+  function toTitleCase(str) {
+    if (str == null || String(str).trim() === '') return str;
+    return String(str).trim().split(/\s+/).map(function(word) {
+      if (word === word.toUpperCase() && word.length > 0) return word;
+      return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+    }).join(' ');
+  }
+
   function writeVehicles(arr) {
     if (window.__medisaVehiclesStorage) {
         window.__medisaVehiclesStorage.write(arr);
@@ -87,6 +96,26 @@
     }
   }
 
+  // Grid genişlikleri sütun kimliğine göre (sürükle-bırak sonrası genişlik doğru sütunla kalsın)
+  function getVehicleColumnWidths(columnOrder) {
+    const defaultCols = '32px 70px 3.2fr 60px 65px 1.8fr 2fr';
+    try {
+      if (!columnOrder || !Array.isArray(columnOrder) || columnOrder.length === 0) return defaultCols;
+      const widthMap = {
+        'year': '32px',
+        'plate': '70px',
+        'brand': '3.2fr',
+        'km': '60px',
+        'type': '65px',
+        'user': '1.8fr',
+        'branch': '2fr'
+      };
+      return columnOrder.map(key => widthMap[key] || '1fr').join(' ');
+    } catch (e) {
+      return defaultCols;
+    }
+  }
+
   // Liste Marka/Model: kelimelerin sadece ilk harfi büyük (title case)
   function toTitleCase(str) {
     if (!str || str === '-') return str;
@@ -102,6 +131,26 @@
   // DOM Elements
   const modalContent = document.getElementById('vehicles-modal-content');
   
+  // Taşıt listesi tıklama delegasyonu (card/list-item tıklanınca detay aç) - tek seferlik
+  if (modalContent && !modalContent._vehicleClickBound) {
+    modalContent._vehicleClickBound = true;
+    function handleVehicleRowClick(e) {
+      const card = e.target.closest('.card');
+      const listItem = e.target.closest('.list-item');
+      if (listItem && listItem.classList.contains('list-item-empty')) return;
+      const row = card || listItem;
+      if (row && row.dataset && row.dataset.vehicleId) {
+        e.stopPropagation();
+        e.preventDefault();
+        if (typeof window.showVehicleDetail === 'function') {
+          window.showVehicleDetail(row.dataset.vehicleId);
+        }
+      }
+    }
+    modalContent.addEventListener('click', handleVehicleRowClick);
+    modalContent.addEventListener('touchend', handleVehicleRowClick, { passive: false });
+  }
+
   // Toolbar Container Oluştur (Eğer yoksa)
   function ensureToolbar() {
     const modalContainer = document.querySelector('#vehicles-modal .modal-container');
@@ -390,6 +439,7 @@
       const listContainer = modalContent; // Direkt content'e basıyoruz
       // Veri Çek
       let vehicles = readVehicles();
+      if (!Array.isArray(vehicles)) vehicles = [];
 
     // 1. Arşiv veya Şube Filtresi
     if (activeBranchId === '__archive__') {
@@ -426,6 +476,7 @@
           const emptyMsg = (activeBranchId === '__archive__') ? 'Arşivde kayıt bulunamadı.' : 'Kayıt bulunamadı.';
           if (viewMode === 'list') {
             loadVehicleColumnOrder();
+            const gridStr = getVehicleColumnWidths(vehicleColumnOrder);
             const isMobile = window.innerWidth <= 640;
             const columnDefs = {
               'year': { label: 'Yılı', class: 'list-year' },
@@ -436,7 +487,7 @@
               'user': { label: isMobile ? 'Kull.' : 'Kullanıcı', class: 'list-user' },
               'branch': { label: 'Şube', class: 'list-branch' }
             };
-            let emptyHtml = '<div class="list-header-row">';
+            let emptyHtml = '<div class="list-header-row" style="grid-template-columns: ' + gridStr + '">';
             vehicleColumnOrder.forEach(columnKey => {
               const def = columnDefs[columnKey];
               if (def) {
@@ -444,7 +495,7 @@
                 emptyHtml += `<div class="list-cell ${def.class} sortable-header" data-col="${columnKey}">${labelHtml}</div>`;
               }
             });
-            emptyHtml += '</div><div class="view-list view-list-empty"><div class="list-item list-item-empty" style="grid-column: 1 / -1; justify-content: center; padding: 24px;"><span style="color:#666;">' + escapeHtml(emptyMsg) + '</span></div></div>';
+            emptyHtml += '</div><div class="vehicles-list-scroll"><div class="view-list view-list-empty"><div class="list-item list-item-empty" style="grid-column: 1 / -1; justify-content: center; padding: 24px;"><span style="color:#666;">' + escapeHtml(emptyMsg) + '</span></div></div></div>';
             listContainer.innerHTML = emptyHtml;
           } else {
             listContainer.innerHTML = `<div style="text-align:center; padding:40px; color:#666">${emptyMsg}</div>`;
@@ -463,6 +514,7 @@
     const isAllView = (activeBranchId === 'all');
     const extraClass = (viewMode === 'list' && isAllView) ? ' is-all-view' : '';
       let html = '';
+      const gridStr = viewMode === 'list' ? getVehicleColumnWidths(vehicleColumnOrder) : '';
       if (viewMode === 'list') {
         const getSortIcon = (column) => {
           if (sortColumn !== column) {
@@ -484,8 +536,7 @@
           'user': { label: isMobile ? 'Kull.' : 'Kullanıcı', class: 'list-user' },
           'branch': { label: 'Şube', class: 'list-branch' }
         };
-        
-        html += '<div class="list-header-row">';
+        html += '<div class="list-header-row" style="grid-template-columns: ' + gridStr + '">';
         // Sıralamaya göre sütun başlıklarını render et (mobilde Marka/Model ve Taşıt Tipi iki satır)
         vehicleColumnOrder.forEach(columnKey => {
           const def = columnDefs[columnKey];
@@ -515,6 +566,7 @@
           }
         });
         html += '</div>';
+        html += '<div class="vehicles-list-scroll">';
       }
       html += `<div class="view-${viewMode}${extraClass}">` + vehicles.map(v => {
         // Plaka (1. satır - tek satır maksimum)
@@ -543,8 +595,9 @@
         if (viewMode === 'card') {
             // Üçüncü satır boşsa div'i render etme
             const thirdLineHtml = thirdLine ? `<div class="card-third-line" title="${escapeHtml(thirdLine)}">${escapeHtml(thirdLine)}</div>` : '';
+            const vid = v.id != null ? String(v.id).replace(/"/g, '&quot;') : '';
             return `
-              <div class="card${unassignedClass}" onclick="event.stopPropagation(); showVehicleDetail('${v.id}');">
+              <div class="card${unassignedClass}" data-vehicle-id="${vid}" style="cursor:pointer">
                 <div class="card-plate">${escapeHtml(plate)}${satildiSpan}</div>
                 <div class="card-brand-model" title="${escapeHtml(brandModel)}">${escapeHtml(toTitleCase(brandModel))}</div>
                 ${thirdLineHtml}
@@ -599,13 +652,14 @@
               }
             });
             
+            const vid = v.id != null ? String(v.id).replace(/"/g, '&quot;') : '';
             return `
-              <div class="list-item${unassignedClass}" onclick="event.stopPropagation(); showVehicleDetail('${v.id}');">
+              <div class="list-item${unassignedClass}" data-vehicle-id="${vid}" style="grid-template-columns: ${gridStr}; cursor:pointer">
                 ${cellHtml}
               </div>
             `;
         }
-    }).join('') + '</div>';
+    }).join('') + '</div>' + (viewMode === 'list' ? '</div>' : '') + '';
 
       listContainer.innerHTML = html;
       
@@ -643,7 +697,13 @@
               }
           });
       }
+      
+      // Mobil: sütun başlıklarına touch ile sürükle-bırak (yer değiştirme)
+      if (viewMode === 'list') {
+          attachVehicleColumnTouchListeners(listContainer);
+      }
     } catch (error) {
+      console.error('renderVehicles hatası:', error);
       if (modalContent) {
         modalContent.innerHTML = '<div style="text-align:center; padding:40px; color:#666">Bir hata oluştu. Lütfen sayfayı yenileyin.</div>';
       }
@@ -667,7 +727,7 @@
   window.showVehicleDetail = function(vehicleId) {
     const runDetail = () => {
       const vehicles = readVehicles();
-      const vehicle = vehicles.find(v => v.id === vehicleId);
+      const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
       if (!vehicle) {
         alert("Taşıt bulunamadı!");
         return;
@@ -956,7 +1016,7 @@
     
     // Taşıtı güncelle
     const vehicles = readVehicles();
-    const vehicle = vehicles.find(v => v.id === vehicleId);
+    const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
     if (!vehicle) return;
     
     vehicle.branchId = branchId;
@@ -1074,16 +1134,18 @@
             (v.tahsisKisi && v.tahsisKisi.toLowerCase().includes(q))
           );
           
-          // Sonuçları Liste Modunda Göster
+          // Sonuçları Liste Modunda Göster (tıklanınca detay açılsın - event delegation ile)
           let html = `<div style="padding:10px; color:#aaa; font-size:12px;">GENEL ARAMA SONUÇLARI (${filtered.length})</div>`;
-          html += `<div class="view-list">` + filtered.map(v => `
-              <div class="list-item">
+          html += `<div class="view-list">` + filtered.map(v => {
+              const vid = v.id != null ? String(v.id).replace(/"/g, '&quot;') : '';
+              return `
+              <div class="list-item" data-vehicle-id="${vid}" style="cursor:pointer">
                 <div class="list-info">
                   <h4>${escapeHtml(v.brandModel)}</h4>
                   <span>${v.year} • ${v.tahsisKisi || 'Boşta'}</span>
                 </div>
               </div>
-          `).join('') + `</div>`;
+          `}).join('') + `</div>`;
           
           modalContent.innerHTML = html;
       }
@@ -1286,123 +1348,113 @@
   }
 
   /**
-   * Sol kolon render (Taşıt özellikleri)
-   */
-  function renderVehicleDetailLeft(vehicle) {
-    const leftEl = document.querySelector('#vehicle-detail-content .vehicle-detail-left');
-    if (!leftEl) return;
-    
-    let html = '';
-    
-    // Kullanıcı
-    const users = readUsers();
-    const assignedUserId = vehicle.assignedUserId || '';
-    const assignedUser = assignedUserId ? users.find(u => u.id === assignedUserId) : null;
-    const assignedUserName = (assignedUser && assignedUser.name) ? assignedUser.name : (vehicle.tahsisKisi || '');
-    
-    // Kullanıcı varsa (assignedUserId var veya tahsisKisi var) normal göster, yoksa kırmızı link göster
-    if (assignedUserId || (assignedUserName && assignedUserName.trim())) {
+   * /**
+ * Sol kolon render (Taşıt özellikleri + Kaporta Şeması)
+ */
+function renderVehicleDetailLeft(vehicle) {
+  const leftEl = document.querySelector('#vehicle-detail-content .vehicle-detail-left');
+  if (!leftEl) return;
+
+  let html = '';
+
+  // Kullanıcı
+  const users = readUsers();
+  const assignedUserId = vehicle.assignedUserId || '';
+  const assignedUser = assignedUserId ? users.find(u => u.id === assignedUserId) : null;
+  const assignedUserName = (assignedUser && assignedUser.name) ? assignedUser.name : (vehicle.tahsisKisi || '');
+
+  if (assignedUserId || (assignedUserName && assignedUserName.trim())) {
       const displayName = escapeHtml(assignedUserName).replace(/ /g, '&nbsp;');
       html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Kullanıcı</span><span class="detail-row-colon">:</span></div><span class="detail-row-value detail-user-value"> ${displayName}</span></div>`;
-    } else {
+  } else {
       html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Kullanıcı</span><span class="detail-row-colon">:</span></div><span class="detail-row-value detail-user-empty" onclick="event.stopPropagation(); if (window.currentDetailVehicleId) openEventModal('kullanici', window.currentDetailVehicleId);"> Kullanıcı Eklemek İçin +</span></div>`;
-    }
+  }
 
-    // Şube
-    const branches = readBranches();
-    const branchId = vehicle.branchId || '';
-    const branchName = branchId
-      ? (branches.find(b => b.id === branchId)?.name || '')
-      : 'Tahsis Edilmemiş';
-    html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Şube</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(branchName)}</span></div>`;
+  // Şube
+  const branches = readBranches();
+  const branchId = vehicle.branchId || '';
+  const branchName = branchId ?
+      (branches.find(b => b.id === branchId)?.name || '') :
+      'Tahsis Edilmemiş';
+  html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Şube</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(branchName)}</span></div>`;
 
-    // Taşıt Tipi
-    const vehicleType = vehicle.vehicleType || '';
-    html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Taşıt Tipi</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(getVehicleTypeLabel(vehicleType))}</span></div>`;
-    
-    // Üretim Yılı
-    const year = vehicle.year || '';
-    html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Üretim Yılı</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(year)}</span></div>`;
-    
-    // Km gösterimi - guncelKm varsa "Km: ***", yoksa "Km (Alındığı Tarih): ***"
-    if (vehicle.guncelKm) {
+  // Taşıt Tipi
+  const vehicleType = vehicle.vehicleType || '';
+  html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Taşıt Tipi</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(getVehicleTypeLabel(vehicleType))}</span></div>`;
+
+  // Üretim Yılı
+  const year = vehicle.year || '';
+  html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Üretim Yılı</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(year)}</span></div>`;
+
+  // Km
+  if (vehicle.guncelKm) {
       const formattedKm = formatNumber(vehicle.guncelKm);
       html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Km</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(formattedKm)}</span></div>`;
-    } else {
+  } else {
       const km = vehicle.km || '';
       const formattedKm = km ? formatNumber(km) : '';
       html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Km (Alındığı Tarih)</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(formattedKm || '-')}</span></div>`;
-    }
-    
-    // Şanzıman
-    const transmission = vehicle.transmission || '';
-    const transmissionLabel = transmission === 'otomatik' ? 'Otomatik' : transmission === 'manuel' ? 'Manuel' : '';
-    html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Şanzıman</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(transmissionLabel)}</span></div>`;
-    
-    // Tramer Kaydı
-    if (vehicle.tramer === 'var' && vehicle.tramerRecords && vehicle.tramerRecords.length > 0) {
-      // Tramer "var" ise alt satırda kayıtlar (label+colon üstte, value altta)
+  }
+
+  // Şanzıman
+  const transmission = vehicle.transmission || '';
+  const transmissionLabel = transmission === 'otomatik' ? 'Otomatik' : transmission === 'manuel' ? 'Manuel' : '';
+  html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Şanzıman</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(transmissionLabel)}</span></div>`;
+
+  // Tramer Kaydı
+  if (vehicle.tramer === 'var' && vehicle.tramerRecords && vehicle.tramerRecords.length > 0) {
       html += `<div class="detail-row detail-row-block"><div class="detail-row-header"><span class="detail-row-label">Tramer Kaydı</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> `;
       vehicle.tramerRecords.forEach((record, index) => {
-        if (index > 0) html += '<br>';
-        html += `${escapeHtml(record.date)} - ${escapeHtml(record.amount)}`;
+          if (index > 0) html += '<br>';
+          html += `${escapeHtml(record.date)} - ${escapeHtml(record.amount)}`;
       });
-      
-      // Toplam hesapla
+
       let total = 0;
       vehicle.tramerRecords.forEach(record => {
-        const amountStr = record.amount.replace(/\./g, '').replace(',', '.').replace('TL', '').trim();
-        const amount = parseFloat(amountStr) || 0;
-        total += amount;
+          const amountStr = record.amount.replace(/\./g, '').replace(',', '.').replace('TL', '').trim();
+          const amount = parseFloat(amountStr) || 0;
+          total += amount;
       });
-      
+
       if (vehicle.tramerRecords.length > 1) {
-        const totalFixed = total.toFixed(2);
-        const totalParts = totalFixed.split('.');
-        const totalInteger = totalParts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-        const totalFormatted = `${totalInteger},${totalParts[1]}TL`;
-        html += `<br><strong>Olmak Üzere Toplam ${totalFormatted}</strong>`;
+          const totalFixed = total.toFixed(2);
+          const totalParts = totalFixed.split('.');
+          const totalInteger = totalParts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+          const totalFormatted = `${totalInteger},${totalParts[1]}TL`;
+          html += `<br><strong>Olmak Üzere Toplam ${totalFormatted}</strong>`;
       }
       html += `</span></div>`;
-    } else {
-      // Tramer "yok" ise aynı satırda "Yoktur" göster
+  } else {
       html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Tramer Kaydı</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> Yoktur.</span></div>`;
-    }
-    
-    // Kaporta Durumu
-    html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Kaporta Durumu</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> `;
-    if (vehicle.boya === 'var' && vehicle.boyaliParcalar) {
-      html += 'Aşağıdaki şemada belirtilmiştir.';
-    } else {
-      html += 'Yoktur.';
-    }
-    html += `</span></div>`;
-
-    // Renk açıklaması: Kaporta Durumu'nun 3px altında, sol grid içinde, yan yana
-    html += `<div class="detail-kaporta-legend">` +
-      `<span class="detail-kaporta-legend-item"><span class="detail-kaporta-dot" style="background:#757575;"></span>O</span>` +
-      `<span class="detail-kaporta-legend-item"><span class="detail-kaporta-dot" style="background:#28a745;"></span>B</span>` +
-      `<span class="detail-kaporta-legend-item"><span class="detail-kaporta-dot" style="background:#e1061b;"></span>D</span>` +
-      `</div>`;
-
-    leftEl.innerHTML = html;
-
-    // Boya şeması container'ı .vehicle-detail-columns'ın DIŞINA (altına) yerleştir
-    const vehicleDetailContent = document.getElementById('vehicle-detail-content');
-    const columnsDiv = vehicleDetailContent && vehicleDetailContent.querySelector('.vehicle-detail-columns');
-    const existingBoyaContainer = document.getElementById('detail-boya-container');
-    if (existingBoyaContainer) existingBoyaContainer.remove();
-    const boyaContainer = document.createElement('div');
-    boyaContainer.id = 'detail-boya-container';
-    if (columnsDiv && columnsDiv.parentNode) {
-      columnsDiv.parentNode.insertBefore(boyaContainer, columnsDiv.nextSibling);
-    } else if (vehicleDetailContent) {
-      vehicleDetailContent.appendChild(boyaContainer);
-    }
-
-    // Boya şemasını render et (her zaman, boya/değişen olmasa bile)
-    renderBoyaSchemaDetail(vehicle);
   }
+
+  // Kaporta Durumu (Legend eklendi)
+  html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Kaporta Durumu</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> `;
+  if (vehicle.boya === 'var' && vehicle.boyaliParcalar) {
+      html += 'Aşağıdaki şemada belirtilmiştir.';
+  } else {
+      html += 'Yoktur.';
+  }
+  html += `</span></div>`;
+
+  // HTML'i sol kolona bas
+  leftEl.innerHTML = html;
+
+  // --- ŞEMA EKLEME: Sol kolonun içine ekliyoruz ---
+  // Önce eskisi varsa temizle
+  const existingBoyaContainer = document.getElementById('detail-boya-container');
+  if (existingBoyaContainer) existingBoyaContainer.remove();
+
+  // Yeni container oluştur
+  const boyaContainer = document.createElement('div');
+  boyaContainer.id = 'detail-boya-container';
+
+  // LeftEl içine append et
+  leftEl.appendChild(boyaContainer);
+
+  // Boya şemasını render et (içinde SVG + tam açıklama Orijinal/Boyalı/Değişen; O/B/D kısaltması yok)
+  renderBoyaSchemaDetail(vehicle);
+}
 
   /**
    * Sağ kolon render (Tarihler, Anahtar, Kredi, UTTS, Takip Cihazı)
@@ -1429,8 +1481,8 @@
     const muayeneDate = vehicle.muayeneDate || '';
     const muayeneWarning = checkDateWarnings(muayeneDate);
     const muayeneDisplay = formatDateForDisplay(muayeneDate);
-    const vt = vehicle.hasOwnProperty('vehicleType') ? vehicle.vehicleType : undefined;
-    const noVehicleType = vt === undefined || vt === null || (typeof vt === 'string' && !vt.trim());
+    const vt = vehicle.vehicleType ?? vehicle.tip ?? '';
+    const noVehicleType = vt == null || (typeof vt === 'string' && !String(vt).trim());
     if (noVehicleType) {
       html += `<div class="detail-row detail-row-inline detail-row-muayene-no-type"><div class="detail-row-header"><span class="detail-row-label">Muayene Bitiş Tarihi</span><span class="detail-row-colon">:</span></div><span class="detail-row-value detail-muayene-value-wrap ${muayeneWarning.class}"> ${escapeHtml(muayeneDisplay || '-')} <span class="muayene-detail-exclamation" aria-hidden="true" title="Taşıt tipi seçilmedi">!</span><span class="muayene-detail-tooltip-wrap"><span class="muayene-detail-tooltip" role="tooltip" hidden>Taşıt Tipi Seçilmediğinden, Muayene Bitiş Tarihi Hatalı Gözükebilir. Seçim Yapmak İçin <button type="button" class="muayene-detail-tooltip-link">Tıklayınız</button>.</span></span></span></div>`;
     } else {
@@ -1459,6 +1511,13 @@
     // Taşıt Takip
     const takipCihazi = vehicle.takipCihaziMontaj ? 'Evet' : 'Hayır';
     html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Taşıt Takip</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(takipCihazi)}</span></div>`;
+    
+    // Sürücü notu (kullanıcı panelinden; son kayıt)
+    const sonNot = vehicle.sonEkstraNot || '';
+    const sonNotDonem = vehicle.sonEkstraNotDonem || '';
+    const notDisplay = sonNot ? escapeHtml(sonNot) : '-';
+    const notDonemDisplay = sonNotDonem ? ` (${escapeHtml(sonNotDonem)})` : '';
+    html += `<div class="detail-row detail-row-block"><div class="detail-row-header"><span class="detail-row-label">Sürücü Notu</span><span class="detail-row-colon">:</span></div><span class="detail-row-value">${notDisplay}${notDonemDisplay}</span></div>`;
     
     rightEl.innerHTML = html;
   }
@@ -1562,8 +1621,8 @@
           const part = svgClone.querySelector(`#${partId}`);
           if (part) {
             if (state === 'boyali') {
-              part.setAttribute('fill', '#28a745');
-              part.style.fill = '#28a745';
+              part.setAttribute('fill', '#5cb85c');
+              part.style.fill = '#5cb85c';
             } else if (state === 'degisen') {
               part.setAttribute('fill', '#e1061b');
               part.style.fill = '#e1061b';
@@ -1684,7 +1743,7 @@
       // Modal'a göre özel işlemler
       if (type === 'kaza') {
         // Kaza modal'ında mevcut boya şemasını göster (readonly) ve varsayılan kullanıcı
-        const vehicle = readVehicles().find(v => v.id === (vehicleId || window.currentDetailVehicleId));
+        const vehicle = readVehicles().find(v => String(v.id) === String(vehicleId || window.currentDetailVehicleId));
         if (vehicle) {
           const container = document.getElementById('kaza-kaporta-container');
           if (container) {
@@ -1740,14 +1799,14 @@
           users.forEach(u => {
             const opt = document.createElement('option');
             opt.value = u.id;
-            opt.textContent = u.name;
+            opt.textContent = u.name || u.isim || '-';
             selectEl.appendChild(opt);
           });
           const addOpt = document.createElement('option');
           addOpt.value = '__add_user__';
           addOpt.textContent = '+ Yeni Kullanıcı Ekle';
           selectEl.appendChild(addOpt);
-          const vehicle = readVehicles().find(v => v.id === (vehicleId || window.currentDetailVehicleId));
+          const vehicle = readVehicles().find(v => String(v.id) === String(vehicleId || window.currentDetailVehicleId));
           if (vehicle?.assignedUserId) {
             selectEl.value = vehicle.assignedUserId;
           } else {
@@ -1778,7 +1837,7 @@
                   users.forEach(u => {
                     const opt = document.createElement('option');
                     opt.value = u.id;
-                    opt.textContent = u.name;
+                    opt.textContent = u.name || u.isim || '-';
                     selectEl.appendChild(opt);
                   });
                   const addOpt2 = document.createElement('option');
@@ -1850,7 +1909,7 @@
         const adresInput = document.getElementById('lastik-adres-event');
         
         // Mevcut değerleri yükle
-        const vehicle = readVehicles().find(v => v.id === (vehicleId || window.currentDetailVehicleId));
+        const vehicle = readVehicles().find(v => String(v.id) === String(vehicleId || window.currentDetailVehicleId));
         if (vehicle) {
           if (vehicle.lastikDurumu === 'var') {
             const varBtn = Array.from(radioBtns).find(btn => btn.dataset.value === 'var');
@@ -1890,7 +1949,7 @@
       } else if (type === 'utts') {
         // UTTS modal'ında mevcut değeri yükle (click handler HTML onclick ile)
         const radioBtns = modal.querySelectorAll('.radio-btn');
-        const vehicle = readVehicles().find(v => v.id === (vehicleId || window.currentDetailVehicleId));
+        const vehicle = readVehicles().find(v => String(v.id) === String(vehicleId || window.currentDetailVehicleId));
         radioBtns.forEach(b => b.classList.remove('active'));
         if (vehicle) {
           const durum = vehicle.uttsTanimlandi ? 'evet' : 'hayir';
@@ -1903,7 +1962,7 @@
       } else if (type === 'takip') {
         // Takip Cihaz modal'ında mevcut değeri yükle (click handler HTML onclick ile)
         const radioBtns = modal.querySelectorAll('.radio-btn');
-        const vehicle = readVehicles().find(v => v.id === (vehicleId || window.currentDetailVehicleId));
+        const vehicle = readVehicles().find(v => String(v.id) === String(vehicleId || window.currentDetailVehicleId));
         radioBtns.forEach(b => b.classList.remove('active'));
         if (vehicle) {
           const durum = vehicle.takipCihaziMontaj ? 'evet' : 'hayir';
@@ -1917,7 +1976,7 @@
         // Bakım modal'ında varsayılan kişi
         const bakimKisiInput = document.getElementById('bakim-kisi');
         if (bakimKisiInput) {
-          const vehicle = readVehicles().find(v => v.id === (vehicleId || window.currentDetailVehicleId));
+          const vehicle = readVehicles().find(v => String(v.id) === String(vehicleId || window.currentDetailVehicleId));
           if (vehicle?.tahsisKisi) {
             bakimKisiInput.value = vehicle.tahsisKisi;
           }
@@ -1926,7 +1985,7 @@
         // Km modal'ında input'u temizle ve mevcut km'yi göster (opsiyonel)
         const kmInput = document.getElementById('km-guncelle-input');
         if (kmInput) {
-          const vehicle = readVehicles().find(v => v.id === (vehicleId || window.currentDetailVehicleId));
+          const vehicle = readVehicles().find(v => String(v.id) === String(vehicleId || window.currentDetailVehicleId));
           // Mevcut güncel km varsa göster, yoksa boş bırak
           const currentKm = vehicle?.guncelKm || '';
           kmInput.value = currentKm ? formatNumber(currentKm) : '';
@@ -1951,7 +2010,7 @@
               });
               
               const freshRadioBtns = modal.querySelectorAll('.radio-btn');
-              const vehicle = readVehicles().find(v => v.id === (vehicleId || window.currentDetailVehicleId));
+              const vehicle = readVehicles().find(v => String(v.id) === String(vehicleId || window.currentDetailVehicleId));
               
               // Mevcut değeri yükle
               if (type === 'utts') {
@@ -2240,7 +2299,7 @@
     }
     
     const vehicles = readVehicles();
-    const vehicle = vehicles.find(v => v.id === vehicleId);
+    const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
     if (!vehicle) return;
     
     if (!vehicle.events) vehicle.events = [];
@@ -2300,7 +2359,7 @@
     }
     
     const vehicles = readVehicles();
-    const vehicle = vehicles.find(v => v.id === vehicleId);
+    const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
     if (!vehicle) return;
     
     if (!vehicle.events) vehicle.events = [];
@@ -2408,7 +2467,7 @@
     }
     
     const vehicles = readVehicles();
-    const vehicle = vehicles.find(v => v.id === vehicleId);
+    const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
     if (!vehicle) return;
     
     if (!vehicle.events) vehicle.events = [];
@@ -2468,7 +2527,7 @@
     }
     
     const vehicles = readVehicles();
-    const vehicle = vehicles.find(v => v.id === vehicleId);
+    const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
     if (!vehicle) return;
     
     if (!vehicle.events) vehicle.events = [];
@@ -2516,7 +2575,7 @@
     }
     
     const vehicles = readVehicles();
-    const vehicle = vehicles.find(v => v.id === vehicleId);
+    const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
     if (!vehicle) return;
     
     if (!vehicle.events) vehicle.events = [];
@@ -2559,7 +2618,7 @@
     const detay = durum === 'var' ? (document.getElementById('anahtar-detay-event')?.value.trim() || '') : '';
     
     const vehicles = readVehicles();
-    const vehicle = vehicles.find(v => v.id === vehicleId);
+    const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
     if (!vehicle) return;
     
     if (!vehicle.events) vehicle.events = [];
@@ -2598,7 +2657,7 @@
     const detay = durum === 'var' ? (document.getElementById('kredi-detay-event')?.value.trim() || '') : '';
     
     const vehicles = readVehicles();
-    const vehicle = vehicles.find(v => v.id === vehicleId);
+    const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
     if (!vehicle) return;
     
     if (!vehicle.events) vehicle.events = [];
@@ -2647,7 +2706,7 @@
     }
     
     const vehicles = readVehicles();
-    const vehicle = vehicles.find(v => v.id === vehicleId);
+    const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
     if (!vehicle) return;
     
     if (!vehicle.events) vehicle.events = [];
@@ -2692,7 +2751,7 @@
     const durum = activeBtn?.dataset.value === 'evet' ? true : false;
     
     const vehicles = readVehicles();
-    const vehicle = vehicles.find(v => v.id === vehicleId);
+    const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
     if (!vehicle) return;
     
     if (!vehicle.events) vehicle.events = [];
@@ -2728,7 +2787,7 @@
     const durum = activeBtn?.dataset.value === 'evet' ? true : false;
     
     const vehicles = readVehicles();
-    const vehicle = vehicles.find(v => v.id === vehicleId);
+    const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
     if (!vehicle) return;
     
     if (!vehicle.events) vehicle.events = [];
@@ -2765,7 +2824,7 @@
     const adres = durum === 'var' ? (document.getElementById('lastik-adres-event')?.value.trim() || '') : '';
     
     const vehicles = readVehicles();
-    const vehicle = vehicles.find(v => v.id === vehicleId);
+    const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
     if (!vehicle) return;
     
     if (!vehicle.events) vehicle.events = [];
@@ -2811,7 +2870,7 @@
     }
     
     const vehicles = readVehicles();
-    const vehicle = vehicles.find(v => v.id === vehicleId);
+    const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
     if (!vehicle) return;
     
     if (!vehicle.events) vehicle.events = [];
@@ -2859,7 +2918,7 @@
     }
 
     const vehicles = readVehicles();
-    const vehicle = vehicles.find(v => v.id === vehicleId);
+    const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
     if (!vehicle) return;
 
     if (!vehicle.events) vehicle.events = [];
@@ -2928,7 +2987,7 @@
     }
     
     const vehicles = readVehicles();
-    const vehicle = vehicles.find(v => v.id === vehicleId);
+    const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
     if (!vehicle) return;
     
     if (!vehicle.events) vehicle.events = [];
@@ -2998,7 +3057,7 @@
     if (!contentEl) return;
     
     const vehicles = readVehicles();
-    const vehicle = vehicles.find(v => v.id === vid);
+    const vehicle = vehicles.find(v => String(v.id) === String(vid));
     if (!vehicle) return;
     
     const events = vehicle.events || [];
@@ -3008,16 +3067,19 @@
     if (tabType === 'bakim') {
       const bakimEvents = events.filter(e => e.type === 'bakim');
       if (bakimEvents.length === 0) {
-        html = '<div style="text-align: center; color: #888; padding: 20px;">Bakım kaydı bulunmamaktadır.</div>';
+        html = '<div class="history-empty-msg" style="text-align: center; padding: 20px;">' + escapeHtml(toTitleCase('Bakım kaydı bulunmamaktadır.')) + '</div>';
       } else {
         bakimEvents.forEach(event => {
           const kmStr = event.data?.km ? `Km: ${escapeHtml(formatNumber(event.data.km))}` : '';
           const tutarStr = event.data?.tutar ? `Tutar: ${escapeHtml(event.data.tutar)}` : '';
           const ekStr = [kmStr, tutarStr].filter(Boolean).join(' | ');
+          const islemler = toTitleCase(event.data?.islemler || '');
+          const servis = toTitleCase(event.data?.servis || '-');
+          const kisi = toTitleCase(event.data?.kisi || '-');
           html += `<div class="history-item" style="padding: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
-            <div style="font-weight: 600; color: #e0e0e0; font-size: 12px; margin-bottom: 4px;">${escapeHtml(event.date)}</div>
-            <div style="color: #aaa; font-size: 12px;">${escapeHtml(event.data?.islemler || '')}</div>
-            <div style="color: #aaa; font-size: 12px; margin-top: 4px;">Servis: ${escapeHtml(event.data?.servis || '-')} | Kişi: ${escapeHtml(event.data?.kisi || '-')}${ekStr ? ' | ' + ekStr : ''}</div>
+            <div class="history-item-date" style="font-weight: 600; font-size: 12px; margin-bottom: 4px;">${escapeHtml(event.date)}</div>
+            <div class="history-item-body" style="font-size: 12px;">${escapeHtml(islemler)}</div>
+            <div class="history-item-body" style="font-size: 12px; margin-top: 4px;">Servis: ${escapeHtml(servis)} | Kişi: ${escapeHtml(kisi)}${ekStr ? ' | ' + ekStr : ''}</div>
           </div>`;
         });
       }
@@ -3025,11 +3087,12 @@
       const kazaEvents = events.filter(e => e.type === 'kaza');
       const partNames = getKaportaPartNames();
       if (kazaEvents.length === 0) {
-        html = '<div style="text-align: center; color: #888; padding: 20px;">Kaza kaydı bulunmamaktadır.</div>';
+        html = '<div class="history-empty-msg" style="text-align: center; padding: 20px;">' + escapeHtml(toTitleCase('Kaza kaydı bulunmamaktadır.')) + '</div>';
       } else {
         kazaEvents.forEach(event => {
           const hasarStr = event.data?.hasarTutari ? ` | Hasar Tutarı: ${escapeHtml(event.data.hasarTutari)}` : '';
-          const aciklamaHtml = event.data?.aciklama ? `<div style="color: #aaa; font-size: 12px; margin-top: 4px;">${escapeHtml(event.data.aciklama)}</div>` : '';
+          const aciklamaVal = event.data?.aciklama ? toTitleCase(event.data.aciklama) : '';
+          const aciklamaHtml = aciklamaVal ? `<div class="history-item-body" style="font-size: 12px; margin-top: 4px;">${escapeHtml(aciklamaVal)}</div>` : '';
           let parcalarHtml = '';
           const hasarParcalari = event.data?.hasarParcalari;
           if (hasarParcalari && typeof hasarParcalari === 'object' && Object.keys(hasarParcalari).length > 0) {
@@ -3037,17 +3100,18 @@
             const degisenList = [];
             Object.keys(hasarParcalari).forEach(partId => {
               const partName = partNames[partId] || partId;
-              if (hasarParcalari[partId] === 'boyali') boyaliList.push(partName);
-              else if (hasarParcalari[partId] === 'degisen') degisenList.push(partName);
+              if (hasarParcalari[partId] === 'boyali') boyaliList.push(toTitleCase(partName));
+              else if (hasarParcalari[partId] === 'degisen') degisenList.push(toTitleCase(partName));
             });
             const parts = [];
-            if (boyaliList.length) parts.push(`Boyalı: ${boyaliList.join(', ')}`);
-            if (degisenList.length) parts.push(`Değişen: ${degisenList.join(', ')}`);
-            if (parts.length) parcalarHtml = `<div style="color: #aaa; font-size: 12px; margin-top: 4px;">${escapeHtml(parts.join(' | '))}</div>`;
+            if (boyaliList.length) parts.push('Boyalı: ' + boyaliList.join(', '));
+            if (degisenList.length) parts.push('Değişen: ' + degisenList.join(', '));
+            if (parts.length) parcalarHtml = `<div class="history-item-body" style="font-size: 12px; margin-top: 4px;">${escapeHtml(parts.join(' | '))}</div>`;
           }
+          const surucu = toTitleCase(event.data?.surucu || '-');
           html += `<div class="history-item" style="padding: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
-            <div style="font-weight: 600; color: #e0e0e0; font-size: 12px; margin-bottom: 4px;">${escapeHtml(event.date)}</div>
-            <div style="color: #aaa; font-size: 12px;">Kullanıcı: ${escapeHtml(event.data?.surucu || '-')}${hasarStr}</div>
+            <div class="history-item-date" style="font-weight: 600; font-size: 12px; margin-bottom: 4px;">${escapeHtml(event.date)}</div>
+            <div class="history-item-body" style="font-size: 12px;">Kullanıcı: ${escapeHtml(surucu)}${hasarStr}</div>
             ${parcalarHtml}
             ${aciklamaHtml}
           </div>`;
@@ -3056,25 +3120,25 @@
     } else if (tabType === 'km') {
       const kmEvents = events.filter(e => e.type === 'km-revize');
       if (kmEvents.length === 0) {
-        html = '<div style="text-align: center; color: #888; padding: 20px;">Km güncelleme kaydı bulunmamaktadır.</div>';
+        html = '<div class="history-empty-msg" style="text-align: center; padding: 20px;">' + escapeHtml(toTitleCase('Km güncelleme kaydı bulunmamaktadır.')) + '</div>';
       } else {
         kmEvents.forEach(event => {
-          // Km revizyon formatı: gg/aa/yyyy - Km Revize
           const eskiKm = event.data?.eskiKm || '-';
           const yeniKm = event.data?.yeniKm || '-';
-          const surucuStr = event.data?.surucu ? `Kullanıcı: ${escapeHtml(event.data.surucu)}` : '';
+          const surucuVal = event.data?.surucu;
+          const surucuStr = surucuVal ? `Kullanıcı: ${escapeHtml(toTitleCase(surucuVal))}` : '';
           html += `<div class="history-item" style="padding: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
-            <div style="font-weight: 600; color: #e0e0e0; font-size: 12px; margin-bottom: 4px;">${escapeHtml(event.date)} - Km Revize</div>
-            <div style="color: #aaa; font-size: 12px; margin-top: 4px;">Önceki Km; ${escapeHtml(formatNumber(eskiKm))} - Güncellenen Km; ${escapeHtml(formatNumber(yeniKm))}</div>
-            ${surucuStr ? `<div style="color: #888; font-size: 12px; margin-top: 4px;">${surucuStr}</div>` : ''}
+            <div class="history-item-date" style="font-weight: 600; font-size: 12px; margin-bottom: 4px;">${escapeHtml(event.date)} - Km Revize</div>
+            <div class="history-item-body" style="font-size: 12px; margin-top: 4px;">Önceki Km; ${escapeHtml(formatNumber(eskiKm))} - Güncellenen Km; ${escapeHtml(formatNumber(yeniKm))}</div>
+            ${surucuStr ? `<div class="history-item-body" style="font-size: 12px; margin-top: 4px;">${surucuStr}</div>` : ''}
           </div>`;
         });
       }
     } else if (tabType === 'sube') {
       const branches = readBranches();
-      const subeEvents = events.filter(e => e.type === 'sube-degisiklik' || e.type === 'kullanici-atama' || e.type === 'sigorta-guncelle' || e.type === 'kasko-guncelle' || e.type === 'muayene-guncelle' || e.type === 'anahtar-guncelle' || e.type === 'kredi-guncelle' || e.type === 'lastik-guncelle' || e.type === 'satis');
+      const subeEvents = events.filter(e => e.type === 'sube-degisiklik' || e.type === 'kullanici-atama' || e.type === 'sigorta-guncelle' || e.type === 'kasko-guncelle' || e.type === 'muayene-guncelle' || e.type === 'anahtar-guncelle' || e.type === 'kredi-guncelle' || e.type === 'lastik-guncelle' || e.type === 'utts-guncelle' || e.type === 'takip-cihaz-guncelle' || e.type === 'not-guncelle' || e.type === 'satis');
       if (subeEvents.length === 0) {
-        html = '<div style="text-align: center; color: #888; padding: 20px;">Şube/Kullanıcı geçmişi bulunmamaktadır.</div>';
+        html = '<div class="history-empty-msg" style="text-align: center; padding: 20px;">' + escapeHtml(toTitleCase('Şube/Kullanıcı geçmişi bulunmamaktadır.')) + '</div>';
       } else {
         subeEvents.forEach(event => {
           let label = '';
@@ -3088,20 +3152,29 @@
           else if (event.type === 'anahtar-guncelle') label = 'Anahtar Güncelleme';
           else if (event.type === 'kredi-guncelle') label = 'Kredi/Rehin Güncelleme';
           else if (event.type === 'lastik-guncelle') label = 'Yazlık/Kışlık Lastik Durumu Güncelleme';
+          else if (event.type === 'utts-guncelle') label = 'UTTS Güncelleme';
+          else if (event.type === 'takip-cihaz-guncelle') label = 'Taşıt Takip Cihazı Güncelleme';
+          else if (event.type === 'not-guncelle') label = 'Sürücü Notu';
           else if (event.type === 'satis') label = 'Satış/Pert';
           
-          let descText = escapeHtml(label);
+          let descText = escapeHtml(toTitleCase(label));
           if (event.type === 'kullanici-atama') {
-            const yeni = event.data?.kullaniciAdi || '-';
-            const eski = event.data?.eskiKullaniciAdi;
+            const yeni = toTitleCase(event.data?.kullaniciAdi || '-');
+            const eski = event.data?.eskiKullaniciAdi ? toTitleCase(event.data.eskiKullaniciAdi) : '';
             descText += ` - ${escapeHtml(yeni)}${eski ? ` (${escapeHtml(eski)})` : ''}`;
           } else if (event.type === 'sube-degisiklik') {
-            const yeni = event.data?.yeniSubeAdi || branches.find(b => b.id === event.data?.yeniSubeId)?.name || '-';
-            const eski = event.data?.eskiSubeAdi || branches.find(b => b.id === event.data?.eskiSubeId)?.name || '';
+            const yeniRaw = event.data?.yeniSubeAdi || branches.find(b => b.id === event.data?.yeniSubeId)?.name || '-';
+            const eskiRaw = event.data?.eskiSubeAdi || branches.find(b => b.id === event.data?.eskiSubeId)?.name || '';
+            const yeni = toTitleCase(yeniRaw);
+            const eski = eskiRaw ? toTitleCase(eskiRaw) : '';
             descText += ` - ${escapeHtml(yeni)}${eski ? ` (${escapeHtml(eski)})` : ''}`;
+          } else if (event.type === 'not-guncelle' && event.data?.not) {
+            const notStr = String(event.data.not);
+            const notDisplay = notStr.length > 40 ? notStr.slice(0, 40) + '…' : notStr;
+            descText += ' - ' + escapeHtml(toTitleCase(notDisplay));
           }
           html += `<div class="history-item history-item-sube" style="padding: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
-            <div style="font-weight: 600; color: #e0e0e0; font-size: 12px; margin-bottom: 4px;">${escapeHtml(event.date)} - ${descText}</div>
+            <div class="history-item-date" style="font-weight: 600; font-size: 12px; margin-bottom: 4px;">${escapeHtml(event.date)} - ${descText}</div>
             ${detailHtml}
           </div>`;
         });
@@ -3372,6 +3445,81 @@
       'branch': 'list-branch'
     };
     return classMap[columnKey] || '';
+  }
+
+  // Mobil: sütun başlığı touch ile sürükle-bırak state
+  let touchColumnDrag = { active: false, columnKey: null, startX: 0, startY: 0, dragging: false, lastDropTarget: null };
+
+  function attachVehicleColumnTouchListeners(container) {
+    const headerCells = container.querySelectorAll('.list-header-row .list-cell[data-col]');
+    if (!headerCells.length) return;
+    headerCells.forEach(function(cell) {
+      const columnKey = cell.getAttribute('data-col');
+      if (!columnKey) return;
+      cell.addEventListener('touchstart', function(e) {
+        if (e.touches.length !== 1) return;
+        touchColumnDrag.active = true;
+        touchColumnDrag.columnKey = columnKey;
+        touchColumnDrag.startX = e.touches[0].clientX;
+        touchColumnDrag.startY = e.touches[0].clientY;
+        touchColumnDrag.dragging = false;
+        touchColumnDrag.lastDropTarget = null;
+        const allRows = container.querySelectorAll('.list-item');
+        allRows.forEach(function(row) {
+          const c = row.querySelector('.list-cell.' + getColumnClass(columnKey));
+          if (c) c.style.opacity = '0.5';
+        });
+        cell.style.opacity = '0.5';
+      }, { passive: true });
+      cell.addEventListener('touchmove', function(e) {
+        if (!touchColumnDrag.active || e.touches.length !== 1) return;
+        const x = e.touches[0].clientX;
+        const y = e.touches[0].clientY;
+        const dx = Math.abs(x - touchColumnDrag.startX);
+        const dy = Math.abs(y - touchColumnDrag.startY);
+        if (!touchColumnDrag.dragging && (dx > 10 || dy > 10)) {
+          touchColumnDrag.dragging = true;
+        }
+        if (touchColumnDrag.dragging) {
+          e.preventDefault();
+          const under = document.elementFromPoint(x, y);
+          const headerCell = under && under.closest('.list-header-row .list-cell[data-col]');
+          const targetKey = headerCell ? headerCell.getAttribute('data-col') : null;
+          container.querySelectorAll('.list-header-row .list-cell').forEach(function(c) {
+            c.classList.toggle('drag-over', c === headerCell && targetKey && targetKey !== touchColumnDrag.columnKey);
+          });
+          touchColumnDrag.lastDropTarget = (targetKey && targetKey !== touchColumnDrag.columnKey) ? targetKey : null;
+        }
+      }, { passive: false });
+      function endTouch() {
+        if (!touchColumnDrag.active) return;
+        const sourceKey = touchColumnDrag.columnKey;
+        const targetKey = touchColumnDrag.lastDropTarget;
+        container.querySelectorAll('.list-header-row .list-cell').forEach(function(c) {
+          c.style.opacity = '1';
+          c.classList.remove('drag-over');
+        });
+        container.querySelectorAll('.list-item .list-cell').forEach(function(c) {
+          c.style.opacity = '1';
+        });
+        touchColumnDrag.active = false;
+        touchColumnDrag.columnKey = null;
+        touchColumnDrag.dragging = false;
+        touchColumnDrag.lastDropTarget = null;
+        if (sourceKey && targetKey) {
+          const draggedIndex = vehicleColumnOrder.indexOf(sourceKey);
+          const targetIndex = vehicleColumnOrder.indexOf(targetKey);
+          if (draggedIndex !== -1 && targetIndex !== -1) {
+            vehicleColumnOrder.splice(draggedIndex, 1);
+            vehicleColumnOrder.splice(targetIndex, 0, sourceKey);
+            saveVehicleColumnOrder();
+            renderVehicles();
+          }
+        }
+      }
+      cell.addEventListener('touchend', endTouch, { passive: true });
+      cell.addEventListener('touchcancel', endTouch, { passive: true });
+    });
   }
 
   // kayit.js deleteVehicle sonrası liste yenilemesi için global erişim

@@ -45,11 +45,17 @@ function loadDataFromLocalStorage() {
         if (savedData) {
             try {
                 const data = JSON.parse(savedData);
+                const rawUsers = data.users || [];
+                const users = rawUsers.map(u => {
+                    const u2 = { ...u };
+                    if (!u2.name && u2.isim) u2.name = u2.isim;
+                    return u2;
+                });
                 window.appData = {
                     tasitlar: data.tasitlar || [],
                     kayitlar: data.kayitlar || [],
                     branches: data.branches || [],
-                    users: data.users || [],
+                    users: users,
                     ayarlar: data.ayarlar || {
                         sirketAdi: 'Medisa',
                         yetkiliKisi: '',
@@ -70,7 +76,12 @@ function loadDataFromLocalStorage() {
         // Eski formatı dene (geriye dönük uyumluluk)
         const vehicles = JSON.parse(localStorage.getItem('medisa_vehicles_v1') || '[]');
         const branches = JSON.parse(localStorage.getItem('medisa_branches_v1') || '[]');
-        const users = JSON.parse(localStorage.getItem('medisa_users_v1') || '[]');
+        const rawUsers = JSON.parse(localStorage.getItem('medisa_users_v1') || '[]');
+        const users = Array.isArray(rawUsers) ? rawUsers.map(u => {
+            const u2 = { ...u };
+            if (!u2.name && u2.isim) u2.name = u2.isim;
+            return u2;
+        }) : [];
         
         // window.appData'yı güncelle
         window.appData = {
@@ -220,12 +231,20 @@ async function loadDataFromServer(forceRefresh = true) {
         });
         data.tasitlar = mergedTasitlar;
 
+        // Kullanıcıları normalize et (isim -> name, tüm modüller tek alan kullansın)
+        const rawUsers = data.users || [];
+        const users = rawUsers.map(u => {
+            const u2 = { ...u };
+            if (!u2.name && u2.isim) u2.name = u2.isim;
+            return u2;
+        });
+
         // Global veri nesnesini güncelle (arac_aylik_hareketler, duzeltme_talepleri save sırasında silinmesin)
         window.appData = {
             tasitlar: data.tasitlar || [],
             kayitlar: data.kayitlar || [],
             branches: data.branches || [],
-            users: data.users || [],
+            users: users,
             ayarlar: data.ayarlar || {
                 sirketAdi: 'Medisa',
                 yetkiliKisi: '',

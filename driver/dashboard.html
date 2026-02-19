@@ -23,6 +23,12 @@
     <link rel="stylesheet" href="driver-style.css?v=20260210">
 </head>
 <body class="dashboard-page">
+    <div id="driver-splash" class="driver-splash" aria-hidden="false">
+        <div class="driver-splash-inner">
+            <img src="../icon/logo-header2.svg" alt="MEDISA" class="driver-splash-logo">
+            <h1 class="driver-splash-title">TAŞIT YÖNETİM SİSTEMİ</h1>
+        </div>
+    </div>
     <div class="app-container driver-dashboard-container">
         <div class="driver-header-fixed">
             <div class="hero">
@@ -83,6 +89,7 @@
                                 </button>
                                 <div id="driver-plate-dropdown" class="driver-plate-dropdown" role="listbox" style="display:none"></div>
                             </div>
+                            <span id="driver-plate-subtitle" class="driver-plate-subtitle" aria-hidden="true"></span>
                         </div>
                         <div id="driver-vehicle-info" class="driver-vehicle-info"></div>
                     </aside>
@@ -162,7 +169,7 @@
                 </p>
                 <div class="form-group">
                     <label for="new-km">Yeni KM Değeri</label>
-                    <input type="number" id="new-km" placeholder="Örn: 54230">
+                    <input type="number" id="new-km" placeholder="Örn: 54230" inputmode="numeric" pattern="[0-9]*">
                 </div>
                 <p class="driver-current-km">
                     Mevcut Bakım: <strong id="current-bakim">-</strong>
@@ -210,8 +217,8 @@
                     <button type="button" onclick="closeDriverEventModal('anahtar')" class="modal-close" aria-label="Kapat"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
                 </div>
                 <div class="modal-body">
-                    <div class="form-group">
-                        <label style="color: #ccc; font-size: 14px; display: block; margin-bottom: 8px;">Durum:</label>
+                    <div class="form-group driver-radio-row">
+                        <label class="driver-radio-label">Durum:</label>
                         <div class="driver-radio-group">
                             <button type="button" class="driver-radio-btn active" data-value="var" data-group="anahtar">Var</button>
                             <button type="button" class="driver-radio-btn" data-value="yok" data-group="anahtar">Yok</button>
@@ -222,7 +229,7 @@
                         <input type="text" id="driver-anahtar-detay" class="form-input" placeholder="Anahtar nerede?" style="width: 100%;">
                     </div>
                     <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
-                        <button type="button" class="btn-submit" onclick="saveDriverEvent('anahtar')">Kaydet</button>
+                        <button type="button" class="btn-submit" onclick="saveDriverEvent('anahtar')">Bildir</button>
                         <button type="button" class="driver-modal-btn-secondary" onclick="closeDriverEventModal('anahtar')">Vazgeç</button>
                     </div>
                 </div>
@@ -237,8 +244,8 @@
                     <button type="button" onclick="closeDriverEventModal('lastik')" class="modal-close" aria-label="Kapat"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
                 </div>
                 <div class="modal-body">
-                    <div class="form-group">
-                        <label style="color: #ccc; font-size: 14px; display: block; margin-bottom: 8px;">Durum:</label>
+                    <div class="form-group driver-radio-row">
+                        <label class="driver-radio-label">Durum:</label>
                         <div class="driver-radio-group">
                             <button type="button" class="driver-radio-btn" data-value="var" data-group="lastik">Var</button>
                             <button type="button" class="driver-radio-btn active" data-value="yok" data-group="lastik">Yok</button>
@@ -249,7 +256,7 @@
                         <input type="text" id="driver-lastik-adres" class="form-input" placeholder="Lastik adresi" style="width: 100%;">
                     </div>
                     <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
-                        <button type="button" class="btn-submit" onclick="saveDriverEvent('lastik')">Kaydet</button>
+                        <button type="button" class="btn-submit" onclick="saveDriverEvent('lastik')">Bildir</button>
                         <button type="button" class="driver-modal-btn-secondary" onclick="closeDriverEventModal('lastik')">Vazgeç</button>
                     </div>
                 </div>
@@ -264,15 +271,15 @@
                     <button type="button" onclick="closeDriverEventModal('utts')" class="modal-close" aria-label="Kapat"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
                 </div>
                 <div class="modal-body">
-                    <div class="form-group">
-                        <label style="color: #ccc; font-size: 14px; display: block; margin-bottom: 8px;">UTTS Tanımlandı mı:</label>
+                    <div class="form-group driver-radio-row">
+                        <label class="driver-radio-label">UTTS Tanımlandı mı:</label>
                         <div class="driver-radio-group">
                             <button type="button" class="driver-radio-btn" data-value="evet" data-group="utts">Evet</button>
                             <button type="button" class="driver-radio-btn active" data-value="hayir" data-group="utts">Hayır</button>
                         </div>
                     </div>
                     <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
-                        <button type="button" class="btn-submit" onclick="saveDriverEvent('utts')">Kaydet</button>
+                        <button type="button" class="btn-submit" onclick="saveDriverEvent('utts')">Bildir</button>
                         <button type="button" class="driver-modal-btn-secondary" onclick="closeDriverEventModal('utts')">Vazgeç</button>
                     </div>
                 </div>
@@ -292,7 +299,7 @@
                         <input type="date" id="driver-muayene-tarih" class="form-input" style="width: 100%;">
                     </div>
                     <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
-                        <button type="button" class="btn-submit" onclick="saveDriverEvent('muayene')">Kaydet</button>
+                        <button type="button" class="btn-submit" onclick="saveDriverEvent('muayene')">Bildir</button>
                         <button type="button" class="driver-modal-btn-secondary" onclick="closeDriverEventModal('muayene')">Vazgeç</button>
                     </div>
                 </div>
@@ -321,10 +328,10 @@
                     </div>
                     <div class="form-group">
                         <label for="driver-sigorta-iletisim" style="color: #ccc; font-size: 14px;">İletişim (isteğe bağlı):</label>
-                        <input type="text" id="driver-sigorta-iletisim" class="form-input" placeholder="Telefon / e-posta" style="width: 100%;">
+                        <input type="text" id="driver-sigorta-iletisim" class="form-input" placeholder="Telefon / e-posta" inputmode="tel" style="width: 100%;">
                     </div>
                     <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
-                        <button type="button" class="btn-submit" onclick="saveDriverEvent('sigorta')">Kaydet</button>
+                        <button type="button" class="btn-submit" onclick="saveDriverEvent('sigorta')">Bildir</button>
                         <button type="button" class="driver-modal-btn-secondary" onclick="closeDriverEventModal('sigorta')">Vazgeç</button>
                     </div>
                 </div>
@@ -353,10 +360,10 @@
                     </div>
                     <div class="form-group">
                         <label for="driver-kasko-iletisim" style="color: #ccc; font-size: 14px;">İletişim (isteğe bağlı):</label>
-                        <input type="text" id="driver-kasko-iletisim" class="form-input" placeholder="Telefon / e-posta" style="width: 100%;">
+                        <input type="text" id="driver-kasko-iletisim" class="form-input" placeholder="Telefon / e-posta" inputmode="tel" style="width: 100%;">
                     </div>
                     <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
-                        <button type="button" class="btn-submit" onclick="saveDriverEvent('kasko')">Kaydet</button>
+                        <button type="button" class="btn-submit" onclick="saveDriverEvent('kasko')">Bildir</button>
                         <button type="button" class="driver-modal-btn-secondary" onclick="closeDriverEventModal('kasko')">Vazgeç</button>
                     </div>
                 </div>

@@ -295,7 +295,7 @@
                             <button class="stok-print-btn" onclick="printStokReport()" title="Yazdır">
                                 🖨️
                             </button>
-                            <div class="stok-search-wrap">
+                            <div class="stok-search-wrap stok-search-wrap-desktop">
                                 <button class="stok-search-btn" onclick="toggleStokSearch()" title="Ara">
                                     🔍
                                 </button>
@@ -314,6 +314,14 @@
                         <div class="stok-date-input-group">
                             <label for="stok-date-end">Bitiş T.</label>
                             <input type="date" id="stok-date-end" class="stok-date-input stok-date-has-value" value="${todayInputValue}">
+                        </div>
+                    </div>
+                    <div class="stok-search-wrap stok-search-wrap-mobile">
+                        <button class="stok-search-btn" onclick="toggleStokSearch()" title="Ara">
+                            🔍
+                        </button>
+                        <div id="stok-search-container-mobile" class="stok-search-container" data-sync-with="stok-search-input">
+                            <input type="text" id="stok-search-input-mobile" class="stok-search-input" placeholder="Üretim yılı, marka/model, kullanıcı, şube ara..." oninput="handleStokSearch(this.value)">
                         </div>
                     </div>
                 </div>
@@ -462,7 +470,8 @@
         }
     }
 
-    // Sütun genişliklerini hesapla (7 sütun: fr ile sığar; 8+ sütun: sabit px, önceki genişlikler korunur)
+    // Sütun genişliklerini hesapla (key bazlı: sürükle-bırak sonrası genişlik doğru sütunla kalır)
+    // 7 sütun: fr ile sığar; 8+ sütun: sabit px
     function getColumnWidths(allColumns) {
         const hasDetail = allColumns.length > 7;
 

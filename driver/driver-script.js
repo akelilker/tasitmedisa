@@ -45,6 +45,19 @@ let allHistoryVehicles = [];
 let currentDriverEventVehicleId = null;
 let currentPeriod = '';
 let selectedVehicleId = null;
+/** Bu oturumda (ekran kapanana kadar) son bildirilen aksiyon: { action, vehicleId }. Ekran kapanınca temizlenir, yeşil geri bildirim beyaz/griye döner. */
+let lastCompletedActionInSession = null;
+
+function clearSessionGreenFeedback() { lastCompletedActionInSession = null; }
+window.addEventListener('pagehide', clearSessionGreenFeedback);
+document.addEventListener('visibilitychange', function() { if (document.hidden) clearSessionGreenFeedback(); });
+
+/** Modal açıkken body scroll kilitlensin (sadece modal içi kayar) */
+function updateDriverModalBodyClass() {
+  var open = document.querySelector('.driver-modal.show');
+  if (open) document.body.classList.add('driver-modal-open');
+  else document.body.classList.remove('driver-modal-open');
+}
 
 /* =========================================
    LOGIN SAYFASI
@@ -175,19 +188,38 @@ if (document.getElementById('login-form')) {
 }
 
 /* =========================================
-   DASHBOARD SAYFASI
+   SPLASH (3 sn) + DASHBOARD / LOGIN
    ========================================= */
 
+/** Splash 3 sn göster, sonra gizle ve normal akışa devam et */
+function initDriverSplash(onComplete) {
+  const splash = document.getElementById('driver-splash');
+  if (!splash) {
+    if (typeof onComplete === 'function') onComplete();
+    return;
+  }
+  setTimeout(function() {
+    splash.classList.add('hidden');
+    splash.setAttribute('aria-hidden', 'true');
+    setTimeout(function() {
+      splash.style.display = 'none';
+      if (typeof onComplete === 'function') onComplete();
+    }, 400);
+  }, 3000);
+}
+
 if (document.getElementById('driver-two-panel')) {
-    const run = () => { loadDashboard(); };
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', run);
-    } else {
-        run();
-    }
-    window.addEventListener('pageshow', function(ev) {
-        if (ev.persisted) run();
-    });
+  const run = () => { initDriverSplash(function() { loadDashboard(); }); };
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', run);
+  } else {
+    run();
+  }
+  window.addEventListener('pageshow', function(ev) {
+    if (ev.persisted) run();
+  });
+} else if (document.getElementById('driver-splash')) {
+  document.addEventListener('DOMContentLoaded', function() { initDriverSplash(); });
 }
 
 async function loadDashboard() {
@@ -230,10 +262,16 @@ async function loadDashboard() {
         const vehicles = data.vehicles;
         const records = data.records;
         selectedVehicleId = selectedVehicleId || (vehicles[0] && vehicles[0].id);
+        if (!getSelectedVehicle() && vehicles && vehicles.length) {
+            selectedVehicleId = vehicles[0].id;
+        }
         
         renderLeftPanel(vehicles, records);
         renderRightPanel(vehicles, records);
         renderSlidingWarning(vehicles, records);
+        
+        var actionArea = document.getElementById('driver-action-area');
+        if (actionArea) actionArea.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         
         if (vehicles.length > 1) {
             const trigger = document.getElementById('driver-plate-trigger');
@@ -279,12 +317,14 @@ function renderLeftPanel(vehicles, records) {
     if (!vehicle) return;
     
     const userNameEl = document.getElementById('driver-user-name');
-    if (userNameEl && currentUser && currentUser.isim) {
-        userNameEl.textContent = currentUser.isim;
+    if (userNameEl && currentUser) {
+        userNameEl.textContent = currentUser.isim || currentUser.ad_soyad || currentUser.name || '-';
     }
     
     const plakaEl = document.getElementById('driver-current-plaka');
     if (plakaEl) plakaEl.textContent = vehicle.plaka;
+    const subtitleEl = document.getElementById('driver-plate-subtitle');
+    if (subtitleEl) subtitleEl.textContent = vehicle.brandModel || [vehicle.marka, vehicle.model].filter(Boolean).join(' ') || '';
     
     const existingRecord = getExistingRecord(vehicle.id);
     const kmVal = vehicle.guncelKm || (existingRecord && existingRecord.guncel_km) || '-';
@@ -301,8 +341,6 @@ function renderLeftPanel(vehicles, records) {
     const kaskoW = checkDateWarningsDriver(vehicle.kaskoDate);
     const muayeneW = checkDateWarningsDriver(vehicle.muayeneDate);
     
-    const tipLabels = { 'otomobil': 'Otomobil', 'kamyonet': 'Kamyonet', 'minibus': 'Minibüs', 'otobus': 'Otobüs', 'kamyon': 'Kamyon', 'tir': 'TIR', 'traktor': 'Traktör' };
-    const tipLabel = tipLabels[vehicle.tip] || vehicle.tip || '-';
     const anahtarLabel = (vehicle.anahtar === 'var') ? (vehicle.anahtarNerede || 'Var') : 'Yoktur.';
     const lastikLabel = (vehicle.lastikDurumu === 'var') ? (vehicle.lastikAdres || 'Var') : 'Yoktur.';
     const uttsLabel = vehicle.uttsTanimlandi ? 'Evet' : 'Hayır';
@@ -318,15 +356,14 @@ function renderLeftPanel(vehicles, records) {
     if (infoEl) {
         infoEl.innerHTML = `
             <div class="driver-info-item"><span class="label">Şube</span><span class="value">${escapeHtmlDriver(vehicle.branchName || '-')}</span></div>
-            <div class="driver-info-item"><span class="label">Taşıt Tipi</span><span class="value">${escapeHtmlDriver(tipLabel)}</span></div>
             <div class="driver-info-item"><span class="label">Üretim Yılı</span><span class="value">${escapeHtmlDriver(vehicle.year || '-')}</span></div>
             <div class="driver-info-item ${hasKmSaved ? 'saved' : ''}"><span class="label">KM</span><span class="value ${kmClass}">${escapeHtmlDriver(kmFormatted)}</span></div>
-            <div class="driver-info-item ${sigortaSaved ? 'saved' : ''}"><span class="label">Sigorta Bitiş</span><span class="value ${sigortaW.class}">${formatDriverDate(vehicle.sigortaDate) || '-'}</span></div>
-            <div class="driver-info-item ${kaskoSaved ? 'saved' : ''}"><span class="label">Kasko Bitiş</span><span class="value ${kaskoW.class}">${formatDriverDate(vehicle.kaskoDate) || '-'}</span></div>
-            <div class="driver-info-item ${muayeneSaved ? 'saved' : ''}"><span class="label">Muayene Bitiş</span><span class="value ${muayeneW.class}">${formatDriverDate(vehicle.muayeneDate) || '-'}</span></div>
+            <div class="driver-info-item"><span class="label">Sigorta Bitiş</span><span class="value ${sigortaW.class}">${formatDriverDate(vehicle.sigortaDate) || '-'}</span></div>
+            <div class="driver-info-item"><span class="label">Kasko Bitiş</span><span class="value ${kaskoW.class}">${formatDriverDate(vehicle.kaskoDate) || '-'}</span></div>
+            <div class="driver-info-item"><span class="label">Muayene Bitiş</span><span class="value ${muayeneW.class}">${formatDriverDate(vehicle.muayeneDate) || '-'}</span></div>
             <div class="driver-info-item ${anahtarSaved ? 'saved' : ''}"><span class="label">Yedek Anahtar</span><span class="value">${escapeHtmlDriver(anahtarLabel)}</span></div>
             <div class="driver-info-item ${lastikSaved ? 'saved' : ''}"><span class="label">Lastik Durumu</span><span class="value">${escapeHtmlDriver(lastikLabel)}</span></div>
-            <div class="driver-info-item ${uttsSaved ? 'saved' : ''}"><span class="label">UTTS</span><span class="value">${escapeHtmlDriver(uttsLabel)}</span></div>
+            <div class="driver-info-item"><span class="label">UTTS</span><span class="value">${escapeHtmlDriver(uttsLabel)}</span></div>
         `;
     }
 }
@@ -344,14 +381,20 @@ function setupPlateDropdown(vehicles) {
     const trigger = document.getElementById('driver-plate-trigger');
     if (!dropdown || !currentPlakaEl || !trigger) return;
     
-    dropdown.innerHTML = vehicles.map(v => 
-        `<div class="driver-plate-dropdown-item" role="option" data-vehicle-id="${v.id}" tabindex="0">${escapeHtmlDriver(v.plaka)}${(v.marka || v.model) ? ' – ' + escapeHtmlDriver([v.marka, v.model].filter(Boolean).join(' ')) : ''}</div>`
-    ).join('');
+    dropdown.innerHTML = vehicles.map(v => {
+        const brandModel = v.brandModel || [v.marka, v.model].filter(Boolean).join(' ');
+        return `<div class="driver-plate-dropdown-item" role="option" data-vehicle-id="${v.id}" tabindex="0">${escapeHtmlDriver(v.plaka)}${brandModel ? ' – ' + escapeHtmlDriver(brandModel) : ''}</div>`;
+    }).join('');
     
     dropdown.querySelectorAll('.driver-plate-dropdown-item').forEach(item => {
-        item.addEventListener('click', function() {
-            selectedVehicleId = this.getAttribute('data-vehicle-id');
-            currentPlakaEl.textContent = getSelectedVehicle().plaka;
+        item.addEventListener('click', function(ev) {
+            ev.preventDefault();
+            ev.stopPropagation();
+            const vid = this.getAttribute('data-vehicle-id');
+            if (vid == null || vid === '') return;
+            selectedVehicleId = vid;
+            const sel = getSelectedVehicle();
+            if (sel) currentPlakaEl.textContent = sel.plaka;
             dropdown.style.display = 'none';
             loadDashboard();
         });
@@ -394,13 +437,18 @@ function renderRightPanel(vehicles, records) {
     const muayeneSaved = !!(vehicle.muayeneDate && vehicle.muayeneDate.trim());
     const anahtarSaved = !!(vehicle.anahtar && String(vehicle.anahtar).trim());
     const lastikSaved = !!(vehicle.lastikDurumu && String(vehicle.lastikDurumu).trim());
-    const kmBtnClass = (hasKmSaved ? ' saved' : '') + (needsKmWarning ? ' warning' : '');
-    const sigortaBtnClass = (sigortaSaved ? ' saved' : '') + (sigortaW.class ? ' warning' : '');
-    const kaskoBtnClass = (kaskoSaved ? ' saved' : '') + (kaskoW.class ? ' warning' : '');
-    const muayeneBtnClass = (muayeneSaved ? ' saved' : '') + (muayeneW.class ? ' warning' : '');
-    
+    const sessionMatch = (action) => lastCompletedActionInSession && lastCompletedActionInSession.action === action && String(lastCompletedActionInSession.vehicleId) === vid;
+    const kmBtnClass = sessionMatch('km') ? ' saved' : (needsKmWarning ? ' warning' : (hasKmSaved ? ' data-entered' : ''));
+    const kazaBtnClass = sessionMatch('kaza') ? ' saved' : (kazaVar ? ' data-entered' : '');
+    const bakimBtnClass = sessionMatch('bakim') ? ' saved' : (bakimVar ? ' data-entered' : '');
+    const sigortaBtnClass = sessionMatch('sigorta') ? ' saved' : (sigortaW.class ? ' warning' : (sigortaSaved ? ' data-entered' : ''));
+    const kaskoBtnClass = sessionMatch('kasko') ? ' saved' : (kaskoW.class ? ' warning' : (kaskoSaved ? ' data-entered' : ''));
+    const muayeneBtnClass = sessionMatch('muayene') ? ' saved' : (muayeneW.class ? ' warning' : (muayeneSaved ? ' data-entered' : ''));
+    const anahtarBtnClass = sessionMatch('anahtar') ? ' saved' : (anahtarSaved ? ' data-entered' : '');
+    const lastikBtnClass = sessionMatch('lastik') ? ' saved' : (lastikSaved ? ' data-entered' : '');
+
     areaEl.innerHTML = buildDriverActionArea(vehicle, existingRecord, bakimVar, kazaVar, {
-        kmBtnClass, sigortaBtnClass, kaskoBtnClass, muayeneBtnClass, anahtarSaved, lastikSaved, vid
+        kmBtnClass, kazaBtnClass, bakimBtnClass, sigortaBtnClass, kaskoBtnClass, muayeneBtnClass, anahtarBtnClass, lastikBtnClass, vid
     });
     
     const kaportaContainer = document.getElementById('kaza-kaporta-' + vid);
@@ -413,43 +461,60 @@ function buildDriverActionArea(vehicle, existingRecord, bakimVar, kazaVar, opts)
     const vid = opts.vid || vehicle.id;
     const today = new Date().toISOString().split('T')[0];
     const esc = (s) => (s == null ? '' : String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'));
-    const kmVal = existingRecord ? esc(existingRecord.guncel_km || '') : '';
+    /* Son güncellenen km: taşıt guncelKm (kayıt sonrası) veya mevcut dönem kaydı - binlik ayırıcı ile */
+    const lastKm = vehicle.guncelKm != null ? vehicle.guncelKm : (existingRecord && existingRecord.guncel_km != null ? existingRecord.guncel_km : '');
+    const kmVal = (lastKm !== '' && lastKm != null) ? esc(formatKm(lastKm)) : '';
     const bakimTarih = existingRecord && existingRecord.bakim_tarih ? existingRecord.bakim_tarih : today;
     const kazaTarih = existingRecord && existingRecord.kaza_tarih ? existingRecord.kaza_tarih : today;
     const bakimAciklama = existingRecord ? esc(existingRecord.bakim_aciklama || '') : '';
     const kazaAciklama = existingRecord ? esc(existingRecord.kaza_aciklama || '') : '';
     const ekstraNot = existingRecord ? esc(existingRecord.ekstra_not || '') : '';
     const kmBtnClass = opts.kmBtnClass || '';
+    const kazaBtnClass = opts.kazaBtnClass || '';
+    const bakimBtnClass = opts.bakimBtnClass || '';
     const sigortaBtnClass = opts.sigortaBtnClass || '';
     const kaskoBtnClass = opts.kaskoBtnClass || '';
     const muayeneBtnClass = opts.muayeneBtnClass || '';
-    const anahtarSaved = opts.anahtarSaved ? ' saved' : '';
-    const lastikSaved = opts.lastikSaved ? ' saved' : '';
+    const anahtarBtnClass = opts.anahtarBtnClass || '';
+    const lastikBtnClass = opts.lastikBtnClass || '';
     return `
         <div class="driver-action-area-inner" data-vehicle-id="${vid}">
             <div class="driver-action-group">
                 <button type="button" class="driver-action-btn${kmBtnClass}" data-action="km" onclick="toggleDriverActionBlock('km','${vid}')">Km Bildir</button>
                 <div id="km-block-${vid}" class="driver-input-form driver-km-form-wrap driver-action-block">
-                    <div class="form-group driver-km-form">
-                        <label for="km-${vid}">Güncel KM</label>
-                        <div class="driver-km-input-wrap">
-                            <span class="driver-km-fake-placeholder" id="km-placeholder-${vid}">Örn: 45230</span>
-                            <input type="text" id="km-${vid}" class="driver-km-input" inputmode="numeric" pattern="[0-9]*" maxlength="8" data-vehicle-id="${vid}" value="${kmVal}" required autocomplete="off" aria-label="Güncel kilometre">
+                    <div class="driver-km-form-content">
+                        <div class="form-group driver-km-form">
+                            <label for="km-${vid}">Güncel KM</label>
+                            <div class="driver-km-input-wrap">
+                                <span class="driver-km-fake-placeholder" id="km-placeholder-${vid}">Örn: 45.230</span>
+                                <input type="text" id="km-${vid}" class="driver-km-input" inputmode="numeric" pattern="[0-9]*" maxlength="8" data-vehicle-id="${vid}" value="${kmVal}" required autocomplete="off" aria-label="Güncel kilometre">
+                            </div>
+                        </div>
+                        <div class="driver-km-form-actions">
+                            <button type="button" class="btn-km-bildir" onclick="submitKmOnly('${vid}')">Bildir</button>
+                            <button type="button" class="btn-km-vazgec" onclick="cancelKmForm('${vid}')">Vazgeç</button>
                         </div>
                     </div>
+                    <div class="driver-km-success-msg" id="km-success-${vid}">Bildirildi</div>
+                    <div class="driver-km-error" id="km-error-${vid}"></div>
                 </div>
             </div>
             <div class="driver-action-group">
-                <button type="button" class="driver-action-btn" data-action="kaza" onclick="toggleDriverActionBlock('kaza','${vid}')">Kaza Bildir</button>
+                <button type="button" class="driver-action-btn${kazaBtnClass}" data-action="kaza" onclick="toggleDriverActionBlock('kaza','${vid}')">Kaza Bildir</button>
                 <div id="kaza-block-${vid}" class="driver-report-block driver-report-block-kaza driver-action-block">
                     <div class="form-group"><label for="kaza-tarih-${vid}">Kaza Tarihi</label><input type="date" id="kaza-tarih-${vid}" class="driver-kaza-input" value="${kazaTarih}"></div>
                     <div class="form-group"><label for="kaza-detay-${vid}">Açıklama</label><textarea id="kaza-detay-${vid}" class="driver-report-textarea-auto driver-kaza-textarea" rows="1" placeholder="Kaza açıklamasını yazın..." maxlength="500">${kazaAciklama}</textarea></div>
                     <div class="form-group"><label for="kaza-tutar-${vid}">Hasar Tutarı (TL)</label><input type="text" id="kaza-tutar-${vid}" class="driver-kaza-input" placeholder="5.000" inputmode="numeric"></div>
                     <div class="form-group"><label class="driver-kaporta-label">Hasar gören parçaları işaretleyin (isteğe bağlı)</label><div id="kaza-kaporta-${vid}" class="driver-kaporta-container" data-vehicle-id="${vid}" data-boyali-parcalar='${JSON.stringify(vehicle.boyaliParcalar || {})}'></div></div>
+                    <div class="driver-form-actions">
+                        <button type="button" class="btn-driver-bildir" onclick="submitDriverAction('kaza','${vid}')">Bildir</button>
+                        <button type="button" class="btn-driver-vazgec" onclick="cancelDriverActionForm('kaza','${vid}')">Vazgeç</button>
+                    </div>
+                    <div class="driver-success-msg" id="kaza-success-${vid}">Bildirildi</div>
                 </div>
             </div>
             <div class="driver-action-group">
-                <button type="button" class="driver-action-btn" data-action="bakim" onclick="toggleDriverActionBlock('bakim','${vid}')">Bakım Bildir</button>
+                <button type="button" class="driver-action-btn${bakimBtnClass}" data-action="bakim" onclick="toggleDriverActionBlock('bakim','${vid}')">Bakım Bildir</button>
                 <div id="bakim-block-${vid}" class="driver-report-block driver-report-block-bakim driver-action-block">
                     <div class="form-group"><label for="bakim-tarih-${vid}">Bakım Tarihi</label><input type="date" id="bakim-tarih-${vid}" class="driver-bakim-input" value="${bakimTarih}"></div>
                     <div class="form-group"><label for="bakim-detay-${vid}">Açıklama</label><textarea id="bakim-detay-${vid}" class="driver-report-textarea-auto driver-bakim-textarea" rows="1" placeholder="Bakım detayını yazın..." maxlength="500">${bakimAciklama}</textarea></div>
@@ -457,22 +522,88 @@ function buildDriverActionArea(vehicle, existingRecord, bakimVar, kazaVar, opts)
                     <div class="form-group"><label for="bakim-kisi-${vid}">Taşıtı Bakıma Götüren Kişi</label><input type="text" id="bakim-kisi-${vid}" class="driver-bakim-input" placeholder="Kişi adı"></div>
                     <div class="form-group"><label for="bakim-km-${vid}">Km</label><input type="text" id="bakim-km-${vid}" class="driver-bakim-input" placeholder="50.000" inputmode="numeric"></div>
                     <div class="form-group"><label for="bakim-tutar-${vid}">Tutar (TL)</label><input type="text" id="bakim-tutar-${vid}" class="driver-bakim-input" placeholder="2.500" inputmode="numeric"></div>
+                    <div class="driver-form-actions">
+                        <button type="button" class="btn-driver-bildir" onclick="submitDriverAction('bakim','${vid}')">Bildir</button>
+                        <button type="button" class="btn-driver-vazgec" onclick="cancelDriverActionForm('bakim','${vid}')">Vazgeç</button>
+                    </div>
+                    <div class="driver-success-msg" id="bakim-success-${vid}">Bildirildi</div>
                 </div>
             </div>
             <div class="driver-action-group">
-                <button type="button" class="driver-action-btn${sigortaBtnClass}" data-action="sigorta" onclick="openDriverEventModal('sigorta','${vid}')">Trafik Sigortası Yenileme</button>
+                <button type="button" class="driver-action-btn${sigortaBtnClass}" data-action="sigorta" onclick="toggleDriverActionBlock('sigorta','${vid}')">Trafik Sigortası Yenileme</button>
+                <div id="sigorta-block-${vid}" class="driver-report-block driver-report-block-sigorta driver-action-block">
+                    <div class="form-group"><label for="driver-sigorta-tarih-${vid}">Yenileme / Başlangıç Tarihi</label><input type="date" id="driver-sigorta-tarih-${vid}" class="form-input" style="width:100%"></div>
+                    <div class="form-group"><label for="driver-sigorta-firma-${vid}">Firma (isteğe bağlı)</label><input type="text" id="driver-sigorta-firma-${vid}" class="form-input" placeholder="Sigorta firması" style="width:100%"></div>
+                    <div class="form-group"><label for="driver-sigorta-acente-${vid}">Acente (isteğe bağlı)</label><input type="text" id="driver-sigorta-acente-${vid}" class="form-input" placeholder="Acente adı" style="width:100%"></div>
+                    <div class="form-group"><label for="driver-sigorta-iletisim-${vid}">İletişim (isteğe bağlı)</label><input type="text" id="driver-sigorta-iletisim-${vid}" class="form-input" placeholder="Telefon / e-posta" inputmode="tel" style="width:100%"></div>
+                    <div class="driver-form-actions">
+                        <button type="button" class="btn-driver-bildir" onclick="saveDriverEventFromBlock('sigorta','${vid}')">Bildir</button>
+                        <button type="button" class="btn-driver-vazgec" onclick="cancelDriverActionForm('sigorta','${vid}')">Vazgeç</button>
+                    </div>
+                </div>
             </div>
             <div class="driver-action-group">
-                <button type="button" class="driver-action-btn${kaskoBtnClass}" data-action="kasko" onclick="openDriverEventModal('kasko','${vid}')">Kasko Yenileme</button>
+                <button type="button" class="driver-action-btn${kaskoBtnClass}" data-action="kasko" onclick="toggleDriverActionBlock('kasko','${vid}')">Kasko Yenileme</button>
+                <div id="kasko-block-${vid}" class="driver-report-block driver-report-block-kasko driver-action-block">
+                    <div class="form-group"><label for="driver-kasko-tarih-${vid}">Yenileme / Başlangıç Tarihi</label><input type="date" id="driver-kasko-tarih-${vid}" class="form-input" style="width:100%"></div>
+                    <div class="form-group"><label for="driver-kasko-firma-${vid}">Firma (isteğe bağlı)</label><input type="text" id="driver-kasko-firma-${vid}" class="form-input" placeholder="Kasko firması" style="width:100%"></div>
+                    <div class="form-group"><label for="driver-kasko-acente-${vid}">Acente (isteğe bağlı)</label><input type="text" id="driver-kasko-acente-${vid}" class="form-input" placeholder="Acente adı" style="width:100%"></div>
+                    <div class="form-group"><label for="driver-kasko-iletisim-${vid}">İletişim (isteğe bağlı)</label><input type="text" id="driver-kasko-iletisim-${vid}" class="form-input" placeholder="Telefon / e-posta" inputmode="tel" style="width:100%"></div>
+                    <div class="driver-form-actions">
+                        <button type="button" class="btn-driver-bildir" onclick="saveDriverEventFromBlock('kasko','${vid}')">Bildir</button>
+                        <button type="button" class="btn-driver-vazgec" onclick="cancelDriverActionForm('kasko','${vid}')">Vazgeç</button>
+                    </div>
+                </div>
             </div>
             <div class="driver-action-group">
-                <button type="button" class="driver-action-btn${muayeneBtnClass}" data-action="muayene" onclick="openDriverEventModal('muayene','${vid}')">Muayene Yenileme</button>
+                <button type="button" class="driver-action-btn${muayeneBtnClass}" data-action="muayene" onclick="toggleDriverActionBlock('muayene','${vid}')">Muayene Yenileme</button>
+                <div id="muayene-block-${vid}" class="driver-report-block driver-report-block-muayene driver-action-block">
+                    <div class="form-group"><label for="driver-muayene-tarih-${vid}">Yaptırılan Tarih</label><input type="date" id="driver-muayene-tarih-${vid}" class="form-input" style="width:100%"></div>
+                    <div class="driver-form-actions">
+                        <button type="button" class="btn-driver-bildir" onclick="saveDriverEventFromBlock('muayene','${vid}')">Bildir</button>
+                        <button type="button" class="btn-driver-vazgec" onclick="cancelDriverActionForm('muayene','${vid}')">Vazgeç</button>
+                    </div>
+                </div>
             </div>
             <div class="driver-action-group">
-                <button type="button" class="driver-action-btn${anahtarSaved}" data-action="anahtar" onclick="openDriverEventModal('anahtar','${vid}')">Anahtar Durumu Bildir</button>
+                <button type="button" class="driver-action-btn${anahtarBtnClass}" data-action="anahtar" onclick="toggleDriverActionBlock('anahtar','${vid}')">Anahtar Durumu Bildir</button>
+                <div id="anahtar-block-${vid}" class="driver-report-block driver-report-block-anahtar driver-action-block">
+                    <div class="form-group driver-radio-row">
+                        <label class="driver-radio-label">Durum:</label>
+                        <div class="driver-radio-group" data-group="anahtar" data-vid="${vid}">
+                            <button type="button" class="driver-radio-btn active" data-value="var" data-group="anahtar">Var</button>
+                            <button type="button" class="driver-radio-btn" data-value="yok" data-group="anahtar">Yok</button>
+                        </div>
+                    </div>
+                    <div id="driver-anahtar-detay-wrap-${vid}" class="form-group" style="display:none">
+                        <label for="driver-anahtar-detay-${vid}" style="color:#ccc;font-size:14px;">Açıklama:</label>
+                        <input type="text" id="driver-anahtar-detay-${vid}" class="form-input" placeholder="Anahtar nerede?" style="width:100%">
+                    </div>
+                    <div class="driver-form-actions">
+                        <button type="button" class="btn-driver-bildir" onclick="saveDriverEventFromBlock('anahtar','${vid}')">Bildir</button>
+                        <button type="button" class="btn-driver-vazgec" onclick="cancelDriverActionForm('anahtar','${vid}')">Vazgeç</button>
+                    </div>
+                </div>
             </div>
             <div class="driver-action-group">
-                <button type="button" class="driver-action-btn${lastikSaved}" data-action="lastik" onclick="openDriverEventModal('lastik','${vid}')">Lastik Durumu Bildir</button>
+                <button type="button" class="driver-action-btn${lastikBtnClass}" data-action="lastik" onclick="toggleDriverActionBlock('lastik','${vid}')">Lastik Durumu Bildir</button>
+                <div id="lastik-block-${vid}" class="driver-report-block driver-report-block-lastik driver-action-block">
+                    <div class="form-group driver-radio-row">
+                        <label class="driver-radio-label">Durum:</label>
+                        <div class="driver-radio-group" data-group="lastik" data-vid="${vid}">
+                            <button type="button" class="driver-radio-btn" data-value="var" data-group="lastik">Var</button>
+                            <button type="button" class="driver-radio-btn active" data-value="yok" data-group="lastik">Yok</button>
+                        </div>
+                    </div>
+                    <div id="driver-lastik-adres-wrap-${vid}" class="form-group" style="display:none">
+                        <label for="driver-lastik-adres-${vid}" style="color:#ccc;font-size:14px;">Adres:</label>
+                        <input type="text" id="driver-lastik-adres-${vid}" class="form-input" placeholder="Lastik adresi" style="width:100%">
+                    </div>
+                    <div class="driver-form-actions">
+                        <button type="button" class="btn-driver-bildir" onclick="saveDriverEventFromBlock('lastik','${vid}')">Bildir</button>
+                        <button type="button" class="btn-driver-vazgec" onclick="cancelDriverActionForm('lastik','${vid}')">Vazgeç</button>
+                    </div>
+                </div>
             </div>
             <div class="driver-action-group driver-action-footer">
                 <div class="form-group driver-ekstra-not-form">
@@ -489,13 +620,15 @@ function buildDriverActionArea(vehicle, existingRecord, bakimVar, kazaVar, opts)
 function buildDriverInputForm(vehicle, existingRecord, bakimVar, kazaVar) {
     const vid = vehicle.id;
     const today = new Date().toISOString().split('T')[0];
+    const lastKm = vehicle.guncelKm != null ? vehicle.guncelKm : (existingRecord && existingRecord.guncel_km != null ? existingRecord.guncel_km : '');
+    const kmVal = (lastKm !== '' && lastKm != null) ? formatKm(lastKm) : '';
     return `
         <div class="driver-input-form" data-vehicle-id="${vid}">
             <div class="form-group driver-km-form">
                 <label for="km-${vid}">Güncel KM</label>
                 <div class="driver-km-input-wrap">
-                    <span class="driver-km-fake-placeholder" id="km-placeholder-${vid}">Örn: 45230</span>
-                    <input type="text" id="km-${vid}" class="driver-km-input" inputmode="numeric" pattern="[0-9]*" maxlength="8" data-vehicle-id="${vid}" value="${existingRecord ? existingRecord.guncel_km : ''}" required autocomplete="off" aria-label="Güncel kilometre">
+                    <span class="driver-km-fake-placeholder" id="km-placeholder-${vid}">Örn: 45.230</span>
+                    <input type="text" id="km-${vid}" class="driver-km-input" inputmode="numeric" pattern="[0-9]*" maxlength="8" data-vehicle-id="${vid}" value="${kmVal}" required autocomplete="off" aria-label="Güncel kilometre">
                 </div>
             </div>
             <div class="driver-report-blocks">
@@ -528,13 +661,25 @@ window.toggleDriverActionBlock = function(type, vehicleId) {
     const vid = String(vehicleId);
     const inner = document.querySelector('.driver-action-area-inner[data-vehicle-id="' + vid + '"]');
     if (!inner) return;
-    const blocks = { km: inner.querySelector('#km-block-' + vid), kaza: document.getElementById('kaza-block-' + vid), bakim: document.getElementById('bakim-block-' + vid) };
-    const target = type === 'km' ? blocks.km : (type === 'kaza' ? blocks.kaza : blocks.bakim);
+    const blocks = {
+        km: inner.querySelector('#km-block-' + vid),
+        kaza: document.getElementById('kaza-block-' + vid),
+        bakim: document.getElementById('bakim-block-' + vid),
+        sigorta: document.getElementById('sigorta-block-' + vid),
+        kasko: document.getElementById('kasko-block-' + vid),
+        muayene: document.getElementById('muayene-block-' + vid),
+        anahtar: document.getElementById('anahtar-block-' + vid),
+        lastik: document.getElementById('lastik-block-' + vid)
+    };
+    const target = blocks[type];
     if (!target) return;
     const isShown = target.classList.contains('show');
+    inner.classList.remove('driver-km-open');
     inner.querySelectorAll('.driver-action-block').forEach(function(b) { if (b) b.classList.remove('show'); });
     if (!isShown) {
         target.classList.add('show');
+        var expandTypes = ['km', 'kaza', 'bakim', 'sigorta', 'kasko', 'muayene', 'anahtar', 'lastik'];
+        if (expandTypes.indexOf(type) !== -1) inner.classList.add('driver-km-open');
         if (type === 'kaza') {
             const dateEl = document.getElementById('kaza-tarih-' + vid);
             if (dateEl && !dateEl.value) dateEl.value = new Date().toISOString().split('T')[0];
@@ -549,6 +694,14 @@ window.toggleDriverActionBlock = function(type, vehicleId) {
             const dateEl = document.getElementById('bakim-tarih-' + vid);
             if (dateEl && !dateEl.value) dateEl.value = new Date().toISOString().split('T')[0];
         }
+        if (type === 'sigorta' || type === 'kasko' || type === 'muayene') {
+            var dateId = type === 'muayene' ? 'driver-muayene-tarih' : (type === 'sigorta' ? 'driver-sigorta-tarih' : 'driver-kasko-tarih');
+            var dateEl = document.getElementById(dateId + '-' + vid);
+            if (dateEl && !dateEl.value) dateEl.value = new Date().toISOString().split('T')[0];
+        }
+        if (type === 'anahtar' || type === 'lastik') {
+            setupDriverEventRadioHandlersForBlock(type, vid);
+        }
         if (type === 'km') {
             setTimeout(function() {
                 const inp = document.getElementById('km-' + vid);
@@ -562,6 +715,190 @@ window.toggleDriverActionBlock = function(type, vehicleId) {
 
 window.focusKmInput = function(vehicleId) {
     toggleDriverActionBlock('km', vehicleId);
+};
+
+window.cancelKmForm = function(vid) {
+    cancelDriverActionForm('km', vid);
+};
+
+window.cancelDriverActionForm = function(type, vid) {
+    const inner = document.querySelector('.driver-action-area-inner[data-vehicle-id="' + vid + '"]');
+    const blockIds = { km: 'km-block-', kaza: 'kaza-block-', bakim: 'bakim-block-', sigorta: 'sigorta-block-', kasko: 'kasko-block-', muayene: 'muayene-block-', anahtar: 'anahtar-block-', lastik: 'lastik-block-' };
+    const blockId = (blockIds[type] || '') + vid;
+    const block = document.getElementById(blockId);
+    if (block) block.classList.remove('show');
+    if (inner) inner.classList.remove('driver-km-open');
+};
+
+window.submitDriverAction = async function(type, vid) {
+    if (type === 'km') {
+        submitKmOnly(vid);
+        return;
+    }
+    var guncelKmEl = document.getElementById('km-' + vid);
+    var guncelKm = guncelKmEl ? parseInt(String(guncelKmEl.value).replace(/\D/g, ''), 10) : 0;
+    if (!guncelKm || guncelKm <= 0) {
+        var rec = getExistingRecord(vid);
+        if (rec != null && rec.guncel_km != null) guncelKm = parseInt(String(rec.guncel_km).replace(/\D/g, ''), 10);
+    }
+    if (!guncelKm || guncelKm <= 0) {
+        alert('Lütfen geçerli bir KM değeri girin (Km alanı veya mevcut kayıt).');
+        if (guncelKmEl) guncelKmEl.focus();
+        return;
+    }
+    var btnBildir, btnVazgec, formActions, successMsg;
+    if (type === 'kaza') {
+        var kazaAciklama = (document.getElementById('kaza-detay-' + vid) || {}).value.trim();
+        if (!kazaAciklama) {
+            alert('Kaza bildirimi için açıklama girin.');
+            return;
+        }
+        btnBildir = document.querySelector('#kaza-block-' + vid + ' .btn-driver-bildir');
+        btnVazgec = document.querySelector('#kaza-block-' + vid + ' .btn-driver-vazgec');
+        formActions = document.querySelector('#kaza-block-' + vid + ' .driver-form-actions');
+        successMsg = document.getElementById('kaza-success-' + vid);
+    } else {
+        var bakimAciklama = (document.getElementById('bakim-detay-' + vid) || {}).value.trim();
+        if (!bakimAciklama) {
+            alert('Bakım bildirimi için açıklama girin.');
+            return;
+        }
+        btnBildir = document.querySelector('#bakim-block-' + vid + ' .btn-driver-bildir');
+        btnVazgec = document.querySelector('#bakim-block-' + vid + ' .btn-driver-vazgec');
+        formActions = document.querySelector('#bakim-block-' + vid + ' .driver-form-actions');
+        successMsg = document.getElementById('bakim-success-' + vid);
+    }
+    if (btnBildir) btnBildir.disabled = true;
+    if (btnVazgec) btnVazgec.disabled = true;
+    var payload = {
+        arac_id: parseInt(vid, 10),
+        guncel_km: guncelKm,
+        bakim_durumu: type === 'bakim' ? 1 : 0,
+        bakim_aciklama: type === 'bakim' ? (document.getElementById('bakim-detay-' + vid) || {}).value.trim() : '',
+        bakim_tarih: type === 'bakim' ? (document.getElementById('bakim-tarih-' + vid) || {}).value : '',
+        bakim_servis: type === 'bakim' ? ((document.getElementById('bakim-servis-' + vid) || {}).value || '').trim() : '',
+        bakim_kisi: type === 'bakim' ? ((document.getElementById('bakim-kisi-' + vid) || {}).value || '').trim() : '',
+        bakim_km: type === 'bakim' ? ((document.getElementById('bakim-km-' + vid) || {}).value || '').trim() : '',
+        bakim_tutar: type === 'bakim' ? ((document.getElementById('bakim-tutar-' + vid) || {}).value || '').trim() : '',
+        kaza_durumu: type === 'kaza' ? 1 : 0,
+        kaza_aciklama: type === 'kaza' ? (document.getElementById('kaza-detay-' + vid).value.trim()) : '',
+        kaza_tarih: type === 'kaza' ? (document.getElementById('kaza-tarih-' + vid).value || '') : '',
+        kaza_hasar_tutari: type === 'kaza' ? ((document.getElementById('kaza-tutar-' + vid) || {}).value || '').trim() : '',
+        boya_parcalar: '{}',
+        ekstra_not: (document.getElementById('not-' + vid) || {}).value || ''
+    };
+    if (type === 'kaza') {
+        var boyaParcalar = {};
+        var kaportaContainer = document.getElementById('kaza-kaporta-' + vid);
+        if (kaportaContainer) {
+            kaportaContainer.querySelectorAll('svg path[id]').forEach(function(part) {
+                var partId = part.getAttribute('id');
+                if (partId === 'araba-govde') return;
+                var state = part.dataset.state;
+                if (state === 'boyali' || state === 'degisen') boyaParcalar[partId] = state;
+            });
+        }
+        payload.boya_parcalar = JSON.stringify(boyaParcalar);
+    }
+    try {
+        var response = await fetch(API_BASE + 'driver_save.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + currentToken },
+            body: JSON.stringify(payload)
+        });
+        var data = await response.json();
+        if (data.success) {
+            lastCompletedActionInSession = { action: type, vehicleId: vid };
+            if (formActions) formActions.style.display = 'none';
+            if (successMsg) successMsg.classList.add('show');
+            setTimeout(function() {
+                var block = document.getElementById((type === 'kaza' ? 'kaza-block-' : 'bakim-block-') + vid);
+                var inner = document.querySelector('.driver-action-area-inner[data-vehicle-id="' + vid + '"]');
+                if (block) block.classList.remove('show');
+                if (inner) inner.classList.remove('driver-km-open');
+                if (formActions) formActions.style.display = '';
+                if (successMsg) successMsg.classList.remove('show');
+                var actionBtn = inner ? inner.querySelector('.driver-action-btn[data-action="' + type + '"]') : null;
+                if (actionBtn) actionBtn.classList.add('saved');
+                loadDashboard();
+            }, 2000);
+        } else {
+            alert(data.message || 'Kayıt yapılamadı.');
+        }
+    } catch (err) {
+        console.error('Bildirim kaydetme hatası:', err);
+        alert('Bağlantı hatası.');
+    } finally {
+        if (btnBildir) btnBildir.disabled = false;
+        if (btnVazgec) btnVazgec.disabled = false;
+    }
+};
+
+window.submitKmOnly = async function(vid) {
+    const kmEl = document.getElementById('km-' + vid);
+    const km = kmEl ? parseInt(String(kmEl.value).replace(/\D/g, ''), 10) : 0;
+    if (!km || km <= 0) {
+        alert('Lütfen geçerli bir KM değeri girin!');
+        if (kmEl) kmEl.focus();
+        return;
+    }
+    const btnBildir = document.querySelector('#km-block-' + vid + ' .btn-km-bildir');
+    const btnVazgec = document.querySelector('#km-block-' + vid + ' .btn-km-vazgec');
+    const formContent = document.querySelector('#km-block-' + vid + ' .driver-km-form-content');
+    const successMsg = document.getElementById('km-success-' + vid);
+    const errorEl = document.getElementById('km-error-' + vid);
+    if (errorEl) { errorEl.classList.remove('show'); errorEl.textContent = ''; }
+    if (btnBildir) btnBildir.disabled = true;
+    if (btnVazgec) btnVazgec.disabled = true;
+    try {
+        const response = await fetch(API_BASE + 'driver_save.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + currentToken },
+            body: JSON.stringify({
+                arac_id: parseInt(vid, 10),
+                guncel_km: km,
+                km_only: true,
+                bakim_durumu: 0,
+                bakim_aciklama: '',
+                bakim_tarih: '',
+                bakim_servis: '',
+                bakim_kisi: '',
+                bakim_km: '',
+                bakim_tutar: '',
+                kaza_durumu: 0,
+                kaza_aciklama: '',
+                kaza_tarih: '',
+                kaza_hasar_tutari: '',
+                boya_parcalar: '{}',
+                ekstra_not: ''
+            })
+        });
+        const data = await response.json();
+        if (data.success) {
+            lastCompletedActionInSession = { action: 'km', vehicleId: vid };
+            if (formContent) formContent.style.display = 'none';
+            if (successMsg) successMsg.classList.add('show');
+            setTimeout(function() {
+                const block = document.getElementById('km-block-' + vid);
+                const inner = document.querySelector('.driver-action-area-inner[data-vehicle-id="' + vid + '"]');
+                if (block) block.classList.remove('show');
+                if (inner) inner.classList.remove('driver-km-open');
+                if (formContent) formContent.style.display = '';
+                if (successMsg) successMsg.classList.remove('show');
+                const kmBtn = inner ? inner.querySelector('.driver-action-btn[data-action="km"]') : null;
+                if (kmBtn) kmBtn.classList.add('saved');
+                loadDashboard();
+            }, 2000);
+        } else {
+            if (errorEl) { errorEl.textContent = data.message || 'Kayıt yapılamadı.'; errorEl.classList.add('show'); }
+        }
+    } catch (err) {
+        console.error('Km kaydetme hatası:', err);
+        if (errorEl) { errorEl.textContent = 'Bağlantı hatası.'; errorEl.classList.add('show'); }
+    } finally {
+        if (btnBildir) btnBildir.disabled = false;
+        if (btnVazgec) btnVazgec.disabled = false;
+    }
 };
 
 function buildSlidingWarnings(vehicles, records) {
@@ -618,7 +955,8 @@ function renderSlidingWarning(vehicles, records) {
     let idx = 0;
     
     function showNext() {
-        el.textContent = texts[idx];
+        const text = texts[idx];
+        el.innerHTML = '<span class="driver-warning-icon" aria-hidden="true">⚠</span> ' + escapeHtmlDriver(text);
         el.className = 'driver-sliding-warning' + (cycleCount >= 3 ? ' driver-warning-pulse' : '');
         idx = (idx + 1) % texts.length;
         if (idx === 0) {
@@ -708,7 +1046,7 @@ function createVehicleCard(vehicle, records, currentPeriod) {
                        pattern="[0-9]*"
                        maxlength="8"
                        data-vehicle-id="${vehicle.id}"
-                       value="${existingRecord ? existingRecord.guncel_km : ''}"
+                       value="${(vehicle.guncelKm != null ? vehicle.guncelKm : (existingRecord && existingRecord.guncel_km != null ? existingRecord.guncel_km : ''))}"
                        required
                        autocomplete="off"
                        aria-label="Güncel kilometre">
@@ -864,30 +1202,39 @@ window.openDriverEventMenu = function(vehicleId) {
         return '<button type="button" class="driver-event-menu-btn' + (isKaza ? ' driver-event-menu-btn-kaza' : '') + '" onclick="handleDriverEventChoice(\'' + e.id + '\', \'' + safeId + '\')">' + e.label + '</button>';
     }).join('');
     modal.classList.add('show');
+    updateDriverModalBodyClass();
 };
 
 window.closeDriverEventMenu = function() {
     const modal = document.getElementById('driver-event-menu-modal');
     if (modal) modal.classList.remove('show');
     currentDriverEventVehicleId = null;
+    updateDriverModalBodyClass();
 };
 
 window.handleDriverEventChoice = function(type, vehicleId) {
     closeDriverEventMenu();
     if (type === 'km') {
-        const input = document.getElementById('km-' + vehicleId);
-        if (input) {
-            input.focus();
-            input.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
+        toggleDriverActionBlock('km', vehicleId);
     } else if (type === 'bakim') {
-        toggleReportBlock('bakim', vehicleId);
-        const block = document.getElementById('bakim-block-' + vehicleId);
-        if (block) block.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        var block = document.getElementById('bakim-block-' + vehicleId);
+        if (block && block.closest('.driver-action-area-inner')) {
+            toggleDriverActionBlock('bakim', vehicleId);
+        } else {
+            toggleReportBlock('bakim', vehicleId);
+            block = document.getElementById('bakim-block-' + vehicleId);
+            if (block) block.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
     } else if (type === 'kaza') {
-        toggleReportBlock('kaza', vehicleId);
-        const block = document.getElementById('kaza-block-' + vehicleId);
-        if (block) block.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        var kazaBlock = document.getElementById('kaza-block-' + vehicleId);
+        if (kazaBlock && kazaBlock.closest('.driver-action-area-inner')) {
+            toggleDriverActionBlock('kaza', vehicleId);
+        } else {
+            toggleReportBlock('kaza', vehicleId);
+            if (kazaBlock) kazaBlock.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    } else if (['sigorta', 'kasko', 'muayene', 'anahtar', 'lastik'].indexOf(type) !== -1) {
+        toggleDriverActionBlock(type, vehicleId);
     } else {
         openDriverEventModal(type, vehicleId);
     }
@@ -895,6 +1242,8 @@ window.handleDriverEventChoice = function(type, vehicleId) {
 
 window.openDriverEventModal = function(type, vehicleId) {
     currentDriverEventVehicleId = vehicleId;
+    const inner = document.querySelector('.driver-action-area-inner[data-vehicle-id="' + String(vehicleId) + '"]');
+    if (inner) inner.classList.add('driver-modal-open');
     const modalId = 'driver-' + type + '-modal';
     const modal = document.getElementById(modalId);
     if (!modal) return;
@@ -952,7 +1301,27 @@ window.openDriverEventModal = function(type, vehicleId) {
         });
     }
     modal.classList.add('show');
+    updateDriverModalBodyClass();
 };
+
+function setupDriverEventRadioHandlersForBlock(group, vid) {
+    const block = document.getElementById(group + '-block-' + vid);
+    if (!block) return;
+    const btns = block.querySelectorAll('.driver-radio-btn[data-group="' + group + '"]');
+    var wrap = document.getElementById('driver-' + group + (group === 'anahtar' ? '-detay-wrap' : '-adres-wrap') + '-' + vid);
+    var input = document.getElementById('driver-' + group + (group === 'anahtar' ? '-detay' : '-adres') + '-' + vid);
+    var isVarDefault = group === 'anahtar';
+    if (wrap) wrap.style.display = isVarDefault ? 'block' : 'none';
+    btns.forEach(function(btn) {
+        btn.onclick = function() {
+            btns.forEach(function(b) { b.classList.remove('active'); });
+            btn.classList.add('active');
+            var isVar = btn.dataset.value === 'var';
+            if (wrap) wrap.style.display = isVar ? 'block' : 'none';
+            if (input && !isVar) input.value = '';
+        };
+    });
+}
 
 function setupDriverEventRadioHandlers(group, detailWrap, detailInput) {
     const container = document.getElementById('driver-' + group + '-modal');
@@ -970,9 +1339,72 @@ function setupDriverEventRadioHandlers(group, detailWrap, detailInput) {
 }
 
 window.closeDriverEventModal = function(type) {
+    const vid = currentDriverEventVehicleId;
+    if (vid) {
+        const inner = document.querySelector('.driver-action-area-inner[data-vehicle-id="' + String(vid) + '"]');
+        if (inner) inner.classList.remove('driver-modal-open');
+    }
     const modal = document.getElementById('driver-' + type + '-modal');
     if (modal) modal.classList.remove('show');
     currentDriverEventVehicleId = null;
+    updateDriverModalBodyClass();
+};
+
+window.saveDriverEventFromBlock = async function(type, vehicleId) {
+    vehicleId = String(vehicleId);
+    if (!vehicleId || !currentToken) return;
+    let data = {};
+    if (type === 'anahtar') {
+        const block = document.getElementById('anahtar-block-' + vehicleId);
+        const active = block ? block.querySelector('.driver-radio-btn.active') : null;
+        const durum = active ? active.dataset.value : 'yok';
+        data = { durum: durum, detay: durum === 'var' ? (document.getElementById('driver-anahtar-detay-' + vehicleId)?.value.trim() || '') : '' };
+    } else if (type === 'lastik') {
+        const block = document.getElementById('lastik-block-' + vehicleId);
+        const active = block ? block.querySelector('.driver-radio-btn.active') : null;
+        const durum = active ? active.dataset.value : 'yok';
+        data = { durum: durum, adres: durum === 'var' ? (document.getElementById('driver-lastik-adres-' + vehicleId)?.value.trim() || '') : '' };
+    } else if (type === 'muayene') {
+        const tarih = document.getElementById('driver-muayene-tarih-' + vehicleId)?.value.trim() || '';
+        if (!tarih) { alert('Tarih zorunludur!'); return; }
+        data = { tarih: tarih };
+    } else if (type === 'sigorta') {
+        const tarih = document.getElementById('driver-sigorta-tarih-' + vehicleId)?.value.trim() || '';
+        if (!tarih) { alert('Tarih zorunludur!'); return; }
+        data = {
+            tarih: tarih,
+            firma: document.getElementById('driver-sigorta-firma-' + vehicleId)?.value.trim() || '',
+            acente: document.getElementById('driver-sigorta-acente-' + vehicleId)?.value.trim() || '',
+            iletisim: document.getElementById('driver-sigorta-iletisim-' + vehicleId)?.value.trim() || ''
+        };
+    } else if (type === 'kasko') {
+        const tarih = document.getElementById('driver-kasko-tarih-' + vehicleId)?.value.trim() || '';
+        if (!tarih) { alert('Tarih zorunludur!'); return; }
+        data = {
+            tarih: tarih,
+            firma: document.getElementById('driver-kasko-firma-' + vehicleId)?.value.trim() || '',
+            acente: document.getElementById('driver-kasko-acente-' + vehicleId)?.value.trim() || '',
+            iletisim: document.getElementById('driver-kasko-iletisim-' + vehicleId)?.value.trim() || ''
+        };
+    } else return;
+    try {
+        const res = await fetch(API_BASE + 'driver_event.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + currentToken },
+            body: JSON.stringify({ arac_id: parseInt(vehicleId, 10), event_type: type, data: data })
+        });
+        const result = await res.json();
+        if (result.success) {
+            lastCompletedActionInSession = { action: type, vehicleId: vehicleId };
+            cancelDriverActionForm(type, vehicleId);
+            await loadDashboard();
+        } else {
+            alert(result.message || 'Kayıt başarısız!');
+        }
+    } catch (err) {
+        console.error(err);
+        alert('Bağlantı hatası!');
+    }
 };
 
 window.saveDriverEvent = async function(type) {
@@ -1310,7 +1742,8 @@ window.showHistory = function() {
         const opt = document.createElement('div');
         opt.className = 'history-vehicle-option';
         opt.dataset.value = String(v.id);
-        opt.textContent = [v.plaka, v.marka, v.model].filter(Boolean).join(' ');
+        const brandModel = v.brandModel || [v.marka, v.model].filter(Boolean).join(' ');
+        opt.textContent = [v.plaka, brandModel].filter(Boolean).join(' – ');
         opt.onclick = function() { selectHistoryVehicle(String(v.id), opt.textContent); };
         dropdown.appendChild(opt);
     });
@@ -1318,7 +1751,8 @@ window.showHistory = function() {
     let defaultText = 'Tüm Taşıtlar';
     if (allHistoryVehicles.length === 1) {
         defaultVal = String(allHistoryVehicles[0].id);
-        defaultText = [allHistoryVehicles[0].plaka, allHistoryVehicles[0].marka, allHistoryVehicles[0].model].filter(Boolean).join(' ');
+        const bm = allHistoryVehicles[0].brandModel || [allHistoryVehicles[0].marka, allHistoryVehicles[0].model].filter(Boolean).join(' ');
+        defaultText = [allHistoryVehicles[0].plaka, bm].filter(Boolean).join(' – ');
     }
     hiddenInput.value = defaultVal;
     if (triggerText) triggerText.textContent = defaultText;
@@ -1326,6 +1760,7 @@ window.showHistory = function() {
     if (trigger) trigger.classList.remove('history-vehicle-trigger-open');
     renderHistoryList();
     document.getElementById('history-modal').classList.add('show');
+    updateDriverModalBodyClass();
 };
 
 window.toggleHistoryVehicleDropdown = function(ev) {
@@ -1407,6 +1842,7 @@ function renderHistoryList() {
 
 window.closeHistory = function() {
     document.getElementById('history-modal').classList.remove('show');
+    updateDriverModalBodyClass();
 };
 
 // Düzeltme talebi
@@ -1422,11 +1858,13 @@ window.showEditRequest = function(recordId) {
     document.getElementById('new-kaza').value = record.kaza_durumu ? (record.kaza_aciklama || '') : '';
     document.getElementById('edit-reason').value = '';
     document.getElementById('edit-request-modal').classList.add('show');
+    updateDriverModalBodyClass();
 };
 
 window.closeEditRequest = function() {
     document.getElementById('edit-request-modal').classList.remove('show');
     currentRecordId = null;
+    updateDriverModalBodyClass();
 };
 
 window.submitEditRequest = async function() {

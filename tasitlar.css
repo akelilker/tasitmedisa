@@ -46,9 +46,21 @@
     overflow-x: visible !important;
 }
 
-/* Olay Ekle 14 modal: çerçeve yatayda kısa kalmasın */
+/* Olay Ekle 14 modal: Taşıtlar modalı ile aynı yapı (500px, footer 54px, çerçeve) */
 .olay-ekle-modal .modal-container {
-    max-width: 540px !important;
+    max-width: 500px !important;
+    width: 100%;
+    background: var(--modal-bg) !important;
+    border: 0.5px solid rgba(255, 255, 255, 0.35) !important;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.9) !important;
+    border-radius: var(--modal-radius) !important;
+    margin: max(12px, env(safe-area-inset-top)) auto 54px auto !important;
+    height: calc(100vh - max(12px, env(safe-area-inset-top)) - 54px) !important;
+    height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 54px) !important;
+    max-height: calc(100vh - max(12px, env(safe-area-inset-top)) - 54px) !important;
+    max-height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 54px) !important;
+    overflow: hidden;
+    overflow-x: hidden;
 }
 
 /* === MODAL ÖZEL FARKLAR === */
@@ -75,7 +87,11 @@
     pointer-events: none;
 }
 .olay-ekle-modal.tasitlar-modal-overlay::before {
-    max-width: 540px; /* Olay Ekle modalları çerçevesi ile aynı */
+    max-width: 500px; /* Olay Ekle modalları Taşıtlar ile aynı */
+}
+/* ayarlar-modal-overlay ::before display:none ezer - Olay Ekle karartma gösterilsin */
+.olay-ekle-modal.tasitlar-modal-overlay.ayarlar-modal-overlay::before {
+    display: block !important;
 }
 
 /* === DETAY İÇERİK === */
@@ -83,8 +99,8 @@
     padding: 20px;
     padding-top: 14px !important; /* Plaka satırının margin-top negatif değerini karşılamak için (0px → 14px) */
     padding-bottom: 20px;
-    padding-left: 20px;
-    padding-right: 20px;
+    padding-left: 18px; /* Container çerçevelerine 2px boşluk (16px → 18px) */
+    padding-right: 18px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -101,7 +117,7 @@
     width: 100%;
     min-height: fit-content; /* İçeriğe göre yükseklik */
     height: auto; /* İçeriğe göre yükseklik */
-    margin-top: -17px !important; /* Plaka 3px yukarı */ /* Yukarı kaydırıldı */
+    margin-top: -20px !important; /* Plaka 3px daha yukarı (-17px → -20px) */
     margin-bottom: 3px !important; /* Plaka-marka arası 3px */ /* Yarı yarıya düşürüldü (4px → 2px) */
     position: relative; /* Absolute "Olay Ekle" butonu için gerekli */
     z-index: 1;
@@ -136,6 +152,7 @@
     font-weight: 600;
     color: #ccc;
     text-align: center; /* Yatayda ortalanmış */
+    line-height: calc(1em + 2px); /* İkinci satıra geçerse satırlar arası 2px boşluk */
     margin-top: 0 !important;
     margin-bottom: 0 !important;
     flex: 1; /* Ortada genişleyerek yer kaplar */
@@ -262,27 +279,32 @@
     flex-shrink: 0;
 }
 
-/* Kaporta renk açıklaması: Kaporta Durumu'nun 3px altında, yan yana */
-.detail-kaporta-legend {
-    display: flex;
-    flex-direction: row;
-    gap: 8px;
-    margin-top: 3px;
-    align-items: center;
-    position: relative;
-    z-index: 2;
+/* Şemayı saran kutu */
+.kaporta-schema-wrapper {
+    width: 170px !important;
+    display: block !important;
+    margin: 0 auto !important;
+    margin-top: 5px !important; /* Şemayı 5px yukarı kaydır */
+    position: relative !important;
 }
-.detail-kaporta-legend-item {
+
+/* Renk açıklamaları – şemadan 3px altında */
+.boya-legend {
+    margin-top: 3px !important;
+    display: flex !important;
+    gap: 15px !important;
+    justify-content: center !important;
+}
+.boya-legend-item {
     display: flex;
     align-items: center;
-    gap: 3px;
-    font-size: 10px;
+    gap: 5px;
+    font-size: 11px;
     color: #aaa;
-    line-height: 1;
 }
-.detail-kaporta-dot {
-    width: 6px;
-    height: 6px;
+.boya-legend-dot {
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
     display: inline-block;
     flex-shrink: 0;
@@ -497,6 +519,17 @@
     text-align: center;
     justify-content: center;
     padding-bottom: 1px !important; /* Sekme metni ile altındaki yatay çizgi arası 1px */
+}
+
+/* Tarihçe içerik: tarih/etiket = kayıt modalı etiket rengi, metin = taşıtlar gri */
+#vehicle-history-modal .history-item-date {
+    color: var(--form-label-color);
+}
+#vehicle-history-modal .history-item-body {
+    color: #ccc;
+}
+#vehicle-history-modal .history-empty-msg {
+    color: #ccc;
 }
 
 #vehicles-modal .modal-header h2,
@@ -736,11 +769,13 @@
   }
   .olay-ekle-modal .modal-body .modal-btn-cancel:hover {
     border-width: 1px !important;
-    background: rgba(40, 167, 69, 0.15) !important;
+    font-weight: 600 !important;
+    background: transparent !important;
   }
   .olay-ekle-modal .modal-body .modal-btn-confirm:hover {
     border-width: 1px !important;
-    background: rgba(var(--theme-color-rgb, 225, 6, 27), 0.15) !important;
+    font-weight: 600 !important;
+    background: transparent !important;
   }
   /* Etiket+input grupları arası 3px */
   .olay-ekle-modal .modal-body > div:first-of-type {
@@ -885,11 +920,35 @@
     flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
-    padding: 10px 8px 12px 8px; /* Üst 10px: şube kartı hover'da üst çerçeve kesilmesin */
+    padding: 18px 8px 12px 8px; /* Üst 18px: şube kartı hover'da scale ile üst çerçeve kesilmesin */
     scrollbar-width: none;
     -ms-overflow-style: none;
 }
 #vehicles-modal .modal-body::-webkit-scrollbar { display: none; }
+
+/* Liste görünümü: scroll sadece liste gövdesinde (başlık scroll dışında – taşma olmaz) */
+#vehicles-modal .modal-body:has(.vehicles-list-scroll) {
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: 0;
+}
+#vehicles-modal-content:has(.vehicles-list-scroll) {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    margin-top: -2px; /* Başlıklar 2px yukarı; listedeki sızma üstte kesilir */
+}
+.vehicles-list-scroll {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+.vehicles-list-scroll::-webkit-scrollbar { display: none; }
 
 /* === GRID (ŞUBELER) === */
 .branch-grid { 
@@ -1116,18 +1175,18 @@
 
 .view-list .list-item {
     display: grid;
-    grid-template-columns: 32px 70px 3.2fr 60px 65px 1.8fr 2fr !important; /* Yılı daraltıldı, Kullanıcı genişletildi */
+    grid-template-columns: 32px 70px 3.2fr 60px 65px 1.8fr 2fr; /* fallback; JS inline style sütun sırasına göre override eder */
     gap: 4px !important;
     align-items: center;
-    padding: 2px 2px 2px 2px;
+    padding: 0 2px;
     border-bottom: 1px solid rgba(255,255,255,0.08);
     background: rgba(255,255,255,0.01);
     position: relative;
     z-index: 0;
-    /* Başlık z-index: 1000 ile üstte kalsın, satırlar altında kaysın */
     cursor: pointer;
-    min-height: 44px; /* İlk satır diğerleriyle aynı hizada görünsün (30→44) */
+    min-height: 32px;
     transition: background 0.2s ease;
+    touch-action: manipulation; /* Mobilde 300ms gecikme kalkar, tap daha hızlı tepki verir */
 }
 
 .view-list .list-item:hover {
@@ -1145,6 +1204,7 @@
     line-height: 1.3;
     min-width: 0;
     border-right: 1px solid rgba(255, 255, 255, 0.1) !important;
+    padding: 2px 4px; /* metin–çerçeve arası dikey 2px */
 }
 
 /* Son sütun (Şube) için border yok */
@@ -1164,29 +1224,47 @@
 #vehicles-modal .modal-body .view-list {
     position: relative;
     margin-top: -11px;
+    z-index: -1; /* Başlığın arkasında kalır (scroll sarmalayıcı yoksa) */
     isolation: isolate;
-    z-index: 0;
+}
+/* Scroll sarmalayıcı içindeyse örtüşme yok, margin sıfır; z-index tıklamaların ulaşması için */
+#vehicles-modal .vehicles-list-scroll .view-list {
+    margin-top: 0 !important;
+    z-index: 0 !important;
+}
+
+/* İçerik alanı: başlık ile liste aynı stacking context'te (scroll sarmalayıcı yoksa) */
+#vehicles-modal #vehicles-modal-content {
+    position: relative;
+    isolation: isolate;
 }
 
 .list-header-row {
     display: grid;
-    grid-template-columns: 32px 70px 3.2fr 60px 65px 1.8fr 2fr !important; /* Yılı daraltıldı, Kullanıcı genişletildi */
+    grid-template-columns: 32px 70px 3.2fr 60px 65px 1.8fr 2fr; /* fallback; JS inline style sütun sırasına göre override eder */
     gap: 4px !important;
     align-items: center;
-    padding: 6px 2px 4px 2px;
+    padding: 2px 2px; /* metin–çerçeve arası dikey 2px */
     margin-bottom: 4px;
     border-bottom: 1px solid rgba(255,255,255,0.22);
-    background: #080d16 !important; /* Modal arka plan rengiyle aynı - şeffaflık sorunu çözülsün */
-    backdrop-filter: blur(8px) !important; /* Blur efekti - içerik altından geçerken daha iyi görünüm */
-    -webkit-backdrop-filter: blur(8px) !important; /* Safari desteği */
+    background: #080d16 !important; /* Opak arka plan */
     width: 100%;
     box-sizing: border-box;
-    position: sticky !important; /* Başlık sabit kalacak */
-    top: 0 !important; /* Scroll alanı üstü = toolbar hemen altı */
-    z-index: 9999 !important; /* Başlık her zaman en üstte, kayarken içerik arkada kalsın */
-    isolation: isolate !important; /* Yeni stacking context - içerik altından geçmesin */
+    position: sticky !important; /* Başlık sabit (scroll modal-body'deyken) */
+    top: 0 !important;
+    z-index: 10 !important;
+    isolation: isolate !important;
     transform: translateZ(0);
-    box-shadow: 0 2px 0 0 #080d16; /* Alt çizgi gibi gölge - içeriğin aradan görünmesini keser */
+    box-shadow: 0 2px 0 0 #080d16;
+}
+/* Liste scroll sarmalayıcı varken başlık scroll dışında – sticky gerekmez */
+#vehicles-modal-content:has(.vehicles-list-scroll) .list-header-row {
+    position: static !important;
+    top: auto !important;
+    z-index: auto !important;
+    transform: none;
+    box-shadow: none;
+    flex-shrink: 0;
 }
 
 .list-header-row .list-cell {
@@ -1197,13 +1275,12 @@
     color: #8b93a1;
     opacity: 0.8;
     display: flex;
-    align-items: center !important; /* Küçülme/satır kırılmasında kendi alanında dikey ortalı */
+    align-items: center !important;
     justify-content: center !important;
     overflow: visible !important;
     text-overflow: clip;
     white-space: nowrap;
-    padding-left: 4px;
-    padding-right: 4px;
+    padding: 2px 4px; /* metin–çerçeve arası dikey 2px */
     min-width: 0;
     border-right: 1px solid rgba(255, 255, 255, 0.1) !important;
 }
@@ -1868,42 +1945,29 @@
     gap: 24px !important;
   }
   
-  /* Olay Ekle (14 modal): Var/Yok, Evet/Hayır – ince çerçeve, renkler, seçili yarı saydam */
+  /* Olay Ekle (14 modal): Var/Yok, Evet/Hayır – pasif beyaz, hover/seçili renkli + yarı saydam arka plan */
   .olay-ekle-modal .radio-btn {
     background: transparent !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border: 1px solid rgba(255, 255, 255, 0.6) !important;
+    color: #fff !important;
     border-radius: 4px !important;
-    padding: 4px 10px !important;
+    padding: 4px 14px !important;
     font-size: 14px !important;
     font-weight: 400 !important;
     cursor: pointer !important;
     transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease !important;
   }
-  .olay-ekle-modal .radio-btn.hover-green {
-    color: #4ade80 !important;
-    border-color: rgba(74, 222, 128, 0.85) !important;
-  }
-  .olay-ekle-modal .radio-btn.hover-red {
-    color: var(--theme-color) !important;
-    border-color: rgba(var(--theme-color-rgb), 0.5) !important;
-  }
-  .olay-ekle-modal .radio-btn:not(.active).hover-green:hover {
-    background: rgba(74, 222, 128, 0.12) !important;
-    border-color: rgba(74, 222, 128, 0.45) !important;
-  }
-  .olay-ekle-modal .radio-btn:not(.active).hover-red:hover {
-    background: rgba(var(--theme-color-rgb), 0.12) !important;
-    border-color: rgba(var(--theme-color-rgb), 0.45) !important;
-  }
-  .olay-ekle-modal .radio-btn.active {
-    background: rgba(var(--theme-color-rgb), 0.20) !important;
-    border-color: var(--theme-color) !important;
-    color: var(--theme-color) !important; /* Hayır/Yok seçilince metin kırmızı */
-  }
+  .olay-ekle-modal .radio-btn.hover-green:hover,
   .olay-ekle-modal .radio-btn.active.green {
     background: rgba(74, 222, 128, 0.18) !important;
     border-color: rgba(74, 222, 128, 0.85) !important;
     color: #4ade80 !important;
+  }
+  .olay-ekle-modal .radio-btn.hover-red:hover,
+  .olay-ekle-modal .radio-btn.active:not(.green) {
+    background: rgba(var(--theme-color-rgb), 0.20) !important;
+    border-color: var(--theme-color) !important;
+    color: var(--theme-color) !important;
   }
   .olay-ekle-modal .radio-group {
     justify-content: flex-start !important;
@@ -1984,6 +2048,10 @@
   }
   .active-branch-title {
     font-size: 16.5px !important; /* Mobil aynı kalsın */
+    margin-top: -4px !important; /* Sol etiket 4px yukarı */
+  }
+  #vehicle-detail-modal .vehicle-detail-toolbar .detail-back-btn {
+    margin-top: -4px !important; /* Sol ok 4px yukarı */
   }
   
   .modal-overlay .modal-container {
@@ -1994,7 +2062,15 @@
     overscroll-behavior: none !important;
     overscroll-behavior-x: none !important;
   }
-  
+
+  /* Olay Ekle modalları mobil: style-core ile uyumlu (overlay doldur, footer boşluk overlay'da) */
+  .olay-ekle-modal .modal-container {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    height: 100% !important;
+    max-height: 100% !important;
+  }
+
   .modal-overlay .modal-header h2 {
     font-size: 19px !important; /* 18px + 1 punto (sadece mobil) */
     color: #ffffff !important; /* Başlık tam beyaz */
@@ -2011,12 +2087,14 @@
   }
 
   /* --- TAŞIT DETAY MODAL --- */
-  /* Taşıt detay toolbar kesilme sorunu */
+  /* Taşıt detay toolbar kesilme sorunu; sol padding toolbar ile aynı (Olay Ekle hizası) */
   #vehicle-detail-content {
     padding-top: 20px !important; /* 14px → 20px */
+    padding-left: 6px !important; /* Container çerçevelerine 2px boşluk (4px → 6px) */
+    padding-right: 6px !important;
   }
   .detail-plate-row {
-    margin-top: -13px !important; /* Plaka 3px yukarı (mobil) */ /* -14px → -10px */
+    margin-top: -16px !important; /* Plaka 3px yukarı (mobil) */
   }
   
   /* Taşıt detay: layout base + container query ile; mobilde de yatay alan varsa yan yana */
@@ -2215,10 +2293,10 @@
     display: grid !important;
     /* Masaüstü: 32px 70px 3.2fr 60px 65px 1.8fr 2fr */
     /* Mobil: Yılı daraltıldı, Kullanıcı genişletildi */
-    grid-template-columns: 32px 70px 2.4fr 60px 1.8fr 2fr !important; /* Yılı, Plaka, Marka/Model, KM, Kullanıcı, Şube */
+    grid-template-columns: 32px 70px 2.4fr 60px 1.8fr 2fr; /* fallback; JS inline style override eder */
     gap: 4px !important; /* Masaüstü ile aynı */
     padding: 4px 1px !important; /* Dikey boşluk 2px azaltıldı */
-    min-height: 44px !important; /* Masaüstü ile aynı – ilk satır diğerleriyle aynı hizada */
+    min-height: 32px !important;
     min-width: 0 !important; /* İçerik sığmayınca ikinci satıra düşsün, yatay taşma olmasın */
     width: 100% !important;
     align-items: center !important;
@@ -2237,7 +2315,7 @@
   /* Başlık Satırı - Mobil: büyüklük ve satıra geçme masaüstü ile uyumlu */
   .list-header-row {
     display: grid !important;
-    grid-template-columns: 32px 70px 2.4fr 60px 1.8fr 2fr !important; /* Yılı daraltıldı, Kullanıcı genişletildi */
+    grid-template-columns: 32px 70px 2.4fr 60px 1.8fr 2fr; /* fallback; JS inline style override eder */
     gap: 4px !important; /* Masaüstü ile aynı */
     align-items: center !important; /* İki satırlı başlıklar dikey ortada */
     padding: 4px 4px !important; /* Dikey boşluk 2px azaltıldı */
@@ -2533,9 +2611,17 @@
   }
   /* Taşıt detay: kaporta ekspertiz mobilde yatay (legend + SVG yan yana, sol grid içinde) */
   #detail-boya-container {
-    margin-top: 8px !important;
+    margin-top: 58px !important; /* Şema 4px daha aşağı (54+4) */
+    gap: 0 !important; /* Şema ile legend arası sadece legend margin-top ile */
     justify-content: center !important;
     overflow: visible !important;
+  }
+  /* Mobil: Orijinal/Boyalı/Değişen açıklamaları şemaya 3px mesafede */
+  #detail-boya-container .boya-legend {
+    margin-top: 3px !important;
+  }
+  #detail-boya-container .kaporta-schema-wrapper {
+    margin-bottom: 0 !important; /* Ek boşluk olmasın */
   }
   #kaza-kaporta-container {
     flex-direction: row !important;
