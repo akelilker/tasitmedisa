@@ -1684,7 +1684,7 @@ body.driver-modal-open {
 #driver-sigorta-modal.driver-modal,
 #driver-kasko-modal.driver-modal {
   background: transparent !important;
-  padding: 0 !important;
+  padding: env(safe-area-inset-top) 0 0 0 !important;
   z-index: 9999;
   flex-direction: column;
   justify-content: flex-start;

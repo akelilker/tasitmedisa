@@ -1,7 +1,7 @@
 // Service Worker - Medisa Taşıt Yönetim Sistemi
 // Version 2.0 - Cache temizleme + 404 fix
 
-const CACHE_VERSION = 'medisa-v2.3';
+const CACHE_VERSION = 'medisa-v2.4';
 
 // Subpath desteği: /medisa/sw.js ise base = '/medisa', kök deploy'da base = ''
 function getBase() {
@@ -12,6 +12,19 @@ function getBase() {
 const CACHE_FILES = [
   '/',
   '/index.html',
+  
+  // Driver (giriş + panel)
+  '/driver/',
+  '/driver/index.html',
+  '/driver/dashboard.html',
+  '/driver/driver-style.css',
+  '/driver/driver-script.js',
+  
+  // Admin
+  '/admin/',
+  '/admin/driver-report.html',
+  '/admin/admin-report.css',
+  '/admin/admin-report.js',
   
   // CSS
   '/style-core.css',
