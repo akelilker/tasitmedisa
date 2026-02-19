@@ -40,11 +40,15 @@ function buildVehicleForDriver($tasit, $branches = []) {
         }
     }
     $guncelKm = $tasit['guncelKm'] ?? $tasit['km'] ?? null;
+    $marka = $tasit['marka'] ?? $tasit['brand'] ?? '';
+    $model = $tasit['model'] ?? '';
+    $brandModel = $tasit['brandModel'] ?? trim($marka . ' ' . $model);
     return [
         'id' => $tasit['id'],
         'plaka' => $tasit['plaka'] ?? $tasit['plate'] ?? '',
-        'marka' => $tasit['marka'] ?? $tasit['brand'] ?? '',
-        'model' => $tasit['model'] ?? '',
+        'marka' => $marka,
+        'model' => $model,
+        'brandModel' => $brandModel,
         'tip' => $tasit['tip'] ?? $tasit['vehicleType'] ?? 'otomobil',
         'year' => $tasit['year'] ?? $tasit['yil'] ?? '',
         'branchId' => $branchId,

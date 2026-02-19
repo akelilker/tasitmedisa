@@ -310,7 +310,7 @@ body.driver-modal-open {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  border-right: 0.5px solid var(--theme-color);
+  border-right: 0.375px solid var(--theme-color);
   padding-right: 12px;
 }
 .driver-right-panel {
@@ -384,7 +384,7 @@ body.driver-modal-open {
 .driver-info-item {
   display: flex;
   flex-direction: row;
-  align-items: baseline;
+  align-items: center;
   gap: 6px;
   text-align: left;
 }
@@ -404,7 +404,6 @@ body.driver-modal-open {
   word-break: break-word;
   font-size: 13px;
   min-width: 0;
-  margin-top: 1px; /* Açıklama alt satıra inince etiket ile dikey 1px */
 }
 .driver-info-item .value.date-warning-red { color: #ef4444; }
 .driver-info-item .value.date-warning-orange { color: #f97316; }
@@ -419,9 +418,9 @@ body.driver-modal-open {
   margin-left: -6px;
 }
 
-/* Kullanıcı paneli sol panel: tüm metinler +1pt (masaüstü) */
-.driver-left-panel .driver-info-item .label { font-size: 12px; }
-.driver-left-panel .driver-info-item .value { font-size: 14px; }
+/* Kullanıcı paneli sol panel: etiket ve açıklama aynı boyut, aynı satırda hizalı */
+.driver-left-panel .driver-info-item .label { font-size: 13px; }
+.driver-left-panel .driver-info-item .value { font-size: 13px; }
 
 .driver-action-buttons {
   display: flex;
@@ -528,7 +527,7 @@ body.driver-modal-open {
 .driver-km-form-actions .btn-km-bildir,
 .driver-km-form-actions .btn-km-vazgec {
   flex: 1;
-  padding: 10px 14px;
+  padding: 8.5px 14px;
   border-radius: 8px;
   font-size: 15px;
   font-weight: 600;
@@ -577,7 +576,7 @@ body.driver-modal-open {
 .driver-form-actions .btn-driver-bildir,
 .driver-form-actions .btn-driver-vazgec {
   flex: 1;
-  padding: 10px 14px;
+  padding: 8.5px 14px;
   border-radius: 8px;
   font-size: 15px;
   font-weight: 600;
@@ -722,9 +721,9 @@ body.driver-modal-open {
     padding: 0;
     font-size: 12px;
   }
-  .driver-info-item { gap: 0; flex-wrap: wrap; }
-  .driver-info-item .label { font-size: 10px; text-transform: none; }
-  .driver-info-item .value { font-size: 12px; flex-basis: 100%; margin-top: 1px; }
+  .driver-info-item { gap: 0; }
+  .driver-info-item .label { font-size: 12px; text-transform: none; }
+  .driver-info-item .value { font-size: 12px; }
   .driver-action-btn { padding: 8px 10px; font-size: 12px; }
   .driver-user-plate-row .driver-user-name { font-size: 12px; }
   .driver-current-plaka { font-size: 14px; }
@@ -1011,7 +1010,7 @@ body.driver-modal-open {
   max-width: 90vw;
   max-height: 240px;
   overflow-y: auto;
-  background: var(--card-bg, #0f1418);
+  background: var(--bg);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 8px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
@@ -1033,7 +1032,7 @@ body.driver-modal-open {
   border-bottom: none;
 }
 .driver-plate-dropdown-item:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(var(--theme-color-rgb), 0.08);
 }
 .driver-cards-inner .vehicle-card.driver-card-hidden {
   display: none !important;
@@ -2714,9 +2713,9 @@ body.driver-modal-open {
   .dashboard-page .btn-edit-request {
     font-size: 16px !important;
   }
-  /* Sol panel (etiket/değer, plaka, kullanıcı adı) +1pt */
+  /* Sol panel: etiket ve açıklama aynı boyut, aynı satırda hizalı */
   .dashboard-page .driver-left-panel .driver-info-item .label {
-    font-size: 11px !important;
+    font-size: 13px !important;
     text-transform: none !important;
   }
   .dashboard-page .driver-left-panel .driver-info-item .value {
