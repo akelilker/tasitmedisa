@@ -739,11 +739,13 @@
   }
   .olay-ekle-modal .modal-body .modal-btn-cancel:hover {
     border-width: 1px !important;
-    background: rgba(40, 167, 69, 0.15) !important;
+    font-weight: 600 !important;
+    background: transparent !important;
   }
   .olay-ekle-modal .modal-body .modal-btn-confirm:hover {
     border-width: 1px !important;
-    background: rgba(var(--theme-color-rgb, 225, 6, 27), 0.15) !important;
+    font-weight: 600 !important;
+    background: transparent !important;
   }
   /* Etiket+input grupları arası 3px */
   .olay-ekle-modal .modal-body > div:first-of-type {
@@ -1913,42 +1915,29 @@
     gap: 24px !important;
   }
   
-  /* Olay Ekle (14 modal): Var/Yok, Evet/Hayır – ince çerçeve, renkler, seçili yarı saydam */
+  /* Olay Ekle (14 modal): Var/Yok, Evet/Hayır – pasif beyaz, hover/seçili renkli + yarı saydam arka plan */
   .olay-ekle-modal .radio-btn {
     background: transparent !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border: 1px solid rgba(255, 255, 255, 0.6) !important;
+    color: #fff !important;
     border-radius: 4px !important;
-    padding: 4px 10px !important;
+    padding: 4px 14px !important;
     font-size: 14px !important;
     font-weight: 400 !important;
     cursor: pointer !important;
     transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease !important;
   }
-  .olay-ekle-modal .radio-btn.hover-green {
-    color: #4ade80 !important;
-    border-color: rgba(74, 222, 128, 0.85) !important;
-  }
-  .olay-ekle-modal .radio-btn.hover-red {
-    color: var(--theme-color) !important;
-    border-color: rgba(var(--theme-color-rgb), 0.5) !important;
-  }
-  .olay-ekle-modal .radio-btn:not(.active).hover-green:hover {
-    background: rgba(74, 222, 128, 0.12) !important;
-    border-color: rgba(74, 222, 128, 0.45) !important;
-  }
-  .olay-ekle-modal .radio-btn:not(.active).hover-red:hover {
-    background: rgba(var(--theme-color-rgb), 0.12) !important;
-    border-color: rgba(var(--theme-color-rgb), 0.45) !important;
-  }
-  .olay-ekle-modal .radio-btn.active {
-    background: rgba(var(--theme-color-rgb), 0.20) !important;
-    border-color: var(--theme-color) !important;
-    color: var(--theme-color) !important; /* Hayır/Yok seçilince metin kırmızı */
-  }
+  .olay-ekle-modal .radio-btn.hover-green:hover,
   .olay-ekle-modal .radio-btn.active.green {
     background: rgba(74, 222, 128, 0.18) !important;
     border-color: rgba(74, 222, 128, 0.85) !important;
     color: #4ade80 !important;
+  }
+  .olay-ekle-modal .radio-btn.hover-red:hover,
+  .olay-ekle-modal .radio-btn.active:not(.green) {
+    background: rgba(var(--theme-color-rgb), 0.20) !important;
+    border-color: var(--theme-color) !important;
+    color: var(--theme-color) !important;
   }
   .olay-ekle-modal .radio-group {
     justify-content: flex-start !important;
