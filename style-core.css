@@ -1174,6 +1174,13 @@ body.modal-open .user-panel-link {
     }
 }
 
+/* --- Masaüstü PWA: window-controls-overlay - başlık çubuğu altında içerik --- */
+@media (display-mode: window-controls-overlay) {
+    body {
+        padding-top: env(title-bar-area-height, 0px) !important;
+    }
+}
+
 /* İçerik pseudo overlay'in üstünde kalsın */
 .app-container > * { position: relative; z-index: 1; }
 /* Modal açıkken body kaymasını ve yatay kaymayı engelle */
