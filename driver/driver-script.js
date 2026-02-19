@@ -299,7 +299,7 @@ function renderLeftPanel(vehicles, records) {
     const plakaEl = document.getElementById('driver-current-plaka');
     if (plakaEl) plakaEl.textContent = vehicle.plaka;
     const subtitleEl = document.getElementById('driver-plate-subtitle');
-    if (subtitleEl) subtitleEl.textContent = [vehicle.marka, vehicle.model].filter(Boolean).join(' ') || '';
+    if (subtitleEl) subtitleEl.textContent = vehicle.brandModel || [vehicle.marka, vehicle.model].filter(Boolean).join(' ') || '';
     
     const existingRecord = getExistingRecord(vehicle.id);
     const kmVal = vehicle.guncelKm || (existingRecord && existingRecord.guncel_km) || '-';
@@ -356,9 +356,10 @@ function setupPlateDropdown(vehicles) {
     const trigger = document.getElementById('driver-plate-trigger');
     if (!dropdown || !currentPlakaEl || !trigger) return;
     
-    dropdown.innerHTML = vehicles.map(v => 
-        `<div class="driver-plate-dropdown-item" role="option" data-vehicle-id="${v.id}" tabindex="0">${escapeHtmlDriver(v.plaka)}${(v.marka || v.model) ? ' – ' + escapeHtmlDriver([v.marka, v.model].filter(Boolean).join(' ')) : ''}</div>`
-    ).join('');
+    dropdown.innerHTML = vehicles.map(v => {
+        const brandModel = v.brandModel || [v.marka, v.model].filter(Boolean).join(' ');
+        return `<div class="driver-plate-dropdown-item" role="option" data-vehicle-id="${v.id}" tabindex="0">${escapeHtmlDriver(v.plaka)}${brandModel ? ' – ' + escapeHtmlDriver(brandModel) : ''}</div>`;
+    }).join('');
     
     dropdown.querySelectorAll('.driver-plate-dropdown-item').forEach(item => {
         item.addEventListener('click', function(ev) {
@@ -430,9 +431,9 @@ function buildDriverActionArea(vehicle, existingRecord, bakimVar, kazaVar, opts)
     const vid = opts.vid || vehicle.id;
     const today = new Date().toISOString().split('T')[0];
     const esc = (s) => (s == null ? '' : String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'));
-    /* Son güncellenen km: taşıt guncelKm (kayıt sonrası) veya mevcut dönem kaydı */
+    /* Son güncellenen km: taşıt guncelKm (kayıt sonrası) veya mevcut dönem kaydı - binlik ayırıcı ile */
     const lastKm = vehicle.guncelKm != null ? vehicle.guncelKm : (existingRecord && existingRecord.guncel_km != null ? existingRecord.guncel_km : '');
-    const kmVal = esc(String(lastKm));
+    const kmVal = (lastKm !== '' && lastKm != null) ? esc(formatKm(lastKm)) : '';
     const bakimTarih = existingRecord && existingRecord.bakim_tarih ? existingRecord.bakim_tarih : today;
     const kazaTarih = existingRecord && existingRecord.kaza_tarih ? existingRecord.kaza_tarih : today;
     const bakimAciklama = existingRecord ? esc(existingRecord.bakim_aciklama || '') : '';
@@ -453,7 +454,7 @@ function buildDriverActionArea(vehicle, existingRecord, bakimVar, kazaVar, opts)
                         <div class="form-group driver-km-form">
                             <label for="km-${vid}">Güncel KM</label>
                             <div class="driver-km-input-wrap">
-                                <span class="driver-km-fake-placeholder" id="km-placeholder-${vid}">Örn: 45230</span>
+                                <span class="driver-km-fake-placeholder" id="km-placeholder-${vid}">Örn: 45.230</span>
                                 <input type="text" id="km-${vid}" class="driver-km-input" inputmode="numeric" pattern="[0-9]*" maxlength="8" data-vehicle-id="${vid}" value="${kmVal}" required autocomplete="off" aria-label="Güncel kilometre">
                             </div>
                         </div>
@@ -526,13 +527,15 @@ function buildDriverActionArea(vehicle, existingRecord, bakimVar, kazaVar, opts)
 function buildDriverInputForm(vehicle, existingRecord, bakimVar, kazaVar) {
     const vid = vehicle.id;
     const today = new Date().toISOString().split('T')[0];
+    const lastKm = vehicle.guncelKm != null ? vehicle.guncelKm : (existingRecord && existingRecord.guncel_km != null ? existingRecord.guncel_km : '');
+    const kmVal = (lastKm !== '' && lastKm != null) ? formatKm(lastKm) : '';
     return `
         <div class="driver-input-form" data-vehicle-id="${vid}">
             <div class="form-group driver-km-form">
                 <label for="km-${vid}">Güncel KM</label>
                 <div class="driver-km-input-wrap">
-                    <span class="driver-km-fake-placeholder" id="km-placeholder-${vid}">Örn: 45230</span>
-                    <input type="text" id="km-${vid}" class="driver-km-input" inputmode="numeric" pattern="[0-9]*" maxlength="8" data-vehicle-id="${vid}" value="${(vehicle.guncelKm != null ? vehicle.guncelKm : (existingRecord && existingRecord.guncel_km != null ? existingRecord.guncel_km : ''))}" required autocomplete="off" aria-label="Güncel kilometre">
+                    <span class="driver-km-fake-placeholder" id="km-placeholder-${vid}">Örn: 45.230</span>
+                    <input type="text" id="km-${vid}" class="driver-km-input" inputmode="numeric" pattern="[0-9]*" maxlength="8" data-vehicle-id="${vid}" value="${kmVal}" required autocomplete="off" aria-label="Güncel kilometre">
                 </div>
             </div>
             <div class="driver-report-blocks">
@@ -704,6 +707,7 @@ window.submitDriverAction = async function(type, vid) {
                 if (successMsg) successMsg.classList.remove('show');
                 var actionBtn = inner ? inner.querySelector('.driver-action-btn[data-action="' + type + '"]') : null;
                 if (actionBtn) actionBtn.classList.add('saved');
+                loadDashboard();
             }, 2000);
         } else {
             alert(data.message || 'Kayıt yapılamadı.');
@@ -768,6 +772,7 @@ window.submitKmOnly = async function(vid) {
                 if (successMsg) successMsg.classList.remove('show');
                 const kmBtn = inner ? inner.querySelector('.driver-action-btn[data-action="km"]') : null;
                 if (kmBtn) kmBtn.classList.add('saved');
+                loadDashboard();
             }, 2000);
         } else {
             if (errorEl) { errorEl.textContent = data.message || 'Kayıt yapılamadı.'; errorEl.classList.add('show'); }
@@ -1539,7 +1544,8 @@ window.showHistory = function() {
         const opt = document.createElement('div');
         opt.className = 'history-vehicle-option';
         opt.dataset.value = String(v.id);
-        opt.textContent = [v.plaka, v.marka, v.model].filter(Boolean).join(' ');
+        const brandModel = v.brandModel || [v.marka, v.model].filter(Boolean).join(' ');
+        opt.textContent = [v.plaka, brandModel].filter(Boolean).join(' – ');
         opt.onclick = function() { selectHistoryVehicle(String(v.id), opt.textContent); };
         dropdown.appendChild(opt);
     });
@@ -1547,7 +1553,8 @@ window.showHistory = function() {
     let defaultText = 'Tüm Taşıtlar';
     if (allHistoryVehicles.length === 1) {
         defaultVal = String(allHistoryVehicles[0].id);
-        defaultText = [allHistoryVehicles[0].plaka, allHistoryVehicles[0].marka, allHistoryVehicles[0].model].filter(Boolean).join(' ');
+        const bm = allHistoryVehicles[0].brandModel || [allHistoryVehicles[0].marka, allHistoryVehicles[0].model].filter(Boolean).join(' ');
+        defaultText = [allHistoryVehicles[0].plaka, bm].filter(Boolean).join(' – ');
     }
     hiddenInput.value = defaultVal;
     if (triggerText) triggerText.textContent = defaultText;
