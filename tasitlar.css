@@ -99,8 +99,8 @@
     padding: 20px;
     padding-top: 14px !important; /* Plaka satırının margin-top negatif değerini karşılamak için (0px → 14px) */
     padding-bottom: 20px;
-    padding-left: 16px; /* Toolbar (sol ok + Taşıtlar) ile aynı hizada */
-    padding-right: 16px;
+    padding-left: 18px; /* Container çerçevelerine 2px boşluk (16px → 18px) */
+    padding-right: 18px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -117,7 +117,7 @@
     width: 100%;
     min-height: fit-content; /* İçeriğe göre yükseklik */
     height: auto; /* İçeriğe göre yükseklik */
-    margin-top: -17px !important; /* Plaka 3px yukarı */ /* Yukarı kaydırıldı */
+    margin-top: -20px !important; /* Plaka 3px daha yukarı (-17px → -20px) */
     margin-bottom: 3px !important; /* Plaka-marka arası 3px */ /* Yarı yarıya düşürüldü (4px → 2px) */
     position: relative; /* Absolute "Olay Ekle" butonu için gerekli */
     z-index: 1;
@@ -152,6 +152,7 @@
     font-weight: 600;
     color: #ccc;
     text-align: center; /* Yatayda ortalanmış */
+    line-height: calc(1em + 2px); /* İkinci satıra geçerse satırlar arası 2px boşluk */
     margin-top: 0 !important;
     margin-bottom: 0 !important;
     flex: 1; /* Ortada genişleyerek yer kaplar */
@@ -239,14 +240,43 @@
 /* Boya şeması container – masaüstünde sol grid içinde, mobilde columns altında */
 #detail-boya-container {
     width: 100% !important;
-    min-height: 0; /* Küçülmeye izin ver */
-    margin: 5px -12px !important;
+    min-height: 180px;
+    margin: 15px 0 !important;
     padding: 0 !important;
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
     justify-content: center !important;
     overflow: visible !important;
+}
+
+/* Şemayı saran kutu */
+.kaporta-schema-wrapper {
+    display: block !important;
+    margin: 0 auto !important;
+    position: relative !important;
+}
+
+/* Renk açıklamaları */
+.boya-legend {
+    margin-top: 15px !important;
+    display: flex !important;
+    gap: 15px !important;
+    justify-content: center !important;
+}
+.boya-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    color: #aaa;
+}
+.boya-legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    flex-shrink: 0;
 }
 
 /* Şemayı saran kutu */
@@ -258,9 +288,9 @@
     position: relative !important;
 }
 
-/* Renk açıklamaları */
+/* Renk açıklamaları – şemadan 3px altında */
 .boya-legend {
-    margin-top: 15px !important;
+    margin-top: 3px !important;
     display: flex !important;
     gap: 15px !important;
     justify-content: center !important;
@@ -2060,11 +2090,11 @@
   /* Taşıt detay toolbar kesilme sorunu; sol padding toolbar ile aynı (Olay Ekle hizası) */
   #vehicle-detail-content {
     padding-top: 20px !important; /* 14px → 20px */
-    padding-left: 4px !important;
-    padding-right: 4px !important;
+    padding-left: 6px !important; /* Container çerçevelerine 2px boşluk (4px → 6px) */
+    padding-right: 6px !important;
   }
   .detail-plate-row {
-    margin-top: -13px !important; /* Plaka 3px yukarı (mobil) */ /* -14px → -10px */
+    margin-top: -16px !important; /* Plaka 3px yukarı (mobil) */
   }
   
   /* Taşıt detay: layout base + container query ile; mobilde de yatay alan varsa yan yana */
@@ -2115,9 +2145,9 @@
     font-size: 19px !important; /* +1 punto daha (sadece mobil) */
   }
   
-  /* Mobil modal-body padding */
+  /* Mobil modal-body padding: çerçeve ile içerik arasında yatay boşluk yok */
   #vehicles-modal .modal-body {
-    padding: 10px 8px 40px 8px !important; /* 16px → 8px */
+    padding: 10px 0 40px 0 !important;
     overflow-x: hidden !important; /* Sağa sola kaymayı engelle */
     touch-action: pan-y !important; /* Sadece dikey kaydırma */
     overscroll-behavior-x: none !important; /* Yatay overscroll'u engelle */
@@ -2616,8 +2646,8 @@
   }
   
   #detail-boya-container svg {
-    width: 96px !important;  /* Yatayda 4px küçült (100 → 96) */
-    height: 152px !important; /* Dikeyde 6px küçült (158 → 152) */
+    width: 100px !important;
+    height: 158px !important;
     transform: rotate(90deg) !important;
     transform-origin: center !important;
     flex-shrink: 0 !important;

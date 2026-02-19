@@ -13,6 +13,46 @@
   display: none;
 }
 
+/* --- Splash ekranı – link/PWA ile açılışta 3 sn --- */
+.driver-splash {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.4s ease;
+}
+.driver-splash.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+.driver-splash-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+.driver-splash-logo {
+  width: var(--hero-logo-width, 176px);
+  height: auto;
+  object-fit: contain;
+  filter: brightness(0.88);
+}
+.driver-splash-title {
+  font-size: clamp(21px, 5.7vw, 30px);
+  font-weight: 800;
+  letter-spacing: clamp(1.28px, 0.65vw, 5.1px);
+  text-transform: uppercase;
+  margin: 0;
+  background: linear-gradient(to bottom, #c2d4df 0%, #ffffff 40%, #9aadba 52%, #d6e0e8 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-family: 'Source Sans 3', sans-serif;
+}
+
 /* --- Overflow: yatay taşma yok; giriş ve panel sayfaları --- */
 body.login-page,
 body.dashboard-page {
@@ -55,14 +95,16 @@ body.driver-modal-open {
   border-right: 1.2px solid var(--border-red-tech);
 }
 
-/* Ortadaki bölüm kaydırılabilir */
+/* Ortadaki bölüm: sol panel sabit, sadece sağ panel kaydırılır */
 .driver-scroll-area {
   flex: 1;
   min-height: 0;
-  overflow-y: auto;
+  overflow: hidden;
   overflow-x: hidden;
   padding-top: 0 !important;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Dashboard: footer sabit altta, her zaman üstte (modallerin üzerinde) */
@@ -241,9 +283,13 @@ body.driver-modal-open {
 /* Scroll alanı öğelerinde üst çizgi yok */
 .driver-scroll-area #loading-spinner,
 .driver-scroll-area .driver-vehicles-list,
-.driver-scroll-area .driver-two-panel,
 .driver-scroll-area .driver-empty-state {
   border-top: none !important;
+}
+.driver-scroll-area .driver-two-panel {
+  border-top: none !important;
+  flex: 1;
+  min-height: 0;
 }
 
 /* --- KAYAN UYARI (Tarihçe ile Çıkış arasında) --- */
@@ -280,6 +326,7 @@ body.driver-modal-open {
 .driver-two-panel {
   display: flex !important;
   flex-direction: column;
+  flex: 1;
   width: 100%;
   max-width: 500px;
   margin: 0 auto;
@@ -292,10 +339,11 @@ body.driver-modal-open {
   display: flex;
   flex-direction: column;
   gap: 2px;       /* Plaka ile marka/model arası 2px */
-  align-items: flex-start;
-  text-align: left;
+  align-items: center;
+  text-align: center;
   flex-shrink: 0;
   margin-bottom: 4px; /* Plaka altı: plaka – araç bilgisi arası 4px */
+  width: 100%;
 }
 .driver-panels-inner {
   display: flex;
@@ -303,6 +351,7 @@ body.driver-modal-open {
   flex: 1;
   min-height: 0;
   gap: 12px;
+  overflow: hidden;
 }
 .driver-left-panel {
   flex: 0 0 35%;
@@ -312,6 +361,8 @@ body.driver-modal-open {
   gap: 8px;
   border-right: 0.375px solid var(--theme-color);
   padding-right: 12px;
+  overflow: hidden;
+  flex-shrink: 0;
 }
 .driver-right-panel {
   flex: 1;
@@ -319,6 +370,13 @@ body.driver-modal-open {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.driver-right-panel::-webkit-scrollbar {
+  display: none;
 }
 
 .driver-user-plate-row {
@@ -334,13 +392,14 @@ body.driver-modal-open {
   color: var(--txt);
   overflow: hidden;
   text-overflow: ellipsis;
-  margin-right: 28px;
   display: block;
+  width: 100%;
 }
-/* Panel: isim ve marka/model ortada, plaka alanı kadar sola kaydırılmış */
+/* Panel: isim ve marka/model kendi gridinde ortalanır */
 .driver-user-plate-in-panel .driver-user-name,
 .driver-user-plate-in-panel .driver-plate-subtitle {
-  margin-right: 5rem; /* plaka listesinin yatay alanı kadar sola kaydırma */
+  text-align: center;
+  align-self: center;
 }
 .driver-plate-subtitle {
   font-size: 14px;
@@ -359,12 +418,31 @@ body.driver-modal-open {
   align-items: center;
   gap: 6px;
   position: relative;
+  width: 100%;
+  min-width: 0;
 }
 .driver-left-panel .driver-plate-dropdown {
   left: 0;
   transform: none;
   top: 100%;
   margin-top: 4px;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: hidden;
+  box-sizing: border-box;
+}
+/* Plaka ortalanırken kırmızı işaret (chevron) hesaba katılmaz; sanki yokmuş gibi tam ortada */
+.driver-plate-dropdown-row .driver-current-plaka {
+  flex: 1;
+  text-align: center;
+  min-width: 0;
+}
+/* Kırmızı chevron akıştan çıkarılır, plaka ortalama etkilenmez */
+.driver-plate-dropdown-row .driver-plate-trigger {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
 }
 .driver-current-plaka {
   font-size: 15px;
@@ -372,6 +450,7 @@ body.driver-modal-open {
   color: var(--txt);
 }
 .driver-plate-trigger {
+  flex-shrink: 0;
   background: transparent;
   border: none;
   color: var(--muted);
@@ -1605,7 +1684,7 @@ body.driver-modal-open {
 #driver-sigorta-modal.driver-modal,
 #driver-kasko-modal.driver-modal {
   background: transparent !important;
-  padding: 0 !important;
+  padding: env(safe-area-inset-top) 0 0 0 !important;
   z-index: 9999;
   flex-direction: column;
   justify-content: flex-start;

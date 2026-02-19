@@ -258,25 +258,27 @@ document.addEventListener('DOMContentLoaded', function() {
       if (window.updateNotifications) window.updateNotifications();
     }, 1000);
 
-    // Loading screen'i kapat
-    const loadingScreen = document.getElementById('loading-screen');
-    if (loadingScreen) {
-      loadingScreen.classList.add('hidden');
-      setTimeout(() => {
-        loadingScreen.style.display = 'none';
-      }, 300);
-    }
+    // Loading screen'i kapat (en az 3 sn splash gösterilir)
+    hideLoadingScreenIfVisible();
 });
 
 /* =========================================
    LOADING SCREEN CLOSE (fallback'lar: load event + dataLoaded + timeout)
+   Ana uygulama anasayfasında logo+başlık en az 3 sn gösterilir
    ========================================= */
+const SPLASH_MIN_MS = 3000;
+const _pageStartTime = Date.now();
+
 function hideLoadingScreenIfVisible() {
   const loadingScreen = document.getElementById('loading-screen');
-  if (loadingScreen && !loadingScreen.classList.contains('hidden')) {
-    loadingScreen.classList.add('hidden');
-    setTimeout(function() { loadingScreen.style.display = 'none'; }, 300);
+  if (!loadingScreen || loadingScreen.classList.contains('hidden')) return;
+  const elapsed = Date.now() - _pageStartTime;
+  if (elapsed < SPLASH_MIN_MS) {
+    setTimeout(hideLoadingScreenIfVisible, Math.max(50, SPLASH_MIN_MS - elapsed));
+    return;
   }
+  loadingScreen.classList.add('hidden');
+  setTimeout(function() { loadingScreen.style.display = 'none'; }, 300);
 }
 
 // Sayfa tam yüklendiğinde hâlâ açıksa kapat

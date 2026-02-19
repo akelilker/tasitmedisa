@@ -45,10 +45,12 @@ let allHistoryVehicles = [];
 let currentDriverEventVehicleId = null;
 let currentPeriod = '';
 let selectedVehicleId = null;
-/** Bu oturumda (ekran kapanana kadar) son bildirilen aksiyon: { action, vehicleId }. Sayfa kapanınca temizlenir. */
+/** Bu oturumda (ekran kapanana kadar) son bildirilen aksiyon: { action, vehicleId }. Ekran kapanınca temizlenir, yeşil geri bildirim beyaz/griye döner. */
 let lastCompletedActionInSession = null;
 
-window.addEventListener('pagehide', function() { lastCompletedActionInSession = null; });
+function clearSessionGreenFeedback() { lastCompletedActionInSession = null; }
+window.addEventListener('pagehide', clearSessionGreenFeedback);
+document.addEventListener('visibilitychange', function() { if (document.hidden) clearSessionGreenFeedback(); });
 
 /** Modal açıkken body scroll kilitlensin (sadece modal içi kayar) */
 function updateDriverModalBodyClass() {
@@ -90,9 +92,9 @@ if (document.getElementById('login-form')) {
     if (rememberCheckbox && localStorage.getItem('driver_remember_me') === '1') {
         rememberCheckbox.checked = true;
         var savedUser = localStorage.getItem('driver_saved_username');
-        var savedPass = localStorage.getItem('driver_saved_password');
         if (usernameInput && savedUser) usernameInput.value = savedUser;
-        if (passwordInput && savedPass) passwordInput.value = savedPass;
+        if (passwordInput) passwordInput.value = '';
+        try { localStorage.removeItem('driver_saved_password'); } catch (e) {}
     }
 
     /* Mobilde sayfa açılışında klavye açılmasın - readonly ile engelliyoruz.
@@ -140,7 +142,7 @@ if (document.getElementById('login-form')) {
                     try {
                         localStorage.setItem('driver_remember_me', '1');
                         localStorage.setItem('driver_saved_username', username);
-                        localStorage.setItem('driver_saved_password', password);
+                        localStorage.removeItem('driver_saved_password');
                     } catch (e) {}
                 } else {
                     try {
@@ -186,19 +188,38 @@ if (document.getElementById('login-form')) {
 }
 
 /* =========================================
-   DASHBOARD SAYFASI
+   SPLASH (3 sn) + DASHBOARD / LOGIN
    ========================================= */
 
+/** Splash 3 sn göster, sonra gizle ve normal akışa devam et */
+function initDriverSplash(onComplete) {
+  const splash = document.getElementById('driver-splash');
+  if (!splash) {
+    if (typeof onComplete === 'function') onComplete();
+    return;
+  }
+  setTimeout(function() {
+    splash.classList.add('hidden');
+    splash.setAttribute('aria-hidden', 'true');
+    setTimeout(function() {
+      splash.style.display = 'none';
+      if (typeof onComplete === 'function') onComplete();
+    }, 400);
+  }, 3000);
+}
+
 if (document.getElementById('driver-two-panel')) {
-    const run = () => { loadDashboard(); };
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', run);
-    } else {
-        run();
-    }
-    window.addEventListener('pageshow', function(ev) {
-        if (ev.persisted) run();
-    });
+  const run = () => { initDriverSplash(function() { loadDashboard(); }); };
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', run);
+  } else {
+    run();
+  }
+  window.addEventListener('pageshow', function(ev) {
+    if (ev.persisted) run();
+  });
+} else if (document.getElementById('driver-splash')) {
+  document.addEventListener('DOMContentLoaded', function() { initDriverSplash(); });
 }
 
 async function loadDashboard() {
@@ -836,6 +857,7 @@ window.submitKmOnly = async function(vid) {
             body: JSON.stringify({
                 arac_id: parseInt(vid, 10),
                 guncel_km: km,
+                km_only: true,
                 bakim_durumu: 0,
                 bakim_aciklama: '',
                 bakim_tarih: '',
