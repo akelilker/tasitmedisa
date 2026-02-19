@@ -1615,8 +1615,8 @@ function renderVehicleDetailLeft(vehicle) {
               part.setAttribute('fill', '#5cb85c');
               part.style.fill = '#5cb85c';
             } else if (state === 'degisen') {
-              part.setAttribute('fill', '#e85868');
-              part.style.fill = '#e85868';
+              part.setAttribute('fill', '#e1061b');
+              part.style.fill = '#e1061b';
             }
             const partName = partNames[partId] || partId;
             const stateLabel = state === 'boyali' ? 'Boyalı' : state === 'degisen' ? 'Değişen' : 'Orijinal';
@@ -1640,7 +1640,7 @@ function renderVehicleDetailLeft(vehicle) {
         legend.innerHTML = `
           <div class="boya-legend-item"><span class="boya-legend-dot" style="background:#9a9a9a;"></span> Orijinal</div>
           <div class="boya-legend-item"><span class="boya-legend-dot" style="background:#5cb85c;"></span> Boyalı</div>
-          <div class="boya-legend-item"><span class="boya-legend-dot" style="background:#e85868;"></span> Değişen</div>
+          <div class="boya-legend-item"><span class="boya-legend-dot" style="background:#e1061b;"></span> Değişen</div>
         `;
         container.appendChild(legend);
       })
