@@ -92,9 +92,9 @@ if (document.getElementById('login-form')) {
     if (rememberCheckbox && localStorage.getItem('driver_remember_me') === '1') {
         rememberCheckbox.checked = true;
         var savedUser = localStorage.getItem('driver_saved_username');
-        var savedPass = localStorage.getItem('driver_saved_password');
         if (usernameInput && savedUser) usernameInput.value = savedUser;
-        if (passwordInput && savedPass) passwordInput.value = savedPass;
+        if (passwordInput) passwordInput.value = '';
+        try { localStorage.removeItem('driver_saved_password'); } catch (e) {}
     }
 
     /* Mobilde sayfa açılışında klavye açılmasın - readonly ile engelliyoruz.
@@ -142,7 +142,7 @@ if (document.getElementById('login-form')) {
                     try {
                         localStorage.setItem('driver_remember_me', '1');
                         localStorage.setItem('driver_saved_username', username);
-                        localStorage.setItem('driver_saved_password', password);
+                        localStorage.removeItem('driver_saved_password');
                     } catch (e) {}
                 } else {
                     try {

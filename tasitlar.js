@@ -1562,10 +1562,10 @@ function renderVehicleDetailLeft(vehicle) {
         container.innerHTML = '';
 
         // Şemanın görünmesini istediğin genişlik (Landscape/Yatay hali)
-        const targetWidth = 140;
+        const targetWidth = 240;
 
         // Orijinal SVG dikey (148x220). Döndürünce oranlar değişiyor.
-        // Yeni yükseklik oranını koruyarak hesapla
+        // Yeni yükseklik oranını koruyarak hesapla (240 * (148/220) ~ 160px)
         const targetHeight = Math.round(targetWidth * (148 / 220));
 
         // SVG'nin ham boyutları
@@ -1607,7 +1607,7 @@ function renderVehicleDetailLeft(vehicle) {
 
         // --- RENKLENDİRME ---
         const partNames = getKaportaPartNames();
-        const defaultGray = '#9a9a9a'; /* Kaporta şeması orijinal parça – açık ton */
+        const defaultGray = '#757575';
 
         const allParts = svgClone.querySelectorAll('path[id]');
         allParts.forEach(part => {
@@ -1643,12 +1643,12 @@ function renderVehicleDetailLeft(vehicle) {
           }
         });
 
-        // --- LEGEND: tam açıklama (Orijinal, Boyalı, Değişen) – O/B/D kısaltması yok
+        // --- LEGEND ---
         const legend = document.createElement('div');
         legend.className = 'boya-legend';
         legend.innerHTML = `
-          <div class="boya-legend-item"><span class="boya-legend-dot" style="background:#9a9a9a;"></span> Orijinal</div>
-          <div class="boya-legend-item"><span class="boya-legend-dot" style="background:#5cb85c;"></span> Boyalı</div>
+          <div class="boya-legend-item"><span class="boya-legend-dot" style="background:#757575;"></span> Orijinal</div>
+          <div class="boya-legend-item"><span class="boya-legend-dot" style="background:#28a745;"></span> Boyalı</div>
           <div class="boya-legend-item"><span class="boya-legend-dot" style="background:#e1061b;"></span> Değişen</div>
         `;
         container.appendChild(legend);
