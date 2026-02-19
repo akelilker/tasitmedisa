@@ -46,9 +46,9 @@
     overflow-x: visible !important;
 }
 
-/* Olay Ekle 14 modal: history-modal ile aynı yapı (540px, footer 54px, çerçeve) */
+/* Olay Ekle 14 modal: Taşıtlar modalı ile aynı yapı (500px, footer 54px, çerçeve) */
 .olay-ekle-modal .modal-container {
-    max-width: 540px !important;
+    max-width: 500px !important;
     width: 100%;
     background: var(--modal-bg) !important;
     border: 0.5px solid rgba(255, 255, 255, 0.35) !important;
@@ -87,7 +87,7 @@
     pointer-events: none;
 }
 .olay-ekle-modal.tasitlar-modal-overlay::before {
-    max-width: 540px; /* Olay Ekle modalları çerçevesi ile aynı */
+    max-width: 500px; /* Olay Ekle modalları Taşıtlar ile aynı */
 }
 /* ayarlar-modal-overlay ::before display:none ezer - Olay Ekle karartma gösterilsin */
 .olay-ekle-modal.tasitlar-modal-overlay.ayarlar-modal-overlay::before {
