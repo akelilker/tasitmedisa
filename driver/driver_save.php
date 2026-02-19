@@ -173,6 +173,38 @@ foreach ($data['arac_aylik_hareketler'] as $kayit) {
     }
 }
 
+// km_only: Sadece KM güncellenirken mevcut bakım/kaza/not değerleri korunsun
+$kmOnly = !empty($input['km_only']);
+$existingRec = ($existingIndex >= 0) ? $data['arac_aylik_hareketler'][$existingIndex] : null;
+
+// km_only: mevcut kayıttan bakım/kaza/not değerlerini al
+if ($kmOnly && $existingRec) {
+    $bakimDurumu = isset($existingRec['bakim_durumu']) ? (int)$existingRec['bakim_durumu'] : 0;
+    $bakimAciklama = isset($existingRec['bakim_aciklama']) ? trim((string)$existingRec['bakim_aciklama']) : '';
+    $bakimTarih = isset($existingRec['bakim_tarih']) ? trim((string)$existingRec['bakim_tarih']) : '';
+    $bakimServis = isset($existingRec['bakim_servis']) ? trim((string)$existingRec['bakim_servis']) : '';
+    $bakimKisi = isset($existingRec['bakim_kisi']) ? trim((string)$existingRec['bakim_kisi']) : '';
+    $bakimKm = isset($existingRec['bakim_km']) ? trim((string)$existingRec['bakim_km']) : '';
+    $bakimTutar = isset($existingRec['bakim_tutar']) ? trim((string)$existingRec['bakim_tutar']) : '';
+    $kazaDurumu = isset($existingRec['kaza_durumu']) ? (int)$existingRec['kaza_durumu'] : 0;
+    $kazaAciklama = isset($existingRec['kaza_aciklama']) ? trim((string)$existingRec['kaza_aciklama']) : '';
+    $kazaTarih = isset($existingRec['kaza_tarih']) ? trim((string)$existingRec['kaza_tarih']) : '';
+    $kazaHasarTutari = isset($existingRec['kaza_hasar_tutari']) ? trim((string)$existingRec['kaza_hasar_tutari']) : '';
+    $ekstraNot = isset($existingRec['ekstra_not']) ? trim((string)$existingRec['ekstra_not']) : '';
+    $boyaParcalarRaw = isset($existingRec['boya_parcalar']) ? $existingRec['boya_parcalar'] : '';
+    $boyaParcalar = [];
+    if ($boyaParcalarRaw !== '') {
+        $decoded = is_string($boyaParcalarRaw) ? json_decode($boyaParcalarRaw, true) : $boyaParcalarRaw;
+        if (is_array($decoded)) {
+            foreach ($decoded as $partId => $state) {
+                if (is_string($partId) && $partId !== '' && in_array($state, ['boyali', 'degisen'], true)) {
+                    $boyaParcalar[$partId] = $state;
+                }
+            }
+        }
+    }
+}
+
 // Kayıt verisi (aylık özet + taşıt detay senkronu için ek alanlar)
 $kayitData = [
     'id' => $existingIndex >= 0 ? $data['arac_aylik_hareketler'][$existingIndex]['id'] : $newId,
