@@ -26,6 +26,15 @@
     try { return JSON.parse(localStorage.getItem(USERS_KEY) || '[]'); } catch { return []; }
   }
 
+  /** Tarihçe içerikleri: kelime başı büyük; tamamı büyük kelime (soyisim vb.) aynen kalır */
+  function toTitleCase(str) {
+    if (str == null || String(str).trim() === '') return str;
+    return String(str).trim().split(/\s+/).map(function(word) {
+      if (word === word.toUpperCase() && word.length > 0) return word;
+      return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+    }).join(' ');
+  }
+
   function writeVehicles(arr) {
     if (window.__medisaVehiclesStorage) {
         window.__medisaVehiclesStorage.write(arr);
@@ -3058,16 +3067,19 @@ function renderVehicleDetailLeft(vehicle) {
     if (tabType === 'bakim') {
       const bakimEvents = events.filter(e => e.type === 'bakim');
       if (bakimEvents.length === 0) {
-        html = '<div style="text-align: center; color: #888; padding: 20px;">Bakım kaydı bulunmamaktadır.</div>';
+        html = '<div class="history-empty-msg" style="text-align: center; padding: 20px;">' + escapeHtml(toTitleCase('Bakım kaydı bulunmamaktadır.')) + '</div>';
       } else {
         bakimEvents.forEach(event => {
           const kmStr = event.data?.km ? `Km: ${escapeHtml(formatNumber(event.data.km))}` : '';
           const tutarStr = event.data?.tutar ? `Tutar: ${escapeHtml(event.data.tutar)}` : '';
           const ekStr = [kmStr, tutarStr].filter(Boolean).join(' | ');
+          const islemler = toTitleCase(event.data?.islemler || '');
+          const servis = toTitleCase(event.data?.servis || '-');
+          const kisi = toTitleCase(event.data?.kisi || '-');
           html += `<div class="history-item" style="padding: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
-            <div style="font-weight: 600; color: #e0e0e0; font-size: 12px; margin-bottom: 4px;">${escapeHtml(event.date)}</div>
-            <div style="color: #aaa; font-size: 12px;">${escapeHtml(event.data?.islemler || '')}</div>
-            <div style="color: #aaa; font-size: 12px; margin-top: 4px;">Servis: ${escapeHtml(event.data?.servis || '-')} | Kişi: ${escapeHtml(event.data?.kisi || '-')}${ekStr ? ' | ' + ekStr : ''}</div>
+            <div class="history-item-date" style="font-weight: 600; font-size: 12px; margin-bottom: 4px;">${escapeHtml(event.date)}</div>
+            <div class="history-item-body" style="font-size: 12px;">${escapeHtml(islemler)}</div>
+            <div class="history-item-body" style="font-size: 12px; margin-top: 4px;">Servis: ${escapeHtml(servis)} | Kişi: ${escapeHtml(kisi)}${ekStr ? ' | ' + ekStr : ''}</div>
           </div>`;
         });
       }
@@ -3075,11 +3087,12 @@ function renderVehicleDetailLeft(vehicle) {
       const kazaEvents = events.filter(e => e.type === 'kaza');
       const partNames = getKaportaPartNames();
       if (kazaEvents.length === 0) {
-        html = '<div style="text-align: center; color: #888; padding: 20px;">Kaza kaydı bulunmamaktadır.</div>';
+        html = '<div class="history-empty-msg" style="text-align: center; padding: 20px;">' + escapeHtml(toTitleCase('Kaza kaydı bulunmamaktadır.')) + '</div>';
       } else {
         kazaEvents.forEach(event => {
           const hasarStr = event.data?.hasarTutari ? ` | Hasar Tutarı: ${escapeHtml(event.data.hasarTutari)}` : '';
-          const aciklamaHtml = event.data?.aciklama ? `<div style="color: #aaa; font-size: 12px; margin-top: 4px;">${escapeHtml(event.data.aciklama)}</div>` : '';
+          const aciklamaVal = event.data?.aciklama ? toTitleCase(event.data.aciklama) : '';
+          const aciklamaHtml = aciklamaVal ? `<div class="history-item-body" style="font-size: 12px; margin-top: 4px;">${escapeHtml(aciklamaVal)}</div>` : '';
           let parcalarHtml = '';
           const hasarParcalari = event.data?.hasarParcalari;
           if (hasarParcalari && typeof hasarParcalari === 'object' && Object.keys(hasarParcalari).length > 0) {
@@ -3087,17 +3100,18 @@ function renderVehicleDetailLeft(vehicle) {
             const degisenList = [];
             Object.keys(hasarParcalari).forEach(partId => {
               const partName = partNames[partId] || partId;
-              if (hasarParcalari[partId] === 'boyali') boyaliList.push(partName);
-              else if (hasarParcalari[partId] === 'degisen') degisenList.push(partName);
+              if (hasarParcalari[partId] === 'boyali') boyaliList.push(toTitleCase(partName));
+              else if (hasarParcalari[partId] === 'degisen') degisenList.push(toTitleCase(partName));
             });
             const parts = [];
-            if (boyaliList.length) parts.push(`Boyalı: ${boyaliList.join(', ')}`);
-            if (degisenList.length) parts.push(`Değişen: ${degisenList.join(', ')}`);
-            if (parts.length) parcalarHtml = `<div style="color: #aaa; font-size: 12px; margin-top: 4px;">${escapeHtml(parts.join(' | '))}</div>`;
+            if (boyaliList.length) parts.push('Boyalı: ' + boyaliList.join(', '));
+            if (degisenList.length) parts.push('Değişen: ' + degisenList.join(', '));
+            if (parts.length) parcalarHtml = `<div class="history-item-body" style="font-size: 12px; margin-top: 4px;">${escapeHtml(parts.join(' | '))}</div>`;
           }
+          const surucu = toTitleCase(event.data?.surucu || '-');
           html += `<div class="history-item" style="padding: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
-            <div style="font-weight: 600; color: #e0e0e0; font-size: 12px; margin-bottom: 4px;">${escapeHtml(event.date)}</div>
-            <div style="color: #aaa; font-size: 12px;">Kullanıcı: ${escapeHtml(event.data?.surucu || '-')}${hasarStr}</div>
+            <div class="history-item-date" style="font-weight: 600; font-size: 12px; margin-bottom: 4px;">${escapeHtml(event.date)}</div>
+            <div class="history-item-body" style="font-size: 12px;">Kullanıcı: ${escapeHtml(surucu)}${hasarStr}</div>
             ${parcalarHtml}
             ${aciklamaHtml}
           </div>`;
@@ -3106,17 +3120,17 @@ function renderVehicleDetailLeft(vehicle) {
     } else if (tabType === 'km') {
       const kmEvents = events.filter(e => e.type === 'km-revize');
       if (kmEvents.length === 0) {
-        html = '<div style="text-align: center; color: #888; padding: 20px;">Km güncelleme kaydı bulunmamaktadır.</div>';
+        html = '<div class="history-empty-msg" style="text-align: center; padding: 20px;">' + escapeHtml(toTitleCase('Km güncelleme kaydı bulunmamaktadır.')) + '</div>';
       } else {
         kmEvents.forEach(event => {
-          // Km revizyon formatı: gg/aa/yyyy - Km Revize
           const eskiKm = event.data?.eskiKm || '-';
           const yeniKm = event.data?.yeniKm || '-';
-          const surucuStr = event.data?.surucu ? `Kullanıcı: ${escapeHtml(event.data.surucu)}` : '';
+          const surucuVal = event.data?.surucu;
+          const surucuStr = surucuVal ? `Kullanıcı: ${escapeHtml(toTitleCase(surucuVal))}` : '';
           html += `<div class="history-item" style="padding: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
-            <div style="font-weight: 600; color: #e0e0e0; font-size: 12px; margin-bottom: 4px;">${escapeHtml(event.date)} - Km Revize</div>
-            <div style="color: #aaa; font-size: 12px; margin-top: 4px;">Önceki Km; ${escapeHtml(formatNumber(eskiKm))} - Güncellenen Km; ${escapeHtml(formatNumber(yeniKm))}</div>
-            ${surucuStr ? `<div style="color: #888; font-size: 12px; margin-top: 4px;">${surucuStr}</div>` : ''}
+            <div class="history-item-date" style="font-weight: 600; font-size: 12px; margin-bottom: 4px;">${escapeHtml(event.date)} - Km Revize</div>
+            <div class="history-item-body" style="font-size: 12px; margin-top: 4px;">Önceki Km; ${escapeHtml(formatNumber(eskiKm))} - Güncellenen Km; ${escapeHtml(formatNumber(yeniKm))}</div>
+            ${surucuStr ? `<div class="history-item-body" style="font-size: 12px; margin-top: 4px;">${surucuStr}</div>` : ''}
           </div>`;
         });
       }
@@ -3124,7 +3138,7 @@ function renderVehicleDetailLeft(vehicle) {
       const branches = readBranches();
       const subeEvents = events.filter(e => e.type === 'sube-degisiklik' || e.type === 'kullanici-atama' || e.type === 'sigorta-guncelle' || e.type === 'kasko-guncelle' || e.type === 'muayene-guncelle' || e.type === 'anahtar-guncelle' || e.type === 'kredi-guncelle' || e.type === 'lastik-guncelle' || e.type === 'utts-guncelle' || e.type === 'takip-cihaz-guncelle' || e.type === 'not-guncelle' || e.type === 'satis');
       if (subeEvents.length === 0) {
-        html = '<div style="text-align: center; color: #888; padding: 20px;">Şube/Kullanıcı geçmişi bulunmamaktadır.</div>';
+        html = '<div class="history-empty-msg" style="text-align: center; padding: 20px;">' + escapeHtml(toTitleCase('Şube/Kullanıcı geçmişi bulunmamaktadır.')) + '</div>';
       } else {
         subeEvents.forEach(event => {
           let label = '';
@@ -3143,21 +3157,24 @@ function renderVehicleDetailLeft(vehicle) {
           else if (event.type === 'not-guncelle') label = 'Sürücü Notu';
           else if (event.type === 'satis') label = 'Satış/Pert';
           
-          let descText = escapeHtml(label);
+          let descText = escapeHtml(toTitleCase(label));
           if (event.type === 'kullanici-atama') {
-            const yeni = event.data?.kullaniciAdi || '-';
-            const eski = event.data?.eskiKullaniciAdi;
+            const yeni = toTitleCase(event.data?.kullaniciAdi || '-');
+            const eski = event.data?.eskiKullaniciAdi ? toTitleCase(event.data.eskiKullaniciAdi) : '';
             descText += ` - ${escapeHtml(yeni)}${eski ? ` (${escapeHtml(eski)})` : ''}`;
           } else if (event.type === 'sube-degisiklik') {
-            const yeni = event.data?.yeniSubeAdi || branches.find(b => b.id === event.data?.yeniSubeId)?.name || '-';
-            const eski = event.data?.eskiSubeAdi || branches.find(b => b.id === event.data?.eskiSubeId)?.name || '';
+            const yeniRaw = event.data?.yeniSubeAdi || branches.find(b => b.id === event.data?.yeniSubeId)?.name || '-';
+            const eskiRaw = event.data?.eskiSubeAdi || branches.find(b => b.id === event.data?.eskiSubeId)?.name || '';
+            const yeni = toTitleCase(yeniRaw);
+            const eski = eskiRaw ? toTitleCase(eskiRaw) : '';
             descText += ` - ${escapeHtml(yeni)}${eski ? ` (${escapeHtml(eski)})` : ''}`;
           } else if (event.type === 'not-guncelle' && event.data?.not) {
             const notStr = String(event.data.not);
-            descText += notStr.length > 40 ? ` - ${escapeHtml(notStr.slice(0, 40))}…` : ` - ${escapeHtml(notStr)}`;
+            const notDisplay = notStr.length > 40 ? notStr.slice(0, 40) + '…' : notStr;
+            descText += ' - ' + escapeHtml(toTitleCase(notDisplay));
           }
           html += `<div class="history-item history-item-sube" style="padding: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
-            <div style="font-weight: 600; color: #e0e0e0; font-size: 12px; margin-bottom: 4px;">${escapeHtml(event.date)} - ${descText}</div>
+            <div class="history-item-date" style="font-weight: 600; font-size: 12px; margin-bottom: 4px;">${escapeHtml(event.date)} - ${descText}</div>
             ${detailHtml}
           </div>`;
         });
