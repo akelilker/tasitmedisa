@@ -240,14 +240,43 @@
 /* Boya şeması container – masaüstünde sol grid içinde, mobilde columns altında */
 #detail-boya-container {
     width: 100% !important;
-    min-height: 0; /* Küçülmeye izin ver */
-    margin: 5px -12px !important;
+    min-height: 180px;
+    margin: 15px 0 !important;
     padding: 0 !important;
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
     justify-content: center !important;
     overflow: visible !important;
+}
+
+/* Şemayı saran kutu */
+.kaporta-schema-wrapper {
+    display: block !important;
+    margin: 0 auto !important;
+    position: relative !important;
+}
+
+/* Renk açıklamaları */
+.boya-legend {
+    margin-top: 15px !important;
+    display: flex !important;
+    gap: 15px !important;
+    justify-content: center !important;
+}
+.boya-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    color: #aaa;
+}
+.boya-legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    flex-shrink: 0;
 }
 
 /* Şemayı saran kutu */
@@ -2116,9 +2145,9 @@
     font-size: 19px !important; /* +1 punto daha (sadece mobil) */
   }
   
-  /* Mobil modal-body padding */
+  /* Mobil modal-body padding: çerçeve ile içerik arasında yatay boşluk yok */
   #vehicles-modal .modal-body {
-    padding: 10px 8px 40px 8px !important; /* 16px → 8px */
+    padding: 10px 0 40px 0 !important;
     overflow-x: hidden !important; /* Sağa sola kaymayı engelle */
     touch-action: pan-y !important; /* Sadece dikey kaydırma */
     overscroll-behavior-x: none !important; /* Yatay overscroll'u engelle */
@@ -2617,8 +2646,8 @@
   }
   
   #detail-boya-container svg {
-    width: 96px !important;  /* Yatayda 4px küçült (100 → 96) */
-    height: 152px !important; /* Dikeyde 6px küçült (158 → 152) */
+    width: 100px !important;
+    height: 158px !important;
     transform: rotate(90deg) !important;
     transform-origin: center !important;
     flex-shrink: 0 !important;
@@ -2627,7 +2656,7 @@
 
   /* Detay modal plaka ve başlıklar toolbar altında kalmasın */
   #vehicle-detail-content { padding-top: 24px !important; }
-  .detail-plate-row { margin-top: -16px !important; margin-bottom: 0 !important; } /* Plaka 3px yukarı, marka arası 1px */
+  .detail-plate-row { margin-top: -13px !important; margin-bottom: 0 !important; } /* Plaka 3px yukarı, marka arası 1px */
   .detail-plate { margin-top: 0 !important; }
   .detail-brand-year-row { padding-top: 1px !important; }
 
