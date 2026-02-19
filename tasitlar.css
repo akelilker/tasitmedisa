@@ -2067,9 +2067,9 @@
     font-size: 19px !important; /* +1 punto daha (sadece mobil) */
   }
   
-  /* Mobil modal-body padding */
+  /* Mobil modal-body padding: çerçeve ile içerik arasında yatay boşluk yok */
   #vehicles-modal .modal-body {
-    padding: 10px 8px 40px 8px !important; /* 16px → 8px */
+    padding: 10px 0 40px 0 !important;
     overflow-x: hidden !important; /* Sağa sola kaymayı engelle */
     touch-action: pan-y !important; /* Sadece dikey kaydırma */
     overscroll-behavior-x: none !important; /* Yatay overscroll'u engelle */
