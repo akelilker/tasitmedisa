@@ -35,7 +35,7 @@
   gap: 16px;
 }
 .driver-splash-logo {
-  width: var(--hero-logo-width, 138px);
+  width: var(--hero-logo-width, 207px);
   height: auto;
   object-fit: contain;
   filter: brightness(0.88);
@@ -419,12 +419,17 @@ body.driver-modal-open {
   gap: 6px;
   position: relative;
   width: 100%;
+  min-width: 0;
 }
 .driver-left-panel .driver-plate-dropdown {
   left: 0;
   transform: none;
   top: 100%;
   margin-top: 4px;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: hidden;
+  box-sizing: border-box;
 }
 /* Plaka ortalanırken kırmızı işaret (chevron) hesaba katılmaz; sanki yokmuş gibi tam ortada */
 .driver-plate-dropdown-row .driver-current-plaka {
