@@ -629,15 +629,25 @@ window.toggleDriverActionBlock = function(type, vehicleId) {
     const vid = String(vehicleId);
     const inner = document.querySelector('.driver-action-area-inner[data-vehicle-id="' + vid + '"]');
     if (!inner) return;
-    const blocks = { km: inner.querySelector('#km-block-' + vid), kaza: document.getElementById('kaza-block-' + vid), bakim: document.getElementById('bakim-block-' + vid) };
-    const target = type === 'km' ? blocks.km : (type === 'kaza' ? blocks.kaza : blocks.bakim);
+    const blocks = {
+        km: inner.querySelector('#km-block-' + vid),
+        kaza: document.getElementById('kaza-block-' + vid),
+        bakim: document.getElementById('bakim-block-' + vid),
+        sigorta: document.getElementById('sigorta-block-' + vid),
+        kasko: document.getElementById('kasko-block-' + vid),
+        muayene: document.getElementById('muayene-block-' + vid),
+        anahtar: document.getElementById('anahtar-block-' + vid),
+        lastik: document.getElementById('lastik-block-' + vid)
+    };
+    const target = blocks[type];
     if (!target) return;
     const isShown = target.classList.contains('show');
     inner.classList.remove('driver-km-open');
     inner.querySelectorAll('.driver-action-block').forEach(function(b) { if (b) b.classList.remove('show'); });
     if (!isShown) {
         target.classList.add('show');
-        if (type === 'km' || type === 'kaza' || type === 'bakim') inner.classList.add('driver-km-open');
+        var expandTypes = ['km', 'kaza', 'bakim', 'sigorta', 'kasko', 'muayene', 'anahtar', 'lastik'];
+        if (expandTypes.indexOf(type) !== -1) inner.classList.add('driver-km-open');
         if (type === 'kaza') {
             const dateEl = document.getElementById('kaza-tarih-' + vid);
             if (dateEl && !dateEl.value) dateEl.value = new Date().toISOString().split('T')[0];
@@ -651,6 +661,14 @@ window.toggleDriverActionBlock = function(type, vehicleId) {
         if (type === 'bakim') {
             const dateEl = document.getElementById('bakim-tarih-' + vid);
             if (dateEl && !dateEl.value) dateEl.value = new Date().toISOString().split('T')[0];
+        }
+        if (type === 'sigorta' || type === 'kasko' || type === 'muayene') {
+            var dateId = type === 'muayene' ? 'driver-muayene-tarih' : (type === 'sigorta' ? 'driver-sigorta-tarih' : 'driver-kasko-tarih');
+            var dateEl = document.getElementById(dateId + '-' + vid);
+            if (dateEl && !dateEl.value) dateEl.value = new Date().toISOString().split('T')[0];
+        }
+        if (type === 'anahtar' || type === 'lastik') {
+            setupDriverEventRadioHandlersForBlock(type, vid);
         }
         if (type === 'km') {
             setTimeout(function() {
@@ -673,7 +691,8 @@ window.cancelKmForm = function(vid) {
 
 window.cancelDriverActionForm = function(type, vid) {
     const inner = document.querySelector('.driver-action-area-inner[data-vehicle-id="' + vid + '"]');
-    const blockId = type === 'km' ? 'km-block-' + vid : (type === 'kaza' ? 'kaza-block-' + vid : 'bakim-block-' + vid);
+    const blockIds = { km: 'km-block-', kaza: 'kaza-block-', bakim: 'bakim-block-', sigorta: 'sigorta-block-', kasko: 'kasko-block-', muayene: 'muayene-block-', anahtar: 'anahtar-block-', lastik: 'lastik-block-' };
+    const blockId = (blockIds[type] || '') + vid;
     const block = document.getElementById(blockId);
     if (block) block.classList.remove('show');
     if (inner) inner.classList.remove('driver-km-open');
@@ -1161,19 +1180,26 @@ window.closeDriverEventMenu = function() {
 window.handleDriverEventChoice = function(type, vehicleId) {
     closeDriverEventMenu();
     if (type === 'km') {
-        const input = document.getElementById('km-' + vehicleId);
-        if (input) {
-            input.focus();
-            input.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
+        toggleDriverActionBlock('km', vehicleId);
     } else if (type === 'bakim') {
-        toggleReportBlock('bakim', vehicleId);
-        const block = document.getElementById('bakim-block-' + vehicleId);
-        if (block) block.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        var block = document.getElementById('bakim-block-' + vehicleId);
+        if (block && block.closest('.driver-action-area-inner')) {
+            toggleDriverActionBlock('bakim', vehicleId);
+        } else {
+            toggleReportBlock('bakim', vehicleId);
+            block = document.getElementById('bakim-block-' + vehicleId);
+            if (block) block.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
     } else if (type === 'kaza') {
-        toggleReportBlock('kaza', vehicleId);
-        const block = document.getElementById('kaza-block-' + vehicleId);
-        if (block) block.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        var kazaBlock = document.getElementById('kaza-block-' + vehicleId);
+        if (kazaBlock && kazaBlock.closest('.driver-action-area-inner')) {
+            toggleDriverActionBlock('kaza', vehicleId);
+        } else {
+            toggleReportBlock('kaza', vehicleId);
+            if (kazaBlock) kazaBlock.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    } else if (['sigorta', 'kasko', 'muayene', 'anahtar', 'lastik'].indexOf(type) !== -1) {
+        toggleDriverActionBlock(type, vehicleId);
     } else {
         openDriverEventModal(type, vehicleId);
     }
@@ -1243,6 +1269,25 @@ window.openDriverEventModal = function(type, vehicleId) {
     updateDriverModalBodyClass();
 };
 
+function setupDriverEventRadioHandlersForBlock(group, vid) {
+    const block = document.getElementById(group + '-block-' + vid);
+    if (!block) return;
+    const btns = block.querySelectorAll('.driver-radio-btn[data-group="' + group + '"]');
+    var wrap = document.getElementById('driver-' + group + (group === 'anahtar' ? '-detay-wrap' : '-adres-wrap') + '-' + vid);
+    var input = document.getElementById('driver-' + group + (group === 'anahtar' ? '-detay' : '-adres') + '-' + vid);
+    var isVarDefault = group === 'anahtar';
+    if (wrap) wrap.style.display = isVarDefault ? 'block' : 'none';
+    btns.forEach(function(btn) {
+        btn.onclick = function() {
+            btns.forEach(function(b) { b.classList.remove('active'); });
+            btn.classList.add('active');
+            var isVar = btn.dataset.value === 'var';
+            if (wrap) wrap.style.display = isVar ? 'block' : 'none';
+            if (input && !isVar) input.value = '';
+        };
+    });
+}
+
 function setupDriverEventRadioHandlers(group, detailWrap, detailInput) {
     const container = document.getElementById('driver-' + group + '-modal');
     if (!container) return;
@@ -1268,6 +1313,62 @@ window.closeDriverEventModal = function(type) {
     if (modal) modal.classList.remove('show');
     currentDriverEventVehicleId = null;
     updateDriverModalBodyClass();
+};
+
+window.saveDriverEventFromBlock = async function(type, vehicleId) {
+    vehicleId = String(vehicleId);
+    if (!vehicleId || !currentToken) return;
+    let data = {};
+    if (type === 'anahtar') {
+        const block = document.getElementById('anahtar-block-' + vehicleId);
+        const active = block ? block.querySelector('.driver-radio-btn.active') : null;
+        const durum = active ? active.dataset.value : 'yok';
+        data = { durum: durum, detay: durum === 'var' ? (document.getElementById('driver-anahtar-detay-' + vehicleId)?.value.trim() || '') : '' };
+    } else if (type === 'lastik') {
+        const block = document.getElementById('lastik-block-' + vehicleId);
+        const active = block ? block.querySelector('.driver-radio-btn.active') : null;
+        const durum = active ? active.dataset.value : 'yok';
+        data = { durum: durum, adres: durum === 'var' ? (document.getElementById('driver-lastik-adres-' + vehicleId)?.value.trim() || '') : '' };
+    } else if (type === 'muayene') {
+        const tarih = document.getElementById('driver-muayene-tarih-' + vehicleId)?.value.trim() || '';
+        if (!tarih) { alert('Tarih zorunludur!'); return; }
+        data = { tarih: tarih };
+    } else if (type === 'sigorta') {
+        const tarih = document.getElementById('driver-sigorta-tarih-' + vehicleId)?.value.trim() || '';
+        if (!tarih) { alert('Tarih zorunludur!'); return; }
+        data = {
+            tarih: tarih,
+            firma: document.getElementById('driver-sigorta-firma-' + vehicleId)?.value.trim() || '',
+            acente: document.getElementById('driver-sigorta-acente-' + vehicleId)?.value.trim() || '',
+            iletisim: document.getElementById('driver-sigorta-iletisim-' + vehicleId)?.value.trim() || ''
+        };
+    } else if (type === 'kasko') {
+        const tarih = document.getElementById('driver-kasko-tarih-' + vehicleId)?.value.trim() || '';
+        if (!tarih) { alert('Tarih zorunludur!'); return; }
+        data = {
+            tarih: tarih,
+            firma: document.getElementById('driver-kasko-firma-' + vehicleId)?.value.trim() || '',
+            acente: document.getElementById('driver-kasko-acente-' + vehicleId)?.value.trim() || '',
+            iletisim: document.getElementById('driver-kasko-iletisim-' + vehicleId)?.value.trim() || ''
+        };
+    } else return;
+    try {
+        const res = await fetch(API_BASE + 'driver_event.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + currentToken },
+            body: JSON.stringify({ arac_id: parseInt(vehicleId, 10), event_type: type, data: data })
+        });
+        const result = await res.json();
+        if (result.success) {
+            cancelDriverActionForm(type, vehicleId);
+            await loadDashboard();
+        } else {
+            alert(result.message || 'Kayıt başarısız!');
+        }
+    } catch (err) {
+        console.error(err);
+        alert('Bağlantı hatası!');
+    }
 };
 
 window.saveDriverEvent = async function(type) {
