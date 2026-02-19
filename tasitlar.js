@@ -588,7 +588,7 @@
             const thirdLineHtml = thirdLine ? `<div class="card-third-line" title="${escapeHtml(thirdLine)}">${escapeHtml(thirdLine)}</div>` : '';
             const vid = v.id != null ? String(v.id).replace(/"/g, '&quot;') : '';
             return `
-              <div class="card${unassignedClass}" data-vehicle-id="${vid}" onclick="var id=this.getAttribute('data-vehicle-id'); if(id&&window.showVehicleDetail) window.showVehicleDetail(id);" style="cursor:pointer">
+              <div class="card${unassignedClass}" data-vehicle-id="${vid}" style="cursor:pointer">
                 <div class="card-plate">${escapeHtml(plate)}${satildiSpan}</div>
                 <div class="card-brand-model" title="${escapeHtml(brandModel)}">${escapeHtml(toTitleCase(brandModel))}</div>
                 ${thirdLineHtml}
@@ -645,7 +645,7 @@
             
             const vid = v.id != null ? String(v.id).replace(/"/g, '&quot;') : '';
             return `
-              <div class="list-item${unassignedClass}" data-vehicle-id="${vid}" onclick="var id=this.getAttribute('data-vehicle-id'); if(id&&window.showVehicleDetail) window.showVehicleDetail(id);" style="grid-template-columns: ${gridStr}; cursor:pointer">
+              <div class="list-item${unassignedClass}" data-vehicle-id="${vid}" style="grid-template-columns: ${gridStr}; cursor:pointer">
                 ${cellHtml}
               </div>
             `;
@@ -1130,7 +1130,7 @@
           html += `<div class="view-list">` + filtered.map(v => {
               const vid = v.id != null ? String(v.id).replace(/"/g, '&quot;') : '';
               return `
-              <div class="list-item" data-vehicle-id="${vid}" onclick="var id=this.getAttribute('data-vehicle-id'); if(id&&window.showVehicleDetail) window.showVehicleDetail(id);" style="cursor:pointer">
+              <div class="list-item" data-vehicle-id="${vid}" style="cursor:pointer">
                 <div class="list-info">
                   <h4>${escapeHtml(v.brandModel)}</h4>
                   <span>${v.year} • ${v.tahsisKisi || 'Boşta'}</span>
