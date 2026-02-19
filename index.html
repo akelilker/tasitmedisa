@@ -1336,14 +1336,20 @@
     <!-- INLINE KRITIK JS: Harici script dosyaları 404 olsa bile loading screen kapanır -->
     <script>
     (function(){
-      // 1. Loading screen'i kapat (DOM hazır olunca veya 4s timeout)
+      // 1. Loading screen: logo+başlık en az 3 sn gösterilir, sonra kapanır
+      var SPLASH_MIN = 3000;
+      var _start = Date.now();
       function hideLoading() {
         var ls = document.getElementById('loading-screen');
-        if (ls && !ls.classList.contains('hidden')) {
-          ls.classList.add('hidden');
-          ls.style.animation = 'none';
-          setTimeout(function(){ ls.style.display = 'none'; }, 350);
+        if (!ls || ls.classList.contains('hidden')) return;
+        var elapsed = Date.now() - _start;
+        if (elapsed < SPLASH_MIN) {
+          setTimeout(hideLoading, Math.max(50, SPLASH_MIN - elapsed));
+          return;
         }
+        ls.classList.add('hidden');
+        ls.style.animation = 'none';
+        setTimeout(function(){ ls.style.display = 'none'; }, 350);
       }
       if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', hideLoading);
