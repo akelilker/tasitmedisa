@@ -35,7 +35,7 @@
   gap: 16px;
 }
 .driver-splash-logo {
-  width: var(--hero-logo-width, 69px);
+  width: var(--hero-logo-width, 138px);
   height: auto;
   object-fit: contain;
   filter: brightness(0.88);
