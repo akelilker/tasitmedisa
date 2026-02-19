@@ -1,0 +1,342 @@
+<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>MEDISA Taşıt Yönetim Sistemi - Tanıtım Belgesi</title>
+<!--[if gte mso 9]>
+<xml>
+<w:WordDocument>
+<w:View>Print</w:View>
+<w:Zoom>100</w:Zoom>
+</w:WordDocument>
+</xml>
+<![endif]-->
+<style>
+body { font-family: Calibri, Arial, sans-serif; font-size: 11pt; line-height: 1.5; color: #333; max-width: 210mm; margin: 0 auto; padding: 20mm; }
+h1 { font-size: 22pt; color: #1a1a1a; border-bottom: 2px solid #e1061b; padding-bottom: 8px; margin-top: 0; }
+h2 { font-size: 16pt; color: #e1061b; margin-top: 24px; margin-bottom: 12px; }
+h3 { font-size: 13pt; color: #333; margin-top: 16px; margin-bottom: 8px; }
+p { margin: 0 0 10px; text-align: justify; }
+table { border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 10.5pt; }
+th, td { border: 1px solid #ccc; padding: 8px 12px; text-align: left; }
+th { background: #e1061b; color: white; font-weight: 600; }
+tr:nth-child(even) { background: #f9f9f9; }
+ul, ol { margin: 0 0 10px 20px; }
+li { margin-bottom: 4px; }
+hr { border: none; border-top: 1px solid #ddd; margin: 24px 0; }
+.cover { text-align: center; padding: 40px 0; }
+.cover h1 { border: none; }
+.cover .subtitle { font-size: 14pt; color: #e1061b; margin: 8px 0; }
+.cover .version { font-size: 11pt; color: #666; }
+.toc { margin: 24px 0; }
+.toc li { list-style: decimal; margin: 6px 0; }
+.footer-note { font-size: 9pt; color: #888; margin-top: 40px; font-style: italic; }
+strong { color: #1a1a1a; }
+</style>
+</head>
+<body>
+
+<div class="cover">
+<h1>TAŞIT YÖNETİM SİSTEMİ</h1>
+<p class="subtitle"><strong>MEDISA Taşıt Yönetim Sistemi</strong></p>
+<p class="version">Versiyon 78.x – Son güncelleme: Şubat 2025</p>
+</div>
+
+<hr>
+
+<h2>İçindekiler</h2>
+<ol class="toc">
+<li>Genel Bakış</li>
+<li>Uygulama Yapısı</li>
+<li>Ana Uygulama (Yönetim Paneli)</li>
+<li>Taşıt Kayıt İşlemleri</li>
+<li>Taşıtlar Modülü</li>
+<li>Raporlar Modülü</li>
+<li>Ayarlar ve Veri Yönetimi</li>
+<li>Kullanıcı Paneli (Şoför Modülü)</li>
+<li>Admin Rapor Sayfası</li>
+<li>Teknik Özellikler</li>
+</ol>
+
+<hr>
+
+<h2>1. Genel Bakış</h2>
+<p><strong>Taşıt Yönetim Sistemi</strong>, kurumsal araç filosunun kaydı, takibi ve raporlanması için geliştirilmiş web tabanlı bir uygulamadır. Şube bazlı taşıt envanteri, kullanıcı atamaları, süre yaklaşan bakım/sigorta/muayene bildirimleri ve şoförlerin doğrudan olay bildirimi yapabildiği entegre bir yapı sunar.</p>
+
+<h3>Temel Hedefler</h3>
+<ul>
+<li>Taşıt kayıtlarının merkezi ve düzenli tutulması</li>
+<li>Sigorta, kasko, muayene gibi süreli işlemlerin takibi</li>
+<li>Şube ve kullanıcı bazlı atama yönetimi</li>
+<li>Şoförlerin Km, Bakım, Kaza vb. olayları doğrudan bildirebilmesi</li>
+<li>Excel dışa aktarma ile raporlama imkânı</li>
+</ul>
+
+<h3>Teknoloji ve Erişim</h3>
+<ul>
+<li><strong>Web uygulaması:</strong> Modern tarayıcılar (Chrome, Firefox, Safari, Edge)</li>
+<li><strong>PWA desteği:</strong> Mobil cihazlara ana ekrana eklenebilir</li>
+<li><strong>Sunucu:</strong> PHP 8.x, JSON veri depolama</li>
+<li><strong>Canlı adres örneği:</strong> karmotors.com.tr/medisa/</li>
+</ul>
+
+<hr>
+
+<h2>2. Uygulama Yapısı</h2>
+
+<h3>Modüller</h3>
+<table>
+<tr><th>Modül</th><th>Amaç</th><th>Hedef Kullanıcı</th></tr>
+<tr><td>Ana Sayfa</td><td>Giriş noktası, menü, bildirimler</td><td>Tüm yetkili kullanıcılar</td></tr>
+<tr><td>Taşıt Kayıt İşlemleri</td><td>Yeni taşıt ekleme / düzenleme</td><td>Yönetici, Satış</td></tr>
+<tr><td>Taşıtlar</td><td>Taşıt listesi, detay, olay yönetimi</td><td>Yönetici, Satış</td></tr>
+<tr><td>Raporlar</td><td>Stok ve kullanıcı bazlı raporlar</td><td>Yönetici, Satış</td></tr>
+<tr><td>Ayarlar</td><td>Şube, kullanıcı, veri yönetimi</td><td>Yönetici</td></tr>
+<tr><td>Kullanıcı Paneli</td><td>Zimmetli taşıt görüntüleme, olay bildirimi</td><td>Şoför</td></tr>
+</table>
+
+<h3>Splash Ekranı</h3>
+<p>Uygulama açılışında <strong>logo</strong> ve <strong>«TAŞIT YÖNETİM SİSTEMİ»</strong> başlığı yaklaşık <strong>3 saniye</strong> süreyle gösterilir. Hem ana sayfada hem de Kullanıcı Paneli sayfasında bu görüntü aynı boyut ve tasarımla yer alır.</p>
+
+<hr>
+
+<h2>3. Ana Uygulama (Yönetim Paneli)</h2>
+<p>Ana sayfa (<code>index.html</code>), tüm modüllere erişim sağlayan merkezi arayüzdür.</p>
+
+<h3>Hero Bölümü</h3>
+<ul><li>MEDISA logosu</li><li>«TAŞIT YÖNETİM SİSTEMİ» ana başlık</li></ul>
+
+<h3>Menü Öğeleri</h3>
+<ol>
+<li><strong>TAŞIT KAYIT İŞLEMLERİ</strong> – Yeni taşıt ekleme veya mevcut kayıt düzenleme</li>
+<li><strong>TAŞITLAR</strong> – Taşıt listesi, şube bazlı filtreleme, detay ve olay ekleme</li>
+<li><strong>RAPORLAR</strong> – Stok ve kullanıcı raporları</li>
+</ol>
+
+<h3>Üst Araçlar</h3>
+<ul>
+<li><strong>Bildirimler</strong> – Süresi yaklaşan sigorta, muayene vb. uyarıları (kırmızı / turuncu gösterim)</li>
+<li><strong>Ayarlar</strong> – Şube yönetimi, kullanıcı yönetimi, veri yönetimi, önbellek temizleme</li>
+</ul>
+
+<h3>Kullanıcı Paneli Bağlantısı</h3>
+<ul>
+<li>«Kullanıcı Paneli &gt;» linki ile şoför giriş sayfasına geçiş</li>
+<li>Footer'da versiyon (örn. v78.1) ve «● Sistem Hazır» durum göstergesi</li>
+</ul>
+
+<hr>
+
+<h2>4. Taşıt Kayıt İşlemleri</h2>
+
+<h3>Taşıt Tipi Seçimi</h3>
+<ul>
+<li>Otomobil / SUV</li>
+<li>Küçük Ticari</li>
+<li>Büyük Ticari</li>
+</ul>
+<p>Her tip için özel ikonlar kullanılır.</p>
+
+<h3>Form Alanları</h3>
+<p><strong>Temel bilgiler:</strong> Plaka, Üretim yılı, Marka / Model, Km (alındığı tarih), Alım bedeli, Şanzıman (Manuel / Otomatik)</p>
+<p><strong>Hasar / Onarım:</strong> Tramer kaydı (Var / Yok), tramer detayları – Boya / Değişen (Var / Yok), parça detayları</p>
+<p><strong>Süreli işlemler:</strong> Sigorta bitiş tarihi, Kasko bitiş tarihi, Muayene bitiş tarihi</p>
+<p><strong>Ek bilgiler:</strong> Yedek anahtar (Var / Yok), Kredi / Rehin (Var / Yok), Tahsis edilen şube, Notlar</p>
+
+<h3>Özellikler</h3>
+<ul>
+<li>Modal pencerede açılır form</li>
+<li>Kaydet / Vazgeç butonları</li>
+<li>Zorunlu alan kontrolü (plaka, marka/model vb.)</li>
+<li>Tescil tarihi ile ilgili onay/uyarı akışları</li>
+</ul>
+
+<hr>
+
+<h2>5. Taşıtlar Modülü</h2>
+
+<h3>Görünümler</h3>
+<ol>
+<li><strong>Şube Grid</strong> – Şubeler kutu/kart olarak listelenir, «Tümü» seçeneği mevcuttur</li>
+<li><strong>Taşıt Listesi</strong> – Seçilen şubeye ait taşıtlar liste veya kart görünümünde</li>
+<li><strong>Taşıt Detayı</strong> – Plaka, marka/model, tüm kayıt bilgileri</li>
+</ol>
+
+<h3>Özellikler</h3>
+<ul>
+<li><strong>Filtreleme:</strong> Şube bazlı</li>
+<li><strong>Sıralama:</strong> Plaka, km, yıl vb. alanlara göre</li>
+<li><strong>Olay Ekle:</strong> Taşıt detayından doğrudan olay ekleme menüsü</li>
+</ul>
+
+<h3>Desteklenen Olay Tipleri</h3>
+<table>
+<tr><th>Olay</th><th>Açıklama</th></tr>
+<tr><td>Bakım</td><td>Bakım kaydı ekleme</td></tr>
+<tr><td>Kaza</td><td>Kaza kaydı, kaporta hasar bölgeleri (SVG)</td></tr>
+<tr><td>Sigorta</td><td>Sigorta yenileme</td></tr>
+<tr><td>Kasko</td><td>Kasko yenileme</td></tr>
+<tr><td>Muayene</td><td>Muayene yenileme</td></tr>
+<tr><td>Anahtar</td><td>Yedek anahtar durumu (Var / Yok, adres vb.)</td></tr>
+<tr><td>Kredi/Rehin</td><td>Kredi bilgisi güncelleme</td></tr>
+<tr><td>Km</td><td>Kilometre güncelleme</td></tr>
+<tr><td>Lastik</td><td>Yazlık / Kışlık lastik durumu ve adres</td></tr>
+<tr><td>UTTS</td><td>UTTS tanımlama durumu</td></tr>
+<tr><td>Takip Cihazı</td><td>Takip cihazı montaj durumu</td></tr>
+<tr><td>Şube Değişikliği</td><td>Taşıt şubesi değiştirme</td></tr>
+<tr><td>Kullanıcı Atama</td><td>Taşıtı şoföre atama</td></tr>
+<tr><td>Satış/Pert</td><td>Satış veya hurdaya çıkarma</td></tr>
+<tr><td>Tarihçe</td><td>Bakım, kaza, km, şube/kullanıcı geçmiş kayıtları</td></tr>
+</table>
+
+<h3>Kaza Modülü</h3>
+<p>Kaporta SVG ile hasar bölgelerinin işaretlenmesi; boya / değişen parça bilgisi</p>
+
+<hr>
+
+<h2>6. Raporlar Modülü</h2>
+
+<h3>Stok Görünümü</h3>
+<p>Şube grid'den şube seçimi veya «Tümü»; tablo formatında taşıt listesi.</p>
+<p><strong>Temel sütunlar:</strong> Sıra, Şube, Yıl, Marka/Model, Plaka, Şanzıman, Km</p>
+<p><strong>Detay sütunları (opsiyonel, sürükle-bırak ile sıralanabilir):</strong> Sigorta, Kasko, Muayene, Kredi, Lastik, UTTS, Takip, Tramer, Boya, Kullanıcı, Tescil tarihi</p>
+<p><strong>Özellikler:</strong> Sütun bazlı sıralama (artan / azalan), Excel dışa aktarma</p>
+
+<h3>Kullanıcı Görünümü</h3>
+<p>Kullanıcı bazlı taşıt listeleme; şube ve arama filtresi; kullanıcı detayı ve atanmış taşıtları</p>
+
+<hr>
+
+<h2>7. Ayarlar ve Veri Yönetimi</h2>
+
+<h3>Şube Yönetimi</h3>
+<p>Şube listesi; yeni şube ekleme; şube düzenleme / silme; alanlar: Şube adı, şehir</p>
+
+<h3>Kullanıcı Yönetimi</h3>
+<p>Kullanıcı listesi; yeni kullanıcı ekleme / düzenleme / silme.</p>
+<p><strong>Kullanıcı formu alanları:</strong> Ad Soyad, Şube (dropdown), Telefon, E-posta, Görev (Yönetici / Satış Temsilcisi / Şoför), Kullanıcı adı, Şifre, Taşıt ataması (checkbox listesi ile zimmetli taşıtlar)</p>
+
+<h3>Veri Yönetimi</h3>
+<ul>
+<li><strong>Yedek Al:</strong> Tüm verileri JSON formatında indirme</li>
+<li><strong>Yedekten Geri Yükle:</strong> JSON dosyasından veri içe aktarma</li>
+</ul>
+
+<h3>Önbellek Temizleme</h3>
+<p>Önbellek temizleme onay penceresi; localStorage ve geçici verilerin temizlenmesi</p>
+
+<hr>
+
+<h2>8. Kullanıcı Paneli (Şoför Modülü)</h2>
+
+<h3>Giriş</h3>
+<p><strong>driver/index.html</strong> – Kullanıcı adı ve şifre ile giriş; «Beni Hatırla» ile oturum bilgisinin saklanması; giriş başarılıysa doğrudan dashboard'a yönlendirme</p>
+
+<h3>Dashboard</h3>
+<ul>
+<li><strong>Header:</strong> Logo, «TAŞIT YÖNETİM SİSTEMİ», «KULLANICI PANELİ» alt başlık</li>
+<li><strong>Kayan uyarı:</strong> Süresi yaklaşan Km bildirimi vb. (kırmızı banner)</li>
+<li><strong>Tarihçe</strong> ve <strong>Çıkış</strong> butonları</li>
+</ul>
+
+<h3>Sol Panel (Taşıt Bilgileri)</h3>
+<p>Kullanıcı adı soyadı; plaka (birden fazla taşıt varsa dropdown ile seçim); marka / model; şube, üretim yılı, km; sigorta bitiş, kasko bitiş, muayene bitiş; yedek anahtar, lastik durumu, UTTS durumu</p>
+
+<h3>Sağ Panel (Olay Bildirimi)</h3>
+<p>Her taşıt için ayrı ayrı: <strong>Km Bildir</strong>, <strong>Kaza Bildir</strong>, <strong>Bakım Bildir</strong>, <strong>Trafik Sigortası Yenileme</strong>, <strong>Kasko Yenileme</strong>, <strong>Muayene Yenileme</strong>, <strong>Anahtar Durumu Bildir</strong>, <strong>Lastik Durumu Bildir</strong>, <strong>Not</strong></p>
+
+<h3>Geri Bildirim</h3>
+<p>Başarılı işlem sonrası yeşil geri bildirim; ekran kapatılıp tekrar açıldığında bu bildirim sıfırlanır; süresi yaklaşan kırmızı bildirimler ekranda kalmaya devam eder</p>
+
+<h3>Düzeltme Talebi</h3>
+<p>KM, Bakım veya Kaza alanında düzeltme talebi oluşturma; sebep açıklaması ile birlikte gönderim; admin panelinden onay/red işlemi</p>
+
+<h3>Tarihçe</h3>
+<p>«Geçmiş Kayıtlarım» modal penceresi; taşıt seçimi ile filtreleme; km, bakım, kaza vb. geçmiş kayıt listesi</p>
+
+<h3>Tasarım Özellikleri</h3>
+<ul>
+<li>Splash ekranı: logo + başlık (anasayfa ile aynı boyut)</li>
+<li>Sol panel sabit, sadece sağ panel kaydırılır</li>
+<li>Plaka ortalanmış (dropdown işareti hesaba katılmadan)</li>
+<li>Mobil ve masaüstü uyumlu</li>
+<li>Scrollbar gizli (kaydırma yine çalışır)</li>
+</ul>
+
+<hr>
+
+<h2>9. Admin Rapor Sayfası</h2>
+<p><strong>admin/driver-report.html</strong> – Aylık kullanıcı raporu ve düzeltme talepleri</p>
+
+<h3>Özellikler</h3>
+<ul>
+<li>Dönem, şube ve durum filtreleri</li>
+<li>Toplam kullanıcı, bildirim, bekleyen, tamamlanan yüzdesi</li>
+<li>Tablo: Kullanıcı, Marka, Plaka, KM, Bakım, Kaza, Durum, İşlem</li>
+<li>WhatsApp ile iletişim linki</li>
+<li>Excel dışa aktarma</li>
+<li>Düzeltme talepleri listesi: Onay / Red işlemleri</li>
+</ul>
+
+<h3>API Entegrasyonu</h3>
+<ul>
+<li><code>admin_report.php</code> – Dönem, şube, durum parametreleri ile rapor verisi</li>
+<li><code>admin_approve.php</code> – Talep onaylama/reddetme</li>
+<li><code>admin_export.php</code> – Excel export</li>
+</ul>
+
+<hr>
+
+<h2>10. Teknik Özellikler</h2>
+
+<h3>Veri Depolama</h3>
+<ul>
+<li><strong>Birincil:</strong> <code>data/data.json</code> (PHP load.php / save.php üzerinden)</li>
+<li><strong>Yedek:</strong> localStorage (medisa_vehicles_v1, medisa_branches_v1, medisa_users_v1 vb.)</li>
+<li><strong>Şoför oturumu:</strong> Token ve giriş bilgileri localStorage'da</li>
+</ul>
+
+<h3>PHP Uç Noktaları</h3>
+<table>
+<tr><th>Endpoint</th><th>Metot</th><th>Amaç</th></tr>
+<tr><td>load.php</td><td>GET</td><td>Ana uygulama verilerini yükle</td></tr>
+<tr><td>save.php</td><td>POST</td><td>Ana uygulama verilerini kaydet</td></tr>
+<tr><td>driver/driver_login.php</td><td>POST</td><td>Şoför girişi</td></tr>
+<tr><td>driver/driver_data.php</td><td>GET</td><td>Zimmetli taşıt listesi</td></tr>
+<tr><td>driver/driver_save.php</td><td>POST</td><td>Km/Bakım/Kaza güncelleme</td></tr>
+<tr><td>driver/driver_event.php</td><td>POST</td><td>Olay bildirimi</td></tr>
+<tr><td>driver/driver_request.php</td><td>POST</td><td>Düzeltme talebi</td></tr>
+<tr><td>driver/admin_report.php</td><td>GET</td><td>Admin rapor verisi</td></tr>
+<tr><td>admin/admin_approve.php</td><td>POST</td><td>Talep onaylama/red</td></tr>
+<tr><td>admin/admin_export.php</td><td>GET</td><td>Excel dışa aktarma</td></tr>
+</table>
+
+<h3>PWA (Progressive Web App)</h3>
+<ul>
+<li>Service Worker (sw.js) ile önbellekleme</li>
+<li>manifest.json ile uygulama meta bilgileri</li>
+<li>Ana ekrana eklenebilir ikon</li>
+<li>Offline kısmi destek</li>
+</ul>
+
+<h3>Kullanıcı Deneyimi</h3>
+<ul>
+<li>Mobil ve masaüstü responsive tasarım</li>
+<li>Koyu tema (kırmızı vurgu)</li>
+<li>Klavye ve dokunmatik erişilebilirlik</li>
+<li>Uzun metinlerde metin taşmasını önleyen (ellipsis) gösterim</li>
+</ul>
+
+<hr>
+
+<h2>Ek Notlar</h2>
+<ul>
+<li>Tüm sayfa ve modallarda footer ile tutarlı versiyon gösterimi</li>
+<li>Modallar arası geçişte scroll ve odak yönetimi</li>
+<li>Tarayıcı başlık ve PWA adları sayfaya göre özelleştirilmiş</li>
+</ul>
+
+<p class="footer-note">Bu belge, Taşıt Yönetim Sistemi kod tabanı incelenerek Şubat 2025 itibarıyla güncellenmiştir.</p>
+
+</body>
+</html>
