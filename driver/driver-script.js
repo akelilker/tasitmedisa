@@ -188,19 +188,38 @@ if (document.getElementById('login-form')) {
 }
 
 /* =========================================
-   DASHBOARD SAYFASI
+   SPLASH (3 sn) + DASHBOARD / LOGIN
    ========================================= */
 
+/** Splash 3 sn göster, sonra gizle ve normal akışa devam et */
+function initDriverSplash(onComplete) {
+  const splash = document.getElementById('driver-splash');
+  if (!splash) {
+    if (typeof onComplete === 'function') onComplete();
+    return;
+  }
+  setTimeout(function() {
+    splash.classList.add('hidden');
+    splash.setAttribute('aria-hidden', 'true');
+    setTimeout(function() {
+      splash.style.display = 'none';
+      if (typeof onComplete === 'function') onComplete();
+    }, 400);
+  }, 3000);
+}
+
 if (document.getElementById('driver-two-panel')) {
-    const run = () => { loadDashboard(); };
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', run);
-    } else {
-        run();
-    }
-    window.addEventListener('pageshow', function(ev) {
-        if (ev.persisted) run();
-    });
+  const run = () => { initDriverSplash(function() { loadDashboard(); }); };
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', run);
+  } else {
+    run();
+  }
+  window.addEventListener('pageshow', function(ev) {
+    if (ev.persisted) run();
+  });
+} else if (document.getElementById('driver-splash')) {
+  document.addEventListener('DOMContentLoaded', function() { initDriverSplash(); });
 }
 
 async function loadDashboard() {
