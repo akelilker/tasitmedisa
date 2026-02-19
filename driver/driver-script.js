@@ -45,10 +45,12 @@ let allHistoryVehicles = [];
 let currentDriverEventVehicleId = null;
 let currentPeriod = '';
 let selectedVehicleId = null;
-/** Bu oturumda (ekran kapanana kadar) son bildirilen aksiyon: { action, vehicleId }. Sayfa kapanınca temizlenir. */
+/** Bu oturumda (ekran kapanana kadar) son bildirilen aksiyon: { action, vehicleId }. Ekran kapanınca temizlenir, yeşil geri bildirim beyaz/griye döner. */
 let lastCompletedActionInSession = null;
 
-window.addEventListener('pagehide', function() { lastCompletedActionInSession = null; });
+function clearSessionGreenFeedback() { lastCompletedActionInSession = null; }
+window.addEventListener('pagehide', clearSessionGreenFeedback);
+document.addEventListener('visibilitychange', function() { if (document.hidden) clearSessionGreenFeedback(); });
 
 /** Modal açıkken body scroll kilitlensin (sadece modal içi kayar) */
 function updateDriverModalBodyClass() {
@@ -836,6 +838,7 @@ window.submitKmOnly = async function(vid) {
             body: JSON.stringify({
                 arac_id: parseInt(vid, 10),
                 guncel_km: km,
+                km_only: true,
                 bakim_durumu: 0,
                 bakim_aciklama: '',
                 bakim_tarih: '',
