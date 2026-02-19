@@ -336,11 +336,20 @@ body.driver-modal-open {
   text-overflow: ellipsis;
   margin-right: 28px;
 }
+/* Panel: isim ve marka/model ortada, plaka alanı kadar sola kaydırılmış */
+.driver-user-plate-in-panel .driver-user-name,
+.driver-user-plate-in-panel .driver-plate-subtitle {
+  margin-right: 5rem; /* plaka listesinin yatay alanı kadar sola kaydırma */
+}
 .driver-plate-subtitle {
   font-size: 14px;
   color: rgba(255, 255, 255, 0.6);
   margin-top: 2px;
   line-height: 1.2;
+}
+.driver-user-plate-in-panel .driver-plate-subtitle {
+  font-size: 15px; /* 1 punto büyük */
+  margin-top: 1px; /* plakanın 1px altında */
 }
 .driver-plate-dropdown-row {
   display: flex;
@@ -431,7 +440,7 @@ body.driver-modal-open {
   background: transparent !important;
   border: 1px solid rgba(255, 255, 255, 0.25);
   color: var(--txt);
-  padding: 10px 12px;
+  padding: 8px 12px;
   font-size: 13px;
   text-align: left;
   cursor: pointer;
@@ -457,6 +466,14 @@ body.driver-modal-open {
 .driver-action-btn.warning:hover {
   border-color: #f87171;
   color: #f87171;
+}
+.driver-action-btn.data-entered {
+  border-color: #fff;
+  color: #fff;
+}
+.driver-action-btn.data-entered:hover {
+  border-color: rgba(255, 255, 255, 0.9);
+  color: rgba(255, 255, 255, 0.95);
 }
 .driver-info-item.saved .label,
 .driver-info-item.saved .value {
@@ -724,7 +741,7 @@ body.driver-modal-open {
   .driver-info-item { gap: 0; }
   .driver-info-item .label { font-size: 12px; text-transform: none; }
   .driver-info-item .value { font-size: 12px; }
-  .driver-action-btn { padding: 8px 10px; font-size: 12px; }
+  .driver-action-btn { padding: 6px 10px; font-size: 12px; }
   .driver-user-plate-row .driver-user-name { font-size: 12px; }
   .driver-current-plaka { font-size: 14px; }
 }
