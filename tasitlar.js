@@ -1440,17 +1440,24 @@ function renderVehicleDetailLeft(vehicle) {
   // HTML'i sol kolona bas
   leftEl.innerHTML = html;
 
-  // --- ŞEMA EKLEME: Sol kolonun içine ekliyoruz ---
-  // Önce eskisi varsa temizle
+  // --- ŞEMA EKLEME: Grid alanında kolonların altında tam genişlikte (sol yaslı, sağ kenar Yoktur "r" hizalı) ---
   const existingBoyaContainer = document.getElementById('detail-boya-container');
   if (existingBoyaContainer) existingBoyaContainer.remove();
 
-  // Yeni container oluştur
   const boyaContainer = document.createElement('div');
   boyaContainer.id = 'detail-boya-container';
 
-  // LeftEl içine append et
-  leftEl.appendChild(boyaContainer);
+  const contentRoot = document.getElementById('vehicle-detail-content');
+  const columnsEl = contentRoot && contentRoot.querySelector('.vehicle-detail-columns');
+  if (contentRoot) {
+    if (columnsEl && columnsEl.nextSibling) {
+      contentRoot.insertBefore(boyaContainer, columnsEl.nextSibling);
+    } else {
+      contentRoot.appendChild(boyaContainer);
+    }
+  } else {
+    leftEl.appendChild(boyaContainer);
+  }
 
   // Boya şemasını render et (içinde SVG + tam açıklama Orijinal/Boyalı/Değişen; O/B/D kısaltması yok)
   renderBoyaSchemaDetail(vehicle);
@@ -1499,10 +1506,10 @@ function renderVehicleDetailLeft(vehicle) {
     const krediLabel = kredi === 'var' ? (vehicle.krediDetay || 'Var') : 'Yoktur.';
     html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Kredi/Rehin</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(krediLabel)}</span></div>`;
     
-    // Yazlık/ Kışlık Lastik
+    // Yazlık/ Kışlık Lastik (Yoktur "r" hizası için referans)
     const lastikDurumu = vehicle.lastikDurumu || '';
     const lastikLabel = lastikDurumu === 'var' ? (vehicle.lastikAdres || 'Var') : 'Yoktur.';
-    html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Yazlık/ Kışlık Lastik</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(lastikLabel)}</span></div>`;
+    html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Yazlık/ Kışlık Lastik</span><span class="detail-row-colon">:</span></div><span class="detail-row-value detail-yoktur-r-ref"> ${escapeHtml(lastikLabel)}</span></div>`;
     
     // UTTS
     const utts = vehicle.uttsTanimlandi ? 'Evet' : 'Hayır';
@@ -1561,27 +1568,23 @@ function renderVehicleDetailLeft(vehicle) {
 
         container.innerHTML = '';
 
-        // Şemanın görünmesini istediğin genişlik (Landscape/Yatay hali)
-        const targetWidth = 240;
-
-        // Orijinal SVG dikey (148x220). Döndürünce oranlar değişiyor.
-        // Yeni yükseklik oranını koruyarak hesapla (240 * (148/220) ~ 160px)
-        const targetHeight = Math.round(targetWidth * (148 / 220));
-
-        // SVG'nin ham boyutları
+        // Şema genişliği: sol yaslı, sağ kenar sağ kolondaki "Yoktur" metninin "r" harfine hizalı (ölçümle ayarlanır)
         const svgOrgWidth = 148;
         const svgOrgHeight = 220;
+        const defaultTargetWidth = 240;
+        const targetHeight = Math.round(defaultTargetWidth * (148 / 220));
 
-        // Wrapper oluştur (Şemayı tutacak kutu)
+        // Wrapper oluştur (Şemayı tutacak kutu); başlangıç değeri, ölçüm sonrası güncellenir
         const svgWrapper = document.createElement('div');
         svgWrapper.className = 'kaporta-schema-wrapper';
         svgWrapper.style.cssText = `
-            width: ${targetWidth}px;
+            width: ${defaultTargetWidth}px;
             height: ${targetHeight}px;
             position: relative;
             overflow: visible;
             flex-shrink: 0;
-            margin: 0 auto;
+            margin: 0;
+            margin-right: auto;
         `;
 
         // SVG'yi hazırla
@@ -1590,6 +1593,7 @@ function renderVehicleDetailLeft(vehicle) {
         svgClone.setAttribute('height', String(svgOrgHeight));
 
         // SVG'yi döndür ve wrapper'ın tam ortasına oturt
+        let targetWidth = defaultTargetWidth;
         const topOff = (targetHeight - svgOrgHeight) / 2;
         const leftOff = (targetWidth - svgOrgWidth) / 2;
 
@@ -1652,6 +1656,28 @@ function renderVehicleDetailLeft(vehicle) {
           <div class="boya-legend-item"><span class="boya-legend-dot" style="background:#e1061b;"></span> Değişen</div>
         `;
         container.appendChild(legend);
+
+        // Sağ kolondaki "Yoktur" metninin "r" harfine göre şema genişliğini oranla (sol yaslı, sağ kenar hizalı)
+        requestAnimationFrame(function alignSchemaToYokturR() {
+          const ref = document.querySelector('#vehicle-detail-modal .vehicle-detail-right .detail-yoktur-r-ref');
+          const content = document.getElementById('vehicle-detail-content');
+          if (ref && content && container.isConnected) {
+            const rRect = ref.getBoundingClientRect();
+            const cRect = content.getBoundingClientRect();
+            const wrapperWidth = Math.round(rRect.right - cRect.left);
+            const minW = 180;
+            const maxW = 420;
+            const clamped = Math.max(minW, Math.min(maxW, wrapperWidth));
+            const h = Math.round(clamped * (148 / 220));
+            svgWrapper.style.width = clamped + 'px';
+            svgWrapper.style.height = h + 'px';
+            const topOff2 = (h - svgOrgHeight) / 2;
+            const leftOff2 = (clamped - svgOrgWidth) / 2;
+            svgClone.style.top = topOff2 + 'px';
+            svgClone.style.left = leftOff2 + 'px';
+            svgClone.style.transform = 'rotate(90deg) scale(' + (clamped / svgOrgHeight) + ')';
+          }
+        });
       })
       .catch(err => {
         console.error('SVG yükleme hatası:', err);
