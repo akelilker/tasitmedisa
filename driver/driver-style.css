@@ -372,6 +372,11 @@ body.driver-modal-open {
   gap: 8px;
   overflow-y: auto;
   overflow-x: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.driver-right-panel::-webkit-scrollbar {
+  display: none;
 }
 
 .driver-user-plate-row {
