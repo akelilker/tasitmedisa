@@ -426,11 +426,18 @@ body.driver-modal-open {
   top: 100%;
   margin-top: 4px;
 }
-/* Plaka ortalanırken sağdaki kırmızı işaret (dropdown chevron) alanı hesaplanmaz */
+/* Plaka ortalanırken kırmızı işaret (chevron) hesaba katılmaz; sanki yokmuş gibi tam ortada */
 .driver-plate-dropdown-row .driver-current-plaka {
   flex: 1;
   text-align: center;
   min-width: 0;
+}
+/* Kırmızı chevron akıştan çıkarılır, plaka ortalama etkilenmez */
+.driver-plate-dropdown-row .driver-plate-trigger {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
 }
 .driver-current-plaka {
   font-size: 15px;
