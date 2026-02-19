@@ -77,6 +77,10 @@
 .olay-ekle-modal.tasitlar-modal-overlay::before {
     max-width: 540px; /* Olay Ekle modalları çerçevesi ile aynı */
 }
+/* ayarlar-modal-overlay ::before display:none ezer - Olay Ekle karartma gösterilsin */
+.olay-ekle-modal.tasitlar-modal-overlay.ayarlar-modal-overlay::before {
+    display: block !important;
+}
 
 /* === DETAY İÇERİK === */
 #vehicle-detail-content {
