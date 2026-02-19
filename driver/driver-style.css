@@ -1561,9 +1561,16 @@ body.driver-modal-open {
   padding: 20px;
 }
 
-/* #history-modal, #edit-request-modal: Taşıtlar modalı ile aynı ayarlar */
+/* #history-modal, #edit-request-modal, Olay Ekle modalları: Taşıtlar modalı ile aynı ayarlar */
 #history-modal.driver-modal,
-#edit-request-modal.driver-modal {
+#edit-request-modal.driver-modal,
+#driver-event-menu-modal.driver-modal,
+#driver-anahtar-modal.driver-modal,
+#driver-lastik-modal.driver-modal,
+#driver-utts-modal.driver-modal,
+#driver-muayene-modal.driver-modal,
+#driver-sigorta-modal.driver-modal,
+#driver-kasko-modal.driver-modal {
   background: transparent !important;
   padding: 0 !important;
   z-index: 9999;
@@ -1575,7 +1582,14 @@ body.driver-modal-open {
   touch-action: pan-y;
 }
 #history-modal.driver-modal.show,
-#edit-request-modal.driver-modal.show {
+#edit-request-modal.driver-modal.show,
+#driver-event-menu-modal.driver-modal.show,
+#driver-anahtar-modal.driver-modal.show,
+#driver-lastik-modal.driver-modal.show,
+#driver-utts-modal.driver-modal.show,
+#driver-muayene-modal.driver-modal.show,
+#driver-sigorta-modal.driver-modal.show,
+#driver-kasko-modal.driver-modal.show {
   display: flex !important;
   pointer-events: auto !important;
 }
@@ -1584,7 +1598,14 @@ body.driver-modal-open {
 }
 
 #history-modal.driver-modal::before,
-#edit-request-modal.driver-modal::before {
+#edit-request-modal.driver-modal::before,
+#driver-event-menu-modal.driver-modal::before,
+#driver-anahtar-modal.driver-modal::before,
+#driver-lastik-modal.driver-modal::before,
+#driver-utts-modal.driver-modal::before,
+#driver-muayene-modal.driver-modal::before,
+#driver-sigorta-modal.driver-modal::before,
+#driver-kasko-modal.driver-modal::before {
   content: '';
   position: absolute;
   top: max(12px, env(safe-area-inset-top));
@@ -1604,7 +1625,21 @@ body.driver-modal-open {
 #history-modal .driver-modal-content,
 #history-modal .modal-container,
 #edit-request-modal .driver-modal-content,
-#edit-request-modal .modal-container {
+#edit-request-modal .modal-container,
+#driver-event-menu-modal .driver-modal-content,
+#driver-event-menu-modal .modal-container,
+#driver-anahtar-modal .driver-modal-content,
+#driver-anahtar-modal .modal-container,
+#driver-lastik-modal .driver-modal-content,
+#driver-lastik-modal .modal-container,
+#driver-utts-modal .driver-modal-content,
+#driver-utts-modal .modal-container,
+#driver-muayene-modal .driver-modal-content,
+#driver-muayene-modal .modal-container,
+#driver-sigorta-modal .driver-modal-content,
+#driver-sigorta-modal .modal-container,
+#driver-kasko-modal .driver-modal-content,
+#driver-kasko-modal .modal-container {
   background: var(--modal-bg) !important;
   border: 0.5px solid rgba(255, 255, 255, 0.35) !important;
   box-shadow: 0 0 40px rgba(0, 0, 0, 0.9) !important;
@@ -1626,7 +1661,14 @@ body.driver-modal-open {
 }
 
 #history-modal .modal-header,
-#edit-request-modal .modal-header {
+#edit-request-modal .modal-header,
+#driver-event-menu-modal .modal-header,
+#driver-anahtar-modal .modal-header,
+#driver-lastik-modal .modal-header,
+#driver-utts-modal .modal-header,
+#driver-muayene-modal .modal-header,
+#driver-sigorta-modal .modal-header,
+#driver-kasko-modal .modal-header {
   background: linear-gradient(180deg, rgba(255, 0, 0, 0.30) 0%, rgba(255, 0, 0, 0.22) 25%, rgba(255, 0, 0, 0.16) 50%, rgba(255, 0, 0, 0.10) 75%, transparent 100%) !important;
   padding: 2px 20px !important;
   height: 60px !important;
@@ -1639,7 +1681,14 @@ body.driver-modal-open {
 }
 
 #history-modal .modal-header h2,
-#edit-request-modal .modal-header h2 {
+#edit-request-modal .modal-header h2,
+#driver-event-menu-modal .modal-header h2,
+#driver-anahtar-modal .modal-header h2,
+#driver-lastik-modal .modal-header h2,
+#driver-utts-modal .modal-header h2,
+#driver-muayene-modal .modal-header h2,
+#driver-sigorta-modal .modal-header h2,
+#driver-kasko-modal .modal-header h2 {
   font-size: 17px !important;
   font-weight: 600 !important;
   letter-spacing: 0.05em !important;
@@ -1655,7 +1704,14 @@ body.driver-modal-open {
 }
 
 #history-modal .modal-close,
-#edit-request-modal .modal-close {
+#edit-request-modal .modal-close,
+#driver-event-menu-modal .modal-close,
+#driver-anahtar-modal .modal-close,
+#driver-lastik-modal .modal-close,
+#driver-utts-modal .modal-close,
+#driver-muayene-modal .modal-close,
+#driver-sigorta-modal .modal-close,
+#driver-kasko-modal .modal-close {
   background: none !important;
   border: none !important;
   color: #aaa !important;
@@ -1672,13 +1728,27 @@ body.driver-modal-open {
   cursor: pointer;
 }
 #history-modal .modal-close:hover,
-#edit-request-modal .modal-close:hover {
+#edit-request-modal .modal-close:hover,
+#driver-event-menu-modal .modal-close:hover,
+#driver-anahtar-modal .modal-close:hover,
+#driver-lastik-modal .modal-close:hover,
+#driver-utts-modal .modal-close:hover,
+#driver-muayene-modal .modal-close:hover,
+#driver-sigorta-modal .modal-close:hover,
+#driver-kasko-modal .modal-close:hover {
   color: #fff !important;
   background: transparent !important;
 }
 
 #history-modal .modal-body,
-#edit-request-modal .modal-body {
+#edit-request-modal .modal-body,
+#driver-event-menu-modal .modal-body,
+#driver-anahtar-modal .modal-body,
+#driver-lastik-modal .modal-body,
+#driver-utts-modal .modal-body,
+#driver-muayene-modal .modal-body,
+#driver-sigorta-modal .modal-body,
+#driver-kasko-modal .modal-body {
   flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
@@ -1690,7 +1760,14 @@ body.driver-modal-open {
   padding-top: 2px !important;
 }
 #history-modal .modal-body::-webkit-scrollbar,
-#edit-request-modal .modal-body::-webkit-scrollbar {
+#edit-request-modal .modal-body::-webkit-scrollbar,
+#driver-event-menu-modal .modal-body::-webkit-scrollbar,
+#driver-anahtar-modal .modal-body::-webkit-scrollbar,
+#driver-lastik-modal .modal-body::-webkit-scrollbar,
+#driver-utts-modal .modal-body::-webkit-scrollbar,
+#driver-muayene-modal .modal-body::-webkit-scrollbar,
+#driver-sigorta-modal .modal-body::-webkit-scrollbar,
+#driver-kasko-modal .modal-body::-webkit-scrollbar {
   display: none;
 }
 
@@ -2452,10 +2529,17 @@ body.driver-modal-open {
   opacity: 0 !important;
 }
 
-/* #history-modal, #edit-request-modal mobil: Taşıtlar modalı ile uyumlu */
+/* #history-modal, #edit-request-modal, Olay Ekle modalları mobil: Taşıtlar modalı ile uyumlu */
 @media (max-width: 640px) {
   #history-modal.driver-modal,
-  #edit-request-modal.driver-modal {
+  #edit-request-modal.driver-modal,
+  #driver-event-menu-modal.driver-modal,
+  #driver-anahtar-modal.driver-modal,
+  #driver-lastik-modal.driver-modal,
+  #driver-utts-modal.driver-modal,
+  #driver-muayene-modal.driver-modal,
+  #driver-sigorta-modal.driver-modal,
+  #driver-kasko-modal.driver-modal {
     padding: 0 !important;
     align-items: stretch !important;
     justify-content: center !important;
@@ -2463,7 +2547,14 @@ body.driver-modal-open {
     overscroll-behavior: none !important;
   }
   #history-modal.driver-modal::before,
-  #edit-request-modal.driver-modal::before {
+  #edit-request-modal.driver-modal::before,
+  #driver-event-menu-modal.driver-modal::before,
+  #driver-anahtar-modal.driver-modal::before,
+  #driver-lastik-modal.driver-modal::before,
+  #driver-utts-modal.driver-modal::before,
+  #driver-muayene-modal.driver-modal::before,
+  #driver-sigorta-modal.driver-modal::before,
+  #driver-kasko-modal.driver-modal::before {
     max-width: 100% !important;
     width: 100%;
     height: calc(100vh - 98px);
@@ -2472,7 +2563,14 @@ body.driver-modal-open {
     transform: none;
   }
   #history-modal .modal-header h2,
-  #edit-request-modal .modal-header h2 {
+  #edit-request-modal .modal-header h2,
+  #driver-event-menu-modal .modal-header h2,
+  #driver-anahtar-modal .modal-header h2,
+  #driver-lastik-modal .modal-header h2,
+  #driver-utts-modal .modal-header h2,
+  #driver-muayene-modal .modal-header h2,
+  #driver-sigorta-modal .modal-header h2,
+  #driver-kasko-modal .modal-header h2 {
     font-size: 21px !important;
     letter-spacing: 0.2em !important;
   }
@@ -2481,7 +2579,21 @@ body.driver-modal-open {
   #history-modal .driver-modal-content,
   #history-modal .modal-container,
   #edit-request-modal .driver-modal-content,
-  #edit-request-modal .modal-container {
+  #edit-request-modal .modal-container,
+  #driver-event-menu-modal .driver-modal-content,
+  #driver-event-menu-modal .modal-container,
+  #driver-anahtar-modal .driver-modal-content,
+  #driver-anahtar-modal .modal-container,
+  #driver-lastik-modal .driver-modal-content,
+  #driver-lastik-modal .modal-container,
+  #driver-utts-modal .driver-modal-content,
+  #driver-utts-modal .modal-container,
+  #driver-muayene-modal .driver-modal-content,
+  #driver-muayene-modal .modal-container,
+  #driver-sigorta-modal .driver-modal-content,
+  #driver-sigorta-modal .modal-container,
+  #driver-kasko-modal .driver-modal-content,
+  #driver-kasko-modal .modal-container {
     max-width: 100% !important;
     width: 100% !important;
     margin-top: 0 !important;
@@ -2506,13 +2618,27 @@ body.driver-modal-open {
 
   /* Modal header: safe-area için üst padding */
   #history-modal .modal-header,
-  #edit-request-modal .modal-header {
+  #edit-request-modal .modal-header,
+  #driver-event-menu-modal .modal-header,
+  #driver-anahtar-modal .modal-header,
+  #driver-lastik-modal .modal-header,
+  #driver-utts-modal .modal-header,
+  #driver-muayene-modal .modal-header,
+  #driver-sigorta-modal .modal-header,
+  #driver-kasko-modal .modal-header {
     padding-top: calc(2px + env(safe-area-inset-top, 0)) !important;
   }
 
   /* modal-body: sadece dikey scroll, yatay kayma yok */
   #history-modal .modal-body,
-  #edit-request-modal .modal-body {
+  #edit-request-modal .modal-body,
+  #driver-event-menu-modal .modal-body,
+  #driver-anahtar-modal .modal-body,
+  #driver-lastik-modal .modal-body,
+  #driver-utts-modal .modal-body,
+  #driver-muayene-modal .modal-body,
+  #driver-sigorta-modal .modal-body,
+  #driver-kasko-modal .modal-body {
     overflow-x: hidden !important;
     touch-action: pan-y !important;
     overscroll-behavior: none !important;
@@ -2961,7 +3087,21 @@ body.driver-modal-open {
   #history-modal .driver-modal-content,
   #history-modal .modal-container,
   #edit-request-modal .driver-modal-content,
-  #edit-request-modal .modal-container {
+  #edit-request-modal .modal-container,
+  #driver-event-menu-modal .driver-modal-content,
+  #driver-event-menu-modal .modal-container,
+  #driver-anahtar-modal .driver-modal-content,
+  #driver-anahtar-modal .modal-container,
+  #driver-lastik-modal .driver-modal-content,
+  #driver-lastik-modal .modal-container,
+  #driver-utts-modal .driver-modal-content,
+  #driver-utts-modal .modal-container,
+  #driver-muayene-modal .driver-modal-content,
+  #driver-muayene-modal .modal-container,
+  #driver-sigorta-modal .driver-modal-content,
+  #driver-sigorta-modal .modal-container,
+  #driver-kasko-modal .driver-modal-content,
+  #driver-kasko-modal .modal-container {
     margin: 0 !important;
     margin-bottom: calc(var(--modal-margin-bottom-mobile, 52px) + env(safe-area-inset-bottom, 0)) !important;
     height: calc(100vh - var(--modal-margin-bottom-mobile, 52px) - env(safe-area-inset-bottom, 0)) !important;
