@@ -865,8 +865,7 @@ margin-top: 6px !important;
 #stok-list-container .stok-controls-row-2 .stok-print-btn,
 #stok-list-container .stok-controls-row-2 .stok-search-wrap { min-height: 38px !important; box-sizing: border-box !important; }
 #stok-list-container .stok-controls-row-2 .stok-search-wrap { position: relative; display: flex; align-items: flex-end; }
-/* Masaüstü: tek büyüteç (sadece desktop wrap göster) */
-#stok-list-container .stok-controls-row-2 .stok-search-wrap-mobile { display: none !important; }
+/* Tek büyüteç (desktop/mobile ortak) */
 #stok-list-container .stok-controls-row-2 .stok-search-wrap .stok-search-btn {
 font-size: 18px !important;
 min-height: 38px !important;
@@ -1493,9 +1492,6 @@ line-height: 1.4;
 
 /* — MOBİL TEK BLOK (max-width: 640px) - .cursorrules uyumlu — */
 @media (max-width: 640px) {
-/* Mobil: tek büyüteç (sadece mobile wrap göster) */
-#stok-list-container .stok-controls-row-2 .stok-search-wrap-desktop { display: none !important; }
-#stok-list-container .stok-controls-row-2 .stok-search-wrap-mobile { display: flex !important; }
 /* Kontrast + Modal */
 .report-card {
 border-color: rgba(255, 255, 255, 0.4) !important;
