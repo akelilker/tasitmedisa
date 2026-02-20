@@ -487,9 +487,9 @@ body.driver-modal-open {
   text-transform: none; /* Etiketler JS'teki Title Case ile görünsün */
 }
 .driver-info-item .label::after {
-  content: ': '; /* İki nokta + bir boşluk (klavye space) */
+  content: ':';
   margin-left: 2px;
-  margin-right: 0;
+  margin-right: 0.3em; /* ":" ile açıklamanın ilk harfi arasında bir boşluk */
 }
 .driver-info-item .value {
   color: rgba(255, 255, 255, 0.5);
