@@ -1420,6 +1420,10 @@
     min-width: 0;
     border-right: 1px solid rgba(255, 255, 255, 0.1) !important;
 }
+/* Sıralama oku her sütunda kendi hücresine göre konumlansın (tüm sütunlarda görünsün) */
+.list-header-row .list-cell.sortable-header {
+    position: relative !important;
+}
 
 .list-header-row .list-cell {
     justify-content: center;
@@ -1529,7 +1533,7 @@
     align-items: center !important; /* Dikeyde ortala */
     flex-wrap: nowrap !important; /* Sort icon aynı satırda kal */
     justify-content: center !important; /* Başlık metni ortada */
-    position: relative;
+    position: relative; /* Ok ikonu bu hücreye göre sağda konumlansın (tüm sütunlarda görünsün) */
 }
 
 .sortable-header:hover {
