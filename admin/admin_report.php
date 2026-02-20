@@ -145,12 +145,13 @@ foreach ($surucular as $surucu) {
         $aracId = $t['id'];
         $arac = $t;
 
-        // Bu dönem için kayıt var mı?
+        // Bu dönem için en son kayıt (aynı dönemde birden fazla kayıt olabilir)
         $kayit = null;
         foreach ($data['arac_aylik_hareketler'] ?? [] as $k) {
             if ($k['arac_id'] === $aracId && (string)($k['surucu_id'] ?? '') === (string)$surucuId && $k['donem'] === $period) {
-                $kayit = $k;
-                break;
+                if ($kayit === null || strcmp($k['guncelleme_tarihi'] ?? $k['kayit_tarihi'] ?? '', $kayit['guncelleme_tarihi'] ?? $kayit['kayit_tarihi'] ?? '') > 0) {
+                    $kayit = $k;
+                }
             }
         }
 

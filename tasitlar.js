@@ -26,6 +26,12 @@
     try { return JSON.parse(localStorage.getItem(USERS_KEY) || '[]'); } catch { return []; }
   }
 
+  let kaportaSvgCache = null;
+  function getKaportaSvg() {
+    if (!kaportaSvgCache) kaportaSvgCache = fetch('icon/kaporta.svg').then(function(r) { return r.text(); });
+    return kaportaSvgCache;
+  }
+
   function writeVehicles(arr) {
     if (window.__medisaVehiclesStorage) {
         window.__medisaVehiclesStorage.write(arr);
@@ -1237,7 +1243,13 @@
       
       const sorted = [...list];
       const dir = sortDirection === 'asc' ? 1 : -1;
-      
+      const branches = sortColumn === 'branch' ? readBranches() : null;
+      const getBranchName = branches ? (branchId) => {
+          if (!branchId) return 'zzz_tahsis_edilmemis';
+          const branch = branches.find(b => b.id === branchId);
+          return branch ? branch.name.toLowerCase() : 'zzz_unknown';
+      } : null;
+
       sorted.sort((a, b) => {
           let aVal, bVal;
           
@@ -1268,12 +1280,6 @@
                   return aVal.localeCompare(bVal) * dir;
                   
               case 'branch':
-                  const branches = readBranches();
-                  const getBranchName = (branchId) => {
-                      if (!branchId) return 'zzz_tahsis_edilmemis';
-                      const branch = branches.find(b => b.id === branchId);
-                      return branch ? branch.name.toLowerCase() : 'zzz_unknown';
-                  };
                   aVal = getBranchName(a.branchId);
                   bVal = getBranchName(b.branchId);
                   return aVal.localeCompare(bVal) * dir;
@@ -1587,9 +1593,7 @@ function renderVehicleDetailLeft(vehicle) {
     const container = document.getElementById('detail-boya-container');
     if (!container) return;
 
-    fetch('icon/kaporta.svg')
-      .then(res => res.text())
-      .then(svgText => {
+    getKaportaSvg().then(function(svgText) {
         const parser = new DOMParser();
         const svgDoc = parser.parseFromString(svgText, 'image/svg+xml');
         const svg = svgDoc.querySelector('svg');
@@ -2212,10 +2216,8 @@ function renderVehicleDetailLeft(vehicle) {
       container.innerHTML = '';
       return;
     }
-    
-    fetch('icon/kaporta.svg')
-      .then(res => res.text())
-      .then(svgText => {
+
+    getKaportaSvg().then(function(svgText) {
         const parser = new DOMParser();
         const svgDoc = parser.parseFromString(svgText, 'image/svg+xml');
         const svg = svgDoc.querySelector('svg');
