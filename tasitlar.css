@@ -67,6 +67,14 @@
   box-sizing: border-box !important;
 }
 
+/* Olay Ekle modallarında tüm tarih inputları muayene ile aynı genişlik (190px) */
+.olay-ekle-modal .modal-body input[type="date"].form-input {
+  width: 190px !important;
+  max-width: 190px !important;
+  min-width: 165px !important;
+  box-sizing: border-box !important;
+}
+
 /* Olay Ekle 14 modal: Taşıtlar modalı ile aynı yapı (500px, footer 54px, çerçeve) */
 .olay-ekle-modal .modal-container {
     max-width: 500px !important;
