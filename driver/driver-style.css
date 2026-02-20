@@ -475,6 +475,7 @@ body.driver-modal-open {
 .driver-info-item {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   align-items: baseline;
   gap: 0; /* Etiket ile açıklama arası 0 */
   text-align: left;
@@ -494,7 +495,7 @@ body.driver-modal-open {
   color: rgba(255, 255, 255, 0.5);
   word-break: break-word;
   font-size: 13px;
-  min-width: 0;
+  min-width: min-content; /* Sığmazsa açıklama daralmadan tamamı alt satıra geçer, ortadan bölünmez */
 }
 .driver-info-item .value.date-warning-red { color: #ef4444; }
 .driver-info-item .value.date-warning-orange { color: #f97316; }
@@ -819,12 +820,6 @@ body.driver-modal-open {
   .driver-vehicle-info {
     padding: 0;
     font-size: 12px;
-  }
-  /* Mobil sol grid: etiket üstte, açıklama tamamı altta (tam genişlik) – ortadan bölünme olmasın */
-  .driver-left-panel .driver-info-item {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0;
   }
   .driver-info-item .label { font-size: 12px; text-transform: none; }
   .driver-info-item .value { font-size: 12px; }
