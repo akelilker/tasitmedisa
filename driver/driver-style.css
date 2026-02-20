@@ -820,16 +820,11 @@ body.driver-modal-open {
     padding: 0;
     font-size: 12px;
   }
-  .driver-info-item {
+  /* Mobil sol grid: etiket üstte, açıklama tamamı altta (tam genişlik) – ortadan bölünme olmasın */
+  .driver-left-panel .driver-info-item {
+    flex-direction: column;
+    align-items: flex-start;
     gap: 0;
-    container-type: inline-size;
-  }
-  /* Sadece satır sığmazsa (çok dar veya uzun içerik) açıklama tamamı alta */
-  @container (max-width: 120px) {
-    .driver-info-item {
-      flex-direction: column;
-      align-items: flex-start;
-    }
   }
   .driver-info-item .label { font-size: 12px; text-transform: none; }
   .driver-info-item .value { font-size: 12px; }
