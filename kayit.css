@@ -1231,14 +1231,14 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         overflow: hidden;
         flex: 0 0 0;
     }
-    /* Notlar ile Boya/Değişen aynı satırda: sağ sütun son blok alta itilir. min-width:0 ile yükseklik artınca sola taşma önlenir. */
+    /* Notlar ile Boya/Değişen aynı satırda: sağ sütun son blok alta itilir; min-height + padding ile sağ alt hiza ince ayar */
     #vehicle-modal .modal-body .modal-column-right .form-section:has(#vehicle-notes) {
         margin-top: auto;
         margin-bottom: 0;
         flex: 1;
-        min-height: 54px;
+        min-height: 58px;
         min-width: 0;
-        padding-bottom: 4px !important;
+        padding-bottom: 6px !important;
     }
     /* Masaüstü: Notlar textarea – yükseklik + yatay taşma yok, metin sarsın */
     #vehicle-modal .modal-body #vehicle-notes {
