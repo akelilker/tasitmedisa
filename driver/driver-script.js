@@ -393,11 +393,22 @@ function escapeHtmlDriver(t) {
     return d.innerHTML;
 }
 
+var _plateCloseBound = false;
 function setupPlateDropdown(vehicles) {
     const dropdown = document.getElementById('driver-plate-dropdown');
     const currentPlakaEl = document.getElementById('driver-current-plaka');
     const trigger = document.getElementById('driver-plate-trigger');
     if (!dropdown || !currentPlakaEl || !trigger) return;
+    
+    if (!_plateCloseBound) {
+        _plateCloseBound = true;
+        document.addEventListener('click', function(ev) {
+            if (!ev.target.closest('.driver-plate-dropdown-row')) {
+                const d = document.getElementById('driver-plate-dropdown');
+                if (d) d.style.display = 'none';
+            }
+        });
+    }
     
     dropdown.innerHTML = vehicles.map(v => {
         const brandModel = v.brandModel || [v.marka, v.model].filter(Boolean).join(' ');
@@ -423,10 +434,6 @@ function setupPlateDropdown(vehicles) {
         const isOpen = dropdown.style.display === 'block';
         dropdown.style.display = isOpen ? 'none' : 'block';
     };
-    
-    document.addEventListener('click', function closePlate(ev) {
-        if (!ev.target.closest('.driver-plate-dropdown-row')) dropdown.style.display = 'none';
-    });
 }
 
 function renderRightPanel(vehicles, records) {
