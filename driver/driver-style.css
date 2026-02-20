@@ -847,6 +847,7 @@ body.driver-modal-open {
   }
   .driver-user-plate-row .driver-user-name { font-size: 12px; }
   .driver-current-plaka { font-size: 14px; }
+  .driver-user-plate-in-panel { gap: 1px; }
 }
 
 .driver-btn-logout {
