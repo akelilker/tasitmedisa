@@ -25,6 +25,12 @@
     display: flex !important;
 }
 
+/* Kaydet butonu yeşili – taşıt tipi seçili/hover ile aynı ton */
+#vehicle-modal {
+    --save-green: #28a745;
+    --save-green-rgb: 40, 167, 69;
+}
+
 /* Karartma Efekti (Masaüstü İçin) */
 #vehicle-modal.modal-overlay::before {
     content: '';
@@ -561,10 +567,15 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     padding: 0;
 }
 
-/* Seçili taşıt tipi: Kaydet butonu ile aynı yeşil (#28a745) */
-.vehicle-type-btn.active img { filter: brightness(0.65) sepia(1) hue-rotate(95deg) saturate(2.2) opacity(0.9); }
-.vehicle-type-btn:hover:not(.active) img { filter: brightness(1.0) grayscale(0) sepia(1) hue-rotate(70deg) saturate(1.5); transform: scale(1.08); }
-.vehicle-type-btn.active:hover img { filter: brightness(0.75) grayscale(0) sepia(1) hue-rotate(95deg) saturate(2.2) drop-shadow(0 0 6px rgba(40,167,69,0.6)); }
+/* Seçili taşıt tipi: Kaydet butonu ile aynı yeşil (--save-green) */
+#vehicle-modal .vehicle-type-btn.active img,
+#vehicle-modal .vehicle-type-btn.active:hover img {
+    filter: brightness(0.65) sepia(1) hue-rotate(95deg) saturate(2.2) opacity(0.9) drop-shadow(0 0 4px rgba(var(--save-green-rgb), 0.5));
+}
+#vehicle-modal .vehicle-type-btn:hover:not(.active) img {
+    filter: brightness(1.0) grayscale(0.35);
+    transform: scale(1.05);
+}
 
 /* Taşıt tipi seçim ekranı (overlay) */
 .vehicle-type-picker-overlay {
@@ -716,8 +727,8 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     margin: 0 auto;
 }
 
-.btn-save { justify-self: center; margin: 0 auto; border: 1px solid rgba(40, 167, 69, 0.5); color: #28a745; }
-.btn-save:hover { background: rgba(40, 167, 69, 0.15); }
+.btn-save { justify-self: center; margin: 0 auto; border: 1px solid rgba(var(--save-green-rgb), 0.5); color: var(--save-green); }
+.btn-save:hover { background: rgba(var(--save-green-rgb), 0.15); }
 .btn-cancel { justify-self: center; margin: 0 auto; border: 1px solid rgba(var(--theme-color-rgb), 0.5); color: var(--theme-color); }
 .btn-cancel:hover { background: rgba(var(--theme-color-rgb), 0.15); }
 
@@ -994,8 +1005,6 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     
     .form-buttons { display: grid; grid-template-columns: 1fr 1fr; padding: 8px 0; gap: 10px; width: 100%; margin-top: 6px; margin-bottom: 10px; }
     .form-buttons .btn-save, .form-buttons .btn-cancel { height: 33px; font-size: 15px; width: 100%; max-width: none; justify-self: stretch; margin: 0; }
-    
-    .vehicle-type-btn.active img { filter: brightness(0.65) sepia(1) hue-rotate(95deg) saturate(2.2) opacity(0.9) drop-shadow(0 0 3px rgba(40,167,69,0.5)); }
     
     /* Notlar: flex ile alta yayılır, alt boşluk dolar */
     
