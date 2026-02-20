@@ -1354,7 +1354,7 @@
 }
 
 /* Tek satır hücreler için (yıl, plaka, km, tip) */
-.view-list .list-cell:not(.list-brand):not(.list-branch) {
+.view-list .list-cell:not(.list-brand):not(.list-branch):not(.list-user) {
     white-space: nowrap !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
