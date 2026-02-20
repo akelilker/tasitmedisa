@@ -2801,6 +2801,8 @@
   .detail-plate { margin-top: 0 !important; margin-bottom: 0 !important; } /* Plaka üstten kesilmesin */
   .detail-brand-year { margin-top: 0 !important; margin-bottom: 4px !important; }
   .detail-row { padding: 4px 0; gap: 1px; }
+  /* Kullanıcı–Şube arası 1px azalt (4px→3px) */
+  #vehicle-detail-modal .vehicle-detail-left .detail-row:first-child { padding-bottom: 3px !important; }
   
   /* Taşıt detay modal başlık +1 punto daha (sadece mobil) */
   #vehicle-detail-modal .modal-header h2 {
