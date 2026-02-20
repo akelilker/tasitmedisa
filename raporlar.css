@@ -58,8 +58,8 @@ position: relative;
 /* Üst çerçeve: kırmızı gradient container çerçevesini ezmesin diye header kendi çizgisini çizer */
 border-top: 0.5px solid rgba(255, 255, 255, 0.35);
 border-bottom: none !important;
-border-top-left-radius: var(–modal-radius, 10px);
-border-top-right-radius: var(–modal-radius, 10px);
+border-top-left-radius: var(--modal-radius, 10px);
+border-top-right-radius: var(--modal-radius, 10px);
 }
 
 /* BAŞLIK */
