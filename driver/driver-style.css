@@ -550,12 +550,12 @@ body.driver-modal-open {
   color: #f87171;
 }
 .driver-action-btn.data-entered {
-  border-color: #fff;
-  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.25); /* Aynı ince parlak gri çerçeve */
+  color: rgba(255, 255, 255, 0.9);
 }
 .driver-action-btn.data-entered:hover {
-  border-color: rgba(255, 255, 255, 0.9);
-  color: rgba(255, 255, 255, 0.95);
+  border-color: rgba(255, 255, 255, 0.5);
+  color: #fff;
 }
 .driver-info-item.saved .label,
 .driver-info-item.saved .value {
