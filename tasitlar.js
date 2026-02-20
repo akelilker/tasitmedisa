@@ -563,7 +563,7 @@
     const isAllView = (activeBranchId === 'all');
     const extraClass = (viewMode === 'list' && isAllView) ? ' is-all-view' : '';
       let html = '';
-      const gridStr = viewMode === 'list' ? getVehicleColumnWidths(vehicleColumnOrder) : '';
+      const gridStr = viewMode === 'list' ? getVehicleColumnWidths(displayColumnOrder) : '';
       if (viewMode === 'list') {
         const getSortIcon = (column) => {
           if (sortColumn !== column) {
@@ -587,7 +587,7 @@
         };
         html += '<div class="list-header-row" style="grid-template-columns: ' + gridStr + '">';
         // Sıralamaya göre sütun başlıklarını render et (mobilde Marka/Model ve Taşıt Tipi iki satır)
-        vehicleColumnOrder.forEach(columnKey => {
+        displayColumnOrder.forEach(columnKey => {
           const def = columnDefs[columnKey];
           if (def) {
             let labelHtml;
@@ -661,7 +661,7 @@
             const branchLabel = getBranchName(v.branchId) || 'Tahsis Edilmemiş';
             
             let cellHtml = '';
-            vehicleColumnOrder.forEach(columnKey => {
+            displayColumnOrder.forEach(columnKey => {
               let cellContent = '';
               let cellClass = '';
               switch(columnKey) {
@@ -688,7 +688,16 @@
                 case 'user':
                   const assignedUser = v.assignedUserId ? users.find(u => u.id === v.assignedUserId) : null;
                   const userName = assignedUser?.isim || v.tahsisKisi || '-';
-                  cellContent = escapeHtml(userName);
+                  if (isMobile && userName && userName.trim()) {
+                    const parts = String(userName).trim().split(/\s+/);
+                    const firstLine = parts[0] || '-';
+                    const secondLine = parts.slice(1).join(' ') || '';
+                    cellContent = secondLine
+                      ? '<span class="user-name-line1">' + escapeHtml(firstLine) + '</span><span class="user-name-line2">' + escapeHtml(secondLine) + '</span>'
+                      : escapeHtml(firstLine);
+                  } else {
+                    cellContent = escapeHtml(userName);
+                  }
                   cellClass = 'list-user';
                   break;
                 case 'branch':
