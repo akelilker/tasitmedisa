@@ -169,6 +169,7 @@
     display: flex;
     justify-content: space-between; /* Olay Ekle solda, Tarihçe sağda */
     align-items: center;
+    flex-wrap: nowrap; /* Olay Ekle ve Tarihçe hep aynı satırda */
     width: 100%;
     margin-top: -4px !important; /* Olay Ekle + Tarihçe 4px yukarı */
     position: relative;
@@ -1999,7 +2000,7 @@
     z-index: 2; /* Marka/model'in üstünde (1'den 2'ye yükseltildi) */
     text-align: left !important; /* Metin sola yaslı */
     margin-left: 0 !important; /* Normal akış */
-    align-self: flex-start; /* Üstten hizala */
+    align-self: center; /* Tarihçe ile aynı satırda hizalı */
     line-height: 1.4; /* Etiketlerle aynı line-height */
 }
 
@@ -2788,14 +2789,6 @@
     overscroll-behavior-x: none !important; /* Yatay overscroll'u engelle */
   }
   
-  /* Marka/model satırı toolbar altında kalmaması için padding-top ekle */
-  .detail-brand-year-row {
-    padding-top: 32px !important; /* Toolbar + header yüksekliği kadar boşluk */
-    margin-top: 0 !important;
-    position: relative;
-    z-index: 1;
-  }
-  
   .detail-plate { font-size: 22px !important; margin-top: 0 !important; margin-bottom: 0 !important; } /* -8px kaldırıldı: plaka üstten kesilmesin */
   .detail-brand-year { font-size: 19px !important; margin-top: 0 !important; margin-bottom: 4px !important; }
   .detail-row { padding: 4px 0; gap: 1px; }
@@ -2864,7 +2857,14 @@
   #vehicle-detail-content { padding-top: 18px !important; }
   .detail-plate-row { margin-top: 0 !important; margin-bottom: 0 !important; }
   .detail-plate { margin-top: 0 !important; }
-  .detail-brand-year-row { padding-top: 1px !important; }
+  /* Marka/model satırı: Olay Ekle ve Tarihçe aynı satırda; tek padding */
+  .detail-brand-year-row {
+    flex-wrap: nowrap !important;
+    padding-top: 1px !important;
+    margin-top: 0 !important;
+    position: relative;
+    z-index: 1;
+  }
 
   /* Taşıt detay: Olay Ekle ve Tarihçe mobilde +1pt (17px, hover 18px); Tarihçe rengi etiket beyazı */
   #vehicle-detail-modal .detail-brand-year-row .history-add-event-btn {
