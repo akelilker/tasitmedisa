@@ -2368,6 +2368,14 @@
   #muayene-tarih {
     max-width: 165px !important; /* gg.aa.yyyy tam sığsın, yıl kesilmesin */
   }
+  /* Olay Ekle: tarih input gg.aa.yyyy sola kavmasın */
+  .olay-ekle-modal .modal-body input[type="date"].form-input {
+    padding-left: 12px !important;
+    text-align: left !important;
+  }
+  .olay-ekle-modal .modal-body input[type="date"].form-input::-webkit-datetime-edit-fields-wrapper {
+    padding-left: 0 !important;
+  }
 
   /* --- OLAY EKLE MODALLARI - TÜM METİNLER +2px --- */
   .olay-ekle-modal .modal-header h2 {
@@ -2822,12 +2830,12 @@
   /* Taşıt detay: kaporta ekspertiz mobilde yatay (legend + SVG yan yana, sol grid içinde) */
   #detail-boya-container {
     margin-top: 58px !important; /* Şema 4px daha aşağı (54+4) */
-    gap: 3px !important; /* Şema ile legend arası dikey boşluk 3px */
-    row-gap: 3px !important;
+    gap: 0 !important;
+    row-gap: 3px !important; /* Şema ile legend (Orijinal/Boyalı/Değişen) arası 3px */
     justify-content: center !important;
     overflow: visible !important;
   }
-  /* Mobil: Orijinal/Boyalı/Değişen açıklamaları şemaya 3px mesafede */
+  /* Mobil: Orijinal/Boyalı/Değişen legend şemaya 3px mesafede (row-gap ile) */
   #detail-boya-container .boya-legend {
     margin-top: 0 !important;
   }
