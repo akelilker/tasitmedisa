@@ -509,15 +509,23 @@
         );
     }
 
+    // 2b. Şanzıman filtresi (Otomatik/Manuel)
+    if (transmissionFilter) {
+        vehicles = vehicles.filter(v => v.transmission === transmissionFilter);
+    }
+
       // 3. Sıralama
       vehicles = applyFilter(vehicles);
+
+      // Şube seçiliyken liste görünümünde şube sütunu gösterilmez
+      const displayColumnOrder = (activeBranchId === 'all' || activeBranchId === '__archive__') ? vehicleColumnOrder : vehicleColumnOrder.filter(function(k) { return k !== 'branch'; });
 
       // 4. HTML – boş liste: liste görünümünde başlıkları koru, tek satırda mesaj göster
       if (vehicles.length === 0) {
           const emptyMsg = (activeBranchId === '__archive__') ? 'Arşivde kayıt bulunamadı.' : 'Kayıt bulunamadı.';
           if (viewMode === 'list') {
             loadVehicleColumnOrder();
-            const gridStr = getVehicleColumnWidths(vehicleColumnOrder);
+            const gridStr = getVehicleColumnWidths(displayColumnOrder);
             const isMobile = window.innerWidth <= 640;
             const columnDefs = {
               'year': { label: 'Yılı', class: 'list-year' },
@@ -529,7 +537,7 @@
               'branch': { label: 'Şube', class: 'list-branch' }
             };
             let emptyHtml = '<div class="list-header-row" style="grid-template-columns: ' + gridStr + '">';
-            vehicleColumnOrder.forEach(columnKey => {
+            displayColumnOrder.forEach(columnKey => {
               const def = columnDefs[columnKey];
               if (def) {
                 const labelHtml = (isMobile && columnKey === 'brand') ? '<span class="header-first-line">Marka /</span><span class="header-second-line">Model</span>' : (isMobile && columnKey === 'type') ? '<span class="header-first-line">Taşıt</span><span class="header-second-line">Tipi</span>' : `<span>${escapeHtml(def.label)}</span>`;
@@ -1161,6 +1169,10 @@
       closeSearchBox();
   });
 
+  window.setTransmissionFilter = function(val) {
+      transmissionFilter = (val === 'otomatik' || val === 'manuel') ? val : '';
+  };
+
   window.handleSearch = function(val) {
       if (searchMode === 'local') {
           // Yerel Arama (Mevcut listeyi filtrele)
@@ -1173,12 +1185,15 @@
           }
           const all = readVehicles();
           const q = val.toLowerCase();
-          const filtered = all.filter(v => 
+          let filtered = all.filter(v => 
             (v.plate && v.plate.toLowerCase().includes(q)) ||
             (v.brandModel && v.brandModel.toLowerCase().includes(q)) ||
             (v.year && String(v.year).includes(q)) ||
             (v.tahsisKisi && v.tahsisKisi.toLowerCase().includes(q))
           );
+          if (transmissionFilter) {
+            filtered = filtered.filter(v => v.transmission === transmissionFilter);
+          }
           
           // Sonuçları Liste Modunda Göster (tıklanınca detay açılsın - event delegation ile)
           let html = `<div style="padding:10px; color:#aaa; font-size:12px;">GENEL ARAMA SONUÇLARI (${filtered.length})</div>`;
