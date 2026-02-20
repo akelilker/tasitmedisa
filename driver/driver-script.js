@@ -241,6 +241,7 @@ async function loadDashboard() {
         const data = await response.json();
         
         if (!data.success) {
+            document.getElementById('loading-spinner').style.display = 'none';
             alert('Oturum süresi doldu! Lütfen tekrar giriş yapın.');
             logout();
             return;
@@ -284,7 +285,18 @@ async function loadDashboard() {
         
     } catch (error) {
         console.error('Veri yükleme hatası:', error);
-        alert('Veriler yüklenemedi! Lütfen sayfayı yenileyin.');
+        const spinner = document.getElementById('loading-spinner');
+        const emptyEl = document.getElementById('empty-state');
+        if (spinner) spinner.style.display = 'none';
+        if (emptyEl) {
+            emptyEl.style.display = 'block';
+            const h3 = emptyEl.querySelector('h3');
+            const p = emptyEl.querySelector('p');
+            if (h3) h3.textContent = 'Yükleme Hatası';
+            if (p) p.textContent = 'Veriler yüklenemedi! Lütfen sayfayı yenileyin.';
+            const icon = emptyEl.querySelector('.driver-empty-icon');
+            if (icon) icon.textContent = '⚠️';
+        }
     }
 }
 
