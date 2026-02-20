@@ -1000,6 +1000,53 @@
     }
 }
 
+/* Şanzıman simgesi + dropdown (genişleyip daralmayan) */
+.v-transmission-wrap {
+    position: relative;
+    flex-shrink: 0;
+}
+.v-transmission-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+.v-transmission-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    margin-top: 4px;
+    min-width: 140px;
+    background: #1a1a1a;
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 8px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+    z-index: 100;
+    padding: 4px 0;
+}
+.v-transmission-dropdown.open {
+    display: block;
+}
+.v-transmission-option {
+    display: block;
+    width: 100%;
+    padding: 8px 12px;
+    text-align: left;
+    font-size: 13px;
+    color: #ccc;
+    background: none;
+    border: none;
+    cursor: pointer;
+    white-space: nowrap;
+}
+.v-transmission-option:hover {
+    background: rgba(255,255,255,0.06);
+    color: #fff;
+}
+.v-transmission-option.active {
+    color: var(--theme-color);
+}
+
 /* === İÇERİK === */
 #vehicles-modal .modal-body {
     flex: 1;
