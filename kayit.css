@@ -1106,6 +1106,10 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-body .modal-column-right .form-section-inline .form-label {
         margin-bottom: 1px !important;
     }
+    /* Sağ grid: tarih inputları ile etiket arası +1px boşluk (Sigorta, Kasko, Muayene) */
+    #vehicle-modal .modal-body .modal-column-right .form-section:has(input[type="date"]) .form-label {
+        margin-bottom: 2px !important;
+    }
     /* Sağ grid: Sigorta hariç etiketlerden önce 1px (first-child 0) */
     #vehicle-modal .modal-body .modal-column-right .form-section:first-child .form-label {
         margin-top: 0 !important;
