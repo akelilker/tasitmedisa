@@ -1397,20 +1397,30 @@
         }
     };
 
-    // Arama kutusunu aç/kapat
+    // Arama kutusunu aç/kapat (mobilde mobile container, masaüstünde desktop container)
     window.toggleStokSearch = function() {
-        const container = document.getElementById('stok-search-container');
-        const input = document.getElementById('stok-search-input');
+        const isMobile = typeof window !== 'undefined' && window.innerWidth <= 640;
+        const container = document.getElementById(isMobile ? 'stok-search-container-mobile' : 'stok-search-container');
+        const input = document.getElementById(isMobile ? 'stok-search-input-mobile' : 'stok-search-input');
+        const otherContainer = document.getElementById(isMobile ? 'stok-search-container' : 'stok-search-container-mobile');
+        const otherInput = document.getElementById(isMobile ? 'stok-search-input' : 'stok-search-input-mobile');
         
         if (container) {
             if (container.classList.contains('open')) {
                 container.classList.remove('open');
-                if (input) {
-                    input.value = '';
+                if (otherContainer) otherContainer.classList.remove('open');
+                const clearInput = input || otherInput;
+                if (clearInput) {
+                    clearInput.value = '';
                     handleStokSearch('');
                 }
             } else {
                 container.classList.add('open');
+                if (otherContainer) otherContainer.classList.remove('open');
+                if (input) {
+                    const syncVal = (otherInput && otherInput.value) || (window.stokSearchTerm || '');
+                    if (input.value !== syncVal) input.value = syncVal;
+                }
                 setTimeout(() => {
                     if (input) input.focus();
                 }, 100);
