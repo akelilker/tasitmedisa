@@ -3,7 +3,7 @@
 	"tasks": [
 		{
 			"type": "Live Preview",
-			"workspacePath": "c:\\Users\\Akel\\Desktop\\tasitmedisa v3\\tasitmedisa",
+			"workspacePath": "c:\\Users\\Akel\\Desktop\\tasitmedisa\\tasitmedisa",
 			"problemMatcher": [],
 			"label": "Live Preview: Run Server"
 		}
