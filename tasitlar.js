@@ -106,8 +106,8 @@
             'plate': '62px',
             'brand': '2.55fr',
             'km': '52px',
-            'user': '1.7fr',
-            'branch': '2.65fr'
+            'user': '1.83fr',   /* şubeden 3px alındı */
+            'branch': '2.52fr'
           }
         : {
             'year': '32px',
