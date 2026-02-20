@@ -258,15 +258,15 @@ document.addEventListener('DOMContentLoaded', function() {
       if (window.updateNotifications) window.updateNotifications();
     }, 1000);
 
-    // Loading screen'i kapat (en az 3 sn splash gösterilir)
+    // Loading screen'i kapat (en az 2 sn splash gösterilir)
     hideLoadingScreenIfVisible();
 });
 
 /* =========================================
    LOADING SCREEN CLOSE (fallback'lar: load event + dataLoaded + timeout)
-   Ana uygulama anasayfasında logo+başlık en az 3 sn gösterilir
+   Ana uygulama anasayfasında logo+başlık en az 2 sn gösterilir
    ========================================= */
-const SPLASH_MIN_MS = 3000;
+const SPLASH_MIN_MS = 2000;
 const _pageStartTime = Date.now();
 
 function hideLoadingScreenIfVisible() {

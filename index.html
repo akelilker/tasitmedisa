@@ -44,7 +44,7 @@
             z-index: 10001; /* Footer (10000) üstünde; splash sırasında footer gizlenir */
             opacity: 1;
             transition: opacity 0.4s ease;
-            animation: autoHideLoading 3.5s forwards;
+            animation: autoHideLoading 2s forwards;
         }
         #loading-screen.hidden {
             opacity: 0;
@@ -103,7 +103,7 @@
 </head>
 <body>
 
-    <!-- Splash: logo + başlık 3 sn -->
+    <!-- Splash: logo + başlık 2 sn -->
     <div id="loading-screen">
         <div class="splash-inner">
             <img src="icon/logo-header2.svg" alt="MEDISA" class="splash-logo">
@@ -936,7 +936,7 @@
                     <div style="display: flex; flex-direction: column; gap: 12px;">
                         <div>
                             <label for="muayene-tarih" style="color: #ccc; font-size: 14px; display: block; margin-bottom: 3px;">Yaptırılan Tarih (gg.aa.yyyy):</label>
-                            <input type="date" id="muayene-tarih" class="form-input" style="width: 20%;">
+                            <input type="date" id="muayene-tarih" class="form-input" style="min-width: 165px; width: 100%; box-sizing: border-box;">
                         </div>
                     </div>
                     <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
@@ -1336,8 +1336,8 @@
     <!-- INLINE KRITIK JS: Harici script dosyaları 404 olsa bile loading screen kapanır -->
     <script>
     (function(){
-      // 1. Loading screen: logo+başlık en az 3 sn gösterilir, sonra kapanır
-      var SPLASH_MIN = 3000;
+      // 1. Loading screen: logo+başlık en az 2 sn gösterilir, sonra kapanır
+      var SPLASH_MIN = 2000;
       var _start = Date.now();
       function hideLoading() {
         var ls = document.getElementById('loading-screen');
@@ -1357,7 +1357,7 @@
         hideLoading();
       }
       window.addEventListener('load', hideLoading);
-      setTimeout(hideLoading, 4000);
+      setTimeout(hideLoading, 2500);
 
       // 2. CSS async load fallback: onerror durumunda media='all' yap (print kalmayı önle)
       document.querySelectorAll('link[rel="stylesheet"][media="print"]').forEach(function(link){
