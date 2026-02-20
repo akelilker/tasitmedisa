@@ -301,12 +301,12 @@
             <div class="vt-right">
                 <div id="v-search-container" class="v-search-container">
                     <input type="text" id="v-search-input" class="v-search-input" placeholder="Plaka, marka, kullanıcı ara..." oninput="handleSearch(this.value)">
+                    <select id="v-transmission-filter" class="v-transmission-filter" title="Şanzıman" onchange="setTransmissionFilter(this.value); handleSearch(document.getElementById('v-search-input')?.value || '')">
+                        <option value="" ${transmissionFilter === '' ? 'selected' : ''}>Tümü</option>
+                        <option value="otomatik" ${transmissionFilter === 'otomatik' ? 'selected' : ''}>Otomatik</option>
+                        <option value="manuel" ${transmissionFilter === 'manuel' ? 'selected' : ''}>Manuel</option>
+                    </select>
                 </div>
-                <select id="v-transmission-filter" class="v-transmission-filter" title="Şanzıman" onchange="setTransmissionFilter(this.value); handleSearch(document.getElementById('v-search-input')?.value || '')">
-                    <option value="" ${transmissionFilter === '' ? 'selected' : ''}>Tümü</option>
-                    <option value="otomatik" ${transmissionFilter === 'otomatik' ? 'selected' : ''}>Otomatik</option>
-                    <option value="manuel" ${transmissionFilter === 'manuel' ? 'selected' : ''}>Manuel</option>
-                </select>
                 <button class="vt-icon-btn search-toggle-btn" onclick="toggleSearchBox('global')" title="Genel Arama">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></svg>
                 </button>
@@ -327,12 +327,12 @@
             <div class="vt-right">
                 <div id="v-search-container" class="v-search-container">
                     <input type="text" id="v-search-input" class="v-search-input" placeholder="Plaka, marka, kullanıcı ara..." oninput="handleSearch(this.value)">
+                    <select id="v-transmission-filter" class="v-transmission-filter" title="Şanzıman" onchange="setTransmissionFilter(this.value); renderVehicles(document.getElementById('v-search-input')?.value || '')">
+                        <option value="" ${transmissionFilter === '' ? 'selected' : ''}>Tümü</option>
+                        <option value="otomatik" ${transmissionFilter === 'otomatik' ? 'selected' : ''}>Otomatik</option>
+                        <option value="manuel" ${transmissionFilter === 'manuel' ? 'selected' : ''}>Manuel</option>
+                    </select>
                 </div>
-                <select id="v-transmission-filter" class="v-transmission-filter" title="Şanzıman" onchange="setTransmissionFilter(this.value); renderVehicles(document.getElementById('v-search-input')?.value || '')">
-                    <option value="" ${transmissionFilter === '' ? 'selected' : ''}>Tümü</option>
-                    <option value="otomatik" ${transmissionFilter === 'otomatik' ? 'selected' : ''}>Otomatik</option>
-                    <option value="manuel" ${transmissionFilter === 'manuel' ? 'selected' : ''}>Manuel</option>
-                </select>
                 <button class="vt-icon-btn search-toggle-btn" onclick="toggleSearchBox('local')" title="Ara">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></svg>
                 </button>
@@ -476,8 +476,9 @@
    */
   function renderVehicles(query = '') {
     try {
+      const listContainer = document.getElementById('vehicles-modal-content') || modalContent;
+      if (!listContainer) return;
       loadVehicleColumnOrder(); // Sütun sıralamasını yükle
-      const listContainer = modalContent; // Direkt content'e basıyoruz
       // Veri Çek
       let vehicles = readVehicles();
       if (!Array.isArray(vehicles)) vehicles = [];
@@ -617,7 +618,7 @@
         html += '</div>';
         html += '<div class="vehicles-list-scroll">';
       }
-      const users = readUsers();
+      const users = readUsers() || [];
       html += `<div class="view-${viewMode}${extraClass}">` + vehicles.map(v => {
         // Plaka (1. satır - tek satır maksimum)
         const plate = v.plate || '-';
@@ -750,8 +751,9 @@
       }
     } catch (error) {
       console.error('renderVehicles hatası:', error);
-      if (modalContent) {
-        modalContent.innerHTML = '<div style="text-align:center; padding:40px; color:#666">Bir hata oluştu. Lütfen sayfayı yenileyin.</div>';
+      const target = document.getElementById('vehicles-modal-content') || modalContent;
+      if (target) {
+        target.innerHTML = '<div style="text-align:center; padding:40px; color:#666">Bir hata oluştu. Lütfen sayfayı yenileyin.</div>';
       }
     }
   }
@@ -1276,10 +1278,10 @@
           return list;
       }
       
-      const sorted = [...list];
+      const sorted = Array.isArray(list) ? [...list] : [];
       const dir = sortDirection === 'asc' ? 1 : -1;
-      const branches = sortColumn === 'branch' ? readBranches() : null;
-      const getBranchName = branches ? (branchId) => {
+      const branches = sortColumn === 'branch' ? (readBranches() || []) : null;
+      const getBranchName = branches && branches.length >= 0 ? (branchId) => {
           if (!branchId) return 'zzz_tahsis_edilmemis';
           const branch = branches.find(b => b.id === branchId);
           return branch ? branch.name.toLowerCase() : 'zzz_unknown';
