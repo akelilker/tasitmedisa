@@ -2771,6 +2771,12 @@ function renderVehicleDetailLeft(vehicle) {
     
     // Eski km değerini al (guncelKm varsa onu, yoksa vehicle.km'i kullan)
     const eskiKm = vehicle.guncelKm || vehicle.km || '';
+    const eskiKmNum = parseInt(String(eskiKm).replace(/\D/g, ''), 10) || 0;
+    const yeniKmNum = parseInt(yeniKm, 10) || 0;
+    if (eskiKmNum > 0 && yeniKmNum < eskiKmNum) {
+      alert('Bildirilmek İstenen Km, Önceki Kayıtlarla Uyuşmamaktadır. Şirket Yetkilisi İle Görüşün');
+      return;
+    }
     
     // Güncel km'yi güncelle
     vehicle.guncelKm = yeniKm;

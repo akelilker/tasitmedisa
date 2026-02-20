@@ -155,14 +155,33 @@ foreach ($data['arac_aylik_hareketler'] as $kayit) {
     }
 }
 
-// KM validasyonu
-if ($lastKm !== null) {
-    if ($guncelKm < $lastKm) {
-        $warning = "⚠️ Uyarı: KM geriye gidiyor! (Geçen ay: $lastKm km, Bu ay: $guncelKm km)";
-    } elseif (($guncelKm - $lastKm) > 10000) {
-        $diff = $guncelKm - $lastKm;
-        $warning = "⚠️ Uyarı: KM çok fazla artmış ($diff km). Lütfen kontrol edin.";
+// Önceki KM: taşıt guncelKm, bu dönem kaydı veya geçen ay kaydı (en büyüğü)
+$oncekiKm = 0;
+$tasitlarList = $data['tasitlar'] ?? [];
+foreach ($tasitlarList as $t) {
+    if (isset($t['id']) && (string)$t['id'] === (string)$aracId) {
+        $v = (int) preg_replace('/\D/', '', (string)($t['guncelKm'] ?? $t['km'] ?? '0'));
+        if ($v > $oncekiKm) $oncekiKm = $v;
+        break;
     }
+}
+if ($existingIndex >= 0 && isset($data['arac_aylik_hareketler'][$existingIndex]['guncel_km'])) {
+    $v = (int) $data['arac_aylik_hareketler'][$existingIndex]['guncel_km'];
+    if ($v > $oncekiKm) $oncekiKm = $v;
+}
+if ($lastKm !== null && $lastKm > $oncekiKm) $oncekiKm = (int) $lastKm;
+
+// Düşük KM kayda izin verme
+if ($oncekiKm > 0 && $guncelKm < $oncekiKm) {
+    echo json_encode(['success' => false, 'message' => 'Bildirilmek İstenen Km, Önceki Kayıtlarla Uyuşmamaktadır. Şirket Yetkilisi İle Görüşün'], JSON_UNESCAPED_UNICODE);
+    exit;
+}
+
+// KM uyarı kontrolü (sadece çok fazla artış – düşük km yukarıda reddedildi)
+$warning = null;
+if ($lastKm !== null && ($guncelKm - $lastKm) > 10000) {
+    $diff = $guncelKm - $lastKm;
+    $warning = "⚠️ Uyarı: KM çok fazla artmış ($diff km). Lütfen kontrol edin.";
 }
 
 // Yeni ID oluştur (mevcut kayıtlar arasında en büyük ID + 1)
