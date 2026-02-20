@@ -2152,9 +2152,25 @@
     border-color: rgba(255, 255, 255, 0.5) !important; /* Hover'da daha belirgin */
   }
   
-  /* Sol ok + etiket sol çerçeveye 3px (mobil) */
+  /* Sol ok + etiket sol çerçeveye 3px (mobil); sağda arama/şanzıman taşmasın */
   .vehicles-toolbar {
     padding-left: 3px !important;
+    padding-right: 6px !important;
+  }
+  #vehicles-modal .vt-right {
+    gap: 6px !important;
+    flex-shrink: 0;
+  }
+  /* Taşıtlar toolbar: arama + şanzıman + diğer ikonlar sığsın */
+  #vehicles-modal .vt-right .vt-icon-btn,
+  #vehicles-modal .vt-right .v-transmission-btn {
+    width: 34px !important;
+    height: 34px !important;
+  }
+  #vehicles-modal .vt-right .vt-icon-btn svg,
+  #vehicles-modal .vt-right .v-transmission-btn svg {
+    width: 18px !important;
+    height: 18px !important;
   }
   /* Taşıt detay toolbar sol 4px */
   #vehicle-detail-modal .vehicle-detail-toolbar {
