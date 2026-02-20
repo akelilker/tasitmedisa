@@ -99,7 +99,7 @@
     const defaultCols = '32px 70px 3.2fr 60px 65px 1.8fr 2fr';
     try {
       if (!columnOrder || !Array.isArray(columnOrder) || columnOrder.length === 0) return defaultCols;
-      const isMobile = typeof window !== 'undefined' && window.innerWidth <= 640;
+      const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
       const widthMap = isMobile
         ? {
             'year': '30px',
@@ -541,8 +541,8 @@
       // Şube seçiliyken liste görünümünde şube sütunu gösterilmez
       const safeColumnOrder = Array.isArray(vehicleColumnOrder) ? vehicleColumnOrder : ['year', 'plate', 'brand', 'km', 'type', 'user', 'branch'];
       const displayColumnOrder = (activeBranchId === 'all' || activeBranchId === '__archive__') ? safeColumnOrder : safeColumnOrder.filter(function(k) { return k !== 'branch'; });
-      const isMobileList = window.innerWidth <= 640;
-      // Mobilde Taşıt Tipi sütununu göstermiyoruz (yer kaplamasın)
+      const isMobileList = window.innerWidth <= 768;
+      // Mobil/tablet (≤768px): Taşıt Tipi sütununu göstermiyoruz (yer kaplamasın)
       const listDisplayOrder = isMobileList ? displayColumnOrder.filter(function(k) { return k !== 'type'; }) : displayColumnOrder;
 
       // 4. HTML – boş liste: liste görünümünde başlıkları koru, tek satırda mesaj göster
