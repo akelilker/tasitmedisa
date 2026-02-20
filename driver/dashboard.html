@@ -20,7 +20,13 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../style-core.css">
-    <link rel="stylesheet" href="driver-style.css?v=20260210">
+    <link rel="stylesheet" href="driver-style.css?v=20260220">
+    <!-- Splash: ana uygulama ile aynı logo+başlık (kritik, mobilde kesin uygulansın) -->
+    <style>
+        .driver-splash-logo { width: 176px !important; height: auto !important; object-fit: contain !important; filter: brightness(0.88) !important; }
+        .driver-splash-title { font-size: clamp(21px, 5.7vw, 30px) !important; font-weight: 800 !important; letter-spacing: clamp(1.28px, 0.65vw, 5.1px) !important; text-transform: uppercase !important; margin: 0 !important; background: linear-gradient(to bottom, #c2d4df 0%, #ffffff 40%, #9aadba 52%, #d6e0e8 100%) !important; -webkit-background-clip: text !important; background-clip: text !important; -webkit-text-fill-color: transparent !important; font-family: 'Source Sans 3', sans-serif !important; }
+        .driver-splash-subtitle { font-size: clamp(20px, 5.2vw, 29px) !important; font-weight: 800 !important; letter-spacing: clamp(1.2px, 0.6vw, 4.5px) !important; text-transform: uppercase !important; margin: 0 !important; margin-top: 2px !important; background: linear-gradient(to bottom, #c2d4df 0%, #ffffff 40%, #9aadba 52%, #d6e0e8 100%) !important; -webkit-background-clip: text !important; background-clip: text !important; -webkit-text-fill-color: transparent !important; font-family: 'Source Sans 3', sans-serif !important; }
+    </style>
 </head>
 <body class="dashboard-page">
     <div id="driver-splash" class="driver-splash" aria-hidden="false">
