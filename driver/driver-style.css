@@ -849,6 +849,26 @@ body.driver-modal-open {
   .driver-current-plaka { font-size: 14px; }
   .driver-user-plate-in-panel { gap: 1px; margin-bottom: 3px; }
 
+  /* MEDISA logosu: 3px aşağı, 2px büyüt; başlık metinlerini itmeden */
+  .dashboard-page .hero-logo {
+    flex: 0 0 56px !important;
+    width: 56px !important;
+    transform: translate(-2px, 4px) !important; /* 1px + 3px aşağı (style-core 1px’e ek) */
+    margin-top: 0 !important;
+  }
+  .dashboard-page .hero-logo img {
+    width: 100% !important;
+    height: auto !important;
+  }
+  /* Ortadaki dikey kırmızı çizgi daha ince */
+  .driver-left-panel {
+    border-right-width: 0.15px !important;
+  }
+  /* Şube etiketinden itibaren 3px aşağı */
+  .driver-left-panel .driver-vehicle-info {
+    margin-top: 3px !important;
+  }
+
   /* Kaydet / Vazgeç: ince metin + ince çerçeve, arka plansız; tıklanınca kalın çerçeve + kalın metin + yarı saydam arka plan; dikey yükseklik 3px az */
   .driver-km-form-actions .btn-km-bildir,
   .driver-km-form-actions .btn-km-vazgec,
