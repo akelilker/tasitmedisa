@@ -1,10 +1,8 @@
 {
-	"folders": [
-		{
-			"path": "."
-		}
-	],
-	"settings": {
-		"php.validate.executablePath": "php"
-	}
+  "folders": [
+    { "path": "C:\\Users\\Akel\\Desktop\\tasitmedisa\\tasitmedisa" }
+  ],
+  "settings": {
+    "php.validate.executablePath": "php"
+  }
 }

@@ -1,1 +1,38 @@
-{"name":"Medisa Taşıt Yönetim Sistemi","short_name":"Medisa Taşıt","description":"Medisa Taşıt Yönetim Sistemi","start_url":"./","scope":"./","display":"standalone","display_override":["window-controls-overlay","standalone"],"orientation":"any","background_color":"#080d16","theme_color":"#080d16","categories":["business","productivity"],"lang":"tr","dir":"ltr","icons":[{"src":"./icon/favicon.svg","sizes":"any","type":"image/svg+xml","purpose":"any"},{"src":"./icon/apple-touch-icon.svg","sizes":"180x180","type":"image/svg+xml","purpose":"any"},{"src":"./icon/icon-192.svg","sizes":"192x192","type":"image/svg+xml","purpose":"any"},{"src":"./icon/icon-512.svg","sizes":"512x512","type":"image/svg+xml","purpose":"any"},{"src":"./icon/icon-192-maskable.svg","sizes":"192x192","type":"image/svg+xml","purpose":"maskable"},{"src":"./icon/icon-512-maskable.svg","sizes":"512x512","type":"image/svg+xml","purpose":"maskable"}],"shortcuts":[{"name":"Taşıt Listesi","short_name":"Taşıtlar","description":"Tüm taşıtları görüntüle","url":"./?view=vehicles","icons":[{"src":"./icon/otomobil.svg","sizes":"any","type":"image/svg+xml"}]},{"name":"Yeni Kayıt","short_name":"Kayıt","description":"Yeni taşıt kaydı oluştur","url":"./?action=add","icons":[{"src":"./icon/kaporta.svg","sizes":"any","type":"image/svg+xml"}]},{"name":"Raporlar","short_name":"Raporlar","description":"Taşıt raporlarını görüntüle","url":"./?view=reports","icons":[{"src":"./icon/marker.png","sizes":"any","type":"image/png"}]}]}
+{
+  "name": "Medisa Taşıt Yönetim Sistemi",
+  "short_name": "Medisa Taşıt",
+  "description": "Taşıt ve kayıt yönetimi",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "theme_color": "#080d16",
+  "background_color": "#080d16",
+  "lang": "tr",
+  "icons": [
+    {
+      "src": "./icon/icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon/icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon/icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    },
+    {
+      "src": "./icon/icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

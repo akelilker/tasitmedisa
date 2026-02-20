@@ -46,6 +46,13 @@
     overflow-x: visible !important;
 }
 
+/* Muayene tarihi input: gg.aa.yyyy tam sığsın, yıl kesilmesin (masaüstü + mobil) */
+#muayene-guncelle-modal #muayene-tarih,
+#muayene-tarih {
+  min-width: 165px !important;
+  box-sizing: border-box !important;
+}
+
 /* Olay Ekle 14 modal: Taşıtlar modalı ile aynı yapı (500px, footer 54px, çerçeve) */
 .olay-ekle-modal .modal-container {
     max-width: 500px !important;
@@ -2211,6 +2218,9 @@
   #satis-tarih {
     width: 50% !important;
     max-width: 150px !important;
+  }
+  #muayene-tarih {
+    max-width: 165px !important; /* gg.aa.yyyy tam sığsın, yıl kesilmesin */
   }
 
   /* --- OLAY EKLE MODALLARI - TÜM METİNLER +2px --- */

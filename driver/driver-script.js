@@ -191,7 +191,7 @@ if (document.getElementById('login-form')) {
    SPLASH (3 sn) + DASHBOARD / LOGIN
    ========================================= */
 
-/** Splash 3 sn göster, sonra gizle ve normal akışa devam et */
+/** Splash 2 sn göster, sonra gizle ve normal akışa devam et */
 function initDriverSplash(onComplete) {
   const splash = document.getElementById('driver-splash');
   if (!splash) {
@@ -205,7 +205,7 @@ function initDriverSplash(onComplete) {
       splash.style.display = 'none';
       if (typeof onComplete === 'function') onComplete();
     }, 400);
-  }, 3000);
+  }, 2000);
 }
 
 if (document.getElementById('driver-two-panel')) {

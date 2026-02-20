@@ -46,8 +46,6 @@ const CACHE_FILES = [
   '/icon/apple-touch-icon.svg',
   '/icon/icon-192.svg',
   '/icon/icon-512.svg',
-  '/icon/icon-192-maskable.svg',
-  '/icon/icon-512-maskable.svg',
   '/icon/logo-header2.svg',
   '/icon/logo-footer.svg',
   '/icon/marker.png',
