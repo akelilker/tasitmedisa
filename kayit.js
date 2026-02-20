@@ -786,7 +786,7 @@
       }
     });
 
-    updateModalTitle("TAŞIT KAYIT İŞLEMLERİ");
+    updateModalTitle("KAYIT İŞLEMLERİ");
     populateBranchSelect();
 
     const pickerOverlay = document.getElementById('vehicle-type-picker-overlay');
