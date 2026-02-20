@@ -46,8 +46,22 @@
     overflow-x: visible !important;
 }
 
-/* Muayene tarihi input: gg.aa.yyyy tam sığsın, yıl kesilmesin (masaüstü + mobil) */
-#muayene-guncelle-modal #muayene-tarih,
+/* Muayene tarihi input: Kaydet butonu ile yatayda hizalı (aynı genişlik) */
+#muayene-guncelle-modal .muayene-tarih-row {
+  display: flex !important;
+  justify-content: center !important;
+}
+#muayene-guncelle-modal .muayene-tarih-inner {
+  width: 390px;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+#muayene-guncelle-modal #muayene-tarih {
+  width: 190px !important;
+  max-width: 190px !important;
+  min-width: 165px !important;
+  box-sizing: border-box !important;
+}
 #muayene-tarih {
   min-width: 165px !important;
   box-sizing: border-box !important;

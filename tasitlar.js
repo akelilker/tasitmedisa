@@ -1598,11 +1598,13 @@ function renderVehicleDetailLeft(vehicle) {
 
         container.innerHTML = '';
 
-        // Şema genişliği: sol grid içinde, sol kolon genişliğine göre requestAnimationFrame ile uyarlanır
+        // Şema genişliği: sol grid içinde, sol kolon genişliğine göre requestAnimationFrame ile uyarlanır (yatay -4px, dikey -8px küçültme)
         const svgOrgWidth = 148;
         const svgOrgHeight = 220;
-        const defaultTargetWidth = 220;
-        const targetHeight = Math.round(defaultTargetWidth * (148 / 220));
+        const shrinkX = 4;
+        const shrinkY = 8;
+        const defaultTargetWidth = 220 - shrinkX;
+        const targetHeight = Math.round(defaultTargetWidth * (148 / 220)) - shrinkY;
 
         // Wrapper oluştur (Şemayı tutacak kutu); başlangıç değeri, ölçüm sonrası güncellenir
         const svgWrapper = document.createElement('div');
@@ -1623,7 +1625,7 @@ function renderVehicleDetailLeft(vehicle) {
         svgClone.setAttribute('height', String(svgOrgHeight));
 
         // SVG'yi döndür ve wrapper'ın tam ortasına oturt
-        let targetWidth = defaultTargetWidth;
+        const targetWidth = defaultTargetWidth;
         const topOff = (targetHeight - svgOrgHeight) / 2;
         const leftOff = (targetWidth - svgOrgWidth) / 2;
 
@@ -1687,7 +1689,7 @@ function renderVehicleDetailLeft(vehicle) {
         `;
         container.appendChild(legend);
 
-        // Sol kolon genişliğine göre şema büyüklüğünü uyarla (sol grid içinde)
+        // Sol kolon genişliğine göre şema büyüklüğünü uyarla (sol grid içinde; yatay -4px, dikey -8px)
         requestAnimationFrame(function alignSchemaToLeftColumn() {
           const leftCol = document.querySelector('#vehicle-detail-modal .vehicle-detail-left');
           if (leftCol && container.isConnected) {
@@ -1697,14 +1699,15 @@ function renderVehicleDetailLeft(vehicle) {
             const minW = 160;
             const maxW = 380;
             const clamped = Math.max(minW, Math.min(maxW, Math.round(availableWidth)));
-            const h = Math.round(clamped * (148 / 220));
-            svgWrapper.style.width = clamped + 'px';
+            const w = clamped - shrinkX;
+            const h = Math.round(clamped * (148 / 220)) - shrinkY;
+            svgWrapper.style.width = w + 'px';
             svgWrapper.style.height = h + 'px';
             const topOff2 = (h - svgOrgHeight) / 2;
-            const leftOff2 = (clamped - svgOrgWidth) / 2;
+            const leftOff2 = (w - svgOrgWidth) / 2;
             svgClone.style.top = topOff2 + 'px';
             svgClone.style.left = leftOff2 + 'px';
-            svgClone.style.transform = 'rotate(90deg) scale(' + (clamped / svgOrgHeight) + ')';
+            svgClone.style.transform = 'rotate(90deg) scale(' + (w / svgOrgHeight) + ')';
           }
         });
       })
