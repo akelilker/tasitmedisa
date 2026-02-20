@@ -1125,20 +1125,62 @@
         const branches = readBranches();
         const users = readUsers();
         const vehicles = readVehicles();
-  
+
         const backup = {
           branches: branches,
           users: users,
           vehicles: vehicles,
           upload_date: new Date().toISOString()
         };
-  
-        // Yedek localStorage'a kaydedilir (clear sonrası korunacak)
+
+        // 1) Yedek localStorage'a kaydedilir (clear sonrası korunacak)
         localStorage.setItem('medisa_server_backup', JSON.stringify(backup));
-        return { success: true, message: 'Veriler yedeklendi.' };
-  
+
+        // 2) Sunucu kayıt fonksiyonu yoksa yerel yedek ile devam et
+        if (typeof window.saveDataToServer !== 'function') {
+          return {
+            success: true,
+            localBackup: true,
+            serverBackup: false,
+            message: 'Yerel yedek oluşturuldu.'
+          };
+        }
+
+        // 3) Sunucuya gönderilecek appData'yi güncel verilerle hizala
+        if (window.appData && typeof window.appData === 'object') {
+          const hasAppUsers = Array.isArray(window.appData.users) && window.appData.users.length > 0;
+          window.appData = {
+            ...window.appData,
+            branches: branches,
+            tasitlar: vehicles,
+            users: hasAppUsers ? window.appData.users : users
+          };
+        }
+
+        // 4) Sunucuya kaydet
+        const serverSaved = await window.saveDataToServer();
+        if (!serverSaved) {
+          return {
+            success: false,
+            localBackup: true,
+            serverBackup: false,
+            message: 'Yerel yedek oluşturuldu ancak sunucuya yüklenemedi.'
+          };
+        }
+
+        return {
+          success: true,
+          localBackup: true,
+          serverBackup: true,
+          message: 'Veriler sunucuya yedeklendi.'
+        };
       } catch (error) {
-        return { success: false, message: error.message };
+        return {
+          success: false,
+          localBackup: false,
+          serverBackup: false,
+          message: error && error.message ? error.message : 'Yedekleme sırasında hata oluştu.'
+        };
       }
     }
   
@@ -1160,7 +1202,7 @@
      */
     window.clearCache = async function clearCache() {
       try {
-        // Modal ile kullanıcıya sor (sunucuya yükleme onaydan SONRA yapılacak)
+        // Modal ile kullanıcıya sor (sunucu yedekleme yalnızca onaydan sonra yapılır)
         const confirmMessage = 'Tarayıcı Belleği Temizlenecektir, Devam Etmek İstediğinize Emin Misiniz?';
         window.openCacheConfirmModal(confirmMessage);
    
@@ -1171,8 +1213,9 @@
   
     // — ÖNBELLEK TEMİZLEME ONAY MODALI —
     let cacheClearConfirmed = false;
+    let allowCacheClearWithLocalBackupOnly = false;
   
-    window.openCacheConfirmModal = function openCacheConfirmModal(message) {
+    window.openCacheConfirmModal = function openCacheConfirmModal(message, options = {}) {
       const modal = document.getElementById('cache-confirm-modal');
       const messageEl = document.getElementById('cache-confirm-message');
       if (!modal || !messageEl) return;
@@ -1180,6 +1223,7 @@
       // Mesajı formatla (satır sonlarını <br> ile değiştir)
       messageEl.innerHTML = message.replace(/\n/g, '<br>');
       cacheClearConfirmed = false;
+      allowCacheClearWithLocalBackupOnly = options && options.allowLocalBackupOnly === true;
   
       // Body'ye modal-open class'ı ekle
       document.body.classList.add('modal-open');
@@ -1207,14 +1251,23 @@
       closeCacheConfirmModal();
   
       try {
-        // 1. ÖNCE SUNUCUYA YEDEKLEME YAP (ilerisi için hazır)
+        // 1. ÖNCE YEDEKLEME YAP (yerel + mümkünse sunucu)
         window.showInfoModal('Veriler Yedekleniyor...');
         const result = await uploadToServer();
-  
-        if (!result.success) {
-          // Sunucuya yükleme başarısız - kullanıcıya sor
-          const retryMessage = 'Veriler Sunucuya Yüklenemedi!\n\nYine De Temizlemek İstiyor Musunuz?';
-          window.openCacheConfirmModal(retryMessage);
+
+        // Yerel yedek bile oluşturulamadıysa işlem iptal
+        if (!result.localBackup) {
+          window.showInfoModal('Yedekleme Başarısız! Tarayıcı Belleği Temizlenmedi.');
+          return;
+        }
+
+        if (!result.success && !allowCacheClearWithLocalBackupOnly) {
+          // Sunucu yedeği başarısız: kullanıcıya yerel yedekle devam etme seçeneği ver
+          const retryMessage = 'Veriler Sunucuya Yüklenemedi!\nYerel Yedek Oluşturuldu.\n\nYine De Temizlemek İstiyor Musunuz?';
+          if (typeof window.closeInfoModal === 'function') {
+            window.closeInfoModal();
+          }
+          window.openCacheConfirmModal(retryMessage, { allowLocalBackupOnly: true });
           return;
         }
   
@@ -1223,7 +1276,10 @@
         // Diğer uygulama state anahtarlarını da temizle
         ['vehicle_column_order', 'stok_active_columns', 'stok_column_order', 'stok_base_column_order'].forEach(k => localStorage.removeItem(k));
         
-        window.showInfoModal('Veriler Yedeklendi Ve Tarayıcı Belleği Temizlendi!\n\nYedek korundu. Geri yüklemek için Ayarlar > Veri Yönetimi > Son Yedekten Geri Yükle kullanın.\n\nSayfa Yenilenecek.');
+        const backupResultMessage = result.serverBackup
+          ? 'Veriler Sunucuya Yedeklendi Ve Tarayıcı Belleği Temizlendi!\n\nYedek korundu. Geri yüklemek için Ayarlar > Veri Yönetimi > Son Yedekten Geri Yükle kullanın.\n\nSayfa Yenilenecek.'
+          : 'Sunucuya Yedekleme Yapılamadı Ancak Yerel Yedek Korunarak Tarayıcı Belleği Temizlendi!\n\nGeri yüklemek için Ayarlar > Veri Yönetimi > Son Yedekten Geri Yükle kullanın.\n\nSayfa Yenilenecek.';
+        window.showInfoModal(backupResultMessage);
         
         // 3. Sayfayı yenile
         setTimeout(() => {
