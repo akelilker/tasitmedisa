@@ -133,29 +133,8 @@ if (!$hasAccess) {
 // Dönem (bu ay)
 $donem = date('Y-m');
 
-// Aynı ay için kayıt var mı kontrol et
-$existingIndex = -1;
-foreach ($data['arac_aylik_hareketler'] as $idx => $kayit) {
-    if ($kayit['arac_id'] === $aracId && $kayit['donem'] === $donem && $kayit['surucu_id'] === $user['id']) {
-        $existingIndex = $idx;
-        break;
-    }
-}
-
-// KM uyarı kontrolü
-$warning = null;
-$lastKm = null;
-
-// Geçen ay kaydını bul
-$lastMonth = date('Y-m', strtotime('-1 month'));
-foreach ($data['arac_aylik_hareketler'] as $kayit) {
-    if ($kayit['arac_id'] === $aracId && $kayit['donem'] === $lastMonth) {
-        $lastKm = $kayit['guncel_km'];
-        break;
-    }
-}
-
-// Önceki KM: taşıt guncelKm, bu dönem kaydı veya geçen ay kaydı (en büyüğü)
+// Her olay için ayrı kayıt: üzerine yazma yok, her gönderimde yeni satır eklenir.
+// Önceki KM: bu araç için tüm kayıtlardaki en yüksek guncel_km (taşıt + aylık hareketler)
 $oncekiKm = 0;
 $tasitlarList = $data['tasitlar'] ?? [];
 foreach ($tasitlarList as $t) {
@@ -165,11 +144,24 @@ foreach ($tasitlarList as $t) {
         break;
     }
 }
-if ($existingIndex >= 0 && isset($data['arac_aylik_hareketler'][$existingIndex]['guncel_km'])) {
-    $v = (int) $data['arac_aylik_hareketler'][$existingIndex]['guncel_km'];
-    if ($v > $oncekiKm) $oncekiKm = $v;
+foreach ($data['arac_aylik_hareketler'] ?? [] as $kayit) {
+    if (isset($kayit['arac_id']) && (string)$kayit['arac_id'] === (string)$aracId && isset($kayit['guncel_km'])) {
+        $v = (int) preg_replace('/\D/', '', (string)$kayit['guncel_km']);
+        if ($v > $oncekiKm) $oncekiKm = $v;
+    }
 }
-if ($lastKm !== null && $lastKm > $oncekiKm) $oncekiKm = (int) $lastKm;
+
+// 10000 km uyarısı için geçen ay en yüksek km
+$warning = null;
+$lastKm = null;
+$lastMonth = date('Y-m', strtotime('-1 month'));
+foreach ($data['arac_aylik_hareketler'] ?? [] as $kayit) {
+    if (isset($kayit['arac_id']) && (string)$kayit['arac_id'] === (string)$aracId && isset($kayit['donem']) && $kayit['donem'] === $lastMonth) {
+        $v = (int) preg_replace('/\D/', '', (string)($kayit['guncel_km'] ?? '0'));
+        if ($lastKm === null || $v > $lastKm) $lastKm = $v;
+    }
+}
+// lastKm sadece 10000 km uyarısı için; yoksa null kalır
 
 // Düşük KM kayda izin verme
 if ($oncekiKm > 0 && $guncelKm < $oncekiKm) {
@@ -184,49 +176,17 @@ if ($lastKm !== null && ($guncelKm - $lastKm) > 10000) {
     $warning = "⚠️ Uyarı: KM çok fazla artmış ($diff km). Lütfen kontrol edin.";
 }
 
-// Yeni ID oluştur (mevcut kayıtlar arasında en büyük ID + 1)
+// Yeni ID (her olay için ayrı kayıt)
 $newId = 1;
-foreach ($data['arac_aylik_hareketler'] as $kayit) {
-    if ($kayit['id'] >= $newId) {
+foreach ($data['arac_aylik_hareketler'] ?? [] as $kayit) {
+    if (isset($kayit['id']) && $kayit['id'] >= $newId) {
         $newId = $kayit['id'] + 1;
     }
 }
 
-// km_only: Sadece KM güncellenirken mevcut bakım/kaza/not değerleri korunsun
-$kmOnly = !empty($input['km_only']);
-$existingRec = ($existingIndex >= 0) ? $data['arac_aylik_hareketler'][$existingIndex] : null;
-
-// km_only: mevcut kayıttan bakım/kaza/not değerlerini al
-if ($kmOnly && $existingRec) {
-    $bakimDurumu = isset($existingRec['bakim_durumu']) ? (int)$existingRec['bakim_durumu'] : 0;
-    $bakimAciklama = isset($existingRec['bakim_aciklama']) ? trim((string)$existingRec['bakim_aciklama']) : '';
-    $bakimTarih = isset($existingRec['bakim_tarih']) ? trim((string)$existingRec['bakim_tarih']) : '';
-    $bakimServis = isset($existingRec['bakim_servis']) ? trim((string)$existingRec['bakim_servis']) : '';
-    $bakimKisi = isset($existingRec['bakim_kisi']) ? trim((string)$existingRec['bakim_kisi']) : '';
-    $bakimKm = isset($existingRec['bakim_km']) ? trim((string)$existingRec['bakim_km']) : '';
-    $bakimTutar = isset($existingRec['bakim_tutar']) ? trim((string)$existingRec['bakim_tutar']) : '';
-    $kazaDurumu = isset($existingRec['kaza_durumu']) ? (int)$existingRec['kaza_durumu'] : 0;
-    $kazaAciklama = isset($existingRec['kaza_aciklama']) ? trim((string)$existingRec['kaza_aciklama']) : '';
-    $kazaTarih = isset($existingRec['kaza_tarih']) ? trim((string)$existingRec['kaza_tarih']) : '';
-    $kazaHasarTutari = isset($existingRec['kaza_hasar_tutari']) ? trim((string)$existingRec['kaza_hasar_tutari']) : '';
-    $ekstraNot = isset($existingRec['ekstra_not']) ? trim((string)$existingRec['ekstra_not']) : '';
-    $boyaParcalarRaw = isset($existingRec['boya_parcalar']) ? $existingRec['boya_parcalar'] : '';
-    $boyaParcalar = [];
-    if ($boyaParcalarRaw !== '') {
-        $decoded = is_string($boyaParcalarRaw) ? json_decode($boyaParcalarRaw, true) : $boyaParcalarRaw;
-        if (is_array($decoded)) {
-            foreach ($decoded as $partId => $state) {
-                if (is_string($partId) && $partId !== '' && in_array($state, ['boyali', 'degisen'], true)) {
-                    $boyaParcalar[$partId] = $state;
-                }
-            }
-        }
-    }
-}
-
-// Kayıt verisi (aylık özet + taşıt detay senkronu için ek alanlar)
+// Kayıt verisi — her gönderimde yeni satır
 $kayitData = [
-    'id' => $existingIndex >= 0 ? $data['arac_aylik_hareketler'][$existingIndex]['id'] : $newId,
+    'id' => $newId,
     'arac_id' => $aracId,
     'surucu_id' => $user['id'],
     'donem' => $donem,
@@ -244,19 +204,12 @@ $kayitData = [
     'kaza_hasar_tutari' => $kazaHasarTutari,
     'boya_parcalar' => !empty($boyaParcalar) ? json_encode($boyaParcalar) : '',
     'ekstra_not' => $ekstraNot,
-    'kayit_tarihi' => $existingIndex >= 0 ? $data['arac_aylik_hareketler'][$existingIndex]['kayit_tarihi'] : date('c'),
+    'kayit_tarihi' => date('c'),
     'guncelleme_tarihi' => date('c'),
     'durum' => 'onaylandi'
 ];
 
-// Kaydet veya güncelle
-if ($existingIndex >= 0) {
-    // Güncelle
-    $data['arac_aylik_hareketler'][$existingIndex] = $kayitData;
-} else {
-    // Yeni kayıt ekle
-    $data['arac_aylik_hareketler'][] = $kayitData;
-}
+$data['arac_aylik_hareketler'][] = $kayitData;
 
 // Taşıtlar detay ekranı senkronizasyonu: tasitlar içindeki araç guncelKm ve events güncelle
 $tasitlar = &$data['tasitlar'];

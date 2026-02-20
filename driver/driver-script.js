@@ -293,9 +293,12 @@ function getSelectedVehicle() {
 }
 
 function getExistingRecord(vehicleId) {
-    return (allHistoryRecords || []).find(r => 
+    const matches = (allHistoryRecords || []).filter(r =>
         String(r.arac_id) === String(vehicleId) && r.donem === currentPeriod
     );
+    if (matches.length === 0) return null;
+    matches.sort((a, b) => (b.guncelleme_tarihi || b.kayit_tarihi || '').localeCompare(a.guncelleme_tarihi || a.kayit_tarihi || ''));
+    return matches[0];
 }
 
 function checkDateWarningsDriver(dateStr) {
@@ -617,46 +620,6 @@ function buildDriverActionArea(vehicle, existingRecord, bakimVar, kazaVar, opts)
     `;
 }
 
-function buildDriverInputForm(vehicle, existingRecord, bakimVar, kazaVar) {
-    const vid = vehicle.id;
-    const today = new Date().toISOString().split('T')[0];
-    const lastKm = vehicle.guncelKm != null ? vehicle.guncelKm : (existingRecord && existingRecord.guncel_km != null ? existingRecord.guncel_km : '');
-    const kmVal = (lastKm !== '' && lastKm != null) ? formatKm(lastKm) : '';
-    return `
-        <div class="driver-input-form" data-vehicle-id="${vid}">
-            <div class="form-group driver-km-form">
-                <label for="km-${vid}">Güncel KM</label>
-                <div class="driver-km-input-wrap">
-                    <span class="driver-km-fake-placeholder" id="km-placeholder-${vid}">Örn: 45.230</span>
-                    <input type="text" id="km-${vid}" class="driver-km-input" inputmode="numeric" pattern="[0-9]*" maxlength="8" data-vehicle-id="${vid}" value="${kmVal}" required autocomplete="off" aria-label="Güncel kilometre">
-                </div>
-            </div>
-            <div class="driver-report-blocks">
-                <div id="bakim-block-${vid}" class="driver-report-block driver-report-block-bakim ${bakimVar ? 'show' : ''}">
-                    <div class="form-group"><label for="bakim-tarih-${vid}">Bakım Tarihi</label><input type="date" id="bakim-tarih-${vid}" class="driver-bakim-input" value="${existingRecord && existingRecord.bakim_tarih ? existingRecord.bakim_tarih : today}"></div>
-                    <div class="form-group"><label for="bakim-detay-${vid}">Açıklama</label><textarea id="bakim-detay-${vid}" class="driver-report-textarea-auto driver-bakim-textarea" rows="1" placeholder="Bakım detayını yazın..." maxlength="500">${existingRecord ? (existingRecord.bakim_aciklama || '') : ''}</textarea></div>
-                    <div class="form-group"><label for="bakim-servis-${vid}">İşlemi Yapan Servis</label><input type="text" id="bakim-servis-${vid}" class="driver-bakim-input" placeholder="Servis adı"></div>
-                    <div class="form-group"><label for="bakim-kisi-${vid}">Taşıtı Bakıma Götüren Kişi</label><input type="text" id="bakim-kisi-${vid}" class="driver-bakim-input" placeholder="Kişi adı"></div>
-                    <div class="form-group"><label for="bakim-km-${vid}">Km</label><input type="text" id="bakim-km-${vid}" class="driver-bakim-input" placeholder="50.000" inputmode="numeric"></div>
-                    <div class="form-group"><label for="bakim-tutar-${vid}">Tutar (TL)</label><input type="text" id="bakim-tutar-${vid}" class="driver-bakim-input" placeholder="2.500" inputmode="numeric"></div>
-                </div>
-                <div id="kaza-block-${vid}" class="driver-report-block driver-report-block-kaza ${kazaVar ? 'show' : ''}">
-                    <div class="form-group"><label for="kaza-tarih-${vid}">Kaza Tarihi</label><input type="date" id="kaza-tarih-${vid}" class="driver-kaza-input" value="${existingRecord && existingRecord.kaza_tarih ? existingRecord.kaza_tarih : today}"></div>
-                    <div class="form-group"><label for="kaza-detay-${vid}">Açıklama</label><textarea id="kaza-detay-${vid}" class="driver-report-textarea-auto driver-kaza-textarea" rows="1" placeholder="Kaza açıklamasını yazın..." maxlength="500">${existingRecord ? (existingRecord.kaza_aciklama || '') : ''}</textarea></div>
-                    <div class="form-group"><label for="kaza-tutar-${vid}">Hasar Tutarı (TL)</label><input type="text" id="kaza-tutar-${vid}" class="driver-kaza-input" placeholder="5.000" inputmode="numeric"></div>
-                    <div class="form-group"><label class="driver-kaporta-label">Hasar gören parçaları işaretleyin (isteğe bağlı)</label><div id="kaza-kaporta-${vid}" class="driver-kaporta-container" data-vehicle-id="${vid}" data-boyali-parcalar='${JSON.stringify(vehicle.boyaliParcalar || {})}'></div></div>
-                </div>
-            </div>
-            <div class="form-group driver-ekstra-not-form">
-                <label for="not-${vid}">Not</label>
-                <textarea id="not-${vid}" class="driver-ekstra-not" rows="1" placeholder="Varsa Belirtin.." maxlength="500">${existingRecord ? existingRecord.ekstra_not : ''}</textarea>
-            </div>
-            <button type="button" onclick="saveVehicleData(${vid})" class="btn-save" id="btn-save-${vid}">Bildir</button>
-            <div id="status-${vid}" class="status-message"></div>
-        </div>
-    `;
-}
-
 window.toggleDriverActionBlock = function(type, vehicleId) {
     const vid = String(vehicleId);
     const inner = document.querySelector('.driver-action-area-inner[data-vehicle-id="' + vid + '"]');
@@ -918,8 +881,7 @@ function buildSlidingWarnings(vehicles, records) {
     let needsKmWarning = false;
     
     for (const v of vehicles) {
-        const existingRecord = records.find(r => String(r.arac_id) === String(v.id) && r.donem === currentPeriod);
-        const hasKmThisMonth = existingRecord && existingRecord.guncel_km != null && String(existingRecord.guncel_km).trim() !== '';
+        const hasKmThisMonth = records.some(r => String(r.arac_id) === String(v.id) && r.donem === currentPeriod && r.guncel_km != null && String(r.guncel_km).trim() !== '');
         if (isFirstOfMonth || !hasKmThisMonth) needsKmWarning = true;
         const checkDate = (dateStr, label) => {
             if (!dateStr) return;
@@ -991,20 +953,6 @@ window.toggleDriverPlateDropdown = function(ev) {
     dropdown.style.display = isOpen ? 'none' : 'block';
 };
 
-function selectDriverVehicle(vehicleId, vehicles, currentPlakaEl, wrap) {
-    const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
-    if (!vehicle || !currentPlakaEl || !wrap) return;
-    currentPlakaEl.textContent = vehicle.plaka;
-    const cards = wrap.querySelectorAll('.driver-cards-inner .vehicle-card');
-    cards.forEach(card => {
-        if (card.getAttribute('data-vehicle-id') === String(vehicleId)) {
-            card.classList.remove('driver-card-hidden');
-        } else {
-            card.classList.add('driver-card-hidden');
-        }
-    });
-}
-
 function formatDriverDate(val) {
     if (!val) return '-';
     if (/^\d{4}-\d{2}-\d{2}$/.test(val)) {
@@ -1012,131 +960,6 @@ function formatDriverDate(val) {
         return d + '.' + m + '.' + y;
     }
     return val;
-}
-
-function createVehicleCard(vehicle, records, currentPeriod) {
-    const card = document.createElement('div');
-    card.className = 'vehicle-card';
-    
-    const existingRecord = records.find(r => 
-        r.arac_id === vehicle.id && 
-        r.donem === currentPeriod
-    );
-
-    // Bakım veya Kaza varsa panelleri açık getir
-    const bakimVar = existingRecord && (existingRecord.bakim_durumu || (existingRecord.bakim_aciklama || '').trim());
-    const kazaVar = existingRecord && (existingRecord.kaza_durumu || (existingRecord.kaza_aciklama || '').trim());
-
-    const anahtarLabel = (vehicle.anahtar === 'var') ? (vehicle.anahtarNerede || 'Var') : 'Yoktur.';
-    const lastikLabel = (vehicle.lastikDurumu === 'var') ? (vehicle.lastikAdres || 'Var') : 'Yoktur.';
-    const uttsLabel = vehicle.uttsTanimlandi ? 'Evet' : 'Hayır';
-    const muayeneLabel = formatDriverDate(vehicle.muayeneDate);
-    
-    card.innerHTML = `
-        <div class="vehicle-header">
-            <h3>${vehicle.plaka}</h3>
-            <p>${vehicle.marka} ${vehicle.model}</p>
-        </div>
-        <div class="driver-info-rows">
-            <div class="driver-info-row"><span class="driver-info-label">Yedek Anahtar:</span> <span class="driver-info-value">${anahtarLabel}</span></div>
-            <div class="driver-info-row"><span class="driver-info-label">Lastik:</span> <span class="driver-info-value">${lastikLabel}</span></div>
-            <div class="driver-info-row"><span class="driver-info-label">UTTS:</span> <span class="driver-info-value">${uttsLabel}</span></div>
-            <div class="driver-info-row"><span class="driver-info-label">Muayene:</span> <span class="driver-info-value">${muayeneLabel}</span></div>
-        </div>
-        <button type="button" class="driver-olay-ekle-btn" onclick="openDriverEventMenu('${String(vehicle.id).replace(/'/g, "\\'")}')">Olay Ekle</button>
-        <div class="form-group driver-km-form">
-<label for="km-${vehicle.id}">Güncel KM</label>
-            <div class="driver-km-input-wrap">
-                <span class="driver-km-fake-placeholder" id="km-placeholder-${vehicle.id}">Örn: 45230</span>
-                <input type="text"
-                       id="km-${vehicle.id}"
-                       class="driver-km-input"
-                       inputmode="numeric"
-                       pattern="[0-9]*"
-                       maxlength="8"
-                       data-vehicle-id="${vehicle.id}"
-                       value="${(vehicle.guncelKm != null ? vehicle.guncelKm : (existingRecord && existingRecord.guncel_km != null ? existingRecord.guncel_km : ''))}"
-                       required
-                       autocomplete="off"
-                       aria-label="Güncel kilometre">
-            </div>
-        </div>
-        
-        <div class="driver-report-actions">
-            <div class="driver-report-item">
-                <button type="button" class="driver-report-btn driver-report-btn-bakim" onclick="toggleReportBlock('bakim', ${vehicle.id})">
-                    <span class="driver-report-btn-icon" aria-hidden="true">🛠</span>
-                    <span class="driver-report-btn-text">Bakım Bildir</span>
-                </button>
-                <div id="bakim-block-${vehicle.id}" class="driver-report-block driver-report-block-bakim ${bakimVar ? 'show' : ''}">
-                    <div class="form-group">
-                        <label for="bakim-tarih-${vehicle.id}">Bakım Tarihi</label>
-                        <input type="date" id="bakim-tarih-${vehicle.id}" class="driver-bakim-input" value="${existingRecord && existingRecord.bakim_tarih ? existingRecord.bakim_tarih : new Date().toISOString().split('T')[0]}">
-                    </div>
-                    <div class="form-group">
-                        <label for="bakim-detay-${vehicle.id}">Açıklama</label>
-                        <textarea id="bakim-detay-${vehicle.id}" class="driver-report-textarea-auto driver-bakim-textarea" rows="1" placeholder="Bakım detayını yazın..." maxlength="500">${existingRecord ? (existingRecord.bakim_aciklama || '') : ''}</textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="bakim-servis-${vehicle.id}">İşlemi Yapan Servis</label>
-                        <input type="text" id="bakim-servis-${vehicle.id}" class="driver-bakim-input" placeholder="Servis adı">
-                    </div>
-                    <div class="form-group">
-                        <label for="bakim-kisi-${vehicle.id}">Taşıtı Bakıma Götüren Kişi</label>
-                        <input type="text" id="bakim-kisi-${vehicle.id}" class="driver-bakim-input" placeholder="Kişi adı">
-                    </div>
-                    <div class="form-group">
-                        <label for="bakim-km-${vehicle.id}">Km</label>
-                        <input type="text" id="bakim-km-${vehicle.id}" class="driver-bakim-input" placeholder="50.000" inputmode="numeric">
-                    </div>
-                    <div class="form-group">
-                        <label for="bakim-tutar-${vehicle.id}">Tutar (TL)</label>
-                        <input type="text" id="bakim-tutar-${vehicle.id}" class="driver-bakim-input" placeholder="2.500" inputmode="numeric">
-                    </div>
-                </div>
-            </div>
-            <div class="driver-report-item">
-                <button type="button" class="driver-report-btn driver-report-btn-kaza" onclick="toggleReportBlock('kaza', ${vehicle.id})">
-                    <span class="driver-report-btn-icon" aria-hidden="true">💥</span>
-                    <span class="driver-report-btn-text">Kaza Bildir</span>
-                </button>
-                <div id="kaza-block-${vehicle.id}" class="driver-report-block driver-report-block-kaza ${kazaVar ? 'show' : ''}">
-                    <div class="form-group">
-                        <label for="kaza-tarih-${vehicle.id}">Kaza Tarihi</label>
-                        <input type="date" id="kaza-tarih-${vehicle.id}" class="driver-kaza-input" value="${existingRecord && existingRecord.kaza_tarih ? existingRecord.kaza_tarih : new Date().toISOString().split('T')[0]}">
-                    </div>
-                    <div class="form-group">
-                        <label for="kaza-detay-${vehicle.id}">Açıklama</label>
-                        <textarea id="kaza-detay-${vehicle.id}" class="driver-report-textarea-auto driver-kaza-textarea" rows="1" placeholder="Kaza açıklamasını yazın..." maxlength="500">${existingRecord ? (existingRecord.kaza_aciklama || '') : ''}</textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="kaza-tutar-${vehicle.id}">Hasar Tutarı (TL)</label>
-                        <input type="text" id="kaza-tutar-${vehicle.id}" class="driver-kaza-input" placeholder="5.000" inputmode="numeric">
-                    </div>
-                    <div class="form-group">
-                        <label class="driver-kaporta-label">Hasar gören parçaları işaretleyin (isteğe bağlı)</label>
-                        <div id="kaza-kaporta-${vehicle.id}" class="driver-kaporta-container" data-vehicle-id="${vehicle.id}" data-boyali-parcalar='${JSON.stringify(vehicle.boyaliParcalar || {})}'></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="form-group driver-ekstra-not-form">
-            <label for="not-${vehicle.id}">Not</label>
-            <textarea id="not-${vehicle.id}" class="driver-ekstra-not" rows="1"
-                      placeholder="Varsa Belirtin.."
-                      maxlength="500">${existingRecord ? existingRecord.ekstra_not : ''}</textarea>
-        </div>
-        
-        <button onclick="saveVehicleData(${vehicle.id})" 
-                class="btn-save" id="btn-save-${vehicle.id}">
-            Bildir
-        </button>
-        
-        <div id="status-${vehicle.id}" class="status-message"></div>
-    `;
-    
-    return card;
 }
 
 function setupKmInputs() {

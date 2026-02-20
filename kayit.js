@@ -780,7 +780,10 @@
     }
     ["anahtar-nerede", "kredi-detay"].forEach(id => {
       const el = document.getElementById(id);
-      if (el) el.style.display = "none";
+      if (el) {
+        const section = el.closest(".form-section");
+        if (section) section.classList.remove("input-visible");
+      }
     });
 
     updateModalTitle("TAŞIT KAYIT İŞLEMLERİ");
@@ -1482,14 +1485,12 @@
     }
     
     modal.style.display = 'flex';
-    requestAnimationFrame(() => {
+    requestAnimationFrame(function() {
       modal.classList.add('active');
-      // Modal açıldıktan sonra overlay pozisyonunu güncelle (birkaç kez, render tamamlanana kadar)
-      setTimeout(() => {
+      requestAnimationFrame(function() {
         updateTescilTarihDisplay();
-        setTimeout(() => updateTescilTarihDisplay(), 50);
-        setTimeout(() => updateTescilTarihDisplay(), 150);
-      }, 50);
+        requestAnimationFrame(updateTescilTarihDisplay);
+      });
     });
   }
 
@@ -1759,13 +1760,11 @@
             
             if (conditionalInput) {
                 if(btn.dataset.value === "var") {
-                    conditionalInput.style.display = "block";
-                    nextElem.classList.add("input-visible"); // Container'ı görünür yap
+                    nextElem.classList.add("input-visible");
                     conditionalInput.focus();
                 } else {
-                    conditionalInput.style.display = "none";
                     conditionalInput.value = "";
-                    nextElem.classList.remove("input-visible"); // Container'ı gizle
+                    nextElem.classList.remove("input-visible");
                 }
             }
         }
