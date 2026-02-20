@@ -2467,13 +2467,13 @@
     background: rgba(255,255,255,0.04) !important; /* Masaüstü ile aynı */
   }
 
-  /* Başlık Satırı - Mobil: +1pt (JS --list-header-font-size), en fazla 1.5pt küçülme */
+  /* Başlık Satırı - Mobil: +1pt (JS --list-header-font-size), en fazla 1.5pt küçülme; üst hizalı (2. satıra geçenler ilk satırla aynı hizada) */
   .list-header-row {
     --list-header-font-size: 15px; /* JS ile güncellenir; min 13.5px (15 - 1.5pt) */
     display: grid !important;
     grid-template-columns: 32px 70px 2.4fr 60px 1.8fr 2fr; /* fallback; JS inline style override eder */
     gap: 4px !important;
-    align-items: center !important;
+    align-items: flex-start !important;
     padding: 4px 4px !important;
     margin-bottom: 4px !important;
     border-bottom: 1px solid rgba(255,255,255,0.22) !important;
@@ -2648,7 +2648,7 @@
     padding-right: 5px !important;
   }
 
-  /* Başlık Hücreleri - font-size tek kaynak (--list-header-font-size, JS ile) */
+  /* Başlık Hücreleri - font-size tek kaynak; üst hizalı; ikinci satıra geçebilir */
   .list-header-row .list-cell {
     font-size: var(--list-header-font-size, 15px) !important;
     font-weight: 600 !important;
@@ -2657,21 +2657,24 @@
     color: #b5b9c0 !important;
     opacity: 1 !important;
     display: flex !important;
-    align-items: center !important;
+    align-items: flex-start !important;
     overflow: visible !important;
     text-overflow: clip !important;
-    white-space: nowrap !important;
+    white-space: normal !important;
+    word-break: break-word !important;
     min-width: 0 !important;
     border-right: 1px solid rgba(255, 255, 255, 0.1) !important;
     justify-content: center !important;
   }
 
-  /* Başlık metinleri - tümü aynı punto (JS değişkeni) */
+  /* Başlık metinleri - tümü aynı punto; ikinci satıra geçebilir */
   .list-header-row .list-cell span {
     font-size: var(--list-header-font-size, 15px) !important;
     font-weight: 700 !important;
     text-transform: uppercase !important;
     color: #b5b9c0 !important;
+    white-space: normal !important;
+    word-break: break-word !important;
   }
 
   .list-header-row .list-cell.list-year {
