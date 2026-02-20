@@ -411,9 +411,10 @@
       updateUserVehiclesTriggerText();
     }
   
-    window.handleUserVehiclesSearch = function(value) {
+    var handleUserVehiclesSearchImpl = function(value) {
       populateUserVehiclesMulti(value);
     };
+    window.handleUserVehiclesSearch = (typeof window.debounce === 'function') ? window.debounce(handleUserVehiclesSearchImpl, 200) : handleUserVehiclesSearchImpl;
   
     function updateUserVehiclesTriggerText() {
       const trigger = document.getElementById('user-vehicles-trigger');

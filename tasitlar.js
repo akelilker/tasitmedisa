@@ -131,20 +131,22 @@
   function applyMobileListHeaderFontSize(listContainer) {
     const headerRow = listContainer && listContainer.querySelector('.list-header-row');
     if (!headerRow) return;
-    const baseSize = 15; /* +1pt (14 → 15) */
-    const minSize = 13.5; /* 15 - 1.5pt */
-    let size = baseSize;
-    headerRow.style.setProperty('--list-header-font-size', size + 'px');
-    const cells = headerRow.querySelectorAll('.list-cell');
-    function hasOverflow() {
-      return Array.prototype.some.call(cells, function (cell) {
-        return cell.scrollWidth > cell.clientWidth || cell.scrollHeight > cell.clientHeight;
-      });
-    }
-    while (hasOverflow() && size > minSize) {
-      size -= 0.5;
+    requestAnimationFrame(function() {
+      const baseSize = 15;
+      const minSize = 13.5;
+      let size = baseSize;
       headerRow.style.setProperty('--list-header-font-size', size + 'px');
-    }
+      const cells = headerRow.querySelectorAll('.list-cell');
+      function hasOverflow() {
+        return Array.prototype.some.call(cells, function (cell) {
+          return cell.scrollWidth > cell.clientWidth || cell.scrollHeight > cell.clientHeight;
+        });
+      }
+      while (hasOverflow() && size > minSize) {
+        size -= 0.5;
+        headerRow.style.setProperty('--list-header-font-size', size + 'px');
+      }
+    });
   }
 
   // Liste Marka/Model: kelimelerin sadece ilk harfi büyük (title case)
@@ -249,7 +251,7 @@
   // --- ANA GİRİŞ ---
   window.openVehiclesView = function() {
     const openView = () => {
-      loadVehicleColumnOrder(); // Sütun sıralamasını yükle
+      loadVehicleColumnOrder();
       const modal = document.getElementById('vehicles-modal');
       if (modal) {
         modal.style.display = 'flex';
@@ -258,10 +260,15 @@
         renderBranchDashboard();
       }
     };
+    openView();
     if (typeof window.loadDataFromServer === 'function') {
-      window.loadDataFromServer().then(openView).catch(openView);
-    } else {
-      openView();
+      window.loadDataFromServer().then(function() {
+        const m = document.getElementById('vehicles-modal');
+        if (m && m.classList.contains('active')) {
+          if (currentView === 'dashboard') renderBranchDashboard();
+          else renderVehicles(document.getElementById('v-search-input') && document.getElementById('v-search-input').value || '');
+        }
+      }).catch(function() {});
     }
   };
 
@@ -576,13 +583,8 @@
           return;
       }
 
-    // Şube isimlerini al (Tümü görünümü için)
     const branches = readBranches() || [];
-    const getBranchName = (branchId) => {
-      if (!branchId) return '';
-      const branch = branches.find(b => b.id === branchId);
-      return branch ? branch.name : '';
-    };
+    const branchMap = new Map(branches.map(function(b) { return [String(b.id), b.name || '']; }));
 
     const isAllView = (activeBranchId === 'all');
     const extraClass = (viewMode === 'list' && isAllView) ? ' is-all-view' : '';
@@ -642,6 +644,7 @@
         html += '<div class="vehicles-list-scroll">';
       }
       const users = readUsers() || [];
+      const userMap = new Map(users.map(function(u) { return [String(u.id), u]; }));
       html += `<div class="view-${viewMode}${extraClass}">` + vehicles.map(v => {
         // Plaka (1. satır - tek satır maksimum)
         const plate = v.plate || '-';
@@ -655,8 +658,7 @@
         if (isArchive) {
           thirdLine = v.satisTarihi ? `Satış: ${v.satisTarihi}` : '';
         } else if (activeBranchId === 'all') {
-          const branchName = getBranchName(v.branchId);
-          thirdLine = branchName || '';
+          thirdLine = branchMap.get(String(v.branchId)) || '';
         } else {
           thirdLine = v.tahsisKisi || '';
         }
@@ -682,7 +684,7 @@
             const kmValue = v.guncelKm || v.km;
             const kmLabel = kmValue ? formatNumber(kmValue) : '-';
             const vehicleTypeLabel = v.vehicleType || '-';
-            const branchLabel = getBranchName(v.branchId) || 'Tahsis Edilmemiş';
+            const branchLabel = branchMap.get(String(v.branchId)) || 'Tahsis Edilmemiş';
             
             let cellHtml = '';
             listDisplayOrder.forEach(columnKey => {
@@ -710,7 +712,7 @@
                   cellClass = 'list-type';
                   break;
                 case 'user':
-                  const assignedUser = v.assignedUserId ? users.find(u => u.id === v.assignedUserId) : null;
+                  const assignedUser = v.assignedUserId ? userMap.get(String(v.assignedUserId)) : null;
                   const userName = assignedUser?.isim || v.tahsisKisi || '-';
                   if (isMobile && userName && userName.trim()) {
                     const parts = String(userName).trim().split(/\s+/);
@@ -1248,9 +1250,8 @@
       }
   };
 
-  window.handleSearch = function(val) {
+  var handleSearchImpl = function(val) {
       if (searchMode === 'local') {
-          // Yerel Arama (Mevcut listeyi filtrele)
           renderVehicles(val);
       } else {
           // Global Arama (Dashboard'ı geçici ez)
@@ -1286,6 +1287,7 @@
           modalContent.innerHTML = html;
       }
   };
+  window.handleSearch = (typeof window.debounce === 'function') ? window.debounce(handleSearchImpl, 200) : handleSearchImpl;
 
   // --- FİLTRE DROPDOWN ---
   window.closeFilterMenu = function() {

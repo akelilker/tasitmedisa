@@ -334,28 +334,6 @@
     margin-top: 0 !important; /* Boşluk container gap ile 3px */
 }
 
-/* Renk açıklamaları – şemadan 3px altında */
-.boya-legend {
-    margin-top: 3px !important;
-    display: flex !important;
-    gap: 15px !important;
-    justify-content: center !important;
-}
-.boya-legend-item {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 11px;
-    color: #aaa;
-}
-.boya-legend-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    display: inline-block;
-    flex-shrink: 0;
-}
-
 .detail-row-label {
     display: block;
     font-size: 14px; /* +1pt (13px → 14px) */
@@ -912,30 +890,6 @@
     color: var(--theme-color);
     font-weight: 600;
 }
-
-.search-input-wrapper {
-    padding: 8px 16px; 
-    width: 100%;
-    min-width: 180px;
-    box-sizing: border-box;
-    white-space: nowrap;
-    display: flex;
-    align-items: center;
-}
-
-.search-input {
-    width: 100%;
-    box-sizing: border-box; 
-    padding: 6px 10px;
-    background: #1a1a1a;
-    border: 1px solid #333;
-    border-radius: 6px;
-    color: #fff;
-    font-size: 14px;
-    outline: none;
-    height: 28px; /* Toolbar içinde ortalanmış yükseklik */
-}
-.search-input:focus { border-color: var(--theme-color); }
 
 /* Toolbar içinde açılır arama kutusu (büyüteç tıklanınca açılır; içinde arama + şanzıman) */
 .v-search-container {
@@ -2154,14 +2108,6 @@
   
   .detail-brand-year {
     color: rgba(255, 255, 255, 0.9) !important; /* Marka/yıl daha parlak */
-  }
-  
-  .vehicle-item {
-    border-color: rgba(255, 255, 255, 0.35) !important; /* Taşıt kartı border daha görünür */
-  }
-  
-  .vehicle-item:hover {
-    border-color: rgba(255, 255, 255, 0.5) !important; /* Hover'da daha belirgin */
   }
   
   /* Sol ok + etiket sol çerçeveye 3px (mobil); sağda arama/şanzıman taşmasın */
