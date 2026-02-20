@@ -58,6 +58,7 @@
   let sortColumn = null; // 'year', 'brand', 'km', 'type', 'branch'
   let sortDirection = 'asc'; // 'asc' | 'desc'
   let currentFilter = 'az'; // 'az' | 'newest' | 'oldest' | 'type' (liste filtre dropdown)
+  let transmissionFilter = ''; // '' | 'otomatik' | 'manuel' (şanzıman filtresi)
   
   // Sütun Sıralaması State
   let vehicleColumnOrder = ['year', 'plate', 'brand', 'km', 'type', 'user', 'branch']; // Varsayılan sıralama
@@ -294,13 +295,18 @@
     if (!toolbar) return;
 
     if (mode === 'dashboard') {
-        // DASHBOARD MODU: Sağda Genel Arama ve Arşiv
+        // DASHBOARD MODU: Sağda Genel Arama, Şanzıman filtresi ve Arşiv
         toolbar.innerHTML = `
             <div class="vt-left"></div>
             <div class="vt-right">
                 <div id="v-search-container" class="v-search-container">
                     <input type="text" id="v-search-input" class="v-search-input" placeholder="Plaka, marka, kullanıcı ara..." oninput="handleSearch(this.value)">
                 </div>
+                <select id="v-transmission-filter" class="v-transmission-filter" title="Şanzıman" onchange="setTransmissionFilter(this.value); handleSearch(document.getElementById('v-search-input')?.value || '')">
+                    <option value="" ${transmissionFilter === '' ? 'selected' : ''}>Tümü</option>
+                    <option value="otomatik" ${transmissionFilter === 'otomatik' ? 'selected' : ''}>Otomatik</option>
+                    <option value="manuel" ${transmissionFilter === 'manuel' ? 'selected' : ''}>Manuel</option>
+                </select>
                 <button class="vt-icon-btn search-toggle-btn" onclick="toggleSearchBox('global')" title="Genel Arama">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></svg>
                 </button>
@@ -322,6 +328,11 @@
                 <div id="v-search-container" class="v-search-container">
                     <input type="text" id="v-search-input" class="v-search-input" placeholder="Plaka, marka, kullanıcı ara..." oninput="handleSearch(this.value)">
                 </div>
+                <select id="v-transmission-filter" class="v-transmission-filter" title="Şanzıman" onchange="setTransmissionFilter(this.value); renderVehicles(document.getElementById('v-search-input')?.value || '')">
+                    <option value="" ${transmissionFilter === '' ? 'selected' : ''}>Tümü</option>
+                    <option value="otomatik" ${transmissionFilter === 'otomatik' ? 'selected' : ''}>Otomatik</option>
+                    <option value="manuel" ${transmissionFilter === 'manuel' ? 'selected' : ''}>Manuel</option>
+                </select>
                 <button class="vt-icon-btn search-toggle-btn" onclick="toggleSearchBox('local')" title="Ara">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></svg>
                 </button>
