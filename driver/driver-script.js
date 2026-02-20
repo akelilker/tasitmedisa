@@ -347,25 +347,28 @@ function renderLeftPanel(vehicles, records) {
     const anahtarLabel = (vehicle.anahtar === 'var') ? (vehicle.anahtarNerede || 'Var') : 'Yoktur.';
     const lastikLabel = (vehicle.lastikDurumu === 'var') ? (vehicle.lastikAdres || 'Var') : 'Yoktur.';
     const uttsLabel = vehicle.uttsTanimlandi ? 'Evet' : 'Hayır';
-    const hasKmSaved = !needsKmWarning;
     const sigortaSaved = !!(vehicle.sigortaDate && vehicle.sigortaDate.trim());
     const kaskoSaved = !!(vehicle.kaskoDate && vehicle.kaskoDate.trim());
     const muayeneSaved = !!(vehicle.muayeneDate && vehicle.muayeneDate.trim());
-    const anahtarSaved = !!(vehicle.anahtar && String(vehicle.anahtar).trim());
-    const lastikSaved = !!(vehicle.lastikDurumu && String(vehicle.lastikDurumu).trim());
     const uttsSaved = vehicle.uttsTanimlandi === true || vehicle.uttsTanimlandi === false;
-    
+    /* Yeşil (saved) sadece bu oturumda bildirim yapıldıysa; pencere kapanınca lastCompletedActionInSession temizlenir, orijinal görünüme döner */
+    const vid = String(vehicle.id);
+    const sessionMatch = (action) => lastCompletedActionInSession && lastCompletedActionInSession.action === action && String(lastCompletedActionInSession.vehicleId) === vid;
+    const kmSavedClass = sessionMatch('km') ? 'saved' : '';
+    const anahtarSavedClass = sessionMatch('anahtar') ? 'saved' : '';
+    const lastikSavedClass = sessionMatch('lastik') ? 'saved' : '';
+
     const infoEl = document.getElementById('driver-vehicle-info');
     if (infoEl) {
         infoEl.innerHTML = `
             <div class="driver-info-item"><span class="label">Şube</span><span class="value">${escapeHtmlDriver(vehicle.branchName || '-')}</span></div>
             <div class="driver-info-item"><span class="label">Üretim Yılı</span><span class="value">${escapeHtmlDriver(vehicle.year || '-')}</span></div>
-            <div class="driver-info-item ${hasKmSaved ? 'saved' : ''}"><span class="label">KM</span><span class="value ${kmClass}">${escapeHtmlDriver(kmFormatted)}</span></div>
+            <div class="driver-info-item ${kmSavedClass}"><span class="label">KM</span><span class="value ${kmClass}">${escapeHtmlDriver(kmFormatted)}</span></div>
             <div class="driver-info-item"><span class="label">Sigorta Bitiş</span><span class="value ${sigortaW.class}">${formatDriverDate(vehicle.sigortaDate) || '-'}</span></div>
             <div class="driver-info-item"><span class="label">Kasko Bitiş</span><span class="value ${kaskoW.class}">${formatDriverDate(vehicle.kaskoDate) || '-'}</span></div>
             <div class="driver-info-item"><span class="label">Muayene Bitiş</span><span class="value ${muayeneW.class}">${formatDriverDate(vehicle.muayeneDate) || '-'}</span></div>
-            <div class="driver-info-item ${anahtarSaved ? 'saved' : ''}"><span class="label">Yedek Anahtar</span><span class="value">${escapeHtmlDriver(anahtarLabel)}</span></div>
-            <div class="driver-info-item ${lastikSaved ? 'saved' : ''}"><span class="label">Lastik Durumu</span><span class="value">${escapeHtmlDriver(lastikLabel)}</span></div>
+            <div class="driver-info-item ${anahtarSavedClass}"><span class="label">Yedek Anahtar</span><span class="value">${escapeHtmlDriver(anahtarLabel)}</span></div>
+            <div class="driver-info-item ${lastikSavedClass}"><span class="label">Lastik Durumu</span><span class="value">${escapeHtmlDriver(lastikLabel)}</span></div>
             <div class="driver-info-item"><span class="label">UTTS</span><span class="value">${escapeHtmlDriver(uttsLabel)}</span></div>
         `;
     }
