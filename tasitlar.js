@@ -301,11 +301,16 @@
             <div class="vt-right">
                 <div id="v-search-container" class="v-search-container">
                     <input type="text" id="v-search-input" class="v-search-input" placeholder="Plaka, marka, kullanıcı ara..." oninput="handleSearch(this.value)">
-                    <select id="v-transmission-filter" class="v-transmission-filter" title="Şanzıman" onchange="setTransmissionFilter(this.value); handleSearch(document.getElementById('v-search-input')?.value || '')">
-                        <option value="" ${transmissionFilter === '' ? 'selected' : ''}>Tümü</option>
-                        <option value="otomatik" ${transmissionFilter === 'otomatik' ? 'selected' : ''}>Otomatik</option>
-                        <option value="manuel" ${transmissionFilter === 'manuel' ? 'selected' : ''}>Manuel</option>
-                    </select>
+                </div>
+                <div class="v-transmission-wrap">
+                    <button type="button" class="vt-icon-btn v-transmission-btn" onclick="toggleTransmissionMenu(event)" title="Şanzıman tipi" aria-label="Şanzıman tipi">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42M19.78 4.22l-1.42 1.42M5.64 18.36l-1.42 1.42"></path></svg>
+                    </button>
+                    <div id="v-transmission-dropdown" class="v-transmission-dropdown" role="menu" aria-hidden="true">
+                        <button type="button" class="v-transmission-option${transmissionFilter === '' ? ' active' : ''}" data-value="" role="menuitem">${transmissionFilter === '' ? '✓ ' : ''}Tümü</button>
+                        <button type="button" class="v-transmission-option${transmissionFilter === 'otomatik' ? ' active' : ''}" data-value="otomatik" role="menuitem">${transmissionFilter === 'otomatik' ? '✓ ' : ''}Otomatik</button>
+                        <button type="button" class="v-transmission-option${transmissionFilter === 'manuel' ? ' active' : ''}" data-value="manuel" role="menuitem">${transmissionFilter === 'manuel' ? '✓ ' : ''}Manuel</button>
+                    </div>
                 </div>
                 <button class="vt-icon-btn search-toggle-btn" onclick="toggleSearchBox('global')" title="Genel Arama">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></svg>
@@ -327,11 +332,16 @@
             <div class="vt-right">
                 <div id="v-search-container" class="v-search-container">
                     <input type="text" id="v-search-input" class="v-search-input" placeholder="Plaka, marka, kullanıcı ara..." oninput="handleSearch(this.value)">
-                    <select id="v-transmission-filter" class="v-transmission-filter" title="Şanzıman" onchange="setTransmissionFilter(this.value); renderVehicles(document.getElementById('v-search-input')?.value || '')">
-                        <option value="" ${transmissionFilter === '' ? 'selected' : ''}>Tümü</option>
-                        <option value="otomatik" ${transmissionFilter === 'otomatik' ? 'selected' : ''}>Otomatik</option>
-                        <option value="manuel" ${transmissionFilter === 'manuel' ? 'selected' : ''}>Manuel</option>
-                    </select>
+                </div>
+                <div class="v-transmission-wrap">
+                    <button type="button" class="vt-icon-btn v-transmission-btn" onclick="toggleTransmissionMenu(event)" title="Şanzıman tipi" aria-label="Şanzıman tipi">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42M19.78 4.22l-1.42 1.42M5.64 18.36l-1.42 1.42"></path></svg>
+                    </button>
+                    <div id="v-transmission-dropdown" class="v-transmission-dropdown" role="menu" aria-hidden="true">
+                        <button type="button" class="v-transmission-option${transmissionFilter === '' ? ' active' : ''}" data-value="" role="menuitem">${transmissionFilter === '' ? '✓ ' : ''}Tümü</button>
+                        <button type="button" class="v-transmission-option${transmissionFilter === 'otomatik' ? ' active' : ''}" data-value="otomatik" role="menuitem">${transmissionFilter === 'otomatik' ? '✓ ' : ''}Otomatik</button>
+                        <button type="button" class="v-transmission-option${transmissionFilter === 'manuel' ? ' active' : ''}" data-value="manuel" role="menuitem">${transmissionFilter === 'manuel' ? '✓ ' : ''}Manuel</button>
+                    </div>
                 </div>
                 <button class="vt-icon-btn search-toggle-btn" onclick="toggleSearchBox('local')" title="Ara">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></svg>
@@ -1184,6 +1194,47 @@
       transmissionFilter = (val === 'otomatik' || val === 'manuel') ? val : '';
   };
 
+  window.toggleTransmissionMenu = function(ev) {
+      if (ev) ev.stopPropagation();
+      var dd = document.getElementById('v-transmission-dropdown');
+      if (!dd) return;
+      var isOpen = dd.classList.contains('open');
+      closeTransmissionMenu();
+      if (!isOpen) {
+          closeSearchBox();
+          closeFilterMenu();
+          dd.classList.add('open');
+          dd.setAttribute('aria-hidden', 'false');
+          var opts = dd.querySelectorAll('.v-transmission-option');
+          var labels = { '': 'Tümü', 'otomatik': 'Otomatik', 'manuel': 'Manuel' };
+          opts.forEach(function(btn) {
+              btn.onclick = function() {
+                  var val = btn.getAttribute('data-value') || '';
+                  setTransmissionFilter(val);
+                  opts.forEach(function(b) {
+                      var v = b.getAttribute('data-value') || '';
+                      b.classList.toggle('active', v === val);
+                      b.textContent = (v === val ? '✓ ' : '') + labels[v];
+                  });
+                  closeTransmissionMenu();
+                  if (searchMode === 'local') {
+                      renderVehicles(document.getElementById('v-search-input') && document.getElementById('v-search-input').value || '');
+                  } else {
+                      handleSearch(document.getElementById('v-search-input') && document.getElementById('v-search-input').value || '');
+                  }
+              };
+          });
+      }
+  };
+
+  window.closeTransmissionMenu = function() {
+      var dd = document.getElementById('v-transmission-dropdown');
+      if (dd) {
+          dd.classList.remove('open');
+          dd.setAttribute('aria-hidden', 'true');
+      }
+  };
+
   window.handleSearch = function(val) {
       if (searchMode === 'local') {
           // Yerel Arama (Mevcut listeyi filtrele)
@@ -1244,19 +1295,19 @@
       }
   };
   
-  // Filtreleme dropdown dışarı tıklandığında kapat
+  // Filtreleme ve şanzıman menüsü: dışarı tıklandığında kapat
   document.addEventListener('click', function(e) {
       const fd = document.getElementById('filter-dropdown');
       const filterBtn = document.querySelector('.vt-icon-btn[onclick*="toggleFilterMenu"]');
-      
-      // Dropdown veya filtre butonu içindeki tıklamaları ignore et
+      const transWrap = e.target.closest('.v-transmission-wrap');
+      const transDd = document.getElementById('v-transmission-dropdown');
+
       if (fd && fd.contains(e.target)) return;
       if (filterBtn && filterBtn.contains(e.target)) return;
-      
-      // Dışarı tıklandığında kapat
-      if (fd && fd.classList.contains('open')) {
-          closeFilterMenu();
-      }
+      if (transWrap) return;
+
+      if (fd && fd.classList.contains('open')) closeFilterMenu();
+      if (transDd && transDd.classList.contains('open')) closeTransmissionMenu();
   });
 
   // Sütun başlığına tıklanınca sıralama yap
