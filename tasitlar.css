@@ -2467,9 +2467,9 @@
     background: rgba(255,255,255,0.04) !important; /* Masaüstü ile aynı */
   }
 
-  /* Başlık Satırı - Mobil: tek punto (JS --list-header-font-size), en fazla 1.5pt küçülme */
+  /* Başlık Satırı - Mobil: +1pt (JS --list-header-font-size), en fazla 1.5pt küçülme */
   .list-header-row {
-    --list-header-font-size: 14px; /* JS ile güncellenir; min 12.5px (14 - 1.5pt) */
+    --list-header-font-size: 15px; /* JS ile güncellenir; min 13.5px (15 - 1.5pt) */
     display: grid !important;
     grid-template-columns: 32px 70px 2.4fr 60px 1.8fr 2fr; /* fallback; JS inline style override eder */
     gap: 4px !important;
@@ -2491,15 +2491,15 @@
     box-sizing: border-box !important;
   }
 
-  /* Liste başlıkları - font-size JS değişkeninden (tümü aynı) */
+  /* Liste başlıkları - font-size JS değişkeninden (tümü aynı), +1pt */
   .list-header-row .list-cell {
-    font-size: var(--list-header-font-size, 14px) !important;
+    font-size: var(--list-header-font-size, 15px) !important;
     padding-left: 1px !important;
     padding-right: 1px !important;
   }
-  /* İçerik hücreleri: metin–çerçeve arası sol/sağ 1px */
+  /* İçerik hücreleri: +1pt (16→17); metin–çerçeve arası sol/sağ 1px */
   .view-list .list-cell {
-    font-size: 16px !important;
+    font-size: 17px !important;
     font-weight: 500 !important;
     color: #e0e0e0 !important;
     display: flex !important;
@@ -2640,7 +2640,7 @@
 
   /* Başlık Hücreleri - font-size tek kaynak (--list-header-font-size, JS ile) */
   .list-header-row .list-cell {
-    font-size: var(--list-header-font-size, 14px) !important;
+    font-size: var(--list-header-font-size, 15px) !important;
     font-weight: 600 !important;
     letter-spacing: 0.3px !important;
     text-transform: uppercase !important;
@@ -2658,7 +2658,7 @@
 
   /* Başlık metinleri - tümü aynı punto (JS değişkeni) */
   .list-header-row .list-cell span {
-    font-size: var(--list-header-font-size, 14px) !important;
+    font-size: var(--list-header-font-size, 15px) !important;
     font-weight: 700 !important;
     text-transform: uppercase !important;
     color: #b5b9c0 !important;

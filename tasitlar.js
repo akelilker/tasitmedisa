@@ -104,11 +104,10 @@
         ? {
             'year': '30px',
             'plate': '62px',
-            'brand': '2.6fr',
+            'brand': '2.4fr',
             'km': '52px',
-            'type': '40px',
-            'user': '1.4fr',
-            'branch': '2.6fr'
+            'user': '1.7fr',
+            'branch': '2.8fr'
           }
         : {
             'year': '32px',
@@ -132,8 +131,8 @@
   function applyMobileListHeaderFontSize(listContainer) {
     const headerRow = listContainer && listContainer.querySelector('.list-header-row');
     if (!headerRow) return;
-    const baseSize = 14;
-    const minSize = 12.5; /* 14 - 1.5pt */
+    const baseSize = 15; /* +1pt (14 → 15) */
+    const minSize = 13.5; /* 15 - 1.5pt */
     let size = baseSize;
     headerRow.style.setProperty('--list-header-font-size', size + 'px');
     const cells = headerRow.querySelectorAll('.list-cell');
@@ -542,28 +541,30 @@
       // Şube seçiliyken liste görünümünde şube sütunu gösterilmez
       const safeColumnOrder = Array.isArray(vehicleColumnOrder) ? vehicleColumnOrder : ['year', 'plate', 'brand', 'km', 'type', 'user', 'branch'];
       const displayColumnOrder = (activeBranchId === 'all' || activeBranchId === '__archive__') ? safeColumnOrder : safeColumnOrder.filter(function(k) { return k !== 'branch'; });
+      const isMobileList = window.innerWidth <= 640;
+      // Mobilde Taşıt Tipi sütununu göstermiyoruz (yer kaplamasın)
+      const listDisplayOrder = isMobileList ? displayColumnOrder.filter(function(k) { return k !== 'type'; }) : displayColumnOrder;
 
       // 4. HTML – boş liste: liste görünümünde başlıkları koru, tek satırda mesaj göster
       if (vehicles.length === 0) {
           const emptyMsg = (activeBranchId === '__archive__') ? 'Arşivde kayıt bulunamadı.' : 'Kayıt bulunamadı.';
           if (viewMode === 'list') {
             loadVehicleColumnOrder();
-            const gridStr = getVehicleColumnWidths(displayColumnOrder);
-            const isMobile = window.innerWidth <= 640;
+            const gridStr = getVehicleColumnWidths(listDisplayOrder);
             const columnDefs = {
               'year': { label: 'Yılı', class: 'list-year' },
               'plate': { label: 'Plaka', class: 'list-plate' },
               'brand': { label: 'Marka / Model', class: 'list-brand' },
               'km': { label: 'Km', class: 'list-km' },
               'type': { label: 'Taşıt Tipi', class: 'list-type' },
-              'user': { label: isMobile ? 'Kull.' : 'Kullanıcı', class: 'list-user' },
+              'user': { label: isMobileList ? 'Kull.' : 'Kullanıcı', class: 'list-user' },
               'branch': { label: 'Şube', class: 'list-branch' }
             };
             let emptyHtml = '<div class="list-header-row" style="grid-template-columns: ' + gridStr + '">';
-            displayColumnOrder.forEach(columnKey => {
+            listDisplayOrder.forEach(columnKey => {
               const def = columnDefs[columnKey];
               if (def) {
-                const labelHtml = (isMobile && columnKey === 'brand') ? '<span class="header-first-line">Marka /</span><span class="header-second-line">Model</span>' : (isMobile && columnKey === 'type') ? '<span class="header-first-line">Taşıt</span><span class="header-second-line">Tipi</span>' : `<span>${escapeHtml(def.label)}</span>`;
+                const labelHtml = (isMobileList && columnKey === 'brand') ? '<span class="header-first-line">Marka /</span><span class="header-second-line">Model</span>' : (isMobileList && columnKey === 'type') ? '<span class="header-first-line">Taşıt</span><span class="header-second-line">Tipi</span>' : `<span>${escapeHtml(def.label)}</span>`;
                 emptyHtml += `<div class="list-cell ${def.class} sortable-header" data-col="${columnKey}">${labelHtml}</div>`;
               }
             });
@@ -587,7 +588,7 @@
     const extraClass = (viewMode === 'list' && isAllView) ? ' is-all-view' : '';
     const isMobile = window.innerWidth <= 640;
       let html = '';
-      const gridStr = viewMode === 'list' ? getVehicleColumnWidths(displayColumnOrder) : '';
+      const gridStr = viewMode === 'list' ? getVehicleColumnWidths(listDisplayOrder) : '';
       if (viewMode === 'list') {
         const getSortIcon = (column) => {
           if (sortColumn !== column) {
@@ -609,8 +610,8 @@
           'branch': { label: 'Şube', class: 'list-branch' }
         };
         html += '<div class="list-header-row" style="grid-template-columns: ' + gridStr + '">';
-        // Sıralamaya göre sütun başlıklarını render et (mobilde Marka/Model ve Taşıt Tipi iki satır)
-        displayColumnOrder.forEach(columnKey => {
+        // Sıralamaya göre sütun başlıklarını render et (mobilde Marka/Model iki satır; Taşıt Tipi mobilde yok)
+        listDisplayOrder.forEach(columnKey => {
           const def = columnDefs[columnKey];
           if (def) {
             let labelHtml;
@@ -684,7 +685,7 @@
             const branchLabel = getBranchName(v.branchId) || 'Tahsis Edilmemiş';
             
             let cellHtml = '';
-            displayColumnOrder.forEach(columnKey => {
+            listDisplayOrder.forEach(columnKey => {
               let cellContent = '';
               let cellClass = '';
               switch(columnKey) {
