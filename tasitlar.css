@@ -244,16 +244,16 @@
     color: inherit;
 }
 
-/* Boya şeması container – grid alanında kolonların altında tam genişlik; sol yaslı, sağ kenar Yoktur "r" hizalı */
+/* Boya şeması container – taşıt detayda sol grid (sol kolon) içinde; büyüklük sol kolona göre uyarlanır */
 #detail-boya-container {
     width: 100% !important;
-    min-height: 180px;
-    margin: 15px 0 !important;
+    min-height: 140px;
+    margin: 12px 0 0 0 !important;
     padding: 0 !important;
     display: flex !important;
     flex-direction: column !important;
     align-items: flex-start !important;
-    justify-content: center !important;
+    justify-content: flex-start !important;
     overflow: visible !important;
     box-sizing: border-box !important;
 }
@@ -706,6 +706,13 @@
   }
   #vehicle-detail-modal .vehicle-detail-columns {
     margin-top: 13px !important;
+  }
+  /* Taşıt detay: ekspertiz şeması sol gridde; büyüklük sol kolona göre (masaüstü) */
+  .vehicle-detail-left #detail-boya-container {
+    margin-top: 14px !important;
+  }
+  .vehicle-detail-left #detail-boya-container .kaporta-schema-wrapper {
+    max-width: 100% !important;
   }
   /* Tarihçe modal: sol ok ve Taşıt Detayları etiketi 8px yukarı (masaüstü) */
   #vehicle-history-modal .modal-container > div:nth-child(2) {
