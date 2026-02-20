@@ -89,7 +89,7 @@ font-size: 20px;
 flex: 1;
 overflow-y: auto;
 padding: 16px 12px 40px 12px;
-color: #ccc;
+color: var(--form-label-color);
 /* scrollbar gizleme: style-core.css’teki .modal-body kuralı kullanılır */
 }
 
@@ -152,7 +152,7 @@ display: inline-flex !important;
 align-items: center !important;
 justify-content: center !important;
 padding: 4px !important;
-color: #999 !important;
+color: var(--form-label-color) !important;
 cursor: pointer !important;
 }
 #reports-modal .stok-back-btn:hover,
@@ -567,7 +567,7 @@ padding: 4px;
 font-size: 11px;
 font-weight: 600;
 letter-spacing: 0.3px;
-color: #8b93a1;
+color: var(--form-label-color);
 opacity: 0.8;
 text-transform: uppercase;
 text-align: center;
@@ -602,7 +602,7 @@ background: rgba(74, 222, 128, 0.1);
 .stok-list-header-cell .stok-header-text {
 font-size: clamp(10px, 1.6vw, 12px) !important;
 font-weight: 700 !important;
-color: #999 !important;
+color: var(--form-label-color) !important;
 }
 .stok-header-text {
 flex: 1;
@@ -888,8 +888,8 @@ min-height: 0;
 justify-content: flex-start;
 }
 /* Masaüstü: Taşıtlar başlık formatı – 12px, beyaza yakın renk, birlikte küçülme (clamp 13px) */
-.stok-list-header-cell { font-size: 12px !important; color: #e8e8e8 !important; opacity: 1 !important; padding: 4px !important; }
-.stok-list-header-cell .stok-header-text { font-size: clamp(10px, 1.6vw, 13px) !important; color: #f0f0f0 !important; }
+.stok-list-header-cell { font-size: 12px !important; color: var(--form-label-color) !important; opacity: 1 !important; padding: 4px !important; }
+.stok-list-header-cell .stok-header-text { font-size: clamp(10px, 1.6vw, 13px) !important; color: var(--form-label-color) !important; }
 .stok-list-cell { font-size: 13px !important; padding: 2px !important; color: #b5b9c0; }
 .stok-list-header-cell[data-col="sira"],
 .stok-list-cell[data-col="sira"],
