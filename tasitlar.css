@@ -2605,7 +2605,7 @@
     text-overflow: ellipsis !important; /* Masaüstü ile aynı */
   }
 
-  /* Mobilde yer kalmadığı için Tip sütununu gizle, Şube gösteriliyor */
+  /* Mobil/tablet (≤768px): Taşıt Tipi sütununu gizle (JS de render etmiyor; bu yedek) */
   .view-list .list-cell.list-type {
     display: none !important;
   }
