@@ -2636,16 +2636,16 @@
   }
   .list-header-row .list-cell.list-branch {
     display: flex !important;
-    padding-left: 4px !important; /* +3px: şube 3px daralt */
+    padding-left: 6px !important; /* şube 2px daha dar (4→6) */
   }
   .list-header-row .list-cell.list-user {
-    padding-right: 3px !important; /* +2px: kullanıcı 2px genişlet */
+    padding-right: 5px !important; /* kullanıcı 2px daha geniş (3→5) */
   }
   .view-list .list-cell.list-branch {
-    padding-left: 4px !important;
+    padding-left: 6px !important;
   }
   .view-list .list-cell.list-user {
-    padding-right: 3px !important;
+    padding-right: 5px !important;
   }
 
   /* Başlık Hücreleri - font-size tek kaynak (--list-header-font-size, JS ile) */
