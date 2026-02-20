@@ -31,7 +31,7 @@
     pointer-events: auto !important; /* Aktif olduğunda tıklamaları al */
 }
 
-/* Şube kartı hover üstten kesilmesin – taşıtlar modalında overflow serbest */
+/* Şube kartı hover üstten kesilmesin –- taşıtlar modalında overflow serbest */
 #vehicles-modal.tasitlar-modal-overlay.active,
 #vehicles-modal.tasitlar-modal-overlay.open {
     overflow: visible !important;
@@ -97,7 +97,7 @@
 /* === DETAY İÇERİK === */
 #vehicle-detail-content {
     padding: 20px;
-    padding-top: 28px !important; /* Plaka üstten kesilmesin: negatif margin-top için yeterli üst boşluk */
+    padding-top: 18px !important; /* Plaka üstten kesilmesin (negatif margin kaldırıldığı için makul üst boşluk) */
     padding-bottom: 20px;
     padding-left: 18px; /* Container çerçevelerine 2px boşluk (16px → 18px) */
     padding-right: 18px;
@@ -109,17 +109,17 @@
     flex: 1;
 }
 
-/* Plaka satırı - plaka ortada, tarihçe butonu sağda */
+/* Plaka satırı - plaka ortada; negatif margin kaldırıldı (üstten kesilme önlendi) */
 .detail-plate-row {
     display: flex;
-    justify-content: center; /* Plakayı ortala */
+    justify-content: center;
     align-items: center;
     width: 100%;
-    min-height: fit-content; /* İçeriğe göre yükseklik */
-    height: auto; /* İçeriğe göre yükseklik */
-    margin-top: -20px !important; /* Plaka 3px daha yukarı (-17px → -20px) */
-    margin-bottom: 3px !important; /* Plaka-marka arası 3px */ /* Yarı yarıya düşürüldü (4px → 2px) */
-    position: relative; /* Absolute "Olay Ekle" butonu için gerekli */
+    min-height: fit-content;
+    height: auto;
+    margin-top: 0 !important;
+    margin-bottom: 3px !important; /* Plaka-marka arası 3px */
+    position: relative;
     z-index: 1;
 }
 
@@ -694,7 +694,7 @@
   }
   /* Plaka üstten kesilmesin (masaüstü) */
   #vehicle-detail-modal #vehicle-detail-content {
-    padding-top: 24px !important;
+    padding-top: 18px !important;
   }
   #vehicle-detail-modal .vehicle-detail-columns {
     margin-top: 13px !important;
@@ -2106,7 +2106,7 @@
     padding-right: 6px !important;
   }
   .detail-plate-row {
-    margin-top: -16px !important; /* Plaka 3px yukarı (mobil) */
+    margin-top: 0 !important; /* Plaka üstten kesilmesin */
   }
   
   /* Taşıt detay: layout base + container query ile; mobilde de yatay alan varsa yan yana */
@@ -2324,65 +2324,69 @@
     background: rgba(255,255,255,0.04) !important; /* Masaüstü ile aynı */
   }
 
-  /* Başlık Satırı - Mobil: büyüklük ve satıra geçme masaüstü ile uyumlu */
+  /* Başlık Satırı - Mobil: tek punto (JS --list-header-font-size), en fazla 1.5pt küçülme */
   .list-header-row {
+    --list-header-font-size: 14px; /* JS ile güncellenir; min 12.5px (14 - 1.5pt) */
     display: grid !important;
     grid-template-columns: 32px 70px 2.4fr 60px 1.8fr 2fr; /* fallback; JS inline style override eder */
-    gap: 4px !important; /* Masaüstü ile aynı */
-    align-items: center !important; /* İki satırlı başlıklar dikey ortada */
-    padding: 4px 4px !important; /* Dikey boşluk 2px azaltıldı */
-    margin-bottom: 4px !important; /* Masaüstü ile aynı */
+    gap: 4px !important;
+    align-items: center !important;
+    padding: 4px 4px !important;
+    margin-bottom: 4px !important;
     border-bottom: 1px solid rgba(255,255,255,0.22) !important;
     background: #080d16 !important;
     backdrop-filter: blur(8px) !important;
     -webkit-backdrop-filter: blur(8px) !important;
     position: sticky !important;
-    top: 0 !important; /* Scroll alanı üstü = toolbar hemen altı */
+    top: 0 !important;
     z-index: 9999 !important;
     isolation: isolate !important;
     transform: translateZ(0);
     box-shadow: 0 2px 0 0 #080d16 !important;
     width: 100% !important;
-    min-width: 0 !important; /* Liste genişliğiyle uyumlu */
+    min-width: 0 !important;
     box-sizing: border-box !important;
   }
 
-  /* Liste başlıkları +1pt (mobil: 14px) */
+  /* Liste başlıkları - font-size JS değişkeninden (tümü aynı) */
   .list-header-row .list-cell {
-    font-size: 14px !important;
+    font-size: var(--list-header-font-size, 14px) !important;
     padding-left: 1px !important;
-    padding-right: 1px !important; /* Çerçeveye 1px */
+    padding-right: 1px !important;
   }
+  /* İçerik hücreleri: çerçeveye 1px, taşmasın */
   .view-list .list-cell {
-    font-size: 16px !important; /* +1 punto (15→16), tüm metin ve sayılar 1pt büyük */
-    font-weight: 500 !important; /* Masaüstü ile aynı */
-    color: #e0e0e0 !important; /* Masaüstü ile aynı */
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    color: #e0e0e0 !important;
     display: flex !important;
     align-items: center !important;
-    justify-content: center !important; /* Masaüstü ile aynı */
-    line-height: 1.4 !important; /* 1.3 → 1.4 – satır aralığı rahat */
+    justify-content: center !important;
+    line-height: 1.4 !important;
     min-width: 0 !important;
-    border-right: 1px solid rgba(255, 255, 255, 0.1) !important; /* Masaüstü ile aynı */
-    padding: 4px 4px !important; /* Dikey boşluk 2px azaltıldı */
+    max-width: 100% !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.1) !important;
+    padding: 1px !important; /* Çerçeveye 1px */
     overflow: hidden !important;
   }
 
-  /* Marka/Model - model metni alt satıra inebilsin (wrap) */
+  /* Marka/Model - en fazla 2 satır, 3. satır yok; çerçeveye 1px */
   .view-list .list-cell.list-brand {
-    font-size: inherit !important; /* 16px - mobil +1pt */
-    font-weight: inherit !important; /* 500 - masaüstü ile aynı */
-    text-align: center !important; /* Masaüstü ile aynı */
+    font-size: inherit !important;
+    font-weight: inherit !important;
+    text-align: center !important;
     white-space: normal !important;
     word-break: break-word !important;
     overflow-wrap: break-word !important;
-    line-height: 1.4 !important; /* 1.3 → 1.4 – satır aralığı rahat */
-    display: block !important; /* block ile metin doğal wrap */
-    overflow: visible !important;
+    line-height: 1.4 !important;
+    display: -webkit-box !important;
+    -webkit-box-orient: vertical !important;
+    -webkit-line-clamp: 2 !important;
+    line-clamp: 2 !important;
+    overflow: hidden !important;
     text-overflow: clip !important;
-    padding: 1px !important; /* Çerçeveye 1px */
+    padding: 1px !important;
     min-width: 0 !important;
-    -webkit-line-clamp: unset !important;
-    line-clamp: unset !important;
   }
 
   /* Plaka - Masaüstü referans alınarak uyarlandı */
@@ -2421,20 +2425,24 @@
     min-width: 0 !important;
   }
 
-  /* Kullanıcı sütunu - mobil: isim sığmazsa en fazla 1.5pt küçülsün, gerekirse alt satıra insın */
-  .view-list .list-cell.list-user,
+  /* Kullanıcı sütunu - en fazla 2 satır, çerçeveye 1px; 1pt'den fazla küçülme yok */
   .list-header-row .list-cell.list-user {
     display: flex !important;
     justify-content: center !important;
     text-align: center !important;
     align-items: center !important;
+  }
+  .view-list .list-cell.list-user {
+    display: -webkit-box !important;
+    -webkit-box-orient: vertical !important;
+    -webkit-line-clamp: 2 !important;
+    line-clamp: 2 !important;
+    text-align: center !important;
     white-space: normal !important;
     word-break: break-word !important;
     overflow-wrap: break-word !important;
-    overflow: visible !important;
-  }
-  .view-list .list-cell.list-user {
-    font-size: clamp(14px, 4vw, 16px) !important; /* 16px'ten en fazla ~1.5pt küçülebilir */
+    overflow: hidden !important;
+    font-size: 16px !important; /* Sabit; 1pt'den fazla küçülme yok, gerekirse alt satıra iner */
   }
 
   /* Tek satır hücreler - list-brand, list-branch, list-user wrap edebilir */
@@ -2452,9 +2460,12 @@
     display: none !important;
   }
   
-  /* Şube sütunu - mobilde görünür */
+  /* Şube sütunu - en fazla 2 satır, çerçeveye 1px */
   .view-list .list-cell.list-branch {
-    display: flex !important;
+    display: -webkit-box !important;
+    -webkit-box-orient: vertical !important;
+    -webkit-line-clamp: 2 !important;
+    line-clamp: 2 !important;
     font-size: inherit !important;
     font-weight: inherit !important;
     color: inherit !important;
@@ -2463,7 +2474,8 @@
     white-space: normal !important;
     word-break: break-word !important;
     overflow-wrap: break-word !important;
-    padding: 1px !important; /* Çerçeveye 1px */
+    overflow: hidden !important;
+    padding: 1px !important;
   }
   #vehicles-modal .view-list .list-item.unassigned-vehicle-card .list-cell.list-branch,
   .view-list .list-item.unassigned-vehicle-card .list-cell.list-branch {
@@ -2473,13 +2485,13 @@
     display: flex !important;
   }
 
-  /* Başlık Hücreleri - sütun başlıkları açık gri, mobil +1pt (14px / 15px) */
+  /* Başlık Hücreleri - font-size tek kaynak (--list-header-font-size, JS ile) */
   .list-header-row .list-cell {
-    font-size: 14px !important; /* +1pt (13→14) */
-    font-weight: 600 !important; /* Masaüstü ile aynı */
-    letter-spacing: 0.3px !important; /* Masaüstü ile aynı */
-    text-transform: uppercase !important; /* Masaüstü ile aynı */
-    color: #b5b9c0 !important; /* Açık gri (koyu #8b93a1 yerine) */
+    font-size: var(--list-header-font-size, 14px) !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.3px !important;
+    text-transform: uppercase !important;
+    color: #b5b9c0 !important;
     opacity: 1 !important;
     display: flex !important;
     align-items: center !important;
@@ -2487,16 +2499,16 @@
     text-overflow: clip !important;
     white-space: nowrap !important;
     min-width: 0 !important;
-    border-right: 1px solid rgba(255, 255, 255, 0.1) !important; /* Masaüstü ile aynı */
-    justify-content: center !important; /* Masaüstü ile aynı */
+    border-right: 1px solid rgba(255, 255, 255, 0.1) !important;
+    justify-content: center !important;
   }
 
-  /* Başlık metinleri: mobilde okunaklı min 12px, viewport ile en fazla 15px */
+  /* Başlık metinleri - tümü aynı punto (JS değişkeni) */
   .list-header-row .list-cell span {
-    font-size: clamp(12px, 2.5vw, 15px) !important;
-    font-weight: 700 !important; /* Masaüstü ile aynı */
-    text-transform: uppercase !important; /* Masaüstü ile aynı */
-    color: #b5b9c0 !important; /* Açık gri */
+    font-size: var(--list-header-font-size, 14px) !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    color: #b5b9c0 !important;
   }
 
   .list-header-row .list-cell.list-year {
@@ -2577,7 +2589,7 @@
   }
   
   /* --- DETAY MODAL SCROLL & PADDING --- */
-  #vehicle-detail-content { padding-top: 28px !important; } /* Plaka üstten kesilmesin */
+  #vehicle-detail-content { padding-top: 18px !important; } /* Plaka üstten kesilmesin */
   #vehicle-detail-modal .modal-body { 
     overflow-y: auto !important;
     overflow-x: hidden !important; /* Sağa sola kaymayı engelle */
@@ -2602,7 +2614,7 @@
     z-index: 1;
   }
   
-  .detail-plate { font-size: 22px !important; margin-top: -8px !important; margin-bottom: 0 !important; }
+  .detail-plate { font-size: 22px !important; margin-top: 0 !important; margin-bottom: 0 !important; } /* -8px kaldırıldı: plaka üstten kesilmesin */
   .detail-brand-year { font-size: 19px !important; margin-top: 0 !important; margin-bottom: 4px !important; }
   .detail-row { padding: 4px 0; gap: 1px; }
   
@@ -2667,8 +2679,8 @@
   }
 
   /* Detay modal plaka ve başlıklar toolbar altında kalmasın, plaka üstten kesilmesin */
-  #vehicle-detail-content { padding-top: 28px !important; }
-  .detail-plate-row { margin-top: -13px !important; margin-bottom: 0 !important; } /* Plaka 3px yukarı, marka arası 1px */
+  #vehicle-detail-content { padding-top: 18px !important; }
+  .detail-plate-row { margin-top: 0 !important; margin-bottom: 0 !important; }
   .detail-plate { margin-top: 0 !important; }
   .detail-brand-year-row { padding-top: 1px !important; }
 
