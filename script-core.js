@@ -77,6 +77,15 @@ window.formatNumber = function(num) {
   return numStr.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 };
 
+window.debounce = function(fn, ms) {
+  var t;
+  return function() {
+    var a = arguments;
+    clearTimeout(t);
+    t = setTimeout(function() { fn.apply(null, a); }, ms);
+  };
+};
+
 /* =========================================
    MODAL MANAGER (Global)
    ========================================= */
