@@ -842,6 +842,15 @@ window.submitKmOnly = async function(vid) {
         if (kmEl) kmEl.focus();
         return;
     }
+    var vehicle = allHistoryVehicles && allHistoryVehicles.find(function(v) { return String(v.id) === String(vid); });
+    var rec = getExistingRecord(vid);
+    var oncekiKm = (vehicle && (vehicle.guncelKm != null ? vehicle.guncelKm : '')) || (rec && rec.guncel_km != null ? rec.guncel_km : '');
+    var oncekiKmNum = parseInt(String(oncekiKm).replace(/\D/g, ''), 10) || 0;
+    if (oncekiKmNum > 0 && km < oncekiKmNum) {
+        alert('Bildirilmek İstenen Km, Önceki Kayıtlarla Uyuşmamaktadır. Şirket Yetkilisi İle Görüşün');
+        if (kmEl) kmEl.focus();
+        return;
+    }
     const btnBildir = document.querySelector('#km-block-' + vid + ' .btn-km-bildir');
     const btnVazgec = document.querySelector('#km-block-' + vid + ' .btn-km-vazgec');
     const formContent = document.querySelector('#km-block-' + vid + ' .driver-km-form-content');
