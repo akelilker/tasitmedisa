@@ -115,11 +115,11 @@
     justify-content: center;
     align-items: center;
     width: 100%;
-    min-height: fit-content;
-    height: auto;
-    margin-top: 0 !important;
+    min-height: fit-content; /* İçeriğe göre yükseklik */
+    height: auto; /* İçeriğe göre yükseklik */
+    margin-top: -20px !important; /* Plaka 3px daha yukarı (-17px → -20px) */
     margin-bottom: 3px !important; /* Plaka-marka arası 3px */
-    position: relative;
+    position: relative; /* Absolute "Olay Ekle" butonu için gerekli */
     z-index: 1;
 }
 
@@ -2107,7 +2107,7 @@
     padding-right: 6px !important;
   }
   .detail-plate-row {
-    margin-top: 0 !important; /* Plaka üstten kesilmesin */
+    margin-top: -16px !important; /* Plaka 3px yukarı (mobil) */
   }
   
   /* Taşıt detay: layout base + container query ile; mobilde de yatay alan varsa yan yana */
