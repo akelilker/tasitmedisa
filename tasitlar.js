@@ -574,6 +574,7 @@
 
     const isAllView = (activeBranchId === 'all');
     const extraClass = (viewMode === 'list' && isAllView) ? ' is-all-view' : '';
+    const isMobile = window.innerWidth <= 640;
       let html = '';
       const gridStr = viewMode === 'list' ? getVehicleColumnWidths(displayColumnOrder) : '';
       if (viewMode === 'list') {
@@ -587,7 +588,6 @@
         };
         
         // Sütun başlık tanımları (mobilde Kullanıcı → Kull.)
-        const isMobile = window.innerWidth <= 640;
         const columnDefs = {
           'year': { label: 'Yılı', class: 'list-year' },
           'plate': { label: 'Plaka', class: 'list-plate' },
