@@ -423,8 +423,6 @@
             }
         }, 50);
         
-        // Sıralama event listener'larını ekle
-        attachStokSortListeners();
         // Mobil: liste tek hamlede ya yatay ya dikey kaysın (eksen kilidi)
         setupStokListTouchAxisLock();
         // Marka hücreleri: sütun daraldıkça font küçülsün (Taşıtlar gibi)
@@ -436,15 +434,18 @@
         const listContainer = document.getElementById('stok-list-container');
         if (!listContainer) return;
         const brandCells = listContainer.querySelectorAll('.stok-list-cell[data-col="marka"]');
-        const minFontSize = 11; /* Daha yüksek: satır kırma öncelikli */
+        const minFontSize = 11;
         const baseFontSize = 12;
-        brandCells.forEach(cell => {
-            if (cell.offsetHeight === 0) return; /* Gizli container'da çalışmasın */
-            cell.style.fontSize = baseFontSize + 'px';
-            while (cell.scrollHeight > cell.offsetHeight && parseInt(cell.style.fontSize) > minFontSize) {
-                const current = parseInt(cell.style.fontSize) || baseFontSize;
-                cell.style.fontSize = (current - 1) + 'px';
-            }
+        requestAnimationFrame(function() {
+            brandCells.forEach(function(cell) {
+                if (cell.offsetHeight === 0) return;
+                cell.style.fontSize = baseFontSize + 'px';
+                var current = baseFontSize;
+                while (cell.scrollHeight > cell.offsetHeight && current > minFontSize) {
+                    current -= 1;
+                    cell.style.fontSize = current + 'px';
+                }
+            });
         });
         // Resize'da tekrar hesapla
         if (!window._stokMarkaResize) {
@@ -741,11 +742,6 @@
         
         renderStokList();
     };
-
-    // Sıralama event listener'larını ekle
-    function attachStokSortListeners() {
-        // Zaten onclick ile bağlandı, ek bir şey gerekmiyor
-    }
 
     /** Mobil: Liste scroll container'da tek hamlede sadece yatay veya sadece dikey kayma (eksen kilidi) */
     function setupStokListTouchAxisLock() {
@@ -1414,18 +1410,12 @@
         }
     };
 
-    // Arama yap
-    window.handleStokSearch = function(searchTerm) {
-        const searchValue = searchTerm.toLowerCase().trim();
-        
-        // Arama terimini sakla (renderStokList'te kullanılacak)
+    var handleStokSearchImpl = function(searchTerm) {
+        var searchValue = ('' + searchTerm).toLowerCase().trim();
         window.stokSearchTerm = searchValue;
-        
-        // Listeyi yeniden render et
-        if (stokCurrentBranchId !== null) {
-            renderStokList();
-        }
+        if (stokCurrentBranchId !== null) renderStokList();
     };
+    window.handleStokSearch = (typeof window.debounce === 'function') ? window.debounce(handleStokSearchImpl, 200) : handleStokSearchImpl;
 
     // Yazdır – Excel ile aynı veriyi tablo olarak yazdırır (ekran görüntüsü değil)
     const stokPrintHeaders = { sira:'No.', sube:'Şube', yil:'Yıl', marka:'Marka/Model', plaka:'Plaka', sanziman:'Şanzıman', km:'KM', sigorta:'Sigorta Bitiş', kasko:'Kasko Bitiş', muayene:'Muayene T.', kredi:'Kredi/Rehin', lastik:'Lastikler', utts:'UTTS', takip:'Takip Cihazı', tramer:'Tramer', boya:'Boya Değişen', kullanici:'Kullanıcı', tescil:'Tescil Tarihi' };
@@ -1642,13 +1632,11 @@
         }
     };
     
-    // Arama yap
-    window.handleKullaniciSearch = function(searchTerm) {
-        kullaniciSearchTerm = searchTerm.toLowerCase().trim();
-        if (kullaniciCurrentBranchId !== null) {
-            renderKullaniciList();
-        }
+    var handleKullaniciSearchImpl = function(searchTerm) {
+        kullaniciSearchTerm = ('' + searchTerm).toLowerCase().trim();
+        if (kullaniciCurrentBranchId !== null) renderKullaniciList();
     };
+    window.handleKullaniciSearch = (typeof window.debounce === 'function') ? window.debounce(handleKullaniciSearchImpl, 200) : handleKullaniciSearchImpl;
     
     // Kullanıcı Detay Göster
     window.showKullaniciDetail = function(userId) {
