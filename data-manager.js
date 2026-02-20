@@ -412,8 +412,13 @@ document.addEventListener('DOMContentLoaded', async function() {
         return;
     }
 
-    // Normal açılış: sunucudan güncel veriyi çek
-    const loadedData = await loadDataFromServer(true);
+    // Normal açılış: sunucudan güncel veriyi çek; başarısızsa (yerel/offline) localStorage kullan
+    let loadedData;
+    try {
+        loadedData = await loadDataFromServer(true);
+    } catch (e) {
+        loadedData = loadDataFromLocalStorage();
+    }
 
     try {
         if (loadedData && loadedData.tasitlar) {
