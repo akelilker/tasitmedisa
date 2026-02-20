@@ -2212,6 +2212,9 @@
     width: 50% !important;
     max-width: 150px !important;
   }
+  #muayene-tarih {
+    max-width: 155px !important; /* +5px: gg.aa.yyyy yatay sığsın */
+  }
 
   /* --- OLAY EKLE MODALLARI - TÜM METİNLER +2px --- */
   .olay-ekle-modal .modal-header h2 {
