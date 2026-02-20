@@ -824,7 +824,13 @@ body.driver-modal-open {
   .driver-info-item { gap: 0; }
   .driver-info-item .label { font-size: 12px; text-transform: none; }
   .driver-info-item .value { font-size: 12px; }
-  .driver-action-btn { padding: 6px 10px; font-size: 12px; }
+  .driver-action-btn {
+    padding: 6px 10px;
+    font-size: 12px;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+  }
   .driver-user-plate-row .driver-user-name { font-size: 12px; }
   .driver-current-plaka { font-size: 14px; }
 }
