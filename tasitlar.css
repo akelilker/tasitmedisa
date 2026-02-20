@@ -631,6 +631,10 @@
     position: relative;
     z-index: 25 !important; /* İkonlar arama kutusunun üstünde kalmalı */
 }
+/* Taşıtlar: şanzıman, arama, arşiv/görünüm ikonları arası 2px */
+#vehicles-modal .vt-right {
+    gap: 2px !important;
+}
 
 .active-branch-title {
     color: #999 !important; 
@@ -2158,7 +2162,7 @@
     padding-right: 6px !important;
   }
   #vehicles-modal .vt-right {
-    gap: 6px !important;
+    gap: 2px !important;
     flex-shrink: 0;
   }
   /* Taşıtlar toolbar: arama + şanzıman + diğer ikonlar sığsın */
