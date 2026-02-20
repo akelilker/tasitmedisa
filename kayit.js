@@ -32,6 +32,14 @@
 
   function writeVehicles(arr) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
+    if (window.appData) {
+      window.appData.tasitlar = arr;
+      if (window.saveDataToServer) {
+        window.saveDataToServer().catch(function (err) {
+          console.error('Sunucuya kaydetme hatası (sessiz):', err);
+        });
+      }
+    }
   }
 
 
@@ -54,15 +62,8 @@
 
   // --- Tramer Kayıt Fonksiyonları ---
   /**
-   * Tarih string'ini formatlar (020225 → 02/02/2025)
-   * 
-   * @param {string} value - Formatlanacak tarih (örn: "020225" veya "02/02/2025")
-   * @returns {string} - Formatlanmış tarih (örn: "02/02/2025") veya boş string
-   */
-  /**
    * Tarihi gg/aa/yyyy formatına çevirir (gösterim için)
-   * 
-   * @param {Date} date - Tarih objesi
+   * @param {Date|string} date - Tarih objesi veya string
    * @returns {string} - gg/aa/yyyy formatında tarih string'i
    */
   function formatDateForDisplay(date) {
@@ -976,7 +977,7 @@
     });
 
     // Şanzıman
-    const transmissionSection = $all('.form-section-inline', modal)[1];
+    const transmissionSection = $(`.form-section-inline[data-section="transmission"]`, modal);
     if (transmissionSection && vehicle.transmission) {
       $all('.radio-btn', transmissionSection).forEach(btn => {
         btn.classList.remove('active');
@@ -987,7 +988,7 @@
     }
 
       // Tramer
-    const tramerSection = $all('.form-section-inline', modal)[2];
+    const tramerSection = $(`.form-section-inline[data-section="tramer"]`, modal);
     if (tramerSection && vehicle.tramer) {
       $all('.radio-btn', tramerSection).forEach(btn => {
         btn.classList.remove('active');
@@ -1016,7 +1017,7 @@
     }
 
     // Boya/Değişen
-    const boyaSection = $all('.form-section-inline', modal)[3];
+    const boyaSection = $(`.form-section-inline[data-section="boya"]`, modal);
     if (boyaSection && vehicle.boya) {
       $all('.radio-btn', boyaSection).forEach(btn => {
         btn.classList.remove('active');
@@ -1053,7 +1054,7 @@
     }
 
     // Yedek Anahtar
-    const anahtarSection = $all('.form-section-inline', modal)[4];
+    const anahtarSection = $(`.form-section-inline[data-section="anahtar"]`, modal);
     if (anahtarSection && vehicle.anahtar) {
       $all('.radio-btn', anahtarSection).forEach(btn => {
         btn.classList.remove('active');
@@ -1071,7 +1072,7 @@
     }
 
     // Kredi/Rehin
-    const krediSection = $all('.form-section-inline', modal)[5];
+    const krediSection = $(`.form-section-inline[data-section="kredi"]`, modal);
     if (krediSection && vehicle.kredi) {
       $all('.radio-btn', krediSection).forEach(btn => {
         btn.classList.remove('active');
@@ -1172,8 +1173,8 @@
     const yearEl = document.getElementById("vehicle-year");
     const brandModelEl = document.getElementById("vehicle-brand-model");
     const kmEl = document.getElementById("vehicle-km");
-    const transmissionSection = $all('.form-section-inline', modal)[1];
-    const tramerSection = $all('.form-section-inline', modal)[2];
+    const transmissionSection = $(`.form-section-inline[data-section="transmission"]`, modal);
+    const tramerSection = $(`.form-section-inline[data-section="tramer"]`, modal);
     const transmissionBtn = $('.radio-group button.active', transmissionSection);
     const tramerBtn = $('.radio-group button.active', tramerSection);
     
@@ -1236,25 +1237,32 @@
       return;
     }
     const tramerRecords = getTramerRecords();
-    const boya = $('.radio-group button.active', $all('.form-section-inline', modal)[3])?.dataset.value || '';
+    const boya = $('.radio-group button.active', $(`.form-section-inline[data-section="boya"]`, modal))?.dataset.value || '';
     const boyaliParcalar = getBoyaPartsState();
     
     const sigortaDate = $all('input[type="date"].form-input', modal)[0]?.value || '';
     const kaskoDate = $all('input[type="date"].form-input', modal)[1]?.value || '';
     const muayeneDate = $all('input[type="date"].form-input', modal)[2]?.value || '';
     
-    const anahtar = $('.radio-group button.active', $all('.form-section-inline', modal)[4])?.dataset.value || '';
+    const anahtar = $('.radio-group button.active', $(`.form-section-inline[data-section="anahtar"]`, modal))?.dataset.value || '';
     const anahtarNerede = document.getElementById('anahtar-nerede')?.value.trim() || '';
-    const kredi = $('.radio-group button.active', $all('.form-section-inline', modal)[5])?.dataset.value || '';
+    const kredi = $('.radio-group button.active', $(`.form-section-inline[data-section="kredi"]`, modal))?.dataset.value || '';
     const krediDetay = document.getElementById('kredi-detay')?.value.trim() || '';
     
     const branchId = document.getElementById("vehicle-branch-select")?.value || '';
     const price = document.getElementById("vehicle-price")?.value.trim() || '';
     const notes = document.getElementById("vehicle-notes")?.value.trim() || '';
     
-    /* UTTS / Takip Cihazı: tasitlar ve raporlarda kullanılıyor; formda radio eklendiğinde buradan okunacak */
-    const uttsTanimlandi = false;
-    const takipCihaziMontaj = false;
+    /* UTTS / Takip Cihazı: Formda yok; düzenlemede mevcut değer korunur, yeni kayıtta false */
+    let uttsTanimlandi = false;
+    let takipCihaziMontaj = false;
+    if (isEditMode && editingVehicleId) {
+      const existing = readVehicles().find(v => String(v.id) === String(editingVehicleId));
+      if (existing) {
+        uttsTanimlandi = !!existing.uttsTanimlandi;
+        takipCihaziMontaj = !!existing.takipCihaziMontaj;
+      }
+    }
 
     const record = {
       id: isEditMode ? editingVehicleId : Date.now().toString(),
