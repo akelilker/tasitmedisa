@@ -496,7 +496,7 @@ body.driver-modal-open {
   text-align: left;
 }
 .driver-info-item .label {
-  color: var(--txt);
+  color: var(--form-label-color);
   font-size: 11px;
   flex-shrink: 0;
   text-transform: none; /* Etiketler JS'teki Title Case ile görünsün */
@@ -1070,7 +1070,7 @@ body.driver-modal-open {
   background: transparent;
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 6px;
-  color: #ccc;
+  color: var(--form-label-color);
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
@@ -1100,7 +1100,7 @@ body.driver-modal-open {
   display: inline;
   margin-bottom: 0;
   margin-right: 0;
-  color: #ccc;
+  color: var(--form-label-color);
   font-size: 14px;
 }
 .driver-radio-group {
@@ -2072,7 +2072,7 @@ body.driver-modal-open {
 .history-filter-label {
   flex-shrink: 0;
   margin: 0;
-  color: var(--muted);
+  color: var(--form-label-color);
   font-size: 14px;
   line-height: 1.4;
   vertical-align: middle;
