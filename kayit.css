@@ -666,6 +666,12 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
 .modal-column-right .form-section:has(#anahtar-nerede):not(.input-visible) { height: 0; overflow: hidden; margin: 0; padding: 0; }
 .modal-column-right .form-section:has(#kredi-detay):not(.input-visible) { height: 0; overflow: hidden; margin: 0; padding: 0; }
 
+/* Gizli alanlar: sadece üst .form-section.input-visible iken gösterilir (anahtar nerede, kredi detay) */
+.form-label-reveal { display: none; }
+.form-input-reveal { display: none; }
+.form-section.input-visible .form-label-reveal { display: block; }
+.form-section.input-visible .form-input-reveal { display: block; }
+
 .radio-btn {
     width: 48px; 
     flex: 0 0 48px; 
