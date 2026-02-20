@@ -833,6 +833,17 @@ body.driver-modal-open {
     display: flex;
     justify-content: center;
     text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+  }
+  .driver-action-btn.saved,
+  .driver-action-btn.warning,
+  .driver-action-btn.data-entered {
+    border: 1px solid rgba(255, 255, 255, 0.25);
+  }
+  .driver-action-btn.saved:hover,
+  .driver-action-btn.warning:hover,
+  .driver-action-btn.data-entered:hover {
+    border-color: rgba(255, 255, 255, 0.5);
   }
   .driver-user-plate-row .driver-user-name { font-size: 12px; }
   .driver-current-plaka { font-size: 14px; }
