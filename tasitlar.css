@@ -2877,7 +2877,10 @@
     margin: -29px 29px !important; /* Rotation layout/visual farkı (29px) telafi */
   }
 
-  /* Detay modal plaka ve başlıklar toolbar altında kalmasın, plaka üstten kesilmesin */
+  /* Detay modal: legend–footer arası boşluk 4px toplam (mobil) */
+  #vehicle-detail-modal #vehicle-detail-content { padding-bottom: 4px !important; }
+  #vehicle-detail-modal .modal-body { padding-bottom: 8px !important; }
+  /* Plaka üstten kesilmesin */
   #vehicle-detail-content { padding-top: 18px !important; }
   .detail-plate-row { margin-top: 0 !important; margin-bottom: 0 !important; }
   .detail-plate { margin-top: 0 !important; }
