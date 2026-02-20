@@ -253,6 +253,7 @@
 
 /* Şemayı saran kutu: sol yaslı, sağ kenar Yoktur metninin "r" harfine dikeyde paralel (max-width ile oranlanır) */
 .kaporta-schema-wrapper {
+    width: 170px !important;
     display: block !important;
     margin: 0 !important;
     margin-right: auto !important;
@@ -261,9 +262,9 @@
     box-sizing: border-box !important;
 }
 
-/* Renk açıklamaları */
+/* Renk açıklamaları – şemadan 3px altında */
 .boya-legend {
-    margin-top: 15px !important;
+    margin-top: 3px !important;
     display: flex !important;
     gap: 15px !important;
     justify-content: center !important;
