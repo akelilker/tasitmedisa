@@ -511,12 +511,12 @@
 
     // 2. Metin Araması (plaka, marka/model, yıl, kullanıcı)
     if (query) {
-        const q = query.toLowerCase();
+        const q = ('' + query).toLowerCase();
         vehicles = vehicles.filter(v => 
-            (v.plate && v.plate.toLowerCase().includes(q)) ||
-            (v.brandModel && v.brandModel.toLowerCase().includes(q)) ||
-            (v.year && v.year.includes(q)) ||
-            (v.tahsisKisi && v.tahsisKisi.toLowerCase().includes(q))
+            (v.plate && ('' + v.plate).toLowerCase().includes(q)) ||
+            (v.brandModel && ('' + v.brandModel).toLowerCase().includes(q)) ||
+            (v.year && ('' + v.year).includes(q)) ||
+            (v.tahsisKisi && ('' + v.tahsisKisi).toLowerCase().includes(q))
         );
     }
 
@@ -529,7 +529,8 @@
       vehicles = applyFilter(vehicles);
 
       // Şube seçiliyken liste görünümünde şube sütunu gösterilmez
-      const displayColumnOrder = (activeBranchId === 'all' || activeBranchId === '__archive__') ? vehicleColumnOrder : vehicleColumnOrder.filter(function(k) { return k !== 'branch'; });
+      const safeColumnOrder = Array.isArray(vehicleColumnOrder) ? vehicleColumnOrder : ['year', 'plate', 'brand', 'km', 'type', 'user', 'branch'];
+      const displayColumnOrder = (activeBranchId === 'all' || activeBranchId === '__archive__') ? safeColumnOrder : safeColumnOrder.filter(function(k) { return k !== 'branch'; });
 
       // 4. HTML – boş liste: liste görünümünde başlıkları koru, tek satırda mesaj göster
       if (vehicles.length === 0) {
@@ -564,7 +565,7 @@
       }
 
     // Şube isimlerini al (Tümü görünümü için)
-    const branches = readBranches();
+    const branches = readBranches() || [];
     const getBranchName = (branchId) => {
       if (!branchId) return '';
       const branch = branches.find(b => b.id === branchId);
