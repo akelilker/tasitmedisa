@@ -929,7 +929,7 @@
 }
 .search-input:focus { border-color: var(--theme-color); }
 
-/* Toolbar içinde açılır arama kutusu (büyüteç yanında) */
+/* Toolbar içinde açılır arama kutusu (büyüteç tıklanınca açılır; içinde arama + şanzıman) */
 .v-search-container {
     width: 0;
     height: 100%;
@@ -939,10 +939,19 @@
     display: flex;
     align-items: center;
     justify-content: flex-end;
+    gap: 8px;
     padding: 0;
 }
 .v-search-container.open {
-    width: 280px;
+    width: 360px;
+}
+.v-search-container .v-search-input {
+    flex: 1;
+    min-width: 0;
+}
+.v-search-container .v-transmission-filter {
+    flex-shrink: 0;
+    margin-left: 0;
 }
 .v-search-input {
     width: 100%;
@@ -964,11 +973,11 @@
     color: #666;
 }
 
-/* Şanzıman filtresi (Tümü / Otomatik / Manuel) */
+/* Şanzıman filtresi (arama çubuğu içinde, açıldığında görünür) */
 .v-transmission-filter {
     height: 32px;
     min-width: 90px;
-    margin-left: 8px;
+    margin-left: 0;
     padding: 0 8px;
     font-size: 12px;
     color: #ccc;
