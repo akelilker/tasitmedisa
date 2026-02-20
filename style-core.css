@@ -43,8 +43,8 @@ body::-webkit-scrollbar,
   --green: #4ade80;
   --red: #ef4444;
 
-  /* Etiket metin rengi (kayıt modalı ile aynı; mobilde override edilir) */
-  --form-label-color: #cccccc;
+  /* Etiket metin rengi (tek kaynak; mobil+masaüstü beyaz) */
+  --form-label-color: #ffffff;
 
   /* --- HERO LOGO GENİŞLİK YÖNETİMİ --- */
   --hero-logo-width: 69px;  /* Masaüstü logo genişliği */
@@ -884,9 +884,6 @@ body.modal-open .user-panel-link {
         /* Hero logo ve spacer genişlik ayarları */
         --hero-logo-width: 54px;    /* Mobilde logo genişliği */
         --hero-spacer-width: 1px;   /* Mobilde spacer genişliği (6px → 4px) */
-
-        /* Etiket rengi mobilde beyaz */
-        --form-label-color: #ffffff;
     }
     
     /* Mobil logo ve spacer genişlik ayarları */

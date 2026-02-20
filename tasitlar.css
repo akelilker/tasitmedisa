@@ -641,7 +641,7 @@
 }
 
 .active-branch-title {
-    color: #999 !important; 
+    color: var(--form-label-color) !important; 
     font-weight: 700;
     font-size: 13.5px; /* 1.5pt küçült (15 → 13.5) */
     white-space: nowrap;
@@ -664,7 +664,7 @@
 .olay-ekle-back-bar .olay-ekle-back-btn {
     background: transparent;
     border: none;
-    color: #ccc;
+    color: var(--form-label-color);
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -675,7 +675,7 @@
 .vt-back-btn {
     background: transparent;
     border: none;
-    color: #999;
+    color: var(--form-label-color);
     cursor: pointer;
     padding: 4px;
     display: flex;
@@ -688,7 +688,7 @@
 .vt-icon-btn {
     background: transparent !important;
     border: none !important;
-    color: #ccc;
+    color: var(--form-label-color);
     width: 32px;
     height: 32px;
     display: flex;
@@ -754,18 +754,18 @@
   }
   #vehicles-modal .list-header-row .list-cell {
     font-size: 12px;
-    color: #e8e8e8;
+    color: var(--form-label-color);
     opacity: 1;
   }
   /* Tüm sütun başlıkları aynı font boyutu (Kullanıcı küçülüyorsa hepsi aynı) */
   #vehicles-modal .list-header-row .list-cell span {
     font-size: clamp(10px, 1.6vw, 13px) !important;
-    color: #f0f0f0 !important;
+    color: var(--form-label-color) !important;
   }
   #vehicles-modal .list-header-row .list-cell.list-brand .sortable-header span,
   #vehicles-modal .list-header-row .list-cell.list-user span {
     font-size: clamp(10px, 1.6vw, 13px) !important;
-    color: #f0f0f0 !important;
+    color: var(--form-label-color) !important;
   }
   /* Taşıt listesi: ilk satır arka plan ve dikey hizalama (masaüstü) */
   #vehicles-modal .view-list .list-item:first-child {
@@ -2353,7 +2353,7 @@
   }
   
   .card-plate { font-size: 18px; } /* +1 punto daha (sadece mobil) */
-  .card-brand-model { font-size: 16px; font-weight: 400; color: #999; } /* +1 punto daha (sadece mobil) */
+  .card-brand-model { font-size: 16px; font-weight: 400; color: var(--form-label-color); } /* +1 punto daha (sadece mobil) */
   .card-third-line { font-size: 14px; } /* +1 punto daha (sadece mobil) */
 
   /* --- TARİH INPUTLARI --- */
