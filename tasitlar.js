@@ -116,6 +116,29 @@
     }
   }
 
+  /**
+   * Mobil taşıt listesi: başlıklar tek punto, en fazla 1.5pt küçülebilir (biri sığmazsa hepsi küçülür).
+   * listContainer içindeki .list-header-row üzerinde --list-header-font-size ayarlar.
+   */
+  function applyMobileListHeaderFontSize(listContainer) {
+    const headerRow = listContainer && listContainer.querySelector('.list-header-row');
+    if (!headerRow) return;
+    const baseSize = 14;
+    const minSize = 12.5; /* 14 - 1.5pt */
+    let size = baseSize;
+    headerRow.style.setProperty('--list-header-font-size', size + 'px');
+    const cells = headerRow.querySelectorAll('.list-cell');
+    function hasOverflow() {
+      return Array.prototype.some.call(cells, function (cell) {
+        return cell.scrollWidth > cell.clientWidth || cell.scrollHeight > cell.clientHeight;
+      });
+    }
+    while (hasOverflow() && size > minSize) {
+      size -= 0.5;
+      headerRow.style.setProperty('--list-header-font-size', size + 'px');
+    }
+  }
+
   // Liste Marka/Model: kelimelerin sadece ilk harfi büyük (title case)
   function toTitleCase(str) {
     if (!str || str === '-') return str;
@@ -149,6 +172,16 @@
     }
     modalContent.addEventListener('click', handleVehicleRowClick);
     modalContent.addEventListener('touchend', handleVehicleRowClick, { passive: false });
+  }
+
+  // Mobil: pencere boyutu değişince başlık font-size tekrar hesaplansın
+  if (modalContent && !modalContent._headerResizeBound) {
+    modalContent._headerResizeBound = true;
+    window.addEventListener('resize', function () {
+      if (window.innerWidth <= 640 && modalContent.querySelector('.list-header-row')) {
+        applyMobileListHeaderFontSize(modalContent);
+      }
+    });
   }
 
   // Toolbar Container Oluştur (Eğer yoksa)
@@ -681,21 +714,9 @@
           }
       }
       
-      // Mobil görünüm için font boyutu ayarlama
+      // Mobil: başlıklar tek punto, en fazla 1.5pt küçülebilir (biri sığmazsa hepsi küçülür)
       if (viewMode === 'list' && window.innerWidth <= 640) {
-          const brandCells = listContainer.querySelectorAll('.view-list .list-cell.list-brand');
-          brandCells.forEach(cell => {
-              let fontSize = 13; // Standart 13px
-              const minFontSize = 11; // Minimum 11px
-              
-              cell.style.fontSize = fontSize + 'px';
-              
-              // Taşma kontrolü ve küçültme mantığı
-              while (cell.scrollWidth > cell.offsetWidth && fontSize > minFontSize) {
-                  fontSize--;
-                  cell.style.fontSize = fontSize + 'px';
-              }
-          });
+          applyMobileListHeaderFontSize(listContainer);
       }
       
       // Mobil: sütun başlıklarına touch ile sürükle-bırak (yer değiştirme)
