@@ -474,8 +474,8 @@ body.driver-modal-open {
 }
 .driver-info-item {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  flex-direction: row;
+  align-items: baseline;
   gap: 0; /* Etiket ile açıklama arası 0 */
   text-align: left;
 }
@@ -495,7 +495,6 @@ body.driver-modal-open {
   word-break: break-word;
   font-size: 13px;
   min-width: 0;
-  margin-top: 0; /* Açıklama tamamı etiketin alt satırında, arası 0 */
 }
 .driver-info-item .value.date-warning-red { color: #ef4444; }
 .driver-info-item .value.date-warning-orange { color: #f97316; }
@@ -808,7 +807,7 @@ body.driver-modal-open {
   white-space: nowrap;
 }
 
-/* Mobil: 35/65, compact, etiket alt satırda */
+/* Mobil: 35/65, compact; etiket+açıklama yan yana, sadece sığmazsa açıklama tamamı alta */
 @media (max-width: 640px) {
   .driver-two-panel {
     padding: 6px 8px 12px;
@@ -821,7 +820,17 @@ body.driver-modal-open {
     padding: 0;
     font-size: 12px;
   }
-  .driver-info-item { gap: 0; }
+  .driver-info-item {
+    gap: 0;
+    container-type: inline-size;
+  }
+  /* Sadece satır sığmazsa (çok dar veya uzun içerik) açıklama tamamı alta */
+  @container (max-width: 120px) {
+    .driver-info-item {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
   .driver-info-item .label { font-size: 12px; text-transform: none; }
   .driver-info-item .value { font-size: 12px; }
   .driver-action-btn {
