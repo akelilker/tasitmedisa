@@ -815,7 +815,11 @@ body.driver-modal-open {
     gap: 8px;
   }
   .driver-panels-inner { gap: 8px; }
-  .driver-left-panel { flex: 0 0 35%; }
+  .driver-left-panel {
+    flex: 0 0 35%;
+    border-right-width: 0.25px;
+    border-right-color: rgba(var(--theme-color-rgb), 0.45);
+  }
   .driver-right-panel { flex: 1; }
   .driver-vehicle-info {
     padding: 0;
