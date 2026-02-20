@@ -2463,6 +2463,10 @@
     font-size: 16px !important;
     margin-bottom: 6px !important;
   }
+  /* Tarihçe bölümler arası dikey boşluk 4px toplam (1.5+1+1.5, mobil) */
+  #vehicle-history-modal .history-item {
+    padding: 1.5px 12px !important;
+  }
   
   /* --- LİSTE GÖRÜNÜMÜ MOBİL - MASAÜSTÜNE GÖRE UYARLANDI --- */
   /* Satır Yapısı - Masaüstü referans alınarak uyarlandı */
