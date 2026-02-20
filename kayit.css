@@ -1020,9 +1020,9 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
 
 /* === MASAÜSTÜ OPTİMİZASYONLARI === */
 @media (min-width: 641px) {
-    /* Tam görünürlük + Taşıt Tipi kesilme: üst padding 10px, alt 6px */
+    /* Başlıktan sonra 4px boşluk (üst 14px); alt padding 2px ile Kaydet/Vazgeç alt çerçeveye yakın */
     #vehicle-modal .modal-body {
-        padding: 10px 12px 6px 12px !important;
+        padding: 14px 12px 2px 12px !important;
     }
     .form-input, select {
         border-width: 1.1px !important;
@@ -1057,6 +1057,10 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         height: 25px !important;
         padding-top: 5px !important;
         padding-bottom: 5px !important;
+        font-size: 12px !important;
+    }
+    #vehicle-modal .modal-body .modal-column-right input[type="date"].form-input::-webkit-datetime-edit {
+        font-size: 12px !important;
     }
     #vehicle-modal .modal-body .modal-column-right textarea.form-input {
         padding-top: 6px !important;
