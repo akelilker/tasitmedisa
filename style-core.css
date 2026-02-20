@@ -687,7 +687,7 @@ html { overflow-x: hidden; }
 /* Kullanıcı Paneli linki - footer üstünde, sağa yaslı (3px aşağı) */
 .user-panel-link {
   position: fixed;
-  bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0) + 9px);
+  bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0) + 7px);
   left: 50%;
   transform: translateX(-50%);
   max-width: 500px;
@@ -1053,10 +1053,11 @@ body.modal-open .user-panel-link {
         min-height: 44px !important;
     }
     
-    /* Ana sayfa butonları mobilde: yükseklik +4px (60px), havada kırmızı gölge */
+    /* Ana sayfa butonları mobilde: yükseklik +6px (62px), havada kırmızı gölge */
     .menu-btn {
-        height: 60px !important; /* 56px + 4px */
+        height: 62px !important; /* 56px + 6px (2px daha) */
         box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25), 0 4px 20px rgba(var(--theme-color-rgb), 0.14);
+        border-color: rgba(255, 255, 255, 0.45); /* Çerçeve gri daha parlak (kalınlık aynı) */
     }
     
     /* Menü butonları arası dikey boşluk +2px */
@@ -1094,11 +1095,11 @@ body.modal-open .user-panel-link {
         box-shadow: inset 0 0 25px var(--red-glow-subtle);
     }
     
-    /* FOOTER IŞIKLARI GÜÇLÜ - GÜNCELLENDİ (0.35 OPAK) */
+    /* FOOTER IŞIKLARI GÜÇLÜ - GÜNCELLENDİ (0.35 OPAK); ışık 3px daha yukarı */
     #app-footer {
         position: fixed;
         bottom: 0;
-        box-shadow: 0 -9px 22px rgba(var(--theme-color-rgb), 0.35);  /* %35 Opaklık + Hafif yayılma */
+        box-shadow: 0 -12px 22px rgba(var(--theme-color-rgb), 0.35);  /* %35 Opaklık + Hafif yayılma */
         border-left: none; /* Mobilde yan yok */
         border-right: none;
         border-top: 1px solid rgba(128, 128, 128, 0.5) !important; /* Gri çizgi */
@@ -1111,7 +1112,8 @@ body.modal-open .user-panel-link {
     }
     
     .menu-btn .ttl {
-        font-size: clamp(13.5px, 3vw, 15.5px) !important; /* +1.5pt */
+        font-size: clamp(14.5px, 3vw, 16.5px) !important; /* +1pt daha */
+        letter-spacing: 1.5px;
         text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);  /* Havada, metin berrak */
     }
     
