@@ -848,6 +848,33 @@ body.driver-modal-open {
   .driver-user-plate-row .driver-user-name { font-size: 12px; }
   .driver-current-plaka { font-size: 14px; }
   .driver-user-plate-in-panel { gap: 1px; margin-bottom: 3px; }
+
+  /* Kaydet / Vazgeç: ince metin + ince çerçeve, arka plansız; tıklanınca kalın çerçeve + kalın metin + yarı saydam arka plan; dikey yükseklik 3px az */
+  .driver-km-form-actions .btn-km-bildir,
+  .driver-km-form-actions .btn-km-vazgec,
+  .driver-form-actions .btn-driver-bildir,
+  .driver-form-actions .btn-driver-vazgec {
+    padding: 5.5px 14px !important; /* 8.5 → 5.5 (3px daha kısa) */
+    font-weight: 400 !important; /* ince metin */
+    border-width: 1px !important; /* ince çerçeve */
+    background: transparent !important; /* arka plansız */
+  }
+  .driver-km-form-actions .btn-km-bildir:active,
+  .driver-form-actions .btn-driver-bildir:active {
+    font-weight: 600 !important;
+    border-width: 2px !important;
+    background: rgba(34, 197, 94, 0.25) !important; /* yeşil yarı saydam */
+    border-color: #22c55e !important;
+    color: #22c55e !important;
+  }
+  .driver-km-form-actions .btn-km-vazgec:active,
+  .driver-form-actions .btn-driver-vazgec:active {
+    font-weight: 600 !important;
+    border-width: 2px !important;
+    background: rgba(225, 6, 27, 0.25) !important; /* kırmızı yarı saydam, metin rengiyle uyumlu */
+    border-color: var(--theme-color, #e1061b) !important;
+    color: var(--theme-color, #e1061b) !important;
+  }
 }
 
 .driver-btn-logout {
