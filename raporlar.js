@@ -295,7 +295,7 @@
                             <button class="stok-print-btn" onclick="printStokReport()" title="Yazdır">
                                 🖨️
                             </button>
-                            <div class="stok-search-wrap stok-search-wrap-desktop">
+                            <div class="stok-search-wrap">
                                 <button class="stok-search-btn" onclick="toggleStokSearch()" title="Ara">
                                     🔍
                                 </button>
@@ -314,14 +314,6 @@
                         <div class="stok-date-input-group">
                             <label for="stok-date-end">Bitiş T.</label>
                             <input type="date" id="stok-date-end" class="stok-date-input stok-date-has-value" value="${todayInputValue}">
-                        </div>
-                    </div>
-                    <div class="stok-search-wrap stok-search-wrap-mobile">
-                        <button class="stok-search-btn" onclick="toggleStokSearch()" title="Ara">
-                            🔍
-                        </button>
-                        <div id="stok-search-container-mobile" class="stok-search-container" data-sync-with="stok-search-input">
-                            <input type="text" id="stok-search-input-mobile" class="stok-search-input" placeholder="Üretim yılı, marka/model, kullanıcı, şube ara..." oninput="handleStokSearch(this.value)">
                         </div>
                     </div>
                 </div>
@@ -1397,28 +1389,22 @@
         }
     };
 
-    // Arama kutusunu aç/kapat (mobilde mobile container, masaüstünde desktop container)
+    // Arama kutusunu aç/kapat (tek büyüteç, mobil+masaüstü)
     window.toggleStokSearch = function() {
-        const isMobile = typeof window !== 'undefined' && window.innerWidth <= 640;
-        const container = document.getElementById(isMobile ? 'stok-search-container-mobile' : 'stok-search-container');
-        const input = document.getElementById(isMobile ? 'stok-search-input-mobile' : 'stok-search-input');
-        const otherContainer = document.getElementById(isMobile ? 'stok-search-container' : 'stok-search-container-mobile');
-        const otherInput = document.getElementById(isMobile ? 'stok-search-input' : 'stok-search-input-mobile');
+        const container = document.getElementById('stok-search-container');
+        const input = document.getElementById('stok-search-input');
         
         if (container) {
             if (container.classList.contains('open')) {
                 container.classList.remove('open');
-                if (otherContainer) otherContainer.classList.remove('open');
-                const clearInput = input || otherInput;
-                if (clearInput) {
-                    clearInput.value = '';
+                if (input) {
+                    input.value = '';
                     handleStokSearch('');
                 }
             } else {
                 container.classList.add('open');
-                if (otherContainer) otherContainer.classList.remove('open');
                 if (input) {
-                    const syncVal = (otherInput && otherInput.value) || (window.stokSearchTerm || '');
+                    const syncVal = window.stokSearchTerm || '';
                     if (input.value !== syncVal) input.value = syncVal;
                 }
                 setTimeout(() => {
