@@ -1022,7 +1022,7 @@
     left: 0;
     margin-top: 4px;
     min-width: 140px;
-    background: #1a1a1a;
+    background: var(--bg);
     border: 1px solid rgba(255,255,255,0.12);
     border-radius: 8px;
     box-shadow: 0 6px 20px rgba(0,0,0,0.4);
@@ -2181,6 +2181,12 @@
     width: 18px !important;
     height: 18px !important;
   }
+  /* Şanzıman dropdown: ekran içinde kalsın, sağa taşmasın */
+  .v-transmission-dropdown {
+    right: 0;
+    left: auto;
+    max-width: min(140px, calc(100vw - 20px));
+  }
   /* Taşıt detay toolbar sol 4px */
   #vehicle-detail-modal .vehicle-detail-toolbar {
     padding-left: 4px !important;
@@ -2265,7 +2271,7 @@
   
   .detail-row-label,
   .detail-row-inline .detail-row-label {
-    font-size: clamp(14px, 4.5vw, 16px) !important;
+    font-size: 15px !important; /* +1pt (base 14px); tek değer, clamp kaldırıldı */
     display: -webkit-box !important;
     -webkit-line-clamp: 2 !important;
     line-clamp: 2 !important;
@@ -2276,30 +2282,30 @@
     word-break: break-word !important;
   }
   
-  /* Mobil taşıt detay açıklamalar +1pt (16px) */
+  /* Mobil taşıt detay: tüm metinler +1pt tek blokta */
   .detail-row-value {
-    font-size: 16px !important;
+    font-size: 16px !important; /* +1pt (base 14/15) */
     color: #888 !important; /* Gri renk */
   }
   .detail-row-value.detail-user-empty {
     color: var(--theme-color) !important;
-    font-size: 18px !important; /* +1 punto → 16px */
+    font-size: 17px !important; /* +1pt (value 16px) */
     white-space: nowrap !important; /* Mobilde tek satırda kal */
   }
   .detail-plate {
-    font-size: 21px !important; /* +1 punto daha (sadece mobil) */
+    font-size: 22px !important; /* +1pt tutarlı (tek kaynak) */
   }
   .detail-brand-year {
-    font-size: 19px !important; /* +1 punto daha (sadece mobil) */
+    font-size: 19px !important; /* +1pt (base 15→16 civarı mobil) */
   }
   .detail-label {
-    font-size: 19px !important; /* +1 punto daha (sadece mobil) */
+    font-size: 15px !important; /* +1pt (base 14px) */
   }
   .detail-item {
-    font-size: 18px !important; /* +1 punto daha (sadece mobil) */
+    font-size: 14px !important; /* +1pt (base 13px) */
   }
   .detail-total {
-    font-size: 19px !important; /* +1 punto daha (sadece mobil) */
+    font-size: 15px !important; /* +1pt (base 14px) */
   }
   
   /* Mobil modal-body padding: çerçeve ile içerik arasında yatay boşluk yok */
@@ -2681,6 +2687,11 @@
     white-space: normal !important;
     word-break: break-word !important;
   }
+  /* Marka/Model ve Kullanıcı başlıkları da aynı punto (base clamp mobilde ezilsin) */
+  .list-header-row .list-cell.list-brand .sortable-header span,
+  .list-header-row .list-cell.list-user span {
+    font-size: var(--list-header-font-size, 15px) !important;
+  }
 
   /* Sıralanabilir başlık: üst hizalı, metin ikinci satıra geçebilir (ilk satır hep aynı hizada) */
   .list-header-row .sortable-header {
@@ -2789,8 +2800,9 @@
     overscroll-behavior-x: none !important; /* Yatay overscroll'u engelle */
   }
   
-  .detail-plate { font-size: 22px !important; margin-top: 0 !important; margin-bottom: 0 !important; } /* -8px kaldırıldı: plaka üstten kesilmesin */
-  .detail-brand-year { font-size: 19px !important; margin-top: 0 !important; margin-bottom: 4px !important; }
+  /* Plaka/marka font-size tek blokta (yukarıda); sadece margin */
+  .detail-plate { margin-top: 0 !important; margin-bottom: 0 !important; } /* Plaka üstten kesilmesin */
+  .detail-brand-year { margin-top: 0 !important; margin-bottom: 4px !important; }
   .detail-row { padding: 4px 0; gap: 1px; }
   
   /* Taşıt detay modal başlık +1 punto daha (sadece mobil) */
