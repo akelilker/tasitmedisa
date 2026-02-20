@@ -34,8 +34,9 @@
   align-items: center;
   gap: 16px;
 }
+/* Splash: ana uygulama girişi ile aynı logo+başlık boyutu */
 .driver-splash-logo {
-  width: var(--hero-logo-width, 176px);
+  width: 176px;
   height: auto;
   object-fit: contain;
   filter: brightness(0.88);
@@ -46,6 +47,20 @@
   letter-spacing: clamp(1.28px, 0.65vw, 5.1px);
   text-transform: uppercase;
   margin: 0;
+  background: linear-gradient(to bottom, #c2d4df 0%, #ffffff 40%, #9aadba 52%, #d6e0e8 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-family: 'Source Sans 3', sans-serif;
+}
+/* KULLANICI PANELİ: başlık altında, 1pt küçük, aynı renk */
+.driver-splash-subtitle {
+  font-size: clamp(20px, 5.2vw, 29px);
+  font-weight: 800;
+  letter-spacing: clamp(1.2px, 0.6vw, 4.5px);
+  text-transform: uppercase;
+  margin: 0;
+  margin-top: 2px;
   background: linear-gradient(to bottom, #c2d4df 0%, #ffffff 40%, #9aadba 52%, #d6e0e8 100%);
   -webkit-background-clip: text;
   background-clip: text;
@@ -3068,20 +3083,29 @@ body.driver-modal-open {
   .dashboard-page .btn-edit-request {
     font-size: 16px !important;
   }
-  /* Sol panel: etiket ve açıklama aynı boyut, aynı satırda hizalı */
+  /* Sol panel: etiket ve açıklama aynı boyut, aynı satırda hizalı; +1pt (mobil sol grid) */
   .dashboard-page .driver-left-panel .driver-info-item .label {
-    font-size: 13px !important;
+    font-size: 14px !important;
     text-transform: none !important;
   }
   .dashboard-page .driver-left-panel .driver-info-item .value {
-    font-size: 13px !important;
+    font-size: 14px !important;
   }
   .dashboard-page .driver-left-panel .driver-current-plaka {
-    font-size: 15px !important;
+    font-size: 16px !important;
   }
   .dashboard-page .driver-left-panel .driver-user-name,
   .dashboard-page .driver-user-plate-in-panel .driver-user-name {
+    font-size: 14px !important;
+  }
+  .dashboard-page .driver-left-panel .driver-plate-subtitle {
+    font-size: 16px !important;
+  }
+  .dashboard-page .driver-plate-dropdown-item {
     font-size: 13px !important;
+  }
+  .dashboard-page .management-system-link {
+    font-size: 15px !important;
   }
   #history-modal .modal-header h2,
   #edit-request-modal .modal-header h2 {
