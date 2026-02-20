@@ -1084,6 +1084,10 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     .modal-column-left .form-section:nth-child(5) {
         margin-bottom: 12px !important; /* 10px → 12px (+2px Km–Şanzıman arası) */
     }
+    /* Taşıtın Alım Bedeli – Şanzıman Tipi arası boşluk (masaüstü) */
+    #vehicle-modal .modal-body .modal-column-left .form-section:has(#vehicle-price) {
+        margin-bottom: 12px !important;
+    }
     .form-buttons { padding: 1px 1px; margin-top: 2px; }
     #vehicle-modal .modal-body .form-buttons { margin-top: 2px !important; }
     #vehicle-modal .modal-body .btn-save,
@@ -1188,9 +1192,9 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-body .modal-column-right .form-section:has(#vehicle-notes) .form-label {
         margin-bottom: 1px !important;
     }
-    /* Grid içeriğe göre yükseklik; her kolon kendi içeriği kadar (sol sağa uymaz, sağ sola uymaz) */
+    /* Notlar ile Boya/Değişen alt hizası: kolonlar eşit yükseklikte */
     #vehicle-modal .modal-body .modal-columns {
-        align-items: start;
+        align-items: stretch;
         margin-top: -5px !important;
         margin-bottom: 2px !important;
     }
