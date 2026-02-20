@@ -107,6 +107,29 @@
     }
   }
 
+  /**
+   * Mobil taşıt listesi: başlıklar tek punto, en fazla 1.5pt küçülebilir (biri sığmazsa hepsi küçülür).
+   * listContainer içindeki .list-header-row üzerinde --list-header-font-size ayarlar.
+   */
+  function applyMobileListHeaderFontSize(listContainer) {
+    const headerRow = listContainer && listContainer.querySelector('.list-header-row');
+    if (!headerRow) return;
+    const baseSize = 14;
+    const minSize = 12.5; /* 14 - 1.5pt */
+    let size = baseSize;
+    headerRow.style.setProperty('--list-header-font-size', size + 'px');
+    const cells = headerRow.querySelectorAll('.list-cell');
+    function hasOverflow() {
+      return Array.prototype.some.call(cells, function (cell) {
+        return cell.scrollWidth > cell.clientWidth || cell.scrollHeight > cell.clientHeight;
+      });
+    }
+    while (hasOverflow() && size > minSize) {
+      size -= 0.5;
+      headerRow.style.setProperty('--list-header-font-size', size + 'px');
+    }
+  }
+
   // Liste Marka/Model: kelimelerin sadece ilk harfi büyük (title case)
   function toTitleCase(str) {
     if (!str || str === '-') return str;
@@ -140,6 +163,16 @@
     }
     modalContent.addEventListener('click', handleVehicleRowClick);
     modalContent.addEventListener('touchend', handleVehicleRowClick, { passive: false });
+  }
+
+  // Mobil: pencere boyutu değişince başlık font-size tekrar hesaplansın
+  if (modalContent && !modalContent._headerResizeBound) {
+    modalContent._headerResizeBound = true;
+    window.addEventListener('resize', function () {
+      if (window.innerWidth <= 640 && modalContent.querySelector('.list-header-row')) {
+        applyMobileListHeaderFontSize(modalContent);
+      }
+    });
   }
 
   // Toolbar Container Oluştur (Eğer yoksa)
@@ -672,21 +705,9 @@
           }
       }
       
-      // Mobil görünüm için font boyutu ayarlama
+      // Mobil: başlıklar tek punto, en fazla 1.5pt küçülebilir (biri sığmazsa hepsi küçülür)
       if (viewMode === 'list' && window.innerWidth <= 640) {
-          const brandCells = listContainer.querySelectorAll('.view-list .list-cell.list-brand');
-          brandCells.forEach(cell => {
-              let fontSize = 13; // Standart 13px
-              const minFontSize = 11; // Minimum 11px
-              
-              cell.style.fontSize = fontSize + 'px';
-              
-              // Taşma kontrolü ve küçültme mantığı
-              while (cell.scrollWidth > cell.offsetWidth && fontSize > minFontSize) {
-                  fontSize--;
-                  cell.style.fontSize = fontSize + 'px';
-              }
-          });
+          applyMobileListHeaderFontSize(listContainer);
       }
       
       // Mobil: sütun başlıklarına touch ile sürükle-bırak (yer değiştirme)
@@ -1456,17 +1477,24 @@ function renderVehicleDetailLeft(vehicle) {
   // HTML'i sol kolona bas
   leftEl.innerHTML = html;
 
-  // --- ŞEMA EKLEME: Sol kolonun içine ekliyoruz ---
-  // Önce eskisi varsa temizle
+  // --- ŞEMA EKLEME: Grid alanında kolonların altında tam genişlikte (sol yaslı, sağ kenar Yoktur "r" hizalı) ---
   const existingBoyaContainer = document.getElementById('detail-boya-container');
   if (existingBoyaContainer) existingBoyaContainer.remove();
 
-  // Yeni container oluştur
   const boyaContainer = document.createElement('div');
   boyaContainer.id = 'detail-boya-container';
 
-  // LeftEl içine append et
-  leftEl.appendChild(boyaContainer);
+  const contentRoot = document.getElementById('vehicle-detail-content');
+  const columnsEl = contentRoot && contentRoot.querySelector('.vehicle-detail-columns');
+  if (contentRoot) {
+    if (columnsEl && columnsEl.nextSibling) {
+      contentRoot.insertBefore(boyaContainer, columnsEl.nextSibling);
+    } else {
+      contentRoot.appendChild(boyaContainer);
+    }
+  } else {
+    leftEl.appendChild(boyaContainer);
+  }
 
   // Boya şemasını render et (içinde SVG + tam açıklama Orijinal/Boyalı/Değişen; O/B/D kısaltması yok)
   renderBoyaSchemaDetail(vehicle);
@@ -1515,10 +1543,10 @@ function renderVehicleDetailLeft(vehicle) {
     const krediLabel = kredi === 'var' ? (vehicle.krediDetay || 'Var') : 'Yoktur.';
     html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Kredi/Rehin</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(krediLabel)}</span></div>`;
     
-    // Yazlık/ Kışlık Lastik
+    // Yazlık/ Kışlık Lastik (Yoktur "r" hizası için referans)
     const lastikDurumu = vehicle.lastikDurumu || '';
     const lastikLabel = lastikDurumu === 'var' ? (vehicle.lastikAdres || 'Var') : 'Yoktur.';
-    html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Yazlık/ Kışlık Lastik</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(lastikLabel)}</span></div>`;
+    html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Yazlık/ Kışlık Lastik</span><span class="detail-row-colon">:</span></div><span class="detail-row-value detail-yoktur-r-ref"> ${escapeHtml(lastikLabel)}</span></div>`;
     
     // UTTS
     const utts = vehicle.uttsTanimlandi ? 'Evet' : 'Hayır';
@@ -1581,6 +1609,7 @@ function renderVehicleDetailLeft(vehicle) {
 
         container.innerHTML = '';
 
+<<<<<<< HEAD
         // Şemanın görünmesini istediğin genişlik (Landscape/Yatay hali)
         const targetWidth = 240;
 
@@ -1589,19 +1618,25 @@ function renderVehicleDetailLeft(vehicle) {
         const targetHeight = Math.round(targetWidth * (148 / 220));
 
         // SVG'nin ham boyutları
+=======
+        // Şema genişliği: sol yaslı, sağ kenar sağ kolondaki "Yoktur" metninin "r" harfine hizalı (ölçümle ayarlanır)
+>>>>>>> 06d87e462a308163a336ae8a97eeb70316b3c439
         const svgOrgWidth = 148;
         const svgOrgHeight = 220;
+        const defaultTargetWidth = 240;
+        const targetHeight = Math.round(defaultTargetWidth * (148 / 220));
 
-        // Wrapper oluştur (Şemayı tutacak kutu)
+        // Wrapper oluştur (Şemayı tutacak kutu); başlangıç değeri, ölçüm sonrası güncellenir
         const svgWrapper = document.createElement('div');
         svgWrapper.className = 'kaporta-schema-wrapper';
         svgWrapper.style.cssText = `
-            width: ${targetWidth}px;
+            width: ${defaultTargetWidth}px;
             height: ${targetHeight}px;
             position: relative;
             overflow: visible;
             flex-shrink: 0;
-            margin: 0 auto;
+            margin: 0;
+            margin-right: auto;
         `;
 
         // SVG'yi hazırla
@@ -1610,6 +1645,7 @@ function renderVehicleDetailLeft(vehicle) {
         svgClone.setAttribute('height', String(svgOrgHeight));
 
         // SVG'yi döndür ve wrapper'ın tam ortasına oturt
+        let targetWidth = defaultTargetWidth;
         const topOff = (targetHeight - svgOrgHeight) / 2;
         const leftOff = (targetWidth - svgOrgWidth) / 2;
 
@@ -1672,6 +1708,28 @@ function renderVehicleDetailLeft(vehicle) {
           <div class="boya-legend-item"><span class="boya-legend-dot" style="background:#e1061b;"></span> Değişen</div>
         `;
         container.appendChild(legend);
+
+        // Sağ kolondaki "Yoktur" metninin "r" harfine göre şema genişliğini oranla (sol yaslı, sağ kenar hizalı)
+        requestAnimationFrame(function alignSchemaToYokturR() {
+          const ref = document.querySelector('#vehicle-detail-modal .vehicle-detail-right .detail-yoktur-r-ref');
+          const content = document.getElementById('vehicle-detail-content');
+          if (ref && content && container.isConnected) {
+            const rRect = ref.getBoundingClientRect();
+            const cRect = content.getBoundingClientRect();
+            const wrapperWidth = Math.round(rRect.right - cRect.left);
+            const minW = 180;
+            const maxW = 420;
+            const clamped = Math.max(minW, Math.min(maxW, wrapperWidth));
+            const h = Math.round(clamped * (148 / 220));
+            svgWrapper.style.width = clamped + 'px';
+            svgWrapper.style.height = h + 'px';
+            const topOff2 = (h - svgOrgHeight) / 2;
+            const leftOff2 = (clamped - svgOrgWidth) / 2;
+            svgClone.style.top = topOff2 + 'px';
+            svgClone.style.left = leftOff2 + 'px';
+            svgClone.style.transform = 'rotate(90deg) scale(' + (clamped / svgOrgHeight) + ')';
+          }
+        });
       })
       .catch(err => {
         console.error('SVG yükleme hatası:', err);
