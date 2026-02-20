@@ -104,10 +104,10 @@
         ? {
             'year': '30px',
             'plate': '62px',
-            'brand': '2.4fr',
+            'brand': '2.55fr',
             'km': '52px',
             'user': '1.7fr',
-            'branch': '2.8fr'
+            'branch': '2.65fr'
           }
         : {
             'year': '32px',
