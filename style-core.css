@@ -684,7 +684,7 @@ html { overflow-x: hidden; }
   pointer-events: none;
 }
 
-/* Kullanıcı Paneli linki - footer üstünde, sağa yaslı (3px aşağı) */
+/* Kullanıcı Paneli linki - footer üstünde, sağa yaslı (mobilde 2px aşağı override ile) */
 .user-panel-link {
   position: fixed;
   bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0) + 7px);
@@ -1053,11 +1053,11 @@ body.modal-open .user-panel-link {
         min-height: 44px !important;
     }
     
-    /* Ana sayfa butonları mobilde: yükseklik +6px (62px), havada kırmızı gölge */
+    /* Ana sayfa butonları mobilde: yükseklik +2px (64px), gri çerçeve parlak, havada kırmızı gölge */
     .menu-btn {
-        height: 62px !important; /* 56px + 6px (2px daha) */
+        height: 64px !important; /* 62px + 2px */
         box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25), 0 4px 20px rgba(var(--theme-color-rgb), 0.14);
-        border-color: rgba(255, 255, 255, 0.45); /* Çerçeve gri daha parlak (kalınlık aynı) */
+        border-color: rgba(255, 255, 255, 0.55); /* Çerçeve gri daha parlak (0.45→0.55, kalınlık aynı) */
     }
     
     /* Menü butonları arası dikey boşluk +2px */
@@ -1095,11 +1095,11 @@ body.modal-open .user-panel-link {
         box-shadow: inset 0 0 25px var(--red-glow-subtle);
     }
     
-    /* FOOTER IŞIKLARI GÜÇLÜ - GÜNCELLENDİ (0.35 OPAK); ışık 3px daha yukarı */
+    /* FOOTER IŞIKLARI GÜÇLÜ - GÜNCELLENDİ (0.35 OPAK); ışık 3px daha yukarı (0 -15px) */
     #app-footer {
         position: fixed;
         bottom: 0;
-        box-shadow: 0 -12px 22px rgba(var(--theme-color-rgb), 0.35);  /* %35 Opaklık + Hafif yayılma */
+        box-shadow: 0 -15px 22px rgba(var(--theme-color-rgb), 0.35);  /* %35 Opaklık + 3px yukarı */
         border-left: none; /* Mobilde yan yok */
         border-right: none;
         border-top: 1px solid rgba(128, 128, 128, 0.5) !important; /* Gri çizgi */
@@ -1112,9 +1112,14 @@ body.modal-open .user-panel-link {
     }
     
     .menu-btn .ttl {
-        font-size: clamp(14.5px, 3vw, 16.5px) !important; /* +1pt daha */
+        font-size: clamp(15.5px, 3.2vw, 17.5px) !important; /* +1pt daha (14.5→15.5, 16.5→17.5) */
         letter-spacing: 1.5px;
         text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);  /* Havada, metin berrak */
+    }
+    
+    /* Mobil: Kullanıcı paneli giriş butonu 2px aşağı */
+    .user-panel-link {
+        bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0) + 5px) !important;
     }
     
     /* Mobil bildirim çerçeveleri - arka plan opak */
