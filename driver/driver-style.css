@@ -860,9 +860,18 @@ body.driver-modal-open {
     width: 100% !important;
     height: auto !important;
   }
-  /* Ortadaki dikey kırmızı çizgi daha ince */
+  /* Login logosu ana uygulama ile aynı büyüklük (54px mobil) */
+  .login-page .hero-logo {
+    flex: 0 0 54px !important;
+    width: 54px !important;
+  }
+  .login-page .hero-logo img {
+    width: 100% !important;
+    height: auto !important;
+  }
+  /* Ortadaki dikey kırmızı çizgi – ufak kalınlaştırma (siliklik giderildi) */
   .driver-left-panel {
-    border-right-width: 0.15px !important;
+    border-right-width: 0.45px !important;
   }
   /* Şube etiketinden itibaren 3px aşağı */
   .driver-left-panel .driver-vehicle-info {
@@ -2996,7 +3005,7 @@ body.driver-modal-open {
     font-size: 24px !important;
   }
   .login-page .hero-panel-subtitle {
-    font-size: 20px !important;
+    font-size: 18px !important; /* h1’e göre 1pt küçük */
   }
   .login-page #app-footer.login-footer .footer-content {
     font-size: 14px !important;
