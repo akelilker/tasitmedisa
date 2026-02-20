@@ -1477,24 +1477,13 @@ function renderVehicleDetailLeft(vehicle) {
   // HTML'i sol kolona bas
   leftEl.innerHTML = html;
 
-  // --- ŞEMA EKLEME: Grid alanında kolonların altında tam genişlikte (sol yaslı, sağ kenar Yoktur "r" hizalı) ---
+  // --- ŞEMA EKLEME: Sol grid (sol kolon) içinde; büyüklük sol kolona göre uyarlanır ---
   const existingBoyaContainer = document.getElementById('detail-boya-container');
   if (existingBoyaContainer) existingBoyaContainer.remove();
 
   const boyaContainer = document.createElement('div');
   boyaContainer.id = 'detail-boya-container';
-
-  const contentRoot = document.getElementById('vehicle-detail-content');
-  const columnsEl = contentRoot && contentRoot.querySelector('.vehicle-detail-columns');
-  if (contentRoot) {
-    if (columnsEl && columnsEl.nextSibling) {
-      contentRoot.insertBefore(boyaContainer, columnsEl.nextSibling);
-    } else {
-      contentRoot.appendChild(boyaContainer);
-    }
-  } else {
-    leftEl.appendChild(boyaContainer);
-  }
+  leftEl.appendChild(boyaContainer);
 
   // Boya şemasını render et (içinde SVG + tam açıklama Orijinal/Boyalı/Değişen; O/B/D kısaltması yok)
   renderBoyaSchemaDetail(vehicle);
@@ -1609,10 +1598,10 @@ function renderVehicleDetailLeft(vehicle) {
 
         container.innerHTML = '';
 
-        // Şema genişliği: sol yaslı, sağ kenar sağ kolondaki "Yoktur" metninin "r" harfine hizalı (ölçümle ayarlanır)
+        // Şema genişliği: sol grid içinde, sol kolon genişliğine göre requestAnimationFrame ile uyarlanır
         const svgOrgWidth = 148;
         const svgOrgHeight = 220;
-        const defaultTargetWidth = 240;
+        const defaultTargetWidth = 220;
         const targetHeight = Math.round(defaultTargetWidth * (148 / 220));
 
         // Wrapper oluştur (Şemayı tutacak kutu); başlangıç değeri, ölçüm sonrası güncellenir
@@ -1698,17 +1687,16 @@ function renderVehicleDetailLeft(vehicle) {
         `;
         container.appendChild(legend);
 
-        // Sağ kolondaki "Yoktur" metninin "r" harfine göre şema genişliğini oranla (sol yaslı, sağ kenar hizalı)
-        requestAnimationFrame(function alignSchemaToYokturR() {
-          const ref = document.querySelector('#vehicle-detail-modal .vehicle-detail-right .detail-yoktur-r-ref');
-          const content = document.getElementById('vehicle-detail-content');
-          if (ref && content && container.isConnected) {
-            const rRect = ref.getBoundingClientRect();
-            const cRect = content.getBoundingClientRect();
-            const wrapperWidth = Math.round(rRect.right - cRect.left);
-            const minW = 180;
-            const maxW = 420;
-            const clamped = Math.max(minW, Math.min(maxW, wrapperWidth));
+        // Sol kolon genişliğine göre şema büyüklüğünü uyarla (sol grid içinde)
+        requestAnimationFrame(function alignSchemaToLeftColumn() {
+          const leftCol = document.querySelector('#vehicle-detail-modal .vehicle-detail-left');
+          if (leftCol && container.isConnected) {
+            const leftRect = leftCol.getBoundingClientRect();
+            const padding = 16;
+            const availableWidth = Math.max(0, leftRect.width - padding);
+            const minW = 160;
+            const maxW = 380;
+            const clamped = Math.max(minW, Math.min(maxW, Math.round(availableWidth)));
             const h = Math.round(clamped * (148 / 220));
             svgWrapper.style.width = clamped + 'px';
             svgWrapper.style.height = h + 'px';
