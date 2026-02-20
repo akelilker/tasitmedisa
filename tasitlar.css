@@ -2677,6 +2677,18 @@
     word-break: break-word !important;
   }
 
+  /* Sıralanabilir başlık: üst hizalı, metin ikinci satıra geçebilir (ilk satır hep aynı hizada) */
+  .list-header-row .sortable-header {
+    align-items: flex-start !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+  }
+  .list-header-row .sortable-header span {
+    white-space: normal !important;
+    word-break: break-word !important;
+    flex-shrink: 1 !important;
+  }
+
   .list-header-row .list-cell.list-year {
     justify-content: center !important; /* Masaüstü ile aynı */
     text-align: center !important; /* Masaüstü ile aynı */
