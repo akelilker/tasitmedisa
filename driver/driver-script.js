@@ -1680,29 +1680,53 @@ function buildCombinedHistoryList() {
     const combined = [...hareketFiltered, ...eventItems];
     const sortKey = (item) => {
         if (item._type === 'hareket') return (item.donem || '') + (item.kayit_tarihi || '');
-        return item.timestamp || (item.date ? new Date(item.date + 'T12:00:00').toISOString() : '');
+        if (item.timestamp) return item.timestamp;
+        const d = item.date ? parseHistoryDate(item.date) : null;
+        return d ? d.toISOString() : '';
     };
     combined.sort((a, b) => (sortKey(b) || '').localeCompare(sortKey(a) || ''));
     return combined;
 }
 
+function parseHistoryDate(str) {
+    if (!str || typeof str !== 'string') return null;
+    const trimmed = str.trim();
+    if (!trimmed) return null;
+    if (trimmed.includes('.')) {
+        const parts = trimmed.split('.');
+        if (parts.length === 3) {
+            const day = parseInt(parts[0], 10);
+            const month = parseInt(parts[1], 10) - 1;
+            const year = parseInt(parts[2], 10);
+            if (!isNaN(day) && !isNaN(month) && !isNaN(year)) {
+                const d = new Date(year, month, day);
+                if (!isNaN(d.getTime())) return d;
+            }
+        }
+    }
+    const d = new Date(trimmed);
+    return isNaN(d.getTime()) ? null : d;
+}
+
 function formatHistoryPeriod(item) {
     if (item._type === 'hareket') return formatPeriod(item.donem || '');
+    const months = ['OCAK', 'ŞUBAT', 'MART', 'NİSAN', 'MAYIS', 'HAZİRAN', 'TEMMUZ', 'AĞUSTOS', 'EYLÜL', 'EKİM', 'KASIM', 'ARALIK'];
     if (item.date) {
-        try {
-            const d = new Date(item.date + 'T12:00:00');
-            const months = ['OCAK', 'ŞUBAT', 'MART', 'NİSAN', 'MAYIS', 'HAZİRAN', 'TEMMUZ', 'AĞUSTOS', 'EYLÜL', 'EKİM', 'KASIM', 'ARALIK'];
-            return `${String(d.getDate()).padStart(2, '0')} ${months[d.getMonth()]} ${d.getFullYear()}`;
-        } catch (e) { return item.date; }
+        const d = parseHistoryDate(item.date);
+        if (d) return `${String(d.getDate()).padStart(2, '0')} ${months[d.getMonth()]} ${d.getFullYear()}`;
+        return item.date;
     }
     if (item.timestamp) {
-        try {
-            const d = new Date(item.timestamp);
-            const months = ['OCAK', 'ŞUBAT', 'MART', 'NİSAN', 'MAYIS', 'HAZİRAN', 'TEMMUZ', 'AĞUSTOS', 'EYLÜL', 'EKİM', 'KASIM', 'ARALIK'];
-            return `${String(d.getDate()).padStart(2, '0')} ${months[d.getMonth()]} ${d.getFullYear()}`;
-        } catch (e) { return ''; }
+        const d = parseHistoryDate(item.timestamp) || new Date(item.timestamp);
+        if (d && !isNaN(d.getTime())) return `${String(d.getDate()).padStart(2, '0')} ${months[d.getMonth()]} ${d.getFullYear()}`;
+        return '';
     }
     return '';
+}
+
+function capitalizeWords(str) {
+    if (!str || typeof str !== 'string') return str;
+    return str.split(/\s+/).map(w => w.charAt(0).toLocaleUpperCase('tr-TR') + w.slice(1).toLocaleLowerCase('tr-TR')).join(' ');
 }
 
 function renderHistoryList() {
@@ -1725,48 +1749,42 @@ function renderHistoryList() {
         if (item._type === 'hareket') {
             window._historyRecordMap[item.id] = item;
             showEditBtn = true;
-            const kayitTarihi = item.kayit_tarihi
-                ? new Date(item.kayit_tarihi).toLocaleString('tr-TR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })
-                : '-';
             if (item.kaza_durumu) {
                 detailsHtml = `<p><strong>Kaza:</strong> ${escapeHtmlDriver(item.kaza_aciklama || 'Var')}</p>`;
                 if (item.kaza_tarih) detailsHtml += `<p><strong>Tarih:</strong> ${item.kaza_tarih}</p>`;
                 if (item.kaza_hasar_tutari) detailsHtml += `<p><strong>Hasar Tutarı:</strong> ${escapeHtmlDriver(item.kaza_hasar_tutari)} TL</p>`;
-                detailsHtml += `<p><strong>Kayıt:</strong> ${kayitTarihi}</p>`;
             } else if (item.bakim_durumu) {
-                detailsHtml = `<p>Bakım bildirildi: ${escapeHtmlDriver(item.bakim_aciklama || 'Var')}</p>`;
+                detailsHtml = `<p>${escapeHtmlDriver(capitalizeWords('Bakım Bildirildi') + ': ')}${escapeHtmlDriver(item.bakim_aciklama || 'Var')}</p>`;
                 if (item.bakim_tarih) detailsHtml += `<p><strong>Tarih:</strong> ${item.bakim_tarih}</p>`;
                 if (item.guncel_km) detailsHtml += `<p><strong>Bildirilen KM:</strong> ${formatKm(item.guncel_km)}</p>`;
-                detailsHtml += `<p><strong>Kayıt:</strong> ${kayitTarihi}</p>`;
             } else {
-                detailsHtml = `<p>Bildirilen KM: <strong>${formatKm(item.guncel_km) || '0'}</strong></p><p><strong>Kayıt:</strong> ${kayitTarihi}</p>`;
+                detailsHtml = `<p>${escapeHtmlDriver(capitalizeWords('Bildirilen KM') + ':')} <strong>${formatKm(item.guncel_km) || '0'}</strong></p>`;
             }
         } else {
-            const eventDate = item.date || (item.timestamp ? new Date(item.timestamp).toLocaleDateString('tr-TR') : '-');
             const d = item.data || {};
             if (item.eventType === 'anahtar-guncelle') {
                 const durum = (d.durum === 'var') ? 'Var' : 'Yok';
-                detailsHtml = `<p>Yedek anahtar durumu <strong>${escapeHtmlDriver(durum)}</strong> olarak güncellendi</p><p><strong>Tarih:</strong> ${escapeHtmlDriver(eventDate)}</p>`;
+                detailsHtml = `<p>${escapeHtmlDriver(capitalizeWords('Yedek anahtar durumu ' + durum + ' olarak güncellendi'))}</p>`;
             } else if (item.eventType === 'lastik-guncelle') {
                 const durum = (d.durum === 'var') ? 'Var' : 'Yok';
-                detailsHtml = `<p>Lastik durumu <strong>${escapeHtmlDriver(durum)}</strong> olarak güncellendi</p><p><strong>Tarih:</strong> ${escapeHtmlDriver(eventDate)}</p>`;
+                detailsHtml = `<p>${escapeHtmlDriver(capitalizeWords('Lastik durumu ' + durum + ' olarak güncellendi'))}</p>`;
             } else if (item.eventType === 'utts-guncelle') {
                 const durum = d.durum ? 'Evet' : 'Hayır';
-                detailsHtml = `<p>UTTS bilgisi <strong>${escapeHtmlDriver(durum)}</strong> olarak güncellendi</p><p><strong>Tarih:</strong> ${escapeHtmlDriver(eventDate)}</p>`;
+                detailsHtml = `<p>${escapeHtmlDriver(capitalizeWords('UTTS bilgisi ' + durum + ' olarak güncellendi'))}</p>`;
             } else if (item.eventType === 'muayene-guncelle') {
                 let txt = 'Muayene Bilgisi Güncellendi';
                 if (d.bitisTarihi) txt += ` (Bitiş: ${escapeHtmlDriver(d.bitisTarihi)})`;
-                detailsHtml = `<p>${escapeHtmlDriver(txt)}</p><p><strong>Tarih:</strong> ${escapeHtmlDriver(eventDate)}</p>`;
+                detailsHtml = `<p>${escapeHtmlDriver(txt)}</p>`;
             } else if (item.eventType === 'kasko-guncelle') {
                 let txt = 'Kasko Yenilemesi Bildirildi';
                 if (d.bitisTarihi) txt += ` (Bitiş: ${escapeHtmlDriver(d.bitisTarihi)})`;
-                detailsHtml = `<p>${escapeHtmlDriver(txt)}</p><p><strong>Tarih:</strong> ${escapeHtmlDriver(eventDate)}</p>`;
+                detailsHtml = `<p>${escapeHtmlDriver(txt)}</p>`;
             } else if (item.eventType === 'sigorta-guncelle') {
                 let txt = 'Trafik Sigortası Yenileme Bildirildi';
                 if (d.bitisTarihi) txt += ` (Bitiş: ${escapeHtmlDriver(d.bitisTarihi)})`;
-                detailsHtml = `<p>${escapeHtmlDriver(txt)}</p><p><strong>Tarih:</strong> ${escapeHtmlDriver(eventDate)}</p>`;
+                detailsHtml = `<p>${escapeHtmlDriver(txt)}</p>`;
             } else {
-                detailsHtml = `<p>${escapeHtmlDriver(item.eventType || 'Güncelleme')}</p><p><strong>Tarih:</strong> ${escapeHtmlDriver(eventDate)}</p>`;
+                detailsHtml = `<p>${escapeHtmlDriver(item.eventType || 'Güncelleme')}</p>`;
             }
         }
 
