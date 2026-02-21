@@ -1922,15 +1922,22 @@ window.logout = function() {
     window.location.href = DRIVER_PAGE_BASE + 'index.html';
 };
 
-/* Service Worker (PWA cache) – driver sayfaları doğrudan açıldığında da çalışır */
+/* Service Worker (PWA cache) – driver izole scope ile ana uygulamadan ayrı PWA olarak kurulabilir */
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
     var swPaths = ['../sw.js', '/sw.js', '/tasitmedisa/sw.js', '/medisa/sw.js'];
     var currentPathIndex = 0;
+    var swScope = (function() {
+      var p = document.location.pathname;
+      if (p.indexOf('/tasitmedisa') === 0) return '/tasitmedisa/driver/';
+      if (p.indexOf('/medisa') === 0) return '/medisa/driver/';
+      if (p.indexOf('/driver') !== -1) return '/driver/';
+      return '/driver/';
+    })();
     function tryRegisterSW() {
       if (currentPathIndex >= swPaths.length) return;
       var swPath = swPaths[currentPathIndex];
-      navigator.serviceWorker.register(swPath, { scope: './' })
+      navigator.serviceWorker.register(swPath, { scope: swScope })
         .then(function() {})
         .catch(function(error) {
           if (error.message && (
