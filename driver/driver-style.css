@@ -1256,18 +1256,18 @@ body.driver-modal-open {
   max-height: 240px;
   overflow-y: auto;
   background: var(--card-bg, #0f1418);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(var(--theme-color-rgb), 0.25);
   border-radius: 8px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(var(--theme-color-rgb), 0.08);
   z-index: 100;
 }
 .driver-plate-dropdown-item {
   padding: 10px 14px;
   font-size: 12px;
-  color: #e5e5e5;
+  color: var(--txt);
   cursor: pointer;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  transition: background 0.15s;
+  transition: background 0.15s, color 0.15s;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -1276,8 +1276,14 @@ body.driver-modal-open {
 .driver-plate-dropdown-item:last-child {
   border-bottom: none;
 }
-.driver-plate-dropdown-item:hover {
-  background: rgba(var(--theme-color-rgb), 0.08);
+.driver-plate-dropdown-item:hover,
+.driver-plate-dropdown-item:focus {
+  background: rgba(var(--theme-color-rgb), 0.12);
+  color: var(--txt);
+  outline: none;
+}
+.driver-plate-dropdown-item[aria-selected="true"] {
+  background: rgba(var(--theme-color-rgb), 0.15);
 }
 .driver-cards-inner .vehicle-card.driver-card-hidden {
   display: none !important;
@@ -2936,8 +2942,11 @@ body.driver-modal-open {
   /* Plaka listesi: mobilde temaya uyumlu koyu arka plan */
   .driver-plate-dropdown {
     background: var(--card-bg, #0f1418) !important;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+    border: 1px solid rgba(var(--theme-color-rgb), 0.25) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(var(--theme-color-rgb), 0.08) !important;
+  }
+  .dashboard-page .driver-plate-dropdown-item {
+    color: var(--txt) !important;
   }
 
   /* Ana başlık çerçevesi – mobilde border + kırmızı ışıklar (login ile uyumlu) */
