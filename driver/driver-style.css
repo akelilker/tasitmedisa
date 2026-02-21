@@ -1556,9 +1556,9 @@ body.driver-modal-open {
   display: none;
 }
 
-/* Kaza bloku: kaporta SVG container – taşma önleme, mobil uyumlu */
+/* Kaza bloku: kaporta SVG container – taşma önleme, mobil uyumlu; %20 küçültme */
 .driver-kaporta-container {
-  max-height: 200px;
+  max-height: 160px; /* 200 * 0.8 */
   overflow: hidden;
   margin-top: 8px;
   margin-bottom: 4px;
@@ -1576,7 +1576,7 @@ body.driver-modal-open {
 }
 @media (max-width: 480px) {
   .driver-kaporta-container {
-    max-height: 180px;
+    max-height: 144px; /* 180 * 0.8 */
   }
   .driver-kaporta-container .boya-legend {
     font-size: 10px;

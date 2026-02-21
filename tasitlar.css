@@ -300,9 +300,9 @@
     box-sizing: border-box !important;
 }
 
-/* Şemayı saran kutu: sol yaslı, sağ kenar Yoktur metninin "r" harfine dikeyde paralel (max-width ile oranlanır) */
+/* Şemayı saran kutu: sol yaslı, sağ kenar Yoktur metninin "r" harfine dikeyde paralel (max-width ile oranlanır); %20 küçültme */
 .kaporta-schema-wrapper {
-    width: 170px !important;
+    width: 136px !important; /* 170 * 0.8 */
     display: block !important;
     margin: 0 !important;
     margin-right: auto !important;
@@ -333,9 +333,9 @@
     flex-shrink: 0;
 }
 
-/* Şemayı saran kutu (detay dışında 170px; detayda JS ile Yoktur "r" hizası) */
+/* Şemayı saran kutu (detay dışında 136px; detayda JS ile Yoktur "r" hizası; %20 küçültme) */
 .kaporta-schema-wrapper {
-    width: 170px;
+    width: 136px;
     display: block !important;
     margin: 0 auto;
     margin-top: 5px !important; /* Şemayı 5px yukarı kaydır */
