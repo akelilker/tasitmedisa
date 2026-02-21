@@ -2449,7 +2449,7 @@
     /* Mobil: Şube 3px dar, Kullanıcı 3px geniş; metin çerçeveye 1px */
     grid-template-columns: 32px 70px 2.4fr 60px 1.75fr 2.05fr; /* fallback; JS inline style override eder */
     gap: 4px !important; /* Masaüstü ile aynı */
-    padding: 4px 1px !important; /* Dikey boşluk 2px azaltıldı */
+    padding: 4px 1px 4px 2px !important; /* Sol çerçeveye 1px daha boşluk */
     min-height: 32px !important;
     min-width: 0 !important; /* İçerik sığmayınca ikinci satıra düşsün, yatay taşma olmasın */
     width: 100% !important;
