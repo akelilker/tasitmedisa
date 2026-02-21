@@ -2215,10 +2215,18 @@ body.driver-modal-open {
 
 /* Kayıt kartı: tema uyumlu koyu gri */
 .history-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
   background: rgba(18, 22, 28, 0.98);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 8px;
-  padding: 3px 16px 3px 16px;
+  padding: 12px 16px;
+}
+
+.history-card-content {
+  flex: 1;
+  min-width: 0;
 }
 
 .history-header {
@@ -2250,21 +2258,24 @@ body.driver-modal-open {
   color: var(--txt);
 }
 
-.btn-edit-request {
-  margin-top: 8px;
-  width: 100%;
-  padding: 10px 14px;
+/* Kalem ikonu: sağda dikeyde ortalı */
+.history-edit-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
   background: transparent;
-  border: 1px solid var(--br);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 8px;
-  color: var(--txt);
-  font-size: 15px;
-  font-weight: 600;
+  color: var(--muted);
   cursor: pointer;
   transition: background 0.2s, border-color 0.2s, color 0.2s;
 }
 
-.btn-edit-request:hover {
+.history-edit-icon:hover {
   background: rgba(74, 222, 128, 0.12);
   border-color: var(--green);
   color: var(--green);
@@ -3121,8 +3132,9 @@ body.driver-modal-open {
   .dashboard-page .history-details p {
     font-size: 15px !important;
   }
-  .dashboard-page .btn-edit-request {
-    font-size: 16px !important;
+  .dashboard-page .history-edit-icon {
+    width: 44px;
+    height: 44px;
   }
   /* Sol panel: etiket ve açıklama aynı boyut, aynı satırda hizalı; +1pt (mobil sol grid) */
   .dashboard-page .driver-left-panel .driver-info-item .label {
@@ -3301,9 +3313,10 @@ body.driver-modal-open {
 
 /* Masaüstü (641px+): Bakım/Kaza butonları – 66px yükseklik, 2px dikey boşluk (mobil kurallardan sonra uygulanması için ayrı blok) */
 @media (min-width: 641px) {
-  /* Geçmiş Kayıtlarım: Düzeltme Talep Et butonu metni 3pt küçük */
-  .dashboard-page .btn-edit-request {
-    font-size: 12px !important;
+  /* Geçmiş Kayıtlarım: kalem ikonu */
+  .dashboard-page .history-edit-icon svg {
+    width: 20px;
+    height: 20px;
   }
   .dashboard-page .driver-report-btn {
     padding: 2px 12px !important;
