@@ -67,11 +67,28 @@
   box-sizing: border-box !important;
 }
 
-/* Olay Ekle modallarında tüm tarih inputları muayene ile aynı genişlik (190px) */
-.olay-ekle-modal .modal-body input[type="date"].form-input {
+/* Olay Ekle modallarında tüm tarih inputları – gg.aa.yyyy kutudan taşmasın */
+.olay-ekle-modal .modal-body input[type="date"].form-input,
+.olay-ekle-modal .modal-body .olay-tarih-input {
   width: 190px !important;
   max-width: 190px !important;
-  min-width: 165px !important;
+  min-width: min(165px, 100%) !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+  font-size: 11px !important;
+  padding: 5px 28px 5px 10px !important;
+  text-align: left !important;
+}
+.olay-ekle-modal .modal-body input[type="date"].form-input::-webkit-datetime-edit,
+.olay-ekle-modal .modal-body .olay-tarih-input::-webkit-datetime-edit {
+  font-size: 11px !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+.olay-ekle-modal .modal-body input[type="date"].form-input::-webkit-datetime-edit-fields-wrapper,
+.olay-ekle-modal .modal-body .olay-tarih-input::-webkit-datetime-edit-fields-wrapper {
+  padding: 0 !important;
+  max-width: 100% !important;
   box-sizing: border-box !important;
 }
 
@@ -959,6 +976,11 @@
         font-size: 11px;
         margin-left: 4px;
         padding: 0 6px;
+    }
+    /* Mobil: arama açıldığında büyüteç sağdan kaçmasın — şanzıman + büyüteç + arşiv (~110px) + padding */
+    .v-search-container.open {
+        width: min(360px, calc(100vw - 120px)) !important;
+        max-width: min(360px, calc(100vw - 120px)) !important;
     }
 }
 
@@ -2112,6 +2134,7 @@
   #vehicles-modal .vt-right {
     gap: 2px !important;
     flex-shrink: 0;
+    min-width: 0 !important; /* Arama açıkken taşmayı önle */
   }
   /* Taşıtlar toolbar: arama + şanzıman + diğer ikonlar sığsın */
   #vehicles-modal .vt-right .vt-icon-btn,
@@ -2296,25 +2319,35 @@
   .card-brand-model { font-size: 16px; font-weight: 400; color: var(--form-label-color); } /* +1 punto daha (sadece mobil) */
   .card-third-line { font-size: 14px; } /* +1 punto daha (sadece mobil) */
 
-  /* --- TARİH INPUTLARI --- */
-  #bakim-tarih,
-  #sigorta-tarih,
-  #kasko-tarih,
-  #muayene-tarih,
-  #satis-tarih {
-    width: 50% !important;
-    max-width: 150px !important;
-  }
-  #muayene-tarih {
-    max-width: 165px !important; /* gg.aa.yyyy tam sığsın, yıl kesilmesin */
-  }
-  /* Olay Ekle: tarih input gg.aa.yyyy sola kavmasın */
+  /* --- TARİH INPUTLARI (Olay Ekle 14 modal) - gg.aa.yyyy kutudan taşmasın --- */
+  .olay-ekle-modal .modal-body .olay-tarih-input,
   .olay-ekle-modal .modal-body input[type="date"].form-input {
-    padding-left: 12px !important;
+    width: 100% !important;
+    max-width: 165px !important;
+    min-width: min(140px, 100%) !important;
+    overflow: hidden !important;
+    font-size: 11px !important;
+    padding: 5px 28px 5px 10px !important;
     text-align: left !important;
+    box-sizing: border-box !important;
   }
+  .olay-ekle-modal .modal-body .olay-tarih-input::-webkit-datetime-edit,
+  .olay-ekle-modal .modal-body input[type="date"].form-input::-webkit-datetime-edit {
+    font-size: 11px !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  .olay-ekle-modal .modal-body .olay-tarih-input::-webkit-datetime-edit-fields-wrapper,
   .olay-ekle-modal .modal-body input[type="date"].form-input::-webkit-datetime-edit-fields-wrapper {
-    padding-left: 0 !important;
+    padding: 0 !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  /* Tarih input'un doğrudan parent'ı – taşan içeriği kırp */
+  .olay-ekle-modal .modal-body div:has(> .olay-tarih-input),
+  .olay-ekle-modal .modal-body div:has(> input[type="date"]) {
+    overflow: hidden !important;
+    min-width: 0 !important;
   }
 
   /* --- OLAY EKLE MODALLARI - TÜM METİNLER +2px --- */
