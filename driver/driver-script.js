@@ -47,6 +47,8 @@ let currentPeriod = '';
 let selectedVehicleId = null;
 /** Bu oturumda (ekran kapanana kadar) son bildirilen aksiyon: { action, vehicleId }. Ekran kapanınca temizlenir, yeşil geri bildirim beyaz/griye döner. */
 let lastCompletedActionInSession = null;
+/** KM bildirimi sonrası uyarının hemen kaybolması için: vehicleId -> period eşlemesi. loadDashboard cache veya geç yanıt verse bile uyarı kalksın. */
+let lastSuccessfulKmSubmissions = {};
 
 function clearSessionGreenFeedback() { lastCompletedActionInSession = null; }
 window.addEventListener('pagehide', clearSessionGreenFeedback);
@@ -234,8 +236,9 @@ async function loadDashboard() {
     currentToken = token;
     
     try {
-        const response = await fetch(API_BASE + 'driver_data.php', {
-            headers: { 'Authorization': 'Bearer ' + token }
+        const response = await fetch(API_BASE + 'driver_data.php?_=' + Date.now(), {
+            headers: { 'Authorization': 'Bearer ' + token },
+            cache: 'no-store'
         });
         
         const data = await response.json();
@@ -797,6 +800,7 @@ window.submitDriverAction = async function(type, vid) {
             if (formActions) formActions.style.display = 'none';
             if (successMsg) successMsg.classList.add('show');
             const period = currentPeriod || new Date().toISOString().slice(0, 7);
+            lastSuccessfulKmSubmissions[String(vid)] = period;
             allHistoryRecords = allHistoryRecords || [];
             allHistoryRecords.push({
                 arac_id: vid,
@@ -882,6 +886,7 @@ window.submitKmOnly = async function(vid) {
             if (formContent) formContent.style.display = 'none';
             if (successMsg) successMsg.classList.add('show');
             const period = currentPeriod || new Date().toISOString().slice(0, 7);
+            lastSuccessfulKmSubmissions[String(vid)] = period;
             allHistoryRecords = allHistoryRecords || [];
             allHistoryRecords.push({
                 arac_id: vid,
@@ -919,7 +924,10 @@ function buildSlidingWarnings(vehicles, records) {
     let needsKmWarning = false;
     
     for (const v of vehicles) {
-        const hasKmThisMonth = records.some(r => String(r.arac_id) === String(v.id) && r.donem === period && r.guncel_km != null && String(r.guncel_km).trim() !== '');
+        const vid = String(v.id);
+        const fromRecords = records.some(r => String(r.arac_id) === vid && String(r.donem || '') === period && r.guncel_km != null && String(r.guncel_km).trim() !== '');
+        const fromOptimistic = lastSuccessfulKmSubmissions[vid] === period;
+        const hasKmThisMonth = fromRecords || fromOptimistic;
         if (!hasKmThisMonth) needsKmWarning = true;
         const checkDate = (dateStr, label) => {
             if (!dateStr) return;
