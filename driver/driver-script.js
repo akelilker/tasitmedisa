@@ -1654,12 +1654,59 @@ document.addEventListener('click', function(ev) {
     }
 });
 
-function renderHistoryList() {
+function buildCombinedHistoryList() {
     const vehicleFilter = document.getElementById('history-vehicle-filter').value;
-    const filtered = vehicleFilter
-        ? allHistoryRecords.filter(r => String(r.arac_id) === String(vehicleFilter))
-        : allHistoryRecords;
-    const sorted = filtered.slice().sort((a, b) => (b.donem + (b.kayit_tarihi || '')).localeCompare(a.donem + (a.kayit_tarihi || '')));
+    const hareketler = (allHistoryRecords || []).map(r => ({ ...r, _type: 'hareket' }));
+    const eventItems = [];
+    (allHistoryVehicles || []).forEach(v => {
+        const aracId = v.id;
+        if (vehicleFilter && String(aracId) !== String(vehicleFilter)) return;
+        const events = v.events || [];
+        events.forEach(ev => {
+            eventItems.push({
+                _type: 'event',
+                id: 'evt-' + (ev.id || Math.random()),
+                arac_id: aracId,
+                eventType: ev.type,
+                timestamp: ev.timestamp || '',
+                date: ev.date || '',
+                data: ev.data || {}
+            });
+        });
+    });
+    const hareketFiltered = vehicleFilter
+        ? hareketler.filter(r => String(r.arac_id) === String(vehicleFilter))
+        : hareketler;
+    const combined = [...hareketFiltered, ...eventItems];
+    const sortKey = (item) => {
+        if (item._type === 'hareket') return (item.donem || '') + (item.kayit_tarihi || '');
+        return item.timestamp || (item.date ? new Date(item.date + 'T12:00:00').toISOString() : '');
+    };
+    combined.sort((a, b) => (sortKey(b) || '').localeCompare(sortKey(a) || ''));
+    return combined;
+}
+
+function formatHistoryPeriod(item) {
+    if (item._type === 'hareket') return formatPeriod(item.donem || '');
+    if (item.date) {
+        try {
+            const d = new Date(item.date + 'T12:00:00');
+            const months = ['OCAK', 'ŞUBAT', 'MART', 'NİSAN', 'MAYIS', 'HAZİRAN', 'TEMMUZ', 'AĞUSTOS', 'EYLÜL', 'EKİM', 'KASIM', 'ARALIK'];
+            return `${String(d.getDate()).padStart(2, '0')} ${months[d.getMonth()]} ${d.getFullYear()}`;
+        } catch (e) { return item.date; }
+    }
+    if (item.timestamp) {
+        try {
+            const d = new Date(item.timestamp);
+            const months = ['OCAK', 'ŞUBAT', 'MART', 'NİSAN', 'MAYIS', 'HAZİRAN', 'TEMMUZ', 'AĞUSTOS', 'EYLÜL', 'EKİM', 'KASIM', 'ARALIK'];
+            return `${String(d.getDate()).padStart(2, '0')} ${months[d.getMonth()]} ${d.getFullYear()}`;
+        } catch (e) { return ''; }
+    }
+    return '';
+}
+
+function renderHistoryList() {
+    const sorted = buildCombinedHistoryList();
     const listEl = document.getElementById('history-list');
     listEl.innerHTML = '';
     if (sorted.length === 0) {
@@ -1667,28 +1714,55 @@ function renderHistoryList() {
         return;
     }
     window._historyRecordMap = window._historyRecordMap || {};
-    sorted.forEach(record => {
-        window._historyRecordMap[record.id] = record;
-        const vehicle = allHistoryVehicles.find(v => v.id === record.arac_id);
-        const plaka = vehicle ? vehicle.plaka : record.arac_id;
-        const periodLabel = formatPeriod(record.donem);
-        const kayitTarihi = record.kayit_tarihi
-            ? new Date(record.kayit_tarihi).toLocaleString('tr-TR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })
-            : '-';
+    sorted.forEach(item => {
+        const vehicle = allHistoryVehicles.find(v => String(v.id) === String(item.arac_id));
+        const plaka = vehicle ? vehicle.plaka : item.arac_id;
+        const periodLabel = formatHistoryPeriod(item);
+
+        let detailsHtml = '';
+        let showEditBtn = false;
+
+        if (item._type === 'hareket') {
+            window._historyRecordMap[item.id] = item;
+            showEditBtn = true;
+            const kayitTarihi = item.kayit_tarihi
+                ? new Date(item.kayit_tarihi).toLocaleString('tr-TR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })
+                : '-';
+            if (item.kaza_durumu) {
+                detailsHtml = `<p><strong>Kaza:</strong> ${escapeHtmlDriver(item.kaza_aciklama || 'Var')}</p>`;
+                if (item.kaza_tarih) detailsHtml += `<p><strong>Tarih:</strong> ${item.kaza_tarih}</p>`;
+                if (item.kaza_hasar_tutari) detailsHtml += `<p><strong>Hasar Tutarı:</strong> ${escapeHtmlDriver(item.kaza_hasar_tutari)} TL</p>`;
+                detailsHtml += `<p><strong>Kayıt:</strong> ${kayitTarihi}</p>`;
+            } else if (item.bakim_durumu) {
+                detailsHtml = `<p><strong>Bakım:</strong> ${escapeHtmlDriver(item.bakim_aciklama || 'Var')}</p>`;
+                if (item.bakim_tarih) detailsHtml += `<p><strong>Tarih:</strong> ${item.bakim_tarih}</p>`;
+                detailsHtml += `<p><strong>Kayıt:</strong> ${kayitTarihi}</p>`;
+            } else {
+                detailsHtml = `<p><strong>KM:</strong> ${formatKm(item.guncel_km) || '0'}</p><p><strong>Kayıt:</strong> ${kayitTarihi}</p>`;
+            }
+        } else {
+            const eventDate = item.date || (item.timestamp ? new Date(item.timestamp).toLocaleDateString('tr-TR') : '-');
+            const labels = {
+                'muayene-guncelle': 'Muayene Bilgisi Güncellendi',
+                'kasko-guncelle': 'Kasko Yenilemesi Bildirildi',
+                'sigorta-guncelle': 'Trafik Sigortası Yenileme Bildirildi',
+                'anahtar-guncelle': 'Yedek Anahtar Bilgisi Güncellendi',
+                'lastik-guncelle': 'Lastik Durumu Güncellendi',
+                'utts-guncelle': 'UTTS Bilgisi Güncellendi'
+            };
+            const label = labels[item.eventType] || item.eventType;
+            detailsHtml = `<p><strong>${escapeHtmlDriver(label)}</strong></p><p><strong>Tarih:</strong> ${eventDate}</p>`;
+        }
+
         const card = document.createElement('div');
         card.className = 'history-card';
         card.innerHTML = `
             <div class="history-header">
-                <span class="history-period">${periodLabel}</span>
-                <span class="history-vehicle">${plaka}</span>
+                <span class="history-period">${escapeHtmlDriver(periodLabel)}</span>
+                <span class="history-vehicle">${escapeHtmlDriver(plaka)}</span>
             </div>
-            <div class="history-details">
-                <p><strong>KM:</strong> ${formatKm(record.guncel_km) || '0'}</p>
-                <p><strong>Bakım:</strong> ${record.bakim_durumu ? (record.bakim_aciklama || 'Var') : 'Yok'}</p>
-                <p><strong>Kaza:</strong> ${record.kaza_durumu ? (record.kaza_aciklama || 'Var') : 'Yok'}</p>
-                <p><strong>Kayıt:</strong> ${kayitTarihi}</p>
-            </div>
-            <button onclick="showEditRequest(${record.id})" class="btn-edit-request">Düzeltme Talep Et</button>
+            <div class="history-details">${detailsHtml}</div>
+            ${showEditBtn ? `<button onclick="showEditRequest(${typeof item.id === 'number' ? item.id : JSON.stringify(String(item.id))})" class="btn-edit-request">Düzeltme Talep Et</button>` : ''}
         `;
         listEl.appendChild(card);
     });
