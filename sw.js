@@ -52,8 +52,10 @@ const CACHE_FILES = [
   '/icon/otomobil.svg',
   '/icon/kaporta.svg',
   
-  // Manifest
-  '/manifest.json'
+  // Manifest files (main + sub apps)
+  '/manifest.json',
+  '/driver/manifest.json',
+  '/admin/manifest.json'
 ];
 
 // Install - Cache tüm dosyaları (hata toleranslı, subpath destekli)
