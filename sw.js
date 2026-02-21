@@ -1,7 +1,7 @@
 // Service Worker - Medisa Taşıt Yönetim Sistemi
 // Version 2.0 - Cache temizleme + 404 fix
 
-const CACHE_VERSION = 'medisa-v2.4';
+const CACHE_VERSION = 'medisa-v2.5';
 
 // Subpath desteği: /medisa/sw.js ise base = '/medisa', kök deploy'da base = ''
 function getBase() {
@@ -52,8 +52,10 @@ const CACHE_FILES = [
   '/icon/otomobil.svg',
   '/icon/kaporta.svg',
   
-  // Manifest
-  '/manifest.json'
+  // Manifest files (main + sub apps)
+  '/manifest.json',
+  '/driver/manifest.json',
+  '/admin/manifest.json'
 ];
 
 // Install - Cache tüm dosyaları (hata toleranslı, subpath destekli)
