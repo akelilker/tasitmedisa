@@ -163,24 +163,11 @@ document.addEventListener('DOMContentLoaded', () => {
     window.updateFooterDim();
   });
 
-  // Tüm modalları izlemeye başla
+  // Tüm modalları izlemeye başla (performans: bodyObserver kaldırıldı - DOM değişikliklerinde tetiklenmiyordu)
   const allModals = document.querySelectorAll('.modal-overlay');
   allModals.forEach(modal => {
     modalObserver.observe(modal, { attributes: true, attributeFilter: ['class', 'style'] });
   });
-  
-  // Dinamik eklenen modallar için de izle
-  const bodyObserver = new MutationObserver((mutations) => {
-    mutations.forEach((mutation) => {
-      mutation.addedNodes.forEach((node) => {
-        if (node.nodeType === 1 && node.classList && node.classList.contains('modal-overlay')) {
-          modalObserver.observe(node, { attributes: true, attributeFilter: ['class', 'style'] });
-        }
-      });
-    });
-  });
-  
-  bodyObserver.observe(document.body, { childList: true, subtree: true });
 });
 
 // Modal açma fonksiyonları: tasitlar.js ve raporlar.js kendi openVehiclesView/openReportsView tanımlar
