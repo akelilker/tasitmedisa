@@ -2466,13 +2466,13 @@
     background: rgba(255,255,255,0.04) !important; /* Masaüstü ile aynı */
   }
 
-  /* Başlık Satırı - Mobil: +1pt (JS --list-header-font-size), en fazla 1.5pt küçülme; üst hizalı (2. satıra geçenler ilk satırla aynı hizada) */
+  /* Başlık Satırı - Mobil: +1pt (JS --list-header-font-size); dikey ortalanmış */
   .list-header-row {
     --list-header-font-size: 15px; /* JS ile güncellenir; min 13.5px (15 - 1.5pt) */
     display: grid !important;
     grid-template-columns: 32px 70px 2.4fr 60px 1.75fr 2.05fr; /* Şube 3px dar, Kullanıcı 3px geniş */
     gap: 4px !important;
-    align-items: flex-start !important;
+    align-items: center !important;
     padding: 2px 4px !important; /* başlık metin üst/alt 2px */
     margin-bottom: 4px !important;
     border-bottom: 1px solid rgba(255,255,255,0.22) !important;
@@ -2496,9 +2496,9 @@
     padding-left: 1px !important;
     padding-right: 1px !important;
   }
-  /* İçerik hücreleri: +1pt (16→17); metin–çerçeve yatay 1px, dikey 2px */
+  /* İçerik hücreleri: +1.5pt (16→17.5); metin–çerçeve yatay 1px, dikey 2px */
   .view-list .list-cell {
-    font-size: 17px !important;
+    font-size: 17.5px !important;
     font-weight: 500 !important;
     color: #e0e0e0 !important;
     display: flex !important;
