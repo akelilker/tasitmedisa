@@ -353,7 +353,7 @@ body.driver-modal-open {
 .driver-user-plate-in-panel {
   display: flex;
   flex-direction: column;
-  gap: 2px;       /* Plaka ile marka/model arası 2px */
+  gap: 1px;       /* Plaka ile marka/model arası total 1px */
   align-items: center;
   text-align: center;
   flex-shrink: 0;
@@ -460,7 +460,7 @@ body.driver-modal-open {
   transform: translateY(-50%);
 }
 .driver-current-plaka {
-  font-size: 15px;
+  font-size: 14px; /* 15px - 1pt */
   font-weight: 700;
   color: var(--txt);
 }
@@ -870,7 +870,7 @@ body.driver-modal-open {
   .driver-user-name { font-size: 14.5px; }
   .driver-user-name-center { font-size: 13.5px; }
   .driver-user-plate-row .driver-user-name { font-size: 12.5px; }
-  .driver-current-plaka { font-size: 14.5px; }
+  .driver-current-plaka { font-size: 13.5px; } /* 14.5 - 1pt */
   .driver-plate-subtitle { font-size: 14.5px; }
   .driver-user-plate-in-panel .driver-plate-subtitle { font-size: 15.5px; }
   .driver-user-plate-in-panel { gap: 1px; margin-bottom: 3px; }
@@ -1215,7 +1215,7 @@ body.driver-modal-open {
   position: relative;
 }
 .driver-current-plaka {
-  font-size: 20px;
+  font-size: 19px; /* 20px - 1pt */
   font-weight: 700;
   color: #e5e5e5;
   margin: 0;
@@ -3121,7 +3121,7 @@ body.driver-modal-open {
     font-size: 14px !important;
   }
   .dashboard-page .driver-left-panel .driver-current-plaka {
-    font-size: 16px !important;
+    font-size: 15px !important; /* 16px - 1pt */
   }
   .dashboard-page .driver-left-panel .driver-user-name,
   .dashboard-page .driver-user-plate-in-panel .driver-user-name {
