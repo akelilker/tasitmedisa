@@ -2217,11 +2217,11 @@ body.driver-modal-open {
 .history-card {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   background: rgba(18, 22, 28, 0.98);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 8px;
-  padding: 12px 16px;
+  padding: 8px 14px;
 }
 
 .history-card-content {
@@ -2232,7 +2232,7 @@ body.driver-modal-open {
 .history-header {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
 }
 
 .history-period {
@@ -2258,26 +2258,24 @@ body.driver-modal-open {
   color: var(--txt);
 }
 
-/* Kalem ikonu: sağda dikeyde ortalı */
+/* Kalem ikonu: sağda dikeyde ortalı, arka plan ve çerçeve yok */
 .history-edit-icon {
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   padding: 0;
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 8px;
+  background: none;
+  border: none;
+  border-radius: 0;
   color: var(--muted);
   cursor: pointer;
-  transition: background 0.2s, border-color 0.2s, color 0.2s;
+  transition: color 0.2s;
 }
 
 .history-edit-icon:hover {
-  background: rgba(74, 222, 128, 0.12);
-  border-color: var(--green);
   color: var(--green);
 }
 
