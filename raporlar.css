@@ -1591,6 +1591,10 @@ color: #ffffff !important;
 font-size: clamp(11px, 2.5vw, 14px) !important;
 padding: 2px 3px !important;
 }
+/* Şube sütunu: tek karakter alta inmesin – max 0.5pt küçük, gerekirse 1.5pt'a kadar küçülebilir */
+.stok-list-cell[data-col="sube"] {
+font-size: clamp(9.5px, 2.5vw, 13.5px) !important;
+}
 
 /* Grid sütunları - taşma önleme */
 .stok-list-header-cell,
