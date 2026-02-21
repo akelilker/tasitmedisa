@@ -892,10 +892,14 @@ body.driver-modal-open {
   .driver-success-msg { font-size: 16.5px; }
   .driver-km-success-msg { font-size: 16.5px; }
 
-  /* MEDISA logosu: 3px aşağı, 2px büyüt; başlık metinlerini itmeden */
+  /* Splash logosu mobilde %20 küçültme (176→141px) */
+  .driver-splash-logo {
+    width: 141px !important;
+  }
+  /* MEDISA hero logosu mobilde %20 küçültme (54→43px) */
   .dashboard-page .hero-logo {
-    flex: 0 0 54px !important;
-    width: 54px !important;
+    flex: 0 0 43px !important;
+    width: 43px !important;
     transform: translate(-2px, 4px) !important; /* 1px + 3px aşağı (style-core 1px’e ek) */
     margin-top: 0 !important;
   }
@@ -903,10 +907,10 @@ body.driver-modal-open {
     width: 100% !important;
     height: auto !important;
   }
-  /* Login logosu ana uygulama ile aynı büyüklük (54px mobil) */
+  /* Login logosu mobilde %20 küçültme (54→43px) */
   .login-page .hero-logo {
-    flex: 0 0 54px !important;
-    width: 54px !important;
+    flex: 0 0 43px !important;
+    width: 43px !important;
   }
   .login-page .hero-logo img {
     width: 100% !important;
