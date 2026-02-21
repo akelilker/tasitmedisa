@@ -796,10 +796,11 @@ window.submitDriverAction = async function(type, vid) {
             lastCompletedActionInSession = { action: type, vehicleId: vid };
             if (formActions) formActions.style.display = 'none';
             if (successMsg) successMsg.classList.add('show');
+            const period = currentPeriod || new Date().toISOString().slice(0, 7);
             allHistoryRecords = allHistoryRecords || [];
             allHistoryRecords.push({
                 arac_id: vid,
-                donem: currentPeriod,
+                donem: period,
                 guncel_km: guncelKm,
                 kayit_tarihi: new Date().toISOString()
             });
@@ -880,14 +881,16 @@ window.submitKmOnly = async function(vid) {
             lastCompletedActionInSession = { action: 'km', vehicleId: vid };
             if (formContent) formContent.style.display = 'none';
             if (successMsg) successMsg.classList.add('show');
+            const period = currentPeriod || new Date().toISOString().slice(0, 7);
             allHistoryRecords = allHistoryRecords || [];
             allHistoryRecords.push({
                 arac_id: vid,
-                donem: currentPeriod,
+                donem: period,
                 guncel_km: km,
                 kayit_tarihi: new Date().toISOString()
             });
             renderSlidingWarning(allHistoryVehicles || [], allHistoryRecords);
+            loadDashboard();
             setTimeout(function() {
                 const block = document.getElementById('km-block-' + vid);
                 const inner = document.querySelector('.driver-action-area-inner[data-vehicle-id="' + vid + '"]');
@@ -897,7 +900,6 @@ window.submitKmOnly = async function(vid) {
                 if (successMsg) successMsg.classList.remove('show');
                 const kmBtn = inner ? inner.querySelector('.driver-action-btn[data-action="km"]') : null;
                 if (kmBtn) kmBtn.classList.add('saved');
-                loadDashboard();
             }, 2000);
         } else {
             if (errorEl) { errorEl.textContent = data.message || 'Kayıt yapılamadı.'; errorEl.classList.add('show'); }
@@ -913,13 +915,11 @@ window.submitKmOnly = async function(vid) {
 
 function buildSlidingWarnings(vehicles, records) {
     const warnings = [];
-    const today = new Date();
-    const dayOfMonth = today.getDate();
-    const isFirstOfMonth = dayOfMonth === 1;
+    const period = currentPeriod || new Date().toISOString().slice(0, 7);
     let needsKmWarning = false;
     
     for (const v of vehicles) {
-        const hasKmThisMonth = records.some(r => String(r.arac_id) === String(v.id) && r.donem === currentPeriod && r.guncel_km != null && String(r.guncel_km).trim() !== '');
+        const hasKmThisMonth = records.some(r => String(r.arac_id) === String(v.id) && r.donem === period && r.guncel_km != null && String(r.guncel_km).trim() !== '');
         if (!hasKmThisMonth) needsKmWarning = true;
         const checkDate = (dateStr, label) => {
             if (!dateStr) return;
