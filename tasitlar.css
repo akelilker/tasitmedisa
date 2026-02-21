@@ -727,7 +727,7 @@
   }
   /* Plaka üstten kesilmesin (masaüstü) */
   #vehicle-detail-modal #vehicle-detail-content {
-    padding-top: 18px !important;
+    padding-top: 15px !important;
   }
   #vehicle-detail-modal .vehicle-detail-columns {
     margin-top: 13px !important;
