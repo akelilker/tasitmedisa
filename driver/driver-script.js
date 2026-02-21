@@ -819,7 +819,7 @@ window.submitDriverAction = async function(type, vid) {
                 var actionBtn = inner ? inner.querySelector('.driver-action-btn[data-action="' + type + '"]') : null;
                 if (actionBtn) actionBtn.classList.add('saved');
                 loadDashboard();
-            }, 2000);
+            }, 4000);
         } else {
             alert(data.message || 'Kayıt yapılamadı.');
         }
@@ -895,7 +895,6 @@ window.submitKmOnly = async function(vid) {
                 kayit_tarihi: new Date().toISOString()
             });
             renderSlidingWarning(allHistoryVehicles || [], allHistoryRecords);
-            loadDashboard();
             setTimeout(function() {
                 const block = document.getElementById('km-block-' + vid);
                 const inner = document.querySelector('.driver-action-area-inner[data-vehicle-id="' + vid + '"]');
@@ -905,7 +904,8 @@ window.submitKmOnly = async function(vid) {
                 if (successMsg) successMsg.classList.remove('show');
                 const kmBtn = inner ? inner.querySelector('.driver-action-btn[data-action="km"]') : null;
                 if (kmBtn) kmBtn.classList.add('saved');
-            }, 2000);
+                loadDashboard();
+            }, 4000);
         } else {
             if (errorEl) { errorEl.textContent = data.message || 'Kayıt yapılamadı.'; errorEl.classList.add('show'); }
         }
