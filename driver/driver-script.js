@@ -796,6 +796,14 @@ window.submitDriverAction = async function(type, vid) {
             lastCompletedActionInSession = { action: type, vehicleId: vid };
             if (formActions) formActions.style.display = 'none';
             if (successMsg) successMsg.classList.add('show');
+            allHistoryRecords = allHistoryRecords || [];
+            allHistoryRecords.push({
+                arac_id: vid,
+                donem: currentPeriod,
+                guncel_km: guncelKm,
+                kayit_tarihi: new Date().toISOString()
+            });
+            renderSlidingWarning(allHistoryVehicles || [], allHistoryRecords);
             setTimeout(function() {
                 var block = document.getElementById((type === 'kaza' ? 'kaza-block-' : 'bakim-block-') + vid);
                 var inner = document.querySelector('.driver-action-area-inner[data-vehicle-id="' + vid + '"]');
@@ -872,6 +880,14 @@ window.submitKmOnly = async function(vid) {
             lastCompletedActionInSession = { action: 'km', vehicleId: vid };
             if (formContent) formContent.style.display = 'none';
             if (successMsg) successMsg.classList.add('show');
+            allHistoryRecords = allHistoryRecords || [];
+            allHistoryRecords.push({
+                arac_id: vid,
+                donem: currentPeriod,
+                guncel_km: km,
+                kayit_tarihi: new Date().toISOString()
+            });
+            renderSlidingWarning(allHistoryVehicles || [], allHistoryRecords);
             setTimeout(function() {
                 const block = document.getElementById('km-block-' + vid);
                 const inner = document.querySelector('.driver-action-area-inner[data-vehicle-id="' + vid + '"]');
