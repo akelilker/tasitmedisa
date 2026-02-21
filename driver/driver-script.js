@@ -1734,24 +1734,40 @@ function renderHistoryList() {
                 if (item.kaza_hasar_tutari) detailsHtml += `<p><strong>Hasar Tutarı:</strong> ${escapeHtmlDriver(item.kaza_hasar_tutari)} TL</p>`;
                 detailsHtml += `<p><strong>Kayıt:</strong> ${kayitTarihi}</p>`;
             } else if (item.bakim_durumu) {
-                detailsHtml = `<p><strong>Bakım:</strong> ${escapeHtmlDriver(item.bakim_aciklama || 'Var')}</p>`;
+                detailsHtml = `<p>Bakım bildirildi: ${escapeHtmlDriver(item.bakim_aciklama || 'Var')}</p>`;
                 if (item.bakim_tarih) detailsHtml += `<p><strong>Tarih:</strong> ${item.bakim_tarih}</p>`;
+                if (item.guncel_km) detailsHtml += `<p><strong>Bildirilen KM:</strong> ${formatKm(item.guncel_km)}</p>`;
                 detailsHtml += `<p><strong>Kayıt:</strong> ${kayitTarihi}</p>`;
             } else {
-                detailsHtml = `<p><strong>KM:</strong> ${formatKm(item.guncel_km) || '0'}</p><p><strong>Kayıt:</strong> ${kayitTarihi}</p>`;
+                detailsHtml = `<p>Bildirilen KM: <strong>${formatKm(item.guncel_km) || '0'}</strong></p><p><strong>Kayıt:</strong> ${kayitTarihi}</p>`;
             }
         } else {
             const eventDate = item.date || (item.timestamp ? new Date(item.timestamp).toLocaleDateString('tr-TR') : '-');
-            const labels = {
-                'muayene-guncelle': 'Muayene Bilgisi Güncellendi',
-                'kasko-guncelle': 'Kasko Yenilemesi Bildirildi',
-                'sigorta-guncelle': 'Trafik Sigortası Yenileme Bildirildi',
-                'anahtar-guncelle': 'Yedek Anahtar Bilgisi Güncellendi',
-                'lastik-guncelle': 'Lastik Durumu Güncellendi',
-                'utts-guncelle': 'UTTS Bilgisi Güncellendi'
-            };
-            const label = labels[item.eventType] || item.eventType;
-            detailsHtml = `<p><strong>${escapeHtmlDriver(label)}</strong></p><p><strong>Tarih:</strong> ${eventDate}</p>`;
+            const d = item.data || {};
+            if (item.eventType === 'anahtar-guncelle') {
+                const durum = (d.durum === 'var') ? 'Var' : 'Yok';
+                detailsHtml = `<p>Yedek anahtar durumu <strong>${escapeHtmlDriver(durum)}</strong> olarak güncellendi</p><p><strong>Tarih:</strong> ${escapeHtmlDriver(eventDate)}</p>`;
+            } else if (item.eventType === 'lastik-guncelle') {
+                const durum = (d.durum === 'var') ? 'Var' : 'Yok';
+                detailsHtml = `<p>Lastik durumu <strong>${escapeHtmlDriver(durum)}</strong> olarak güncellendi</p><p><strong>Tarih:</strong> ${escapeHtmlDriver(eventDate)}</p>`;
+            } else if (item.eventType === 'utts-guncelle') {
+                const durum = d.durum ? 'Evet' : 'Hayır';
+                detailsHtml = `<p>UTTS bilgisi <strong>${escapeHtmlDriver(durum)}</strong> olarak güncellendi</p><p><strong>Tarih:</strong> ${escapeHtmlDriver(eventDate)}</p>`;
+            } else if (item.eventType === 'muayene-guncelle') {
+                let txt = 'Muayene Bilgisi Güncellendi';
+                if (d.bitisTarihi) txt += ` (Bitiş: ${escapeHtmlDriver(d.bitisTarihi)})`;
+                detailsHtml = `<p>${escapeHtmlDriver(txt)}</p><p><strong>Tarih:</strong> ${escapeHtmlDriver(eventDate)}</p>`;
+            } else if (item.eventType === 'kasko-guncelle') {
+                let txt = 'Kasko Yenilemesi Bildirildi';
+                if (d.bitisTarihi) txt += ` (Bitiş: ${escapeHtmlDriver(d.bitisTarihi)})`;
+                detailsHtml = `<p>${escapeHtmlDriver(txt)}</p><p><strong>Tarih:</strong> ${escapeHtmlDriver(eventDate)}</p>`;
+            } else if (item.eventType === 'sigorta-guncelle') {
+                let txt = 'Trafik Sigortası Yenileme Bildirildi';
+                if (d.bitisTarihi) txt += ` (Bitiş: ${escapeHtmlDriver(d.bitisTarihi)})`;
+                detailsHtml = `<p>${escapeHtmlDriver(txt)}</p><p><strong>Tarih:</strong> ${escapeHtmlDriver(eventDate)}</p>`;
+            } else {
+                detailsHtml = `<p>${escapeHtmlDriver(item.eventType || 'Güncelleme')}</p><p><strong>Tarih:</strong> ${escapeHtmlDriver(eventDate)}</p>`;
+            }
         }
 
         const card = document.createElement('div');
