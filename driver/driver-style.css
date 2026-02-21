@@ -401,6 +401,9 @@ body.driver-modal-open {
   align-items: center;
   text-align: center;
 }
+.driver-user-plate-row.driver-user-plate-in-panel {
+  gap: 1px; /* Panelde plaka–model arası toplam 1px (.driver-user-plate-row 4px’i override eder) */
+}
 .driver-user-plate-row .driver-user-name {
   font-size: 14px;
   font-weight: 600;
