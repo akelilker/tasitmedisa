@@ -3,7 +3,7 @@
   "name": "Medisa Kullanici Paneli",
   "short_name": "Kullanici Paneli",
   "description": "Medisa surucu/kullanici dashboard uygulamasi",
-  "start_url": "./dashboard.html",
+  "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "any",
