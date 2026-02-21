@@ -2874,7 +2874,7 @@ body.driver-modal-open {
     overscroll-behavior-x: none !important;
   }
 
-  /* Modal header: safe-area padding overlay seviyesinde hallediliyor */
+  /* Modal header: safe-area padding overlay seviyesinde, kenardan kenara tasarımda köşe 0 */
   #history-modal .modal-header,
   #edit-request-modal .modal-header,
   #driver-event-menu-modal .modal-header,
@@ -2885,6 +2885,8 @@ body.driver-modal-open {
   #driver-sigorta-modal .modal-header,
   #driver-kasko-modal .modal-header {
     padding-top: 12px !important;
+    border-top-left-radius: 0 !important;
+    border-top-right-radius: 0 !important;
   }
 
   /* modal-body: sadece dikey scroll, yatay kayma yok */
