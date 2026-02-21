@@ -471,8 +471,8 @@
         if (hasDetail) {
             // Sabit px: temel sütunlar ekrana sığdıklarındaki orana yakın (~496px tablo)
             const basePx = {
-                'sira': 34, 'sube': 82, 'yil': 41, 'marka': 136,
-                'plaka': 68, 'sanziman': 61, 'km': 54
+                'sira': 32, 'sube': 79, 'yil': 41, 'marka': 136,
+                'plaka': 68, 'sanziman': 64, 'km': 54
             };
             const detailPx = {
                 'sigorta': 72, 'kasko': 72, 'muayene': 72, 'kredi': 56,
@@ -487,9 +487,9 @@
 
         // Sadece temel: fr ile ekrana sığar
         const columnWidths = {
-            'sira': 'minmax(28px, 0.5fr)', 'sube': 'minmax(48px, 1.2fr)',
+            'sira': 'minmax(26px, 0.5fr)', 'sube': 'minmax(45px, 1.15fr)',
             'yil': 'minmax(40px, 0.6fr)', 'marka': 'minmax(60px, 2fr)',
-            'plaka': 'minmax(56px, 1fr)', 'sanziman': 'minmax(56px, 0.9fr)',
+            'plaka': 'minmax(56px, 1fr)', 'sanziman': 'minmax(59px, 0.95fr)',
             'km': 'minmax(48px, 0.8fr)'
         };
         return allColumns.map(col => columnWidths[col.key] || '80px').join(' ');
