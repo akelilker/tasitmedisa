@@ -582,9 +582,6 @@ transition: background 0.2s;
 min-width: 0;
 overflow: hidden;
 text-overflow: ellipsis;
-}
-
-.stok-list-header-cell {
 cursor: move;
 }
 
@@ -1506,12 +1503,6 @@ font-size: 21px;
 .report-card .label {
 color: var(--form-label-color) !important;
 font-size: 11px;
-}
-.stok-branch-item {
-border-color: rgba(255, 255, 255, 0.35) !important;
-}
-.stok-branch-item:hover {
-border-color: rgba(255, 255, 255, 0.5) !important;
 }
 /* Raporlar modal mobil: ortak ölçü style-core’da (.modal-overlay .modal-container) */
 #reports-modal .modal-header h2 {
