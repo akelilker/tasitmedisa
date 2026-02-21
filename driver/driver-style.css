@@ -2759,7 +2759,7 @@ body.driver-modal-open {
   opacity: 0 !important;
 }
 
-/* #history-modal, #edit-request-modal, Olay Ekle modalları mobil: Taşıtlar modalı ile uyumlu */
+/* #history-modal, #edit-request-modal, Olay Ekle modalları mobil: overlay-bottom stratejisi (style-core ile uyumlu) */
 @media (max-width: 640px) {
   #history-modal.driver-modal,
   #edit-request-modal.driver-modal,
@@ -2771,6 +2771,11 @@ body.driver-modal-open {
   #driver-sigorta-modal.driver-modal,
   #driver-kasko-modal.driver-modal {
     padding: 0 !important;
+    top: 0 !important;
+    bottom: calc(var(--modal-margin-bottom-mobile, 52px) + env(safe-area-inset-bottom, 0)) !important;
+    height: auto !important;
+    max-height: calc(100vh - var(--modal-margin-bottom-mobile, 52px) - env(safe-area-inset-bottom, 0)) !important;
+    max-height: calc(100dvh - var(--modal-margin-bottom-mobile, 52px) - env(safe-area-inset-bottom, 0)) !important;
     align-items: stretch !important;
     justify-content: center !important;
     overflow: hidden !important;
@@ -2787,7 +2792,7 @@ body.driver-modal-open {
   #driver-kasko-modal.driver-modal::before {
     max-width: 100% !important;
     width: 100%;
-    height: calc(100vh - 98px);
+    height: 100%;
     top: 0;
     left: 0;
     transform: none;
@@ -2805,7 +2810,7 @@ body.driver-modal-open {
     letter-spacing: 0.2em !important;
   }
 
-  /* 6. Mobil modal – style-core.css ile uyumlu (footer + 8px boşluk) */
+  /* Mobil modal container: overlay'ı doldur, margin yok */
   #history-modal .driver-modal-content,
   #history-modal .modal-container,
   #edit-request-modal .driver-modal-content,
@@ -2826,19 +2831,14 @@ body.driver-modal-open {
   #driver-kasko-modal .modal-container {
     max-width: 100% !important;
     width: 100% !important;
-    margin-top: 0 !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    margin-bottom: calc(var(--modal-margin-bottom-mobile, 52px) + env(safe-area-inset-bottom, 0)) !important;
-    height: calc(100vh - var(--modal-margin-bottom-mobile, 52px) - env(safe-area-inset-bottom, 0)) !important;
-    height: calc(100dvh - var(--modal-margin-bottom-mobile, 52px) - env(safe-area-inset-bottom, 0)) !important;
-    max-height: calc(100vh - var(--modal-margin-bottom-mobile, 52px) - env(safe-area-inset-bottom, 0)) !important;
-    max-height: calc(100dvh - var(--modal-margin-bottom-mobile, 52px) - env(safe-area-inset-bottom, 0)) !important;
+    margin: 0 !important;
+    height: 100% !important;
+    max-height: 100% !important;
     background: #080d16 !important;
     border-radius: 0 !important;
     border: 0.7px solid rgba(255, 255, 255, 0.35) !important;
     border-top: none !important;
-    padding-top: env(safe-area-inset-top, 0) !important;
+    padding-top: 0 !important;
     overflow: hidden !important;
     overflow-x: hidden !important;
     touch-action: pan-y !important;
@@ -2846,7 +2846,7 @@ body.driver-modal-open {
     overscroll-behavior-x: none !important;
   }
 
-  /* Modal header: safe-area için üst padding */
+  /* Modal header: safe-area padding overlay seviyesinde hallediliyor */
   #history-modal .modal-header,
   #edit-request-modal .modal-header,
   #driver-event-menu-modal .modal-header,
@@ -2856,7 +2856,7 @@ body.driver-modal-open {
   #driver-muayene-modal .modal-header,
   #driver-sigorta-modal .modal-header,
   #driver-kasko-modal .modal-header {
-    padding-top: calc(2px + env(safe-area-inset-top, 0)) !important;
+    padding-top: 12px !important;
   }
 
   /* modal-body: sadece dikey scroll, yatay kayma yok */
@@ -3329,7 +3329,20 @@ body.driver-modal-open {
     padding-bottom: max(12px, env(safe-area-inset-bottom)) !important;
   }
 
-  /* Modal'lar: iOS PWA – footer + 8px boşluk */
+  /* Modal overlay: iOS PWA – overlay-bottom stratejisi, safe-area-inset-top en üstte */
+  #history-modal.driver-modal,
+  #edit-request-modal.driver-modal,
+  #driver-event-menu-modal.driver-modal,
+  #driver-anahtar-modal.driver-modal,
+  #driver-lastik-modal.driver-modal,
+  #driver-utts-modal.driver-modal,
+  #driver-muayene-modal.driver-modal,
+  #driver-sigorta-modal.driver-modal,
+  #driver-kasko-modal.driver-modal {
+    padding-top: env(safe-area-inset-top, 0) !important;
+  }
+
+  /* Modal container: iOS PWA – overlay'ı doldur, margin yok */
   #history-modal .driver-modal-content,
   #history-modal .modal-container,
   #edit-request-modal .driver-modal-content,
@@ -3349,11 +3362,8 @@ body.driver-modal-open {
   #driver-kasko-modal .driver-modal-content,
   #driver-kasko-modal .modal-container {
     margin: 0 !important;
-    margin-bottom: calc(var(--modal-margin-bottom-mobile, 52px) + env(safe-area-inset-bottom, 0)) !important;
-    height: calc(100vh - var(--modal-margin-bottom-mobile, 52px) - env(safe-area-inset-bottom, 0)) !important;
-    height: calc(100dvh - var(--modal-margin-bottom-mobile, 52px) - env(safe-area-inset-bottom, 0)) !important;
-    max-height: calc(100vh - var(--modal-margin-bottom-mobile, 52px) - env(safe-area-inset-bottom, 0)) !important;
-    max-height: calc(100dvh - var(--modal-margin-bottom-mobile, 52px) - env(safe-area-inset-bottom, 0)) !important;
+    height: 100% !important;
+    max-height: 100% !important;
   }
 }
 
