@@ -1714,12 +1714,13 @@ function renderVehicleDetailLeft(vehicle) {
 
         container.innerHTML = '';
 
-        // Şema genişliği: sol grid içinde, sol kolon genişliğine göre requestAnimationFrame ile uyarlanır (yatay -4px, dikey -8px küçültme)
+        // Şema genişliği: sol grid içinde, sol kolon genişliğine göre requestAnimationFrame ile uyarlanır (yatay -4px, dikey -8px küçültme; %20 küçültme)
+        const schemaScale = 0.8; /* %20 küçültme */
         const svgOrgWidth = 148;
         const svgOrgHeight = 220;
         const shrinkX = 4;
         const shrinkY = 8;
-        const defaultTargetWidth = 220 - shrinkX;
+        const defaultTargetWidth = Math.round((220 - shrinkX) * schemaScale);
         const targetHeight = Math.round(defaultTargetWidth * (148 / 220)) - shrinkY;
 
         // Wrapper oluştur (Şemayı tutacak kutu); başlangıç değeri, ölçüm sonrası güncellenir
@@ -1811,9 +1812,9 @@ function renderVehicleDetailLeft(vehicle) {
             const leftRect = leftCol.getBoundingClientRect();
             const padding = 16;
             const availableWidth = Math.max(0, leftRect.width - padding);
-            const minW = 160;
-            const maxW = 380;
-            const clamped = Math.max(minW, Math.min(maxW, Math.round(availableWidth)));
+            const minW = 128;   /* 160 * 0.8 */
+            const maxW = 304;   /* 380 * 0.8 */
+            const clamped = Math.max(minW, Math.min(maxW, Math.round(availableWidth * 0.8)));
             const w = clamped - shrinkX;
             const h = Math.round(clamped * (148 / 220)) - shrinkY;
             svgWrapper.style.width = w + 'px';
@@ -2339,15 +2340,15 @@ function renderVehicleDetailLeft(vehicle) {
         schemaWrapper.style.alignItems = 'flex-start';
         schemaWrapper.style.justifyContent = 'center';
         schemaWrapper.style.gap = '24px';
-        schemaWrapper.style.maxHeight = '180px';
+        schemaWrapper.style.maxHeight = '144px'; /* 180 * 0.8 */
         schemaWrapper.style.overflow = 'hidden';
         
         schemaWrapper.appendChild(svgClone);
         
         svgClone.setAttribute('width', '140');
         svgClone.setAttribute('height', '210');
-        svgClone.style.width = '210px';
-        svgClone.style.height = '140px';
+        svgClone.style.width = '168px';  /* 210 * 0.8 */
+        svgClone.style.height = '112px'; /* 140 * 0.8 */
         svgClone.style.margin = '0';
         svgClone.style.display = 'block';
         svgClone.style.transform = 'rotate(90deg)';
