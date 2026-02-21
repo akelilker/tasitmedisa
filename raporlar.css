@@ -1579,11 +1579,16 @@ width: 100% !important;
 }
 
 .stok-list-header-cell {
-font-size: clamp(10px, 2.5vw, 13px) !important;
+font-size: clamp(11.5px, 2.5vw, 14.5px) !important;
 padding: 2px 3px !important;
+color: #ffffff !important;
+}
+.stok-list-header-cell .stok-header-text {
+font-size: clamp(11.5px, 2.5vw, 14.5px) !important;
+color: #ffffff !important;
 }
 .stok-list-cell {
-font-size: clamp(10px, 2.5vw, 13px) !important;
+font-size: clamp(11px, 2.5vw, 14px) !important;
 padding: 2px 3px !important;
 }
 
