@@ -1899,22 +1899,16 @@
   margin-top: 0 !important;
   padding: 0 !important;
   padding-bottom: 40px !important; /* Chrome fix: Logoların kesilmemesi için artırıldı */
-  overflow-y: auto !important; /* Scroll burada */
+  overflow-y: auto !important;
   overflow-x: visible !important; /* Plaka taşabilir */
   flex: 1;
   display: flex;
   flex-direction: column;
-  -webkit-overflow-scrolling: touch; /* iOS smooth scroll */
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE/Edge */
-}
-#vehicle-detail-modal .modal-body::-webkit-scrollbar { display: none; } /* Chrome/Safari */
-
-/* Vehicle Detail Modal Body: scroll burada */
-#vehicle-detail-modal .modal-body {
-  overflow-y: auto !important; /* Scroll burada */
   -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
+#vehicle-detail-modal .modal-body::-webkit-scrollbar { display: none; }
 
 .vehicle-detail-toolbar .toolbar-right {
   display: flex;
