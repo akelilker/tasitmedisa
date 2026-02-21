@@ -32,6 +32,19 @@
     return kaportaSvgCache;
   }
 
+  var parsedKaportaSvgCache = null;
+  function getParsedKaportaSvg() {
+    if (parsedKaportaSvgCache) {
+      return Promise.resolve(parsedKaportaSvgCache.cloneNode(true));
+    }
+    return getKaportaSvg().then(function(svgText) {
+      var parser = new DOMParser();
+      var svgDoc = parser.parseFromString(svgText, 'image/svg+xml');
+      parsedKaportaSvgCache = svgDoc.querySelector('svg');
+      return parsedKaportaSvgCache ? parsedKaportaSvgCache.cloneNode(true) : null;
+    });
+  }
+
   function writeVehicles(arr) {
     if (window.__medisaVehiclesStorage) {
         window.__medisaVehiclesStorage.write(arr);
@@ -1696,12 +1709,8 @@ function renderVehicleDetailLeft(vehicle) {
     const container = document.getElementById('detail-boya-container');
     if (!container) return;
 
-    getKaportaSvg().then(function(svgText) {
-        const parser = new DOMParser();
-        const svgDoc = parser.parseFromString(svgText, 'image/svg+xml');
-        const svg = svgDoc.querySelector('svg');
-
-        if (!svg) return;
+    getParsedKaportaSvg().then(function(svgClone) {
+        if (!svgClone) return;
 
         container.innerHTML = '';
 
@@ -1726,8 +1735,7 @@ function renderVehicleDetailLeft(vehicle) {
             margin-right: auto;
         `;
 
-        // SVG'yi hazırla
-        const svgClone = svg.cloneNode(true);
+        // SVG'yi hazırla (zaten clone geldi)
         svgClone.setAttribute('width', String(svgOrgWidth));
         svgClone.setAttribute('height', String(svgOrgHeight));
 
@@ -2320,12 +2328,8 @@ function renderVehicleDetailLeft(vehicle) {
       return;
     }
 
-    getKaportaSvg().then(function(svgText) {
-        const parser = new DOMParser();
-        const svgDoc = parser.parseFromString(svgText, 'image/svg+xml');
-        const svg = svgDoc.querySelector('svg');
-        
-        if (!svg) return;
+    getParsedKaportaSvg().then(function(svgClone) {
+        if (!svgClone) return;
         
         container.innerHTML = '';
         
@@ -2338,8 +2342,6 @@ function renderVehicleDetailLeft(vehicle) {
         schemaWrapper.style.maxHeight = '180px';
         schemaWrapper.style.overflow = 'hidden';
         
-        // SVG'yi wrapper'a ekle
-        const svgClone = svg.cloneNode(true);
         schemaWrapper.appendChild(svgClone);
         
         svgClone.setAttribute('width', '140');
