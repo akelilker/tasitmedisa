@@ -904,7 +904,7 @@ function buildSlidingWarnings(vehicles, records) {
     
     for (const v of vehicles) {
         const hasKmThisMonth = records.some(r => String(r.arac_id) === String(v.id) && r.donem === currentPeriod && r.guncel_km != null && String(r.guncel_km).trim() !== '');
-        if (isFirstOfMonth || !hasKmThisMonth) needsKmWarning = true;
+        if (!hasKmThisMonth) needsKmWarning = true;
         const checkDate = (dateStr, label) => {
             if (!dateStr) return;
             const w = checkDateWarningsDriver(dateStr);
