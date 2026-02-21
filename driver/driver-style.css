@@ -3091,6 +3091,9 @@ body.driver-modal-open {
   .dashboard-page .driver-left-panel .driver-plate-subtitle {
     font-size: 16px !important;
   }
+  .dashboard-page .driver-sliding-warning {
+    font-size: 14px !important;
+  }
   .dashboard-page .driver-plate-dropdown-item {
     font-size: 13px !important;
   }
