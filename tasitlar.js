@@ -2586,21 +2586,30 @@ function renderVehicleDetailLeft(vehicle) {
 
   /**
    * Muayene bitiş tarihi hesapla
+   * - Araç sıfır ise (üretim yılı == muayene yılı):
+   *     otomobil → +3 yıl, küçük/büyük ticari → +2 yıl
+   * - Sonraki muayeneler:
+   *     otomobil → +2 yıl, küçük/büyük ticari → +1 yıl
    */
   function calculateNextMuayene(vehicle, muayeneDate) {
     if (!muayeneDate) return '';
-    
-    const currentYear = new Date().getFullYear();
-    const productionYear = parseInt(vehicle.year) || currentYear;
-    const isFirstMuayene = !vehicle.events || !vehicle.events.some(e => e.type === 'muayene-guncelle');
+
     const vehicleType = vehicle.vehicleType; // 'otomobil' | 'minivan' | 'kamyon'
-    
-    if (isFirstMuayene) {
-      // İlk muayene
+    const productionYear = parseInt(vehicle.year) || new Date().getFullYear();
+
+    // Muayene yılını gg/aa/yyyy formatından çıkar
+    const dateMatch = muayeneDate.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+    const muayeneYear = dateMatch ? parseInt(dateMatch[3]) : new Date().getFullYear();
+
+    // Üretim yılı ile muayene yılı aynıysa araç sıfır kabul edilir
+    const isSifir = productionYear === muayeneYear;
+
+    if (isSifir) {
+      // Sıfır araç - ilk muayene süreleri
       if (vehicleType === 'otomobil') {
         return addYears(muayeneDate, 3);
       } else {
-        // minivan veya kamyon (ticari)
+        // küçük veya büyük ticari (minivan / kamyon)
         return addYears(muayeneDate, 2);
       }
     } else {
@@ -2608,7 +2617,7 @@ function renderVehicleDetailLeft(vehicle) {
       if (vehicleType === 'otomobil') {
         return addYears(muayeneDate, 2);
       } else {
-        // ticari
+        // küçük veya büyük ticari
         return addYears(muayeneDate, 1);
       }
     }
