@@ -1733,7 +1733,13 @@ function parseHistoryDate(str) {
 }
 
 function formatHistoryPeriod(item) {
-    if (item._type === 'hareket') return formatPeriod(item.donem || '');
+    if (item._type === 'hareket') {
+        const months = ['OCAK', 'ŞUBAT', 'MART', 'NİSAN', 'MAYIS', 'HAZİRAN', 'TEMMUZ', 'AĞUSTOS', 'EYLÜL', 'EKİM', 'KASIM', 'ARALIK'];
+        const ts = item.guncelleme_tarihi || item.kayit_tarihi || '';
+        const d = ts ? (parseHistoryDate(ts) || new Date(ts)) : null;
+        if (d && !isNaN(d.getTime())) return `${String(d.getDate()).padStart(2, '0')} ${months[d.getMonth()]} ${d.getFullYear()}`;
+        return formatPeriod(item.donem || '');
+    }
     const months = ['OCAK', 'ŞUBAT', 'MART', 'NİSAN', 'MAYIS', 'HAZİRAN', 'TEMMUZ', 'AĞUSTOS', 'EYLÜL', 'EKİM', 'KASIM', 'ARALIK'];
     if (item.date) {
         const d = parseHistoryDate(item.date);
