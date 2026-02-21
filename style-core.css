@@ -882,7 +882,7 @@ body.modal-open .user-panel-link {
         --card-bg: #1f1f1f; /* #1a1a1a → #1f1f1f (daha açık) */
         
         /* Hero logo ve spacer genişlik ayarları */
-        --hero-logo-width: 54px;    /* Mobilde logo genişliği */
+        --hero-logo-width: 43px;    /* Mobilde logo genişliği (%20 küçültme: 54→43) */
         --hero-spacer-width: 1px;   /* Mobilde spacer genişliği (6px → 4px) */
     }
     
