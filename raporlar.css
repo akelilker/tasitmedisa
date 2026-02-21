@@ -922,7 +922,7 @@ margin-top: 0;
 .stok-back-btn {
 background: transparent;
 border: none;
-color: #999;
+color: var(--form-label-color);
 cursor: pointer;
 padding: 4px;
 display: inline-flex;

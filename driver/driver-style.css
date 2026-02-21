@@ -2309,7 +2309,7 @@ body.driver-modal-open {
 }
 
 .login-page #app-footer.login-footer .version {
-  color: #ccc !important;
+  color: var(--form-label-color) !important;
   font-weight: 500 !important;
   transition: opacity 1s ease !important;
 }
