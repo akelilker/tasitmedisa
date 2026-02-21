@@ -2349,6 +2349,14 @@
     overflow: hidden !important;
     min-width: 0 !important;
   }
+  /* Olay Ekle: tarih input gg.aa.yyyy sola kavmasın */
+  .olay-ekle-modal .modal-body input[type="date"].form-input {
+    padding-left: 12px !important;
+    text-align: left !important;
+  }
+  .olay-ekle-modal .modal-body input[type="date"].form-input::-webkit-datetime-edit-fields-wrapper {
+    padding-left: 0 !important;
+  }
 
   /* --- OLAY EKLE MODALLARI - TÜM METİNLER +2px --- */
   .olay-ekle-modal .modal-header h2 {
