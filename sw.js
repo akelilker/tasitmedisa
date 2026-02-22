@@ -43,6 +43,7 @@ const CACHE_FILES = [
   
   // Icons
   '/favicon.ico',
+  '/icon/favicon.ico',
   '/icon/favicon.png',
   '/icon/apple-touch-icon.svg',
   '/icon/icon-192.svg',
