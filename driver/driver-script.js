@@ -1571,7 +1571,7 @@ window.saveVehicleData = async function(vehicleId) {
                 kaza_tarih: kazaTarih,
                 kaza_hasar_tutari: kazaHasarTutari,
                 boya_parcalar: JSON.stringify(boyaParcalar),
-                ekstra_not: capitalizeWords(not)
+                ekstra_not: capitalizeWords((not || '').trim())
             })
         });
         
@@ -1934,11 +1934,11 @@ window.submitEditRequest = async function() {
     if (kmChanged && newKm !== null) payload.yeni_km = newKm;
     if (bakimChanged) {
         payload.yeni_bakim_durumu = newBakim ? 1 : 0;
-        payload.yeni_bakim_aciklama = newBakim;
+        payload.yeni_bakim_aciklama = capitalizeWords(newBakim);
     }
     if (kazaChanged) {
         payload.yeni_kaza_durumu = newKaza ? 1 : 0;
-        payload.yeni_kaza_aciklama = newKaza;
+        payload.yeni_kaza_aciklama = capitalizeWords(newKaza);
     }
     try {
         const response = await fetch(API_BASE + 'driver_request.php', {
