@@ -2198,7 +2198,7 @@
   }
   
   .modal-overlay .modal-container {
-    background: #080d16 !important;
+    background: var(--modal-bg) !important;
     overflow: hidden !important;
     overflow-x: hidden !important; /* Yatay kayma engelle */
     touch-action: pan-y !important;

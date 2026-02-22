@@ -1756,7 +1756,7 @@ body.driver-modal-open {
 }
 
 .driver-modal-content {
-  background: var(--modal-bg, var(--bg));
+  background: var(--modal-bg);
   border-radius: var(--modal-radius, 10px);
   width: 100%;
   max-width: min(500px, calc(100vw - 40px));
