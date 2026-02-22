@@ -259,7 +259,7 @@ async function loadDashboard() {
         const spinnerEl = document.getElementById('loading-spinner');
         if (spinnerEl) spinnerEl.style.display = 'none';
 
-        if (data.vehicles.length === 0) {
+        if (!data.vehicles || data.vehicles.length === 0) {
             const emptyEl = document.getElementById('empty-state');
             if (emptyEl) emptyEl.style.display = 'block';
             return;
@@ -268,6 +268,8 @@ async function loadDashboard() {
         const twoPanel = document.getElementById('driver-two-panel');
         if (!twoPanel) return;
         twoPanel.style.display = 'flex';
+        const emptyStateEl = document.getElementById('empty-state');
+        if (emptyStateEl) emptyStateEl.style.display = 'none';
         const vehicles = data.vehicles;
         const records = data.records;
         selectedVehicleId = selectedVehicleId || (vehicles[0] && vehicles[0].id);
@@ -313,8 +315,9 @@ function getSelectedVehicle() {
 }
 
 function getExistingRecord(vehicleId) {
+    const period = (currentPeriod || '').toString().trim();
     const matches = (allHistoryRecords || []).filter(r =>
-        String(r.arac_id) === String(vehicleId) && r.donem === currentPeriod
+        String(r.arac_id) === String(vehicleId) && String(r.donem || '').trim() === period
     );
     if (matches.length === 0) return null;
     matches.sort((a, b) => (b.guncelleme_tarihi || b.kayit_tarihi || '').localeCompare(a.guncelleme_tarihi || a.kayit_tarihi || ''));
