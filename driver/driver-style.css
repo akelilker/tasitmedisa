@@ -2415,6 +2415,10 @@ body.driver-modal-open {
 }
 
 /* Yönetim Sistemi linki - footer üstünde, sola yaslı (anasayfa Kullanıcı Paneli ile aynı 3px aşağı) */
+/* Kaza/Bakım/KM vb. blok açıkken tıklamalar linke gitmesin (Bildir ile çakışma önleme) */
+body.driver-action-block-open .management-system-link {
+  pointer-events: none;
+}
 .management-system-link {
   position: fixed;
   bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0) + 9px);

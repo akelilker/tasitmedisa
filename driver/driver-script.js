@@ -719,7 +719,13 @@ window.cancelDriverActionForm = function(type, vid) {
     const blockId = (blockIds[type] || '') + vid;
     const block = document.getElementById(blockId);
     if (block) block.classList.remove('show');
-    if (inner) inner.classList.remove('driver-km-open');
+    if (inner) {
+        var anyOpen = inner.querySelectorAll('.driver-action-block.show').length > 0;
+        if (!anyOpen) {
+            inner.classList.remove('driver-km-open');
+            document.body.classList.remove('driver-action-block-open');
+        }
+    }
 };
 
 window.submitDriverAction = async function(type, vid) {
@@ -818,7 +824,10 @@ window.submitDriverAction = async function(type, vid) {
                 var block = document.getElementById((type === 'kaza' ? 'kaza-block-' : 'bakim-block-') + vid);
                 var inner = document.querySelector('.driver-action-area-inner[data-vehicle-id="' + vid + '"]');
                 if (block) block.classList.remove('show');
-                if (inner) inner.classList.remove('driver-km-open');
+                if (inner) {
+                    inner.classList.remove('driver-km-open');
+                    document.body.classList.remove('driver-action-block-open');
+                }
                 if (formActions) formActions.style.display = '';
                 if (successMsg) successMsg.classList.remove('show');
                 var actionBtn = inner ? inner.querySelector('.driver-action-btn[data-action="' + type + '"]') : null;
@@ -905,7 +914,10 @@ window.submitKmOnly = async function(vid) {
                 const block = document.getElementById('km-block-' + vid);
                 const inner = document.querySelector('.driver-action-area-inner[data-vehicle-id="' + vid + '"]');
                 if (block) block.classList.remove('show');
-                if (inner) inner.classList.remove('driver-km-open');
+                if (inner) {
+                    inner.classList.remove('driver-km-open');
+                    document.body.classList.remove('driver-action-block-open');
+                }
                 if (formContent) formContent.style.display = '';
                 if (successMsg) successMsg.classList.remove('show');
                 const kmBtn = inner ? inner.querySelector('.driver-action-btn[data-action="km"]') : null;
