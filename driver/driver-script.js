@@ -244,25 +244,30 @@ async function loadDashboard() {
         const data = await response.json();
         
         if (!data.success) {
-            document.getElementById('loading-spinner').style.display = 'none';
+            const spinner = document.getElementById('loading-spinner');
+            if (spinner) spinner.style.display = 'none';
             alert('Oturum süresi doldu! Lütfen tekrar giriş yapın.');
             logout();
             return;
         }
-        
+
         currentUser = data.user;
         allHistoryRecords = data.records || [];
         allHistoryVehicles = data.vehicles || [];
         currentPeriod = data.current_period || '';
-        
-        document.getElementById('loading-spinner').style.display = 'none';
-        
+
+        const spinnerEl = document.getElementById('loading-spinner');
+        if (spinnerEl) spinnerEl.style.display = 'none';
+
         if (data.vehicles.length === 0) {
-            document.getElementById('empty-state').style.display = 'block';
+            const emptyEl = document.getElementById('empty-state');
+            if (emptyEl) emptyEl.style.display = 'block';
             return;
         }
-        
-        document.getElementById('driver-two-panel').style.display = 'flex';
+
+        const twoPanel = document.getElementById('driver-two-panel');
+        if (!twoPanel) return;
+        twoPanel.style.display = 'flex';
         const vehicles = data.vehicles;
         const records = data.records;
         selectedVehicleId = selectedVehicleId || (vehicles[0] && vehicles[0].id);
