@@ -2816,16 +2816,19 @@
   #detail-boya-container {
     margin-top: 58px !important; /* Şema 4px daha aşağı (54+4) */
     gap: 0 !important;
-    row-gap: 4px !important; /* Şema ile legend (Orijinal/Boyalı/Değişen) arası 4px */
+    row-gap: 0 !important; /* Şema ile legend arası boşluk yok */
     justify-content: center !important;
     overflow: visible !important;
   }
-  /* Mobil: Orijinal/Boyalı/Değişen legend şemaya 4px mesafede (row-gap ile) */
+  /* Mobil: Orijinal/Boyalı/Değişen legend şemaya bitişik */
   #detail-boya-container .boya-legend {
     margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    padding-top: 0 !important;
   }
   #detail-boya-container .kaporta-schema-wrapper {
-    margin-bottom: 0 !important; /* Ek boşluk olmasın */
+    margin-bottom: 0 !important;
+    margin-top: 0 !important;
   }
   #kaza-kaporta-container {
     flex-direction: row !important;
