@@ -21,7 +21,7 @@ if (!$tokenData) {
 
 // Input al
 $input = json_decode(file_get_contents('php://input'), true);
-$aracId = intval($input['arac_id'] ?? 0);
+$aracId = trim((string)($input['arac_id'] ?? ''));
 $guncelKm = intval($input['guncel_km'] ?? 0);
 $bakimDurumu = intval($input['bakim_durumu'] ?? 0);
 $bakimAciklama = trim($input['bakim_aciklama'] ?? '');
@@ -51,7 +51,7 @@ if ($boyaParcalarRaw !== '') {
 }
 
 // Validasyon
-if ($aracId <= 0) {
+if ($aracId === '' || !is_numeric($aracId)) {
     echo json_encode(['success' => false, 'message' => 'Geçersiz Taşıt ID!'], JSON_UNESCAPED_UNICODE);
     exit;
 }
