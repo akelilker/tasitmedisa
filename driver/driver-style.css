@@ -34,17 +34,17 @@
   align-items: center;
   gap: 16px;
 }
-/* Splash: ana uygulama girişi ile aynı logo+başlık boyutu */
+/* Splash: ana uygulama girişi ile aynı logo+başlık boyutu (%15 küçültme) */
 .driver-splash-logo {
-  width: 176px;
+  width: 150px;
   height: auto;
   object-fit: contain;
   filter: brightness(0.88);
 }
 .driver-splash-title {
-  font-size: clamp(21px, 5.7vw, 30px);
+  font-size: clamp(18px, 4.85vw, 26px);
   font-weight: 800;
-  letter-spacing: clamp(1.28px, 0.65vw, 5.1px);
+  letter-spacing: clamp(1.1px, 0.55vw, 4.4px);
   text-transform: uppercase;
   margin: 0;
   background: linear-gradient(to bottom, #c2d4df 0%, #ffffff 40%, #9aadba 52%, #d6e0e8 100%);
@@ -55,9 +55,9 @@
 }
 /* KULLANICI PANELİ: başlık altında, 1pt küçük, aynı renk */
 .driver-splash-subtitle {
-  font-size: clamp(20px, 5.2vw, 29px);
+  font-size: clamp(17px, 4.4vw, 25px);
   font-weight: 800;
-  letter-spacing: clamp(1.2px, 0.6vw, 4.5px);
+  letter-spacing: clamp(1px, 0.5vw, 3.8px);
   text-transform: uppercase;
   margin: 0;
   margin-top: 2px;
@@ -900,9 +900,9 @@ body.driver-modal-open {
   .driver-success-msg { font-size: 16.5px; }
   .driver-km-success-msg { font-size: 16.5px; }
 
-  /* Splash logosu mobilde %20 küçültme (176→141px) */
+  /* Splash logosu mobilde %15 küçültme (150→120px) */
   .driver-splash-logo {
-    width: 141px !important;
+    width: 120px !important;
   }
   /* MEDISA hero logosu mobilde %20 küçültme (54→43px) */
   .dashboard-page .hero-logo {
