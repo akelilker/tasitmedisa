@@ -2816,11 +2816,11 @@
   #detail-boya-container {
     margin-top: 58px !important; /* Şema 4px daha aşağı (54+4) */
     gap: 0 !important;
-    row-gap: 3px !important; /* Şema ile legend (Orijinal/Boyalı/Değişen) arası 3px */
+    row-gap: 4px !important; /* Şema ile legend (Orijinal/Boyalı/Değişen) arası 4px */
     justify-content: center !important;
     overflow: visible !important;
   }
-  /* Mobil: Orijinal/Boyalı/Değişen legend şemaya 3px mesafede (row-gap ile) */
+  /* Mobil: Orijinal/Boyalı/Değişen legend şemaya 4px mesafede (row-gap ile) */
   #detail-boya-container .boya-legend {
     margin-top: 0 !important;
   }
