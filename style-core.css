@@ -27,7 +27,7 @@ body::-webkit-scrollbar,
 
   /* --- MODAL ORTAK (tek yerden yönetim) --- */
   /* Dikey için vw KULLANMA: vw = viewport genişliği. Dikey için vh/dvh veya px. */
-  --modal-bg: #080d16;
+  --modal-bg: linear-gradient(180deg, #060d16, #08090c); /* Menü butonları ile aynı gradient */
   --modal-max-width: 500px;
   --modal-radius: 10px;
   --modal-margin-bottom-desktop: calc(var(--app-footer-height) + var(--modal-gap-above-footer));
@@ -587,8 +587,8 @@ html { overflow-x: hidden; }
   max-height: calc(100vh - max(12px, env(safe-area-inset-top)) - var(--modal-margin-bottom-desktop));
   max-height: calc(100dvh - max(12px, env(safe-area-inset-top)) - var(--modal-margin-bottom-desktop));
   border-radius: var(--modal-radius);
-  border: 0.5px solid rgba(255, 255, 255, 0.35);
-  box-shadow: 0 0 40px rgba(0, 0, 0, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.3); /* Menü butonları ile aynı çerçeve */
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2), 0 4px 16px rgba(var(--theme-color-rgb), 0.1), 0 0 40px rgba(0, 0, 0, 0.9); /* Menü + modal gölge */
   display: flex;
   flex-direction: column;
   overflow: hidden;
