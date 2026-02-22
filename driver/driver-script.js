@@ -498,9 +498,9 @@ function buildDriverActionArea(vehicle, existingRecord, bakimVar, kazaVar, opts)
     const kmVal = (lastKm !== '' && lastKm != null) ? esc(formatKm(lastKm)) : '';
     const bakimTarih = existingRecord && existingRecord.bakim_tarih ? existingRecord.bakim_tarih : today;
     const kazaTarih = existingRecord && existingRecord.kaza_tarih ? existingRecord.kaza_tarih : today;
-    const bakimAciklama = existingRecord ? esc(existingRecord.bakim_aciklama || '') : '';
-    const kazaAciklama = existingRecord ? esc(existingRecord.kaza_aciklama || '') : '';
-    const ekstraNot = existingRecord ? esc(existingRecord.ekstra_not || '') : '';
+    const bakimAciklama = existingRecord ? esc(capitalizeWords(existingRecord.bakim_aciklama || '')) : '';
+    const kazaAciklama = existingRecord ? esc(capitalizeWords(existingRecord.kaza_aciklama || '')) : '';
+    const ekstraNot = existingRecord ? esc(capitalizeWords(existingRecord.ekstra_not || '')) : '';
     const kmBtnClass = opts.kmBtnClass || '';
     const kazaBtnClass = opts.kazaBtnClass || '';
     const bakimBtnClass = opts.bakimBtnClass || '';
@@ -776,14 +776,14 @@ window.submitDriverAction = async function(type, vid) {
         arac_id: parseInt(vid, 10),
         guncel_km: guncelKm,
         bakim_durumu: type === 'bakim' ? 1 : 0,
-        bakim_aciklama: type === 'bakim' ? (document.getElementById('bakim-detay-' + vid) || {}).value.trim() : '',
+        bakim_aciklama: type === 'bakim' ? capitalizeWords((document.getElementById('bakim-detay-' + vid) || {}).value.trim()) : '',
         bakim_tarih: type === 'bakim' ? (document.getElementById('bakim-tarih-' + vid) || {}).value : '',
         bakim_servis: type === 'bakim' ? ((document.getElementById('bakim-servis-' + vid) || {}).value || '').trim() : '',
         bakim_kisi: type === 'bakim' ? ((document.getElementById('bakim-kisi-' + vid) || {}).value || '').trim() : '',
         bakim_km: type === 'bakim' ? ((document.getElementById('bakim-km-' + vid) || {}).value || '').trim() : '',
         bakim_tutar: type === 'bakim' ? ((document.getElementById('bakim-tutar-' + vid) || {}).value || '').trim() : '',
         kaza_durumu: type === 'kaza' ? 1 : 0,
-        kaza_aciklama: type === 'kaza' ? (document.getElementById('kaza-detay-' + vid).value.trim()) : '',
+        kaza_aciklama: type === 'kaza' ? capitalizeWords(document.getElementById('kaza-detay-' + vid).value.trim()) : '',
         kaza_tarih: type === 'kaza' ? (document.getElementById('kaza-tarih-' + vid).value || '') : '',
         kaza_hasar_tutari: type === 'kaza' ? ((document.getElementById('kaza-tutar-' + vid) || {}).value || '').trim() : '',
         boya_parcalar: '{}',
@@ -1560,18 +1560,18 @@ window.saveVehicleData = async function(vehicleId) {
                 arac_id: vehicleId,
                 guncel_km: parseInt(km),
                 bakim_durumu: bakimVar ? 1 : 0,
-                bakim_aciklama: bakimAciklama,
+                bakim_aciklama: capitalizeWords(bakimAciklama),
                 bakim_tarih: bakimTarih,
                 bakim_servis: bakimServis,
                 bakim_kisi: bakimKisi,
                 bakim_km: bakimKm,
                 bakim_tutar: bakimTutar,
                 kaza_durumu: kazaVar ? 1 : 0,
-                kaza_aciklama: kazaAciklama,
+                kaza_aciklama: capitalizeWords(kazaAciklama),
                 kaza_tarih: kazaTarih,
                 kaza_hasar_tutari: kazaHasarTutari,
                 boya_parcalar: JSON.stringify(boyaParcalar),
-                ekstra_not: not
+                ekstra_not: capitalizeWords(not)
             })
         });
         
@@ -1820,11 +1820,11 @@ function renderHistoryList() {
             window._historyRecordMap[item.id] = item;
             showEditBtn = true;
             if (item.kaza_durumu) {
-                detailsHtml = `<p><strong>Kaza:</strong> ${escapeHtmlDriver(item.kaza_aciklama || 'Var')}</p>`;
+                detailsHtml = `<p><strong>Kaza:</strong> ${escapeHtmlDriver(capitalizeWords(item.kaza_aciklama || 'Var'))}</p>`;
                 if (item.kaza_tarih) detailsHtml += `<p><strong>Tarih:</strong> ${item.kaza_tarih}</p>`;
                 if (item.kaza_hasar_tutari) detailsHtml += `<p><strong>Hasar Tutarı:</strong> ${escapeHtmlDriver(item.kaza_hasar_tutari)} TL</p>`;
             } else if (item.bakim_durumu) {
-                detailsHtml = `<p>${escapeHtmlDriver(capitalizeWords('Bakım Bildirildi') + ': ')}${escapeHtmlDriver(item.bakim_aciklama || 'Var')}</p>`;
+                detailsHtml = `<p>${escapeHtmlDriver(capitalizeWords('Bakım Bildirildi') + ': ')}${escapeHtmlDriver(capitalizeWords(item.bakim_aciklama || 'Var'))}</p>`;
                 if (item.bakim_tarih) detailsHtml += `<p><strong>Tarih:</strong> ${item.bakim_tarih}</p>`;
                 if (item.guncel_km) detailsHtml += `<p><strong>Bildirilen KM:</strong> ${formatKm(item.guncel_km)}</p>`;
             } else {
@@ -1890,10 +1890,10 @@ window.showEditRequest = function(recordId) {
     currentRecordId = recordId;
     document.getElementById('current-km').textContent = formatKm(record.guncel_km) || '0';
     document.getElementById('new-km').value = formatKm(record.guncel_km) || '';
-    document.getElementById('current-bakim').textContent = record.bakim_durumu ? (record.bakim_aciklama || 'Var') : 'Yok';
-    document.getElementById('new-bakim').value = record.bakim_durumu ? (record.bakim_aciklama || '') : '';
-    document.getElementById('current-kaza').textContent = record.kaza_durumu ? (record.kaza_aciklama || 'Var') : 'Yok';
-    document.getElementById('new-kaza').value = record.kaza_durumu ? (record.kaza_aciklama || '') : '';
+    document.getElementById('current-bakim').textContent = record.bakim_durumu ? capitalizeWords(record.bakim_aciklama || 'Var') : 'Yok';
+    document.getElementById('new-bakim').value = record.bakim_durumu ? capitalizeWords(record.bakim_aciklama || '') : '';
+    document.getElementById('current-kaza').textContent = record.kaza_durumu ? capitalizeWords(record.kaza_aciklama || 'Var') : 'Yok';
+    document.getElementById('new-kaza').value = record.kaza_durumu ? capitalizeWords(record.kaza_aciklama || '') : '';
     document.getElementById('edit-reason').value = '';
     document.getElementById('edit-request-modal').classList.add('show');
     updateDriverModalBodyClass();
