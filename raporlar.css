@@ -1730,6 +1730,8 @@ width: 100% !important;
 overflow: hidden !important;
 text-overflow: ellipsis !important;
 border-color: rgba(255, 255, 255, 0.28) !important;
+margin-left: 3px !important;
+margin-right: 3px !important;
 }
 #stok-date-start,
 #stok-date-end {
