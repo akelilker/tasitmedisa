@@ -618,7 +618,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 16px 0 3px; /* Sol ok + etiket sol çerçeveye 3px */
+    padding: 0 16px 0 0; /* Sol ok çerçeveye yaslı (3px sola alındı) */
     position: relative !important; /* Arama kutusunun buraya göre konumlanması için */
     z-index: 10;
     flex-shrink: 0;
@@ -639,7 +639,7 @@
 }
 
 .active-branch-title {
-    color: var(--form-label-color) !important; 
+    color: var(--muted) !important; 
     font-weight: 700;
     font-size: 13.5px; /* 1.5pt küçült (15 → 13.5) */
     white-space: nowrap;
@@ -2132,7 +2132,7 @@
   
   /* Sol ok + etiket sol çerçeveye 3px (mobil); sağda arama/şanzıman taşmasın */
   .vehicles-toolbar {
-    padding-left: 3px !important;
+    padding-left: 0 !important; /* Sol ok çerçeveye yaslı */
     padding-right: 6px !important;
   }
   #vehicles-modal .vt-right {
@@ -2159,7 +2159,7 @@
   }
   /* Taşıt detay toolbar sol 4px */
   #vehicle-detail-modal .vehicle-detail-toolbar {
-    padding-left: 4px !important;
+    padding-left: 1px !important; /* Sol ok 3px sola (4→1) */
   }
   /* --- MODAL GERİ/BÜYÜTEÇ BUTONLARI BÜYÜT --- */
   .vt-back-btn, .vehicle-detail-toolbar .detail-back-btn {
