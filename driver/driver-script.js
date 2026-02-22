@@ -608,7 +608,7 @@ function buildDriverActionArea(vehicle, existingRecord, bakimVar, kazaVar, opts)
                         </div>
                     </div>
                     <div id="driver-anahtar-detay-wrap-${vid}" class="form-group" style="display:none">
-                        <label for="driver-anahtar-detay-${vid}" style="color:#ccc;font-size:14px;">Açıklama:</label>
+                        <label for="driver-anahtar-detay-${vid}" style="color:#ccc;font-size:15px;">Açıklama:</label>
                         <input type="text" id="driver-anahtar-detay-${vid}" class="form-input" placeholder="Anahtar nerede?" style="width:100%">
                     </div>
                     <div class="driver-form-actions">
@@ -628,7 +628,7 @@ function buildDriverActionArea(vehicle, existingRecord, bakimVar, kazaVar, opts)
                         </div>
                     </div>
                     <div id="driver-lastik-adres-wrap-${vid}" class="form-group" style="display:none">
-                        <label for="driver-lastik-adres-${vid}" style="color:#ccc;font-size:14px;">Adres:</label>
+                        <label for="driver-lastik-adres-${vid}" style="color:#ccc;font-size:15px;">Adres:</label>
                         <input type="text" id="driver-lastik-adres-${vid}" class="form-input" placeholder="Lastik adresi" style="width:100%">
                     </div>
                     <div class="driver-form-actions">
