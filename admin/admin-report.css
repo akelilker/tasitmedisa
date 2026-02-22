@@ -368,6 +368,7 @@ body.admin-report-page::-webkit-scrollbar {
 }
 
 .report-table td {
+  text-align: center;
   white-space: normal;
   overflow-wrap: break-word;
   word-break: break-word;
