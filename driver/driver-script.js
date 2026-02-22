@@ -639,7 +639,7 @@ function buildDriverActionArea(vehicle, existingRecord, bakimVar, kazaVar, opts)
                     <label for="not-${vid}">Not</label>
                     <textarea id="not-${vid}" class="driver-ekstra-not" rows="1" placeholder="Varsa Belirtin.." maxlength="500">${ekstraNot}</textarea>
                 </div>
-                <button type="button" onclick="saveVehicleData(${vid})" class="btn-save" id="btn-save-${vid}">Bildir</button>
+                <button type="button" onclick="saveVehicleData('${vid}')" class="btn-save" id="btn-save-${vid}">Bildir</button>
                 <div id="status-${vid}" class="status-message"></div>
             </div>
         </div>
@@ -940,15 +940,16 @@ window.submitKmOnly = async function(vid) {
 function buildSlidingWarnings(vehicles, records) {
     const warnings = [];
     const period = (currentPeriod || new Date().toISOString().slice(0, 7)).toString().trim();
-    let needsKmWarning = false;
-    
+
     for (const v of vehicles) {
         const vid = String(v.id);
         const fromRecords = records.some(r => String(r.arac_id) === vid && String(r.donem || '').trim() === period && r.guncel_km != null && String(r.guncel_km).trim() !== '');
         const optVal = lastSuccessfulKmSubmissions[vid] || lastSuccessfulKmSubmissions[String(v.id)];
         const fromOptimistic = optVal && String(optVal).trim() === period;
         const hasKmThisMonth = fromRecords || !!fromOptimistic;
-        if (!hasKmThisMonth) needsKmWarning = true;
+        if (!hasKmThisMonth) {
+            warnings.push({ text: v.plaka + ' Plakalı Taşıtın Güncel Km Bildirimi Yapılmamıştır', plaka: v.plaka });
+        }
         const checkDate = (dateStr, label) => {
             if (!dateStr) return;
             const w = checkDateWarningsDriver(dateStr);
@@ -962,9 +963,6 @@ function buildSlidingWarnings(vehicles, records) {
         checkDate(v.muayeneDate, 'Muayene');
         checkDate(v.sigortaDate, 'Sigorta');
         checkDate(v.kaskoDate, 'Kasko');
-    }
-    if (needsKmWarning) {
-        warnings.unshift({ text: 'Güncel Km Bildirmeniz Gerekmektedir', plaka: '' });
     }
     return warnings;
 }

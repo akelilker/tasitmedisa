@@ -109,9 +109,9 @@ if (count($vehicles) === 0 && !empty($user['zimmetli_araclar'])) {
 // Bu ay için mevcut kayıtları bul
 $currentPeriod = date('Y-m');
 $records = [];
-$assignedVehicleIds = array_map(function ($v) { return $v['id']; }, $vehicles);
+$assignedVehicleIds = array_map(function ($v) { return (string)$v['id']; }, $vehicles);
 foreach ($data['arac_aylik_hareketler'] ?? [] as $kayit) {
-    if (isset($kayit['surucu_id']) && (string)$kayit['surucu_id'] === (string)$user['id'] && in_array($kayit['arac_id'], $assignedVehicleIds)) {
+    if (isset($kayit['surucu_id']) && (string)$kayit['surucu_id'] === (string)$user['id'] && in_array((string)$kayit['arac_id'], $assignedVehicleIds, true)) {
         $records[] = $kayit;
     }
 }
