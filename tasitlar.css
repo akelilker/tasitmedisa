@@ -2197,7 +2197,7 @@
     margin-top: -4px !important; /* Sol ok 4px yukarı */
   }
   
-  .modal-overlay .modal-container {
+  .tasitlar-modal-overlay .modal-container {
     background: var(--modal-bg) !important;
     overflow: hidden !important;
     overflow-x: hidden !important; /* Yatay kayma engelle */
@@ -2214,7 +2214,7 @@
     max-height: 100% !important;
   }
 
-  .modal-overlay .modal-header h2 {
+  .tasitlar-modal-overlay .modal-header h2 {
     font-size: 19px !important; /* 18px + 1 punto (sadece mobil) */
     color: #ffffff !important; /* Başlık tam beyaz */
     text-shadow: none !important;
@@ -2799,8 +2799,8 @@
     overscroll-behavior-x: none !important; /* Yatay overscroll'u engelle */
   }
   
-  /* Tüm modal body'ler için overflow-x kontrolü */
-  .modal-overlay .modal-body {
+  /* Tüm taşıt modal body'leri için overflow-x kontrolü */
+  .tasitlar-modal-overlay .modal-body {
     overflow-x: hidden !important; /* Sağa sola kaymayı engelle */
     touch-action: pan-y !important; /* Sadece dikey kaydırma */
     overscroll-behavior-x: none !important; /* Yatay overscroll'u engelle */
