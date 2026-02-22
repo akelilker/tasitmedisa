@@ -60,7 +60,7 @@ if ($action === 'pending_requests') {
             $arac = null;
             if ($kayit) {
                 foreach ($data['tasitlar'] as $t) {
-                    if ($t['id'] === $kayit['arac_id']) {
+                    if ((string)$t['id'] === (string)$kayit['arac_id']) {
                         $arac = $t;
                         break;
                     }
@@ -148,7 +148,7 @@ foreach ($surucular as $surucu) {
         // Bu dönem için en son kayıt (aynı dönemde birden fazla kayıt olabilir)
         $kayit = null;
         foreach ($data['arac_aylik_hareketler'] ?? [] as $k) {
-            if ((string)$k['arac_id'] === (string)$aracId && (string)($k['surucu_id'] ?? '') === (string)$surucuId && $k['donem'] === $period) {
+            if ((string)$k['arac_id'] === (string)$aracId && (string)($k['surucu_id'] ?? '') === (string)$surucuId && (string)($k['donem'] ?? '') === (string)$period) {
                 if ($kayit === null || strcmp($k['guncelleme_tarihi'] ?? $k['kayit_tarihi'] ?? '', $kayit['guncelleme_tarihi'] ?? $kayit['kayit_tarihi'] ?? '') > 0) {
                     $kayit = $k;
                 }
@@ -182,7 +182,7 @@ foreach ($surucular as $surucu) {
         if ($km === null) {
             $sonDonem = null;
             foreach ($data['arac_aylik_hareketler'] ?? [] as $onceki) {
-                if (isset($onceki['arac_id']) && (int)$onceki['arac_id'] === (int)$aracId && isset($onceki['guncel_km'])) {
+                if (isset($onceki['arac_id']) && (string)$onceki['arac_id'] === (string)$aracId && isset($onceki['guncel_km'])) {
                     $d = $onceki['donem'] ?? '';
                     if ($sonDonem === null || ($d !== '' && strcmp($d, $sonDonem) > 0)) {
                         $sonDonem = $d;
