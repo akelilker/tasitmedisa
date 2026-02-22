@@ -799,7 +799,7 @@ window.submitDriverAction = async function(type, vid) {
             lastCompletedActionInSession = { action: type, vehicleId: vid };
             if (formActions) formActions.style.display = 'none';
             if (successMsg) successMsg.classList.add('show');
-            const period = currentPeriod || new Date().toISOString().slice(0, 7);
+            const period = (currentPeriod || new Date().toISOString().slice(0, 7)).toString().trim();
             lastSuccessfulKmSubmissions[String(vid)] = period;
             allHistoryRecords = allHistoryRecords || [];
             allHistoryRecords.push({
@@ -809,6 +809,7 @@ window.submitDriverAction = async function(type, vid) {
                 kayit_tarihi: new Date().toISOString()
             });
             renderSlidingWarning(allHistoryVehicles || [], allHistoryRecords);
+            setTimeout(function() { renderSlidingWarning(allHistoryVehicles || [], allHistoryRecords); }, 300);
             setTimeout(function() {
                 var block = document.getElementById((type === 'kaza' ? 'kaza-block-' : 'bakim-block-') + vid);
                 var inner = document.querySelector('.driver-action-area-inner[data-vehicle-id="' + vid + '"]');
@@ -885,7 +886,7 @@ window.submitKmOnly = async function(vid) {
             lastCompletedActionInSession = { action: 'km', vehicleId: vid };
             if (formContent) formContent.style.display = 'none';
             if (successMsg) successMsg.classList.add('show');
-            const period = currentPeriod || new Date().toISOString().slice(0, 7);
+            const period = (currentPeriod || new Date().toISOString().slice(0, 7)).toString().trim();
             lastSuccessfulKmSubmissions[String(vid)] = period;
             allHistoryRecords = allHistoryRecords || [];
             allHistoryRecords.push({
@@ -895,6 +896,7 @@ window.submitKmOnly = async function(vid) {
                 kayit_tarihi: new Date().toISOString()
             });
             renderSlidingWarning(allHistoryVehicles || [], allHistoryRecords);
+            setTimeout(function() { renderSlidingWarning(allHistoryVehicles || [], allHistoryRecords); }, 300);
             setTimeout(function() {
                 const block = document.getElementById('km-block-' + vid);
                 const inner = document.querySelector('.driver-action-area-inner[data-vehicle-id="' + vid + '"]');
@@ -920,14 +922,15 @@ window.submitKmOnly = async function(vid) {
 
 function buildSlidingWarnings(vehicles, records) {
     const warnings = [];
-    const period = currentPeriod || new Date().toISOString().slice(0, 7);
+    const period = (currentPeriod || new Date().toISOString().slice(0, 7)).toString().trim();
     let needsKmWarning = false;
     
     for (const v of vehicles) {
         const vid = String(v.id);
-        const fromRecords = records.some(r => String(r.arac_id) === vid && String(r.donem || '') === period && r.guncel_km != null && String(r.guncel_km).trim() !== '');
-        const fromOptimistic = lastSuccessfulKmSubmissions[vid] === period;
-        const hasKmThisMonth = fromRecords || fromOptimistic;
+        const fromRecords = records.some(r => String(r.arac_id) === vid && String(r.donem || '').trim() === period && r.guncel_km != null && String(r.guncel_km).trim() !== '');
+        const optVal = lastSuccessfulKmSubmissions[vid] || lastSuccessfulKmSubmissions[String(v.id)];
+        const fromOptimistic = optVal && String(optVal).trim() === period;
+        const hasKmThisMonth = fromRecords || !!fromOptimistic;
         if (!hasKmThisMonth) needsKmWarning = true;
         const checkDate = (dateStr, label) => {
             if (!dateStr) return;
