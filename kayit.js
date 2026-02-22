@@ -821,7 +821,7 @@
 
     // Mobil kontrolü
     const isMobile = window.innerWidth <= 640;
-    const leftValue = isMobile ? '4px' : '8px';
+    const leftValue = isMobile ? '12px' : '8px';
     
     // Input'un padding ve height değerlerini al
     const inputStyle = window.getComputedStyle(input);
