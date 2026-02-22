@@ -416,12 +416,20 @@ body.admin-report-page::-webkit-scrollbar {
   text-overflow: clip;
 }
 
-/* Masaüstü: Durum sütunu yatayda daha geniş */
+/* Masaüstü: Sütun genişlikleri (Durum -6px, İşlem +4px, Marka/Model +2px) */
 @media (min-width: 641px) {
+  .report-table th:nth-child(2),
+  .report-table td:nth-child(2) {
+    width: calc(9% + 2px); /* Marka/Model +2px */
+  }
   .report-table th:nth-child(5),
   .report-table td:nth-child(5) {
-    width: 10%;
-    min-width: 4rem;
+    width: calc(10% - 6px); /* Durum -6px */
+    min-width: calc(4rem - 6px);
+  }
+  .report-table th:nth-child(6),
+  .report-table td:nth-child(6) {
+    width: calc(1% + 4px); /* İşlem +4px */
   }
   .pending-card {
     padding: 0.65rem 0.5rem;
@@ -827,18 +835,25 @@ body.admin-report-page::-webkit-scrollbar {
     height: 18px;
   }
   .report-table th:nth-child(1),
-  .report-table td:nth-child(1),
+  .report-table td:nth-child(1) {
+    width: calc(13% + 1px); /* Kullanıcı +1px */
+  }
   .report-table th:nth-child(2),
-  .report-table td:nth-child(2),
+  .report-table td:nth-child(2) {
+    width: calc(9% - 4px); /* Marka/Model -4px */
+  }
   .report-table th:nth-child(3),
   .report-table td:nth-child(3),
   .report-table th:nth-child(4),
   .report-table td:nth-child(4),
   .report-table th:nth-child(5),
-  .report-table td:nth-child(5),
+  .report-table td:nth-child(5) {
+    width: auto;
+    min-width: 0;
+  }
   .report-table th:nth-child(6),
   .report-table td:nth-child(6) {
-    width: auto;
+    width: calc(1% + 3px); /* İşlem +3px */
     min-width: 0;
   }
   .pending-card {
