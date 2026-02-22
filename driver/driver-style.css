@@ -3422,16 +3422,19 @@ body.driver-action-block-open .management-system-link {
     margin: 0 !important;
   }
 
-  /* Content-wrap: iOS PWA'da ekstra safe-area padding kaldır */
-  .dashboard-page .driver-scroll-area,
-  .login-page .content-wrap.driver-content-wrap {
+  /* Content-wrap: iOS PWA'da ekstra safe-area padding kaldır (dashboard scroll) */
+  .dashboard-page .driver-scroll-area {
     padding-top: 0 !important;
   }
+  /* Login content-wrap: çentikten kaçınmak için üst safe-area */
+  .login-page .content-wrap.driver-content-wrap {
+    padding-top: max(12px, env(safe-area-inset-top)) !important;
+  }
 
-  /* Header sabit, çentik üstüne */
+  /* Header: çentikten kaçınmak için üst safe-area (padding-top 0 ile içerik yukarı gidiyordu) */
   .dashboard-page .driver-header-fixed,
   .login-page .driver-header-fixed {
-    padding-top: 0 !important;
+    padding-top: max(12px, env(safe-area-inset-top)) !important;
     border-top-left-radius: 38px !important;
     border-top-right-radius: 38px !important;
     border-left: none !important;
