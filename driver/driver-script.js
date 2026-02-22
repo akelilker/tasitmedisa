@@ -663,11 +663,15 @@ window.toggleDriverActionBlock = function(type, vehicleId) {
     if (!target) return;
     const isShown = target.classList.contains('show');
     inner.classList.remove('driver-km-open');
+    document.body.classList.remove('driver-action-block-open');
     inner.querySelectorAll('.driver-action-block').forEach(function(b) { if (b) b.classList.remove('show'); });
     if (!isShown) {
         target.classList.add('show');
         var expandTypes = ['km', 'kaza', 'bakim', 'sigorta', 'kasko', 'muayene', 'anahtar', 'lastik'];
-        if (expandTypes.indexOf(type) !== -1) inner.classList.add('driver-km-open');
+        if (expandTypes.indexOf(type) !== -1) {
+            inner.classList.add('driver-km-open');
+            document.body.classList.add('driver-action-block-open');
+        }
         if (type === 'kaza') {
             const dateEl = document.getElementById('kaza-tarih-' + vid);
             if (dateEl && !dateEl.value) dateEl.value = new Date().toISOString().split('T')[0];
