@@ -1646,8 +1646,8 @@
         // Aktif buton değilse hover class'ı ekle
         if (!btn.classList.contains("active")) {
           if (isSanziman) {
-            // Şanzıman: Her iki buton da kırmızı hover
-            btn.classList.add("hover-red");
+            // Şanzıman: Her iki buton da yeşil hover
+            btn.classList.add("hover-green");
           } else if (isTramer || isBoya) {
             // Tramer ve Boya Değişen: Var=kırmızı, Yok=yeşil
             if (btn.dataset.value === "var") {
