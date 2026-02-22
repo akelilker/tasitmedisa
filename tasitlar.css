@@ -562,15 +562,18 @@
     padding-bottom: 1px !important; /* Sekme metni ile altındaki yatay çizgi arası 1px */
 }
 
-/* Tarihçe içerik: tarih/etiket = kayıt modalı etiket rengi, metin = taşıtlar gri */
+/* Tarihçe: etiketler (tarih, başlık) beyaz; açıklamalar (detay) gri */
 #vehicle-history-modal .history-item-date {
-    color: var(--form-label-color);
+    color: #fff;
+}
+#vehicle-history-modal .history-item-label {
+    color: #fff;
 }
 #vehicle-history-modal .history-item-body {
-    color: #ccc;
+    color: #999;
 }
 #vehicle-history-modal .history-empty-msg {
-    color: #ccc;
+    color: #999;
 }
 
 #vehicles-modal .modal-header h2,
@@ -739,9 +742,10 @@
   .vehicle-detail-left #detail-boya-container .kaporta-schema-wrapper {
     max-width: 100% !important;
   }
-  /* Tarihçe modal: sol ok ve Taşıt Detayları etiketi 8px yukarı (masaüstü) */
+  /* Tarihçe modal: sol ok ve Taşıt Detayları sabit (scroll ile gitmesin) */
   #vehicle-history-modal .modal-container > div:nth-child(2) {
     margin-top: -8px;
+    flex-shrink: 0;
   }
   /* Taşıt listesi: sekme başlıkları 3px yukarı (masaüstü) */
   #vehicles-modal .list-header-row {
