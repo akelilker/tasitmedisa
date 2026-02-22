@@ -799,7 +799,7 @@ body.driver-modal-open {
 .driver-action-area .form-group label {
   display: block;
   margin-bottom: 6px;
-  font-size: 13px;
+  font-size: 14px; /* +1 punto (13→14) */
   color: var(--form-label-color);
   font-weight: 600;
   color: var(--txt);
@@ -889,7 +889,7 @@ body.driver-modal-open {
   .driver-form-actions .btn-driver-bildir,
   .driver-form-actions .btn-driver-vazgec { font-size: 15.5px; }
   #driver-input-area .form-group label,
-  .driver-action-area .form-group label { font-size: 13.5px; }
+  .driver-action-area .form-group label { font-size: 14.5px; }
   #driver-input-area .form-group input,
   #driver-input-area .form-group textarea,
   .driver-action-area .form-group input,
@@ -1141,32 +1141,47 @@ body.driver-modal-open {
   margin-bottom: 0;
   margin-right: 0;
   color: var(--form-label-color);
-  font-size: 14px;
+  font-size: 15px; /* +1 punto */
 }
 .driver-radio-group {
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
 }
+/* Anahtar/Lastik Var/Yok: normal metin+çerçeve; hover/seçili: yeşil/kırmızı border+metin+yarı saydam arka plan */
 .driver-radio-btn {
   background: transparent;
-  border: none;
-  padding: 0 4px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 6px;
+  padding: 6px 14px;
   cursor: pointer;
   font-weight: 600;
   font-size: 16px;
-  color: rgba(255, 255, 255, 0.4);
-  transition: color 0.2s;
+  color: rgba(255, 255, 255, 0.5);
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
 }
-.driver-radio-btn[data-value="var"],
+/* Var: hover ve seçili – yeşil border, yeşil metin, yarı saydam yeşil arka plan */
+.driver-radio-btn[data-group="anahtar"][data-value="var"]:hover,
 .driver-radio-btn[data-group="anahtar"].active[data-value="var"],
+.driver-radio-btn[data-group="lastik"][data-value="var"]:hover,
 .driver-radio-btn[data-group="lastik"].active[data-value="var"] {
+  border-color: #28a745;
   color: #28a745;
+  background: rgba(40, 167, 69, 0.2);
 }
-.driver-radio-btn[data-value="yok"],
+/* Yok: hover ve seçili – kırmızı border, kırmızı metin, yarı saydam kırmızı arka plan */
+.driver-radio-btn[data-group="anahtar"][data-value="yok"]:hover,
 .driver-radio-btn[data-group="anahtar"].active[data-value="yok"],
+.driver-radio-btn[data-group="lastik"][data-value="yok"]:hover,
 .driver-radio-btn[data-group="lastik"].active[data-value="yok"] {
-  color: var(--theme-color);
+  border-color: var(--theme-color, #e1061b);
+  color: var(--theme-color, #e1061b);
+  background: rgba(225, 6, 27, 0.2);
+}
+/* UTTS Evet/Hayır: eski stil (çerçevesiz, sadece renk) */
+.driver-radio-btn[data-group="utts"] {
+  border: none;
+  padding: 0 4px;
 }
 .driver-radio-btn[data-value="evet"],
 .driver-radio-btn[data-group="utts"].active[data-value="evet"] {
@@ -1176,7 +1191,11 @@ body.driver-modal-open {
 .driver-radio-btn[data-group="utts"].active[data-value="hayir"] {
   color: var(--theme-color);
 }
-.driver-radio-btn.active {
+.driver-radio-btn[data-group="anahtar"].active,
+.driver-radio-btn[data-group="lastik"].active {
+  text-decoration: none; /* Var/Yok: border+arka plan yeterli */
+}
+.driver-radio-btn[data-group="utts"].active {
   text-decoration: underline;
 }
 
@@ -1336,7 +1355,7 @@ body.driver-modal-open {
 .vehicle-card .form-group label {
   display: block;
   margin-bottom: 6px;
-  font-size: 13px;
+  font-size: 14px; /* +1 punto (13→14) */
   color: var(--form-label-color);
   font-weight: 600;
   color: var(--txt);
@@ -2039,7 +2058,7 @@ body.driver-modal-open {
 .driver-modal .form-group label {
   display: block;
   margin-bottom: 6px;
-  font-size: 13px;
+  font-size: 14px; /* +1 punto (13→14) */
   color: var(--form-label-color);
   font-weight: 600;
   color: var(--txt);
