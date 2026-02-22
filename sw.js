@@ -42,6 +42,7 @@ const CACHE_FILES = [
   '/data-manager.js',
   
   // Icons
+  '/favicon.ico',
   '/icon/favicon.svg',
   '/icon/apple-touch-icon.svg',
   '/icon/icon-192.svg',
