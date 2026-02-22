@@ -338,7 +338,7 @@ body.admin-report-page::-webkit-scrollbar {
   min-width: 0;
   table-layout: auto;
   border-collapse: collapse;
-  font-size: clamp(0.6rem, 2vw, calc(0.9rem - 3px));
+  font-size: clamp(0.65rem, 2vw, calc(0.9rem - 1.7px));
 }
 
 .report-table th,
@@ -350,7 +350,7 @@ body.admin-report-page::-webkit-scrollbar {
   color: var(--txt);
   overflow: hidden;
   text-overflow: ellipsis;
-  font-size: clamp(0.6rem, 2vw, calc(0.9rem - 3px));
+  font-size: clamp(0.65rem, 2vw, calc(0.9rem - 1.7px));
 }
 
 .report-table th:first-child,
@@ -364,11 +364,18 @@ body.admin-report-page::-webkit-scrollbar {
   font-weight: 600;
   text-align: center;
   color: var(--form-label-color);
+  font-size: clamp(0.7rem, 2.2vw, calc(0.9rem - 1px));
+}
+
+.report-table td {
+  white-space: normal;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  word-wrap: break-word;
 }
 
 .report-table th:nth-child(3),
 .report-table td:nth-child(3) {
-  font-size: min(0.95em, 0.85rem);
   text-align: center;
 }
 
@@ -377,77 +384,41 @@ body.admin-report-page::-webkit-scrollbar {
   text-align: center;
 }
 
-.report-table th:nth-child(8) {
-  font-size: min(0.9em, 0.8rem);
-}
-
-/* Sütun Genişlikleri Güncellendi */
+/* Sütun Genişlikleri: Marka -8px, Plaka +4px, KM +4px (Bakım/Kaza kaldırıldı) */
 .report-table th:nth-child(1),
 .report-table td:nth-child(1) { width: 13%; } /* Kullanıcı */
 
 .report-table th:nth-child(2),
-.report-table td:nth-child(2) { width: 11%; } /* Marka */
+.report-table td:nth-child(2) { width: 9%; } /* Marka/ Model – 8px daraltıldı */
 
 .report-table th:nth-child(3),
-.report-table td:nth-child(3) { width: 9%; }  /* Plaka */
+.report-table td:nth-child(3) { width: 11%; } /* Plaka – 4px genişletildi */
 
 .report-table th:nth-child(4),
-.report-table td:nth-child(4) { width: 8%; }  /* KM */
+.report-table td:nth-child(4) { width: 10%; } /* KM – 4px genişletildi */
 
 .report-table th:nth-child(5),
-.report-table td:nth-child(5) { width: 4%; min-width: 2rem; } /* Bakım */
-.report-table th:nth-child(6),
-.report-table td:nth-child(6) { width: 4%; min-width: 2rem; } /* Kaza */
-.report-table th:nth-child(7),
-.report-table td:nth-child(7) { width: 5%; min-width: 2rem; } /* Durum */
-.report-table th:nth-child(8),
-.report-table td:nth-child(8) { width: 1%; white-space: nowrap; } /* İşlem – metne göre genişler */
+.report-table td:nth-child(5) { width: 5%; min-width: 2rem; } /* Durum */
 
-.report-table td:nth-child(8) {
+.report-table th:nth-child(6),
+.report-table td:nth-child(6) { width: 1%; white-space: nowrap; } /* İşlem */
+
+.report-table td:nth-child(6) {
   text-align: center;
   vertical-align: middle;
 }
 
-.report-table td {
-  white-space: nowrap;
-}
-
 .report-table th:nth-child(1),
-.report-table td:nth-child(1) {
-  white-space: normal;
-  overflow-wrap: break-word;
-  word-break: break-word;
-  font-size: min(0.95em, calc(0.9rem - 2px));
-  text-overflow: clip;
-}
-
+.report-table td:nth-child(1),
 .report-table th:nth-child(2),
 .report-table td:nth-child(2) {
-  white-space: normal;
-  overflow-wrap: break-word;
-  word-break: break-word;
   text-overflow: clip;
 }
 
-.report-table th:nth-child(5),
-.report-table th:nth-child(6),
-.report-table th:nth-child(7) {
-  font-size: min(0.6em, 0.6rem);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: clip;
-}
-
-/* Masaüstü: Bakım, Kaza, Durum başlıkları daha okunaklı; Durum sütunu yatayda daha geniş */
+/* Masaüstü: Durum sütunu yatayda daha geniş */
 @media (min-width: 641px) {
   .report-table th:nth-child(5),
-  .report-table th:nth-child(6),
-  .report-table th:nth-child(7) {
-    font-size: 0.8rem;
-    min-width: 2.5rem;
-  }
-  .report-table th:nth-child(7),
-  .report-table td:nth-child(7) {
+  .report-table td:nth-child(5) {
     width: 10%;
     min-width: 4rem;
   }
@@ -479,6 +450,14 @@ body.admin-report-page::-webkit-scrollbar {
   color: var(--theme-color);
 }
 
+.report-table tr.row-km-overdue td {
+  color: #ef4444;
+}
+
+.report-table tr.row-km-warning td {
+  color: #fb923c;
+}
+
 .report-table .action-cell button {
   padding: 0.3rem 0.5rem; /* Guncellendi: Buton bosluklari kuculdu */
   margin-right: 0.25rem;
@@ -503,8 +482,8 @@ body.admin-report-page::-webkit-scrollbar {
 }
 
 .report-table .action-cell .whatsapp-btn .whatsapp-icon {
-  width: 16px; /* Guncellendi: İkon boyutu 16px */
-  height: 16px;
+  width: 20px;
+  height: 20px;
   fill: #25d366;
 }
 
@@ -536,28 +515,6 @@ body.admin-report-page::-webkit-scrollbar {
 
 .report-table .durum-bildirildi {
   color: #4ade80;
-}
-
-.report-table .cell-icon-wrap {
-  text-align: center;
-}
-
-.report-table .cell-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.report-table .cell-icon .cell-svg {
-  display: block;
-}
-
-.report-table .cell-icon.cell-yes {
-  color: #4ade80;
-}
-
-.report-table .cell-icon.cell-no {
-  color: var(--theme-color);
 }
 
 /* --- Bekleyen talepler --- */
@@ -860,17 +817,13 @@ body.admin-report-page::-webkit-scrollbar {
   .report-filters-row::-webkit-scrollbar {
     display: none;
   }
-  .report-table .cell-icon .cell-svg {
-    width: 16px;
-    height: 16px;
-  }
   .report-table .durum-icon .durum-svg {
     width: 13px;
     height: 13px;
   }
   .report-table .action-cell .whatsapp-btn .whatsapp-icon {
-    width: 14px;
-    height: 14px;
+    width: 18px;
+    height: 18px;
   }
   .report-table th:nth-child(1),
   .report-table td:nth-child(1),
@@ -883,11 +836,7 @@ body.admin-report-page::-webkit-scrollbar {
   .report-table th:nth-child(5),
   .report-table td:nth-child(5),
   .report-table th:nth-child(6),
-  .report-table td:nth-child(6),
-  .report-table th:nth-child(7),
-  .report-table td:nth-child(7),
-  .report-table th:nth-child(8),
-  .report-table td:nth-child(8) {
+  .report-table td:nth-child(6) {
     width: auto;
     min-width: 0;
   }
