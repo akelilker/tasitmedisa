@@ -1667,16 +1667,17 @@ function renderVehicleDetailLeft(vehicle) {
     const takipCihazi = vehicle.takipCihaziMontaj ? 'Evet' : 'Hayır';
     html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Taşıt Takip</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(takipCihazi)}</span></div>`;
     
-    // Notlar (kayıt formundan)
+    // Notlar (kayıt formundan) + Kullanıcı Notu (varsa, kullanıcı panelinden)
     const notes = vehicle.notes || '';
-    html += `<div class="detail-row detail-row-block"><div class="detail-row-header"><span class="detail-row-label">Notlar</span><span class="detail-row-colon">:</span></div><span class="detail-row-value">${notes ? escapeHtml(notes) : '-'}</span></div>`;
-
-    // Sürücü notu (kullanıcı panelinden; son kayıt)
     const sonNot = vehicle.sonEkstraNot || '';
     const sonNotDonem = vehicle.sonEkstraNotDonem || '';
-    const notDisplay = sonNot ? escapeHtml(sonNot) : '-';
-    const notDonemDisplay = sonNotDonem ? ` (${escapeHtml(sonNotDonem)})` : '';
-    html += `<div class="detail-row detail-row-block"><div class="detail-row-header"><span class="detail-row-label">Sürücü Notu</span><span class="detail-row-colon">:</span></div><span class="detail-row-value">${notDisplay}${notDonemDisplay}</span></div>`;
+    let notesValue = notes ? escapeHtml(notes) : '';
+    if (sonNot) {
+      const kullaniciNotu = 'Kullanıcı Notu: ' + escapeHtml(sonNot) + (sonNotDonem ? ' (' + escapeHtml(sonNotDonem) + ')' : '');
+      notesValue = notesValue ? notesValue + '<br><br>' + kullaniciNotu : kullaniciNotu;
+    }
+    notesValue = notesValue || '-';
+    html += `<div class="detail-row detail-row-block"><div class="detail-row-header"><span class="detail-row-label">Notlar</span><span class="detail-row-colon">:</span></div><span class="detail-row-value">${notesValue}</span></div>`;
     
     rightEl.innerHTML = html;
   }
