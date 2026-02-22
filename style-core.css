@@ -649,8 +649,26 @@ html { overflow-x: hidden; }
 /* Modal body varyantları (inline stil yerine) */
 #cache-confirm-modal .modal-body { padding: 20px 20px 12px 20px; }
 #kaza-ekle-modal .modal-body { padding-top: 50px; }
-#vehicle-history-modal .modal-body { padding: 0; }
-#vehicle-history-modal #history-content { padding: 20px; }
+#vehicle-history-modal .modal-body {
+  padding: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  min-height: 0 !important;
+}
+#vehicle-history-modal #history-tabs {
+  flex-shrink: 0 !important;
+}
+#vehicle-history-modal .modal-container > div:nth-child(2) {
+  flex-shrink: 0 !important;
+}
+#vehicle-history-modal #history-content {
+  flex: 1 !important;
+  overflow-y: auto !important;
+  min-height: 0 !important;
+  padding: 20px !important;
+  -webkit-overflow-scrolling: touch;
+}
 
 /* Modal Evet/Hayır ve Kaydet/Vazgeç butonları */
 .modal-btn-confirm,

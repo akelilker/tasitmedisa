@@ -3325,40 +3325,87 @@ function renderVehicleDetailLeft(vehicle) {
       } else {
         subeEvents.forEach(event => {
           let label = '';
-          let detailHtml = '';
+          let detailText = '';
           
-          if (event.type === 'sube-degisiklik') label = 'Şube Değişikliği';
-          else if (event.type === 'kullanici-atama') label = 'Yeni Kullanıcı';
-          else if (event.type === 'sigorta-guncelle') label = 'Sigorta Güncelleme';
-          else if (event.type === 'kasko-guncelle') label = 'Kasko Güncelleme';
-          else if (event.type === 'muayene-guncelle') label = 'Muayene Güncelleme';
-          else if (event.type === 'anahtar-guncelle') label = 'Anahtar Güncelleme';
-          else if (event.type === 'kredi-guncelle') label = 'Kredi/Rehin Güncelleme';
-          else if (event.type === 'lastik-guncelle') label = 'Yazlık/Kışlık Lastik Durumu Güncelleme';
-          else if (event.type === 'utts-guncelle') label = 'UTTS Güncelleme';
-          else if (event.type === 'takip-cihaz-guncelle') label = 'Taşıt Takip Cihazı Güncelleme';
-          else if (event.type === 'not-guncelle') label = 'Sürücü Notu';
-          else if (event.type === 'satis') label = 'Satış/Pert';
-          
-          let descText = escapeHtml(toTitleCase(label));
-          if (event.type === 'kullanici-atama') {
-            const yeni = toTitleCase(event.data?.kullaniciAdi || '-');
-            const eski = event.data?.eskiKullaniciAdi ? toTitleCase(event.data.eskiKullaniciAdi) : '';
-            descText += ` - ${escapeHtml(yeni)}${eski ? ` (${escapeHtml(eski)})` : ''}`;
-          } else if (event.type === 'sube-degisiklik') {
+          if (event.type === 'sube-degisiklik') {
+            label = 'Şube Değişikliği';
             const yeniRaw = event.data?.yeniSubeAdi || branches.find(b => b.id === event.data?.yeniSubeId)?.name || '-';
             const eskiRaw = event.data?.eskiSubeAdi || branches.find(b => b.id === event.data?.eskiSubeId)?.name || '';
             const yeni = toTitleCase(yeniRaw);
             const eski = eskiRaw ? toTitleCase(eskiRaw) : '';
-            descText += ` - ${escapeHtml(yeni)}${eski ? ` (${escapeHtml(eski)})` : ''}`;
-          } else if (event.type === 'not-guncelle' && event.data?.not) {
-            const notStr = String(event.data.not);
-            const notDisplay = notStr.length > 40 ? notStr.slice(0, 40) + '…' : notStr;
-            descText += ' - ' + escapeHtml(toTitleCase(notDisplay));
+            detailText = eski ? escapeHtml(yeni) + ' (Önceki: ' + escapeHtml(eski) + ')' : escapeHtml(yeni);
+          } else if (event.type === 'kullanici-atama') {
+            label = 'Yeni Kullanıcı';
+            const yeni = toTitleCase(event.data?.kullaniciAdi || '-');
+            const eski = event.data?.eskiKullaniciAdi ? toTitleCase(event.data.eskiKullaniciAdi) : '';
+            detailText = eski ? escapeHtml(yeni) + ' (Önceki: ' + escapeHtml(eski) + ')' : escapeHtml(yeni);
+          } else if (event.type === 'anahtar-guncelle') {
+            label = 'Anahtar Durumu';
+            const durum = event.data?.durum || 'yok';
+            const detay = (event.data?.detay || '').trim();
+            detailText = durum === 'var'
+              ? (detay ? 'Anahtar Var Olarak Bildirildi. Yeri: ' + escapeHtml(toTitleCase(detay)) : 'Anahtar Var Olarak Bildirildi')
+              : 'Anahtar Yok Olarak Bildirildi';
+          } else if (event.type === 'lastik-guncelle') {
+            label = 'Yazlık/Kışlık Lastik Durumu';
+            const durum = event.data?.durum || 'yok';
+            const adres = (event.data?.adres || '').trim();
+            detailText = durum === 'var'
+              ? (adres ? 'Lastik Var Olarak Bildirildi. Adres: ' + escapeHtml(toTitleCase(adres)) : 'Lastik Var Olarak Bildirildi')
+              : 'Lastik Yok Olarak Bildirildi';
+          } else if (event.type === 'kredi-guncelle') {
+            label = 'Kredi/Rehin';
+            const durum = event.data?.durum || 'yok';
+            const detay = (event.data?.detay || '').trim();
+            detailText = durum === 'var'
+              ? (detay ? 'Kredi Var Olarak Bildirildi. Detay: ' + escapeHtml(toTitleCase(detay)) : 'Kredi Var Olarak Bildirildi')
+              : 'Kredi Yok Olarak Bildirildi';
+          } else if (event.type === 'utts-guncelle') {
+            label = 'UTTS';
+            const durum = event.data?.durum;
+            detailText = durum === true || durum === 'evet' ? 'UTTS Evet Olarak Güncellendi' : 'UTTS Hayır Olarak Güncellendi';
+          } else if (event.type === 'takip-cihaz-guncelle') {
+            label = 'Taşıt Takip Cihazı';
+            const durum = event.data?.durum;
+            detailText = durum === true || durum === 'var' ? 'Takip Cihazı Var Olarak Güncellendi' : 'Takip Cihazı Yok Olarak Güncellendi';
+          } else if (event.type === 'sigorta-guncelle') {
+            label = 'Sigorta Güncelleme';
+            const bitis = event.data?.bitisTarihi || '-';
+            const firma = (event.data?.firma || '').trim();
+            const acente = (event.data?.acente || '').trim();
+            detailText = 'Bitiş Tarihi: ' + escapeHtml(bitis);
+            if (firma) detailText += ' | Firma: ' + escapeHtml(toTitleCase(firma));
+            if (acente) detailText += ' | Acente: ' + escapeHtml(toTitleCase(acente));
+          } else if (event.type === 'kasko-guncelle') {
+            label = 'Kasko Güncelleme';
+            const bitis = event.data?.bitisTarihi || '-';
+            const firma = (event.data?.firma || '').trim();
+            const acente = (event.data?.acente || '').trim();
+            detailText = 'Bitiş Tarihi: ' + escapeHtml(bitis);
+            if (firma) detailText += ' | Firma: ' + escapeHtml(toTitleCase(firma));
+            if (acente) detailText += ' | Acente: ' + escapeHtml(toTitleCase(acente));
+          } else if (event.type === 'muayene-guncelle') {
+            label = 'Muayene Güncelleme';
+            const bitis = event.data?.bitisTarihi || '-';
+            detailText = 'Bitiş Tarihi: ' + escapeHtml(bitis) + ' olarak güncellendi';
+          } else if (event.type === 'not-guncelle') {
+            label = 'Sürücü Notu';
+            const notStr = String(event.data?.not || '');
+            const notDisplay = notStr.length > 60 ? notStr.slice(0, 60) + '…' : notStr;
+            detailText = notDisplay ? escapeHtml(toTitleCase(notDisplay)) : '-';
+          } else if (event.type === 'satis') {
+            label = 'Satış/Pert';
+            detailText = 'Satış/Pert olarak kaydedildi';
+          } else {
+            label = event.type;
           }
+          
+          const labelHtml = escapeHtml(toTitleCase(label));
+          const dateLabelHtml = `${escapeHtml(event.date)} - ${labelHtml}`;
+          const bodyHtml = detailText ? `<div class="history-item-body" style="font-size: 12px; margin-top: 4px;">${detailText}</div>` : '';
           html += `<div class="history-item history-item-sube" style="padding: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
-            <div class="history-item-date" style="font-weight: 600; font-size: 12px; margin-bottom: 4px;">${escapeHtml(event.date)} - ${descText}</div>
-            ${detailHtml}
+            <div class="history-item-date" style="font-weight: 600; font-size: 12px; margin-bottom: 4px;">${dateLabelHtml}</div>
+            ${bodyHtml}
           </div>`;
         });
       }
