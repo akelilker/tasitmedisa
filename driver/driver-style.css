@@ -1255,7 +1255,7 @@ body.driver-modal-open {
   max-width: 90vw;
   max-height: 240px;
   overflow-y: auto;
-  background: var(--card-bg, #0f1418);
+  background: var(--bg);
   border: 1px solid rgba(var(--theme-color-rgb), 0.25);
   border-radius: 8px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(var(--theme-color-rgb), 0.08);
@@ -2955,9 +2955,9 @@ body.driver-action-block-open .management-system-link {
     box-shadow: 0 -9px 22px rgba(var(--theme-color-rgb), 0.35) !important;
   }
 
-  /* Plaka listesi: mobilde temaya uyumlu koyu arka plan */
+  /* Plaka listesi: temaya uyumlu koyu arka plan (--bg ile sol panel ile aynı) */
   .driver-plate-dropdown {
-    background: var(--card-bg, #0f1418) !important;
+    background: var(--bg) !important;
     border: 1px solid rgba(var(--theme-color-rgb), 0.25) !important;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(var(--theme-color-rgb), 0.08) !important;
   }
