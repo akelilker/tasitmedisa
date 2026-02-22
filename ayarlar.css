@@ -1206,8 +1206,8 @@ input.settings-form-input:-moz-autofill,
         color: var(--form-label-color) !important;
     }
     
-    /* Modal başlıkları mobilde 1.5 punto büyüt */
-    .modal-header h2 {
+    /* Modal başlıkları mobilde 1.5 punto büyüt (sadece ayarlar modalları) */
+    .ayarlar-modal-overlay .modal-header h2 {
         font-size: 19px !important; /* 17px + 1.5 punto (2px) */
         color: #ffffff !important; /* Başlık tam beyaz */
         text-shadow: none !important;
