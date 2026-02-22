@@ -1,7 +1,7 @@
 // Service Worker - Medisa Taşıt Yönetim Sistemi
-// Version 2.0 - Cache temizleme + 404 fix
+// Version 2.6 - Network-first stratejisi aktif edildi
 
-const CACHE_VERSION = 'medisa-v2.5';
+const CACHE_VERSION = 'medisa-v2.6';
 
 // Subpath desteği: /medisa/sw.js ise base = '/medisa', kök deploy'da base = ''
 function getBase() {
@@ -97,20 +97,18 @@ self.addEventListener('activate', (event) => {
         return self.clients.claim();
       })
       .catch((err) => {
-        // claim hatası olursa sessizce devam et
         console.warn('SW activate:', err);
       })
   );
 });
 
-// Fetch - Cache-first stratejisi
+// Fetch - Strateji
 self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
   
   // Sadece same-origin istekleri cache'le
   if (url.origin !== location.origin) {
-    // ExcelJS gibi CDN istekleri - network-first
     event.respondWith(
       fetch(request)
         .catch(() => {
@@ -120,20 +118,16 @@ self.addEventListener('fetch', (event) => {
     return;
   }
   
-  // API çağrıları ve PHP - network-first (POST cache'lenemez, sadece GET)
+  // API çağrıları ve PHP - network-first
   if (url.pathname.includes('/api/') || url.pathname.includes('.php')) {
     event.respondWith(
       fetch(request)
         .then((response) => {
-          // load.php için ASLA cache kullanma (senkronizasyon için kritik)
           if (url.pathname.includes('load.php')) {
             return response;
           }
-          
-          // Diğer PHP dosyaları için: Sadece cache-control header'ı olmayan GET isteklerini cache'le
           if (request.method === 'GET' && response && response.status === 200) {
             const cacheControl = response.headers.get('Cache-Control');
-            // no-cache, no-store veya must-revalidate varsa cache'leme
             if (!cacheControl || 
                 (!cacheControl.includes('no-cache') && 
                  !cacheControl.includes('no-store') && 
@@ -147,8 +141,6 @@ self.addEventListener('fetch', (event) => {
           return response;
         })
         .catch(() => {
-          // Network başarısızsa ve GET ise cache'den dön
-          // Ancak load.php için cache'den dönme (her zaman fresh data gerekli)
           if (request.method === 'GET' && !url.pathname.includes('load.php')) {
             return caches.match(request);
           }
@@ -158,47 +150,45 @@ self.addEventListener('fetch', (event) => {
     return;
   }
   
-  // Static dosyalar - cache-first
+  // Static dosyalar - NETWORK-FIRST (Önce internetten güncelini çek)
   event.respondWith(
-    caches.match(request)
-      .then((cachedResponse) => {
-        if (cachedResponse) return cachedResponse;
-        return fetch(request)
-          .then((response) => {
-            if (!response || response.status !== 200 || response.type === 'error') {
-              return response;
-            }
-            const responseClone = response.clone();
-            caches.open(CACHE_VERSION).then((cache) => {
-              cache.put(request, responseClone);
-            });
-            return response;
-          })
-          .catch(() => {
+    fetch(request)
+      .then((response) => {
+        if (!response || response.status !== 200 || response.type === 'error') {
+          return response;
+        }
+        // Başarılıysa cache'i yenile
+        const responseClone = response.clone();
+        caches.open(CACHE_VERSION).then((cache) => {
+          cache.put(request, responseClone);
+        });
+        return response;
+      })
+      .catch(() => {
+        // İnternet yoksa eski önbellekten getir
+        return caches.match(request)
+          .then((cachedResponse) => {
+            if (cachedResponse) return cachedResponse;
             if (request.destination === 'document') {
               const base = getBase();
               const fallbackPath = base ? base + '/' : '/';
               return caches.match(fallbackPath);
             }
-            return caches.match(request);
           });
       })
   );
 });
 
-// Background Sync (opsiyonel - offline form submission için)
+// Background Sync (opsiyonel)
 self.addEventListener('sync', (event) => {
   if (event.tag === 'sync-vehicles') {
     event.waitUntil(syncVehicleData());
   }
 });
 
-async function syncVehicleData() {
-  // Offline'da kaydedilen verileri sync et
-  // Burada IndexedDB'den pending data çekip API'ye gönderebilirsin
-}
+async function syncVehicleData() {}
 
-// Push Notifications (opsiyonel, subpath destekli)
+// Push Notifications
 self.addEventListener('push', (event) => {
   const data = event.data ? event.data.json() : {};
   const title = data.title || 'Medisa Taşıt';
