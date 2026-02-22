@@ -2167,6 +2167,16 @@
     width: 28px !important;
     height: 28px !important;
   }
+  /* Olay Ekle (14 modal): sol ok Taşıtlar Listesi ile aynı mobil boyut */
+  .olay-ekle-modal .olay-ekle-back-btn {
+    padding: 10px !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+  }
+  .olay-ekle-modal .olay-ekle-back-btn svg {
+    width: 28px !important;
+    height: 28px !important;
+  }
   .vt-icon-btn {
     width: 38px !important;
     height: 38px !important;
