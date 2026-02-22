@@ -2103,6 +2103,17 @@ body.driver-modal-open {
   color: rgba(74, 222, 128, 0.95);
 }
 
+/* Geçmiş kayıtlar modal: geri butonu ve metin */
+#history-modal .history-back-btn svg {
+  width: 18px;
+  height: 18px;
+}
+#history-modal .history-back-text {
+  color: var(--muted) !important;
+  font-weight: 500;
+  font-size: 13.5px;
+}
+
 /* Geçmiş kayıtlar modal içi */
 .history-filters {
   margin-bottom: 16px;
@@ -2216,8 +2227,8 @@ body.driver-modal-open {
 /* Kayıt kartı: tema uyumlu koyu gri */
 .history-card {
   display: flex;
-  align-items: center;
-  gap: 10px;
+  flex-direction: column;
+  gap: 6px;
   background: rgba(18, 22, 28, 0.98);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 8px;
@@ -2229,12 +2240,24 @@ body.driver-modal-open {
   min-width: 0;
 }
 
-/* Üst satır: tarih, alt satır: plaka – sola yaslı */
+.history-details-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.history-details {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Üst satır: tarih sola, plaka sağa – aynı satırda */
 .history-header {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 2px;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
   margin-bottom: 4px;
 }
 
@@ -2247,6 +2270,7 @@ body.driver-modal-open {
 .history-vehicle {
   color: var(--muted);
   font-size: 14px;
+  text-align: right;
 }
 
 .history-details p {
@@ -2264,6 +2288,7 @@ body.driver-modal-open {
 /* Kalem ikonu: sağda dikeyde ortalı, arka plan ve çerçeve yok */
 .history-edit-icon {
   flex-shrink: 0;
+  align-self: center;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -3175,6 +3200,16 @@ body.driver-action-block-open .management-system-link {
   #history-modal .history-filter-label,
   #history-modal .history-vehicle-trigger {
     font-size: 15px !important;
+  }
+  /* Geçmiş Kayıtlarım: sol ok mobilde büyük (Taşıtlar referansı) */
+  #history-modal .history-back-btn {
+    padding: 10px !important;
+    min-width: 44px !important;
+    min-height: 44px !important;
+  }
+  #history-modal .history-back-btn svg {
+    width: 28px !important;
+    height: 28px !important;
   }
   #edit-request-modal .form-group label {
     font-size: 14px !important;

@@ -1868,9 +1868,11 @@ function renderHistoryList() {
                     <span class="history-period">${escapeHtmlDriver(periodLabel)}</span>
                     <span class="history-vehicle">${escapeHtmlDriver(plaka)}</span>
                 </div>
-                <div class="history-details">${detailsHtml}</div>
+                <div class="history-details-row">
+                    <div class="history-details">${detailsHtml}</div>
+                    ${showEditBtn ? `<button type="button" onclick="showEditRequest(${editId})" class="history-edit-icon" title="Düzeltme Talep Et" aria-label="Düzeltme Talep Et">${pencilSvg}</button>` : ''}
+                </div>
             </div>
-            ${showEditBtn ? `<button type="button" onclick="showEditRequest(${editId})" class="history-edit-icon" title="Düzeltme Talep Et" aria-label="Düzeltme Talep Et">${pencilSvg}</button>` : ''}
         `;
         listEl.appendChild(card);
     });
