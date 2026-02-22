@@ -348,10 +348,8 @@ function renderLeftPanel(vehicles, records) {
     const kmVal = vehicle.guncelKm || (existingRecord && existingRecord.guncel_km) || '-';
     const kmFormatted = (kmVal !== '-' && kmVal != null) ? String(kmVal).replace(/\B(?=(\d{3})+(?!\d))/g, '.') : '-';
     const needsKmWarning = (() => {
-        const dayOfMonth = new Date().getDate();
-        const isFirstOfMonth = dayOfMonth === 1;
         const hasKmThisMonth = existingRecord && existingRecord.guncel_km != null && String(existingRecord.guncel_km).trim() !== '';
-        return isFirstOfMonth || !hasKmThisMonth;
+        return !hasKmThisMonth;
     })();
     const kmClass = needsKmWarning ? 'date-warning-red' : '';
     
@@ -451,10 +449,8 @@ function renderRightPanel(vehicles, records) {
     const bakimVar = existingRecord && (existingRecord.bakim_durumu || (existingRecord.bakim_aciklama || '').trim());
     const kazaVar = existingRecord && (existingRecord.kaza_durumu || (existingRecord.kaza_aciklama || '').trim());
     const needsKmWarning = (() => {
-        const dayOfMonth = new Date().getDate();
-        const isFirstOfMonth = dayOfMonth === 1;
         const hasKmThisMonth = existingRecord && existingRecord.guncel_km != null && String(existingRecord.guncel_km).trim() !== '';
-        return isFirstOfMonth || !hasKmThisMonth;
+        return !hasKmThisMonth;
     })();
     const hasKmSaved = !needsKmWarning;
     const sigortaW = checkDateWarningsDriver(vehicle.sigortaDate);
@@ -1578,6 +1574,15 @@ window.saveVehicleData = async function(vehicleId) {
         if (data.success) {
             showStatus(vehicleId, 'success', '✅ Kaydedildi!');
             btn.textContent = 'GÜNCELLE';
+
+            lastCompletedActionInSession = { action: 'km', vehicleId: vehicleId };
+            const period = currentPeriod || new Date().toISOString().slice(0, 7);
+            lastSuccessfulKmSubmissions[String(vehicleId)] = period;
+
+            setTimeout(() => {
+                loadDashboard();
+            }, 1500);
+
             if (data.warning) {
                 setTimeout(() => { alert(data.warning); }, 500);
             }

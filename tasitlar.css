@@ -2360,12 +2360,14 @@
     min-width: 0 !important;
   }
   /* Olay Ekle: tarih input gg.aa.yyyy sola kavmasın */
-  .olay-ekle-modal .modal-body input[type="date"].form-input {
-    padding-left: 12px !important;
+  .olay-ekle-modal .modal-body input[type="date"].form-input,
+  .olay-ekle-modal .modal-body .olay-tarih-input {
+    padding-left: 16px !important;
     text-align: left !important;
   }
-  .olay-ekle-modal .modal-body input[type="date"].form-input::-webkit-datetime-edit-fields-wrapper {
-    padding-left: 0 !important;
+  .olay-ekle-modal .modal-body input[type="date"].form-input::-webkit-datetime-edit-fields-wrapper,
+  .olay-ekle-modal .modal-body .olay-tarih-input::-webkit-datetime-edit-fields-wrapper {
+    padding-left: 2px !important;
   }
 
   /* --- OLAY EKLE MODALLARI - TÜM METİNLER +2px --- */

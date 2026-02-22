@@ -2238,10 +2238,12 @@ function renderVehicleDetailLeft(vehicle) {
               if (existing) existing.remove();
               
               if (!input.value && input !== document.activeElement) {
+                const isMobile = window.innerWidth <= 640;
+                const leftPx = isMobile ? '12px' : '8px';
                 const placeholder = document.createElement('span');
                 placeholder.className = 'date-placeholder';
                 placeholder.textContent = 'gg.aa.yyyy';
-                placeholder.style.cssText = 'position: absolute; left: 8px; top: 50%; transform: translateY(-50%); color: #666 !important; pointer-events: none; font-size: 10px; z-index: 100;';
+                placeholder.style.cssText = 'position: absolute; left: ' + leftPx + '; top: 50%; transform: translateY(-50%); color: #666 !important; pointer-events: none; font-size: 10px; z-index: 100;';
                 
                 const parent = input.parentElement;
                 if (parent) {
