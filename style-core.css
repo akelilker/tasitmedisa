@@ -27,7 +27,7 @@ body::-webkit-scrollbar,
 
   /* --- MODAL ORTAK (tek yerden yönetim) --- */
   /* Dikey için vw KULLANMA: vw = viewport genişliği. Dikey için vh/dvh veya px. */
-  --modal-bg: #2C2C2C; /* Tüm modallar tek renk (şube kartları tonu) */
+  --modal-bg: var(--bg); /* Container dışı alanla aynı (koyu lacivert) */
   --modal-max-width: 500px;
   --modal-radius: 10px;
   --modal-margin-bottom-desktop: calc(var(--app-footer-height) + var(--modal-gap-above-footer));
