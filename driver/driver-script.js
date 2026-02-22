@@ -1584,9 +1584,12 @@ window.saveVehicleData = async function(vehicleId) {
             const period = currentPeriod || new Date().toISOString().slice(0, 7);
             lastSuccessfulKmSubmissions[String(vehicleId)] = period;
 
+            /* "Kaydedildi!" mesajı showStatus ile 5 sn gösteriliyor; loadDashboard
+               paneli yeniden çizdiği için mesajı siliyor. Önce mesajı göster, 4 sn
+               sonra yenile ki kullanıcı "Bildirildi" yazısını görsün. */
             setTimeout(() => {
                 loadDashboard();
-            }, 1500);
+            }, 4000);
 
             if (data.warning) {
                 setTimeout(() => { alert(data.warning); }, 500);
