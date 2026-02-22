@@ -62,7 +62,7 @@ foreach ($hareketler as $k) {
 
     $surucuAdi = titleCaseTr($surucuAdi);
     $aracText = titleCaseTr($aracText);
-    $plaka = titleCaseTr($plaka);
+    $plaka = mb_strtoupper($plaka, 'UTF-8');
 
     fputcsv($out, [$surucuAdi, $aracText, $plaka, $km, $kayitTarihi], ';');
 }

@@ -138,7 +138,7 @@
 
     var surucuAdi = capitalizeWords(record.surucu_adi || '');
     var aracDisplay = capitalizeWords(aracText.trim() || '');
-    var plakaDisplay = capitalizeWords(record.plaka || '');
+    var plakaDisplay = (record.plaka || '').toString().trim().toLocaleUpperCase('tr-TR');
 
     tr.innerHTML =
       '<td>' + escapeHtml(surucuAdi || '–') + '</td>' +
@@ -214,7 +214,7 @@
         requests.forEach(function (req) {
           var card = document.createElement('div');
           card.className = 'pending-card';
-          var parts = ['<strong><span class="pending-name">' + escapeHtml(req.surucu_adi) + '</span><span class="pending-muted"> – ' + escapeHtml(req.plaka) + ' (' + escapeHtml(req.donem) + ')</span></strong>'];
+          var parts = ['<strong><span class="pending-name">' + escapeHtml(req.surucu_adi) + '</span><span class="pending-muted"> – ' + escapeHtml((req.plaka || '').toString().trim().toLocaleUpperCase('tr-TR')) + ' (' + escapeHtml(req.donem) + ')</span></strong>'];
           if (req.yeni_km != null) parts.push('<span class="pending-km-label">KM: </span><span class="pending-muted">' + escapeHtml(formatKm(req.eski_km)) + ' → ' + escapeHtml(formatKm(req.yeni_km)) + '</span>');
           if (req.yeni_bakim != null) parts.push('<span class="pending-muted">Bakım: ' + escapeHtml(String(req.eski_bakim || 'Yok')) + ' → ' + escapeHtml(req.yeni_bakim || 'Yok') + '</span>');
           if (req.yeni_kaza != null) parts.push('<span class="pending-kaza-label">Kaza: </span><span class="pending-muted">' + escapeHtml(String(req.eski_kaza || 'Yok')) + ' → ' + escapeHtml(req.yeni_kaza || 'Yok') + '</span>');
