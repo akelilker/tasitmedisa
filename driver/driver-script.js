@@ -1581,12 +1581,19 @@ window.saveVehicleData = async function(vehicleId) {
             btn.textContent = 'GÜNCELLE';
 
             lastCompletedActionInSession = { action: 'km', vehicleId: vehicleId };
-            const period = currentPeriod || new Date().toISOString().slice(0, 7);
+            const period = (currentPeriod || new Date().toISOString().slice(0, 7)).toString().trim();
             lastSuccessfulKmSubmissions[String(vehicleId)] = period;
 
-            /* "Kaydedildi!" mesajı showStatus ile 5 sn gösteriliyor; loadDashboard
-               paneli yeniden çizdiği için mesajı siliyor. Önce mesajı göster, 4 sn
-               sonra yenile ki kullanıcı "Bildirildi" yazısını görsün. */
+            allHistoryRecords = allHistoryRecords || [];
+            allHistoryRecords.push({
+                arac_id: vehicleId,
+                donem: period,
+                guncel_km: parseInt(km),
+                kayit_tarihi: new Date().toISOString()
+            });
+            renderSlidingWarning(allHistoryVehicles || [], allHistoryRecords);
+            setTimeout(function() { renderSlidingWarning(allHistoryVehicles || [], allHistoryRecords); }, 300);
+
             setTimeout(() => {
                 loadDashboard();
             }, 4000);
