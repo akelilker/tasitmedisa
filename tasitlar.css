@@ -97,8 +97,8 @@
     max-width: 500px !important;
     width: 100%;
     background: var(--modal-bg) !important;
-    border: 0.5px solid rgba(255, 255, 255, 0.35) !important;
-    box-shadow: 0 0 40px rgba(0, 0, 0, 0.9) !important;
+    border: 0.5px solid var(--border-medium) !important;
+    box-shadow: 0 0 40px var(--shadow-modal) !important;
     border-radius: var(--modal-radius) !important;
     margin: max(12px, env(safe-area-inset-top)) auto 54px auto !important;
     height: calc(100vh - max(12px, env(safe-area-inset-top)) - 54px) !important;
@@ -127,7 +127,7 @@
     max-width: 500px;
     height: calc(100vh - max(12px, env(safe-area-inset-top)) - 54px);
     height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 54px);
-    background: rgba(0, 0, 0, 0.85);
+    background: var(--shadow-overlay);
     backdrop-filter: blur(5px);
     z-index: -1;
     pointer-events: none;
@@ -172,7 +172,7 @@
 .detail-plate {
     font-size: 15px; /* Plaka 15px */
     font-weight: 700;
-    color: #f0f0f0;
+    color: var(--txt-light);
     text-align: center;
     width: 100%; /* Tam genişlik */
     letter-spacing: 2px;
@@ -197,7 +197,7 @@
 .detail-brand-year {
     font-size: 15px; /* Etiketlerden 1pt büyük (14px + 1px = 15px) */
     font-weight: 600;
-    color: #ccc;
+    color: var(--txt-gray);
     text-align: center; /* Yatayda ortalanmış */
     line-height: calc(1em + 2px); /* İkinci satıra geçerse satırlar arası 2px boşluk */
     margin-top: 0 !important;
@@ -213,7 +213,7 @@
     background: transparent !important;
     border: none !important;
     padding: 0 !important;
-    color: #ccc;
+    color: var(--txt-gray);
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -221,7 +221,7 @@
     flex-shrink: 0;
     font-size: 12px; /* 1pt büyütüldü (11px → 12px varsayılan body font-size'a göre) */
 }
-.history-btn-minimal:hover { color: #fff; }
+.history-btn-minimal:hover { color: var(--txt-white); }
 .history-btn-minimal svg { display: block; }
 
 /* === İKİ KOLONLU LAYOUT === */
@@ -323,7 +323,7 @@
     align-items: center;
     gap: 5px;
     font-size: 11px;
-    color: #aaa;
+    color: var(--txt-placeholder);
 }
 .boya-legend-dot {
     width: 10px;
@@ -363,7 +363,7 @@
 .detail-row-value {
     font-family: inherit;
     font-size: 14px; /* +1pt (13px → 13px */
-    color: #888; /* Kayıt modundaki form-input ile aynı (#ccc → #888) */
+    color: var(--txt-gray-darker);
     line-height: 1.4;
     word-wrap: break-word; /* Uzun kelimeleri kır */
     overflow-wrap: break-word; /* Modern tarayıcılar için */
@@ -432,7 +432,7 @@
 
 /* Tarih uyarı renkleri */
 .date-warning-orange {
-    color: #ff8c00 !important;
+    color: var(--orange-warn) !important;
 }
 
 .date-warning-red {
@@ -471,8 +471,8 @@
     border-radius: 8px;
     font-size: 12px;
     line-height: 1.4;
-    color: #e0e0e0;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+    color: var(--txt-muted);
+    box-shadow: 0 4px 12px var(--shadow-dark);
     white-space: normal;
 }
 #vehicle-detail-modal .muayene-detail-tooltip.visible {
@@ -487,14 +487,14 @@
     background: none;
     border: none;
     padding: 0;
-    color: #5b9bd5;
+    color: var(--link-blue);
     text-decoration: underline;
     cursor: pointer;
     font-size: inherit;
     font-family: inherit;
 }
 #vehicle-detail-modal .muayene-detail-tooltip-link:hover {
-    color: #7ab3e8;
+    color: var(--link-blue-hover);
 }
 
 /* === TRAMER KAYITLARI DETAY MODAL STİLLERİ === */
@@ -515,9 +515,9 @@
 
 .detail-item {
     font-size: 13px;
-    color: #ccc;
+    color: var(--txt-gray);
     padding: 4px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid var(--border-ultra);
 }
 
 .detail-item:last-of-type {
@@ -527,15 +527,15 @@
 .detail-total {
     font-size: 14px;
     font-weight: 600;
-    color: #f0f0f0;
+    color: var(--txt-light);
     margin-top: 12px;
     padding-top: 12px;
-    border-top: 1px solid rgba(255, 255, 255, 0.15);
+    border-top: 1px solid var(--border-faint);
 }
 
 /* === SABİT HEADER === */
 .tasitlar-modal-overlay .modal-header {
-    background: linear-gradient(180deg, rgba(255, 0, 0, 0.30) 0%, rgba(255, 0, 0, 0.22) 25%, rgba(255, 0, 0, 0.16) 50%, rgba(255, 0, 0, 0.10) 75%, transparent 100%);
+    background: linear-gradient(180deg, rgba(var(--theme-color-rgb), 0.30) 0%, rgba(var(--theme-color-rgb), 0.22) 25%, rgba(var(--theme-color-rgb), 0.16) 50%, rgba(var(--theme-color-rgb), 0.10) 75%, transparent 100%);
     padding: 2px 20px;
     height: 60px;
     display: flex;
@@ -546,7 +546,7 @@
     border-bottom: none !important;
     border-top-left-radius: var(--modal-radius);
     border-top-right-radius: var(--modal-radius);
-    border-top: 0.5px solid rgba(255, 255, 255, 0.35);
+    border-top: 0.5px solid var(--border-medium);
 }
 
 /* Tarihçe modalı – sekme başlıkları yatayda ortalı (tüm viewport’lar) */
@@ -554,7 +554,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--border-ultra);
 }
 #vehicle-history-modal #history-tabs .history-tab {
     text-align: center;
@@ -564,16 +564,16 @@
 
 /* Tarihçe: etiketler (tarih, başlık) beyaz; açıklamalar (detay) gri */
 #vehicle-history-modal .history-item-date {
-    color: #fff;
+    color: var(--txt-white);
 }
 #vehicle-history-modal .history-item-label {
-    color: #fff;
+    color: var(--txt-white);
 }
 #vehicle-history-modal .history-item-body {
-    color: #999;
+    color: var(--txt-placeholder);
 }
 #vehicle-history-modal .history-empty-msg {
-    color: #999;
+    color: var(--txt-placeholder);
 }
 
 #vehicles-modal .modal-header h2,
@@ -581,7 +581,7 @@
     font-size: 17px !important;
     font-weight: 600 !important;
     letter-spacing: 0.05em !important; /* Masaüstü */
-    color: #f0f0f0 !important;
+    color: var(--txt-light) !important;
     text-shadow: none !important;
     opacity: 1 !important;
     margin: 0;
@@ -595,7 +595,7 @@
 #vehicles-modal .modal-close {
     background: none;
     border: none;
-    color: #aaa;
+    color: var(--txt-placeholder);
     cursor: pointer;
     position: absolute;
     right: 15px;
@@ -608,12 +608,12 @@
     align-items: center;
     justify-content: center;
 }
-#vehicles-modal .modal-close:hover { color: #fff; }
+#vehicles-modal .modal-close:hover { color: var(--txt-white); }
 
 /* === DİNAMİK TOOLBAR === */
 .vehicles-toolbar {
     height: 40px;
-    background: #080d16;
+    background: var(--bg);
     border-bottom: none; 
     display: flex;
     justify-content: space-between;
@@ -681,7 +681,7 @@
     justify-content: center;
 }
 .vt-back-btn svg { width: 24px; height: 24px; } /* 100→120 oranı (20→24) */
-.vt-back-btn:hover { color: #fff; }
+.vt-back-btn:hover { color: var(--txt-white); }
 
 .vt-icon-btn {
     background: transparent !important;
@@ -768,7 +768,7 @@
   }
   /* Taşıt listesi: ilk satır arka plan ve dikey hizalama (masaüstü) */
   #vehicles-modal .view-list .list-item:first-child {
-    background: rgba(255,255,255,0.01) !important;
+    background: var(--border-faint-02) !important;
     align-items: center !important;
   }
   #vehicles-modal .view-list .list-item:first-child .list-cell {
@@ -895,7 +895,7 @@
     padding: 10px 16px;
     background: transparent;
     border: none;
-    color: #aaa !important; /* Sadece metin */
+    color: var(--txt-placeholder) !important;
     font-size: 13px !important;
     text-align: center !important; /* Yatayda ortalanmış */
     cursor: pointer;
@@ -904,7 +904,7 @@
 }
 #filter-dropdown .filter-dropdown-btn:hover {
     transform: scale(1.1); /* Hover efekti */
-    color: #fff !important;
+    color: var(--txt-white) !important;
     background: transparent;
 }
 #filter-dropdown .filter-dropdown-btn.active {
@@ -938,9 +938,9 @@
 }
 .v-search-input {
     width: 100%;
-    background: #151515;
-    border: 1px solid #333;
-    color: #fff;
+    background: var(--bg-2);
+    border: 1px solid var(--br);
+    color: var(--txt-white);
     padding: 6px 12px;
     border-radius: 6px;
     font-size: 14px;
@@ -953,7 +953,7 @@
     border-color: var(--theme-color);
 }
 .v-search-input::placeholder {
-    color: #666;
+    color: var(--txt-gray-darkest);
 }
 
 /* Şanzıman filtresi (arama çubuğu içinde, açıldığında görünür) */
@@ -963,9 +963,9 @@
     margin-left: 0;
     padding: 0 8px;
     font-size: 12px;
-    color: #ccc;
-    background: #151515;
-    border: 1px solid rgba(255,255,255,0.15);
+    color: var(--txt-gray);
+    background: var(--bg-2);
+    border: 1px solid var(--border-faint-15);
     border-radius: 6px;
     cursor: pointer;
 }
@@ -992,9 +992,9 @@
     margin-top: 4px;
     min-width: 140px;
     background: var(--bg);
-    border: 1px solid rgba(255,255,255,0.12);
+    border: 1px solid var(--border-faint);
     border-radius: 8px;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+    box-shadow: 0 6px 20px var(--shadow-dark);
     z-index: 100;
     padding: 4px 0;
 }
@@ -1007,15 +1007,15 @@
     padding: 8px 12px;
     text-align: left;
     font-size: 13px;
-    color: #ccc;
+    color: var(--txt-gray);
     background: none;
     border: none;
     cursor: pointer;
     white-space: nowrap;
 }
 .v-transmission-option:hover {
-    background: rgba(255,255,255,0.06);
-    color: #fff;
+    background: var(--border-ultra);
+    color: var(--txt-white);
 }
 .v-transmission-option.active {
     color: var(--theme-color);
@@ -1071,8 +1071,8 @@
     width: calc((100% - (4 * 8px)) / 5);
     max-width: calc((100% - (4 * 8px)) / 5);
     flex: 0 0 calc((100% - (4 * 8px)) / 5);
-    background: rgba(255, 255, 255, 0.02); 
-    border: 1px solid rgba(255, 255, 255, 0.30); 
+    background: var(--border-faint-02); 
+    border: 1px solid var(--border-subtle); 
     border-radius: 8px;
     padding: 3px 4px; /* Dikeyde 2px daha dar (4px → 3px üst/alt) */
     text-align: center;
@@ -1089,7 +1089,7 @@
 /* Şube kartları - Sadece masaüstünde hover */
 @media (hover: hover) and (pointer: fine) {
     .branch-card:hover {
-        border-color: rgba(255, 255, 255, 0.6);
+        border-color: var(--border-bright);
         /* Clip-safe hover: yukarı taşıma yok (üstten kesilmesin) */
         transform: scale(1.04);
         transform-origin: center;
@@ -1104,7 +1104,7 @@
 /* Şube kartları - Mobil active */
 @media (hover: none) {
     .branch-card:active {
-        border-color: rgba(255, 255, 255, 0.6);
+        border-color: var(--border-bright);
         transform: scale(1.04);
         transform-origin: center;
         z-index: 5;
@@ -1115,14 +1115,14 @@
     }
 }
 .branch-card.all-card {
-    border-color: rgba(255, 255, 255, 0.30); 
-    background: rgba(255, 255, 255, 0.02);
+    border-color: var(--border-subtle); 
+    background: var(--border-faint-02);
 }
 
 /* Tümü kartı için özel hover düzeltmesi */
 @media (hover: hover) and (pointer: fine) {
     .branch-card.all-card:hover {
-        border-color: rgba(255, 255, 255, 0.6) !important;
+        border-color: var(--border-bright) !important;
         transform: scale(1.06) !important;
         transform-origin: center;
         z-index: 10;
@@ -1130,7 +1130,7 @@
 }
 @media (hover: none) {
     .branch-card.all-card:active {
-        border-color: rgba(255, 255, 255, 0.6) !important;
+        border-color: var(--border-bright) !important;
         transform: scale(1.06) !important;
         transform-origin: center;
         z-index: 10;
@@ -1140,7 +1140,7 @@
 .branch-name {
     font-size: 13px; /* +1 punto (12→13) */
     font-weight: 700;
-    color: #f0f0f0;
+    color: var(--txt-light);
     text-transform: uppercase;
     margin-bottom: 2px;
     line-height: 1.1;
@@ -1157,7 +1157,7 @@
 
 .branch-count {
     font-size: 12px; /* +1 punto (11→12) */
-    color: #888; 
+    color: var(--txt-gray-darker); 
     background: transparent; 
     padding: 0; 
     border-radius: 0;
@@ -1180,8 +1180,8 @@
     width: calc((100% - (4 * 8px)) / 5);
     max-width: calc((100% - (4 * 8px)) / 5);
     flex: 0 0 calc((100% - (4 * 8px)) / 5);
-    background: rgba(255, 255, 255, 0.02); 
-    border: 1px solid rgba(255, 255, 255, 0.30);
+    background: var(--border-faint-02); 
+    border: 1px solid var(--border-subtle);
     border-radius: 8px;
     padding: 8px;
     position: relative;
@@ -1200,7 +1200,7 @@
 /* Araç kartları - Sadece masaüstünde hover */
 @media (hover: hover) and (pointer: fine) {
     .view-card .card:hover {
-        border-color: rgba(255, 255, 255, 0.6);
+        border-color: var(--border-bright);
         /* Clip-safe hover: yukarı taşıma yok */
         transform: scale(1.04);
         transform-origin: center;
@@ -1216,7 +1216,7 @@
 /* Araç kartları - Mobil active */
 @media (hover: none) {
     .view-card .card:active {
-        border-color: rgba(255, 255, 255, 0.6);
+        border-color: var(--border-bright);
         transform: scale(1.04);
         transform-origin: center;
         z-index: 5;
@@ -1231,7 +1231,7 @@
 .card-plate {
     font-size: 12px;
     font-weight: 700;
-    color: #f0f0f0;
+    color: var(--txt-light);
     text-align: center;
     margin-bottom: 4px;
     line-height: 1.2;
@@ -1245,7 +1245,7 @@
 .view-card .card-brand-model {
     font-size: 11px;
     font-weight: 400;
-    color: #999;
+    color: var(--txt-placeholder);
     text-align: center;
     margin-bottom: 4px;
     line-height: 1.3 !important; /* 2 satır için */
@@ -1265,7 +1265,7 @@
 .card-third-line {
     font-size: 10px;
     font-weight: 500;
-    color: #888;
+    color: var(--txt-gray-darker);
     text-align: center;
     line-height: 1.2;
     transition: transform 0.2s ease;
@@ -1285,8 +1285,8 @@
     gap: 4px !important;
     align-items: center;
     padding: 0 2px;
-    border-bottom: 1px solid rgba(255,255,255,0.08);
-    background: rgba(255,255,255,0.01);
+    border-bottom: 1px solid var(--border-faint-08);
+    background: var(--border-faint-02);
     position: relative;
     z-index: 0;
     cursor: pointer;
@@ -1296,20 +1296,20 @@
 }
 
 .view-list .list-item:hover {
-    background: rgba(255,255,255,0.04);
+    background: var(--border-ultra);
 }
 
 #vehicles-modal .view-list .list-cell,
 .view-list .list-cell {
     font-size: 12px !important; /* masaüstü içerik +1 punto (10→11) */
     font-weight: 500 !important;
-    color: #b5b9c0 !important; /* hafif gri - başlıktan daha soluk */
+    color: var(--txt-gray-dark) !important;
     display: flex;
     align-items: center;
     justify-content: center !important;
     line-height: 1.3;
     min-width: 0;
-    border-right: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-right: 1px solid var(--border-ultra) !important;
     padding: 2px 4px; /* metin–çerçeve arası dikey 2px */
 }
 
@@ -1352,8 +1352,8 @@
     align-items: center;
     padding: 2px 2px; /* metin–çerçeve arası dikey 2px */
     margin-bottom: 4px;
-    border-bottom: 1px solid rgba(255,255,255,0.22);
-    background: #080d16 !important; /* Opak arka plan */
+    border-bottom: 1px solid var(--border-faint-22);
+    background: var(--bg) !important;
     width: 100%;
     box-sizing: border-box;
     position: sticky !important; /* Başlık sabit (scroll modal-body'deyken) */
@@ -1361,7 +1361,7 @@
     z-index: 10 !important;
     isolation: isolate !important;
     transform: translateZ(0);
-    box-shadow: 0 2px 0 0 #080d16;
+    box-shadow: 0 2px 0 0 var(--bg);
 }
 /* Liste scroll sarmalayıcı varken başlık scroll dışında – sticky gerekmez */
 #vehicles-modal-content:has(.vehicles-list-scroll) .list-header-row {
@@ -1378,7 +1378,7 @@
     font-weight: 600;
     letter-spacing: 0.3px;
     text-transform: uppercase;
-    color: #8b93a1;
+    color: var(--txt-gray-dark);
     opacity: 0.8;
     display: flex;
     align-items: center !important;
@@ -1388,7 +1388,7 @@
     white-space: nowrap;
     padding: 2px 4px; /* metin–çerçeve arası dikey 2px */
     min-width: 0;
-    border-right: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-right: 1px solid var(--border-ultra) !important;
 }
 /* Sıralama oku her sütunda kendi hücresine göre konumlansın (tüm sütunlarda görünsün) */
 .list-header-row .list-cell.sortable-header {
@@ -1403,7 +1403,7 @@
     font-size: clamp(10px, 1.6vw, 12px) !important;
     font-weight: 700 !important;
     text-transform: uppercase;
-    color: #999 !important;
+    color: var(--txt-placeholder) !important;
 }
 
 .list-header-row .list-cell.list-year {
@@ -1511,8 +1511,8 @@
 }
 
 .sortable-header.drag-over {
-    border-left: 2px solid #4ade80;
-    border-right: 2px solid #4ade80;
+    border-left: 2px solid var(--green);
+    border-right: 2px solid var(--green);
     background: rgba(74, 222, 128, 0.1);
 }
 
@@ -1535,7 +1535,7 @@
 
 .sort-icon.active {
     opacity: 1;
-    color: #f0f0f0;
+    color: var(--txt-light);
 }
 
 .sortable-header:hover .sort-icon {
@@ -1579,7 +1579,7 @@
 .view-list .list-cell.list-branch {
     text-align: center !important;
     font-size: inherit !important;
-    color: #a9b4c6;
+    color: var(--txt-gray-dark);
     padding-left: 2px !important;
     padding-right: 2px !important;
     min-width: 0 !important;
@@ -1597,7 +1597,7 @@
 }
 
 .view-list .list-cell.list-year {
-    color: #b5b9c0;
+    color: var(--txt-gray-dark);
     font-weight: inherit !important;
     font-size: inherit !important;
     display: flex;
@@ -1634,7 +1634,7 @@
 .view-list .list-cell.list-plate {
     font-size: inherit !important;
     font-weight: inherit !important;
-    color: #b5b9c0 !important;
+    color: var(--txt-gray-dark) !important;
     justify-content: center !important;
     text-align: center !important;
     display: flex;
@@ -1645,7 +1645,7 @@
 }
 
 .view-list .list-cell.list-km {
-    color: #9aa3b1;
+    color: var(--txt-gray-dark);
     font-size: inherit !important;
     justify-content: center;
     padding-left: 6px;
@@ -1654,7 +1654,7 @@
 }
 
 .view-list .list-cell.list-type {
-    color: #9aa3b1;
+    color: var(--txt-gray-dark);
     font-size: inherit !important;
     justify-content: center !important;
     text-align: center !important;
@@ -1668,8 +1668,8 @@
     border-bottom: none;
 }
 
-.view-list .list-info h4 { margin: 0; font-size: 14px; color: #f0f0f0; }
-.view-list .list-info span { font-size: 11px; color: #888; }
+.view-list .list-info h4 { margin: 0; font-size: 14px; color: var(--txt-light); }
+.view-list .list-info span { font-size: 11px; color: var(--txt-gray-darker); }
 
 .branch-card.unassigned-branch-card {
     border-color: rgba(var(--theme-color-rgb), 0.5) !important;
@@ -1682,8 +1682,8 @@
 
 /* Tahsis Edilmemiş Taşıtlar — tema uyumlu; metinler kırmızı (hem mobil hem masaüstü) */
 .view-card .card.unassigned-vehicle-card {
-    border-color: rgba(255, 255, 255, 0.30) !important;
-    background: rgba(255, 255, 255, 0.02) !important;
+    border-color: var(--border-subtle) !important;
+    background: var(--border-faint-02) !important;
 }
 .view-card .card.unassigned-vehicle-card .card-plate,
 .view-card .card.unassigned-vehicle-card .card-brand-model,
@@ -1692,8 +1692,8 @@
 }
 
 .view-list .list-item.unassigned-vehicle-card {
-    border-bottom-color: rgba(255, 255, 255, 0.08) !important;
-    background: rgba(255, 255, 255, 0.01) !important;
+    border-bottom-color: var(--border-faint-08) !important;
+    background: var(--border-faint-02) !important;
 }
 /* Sadece Şube sütunundaki "Tahsis Edilmemiş" metni kırmızı; satırın geri kalanı normal */
 #vehicles-modal .view-list .list-item.unassigned-vehicle-card .list-cell.list-branch,
@@ -1714,7 +1714,7 @@
 .list-action-btn {
     background: none;
     border: none;
-    color: #ccc;
+    color: var(--txt-gray);
     width: auto;
     height: auto;
     display: flex;
@@ -1727,14 +1727,14 @@
     border-radius: 4px;
 }
 
-.list-action-btn.edit:hover { color: #dda410; background: rgba(221, 164, 16, 0.1); transform: scale(1.1); }
+.list-action-btn.edit:hover { color: var(--amber-edit); background: rgba(221, 164, 16, 0.1); transform: scale(1.1); }
 .list-action-btn.delete:hover { color: var(--theme-color); background: rgba(var(--theme-color-rgb), 0.1); transform: scale(1.1); }
 
 /* === ŞUBE ATAMA FORMU === */
 .detail-branch-assign {
   margin-top: 24px;
   padding-top: 20px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid var(--border-ultra);
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -1744,7 +1744,7 @@
 .assign-toggle {
   font-size: 13px;
   font-weight: 600;
-  color: #888;
+  color: var(--txt-gray-darker);
   text-align: center;
   letter-spacing: 0.5px;
   cursor: pointer;
@@ -1752,7 +1752,7 @@
   transition: color 0.2s;
 }
 
-.assign-toggle:hover { color: #aaa; }
+.assign-toggle:hover { color: var(--txt-placeholder); }
 
 .assign-form {
   width: 100%;
@@ -1766,10 +1766,10 @@
   width: 100%;
   max-width: 350px;
   padding: 8px 12px;
-  background: #0d131f;
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: var(--bg-content);
+  border: 1px solid var(--border-shiny);
   border-radius: 6px;
-  color: #888 !important;
+  color: var(--txt-gray-darker) !important;
   font-size: 12px;
   font-weight: 600;
   line-height: 1.5;
@@ -1789,24 +1789,24 @@
 /* Select'te bir şey seçildiğinde rengi değiştir */
 .assign-select:not([value=""]),
 .assign-select.has-value {
-  color: #f0f0f0 !important;
+  color: var(--txt-light) !important;
 }
 
 .assign-select:focus {
   outline: none;
-  border-color: rgba(255, 255, 255, 0.5);
+  border-color: var(--border-light);
   box-shadow: 0 0 8px rgba(var(--theme-color-rgb), 0.3);
 }
 
 .assign-select option {
-  background: #080d16;
-  color: #f0f0f0; 
+  background: var(--bg);
+  color: var(--txt-light); 
   padding: 8px;
   font-size: 12px;
   font-weight: 600;
 }
 .assign-select option:first-child { 
-  color: #888; 
+  color: var(--txt-gray-darker); 
   font-style: normal;
 }
 
@@ -1821,7 +1821,7 @@
   background: transparent;
   border: 1px solid rgba(74, 222, 128, 0.4);
   border-radius: 6px;
-  color: #4ade80;
+  color: var(--green);
   font-weight: 600;
   font-size: 13px;
   cursor: pointer;
@@ -1831,7 +1831,7 @@
 
 .assign-save-btn:hover {
   background: rgba(74, 222, 128, 0.1);
-  border-color: #4ade80;
+  border-color: var(--green);
   box-shadow: 0 0 12px rgba(74, 222, 128, 0.3);
 }
 
@@ -1932,7 +1932,7 @@
 .vehicle-detail-toolbar .detail-back-btn {
   background: transparent;
   border: none;
-  color: #999;
+  color: var(--txt-placeholder);
   cursor: pointer;
   padding: 2px; /* Toolbar yüksekliği azaltıldığı için padding düşürüldü (4px → 2px) */
   display: flex;
@@ -1940,7 +1940,7 @@
   justify-content: center;
   transition: color 0.2s;
 }
-.vehicle-detail-toolbar .detail-back-btn:hover { color: #fff; }
+.vehicle-detail-toolbar .detail-back-btn:hover { color: var(--txt-white); }
 .vehicle-detail-toolbar .detail-back-btn svg { width: 24px; height: 24px; } /* 100→120 oranı */
 
 /* Olay Ekle butonu - Marka/model satırında solda */
@@ -1984,7 +1984,7 @@
     display: flex !important; /* Görünürlüğü garantile */
     align-items: center;
     gap: 4px; /* İkon ve metin arası boşluk */
-    color: #ccc;
+    color: var(--txt-gray);
     font-size: 15px; /* 1pt büyütüldü (11px → 12px) */
     padding: 4px 8px;
     flex-shrink: 0; /* Sağda sabit kalır */
@@ -1993,7 +1993,7 @@
 }
 
 .detail-brand-year-row .history-btn-minimal:hover {
-    color: #fff;
+    color: var(--txt-white);
     font-size: 16px; /* Hover'da metin de büyüsün (15px → 16px) */
 }
 
@@ -2052,8 +2052,8 @@
   /* Olay Ekle (14 modal): Var/Yok, Evet/Hayır – pasif beyaz, hover/seçili renkli + yarı saydam arka plan */
   .olay-ekle-modal .radio-btn {
     background: transparent !important;
-    border: 1px solid rgba(255, 255, 255, 0.6) !important;
-    color: #fff !important;
+    border: 1px solid var(--border-bright) !important;
+    color: var(--txt-white) !important;
     border-radius: 4px !important;
     padding: 4px 14px !important;
     font-size: 14px !important;
@@ -2088,11 +2088,11 @@
 /* Tarihçe – Şube/Kullanıcı geçmişi: açıklamalar normal ve daha az parlak */
 #vehicle-history-modal .history-item-sube .history-date {
     font-weight: 600;
-    color: #e0e0e0;
+    color: var(--txt-muted);
 }
 #vehicle-history-modal .history-item-sube .history-desc {
     font-weight: 400 !important;
-    color: #999 !important;
+    color: var(--txt-placeholder) !important;
 }
 
 /* =========================================
@@ -2120,7 +2120,7 @@
   }
   
   .detail-plate {
-    color: #ffffff !important; /* Plaka metni beyaz */
+    color: var(--txt-white) !important;
   }
   
   .detail-brand-year {
@@ -2213,13 +2213,13 @@
 
   .tasitlar-modal-overlay .modal-header h2 {
     font-size: 19px !important; /* 18px + 1 punto (sadece mobil) */
-    color: #ffffff !important; /* Başlık tam beyaz */
+    color: var(--txt-white) !important;
     text-shadow: none !important;
   }
 
   #filter-dropdown {
-    background: #080d16 !important;
-    border: 1px solid rgba(255, 255, 255, 0.5) !important;
+    background: var(--bg) !important;
+    border: 1px solid var(--border-light) !important;
     border-radius: 8px;
     padding: 8px !important;
     box-shadow: 0 6px 14px rgba(0, 0, 0, 0.45);
@@ -2262,7 +2262,7 @@
   /* Mobil taşıt detay: tüm metinler +1pt tek blokta */
   .detail-row-value {
     font-size: 16px !important; /* +1pt (base 14/15) */
-    color: #888 !important; /* Gri renk */
+    color: var(--txt-gray-darker) !important; /* Gri renk */
   }
   .detail-row-value.detail-user-empty {
     color: var(--theme-color) !important;
@@ -2475,8 +2475,8 @@
     min-width: 0 !important; /* İçerik sığmayınca ikinci satıra düşsün, yatay taşma olmasın */
     width: 100% !important;
     align-items: center !important;
-    border-bottom: 1px solid rgba(255,255,255,0.08) !important; /* Masaüstü ile aynı */
-    background: rgba(255,255,255,0.01) !important; /* Masaüstü ile aynı */
+    border-bottom: 1px solid var(--border-faint-08) !important;
+    background: var(--border-faint-02) !important;
     position: relative !important;
     /* Liste görünür; başlık z-index: 1000 ile üstte */
     cursor: pointer !important;
@@ -2484,7 +2484,7 @@
   }
 
   .view-list .list-item:hover {
-    background: rgba(255,255,255,0.04) !important; /* Masaüstü ile aynı */
+    background: var(--border-ultra) !important;
   }
 
   /* Başlık Satırı - Mobil: +1pt (JS --list-header-font-size); dikey ortalanmış */
@@ -2496,8 +2496,8 @@
     align-items: center !important;
     padding: 2px 4px !important; /* başlık metin üst/alt 2px */
     margin-bottom: 4px !important;
-    border-bottom: 1px solid rgba(255,255,255,0.22) !important;
-    background: #080d16 !important;
+    border-bottom: 1px solid var(--border-faint-22) !important;
+    background: var(--bg) !important;
     backdrop-filter: blur(8px) !important;
     -webkit-backdrop-filter: blur(8px) !important;
     position: sticky !important;
@@ -2505,7 +2505,7 @@
     z-index: 9999 !important;
     isolation: isolate !important;
     transform: translateZ(0);
-    box-shadow: 0 2px 0 0 #080d16 !important;
+    box-shadow: 0 2px 0 0 var(--bg) !important;
     width: 100% !important;
     min-width: 0 !important;
     box-sizing: border-box !important;
@@ -2521,14 +2521,14 @@
   .view-list .list-cell {
     font-size: 17.5px !important;
     font-weight: 500 !important;
-    color: #e0e0e0 !important;
+    color: var(--txt-muted) !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     line-height: 1.4 !important;
     min-width: 0 !important;
     max-width: 100% !important;
-    border-right: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-right: 1px solid var(--border-ultra) !important;
     padding-left: 1px !important;
     padding-right: 1px !important;
     padding-top: 2px !important;
@@ -2559,7 +2559,7 @@
   .view-list .list-cell.list-plate {
     font-size: inherit !important; /* 16px - mobil +1pt */
     font-weight: inherit !important; /* 500 - masaüstü ile aynı */
-    color: #fff !important; /* Masaüstü ile aynı */
+    color: var(--txt-white) !important; /* Masaüstü ile aynı */
     justify-content: center !important; /* Masaüstü ile aynı */
     text-align: center !important; /* Masaüstü ile aynı */
     display: flex !important;
@@ -2571,7 +2571,7 @@
 
   /* Yılı - yatay 1px, dikey 2px */
   .view-list .list-cell.list-year {
-    color: #f1f5f9 !important; /* Masaüstü ile aynı */
+    color: var(--txt-light) !important;
     font-weight: inherit !important;
     font-size: inherit !important;
     display: flex !important;
@@ -2584,7 +2584,7 @@
 
   /* KM - yatay 1px, dikey 2px */
   .view-list .list-cell.list-km {
-    color: #9aa3b1 !important; /* Masaüstü ile aynı */
+    color: var(--txt-gray-dark) !important;
     font-size: inherit !important; /* 16px - mobil +1pt */
     justify-content: center !important; /* Masaüstü ile aynı */
     padding: 2px 1px !important;
@@ -2668,7 +2668,7 @@
     font-weight: 600 !important;
     letter-spacing: 0.3px !important;
     text-transform: uppercase !important;
-    color: #b5b9c0 !important;
+    color: var(--txt-gray-dark) !important;
     opacity: 1 !important;
     display: flex !important;
     align-items: flex-start !important;
@@ -2677,7 +2677,7 @@
     white-space: normal !important;
     word-break: break-word !important;
     min-width: 0 !important;
-    border-right: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-right: 1px solid var(--border-ultra) !important;
     justify-content: center !important;
   }
 
@@ -2686,7 +2686,7 @@
     font-size: var(--list-header-font-size, 15px) !important;
     font-weight: 700 !important;
     text-transform: uppercase !important;
-    color: #b5b9c0 !important;
+    color: var(--txt-gray-dark) !important;
     white-space: normal !important;
     word-break: break-word !important;
   }
