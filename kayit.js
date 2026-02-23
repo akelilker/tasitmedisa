@@ -977,24 +977,25 @@
       }
     });
 
-    // Şanzıman
+    // Şanzıman (seçili = her zaman yeşil)
     const transmissionSection = $(`.form-section-inline[data-section="transmission"]`, modal);
     if (transmissionSection && vehicle.transmission) {
       $all('.radio-btn', transmissionSection).forEach(btn => {
-        btn.classList.remove('active');
+        btn.classList.remove('active', 'green');
         if (btn.dataset.value === vehicle.transmission) {
-          btn.classList.add('active');
+          btn.classList.add('active', 'green');
         }
       });
     }
 
-      // Tramer
+      // Tramer (Var=yeşil, Yok=kırmızı)
     const tramerSection = $(`.form-section-inline[data-section="tramer"]`, modal);
     if (tramerSection && vehicle.tramer) {
       $all('.radio-btn', tramerSection).forEach(btn => {
-        btn.classList.remove('active');
+        btn.classList.remove('active', 'green');
         if (btn.dataset.value === vehicle.tramer) {
           btn.classList.add('active');
+          if (vehicle.tramer === 'var') btn.classList.add('green');
         }
       });
       if (vehicle.tramer === 'var') {
@@ -1017,13 +1018,14 @@
       }
     }
 
-    // Boya/Değişen
+    // Boya/Değişen (Var=yeşil, Yok=kırmızı)
     const boyaSection = $(`.form-section-inline[data-section="boya"]`, modal);
     if (boyaSection && vehicle.boya) {
       $all('.radio-btn', boyaSection).forEach(btn => {
-        btn.classList.remove('active');
+        btn.classList.remove('active', 'green');
         if (btn.dataset.value === vehicle.boya) {
           btn.classList.add('active');
+          if (vehicle.boya === 'var') btn.classList.add('green');
         }
       });
       if (vehicle.boya === 'var') {
@@ -1054,13 +1056,14 @@
       $all('input[type="date"].form-input', modal)[2].value = vehicle.muayeneDate;
     }
 
-    // Yedek Anahtar
+    // Yedek Anahtar (Var=yeşil, Yok=kırmızı)
     const anahtarSection = $(`.form-section-inline[data-section="anahtar"]`, modal);
     if (anahtarSection && vehicle.anahtar) {
       $all('.radio-btn', anahtarSection).forEach(btn => {
-        btn.classList.remove('active');
+        btn.classList.remove('active', 'green');
         if (btn.dataset.value === vehicle.anahtar) {
           btn.classList.add('active');
+          if (vehicle.anahtar === 'var') btn.classList.add('green');
         }
       });
       if (vehicle.anahtar === 'var' && vehicle.anahtarNerede) {
@@ -1072,13 +1075,14 @@
       }
     }
 
-    // Kredi/Rehin
+    // Kredi/Rehin (Var=yeşil, Yok=kırmızı)
     const krediSection = $(`.form-section-inline[data-section="kredi"]`, modal);
     if (krediSection && vehicle.kredi) {
       $all('.radio-btn', krediSection).forEach(btn => {
-        btn.classList.remove('active');
+        btn.classList.remove('active', 'green');
         if (btn.dataset.value === vehicle.kredi) {
           btn.classList.add('active');
+          if (vehicle.kredi === 'var') btn.classList.add('green');
         }
       });
       if (vehicle.kredi === 'var' && vehicle.krediDetay) {
@@ -1690,24 +1694,19 @@
           section.classList.remove('field-error');
         }
         
-        // Renk mantığı:
-        // Tramer: Var=Kırmızı, Yok=Yeşil
-        // Yedek Anahtar: Yok=Kırmızı, Var=Yeşil
-        // Kredi/Rehin: Yok=Yeşil, Var=Kırmızı
-        const sectionLabel = btn.closest(".form-section-inline")?.querySelector(".form-label")?.textContent || "";
-        const isYedekAnahtar = sectionLabel.includes("Yedek Anahtar");
-        const isKrediRehin = sectionLabel.includes("Kredi") || sectionLabel.includes("Rehin");
-        
-        if (isYedekAnahtar) {
-          // Yedek Anahtar: Yok=Kırmızı, Var=Yeşil
-          if (btn.dataset.value === "var") btn.classList.add("green");
-        } else if (isKrediRehin) {
-          // Kredi/Rehin: Yok=Yeşil, Var=Kırmızı
-          if (btn.dataset.value === "yok") btn.classList.add("green");
-        } else {
-          // Tramer ve diğerleri: Var=Kırmızı, Yok=Yeşil
-          if (btn.dataset.value === "yok") btn.classList.add("green");
+        // Renk mantığı: Var=yeşil, Yok=kırmızı. Şanzıman (Manuel/Otomatik)=hep yeşil.
+        const section = btn.closest(".form-section-inline");
+        const sectionLabel = section?.querySelector(".form-label")?.textContent || "";
+        const isTransmission = section?.dataset?.section === "transmission";
+
+        if (isTransmission) {
+          // Şanzıman Tipi: seçili buton her zaman yeşil
+          btn.classList.add("green");
+        } else if (btn.dataset.value === "var") {
+          // Var/Yok alanlarında "Var" seçiliyse yeşil
+          btn.classList.add("green");
         }
+        // "Yok" seçiliyse .green eklenmez → kırmızı (CSS .radio-btn.active:not(.green))
         
         // Hover class'larını güncelle
         updateRadioButtonHover();
