@@ -144,7 +144,7 @@ body::-webkit-scrollbar,
 .universal-btn-cancel {
   background-color: transparent !important; /* Arka plan yok */
   border-radius: 8px !important;
-  padding: 6px 24px !important; /* Yükseklik azaltıldı (eski 10px'ti, 6px yapıldı) */
+  padding: 3px 24px !important; /* Dikey 3px (6px'ten azaltıldı) */
   font-family: inherit !important;
   font-size: 15px !important;
   font-weight: 500 !important;
