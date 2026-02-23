@@ -93,9 +93,17 @@ window.debounce = function(fn, ms) {
 
 /** Kaporta SVG metni - tek fetch, cache paylaşımı (tasitlar + kayit) */
 var _kaportaSvgCache = null;
-window.getKaportaSvgText = function() {
-  if (!_kaportaSvgCache) _kaportaSvgCache = fetch('icon/kaporta.svg').then(function(r) { return r.text(); });
-  return _kaportaSvgCache;
+window.getKaportaSvg = async function() {
+  if (_kaportaSvgCache !== null) return _kaportaSvgCache;
+  try {
+    var res = await fetch('icon/kaporta.svg');
+    var text = await res.text();
+    _kaportaSvgCache = text || '';
+    return _kaportaSvgCache;
+  } catch (e) {
+    console.error('Kaporta SVG yüklenemedi:', e);
+    return '';
+  }
 };
 
 /* =========================================
