@@ -673,28 +673,23 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
 .form-section.input-visible .form-input-reveal { display: block; }
 
 .radio-btn {
-    /* Kaydet/Vazgeç ile aynı boyutlar: padding 6px 24px, font 15px, radius 8px */
-    padding: 6px 24px !important;
-    min-height: 0;
-    height: auto !important;
-    width: auto !important;
-    min-width: 0;
-    flex: 0 0 auto;
+    width: 48px; 
+    flex: 0 0 48px; 
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.20);
     color: #888;
-    font-size: 15px !important;
-    font-weight: 500 !important;
+    font-size: 10px;
     cursor: pointer;
-    border-radius: 8px !important;
+    border-radius: 4px;
+    height: 19px; 
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 0;
+    padding: 0;
     -webkit-appearance: none;
     appearance: none;
     transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
-    box-sizing: border-box;
 }
 
 .radio-btn:not(.active).hover-red:hover { background: rgba(var(--theme-color-rgb), 0.1) !important; border-color: var(--theme-color, #e1061b) !important; color: var(--theme-color, #e1061b) !important; }
@@ -1019,9 +1014,9 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     .modal-column-right .form-section-inline .form-label { width: 100%; margin-bottom: 0; font-size: 15px !important; height: auto; }
     .modal-column-right .form-section-inline .radio-group { width: 100%; justify-content: space-between; gap: 3px; padding: 0; }
     .modal-column-left .form-section-inline .radio-btn,
-    .modal-column-right .form-section-inline .radio-btn { flex: 0 0 auto; min-width: 0; padding: 6px 24px !important; font-size: 15px !important; height: auto !important; }
+    .modal-column-right .form-section-inline .radio-btn { flex: 1 1 0; min-width: 0; padding: 0 6px; font-size: 11px; height: 27px; }
     
-    .radio-btn { height: auto !important; min-width: 0; font-size: 15px !important; padding: 6px 24px !important; }
+    .radio-btn { height: 27px; min-width: 48px; font-size: 12px; padding: 0 8px; }
     .modal-column-left .form-section-inline .radio-group { justify-content: space-between; width: 100%; padding: 0; gap: 3px; }
     
     /* Notlar: flex ile alta yayılır, alt boşluk dolar */
