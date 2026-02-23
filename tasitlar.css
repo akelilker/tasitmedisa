@@ -1761,50 +1761,6 @@
   font-style: normal;
 }
 
-.assign-buttons {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-}
-
-.assign-save-btn {
-  padding: 8px 32px;
-  background: transparent;
-  border: 1px solid rgba(74, 222, 128, 0.4);
-  border-radius: 6px;
-  color: var(--green);
-  font-weight: 600;
-  font-size: 13px;
-  cursor: pointer;
-  transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
-  letter-spacing: 1px;
-}
-
-.assign-save-btn:hover {
-  background: rgba(74, 222, 128, 0.1);
-  border-color: var(--green);
-  box-shadow: 0 0 12px rgba(74, 222, 128, 0.3);
-}
-
-.assign-cancel-btn {
-  padding: 8px 32px;
-  background: transparent;
-  border: 1px solid rgba(var(--theme-color-rgb), 0.4);
-  border-radius: 6px;
-  color: var(--theme-color);
-  font-weight: 600;
-  font-size: 13px;
-  cursor: pointer;
-  transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
-  letter-spacing: 1px;
-}
-
-.assign-cancel-btn:hover {
-  background: rgba(var(--theme-color-rgb), 0.1);
-  border-color: var(--theme-color);
-  box-shadow: 0 0 12px rgba(var(--theme-color-rgb), 0.3);
-}
-
 /* Şubeye Tahsis Etmek İçin Butonu - Toolbar içinde, çerçevesiz */
 .detail-assign-button-frameless {
   background: transparent;
@@ -2019,8 +1975,6 @@
   /* Şube Atama Mobil */
   .assign-toggle { font-size: 13px; }
   .assign-select { font-size: 13px; }
-  .assign-save-btn, .assign-cancel-btn { font-size: 13px; padding: 7px 24px; }
-
 /* Tarihçe – Şube/Kullanıcı geçmişi: açıklamalar normal ve daha az parlak */
 #vehicle-history-modal .history-item-sube .history-date {
     font-weight: 600;

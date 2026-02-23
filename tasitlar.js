@@ -1105,9 +1105,9 @@
           <select id="detail-branch-select" class="assign-select">
             <option value="" disabled selected>Şube Seçiniz</option>
           </select>
-          <div class="assign-buttons">
-            <button class="assign-save-btn" onclick="assignVehicleToBranch('${vehicleId}')">Kaydet</button>
-            <button class="assign-cancel-btn" onclick="closeVehicleDetailModal()">Vazgeç</button>
+          <div class="universal-btn-group">
+            <button type="button" class="universal-btn-save" onclick="assignVehicleToBranch('${vehicleId}')">Kaydet</button>
+            <button type="button" class="universal-btn-cancel" onclick="closeVehicleDetailModal()">Vazgeç</button>
           </div>
         </div>
       `;
