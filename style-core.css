@@ -138,15 +138,15 @@ body::-webkit-scrollbar,
   box-sizing: border-box !important;
 }
 
-/* BUTONLAR (Kendi hücresinde ortalanır ve genişler) */
+/* BUTONLAR (Kendi hücresinde ortalanır, 8'er px daraltılmış) */
 .universal-btn-save,
 .universal-btn-cancel {
-  width: 100% !important;
-  max-width: 220px !important; /* Masaüstünde çok abartı uzamasını engeller ama geniş tutar */
-  justify-self: center !important; /* Kendi GRID HÜCRESİNİN tam merkezine oturur */
+  justify-self: center !important; /* Butonu kendi grid hücresinin tam merkezine (yatayda) sabitler */
+  width: calc(100% - 16px) !important; /* Sağdan ve soldan 8'er piksel (toplam 16px) daralma */
+  max-width: 200px !important; /* Masaüstünde maksimum genişlik daraltıldı */
   background-color: transparent !important;
   border-radius: 8px !important;
-  padding: 5px 24px !important; /* Eski 7px → 5px (toplam 4px dikey daralma) */
+  padding: 3.5px 24px !important; /* Üstten ve alttan kısıldı, toplam yükseklik ~3px azaldı */
   font-family: inherit !important;
   font-size: 15px !important;
   font-weight: 500 !important;
@@ -162,14 +162,12 @@ body::-webkit-scrollbar,
 
 /* Renk Standartları (Outline) */
 .universal-btn-save {
-  margin-right: 6px !important; /* Sağdan 6px daralt (ortadaki boşluğu açar) */
   color: var(--green-success, #28a745) !important;
   border: 1px solid var(--green-success, #28a745) !important;
 }
 .universal-btn-save:hover { background-color: rgba(40, 167, 69, 0.1) !important; font-weight: 600 !important; }
 
 .universal-btn-cancel {
-  margin-left: 6px !important; /* Soldan 6px daralt (ortadaki boşluğu açar) */
   color: var(--theme-color, #e1061b) !important;
   border: 1px solid var(--theme-color, #e1061b) !important;
 }
