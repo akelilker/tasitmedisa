@@ -870,16 +870,16 @@ display: flex;
 align-items: center;
 justify-content: center;
 box-sizing: border-box;
+flex-shrink: 0;
 }
 #stok-list-container .stok-controls-row-2 .stok-date-range-controls { margin-left: auto; margin-top: 0 !important; padding-bottom: 0 !important; margin-bottom: 8px !important; align-items: flex-end !important; }
 #stok-list-container .stok-controls-row-2 .stok-date-input-group { margin-bottom: 0 !important; padding-bottom: 0 !important; }
 #stok-list-container .stok-controls-row-2 .stok-date-input-group label { padding-top: 4px !important; }
+/* Arama kutusu büyütecın sağına açılır, büyüteç sabit kalır */
 #stok-list-container .stok-controls-row-2 .stok-search-container.open {
-position: absolute;
-top: 100%;
-left: 0;
+position: relative;
 width: 250px;
-margin-top: 4px;
+margin-left: 6px;
 height: auto;
 min-height: 0;
 justify-content: flex-start;
@@ -1222,6 +1222,9 @@ z-index: 20;
 
 .stok-search-container.open {
 width: 250px;
+}
+.stok-search-container.open .stok-search-input {
+margin-top: 0;
 }
 
 .stok-search-input {
@@ -1755,17 +1758,16 @@ align-items: center;
 .stok-print-btn { font-size: 20px !important; }
 .stok-export-btn,
 .stok-print-btn { width: auto; }
-/* Arama kutusu: solda, Bitiş bölümünün 1px altında */
+/* Arama kutusu büyütecın sağına açılır, büyüteç sabit kalır */
 #stok-list-container .stok-controls-row-2 .stok-search-wrap:has(.stok-search-container.open) {
-flex-direction: column !important;
-width: 100% !important;
-align-items: stretch !important;
+flex-direction: row !important;
+align-items: center !important;
 }
 #stok-list-container .stok-controls-row-2 .stok-search-container.open {
-position: static !important;
-width: 100% !important;
-margin-top: 1px !important;
-margin-left: 0 !important;
+position: relative !important;
+width: 200px !important;
+margin-left: 6px !important;
+margin-top: 0 !important;
 }
 /* Büyüteç aynı satırda: wrap ve buton dikey ortalansın */
 #stok-list-container .stok-controls-row-2 .stok-search-wrap {
