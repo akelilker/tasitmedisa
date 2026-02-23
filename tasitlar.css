@@ -749,12 +749,26 @@
     padding-left: 1px !important;
     padding-right: 1px !important;
   }
-  .olay-ekle-modal .modal-body > div > div:has(label),
-  .olay-ekle-modal .modal-body > div > div:has(.universal-btn-cancel) {
+  /* Sadece etiketli form satırları 390px (buton grubunu dahil etme – aşağıda ayrı kural) */
+  .olay-ekle-modal .modal-body > div > div:has(label) {
     max-width: 390px;
     margin-left: auto;
     margin-right: auto;
     width: 100%;
+  }
+  /* Kaydet/Vazgeç: input ile aynı yatay genişlik ve hiza (390px, ortalanmış) */
+  .olay-ekle-modal .modal-body .universal-btn-group {
+    max-width: 390px !important;
+    width: 100% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    box-sizing: border-box !important;
+  }
+  .olay-ekle-modal .modal-body .universal-btn-save,
+  .olay-ekle-modal .modal-body .universal-btn-cancel {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
   }
   .olay-ekle-modal .modal-body > div > div:has(label) label {
     text-align: left !important;
