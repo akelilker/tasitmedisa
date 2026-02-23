@@ -28,7 +28,7 @@
 
   var parsedKaportaSvgCache = null;
   function getKaportaSvg() {
-    return window.getKaportaSvgText ? window.getKaportaSvgText() : fetch('icon/kaporta.svg').then(function(r) { return r.text(); });
+    return window.getKaportaSvg();
   }
   function getParsedKaportaSvg() {
     if (parsedKaportaSvgCache) {
