@@ -335,7 +335,14 @@ if ('serviceWorker' in navigator) {
             const newWorker = registration.installing;
             newWorker.addEventListener('statechange', () => {
               if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                // Yeni service worker mevcut
+                var toast = document.createElement('div');
+                toast.className = 'update-toast';
+                toast.innerHTML = '<span class="update-toast-text">Yeni sürüm mevcut</span><button type="button" class="update-toast-btn">Yenile</button>';
+                document.body.appendChild(toast);
+                requestAnimationFrame(function() { toast.classList.add('visible'); });
+                toast.querySelector('.update-toast-btn').addEventListener('click', function() {
+                  window.location.reload(true);
+                });
               }
             });
           });
