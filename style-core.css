@@ -139,12 +139,12 @@ body::-webkit-scrollbar,
   border: none !important;
 }
 
-/* ORTAK BUTON YAPISI (Orijinal: İçi Boş, Daha İnce, Tam Ortalı) */
+/* ORTAK BUTON YAPISI (İçi boş, daha ince) */
 .universal-btn-save,
 .universal-btn-cancel {
-  background-color: transparent !important; /* Arka plan yok */
+  background-color: transparent !important; /* ASLA içi dolu renk olmayacak */
   border-radius: 8px !important;
-  padding: 3px 24px !important; /* Dikey 3px (6px'ten azaltıldı) */
+  padding: 6px 24px !important; /* Dikey padding 10px'ten 6px'e düşürüldü (daha ince) */
   font-family: inherit !important;
   font-size: 15px !important;
   font-weight: 500 !important;
@@ -153,7 +153,7 @@ body::-webkit-scrollbar,
   align-items: center !important;
   justify-content: center !important;
   text-align: center !important;
-  justify-self: center !important; /* 2'li grid içindeyse kendi hücresinin göbeğinde durur */
+  justify-self: center !important;
   transition: all 0.2s ease !important;
   box-shadow: none !important;
   height: auto !important;
@@ -161,31 +161,19 @@ body::-webkit-scrollbar,
   box-sizing: border-box !important;
 }
 
-/* KAYDET (YEŞİL) - Normal Durum */
+/* KAYDET / EVET (Canlı Yeşil) */
 .universal-btn-save {
   color: var(--green-success, #28a745) !important;
   border: 1px solid var(--green-success, #28a745) !important;
 }
+.universal-btn-save:hover { background-color: rgba(40, 167, 69, 0.1) !important; font-weight: 600 !important; }
 
-/* KAYDET (YEŞİL) - Üzerine Gelince (Hover) */
-.universal-btn-save:hover {
-  background-color: rgba(40, 167, 69, 0.1) !important; /* Yarı saydam yeşil arka plan */
-  font-weight: 600 !important; /* Metin kalınlaşır */
-  -webkit-text-stroke: 0.3px currentColor !important; /* Kayma yapmadan net kalınlık */
-}
-
-/* VAZGEÇ (KIRMIZI) - Normal Durum */
+/* VAZGEÇ / HAYIR (Canlı Kırmızı) */
 .universal-btn-cancel {
   color: var(--theme-color, #e1061b) !important;
   border: 1px solid var(--theme-color, #e1061b) !important;
 }
-
-/* VAZGEÇ (KIRMIZI) - Üzerine Gelince (Hover) */
-.universal-btn-cancel:hover {
-  background-color: rgba(225, 6, 27, 0.1) !important; /* Yarı saydam kırmızı arka plan */
-  font-weight: 600 !important;
-  -webkit-text-stroke: 0.3px currentColor !important;
-}
+.universal-btn-cancel:hover { background-color: rgba(225, 6, 27, 0.1) !important; font-weight: 600 !important; }
 
 /* --- 1. SIFIRLAMA & ANA YAPI --- */
 html, body {
