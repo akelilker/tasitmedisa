@@ -393,15 +393,16 @@ input[type="date"].form-input {
 
 .date-placeholder {
     position: absolute;
-    left: 12px !important; /* Input yazısıyla aynı hizada başlar */
-    color: #666;
+    left: 12px !important;
+    text-align: left !important;
+    transform: none !important; /* JS zaten ortalıyor, havaya uçmasın */
+    width: auto !important;
+    font-size: 13px !important; /* Standart input boyutu */
+    color: #6c757d !important; /* Şık placeholder grisi */
+    letter-spacing: 0.5px !important;
     pointer-events: none;
-    font-size: 10px;
     z-index: 100;
     font-family: inherit;
-    text-align: left !important;
-    transform: translateY(-50%) !important; /* Dikeyde tam ortalar */
-    width: auto !important; /* Genişliği serbest bırak ki sığsın */
 }
 
 /* Kasko ve Muayene (sağ kolon) tarih placeholder'ı kutu içinde yatayda ortalı – masaüstü + mobil */
