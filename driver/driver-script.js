@@ -1442,14 +1442,19 @@ function initDriverKaporta(vehicleId, boyaliParcalar) {
             svgClone.style.transform = 'rotate(90deg)';
             svgClone.style.transformOrigin = 'center center';
             const allParts = svgClone.querySelectorAll('path[id]');
+            // Varsayılan gri
             allParts.forEach(function(part) {
                 const partId = part.getAttribute('id');
                 if (partId === 'araba-govde') return;
                 part.setAttribute('fill', '#888888');
                 part.style.fill = '#888888';
-                part.style.cursor = 'pointer';
-                const state = boyaliParcalar[partId] || 'boyasiz';
-                part.dataset.state = state;
+            });
+            // Önceki kazalardan gelen parçalar: sadece görsel, readonly, dataset.state atanmaz (yeni kayda dahil edilmez)
+            Object.keys(boyaliParcalar).forEach(function(partId) {
+                if (partId === 'araba-govde') return;
+                const part = svgClone.querySelector('#' + CSS.escape(partId));
+                if (!part) return;
+                const state = boyaliParcalar[partId];
                 if (state === 'boyali') {
                     part.setAttribute('fill', '#28a745');
                     part.style.fill = '#28a745';
@@ -1457,6 +1462,16 @@ function initDriverKaporta(vehicleId, boyaliParcalar) {
                     part.setAttribute('fill', '#e1061b');
                     part.style.fill = '#e1061b';
                 }
+                part.style.pointerEvents = 'none';
+                part.style.opacity = '0.7';
+            });
+            // Bu kazada seçilebilecek parçalar: tıklanabilir, sadece bunlar kayda gider
+            allParts.forEach(function(part) {
+                const partId = part.getAttribute('id');
+                if (partId === 'araba-govde') return;
+                if (boyaliParcalar[partId]) return;
+                part.style.cursor = 'pointer';
+                part.dataset.state = 'boyasiz';
                 part.addEventListener('click', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
