@@ -1695,7 +1695,6 @@
         }
         
         // Renk mantığı: Var=yeşil, Yok=kırmızı. Şanzıman (Manuel/Otomatik)=hep yeşil.
-        const section = btn.closest(".form-section-inline");
         const sectionLabel = section?.querySelector(".form-label")?.textContent || "";
         const isTransmission = section?.dataset?.section === "transmission";
 
