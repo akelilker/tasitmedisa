@@ -143,7 +143,7 @@
 /* === DETAY İÇERİK === */
 #vehicle-detail-content {
     padding: 20px;
-    padding-top: 18px !important; /* Plaka üstten kesilmesin (negatif margin kaldırıldığı için makul üst boşluk) */
+    padding-top: 18px !important;
     padding-bottom: 20px;
     padding-left: 18px; /* Container çerçevelerine 2px boşluk (16px → 18px) */
     padding-right: 18px;
@@ -155,7 +155,7 @@
     flex: 1;
 }
 
-/* Plaka satırı - plaka ortada; negatif margin kaldırıldı (üstten kesilme önlendi) */
+/* Plaka satırı - plaka ortada */
 .detail-plate-row {
     display: flex;
     justify-content: center;
@@ -261,7 +261,7 @@
     align-items: baseline;
     gap: 4px; /* Daha da azaltıldı (1px → 0.5px) */
     padding: 2px 0; /* 2px üst, 2px alt (4px 0 → 2px 0) */
-    border-bottom: none; /* Yatay çizgiler kaldırıldı */
+    border-bottom: none;
     min-width: 0;
     flex-wrap: wrap;
 }
@@ -420,7 +420,7 @@
 .detail-row-inline .detail-row-value {
     /* Sığıyorsa yan yana kal, sığmıyorsa TÜMÜ alt satıra geç */
     flex-grow: 1;               /* Boş alan varsa doldur */
-    flex-shrink: 0;             /* KESİNLİKLE küçülme (kök neden buydu: eski flex:1 → shrink:1 → dar kutuya sığdırıyordu) */
+    flex-shrink: 0;
     flex-basis: max-content;    /* Başlangıç genişliği = metnin kırılmadan doğal genişliği */
     min-width: 0;               /* Taşma koruması (çok uzun tek kelime) */
     max-width: 100%;            /* Alt satıra geçince konteyneri aşmasın */
@@ -482,7 +482,7 @@
 #vehicle-detail-modal .muayene-detail-tooltip.visible[hidden] {
     display: block !important;
 }
-/* Tooltip görünürlüğü JS ile (mouseover/mouseout + gecikmeli kapatma); hover kuralları kaldırıldı */
+/* Tooltip görünürlüğü JS ile (mouseover/mouseout + gecikmeli kapatma) */
 #vehicle-detail-modal .muayene-detail-tooltip-link {
     background: none;
     border: none;
@@ -974,20 +974,6 @@
     border-color: var(--theme-color);
     outline: none;
 }
-@media (max-width: 640px) {
-    .v-transmission-filter {
-        min-width: 72px;
-        font-size: 11px;
-        margin-left: 4px;
-        padding: 0 6px;
-    }
-    /* Mobil: arama açıldığında büyüteç sağdan kaçmasın — şanzıman + büyüteç + arşiv (~110px) + padding */
-    .v-search-container.open {
-        width: min(360px, calc(100vw - 120px)) !important;
-        max-width: min(360px, calc(100vw - 120px)) !important;
-    }
-}
-
 /* Şanzıman simgesi + dropdown (genişleyip daralmayan) */
 .v-transmission-wrap {
     position: relative;
@@ -1908,7 +1894,7 @@
 .vehicle-detail-toolbar {
   height: 24px; /* 8px daha azaltıldı (32px → 24px) */
   min-height: 24px; /* Minimum yükseklik */
-  background: transparent !important; /* Arka plan rengi kaldırıldı */
+  background: transparent !important;
   border-bottom: none; 
   display: flex;
   justify-content: space-between; /* Sol ve sağ arasında boşluk */
@@ -1962,7 +1948,7 @@
     width: auto;
     padding: 5px 8px 5px 0 !important; /* +1px dikey (Olay ekle butonu) */
     background: transparent !important;
-    border: none !important; /* Çerçeve kaldırıldı */
+    border: none !important;
     color: var(--theme-color);
     border-radius: 0;
     cursor: pointer;
@@ -1970,7 +1956,7 @@
     font-size: 15px; /* 1pt büyütüldü (11px → 12px) */
     display: flex !important; /* Görünürlüğü garantile */
     align-items: center;
-    gap: 0; /* Gap kaldırıldı, metin içinde boşluk var */
+    gap: 0;
     justify-content: flex-start !important; /* Ünlem sola yaslı */
     flex-shrink: 0; /* Solda sabit kalır */
     position: relative; /* Z-index için gerekli */
@@ -2113,6 +2099,17 @@
    MOBİL GÖRÜNÜM - TÜM MEDIA QUERY'LER BİRLEŞTİRİLDİ
    ========================================= */
 @media (max-width: 640px) {
+  /* Şanzıman + arama (önceki bloktan taşındı) */
+  .v-transmission-filter {
+    min-width: 72px;
+    font-size: 11px;
+    margin-left: 4px;
+    padding: 0 6px;
+  }
+  .v-search-container.open {
+    width: min(360px, calc(100vw - 120px)) !important;
+    max-width: min(360px, calc(100vw - 120px)) !important;
+  }
   /* ✨ MOBİL KONTRAST ARTIRMA ✨ */
   .detail-row-label {
     color: var(--form-label-color) !important;
@@ -2251,7 +2248,7 @@
   
   .detail-row-label,
   .detail-row-inline .detail-row-label {
-    font-size: 15px !important; /* +1pt (base 14px); tek değer, clamp kaldırıldı */
+    font-size: 15px !important;
     display: -webkit-box !important;
     -webkit-line-clamp: 2 !important;
     line-clamp: 2 !important;
