@@ -88,6 +88,38 @@ body::-webkit-scrollbar,
   --hero-spacer-width: 30px; /* Masaüstü spacer genişliği */
 }
 
+/* --- EVRENSEL GERİ DÖN NAVİGASYONU (tüm uygulama) --- */
+.universal-back-bar {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  width: 100%;
+  background: transparent;
+}
+.universal-back-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 8px 0;
+  color: var(--txt-light);
+  text-decoration: none;
+}
+.universal-back-btn:hover { color: var(--txt-white); }
+.universal-back-label {
+  font-size: 17.5px;
+  font-weight: 500;
+  line-height: 1;
+  margin: 0;
+}
+.back-icon-svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
 /* --- 1. SIFIRLAMA & ANA YAPI --- */
 html, body {
   margin: 0;

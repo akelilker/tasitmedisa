@@ -886,7 +886,7 @@ body.driver-modal-open {
   .vehicle-header h3 { font-size: 20.5px; }
   .vehicle-header p { font-size: 14.5px; }
   .driver-plate-chevron { font-size: 19.5px; }
-  .management-system-link { font-size: 14.5px; }
+  .driver-footer-back-wrap .universal-back-label { font-size: 14.5px; }
   .driver-btn-logout { font-size: 12.5px; }
   .driver-km-form-actions .btn-km-bildir,
   .driver-km-form-actions .btn-km-vazgec,
@@ -2126,12 +2126,7 @@ body.driver-modal-open {
   color: rgba(74, 222, 128, 0.95);
 }
 
-/* Geçmiş kayıtlar modal: geri butonu ve metin */
-#history-modal .history-back-btn svg {
-  width: 18px;
-  height: 18px;
-}
-#history-modal .history-back-text {
+#history-modal .universal-back-bar .universal-back-label {
   color: var(--muted) !important;
   font-weight: 500;
   font-size: 13.5px;
@@ -2465,32 +2460,30 @@ body.driver-modal-open {
   opacity: 0.7 !important;
 }
 
-/* Yönetim Sistemi linki - footer üstünde, sola yaslı (anasayfa Kullanıcı Paneli ile aynı 3px aşağı) */
-/* Kaza/Bakım/KM vb. blok açıkken tıklamalar linke gitmesin (Bildir ile çakışma önleme) */
-body.driver-action-block-open .management-system-link {
+/* Yönetim Sistemi (evrensel geri çubuğu) - footer üstünde, sola yaslı */
+body.driver-action-block-open .driver-footer-back-wrap {
   pointer-events: none;
 }
-.management-system-link {
+.driver-footer-back-wrap {
   position: fixed;
   bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0) + 9px);
   left: 50%;
   transform: translateX(calc(-50% - 3px));
   max-width: 500px;
   width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  padding: 6px 16px;
   box-sizing: border-box;
+  z-index: 9999;
+}
+.driver-footer-back-wrap .universal-back-btn {
   color: rgba(var(--theme-color-rgb), 0.55);
-  text-decoration: none;
   font-size: 14px;
   font-weight: 500;
   letter-spacing: 0.5px;
-  z-index: 9999;
   transition: color 0.2s;
 }
-/* Masaüstü: Login başlık anasayfa ile aynı hizada (başlık aşağı kaymasın) */
+.driver-footer-back-wrap .universal-back-btn:hover {
+  color: var(--theme-color);
+}
 @media (min-width: 769px) {
   .login-page .driver-header-fixed {
     padding-top: 6px !important;
@@ -2500,28 +2493,14 @@ body.driver-action-block-open .management-system-link {
     padding-bottom: 10px !important;
   }
 }
-
 @media (min-width: 769px) {
-  .management-system-link {
+  .driver-footer-back-wrap {
     bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0) + 3px);
-    font-size: 13px;
     transform: translateX(calc(-50% - 8px));
   }
-}
-.management-system-link-inner {
-  display: inline-flex;
-  align-items: center;
-  transition: color 0.2s;
-}
-.management-system-link-inner:hover {
-  color: var(--theme-color);
-}
-.management-system-link-arrow {
-  flex-shrink: 0;
-  margin-right: 6px;
-}
-.management-system-link-text {
-  flex-shrink: 0;
+  .driver-footer-back-wrap .universal-back-label {
+    font-size: 13px;
+  }
 }
 
 @media (min-width: 769px) {
@@ -3213,7 +3192,7 @@ body.driver-action-block-open .management-system-link {
   .dashboard-page .driver-plate-dropdown-item {
     font-size: 13px !important;
   }
-  .dashboard-page .management-system-link {
+  .dashboard-page .driver-footer-back-wrap .universal-back-label {
     font-size: 15px !important;
   }
   #history-modal .modal-header h2,
@@ -3224,13 +3203,12 @@ body.driver-action-block-open .management-system-link {
   #history-modal .history-vehicle-trigger {
     font-size: 15px !important;
   }
-  /* Geçmiş Kayıtlarım: sol ok mobilde büyük (Taşıtlar referansı) */
-  #history-modal .history-back-btn {
+  #history-modal .universal-back-btn {
     padding: 10px !important;
     min-width: 44px !important;
     min-height: 44px !important;
   }
-  #history-modal .history-back-btn svg {
+  #history-modal .back-icon-svg {
     width: 28px !important;
     height: 28px !important;
   }

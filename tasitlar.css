@@ -638,65 +638,12 @@
     gap: 2px !important;
 }
 
-.active-branch-title {
-    color: var(--muted) !important; 
-    font-weight: 700;
-    font-size: 13.5px; /* 1.5pt küçült (15 → 13.5) */
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+/* Toolbar içi geri çubuğu: tam genişlik almasın (style-core .universal-back-bar override) */
+.vehicle-detail-toolbar .universal-back-bar,
+.vt-left .universal-back-bar {
+  width: auto;
+  flex: 0 0 auto;
 }
-
-/* Boş olduğunda gizle */
-.active-branch-title:empty {
-    display: none;
-}
-
-/* Olay modalları: ortak "Olay Ekle" geri çubuğu (tek class, tekrar yok) */
-.olay-ekle-back-bar {
-    padding: 8px 16px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-.olay-ekle-back-bar .olay-ekle-back-btn {
-    background: transparent;
-    border: none;
-    color: var(--form-label-color);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    padding: 0;
-}
-
-/* Olay Ekle modalları: sol ok + başlık hizalama (dikey ortalanma) ve +1pt büyütme */
-.olay-ekle-modal .olay-ekle-back-bar {
-    display: flex !important;
-    align-items: center !important;
-}
-.olay-ekle-modal .olay-ekle-back-bar .olay-ekle-back-btn {
-    align-items: center !important;
-}
-.olay-ekle-modal .olay-ekle-back-bar .olay-ekle-back-btn span,
-.olay-ekle-modal .olay-ekle-back-bar .active-branch-title {
-    font-size: 14.5px !important; /* 13.5 + 1pt */
-    margin-top: 0 !important;
-    margin-bottom: 0 !important;
-}
-
-.vt-back-btn {
-    background: transparent;
-    border: none;
-    color: var(--form-label-color);
-    cursor: pointer;
-    padding: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.vt-back-btn svg { width: 24px; height: 24px; } /* 100→120 oranı (20→24) */
-.vt-back-btn:hover { color: var(--txt-white); }
 
 .vt-icon-btn {
     background: transparent !important;
@@ -728,12 +675,6 @@
   }
   /* Taşıt detay modalı: sol ok + Taşıtlar etiketi 6px yukarı (masaüstü) */
   #vehicle-detail-modal .vehicle-detail-toolbar > div:first-child {
-    margin-top: -6px;
-  }
-  #vehicle-detail-modal .vehicle-detail-toolbar .detail-back-btn {
-    margin-top: -8px;
-  }
-  #vehicle-detail-modal .vehicle-detail-toolbar .active-branch-title {
     margin-top: -6px;
   }
   /* Taşıt detay: plaka 1pt büyük, plaka–marka/model arası 3px az (masaüstü) */
@@ -871,13 +812,8 @@
     outline: none !important;
     box-shadow: none !important;
   }
-  /* Olay Ekle (14 modal): sol ok 2px büyük, geri çubuğu 6px yukarı */
-  .olay-ekle-modal .olay-ekle-back-bar {
+  .olay-ekle-modal .universal-back-bar {
     margin-top: -6px !important;
-  }
-  .olay-ekle-modal .olay-ekle-back-btn svg {
-    width: 18px !important;
-    height: 18px !important;
   }
 }
 
@@ -1943,21 +1879,6 @@
   gap: 8px;
 }
 
-/* Detay Modal Geri Butonu - Toolbar içinde sol tarafta */
-.vehicle-detail-toolbar .detail-back-btn {
-  background: transparent;
-  border: none;
-  color: var(--txt-placeholder);
-  cursor: pointer;
-  padding: 2px; /* Toolbar yüksekliği azaltıldığı için padding düşürüldü (4px → 2px) */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: color 0.2s;
-}
-.vehicle-detail-toolbar .detail-back-btn:hover { color: var(--txt-white); }
-.vehicle-detail-toolbar .detail-back-btn svg { width: 24px; height: 24px; } /* 100→120 oranı */
-
 /* Olay Ekle butonu - Marka/model satırında solda */
 .detail-brand-year-row .history-add-event-btn {
     width: auto;
@@ -2183,23 +2104,15 @@
     max-width: min(280px, 90vw);
     box-sizing: border-box;
   }
-  /* --- MODAL GERİ/BÜYÜTEÇ BUTONLARI BÜYÜT --- */
-  .vt-back-btn, .vehicle-detail-toolbar .detail-back-btn {
+  /* --- EVRENSEL GERİ BUTONU MOBİL (touch target) --- */
+  .vehicle-detail-toolbar .universal-back-btn,
+  .olay-ekle-modal .universal-back-btn {
     padding: 10px !important;
     min-width: 44px !important;
     min-height: 44px !important;
   }
-  .vt-back-btn svg, .vehicle-detail-toolbar .detail-back-btn svg {
-    width: 28px !important;
-    height: 28px !important;
-  }
-  /* Olay Ekle (14 modal): sol ok Taşıtlar Listesi ile aynı mobil boyut */
-  .olay-ekle-modal .olay-ekle-back-btn {
-    padding: 10px !important;
-    min-width: 44px !important;
-    min-height: 44px !important;
-  }
-  .olay-ekle-modal .olay-ekle-back-btn svg {
+  .vehicle-detail-toolbar .back-icon-svg,
+  .olay-ekle-modal .back-icon-svg {
     width: 28px !important;
     height: 28px !important;
   }
@@ -2211,20 +2124,11 @@
     width: 22px !important;
     height: 22px !important;
   }
-  .active-branch-title {
-    font-size: 16.5px !important; /* Mobil aynı kalsın */
-    margin-top: -4px !important; /* Sol etiket 4px yukarı */
-  }
-  /* Olay Ekle modalları mobil: başlık +1pt, hizalama (margin-top 0) */
-  .olay-ekle-modal .olay-ekle-back-bar .olay-ekle-back-btn span,
-  .olay-ekle-modal .olay-ekle-back-bar .active-branch-title {
-    font-size: 17.5px !important; /* 16.5 + 1pt */
+  .olay-ekle-modal .universal-back-bar .universal-back-label {
+    font-size: 17.5px !important;
     margin-top: 0 !important;
   }
-  #vehicle-detail-modal .vehicle-detail-toolbar .detail-back-btn {
-    margin-top: -4px !important; /* Sol ok 4px yukarı */
-  }
-  
+
   .tasitlar-modal-overlay .modal-container {
     background: var(--modal-bg) !important;
     overflow: hidden !important;
@@ -2937,8 +2841,7 @@
     font-size: 18px !important;
   }
 
-  /* Olay Ekle menü: sol ok + etiket mobilde 6px yukarı */
-  #event-menu-modal .olay-ekle-back-bar {
+  #event-menu-modal .universal-back-bar {
     margin-top: -6px !important;
   }
 
