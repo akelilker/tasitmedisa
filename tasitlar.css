@@ -2064,13 +2064,13 @@
     gap: 24px !important;
   }
   
-  /* Olay Ekle (14 modal): Var/Yok, Evet/Hayır – pasif beyaz, hover/seçili renkli + yarı saydam arka plan */
+  /* Olay Ekle (14 modal): Var/Yok, Evet/Hayır – pasif beyaz, hover/seçili renkli; 2x yatay, +5px dikey */
   .olay-ekle-modal .radio-btn {
     background: transparent !important;
     border: 1px solid var(--border-bright) !important;
     color: var(--txt-white) !important;
     border-radius: 4px !important;
-    padding: 4px 14px !important;
+    padding: 9px 28px !important; /* 4+5 dikey, 14*2 yatay */
     font-size: 14px !important;
     font-weight: 400 !important;
     cursor: pointer !important;
@@ -2391,15 +2391,19 @@
     overflow: hidden !important;
     min-width: 0 !important;
   }
-  /* Olay Ekle: tarih input gg.aa.yyyy sola kavmasın */
+  /* Olay Ekle: tarih input gg.aa.yyyy sola kaçmasın */
   .olay-ekle-modal .modal-body input[type="date"].form-input,
   .olay-ekle-modal .modal-body .olay-tarih-input {
-    padding-left: 16px !important;
+    padding-left: 12px !important;
+    padding-right: 28px !important;
     text-align: left !important;
+    width: 100% !important;
+    max-width: 100% !important;
   }
   .olay-ekle-modal .modal-body input[type="date"].form-input::-webkit-datetime-edit-fields-wrapper,
   .olay-ekle-modal .modal-body .olay-tarih-input::-webkit-datetime-edit-fields-wrapper {
-    padding-left: 2px !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
   }
 
   /* --- OLAY EKLE MODALLARI - TÜM METİNLER +2px --- */
