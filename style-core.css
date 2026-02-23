@@ -111,8 +111,8 @@ body::-webkit-scrollbar,
 }
 .universal-back-btn:hover { color: var(--txt-white); }
 .universal-back-label {
-  color: #adb5bd !important; /* Bembeyaz yerine göz yormayan hafif gri */
-  font-size: 15.5px !important; /* 17.5px'ten 2 punto daha küçük */
+  color: #adb5bd !important; /* Fotoğraftaki gibi hafif gri */
+  font-size: 15px !important;
   font-weight: 500 !important;
   line-height: 1 !important;
   margin: 0 !important;
@@ -123,62 +123,66 @@ body::-webkit-scrollbar,
   flex-shrink: 0;
 }
 
-/* --- EVRENSEL İŞLEM BUTONLARI (Orijinal kayit.css matematiği) --- */
-/* ORİJİNAL KAYIT.CSS KAPSAYICISI */
+/* --- EVRENSEL İŞLEM BUTONLARI (Orijinal kayit.css matematiği ve zarafeti) --- */
+/* Buton Grubu (Kapsayıcı) - Aradaki Boşluğu Aç */
 .universal-btn-group {
   display: grid !important;
   grid-template-columns: 1fr 1fr !important;
-  gap: 0 !important;
-  padding: 2px 0 8px 0 !important;
+  gap: 20px !important; /* Fotoğraflardaki o geniş nefes payı */
+  padding: 12px 16px !important;
   width: 100% !important;
-  margin-top: 10px !important;
+  margin-top: auto !important;
   background: transparent !important;
   border: none !important;
 }
 
-/* ORİJİNAL KAYIT.CSS BUTONLARI (Kuyumcu Ölçüleri) */
+/* Butonların Orijinal Zarif Formu (İnce Çerçeve ve Sabit Yükseklik) */
 .universal-btn-save,
 .universal-btn-cancel {
   background: transparent !important;
-  height: 28px !important; /* Orijinal Masaüstü Yüksekliği */
-  font-weight: 400 !important;
-  font-size: 11px !important; /* Orijinal Font Boyutu */
-  text-transform: none !important;
+  height: 28px !important; /* Orijinal dosyadaki jilet yükseklik */
   border-radius: 8px !important;
-  cursor: pointer !important;
+  border-width: 1px !important; /* Sadece 1px ince çerçeve */
+  font-size: 11.5px !important; /* Orijinal punto */
+  font-weight: 400 !important; /* Bekleme modunda narin/ince metin */
+  width: 100% !important;
+  max-width: 212px !important; /* Orijinal max sınır */
+  min-width: 159px !important; /* Orijinal min sınır */
+  justify-self: center !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  width: 100% !important;
-  max-width: 212px !important; /* Orijinal Maksimum Genişlik */
-  min-width: 159px !important; /* Orijinal Minimum Genişlik */
-  justify-self: center !important;
-  margin: 0 auto !important;
-  padding: 0 !important; /* PADDING İPTAL - Sadece Height ile kontrol ediliyor */
+  transition: all 0.2s ease-in-out !important;
+  padding: 0 !important; /* İç boşluğu sıfırla, height ile yönet */
+  cursor: pointer !important;
+  text-transform: none !important;
   line-height: 1 !important;
-  transition: background 0.2s, border-color 0.2s, color 0.2s !important;
   box-shadow: none !important;
   box-sizing: border-box !important;
 }
 
-/* ORİJİNAL YEŞİL (KAYDET / EVET) */
+/* Kaydet (Yeşil) - Dinamik Hover Efekti (Üzerine Gelince Kaslanma) */
 .universal-btn-save {
   color: var(--green-success, #28a745) !important;
-  border: 1px solid rgba(40, 167, 69, 0.5) !important; /* Yarı saydam çerçeve */
+  border: 1px solid rgba(40, 167, 69, 0.45) !important;
 }
 .universal-btn-save:hover {
-  background: rgba(40, 167, 69, 0.15) !important;
+  background: rgba(40, 167, 69, 0.12) !important;
+  font-weight: 600 !important; /* Üzerine gelince metin kalınlaşır */
   border-color: var(--green-success, #28a745) !important;
+  -webkit-text-stroke: 0.2px currentColor; /* Net kalınlık efekti */
 }
 
-/* ORİJİNAL KIRMIZI (VAZGEÇ / HAYIR) */
+/* Vazgeç (Kırmızı) - Dinamik Hover Efekti */
 .universal-btn-cancel {
   color: var(--theme-color, #e1061b) !important;
-  border: 1px solid rgba(225, 6, 27, 0.5) !important; /* Yarı saydam çerçeve */
+  border: 1px solid rgba(225, 6, 27, 0.45) !important;
 }
 .universal-btn-cancel:hover {
-  background: rgba(225, 6, 27, 0.15) !important;
+  background: rgba(225, 6, 27, 0.12) !important;
+  font-weight: 600 !important;
   border-color: var(--theme-color, #e1061b) !important;
+  -webkit-text-stroke: 0.2px currentColor;
 }
 
 /* --- 1. SIFIRLAMA & ANA YAPI --- */
