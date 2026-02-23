@@ -141,37 +141,52 @@ body::-webkit-scrollbar,
 /* BUTONLAR (Kendi hücresinde ortalanır, 8'er px daraltılmış) */
 .universal-btn-save,
 .universal-btn-cancel {
-  justify-self: center !important; /* Butonu kendi grid hücresinin tam merkezine (yatayda) sabitler */
-  width: calc(100% - 16px) !important; /* Sağdan ve soldan 8'er piksel (toplam 16px) daralma */
-  max-width: 200px !important; /* Masaüstünde maksimum genişlik daraltıldı */
+  justify-self: center !important;
+  width: calc(100% - 16px) !important;
+  max-width: 200px !important;
+  font-weight: 400 !important; /* Normal durum: ince ve zarif */
+  border-width: 1px !important;
+  border-style: solid !important;
   background-color: transparent !important;
   border-radius: 8px !important;
-  padding: 3.5px 24px !important; /* Üstten ve alttan kısıldı, toplam yükseklik ~3px azaldı */
+  padding: 3.5px 24px !important;
   font-family: inherit !important;
   font-size: 15px !important;
-  font-weight: 500 !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   cursor: pointer !important;
-  transition: all 0.2s ease !important;
+  transition: all 0.2s ease-in-out !important;
   box-shadow: none !important;
   height: auto !important;
   box-sizing: border-box !important;
 }
 
-/* Renk Standartları (Outline) */
+/* KAYDET (Yeşil) - Normal Durum */
 .universal-btn-save {
   color: var(--green-success, #28a745) !important;
-  border: 1px solid var(--green-success, #28a745) !important;
+  border-color: var(--green-success, #28a745) !important;
 }
-.universal-btn-save:hover { background-color: rgba(40, 167, 69, 0.1) !important; font-weight: 600 !important; }
+/* KAYDET - Hover ve Active (kalınlık + arka plan, zıplama yok) */
+.universal-btn-save:hover,
+.universal-btn-save:active {
+  font-weight: 600 !important;
+  background-color: rgba(40, 167, 69, 0.15) !important;
+  box-shadow: inset 0 0 0 1px var(--green-success, #28a745), 0 0 0 1px var(--green-success, #28a745) !important;
+}
 
+/* VAZGEÇ (Kırmızı) - Normal Durum */
 .universal-btn-cancel {
   color: var(--theme-color, #e1061b) !important;
-  border: 1px solid var(--theme-color, #e1061b) !important;
+  border-color: var(--theme-color, #e1061b) !important;
 }
-.universal-btn-cancel:hover { background-color: rgba(225, 6, 27, 0.1) !important; font-weight: 600 !important; }
+/* VAZGEÇ - Hover ve Active (kalınlık + arka plan, zıplama yok) */
+.universal-btn-cancel:hover,
+.universal-btn-cancel:active {
+  font-weight: 600 !important;
+  background-color: rgba(225, 6, 27, 0.15) !important;
+  box-shadow: inset 0 0 0 1px var(--theme-color, #e1061b), 0 0 0 1px var(--theme-color, #e1061b) !important;
+}
 
 /* --- 1. SIFIRLAMA & ANA YAPI --- */
 html, body {
