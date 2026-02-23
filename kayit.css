@@ -809,7 +809,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     .form-input,
     select.form-input,
     select {
-        color: #ffffff !important; /* Input metni beyaz */
+        color: #adb5bd !important; /* Input metni gri (göz yormayan) */
         border-color: rgba(255, 255, 255, 0.4) !important; /* Border daha görünür */
         background: rgba(255, 255, 255, 0.02) !important; /* Beyaz sis yoğunluğu azaltıldı (0.05 → 0.02) */
     }
@@ -1134,7 +1134,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     .form-input, select {
         border-width: 1.1px !important;
         border-color: rgba(255, 255, 255, 0.28) !important; /* Biraz daha parlak gri (0.20 -> 0.28) */
-        color: #e6e6e6 !important; /* Daha parlak metin (#d1d1d1 -> #e6e6e6) */
+        color: #adb5bd !important; /* Input metni gri (tüm uygulama ile uyumlu) */
         -webkit-font-smoothing: antialiased; /* Font yumuşatma (netlik) */
         -moz-osx-font-smoothing: grayscale;
     }
