@@ -1938,11 +1938,11 @@
     gap: 24px !important;
   }
   
-  /* Olay Ekle (14 modal): Var/Yok, Evet/Hayır – pasif beyaz, hover/seçili renkli; 2x yatay, +5px dikey */
+  /* Olay Ekle (14 modal): Var/Yok, Evet/Hayır – pasif açık gri, hover/seçili renkli */
   .olay-ekle-modal .radio-btn {
-    background: transparent !important;
-    border: 1px solid var(--border-bright) !important;
-    color: var(--txt-white) !important;
+    background: rgba(255, 255, 255, 0.06) !important; /* Pasifken hafif gri zemin */
+    border: 1px solid rgba(255, 255, 255, 0.25) !important; /* Parlak beyaz değil, açık gri çerçeve */
+    color: #9ca3af !important; /* Pasifken açık gri metin (parlak beyaz değil) */
     border-radius: 4px !important;
     padding: 9px 28px !important; /* 4+5 dikey, 14*2 yatay */
     font-size: 14px !important;
