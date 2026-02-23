@@ -2109,7 +2109,9 @@ function renderVehicleDetailLeft(vehicle) {
         const radioBtns = modal.querySelectorAll('.radio-btn');
         const detayWrapper = document.getElementById('anahtar-detay-wrapper');
         const detayInput = document.getElementById('anahtar-detay-event');
-        
+        radioBtns.forEach(b => b.classList.remove('active', 'green'));
+        if (detayWrapper) detayWrapper.style.display = 'none';
+        if (detayInput) detayInput.value = '';
         radioBtns.forEach(btn => {
           btn.addEventListener('click', function(e) {
             e.preventDefault();
@@ -2133,7 +2135,9 @@ function renderVehicleDetailLeft(vehicle) {
         const radioBtns = modal.querySelectorAll('.radio-btn');
         const detayWrapper = document.getElementById('kredi-detay-wrapper-event');
         const detayInput = document.getElementById('kredi-detay-event');
-        
+        radioBtns.forEach(b => b.classList.remove('active', 'green'));
+        if (detayWrapper) detayWrapper.style.display = 'none';
+        if (detayInput) detayInput.value = '';
         radioBtns.forEach(btn => {
           btn.addEventListener('click', function(e) {
             e.preventDefault();
@@ -2158,7 +2162,9 @@ function renderVehicleDetailLeft(vehicle) {
         const adresWrapper = document.getElementById('lastik-adres-wrapper-event');
         const adresInput = document.getElementById('lastik-adres-event');
         
-        // Mevcut değerleri yükle
+        radioBtns.forEach(b => b.classList.remove('active', 'green'));
+        if (adresWrapper) adresWrapper.style.display = 'none';
+        if (adresInput) adresInput.value = '';
         const vehicle = readVehicles().find(v => String(v.id) === String(vehicleId || window.currentDetailVehicleId));
         if (vehicle) {
           if (vehicle.lastikDurumu === 'var') {
@@ -2172,12 +2178,7 @@ function renderVehicleDetailLeft(vehicle) {
             const yokBtn = Array.from(radioBtns).find(btn => btn.dataset.value === 'yok');
             if (yokBtn) yokBtn.classList.add('active');
           }
-        } else {
-          // Varsayılan olarak "Yok" seçili
-          const yokBtn = Array.from(radioBtns).find(btn => btn.dataset.value === 'yok');
-          if (yokBtn) yokBtn.classList.add('active');
         }
-        
         radioBtns.forEach(btn => {
           btn.addEventListener('click', function(e) {
             e.preventDefault();
@@ -2197,30 +2198,22 @@ function renderVehicleDetailLeft(vehicle) {
           });
         });
       } else if (type === 'utts') {
-        // UTTS modal'ında mevcut değeri yükle (click handler HTML onclick ile)
         const radioBtns = modal.querySelectorAll('.radio-btn');
         const vehicle = readVehicles().find(v => String(v.id) === String(vehicleId || window.currentDetailVehicleId));
-        radioBtns.forEach(b => b.classList.remove('active'));
+        radioBtns.forEach(b => b.classList.remove('active', 'green'));
         if (vehicle) {
           const durum = vehicle.uttsTanimlandi ? 'evet' : 'hayir';
           const btn = Array.from(radioBtns).find(btn => btn.dataset.value === durum);
-          if (btn) btn.classList.add('active');
-        } else {
-          const hayirBtn = Array.from(radioBtns).find(btn => btn.dataset.value === 'hayir');
-          if (hayirBtn) hayirBtn.classList.add('active');
+          if (btn) { btn.classList.add('active'); if (durum === 'evet') btn.classList.add('green'); }
         }
       } else if (type === 'takip') {
-        // Takip Cihaz modal'ında mevcut değeri yükle (click handler HTML onclick ile)
         const radioBtns = modal.querySelectorAll('.radio-btn');
         const vehicle = readVehicles().find(v => String(v.id) === String(vehicleId || window.currentDetailVehicleId));
-        radioBtns.forEach(b => b.classList.remove('active'));
+        radioBtns.forEach(b => b.classList.remove('active', 'green'));
         if (vehicle) {
           const durum = vehicle.takipCihaziMontaj ? 'evet' : 'hayir';
           const btn = Array.from(radioBtns).find(btn => btn.dataset.value === durum);
-          if (btn) btn.classList.add('active');
-        } else {
-          const hayirBtn = Array.from(radioBtns).find(btn => btn.dataset.value === 'hayir');
-          if (hayirBtn) hayirBtn.classList.add('active');
+          if (btn) { btn.classList.add('active'); if (durum === 'evet') btn.classList.add('green'); }
         }
       } else if (type === 'bakim') {
         // Bakım modal'ında varsayılan kişi
@@ -2262,24 +2255,19 @@ function renderVehicleDetailLeft(vehicle) {
               const freshRadioBtns = modal.querySelectorAll('.radio-btn');
               const vehicle = readVehicles().find(v => String(v.id) === String(vehicleId || window.currentDetailVehicleId));
               
-              // Mevcut değeri yükle
               if (type === 'utts') {
+                freshRadioBtns.forEach(b => b.classList.remove('active', 'green'));
                 if (vehicle) {
                   const durum = vehicle.uttsTanimlandi ? 'evet' : 'hayir';
                   const btn = Array.from(freshRadioBtns).find(btn => btn.dataset.value === durum);
-                  if (btn) btn.classList.add('active');
-                } else {
-                  const hayirBtn = Array.from(freshRadioBtns).find(btn => btn.dataset.value === 'hayir');
-                  if (hayirBtn) hayirBtn.classList.add('active');
+                  if (btn) { btn.classList.add('active'); if (durum === 'evet') btn.classList.add('green'); }
                 }
               } else if (type === 'takip') {
+                freshRadioBtns.forEach(b => b.classList.remove('active', 'green'));
                 if (vehicle) {
                   const durum = vehicle.takipCihaziMontaj ? 'evet' : 'hayir';
                   const btn = Array.from(freshRadioBtns).find(btn => btn.dataset.value === durum);
-                  if (btn) btn.classList.add('active');
-                } else {
-                  const hayirBtn = Array.from(freshRadioBtns).find(btn => btn.dataset.value === 'hayir');
-                  if (hayirBtn) hayirBtn.classList.add('active');
+                  if (btn) { btn.classList.add('active'); if (durum === 'evet') btn.classList.add('green'); }
                 }
               }
               
