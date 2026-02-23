@@ -422,9 +422,8 @@
     // SVG zaten yüklüyse tekrar yükleme
     if (container.querySelector('svg')) return;
     
-    // SVG içeriğini fetch ile yükle
-    fetch('icon/kaporta.svg')
-      .then(response => response.text())
+    // SVG içeriğini ortak cache'den al (script-core.getKaportaSvgText)
+    (window.getKaportaSvgText ? window.getKaportaSvgText() : fetch('icon/kaporta.svg').then(r => r.text()))
       .then(svgText => {
         // SVG'yi container'a ekle
         container.innerHTML = svgText;
