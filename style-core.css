@@ -131,41 +131,40 @@ body::-webkit-scrollbar,
   flex-shrink: 0;
 }
 
-/* --- EVRENSEL İŞLEM BUTONLARI --- */
-/* Buton Kapsayıcısı (Input ile Aynı Genişlik ve Tam Ortalama) */
+/* --- EVRENSEL İŞLEM BUTONLARI (Orijinal kayit.css matematiği ve zarafeti) --- */
+/* Buton Grubu (Kapsayıcı) - Aradaki Boşluğu Aç; minmax(0,1fr) taşmayı önler */
 .universal-btn-group {
   display: grid !important;
-  grid-template-columns: 1fr 1fr !important;
-  gap: 16px !important;
+  grid-template-columns: 1fr 1fr !important; /* 2 eşit kolon */
+  gap: 16px !important; /* Aradaki boşluk */
   width: 100% !important;
-  /* Yan paddingleri (sol/sağ) SIFIRLADIK – üstteki inputlarla aynı hizada */
-  padding: 16px 0 0 0 !important;
-  margin: auto 0 0 0 !important;
+  max-width: 100% !important; /* Kapsayıcıyı tam yay */
+  padding: 16px 20px !important; /* Inputların yan paddingleri ile eşitle */
   box-sizing: border-box !important;
-  justify-items: center !important; /* Hücre içindeki elemanları KESİN merkeze kilitler */
+  justify-items: stretch !important; /* Butonları hücreye tam yay */
+  background: transparent !important;
   border: none !important;
 }
 
-/* Butonların Kusursuz Ortalanması ve Yayılması */
+/* Butonların Orijinal Zarif Formu (İnce Çerçeve ve Sabit Yükseklik) */
 .universal-btn-save,
 .universal-btn-cancel {
-  width: 100% !important; /* Grid hücresini tam doldurur (Input genişliğiyle eşitlenmesi için) */
-  max-width: 212px !important; /* Masaüstünde gereksiz uzamayı durdurur */
-  min-width: 0 !important;
-  justify-self: center !important; /* Kendi hücresinin tam göbeğine oturur */
-  margin: 0 !important; /* Ortalamayı bozan sağ/sol marginleri SIFIRLAR */
-  height: 32px !important; /* Zarif, ideal form yüksekliği */
+  background: transparent !important;
+  height: 32px !important; /* Form estetiği için ideal yükseklik */
   border-radius: 8px !important;
-  border-width: 1px !important;
-  border-style: solid !important;
-  font-size: 13px !important;
-  font-weight: 500 !important;
+  border-width: 1px !important; /* 1px ince çerçeve */
+  font-size: 11.5px !important;
+  font-weight: 400 !important;
+  width: 100% !important; /* Hücrenin tamamını kapla */
+  max-width: none !important; /* Önceki kısıtlamaları kaldır */
+  min-width: 0 !important;
+  justify-self: stretch !important; /* Grid hücresine yaslan */
+  margin: 0 !important; /* Kenar boşluklarını sıfırla */
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
+  transition: all 0.2s ease-in-out !important;
   padding: 0 !important;
-  box-sizing: border-box !important;
-  background: transparent !important;
   cursor: pointer !important;
   text-transform: none !important;
   line-height: 1 !important;
@@ -692,6 +691,13 @@ html { overflow-x: hidden; }
   #app-footer.dimmed.delayed .brand img {
     opacity: 0.5 !important;
   }
+  
+  /* Masaüstü: Modal butonları full-width (input ile aynı hizada) */
+  .universal-btn-save,
+  .universal-btn-cancel {
+    min-width: 0 !important;
+    max-width: none !important;
+  }
 }
 
 .view-section { display: none; }
@@ -729,6 +735,9 @@ html { overflow-x: hidden; }
   display: flex !important;
 }
 .modal-overlay .modal-container {
+  display: flex !important;
+  flex-direction: column !important;
+  max-height: 90vh !important; /* Ekrandan taşmayı önler, butonlar kaçmasın */
   position: relative;
   background: var(--modal-bg);
   width: 100%;
@@ -736,13 +745,9 @@ html { overflow-x: hidden; }
   margin: max(12px, env(safe-area-inset-top)) auto var(--modal-margin-bottom-desktop) auto;
   height: calc(100vh - max(12px, env(safe-area-inset-top)) - var(--modal-margin-bottom-desktop));
   height: calc(100dvh - max(12px, env(safe-area-inset-top)) - var(--modal-margin-bottom-desktop));
-  max-height: calc(100vh - max(12px, env(safe-area-inset-top)) - var(--modal-margin-bottom-desktop));
-  max-height: calc(100dvh - max(12px, env(safe-area-inset-top)) - var(--modal-margin-bottom-desktop));
   border-radius: var(--modal-radius);
   border: 1px solid var(--border-subtle);
   box-shadow: 0 4px 10px rgba(0,0,0,0.2), 0 4px 16px rgba(var(--theme-color-rgb), 0.1), 0 0 40px rgba(0, 0, 0, 0.9); /* Menü + modal gölge */
-  display: flex;
-  flex-direction: column;
   overflow: hidden;
   overflow-x: hidden; /* Yatay scroll engelle */
   box-sizing: border-box;
@@ -786,10 +791,10 @@ html { overflow-x: hidden; }
   color: var(--theme-color);
 }
 .modal-overlay .modal-body {
-  flex: 1;
-  overflow-y: auto;
+  flex: 0 1 auto !important; /* İçerik kadar yer kapla, butonları itme */
+  overflow-y: auto !important;
   overflow-x: hidden; /* Yatay kayma engelle */
-  padding: 20px;
+  padding: 20px; /* .universal-btn-group yan padding (20px) ile aynı – input/buton dikey hiza */
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-x: none;
   /* scrollbar gizleme: tek kaynak dosya başındaki html, body, .modal-body, .modal-container kuralı */
