@@ -279,11 +279,12 @@
         listContainer.innerHTML = `
             <div class="stok-list-top-controls">
                 <div class="stok-controls-row-1">
-                    <button class="stok-back-btn" onclick="goBackToStokGrid()" title="Geri Dön">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M19 12H5M12 19l-7-7 7-7"/>
-                        </svg>
-                    </button>
+                    <div class="universal-back-bar">
+                        <button type="button" class="universal-back-btn" onclick="goBackToStokGrid()" title="Geri Dön">
+                            <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                            <span class="universal-back-label">Geri Dön</span>
+                        </button>
+                    </div>
                     <button class="stok-detail-add-btn ${stokDetailMenuOpen ? 'active' : ''}" onclick="toggleStokDetailMenu()">+ Detay Ekleme</button>
                 </div>
                 <div class="stok-controls-row-2">
@@ -447,19 +448,21 @@
                 }
             });
         });
-        // Resize'da tekrar hesapla
+        // Resize'da tekrar hesapla (debounce)
         if (!window._stokMarkaResize) {
             window._stokMarkaResize = true;
-            let resizeTimer;
-            window.addEventListener('resize', () => {
-                clearTimeout(resizeTimer);
-                resizeTimer = setTimeout(() => {
-                    const container = document.getElementById('stok-list-container');
-                    if (container && container.querySelector('.stok-list-cell[data-col="marka"]')) {
-                        adjustStokMarkaFontSizes();
-                    }
-                }, 100);
-            });
+            var onResize = window.debounce ? window.debounce(function () {
+                const container = document.getElementById('stok-list-container');
+                if (container && container.querySelector('.stok-list-cell[data-col="marka"]')) {
+                    adjustStokMarkaFontSizes();
+                }
+            }, 100) : function () {
+                const container = document.getElementById('stok-list-container');
+                if (container && container.querySelector('.stok-list-cell[data-col="marka"]')) {
+                    adjustStokMarkaFontSizes();
+                }
+            };
+            window.addEventListener('resize', onResize);
         }
     }
 
@@ -1568,11 +1571,12 @@
         
         let html = `
             <div class="kullanici-list-top-controls">
-                <button class="stok-back-btn" onclick="goBackToKullaniciGrid()" title="Geri Dön">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M19 12H5M12 19l-7-7 7-7"/>
-                    </svg>
-                </button>
+                <div class="universal-back-bar">
+                    <button type="button" class="universal-back-btn" onclick="goBackToKullaniciGrid()" title="Geri Dön">
+                        <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        <span class="universal-back-label">Geri Dön</span>
+                    </button>
+                </div>
                 <div class="kullanici-export-controls">
                     <div class="kullanici-export-right">
                         <div id="kullanici-search-container" class="stok-search-container">
@@ -1697,11 +1701,12 @@
         
         let html = `
             <div class="kullanici-detail-header">
-                <button class="stok-back-btn" onclick="goBackToKullaniciList()" title="Geri Dön">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M19 12H5M12 19l-7-7 7-7"/>
-                    </svg>
-                </button>
+                <div class="universal-back-bar">
+                    <button type="button" class="universal-back-btn" onclick="goBackToKullaniciList()" title="Geri Dön">
+                        <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        <span class="universal-back-label">Geri Dön</span>
+                    </button>
+                </div>
             </div>
             <div class="kullanici-detail-grid">
                 <div class="kullanici-detail-left">

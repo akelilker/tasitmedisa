@@ -522,9 +522,9 @@ function buildDriverActionArea(vehicle, existingRecord, bakimVar, kazaVar, opts)
                                 <input type="text" id="km-${vid}" class="driver-km-input" inputmode="numeric" pattern="[0-9]*" maxlength="8" data-vehicle-id="${vid}" value="${kmVal}" required autocomplete="off" aria-label="Güncel kilometre">
                             </div>
                         </div>
-                        <div class="driver-km-form-actions">
-                            <button type="button" class="btn-km-bildir" onclick="submitKmOnly('${vid}')">Bildir</button>
-                            <button type="button" class="btn-km-vazgec" onclick="cancelKmForm('${vid}')">Vazgeç</button>
+                        <div class="universal-btn-group">
+                            <button type="button" class="universal-btn-save" onclick="submitKmOnly('${vid}')">Bildir</button>
+                            <button type="button" class="universal-btn-cancel" onclick="cancelKmForm('${vid}')">Vazgeç</button>
                         </div>
                     </div>
                     <div class="driver-km-success-msg" id="km-success-${vid}">Bildirildi</div>
@@ -538,9 +538,9 @@ function buildDriverActionArea(vehicle, existingRecord, bakimVar, kazaVar, opts)
                     <div class="form-group"><label for="kaza-detay-${vid}">Açıklama</label><textarea id="kaza-detay-${vid}" class="driver-report-textarea-auto driver-kaza-textarea" rows="1" placeholder="Kaza açıklamasını yazın..." maxlength="500">${kazaAciklama}</textarea></div>
                     <div class="form-group"><label for="kaza-tutar-${vid}">Hasar Tutarı (TL)</label><input type="text" id="kaza-tutar-${vid}" class="driver-kaza-input" placeholder="5.000" inputmode="numeric"></div>
                     <div class="form-group"><label class="driver-kaporta-label">Hasar gören parçaları işaretleyin (isteğe bağlı)</label><div id="kaza-kaporta-${vid}" class="driver-kaporta-container" data-vehicle-id="${vid}" data-boyali-parcalar='${JSON.stringify(vehicle.boyaliParcalar || {})}'></div></div>
-                    <div class="driver-form-actions">
-                        <button type="button" class="btn-driver-bildir" onclick="submitDriverAction('kaza','${vid}')">Bildir</button>
-                        <button type="button" class="btn-driver-vazgec" onclick="cancelDriverActionForm('kaza','${vid}')">Vazgeç</button>
+                    <div class="universal-btn-group">
+                        <button type="button" class="universal-btn-save" onclick="submitDriverAction('kaza','${vid}')">Bildir</button>
+                        <button type="button" class="universal-btn-cancel" onclick="cancelDriverActionForm('kaza','${vid}')">Vazgeç</button>
                     </div>
                     <div class="driver-success-msg" id="kaza-success-${vid}">Bildirildi</div>
                 </div>
@@ -554,9 +554,9 @@ function buildDriverActionArea(vehicle, existingRecord, bakimVar, kazaVar, opts)
                     <div class="form-group"><label for="bakim-kisi-${vid}">Taşıtı Bakıma Götüren Kişi</label><input type="text" id="bakim-kisi-${vid}" class="driver-bakim-input" placeholder="Kişi adı"></div>
                     <div class="form-group"><label for="bakim-km-${vid}">Bakım Km</label><input type="text" id="bakim-km-${vid}" class="driver-bakim-input" placeholder="50.000" inputmode="numeric"></div>
                     <div class="form-group"><label for="bakim-tutar-${vid}">Tutar (TL)</label><input type="text" id="bakim-tutar-${vid}" class="driver-bakim-input" placeholder="2.500" inputmode="numeric"></div>
-                    <div class="driver-form-actions">
-                        <button type="button" class="btn-driver-bildir" onclick="submitDriverAction('bakim','${vid}')">Bildir</button>
-                        <button type="button" class="btn-driver-vazgec" onclick="cancelDriverActionForm('bakim','${vid}')">Vazgeç</button>
+                    <div class="universal-btn-group">
+                        <button type="button" class="universal-btn-save" onclick="submitDriverAction('bakim','${vid}')">Bildir</button>
+                        <button type="button" class="universal-btn-cancel" onclick="cancelDriverActionForm('bakim','${vid}')">Vazgeç</button>
                     </div>
                     <div class="driver-success-msg" id="bakim-success-${vid}">Bildirildi</div>
                 </div>
@@ -568,9 +568,9 @@ function buildDriverActionArea(vehicle, existingRecord, bakimVar, kazaVar, opts)
                     <div class="form-group"><label for="driver-sigorta-firma-${vid}">Firma (isteğe bağlı)</label><input type="text" id="driver-sigorta-firma-${vid}" class="form-input" placeholder="Sigorta firması" style="width:100%"></div>
                     <div class="form-group"><label for="driver-sigorta-acente-${vid}">Acente (isteğe bağlı)</label><input type="text" id="driver-sigorta-acente-${vid}" class="form-input" placeholder="Acente adı" style="width:100%"></div>
                     <div class="form-group"><label for="driver-sigorta-iletisim-${vid}">İletişim (isteğe bağlı)</label><input type="text" id="driver-sigorta-iletisim-${vid}" class="form-input" placeholder="Telefon / e-posta" inputmode="tel" style="width:100%"></div>
-                    <div class="driver-form-actions">
-                        <button type="button" class="btn-driver-bildir" onclick="saveDriverEventFromBlock('sigorta','${vid}')">Bildir</button>
-                        <button type="button" class="btn-driver-vazgec" onclick="cancelDriverActionForm('sigorta','${vid}')">Vazgeç</button>
+                    <div class="universal-btn-group">
+                        <button type="button" class="universal-btn-save" onclick="saveDriverEventFromBlock('sigorta','${vid}')">Bildir</button>
+                        <button type="button" class="universal-btn-cancel" onclick="cancelDriverActionForm('sigorta','${vid}')">Vazgeç</button>
                     </div>
                 </div>
             </div>
@@ -581,9 +581,9 @@ function buildDriverActionArea(vehicle, existingRecord, bakimVar, kazaVar, opts)
                     <div class="form-group"><label for="driver-kasko-firma-${vid}">Firma (isteğe bağlı)</label><input type="text" id="driver-kasko-firma-${vid}" class="form-input" placeholder="Kasko firması" style="width:100%"></div>
                     <div class="form-group"><label for="driver-kasko-acente-${vid}">Acente (isteğe bağlı)</label><input type="text" id="driver-kasko-acente-${vid}" class="form-input" placeholder="Acente adı" style="width:100%"></div>
                     <div class="form-group"><label for="driver-kasko-iletisim-${vid}">İletişim (isteğe bağlı)</label><input type="text" id="driver-kasko-iletisim-${vid}" class="form-input" placeholder="Telefon / e-posta" inputmode="tel" style="width:100%"></div>
-                    <div class="driver-form-actions">
-                        <button type="button" class="btn-driver-bildir" onclick="saveDriverEventFromBlock('kasko','${vid}')">Bildir</button>
-                        <button type="button" class="btn-driver-vazgec" onclick="cancelDriverActionForm('kasko','${vid}')">Vazgeç</button>
+                    <div class="universal-btn-group">
+                        <button type="button" class="universal-btn-save" onclick="saveDriverEventFromBlock('kasko','${vid}')">Bildir</button>
+                        <button type="button" class="universal-btn-cancel" onclick="cancelDriverActionForm('kasko','${vid}')">Vazgeç</button>
                     </div>
                 </div>
             </div>
@@ -591,9 +591,9 @@ function buildDriverActionArea(vehicle, existingRecord, bakimVar, kazaVar, opts)
                 <button type="button" class="driver-action-btn${muayeneBtnClass}" data-action="muayene" onclick="toggleDriverActionBlock('muayene','${vid}')">Muayene Yenileme</button>
                 <div id="muayene-block-${vid}" class="driver-report-block driver-report-block-muayene driver-action-block">
                     <div class="form-group"><label for="driver-muayene-tarih-${vid}">Yaptırılan Tarih</label><input type="date" id="driver-muayene-tarih-${vid}" class="form-input" style="width:100%"></div>
-                    <div class="driver-form-actions">
-                        <button type="button" class="btn-driver-bildir" onclick="saveDriverEventFromBlock('muayene','${vid}')">Bildir</button>
-                        <button type="button" class="btn-driver-vazgec" onclick="cancelDriverActionForm('muayene','${vid}')">Vazgeç</button>
+                    <div class="universal-btn-group">
+                        <button type="button" class="universal-btn-save" onclick="saveDriverEventFromBlock('muayene','${vid}')">Bildir</button>
+                        <button type="button" class="universal-btn-cancel" onclick="cancelDriverActionForm('muayene','${vid}')">Vazgeç</button>
                     </div>
                 </div>
             </div>
@@ -611,9 +611,9 @@ function buildDriverActionArea(vehicle, existingRecord, bakimVar, kazaVar, opts)
                         <label for="driver-anahtar-detay-${vid}" style="color:#ccc;font-size:15px;">Açıklama:</label>
                         <input type="text" id="driver-anahtar-detay-${vid}" class="form-input" placeholder="Anahtar nerede?" style="width:100%">
                     </div>
-                    <div class="driver-form-actions">
-                        <button type="button" class="btn-driver-bildir" onclick="saveDriverEventFromBlock('anahtar','${vid}')">Bildir</button>
-                        <button type="button" class="btn-driver-vazgec" onclick="cancelDriverActionForm('anahtar','${vid}')">Vazgeç</button>
+                    <div class="universal-btn-group">
+                        <button type="button" class="universal-btn-save" onclick="saveDriverEventFromBlock('anahtar','${vid}')">Bildir</button>
+                        <button type="button" class="universal-btn-cancel" onclick="cancelDriverActionForm('anahtar','${vid}')">Vazgeç</button>
                     </div>
                 </div>
             </div>
@@ -631,9 +631,9 @@ function buildDriverActionArea(vehicle, existingRecord, bakimVar, kazaVar, opts)
                         <label for="driver-lastik-adres-${vid}" style="color:#ccc;font-size:15px;">Adres:</label>
                         <input type="text" id="driver-lastik-adres-${vid}" class="form-input" placeholder="Lastik adresi" style="width:100%">
                     </div>
-                    <div class="driver-form-actions">
-                        <button type="button" class="btn-driver-bildir" onclick="saveDriverEventFromBlock('lastik','${vid}')">Bildir</button>
-                        <button type="button" class="btn-driver-vazgec" onclick="cancelDriverActionForm('lastik','${vid}')">Vazgeç</button>
+                    <div class="universal-btn-group">
+                        <button type="button" class="universal-btn-save" onclick="saveDriverEventFromBlock('lastik','${vid}')">Bildir</button>
+                        <button type="button" class="universal-btn-cancel" onclick="cancelDriverActionForm('lastik','${vid}')">Vazgeç</button>
                     </div>
                 </div>
             </div>
@@ -642,7 +642,7 @@ function buildDriverActionArea(vehicle, existingRecord, bakimVar, kazaVar, opts)
                     <label for="not-${vid}">Not</label>
                     <textarea id="not-${vid}" class="driver-ekstra-not" rows="1" placeholder="Varsa Belirtin.." maxlength="500">${ekstraNot}</textarea>
                 </div>
-                <button type="button" onclick="saveVehicleData('${vid}')" class="btn-save" id="btn-save-${vid}">Bildir</button>
+                <button type="button" onclick="saveVehicleData('${vid}')" class="universal-btn-save" id="btn-save-${vid}">Bildir</button>
                 <div id="status-${vid}" class="status-message"></div>
             </div>
         </div>
@@ -755,9 +755,9 @@ window.submitDriverAction = async function(type, vid) {
             alert('Kaza bildirimi için açıklama girin.');
             return;
         }
-        btnBildir = document.querySelector('#kaza-block-' + vid + ' .btn-driver-bildir');
-        btnVazgec = document.querySelector('#kaza-block-' + vid + ' .btn-driver-vazgec');
-        formActions = document.querySelector('#kaza-block-' + vid + ' .driver-form-actions');
+        btnBildir = document.querySelector('#kaza-block-' + vid + ' .universal-btn-save');
+        btnVazgec = document.querySelector('#kaza-block-' + vid + ' .universal-btn-cancel');
+        formActions = document.querySelector('#kaza-block-' + vid + ' .universal-btn-group');
         successMsg = document.getElementById('kaza-success-' + vid);
     } else {
         var bakimAciklama = (document.getElementById('bakim-detay-' + vid) || {}).value.trim();
@@ -765,9 +765,9 @@ window.submitDriverAction = async function(type, vid) {
             alert('Bakım bildirimi için açıklama girin.');
             return;
         }
-        btnBildir = document.querySelector('#bakim-block-' + vid + ' .btn-driver-bildir');
-        btnVazgec = document.querySelector('#bakim-block-' + vid + ' .btn-driver-vazgec');
-        formActions = document.querySelector('#bakim-block-' + vid + ' .driver-form-actions');
+        btnBildir = document.querySelector('#bakim-block-' + vid + ' .universal-btn-save');
+        btnVazgec = document.querySelector('#bakim-block-' + vid + ' .universal-btn-cancel');
+        formActions = document.querySelector('#bakim-block-' + vid + ' .universal-btn-group');
         successMsg = document.getElementById('bakim-success-' + vid);
     }
     if (btnBildir) btnBildir.disabled = true;
@@ -867,8 +867,8 @@ window.submitKmOnly = async function(vid) {
         if (kmEl) kmEl.focus();
         return;
     }
-    const btnBildir = document.querySelector('#km-block-' + vid + ' .btn-km-bildir');
-    const btnVazgec = document.querySelector('#km-block-' + vid + ' .btn-km-vazgec');
+    const btnBildir = document.querySelector('#km-block-' + vid + ' .universal-btn-save');
+    const btnVazgec = document.querySelector('#km-block-' + vid + ' .universal-btn-cancel');
     const formContent = document.querySelector('#km-block-' + vid + ' .driver-km-form-content');
     const successMsg = document.getElementById('km-success-' + vid);
     const errorEl = document.getElementById('km-error-' + vid);
@@ -1442,14 +1442,19 @@ function initDriverKaporta(vehicleId, boyaliParcalar) {
             svgClone.style.transform = 'rotate(90deg)';
             svgClone.style.transformOrigin = 'center center';
             const allParts = svgClone.querySelectorAll('path[id]');
+            // Varsayılan gri
             allParts.forEach(function(part) {
                 const partId = part.getAttribute('id');
                 if (partId === 'araba-govde') return;
                 part.setAttribute('fill', '#888888');
                 part.style.fill = '#888888';
-                part.style.cursor = 'pointer';
-                const state = boyaliParcalar[partId] || 'boyasiz';
-                part.dataset.state = state;
+            });
+            // Önceki kazalardan gelen parçalar: sadece görsel, readonly, dataset.state atanmaz (yeni kayda dahil edilmez)
+            Object.keys(boyaliParcalar).forEach(function(partId) {
+                if (partId === 'araba-govde') return;
+                const part = svgClone.querySelector('#' + CSS.escape(partId));
+                if (!part) return;
+                const state = boyaliParcalar[partId];
                 if (state === 'boyali') {
                     part.setAttribute('fill', '#28a745');
                     part.style.fill = '#28a745';
@@ -1457,6 +1462,16 @@ function initDriverKaporta(vehicleId, boyaliParcalar) {
                     part.setAttribute('fill', '#e1061b');
                     part.style.fill = '#e1061b';
                 }
+                part.style.pointerEvents = 'none';
+                part.style.opacity = '0.7';
+            });
+            // Bu kazada seçilebilecek parçalar: tıklanabilir, sadece bunlar kayda gider
+            allParts.forEach(function(part) {
+                const partId = part.getAttribute('id');
+                if (partId === 'araba-govde') return;
+                if (boyaliParcalar[partId]) return;
+                part.style.cursor = 'pointer';
+                part.dataset.state = 'boyasiz';
                 part.addEventListener('click', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
