@@ -1288,3 +1288,45 @@ body.modal-open .app-container {
     margin: 0;
     text-align: center;
 }
+
+/* PWA Update Toast */
+.update-toast {
+    position: fixed;
+    bottom: calc(var(--app-footer-height) + 16px);
+    left: 50%;
+    transform: translateX(-50%) translateY(100%);
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 12px 20px;
+    background: var(--bg-content);
+    border: 1px solid var(--theme-color);
+    border-radius: 10px;
+    box-shadow: 0 4px 20px var(--shadow-dark);
+    transition: transform 0.3s ease;
+}
+.update-toast.visible {
+    transform: translateX(-50%) translateY(0);
+}
+.update-toast-text {
+    color: var(--txt-light);
+    font-size: 14px;
+    font-weight: 600;
+}
+.update-toast-btn {
+    padding: 8px 16px;
+    background: transparent;
+    border: 1px solid var(--green-success);
+    color: var(--green-success);
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+.update-toast-btn:hover {
+    background: var(--green-success);
+    color: var(--bg);
+}
