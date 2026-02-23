@@ -726,6 +726,9 @@ html { overflow-x: hidden; }
   display: flex !important;
 }
 .modal-overlay .modal-container {
+  display: flex !important;
+  flex-direction: column !important;
+  max-height: 90vh !important; /* Ekrandan taşmayı önler, butonlar kaçmasın */
   position: relative;
   background: var(--modal-bg);
   width: 100%;
@@ -733,13 +736,9 @@ html { overflow-x: hidden; }
   margin: max(12px, env(safe-area-inset-top)) auto var(--modal-margin-bottom-desktop) auto;
   height: calc(100vh - max(12px, env(safe-area-inset-top)) - var(--modal-margin-bottom-desktop));
   height: calc(100dvh - max(12px, env(safe-area-inset-top)) - var(--modal-margin-bottom-desktop));
-  max-height: calc(100vh - max(12px, env(safe-area-inset-top)) - var(--modal-margin-bottom-desktop));
-  max-height: calc(100dvh - max(12px, env(safe-area-inset-top)) - var(--modal-margin-bottom-desktop));
   border-radius: var(--modal-radius);
   border: 1px solid var(--border-subtle);
   box-shadow: 0 4px 10px rgba(0,0,0,0.2), 0 4px 16px rgba(var(--theme-color-rgb), 0.1), 0 0 40px rgba(0, 0, 0, 0.9); /* Menü + modal gölge */
-  display: flex;
-  flex-direction: column;
   overflow: hidden;
   overflow-x: hidden; /* Yatay scroll engelle */
   box-sizing: border-box;
@@ -783,8 +782,8 @@ html { overflow-x: hidden; }
   color: var(--theme-color);
 }
 .modal-overlay .modal-body {
-  flex: 1;
-  overflow-y: auto;
+  flex: 0 1 auto !important; /* İçerik kadar yer kapla, butonları itme */
+  overflow-y: auto !important;
   overflow-x: hidden; /* Yatay kayma engelle */
   padding: 20px;
   -webkit-overflow-scrolling: touch;
