@@ -938,7 +938,7 @@ body.admin-report-page::-webkit-scrollbar {
     margin: 0 !important;
   }
   .admin-content-wrap {
-    padding-top: 4px !important;
+    padding-top: max(12px, env(safe-area-inset-top)) !important;
   }
   .admin-report-hero {
     margin-left: 0 !important;
