@@ -92,10 +92,10 @@ body::-webkit-scrollbar,
 /* Geri Dön Çubuğu (Okların Sabitlenmesi) */
 .universal-back-bar {
   display: flex !important;
-  align-items: center !important; /* Oku ve metni dikeyde KUSURSUZ ortalar */
+  align-items: center !important;
   justify-content: flex-start !important;
+  padding: 8px 0 0 0 !important; /* Alt boşluk tam 8px daraltıldı (0px yapıldı) */
   width: 100% !important;
-  padding: 8px 0 8px 0 !important; /* Üstten 8px tıraşlandı, bar yukarı kaydı */
   margin: 0 !important;
   box-sizing: border-box !important;
   gap: 12px !important;
