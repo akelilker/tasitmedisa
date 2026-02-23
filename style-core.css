@@ -120,6 +120,45 @@ body::-webkit-scrollbar,
   flex-shrink: 0;
 }
 
+/* --- EVRENSEL İŞLEM BUTONLARI (Kaydet/Vazgeç, Bildir, Evet/Hayır) --- */
+.universal-btn-group {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 16px;
+  width: 100%;
+  margin-top: 10px;
+}
+.universal-btn-save {
+  background-color: var(--green-success);
+  color: var(--txt-light);
+  border: none;
+  border-radius: 8px;
+  padding: 10px 24px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.universal-btn-save:hover { opacity: 0.9; }
+.universal-btn-cancel {
+  background-color: var(--bg-content);
+  color: var(--theme-color);
+  border: 1px solid var(--theme-color);
+  border-radius: 8px;
+  padding: 10px 24px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.universal-btn-cancel:hover { opacity: 0.8; }
+
 /* --- 1. SIFIRLAMA & ANA YAPI --- */
 html, body {
   margin: 0;
@@ -744,21 +783,6 @@ html { overflow-x: hidden; }
   padding: 20px !important;
   -webkit-overflow-scrolling: touch;
 }
-
-/* Modal Evet/Hayır ve Kaydet/Vazgeç butonları */
-.modal-btn-confirm,
-.modal-btn-cancel {
-  flex: 1;
-  background: transparent;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 14px;
-  padding: 8px 16px;
-}
-.modal-btn-confirm { border: 0.3px solid var(--theme-color); color: var(--theme-color); }
-.modal-btn-cancel { border: 0.3px solid var(--green-success); color: var(--green-success); }
-.modal-btn--sm { padding: 6px 10px; line-height: 1.2; }
 
 /* Modal container: marker ikonu */
 .modal-container::after {
