@@ -386,15 +386,20 @@ input[type="date"].form-input:focus {
     border-color: var(--theme-color) !important;
     outline: none !important;
 }
+/* Tarih kutusu: placeholder ile metin üst üste binmesin */
+input[type="date"].form-input {
+    padding-left: 12px !important;
+}
 
 .date-placeholder {
     position: absolute;
-    left: 8px;
+    left: 12px !important; /* Soldan taşıp dışarı çıkmasını engeller, içeri iter */
     color: #666;
     pointer-events: none;
     font-size: 10px;
     z-index: 100;
     font-family: inherit;
+    text-align: left !important;
 }
 
 /* Kasko ve Muayene (sağ kolon) tarih placeholder'ı kutu içinde yatayda ortalı – masaüstü + mobil */
@@ -1067,6 +1072,31 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     .form-section-inline:has(.radio-group) { flex-direction: column; align-items: flex-start; gap: 0; margin-bottom: 10px; }
     .form-section-inline:has(.radio-group) .form-label { margin-bottom: 0; width: 100%; }
     .form-section-inline:has(.radio-group) .radio-group { width: auto; justify-content: flex-start; gap: 3px; }
+
+    /* Etiketi ve Butonları Aynı Satırda (Row) Tut – taşma engelle */
+    .modal-body .form-section-inline:has(.radio-group),
+    .modal-body .form-section-inline:has([data-group]) {
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        gap: 12px !important;
+    }
+    .modal-body .form-section-inline:has(.radio-group) .form-label {
+        width: auto !important;
+        margin-bottom: 0 !important;
+    }
+    .modal-body .form-section-inline:has(.radio-group) .radio-group {
+        width: auto !important;
+        flex-wrap: nowrap !important;
+        justify-content: flex-end !important;
+    }
+    /* Var/Yok butonları: dikey 3px, yatay 8px büyütme */
+    .modal-body .radio-btn,
+    .modal-body .toggle-btn {
+        height: 30px !important;
+        padding: 0 16px !important;
+        font-size: 13px !important;
+    }
     /* Taşıt Tipi: etiket–ikon arası sıfır (gap 4px ezmesin) */
     .modal-column-left .form-section-inline:first-child { gap: 0 !important; }
     
