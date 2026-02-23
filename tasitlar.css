@@ -15,10 +15,10 @@
     justify-content: flex-start !important;
     align-items: center !important;
     pointer-events: none !important;
-    padding-top: 0 !important;
+    padding-top: env(safe-area-inset-top, 0px) !important;
+    padding-bottom: env(safe-area-inset-bottom, 0px) !important;
     padding-left: 0 !important;
     padding-right: 0 !important;
-    padding-bottom: 0 !important;
     height: 100vh;
     height: 100dvh;
     overflow: hidden !important;
