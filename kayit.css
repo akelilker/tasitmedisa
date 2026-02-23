@@ -393,19 +393,21 @@ input[type="date"].form-input {
 
 .date-placeholder {
     position: absolute;
-    left: 12px !important; /* Soldan taşıp dışarı çıkmasını engeller, içeri iter */
+    left: 12px !important; /* Input yazısıyla aynı hizada başlar */
     color: #666;
     pointer-events: none;
     font-size: 10px;
     z-index: 100;
     font-family: inherit;
     text-align: left !important;
+    transform: translateY(-50%) !important; /* Dikeyde tam ortalar */
+    width: auto !important; /* Genişliği serbest bırak ki sığsın */
 }
 
 /* Kasko ve Muayene (sağ kolon) tarih placeholder'ı kutu içinde yatayda ortalı – masaüstü + mobil */
 #vehicle-modal .modal-column-right .date-placeholder {
     left: 50% !important;
-    transform: translateX(-50%) !important;
+    transform: translate(-50%, -50%) !important; /* Yatay + dikey ortalama */
     text-align: center;
 }
 

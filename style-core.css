@@ -211,6 +211,20 @@ input[type="date"].form-input:focus {
   color: #adb5bd !important;
 }
 
+/* Tarih Inputu Kesilme ve Hizalama Düzeltmesi (iOS Safari vb.) */
+input[type="date"].form-input {
+  padding-left: 12px !important;
+  text-align: left !important;
+  justify-content: flex-start !important;
+}
+input[type="date"].form-input::-webkit-datetime-edit,
+input[type="date"].form-input::-webkit-datetime-edit-fields-wrapper {
+  padding-left: 0 !important;
+  text-align: left !important;
+  justify-content: flex-start !important;
+  margin-left: 0 !important;
+}
+
 /* --- 1. SIFIRLAMA & ANA YAPI --- */
 html, body {
   margin: 0;
