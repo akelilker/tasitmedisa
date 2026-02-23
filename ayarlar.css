@@ -34,14 +34,14 @@
 /* Ayarlar modalları: branch/user/data-management container style-core'da; küçük modallar aşağıda override */
 
 #cache-confirm-modal .modal-container {
-    background: #080d16; 
+    background: var(--bg); 
     width: 100%;
     max-width: 400px;
     height: 210px !important;
     max-height: 210px !important;
     margin: 80px auto 52px auto;
     border-radius: 10px;
-    border: 0.5px solid rgba(255, 255, 255, 0.5);
+    border: 0.5px solid var(--border-light);
     box-shadow: none; 
     display: flex;
     flex-direction: column;
@@ -83,19 +83,19 @@
 /* HAYIR butonu (yeşil) - 2. buton */
 #cache-confirm-modal .modal-body button:last-child:hover {
     font-size: 15px !important;
-    background: rgba(40, 167, 69, 0.08) !important; /* Çok hafif yeşil dolgu */
+    background: rgba(var(--green-success-rgb), 0.08) !important;
 }
 
 /* === TESCİL TARİHİ MODALLARI === */
 #tescil-tarih-confirm-modal .modal-container {
-    background: #080d16; 
+    background: var(--bg); 
     width: 100%;
     max-width: 400px;
     height: 190px !important;
     max-height: 190px !important;
     margin: 80px auto 52px auto;
     border-radius: 10px;
-    border: 0.5px solid rgba(255, 255, 255, 0.5);
+    border: 0.5px solid var(--border-light);
     box-shadow: none; 
     display: flex;
     flex-direction: column;
@@ -136,19 +136,19 @@
 
 #tescil-tarih-confirm-modal .modal-body button:last-child:hover {
     font-size: 15px !important;
-    background: rgba(40, 167, 69, 0.08) !important;
+    background: rgba(var(--green-success-rgb), 0.08) !important;
 }
 
 /* Tescil Tarihi Giriş Modalı */
 #tescil-tarih-input-modal .modal-container {
-    background: #080d16; 
+    background: var(--bg); 
     width: 100%;
     max-width: 400px;
     height: 220px !important;
     max-height: 220px !important;
     margin: 80px auto 52px auto;
     border-radius: 10px;
-    border: 0.5px solid rgba(255, 255, 255, 0.5);
+    border: 0.5px solid var(--border-light);
     box-shadow: none; 
     display: flex;
     flex-direction: column;
@@ -163,10 +163,10 @@
     width: 140px;
     text-align: center;
     padding: 8px 12px;
-    background: #0d131f;
-    border: 0.3px solid rgba(255, 255, 255, 0.2);
+    background: var(--bg-content);
+    border: 0.3px solid var(--border-faint);
     border-radius: 6px;
-    color: #e0e0e0;
+    color: var(--txt-muted);
     font-size: 14px;
     font-family: inherit;
     box-sizing: border-box;
@@ -174,8 +174,8 @@
 
 #tescil-tarih-input-modal #tescil-tarih-input:focus {
     outline: none;
-    border-color: rgba(255, 255, 255, 0.4);
-    background: #0f1622;
+    border-color: var(--border-mid);
+    background: var(--bg-input-focus);
 }
 
 #tescil-tarih-input-modal #tescil-tarih-input.field-error {
@@ -191,7 +191,7 @@
     position: absolute;
     pointer-events: none;
     white-space: nowrap;
-    color: #e0e0e0;
+    color: var(--txt-muted);
     background: transparent;
     overflow: visible;
     user-select: none;
@@ -211,13 +211,13 @@
     z-index: 1;
     color: transparent !important; /* Metin görünmez, overlay gösterir */
     /* background ve border korunur (mevcut stil) */
-    caret-color: #e0e0e0; /* Cursor görünür olsun */
+    caret-color: var(--txt-muted);
 }
 
 #tescil-tarih-input-modal #tescil-tarih-input:focus {
     color: transparent !important; /* Focus'ta da transparent kal */
     /* background ve border stilleri korunur */
-    caret-color: #e0e0e0; /* Cursor görünür olsun */
+    caret-color: var(--txt-muted);
 }
 
 #tescil-tarih-input-modal #tescil-tarih-input::placeholder {
@@ -244,7 +244,7 @@
 
 .tescil-tarih-kaydet-btn:hover {
     font-size: 15px !important;
-    background: rgba(40, 167, 69, 0.08) !important;
+    background: rgba(var(--green-success-rgb), 0.08) !important;
 }
 
 .tescil-tarih-vazgec-btn:hover {
@@ -271,7 +271,7 @@
 
 /* Tarihçe Tab Stilleri */
 .history-tab.active {
-    color: #e0e0e0 !important;
+    color: var(--txt-muted) !important;
     border-bottom-color: var(--theme-color) !important;
 }
 
@@ -280,11 +280,11 @@
 }
 
 .history-tab:hover {
-    color: #f0f0f0 !important;
+    color: var(--txt-light) !important;
 }
 
 #info-modal .modal-container {
-    background: #080d16; 
+    background: var(--bg); 
     width: 100%;
     max-width: 400px;
     height: auto !important;
@@ -292,7 +292,7 @@
     max-height: calc(100dvh - 80px - 52px);
     margin: 80px auto 52px auto;
     border-radius: 10px;
-    border: 0.5px solid rgba(255, 255, 255, 0.5);
+    border: 0.5px solid var(--border-light);
     box-shadow: none; 
     display: flex;
     flex-direction: column;
@@ -331,8 +331,8 @@
 #info-modal .modal-body button {
     padding: 10px 30px !important;
     background: transparent !important;
-    border: 0.3px solid #28a745 !important;
-    color: #28a745 !important;
+    border: 0.3px solid var(--green-success) !important;
+    color: var(--green-success) !important;
     border-radius: 6px !important;
     cursor: pointer !important;
     font-weight: 600 !important;
@@ -362,7 +362,7 @@
     font-size: 17px !important;
     font-weight: 600 !important;
     letter-spacing: 0.05em !important;
-    color: #f0f0f0 !important;
+    color: var(--txt-light) !important;
     text-shadow: none !important;
     opacity: 1 !important;
     margin: 0;
@@ -371,13 +371,13 @@
 .modal-close {
     background: none;
     border: none;
-    color: #aaa;
+    color: var(--txt-placeholder);
     cursor: pointer;
     position: absolute;
     right: 15px;
     font-size: 20px;
 }
-.modal-close:hover { color: #fff; }
+.modal-close:hover { color: var(--txt-white); }
 
 /* Header altı: sol ok + Ayarlar (Taşıtlar modalı okları ile aynı stil) */
 .ayarlar-back-bar {
@@ -385,7 +385,7 @@
     align-items: center;
     gap: 4px;
     padding: 8px 16px;
-    background: #080d16;
+    background: var(--bg);
     flex-shrink: 0;
     margin-top: -16px;
 }
@@ -405,7 +405,7 @@
     height: 20px;
 }
 .ayarlar-back-btn:hover {
-    color: #fff;
+    color: var(--txt-white);
 }
 .ayarlar-back-label {
     font-size: 14px;
@@ -446,7 +446,7 @@
 .data-management-text-btn {
     background: none;
     border: none;
-    color: #b5b9c0;
+    color: var(--txt-gray-dark);
     padding: 8px 0;
     cursor: pointer;
     font-weight: 600;
@@ -514,9 +514,9 @@
 .settings-dropdown.open { display: flex; }
 
 .settings-dropdown button {
-    background: #080d16;
-    border: 1px solid rgba(255, 255, 255, 0.3); 
-    color: #f0f0f0;
+    background: var(--bg);
+    border: 1px solid var(--border-subtle); 
+    color: var(--txt-light);
     padding: 8px 20px;
     height: 40px;
     width: 100%;
@@ -551,7 +551,7 @@
 }
 
 .settings-dropdown .has-submenu:hover {
-    border-color: rgba(255, 255, 255, 0.55) !important;
+    border-color: var(--border-light) !important;
 }
 
 /* HR elementi boşluğu eşitleme - sadece alt boşluk */
@@ -564,9 +564,9 @@
     width: 100% !important;
 }
 .settings-dropdown button:hover { 
-    background: #0f1418; 
-    color: #fff; 
-    border-color: rgba(255, 255, 255, 0.55); 
+    background: var(--bg-input); 
+    color: var(--txt-white); 
+    border-color: var(--border-light); 
     font-size: 16px; 
 } 
 
@@ -584,45 +584,45 @@
     justify-content: space-between;
     align-items: center;
     padding: 12px;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-    background: rgba(255,255,255,0.02);
+    border-bottom: 1px solid var(--border-ultra);
+    background: var(--border-faint-02);
 }
 .list-item:last-child { border-bottom: none; }
 
 .item-info { display: flex; flex-direction: column; }
-.item-title { font-weight: 600; color: #f0f0f0; font-size: 15px; margin-bottom: 2px; }
-.item-subtitle { font-size: 13px; color: #888; }
+.item-title { font-weight: 600; color: var(--txt-light); font-size: 15px; margin-bottom: 2px; }
+.item-subtitle { font-size: 13px; color: var(--txt-gray-darker); }
 
 .item-actions { display: flex; gap: 8px; }
 .action-btn {
     background: transparent;
-    border: 1px solid rgba(255,255,255,0.2);
-    color: #ccc;
+    border: 1px solid var(--border-faint);
+    color: var(--txt-gray);
     width: 28px; height: 28px;
     border-radius: 4px;
     display: flex; align-items: center; justify-content: center;
     cursor: pointer;
 }
-.action-btn.edit:hover { border-color: #dda410; color: #dda410; }
+.action-btn.edit:hover { border-color: var(--amber-edit); color: var(--amber-edit); }
 .action-btn.delete:hover { border-color: var(--theme-color); color: var(--theme-color); }
 
 .settings-add-btn {
     width: 100%;
-    background: rgba(255,255,255,0.05);
-    border: 1px dashed rgba(255,255,255,0.3);
-    color: #ccc;
+    background: var(--border-ultra);
+    border: 1px dashed var(--border-subtle);
+    color: var(--txt-gray);
     padding: 10px;
     margin-bottom: 10px;
     border-radius: 6px;
     cursor: pointer;
     font-weight: 600;
 }
-.settings-add-btn:hover { background: rgba(255,255,255,0.1); color: #fff; border-color: #fff; }
+.settings-add-btn:hover { background: var(--border-ultra); color: var(--txt-white); border-color: var(--txt-white); }
 
 .settings-add-text-btn {
     background: none;
     border: none;
-    color: #fff;
+    color: var(--txt-white);
     padding: 8px 0;
     cursor: pointer;
     font-weight: 600;
@@ -645,7 +645,7 @@
     text-align: center;
 }
 
-.settings-add-text-btn.user-add-btn { color: #888; }
+.settings-add-text-btn.user-add-btn { color: var(--txt-gray-darker); }
 .settings-add-text-btn:hover { 
     font-size: 16px;
 }
@@ -656,10 +656,10 @@
 .settings-form-input, .settings-form-select {
     width: 100%;
     padding: 8px;
-    background: #0d131f;
-    border: 1px solid rgba(255,255,255,0.2);
+    background: var(--bg-content);
+    border: 1px solid var(--border-faint);
     border-radius: 6px;
-    color: #fff;
+    color: var(--txt-white);
     font-size: 15px;
     box-sizing: border-box;
 }
@@ -669,15 +669,15 @@
 select.settings-form-select option,
 #user-role option,
 #user-branch option {
-    background-color: #080d16 !important;
-    color: #e0e0e0 !important;
+    background-color: var(--bg) !important;
+    color: var(--txt-muted) !important;
 }
 
 .settings-form-select option:checked,
 select.settings-form-select option:checked,
 #user-role option:checked,
 #user-branch option:checked {
-    background: #080d16 !important;
+    background: var(--bg) !important;
     color: #fff !important;
 }
 
@@ -685,7 +685,7 @@ select.settings-form-select option:checked,
 select.settings-form-select option:hover,
 #user-role option:hover,
 #user-branch option:hover {
-    background: rgba(255, 255, 255, 0.1) !important; /* Açık gri, nötr */
+    background: var(--border-ultra) !important;
     color: #fff !important;
 }
 
@@ -693,7 +693,7 @@ select.settings-form-select option:hover,
 select.settings-form-select option:focus,
 #user-role option:focus,
 #user-branch option:focus {
-    background: rgba(255, 255, 255, 0.1) !important;
+    background: var(--border-ultra) !important;
     color: #fff !important;
 }
 
@@ -701,7 +701,7 @@ select.settings-form-select option:focus,
 select.settings-form-select option:active,
 #user-role option:active,
 #user-branch option:active {
-    background: rgba(255, 255, 255, 0.15) !important;
+    background: var(--border-faint-15) !important;
     color: #fff !important;
 }
 
@@ -710,7 +710,7 @@ select.settings-form-select option:active,
 select.settings-form-select,
 #user-role,
 #user-branch {
-    accent-color: rgba(255, 255, 255, 0.1) !important;
+    accent-color: var(--border-ultra) !important;
     color-scheme: dark;
 }
 
@@ -739,12 +739,12 @@ input.settings-form-input:-webkit-autofill:active,
 #branch-city:-webkit-autofill:hover,
 #branch-city:-webkit-autofill:focus,
 #branch-city:-webkit-autofill:active {
-    -webkit-box-shadow: 0 0 0 1000px #0d131f inset !important;
-    -webkit-text-fill-color: #fff !important;
-    background-color: #0d131f !important;
+    -webkit-box-shadow: 0 0 0 1000px var(--bg-content) inset !important;
+    -webkit-text-fill-color: var(--txt-white) !important;
+    background-color: var(--bg-content) !important;
     background-clip: content-box !important;
     color: #fff !important;
-    caret-color: #fff !important;
+    caret-color: var(--txt-white) !important;
     transition: background-color 5000s ease-in-out 0s, color 5000s ease-in-out 0s !important;
 }
 
@@ -755,9 +755,9 @@ input.settings-form-input:-moz-autofill,
 #user-email:-moz-autofill,
 #branch-name:-moz-autofill,
 #branch-city:-moz-autofill {
-    background-color: #0d131f !important;
+    background-color: var(--bg-content) !important;
     color: #fff !important;
-    box-shadow: 0 0 0 1000px #0d131f inset !important;
+    box-shadow: 0 0 0 1000px var(--bg-content) inset !important;
 }
 /* Atanacak Taşıt - Dropdown (tıklanınca açılan liste) */
 .user-vehicles-dropdown-wrap {
@@ -767,10 +767,10 @@ input.settings-form-input:-moz-autofill,
   width: 100%;
   height: 26px;
   padding: 2px 8px;
-  background: #0d131f;
+  background: var(--bg-content);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 6px;
-  color: #888;
+  color: var(--txt-gray-darker);
   font-size: 13px;
   line-height: 22px;
   cursor: pointer;
@@ -781,7 +781,7 @@ input.settings-form-input:-moz-autofill,
   align-items: center;
 }
 .user-vehicles-trigger:hover {
-  border-color: rgba(255, 255, 255, 0.35);
+  border-color: var(--border-medium);
 }
 .user-vehicles-trigger.user-vehicles-trigger-open {
   border-color: var(--theme-color);
@@ -800,7 +800,7 @@ input.settings-form-input:-moz-autofill,
   max-height: 200px;
   overflow-y: auto;
   z-index: 10;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 4px 12px var(--shadow-dark);
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
@@ -814,7 +814,7 @@ input.settings-form-input:-moz-autofill,
   padding: 0 10px;
   margin-bottom: 8px;
   height: 26px;
-  background: rgba(0, 0, 0, 0.2);
+  background: var(--shadow-dark);
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 6px;
   box-sizing: border-box;
@@ -838,7 +838,7 @@ input.settings-form-input:-moz-autofill,
   line-height: 1;
 }
 .user-vehicles-search-input::placeholder {
-  color: #888;
+  color: var(--txt-gray-darker);
 }
 .user-vehicles-checkbox-list {
   max-height: 184px;
@@ -860,8 +860,8 @@ input.settings-form-input:-moz-autofill,
 
 .settings-btn-save {
     background: transparent;
-    border: 0.3px solid #28a745; 
-    color: #28a745;
+    border: 0.3px solid var(--green-success);
+    color: var(--green-success);
     padding: 0;
     border-radius: 6px;
     cursor: pointer;
@@ -880,7 +880,7 @@ input.settings-form-input:-moz-autofill,
 }
 .settings-btn-save:hover { 
     font-size: 16px;
-    background: rgba(255, 165, 0, 0.08); /* Çok az saydam turuncu arka plan */
+    background: rgba(var(--orange-warn-rgb), 0.08);
     transform: none; /* Komple büyüme yok */
 }
 
@@ -906,7 +906,7 @@ input.settings-form-input:-moz-autofill,
 }
 .settings-btn-cancel:hover { 
     font-size: 16px;
-    background: rgba(255, 165, 0, 0.08); /* Çok az saydam turuncu arka plan */
+    background: rgba(var(--orange-warn-rgb), 0.08);
     transform: none; /* Komple büyüme yok */
 }
 
@@ -1010,14 +1010,14 @@ input.settings-form-input:-moz-autofill,
 
 .settings-card:hover {
     background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.4);
+    border-color: var(--border-mid);
     transform: translateY(-2px);
 }
 
 .settings-card-title {
     font-size: 12px;
     font-weight: 600;
-    color: #f0f0f0;
+    color: var(--txt-light);
     text-align: center !important; /* Yatayda ortala */
     margin: 0 auto; /* Ortala */
     line-height: 1.1;
@@ -1032,7 +1032,7 @@ input.settings-form-input:-moz-autofill,
 
 .settings-card-subtitle {
     font-size: 11px;
-    color: #888;
+    color: var(--txt-gray-darker);
     text-align: center !important; /* Yatayda ortala */
     margin: 0 auto; /* Ortala */
     line-height: 1.1;
@@ -1077,7 +1077,7 @@ input.settings-form-input:-moz-autofill,
 .settings-action-btn {
     background: none;
     border: none;
-    color: #ccc;
+    color: var(--txt-gray);
     width: auto;
     height: auto;
     display: flex;
@@ -1108,7 +1108,7 @@ input.settings-form-input:-moz-autofill,
 .settings-back-btn {
     background: none;
     border: none;
-    color: #ccc;
+    color: var(--txt-gray);
     width: 32px;
     height: 32px;
     display: flex;
@@ -1125,7 +1125,7 @@ input.settings-form-input:-moz-autofill,
 .settings-detail-title {
     font-size: 17px;
     font-weight: 600;
-    color: #e0e0e0;
+    color: var(--txt-muted);
     margin: 0;
 }
 
@@ -1170,7 +1170,7 @@ input.settings-form-input:-moz-autofill,
         font-size: 17px !important;
         font-weight: 600 !important;
         letter-spacing: 0.05em !important;
-        color: #f0f0f0 !important;
+        color: var(--txt-light) !important;
         text-shadow: none !important;
         margin: 0;
         text-align: center;
@@ -1226,10 +1226,10 @@ input.settings-form-input:-moz-autofill,
         padding-bottom: 5px !important;
         padding-left: 8px;
         padding-right: 8px;
-        background: #0d131f;
+        background: var(--bg-content);
         border: 1.1px solid rgba(255, 255, 255, 0.20);
         border-radius: 6px;
-        color: #888;
+        color: var(--txt-gray-darker);
         font-size: 10px;
         box-sizing: border-box;
     }
@@ -1362,7 +1362,7 @@ input.settings-form-input:-moz-autofill,
     #branch-modal .modal-container,
     #user-modal .modal-container,
     #data-management-modal .modal-container {
-        background: #080d16 !important;
+        background: var(--bg) !important;
     }
     #branch-form-modal.modal-overlay,
     #user-form-modal.modal-overlay {
@@ -1376,7 +1376,7 @@ input.settings-form-input:-moz-autofill,
     }
     #branch-form-modal .modal-container,
     #user-form-modal .modal-container {
-        background: #080d16 !important;
+        background: var(--bg) !important;
     }
     #branch-list, #user-list {
         gap: 8px;
