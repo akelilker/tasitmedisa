@@ -62,30 +62,6 @@
     margin-bottom: 18px !important;
 }
 
-/* Cache Confirm Modal Butonları - Hover Efekti (Sabit Yükseklik) */
-#cache-confirm-modal .modal-body button {
-    transition: background 0.2s, font-size 0.2s !important;
-    height: 28px !important; /* Sabit yükseklik - taşma engellendi */
-    overflow: hidden !important; /* Metin büyürse taşma gizlensin */
-    line-height: 1.2 !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    box-sizing: border-box !important;
-}
-
-/* EVET butonu (kırmızı) - 1. buton */
-#cache-confirm-modal .modal-body button:first-child:hover {
-    font-size: 15px !important;
-    background: rgba(var(--theme-color-rgb), 0.08) !important; /* Çok hafif kırmızı dolgu */
-}
-
-/* HAYIR butonu (yeşil) - 2. buton */
-#cache-confirm-modal .modal-body button:last-child:hover {
-    font-size: 15px !important;
-    background: rgba(var(--green-success-rgb), 0.08) !important;
-}
-
 /* === TESCİL TARİHİ MODALLARI === */
 #tescil-tarih-confirm-modal .modal-container {
     background: var(--bg); 
@@ -115,28 +91,6 @@
     margin-bottom: 10px !important;
     line-height: 1.4 !important;
     margin-top: 0 !important;
-}
-
-/* Tescil Tarihi Onay Modal Butonları - Hover Efekti */
-#tescil-tarih-confirm-modal .modal-body button {
-    transition: background 0.2s, font-size 0.2s !important;
-    height: 28px !important;
-    overflow: hidden !important;
-    line-height: 1.2 !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    box-sizing: border-box !important;
-}
-
-#tescil-tarih-confirm-modal .modal-body button:first-child:hover {
-    font-size: 15px !important;
-    background: rgba(var(--theme-color-rgb), 0.08) !important;
-}
-
-#tescil-tarih-confirm-modal .modal-body button:last-child:hover {
-    font-size: 15px !important;
-    background: rgba(var(--green-success-rgb), 0.08) !important;
 }
 
 /* Tescil Tarihi Giriş Modalı */
