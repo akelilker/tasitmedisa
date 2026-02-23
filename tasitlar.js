@@ -196,6 +196,15 @@
   if (modalContent && !modalContent._vehicleClickBound) {
     modalContent._vehicleClickBound = true;
     function handleVehicleRowClick(e) {
+      const branchCard = e.target.closest('.branch-card');
+      if (branchCard && branchCard.dataset.branchId !== undefined) {
+        e.stopPropagation();
+        e.preventDefault();
+        if (typeof window.openBranchList === 'function') {
+          window.openBranchList(branchCard.dataset.branchId, branchCard.dataset.branchName || '');
+        }
+        return;
+      }
       const card = e.target.closest('.card');
       const listItem = e.target.closest('.list-item');
       if (listItem && listItem.classList.contains('list-item-empty')) return;
@@ -210,6 +219,66 @@
     }
     modalContent.addEventListener('click', handleVehicleRowClick);
     modalContent.addEventListener('touchend', handleVehicleRowClick, { passive: false });
+  }
+
+  // Bildirim listesi: delegation (her bildirime ayrı onclick yerine tek listener)
+  if (DOM.notificationsDropdown && !DOM.notificationsDropdown._notifDelegationBound) {
+    DOM.notificationsDropdown._notifDelegationBound = true;
+    DOM.notificationsDropdown.addEventListener('click', function(e) {
+      var btn = e.target.closest('.notification-item[data-plate]');
+      if (!btn) return;
+      var plate = btn.getAttribute('data-plate') || '';
+      if (!plate) return;
+      if (typeof window.openVehiclesView === 'function') window.openVehiclesView();
+      setTimeout(function() {
+        var vehicles = window.getMedisaVehicles ? window.getMedisaVehicles() : JSON.parse(localStorage.getItem('medisa_vehicles_v1') || '[]');
+        var v = vehicles.find(function(v) { return v.plate === plate; });
+        if (v && typeof window.showVehicleDetail === 'function') window.showVehicleDetail(v.id);
+      }, 100);
+    });
+  }
+
+  // Olay menü listesi: delegation (her butona ayrı onclick yerine tek listener)
+  if (DOM.eventMenuList && !DOM.eventMenuList._eventDelegationBound) {
+    DOM.eventMenuList._eventDelegationBound = true;
+    DOM.eventMenuList.addEventListener('click', function(e) {
+      var btn = e.target.closest('button[data-event-id]');
+      if (!btn) return;
+      e.stopPropagation();
+      e.preventDefault();
+      var eventId = btn.getAttribute('data-event-id');
+      var vehicleId = btn.getAttribute('data-vehicle-id') || window.currentDetailVehicleId || '';
+      if (eventId && typeof window.openEventModal === 'function') {
+        window.openEventModal(eventId, vehicleId);
+      }
+    });
+  }
+
+  // Şanzıman dropdown: delegation (her option'a ayrı listener yerine tek listener)
+  if (DOM.vehiclesModalContainer && !DOM.vehiclesModalContainer._transmissionDelegationBound) {
+    DOM.vehiclesModalContainer._transmissionDelegationBound = true;
+    DOM.vehiclesModalContainer.addEventListener('click', function(e) {
+      var btn = e.target.closest('.v-transmission-option');
+      if (!btn) return;
+      var val = btn.getAttribute('data-value') || '';
+      setTransmissionFilter(val);
+      var dd = document.getElementById('v-transmission-dropdown');
+      if (dd) {
+        var opts = dd.querySelectorAll('.v-transmission-option');
+        var labels = { '': 'Tümü', 'otomatik': 'Otomatik', 'manuel': 'Manuel' };
+        opts.forEach(function(b) {
+          var v = b.getAttribute('data-value') || '';
+          b.classList.toggle('active', v === val);
+          b.textContent = (v === val ? '✓ ' : '') + labels[v];
+        });
+      }
+      closeTransmissionMenu();
+      if (searchMode === 'local') {
+        renderVehicles(document.getElementById('v-search-input') && document.getElementById('v-search-input').value || '');
+      } else {
+        handleSearch(document.getElementById('v-search-input') && document.getElementById('v-search-input').value || '');
+      }
+    });
   }
 
   // Mobil: pencere boyutu değişince başlık font-size tekrar hesaplansın (debounce)
@@ -438,7 +507,7 @@
 
     // 1. "TÜMÜ" Kartı (Manuel) — sadece aktif (satılmamış) taşıtlar
     html += `
-      <div class="branch-card all-card" onclick="openBranchList('all', 'Taşıtlar')">
+      <div class="branch-card all-card" data-branch-id="all" data-branch-name="Taşıtlar">
         <div class="branch-name">TÜMÜ</div>
         <div class="branch-count">${activeVehicles.length} Taşıt</div>
       </div>
@@ -481,11 +550,12 @@
   };
 
   function createBranchCard(id, name, count, isUnassigned = false) {
-    // Tam şube adı gösterilir; kutu içinde 2 satır, satır başına 9 karakter sığacak şekilde CSS ile sarılır (kesme/ellipsis yok)
     const unassignedClass = isUnassigned ? ' unassigned-branch-card' : '';
+    const safeId = (id || '').replace(/"/g, '&quot;');
+    const safeName = escapeHtml(name);
     return `
-      <div class="branch-card${unassignedClass}" onclick="openBranchList('${id}', '${escapeHtml(name)}')">
-        <div class="branch-name" title="${escapeHtml(name)}">${escapeHtml(name)}</div>
+      <div class="branch-card${unassignedClass}" data-branch-id="${safeId}" data-branch-name="${safeName}">
+        <div class="branch-name" title="${safeName}">${safeName}</div>
         <div class="branch-count">${count} Taşıt</div>
       </div>
     `;
@@ -1256,25 +1326,6 @@
           closeFilterMenu();
           dd.classList.add('open');
           dd.setAttribute('aria-hidden', 'false');
-          var opts = dd.querySelectorAll('.v-transmission-option');
-          var labels = { '': 'Tümü', 'otomatik': 'Otomatik', 'manuel': 'Manuel' };
-          opts.forEach(function(btn) {
-              btn.onclick = function() {
-                  var val = btn.getAttribute('data-value') || '';
-                  setTransmissionFilter(val);
-                  opts.forEach(function(b) {
-                      var v = b.getAttribute('data-value') || '';
-                      b.classList.toggle('active', v === val);
-                      b.textContent = (v === val ? '✓ ' : '') + labels[v];
-                  });
-                  closeTransmissionMenu();
-                  if (searchMode === 'local') {
-                      renderVehicles(document.getElementById('v-search-input') && document.getElementById('v-search-input').value || '');
-                  } else {
-                      handleSearch(document.getElementById('v-search-input') && document.getElementById('v-search-input').value || '');
-                  }
-              };
-          });
       }
   };
 
@@ -1905,13 +1956,14 @@ function renderVehicleDetailLeft(vehicle) {
         { id: 'satis', label: 'Satış/Pert Bildirimi Yap' }
       ];
       
+      const vid = (window.currentDetailVehicleId || vehicleId || '').toString().replace(/"/g, '&quot;');
       menuList.innerHTML = events.map(event => {
         const isKaza = event.id === 'kaza';
         const isSatis = event.id === 'satis';
         const borderColor = (isKaza || isSatis) ? '#e1061b' : 'rgba(255, 255, 255, 0.3)';
         const textColor = (isKaza || isSatis) ? '#e1061b' : '#ccc';
         const borderWidth = (isKaza || isSatis) ? '0.3px' : '1px';
-        return `<button onclick="event.stopPropagation(); event.preventDefault(); openEventModal('${event.id}', '${window.currentDetailVehicleId || vehicleId || ''}');" style="width: 100%; padding: 12px; background: transparent; border: ${borderWidth} solid ${borderColor}; color: ${textColor}; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px; text-align: left;">${event.label}</button>`;
+        return `<button type="button" data-event-id="${event.id}" data-vehicle-id="${vid}" style="width: 100%; padding: 12px; background: transparent; border: ${borderWidth} solid ${borderColor}; color: ${textColor}; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px; text-align: left;">${event.label}</button>`;
       }).join('');
       
       modal.style.display = 'flex';
@@ -3558,7 +3610,8 @@ function renderVehicleDetailLeft(vehicle) {
           ? 'rgba(225, 6, 27, 0.6)' 
           : 'rgba(255, 140, 0, 0.6)';
         
-        html += `<button onclick="openVehiclesView(); setTimeout(() => { const vehicles = window.getMedisaVehicles ? window.getMedisaVehicles() : JSON.parse(localStorage.getItem('medisa_vehicles_v1') || '[]'); const v = vehicles.find(v => v.plate === '${escapeHtml(notif.plate)}'); if (v) showVehicleDetail(v.id); }, 100);" style="width: 100%; padding: 12px; background: transparent; border: 1px solid ${borderColor}; color: #ccc; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 13px; text-align: left; margin-bottom: 4px; transition: all 0.2s ease;" class="notification-item ${notif.warningClass}-border">
+        const safePlate = (notif.plate || '').replace(/"/g, '&quot;');
+        html += `<button type="button" data-plate="${safePlate}" style="width: 100%; padding: 12px; background: transparent; border: 1px solid ${borderColor}; color: #ccc; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 13px; text-align: left; margin-bottom: 4px; transition: all 0.2s ease;" class="notification-item ${notif.warningClass}-border">
           <div style="font-weight: 600; color: #fff; margin-bottom: 4px; text-align: center;">${escapeHtml(notif.plate)}</div>
           <div style="font-size: 11px; color: #999; margin-bottom: 4px; text-align: center;">${escapeHtml(notif.brandModel)}</div>
           <div style="font-size: 11px; text-align: center; margin-bottom: 4px;">
