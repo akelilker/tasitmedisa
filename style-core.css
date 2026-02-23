@@ -124,51 +124,49 @@ body::-webkit-scrollbar,
 }
 
 /* --- EVRENSEL İŞLEM BUTONLARI (Kaydet/Vazgeç, Bildir, Evet/Hayır) --- */
-/* GRUP KAPSAYICI (Artık sağa değil, TAM ORTAYA yaslı) */
+/* KAPSAYICIYI 2 KOLONLU GRID YAP (Sol ve Sağ Hücreler) */
 .universal-btn-group {
-  display: flex !important;
-  justify-content: center !important; /* Butonları daima ortala */
-  align-items: center !important;
-  gap: 12px !important;
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important; /* Ekranı iki eşit parçaya böler */
+  gap: 16px !important;
   padding: 16px !important;
   width: 100% !important;
   margin: 0 !important;
   margin-top: auto !important;
   background: transparent !important;
-  box-sizing: border-box !important;
   border: none !important;
+  box-sizing: border-box !important;
 }
 
-/* ORTAK BUTON YAPISI (İçi boş, daha ince) */
+/* BUTONLAR (Kendi hücresinde ortalanır ve genişler) */
 .universal-btn-save,
 .universal-btn-cancel {
-  background-color: transparent !important; /* ASLA içi dolu renk olmayacak */
+  width: 100% !important;
+  max-width: 220px !important; /* Masaüstünde çok abartı uzamasını engeller ama geniş tutar */
+  justify-self: center !important; /* Kendi GRID HÜCRESİNİN tam merkezine oturur */
+  background-color: transparent !important;
   border-radius: 8px !important;
-  padding: 6px 24px !important; /* Dikey padding 10px'ten 6px'e düşürüldü (daha ince) */
+  padding: 7px 24px !important; /* Dikeyden tam 3px tıraşlandı (daha ince) */
   font-family: inherit !important;
   font-size: 15px !important;
   font-weight: 500 !important;
-  cursor: pointer !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  text-align: center !important;
-  justify-self: center !important;
+  cursor: pointer !important;
   transition: all 0.2s ease !important;
   box-shadow: none !important;
   height: auto !important;
-  width: auto !important;
   box-sizing: border-box !important;
 }
 
-/* KAYDET / EVET (Canlı Yeşil) */
+/* Renk Standartları (Outline) */
 .universal-btn-save {
   color: var(--green-success, #28a745) !important;
   border: 1px solid var(--green-success, #28a745) !important;
 }
 .universal-btn-save:hover { background-color: rgba(40, 167, 69, 0.1) !important; font-weight: 600 !important; }
 
-/* VAZGEÇ / HAYIR (Canlı Kırmızı) */
 .universal-btn-cancel {
   color: var(--theme-color, #e1061b) !important;
   border: 1px solid var(--theme-color, #e1061b) !important;
