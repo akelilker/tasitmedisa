@@ -2,29 +2,34 @@
    TAŞIT YÖNETİM SİSTEMİ - CORE SCRIPT
    ========================================= */
 
+var _cachedMenu, _cachedNotif, _cachedSubmenu;
+function getMenu() { return _cachedMenu || (_cachedMenu = document.getElementById('settings-menu')); }
+function getNotif() { return _cachedNotif || (_cachedNotif = document.getElementById('notifications-dropdown')); }
+function getSubmenu() { return _cachedSubmenu || (_cachedSubmenu = document.getElementById('data-submenu')); }
+
 function toggleSettingsMenu(e) {
   e.stopPropagation();
-  const menu = document.getElementById('settings-menu');
-  const notif = document.getElementById('notifications-dropdown');
+  const menu = getMenu();
+  const notif = getNotif();
   if (notif) notif.classList.remove('open');
   if (menu) menu.classList.toggle('open');
 }
 
 function toggleNotifications(e) {
   e.stopPropagation();
-  const notif = document.getElementById('notifications-dropdown');
-  const menu = document.getElementById('settings-menu');
+  const notif = getNotif();
+  const menu = getMenu();
   if (menu) menu.classList.remove('open');
   if (notif) notif.classList.toggle('open');
 }
 
 function showDataSubmenu() {
-  const submenu = document.getElementById('data-submenu');
+  const submenu = getSubmenu();
   if (submenu) submenu.classList.add('open');
 }
 
 function hideDataSubmenu(e) {
-  const submenu = document.getElementById('data-submenu');
+  const submenu = getSubmenu();
   if (!submenu) return;
   const next = e && e.relatedTarget ? e.relatedTarget : null;
   if (next && (submenu.contains(next) || (e.currentTarget && e.currentTarget.contains(next)))) {
@@ -34,9 +39,9 @@ function hideDataSubmenu(e) {
 }
 
 document.addEventListener('click', (e) => {
-  const menu = document.getElementById('settings-menu');
-  const notif = document.getElementById('notifications-dropdown');
-  const submenu = document.getElementById('data-submenu');
+  const menu = getMenu();
+  const notif = getNotif();
+  const submenu = getSubmenu();
   
   // Settings menu içindeki click'leri ignore et (butonlar çalışsın)
   if (menu && menu.contains(e.target)) {
@@ -86,15 +91,25 @@ window.debounce = function(fn, ms) {
   };
 };
 
+/** Kaporta SVG metni - tek fetch, cache paylaşımı (tasitlar + kayit) */
+var _kaportaSvgCache = null;
+window.getKaportaSvgText = function() {
+  if (!_kaportaSvgCache) _kaportaSvgCache = fetch('icon/kaporta.svg').then(function(r) { return r.text(); });
+  return _kaportaSvgCache;
+};
+
 /* =========================================
    MODAL MANAGER (Global)
    ========================================= */
 // Footer dim kontrolü fonksiyonu (Global)
 let dimTimeout = null;
 
+var _cachedFooter;
+function getFooter() { return _cachedFooter || (_cachedFooter = document.getElementById('app-footer')); }
+
 // Sayfa yüklendiğinde footer animasyonunu başlat
 function startFooterAnimation() {
-  const footer = document.getElementById('app-footer');
+  const footer = getFooter();
   if (!footer) {
     // Footer bulunamadı
     return;
@@ -122,7 +137,7 @@ function startFooterAnimation() {
 
 // Modal kontrolü için ayrı fonksiyon
 window.updateFooterDim = function() {
-  const footer = document.getElementById('app-footer');
+  const footer = getFooter();
   if (!footer) return;
   
   let isAnyModalOpen = false;
@@ -163,7 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.updateFooterDim();
   });
 
-  // Tüm modalları izlemeye başla (performans: bodyObserver kaldırıldı - DOM değişikliklerinde tetiklenmiyordu)
+  // Modal attribute değişikliklerini izle (footer dim, body.modal-open)
   const allModals = document.querySelectorAll('.modal-overlay');
   allModals.forEach(modal => {
     modalObserver.observe(modal, { attributes: true, attributeFilter: ['class', 'style'] });

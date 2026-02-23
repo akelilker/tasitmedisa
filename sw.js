@@ -85,7 +85,7 @@ self.addEventListener('install', (event) => {
   );
 });
 
-// Activate - Eski cache'leri temizle, sonra kontrolü al
+// Activate - Önceki cache sürümlerini temizle, sonra kontrolü al
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys()

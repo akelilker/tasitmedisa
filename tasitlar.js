@@ -26,13 +26,10 @@
     try { return JSON.parse(localStorage.getItem(USERS_KEY) || '[]'); } catch { return []; }
   }
 
-  let kaportaSvgCache = null;
-  function getKaportaSvg() {
-    if (!kaportaSvgCache) kaportaSvgCache = fetch('icon/kaporta.svg').then(function(r) { return r.text(); });
-    return kaportaSvgCache;
-  }
-
   var parsedKaportaSvgCache = null;
+  function getKaportaSvg() {
+    return window.getKaportaSvgText ? window.getKaportaSvgText() : fetch('icon/kaporta.svg').then(function(r) { return r.text(); });
+  }
   function getParsedKaportaSvg() {
     if (parsedKaportaSvgCache) {
       return Promise.resolve(parsedKaportaSvgCache.cloneNode(true));
@@ -197,14 +194,19 @@
     modalContent.addEventListener('touchend', handleVehicleRowClick, { passive: false });
   }
 
-  // Mobil: pencere boyutu değişince başlık font-size tekrar hesaplansın
+  // Mobil: pencere boyutu değişince başlık font-size tekrar hesaplansın (debounce)
   if (modalContent && !modalContent._headerResizeBound) {
     modalContent._headerResizeBound = true;
-    window.addEventListener('resize', function () {
+    var onResize = window.debounce ? window.debounce(function () {
       if (window.innerWidth <= 640 && modalContent.querySelector('.list-header-row')) {
         applyMobileListHeaderFontSize(modalContent);
       }
-    });
+    }, 150) : function () {
+      if (window.innerWidth <= 640 && modalContent.querySelector('.list-header-row')) {
+        applyMobileListHeaderFontSize(modalContent);
+      }
+    };
+    window.addEventListener('resize', onResize);
   }
 
   // Toolbar Container Oluştur (Eğer yoksa)
@@ -234,9 +236,10 @@
             <button type="button" class="filter-dropdown-btn" data-filter="oldest">En Eski</button>
             <button type="button" class="filter-dropdown-btn" data-filter="type">Tipe Göre</button>
         `;
-        filterDrop.querySelectorAll('.filter-dropdown-btn').forEach(function(btn) {
-            btn.addEventListener('click', function() {
-                currentFilter = this.dataset.filter || 'az';
+        filterDrop.addEventListener('click', function(e) {
+            var btn = e.target.closest('.filter-dropdown-btn');
+            if (!btn) return;
+            currentFilter = btn.dataset.filter || 'az';
                 // Filtreye göre sıralama sütunu ve yönü
                 if (currentFilter === 'az') {
                     sortColumn = 'plate';
@@ -253,7 +256,6 @@
                 }
                 closeFilterMenu();
                 renderVehicles(document.getElementById('v-search-input')?.value || '');
-            });
         });
         modalContainer.appendChild(filterDrop);
     }

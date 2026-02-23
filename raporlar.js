@@ -447,19 +447,21 @@
                 }
             });
         });
-        // Resize'da tekrar hesapla
+        // Resize'da tekrar hesapla (debounce)
         if (!window._stokMarkaResize) {
             window._stokMarkaResize = true;
-            let resizeTimer;
-            window.addEventListener('resize', () => {
-                clearTimeout(resizeTimer);
-                resizeTimer = setTimeout(() => {
-                    const container = document.getElementById('stok-list-container');
-                    if (container && container.querySelector('.stok-list-cell[data-col="marka"]')) {
-                        adjustStokMarkaFontSizes();
-                    }
-                }, 100);
-            });
+            var onResize = window.debounce ? window.debounce(function () {
+                const container = document.getElementById('stok-list-container');
+                if (container && container.querySelector('.stok-list-cell[data-col="marka"]')) {
+                    adjustStokMarkaFontSizes();
+                }
+            }, 100) : function () {
+                const container = document.getElementById('stok-list-container');
+                if (container && container.querySelector('.stok-list-cell[data-col="marka"]')) {
+                    adjustStokMarkaFontSizes();
+                }
+            };
+            window.addEventListener('resize', onResize);
         }
     }
 
