@@ -171,8 +171,26 @@
   // Global Detail Vehicle ID (HTML onclick erişimi için)
   window.currentDetailVehicleId = null;
 
-  // DOM Elements
-  const modalContent = document.getElementById('vehicles-modal-content');
+  // DOM Cache (statik elementler - init aşamasında bir kere bağlanır)
+  const DOM = {};
+  function bindDOM() {
+    DOM.vehiclesModal = document.getElementById('vehicles-modal');
+    DOM.vehiclesModalContent = document.getElementById('vehicles-modal-content');
+    DOM.vehiclesModalContainer = document.querySelector('#vehicles-modal .modal-container');
+    DOM.vehiclesModalHeader = document.querySelector('#vehicles-modal .modal-header');
+    DOM.vehicleDetailModal = document.getElementById('vehicle-detail-modal');
+    DOM.vehicleDetailContent = document.getElementById('vehicle-detail-content');
+    DOM.vehicleDetailLeft = document.querySelector('#vehicle-detail-content .vehicle-detail-left');
+    DOM.vehicleDetailRight = document.querySelector('#vehicle-detail-content .vehicle-detail-right');
+    DOM.eventMenuModal = document.getElementById('event-menu-modal');
+    DOM.eventMenuList = document.getElementById('event-menu-list');
+    DOM.vehicleHistoryModal = document.getElementById('vehicle-history-modal');
+    DOM.historyContent = document.getElementById('history-content');
+    DOM.notificationsDropdown = document.getElementById('notifications-dropdown');
+  }
+  bindDOM();
+
+  const modalContent = DOM.vehiclesModalContent;
   
   // Taşıt listesi tıklama delegasyonu (card/list-item tıklanınca detay aç) - tek seferlik
   if (modalContent && !modalContent._vehicleClickBound) {
@@ -211,8 +229,8 @@
 
   // Toolbar Container Oluştur (Eğer yoksa)
   function ensureToolbar() {
-    const modalContainer = document.querySelector('#vehicles-modal .modal-container');
-    const header = document.querySelector('#vehicles-modal .modal-header');
+    const modalContainer = DOM.vehiclesModalContainer;
+    const header = DOM.vehiclesModalHeader;
     
     // Toolbar
     let toolbar = document.querySelector('.vehicles-toolbar');
@@ -267,7 +285,7 @@
   window.openVehiclesView = function() {
     const openView = () => {
       loadVehicleColumnOrder();
-      const modal = document.getElementById('vehicles-modal');
+      const modal = DOM.vehiclesModal;
       if (modal) {
         modal.style.display = 'flex';
         requestAnimationFrame(() => modal.classList.add('active'));
@@ -278,7 +296,7 @@
     openView();
     if (typeof window.loadDataFromServer === 'function') {
       window.loadDataFromServer().then(function() {
-        const m = document.getElementById('vehicles-modal');
+        const m = DOM.vehiclesModal;
         if (m && m.classList.contains('active')) {
           if (currentView === 'dashboard') renderBranchDashboard();
           else renderVehicles(document.getElementById('v-search-input') && document.getElementById('v-search-input').value || '');
@@ -294,7 +312,7 @@
       event.preventDefault();
     }
     
-    const modal = document.getElementById('vehicles-modal');
+    const modal = DOM.vehiclesModal;
     if (modal) {
       modal.classList.remove('active');
       setTimeout(() => {
@@ -518,7 +536,7 @@
    */
   function renderVehicles(query = '') {
     try {
-      const listContainer = document.getElementById('vehicles-modal-content') || modalContent;
+      const listContainer = DOM.vehiclesModalContent;
       if (!listContainer) return;
       loadVehicleColumnOrder(); // Sütun sıralamasını yükle
       // Veri Çek
@@ -791,7 +809,7 @@
       }
     } catch (error) {
       console.error('renderVehicles hatası:', error);
-      const target = document.getElementById('vehicles-modal-content') || modalContent;
+      const target = DOM.vehiclesModalContent;
       if (target) {
         target.innerHTML = '<div style="text-align:center; padding:40px; color:#666">Bir hata oluştu. Lütfen sayfayı yenileyin.</div>';
       }
@@ -823,10 +841,10 @@
 
       window.currentDetailVehicleId = vehicleId;
 
-    const modal = document.getElementById('vehicle-detail-modal');
+    const modal = DOM.vehicleDetailModal;
     if (!modal) return;
 
-    const contentEl = document.getElementById('vehicle-detail-content');
+    const contentEl = DOM.vehicleDetailContent;
     if (!contentEl) return;
 
     // Plaka (üstte yatayda ortalı) - Satıldı durumu için kırmızı yazı ekle
@@ -1155,7 +1173,10 @@
     ];
     
     modalIds.forEach(id => {
-      const modal = document.getElementById(id);
+      const modal = (id === 'vehicles-modal' ? DOM.vehiclesModal :
+                    id === 'vehicle-detail-modal' ? DOM.vehicleDetailModal :
+                    id === 'vehicle-history-modal' ? DOM.vehicleHistoryModal :
+                    id === 'event-menu-modal' ? DOM.eventMenuModal : null) || document.getElementById(id);
       if (modal) {
         modal.classList.remove('active', 'open');
         modal.style.display = 'none';
@@ -1165,7 +1186,7 @@
 
   // --- Taşıt Detay Modalını Kapat ---
   window.closeVehicleDetailModal = function() {
-    const modal = document.getElementById('vehicle-detail-modal');
+    const modal = DOM.vehicleDetailModal;
     if (modal) {
       modal.classList.remove('active');
       setTimeout(() => modal.style.display = 'none', 300);
@@ -1505,7 +1526,7 @@
  * Sol kolon render (Taşıt özellikleri + Kaporta Şeması)
  */
 function renderVehicleDetailLeft(vehicle) {
-  const leftEl = document.querySelector('#vehicle-detail-content .vehicle-detail-left');
+  const leftEl = DOM.vehicleDetailLeft;
   if (!leftEl) return;
 
   let html = '';
@@ -1617,7 +1638,7 @@ function renderVehicleDetailLeft(vehicle) {
    * Sağ kolon render (Tarihler, Anahtar, Kredi, UTTS, Takip Cihazı)
    */
   function renderVehicleDetailRight(vehicle) {
-    const rightEl = document.querySelector('#vehicle-detail-content .vehicle-detail-right');
+    const rightEl = DOM.vehicleDetailRight;
     if (!rightEl) return;
     
     let html = '';
@@ -1810,7 +1831,7 @@ function renderVehicleDetailLeft(vehicle) {
 
         // Sol kolon genişliğine göre şema büyüklüğünü uyarla (sol grid içinde; yatay -4px, dikey -8px)
         requestAnimationFrame(function alignSchemaToLeftColumn() {
-          const leftCol = document.querySelector('#vehicle-detail-modal .vehicle-detail-left');
+          const leftCol = DOM.vehicleDetailLeft;
           if (leftCol && container.isConnected) {
             const leftRect = leftCol.getBoundingClientRect();
             const padding = 16;
@@ -1858,10 +1879,10 @@ function renderVehicleDetailLeft(vehicle) {
         }
       });
       
-      const modal = document.getElementById('event-menu-modal');
+      const modal = DOM.eventMenuModal;
       if (!modal) return;
       
-      const menuList = document.getElementById('event-menu-list');
+      const menuList = DOM.eventMenuList;
       if (!menuList) return;
       
       // Menü listesini oluştur
@@ -2308,7 +2329,7 @@ function renderVehicleDetailLeft(vehicle) {
    * Event menu modal'ını kapat
    */
   window.closeEventMenuModal = function() {
-    const modal = document.getElementById('event-menu-modal');
+    const modal = DOM.eventMenuModal;
     if (modal) {
       modal.classList.remove('active');
       setTimeout(() => modal.style.display = 'none', 300);
@@ -3208,7 +3229,7 @@ function renderVehicleDetailLeft(vehicle) {
     const vid = vehicleId || window.currentDetailVehicleId;
     if (!vid) return;
     
-    const modal = document.getElementById('vehicle-history-modal');
+    const modal = DOM.vehicleHistoryModal;
     if (!modal) return;
     
     // İlk tab'ı göster
@@ -3226,7 +3247,7 @@ function renderVehicleDetailLeft(vehicle) {
     if (!vid) return;
     
     // Tab'ları güncelle
-    document.querySelectorAll('.history-tab').forEach(tab => {
+    (DOM.vehicleHistoryModal ? DOM.vehicleHistoryModal.querySelectorAll('.history-tab') : []).forEach(tab => {
       tab.classList.remove('active');
       if (tab.dataset.tab === tabType) {
         tab.classList.add('active');
@@ -3239,7 +3260,7 @@ function renderVehicleDetailLeft(vehicle) {
     });
     
     // İçeriği render et
-    const contentEl = document.getElementById('history-content');
+    const contentEl = DOM.historyContent;
     if (!contentEl) return;
     
     const vehicles = readVehicles();
@@ -3421,7 +3442,7 @@ function renderVehicleDetailLeft(vehicle) {
    * Tarihçe modal'ını kapat
    */
   window.closeVehicleHistoryModal = function() {
-    const modal = document.getElementById('vehicle-history-modal');
+    const modal = DOM.vehicleHistoryModal;
     if (modal) {
       modal.classList.remove('active');
       setTimeout(() => modal.style.display = 'none', 300);
@@ -3505,7 +3526,7 @@ function renderVehicleDetailLeft(vehicle) {
     });
 
     // Bildirimleri güncelle
-    const notifDropdown = document.getElementById('notifications-dropdown');
+    const notifDropdown = DOM.notificationsDropdown;
     const notifIcon = document.querySelector('.icon-btn[onclick="toggleNotifications(event)"]');
     
     if (notifications.length === 0) {
