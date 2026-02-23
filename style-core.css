@@ -121,43 +121,65 @@ body::-webkit-scrollbar,
 }
 
 /* --- EVRENSEL İŞLEM BUTONLARI (Kaydet/Vazgeç, Bildir, Evet/Hayır) --- */
+/* Alt Butonların Kapsayıcısı - STANDART KUTU */
 .universal-btn-group {
-  display: flex;
-  justify-content: flex-end;
-  gap: 12px;
-  padding: 16px;
-  width: 100%;
-  margin-top: 10px;
+  display: flex !important;
+  justify-content: flex-end !important;
+  align-items: center !important;
+  gap: 12px !important;
+  padding: 16px !important;
+  width: 100% !important;
+  margin: 0 !important; /* Dışarıdan gelen marginleri sıfırla */
+  margin-top: auto !important; /* Modallarda alta it */
+  background: transparent !important; /* Arka plan rengi çakışmasını önle */
+  box-sizing: border-box !important; /* Padding taşmasını önle */
+  border: none !important; /* Eski borderları kaldır */
 }
-.universal-btn-save {
-  background-color: var(--green-success);
-  color: var(--txt-light);
-  border: none;
-  border-radius: 8px;
-  padding: 10px 24px;
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: opacity 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.universal-btn-save:hover { opacity: 0.9; }
+
+/* Ortak Buton Özellikleri (Sıfırlama) */
+.universal-btn-save,
 .universal-btn-cancel {
-  background-color: var(--bg-content);
-  color: var(--theme-color);
-  border: 1px solid var(--theme-color);
-  border-radius: 8px;
-  padding: 10px 24px;
-  font-size: 15px;
-  font-weight: 500;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  /* Yazı Tipi Standartları */
+  font-family: inherit !important;
+  font-size: 15px !important; /* Kesin boyut */
+  line-height: normal !important;
+  text-transform: none !important;
+  letter-spacing: normal !important;
+
+  /* Kutu Modeli Standartları */
+  padding: 10px 24px !important; /* Kesin padding */
+  margin: 0 !important; /* Butonların kendi margini olmasın */
+  height: auto !important;
+  width: auto !important;
+  box-sizing: border-box !important;
+
+  /* Görünüm Standartları */
+  border-radius: 8px !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: none !important; /* Eski gölgeleri kaldır */
+  transition: opacity 0.2s ease !important;
 }
-.universal-btn-cancel:hover { opacity: 0.8; }
+
+/* Birincil Aksiyon (Kaydet - Yeşil) */
+.universal-btn-save {
+  background-color: var(--green-success) !important;
+  color: var(--txt-light) !important;
+  border: none !important;
+  font-weight: 600 !important;
+}
+.universal-btn-save:hover { opacity: 0.9 !important; }
+
+/* İkincil Aksiyon (Vazgeç - Çerçeveli) */
+.universal-btn-cancel {
+  background-color: transparent !important;
+  color: var(--theme-color) !important;
+  border: 1px solid var(--theme-color) !important;
+  font-weight: 500 !important;
+}
+.universal-btn-cancel:hover { opacity: 0.8 !important; }
 
 /* --- 1. SIFIRLAMA & ANA YAPI --- */
 html, body {
@@ -756,10 +778,6 @@ html { overflow-x: hidden; }
   overscroll-behavior-x: none;
   /* scrollbar gizleme: tek kaynak dosya başındaki html, body, .modal-body, .modal-container kuralı */
 }
-.modal-overlay .modal-footer {
-  flex-shrink: 0;
-}
-
 /* Modal body varyantları (inline stil yerine) */
 #cache-confirm-modal .modal-body { padding: 20px 20px 12px 20px; }
 #kaza-ekle-modal .modal-body { padding-top: 50px; }

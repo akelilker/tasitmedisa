@@ -750,7 +750,7 @@
     padding-right: 1px !important;
   }
   .olay-ekle-modal .modal-body > div > div:has(label),
-  .olay-ekle-modal .modal-body > div > div:has(.modal-btn-cancel) {
+  .olay-ekle-modal .modal-body > div > div:has(.universal-btn-cancel) {
     max-width: 390px;
     margin-left: auto;
     margin-right: auto;
@@ -771,23 +771,6 @@
   .olay-ekle-modal .modal-body select {
     height: 30px !important;
     min-height: 23px !important;
-  }
-  .olay-ekle-modal .modal-body .modal-btn-cancel,
-  .olay-ekle-modal .modal-body .modal-btn-confirm {
-    max-width: 190px !important;
-    font-weight: 400 !important;
-    border-width: 0.2px !important;
-    padding: 6px 12px !important;
-  }
-  .olay-ekle-modal .modal-body .modal-btn-cancel:hover {
-    border-width: 1px !important;
-    font-weight: 600 !important;
-    background: transparent !important;
-  }
-  .olay-ekle-modal .modal-body .modal-btn-confirm:hover {
-    border-width: 1px !important;
-    font-weight: 600 !important;
-    background: transparent !important;
   }
   /* Etiket+input grupları arası 3px */
   .olay-ekle-modal .modal-body > div:first-of-type {
