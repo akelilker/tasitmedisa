@@ -700,44 +700,6 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
 .radio-btn.active.green { background: rgba(74, 222, 128, 0.18); border-color: rgba(74, 222, 128, 0.85); color: #4ade80; }
 .radio-btn.active.green:hover, .radio-btn.active.green:focus { background: rgba(74, 222, 128, 0.22); border-color: rgba(74, 222, 128, 0.85); box-shadow: none; outline: none; }
 
-/* ALT BUTONLAR */
-.form-buttons {
-    display: grid;
-    grid-template-columns: 1fr 1fr; 
-    gap: 0; 
-    padding: 2px 0 8px 0; /* Üst boşluk 2px daha azaltıldı (4px → 2px) */
-    margin-top: -9px; 
-    margin-bottom: 0;
-    flex-shrink: 0;
-    background: transparent;
-    border-top: none;
-    width: 100%;
-}
-
-.btn-save, .btn-cancel {
-    background: transparent;
-    height: 24px;
-    font-weight: 400;
-    font-size: 12px; 
-    text-transform: none; 
-    border-radius: 8px;
-    cursor: pointer;
-    display: flex; 
-    align-items: center; 
-    justify-content: center;
-    width: auto; 
-    max-width: 212px; 
-    min-width: 159px; 
-    transition: background 0.2s, border-color 0.2s, color 0.2s;
-    line-height: 1;
-    margin: 0 auto;
-}
-
-.btn-save { justify-self: center; margin: 0 auto; border: 1px solid rgba(var(--save-green-rgb), 0.5); color: var(--save-green); }
-.btn-save:hover { background: rgba(var(--save-green-rgb), 0.15); }
-.btn-cancel { justify-self: center; margin: 0 auto; border: 1px solid rgba(var(--theme-color-rgb), 0.5); color: var(--theme-color); }
-.btn-cancel:hover { background: rgba(var(--theme-color-rgb), 0.15); }
-
 .modal-column-left { padding-right: 10px; padding-left: 0; border-right: 1px solid rgba(var(--theme-color-rgb), 0.28); box-shadow: 10px 0 18px -18px rgba(var(--theme-color-rgb), 0.45); }
 .modal-column-right { padding-left: 10px; padding-right: 0; }
 
@@ -1009,9 +971,6 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     .radio-btn { height: 27px; min-width: 48px; font-size: 12px; padding: 0 8px; }
     .modal-column-left .form-section-inline .radio-group { justify-content: space-between; width: 100%; padding: 0; gap: 3px; }
     
-    .form-buttons { display: grid; grid-template-columns: 1fr 1fr; padding: 8px 0; gap: 10px; width: 100%; margin-top: 6px; margin-bottom: 10px; }
-    .form-buttons .btn-save, .form-buttons .btn-cancel { height: 33px; font-size: 15px; width: 100%; max-width: none; justify-self: stretch; margin: 0; }
-    
     /* Notlar: flex ile alta yayılır, alt boşluk dolar */
     
     /* Sol taraftaki Boya Değişen butonları alt hizalaması - sağ taraftaki form-section'lar ile eşit */
@@ -1107,10 +1066,6 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-body .modal-column-left .form-section:has(#vehicle-price) {
         margin-bottom: 12px !important;
     }
-    .form-buttons { padding: 1px 1px; margin-top: 2px; }
-    #vehicle-modal .modal-body .form-buttons { margin-top: 2px !important; }
-    #vehicle-modal .modal-body .btn-save,
-    #vehicle-modal .modal-body .btn-cancel { height: 28px !important; font-size: 11px; }
     /* Boya/Değişen: açılan taşıt şeması butonlardan 6px aşağı (masaüstü) */
     #vehicle-modal #boya-parts-container { margin-top: 12px; }
     
@@ -1272,12 +1227,6 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         box-sizing: border-box !important;
         word-wrap: break-word;
         overflow-wrap: break-word;
-    }
-    #vehicle-modal .modal-body .form-buttons {
-        padding: 0 0 6px 0;
-        margin-top: 9px !important;
-        flex-shrink: 0;
-        align-items: flex-end;
     }
     /* Taşıtın Alım Bedeli ve Notlar inputları masaüstünde 2px dar; Notlar yatay scroll olmasın */
     #vehicle-modal #vehicle-price,

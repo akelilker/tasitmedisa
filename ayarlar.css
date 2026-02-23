@@ -821,66 +821,6 @@ input.settings-form-input:-moz-autofill,
   display: none;
 }
 
-.settings-form-buttons { 
-    display: flex;
-    justify-content: center; /* Butonları yatayda ortala */
-    gap: 10px; /* Butonlar arası 10px boşluk (scale büyümesi için yeterli) */
-    margin-top: 16px; 
-    flex-wrap: wrap; /* Gerekirse alt satıra geç */
-}
-
-.settings-btn-save {
-    background: transparent;
-    border: 0.3px solid var(--green-success);
-    color: var(--green-success);
-    padding: 0;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: font-size 0.2s, background 0.2s; /* Font-size ve background transition */
-    height: 32px;
-    min-width: 120px; /* Minimum genişlik */
-    flex: 0 0 auto; /* Flex ile otomatik genişlik, eşit olmayacak */
-    font-size: 15px;
-    line-height: 32px; /* Yükseklik ile aynı, tek satırda ortalama */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-sizing: border-box;
-    overflow: hidden; /* İçerik taşmasını önle */
-}
-.settings-btn-save:hover { 
-    font-size: 16px;
-    background: rgba(var(--orange-warn-rgb), 0.08);
-    transform: none; /* Komple büyüme yok */
-}
-
-.settings-btn-cancel {
-    background: transparent;
-    border: 0.3px solid var(--theme-color); 
-    color: var(--theme-color);
-    padding: 0;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: font-size 0.2s, background 0.2s; /* Font-size ve background transition */
-    height: 32px;
-    min-width: 120px; /* Minimum genişlik */
-    flex: 0 0 auto; /* Flex ile otomatik genişlik, eşit olmayacak */
-    font-size: 15px;
-    line-height: 32px; /* Yükseklik ile aynı, tek satırda ortalama */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-sizing: border-box;
-    overflow: hidden; /* İçerik taşmasını önle */
-}
-.settings-btn-cancel:hover { 
-    font-size: 16px;
-    background: rgba(var(--orange-warn-rgb), 0.08);
-    transform: none; /* Komple büyüme yok */
-}
-
 .settings-btn-delete {
     background: transparent;
     border: 0.3px solid var(--theme-color); 
@@ -1187,45 +1127,6 @@ input.settings-form-input:-moz-autofill,
         font-size: 10px;
         box-sizing: border-box;
     }
-    #branch-form-modal .modal-body .settings-form-buttons,
-    #user-form-modal .modal-body .settings-form-buttons {
-        margin-top: 7px; /* Şehir/son input ile Kaydet-Vazgeç arası 4px ek boşluk (3px + 4px) */
-        padding: 1px 0;
-    }
-    #branch-form-modal .settings-btn-save,
-    #user-form-modal .settings-btn-save {
-        width: 182px;
-        min-width: 182px;
-        height: 30px !important;
-        font-size: 11px !important;
-        line-height: 1 !important;
-        border: 1px solid rgba(40, 167, 69, 0.5) !important;
-        color: #28a745 !important;
-        border-radius: 8px !important;
-        font-weight: 400 !important;
-    }
-    #branch-form-modal .settings-btn-save:hover,
-    #user-form-modal .settings-btn-save:hover {
-        background: rgba(40, 167, 69, 0.15) !important;
-        font-size: 11px !important;
-    }
-    #branch-form-modal .settings-btn-cancel,
-    #user-form-modal .settings-btn-cancel {
-        width: 182px;
-        min-width: 182px;
-        height: 30px !important;
-        font-size: 11px !important;
-        line-height: 1 !important;
-        border: 1px solid rgba(var(--theme-color-rgb), 0.5) !important;
-        color: var(--theme-color) !important;
-        border-radius: 8px !important;
-        font-weight: 400 !important;
-    }
-    #branch-form-modal .settings-btn-cancel:hover,
-    #user-form-modal .settings-btn-cancel:hover {
-        background: rgba(var(--theme-color-rgb), 0.15) !important;
-        font-size: 11px !important;
-    }
     #branch-form-modal .settings-btn-delete,
     #user-form-modal .settings-btn-delete {
         height: 30px !important;
@@ -1264,14 +1165,6 @@ input.settings-form-input:-moz-autofill,
     }
     .settings-card-gorev {
         color: rgba(255, 255, 255, 0.75) !important;
-    }
-    .settings-btn-save {
-        border-color: #28a745 !important;
-        color: #28a745 !important;
-    }
-    .settings-btn-cancel {
-        border-color: var(--theme-color) !important;
-        color: var(--theme-color) !important;
     }
     .settings-btn-delete {
         border-color: var(--theme-color) !important;
@@ -1355,11 +1248,6 @@ input.settings-form-input:-moz-autofill,
         height: 26px !important;
         padding: 2px 8px;
         box-sizing: border-box;
-    }
-    #branch-form-modal .settings-btn-save,
-    #user-form-modal .settings-btn-save {
-        height: 32px !important;
-        line-height: 30px;
     }
     .settings-dropdown button {
         text-align: right !important;
