@@ -139,7 +139,7 @@ body::-webkit-scrollbar,
   gap: 16px !important; /* Aradaki boşluk */
   width: 100% !important;
   max-width: 100% !important; /* Kapsayıcıyı tam yay */
-  padding: 16px 20px !important; /* Inputların yan paddingleri ile eşitle */
+  padding: 16px 0 !important; /* Yatay 0: inputlarla aynı hizada (modal-body zaten 20px veriyor) */
   box-sizing: border-box !important;
   justify-items: stretch !important; /* Butonları hücreye tam yay */
   background: transparent !important;
