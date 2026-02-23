@@ -385,7 +385,7 @@ body.admin-report-page::-webkit-scrollbar {
   text-align: center;
 }
 
-/* Sütun Genişlikleri: Marka -8px, Plaka +4px, KM +4px (Bakım/Kaza kaldırıldı) */
+/* Sütun genişlikleri: Kullanıcı, Marka/Model, Plaka, KM, Durum, İşlem */
 .report-table th:nth-child(1),
 .report-table td:nth-child(1) { width: 13%; } /* Kullanıcı */
 

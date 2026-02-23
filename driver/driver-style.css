@@ -585,7 +585,7 @@ body.driver-modal-open {
 .driver-info-item.saved .value {
   color: #22c55e;
 }
-/* Sigorta/Kasko/Muayene için yeşil (saved) kaldırıldı; sadece uyarı çerçevesi kullanılıyor */
+/* Sigorta/Kasko/Muayene: sadece uyarı çerçevesi */
 
 .driver-input-area {
   min-height: 0;
@@ -1178,7 +1178,7 @@ body.driver-modal-open {
   color: var(--theme-color, #e1061b);
   background: rgba(225, 6, 27, 0.2);
 }
-/* UTTS Evet/Hayır: eski stil (çerçevesiz, sadece renk) */
+/* UTTS Evet/Hayır: çerçevesiz, sadece renk */
 .driver-radio-btn[data-group="utts"] {
   border: none;
   padding: 0 4px;
