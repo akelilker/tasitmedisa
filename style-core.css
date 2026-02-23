@@ -89,14 +89,22 @@ body::-webkit-scrollbar,
 }
 
 /* --- EVRENSEL GERİ DÖN NAVİGASYONU (tüm uygulama) --- */
+/* Geri Dön Çubuğu (Okların Sabitlenmesi) */
 .universal-back-bar {
   display: flex !important;
-  flex-wrap: nowrap !important; /* Alt satıra atmayı engelle - ! Olay Ekle yan yana kalsın */
   align-items: center !important;
-  justify-content: space-between !important; /* Aralığı aç */
-  padding: 12px 16px;
-  width: 100%;
-  background: transparent;
+  justify-content: flex-start !important;
+  width: 100% !important;
+  padding: 16px 0 !important; /* Sağ ve sol padding'i SIFIRLA. Hizalamayı modal-body yapsın */
+  margin: 0 !important;
+  box-sizing: border-box !important;
+  gap: 12px !important;
+}
+.universal-back-bar svg,
+.universal-back-bar i,
+.universal-back-bar img {
+  margin-left: 0 !important; /* Ok ikonu tam sola yaslansın */
+  padding-left: 0 !important;
 }
 .universal-back-btn {
   display: flex;
@@ -123,44 +131,46 @@ body::-webkit-scrollbar,
   flex-shrink: 0;
 }
 
-/* --- EVRENSEL İŞLEM BUTONLARI (Orijinal kayit.css matematiği ve zarafeti) --- */
-/* Buton Grubu (Kapsayıcı) - Aradaki Boşluğu Aç; minmax(0,1fr) taşmayı önler */
+/* --- EVRENSEL İŞLEM BUTONLARI --- */
+/* Buton Kapsayıcısı (Input ile Aynı Genişlik ve Tam Ortalama) */
 .universal-btn-group {
   display: grid !important;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
-  gap: 20px !important; /* Fotoğraflardaki o geniş nefes payı */
-  padding: 12px 16px !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 16px !important;
   width: 100% !important;
-  max-width: 100% !important;
-  margin-top: auto !important;
-  background: transparent !important;
-  border: none !important;
+  /* Yan paddingleri (sol/sağ) SIFIRLADIK – üstteki inputlarla aynı hizada */
+  padding: 16px 0 0 0 !important;
+  margin: auto 0 0 0 !important;
   box-sizing: border-box !important;
+  justify-items: center !important; /* Hücre içindeki elemanları KESİN merkeze kilitler */
+  border: none !important;
 }
 
-/* Butonların Orijinal Zarif Formu (İnce Çerçeve ve Sabit Yükseklik) */
+/* Butonların Kusursuz Ortalanması ve Yayılması */
 .universal-btn-save,
 .universal-btn-cancel {
-  background: transparent !important;
-  height: 28px !important; /* Orijinal dosyadaki jilet yükseklik */
+  width: 100% !important; /* Grid hücresini tam doldurur (Input genişliğiyle eşitlenmesi için) */
+  max-width: 212px !important; /* Masaüstünde gereksiz uzamayı durdurur */
+  min-width: 0 !important;
+  justify-self: center !important; /* Kendi hücresinin tam göbeğine oturur */
+  margin: 0 !important; /* Ortalamayı bozan sağ/sol marginleri SIFIRLAR */
+  height: 32px !important; /* Zarif, ideal form yüksekliği */
   border-radius: 8px !important;
-  border-width: 1px !important; /* Sadece 1px ince çerçeve */
-  font-size: 11.5px !important; /* Orijinal punto */
-  font-weight: 400 !important; /* Bekleme modunda narin/ince metin */
-  width: 100% !important;
-  max-width: 100% !important; /* Hücreyi aşma – taşma önleme */
-  min-width: 0 !important; /* Grid hücresinde daralabilir */
-  justify-self: center !important;
+  border-width: 1px !important;
+  border-style: solid !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  transition: all 0.2s ease-in-out !important;
-  padding: 0 !important; /* İç boşluğu sıfırla, height ile yönet */
+  padding: 0 !important;
+  box-sizing: border-box !important;
+  background: transparent !important;
   cursor: pointer !important;
   text-transform: none !important;
   line-height: 1 !important;
   box-shadow: none !important;
-  box-sizing: border-box !important;
+  transition: all 0.2s ease-in-out !important;
 }
 
 /* Kaydet (Yeşil) - Dinamik Hover Efekti (Üzerine Gelince Kaslanma) */
@@ -681,13 +691,6 @@ html { overflow-x: hidden; }
   /* Footer MEDISA - Masaüstünde hafif soldur (0.7 -> 0.5) */
   #app-footer.dimmed.delayed .brand img {
     opacity: 0.5 !important;
-  }
-  
-  /* Masaüstü: Butonlar orijinal genişlik sınırları (159–212px) */
-  .universal-btn-save,
-  .universal-btn-cancel {
-    min-width: 159px !important;
-    max-width: 212px !important;
   }
 }
 
