@@ -9,7 +9,7 @@ body::-webkit-scrollbar,
 .modal-container::-webkit-scrollbar {
   display: none;
 }
-
+ 
 :root {
   --theme-color: #e1061b;
   --theme-color-rgb: 225, 6, 27;
