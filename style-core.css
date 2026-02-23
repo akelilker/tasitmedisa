@@ -127,35 +127,36 @@ body::-webkit-scrollbar,
 /* Buton Grubu (Kapsayıcı) - Aradaki Boşluğu Aç; minmax(0,1fr) taşmayı önler */
 .universal-btn-group {
   display: grid !important;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
-  gap: 20px !important; /* Fotoğraflardaki o geniş nefes payı */
-  padding: 12px 16px !important;
+  grid-template-columns: 1fr 1fr !important; /* 2 eşit kolon */
+  gap: 16px !important; /* Aradaki boşluk */
   width: 100% !important;
-  max-width: 100% !important;
-  margin-top: auto !important;
+  max-width: 100% !important; /* Kapsayıcıyı tam yay */
+  padding: 16px 20px !important; /* Inputların yan paddingleri ile eşitle */
+  box-sizing: border-box !important;
+  justify-items: stretch !important; /* Butonları hücreye tam yay */
   background: transparent !important;
   border: none !important;
-  box-sizing: border-box !important;
 }
 
 /* Butonların Orijinal Zarif Formu (İnce Çerçeve ve Sabit Yükseklik) */
 .universal-btn-save,
 .universal-btn-cancel {
   background: transparent !important;
-  height: 28px !important; /* Orijinal dosyadaki jilet yükseklik */
+  height: 32px !important; /* Form estetiği için ideal yükseklik */
   border-radius: 8px !important;
-  border-width: 1px !important; /* Sadece 1px ince çerçeve */
-  font-size: 11.5px !important; /* Orijinal punto */
-  font-weight: 400 !important; /* Bekleme modunda narin/ince metin */
-  width: 100% !important;
-  max-width: 100% !important; /* Hücreyi aşma – taşma önleme */
-  min-width: 0 !important; /* Grid hücresinde daralabilir */
-  justify-self: center !important;
+  border-width: 1px !important; /* 1px ince çerçeve */
+  font-size: 11.5px !important;
+  font-weight: 400 !important;
+  width: 100% !important; /* Hücrenin tamamını kapla */
+  max-width: none !important; /* Önceki kısıtlamaları kaldır */
+  min-width: 0 !important;
+  justify-self: stretch !important; /* Grid hücresine yaslan */
+  margin: 0 !important; /* Kenar boşluklarını sıfırla */
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   transition: all 0.2s ease-in-out !important;
-  padding: 0 !important; /* İç boşluğu sıfırla, height ile yönet */
+  padding: 0 !important;
   cursor: pointer !important;
   text-transform: none !important;
   line-height: 1 !important;
@@ -683,11 +684,11 @@ html { overflow-x: hidden; }
     opacity: 0.5 !important;
   }
   
-  /* Masaüstü: Butonlar orijinal genişlik sınırları (159–212px) */
+  /* Masaüstü: Modal butonları full-width (input ile aynı hizada) */
   .universal-btn-save,
   .universal-btn-cancel {
-    min-width: 159px !important;
-    max-width: 212px !important;
+    min-width: 0 !important;
+    max-width: none !important;
   }
 }
 
@@ -785,7 +786,7 @@ html { overflow-x: hidden; }
   flex: 0 1 auto !important; /* İçerik kadar yer kapla, butonları itme */
   overflow-y: auto !important;
   overflow-x: hidden; /* Yatay kayma engelle */
-  padding: 20px;
+  padding: 20px; /* .universal-btn-group yan padding (20px) ile aynı – input/buton dikey hiza */
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-x: none;
   /* scrollbar gizleme: tek kaynak dosya başındaki html, body, .modal-body, .modal-container kuralı */
