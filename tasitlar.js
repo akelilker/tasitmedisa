@@ -26,13 +26,10 @@
     try { return JSON.parse(localStorage.getItem(USERS_KEY) || '[]'); } catch { return []; }
   }
 
-  let kaportaSvgCache = null;
-  function getKaportaSvg() {
-    if (!kaportaSvgCache) kaportaSvgCache = fetch('icon/kaporta.svg').then(function(r) { return r.text(); });
-    return kaportaSvgCache;
-  }
-
   var parsedKaportaSvgCache = null;
+  function getKaportaSvg() {
+    return window.getKaportaSvg();
+  }
   function getParsedKaportaSvg() {
     if (parsedKaportaSvgCache) {
       return Promise.resolve(parsedKaportaSvgCache.cloneNode(true));
@@ -174,13 +171,40 @@
   // Global Detail Vehicle ID (HTML onclick erişimi için)
   window.currentDetailVehicleId = null;
 
-  // DOM Elements
-  const modalContent = document.getElementById('vehicles-modal-content');
+  // DOM Cache (statik elementler - init aşamasında bir kere bağlanır)
+  const DOM = {};
+  function bindDOM() {
+    DOM.vehiclesModal = document.getElementById('vehicles-modal');
+    DOM.vehiclesModalContent = document.getElementById('vehicles-modal-content');
+    DOM.vehiclesModalContainer = document.querySelector('#vehicles-modal .modal-container');
+    DOM.vehiclesModalHeader = document.querySelector('#vehicles-modal .modal-header');
+    DOM.vehicleDetailModal = document.getElementById('vehicle-detail-modal');
+    DOM.vehicleDetailContent = document.getElementById('vehicle-detail-content');
+    DOM.vehicleDetailLeft = document.querySelector('#vehicle-detail-content .vehicle-detail-left');
+    DOM.vehicleDetailRight = document.querySelector('#vehicle-detail-content .vehicle-detail-right');
+    DOM.eventMenuModal = document.getElementById('event-menu-modal');
+    DOM.eventMenuList = document.getElementById('event-menu-list');
+    DOM.vehicleHistoryModal = document.getElementById('vehicle-history-modal');
+    DOM.historyContent = document.getElementById('history-content');
+    DOM.notificationsDropdown = document.getElementById('notifications-dropdown');
+  }
+  bindDOM();
+
+  const modalContent = DOM.vehiclesModalContent;
   
   // Taşıt listesi tıklama delegasyonu (card/list-item tıklanınca detay aç) - tek seferlik
   if (modalContent && !modalContent._vehicleClickBound) {
     modalContent._vehicleClickBound = true;
     function handleVehicleRowClick(e) {
+      const branchCard = e.target.closest('.branch-card');
+      if (branchCard && branchCard.dataset.branchId !== undefined) {
+        e.stopPropagation();
+        e.preventDefault();
+        if (typeof window.openBranchList === 'function') {
+          window.openBranchList(branchCard.dataset.branchId, branchCard.dataset.branchName || '');
+        }
+        return;
+      }
       const card = e.target.closest('.card');
       const listItem = e.target.closest('.list-item');
       if (listItem && listItem.classList.contains('list-item-empty')) return;
@@ -197,20 +221,85 @@
     modalContent.addEventListener('touchend', handleVehicleRowClick, { passive: false });
   }
 
-  // Mobil: pencere boyutu değişince başlık font-size tekrar hesaplansın
-  if (modalContent && !modalContent._headerResizeBound) {
-    modalContent._headerResizeBound = true;
-    window.addEventListener('resize', function () {
-      if (window.innerWidth <= 640 && modalContent.querySelector('.list-header-row')) {
-        applyMobileListHeaderFontSize(modalContent);
+  // Bildirim listesi: delegation (her bildirime ayrı onclick yerine tek listener)
+  if (DOM.notificationsDropdown && !DOM.notificationsDropdown._notifDelegationBound) {
+    DOM.notificationsDropdown._notifDelegationBound = true;
+    DOM.notificationsDropdown.addEventListener('click', function(e) {
+      var btn = e.target.closest('.notification-item[data-plate]');
+      if (!btn) return;
+      var plate = btn.getAttribute('data-plate') || '';
+      if (!plate) return;
+      if (typeof window.openVehiclesView === 'function') window.openVehiclesView();
+      setTimeout(function() {
+        var vehicles = window.getMedisaVehicles ? window.getMedisaVehicles() : JSON.parse(localStorage.getItem('medisa_vehicles_v1') || '[]');
+        var v = vehicles.find(function(v) { return v.plate === plate; });
+        if (v && typeof window.showVehicleDetail === 'function') window.showVehicleDetail(v.id);
+      }, 100);
+    });
+  }
+
+  // Olay menü listesi: delegation (her butona ayrı onclick yerine tek listener)
+  if (DOM.eventMenuList && !DOM.eventMenuList._eventDelegationBound) {
+    DOM.eventMenuList._eventDelegationBound = true;
+    DOM.eventMenuList.addEventListener('click', function(e) {
+      var btn = e.target.closest('button[data-event-id]');
+      if (!btn) return;
+      e.stopPropagation();
+      e.preventDefault();
+      var eventId = btn.getAttribute('data-event-id');
+      var vehicleId = btn.getAttribute('data-vehicle-id') || window.currentDetailVehicleId || '';
+      if (eventId && typeof window.openEventModal === 'function') {
+        window.openEventModal(eventId, vehicleId);
       }
     });
   }
 
+  // Şanzıman dropdown: delegation (her option'a ayrı listener yerine tek listener)
+  if (DOM.vehiclesModalContainer && !DOM.vehiclesModalContainer._transmissionDelegationBound) {
+    DOM.vehiclesModalContainer._transmissionDelegationBound = true;
+    DOM.vehiclesModalContainer.addEventListener('click', function(e) {
+      var btn = e.target.closest('.v-transmission-option');
+      if (!btn) return;
+      var val = btn.getAttribute('data-value') || '';
+      setTransmissionFilter(val);
+      var dd = document.getElementById('v-transmission-dropdown');
+      if (dd) {
+        var opts = dd.querySelectorAll('.v-transmission-option');
+        var labels = { '': 'Tümü', 'otomatik': 'Otomatik', 'manuel': 'Manuel' };
+        opts.forEach(function(b) {
+          var v = b.getAttribute('data-value') || '';
+          b.classList.toggle('active', v === val);
+          b.textContent = (v === val ? '✓ ' : '') + labels[v];
+        });
+      }
+      closeTransmissionMenu();
+      if (searchMode === 'local') {
+        renderVehicles(document.getElementById('v-search-input') && document.getElementById('v-search-input').value || '');
+      } else {
+        handleSearch(document.getElementById('v-search-input') && document.getElementById('v-search-input').value || '');
+      }
+    });
+  }
+
+  // Mobil: pencere boyutu değişince başlık font-size tekrar hesaplansın (debounce)
+  if (modalContent && !modalContent._headerResizeBound) {
+    modalContent._headerResizeBound = true;
+    var onResize = window.debounce ? window.debounce(function () {
+      if (window.innerWidth <= 640 && modalContent.querySelector('.list-header-row')) {
+        applyMobileListHeaderFontSize(modalContent);
+      }
+    }, 150) : function () {
+      if (window.innerWidth <= 640 && modalContent.querySelector('.list-header-row')) {
+        applyMobileListHeaderFontSize(modalContent);
+      }
+    };
+    window.addEventListener('resize', onResize);
+  }
+
   // Toolbar Container Oluştur (Eğer yoksa)
   function ensureToolbar() {
-    const modalContainer = document.querySelector('#vehicles-modal .modal-container');
-    const header = document.querySelector('#vehicles-modal .modal-header');
+    const modalContainer = DOM.vehiclesModalContainer;
+    const header = DOM.vehiclesModalHeader;
     
     // Toolbar
     let toolbar = document.querySelector('.vehicles-toolbar');
@@ -234,9 +323,10 @@
             <button type="button" class="filter-dropdown-btn" data-filter="oldest">En Eski</button>
             <button type="button" class="filter-dropdown-btn" data-filter="type">Tipe Göre</button>
         `;
-        filterDrop.querySelectorAll('.filter-dropdown-btn').forEach(function(btn) {
-            btn.addEventListener('click', function() {
-                currentFilter = this.dataset.filter || 'az';
+        filterDrop.addEventListener('click', function(e) {
+            var btn = e.target.closest('.filter-dropdown-btn');
+            if (!btn) return;
+            currentFilter = btn.dataset.filter || 'az';
                 // Filtreye göre sıralama sütunu ve yönü
                 if (currentFilter === 'az') {
                     sortColumn = 'plate';
@@ -253,7 +343,6 @@
                 }
                 closeFilterMenu();
                 renderVehicles(document.getElementById('v-search-input')?.value || '');
-            });
         });
         modalContainer.appendChild(filterDrop);
     }
@@ -265,7 +354,7 @@
   window.openVehiclesView = function() {
     const openView = () => {
       loadVehicleColumnOrder();
-      const modal = document.getElementById('vehicles-modal');
+      const modal = DOM.vehiclesModal;
       if (modal) {
         modal.style.display = 'flex';
         requestAnimationFrame(() => modal.classList.add('active'));
@@ -276,7 +365,7 @@
     openView();
     if (typeof window.loadDataFromServer === 'function') {
       window.loadDataFromServer().then(function() {
-        const m = document.getElementById('vehicles-modal');
+        const m = DOM.vehiclesModal;
         if (m && m.classList.contains('active')) {
           if (currentView === 'dashboard') renderBranchDashboard();
           else renderVehicles(document.getElementById('v-search-input') && document.getElementById('v-search-input').value || '');
@@ -292,7 +381,7 @@
       event.preventDefault();
     }
     
-    const modal = document.getElementById('vehicles-modal');
+    const modal = DOM.vehiclesModal;
     if (modal) {
       modal.classList.remove('active');
       setTimeout(() => {
@@ -354,10 +443,12 @@
         // DETAY MODU: Solda Geri+İsim, Sağda Yerel Arama/Filtre/Görünüm
         toolbar.innerHTML = `
             <div class="vt-left">
-                <button class="vt-back-btn" onclick="renderBranchDashboard()">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-                </button>
-                ${title ? `<span class="active-branch-title">${escapeHtml(title)}</span>` : ''}
+                <div class="universal-back-bar">
+                    <button type="button" class="universal-back-btn" onclick="renderBranchDashboard()">
+                        <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        ${title ? `<span class="universal-back-label">${escapeHtml(title)}</span>` : ''}
+                    </button>
+                </div>
             </div>
             <div class="vt-right">
                 <div id="v-search-container" class="v-search-container">
@@ -418,7 +509,7 @@
 
     // 1. "TÜMÜ" Kartı (Manuel) — sadece aktif (satılmamış) taşıtlar
     html += `
-      <div class="branch-card all-card" onclick="openBranchList('all', 'Taşıtlar')">
+      <div class="branch-card all-card" data-branch-id="all" data-branch-name="Taşıtlar">
         <div class="branch-name">TÜMÜ</div>
         <div class="branch-count">${activeVehicles.length} Taşıt</div>
       </div>
@@ -461,11 +552,12 @@
   };
 
   function createBranchCard(id, name, count, isUnassigned = false) {
-    // Tam şube adı gösterilir; kutu içinde 2 satır, satır başına 9 karakter sığacak şekilde CSS ile sarılır (kesme/ellipsis yok)
     const unassignedClass = isUnassigned ? ' unassigned-branch-card' : '';
+    const safeId = (id || '').replace(/"/g, '&quot;');
+    const safeName = escapeHtml(name);
     return `
-      <div class="branch-card${unassignedClass}" onclick="openBranchList('${id}', '${escapeHtml(name)}')">
-        <div class="branch-name" title="${escapeHtml(name)}">${escapeHtml(name)}</div>
+      <div class="branch-card${unassignedClass}" data-branch-id="${safeId}" data-branch-name="${safeName}">
+        <div class="branch-name" title="${safeName}">${safeName}</div>
         <div class="branch-count">${count} Taşıt</div>
       </div>
     `;
@@ -516,7 +608,7 @@
    */
   function renderVehicles(query = '') {
     try {
-      const listContainer = document.getElementById('vehicles-modal-content') || modalContent;
+      const listContainer = DOM.vehiclesModalContent;
       if (!listContainer) return;
       loadVehicleColumnOrder(); // Sütun sıralamasını yükle
       // Veri Çek
@@ -789,7 +881,7 @@
       }
     } catch (error) {
       console.error('renderVehicles hatası:', error);
-      const target = document.getElementById('vehicles-modal-content') || modalContent;
+      const target = DOM.vehiclesModalContent;
       if (target) {
         target.innerHTML = '<div style="text-align:center; padding:40px; color:#666">Bir hata oluştu. Lütfen sayfayı yenileyin.</div>';
       }
@@ -821,10 +913,10 @@
 
       window.currentDetailVehicleId = vehicleId;
 
-    const modal = document.getElementById('vehicle-detail-modal');
+    const modal = DOM.vehicleDetailModal;
     if (!modal) return;
 
-    const contentEl = document.getElementById('vehicle-detail-content');
+    const contentEl = DOM.vehicleDetailContent;
     if (!contentEl) return;
 
     // Plaka (üstte yatayda ortalı) - Satıldı durumu için kırmızı yazı ekle
@@ -942,14 +1034,13 @@
         }
       }
 
-      // Geri butonu oluştur
+      // Geri butonu (evrensel yapı)
+      const backBar = document.createElement('div');
+      backBar.className = 'universal-back-bar';
       const backBtn = document.createElement('button');
-      backBtn.className = 'detail-back-btn vt-back-btn';
-      backBtn.innerHTML = `
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M19 12H5M12 19l-7-7 7-7"/>
-        </svg>
-      `;
+      backBtn.type = 'button';
+      backBtn.className = 'universal-back-btn';
+      backBtn.innerHTML = `<svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg><span class="universal-back-label">${escapeHtml(backLabel)}</span>`;
       backBtn.onclick = () => {
         closeVehicleDetailModal();
         if (lastListContext && lastListContext.mode === 'archive') {
@@ -960,12 +1051,8 @@
           renderBranchDashboard();
         }
       };
-      toolbarLeft.appendChild(backBtn);
-
-      const backLabelSpan = document.createElement('span');
-      backLabelSpan.className = 'active-branch-title';
-      backLabelSpan.textContent = backLabel;
-      toolbarLeft.appendChild(backLabelSpan);
+      backBar.appendChild(backBtn);
+      toolbarLeft.appendChild(backBar);
       
       // Orta taraf (tahsis butonu - sadece tahsis edilmemiş taşıtlar için)
       const toolbarCenter = document.createElement('div');
@@ -1018,9 +1105,9 @@
           <select id="detail-branch-select" class="assign-select">
             <option value="" disabled selected>Şube Seçiniz</option>
           </select>
-          <div class="assign-buttons">
-            <button class="assign-save-btn" onclick="assignVehicleToBranch('${vehicleId}')">Kaydet</button>
-            <button class="assign-cancel-btn" onclick="closeVehicleDetailModal()">Vazgeç</button>
+          <div class="universal-btn-group">
+            <button type="button" class="universal-btn-save" onclick="assignVehicleToBranch('${vehicleId}')">Kaydet</button>
+            <button type="button" class="universal-btn-cancel" onclick="closeVehicleDetailModal()">Vazgeç</button>
           </div>
         </div>
       `;
@@ -1153,7 +1240,10 @@
     ];
     
     modalIds.forEach(id => {
-      const modal = document.getElementById(id);
+      const modal = (id === 'vehicles-modal' ? DOM.vehiclesModal :
+                    id === 'vehicle-detail-modal' ? DOM.vehicleDetailModal :
+                    id === 'vehicle-history-modal' ? DOM.vehicleHistoryModal :
+                    id === 'event-menu-modal' ? DOM.eventMenuModal : null) || document.getElementById(id);
       if (modal) {
         modal.classList.remove('active', 'open');
         modal.style.display = 'none';
@@ -1163,7 +1253,7 @@
 
   // --- Taşıt Detay Modalını Kapat ---
   window.closeVehicleDetailModal = function() {
-    const modal = document.getElementById('vehicle-detail-modal');
+    const modal = DOM.vehicleDetailModal;
     if (modal) {
       modal.classList.remove('active');
       setTimeout(() => modal.style.display = 'none', 300);
@@ -1233,25 +1323,6 @@
           closeFilterMenu();
           dd.classList.add('open');
           dd.setAttribute('aria-hidden', 'false');
-          var opts = dd.querySelectorAll('.v-transmission-option');
-          var labels = { '': 'Tümü', 'otomatik': 'Otomatik', 'manuel': 'Manuel' };
-          opts.forEach(function(btn) {
-              btn.onclick = function() {
-                  var val = btn.getAttribute('data-value') || '';
-                  setTransmissionFilter(val);
-                  opts.forEach(function(b) {
-                      var v = b.getAttribute('data-value') || '';
-                      b.classList.toggle('active', v === val);
-                      b.textContent = (v === val ? '✓ ' : '') + labels[v];
-                  });
-                  closeTransmissionMenu();
-                  if (searchMode === 'local') {
-                      renderVehicles(document.getElementById('v-search-input') && document.getElementById('v-search-input').value || '');
-                  } else {
-                      handleSearch(document.getElementById('v-search-input') && document.getElementById('v-search-input').value || '');
-                  }
-              };
-          });
       }
   };
 
@@ -1503,7 +1574,7 @@
  * Sol kolon render (Taşıt özellikleri + Kaporta Şeması)
  */
 function renderVehicleDetailLeft(vehicle) {
-  const leftEl = document.querySelector('#vehicle-detail-content .vehicle-detail-left');
+  const leftEl = DOM.vehicleDetailLeft;
   if (!leftEl) return;
 
   let html = '';
@@ -1615,7 +1686,7 @@ function renderVehicleDetailLeft(vehicle) {
    * Sağ kolon render (Tarihler, Anahtar, Kredi, UTTS, Takip Cihazı)
    */
   function renderVehicleDetailRight(vehicle) {
-    const rightEl = document.querySelector('#vehicle-detail-content .vehicle-detail-right');
+    const rightEl = DOM.vehicleDetailRight;
     if (!rightEl) return;
     
     let html = '';
@@ -1808,7 +1879,7 @@ function renderVehicleDetailLeft(vehicle) {
 
         // Sol kolon genişliğine göre şema büyüklüğünü uyarla (sol grid içinde; yatay -4px, dikey -8px)
         requestAnimationFrame(function alignSchemaToLeftColumn() {
-          const leftCol = document.querySelector('#vehicle-detail-modal .vehicle-detail-left');
+          const leftCol = DOM.vehicleDetailLeft;
           if (leftCol && container.isConnected) {
             const leftRect = leftCol.getBoundingClientRect();
             const padding = 16;
@@ -1856,10 +1927,10 @@ function renderVehicleDetailLeft(vehicle) {
         }
       });
       
-      const modal = document.getElementById('event-menu-modal');
+      const modal = DOM.eventMenuModal;
       if (!modal) return;
       
-      const menuList = document.getElementById('event-menu-list');
+      const menuList = DOM.eventMenuList;
       if (!menuList) return;
       
       // Menü listesini oluştur
@@ -1882,13 +1953,14 @@ function renderVehicleDetailLeft(vehicle) {
         { id: 'satis', label: 'Satış/Pert Bildirimi Yap' }
       ];
       
+      const vid = (window.currentDetailVehicleId || vehicleId || '').toString().replace(/"/g, '&quot;');
       menuList.innerHTML = events.map(event => {
         const isKaza = event.id === 'kaza';
         const isSatis = event.id === 'satis';
         const borderColor = (isKaza || isSatis) ? '#e1061b' : 'rgba(255, 255, 255, 0.3)';
         const textColor = (isKaza || isSatis) ? '#e1061b' : '#ccc';
         const borderWidth = (isKaza || isSatis) ? '0.3px' : '1px';
-        return `<button onclick="event.stopPropagation(); event.preventDefault(); openEventModal('${event.id}', '${window.currentDetailVehicleId || vehicleId || ''}');" style="width: 100%; padding: 12px; background: transparent; border: ${borderWidth} solid ${borderColor}; color: ${textColor}; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px; text-align: left;">${event.label}</button>`;
+        return `<button type="button" data-event-id="${event.id}" data-vehicle-id="${vid}" style="width: 100%; padding: 12px; background: transparent; border: ${borderWidth} solid ${borderColor}; color: ${textColor}; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px; text-align: left;">${event.label}</button>`;
       }).join('');
       
       modal.style.display = 'flex';
@@ -2034,7 +2106,9 @@ function renderVehicleDetailLeft(vehicle) {
         const radioBtns = modal.querySelectorAll('.radio-btn');
         const detayWrapper = document.getElementById('anahtar-detay-wrapper');
         const detayInput = document.getElementById('anahtar-detay-event');
-        
+        radioBtns.forEach(b => b.classList.remove('active', 'green'));
+        if (detayWrapper) detayWrapper.style.display = 'none';
+        if (detayInput) detayInput.value = '';
         radioBtns.forEach(btn => {
           btn.addEventListener('click', function(e) {
             e.preventDefault();
@@ -2058,7 +2132,9 @@ function renderVehicleDetailLeft(vehicle) {
         const radioBtns = modal.querySelectorAll('.radio-btn');
         const detayWrapper = document.getElementById('kredi-detay-wrapper-event');
         const detayInput = document.getElementById('kredi-detay-event');
-        
+        radioBtns.forEach(b => b.classList.remove('active', 'green'));
+        if (detayWrapper) detayWrapper.style.display = 'none';
+        if (detayInput) detayInput.value = '';
         radioBtns.forEach(btn => {
           btn.addEventListener('click', function(e) {
             e.preventDefault();
@@ -2083,7 +2159,9 @@ function renderVehicleDetailLeft(vehicle) {
         const adresWrapper = document.getElementById('lastik-adres-wrapper-event');
         const adresInput = document.getElementById('lastik-adres-event');
         
-        // Mevcut değerleri yükle
+        radioBtns.forEach(b => b.classList.remove('active', 'green'));
+        if (adresWrapper) adresWrapper.style.display = 'none';
+        if (adresInput) adresInput.value = '';
         const vehicle = readVehicles().find(v => String(v.id) === String(vehicleId || window.currentDetailVehicleId));
         if (vehicle) {
           if (vehicle.lastikDurumu === 'var') {
@@ -2097,12 +2175,7 @@ function renderVehicleDetailLeft(vehicle) {
             const yokBtn = Array.from(radioBtns).find(btn => btn.dataset.value === 'yok');
             if (yokBtn) yokBtn.classList.add('active');
           }
-        } else {
-          // Varsayılan olarak "Yok" seçili
-          const yokBtn = Array.from(radioBtns).find(btn => btn.dataset.value === 'yok');
-          if (yokBtn) yokBtn.classList.add('active');
         }
-        
         radioBtns.forEach(btn => {
           btn.addEventListener('click', function(e) {
             e.preventDefault();
@@ -2122,30 +2195,22 @@ function renderVehicleDetailLeft(vehicle) {
           });
         });
       } else if (type === 'utts') {
-        // UTTS modal'ında mevcut değeri yükle (click handler HTML onclick ile)
         const radioBtns = modal.querySelectorAll('.radio-btn');
         const vehicle = readVehicles().find(v => String(v.id) === String(vehicleId || window.currentDetailVehicleId));
-        radioBtns.forEach(b => b.classList.remove('active'));
+        radioBtns.forEach(b => b.classList.remove('active', 'green'));
         if (vehicle) {
           const durum = vehicle.uttsTanimlandi ? 'evet' : 'hayir';
           const btn = Array.from(radioBtns).find(btn => btn.dataset.value === durum);
-          if (btn) btn.classList.add('active');
-        } else {
-          const hayirBtn = Array.from(radioBtns).find(btn => btn.dataset.value === 'hayir');
-          if (hayirBtn) hayirBtn.classList.add('active');
+          if (btn) { btn.classList.add('active'); if (durum === 'evet') btn.classList.add('green'); }
         }
       } else if (type === 'takip') {
-        // Takip Cihaz modal'ında mevcut değeri yükle (click handler HTML onclick ile)
         const radioBtns = modal.querySelectorAll('.radio-btn');
         const vehicle = readVehicles().find(v => String(v.id) === String(vehicleId || window.currentDetailVehicleId));
-        radioBtns.forEach(b => b.classList.remove('active'));
+        radioBtns.forEach(b => b.classList.remove('active', 'green'));
         if (vehicle) {
           const durum = vehicle.takipCihaziMontaj ? 'evet' : 'hayir';
           const btn = Array.from(radioBtns).find(btn => btn.dataset.value === durum);
-          if (btn) btn.classList.add('active');
-        } else {
-          const hayirBtn = Array.from(radioBtns).find(btn => btn.dataset.value === 'hayir');
-          if (hayirBtn) hayirBtn.classList.add('active');
+          if (btn) { btn.classList.add('active'); if (durum === 'evet') btn.classList.add('green'); }
         }
       } else if (type === 'bakim') {
         // Bakım modal'ında varsayılan kişi
@@ -2187,24 +2252,19 @@ function renderVehicleDetailLeft(vehicle) {
               const freshRadioBtns = modal.querySelectorAll('.radio-btn');
               const vehicle = readVehicles().find(v => String(v.id) === String(vehicleId || window.currentDetailVehicleId));
               
-              // Mevcut değeri yükle
               if (type === 'utts') {
+                freshRadioBtns.forEach(b => b.classList.remove('active', 'green'));
                 if (vehicle) {
                   const durum = vehicle.uttsTanimlandi ? 'evet' : 'hayir';
                   const btn = Array.from(freshRadioBtns).find(btn => btn.dataset.value === durum);
-                  if (btn) btn.classList.add('active');
-                } else {
-                  const hayirBtn = Array.from(freshRadioBtns).find(btn => btn.dataset.value === 'hayir');
-                  if (hayirBtn) hayirBtn.classList.add('active');
+                  if (btn) { btn.classList.add('active'); if (durum === 'evet') btn.classList.add('green'); }
                 }
               } else if (type === 'takip') {
+                freshRadioBtns.forEach(b => b.classList.remove('active', 'green'));
                 if (vehicle) {
                   const durum = vehicle.takipCihaziMontaj ? 'evet' : 'hayir';
                   const btn = Array.from(freshRadioBtns).find(btn => btn.dataset.value === durum);
-                  if (btn) btn.classList.add('active');
-                } else {
-                  const hayirBtn = Array.from(freshRadioBtns).find(btn => btn.dataset.value === 'hayir');
-                  if (hayirBtn) hayirBtn.classList.add('active');
+                  if (btn) { btn.classList.add('active'); if (durum === 'evet') btn.classList.add('green'); }
                 }
               }
               
@@ -2306,7 +2366,7 @@ function renderVehicleDetailLeft(vehicle) {
    * Event menu modal'ını kapat
    */
   window.closeEventMenuModal = function() {
-    const modal = document.getElementById('event-menu-modal');
+    const modal = DOM.eventMenuModal;
     if (modal) {
       modal.classList.remove('active');
       setTimeout(() => modal.style.display = 'none', 300);
@@ -3206,7 +3266,7 @@ function renderVehicleDetailLeft(vehicle) {
     const vid = vehicleId || window.currentDetailVehicleId;
     if (!vid) return;
     
-    const modal = document.getElementById('vehicle-history-modal');
+    const modal = DOM.vehicleHistoryModal;
     if (!modal) return;
     
     // İlk tab'ı göster
@@ -3224,7 +3284,7 @@ function renderVehicleDetailLeft(vehicle) {
     if (!vid) return;
     
     // Tab'ları güncelle
-    document.querySelectorAll('.history-tab').forEach(tab => {
+    (DOM.vehicleHistoryModal ? DOM.vehicleHistoryModal.querySelectorAll('.history-tab') : []).forEach(tab => {
       tab.classList.remove('active');
       if (tab.dataset.tab === tabType) {
         tab.classList.add('active');
@@ -3237,7 +3297,7 @@ function renderVehicleDetailLeft(vehicle) {
     });
     
     // İçeriği render et
-    const contentEl = document.getElementById('history-content');
+    const contentEl = DOM.historyContent;
     if (!contentEl) return;
     
     const vehicles = readVehicles();
@@ -3419,7 +3479,7 @@ function renderVehicleDetailLeft(vehicle) {
    * Tarihçe modal'ını kapat
    */
   window.closeVehicleHistoryModal = function() {
-    const modal = document.getElementById('vehicle-history-modal');
+    const modal = DOM.vehicleHistoryModal;
     if (modal) {
       modal.classList.remove('active');
       setTimeout(() => modal.style.display = 'none', 300);
@@ -3503,7 +3563,7 @@ function renderVehicleDetailLeft(vehicle) {
     });
 
     // Bildirimleri güncelle
-    const notifDropdown = document.getElementById('notifications-dropdown');
+    const notifDropdown = DOM.notificationsDropdown;
     const notifIcon = document.querySelector('.icon-btn[onclick="toggleNotifications(event)"]');
     
     if (notifications.length === 0) {
@@ -3535,7 +3595,8 @@ function renderVehicleDetailLeft(vehicle) {
           ? 'rgba(225, 6, 27, 0.6)' 
           : 'rgba(255, 140, 0, 0.6)';
         
-        html += `<button onclick="openVehiclesView(); setTimeout(() => { const vehicles = window.getMedisaVehicles ? window.getMedisaVehicles() : JSON.parse(localStorage.getItem('medisa_vehicles_v1') || '[]'); const v = vehicles.find(v => v.plate === '${escapeHtml(notif.plate)}'); if (v) showVehicleDetail(v.id); }, 100);" style="width: 100%; padding: 12px; background: transparent; border: 1px solid ${borderColor}; color: #ccc; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 13px; text-align: left; margin-bottom: 4px; transition: all 0.2s ease;" class="notification-item ${notif.warningClass}-border">
+        const safePlate = (notif.plate || '').replace(/"/g, '&quot;');
+        html += `<button type="button" data-plate="${safePlate}" style="width: 100%; padding: 12px; background: transparent; border: 1px solid ${borderColor}; color: #ccc; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 13px; text-align: left; margin-bottom: 4px; transition: all 0.2s ease;" class="notification-item ${notif.warningClass}-border">
           <div style="font-weight: 600; color: #fff; margin-bottom: 4px; text-align: center;">${escapeHtml(notif.plate)}</div>
           <div style="font-size: 11px; color: #999; margin-bottom: 4px; text-align: center;">${escapeHtml(notif.brandModel)}</div>
           <div style="font-size: 11px; text-align: center; margin-bottom: 4px;">

@@ -306,9 +306,9 @@
                         </div>
                     </div>
                     
-                    <div class="form-buttons">
-                        <button class="btn-save" onclick="saveVehicleRecord()">Kaydet</button>
-                        <button class="btn-cancel" onclick="closeVehicleModal()">Vazgeç</button>
+                    <div class="universal-btn-group">
+                        <button class="universal-btn-save" onclick="saveVehicleRecord()">Kaydet</button>
+                        <button class="universal-btn-cancel" onclick="closeVehicleModal()">Vazgeç</button>
                     </div>
                 </div>
             </div>
@@ -369,7 +369,7 @@
         </div>
 
         <div id="branch-modal" class="modal-overlay ayarlar-modal-overlay">
-            <div class="modal-container" onclick="if(event.target.closest('.ayarlar-back-btn')) { event.stopPropagation(); closeBranchManagement(); var m=document.getElementById('settings-menu'); if(m)m.classList.add('open'); }">
+            <div class="modal-container" onclick="if(event.target.closest('.universal-back-btn')) { event.stopPropagation(); closeBranchManagement(); var m=document.getElementById('settings-menu'); if(m)m.classList.add('open'); }">
                 <div class="modal-header">
                     <h2>ŞUBE YÖNETİMİ</h2>
                     <button class="modal-close" onclick="closeBranchManagement()">
@@ -379,11 +379,11 @@
                         </svg>
                     </button>
                 </div>
-                <div class="ayarlar-back-bar">
-                    <button type="button" class="ayarlar-back-btn" aria-label="Ayarlar">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                <div class="universal-back-bar">
+                    <button type="button" class="universal-back-btn" aria-label="Ayarlar">
+                        <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        <span class="universal-back-label">Ayarlar</span>
                     </button>
-                    <span class="ayarlar-back-label">Ayarlar</span>
                 </div>
                 <div class="modal-body">
                     <div style="padding: 16px;">
@@ -405,11 +405,11 @@
                         </svg>
                     </button>
                 </div>
-                <div class="ayarlar-back-bar">
-                    <button type="button" class="ayarlar-back-btn" aria-label="Şube Yönetimi" onclick="closeBranchFormModal()">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                <div class="universal-back-bar">
+                    <button type="button" class="universal-back-btn" aria-label="Şube Yönetimi" onclick="closeBranchFormModal()">
+                        <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        <span class="universal-back-label">Şube Yönetimi</span>
                     </button>
-                    <span class="ayarlar-back-label">Şube Yönetimi</span>
                 </div>
                 <div class="modal-body">
                     <form id="branch-form" style="padding: 16px;">
@@ -422,9 +422,9 @@
                             <label class="form-label" for="branch-city">Şehir</label>
                             <input type="text" id="branch-city" class="form-input" placeholder="Şehir">
                         </div>
-                        <div class="settings-form-buttons">
-                            <button type="button" class="settings-btn-save" onclick="saveBranch()">Kaydet</button>
-                            <button type="button" class="settings-btn-cancel" onclick="closeBranchFormModal()">Vazgeç</button>
+                        <div class="universal-btn-group">
+                            <button type="button" class="universal-btn-save" onclick="saveBranch()">Kaydet</button>
+                            <button type="button" class="universal-btn-cancel" onclick="closeBranchFormModal()">Vazgeç</button>
                             <button type="button" class="settings-btn-delete" onclick="deleteBranch(document.getElementById('branch-id').value)" id="branch-delete-btn" style="display: none;">Sil</button>
                         </div>
                     </form>
@@ -433,7 +433,7 @@
         </div>
 
         <div id="user-modal" class="modal-overlay ayarlar-modal-overlay">
-            <div class="modal-container" onclick="if(event.target.closest('.ayarlar-back-btn')) { event.stopPropagation(); closeUserManagement(); var m=document.getElementById('settings-menu'); if(m)m.classList.add('open'); }">
+            <div class="modal-container" onclick="if(event.target.closest('.universal-back-btn')) { event.stopPropagation(); closeUserManagement(); var m=document.getElementById('settings-menu'); if(m)m.classList.add('open'); }">
                 <div class="modal-header">
                     <h2>KULLANICI YÖNETİMİ</h2>
                     <button class="modal-close" onclick="closeUserManagement()">
@@ -443,11 +443,11 @@
                         </svg>
                     </button>
                 </div>
-                <div class="ayarlar-back-bar">
-                    <button type="button" class="ayarlar-back-btn" aria-label="Ayarlar">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                <div class="universal-back-bar">
+                    <button type="button" class="universal-back-btn" aria-label="Ayarlar">
+                        <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        <span class="universal-back-label">Ayarlar</span>
                     </button>
-                    <span class="ayarlar-back-label">Ayarlar</span>
                 </div>
                 <div class="modal-body">
                     <div style="padding: 16px;">
@@ -469,11 +469,11 @@
                         </svg>
                     </button>
                 </div>
-                <div class="ayarlar-back-bar">
-                    <button type="button" class="ayarlar-back-btn" aria-label="Kullanıcı Yönetimi" onclick="closeUserFormModal()">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                <div class="universal-back-bar">
+                    <button type="button" class="universal-back-btn" aria-label="Kullanıcı Yönetimi" onclick="closeUserFormModal()">
+                        <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        <span class="universal-back-label">Kullanıcı Yönetimi</span>
                     </button>
-                    <span class="ayarlar-back-label">Kullanıcı Yönetimi</span>
                 </div>
                 <div class="modal-body">
                     <form id="user-form" class="user-form-inner">
@@ -525,9 +525,9 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="settings-form-buttons">
-                            <button type="button" class="settings-btn-save" onclick="saveUser()">Kaydet</button>
-                            <button type="button" class="settings-btn-cancel" onclick="closeUserFormModal()">Vazgeç</button>
+                        <div class="universal-btn-group">
+                            <button type="button" class="universal-btn-save" onclick="saveUser()">Kaydet</button>
+                            <button type="button" class="universal-btn-cancel" onclick="closeUserFormModal()">Vazgeç</button>
                             <button type="button" class="settings-btn-delete" onclick="deleteUser(document.getElementById('user-id').value)" id="user-delete-btn" style="display: none;">Sil</button>
                         </div>
                     </form>
@@ -536,7 +536,7 @@
         </div>
 
         <div id="data-management-modal" class="modal-overlay ayarlar-modal-overlay">
-            <div class="modal-container" onclick="if(event.target.closest('.ayarlar-back-btn')) { event.stopPropagation(); closeDataManagement(); var m=document.getElementById('settings-menu'); if(m)m.classList.add('open'); }">
+            <div class="modal-container" onclick="if(event.target.closest('.universal-back-btn')) { event.stopPropagation(); closeDataManagement(); var m=document.getElementById('settings-menu'); if(m)m.classList.add('open'); }">
                 <div class="modal-header">
                     <h2>VERİ YÖNETİMİ</h2>
                     <button class="modal-close" onclick="closeDataManagement()">
@@ -546,11 +546,11 @@
                         </svg>
                     </button>
                 </div>
-                <div class="ayarlar-back-bar">
-                    <button type="button" class="ayarlar-back-btn" aria-label="Ayarlar">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                <div class="universal-back-bar">
+                    <button type="button" class="universal-back-btn" aria-label="Ayarlar">
+                        <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        <span class="universal-back-label">Ayarlar</span>
                     </button>
-                    <span class="ayarlar-back-label">Ayarlar</span>
                 </div>
                 <div class="modal-body">
                     <div class="data-management-actions">
@@ -616,9 +616,9 @@
                 </div>
                 <div class="modal-body" onclick="event.stopPropagation();">
                     <p id="cache-confirm-message" style="color: var(--form-label-color); font-size: 14px; line-height: 1.6; margin-bottom: 18px; text-align: center;"></p>
-                    <div style="display: flex; gap: 10px; justify-content: center;">
-                        <button type="button" class="modal-btn-confirm modal-btn--sm" onclick="event.stopPropagation(); confirmCacheClear();">Evet</button>
-                        <button type="button" class="modal-btn-cancel modal-btn--sm" onclick="event.stopPropagation(); closeCacheConfirmModal();">Hayır</button>
+                    <div class="universal-btn-group">
+                        <button type="button" class="universal-btn-save" onclick="event.stopPropagation(); confirmCacheClear();">Evet</button>
+                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); closeCacheConfirmModal();">Hayır</button>
                     </div>
                 </div>
             </div>
@@ -659,9 +659,9 @@
                 </div>
                 <div class="modal-body" onclick="event.stopPropagation();">
                     <p id="tescil-confirm-message" style="color: var(--form-label-color); font-size: 14px; line-height: 1.6; margin-bottom: 20px; text-align: center;"></p>
-                    <div style="display: flex; gap: 10px; justify-content: center;">
-                        <button type="button" class="modal-btn-confirm modal-btn--sm" onclick="event.stopPropagation(); confirmOnay();">Evet</button>
-                        <button type="button" class="modal-btn-cancel modal-btn--sm" onclick="event.stopPropagation(); cancelOnay();">Hayır</button>
+                    <div class="universal-btn-group">
+                        <button type="button" class="universal-btn-save" onclick="event.stopPropagation(); confirmOnay();">Evet</button>
+                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); cancelOnay();">Hayır</button>
                     </div>
                 </div>
             </div>
@@ -687,9 +687,9 @@
                             <span id="tescil-tarih-overlay" class="tescil-tarih-overlay" style="position: absolute; pointer-events: none; white-space: nowrap; font-size: 14px; font-family: inherit; line-height: 1; color: #e0e0e0;"></span>
                         </div>
                     </div>
-                    <div style="display: flex; gap: 10px; justify-content: center;">
-                        <button type="button" class="tescil-tarih-kaydet-btn modal-btn-cancel modal-btn--sm" onclick="event.stopPropagation(); saveTescilTarihi();">Kaydet</button>
-                        <button type="button" class="tescil-tarih-vazgec-btn modal-btn-confirm modal-btn--sm" onclick="event.stopPropagation(); cancelTescilTarihi();">Vazgeç</button>
+                    <div class="universal-btn-group">
+                        <button type="button" class="universal-btn-save" onclick="event.stopPropagation(); saveTescilTarihi();">Kaydet</button>
+                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); cancelTescilTarihi();">Vazgeç</button>
                     </div>
                 </div>
             </div>
@@ -708,10 +708,10 @@
                         </svg>
                     </button>
                 </div>
-                <div class="olay-ekle-back-bar">
-                    <button type="button" class="olay-ekle-back-btn" onclick="event.stopPropagation(); backToVehicleDetail();" title="Taşıt Detay'a dön">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-                        <span>Taşıt Detay</span>
+                <div class="universal-back-bar">
+                    <button type="button" class="universal-back-btn" onclick="event.stopPropagation(); backToVehicleDetail();" title="Taşıt Detay'a dön">
+                        <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        <span class="universal-back-label">Taşıt Detay</span>
                     </button>
                 </div>
                 <div class="modal-body" onclick="event.stopPropagation();">
@@ -732,13 +732,11 @@
                         </svg>
                     </button>
                 </div>
-                <div class="olay-ekle-back-bar">
-                    <button type="button" class="olay-ekle-back-btn" onclick="openEventModal('menu', window.currentDetailVehicleId)" aria-label="Olay menüsüne dön">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M19 12H5M12 19l-7-7 7-7"/>
-                        </svg>
+                <div class="universal-back-bar">
+                    <button type="button" class="universal-back-btn" onclick="openEventModal('menu', window.currentDetailVehicleId)" aria-label="Olay menüsüne dön">
+                        <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        <span class="universal-back-label">Olay Ekle</span>
                     </button>
-                    <span class="active-branch-title">Olay Ekle</span>
                 </div>
                 <div class="modal-body" onclick="event.stopPropagation();">
                     <div style="display: flex; flex-direction: column; gap: 12px;">
@@ -767,9 +765,9 @@
                             <input type="text" id="bakim-tutar" class="form-input" placeholder="2.500" inputmode="numeric" style="width: 100%;">
                         </div>
                     </div>
-                    <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
-                        <button type="button" class="modal-btn-cancel" onclick="event.stopPropagation(); saveBakimEvent();">Kaydet</button>
-                        <button type="button" class="modal-btn-confirm" onclick="event.stopPropagation(); closeEventModal('bakim');">Vazgeç</button>
+                    <div class="universal-btn-group">
+                        <button type="button" class="universal-btn-save" onclick="event.stopPropagation(); saveBakimEvent();">Kaydet</button>
+                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); closeEventModal('bakim');">Vazgeç</button>
                     </div>
                 </div>
             </div>
@@ -787,13 +785,11 @@
                         </svg>
                     </button>
                 </div>
-                <div class="olay-ekle-back-bar">
-                    <button type="button" class="olay-ekle-back-btn" onclick="openEventModal('menu', window.currentDetailVehicleId)" aria-label="Olay menüsüne dön">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M19 12H5M12 19l-7-7 7-7"/>
-                        </svg>
+                <div class="universal-back-bar">
+                    <button type="button" class="universal-back-btn" onclick="openEventModal('menu', window.currentDetailVehicleId)" aria-label="Olay menüsüne dön">
+                        <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        <span class="universal-back-label">Olay Ekle</span>
                     </button>
-                    <span class="active-branch-title">Olay Ekle</span>
                 </div>
                 <div class="modal-body" onclick="event.stopPropagation();">
                     <div style="display: flex; flex-direction: column; gap: 12px;">
@@ -814,9 +810,9 @@
                             <div id="kaza-kaporta-container" role="group" aria-labelledby="kaza-kaporta-label" style="margin-top: 3px; margin-bottom: 8px; overflow: hidden;"></div>
                         </div>
                     </div>
-                    <div style="display: flex; gap: 10px; justify-content: center; margin-top: 0px;">
-                        <button type="button" class="modal-btn-cancel" onclick="event.stopPropagation(); saveKazaEvent();">Kaydet</button>
-                        <button type="button" class="modal-btn-confirm" onclick="event.stopPropagation(); closeEventModal('kaza');">Vazgeç</button>
+                    <div class="universal-btn-group">
+                        <button type="button" class="universal-btn-save" onclick="event.stopPropagation(); saveKazaEvent();">Kaydet</button>
+                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); closeEventModal('kaza');">Vazgeç</button>
                     </div>
                 </div>
             </div>
@@ -834,13 +830,11 @@
                         </svg>
                     </button>
                 </div>
-                <div class="olay-ekle-back-bar">
-                    <button type="button" class="olay-ekle-back-btn" onclick="openEventModal('menu', window.currentDetailVehicleId)" aria-label="Olay menüsüne dön">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M19 12H5M12 19l-7-7 7-7"/>
-                        </svg>
+                <div class="universal-back-bar">
+                    <button type="button" class="universal-back-btn" onclick="openEventModal('menu', window.currentDetailVehicleId)" aria-label="Olay menüsüne dön">
+                        <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        <span class="universal-back-label">Olay Ekle</span>
                     </button>
-                    <span class="active-branch-title">Olay Ekle</span>
                 </div>
                 <div class="modal-body" onclick="event.stopPropagation();">
                     <div style="display: flex; flex-direction: column; gap: 12px;">
@@ -861,9 +855,9 @@
                             <input type="text" id="sigorta-iletisim" class="form-input" placeholder="Telefon numarası" inputmode="tel" style="width: 100%;">
                         </div>
                     </div>
-                    <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
-                        <button type="button" class="modal-btn-cancel" onclick="event.stopPropagation(); updateSigortaInfo();">Kaydet</button>
-                        <button type="button" class="modal-btn-confirm" onclick="event.stopPropagation(); closeEventModal('sigorta');">Vazgeç</button>
+                    <div class="universal-btn-group">
+                        <button type="button" class="universal-btn-save" onclick="event.stopPropagation(); updateSigortaInfo();">Kaydet</button>
+                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); closeEventModal('sigorta');">Vazgeç</button>
                     </div>
                 </div>
             </div>
@@ -881,13 +875,11 @@
                         </svg>
                     </button>
                 </div>
-                <div class="olay-ekle-back-bar">
-                    <button type="button" class="olay-ekle-back-btn" onclick="openEventModal('menu', window.currentDetailVehicleId)" aria-label="Olay menüsüne dön">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M19 12H5M12 19l-7-7 7-7"/>
-                        </svg>
+                <div class="universal-back-bar">
+                    <button type="button" class="universal-back-btn" onclick="openEventModal('menu', window.currentDetailVehicleId)" aria-label="Olay menüsüne dön">
+                        <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        <span class="universal-back-label">Olay Ekle</span>
                     </button>
-                    <span class="active-branch-title">Olay Ekle</span>
                 </div>
                 <div class="modal-body" onclick="event.stopPropagation();">
                     <div style="display: flex; flex-direction: column; gap: 12px;">
@@ -908,9 +900,9 @@
                             <input type="text" id="kasko-iletisim" class="form-input" placeholder="Telefon numarası" inputmode="tel" style="width: 100%;">
                         </div>
                     </div>
-                    <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
-                        <button type="button" class="modal-btn-cancel" onclick="event.stopPropagation(); updateKaskoInfo();">Kaydet</button>
-                        <button type="button" class="modal-btn-confirm" onclick="event.stopPropagation(); closeEventModal('kasko');">Vazgeç</button>
+                    <div class="universal-btn-group">
+                        <button type="button" class="universal-btn-save" onclick="event.stopPropagation(); updateKaskoInfo();">Kaydet</button>
+                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); closeEventModal('kasko');">Vazgeç</button>
                     </div>
                 </div>
             </div>
@@ -928,13 +920,11 @@
                         </svg>
                     </button>
                 </div>
-                <div class="olay-ekle-back-bar">
-                    <button type="button" class="olay-ekle-back-btn" onclick="openEventModal('menu', window.currentDetailVehicleId)" aria-label="Olay menüsüne dön">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M19 12H5M12 19l-7-7 7-7"/>
-                        </svg>
+                <div class="universal-back-bar">
+                    <button type="button" class="universal-back-btn" onclick="openEventModal('menu', window.currentDetailVehicleId)" aria-label="Olay menüsüne dön">
+                        <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        <span class="universal-back-label">Olay Ekle</span>
                     </button>
-                    <span class="active-branch-title">Olay Ekle</span>
                 </div>
                 <div class="modal-body" onclick="event.stopPropagation();">
                     <div class="muayene-tarih-row">
@@ -943,9 +933,9 @@
                             <input type="date" id="muayene-tarih" class="form-input olay-tarih-input">
                         </div>
                     </div>
-                    <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
-                        <button type="button" class="modal-btn-cancel" onclick="event.stopPropagation(); updateMuayeneInfo();">Kaydet</button>
-                        <button type="button" class="modal-btn-confirm" onclick="event.stopPropagation(); closeEventModal('muayene');">Vazgeç</button>
+                    <div class="universal-btn-group">
+                        <button type="button" class="universal-btn-save" onclick="event.stopPropagation(); updateMuayeneInfo();">Kaydet</button>
+                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); closeEventModal('muayene');">Vazgeç</button>
                     </div>
                 </div>
             </div>
@@ -963,20 +953,18 @@
                         </svg>
                     </button>
                 </div>
-                <div class="olay-ekle-back-bar">
-                    <button type="button" class="olay-ekle-back-btn" onclick="openEventModal('menu', window.currentDetailVehicleId)" aria-label="Olay menüsüne dön">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M19 12H5M12 19l-7-7 7-7"/>
-                        </svg>
+                <div class="universal-back-bar">
+                    <button type="button" class="universal-back-btn" onclick="openEventModal('menu', window.currentDetailVehicleId)" aria-label="Olay menüsüne dön">
+                        <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        <span class="universal-back-label">Olay Ekle</span>
                     </button>
-                    <span class="active-branch-title">Olay Ekle</span>
                 </div>
                 <div class="modal-body" onclick="event.stopPropagation();">
                     <div style="display: flex; flex-direction: column; gap: 12px;">
                         <div>
                             <label for="anahtar-durum-var" style="color: var(--form-label-color); font-size: 14px; display: block; margin-bottom: 8px;">Durum:</label>
                             <div class="radio-group" style="display: flex; gap: 8px; justify-content: flex-start;">
-                                <button type="button" id="anahtar-durum-var" class="radio-btn hover-green green" data-value="var">Var</button>
+                                <button type="button" id="anahtar-durum-var" class="radio-btn hover-green" data-value="var">Var</button>
                                 <button type="button" class="radio-btn hover-red" data-value="yok">Yok</button>
                             </div>
                         </div>
@@ -985,9 +973,9 @@
                             <input type="text" id="anahtar-detay-event" class="form-input" placeholder="Anahtar nerede?" style="width: 100%;">
                         </div>
                     </div>
-                    <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
-                        <button type="button" class="modal-btn-cancel" onclick="event.stopPropagation(); updateAnahtarInfo();">Kaydet</button>
-                        <button type="button" class="modal-btn-confirm" onclick="event.stopPropagation(); closeEventModal('anahtar');">Vazgeç</button>
+                    <div class="universal-btn-group">
+                        <button type="button" class="universal-btn-save" onclick="event.stopPropagation(); updateAnahtarInfo();">Kaydet</button>
+                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); closeEventModal('anahtar');">Vazgeç</button>
                     </div>
                 </div>
             </div>
@@ -1005,20 +993,18 @@
                         </svg>
                     </button>
                 </div>
-                <div class="olay-ekle-back-bar">
-                    <button type="button" class="olay-ekle-back-btn" onclick="openEventModal('menu', window.currentDetailVehicleId)" aria-label="Olay menüsüne dön">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M19 12H5M12 19l-7-7 7-7"/>
-                        </svg>
+                <div class="universal-back-bar">
+                    <button type="button" class="universal-back-btn" onclick="openEventModal('menu', window.currentDetailVehicleId)" aria-label="Olay menüsüne dön">
+                        <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        <span class="universal-back-label">Olay Ekle</span>
                     </button>
-                    <span class="active-branch-title">Olay Ekle</span>
                 </div>
                 <div class="modal-body" onclick="event.stopPropagation();">
                     <div style="display: flex; flex-direction: column; gap: 12px;">
                         <div>
                             <label for="kredi-durum-var" style="color: var(--form-label-color); font-size: 14px; display: block; margin-bottom: 8px;">Durum:</label>
                             <div class="radio-group" style="display: flex; gap: 8px; justify-content: flex-start;">
-                                <button type="button" id="kredi-durum-var" class="radio-btn hover-green green" data-value="var">Var</button>
+                                <button type="button" id="kredi-durum-var" class="radio-btn hover-green" data-value="var">Var</button>
                                 <button type="button" class="radio-btn hover-red" data-value="yok">Yok</button>
                             </div>
                         </div>
@@ -1027,9 +1013,9 @@
                             <input type="text" id="kredi-detay-event" class="form-input" placeholder="Kredi/Rehin detayı" style="width: 100%;">
                         </div>
                     </div>
-                    <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
-                        <button type="button" class="modal-btn-cancel" onclick="event.stopPropagation(); updateKrediInfo();">Kaydet</button>
-                        <button type="button" class="modal-btn-confirm" onclick="event.stopPropagation(); closeEventModal('kredi');">Vazgeç</button>
+                    <div class="universal-btn-group">
+                        <button type="button" class="universal-btn-save" onclick="event.stopPropagation(); updateKrediInfo();">Kaydet</button>
+                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); closeEventModal('kredi');">Vazgeç</button>
                     </div>
                 </div>
             </div>
@@ -1047,13 +1033,11 @@
                         </svg>
                     </button>
                 </div>
-                <div class="olay-ekle-back-bar">
-                    <button type="button" class="olay-ekle-back-btn" onclick="openEventModal('menu', window.currentDetailVehicleId)" aria-label="Olay menüsüne dön">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M19 12H5M12 19l-7-7 7-7"/>
-                        </svg>
+                <div class="universal-back-bar">
+                    <button type="button" class="universal-back-btn" onclick="openEventModal('menu', window.currentDetailVehicleId)" aria-label="Olay menüsüne dön">
+                        <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        <span class="universal-back-label">Olay Ekle</span>
                     </button>
-                    <span class="active-branch-title">Olay Ekle</span>
                 </div>
                 <div class="modal-body" onclick="event.stopPropagation();">
                     <div style="display: flex; flex-direction: column; gap: 12px;">
@@ -1062,9 +1046,9 @@
                             <input type="text" id="km-guncelle-input" class="form-input" placeholder="150.000" inputmode="numeric" style="width: 100%;">
                         </div>
                     </div>
-                    <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
-                        <button type="button" class="modal-btn-cancel" onclick="event.stopPropagation(); updateKmInfo();">Kaydet</button>
-                        <button type="button" class="modal-btn-confirm" onclick="event.stopPropagation(); closeEventModal('km');">Vazgeç</button>
+                    <div class="universal-btn-group">
+                        <button type="button" class="universal-btn-save" onclick="event.stopPropagation(); updateKmInfo();">Kaydet</button>
+                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); closeEventModal('km');">Vazgeç</button>
                     </div>
                 </div>
             </div>
@@ -1082,20 +1066,18 @@
                         </svg>
                     </button>
                 </div>
-                <div class="olay-ekle-back-bar">
-                    <button type="button" class="olay-ekle-back-btn" onclick="openEventModal('menu', window.currentDetailVehicleId)" aria-label="Olay menüsüne dön">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M19 12H5M12 19l-7-7 7-7"/>
-                        </svg>
+                <div class="universal-back-bar">
+                    <button type="button" class="universal-back-btn" onclick="openEventModal('menu', window.currentDetailVehicleId)" aria-label="Olay menüsüne dön">
+                        <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        <span class="universal-back-label">Olay Ekle</span>
                     </button>
-                    <span class="active-branch-title">Olay Ekle</span>
                 </div>
                 <div class="modal-body" onclick="event.stopPropagation();">
                     <div style="display: flex; flex-direction: column; gap: 12px;">
                         <div>
                             <label for="lastik-durum-var" style="color: var(--form-label-color); font-size: 14px; display: block; margin-bottom: 8px;">Durum:</label>
                             <div class="radio-group" style="display: flex; gap: 8px; justify-content: flex-start;">
-                                <button type="button" id="lastik-durum-var" class="radio-btn hover-green green" data-value="var">Var</button>
+                                <button type="button" id="lastik-durum-var" class="radio-btn hover-green" data-value="var">Var</button>
                                 <button type="button" class="radio-btn hover-red" data-value="yok">Yok</button>
                             </div>
                         </div>
@@ -1104,9 +1086,9 @@
                             <input type="text" id="lastik-adres-event" class="form-input" placeholder="Lastik adresi" style="width: 100%;">
                         </div>
                     </div>
-                    <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
-                        <button type="button" class="modal-btn-cancel" onclick="event.stopPropagation(); updateLastikInfo();">Kaydet</button>
-                        <button type="button" class="modal-btn-confirm" onclick="event.stopPropagation(); closeEventModal('lastik');">Vazgeç</button>
+                    <div class="universal-btn-group">
+                        <button type="button" class="universal-btn-save" onclick="event.stopPropagation(); updateLastikInfo();">Kaydet</button>
+                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); closeEventModal('lastik');">Vazgeç</button>
                     </div>
                 </div>
             </div>
@@ -1124,27 +1106,25 @@
                         </svg>
                     </button>
                 </div>
-                <div class="olay-ekle-back-bar">
-                    <button type="button" class="olay-ekle-back-btn" onclick="openEventModal('menu', window.currentDetailVehicleId)" aria-label="Olay menüsüne dön">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M19 12H5M12 19l-7-7 7-7"/>
-                        </svg>
+                <div class="universal-back-bar">
+                    <button type="button" class="universal-back-btn" onclick="openEventModal('menu', window.currentDetailVehicleId)" aria-label="Olay menüsüne dön">
+                        <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        <span class="universal-back-label">Olay Ekle</span>
                     </button>
-                    <span class="active-branch-title">Olay Ekle</span>
                 </div>
                 <div class="modal-body" onclick="event.stopPropagation();">
                     <div style="display: flex; flex-direction: column; gap: 12px;">
                         <div>
                             <label for="utts-evet" style="color: var(--form-label-color); font-size: 14px; display: block; margin-bottom: 8px;">UTTS Tanımlandı mı:</label>
                             <div class="radio-group" style="display: flex; gap: 8px; justify-content: flex-start;">
-                                <button type="button" id="utts-evet" class="radio-btn hover-green green" data-value="evet" onclick="event.stopPropagation(); this.closest('.radio-group').querySelectorAll('.radio-btn').forEach(b => b.classList.remove('active','green')); this.classList.add('active','green');">Evet</button>
+                                <button type="button" id="utts-evet" class="radio-btn hover-green" data-value="evet" onclick="event.stopPropagation(); this.closest('.radio-group').querySelectorAll('.radio-btn').forEach(b => b.classList.remove('active','green')); this.classList.add('active','green');">Evet</button>
                                 <button type="button" class="radio-btn hover-red" data-value="hayir" onclick="event.stopPropagation(); this.closest('.radio-group').querySelectorAll('.radio-btn').forEach(b => b.classList.remove('active','green')); this.classList.add('active');">Hayır</button>
                             </div>
                         </div>
                     </div>
-                    <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
-                        <button type="button" class="modal-btn-cancel" onclick="event.stopPropagation(); updateUTTSInfo();">Kaydet</button>
-                        <button type="button" class="modal-btn-confirm" onclick="event.stopPropagation(); closeEventModal('utts');">Vazgeç</button>
+                    <div class="universal-btn-group">
+                        <button type="button" class="universal-btn-save" onclick="event.stopPropagation(); updateUTTSInfo();">Kaydet</button>
+                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); closeEventModal('utts');">Vazgeç</button>
                     </div>
                 </div>
             </div>
@@ -1162,27 +1142,25 @@
                         </svg>
                     </button>
                 </div>
-                <div class="olay-ekle-back-bar">
-                    <button type="button" class="olay-ekle-back-btn" onclick="openEventModal('menu', window.currentDetailVehicleId)" aria-label="Olay menüsüne dön">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M19 12H5M12 19l-7-7 7-7"/>
-                        </svg>
+                <div class="universal-back-bar">
+                    <button type="button" class="universal-back-btn" onclick="openEventModal('menu', window.currentDetailVehicleId)" aria-label="Olay menüsüne dön">
+                        <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        <span class="universal-back-label">Olay Ekle</span>
                     </button>
-                    <span class="active-branch-title">Olay Ekle</span>
                 </div>
                 <div class="modal-body" onclick="event.stopPropagation();">
                     <div style="display: flex; flex-direction: column; gap: 12px;">
                         <div>
                             <label for="takip-evet" style="color: var(--form-label-color); font-size: 14px; display: block; margin-bottom: 8px;">Takip Cihazı Montajı:</label>
                             <div class="radio-group" style="display: flex; gap: 8px; justify-content: flex-start;">
-                                <button type="button" id="takip-evet" class="radio-btn hover-green green" data-value="evet" onclick="event.stopPropagation(); this.closest('.radio-group').querySelectorAll('.radio-btn').forEach(b => b.classList.remove('active','green')); this.classList.add('active','green');">Evet</button>
+                                <button type="button" id="takip-evet" class="radio-btn hover-green" data-value="evet" onclick="event.stopPropagation(); this.closest('.radio-group').querySelectorAll('.radio-btn').forEach(b => b.classList.remove('active','green')); this.classList.add('active','green');">Evet</button>
                                 <button type="button" class="radio-btn hover-red" data-value="hayir" onclick="event.stopPropagation(); this.closest('.radio-group').querySelectorAll('.radio-btn').forEach(b => b.classList.remove('active','green')); this.classList.add('active');">Hayır</button>
                             </div>
                         </div>
                     </div>
-                    <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
-                        <button type="button" class="modal-btn-cancel" onclick="event.stopPropagation(); updateTakipCihazInfo();">Kaydet</button>
-                        <button type="button" class="modal-btn-confirm" onclick="event.stopPropagation(); closeEventModal('takip');">Vazgeç</button>
+                    <div class="universal-btn-group">
+                        <button type="button" class="universal-btn-save" onclick="event.stopPropagation(); updateTakipCihazInfo();">Kaydet</button>
+                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); closeEventModal('takip');">Vazgeç</button>
                     </div>
                 </div>
             </div>
@@ -1200,13 +1178,11 @@
                         </svg>
                     </button>
                 </div>
-                <div class="olay-ekle-back-bar">
-                    <button type="button" class="olay-ekle-back-btn" onclick="openEventModal('menu', window.currentDetailVehicleId)" aria-label="Olay menüsüne dön">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M19 12H5M12 19l-7-7 7-7"/>
-                        </svg>
+                <div class="universal-back-bar">
+                    <button type="button" class="universal-back-btn" onclick="openEventModal('menu', window.currentDetailVehicleId)" aria-label="Olay menüsüne dön">
+                        <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        <span class="universal-back-label">Olay Ekle</span>
                     </button>
-                    <span class="active-branch-title">Olay Ekle</span>
                 </div>
                 <div class="modal-body" onclick="event.stopPropagation();">
                     <div style="display: flex; flex-direction: column; gap: 12px;">
@@ -1217,9 +1193,9 @@
                             </select>
                         </div>
                     </div>
-                    <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
-                        <button type="button" class="modal-btn-cancel" onclick="event.stopPropagation(); updateSubeDegisiklik();">Kaydet</button>
-                        <button type="button" class="modal-btn-confirm" onclick="event.stopPropagation(); closeEventModal('sube');">Vazgeç</button>
+                    <div class="universal-btn-group">
+                        <button type="button" class="universal-btn-save" onclick="event.stopPropagation(); updateSubeDegisiklik();">Kaydet</button>
+                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); closeEventModal('sube');">Vazgeç</button>
                     </div>
                 </div>
             </div>
@@ -1237,13 +1213,11 @@
                         </svg>
                     </button>
                 </div>
-                <div class="olay-ekle-back-bar">
-                    <button type="button" class="olay-ekle-back-btn" onclick="openEventModal('menu', window.currentDetailVehicleId)" aria-label="Olay menüsüne dön">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M19 12H5M12 19l-7-7 7-7"/>
-                        </svg>
+                <div class="universal-back-bar">
+                    <button type="button" class="universal-back-btn" onclick="openEventModal('menu', window.currentDetailVehicleId)" aria-label="Olay menüsüne dön">
+                        <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        <span class="universal-back-label">Olay Ekle</span>
                     </button>
-                    <span class="active-branch-title">Olay Ekle</span>
                 </div>
                 <div class="modal-body" onclick="event.stopPropagation();">
                     <div style="display: flex; flex-direction: column; gap: 12px;">
@@ -1254,9 +1228,9 @@
                             </select>
                         </div>
                     </div>
-                    <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
-                        <button type="button" class="modal-btn-cancel" onclick="event.stopPropagation(); updateKullaniciAtama();">Kaydet</button>
-                        <button type="button" class="modal-btn-confirm" onclick="event.stopPropagation(); closeEventModal('kullanici');">Vazgeç</button>
+                    <div class="universal-btn-group">
+                        <button type="button" class="universal-btn-save" onclick="event.stopPropagation(); updateKullaniciAtama();">Kaydet</button>
+                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); closeEventModal('kullanici');">Vazgeç</button>
                     </div>
                 </div>
             </div>
@@ -1274,13 +1248,11 @@
                         </svg>
                     </button>
                 </div>
-                <div class="olay-ekle-back-bar">
-                    <button type="button" class="olay-ekle-back-btn" onclick="openEventModal('menu', window.currentDetailVehicleId)" aria-label="Olay menüsüne dön">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M19 12H5M12 19l-7-7 7-7"/>
-                        </svg>
+                <div class="universal-back-bar">
+                    <button type="button" class="universal-back-btn" onclick="openEventModal('menu', window.currentDetailVehicleId)" aria-label="Olay menüsüne dön">
+                        <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        <span class="universal-back-label">Olay Ekle</span>
                     </button>
-                    <span class="active-branch-title">Olay Ekle</span>
                 </div>
                 <div class="modal-body" onclick="event.stopPropagation();">
                     <div style="display: flex; flex-direction: column; gap: 12px;">
@@ -1297,9 +1269,9 @@
                             <textarea id="satis-aciklama" class="form-input" rows="3" placeholder="Açıklama" style="width: 100%;"></textarea>
                         </div>
                     </div>
-                    <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
-                        <button type="button" class="modal-btn-cancel" onclick="event.stopPropagation(); saveSatisPert();">Kaydet</button>
-                        <button type="button" class="modal-btn-confirm" onclick="event.stopPropagation(); closeEventModal('satis');">Vazgeç</button>
+                    <div class="universal-btn-group">
+                        <button type="button" class="universal-btn-save" onclick="event.stopPropagation(); saveSatisPert();">Kaydet</button>
+                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); closeEventModal('satis');">Vazgeç</button>
                     </div>
                 </div>
             </div>
@@ -1317,13 +1289,11 @@
                         </svg>
                     </button>
                 </div>
-                <div style="padding: 8px 16px; display: flex; align-items: center; gap: 8px;">
-                    <button onclick="event.stopPropagation(); closeVehicleHistoryModal(); if (window.currentDetailVehicleId) showVehicleDetail(window.currentDetailVehicleId);" style="background: transparent; border: none; color: var(--form-label-color); cursor: pointer; display: flex; align-items: center; gap: 4px; padding: 0;">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M19 12H5M12 19l-7-7 7-7"/>
-                        </svg>
+                <div class="universal-back-bar">
+                    <button type="button" class="universal-back-btn" onclick="event.stopPropagation(); closeVehicleHistoryModal(); if (window.currentDetailVehicleId) showVehicleDetail(window.currentDetailVehicleId);">
+                        <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        <span class="universal-back-label">Taşıt Detayları</span>
                     </button>
-                    <span class="active-branch-title" style="color: #999; font-weight: 700; font-size: 13.5px;">Taşıt Detayları</span>
                 </div>
                 <div class="modal-body">
                     <div id="history-tabs" style="display: flex; align-items: center; justify-content: center; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
