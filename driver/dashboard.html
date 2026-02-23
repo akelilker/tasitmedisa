@@ -108,14 +108,12 @@
             </div>
         </main>
 
-        <a href="../" class="management-system-link" title="Yönetim Sistemi">
-            <span class="management-system-link-inner">
-                <svg class="management-system-link-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="15 6 9 12 15 18"></polyline>
-                </svg>
-                <span class="management-system-link-text">Yönetim Sistemi</span>
-            </span>
-        </a>
+        <div class="universal-back-bar driver-footer-back-wrap">
+            <a href="../" class="universal-back-btn" title="Yönetim Sistemi">
+                <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                <span class="universal-back-label">Yönetim Sistemi</span>
+            </a>
+        </div>
         <footer id="app-footer">
             <div class="footer-content">
                 <span class="version" id="version-display"></span>
@@ -135,13 +133,11 @@
                         </svg>
                     </button>
             </div>
-            <div class="history-nav-row" style="padding: 8px 16px; display: flex; align-items: center; gap: 8px;">
-                <button type="button" onclick="closeHistory()" class="history-back-btn" style="background: transparent; border: none; color: var(--form-label-color); cursor: pointer; display: flex; align-items: center; gap: 4px; padding: 0;">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M19 12H5M12 19l-7-7 7-7"/>
-                    </svg>
+            <div class="universal-back-bar">
+                <button type="button" class="universal-back-btn" onclick="closeHistory()">
+                    <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                    <span class="universal-back-label">Kullanıcı Paneli</span>
                 </button>
-                <span class="history-back-text">Kullanıcı Paneli</span>
             </div>
             <div class="modal-body">
                 <div class="history-filters">

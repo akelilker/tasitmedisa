@@ -443,10 +443,12 @@
         // DETAY MODU: Solda Geri+İsim, Sağda Yerel Arama/Filtre/Görünüm
         toolbar.innerHTML = `
             <div class="vt-left">
-                <button class="vt-back-btn" onclick="renderBranchDashboard()">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-                </button>
-                ${title ? `<span class="active-branch-title">${escapeHtml(title)}</span>` : ''}
+                <div class="universal-back-bar">
+                    <button type="button" class="universal-back-btn" onclick="renderBranchDashboard()">
+                        <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        ${title ? `<span class="universal-back-label">${escapeHtml(title)}</span>` : ''}
+                    </button>
+                </div>
             </div>
             <div class="vt-right">
                 <div id="v-search-container" class="v-search-container">
@@ -1032,14 +1034,13 @@
         }
       }
 
-      // Geri butonu oluştur
+      // Geri butonu (evrensel yapı)
+      const backBar = document.createElement('div');
+      backBar.className = 'universal-back-bar';
       const backBtn = document.createElement('button');
-      backBtn.className = 'detail-back-btn vt-back-btn';
-      backBtn.innerHTML = `
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M19 12H5M12 19l-7-7 7-7"/>
-        </svg>
-      `;
+      backBtn.type = 'button';
+      backBtn.className = 'universal-back-btn';
+      backBtn.innerHTML = `<svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg><span class="universal-back-label">${escapeHtml(backLabel)}</span>`;
       backBtn.onclick = () => {
         closeVehicleDetailModal();
         if (lastListContext && lastListContext.mode === 'archive') {
@@ -1050,12 +1051,8 @@
           renderBranchDashboard();
         }
       };
-      toolbarLeft.appendChild(backBtn);
-
-      const backLabelSpan = document.createElement('span');
-      backLabelSpan.className = 'active-branch-title';
-      backLabelSpan.textContent = backLabel;
-      toolbarLeft.appendChild(backLabelSpan);
+      backBar.appendChild(backBtn);
+      toolbarLeft.appendChild(backBar);
       
       // Orta taraf (tahsis butonu - sadece tahsis edilmemiş taşıtlar için)
       const toolbarCenter = document.createElement('div');

@@ -133,49 +133,15 @@ align-items: center;
 gap: 8px;
 width: 100%;
 }
-#reports-modal .reports-list-header-actions .stok-back-btn,
+#reports-modal .reports-list-header-actions .universal-back-bar,
 #reports-modal .reports-list-header-actions .stok-detail-add-btn {
 margin: 0;
 }
-/* Raporlar: sol ok – hem stok-back-btn hem back-btn (sunucu cache) icin */
-#reports-modal .stok-back-btn,
-#reports-modal .back-btn,
-#reports-modal .modal-back-bar .back-btn {
-background: transparent !important;
-background-color: transparent !important;
--webkit-appearance: none !important;
-appearance: none !important;
-border: none !important;
-box-shadow: none !important;
-outline: none !important;
-display: inline-flex !important;
-align-items: center !important;
-justify-content: center !important;
-padding: 4px !important;
-color: var(--form-label-color) !important;
-cursor: pointer !important;
-}
-#reports-modal .stok-back-btn:hover,
-#reports-modal .back-btn:hover,
-#reports-modal .modal-back-bar .back-btn:hover {
-color: #fff !important;
-background: transparent !important;
-outline: none !important;
-box-shadow: none !important;
-}
-/* Raporlar: sol ok wrapper (sunucu cache DOM) */
-#reports-modal .modal-back-bar {
-all: unset !important;
-display: inline-flex !important;
-align-items: center !important;
-gap: 4px !important;
-background: none !important;
-}
-/* Raporlar: ok yanindaki etiket (sunucu cache DOM) */
-#reports-modal .back-label {
-font-size: 14px;
-font-weight: 600;
-color: var(--form-label-color);
+#reports-modal .stok-controls-row-1 .universal-back-bar,
+#reports-modal .kullanici-list-top-controls .universal-back-bar,
+#reports-modal .kullanici-detail-header .universal-back-bar {
+width: auto;
+flex: 0 0 auto;
 }
 /* Row-1: sol ok ile metin ayni satirda */
 #reports-modal .reports-list-header-actions .stok-controls-row-1,
@@ -919,28 +885,6 @@ width: 100%;
 margin-top: 0;
 }
 
-.stok-back-btn {
-background: transparent;
-border: none;
-color: var(--form-label-color);
-cursor: pointer;
-padding: 4px;
-display: inline-flex;
-align-items: center;
-justify-content: center;
-transition: color 0.2s;
-margin-top: 0;
-}
-
-.stok-back-btn svg {
-width: 20px;
-height: 20px;
-}
-
-.stok-back-btn:hover {
-color: #fff;
-}
-
 .stok-detail-add-btn {
 background: transparent;
 border: none;
@@ -1671,28 +1615,16 @@ align-items: center !important;
 }
 .stok-list-top-controls > .stok-controls-row-1 { order: 0; }
 .stok-list-top-controls > .stok-controls-row-2 { order: 2; margin-top: 0 !important; }
-.stok-back-btn,
-.back-btn {
+#reports-modal .universal-back-btn {
 margin-top: 0;
 margin-left: 0;
-display: inline-flex !important;
-align-items: center;
-justify-content: center;
 padding: 10px !important;
 min-width: auto !important;
 min-height: auto !important;
-background: transparent !important;
 }
-.stok-back-btn svg,
-.back-btn svg {
+#reports-modal .back-icon-svg {
 width: 24px !important;
 height: 24px !important;
-}
-/* Mobil: sol ok wrapper arka plansiz */
-.modal-back-bar {
-background: none !important;
-display: inline-flex !important;
-align-items: center !important;
 }
 .stok-detail-add-btn {
 font-size: 14px !important;
