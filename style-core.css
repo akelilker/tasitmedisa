@@ -577,6 +577,9 @@ html { overflow-x: hidden; }
   display: flex !important;
 }
 .modal-overlay .modal-container {
+  display: flex !important;
+  flex-direction: column !important;
+  max-height: 90vh !important; /* Ekrandan taşmayı önler, butonlar kaçmasın */
   position: relative;
   background: var(--modal-bg);
   width: 100%;
@@ -584,13 +587,9 @@ html { overflow-x: hidden; }
   margin: max(12px, env(safe-area-inset-top)) auto var(--modal-margin-bottom-desktop) auto;
   height: calc(100vh - max(12px, env(safe-area-inset-top)) - var(--modal-margin-bottom-desktop));
   height: calc(100dvh - max(12px, env(safe-area-inset-top)) - var(--modal-margin-bottom-desktop));
-  max-height: calc(100vh - max(12px, env(safe-area-inset-top)) - var(--modal-margin-bottom-desktop));
-  max-height: calc(100dvh - max(12px, env(safe-area-inset-top)) - var(--modal-margin-bottom-desktop));
   border-radius: var(--modal-radius);
   border: 1px solid rgba(255, 255, 255, 0.3); /* Menü butonları ile aynı çerçeve */
   box-shadow: 0 4px 10px rgba(0,0,0,0.2), 0 4px 16px rgba(var(--theme-color-rgb), 0.1), 0 0 40px rgba(0, 0, 0, 0.9); /* Menü + modal gölge */
-  display: flex;
-  flex-direction: column;
   overflow: hidden;
   overflow-x: hidden; /* Yatay scroll engelle */
   box-sizing: border-box;
@@ -634,8 +633,8 @@ html { overflow-x: hidden; }
   color: var(--theme-color);
 }
 .modal-overlay .modal-body {
-  flex: 1;
-  overflow-y: auto;
+  flex: 0 1 auto !important; /* İçerik kadar yer kapla, butonları itme */
+  overflow-y: auto !important;
   overflow-x: hidden; /* Yatay kayma engelle */
   padding: 20px;
   -webkit-overflow-scrolling: touch;
@@ -644,6 +643,66 @@ html { overflow-x: hidden; }
 }
 .modal-overlay .modal-footer {
   flex-shrink: 0;
+}
+
+/* --- EVRENSEL BUTON GRUBU (içeriğe yakın, modal içinde hapsetme) --- */
+.universal-btn-group {
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 16px !important;
+  width: 100% !important;
+  margin-top: 12px !important; /* İçeriğe yaklaştırır */
+  padding: 12px 20px !important;
+  position: relative !important;
+  flex-shrink: 0 !important; /* Esneyip aşağı kaçmasını engeller */
+  background: transparent !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.05) !important; /* Hafif ayraç çizgisi */
+}
+
+/* Orijinal zarif ölçüler (28px yükseklik, 159–212px genişlik, 1px çerçeve) */
+.universal-btn-save,
+.universal-btn-cancel {
+  background: transparent !important;
+  height: 28px !important;
+  font-weight: 400 !important;
+  font-size: 11px !important;
+  text-transform: none !important;
+  border-radius: 8px !important;
+  border-width: 1px !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  max-width: 212px !important;
+  min-width: 159px !important;
+  justify-self: center !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+  line-height: 1 !important;
+  transition: background 0.2s, border-color 0.2s, color 0.2s !important;
+  box-shadow: none !important;
+  box-sizing: border-box !important;
+}
+
+.universal-btn-save {
+  color: var(--green-success, #28a745) !important;
+  border: 1px solid rgba(40, 167, 69, 0.5) !important;
+}
+.universal-btn-save:hover {
+  font-weight: 600 !important; /* Hover kaslanma */
+  background: rgba(40, 167, 69, 0.15) !important;
+  border-color: var(--green-success, #28a745) !important;
+}
+
+.universal-btn-cancel {
+  color: var(--theme-color, #e1061b) !important;
+  border: 1px solid rgba(225, 6, 27, 0.5) !important;
+}
+.universal-btn-cancel:hover {
+  font-weight: 600 !important; /* Hover kaslanma */
+  background: rgba(225, 6, 27, 0.15) !important;
+  border-color: var(--theme-color, #e1061b) !important;
 }
 
 /* Modal body varyantları (inline stil yerine) */
