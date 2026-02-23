@@ -1313,6 +1313,34 @@ body.modal-open .user-panel-link {
     .notification-item > div:first-child {
         font-size: 11px !important; /* 13px - 2pt (≈2px) = 11px */
     }
+
+    /* === ANA KAYIT MODALI KURTARMA (Dar alana sığması için alt alta dizilmek zorundadır) === */
+    #vehicle-modal .modal-body .form-section-inline:has(.radio-group),
+    #vehicle-modal .modal-body .form-section-inline:has([data-group]) {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 4px !important;
+        height: auto !important;
+    }
+    #vehicle-modal .modal-body .form-section-inline:has(.radio-group) .form-label {
+        width: 100% !important;
+        margin-bottom: 2px !important;
+    }
+    #vehicle-modal .modal-body .form-section-inline:has(.radio-group) .radio-group {
+        width: 100% !important;
+        justify-content: space-between !important;
+        flex-wrap: nowrap !important;
+        gap: 4px !important;
+    }
+    /* Ana formda butonların sağa sola taşmaması için orijinal dar ölçülerine dönüyoruz */
+    #vehicle-modal .modal-body .radio-btn,
+    #vehicle-modal .modal-body .toggle-btn {
+        height: 27px !important;
+        padding: 0 4px !important;
+        font-size: 11px !important;
+        flex: 1 1 0 !important;
+        min-width: 0 !important;
+    }
 }
 
 /* --- iOS PWA: Kırmızı çerçeve ekran üstü + kıvrımlar paralel --- */
