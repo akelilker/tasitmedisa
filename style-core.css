@@ -95,7 +95,7 @@ body::-webkit-scrollbar,
   align-items: center !important; /* Oku ve metni dikeyde KUSURSUZ ortalar */
   justify-content: flex-start !important;
   width: 100% !important;
-  padding: 16px 0 8px 0 !important; /* Alt boşluk 8px daraltıldı (16px'ten 8px'e düştü) */
+  padding: 8px 0 8px 0 !important; /* Üstten 8px tıraşlandı, bar yukarı kaydı */
   margin: 0 !important;
   box-sizing: border-box !important;
   gap: 12px !important;
@@ -197,6 +197,18 @@ body::-webkit-scrollbar,
   font-weight: 600 !important;
   border-color: var(--theme-color, #e1061b) !important;
   -webkit-text-stroke: 0.2px currentColor;
+}
+
+/* Tüm input/select/textarea içerik metni: göz yormayan gri */
+.form-input,
+select.form-input,
+select,
+textarea.form-input {
+  color: #adb5bd !important;
+}
+input[type="date"].form-input.has-value,
+input[type="date"].form-input:focus {
+  color: #adb5bd !important;
 }
 
 /* --- 1. SIFIRLAMA & ANA YAPI --- */
