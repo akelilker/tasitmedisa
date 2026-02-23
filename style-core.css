@@ -91,7 +91,9 @@ body::-webkit-scrollbar,
 /* --- EVRENSEL GERİ DÖN NAVİGASYONU (tüm uygulama) --- */
 .universal-back-bar {
   display: flex;
-  align-items: center;
+  flex-wrap: wrap !important; /* Sığmayan ekstra etiketleri (! Olay Ekle vb.) düzgünce sığdırır */
+  gap: 8px 12px !important;
+  align-items: center !important;
   padding: 12px 16px;
   width: 100%;
   background: transparent;
@@ -109,10 +111,11 @@ body::-webkit-scrollbar,
 }
 .universal-back-btn:hover { color: var(--txt-white); }
 .universal-back-label {
-  font-size: 17.5px;
-  font-weight: 500;
-  line-height: 1;
-  margin: 0;
+  color: #adb5bd !important; /* Bembeyaz yerine göz yormayan hafif gri */
+  font-size: 15.5px !important; /* 17.5px'ten 2 punto daha küçük */
+  font-weight: 500 !important;
+  line-height: 1 !important;
+  margin: 0 !important;
 }
 .back-icon-svg {
   width: 20px;
@@ -121,65 +124,68 @@ body::-webkit-scrollbar,
 }
 
 /* --- EVRENSEL İŞLEM BUTONLARI (Kaydet/Vazgeç, Bildir, Evet/Hayır) --- */
-/* Alt Butonların Kapsayıcısı - STANDART KUTU */
+/* GRUP KAPSAYICI (Artık sağa değil, TAM ORTAYA yaslı) */
 .universal-btn-group {
   display: flex !important;
-  justify-content: flex-end !important;
+  justify-content: center !important; /* Butonları daima ortala */
   align-items: center !important;
   gap: 12px !important;
   padding: 16px !important;
   width: 100% !important;
-  margin: 0 !important; /* Dışarıdan gelen marginleri sıfırla */
-  margin-top: auto !important; /* Modallarda alta it */
-  background: transparent !important; /* Arka plan rengi çakışmasını önle */
-  box-sizing: border-box !important; /* Padding taşmasını önle */
-  border: none !important; /* Eski borderları kaldır */
+  margin: 0 !important;
+  margin-top: auto !important;
+  background: transparent !important;
+  box-sizing: border-box !important;
+  border: none !important;
 }
 
-/* Ortak Buton Özellikleri (Sıfırlama) */
+/* ORTAK BUTON YAPISI (Orijinal: İçi Boş, Daha İnce, Tam Ortalı) */
 .universal-btn-save,
 .universal-btn-cancel {
-  /* Yazı Tipi Standartları */
-  font-family: inherit !important;
-  font-size: 15px !important; /* Kesin boyut */
-  line-height: normal !important;
-  text-transform: none !important;
-  letter-spacing: normal !important;
-
-  /* Kutu Modeli Standartları */
-  padding: 10px 24px !important; /* Kesin padding */
-  margin: 0 !important; /* Butonların kendi margini olmasın */
-  height: auto !important;
-  width: auto !important;
-  box-sizing: border-box !important;
-
-  /* Görünüm Standartları */
+  background-color: transparent !important; /* Arka plan yok */
   border-radius: 8px !important;
+  padding: 6px 24px !important; /* Yükseklik azaltıldı (eski 10px'ti, 6px yapıldı) */
+  font-family: inherit !important;
+  font-size: 15px !important;
+  font-weight: 500 !important;
   cursor: pointer !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  box-shadow: none !important; /* Eski gölgeleri kaldır */
-  transition: opacity 0.2s ease !important;
+  text-align: center !important;
+  justify-self: center !important; /* 2'li grid içindeyse kendi hücresinin göbeğinde durur */
+  transition: all 0.2s ease !important;
+  box-shadow: none !important;
+  height: auto !important;
+  width: auto !important;
+  box-sizing: border-box !important;
 }
 
-/* Birincil Aksiyon (Kaydet - Yeşil) */
+/* KAYDET (YEŞİL) - Normal Durum */
 .universal-btn-save {
-  background-color: var(--green-success) !important;
-  color: var(--txt-light) !important;
-  border: none !important;
-  font-weight: 600 !important;
+  color: var(--green-success, #28a745) !important;
+  border: 1px solid var(--green-success, #28a745) !important;
 }
-.universal-btn-save:hover { opacity: 0.9 !important; }
 
-/* İkincil Aksiyon (Vazgeç - Çerçeveli) */
-.universal-btn-cancel {
-  background-color: transparent !important;
-  color: var(--theme-color) !important;
-  border: 1px solid var(--theme-color) !important;
-  font-weight: 500 !important;
+/* KAYDET (YEŞİL) - Üzerine Gelince (Hover) */
+.universal-btn-save:hover {
+  background-color: rgba(40, 167, 69, 0.1) !important; /* Yarı saydam yeşil arka plan */
+  font-weight: 600 !important; /* Metin kalınlaşır */
+  -webkit-text-stroke: 0.3px currentColor !important; /* Kayma yapmadan net kalınlık */
 }
-.universal-btn-cancel:hover { opacity: 0.8 !important; }
+
+/* VAZGEÇ (KIRMIZI) - Normal Durum */
+.universal-btn-cancel {
+  color: var(--theme-color, #e1061b) !important;
+  border: 1px solid var(--theme-color, #e1061b) !important;
+}
+
+/* VAZGEÇ (KIRMIZI) - Üzerine Gelince (Hover) */
+.universal-btn-cancel:hover {
+  background-color: rgba(225, 6, 27, 0.1) !important; /* Yarı saydam kırmızı arka plan */
+  font-weight: 600 !important;
+  -webkit-text-stroke: 0.3px currentColor !important;
+}
 
 /* --- 1. SIFIRLAMA & ANA YAPI --- */
 html, body {
