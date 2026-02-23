@@ -72,6 +72,8 @@
 body.login-page,
 body.dashboard-page {
   overflow-x: hidden !important;
+  padding-top: env(safe-area-inset-top, 0px) !important;
+  padding-bottom: env(safe-area-inset-bottom, 0px) !important;
 }
 /* Modal açıkken arka plan scroll kilitlensin (sadece modal içi kayar) */
 body.driver-modal-open {
@@ -83,6 +85,7 @@ body.driver-modal-open {
 /* --- DASHBOARD SAYFA YAPISI --- */
 .dashboard-page {
   min-height: 100vh;
+  min-height: 100dvh;
   padding: 0;
 }
 
@@ -95,6 +98,7 @@ body.driver-modal-open {
 
 .driver-dashboard-container {
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
 }
