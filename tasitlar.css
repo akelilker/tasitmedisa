@@ -2600,7 +2600,7 @@
   /* Liste başlıkları - font-size JS değişkeninden (tümü aynı), +1pt; renk #ffffff */
   .list-header-row .list-cell,
   .list-header-row .list-cell span {
-    color: #ffffff !important;
+    color: var(--form-label-color) !important; /* Kayıt modalı etiketleri ile aynı beyaz */
   }
   .list-header-row .list-cell {
     font-size: var(--list-header-font-size, 15px) !important;
