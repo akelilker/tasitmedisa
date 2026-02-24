@@ -2021,7 +2021,7 @@
     transform: scale(1.08); /* Görsel olarak büyüt (sayfa kıpırdamasın diye transform kullanıldı) */
 }
 
-/* Tarihçe butonu - Marka/model satırında sağda */
+/* Tarihçe butonu - Marka/model satırında sağda (Olay Ekle ile aynı satır, aynı dikey padding) */
 .detail-brand-year-row .history-btn-minimal {
     position: relative;
     display: flex !important;
@@ -2029,7 +2029,7 @@
     gap: 4px;
     color: var(--txt-gray);
     font-size: 15px;
-    padding: 4px 8px;
+    padding: 5px 8px 5px 8px; /* Olay Ekle ile aynı dikey 5px – tek satır hizası */
     flex-shrink: 0;
     z-index: 2;
     transition: color 0.2s ease, font-size 0.2s ease;
