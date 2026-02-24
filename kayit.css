@@ -356,7 +356,7 @@ select option:active {
 .form-input::placeholder { color: var(--data-value-color, #a0aec0); opacity: 0.8; }
 
 input[type="date"].form-input {
-    padding: 4px 30px 4px 8px !important; 
+    padding: 0 22px 0 12px !important; /* İkon metne yakın: 3+16+3px sağ */
 }
 
 input[type="date"] {
@@ -391,16 +391,18 @@ input[type="date"].form-input {
     padding-left: 12px !important;
 }
 
-/* Kayıt modalı tarih inputları: metin ve takvim ikonu dikey ortada */
+/* Kayıt modalı tarih inputları: metin yatay+dikey ortada, takvim ikonu sağda */
 #vehicle-modal input[type="date"].form-input::-webkit-datetime-edit,
 #vehicle-modal input[type="date"].form-input::-webkit-datetime-edit-fields-wrapper {
     display: flex !important;
     align-items: center !important;
+    justify-content: center !important;
     height: 100% !important;
     min-height: 100% !important;
     padding: 0 !important;
     margin: 0 !important;
-    line-height: 1 !important;
+    line-height: inherit !important;
+    text-align: center !important;
 }
 #vehicle-modal input[type="date"].form-input::-webkit-calendar-picker-indicator {
     position: absolute !important;
@@ -1061,7 +1063,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         height: 28px; 
         color: #888; 
         font-size: 11px !important; 
-        padding: 5px 28px 5px 6px !important; 
+        padding: 0 22px 0 6px !important; 
         min-width: 0;
         width: calc(100% - 2px); 
         max-width: calc(100% - 2px);
@@ -1081,7 +1083,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         width: 100%; 
         max-width: 100%; 
         margin-right: 0; 
-        padding-right: 24px !important;
+        padding-right: 22px !important;
         padding-left: 10px !important;
         text-align: center;
         overflow: hidden;
