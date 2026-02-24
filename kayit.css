@@ -404,6 +404,13 @@ input[type="date"].form-input {
     line-height: inherit !important;
     text-align: center !important;
 }
+/* Sağ kolon: seçili değilken native placeholder kullan (dikey hiza tek kaynaktan) – overlay kapat */
+#vehicle-modal .modal-column-right .date-placeholder {
+    display: none !important;
+}
+#vehicle-modal .modal-column-right input[type="date"]:not(.has-value):not(:focus)::-webkit-datetime-edit {
+    color: #6c757d !important; /* Native gg.aa.yyyy görünür ve ortada */
+}
 #vehicle-modal input[type="date"].form-input::-webkit-calendar-picker-indicator {
     position: absolute !important;
     right: 3px !important;
