@@ -576,19 +576,38 @@
     color: var(--txt-placeholder);
 }
 
+/* Tarihçe: sekme ile içerik arası 5px azaltma (history-content padding-top style-core'da 15px yapıldı) */
+#vehicle-history-modal #history-tabs {
+    margin-bottom: 0;
+}
+
+/* Tarihçe liste elemanları: üst/alt boşluk 2'şer px azaltma (12px → 10px) */
+#vehicle-history-modal .history-item,
+.modal-overlay:has(.history-tabs) .history-item {
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+}
+
 #vehicles-modal .modal-header h2,
-#vehicle-detail-modal .modal-header h2 {
+#vehicle-detail-modal .modal-header h2,
+#vehicle-history-modal .modal-header h2,
+.modal-overlay:has(.history-tabs) .modal-header h2 {
     font-size: 17px !important;
     font-weight: 600 !important;
-    letter-spacing: 0.05em !important; /* Masaüstü */
+    letter-spacing: 0.05em !important;
     color: var(--txt-light) !important;
     text-shadow: none !important;
     opacity: 1 !important;
-    margin: 0;
+    margin: 0 !important;
     text-transform: uppercase;
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
+    position: absolute !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    text-align: center !important;
+    width: 100% !important;
+    pointer-events: none !important;
     white-space: nowrap;
 }
 
