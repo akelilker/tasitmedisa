@@ -2223,30 +2223,30 @@
     width: 28px !important;
     height: 28px !important;
   }
-  /* Mobil: Tasit Detayi geri ok/metin hizasini kilitle */
+  /* Mobil: sol ok ile etiket (Taşıtlar) dikeyde hizalı */
   #vehicle-detail-modal .vehicle-detail-toolbar .universal-back-bar {
     display: inline-flex !important;
-    align-items: flex-start !important;
-    gap: 3px !important;
+    align-items: center !important;
+    gap: 4px !important;
     padding-left: 0 !important;
   }
   #vehicle-detail-modal .vehicle-detail-toolbar .universal-back-btn {
     display: inline-flex !important;
-    align-items: flex-start !important;
-    gap: 3px !important;
+    align-items: center !important;
+    gap: 4px !important;
     padding-left: 0 !important;
   }
   #vehicle-detail-modal .vehicle-detail-toolbar .universal-back-btn i,
   #vehicle-detail-modal .vehicle-detail-toolbar .universal-back-btn svg,
   #vehicle-detail-modal .vehicle-detail-toolbar .universal-back-btn .back-icon-svg {
     position: relative !important;
-    top: 5px !important;
+    top: 0 !important;
     margin: 0 !important;
     padding: 0 !important;
   }
   #vehicle-detail-modal .vehicle-detail-toolbar .universal-back-btn .universal-back-label,
   #vehicle-detail-modal .vehicle-detail-toolbar .universal-back-btn span {
-    font-size: 13px !important; /* style-core 14px -> 13px */
+    font-size: 13px !important;
     line-height: 1 !important;
     margin: 0 !important;
   }
