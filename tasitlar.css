@@ -2936,7 +2936,7 @@
     min-height: 0;
   }
   #detail-boya-container .kaporta-schema-wrapper {
-    margin: -12px 0 0 0 !important; /* 4px daha yukarı – üst boşluk dar */
+    margin: -12px auto 0 auto !important; /* Yatayda ortala (sol grid içinde) */
     padding: 0 !important; /* Şema üstünde kendi padding’i olmasın */
   }
   #kaza-kaporta-container {
