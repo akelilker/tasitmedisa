@@ -2448,7 +2448,11 @@
     box-sizing: border-box !important;
   }
 
-  /* Liste başlıkları - font-size JS değişkeninden (tümü aynı), +1pt */
+  /* Liste başlıkları - font-size JS değişkeninden (tümü aynı), +1pt; renk #ffffff */
+  .list-header-row .list-cell,
+  .list-header-row .list-cell span {
+    color: #ffffff !important;
+  }
   .list-header-row .list-cell {
     font-size: var(--list-header-font-size, 15px) !important;
     padding-left: 1px !important;
@@ -2473,9 +2477,9 @@
     overflow: hidden !important;
   }
 
-  /* Marka/Model - en fazla 2 satır, 3. satır yok; yatay 1px, dikey 2px */
+  /* Marka/Model - en fazla 2 satır, 3. satır yok; 1 punto küçük (17.5→16.5px) */
   .view-list .list-cell.list-brand {
-    font-size: inherit !important;
+    font-size: 16.5px !important;
     font-weight: inherit !important;
     text-align: center !important;
     white-space: normal !important;
