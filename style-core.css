@@ -110,9 +110,9 @@ body::-webkit-scrollbar,
   padding-left: 0 !important;
 }
 .universal-back-btn {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+  display: inline-flex !important;
+  align-items: flex-start !important; /* Okun serbest hareket etmesi için */
+  gap: 3px !important; /* Ok ile yazı arasındaki toplam yatay boşluk KESİN 3px */
   cursor: pointer;
   background: none;
   border: none;
@@ -123,10 +123,18 @@ body::-webkit-scrollbar,
 .universal-back-btn:hover { color: var(--txt-white); }
 .universal-back-label {
   color: #adb5bd !important; /* Fotoğraftaki gibi hafif gri */
-  font-size: 15px !important;
+  font-size: 14px !important; /* 15px → 14px (1 punto küçültme) */
   font-weight: 500 !important;
   line-height: 1 !important;
   margin: 0 !important;
+}
+.universal-back-btn svg,
+.universal-back-btn .back-icon-svg,
+.universal-back-btn i,
+.universal-back-btn img {
+  position: relative !important;
+  top: 5px !important; /* Oku 5px aşağı indirir ve yazıyla dikeyde dengeler */
+  margin: 0 !important; /* Eski margin boşluklarını ez ki 3px gap kuralı bozulmasın */
 }
 .back-icon-svg {
   width: 20px;
