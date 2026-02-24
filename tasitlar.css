@@ -1118,9 +1118,7 @@
     flex: 1;
     overflow-y: auto;
     overflow-x: hidden;
-    padding: 18px 8px 12px 8px; /* Üst 18px: şube kartı hover'da scale ile üst çerçeve kesilmesin */
-    padding-left: 2px !important;
-    padding-right: 2px !important;
+    padding: 18px 3px 12px 3px !important; /* Çerçeve ile içerik arası 3px; üst 18px şube kartı hover kesilmesin */
     box-sizing: border-box !important;
     scrollbar-width: none;
     -ms-overflow-style: none;
@@ -1150,12 +1148,12 @@
     scrollbar-width: none;
     -ms-overflow-style: none;
 }
-/* LİSTE DÜZENİNİ KORUMA (KENARLARA YAPIŞTIRMA) */
+/* Liste: çerçeve ile 3px boşluk (modal-body padding 3px); hover taşmasın */
 #vehicles-modal .vehicles-list-scroll,
 #vehicles-modal .tasit-list-container {
-    margin-left: -2px !important;
-    margin-right: -2px !important;
-    width: calc(100% + 4px) !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100% !important;
 }
 .vehicles-list-scroll::-webkit-scrollbar { display: none; }
 
@@ -2370,9 +2368,9 @@
     font-size: 15px !important; /* +1pt (base 14px) */
   }
   
-  /* Mobil modal-body padding: çerçeve ile içerik arasında yatay boşluk yok */
+  /* Mobil: çerçeve ile içerik arası 3px */
   #vehicles-modal .modal-body {
-    padding: 10px 2px 40px 2px !important;
+    padding: 10px 3px 40px 3px !important;
     overflow-x: hidden !important; /* Sağa sola kaymayı engelle */
     touch-action: pan-y !important; /* Sadece dikey kaydırma */
     overscroll-behavior-x: none !important; /* Yatay overscroll'u engelle */
@@ -2882,8 +2880,8 @@
   /* --- DETAY MODAL SCROLL & PADDING --- */
   #vehicle-detail-content {
     padding-top: 18px !important; /* Plaka üstten kesilmesin */
-    padding-left: 2px !important; /* Mobilde sağ/sol 2px boşluk */
-    padding-right: 2px !important;
+    padding-left: 3px !important; /* Çerçeve ile içerik arası 3px */
+    padding-right: 3px !important;
   }
   #vehicle-detail-modal .modal-body { 
     overflow-y: auto !important;
