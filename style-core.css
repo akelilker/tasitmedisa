@@ -27,7 +27,9 @@ body::-webkit-scrollbar,
 
   /* --- MODAL ORTAK (tek yerden yönetim) --- */
   /* Dikey için vw KULLANMA: vw = viewport genişliği. Dikey için vh/dvh veya px. */
-  --modal-bg: var(--bg); /* Container dışı alanla aynı (koyu lacivert) */
+  --modal-bg: var(--bg); /* Yedek; container arka planı aşağıda gradyan ile override */
+  /* Logo kırmızısı → lacivert: Medisa #e1061b, bitiş #050a1a (yumuşak geçiş için başlangıç -10% opsiyonel) */
+  --modal-gradient: linear-gradient(180deg, #e1061b 0%, #050a1a 100%);
   --modal-max-width: 500px;
   --modal-radius: 10px;
   --modal-margin-bottom-desktop: calc(var(--app-footer-height) + var(--modal-gap-above-footer));
@@ -852,9 +854,15 @@ html { overflow-x: hidden; }
   max-height: 90vh !important;
   box-sizing: border-box;
 }
+/* Modal arka plan: logo kırmızısı (#e1061b) → lacivert (#050a1a), siyah pas geçilir */
+.modal-overlay .modal-container,
+.login-container,
+.user-panel-container,
+.modal-content {
+  background: linear-gradient(180deg, #e1061b 0%, #050a1a 100%) !important;
+}
 .modal-overlay .modal-container {
   position: relative;
-  background: var(--modal-bg);
   width: 100%;
   max-width: var(--modal-max-width);
   margin: max(12px, env(safe-area-inset-top)) auto var(--modal-margin-bottom-desktop) auto;
