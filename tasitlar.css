@@ -2929,7 +2929,7 @@
     overflow: visible !important;
   }
   #detail-boya-container .boya-legend {
-    margin: 0 !important;
+    margin: -8px 0 0 0 !important; /* 8px yukarı – şema ile legend arası üst boşluk kapansın */
     padding: 0 !important;
     line-height: 1.2 !important;
     min-height: 0;
