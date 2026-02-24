@@ -125,14 +125,22 @@
     height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 54px) !important;
     max-height: calc(100vh - max(12px, env(safe-area-inset-top)) - 54px) !important;
     max-height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 54px) !important;
-    overflow: hidden;
-    overflow-x: hidden;
+    overflow: hidden !important;
+    overflow-x: hidden !important;
+    touch-action: pan-y !important; /* İçeride dikey kaydırma çalışsın */
+    display: flex !important;
+    flex-direction: column !important;
 }
-/* Olay Ekle (Kaza, Bakım vb.): modal gövdesi mutlaka kayar, üst/alt erişilebilir */
+/* Olay Ekle (Kaza, Bakım vb.): modal gövdesi mutlaka kayar, üst görünsün */
 .olay-ekle-modal .modal-body {
-    overflow-y: auto !important;
+    flex: 1 1 auto !important;
     min-height: 0 !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
     -webkit-overflow-scrolling: touch !important;
+    touch-action: pan-y !important;
+    overscroll-behavior-y: contain !important;
+    padding-top: 20px !important; /* Üst içerik kesilmesin */
 }
 
 /* Kaza Modalı Özel İçerik Düzeni (Ekle + Güncelle) */
