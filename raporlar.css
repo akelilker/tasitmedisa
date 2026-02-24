@@ -100,7 +100,8 @@ flex-shrink: 0;
 padding: 0;
 background: transparent;
 }
-#reports-modal .reports-list-header-actions:not(:empty) {
+#reports-modal .reports-list-header-actions:not(:empty),
+#reports-modal .reports-list-header-actions.has-stok-actions {
 display: flex;
 flex-shrink: 0 !important;
 min-height: 48px;
@@ -787,7 +788,8 @@ margin-top: 0 !important; /* -28px kesiliyordu, sıfırlandı */
 padding: 1px 0;
 }
 /* Sol ok + Detay Ekleme satırı: slot ezilmesin (Detay Ekle butonu kaybolmasın) */
-#reports-modal .modal-container > #reports-list-header-actions:not(:empty) {
+#reports-modal .modal-container > #reports-list-header-actions:not(:empty),
+#reports-modal .modal-container > #reports-list-header-actions.has-stok-actions {
 flex-shrink: 0 !important;
 min-height: 48px !important;
 }
