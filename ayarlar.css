@@ -1165,6 +1165,15 @@ input.settings-form-input:-moz-autofill,
     #data-management-modal .modal-container {
         background: var(--bg) !important;
     }
+    /* Veri Yönetimi mobil: Yedek Al 5px yukarı, butonlar sağa yaslı, metin beyaz */
+    #data-management-modal .data-management-actions {
+        transform: translateY(calc(-50% - 5px));
+        align-items: flex-end;
+        text-align: right;
+    }
+    #data-management-modal .data-management-text-btn {
+        color: #ffffff !important;
+    }
     #branch-form-modal.modal-overlay,
     #user-form-modal.modal-overlay {
         padding-left: 0 !important;
