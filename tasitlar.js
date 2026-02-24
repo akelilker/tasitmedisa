@@ -1158,36 +1158,6 @@
     modal.style.display = 'flex';
     requestAnimationFrame(() => {
       modal.classList.add('active');
-      // #region agent log
-      requestAnimationFrame(() => {
-        var body = modal ? modal.querySelector('.modal-body') : null;
-        var content = document.getElementById('vehicle-detail-content');
-        var leftCol = content ? content.querySelector('.vehicle-detail-left') : null;
-        var rightCol = content ? content.querySelector('.vehicle-detail-right') : null;
-        var bodyStyle = body ? window.getComputedStyle(body) : null;
-        var contentStyle = content ? window.getComputedStyle(content) : null;
-        var leftStyle = leftCol ? window.getComputedStyle(leftCol) : null;
-        var rightStyle = rightCol ? window.getComputedStyle(rightCol) : null;
-        var payload = {
-          sessionId: '3ec9d8',
-          runId: 'detail-open',
-          hypothesisId: 'H1',
-          location: 'tasitlar.js:showVehicleDetail',
-          message: 'Vehicle detail modal padding (computed)',
-          data: {
-            innerWidth: window.innerWidth,
-            contentPaddingLeft: contentStyle ? contentStyle.paddingLeft : null,
-            contentPaddingRight: contentStyle ? contentStyle.paddingRight : null,
-            bodyPaddingLeft: bodyStyle ? bodyStyle.paddingLeft : null,
-            bodyPaddingRight: bodyStyle ? bodyStyle.paddingRight : null,
-            leftColPaddingRight: leftStyle ? leftStyle.paddingRight : null,
-            rightColPaddingLeft: rightStyle ? rightStyle.paddingLeft : null
-          },
-          timestamp: Date.now()
-        };
-        fetch('http://127.0.0.1:7824/ingest/aaeefe94-e582-470c-8671-3dbfa48b74c7', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': '3ec9d8' }, body: JSON.stringify(payload) }).catch(function() {});
-      });
-      // #endregion
     });
     };
     if (typeof window.loadDataFromServer === 'function') {
