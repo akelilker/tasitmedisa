@@ -195,7 +195,7 @@ body.admin-report-page::-webkit-scrollbar {
   border-radius: 0;
   font-size: 0.9rem;
   background: transparent;
-  color: var(--muted);
+  color: var(--data-value-color, #a0aec0);
   flex: 0 0 auto;
   color-scheme: dark;
   width: fit-content;
@@ -300,7 +300,8 @@ body.admin-report-page::-webkit-scrollbar {
 
 .report-stat-box .label {
   font-size: 0.8rem;
-  color: var(--form-label-color);
+  font-weight: 500;
+  color: #ffffff;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -311,7 +312,7 @@ body.admin-report-page::-webkit-scrollbar {
 .report-stat-box .value {
   font-size: 1.1rem;
   font-weight: 700;
-  color: var(--muted);
+  color: var(--data-value-color, #a0aec0);
   text-align: center;
 }
 
@@ -361,9 +362,9 @@ body.admin-report-page::-webkit-scrollbar {
 .report-table th {
   white-space: nowrap;
   background: transparent;
-  font-weight: 600;
+  font-weight: 500;
   text-align: center;
-  color: var(--form-label-color);
+  color: #ffffff;
   font-size: clamp(0.7rem, 2.2vw, calc(0.9rem - 1px));
 }
 
@@ -373,6 +374,7 @@ body.admin-report-page::-webkit-scrollbar {
   overflow-wrap: break-word;
   word-break: break-word;
   word-wrap: break-word;
+  color: var(--data-value-color, #a0aec0);
 }
 
 .report-table th:nth-child(3),
