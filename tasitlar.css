@@ -766,6 +766,20 @@
   margin: 0 !important;
   padding-left: 0 !important;
 }
+/* Taşıtlar modalı başlık geri alanı: ok + etiket kesin hizalama */
+#vehicles-modal .vehicles-toolbar .vt-left .universal-back-bar,
+#vehicles-modal .vehicles-toolbar .vt-left .universal-back-btn {
+  display: flex !important;
+  align-items: center !important; /* Ok ve metni dikeyde ortala */
+  gap: 6px !important; /* Ok ve metin arası ideal boşluk */
+}
+#vehicles-modal .vehicles-toolbar .vt-left .universal-back-btn i,
+#vehicles-modal .vehicles-toolbar .vt-left .universal-back-btn svg,
+#vehicles-modal .vehicles-toolbar .vt-left .universal-back-btn .back-icon-svg {
+  position: relative !important;
+  top: 1px !important; /* Optik dengeleme */
+  margin: 0 !important;
+}
 
 .vt-icon-btn {
     background: transparent !important;
