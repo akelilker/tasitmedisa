@@ -102,7 +102,8 @@ background: transparent;
 }
 #reports-modal .reports-list-header-actions:not(:empty) {
 display: flex;
-flex-shrink: 0;
+flex-shrink: 0 !important;
+min-height: 48px;
 align-items: center;
 padding: 8px 2px;
 background: transparent;
@@ -785,7 +786,11 @@ margin-top: 0 !important; /* -28px kesiliyordu, sıfırlandı */
 .report-view {
 padding: 1px 0;
 }
-/* Sol ok + Detay Ekleme satırı modal başlığına daha yakın; altında 4px dikey boşluk */
+/* Sol ok + Detay Ekleme satırı: slot ezilmesin (Detay Ekle butonu kaybolmasın) */
+#reports-modal .modal-container > #reports-list-header-actions:not(:empty) {
+flex-shrink: 0 !important;
+min-height: 48px !important;
+}
 #reports-modal .reports-list-header-actions:not(:empty) {
 padding-top: 4px !important;
 padding-bottom: 4px !important;
