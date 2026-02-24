@@ -155,7 +155,7 @@
 .form-label {
     display: block;
     font-size: 12px; 
-    font-weight: 600;
+    font-weight: 500;
     color: var(--form-label-color); 
     margin-bottom: 0px; 
 }
@@ -166,7 +166,7 @@
     background: #0d131f; 
     border: 1.1px solid rgba(255, 255, 255, 0.20);
     border-radius: 6px;
-    color: #888;
+    color: var(--data-value-color, #a0aec0);
     font-size: 9px;
     height: 20px; 
     box-sizing: border-box;
@@ -174,7 +174,7 @@
 }
 
 input[type="number"].form-input {
-    color: #888; 
+    color: var(--data-value-color, #a0aec0); 
 }
 
 input[type="number"].form-input::-webkit-inner-spin-button,
@@ -353,7 +353,7 @@ select option:active {
     color: rgba(255, 255, 255, 0.38) !important;
 }
 
-.form-input::placeholder { color: #555; opacity: 0.7; }
+.form-input::placeholder { color: var(--data-value-color, #a0aec0); opacity: 0.8; }
 
 input[type="date"].form-input {
     padding: 4px 30px 4px 8px !important; 
@@ -812,7 +812,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     .form-input,
     select.form-input,
     select {
-        color: #adb5bd !important; /* Input metni gri (göz yormayan) */
+        color: var(--data-value-color, #a0aec0) !important;
         border-color: rgba(255, 255, 255, 0.4) !important; /* Border daha görünür */
         background: rgba(255, 255, 255, 0.02) !important; /* Beyaz sis yoğunluğu azaltıldı (0.05 → 0.02) */
     }
@@ -828,7 +828,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     }
     
     .form-input::placeholder {
-        color: rgba(255, 255, 255, 0.5) !important; /* Placeholder daha görünür */
+        color: var(--data-value-color, #a0aec0) !important;
     }
     
     .radio-btn {
