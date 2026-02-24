@@ -39,6 +39,7 @@ body::-webkit-scrollbar,
   --green: #4ade80;
   --red: #ef4444;
   --form-label-color: #ffffff;
+  /* Girilen veri / açıklama metin rengi (beyaz-gri hiyerarşisi) */
   --data-value-color: #a0aec0;
 
   --bg-content: #0d131f;
