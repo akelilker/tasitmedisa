@@ -577,7 +577,7 @@
 
 /* Formlar */
 .settings-form-section { margin-bottom: 12px; }
-.settings-form-label { display: block; font-size: 13px; color: var(--form-label-color); margin-bottom: 4px; }
+.settings-form-label { display: block; font-size: 13px; color: #ffffff; font-weight: 500; margin-bottom: 4px; }
 .settings-form-input, .settings-form-select {
     width: 100%;
     padding: 8px;
@@ -882,7 +882,7 @@ input.settings-form-input:-moz-autofill,
 .settings-card-title {
     font-size: 12px;
     font-weight: 600;
-    color: var(--txt-light);
+    color: var(--data-value-color, #a0aec0);
     text-align: center !important; /* Yatayda ortala */
     margin: 0 auto; /* Ortala */
     line-height: 1.1;
@@ -897,7 +897,7 @@ input.settings-form-input:-moz-autofill,
 
 .settings-card-subtitle {
     font-size: 11px;
-    color: var(--txt-gray-darker);
+    color: var(--data-value-color, #a0aec0);
     text-align: center !important; /* Yatayda ortala */
     margin: 0 auto; /* Ortala */
     line-height: 1.1;
@@ -912,7 +912,7 @@ input.settings-form-input:-moz-autofill,
 
 .settings-card-gorev {
     font-size: 10px;
-    color: #999;
+    color: var(--data-value-color, #a0aec0);
     text-align: center !important; /* Yatayda ortala */
     margin: 0 auto; /* Ortala */
     line-height: 1.1;
@@ -927,7 +927,7 @@ input.settings-form-input:-moz-autofill,
 
 .settings-card-count {
     font-size: 10px;
-    color: #999;
+    color: var(--data-value-color, #a0aec0);
     text-align: center !important; /* Yatayda ortala */
     margin: 0 auto; /* Ortala */
     line-height: 1.1;
@@ -993,8 +993,8 @@ input.settings-form-input:-moz-autofill,
     border-radius: 6px;
 }
 
-.settings-detail-label { font-size: 13px; font-weight: 600; color: var(--form-label-color); }
-.settings-detail-value { font-size: 14px; font-weight: 600; color: #e0e0e0; text-align: right; }
+.settings-detail-label { font-size: 13px; font-weight: 500; color: #ffffff; }
+.settings-detail-value { font-size: 14px; font-weight: 600; color: var(--data-value-color, #a0aec0); text-align: right; }
 .settings-detail-item { font-size: 16px; font-weight: 600; color: #e0e0e0; padding: 0; margin: 0; text-align: left; line-height: 1.2; }
 
 /* === MASAÜSTÜ AYARLAR === */
