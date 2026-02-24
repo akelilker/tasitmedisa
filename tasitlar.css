@@ -2878,8 +2878,8 @@
   /* --- DETAY MODAL SCROLL & PADDING --- */
   #vehicle-detail-content {
     padding-top: 18px !important; /* Plaka üstten kesilmesin */
-    padding-left: 3px !important; /* Çerçeve ile içerik arası 3px */
-    padding-right: 3px !important;
+    padding-left: 8px !important; /* Çerçeve ile içerik arası – detay sayfası rahat olsun */
+    padding-right: 8px !important;
   }
   #vehicle-detail-modal .modal-body { 
     overflow-y: auto !important;
