@@ -808,6 +808,11 @@
 
 /* Masaüstü: sol ok ve etiket (3px aşağı: -54 → -51); sütun başlıkları +1px, beyaza yakın renk */
 @media (min-width: 641px) {
+  /* Bilgi kutuları (şube kartları) hover'da yan çerçeveye değmesin – sol/sağ 2px boşluk */
+  #vehicles-modal .modal-body:not(:has(.vehicles-list-scroll)) {
+    padding-left: 5px !important;
+    padding-right: 5px !important;
+  }
   #vehicles-modal .vt-left {
     margin-top: -51px;
   }
@@ -1387,7 +1392,7 @@
     align-items: center;
     padding: 0 2px;
     border-bottom: 1px solid var(--border-faint-08);
-    background: var(--border-faint-02);
+    background: var(--bg); /* Modal arka planı ile aynı */
     position: relative;
     z-index: 0;
     cursor: pointer;
@@ -2562,7 +2567,7 @@
     width: 100% !important;
     align-items: center !important;
     border-bottom: 1px solid var(--border-faint-08) !important;
-    background: var(--border-faint-02) !important;
+    background: var(--bg) !important; /* Modal arka planı ile aynı */
     position: relative !important;
     /* Liste görünür; başlık z-index: 1000 ile üstte */
     cursor: pointer !important;
