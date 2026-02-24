@@ -174,6 +174,7 @@
         if (headerActions) {
             headerActions.innerHTML = '';
             headerActions.setAttribute('aria-hidden', 'true');
+            headerActions.classList.remove('has-stok-actions');
         }
         if (!gridContainer) return;
         
@@ -344,6 +345,7 @@
                 if (menu) wrap.appendChild(menu);
                 headerActions.appendChild(wrap);
                 headerActions.setAttribute('aria-hidden', 'false');
+                headerActions.classList.add('has-stok-actions');
             }
         }
 
@@ -1101,6 +1103,7 @@
         if (headerActions) {
             headerActions.innerHTML = '';
             headerActions.setAttribute('aria-hidden', 'true');
+            headerActions.classList.remove('has-stok-actions');
         }
         renderStokView();
     };
