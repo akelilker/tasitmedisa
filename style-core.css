@@ -803,6 +803,29 @@ html { overflow-x: hidden; }
   letter-spacing: 1px;
   text-align: center;
 }
+
+/* SİSTEMDEKİ TÜM MODALLARIN BAŞLIK YÜKSEKLİĞİNİ 60PX'E KİLİTLEME */
+.modal-overlay .modal-header {
+  height: 60px !important;
+  min-height: 60px !important; /* İçeriğe göre esnemesini KESİN engeller */
+  max-height: 60px !important; /* İçeriğe göre uzamasını KESİN engeller */
+  padding: 0 20px !important; /* Dikey paddingleri sıfırla, flex ile ortala */
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  flex-shrink: 0 !important;
+  box-sizing: border-box !important;
+}
+
+/* Başlık Metni (H2) Ortalaması */
+.modal-overlay .modal-header h2 {
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: 1 !important; /* Satır yüksekliğinden dolayı sarkan pikselleri önler */
+  display: flex !important;
+  align-items: center !important;
+}
+
 .modal-overlay .modal-close {
   position: absolute;
   right: 16px;

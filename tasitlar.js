@@ -2162,20 +2162,7 @@ function renderVehicleDetailLeft(vehicle) {
         radioBtns.forEach(b => b.classList.remove('active', 'green'));
         if (adresWrapper) adresWrapper.style.display = 'none';
         if (adresInput) adresInput.value = '';
-        const vehicle = readVehicles().find(v => String(v.id) === String(vehicleId || window.currentDetailVehicleId));
-        if (vehicle) {
-          if (vehicle.lastikDurumu === 'var') {
-            const varBtn = Array.from(radioBtns).find(btn => btn.dataset.value === 'var');
-            if (varBtn) {
-              varBtn.classList.add('active', 'green');
-              if (adresWrapper) adresWrapper.style.display = 'block';
-              if (adresInput && vehicle.lastikAdres) adresInput.value = vehicle.lastikAdres;
-            }
-          } else {
-            const yokBtn = Array.from(radioBtns).find(btn => btn.dataset.value === 'yok');
-            if (yokBtn) yokBtn.classList.add('active');
-          }
-        }
+        /* Varsayılan seçim yok: form nötr açılır */
         radioBtns.forEach(btn => {
           btn.addEventListener('click', function(e) {
             e.preventDefault();
@@ -2196,22 +2183,12 @@ function renderVehicleDetailLeft(vehicle) {
         });
       } else if (type === 'utts') {
         const radioBtns = modal.querySelectorAll('.radio-btn');
-        const vehicle = readVehicles().find(v => String(v.id) === String(vehicleId || window.currentDetailVehicleId));
         radioBtns.forEach(b => b.classList.remove('active', 'green'));
-        if (vehicle) {
-          const durum = vehicle.uttsTanimlandi ? 'evet' : 'hayir';
-          const btn = Array.from(radioBtns).find(btn => btn.dataset.value === durum);
-          if (btn) { btn.classList.add('active'); if (durum === 'evet') btn.classList.add('green'); }
-        }
+        /* Varsayılan seçim yok: form nötr açılır */
       } else if (type === 'takip') {
         const radioBtns = modal.querySelectorAll('.radio-btn');
-        const vehicle = readVehicles().find(v => String(v.id) === String(vehicleId || window.currentDetailVehicleId));
         radioBtns.forEach(b => b.classList.remove('active', 'green'));
-        if (vehicle) {
-          const durum = vehicle.takipCihaziMontaj ? 'evet' : 'hayir';
-          const btn = Array.from(radioBtns).find(btn => btn.dataset.value === durum);
-          if (btn) { btn.classList.add('active'); if (durum === 'evet') btn.classList.add('green'); }
-        }
+        /* Varsayılan seçim yok: form nötr açılır */
       } else if (type === 'bakim') {
         // Bakım modal'ında varsayılan kişi
         const bakimKisiInput = document.getElementById('bakim-kisi');
@@ -2250,31 +2227,17 @@ function renderVehicleDetailLeft(vehicle) {
               });
               
               const freshRadioBtns = modal.querySelectorAll('.radio-btn');
-              const vehicle = readVehicles().find(v => String(v.id) === String(vehicleId || window.currentDetailVehicleId));
-              
-              if (type === 'utts') {
-                freshRadioBtns.forEach(b => b.classList.remove('active', 'green'));
-                if (vehicle) {
-                  const durum = vehicle.uttsTanimlandi ? 'evet' : 'hayir';
-                  const btn = Array.from(freshRadioBtns).find(btn => btn.dataset.value === durum);
-                  if (btn) { btn.classList.add('active'); if (durum === 'evet') btn.classList.add('green'); }
-                }
-              } else if (type === 'takip') {
-                freshRadioBtns.forEach(b => b.classList.remove('active', 'green'));
-                if (vehicle) {
-                  const durum = vehicle.takipCihaziMontaj ? 'evet' : 'hayir';
-                  const btn = Array.from(freshRadioBtns).find(btn => btn.dataset.value === durum);
-                  if (btn) { btn.classList.add('active'); if (durum === 'evet') btn.classList.add('green'); }
-                }
-              }
+              freshRadioBtns.forEach(b => b.classList.remove('active', 'green'));
+              /* Varsayılan seçim yok: nötr başlar */
               
               // Event listener'ları ekle
               freshRadioBtns.forEach(btn => {
                 btn.addEventListener('click', function(e) {
                   e.preventDefault();
                   e.stopPropagation();
-                  freshRadioBtns.forEach(b => b.classList.remove('active'));
+                  freshRadioBtns.forEach(b => b.classList.remove('active', 'green'));
                   this.classList.add('active');
+                  if (this.dataset.value === 'evet') this.classList.add('green');
                 });
               });
             }
@@ -2357,6 +2320,26 @@ function renderVehicleDetailLeft(vehicle) {
     
     const modal = document.getElementById(modalId);
     if (modal) {
+      // Kapatırken radio ve detay alanlarını sıfırla; bir sonraki açılış nötr olsun
+      modal.querySelectorAll('.radio-btn').forEach(b => b.classList.remove('active', 'green'));
+      if (type === 'lastik') {
+        const adresW = document.getElementById('lastik-adres-wrapper-event');
+        const adresInp = document.getElementById('lastik-adres-event');
+        if (adresW) adresW.style.display = 'none';
+        if (adresInp) adresInp.value = '';
+      }
+      if (type === 'anahtar') {
+        const detayW = document.getElementById('anahtar-detay-wrapper');
+        const detayInp = document.getElementById('anahtar-detay-event');
+        if (detayW) detayW.style.display = 'none';
+        if (detayInp) detayInp.value = '';
+      }
+      if (type === 'kredi') {
+        const detayW = document.getElementById('kredi-detay-wrapper-event');
+        const detayInp = document.getElementById('kredi-detay-event');
+        if (detayW) detayW.style.display = 'none';
+        if (detayInp) detayInp.value = '';
+      }
       modal.classList.remove('active');
       setTimeout(() => modal.style.display = 'none', 300);
     }
