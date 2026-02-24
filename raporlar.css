@@ -1665,6 +1665,51 @@ min-height: auto !important;
 width: 24px !important;
 height: 24px !important;
 }
+/* Mobil: Raporlar geri ok/metin hizasini sabitle */
+#reports-modal .reports-list-header-actions .universal-back-bar,
+#reports-modal .kullanici-list-top-controls .universal-back-bar,
+#reports-modal .kullanici-detail-header .universal-back-bar {
+display: inline-flex !important;
+align-items: flex-start !important;
+gap: 3px !important;
+padding-left: 0 !important;
+}
+#reports-modal .reports-list-header-actions .universal-back-btn,
+#reports-modal .kullanici-list-top-controls .universal-back-btn,
+#reports-modal .kullanici-detail-header .universal-back-btn {
+display: inline-flex !important;
+align-items: flex-start !important;
+gap: 3px !important;
+padding-left: 0 !important;
+}
+#reports-modal .reports-list-header-actions .universal-back-btn i,
+#reports-modal .reports-list-header-actions .universal-back-btn svg,
+#reports-modal .reports-list-header-actions .universal-back-btn .back-icon-svg,
+#reports-modal .kullanici-list-top-controls .universal-back-btn i,
+#reports-modal .kullanici-list-top-controls .universal-back-btn svg,
+#reports-modal .kullanici-list-top-controls .universal-back-btn .back-icon-svg,
+#reports-modal .kullanici-detail-header .universal-back-btn i,
+#reports-modal .kullanici-detail-header .universal-back-btn svg,
+#reports-modal .kullanici-detail-header .universal-back-btn .back-icon-svg {
+position: relative !important;
+top: 5px !important;
+margin: 0 !important;
+padding: 0 !important;
+}
+#reports-modal .reports-list-header-actions .universal-back-btn .universal-back-label,
+#reports-modal .reports-list-header-actions .universal-back-btn span {
+font-size: 12px !important; /* 13px -> 12px */
+line-height: 1 !important;
+margin: 0 !important;
+}
+#reports-modal .kullanici-list-top-controls .universal-back-btn .universal-back-label,
+#reports-modal .kullanici-list-top-controls .universal-back-btn span,
+#reports-modal .kullanici-detail-header .universal-back-btn .universal-back-label,
+#reports-modal .kullanici-detail-header .universal-back-btn span {
+font-size: 13px !important; /* style-core 14px -> 13px */
+line-height: 1 !important;
+margin: 0 !important;
+}
 .stok-detail-add-btn {
 font-size: 14px !important;
 margin-left: 0 !important;

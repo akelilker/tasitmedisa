@@ -2100,6 +2100,40 @@
     width: 28px !important;
     height: 28px !important;
   }
+  /* Mobil: Tasitlar + Tasit Detayi geri ok/metin hizasini kilitle */
+  #vehicles-modal .universal-back-bar,
+  #vehicle-detail-modal .vehicle-detail-toolbar .universal-back-bar {
+    display: inline-flex !important;
+    align-items: flex-start !important;
+    gap: 3px !important;
+    padding-left: 0 !important;
+  }
+  #vehicles-modal .universal-back-btn,
+  #vehicle-detail-modal .vehicle-detail-toolbar .universal-back-btn {
+    display: inline-flex !important;
+    align-items: flex-start !important;
+    gap: 3px !important;
+    padding-left: 0 !important;
+  }
+  #vehicles-modal .universal-back-btn i,
+  #vehicles-modal .universal-back-btn svg,
+  #vehicles-modal .universal-back-btn .back-icon-svg,
+  #vehicle-detail-modal .vehicle-detail-toolbar .universal-back-btn i,
+  #vehicle-detail-modal .vehicle-detail-toolbar .universal-back-btn svg,
+  #vehicle-detail-modal .vehicle-detail-toolbar .universal-back-btn .back-icon-svg {
+    position: relative !important;
+    top: 5px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  #vehicles-modal .universal-back-btn .universal-back-label,
+  #vehicles-modal .universal-back-btn span,
+  #vehicle-detail-modal .vehicle-detail-toolbar .universal-back-btn .universal-back-label,
+  #vehicle-detail-modal .vehicle-detail-toolbar .universal-back-btn span {
+    font-size: 13px !important; /* style-core 14px -> 13px */
+    line-height: 1 !important;
+    margin: 0 !important;
+  }
   .vt-icon-btn {
     width: 38px !important;
     height: 38px !important;
