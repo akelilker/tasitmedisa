@@ -1071,7 +1071,7 @@ body.modal-open .user-panel-link {
     margin: 0 auto;
     background: var(--bg);
     z-index: 10000; /* Modal overlay (9999) üstünde */ 
-    border-top: 0.7px solid rgba(128, 128, 128, 0.5);  /* Gri çizgi */
+    border-top: 0.8px solid rgba(128, 128, 128, 0.5);  /* Gri çizgi */
     border-left: 0.5px solid rgba(255, 255, 255, 0.20);  /* Masaüstü: ince + soluk */
     border-right: 0.5px solid rgba(255, 255, 255, 0.20);
     /* Footer'dan yukarı doğru ışık çıkıyor */
