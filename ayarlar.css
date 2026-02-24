@@ -371,7 +371,7 @@
 .data-management-text-btn {
     background: none;
     border: none;
-    color: var(--txt-gray-dark);
+    color: #ffffff;
     padding: 8px 0;
     cursor: pointer;
     font-weight: 600;
