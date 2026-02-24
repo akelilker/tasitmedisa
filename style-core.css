@@ -45,6 +45,8 @@ body::-webkit-scrollbar,
 
   /* Etiket metin rengi (tek kaynak; mobil+masaüstü beyaz) */
   --form-label-color: #ffffff;
+  /* Girilen veri / açıklama metin rengi (beyaz-gri hiyerarşisi) */
+  --data-value-color: #a0aec0;
 
   /* --- RENK PALETİ (merkezi yönetim) --- */
   --bg-content: #0d131f;
@@ -285,16 +287,16 @@ body::-webkit-scrollbar,
   border: 1px solid rgba(225, 6, 27, 0.5) !important;
 }
 
-/* Tüm input/select/textarea içerik metni: göz yormayan gri */
+/* Tüm input/select/textarea içerik metni: beyaz-gri hiyerarşisi */
 .form-input,
 select.form-input,
 select,
 textarea.form-input {
-  color: #adb5bd !important;
+  color: var(--data-value-color, #a0aec0) !important;
 }
 input[type="date"].form-input.has-value,
 input[type="date"].form-input:focus {
-  color: #adb5bd !important;
+  color: var(--data-value-color, #a0aec0) !important;
 }
 
 /* Tarih Inputu Kesilme ve Hizalama Düzeltmesi (iOS Safari vb.) */
