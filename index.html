@@ -767,7 +767,7 @@
                     </div>
                     <div class="universal-btn-group">
                         <button type="button" class="universal-btn-save" onclick="event.stopPropagation(); saveBakimEvent();">Kaydet</button>
-                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); closeEventModal('bakim');">Vazgeç</button>
+                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); closeEventModalAndShowEventMenu('bakim');">Vazgeç</button>
                     </div>
                 </div>
             </div>
@@ -812,7 +812,7 @@
                     </div>
                     <div class="universal-btn-group">
                         <button type="button" class="universal-btn-save" onclick="event.stopPropagation(); saveKazaEvent();">Kaydet</button>
-                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); closeEventModal('kaza');">Vazgeç</button>
+                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); closeEventModalAndShowEventMenu('kaza');">Vazgeç</button>
                     </div>
                 </div>
             </div>
@@ -857,7 +857,7 @@
                     </div>
                     <div class="universal-btn-group">
                         <button type="button" class="universal-btn-save" onclick="event.stopPropagation(); updateSigortaInfo();">Kaydet</button>
-                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); closeEventModal('sigorta');">Vazgeç</button>
+                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); closeEventModalAndShowEventMenu('sigorta');">Vazgeç</button>
                     </div>
                 </div>
             </div>
@@ -902,7 +902,7 @@
                     </div>
                     <div class="universal-btn-group">
                         <button type="button" class="universal-btn-save" onclick="event.stopPropagation(); updateKaskoInfo();">Kaydet</button>
-                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); closeEventModal('kasko');">Vazgeç</button>
+                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); closeEventModalAndShowEventMenu('kasko');">Vazgeç</button>
                     </div>
                 </div>
             </div>
@@ -935,7 +935,7 @@
                     </div>
                     <div class="universal-btn-group">
                         <button type="button" class="universal-btn-save" onclick="event.stopPropagation(); updateMuayeneInfo();">Kaydet</button>
-                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); closeEventModal('muayene');">Vazgeç</button>
+                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); closeEventModalAndShowEventMenu('muayene');">Vazgeç</button>
                     </div>
                 </div>
             </div>
@@ -975,7 +975,7 @@
                     </div>
                     <div class="universal-btn-group">
                         <button type="button" class="universal-btn-save" onclick="event.stopPropagation(); updateAnahtarInfo();">Kaydet</button>
-                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); closeEventModal('anahtar');">Vazgeç</button>
+                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); closeEventModalAndShowEventMenu('anahtar');">Vazgeç</button>
                     </div>
                 </div>
             </div>
@@ -1015,7 +1015,7 @@
                     </div>
                     <div class="universal-btn-group">
                         <button type="button" class="universal-btn-save" onclick="event.stopPropagation(); updateKrediInfo();">Kaydet</button>
-                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); closeEventModal('kredi');">Vazgeç</button>
+                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); closeEventModalAndShowEventMenu('kredi');">Vazgeç</button>
                     </div>
                 </div>
             </div>
@@ -1048,7 +1048,7 @@
                     </div>
                     <div class="universal-btn-group">
                         <button type="button" class="universal-btn-save" onclick="event.stopPropagation(); updateKmInfo();">Kaydet</button>
-                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); closeEventModal('km');">Vazgeç</button>
+                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); closeEventModalAndShowEventMenu('km');">Vazgeç</button>
                     </div>
                 </div>
             </div>
@@ -1088,7 +1088,7 @@
                     </div>
                     <div class="universal-btn-group">
                         <button type="button" class="universal-btn-save" onclick="event.stopPropagation(); updateLastikInfo();">Kaydet</button>
-                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); closeEventModal('lastik');">Vazgeç</button>
+                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); closeEventModalAndShowEventMenu('lastik');">Vazgeç</button>
                     </div>
                 </div>
             </div>
@@ -1124,7 +1124,7 @@
                     </div>
                     <div class="universal-btn-group">
                         <button type="button" class="universal-btn-save" onclick="event.stopPropagation(); updateUTTSInfo();">Kaydet</button>
-                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); closeEventModal('utts');">Vazgeç</button>
+                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); closeEventModalAndShowEventMenu('utts');">Vazgeç</button>
                     </div>
                 </div>
             </div>
@@ -1160,7 +1160,7 @@
                     </div>
                     <div class="universal-btn-group">
                         <button type="button" class="universal-btn-save" onclick="event.stopPropagation(); updateTakipCihazInfo();">Kaydet</button>
-                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); closeEventModal('takip');">Vazgeç</button>
+                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); closeEventModalAndShowEventMenu('takip');">Vazgeç</button>
                     </div>
                 </div>
             </div>
@@ -1195,7 +1195,7 @@
                     </div>
                     <div class="universal-btn-group">
                         <button type="button" class="universal-btn-save" onclick="event.stopPropagation(); updateSubeDegisiklik();">Kaydet</button>
-                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); closeEventModal('sube');">Vazgeç</button>
+                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); closeEventModalAndShowEventMenu('sube');">Vazgeç</button>
                     </div>
                 </div>
             </div>
@@ -1230,7 +1230,7 @@
                     </div>
                     <div class="universal-btn-group">
                         <button type="button" class="universal-btn-save" onclick="event.stopPropagation(); updateKullaniciAtama();">Kaydet</button>
-                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); closeEventModal('kullanici');">Vazgeç</button>
+                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); closeEventModalAndShowEventMenu('kullanici');">Vazgeç</button>
                     </div>
                 </div>
             </div>
@@ -1271,7 +1271,7 @@
                     </div>
                     <div class="universal-btn-group">
                         <button type="button" class="universal-btn-save" onclick="event.stopPropagation(); saveSatisPert();">Kaydet</button>
-                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); closeEventModal('satis');">Vazgeç</button>
+                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); closeEventModalAndShowEventMenu('satis');">Vazgeç</button>
                     </div>
                 </div>
             </div>
