@@ -748,6 +748,7 @@
   .olay-ekle-modal .modal-body {
     padding-left: 1px !important;
     padding-right: 1px !important;
+    padding-top: 16px !important; /* Olay Ekle etiketi ile Tarih etiketi arası 4px azaltıldı (20→16) */
   }
   /* Sadece etiketli form satırları 390px (buton grubunu dahil etme – aşağıda ayrı kural) */
   .olay-ekle-modal .modal-body > div > div:has(label) {
@@ -810,7 +811,7 @@
     box-shadow: none !important;
   }
   .olay-ekle-modal .universal-back-bar {
-    margin-top: -18px !important; /* Sol ok + etiket 6px daha yukarı (-12 → -18) */
+    margin-top: -21px !important; /* Sol ok + etiket 3px daha yukarı (-18 → -21) */
   }
 }
 
@@ -2076,11 +2077,22 @@
     height: 22px !important;
   }
   .olay-ekle-modal .universal-back-bar {
-    margin-top: -18px !important; /* Mobil: sol ok + etiket 6px daha yukarı */
+    margin-top: -21px !important; /* Mobil: sol ok + etiket 3px daha yukarı */
   }
   .olay-ekle-modal .universal-back-bar .universal-back-label {
     font-size: 17.5px !important;
     margin-top: 0 !important;
+  }
+
+  /* Yapılan İşlemler: 2 satır varsayılan, içerik uzadıkça aşağı açılsın */
+  #bakim-islemler.olay-textarea-expand,
+  .olay-ekle-modal textarea.olay-textarea-expand {
+    min-height: 3em !important; /* ~2 satır yüksekliği */
+    height: auto !important;
+    resize: none !important;
+    overflow-y: auto !important;
+    line-height: 1.4 !important;
+    box-sizing: border-box !important;
   }
 
   .tasitlar-modal-overlay .modal-container {
@@ -2270,6 +2282,7 @@
   }
 
   .olay-ekle-modal .modal-body {
+    padding-top: 16px !important; /* Olay Ekle – Tarih arası 4px az (mobil) */
     padding-bottom: 40px !important; /* Chrome fix: Logoların kesilmemesi */
     font-size: 16px !important; /* +2px */
   }
@@ -2796,7 +2809,7 @@
   }
 
   #event-menu-modal .universal-back-bar {
-    margin-top: -18px !important; /* Olay Ekle menü: sol ok + etiket 6px daha yukarı */
+    margin-top: -21px !important; /* Olay Ekle menü: sol ok + etiket 3px daha yukarı */
   }
 
   /* --- EVENT MENU LIST MOBİL --- (spesifik seçici: .modal-body button kuralını ezer) */

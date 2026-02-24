@@ -2554,6 +2554,22 @@ function renderVehicleDetailLeft(vehicle) {
     showVehicleDetail(vehicleId); // Detay ekranını yenile
   };
 
+  /** Yapılan İşlemler textarea: 2 satır açık, içerik uzadıkça aşağı açılsın */
+  (function initBakimIslemlerExpand() {
+    var el = document.getElementById('bakim-islemler');
+    if (el) {
+      el.addEventListener('input', function() {
+        this.style.height = 'auto';
+        var lineHeight = 22;
+        var minH = lineHeight * 2;
+        var maxH = lineHeight * 10;
+        var newH = Math.min(Math.max(this.scrollHeight, minH), maxH);
+        this.style.height = newH + 'px';
+        this.style.overflow = this.scrollHeight > maxH ? 'auto' : 'hidden';
+      });
+    }
+  })();
+
   /**
    * Kaza olayı kaydet
    */
