@@ -737,18 +737,13 @@
   flex: 0 0 auto;
 }
 
-/* Taşıtlar modalı: sol ok + etiket hizası (masaüstü + mobil) – gap 3px, ok 6px aşağı */
-#vehicles-modal .universal-back-bar,
-#vehicles-modal .universal-back-btn,
+/* Taşıt detay toolbar: sol ok + etiket hizası */
 #vehicle-detail-modal .vehicle-detail-toolbar .universal-back-bar,
 #vehicle-detail-modal .vehicle-detail-toolbar .universal-back-btn {
   display: inline-flex !important;
   align-items: center !important;
   gap: 3px !important;
 }
-#vehicles-modal .universal-back-btn i,
-#vehicles-modal .universal-back-btn svg,
-#vehicles-modal .universal-back-btn .back-icon-svg,
 #vehicle-detail-modal .vehicle-detail-toolbar .universal-back-btn i,
 #vehicle-detail-modal .vehicle-detail-toolbar .universal-back-btn svg,
 #vehicle-detail-modal .vehicle-detail-toolbar .universal-back-btn .back-icon-svg {
@@ -757,8 +752,6 @@
   margin: 0 !important;
   padding: 0 !important;
 }
-#vehicles-modal .universal-back-btn .universal-back-label,
-#vehicles-modal .universal-back-btn span,
 #vehicle-detail-modal .vehicle-detail-toolbar .universal-back-btn .universal-back-label,
 #vehicle-detail-modal .vehicle-detail-toolbar .universal-back-btn span {
   font-size: 13px !important;
@@ -766,19 +759,27 @@
   margin: 0 !important;
   padding-left: 0 !important;
 }
-/* Taşıtlar modalı başlık geri alanı: ok + etiket kesin hizalama */
+/* BAŞLIK VE OK HİZALAMASI - KESİN KURAL (Taşıtlar Modalı) */
 #vehicles-modal .vehicles-toolbar .vt-left .universal-back-bar,
-#vehicles-modal .vehicles-toolbar .vt-left .universal-back-btn {
-  display: flex !important;
-  align-items: center !important; /* Ok ve metni dikeyde ortala */
-  gap: 6px !important; /* Ok ve metin arası ideal boşluk */
+#vehicles-modal .vehicles-toolbar .vt-left .universal-back-btn,
+#vehicles-modal .vehicles-toolbar .vt-left .modal-header-back {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 6px !important;
+  height: auto !important;
 }
 #vehicles-modal .vehicles-toolbar .vt-left .universal-back-btn i,
 #vehicles-modal .vehicles-toolbar .vt-left .universal-back-btn svg,
-#vehicles-modal .vehicles-toolbar .vt-left .universal-back-btn .back-icon-svg {
-  position: relative !important;
-  top: 1px !important; /* Optik dengeleme */
+#vehicles-modal .vehicles-toolbar .vt-left .modal-header-back i,
+#vehicles-modal .vehicles-toolbar .vt-left .modal-header-back svg {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  position: static !important;
+  transform: none !important;
   margin: 0 !important;
+  line-height: 1 !important;
 }
 
 .vt-icon-btn {
@@ -1112,6 +1113,9 @@
     overflow-y: auto;
     overflow-x: hidden;
     padding: 18px 8px 12px 8px; /* Üst 18px: şube kartı hover'da scale ile üst çerçeve kesilmesin */
+    padding-left: 2px !important;
+    padding-right: 2px !important;
+    box-sizing: border-box !important;
     scrollbar-width: none;
     -ms-overflow-style: none;
 }
@@ -1139,6 +1143,13 @@
     overflow-x: hidden;
     scrollbar-width: none;
     -ms-overflow-style: none;
+}
+/* LİSTE DÜZENİNİ KORUMA (KENARLARA YAPIŞTIRMA) */
+#vehicles-modal .vehicles-list-scroll,
+#vehicles-modal .tasit-list-container {
+    margin-left: -2px !important;
+    margin-right: -2px !important;
+    width: calc(100% + 4px) !important;
 }
 .vehicles-list-scroll::-webkit-scrollbar { display: none; }
 
@@ -2208,24 +2219,19 @@
     width: 28px !important;
     height: 28px !important;
   }
-  /* Mobil: Tasitlar + Tasit Detayi geri ok/metin hizasini kilitle */
-  #vehicles-modal .universal-back-bar,
+  /* Mobil: Tasit Detayi geri ok/metin hizasini kilitle */
   #vehicle-detail-modal .vehicle-detail-toolbar .universal-back-bar {
     display: inline-flex !important;
     align-items: flex-start !important;
     gap: 3px !important;
     padding-left: 0 !important;
   }
-  #vehicles-modal .universal-back-btn,
   #vehicle-detail-modal .vehicle-detail-toolbar .universal-back-btn {
     display: inline-flex !important;
     align-items: flex-start !important;
     gap: 3px !important;
     padding-left: 0 !important;
   }
-  #vehicles-modal .universal-back-btn i,
-  #vehicles-modal .universal-back-btn svg,
-  #vehicles-modal .universal-back-btn .back-icon-svg,
   #vehicle-detail-modal .vehicle-detail-toolbar .universal-back-btn i,
   #vehicle-detail-modal .vehicle-detail-toolbar .universal-back-btn svg,
   #vehicle-detail-modal .vehicle-detail-toolbar .universal-back-btn .back-icon-svg {
@@ -2234,8 +2240,6 @@
     margin: 0 !important;
     padding: 0 !important;
   }
-  #vehicles-modal .universal-back-btn .universal-back-label,
-  #vehicles-modal .universal-back-btn span,
   #vehicle-detail-modal .vehicle-detail-toolbar .universal-back-btn .universal-back-label,
   #vehicle-detail-modal .vehicle-detail-toolbar .universal-back-btn span {
     font-size: 13px !important; /* style-core 14px -> 13px */
