@@ -2758,7 +2758,7 @@
     font-weight: 600 !important;
     letter-spacing: 0.3px !important;
     text-transform: uppercase !important;
-    color: var(--txt-gray-dark) !important;
+    color: var(--form-label-color) !important; /* Kayıt etiketleri ile aynı beyaz */
     opacity: 1 !important;
     display: flex !important;
     align-items: flex-start !important;
@@ -2776,7 +2776,7 @@
     font-size: var(--list-header-font-size, 15px) !important;
     font-weight: 700 !important;
     text-transform: uppercase !important;
-    color: var(--txt-gray-dark) !important;
+    color: var(--form-label-color) !important; /* Kayıt etiketleri ile aynı beyaz */
     white-space: normal !important;
     word-break: break-word !important;
   }
