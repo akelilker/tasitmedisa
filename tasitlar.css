@@ -2919,11 +2919,11 @@
     justify-content: center !important; /* Kaporta şeması yatayda ortalanmış */
     gap: 12px !important;
   }
-  /* Taşıt detay: kaporta ekspertiz mobil – şema ile (Orijinal/Boyalı/Değişen) arası tam 6px */
+  /* Taşıt detay: kaporta ekspertiz mobil – şema ile legend arası minimal (3px) */
   #detail-boya-container {
     margin-top: 58px !important;
-    gap: 6px 0 !important; /* Dikey 6px, yatay 0 */
-    row-gap: 6px !important;
+    gap: 3px 0 !important;
+    row-gap: 3px !important;
     column-gap: 0 !important;
     justify-content: center !important;
     overflow: visible !important;
@@ -2936,6 +2936,7 @@
   }
   #detail-boya-container .kaporta-schema-wrapper {
     margin: 0 !important;
+    padding-bottom: 0 !important;
   }
   #kaza-kaporta-container {
     flex-direction: row !important;
@@ -2965,7 +2966,7 @@
     transform: rotate(90deg) !important;
     transform-origin: center !important;
     flex-shrink: 0 !important;
-    margin: -29px 29px !important; /* Rotation layout/visual farkı (29px) telafi */
+    margin: 0 29px !important; /* Sadece yatay telafi; dikey 0 ile şema–legend boşluğu artmasın */
   }
 
   /* Detay modal: legend–footer arası boşluk 4px toplam (mobil) */
