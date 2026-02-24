@@ -135,7 +135,7 @@ body::-webkit-scrollbar,
   cursor: pointer;
   background: none;
   border: none;
-  padding: 8px 0;
+  padding: 8px 0 8px 0 !important; /* Yatay padding yok – gap 3px kalır */
   color: var(--txt-light);
 }
 .universal-back-btn:hover { color: var(--txt-white); }
@@ -149,7 +149,7 @@ body::-webkit-scrollbar,
   margin: 0 !important;
 }
 
-/* Sol oku 5px aşağı kaydırma (global, masaüstü + mobil) */
+/* Sol oku aşağı kaydırma (global, masaüstü + mobil) – metin baseline ile hizalı */
 .universal-back-btn i,
 .universal-back-btn svg,
 .universal-back-btn .back-icon-svg,
@@ -159,8 +159,14 @@ body::-webkit-scrollbar,
 .universal-back-bar .universal-back-btn .back-icon-svg,
 .universal-back-bar .universal-back-btn img {
   position: relative !important;
-  top: 5px !important; /* Oku dikeyde metnin merkezine hizalamak için 5px aşağı */
-  margin: 0 !important; /* 3px gap bozulmasın */
+  top: 6px !important; /* Ok metin baseline’a daha iyi hizalanır */
+  margin: 0 !important;
+  padding: 0 !important; /* 3px gap bozulmasın */
+}
+.universal-back-btn .universal-back-label,
+.universal-back-bar .universal-back-btn .universal-back-label {
+  margin-left: 0 !important;
+  padding-left: 0 !important;
 }
 
 .back-icon-svg {

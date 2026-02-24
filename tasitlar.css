@@ -673,6 +673,36 @@
   flex: 0 0 auto;
 }
 
+/* Taşıtlar modalı: sol ok + etiket hizası (masaüstü + mobil) – gap 3px, ok 6px aşağı */
+#vehicles-modal .universal-back-bar,
+#vehicles-modal .universal-back-btn,
+#vehicle-detail-modal .vehicle-detail-toolbar .universal-back-bar,
+#vehicle-detail-modal .vehicle-detail-toolbar .universal-back-btn {
+  display: inline-flex !important;
+  align-items: flex-start !important;
+  gap: 3px !important;
+}
+#vehicles-modal .universal-back-btn i,
+#vehicles-modal .universal-back-btn svg,
+#vehicles-modal .universal-back-btn .back-icon-svg,
+#vehicle-detail-modal .vehicle-detail-toolbar .universal-back-btn i,
+#vehicle-detail-modal .vehicle-detail-toolbar .universal-back-btn svg,
+#vehicle-detail-modal .vehicle-detail-toolbar .universal-back-btn .back-icon-svg {
+  position: relative !important;
+  top: 6px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+#vehicles-modal .universal-back-btn .universal-back-label,
+#vehicles-modal .universal-back-btn span,
+#vehicle-detail-modal .vehicle-detail-toolbar .universal-back-btn .universal-back-label,
+#vehicle-detail-modal .vehicle-detail-toolbar .universal-back-btn span {
+  font-size: 13px !important;
+  line-height: 1 !important;
+  margin: 0 !important;
+  padding-left: 0 !important;
+}
+
 .vt-icon-btn {
     background: transparent !important;
     border: none !important;
@@ -2122,7 +2152,7 @@
   #vehicle-detail-modal .vehicle-detail-toolbar .universal-back-btn svg,
   #vehicle-detail-modal .vehicle-detail-toolbar .universal-back-btn .back-icon-svg {
     position: relative !important;
-    top: 5px !important;
+    top: 6px !important; /* Ok metinle hizalı (fotoğraf incelemesi) */
     margin: 0 !important;
     padding: 0 !important;
   }
