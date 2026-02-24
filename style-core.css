@@ -934,8 +934,9 @@ html { overflow-x: hidden; }
   overscroll-behavior: none;
   overscroll-behavior-x: none;
 }
-/* Header ve Footer sabit kalır, kaydırmadan etkilenmez (Strict Flex-Scroll) */
+/* Header, geri çubuğu ve footer sabit kalır, kaydırmadan etkilenmez (Strict Flex-Scroll) */
 .modal-overlay .modal-header,
+.modal-overlay .universal-back-bar,
 .universal-btn-group,
 .form-buttons {
   flex-shrink: 0 !important;
@@ -1013,6 +1014,7 @@ html { overflow-x: hidden; }
 .login-body,
 .user-panel-body {
   flex: 1 1 auto !important;
+  min-height: 0 !important; /* Flex içinde küçülebilsin, taşan içerik scroll olsun */
   overflow-y: auto !important;
   overflow-x: hidden !important;
   touch-action: pan-y !important; /* Sadece bu alanda dikey parmak hareketine izin */
