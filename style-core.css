@@ -949,8 +949,23 @@ html { overflow-x: hidden; }
   flex: 1 !important;
   overflow-y: auto !important;
   min-height: 0 !important;
-  padding: 20px !important;
+  padding: 15px 20px 20px 20px !important; /* Sekmeler ile içerik arası 5px azaltıldı (20→15) */
   -webkit-overflow-scrolling: touch;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+#vehicle-history-modal .modal-body,
+#vehicle-history-modal #history-content,
+.modal-overlay:has(.history-tabs) .modal-body {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+#vehicle-history-modal .modal-body::-webkit-scrollbar,
+#vehicle-history-modal #history-content::-webkit-scrollbar,
+.modal-overlay:has(.history-tabs) .modal-body::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }
 
 /* Modal container: marker ikonu */
