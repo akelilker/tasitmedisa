@@ -131,16 +131,22 @@ display: flex;
 }
 #reports-modal .reports-list-header-actions .stok-detail-add-wrap .stok-controls-row-1 {
 display: flex;
-align-items: center;
-gap: 8px;
+flex-direction: column !important; /* 1. satır: sol ok+etiket, 2. satır: + Detay Ekleme */
+align-items: flex-start;
+gap: 4px;
 width: 100%;
-min-width: 0; /* Taşmayı önle; Detay Ekleme butonu kesilmesin */
+min-width: 0;
+}
+/* Sol ok + etiket 6px yukarı */
+#reports-modal .reports-list-header-actions .stok-controls-row-1 .universal-back-bar {
+margin-top: -6px !important;
+margin-bottom: 0;
 }
 #reports-modal .reports-list-header-actions .universal-back-bar,
 #reports-modal .reports-list-header-actions .stok-detail-add-btn {
 margin: 0;
 }
-/* Header slotunda geri çubuğu küçülebilir yap; "+ Detay Ekleme" butonu kesilmesin (overflow-x: hidden nedeniyle) */
+/* Header slotunda geri çubuğu küçülebilir yap */
 #reports-modal .reports-list-header-actions .stok-controls-row-1 .universal-back-bar {
 flex: 1 1 auto !important;
 min-width: 0 !important;
