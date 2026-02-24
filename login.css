@@ -1,8 +1,0 @@
-/* Login / giriş sayfası: modal arka plan gradyanı (logo kırmızısı → lacivert) */
-/* style-core.css ile aynı ton; bu dosya yalnızca login sayfası ayrı kullanılıyorsa gerekir */
-.modal-container,
-.login-container,
-.user-panel-container,
-.modal-content {
-  background: linear-gradient(180deg, #e1061b 0%, #050a1a 100%) !important;
-}
