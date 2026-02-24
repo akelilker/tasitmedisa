@@ -622,6 +622,7 @@
 #vehicle-history-modal #history-tabs .history-tab {
     text-align: center;
     justify-content: center;
+    color: #ffffff !important;
     padding-bottom: 1px !important; /* Sekme metni ile altındaki yatay çizgi arası 1px */
 }
 
@@ -2290,8 +2291,8 @@
   /* Taşıt detay toolbar kesilme sorunu; sol padding toolbar ile aynı (Olay Ekle hizası) */
   #vehicle-detail-content {
     padding-top: 20px !important; /* 14px → 20px */
-    padding-left: 6px !important; /* Container çerçevelerine 2px boşluk (4px → 6px) */
-    padding-right: 6px !important;
+    padding-left: 2px !important; /* Mobilde sağ/sol 2px boşluk */
+    padding-right: 2px !important;
   }
   .detail-plate-row {
     margin-top: -16px !important; /* Plaka 3px yukarı (mobil) */
@@ -2347,7 +2348,7 @@
   
   /* Mobil modal-body padding: çerçeve ile içerik arasında yatay boşluk yok */
   #vehicles-modal .modal-body {
-    padding: 10px 0 40px 0 !important;
+    padding: 10px 2px 40px 2px !important;
     overflow-x: hidden !important; /* Sağa sola kaymayı engelle */
     touch-action: pan-y !important; /* Sadece dikey kaydırma */
     overscroll-behavior-x: none !important; /* Yatay overscroll'u engelle */
@@ -2855,7 +2856,11 @@
   }
   
   /* --- DETAY MODAL SCROLL & PADDING --- */
-  #vehicle-detail-content { padding-top: 18px !important; } /* Plaka üstten kesilmesin */
+  #vehicle-detail-content {
+    padding-top: 18px !important; /* Plaka üstten kesilmesin */
+    padding-left: 2px !important; /* Mobilde sağ/sol 2px boşluk */
+    padding-right: 2px !important;
+  }
   #vehicle-detail-modal .modal-body { 
     overflow-y: auto !important;
     overflow-x: hidden !important; /* Sağa sola kaymayı engelle */
