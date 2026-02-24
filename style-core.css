@@ -331,46 +331,45 @@ input[type="date"].form-input:focus {
   color: var(--data-value-color, #a0aec0) !important;
 }
 
-/* Tarih Inputu Kesilme ve Hizalama Düzeltmesi (iOS Safari vb.) */
+/* TÜM TARİH İNPUTLARI İÇİN EVRENSEL DİKEY HİZALAMA (tüm ekranlar) */
 input[type="date"].form-input {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  height: 27px !important;
+  line-height: 27px !important;
+  display: flex !important;
+  align-items: center !important;
   padding-left: 12px !important;
   text-align: left !important;
   justify-content: flex-start !important;
 }
+
+/* Chrome/Safari Shadow DOM içerik ortalama */
 input[type="date"].form-input::-webkit-datetime-edit,
 input[type="date"].form-input::-webkit-datetime-edit-fields-wrapper {
+  display: flex !important;
+  align-items: center !important;
+  height: 100% !important;
+  padding: 0 !important;
+  margin: 0 !important;
   padding-left: 0 !important;
   text-align: left !important;
   justify-content: flex-start !important;
   margin-left: 0 !important;
 }
 
+/* Sağdaki takvim ikonunu ortalama */
+input[type="date"].form-input::-webkit-calendar-picker-indicator {
+  margin-top: auto !important;
+  margin-bottom: auto !important;
+  cursor: pointer !important;
+}
+
 @media (min-width: 641px) {
-  /* Sadece Tarih Inputları İçin Özel Dikey/Yatay Hizalama */
+  /* Masaüstü: modal tarih inputları sol padding daraltma */
   .modal-overlay input[type="date"].form-input,
   #vehicle-modal input[type="date"].form-input {
-    padding-top: 0 !important; /* Tarih kutularında dikey padding yazıyı ezer, sıfırlıyoruz */
-    padding-bottom: 0 !important;
-    height: 27px !important; /* Diğer kutularla aynı yükseklik */
-    line-height: 27px !important; /* Yazıyı dikeyde kusursuz ortalar */
-    padding-left: 8px !important; /* 12px olan sol boşluğu masaüstünde biraz daraltıyoruz */
-  }
-
-  /* Chrome/Edge/Safari içindeki tarih bölmelerini (gg.aa.yyyy) zorla ortalama */
-  input[type="date"].form-input::-webkit-datetime-edit,
-  input[type="date"].form-input::-webkit-datetime-edit-fields-wrapper {
-    display: flex !important;
-    align-items: center !important;
-    height: 100% !important;
-    padding: 0 !important;
-    margin: 0 !important;
-  }
-
-  /* Sağdaki takvim ikonunu dikeyde ortalama */
-  input[type="date"].form-input::-webkit-calendar-picker-indicator {
-    margin-top: auto !important;
-    margin-bottom: auto !important;
-    cursor: pointer !important;
+    padding-left: 8px !important;
   }
 }
 
