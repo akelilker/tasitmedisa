@@ -2919,24 +2919,25 @@
     justify-content: center !important; /* Kaporta şeması yatayda ortalanmış */
     gap: 12px !important;
   }
-  /* Taşıt detay: kaporta ekspertiz mobil – şema ile legend arası minimal (3px) */
+  /* Taşıt detay: kaporta ekspertiz mobil – şema üstü boşluk az; şema kendi padding/margin yok */
   #detail-boya-container {
-    margin-top: 58px !important;
+    margin-top: 50px !important; /* 58→50: “Aşağıdaki şemada…” ile şema arası 8px daraldı */
     gap: 3px 0 !important;
     row-gap: 3px !important;
     column-gap: 0 !important;
     justify-content: center !important;
     overflow: visible !important;
+    padding: 0 !important;
   }
   #detail-boya-container .boya-legend {
-    margin: -14px 0 0 0 !important; /* Şema ile açıklama arası üst boşluk kapansın */
+    margin: -14px 0 0 0 !important;
     padding: 0 !important;
     line-height: 1.2 !important;
     min-height: 0;
   }
   #detail-boya-container .kaporta-schema-wrapper {
     margin: 0 !important;
-    padding-bottom: 0 !important;
+    padding: 0 !important; /* Şema üstünde kendi padding’i olmasın */
   }
   #kaza-kaporta-container {
     flex-direction: row !important;
