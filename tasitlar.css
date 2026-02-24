@@ -2937,7 +2937,7 @@
   }
   #detail-boya-container .kaporta-schema-wrapper {
     margin: -12px auto 0 auto !important; /* Yatayda ortala */
-    transform: translateX(-4px) !important; /* 4px sola kaydır */
+    transform: translateX(-6px) !important; /* 6px sola (2px daha sola) */
     padding: 0 !important; /* Şema üstünde kendi padding’i olmasın */
   }
   #kaza-kaporta-container {
