@@ -696,10 +696,10 @@
 }
 .vt-icon-btn.active { color: var(--theme-color); }
 
-/* Masaüstü: sol ok ve etiket 6px yukarı; sütun başlıkları +1px, beyaza yakın renk */
+/* Masaüstü: sol ok ve etiket (3px aşağı: -54 → -51); sütun başlıkları +1px, beyaza yakın renk */
 @media (min-width: 641px) {
   #vehicles-modal .vt-left {
-    margin-top: -54px;
+    margin-top: -51px;
   }
   /* Taşıt detay modalı: sol ok + Taşıtlar etiketi 6px yukarı (masaüstü) */
   #vehicle-detail-modal .vehicle-detail-toolbar > div:first-child {
