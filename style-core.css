@@ -10,6 +10,7 @@ body::-webkit-scrollbar,
   display: none;
 }
  
+/* ========== TÜM :root DEĞİŞKENLERİ (tek kaynak) ========== */
 :root {
   --theme-color: #e1061b;
   --theme-color-rgb: 225, 6, 27;
@@ -22,33 +23,24 @@ body::-webkit-scrollbar,
   --border-shiny: rgba(255, 255, 255, 0.25);
 
   --modal-footer-gap: 12px;
-  --app-footer-height: 48px; /* footer-content yaklaşık yüksekliği */
+  --app-footer-height: 48px;
   --modal-footer-reserve: calc(var(--app-footer-height) + var(--modal-footer-gap));
+  --modal-gap-above-footer: 10px; /* Masaüstünde 6px override edilir */
 
-  /* --- MODAL ORTAK (tek yerden yönetim) --- */
-  /* Dikey için vw KULLANMA: vw = viewport genişliği. Dikey için vh/dvh veya px. */
-  --modal-bg: var(--bg); /* Container dışı alanla aynı (koyu lacivert) */
+  --modal-bg: var(--bg);
   --modal-max-width: 500px;
   --modal-radius: 10px;
   --modal-margin-bottom-desktop: calc(var(--app-footer-height) + var(--modal-gap-above-footer));
-  --modal-gap-above-footer: 10px; /* modal ile footer arası boşluk (tek kaynak) - iOS PWA uyumu */
-  --modal-margin-bottom-mobile: calc(var(--modal-gap-above-footer) + var(--app-footer-height)); /* 52px */
+  --modal-margin-bottom-mobile: calc(var(--modal-gap-above-footer) + var(--app-footer-height));
 
-  /* --- KIRMIZI ÇERÇEVE AYARLARI --- */
-  /* Çerçeve Rengi (0.6 = %60 Görünürlük) */
   --border-red-tech: rgba(var(--theme-color-rgb), 0.4);
-  /* Işık Efekti (0.25 = %25 Parlaklık) */
   --red-glow-subtle: rgba(var(--theme-color-rgb), 0.12);
 
   --green: #4ade80;
   --red: #ef4444;
-
-  /* Etiket metin rengi (tek kaynak; mobil+masaüstü beyaz) */
   --form-label-color: #ffffff;
-  /* Girilen veri / açıklama metin rengi (beyaz-gri hiyerarşisi) */
   --data-value-color: #a0aec0;
 
-  /* --- RENK PALETİ (merkezi yönetim) --- */
   --bg-content: #0d131f;
   --bg-input: #0f1418;
   --bg-input-focus: #0f1622;
@@ -84,10 +76,31 @@ body::-webkit-scrollbar,
   --br-medium: #555;
   --hero-gradient-start: #060d16;
   --hero-gradient-end: #08090c;
+  --hero-logo-width: 69px;
+  --hero-spacer-width: 30px;
+}
 
-  /* --- HERO LOGO GENİŞLİK YÖNETİMİ --- */
-  --hero-logo-width: 69px;  /* Masaüstü logo genişliği */
-  --hero-spacer-width: 30px; /* Masaüstü spacer genişliği */
+/* Masaüstü (641px+): modal–footer arası 6px */
+@media (min-width: 641px) {
+  :root {
+    --modal-gap-above-footer: 6px;
+  }
+}
+
+/* Mobil (640px ve altı): kontrast artırma */
+@media (max-width: 640px) {
+  :root {
+    --txt: #ffffff;
+    --muted: rgba(255, 255, 255, 0.7);
+    --br: #444;
+    --border-shiny: rgba(255, 255, 255, 0.35);
+    --border-red-tech: rgba(var(--theme-color-rgb), 0.45);
+    --red-glow-subtle: rgba(var(--theme-color-rgb), 0.18);
+    --bg-2: #1a1a1a;
+    --card-bg: #1f1f1f;
+    --hero-logo-width: 43px;
+    --hero-spacer-width: 1px;
+  }
 }
 
 /* --- EVRENSEL GERİ DÖN NAVİGASYONU (tüm uygulama) --- */
@@ -780,10 +793,6 @@ html { overflow-x: hidden; }
 
 /* Masaüstünde container'ın %45'i + metin ortalı */
 @media (min-width: 641px) {
-  /* Masaüstü (1920 vb.): alttaki boşluğu azalt – modal–footer arası 6px */
-  :root {
-    --modal-gap-above-footer: 6px;
-  }
   /* Ana başlık: 2px aşağı (base translateY(-2px) → 0) */
   .hero h1 {
     transform: translateY(0);
@@ -1201,31 +1210,7 @@ body.modal-open .user-panel-link {
 
 /* MOBİL AYARLARI */
 @media (max-width: 640px) {
-    /* ✨ MOBİL KONTRAST ARTIRMA ✨ */
-    :root {
-        /* Metin kontrastı artırıldı */
-        --txt: #ffffff; /* #f0f0f0 → #ffffff (daha parlak beyaz) */
-        --muted: rgba(255, 255, 255, 0.7); /* 0.5 → 0.7 (daha görünür) */
-        
-        /* Border kontrastı artırıldı */
-        --br: #444; /* #333 → #444 (daha açık gri) */
-        --border-shiny: rgba(255, 255, 255, 0.35); /* 0.25 → 0.35 (daha görünür) */
-        
-        /* Kırmızı çerçeve kontrastı artırıldı */
-        --border-red-tech: rgba(var(--theme-color-rgb), 0.45); /* 0.3 → 0.45 (daha belirgin) */
-        --red-glow-subtle: rgba(var(--theme-color-rgb), 0.18); /* 0.12 → 0.18 (daha parlak) */
-        
-        /* Arka plan tüm sayfalarda aynı (#080d16) */
-        --bg: #080d16;
-        --bg-2: #1a1a1a; /* #151515 → #1a1a1a (daha açık) */
-        --card-bg: #1f1f1f; /* #1a1a1a → #1f1f1f (daha açık) */
-        
-        /* Hero logo ve spacer genişlik ayarları */
-        --hero-logo-width: 43px;    /* Mobilde logo genişliği (%20 küçültme: 54→43) */
-        --hero-spacer-width: 1px;   /* Mobilde spacer genişliği (6px → 4px) */
-    }
-    
-    /* Mobil logo ve spacer genişlik ayarları */
+    /* :root override'ları dosya başında birleştirildi */
     /* ✨ iOS FOOTER ALTI RENK SORUNU ✨ - Body/container aynı renk */
     html, body {
         background-color: var(--bg);
