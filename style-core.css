@@ -129,8 +129,8 @@ body::-webkit-scrollbar,
 .universal-back-btn,
 .universal-back-bar a.universal-back-btn {
   display: inline-flex !important;
-  align-items: flex-start !important;
-  gap: 3px !important; /* Etiket ile ok arasındaki mesafe KESİN 3px */
+  align-items: center !important; /* Ok ve etiket aynı satırda dikey ortalı */
+  gap: 3px !important;
   text-decoration: none !important;
   cursor: pointer;
   background: none;
@@ -159,7 +159,7 @@ body::-webkit-scrollbar,
 .universal-back-bar .universal-back-btn .back-icon-svg,
 .universal-back-bar .universal-back-btn img {
   position: relative !important;
-  top: 6px !important; /* Ok metin baseline’a daha iyi hizalanır */
+  top: 0 !important; /* Ok metin baseline’a daha iyi hizalanır */
   margin: 0 !important;
   padding: 0 !important; /* 3px gap bozulmasın */
 }

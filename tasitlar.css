@@ -108,6 +108,12 @@
     overflow: hidden;
     overflow-x: hidden;
 }
+/* Olay Ekle (Kaza, Bakım vb.): modal gövdesi mutlaka kayar, üst/alt erişilebilir */
+.olay-ekle-modal .modal-body {
+    overflow-y: auto !important;
+    min-height: 0 !important;
+    -webkit-overflow-scrolling: touch !important;
+}
 
 /* === MODAL ÖZEL FARKLAR === */
 
@@ -679,7 +685,7 @@
 #vehicle-detail-modal .vehicle-detail-toolbar .universal-back-bar,
 #vehicle-detail-modal .vehicle-detail-toolbar .universal-back-btn {
   display: inline-flex !important;
-  align-items: flex-start !important;
+  align-items: center !important;
   gap: 3px !important;
 }
 #vehicles-modal .universal-back-btn i,
@@ -689,7 +695,7 @@
 #vehicle-detail-modal .vehicle-detail-toolbar .universal-back-btn svg,
 #vehicle-detail-modal .vehicle-detail-toolbar .universal-back-btn .back-icon-svg {
   position: relative !important;
-  top: 6px !important;
+  top: 0 !important;
   margin: 0 !important;
   padding: 0 !important;
 }
@@ -2130,18 +2136,18 @@
     width: 28px !important;
     height: 28px !important;
   }
-  /* Mobil: Tasitlar + Tasit Detayi geri ok/metin hizasini kilitle */
+  /* Mobil: Taşıtlar + Taşıt Detayı geri ok ve etiket aynı satırda ortalı */
   #vehicles-modal .universal-back-bar,
   #vehicle-detail-modal .vehicle-detail-toolbar .universal-back-bar {
     display: inline-flex !important;
-    align-items: flex-start !important;
+    align-items: center !important;
     gap: 3px !important;
     padding-left: 0 !important;
   }
   #vehicles-modal .universal-back-btn,
   #vehicle-detail-modal .vehicle-detail-toolbar .universal-back-btn {
     display: inline-flex !important;
-    align-items: flex-start !important;
+    align-items: center !important;
     gap: 3px !important;
     padding-left: 0 !important;
   }
@@ -2152,7 +2158,7 @@
   #vehicle-detail-modal .vehicle-detail-toolbar .universal-back-btn svg,
   #vehicle-detail-modal .vehicle-detail-toolbar .universal-back-btn .back-icon-svg {
     position: relative !important;
-    top: 6px !important; /* Ok metinle hizalı (fotoğraf incelemesi) */
+    top: 0 !important;
     margin: 0 !important;
     padding: 0 !important;
   }
