@@ -711,9 +711,10 @@
     justify-content: space-between;
     align-items: center;
     padding: 0 16px 0 0; /* Sol ok çerçeveye yaslı (3px sola alındı) */
-    position: relative !important; /* Arama kutusunun buraya göre konumlanması için */
+    position: relative !important;
     z-index: 10;
     flex-shrink: 0;
+    overflow: visible !important; /* Şanzıman dropdown kesilmesin (masaüstü + mobil) */
 }
 
 .vt-left { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
@@ -1077,15 +1078,16 @@
     display: none;
     position: absolute;
     top: 100%;
-    left: 0;
+    right: 0;           /* Sağa hizala: masaüstünde modal dışına taşmasın */
+    left: auto;
     margin-top: 4px;
     min-width: 140px;
-    max-width: min(140px, calc(100vw - 24px)); /* Ekrandan taşma / kesilme olmasın */
+    max-width: min(140px, calc(100vw - 24px));
     background: var(--bg);
     border: 1px solid var(--border-faint);
     border-radius: 8px;
     box-shadow: 0 6px 20px var(--shadow-dark);
-    z-index: 100;
+    z-index: 1000;      /* Toolbar ve modal içeriğinin üstünde görünsün */
     padding: 4px 0;
 }
 .v-transmission-dropdown.open {
@@ -2178,8 +2180,8 @@
   #vehicles-modal .vt-right {
     gap: 2px !important;
     flex-shrink: 1;
-    min-width: 0 !important; /* Arama açıkken taşmayı önle */
-    overflow: hidden; /* Arama kutusu açıkken hizada kalsın, taşma kesilmesin */
+    min-width: 0 !important;
+    overflow: visible !important; /* Şanzıman dropdown mobilde kesilmesin, görünsün */
   }
   /* Taşıtlar toolbar: arama + şanzıman + diğer ikonlar sığsın */
   #vehicles-modal .vt-right .vt-icon-btn,
@@ -2192,11 +2194,10 @@
     width: 18px !important;
     height: 18px !important;
   }
-  /* Şanzıman dropdown: ekran içinde kalsın, sağa taşmasın */
+  /* Şanzıman dropdown mobil: sağa hizalı (zaten base'de right:0), görünür olsun */
   .v-transmission-dropdown {
-    right: 0;
-    left: auto;
     max-width: min(140px, calc(100vw - 20px));
+    z-index: 1000;
   }
   /* Taşıt detay toolbar sol 4px */
   #vehicle-detail-modal .vehicle-detail-toolbar {
