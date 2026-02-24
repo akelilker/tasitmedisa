@@ -199,22 +199,76 @@ body::-webkit-scrollbar,
   -webkit-text-stroke: 0.2px currentColor;
 }
 
-/* Şube ve Ayarlar Modalları İçin Özel Buton Hizalaması */
+/* Ayarlar/Şube modalları: Olay Ekle standardı – tam genişlik, sol hizalama */
+#sube-modal .form-section,
+#branch-form-modal .form-section,
+#user-form-modal .form-section,
+.settings-modal .form-section,
+.ayarlar-modal-overlay .modal-body .form-section,
+.modal-body:has(#sube-adi) .form-section,
+.modal-body:has(#branch-name) .form-section {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+}
+
+#sube-modal .form-label,
+#branch-form-modal .form-label,
+#user-form-modal .form-label,
+.settings-modal .form-label,
+.ayarlar-modal-overlay .modal-body .form-label,
+.modal-body:has(#sube-adi) .form-label,
+.modal-body:has(#branch-name) .form-label {
+  text-align: left !important;
+  width: 100% !important;
+  margin-bottom: 4px !important;
+}
+
+#sube-modal .form-input,
+#branch-form-modal .form-input,
+#user-form-modal .form-input,
+.settings-modal .form-input,
+.ayarlar-modal-overlay .modal-body .form-input,
+.modal-body:has(#sube-adi) .form-input,
+.modal-body:has(#branch-name) .form-input,
+#branch-form-modal .modal-body .form-input,
+#branch-form-modal .modal-body select.form-input,
+#user-form-modal .modal-body .form-input,
+#user-form-modal .modal-body select.form-input {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Buton grubu da tam genişlik (400px kısıtlaması kaldırıldı) */
+#sube-modal .universal-btn-group,
 #branch-form-modal .universal-btn-group,
 #user-form-modal .universal-btn-group,
-.ayarlar-modal-overlay .modal-body .universal-btn-group {
-  max-width: 400px !important;
-  margin-left: auto !important;
-  margin-right: auto !important;
+.settings-modal .universal-btn-group,
+.ayarlar-modal-overlay .modal-body .universal-btn-group,
+.modal-body:has(#sube-adi) .universal-btn-group,
+.modal-body:has(#branch-name) .universal-btn-group {
+  max-width: 100% !important;
+  width: 100% !important;
   padding-left: 0 !important;
   padding-right: 0 !important;
 }
 
-/* Sil butonunu grid'de tam genişlikte, simetrik */
+/* Sil butonunu grid'de tam genişlikte, simetrik (3. buton alt satırda tam boy) */
+#sube-modal .btn-delete,
+#sube-modal .settings-btn-delete,
 #branch-form-modal .settings-btn-delete,
 #user-form-modal .settings-btn-delete,
+.settings-modal .btn-delete,
+.universal-btn-group .universal-btn-delete,
 .universal-btn-group .settings-btn-delete,
-.universal-btn-group button.settings-btn-delete {
+.universal-btn-group button.settings-btn-delete,
+.universal-btn-group button.btn-delete,
+.universal-btn-group button:nth-child(3) {
   grid-column: 1 / -1 !important;
   width: 100% !important;
   max-width: none !important;
