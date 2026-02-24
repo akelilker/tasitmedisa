@@ -331,33 +331,29 @@ input[type="date"].form-input:focus {
   color: var(--data-value-color, #a0aec0) !important;
 }
 
-/* 1. TARİH KUTUSU ANA GÖVDE (Flex iptal – block, ikon/metin binmesi engellenir) */
+/* TARİH KUTUSU ANA GÖVDE HİZALAMASI */
 input[type="date"].form-input {
-  display: block !important;
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
-  position: relative !important;
-  height: 32px !important;
-  line-height: 32px !important;
-  padding-left: 12px !important;
-  text-align: left !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 0 8px 0 12px !important;
+  height: 36px !important;
+  box-sizing: border-box !important;
 }
 
-/* 2. Metin ve ikonun üst üste binmesini engelleme */
+/* Chrome/Safari iç metin (gg.aa.yyyy) dikey ortalama */
 input[type="date"].form-input::-webkit-datetime-edit,
 input[type="date"].form-input::-webkit-datetime-edit-fields-wrapper {
-  display: inline-block !important;
+  display: flex !important;
+  align-items: center !important;
+  height: 100% !important;
   padding: 0 !important;
   margin: 0 !important;
-  padding-right: 30px !important;
 }
 
-/* 3. Takvim ikonunu sağa sabitleme ve dikey ortalama */
+/* Takvim ikonu sıfırlama */
 input[type="date"].form-input::-webkit-calendar-picker-indicator {
-  position: absolute !important;
-  right: 8px !important;
-  top: 50% !important;
-  transform: translateY(-50%) !important;
+  display: block !important;
   margin: 0 !important;
   padding: 0 !important;
   cursor: pointer !important;
