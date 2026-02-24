@@ -181,32 +181,32 @@
 
 /* Plaka satırında artık buton yok, sadece plaka var */
 
-/* Marka/Model - yatayda ortalanmış (tarihçe butonu toolbar'a taşındı) */
+/* Taşıt Detay Alt Başlık Satırı: Olay Ekle | Marka/Model | Tarihçe – dikeyde kusursuz hizalı */
 .detail-brand-year-row {
-    display: flex;
-    justify-content: space-between; /* Olay Ekle solda, Tarihçe sağda */
-    align-items: center;
-    flex-wrap: nowrap; /* Olay Ekle ve Tarihçe hep aynı satırda */
-    width: 100%;
-    margin-top: -4px !important; /* Olay Ekle + Tarihçe 4px yukarı */
+    display: flex !important;
+    align-items: center !important; /* DİKEYDE KUSURSUZ HİZALAR */
+    justify-content: space-between !important;
+    flex-wrap: nowrap;
+    width: 100% !important;
+    margin-top: -4px !important;
     position: relative;
-    padding-left: 0; /* Sol taraftan padding yok */
-    padding-right: 0; /* Sağ taraftan padding yok */
+    padding-left: 0;
+    padding-right: 0;
 }
 
 .detail-brand-year {
-    font-size: 15px; /* Etiketlerden 1pt büyük (14px + 1px = 15px) */
+    font-size: 15px;
     font-weight: 600;
     color: var(--txt-gray);
-    text-align: center; /* Yatayda ortalanmış */
-    line-height: calc(1em + 2px); /* İkinci satıra geçerse satırlar arası 2px boşluk */
-    margin-top: 0 !important;
-    margin-bottom: 0 !important;
-    flex: 1; /* Ortada genişleyerek yer kaplar */
-    position: absolute; /* Absolute ile ortada konumlandır */
+    text-align: center;
+    line-height: 1 !important; /* Dikey kaymayı önler, satırla aynı hizada */
+    margin: 0 !important;
+    flex: 1;
+    position: absolute;
     left: 50%;
-    transform: translateX(-50%);
-    pointer-events: none; /* Tıklamaları geçir */
+    top: 50%;
+    transform: translate(-50%, -50%); /* Yatay + dikey ortala, butonlarla aynı hizada */
+    pointer-events: none;
 }
 
 .history-btn-minimal {
@@ -1836,25 +1836,26 @@
 /* Olay Ekle butonu - Marka/model satırında solda */
 .detail-brand-year-row .history-add-event-btn {
     width: auto;
-    padding: 5px 8px 5px 0 !important; /* +1px dikey (Olay ekle butonu) */
+    padding: 5px 8px 5px 0 !important;
     background: transparent !important;
     border: none !important;
     color: var(--theme-color);
     border-radius: 0;
     cursor: pointer;
     font-weight: 600;
-    font-size: 15px; /* 1pt büyütüldü (11px → 12px) */
-    display: flex !important; /* Görünürlüğü garantile */
-    align-items: center;
+    font-size: 15px;
+    display: flex !important;
+    align-items: center !important; /* İkon ve metin kendi içinde hizalı */
     gap: 0;
-    justify-content: flex-start !important; /* Ünlem sola yaslı */
-    flex-shrink: 0; /* Solda sabit kalır */
-    position: relative; /* Z-index için gerekli */
-    z-index: 2; /* Marka/model'in üstünde (1'den 2'ye yükseltildi) */
-    text-align: left !important; /* Metin sola yaslı */
-    margin-left: 0 !important; /* Normal akış */
-    align-self: center; /* Tarihçe ile aynı satırda hizalı */
-    line-height: 1.4; /* Etiketlerle aynı line-height */
+    justify-content: flex-start !important;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 2;
+    text-align: left !important;
+    margin: 0 !important; /* Hizayı bozan dış boşlukları kaldır */
+    margin-left: 0 !important;
+    align-self: center;
+    line-height: 1 !important; /* Font yüksekliğinden kaynaklı kaymaları önler */
 }
 
 .detail-brand-year-row .history-add-event-btn svg {
@@ -1870,16 +1871,18 @@
 
 /* Tarihçe butonu - Marka/model satırında sağda */
 .detail-brand-year-row .history-btn-minimal {
-    position: relative; /* Z-index için gerekli */
-    display: flex !important; /* Görünürlüğü garantile */
-    align-items: center;
-    gap: 4px; /* İkon ve metin arası boşluk */
+    position: relative;
+    display: flex !important;
+    align-items: center !important; /* İkon ve metin kendi içinde hizalı */
+    gap: 4px;
     color: var(--txt-gray);
-    font-size: 15px; /* 1pt büyütüldü (11px → 12px) */
+    font-size: 15px;
     padding: 4px 8px;
-    flex-shrink: 0; /* Sağda sabit kalır */
-    z-index: 2; /* Marka/model'in üstünde (1'den 2'ye yükseltildi) */
+    flex-shrink: 0;
+    z-index: 2;
     transition: color 0.2s ease, font-size 0.2s ease;
+    margin: 0 !important; /* Hizayı bozan dış boşlukları kaldır */
+    line-height: 1 !important; /* Font yüksekliğinden kaynaklı kaymaları önler */
 }
 
 .detail-brand-year-row .history-btn-minimal:hover {
