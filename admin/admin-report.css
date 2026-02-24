@@ -416,15 +416,19 @@ body.admin-report-page::-webkit-scrollbar {
   text-overflow: clip;
 }
 
-/* Masaüstü: Sütun genişlikleri – Kullanıcı +4px, Marka/Model -5px, KM +4px, Durum -4px */
+/* Masaüstü: Sütun genişlikleri – Kullanıcı +2px, Marka/Model -8px, Plaka +6px, KM +4px, Durum -4px */
 @media (min-width: 641px) {
   .report-table th:nth-child(1),
   .report-table td:nth-child(1) {
-    width: calc(13% + 4px); /* Kullanıcı +4px */
+    width: calc(13% + 2px); /* Kullanıcı +2px yatayda */
   }
   .report-table th:nth-child(2),
   .report-table td:nth-child(2) {
-    width: calc(9% - 5px); /* Marka/Model -5px */
+    width: calc(9% - 8px); /* Marka/Model -8px yatayda daralt */
+  }
+  .report-table th:nth-child(3),
+  .report-table td:nth-child(3) {
+    width: calc(11% + 6px); /* Plaka +6px yatayda */
   }
   .report-table th:nth-child(4),
   .report-table td:nth-child(4) {
