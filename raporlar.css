@@ -649,7 +649,11 @@ gap: 4px;
 min-height: 28px;
 align-items: center;
 padding: 2px 2px;
-background: rgba(255, 255, 255, 0.01);
+background: var(--bg);
+}
+/* Taşıtlar listesi ile aynı standart: bir satır koyu bir satır açık */
+.stok-list-row:nth-child(even) {
+background: var(--border-faint-02);
 }
 
 .stok-list-row:hover {

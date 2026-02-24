@@ -865,9 +865,8 @@
     font-size: clamp(10px, 1.6vw, 13px) !important;
     color: var(--form-label-color) !important;
   }
-  /* Taşıt listesi: ilk satır arka plan ve dikey hizalama (masaüstü) */
+  /* Taşıt listesi: ilk satır dikey hizalama (masaüstü); arka plan alternating’e bırakıldı */
   #vehicles-modal .view-list .list-item:first-child {
-    background: var(--border-faint-02) !important;
     align-items: center !important;
   }
   #vehicles-modal .view-list .list-item:first-child .list-cell {
@@ -1404,6 +1403,10 @@
 .view-list .list-item:hover {
     background: var(--border-ultra);
 }
+/* Standart: bir satır koyu bir satır açık – okunabilirlik */
+.view-list .list-item:nth-child(even) {
+    background: var(--border-faint-02);
+}
 
 #vehicles-modal .view-list .list-cell,
 .view-list .list-cell {
@@ -1799,7 +1802,7 @@
 
 .view-list .list-item.unassigned-vehicle-card {
     border-bottom-color: var(--border-faint-08) !important;
-    background: var(--border-faint-02) !important;
+    /* Arka plan alternating’e bırakıldı; vurgu için Şube sütununda kırmızı metin yeterli */
 }
 /* Sadece Şube sütunundaki "Tahsis Edilmemiş" metni kırmızı; satırın geri kalanı normal */
 #vehicles-modal .view-list .list-item.unassigned-vehicle-card .list-cell.list-branch,
@@ -2572,6 +2575,9 @@
     /* Liste görünür; başlık z-index: 1000 ile üstte */
     cursor: pointer !important;
     transition: background 0.2s ease !important;
+  }
+  .view-list .list-item:nth-child(even) {
+    background: var(--border-faint-02) !important; /* Alternating: bir koyu bir açık */
   }
 
   .view-list .list-item:hover {
