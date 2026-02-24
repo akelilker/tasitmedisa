@@ -92,6 +92,26 @@
   box-sizing: border-box !important;
 }
 
+/* Olay Ekle (Bakım, Kaza vb.): tarih metni ve takvim ikonu dikey ortada */
+.olay-ekle-modal .modal-body input[type="date"].form-input::-webkit-datetime-edit,
+.olay-ekle-modal .modal-body .olay-tarih-input::-webkit-datetime-edit,
+.olay-ekle-modal .modal-body input[type="date"].form-input::-webkit-datetime-edit-fields-wrapper,
+.olay-ekle-modal .modal-body .olay-tarih-input::-webkit-datetime-edit-fields-wrapper {
+  display: flex !important;
+  align-items: center !important;
+  height: 100% !important;
+  min-height: 100% !important;
+  margin: 0 !important;
+}
+.olay-ekle-modal .modal-body input[type="date"].form-input::-webkit-calendar-picker-indicator,
+.olay-ekle-modal .modal-body .olay-tarih-input::-webkit-calendar-picker-indicator {
+  position: relative !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  margin: 0 !important;
+  cursor: pointer !important;
+}
+
 /* Olay Ekle 14 modal: Taşıtlar modalı ile aynı yapı (500px, footer 54px, çerçeve) */
 .olay-ekle-modal .modal-container {
     max-width: 500px !important;
@@ -105,8 +125,51 @@
     height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 54px) !important;
     max-height: calc(100vh - max(12px, env(safe-area-inset-top)) - 54px) !important;
     max-height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 54px) !important;
-    overflow: hidden;
-    overflow-x: hidden;
+    overflow: hidden !important;
+    overflow-x: hidden !important;
+    touch-action: pan-y !important; /* İçeride dikey kaydırma çalışsın */
+    display: flex !important;
+    flex-direction: column !important;
+}
+/* Olay Ekle (Kaza, Bakım vb.): modal gövdesi mutlaka kayar, üst görünsün */
+.olay-ekle-modal .modal-body {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch !important;
+    touch-action: pan-y !important;
+    overscroll-behavior-y: contain !important;
+    padding-top: 20px !important; /* Üst içerik kesilmesin */
+}
+
+/* Kaza Modalı Özel İçerik Düzeni (Ekle + Güncelle) */
+#kaza-guncelle-modal .modal-body,
+#kaza-ekle-modal .modal-body {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    overflow-y: auto !important;
+    padding-bottom: 20px !important;
+}
+
+/* Şemayı saran kapsayıcı hizalama */
+#kaza-guncelle-modal #kaza-kaporta-container,
+#kaza-ekle-modal #kaza-kaporta-container {
+    margin-top: 10px !important;
+    margin-bottom: 20px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    width: 100% !important;
+}
+
+/* Kaza modalı buton grubunu alta sabitleme */
+#kaza-guncelle-modal .universal-btn-group,
+#kaza-ekle-modal .universal-btn-group {
+    margin-top: auto !important;
+    flex-shrink: 0 !important;
+    background: var(--bg) !important;
 }
 
 /* === MODAL ÖZEL FARKLAR === */
@@ -671,6 +734,36 @@
 .vt-left .universal-back-bar {
   width: auto;
   flex: 0 0 auto;
+}
+
+/* Taşıtlar modalı: sol ok + etiket hizası (masaüstü + mobil) – gap 3px, ok 6px aşağı */
+#vehicles-modal .universal-back-bar,
+#vehicles-modal .universal-back-btn,
+#vehicle-detail-modal .vehicle-detail-toolbar .universal-back-bar,
+#vehicle-detail-modal .vehicle-detail-toolbar .universal-back-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 3px !important;
+}
+#vehicles-modal .universal-back-btn i,
+#vehicles-modal .universal-back-btn svg,
+#vehicles-modal .universal-back-btn .back-icon-svg,
+#vehicle-detail-modal .vehicle-detail-toolbar .universal-back-btn i,
+#vehicle-detail-modal .vehicle-detail-toolbar .universal-back-btn svg,
+#vehicle-detail-modal .vehicle-detail-toolbar .universal-back-btn .back-icon-svg {
+  position: relative !important;
+  top: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+#vehicles-modal .universal-back-btn .universal-back-label,
+#vehicles-modal .universal-back-btn span,
+#vehicle-detail-modal .vehicle-detail-toolbar .universal-back-btn .universal-back-label,
+#vehicle-detail-modal .vehicle-detail-toolbar .universal-back-btn span {
+  font-size: 13px !important;
+  line-height: 1 !important;
+  margin: 0 !important;
+  padding-left: 0 !important;
 }
 
 .vt-icon-btn {

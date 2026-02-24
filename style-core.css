@@ -10,6 +10,7 @@ body::-webkit-scrollbar,
   display: none;
 }
  
+/* ========== TÜM :root DEĞİŞKENLERİ (tek kaynak) ========== */
 :root {
   --theme-color: #e1061b;
   --theme-color-rgb: 225, 6, 27;
@@ -22,31 +23,24 @@ body::-webkit-scrollbar,
   --border-shiny: rgba(255, 255, 255, 0.25);
 
   --modal-footer-gap: 12px;
-  --app-footer-height: 48px; /* footer-content yaklaşık yüksekliği */
+  --app-footer-height: 48px;
   --modal-footer-reserve: calc(var(--app-footer-height) + var(--modal-footer-gap));
+  --modal-gap-above-footer: 10px; /* Masaüstünde 6px override edilir */
 
-  /* --- MODAL ORTAK (tek yerden yönetim) --- */
-  /* Dikey için vw KULLANMA: vw = viewport genişliği. Dikey için vh/dvh veya px. */
-  --modal-bg: var(--bg); /* Container dışı alanla aynı (koyu lacivert) */
+  --modal-bg: var(--bg);
   --modal-max-width: 500px;
   --modal-radius: 10px;
   --modal-margin-bottom-desktop: calc(var(--app-footer-height) + var(--modal-gap-above-footer));
-  --modal-gap-above-footer: 10px; /* modal ile footer arası boşluk (tek kaynak) - iOS PWA uyumu */
-  --modal-margin-bottom-mobile: calc(var(--modal-gap-above-footer) + var(--app-footer-height)); /* 52px */
+  --modal-margin-bottom-mobile: calc(var(--modal-gap-above-footer) + var(--app-footer-height));
 
-  /* --- KIRMIZI ÇERÇEVE AYARLARI --- */
-  /* Çerçeve Rengi (0.6 = %60 Görünürlük) */
   --border-red-tech: rgba(var(--theme-color-rgb), 0.4);
-  /* Işık Efekti (0.25 = %25 Parlaklık) */
   --red-glow-subtle: rgba(var(--theme-color-rgb), 0.12);
 
   --green: #4ade80;
   --red: #ef4444;
-
-  /* Etiket metin rengi (tek kaynak; mobil+masaüstü beyaz) */
   --form-label-color: #ffffff;
+  --data-value-color: #a0aec0;
 
-  /* --- RENK PALETİ (merkezi yönetim) --- */
   --bg-content: #0d131f;
   --bg-input: #0f1418;
   --bg-input-focus: #0f1622;
@@ -82,60 +76,99 @@ body::-webkit-scrollbar,
   --br-medium: #555;
   --hero-gradient-start: #060d16;
   --hero-gradient-end: #08090c;
+  --hero-logo-width: 69px;
+  --hero-spacer-width: 30px;
+}
 
-  /* --- HERO LOGO GENİŞLİK YÖNETİMİ --- */
-  --hero-logo-width: 69px;  /* Masaüstü logo genişliği */
-  --hero-spacer-width: 30px; /* Masaüstü spacer genişliği */
+/* Masaüstü (641px+): modal–footer arası 6px */
+@media (min-width: 641px) {
+  :root {
+    --modal-gap-above-footer: 6px;
+  }
+}
+
+/* Mobil (640px ve altı): kontrast artırma */
+@media (max-width: 640px) {
+  :root {
+    --txt: #ffffff;
+    --muted: rgba(255, 255, 255, 0.7);
+    --br: #444;
+    --border-shiny: rgba(255, 255, 255, 0.35);
+    --border-red-tech: rgba(var(--theme-color-rgb), 0.45);
+    --red-glow-subtle: rgba(var(--theme-color-rgb), 0.18);
+    --bg-2: #1a1a1a;
+    --card-bg: #1f1f1f;
+    --hero-logo-width: 43px;
+    --hero-spacer-width: 1px;
+  }
 }
 
 /* --- EVRENSEL GERİ DÖN NAVİGASYONU (tüm uygulama) --- */
-/* Geri Dön Çubuğu (Okların Sabitlenmesi) */
+/* Masaüstü ve mobil ortak: geri dön ok + etiket hizalaması (3px gap, ok 5px aşağı, etiket 1px küçük) */
+
 .universal-back-bar {
   display: flex !important;
-  align-items: center !important;
+  align-items: flex-start !important; /* Buton dikey hizası bozulmasın */
   justify-content: flex-start !important;
-  padding: 8px 0 0 0 !important; /* Alt boşluk tam 8px daraltıldı (0px yapıldı) */
+  padding: 8px 0 0 0 !important;
   width: 100% !important;
   margin: 0 !important;
   box-sizing: border-box !important;
-  gap: 12px !important;
+  gap: 3px !important; /* Bar içi boşluk tutarlı */
 }
 .universal-back-bar svg,
 .universal-back-bar i,
 .universal-back-bar img {
-  margin-left: 0 !important; /* Ok ikonu tam sola yaslansın */
-  margin-top: 0 !important;
-  transform: translateY(0) !important; /* Varsa aşağı iten değerleri sıfırlar */
+  margin: 0 !important;
+  transform: translateY(0) !important;
   display: block !important;
-  padding-left: 0 !important;
+  padding: 0 !important;
 }
-.universal-back-btn {
+
+/* Geri dön butonu/linki: ok ile etiket arası KESİN 3px, tüm ekranlar */
+.universal-back-btn,
+.universal-back-bar a.universal-back-btn {
   display: inline-flex !important;
-  align-items: flex-start !important; /* Okun serbest hareket etmesi için */
-  gap: 3px !important; /* Ok ile yazı arasındaki toplam yatay boşluk KESİN 3px */
+  align-items: center !important; /* Ok ve etiket aynı satırda dikey ortalı */
+  gap: 3px !important;
+  text-decoration: none !important;
   cursor: pointer;
   background: none;
   border: none;
-  padding: 8px 0;
+  padding: 8px 0 8px 0 !important; /* Yatay padding yok – gap 3px kalır */
   color: var(--txt-light);
-  text-decoration: none;
 }
 .universal-back-btn:hover { color: var(--txt-white); }
+
+/* Etiket: 1 punto küçük (14px → 13px), tüm ekranlar */
 .universal-back-label {
-  color: #adb5bd !important; /* Fotoğraftaki gibi hafif gri */
-  font-size: 14px !important; /* 15px → 14px (1 punto küçültme) */
+  color: #adb5bd !important;
+  font-size: 13px !important; /* 14px → 13px (1 punto küçültme) */
   font-weight: 500 !important;
   line-height: 1 !important;
   margin: 0 !important;
 }
+
+/* Sol oku aşağı kaydırma (global, masaüstü + mobil) – metin baseline ile hizalı */
+.universal-back-btn i,
 .universal-back-btn svg,
 .universal-back-btn .back-icon-svg,
-.universal-back-btn i,
-.universal-back-btn img {
+.universal-back-btn img,
+.universal-back-bar .universal-back-btn i,
+.universal-back-bar .universal-back-btn svg,
+.universal-back-bar .universal-back-btn .back-icon-svg,
+.universal-back-bar .universal-back-btn img {
   position: relative !important;
-  top: 5px !important; /* Oku 5px aşağı indirir ve yazıyla dikeyde dengeler */
-  margin: 0 !important; /* Eski margin boşluklarını ez ki 3px gap kuralı bozulmasın */
+  top: 0 !important; /* Ok metin baseline’a daha iyi hizalanır */
+  margin: 0 !important;
+  padding: 0 !important; /* 3px gap bozulmasın */
 }
+.universal-back-btn .universal-back-label,
+.universal-back-bar .universal-back-btn .universal-back-label {
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+}
+
 .back-icon-svg {
   width: 20px;
   height: 20px;
@@ -285,16 +318,16 @@ body::-webkit-scrollbar,
   border: 1px solid rgba(225, 6, 27, 0.5) !important;
 }
 
-/* Tüm input/select/textarea içerik metni: göz yormayan gri */
+/* Tüm input/select/textarea içerik metni: beyaz-gri hiyerarşisi */
 .form-input,
 select.form-input,
 select,
 textarea.form-input {
-  color: #adb5bd !important;
+  color: var(--data-value-color, #a0aec0) !important;
 }
 input[type="date"].form-input.has-value,
 input[type="date"].form-input:focus {
-  color: #adb5bd !important;
+  color: var(--data-value-color, #a0aec0) !important;
 }
 
 /* Tarih Inputu Kesilme ve Hizalama Düzeltmesi (iOS Safari vb.) */
@@ -309,6 +342,35 @@ input[type="date"].form-input::-webkit-datetime-edit-fields-wrapper {
   text-align: left !important;
   justify-content: flex-start !important;
   margin-left: 0 !important;
+}
+
+@media (min-width: 641px) {
+  /* Sadece Tarih Inputları İçin Özel Dikey/Yatay Hizalama */
+  .modal-overlay input[type="date"].form-input,
+  #vehicle-modal input[type="date"].form-input {
+    padding-top: 0 !important; /* Tarih kutularında dikey padding yazıyı ezer, sıfırlıyoruz */
+    padding-bottom: 0 !important;
+    height: 27px !important; /* Diğer kutularla aynı yükseklik */
+    line-height: 27px !important; /* Yazıyı dikeyde kusursuz ortalar */
+    padding-left: 8px !important; /* 12px olan sol boşluğu masaüstünde biraz daraltıyoruz */
+  }
+
+  /* Chrome/Edge/Safari içindeki tarih bölmelerini (gg.aa.yyyy) zorla ortalama */
+  input[type="date"].form-input::-webkit-datetime-edit,
+  input[type="date"].form-input::-webkit-datetime-edit-fields-wrapper {
+    display: flex !important;
+    align-items: center !important;
+    height: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Sağdaki takvim ikonunu dikeyde ortalama */
+  input[type="date"].form-input::-webkit-calendar-picker-indicator {
+    margin-top: auto !important;
+    margin-bottom: auto !important;
+    cursor: pointer !important;
+  }
 }
 
 /* --- 1. SIFIRLAMA & ANA YAPI --- */
@@ -778,10 +840,6 @@ html { overflow-x: hidden; }
 
 /* Masaüstünde container'ın %45'i + metin ortalı */
 @media (min-width: 641px) {
-  /* Masaüstü (1920 vb.): alttaki boşluğu azalt – modal–footer arası 6px */
-  :root {
-    --modal-gap-above-footer: 6px;
-  }
   /* Ana başlık: 2px aşağı (base translateY(-2px) → 0) */
   .hero h1 {
     transform: translateY(0);
@@ -876,8 +934,9 @@ html { overflow-x: hidden; }
   overscroll-behavior: none;
   overscroll-behavior-x: none;
 }
-/* Header ve Footer sabit kalır, kaydırmadan etkilenmez (Strict Flex-Scroll) */
+/* Header, geri çubuğu ve footer sabit kalır, kaydırmadan etkilenmez (Strict Flex-Scroll) */
 .modal-overlay .modal-header,
+.modal-overlay .universal-back-bar,
 .universal-btn-group,
 .form-buttons {
   flex-shrink: 0 !important;
@@ -955,6 +1014,7 @@ html { overflow-x: hidden; }
 .login-body,
 .user-panel-body {
   flex: 1 1 auto !important;
+  min-height: 0 !important; /* Flex içinde küçülebilsin, taşan içerik scroll olsun */
   overflow-y: auto !important;
   overflow-x: hidden !important;
   touch-action: pan-y !important; /* Sadece bu alanda dikey parmak hareketine izin */
@@ -967,7 +1027,7 @@ html { overflow-x: hidden; }
 }
 /* Modal body varyantları (inline stil yerine) */
 #cache-confirm-modal .modal-body { padding: 20px 20px 12px 20px; }
-#kaza-ekle-modal .modal-body { padding-top: 50px; }
+#kaza-ekle-modal .modal-body { padding-top: 20px; }
 #vehicle-history-modal .modal-body {
   padding: 0 !important;
   display: flex !important;
@@ -1199,31 +1259,7 @@ body.modal-open .user-panel-link {
 
 /* MOBİL AYARLARI */
 @media (max-width: 640px) {
-    /* ✨ MOBİL KONTRAST ARTIRMA ✨ */
-    :root {
-        /* Metin kontrastı artırıldı */
-        --txt: #ffffff; /* #f0f0f0 → #ffffff (daha parlak beyaz) */
-        --muted: rgba(255, 255, 255, 0.7); /* 0.5 → 0.7 (daha görünür) */
-        
-        /* Border kontrastı artırıldı */
-        --br: #444; /* #333 → #444 (daha açık gri) */
-        --border-shiny: rgba(255, 255, 255, 0.35); /* 0.25 → 0.35 (daha görünür) */
-        
-        /* Kırmızı çerçeve kontrastı artırıldı */
-        --border-red-tech: rgba(var(--theme-color-rgb), 0.45); /* 0.3 → 0.45 (daha belirgin) */
-        --red-glow-subtle: rgba(var(--theme-color-rgb), 0.18); /* 0.12 → 0.18 (daha parlak) */
-        
-        /* Arka plan tüm sayfalarda aynı (#080d16) */
-        --bg: #080d16;
-        --bg-2: #1a1a1a; /* #151515 → #1a1a1a (daha açık) */
-        --card-bg: #1f1f1f; /* #1a1a1a → #1f1f1f (daha açık) */
-        
-        /* Hero logo ve spacer genişlik ayarları */
-        --hero-logo-width: 43px;    /* Mobilde logo genişliği (%20 küçültme: 54→43) */
-        --hero-spacer-width: 1px;   /* Mobilde spacer genişliği (6px → 4px) */
-    }
-    
-    /* Mobil logo ve spacer genişlik ayarları */
+    /* :root override'ları dosya başında birleştirildi */
     /* ✨ iOS FOOTER ALTI RENK SORUNU ✨ - Body/container aynı renk */
     html, body {
         background-color: var(--bg);
