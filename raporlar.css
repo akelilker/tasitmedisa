@@ -107,7 +107,7 @@ flex-shrink: 0 !important;
 min-height: 48px;
 align-items: flex-start;
 justify-content: flex-start;
-padding: 8px 2px;
+padding: 8px 12px 8px 12px;
 background: transparent;
 }
 #reports-modal .reports-list-header-actions .stok-detail-add-wrap {
@@ -1602,9 +1602,9 @@ padding-top: 2px !important;
 #stok-list-container .stok-list-top-controls {
 padding-top: 0 !important;
 }
-/* Mobilde header-altı slot: buton altı dikey boşluk */
+/* Mobilde header-altı slot: sol ok + Detay Ekleme body ile hizalı (12px) */
 #reports-modal .reports-list-header-actions:not(:empty) {
-padding: 6px 1px 4px 2px !important;
+padding: 6px 12px 4px 12px !important;
 }
 /* Mobil: Detay menüsü akışta olsun – liste ve kontroller aşağı kaysın (üst üste binmesin) */
 #reports-modal .stok-detail-add-wrap .stok-detail-menu {
@@ -1831,8 +1831,8 @@ box-sizing: border-box !important;
 max-width: 100% !important;
 }
 #reports-modal .reports-list-header-actions {
-padding-left: 2px !important;
-padding-right: 2px !important;
+padding-left: 12px !important;
+padding-right: 12px !important;
 width: 100% !important;
 box-sizing: border-box !important;
 }
