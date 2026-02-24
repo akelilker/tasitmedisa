@@ -2357,6 +2357,16 @@ function renderVehicleDetailLeft(vehicle) {
   };
 
   /**
+   * Olay Ekle alt modalından Vazgeç: modalı kapat, Olay Ekle menüsünü tekrar aç (taşıt detaya dönme).
+   */
+  window.closeEventModalAndShowEventMenu = function(type) {
+    window.closeEventModal(type);
+    setTimeout(function() {
+      openEventModal('menu', window.currentDetailVehicleId);
+    }, 350);
+  };
+
+  /**
    * Olay menüsünden taşıt detay ekranına dön (event-menu-modal içindeki "Taşıt Detay" butonu)
    */
   window.backToVehicleDetail = function() {
