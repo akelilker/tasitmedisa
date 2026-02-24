@@ -834,17 +834,25 @@ html { overflow-x: hidden; }
   align-items: center;
   padding: 20px;
   box-sizing: border-box;
-  overflow: hidden; /* Yatay kayma engelle */
-  overscroll-behavior: none;
+  overflow: hidden !important;
+  overscroll-behavior: none !important;
+  touch-action: none !important; /* Arka plan ve ana kutu ASLA kaydırılamaz (iOS zıplama engeli) */
 }
 .modal-overlay.active,
 .modal-overlay.open {
   display: flex !important;
 }
-.modal-overlay .modal-container {
+.modal-overlay .modal-container,
+.login-container,
+.user-panel-container {
   display: flex !important;
   flex-direction: column !important;
-  max-height: 90vh !important; /* Ekrandan taşmayı önler, butonlar kaçmasın */
+  overflow: hidden !important; /* Dış çerçevenin kaymasını kesin kilitler */
+  touch-action: none !important; /* Kutu düzeyinde esnemeyi yasaklar (iOS) */
+  max-height: 90vh !important;
+  box-sizing: border-box;
+}
+.modal-overlay .modal-container {
   position: relative;
   background: var(--modal-bg);
   width: 100%;
@@ -854,15 +862,18 @@ html { overflow-x: hidden; }
   height: calc(100dvh - max(12px, env(safe-area-inset-top)) - var(--modal-margin-bottom-desktop));
   border-radius: var(--modal-radius);
   border: 1px solid var(--border-subtle);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2), 0 4px 16px rgba(var(--theme-color-rgb), 0.1), 0 0 40px rgba(0, 0, 0, 0.9); /* Menü + modal gölge */
-  overflow: hidden;
-  overflow-x: hidden; /* Yatay scroll engelle */
-  box-sizing: border-box;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2), 0 4px 16px rgba(var(--theme-color-rgb), 0.1), 0 0 40px rgba(0, 0, 0, 0.9);
+  overflow-x: hidden;
   pointer-events: auto;
-  touch-action: pan-y;
-  -webkit-overflow-scrolling: touch;
   overscroll-behavior: none;
   overscroll-behavior-x: none;
+}
+/* Header ve Footer sabit kalır, kaydırmadan etkilenmez (Strict Flex-Scroll) */
+.modal-overlay .modal-header,
+.universal-btn-group,
+.form-buttons {
+  flex-shrink: 0 !important;
+  z-index: 10 !important;
 }
 .modal-overlay .modal-header {
   display: flex;
@@ -870,7 +881,6 @@ html { overflow-x: hidden; }
   align-items: center;
   padding: 16px 20px;
   border-bottom: 1px solid var(--border-ultra);
-  flex-shrink: 0;
   position: relative;
 }
 .modal-overlay .modal-header h2 {
@@ -932,14 +942,20 @@ html { overflow-x: hidden; }
 .modal-overlay .modal-close:hover {
   color: var(--theme-color);
 }
-.modal-overlay .modal-body {
-  flex: 0 1 auto !important; /* İçerik kadar yer kapla, butonları itme */
+/* Sadece gövde (body) kaydırılabilir – çerçeve sabit (iOS zıplama engeli) */
+.modal-overlay .modal-body,
+.login-body,
+.user-panel-body {
+  flex: 1 1 auto !important;
   overflow-y: auto !important;
-  overflow-x: hidden; /* Yatay kayma engelle */
-  padding: 20px; /* .universal-btn-group yan padding (20px) ile aynı – input/buton dikey hiza */
-  -webkit-overflow-scrolling: touch;
-  overscroll-behavior-x: none;
-  /* scrollbar gizleme: tek kaynak dosya başındaki html, body, .modal-body, .modal-container kuralı */
+  overflow-x: hidden !important;
+  touch-action: pan-y !important; /* Sadece bu alanda dikey parmak hareketine izin */
+  -webkit-overflow-scrolling: touch !important; /* iOS momentum kaydırma */
+  overscroll-behavior-y: contain !important; /* Kaydırma bitince dış kutuyu zıplatmayı yasaklar */
+  overscroll-behavior-x: none !important;
+}
+.modal-overlay .modal-body {
+  padding: 20px;
 }
 /* Modal body varyantları (inline stil yerine) */
 #cache-confirm-modal .modal-body { padding: 20px 20px 12px 20px; }
