@@ -852,15 +852,9 @@ html { overflow-x: hidden; }
   max-height: 90vh !important;
   box-sizing: border-box;
 }
-/* Modal arka plan: logo kırmızısı (#e1061b) → koyu lacivert (#050a1a) */
-.modal-overlay .modal-container,
-.login-container,
-.user-panel-container,
-.modal-content {
-  background: linear-gradient(180deg, #e1061b 0%, #050a1a 100%) !important;
-}
 .modal-overlay .modal-container {
   position: relative;
+  background: var(--modal-bg);
   width: 100%;
   max-width: var(--modal-max-width);
   margin: max(12px, env(safe-area-inset-top)) auto var(--modal-margin-bottom-desktop) auto;

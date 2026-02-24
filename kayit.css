@@ -891,7 +891,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         max-height: 100% !important;
         margin-bottom: 0 !important;
         border-radius: 10px !important;
-        background: linear-gradient(180deg, #e1061b 0%, #050a1a 100%) !important;
+        background: #080d16 !important;
         overflow: hidden !important;
         overflow-x: hidden !important;
         touch-action: pan-y !important;
