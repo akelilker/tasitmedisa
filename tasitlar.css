@@ -2921,7 +2921,7 @@
   }
   /* Taşıt detay: kaporta ekspertiz mobil – şema üstü boşluk az; şema kendi padding/margin yok */
   #detail-boya-container {
-    margin-top: 42px !important; /* 58→50: “Aşağıdaki şemada…” ile şema arası 8px daraldı */
+    margin-top: 38px !important; /* 4px daha dar – "Aşağıdaki şemada…" ile şema arası */ /* 58→50: “Aşağıdaki şemada…” ile şema arası 8px daraldı */
     gap: 3px 0 !important;
     row-gap: 3px !important;
     column-gap: 0 !important;
@@ -2930,13 +2930,13 @@
     padding: 0 !important;
   }
   #detail-boya-container .boya-legend {
-    margin: -14px 0 0 0 !important;
+    margin: -18px 0 0 0 !important; /* 4px daha dar – şema ile legend arası */
     padding: 0 !important;
     line-height: 1.2 !important;
     min-height: 0;
   }
   #detail-boya-container .kaporta-schema-wrapper {
-    margin: -8px 0 0 0 !important;
+    margin: -12px 0 0 0 !important; /* 4px daha yukarı – üst boşluk dar */
     padding: 0 !important; /* Şema üstünde kendi padding’i olmasın */
   }
   #kaza-kaporta-container {
