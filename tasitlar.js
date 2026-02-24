@@ -3298,10 +3298,10 @@ function renderVehicleDetailLeft(vehicle) {
       if (tab.dataset.tab === tabType) {
         tab.classList.add('active');
         tab.style.borderBottomColor = '#e1061b';
-        tab.style.color = '#e1061b';
+        tab.style.color = '#ffffff';
       } else {
         tab.style.borderBottomColor = 'transparent';
-        tab.style.color = '#ccc';
+        tab.style.color = '#ffffff';
       }
     });
     
