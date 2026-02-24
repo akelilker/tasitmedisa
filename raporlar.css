@@ -134,10 +134,21 @@ display: flex;
 align-items: center;
 gap: 8px;
 width: 100%;
+min-width: 0; /* Taşmayı önle; Detay Ekleme butonu kesilmesin */
 }
 #reports-modal .reports-list-header-actions .universal-back-bar,
 #reports-modal .reports-list-header-actions .stok-detail-add-btn {
 margin: 0;
+}
+/* Header slotunda geri çubuğu küçülebilir yap; "+ Detay Ekleme" butonu kesilmesin (overflow-x: hidden nedeniyle) */
+#reports-modal .reports-list-header-actions .stok-controls-row-1 .universal-back-bar {
+flex: 1 1 auto !important;
+min-width: 0 !important;
+width: auto !important;
+}
+#reports-modal .reports-list-header-actions .stok-controls-row-1 .stok-detail-add-btn {
+flex: 0 0 auto !important;
+flex-shrink: 0 !important;
 }
 #reports-modal .stok-controls-row-1 .universal-back-bar,
 #reports-modal .kullanici-list-top-controls .universal-back-bar,

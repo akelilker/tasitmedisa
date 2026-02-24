@@ -337,16 +337,30 @@
         if (headerActions) {
             const firstRow = listContainer.querySelector('.stok-controls-row-1');
             const menu = document.getElementById('stok-detail-menu');
+            headerActions.innerHTML = '';
+            const wrap = document.createElement('div');
+            wrap.className = 'stok-detail-add-wrap';
             if (firstRow) {
-                headerActions.innerHTML = '';
-                const wrap = document.createElement('div');
-                wrap.className = 'stok-detail-add-wrap';
                 wrap.appendChild(firstRow.cloneNode(true));
-                if (menu) wrap.appendChild(menu);
-                headerActions.appendChild(wrap);
-                headerActions.setAttribute('aria-hidden', 'false');
-                headerActions.classList.add('has-stok-actions');
+            } else {
+                // Fallback: clone yoksa satırı elle oluştur (Detay Ekleme butonu kaybolmasın)
+                const row = document.createElement('div');
+                row.className = 'stok-controls-row-1';
+                row.innerHTML = `
+                    <div class="universal-back-bar">
+                        <button type="button" class="universal-back-btn" onclick="goBackToStokGrid()" title="Raporlar">
+                            <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                            <span class="universal-back-label">Raporlar</span>
+                        </button>
+                    </div>
+                    <button class="stok-detail-add-btn ${stokDetailMenuOpen ? 'active' : ''}" onclick="toggleStokDetailMenu()">+ Detay Ekleme</button>
+                `;
+                wrap.appendChild(row);
             }
+            if (menu) wrap.appendChild(menu);
+            headerActions.appendChild(wrap);
+            headerActions.setAttribute('aria-hidden', 'false');
+            headerActions.classList.add('has-stok-actions');
         }
 
         // Detay menüsünü render et
