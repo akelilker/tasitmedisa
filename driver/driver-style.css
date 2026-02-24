@@ -425,7 +425,7 @@ body.driver-modal-open {
 }
 .driver-plate-subtitle {
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--data-value-color, #a0aec0);
   margin-top: 2px;
   line-height: 1.2;
 }
@@ -503,7 +503,8 @@ body.driver-modal-open {
   text-align: left;
 }
 .driver-info-item .label {
-  color: var(--form-label-color);
+  color: #ffffff;
+  font-weight: 500;
   font-size: 11px;
   flex-shrink: 0;
   text-transform: none; /* Etiketler JS'teki Title Case ile görünsün */
@@ -514,7 +515,7 @@ body.driver-modal-open {
   margin-right: 0.3em; /* ":" ile açıklamanın ilk harfi arasında bir boşluk */
 }
 .driver-info-item .value {
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--data-value-color, #a0aec0);
   word-break: break-word;
   font-size: 13px;
   min-width: min-content; /* Sığmazsa açıklama daralmadan tamamı alt satıra geçer, ortadan bölünmez */
@@ -692,7 +693,7 @@ body.driver-modal-open {
   border: none !important;
   box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.38) !important;
   border-radius: 8px;
-  color: var(--txt);
+  color: var(--data-value-color, #a0aec0);
   font-size: 16px;
   font-family: inherit;
   transition: box-shadow 0.2s;
@@ -738,9 +739,8 @@ body.driver-modal-open {
   display: block;
   margin-bottom: 6px;
   font-size: 14px; /* +1 punto (13→14) */
-  color: var(--form-label-color);
-  font-weight: 600;
-  color: var(--txt);
+  color: #ffffff;
+  font-weight: 500;
 }
 #driver-input-area .driver-report-block .form-group input,
 #driver-input-area .driver-report-block .form-group textarea,
@@ -748,7 +748,7 @@ body.driver-modal-open {
 .driver-action-area .driver-report-block .form-group textarea {
   background: #0f1418 !important;
   background-color: #0f1418 !important;
-  color: var(--txt);
+  color: var(--data-value-color, #a0aec0);
 }
 #driver-input-area .driver-km-input-wrap,
 .driver-action-area .driver-km-input-wrap {
@@ -1240,9 +1240,8 @@ body.driver-modal-open {
   display: block;
   margin-bottom: 6px;
   font-size: 14px; /* +1 punto (13→14) */
-  color: var(--form-label-color);
-  font-weight: 600;
-  color: var(--txt);
+  color: #ffffff;
+  font-weight: 500;
 }
 
 .vehicle-card .form-group input,
@@ -1254,7 +1253,7 @@ body.driver-modal-open {
   border: none !important;
   box-shadow: inset 0 0 0 0.5px rgba(var(--theme-color-rgb), 0.85) !important;
   border-radius: 8px;
-  color: var(--txt);
+  color: var(--data-value-color, #a0aec0);
   font-size: 16px;
   font-family: inherit;
   transition: box-shadow 0.2s;
@@ -1440,7 +1439,8 @@ body.driver-modal-open {
   text-align: center;
   display: block;
   margin-bottom: 2px;
-  color: var(--form-label-color);
+  color: #ffffff;
+  font-weight: 500;
 }
 .driver-report-block-bakim .form-group input.driver-bakim-input,
 .driver-report-block-bakim .form-group textarea.driver-bakim-textarea {
@@ -1455,7 +1455,8 @@ body.driver-modal-open {
   text-align: center;
   display: block;
   margin-bottom: 2px;
-  color: var(--form-label-color);
+  color: #ffffff;
+  font-weight: 500;
 }
 .driver-report-block-kaza .form-group input.driver-kaza-input,
 .driver-report-block-kaza .form-group textarea.driver-kaza-textarea {
@@ -1943,9 +1944,8 @@ body.driver-modal-open {
   display: block;
   margin-bottom: 6px;
   font-size: 14px; /* +1 punto (13→14) */
-  color: var(--form-label-color);
-  font-weight: 600;
-  color: var(--txt);
+  color: #ffffff;
+  font-weight: 500;
 }
 
 .driver-modal .form-group input,
@@ -1957,7 +1957,7 @@ body.driver-modal-open {
   border: none !important;
   box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.25) !important;
   border-radius: 8px;
-  color: var(--txt);
+  color: var(--data-value-color, #a0aec0);
   font-size: 16px;
   font-family: inherit;
   transition: box-shadow 0.2s;
@@ -2469,8 +2469,8 @@ body.driver-action-block-open .driver-footer-back-wrap {
   display: block;
   margin-bottom: 8px;
   font-size: 14px;
-  font-weight: 600;
-  color: var(--form-label-color);
+  font-weight: 500;
+  color: #ffffff;
 }
 
 .login-form .form-group input {
@@ -2482,7 +2482,7 @@ body.driver-action-block-open .driver-footer-back-wrap {
   border: none !important;
   box-shadow: inset 0 0 0 0.5px rgba(var(--theme-color-rgb), 0.85) !important;
   border-radius: 8px;
-  color: var(--txt);
+  color: var(--data-value-color, #a0aec0);
   font-size: 16px;
   transition: box-shadow 0.2s;
   box-sizing: border-box;
@@ -2498,7 +2498,7 @@ body.driver-action-block-open .driver-footer-back-wrap {
 .login-form .form-group input:-webkit-autofill:focus {
   -webkit-box-shadow: 0 0 0 30px #0f1418 inset, inset 0 0 0 0.5px rgba(var(--theme-color-rgb), 0.85) !important;
   box-shadow: inset 0 0 0 0.5px rgba(var(--theme-color-rgb), 0.85) !important;
-  -webkit-text-fill-color: var(--txt) !important;
+  -webkit-text-fill-color: var(--data-value-color, #a0aec0) !important;
   background: #0f1418 !important;
   background-color: #0f1418 !important;
   border: none !important;
@@ -2517,7 +2517,7 @@ body.driver-action-block-open .driver-footer-back-wrap {
 }
 
 .login-form .form-group input::placeholder {
-  color: rgba(255, 255, 255, 0.35) !important;
+  color: var(--data-value-color, #a0aec0) !important;
   opacity: 1;
 }
 
@@ -2536,7 +2536,7 @@ body.driver-action-block-open .driver-footer-back-wrap {
 
 .form-group-checkbox label {
   font-size: 14px;
-  color: var(--form-label-color);
+  color: var(--data-value-color, #a0aec0);
   cursor: pointer;
 }
 
