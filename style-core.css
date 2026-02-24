@@ -1589,3 +1589,49 @@ body.modal-open .app-container {
     background: var(--green-success);
     color: var(--bg);
 }
+
+/* ========== MASAÜSTÜ FERAHLAMA OPERASYONU ========== */
+/* Şube ve Kullanıcı Yönetimi bilgi kutularını masaüstünde büyütme: +1 punto metin, +3px dikey/yatay, padding kısıtma ile simetri */
+@media (min-width: 641px) {
+    #sube-modal,
+    #kullanici-modal,
+    #branch-form-modal,
+    #user-form-modal,
+    #branch-modal,
+    #user-modal,
+    .settings-modal,
+    .modal-overlay:has(#sube-adi),
+    .modal-overlay:has(#kullanici-adi),
+    .modal-overlay:has(#branch-name),
+    .modal-overlay:has(#user-form) {
+        & .modal-body {
+            padding-left: 10.5px !important;
+            padding-right: 10.5px !important;
+        }
+        & .form-label {
+            font-size: 13px !important;
+        }
+        & .form-input,
+        & select {
+            font-size: 14px !important;
+        }
+        & .universal-btn-save,
+        & .universal-btn-cancel,
+        & .btn-delete,
+        & .settings-btn-delete {
+            font-size: 12.5px !important;
+        }
+        & .form-input,
+        & select {
+            height: 27px !important;
+            padding-top: 5px !important;
+            padding-bottom: 5px !important;
+        }
+        & .universal-btn-save,
+        & .universal-btn-cancel,
+        & .btn-delete,
+        & .settings-btn-delete {
+            height: 31px !important;
+        }
+    }
+}
