@@ -341,9 +341,13 @@ input[type="date"].form-input {
   padding: 0 22px 0 12px !important; /* Sağ: 3px kenar + ~16px ikon + 3px boşluk = metne yakın */
 }
 
-/* İç metin yatayda ve dikeyde ortada; taşma yok */
+/* İç metin yatayda ve dikeyde ortada; taşma yok (hem boş hem dolu hem focus) */
 input[type="date"].form-input::-webkit-datetime-edit,
-input[type="date"].form-input::-webkit-datetime-edit-fields-wrapper {
+input[type="date"].form-input::-webkit-datetime-edit-fields-wrapper,
+input[type="date"].form-input:focus::-webkit-datetime-edit,
+input[type="date"].form-input:focus::-webkit-datetime-edit-fields-wrapper,
+input[type="date"].form-input.has-value::-webkit-datetime-edit,
+input[type="date"].form-input.has-value::-webkit-datetime-edit-fields-wrapper {
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -356,7 +360,9 @@ input[type="date"].form-input::-webkit-datetime-edit-fields-wrapper {
   text-align: center !important;
   line-height: 1 !important;
 }
-input[type="date"].form-input::-webkit-datetime-edit {
+input[type="date"].form-input::-webkit-datetime-edit,
+input[type="date"].form-input:focus::-webkit-datetime-edit,
+input[type="date"].form-input.has-value::-webkit-datetime-edit {
   line-height: 1 !important;
   padding-top: 0 !important;
   padding-bottom: 0 !important;
