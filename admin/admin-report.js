@@ -86,7 +86,12 @@
     if (totalEl) totalEl.textContent = stats.total != null ? stats.total : '0';
     if (enteredEl) enteredEl.textContent = stats.entered != null ? stats.entered : '0';
     if (pendingEl) pendingEl.textContent = stats.pending != null ? stats.pending : '0';
-    if (pctEl) pctEl.textContent = (stats.percentage != null ? stats.percentage : 0) + '%';
+    // Tamamlanan % = (yapılan bildirim / toplam beklenen iş) * 100 (araç/bildirim bazlı, kullanıcı sayısına bölünmez)
+    var toplamYapilan = stats.entered != null ? Number(stats.entered) : 0;
+    var toplamBekleyen = stats.pending != null ? Number(stats.pending) : 0;
+    var toplamArac = toplamYapilan + toplamBekleyen;
+    var tamamlananYuzde = toplamArac > 0 ? Math.round((toplamYapilan / toplamArac) * 100) : 0;
+    if (pctEl) pctEl.textContent = tamamlananYuzde + '%';
     var pendingBox = pendingEl ? pendingEl.closest('.report-stat-box-pending') : null;
     if (pendingBox) {
       var hasPending = (stats.pending != null && Number(stats.pending) > 0);
