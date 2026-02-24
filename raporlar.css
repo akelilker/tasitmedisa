@@ -47,7 +47,7 @@ pointer-events: none;
 
 /* === HEADER === */
 #reports-modal .modal-header {
-background: linear-gradient(180deg, rgba(255, 0, 0, 0.30) 0%, rgba(255, 0, 0, 0.22) 25%, rgba(255, 0, 0, 0.16) 50%, rgba(255, 0, 0, 0.10) 75%, transparent 100%);
+background: linear-gradient(180deg, rgba(var(--theme-color-rgb), 0.36) 0%, rgba(var(--theme-color-rgb), 0.28) 25%, rgba(var(--theme-color-rgb), 0.20) 50%, rgba(var(--theme-color-rgb), 0.12) 75%, transparent 100%);
 padding: 2px 20px;
 height: 60px;
 display: flex;

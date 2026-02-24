@@ -562,18 +562,27 @@
     padding-bottom: 1px !important; /* Sekme metni ile altındaki yatay çizgi arası 1px */
 }
 
-/* Tarihçe: etiketler (tarih, başlık) beyaz; açıklamalar (detay) gri */
+/* Tarihçe: etiketler (tarih, başlık) beyaz; açıklamalar (detay) gri – kontrast artırıldı */
 #vehicle-history-modal .history-item-date {
     color: var(--txt-white);
+    margin-bottom: 2px !important;
+}
+#vehicle-history-modal .history-item-date + .history-item-body {
+    margin-top: 4px !important;
 }
 #vehicle-history-modal .history-item-label {
     color: var(--txt-white);
 }
 #vehicle-history-modal .history-item-body {
-    color: var(--txt-placeholder);
+    color: var(--txt-muted); /* #999 → #e0e0e0 (kontrast artışı) */
 }
 #vehicle-history-modal .history-empty-msg {
     color: var(--txt-placeholder);
+}
+/* Tarihçe: yeni tarihe geçerken aradaki yatay çizgi kırmızı, kontrast için opacity artırıldı */
+#vehicle-history-modal .history-item,
+.modal-overlay:has(.history-tabs) .history-item {
+    border-bottom-color: rgba(var(--theme-color-rgb), 0.6) !important;
 }
 
 /* Tarihçe: sekme ile içerik arası 5px azaltma (history-content padding-top style-core'da 15px yapıldı) */
