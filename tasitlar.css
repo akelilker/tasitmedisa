@@ -135,6 +135,35 @@
     -webkit-overflow-scrolling: touch !important;
 }
 
+/* Kaza Modalı Özel İçerik Düzeni (Ekle + Güncelle) */
+#kaza-guncelle-modal .modal-body,
+#kaza-ekle-modal .modal-body {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    overflow-y: auto !important;
+    padding-bottom: 20px !important;
+}
+
+/* Şemayı saran kapsayıcı hizalama */
+#kaza-guncelle-modal #kaza-kaporta-container,
+#kaza-ekle-modal #kaza-kaporta-container {
+    margin-top: 10px !important;
+    margin-bottom: 20px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    width: 100% !important;
+}
+
+/* Kaza modalı buton grubunu alta sabitleme */
+#kaza-guncelle-modal .universal-btn-group,
+#kaza-ekle-modal .universal-btn-group {
+    margin-top: auto !important;
+    flex-shrink: 0 !important;
+    background: var(--bg) !important;
+}
+
 /* === MODAL ÖZEL FARKLAR === */
 
 /* Detay modal: karartma yok */
