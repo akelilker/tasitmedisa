@@ -2921,7 +2921,7 @@
   }
   /* Taşıt detay: kaporta ekspertiz mobil – şema üstü boşluk az; şema kendi padding/margin yok */
   #detail-boya-container {
-    margin-top: 38px !important; /* 4px daha dar – "Aşağıdaki şemada…" ile şema arası */ /* 58→50: “Aşağıdaki şemada…” ile şema arası 8px daraldı */
+    margin-top: 34px !important; /* Kaporta Durumu etiketi ile blok arası 4px daha dar */ /* 58→50: “Aşağıdaki şemada…” ile şema arası 8px daraldı */
     gap: 3px 0 !important;
     row-gap: 3px !important;
     column-gap: 0 !important;
