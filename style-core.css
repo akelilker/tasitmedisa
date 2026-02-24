@@ -104,53 +104,65 @@ body::-webkit-scrollbar,
 }
 
 /* --- EVRENSEL GERİ DÖN NAVİGASYONU (tüm uygulama) --- */
-/* Geri Dön Çubuğu (Okların Sabitlenmesi) */
+/* Masaüstü ve mobil ortak: geri dön ok + etiket hizalaması (3px gap, ok 5px aşağı, etiket 1px küçük) */
+
 .universal-back-bar {
   display: flex !important;
-  align-items: center !important;
+  align-items: flex-start !important; /* Buton dikey hizası bozulmasın */
   justify-content: flex-start !important;
-  padding: 8px 0 0 0 !important; /* Alt boşluk tam 8px daraltıldı (0px yapıldı) */
+  padding: 8px 0 0 0 !important;
   width: 100% !important;
   margin: 0 !important;
   box-sizing: border-box !important;
-  gap: 12px !important;
+  gap: 3px !important; /* Bar içi boşluk tutarlı */
 }
 .universal-back-bar svg,
 .universal-back-bar i,
 .universal-back-bar img {
-  margin-left: 0 !important; /* Ok ikonu tam sola yaslansın */
-  margin-top: 0 !important;
-  transform: translateY(0) !important; /* Varsa aşağı iten değerleri sıfırlar */
+  margin: 0 !important;
+  transform: translateY(0) !important;
   display: block !important;
-  padding-left: 0 !important;
+  padding: 0 !important;
 }
-.universal-back-btn {
+
+/* Geri dön butonu/linki: ok ile etiket arası KESİN 3px, tüm ekranlar */
+.universal-back-btn,
+.universal-back-bar a.universal-back-btn {
   display: inline-flex !important;
-  align-items: flex-start !important; /* Okun serbest hareket etmesi için */
-  gap: 3px !important; /* Ok ile yazı arasındaki toplam yatay boşluk KESİN 3px */
+  align-items: flex-start !important;
+  gap: 3px !important; /* Etiket ile ok arasındaki mesafe KESİN 3px */
+  text-decoration: none !important;
   cursor: pointer;
   background: none;
   border: none;
   padding: 8px 0;
   color: var(--txt-light);
-  text-decoration: none;
 }
 .universal-back-btn:hover { color: var(--txt-white); }
+
+/* Etiket: 1 punto küçük (14px → 13px), tüm ekranlar */
 .universal-back-label {
-  color: #adb5bd !important; /* Fotoğraftaki gibi hafif gri */
-  font-size: 14px !important; /* 15px → 14px (1 punto küçültme) */
+  color: #adb5bd !important;
+  font-size: 13px !important; /* 14px → 13px (1 punto küçültme) */
   font-weight: 500 !important;
   line-height: 1 !important;
   margin: 0 !important;
 }
+
+/* Sol oku 5px aşağı kaydırma (global, masaüstü + mobil) */
+.universal-back-btn i,
 .universal-back-btn svg,
 .universal-back-btn .back-icon-svg,
-.universal-back-btn i,
-.universal-back-btn img {
+.universal-back-btn img,
+.universal-back-bar .universal-back-btn i,
+.universal-back-bar .universal-back-btn svg,
+.universal-back-bar .universal-back-btn .back-icon-svg,
+.universal-back-bar .universal-back-btn img {
   position: relative !important;
-  top: 5px !important; /* Oku 5px aşağı indirir ve yazıyla dikeyde dengeler */
-  margin: 0 !important; /* Eski margin boşluklarını ez ki 3px gap kuralı bozulmasın */
+  top: 5px !important; /* Oku dikeyde metnin merkezine hizalamak için 5px aşağı */
+  margin: 0 !important; /* 3px gap bozulmasın */
 }
+
 .back-icon-svg {
   width: 20px;
   height: 20px;
