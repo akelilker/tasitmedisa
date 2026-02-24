@@ -1001,6 +1001,8 @@
 /* Toolbar içinde açılır arama kutusu (büyüteç tıklanınca açılır; içinde arama + şanzıman) */
 .v-search-container {
     width: 0;
+    min-width: 0;
+    flex-shrink: 1;
     height: 100%;
     background: transparent;
     overflow: hidden;
@@ -1013,6 +1015,7 @@
 }
 .v-search-container.open {
     width: 360px;
+    max-width: min(360px, calc(100vw - 120px)); /* Büyüteç+vites+liste ikonları (≈120px) her zaman görünsün, taşma/kesilme olmasın */
 }
 .v-search-container .v-search-input {
     flex: 1;
@@ -1077,6 +1080,7 @@
     left: 0;
     margin-top: 4px;
     min-width: 140px;
+    max-width: min(140px, calc(100vw - 24px)); /* Ekrandan taşma / kesilme olmasın */
     background: var(--bg);
     border: 1px solid var(--border-faint);
     border-radius: 8px;
@@ -2173,8 +2177,9 @@
   }
   #vehicles-modal .vt-right {
     gap: 2px !important;
-    flex-shrink: 0;
+    flex-shrink: 1;
     min-width: 0 !important; /* Arama açıkken taşmayı önle */
+    overflow: hidden; /* Arama kutusu açıkken hizada kalsın, taşma kesilmesin */
   }
   /* Taşıtlar toolbar: arama + şanzıman + diğer ikonlar sığsın */
   #vehicles-modal .vt-right .vt-icon-btn,
