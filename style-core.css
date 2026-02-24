@@ -199,6 +199,30 @@ body::-webkit-scrollbar,
   -webkit-text-stroke: 0.2px currentColor;
 }
 
+/* Şube ve Ayarlar Modalları İçin Özel Buton Hizalaması */
+#branch-form-modal .universal-btn-group,
+#user-form-modal .universal-btn-group,
+.ayarlar-modal-overlay .modal-body .universal-btn-group {
+  max-width: 400px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+/* Sil butonunu grid'de tam genişlikte, simetrik */
+#branch-form-modal .settings-btn-delete,
+#user-form-modal .settings-btn-delete,
+.universal-btn-group .settings-btn-delete,
+.universal-btn-group button.settings-btn-delete {
+  grid-column: 1 / -1 !important;
+  width: 100% !important;
+  max-width: none !important;
+  margin-top: 4px !important;
+  color: var(--theme-color, #e1061b) !important;
+  border: 1px solid rgba(225, 6, 27, 0.5) !important;
+}
+
 /* Tüm input/select/textarea içerik metni: göz yormayan gri */
 .form-input,
 select.form-input,
