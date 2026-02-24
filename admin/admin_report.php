@@ -208,9 +208,10 @@ foreach ($surucular as $surucu) {
     }
 }
 
-// Yüzde hesapla
-if ($stats['total'] > 0) {
-    $stats['percentage'] = round(($stats['entered'] / $stats['total']) * 100);
+// Yüzde hesapla: araç/bildirim sayısına göre (entered + pending = toplam beklenen iş)
+$toplamBeklenenIs = ($stats['entered'] ?? 0) + ($stats['pending'] ?? 0);
+if ($toplamBeklenenIs > 0) {
+    $stats['percentage'] = round(($stats['entered'] / $toplamBeklenenIs) * 100);
 }
 
 echo json_encode([
