@@ -884,10 +884,11 @@ html { overflow-x: hidden; }
 
 /* SİSTEMDEKİ TÜM MODALLARIN BAŞLIK YÜKSEKLİĞİNİ 60PX'E KİLİTLEME */
 .modal-overlay .modal-header {
+  position: relative !important; /* İçindeki absolute h2 ve X butonu için referans */
   height: 60px !important;
-  min-height: 60px !important; /* İçeriğe göre esnemesini KESİN engeller */
-  max-height: 60px !important; /* İçeriğe göre uzamasını KESİN engeller */
-  padding: 0 20px !important; /* Dikey paddingleri sıfırla, flex ile ortala */
+  min-height: 60px !important;
+  max-height: 60px !important;
+  padding: 0 20px !important;
   display: flex !important;
   justify-content: center !important;
   align-items: center !important;
@@ -895,23 +896,34 @@ html { overflow-x: hidden; }
   box-sizing: border-box !important;
 }
 
-/* Başlık Metni (H2) Ortalaması */
+/* TÜM MODAL BAŞLIKLARI (H2) MUTLAK MERKEZE SABİTLEME – X butonu ile itişmesin */
 .modal-overlay .modal-header h2 {
+  position: absolute !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
   margin: 0 !important;
   padding: 0 !important;
-  line-height: 1 !important; /* Satır yüksekliğinden dolayı sarkan pikselleri önler */
-  display: flex !important;
-  align-items: center !important;
+  text-align: center !important;
+  width: 100% !important;
+  pointer-events: none !important;
+  white-space: nowrap !important;
+  z-index: 5 !important;
+  line-height: 1 !important;
 }
 
+/* Kapat (X) butonu sağ köşede, başlığın üstünde tıklanabilir */
 .modal-overlay .modal-close {
-  position: absolute;
-  right: 16px;
+  position: absolute !important;
+  right: 15px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  z-index: 10 !important;
+  margin: 0 !important;
+  padding: 0 !important;
   background: transparent;
   border: none;
   color: var(--txt-gray-darker);
   cursor: pointer;
-  padding: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
