@@ -2193,18 +2193,18 @@
     width: 28px !important;
     height: 28px !important;
   }
-  /* Mobil: Taşıtlar + Taşıt Detayı geri ok ve etiket aynı satırda ortalı */
+  /* Mobil: Tasitlar + Tasit Detayi geri ok/metin hizasini kilitle */
   #vehicles-modal .universal-back-bar,
   #vehicle-detail-modal .vehicle-detail-toolbar .universal-back-bar {
     display: inline-flex !important;
-    align-items: center !important;
+    align-items: flex-start !important;
     gap: 3px !important;
     padding-left: 0 !important;
   }
   #vehicles-modal .universal-back-btn,
   #vehicle-detail-modal .vehicle-detail-toolbar .universal-back-btn {
     display: inline-flex !important;
-    align-items: center !important;
+    align-items: flex-start !important;
     gap: 3px !important;
     padding-left: 0 !important;
   }
@@ -2215,7 +2215,7 @@
   #vehicle-detail-modal .vehicle-detail-toolbar .universal-back-btn svg,
   #vehicle-detail-modal .vehicle-detail-toolbar .universal-back-btn .back-icon-svg {
     position: relative !important;
-    top: 0 !important;
+    top: 5px !important;
     margin: 0 !important;
     padding: 0 !important;
   }
