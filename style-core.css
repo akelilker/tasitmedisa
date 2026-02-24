@@ -331,17 +331,17 @@ input[type="date"].form-input:focus {
   color: var(--data-value-color, #a0aec0) !important;
 }
 
-/* TARİH KUTUSU: metin yatayda ortada, ikon sağda 3px boşlukla (binme yok) */
+/* TARİH KUTUSU: metin yatay+dikey ortada, ikon metnin hemen yanında 3px boşlukla */
 input[type="date"].form-input {
   position: relative !important;
   display: flex !important;
   align-items: center !important;
   height: 36px !important;
   box-sizing: border-box !important;
-  padding: 0 28px 0 12px !important; /* Sağ: ikon alanı (~24px) + 3px boşluk */
+  padding: 0 22px 0 12px !important; /* Sağ: 3px kenar + ~16px ikon + 3px boşluk = metne yakın */
 }
 
-/* İç metin yatayda ortada, dikeyde ortada; sağa taşmayı engelle */
+/* İç metin yatayda ve dikeyde ortada; taşma yok */
 input[type="date"].form-input::-webkit-datetime-edit,
 input[type="date"].form-input::-webkit-datetime-edit-fields-wrapper {
   display: flex !important;
@@ -354,9 +354,18 @@ input[type="date"].form-input::-webkit-datetime-edit-fields-wrapper {
   margin: 0 !important;
   box-sizing: border-box !important;
   text-align: center !important;
+  line-height: 1 !important;
+}
+input[type="date"].form-input::-webkit-datetime-edit {
+  line-height: 1 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  height: 100% !important;
+  display: flex !important;
+  align-items: center !important;
 }
 
-/* Takvim ikonu: sağ kenardan 3px içeride, dikey ortalı; metnin içine girmesin */
+/* Takvim ikonu: sağdan 3px, dikey ortalı; metinle arasında 3px boşluk (padding-right ile) */
 input[type="date"].form-input::-webkit-calendar-picker-indicator {
   position: absolute !important;
   right: 3px !important;
