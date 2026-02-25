@@ -27,8 +27,8 @@
 /* style-core .content-wrap sol/sağ border + glow → container zaten veriyor, iptal */
 .dashboard-page .content-wrap.driver-content-wrap,
 .login-page .content-wrap.driver-content-wrap {
-  border-left: 1.2px solid var(--border-red-tech) !important;
-  border-right: 1.2px solid var(--border-red-tech) !important;
+  border-left: none !important;
+  border-right: none !important;
   box-shadow: none !important;
 }
 
@@ -123,6 +123,18 @@ body.driver-modal-open {
   box-sizing: border-box;
   overflow: hidden;
 }
+.dashboard-page .driver-dashboard-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: var(--app-footer-height, 48px);
+  border-left: 1.2px solid var(--border-red-tech);
+  border-right: 1.2px solid var(--border-red-tech);
+  pointer-events: none;
+  z-index: 2;
+}
 
 /* Ana başlık (hero + driver-below-hero) sabit üstte – plaka yukarı, container çerçevesi devam */
 .driver-header-fixed {
@@ -132,8 +144,6 @@ body.driver-modal-open {
   padding: max(12px, env(safe-area-inset-top)) 4px 4px 4px;
   box-sizing: border-box;
   border-top: 1.2px solid var(--border-red-tech);
-  border-left: 1.2px solid var(--border-red-tech);
-  border-right: 1.2px solid var(--border-red-tech);
 }
 
 /* Ortadaki bölüm: sol panel sabit, sadece sağ panel kaydırılır */
@@ -624,7 +634,6 @@ body.driver-modal-open {
   min-height: 0;
   max-width: 100%;
   min-width: 0;
-  overflow-x: hidden;
 }
 .driver-action-area .form-group {
   min-width: 0;
@@ -886,7 +895,7 @@ body.driver-modal-open {
   }
   /* Ortadaki dikey kırmızı çizgi – ince */
   .driver-left-panel {
-    border-right-width: 0.375px !important;
+    border-right-width: 0.35px !important;
   }
   /* Şube etiketinden itibaren 3px aşağı */
   .driver-left-panel .driver-vehicle-info {
@@ -2911,10 +2920,10 @@ body.driver-action-block-open .driver-footer-back-wrap {
     color: var(--txt) !important;
   }
 
-  /* Ana başlık: yan çizgiler header'da (footer'a uzamasın) */
+  /* Ana başlık: yan çizgiler sadece container'da (çift border olmasın) */
   .dashboard-page .driver-header-fixed {
-    border-left: 1.2px solid var(--border-red-tech) !important;
-    border-right: 1.2px solid var(--border-red-tech) !important;
+    border-left: none !important;
+    border-right: none !important;
   }
   .dashboard-page .hero {
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45), 0 4px 24px rgba(var(--theme-color-rgb), 0.18) !important;
