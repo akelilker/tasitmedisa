@@ -896,6 +896,11 @@ padding-top: 0 !important; /* ezen 14px kaldır; aralık sadece header padding-b
 position: static !important;
 margin-top: 8px;
 }
+/* Detay Ekle açıkken: menü ile Başlangıç/Bitiş Tarihi satırı arası dikey boşluk 5px */
+#reports-modal:has(.stok-detail-menu-open) #stok-list-container .stok-list-top-controls > .stok-controls-row-2 {
+margin-top: 5px !important;
+padding-top: 0 !important;
+}
 #stok-list-container .stok-list-top-controls {
 padding-top: 0 !important;
 margin-bottom: 0 !important;
