@@ -2388,13 +2388,13 @@ body.driver-action-block-open .driver-footer-back-wrap {
   position: fixed;
   bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0) + 9px);
   left: 50%;
-  transform: translateX(calc(-50% - 3px));
+  transform: translateX(-50%);
   max-width: 500px;
   width: 100%;
   box-sizing: border-box;
   z-index: 9999;
-  padding-left: 12px;
-  padding-right: 12px;
+  padding-left: 12px !important;
+  padding-right: 12px !important;
   overflow: hidden;
 }
 .driver-footer-back-wrap .universal-back-btn {
@@ -2427,7 +2427,7 @@ body.driver-action-block-open .driver-footer-back-wrap {
 @media (min-width: 769px) {
   .driver-footer-back-wrap {
     bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0) + 3px);
-    transform: translateX(calc(-50% - 8px));
+    transform: translateX(-50%);
   }
   .driver-footer-back-wrap .universal-back-label {
     font-size: 13px;
