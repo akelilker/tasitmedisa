@@ -875,10 +875,10 @@ body.driver-modal-open {
   .driver-splash-logo {
     width: 120px !important;
   }
-  /* MEDISA hero logosu mobilde – metinleri bozmayacak kadar büyütme (43→52px) */
+  /* MEDISA hero logosu mobilde – metinleri bozmayacak kadar büyütme (52→58px) */
   .dashboard-page .hero-logo {
-    flex: 0 0 52px !important;
-    width: 52px !important;
+    flex: 0 0 58px !important;
+    width: 58px !important;
     transform: translate(-2px, 4px) !important; /* 1px + 3px aşağı (style-core 1px’e ek) */
     margin-top: 0 !important;
   }
@@ -886,10 +886,10 @@ body.driver-modal-open {
     width: 100% !important;
     height: auto !important;
   }
-  /* Login logosu mobilde – metinleri bozmayacak kadar büyütme (43→52px) */
+  /* Login logosu mobilde – metinleri bozmayacak kadar büyütme (52→58px) */
   .login-page .hero-logo {
-    flex: 0 0 52px !important;
-    width: 52px !important;
+    flex: 0 0 58px !important;
+    width: 58px !important;
   }
   .login-page .hero-logo img {
     width: 100% !important;
@@ -2400,21 +2400,22 @@ body.driver-action-block-open .driver-footer-back-wrap {
 .driver-footer-back-wrap .universal-back-btn {
   display: inline-block;
   max-width: 100%;
-  color: #adb5bd !important; /* Soluk – ana uygulama anasayfadaki gibi */
+  color: var(--theme-color) !important; /* Kırmızı, pasifken yarı saydam */
+  opacity: 0.5;
   font-size: 14px;
   font-weight: 500;
   letter-spacing: 0.5px;
-  transition: opacity 0.2s;
+  transition: opacity 0.2s, color 0.2s;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 .driver-footer-back-wrap .universal-back-btn:hover {
   color: var(--txt-white) !important;
-  opacity: 0.9;
+  opacity: 1;
 }
 .driver-footer-back-wrap .universal-back-label {
-  color: #adb5bd !important; /* Soluk – ana uygulama anasayfadaki gibi */
+  color: var(--theme-color) !important;
 }
 .driver-footer-back-wrap .universal-back-btn:hover .universal-back-label {
   color: var(--txt-white) !important;
@@ -2572,7 +2573,7 @@ body.driver-action-block-open .driver-footer-back-wrap {
 }
 
 .login-form .form-group input::placeholder {
-  color: var(--data-value-color, #a0aec0) !important;
+  color: rgba(160, 174, 192, 0.6) !important; /* Örn: Savaş – çok az daha silik */
   opacity: 1;
 }
 
