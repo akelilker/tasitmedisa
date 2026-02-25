@@ -118,8 +118,8 @@
             'plate': '62px',
             'brand': '2.55fr',
             'km': '52px',
-            'user': '1.83fr',   /* şubeden 3px alındı */
-            'branch': '2.52fr'
+            'user': '1.87fr',   /* mobilde KULL. sütunu +2px */
+            'branch': '2.48fr'  /* mobilde ŞUBE sütunu -2px */
           }
         : {
             'year': '32px',
@@ -2430,20 +2430,28 @@ function renderVehicleDetailLeft(vehicle) {
         
         // Şema wrapper'ı oluştur
         const schemaWrapper = document.createElement('div');
+        const isMobileKazaSchema = window.innerWidth <= 640;
         schemaWrapper.style.display = 'flex';
         schemaWrapper.style.alignItems = 'flex-start';
         schemaWrapper.style.justifyContent = 'center';
         schemaWrapper.style.gap = '24px';
         schemaWrapper.style.maxHeight = '144px'; /* 180 * 0.8 */
-        schemaWrapper.style.overflow = 'hidden';
+        schemaWrapper.style.overflow = isMobileKazaSchema ? 'visible' : 'hidden';
         
         schemaWrapper.appendChild(svgClone);
         
         svgClone.setAttribute('width', '140');
         svgClone.setAttribute('height', '210');
-        svgClone.style.width = '168px';  /* 210 * 0.8 */
-        svgClone.style.height = '112px'; /* 140 * 0.8 */
-        svgClone.style.margin = '0';
+        if (isMobileKazaSchema) {
+          // Mobilde şemayı sola doğru 18px büyüt: sağ kenar sabit kalır.
+          svgClone.style.width = '186px';
+          svgClone.style.height = '124px';
+          svgClone.style.margin = '0 0 0 -18px';
+        } else {
+          svgClone.style.width = '168px';  /* 210 * 0.8 */
+          svgClone.style.height = '112px'; /* 140 * 0.8 */
+          svgClone.style.margin = '0';
+        }
         svgClone.style.display = 'block';
         svgClone.style.transform = 'rotate(90deg)';
         svgClone.style.transformOrigin = 'center center';
