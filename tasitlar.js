@@ -168,6 +168,22 @@
     }).join(' ');
   }
 
+  // Plaka: harfler tamamen büyük (TR locale)
+  function formatPlaka(str) {
+    if (str == null || str === '' || str === '-') return str === '' ? '-' : (str || '-');
+    return String(str).trim().toLocaleUpperCase('tr-TR');
+  }
+
+  // Ad Soyad: soyad tamamen büyük, ad(lar) title case
+  function formatAdSoyad(str) {
+    if (!str || str === '-') return str;
+    var parts = String(str).trim().split(/\s+/).filter(Boolean);
+    if (parts.length === 0) return str;
+    if (parts.length === 1) return toTitleCase(parts[0]);
+    var last = parts.pop();
+    return parts.map(function(w) { return w.charAt(0).toLocaleUpperCase('tr-TR') + w.slice(1).toLocaleLowerCase('tr-TR'); }).join(' ') + ' ' + last.toLocaleUpperCase('tr-TR');
+  }
+
   // Global Detail Vehicle ID (HTML onclick erişimi için)
   window.currentDetailVehicleId = null;
 
@@ -767,6 +783,7 @@
         } else {
           thirdLine = v.tahsisKisi || '';
         }
+        const thirdLineDisplay = thirdLine ? (isArchive ? toTitleCase(thirdLine) : (activeBranchId === 'all' ? toTitleCase(thirdLine) : formatAdSoyad(thirdLine))) : '';
         const satildiSpan = isArchive ? ' <span style="color:#e1061b;font-size:12px;">(SATILDI)</span>' : '';
 
         // Tahsis edilmemiş taşıtlar için kırmızı class (liste ve kartta her zaman)
@@ -775,11 +792,11 @@
         
         if (viewMode === 'card') {
             // Üçüncü satır boşsa div'i render etme
-            const thirdLineHtml = thirdLine ? `<div class="card-third-line" title="${escapeHtml(thirdLine)}">${escapeHtml(thirdLine)}</div>` : '';
+            const thirdLineHtml = thirdLineDisplay ? `<div class="card-third-line" title="${escapeHtml(thirdLineDisplay)}">${escapeHtml(thirdLineDisplay)}</div>` : '';
             const vid = v.id != null ? String(v.id).replace(/"/g, '&quot;') : '';
             return `
               <div class="card${unassignedClass}" data-vehicle-id="${vid}" style="cursor:pointer">
-                <div class="card-plate">${escapeHtml(plate)}${satildiSpan}</div>
+                <div class="card-plate">${escapeHtml(formatPlaka(plate))}${satildiSpan}</div>
                 <div class="card-brand-model" title="${escapeHtml(brandModel)}">${escapeHtml(toTitleCase(brandModel))}</div>
                 ${thirdLineHtml}
               </div>
@@ -788,8 +805,8 @@
             // Liste görünümü: Sıralamaya göre dinamik
             const kmValue = v.guncelKm || v.km;
             const kmLabel = kmValue ? formatNumber(kmValue) : '-';
-            const vehicleTypeLabel = v.vehicleType || '-';
-            const branchLabel = branchMap.get(String(v.branchId)) || 'Tahsis Edilmemiş';
+            const vehicleTypeLabel = toTitleCase(v.vehicleType || '-');
+            const branchLabel = toTitleCase(branchMap.get(String(v.branchId)) || 'Tahsis Edilmemiş');
             
             let cellHtml = '';
             listDisplayOrder.forEach(columnKey => {
@@ -801,7 +818,7 @@
                   cellClass = 'list-year';
                   break;
                 case 'plate':
-                  cellContent = escapeHtml(plate);
+                  cellContent = escapeHtml(formatPlaka(plate));
                   cellClass = 'list-plate';
                   break;
                 case 'brand':
@@ -818,8 +835,9 @@
                   break;
                 case 'user':
                   const assignedUser = v.assignedUserId ? userMap.get(String(v.assignedUserId)) : null;
-                  const userName = assignedUser?.isim || v.tahsisKisi || '-';
-                  if (isMobile && userName && userName.trim()) {
+                  const userNameRaw = assignedUser?.isim || v.tahsisKisi || '-';
+                  const userName = formatAdSoyad(userNameRaw);
+                  if (isMobile && userName && userName !== '-') {
                     const parts = String(userName).trim().split(/\s+/);
                     const firstLine = parts[0] || '-';
                     const secondLine = parts.slice(1).join(' ') || '';
