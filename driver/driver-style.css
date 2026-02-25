@@ -101,6 +101,11 @@ body.driver-modal-open {
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
+  box-sizing: border-box;
+  overflow: hidden;
+  border-left: 1.2px solid var(--border-red-tech);
+  border-right: 1.2px solid var(--border-red-tech);
+  border-bottom: 1.2px solid var(--border-red-tech);
 }
 
 /* Ana başlık (hero + driver-below-hero) sabit üstte – plaka yukarı, container çerçevesi devam */
@@ -110,8 +115,7 @@ body.driver-modal-open {
   z-index: 5;
   padding: max(12px, env(safe-area-inset-top)) 4px 4px 4px;
   box-sizing: border-box;
-  border-left: 1.2px solid var(--border-red-tech);
-  border-right: 1.2px solid var(--border-red-tech);
+  border-top: 1.2px solid var(--border-red-tech);
 }
 
 /* Ortadaki bölüm: sol panel sabit, sadece sağ panel kaydırılır */
@@ -279,10 +283,6 @@ body.driver-modal-open {
   }
   .dashboard-page .driver-below-hero-row .driver-btn-logout {
     margin-right: 8px !important;
-  }
-  .dashboard-page .driver-header-fixed {
-    border-left-width: 1.5px;
-    border-right-width: 1.5px;
   }
   .dashboard-page .hero-logo,
   .login-page .hero-logo {
@@ -2237,7 +2237,10 @@ body.driver-modal-open {
   margin-right: auto !important;
   box-sizing: border-box !important;
   min-width: 0 !important;
-  overflow-x: hidden !important;
+  overflow: hidden !important;
+  border-left: 1.2px solid var(--border-red-tech) !important;
+  border-right: 1.2px solid var(--border-red-tech) !important;
+  border-bottom: 1.2px solid var(--border-red-tech) !important;
 }
 
 /* Login content-wrap: anasayfa ile aynı hizalama (padding, safe-area) */
