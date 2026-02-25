@@ -993,7 +993,7 @@
     box-shadow: none !important;
   }
   .olay-ekle-modal .universal-back-bar {
-    margin-top: -21px !important; /* Sol ok + etiket 3px daha yukarı (-18 → -21) */
+    margin-top: -6px !important;
   }
 }
 
@@ -2324,7 +2324,7 @@
     height: 22px !important;
   }
   .olay-ekle-modal .universal-back-bar {
-    margin-top: -21px !important; /* Mobil: sol ok + etiket 3px daha yukarı */
+    margin-top: -6px !important;
   }
   .olay-ekle-modal .universal-back-bar .universal-back-label {
     font-size: 17.5px !important;
@@ -3088,7 +3088,7 @@
   }
 
   #event-menu-modal .universal-back-bar {
-    margin-top: -21px !important; /* Olay Ekle menü: sol ok + etiket 3px daha yukarı */
+    margin-top: -6px !important;
   }
 
   /* --- EVENT MENU LIST MOBİL --- (spesifik seçici: .modal-body button kuralını ezer) */
