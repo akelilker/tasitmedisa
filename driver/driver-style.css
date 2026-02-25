@@ -181,10 +181,14 @@ body.driver-modal-open {
   flex: 1;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start; /* Logo ile başlık arası boşluğu azalt – sola yasla */
   justify-content: center;
   gap: 2px;
   min-width: 0;
+  padding-left: 8px; /* Logo ile başlık arası minimal boşluk */
+}
+.hero-title-wrap h1 {
+  text-align: left !important; /* Logo yanında sola yaslı */
 }
 
 .hero-subtitle {
@@ -277,7 +281,7 @@ body.driver-modal-open {
   margin: 0;
   letter-spacing: 4px;
   text-transform: uppercase;
-  text-align: center;
+  text-align: left;
   flex: none;
   background: linear-gradient(to bottom,
     #c2d4df 0%,
