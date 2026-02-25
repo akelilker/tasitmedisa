@@ -673,9 +673,11 @@
 #vehicle-history-modal .history-empty-msg {
     color: var(--txt-placeholder);
 }
-/* Tarihçe: yeni tarihe geçerken aradaki yatay çizgi kırmızı, kontrast için opacity artırıldı */
+/* Tarihçe: yeni tarihe geçerken aradaki yatay çizgi kırmızı ve ince */
 #vehicle-history-modal .history-item,
 .modal-overlay:has(.history-tabs) .history-item {
+    border-bottom-width: 0.5px !important;
+    border-bottom-style: solid !important;
     border-bottom-color: rgba(var(--theme-color-rgb), 0.6) !important;
 }
 
