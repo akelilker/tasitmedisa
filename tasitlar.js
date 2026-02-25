@@ -2447,6 +2447,8 @@ function renderVehicleDetailLeft(vehicle) {
           svgClone.style.width = '186px';
           svgClone.style.height = '124px';
           svgClone.style.margin = '0 0 0 -18px';
+          svgClone.style.position = 'relative';
+          svgClone.style.left = '-18px';
         } else {
           svgClone.style.width = '168px';  /* 210 * 0.8 */
           svgClone.style.height = '112px'; /* 140 * 0.8 */
