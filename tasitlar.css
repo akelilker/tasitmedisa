@@ -2538,6 +2538,18 @@
     text-align: left !important;
   }
 
+  /* Mobil Olay Ekle: Evet/Hayır, Var/Yok sorularında etiket + butonlar aynı satırda */
+  .olay-ekle-modal .modal-body > div > div:has(.radio-group) {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 8px !important;
+  }
+  .olay-ekle-modal .modal-body > div > div:has(.radio-group) label {
+    margin-bottom: 0 !important;
+    flex-shrink: 0 !important;
+  }
+
   .olay-ekle-modal .modal-body .form-input,
   .olay-ekle-modal .modal-body select,
   .olay-ekle-modal .modal-body textarea {
