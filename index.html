@@ -1313,7 +1313,7 @@
       // 1. Loading screen: logo+başlık en az 2 sn gösterilir, sonra kapanır
       var SPLASH_MIN = 2000;
       var _start = Date.now();
-      function hideLoading() {
+      window.hideLoading = function hideLoading() {
         var ls = document.getElementById('loading-screen');
         if (!ls || ls.classList.contains('hidden')) return;
         var elapsed = Date.now() - _start;
@@ -1324,7 +1324,7 @@
         ls.classList.add('hidden');
         ls.style.animation = 'none';
         setTimeout(function(){ ls.style.display = 'none'; }, 350);
-      }
+      };
       if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', hideLoading);
       } else {
