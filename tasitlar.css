@@ -166,6 +166,19 @@
     width: 100% !important;
 }
 
+/* Hasar Gören Parça etiketi: Hasar Tutarı etiketi ile aynı sol hizada (dikey hiza) */
+#kaza-ekle-modal .modal-body > div > div:has(#kaza-kaporta-container) {
+    width: 100% !important;
+    padding-left: 0 !important;
+    margin-left: 0 !important;
+}
+#kaza-ekle-modal #kaza-kaporta-label {
+    display: block !important;
+    text-align: left !important;
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+}
+
 /* Kaza modalı buton grubunu alta sabitleme */
 #kaza-guncelle-modal .universal-btn-group,
 #kaza-ekle-modal .universal-btn-group {
@@ -2089,7 +2102,7 @@
   font-weight: 700 !important; /* 14px → 15px */
 }
 
-/* Kaza Modalı - Kaporta Şeması Yatayda Ortalı */
+/* Kaza Modalı - Kaporta Şeması Yatayda Ortalı; masaüstünde şema büyük (soldaki alanı da kullan) */
   #kaza-kaporta-container {
     display: flex !important;
     justify-content: center !important;
@@ -2102,6 +2115,19 @@
     align-items: flex-start !important;
     justify-content: center !important;
     gap: 24px !important;
+  }
+
+  /* Masaüstü: şema oranlı büyütme (~1.31x) – yatay alan kullanılsın */
+  @media (min-width: 641px) {
+    #kaza-ekle-modal #kaza-kaporta-container > div,
+    #kaza-guncelle-modal #kaza-kaporta-container > div {
+      max-height: 190px !important;
+    }
+    #kaza-ekle-modal #kaza-kaporta-container svg,
+    #kaza-guncelle-modal #kaza-kaporta-container svg {
+      width: 220px !important;
+      height: 147px !important;
+    }
   }
   
   /* Olay Ekle (14 modal): Var/Yok, Evet/Hayır – pasif açık gri, hover/seçili renkli */
