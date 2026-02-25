@@ -119,9 +119,6 @@
     max-width: 500px !important;
     width: 100%;
     background: var(--modal-bg) !important;
-    border: 0.5px solid var(--border-medium) !important;
-    box-shadow: 0 0 40px var(--shadow-modal) !important;
-    border-radius: var(--modal-radius) !important;
     margin: max(12px, env(safe-area-inset-top)) auto 54px auto !important;
     height: calc(100vh - max(12px, env(safe-area-inset-top)) - 54px) !important;
     height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 54px) !important;
