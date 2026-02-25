@@ -173,9 +173,9 @@ gap: 4px;
 width: 100%;
 min-width: 0;
 }
-/* Sol ok + etiket 4px daha yukarı (toplam 10px yukarı), sola yaslı */
+/* Sol ok + Raporlar etiketi 5px daha yukarı (dikey alan tasarrufu; toplam 15px yukarı) */
 #reports-modal .reports-list-header-actions .stok-controls-row-1 .universal-back-bar {
-margin-top: -10px !important;
+margin-top: -15px !important;
 margin-bottom: 0;
 }
 /* Raporlar etiketi 2 punto küçük; sol ok yanındaki etiket gri (#adb5bd); line-height ikonla aynı (20px) hiza için */
