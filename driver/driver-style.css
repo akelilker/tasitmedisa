@@ -13,6 +13,25 @@
   display: none;
 }
 
+/* --- style-core.css border çakışmalarını temizle (driver sayfalarında border tek kaynaktan gelsin) --- */
+/* style-core .app-container üst border → driver-header-fixed zaten veriyor, iptal */
+.dashboard-page .app-container.driver-dashboard-container,
+.login-page .app-container.driver-dashboard-container {
+  border-top: none !important;
+}
+/* style-core .app-container::after inset red glow → container kendi glow'unu kullanır, iptal */
+.dashboard-page .app-container.driver-dashboard-container::after,
+.login-page .app-container.driver-dashboard-container::after {
+  box-shadow: none !important;
+}
+/* style-core .content-wrap sol/sağ border + glow → container zaten veriyor, iptal */
+.dashboard-page .content-wrap.driver-content-wrap,
+.login-page .content-wrap.driver-content-wrap {
+  border-left: none !important;
+  border-right: none !important;
+  box-shadow: none !important;
+}
+
 /* --- Splash ekranı – link/PWA ile açılışta 3 sn --- */
 .driver-splash {
   position: fixed;
@@ -2249,9 +2268,6 @@ body.driver-modal-open {
   box-sizing: border-box !important;
   min-width: 0 !important;
   overflow: hidden !important;
-  border-left: 1.2px solid var(--border-red-tech) !important;
-  border-right: 1.2px solid var(--border-red-tech) !important;
-  border-bottom: 1.2px solid var(--border-red-tech) !important;
 }
 
 /* Login content-wrap: anasayfa ile aynı hizalama (padding, safe-area) */
@@ -2898,10 +2914,10 @@ body.driver-action-block-open .driver-footer-back-wrap {
     color: var(--txt) !important;
   }
 
-  /* Ana başlık çerçevesi – mobilde border + kırmızı ışıklar (login ile uyumlu) */
+  /* Ana başlık: yan çizgiler sadece container'da (çift border olmasın) */
   .dashboard-page .driver-header-fixed {
-    border-left-width: 1.2px !important;
-    border-right-width: 1.2px !important;
+    border-left: none !important;
+    border-right: none !important;
   }
   .dashboard-page .hero {
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45), 0 4px 24px rgba(var(--theme-color-rgb), 0.18) !important;
@@ -3192,10 +3208,10 @@ body.driver-action-block-open .driver-footer-back-wrap {
     padding-bottom: max(12px, env(safe-area-inset-bottom, 0)) !important;
   }
 
-  /* 5. Login header = panel ile aynı (driver-header-fixed zaten uygulanıyor) */
+  /* 5. Login header: yan çizgiler sadece container'da (çift border olmasın) */
   .login-page .driver-header-fixed {
-    border-left: 1.2px solid var(--border-red-tech) !important;
-    border-right: 1.2px solid var(--border-red-tech) !important;
+    border-left: none !important;
+    border-right: none !important;
     padding-left: 5px !important;
     padding-right: 5px !important;
   }
