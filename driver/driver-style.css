@@ -135,7 +135,7 @@ body.driver-modal-open {
   border-left: 1.2px solid var(--border-red-tech);
   border-right: 1.2px solid var(--border-red-tech);
   pointer-events: none;
-  z-index: 2;
+  z-index: 11;
 }
 
 /* Ana başlık (hero + driver-below-hero) sabit üstte – plaka yukarı, container çerçevesi devam */
