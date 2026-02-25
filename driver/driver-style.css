@@ -181,14 +181,39 @@ body.driver-modal-open {
   flex: 1;
   display: flex;
   flex-direction: column;
-  align-items: flex-start; /* Logo ile başlık arası boşluğu azalt – sola yasla */
+  align-items: center;
   justify-content: center;
   gap: 2px;
   min-width: 0;
-  padding-left: 8px; /* Logo ile başlık arası minimal boşluk */
 }
 .hero-title-wrap h1 {
-  text-align: left !important; /* Logo yanında sola yaslı */
+  text-align: center !important;
+}
+
+/* Driver: Logo ile başlık arasında boşluk yok, [logo+başlık] yatayda ortalanmış */
+.dashboard-page .hero,
+.login-page .hero {
+  justify-content: center !important;
+}
+.dashboard-page .hero::before,
+.login-page .hero::before,
+.dashboard-page .hero::after,
+.login-page .hero::after {
+  content: '';
+  flex: 1;
+  min-width: 0;
+}
+.dashboard-page .hero-spacer,
+.login-page .hero-spacer {
+  flex: 0 0 0 !important;
+  width: 0 !important;
+  overflow: hidden !important;
+}
+.dashboard-page .hero-title-wrap,
+.login-page .hero-title-wrap {
+  flex: 0 1 auto !important; /* İçeriğe göre genişlik, logo ile bitişik */
+  padding-left: 0 !important;
+  margin-left: 0 !important;
 }
 
 .hero-subtitle {
@@ -281,7 +306,7 @@ body.driver-modal-open {
   margin: 0;
   letter-spacing: 4px;
   text-transform: uppercase;
-  text-align: left;
+  text-align: center;
   flex: none;
   background: linear-gradient(to bottom,
     #c2d4df 0%,
