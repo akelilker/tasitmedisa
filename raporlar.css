@@ -98,7 +98,7 @@ color: var(--form-label-color);
 #reports-modal .kullanici-list-top-controls .universal-back-bar,
 #reports-modal .kullanici-detail-header .universal-back-bar {
 display: inline-flex !important;
-align-items: flex-start !important;
+align-items: center !important;
 gap: 3px !important;
 padding-left: 0 !important;
 }
@@ -106,7 +106,7 @@ padding-left: 0 !important;
 #reports-modal .kullanici-list-top-controls .universal-back-btn,
 #reports-modal .kullanici-detail-header .universal-back-btn {
 display: inline-flex !important;
-align-items: flex-start !important;
+align-items: center !important;
 gap: 3px !important;
 padding-left: 0 !important;
 }
@@ -120,7 +120,7 @@ padding-left: 0 !important;
 #reports-modal .kullanici-detail-header .universal-back-btn svg,
 #reports-modal .kullanici-detail-header .universal-back-btn .back-icon-svg {
 position: relative !important;
-top: 5px !important;
+top: 0 !important;
 margin: 0 !important;
 padding: 0 !important;
 }
@@ -178,15 +178,19 @@ min-width: 0;
 margin-top: -10px !important;
 margin-bottom: 0;
 }
-/* Raporlar etiketi 2 punto küçük (15px → 13px) */
+/* Raporlar etiketi 2 punto küçük; sol ok yanındaki etiket gri */
 #reports-modal .reports-list-header-actions .universal-back-label {
 font-size: 13px !important;
+color: var(--txt-muted, #a0aec0) !important;
+margin: 0;
 }
-/* Etiket ve Detay Ekleme butonu aynı metin rengi */
-#reports-modal .reports-list-header-actions .universal-back-label,
+/* Detay Ekleme butonu varsayılan beyaz; seçiliyken yeşil */
 #reports-modal .reports-list-header-actions .stok-detail-add-btn {
 color: var(--txt-light) !important;
 margin: 0;
+}
+#reports-modal .reports-list-header-actions .stok-detail-add-btn.active {
+color: #4ade80 !important;
 }
 #reports-modal .reports-list-header-actions .universal-back-bar {
 margin: 0;
@@ -204,6 +208,9 @@ align-self: flex-start !important;
 }
 #reports-modal .reports-list-header-actions .stok-detail-add-btn:hover {
 color: var(--txt-light) !important;
+}
+#reports-modal .reports-list-header-actions .stok-detail-add-btn.active:hover {
+color: #4ade80 !important;
 }
 #reports-modal .stok-controls-row-1 .universal-back-bar,
 #reports-modal .kullanici-list-top-controls .universal-back-bar,
@@ -1717,7 +1724,7 @@ height: 24px !important;
 #reports-modal .kullanici-list-top-controls .universal-back-bar,
 #reports-modal .kullanici-detail-header .universal-back-bar {
 display: inline-flex !important;
-align-items: flex-start !important;
+align-items: center !important;
 gap: 3px !important;
 padding-left: 0 !important;
 }
@@ -1725,7 +1732,7 @@ padding-left: 0 !important;
 #reports-modal .kullanici-list-top-controls .universal-back-btn,
 #reports-modal .kullanici-detail-header .universal-back-btn {
 display: inline-flex !important;
-align-items: flex-start !important;
+align-items: center !important;
 gap: 3px !important;
 padding-left: 0 !important;
 }
@@ -1739,7 +1746,7 @@ padding-left: 0 !important;
 #reports-modal .kullanici-detail-header .universal-back-btn svg,
 #reports-modal .kullanici-detail-header .universal-back-btn .back-icon-svg {
 position: relative !important;
-top: 5px !important;
+top: 0 !important;
 margin: 0 !important;
 padding: 0 !important;
 }
