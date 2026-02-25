@@ -1843,7 +1843,7 @@ function renderHistoryList() {
                 if (item.bakim_tarih) detailsHtml += `<p><strong>Tarih:</strong> ${item.bakim_tarih}</p>`;
                 if (item.guncel_km) detailsHtml += `<p><strong>Bildirilen KM:</strong> ${formatKm(item.guncel_km)}</p>`;
             } else {
-                detailsHtml = `<p>${escapeHtmlDriver(capitalizeWords('Bildirilen KM') + ':')} <strong>${formatKm(item.guncel_km) || '0'}</strong></p>`;
+                detailsHtml = `<p><strong>Bildirilen KM:</strong> ${formatKm(item.guncel_km) || '0'}</p>`;
             }
         } else {
             const d = item.data || {};
