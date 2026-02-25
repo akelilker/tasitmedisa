@@ -174,14 +174,16 @@
     margin-left: 0 !important;
     box-sizing: border-box !important;
 }
+/* "H" (Hasar...) ilk harfi, 5.000 inputunun sol dikey çerçevesi (border+padding) ile aynı hizada */
 #kaza-ekle-modal .kaza-kaporta-label,
 #kaza-guncelle-modal .kaza-kaporta-label {
     display: block !important;
     text-align: left !important;
     margin-left: 0 !important;
-    padding-left: 0 !important;
+    padding-left: 9px !important; /* form-input border 1px + padding-left 8px = input içeriği ile hiza */
     font-size: 14px !important;
     margin-bottom: 3px !important;
+    box-sizing: border-box !important;
 }
 
 /* Kaza modalı buton grubunu alta sabitleme */
