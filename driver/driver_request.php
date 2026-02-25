@@ -70,7 +70,7 @@ if (!$data) {
 
 // Kaydı bul
 $kayit = null;
-foreach ($data['arac_aylik_hareketler'] as $k) {
+foreach (($data['arac_aylik_hareketler'] ?? []) as $k) {
     if ($k['id'] === $kayitId) {
         $kayit = $k;
         break;
