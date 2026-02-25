@@ -2446,7 +2446,9 @@ function renderVehicleDetailLeft(vehicle) {
           // Mobilde şemayı sola doğru 18px büyüt: sağ kenar sabit kalır.
           svgClone.style.width = '186px';
           svgClone.style.height = '124px';
-          svgClone.style.margin = '0 0 0 -18px';
+          svgClone.style.margin = '0';
+          svgClone.style.position = 'relative';
+          svgClone.style.left = '-18px';
         } else {
           svgClone.style.width = '168px';  /* 210 * 0.8 */
           svgClone.style.height = '112px'; /* 140 * 0.8 */

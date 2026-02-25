@@ -789,6 +789,13 @@
     if (!input) return;
     const hasValue = !!input.value;
     input.classList.toggle('has-value', hasValue);
+    const isVehicleRightDate = !!input.closest('#vehicle-modal .modal-column-right');
+    // Sağ kolondaki tarih alanlarında (Sigorta/Kasko/Muayene) değeri gizleme:
+    // iOS Safari ilk render'da metni boş gösterebildiği için renk daima görünür tutulur.
+    if (isVehicleRightDate) {
+      input.style.color = '#888';
+      return;
+    }
     input.style.color = (hasValue || input === document.activeElement) ? '#888' : 'transparent';
   }
 
@@ -914,6 +921,8 @@
         });
         syncDateInputVisibility(modal);
         setTimeout(() => syncDateInputVisibility(modal), 0);
+        setTimeout(() => syncDateInputVisibility(modal), 80);
+        setTimeout(() => syncDateInputVisibility(modal), 180);
         // Hover class'larını ayarla
         updateRadioButtonHover();
       });
@@ -1120,6 +1129,8 @@
       });
       syncDateInputVisibility(modal);
       setTimeout(() => syncDateInputVisibility(modal), 0);
+      setTimeout(() => syncDateInputVisibility(modal), 80);
+      setTimeout(() => syncDateInputVisibility(modal), 180);
       updateRadioButtonHover();
     });
 

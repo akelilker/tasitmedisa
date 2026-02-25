@@ -249,7 +249,7 @@ document.addEventListener('DOMContentLoaded', () => {
    VERSION DISPLAY (Global Core - v78.1)
    ========================================= */
 document.addEventListener('DOMContentLoaded', function() {
-    const APP_VERSION = "v78.1";
+    const APP_VERSION = "v78.2";
     const versionEl = document.getElementById('version-display');
 
     if (versionEl) {
