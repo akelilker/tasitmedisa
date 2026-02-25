@@ -61,39 +61,6 @@ function updateDriverModalBodyClass() {
   else document.body.classList.remove('driver-modal-open');
 }
 
-// #region agent log
-function logDriverContainerOverflow() {
-  var container = document.querySelector('.app-container.driver-dashboard-container');
-  var footer = document.getElementById('app-footer');
-  var backWrap = document.querySelector('.driver-footer-back-wrap');
-  if (!container) return;
-  var cr = container.getBoundingClientRect();
-  var data = { page: document.getElementById('login-form') ? 'login' : 'dashboard', container: { left: cr.left, right: cr.right, top: cr.top, bottom: cr.bottom, width: cr.width }, overflow: {} };
-  var cs = window.getComputedStyle(container);
-  data.containerOverflow = cs.overflow + ' / ' + cs.overflowX + ' / ' + cs.overflowY;
-  if (footer) {
-    var fr = footer.getBoundingClientRect();
-    data.footer = { left: fr.left, right: fr.right, width: fr.width };
-    data.overflow.footerLeft = fr.left < cr.left;
-    data.overflow.footerRight = fr.right > cr.right;
-    data.overflow.footerBottom = fr.bottom > cr.bottom;
-  }
-  if (backWrap) {
-    var br = backWrap.getBoundingClientRect();
-    data.backWrap = { left: br.left, right: br.right, width: br.width };
-    data.overflow.backWrapLeft = br.left < cr.left;
-    data.overflow.backWrapRight = br.right > cr.right;
-  }
-  fetch('http://127.0.0.1:7824/ingest/aaeefe94-e582-470c-8671-3dbfa48b74c7',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'a3a056'},body:JSON.stringify({sessionId:'a3a056',location:'driver-script.js:logDriverContainerOverflow',message:'container overflow check',data:data,timestamp:Date.now(),hypothesisId:'A-C-D-E'})}).catch(function(){});
-}
-if (typeof document !== 'undefined' && document.addEventListener) {
-  document.addEventListener('DOMContentLoaded', function() {
-    setTimeout(logDriverContainerOverflow, 150);
-    window.addEventListener('resize', function() { setTimeout(logDriverContainerOverflow, 100); });
-  });
-}
-// #endregion
-
 /* =========================================
    LOGIN SAYFASI
    ========================================= */
