@@ -321,7 +321,15 @@ async function saveDataToServer() {
    ========================================= */
 
 function genericSaveData(collectionName, item) {
+    if (!window.appData || typeof window.appData[collectionName] === 'undefined') {
+        return Promise.reject(new Error('Veri henüz yüklenmedi veya geçersiz koleksiyon'));
+    }
     const collection = window.appData[collectionName];
+    if (!Array.isArray(collection)) {
+        window.appData[collectionName] = [];
+        window.appData[collectionName].push(item);
+        return saveDataToServer();
+    }
     const existingIndex = collection.findIndex(x => x.id === item.id);
     if (existingIndex >= 0) {
         collection[existingIndex] = item;
