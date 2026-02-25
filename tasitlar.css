@@ -185,7 +185,7 @@
     display: block !important;
     text-align: left !important;
     margin-left: 0 !important;
-    padding-left: 18px !important; /* Sol çerçeve ile label arası 18px */
+    padding-left: 65px !important; /* Sol çerçeve ile label arası 65px */
     font-size: 14px !important;
     margin-bottom: 0 !important;
     box-sizing: border-box !important;
