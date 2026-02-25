@@ -70,6 +70,7 @@
 /* Olay Ekle modallarında tüm tarih inputları – gg.aa.yyyy kutudan taşmasın */
 .olay-ekle-modal .modal-body input[type="date"].form-input,
 .olay-ekle-modal .modal-body .olay-tarih-input {
+  position: relative !important; /* Takvim simgesi absolute ile buna göre ortalanır */
   width: 190px !important;
   max-width: 190px !important;
   min-width: min(165px, 100%) !important;
@@ -105,7 +106,8 @@
 }
 .olay-ekle-modal .modal-body input[type="date"].form-input::-webkit-calendar-picker-indicator,
 .olay-ekle-modal .modal-body .olay-tarih-input::-webkit-calendar-picker-indicator {
-  position: relative !important;
+  position: absolute !important;
+  right: 6px !important;
   top: 50% !important;
   transform: translateY(-50%) !important;
   margin: 0 !important;
