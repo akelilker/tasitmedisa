@@ -178,11 +178,11 @@ min-width: 0;
 margin-top: -10px !important;
 margin-bottom: 0;
 }
-/* Raporlar etiketi 2 punto küçük; sol ok yanındaki etiket gri; line-height ikonla aynı (20px) hiza için */
+/* Raporlar etiketi 2 punto küçük; sol ok yanındaki etiket gri (#adb5bd); line-height ikonla aynı (20px) hiza için */
 #reports-modal .reports-list-header-actions .universal-back-label {
 font-size: 13px !important;
 line-height: 20px !important;
-color: var(--txt-muted, #a0aec0) !important;
+color: #adb5bd !important;
 margin: 0;
 }
 /* Detay Ekleme butonu varsayılan beyaz; seçiliyken yeşil */
@@ -1766,6 +1766,7 @@ margin: 0 !important;
 font-size: 13px !important; /* style-core 14px -> 13px */
 line-height: 1 !important;
 margin: 0 !important;
+color: #adb5bd !important;
 }
 .stok-detail-add-btn {
 font-size: 14px !important;
