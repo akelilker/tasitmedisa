@@ -654,13 +654,13 @@
         const branch = vehicle.branchId ? branches.find(b => b.id === vehicle.branchId) : null;
         const branchName = branch ? branch.name : '-';
 
-        // Base cell'leri stokBaseColumnOrder sırasına göre oluştur
+        // Base cell'leri stokBaseColumnOrder sırasına göre oluştur (format: şube/marka title case, plaka büyük harf)
         const baseCellData = {
             'sira': rowNum,
-            'sube': branchName,
+            'sube': toTitleCase(branchName),
             'yil': vehicle.year || '-',
-            'marka': vehicle.brandModel || '-',
-            'plaka': vehicle.plate || '-',
+            'marka': toTitleCase(vehicle.brandModel || '-'),
+            'plaka': formatPlaka(vehicle.plate || '-'),
             'sanziman': vehicle.transmission === 'manuel' ? 'Manuel' : vehicle.transmission === 'otomatik' ? 'Otomatik' : '-',
             'km': vehicle.km ? formatNumber(vehicle.km) : '-'
         };
@@ -680,7 +680,7 @@
             { key: 'takip', value: vehicle.takipCihaziMontaj ? 'Evet' : 'Hayır' },
             { key: 'tramer', value: vehicle.tramer === 'var' ? 'Var' : vehicle.tramer === 'yok' ? 'Yok' : '-' },
             { key: 'boya', value: vehicle.boya === 'var' ? 'Var' : vehicle.boya === 'yok' ? 'Yok' : '-' },
-            { key: 'kullanici', value: getVehicleUser(vehicle) },
+            { key: 'kullanici', value: formatAdSoyad(getVehicleUser(vehicle)) },
             { key: 'tescil', value: vehicle.tescilTarihi ? formatDate(vehicle.tescilTarihi) : '-' }
         ];
 
@@ -1207,10 +1207,10 @@
         if (col.isBase) {
             switch (col.key) {
                 case 'sira': value = index + 1; break;
-                case 'sube': value = vehicle.branchId ? (getBranches().find(b => b.id === vehicle.branchId)?.name || '-') : '-'; break;
+                case 'sube': value = toTitleCase(vehicle.branchId ? (getBranches().find(b => b.id === vehicle.branchId)?.name || '-') : '-'); break;
                 case 'yil': value = vehicle.year || '-'; break;
-                case 'marka': value = vehicle.brandModel || '-'; break;
-                case 'plaka': value = vehicle.plate || '-'; break;
+                case 'marka': value = toTitleCase(vehicle.brandModel || '-'); break;
+                case 'plaka': value = formatPlaka(vehicle.plate || '-'); break;
                 case 'sanziman': value = vehicle.transmission === 'manuel' ? 'Manuel' : vehicle.transmission === 'otomatik' ? 'Otomatik' : '-'; break;
                 case 'km': value = vehicle.km ? formatNumber(vehicle.km) : '-'; break;
             }
@@ -1225,7 +1225,7 @@
                 case 'takip': value = vehicle.takipCihaziMontaj ? 'Evet' : 'Hayır'; break;
                 case 'tramer': value = vehicle.tramer === 'var' ? 'Var' : vehicle.tramer === 'yok' ? 'Yok' : '-'; break;
                 case 'boya': value = vehicle.boya === 'var' ? 'Var' : vehicle.boya === 'yok' ? 'Yok' : '-'; break;
-                case 'kullanici': value = getVehicleUser(vehicle); break;
+                case 'kullanici': value = formatAdSoyad(getVehicleUser(vehicle)); break;
                 case 'tescil': value = vehicle.tescilTarihi ? formatDate(vehicle.tescilTarihi) : '-'; break;
             }
         }
@@ -1635,13 +1635,13 @@
         
         users.forEach(u => {
             const assignedVehicle = vehicles.find(v => v.assignedUserId === u.id);
-            const vehiclePlate = assignedVehicle ? (assignedVehicle.plate || '-') : '-';
-            const vehicleBrand = assignedVehicle ? (assignedVehicle.brandModel || '-') : '-';
+            const vehiclePlate = formatPlaka(assignedVehicle ? (assignedVehicle.plate || '-') : '-');
+            const vehicleBrand = toTitleCase(assignedVehicle ? (assignedVehicle.brandModel || '-') : '-');
             
             html += `
                 <div class="kullanici-list-item" onclick="showKullaniciDetail('${u.id}')">
                     <div class="kullanici-list-item-left">
-                        <div class="kullanici-list-item-name">${escapeHtml(u.name || '-')}</div>
+                        <div class="kullanici-list-item-name">${escapeHtml(formatAdSoyad(u.name || '-'))}</div>
                     </div>
                     <div class="kullanici-list-item-right">
                         <div class="kullanici-list-item-plate">${escapeHtml(vehiclePlate)}</div>
@@ -1715,8 +1715,8 @@
                 vehicle.events.forEach(event => {
                     userEvents.push({
                         ...event,
-                        vehiclePlate: vehicle.plate || '-',
-                        vehicleBrand: vehicle.brandModel || '-'
+                        vehiclePlate: formatPlaka(vehicle.plate || '-'),
+                        vehicleBrand: toTitleCase(vehicle.brandModel || '-')
                     });
                 });
             }
@@ -1735,11 +1735,11 @@
             'sales': 'Satış Temsilcisi',
             'driver': 'Şoför'
         };
-        const roleLabel = roleLabels[user.role] || user.role || 'Kullanıcı';
+        const roleLabel = toTitleCase(roleLabels[user.role] || user.role || 'Kullanıcı');
         
         // Şube adı
         const branch = user.branchId ? branches.find(b => b.id === user.branchId) : null;
-        const branchName = branch ? branch.name : '-';
+        const branchName = toTitleCase(branch ? branch.name : '-');
         
         let html = `
             <div class="kullanici-detail-header">
@@ -1755,7 +1755,7 @@
                     <div class="kullanici-detail-section">
                         <div class="kullanici-detail-row">
                             <span class="kullanici-detail-label">Ad Soyad:</span>
-                            <span class="kullanici-detail-value">${escapeHtml(user.name || '-')}</span>
+                            <span class="kullanici-detail-value">${escapeHtml(formatAdSoyad(user.name || '-'))}</span>
                         </div>
                         <div class="kullanici-detail-row">
                             <span class="kullanici-detail-label">Şube:</span>
@@ -1792,14 +1792,14 @@
                 if (event.type === 'kaza') {
                     eventTypeLabel = 'KAZA';
                     const d = event.data || {};
-                    const surucu = d.surucu || event.surucu || '-';
+                    const surucu = formatAdSoyad(d.surucu || event.surucu || '-');
                     const tutar = (d.hasarTutari || event.tutar) ? formatNumber(String(d.hasarTutari || event.tutar || '')) + ' TL' : '-';
-                    const aciklama = d.aciklama ? ` | ${escapeHtml(d.aciklama)}` : '';
+                    const aciklama = d.aciklama ? ` | ${escapeHtml(toTitleCase(d.aciklama))}` : '';
                     eventText = `Kullanıcı: ${escapeHtml(surucu)} | Hasar: ${escapeHtml(tutar)}${aciklama}`;
                 } else if (event.type === 'bakim') {
                     eventTypeLabel = 'BAKIM';
                     const d = event.data || {};
-                    const islemler = d.islemler || event.islemler || '-';
+                    const islemler = toTitleCase(d.islemler || event.islemler || '-');
                     const tutar = (d.tutar || event.tutar) ? formatNumber(String(d.tutar || event.tutar || '')) + ' TL' : '-';
                     eventText = `${escapeHtml(islemler)} | Tutar: ${escapeHtml(tutar)}`;
                 } else {
