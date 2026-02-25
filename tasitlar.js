@@ -995,6 +995,24 @@
       historyBtn.setAttribute('aria-label', 'Tarihçe');
       historyBtn.onclick = () => showVehicleHistory(null);
       brandYearRow.appendChild(historyBtn);
+
+      // #region agent log
+      requestAnimationFrame(function () {
+        var row = brandYearRow;
+        var addBtn = row.querySelector('.history-add-event-btn');
+        var histBtn = row.querySelector('.history-btn-minimal');
+        if (!row || !addBtn || !histBtn) return;
+        var rowRect = row.getBoundingClientRect();
+        var addRect = addBtn.getBoundingClientRect();
+        var histRect = histBtn.getBoundingClientRect();
+        var rowStyle = window.getComputedStyle(row);
+        var addStyle = window.getComputedStyle(addBtn);
+        var histStyle = window.getComputedStyle(histBtn);
+        var histSvg = histBtn.querySelector('svg');
+        var histSvgRect = histSvg ? histSvg.getBoundingClientRect() : null;
+        fetch('http://127.0.0.1:7824/ingest/aaeefe94-e582-470c-8671-3dbfa48b74c7',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'3ec9d8'},body:JSON.stringify({sessionId:'3ec9d8',location:'tasitlar.js:detail-row-align',message:'Olay Ekle vs Tarihce alignment',data:{rowTop:rowRect.top,rowHeight:rowRect.height,rowAlignItems:rowStyle.alignItems,addTop:addRect.top,addHeight:addRect.height,addAlignSelf:addStyle.alignSelf,addPaddingTop:addStyle.paddingTop,addLineHeight:addStyle.lineHeight,histTop:histRect.top,histHeight:histRect.height,histAlignSelf:histStyle.alignSelf,histPaddingTop:histStyle.paddingTop,histLineHeight:histStyle.lineHeight,histSvgHeight:histSvgRect?histSvgRect.height:null,histSvgTop:histSvgRect?histSvgRect.top:null,deltaTop:histRect.top-addRect.top},timestamp:Date.now(),hypothesisId:'A,B,C,D,E'})}).catch(function(){});
+      });
+      // #endregion
     }
 
     // İki kolonlu layout'u render et
