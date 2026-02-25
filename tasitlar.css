@@ -911,6 +911,13 @@
     min-height: 38px !important;
     height: 38px !important;
     box-sizing: border-box;
+    border: 1.1px solid #e1061b !important;
+    background: var(--bg, #080d16) !important;
+    color: var(--data-value-color, #a0aec0) !important;
+  }
+  #sube-degisiklik-modal .modal-body select#sube-select option {
+    background: var(--bg, #080d16);
+    color: var(--data-value-color, #a0aec0);
   }
 
   /* Olay Ekle modalları – masaüstü: içerik buton satırı genişliği (390px), çerçeve ile 1px boşluk */
@@ -2550,6 +2557,13 @@
   #sube-degisiklik-modal .modal-body .form-input {
     min-height: 32px !important;
     height: 32px !important;
+    border: 1.1px solid #e1061b !important;
+    background: var(--bg, #080d16) !important;
+    color: var(--data-value-color, #a0aec0) !important;
+  }
+  #sube-degisiklik-modal .modal-body select option {
+    background: var(--bg, #080d16);
+    color: var(--data-value-color, #a0aec0);
   }
 
   /* Olay Ekle (14 modal): ortak header/h2 – uzun başlıklar satır kırar */
