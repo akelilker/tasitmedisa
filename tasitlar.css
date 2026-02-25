@@ -166,17 +166,22 @@
     width: 100% !important;
 }
 
-/* Hasar Gören Parça etiketi: Hasar Tutarı etiketi ile aynı sol hizada (dikey hiza) */
-#kaza-ekle-modal .modal-body > div > div:has(#kaza-kaporta-container) {
+/* Hasar Gören Parça etiketi: Hasar Tutarı ile aynı sol hizada (sınıf ile, :has() yok) */
+#kaza-ekle-modal .modal-body .kaza-kaporta-row,
+#kaza-guncelle-modal .modal-body .kaza-kaporta-row {
     width: 100% !important;
     padding-left: 0 !important;
     margin-left: 0 !important;
+    box-sizing: border-box !important;
 }
-#kaza-ekle-modal #kaza-kaporta-label {
+#kaza-ekle-modal .kaza-kaporta-label,
+#kaza-guncelle-modal .kaza-kaporta-label {
     display: block !important;
     text-align: left !important;
     margin-left: 0 !important;
     padding-left: 0 !important;
+    font-size: 14px !important;
+    margin-bottom: 3px !important;
 }
 
 /* Kaza modalı buton grubunu alta sabitleme */
