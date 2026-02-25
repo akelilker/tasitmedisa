@@ -166,12 +166,13 @@
     width: 100% !important;
 }
 
-/* Hasar Gören Parça etiketi: Hasar Tutarı ile aynı sol hizada (sınıf ile, :has() yok) */
+/* Hasar Gören Parça etiketi: Hasar Tutarı ile aynı sol hizada; üstteki dikey boşluğu kapat */
 #kaza-ekle-modal .modal-body .kaza-kaporta-row,
 #kaza-guncelle-modal .modal-body .kaza-kaporta-row {
     width: 100% !important;
     padding-left: 0 !important;
     margin-left: 0 !important;
+    margin-top: -8px !important; /* 12px gap’i 4px’e indir – üstteki boşluğu kullan */
     box-sizing: border-box !important;
 }
 /* "H" (Hasar...) ilk harfi = 5.000 inputunun sol dikey çerçevesi ile aynı hizada; metin–şema arası 4px */
