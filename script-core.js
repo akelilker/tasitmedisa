@@ -277,39 +277,14 @@ document.addEventListener('DOMContentLoaded', function() {
       if (window.updateNotifications) window.updateNotifications();
     }, 1000);
 
-    // Loading screen'i kapat (en az 2 sn splash gösterilir)
-    hideLoadingScreenIfVisible();
+    // Loading screen'i kapat (index.html'deki window.hideLoading kullanılır)
+    if (window.hideLoading) window.hideLoading();
 });
 
-/* =========================================
-   LOADING SCREEN CLOSE (fallback'lar: load event + dataLoaded + timeout)
-   Ana uygulama anasayfasında logo+başlık en az 2 sn gösterilir
-   ========================================= */
-const SPLASH_MIN_MS = 2000;
-const _pageStartTime = Date.now();
-
-function hideLoadingScreenIfVisible() {
-  const loadingScreen = document.getElementById('loading-screen');
-  if (!loadingScreen || loadingScreen.classList.contains('hidden')) return;
-  const elapsed = Date.now() - _pageStartTime;
-  if (elapsed < SPLASH_MIN_MS) {
-    setTimeout(hideLoadingScreenIfVisible, Math.max(50, SPLASH_MIN_MS - elapsed));
-    return;
-  }
-  loadingScreen.classList.add('hidden');
-  setTimeout(function() { loadingScreen.style.display = 'none'; }, 300);
-}
-
-// Sayfa tam yüklendiğinde hâlâ açıksa kapat
-window.addEventListener('load', hideLoadingScreenIfVisible);
-
-// Veri yüklendikten sonra da kapat (/medisa/ load.php 404 olsa bile dataLoaded tetiklenir)
-window.addEventListener('dataLoaded', function() {
-  setTimeout(hideLoadingScreenIfVisible, 50);
-});
-
-// 8 saniye sonra zorla kapat (script 404 / ağ hatası durumunda spinner takılmasın)
-setTimeout(hideLoadingScreenIfVisible, 8000);
+// Loading screen: index.html'deki window.hideLoading kullanılır (load + dataLoaded + 8 sn fallback)
+window.addEventListener('load', () => { if (window.hideLoading) window.hideLoading(); });
+window.addEventListener('dataLoaded', () => { setTimeout(() => { if (window.hideLoading) window.hideLoading(); }, 50); });
+setTimeout(() => { if (window.hideLoading) window.hideLoading(); }, 8000);
 
 /* =========================================
    SERVICE WORKER REGISTRATION
