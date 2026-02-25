@@ -1,0 +1,55 @@
+# TAŞIT YÖNETİM SİSTEMİ (MEDISA)
+**Versiyon:** 78.1 – **Son Güncelleme:** Şubat 2026
+
+## 1. Genel Bakış
+[cite_start]Taşıt Yönetim Sistemi, kurumsal araç filosunun kaydı, takibi ve raporlanması için geliştirilmiş, yüksek performanslı web tabanlı bir uygulamadır[cite: 1]. [cite_start]Şube bazlı taşıt envanteri, kullanıcı atamaları, süre yaklaşan bakım/sigorta/muayene bildirimleri ve şoförlerin doğrudan olay bildirimi yapabildiği entegre bir yapı sunar[cite: 2].
+
+**Temel Hedefler**
+* [cite_start]Taşıt kayıtlarının merkezi ve düzenli tutulması [cite: 3]
+* [cite_start]Sigorta, kasko, muayene gibi süreli işlemlerin takibi [cite: 3]
+* [cite_start]Şube ve kullanıcı bazlı atama yönetimi [cite: 3]
+* [cite_start]Şoförlerin Km, Bakım, Kaza vb. olayları doğrudan bildirebilmesi [cite: 3, 4]
+* [cite_start]Excel dışa aktarma ile gelişmiş raporlama imkânı [cite: 4]
+
+**Teknoloji ve Erişim**
+* [cite_start]**Web Uygulaması:** Modern tarayıcılar (Chrome, Firefox, Safari, Edge) [cite: 4]
+* [cite_start]**PWA Desteği:** Mobil cihazlara ana ekrana eklenebilir, çevrimdışı (offline) kısmi destek sunar [cite: 4]
+* [cite_start]**Sunucu & Veri:** PHP 8.x, JSON veri depolama (`data/data.json`) ve optimize edilmiş tekil LocalStorage (`medisa_data_v1`) mimarisi [cite: 4]
+* **Tasarım:** Premium Dark tema, milimetrik hizalamalar.
+
+## 2. Ana Uygulama (Yönetim Paneli)
+[cite_start]Tüm modüllere erişim sağlayan merkezi arayüzdür (`index.html`)[cite: 7]. [cite_start]Uygulama açılışında 2 saniyelik optimize edilmiş Splash ekranı ile karşılar[cite: 5].
+
+**Menü Öğeleri:**
+* [cite_start]**TAŞIT KAYIT İŞLEMLERİ:** Yeni taşıt ekleme veya mevcut kayıt düzenleme (Otomobil, Küçük Ticari, Büyük Ticari) [cite: 8, 9]
+* [cite_start]**TAŞITLAR:** Şube bazlı filtreleme, detay görüntüleme ve 14 farklı olay ekleme (Bakım, Kaza, Sigorta, Kasko, vb.) [cite: 8]
+* [cite_start]**RAPORLAR:** Sütun bazlı sıralanabilir stok ve kullanıcı raporları [cite: 8]
+
+**Üst Araçlar:**
+* [cite_start]**Bildirimler:** Süresi yaklaşan sigorta, muayene uyarıları [cite: 8]
+* [cite_start]**Ayarlar:** Şube, kullanıcı, veri yönetimi (Yedek Al/Yükle) ve tek tıkla Önbellek Temizleme [cite: 8]
+
+## 3. Taşıtlar ve Olay Modülü
+[cite_start]Taşıt detay ekranından doğrudan olay işlenebilir[cite: 11]. Desteklenen başlıca olaylar:
+* [cite_start]**Bakım, Muayene, Sigorta, Kasko:** Tarih ve tutar güncellemeleri [cite: 11]
+* [cite_start]**Kaza:** Kaporta SVG haritası üzerinden hasar bölgelerinin işaretlenmesi [cite: 11, 12]
+* [cite_start]**Zimmet ve Şube:** Şube değişikliği, Kullanıcı atama işlemleri [cite: 11]
+* [cite_start]**Ekipman:** Yedek anahtar durumu, Yazlık/Kışlık lastik, UTTS ve Takip Cihazı tanımlamaları [cite: 11]
+
+[cite_start]Tüm bu işlemler "Tarihçe" sekmesinde geriye dönük olarak listelenir[cite: 11].
+
+## 4. Kullanıcı Paneli (Şoför Modülü)
+[cite_start]Şoförlerin kendilerine zimmetli araçları yönettiği mobil uyumlu paneldir (`driver/index.html`)[cite: 18].
+* [cite_start]**Dashboard:** Süresi yaklaşan KM/Bakım bildirimleri (kırmızı banner) [cite: 19]
+* [cite_start]**Bilgi Paneli:** Sigorta, muayene, lastik ve UTTS durumu takibi [cite: 20, 21]
+* [cite_start]**Olay Bildirimi:** Anlık KM, Kaza, Bakım, Anahtar durumu bildirme [cite: 21]
+* [cite_start]**Düzeltme Talebi:** Hatalı girilen KM veya Bakım işlemleri için admin onaylı düzeltme talebi oluşturma [cite: 23]
+
+## 5. Admin Rapor Sayfası
+Yöneticiler için aylık kullanıcı raporu ve şoförlerden gelen düzeltme taleplerinin onay/red işlemlerinin yapıldığı kontrol merkezidir (`admin/driver-report.html`).
+
+## 6. Veri Mimarisi ve API Uç Noktaları
+[cite_start]Sistem I/O darboğazlarını engellemek için `medisa_data_v1` anahtarında birleştirilmiş yerel veri kullanır[cite: 25].
+* [cite_start]`load.php` / `save.php`: Ana uygulama veri senkronizasyonu [cite: 25]
+* [cite_start]`driver_save.php` / `driver_event.php`: Şoför olay bildirimleri [cite: 25]
+* [cite_start]`admin_approve.php` / `admin_export.php`: Talep yönetimi ve Excel çıktısı [cite: 25]
