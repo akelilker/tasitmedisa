@@ -1164,11 +1164,16 @@ body.driver-modal-open {
   max-width: 90vw;
   max-height: 240px;
   overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
   background: var(--bg);
   border: 1px solid rgba(var(--theme-color-rgb), 0.25);
   border-radius: 8px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(var(--theme-color-rgb), 0.08);
   z-index: 100;
+}
+.driver-plate-dropdown::-webkit-scrollbar {
+  display: none;
 }
 .driver-plate-dropdown-item {
   padding: 10px 14px;
