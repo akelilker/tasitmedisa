@@ -39,7 +39,7 @@ if (!$data) {
 // Talebi bul
 $talepIndex = -1;
 $talep = null;
-foreach ($data['duzeltme_talepleri'] as $idx => $t) {
+foreach (($data['duzeltme_talepleri'] ?? []) as $idx => $t) {
     if ($t['id'] === $requestId) {
         $talepIndex = $idx;
         $talep = $t;
@@ -68,7 +68,7 @@ $data['duzeltme_talepleri'][$talepIndex]['admin_id'] = 1; // Admin ID (şimdilik
 // Eğer onaylandıysa, ana kaydı güncelle
 if ($action === 'approve') {
     $kayitIndex = -1;
-    foreach ($data['arac_aylik_hareketler'] as $idx => $k) {
+    foreach (($data['arac_aylik_hareketler'] ?? []) as $idx => $k) {
         if ($k['id'] === $talep['kayit_id']) {
             $kayitIndex = $idx;
             break;
