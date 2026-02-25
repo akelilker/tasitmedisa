@@ -176,7 +176,7 @@
     width: 100% !important;
     padding-left: 0 !important;
     margin-left: 0 !important;
-    margin-top: -4px !important; /* 12px gap’i 4px’e indir – üstteki boşluğu kullan */
+    margin-top: -9px !important; /* 12px gap’i 4px’e indir – üstteki boşluğu kullan */
     box-sizing: border-box !important;
 }
 /* "H" (Hasar...) ilk harfi = 5.000 inputunun sol dikey çerçevesi ile aynı hizada; metin–şema arası 4px */
@@ -185,7 +185,7 @@
     display: block !important;
     text-align: left !important;
     margin-left: 0 !important;
-    padding-left: 58px !important; /* Sol çerçeve ile label arası 58px */
+    padding-left: 55px !important; /* Sol çerçeve ile label arası 55px */
     font-size: 14px !important;
     margin-bottom: 0 !important;
     box-sizing: border-box !important;
@@ -278,7 +278,7 @@
     justify-content: space-between !important;
     flex-wrap: nowrap;
     width: 100% !important;
-    margin-top: -4px !important;
+    margin-top: -9px !important;
     position: relative;
     padding-left: 0;
     padding-right: 0;
