@@ -3,21 +3,10 @@
    ========================================= */
 
 (function() {
-    // Veri okuma: data-manager ortak getter (tek kaynak), yoksa localStorage
-    function getVehicles() {
-        if (typeof window.getMedisaVehicles === 'function') return window.getMedisaVehicles();
-        try { return JSON.parse(localStorage.getItem("medisa_vehicles_v1") || "[]"); } catch { return []; }
-    }
-
-    function getBranches() {
-        if (typeof window.getMedisaBranches === 'function') return window.getMedisaBranches();
-        try { return JSON.parse(localStorage.getItem("medisa_branches_v1") || "[]"); } catch { return []; }
-    }
-
-    function getUsers() {
-        if (typeof window.getMedisaUsers === 'function') return window.getMedisaUsers();
-        try { return JSON.parse(localStorage.getItem("medisa_users_v1") || "[]"); } catch { return []; }
-    }
+    // Veri okuma: tek kaynak – data-manager getter'ları (DRY)
+    function getVehicles() { return (typeof window.getMedisaVehicles === 'function' ? window.getMedisaVehicles() : null) || []; }
+    function getBranches() { return (typeof window.getMedisaBranches === 'function' ? window.getMedisaBranches() : null) || []; }
+    function getUsers() { return (typeof window.getMedisaUsers === 'function' ? window.getMedisaUsers() : null) || []; }
 
     // Liste metin format: kelimelerin ilk harfi büyük (TR locale)
     function toTitleCase(str) {
