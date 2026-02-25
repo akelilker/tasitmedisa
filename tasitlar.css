@@ -653,19 +653,19 @@
     padding-bottom: 1px !important; /* Sekme metni ile altındaki yatay çizgi arası 1px */
 }
 
-/* Tarihçe: etiketler (tarih, başlık) beyaz; açıklamalar (detay) gri – kontrast artırıldı */
+/* Tarihçe: sadece etiketler (tarih, başlık) beyaz; kullanıcı verileri gri */
 #vehicle-history-modal .history-item-date {
-    color: var(--txt-white);
+    color: #ffffff !important;
     margin-bottom: 2px !important;
 }
 #vehicle-history-modal .history-item-date + .history-item-body {
     margin-top: 4px !important;
 }
 #vehicle-history-modal .history-item-label {
-    color: var(--txt-white);
+    color: #ffffff !important;
 }
 #vehicle-history-modal .history-item-body {
-    color: var(--txt-muted); /* #999 → #e0e0e0 (kontrast artışı) */
+    color: var(--data-value-color, #a0aec0) !important;
 }
 #vehicle-history-modal .history-empty-msg {
     color: var(--txt-placeholder);
@@ -2184,14 +2184,16 @@
   /* Şube Atama Mobil */
   .assign-toggle { font-size: 13px; }
   .assign-select { font-size: 13px; }
-/* Tarihçe – Şube/Kullanıcı geçmişi: açıklamalar normal ve daha az parlak */
+/* Tarihçe – Şube/Kullanıcı geçmişi: etiket (tarih) beyaz, açıklama gri */
+#vehicle-history-modal .history-item-sube .history-item-date,
 #vehicle-history-modal .history-item-sube .history-date {
     font-weight: 600;
-    color: var(--txt-muted);
+    color: #ffffff !important;
 }
+#vehicle-history-modal .history-item-sube .history-item-body,
 #vehicle-history-modal .history-item-sube .history-desc {
     font-weight: 400 !important;
-    color: var(--txt-placeholder) !important;
+    color: var(--data-value-color, #a0aec0) !important;
 }
 
 /* =========================================
