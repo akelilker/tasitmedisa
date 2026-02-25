@@ -129,7 +129,7 @@ body.driver-modal-open {
   top: 0;
   left: 0;
   right: 0;
-  bottom: var(--app-footer-height, 48px);
+  bottom: 0;
   border-left: 1.2px solid var(--border-red-tech);
   border-right: 1.2px solid var(--border-red-tech);
   pointer-events: none;
