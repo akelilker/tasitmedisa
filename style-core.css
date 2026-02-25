@@ -1300,7 +1300,7 @@ body.modal-open .user-panel-link {
     
     /* Mobil header logo boyutu ve dengesi */
     .hero-logo img {
-        height: 40px !important;
+        height: 38px !important; /* Mobil header logosu 2px küçültüldü */
         width: auto !important;
         display: block !important;
         object-fit: contain !important;
