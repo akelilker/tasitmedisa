@@ -426,17 +426,19 @@ color: #ccffdd;
 .stok-branch-grid {
 display: flex;
 flex-wrap: wrap;
-gap: 8px;
+gap: 3px;
 align-content: start;
 justify-content: center;
+padding: 0 3px;
+box-sizing: border-box;
 }
 
 .stok-branch-card {
 aspect-ratio: 1 / 1;
 min-height: 0;
-width: calc((100% - (4 * 8px)) / 5);
-max-width: calc((100% - (4 * 8px)) / 5);
-flex: 0 0 calc((100% - (4 * 8px)) / 5);
+width: calc((100% - (4 * 3px)) / 5);
+max-width: calc((100% - (4 * 3px)) / 5);
+flex: 0 0 calc((100% - (4 * 3px)) / 5);
 background: rgba(255, 255, 255, 0.02);
 border: 1px solid rgba(255, 255, 255, 0.30);
 border-radius: 8px;
@@ -1570,8 +1572,8 @@ gap: 10px;
 .report-filters select,
 .search-box-wrapper input { font-size: 15px !important; }
 
-/* Stok grid + liste – Taşıtlar kutuları ile aynı (gap 2px, clamp boyut, 15px font) */
-.stok-branch-grid { gap: 2px; }
+/* Stok grid + liste – kartlar arası ve kenarlarda 3px boşluk (hover binmesin) */
+.stok-branch-grid { gap: 3px; padding: 0 3px; }
 .stok-branch-card {
 width: clamp(90px, 26vw, 104px);
 max-width: clamp(90px, 26vw, 104px);
