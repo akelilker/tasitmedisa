@@ -320,17 +320,20 @@ async function saveDataToServer() {
    YARDIMCI FONKSİYONLAR
    ========================================= */
 
+function genericSaveData(collectionName, item) {
+    const collection = window.appData[collectionName];
+    const existingIndex = collection.findIndex(x => x.id === item.id);
+    if (existingIndex >= 0) {
+        collection[existingIndex] = item;
+    } else {
+        collection.push(item);
+    }
+    return saveDataToServer();
+}
+
 // Taşıt ekleme/güncelleme
 window.saveTasit = async function(tasit) {
-    const existingIndex = window.appData.tasitlar.findIndex(t => t.id === tasit.id);
-    
-    if (existingIndex >= 0) {
-        window.appData.tasitlar[existingIndex] = tasit;
-    } else {
-        window.appData.tasitlar.push(tasit);
-    }
-    
-    return await saveDataToServer();
+    return await genericSaveData('tasitlar', tasit);
 };
 
 // Taşıt silme
@@ -341,15 +344,7 @@ window.deleteTasit = async function(tasitId) {
 
 // Kayıt ekleme/güncelleme
 window.saveKayit = async function(kayit) {
-    const existingIndex = window.appData.kayitlar.findIndex(k => k.id === kayit.id);
-    
-    if (existingIndex >= 0) {
-        window.appData.kayitlar[existingIndex] = kayit;
-    } else {
-        window.appData.kayitlar.push(kayit);
-    }
-    
-    return await saveDataToServer();
+    return await genericSaveData('kayitlar', kayit);
 };
 
 // Kayıt silme
@@ -366,15 +361,7 @@ window.saveAyarlar = async function(ayarlar) {
 
 // Şifre ekleme/güncelleme
 window.saveSifre = async function(sifre) {
-    const existingIndex = window.appData.sifreler.findIndex(s => s.id === sifre.id);
-    
-    if (existingIndex >= 0) {
-        window.appData.sifreler[existingIndex] = sifre;
-    } else {
-        window.appData.sifreler.push(sifre);
-    }
-    
-    return await saveDataToServer();
+    return await genericSaveData('sifreler', sifre);
 };
 
 // Şifre silme
@@ -421,30 +408,17 @@ document.addEventListener('DOMContentLoaded', async function() {
 });
 
 // Ortak veri okuyucu (tasitlar.js ve raporlar.js tek kaynaktan okusun; önce medisa_data_v1)
-function getMedisaVehicles() {
-    if (window.appData && Array.isArray(window.appData.tasitlar)) return window.appData.tasitlar;
+function getMedisaData(key, localKey) {
+    if (window.appData && Array.isArray(window.appData[key])) return window.appData[key];
     try {
         const raw = localStorage.getItem('medisa_data_v1');
-        if (raw) { const d = JSON.parse(raw); if (d && Array.isArray(d.tasitlar)) return d.tasitlar; }
-        return JSON.parse(localStorage.getItem('medisa_vehicles_v1') || '[]');
+        if (raw) { const d = JSON.parse(raw); if (d && Array.isArray(d[key])) return d[key]; }
+        return JSON.parse(localStorage.getItem(localKey) || '[]');
     } catch { return []; }
 }
-function getMedisaBranches() {
-    if (window.appData && Array.isArray(window.appData.branches)) return window.appData.branches;
-    try {
-        const raw = localStorage.getItem('medisa_data_v1');
-        if (raw) { const d = JSON.parse(raw); if (d && Array.isArray(d.branches)) return d.branches; }
-        return JSON.parse(localStorage.getItem('medisa_branches_v1') || '[]');
-    } catch { return []; }
-}
-function getMedisaUsers() {
-    if (window.appData && Array.isArray(window.appData.users)) return window.appData.users;
-    try {
-        const raw = localStorage.getItem('medisa_data_v1');
-        if (raw) { const d = JSON.parse(raw); if (d && Array.isArray(d.users)) return d.users; }
-        return JSON.parse(localStorage.getItem('medisa_users_v1') || '[]');
-    } catch { return []; }
-}
+function getMedisaVehicles() { return getMedisaData('tasitlar', 'medisa_vehicles_v1'); }
+function getMedisaBranches() { return getMedisaData('branches', 'medisa_branches_v1'); }
+function getMedisaUsers() { return getMedisaData('users', 'medisa_users_v1'); }
 
 window.getMedisaVehicles = getMedisaVehicles;
 window.getMedisaBranches = getMedisaBranches;

@@ -322,29 +322,7 @@ if ('serviceWorker' in navigator) {
             });
           });
         })
-        .catch((error) => {
-          // 404 veya diğer hatalar - bir sonraki path'i dene
-          if (error.message && (
-            error.message.includes('404') || 
-            error.message.includes('Failed to fetch') ||
-            error.message.includes('bad HTTP response code')
-          )) {
-            currentPathIndex++;
-            tryRegisterSW();
-          } else if (error.message && (error.message.includes('redirect') || error.message.includes('Redirect'))) {
-            // Redirect hatası - bir sonraki path'i dene
-            currentPathIndex++;
-            tryRegisterSW();
-          } else if (error.name === 'SecurityError') {
-            // Güvenlik hatası - bir sonraki path'i dene
-            currentPathIndex++;
-            tryRegisterSW();
-          } else {
-            // Diğer hatalar - bir sonraki path'i dene
-            currentPathIndex++;
-            tryRegisterSW();
-          }
-        });
+        .catch((e) => { currentPathIndex++; tryRegisterSW(); });
     }
     
     tryRegisterSW();
