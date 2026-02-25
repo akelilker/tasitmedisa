@@ -1826,9 +1826,6 @@ body.driver-modal-open {
 #driver-kasko-modal .driver-modal-content,
 #driver-kasko-modal .modal-container {
   background: var(--modal-bg) !important;
-  border: 0.5px solid rgba(255, 255, 255, 0.35) !important;
-  box-shadow: 0 0 40px rgba(0, 0, 0, 0.9) !important;
-  border-radius: var(--modal-radius) !important;
   width: 100%;
   max-width: 500px;
   margin: max(12px, env(safe-area-inset-top)) auto 54px auto;
@@ -2846,8 +2843,7 @@ body.driver-action-block-open .driver-footer-back-wrap {
     height: 100% !important;
     max-height: 100% !important;
     background: #080d16 !important;
-    border-radius: 0 !important;
-    border: 0.7px solid rgba(255, 255, 255, 0.35) !important;
+    border-radius: 10px !important;
     border-top: none !important;
     padding-top: 0 !important;
     overflow: hidden !important;
