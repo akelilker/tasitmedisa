@@ -408,7 +408,7 @@ body.driver-modal-open {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  border-right: 0.375px solid var(--theme-color);
+  border-right: 1.2px solid var(--border-red-tech);
   padding-right: 12px;
   overflow: hidden;
   flex-shrink: 0;
@@ -815,8 +815,8 @@ body.driver-modal-open {
   .driver-panels-inner { gap: 8px; }
   .driver-left-panel {
     flex: 0 0 35%;
-    border-right-width: 0.25px;
-    border-right-color: rgba(var(--theme-color-rgb), 0.45);
+    border-right-width: 1.2px;
+    border-right-color: var(--border-red-tech);
   }
   .driver-right-panel { flex: 1; }
   .driver-vehicle-info {
@@ -895,9 +895,9 @@ body.driver-modal-open {
     width: 100% !important;
     height: auto !important;
   }
-  /* Ortadaki dikey kırmızı çizgi – ince */
+  /* Ortadaki dikey kırmızı çizgi – yan çizgilerle aynı */
   .driver-left-panel {
-    border-right-width: 0.35px !important;
+    border-right-width: 1.2px !important;
   }
   /* Şube etiketinden itibaren 3px aşağı */
   .driver-left-panel .driver-vehicle-info {
