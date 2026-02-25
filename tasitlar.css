@@ -56,10 +56,11 @@
   max-width: 100%;
   box-sizing: border-box;
 }
+/* Tarih input genişliği = Kaydet butonu genişliği (grid 1fr 1fr, gap 16px) */
 #muayene-guncelle-modal #muayene-tarih {
-  width: 190px !important;
-  max-width: 190px !important;
-  min-width: 165px !important;
+  width: calc((100% - 16px) / 2) !important;
+  max-width: calc((100% - 16px) / 2) !important;
+  min-width: min(140px, calc((100% - 16px) / 2)) !important;
   box-sizing: border-box !important;
 }
 #muayene-tarih {
@@ -2546,6 +2547,11 @@
     margin-bottom: 0 !important;
     flex-shrink: 0 !important;
   }
+  /* Mobil Olay Ekle 14 modal: Var/Yok, Evet/Hayır butonları yatayda 4er px daha geniş */
+  .olay-ekle-modal .radio-btn {
+    padding-left: 32px !important;
+    padding-right: 32px !important;
+  }
 
   .olay-ekle-modal .modal-body .form-input,
   .olay-ekle-modal .modal-body select,
@@ -2599,6 +2605,11 @@
   .olay-ekle-modal .modal-close svg {
     width: 24px !important;
     height: 24px !important;
+  }
+  /* Yedek Anahtar modal: başlık ile X üst üste – X 4px yukarı */
+  #anahtar-guncelle-modal .modal-close {
+    position: relative !important;
+    top: -4px !important;
   }
 
   /* --- TARİHÇE MODAL --- */
