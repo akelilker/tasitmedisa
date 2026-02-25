@@ -2007,7 +2007,7 @@ body.driver-modal-open {
 }
 
 #history-modal .universal-back-bar .universal-back-label {
-  color: var(--muted) !important;
+  color: var(--muted, #adb5bd) !important;
   font-weight: 500;
   font-size: 13.5px;
 }
@@ -2363,6 +2363,9 @@ body.driver-action-block-open .driver-footer-back-wrap {
 }
 .driver-footer-back-wrap .universal-back-btn:hover {
   color: var(--theme-color);
+}
+.driver-footer-back-wrap .universal-back-label {
+  color: var(--muted, #adb5bd) !important;
 }
 @media (min-width: 769px) {
   .login-page .driver-header-fixed {

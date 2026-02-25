@@ -791,6 +791,7 @@
   line-height: 1 !important;
   margin: 0 !important;
   padding-left: 0 !important;
+  color: #adb5bd !important;
 }
 /* BAŞLIK VE OK HİZALAMASI - KESİN KURAL (Taşıtlar Modalı) */
 #vehicles-modal .vehicles-toolbar .vt-left .universal-back-bar,
@@ -2312,6 +2313,7 @@
     font-size: 13px !important;
     line-height: 1 !important;
     margin: 0 !important;
+    color: #adb5bd !important;
   }
   .vt-icon-btn {
     width: 38px !important;
@@ -2327,6 +2329,7 @@
   .olay-ekle-modal .universal-back-bar .universal-back-label {
     font-size: 17.5px !important;
     margin-top: 0 !important;
+    color: #adb5bd !important;
   }
 
   /* Yapılan İşlemler: 2 satır varsayılan, içerik uzadıkça aşağı açılsın */
