@@ -158,8 +158,8 @@
 /* Şemayı saran kapsayıcı hizalama */
 #kaza-guncelle-modal #kaza-kaporta-container,
 #kaza-ekle-modal #kaza-kaporta-container {
-    margin-top: 4px !important; /* Hasar Gören Parça metni ile şema arası 4px */
-    margin-bottom: 20px !important;
+    margin-top: 4px !important; /* Label ile şema arası 4px */
+    margin-bottom: 0 !important; /* Butonlara mesafe buton grubunun margin-top ile */
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
@@ -172,7 +172,7 @@
     width: 100% !important;
     padding-left: 0 !important;
     margin-left: 0 !important;
-    margin-top: -8px !important; /* 12px gap’i 4px’e indir – üstteki boşluğu kullan */
+    margin-top: -4px !important; /* 12px gap’i 4px’e indir – üstteki boşluğu kullan */
     box-sizing: border-box !important;
 }
 /* "H" (Hasar...) ilk harfi = 5.000 inputunun sol dikey çerçevesi ile aynı hizada; metin–şema arası 4px */
@@ -187,10 +187,10 @@
     box-sizing: border-box !important;
 }
 
-/* Kaza modalı buton grubunu alta sabitleme */
+/* Kaza modalı buton grubu: şemadan 10px aşağıda */
 #kaza-guncelle-modal .universal-btn-group,
 #kaza-ekle-modal .universal-btn-group {
-    margin-top: auto !important;
+    margin-top: 10px !important; /* Şemadan 10px aşağıda */
     flex-shrink: 0 !important;
     background: var(--bg) !important;
 }
