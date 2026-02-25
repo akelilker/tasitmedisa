@@ -88,9 +88,41 @@ font-size: 20px;
 #reports-modal .modal-body {
 flex: 1;
 overflow-y: auto;
-padding: 16px 12px 40px 12px;
+padding: 16px 4px 40px 4px;
 color: var(--form-label-color);
 /* scrollbar gizleme: style-core.css’teki .modal-body kuralı kullanılır */
+}
+
+/* Sol ok + etiket: tüm viewport’larda aynı satırda, 3px gap, ikon 5px aşağı */
+#reports-modal .reports-list-header-actions .universal-back-bar,
+#reports-modal .kullanici-list-top-controls .universal-back-bar,
+#reports-modal .kullanici-detail-header .universal-back-bar {
+display: inline-flex !important;
+align-items: flex-start !important;
+gap: 3px !important;
+padding-left: 0 !important;
+}
+#reports-modal .reports-list-header-actions .universal-back-btn,
+#reports-modal .kullanici-list-top-controls .universal-back-btn,
+#reports-modal .kullanici-detail-header .universal-back-btn {
+display: inline-flex !important;
+align-items: flex-start !important;
+gap: 3px !important;
+padding-left: 0 !important;
+}
+#reports-modal .reports-list-header-actions .universal-back-btn i,
+#reports-modal .reports-list-header-actions .universal-back-btn svg,
+#reports-modal .reports-list-header-actions .universal-back-btn .back-icon-svg,
+#reports-modal .kullanici-list-top-controls .universal-back-btn i,
+#reports-modal .kullanici-list-top-controls .universal-back-btn svg,
+#reports-modal .kullanici-list-top-controls .universal-back-btn .back-icon-svg,
+#reports-modal .kullanici-detail-header .universal-back-btn i,
+#reports-modal .kullanici-detail-header .universal-back-btn svg,
+#reports-modal .kullanici-detail-header .universal-back-btn .back-icon-svg {
+position: relative !important;
+top: 5px !important;
+margin: 0 !important;
+padding: 0 !important;
 }
 
 /* Header altı slot: masaüstü + mobil sol ok + Detay Ekleme burada görünür */
@@ -107,7 +139,7 @@ flex-shrink: 0 !important;
 min-height: 48px;
 align-items: flex-start;
 justify-content: flex-start;
-padding: 8px 12px 8px 12px;
+padding: 8px 4px 8px 4px;
 background: transparent;
 }
 #reports-modal .reports-list-header-actions .stok-detail-add-wrap {
@@ -134,8 +166,9 @@ display: flex;
 }
 #reports-modal .reports-list-header-actions .stok-detail-add-wrap .stok-controls-row-1 {
 display: flex;
-flex-direction: column !important; /* 1. satır: sol ok+etiket, 2. satır: + Detay Ekleme */
-align-items: flex-start;
+flex-direction: column !important;
+align-items: flex-start !important;
+justify-content: flex-start !important;
 gap: 4px;
 width: 100%;
 min-width: 0;
@@ -167,6 +200,7 @@ width: auto !important;
 #reports-modal .reports-list-header-actions .stok-controls-row-1 .stok-detail-add-btn {
 flex: 0 0 auto !important;
 flex-shrink: 0 !important;
+align-self: flex-start !important;
 }
 #reports-modal .reports-list-header-actions .stok-detail-add-btn:hover {
 color: var(--txt-light) !important;
@@ -973,12 +1007,14 @@ display: flex;
 .stok-date-range-controls {
 display: flex;
 flex-direction: row;
-gap: 8px;
+gap: 4px;
 margin-bottom: 0;
 padding: 0;
 align-items: center;
 margin-left: auto;
-margin-top: 0; /* Row-2 seviyesinde margin-top kullanılıyor */
+margin-top: 0;
+min-width: 0;
+max-width: 100%;
 }
 
 .stok-date-input-group {
@@ -986,7 +1022,9 @@ display: flex;
 flex-direction: column;
 gap: 4px;
 width: auto;
-flex: 1;
+flex: 1 1 0;
+min-width: 0;
+max-width: 50%;
 margin-top: 0;
 }
 
@@ -1004,7 +1042,10 @@ padding-top: 2px; /* Üst kesilme önleme */
 background: #151515;
 border: 1px solid rgba(255, 255, 255, 0.28);
 color: var(--data-value-color, #a0aec0) !important;
-padding: 1.2px 30px 1.2px 6px; /* Yatayda 2px daraltıldı; sağ padding takvim için */
+padding: 1.2px 28px 1.2px 6px;
+min-width: 0;
+max-width: 100%;
+box-sizing: border-box; /* Yatayda 2px daraltıldı; sağ padding takvim için */
 border-radius: 6px;
 font-size: 13px;
 outline: none;
@@ -1610,7 +1651,7 @@ padding-top: 0 !important;
 }
 /* Mobilde header-altı slot: sol ok + Detay Ekleme body ile hizalı (12px) */
 #reports-modal .reports-list-header-actions:not(:empty) {
-padding: 6px 12px 4px 12px !important;
+padding: 6px 4px 4px 4px !important;
 }
 /* Mobil: Detay menüsü akışta olsun – liste ve kontroller aşağı kaysın (üst üste binmesin) */
 #reports-modal .stok-detail-add-wrap .stok-detail-menu {
