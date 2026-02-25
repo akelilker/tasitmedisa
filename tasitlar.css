@@ -2606,10 +2606,12 @@
     width: 24px !important;
     height: 24px !important;
   }
-  /* Yedek Anahtar modal: başlık ile X üst üste – X 4px yukarı */
+  /* Yedek Anahtar modal: X sağa yaslı, 4px yukarı (position: absolute korunmalı) */
   #anahtar-guncelle-modal .modal-close {
-    position: relative !important;
-    top: -4px !important;
+    position: absolute !important;
+    right: 15px !important;
+    top: calc(50% - 4px) !important;
+    transform: translateY(-50%) !important;
   }
 
   /* --- TARİHÇE MODAL --- */

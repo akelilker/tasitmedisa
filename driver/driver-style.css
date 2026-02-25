@@ -875,10 +875,10 @@ body.driver-modal-open {
   .driver-splash-logo {
     width: 120px !important;
   }
-  /* MEDISA hero logosu mobilde %20 küçültme (54→43px) */
+  /* MEDISA hero logosu mobilde – metinleri bozmayacak kadar büyütme (43→52px) */
   .dashboard-page .hero-logo {
-    flex: 0 0 43px !important;
-    width: 43px !important;
+    flex: 0 0 52px !important;
+    width: 52px !important;
     transform: translate(-2px, 4px) !important; /* 1px + 3px aşağı (style-core 1px’e ek) */
     margin-top: 0 !important;
   }
@@ -886,10 +886,10 @@ body.driver-modal-open {
     width: 100% !important;
     height: auto !important;
   }
-  /* Login logosu mobilde %20 küçültme (54→43px) */
+  /* Login logosu mobilde – metinleri bozmayacak kadar büyütme (43→52px) */
   .login-page .hero-logo {
-    flex: 0 0 43px !important;
-    width: 43px !important;
+    flex: 0 0 52px !important;
+    width: 52px !important;
   }
   .login-page .hero-logo img {
     width: 100% !important;
@@ -2400,7 +2400,7 @@ body.driver-action-block-open .driver-footer-back-wrap {
 .driver-footer-back-wrap .universal-back-btn {
   display: inline-block;
   max-width: 100%;
-  color: var(--theme-color) !important;
+  color: #adb5bd !important; /* Soluk – ana uygulama anasayfadaki gibi */
   font-size: 14px;
   font-weight: 500;
   letter-spacing: 0.5px;
@@ -2410,10 +2410,14 @@ body.driver-action-block-open .driver-footer-back-wrap {
   white-space: nowrap;
 }
 .driver-footer-back-wrap .universal-back-btn:hover {
+  color: var(--txt-white) !important;
   opacity: 0.9;
 }
 .driver-footer-back-wrap .universal-back-label {
-  color: var(--theme-color) !important;
+  color: #adb5bd !important; /* Soluk – ana uygulama anasayfadaki gibi */
+}
+.driver-footer-back-wrap .universal-back-btn:hover .universal-back-label {
+  color: var(--txt-white) !important;
 }
 @media (min-width: 769px) {
   .login-page .driver-header-fixed {
