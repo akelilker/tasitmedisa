@@ -3343,7 +3343,7 @@ function renderVehicleDetailLeft(vehicle) {
         html = '<div class="history-empty-msg" style="text-align: center; padding: 20px;">' + escapeHtml(toTitleCase('Kaza kaydı bulunmamaktadır.')) + '</div>';
       } else {
         kazaEvents.forEach(event => {
-          const hasarStr = event.data?.hasarTutari ? ` | Hasar Tutarı: ${escapeHtml(event.data.hasarTutari)}` : '';
+          const hasarStr = event.data?.hasarTutari ? ` | <span class="history-label">Hasar Tutarı:</span> ${escapeHtml(event.data.hasarTutari)}` : '';
           const aciklamaVal = event.data?.aciklama ? toTitleCase(event.data.aciklama) : '';
           const aciklamaHtml = aciklamaVal ? `<div class="history-item-body" style="font-size: 12px; margin-top: 4px;">${escapeHtml(aciklamaVal)}</div>` : '';
           let parcalarHtml = '';
@@ -3356,15 +3356,15 @@ function renderVehicleDetailLeft(vehicle) {
               if (hasarParcalari[partId] === 'boyali') boyaliList.push(toTitleCase(partName));
               else if (hasarParcalari[partId] === 'degisen') degisenList.push(toTitleCase(partName));
             });
-            const parts = [];
-            if (boyaliList.length) parts.push('Boyalı: ' + boyaliList.join(', '));
-            if (degisenList.length) parts.push('Değişen: ' + degisenList.join(', '));
-            if (parts.length) parcalarHtml = `<div class="history-item-body" style="font-size: 12px; margin-top: 4px;">${escapeHtml(parts.join(' | '))}</div>`;
+            const partParts = [];
+            if (boyaliList.length) partParts.push(`<span class="history-label">Boyalı:</span> ${escapeHtml(boyaliList.join(', '))}`);
+            if (degisenList.length) partParts.push(`<span class="history-label">Değişen:</span> ${escapeHtml(degisenList.join(', '))}`);
+            if (partParts.length) parcalarHtml = `<div class="history-item-body" style="font-size: 12px; margin-top: 4px;">${partParts.join(' | ')}</div>`;
           }
           const surucu = toTitleCase(event.data?.surucu || '-');
           html += `<div class="history-item" style="padding: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
             <div class="history-item-date" style="font-weight: 600; font-size: 12px; margin-bottom: 4px;">${escapeHtml(event.date)}</div>
-            <div class="history-item-body" style="font-size: 12px;">Kullanıcı: ${escapeHtml(surucu)}${hasarStr}</div>
+            <div class="history-item-body" style="font-size: 12px;"><span class="history-label">Kullanıcı:</span> ${escapeHtml(surucu)}${hasarStr}</div>
             ${parcalarHtml}
             ${aciklamaHtml}
           </div>`;
@@ -3379,10 +3379,10 @@ function renderVehicleDetailLeft(vehicle) {
           const eskiKm = event.data?.eskiKm || '-';
           const yeniKm = event.data?.yeniKm || '-';
           const surucuVal = event.data?.surucu;
-          const surucuStr = surucuVal ? `Kullanıcı: ${escapeHtml(toTitleCase(surucuVal))}` : '';
+          const surucuStr = surucuVal ? `<span class="history-label">Kullanıcı:</span> ${escapeHtml(toTitleCase(surucuVal))}` : '';
           html += `<div class="history-item" style="padding: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
             <div class="history-item-date" style="font-weight: 600; font-size: 12px; margin-bottom: 4px;">${escapeHtml(event.date)} - Km Revize</div>
-            <div class="history-item-body" style="font-size: 12px; margin-top: 4px;">Önceki Km; ${escapeHtml(formatNumber(eskiKm))} - Güncellenen Km; ${escapeHtml(formatNumber(yeniKm))}</div>
+            <div class="history-item-body" style="font-size: 12px; margin-top: 4px;"><span class="history-label">Önceki Km;</span> ${escapeHtml(formatNumber(eskiKm))} - <span class="history-label">Güncellenen Km;</span> ${escapeHtml(formatNumber(yeniKm))}</div>
             ${surucuStr ? `<div class="history-item-body" style="font-size: 12px; margin-top: 4px;">${surucuStr}</div>` : ''}
           </div>`;
         });

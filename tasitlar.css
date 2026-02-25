@@ -667,6 +667,9 @@
 #vehicle-history-modal .history-item-body {
     color: var(--data-value-color, #a0aec0) !important;
 }
+#vehicle-history-modal .history-item-body .history-label {
+    color: #ffffff !important;
+}
 #vehicle-history-modal .history-empty-msg {
     color: var(--txt-placeholder);
 }
