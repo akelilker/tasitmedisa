@@ -158,7 +158,7 @@
 /* Şemayı saran kapsayıcı hizalama */
 #kaza-guncelle-modal #kaza-kaporta-container,
 #kaza-ekle-modal #kaza-kaporta-container {
-    margin-top: 10px !important;
+    margin-top: 2px !important; /* 8px yukarı (10→2) */
     margin-bottom: 20px !important;
     display: flex !important;
     flex-direction: column !important;
