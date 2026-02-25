@@ -3367,7 +3367,7 @@ function renderVehicleDetailLeft(vehicle) {
           const islemler = toTitleCase(event.data?.islemler || '');
           const servis = toTitleCase(event.data?.servis || '-');
           const kisi = toTitleCase(event.data?.kisi || '-');
-          html += `<div class="history-item" style="padding: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+          html += `<div class="history-item" style="padding: 12px; border-bottom: 0.5px solid rgba(225, 6, 27, 0.25);">
             <div class="history-item-date" style="font-weight: 600; font-size: 12px; margin-bottom: 4px;">${escapeHtml(event.date)}</div>
             <div class="history-item-body" style="font-size: 12px;">${escapeHtml(islemler)}</div>
             <div class="history-item-body" style="font-size: 12px; margin-top: 4px;"><span class="history-label">Servis:</span> ${escapeHtml(servis)} | <span class="history-label">Kişi:</span> ${escapeHtml(kisi)}${ekStr ? ' | ' + ekStr : ''}</div>
@@ -3400,7 +3400,7 @@ function renderVehicleDetailLeft(vehicle) {
             if (partParts.length) parcalarHtml = `<div class="history-item-body" style="font-size: 12px; margin-top: 4px;">${partParts.join(' | ')}</div>`;
           }
           const surucu = toTitleCase(event.data?.surucu || '-');
-          html += `<div class="history-item" style="padding: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+          html += `<div class="history-item" style="padding: 12px; border-bottom: 0.5px solid rgba(225, 6, 27, 0.25);">
             <div class="history-item-date" style="font-weight: 600; font-size: 12px; margin-bottom: 4px;">${escapeHtml(event.date)}</div>
             <div class="history-item-body" style="font-size: 12px;"><span class="history-label">Kullanıcı:</span> ${escapeHtml(surucu)}${hasarStr}</div>
             ${parcalarHtml}
@@ -3418,7 +3418,7 @@ function renderVehicleDetailLeft(vehicle) {
           const yeniKm = event.data?.yeniKm || '-';
           const surucuVal = event.data?.surucu;
           const surucuStr = surucuVal ? `<span class="history-label">Kullanıcı:</span> ${escapeHtml(toTitleCase(surucuVal))}` : '';
-          html += `<div class="history-item" style="padding: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+          html += `<div class="history-item" style="padding: 12px; border-bottom: 0.5px solid rgba(225, 6, 27, 0.25);">
             <div class="history-item-date" style="font-weight: 600; font-size: 12px; margin-bottom: 4px;">${escapeHtml(event.date)} - Km Revize</div>
             <div class="history-item-body" style="font-size: 12px; margin-top: 4px;"><span class="history-label">Önceki Km;</span> ${escapeHtml(formatNumber(eskiKm))} - <span class="history-label">Güncellenen Km;</span> ${escapeHtml(formatNumber(yeniKm))}</div>
             ${surucuStr ? `<div class="history-item-body" style="font-size: 12px; margin-top: 4px;">${surucuStr}</div>` : ''}
@@ -3511,7 +3511,7 @@ function renderVehicleDetailLeft(vehicle) {
           const labelHtml = escapeHtml(toTitleCase(label));
           const dateLabelHtml = `${escapeHtml(event.date)} - ${labelHtml}`;
           const bodyHtml = detailText ? `<div class="history-item-body" style="font-size: 12px; margin-top: 4px;">${detailText}</div>` : '';
-          html += `<div class="history-item history-item-sube" style="padding: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+          html += `<div class="history-item history-item-sube" style="padding: 12px; border-bottom: 0.5px solid rgba(225, 6, 27, 0.25);">
             <div class="history-item-date" style="font-weight: 600; font-size: 12px; margin-bottom: 4px;">${dateLabelHtml}</div>
             ${bodyHtml}
           </div>`;
