@@ -503,7 +503,7 @@ body.driver-modal-open {
   text-align: left;
 }
 .driver-info-item .label {
-  color: #ffffff;
+  color: var(--form-label-color, #ffffff) !important;
   font-weight: 500;
   font-size: 11px;
   flex-shrink: 0;
@@ -515,7 +515,7 @@ body.driver-modal-open {
   margin-right: 0.3em; /* ":" ile açıklamanın ilk harfi arasında bir boşluk */
 }
 .driver-info-item .value {
-  color: var(--data-value-color, #a0aec0);
+  color: var(--data-value-color, #a0aec0) !important;
   word-break: break-word;
   font-size: 13px;
   min-width: min-content; /* Sığmazsa açıklama daralmadan tamamı alt satıra geçer, ortadan bölünmez */
@@ -2171,16 +2171,17 @@ body.driver-modal-open {
   text-align: right;
 }
 
+/* Etiket beyaz, açıklama gri: p varsayılan gri; strong etiket (beyaz) */
 .history-details p {
   font-size: 14px;
-  color: var(--muted);
+  color: var(--data-value-color, #a0aec0);
   margin: 0;
   padding: 0;
   line-height: 1.3;
 }
 
 .history-details strong {
-  color: var(--txt);
+  color: var(--form-label-color, #ffffff);
 }
 
 /* Kalem ikonu: sağda dikeyde ortalı, arka plan ve çerçeve yok */
@@ -2353,19 +2354,27 @@ body.driver-action-block-open .driver-footer-back-wrap {
   width: 100%;
   box-sizing: border-box;
   z-index: 9999;
+  padding-left: 12px;
+  padding-right: 12px;
+  overflow: hidden;
 }
 .driver-footer-back-wrap .universal-back-btn {
-  color: rgba(var(--theme-color-rgb), 0.55);
+  display: inline-block;
+  max-width: 100%;
+  color: var(--theme-color) !important;
   font-size: 14px;
   font-weight: 500;
   letter-spacing: 0.5px;
-  transition: color 0.2s;
+  transition: opacity 0.2s;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .driver-footer-back-wrap .universal-back-btn:hover {
-  color: var(--theme-color);
+  opacity: 0.9;
 }
 .driver-footer-back-wrap .universal-back-label {
-  color: var(--muted, #adb5bd) !important;
+  color: var(--theme-color) !important;
 }
 @media (min-width: 769px) {
   .login-page .driver-header-fixed {
@@ -3016,10 +3025,10 @@ body.driver-action-block-open .driver-footer-back-wrap {
     font-size: 17px !important;
   }
   .dashboard-page .vehicle-header h3 {
-    font-size: 20px !important;
+    font-size: 21px !important;
   }
   .dashboard-page .vehicle-header p {
-    font-size: 15px !important;
+    font-size: 16px !important;
   }
   .dashboard-page .driver-report-btn {
     font-size: 16px !important;
@@ -3039,13 +3048,13 @@ body.driver-action-block-open .driver-footer-back-wrap {
     font-size: 15px !important;
   }
   .dashboard-page .history-period {
-    font-size: 16px !important;
+    font-size: 17px !important;
   }
   .dashboard-page .history-vehicle {
-    font-size: 15px !important;
+    font-size: 16px !important;
   }
   .dashboard-page .history-details p {
-    font-size: 15px !important;
+    font-size: 16px !important;
   }
   .dashboard-page .history-edit-icon {
     width: 44px;
@@ -3053,30 +3062,30 @@ body.driver-action-block-open .driver-footer-back-wrap {
   }
   /* Sol panel: etiket ve açıklama aynı boyut, aynı satırda hizalı; +1pt (mobil sol grid) */
   .dashboard-page .driver-left-panel .driver-info-item .label {
-    font-size: 14px !important;
+    font-size: 15px !important;
     text-transform: none !important;
   }
   .dashboard-page .driver-left-panel .driver-info-item .value {
-    font-size: 14px !important;
+    font-size: 15px !important;
   }
   .dashboard-page .driver-left-panel .driver-current-plaka {
-    font-size: 15px !important; /* 16px - 1pt */
+    font-size: 16px !important;
   }
   .dashboard-page .driver-left-panel .driver-user-name,
   .dashboard-page .driver-user-plate-in-panel .driver-user-name {
-    font-size: 14px !important;
+    font-size: 15px !important;
   }
   .dashboard-page .driver-left-panel .driver-plate-subtitle {
-    font-size: 16px !important;
+    font-size: 17px !important;
   }
   .dashboard-page .driver-sliding-warning {
-    font-size: 14px !important;
+    font-size: 15px !important;
   }
   .dashboard-page .driver-plate-dropdown-item {
-    font-size: 13px !important;
+    font-size: 14px !important;
   }
   .dashboard-page .driver-footer-back-wrap .universal-back-label {
-    font-size: 15px !important;
+    font-size: 16px !important;
   }
   #history-modal .modal-header h2,
   #edit-request-modal .modal-header h2 {
@@ -3084,7 +3093,7 @@ body.driver-action-block-open .driver-footer-back-wrap {
   }
   #history-modal .history-filter-label,
   #history-modal .history-vehicle-trigger {
-    font-size: 15px !important;
+    font-size: 16px !important;
   }
   #history-modal .universal-back-btn {
     padding: 10px !important;
