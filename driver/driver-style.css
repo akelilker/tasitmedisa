@@ -27,8 +27,6 @@
 /* style-core .content-wrap sol/sağ border + glow → container zaten veriyor, iptal */
 .dashboard-page .content-wrap.driver-content-wrap,
 .login-page .content-wrap.driver-content-wrap {
-  border-left: none !important;
-  border-right: none !important;
   box-shadow: none !important;
 }
 
@@ -122,9 +120,6 @@ body.driver-modal-open {
   flex-direction: column;
   box-sizing: border-box;
   overflow: hidden;
-  border-left: 1.2px solid var(--border-red-tech);
-  border-right: 1.2px solid var(--border-red-tech);
-  border-bottom: 1.2px solid var(--border-red-tech);
 }
 
 /* Ana başlık (hero + driver-below-hero) sabit üstte – plaka yukarı, container çerçevesi devam */
@@ -157,13 +152,19 @@ body.driver-modal-open {
 
 .driver-content-wrap {
   overflow-x: hidden;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
   padding-bottom: 24px;
 }
 
-.driver-content-wrap::-webkit-scrollbar {
-  display: none;
+.dashboard-page .content-wrap.driver-content-wrap,
+.login-page .content-wrap.driver-content-wrap {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+.dashboard-page .content-wrap.driver-content-wrap::-webkit-scrollbar,
+.login-page .content-wrap.driver-content-wrap::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }
 
 .hero-title-wrap {
@@ -883,9 +884,9 @@ body.driver-modal-open {
     width: 100% !important;
     height: auto !important;
   }
-  /* Ortadaki dikey kırmızı çizgi – ufak kalınlaştırma (siliklik giderildi) */
+  /* Ortadaki dikey kırmızı çizgi */
   .driver-left-panel {
-    border-right-width: 0.75px !important;
+    border-right-width: 0.25px !important;
   }
   /* Şube etiketinden itibaren 3px aşağı */
   .driver-left-panel .driver-vehicle-info {
