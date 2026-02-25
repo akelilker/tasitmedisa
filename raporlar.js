@@ -19,6 +19,31 @@
         try { return JSON.parse(localStorage.getItem("medisa_users_v1") || "[]"); } catch { return []; }
     }
 
+    // Liste metin format: kelimelerin ilk harfi büyük (TR locale)
+    function toTitleCase(str) {
+        if (!str || str === '-') return str;
+        return String(str).trim().split(/\s+/).map(function(w) {
+            if (!w) return w;
+            return w.charAt(0).toLocaleUpperCase('tr-TR') + w.slice(1).toLocaleLowerCase('tr-TR');
+        }).join(' ');
+    }
+
+    // Plaka: harfler tamamen büyük (TR locale)
+    function formatPlaka(str) {
+        if (str == null || str === '' || str === '-') return str === '' ? '-' : (str || '-');
+        return String(str).trim().toLocaleUpperCase('tr-TR');
+    }
+
+    // Ad Soyad: soyad tamamen büyük, ad(lar) title case
+    function formatAdSoyad(str) {
+        if (!str || str === '-') return str;
+        var parts = String(str).trim().split(/\s+/).filter(Boolean);
+        if (parts.length === 0) return str;
+        if (parts.length === 1) return toTitleCase(parts[0]);
+        var last = parts.pop();
+        return parts.map(function(w) { return w.charAt(0).toLocaleUpperCase('tr-TR') + w.slice(1).toLocaleLowerCase('tr-TR'); }).join(' ') + ' ' + last.toLocaleUpperCase('tr-TR');
+    }
+
     // --- STOK Görünümü State ---
     let stokCurrentBranchId = null; // null = grid görünümü, 'all' = tümü listesi, 'id' = şube listesi
     let stokSortState = {}; // { columnKey: 'asc' | 'desc' | null }
