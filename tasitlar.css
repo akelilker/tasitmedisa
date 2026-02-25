@@ -675,7 +675,7 @@
 .modal-overlay:has(.history-tabs) .history-item {
     border-bottom-width: 0.5px !important;
     border-bottom-style: solid !important;
-    border-bottom-color: rgba(var(--theme-color-rgb), 0.6) !important;
+    border-bottom-color: rgba(var(--theme-color-rgb), 0.25) !important;
 }
 
 /* Tarihçe: sekme ile içerik arası 5px azaltma (history-content padding-top style-core'da 15px yapıldı) */
