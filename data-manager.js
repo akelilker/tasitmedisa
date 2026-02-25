@@ -256,12 +256,9 @@ async function loadDataFromServer(forceRefresh = true) {
             duzeltme_talepleri: data.duzeltme_talepleri || []
         };
 
-        // Sunucudan başarıyla yüklendiğinde localStorage'ı da güncelle (taşıtlar/ayarlar/kayıt senkron)
+        // Sunucudan başarıyla yüklendiğinde localStorage'ı da güncelle (tek key: medisa_data_v1)
         try {
             localStorage.setItem('medisa_data_v1', JSON.stringify(window.appData));
-            if (window.appData.tasitlar) localStorage.setItem('medisa_vehicles_v1', JSON.stringify(window.appData.tasitlar));
-            if (window.appData.branches) localStorage.setItem('medisa_branches_v1', JSON.stringify(window.appData.branches));
-            if (window.appData.users) localStorage.setItem('medisa_users_v1', JSON.stringify(window.appData.users));
         } catch (e) {
             // localStorage güncellenemedi - sessizce devam et
         }
@@ -398,15 +395,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         sessionStorage.removeItem('medisa_just_restored');
         const loadedData = loadDataFromLocalStorage();
         try {
-            if (loadedData && loadedData.tasitlar) {
-                localStorage.setItem('medisa_vehicles_v1', JSON.stringify(loadedData.tasitlar));
-            }
-            if (loadedData && loadedData.branches) {
-                localStorage.setItem('medisa_branches_v1', JSON.stringify(loadedData.branches));
-            }
-            if (loadedData && loadedData.users) {
-                localStorage.setItem('medisa_users_v1', JSON.stringify(loadedData.users));
-            }
+            localStorage.setItem('medisa_data_v1', JSON.stringify(window.appData));
         } catch (e) { }
         window.dispatchEvent(new CustomEvent('dataLoaded', { detail: window.appData }));
         return;
@@ -421,17 +410,9 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 
     try {
-        if (loadedData && loadedData.tasitlar) {
-            localStorage.setItem('medisa_vehicles_v1', JSON.stringify(loadedData.tasitlar));
-        }
-        if (loadedData && loadedData.branches) {
-            localStorage.setItem('medisa_branches_v1', JSON.stringify(loadedData.branches));
-        }
-        if (loadedData && loadedData.users) {
-            localStorage.setItem('medisa_users_v1', JSON.stringify(loadedData.users));
-        }
+        localStorage.setItem('medisa_data_v1', JSON.stringify(window.appData));
     } catch (e) {
-        // Eski localStorage key'leri güncellenemedi - sessizce devam et
+        // localStorage güncellenemedi - sessizce devam et
     }
 
     window.dispatchEvent(new CustomEvent('dataLoaded', { 
@@ -439,18 +420,30 @@ document.addEventListener('DOMContentLoaded', async function() {
     }));
 });
 
-// Ortak veri okuyucu (tasitlar.js ve raporlar.js tek kaynaktan okusun)
+// Ortak veri okuyucu (tasitlar.js ve raporlar.js tek kaynaktan okusun; önce medisa_data_v1)
 function getMedisaVehicles() {
     if (window.appData && Array.isArray(window.appData.tasitlar)) return window.appData.tasitlar;
-    try { return JSON.parse(localStorage.getItem('medisa_vehicles_v1') || '[]'); } catch { return []; }
+    try {
+        const raw = localStorage.getItem('medisa_data_v1');
+        if (raw) { const d = JSON.parse(raw); if (d && Array.isArray(d.tasitlar)) return d.tasitlar; }
+        return JSON.parse(localStorage.getItem('medisa_vehicles_v1') || '[]');
+    } catch { return []; }
 }
 function getMedisaBranches() {
     if (window.appData && Array.isArray(window.appData.branches)) return window.appData.branches;
-    try { return JSON.parse(localStorage.getItem('medisa_branches_v1') || '[]'); } catch { return []; }
+    try {
+        const raw = localStorage.getItem('medisa_data_v1');
+        if (raw) { const d = JSON.parse(raw); if (d && Array.isArray(d.branches)) return d.branches; }
+        return JSON.parse(localStorage.getItem('medisa_branches_v1') || '[]');
+    } catch { return []; }
 }
 function getMedisaUsers() {
     if (window.appData && Array.isArray(window.appData.users)) return window.appData.users;
-    try { return JSON.parse(localStorage.getItem('medisa_users_v1') || '[]'); } catch { return []; }
+    try {
+        const raw = localStorage.getItem('medisa_data_v1');
+        if (raw) { const d = JSON.parse(raw); if (d && Array.isArray(d.users)) return d.users; }
+        return JSON.parse(localStorage.getItem('medisa_users_v1') || '[]');
+    } catch { return []; }
 }
 
 window.getMedisaVehicles = getMedisaVehicles;
