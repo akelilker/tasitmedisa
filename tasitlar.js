@@ -3323,8 +3323,8 @@ function renderVehicleDetailLeft(vehicle) {
         html = '<div class="history-empty-msg" style="text-align: center; padding: 20px;">' + escapeHtml(toTitleCase('Bakım kaydı bulunmamaktadır.')) + '</div>';
       } else {
         bakimEvents.forEach(event => {
-          const kmStr = event.data?.km ? `Km: ${escapeHtml(formatNumber(event.data.km))}` : '';
-          const tutarStr = event.data?.tutar ? `Tutar: ${escapeHtml(event.data.tutar)}` : '';
+          const kmStr = event.data?.km ? `<span class="history-label">Km:</span> ${escapeHtml(formatNumber(event.data.km))}` : '';
+          const tutarStr = event.data?.tutar ? `<span class="history-label">Tutar:</span> ${escapeHtml(event.data.tutar)}` : '';
           const ekStr = [kmStr, tutarStr].filter(Boolean).join(' | ');
           const islemler = toTitleCase(event.data?.islemler || '');
           const servis = toTitleCase(event.data?.servis || '-');
@@ -3332,7 +3332,7 @@ function renderVehicleDetailLeft(vehicle) {
           html += `<div class="history-item" style="padding: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
             <div class="history-item-date" style="font-weight: 600; font-size: 12px; margin-bottom: 4px;">${escapeHtml(event.date)}</div>
             <div class="history-item-body" style="font-size: 12px;">${escapeHtml(islemler)}</div>
-            <div class="history-item-body" style="font-size: 12px; margin-top: 4px;">Servis: ${escapeHtml(servis)} | Kişi: ${escapeHtml(kisi)}${ekStr ? ' | ' + ekStr : ''}</div>
+            <div class="history-item-body" style="font-size: 12px; margin-top: 4px;"><span class="history-label">Servis:</span> ${escapeHtml(servis)} | <span class="history-label">Kişi:</span> ${escapeHtml(kisi)}${ekStr ? ' | ' + ekStr : ''}</div>
           </div>`;
         });
       }
