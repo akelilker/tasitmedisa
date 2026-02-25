@@ -15,19 +15,14 @@
   function $all(sel, root = document) { return Array.from(root.querySelectorAll(sel)); }
   function getModal() { return document.getElementById("vehicle-modal"); }
 
-  // --- Data Reading ---
+  // --- Data Reading: tek kaynak getMedisa* (DRY), yoksa localStorage fallback ---
   function readBranches() {
-    try {
-      const raw = localStorage.getItem(BRANCHES_KEY);
-      return raw ? JSON.parse(raw) : [];
-    } catch { return []; }
+    if (typeof window.getMedisaBranches === 'function') return window.getMedisaBranches();
+    try { const raw = localStorage.getItem(BRANCHES_KEY); return raw ? JSON.parse(raw) : []; } catch { return []; }
   }
-
   function readVehicles() {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      return raw ? JSON.parse(raw) : [];
-    } catch { return []; }
+    if (typeof window.getMedisaVehicles === 'function') return window.getMedisaVehicles();
+    try { const raw = localStorage.getItem(STORAGE_KEY); return raw ? JSON.parse(raw) : []; } catch { return []; }
   }
 
   function writeVehicles(arr) {

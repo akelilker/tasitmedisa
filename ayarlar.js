@@ -14,15 +14,14 @@
     // ŞUBE YÖNETİMİ
     // ========================================
   
-    // — Storage —
+    // — Storage: tek kaynak getMedisa* (DRY), yoksa localStorage fallback —
     function readBranches() {
+      if (typeof window.getMedisaBranches === 'function') return window.getMedisaBranches();
       try {
         const raw = localStorage.getItem(BRANCHES_KEY);
         const arr = raw ? JSON.parse(raw) : [];
         return Array.isArray(arr) ? arr : [];
-      } catch {
-        return [];
-      }
+      } catch { return []; }
     }
   
     function writeBranches(arr) {
@@ -41,13 +40,12 @@
     }
   
     function readVehicles() {
+      if (typeof window.getMedisaVehicles === 'function') return window.getMedisaVehicles();
       try {
         const raw = localStorage.getItem(VEHICLES_KEY);
         const arr = raw ? JSON.parse(raw) : [];
         return Array.isArray(arr) ? arr : [];
-      } catch {
-        return [];
-      }
+      } catch { return []; }
     }
   
     // — Modal Kontrolü (Ana Liste) —
@@ -266,30 +264,25 @@
     // KULLANICI YÖNETİMİ
     // ========================================
   
-    // — Storage —
+    // — Storage: getMedisaUsers tek kaynak (DRY); yoksa localStorage + normalizasyon —
     function readUsers() {
+      if (typeof window.getMedisaUsers === 'function') return window.getMedisaUsers();
       try {
         const raw = localStorage.getItem(USERS_KEY);
         const arr = raw ? JSON.parse(raw) : [];
         if (!Array.isArray(arr)) return [];
         return arr.map(u => {
-          // Sunucudan gelen isim -> name dönüşümü
           if (!u.name && u.isim) u.name = u.isim;
           if (!u.name && (u.firstName || u.lastName)) {
             u.name = ((u.firstName || '') + ' ' + (u.lastName || '')).trim();
           }
           if (!u.name) u.name = '';
-          // Diğer alan dönüşümleri
           if (!u.phone && u.telefon) u.phone = u.telefon;
           if (!u.branchId && u.sube_id) u.branchId = String(u.sube_id);
-          if (!u.role && u.tip) {
-            u.role = u.tip === 'admin' ? 'admin' : 'driver';
-          }
+          if (!u.role && u.tip) u.role = u.tip === 'admin' ? 'admin' : 'driver';
           return u;
         });
-      } catch {
-        return [];
-      }
+      } catch { return []; }
     }
   
     function writeVehicles(arr) {

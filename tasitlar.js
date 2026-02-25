@@ -7,23 +7,25 @@
   const VEHICLES_KEY = "medisa_vehicles_v1";
   const USERS_KEY = "medisa_users_v1";
 
-  // Veri okuma: önce data-manager ortak getter, yoksa storage/localStorage
+  function parseLocalStorageArray(key) {
+    try { return JSON.parse(localStorage.getItem(key) || '[]'); } catch { return []; }
+  }
+
+  // Veri okuma: önce data-manager getter, sonra __medisa*Storage, sonra localStorage (DRY)
   function readBranches() {
     if (typeof window.getMedisaBranches === 'function') return window.getMedisaBranches();
     if (window.__medisaBranchesStorage) return window.__medisaBranchesStorage.read();
-    try { return JSON.parse(localStorage.getItem(BRANCHES_KEY) || '[]'); } catch { return []; }
+    return parseLocalStorageArray(BRANCHES_KEY);
   }
-
   function readVehicles() {
     if (typeof window.getMedisaVehicles === 'function') return window.getMedisaVehicles();
     if (window.__medisaVehiclesStorage) return window.__medisaVehiclesStorage.read();
-    try { return JSON.parse(localStorage.getItem(VEHICLES_KEY) || '[]'); } catch { return []; }
+    return parseLocalStorageArray(VEHICLES_KEY);
   }
-
   function readUsers() {
     if (typeof window.getMedisaUsers === 'function') return window.getMedisaUsers();
     if (window.__medisaUsersStorage) return window.__medisaUsersStorage.read();
-    try { return JSON.parse(localStorage.getItem(USERS_KEY) || '[]'); } catch { return []; }
+    return parseLocalStorageArray(USERS_KEY);
   }
 
   var parsedKaportaSvgCache = null;
@@ -247,7 +249,7 @@
       if (!plate) return;
       if (typeof window.openVehiclesView === 'function') window.openVehiclesView();
       setTimeout(function() {
-        var vehicles = window.getMedisaVehicles ? window.getMedisaVehicles() : JSON.parse(localStorage.getItem('medisa_vehicles_v1') || '[]');
+        var vehicles = (window.getMedisaVehicles && window.getMedisaVehicles()) || parseLocalStorageArray(VEHICLES_KEY);
         var v = vehicles.find(function(v) { return v.plate === plate; });
         if (v && typeof window.showVehicleDetail === 'function') window.showVehicleDetail(v.id);
       }, 100);
