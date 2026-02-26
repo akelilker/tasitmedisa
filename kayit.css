@@ -1361,7 +1361,15 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     }
     #vehicle-modal .modal-body .universal-btn-group {
         flex-shrink: 0;
-        margin-top: 8px;
+        margin-top: 4px;
+    }
+    /* Var açılınca taşmayı azalt: açılan bölüm sıkı (tek Var’da scrollbar çıkmasın) */
+    #vehicle-modal .modal-body .modal-column-right .form-section.input-visible {
+        margin-top: 2px !important;
+        margin-bottom: 2px !important;
+    }
+    #vehicle-modal .modal-body .modal-column-right .form-section:has(#kredi-detay).input-visible {
+        margin-top: 2px !important;
     }
     #vehicle-modal .modal-body .modal-column-left,
     #vehicle-modal .modal-body .modal-column-right {
@@ -1406,7 +1414,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         margin-top: auto;
         margin-bottom: 0;
         flex: 1;
-        min-height: 58px;
+        min-height: 48px;
         min-width: 0;
         padding-bottom: 6px !important;
     }
