@@ -3505,6 +3505,17 @@ body.driver-action-block-open .driver-footer-back-wrap {
     border-right: none !important;
   }
 
+  /* iOS PWA (Kullanıcı paneli): ana başlık tek satırda kalsın */
+  .dashboard-page .hero.hero-two-rows .hero-row-top {
+    flex-wrap: nowrap !important;
+  }
+  .dashboard-page .hero.hero-two-rows .hero-title-line {
+    white-space: nowrap !important;
+    font-size: clamp(17px, 4.1vw, 21px) !important;
+    letter-spacing: 1.6px !important;
+    line-height: 1.15 !important;
+  }
+
   /* Footer: kenarlar ekrana sıfır */
   .dashboard-page #app-footer,
   .login-page #app-footer.login-footer {
