@@ -56,10 +56,11 @@
   max-width: 100%;
   box-sizing: border-box;
 }
+/* Tarih input genişliği = Kaydet butonu genişliği (grid 1fr 1fr, gap 16px) */
 #muayene-guncelle-modal #muayene-tarih {
-  width: 190px !important;
-  max-width: 190px !important;
-  min-width: 165px !important;
+  width: calc((100% - 16px) / 2) !important;
+  max-width: calc((100% - 16px) / 2) !important;
+  min-width: min(140px, calc((100% - 16px) / 2)) !important;
   box-sizing: border-box !important;
 }
 #muayene-tarih {
@@ -119,9 +120,6 @@
     max-width: 500px !important;
     width: 100%;
     background: var(--modal-bg) !important;
-    border: 0.5px solid var(--border-medium) !important;
-    box-shadow: 0 0 40px var(--shadow-modal) !important;
-    border-radius: var(--modal-radius) !important;
     margin: max(12px, env(safe-area-inset-top)) auto 54px auto !important;
     height: calc(100vh - max(12px, env(safe-area-inset-top)) - 54px) !important;
     height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 54px) !important;
@@ -678,7 +676,7 @@
 .modal-overlay:has(.history-tabs) .history-item {
     border-bottom-width: 0.5px !important;
     border-bottom-style: solid !important;
-    border-bottom-color: rgba(var(--theme-color-rgb), 0.6) !important;
+    border-bottom-color: rgba(var(--theme-color-rgb), 0.25) !important;
 }
 
 /* Tarihçe: sekme ile içerik arası 5px azaltma (history-content padding-top style-core'da 15px yapıldı) */
@@ -993,7 +991,7 @@
     box-shadow: none !important;
   }
   .olay-ekle-modal .universal-back-bar {
-    margin-top: -21px !important; /* Sol ok + etiket 3px daha yukarı (-18 → -21) */
+    margin-top: -6px !important;
   }
 }
 
@@ -2324,7 +2322,7 @@
     height: 22px !important;
   }
   .olay-ekle-modal .universal-back-bar {
-    margin-top: -21px !important; /* Mobil: sol ok + etiket 3px daha yukarı */
+    margin-top: -6px !important;
   }
   .olay-ekle-modal .universal-back-bar .universal-back-label {
     font-size: 17.5px !important;
@@ -2549,6 +2547,11 @@
     margin-bottom: 0 !important;
     flex-shrink: 0 !important;
   }
+  /* Mobil Olay Ekle 14 modal: Var/Yok, Evet/Hayır butonları yatayda 4er px daha geniş */
+  .olay-ekle-modal .radio-btn {
+    padding-left: 32px !important;
+    padding-right: 32px !important;
+  }
 
   .olay-ekle-modal .modal-body .form-input,
   .olay-ekle-modal .modal-body select,
@@ -2603,6 +2606,13 @@
     width: 24px !important;
     height: 24px !important;
   }
+  /* Yedek Anahtar modal: X sağa yaslı, 4px yukarı (position: absolute korunmalı) */
+  #anahtar-guncelle-modal .modal-close {
+    position: absolute !important;
+    right: 15px !important;
+    top: calc(50% - 4px) !important;
+    transform: translateY(-50%) !important;
+  }
 
   /* --- TARİHÇE MODAL --- */
   /* Mobil tarihçe sekmeleri - ortalı +2px */
@@ -2638,8 +2648,8 @@
   .view-list .list-item {
     display: grid !important;
     /* Masaüstü: 32px 70px 3.2fr 60px 65px 1.8fr 2fr */
-    /* Mobil: Şube 3px dar, Kullanıcı 3px geniş; metin çerçeveye 1px */
-    grid-template-columns: 32px 70px 2.4fr 60px 1.75fr 2.05fr; /* fallback; JS inline style override eder */
+    /* Mobil: Şube 2px dar, Kullanıcı 2px geniş; metin çerçeveye 1px */
+    grid-template-columns: 32px 70px 2.4fr 60px 1.79fr 2.01fr; /* fallback; JS inline style override eder */
     gap: 4px !important; /* Masaüstü ile aynı */
     padding: 4px 1px 4px 2px !important; /* Sol çerçeveye 1px daha boşluk */
     min-height: 32px !important;
@@ -2665,7 +2675,7 @@
   .list-header-row {
     --list-header-font-size: 15px; /* JS ile güncellenir; min 13.5px (15 - 1.5pt) */
     display: grid !important;
-    grid-template-columns: 32px 70px 2.4fr 60px 1.75fr 2.05fr; /* Şube 3px dar, Kullanıcı 3px geniş */
+    grid-template-columns: 32px 70px 2.4fr 60px 1.79fr 2.01fr; /* Şube 2px dar, Kullanıcı 2px geniş */
     gap: 4px !important;
     align-items: center !important;
     padding: 2px 4px !important; /* başlık metin üst/alt 2px */
@@ -3088,7 +3098,7 @@
   }
 
   #event-menu-modal .universal-back-bar {
-    margin-top: -21px !important; /* Olay Ekle menü: sol ok + etiket 3px daha yukarı */
+    margin-top: -6px !important;
   }
 
   /* --- EVENT MENU LIST MOBİL --- (spesifik seçici: .modal-body button kuralını ezer) */

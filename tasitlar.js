@@ -118,8 +118,8 @@
             'plate': '62px',
             'brand': '2.55fr',
             'km': '52px',
-            'user': '1.83fr',   /* şubeden 3px alındı */
-            'branch': '2.52fr'
+            'user': '1.87fr',   /* mobilde KULL. sütunu +2px */
+            'branch': '2.48fr'  /* mobilde ŞUBE sütunu -2px */
           }
         : {
             'year': '32px',
@@ -2430,20 +2430,30 @@ function renderVehicleDetailLeft(vehicle) {
         
         // Şema wrapper'ı oluştur
         const schemaWrapper = document.createElement('div');
+        const isMobileKazaSchema = window.innerWidth <= 640;
         schemaWrapper.style.display = 'flex';
         schemaWrapper.style.alignItems = 'flex-start';
         schemaWrapper.style.justifyContent = 'center';
         schemaWrapper.style.gap = '24px';
         schemaWrapper.style.maxHeight = '144px'; /* 180 * 0.8 */
-        schemaWrapper.style.overflow = 'hidden';
+        schemaWrapper.style.overflow = isMobileKazaSchema ? 'visible' : 'hidden';
         
         schemaWrapper.appendChild(svgClone);
         
         svgClone.setAttribute('width', '140');
         svgClone.setAttribute('height', '210');
-        svgClone.style.width = '168px';  /* 210 * 0.8 */
-        svgClone.style.height = '112px'; /* 140 * 0.8 */
-        svgClone.style.margin = '0';
+        if (isMobileKazaSchema) {
+          // Mobilde şemayı sola doğru 18px büyüt: sağ kenar sabit kalır.
+          svgClone.style.width = '186px';
+          svgClone.style.height = '124px';
+          svgClone.style.margin = '0';
+          svgClone.style.position = 'relative';
+          svgClone.style.left = '-18px';
+        } else {
+          svgClone.style.width = '168px';  /* 210 * 0.8 */
+          svgClone.style.height = '112px'; /* 140 * 0.8 */
+          svgClone.style.margin = '0';
+        }
         svgClone.style.display = 'block';
         svgClone.style.transform = 'rotate(90deg)';
         svgClone.style.transformOrigin = 'center center';
@@ -3367,7 +3377,7 @@ function renderVehicleDetailLeft(vehicle) {
           const islemler = toTitleCase(event.data?.islemler || '');
           const servis = toTitleCase(event.data?.servis || '-');
           const kisi = toTitleCase(event.data?.kisi || '-');
-          html += `<div class="history-item" style="padding: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+          html += `<div class="history-item" style="padding: 12px; border-bottom: 0.5px solid rgba(225, 6, 27, 0.25);">
             <div class="history-item-date" style="font-weight: 600; font-size: 12px; margin-bottom: 4px;">${escapeHtml(event.date)}</div>
             <div class="history-item-body" style="font-size: 12px;">${escapeHtml(islemler)}</div>
             <div class="history-item-body" style="font-size: 12px; margin-top: 4px;"><span class="history-label">Servis:</span> ${escapeHtml(servis)} | <span class="history-label">Kişi:</span> ${escapeHtml(kisi)}${ekStr ? ' | ' + ekStr : ''}</div>
@@ -3400,7 +3410,7 @@ function renderVehicleDetailLeft(vehicle) {
             if (partParts.length) parcalarHtml = `<div class="history-item-body" style="font-size: 12px; margin-top: 4px;">${partParts.join(' | ')}</div>`;
           }
           const surucu = toTitleCase(event.data?.surucu || '-');
-          html += `<div class="history-item" style="padding: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+          html += `<div class="history-item" style="padding: 12px; border-bottom: 0.5px solid rgba(225, 6, 27, 0.25);">
             <div class="history-item-date" style="font-weight: 600; font-size: 12px; margin-bottom: 4px;">${escapeHtml(event.date)}</div>
             <div class="history-item-body" style="font-size: 12px;"><span class="history-label">Kullanıcı:</span> ${escapeHtml(surucu)}${hasarStr}</div>
             ${parcalarHtml}
@@ -3418,7 +3428,7 @@ function renderVehicleDetailLeft(vehicle) {
           const yeniKm = event.data?.yeniKm || '-';
           const surucuVal = event.data?.surucu;
           const surucuStr = surucuVal ? `<span class="history-label">Kullanıcı:</span> ${escapeHtml(toTitleCase(surucuVal))}` : '';
-          html += `<div class="history-item" style="padding: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+          html += `<div class="history-item" style="padding: 12px; border-bottom: 0.5px solid rgba(225, 6, 27, 0.25);">
             <div class="history-item-date" style="font-weight: 600; font-size: 12px; margin-bottom: 4px;">${escapeHtml(event.date)} - Km Revize</div>
             <div class="history-item-body" style="font-size: 12px; margin-top: 4px;"><span class="history-label">Önceki Km;</span> ${escapeHtml(formatNumber(eskiKm))} - <span class="history-label">Güncellenen Km;</span> ${escapeHtml(formatNumber(yeniKm))}</div>
             ${surucuStr ? `<div class="history-item-body" style="font-size: 12px; margin-top: 4px;">${surucuStr}</div>` : ''}
@@ -3511,7 +3521,7 @@ function renderVehicleDetailLeft(vehicle) {
           const labelHtml = escapeHtml(toTitleCase(label));
           const dateLabelHtml = `${escapeHtml(event.date)} - ${labelHtml}`;
           const bodyHtml = detailText ? `<div class="history-item-body" style="font-size: 12px; margin-top: 4px;">${detailText}</div>` : '';
-          html += `<div class="history-item history-item-sube" style="padding: 12px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+          html += `<div class="history-item history-item-sube" style="padding: 12px; border-bottom: 0.5px solid rgba(225, 6, 27, 0.25);">
             <div class="history-item-date" style="font-weight: 600; font-size: 12px; margin-bottom: 4px;">${dateLabelHtml}</div>
             ${bodyHtml}
           </div>`;
