@@ -651,7 +651,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
 }
 .vehicle-type-picker-box {
     position: relative;
-    background: var(--card-bg, #0f1418); /* Tema ile uyumlu koyu arka plan */
+    background: var(--modal-bg);
     border: 1px solid rgba(var(--theme-color-rgb), 0.35);
     border-radius: 12px;
     padding: 24px;
