@@ -875,6 +875,18 @@ body.driver-modal-open {
   .driver-info-item .value { font-size: 12.5px; }
   .driver-left-panel .driver-info-item .label { font-size: 13.5px; }
   .driver-left-panel .driver-info-item .value { font-size: 13.5px; }
+  .driver-left-panel .driver-info-item:has(.value) {
+    align-items: flex-start;
+    row-gap: 0 !important;
+  }
+  .driver-left-panel .driver-info-item:has(.value) .value {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+    line-height: 1.25;
+  }
+  .driver-left-panel .driver-info-item:has(.value) .label::after {
+    margin-right: 0.2em;
+  }
   .driver-action-btn {
     padding: 6px 10px;
     font-size: 12.5px;
