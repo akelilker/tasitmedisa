@@ -52,11 +52,13 @@
   flex-direction: column;
   align-items: center;
   gap: 16px;
+  min-width: 120px; /* Logo yüklenmeden önce layout kaymasını önler */
 }
-/* Splash: açılış logosu 120px */
+/* Splash: açılış logosu 120px, aspect-ratio ile alan rezerve */
 .driver-splash-logo {
   width: 120px;
   height: auto;
+  aspect-ratio: 624.89 / 357.04; /* SVG oranı – layout shift yok */
   object-fit: contain;
   filter: brightness(0.88);
 }

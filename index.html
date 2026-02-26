@@ -21,6 +21,7 @@
     <link rel="apple-touch-icon" sizes="512x512" href="./icon/icon-512.svg">
     <link rel="mask-icon" href="./icon/logo-header2.svg" color="#080d16">
     <link rel="manifest" href="./manifest.json">
+    <link rel="preload" href="icon/logo-header2.svg" as="image">
 
     <!-- PWA: tema rengi (masaüstü sekme çubuğu, mobil status bar, iOS) -->
     <meta name="theme-color" content="#080d16">
@@ -58,14 +59,17 @@
             flex-direction: column;
             align-items: center;
             gap: 16px;
+            min-width: 150px; /* Logo yüklenmeden önce layout kaymasını önler */
         }
         #loading-screen .splash-logo {
             width: 150px;
             height: auto;
+            aspect-ratio: 624.89 / 357.04; /* SVG oranı – alan rezerve, layout shift yok */
             object-fit: contain;
             filter: brightness(0.88);
         }
         @media (max-width: 640px) {
+            #loading-screen .splash-inner { min-width: 120px; }
             #loading-screen .splash-logo { width: 120px !important; } /* %15 küçültme */
         }
         #loading-screen .splash-title {
