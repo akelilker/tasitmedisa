@@ -946,6 +946,10 @@ body.driver-modal-open {
     content: '';
     flex: 0 0 54px; /* Sol logoyu dengeleyip başlığı yatayda gerçek merkeze getirir */
   }
+  .dashboard-page .hero.hero-two-rows .hero-title-line {
+    font-size: clamp(14px, 4vw, 19px) !important;
+    letter-spacing: 1.2px !important;
+  }
   .dashboard-page .hero-logo img {
     width: 100% !important;
     height: auto !important;
