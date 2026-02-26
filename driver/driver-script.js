@@ -1044,6 +1044,81 @@ window.toggleDriverPlateDropdown = function(ev) {
     dropdown.style.display = isOpen ? 'none' : 'block';
 };
 
+// #region agent log
+(function() {
+    const runId = 'pre-fix-hero-logo-mobile';
+
+    function postDebugLog(hypothesisId, location, message, data) {
+        // #region agent log
+        fetch('http://127.0.0.1:7824/ingest/aaeefe94-e582-470c-8671-3dbfa48b74c7',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bd1994'},body:JSON.stringify({sessionId:'bd1994',runId:runId,hypothesisId:hypothesisId,location:location,message:message,data:data,timestamp:Date.now()})}).catch(()=>{});
+        // #endregion
+    }
+
+    function captureHeroLogoMetrics(phase) {
+        const isDashboard = document.body && document.body.classList.contains('dashboard-page');
+        if (!isDashboard) return;
+
+        const heroLogo = document.querySelector('.dashboard-page .hero-logo');
+        const hero = document.querySelector('.dashboard-page .hero');
+        const header = document.querySelector('.dashboard-page .driver-header-fixed');
+        if (!heroLogo || !hero || !header) {
+            postDebugLog('H4', 'driver-script.js:heroLogoMetrics', 'Required elements missing', {
+                phase: phase,
+                hasHeroLogo: !!heroLogo,
+                hasHero: !!hero,
+                hasHeader: !!header
+            });
+            return;
+        }
+
+        const logoStyle = window.getComputedStyle(heroLogo);
+        const heroStyle = window.getComputedStyle(hero);
+        const headerStyle = window.getComputedStyle(header);
+        const logoRect = heroLogo.getBoundingClientRect();
+        const heroRect = hero.getBoundingClientRect();
+        const headerRect = header.getBoundingClientRect();
+
+        postDebugLog('H1', 'driver-script.js:heroLogoMetrics', 'Logo transform and position captured', {
+            phase: phase,
+            transform: logoStyle.transform,
+            marginTop: logoStyle.marginTop,
+            topGapToHero: Math.round(logoRect.top - heroRect.top),
+            bottomGapToHero: Math.round(heroRect.bottom - logoRect.bottom),
+            inlineTransform: heroLogo.style.transform || ''
+        });
+
+        postDebugLog('H2', 'driver-script.js:heroLogoMetrics', 'Viewport/media state captured', {
+            phase: phase,
+            width: window.innerWidth,
+            max640: window.matchMedia('(max-width: 640px)').matches,
+            standalone: window.matchMedia('(display-mode: standalone)').matches
+        });
+
+        postDebugLog('H3', 'driver-script.js:heroLogoMetrics', 'Header/hero geometry captured', {
+            phase: phase,
+            headerHeight: Math.round(headerRect.height),
+            heroHeight: Math.round(heroRect.height),
+            heroMinHeight: heroStyle.minHeight,
+            heroPaddingTop: heroStyle.paddingTop,
+            heroPaddingBottom: heroStyle.paddingBottom,
+            headerPaddingTop: headerStyle.paddingTop
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        captureHeroLogoMetrics('domcontentloaded');
+    });
+
+    window.addEventListener('load', function() {
+        captureHeroLogoMetrics('load');
+    });
+
+    window.addEventListener('resize', function() {
+        captureHeroLogoMetrics('resize');
+    });
+})();
+// #endregion
+
 function formatDriverDate(val) {
     if (!val) return '-';
     if (/^\d{4}-\d{2}-\d{2}$/.test(val)) {
