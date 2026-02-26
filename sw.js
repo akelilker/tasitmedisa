@@ -49,6 +49,7 @@ const CACHE_FILES = [
   '/icon/icon-192.svg',
   '/icon/icon-512.svg',
   '/icon/logo-header2.svg',
+  '/icon/logo-header2-mobile-header.svg',
   '/icon/logo-footer.svg',
   '/icon/marker.png',
   '/icon/otomobil.svg',
