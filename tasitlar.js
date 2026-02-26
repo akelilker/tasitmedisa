@@ -208,6 +208,51 @@
   }
   bindDOM();
 
+  const EVENT_MODAL_IDS = {
+    km: 'km-guncelle-modal',
+    bakim: 'bakim-ekle-modal',
+    kaza: 'kaza-ekle-modal',
+    sigorta: 'sigorta-guncelle-modal',
+    kasko: 'kasko-guncelle-modal',
+    muayene: 'muayene-guncelle-modal',
+    anahtar: 'anahtar-guncelle-modal',
+    kredi: 'kredi-guncelle-modal',
+    lastik: 'lastik-guncelle-modal',
+    utts: 'utts-guncelle-modal',
+    takip: 'takip-cihaz-guncelle-modal',
+    sube: 'sube-degisiklik-modal',
+    kullanici: 'kullanici-atama-modal',
+    satis: 'satis-pert-modal'
+  };
+
+  function getEventModalId(type) {
+    return EVENT_MODAL_IDS[type] || null;
+  }
+
+  function refreshModalRadioButtons(modal) {
+    if (!modal) return [];
+    modal.querySelectorAll('.radio-btn').forEach(function(btn) {
+      var fresh = btn.cloneNode(true);
+      btn.parentNode.replaceChild(fresh, btn);
+    });
+    return modal.querySelectorAll('.radio-btn');
+  }
+
+  function resetModalState(modal) {
+    if (!modal) return;
+    if (typeof window.resetModalInputs === 'function') {
+      window.resetModalInputs(modal);
+    }
+    modal.querySelectorAll('.date-placeholder').forEach(function(el) { el.remove(); });
+    modal.querySelectorAll('.universal-btn-save').forEach(function(btn) { btn.disabled = false; });
+    ['lastik-adres-wrapper-event', 'anahtar-detay-wrapper', 'kredi-detay-wrapper-event'].forEach(function(id) {
+      var wrap = modal.querySelector('#' + id);
+      if (wrap) wrap.style.display = 'none';
+    });
+    var kazaKaporta = modal.querySelector('#kaza-kaporta-container');
+    if (kazaKaporta) kazaKaporta.innerHTML = '';
+  }
+
   const modalContent = DOM.vehiclesModalContent;
   
   // Taşıt listesi tıklama delegasyonu (card/list-item tıklanınca detay aç) - tek seferlik
@@ -401,6 +446,7 @@
     
     const modal = DOM.vehiclesModal;
     if (modal) {
+      resetModalState(modal);
       modal.classList.remove('active');
       setTimeout(() => {
         modal.style.display = 'none';
@@ -1015,24 +1061,6 @@
       historyBtn.setAttribute('aria-label', 'Tarihçe');
       historyBtn.onclick = () => showVehicleHistory(null);
       brandYearRow.appendChild(historyBtn);
-
-      // #region agent log
-      requestAnimationFrame(function () {
-        var row = brandYearRow;
-        var addBtn = row.querySelector('.history-add-event-btn');
-        var histBtn = row.querySelector('.history-btn-minimal');
-        if (!row || !addBtn || !histBtn) return;
-        var rowRect = row.getBoundingClientRect();
-        var addRect = addBtn.getBoundingClientRect();
-        var histRect = histBtn.getBoundingClientRect();
-        var rowStyle = window.getComputedStyle(row);
-        var addStyle = window.getComputedStyle(addBtn);
-        var histStyle = window.getComputedStyle(histBtn);
-        var histSvg = histBtn.querySelector('svg');
-        var histSvgRect = histSvg ? histSvg.getBoundingClientRect() : null;
-        fetch('http://127.0.0.1:7824/ingest/aaeefe94-e582-470c-8671-3dbfa48b74c7',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'3ec9d8'},body:JSON.stringify({sessionId:'3ec9d8',location:'tasitlar.js:detail-row-align',message:'Olay Ekle vs Tarihce alignment',data:{rowTop:rowRect.top,rowHeight:rowRect.height,rowAlignItems:rowStyle.alignItems,addTop:addRect.top,addHeight:addRect.height,addAlignSelf:addStyle.alignSelf,addPaddingTop:addStyle.paddingTop,addLineHeight:addStyle.lineHeight,histTop:histRect.top,histHeight:histRect.height,histAlignSelf:histStyle.alignSelf,histPaddingTop:histStyle.paddingTop,histLineHeight:histStyle.lineHeight,histSvgHeight:histSvgRect?histSvgRect.height:null,histSvgTop:histSvgRect?histSvgRect.top:null,deltaTop:histRect.top-addRect.top},timestamp:Date.now(),hypothesisId:'A,B,C,D,E'})}).catch(function(){});
-      });
-      // #endregion
     }
 
     // İki kolonlu layout'u render et
@@ -1283,16 +1311,19 @@
                     id === 'vehicle-history-modal' ? DOM.vehicleHistoryModal :
                     id === 'event-menu-modal' ? DOM.eventMenuModal : null) || document.getElementById(id);
       if (modal) {
+        resetModalState(modal);
         modal.classList.remove('active', 'open');
         modal.style.display = 'none';
       }
     });
+    window.currentDetailVehicleId = null;
   };
 
   // --- Taşıt Detay Modalını Kapat ---
   window.closeVehicleDetailModal = function() {
     const modal = DOM.vehicleDetailModal;
     if (modal) {
+      resetModalState(modal);
       modal.classList.remove('active');
       setTimeout(() => modal.style.display = 'none', 300);
     }
@@ -2141,7 +2172,7 @@ function renderVehicleDetailLeft(vehicle) {
         }
       } else if (type === 'anahtar') {
         // Anahtar modal'ında radio button handler'larını ekle
-        const radioBtns = modal.querySelectorAll('.radio-btn');
+        const radioBtns = refreshModalRadioButtons(modal);
         const detayWrapper = document.getElementById('anahtar-detay-wrapper');
         const detayInput = document.getElementById('anahtar-detay-event');
         radioBtns.forEach(b => b.classList.remove('active', 'green'));
@@ -2167,7 +2198,7 @@ function renderVehicleDetailLeft(vehicle) {
         });
       } else if (type === 'kredi') {
         // Kredi modal'ında radio button handler'larını ekle
-        const radioBtns = modal.querySelectorAll('.radio-btn');
+        const radioBtns = refreshModalRadioButtons(modal);
         const detayWrapper = document.getElementById('kredi-detay-wrapper-event');
         const detayInput = document.getElementById('kredi-detay-event');
         radioBtns.forEach(b => b.classList.remove('active', 'green'));
@@ -2193,7 +2224,7 @@ function renderVehicleDetailLeft(vehicle) {
         });
       } else if (type === 'lastik') {
         // Lastik modal'ında radio button handler'larını ekle
-        const radioBtns = modal.querySelectorAll('.radio-btn');
+        const radioBtns = refreshModalRadioButtons(modal);
         const adresWrapper = document.getElementById('lastik-adres-wrapper-event');
         const adresInput = document.getElementById('lastik-adres-event');
         
@@ -2256,24 +2287,17 @@ function renderVehicleDetailLeft(vehicle) {
         // UTTS ve Takip modalları için event listener'ları modal açıldıktan sonra ekle
         if (type === 'utts' || type === 'takip') {
           requestAnimationFrame(() => {
-            const radioBtns = modal.querySelectorAll('.radio-btn');
+            const radioBtns = refreshModalRadioButtons(modal);
             if (radioBtns.length > 0) {
-              // Mevcut listener'ları kaldır ve yeniden ekle
-              radioBtns.forEach(btn => {
-                const newBtn = btn.cloneNode(true);
-                btn.parentNode.replaceChild(newBtn, btn);
-              });
-              
-              const freshRadioBtns = modal.querySelectorAll('.radio-btn');
-              freshRadioBtns.forEach(b => b.classList.remove('active', 'green'));
+              radioBtns.forEach(b => b.classList.remove('active', 'green'));
               /* Varsayılan seçim yok: nötr başlar */
               
               // Event listener'ları ekle
-              freshRadioBtns.forEach(btn => {
+              radioBtns.forEach(btn => {
                 btn.addEventListener('click', function(e) {
                   e.preventDefault();
                   e.stopPropagation();
-                  freshRadioBtns.forEach(b => b.classList.remove('active', 'green'));
+                  radioBtns.forEach(b => b.classList.remove('active', 'green'));
                   this.classList.add('active');
                   if (this.dataset.value === 'evet') this.classList.add('green');
                 });
@@ -2339,45 +2363,13 @@ function renderVehicleDetailLeft(vehicle) {
    * Olay modal'ını kapat
    */
   window.closeEventModal = function(type) {
-    const modalId = type === 'km' ? 'km-guncelle-modal' :
-                    type === 'bakim' ? 'bakim-ekle-modal' :
-                    type === 'kaza' ? 'kaza-ekle-modal' :
-                    type === 'sigorta' ? 'sigorta-guncelle-modal' :
-                    type === 'kasko' ? 'kasko-guncelle-modal' :
-                    type === 'muayene' ? 'muayene-guncelle-modal' :
-                    type === 'anahtar' ? 'anahtar-guncelle-modal' :
-                    type === 'kredi' ? 'kredi-guncelle-modal' :
-                    type === 'lastik' ? 'lastik-guncelle-modal' :
-                    type === 'utts' ? 'utts-guncelle-modal' :
-                    type === 'takip' ? 'takip-cihaz-guncelle-modal' :
-                    type === 'sube' ? 'sube-degisiklik-modal' :
-                    type === 'kullanici' ? 'kullanici-atama-modal' :
-                    type === 'satis' ? 'satis-pert-modal' : null;
+    const modalId = getEventModalId(type);
     
     if (!modalId) return;
     
     const modal = document.getElementById(modalId);
     if (modal) {
-      // Kapatırken radio ve detay alanlarını sıfırla; bir sonraki açılış nötr olsun
-      modal.querySelectorAll('.radio-btn').forEach(b => b.classList.remove('active', 'green'));
-      if (type === 'lastik') {
-        const adresW = document.getElementById('lastik-adres-wrapper-event');
-        const adresInp = document.getElementById('lastik-adres-event');
-        if (adresW) adresW.style.display = 'none';
-        if (adresInp) adresInp.value = '';
-      }
-      if (type === 'anahtar') {
-        const detayW = document.getElementById('anahtar-detay-wrapper');
-        const detayInp = document.getElementById('anahtar-detay-event');
-        if (detayW) detayW.style.display = 'none';
-        if (detayInp) detayInp.value = '';
-      }
-      if (type === 'kredi') {
-        const detayW = document.getElementById('kredi-detay-wrapper-event');
-        const detayInp = document.getElementById('kredi-detay-event');
-        if (detayW) detayW.style.display = 'none';
-        if (detayInp) detayInp.value = '';
-      }
+      resetModalState(modal);
       modal.classList.remove('active');
       setTimeout(() => modal.style.display = 'none', 300);
     }
@@ -2389,6 +2381,7 @@ function renderVehicleDetailLeft(vehicle) {
   window.closeEventMenuModal = function() {
     const modal = DOM.eventMenuModal;
     if (modal) {
+      resetModalState(modal);
       modal.classList.remove('active');
       setTimeout(() => modal.style.display = 'none', 300);
     }
@@ -3538,10 +3531,53 @@ function renderVehicleDetailLeft(vehicle) {
   window.closeVehicleHistoryModal = function() {
     const modal = DOM.vehicleHistoryModal;
     if (modal) {
+      resetModalState(modal);
+      if (DOM.historyContent) DOM.historyContent.innerHTML = '';
       modal.classList.remove('active');
       setTimeout(() => modal.style.display = 'none', 300);
     }
   };
+
+  function withSaveButtonGuard(modalId, handler) {
+    return function guardedSaveAction() {
+      var modal = document.getElementById(modalId);
+      var saveBtn = modal ? modal.querySelector('.universal-btn-save') : null;
+      if (saveBtn && saveBtn.disabled) return;
+      if (saveBtn) saveBtn.disabled = true;
+      try {
+        var result = handler.apply(this, arguments);
+        if (result && typeof result.finally === 'function') {
+          return result.finally(function() {
+            if (saveBtn) saveBtn.disabled = false;
+          });
+        }
+        if (saveBtn) saveBtn.disabled = false;
+        return result;
+      } catch (error) {
+        if (saveBtn) saveBtn.disabled = false;
+        throw error;
+      }
+    };
+  }
+
+  if (!window.__medisaSaveGuardsApplied) {
+    window.assignVehicleToBranch = withSaveButtonGuard('vehicle-detail-modal', window.assignVehicleToBranch);
+    window.saveBakimEvent = withSaveButtonGuard('bakim-ekle-modal', window.saveBakimEvent);
+    window.saveKazaEvent = withSaveButtonGuard('kaza-ekle-modal', window.saveKazaEvent);
+    window.updateSigortaInfo = withSaveButtonGuard('sigorta-guncelle-modal', window.updateSigortaInfo);
+    window.updateKaskoInfo = withSaveButtonGuard('kasko-guncelle-modal', window.updateKaskoInfo);
+    window.updateMuayeneInfo = withSaveButtonGuard('muayene-guncelle-modal', window.updateMuayeneInfo);
+    window.updateAnahtarInfo = withSaveButtonGuard('anahtar-guncelle-modal', window.updateAnahtarInfo);
+    window.updateKrediInfo = withSaveButtonGuard('kredi-guncelle-modal', window.updateKrediInfo);
+    window.updateKmInfo = withSaveButtonGuard('km-guncelle-modal', window.updateKmInfo);
+    window.updateLastikInfo = withSaveButtonGuard('lastik-guncelle-modal', window.updateLastikInfo);
+    window.updateUTTSInfo = withSaveButtonGuard('utts-guncelle-modal', window.updateUTTSInfo);
+    window.updateTakipCihazInfo = withSaveButtonGuard('takip-cihaz-guncelle-modal', window.updateTakipCihazInfo);
+    window.updateSubeDegisiklik = withSaveButtonGuard('sube-degisiklik-modal', window.updateSubeDegisiklik);
+    window.updateKullaniciAtama = withSaveButtonGuard('kullanici-atama-modal', window.updateKullaniciAtama);
+    window.saveSatisPert = withSaveButtonGuard('satis-pert-modal', window.saveSatisPert);
+    window.__medisaSaveGuardsApplied = true;
+  }
 
   /**
    * Bildirimleri güncelle (muayene, sigorta, kasko)

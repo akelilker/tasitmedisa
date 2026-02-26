@@ -116,6 +116,13 @@
     window.closeBranchFormModal = function closeBranchFormModal() {
       const modal = document.getElementById('branch-form-modal');
       if (!modal) return;
+      if (typeof window.resetModalInputs === 'function') {
+        window.resetModalInputs(modal);
+      }
+      const form = $('#branch-form', modal);
+      if (form) form.reset();
+      const deleteBtn = $('#branch-delete-btn', modal);
+      if (deleteBtn) deleteBtn.style.display = 'none';
       modal.classList.remove('active');
       setTimeout(() => modal.style.display = 'none', 300);
     };
@@ -136,10 +143,12 @@
      * (Hata yakalama henüz eklenmedi - rapor önerisi #6)
      */
     window.saveBranch = function saveBranch() {
+      const modal = document.getElementById('branch-form-modal');
+      if (!modal) return;
+      const saveBtn = modal.querySelector('.universal-btn-save[onclick*="saveBranch"]') || modal.querySelector('.universal-btn-save');
+      if (saveBtn && saveBtn.disabled) return;
+      if (saveBtn) saveBtn.disabled = true;
       try {
-        const modal = document.getElementById('branch-form-modal');
-        if (!modal) return;
-  
         const idInput = $('#branch-id', modal);
       const nameInput = $('#branch-name', modal);
       const cityInput = $('#branch-city', modal);
@@ -186,6 +195,8 @@
         alert(id ? 'Şube Güncellendi.' : 'Şube Eklendi.');
       } catch (error) {
         alert('Şube kaydı sırasında bir hata oluştu! Lütfen tekrar deneyin.');
+      } finally {
+        if (saveBtn) saveBtn.disabled = false;
       }
     };
   
@@ -600,6 +611,16 @@
     window.closeUserFormModal = function closeUserFormModal() {
       const modal = document.getElementById('user-form-modal');
       if (!modal) return;
+      if (typeof window.resetModalInputs === 'function') {
+        window.resetModalInputs(modal);
+      }
+      const form = $('#user-form', modal);
+      if (form) form.reset();
+      closeUserVehiclesDropdown();
+      const searchInput = document.getElementById('user-vehicles-search');
+      if (searchInput) searchInput.value = '';
+      const deleteBtn = $('#user-delete-btn', modal);
+      if (deleteBtn) deleteBtn.style.display = 'none';
       modal.classList.remove('active');
       setTimeout(() => modal.style.display = 'none', 300);
     };
@@ -654,8 +675,12 @@
     }
   
     window.saveUser = function saveUser() {
+      const modal = document.getElementById('user-form-modal');
+      if (!modal) return;
+      const saveBtn = modal.querySelector('.universal-btn-save[onclick*="saveUser"]') || modal.querySelector('.universal-btn-save');
+      if (saveBtn && saveBtn.disabled) return;
+      if (saveBtn) saveBtn.disabled = true;
       try {
-        const modal = document.getElementById('user-form-modal');
         if (!modal) {
           alert('Form modalı bulunamadı!');
           return;
@@ -776,6 +801,8 @@
       } catch (error) {
         console.error('Kullanıcı kayıt hatası:', error);
         alert('Kullanıcı kaydı sırasında bir hata oluştu! Lütfen tekrar deneyin.');
+      } finally {
+        if (saveBtn) saveBtn.disabled = false;
       }
     };
   
