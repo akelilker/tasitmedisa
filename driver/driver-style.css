@@ -3505,14 +3505,27 @@ body.driver-action-block-open .driver-footer-back-wrap {
     border-right: none !important;
   }
 
-  /* iOS PWA (Kullanıcı paneli): ana başlık tek satırda kalsın */
-  .dashboard-page .hero.hero-two-rows .hero-row-top {
+  /* iOS PWA (Kullanıcı paneli): ana başlık tam metin tek satır + logo ince ayarı */
+  .dashboard-page .hero.hero-two-rows .hero-row-top,
+  .login-page .hero.hero-two-rows .hero-row-top {
     flex-wrap: nowrap !important;
+    gap: 0 !important;
   }
-  .dashboard-page .hero.hero-two-rows .hero-title-line {
+  .dashboard-page .hero.hero-two-rows .hero-row-top .hero-logo,
+  .login-page .hero.hero-two-rows .hero-row-top .hero-logo {
+    /* Mevcut mobil konuma göre: 2px sağa, 3px yukarı */
+    transform: translate(0, -2px) !important;
+    margin-right: 10px !important;
+  }
+  .dashboard-page .hero.hero-two-rows .hero-title-line,
+  .login-page .hero.hero-two-rows .hero-title-line {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
     white-space: nowrap !important;
-    font-size: clamp(17px, 4.1vw, 21px) !important;
-    letter-spacing: 1.6px !important;
+    overflow: hidden !important;
+    text-overflow: clip !important;
+    font-size: clamp(14px, 3.75vw, 18px) !important;
+    letter-spacing: clamp(0.7px, 0.2vw, 1.2px) !important;
     line-height: 1.15 !important;
   }
 
