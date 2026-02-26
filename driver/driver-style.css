@@ -57,8 +57,8 @@
 /* Splash: açılış logosu 120px, aspect-ratio ile alan rezerve */
 .driver-splash-logo {
   width: 120px;
-  height: auto;
-  aspect-ratio: 624.89 / 357.04; /* SVG oranı – layout shift yok */
+  height: 69px; /* SVG oranı 624.89:357.04 – layout shift önleme */
+  flex-shrink: 0;
   object-fit: contain;
   filter: brightness(0.88);
 }
@@ -933,9 +933,10 @@ body.driver-modal-open {
   .driver-success-msg { font-size: 16.5px; }
   .driver-km-success-msg { font-size: 16.5px; }
 
-  /* Splash logosu mobilde 120px */
+  /* Splash logosu mobilde 120x69 */
   .driver-splash-logo {
     width: 120px !important;
+    height: 69px !important;
   }
   /* MEDISA hero logosu mobilde – 54px */
   .dashboard-page .hero-logo {
