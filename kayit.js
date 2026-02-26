@@ -727,23 +727,18 @@
       // Sigorta Bitiş Tarihi (index 0) - bugün + 1 yıl
       if (dateInputs[0]) {
         dateInputs[0].value = formatDate(nextYear);
-        dateInputs[0].classList.add('has-value'); // Stil için
-        dateInputs[0].style.color = '#888'; // Görünür olması için
       }
       
       // Kasko Bitiş Tarihi (index 1) boş kalacak
       if (dateInputs[1]) {
         dateInputs[1].value = '';
-        dateInputs[1].classList.remove('has-value'); // Stil için
-        dateInputs[1].style.color = 'transparent'; // Placeholder görünmesi için
       }
       
       // Muayene Bitiş Tarihi (index 2) boş kalacak
       if (dateInputs[2]) {
         dateInputs[2].value = '';
-        dateInputs[2].classList.remove('has-value'); // Stil için
-        dateInputs[2].style.color = 'transparent'; // Placeholder görünmesi için
       }
+      syncDateInputVisibility(modal);
     }
 
     // Reset Selects & Buttons
@@ -786,6 +781,29 @@
     if (pickerOverlay) pickerOverlay.style.display = 'none';
   }
 
+  /**
+   * Tarih inputlarının görünürlük sınıfını/renk durumunu tek noktadan senkronlar.
+   * Mobil Safari'de ilk açılışta değerin görünmemesi problemine karşı kullanılır.
+   */
+  function syncSingleDateInputVisibility(input) {
+    if (!input) return;
+    const hasValue = !!input.value;
+    input.classList.toggle('has-value', hasValue);
+    const isVehicleRightDate = !!input.closest('#vehicle-modal .modal-column-right');
+    // Sağ kolondaki tarih alanlarında (Sigorta/Kasko/Muayene) değeri gizleme:
+    // iOS Safari ilk render'da metni boş gösterebildiği için renk daima görünür tutulur.
+    if (isVehicleRightDate) {
+      input.style.color = '#888';
+      return;
+    }
+    input.style.color = (hasValue || input === document.activeElement) ? '#888' : 'transparent';
+  }
+
+  function syncDateInputVisibility(modal) {
+    if (!modal) return;
+    $all('input[type="date"].form-input', modal).forEach(syncSingleDateInputVisibility);
+  }
+
   // --- Date Placeholder Helper ---
   /**
    * Tarih input'larına özel placeholder ekler (iOS uyumlu)
@@ -810,7 +828,7 @@
     const existing = input.parentElement.querySelector('.date-placeholder');
     if (existing) existing.remove();
 
-    if (input.value) input.classList.add('has-value');
+    syncSingleDateInputVisibility(input);
 
     // Mobil kontrolü
     const isMobile = window.innerWidth <= 640;
@@ -855,6 +873,7 @@
     
     // Placeholder görünürlüğünü kontrol et
     function updatePlaceholder() {
+      syncSingleDateInputVisibility(input);
       if (input.value || input === document.activeElement) {
         placeholder.style.display = 'none';
       } else {
@@ -863,36 +882,18 @@
     }
     
       // Event listener'lar
-      input.addEventListener('change', () => {
-        const hasValue = !!input.value;
-        input.classList.toggle('has-value', hasValue);
-        // Değer girildiğinde input rengini görünür yap
-        if (hasValue) {
-          input.style.color = '#888';
-        } else {
-          input.style.color = 'transparent';
-        }
+      input.addEventListener('change', updatePlaceholder);
+      input.addEventListener('input', updatePlaceholder);
+      
+      input.addEventListener('focus', () => {
         updatePlaceholder();
       });
       
-      input.addEventListener('focus', () => {
-        placeholder.style.display = 'none';
-        input.style.color = '#888'; // Focus olduğunda görünür
-      });
-      
       input.addEventListener('blur', () => {
-        if (!input.value) {
-          input.style.color = 'transparent'; // Boşsa gizle
-        }
         updatePlaceholder();
       });
     
       // İlk durumu kontrol et
-      if (!input.value) {
-        input.style.color = 'transparent'; // Boşsa gizle
-      } else {
-        input.style.color = '#888'; // Değer varsa görünür
-      }
       updatePlaceholder();
     }
 
@@ -918,6 +919,10 @@
         $all('input[type="date"].form-input', modal).forEach(input => {
           setupDatePlaceholder(input);
         });
+        syncDateInputVisibility(modal);
+        setTimeout(() => syncDateInputVisibility(modal), 0);
+        setTimeout(() => syncDateInputVisibility(modal), 80);
+        setTimeout(() => syncDateInputVisibility(modal), 180);
         // Hover class'larını ayarla
         updateRadioButtonHover();
       });
@@ -927,9 +932,14 @@
   window.closeVehicleModal = function() {
     const modal = getModal();
     if (modal) {
+      if (typeof window.resetModalInputs === 'function') {
+        window.resetModalInputs(modal);
+      }
       modal.classList.remove('active');
       setTimeout(() => modal.style.display = 'none', 300);
       resetVehicleForm();
+      isEditMode = false;
+      editingVehicleId = null;
     }
   };
 
@@ -1050,6 +1060,7 @@
     if (vehicle.muayeneDate) {
       $all('input[type="date"].form-input', modal)[2].value = vehicle.muayeneDate;
     }
+    syncDateInputVisibility(modal);
 
     // Yedek Anahtar (Var=yeşil, Yok=kırmızı)
     const anahtarSection = $(`.form-section-inline[data-section="anahtar"]`, modal);
@@ -1121,6 +1132,10 @@
       $all('input[type="date"].form-input', modal).forEach(input => {
         setupDatePlaceholder(input);
       });
+      syncDateInputVisibility(modal);
+      setTimeout(() => syncDateInputVisibility(modal), 0);
+      setTimeout(() => syncDateInputVisibility(modal), 80);
+      setTimeout(() => syncDateInputVisibility(modal), 180);
       updateRadioButtonHover();
     });
 
@@ -1164,10 +1179,12 @@
    * (Hata yakalama henüz eklenmedi - rapor önerisi #6)
    */
   window.saveVehicleRecord = function() {
+    const modal = getModal();
+    if (!modal) return;
+    const saveBtn = modal.querySelector('.universal-btn-save[onclick*="saveVehicleRecord"]') || modal.querySelector('.universal-btn-save');
+    if (saveBtn && saveBtn.disabled) return;
+    if (saveBtn) saveBtn.disabled = true;
     try {
-      const modal = getModal();
-      if (!modal) return;
-
       // Zorunlu alanları kontrol et ve kırmızı çerçeve ekle
     const plateEl = document.getElementById("vehicle-plate");
     const yearEl = document.getElementById("vehicle-year");
@@ -1298,6 +1315,8 @@
     showTescilTarihConfirmModal(record);
     } catch (error) {
       alert('Kayıt sırasında bir hata oluştu! Lütfen tekrar deneyin.');
+    } finally {
+      if (saveBtn) saveBtn.disabled = false;
     }
   };
 
