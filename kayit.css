@@ -1354,7 +1354,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-body .modal-column-right {
         display: flex;
         flex-direction: column;
-        align-self: start;
+        min-height: 0;
     }
     #vehicle-modal .modal-body .modal-column-right {
         min-width: 0;
