@@ -54,45 +54,36 @@ function clearSessionGreenFeedback() { lastCompletedActionInSession = null; }
 window.addEventListener('pagehide', clearSessionGreenFeedback);
 document.addEventListener('visibilitychange', function() { if (document.hidden) clearSessionGreenFeedback(); });
 
+// #region agent log
+(function debugDriverStyles(){
+  function send(msg, data){ fetch('http://127.0.0.1:7824/ingest/aaeefe94-e582-470c-8671-3dbfa48b74c7',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'a3a056'},body:JSON.stringify({sessionId:'a3a056',location:'driver-script.js',message:msg,data:data,timestamp:Date.now()})}).catch(function(){}); }
+  function gs(el,props){ if(!el) return null; var s=getComputedStyle(el),r={}; props.forEach(function(p){r[p]=s.getPropertyValue(p);}); r._tag=el.tagName; r._class=el.className; return r; }
+  setTimeout(function(){
+    var cw=document.querySelector('.content-wrap.driver-content-wrap');
+    var rp=document.querySelector('.driver-right-panel');
+    var lp=document.querySelector('.driver-left-panel');
+    var ac=document.querySelector('.app-container.driver-dashboard-container');
+    var ft=document.getElementById('app-footer');
+    var pi=document.querySelector('.driver-panels-inner');
+    var bp=['overflow-x','overflow-y','scrollbar-width','border-left','border-right','border-bottom','border-top','box-shadow','height','max-height'];
+    send('H1-scrollbar-contentWrap',gs(cw,bp));
+    send('H1-scrollbar-rightPanel',gs(rp,bp.concat(['display','flex-direction'])));
+    send('H1-scrollbar-panelsInner',gs(pi,bp));
+    send('H2-borders-appContainer',gs(ac,['border-left','border-right','border-bottom','border-top','height','min-height','box-shadow']));
+    send('H2-borders-footer',gs(ft,['border-left','border-right','border-top','height','position','bottom','box-shadow']));
+    send('H3-divider-leftPanel',gs(lp,['border-right','border-right-width','border-right-color','border-right-style']));
+    if(rp){send('H1-scrollbar-rpScrollHeight',{scrollHeight:rp.scrollHeight,clientHeight:rp.clientHeight,offsetHeight:rp.offsetHeight,overflowing:rp.scrollHeight>rp.clientHeight});}
+    if(cw){send('H1-scrollbar-cwScrollHeight',{scrollHeight:cw.scrollHeight,clientHeight:cw.clientHeight,offsetHeight:cw.offsetHeight,overflowing:cw.scrollHeight>cw.clientHeight});}
+  },2000);
+})();
+// #endregion
+
 /** Modal açıkken body scroll kilitlensin (sadece modal içi kayar) */
 function updateDriverModalBodyClass() {
   var open = document.querySelector('.driver-modal.show');
   if (open) document.body.classList.add('driver-modal-open');
   else document.body.classList.remove('driver-modal-open');
 }
-
-// #region agent log
-function logDriverContainerOverflow() {
-  var container = document.querySelector('.app-container.driver-dashboard-container');
-  var footer = document.getElementById('app-footer');
-  var backWrap = document.querySelector('.driver-footer-back-wrap');
-  if (!container) return;
-  var cr = container.getBoundingClientRect();
-  var data = { page: document.getElementById('login-form') ? 'login' : 'dashboard', container: { left: cr.left, right: cr.right, top: cr.top, bottom: cr.bottom, width: cr.width }, overflow: {} };
-  var cs = window.getComputedStyle(container);
-  data.containerOverflow = cs.overflow + ' / ' + cs.overflowX + ' / ' + cs.overflowY;
-  if (footer) {
-    var fr = footer.getBoundingClientRect();
-    data.footer = { left: fr.left, right: fr.right, width: fr.width };
-    data.overflow.footerLeft = fr.left < cr.left;
-    data.overflow.footerRight = fr.right > cr.right;
-    data.overflow.footerBottom = fr.bottom > cr.bottom;
-  }
-  if (backWrap) {
-    var br = backWrap.getBoundingClientRect();
-    data.backWrap = { left: br.left, right: br.right, width: br.width };
-    data.overflow.backWrapLeft = br.left < cr.left;
-    data.overflow.backWrapRight = br.right > cr.right;
-  }
-  fetch('http://127.0.0.1:7824/ingest/aaeefe94-e582-470c-8671-3dbfa48b74c7',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'a3a056'},body:JSON.stringify({sessionId:'a3a056',location:'driver-script.js:logDriverContainerOverflow',message:'container overflow check',data:data,timestamp:Date.now(),hypothesisId:'A-C-D-E'})}).catch(function(){});
-}
-if (typeof document !== 'undefined' && document.addEventListener) {
-  document.addEventListener('DOMContentLoaded', function() {
-    setTimeout(logDriverContainerOverflow, 150);
-    window.addEventListener('resize', function() { setTimeout(logDriverContainerOverflow, 100); });
-  });
-}
-// #endregion
 
 /* =========================================
    LOGIN SAYFASI

@@ -13,6 +13,25 @@
   display: none;
 }
 
+/* --- style-core.css border çakışmalarını temizle (driver sayfalarında border tek kaynaktan gelsin) --- */
+/* style-core .app-container üst border → driver-header-fixed zaten veriyor, iptal */
+.dashboard-page .app-container.driver-dashboard-container,
+.login-page .app-container.driver-dashboard-container {
+  border-top: none !important;
+}
+/* style-core .app-container::after inset red glow → container kendi glow'unu kullanır, iptal */
+.dashboard-page .app-container.driver-dashboard-container::after,
+.login-page .app-container.driver-dashboard-container::after {
+  box-shadow: none !important;
+}
+/* style-core .content-wrap sol/sağ border + glow → container zaten veriyor, iptal */
+.dashboard-page .content-wrap.driver-content-wrap,
+.login-page .content-wrap.driver-content-wrap {
+  border-left: none !important;
+  border-right: none !important;
+  box-shadow: none !important;
+}
+
 /* --- Splash ekranı – link/PWA ile açılışta 3 sn --- */
 .driver-splash {
   position: fixed;
@@ -97,15 +116,26 @@ body.driver-modal-open {
 }
 
 .driver-dashboard-container {
+  height: 100vh;
+  height: 100dvh;
   min-height: 100vh;
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
   overflow: hidden;
+}
+.dashboard-page .driver-dashboard-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   border-left: 1.2px solid var(--border-red-tech);
   border-right: 1.2px solid var(--border-red-tech);
-  border-bottom: 1.2px solid var(--border-red-tech);
+  pointer-events: none;
+  z-index: 11;
 }
 
 /* Ana başlık (hero + driver-below-hero) sabit üstte – plaka yukarı, container çerçevesi devam */
@@ -155,6 +185,53 @@ body.driver-modal-open {
   justify-content: center;
   gap: 2px;
   min-width: 0;
+}
+.hero-title-wrap h1 {
+  text-align: center !important;
+}
+
+/* Driver: Başlık alanı üst satır + alt satır (iki parça) */
+.hero.hero-two-rows {
+  flex-direction: column !important;
+  align-items: stretch !important;
+  gap: 4px !important;
+}
+.hero.hero-two-rows .hero-row-top {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  min-width: 0;
+}
+.hero.hero-two-rows .hero-row-top .hero-logo {
+  flex-shrink: 0;
+}
+.hero.hero-two-rows .hero-title-line {
+  flex: 0 1 auto;
+  min-width: 0;
+  margin: 0;
+  font-size: clamp(16px, 4.5vw, 24px);
+  font-weight: 800;
+  letter-spacing: clamp(1px, 0.5vw, 4px);
+  text-transform: uppercase;
+  text-align: center;
+  background: linear-gradient(to bottom, #c2d4df 0%, #ffffff 40%, #9aadba 52%, #d6e0e8 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  color: transparent !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.hero.hero-two-rows .hero-row-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+}
+.hero.hero-two-rows .hero-row-bottom .hero-panel-subtitle {
+  margin: 0;
 }
 
 .hero-subtitle {
@@ -241,7 +318,8 @@ body.driver-modal-open {
 }
 
 /* KULLANICI PANELİ: h1 altında, 1pt küçük, aynı renk (metalik gradient) */
-.hero-title-wrap .hero-panel-subtitle {
+.hero-title-wrap .hero-panel-subtitle,
+.hero-row-bottom .hero-panel-subtitle {
   font-size: 17px;
   font-weight: 800;
   margin: 0;
@@ -378,7 +456,7 @@ body.driver-modal-open {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  border-right: 0.375px solid var(--theme-color);
+  border-right: 1.2px solid var(--border-red-tech);
   padding-right: 12px;
   overflow: hidden;
   flex-shrink: 0;
@@ -395,7 +473,9 @@ body.driver-modal-open {
   -ms-overflow-style: none;
 }
 .driver-right-panel::-webkit-scrollbar {
-  display: none;
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }
 
 .driver-user-plate-row {
@@ -602,6 +682,11 @@ body.driver-modal-open {
   flex-direction: column;
   gap: 0;
   min-height: 0;
+  max-width: 100%;
+  min-width: 0;
+}
+.driver-action-area .form-group {
+  min-width: 0;
 }
 .driver-action-area-inner {
   display: flex;
@@ -778,8 +863,8 @@ body.driver-modal-open {
   .driver-panels-inner { gap: 8px; }
   .driver-left-panel {
     flex: 0 0 35%;
-    border-right-width: 0.25px;
-    border-right-color: rgba(var(--theme-color-rgb), 0.45);
+    border-right-width: 1.2px;
+    border-right-color: var(--border-red-tech);
   }
   .driver-right-panel { flex: 1; }
   .driver-vehicle-info {
@@ -838,10 +923,10 @@ body.driver-modal-open {
   .driver-splash-logo {
     width: 120px !important;
   }
-  /* MEDISA hero logosu mobilde %20 küçültme (54→43px) */
+  /* MEDISA hero logosu mobilde – 54px */
   .dashboard-page .hero-logo {
-    flex: 0 0 43px !important;
-    width: 43px !important;
+    flex: 0 0 54px !important;
+    width: 54px !important;
     transform: translate(-2px, 4px) !important; /* 1px + 3px aşağı (style-core 1px’e ek) */
     margin-top: 0 !important;
   }
@@ -849,18 +934,18 @@ body.driver-modal-open {
     width: 100% !important;
     height: auto !important;
   }
-  /* Login logosu mobilde %20 küçültme (54→43px) */
+  /* Login logosu mobilde – 54px */
   .login-page .hero-logo {
-    flex: 0 0 43px !important;
-    width: 43px !important;
+    flex: 0 0 54px !important;
+    width: 54px !important;
   }
   .login-page .hero-logo img {
     width: 100% !important;
     height: auto !important;
   }
-  /* Ortadaki dikey kırmızı çizgi – ufak kalınlaştırma (siliklik giderildi) */
+  /* Ortadaki dikey kırmızı çizgi – yan çizgilerle aynı */
   .driver-left-panel {
-    border-right-width: 0.75px !important;
+    border-right-width: 1.2px !important;
   }
   /* Şube etiketinden itibaren 3px aşağı */
   .driver-left-panel .driver-vehicle-info {
@@ -1158,11 +1243,16 @@ body.driver-modal-open {
   max-width: 90vw;
   max-height: 240px;
   overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
   background: var(--bg);
   border: 1px solid rgba(var(--theme-color-rgb), 0.25);
   border-radius: 8px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(var(--theme-color-rgb), 0.08);
   z-index: 100;
+}
+.driver-plate-dropdown::-webkit-scrollbar {
+  display: none;
 }
 .driver-plate-dropdown-item {
   padding: 10px 14px;
@@ -1796,9 +1886,6 @@ body.driver-modal-open {
 #driver-kasko-modal .driver-modal-content,
 #driver-kasko-modal .modal-container {
   background: var(--modal-bg) !important;
-  border: 0.5px solid rgba(255, 255, 255, 0.35) !important;
-  box-shadow: 0 0 40px rgba(0, 0, 0, 0.9) !important;
-  border-radius: var(--modal-radius) !important;
   width: 100%;
   max-width: 500px;
   margin: max(12px, env(safe-area-inset-top)) auto 54px auto;
@@ -2238,9 +2325,6 @@ body.driver-modal-open {
   box-sizing: border-box !important;
   min-width: 0 !important;
   overflow: hidden !important;
-  border-left: 1.2px solid var(--border-red-tech) !important;
-  border-right: 1.2px solid var(--border-red-tech) !important;
-  border-bottom: 1.2px solid var(--border-red-tech) !important;
 }
 
 /* Login content-wrap: anasayfa ile aynı hizalama (padding, safe-area) */
@@ -2256,6 +2340,28 @@ body.driver-modal-open {
   scrollbar-width: none !important;
   -ms-overflow-style: none !important;
   -webkit-overflow-scrolling: touch !important;
+}
+
+/* Login sayfası: tüm metinler 8px sola kaydırıldı */
+.login-page .driver-header-fixed {
+  padding-left: 0 !important;
+}
+.login-page .hero {
+  padding-left: 8px !important;
+  padding-right: 24px !important;
+}
+.login-page .content-wrap {
+  padding-left: 0 !important;
+}
+.login-page .login-container {
+  padding-left: 22px !important;
+  padding-right: 30px !important;
+}
+.login-page .driver-footer-back-wrap {
+  padding-left: 4px !important;
+}
+.login-page #app-footer.login-footer .footer-content {
+  padding-left: 4px !important;
 }
 
 .login-page .content-wrap::-webkit-scrollbar {
@@ -2352,32 +2458,40 @@ body.driver-action-block-open .driver-footer-back-wrap {
   position: fixed;
   bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0) + 9px);
   left: 50%;
-  transform: translateX(calc(-50% - 3px));
+  transform: translateX(-50%);
   max-width: 500px;
   width: 100%;
   box-sizing: border-box;
   z-index: 9999;
-  padding-left: 12px;
-  padding-right: 12px;
+  padding-left: 12px !important;
+  padding-right: 12px !important;
   overflow: hidden;
 }
 .driver-footer-back-wrap .universal-back-btn {
   display: inline-block;
   max-width: 100%;
-  color: var(--theme-color) !important;
+  color: var(--theme-color) !important; /* Kırmızı, pasifken yarı saydam */
+  opacity: 0.5;
   font-size: 14px;
   font-weight: 500;
   letter-spacing: 0.5px;
-  transition: opacity 0.2s;
+  transition: opacity 0.2s, color 0.2s;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 .driver-footer-back-wrap .universal-back-btn:hover {
-  opacity: 0.9;
+  color: var(--txt-white) !important;
+  opacity: 1;
 }
 .driver-footer-back-wrap .universal-back-label {
-  color: var(--theme-color) !important;
+  color: #adb5bd !important; /* Soluk – ana uygulama anasayfadaki gibi */
+}
+.driver-footer-back-wrap .universal-back-btn:hover .universal-back-label {
+  color: var(--txt-white) !important;
+}
+.driver-footer-back-wrap .universal-back-btn:hover .universal-back-label {
+  color: var(--txt-white) !important;
 }
 @media (min-width: 769px) {
   .login-page .driver-header-fixed {
@@ -2391,7 +2505,7 @@ body.driver-action-block-open .driver-footer-back-wrap {
 @media (min-width: 769px) {
   .driver-footer-back-wrap {
     bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0) + 3px);
-    transform: translateX(calc(-50% - 8px));
+    transform: translateX(-50%);
   }
   .driver-footer-back-wrap .universal-back-label {
     font-size: 13px;
@@ -2532,7 +2646,7 @@ body.driver-action-block-open .driver-footer-back-wrap {
 }
 
 .login-form .form-group input::placeholder {
-  color: var(--data-value-color, #a0aec0) !important;
+  color: rgba(160, 174, 192, 0.6) !important; /* Örn: Savaş – çok az daha silik */
   opacity: 1;
 }
 
@@ -2819,8 +2933,7 @@ body.driver-action-block-open .driver-footer-back-wrap {
     height: 100% !important;
     max-height: 100% !important;
     background: #080d16 !important;
-    border-radius: 0 !important;
-    border: 0.7px solid rgba(255, 255, 255, 0.35) !important;
+    border-radius: 10px !important;
     border-top: none !important;
     padding-top: 0 !important;
     overflow: hidden !important;
@@ -2887,10 +3000,10 @@ body.driver-action-block-open .driver-footer-back-wrap {
     color: var(--txt) !important;
   }
 
-  /* Ana başlık çerçevesi – mobilde border + kırmızı ışıklar (login ile uyumlu) */
+  /* Ana başlık: yan çizgiler sadece container'da (çift border olmasın) */
   .dashboard-page .driver-header-fixed {
-    border-left-width: 1.2px !important;
-    border-right-width: 1.2px !important;
+    border-left: none !important;
+    border-right: none !important;
   }
   .dashboard-page .hero {
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45), 0 4px 24px rgba(var(--theme-color-rgb), 0.18) !important;
@@ -3181,10 +3294,10 @@ body.driver-action-block-open .driver-footer-back-wrap {
     padding-bottom: max(12px, env(safe-area-inset-bottom, 0)) !important;
   }
 
-  /* 5. Login header = panel ile aynı (driver-header-fixed zaten uygulanıyor) */
+  /* 5. Login header: yan çizgiler sadece container'da (çift border olmasın) */
   .login-page .driver-header-fixed {
-    border-left: 1.2px solid var(--border-red-tech) !important;
-    border-right: 1.2px solid var(--border-red-tech) !important;
+    border-left: none !important;
+    border-right: none !important;
     padding-left: 5px !important;
     padding-right: 5px !important;
   }

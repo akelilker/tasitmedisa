@@ -943,8 +943,8 @@ html { overflow-x: hidden; }
   height: calc(100vh - max(12px, env(safe-area-inset-top)) - var(--modal-margin-bottom-desktop));
   height: calc(100dvh - max(12px, env(safe-area-inset-top)) - var(--modal-margin-bottom-desktop));
   border-radius: var(--modal-radius);
-  border: 1px solid var(--border-subtle);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2), 0 4px 16px rgba(var(--theme-color-rgb), 0.1), 0 0 40px rgba(0, 0, 0, 0.9);
+  border: 0.5px solid var(--border-medium);
+  box-shadow: 0 0 40px var(--shadow-modal);
   overflow-x: hidden;
   pointer-events: auto;
   overscroll-behavior: none;
@@ -1372,8 +1372,8 @@ body.modal-open .user-panel-link {
         height: 100% !important;
         max-height: 100% !important;
         border-radius: 10px !important;
-        border: 1px solid rgba(255, 255, 255, 0.35) !important;
-        box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08);
+        border: 0.5px solid var(--border-medium) !important;
+        box-shadow: 0 0 40px var(--shadow-modal);
         background: var(--modal-bg) !important;
         padding: 0 !important;
         padding-top: 0 !important;
