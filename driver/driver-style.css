@@ -190,30 +190,48 @@ body.driver-modal-open {
   text-align: center !important;
 }
 
-/* Driver: Logo ile başlık arasında boşluk yok, [logo+başlık] yatayda ortalanmış */
-.dashboard-page .hero,
-.login-page .hero {
-  justify-content: center !important;
+/* Driver: Başlık alanı üst satır + alt satır (iki parça) */
+.hero.hero-two-rows {
+  flex-direction: column !important;
+  align-items: stretch !important;
+  gap: 4px !important;
 }
-.dashboard-page .hero::before,
-.login-page .hero::before,
-.dashboard-page .hero::after,
-.login-page .hero::after {
-  content: '';
-  flex: 1;
+.hero.hero-two-rows .hero-row-top {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
   min-width: 0;
 }
-.dashboard-page .hero-spacer,
-.login-page .hero-spacer {
-  flex: 0 0 0 !important;
-  width: 0 !important;
-  overflow: hidden !important;
+.hero.hero-two-rows .hero-row-top .hero-logo {
+  flex-shrink: 0;
 }
-.dashboard-page .hero-title-wrap,
-.login-page .hero-title-wrap {
-  flex: 0 1 auto !important; /* İçeriğe göre genişlik, logo ile bitişik */
-  padding-left: 0 !important;
-  margin-left: 0 !important;
+.hero.hero-two-rows .hero-title-line {
+  flex: 0 1 auto;
+  min-width: 0;
+  margin: 0;
+  font-size: clamp(16px, 4.5vw, 24px);
+  font-weight: 800;
+  letter-spacing: clamp(1px, 0.5vw, 4px);
+  text-transform: uppercase;
+  text-align: center;
+  background: linear-gradient(to bottom, #c2d4df 0%, #ffffff 40%, #9aadba 52%, #d6e0e8 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  color: transparent !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.hero.hero-two-rows .hero-row-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+}
+.hero.hero-two-rows .hero-row-bottom .hero-panel-subtitle {
+  margin: 0;
 }
 
 .hero-subtitle {
@@ -300,7 +318,8 @@ body.driver-modal-open {
 }
 
 /* KULLANICI PANELİ: h1 altında, 1pt küçük, aynı renk (metalik gradient) */
-.hero-title-wrap .hero-panel-subtitle {
+.hero-title-wrap .hero-panel-subtitle,
+.hero-row-bottom .hero-panel-subtitle {
   font-size: 17px;
   font-weight: 800;
   margin: 0;
@@ -904,10 +923,10 @@ body.driver-modal-open {
   .driver-splash-logo {
     width: 120px !important;
   }
-  /* MEDISA hero logosu mobilde – metinleri bozmayacak kadar büyütme (52→58px) */
+  /* MEDISA hero logosu mobilde – 54px */
   .dashboard-page .hero-logo {
-    flex: 0 0 58px !important;
-    width: 58px !important;
+    flex: 0 0 54px !important;
+    width: 54px !important;
     transform: translate(-2px, 4px) !important; /* 1px + 3px aşağı (style-core 1px’e ek) */
     margin-top: 0 !important;
   }
@@ -915,10 +934,10 @@ body.driver-modal-open {
     width: 100% !important;
     height: auto !important;
   }
-  /* Login logosu mobilde – metinleri bozmayacak kadar büyütme (52→58px) */
+  /* Login logosu mobilde – 54px */
   .login-page .hero-logo {
-    flex: 0 0 58px !important;
-    width: 58px !important;
+    flex: 0 0 54px !important;
+    width: 54px !important;
   }
   .login-page .hero-logo img {
     width: 100% !important;
@@ -2321,6 +2340,28 @@ body.driver-modal-open {
   scrollbar-width: none !important;
   -ms-overflow-style: none !important;
   -webkit-overflow-scrolling: touch !important;
+}
+
+/* Login sayfası: tüm metinler 8px sola kaydırıldı */
+.login-page .driver-header-fixed {
+  padding-left: 0 !important;
+}
+.login-page .hero {
+  padding-left: 8px !important;
+  padding-right: 24px !important;
+}
+.login-page .content-wrap {
+  padding-left: 0 !important;
+}
+.login-page .login-container {
+  padding-left: 22px !important;
+  padding-right: 30px !important;
+}
+.login-page .driver-footer-back-wrap {
+  padding-left: 4px !important;
+}
+.login-page #app-footer.login-footer .footer-content {
+  padding-left: 4px !important;
 }
 
 .login-page .content-wrap::-webkit-scrollbar {
