@@ -1806,6 +1806,13 @@
                 if(btn.dataset.value === "var") {
                     nextElem.classList.add("input-visible");
                     conditionalInput.focus();
+                    // #region agent log
+                    requestAnimationFrame(function() {
+                        var cols = getModal() && getModal().querySelector('.modal-columns');
+                        var sh = cols ? cols.scrollHeight : 0, ch = cols ? cols.clientHeight : 0;
+                        fetch('http://127.0.0.1:7824/ingest/aaeefe94-e582-470c-8671-3dbfa48b74c7',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'051662'},body:JSON.stringify({sessionId:'051662',location:'kayit.js:Var input-visible',message:'scroll when Var',data:{sectionId:conditionalInput.id,sectionHeight:nextElem.offsetHeight,scrollHeight:sh,clientHeight:ch,overflow:sh>ch},timestamp:Date.now(),hypothesisId:'A'})}).catch(function(){});
+                    });
+                    // #endregion
                 } else {
                     conditionalInput.value = "";
                     nextElem.classList.remove("input-visible");
