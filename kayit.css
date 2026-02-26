@@ -1358,6 +1358,11 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         margin-bottom: 2px !important;
         overflow-y: auto;
         overflow-x: hidden;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+    #vehicle-modal .modal-body .modal-columns::-webkit-scrollbar {
+        display: none;
     }
     #vehicle-modal .modal-body .universal-btn-group {
         flex-shrink: 0;
