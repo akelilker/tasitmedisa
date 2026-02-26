@@ -1334,6 +1334,14 @@ body.modal-open .user-panel-link {
         text-rendering: optimizeLegibility;
         transform: translateY(-2px);  /* Havada - kırmızı ile eşit */
     }
+    /* Anasayfa mobil header: logo yuvarlağı büyüse de başlık tek satıra sığsın */
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-logo {
+        margin-right: 8px !important;
+    }
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero h1 {
+        font-size: clamp(17px, 4.9vw, 21px) !important;
+        letter-spacing: 2px !important;
+    }
     
     /* Modal başlıkları mobilde 19px */
     .modal-header h2 {
