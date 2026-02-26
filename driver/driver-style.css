@@ -939,7 +939,7 @@ body.driver-modal-open {
   .dashboard-page .hero-logo {
     flex: 0 0 54px !important;
     width: 54px !important;
-    transform: translate(-2px, -12px) !important; /* Alt çerçeveden 12px yukarı konum */
+    transform: translate(-2px, 30px) !important; /* Hero alt çerçevesinden yaklaşık 12px yukarı */
     margin-top: 0 !important;
   }
   .dashboard-page .hero-logo img {
