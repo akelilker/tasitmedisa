@@ -936,8 +936,8 @@
       // Modal container yüksekliğini garanti et (JS override)
       const modalContainer = modal.querySelector('.modal-container');
       if (modalContainer) {
-        modalContainer.style.height = 'calc(100vh - 50px)';
-        modalContainer.style.maxHeight = 'calc(100vh - 50px)';
+        modalContainer.style.height = 'calc(100vh - 20px)';
+        modalContainer.style.maxHeight = 'calc(100vh - 20px)';
       }
 
       modal.style.display = 'flex';
@@ -1152,8 +1152,8 @@
     // Modal container yüksekliğini garanti et (JS override)
     const modalContainer = modal.querySelector('.modal-container');
     if (modalContainer) {
-      modalContainer.style.height = 'calc(100vh - 50px)';
-      modalContainer.style.maxHeight = 'calc(100vh - 50px)';
+      modalContainer.style.height = 'calc(100vh - 20px)';
+      modalContainer.style.maxHeight = 'calc(100vh - 20px)';
     }
 
     // Modalı aç
