@@ -1074,6 +1074,8 @@ window.toggleDriverPlateDropdown = function(ev) {
         const logoStyle = window.getComputedStyle(heroLogo);
         const heroStyle = window.getComputedStyle(hero);
         const headerStyle = window.getComputedStyle(header);
+        const heroRowTop = document.querySelector('.dashboard-page .hero-row-top');
+        const heroRowBottom = document.querySelector('.dashboard-page .hero-row-bottom');
         const logoRect = heroLogo.getBoundingClientRect();
         const heroRect = hero.getBoundingClientRect();
         const headerRect = header.getBoundingClientRect();
@@ -1103,6 +1105,25 @@ window.toggleDriverPlateDropdown = function(ev) {
             heroPaddingBottom: heroStyle.paddingBottom,
             headerPaddingTop: headerStyle.paddingTop
         });
+
+        if (heroRowTop && heroRowBottom) {
+            const topRect = heroRowTop.getBoundingClientRect();
+            const bottomRect = heroRowBottom.getBoundingClientRect();
+            postDebugLog('H5', 'driver-script.js:heroLogoMetrics', 'Header row segmentation captured', {
+                phase: phase,
+                topRowHeight: Math.round(topRect.height),
+                bottomRowHeight: Math.round(bottomRect.height),
+                logoTopVsTopRow: Math.round(logoRect.top - topRect.top),
+                logoBottomVsTopRowBottom: Math.round(topRect.bottom - logoRect.bottom),
+                logoBottomVsBottomRowTop: Math.round(bottomRect.top - logoRect.bottom)
+            });
+        } else {
+            postDebugLog('H5', 'driver-script.js:heroLogoMetrics', 'Header row elements missing', {
+                phase: phase,
+                hasTopRow: !!heroRowTop,
+                hasBottomRow: !!heroRowBottom
+            });
+        }
     }
 
     document.addEventListener('DOMContentLoaded', function() {
