@@ -3254,6 +3254,7 @@ function renderVehicleDetailLeft(vehicle) {
 
     vehicle.assignedUserId = yeniKullaniciId;
     vehicle.tahsisKisi = user?.name || '';
+    if (user && !vehicle.branchId && user.branchId) vehicle.branchId = user.branchId;
     vehicle.updatedAt = new Date().toISOString();
 
     const event = {
