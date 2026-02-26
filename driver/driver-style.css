@@ -61,9 +61,9 @@
   filter: brightness(0.88);
 }
 .driver-splash-title {
-  font-size: clamp(18px, 4.85vw, 26px);
+  font-size: clamp(16px, 4.5vw, 24px);
   font-weight: 800;
-  letter-spacing: clamp(1.1px, 0.55vw, 4.4px);
+  letter-spacing: clamp(1px, 0.5vw, 4px);
   text-transform: uppercase;
   margin: 0;
   background: linear-gradient(to bottom, #c2d4df 0%, #ffffff 40%, #9aadba 52%, #d6e0e8 100%);
@@ -74,9 +74,9 @@
 }
 /* KULLANICI PANELİ: başlık altında, 1pt küçük, aynı renk */
 .driver-splash-subtitle {
-  font-size: clamp(17px, 4.4vw, 25px);
+  font-size: clamp(15px, 4vw, 22px);
   font-weight: 800;
-  letter-spacing: clamp(1px, 0.5vw, 3.8px);
+  letter-spacing: clamp(1px, 0.5vw, 3.5px);
   text-transform: uppercase;
   margin: 0;
   margin-top: 2px;
