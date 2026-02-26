@@ -15,34 +15,6 @@
   function $all(sel, root = document) { return Array.from(root.querySelectorAll(sel)); }
   function getModal() { return document.getElementById("vehicle-modal"); }
 
-  // #region agent log
-  function logNotesLayout() {
-    const modal = getModal();
-    if (!modal || !modal.classList.contains('active')) return;
-    const notesEl = document.getElementById('vehicle-notes');
-    const notesSection = notesEl && notesEl.closest('.form-section');
-    const boyaBlock = modal.querySelector('.modal-column-left .form-section-inline:has(#boya-var)');
-    const rightCol = modal.querySelector('.modal-column-right');
-    const leftCol = modal.querySelector('.modal-column-left');
-    const grid = modal.querySelector('.modal-columns');
-    if (!notesEl || !notesSection || !rightCol) return;
-    const csSection = window.getComputedStyle(notesSection);
-    const csNotes = window.getComputedStyle(notesEl);
-    const rSection = notesSection.getBoundingClientRect();
-    const rNotes = notesEl.getBoundingClientRect();
-    const rBoya = boyaBlock ? boyaBlock.getBoundingClientRect() : null;
-    const data = {
-      notesSection: { display: csSection.display, flexGrow: csSection.flexGrow, marginTop: csSection.marginTop, height: csSection.height, minHeight: csSection.minHeight, rectBottom: rSection.bottom, rectHeight: rSection.height },
-      notesTextarea: { height: csNotes.height, minHeight: csNotes.minHeight, rectTop: rNotes.top, rectBottom: rNotes.bottom, rectHeight: rNotes.height },
-      boyaBottom: rBoya ? rBoya.bottom : null,
-      rightColHeight: rightCol.getBoundingClientRect().height,
-      leftColHeight: leftCol ? leftCol.getBoundingClientRect().height : null,
-      gridAlignItems: grid ? window.getComputedStyle(grid).alignItems : null
-    };
-    fetch('http://127.0.0.1:7824/ingest/aaeefe94-e582-470c-8671-3dbfa48b74c7',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'051662'},body:JSON.stringify({sessionId:'051662',location:'kayit.js:logNotesLayout',message:'notes layout',data:data,timestamp:Date.now(),hypothesisId:'A'})}).catch(()=>{});
-  }
-  // #endregion
-
   // --- Data Reading: tek kaynak getMedisa* (DRY), yoksa localStorage fallback ---
   function readBranches() {
     if (typeof window.getMedisaBranches === 'function') return window.getMedisaBranches();
@@ -953,9 +925,6 @@
         setTimeout(() => syncDateInputVisibility(modal), 180);
         // Hover class'larını ayarla
         updateRadioButtonHover();
-        // #region agent log
-        setTimeout(logNotesLayout, 200);
-        // #endregion
       });
     }
   };
@@ -1168,9 +1137,6 @@
       setTimeout(() => syncDateInputVisibility(modal), 80);
       setTimeout(() => syncDateInputVisibility(modal), 180);
       updateRadioButtonHover();
-      // #region agent log
-      setTimeout(logNotesLayout, 200);
-      // #endregion
     });
 
     // Taşıtlar modalını kapat
@@ -1806,13 +1772,6 @@
                 if(btn.dataset.value === "var") {
                     nextElem.classList.add("input-visible");
                     conditionalInput.focus();
-                    // #region agent log
-                    requestAnimationFrame(function() {
-                        var cols = getModal() && getModal().querySelector('.modal-columns');
-                        var sh = cols ? cols.scrollHeight : 0, ch = cols ? cols.clientHeight : 0;
-                        fetch('http://127.0.0.1:7824/ingest/aaeefe94-e582-470c-8671-3dbfa48b74c7',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'051662'},body:JSON.stringify({sessionId:'051662',location:'kayit.js:Var input-visible',message:'scroll when Var',data:{sectionId:conditionalInput.id,sectionHeight:nextElem.offsetHeight,scrollHeight:sh,clientHeight:ch,overflow:sh>ch},timestamp:Date.now(),hypothesisId:'A'})}).catch(function(){});
-                    });
-                    // #endregion
                 } else {
                     conditionalInput.value = "";
                     nextElem.classList.remove("input-visible");
