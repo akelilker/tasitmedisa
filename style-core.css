@@ -1,13 +1,14 @@
 /* --- Scrollbar Gizleme --- */
-html, body, .modal-body, .modal-container {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+html, body, .modal-body, .modal-container, .content-wrap {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
 }
 html::-webkit-scrollbar,
 body::-webkit-scrollbar,
 .modal-body::-webkit-scrollbar,
-.modal-container::-webkit-scrollbar {
-  display: none;
+.modal-container::-webkit-scrollbar,
+.content-wrap::-webkit-scrollbar {
+  display: none !important;
 }
  
 /* ========== TÜM :root DEĞİŞKENLERİ (tek kaynak) ========== */
@@ -476,34 +477,6 @@ html { overflow-x: hidden; }
     }
     .hero {
         border-width: 1.2px;
-    }
-}
-
-/* --- SCROLLBAR AYARLARI --- */
-@media (max-width: 768px) {
-    .content-wrap {
-        scrollbar-width: none; 
-        -ms-overflow-style: none;
-    }
-    .content-wrap::-webkit-scrollbar { display: none; }
-}
-
-@media (min-width: 769px) {
-    .content-wrap {
-        scrollbar-gutter: stable; /* Scrollbar alanı rezerve – logo/başlık kayması önlenir */
-    }
-    .content-wrap::-webkit-scrollbar {
-        width: 6px;
-    }
-    .content-wrap::-webkit-scrollbar-track {
-        background: transparent;
-    }
-    .content-wrap::-webkit-scrollbar-thumb {
-        background-color: var(--border-faint);
-        border-radius: 3px;
-    }
-    .content-wrap::-webkit-scrollbar-thumb:hover {
-        background-color: var(--theme-color);
     }
 }
 
