@@ -939,8 +939,12 @@ body.driver-modal-open {
   .dashboard-page .hero-logo {
     flex: 0 0 54px !important;
     width: 54px !important;
-    transform: translate(-2px, 30px) !important; /* Hero alt çerçevesinden yaklaşık 12px yukarı */
+    transform: translate(-2px, 26px) !important; /* Önceki konuma göre 4px yukarı */
     margin-top: 0 !important;
+  }
+  .dashboard-page .hero.hero-two-rows .hero-row-top::after {
+    content: '';
+    flex: 0 0 54px; /* Sol logoyu dengeleyip başlığı yatayda gerçek merkeze getirir */
   }
   .dashboard-page .hero-logo img {
     width: 100% !important;
