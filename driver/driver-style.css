@@ -2997,8 +2997,9 @@ body.driver-action-block-open .driver-footer-back-wrap {
   /* Plaka listesi: temaya uyumlu koyu arka plan (--bg ile sol panel ile aynı) */
   .driver-plate-dropdown {
     background: var(--bg) !important;
-    border: 1px solid rgba(var(--theme-color-rgb), 0.25) !important;
+    border: 1px solid rgba(128, 128, 128, 0.55) !important;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(var(--theme-color-rgb), 0.08) !important;
+    min-width: 280px !important; /* 200px + %40 */
   }
   .dashboard-page .driver-plate-dropdown-item {
     color: var(--txt) !important;
