@@ -529,6 +529,10 @@ html { overflow-x: hidden; }
   filter: none !important;
   backdrop-filter: none !important;
 }
+.hero-logo picture {
+  display: block;
+  width: 100%;
+}
 
 /* DÜZELTME: SVG ve IMG width ayarı */
 .hero-logo svg,
