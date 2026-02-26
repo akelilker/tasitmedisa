@@ -2035,37 +2035,49 @@
     const branchList = document.getElementById("vehicle-branch-list");
     const branchWrap = document.querySelector(".vehicle-branch-dropdown-wrap");
     if (branchTrigger && branchList) {
+      function positionBranchList() {
+        var r = branchTrigger.getBoundingClientRect();
+        branchList.style.position = "fixed";
+        branchList.style.top = (r.bottom + 4) + "px";
+        branchList.style.left = r.left + "px";
+        branchList.style.width = r.width + "px";
+        branchList.style.right = "auto";
+      }
+      function closeBranchList() {
+        branchList.classList.remove("open");
+        branchTrigger.setAttribute("aria-expanded", "false");
+        branchList.setAttribute("aria-hidden", "true");
+        branchList.style.position = "";
+        branchList.style.top = "";
+        branchList.style.left = "";
+        branchList.style.width = "";
+      }
       branchTrigger.addEventListener("click", function () {
-        const isOpen = branchList.classList.contains("open");
+        var isOpen = branchList.classList.contains("open");
         if (isOpen) {
-          branchList.classList.remove("open");
-          branchTrigger.setAttribute("aria-expanded", "false");
-          branchList.setAttribute("aria-hidden", "true");
+          closeBranchList();
         } else {
           branchList.classList.add("open");
           branchTrigger.setAttribute("aria-expanded", "true");
           branchList.setAttribute("aria-hidden", "false");
+          positionBranchList();
         }
       });
       document.addEventListener("click", function (ev) {
         if (!branchList.classList.contains("open")) return;
         if (branchWrap && branchWrap.contains(ev.target)) return;
-        branchList.classList.remove("open");
-        branchTrigger.setAttribute("aria-expanded", "false");
-        branchList.setAttribute("aria-hidden", "true");
+        closeBranchList();
       });
       branchList.addEventListener("click", function (ev) {
-        const option = ev.target.closest(".vehicle-branch-option");
+        var option = ev.target.closest(".vehicle-branch-option");
         if (!option || !option.hasAttribute("data-value")) return;
-        const value = option.getAttribute("data-value");
+        var value = option.getAttribute("data-value");
         branchSelectEl.value = value;
         branchList.querySelectorAll(".vehicle-branch-option").forEach(function (o) { o.classList.remove("selected"); });
         option.classList.add("selected");
         branchTrigger.textContent = option.textContent;
         if (value === "") branchTrigger.classList.add("placeholder"); else branchTrigger.classList.remove("placeholder");
-        branchList.classList.remove("open");
-        branchTrigger.setAttribute("aria-expanded", "false");
-        branchList.setAttribute("aria-hidden", "true");
+        closeBranchList();
         syncBranchSelectPlaceholder();
         branchSelectEl.dispatchEvent(new Event("change"));
       });

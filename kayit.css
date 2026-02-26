@@ -1348,6 +1348,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-body {
         display: flex !important;
         flex-direction: column !important;
+        overflow: hidden !important;
     }
     #vehicle-modal .modal-body .modal-columns {
         flex: 1 1 0;
@@ -1357,10 +1358,6 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         margin-bottom: 2px !important;
         overflow-y: auto;
         overflow-x: hidden;
-    }
-    /* Tahsis Edilen Şube açıkken form alanında kaydırma çubuğu çıkmasın */
-    #vehicle-modal .modal-body .modal-columns:has(.vehicle-branch-list.open) {
-        overflow: hidden;
     }
     #vehicle-modal .modal-body .universal-btn-group {
         flex-shrink: 0;
@@ -1374,6 +1371,11 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     }
     #vehicle-modal .modal-body .modal-column-right {
         min-width: 0;
+    }
+    /* Sağ kolon: açılır alanlar alttakileri itsin, bölümler küçülmesin */
+    #vehicle-modal .modal-body .modal-column-right .form-section,
+    #vehicle-modal .modal-body .modal-column-right .form-section-inline {
+        flex-shrink: 0;
     }
     /* Boya/Değişen: satır en altta kalsın (Notlar hizası bozulmasın) */
     #vehicle-modal .modal-body .modal-column-left .form-section-inline:has(#boya-var) {
