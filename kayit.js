@@ -932,9 +932,14 @@
   window.closeVehicleModal = function() {
     const modal = getModal();
     if (modal) {
+      if (typeof window.resetModalInputs === 'function') {
+        window.resetModalInputs(modal);
+      }
       modal.classList.remove('active');
       setTimeout(() => modal.style.display = 'none', 300);
       resetVehicleForm();
+      isEditMode = false;
+      editingVehicleId = null;
     }
   };
 
@@ -1174,10 +1179,12 @@
    * (Hata yakalama henüz eklenmedi - rapor önerisi #6)
    */
   window.saveVehicleRecord = function() {
+    const modal = getModal();
+    if (!modal) return;
+    const saveBtn = modal.querySelector('.universal-btn-save[onclick*="saveVehicleRecord"]') || modal.querySelector('.universal-btn-save');
+    if (saveBtn && saveBtn.disabled) return;
+    if (saveBtn) saveBtn.disabled = true;
     try {
-      const modal = getModal();
-      if (!modal) return;
-
       // Zorunlu alanları kontrol et ve kırmızı çerçeve ekle
     const plateEl = document.getElementById("vehicle-plate");
     const yearEl = document.getElementById("vehicle-year");
@@ -1308,6 +1315,8 @@
     showTescilTarihConfirmModal(record);
     } catch (error) {
       alert('Kayıt sırasında bir hata oluştu! Lütfen tekrar deneyin.');
+    } finally {
+      if (saveBtn) saveBtn.disabled = false;
     }
   };
 
