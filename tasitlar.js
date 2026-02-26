@@ -293,6 +293,7 @@
       var plate = btn.getAttribute('data-plate') || '';
       var vehicleId = btn.getAttribute('data-vehicle-id') || '';
       var openHistory = btn.getAttribute('data-open-history') === '1';
+      var historyTab = btn.getAttribute('data-history-tab') || '';
       if (!plate && !vehicleId) return;
       if (typeof window.openVehiclesView === 'function') window.openVehiclesView();
       setTimeout(function() {
@@ -303,7 +304,8 @@
         if (v && typeof window.showVehicleDetail === 'function') {
           window.showVehicleDetail(v.id);
           if (openHistory && typeof window.showVehicleHistory === 'function') {
-            setTimeout(function() { window.showVehicleHistory(v.id); }, 150);
+            var tab = (/^(bakim|kaza|km|diger)$/.test(historyTab)) ? historyTab : null;
+            setTimeout(function() { window.showVehicleHistory(v.id, tab); }, 150);
           }
         }
       }, 100);
@@ -3319,17 +3321,17 @@ function renderVehicleDetailLeft(vehicle) {
   };
 
   /**
-   * Tarihçe modal'ını aç
+   * Tarihçe modal'ını aç (initialTab: bakim | kaza | km | diger; yoksa bakım)
    */
-  window.showVehicleHistory = function(vehicleId) {
+  window.showVehicleHistory = function(vehicleId, initialTab) {
     const vid = vehicleId || window.currentDetailVehicleId;
     if (!vid) return;
     
     const modal = DOM.vehicleHistoryModal;
     if (!modal) return;
     
-    // İlk tab'ı göster
-    switchHistoryTab('bakim', vid);
+    const tab = (initialTab && /^(bakim|kaza|km|diger)$/.test(initialTab)) ? initialTab : 'bakim';
+    switchHistoryTab(tab, vid);
     
     modal.style.display = 'flex';
     requestAnimationFrame(() => modal.classList.add('active'));
@@ -3626,6 +3628,14 @@ function renderVehicleDetailLeft(vehicle) {
     return labels[type] || (type ? toTitleCase(String(type)) : 'Olay');
   }
 
+  /** Olay tipinden tarihçe sekme id'si (bakim, kaza, km, diger) */
+  function getHistoryTabForEventType(type) {
+    if (type === 'bakim') return 'bakim';
+    if (type === 'kaza') return 'kaza';
+    if (type === 'km-revize') return 'km';
+    return 'diger';
+  }
+
   /**
    * Bildirimleri güncelle (muayene, sigorta, kasko + kullanıcı paneli işlemleri)
    */
@@ -3774,9 +3784,10 @@ function renderVehicleDetailLeft(vehicle) {
           const ev = item.event;
           const typeLabel = getNotificationEventTypeLabel(ev.type);
           const dateDisplay = ev.date || '-';
+          const historyTab = getHistoryTabForEventType(ev.type);
           const safePlate = (item.plate || '').replace(/"/g, '&quot;');
           const safeVid = String(item.vehicleId || '').replace(/"/g, '&quot;');
-          html += `<button type="button" data-plate="${safePlate}" data-vehicle-id="${safeVid}" data-open-history="1" style="width: 100%; padding: 10px 12px; background: transparent; border: 1px solid rgba(255,255,255,0.25); color: #ccc; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 12px; text-align: left; margin-bottom: 4px; transition: all 0.2s ease;" class="notification-item notification-item-activity">
+          html += `<button type="button" data-plate="${safePlate}" data-vehicle-id="${safeVid}" data-open-history="1" data-history-tab="${historyTab}" style="width: 100%; padding: 10px 12px; background: transparent; border: 1px solid rgba(255,255,255,0.25); color: #ccc; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 12px; text-align: left; margin-bottom: 4px; transition: all 0.2s ease;" class="notification-item notification-item-activity">
           <div style="font-weight: 600; color: #fff; margin-bottom: 2px;">${escapeHtml(item.plate)}</div>
           <div style="font-size: 11px; color: #999;">${escapeHtml(typeLabel)} - ${escapeHtml(dateDisplay)}</div>
         </button>`;
