@@ -1567,6 +1567,15 @@ body.driver-modal-open {
   padding-left: 10px !important;
   padding-right: 10px !important;
 }
+/* Kaza/Bakım blokları açıkken (mobil+masaüstü): input çerçevesi aksiyon rengi */
+.dashboard-page .driver-report-block-kaza.show .form-group input.driver-kaza-input:not(:focus),
+.dashboard-page .driver-report-block-kaza.show .form-group textarea.driver-kaza-textarea:not(:focus) {
+  box-shadow: inset 0 0 0 0.5px var(--theme-color) !important;
+}
+.dashboard-page .driver-report-block-bakim.show .form-group input.driver-bakim-input:not(:focus),
+.dashboard-page .driver-report-block-bakim.show .form-group textarea.driver-bakim-textarea:not(:focus) {
+  box-shadow: inset 0 0 0 0.5px #4ade80 !important;
+}
 
 /* Bakım/Kaza Açıklama: varsayılan 1 satır, içerik uzadıkça otomatik büyür, kesilme yok */
 .driver-report-block .form-group textarea.driver-report-textarea-auto {
@@ -3122,14 +3131,6 @@ body.driver-action-block-open .driver-footer-back-wrap {
   .dashboard-page .driver-report-block .form-group input:not(:focus),
   .dashboard-page .driver-report-block .form-group textarea:not(:focus) {
     box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.35) !important;
-  }
-  .dashboard-page .driver-report-block-kaza.show .form-group input.driver-kaza-input:not(:focus),
-  .dashboard-page .driver-report-block-kaza.show .form-group textarea.driver-kaza-textarea:not(:focus) {
-    box-shadow: inset 0 0 0 0.5px var(--theme-color) !important;
-  }
-  .dashboard-page .driver-report-block-bakim.show .form-group input.driver-bakim-input:not(:focus),
-  .dashboard-page .driver-report-block-bakim.show .form-group textarea.driver-bakim-textarea:not(:focus) {
-    box-shadow: inset 0 0 0 0.5px #4ade80 !important;
   }
 
   /* Not input: placeholder yatay+dikey ortalı, içerik sola (aşağı yukarı kayma önleme) */
