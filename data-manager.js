@@ -34,6 +34,8 @@ window.appData = {
 // Veri yükleme durumu
 let isDataLoaded = false;
 let isDataLoading = false;
+let loadPromise = null;
+let isSaving = false;
 
 /* =========================================
    LOCALSTORAGE'DAN VERİ YÜKLEME (Fallback)
@@ -137,147 +139,145 @@ function mergeVehicleEvents(localEvents, serverEvents) {
    SUNUCUDAN VERİ YÜKLEME
    ========================================= */
 async function loadDataFromServer(forceRefresh = true) {
-    // Eğer zaten yükleniyorsa bekle (çift istek önleme)
-    if (isDataLoading) {
-        return new Promise((resolve) => {
-            const checkInterval = setInterval(() => {
-                if (!isDataLoading) {
-                    clearInterval(checkInterval);
-                    resolve(window.appData);
-                }
-            }, 100);
-        });
+    if (loadPromise) {
+        return loadPromise;
     }
 
     isDataLoading = true;
-    
-    try {
-        // Cache-busting parametresi ekle (her seferinde güncel veri çekmek için)
-        const cacheBuster = new Date().getTime();
-        const url = `${API_LOAD}?t=${cacheBuster}`;
-        
-        const response = await fetch(url, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Cache-Control': 'no-cache, no-store, must-revalidate',
-                'Pragma': 'no-cache'
-            },
-            cache: 'no-store'
-        });
-
-        if (!response.ok) {
-            const errorText = await response.text().catch(() => 'Yanıt okunamadı');
-            throw new Error(`HTTP error! status: ${response.status}, message: ${errorText.substring(0, 100)}`);
-        }
-
-        // Önce text olarak oku, JSON olup olmadığını kontrol et
-        const responseText = await response.text();
-        
-        // Boş response kontrolü
-        if (!responseText || responseText.trim() === '') {
-            return loadDataFromLocalStorage();
-        }
-        
-        // PHP kodu döndüyse (<?php ile başlıyorsa), localStorage'dan yükle
-        const trimmedResponse = responseText.trim();
-        if (trimmedResponse.startsWith('<?php') || (trimmedResponse.startsWith('<') && trimmedResponse.includes('html'))) {
-            return loadDataFromLocalStorage();
-        }
-
-        let data;
+    loadPromise = (async function() {
         try {
-            data = JSON.parse(responseText);
-        } catch (parseError) {
-            return loadDataFromLocalStorage();
-        }
+            // Cache-busting parametresi ekle (her seferinde güncel veri çekmek için)
+            const cacheBuster = new Date().getTime();
+            const url = `${API_LOAD}?t=${cacheBuster}`;
+            
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Cache-Control': 'no-cache, no-store, must-revalidate',
+                    'Pragma': 'no-cache'
+                },
+                cache: 'no-store'
+            });
 
-        // Yerel taşıtları oku ve sunucu taşıtları ile birleştir (olay/işaretleme kaybı önleme)
-        let localTasitlar = [];
-        try {
-            const raw = localStorage.getItem('medisa_vehicles_v1');
-            if (raw) localTasitlar = JSON.parse(raw);
-            if (!Array.isArray(localTasitlar)) localTasitlar = [];
-        } catch (e) {
-            localTasitlar = [];
-        }
-        const serverTasitlar = data.tasitlar || [];
-        const localMap = new Map(localTasitlar.map(lv => [String(lv.id), lv]));
-        const mergedTasitlar = serverTasitlar.map(sv => {
-            const local = localMap.get(String(sv.id));
-            if (!local) return sv;
-            const localEvents = local.events;
-            const serverEvents = sv.events;
-            const mergedEvents = mergeVehicleEvents(localEvents, serverEvents);
-            const localBoyaliParcalar = local.boyaliParcalar && typeof local.boyaliParcalar === 'object' && Object.keys(local.boyaliParcalar).length > 0
-                ? local.boyaliParcalar
-                : null;
-            const serverBoyaliParcalar = sv.boyaliParcalar && typeof sv.boyaliParcalar === 'object' && Object.keys(sv.boyaliParcalar).length > 0
-                ? sv.boyaliParcalar
-                : null;
-            const localBoyaVar = local.boya === 'var';
-            const localTahsisKisi = (local.tahsisKisi && String(local.tahsisKisi).trim()) || null;
-            const localAssignedUserId = local.assignedUserId !== undefined && local.assignedUserId !== null && local.assignedUserId !== ''
-                ? local.assignedUserId
-                : null;
-            return {
-                ...sv,
-                events: mergedEvents,
-                boyaliParcalar: serverBoyaliParcalar || localBoyaliParcalar || {},
-                boya: (serverBoyaliParcalar ? 'var' : (localBoyaVar ? 'var' : (sv.boya || local.boya))),
-                tahsisKisi: localTahsisKisi || sv.tahsisKisi || local.tahsisKisi || '',
-                assignedUserId: localAssignedUserId !== null ? localAssignedUserId : (sv.assignedUserId !== undefined ? sv.assignedUserId : local.assignedUserId)
+            if (!response.ok) {
+                const errorText = await response.text().catch(() => 'Yanıt okunamadı');
+                throw new Error(`HTTP error! status: ${response.status}, message: ${errorText.substring(0, 100)}`);
+            }
+
+            // Önce text olarak oku, JSON olup olmadığını kontrol et
+            const responseText = await response.text();
+            
+            // Boş response kontrolü
+            if (!responseText || responseText.trim() === '') {
+                return loadDataFromLocalStorage();
+            }
+            
+            // PHP kodu döndüyse (<?php ile başlıyorsa), localStorage'dan yükle
+            const trimmedResponse = responseText.trim();
+            if (trimmedResponse.startsWith('<?php') || (trimmedResponse.startsWith('<') && trimmedResponse.includes('html'))) {
+                return loadDataFromLocalStorage();
+            }
+
+            let data;
+            try {
+                data = JSON.parse(responseText);
+            } catch (parseError) {
+                return loadDataFromLocalStorage();
+            }
+
+            // Yerel taşıtları oku ve sunucu taşıtları ile birleştir (olay/işaretleme kaybı önleme)
+            let localTasitlar = [];
+            try {
+                const raw = localStorage.getItem('medisa_vehicles_v1');
+                if (raw) localTasitlar = JSON.parse(raw);
+                if (!Array.isArray(localTasitlar)) localTasitlar = [];
+            } catch (e) {
+                localTasitlar = [];
+            }
+            const serverTasitlar = data.tasitlar || [];
+            const localMap = new Map(localTasitlar.map(lv => [String(lv.id), lv]));
+            const mergedTasitlar = serverTasitlar.map(sv => {
+                const local = localMap.get(String(sv.id));
+                if (!local) return sv;
+                const localEvents = local.events;
+                const serverEvents = sv.events;
+                const mergedEvents = mergeVehicleEvents(localEvents, serverEvents);
+                const localBoyaliParcalar = local.boyaliParcalar && typeof local.boyaliParcalar === 'object' && Object.keys(local.boyaliParcalar).length > 0
+                    ? local.boyaliParcalar
+                    : null;
+                const serverBoyaliParcalar = sv.boyaliParcalar && typeof sv.boyaliParcalar === 'object' && Object.keys(sv.boyaliParcalar).length > 0
+                    ? sv.boyaliParcalar
+                    : null;
+                const localBoyaVar = local.boya === 'var';
+                const localTahsisKisi = (local.tahsisKisi && String(local.tahsisKisi).trim()) || null;
+                const localAssignedUserId = local.assignedUserId !== undefined && local.assignedUserId !== null && local.assignedUserId !== ''
+                    ? local.assignedUserId
+                    : null;
+                return {
+                    ...sv,
+                    events: mergedEvents,
+                    boyaliParcalar: serverBoyaliParcalar || localBoyaliParcalar || {},
+                    boya: (serverBoyaliParcalar ? 'var' : (localBoyaVar ? 'var' : (sv.boya || local.boya))),
+                    tahsisKisi: localTahsisKisi || sv.tahsisKisi || local.tahsisKisi || '',
+                    assignedUserId: localAssignedUserId !== null ? localAssignedUserId : (sv.assignedUserId !== undefined ? sv.assignedUserId : local.assignedUserId)
+                };
+            });
+            data.tasitlar = mergedTasitlar;
+
+            // Kullanıcıları normalize et (isim -> name, tüm modüller tek alan kullansın)
+            const rawUsers = data.users || [];
+            const users = rawUsers.map(u => {
+                const u2 = { ...u };
+                if (!u2.name && u2.isim) u2.name = u2.isim;
+                return u2;
+            });
+
+            // Global veri nesnesini güncelle (arac_aylik_hareketler, duzeltme_talepleri save sırasında silinmesin)
+            window.appData = {
+                tasitlar: data.tasitlar || [],
+                kayitlar: data.kayitlar || [],
+                branches: data.branches || [],
+                users: users,
+                ayarlar: data.ayarlar || {
+                    sirketAdi: 'Medisa',
+                    yetkiliKisi: '',
+                    telefon: '',
+                    eposta: ''
+                },
+                sifreler: data.sifreler || [],
+                arac_aylik_hareketler: data.arac_aylik_hareketler || [],
+                duzeltme_talepleri: data.duzeltme_talepleri || []
             };
-        });
-        data.tasitlar = mergedTasitlar;
 
-        // Kullanıcıları normalize et (isim -> name, tüm modüller tek alan kullansın)
-        const rawUsers = data.users || [];
-        const users = rawUsers.map(u => {
-            const u2 = { ...u };
-            if (!u2.name && u2.isim) u2.name = u2.isim;
-            return u2;
-        });
+            // Sunucudan başarıyla yüklendiğinde localStorage'ı da güncelle (tek key: medisa_data_v1)
+            try {
+                localStorage.setItem('medisa_data_v1', JSON.stringify(window.appData));
+            } catch (e) {
+                // localStorage güncellenemedi - sessizce devam et
+            }
 
-        // Global veri nesnesini güncelle (arac_aylik_hareketler, duzeltme_talepleri save sırasında silinmesin)
-        window.appData = {
-            tasitlar: data.tasitlar || [],
-            kayitlar: data.kayitlar || [],
-            branches: data.branches || [],
-            users: users,
-            ayarlar: data.ayarlar || {
-                sirketAdi: 'Medisa',
-                yetkiliKisi: '',
-                telefon: '',
-                eposta: ''
-            },
-            sifreler: data.sifreler || [],
-            arac_aylik_hareketler: data.arac_aylik_hareketler || [],
-            duzeltme_talepleri: data.duzeltme_talepleri || []
-        };
+            isDataLoaded = true;
+            return window.appData;
 
-        // Sunucudan başarıyla yüklendiğinde localStorage'ı da güncelle (tek key: medisa_data_v1)
-        try {
-            localStorage.setItem('medisa_data_v1', JSON.stringify(window.appData));
-        } catch (e) {
-            // localStorage güncellenemedi - sessizce devam et
+        } catch (error) {
+            // Hata durumunda localStorage'dan yükle
+            return loadDataFromLocalStorage();
+        } finally {
+            isDataLoading = false;
+            loadPromise = null;
         }
-
-        isDataLoaded = true;
-        return window.appData;
-
-    } catch (error) {
-        // Hata durumunda localStorage'dan yükle
-        return loadDataFromLocalStorage();
-    } finally {
-        isDataLoading = false;
-    }
+    })();
+    
+    return loadPromise;
 }
 
 /* =========================================
    SUNUCUYA VERİ KAYDETME
    ========================================= */
 async function saveDataToServer() {
+    if (isSaving) return false;
+    isSaving = true;
     try {
         const response = await fetch(API_SAVE, {
             method: 'POST',
@@ -313,6 +313,8 @@ async function saveDataToServer() {
         // Diğer hatalar için konsola yaz (alert rahatsız edici)
         console.warn('[Medisa] Veri kaydedilemedi:', error.message);
         return false;
+    } finally {
+        isSaving = false;
     }
 }
 
