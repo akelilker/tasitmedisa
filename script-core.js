@@ -201,6 +201,31 @@ window.backToVehicleDetail = function() {
   }
 };
 
+/** Tarihçe modalından anasayfaya dön ve bildirim dropdown'ını aç (X veya ESC) */
+window.closeHistoryToHomeAndOpenNotifications = function() {
+  if (typeof window.closeAllModals === 'function') {
+    window.closeAllModals();
+  }
+  var notif = getNotif();
+  if (notif) {
+    notif.classList.add('open');
+  }
+};
+
+document.addEventListener('keydown', function(e) {
+  if (e.key !== 'Escape') return;
+  var historyModal = document.getElementById('vehicle-history-modal');
+  if (!historyModal) return;
+  var isVisible = historyModal.style.display === 'flex' || (historyModal.style.display !== 'none' && historyModal.offsetParent !== null);
+  if (isVisible && historyModal.classList.contains('active')) {
+    if (typeof window.closeHistoryToHomeAndOpenNotifications === 'function') {
+      window.closeHistoryToHomeAndOpenNotifications();
+    }
+    e.preventDefault();
+    e.stopPropagation();
+  }
+});
+
 document.addEventListener('DOMContentLoaded', () => {
   // Sayfa yüklendiğinde footer animasyonunu başlat
   startFooterAnimation();

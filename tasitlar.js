@@ -291,12 +291,21 @@
       var btn = e.target.closest('.notification-item[data-plate]');
       if (!btn) return;
       var plate = btn.getAttribute('data-plate') || '';
-      if (!plate) return;
+      var vehicleId = btn.getAttribute('data-vehicle-id') || '';
+      var openHistory = btn.getAttribute('data-open-history') === '1';
+      if (!plate && !vehicleId) return;
       if (typeof window.openVehiclesView === 'function') window.openVehiclesView();
       setTimeout(function() {
         var vehicles = (window.getMedisaVehicles && window.getMedisaVehicles()) || parseLocalStorageArray(VEHICLES_KEY);
-        var v = vehicles.find(function(v) { return v.plate === plate; });
-        if (v && typeof window.showVehicleDetail === 'function') window.showVehicleDetail(v.id);
+        var v = vehicleId
+          ? vehicles.find(function(v) { return String(v.id) === String(vehicleId); })
+          : vehicles.find(function(v) { return v.plate === plate; });
+        if (v && typeof window.showVehicleDetail === 'function') {
+          window.showVehicleDetail(v.id);
+          if (openHistory && typeof window.showVehicleHistory === 'function') {
+            setTimeout(function() { window.showVehicleHistory(v.id); }, 150);
+          }
+        }
       }, 100);
     });
   }
@@ -3579,8 +3588,46 @@ function renderVehicleDetailLeft(vehicle) {
     window.__medisaSaveGuardsApplied = true;
   }
 
+  /** Olay tarihini sıralama için sayıya çevir (dd.mm.yyyy veya timestamp) */
+  function getEventSortTime(ev) {
+    if (ev.timestamp) {
+      const t = new Date(ev.timestamp).getTime();
+      if (!isNaN(t)) return t;
+    }
+    if (!ev.date) return 0;
+    const parts = String(ev.date).trim().split('.');
+    if (parts.length !== 3) return 0;
+    const day = parseInt(parts[0], 10);
+    const month = parseInt(parts[1], 10) - 1;
+    const year = parseInt(parts[2], 10);
+    const d = new Date(year, month, day);
+    return isNaN(d.getTime()) ? 0 : d.getTime();
+  }
+
+  /** Bildirim listesi için kısa olay tipi etiketi */
+  function getNotificationEventTypeLabel(type) {
+    const labels = {
+      'bakim': 'Bakım',
+      'kaza': 'Kaza',
+      'km-revize': 'Km güncelleme',
+      'anahtar-guncelle': 'Yedek anahtar',
+      'lastik-guncelle': 'Lastik',
+      'utts-guncelle': 'UTTS',
+      'muayene-guncelle': 'Muayene güncelleme',
+      'sigorta-guncelle': 'Sigorta güncelleme',
+      'kasko-guncelle': 'Kasko güncelleme',
+      'sube-degisiklik': 'Şube değişikliği',
+      'kullanici-atama': 'Kullanıcı atama',
+      'kredi-guncelle': 'Kredi/Rehin',
+      'takip-cihaz-guncelle': 'Takip cihazı',
+      'not-guncelle': 'Sürücü notu',
+      'satis': 'Satış/Pert'
+    };
+    return labels[type] || (type ? toTitleCase(String(type)) : 'Olay');
+  }
+
   /**
-   * Bildirimleri güncelle (muayene, sigorta, kasko)
+   * Bildirimleri güncelle (muayene, sigorta, kasko + kullanıcı paneli işlemleri)
    */
   window.updateNotifications = function() {
     const vehicles = readVehicles();
@@ -3655,11 +3702,30 @@ function renderVehicleDetailLeft(vehicle) {
       }
     });
 
+    // Kullanıcı paneli işlemleri: tüm taşıtlardan son olayları topla (en yeni 15)
+    const recentEvents = [];
+    vehicles.forEach(vehicle => {
+      if (vehicle.satildiMi) return;
+      const events = vehicle.events || [];
+      const plate = vehicle.plate || '-';
+      const brandModel = vehicle.brandModel || '-';
+      events.forEach(ev => {
+        recentEvents.push({
+          vehicleId: vehicle.id,
+          plate: plate,
+          brandModel: brandModel,
+          event: ev
+        });
+      });
+    });
+    recentEvents.sort((a, b) => getEventSortTime(b.event) - getEventSortTime(a.event));
+    const recentSlice = recentEvents.slice(0, 15);
+
     // Bildirimleri güncelle
     const notifDropdown = DOM.notificationsDropdown;
     const notifIcon = document.querySelector('.icon-btn[onclick="toggleNotifications(event)"]');
-    
-    if (notifications.length === 0) {
+
+    if (notifications.length === 0 && recentSlice.length === 0) {
       if (notifDropdown) {
         notifDropdown.innerHTML = '<button disabled>Bildirim Yok</button>';
       }
@@ -3667,29 +3733,27 @@ function renderVehicleDetailLeft(vehicle) {
         notifIcon.classList.remove('notification-red', 'notification-orange', 'notification-pulse');
       }
     } else {
-      // Bildirimleri önceliğe göre sırala (kırmızı önce, sonra turuncu)
-      notifications.sort((a, b) => {
-        if (a.warningClass === 'date-warning-red' && b.warningClass !== 'date-warning-red') return -1;
-        if (a.warningClass !== 'date-warning-red' && b.warningClass === 'date-warning-red') return 1;
-        return a.days - b.days; // Gün sayısına göre sırala
-      });
-
       let html = '';
-      notifications.forEach(notif => {
-        const typeLabel = notif.type === 'sigorta' ? 'Sigorta' : notif.type === 'kasko' ? 'Kasko' : 'Muayene';
-        const dateDisplay = formatDateForDisplay(notif.date);
-        const daysText = notif.days < 0 ? `${Math.abs(notif.days)} gün geçmiş` : 
-                        notif.days === 0 ? 'Bugün' : 
-                        notif.days === 1 ? 'Yarın' : 
-                        `${notif.days} gün kaldı`;
-        
-        // Çerçeve rengini belirle
-        const borderColor = notif.warningClass === 'date-warning-red' 
-          ? 'rgba(225, 6, 27, 0.6)' 
-          : 'rgba(255, 140, 0, 0.6)';
-        
-        const safePlate = (notif.plate || '').replace(/"/g, '&quot;');
-        html += `<button type="button" data-plate="${safePlate}" style="width: 100%; padding: 12px; background: transparent; border: 1px solid ${borderColor}; color: #ccc; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 13px; text-align: left; margin-bottom: 4px; transition: all 0.2s ease;" class="notification-item ${notif.warningClass}-border">
+
+      // Tarih uyarıları (sigorta, kasko, muayene)
+      if (notifications.length > 0) {
+        notifications.sort((a, b) => {
+          if (a.warningClass === 'date-warning-red' && b.warningClass !== 'date-warning-red') return -1;
+          if (a.warningClass !== 'date-warning-red' && b.warningClass === 'date-warning-red') return 1;
+          return a.days - b.days;
+        });
+        notifications.forEach(notif => {
+          const typeLabel = notif.type === 'sigorta' ? 'Sigorta' : notif.type === 'kasko' ? 'Kasko' : 'Muayene';
+          const dateDisplay = formatDateForDisplay(notif.date);
+          const daysText = notif.days < 0 ? `${Math.abs(notif.days)} gün geçmiş` :
+                          notif.days === 0 ? 'Bugün' :
+                          notif.days === 1 ? 'Yarın' :
+                          `${notif.days} gün kaldı`;
+          const borderColor = notif.warningClass === 'date-warning-red'
+            ? 'rgba(225, 6, 27, 0.6)'
+            : 'rgba(255, 140, 0, 0.6)';
+          const safePlate = (notif.plate || '').replace(/"/g, '&quot;');
+          html += `<button type="button" data-plate="${safePlate}" style="width: 100%; padding: 12px; background: transparent; border: 1px solid ${borderColor}; color: #ccc; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 13px; text-align: left; margin-bottom: 4px; transition: all 0.2s ease;" class="notification-item ${notif.warningClass}-border">
           <div style="font-weight: 600; color: #fff; margin-bottom: 4px; text-align: center;">${escapeHtml(notif.plate)}</div>
           <div style="font-size: 11px; color: #999; margin-bottom: 4px; text-align: center;">${escapeHtml(notif.brandModel)}</div>
           <div style="font-size: 11px; text-align: center; margin-bottom: 4px;">
@@ -3699,13 +3763,30 @@ function renderVehicleDetailLeft(vehicle) {
             <span class="${notif.warningClass}" style="font-size: 11px;">${escapeHtml(daysText)}</span>
           </div>
         </button>`;
-      });
+        });
+      }
+
+      // Kullanıcı paneli işlemleri bölümü
+      if (recentSlice.length > 0) {
+        if (html) html += '<div style="margin-top: 12px; font-size: 11px; color: #999; text-align: center; margin-bottom: 6px;">Kullanıcı paneli işlemleri</div>';
+        else html += '<div style="margin-bottom: 6px; font-size: 11px; color: #999; text-align: center;">Kullanıcı paneli işlemleri</div>';
+        recentSlice.forEach(item => {
+          const ev = item.event;
+          const typeLabel = getNotificationEventTypeLabel(ev.type);
+          const dateDisplay = ev.date || '-';
+          const safePlate = (item.plate || '').replace(/"/g, '&quot;');
+          const safeVid = String(item.vehicleId || '').replace(/"/g, '&quot;');
+          html += `<button type="button" data-plate="${safePlate}" data-vehicle-id="${safeVid}" data-open-history="1" style="width: 100%; padding: 10px 12px; background: transparent; border: 1px solid rgba(255,255,255,0.25); color: #ccc; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 12px; text-align: left; margin-bottom: 4px; transition: all 0.2s ease;" class="notification-item notification-item-activity">
+          <div style="font-weight: 600; color: #fff; margin-bottom: 2px;">${escapeHtml(item.plate)}</div>
+          <div style="font-size: 11px; color: #999;">${escapeHtml(typeLabel)} - ${escapeHtml(dateDisplay)}</div>
+        </button>`;
+        });
+      }
 
       if (notifDropdown) {
         notifDropdown.innerHTML = html;
       }
 
-      // Bildirim simgesine renk ve animasyon ekle
       if (notifIcon) {
         notifIcon.classList.remove('notification-red', 'notification-orange', 'notification-pulse');
         if (hasRed) {
