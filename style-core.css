@@ -427,8 +427,8 @@ html { overflow-x: hidden; }
     flex-direction: column;
     overflow-x: hidden; /* İçerik yan taşmasın */
     box-sizing: border-box;
-    /* KIRMIZI ÇERÇEVE - sadece üst */
-    border-top: 1px solid var(--border-red-tech);
+    /* KIRMIZI ÇERÇEVE - sadece üst (ince) */
+    border-top: 0.5px solid var(--border-red-tech);
     box-shadow: 0 2px 14px rgba(var(--theme-color-rgb), 0.1), inset 0 0 80px rgba(10, 13, 28, 0.22);  /* Havada: kırmızı gölge + iç parlaklık (#0a0d1c tonu) */
     background: var(--bg);
     transition: border-color 0.3s ease;
@@ -458,21 +458,21 @@ html { overflow-x: hidden; }
     position: relative;
     z-index: 10;
     box-sizing: border-box;
-    /* YAN ÇİZGİLER CONTENT-WRAP'TE - footer'a gitmeyecek */
-    border-left: 1.2px solid var(--border-red-tech);
-    border-right: 1.2px solid var(--border-red-tech);
+    /* YAN ÇİZGİLER CONTENT-WRAP'TE - footer'a gitmeyecek (ince) */
+    border-left: 0.5px solid var(--border-red-tech);
+    border-right: 0.5px solid var(--border-red-tech);
     box-shadow: 0 0 24px var(--red-glow-subtle);
     transition: border-color 0.3s ease;
 }
 
-/* Masaüstü: çerçeve kalınlığı */
+/* Masaüstü: çerçeve kalınlığı (ince) */
 @media (min-width: 769px) {
     .app-container {
-        border-top-width: 1.2px;
+        border-top-width: 0.5px;
     }
     .content-wrap {
-        border-left-width: 1.5px;
-        border-right-width: 1.5px;
+        border-left-width: 0.5px;
+        border-right-width: 0.5px;
     }
     .hero {
         border-width: 1.2px;
@@ -1474,8 +1474,8 @@ body.modal-open .user-panel-link {
         left: 0;
         right: 0;
         bottom: 0;
-        border-left: 1px solid var(--border-red-tech);
-        border-right: 1px solid var(--border-red-tech);
+        border-left: 0.5px solid var(--border-red-tech);
+        border-right: 0.5px solid var(--border-red-tech);
         pointer-events: none;
         z-index: 20;
         box-sizing: border-box;
@@ -1583,9 +1583,9 @@ body.modal-open .user-panel-link {
         border-bottom-left-radius: 0 !important;
         border-bottom-right-radius: 0 !important;
         overflow: hidden !important;
-        border-top: 1.2px solid var(--border-red-tech) !important;
-        border-left: 1px solid var(--border-red-tech) !important;
-        border-right: 1px solid var(--border-red-tech) !important;
+        border-top: 0.5px solid var(--border-red-tech) !important;
+        border-left: 0.5px solid var(--border-red-tech) !important;
+        border-right: 0.5px solid var(--border-red-tech) !important;
         box-shadow: 0 2px 14px rgba(var(--theme-color-rgb), 0.1) !important;
         min-height: calc(100vh - env(safe-area-inset-bottom)) !important;
         min-height: calc(100dvh - env(safe-area-inset-bottom)) !important;
@@ -1594,9 +1594,9 @@ body.modal-open .user-panel-link {
     .admin-app-container {
         border-radius: 20px !important;
         overflow: hidden !important;
-        border-top: 1.2px solid var(--border-red-tech) !important;
-        border-left: 1px solid var(--border-red-tech) !important;
-        border-right: 1px solid var(--border-red-tech) !important;
+        border-top: 0.5px solid var(--border-red-tech) !important;
+        border-left: 0.5px solid var(--border-red-tech) !important;
+        border-right: 0.5px solid var(--border-red-tech) !important;
         box-shadow: 0 2px 14px rgba(var(--theme-color-rgb), 0.1) !important;
         min-height: calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important;
         min-height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important;
