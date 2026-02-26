@@ -27,8 +27,8 @@ body.admin-report-page::-webkit-scrollbar {
   margin: 0 auto;
   min-height: 100vh;
   background: var(--bg);
-  border-left: 1px solid var(--border-red-tech);
-  border-right: 1px solid var(--border-red-tech);
+  border-left: 0.5px solid var(--border-red-tech);
+  border-right: 0.5px solid var(--border-red-tech);
   box-sizing: border-box;
   overflow: visible;
 }
@@ -917,9 +917,9 @@ body.admin-report-page::-webkit-scrollbar {
   .admin-app-container {
     border-radius: 38px !important;
     overflow: hidden !important;
-    border-top: 1.2px solid var(--border-red-tech) !important;
-    border-left: 1px solid var(--border-red-tech) !important;
-    border-right: 1px solid var(--border-red-tech) !important;
+    border-top: 0.5px solid var(--border-red-tech) !important;
+    border-left: 0.5px solid var(--border-red-tech) !important;
+    border-right: 0.5px solid var(--border-red-tech) !important;
     box-shadow: 0 2px 14px rgba(var(--theme-color-rgb), 0.1) !important;
     min-height: calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important;
     min-height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important;
