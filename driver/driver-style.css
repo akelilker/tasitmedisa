@@ -3022,6 +3022,7 @@ body.driver-action-block-open .driver-footer-back-wrap {
   }
   .dashboard-page .driver-plate-dropdown-item {
     color: var(--txt) !important;
+    text-align: left !important;
   }
 
   /* Ana başlık: yan çizgiler sadece container'da (çift border olmasın) */
