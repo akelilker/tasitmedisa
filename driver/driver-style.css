@@ -939,16 +939,26 @@ body.driver-modal-open {
   .dashboard-page .hero-logo {
     flex: 0 0 54px !important;
     width: 54px !important;
-    transform: translate(-2px, 26px) !important; /* Önceki konuma göre 4px yukarı */
+    transform: translate(-2px, 22px) !important; /* Önceki konuma göre 4px yukarı */
     margin-top: 0 !important;
   }
-  .dashboard-page .hero.hero-two-rows .hero-row-top::after {
-    content: '';
-    flex: 0 0 54px; /* Sol logoyu dengeleyip başlığı yatayda gerçek merkeze getirir */
+  .dashboard-page .hero.hero-two-rows .hero-row-top {
+    display: grid !important;
+    grid-template-columns: 54px minmax(0, 1fr) 54px !important; /* Anasayfa gibi görsel merkez */
+    align-items: center !important;
   }
-  .dashboard-page .hero.hero-two-rows .hero-title-line {
-    font-size: clamp(14px, 4vw, 19px) !important;
-    letter-spacing: 1.2px !important;
+  .dashboard-page .hero.hero-two-rows .hero-row-top .hero-logo {
+    grid-column: 1;
+    justify-self: start;
+  }
+  .dashboard-page .hero.hero-two-rows .hero-row-top .hero-title-line {
+    grid-column: 2;
+    justify-self: center;
+    width: 100%;
+    max-width: 100%;
+    font-size: clamp(19px, 5.5vw, 23px) !important;
+    letter-spacing: 2.5px !important;
+    line-height: 1.25 !important;
   }
   .dashboard-page .hero-logo img {
     width: 100% !important;
