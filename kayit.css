@@ -1003,7 +1003,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-column-right .form-section-inline {
         display: flex;
         flex-direction: column;
-        gap: 4px !important;
+        gap: 5px !important; /* Etiket ile alan/açıklama arası +1px */
         align-items: stretch;
     }
     /* Base .form-section:first-child .form-label override - mobil */
@@ -1135,7 +1135,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     .modal-column-right .form-section-inline,
     .modal-column-right .form-section-inline:has(.radio-group),
     .modal-column-right .form-section-inline:first-of-type:has(.radio-group),
-    .modal-column-right .form-section-inline:has([data-group="kredi"]) { flex-direction: column; align-items: flex-start; gap: 3px !important; margin-bottom: 7px; height: auto; margin-top: 0; }
+    .modal-column-right .form-section-inline:has([data-group="kredi"]) { flex-direction: column; align-items: flex-start; gap: 4px !important; margin-bottom: 7px; height: auto; margin-top: 0; }
     
     .modal-column-right .form-section-inline .form-label { width: 100%; margin-bottom: 0; font-size: 15px !important; height: auto; }
     .modal-column-right .form-section-inline .radio-group { width: 100%; justify-content: space-between; gap: 3px; padding: 0; }
