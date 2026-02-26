@@ -386,21 +386,8 @@ if ('serviceWorker' in navigator) {
     const btn = document.createElement('button');
     btn.id = 'pwa-install-btn';
     btn.type = 'button';
-    btn.textContent = 'Uygulamayi Yukle';
-    btn.style.cssText = [
-      'position:fixed',
-      'right:16px',
-      'bottom:calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0px) + 14px)',
-      'z-index:10003',
-      'padding:10px 14px',
-      'border-radius:8px',
-      'border:1px solid rgba(225, 6, 27, 0.55)',
-      'background:#080d16',
-      'color:#f0f0f0',
-      'font-size:13px',
-      'font-weight:600',
-      'cursor:pointer'
-    ].join(';');
+    btn.textContent = 'Uygulamayı Yükle';
+    btn.className = 'pwa-install-btn';
 
     btn.addEventListener('click', async function() {
       if (!deferredInstallPrompt) return;
@@ -414,7 +401,12 @@ if ('serviceWorker' in navigator) {
       removeInstallButton();
     });
 
-    document.body.appendChild(btn);
+    var wrapper = document.getElementById('pwa-install-wrapper');
+    if (wrapper) {
+      wrapper.appendChild(btn);
+    } else {
+      document.body.appendChild(btn);
+    }
   }
 
   window.addEventListener('beforeinstallprompt', function(e) {

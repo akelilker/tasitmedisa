@@ -595,11 +595,10 @@ html { overflow-x: hidden; }
   box-shadow: 0 2px 10px rgba(var(--theme-color-rgb), 0.3);  /* Havada: kırmızı glow */
 }
 
-/* İKON SATIRI – sağda kesilmesin */
+/* İKON SATIRI – sol/orta/sağ: PWA butonu ortada, bildirim+ayarlar sağda */
 .icons-row {
   display: flex;
-  justify-content: flex-end;
-  gap: 16px;
+  align-items: center;
   padding: 0 12px 0 8px;
   margin-bottom: 8px;
   position: relative;
@@ -607,8 +606,46 @@ html { overflow-x: hidden; }
   max-width: 100%;
   flex-shrink: 0;
 }
+.icons-row-left {
+  flex: 1;
+  min-width: 0;
+}
+.pwa-install-center {
+  flex: 0 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.icons-row-right {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 16px;
+}
 .icons-row .icon-btn {
   flex-shrink: 0;
+}
+
+/* PWA "Uygulamayı Yükle" butonu – yeşil metin + yeşil çerçeve, satırda ortalı */
+#pwa-install-btn,
+.pwa-install-btn {
+  padding: 8px 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(34, 197, 94, 0.65);
+  background: #080d16;
+  color: #22c55e;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+}
+#pwa-install-btn:hover,
+.pwa-install-btn:hover {
+  color: #4ade80;
+  border-color: rgba(74, 222, 128, 0.8);
+  background: rgba(34, 197, 94, 0.08);
 }
 
 .icon-btn {
