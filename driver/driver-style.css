@@ -2471,7 +2471,7 @@ body.driver-action-block-open .driver-footer-back-wrap {
   display: inline-block;
   max-width: 100%;
   color: var(--theme-color) !important; /* Kırmızı, pasifken yarı saydam */
-  opacity: 0.5;
+  opacity: 1;
   font-size: 14px;
   font-weight: 500;
   letter-spacing: 0.5px;
@@ -2485,7 +2485,7 @@ body.driver-action-block-open .driver-footer-back-wrap {
   opacity: 1;
 }
 .driver-footer-back-wrap .universal-back-label {
-  color: #adb5bd !important; /* Soluk – ana uygulama anasayfadaki gibi */
+  color: var(--theme-color) !important;
 }
 .driver-footer-back-wrap .universal-back-btn:hover .universal-back-label {
   color: var(--txt-white) !important;
