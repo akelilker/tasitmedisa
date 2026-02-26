@@ -2468,7 +2468,9 @@ body.driver-action-block-open .driver-footer-back-wrap {
   overflow: hidden;
 }
 .driver-footer-back-wrap .universal-back-btn {
-  display: inline-block;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 3px !important;
   max-width: 100%;
   color: var(--theme-color) !important; /* Kırmızı, pasifken yarı saydam */
   opacity: 0.55;
@@ -2523,9 +2525,6 @@ body.driver-action-block-open .driver-footer-back-wrap {
 
 @media (max-width: 768px) {
   .driver-footer-back-wrap .universal-back-btn {
-    transform: translateY(3px);
-  }
-  .driver-footer-back-wrap .universal-back-label {
     transform: translateY(3px);
   }
   .login-page {
