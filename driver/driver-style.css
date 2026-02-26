@@ -959,6 +959,14 @@ body.driver-modal-open {
     font-size: clamp(19px, 5.5vw, 23px) !important;
     letter-spacing: 2.5px !important;
     line-height: 1.25 !important;
+    /* Başlık sığsın diye mobilde 2 satıra izin ver */
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    display: -webkit-box !important;
+    -webkit-box-orient: vertical !important;
+    -webkit-line-clamp: 2 !important;
+    line-clamp: 2 !important;
   }
   .dashboard-page .hero-logo img {
     width: 100% !important;
