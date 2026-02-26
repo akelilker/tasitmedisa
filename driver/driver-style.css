@@ -2471,7 +2471,7 @@ body.driver-action-block-open .driver-footer-back-wrap {
   display: inline-block;
   max-width: 100%;
   color: var(--theme-color) !important; /* Kırmızı, pasifken yarı saydam */
-  opacity: 1;
+  opacity: 0.55;
   font-size: 14px;
   font-weight: 500;
   letter-spacing: 0.5px;
@@ -2481,17 +2481,16 @@ body.driver-action-block-open .driver-footer-back-wrap {
   white-space: nowrap;
 }
 .driver-footer-back-wrap .universal-back-btn:hover {
-  color: var(--txt-white) !important;
+  color: var(--theme-color) !important;
   opacity: 1;
 }
 .driver-footer-back-wrap .universal-back-label {
   color: var(--theme-color) !important;
+  opacity: 0.55;
 }
 .driver-footer-back-wrap .universal-back-btn:hover .universal-back-label {
-  color: var(--txt-white) !important;
-}
-.driver-footer-back-wrap .universal-back-btn:hover .universal-back-label {
-  color: var(--txt-white) !important;
+  color: var(--theme-color) !important;
+  opacity: 1;
 }
 @media (min-width: 769px) {
   .login-page .driver-header-fixed {
@@ -2523,6 +2522,12 @@ body.driver-action-block-open .driver-footer-back-wrap {
 }
 
 @media (max-width: 768px) {
+  .driver-footer-back-wrap .universal-back-btn {
+    transform: translateY(3px);
+  }
+  .driver-footer-back-wrap .universal-back-label {
+    transform: translateY(3px);
+  }
   .login-page {
     max-width: 100% !important;
     padding-top: max(12px, env(safe-area-inset-top)) !important;
