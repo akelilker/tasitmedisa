@@ -78,7 +78,7 @@ body::-webkit-scrollbar,
   --hero-gradient-start: #060d16;
   --hero-gradient-end: #08090c;
   --hero-logo-width: 69px;
-  --hero-spacer-width: 16px; /* 30→16: fallback font ile tam başlık sığsın */
+  --hero-spacer-width: 30px;
 }
 
 /* Masaüstü (641px+): modal–footer arası 6px */
