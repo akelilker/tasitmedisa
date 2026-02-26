@@ -2485,7 +2485,10 @@ body.driver-action-block-open .driver-footer-back-wrap {
   opacity: 1;
 }
 .driver-footer-back-wrap .universal-back-label {
-  color: var(--theme-color) !important;
+  color: #adb5bd !important; /* Soluk – ana uygulama anasayfadaki gibi */
+}
+.driver-footer-back-wrap .universal-back-btn:hover .universal-back-label {
+  color: var(--txt-white) !important;
 }
 .driver-footer-back-wrap .universal-back-btn:hover .universal-back-label {
   color: var(--txt-white) !important;
