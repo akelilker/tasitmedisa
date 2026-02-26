@@ -360,6 +360,76 @@ if ('serviceWorker' in navigator) {
 }
 
 /* =========================================
+   PWA INSTALL PROMPT HANDLER
+   ========================================= */
+(function() {
+  let deferredInstallPrompt = null;
+
+  function isStandaloneMode() {
+    return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+  }
+
+  function getInstallButton() {
+    return document.getElementById('pwa-install-btn');
+  }
+
+  function removeInstallButton() {
+    const existing = getInstallButton();
+    if (existing && existing.parentNode) existing.parentNode.removeChild(existing);
+  }
+
+  function showInstallButton() {
+    if (isStandaloneMode()) return;
+    if (!deferredInstallPrompt) return;
+    if (getInstallButton()) return;
+
+    const btn = document.createElement('button');
+    btn.id = 'pwa-install-btn';
+    btn.type = 'button';
+    btn.textContent = 'Uygulamayi Yukle';
+    btn.style.cssText = [
+      'position:fixed',
+      'right:16px',
+      'bottom:calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0px) + 14px)',
+      'z-index:10003',
+      'padding:10px 14px',
+      'border-radius:8px',
+      'border:1px solid rgba(225, 6, 27, 0.55)',
+      'background:#080d16',
+      'color:#f0f0f0',
+      'font-size:13px',
+      'font-weight:600',
+      'cursor:pointer'
+    ].join(';');
+
+    btn.addEventListener('click', async function() {
+      if (!deferredInstallPrompt) return;
+      deferredInstallPrompt.prompt();
+      try {
+        await deferredInstallPrompt.userChoice;
+      } catch (err) {
+        // Kullanıcı prompt'u kapatırsa sessiz devam edilir.
+      }
+      deferredInstallPrompt = null;
+      removeInstallButton();
+    });
+
+    document.body.appendChild(btn);
+  }
+
+  window.addEventListener('beforeinstallprompt', function(e) {
+    e.preventDefault();
+    deferredInstallPrompt = e;
+    showInstallButton();
+  });
+
+  window.addEventListener('appinstalled', function() {
+    deferredInstallPrompt = null;
+    removeInstallButton();
+  });
+})();
+
+/* =========================================
    MANIFEST.JSON CORS HATASI YÖNETİMİ
    ========================================= */
 // Manifest.json CORS/404 hatası için sessizce devam et
