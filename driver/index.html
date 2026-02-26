@@ -22,15 +22,15 @@
     <meta name="apple-mobile-web-app-title" content="Kullanıcı Girişi - Medisa">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;600;700&display=optional" rel="stylesheet">
     <link rel="stylesheet" href="../style-core.css?v=81">
     <link rel="stylesheet" href="driver-style.css?v=81">
     <!-- Splash: ana uygulama ile aynı logo+başlık (kritik, mobilde kesin uygulansın) -->
     <style>
-        .driver-splash-inner { min-width: 120px !important; }
-        .driver-splash-logo { width: 120px !important; height: auto !important; aspect-ratio: 624.89 / 357.04 !important; object-fit: contain !important; filter: brightness(0.88) !important; }
-        .driver-splash-title { font-size: clamp(16px, 4.5vw, 24px) !important; font-weight: 800 !important; letter-spacing: clamp(1px, 0.5vw, 4px) !important; text-transform: uppercase !important; margin: 0 !important; background: linear-gradient(to bottom, #c2d4df 0%, #ffffff 40%, #9aadba 52%, #d6e0e8 100%) !important; -webkit-background-clip: text !important; background-clip: text !important; -webkit-text-fill-color: transparent !important; font-family: 'Source Sans 3', sans-serif !important; }
-        .driver-splash-subtitle { font-size: clamp(15px, 4vw, 22px) !important; font-weight: 800 !important; letter-spacing: clamp(1px, 0.5vw, 3.5px) !important; text-transform: uppercase !important; margin: 0 !important; margin-top: 2px !important; background: linear-gradient(to bottom, #c2d4df 0%, #ffffff 40%, #9aadba 52%, #d6e0e8 100%) !important; -webkit-background-clip: text !important; background-clip: text !important; -webkit-text-fill-color: transparent !important; font-family: 'Source Sans 3', sans-serif !important; }
+        .driver-splash-inner { min-width: 120px !important; flex-shrink: 0 !important; }
+        .driver-splash-logo { width: 120px !important; height: 69px !important; flex-shrink: 0 !important; object-fit: contain !important; filter: brightness(0.88) !important; }
+        .driver-splash-title { font-size: clamp(16px, 4.5vw, 24px) !important; font-weight: 800 !important; letter-spacing: clamp(1px, 0.5vw, 4px) !important; text-transform: uppercase !important; margin: 0 !important; flex-shrink: 0 !important; background: linear-gradient(to bottom, #c2d4df 0%, #ffffff 40%, #9aadba 52%, #d6e0e8 100%) !important; -webkit-background-clip: text !important; background-clip: text !important; -webkit-text-fill-color: transparent !important; font-family: 'Source Sans 3', sans-serif !important; }
+        .driver-splash-subtitle { font-size: clamp(15px, 4vw, 22px) !important; font-weight: 800 !important; letter-spacing: clamp(1px, 0.5vw, 3.5px) !important; text-transform: uppercase !important; margin: 0 !important; margin-top: 2px !important; flex-shrink: 0 !important; background: linear-gradient(to bottom, #c2d4df 0%, #ffffff 40%, #9aadba 52%, #d6e0e8 100%) !important; -webkit-background-clip: text !important; background-clip: text !important; -webkit-text-fill-color: transparent !important; font-family: 'Source Sans 3', sans-serif !important; }
     </style>
     <style>
       /* Input stilleri - en yüksek öncelik (box-shadow ile ince çerçeve, koyu tema) */
@@ -61,7 +61,7 @@
 <body class="login-page">
     <div id="driver-splash" class="driver-splash" aria-hidden="false">
         <div class="driver-splash-inner">
-            <img src="../icon/logo-header2.svg" alt="MEDISA" class="driver-splash-logo">
+            <img src="../icon/logo-header2.svg" alt="MEDISA" class="driver-splash-logo" width="120" height="69">
             <h1 class="driver-splash-title">TAŞIT YÖNETİM SİSTEMİ</h1>
             <p class="driver-splash-subtitle">KULLANICI PANELİ</p>
         </div>
