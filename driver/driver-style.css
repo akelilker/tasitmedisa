@@ -3123,12 +3123,12 @@ body.driver-action-block-open .driver-footer-back-wrap {
   .dashboard-page .driver-report-block .form-group textarea:not(:focus) {
     box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.35) !important;
   }
-  .dashboard-page .driver-report-item:has(.driver-report-block-kaza.show) .driver-report-block-kaza .form-group input.driver-kaza-input:not(:focus),
-  .dashboard-page .driver-report-item:has(.driver-report-block-kaza.show) .driver-report-block-kaza .form-group textarea.driver-kaza-textarea:not(:focus) {
+  .dashboard-page .driver-report-block-kaza.show .form-group input.driver-kaza-input:not(:focus),
+  .dashboard-page .driver-report-block-kaza.show .form-group textarea.driver-kaza-textarea:not(:focus) {
     box-shadow: inset 0 0 0 0.5px var(--theme-color) !important;
   }
-  .dashboard-page .driver-report-item:has(.driver-report-block-bakim.show) .driver-report-block-bakim .form-group input.driver-bakim-input:not(:focus),
-  .dashboard-page .driver-report-item:has(.driver-report-block-bakim.show) .driver-report-block-bakim .form-group textarea.driver-bakim-textarea:not(:focus) {
+  .dashboard-page .driver-report-block-bakim.show .form-group input.driver-bakim-input:not(:focus),
+  .dashboard-page .driver-report-block-bakim.show .form-group textarea.driver-bakim-textarea:not(:focus) {
     box-shadow: inset 0 0 0 0.5px #4ade80 !important;
   }
 
