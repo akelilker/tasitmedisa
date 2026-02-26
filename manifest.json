@@ -1,4 +1,5 @@
 {
+  "id": "/",
   "name": "Medisa Taşıt Yönetim Sistemi",
   "short_name": "Medisa Taşıt",
   "description": "Taşıt ve kayıt yönetimi",
@@ -9,6 +10,7 @@
   "theme_color": "#080d16",
   "background_color": "#080d16",
   "lang": "tr",
+  "categories": ["business", "productivity"],
   "icons": [
     {
       "src": "./icon/icon-192.svg",
@@ -33,6 +35,21 @@
       "sizes": "512x512",
       "type": "image/svg+xml",
       "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Kayıt İşlemleri",
+      "short_name": "Kayıt",
+      "description": "Taşıt kayıt işlemlerine git",
+      "url": "./index.html",
+      "icons": [
+        {
+          "src": "./icon/icon-192.svg",
+          "sizes": "192x192",
+          "type": "image/svg+xml"
+        }
+      ]
     }
   ]
 }
