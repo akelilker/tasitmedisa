@@ -53,9 +53,9 @@
   align-items: center;
   gap: 16px;
 }
-/* Splash: ana uygulama girişi ile aynı logo+başlık boyutu (%15 küçültme) */
+/* Splash: açılış logosu 120px */
 .driver-splash-logo {
-  width: 150px;
+  width: 120px;
   height: auto;
   object-fit: contain;
   filter: brightness(0.88);
@@ -931,7 +931,7 @@ body.driver-modal-open {
   .driver-success-msg { font-size: 16.5px; }
   .driver-km-success-msg { font-size: 16.5px; }
 
-  /* Splash logosu mobilde %15 küçültme (150→120px) */
+  /* Splash logosu mobilde 120px */
   .driver-splash-logo {
     width: 120px !important;
   }
