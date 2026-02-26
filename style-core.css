@@ -489,6 +489,9 @@ html { overflow-x: hidden; }
 }
 
 @media (min-width: 769px) {
+    .content-wrap {
+        scrollbar-gutter: stable; /* Scrollbar alanı rezerve – logo/başlık kayması önlenir */
+    }
     .content-wrap::-webkit-scrollbar {
         width: 6px;
     }
