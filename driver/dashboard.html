@@ -11,6 +11,7 @@
     <link rel="apple-touch-icon" sizes="192x192" href="../icon/icon-192.svg">
     <link rel="apple-touch-icon" sizes="512x512" href="../icon/icon-512.svg">
     <link rel="manifest" href="./manifest.json">
+    <link rel="preload" href="../icon/logo-header2.svg" as="image">
     <meta name="theme-color" content="#080d16">
     <meta name="msapplication-TileColor" content="#080d16">
     <meta name="mobile-web-app-capable" content="yes">
@@ -24,7 +25,8 @@
     <link rel="stylesheet" href="driver-style.css?v=20260225f">
     <!-- Splash: ana uygulama ile aynı logo+başlık (kritik, mobilde kesin uygulansın) -->
     <style>
-        .driver-splash-logo { width: 150px !important; height: auto !important; object-fit: contain !important; filter: brightness(0.88) !important; }
+        .driver-splash-inner { min-width: 150px !important; }
+        .driver-splash-logo { width: 150px !important; height: auto !important; aspect-ratio: 624.89 / 357.04 !important; object-fit: contain !important; filter: brightness(0.88) !important; }
         .driver-splash-title { font-size: clamp(16px, 4.5vw, 24px) !important; font-weight: 800 !important; letter-spacing: clamp(1px, 0.5vw, 4px) !important; text-transform: uppercase !important; margin: 0 !important; background: linear-gradient(to bottom, #c2d4df 0%, #ffffff 40%, #9aadba 52%, #d6e0e8 100%) !important; -webkit-background-clip: text !important; background-clip: text !important; -webkit-text-fill-color: transparent !important; font-family: 'Source Sans 3', sans-serif !important; }
         .driver-splash-subtitle { font-size: clamp(15px, 4vw, 22px) !important; font-weight: 800 !important; letter-spacing: clamp(1px, 0.5vw, 3.5px) !important; text-transform: uppercase !important; margin: 0 !important; margin-top: 2px !important; background: linear-gradient(to bottom, #c2d4df 0%, #ffffff 40%, #9aadba 52%, #d6e0e8 100%) !important; -webkit-background-clip: text !important; background-clip: text !important; -webkit-text-fill-color: transparent !important; font-family: 'Source Sans 3', sans-serif !important; }
     </style>
