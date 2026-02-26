@@ -1076,6 +1076,7 @@ window.toggleDriverPlateDropdown = function(ev) {
         const headerStyle = window.getComputedStyle(header);
         const heroRowTop = document.querySelector('.dashboard-page .hero-row-top');
         const heroRowBottom = document.querySelector('.dashboard-page .hero-row-bottom');
+        const titleEl = document.querySelector('.dashboard-page .hero-title-line') || document.querySelector('.dashboard-page .hero h1');
         const logoRect = heroLogo.getBoundingClientRect();
         const heroRect = hero.getBoundingClientRect();
         const headerRect = header.getBoundingClientRect();
@@ -1122,6 +1123,27 @@ window.toggleDriverPlateDropdown = function(ev) {
                 phase: phase,
                 hasTopRow: !!heroRowTop,
                 hasBottomRow: !!heroRowBottom
+            });
+        }
+
+        if (titleEl) {
+            const titleRect = titleEl.getBoundingClientRect();
+            const titleStyle = window.getComputedStyle(titleEl);
+            const titleCenter = titleRect.left + (titleRect.width / 2);
+            const heroCenter = heroRect.left + (heroRect.width / 2);
+            postDebugLog('H6', 'driver-script.js:heroLogoMetrics', 'Header title centering captured', {
+                phase: phase,
+                titleCenterDelta: Math.round(titleCenter - heroCenter),
+                titleWidth: Math.round(titleRect.width),
+                titleClientWidth: titleEl.clientWidth,
+                titleScrollWidth: titleEl.scrollWidth,
+                textAlign: titleStyle.textAlign,
+                whiteSpace: titleStyle.whiteSpace,
+                textOverflow: titleStyle.textOverflow
+            });
+        } else {
+            postDebugLog('H6', 'driver-script.js:heroLogoMetrics', 'Header title element missing', {
+                phase: phase
             });
         }
     }
