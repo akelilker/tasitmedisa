@@ -91,6 +91,30 @@ window.debounce = function(fn, ms) {
   };
 };
 
+window.resetModalInputs = function(modalElement) {
+  if (!modalElement) return;
+  var activeEl = document.activeElement;
+  if (activeEl && modalElement.contains(activeEl) && typeof activeEl.blur === 'function') {
+    activeEl.blur();
+  }
+
+  modalElement.querySelectorAll('input, textarea, select').forEach(function(el) {
+    if (el.tagName === 'SELECT') {
+      el.selectedIndex = 0;
+      el.value = '';
+    } else if (el.type === 'checkbox' || el.type === 'radio') {
+      el.checked = false;
+    } else {
+      el.value = '';
+    }
+    el.classList.remove('field-error', 'has-value');
+  });
+
+  modalElement.querySelectorAll('.radio-btn').forEach(function(btn) {
+    btn.classList.remove('active', 'green');
+  });
+};
+
 /** Kaporta SVG metni - tek fetch, cache paylaşımı (tasitlar + kayit) */
 var _kaportaSvgCache = null;
 window.getKaportaSvg = async function() {
@@ -114,6 +138,9 @@ let dimTimeout = null;
 
 var _cachedFooter;
 function getFooter() { return _cachedFooter || (_cachedFooter = document.getElementById('app-footer')); }
+var _cachedModalOverlays = null;
+function refreshModalOverlays() { _cachedModalOverlays = document.querySelectorAll('.modal-overlay'); return _cachedModalOverlays; }
+function getModalOverlays() { return _cachedModalOverlays || refreshModalOverlays(); }
 
 // Sayfa yüklendiğinde footer animasyonunu başlat
 function startFooterAnimation() {
@@ -149,7 +176,7 @@ window.updateFooterDim = function() {
   if (!footer) return;
   
   let isAnyModalOpen = false;
-  document.querySelectorAll('.modal-overlay').forEach(modal => {
+  getModalOverlays().forEach(modal => {
     if (modal.classList.contains('active') || modal.style.display === 'flex') {
       isAnyModalOpen = true;
     }
@@ -183,14 +210,17 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Modal Observer: Body class yönetimi (Scroll engelleme vb.)
   const modalObserver = new MutationObserver((mutations) => {
+    refreshModalOverlays();
     window.updateFooterDim();
   });
 
   // Modal attribute değişikliklerini izle (footer dim, body.modal-open)
-  const allModals = document.querySelectorAll('.modal-overlay');
+  const allModals = refreshModalOverlays();
   allModals.forEach(modal => {
     modalObserver.observe(modal, { attributes: true, attributeFilter: ['class', 'style'] });
   });
+
+  modalObserver.observe(document.body, { childList: true, subtree: true });
 });
 
 // Modal açma fonksiyonları: tasitlar.js ve raporlar.js kendi openVehiclesView/openReportsView tanımlar
@@ -249,7 +279,7 @@ document.addEventListener('DOMContentLoaded', () => {
    VERSION DISPLAY (Global Core - v78.1)
    ========================================= */
 document.addEventListener('DOMContentLoaded', function() {
-    const APP_VERSION = "v78.1";
+    const APP_VERSION = "v78.2";
     const versionEl = document.getElementById('version-display');
 
     if (versionEl) {
