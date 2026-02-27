@@ -974,7 +974,12 @@ function buildSlidingWarnings(vehicles, records) {
         const optVal = lastSuccessfulKmSubmissions[vid] || lastSuccessfulKmSubmissions[String(v.id)];
         const fromOptimistic = optVal && String(optVal).trim() === period;
         const hasKmThisMonth = fromRecords || !!fromOptimistic;
-        if (!hasKmThisMonth) {
+        /* Yeni alınan araç: bu ay sisteme eklenen araç için km uyarısı gösterme */
+        const createdAt = v.createdAt || '';
+        const createdPeriod = createdAt ? String(createdAt).slice(0, 7).replace(/-/g, '') : '';
+        const periodNum = period.replace(/-/g, '');
+        const isNewThisMonth = createdPeriod && createdPeriod === periodNum;
+        if (!hasKmThisMonth && !isNewThisMonth) {
             warnings.push({ text: v.plaka + ' Plakalı Taşıtın Güncel Km Bildirimi Yapılmamıştır', plaka: v.plaka });
         }
         const checkDate = (dateStr, label) => {

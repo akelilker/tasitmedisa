@@ -1376,26 +1376,5 @@
     <script defer src="tasitlar.js?v=20260225"></script>
     <script defer src="raporlar.js?v=20260225"></script>
     <script defer src="ayarlar.js?v=20260225"></script>
-    <!-- #region agent log -->
-    <script>
-    (function(){
-      function capture(tag){
-        var html=document.documentElement, bod=document.body, cw=document.querySelector('.content-wrap'), ac=document.querySelector('.app-container'), hero=document.querySelector('.hero'), h1=hero?hero.querySelector('h1'):null, logo=hero?hero.querySelector('.hero-logo'):null, ft=document.getElementById('app-footer');
-        var cs=getComputedStyle;
-        console.log('[DBG-051662:'+tag+']',JSON.stringify({
-          vpH:window.innerHeight, vpW:window.innerWidth,
-          footerExists:!!ft, footerDisplay:ft?cs(ft).display:'', footerVisibility:ft?cs(ft).visibility:'', footerOpacity:ft?cs(ft).opacity:'', footerPosition:ft?cs(ft).position:'', footerBottom:ft?cs(ft).bottom:'', footerLeft:ft?cs(ft).left:'', footerWidth:ft?ft.offsetWidth:0, footerHeight:ft?ft.offsetHeight:0,
-          footerRect:ft?JSON.stringify(ft.getBoundingClientRect()):'',
-          footerZindex:ft?cs(ft).zIndex:'', footerBg:ft?cs(ft).background.substring(0,40):'',
-          bodyW:bod.offsetWidth, bodyLeft:bod.getBoundingClientRect().left
-        }));
-      }
-      window.addEventListener('load',function(){
-        capture('load');
-        setTimeout(function(){ capture('3s'); },3000);
-      });
-    })();
-    </script>
-    <!-- #endregion -->
 </body>
 </html>
