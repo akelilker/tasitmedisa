@@ -804,6 +804,26 @@
     $all('input[type="date"].form-input', modal).forEach(syncSingleDateInputVisibility);
   }
 
+  /**
+   * iOS Safari: modal ilk açıldığında type="date" inputlar bazen değeri çizmiyor.
+   * Modal göründükten sonra değeri yeniden atayarak repaint tetiklenir.
+   */
+  function forceDateInputRepaint(modal) {
+    if (!modal) return;
+    $all('input[type="date"].form-input', modal).forEach(function(input) {
+      var val = input.value;
+      if (val) {
+        input.value = '';
+        requestAnimationFrame(function() {
+          input.value = val;
+          syncSingleDateInputVisibility(input);
+        });
+      } else {
+        syncSingleDateInputVisibility(input);
+      }
+    });
+  }
+
   // --- Date Placeholder Helper ---
   /**
    * Tarih input'larına özel placeholder ekler (iOS uyumlu)
@@ -923,6 +943,8 @@
         setTimeout(() => syncDateInputVisibility(modal), 0);
         setTimeout(() => syncDateInputVisibility(modal), 80);
         setTimeout(() => syncDateInputVisibility(modal), 180);
+        // iOS: tarih inputları ilk açılışta boş görünme – repaint tetikle
+        setTimeout(() => forceDateInputRepaint(modal), 120);
         // Hover class'larını ayarla
         updateRadioButtonHover();
       });
@@ -1136,6 +1158,8 @@
       setTimeout(() => syncDateInputVisibility(modal), 0);
       setTimeout(() => syncDateInputVisibility(modal), 80);
       setTimeout(() => syncDateInputVisibility(modal), 180);
+      // iOS: Kasko/Muayene tarih inputları ilk açılışta boş görünme – repaint tetikle
+      setTimeout(() => forceDateInputRepaint(modal), 120);
       updateRadioButtonHover();
     });
 
