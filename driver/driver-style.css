@@ -386,12 +386,12 @@ body.driver-modal-open {
   .dashboard-page .driver-below-hero-row {
     gap: 10px !important;
   }
-  /* ========== MASAÜSTÜ (769px+) – Header logo: 1px sola (-21px) ========== */
+  /* ========== MASAÜSTÜ (769px+) – Header logo: 0.5px yukarı (-21px, 9.5px) ========== */
   .dashboard-page .hero.hero-two-rows .hero-logo,
   .login-page .hero.hero-two-rows .hero-logo {
     flex: 0 0 76px !important;
     width: 76px !important;
-    transform: translate(-21px, 10px) !important;
+    transform: translate(-21px, 9.5px) !important;
   }
   .dashboard-page .hero.hero-two-rows .hero-logo img,
   .login-page .hero.hero-two-rows .hero-logo img {
