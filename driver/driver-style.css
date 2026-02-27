@@ -382,14 +382,15 @@ body.driver-modal-open {
   .dashboard-page .driver-below-hero-row .driver-btn-logout {
     margin-right: 8px !important;
   }
-  .dashboard-page .hero-logo,
-  .login-page .hero-logo {
+  /* ========== MASAÜSTÜ (769px+) – Header logo: konum sabit. Mobil için bu bloku değiştirme. ========== */
+  .dashboard-page .hero.hero-two-rows .hero-logo,
+  .login-page .hero.hero-two-rows .hero-logo {
     flex: 0 0 72px !important;
     width: 72px !important;
     transform: translate(-14px, 10px) !important; /* 6px yukarı, 2px sola */
   }
-  .dashboard-page .hero-logo img,
-  .login-page .hero-logo img {
+  .dashboard-page .hero.hero-two-rows .hero-logo img,
+  .login-page .hero.hero-two-rows .hero-logo img {
     width: 100% !important;
   }
   .dashboard-page .hero.hero-two-rows .hero-title-line,
@@ -960,11 +961,17 @@ body.driver-modal-open {
     width: 120px !important;
     height: 69px !important;
   }
-  /* MEDISA hero logosu mobilde – 54px */
-  .dashboard-page .hero-logo {
+  /* Mobil (640px altı): MEDISA hero logosu – 54px, konum başlıkla hizalı (22px aşağı kaldırıldı) */
+  .dashboard-page .hero.hero-two-rows .hero-logo {
     flex: 0 0 54px !important;
     width: 54px !important;
-    transform: translate(-2px, 22px) !important; /* Önceki konuma göre 4px yukarı */
+    transform: translate(-2px, 6px) !important;
+    margin-top: 0 !important;
+  }
+  .login-page .hero.hero-two-rows .hero-logo {
+    flex: 0 0 54px !important;
+    width: 54px !important;
+    transform: translate(-2px, 6px) !important;
     margin-top: 0 !important;
   }
   /* Mobil: 54px logo sütunları, başlık ortada */
@@ -3526,11 +3533,10 @@ body.driver-action-block-open .driver-footer-back-wrap {
     border-right: none !important;
   }
 
-  /* iOS PWA (Kullanıcı paneli): ana başlık tam metin tek satır + logo ince ayarı */
+  /* iOS PWA (Kullanıcı paneli): logo masaüstüyle uyumlu yukarı, başlık tek satır */
   .dashboard-page .hero.hero-two-rows .hero-logo,
   .login-page .hero.hero-two-rows .hero-logo {
-    /* Mevcut mobil konuma göre: 2px sağa, 3px yukarı */
-    transform: translate(0, -2px) !important;
+    transform: translate(0, -6px) !important;
     margin-right: 10px !important;
   }
   .dashboard-page .hero.hero-two-rows .hero-title-block .hero-title-line,
