@@ -64,7 +64,8 @@ function buildVehicleForDriver($tasit, $branches = []) {
         'lastikAdres' => $tasit['lastikAdres'] ?? '',
         'uttsTanimlandi' => $tasit['uttsTanimlandi'] ?? false,
         'muayeneDate' => $tasit['muayeneDate'] ?? '',
-        'events' => $tasit['events'] ?? []
+        'events' => $tasit['events'] ?? [],
+        'createdAt' => $tasit['createdAt'] ?? null
     ];
 }
 
