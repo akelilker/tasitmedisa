@@ -351,6 +351,12 @@ body.driver-modal-open {
     font-size: 17px;
     letter-spacing: 3px;
   }
+  /* Kullanıcı Paneli + Login: başlık kutunun içine sığsın */
+  .dashboard-page .hero.hero-two-rows .hero-title-line,
+  .login-page .hero.hero-two-rows .hero-title-line {
+    font-size: clamp(16px, 4.5vw, 20px) !important;
+    letter-spacing: clamp(1px, 0.45vw, 3px) !important;
+  }
   .dashboard-page .hero {
     margin-bottom: 0 !important;
   }
