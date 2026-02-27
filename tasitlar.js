@@ -1817,7 +1817,11 @@ function renderVehicleDetailLeft(vehicle) {
     // Taşıt Takip
     const takipCihazi = vehicle.takipCihaziMontaj ? 'Evet' : 'Hayır';
     html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Taşıt Takip</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(takipCihazi)}</span></div>`;
-    
+
+    // Kasko Kodu (sadece taşıt detayda bilgi olarak)
+    const kaskoKodu = vehicle.kaskoKodu || '';
+    html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Kasko Kodu</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(kaskoKodu || '-')}</span></div>`;
+
     // Notlar (kayıt formundan) + Kullanıcı Notu (varsa, kullanıcı panelinden)
     const notes = vehicle.notes || '';
     const sonNot = vehicle.sonEkstraNot || '';
