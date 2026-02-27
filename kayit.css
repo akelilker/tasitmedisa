@@ -1322,6 +1322,24 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-body .modal-column-right .form-section-inline:has(#yedek-anahtar-var) {
         margin-top: 3px !important;
     }
+    /* Sağ kolon Var/Yok (Yedek Anahtar, Kredi/Rehin): etiket sabit genişlik – butonlar üsttekilerle hizalı, çerçeve kesilmesin */
+    #vehicle-modal .modal-body .modal-column-right .form-section-inline:has(.radio-group) {
+        justify-content: flex-start !important;
+        width: 100% !important;
+        min-width: 0 !important;
+    }
+    #vehicle-modal .modal-body .modal-column-right .form-section-inline:has(.radio-group) .form-label {
+        flex: 0 0 165px !important;
+        min-width: 165px !important;
+        max-width: 165px !important;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    #vehicle-modal .modal-body .modal-column-right .form-section-inline:has(.radio-group) .radio-group {
+        flex: 0 0 auto !important;
+        margin-left: 0 !important;
+    }
     /* Masaüstü: ilk satır (Taşıt Tipi / Sigorta) – üst kesilme olmaması için margin-top 0 */
     #vehicle-modal .modal-body .modal-column-left .form-section-inline:first-child {
         margin-top: 0 !important;
