@@ -929,8 +929,31 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     }
     /* İçerik yukarı kaydığında aşağı zıplamasın (mobil bounce kapatma) */
     #vehicle-modal .modal-body {
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+        overflow: hidden !important;
         overscroll-behavior: none !important;
         overscroll-behavior-y: none !important;
+        padding-bottom: 8px !important;
+    }
+    #vehicle-modal .modal-body .modal-columns {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow-y: auto;
+        overflow-x: hidden;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        padding-bottom: 6px;
+    }
+    #vehicle-modal .modal-body .modal-columns::-webkit-scrollbar {
+        display: none;
+    }
+    #vehicle-modal .modal-body .universal-btn-group {
+        flex-shrink: 0;
+        margin-top: 6px;
+        padding-top: 8px !important;
+        padding-bottom: 6px !important;
     }
 
     #vehicle-modal.modal-overlay::before {
@@ -1022,7 +1045,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal #vehicle-notes,
     #vehicle-modal .modal-column-right .form-section:has(#vehicle-notes) textarea {
         flex: 1 !important;
-        min-height: 68px !important; /* Mobilde varsayılan 3 satır */
+        min-height: 58px !important; /* Mobilde varsayılan 2.5 satır */
         height: auto !important;
     }
     #vehicle-modal .modal-column-right .form-section,
@@ -1102,8 +1125,11 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     }
     
     /* Sağ kolon textarea: min-height +1px */
-    #vehicle-modal .modal-column-right textarea.form-input {
+    #vehicle-modal .modal-column-right textarea.form-input:not(#vehicle-notes) {
         min-height: 73px !important;
+    }
+    #vehicle-modal #vehicle-notes {
+        min-height: 58px !important;
     }
     
     /* Tarih inputları: gg.aa.yyyy kutudan taşmasın – font küçük, overflow gizli */
