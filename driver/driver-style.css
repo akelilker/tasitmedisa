@@ -375,6 +375,10 @@ body.driver-modal-open {
   .dashboard-page .driver-below-hero {
     margin-top: 12px !important;
   }
+  /* Tarihçe/çıkış butonları alanı ile alttaki içerik arası dikey boşluk sıfır */
+  .dashboard-page .driver-header-fixed {
+    padding-bottom: 0 !important;
+  }
   /* Geçmiş ve kapı simgeleri çerçeveden 4px daha içeri (masaüstü: 12px + 8px) */
   .dashboard-page .driver-below-hero-row .driver-btn-history {
     margin-left: 12px !important;
