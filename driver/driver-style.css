@@ -380,7 +380,7 @@ body.driver-modal-open {
   .login-page .hero-logo {
     flex: 0 0 72px !important;
     width: 72px !important;
-    transform: none !important;
+    transform: translate(-12px, 12px) !important;
   }
   .dashboard-page .hero-logo img,
   .login-page .hero-logo img {
