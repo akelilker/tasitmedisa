@@ -1025,6 +1025,21 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         min-height: 0 !important;
         display: block !important;
     }
+    /* Kredi Rehin, Tahsis Edilen Şube, Kasko Kodu, Notlar: üstteki dikey boşluklar toplam 2px */
+    #vehicle-modal .modal-column-right .form-section-inline:has([data-group="kredi"]) {
+        margin-top: 2px !important;
+    }
+    #vehicle-modal .modal-column-right .form-section:has(#vehicle-branch-select),
+    #vehicle-modal .modal-column-right .form-section:has(#vehicle-kasko-kodu),
+    #vehicle-modal .modal-column-right .form-section:has(#vehicle-notes) {
+        margin-top: 0 !important;
+    }
+    #vehicle-modal .modal-column-right .form-section-inline:has([data-group="kredi"]) .form-label,
+    #vehicle-modal .modal-column-right .form-section:has(#vehicle-branch-select) .form-label,
+    #vehicle-modal .modal-column-right .form-section:has(#vehicle-kasko-kodu) .form-label,
+    #vehicle-modal .modal-column-right .form-section:has(#vehicle-notes) .form-label {
+        margin-top: 0 !important;
+    }
     /* Tahsis Edilen Şube ve Notlar: etiket altı 1px (önceki margin shorthand’i ezer) */
     #vehicle-modal .modal-column-right .form-section:has(#vehicle-branch-select) .form-label,
     #vehicle-modal .modal-column-right .form-section:has(#vehicle-notes) .form-label {
