@@ -386,7 +386,7 @@ body.driver-modal-open {
   .login-page .hero-logo {
     flex: 0 0 72px !important;
     width: 72px !important;
-    transform: translate(-12px, 16px) !important;
+    transform: translate(-12px, 10px) !important; /* 6px yukarı (önceden 16px aşağıydı) */
   }
   .dashboard-page .hero-logo img,
   .login-page .hero-logo img {
