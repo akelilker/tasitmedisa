@@ -1220,6 +1220,10 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     .modal-column-left .form-section-inline:not(:first-child) {
         margin-bottom: 6px !important;
     }
+    /* Tramer – Boya/Değişen arası sıkı (mobil) */
+    #vehicle-modal .modal-column-left .form-section-inline:nth-of-type(3) {
+        margin-bottom: 2px !important;
+    }
     
     .modal-column-right .form-section-inline:has(.radio-group) .radio-group { position: static; transform: none; right: auto; top: auto; }
     .modal-column-left .form-section-inline:not(:first-child) { justify-content: space-between; }
@@ -1365,10 +1369,10 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-body .modal-column-left .form-section-inline:nth-of-type(2) {
         margin-top: 4px !important;
     }
-    /* Şanzıman Tipi – Tramer Kaydı arası +3px; Tramer – Boya arası 2px azaltıldı */
+    /* Şanzıman Tipi – Tramer Kaydı arası +3px; Tramer – Boya arası sıkı */
     #vehicle-modal .modal-body .modal-column-left .form-section-inline:nth-of-type(3) {
         margin-top: 5px !important;
-        margin-bottom: 4px !important;
+        margin-bottom: 2px !important;
     }
     #vehicle-modal .modal-body .modal-column-right .form-section:nth-of-type(3) {
         margin-bottom: 6px;
