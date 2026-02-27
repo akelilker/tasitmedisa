@@ -370,15 +370,25 @@ body.driver-modal-open {
   .dashboard-page .driver-below-hero-row .driver-btn-logout {
     margin-right: 8px !important;
   }
+  /* Hero üst satır: logo + başlık hizalama */
+  .dashboard-page .hero.hero-two-rows .hero-row-top,
+  .login-page .hero.hero-two-rows .hero-row-top {
+    gap: 12px !important;
+    align-items: center !important;
+  }
   .dashboard-page .hero-logo,
   .login-page .hero-logo {
     flex: 0 0 72px !important;
     width: 72px !important;
-    transform: translateY(-4px) !important;
+    transform: none !important;
   }
   .dashboard-page .hero-logo img,
   .login-page .hero-logo img {
     width: 100% !important;
+  }
+  .dashboard-page .hero.hero-two-rows .hero-title-line,
+  .login-page .hero.hero-two-rows .hero-title-line {
+    line-height: 1.35 !important;
   }
   .driver-user-name-center {
     font-size: 14.5px;
