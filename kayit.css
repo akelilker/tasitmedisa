@@ -909,10 +909,10 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     /* Kayıt modalı mobil: overlay konumu (style-core ile aynı, taşıtlar gibi kendi dosyasında) */
     #vehicle-modal.modal-overlay {
         top: 0 !important;
-        bottom: calc(var(--modal-gap-above-footer) + var(--app-footer-height) + env(safe-area-inset-bottom, 0)) !important;
+        bottom: calc(var(--modal-gap-above-footer) + var(--app-footer-height) + env(safe-area-inset-bottom, 0) + 6px) !important;
         height: auto !important;
-        max-height: calc(100vh - var(--modal-gap-above-footer) - var(--app-footer-height) - env(safe-area-inset-bottom, 0)) !important;
-        max-height: calc(100dvh - var(--modal-gap-above-footer) - var(--app-footer-height) - env(safe-area-inset-bottom, 0)) !important;
+        max-height: calc(100vh - var(--modal-gap-above-footer) - var(--app-footer-height) - env(safe-area-inset-bottom, 0) - 6px) !important;
+        max-height: calc(100dvh - var(--modal-gap-above-footer) - var(--app-footer-height) - env(safe-area-inset-bottom, 0) - 6px) !important;
     }
     
     #vehicle-modal .modal-container {
@@ -926,6 +926,10 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         touch-action: pan-y !important;
         overscroll-behavior: none !important;
         overscroll-behavior-x: none !important;
+    }
+    /* Sağ alt marker ikon buton çerçevesine binmesin */
+    #vehicle-modal .modal-container::after {
+        display: none !important;
     }
     /* İçerik yukarı kaydığında aşağı zıplamasın (mobil bounce kapatma) */
     #vehicle-modal .modal-body {
@@ -1440,7 +1444,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         min-height: 0;
         align-items: stretch;
         margin-top: -5px !important;
-        margin-bottom: 2px !important;
+        margin-bottom: 6px !important;
         overflow-y: auto;
         overflow-x: hidden;
         scrollbar-width: none;
@@ -1451,7 +1455,9 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     }
     #vehicle-modal .modal-body .universal-btn-group {
         flex-shrink: 0;
-        margin-top: 4px;
+        margin-top: 6px;
+        padding-top: 8px !important;
+        padding-bottom: 10px !important;
     }
     /* Var açılınca taşmayı azalt: açılan bölüm sıkı (tek Var’da scrollbar çıkmasın) */
     #vehicle-modal .modal-body .modal-column-right .form-section.input-visible {
@@ -1510,7 +1516,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     }
     /* Masaüstü: Notlar textarea – yükseklik + yatay taşma yok, metin sarsın */
     #vehicle-modal .modal-body #vehicle-notes {
-        min-height: 52px !important;
+        min-height: 58px !important; /* Mobilde 2.5 satır sabit başlangıç */
         height: auto !important;
         overflow-x: hidden !important;
         max-width: 100% !important;
