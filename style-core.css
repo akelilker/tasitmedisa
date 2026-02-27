@@ -555,7 +555,7 @@ html { overflow-x: hidden; }
 }
 
 /* Anasayfa: başlık çerçeveye göre yatay ortalı (kullanıcı paneli gibi) */
-.hero:not(.hero-two-rows) h1 {
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero h1 {
   position: absolute;
   left: 0;
   right: 0;
@@ -886,8 +886,10 @@ html { overflow-x: hidden; }
 
 /* Masaüstünde container'ın %45'i + metin ortalı */
 @media (min-width: 641px) {
-  /* Ana başlık: 2px aşağı (base translateY(-2px) → 0) */
-  .hero h1 {
+  /* Ana başlık: 2px aşağı (base translateY(-2px) → 0) - driver/admin hero için */
+  body.dashboard-page .hero h1,
+  body.login-page .hero h1,
+  body.admin-report-page .hero h1 {
     transform: translateY(0);
   }
   /* Anasayfa masaüstü: başlık kutunun içine sığsın */
@@ -1367,7 +1369,7 @@ body.modal-open .user-panel-link {
         filter: none !important;
         -webkit-font-smoothing: antialiased;
         text-rendering: optimizeLegibility;
-        transform: translateY(-2px);  /* Havada - kırmızı ile eşit */
+        transform: translateY(-2px);  /* Havada - kırmızı ile eşit (driver/admin) */
     }
     /* Anasayfa mobil header: logo yuvarlağı büyüse de başlık tek satıra sığsın */
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-logo {
