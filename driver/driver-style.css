@@ -386,12 +386,12 @@ body.driver-modal-open {
   .dashboard-page .driver-below-hero-row {
     gap: 10px !important;
   }
-  /* ========== MASAÜSTÜ (769px+) – Header logo: 6px sola, ufak büyütme ========== */
+  /* ========== MASAÜSTÜ (769px+) – Header logo: 1px sola (-21px) ========== */
   .dashboard-page .hero.hero-two-rows .hero-logo,
   .login-page .hero.hero-two-rows .hero-logo {
     flex: 0 0 76px !important;
     width: 76px !important;
-    transform: translate(-20px, 10px) !important; /* 6px daha sola (-14→-20), aynı yükseklik */
+    transform: translate(-21px, 10px) !important;
   }
   .dashboard-page .hero.hero-two-rows .hero-logo img,
   .login-page .hero.hero-two-rows .hero-logo img {
@@ -433,6 +433,10 @@ body.driver-modal-open {
   }
   .dashboard-page .driver-left-panel .driver-plate-dropdown-item:last-child {
     border-bottom: none !important;
+  }
+  /* Sağ grid: butonlar arası dikey boşluk 1px daralt (6px → 5px) */
+  .dashboard-page .driver-action-buttons {
+    gap: 5px !important;
   }
 }
 
@@ -995,17 +999,17 @@ body.driver-modal-open {
     width: 120px !important;
     height: 69px !important;
   }
-  /* Mobil (640px altı): MEDISA hero logosu – 1px sola (toplam: -13px, 10px) */
+  /* Mobil (640px altı): MEDISA hero logosu – 1px sola (toplam: -14px, 10px) */
   .dashboard-page .hero.hero-two-rows .hero-logo {
     flex: 0 0 56px !important;
     width: 56px !important;
-    transform: translate(-13px, 10px) !important;
+    transform: translate(-14px, 10px) !important;
     margin-top: 0 !important;
   }
   .login-page .hero.hero-two-rows .hero-logo {
     flex: 0 0 56px !important;
     width: 56px !important;
-    transform: translate(-13px, 10px) !important;
+    transform: translate(-14px, 10px) !important;
     margin-top: 0 !important;
   }
   /* Mobil: 56px logo sütunları, başlık ortada */
