@@ -377,5 +377,29 @@
         </div>
     </div>
     <script defer src="driver-script.js?v=20260220"></script>
+    <script>
+    // #region agent log
+    (function(){
+      function log(hypothesisId, data) {
+        var payload = { sessionId: 'fc686b', runId: 'run1', hypothesisId: hypothesisId, location: 'dashboard.html:logo-computed', message: 'hero-logo transform', data: data, timestamp: Date.now() };
+        fetch('http://127.0.0.1:7824/ingest/aaeefe94-e582-470c-8671-3dbfa48b74c7', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': 'fc686b' }, body: JSON.stringify(payload) }).catch(function(){});
+      }
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run); else run();
+      function run() {
+        setTimeout(function(){
+          var el = document.querySelector('.driver-header-fixed .hero-logo');
+          if (!el) { log('H4', { found: false }); return; }
+          var cs = window.getComputedStyle(el);
+          var transform = cs.transform;
+          var innerWidth = window.innerWidth;
+          var matrix = transform !== 'none' && transform.indexOf('matrix') === 0 ? transform : transform;
+          log('H1', { transform: transform, innerWidth: innerWidth, media: innerWidth >= 769 ? 'min-width:769' : innerWidth <= 640 ? 'max-width:640' : 'mid' });
+          log('H2', { transform: transform, innerWidth: innerWidth });
+          log('H3', { transform: transform, standalone: window.matchMedia('(display-mode: standalone)').matches });
+        }, 100);
+      }
+    })();
+    // #endregion
+    </script>
 </body>
 </html>
