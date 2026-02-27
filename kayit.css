@@ -1022,7 +1022,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal #vehicle-notes,
     #vehicle-modal .modal-column-right .form-section:has(#vehicle-notes) textarea {
         flex: 1 !important;
-        min-height: 44px !important; /* Varsayılan 2 satır; bilgi girdikçe aşağı uzar (auto-expand) */
+        min-height: 68px !important; /* Mobilde varsayılan 3 satır */
         height: auto !important;
     }
     #vehicle-modal .modal-column-right .form-section,
@@ -1082,10 +1082,10 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-column-right .form-section:first-child {
         margin-top: 0;
     }
-    /* Taşıt tipi / Sigorta bitiş satırı mobilde bir satır aşağı */
+    /* Taşıt tipi / Sigorta ilk satırında üst boşluk minimal kalsın */
     #vehicle-modal .modal-body .modal-column-left .form-section-inline:first-child,
     #vehicle-modal .modal-body .modal-column-right .form-section:first-child {
-        margin-top: 12px !important;
+        margin-top: 2px !important;
     }
     /* Taşıt Tipi: etiket–ikon dikey aralık sıfır (2px ezmesin) */
     #vehicle-modal .modal-column-left .form-section-inline:first-child .form-label {
