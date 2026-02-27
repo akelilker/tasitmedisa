@@ -497,8 +497,6 @@ html { overflow-x: hidden; }
 }
 
 .hero-logo {
-  position: relative;
-  z-index: 1;
   flex: 0 0 var(--hero-logo-width);
   width: var(--hero-logo-width);
   margin-left: -5px;  /* Sola kaydır */
@@ -552,17 +550,6 @@ html { overflow-x: hidden; }
   margin: 0;
   line-height: 1.6;
   transform: translateY(-2px);
-}
-
-/* Anasayfa: başlık çerçeveye göre yatay ortalı (kullanıcı paneli gibi) */
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero h1 {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  pointer-events: none;
-  flex: none;
 }
 
 /* HERO SPACER - Logo yarısı genişlikte denge alanı */
@@ -886,10 +873,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero h1 {
 
 /* Masaüstünde container'ın %45'i + metin ortalı */
 @media (min-width: 641px) {
-  /* Ana başlık: 2px aşağı (base translateY(-2px) → 0) - driver/admin hero için */
-  body.dashboard-page .hero h1,
-  body.login-page .hero h1,
-  body.admin-report-page .hero h1 {
+  /* Ana başlık: 2px aşağı (base translateY(-2px) → 0) */
+  .hero h1 {
     transform: translateY(0);
   }
   /* Anasayfa masaüstü: başlık kutunun içine sığsın */
@@ -1369,7 +1354,7 @@ body.modal-open .user-panel-link {
         filter: none !important;
         -webkit-font-smoothing: antialiased;
         text-rendering: optimizeLegibility;
-        transform: translateY(-2px);  /* Havada - kırmızı ile eşit (driver/admin) */
+        transform: translateY(-2px);  /* Havada - kırmızı ile eşit */
     }
     /* Anasayfa mobil header: logo yuvarlağı büyüse de başlık tek satıra sığsın */
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-logo {
