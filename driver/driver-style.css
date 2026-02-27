@@ -404,7 +404,7 @@ body.driver-modal-open {
   }
   .dashboard-page .hero.hero-two-rows .hero-logo img,
   .login-page .hero.hero-two-rows .hero-logo img {
-    width: 100% !important;
+    width: 100% !important; 
   }
   .dashboard-page .hero.hero-two-rows .hero-title-line,
   .login-page .hero.hero-two-rows .hero-title-line {
