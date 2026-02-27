@@ -877,6 +877,11 @@ html { overflow-x: hidden; }
   .hero h1 {
     transform: translateY(0);
   }
+  /* Anasayfa masaüstü: eski ayar – tam başlık sığsın */
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero h1 {
+    font-size: clamp(17px, 4.9vw, 21px) !important;
+    letter-spacing: clamp(1px, 0.5vw, 3.5px);
+  }
   .settings-dropdown {
     width: 45%; /* Masaüstünde container'ın %45'i */
     max-width: 225px;
