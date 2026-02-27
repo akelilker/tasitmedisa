@@ -982,17 +982,17 @@ body.driver-modal-open {
     width: 120px !important;
     height: 69px !important;
   }
-  /* Mobil (640px altı): MEDISA hero logosu – 1px sola, 3px aşağı (toplam: -9px, 9px) */
+  /* Mobil (640px altı): MEDISA hero logosu – 1px sola, 5px aşağı (toplam: -9px, 11px) */
   .dashboard-page .hero.hero-two-rows .hero-logo {
     flex: 0 0 56px !important;
     width: 56px !important;
-    transform: translate(-9px, 9px) !important;
+    transform: translate(-9px, 11px) !important;
     margin-top: 0 !important;
   }
   .login-page .hero.hero-two-rows .hero-logo {
     flex: 0 0 56px !important;
     width: 56px !important;
-    transform: translate(-9px, 9px) !important;
+    transform: translate(-9px, 11px) !important;
     margin-top: 0 !important;
   }
   /* Mobil: 56px logo sütunları, başlık ortada */
@@ -2581,6 +2581,14 @@ body.driver-action-block-open .driver-footer-back-wrap {
 }
 .driver-footer-back-wrap .universal-back-btn:hover .universal-back-label {
   color: var(--theme-color) !important;
+  opacity: 1;
+}
+/* Yönetim Sistemi butonunun solundaki ok işareti – demet gibi yarı saydam */
+.driver-footer-back-wrap .universal-back-btn .back-icon-svg {
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+.driver-footer-back-wrap .universal-back-btn:hover .back-icon-svg {
   opacity: 1;
 }
 @media (min-width: 769px) {
