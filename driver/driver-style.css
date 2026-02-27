@@ -204,6 +204,7 @@ body.driver-modal-open {
   grid-column: 1;
   justify-self: start;
   flex-shrink: 0;
+  margin-left: 10px; /* Soldan vıraja takılmaması için hafif sağa */
 }
 .hero.hero-two-rows .hero-title-block {
   grid-column: 2;
