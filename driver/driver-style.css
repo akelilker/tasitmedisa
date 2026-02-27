@@ -395,12 +395,12 @@ body.driver-modal-open {
     width: 19px !important;
     height: 19px !important;
   }
-  /* ========== MASAÜSTÜ (769px+) – Header logo: 0.5px yukarı (-21px, 9.5px) ========== */
+  /* ========== MASAÜSTÜ (769px+) – Header logo: 1px sağ (-20px, 9.5px) ========== */
   .dashboard-page .hero.hero-two-rows .hero-logo,
   .login-page .hero.hero-two-rows .hero-logo {
     flex: 0 0 76px !important;
     width: 76px !important;
-    transform: translate(-21px, 9.5px) !important;
+    transform: translate(-20px, 9.5px) !important;
   }
   .dashboard-page .hero.hero-two-rows .hero-logo img,
   .login-page .hero.hero-two-rows .hero-logo img {
