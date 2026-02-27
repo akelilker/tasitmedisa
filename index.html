@@ -1379,29 +1379,24 @@
     <!-- #region agent log -->
     <script>
     (function(){
-      function dbg(msg, data, hyp, runId){
-        fetch('http://127.0.0.1:7824/ingest/aaeefe94-e582-470c-8671-3dbfa48b74c7',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'051662'},body:JSON.stringify({sessionId:'051662',runId:runId||'init',location:'index.html:debug',message:msg,data:data||{},hypothesisId:hyp,timestamp:Date.now()})}).catch(function(){});
-      }
-      function capture(runId){
-        var hero=document.querySelector('.hero'); var h1=hero?hero.querySelector('h1'):null; var logo=hero?hero.querySelector('.hero-logo'):null; var cw=document.querySelector('.content-wrap'); var ac=document.querySelector('.app-container');
-        var fontOk=typeof document.fonts!=='undefined'&&document.fonts.check?document.fonts.check('16px "Source Sans 3"'):null;
-        dbg('layout',{
-          viewportW:window.innerWidth,viewportH:window.innerHeight,
-          bodyScrollW:document.body.scrollWidth,bodyClientW:document.body.clientWidth,bodyOverflowX:getComputedStyle(document.body).overflowX,
-          htmlScrollW:document.documentElement.scrollWidth,htmlClientW:document.documentElement.clientWidth,
-          appContainerW:ac?ac.offsetWidth:0,appContainerScrollW:ac?ac.scrollWidth:0,
-          contentWrapW:cw?cw.offsetWidth:0,contentWrapScrollW:cw?cw.scrollWidth:0,
-          heroW:hero?hero.offsetWidth:0,heroScrollW:hero?hero.scrollWidth:0,
-          h1W:h1?h1.offsetWidth:0,h1ScrollW:h1?h1.scrollWidth:0,h1Overflow:h1?(h1.scrollWidth>h1.clientWidth):false,
-          logoW:logo?logo.offsetWidth:0,logoLeft:logo?logo.getBoundingClientRect().left:0,
-          heroSpacer:getComputedStyle(document.documentElement).getPropertyValue('--hero-spacer-width').trim(),
-          fontSourceSans3:fontOk
-        },'H2,H3,H4',runId);
+      function capture(tag){
+        var html=document.documentElement, bod=document.body, cw=document.querySelector('.content-wrap'), ac=document.querySelector('.app-container'), hero=document.querySelector('.hero'), h1=hero?hero.querySelector('h1'):null, logo=hero?hero.querySelector('.hero-logo'):null;
+        var cs=getComputedStyle, splash=document.getElementById('loading-screen');
+        console.log('[DBG-051662:'+tag+']',JSON.stringify({
+          htmlOvfY:cs(html).overflowY, htmlScrollH:html.scrollHeight, htmlClientH:html.clientHeight, htmlHasVScroll:html.scrollHeight>html.clientHeight,
+          bodyOvfY:cs(bod).overflowY, bodyOvf:cs(bod).overflow, bodyScrollH:bod.scrollHeight, bodyClientH:bod.clientHeight,
+          acH:ac?ac.offsetHeight:0, acScrollH:ac?ac.scrollHeight:0, acOvfY:ac?cs(ac).overflowY:'',
+          cwH:cw?cw.offsetHeight:0, cwScrollH:cw?cw.scrollHeight:0, cwOvfY:cw?cs(cw).overflowY:'',
+          splashDisplay:splash?cs(splash).display:'none', splashOpacity:splash?cs(splash).opacity:'0',
+          vpH:window.innerHeight, vpW:window.innerWidth,
+          heroLeft:hero?hero.getBoundingClientRect().left:0, logoLeft:logo?logo.getBoundingClientRect().left:0
+        }));
       }
       window.addEventListener('load',function(){
-        capture('load'); /* H5: ilk an layout */
-        if(typeof document.fonts!=='undefined'&&document.fonts.ready) document.fonts.ready.then(function(){ setTimeout(function(){ capture('postSplash'); },2600); });
-        else setTimeout(function(){ capture('postSplash'); },2600);
+        capture('load');
+        setTimeout(function(){ capture('500ms'); },500);
+        setTimeout(function(){ capture('2s'); },2000);
+        setTimeout(function(){ capture('4s'); },4000);
       });
     })();
     </script>
