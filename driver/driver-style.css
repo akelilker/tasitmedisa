@@ -410,7 +410,7 @@ body.driver-modal-open {
   }
   /* Sol grid: etiket + açıklama sonrası 3px boşluk (masaüstü) */
   .dashboard-page .driver-left-panel .driver-vehicle-info {
-    gap: 3px !important;
+    gap: 8px !important;
   }
   /* Açıklama alt satıra inince etiket–açıklama arası 0; etiket+açıklama arası 1.6px (masaüstü) */
   .dashboard-page .driver-left-panel .driver-info-item:has(.value) {
