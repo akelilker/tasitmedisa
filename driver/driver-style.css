@@ -192,23 +192,32 @@ body.driver-modal-open {
   text-align: center !important;
 }
 
-/* Driver: Başlık alanı üst satır + alt satır (iki parça) */
+/* Driver: Başlık alanı – 3 sütunlu grid (logo | başlık bloğu | spacer), tam ortalama */
 .hero.hero-two-rows {
-  flex-direction: column !important;
-  align-items: stretch !important;
-  gap: 4px !important;
-}
-.hero.hero-two-rows .hero-row-top {
-  display: flex;
+  display: grid !important;
+  grid-template-columns: var(--hero-logo-width) 1fr var(--hero-logo-width);
   align-items: center;
-  justify-content: center;
-  gap: 0;
-  min-width: 0;
+  gap: 8px;
+  flex-direction: unset !important;
 }
-.hero.hero-two-rows .hero-row-top .hero-logo {
+.hero.hero-two-rows .hero-logo {
+  grid-column: 1;
+  justify-self: start;
   flex-shrink: 0;
 }
-.hero.hero-two-rows .hero-title-line {
+.hero.hero-two-rows .hero-title-block {
+  grid-column: 2;
+  justify-self: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+}
+.hero.hero-two-rows .hero-spacer {
+  grid-column: 3;
+}
+.hero.hero-two-rows .hero-title-block .hero-title-line {
   flex: 0 1 auto;
   min-width: 0;
   margin: 0;
@@ -226,13 +235,7 @@ body.driver-modal-open {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.hero.hero-two-rows .hero-row-bottom {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 0;
-}
-.hero.hero-two-rows .hero-row-bottom .hero-panel-subtitle {
+.hero.hero-two-rows .hero-title-block .hero-panel-subtitle {
   margin: 0;
 }
 
@@ -321,7 +324,7 @@ body.driver-modal-open {
 
 /* KULLANICI PANELİ: h1 altında, 1pt küçük, aynı renk (metalik gradient) */
 .hero-title-wrap .hero-panel-subtitle,
-.hero-row-bottom .hero-panel-subtitle {
+.hero-title-block .hero-panel-subtitle {
   font-size: 17px;
   font-weight: 800;
   margin: 0;
@@ -347,7 +350,8 @@ body.driver-modal-open {
 
 /* Masaüstü: Kullanıcı Paneli başlığı, driver-below-hero boşluk, çerçeve kalınlığı, logo boyutu */
 @media (min-width: 769px) {
-  .hero-title-wrap .hero-panel-subtitle {
+  .hero-title-wrap .hero-panel-subtitle,
+  .hero-title-block .hero-panel-subtitle {
     font-size: 17px;
     letter-spacing: 3px;
   }
@@ -369,12 +373,6 @@ body.driver-modal-open {
   }
   .dashboard-page .driver-below-hero-row .driver-btn-logout {
     margin-right: 8px !important;
-  }
-  /* Hero üst satır: logo + başlık hizalama */
-  .dashboard-page .hero.hero-two-rows .hero-row-top,
-  .login-page .hero.hero-two-rows .hero-row-top {
-    gap: 12px !important;
-    align-items: center !important;
   }
   .dashboard-page .hero-logo,
   .login-page .hero-logo {
@@ -961,18 +959,12 @@ body.driver-modal-open {
     transform: translate(-2px, 22px) !important; /* Önceki konuma göre 4px yukarı */
     margin-top: 0 !important;
   }
-  .dashboard-page .hero.hero-two-rows .hero-row-top {
-    display: grid !important;
-    grid-template-columns: 54px minmax(0, 1fr) 54px !important; /* Anasayfa gibi görsel merkez */
-    align-items: center !important;
+  /* Mobil: 54px logo sütunları, başlık ortada */
+  .dashboard-page .hero.hero-two-rows,
+  .login-page .hero.hero-two-rows {
+    grid-template-columns: 54px 1fr 54px !important;
   }
-  .dashboard-page .hero.hero-two-rows .hero-row-top .hero-logo {
-    grid-column: 1;
-    justify-self: start;
-  }
-  .dashboard-page .hero.hero-two-rows .hero-row-top .hero-title-line {
-    grid-column: 2;
-    justify-self: center;
+  .dashboard-page .hero.hero-two-rows .hero-title-block .hero-title-line {
     width: 100%;
     max-width: 100%;
     font-size: clamp(19px, 5.5vw, 23px) !important;
@@ -2809,7 +2801,8 @@ body.driver-action-block-open .driver-footer-back-wrap {
     font-size: 15px;
     letter-spacing: 0.05em;
   }
-  .hero-title-wrap .hero-panel-subtitle {
+  .hero-title-wrap .hero-panel-subtitle,
+  .hero-title-block .hero-panel-subtitle {
     font-size: 22px; /* h1 (23px) - 1pt küçük */
   }
   .driver-user-name {
@@ -3245,7 +3238,8 @@ body.driver-action-block-open .driver-footer-back-wrap {
   .dashboard-page .vehicle-card .btn-save {
     font-size: 16px !important;
   }
-  .dashboard-page .hero-title-wrap .hero-panel-subtitle {
+  .dashboard-page .hero-title-wrap .hero-panel-subtitle,
+  .dashboard-page .hero-title-block .hero-panel-subtitle {
     font-size: 22px !important; /* h1 (23px) - 1pt küçük */
   }
   .dashboard-page .hero h1 {
@@ -3525,19 +3519,14 @@ body.driver-action-block-open .driver-footer-back-wrap {
   }
 
   /* iOS PWA (Kullanıcı paneli): ana başlık tam metin tek satır + logo ince ayarı */
-  .dashboard-page .hero.hero-two-rows .hero-row-top,
-  .login-page .hero.hero-two-rows .hero-row-top {
-    flex-wrap: nowrap !important;
-    gap: 0 !important;
-  }
-  .dashboard-page .hero.hero-two-rows .hero-row-top .hero-logo,
-  .login-page .hero.hero-two-rows .hero-row-top .hero-logo {
+  .dashboard-page .hero.hero-two-rows .hero-logo,
+  .login-page .hero.hero-two-rows .hero-logo {
     /* Mevcut mobil konuma göre: 2px sağa, 3px yukarı */
     transform: translate(0, -2px) !important;
     margin-right: 10px !important;
   }
-  .dashboard-page .hero.hero-two-rows .hero-title-line,
-  .login-page .hero.hero-two-rows .hero-title-line {
+  .dashboard-page .hero.hero-two-rows .hero-title-block .hero-title-line,
+  .login-page .hero.hero-two-rows .hero-title-block .hero-title-line {
     flex: 1 1 auto !important;
     min-width: 0 !important;
     white-space: nowrap !important;
