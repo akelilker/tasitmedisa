@@ -1137,6 +1137,9 @@
     const notesInput = document.getElementById("vehicle-notes");
     if (notesInput) notesInput.value = vehicle.notes || '';
 
+    const kaskoKoduInput = document.getElementById("vehicle-kasko-kodu");
+    if (kaskoKoduInput) kaskoKoduInput.value = vehicle.kaskoKodu || '';
+
     // Modal başlığını güncelle
     updateModalTitle("TAŞIT DÜZENLE");
 
@@ -1291,6 +1294,7 @@
     const krediDetay = document.getElementById('kredi-detay')?.value.trim() || '';
     
     const branchId = document.getElementById("vehicle-branch-select")?.value || '';
+    const kaskoKodu = document.getElementById("vehicle-kasko-kodu")?.value.trim() || '';
     const price = document.getElementById("vehicle-price")?.value.trim() || '';
     const notes = document.getElementById("vehicle-notes")?.value.trim() || '';
     
@@ -1325,6 +1329,7 @@
       kredi: kredi,
       krediDetay: krediDetay,
       branchId: branchId,
+      kaskoKodu: kaskoKodu,
       price: price,
       notes: notes,
       uttsTanimlandi: uttsTanimlandi,
