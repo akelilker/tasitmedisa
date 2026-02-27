@@ -1040,16 +1040,15 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-column-right .form-section:has(#vehicle-branch-select) {
         margin-bottom: 6px !important;
     }
-    /* Notlar: kalan alanı doldur, üst-alt eşitlik */
+    /* Notlar: sol kolon Boya/Değişen ile aynı satırda – alta yapışır, alan doldurmaz */
     #vehicle-modal .modal-column-right .form-section:has(#vehicle-notes) {
-        flex: 1;
-        min-height: 80px;
+        margin-top: auto !important;
         margin-bottom: 0 !important;
+        flex: none !important;
     }
     #vehicle-modal #vehicle-notes,
     #vehicle-modal .modal-column-right .form-section:has(#vehicle-notes) textarea {
-        flex: 1 !important;
-        min-height: 58px !important; /* Mobilde varsayılan 2.5 satır */
+        min-height: 44px !important; /* 2 satır varsayılan; auto-expand ile uzar */
         height: auto !important;
     }
     #vehicle-modal .modal-column-right .form-section,
@@ -1083,8 +1082,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         margin-top: 2px !important;
     }
     #vehicle-modal .modal-column-right .form-section:has(#vehicle-branch-select),
-    #vehicle-modal .modal-column-right .form-section:has(#vehicle-kasko-kodu),
-    #vehicle-modal .modal-column-right .form-section:has(#vehicle-notes) {
+    #vehicle-modal .modal-column-right .form-section:has(#vehicle-kasko-kodu) {
         margin-top: 0 !important;
     }
     #vehicle-modal .modal-column-right .form-section-inline:has([data-group="kredi"]) .form-label,
@@ -1505,18 +1503,17 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         overflow: hidden;
         flex: 0 0 0;
     }
-    /* Notlar ile Boya/Değişen aynı satırda: sağ sütun son blok alta itilir; min-height + padding ile sağ alt hiza ince ayar */
+    /* Notlar ile Boya/Değişen aynı satırda: sağ sütun son blok alta itilir, alan doldurmaz */
     #vehicle-modal .modal-body .modal-column-right .form-section:has(#vehicle-notes) {
-        margin-top: auto;
-        margin-bottom: 0;
-        flex: 1;
-        min-height: 48px;
+        margin-top: auto !important;
+        margin-bottom: 0 !important;
+        flex: none !important;
         min-width: 0;
         padding-bottom: 6px !important;
     }
     /* Masaüstü: Notlar textarea – yükseklik + yatay taşma yok, metin sarsın */
     #vehicle-modal .modal-body #vehicle-notes {
-        min-height: 58px !important; /* Mobilde 2.5 satır sabit başlangıç */
+        min-height: 44px !important; /* 2 satır varsayılan; auto-expand ile uzar */
         height: auto !important;
         overflow-x: hidden !important;
         max-width: 100% !important;
