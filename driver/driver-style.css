@@ -422,6 +422,11 @@ body.driver-modal-open {
     padding-top: 0 !important;
     line-height: 1.25;
   }
+  /* Plaka liste çerçevesi: ince gri, parlak (masaüstü) */
+  .dashboard-page .driver-left-panel .driver-plate-dropdown {
+    border: 1px solid rgba(255, 255, 255, 0.38) !important;
+    box-shadow: 0 2px 14px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.08) !important;
+  }
 }
 
 /* Scroll alanı öğelerinde üst çizgi yok */
