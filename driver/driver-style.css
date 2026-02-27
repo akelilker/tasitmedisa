@@ -447,9 +447,9 @@ body.driver-modal-open {
   .dashboard-page .driver-left-panel .driver-plate-dropdown-item:last-child {
     border-bottom: none !important;
   }
-  /* Sağ grid: butonlar arası dikey boşluk 1px daralt (6px → 5px) */
+  /* Sağ grid: butonlar arası dikey boşluk 1px */
   .dashboard-page .driver-action-buttons {
-    gap: 5px !important;
+    gap: 1px !important;
   }
 }
 
