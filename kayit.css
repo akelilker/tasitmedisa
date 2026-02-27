@@ -993,15 +993,16 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-column-right { display: flex; flex-direction: column; min-height: 0; }
     .modal-column-right .form-section { margin-bottom: 8px; }
 
-    /* Mobil: sağ-sol grid alt hizası eşit kalsın */
+    /* Mobil: sağ-sol grid alt hizası eşit – kolonlar aynı yükseklikte, son satır aynı hizada */
     #vehicle-modal .modal-columns {
         align-items: stretch !important;
     }
     #vehicle-modal .modal-column-left,
     #vehicle-modal .modal-column-right {
-        display: flex;
-        flex-direction: column;
+        display: flex !important;
+        flex-direction: column !important;
         min-height: 0;
+        align-self: stretch !important;
     }
     /* Sol alt hizayı bozan gizli Tramer/Boya alanları mobilde yer kaplamasın */
     #vehicle-modal .modal-column-left .form-section:has(#tramer-records-container):not(.tramer-records-visible),
@@ -1131,7 +1132,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         min-height: 73px !important;
     }
     #vehicle-modal #vehicle-notes {
-        min-height: 58px !important;
+        min-height: 44px !important; /* 2 satır varsayılan; auto-expand ile uzar */
     }
     
     /* Tarih inputları: gg.aa.yyyy kutudan taşmasın – font küçük, overflow gizli */
