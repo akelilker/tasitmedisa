@@ -427,6 +427,13 @@ body.driver-modal-open {
     border: 1px solid rgba(255, 255, 255, 0.38) !important;
     box-shadow: 0 2px 14px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.08) !important;
   }
+  /* Plakalar arası yatay çizgi: çerçeve ile aynı gri ton */
+  .dashboard-page .driver-left-panel .driver-plate-dropdown-item {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.38) !important;
+  }
+  .dashboard-page .driver-left-panel .driver-plate-dropdown-item:last-child {
+    border-bottom: none !important;
+  }
 }
 
 /* Scroll alanı öğelerinde üst çizgi yok */
