@@ -10,7 +10,7 @@
 
   let isEditMode = false;
   let editingVehicleId = null;
-  const NOTES_MIN_HEIGHT_PX = 68; // Mobilde ~3 satır başlangıç yüksekliği
+  const NOTES_MIN_HEIGHT_PX = 58; // Mobilde ~2.5 satır başlangıç yüksekliği
 
   function $(sel, root = document) { return root.querySelector(sel); }
   function $all(sel, root = document) { return Array.from(root.querySelectorAll(sel)); }
