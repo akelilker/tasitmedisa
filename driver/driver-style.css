@@ -938,8 +938,9 @@ body.driver-modal-open {
   .driver-info-item .value { font-size: 12.5px; }
   .driver-left-panel .driver-info-item .label { font-size: 13.5px; }
   .driver-left-panel .driver-info-item .value { font-size: 13.5px; }
+  /* Mobil sol grid: etiket + açıklama yatayda hizalı (baseline, açıklama yukarıda görünmesin) */
   .driver-left-panel .driver-info-item:has(.value) {
-    align-items: flex-start;
+    align-items: baseline !important;
     row-gap: 0 !important;
   }
   .driver-left-panel .driver-info-item:has(.value) .value {
