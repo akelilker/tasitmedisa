@@ -386,6 +386,15 @@ body.driver-modal-open {
   .dashboard-page .driver-below-hero-row {
     gap: 10px !important;
   }
+  /* Tarihçe ve çıkış butonları masaüstü: 1px küçült */
+  .dashboard-page .driver-below-hero-row .driver-btn-history .driver-btn-history-icon {
+    width: 23px !important;
+    height: 23px !important;
+  }
+  .dashboard-page .driver-below-hero-row .driver-btn-logout .driver-btn-logout-icon {
+    width: 19px !important;
+    height: 19px !important;
+  }
   /* ========== MASAÜSTÜ (769px+) – Header logo: 0.5px yukarı (-21px, 9.5px) ========== */
   .dashboard-page .hero.hero-two-rows .hero-logo,
   .login-page .hero.hero-two-rows .hero-logo {
