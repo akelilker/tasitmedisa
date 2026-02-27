@@ -382,12 +382,12 @@ body.driver-modal-open {
   .dashboard-page .driver-below-hero-row .driver-btn-logout {
     margin-right: 8px !important;
   }
-  /* ========== MASAÜSTÜ (769px+) – Header logo: konum sabit. Mobil için bu bloku değiştirme. ========== */
+  /* ========== MASAÜSTÜ (769px+) – Header logo: 6px sola, ufak büyütme ========== */
   .dashboard-page .hero.hero-two-rows .hero-logo,
   .login-page .hero.hero-two-rows .hero-logo {
-    flex: 0 0 72px !important;
-    width: 72px !important;
-    transform: translate(-14px, 10px) !important; /* 6px yukarı, 2px sola */
+    flex: 0 0 76px !important;
+    width: 76px !important;
+    transform: translate(-20px, 10px) !important; /* 6px daha sola (-14→-20), aynı yükseklik */
   }
   .dashboard-page .hero.hero-two-rows .hero-logo img,
   .login-page .hero.hero-two-rows .hero-logo img {
@@ -961,23 +961,23 @@ body.driver-modal-open {
     width: 120px !important;
     height: 69px !important;
   }
-  /* Mobil (640px altı): MEDISA hero logosu – 54px, konum başlıkla hizalı (22px aşağı kaldırıldı) */
+  /* Mobil (640px altı): MEDISA hero logosu – 6px sola, ufak büyütme (56px) */
   .dashboard-page .hero.hero-two-rows .hero-logo {
-    flex: 0 0 54px !important;
-    width: 54px !important;
-    transform: translate(-2px, 6px) !important;
+    flex: 0 0 56px !important;
+    width: 56px !important;
+    transform: translate(-8px, 6px) !important; /* 6px sola (-2→-8) */
     margin-top: 0 !important;
   }
   .login-page .hero.hero-two-rows .hero-logo {
-    flex: 0 0 54px !important;
-    width: 54px !important;
-    transform: translate(-2px, 6px) !important;
+    flex: 0 0 56px !important;
+    width: 56px !important;
+    transform: translate(-8px, 6px) !important;
     margin-top: 0 !important;
   }
-  /* Mobil: 54px logo sütunları, başlık ortada */
+  /* Mobil: 56px logo sütunları, başlık ortada */
   .dashboard-page .hero.hero-two-rows,
   .login-page .hero.hero-two-rows {
-    grid-template-columns: 54px 1fr 54px !important;
+    grid-template-columns: 56px 1fr 56px !important;
   }
   .dashboard-page .hero.hero-two-rows .hero-title-block .hero-title-line {
     width: 100%;
@@ -993,10 +993,10 @@ body.driver-modal-open {
     width: 100% !important;
     height: auto !important;
   }
-  /* Login logosu mobilde – 54px */
+  /* Login logosu mobilde – 56px (logo ufak büyütme) */
   .login-page .hero-logo {
-    flex: 0 0 54px !important;
-    width: 54px !important;
+    flex: 0 0 56px !important;
+    width: 56px !important;
   }
   .login-page .hero-logo img {
     width: 100% !important;
