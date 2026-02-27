@@ -996,7 +996,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal #vehicle-notes,
     #vehicle-modal .modal-column-right .form-section:has(#vehicle-notes) textarea {
         flex: 1 !important;
-        min-height: 72px !important;
+        min-height: 44px !important; /* Varsayılan 2 satır; bilgi girdikçe aşağı uzar (auto-expand) */
         height: auto !important;
     }
     #vehicle-modal .modal-column-right .form-section,
