@@ -382,6 +382,10 @@ body.driver-modal-open {
   .dashboard-page .driver-below-hero-row .driver-btn-logout {
     margin-right: 8px !important;
   }
+  /* Tarihçe ile çıkış butonu arası 2px daralt (masaüstü) */
+  .dashboard-page .driver-below-hero-row {
+    gap: 10px !important;
+  }
   /* ========== MASAÜSTÜ (769px+) – Header logo: 6px sola, ufak büyütme ========== */
   .dashboard-page .hero.hero-two-rows .hero-logo,
   .login-page .hero.hero-two-rows .hero-logo {
@@ -399,6 +403,23 @@ body.driver-modal-open {
   }
   .driver-user-name-center {
     font-size: 14.5px;
+  }
+  /* Plaka 1 punto küçült (masaüstü) */
+  .dashboard-page .driver-left-panel .driver-current-plaka {
+    font-size: 15px !important;
+  }
+  /* Sol grid: etiket + açıklama sonrası 3px boşluk (masaüstü) */
+  .dashboard-page .driver-left-panel .driver-vehicle-info {
+    gap: 3px !important;
+  }
+  /* Açıklama alt satıra inince etiket–açıklama arası 0 (masaüstü) */
+  .dashboard-page .driver-left-panel .driver-info-item:has(.value) {
+    row-gap: 0 !important;
+  }
+  .dashboard-page .driver-left-panel .driver-info-item:has(.value) .value {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+    line-height: 1.25;
   }
 }
 
