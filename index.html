@@ -1380,23 +1380,19 @@
     <script>
     (function(){
       function capture(tag){
-        var html=document.documentElement, bod=document.body, cw=document.querySelector('.content-wrap'), ac=document.querySelector('.app-container'), hero=document.querySelector('.hero'), h1=hero?hero.querySelector('h1'):null, logo=hero?hero.querySelector('.hero-logo'):null;
-        var cs=getComputedStyle, splash=document.getElementById('loading-screen');
+        var html=document.documentElement, bod=document.body, cw=document.querySelector('.content-wrap'), ac=document.querySelector('.app-container'), hero=document.querySelector('.hero'), h1=hero?hero.querySelector('h1'):null, logo=hero?hero.querySelector('.hero-logo'):null, ft=document.getElementById('app-footer');
+        var cs=getComputedStyle;
         console.log('[DBG-051662:'+tag+']',JSON.stringify({
-          htmlOvfY:cs(html).overflowY, htmlScrollH:html.scrollHeight, htmlClientH:html.clientHeight, htmlHasVScroll:html.scrollHeight>html.clientHeight,
-          bodyOvfY:cs(bod).overflowY, bodyOvf:cs(bod).overflow, bodyScrollH:bod.scrollHeight, bodyClientH:bod.clientHeight,
-          acH:ac?ac.offsetHeight:0, acScrollH:ac?ac.scrollHeight:0, acOvfY:ac?cs(ac).overflowY:'',
-          cwH:cw?cw.offsetHeight:0, cwScrollH:cw?cw.scrollHeight:0, cwOvfY:cw?cs(cw).overflowY:'',
-          splashDisplay:splash?cs(splash).display:'none', splashOpacity:splash?cs(splash).opacity:'0',
           vpH:window.innerHeight, vpW:window.innerWidth,
-          heroLeft:hero?hero.getBoundingClientRect().left:0, logoLeft:logo?logo.getBoundingClientRect().left:0
+          footerExists:!!ft, footerDisplay:ft?cs(ft).display:'', footerVisibility:ft?cs(ft).visibility:'', footerOpacity:ft?cs(ft).opacity:'', footerPosition:ft?cs(ft).position:'', footerBottom:ft?cs(ft).bottom:'', footerLeft:ft?cs(ft).left:'', footerWidth:ft?ft.offsetWidth:0, footerHeight:ft?ft.offsetHeight:0,
+          footerRect:ft?JSON.stringify(ft.getBoundingClientRect()):'',
+          footerZindex:ft?cs(ft).zIndex:'', footerBg:ft?cs(ft).background.substring(0,40):'',
+          bodyW:bod.offsetWidth, bodyLeft:bod.getBoundingClientRect().left
         }));
       }
       window.addEventListener('load',function(){
         capture('load');
-        setTimeout(function(){ capture('500ms'); },500);
-        setTimeout(function(){ capture('2s'); },2000);
-        setTimeout(function(){ capture('4s'); },4000);
+        setTimeout(function(){ capture('3s'); },3000);
       });
     })();
     </script>
