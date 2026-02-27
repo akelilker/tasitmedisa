@@ -877,10 +877,14 @@ html { overflow-x: hidden; }
   .hero h1 {
     transform: translateY(0);
   }
-  /* Anasayfa masaüstü: eski ayar – tam başlık sığsın */
+  /* Anasayfa masaüstü: başlık kutunun içine sığsın */
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-spacer {
+    flex: 0 0 16px;
+    min-width: 0;
+  }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero h1 {
-    font-size: clamp(17px, 4.9vw, 21px) !important;
-    letter-spacing: clamp(1px, 0.5vw, 3.5px);
+    font-size: clamp(16px, 4.5vw, 20px) !important;
+    letter-spacing: clamp(1px, 0.45vw, 3px);
   }
   .settings-dropdown {
     width: 45%; /* Masaüstünde container'ın %45'i */
