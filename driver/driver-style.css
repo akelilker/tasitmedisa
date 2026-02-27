@@ -2215,6 +2215,22 @@ body.driver-modal-open {
   font-size: 13.5px;
 }
 
+/* Masaüstü: Geçmiş modalı – sol ok+etiket 6px yukarı, Taşıt Seç 2px yukarı + Tüm Taşıtlar gri, kart içi dikey 1px daralt */
+@media (min-width: 769px) {
+  #history-modal .universal-back-bar {
+    margin-top: -6px !important;
+  }
+  #history-modal .history-filters {
+    margin-top: -2px !important;
+  }
+  #history-modal .history-vehicle-trigger-text {
+    color: var(--muted, #adb5bd) !important;
+  }
+  #history-modal .history-card {
+    padding: 7px 14px !important;
+  }
+}
+
 /* Geçmiş kayıtlar modal içi */
 .history-filters {
   margin-bottom: 16px;
