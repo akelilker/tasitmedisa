@@ -10,6 +10,7 @@
 
   let isEditMode = false;
   let editingVehicleId = null;
+  const NOTES_MIN_HEIGHT_PX = 68; // Mobilde ~3 satır başlangıç yüksekliği
 
   function $(sel, root = document) { return root.querySelector(sel); }
   function $all(sel, root = document) { return Array.from(root.querySelectorAll(sel)); }
@@ -53,6 +54,14 @@
   function formatNumberWithSeparator(value) {
     if (!value || String(value).trim() === '') return '';
     return window.formatNumber(value);
+  }
+
+  function resizeVehicleNotesArea(textarea) {
+    if (!textarea) return;
+    textarea.style.height = 'auto';
+    const targetHeight = Math.max(textarea.scrollHeight, NOTES_MIN_HEIGHT_PX);
+    textarea.style.height = `${targetHeight}px`;
+    textarea.style.overflowY = 'hidden';
   }
 
   // --- Tramer Kayıt Fonksiyonları ---
@@ -705,7 +714,7 @@
       input.classList.remove('has-value');
       
       if (input.id === 'vehicle-notes') {
-          input.style.height = '22px';
+          resizeVehicleNotesArea(input);
       }
     });
 
@@ -925,13 +934,6 @@
       editingVehicleId = null;
       resetVehicleForm();
 
-      // Modal container yüksekliğini garanti et (JS override)
-      const modalContainer = modal.querySelector('.modal-container');
-      if (modalContainer) {
-        modalContainer.style.height = 'calc(100vh - 20px)';
-        modalContainer.style.maxHeight = 'calc(100vh - 20px)';
-      }
-
       modal.style.display = 'flex';
       requestAnimationFrame(() => {
         modal.classList.add('active');
@@ -1135,20 +1137,16 @@
     if (priceInput) priceInput.value = vehicle.price || '';
     
     const notesInput = document.getElementById("vehicle-notes");
-    if (notesInput) notesInput.value = vehicle.notes || '';
+    if (notesInput) {
+      notesInput.value = vehicle.notes || '';
+      resizeVehicleNotesArea(notesInput);
+    }
 
     const kaskoKoduInput = document.getElementById("vehicle-kasko-kodu");
     if (kaskoKoduInput) kaskoKoduInput.value = vehicle.kaskoKodu || '';
 
     // Modal başlığını güncelle
     updateModalTitle("TAŞIT DÜZENLE");
-
-    // Modal container yüksekliğini garanti et (JS override)
-    const modalContainer = modal.querySelector('.modal-container');
-    if (modalContainer) {
-      modalContainer.style.height = 'calc(100vh - 20px)';
-      modalContainer.style.maxHeight = 'calc(100vh - 20px)';
-    }
 
     // Modalı aç
     modal.style.display = 'flex';
@@ -1960,16 +1958,13 @@
       });
     }
 
-    // Notlar Auto-Expand Logic (max 5 satır = 88px) + İlk harf büyük
+    // Notlar Auto-Expand Logic (3 satırdan başlar, yazdıkça büyür) + İlk harf büyük
     const notesArea = document.getElementById("vehicle-notes");
     if(notesArea) {
         notesArea.addEventListener('input', function() {
-            this.style.height = 'auto';
-            const maxHeight = 88; // 5 satır
-            const newHeight = Math.min(this.scrollHeight, maxHeight);
-            this.style.height = newHeight + 'px';
-            this.style.overflow = this.scrollHeight > maxHeight ? 'auto' : 'hidden';
+            resizeVehicleNotesArea(this);
         });
+        resizeVehicleNotesArea(notesArea);
         notesArea.addEventListener('blur', function() {
           if (this.value) {
             const cursorPos = this.selectionStart;
