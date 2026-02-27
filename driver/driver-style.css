@@ -412,10 +412,10 @@ body.driver-modal-open {
   .dashboard-page .driver-left-panel .driver-vehicle-info {
     gap: 3px !important;
   }
-  /* Açıklama alt satıra inince etiket–açıklama arası 0; etiket+açıklama arası 0.6px (masaüstü) */
+  /* Açıklama alt satıra inince etiket–açıklama arası 0; etiket+açıklama arası 1.6px (masaüstü) */
   .dashboard-page .driver-left-panel .driver-info-item:has(.value) {
     row-gap: 0 !important;
-    column-gap: 0.6px !important;
+    column-gap: 1.6px !important;
   }
   .dashboard-page .driver-left-panel .driver-info-item:has(.value) .value {
     margin-top: 0 !important;
