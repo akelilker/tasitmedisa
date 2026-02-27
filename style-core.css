@@ -497,6 +497,8 @@ html { overflow-x: hidden; }
 }
 
 .hero-logo {
+  position: relative;
+  z-index: 1;
   flex: 0 0 var(--hero-logo-width);
   width: var(--hero-logo-width);
   margin-left: -5px;  /* Sola kaydır */
@@ -550,6 +552,17 @@ html { overflow-x: hidden; }
   margin: 0;
   line-height: 1.6;
   transform: translateY(-2px);
+}
+
+/* Anasayfa: başlık çerçeveye göre yatay ortalı (kullanıcı paneli gibi) */
+.hero:not(.hero-two-rows) h1 {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  flex: none;
 }
 
 /* HERO SPACER - Logo yarısı genişlikte denge alanı */
