@@ -1259,6 +1259,10 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         padding-top: 4px !important;
         padding-bottom: 4px !important;
     }
+    /* Sol kolon: Plaka, Üretim Yılı, Marka/Model, Km, Taşıtın Alım Bedeli – dikeyde 2px genişlet */
+    #vehicle-modal .modal-body .modal-column-left .form-section input.form-input:not([type="date"]) {
+        height: 24px !important;
+    }
     #vehicle-modal .modal-body input[type="date"].form-input {
         height: 22px !important;
         padding-top: 4px !important;
