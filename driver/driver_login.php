@@ -84,7 +84,7 @@ foreach ($data['users'] as &$u) {
 unset($u);
 
 // Veriyi kaydet
-file_put_contents($dataFile, json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT), LOCK_EX);
+saveData($data);
 
 // Başarılı yanıt
 echo json_encode([
