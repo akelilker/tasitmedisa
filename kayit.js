@@ -949,6 +949,30 @@
         setTimeout(() => forceDateInputRepaint(modal), 120);
         // Hover class'larını ayarla
         updateRadioButtonHover();
+        // #region agent log
+        setTimeout(function() {
+          var cols = modal.querySelector('.modal-columns');
+          var leftCol = modal.querySelector('.modal-column-left');
+          var rightCol = modal.querySelector('.modal-column-right');
+          var boyaRow = leftCol ? leftCol.querySelector('.form-section-inline:has(#boya-var)') : null;
+          var notesSection = rightCol ? rightCol.querySelector('.form-section:has(#vehicle-notes)') : null;
+          var getStyle = function(el, prop) { return el ? (window.getComputedStyle(el)[prop] || '') : ''; };
+          var data = {
+            gridAlignItems: cols ? getStyle(cols, 'alignItems') : '',
+            leftHeight: leftCol ? leftCol.offsetHeight : 0,
+            rightHeight: rightCol ? rightCol.offsetHeight : 0,
+            boyaMarginTop: boyaRow ? getStyle(boyaRow, 'marginTop') : '',
+            boyaOffsetTop: boyaRow ? boyaRow.offsetTop : 0,
+            boyaBottom: boyaRow ? boyaRow.offsetTop + boyaRow.offsetHeight : 0,
+            notesMarginTop: notesSection ? getStyle(notesSection, 'marginTop') : '',
+            notesOffsetTop: notesSection ? notesSection.offsetTop : 0,
+            notesBottom: notesSection ? notesSection.offsetTop + notesSection.offsetHeight : 0,
+            leftColBottom: leftCol ? leftCol.offsetTop + leftCol.offsetHeight : 0,
+            rightColBottom: rightCol ? rightCol.offsetTop + rightCol.offsetHeight : 0
+          };
+          fetch('http://127.0.0.1:7824/ingest/aaeefe94-e582-470c-8671-3dbfa48b74c7',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'fc686b'},body:JSON.stringify({sessionId:'fc686b',location:'kayit.js:openVehicleModal',message:'grid layout',data:data,timestamp:Date.now(),hypothesisId:'H1-H5'})}).catch(function(){});
+        }, 350);
+        // #endregion
       });
     }
   };
