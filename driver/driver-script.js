@@ -14,7 +14,7 @@ const API_BASE = (function(){
   } else if (p && p !== '/') {
     base = p.endsWith('/') ? p : p + '/';
   }
-  return (base === '/' ? './' : base) + (base !== '/' ? 'driver/' : '');
+  return (base === '/' ? '/driver/' : base + 'driver/');
 })();
 
 // İkon/kaporta SVG base path (sürücü paneli farklı dizinde)
