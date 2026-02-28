@@ -1499,9 +1499,9 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-body .modal-column-right .form-section-inline {
         flex-shrink: 0;
     }
-    /* Boya/Değişen: satır en altta kalsın (Notlar hizası bozulmasın) */
+    /* Boya/Değişen: Tramer ile arası sıkı (margin-top: auto 33px boşluk yapıyordu, kaldırıldı) */
     #vehicle-modal .modal-body .modal-column-left .form-section-inline:has(#boya-var) {
-        margin-top: auto !important;
+        margin-top: 0 !important;
         margin-bottom: 0 !important;
     }
     /* Tramer/Boya container: sadece açık değilken 0 alan (JS .tramer-records-visible / .boya-parts-visible ekler) */
