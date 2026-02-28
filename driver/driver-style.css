@@ -2227,9 +2227,6 @@ body.driver-modal-open {
   #history-modal .history-filters {
     margin-top: -2px !important;
   }
-  #history-modal .history-vehicle-trigger-text {
-    color: var(--muted, #adb5bd) !important;
-  }
   #history-modal .history-card {
     padding: 7px 14px !important;
   }
@@ -2271,6 +2268,10 @@ body.driver-modal-open {
 
 .history-vehicle-trigger-text {
   flex-shrink: 0;
+}
+
+#history-modal .history-vehicle-trigger.history-all-selected .history-vehicle-trigger-text {
+  color: var(--muted, #adb5bd) !important;
 }
 
 .history-vehicle-chevron {
@@ -2319,6 +2320,10 @@ body.driver-modal-open {
   cursor: pointer;
   transition: background 0.15s;
   color: var(--txt);
+}
+
+#history-modal .history-vehicle-option[data-value=""] {
+  color: var(--muted, #adb5bd);
 }
 
 .history-vehicle-option:hover {

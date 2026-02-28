@@ -1663,6 +1663,13 @@ function formatKm(value) {
     return numStr.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 }
 
+function updateHistoryTriggerTone(selectedValue) {
+    const trigger = document.querySelector('.history-vehicle-trigger');
+    if (!trigger) return;
+    const isAllSelected = selectedValue === '' || selectedValue == null;
+    trigger.classList.toggle('history-all-selected', isAllSelected);
+}
+
 // Geçmiş kayıtlar - custom dropdown
 window.showHistory = function() {
     const hiddenInput = document.getElementById('history-vehicle-filter');
@@ -1694,6 +1701,7 @@ window.showHistory = function() {
     }
     hiddenInput.value = defaultVal;
     if (triggerText) triggerText.textContent = defaultText;
+    updateHistoryTriggerTone(defaultVal);
     if (dropdown) dropdown.style.display = 'none';
     if (trigger) trigger.classList.remove('history-vehicle-trigger-open');
     renderHistoryList();
@@ -1723,6 +1731,7 @@ function selectHistoryVehicle(value, text) {
     const trigger = document.querySelector('.history-vehicle-trigger');
     if (hiddenInput) hiddenInput.value = value;
     if (triggerText) triggerText.textContent = text;
+    updateHistoryTriggerTone(value);
     if (dropdown) dropdown.style.display = 'none';
     if (trigger) trigger.classList.remove('history-vehicle-trigger-open');
     renderHistoryList();
