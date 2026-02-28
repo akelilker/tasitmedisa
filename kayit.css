@@ -1413,18 +1413,20 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         justify-content: flex-start !important;
         width: 100% !important;
         min-width: 0 !important;
+        box-sizing: border-box !important;
     }
     #vehicle-modal .modal-body .modal-column-right .form-section-inline:has(.radio-group) .form-label {
-        flex: 0 0 135px !important;
-        min-width: 135px !important;
-        max-width: 135px !important;
+        flex: 0 0 118px !important;
+        min-width: 118px !important;
+        max-width: 118px !important;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
     }
     #vehicle-modal .modal-body .modal-column-right .form-section-inline:has(.radio-group) .radio-group {
-        flex: 0 0 auto !important;
-        margin-left: 0 !important;
+        flex: 1 1 auto !important;
+        min-width: 0 !important;
+        margin-left: 4px !important;
     }
     /* Masaüstü: ilk satır (Taşıt Tipi / Sigorta) – üst kesilme olmaması için margin-top 0 */
     #vehicle-modal .modal-body .modal-column-left .form-section-inline:first-child {
@@ -1511,6 +1513,11 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         height: 0;
         overflow: hidden;
         flex: 0 0 0;
+    }
+    /* Tramer kayıt alanı açıkken de Tramer–Boya arası sıkı kalsın */
+    #vehicle-modal .modal-body .modal-column-left .form-section:has(#tramer-records-container) {
+        margin-top: 0 !important;
+        margin-bottom: 2px !important;
     }
     #vehicle-modal .modal-body .modal-column-left .form-section:has(#boya-parts-container):not(.boya-parts-visible) {
         margin-top: 0 !important;
