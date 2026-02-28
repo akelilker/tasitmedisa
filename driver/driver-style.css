@@ -2351,7 +2351,7 @@ body.driver-modal-open {
   flex-direction: column;
   gap: 6px;
   background: rgba(18, 22, 28, 0.98);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(128, 128, 128, 0.42);
   border-radius: 8px;
   padding: 8px 14px;
 }
