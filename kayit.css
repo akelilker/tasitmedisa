@@ -1371,10 +1371,10 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-body .modal-column-left .form-section-inline:nth-of-type(2) {
         margin-top: 4px !important;
     }
-    /* Şanzıman Tipi – Tramer Kaydı arası +3px; Tramer – Boya arası sıkı */
+    /* Şanzıman Tipi – Tramer Kaydı arası +3px; Tramer – Boya arası dengeli */
     #vehicle-modal .modal-body .modal-column-left .form-section-inline:nth-of-type(3) {
         margin-top: 5px !important;
-        margin-bottom: 2px !important;
+        margin-bottom: 1px !important;
     }
     #vehicle-modal .modal-body .modal-column-right .form-section:nth-of-type(3) {
         margin-bottom: 6px;
@@ -1397,16 +1397,16 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-body .modal-column-right .form-section-inline:has(#yedek-anahtar-var) {
         margin-top: 3px !important;
     }
-    /* Sağ kolon Var/Yok (Yedek Anahtar, Kredi/Rehin): etiket sabit genişlik – butonlar üsttekilerle hizalı, çerçeve kesilmesin */
+    /* Sağ kolon Var/Yok (Yedek Anahtar, Kredi/Rehin): etiket dar – butonlar kolon içinde, sağdan taşmasın */
     #vehicle-modal .modal-body .modal-column-right .form-section-inline:has(.radio-group) {
         justify-content: flex-start !important;
         width: 100% !important;
         min-width: 0 !important;
     }
     #vehicle-modal .modal-body .modal-column-right .form-section-inline:has(.radio-group) .form-label {
-        flex: 0 0 165px !important;
-        min-width: 165px !important;
-        max-width: 165px !important;
+        flex: 0 0 135px !important;
+        min-width: 135px !important;
+        max-width: 135px !important;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -1458,6 +1458,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         display: none;
     }
     #vehicle-modal .modal-body .universal-btn-group {
+        position: static !important;
         flex-shrink: 0;
         margin-top: 6px;
         padding-top: 8px !important;
