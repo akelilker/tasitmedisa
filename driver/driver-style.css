@@ -3480,9 +3480,22 @@ body.driver-action-block-open .driver-footer-back-wrap {
     padding-top: 12px !important;
   }
 
-  /* 7. History etiketleri arası 3px boşluk */
-  .history-details p + p {
-    margin-top: 3px !important;
+  /* 7. History kartı: mobilde metin-çerçeve dikey boşlukları sıkılaştır */
+  #history-modal .history-card {
+    padding-top: 1px !important;
+    padding-bottom: 1px !important;
+    gap: 1px !important;
+  }
+  #history-modal .history-header {
+    margin-bottom: 1px !important;
+  }
+  #history-modal .history-details p + p {
+    margin-top: 1px !important;
+  }
+  #history-modal .history-edit-icon {
+    width: 22px !important;
+    height: 22px !important;
+    align-self: flex-start !important;
   }
 
   /* Foto 4: Kullanıcı adı-plaka arası boşluk yarıya (12px -> 6px) */
