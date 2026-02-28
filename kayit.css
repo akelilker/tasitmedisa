@@ -1543,9 +1543,9 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         min-width: 0;
         padding-bottom: 6px !important;
     }
-    /* Masaüstü: Notlar textarea – yükseklik + yatay taşma yok, metin sarsın */
+    /* Masaüstü: Notlar textarea – varsayılan 1 satır, içerik uzadıkça auto-expand ile uzar */
     #vehicle-modal .modal-body #vehicle-notes {
-        min-height: 44px !important; /* 2 satır varsayılan; auto-expand ile uzar */
+        min-height: 26px !important;
         height: auto !important;
         overflow-x: hidden !important;
         max-width: 100% !important;
