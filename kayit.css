@@ -152,6 +152,14 @@
 /* --- FORM ELEMANLARI --- */
 .form-section { margin-bottom: 4px; }
 
+/* Sol kolon: Üretim Yılı, Marka/Model, Km, Taşıtın Alım Bedeli etiketlerinden önce 2px boşluk */
+#vehicle-modal .modal-column-left .form-section:has(#vehicle-year),
+#vehicle-modal .modal-column-left .form-section:has(#vehicle-brand-model),
+#vehicle-modal .modal-column-left .form-section:has(#vehicle-km),
+#vehicle-modal .modal-column-left .form-section:has(#vehicle-price) {
+    margin-top: 2px;
+}
+
 .form-label {
     display: block;
     font-size: 12px; 
