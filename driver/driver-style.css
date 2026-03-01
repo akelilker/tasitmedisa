@@ -629,7 +629,8 @@ body.driver-modal-open {
   scrollbar-width: none;
   -ms-overflow-style: none;
   -webkit-overflow-scrolling: touch;
-  padding-bottom: 24px;
+  /* Footer + back bar alanı için boşluk – Not/Bildir kesilmesin */
+  padding-bottom: calc(var(--app-footer-height, 48px) + 50px + env(safe-area-inset-bottom, 0));
 }
 .driver-right-panel::-webkit-scrollbar {
   display: none !important;
@@ -2835,9 +2836,9 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .dashboard-page .driver-dashboard-container {
     padding-bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important;
   }
-  /* Sağ panel: kaydırınca Not + Bildir görünsün, bar üstünde yeterli boşluk */
+  /* Sağ panel: kaydırınca Not + Bildir kesilmesin – footer + back bar için yeterli boşluk */
   .dashboard-page .driver-right-panel {
-    padding-bottom: calc(72px + env(safe-area-inset-bottom, 0)) !important;
+    padding-bottom: calc(var(--app-footer-height, 48px) + 56px + env(safe-area-inset-bottom, 0)) !important;
   }
   .login-page {
     max-width: 100% !important;
