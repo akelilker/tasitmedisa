@@ -1045,7 +1045,9 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         margin-bottom: 0 !important;
     }
 
-    #vehicle-modal .modal-column-left .form-section-inline:first-child { flex-direction: column; align-items: flex-start; gap: 0 !important; margin-bottom: 2px; }
+    /* Mobil: Plaka etiketi ile Taşıt simgeleri arası 1px (inline style kaldırıldı, çakışan kurallar temizlendi) */
+    #vehicle-modal .modal-column-left .form-section-inline:first-child { flex-direction: column; align-items: flex-start; gap: 0 !important; margin-bottom: 1px !important; }
+    #vehicle-modal .modal-column-left .form-section:has(#vehicle-plate) { margin-top: 0 !important; }
     .modal-column-left .form-section-inline:first-child .vehicle-type-group { width: 100%; justify-content: center; align-items: flex-end; flex-wrap: nowrap; max-width: 100%; margin-top: -21px !important; padding-top: 0; gap: 26px; }
     .vehicle-type-group { width: 100%; justify-content: center; align-items: flex-end; flex-wrap: nowrap; max-width: 100%; margin-top: 0; padding-top: 0; gap: 28px; }
     .modal-column-left .form-section-inline:first-child .form-label { margin-bottom: 0 !important; padding-bottom: 0; line-height: 1; }
