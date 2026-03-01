@@ -2259,6 +2259,10 @@ body.driver-modal-open {
   border-color: rgba(74, 222, 128, 0.75) !important;
   color: rgba(74, 222, 128, 0.95) !important;
 }
+#edit-request-modal .form-group input::placeholder,
+#edit-request-modal .form-group textarea::placeholder {
+  color: rgba(255, 255, 255, 0.22) !important;
+}
 
 /* Düzeltme Talebi: KM input spinner gizli */
 .driver-modal .form-group input[type="number"] {
@@ -3498,7 +3502,7 @@ body.driver-action-block-open .driver-footer-back-wrap {
   }
   #edit-request-modal .form-group input::placeholder,
   #edit-request-modal .form-group textarea::placeholder {
-    color: rgba(255, 255, 255, 0.45) !important;
+    color: rgba(255, 255, 255, 0.22) !important;
   }
   #edit-request-modal .btn-submit {
     font-size: 17px !important;
