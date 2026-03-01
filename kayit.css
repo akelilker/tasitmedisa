@@ -1468,11 +1468,11 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     /* Masaüstü: ilk satır (Taşıt Tipi / Sigorta) – üst kesilme olmaması için margin-top 0 */
     #vehicle-modal .modal-body .modal-column-left .form-section-inline:first-child {
         margin-top: 0 !important;
-        margin-bottom: -5px !important;
+        margin-bottom: 2px !important;
     }
-    /* Plaka etiketi ile Taşıt Tipi simgeleri arası 2px (masaüstü) */
+    /* Plaka etiketi ile Taşıt Tipi simgeleri arası 2px (first-child margin-bottom ile) */
     #vehicle-modal .modal-body .modal-column-left .form-section:has(#vehicle-plate) {
-        margin-top: 2px !important;
+        margin-top: 0 !important;
     }
     /* Masaüstü: Sigorta etiketi – üst kesilme olmaması için margin-top 0 */
     #vehicle-modal .modal-body .modal-column-right .form-section:first-child {
