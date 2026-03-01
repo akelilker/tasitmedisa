@@ -110,6 +110,12 @@ window.debounce = function(fn, ms) {
   };
 };
 
+/** Hata loglama – kullanıcıya göstermeden teknik bilgiyi konsola yazar */
+window.__medisaLogError = function(context, error, extra) {
+  var msg = error && (error.message || String(error));
+  console.error('[Medisa]', context, msg, error && error.stack ? error.stack : '', extra || '');
+};
+
 window.resetModalInputs = function(modalElement) {
   if (!modalElement) return;
   var activeEl = document.activeElement;

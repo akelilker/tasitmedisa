@@ -1050,7 +1050,9 @@
         alert('Yedek başarıyla geri yüklendi!\n\nSayfa yenilenecek.');
         setTimeout(() => window.location.reload(), 500);
       } catch (err) {
-        alert('Yedek okunamadı: ' + (err.message || 'Bilinmeyen hata'));
+        if (typeof window.__medisaLogError === 'function') window.__medisaLogError('Yedek geri yükle (restoreFromLastBackup)', err);
+        else console.error('Yedek geri yükle hatası:', err);
+        alert('Yedek okunamadı. Lütfen geçerli bir yedek dosyası ile tekrar deneyin.');
       }
     };
 
@@ -1196,11 +1198,13 @@
           message: 'Veriler sunucuya yedeklendi.'
         };
       } catch (error) {
+        if (typeof window.__medisaLogError === 'function') window.__medisaLogError('Yedekleme (uploadToServer)', error);
+        else console.error('Yedekleme hatası:', error);
         return {
           success: false,
           localBackup: false,
           serverBackup: false,
-          message: error && error.message ? error.message : 'Yedekleme sırasında hata oluştu.'
+          message: 'Yedekleme sırasında hata oluştu. Lütfen tekrar deneyin.'
         };
       }
     }
