@@ -3450,10 +3450,15 @@ body.driver-action-block-open .driver-footer-back-wrap {
   }
   #edit-request-modal .form-group label {
     font-size: 14px !important;
+    color: #ffffff !important;
   }
   #edit-request-modal .form-group input,
   #edit-request-modal .form-group textarea {
     font-size: 17px !important;
+  }
+  #edit-request-modal .form-group input::placeholder,
+  #edit-request-modal .form-group textarea::placeholder {
+    color: rgba(255, 255, 255, 0.45) !important;
   }
   #edit-request-modal .btn-submit {
     font-size: 17px !important;
@@ -3496,7 +3501,7 @@ body.driver-action-block-open .driver-footer-back-wrap {
   }
   #edit-request-modal .form-group input,
   #edit-request-modal .form-group textarea {
-    padding: 9px 16px !important;
+    padding: 5px 16px !important;
   }
   #edit-request-modal .btn-submit {
     padding: 18px !important;
