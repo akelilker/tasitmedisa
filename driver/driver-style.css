@@ -2248,6 +2248,10 @@ body.driver-modal-open {
   padding-top: 3px !important;
   padding-bottom: 3px !important;
 }
+#edit-request-modal .form-group input:not(:focus),
+#edit-request-modal .form-group textarea:not(:focus) {
+  box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.35) !important;
+}
 #edit-request-modal .btn-submit {
   font-weight: 500 !important;
   border-width: 1px !important;
