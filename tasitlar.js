@@ -3809,6 +3809,9 @@ function renderVehicleDetailLeft(vehicle) {
           notifIcon.classList.add('notification-red', 'notification-pulse');
         } else if (hasOrange) {
           notifIcon.classList.add('notification-orange', 'notification-pulse');
+        } else {
+          /* Okunmamış bildirim varsa (tarih uyarısı veya kullanıcı paneli işlemi) simge kırmızı */
+          notifIcon.classList.add('notification-red');
         }
       }
     }
