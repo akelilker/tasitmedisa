@@ -24,15 +24,16 @@ function toggleNotifications(e) {
     notif.classList.toggle('open');
     if (notif.classList.contains('open')) {
       var keys = [];
-      notif.querySelectorAll('[data-notif-key]').forEach(function(el) {
-        keys.push(el.getAttribute('data-notif-key'));
+      notif.querySelectorAll('.notification-item-activity[data-notif-key]').forEach(function(el) {
+        var k = (el.getAttribute('data-notif-key') || '').toString().trim();
+        if (k) keys.push(k);
         el.classList.remove('notification-unread');
       });
       if (keys.length) {
         try {
-          var viewed = JSON.parse(sessionStorage.getItem('notifViewedKeys') || '[]');
+          var viewed = JSON.parse(sessionStorage.getItem('notifViewedKeysV2') || '[]');
           keys.forEach(function(k) { if (viewed.indexOf(k) === -1) viewed.push(k); });
-          sessionStorage.setItem('notifViewedKeys', JSON.stringify(viewed));
+          sessionStorage.setItem('notifViewedKeysV2', JSON.stringify(viewed));
         } catch (err) {}
       }
     }

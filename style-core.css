@@ -674,10 +674,11 @@ html { overflow-x: hidden; }
   box-shadow: 0 0 8px rgba(var(--orange-warn-rgb), 0.2);
 }
 
-/* Okunmamış bildirimler: kırmızı çerçeve */
+/* Okunmamış bildirimler: kırmızı çerçeve + belirgin arka plan */
 #notifications-dropdown .notification-item-activity.notification-unread {
-  border-color: rgba(var(--theme-color-rgb), 0.6) !important;
-  box-shadow: 0 0 8px rgba(var(--theme-color-rgb), 0.2);
+  border: 1px solid rgba(var(--theme-color-rgb), 0.8) !important;
+  box-shadow: 0 0 12px rgba(var(--theme-color-rgb), 0.35);
+  background: rgba(var(--theme-color-rgb), 0.08) !important;
 }
 
 .notification-item:hover {
