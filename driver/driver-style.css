@@ -2708,8 +2708,12 @@ body.driver-modal-open {
 }
 
 /* Yönetim Sistemi (evrensel geri çubuğu) – ortak stil (konum sayfa bazlı) */
+/* Form açıkken arka plana tıklanmasın; Yönetim Sistemi linki her zaman tıklanabilsin */
 body.driver-action-block-open .driver-footer-back-wrap {
   pointer-events: none;
+}
+body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
+  pointer-events: auto !important;
 }
 .driver-footer-back-wrap {
   box-sizing: border-box;
@@ -2789,6 +2793,10 @@ body.driver-action-block-open .driver-footer-back-wrap {
 @media (max-width: 768px) {
   .driver-footer-back-wrap .universal-back-btn {
     transform: translateY(3px);
+  }
+  /* Mobil: sağ panelde Bildir butonu altı kesilmesin */
+  .dashboard-page .driver-right-panel {
+    padding-bottom: calc(24px + var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important;
   }
   .login-page {
     max-width: 100% !important;
@@ -3712,14 +3720,12 @@ body.driver-action-block-open .driver-footer-back-wrap {
     box-sizing: border-box !important;
   }
 
-  /* Dashboard ve Login: ana container iOS kıvrımlarına uyumlu */
+  /* Dashboard ve Login: ana container iOS kıvrımlarına uyumlu; yan çizgiler sadece ::before ile (üst üste binmesin) */
   .dashboard-page .app-container.driver-dashboard-container,
   .login-page .app-container.driver-dashboard-container {
     border-radius: 38px !important;
     overflow: hidden !important;
     border-top: 1.2px solid var(--border-red-tech) !important;
-    border-left: 1px solid var(--border-red-tech) !important;
-    border-right: 1px solid var(--border-red-tech) !important;
     box-shadow: 0 2px 14px rgba(var(--theme-color-rgb), 0.1) !important;
     min-height: calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important;
     min-height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important;
