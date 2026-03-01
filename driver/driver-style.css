@@ -1097,6 +1097,10 @@ body.driver-modal-open {
     width: 100% !important;
     height: auto !important;
   }
+  /* Mobil şifre ekranı: başlık metni yatayda ortalı (logo konumu değişmez) */
+  .login-page .hero.hero-two-rows .hero-title-block {
+    transform: translateX(-28px);
+  }
   /* Ortadaki dikey kırmızı çizgi – yan çizgilerle aynı */
   .driver-left-panel {
     border-right-width: 1.2px !important;
