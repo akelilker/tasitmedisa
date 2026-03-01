@@ -1074,7 +1074,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     }
     /* Notlar: Kasko Kodu ile arası 8px; Boya ile aynı satırda; etiket-input sıkı */
     #vehicle-modal .modal-column-right .form-section:has(#vehicle-notes) {
-        margin-top: 2px !important;
+        margin-top: 8px !important;
         margin-bottom: 0 !important;
         flex: none !important;
         gap: 0 !important;
@@ -1419,9 +1419,10 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         margin-top: 4px !important;
         margin-bottom: 3px !important; /* +1px: Şanzıman–Tramer arası */
     }
+    /* Şanzıman Tipi – Tramer Kaydı arası +3px; Tramer – Boya arası dengeli */
     #vehicle-modal .modal-body .modal-column-left .form-section-inline:nth-of-type(3) {
-        margin-top: 1px !important;   /* +1px: Şanzıman–Tramer arası */
-        margin-bottom: 2px !important;
+        margin-top: 5px !important;
+        margin-bottom: 1px !important;
     }
     #vehicle-modal .modal-body .modal-column-left .form-section-inline:nth-of-type(4) {
         margin-top: 1px !important;   /* +1px: Tramer–Boya arası */
@@ -1455,9 +1456,9 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         box-sizing: border-box !important;
     }
     #vehicle-modal .modal-body .modal-column-right .form-section-inline:has(.radio-group) .form-label {
-        flex: 0 0 118px !important;
-        min-width: 118px !important;
-        max-width: 118px !important;
+        flex: 0 0 135px !important;
+        min-width: 135px !important;
+        max-width: 135px !important;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
