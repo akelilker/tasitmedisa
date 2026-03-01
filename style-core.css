@@ -674,13 +674,6 @@ html { overflow-x: hidden; }
   box-shadow: 0 0 8px rgba(var(--orange-warn-rgb), 0.2);
 }
 
-/* Okunmamış bildirimler: kırmızı çerçeve + belirgin arka plan */
-#notifications-dropdown .notification-item-activity.notification-unread {
-  border: 1px solid rgba(var(--theme-color-rgb), 0.8) !important;
-  box-shadow: 0 0 12px rgba(var(--theme-color-rgb), 0.35);
-  background: rgba(var(--theme-color-rgb), 0.08) !important;
-}
-
 .notification-item:hover {
   border-color: var(--border-light) !important;
   box-shadow: 0 4px 12px var(--shadow-dark);
@@ -697,6 +690,14 @@ html { overflow-x: hidden; }
   overflow: hidden !important;
   text-align: left !important;
 }
+
+/* Okunmamış bildirimler: kırmızı çerçeve (genel .notification-item-activity kuralından sonra, override için) */
+#notifications-dropdown .notification-item-activity.notification-unread {
+  border: 1px solid rgba(var(--theme-color-rgb), 0.8) !important;
+  box-shadow: 0 0 12px rgba(var(--theme-color-rgb), 0.35);
+  background: rgba(var(--theme-color-rgb), 0.08) !important;
+}
+
 #notifications-dropdown .notification-item-activity .notif-line1 {
   word-wrap: break-word !important;
   overflow-wrap: break-word !important;
@@ -865,7 +866,7 @@ html { overflow-x: hidden; }
   font-weight: 600;
   font-size: 13px;
   cursor: pointer;
-  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, font-size 0.2s ease, box-shadow 0.2s ease;
+  transition:h background 0.2s ease, border-color 0.2s ease, color 0.2s ease, font-size 0.2s ease, box-shadow 0.2s ease;
   margin: 0;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
   height: 48px;
