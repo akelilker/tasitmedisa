@@ -21,6 +21,9 @@ function titleCaseTr($str) {
 }
 
 $period = $_GET['period'] ?? date('Y-m');
+if (!preg_match('/^\d{4}-\d{2}$/', $period)) {
+    $period = date('Y-m');
+}
 $data = loadData();
 if (!$data) {
     http_response_code(500);

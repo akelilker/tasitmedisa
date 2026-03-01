@@ -123,7 +123,7 @@ $eventBase = [
 switch ($eventType) {
     case 'anahtar':
         $durum = isset($data['durum']) ? (string)$data['durum'] : 'yok';
-        $detay = ($durum === 'var') ? trim($data['detay'] ?? '') : '';
+        $detay = ($durum === 'var') ? mb_substr(strip_tags(trim($data['detay'] ?? '')), 0, 500) : '';
         $vehicle['anahtar'] = $durum;
         $vehicle['anahtarNerede'] = $detay;
         $eventBase['type'] = 'anahtar-guncelle';
@@ -133,7 +133,7 @@ switch ($eventType) {
 
     case 'lastik':
         $durum = isset($data['durum']) ? (string)$data['durum'] : 'yok';
-        $adres = ($durum === 'var') ? trim($data['adres'] ?? '') : '';
+        $adres = ($durum === 'var') ? mb_substr(strip_tags(trim($data['adres'] ?? '')), 0, 500) : '';
         $vehicle['lastikDurumu'] = $durum;
         $vehicle['lastikAdres'] = $adres;
         $eventBase['type'] = 'lastik-guncelle';
@@ -151,8 +151,8 @@ switch ($eventType) {
 
     case 'muayene':
         $tarih = trim($data['tarih'] ?? '');
-        if ($tarih === '') {
-            echo json_encode(['success' => false, 'message' => 'Muayene tarihi zorunludur!'], JSON_UNESCAPED_UNICODE);
+        if ($tarih === '' || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $tarih)) {
+            echo json_encode(['success' => false, 'message' => 'Muayene tarihi zorunludur! (YYYY-MM-DD)'], JSON_UNESCAPED_UNICODE);
             exit;
         }
         $bitisTarihi = calculateNextMuayene($vehicle, $tarih);
@@ -164,8 +164,8 @@ switch ($eventType) {
 
     case 'sigorta':
         $tarih = trim($data['tarih'] ?? '');
-        if ($tarih === '') {
-            echo json_encode(['success' => false, 'message' => 'Sigorta tarihi zorunludur!'], JSON_UNESCAPED_UNICODE);
+        if ($tarih === '' || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $tarih)) {
+            echo json_encode(['success' => false, 'message' => 'Sigorta tarihi zorunludur! (YYYY-MM-DD)'], JSON_UNESCAPED_UNICODE);
             exit;
         }
         $bitisTarihi = addYears($tarih, 1);
@@ -174,16 +174,16 @@ switch ($eventType) {
         $eventBase['date'] = $tarih;
         $eventBase['data'] = [
             'bitisTarihi' => $bitisTarihi,
-            'firma' => trim($data['firma'] ?? ''),
-            'acente' => trim($data['acente'] ?? ''),
-            'iletisim' => trim($data['iletisim'] ?? '')
+            'firma' => mb_substr(strip_tags(trim($data['firma'] ?? '')), 0, 300),
+            'acente' => mb_substr(strip_tags(trim($data['acente'] ?? '')), 0, 300),
+            'iletisim' => mb_substr(strip_tags(trim($data['iletisim'] ?? '')), 0, 300)
         ];
         break;
 
     case 'kasko':
         $tarih = trim($data['tarih'] ?? '');
-        if ($tarih === '') {
-            echo json_encode(['success' => false, 'message' => 'Kasko tarihi zorunludur!'], JSON_UNESCAPED_UNICODE);
+        if ($tarih === '' || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $tarih)) {
+            echo json_encode(['success' => false, 'message' => 'Kasko tarihi zorunludur! (YYYY-MM-DD)'], JSON_UNESCAPED_UNICODE);
             exit;
         }
         $bitisTarihi = addYears($tarih, 1);
@@ -192,9 +192,9 @@ switch ($eventType) {
         $eventBase['date'] = $tarih;
         $eventBase['data'] = [
             'bitisTarihi' => $bitisTarihi,
-            'firma' => trim($data['firma'] ?? ''),
-            'acente' => trim($data['acente'] ?? ''),
-            'iletisim' => trim($data['iletisim'] ?? '')
+            'firma' => mb_substr(strip_tags(trim($data['firma'] ?? '')), 0, 300),
+            'acente' => mb_substr(strip_tags(trim($data['acente'] ?? '')), 0, 300),
+            'iletisim' => mb_substr(strip_tags(trim($data['iletisim'] ?? '')), 0, 300)
         ];
         break;
 

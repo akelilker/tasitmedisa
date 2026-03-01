@@ -11,11 +11,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
-// Parametreleri al
+// Parametreleri al ve güvenli hale getir
 $period = $_GET['period'] ?? date('Y-m');
-$branch = $_GET['branch'] ?? '';
-$status = $_GET['status'] ?? '';
+if (!preg_match('/^\d{4}-\d{2}$/', $period)) {
+    $period = date('Y-m');
+}
+$branch = isset($_GET['branch']) ? trim((string)$_GET['branch']) : '';
+$status = isset($_GET['status']) ? trim((string)$_GET['status']) : '';
+$allowedStatus = ['', 'girdi', 'girmedi', 'kaza', 'bakim'];
+if (!in_array($status, $allowedStatus, true)) {
+    $status = '';
+}
 $action = $_GET['action'] ?? 'report';
+if (!in_array($action, ['report', 'branches', 'pending_requests'], true)) {
+    $action = 'report';
+}
 
 // Veriyi yükle
 $data = loadData();
