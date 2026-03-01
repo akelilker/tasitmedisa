@@ -2606,7 +2606,7 @@ body.driver-modal-open {
   left: auto;
   right: auto;
   margin: 0 0 6px 0;
-  padding: 0 4px 0 22px !important;
+  padding: 0 4px 0 4px !important;
   flex-shrink: 0;
   justify-content: flex-start;
   width: 100%;
