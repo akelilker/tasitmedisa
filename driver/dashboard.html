@@ -169,6 +169,12 @@
                     </svg>
                 </button>
             </div>
+            <div class="universal-back-bar">
+                <button type="button" class="universal-back-btn" onclick="closeEditRequest()">
+                    <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                    <span class="universal-back-label">Kullanıcı Paneli</span>
+                </button>
+            </div>
             <div class="modal-body">
                 <p class="driver-current-km">
                     Mevcut KM: <strong id="current-km">0</strong>
@@ -182,18 +188,18 @@
                 </p>
                 <div class="form-group">
                     <label for="new-bakim">Yeni Bakım Açıklama</label>
-                    <textarea id="new-bakim" rows="2" placeholder="Boş bırakırsanız 'Yok' sayılır"></textarea>
+                    <input type="text" id="new-bakim" placeholder="Boş bırakırsanız 'Yok' sayılır">
                 </div>
                 <p class="driver-current-km">
                     Mevcut Kaza: <strong id="current-kaza">-</strong>
                 </p>
                 <div class="form-group">
                     <label for="new-kaza">Yeni Kaza Açıklama</label>
-                    <textarea id="new-kaza" rows="2" placeholder="Boş bırakırsanız 'Yok' sayılır"></textarea>
+                    <input type="text" id="new-kaza" placeholder="Boş bırakırsanız 'Yok' sayılır">
                 </div>
                 <div class="form-group">
                     <label for="edit-reason">Düzeltme Sebebi</label>
-                    <textarea id="edit-reason" placeholder="Neden düzeltmek istiyorsunuz?" rows="4" required></textarea>
+                    <textarea id="edit-reason" placeholder="Neden düzeltmek istiyorsunuz?" rows="1" required></textarea>
                 </div>
                 <button type="button" onclick="submitEditRequest()" class="btn-submit">Talep Gönder</button>
             </div>
