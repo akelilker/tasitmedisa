@@ -641,7 +641,7 @@ body.driver-modal-open {
   flex-direction: column;
   gap: 8px;
   overflow-y: auto !important;
-  overflow-x: auto !important;
+  overflow-x: hidden !important; /* Sadece aşağı-yukarı kayma; sağa-sola hareket yok */
   scrollbar-width: none;
   -ms-overflow-style: none;
   -webkit-overflow-scrolling: touch;
@@ -1856,6 +1856,12 @@ body.driver-modal-open {
   border-color: var(--muted);
   cursor: not-allowed;
   transform: none;
+}
+
+/* Sağ grid: Bildir / Vazgeç butonları – çerçeveye dokunmadan metin 1pt büyük */
+.dashboard-page .vehicle-card .universal-btn-save,
+.dashboard-page .vehicle-card .universal-btn-cancel {
+  font-size: 15px !important;
 }
 
 .status-message {
