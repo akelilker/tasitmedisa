@@ -1032,15 +1032,15 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         overflow: hidden !important;
         flex: 0 0 0 !important;
     }
-    /* Tramer Kaydı ile Boya/Değişen arası dikey boşluk tam 3px (mobil) */
+    /* Tramer Kaydı ile Boya/Değişen arası 6px – diğer bloklarla dengeli */
     #vehicle-modal .modal-column-left .form-section-inline:has(#tramer-var) {
-        margin-bottom: 3px !important;
+        margin-bottom: 6px !important;
     }
     #vehicle-modal .modal-column-left .form-section:has(#tramer-records-container).tramer-records-visible {
-        margin-bottom: 3px !important;
+        margin-bottom: 6px !important;
     }
     #vehicle-modal .modal-column-left .form-section-inline:has(#boya-var) {
-        margin-top: 3px !important; /* Tramer ile arası sabit 3px – auto kaldırıldı */
+        margin-top: 0 !important;
         margin-bottom: 0 !important;
     }
 
@@ -1065,12 +1065,15 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-column-right .form-section:has(#vehicle-branch-select) {
         margin-bottom: 6px !important;
     }
-    /* Notlar: sol kolon Boya/Değişen ile aynı satırda – alta yapışır (margin-top: auto); ince ayar için 6px yukarı */
+    /* Kasko Kodu – Notlar arası net boşluk */
+    #vehicle-modal .modal-column-right .form-section:has(#vehicle-kasko-kodu) {
+        margin-bottom: 10px !important;
+    }
+    /* Notlar: sol kolon Boya/Değişen ile aynı satırda – alta yapışır (margin-top: auto); Kasko Kodu ile arası net */
     #vehicle-modal .modal-column-right .form-section:has(#vehicle-notes) {
         margin-top: auto !important;
         margin-bottom: 0 !important;
         flex: none !important;
-        transform: translateY(-6px);
     }
     #vehicle-modal #vehicle-notes,
     #vehicle-modal .modal-column-right .form-section:has(#vehicle-notes) textarea {
@@ -1244,13 +1247,12 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     
     /* Notlar: flex ile alta yayılır, alt boşluk dolar */
     
-    /* Sol taraftaki form-section-inline boşlukları (Tramer hariç – o 3px ayrı) */
+    /* Sol taraftaki form-section-inline boşlukları (Tramer dahil – hepsi 6px) */
     .modal-column-left .form-section-inline:not(:first-child):not(:has(#tramer-var)) {
         margin-bottom: 6px !important;
     }
-    /* Tramer – Boya arası 3px (nth-of-type 2px override kaldırıldı) */
     #vehicle-modal .modal-column-left .form-section-inline:has(#tramer-var) {
-        margin-bottom: 3px !important;
+        margin-bottom: 6px !important;
     }
     
     .modal-column-right .form-section-inline:has(.radio-group) .radio-group { position: static; transform: none; right: auto; top: auto; }
@@ -1466,6 +1468,10 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         margin-top: 2px;
         margin-bottom: 8px !important;
     }
+    /* Kasko Kodu – Notlar arası net boşluk (masaüstü) */
+    #vehicle-modal .modal-body .modal-column-right .form-section:has(#vehicle-kasko-kodu) {
+        margin-bottom: 10px !important;
+    }
     /* Tahsis Edilen Şube etiketi: 3px yukarı; etiket altı 1px */
     #vehicle-modal .modal-body .modal-column-right .form-section:has(#vehicle-branch-select) .form-label {
         margin-top: -2px !important; /* genel +1px kuralına göre 3px yukarı */
@@ -1524,11 +1530,11 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-body .modal-column-right .form-section-inline {
         flex-shrink: 0;
     }
-    /* Tramer Kaydı ile Boya/Değişen arası dikey boşluk 3px */
+    /* Tramer Kaydı ile Boya/Değişen arası 6px – diğer bloklarla dengeli */
     #vehicle-modal .modal-body .modal-column-left .form-section-inline:has(#tramer-var) {
-        margin-bottom: 3px !important;
+        margin-bottom: 6px !important;
     }
-    /* Boya/Değişen: Tramer ile arası 3px (üst margin 0) */
+    /* Boya/Değişen: Tramer ile arası 6px (üst margin 0, collapse ile) */
     #vehicle-modal .modal-body .modal-column-left .form-section-inline:has(#boya-var) {
         margin-top: 0 !important;
         margin-bottom: 0 !important;
@@ -1543,10 +1549,10 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         overflow: hidden;
         flex: 0 0 0;
     }
-    /* Tramer kayıt alanı açıkken Tramer–Boya arası 3px */
+    /* Tramer kayıt alanı açıkken Tramer–Boya arası 6px */
     #vehicle-modal .modal-body .modal-column-left .form-section:has(#tramer-records-container) {
         margin-top: 0 !important;
-        margin-bottom: 3px !important;
+        margin-bottom: 6px !important;
     }
     #vehicle-modal .modal-body .modal-column-left .form-section:has(#boya-parts-container):not(.boya-parts-visible) {
         margin-top: 0 !important;
@@ -1564,7 +1570,6 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         flex: none !important;
         min-width: 0;
         padding-bottom: 6px !important;
-        transform: translateY(-18px);
     }
     /* Masaüstü: Notlar textarea – varsayılan 1 satır, içerik uzadıkça aşağı genişler (max 300px) */
     #vehicle-modal .modal-body #vehicle-notes {
