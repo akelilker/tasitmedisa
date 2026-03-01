@@ -1,0 +1,7 @@
+# MEDISA Taşıt Yönetim Sistemi
+# RewriteBase /medisa/ veya / gerektiğinde script tarafından ayarlanır
+
+# Dokümantasyon (.md) sunucuda servis edilmesin
+<FilesMatch "\.md$">
+    Require all denied
+</FilesMatch>
