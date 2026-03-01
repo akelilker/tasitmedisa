@@ -41,7 +41,7 @@ $path = __DIR__ . '/' . $file;
 
 if (!file_exists($path)) {
     http_response_code(404);
-    echo '// File not found: ' . $file;
+    echo '// File not found: ' . htmlspecialchars($file, ENT_QUOTES | ENT_HTML5, 'UTF-8');
     exit;
 }
 

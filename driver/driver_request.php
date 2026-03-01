@@ -27,7 +27,7 @@ $yeniBakimDurumu = isset($input['yeni_bakim_durumu']) ? intval($input['yeni_baki
 $yeniBakimAciklama = isset($input['yeni_bakim_aciklama']) ? trim($input['yeni_bakim_aciklama']) : null;
 $yeniKazaDurumu = isset($input['yeni_kaza_durumu']) ? intval($input['yeni_kaza_durumu']) : null;
 $yeniKazaAciklama = isset($input['yeni_kaza_aciklama']) ? trim($input['yeni_kaza_aciklama']) : null;
-$sebep = trim($input['sebep'] ?? '');
+$sebep = strip_tags(trim($input['sebep'] ?? ''));
 
 // Validasyon
 if ($kayitId <= 0) {

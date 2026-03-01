@@ -16,6 +16,7 @@ $input = json_decode(file_get_contents('php://input'), true);
 $requestId = intval($input['request_id'] ?? 0);
 $action = $input['action'] ?? ''; // 'approve' veya 'reject'
 $adminNote = trim($input['admin_note'] ?? '');
+$adminNote = mb_substr(strip_tags($adminNote), 0, 1000);
 
 // Validasyon
 if ($requestId <= 0) {
