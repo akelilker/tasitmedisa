@@ -8,12 +8,15 @@
     function getBranches() { return (typeof window.getMedisaBranches === 'function' ? window.getMedisaBranches() : null) || []; }
     function getUsers() { return (typeof window.getMedisaUsers === 'function' ? window.getMedisaUsers() : null) || []; }
 
-    // Liste metin format: kelimelerin ilk harfi büyük (TR locale)
+    // Liste metin format: kelimelerin ilk harfi büyük (TR locale); tire (-) sonrası da büyük (örn. Mercedes-Benz)
     function toTitleCase(str) {
         if (!str || str === '-') return str;
         return String(str).trim().split(/\s+/).map(function(w) {
             if (!w) return w;
-            return w.charAt(0).toLocaleUpperCase('tr-TR') + w.slice(1).toLocaleLowerCase('tr-TR');
+            return w.split('-').map(function(part) {
+                if (!part) return part;
+                return part.charAt(0).toLocaleUpperCase('tr-TR') + part.slice(1).toLocaleLowerCase('tr-TR');
+            }).join('-');
         }).join(' ');
     }
 
