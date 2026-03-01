@@ -2594,22 +2594,23 @@ body.driver-modal-open {
   padding-left: 22px !important;
   padding-right: 30px !important;
 }
-/* Login: Yönetim Sistemi geçiş butonu + sol ok container içinde, footerdan 6px yukarıda, sola yaslı */
+/* Şifre ekranı: Yönetim Sistemi butonu + sol ok kesinlikle container içinde (akışta, kırmızı çizgiler arasında) */
 .login-page .driver-footer-back-wrap {
-  position: static !important;
-  bottom: auto !important;
-  left: auto !important;
-  right: auto !important;
-  margin: 0 0 6px 0 !important;
+  position: static;
+  bottom: auto;
+  left: auto;
+  right: auto;
+  margin: 0 0 6px 0;
   padding: 0 4px 0 22px !important;
-  flex-shrink: 0 !important;
-  justify-content: flex-start !important;
-  width: 100% !important;
-  max-width: 100% !important;
-  box-sizing: border-box !important;
+  flex-shrink: 0;
+  justify-content: flex-start;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  z-index: auto;
 }
 .login-page .driver-footer-back-wrap .universal-back-btn {
-  margin-left: 0 !important;
+  margin-left: 0;
 }
 .login-page #app-footer.login-footer .footer-content {
   padding-left: 4px !important;
@@ -2701,11 +2702,20 @@ body.driver-modal-open {
   opacity: 0.7 !important;
 }
 
-/* Yönetim Sistemi (evrensel geri çubuğu) - footer üstünde, sola yaslı */
+/* Yönetim Sistemi (evrensel geri çubuğu) – ortak stil (konum sayfa bazlı) */
 body.driver-action-block-open .driver-footer-back-wrap {
   pointer-events: none;
 }
 .driver-footer-back-wrap {
+  box-sizing: border-box;
+  padding-left: 12px !important;
+  padding-right: 12px !important;
+  overflow: hidden;
+  display: flex;
+  justify-content: flex-start;
+}
+/* Sadece kullanıcı paneli (dashboard): viewport’a sabit, altta */
+.dashboard-page .driver-footer-back-wrap {
   position: fixed;
   bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0) + 9px);
   left: 0;
@@ -2713,13 +2723,7 @@ body.driver-action-block-open .driver-footer-back-wrap {
   max-width: 500px;
   width: 100%;
   margin: 0 auto;
-  box-sizing: border-box;
   z-index: 9999;
-  padding-left: 12px !important;
-  padding-right: 12px !important;
-  overflow: hidden;
-  display: flex;
-  justify-content: flex-start;
 }
 .driver-footer-back-wrap .universal-back-btn {
   display: inline-flex !important;
@@ -2757,7 +2761,7 @@ body.driver-action-block-open .driver-footer-back-wrap {
   opacity: 1;
 }
 @media (min-width: 769px) {
-  .driver-footer-back-wrap {
+  .dashboard-page .driver-footer-back-wrap {
     bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0) - 3px);
     margin-left: 12px;
     margin-right: auto;
