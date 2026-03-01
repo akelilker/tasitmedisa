@@ -1497,7 +1497,7 @@ body.modal-open .user-panel-link {
         gap: 8px !important;
     }
     
-    /* MOBİLDE YAN ÇİZGİLER KIRMIZI - pseudo ile üstte (hero/menü üstüne çıkmasın) */
+    /* MOBİLDE YAN ÇİZGİLER KIRMIZI - pseudo ile üstte (hero/menü üstüne çıkmasın); minimal belirgin */
     .content-wrap { 
         border-left: none;
         border-right: none;
@@ -1509,17 +1509,18 @@ body.modal-open .user-panel-link {
         left: 0;
         right: 0;
         bottom: 0;
-        border-left: 0.5px solid var(--border-red-tech);
-        border-right: 0.5px solid var(--border-red-tech);
+        border-left: 1px solid rgba(var(--theme-color-rgb), 0.55);
+        border-right: 1px solid rgba(var(--theme-color-rgb), 0.55);
         pointer-events: none;
         z-index: 20;
         box-sizing: border-box;
     }
     
-    /* CONTAINER'DAN YAN ÇİZGİLER KALDIRILDI */
+    /* CONTAINER'DAN YAN ÇİZGİLER KALDIRILDI; üst çizgi minimal belirgin */
     .app-container {
         border-left: none;
         border-right: none;
+        border-top: 1px solid rgba(var(--theme-color-rgb), 0.55) !important;
     }
     
     /* Kırmızı çerçeve mobilde havada: iç ışık tam (kırmızı ile eşit) */
@@ -1610,7 +1611,7 @@ body.modal-open .user-panel-link {
     .content-wrap {
         padding-top: max(12px, env(safe-area-inset-top)) !important;
     }
-    /* Çerçeve viewport içinde kalır; çift padding yok, content-wrap halleder */
+    /* Çerçeve viewport içinde kalır; çift padding yok, content-wrap halleder; minimal belirgin */
     .app-container {
         margin-top: 0 !important;
         padding-top: 0 !important;
@@ -1618,9 +1619,9 @@ body.modal-open .user-panel-link {
         border-bottom-left-radius: 0 !important;
         border-bottom-right-radius: 0 !important;
         overflow: hidden !important;
-        border-top: 0.5px solid var(--border-red-tech) !important;
-        border-left: 0.5px solid var(--border-red-tech) !important;
-        border-right: 0.5px solid var(--border-red-tech) !important;
+        border-top: 1px solid rgba(var(--theme-color-rgb), 0.55) !important;
+        border-left: 1px solid rgba(var(--theme-color-rgb), 0.55) !important;
+        border-right: 1px solid rgba(var(--theme-color-rgb), 0.55) !important;
         box-shadow: 0 2px 14px rgba(var(--theme-color-rgb), 0.1) !important;
         min-height: calc(100vh - env(safe-area-inset-bottom)) !important;
         min-height: calc(100dvh - env(safe-area-inset-bottom)) !important;
