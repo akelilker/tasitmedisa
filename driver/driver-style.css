@@ -3194,7 +3194,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     letter-spacing: 0.2em !important;
   }
 
-  /* Mobil modal container: overlay'ı doldur, margin yok */
+  /* Mobil modal container: footer arkasında kalmayacak şekilde yükseklik sınırla */
   #history-modal .driver-modal-content,
   #history-modal .modal-container,
   #edit-request-modal .driver-modal-content,
@@ -3216,8 +3216,8 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     max-width: 100% !important;
     width: 100% !important;
     margin: 0 !important;
-    height: 100% !important;
-    max-height: 100% !important;
+    height: calc(100% - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0)) !important;
+    max-height: calc(100% - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0)) !important;
     background: #080d16 !important;
     border-radius: 10px !important;
     border-top: none !important;
@@ -3244,7 +3244,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     border-top-right-radius: 0 !important;
   }
 
-  /* modal-body: sadece dikey scroll, yatay kayma yok */
+  /* modal-body: dikey scroll, alt içerik footer'a yapışmasın */
   #history-modal .modal-body,
   #edit-request-modal .modal-body,
   #driver-event-menu-modal .modal-body,
@@ -3259,6 +3259,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     overscroll-behavior: none !important;
     overscroll-behavior-x: none !important;
     -webkit-overflow-scrolling: touch;
+    padding-bottom: max(20px, env(safe-area-inset-bottom, 0)) !important;
   }
 
   /* Mobil arka plan tüm sayfalarla aynı (#080d16) */
@@ -3806,7 +3807,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     padding-top: env(safe-area-inset-top, 0) !important;
   }
 
-  /* Modal container: iOS PWA – overlay'ı doldur, margin yok */
+  /* Modal container: iOS PWA – footer arkasında kalmayacak şekilde yükseklik sınırla */
   #history-modal .driver-modal-content,
   #history-modal .modal-container,
   #edit-request-modal .driver-modal-content,
@@ -3826,8 +3827,8 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   #driver-kasko-modal .driver-modal-content,
   #driver-kasko-modal .modal-container {
     margin: 0 !important;
-    height: 100% !important;
-    max-height: 100% !important;
+    height: calc(100% - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0)) !important;
+    max-height: calc(100% - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0)) !important;
   }
 }
 
