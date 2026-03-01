@@ -127,20 +127,8 @@ body.driver-modal-open {
   box-sizing: border-box;
   overflow: hidden;
 }
-.dashboard-page .driver-dashboard-container::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  border-left: 1.2px solid var(--border-red-tech);
-  border-right: 1.2px solid var(--border-red-tech);
-  pointer-events: none;
-  z-index: 11;
-}
-/* Login: aynı kırmızı dikey çizgiler (Yönetim Sistemi + ok çerçeve içinde) */
-.login-page .driver-dashboard-container::before {
+/* Kullanıcı paneli + şifre ekranı: yan kırmızı çizgiler aynı */
+.driver-dashboard-container::before {
   content: '';
   position: absolute;
   top: 0;
@@ -1110,10 +1098,7 @@ body.driver-modal-open {
     width: 100% !important;
     height: auto !important;
   }
-  /* Mobil şifre ekranı: başlık metni yatayda ortalı (logo konumu değişmez) */
-  .login-page .hero.hero-two-rows .hero-title-block {
-    transform: translateX(-28px);
-  }
+  /* Şifre ekranı başlık: kullanıcı paneli ile aynı (ekstra kaydırma yok) */
   /* Ortadaki dikey kırmızı çizgi – yan çizgilerle aynı */
   .driver-left-panel {
     border-right-width: 1.2px !important;
@@ -2601,14 +2586,7 @@ body.driver-modal-open {
   -webkit-overflow-scrolling: touch !important;
 }
 
-/* Login sayfası: tüm metinler 8px sola kaydırıldı */
-.login-page .driver-header-fixed {
-  padding-left: 0 !important;
-}
-.login-page .hero {
-  padding-left: 8px !important;
-  padding-right: 24px !important;
-}
+/* Şifre ekranı: header/hero kullanıcı paneli ile aynı (padding vb. ortak) */
 .login-page .content-wrap {
   padding-left: 0 !important;
 }
@@ -2777,15 +2755,6 @@ body.driver-action-block-open .driver-footer-back-wrap {
 }
 .driver-footer-back-wrap .universal-back-btn:hover .back-icon-svg {
   opacity: 1;
-}
-@media (min-width: 769px) {
-  .login-page .driver-header-fixed {
-    padding-top: 6px !important;
-  }
-  .login-page .hero {
-    padding-top: 8px !important;
-    padding-bottom: 10px !important;
-  }
 }
 @media (min-width: 769px) {
   .driver-footer-back-wrap {
@@ -3615,12 +3584,10 @@ body.driver-action-block-open .driver-footer-back-wrap {
     padding-bottom: max(12px, env(safe-area-inset-bottom, 0)) !important;
   }
 
-  /* 5. Login header: yan çizgiler sadece container'da (çift border olmasın) */
+  /* 5. Şifre ekranı header: kullanıcı paneli ile aynı (yan çizgiler container'da, padding panel ile aynı) */
   .login-page .driver-header-fixed {
     border-left: none !important;
     border-right: none !important;
-    padding-left: 5px !important;
-    padding-right: 5px !important;
   }
   .login-page .driver-scroll-area {
     padding-left: 4px !important;
