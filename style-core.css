@@ -243,7 +243,6 @@ body::-webkit-scrollbar,
 }
 
 /* Ayarlar/Şube modalları: Olay Ekle standardı – tam genişlik, sol hizalama */
-#sube-modal .form-section,
 #branch-form-modal .form-section,
 #user-form-modal .form-section,
 .settings-modal .form-section,
@@ -259,7 +258,6 @@ body::-webkit-scrollbar,
   align-items: flex-start !important;
 }
 
-#sube-modal .form-label,
 #branch-form-modal .form-label,
 #user-form-modal .form-label,
 .settings-modal .form-label,
@@ -271,7 +269,6 @@ body::-webkit-scrollbar,
   margin-bottom: 4px !important;
 }
 
-#sube-modal .form-input,
 #branch-form-modal .form-input,
 #user-form-modal .form-input,
 .settings-modal .form-input,
@@ -288,7 +285,6 @@ body::-webkit-scrollbar,
 }
 
 /* Buton grubu da tam genişlik (400px kısıtlaması kaldırıldı) */
-#sube-modal .universal-btn-group,
 #branch-form-modal .universal-btn-group,
 #user-form-modal .universal-btn-group,
 .settings-modal .universal-btn-group,
@@ -302,8 +298,6 @@ body::-webkit-scrollbar,
 }
 
 /* Sil butonunu grid'de tam genişlikte, simetrik (3. buton alt satırda tam boy) */
-#sube-modal .btn-delete,
-#sube-modal .settings-btn-delete,
 #branch-form-modal .settings-btn-delete,
 #user-form-modal .settings-btn-delete,
 .settings-modal .btn-delete,
@@ -969,7 +963,6 @@ html { overflow-x: hidden; }
 }
 
 .card { background: var(--card-bg); padding: 16px; border-radius: 12px; border: 1px solid var(--br); }
-.btn.sec { background: transparent; border: 1px solid var(--br-medium); color: var(--txt-gray); padding: 8px 16px; border-radius: 6px; cursor: pointer; margin-top: 10px; }
 
 /* --- MODALLAR: ORTAK OVERLAY + CONTAINER (tek yerden yönetim) --- */
 .modal-overlay {
@@ -1020,8 +1013,7 @@ html { overflow-x: hidden; }
 /* Header, geri çubuğu ve footer sabit kalır, kaydırmadan etkilenmez (Strict Flex-Scroll) */
 .modal-overlay .modal-header,
 .modal-overlay .universal-back-bar,
-.universal-btn-group,
-.form-buttons {
+.universal-btn-group {
   flex-shrink: 0 !important;
   z-index: 10 !important;
 }
@@ -1796,7 +1788,6 @@ body.modal-open .app-container {
 /* ========== MASAÜSTÜ FERAHLAMA OPERASYONU ========== */
 /* Şube ve Kullanıcı Yönetimi bilgi kutularını masaüstünde büyütme: +1 punto metin, +3px dikey/yatay, padding kısıtma ile simetri */
 @media (min-width: 641px) {
-    #sube-modal,
     #kullanici-modal,
     #branch-form-modal,
     #user-form-modal,

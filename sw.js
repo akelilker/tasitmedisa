@@ -1,7 +1,7 @@
 // Service Worker - Medisa Taşıt Yönetim Sistemi
-// Version 2.6 - Network-first stratejisi aktif edildi
+// Version 2.10 - Precache sadeleştirildi (ilk kurulum hızı); diğer dosyalar ilk istekte cache'lenir
 
-const CACHE_VERSION = 'medisa-v2.9';
+const CACHE_VERSION = 'medisa-v2.10';
 
 // Subpath desteği: /medisa/sw.js ise base = '/medisa', kök deploy'da base = ''
 function getBase() {
@@ -9,55 +9,28 @@ function getBase() {
   return p || '';
 }
 
+// Sadece kritik giriş noktaları ve manifest; CSS/JS modülleri fetch ile network-first + cache fallback ile ilk kullanımda cache'lenir
 const CACHE_FILES = [
   '/',
   '/index.html',
-  
-  // Driver (giriş + panel)
+  '/style-core.css',
+  '/script-core.js',
+  '/data-manager.js',
+  '/manifest.json',
+  '/icon/logo-header2.svg',
+  '/icon/apple-touch-icon.svg',
+  '/icon/icon-192.svg',
+  '/icon/icon-512.svg',
   '/driver/',
   '/driver/index.html',
   '/driver/dashboard.html',
   '/driver/driver-style.css',
   '/driver/driver-script.js',
-  
-  // Admin
+  '/driver/manifest.json',
   '/admin/',
   '/admin/driver-report.html',
   '/admin/admin-report.css',
   '/admin/admin-report.js',
-  
-  // CSS
-  '/style-core.css',
-  '/kayit.css',
-  '/tasitlar.css',
-  '/raporlar.css',
-  '/ayarlar.css',
-  
-  // JavaScript
-  '/script-core.js',
-  '/kayit.js',
-  '/tasitlar.js',
-  '/raporlar.js',
-  '/ayarlar.js',
-  '/data-manager.js',
-  
-  // Icons
-  '/favicon.ico',
-  '/icon/favicon.ico',
-  '/icon/favicon.png',
-  '/icon/apple-touch-icon.svg',
-  '/icon/icon-192.svg',
-  '/icon/icon-512.svg',
-  '/icon/logo-header2.svg',
-  '/icon/logo-header2-mobile-header.svg',
-  '/icon/logo-footer.svg',
-  '/icon/marker.png',
-  '/icon/otomobil.svg',
-  '/icon/kaporta.svg',
-  
-  // Manifest files (main + sub apps)
-  '/manifest.json',
-  '/driver/manifest.json',
   '/admin/manifest.json'
 ];
 
