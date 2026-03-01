@@ -126,6 +126,35 @@ body.driver-modal-open {
   padding-bottom: 10px !important;
 }
 
+/* Dashboard: container + back bar + footer ayrık; sayfa altı ve footer her zaman görünsün */
+body.dashboard-page {
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 100vh !important;
+  min-height: 100dvh !important;
+  padding-bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important; /* footer yüksekliği kadar boşluk */
+  box-sizing: border-box !important;
+}
+body.dashboard-page .driver-dashboard-container {
+  flex: 1 1 0 !important;
+  min-height: 0 !important;
+  height: auto !important;
+  max-height: 100% !important;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+body.dashboard-page .driver-footer-back-wrap {
+  flex-shrink: 0 !important;
+  background: var(--bg) !important;
+  padding: 8px 12px !important;
+  border-top: 1px solid rgba(128, 128, 128, 0.35) !important;
+  max-width: min(720px, 96vw) !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  width: 100% !important;
+}
 .driver-dashboard-container {
   height: 100vh;
   height: 100dvh;
@@ -136,8 +165,7 @@ body.driver-modal-open {
   box-sizing: border-box;
   overflow: hidden;
 }
-/* Dashboard + şifre ekranı: fixed footer alanı kadar alt boşluk; Yönetim Sistemi barı bu alanın üstünde kalır */
-.dashboard-page .driver-dashboard-container,
+/* Login + şifre ekranı: container içinde footer, padding-bottom */
 .login-page .driver-dashboard-container {
   padding-bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0));
 }
@@ -177,11 +205,17 @@ body.driver-modal-open {
   flex-direction: column;
 }
 
-/* Dashboard: footer sabit altta, container ile aynı genişlik */
+/* Dashboard: footer her zaman viewport altında görünsün */
 .dashboard-page #app-footer {
+  position: fixed !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
   flex-shrink: 0;
   z-index: 10002 !important;
   max-width: min(720px, 96vw) !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
 }
 .dashboard-page #app-footer .footer-content {
   max-width: min(720px, 96vw) !important;
