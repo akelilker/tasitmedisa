@@ -1032,6 +1032,13 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         overflow: hidden !important;
         flex: 0 0 0 !important;
     }
+    /* Tramer Kaydı ile Boya/Değişen arası dikey boşluk 3px (mobil) */
+    #vehicle-modal .modal-column-left .form-section-inline:has(#tramer-var) {
+        margin-bottom: 3px !important;
+    }
+    #vehicle-modal .modal-column-left .form-section:has(#tramer-records-container).tramer-records-visible {
+        margin-bottom: 3px !important;
+    }
     /* Sol kolonun en alt satırını (Boya/Değişen) dibe sabitle */
     #vehicle-modal .modal-column-left .form-section-inline:has(#boya-var) {
         margin-top: auto !important;
