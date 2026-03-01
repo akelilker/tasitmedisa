@@ -456,6 +456,23 @@ body.driver-modal-open {
     padding-top: 6px !important;
     padding-bottom: 6px !important;
   }
+  /* Sağ grid: tüm içerik (Not + Bildir dahil) ilk ekranda sığsın – dikey boşluklar daraltıldı */
+  .dashboard-page .driver-two-panel {
+    padding-bottom: 8px !important;
+  }
+  .dashboard-page .driver-right-panel {
+    gap: 4px !important;
+  }
+  .dashboard-page .driver-action-group {
+    margin-bottom: 5px !important;
+    gap: 4px !important;
+  }
+  .dashboard-page .driver-action-footer {
+    margin-top: 0 !important;
+  }
+  .dashboard-page .driver-action-area .form-group label {
+    margin-bottom: 4px !important;
+  }
 }
 
 /* Scroll alanı öğelerinde üst çizgi yok */
