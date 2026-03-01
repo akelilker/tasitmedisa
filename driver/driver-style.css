@@ -289,18 +289,6 @@ body.driver-modal-open {
   white-space: nowrap;
 }
 
-.driver-user-name-center {
-  flex: 1;
-  text-align: center;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--txt);
-  padding: 0 8px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
 /* --- Geçmiş Kayıtlar (sol) + Çıkış (sağ) - header dışında --- */
 .driver-below-hero {
   margin-top: 0;
@@ -456,9 +444,6 @@ body.driver-modal-open {
   .dashboard-page .hero.hero-two-rows .hero-title-line,
   .login-page .hero.hero-two-rows .hero-title-line {
     line-height: 1.35 !important;
-  }
-  .driver-user-name-center {
-    font-size: 14.5px;
   }
   /* Plaka 1 punto küçült (masaüstü) */
   .dashboard-page .driver-left-panel .driver-current-plaka {
@@ -1088,7 +1073,6 @@ body.driver-modal-open {
     border-color: rgba(255, 255, 255, 0.5);
   }
   .driver-user-name { font-size: 14.5px; }
-  .driver-user-name-center { font-size: 13.5px; }
   .driver-user-plate-row .driver-user-name { font-size: 12.5px; }
   .driver-current-plaka { font-size: 13.5px; } /* 14.5 - 1pt */
   .driver-plate-subtitle { font-size: 14.5px; }
