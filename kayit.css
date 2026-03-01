@@ -1578,15 +1578,14 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         overflow: hidden;
         flex: 0 0 0;
     }
-    /* Notlar ile Boya/Değişen alt hiza: sol kolon sonu (Boya) ile sağ kolon sonu (Notlar+padding) aynı satırda */
-    /* Notlar–Kasko Kodu arası 2px daralt (başka yeri etkilemez) */
+    /* Notlar ile Boya/Değişen üst hiza: Boya Var/Yok ile Notlar aynı satırda (log: diffTop -12px → +10px translate) */
     #vehicle-modal .modal-body .modal-column-right .form-section:has(#vehicle-notes) {
         margin-top: auto !important;
         margin-bottom: 0 !important;
         flex: none !important;
         min-width: 0;
         padding-bottom: 6px !important;
-        transform: translateY(-2px);
+        transform: translateY(10px);
     }
     /* Masaüstü: Notlar textarea – varsayılan 1 satır, içerik uzadıkça aşağı genişler (max 300px) */
     #vehicle-modal .modal-body #vehicle-notes {
