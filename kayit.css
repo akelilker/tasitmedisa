@@ -1359,6 +1359,13 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-body .modal-column-left .form-section:has(#vehicle-plate) .form-label {
         margin-top: 0 !important;
     }
+    /* Üretim Yılı, Marka/Model, Km, Taşıtın Alım Bedeli etiketleri üstüne +1px (masaüstü) */
+    #vehicle-modal .modal-body .modal-column-left .form-section:has(#vehicle-year) .form-label,
+    #vehicle-modal .modal-body .modal-column-left .form-section:has(#vehicle-brand-model) .form-label,
+    #vehicle-modal .modal-body .modal-column-left .form-section:has(#vehicle-km) .form-label,
+    #vehicle-modal .modal-body .modal-column-left .form-section:has(#vehicle-price) .form-label {
+        margin-top: 2px !important;
+    }
     /* Sağ grid: etiket–input arası 1px (ortak) */
     #vehicle-modal .modal-body .modal-column-right .form-section .form-label,
     #vehicle-modal .modal-body .modal-column-right .form-section-inline .form-label {
