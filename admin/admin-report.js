@@ -193,7 +193,10 @@
   function sendWhatsApp(phone, name, plaka, donem) {
     phone = (phone || '').replace(/\D/g, '');
     if (phone.indexOf('90') !== 0) phone = '90' + phone;
-    var text = 'Sn. ' + (name || '') + ', ' + (donem || '') + ' Dönemi İçin; Kullanımınıza Tahsis Edilen (' + (plaka || '') + ') Plakalı Taşıt İle İlgili; Uygulamamız Üzerinden Bilgi Güncellemesi Yapmanızı Rica Ederiz.';
+    var driverLink = (typeof window !== 'undefined' && window.location && window.location.origin)
+      ? window.location.origin + '/driver/'
+      : 'https://karmotors.com.tr/driver/';
+    var text = 'Sn. ' + (name || '') + ', ' + (donem || '') + ' Dönemi İçin; Kullanımınıza Tahsis Edilen (' + (plaka || '') + ') Plakalı Taşıt İle İlgili; Uygulamamız Üzerinden Bilgi Güncellemesi Yapmanızı Rica Ederiz. Bildirmek için tıklayın: ' + driverLink;
     var url = 'https://wa.me/' + phone + '?text=' + encodeURIComponent(text);
     window.open(url, '_blank');
   }
