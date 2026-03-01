@@ -2799,9 +2799,13 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .driver-footer-back-wrap .universal-back-btn {
     transform: translateY(3px);
   }
-  /* Mobil: sağ panelde Bildir butonu altı kesilmesin */
+  /* Mobil: alttaki gereksiz boşluğu azalt, sağ grid (Not + Bildir) kesilmesin – scroll alanı daha fazla yükseklik alsın */
+  .dashboard-page .driver-dashboard-container {
+    padding-bottom: calc(8px + env(safe-area-inset-bottom, 0)) !important;
+  }
+  /* Sağ panel: kaydırınca Not + Bildir görünsün, bar üstünde yeterli boşluk */
   .dashboard-page .driver-right-panel {
-    padding-bottom: calc(24px + var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important;
+    padding-bottom: calc(72px + env(safe-area-inset-bottom, 0)) !important;
   }
   .login-page {
     max-width: 100% !important;
