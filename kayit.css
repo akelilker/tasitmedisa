@@ -1082,7 +1082,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     }
     #vehicle-modal #vehicle-notes,
     #vehicle-modal .modal-column-right .form-section:has(#vehicle-notes) textarea {
-        min-height: 59px !important; /* 44+15px mobil varsayılan çerçeve; auto-expand ile uzar */
+        min-height: 61px !important; /* 44+17px mobil varsayılan çerçeve; auto-expand ile uzar */
         height: auto !important;
     }
     #vehicle-modal .modal-column-right .form-section,
@@ -1165,7 +1165,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         min-height: 73px !important;
     }
     #vehicle-modal #vehicle-notes {
-        min-height: 59px !important; /* 44+15px mobil varsayılan çerçeve */
+        min-height: 61px !important; /* 44+17px mobil varsayılan çerçeve */
     }
     
     /* Tarih inputları: gg.aa.yyyy kutudan taşmasın – font küçük, overflow gizli */
