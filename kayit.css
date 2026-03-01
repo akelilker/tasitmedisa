@@ -965,7 +965,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-body .modal-columns::-webkit-scrollbar {
         display: none;
     }
-    /* Kaydet/Vazgeç her zaman görünsün: scroll ederken altta sabit */
+    /* Kaydet/Vazgeç her zaman görünsün: scroll ederken altta sabit; yatayda aynı satırda */
     #vehicle-modal .modal-body .universal-btn-group {
         flex-shrink: 0;
         position: sticky !important;
@@ -976,6 +976,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         background: #080d16 !important;
         z-index: 2;
         border-top: 1px solid rgba(255, 255, 255, 0.06);
+        align-items: center !important;
     }
 
     #vehicle-modal.modal-overlay::before {
@@ -1044,7 +1045,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         margin-bottom: 0 !important;
     }
 
-    .modal-column-left .form-section-inline:first-child { flex-direction: column; align-items: flex-start; gap: 0 !important; margin-bottom: 5px; }
+    #vehicle-modal .modal-column-left .form-section-inline:first-child { flex-direction: column; align-items: flex-start; gap: 0 !important; margin-bottom: 2px; }
     .modal-column-left .form-section-inline:first-child .vehicle-type-group { width: 100%; justify-content: center; align-items: flex-end; flex-wrap: nowrap; max-width: 100%; margin-top: -21px !important; padding-top: 0; gap: 26px; }
     .vehicle-type-group { width: 100%; justify-content: center; align-items: flex-end; flex-wrap: nowrap; max-width: 100%; margin-top: 0; padding-top: 0; gap: 28px; }
     .modal-column-left .form-section-inline:first-child .form-label { margin-bottom: 0 !important; padding-bottom: 0; line-height: 1; }
@@ -1069,12 +1070,12 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-column-right .form-section:has(#vehicle-kasko-kodu) {
         margin-bottom: 6px !important;
     }
-    /* Notlar: Kasko Kodu ile arası 8px; Boya ile aynı satırda (translateY ile aşağı hiza) */
+    /* Notlar: Kasko Kodu ile arası 8px; Boya ile aynı satırda; etiket-input sıkı */
     #vehicle-modal .modal-column-right .form-section:has(#vehicle-notes) {
         margin-top: 2px !important;
         margin-bottom: 0 !important;
         flex: none !important;
-        gap: 2px !important;
+        gap: 0 !important;
         transform: translateY(8px);
     }
     #vehicle-modal #vehicle-notes,
@@ -1524,6 +1525,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         margin-top: 10px;
         padding-top: 8px !important;
         padding-bottom: 10px !important;
+        align-items: center !important;
     }
     /* Var açılınca taşmayı azalt: açılan bölüm sıkı (tek Var’da scrollbar çıkmasın) */
     #vehicle-modal .modal-body .modal-column-right .form-section.input-visible {
