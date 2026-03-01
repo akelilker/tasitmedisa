@@ -173,10 +173,13 @@ body.driver-modal-open {
   flex-direction: column;
 }
 
-/* Dashboard: footer sabit altta */
+/* Dashboard: footer sabit altta; bandı kaldırmak için en az rezerve yükseklik kadar doldur */
 .dashboard-page #app-footer {
   flex-shrink: 0;
   z-index: 10002 !important;
+  min-height: var(--app-footer-height, 48px) !important;
+  display: flex !important;
+  align-items: center !important;
 }
 
 .driver-content-wrap {
