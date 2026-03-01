@@ -281,6 +281,25 @@ async function loadDashboard() {
         renderRightPanel(vehicles, records);
         renderSlidingWarning(vehicles, records);
         
+        // #region agent log
+        setTimeout(function logRightPanelLayout() {
+          var scrollArea = document.querySelector('.driver-scroll-area');
+          var twoPanel = document.getElementById('driver-two-panel');
+          var panelsInner = twoPanel && twoPanel.querySelector('.driver-panels-inner');
+          var rightPanel = document.querySelector('.driver-right-panel');
+          var container = document.querySelector('.driver-dashboard-container');
+          var getStyle = function(el, p) { return el && window.getComputedStyle(el).getPropertyValue(p); };
+          var data = {
+            scrollArea: scrollArea ? { clientHeight: scrollArea.clientHeight, scrollHeight: scrollArea.scrollHeight, overflow: getStyle(scrollArea, 'overflow'), overflowY: getStyle(scrollArea, 'overflow-y') } : null,
+            twoPanel: twoPanel ? { clientHeight: twoPanel.clientHeight, scrollHeight: twoPanel.scrollHeight, overflow: getStyle(twoPanel, 'overflow') } : null,
+            panelsInner: panelsInner ? { clientHeight: panelsInner.clientHeight, scrollHeight: panelsInner.scrollHeight, overflow: getStyle(panelsInner, 'overflow') } : null,
+            rightPanel: rightPanel ? { clientHeight: rightPanel.clientHeight, scrollHeight: rightPanel.scrollHeight, overflowY: getStyle(rightPanel, 'overflow-y'), canScroll: rightPanel.scrollHeight > rightPanel.clientHeight, paddingBottom: getStyle(rightPanel, 'padding-bottom') } : null,
+            containerPaddingBottom: container ? getStyle(container, 'padding-bottom') : null
+          };
+          fetch('http://127.0.0.1:7824/ingest/aaeefe94-e582-470c-8671-3dbfa48b74c7',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'865d64'},body:JSON.stringify({sessionId:'865d64',location:'driver-script.js:layout',message:'right-panel layout',data:data,timestamp:Date.now(),hypothesisId:'A'})}).catch(function(){});
+        }, 500);
+        // #endregion
+
         var actionArea = document.getElementById('driver-action-area');
         if (actionArea) actionArea.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         
