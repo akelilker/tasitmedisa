@@ -375,9 +375,9 @@ body.driver-modal-open {
   .dashboard-page .driver-below-hero {
     margin-top: 12px !important;
   }
-  /* Tarihçe ve çıkış butonları 2px yukarı, çerçeveye yaklaşsın */
+  /* Tarihçe ve çıkış butonları 4px yukarı, çerçeveye yaklaşsın */
   .dashboard-page .driver-below-hero-row {
-    margin-top: -2px !important;
+    margin-top: -4px !important;
   }
   /* Tarihçe/çıkış butonları alanı ile alttaki içerik arası dikey boşluk sıfır */
   .dashboard-page .driver-header-fixed {
