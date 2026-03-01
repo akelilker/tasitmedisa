@@ -3785,6 +3785,7 @@ function renderVehicleDetailLeft(vehicle) {
       if (recentSlice.length > 0) {
         if (html) html += '<div style="margin-top: 12px; font-size: 11px; color: #999; text-align: center; margin-bottom: 6px;">Kullanıcı paneli işlemleri</div>';
         else html += '<div style="margin-bottom: 6px; font-size: 11px; color: #999; text-align: center;">Kullanıcı paneli işlemleri</div>';
+        const viewedKeys = JSON.parse(sessionStorage.getItem('notifViewedKeys') || '[]');
         recentSlice.forEach(item => {
           const ev = item.event;
           const typeLabel = getNotificationEventTypeLabel(ev.type);
@@ -3792,7 +3793,10 @@ function renderVehicleDetailLeft(vehicle) {
           const historyTab = getHistoryTabForEventType(ev.type);
           const safePlate = (item.plate || '').replace(/"/g, '&quot;');
           const safeVid = String(item.vehicleId || '').replace(/"/g, '&quot;');
-          html += `<button type="button" data-plate="${safePlate}" data-vehicle-id="${safeVid}" data-open-history="1" data-history-tab="${historyTab}" style="width: 100%; padding: 10px 12px; background: transparent; border: 1px solid rgba(255,255,255,0.25); color: #ccc; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 12px; text-align: left; margin-bottom: 4px; transition: all 0.2s ease;" class="notification-item notification-item-activity">
+          const notifKey = `${item.plate || ''}|${ev.type || ''}|${dateDisplay}`;
+          const safeKey = notifKey.replace(/"/g, '&quot;');
+          const unreadClass = viewedKeys.indexOf(notifKey) === -1 ? ' notification-unread' : '';
+          html += `<button type="button" data-plate="${safePlate}" data-vehicle-id="${safeVid}" data-open-history="1" data-history-tab="${historyTab}" data-notif-key="${safeKey}" style="width: 100%; padding: 10px 12px; background: transparent; color: #ccc; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 12px; text-align: left; margin-bottom: 4px; transition: all 0.2s ease;" class="notification-item notification-item-activity${unreadClass}">
           <div class="notif-line1" style="font-weight: 600; color: #fff; margin-bottom: 2px;">${escapeHtml(item.plate)} ${escapeHtml(typeLabel)}</div>
           <div class="notif-line2" style="font-size: 11px; color: #999;">${escapeHtml(dateDisplay)}</div>
         </button>`;
