@@ -965,12 +965,17 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-body .modal-columns::-webkit-scrollbar {
         display: none;
     }
+    /* Kaydet/Vazgeç her zaman görünsün: scroll ederken altta sabit */
     #vehicle-modal .modal-body .universal-btn-group {
         flex-shrink: 0;
-        position: static !important;
+        position: sticky !important;
+        bottom: 0 !important;
         margin-top: 1px;
-        padding-top: 4px !important;
-        padding-bottom: 2px !important;
+        padding-top: 8px !important;
+        padding-bottom: 10px !important;
+        background: #080d16 !important;
+        z-index: 2;
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
     }
 
     #vehicle-modal.modal-overlay::before {
@@ -1000,9 +1005,9 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     .modal-close { font-size: 21px; }
     textarea.form-input { font-size: 13px; }
     
-    .modal-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
-    .modal-column-left { padding-right: 8px; padding-left: 0; border-right: 1px solid rgba(var(--theme-color-rgb), 0.28); }
-    .modal-column-right { padding-left: 8px; padding-right: 0; overflow: hidden; }
+    .modal-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 0; min-width: 0; }
+    .modal-column-left { padding-right: 8px; padding-left: 0; border-right: 1px solid rgba(var(--theme-color-rgb), 0.28); min-width: 0; }
+    .modal-column-right { padding-left: 8px; padding-right: 0; overflow: hidden; min-width: 0; }
     #vehicle-modal .modal-column-right { display: flex; flex-direction: column; min-height: 0; }
     .modal-column-right .form-section { margin-bottom: 8px; }
 
@@ -1221,12 +1226,14 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     .modal-column-right .form-section-inline:first-of-type:has(.radio-group),
     .modal-column-right .form-section-inline:has([data-group="kredi"]) { flex-direction: column; align-items: flex-start; gap: 4px !important; margin-bottom: 7px; height: auto; margin-top: 0; }
     
-    .modal-column-right .form-section-inline .form-label { width: 100%; margin-bottom: 0; font-size: 15px !important; height: auto; }
-    .modal-column-right .form-section-inline .radio-group { width: 100%; justify-content: space-between; gap: 3px; padding: 0; }
+    .modal-column-right .form-section-inline .form-label { width: 100%; margin-bottom: 0; font-size: 15px !important; height: auto; white-space: normal; word-break: break-word; overflow-wrap: break-word; min-width: 0; }
+    .modal-column-right .form-section-inline .radio-group { width: 100%; max-width: 100%; min-width: 0; justify-content: space-between; gap: 3px; padding: 0; box-sizing: border-box; }
     .modal-column-left .form-section-inline .radio-btn,
-    .modal-column-right .form-section-inline .radio-btn { flex: 1 1 0; min-width: 0; padding: 0 6px; font-size: 11px; height: 27px; }
+    .modal-column-right .form-section-inline .radio-btn { flex: 1 1 0; min-width: 0; padding: 0 6px; font-size: 11px; height: 27px; max-width: 100%; }
     
     .radio-btn { height: 27px; min-width: 48px; font-size: 12px; padding: 0 8px; }
+    /* Sağ kolon Var/Yok: dar ekranda taşmasın */
+    #vehicle-modal .modal-column-right .form-section-inline .radio-btn { min-width: 0 !important; }
     .modal-column-left .form-section-inline .radio-group { justify-content: space-between; width: 100%; padding: 0; gap: 3px; }
     
     /* Notlar: flex ile alta yayılır, alt boşluk dolar */
