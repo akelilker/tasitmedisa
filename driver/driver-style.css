@@ -183,7 +183,8 @@ body.driver-modal-open {
   overflow-x: hidden;
   scrollbar-width: none;
   -ms-overflow-style: none;
-  padding-bottom: 24px;
+  /* Footer + back bar alanı – Not/Bildir kesilmesin */
+  padding-bottom: calc(var(--app-footer-height, 48px) + 52px + env(safe-area-inset-bottom, 0));
 }
 
 .driver-content-wrap::-webkit-scrollbar {
@@ -874,7 +875,7 @@ body.driver-modal-open {
 }
 .driver-action-footer {
   margin-top: 3px;
-  margin-bottom: 16px;
+  margin-bottom: 24px;
   padding-top: 0;
 }
 
