@@ -2788,7 +2788,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   justify-content: flex-start;
   padding-left: 12px !important;
 }
-/* Sol panel içindeki Yönetim Sistemi: tam genişlik bar değil, altta sabit */
+/* Sol panel içindeki Yönetim Sistemi: tam genişlik bar değil, altta sabit, sola yaslı */
 .driver-left-panel .driver-footer-back-wrap {
   margin-top: auto !important;
   margin-bottom: 0 !important;
@@ -2797,11 +2797,12 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   padding-left: 0 !important;
   padding-right: 0 !important;
   z-index: auto !important;
+  justify-content: flex-start !important;
 }
-/* Empty state: Yönetim Sistemi linki (sol panel görünmeyince) */
+/* Empty state: Yönetim Sistemi linki (sol panel görünmeyince), sola yaslı */
 .driver-back-in-empty {
   margin-top: 16px !important;
-  justify-content: center !important;
+  justify-content: flex-start !important;
   padding-left: 0 !important;
   padding-right: 0 !important;
 }
