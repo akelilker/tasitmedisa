@@ -26,5 +26,4 @@ jobs:
             **/.github*/**
             **/docker/**
             **/data/**
-            README.md
-            DEPLOY-KARMOTORS.md
+            **/*.md
