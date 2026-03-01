@@ -31,6 +31,11 @@
   border-right: none !important;
   box-shadow: none !important;
 }
+/* Mobil: style-core .content-wrap::before da yan çizgi çiziyor; çift görünmesin, sadece container ::before kalsın */
+.dashboard-page .content-wrap.driver-content-wrap::before,
+.login-page .content-wrap.driver-content-wrap::before {
+  display: none !important;
+}
 
 /* --- Splash ekranı – link/PWA ile açılışta 3 sn --- */
 .driver-splash {
