@@ -484,6 +484,18 @@ body.driver-modal-open {
   }
 }
 
+/* Masaüstü: Tarihçe modalı – düzeltme simgesi %85, 2. satırda sağa yaslı */
+@media (min-width: 769px) {
+  #history-modal .history-details-row {
+    align-items: flex-end !important;
+  }
+  #history-modal .history-edit-icon {
+    transform: scale(0.85) !important;
+    transform-origin: center bottom !important;
+    align-self: flex-end !important;
+  }
+}
+
 /* Scroll alanı öğelerinde üst çizgi yok */
 .driver-scroll-area #loading-spinner,
 .driver-scroll-area .driver-vehicles-list,
