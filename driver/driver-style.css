@@ -451,6 +451,11 @@ body.driver-modal-open {
   .dashboard-page .driver-action-buttons {
     gap: 1px !important;
   }
+  /* Sağ grid: butonların iç dikey yüksekliği masaüstünde 1px daralt (mobil dokunulmaz) */
+  .dashboard-page .driver-action-buttons .driver-action-btn {
+    padding-top: 7px !important;
+    padding-bottom: 7px !important;
+  }
 }
 
 /* Scroll alanı öğelerinde üst çizgi yok */
