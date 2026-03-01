@@ -623,6 +623,16 @@ body.driver-modal-open {
   overflow: hidden;
   flex-shrink: 0;
 }
+/* Sol panel: üst içerik (plaka + araç bilgisi) kayar, Yönetim Sistemi altta sabit */
+.driver-left-panel-content {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
 .driver-right-panel {
   flex: 1;
   min-width: 0;
@@ -2764,7 +2774,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   display: flex;
   justify-content: flex-start;
 }
-/* Dashboard: Yönetim Sistemi barı footerın 5px üstünde, sola yaslı */
+/* Dashboard: Yönetim Sistemi barı footerın 5px üstünde, sola yaslı (sadece login / eski yer – dashboard’da artık sol panelde) */
 .dashboard-page .driver-footer-back-wrap {
   position: relative;
   bottom: auto;
@@ -2777,6 +2787,23 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   z-index: 10003;
   justify-content: flex-start;
   padding-left: 12px !important;
+}
+/* Sol panel içindeki Yönetim Sistemi: tam genişlik bar değil, altta sabit */
+.driver-left-panel .driver-footer-back-wrap {
+  margin-top: auto !important;
+  margin-bottom: 0 !important;
+  width: auto !important;
+  max-width: none !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  z-index: auto !important;
+}
+/* Empty state: Yönetim Sistemi linki (sol panel görünmeyince) */
+.driver-back-in-empty {
+  margin-top: 16px !important;
+  justify-content: center !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
 }
 .driver-footer-back-wrap .universal-back-btn {
   display: inline-flex !important;
