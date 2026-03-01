@@ -2050,3 +2050,40 @@ if ('serviceWorker' in navigator) {
     tryRegisterSW();
   });
 }
+
+/* PWA Install Prompt – driver sayfalarında script-core yüklü olmadığı için burada */
+(function() {
+  var deferredInstallPrompt = null;
+  function isStandaloneMode() {
+    return (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || (window.navigator && window.navigator.standalone === true);
+  }
+  function getInstallBtn() { return document.getElementById('pwa-install-btn'); }
+  function removeInstallBtn() {
+    var el = getInstallBtn();
+    if (el && el.parentNode) el.parentNode.removeChild(el);
+  }
+  function showInstallBtn() {
+    if (isStandaloneMode() || !deferredInstallPrompt || getInstallBtn()) return;
+    var btn = document.createElement('button');
+    btn.id = 'pwa-install-btn';
+    btn.type = 'button';
+    btn.textContent = 'Uygulamayı Yükle';
+    btn.className = 'pwa-install-btn';
+    btn.addEventListener('click', function() {
+      if (!deferredInstallPrompt) return;
+      deferredInstallPrompt.prompt();
+      deferredInstallPrompt.userChoice.then(function() { deferredInstallPrompt = null; removeInstallBtn(); }).catch(function() { deferredInstallPrompt = null; removeInstallBtn(); });
+    });
+    var wrapper = document.getElementById('pwa-install-wrapper');
+    if (wrapper) wrapper.appendChild(btn); else document.body.appendChild(btn);
+  }
+  window.addEventListener('beforeinstallprompt', function(e) {
+    e.preventDefault();
+    deferredInstallPrompt = e;
+    showInstallBtn();
+  });
+  window.addEventListener('appinstalled', function() {
+    deferredInstallPrompt = null;
+    removeInstallBtn();
+  });
+})();
