@@ -1518,7 +1518,11 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-body .modal-column-right .form-section-inline {
         flex-shrink: 0;
     }
-    /* Boya/Değişen: Tramer ile arası sıkı (margin-top: auto 33px boşluk yapıyordu, kaldırıldı) */
+    /* Tramer Kaydı ile Boya/Değişen arası dikey boşluk 3px */
+    #vehicle-modal .modal-body .modal-column-left .form-section-inline:has(#tramer-var) {
+        margin-bottom: 3px !important;
+    }
+    /* Boya/Değişen: Tramer ile arası 3px (üst margin 0) */
     #vehicle-modal .modal-body .modal-column-left .form-section-inline:has(#boya-var) {
         margin-top: 0 !important;
         margin-bottom: 0 !important;
@@ -1533,10 +1537,10 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         overflow: hidden;
         flex: 0 0 0;
     }
-    /* Tramer kayıt alanı açıkken de Tramer–Boya arası sıkı kalsın */
+    /* Tramer kayıt alanı açıkken Tramer–Boya arası 3px */
     #vehicle-modal .modal-body .modal-column-left .form-section:has(#tramer-records-container) {
         margin-top: 0 !important;
-        margin-bottom: 2px !important;
+        margin-bottom: 3px !important;
     }
     #vehicle-modal .modal-body .modal-column-left .form-section:has(#boya-parts-container):not(.boya-parts-visible) {
         margin-top: 0 !important;
