@@ -494,13 +494,34 @@ body.driver-modal-open {
     transform-origin: center bottom !important;
     align-self: flex-end !important;
   }
-  /* Düzeltme Talebi modalı masaüstü: etiketler beyaz, açıklamalar (placeholder) gri */
-  #edit-request-modal .form-group label {
+  /* Düzeltme Talebi modalı masaüstü: aynı punto, etiketler beyaz, açıklamalar gri, boşluk/input daraltma */
+  #edit-request-modal .driver-current-km,
+  #edit-request-modal .form-group label,
+  #edit-request-modal .form-group input,
+  #edit-request-modal .form-group textarea {
+    font-size: 14px !important;
+  }
+  #edit-request-modal .form-group label,
+  #edit-request-modal .driver-current-km {
     color: #ffffff !important;
+  }
+  #edit-request-modal .driver-current-km strong {
+    color: var(--data-value-color, #a0aec0) !important;
+  }
+  #edit-request-modal .driver-current-km {
+    margin-bottom: 13px !important;
+  }
+  #edit-request-modal .form-group {
+    margin-bottom: 13px !important;
+  }
+  #edit-request-modal .form-group input,
+  #edit-request-modal .form-group textarea {
+    padding-top: 3px !important;
+    padding-bottom: 3px !important;
   }
   #edit-request-modal .form-group input::placeholder,
   #edit-request-modal .form-group textarea::placeholder {
-    color: rgba(255, 255, 255, 0.45) !important;
+    color: rgba(255, 255, 255, 0.30) !important;
   }
 }
 
