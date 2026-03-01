@@ -1460,7 +1460,7 @@ body.modal-open .user-panel-link {
         height: 100% !important;
         max-height: 100% !important;
         border-radius: 10px !important;
-        border: 0.5px solid rgba(255, 255, 255, 0.42) !important;
+        border: 0.5px solid rgba(255, 255, 255, 0.47) !important;
         box-shadow: 0 0 40px var(--shadow-modal);
         background: var(--modal-bg) !important;
         padding: 0 !important;
