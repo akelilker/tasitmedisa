@@ -679,21 +679,34 @@ html { overflow-x: hidden; }
   box-shadow: 0 4px 12px var(--shadow-dark);
 }
 
-/* Bildirim: Plaka + açıklama tek satır, tarih ikinci satırda sola dayalı (mobil + masaüstü) */
-.notification-item-activity .notif-line1 {
-  white-space: nowrap !important;
+/* Bildirim: Plaka + açıklama (uzarsa alt satıra iner), tarih ikinci satırda sola dayalı */
+#notifications-dropdown .notification-item-activity {
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  justify-content: flex-start !important;
+  height: auto !important;
+  min-height: 48px !important;
   overflow: hidden !important;
-  text-overflow: ellipsis !important;
+  text-align: left !important;
 }
-.notification-item-activity .notif-line2 {
+#notifications-dropdown .notification-item-activity .notif-line1 {
+  word-wrap: break-word !important;
+  overflow-wrap: break-word !important;
+}
+#notifications-dropdown .notification-item-activity .notif-line2 {
   text-align: left !important;
 }
 
-/* Bildirim dropdown: kaydırılabilir (max-height mobilde 5, masaüstünde 6 kayıt) */
+/* Bildirim dropdown: kaydırılabilir, scrollbar gizli */
 #notifications-dropdown {
   overflow-y: auto !important;
   overflow-x: hidden !important;
   -webkit-overflow-scrolling: touch;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+#notifications-dropdown::-webkit-scrollbar {
+  display: none !important;
 }
 
 /* MENÜ – hover scale taşma olmasın */
@@ -1581,12 +1594,9 @@ body.modal-open .user-panel-link {
         background: var(--bg) !important;
     }
     
-    /* Mobil bildirimlerde plaka font boyutunu 2 punto küçült, tek satırda kal */
+    /* Mobil bildirimlerde plaka font boyutunu 2 punto küçült */
     .notification-item > div:first-child {
         font-size: 11px !important; /* 13px - 2pt (≈2px) = 11px */
-        white-space: nowrap !important;
-        overflow: hidden !important;
-        text-overflow: ellipsis !important;
     }
     
     /* Mobil: 5 bildirim ekranda görünsün, fazlası için aşağı kaydırılabilir */
