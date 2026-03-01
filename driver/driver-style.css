@@ -127,6 +127,10 @@ body.driver-modal-open {
   box-sizing: border-box;
   overflow: hidden;
 }
+/* Dashboard: fixed footer alanı kadar alt boşluk; Yönetim Sistemi barı bu alanın üstünde kalır */
+.dashboard-page .driver-dashboard-container {
+  padding-bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0));
+}
 /* Kullanıcı paneli + şifre ekranı: yan kırmızı çizgiler aynı */
 .driver-dashboard-container::before {
   content: '';
@@ -2714,9 +2718,9 @@ body.driver-action-block-open .driver-footer-back-wrap {
   display: flex;
   justify-content: flex-start;
 }
-/* Kullanıcı paneli (dashboard): Yönetim Sistemi butonu container içinde, footerdan 6px yukarıda */
+/* Kullanıcı paneli (dashboard): Yönetim Sistemi butonu container içinde, footerdan 6px yukarıda; fixed footer'ın üstünde görünsün */
 .dashboard-page .driver-footer-back-wrap {
-  position: static;
+  position: relative;
   bottom: auto;
   left: auto;
   right: auto;
@@ -2724,7 +2728,7 @@ body.driver-action-block-open .driver-footer-back-wrap {
   flex-shrink: 0;
   width: 100%;
   max-width: 100%;
-  z-index: auto;
+  z-index: 10003;
 }
 .driver-footer-back-wrap .universal-back-btn {
   display: inline-flex !important;
