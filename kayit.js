@@ -951,36 +951,6 @@
         setTimeout(() => forceDateInputRepaint(modal), 120);
         // Hover class'larını ayarla
         updateRadioButtonHover();
-        // #region agent log
-        setTimeout(function() {
-          var boyaEl = document.getElementById('boya-var');
-          var boyaRow = boyaEl ? boyaEl.closest('.form-section-inline') : null;
-          var notesInput = document.getElementById('vehicle-notes');
-          var notesSection = notesInput ? notesInput.closest('.form-section') : null;
-          var cols = modal.querySelector('.modal-columns');
-          var leftCol = modal.querySelector('.modal-column-left');
-          var rightCol = modal.querySelector('.modal-column-right');
-          var getStyle = function(el, prop) { return el ? (window.getComputedStyle(el)[prop] || '') : ''; };
-          var boyaRect = boyaRow ? boyaRow.getBoundingClientRect() : null;
-          var notesRect = notesSection ? notesSection.getBoundingClientRect() : null;
-          var diffTop = (boyaRect && notesRect) ? (notesRect.top - boyaRect.top) : null;
-          var diffBottom = (boyaRect && notesRect) ? (notesRect.bottom - boyaRect.bottom) : null;
-          var data = {
-            innerWidth: window.innerWidth,
-            gridAlignItems: cols ? getStyle(cols, 'alignItems') : '',
-            leftHeight: leftCol ? leftCol.offsetHeight : 0,
-            rightHeight: rightCol ? rightCol.offsetHeight : 0,
-            boyaMarginTop: boyaRow ? getStyle(boyaRow, 'marginTop') : '',
-            boyaRect: boyaRect ? { top: boyaRect.top, bottom: boyaRect.bottom } : null,
-            notesMarginTop: notesSection ? getStyle(notesSection, 'marginTop') : '',
-            notesTransform: notesSection ? getStyle(notesSection, 'transform') : '',
-            notesRect: notesRect ? { top: notesRect.top, bottom: notesRect.bottom } : null,
-            diffTop: diffTop,
-            diffBottom: diffBottom
-          };
-          fetch('http://127.0.0.1:7824/ingest/aaeefe94-e582-470c-8671-3dbfa48b74c7',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'fc686b'},body:JSON.stringify({sessionId:'fc686b',location:'kayit.js:openVehicleModal',message:'boya-notlar layout',data:data,timestamp:Date.now(),hypothesisId:'H1'})}).catch(function(){});
-        }, 350);
-        // #endregion
       });
     }
   };

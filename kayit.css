@@ -1069,12 +1069,13 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-column-right .form-section:has(#vehicle-kasko-kodu) {
         margin-bottom: 6px !important;
     }
-    /* Notlar: üstte gereksiz boşluk yok; Kasko Kodu ile arası 6px+2px=8px */
+    /* Notlar: Kasko Kodu ile arası 8px; Boya ile aynı satırda (translateY ile aşağı hiza) */
     #vehicle-modal .modal-column-right .form-section:has(#vehicle-notes) {
         margin-top: 2px !important;
         margin-bottom: 0 !important;
         flex: none !important;
         gap: 2px !important;
+        transform: translateY(8px);
     }
     #vehicle-modal #vehicle-notes,
     #vehicle-modal .modal-column-right .form-section:has(#vehicle-notes) textarea {
@@ -1579,13 +1580,14 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         overflow: hidden;
         flex: 0 0 0;
     }
-    /* Notlar: Kasko Kodu ile arası diğer alanlar gibi (6px+2px=8px); Boya ile aynı satırda */
+    /* Notlar: Kasko Kodu ile arası 8px; Boya ile aynı satırda (translateY ile aşağı hiza) */
     #vehicle-modal .modal-body .modal-column-right .form-section:has(#vehicle-notes) {
         margin-top: 2px !important;
         margin-bottom: 0 !important;
         flex: none !important;
         min-width: 0;
         padding-bottom: 6px !important;
+        transform: translateY(10px);
     }
     /* Masaüstü: Notlar textarea – varsayılan 1 satır, içerik uzadıkça aşağı genişler (max 300px) */
     #vehicle-modal .modal-body #vehicle-notes {
