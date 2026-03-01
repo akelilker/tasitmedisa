@@ -392,7 +392,7 @@ body.admin-report-page::-webkit-scrollbar {
 .report-table td:nth-child(1) { width: 13%; } /* Kullanıcı */
 
 .report-table th:nth-child(2),
-.report-table td:nth-child(2) { width: 9%; } /* Marka/ Model – 8px daraltıldı */
+.report-table td:nth-child(2) { width: calc(9% - 4px); } /* Marka/Model 4px daraltıldı */
 
 .report-table th:nth-child(3),
 .report-table td:nth-child(3) { width: 11%; } /* Plaka – 4px genişletildi */
@@ -426,7 +426,7 @@ body.admin-report-page::-webkit-scrollbar {
   }
   .report-table th:nth-child(2),
   .report-table td:nth-child(2) {
-    width: calc(9% - 8px); /* Marka/Model -8px yatayda daralt */
+    width: calc(9% - 12px); /* Marka/Model 4px daha dar (toplam -12px) */
   }
   .report-table th:nth-child(3),
   .report-table td:nth-child(3) {
@@ -862,17 +862,17 @@ body.admin-report-page::-webkit-scrollbar {
   }
   .report-table th:nth-child(2),
   .report-table td:nth-child(2) {
-    width: calc(9% - 12px); /* Marka/Model 4px daraltıldı (mobil) */
+    width: calc(9% - 16px); /* Marka/Model 4px daha dar (mobil) */
   }
   .report-table th:nth-child(3),
   .report-table td:nth-child(3) {
-    width: calc(11% + 2px); /* Plaka 2px genişletildi (mobil) */
-    min-width: 0;
+    width: calc(13% + 6px); /* Plaka: içeriğin sığması için genişletildi (mobil) */
+    min-width: 5em;
   }
   .report-table th:nth-child(4),
   .report-table td:nth-child(4) {
-    width: calc(10% + 4px); /* KM 2px daha geniş (mobil) */
-    min-width: 0;
+    width: calc(12% + 6px); /* KM: içeriğin sığması için genişletildi (mobil) */
+    min-width: 4.2em;
   }
   .report-table th:nth-child(5),
   .report-table td:nth-child(5) {
