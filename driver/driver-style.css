@@ -161,7 +161,7 @@ body.driver-modal-open {
   border-top: 1.2px solid var(--border-red-tech);
 }
 
-/* Ortadaki bölüm: sol grid sabit, sadece sağ grid kendi içinde kayar */
+/* Ortadaki bölüm: sol grid sabit, sadece sağ grid kendi içinde kayar; barın üstüne binmemesi için z-index */
 .driver-scroll-area {
   flex: 1;
   min-height: 0;
@@ -171,6 +171,8 @@ body.driver-modal-open {
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
+  position: relative;
+  z-index: 10004;
 }
 
 /* Dashboard: footer sabit altta; bandı kaldırmak için en az rezerve yükseklik kadar doldur */
