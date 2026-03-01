@@ -127,8 +127,9 @@ body.driver-modal-open {
   box-sizing: border-box;
   overflow: hidden;
 }
-/* Dashboard: fixed footer alanı kadar alt boşluk; Yönetim Sistemi barı bu alanın üstünde kalır */
-.dashboard-page .driver-dashboard-container {
+/* Dashboard + şifre ekranı: fixed footer alanı kadar alt boşluk; Yönetim Sistemi barı bu alanın üstünde kalır */
+.dashboard-page .driver-dashboard-container,
+.login-page .driver-dashboard-container {
   padding-bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0));
 }
 /* Kullanıcı paneli + şifre ekranı: yan kırmızı çizgiler aynı */
@@ -2598,9 +2599,9 @@ body.driver-modal-open {
   padding-left: 22px !important;
   padding-right: 30px !important;
 }
-/* Şifre ekranı: Yönetim Sistemi butonu + sol ok kesinlikle container içinde (akışta, kırmızı çizgiler arasında) */
+/* Şifre ekranı: Yönetim Sistemi butonu container içinde, footerdan 6px yukarıda; fixed footer üstünde görünsün (dashboard ile aynı) */
 .login-page .driver-footer-back-wrap {
-  position: static;
+  position: relative;
   bottom: auto;
   left: auto;
   right: auto;
@@ -2611,7 +2612,7 @@ body.driver-modal-open {
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
-  z-index: auto;
+  z-index: 10003;
 }
 .login-page .driver-footer-back-wrap .universal-back-btn {
   margin-left: 0;
