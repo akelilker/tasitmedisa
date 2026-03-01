@@ -1573,12 +1573,6 @@
       renderVehicles(document.getElementById('v-search-input')?.value || '');
   };
 
-  function formatDateShort(dateStr) {
-    if (!dateStr) return '';
-    const parts = dateStr.split('-');
-    return `${parts[2]}.${parts[1]}.${parts[0].substring(2)}`;
-  }
-
   // --- VEHICLE DETAIL - NEW FUNCTIONS ---
 
   /**

@@ -968,20 +968,8 @@ html { overflow-x: hidden; }
   }
 }
 
-.view-section { display: none; }
 .card { background: var(--card-bg); padding: 16px; border-radius: 12px; border: 1px solid var(--br); }
 .btn.sec { background: transparent; border: 1px solid var(--br-medium); color: var(--txt-gray); padding: 8px 16px; border-radius: 6px; cursor: pointer; margin-top: 10px; }
-
-.btn-secondary {
-    background: transparent;
-    border: 1px solid var(--border-subtle);
-    color: var(--txt-muted);
-}
-
-.btn-secondary:hover {
-    border-color: var(--border-light);
-    color: var(--txt-white);
-}
 
 /* --- MODALLAR: ORTAK OVERLAY + CONTAINER (tek yerden yönetim) --- */
 .modal-overlay {
