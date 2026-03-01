@@ -447,14 +447,14 @@ body.driver-modal-open {
   .dashboard-page .driver-left-panel .driver-plate-dropdown-item:last-child {
     border-bottom: none !important;
   }
-  /* Sağ grid: butonlar arası dikey boşluk 1px */
+  /* Sağ grid: butonlar arası dikey boşluk 0 (1px daha daraltıldı) */
   .dashboard-page .driver-action-buttons {
-    gap: 1px !important;
+    gap: 0 !important;
   }
-  /* Sağ grid: butonların iç dikey yüksekliği masaüstünde 1px daralt (mobil dokunulmaz) */
+  /* Sağ grid: butonların iç dikey yüksekliği masaüstünde 1px daha dar (6px) */
   .dashboard-page .driver-action-buttons .driver-action-btn {
-    padding-top: 7px !important;
-    padding-bottom: 7px !important;
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
   }
 }
 
