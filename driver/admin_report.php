@@ -45,38 +45,25 @@ if ($action === 'branches') {
 // Bekleyen talepler (action=pending_requests)
 if ($action === 'pending_requests') {
     $pendingRequests = [];
-    
+    $usersById = [];
+    foreach ($data['users'] ?? [] as $u) {
+        $usersById[(string)$u['id']] = $u;
+    }
+    $kayitById = [];
+    foreach ($data['arac_aylik_hareketler'] ?? [] as $k) {
+        $kayitById[(string)$k['id']] = $k;
+    }
+    $tasitById = [];
+    foreach ($data['tasitlar'] ?? [] as $t) {
+        $tasitById[(string)$t['id']] = $t;
+    }
+
     foreach ($data['duzeltme_talepleri'] ?? [] as $talep) {
         if ($talep['durum'] === 'beklemede') {
-            // Kullanıcı bilgisi
-            $surucu = null;
-            foreach ($data['users'] as $u) {
-                if ($u['id'] === $talep['surucu_id']) {
-                    $surucu = $u;
-                    break;
-                }
-            }
-            
-            // Kayıt bilgisi
-            $kayit = null;
-            foreach (($data['arac_aylik_hareketler'] ?? []) as $k) {
-                if ($k['id'] === $talep['kayit_id']) {
-                    $kayit = $k;
-                    break;
-                }
-            }
-            
-            // Taşıt bilgisi
-            $arac = null;
-            if ($kayit) {
-                foreach ($data['tasitlar'] as $t) {
-                    if ($t['id'] === $kayit['arac_id']) {
-                        $arac = $t;
-                        break;
-                    }
-                }
-            }
-            
+            $surucu = $usersById[(string)($talep['surucu_id'] ?? '')] ?? null;
+            $kayit = $kayitById[(string)($talep['kayit_id'] ?? '')] ?? null;
+            $arac = $kayit ? ($tasitById[(string)($kayit['arac_id'] ?? '')] ?? null) : null;
+
             $req = [
                 'id' => $talep['id'],
                 'kayit_id' => $talep['kayit_id'],
@@ -113,8 +100,33 @@ $stats = [
     'percentage' => 0
 ];
 
-// Portal / atanmış araçlı kullanıcılar: en az bir araç assignedUserId ile atanmış olanlar
 $tasitlar = $data['tasitlar'] ?? [];
+$hareketler = $data['arac_aylik_hareketler'] ?? [];
+
+$kayitByAracSurucuDonem = [];
+foreach ($hareketler as $k) {
+    $aid = (string)($k['arac_id'] ?? '');
+    $sid = (string)($k['surucu_id'] ?? '');
+    $don = (string)($k['donem'] ?? '');
+    $key = $aid . "\0" . $sid . "\0" . $don;
+    $tarih = $k['guncelleme_tarihi'] ?? $k['kayit_tarihi'] ?? '';
+    if (!isset($kayitByAracSurucuDonem[$key]) || strcmp($tarih, $kayitByAracSurucuDonem[$key]['guncelleme_tarihi'] ?? $kayitByAracSurucuDonem[$key]['kayit_tarihi'] ?? '') > 0) {
+        $kayitByAracSurucuDonem[$key] = $k;
+    }
+}
+
+$aracIdToLatestKm = [];
+foreach ($hareketler as $k) {
+    if (!isset($k['guncel_km'])) {
+        continue;
+    }
+    $aid = (string)($k['arac_id'] ?? '');
+    $d = (string)($k['donem'] ?? '');
+    if (!isset($aracIdToLatestKm[$aid]) || strcmp($d, $aracIdToLatestKm[$aid]['donem']) > 0) {
+        $aracIdToLatestKm[$aid] = ['donem' => $d, 'km' => $k['guncel_km']];
+    }
+}
+
 $userIdsWithVehicle = [];
 foreach ($tasitlar as $t) {
     $uid = $t['assignedUserId'] ?? null;
@@ -132,7 +144,6 @@ foreach ($data['users'] as $u) {
     if (!isset($userIdsWithVehicle[(string)$u['id']])) {
         continue;
     }
-    // Şube filtresi
     if (!empty($branch)) {
         $ubeId = $u['sube_id'] ?? $u['branchId'] ?? null;
         if ($ubeId !== null && (string)$ubeId !== (string)$branch) {
@@ -144,7 +155,6 @@ foreach ($data['users'] as $u) {
 
 $stats['total'] = count($surucular);
 
-// Her kullanıcı için atanmış araçları kontrol et (assignedUserId)
 foreach ($surucular as $surucu) {
     $surucuId = $surucu['id'];
     foreach ($tasitlar as $t) {
@@ -155,21 +165,13 @@ foreach ($surucular as $surucu) {
         $aracId = $t['id'];
         $arac = $t;
 
-        // Bu dönem için en son kayıt (aynı dönemde birden fazla kayıt olabilir)
-        $kayit = null;
-        foreach ($data['arac_aylik_hareketler'] ?? [] as $k) {
-            if ($k['arac_id'] === $aracId && (string)($k['surucu_id'] ?? '') === (string)$surucuId && $k['donem'] === $period) {
-                if ($kayit === null || strcmp($k['guncelleme_tarihi'] ?? $k['kayit_tarihi'] ?? '', $kayit['guncelleme_tarihi'] ?? $kayit['kayit_tarihi'] ?? '') > 0) {
-                    $kayit = $k;
-                }
-            }
-        }
+        $key = (string)$aracId . "\0" . (string)$surucuId . "\0" . (string)$period;
+        $kayit = $kayitByAracSurucuDonem[$key] ?? null;
 
         $girdi = $kayit !== null;
         $bakimVar = $kayit ? ($kayit['bakim_durumu'] ?? false) : false;
         $kazaVar = $kayit ? ($kayit['kaza_durumu'] ?? false) : false;
 
-        // Durum filtresi
         if ($status === 'girdi' && !$girdi) continue;
         if ($status === 'girmedi' && $girdi) continue;
         if ($status === 'kaza' && !$kazaVar) continue;
@@ -190,16 +192,7 @@ foreach ($surucular as $surucu) {
         }
         $km = $girdi ? ($kayit['guncel_km'] ?? null) : null;
         if ($km === null) {
-            $sonDonem = null;
-            foreach ($data['arac_aylik_hareketler'] ?? [] as $onceki) {
-                if (isset($onceki['arac_id']) && (int)$onceki['arac_id'] === (int)$aracId && isset($onceki['guncel_km'])) {
-                    $d = $onceki['donem'] ?? '';
-                    if ($sonDonem === null || ($d !== '' && strcmp($d, $sonDonem) > 0)) {
-                        $sonDonem = $d;
-                        $km = $onceki['guncel_km'];
-                    }
-                }
-            }
+            $km = $aracIdToLatestKm[(string)$aracId]['km'] ?? null;
         }
         $records[] = [
             'surucu_id' => $surucuId,
