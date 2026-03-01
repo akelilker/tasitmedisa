@@ -2714,16 +2714,17 @@ body.driver-action-block-open .driver-footer-back-wrap {
   display: flex;
   justify-content: flex-start;
 }
-/* Sadece kullanıcı paneli (dashboard): viewport’a sabit, altta */
+/* Kullanıcı paneli (dashboard): Yönetim Sistemi butonu container içinde, footerdan 6px yukarıda */
 .dashboard-page .driver-footer-back-wrap {
-  position: fixed;
-  bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0) + 9px);
-  left: 0;
-  right: 0;
-  max-width: 500px;
+  position: static;
+  bottom: auto;
+  left: auto;
+  right: auto;
+  margin: 0 0 6px 0;
+  flex-shrink: 0;
   width: 100%;
-  margin: 0 auto;
-  z-index: 9999;
+  max-width: 100%;
+  z-index: auto;
 }
 .driver-footer-back-wrap .universal-back-btn {
   display: inline-flex !important;
@@ -2762,9 +2763,8 @@ body.driver-action-block-open .driver-footer-back-wrap {
 }
 @media (min-width: 769px) {
   .dashboard-page .driver-footer-back-wrap {
-    bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0) - 3px);
-    margin-left: 12px;
-    margin-right: auto;
+    margin: 0 0 6px 0;
+    padding-left: 12px !important;
   }
   .driver-footer-back-wrap .universal-back-label {
     font-size: 13px;
