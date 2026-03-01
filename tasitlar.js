@@ -3800,7 +3800,7 @@ function renderVehicleDetailLeft(vehicle) {
           const safeKey = notifKey.replace(/"/g, '&quot;');
           const isUnread = viewedKeys.indexOf(notifKey) === -1;
           const unreadClass = isUnread ? ' notification-unread' : '';
-          const unreadStyle = isUnread ? ' border: 1px solid rgba(225, 6, 27, 0.85) !important; box-shadow: 0 0 12px rgba(225, 6, 27, 0.35); background: rgba(225, 6, 27, 0.08) !important;' : '';
+          const unreadStyle = isUnread ? ' border: 1px solid rgba(225, 6, 27, 0.85) !important;' : '';
           html += `<button type="button" data-plate="${safePlate}" data-vehicle-id="${safeVid}" data-open-history="1" data-history-tab="${historyTab}" data-notif-key="${safeKey}" style="width: 100%; padding: 10px 12px; background: transparent; color: #ccc; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 12px; text-align: left; margin-bottom: 4px; transition: all 0.2s ease;${unreadStyle}" class="notification-item notification-item-activity${unreadClass}">
           <div class="notif-line1" style="font-weight: 600; color: #fff; margin-bottom: 2px;">${escapeHtml(item.plate)} ${escapeHtml(typeLabel)}</div>
           <div class="notif-line2" style="font-size: 11px; color: #999;">${escapeHtml(dateDisplay)}</div>
