@@ -2236,10 +2236,19 @@ body.driver-modal-open {
   resize: none;
 }
 
-/* Düzeltme Talebi: input iç yükseklik 3px dar, bölümler arası 3px dar, Bildir ince */
+/* Düzeltme Talebi: etiket beyaz, açıklama gri (mobil + masaüstü) */
 #edit-request-modal .driver-current-km {
+  color: #ffffff !important;
   margin-bottom: 13px !important;
 }
+#edit-request-modal .driver-current-km strong {
+  color: var(--data-value-color, #a0aec0) !important;
+}
+#edit-request-modal .form-group label {
+  color: #ffffff !important;
+}
+
+/* Düzeltme Talebi: input iç yükseklik 3px dar, bölümler arası 3px dar, Bildir ince */
 #edit-request-modal .form-group {
   margin-bottom: 13px !important;
 }
