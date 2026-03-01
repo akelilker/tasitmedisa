@@ -367,6 +367,30 @@ body.driver-modal-open {
   text-rendering: optimizeLegibility;
 }
 
+/* Ara aralık (641px–768px): logo başlık üzerine binmesin – 56px sütunlar, margin yok */
+@media (min-width: 641px) and (max-width: 768px) {
+  .dashboard-page .hero.hero-two-rows,
+  .login-page .hero.hero-two-rows {
+    grid-template-columns: 56px 1fr 56px !important;
+  }
+  .dashboard-page .hero.hero-two-rows .hero-logo,
+  .login-page .hero.hero-two-rows .hero-logo {
+    flex: 0 0 56px !important;
+    width: 56px !important;
+    margin-left: 0 !important;
+    transform: translate(0, -6px) !important;
+  }
+  .dashboard-page .hero.hero-two-rows .hero-logo img,
+  .login-page .hero.hero-two-rows .hero-logo img {
+    width: 100% !important;
+  }
+  .dashboard-page .hero.hero-two-rows .hero-title-block .hero-title-line,
+  .login-page .hero.hero-two-rows .hero-title-block .hero-title-line {
+    font-size: clamp(16px, 4.2vw, 20px) !important;
+    letter-spacing: clamp(1px, 0.4vw, 3px) !important;
+  }
+}
+
 /* Masaüstü: Kullanıcı Paneli başlığı, driver-below-hero boşluk, çerçeve kalınlığı, logo boyutu */
 @media (min-width: 769px) {
   .hero-title-wrap .hero-panel-subtitle,
