@@ -85,23 +85,37 @@
                 <div class="driver-empty-icon">🚗</div>
                 <h3>Zimmetli Taşıt Bulunamadı</h3>
                 <p>Size Atanmış Taşıt Bulunmamaktadır. Lütfen Yöneticinizle İletişime Geçin.</p>
+                <div class="universal-back-bar driver-footer-back-wrap driver-back-in-empty">
+                    <a href="../" class="universal-back-btn" title="Yönetim Sistemi">
+                        <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        <span class="universal-back-label">Yönetim Sistemi</span>
+                    </a>
+                </div>
             </div>
 
             <div id="driver-two-panel" class="driver-two-panel" style="display: none;">
                 <div class="driver-panels-inner">
                     <aside class="driver-left-panel">
-                        <div class="driver-user-plate-row driver-user-plate-in-panel">
-                            <span id="driver-user-name" class="driver-user-name"></span>
-                            <div class="driver-plate-dropdown-row">
-                                <span id="driver-current-plaka" class="driver-current-plaka"></span>
-                                <button type="button" id="driver-plate-trigger" class="driver-plate-trigger" aria-label="Taşıt seç" style="display: none;">
-                                    <span class="driver-plate-chevron">▾</span>
-                                </button>
-                                <div id="driver-plate-dropdown" class="driver-plate-dropdown" role="listbox" style="display:none"></div>
+                        <div class="driver-left-panel-content">
+                            <div class="driver-user-plate-row driver-user-plate-in-panel">
+                                <span id="driver-user-name" class="driver-user-name"></span>
+                                <div class="driver-plate-dropdown-row">
+                                    <span id="driver-current-plaka" class="driver-current-plaka"></span>
+                                    <button type="button" id="driver-plate-trigger" class="driver-plate-trigger" aria-label="Taşıt seç" style="display: none;">
+                                        <span class="driver-plate-chevron">▾</span>
+                                    </button>
+                                    <div id="driver-plate-dropdown" class="driver-plate-dropdown" role="listbox" style="display:none"></div>
+                                </div>
+                                <span id="driver-plate-subtitle" class="driver-plate-subtitle" aria-hidden="true"></span>
                             </div>
-                            <span id="driver-plate-subtitle" class="driver-plate-subtitle" aria-hidden="true"></span>
+                            <div id="driver-vehicle-info" class="driver-vehicle-info"></div>
                         </div>
-                        <div id="driver-vehicle-info" class="driver-vehicle-info"></div>
+                        <div class="universal-back-bar driver-footer-back-wrap">
+                            <a href="../" class="universal-back-btn" title="Yönetim Sistemi">
+                                <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                                <span class="universal-back-label">Yönetim Sistemi</span>
+                            </a>
+                        </div>
                     </aside>
                     <main class="driver-right-panel">
                         <div id="driver-action-area" class="driver-action-area"></div>
@@ -110,12 +124,6 @@
             </div>
         </main>
 
-        <div class="universal-back-bar driver-footer-back-wrap">
-            <a href="../" class="universal-back-btn" title="Yönetim Sistemi">
-                <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-                <span class="universal-back-label">Yönetim Sistemi</span>
-            </a>
-        </div>
         <footer id="app-footer">
             <div class="footer-content">
                 <span class="version" id="version-display"></span>
