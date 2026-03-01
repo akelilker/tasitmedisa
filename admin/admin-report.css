@@ -884,6 +884,30 @@ body.admin-report-page::-webkit-scrollbar {
     width: calc(1% + 3px); /* İşlem +3px */
     min-width: 0;
   }
+  /* Mobil: listedeki tüm metinler 1 punto büyük */
+  .report-table,
+  .report-table th,
+  .report-table td {
+    font-size: 14px !important;
+  }
+  .report-table th {
+    font-size: 15px !important;
+  }
+  .report-table .action-cell button {
+    font-size: 14px !important;
+  }
+  .pending-section h2 {
+    font-size: 17px !important;
+  }
+  .pending-card .info {
+    font-size: 14px !important;
+  }
+  .pending-card .actions button {
+    font-size: 13px !important;
+  }
+  .kullanici-list-item-name { font-size: 15px !important; }
+  .kullanici-list-item-plate { font-size: 14px !important; }
+  .kullanici-list-item-brand { font-size: 13px !important; }
   .pending-card {
     grid-template-columns: 1fr auto;
     align-items: center;
@@ -900,14 +924,11 @@ body.admin-report-page::-webkit-scrollbar {
   }
   
   /* Kullanıcı liste: sağ ve sol kenar boşluğu 1px */
-  .kullanici-list-item { 
+  .kullanici-list-item {
     padding: 7px 8px !important; 
     margin-left: 1px;
     margin-right: 1px;
   }
-  .kullanici-list-item-name { font-size: 14px !important; }
-  .kullanici-list-item-plate { font-size: 13px !important; }
-  .kullanici-list-item-brand { font-size: 12px !important; }
 }
 
 /* --- iOS PWA: Kullanıcı Raporları sayfası - ekran kenarlarına sıfır çerçeve --- */
