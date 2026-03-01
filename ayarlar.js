@@ -1241,8 +1241,9 @@
       const messageEl = document.getElementById('cache-confirm-message');
       if (!modal || !messageEl) return;
 
-      // Mesajı formatla (satır sonlarını <br> ile değiştir)
-      messageEl.innerHTML = message.replace(/\n/g, '<br>');
+      // Mesajı güvenli şekilde formatla (önce escape, sonra satır sonlarını <br> ile değiştir)
+      var safeMsg = (typeof window.escapeHtml === 'function' ? window.escapeHtml(message) : String(message).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'));
+      messageEl.innerHTML = safeMsg.replace(/\n/g, '<br>');
       cacheClearConfirmed = false;
       allowCacheClearWithLocalBackupOnly = options && options.allowLocalBackupOnly === true;
   
@@ -1318,16 +1319,17 @@
       const messageEl = document.getElementById('info-message');
       if (!modal || !messageEl) return;
 
-      // Mesajı formatla (satır sonlarını <br> ile değiştir)
-      messageEl.innerHTML = message.replace(/\n/g, '<br>');
-  
+      // Mesajı güvenli şekilde formatla (önce escape, sonra satır sonlarını <br> ile değiştir)
+      var safeMsg = (typeof window.escapeHtml === 'function' ? window.escapeHtml(message) : String(message).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'));
+      messageEl.innerHTML = safeMsg.replace(/\n/g, '<br>');
+
       // Body'ye modal-open class'ı ekle
       document.body.classList.add('modal-open');
-  
+
       modal.style.display = 'flex';
       requestAnimationFrame(() => modal.classList.add('active'));
     };
-  
+
     window.closeInfoModal = function closeInfoModal() {
       const modal = document.getElementById('info-modal');
       if (!modal) return;

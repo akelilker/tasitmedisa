@@ -21,6 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 // Input al
 $input = json_decode(file_get_contents('php://input'), true);
 $username = trim($input['username'] ?? '');
+$username = mb_substr($username, 0, 255);
 $password = $input['password'] ?? '';
 
 if (empty($username) || empty($password)) {

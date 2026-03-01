@@ -1101,6 +1101,11 @@ function setupEkstraNotAutoResize() {
    OLAY EKLE - Event Menu & Modals
    ========================================= */
 
+function escapeDriverAttr(s) {
+    if (s == null) return '';
+    return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
 window.openDriverEventMenu = function(vehicleId) {
     currentDriverEventVehicleId = vehicleId;
     const modal = document.getElementById('driver-event-menu-modal');
@@ -1117,13 +1122,15 @@ window.openDriverEventMenu = function(vehicleId) {
         { id: 'sigorta', label: 'Trafik Sigortası Yenileme' },
         { id: 'kasko', label: 'Kasko Yenileme' }
     ];
-    var safeId = String(vehicleId).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
     list.innerHTML = events.map(function(e) {
         const isKaza = e.id === 'kaza';
-        const borderColor = isKaza ? '#e1061b' : 'rgba(255, 255, 255, 0.3)';
-        const textColor = isKaza ? '#e1061b' : '#ccc';
-        return '<button type="button" class="driver-event-menu-btn' + (isKaza ? ' driver-event-menu-btn-kaza' : '') + '" onclick="handleDriverEventChoice(\'' + e.id + '\', \'' + safeId + '\')">' + e.label + '</button>';
+        return '<button type="button" class="driver-event-menu-btn' + (isKaza ? ' driver-event-menu-btn-kaza' : '') + '" data-event-id="' + escapeDriverAttr(e.id) + '" data-vehicle-id="' + escapeDriverAttr(vehicleId) + '">' + escapeHtmlDriver(e.label) + '</button>';
     }).join('');
+    list.querySelectorAll('.driver-event-menu-btn').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            window.handleDriverEventChoice(btn.dataset.eventId, btn.dataset.vehicleId);
+        });
+    });
     modal.classList.add('show');
     updateDriverModalBodyClass();
 };
