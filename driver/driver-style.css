@@ -473,6 +473,11 @@ body.driver-modal-open {
   .dashboard-page .driver-action-area .form-group label {
     margin-bottom: 4px !important;
   }
+  /* Not input: masaüstünde dikey 3px daralt */
+  .dashboard-page .driver-action-area .form-group textarea.driver-ekstra-not {
+    padding-top: 5px !important;
+    padding-bottom: 4px !important;
+  }
 }
 
 /* Scroll alanı öğelerinde üst çizgi yok */
