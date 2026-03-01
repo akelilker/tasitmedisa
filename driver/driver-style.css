@@ -523,9 +523,9 @@ body.driver-modal-open {
   #edit-request-modal .form-group textarea::placeholder {
     color: rgba(255, 255, 255, 0.30) !important;
   }
-  /* İçerik alanı 430px gibi: inputlar yatayda sınırlı */
+  /* İçerik alanı 860px (430px × 2): inputlar yatayda sınırlı ama çok dar değil */
   #edit-request-modal .modal-body {
-    max-width: 430px !important;
+    max-width: 860px !important;
     margin-left: auto !important;
     margin-right: auto !important;
     box-sizing: border-box !important;
