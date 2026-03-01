@@ -302,8 +302,8 @@ body.driver-modal-open {
 
 /* --- Geçmiş Kayıtlar (sol) + Çıkış (sağ) - header dışında --- */
 .driver-below-hero {
-  margin-top: 1px;
-  margin-bottom: 2px;
+  margin-top: 0;
+  margin-bottom: 1px;
   padding: 0 4px;
   display: flex;
   flex-direction: column;
@@ -414,10 +414,10 @@ body.driver-modal-open {
     margin-bottom: 0 !important;
   }
   .dashboard-page .driver-below-hero {
-    margin-top: 1px !important;
-    margin-bottom: 2px !important;
+    margin-top: 0 !important;
+    margin-bottom: 1px !important;
   }
-  /* Tarihçe/çıkış butonları alanı ile alttaki içerik arası 2px */
+  /* Tarihçe/çıkış butonları alanı ile alttaki içerik arası 1px */
   .dashboard-page .driver-header-fixed {
     padding-bottom: 0 !important;
   }
