@@ -594,6 +594,43 @@ body.driver-modal-open {
   overflow: hidden;
   flex-shrink: 0;
 }
+/* Yönetim Sistemi sol grid altında; metin dar panelde kesilmesin (satır kırılabilir) */
+.driver-back-in-panel {
+  margin-top: auto;
+  padding-top: 8px;
+  flex-shrink: 0;
+  min-width: 0;
+}
+.driver-back-in-panel .universal-back-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  flex-wrap: wrap;
+  gap: 3px !important;
+  color: var(--theme-color) !important;
+  opacity: 0.55;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  transition: opacity 0.2s, color 0.2s;
+  text-decoration: none;
+  white-space: normal;
+  word-break: break-word;
+  max-width: 100%;
+}
+.driver-back-in-panel .universal-back-btn:hover {
+  color: var(--theme-color) !important;
+  opacity: 1;
+}
+.driver-back-in-panel .universal-back-label {
+  color: var(--theme-color) !important;
+  opacity: 0.55;
+}
+.driver-back-in-panel .universal-back-btn:hover .universal-back-label { opacity: 1; }
+.driver-back-in-panel .universal-back-btn .back-icon-svg {
+  opacity: 0.6;
+  flex-shrink: 0;
+}
+.driver-back-in-panel .universal-back-btn:hover .back-icon-svg { opacity: 1; }
 .driver-right-panel {
   flex: 1;
   min-width: 0;
@@ -2724,7 +2761,11 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   display: flex;
   justify-content: flex-start;
 }
-/* Dashboard: Yönetim Sistemi barı footerın 5px üstünde, sola yaslı */
+/* Dashboard: Yönetim Sistemi sol gridde; alttaki bar gizli */
+.dashboard-page .driver-footer-back-wrap.driver-footer-back-wrap-hidden {
+  display: none !important;
+}
+/* Login vb.: Yönetim Sistemi barı footerın 5px üstünde, sola yaslı */
 .dashboard-page .driver-footer-back-wrap {
   position: relative;
   bottom: auto;
