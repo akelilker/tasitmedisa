@@ -139,18 +139,6 @@ body.driver-modal-open {
   pointer-events: none;
   z-index: 11;
 }
-.login-page .driver-dashboard-container::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  border-left: 1.2px solid var(--border-red-tech);
-  border-right: 1.2px solid var(--border-red-tech);
-  pointer-events: none;
-  z-index: 11;
-}
 
 /* Ana başlık (hero + driver-below-hero) sabit üstte – plaka yukarı, container çerçevesi devam */
 .driver-header-fixed {
@@ -3720,11 +3708,7 @@ body.driver-action-block-open .driver-footer-back-wrap {
     box-sizing: border-box !important;
   }
 
-  /* Dashboard ve Login: ana container iOS kıvrımlarına uyumlu; ::before kaldır (çift çizgi olmasın) */
-  .dashboard-page .driver-dashboard-container::before,
-  .login-page .driver-dashboard-container::before {
-    display: none !important;
-  }
+  /* Dashboard ve Login: ana container iOS kıvrımlarına uyumlu */
   .dashboard-page .app-container.driver-dashboard-container,
   .login-page .app-container.driver-dashboard-container {
     border-radius: 38px !important;
