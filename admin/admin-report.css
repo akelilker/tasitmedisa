@@ -768,6 +768,14 @@ body.admin-report-page::-webkit-scrollbar {
     margin-left: auto;
 }
 
+/* --- Mobil: kırmızı dikey çizgiler biraz daha belirgin --- */
+@media (max-width: 768px) {
+  .admin-app-container {
+    border-left: 1px solid rgba(var(--theme-color-rgb), 0.55) !important;
+    border-right: 1px solid rgba(var(--theme-color-rgb), 0.55) !important;
+  }
+}
+
 /* --- Mobil --- */
 @media (max-width: 640px) {
   .admin-report-subtitle {
@@ -918,8 +926,8 @@ body.admin-report-page::-webkit-scrollbar {
     border-radius: 38px !important;
     overflow: hidden !important;
     border-top: 0.5px solid var(--border-red-tech) !important;
-    border-left: 0.5px solid var(--border-red-tech) !important;
-    border-right: 0.5px solid var(--border-red-tech) !important;
+    border-left: 1px solid rgba(var(--theme-color-rgb), 0.55) !important;
+    border-right: 1px solid rgba(var(--theme-color-rgb), 0.55) !important;
     box-shadow: 0 2px 14px rgba(var(--theme-color-rgb), 0.1) !important;
     min-height: calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important;
     min-height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important;
