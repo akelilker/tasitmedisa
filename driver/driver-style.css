@@ -2236,6 +2236,30 @@ body.driver-modal-open {
   resize: none;
 }
 
+/* Düzeltme Talebi: input iç yükseklik 3px dar, bölümler arası 3px dar, Bildir ince */
+#edit-request-modal .driver-current-km {
+  margin-bottom: 13px !important;
+}
+#edit-request-modal .form-group {
+  margin-bottom: 13px !important;
+}
+#edit-request-modal .form-group input,
+#edit-request-modal .form-group textarea {
+  padding-top: 3px !important;
+  padding-bottom: 3px !important;
+}
+#edit-request-modal .btn-submit {
+  font-weight: 500 !important;
+  border-width: 1px !important;
+  border-color: rgba(74, 222, 128, 0.45) !important;
+  color: rgba(74, 222, 128, 0.8) !important;
+  padding: 10px 14px !important;
+}
+#edit-request-modal .btn-submit:hover {
+  border-color: rgba(74, 222, 128, 0.75) !important;
+  color: rgba(74, 222, 128, 0.95) !important;
+}
+
 /* Düzeltme Talebi: KM input spinner gizli */
 .driver-modal .form-group input[type="number"] {
   -moz-appearance: textfield;
