@@ -21,19 +21,21 @@ function toggleNotifications(e) {
   const menu = getMenu();
   if (menu) menu.classList.remove('open');
   if (notif) {
+    var wasOpen = notif.classList.contains('open');
     notif.classList.toggle('open');
-    if (notif.classList.contains('open')) {
+    /* Açılırken sınıfı kaldırma: okunmamışlar kırmızı çerçeve ile görünsün. Kapanırken "okundu" işaretle. */
+    if (wasOpen) {
       var keys = [];
       notif.querySelectorAll('.notification-item-activity[data-notif-key]').forEach(function(el) {
         var k = (el.getAttribute('data-notif-key') || '').toString().trim();
         if (k) keys.push(k);
-        el.classList.remove('notification-unread');
       });
       if (keys.length) {
         try {
           var viewed = JSON.parse(sessionStorage.getItem('notifViewedKeysV2') || '[]');
           keys.forEach(function(k) { if (viewed.indexOf(k) === -1) viewed.push(k); });
           sessionStorage.setItem('notifViewedKeysV2', JSON.stringify(viewed));
+          if (typeof window.updateNotifications === 'function') window.updateNotifications();
         } catch (err) {}
       }
     }
