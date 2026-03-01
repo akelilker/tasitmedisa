@@ -952,7 +952,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         overflow-x: hidden !important;
         overscroll-behavior: none !important;
         overscroll-behavior-y: none !important;
-        padding-bottom: 4px !important;
+        padding-bottom: 12px !important;
     }
     #vehicle-modal .modal-body .modal-columns {
         flex: 1 1 auto;
@@ -1072,10 +1072,11 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-column-right .form-section:has(#vehicle-kasko-kodu) {
         margin-bottom: 6px !important;
     }
-    /* Notlar: Kasko Kodu ile arası 8px; Boya ile aynı satırda; etiket-input sıkı */
+    /* Notlar: Kasko Kodu ile arası 8px; Boya ile aynı satırda; etiket-input sıkı; alt çerçeve kesilmesin */
     #vehicle-modal .modal-column-right .form-section:has(#vehicle-notes) {
         margin-top: 8px !important;
         margin-bottom: 0 !important;
+        padding-bottom: 8px !important;
         flex: none !important;
         gap: 0 !important;
         transform: translateY(8px);
