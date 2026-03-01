@@ -679,6 +679,23 @@ html { overflow-x: hidden; }
   box-shadow: 0 4px 12px var(--shadow-dark);
 }
 
+/* Bildirim: Plaka + açıklama tek satır, tarih ikinci satırda sola dayalı (mobil + masaüstü) */
+.notification-item-activity .notif-line1 {
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+.notification-item-activity .notif-line2 {
+  text-align: left !important;
+}
+
+/* Bildirim dropdown: kaydırılabilir (max-height mobilde 5, masaüstünde 6 kayıt) */
+#notifications-dropdown {
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  -webkit-overflow-scrolling: touch;
+}
+
 /* MENÜ – hover scale taşma olmasın */
 .menu-container {
   display: flex;
@@ -889,6 +906,10 @@ html { overflow-x: hidden; }
   .settings-dropdown {
     width: 45%; /* Masaüstünde container'ın %45'i */
     max-width: 225px;
+  }
+  /* Masaüstü: 6 bildirim ekranda görünsün, fazlası için aşağı kaydırılabilir */
+  #notifications-dropdown {
+    max-height: 380px !important;
   }
   .settings-dropdown button {
     text-align: center; /* Masaüstünde ortalı */
@@ -1566,16 +1587,6 @@ body.modal-open .user-panel-link {
         white-space: nowrap !important;
         overflow: hidden !important;
         text-overflow: ellipsis !important;
-    }
-    
-    /* Mobil: Plaka + açıklama tek satır (alta inmesin), tarih ikinci satırda sola dayalı */
-    .notification-item-activity .notif-line1 {
-        white-space: nowrap !important;
-        overflow: hidden !important;
-        text-overflow: ellipsis !important;
-    }
-    .notification-item-activity .notif-line2 {
-        text-align: left !important;
     }
     
     /* Mobil: 5 bildirim ekranda görünsün, fazlası için aşağı kaydırılabilir */
