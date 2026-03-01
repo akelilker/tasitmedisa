@@ -862,16 +862,16 @@ body.admin-report-page::-webkit-scrollbar {
   }
   .report-table th:nth-child(2),
   .report-table td:nth-child(2) {
-    width: calc(9% - 8px); /* Marka/Model -4px daraltıldı (mobil) */
+    width: calc(9% - 12px); /* Marka/Model 4px daraltıldı (mobil) */
   }
   .report-table th:nth-child(3),
   .report-table td:nth-child(3) {
-    width: auto;
+    width: calc(11% + 2px); /* Plaka 2px genişletildi (mobil) */
     min-width: 0;
   }
   .report-table th:nth-child(4),
   .report-table td:nth-child(4) {
-    width: calc(10% + 2px); /* KM +2px genişletildi (mobil) */
+    width: calc(10% + 4px); /* KM 2px daha geniş (mobil) */
     min-width: 0;
   }
   .report-table th:nth-child(5),
