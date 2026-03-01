@@ -523,11 +523,18 @@ body.driver-modal-open {
   #edit-request-modal .form-group textarea::placeholder {
     color: rgba(255, 255, 255, 0.30) !important;
   }
-  /* İçerik alanı 860px (430px × 2): inputlar yatayda sınırlı ama çok dar değil */
-  #edit-request-modal .modal-body {
+  /* Düzeltme Talebi modalı masaüstü: container ve overlay geniş (860px), ekran küçük kalmasın */
+  #edit-request-modal.driver-modal::before {
     max-width: 860px !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
+  }
+  #edit-request-modal .driver-modal-content,
+  #edit-request-modal .modal-container {
+    max-width: 860px !important;
+  }
+  #edit-request-modal .modal-body {
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
     box-sizing: border-box !important;
   }
   /* Talep Gönder: ince çerçeve, ince metin; hover'da belirgin */
