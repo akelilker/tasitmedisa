@@ -1334,7 +1334,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     overflow: hidden;
     box-shadow: none;
     box-sizing: border-box;
@@ -1403,6 +1403,7 @@
     overflow: hidden;
     word-break: break-word;
     transition: transform 0.2s ease;
+    flex-grow: 1; /* Kart içinde orta alan boşluğu doldurur, alt satır alta itilir */
 }
 
 .card-third-line {
@@ -1420,6 +1421,7 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
     word-break: break-word;
+    margin-top: auto; /* Üstteki boşluk ne olursa olsun en alta yapışır */
 }
 
 .view-list .list-item {
@@ -2458,17 +2460,28 @@
   .branch-name { font-size: 15px; } /* +1 punto daha (sadece mobil) */
   .branch-count { font-size: 15px; } /* +1 punto daha (sadece mobil) */
   
+  /* Mobil: 2'li grid, kartlar eşit yükseklik, alt satır (fiyat/buton) hep aynı hizada */
   .view-card { 
-    gap: 4px; 
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 15px;
+    align-items: stretch;
     padding: 0; 
-    justify-content: space-evenly; /* Kartları eşit dağıt */
   }
   .view-card .card { 
+    height: 100%;
+    width: auto !important;
+    max-width: none !important;
+    flex: none !important;
+    aspect-ratio: unset !important;
+    justify-content: flex-start;
     padding: 3px; 
-    width: clamp(90px, 26vw, 104px);
-    max-width: clamp(90px, 26vw, 104px);
-    flex: 0 0 clamp(90px, 26vw, 104px);
     border: 1.2px solid rgba(255, 255, 255, 0.25); /* Daha kalın ve daha görünür çerçeve */
+  }
+  .view-card .card-brand-model {
+    flex-grow: 1;
+    min-height: 2.6em;
+    height: auto !important; /* Orta alan esnasın, üçüncü satır alta yapışsın */
   }
   
   .card-plate { font-size: 18px; } /* +1 punto daha (sadece mobil) */
