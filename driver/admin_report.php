@@ -145,8 +145,8 @@ foreach ($data['users'] as $u) {
         continue;
     }
     if (!empty($branch)) {
-        $ubeId = $u['sube_id'] ?? $u['branchId'] ?? null;
-        if ($ubeId !== null && (string)$ubeId !== (string)$branch) {
+        $subeId = $u['sube_id'] ?? $u['branchId'] ?? null;
+        if ($subeId !== null && (string)$subeId !== (string)$branch) {
             continue;
         }
     }
