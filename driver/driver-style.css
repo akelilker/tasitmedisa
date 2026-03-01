@@ -494,62 +494,6 @@ body.driver-modal-open {
     transform-origin: center bottom !important;
     align-self: flex-end !important;
   }
-  /* Düzeltme Talebi modalı masaüstü: aynı punto (13px), etiketler beyaz, açıklamalar gri, boşluk/input daraltma */
-  #edit-request-modal .driver-current-km,
-  #edit-request-modal .form-group label,
-  #edit-request-modal .form-group input,
-  #edit-request-modal .form-group textarea {
-    font-size: 13px !important;
-  }
-  #edit-request-modal .form-group label,
-  #edit-request-modal .driver-current-km {
-    color: #ffffff !important;
-  }
-  #edit-request-modal .driver-current-km strong {
-    color: var(--data-value-color, #a0aec0) !important;
-  }
-  #edit-request-modal .driver-current-km {
-    margin-bottom: 13px !important;
-  }
-  #edit-request-modal .form-group {
-    margin-bottom: 13px !important;
-  }
-  #edit-request-modal .form-group input,
-  #edit-request-modal .form-group textarea {
-    padding-top: 3px !important;
-    padding-bottom: 3px !important;
-  }
-  #edit-request-modal .form-group input::placeholder,
-  #edit-request-modal .form-group textarea::placeholder {
-    color: rgba(255, 255, 255, 0.30) !important;
-  }
-  /* Düzeltme Talebi modalı masaüstü: container ve overlay geniş (860px), ekran küçük kalmasın */
-  #edit-request-modal.driver-modal::before {
-    max-width: 860px !important;
-  }
-  #edit-request-modal .driver-modal-content,
-  #edit-request-modal .modal-container {
-    max-width: 860px !important;
-  }
-  #edit-request-modal .modal-body {
-    max-width: 100% !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    box-sizing: border-box !important;
-  }
-  /* Talep Gönder: ince çerçeve, ince metin; hover'da belirgin */
-  #edit-request-modal .btn-submit {
-    font-size: 13px !important;
-    font-weight: 500 !important;
-    border-width: 1px !important;
-    border-color: rgba(74, 222, 128, 0.4) !important;
-    color: rgba(74, 222, 128, 0.75) !important;
-    padding: 10px 14px !important;
-  }
-  #edit-request-modal .btn-submit:hover {
-    border-color: rgba(74, 222, 128, 0.85) !important;
-    color: rgba(74, 222, 128, 0.98) !important;
-  }
 }
 
 /* Scroll alanı öğelerinde üst çizgi yok */
