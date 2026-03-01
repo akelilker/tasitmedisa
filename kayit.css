@@ -970,7 +970,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         flex-shrink: 0;
         position: sticky !important;
         bottom: 0 !important;
-        margin-top: 1px;
+        margin-top: 10px;
         padding-top: 8px !important;
         padding-bottom: 10px !important;
         background: #080d16 !important;
@@ -1520,7 +1520,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-body .universal-btn-group {
         position: static !important;
         flex-shrink: 0;
-        margin-top: 3px;
+        margin-top: 10px;
         padding-top: 8px !important;
         padding-bottom: 10px !important;
     }
