@@ -1477,8 +1477,9 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         margin-top: -2px !important; /* genel +1px kuralına göre 3px yukarı */
         margin-bottom: 1px !important;
     }
-    /* Notlar etiketi altı 1px */
+    /* Notlar etiketi: 3px yukarı, altı 1px */
     #vehicle-modal .modal-body .modal-column-right .form-section:has(#vehicle-notes) .form-label {
+        margin-top: -3px !important;
         margin-bottom: 1px !important;
     }
     /* Grid altları eşit: body flex yapıp grid’i büyütüyoruz; kolonlar stretch ile eşit yükseklikte */
@@ -1534,9 +1535,9 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-body .modal-column-left .form-section-inline:has(#tramer-var) {
         margin-bottom: 6px !important;
     }
-    /* Boya/Değişen: Tramer ile arası 6px (üst margin 0, collapse ile) */
+    /* Boya/Değişen: 1px aşağı, Tramer ile arası net */
     #vehicle-modal .modal-body .modal-column-left .form-section-inline:has(#boya-var) {
-        margin-top: 0 !important;
+        margin-top: 1px !important;
         margin-bottom: 0 !important;
     }
     /* Tramer/Boya container: sadece açık değilken 0 alan (JS .tramer-records-visible / .boya-parts-visible ekler) */
