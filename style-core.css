@@ -674,9 +674,21 @@ html { overflow-x: hidden; }
   box-shadow: 0 0 8px rgba(var(--orange-warn-rgb), 0.2);
 }
 
+/* Bildirim kutuları hover: sadece çerçeve belirginleşir, arka plan ve yazı değişmez */
 .notification-item:hover {
-  border-color: var(--border-light) !important;
-  box-shadow: 0 4px 12px var(--shadow-dark);
+  border-color: rgba(255, 255, 255, 0.5) !important;
+}
+#notifications-dropdown .notification-item-activity:hover {
+  border-color: rgba(255, 255, 255, 0.5) !important;
+}
+#notifications-dropdown .notification-item-activity.notification-unread:hover {
+  border-color: rgba(var(--theme-color-rgb), 1) !important;
+}
+#notifications-dropdown .notification-item.date-warning-red-border:hover {
+  border-color: rgba(var(--theme-color-rgb), 0.85) !important;
+}
+#notifications-dropdown .notification-item.date-warning-orange-border:hover {
+  border-color: rgba(var(--orange-warn-rgb), 0.85) !important;
 }
 
 /* Bildirim: Plaka + açıklama (uzarsa alt satıra iner), tarih ikinci satırda sola dayalı */
