@@ -2616,8 +2616,15 @@ body.driver-modal-open {
   padding-left: 22px !important;
   padding-right: 30px !important;
 }
+/* Login: Yönetim Sistemi geçiş butonu container içinde (kırmızı çizgiler arasında) */
 .login-page .driver-footer-back-wrap {
-  padding-left: 4px !important;
+  position: static !important;
+  bottom: auto !important;
+  left: auto !important;
+  right: auto !important;
+  margin: 0 !important;
+  padding: 8px 4px 4px 4px !important;
+  flex-shrink: 0 !important;
 }
 .login-page #app-footer.login-footer .footer-content {
   padding-left: 4px !important;
