@@ -1467,6 +1467,10 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         margin-top: 0 !important;
         margin-bottom: -5px !important;
     }
+    /* Plaka etiketi ile Taşıt Tipi simgeleri arası 2px (masaüstü) */
+    #vehicle-modal .modal-body .modal-column-left .form-section:has(#vehicle-plate) {
+        margin-top: 2px !important;
+    }
     /* Masaüstü: Sigorta etiketi – üst kesilme olmaması için margin-top 0 */
     #vehicle-modal .modal-body .modal-column-right .form-section:first-child {
         margin-top: 0 !important;
