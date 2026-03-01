@@ -259,7 +259,6 @@ body.admin-report-page::-webkit-scrollbar {
   color: #fff;
 }
 
-.report-filters button.report-icon-btn.secondary,
 .report-filters button.report-icon-excel {
   background: transparent !important;
   color: #86efac !important;
