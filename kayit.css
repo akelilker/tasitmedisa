@@ -968,7 +968,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-body .universal-btn-group {
         flex-shrink: 0;
         position: static !important;
-        margin-top: 4px;
+        margin-top: 1px;
         padding-top: 4px !important;
         padding-bottom: 2px !important;
     }
@@ -1484,7 +1484,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-body .universal-btn-group {
         position: static !important;
         flex-shrink: 0;
-        margin-top: 6px;
+        margin-top: 3px;
         padding-top: 8px !important;
         padding-bottom: 10px !important;
     }
