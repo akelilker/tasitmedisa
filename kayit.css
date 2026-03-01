@@ -1032,16 +1032,15 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         overflow: hidden !important;
         flex: 0 0 0 !important;
     }
-    /* Tramer Kaydı ile Boya/Değişen arası dikey boşluk 3px (mobil) */
+    /* Tramer Kaydı ile Boya/Değişen arası dikey boşluk tam 3px (mobil) */
     #vehicle-modal .modal-column-left .form-section-inline:has(#tramer-var) {
         margin-bottom: 3px !important;
     }
     #vehicle-modal .modal-column-left .form-section:has(#tramer-records-container).tramer-records-visible {
         margin-bottom: 3px !important;
     }
-    /* Sol kolonun en alt satırını (Boya/Değişen) dibe sabitle */
     #vehicle-modal .modal-column-left .form-section-inline:has(#boya-var) {
-        margin-top: auto !important;
+        margin-top: 3px !important; /* Tramer ile arası sabit 3px – auto kaldırıldı */
         margin-bottom: 0 !important;
     }
 
@@ -1245,13 +1244,13 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     
     /* Notlar: flex ile alta yayılır, alt boşluk dolar */
     
-    /* Sol taraftaki Boya Değişen butonları alt hizalaması - sağ taraftaki form-section'lar ile eşit */
-    .modal-column-left .form-section-inline:not(:first-child) {
+    /* Sol taraftaki form-section-inline boşlukları (Tramer hariç – o 3px ayrı) */
+    .modal-column-left .form-section-inline:not(:first-child):not(:has(#tramer-var)) {
         margin-bottom: 6px !important;
     }
-    /* Tramer – Boya/Değişen arası sıkı (mobil) */
-    #vehicle-modal .modal-column-left .form-section-inline:nth-of-type(3) {
-        margin-bottom: 2px !important;
+    /* Tramer – Boya arası 3px (nth-of-type 2px override kaldırıldı) */
+    #vehicle-modal .modal-column-left .form-section-inline:has(#tramer-var) {
+        margin-bottom: 3px !important;
     }
     
     .modal-column-right .form-section-inline:has(.radio-group) .radio-group { position: static; transform: none; right: auto; top: auto; }
