@@ -496,9 +496,9 @@ body.driver-modal-open {
     padding-top: 6px !important;
     padding-bottom: 6px !important;
   }
-  /* Sağ grid: tüm içerik (Not + Bildir dahil) ilk ekranda sığsın – dikey boşluklar daraltıldı */
+  /* Sağ grid: alt boşluk sıfır – çerçeveye tam yanaşsın */
   .dashboard-page .driver-two-panel {
-    padding-bottom: 8px !important;
+    padding-bottom: 0 !important;
   }
   .dashboard-page .driver-right-panel {
     gap: 4px !important;
@@ -584,7 +584,7 @@ body.driver-modal-open {
   width: 100%;
   max-width: 500px;
   margin: 0 auto;
-  padding: 8px 12px 16px;
+  padding: 8px 12px 0;
   gap: 4px;
   box-sizing: border-box;
   min-height: 0;
@@ -630,7 +630,7 @@ body.driver-modal-open {
   scrollbar-width: none;
   -ms-overflow-style: none;
   -webkit-overflow-scrolling: touch;
-  padding-bottom: 24px !important;
+  padding-bottom: 5px !important;
 }
 .driver-right-panel::-webkit-scrollbar {
   display: none !important;
@@ -873,8 +873,8 @@ body.driver-modal-open {
   display: none;
 }
 .driver-action-footer {
-  margin-top: 3px;
-  margin-bottom: 16px;
+  margin-top: 0;
+  margin-bottom: 0;
   padding-top: 0;
 }
 
@@ -2837,7 +2837,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     padding-bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important;
   }
   .dashboard-page .driver-right-panel {
-    padding-bottom: 24px !important;
+    padding-bottom: 5px !important;
   }
   .login-page {
     max-width: 100% !important;
