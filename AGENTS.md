@@ -34,6 +34,14 @@ sudo chmod 666 /var/run/docker.sock
 - `docker/Dockerfile` — `php:8.2-apache` image with mod_rewrite
 - `docker-compose.yml` — single `web` service on port 8080
 
+### Entry points
+
+| Module | URL | Description |
+|--------|-----|-------------|
+| Main dashboard | `http://localhost:8080/` | Main vehicle management dashboard |
+| Driver portal | `http://localhost:8080/driver/` | Driver login & dashboard |
+| Admin reports | `http://localhost:8080/admin/driver-report.html` | Monthly driver reports |
+
 ### Lint / Test / Build
 
 This project has **no** linting tools, test frameworks, or build systems. Validation is done through manual browser testing. PHP syntax can be checked with `php -l <file>.php` inside the container:
