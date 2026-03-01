@@ -2266,7 +2266,7 @@ body.driver-modal-open {
   border-width: 1px !important;
   border-color: rgba(74, 222, 128, 0.45) !important;
   color: rgba(74, 222, 128, 0.8) !important;
-  padding: 10px 14px !important;
+  padding: 7px 14px 8px !important;
 }
 #edit-request-modal .btn-submit:hover {
   border-color: rgba(74, 222, 128, 0.75) !important;
@@ -3561,7 +3561,7 @@ body.driver-action-block-open .driver-footer-back-wrap {
     padding: 5px 16px !important;
   }
   #edit-request-modal .btn-submit {
-    padding: 18px !important;
+    padding: 15px 18px 16px !important;
   }
 
   /* 3. Beni Hatırla checkbox mobilde 22px (base'de zaten gri + kırmızı) */
