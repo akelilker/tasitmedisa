@@ -489,6 +489,10 @@ textarea.notes-auto-expand {
     box-sizing: border-box;
     max-width: 100%;
 }
+/* Kayıt modalı Notlar: içerik uzadıkça aşağı genişler (max 300px), taşarsa scroll */
+#vehicle-modal #vehicle-notes {
+    max-height: 300px !important;
+}
 
 /* Kredi detay: resize ve scrollbar görünmesin (içerik 4 satıra kadar auto-expand, taşarsa wheel ile kayar) */
 #kredi-detay {
@@ -1544,9 +1548,10 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         padding-bottom: 6px !important;
         transform: translateY(-13px);
     }
-    /* Masaüstü: Notlar textarea – varsayılan 1 satır, içerik uzadıkça auto-expand ile uzar */
+    /* Masaüstü: Notlar textarea – varsayılan 1 satır, içerik uzadıkça aşağı genişler (max 300px) */
     #vehicle-modal .modal-body #vehicle-notes {
         min-height: 26px !important;
+        max-height: 300px !important;
         height: auto !important;
         overflow-x: hidden !important;
         max-width: 100% !important;
