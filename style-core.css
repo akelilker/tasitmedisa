@@ -1560,9 +1560,30 @@ body.modal-open .user-panel-link {
         background: var(--bg) !important;
     }
     
-    /* Mobil bildirimlerde plaka font boyutunu 2 punto küçült */
+    /* Mobil bildirimlerde plaka font boyutunu 2 punto küçült, tek satırda kal */
     .notification-item > div:first-child {
         font-size: 11px !important; /* 13px - 2pt (≈2px) = 11px */
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+    
+    /* Mobil: Plaka + açıklama tek satır (alta inmesin), tarih ikinci satırda sola dayalı */
+    .notification-item-activity .notif-line1 {
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+    .notification-item-activity .notif-line2 {
+        text-align: left !important;
+    }
+    
+    /* Mobil: 5 bildirim ekranda görünsün, fazlası için aşağı kaydırılabilir */
+    #notifications-dropdown {
+        max-height: 320px !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        -webkit-overflow-scrolling: touch;
     }
 
     /* === ANA KAYIT MODALI KURTARMA (Dar alana sığması için alt alta dizilmek zorundadır) === */

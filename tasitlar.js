@@ -3793,8 +3793,8 @@ function renderVehicleDetailLeft(vehicle) {
           const safePlate = (item.plate || '').replace(/"/g, '&quot;');
           const safeVid = String(item.vehicleId || '').replace(/"/g, '&quot;');
           html += `<button type="button" data-plate="${safePlate}" data-vehicle-id="${safeVid}" data-open-history="1" data-history-tab="${historyTab}" style="width: 100%; padding: 10px 12px; background: transparent; border: 1px solid rgba(255,255,255,0.25); color: #ccc; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 12px; text-align: left; margin-bottom: 4px; transition: all 0.2s ease;" class="notification-item notification-item-activity">
-          <div style="font-weight: 600; color: #fff; margin-bottom: 2px;">${escapeHtml(item.plate)}</div>
-          <div style="font-size: 11px; color: #999;">${escapeHtml(typeLabel)} - ${escapeHtml(dateDisplay)}</div>
+          <div class="notif-line1" style="font-weight: 600; color: #fff; margin-bottom: 2px;">${escapeHtml(item.plate)} ${escapeHtml(typeLabel)}</div>
+          <div class="notif-line2" style="font-size: 11px; color: #999;">${escapeHtml(dateDisplay)}</div>
         </button>`;
         });
       }
