@@ -1498,7 +1498,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         gap: 0 !important;
     }
     #vehicle-modal .modal-body .modal-column-right .form-section:has(#vehicle-notes) .form-label {
-        transform: translateY(-6px);
+        transform: translateY(-8px);
         margin-bottom: 0 !important;
     }
     /* Grid altları eşit: body flex yapıp grid’i büyütüyoruz; kolonlar stretch ile eşit yükseklikte */
