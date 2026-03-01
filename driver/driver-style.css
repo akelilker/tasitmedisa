@@ -516,9 +516,9 @@ body.driver-modal-open {
   .dashboard-page .driver-action-area .form-group label {
     margin-bottom: 4px !important;
   }
-  /* Not input: masaüstünde iç dikey 3px daha dar */
+  /* Not input: masaüstünde dar – Kaydet butonu yukarı gelsin */
   .dashboard-page .driver-action-area .form-group textarea.driver-ekstra-not {
-    padding-top: 3px !important;
+    padding-top: 2px !important;
     padding-bottom: 2px !important;
   }
 }
@@ -891,6 +891,10 @@ body.driver-modal-open {
   margin-top: 0;
   margin-bottom: 0;
   padding-top: 0;
+  gap: 3px;
+}
+.driver-action-footer .form-group label {
+  margin-bottom: 3px !important;
 }
 
 /* Km (veya tek aksiyon) açıkken sadece o grubu göster */
@@ -986,8 +990,8 @@ body.driver-modal-open {
 }
 #driver-input-area .form-group textarea.driver-ekstra-not,
 .driver-action-area .form-group textarea.driver-ekstra-not {
-  min-height: calc(1.1em - 3px);
-  height: calc(1.1em - 3px);
+  min-height: calc(1.1em - 10px);
+  height: calc(1.1em - 10px);
   resize: none;
   color: rgba(255, 255, 255, 0.7) !important;
 }
