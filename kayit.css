@@ -1535,13 +1535,14 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         overflow: hidden;
         flex: 0 0 0;
     }
-    /* Notlar ile Boya/Değişen aynı satırda: sağ sütun son blok alta itilir, alan doldurmaz */
+    /* Notlar ile Boya/Değişen aynı satırda: sağ sütun son blok alta itilir; Notlar etiketi–Kasko Kodu alt çerçevesi arası 3px daraltıldı */
     #vehicle-modal .modal-body .modal-column-right .form-section:has(#vehicle-notes) {
         margin-top: auto !important;
         margin-bottom: 0 !important;
         flex: none !important;
         min-width: 0;
         padding-bottom: 6px !important;
+        transform: translateY(-3px);
     }
     /* Masaüstü: Notlar textarea – varsayılan 1 satır, içerik uzadıkça auto-expand ile uzar */
     #vehicle-modal .modal-body #vehicle-notes {
