@@ -20,7 +20,23 @@ function toggleNotifications(e) {
   const notif = getNotif();
   const menu = getMenu();
   if (menu) menu.classList.remove('open');
-  if (notif) notif.classList.toggle('open');
+  if (notif) {
+    notif.classList.toggle('open');
+    if (notif.classList.contains('open')) {
+      var keys = [];
+      notif.querySelectorAll('[data-notif-key]').forEach(function(el) {
+        keys.push(el.getAttribute('data-notif-key'));
+        el.classList.remove('notification-unread');
+      });
+      if (keys.length) {
+        try {
+          var viewed = JSON.parse(sessionStorage.getItem('notifViewedKeys') || '[]');
+          keys.forEach(function(k) { if (viewed.indexOf(k) === -1) viewed.push(k); });
+          sessionStorage.setItem('notifViewedKeys', JSON.stringify(viewed));
+        } catch (err) {}
+      }
+    }
+  }
 }
 
 function showDataSubmenu() {

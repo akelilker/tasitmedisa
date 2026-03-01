@@ -674,6 +674,12 @@ html { overflow-x: hidden; }
   box-shadow: 0 0 8px rgba(var(--orange-warn-rgb), 0.2);
 }
 
+/* Okunmamış bildirimler: kırmızı çerçeve */
+#notifications-dropdown .notification-item-activity.notification-unread {
+  border-color: rgba(var(--theme-color-rgb), 0.6) !important;
+  box-shadow: 0 0 8px rgba(var(--theme-color-rgb), 0.2);
+}
+
 .notification-item:hover {
   border-color: var(--border-light) !important;
   box-shadow: 0 4px 12px var(--shadow-dark);
@@ -681,6 +687,7 @@ html { overflow-x: hidden; }
 
 /* Bildirim: Plaka + açıklama (uzarsa alt satıra iner), tarih ikinci satırda sola dayalı */
 #notifications-dropdown .notification-item-activity {
+  border: 1px solid rgba(255,255,255,0.25) !important;
   flex-direction: column !important;
   align-items: flex-start !important;
   justify-content: flex-start !important;
