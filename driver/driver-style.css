@@ -1068,8 +1068,9 @@ body.driver-modal-open {
   .driver-left-panel .driver-info-item:has(.value) .label::after {
     margin-right: 0.2em;
   }
+  /* Sağ grid butonları: mobilde dikey yükseklik +2px (6→7 üst/alt) */
   .driver-action-btn {
-    padding: 6px 10px;
+    padding: 7px 10px;
     font-size: 12.5px;
     display: flex;
     justify-content: center;
@@ -3797,9 +3798,9 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
 }
 
-/* --- iOS PWA: Kullanıcı Paneli ve Giriş Sayfası - çentiklere uyumlu çerçeve --- */
+/* --- iOS ve Android PWA: Kullanıcı Paneli ve Giriş Sayfası - çentiklere uyumlu çerçeve --- */
 @media (max-width: 768px) and (display-mode: standalone) {
-  /* iOS PWA: html/body safe-area padding */
+  /* Safe-area sadece html'de; body padding 0 ile çift çentik uygulanması önlenir */
   html {
     padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left) !important;
     box-sizing: border-box !important;
@@ -3809,6 +3810,12 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     padding: 0 !important;
     min-height: 100vh !important;
     min-height: 100dvh !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Splash: çentik/dynamic island altında kalmaması için safe-area padding */
+  .driver-splash {
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left) !important;
     box-sizing: border-box !important;
   }
 
