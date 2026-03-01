@@ -294,6 +294,14 @@
       var vehicleId = btn.getAttribute('data-vehicle-id') || '';
       var openHistory = btn.getAttribute('data-open-history') === '1';
       var historyTab = btn.getAttribute('data-history-tab') || '';
+      var notifKey = (btn.getAttribute('data-notif-key') || '').toString().trim();
+      if (notifKey) {
+        try {
+          var viewed = JSON.parse(sessionStorage.getItem('notifViewedKeysV2') || '[]');
+          if (viewed.indexOf(notifKey) === -1) { viewed.push(notifKey); sessionStorage.setItem('notifViewedKeysV2', JSON.stringify(viewed)); }
+          if (typeof window.updateNotifications === 'function') window.updateNotifications();
+        } catch (err) {}
+      }
       if (!plate && !vehicleId) return;
       if (typeof window.openVehiclesView === 'function') window.openVehiclesView();
       setTimeout(function() {
