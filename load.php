@@ -33,10 +33,10 @@ $content = file_get_contents($dataFile);
 
 // Dosya okunamazsa hata döndür
 if ($content === false) {
+    error_log('[Medisa load.php] Veri dosyası okunamadı: ' . $dataFile);
     http_response_code(500);
     echo json_encode([
-        'error' => 'Veri dosyası okunamadı',
-        'file_path' => $dataFile
+        'error' => 'Veri yüklenemedi. Lütfen daha sonra tekrar deneyin.'
     ], JSON_UNESCAPED_UNICODE);
     exit;
 }
@@ -44,10 +44,10 @@ if ($content === false) {
 // JSON geçerliliğini kontrol et
 $data = json_decode($content, true);
 if ($data === null) {
+    error_log('[Medisa load.php] Bozuk JSON: ' . json_last_error_msg());
     http_response_code(500);
     echo json_encode([
-        'error' => 'Bozuk JSON verisi',
-        'json_error' => json_last_error_msg()
+        'error' => 'Veri yüklenemedi. Lütfen daha sonra tekrar deneyin.'
     ], JSON_UNESCAPED_UNICODE);
     exit;
 }

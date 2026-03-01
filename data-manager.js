@@ -162,7 +162,12 @@ async function loadDataFromServer(forceRefresh = true) {
 
             if (!response.ok) {
                 const errorText = await response.text().catch(() => 'Yanıt okunamadı');
-                throw new Error(`HTTP error! status: ${response.status}, message: ${errorText.substring(0, 100)}`);
+                if (typeof window.__medisaLogError === 'function') {
+                    window.__medisaLogError('loadDataFromServer HTTP', new Error('status ' + response.status), errorText.substring(0, 200));
+                } else {
+                    console.error('[Medisa] loadDataFromServer HTTP hatası', response.status, errorText.substring(0, 200));
+                }
+                return loadDataFromLocalStorage();
             }
 
             // Önce text olarak oku, JSON olup olmadığını kontrol et
@@ -261,7 +266,8 @@ async function loadDataFromServer(forceRefresh = true) {
             return window.appData;
 
         } catch (error) {
-            // Hata durumunda localStorage'dan yükle
+            if (typeof window.__medisaLogError === 'function') window.__medisaLogError('loadDataFromServer', error);
+            else console.warn('[Medisa] Veri yüklenemedi, yerel veri kullanılıyor:', error && error.message);
             return loadDataFromLocalStorage();
         } finally {
             isDataLoading = false;
@@ -349,17 +355,6 @@ window.saveTasit = async function(tasit) {
 // Taşıt silme
 window.deleteTasit = async function(tasitId) {
     window.appData.tasitlar = window.appData.tasitlar.filter(t => t.id !== tasitId);
-    return await saveDataToServer();
-};
-
-// Kayıt ekleme/güncelleme
-window.saveKayit = async function(kayit) {
-    return await genericSaveData('kayitlar', kayit);
-};
-
-// Kayıt silme
-window.deleteKayit = async function(kayitId) {
-    window.appData.kayitlar = window.appData.kayitlar.filter(k => k.id !== kayitId);
     return await saveDataToServer();
 };
 

@@ -1419,8 +1419,9 @@
         link.click();
         window.URL.revokeObjectURL(url);
         } catch (error) {
-            console.error('Excel export hatası:', error);
-            alert('Excel dosyası oluşturulurken bir hata oluştu: ' + (error.message || error));
+            if (typeof window.__medisaLogError === 'function') window.__medisaLogError('Excel export', error);
+            else console.error('Excel export hatası:', error);
+            alert('Excel dosyası oluşturulurken bir hata oluştu. Lütfen tekrar deneyin.');
         }
     };
 
