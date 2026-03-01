@@ -3279,8 +3279,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     box-shadow: 0 -9px 22px rgba(var(--theme-color-rgb), 0.35) !important;
   }
 
-  /* Plaka listesi: temaya uyumlu koyu arka plan (--bg ile sol panel ile aynı) */
-  .dashboard-page .driver-panels-inner,
+  /* Plaka dropdown dışarı taşabilsin; panels-inner overflow: hidden kalsın ki sağ panel yüksekliği kısıtlansın ve Not+Bildir kaydırılabilir */
   .dashboard-page .driver-left-panel,
   .dashboard-page .driver-plate-dropdown-row {
     overflow: visible !important;
