@@ -161,16 +161,17 @@ body.driver-modal-open {
   border-top: 1.2px solid var(--border-red-tech);
 }
 
-/* Ortadaki bölüm: sol panel sabit, sadece sağ panel kaydırılır */
+/* Ortadaki bölüm: main kaydırılır, Not + Bildir aşağı kaydırınca görünür */
 .driver-scroll-area {
   flex: 1;
   min-height: 0;
-  overflow: hidden;
+  overflow-y: auto;
   overflow-x: hidden;
   padding-top: 0 !important;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* Dashboard: footer sabit altta, her zaman üstte (modallerin üzerinde) */
@@ -515,7 +516,7 @@ body.driver-modal-open {
 }
 .driver-scroll-area .driver-two-panel {
   border-top: none !important;
-  flex: 1;
+  flex: 0 0 auto;
   min-height: 0;
 }
 
