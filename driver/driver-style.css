@@ -2294,6 +2294,10 @@ body.driver-modal-open {
   #history-modal .history-card {
     padding: 7px 14px !important;
   }
+  /* Tarih (01 MART 2026) ile Bildirilen KM arası dikey boşluk 6px daralt */
+  #history-modal .history-header {
+    margin-bottom: -2px !important;
+  }
 }
 
 /* Geçmiş kayıtlar modal içi */
