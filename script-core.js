@@ -508,14 +508,12 @@ window.addEventListener('dataLoaded', () => { setTimeout(() => { if (window.hide
 setTimeout(() => { if (window.hideLoading) window.hideLoading(); }, 8000);
 
 /* =========================================
-   SERVICE WORKER REGISTRATION (ortak registerServiceWorker kullanımı)
+   SERVICE WORKER REGISTRATION (tek merkez: tüm sayfalar, scope /)
    ========================================= */
 (function() {
-  var p = typeof document !== 'undefined' && document.location ? document.location.pathname : '';
-  if (p.indexOf('/driver') !== -1 || p.indexOf('/admin') !== -1) return;
   window.registerServiceWorker({
     paths: ['./sw.js', '/sw.js', '/tasitmedisa/sw.js', '/medisa/sw.js'],
-    scope: './',
+    scope: '/',
     onUpdate: function() {
       var toast = document.createElement('div');
       toast.className = 'update-toast';
