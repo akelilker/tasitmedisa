@@ -3412,9 +3412,8 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     overflow: hidden !important;
     overscroll-behavior: none !important;
   }
-  /* Geçmiş Kayıtlar + Düzeltme Talebi: overlay footer'ın ÜSTÜNDE bitsin (footer görünsün); 6px boşluk koyu gölge ile kapansın */
-  #history-modal.driver-modal,
-  #edit-request-modal.driver-modal {
+  /* Geçmiş Kayıtlar: overlay footer'ın ÜSTÜNDE bitsin (footer görünsün); 6px boşluk koyu gölge ile kapansın. Düzeltme Talebi = kayıt modalı ile aynı (yukarıdaki blok). */
+  #history-modal.driver-modal {
     bottom: calc(var(--modal-gap-above-footer, 10px) + var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0) + 6px) !important;
     height: auto !important;
     max-height: calc(100vh - var(--modal-gap-above-footer, 10px) - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0) - 6px) !important;
