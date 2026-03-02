@@ -3984,19 +3984,18 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     bottom: 0 !important; /* Container dibine kadar; footer üstünde asılı çerçeve kalmasın */
   }
 
-  /* Content-wrap: iOS PWA'da ekstra safe-area padding kaldır (dashboard scroll) */
+  /* Content-wrap: iOS PWA'da safe-area sadece html'de; çift çentik yok */
   .dashboard-page .driver-scroll-area {
     padding-top: 0 !important;
   }
-  /* Login content-wrap: çentikten kaçınmak için üst safe-area */
   .login-page .content-wrap.driver-content-wrap {
-    padding-top: max(12px, env(safe-area-inset-top)) !important;
+    padding-top: 12px !important;
   }
 
-  /* Header: çentikten kaçınmak için üst safe-area; çizgiler anasayfa modalı ile aynı */
+  /* Header: safe-area html'de; sabit 12px ile çift boşluk kapatıldı */
   .dashboard-page .driver-header-fixed,
   .login-page .driver-header-fixed {
-    padding-top: max(12px, env(safe-area-inset-top)) !important;
+    padding-top: 12px !important;
     border-top: 0.99px solid rgba(var(--theme-color-rgb), 0.55) !important;
     border-top-left-radius: 38px !important;
     border-top-right-radius: 38px !important;
@@ -4129,7 +4128,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     padding-top: 0 !important;
   }
   html.driver-pwa-standalone .login-page .content-wrap.driver-content-wrap {
-    padding-top: max(12px, env(safe-area-inset-top)) !important;
+    padding-top: 12px !important; /* Safe-area html'de; çift çentik yok */
   }
   html.driver-pwa-standalone .dashboard-page .driver-header-fixed,
   html.driver-pwa-standalone .login-page .driver-header-fixed {
