@@ -3994,6 +3994,120 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
 }
 
+/* --- Aynı safe-area kuralları: display-mode eşleşmese bile JS ile driver-pwa-standalone class'ı varsa (iOS PWA) --- */
+@media (max-width: 768px) {
+  html.driver-pwa-standalone {
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left) !important;
+    box-sizing: border-box !important;
+  }
+  html.driver-pwa-standalone > body.dashboard-page,
+  html.driver-pwa-standalone > body.login-page {
+    padding: 0 !important;
+    min-height: 100vh !important;
+    min-height: 100dvh !important;
+    box-sizing: border-box !important;
+  }
+  html.driver-pwa-standalone .driver-splash {
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left) !important;
+    box-sizing: border-box !important;
+  }
+  html.driver-pwa-standalone .dashboard-page .app-container.driver-dashboard-container,
+  html.driver-pwa-standalone .login-page .app-container.driver-dashboard-container {
+    border-radius: 38px !important;
+    overflow: hidden !important;
+    border-top: 0.99px solid rgba(var(--theme-color-rgb), 0.55) !important;
+    box-shadow: 0 2px 14px rgba(var(--theme-color-rgb), 0.1) !important;
+    min-height: calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important;
+    min-height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom)) !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+  }
+  html.driver-pwa-standalone .dashboard-page .driver-dashboard-container::before,
+  html.driver-pwa-standalone .login-page .driver-dashboard-container::before {
+    border-radius: 38px !important;
+    border-left: 0.99px solid rgba(var(--theme-color-rgb), 0.55) !important;
+    border-right: 0.99px solid rgba(var(--theme-color-rgb), 0.55) !important;
+  }
+  html.driver-pwa-standalone .dashboard-page .driver-scroll-area {
+    padding-top: 0 !important;
+  }
+  html.driver-pwa-standalone .login-page .content-wrap.driver-content-wrap {
+    padding-top: max(12px, env(safe-area-inset-top)) !important;
+  }
+  html.driver-pwa-standalone .dashboard-page .driver-header-fixed,
+  html.driver-pwa-standalone .login-page .driver-header-fixed {
+    padding-top: max(12px, env(safe-area-inset-top)) !important;
+    border-top: 0.99px solid rgba(var(--theme-color-rgb), 0.55) !important;
+    border-top-left-radius: 38px !important;
+    border-top-right-radius: 38px !important;
+    border-left: none !important;
+    border-right: none !important;
+  }
+  html.driver-pwa-standalone .dashboard-page .hero.hero-two-rows .hero-logo,
+  html.driver-pwa-standalone .login-page .hero.hero-two-rows .hero-logo {
+    transform: translate(0, -6px) !important;
+    margin-right: 10px !important;
+  }
+  html.driver-pwa-standalone .dashboard-page .hero.hero-two-rows .hero-title-block .hero-title-line,
+  html.driver-pwa-standalone .login-page .hero.hero-two-rows .hero-title-block .hero-title-line {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: clip !important;
+    font-size: clamp(14px, 3.75vw, 18px) !important;
+    letter-spacing: clamp(0.7px, 0.2vw, 1.2px) !important;
+    line-height: 1.15 !important;
+  }
+  html.driver-pwa-standalone .dashboard-page #app-footer,
+  html.driver-pwa-standalone .login-page #app-footer.login-footer {
+    max-width: 100% !important;
+    border-top: 1px solid rgba(200, 200, 200, 0.7) !important;
+    border-left: 0.5px solid rgba(255, 255, 255, 0.18) !important;
+    border-right: 0.5px solid rgba(255, 255, 255, 0.18) !important;
+    box-shadow: 0 -15px 22px rgba(var(--theme-color-rgb), 0.35) !important;
+    padding-bottom: env(safe-area-inset-bottom, 0) !important;
+  }
+  html.driver-pwa-standalone .dashboard-page #app-footer .footer-content,
+  html.driver-pwa-standalone .login-page #app-footer.login-footer .footer-content {
+    max-width: 100% !important;
+    padding-bottom: max(12px, env(safe-area-inset-bottom)) !important;
+  }
+  html.driver-pwa-standalone #history-modal.driver-modal,
+  html.driver-pwa-standalone #edit-request-modal.driver-modal,
+  html.driver-pwa-standalone #driver-event-menu-modal.driver-modal,
+  html.driver-pwa-standalone #driver-anahtar-modal.driver-modal,
+  html.driver-pwa-standalone #driver-lastik-modal.driver-modal,
+  html.driver-pwa-standalone #driver-utts-modal.driver-modal,
+  html.driver-pwa-standalone #driver-muayene-modal.driver-modal,
+  html.driver-pwa-standalone #driver-sigorta-modal.driver-modal,
+  html.driver-pwa-standalone #driver-kasko-modal.driver-modal {
+    padding-top: env(safe-area-inset-top, 0) !important;
+  }
+  html.driver-pwa-standalone #history-modal .driver-modal-content,
+  html.driver-pwa-standalone #history-modal .modal-container,
+  html.driver-pwa-standalone #edit-request-modal .driver-modal-content,
+  html.driver-pwa-standalone #edit-request-modal .modal-container,
+  html.driver-pwa-standalone #driver-event-menu-modal .driver-modal-content,
+  html.driver-pwa-standalone #driver-event-menu-modal .modal-container,
+  html.driver-pwa-standalone #driver-anahtar-modal .driver-modal-content,
+  html.driver-pwa-standalone #driver-anahtar-modal .modal-container,
+  html.driver-pwa-standalone #driver-lastik-modal .driver-modal-content,
+  html.driver-pwa-standalone #driver-lastik-modal .modal-container,
+  html.driver-pwa-standalone #driver-utts-modal .driver-modal-content,
+  html.driver-pwa-standalone #driver-utts-modal .modal-container,
+  html.driver-pwa-standalone #driver-muayene-modal .driver-modal-content,
+  html.driver-pwa-standalone #driver-muayene-modal .modal-container,
+  html.driver-pwa-standalone #driver-sigorta-modal .driver-modal-content,
+  html.driver-pwa-standalone #driver-sigorta-modal .modal-container,
+  html.driver-pwa-standalone #driver-kasko-modal .driver-modal-content,
+  html.driver-pwa-standalone #driver-kasko-modal .modal-container {
+    margin: 0 !important;
+    height: calc(100% - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0)) !important;
+    max-height: calc(100% - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0)) !important;
+  }
+}
+
 /* --- h1 Metalik Gradient (anasayfa ile aynı) --- */
 .hero-title-wrap h1,
 .login-page .hero h1,
