@@ -8,33 +8,9 @@
     function getBranches() { return (typeof window.getMedisaBranches === 'function' ? window.getMedisaBranches() : null) || []; }
     function getUsers() { return (typeof window.getMedisaUsers === 'function' ? window.getMedisaUsers() : null) || []; }
 
-    // Liste metin format: kelimelerin ilk harfi büyük (TR locale); tire (-) sonrası da büyük (örn. Mercedes-Benz)
-    function toTitleCase(str) {
-        if (!str || str === '-') return str;
-        return String(str).trim().split(/\s+/).map(function(w) {
-            if (!w) return w;
-            return w.split('-').map(function(part) {
-                if (!part) return part;
-                return part.charAt(0).toLocaleUpperCase('tr-TR') + part.slice(1).toLocaleLowerCase('tr-TR');
-            }).join('-');
-        }).join(' ');
-    }
-
-    // Plaka: harfler tamamen büyük (TR locale)
-    function formatPlaka(str) {
-        if (str == null || str === '' || str === '-') return str === '' ? '-' : (str || '-');
-        return String(str).trim().toLocaleUpperCase('tr-TR');
-    }
-
-    // Ad Soyad: soyad tamamen büyük, ad(lar) title case
-    function formatAdSoyad(str) {
-        if (!str || str === '-') return str;
-        var parts = String(str).trim().split(/\s+/).filter(Boolean);
-        if (parts.length === 0) return str;
-        if (parts.length === 1) return toTitleCase(parts[0]);
-        var last = parts.pop();
-        return parts.map(function(w) { return w.charAt(0).toLocaleUpperCase('tr-TR') + w.slice(1).toLocaleLowerCase('tr-TR'); }).join(' ') + ' ' + last.toLocaleUpperCase('tr-TR');
-    }
+    function toTitleCase(str) { return (typeof window.toTitleCase === 'function' ? window.toTitleCase(str) : str); }
+    function formatPlaka(str) { return (typeof window.formatPlaka === 'function' ? window.formatPlaka(str) : (str == null ? '-' : String(str))); }
+    function formatAdSoyad(str) { return (typeof window.formatAdSoyad === 'function' ? window.formatAdSoyad(str) : str); }
 
     // --- STOK Görünümü State ---
     let stokCurrentBranchId = null; // null = grid görünümü, 'all' = tümü listesi, 'id' = şube listesi
@@ -64,43 +40,25 @@
     let stokBaseColumnOrder = ['sira', 'sube', 'yil', 'marka', 'plaka', 'sanziman', 'km']; // Temel sütunların sırası
     let stokDetailMenuOpen = false; // Detay Ekleme menüsü açık mı (toggle için tek kaynak)
 
-    // localStorage'dan aktif sütunları yükle
     function loadStokColumnState() {
-        try {
-            const saved = localStorage.getItem('stok_active_columns');
-            if (saved) {
-                stokActiveColumns = { ...stokActiveColumns, ...JSON.parse(saved) };
-            }
-            const savedOrder = localStorage.getItem('stok_column_order');
-            if (savedOrder) {
-                stokColumnOrder = JSON.parse(savedOrder);
-            }
-            const savedBaseOrder = localStorage.getItem('stok_base_column_order');
-            if (savedBaseOrder) {
-                const loadedOrder = JSON.parse(savedBaseOrder);
-                // Plaka sütunu mutlaka olmalı - yoksa varsayılan değere geri dön
-                if (!loadedOrder.includes('plaka')) {
-                    stokBaseColumnOrder = ['sira', 'sube', 'yil', 'marka', 'plaka', 'sanziman', 'km'];
-                    saveStokColumnState(); // Düzeltilmiş sıralamayı kaydet
-                } else {
-                    stokBaseColumnOrder = loadedOrder;
-                }
-            }
-        } catch (e) {
-            // Hata durumunda varsayılan değerler kullanılacak
-            stokBaseColumnOrder = ['sira', 'sube', 'yil', 'marka', 'plaka', 'sanziman', 'km'];
+        var load = typeof window.loadColumnState === 'function' ? window.loadColumnState : function(k, def) { try { var r = localStorage.getItem(k); return r ? JSON.parse(r) : def; } catch (e) { return def; } };
+        var savedCols = load('stok_active_columns', {});
+        if (savedCols && typeof savedCols === 'object') stokActiveColumns = { ...stokActiveColumns, ...savedCols };
+        var savedOrder = load('stok_column_order', []);
+        if (Array.isArray(savedOrder)) stokColumnOrder = savedOrder;
+        var savedBaseOrder = load('stok_base_column_order', ['sira', 'sube', 'yil', 'marka', 'plaka', 'sanziman', 'km']);
+        if (Array.isArray(savedBaseOrder)) {
+            if (savedBaseOrder.indexOf('plaka') === -1) {
+                stokBaseColumnOrder = ['sira', 'sube', 'yil', 'marka', 'plaka', 'sanziman', 'km'];
+                saveStokColumnState();
+            } else stokBaseColumnOrder = savedBaseOrder;
         }
     }
-
-    // Aktif sütunları localStorage'a kaydet
     function saveStokColumnState() {
-        try {
-            localStorage.setItem('stok_active_columns', JSON.stringify(stokActiveColumns));
-            localStorage.setItem('stok_column_order', JSON.stringify(stokColumnOrder));
-            localStorage.setItem('stok_base_column_order', JSON.stringify(stokBaseColumnOrder));
-        } catch (e) {
-            // Hata durumunda sessizce devam et
-        }
+        var save = typeof window.saveColumnState === 'function' ? window.saveColumnState : function(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
+        save('stok_active_columns', stokActiveColumns);
+        save('stok_column_order', stokColumnOrder);
+        save('stok_base_column_order', stokBaseColumnOrder);
     }
 
     // --- Modal ve Sekme Yönetimi ---
@@ -1105,19 +1063,7 @@
         draggedColumnKey = null;
     };
 
-    // Yardımcı fonksiyonlar
-    function formatDate(dateStr) {
-        if (!dateStr) return '-';
-        try {
-            const date = new Date(dateStr);
-            const day = String(date.getDate()).padStart(2, '0');
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const year = date.getFullYear();
-            return `${day}/${month}/${year}`;
-        } catch {
-            return dateStr;
-        }
-    }
+    function formatDate(dateStr) { return (typeof window.formatDateShort === 'function' ? window.formatDateShort(dateStr) : (dateStr ? String(dateStr) : '-')) || '-'; }
 
     function getVehicleUser(vehicle) {
         if (!vehicle.assignedUserId) return '-';
@@ -1838,9 +1784,7 @@
         }
     };
     
-    function formatDateForDisplay(dateStr) {
-        return !dateStr ? '' : formatDate(dateStr);
-    }
+    function formatDateForDisplay(dateStr) { return !dateStr ? '' : (typeof window.formatDateShort === 'function' ? window.formatDateShort(dateStr) : formatDate(dateStr)); }
 
     // Global Event Listeners (ESC ve Overlay click)
     document.addEventListener('keydown', (e) => {

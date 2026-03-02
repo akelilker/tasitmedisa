@@ -11,22 +11,9 @@
     try { return JSON.parse(localStorage.getItem(key) || '[]'); } catch { return []; }
   }
 
-  // Veri okuma: önce data-manager getter, sonra __medisa*Storage, sonra localStorage (DRY)
-  function readBranches() {
-    if (typeof window.getMedisaBranches === 'function') return window.getMedisaBranches();
-    if (window.__medisaBranchesStorage) return window.__medisaBranchesStorage.read();
-    return parseLocalStorageArray(BRANCHES_KEY);
-  }
-  function readVehicles() {
-    if (typeof window.getMedisaVehicles === 'function') return window.getMedisaVehicles();
-    if (window.__medisaVehiclesStorage) return window.__medisaVehiclesStorage.read();
-    return parseLocalStorageArray(VEHICLES_KEY);
-  }
-  function readUsers() {
-    if (typeof window.getMedisaUsers === 'function') return window.getMedisaUsers();
-    if (window.__medisaUsersStorage) return window.__medisaUsersStorage.read();
-    return parseLocalStorageArray(USERS_KEY);
-  }
+  function readBranches() { return (typeof window.getMedisaBranches === 'function' ? window.getMedisaBranches() : null) || parseLocalStorageArray(BRANCHES_KEY); }
+  function readVehicles() { return (typeof window.getMedisaVehicles === 'function' ? window.getMedisaVehicles() : null) || parseLocalStorageArray(VEHICLES_KEY); }
+  function readUsers() { return (typeof window.getMedisaUsers === 'function' ? window.getMedisaUsers() : null) || parseLocalStorageArray(USERS_KEY); }
 
   var parsedKaportaSvgCache = null;
   function getKaportaSvg() {
@@ -45,22 +32,9 @@
   }
 
   function writeVehicles(arr) {
-    if (window.__medisaVehiclesStorage) {
-        window.__medisaVehiclesStorage.write(arr);
-    } else {
-        localStorage.setItem(VEHICLES_KEY, JSON.stringify(arr));
-    }
-    
-    // window.appData'yı güncelle ve sunucuya kaydet
-    if (window.appData) {
-      window.appData.tasitlar = arr;
-      // Sunucuya kaydet (async, hata durumunda sessizce devam et)
-      if (window.saveDataToServer) {
-        window.saveDataToServer().catch(err => {
-          console.error('Sunucuya kaydetme hatası (sessiz):', err);
-        });
-      }
-    }
+    if (typeof window.writeVehicles === 'function') { window.writeVehicles(arr); return; }
+    localStorage.setItem(VEHICLES_KEY, JSON.stringify(arr));
+    if (window.appData) { window.appData.tasitlar = arr; if (window.saveDataToServer) window.saveDataToServer().catch(function(err) { console.error('Sunucuya kaydetme hatası (sessiz):', err); }); }
   }
 
   // Global State
@@ -75,35 +49,26 @@
   // Sütun Sıralaması State
   let vehicleColumnOrder = ['year', 'plate', 'brand', 'km', 'type', 'user', 'branch']; // Varsayılan sıralama
   
-  // Sütun sıralamasını localStorage'dan yükle
+  var defaultVehicleColumnOrder = ['year', 'plate', 'brand', 'km', 'type', 'user', 'branch'];
   function loadVehicleColumnOrder() {
-    try {
-      const saved = localStorage.getItem('vehicle_column_order');
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        // Tüm sütunların mevcut olduğunu kontrol et
-        const allColumns = ['year', 'plate', 'brand', 'km', 'type', 'user', 'branch'];
-        const validOrder = parsed.filter(col => allColumns.includes(col));
-        // Eksik sütunları ekle
-        allColumns.forEach(col => {
-          if (!validOrder.includes(col)) {
-            validOrder.push(col);
-          }
-        });
+    if (typeof window.loadColumnState === 'function') {
+      var saved = window.loadColumnState('vehicle_column_order', defaultVehicleColumnOrder);
+      if (Array.isArray(saved)) {
+        var allColumns = defaultVehicleColumnOrder.slice();
+        var validOrder = saved.filter(function(col) { return allColumns.indexOf(col) !== -1; });
+        allColumns.forEach(function(col) { if (validOrder.indexOf(col) === -1) validOrder.push(col); });
         vehicleColumnOrder = validOrder;
-      }
-    } catch (e) {
-      vehicleColumnOrder = ['year', 'plate', 'brand', 'km', 'type', 'user', 'branch'];
+      } else { vehicleColumnOrder = defaultVehicleColumnOrder.slice(); }
+    } else {
+      try {
+        var raw = localStorage.getItem('vehicle_column_order');
+        if (raw) { var p = JSON.parse(raw); if (Array.isArray(p)) vehicleColumnOrder = p; }
+      } catch (e) { vehicleColumnOrder = defaultVehicleColumnOrder.slice(); }
     }
   }
-  
-  // Sütun sıralamasını localStorage'a kaydet
   function saveVehicleColumnOrder() {
-    try {
-      localStorage.setItem('vehicle_column_order', JSON.stringify(vehicleColumnOrder));
-    } catch (e) {
-      // Sessizce devam et
-    }
+    if (typeof window.saveColumnState === 'function') window.saveColumnState('vehicle_column_order', vehicleColumnOrder);
+    else try { localStorage.setItem('vehicle_column_order', JSON.stringify(vehicleColumnOrder)); } catch (e) {}
   }
 
   // Grid genişlikleri sütun kimliğine göre (sürükle-bırak sonrası genişlik doğru sütunla kalsın)
@@ -161,30 +126,9 @@
     });
   }
 
-  // Liste Marka/Model: kelimelerin sadece ilk harfi büyük (title case)
-  function toTitleCase(str) {
-    if (!str || str === '-') return str;
-    return str.split(/\s+/).map(function(w) {
-      if (!w) return w;
-      return w.charAt(0).toLocaleUpperCase('tr-TR') + w.slice(1).toLocaleLowerCase('tr-TR');
-    }).join(' ');
-  }
-
-  // Plaka: harfler tamamen büyük (TR locale)
-  function formatPlaka(str) {
-    if (str == null || str === '' || str === '-') return str === '' ? '-' : (str || '-');
-    return String(str).trim().toLocaleUpperCase('tr-TR');
-  }
-
-  // Ad Soyad: soyad tamamen büyük, ad(lar) title case
-  function formatAdSoyad(str) {
-    if (!str || str === '-') return str;
-    var parts = String(str).trim().split(/\s+/).filter(Boolean);
-    if (parts.length === 0) return str;
-    if (parts.length === 1) return toTitleCase(parts[0]);
-    var last = parts.pop();
-    return parts.map(function(w) { return w.charAt(0).toLocaleUpperCase('tr-TR') + w.slice(1).toLocaleLowerCase('tr-TR'); }).join(' ') + ' ' + last.toLocaleUpperCase('tr-TR');
-  }
+  function toTitleCase(str) { return (typeof window.toTitleCase === 'function' ? window.toTitleCase(str) : str); }
+  function formatPlaka(str) { return (typeof window.formatPlaka === 'function' ? window.formatPlaka(str) : (str == null ? '-' : String(str))); }
+  function formatAdSoyad(str) { return (typeof window.formatAdSoyad === 'function' ? window.formatAdSoyad(str) : str); }
 
   // Global Detail Vehicle ID (HTML onclick erişimi için)
   window.currentDetailVehicleId = null;
@@ -1575,69 +1519,8 @@
 
   // --- VEHICLE DETAIL - NEW FUNCTIONS ---
 
-  /**
-   * Tarih uyarı kontrolü (3 hafta turuncu, 3 gün kırmızı)
-   */
-  function checkDateWarnings(dateString) {
-    if (!dateString) return { class: '', days: null };
-    
-    // YYYY-MM-DD formatından parse et
-    const date = new Date(dateString + 'T00:00:00');
-    if (isNaN(date.getTime())) return { class: '', days: null };
-    
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    date.setHours(0, 0, 0, 0);
-    
-    const diffTime = date - today;
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
-    if (diffDays < 0) {
-      // Geçmiş tarih - kırmızı
-      return { class: 'date-warning-red', days: diffDays };
-    } else if (diffDays <= 3) {
-      // 3 gün veya daha az - kırmızı
-      return { class: 'date-warning-red', days: diffDays };
-    } else if (diffDays <= 21) {
-      // 3 hafta veya daha az - turuncu
-      return { class: 'date-warning-orange', days: diffDays };
-    }
-    
-    return { class: '', days: diffDays };
-  }
-
-  /**
-   * Tarihi gg/aa/yyyy formatına çevirir
-   */
-  function formatDateForDisplay(dateStr) {
-    if (!dateStr) return '';
-    
-    // Eğer Date objesi ise string'e çevir
-    if (dateStr instanceof Date) {
-      const day = String(dateStr.getDate()).padStart(2, '0');
-      const month = String(dateStr.getMonth() + 1).padStart(2, '0');
-      const year = dateStr.getFullYear();
-      return `${day}/${month}/${year}`;
-    }
-    
-    // String değilse string'e çevir
-    const str = String(dateStr);
-    
-    // YYYY-MM-DD formatından parse et
-    if (str.includes('-')) {
-      const parts = str.split('-');
-      if (parts.length === 3) {
-        return `${parts[2]}/${parts[1]}/${parts[0]}`;
-      }
-    }
-    
-    // Zaten gg/aa/yyyy formatındaysa olduğu gibi döndür
-    if (str.includes('/')) {
-      return str;
-    }
-    
-    return str;
-  }
+  function checkDateWarnings(dateString) { return (typeof window.checkDateWarnings === 'function' ? window.checkDateWarnings(dateString) : { class: '', days: null }); }
+  function formatDateForDisplay(dateStr) { return (typeof window.formatDateShort === 'function' ? window.formatDateShort(dateStr) : (dateStr ? String(dateStr) : '')); }
 
   /**
    * Taşıt tipi görünen adını döndürür
@@ -2689,7 +2572,8 @@ function renderVehicleDetailLeft(vehicle) {
   };
 
   /**
-   * Yılları ekle helper fonksiyonu
+   * Yılları ekle (gg/aa/yyyy → +years → YYYY-MM-DD).
+   * Aynı iş kuralı driver_event.php içinde PHP ile kullanılır; değişiklikte her iki tarafı senkron tutun.
    */
   function addYears(dateStr, years) {
     if (!dateStr) return '';
@@ -2716,7 +2600,8 @@ function renderVehicleDetailLeft(vehicle) {
   }
 
   /**
-   * Muayene bitiş tarihi hesapla
+   * Muayene bitiş tarihi hesapla (otomobil/ticari + sıfır/sonraki muayene kuralları).
+   * Aynı algoritma driver_event.php calculateNextMuayene ile paylaşılır; senkron tutulmalı.
    * - Araç sıfır ise (üretim yılı == muayene yılı):
    *     otomobil → +3 yıl, küçük/büyük ticari → +2 yıl
    * - Sonraki muayeneler:
