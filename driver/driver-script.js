@@ -55,14 +55,50 @@ window.addEventListener('pagehide', clearSessionGreenFeedback);
 document.addEventListener('visibilitychange', function() { if (document.hidden) clearSessionGreenFeedback(); });
 
 /** iOS/Android PWA + mobil: çentik safe-area kurallarının uygulanması için (display-mode: standalone bazen eşleşmeyebilir) */
+// #region agent log
 (function ensurePwaStandaloneClass() {
   function isPWA() {
     return (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || (window.navigator && window.navigator.standalone === true);
   }
   if (isPWA() && window.innerWidth <= 768 && document.documentElement) {
     document.documentElement.classList.add('driver-pwa-standalone');
+    fetch('http://127.0.0.1:7824/ingest/aaeefe94-e582-470c-8671-3dbfa48b74c7',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'58ef87'},body:JSON.stringify({sessionId:'58ef87',location:'driver-script.js:ensurePwaStandaloneClass',message:'PWA class added',data:{innerWidth:window.innerWidth},timestamp:Date.now(),hypothesisId:'H3'})}).catch(function(){});
   }
 })();
+// #endregion agent log
+
+// #region agent log
+(function debugLayoutShift() {
+  function sendLayout(eventName, hypothesisId) {
+    var vv = window.visualViewport;
+    var body = document.body;
+    var container = document.querySelector('.driver-dashboard-container') || document.querySelector('.app-container');
+    var bodyH = body ? body.getBoundingClientRect().height : 0;
+    var containerH = container ? container.getBoundingClientRect().height : 0;
+    var hasPwa = document.documentElement && document.documentElement.classList.contains('driver-pwa-standalone');
+    fetch('http://127.0.0.1:7824/ingest/aaeefe94-e582-470c-8671-3dbfa48b74c7',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'58ef87'},body:JSON.stringify({sessionId:'58ef87',location:'driver-script.js:debugLayoutShift',message:'layout',data:{event:eventName,innerHeight:window.innerHeight,vvHeight:vv?vv.height:0,vvWidth:vv?vv.width:0,bodyHeight:bodyH,containerHeight:containerH,hasPwaClass:hasPwa},timestamp:Date.now(),hypothesisId:hypothesisId})}).catch(function(){});
+  }
+  var rafDone = false;
+  function onLoad() {
+    sendLayout('load','H1');
+    if (!rafDone) {
+      requestAnimationFrame(function() {
+        rafDone = true;
+        sendLayout('rAF-after-load','H2');
+      });
+    }
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() { sendLayout('DOMContentLoaded','H1'); });
+  } else {
+    sendLayout('DOMContentLoaded-late','H1');
+  }
+  window.addEventListener('load', onLoad);
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', function() { sendLayout('visualViewport.resize','H4'); });
+  }
+})();
+// #endregion agent log
 
 /** iOS PWA: modal içi input/textarea focus'ta klavye açıldıktan sonra alan görünür kalsın */
 document.addEventListener('focusin', function(ev) {

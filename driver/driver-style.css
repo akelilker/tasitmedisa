@@ -3480,8 +3480,9 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     border-left: 0.99px solid rgba(var(--theme-color-rgb), 0.55) !important;
     border-right: 0.99px solid rgba(var(--theme-color-rgb), 0.55) !important;
   }
-  /* Panel: kırmızı çizgiler footer üzerinde dursun, aşağı taşmasın */
-  .dashboard-page .driver-dashboard-container::before {
+  /* Panel + şifre ekranı: kırmızı çizgiler footer üzerinde dursun, aşağı taşmasın */
+  .dashboard-page .driver-dashboard-container::before,
+  .login-page .driver-dashboard-container::before {
     bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important;
   }
   /* Footer anasayfa ile aynı: belirgin gri üst çizgi, yan soluk çizgiler (footerdan yükselen), kırmızı glow */
@@ -3976,7 +3977,8 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     border-left: 0.99px solid rgba(var(--theme-color-rgb), 0.55) !important;
     border-right: 0.99px solid rgba(var(--theme-color-rgb), 0.55) !important;
   }
-  .dashboard-page .driver-dashboard-container::before {
+  .dashboard-page .driver-dashboard-container::before,
+  .login-page .driver-dashboard-container::before {
     bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important;
   }
 
@@ -4120,7 +4122,8 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     border-left: 0.99px solid rgba(var(--theme-color-rgb), 0.55) !important;
     border-right: 0.99px solid rgba(var(--theme-color-rgb), 0.55) !important;
   }
-  html.driver-pwa-standalone .dashboard-page .driver-dashboard-container::before {
+  html.driver-pwa-standalone .dashboard-page .driver-dashboard-container::before,
+  html.driver-pwa-standalone .login-page .driver-dashboard-container::before {
     bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important;
   }
   html.driver-pwa-standalone .dashboard-page .driver-scroll-area {
