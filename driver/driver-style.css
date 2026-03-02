@@ -194,6 +194,14 @@ body.driver-modal-open {
   box-shadow: 0 -10px 20px rgba(var(--theme-color-rgb), 0.16) !important;
 }
 
+/* Masaüstü: modal açıkken footer flu görünmesin, kaydırmada gizlensin */
+@media (min-width: 641px) {
+  body.driver-modal-open #app-footer {
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+}
+
 .driver-content-wrap {
   overflow-y: hidden !important;
   overflow-x: hidden !important;
