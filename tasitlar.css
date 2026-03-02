@@ -2955,16 +2955,18 @@
     padding: 1px !important; /* Çerçeveye 1px */
   } 
 
-  /* Mobil: overlay yüksekliği top-bottom ile (footer ile 10px boşluk style-core'da) */
+  /* Mobil: overlay yüksekliği top-bottom ile (footer ile 10px boşluk style-core'da); padding-bottom 0 = Raporlar/Kayıt ile aynı boşluk */
   .tasitlar-modal-overlay {
     height: auto !important;
+    padding-bottom: 0 !important;
     max-height: calc(100vh - var(--modal-gap-above-footer) - var(--app-footer-height) - env(safe-area-inset-bottom, 0)) !important;
     max-height: calc(100dvh - var(--modal-gap-above-footer) - var(--app-footer-height) - env(safe-area-inset-bottom, 0)) !important;
   }
-  /* iOS PWA: çentik (notch) alanı için üst padding (base kuralındaki padding-top:0'ı ezer) */
+  /* iOS PWA: çentik (notch) alanı için üst padding (base kuralındaki padding-top:0'ı ezer); alt padding 0 = diğer modallarla aynı */
   @media (display-mode: standalone) {
     .tasitlar-modal-overlay {
       padding-top: env(safe-area-inset-top) !important;
+      padding-bottom: 0 !important;
     }
   }
   /* Ortak mobil container + iOS PWA: style-core.css (.modal-overlay .modal-container) */
