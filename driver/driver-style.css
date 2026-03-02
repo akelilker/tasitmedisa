@@ -1194,6 +1194,19 @@ body.driver-modal-open {
     overflow: hidden !important;
     text-overflow: ellipsis !important;
   }
+  /* iOS: başlık metinleri ince/bozuk görünmesin – font smoothing + hafif gölge */
+  .login-page .hero.hero-two-rows .hero-title-block .hero-title-line,
+  .login-page .hero-title-block .hero-panel-subtitle {
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
+    text-rendering: optimizeLegibility !important;
+  }
+  .login-page .hero.hero-two-rows .hero-title-block .hero-title-line {
+    text-shadow: 0 0 1px rgba(255, 255, 255, 0.25) !important;
+  }
+  .login-page .hero-title-block .hero-panel-subtitle {
+    text-shadow: 0 0 1px rgba(255, 255, 255, 0.25) !important;
+  }
   .dashboard-page .hero-logo img {
     width: 100% !important;
     height: auto !important;
@@ -3445,9 +3458,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     border-left: 0.99px solid rgba(var(--theme-color-rgb), 0.55) !important;
     border-right: 0.99px solid rgba(var(--theme-color-rgb), 0.55) !important;
   }
-  .login-page .driver-dashboard-container::before {
-    bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important;
-  }
+  /* Kırmızı çizgiler footer'a kadar insın (bottom override yok; container tam yükseklik, çizgiler footera değer) */
   /* Footer anasayfa ile aynı: belirgin gri üst çizgi, yan soluk çizgiler (footerdan yükselen), kırmızı glow */
   .dashboard-page #app-footer,
   .login-page #app-footer.login-footer {
@@ -3928,15 +3939,12 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     max-width: 100% !important;
     margin: 0 !important;
   }
-  /* ::before yan çizgiler: container border-radius ile aynı kavis; kalınlık anasayfa modalı ile aynı */
+  /* ::before yan çizgiler: container border-radius ile aynı kavis; kalınlık anasayfa modalı ile aynı; footer'a kadar insın (bottom override yok) */
   .dashboard-page .driver-dashboard-container::before,
   .login-page .driver-dashboard-container::before {
     border-radius: 38px !important;
     border-left: 0.99px solid rgba(var(--theme-color-rgb), 0.55) !important;
     border-right: 0.99px solid rgba(var(--theme-color-rgb), 0.55) !important;
-  }
-  .login-page .driver-dashboard-container::before {
-    bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important;
   }
 
   /* Content-wrap: iOS PWA'da ekstra safe-area padding kaldır (dashboard scroll) */
@@ -4074,9 +4082,6 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     border-left: 0.99px solid rgba(var(--theme-color-rgb), 0.55) !important;
     border-right: 0.99px solid rgba(var(--theme-color-rgb), 0.55) !important;
   }
-  html.driver-pwa-standalone .login-page .driver-dashboard-container::before {
-    bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important;
-  }
   html.driver-pwa-standalone .dashboard-page .driver-scroll-area {
     padding-top: 0 !important;
   }
@@ -4115,6 +4120,14 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     white-space: nowrap !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
+  }
+  /* iOS PWA: şifre ekranı başlıkları ince/bozuk görünmesin */
+  html.driver-pwa-standalone .login-page .hero.hero-two-rows .hero-title-block .hero-title-line,
+  html.driver-pwa-standalone .login-page .hero-title-block .hero-panel-subtitle {
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
+    text-rendering: optimizeLegibility !important;
+    text-shadow: 0 0 1px rgba(255, 255, 255, 0.25) !important;
   }
   html.driver-pwa-standalone .dashboard-page #app-footer,
   html.driver-pwa-standalone .login-page #app-footer.login-footer {
