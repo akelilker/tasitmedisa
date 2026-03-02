@@ -57,6 +57,17 @@ Deploy script veya GitHub Actions kullanıyorsan hedef path’i canlı klasörle
 
 ---
 
+## Favicon (favicon.ico 404)
+
+Tarayıcılar sıkça site kökünde `https://www.karmotors.com.tr/favicon.ico` ister. Uygulama ikonu `medisa/icon/favicon.ico` (veya `tasitmedisa/icon/favicon.ico`) olduğu için kök isteği 404 verir.
+
+**Seçenekler:**
+
+1. **Nginx kullanıyorsan:** `docker/nginx-proxy.conf` içindeki gibi kök favicon'u uygulama ikonuna yönlendir: `location = /favicon.ico { return 302 /medisa/icon/favicon.ico; }`
+2. **cPanel / Apache:** Site köküne (örn. `public_html/favicon.ico`) `medisa/icon/favicon.ico` dosyasının bir kopyasını koy veya kök `.htaccess` ile `Redirect 302 /favicon.ico /medisa/icon/favicon.ico` ekle.
+
+---
+
 ## apple-touch-icon
 
 Manifest ve HTML **apple-touch-icon.svg** kullanıyor. Tarayıcı bazen otomatik `apple-touch-icon.png` isteyebilir; 404’ü kapatmak için `docker/nginx-proxy.conf` içinde `.png` → `.svg` redirect’i tanımlı (sunucuda bu config kullanılsın).
