@@ -142,12 +142,14 @@ window.checkDateWarnings = function(dateString) {
   return { class: '', days: diffDays };
 };
 
-/** Kısa tarih: Date veya string → gg/aa/yyyy */
+/** Kısa tarih: Date veya string → gg/aa/yyyy (padStart bazı WebKit sürümlerinde RangeError verebilir, güvenli sarmalayıcı) */
 window.formatDateShort = function(dateStr) {
   if (!dateStr) return '';
+  function pad2(n) { var s = String(n); return s.length >= 2 ? s : '0' + s; }
   if (dateStr instanceof Date) {
     var d = dateStr;
-    return String(d.getDate()).padStart(2, '0') + '/' + String(d.getMonth() + 1).padStart(2, '0') + '/' + d.getFullYear();
+    if (isNaN(d.getTime())) return '';
+    return pad2(d.getDate()) + '/' + pad2(d.getMonth() + 1) + '/' + d.getFullYear();
   }
   var str = String(dateStr);
   if (str.indexOf('-') !== -1) {
