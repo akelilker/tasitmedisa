@@ -1693,41 +1693,45 @@ function updateHistoryTriggerTone(selectedValue) {
 
 // Geçmiş kayıtlar - custom dropdown
 window.showHistory = function() {
-    const hiddenInput = document.getElementById('history-vehicle-filter');
-    const triggerText = document.querySelector('.history-vehicle-trigger-text');
-    const dropdown = document.getElementById('history-vehicle-dropdown');
-    const trigger = document.querySelector('.history-vehicle-trigger');
+    var modal = document.getElementById('history-modal');
+    var hiddenInput = document.getElementById('history-vehicle-filter');
+    var triggerText = document.querySelector('.history-vehicle-trigger-text');
+    var dropdown = document.getElementById('history-vehicle-dropdown');
+    var trigger = document.querySelector('.history-vehicle-trigger');
+    if (!modal || !hiddenInput || !dropdown) return;
     dropdown.innerHTML = '';
-    const optAll = document.createElement('div');
+    var optAll = document.createElement('div');
     optAll.className = 'history-vehicle-option';
     optAll.dataset.value = '';
     optAll.textContent = 'Tüm Taşıtlar';
     optAll.onclick = function() { selectHistoryVehicle('', 'Tüm Taşıtlar'); };
     dropdown.appendChild(optAll);
-    allHistoryVehicles.forEach(v => {
-        const opt = document.createElement('div');
+    (allHistoryVehicles || []).forEach(function(v) {
+        var opt = document.createElement('div');
         opt.className = 'history-vehicle-option';
         opt.dataset.value = String(v.id);
-        const brandModel = v.brandModel || [v.marka, v.model].filter(Boolean).join(' ');
+        var brandModel = v.brandModel || [v.marka, v.model].filter(Boolean).join(' ');
         opt.textContent = [v.plaka, brandModel].filter(Boolean).join(' – ');
         opt.onclick = function() { selectHistoryVehicle(String(v.id), opt.textContent); };
         dropdown.appendChild(opt);
     });
-    let defaultVal = '';
-    let defaultText = 'Tüm Taşıtlar';
-    if (allHistoryVehicles.length === 1) {
+    var defaultVal = '';
+    var defaultText = 'Tüm Taşıtlar';
+    if (allHistoryVehicles && allHistoryVehicles.length === 1) {
         defaultVal = String(allHistoryVehicles[0].id);
-        const bm = allHistoryVehicles[0].brandModel || [allHistoryVehicles[0].marka, allHistoryVehicles[0].model].filter(Boolean).join(' ');
+        var bm = allHistoryVehicles[0].brandModel || [allHistoryVehicles[0].marka, allHistoryVehicles[0].model].filter(Boolean).join(' ');
         defaultText = [allHistoryVehicles[0].plaka, bm].filter(Boolean).join(' – ');
     }
     hiddenInput.value = defaultVal;
     if (triggerText) triggerText.textContent = defaultText;
     updateHistoryTriggerTone(defaultVal);
-    if (dropdown) dropdown.style.display = 'none';
+    dropdown.style.display = 'none';
     if (trigger) trigger.classList.remove('history-vehicle-trigger-open');
-    renderHistoryList();
-    document.getElementById('history-modal').classList.add('show');
+    modal.classList.add('show');
     updateDriverModalBodyClass();
+    requestAnimationFrame(function() {
+        renderHistoryList();
+    });
 };
 
 window.toggleHistoryVehicleDropdown = function(ev) {
@@ -1769,7 +1773,8 @@ document.addEventListener('click', function(ev) {
 });
 
 function buildCombinedHistoryList() {
-    const vehicleFilter = document.getElementById('history-vehicle-filter').value;
+    var filterEl = document.getElementById('history-vehicle-filter');
+    var vehicleFilter = (filterEl && filterEl.value) ? filterEl.value : '';
     const hareketler = (allHistoryRecords || []).map(r => ({ ...r, _type: 'hareket' }));
     const eventItems = [];
     (allHistoryVehicles || []).forEach(v => {
@@ -1852,10 +1857,17 @@ function capitalizeWords(str) {
 }
 
 function renderHistoryList() {
-    const sorted = buildCombinedHistoryList();
-    const listEl = document.getElementById('history-list');
+    var listEl = document.getElementById('history-list');
+    if (!listEl) return;
+    var sorted;
+    try {
+        sorted = buildCombinedHistoryList();
+    } catch (e) {
+        listEl.innerHTML = '<p class="history-empty">Kayıtlar yüklenirken hata oluştu.</p>';
+        return;
+    }
     listEl.innerHTML = '';
-    if (sorted.length === 0) {
+    if (!sorted || sorted.length === 0) {
         listEl.innerHTML = '<p class="history-empty">Geçmiş kayıt bulunamadı.</p>';
         return;
     }
