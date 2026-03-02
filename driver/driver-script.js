@@ -54,6 +54,26 @@ function clearSessionGreenFeedback() { lastCompletedActionInSession = null; }
 window.addEventListener('pagehide', clearSessionGreenFeedback);
 document.addEventListener('visibilitychange', function() { if (document.hidden) clearSessionGreenFeedback(); });
 
+/** iOS/Android PWA + mobil: çentik safe-area kurallarının uygulanması için (display-mode: standalone bazen eşleşmeyebilir) */
+(function ensurePwaStandaloneClass() {
+  function isPWA() {
+    return (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || (window.navigator && window.navigator.standalone === true);
+  }
+  if (isPWA() && window.innerWidth <= 768 && document.documentElement) {
+    document.documentElement.classList.add('driver-pwa-standalone');
+  }
+})();
+
+/** iOS PWA: modal içi input/textarea focus'ta klavye açıldıktan sonra alan görünür kalsın */
+document.addEventListener('focusin', function(ev) {
+  var el = ev.target;
+  if (el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') && el.closest && el.closest('.driver-modal')) {
+    setTimeout(function() {
+      if (el && typeof el.scrollIntoView === 'function') el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 350);
+  }
+});
+
 /** Modal açıkken body scroll kilitlensin (sadece modal içi kayar) */
 function updateDriverModalBodyClass() {
   var open = document.querySelector('.driver-modal.show');
@@ -110,6 +130,15 @@ if (document.getElementById('login-form')) {
     if (usernameInput) usernameInput.addEventListener('touchstart', function() { removeReadonlyOnFocus(this); }, { once: true, passive: true });
     if (passwordInput) passwordInput.addEventListener('focus', function() { removeReadonlyOnFocus(this); }, { once: true });
     if (passwordInput) passwordInput.addEventListener('touchstart', function() { removeReadonlyOnFocus(this); }, { once: true, passive: true });
+
+    /* iOS PWA: klavye açıldığında alan görünür kalsın – focus sonrası gecikmeli scroll */
+    function scrollInputIntoView(el) {
+      if (el && typeof el.scrollIntoView === 'function') {
+        setTimeout(function() { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 350);
+      }
+    }
+    if (usernameInput) usernameInput.addEventListener('focus', function() { scrollInputIntoView(this); });
+    if (passwordInput) passwordInput.addEventListener('focus', function() { scrollInputIntoView(this); });
 
     document.getElementById('login-form').addEventListener('submit', async (e) => {
         e.preventDefault();
