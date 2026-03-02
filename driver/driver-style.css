@@ -3384,15 +3384,14 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     overflow: hidden !important;
     overscroll-behavior: none !important;
   }
-  /* Geçmiş Kayıtlar + Düzeltme Talebi: overlay tam yükseklik, alt padding ile 6px boşluk; boşlukta çerçeve parçaları görünmesin */
+  /* Geçmiş Kayıtlar + Düzeltme Talebi: overlay footer'ın ÜSTÜNDE bitsin (footer görünsün); 6px boşluk koyu gölge ile kapansın */
   #history-modal.driver-modal,
   #edit-request-modal.driver-modal {
-    top: 0 !important;
-    bottom: 0 !important;
-    height: 100vh !important;
-    height: 100dvh !important;
-    max-height: none !important;
-    padding-bottom: calc(var(--modal-gap-above-footer, 10px) + var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0) + 6px) !important;
+    bottom: calc(var(--modal-gap-above-footer, 10px) + var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0) + 6px) !important;
+    height: auto !important;
+    max-height: calc(100vh - var(--modal-gap-above-footer, 10px) - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0) - 6px) !important;
+    max-height: calc(100dvh - var(--modal-gap-above-footer, 10px) - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0) - 6px) !important;
+    box-shadow: 0 6px 0 0 #080d16 !important; /* 6px boşlukta çerçeve parçaları görünmesin */
   }
   /* Modal açıkken üst kırmızı çerçeve görünsün (başlık rengi kesmesin) */
   #history-modal.driver-modal.show::after,
