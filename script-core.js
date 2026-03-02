@@ -101,6 +101,145 @@ window.formatNumber = function(num) {
   return numStr.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 };
 
+/** Attribute içeriği için HTML escape (& " < > ') */
+window.escapeAttr = function(s) {
+  if (s == null) return '';
+  return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+};
+
+/** KM gösterimi: rakam + binlik nokta; boşta '–' (rapor/admin ile uyumlu) */
+window.formatKm = function(value) {
+  if (value == null || value === '') return '–';
+  var numStr = String(value).replace(/[^\d]/g, '');
+  if (!numStr) return '–';
+  return numStr.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+};
+
+/** Kelimelerin ilk harfi büyük (tr-TR); tire ile ayrılan parçalar da büyütülür (Mercedes-Benz) */
+window.capitalizeWords = function(str) {
+  if (!str || typeof str !== 'string') return str;
+  return str.split(/\s+/).map(function(w) {
+    if (!w) return w;
+    return w.split('-').map(function(part) {
+      if (!part) return part;
+      return part.charAt(0).toLocaleUpperCase('tr-TR') + part.slice(1).toLocaleLowerCase('tr-TR');
+    }).join('-');
+  }).join(' ');
+};
+
+/** Tarih uyarı sınıfı (geçmiş/≤3 gün kırmızı, ≤21 gün turuncu) */
+window.checkDateWarnings = function(dateString) {
+  if (!dateString) return { class: '', days: null };
+  var date = new Date(dateString + 'T00:00:00');
+  if (isNaN(date.getTime())) return { class: '', days: null };
+  var today = new Date();
+  today.setHours(0, 0, 0, 0);
+  date.setHours(0, 0, 0, 0);
+  var diffDays = Math.ceil((date - today) / (1000 * 60 * 60 * 24));
+  if (diffDays < 0) return { class: 'date-warning-red', days: diffDays };
+  if (diffDays <= 3) return { class: 'date-warning-red', days: diffDays };
+  if (diffDays <= 21) return { class: 'date-warning-orange', days: diffDays };
+  return { class: '', days: diffDays };
+};
+
+/** Kısa tarih: Date veya string → gg/aa/yyyy */
+window.formatDateShort = function(dateStr) {
+  if (!dateStr) return '';
+  if (dateStr instanceof Date) {
+    var d = dateStr;
+    return String(d.getDate()).padStart(2, '0') + '/' + String(d.getMonth() + 1).padStart(2, '0') + '/' + d.getFullYear();
+  }
+  var str = String(dateStr);
+  if (str.indexOf('-') !== -1) {
+    var parts = str.split('-');
+    if (parts.length === 3) return parts[2] + '/' + parts[1] + '/' + parts[0];
+  }
+  if (str.indexOf('/') !== -1) return str;
+  return str;
+};
+
+/** Başlık formatı: kelime başı büyük, tire sonrası da (Mercedes-Benz) */
+window.toTitleCase = function(str) {
+  if (!str || str === '-') return str;
+  return String(str).trim().split(/\s+/).map(function(w) {
+    if (!w) return w;
+    return w.split('-').map(function(part) {
+      if (!part) return part;
+      return part.charAt(0).toLocaleUpperCase('tr-TR') + part.slice(1).toLocaleLowerCase('tr-TR');
+    }).join('-');
+  }).join(' ');
+};
+
+/** Plaka: tamamen büyük (tr-TR) */
+window.formatPlaka = function(str) {
+  if (str == null || str === '' || str === '-') return str === '' ? '-' : (str || '-');
+  return String(str).trim().toLocaleUpperCase('tr-TR');
+};
+
+/** Ad Soyad: soyad büyük, ad(lar) title case */
+window.formatAdSoyad = function(str) {
+  if (!str || str === '-') return str;
+  var parts = String(str).trim().split(/\s+/).filter(Boolean);
+  if (parts.length === 0) return str;
+  if (parts.length === 1) return window.toTitleCase(parts[0]);
+  var last = parts.pop();
+  return parts.map(function(w) { return w.charAt(0).toLocaleUpperCase('tr-TR') + w.slice(1).toLocaleLowerCase('tr-TR'); }).join(' ') + ' ' + last.toLocaleUpperCase('tr-TR');
+};
+
+/** Kolon state: localStorage'dan oku (key → JSON); yoksa default dön */
+window.loadColumnState = function(key, defaultVal) {
+  try {
+    var raw = localStorage.getItem(key);
+    if (raw) return JSON.parse(raw);
+  } catch (e) {}
+  return defaultVal;
+};
+
+/** Kolon state: localStorage'a yaz */
+window.saveColumnState = function(key, state) {
+  try {
+    localStorage.setItem(key, JSON.stringify(state));
+  } catch (e) {}
+};
+
+/**
+ * Service Worker ortak kayıt: paths ve scope ile dene, güncelleme bildirimi opsiyonel.
+ * @param {Object} opts - { paths: string[], scope: string, onUpdate?: function() }
+ */
+window.registerServiceWorker = function(opts) {
+  if (!('serviceWorker' in navigator) || !opts || !Array.isArray(opts.paths) || !opts.scope) return;
+  var currentPathIndex = 0;
+  var paths = opts.paths;
+  var scope = opts.scope;
+  var onUpdate = opts.onUpdate || null;
+  function tryRegister() {
+    if (currentPathIndex >= paths.length) return;
+    var swPath = paths[currentPathIndex];
+    navigator.serviceWorker.register(swPath, { scope: scope })
+      .then(function(registration) {
+        if (onUpdate && registration) {
+          registration.addEventListener('updatefound', function() {
+            var newWorker = registration.installing;
+            if (newWorker) {
+              newWorker.addEventListener('statechange', function() {
+                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                  onUpdate();
+                }
+              });
+            }
+          });
+        }
+      })
+      .catch(function(e) {
+        currentPathIndex++;
+        tryRegister();
+      });
+  }
+  window.addEventListener('load', function() {
+    tryRegister();
+  });
+};
+
 window.debounce = function(fn, ms) {
   var t;
   return function() {
@@ -367,47 +506,26 @@ window.addEventListener('dataLoaded', () => { setTimeout(() => { if (window.hide
 setTimeout(() => { if (window.hideLoading) window.hideLoading(); }, 8000);
 
 /* =========================================
-   SERVICE WORKER REGISTRATION
+   SERVICE WORKER REGISTRATION (ortak registerServiceWorker kullanımı)
    ========================================= */
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    // Service Worker kaydını güvenli şekilde dene
-    // Önce mevcut dizinde dene, sonra root'ta dene
-    const swPaths = ['./sw.js', '/sw.js', '/tasitmedisa/sw.js', '/medisa/sw.js'];
-    let currentPathIndex = 0;
-    
-    function tryRegisterSW() {
-      if (currentPathIndex >= swPaths.length) {
-        // Tüm path'ler denendi, sessizce devam et
-        return;
+(function() {
+  var p = typeof document !== 'undefined' && document.location ? document.location.pathname : '';
+  if (p.indexOf('/driver') !== -1 || p.indexOf('/admin') !== -1) return;
+  window.registerServiceWorker({
+    paths: ['./sw.js', '/sw.js', '/tasitmedisa/sw.js', '/medisa/sw.js'],
+    scope: './',
+    onUpdate: function() {
+      var toast = document.createElement('div');
+      toast.className = 'update-toast';
+      toast.innerHTML = '<span class="update-toast-text">Yeni sürüm mevcut</span><button type="button" class="update-toast-btn">Yenile</button>';
+      document.body.appendChild(toast);
+      requestAnimationFrame(function() { toast.classList.add('visible'); });
+      if (toast.querySelector('.update-toast-btn')) {
+        toast.querySelector('.update-toast-btn').addEventListener('click', function() { window.location.reload(true); });
       }
-      
-      const swPath = swPaths[currentPathIndex];
-      navigator.serviceWorker.register(swPath, { scope: './' })
-        .then((registration) => {
-          // Yeni service worker varsa güncelle
-          registration.addEventListener('updatefound', () => {
-            const newWorker = registration.installing;
-            newWorker.addEventListener('statechange', () => {
-              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                var toast = document.createElement('div');
-                toast.className = 'update-toast';
-                toast.innerHTML = '<span class="update-toast-text">Yeni sürüm mevcut</span><button type="button" class="update-toast-btn">Yenile</button>';
-                document.body.appendChild(toast);
-                requestAnimationFrame(function() { toast.classList.add('visible'); });
-                toast.querySelector('.update-toast-btn').addEventListener('click', function() {
-                  window.location.reload(true);
-                });
-              }
-            });
-          });
-        })
-        .catch((e) => { currentPathIndex++; tryRegisterSW(); });
     }
-    
-    tryRegisterSW();
   });
-}
+})();
 
 /* =========================================
    PWA INSTALL PROMPT HANDLER
