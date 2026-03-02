@@ -4,7 +4,7 @@
 
 (function () {
   var API_BASE = './';
-  var APP_VERSION = 'v78.1';
+  var APP_VERSION = 'v78.3';
   var reportPeriod = '';
   var reportBranch = '';
   var reportStatus = '';
