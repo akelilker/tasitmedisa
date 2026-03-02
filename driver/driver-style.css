@@ -561,6 +561,43 @@ body.driver-modal-open {
   text-align: center;
   white-space: nowrap;
   padding: 0 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+.driver-sliding-warning .driver-warning-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+  flex: 1;
+}
+.driver-warning-marquee-outer {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+.driver-warning-marquee-inner {
+  display: inline-flex;
+  white-space: nowrap;
+  gap: 2em;
+  animation: driver-marquee 12s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .driver-warning-marquee-inner {
+    animation: none;
+  }
+  .driver-warning-marquee-outer {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+.driver-warning-marquee-inner span {
+  flex-shrink: 0;
+}
+@keyframes driver-marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
 .driver-sliding-warning.driver-warning-pulse {
   animation: driver-warning-pulse 1s ease-in-out 3;
@@ -572,8 +609,9 @@ body.driver-modal-open {
 .driver-warning-icon {
   color: #ef4444;
   display: inline-block;
+  flex-shrink: 0;
   animation: driver-warning-scale 1.2s ease-in-out infinite;
-  margin-right: 4px;
+  margin-right: 0;
   vertical-align: middle;
 }
 @keyframes driver-warning-scale {
