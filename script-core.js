@@ -503,10 +503,10 @@ document.addEventListener('DOMContentLoaded', () => {
 })();
 
 /* =========================================
-   VERSION DISPLAY (Global Core - v78.1)
+   VERSION DISPLAY (Anasayfa - v78.1)
    ========================================= */
 document.addEventListener('DOMContentLoaded', function() {
-    const APP_VERSION = "v78.2";
+    const APP_VERSION = "v78.1";
     const versionEl = document.getElementById('version-display');
 
     if (versionEl) {
