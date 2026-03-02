@@ -2279,8 +2279,25 @@ body.driver-modal-open {
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
+/* Geçmiş Kayıtlar modalı: tarihçe/kayıt modalı ile aynı yapı – body flex column, scroll sadece liste alanında */
 #history-modal .modal-body {
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  min-height: 0 !important;
   padding-top: 2px !important;
+}
+#history-modal .history-filters {
+  flex-shrink: 0 !important;
+}
+#history-modal #history-list,
+#history-modal .history-container {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  -webkit-overflow-scrolling: touch !important;
+  padding-bottom: max(20px, env(safe-area-inset-bottom, 0)) !important;
 }
 #history-modal .modal-body::-webkit-scrollbar,
 #edit-request-modal .modal-body::-webkit-scrollbar,
@@ -3404,6 +3421,10 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     overscroll-behavior-x: none !important;
     -webkit-overflow-scrolling: touch;
     padding-bottom: max(20px, env(safe-area-inset-bottom, 0)) !important;
+  }
+  /* Geçmiş Kayıtlar: scroll #history-list içinde, body padding-bottom gereksiz (liste kendi padding-bottom kullanır) */
+  #history-modal .modal-body {
+    padding-bottom: 0 !important;
   }
 
   /* Mobil arka plan tüm sayfalarla aynı (#080d16) */
