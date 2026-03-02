@@ -3481,14 +3481,14 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     background: #080d16 !important;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25) !important;
   }
-  /* Mobil: üst/yan çizgiler anasayfa ile aynı (0.99px) */
+  /* Mobil/PWA: üst/yan çizgiler biraz daha belirgin (0.68) */
   .dashboard-page .driver-header-fixed {
-    border-top: 0.99px solid rgba(var(--theme-color-rgb), 0.55) !important;
+    border-top: 0.99px solid rgba(var(--theme-color-rgb), 0.68) !important;
   }
   .dashboard-page .driver-dashboard-container::before,
   .login-page .driver-dashboard-container::before {
-    border-left: 0.99px solid rgba(var(--theme-color-rgb), 0.55) !important;
-    border-right: 0.99px solid rgba(var(--theme-color-rgb), 0.55) !important;
+    border-left: 0.99px solid rgba(var(--theme-color-rgb), 0.68) !important;
+    border-right: 0.99px solid rgba(var(--theme-color-rgb), 0.68) !important;
     top: 0 !important;
     bottom: 0 !important;
     clip-path: inset(0 0 calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) 0) !important; /* Çizgiler footer üstünde kesilsin, taşmasın */
