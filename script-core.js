@@ -544,12 +544,16 @@ window.addEventListener('dataLoaded', () => { setTimeout(() => { if (window.hide
 setTimeout(() => { if (window.hideLoading) window.hideLoading(); }, 8000);
 
 /* =========================================
-   SERVICE WORKER REGISTRATION (tek merkez: tüm sayfalar, scope /)
+   SERVICE WORKER REGISTRATION (scope pathname'e göre: /medisa/, /tasitmedisa/ veya /)
    ========================================= */
 (function() {
+  var p = (typeof document !== 'undefined' && document.location) ? document.location.pathname : '';
+  var base = (p.indexOf('/tasitmedisa') === 0) ? '/tasitmedisa' : (p.indexOf('/medisa') === 0) ? '/medisa' : '';
+  var scope = base ? base + '/' : '/';
+  var paths = base ? [base + '/sw.js'] : ['./sw.js', '/sw.js', '/tasitmedisa/sw.js', '/medisa/sw.js'];
   window.registerServiceWorker({
-    paths: ['./sw.js', '/sw.js', '/tasitmedisa/sw.js', '/medisa/sw.js'],
-    scope: '/',
+    paths: paths,
+    scope: scope,
     onUpdate: function() {
       var toast = document.createElement('div');
       toast.className = 'update-toast';
