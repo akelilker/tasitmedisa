@@ -15,8 +15,8 @@ body::-webkit-scrollbar,
 :root {
   --theme-color: #e1061b;
   --theme-color-rgb: 225, 6, 27;
-  /* Footer'dan yukarı süzen ışık: hafif açık kırmızı (bordo değil) */
-  --footer-glow-rgb: 232, 35, 40;
+  /* Footer'dan yukarı süzen ışık: bordo ile açık kırmızı arası orta ton */
+  --footer-glow-rgb: 230, 22, 32;
   --bg: #080d16;
   --bg-2: #151515;
   --card-bg: #1a1a1a;
