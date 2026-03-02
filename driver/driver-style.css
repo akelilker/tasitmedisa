@@ -4,13 +4,15 @@
    ========================================= */
 
 /* --- Scrollbar Gizleme (html/body/modal style-core'da; sadece driver-spesifik) --- */
-.driver-scroll-area, .history-list {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+.driver-scroll-area, .history-list, .history-container, #history-list {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
 }
 .driver-scroll-area::-webkit-scrollbar,
-.history-list::-webkit-scrollbar {
-  display: none;
+.history-list::-webkit-scrollbar,
+.history-container::-webkit-scrollbar,
+#history-list::-webkit-scrollbar {
+  display: none !important;
 }
 
 /* --- style-core.css border çakışmalarını temizle (driver sayfalarında border tek kaynaktan gelsin) --- */
@@ -192,14 +194,6 @@ body.driver-modal-open {
   border-left: 0.5px solid rgba(255, 255, 255, 0.20) !important;
   border-right: 0.5px solid rgba(255, 255, 255, 0.20) !important;
   box-shadow: 0 -10px 20px rgba(var(--theme-color-rgb), 0.16) !important;
-}
-
-/* Masaüstü: modal açıkken footer flu görünmesin, kaydırmada gizlensin */
-@media (min-width: 641px) {
-  body.driver-modal-open #app-footer {
-    visibility: hidden !important;
-    pointer-events: none !important;
-  }
 }
 
 .driver-content-wrap {
@@ -2372,8 +2366,11 @@ body.driver-modal-open {
 #driver-utts-modal .modal-body::-webkit-scrollbar,
 #driver-muayene-modal .modal-body::-webkit-scrollbar,
 #driver-sigorta-modal .modal-body::-webkit-scrollbar,
-#driver-kasko-modal .modal-body::-webkit-scrollbar {
-  display: none;
+#driver-kasko-modal .modal-body::-webkit-scrollbar,
+#history-modal .modal-container::-webkit-scrollbar,
+#edit-request-modal .modal-container::-webkit-scrollbar,
+.driver-modal-content::-webkit-scrollbar {
+  display: none !important;
 }
 
 .driver-current-km {
