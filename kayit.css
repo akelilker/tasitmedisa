@@ -1598,6 +1598,12 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         padding-bottom: 6px !important;
         transform: translateY(10px);
     }
+    /* iOS PWA: Notlar etiketinin üstündeki dikey boşluk 2px daralt */
+    @media (display-mode: standalone) {
+        #vehicle-modal .modal-body .modal-column-right .form-section:has(#vehicle-notes) {
+            transform: translateY(8px);
+        }
+    }
     /* Masaüstü: Notlar textarea – varsayılan 1 satır, içerik uzadıkça aşağı genişler (max 300px) */
     #vehicle-modal .modal-body #vehicle-notes {
         min-height: 26px !important;
