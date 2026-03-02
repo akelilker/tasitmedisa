@@ -3588,6 +3588,14 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     border-right: 0.5px solid rgba(255, 255, 255, 0.18) !important;
     box-shadow: 0 -15px 22px rgba(var(--theme-color-rgb), 0.35) !important;
   }
+  /* iOS PWA / çentik: Dashboard footer alt safe-area (home indicator üstünde içerik kalsın) */
+  .dashboard-page #app-footer {
+    min-height: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important;
+    padding-bottom: env(safe-area-inset-bottom, 0) !important;
+  }
+  .dashboard-page #app-footer .footer-content {
+    padding-bottom: max(12px, env(safe-area-inset-bottom, 0)) !important;
+  }
 
   /* Plaka dropdown dışarı taşabilsin; panels-inner overflow: hidden kalsın ki sağ panel yüksekliği kısıtlansın ve Not+Bildir kaydırılabilir */
   .dashboard-page .driver-left-panel,
@@ -4031,8 +4039,13 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
 }
 
-/* --- Sadece iOS PWA: 2. satır 1pt küçük (eski halinden) + sağ grid buton yüksekliği + üst çerçeve kalınlığı --- */
+/* --- Sadece iOS PWA: çentik/notch + 2. satır 1pt küçük + sağ grid buton yüksekliği + üst çerçeve kalınlığı --- */
 @media (max-width: 768px) and (display-mode: standalone) {
+  /* Splash: çentik altında logo kalmasın */
+  .driver-splash {
+    padding: env(safe-area-inset-top, 0) env(safe-area-inset-right, 0) env(safe-area-inset-bottom, 0) env(safe-area-inset-left, 0);
+    box-sizing: border-box;
+  }
   /* 1. satıra dokunulmaz. 2. satır (subtitle) eski halinden 1pt küçük */
   .dashboard-page .hero-title-wrap .hero-panel-subtitle,
   .dashboard-page .hero-title-block .hero-panel-subtitle {
