@@ -305,11 +305,4 @@
   } else {
     init();
   }
-
-  if (typeof window.registerServiceWorker === 'function') {
-    window.registerServiceWorker({
-      paths: ['../sw.js', '/sw.js', '/tasitmedisa/sw.js', '/medisa/sw.js'],
-      scope: './'
-    });
-  }
 })();

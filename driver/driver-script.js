@@ -85,11 +85,9 @@ function updateDriverModalBodyClass() {
    LOGIN SAYFASI
    ========================================= */
 
-/* Footer dimmer + versiyon */
+/* Footer dimmer (sürüm metni script-core.js tarafından PWA/Mobil soneki ile yazılır) */
 (function initLoginFooterDim() {
   const footer = document.getElementById('app-footer');
-  const versionEl = document.getElementById('version-display');
-  if (versionEl) versionEl.textContent = APP_VERSION;
   if (!footer) return;
   footer.classList.add('dimmed');
   footer.classList.remove('delayed');
@@ -2092,53 +2090,3 @@ window.logout = function() {
     sessionStorage.removeItem('driver_token');
     window.location.href = DRIVER_PAGE_BASE + 'index.html';
 };
-
-if (typeof window.registerServiceWorker === 'function') {
-  var swScope = (function() {
-    var p = document.location.pathname;
-    if (p.indexOf('/tasitmedisa') === 0) return '/tasitmedisa/driver/';
-    if (p.indexOf('/medisa') === 0) return '/medisa/driver/';
-    return '/driver/';
-  })();
-  window.registerServiceWorker({
-    paths: ['../sw.js', '/sw.js', '/tasitmedisa/sw.js', '/medisa/sw.js'],
-    scope: swScope
-  });
-}
-
-/* PWA Install Prompt – driver sayfalarında script-core yüklü olmadığı için burada */
-(function() {
-  var deferredInstallPrompt = null;
-  function isStandaloneMode() {
-    return (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || (window.navigator && window.navigator.standalone === true);
-  }
-  function getInstallBtn() { return document.getElementById('pwa-install-btn'); }
-  function removeInstallBtn() {
-    var el = getInstallBtn();
-    if (el && el.parentNode) el.parentNode.removeChild(el);
-  }
-  function showInstallBtn() {
-    if (isStandaloneMode() || !deferredInstallPrompt || getInstallBtn()) return;
-    var btn = document.createElement('button');
-    btn.id = 'pwa-install-btn';
-    btn.type = 'button';
-    btn.textContent = 'Uygulamayı Yükle';
-    btn.className = 'pwa-install-btn';
-    btn.addEventListener('click', function() {
-      if (!deferredInstallPrompt) return;
-      deferredInstallPrompt.prompt();
-      deferredInstallPrompt.userChoice.then(function() { deferredInstallPrompt = null; removeInstallBtn(); }).catch(function() { deferredInstallPrompt = null; removeInstallBtn(); });
-    });
-    var wrapper = document.getElementById('pwa-install-wrapper');
-    if (wrapper) wrapper.appendChild(btn); else document.body.appendChild(btn);
-  }
-  window.addEventListener('beforeinstallprompt', function(e) {
-    e.preventDefault();
-    deferredInstallPrompt = e;
-    showInstallBtn();
-  });
-  window.addEventListener('appinstalled', function() {
-    deferredInstallPrompt = null;
-    removeInstallBtn();
-  });
-})();
