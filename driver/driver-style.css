@@ -3484,11 +3484,14 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .dashboard-page .driver-header-fixed {
     border-top: 0.99px solid rgba(var(--theme-color-rgb), 0.55) !important;
   }
+  .dashboard-page .driver-dashboard-container { --driver-header-height: 108px; }
+  .login-page .driver-dashboard-container { --driver-header-height: 64px; }
   .dashboard-page .driver-dashboard-container::before,
   .login-page .driver-dashboard-container::before {
     border-left: 0.99px solid rgba(var(--theme-color-rgb), 0.55) !important;
     border-right: 0.99px solid rgba(var(--theme-color-rgb), 0.55) !important;
-    bottom: 0 !important; /* Container dibine kadar; çerçeve asılı kalmasın */
+    top: var(--driver-header-height, 70px) !important;
+    bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important;
   }
   /* Footer anasayfa ile aynı: belirgin gri üst çizgi, yan soluk çizgiler (footerdan yükselen), kırmızı glow */
   .dashboard-page #app-footer,
@@ -3975,13 +3978,17 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     max-width: 100% !important;
     margin: 0 !important;
   }
-  /* ::before yan çizgiler: container border-radius ile aynı kavis; panelde footer üzerinde dursun */
+  /* Header/footer yüksekliği: çerçeve çizgileri sadece içerik bandında (header altı – footer üstü) */
+  .dashboard-page .driver-dashboard-container { --driver-header-height: 108px; }
+  .login-page .driver-dashboard-container { --driver-header-height: 64px; }
+  /* ::before yan çizgiler: header üstüne ve footer altına taşmasın; footer üzerinde dursun */
   .dashboard-page .driver-dashboard-container::before,
   .login-page .driver-dashboard-container::before {
     border-radius: 38px !important;
     border-left: 0.99px solid rgba(var(--theme-color-rgb), 0.55) !important;
     border-right: 0.99px solid rgba(var(--theme-color-rgb), 0.55) !important;
-    bottom: 0 !important; /* Container dibine kadar; footer üstünde asılı çerçeve kalmasın */
+    top: var(--driver-header-height, 70px) !important;
+    bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important;
   }
 
   /* Content-wrap: iOS PWA'da safe-area sadece html'de; çift çentik yok */
@@ -4117,12 +4124,15 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     max-width: 100% !important;
     margin: 0 !important;
   }
+  html.driver-pwa-standalone .dashboard-page .driver-dashboard-container { --driver-header-height: 108px; }
+  html.driver-pwa-standalone .login-page .driver-dashboard-container { --driver-header-height: 64px; }
   html.driver-pwa-standalone .dashboard-page .driver-dashboard-container::before,
   html.driver-pwa-standalone .login-page .driver-dashboard-container::before {
     border-radius: 38px !important;
     border-left: 0.99px solid rgba(var(--theme-color-rgb), 0.55) !important;
     border-right: 0.99px solid rgba(var(--theme-color-rgb), 0.55) !important;
-    bottom: 0 !important; /* Container dibine kadar; çerçeve asılı kalmasın */
+    top: var(--driver-header-height, 70px) !important;
+    bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important;
   }
   html.driver-pwa-standalone .dashboard-page .driver-scroll-area {
     padding-top: 0 !important;
