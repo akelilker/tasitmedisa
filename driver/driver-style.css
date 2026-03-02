@@ -2146,7 +2146,7 @@ body.driver-modal-open {
   z-index: 10011 !important;
 }
 
-/* Masaüstü: kayıt modalı ile aynı – overlay üst padding yok, sadece container margin (style-core ile uyumlu) */
+/* Masaüstü: kayıt modalı ile aynı – overlay üst padding yok; overlay footer'ı örtmesin, footer görünsün */
 @media (min-width: 641px) {
   #history-modal.driver-modal,
   #edit-request-modal.driver-modal,
@@ -2158,6 +2158,13 @@ body.driver-modal-open {
   #driver-sigorta-modal.driver-modal,
   #driver-kasko-modal.driver-modal {
     padding: 0 !important;
+  }
+  /* Geçmiş Kayıtlar + Düzeltme Talebi: overlay footer üstünde bitsin, footer görünsün */
+  #history-modal.driver-modal,
+  #edit-request-modal.driver-modal {
+    bottom: var(--app-footer-height, 48px) !important;
+    height: auto !important;
+    max-height: calc(100vh - var(--app-footer-height, 48px)) !important;
   }
 }
 
