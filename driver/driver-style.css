@@ -3941,6 +3941,24 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
 }
 
+/* --- Sadece iOS PWA: header başlık kuralı + sağ grid buton yüksekliği --- */
+@media (max-width: 768px) and (display-mode: standalone) {
+  /* 1. satır başlık (hero-title-line); 2. satır (subtitle) bunu geçmeyecek */
+  .dashboard-page .hero.hero-two-rows .hero-title-block .hero-title-line,
+  .login-page .hero.hero-two-rows .hero-title-block .hero-title-line {
+    font-size: clamp(14px, 3.75vw, 18px) !important;
+  }
+  .dashboard-page .hero-title-wrap .hero-panel-subtitle,
+  .dashboard-page .hero-title-block .hero-panel-subtitle,
+  .login-page .hero-title-block .hero-panel-subtitle {
+    font-size: clamp(13px, 3.5vw, 17px) !important; /* 2. satır 1. satır puntosundan büyük olmaz */
+  }
+  /* Sağ grid butonları: dikey yükseklik +2px */
+  .dashboard-page .driver-report-btn {
+    min-height: 74px !important; /* 72 + 2 */
+  }
+}
+
 /* --- h1 Metalik Gradient (anasayfa ile aynı) --- */
 .hero-title-wrap h1,
 .login-page .hero h1,
