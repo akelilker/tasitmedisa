@@ -1422,7 +1422,8 @@ body.modal-open .user-panel-link {
         max-height: calc(100dvh - var(--modal-gap-above-footer) - var(--app-footer-height) - env(safe-area-inset-bottom, 0)) !important;
     }
     #vehicle-modal.modal-overlay,
-    #reports-modal.modal-overlay {
+    #reports-modal.modal-overlay,
+    #vehicles-modal.modal-overlay {
         top: 0 !important;
         bottom: calc(var(--modal-gap-above-footer) + var(--app-footer-height) + env(safe-area-inset-bottom, 0)) !important;
         height: auto !important;
@@ -1480,7 +1481,8 @@ body.modal-open .user-panel-link {
             max-height: calc(100dvh - var(--modal-gap-above-footer) - var(--app-footer-height) - env(safe-area-inset-bottom, 0)) !important;
         }
         #vehicle-modal.modal-overlay,
-        #reports-modal.modal-overlay {
+        #reports-modal.modal-overlay,
+        #vehicles-modal.modal-overlay {
             bottom: calc(var(--modal-gap-above-footer) + var(--app-footer-height) + env(safe-area-inset-bottom, 0)) !important;
             max-height: calc(100vh - var(--modal-gap-above-footer) - var(--app-footer-height) - env(safe-area-inset-bottom, 0)) !important;
             max-height: calc(100dvh - var(--modal-gap-above-footer) - var(--app-footer-height) - env(safe-area-inset-bottom, 0)) !important;
