@@ -2750,7 +2750,7 @@ body.driver-modal-open {
   margin: 0 !important;
   padding: 0 !important;
   background: #080d16 !important;
-  border-top: 1px solid rgba(200, 200, 200, 0.7) !important;
+  border-top: 0.5px solid rgba(200, 200, 200, 0.7) !important;
   border-left: 0.5px solid rgba(255, 255, 255, 0.20) !important;
   border-right: 0.5px solid rgba(255, 255, 255, 0.20) !important;
   box-shadow: 0 -10px 20px rgba(var(--theme-color-rgb), 0.16) !important;
