@@ -2159,12 +2159,17 @@ body.driver-modal-open {
   #driver-kasko-modal.driver-modal {
     padding: 0 !important;
   }
-  /* Geçmiş Kayıtlar + Düzeltme Talebi: overlay footer üstünde bitsin, footer görünsün */
+  /* Geçmiş Kayıtlar + Düzeltme Talebi: overlay footer üstünde bitsin; modal–footer arası tam 6px */
   #history-modal.driver-modal,
   #edit-request-modal.driver-modal {
-    bottom: var(--app-footer-height, 48px) !important;
+    bottom: calc(6px + var(--app-footer-height, 48px)) !important;
     height: auto !important;
-    max-height: calc(100vh - var(--app-footer-height, 48px)) !important;
+    max-height: calc(100vh - 6px - var(--app-footer-height, 48px)) !important;
+  }
+  #history-modal.driver-modal::before,
+  #edit-request-modal.driver-modal::before {
+    height: calc(100vh - max(12px, env(safe-area-inset-top)) - 6px - var(--app-footer-height, 48px)) !important;
+    height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 6px - var(--app-footer-height, 48px)) !important;
   }
 }
 
@@ -2192,7 +2197,7 @@ body.driver-modal-open {
   pointer-events: none;
 }
 
-/* Taşıtlar modalı ile aynı: genişlik 500px, yükseklik, footer boşluğu (--modal-margin-bottom-desktop), yatay çerçeve */
+/* Taşıtlar modalı ile aynı: genişlik 500px, yatay çerçeve. Diğer modallar: --modal-margin-bottom-desktop */
 #history-modal .driver-modal-content,
 #history-modal .modal-container,
 #edit-request-modal .driver-modal-content,
@@ -2220,12 +2225,23 @@ body.driver-modal-open {
   max-height: calc(100vh - max(12px, env(safe-area-inset-top)) - var(--modal-margin-bottom-desktop));
   max-height: calc(100dvh - max(12px, env(safe-area-inset-top)) - var(--modal-margin-bottom-desktop));
   overflow: hidden;
-  overflow-x: hidden; /* Yatay kayma engelle */
+  overflow-x: hidden;
   display: flex;
   flex-direction: column;
   touch-action: pan-y;
   overscroll-behavior: none;
   overscroll-behavior-x: none;
+}
+/* Geçmiş Kayıtlar + Düzeltme Talebi masaüstü: modal–footer arası tam 6px */
+#history-modal .driver-modal-content,
+#history-modal .modal-container,
+#edit-request-modal .driver-modal-content,
+#edit-request-modal .modal-container {
+  margin-bottom: 6px !important;
+  height: calc(100vh - max(12px, env(safe-area-inset-top)) - 6px - var(--app-footer-height, 48px)) !important;
+  height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 6px - var(--app-footer-height, 48px)) !important;
+  max-height: calc(100vh - max(12px, env(safe-area-inset-top)) - 6px - var(--app-footer-height, 48px)) !important;
+  max-height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 6px - var(--app-footer-height, 48px)) !important;
 }
 
 #history-modal .modal-header,
