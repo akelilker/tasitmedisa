@@ -22,11 +22,13 @@ body.admin-report-page::-webkit-scrollbar {
   display: none;
 }
 
+/* Anasayfa ile aynı: üst + yan kırmızı çizgiler */
 .admin-app-container {
   max-width: 1200px;
   margin: 0 auto;
   min-height: 100vh;
   background: var(--bg);
+  border-top: 0.5px solid var(--border-red-tech);
   border-left: 0.5px solid var(--border-red-tech);
   border-right: 0.5px solid var(--border-red-tech);
   box-sizing: border-box;
@@ -628,7 +630,7 @@ body.admin-report-page::-webkit-scrollbar {
   border: 1px solid #c62828;
 }
 
-/* --- Admin footer --- */
+/* --- Admin footer: anasayfa ile aynı (gri üst, yan soluk, kırmızı glow) --- */
 .admin-footer {
   position: fixed;
   bottom: 0;
@@ -637,9 +639,9 @@ body.admin-report-page::-webkit-scrollbar {
   width: 100%;
   max-width: 1200px;
   background: #080d16;
-  border-top: 0.7px solid rgba(128, 128, 128, 0.5);
-  border-left: 0.5px solid rgba(255, 255, 255, 0.2);
-  border-right: 0.5px solid rgba(255, 255, 255, 0.2);
+  border-top: 0.8px solid rgba(128, 128, 128, 0.5);
+  border-left: 0.5px solid rgba(255, 255, 255, 0.20);
+  border-right: 0.5px solid rgba(255, 255, 255, 0.20);
   box-shadow: 0 -10px 20px rgba(var(--theme-color-rgb), 0.16);
   z-index: 1000;
 }
@@ -767,16 +769,24 @@ body.admin-report-page::-webkit-scrollbar {
     margin-left: auto;
 }
 
-/* --- Mobil: kırmızı dikey çizgiler biraz daha belirgin --- */
+/* --- Mobil: kırmızı çizgiler anasayfa ile aynı (0.99px) --- */
 @media (max-width: 768px) {
   .admin-app-container {
-    border-left: 1px solid rgba(var(--theme-color-rgb), 0.55) !important;
-    border-right: 1px solid rgba(var(--theme-color-rgb), 0.55) !important;
+    border-top: 0.99px solid rgba(var(--theme-color-rgb), 0.55) !important;
+    border-left: 0.99px solid rgba(var(--theme-color-rgb), 0.55) !important;
+    border-right: 0.99px solid rgba(var(--theme-color-rgb), 0.55) !important;
   }
 }
 
 /* --- Mobil --- */
 @media (max-width: 640px) {
+  /* Footer anasayfa mobil ile aynı: gri üst, yan yok, kırmızı glow */
+  .admin-footer {
+    border-top: 1px solid rgba(128, 128, 128, 0.5) !important;
+    border-left: none !important;
+    border-right: none !important;
+    box-shadow: 0 -15px 22px rgba(var(--theme-color-rgb), 0.35) !important;
+  }
   .admin-report-subtitle {
     font-size: 17px;
   }
@@ -965,8 +975,10 @@ body.admin-report-page::-webkit-scrollbar {
   }
   .admin-footer {
     max-width: 100% !important;
+    border-top: 1px solid rgba(128, 128, 128, 0.5) !important;
     border-left: none !important;
     border-right: none !important;
+    box-shadow: 0 -15px 22px rgba(var(--theme-color-rgb), 0.35) !important;
     left: 0 !important;
     transform: none !important;
     padding-bottom: env(safe-area-inset-bottom, 0) !important;
