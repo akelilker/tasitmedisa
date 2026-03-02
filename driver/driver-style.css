@@ -2312,6 +2312,27 @@ body.driver-modal-open {
   -webkit-overflow-scrolling: touch !important;
   padding-bottom: max(20px, env(safe-area-inset-bottom, 0)) !important;
 }
+/* Düzeltme Talebi modalı: İşlem Geçmişi ile aynı yapı – body flex column, scroll #edit-request-content içinde */
+#edit-request-modal .modal-body {
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  min-height: 0 !important;
+}
+#edit-request-modal #edit-request-content,
+#edit-request-modal .edit-request-scroll {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  -webkit-overflow-scrolling: touch !important;
+  padding-bottom: max(20px, env(safe-area-inset-bottom, 0)) !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+#edit-request-modal .edit-request-scroll::-webkit-scrollbar {
+  display: none !important;
+}
 #history-modal .modal-body::-webkit-scrollbar,
 #edit-request-modal .modal-body::-webkit-scrollbar,
 #driver-event-menu-modal .modal-body::-webkit-scrollbar,
@@ -3435,8 +3456,9 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     -webkit-overflow-scrolling: touch;
     padding-bottom: max(20px, env(safe-area-inset-bottom, 0)) !important;
   }
-  /* Geçmiş Kayıtlar: scroll #history-list içinde, body padding-bottom gereksiz (liste kendi padding-bottom kullanır) */
-  #history-modal .modal-body {
+  /* Geçmiş Kayıtlar + Düzeltme Talebi: scroll kendi alanında, body padding-bottom gereksiz */
+  #history-modal .modal-body,
+  #edit-request-modal .modal-body {
     padding-bottom: 0 !important;
   }
 
