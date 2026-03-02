@@ -425,6 +425,33 @@ function getMedisaVehicles() { return getMedisaData('tasitlar', 'medisa_vehicles
 function getMedisaBranches() { return getMedisaData('branches', 'medisa_branches_v1'); }
 function getMedisaUsers() { return getMedisaData('users', 'medisa_users_v1'); }
 
+/** Taşıt listesini güncelle: appData + localStorage + sunucuya kaydet */
+window.writeVehicles = function(arr) {
+    if (!window.appData) window.appData = { tasitlar: [], kayitlar: [], branches: [], users: [], ayarlar: {}, sifreler: [], arac_aylik_hareketler: [], duzeltme_talepleri: [] };
+    window.appData.tasitlar = Array.isArray(arr) ? arr : [];
+    try { localStorage.setItem('medisa_vehicles_v1', JSON.stringify(window.appData.tasitlar)); } catch (e) {}
+    try { localStorage.setItem('medisa_data_v1', JSON.stringify(window.appData)); } catch (e) {}
+    if (typeof window.saveDataToServer === 'function') window.saveDataToServer().catch(function(err) { console.error('Sunucuya kaydetme hatası (sessiz):', err); });
+};
+
+/** Şube listesini güncelle: appData + localStorage + sunucuya kaydet */
+window.writeBranches = function(arr) {
+    if (!window.appData) return;
+    window.appData.branches = Array.isArray(arr) ? arr : [];
+    try { localStorage.setItem('medisa_branches_v1', JSON.stringify(window.appData.branches)); } catch (e) {}
+    try { localStorage.setItem('medisa_data_v1', JSON.stringify(window.appData)); } catch (e) {}
+    if (typeof window.saveDataToServer === 'function') window.saveDataToServer().catch(function(err) { console.error('Sunucuya kaydetme hatası (sessiz):', err); });
+};
+
+/** Kullanıcı listesini güncelle: appData + localStorage + sunucuya kaydet */
+window.writeUsers = function(arr) {
+    if (!window.appData) return;
+    window.appData.users = Array.isArray(arr) ? arr : [];
+    try { localStorage.setItem('medisa_users_v1', JSON.stringify(window.appData.users)); } catch (e) {}
+    try { localStorage.setItem('medisa_data_v1', JSON.stringify(window.appData)); } catch (e) {}
+    if (typeof window.saveDataToServer === 'function') window.saveDataToServer().catch(function(err) { console.error('Sunucuya kaydetme hatası (sessiz):', err); });
+};
+
 window.getMedisaVehicles = getMedisaVehicles;
 window.getMedisaBranches = getMedisaBranches;
 window.getMedisaUsers = getMedisaUsers;

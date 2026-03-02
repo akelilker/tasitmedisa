@@ -10,6 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
+/** Yıl ekle (tasitlar.js addYears ile aynı iş kuralı; tarih formatı PHP tarafında Y-m-d). */
 function addYears($dateStr, $years) {
     if (!$dateStr) return '';
     $dt = new DateTime($dateStr);
@@ -18,6 +19,7 @@ function addYears($dateStr, $years) {
     return $dt->format('Y-m-d');
 }
 
+/** Muayene sonraki bitiş tarihi (tasitlar.js calculateNextMuayene ile aynı otomobil/ticari + yıl kuralları). */
 function calculateNextMuayene($vehicle, $muayeneDateStr) {
     if (!$muayeneDateStr) return '';
     $events = $vehicle['events'] ?? [];

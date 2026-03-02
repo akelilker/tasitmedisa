@@ -16,27 +16,9 @@
   function $all(sel, root = document) { return Array.from(root.querySelectorAll(sel)); }
   function getModal() { return document.getElementById("vehicle-modal"); }
 
-  // --- Data Reading: tek kaynak getMedisa* (DRY), yoksa localStorage fallback ---
-  function readBranches() {
-    if (typeof window.getMedisaBranches === 'function') return window.getMedisaBranches();
-    try { const raw = localStorage.getItem(BRANCHES_KEY); return raw ? JSON.parse(raw) : []; } catch { return []; }
-  }
-  function readVehicles() {
-    if (typeof window.getMedisaVehicles === 'function') return window.getMedisaVehicles();
-    try { const raw = localStorage.getItem(STORAGE_KEY); return raw ? JSON.parse(raw) : []; } catch { return []; }
-  }
-
-  function writeVehicles(arr) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
-    if (window.appData) {
-      window.appData.tasitlar = arr;
-      if (window.saveDataToServer) {
-        window.saveDataToServer().catch(function (err) {
-          console.error('Sunucuya kaydetme hatası (sessiz):', err);
-        });
-      }
-    }
-  }
+  function readBranches() { return (typeof window.getMedisaBranches === 'function' ? window.getMedisaBranches() : null) || (function() { try { var r = localStorage.getItem(BRANCHES_KEY); return r ? JSON.parse(r) : []; } catch (e) { return []; } })(); }
+  function readVehicles() { return (typeof window.getMedisaVehicles === 'function' ? window.getMedisaVehicles() : null) || (function() { try { var r = localStorage.getItem(STORAGE_KEY); return r ? JSON.parse(r) : []; } catch (e) { return []; } })(); }
+  function writeVehicles(arr) { if (typeof window.writeVehicles === 'function') { window.writeVehicles(arr); return; } localStorage.setItem(STORAGE_KEY, JSON.stringify(arr)); if (window.appData) { window.appData.tasitlar = arr; if (window.saveDataToServer) window.saveDataToServer().catch(function(err) { console.error('Sunucuya kaydetme hatası (sessiz):', err); }); } }
 
 
   // --- Helper Functions ---
@@ -67,20 +49,7 @@
   }
 
   // --- Tramer Kayıt Fonksiyonları ---
-  /**
-   * Tarihi gg/aa/yyyy formatına çevirir (gösterim için)
-   * @param {Date|string} date - Tarih objesi veya string
-   * @returns {string} - gg/aa/yyyy formatında tarih string'i
-   */
-  function formatDateForDisplay(date) {
-    if (!date) return '';
-    
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const year = date.getFullYear();
-    
-    return `${day}/${month}/${year}`;
-  }
+  function formatDateForDisplay(date) { return (typeof window.formatDateShort === 'function' ? window.formatDateShort(date) : (date ? (date instanceof Date ? (String(date.getDate()).padStart(2, '0') + '/' + String(date.getMonth() + 1).padStart(2, '0') + '/' + date.getFullYear()) : String(date)) : '')); }
 
   /**
    * gg/aa/yyyy formatındaki string'i parse eder

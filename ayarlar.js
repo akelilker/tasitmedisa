@@ -14,39 +14,9 @@
     // ŞUBE YÖNETİMİ
     // ========================================
   
-    // — Storage: tek kaynak getMedisa* (DRY), yoksa localStorage fallback —
-    function readBranches() {
-      if (typeof window.getMedisaBranches === 'function') return window.getMedisaBranches();
-      try {
-        const raw = localStorage.getItem(BRANCHES_KEY);
-        const arr = raw ? JSON.parse(raw) : [];
-        return Array.isArray(arr) ? arr : [];
-      } catch { return []; }
-    }
-  
-    function writeBranches(arr) {
-      localStorage.setItem(BRANCHES_KEY, JSON.stringify(arr));
-      
-      // window.appData'yı güncelle ve sunucuya kaydet
-      if (window.appData) {
-        window.appData.branches = arr;
-        // Sunucuya kaydet (async, hata durumunda sessizce devam et)
-        if (window.saveDataToServer) {
-          window.saveDataToServer().catch(err => {
-            console.error('Sunucuya kaydetme hatası (sessiz):', err);
-          });
-        }
-      }
-    }
-  
-    function readVehicles() {
-      if (typeof window.getMedisaVehicles === 'function') return window.getMedisaVehicles();
-      try {
-        const raw = localStorage.getItem(VEHICLES_KEY);
-        const arr = raw ? JSON.parse(raw) : [];
-        return Array.isArray(arr) ? arr : [];
-      } catch { return []; }
-    }
+    function readBranches() { return (typeof window.getMedisaBranches === 'function' ? window.getMedisaBranches() : null) || (function() { try { var r = localStorage.getItem(BRANCHES_KEY); return r ? JSON.parse(r) : []; } catch (e) { return []; } })(); }
+    function writeBranches(arr) { if (typeof window.writeBranches === 'function') { window.writeBranches(arr); return; } localStorage.setItem(BRANCHES_KEY, JSON.stringify(arr)); if (window.appData) { window.appData.branches = arr; if (window.saveDataToServer) window.saveDataToServer().catch(function(err) { console.error('Sunucuya kaydetme hatası (sessiz):', err); }); } }
+    function readVehicles() { return (typeof window.getMedisaVehicles === 'function' ? window.getMedisaVehicles() : null) || (function() { try { var r = localStorage.getItem(VEHICLES_KEY); return r ? JSON.parse(r) : []; } catch (e) { return []; } })(); }
   
     // — Modal Kontrolü (Ana Liste) —
     window.openBranchManagement = function openBranchManagement() {
@@ -275,38 +245,25 @@
     // KULLANICI YÖNETİMİ
     // ========================================
   
-    // — Storage: getMedisaUsers tek kaynak (DRY); yoksa localStorage + normalizasyon —
     function readUsers() {
       if (typeof window.getMedisaUsers === 'function') return window.getMedisaUsers();
       try {
-        const raw = localStorage.getItem(USERS_KEY);
-        const arr = raw ? JSON.parse(raw) : [];
+        var raw = localStorage.getItem(USERS_KEY);
+        var arr = raw ? JSON.parse(raw) : [];
         if (!Array.isArray(arr)) return [];
-        return arr.map(u => {
+        return arr.map(function(u) {
           if (!u.name && u.isim) u.name = u.isim;
-          if (!u.name && (u.firstName || u.lastName)) {
-            u.name = ((u.firstName || '') + ' ' + (u.lastName || '')).trim();
-          }
+          if (!u.name && (u.firstName || u.lastName)) u.name = ((u.firstName || '') + ' ' + (u.lastName || '')).trim();
           if (!u.name) u.name = '';
           if (!u.phone && u.telefon) u.phone = u.telefon;
           if (!u.branchId && u.sube_id) u.branchId = String(u.sube_id);
           if (!u.role && u.tip) u.role = u.tip === 'admin' ? 'admin' : 'driver';
           return u;
         });
-      } catch { return []; }
+      } catch (e) { return []; }
     }
   
-    function writeVehicles(arr) {
-      localStorage.setItem(VEHICLES_KEY, JSON.stringify(arr));
-      if (window.appData) {
-        window.appData.tasitlar = arr;
-        if (window.saveDataToServer) {
-          window.saveDataToServer().catch(err => {
-            console.error('Sunucuya kaydetme hatası (sessiz):', err);
-          });
-        }
-      }
-    }
+    function writeVehicles(arr) { if (typeof window.writeVehicles === 'function') { window.writeVehicles(arr); return; } localStorage.setItem(VEHICLES_KEY, JSON.stringify(arr)); if (window.appData) { window.appData.tasitlar = arr; if (window.saveDataToServer) window.saveDataToServer().catch(function(err) { console.error('Sunucuya kaydetme hatası (sessiz):', err); }); } }
   
     /**
      * localStorage kullanıcı listesini appData.users formatına dönüştürüp senkron eder.
