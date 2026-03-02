@@ -188,7 +188,7 @@ body.driver-modal-open {
   min-height: var(--app-footer-height, 48px) !important;
   display: flex !important;
   align-items: center !important;
-  border-top: 1px solid rgba(200, 200, 200, 0.7) !important;  /* Daha belirgin gri çizgi */
+  border-top: 0.5px solid rgba(200, 200, 200, 0.7) !important;  /* İnce gri çizgi */
   border-left: 0.5px solid rgba(255, 255, 255, 0.20) !important;
   border-right: 0.5px solid rgba(255, 255, 255, 0.20) !important;
   box-shadow: 0 -10px 20px rgba(var(--theme-color-rgb), 0.16) !important;
@@ -442,7 +442,7 @@ body.driver-modal-open {
   /* Footer anasayfa ile aynı: belirgin gri üst çizgi, yan soluk çizgiler, kırmızı glow */
   .dashboard-page #app-footer,
   .login-page #app-footer.login-footer {
-    border-top: 1px solid rgba(200, 200, 200, 0.7) !important;
+    border-top: 0.5px solid rgba(200, 200, 200, 0.7) !important;
     border-left: 0.5px solid rgba(255, 255, 255, 0.20) !important;
     border-right: 0.5px solid rgba(255, 255, 255, 0.20) !important;
     box-shadow: 0 -10px 20px rgba(var(--theme-color-rgb), 0.16) !important;
@@ -1188,6 +1188,11 @@ body.driver-modal-open {
   /* Şifre ekranı mobil: header metinleri 1pt küçük */
   .login-page .hero.hero-two-rows .hero-title-block .hero-title-line {
     font-size: clamp(18px, 5vw, 22px) !important;
+  }
+  .login-page .hero-title-block .hero-panel-subtitle {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
   }
   .dashboard-page .hero-logo img {
     width: 100% !important;
@@ -2977,7 +2982,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .login-page #app-footer.login-footer {
     padding-bottom: max(20px, env(safe-area-inset-bottom, 0)) !important;
     box-shadow: 0 -9px 22px rgba(var(--theme-color-rgb), 0.35) !important;
-    border-top: 1px solid rgba(200, 200, 200, 0.7) !important;
+    border-top: 0.5px solid rgba(200, 200, 200, 0.7) !important;
     border-left: 0.5px solid rgba(255, 255, 255, 0.18) !important;
     border-right: 0.5px solid rgba(255, 255, 255, 0.18) !important;
   }
@@ -3419,11 +3424,14 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     border-left: 0.99px solid rgba(var(--theme-color-rgb), 0.55) !important;
     border-right: 0.99px solid rgba(var(--theme-color-rgb), 0.55) !important;
   }
+  .login-page .driver-dashboard-container::before {
+    bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important;
+  }
   /* Footer anasayfa ile aynı: belirgin gri üst çizgi, yan soluk çizgiler (footerdan yükselen), kırmızı glow */
   .dashboard-page #app-footer,
   .login-page #app-footer.login-footer {
     background: #080d16 !important;
-    border-top: 1px solid rgba(200, 200, 200, 0.7) !important;
+    border-top: 0.5px solid rgba(200, 200, 200, 0.7) !important;
     border-left: 0.5px solid rgba(255, 255, 255, 0.18) !important;
     border-right: 0.5px solid rgba(255, 255, 255, 0.18) !important;
     box-shadow: 0 -15px 22px rgba(var(--theme-color-rgb), 0.35) !important;
@@ -3754,7 +3762,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     min-height: 0 !important;
     padding-bottom: 0 !important;
     box-shadow: 0 -9px 22px rgba(var(--theme-color-rgb), 0.35) !important;
-    border-top: 1px solid rgba(200, 200, 200, 0.7) !important;
+    border-top: 0.5px solid rgba(200, 200, 200, 0.7) !important;
     border-left: 0.5px solid rgba(255, 255, 255, 0.18) !important;
     border-right: 0.5px solid rgba(255, 255, 255, 0.18) !important;
   }
@@ -3906,6 +3914,9 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     border-left: 0.99px solid rgba(var(--theme-color-rgb), 0.55) !important;
     border-right: 0.99px solid rgba(var(--theme-color-rgb), 0.55) !important;
   }
+  .login-page .driver-dashboard-container::before {
+    bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important;
+  }
 
   /* Content-wrap: iOS PWA'da ekstra safe-area padding kaldır (dashboard scroll) */
   .dashboard-page .driver-scroll-area {
@@ -3947,12 +3958,17 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .login-page .hero.hero-two-rows .hero-title-block .hero-title-line {
     font-size: clamp(13px, 3.5vw, 17px) !important;
   }
+  .login-page .hero-title-block .hero-panel-subtitle {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
 
   /* Footer: anasayfa mobil ile aynı – belirgin gri üst çizgi, yan soluk çizgiler, kırmızı glow */
   .dashboard-page #app-footer,
   .login-page #app-footer.login-footer {
     max-width: 100% !important;
-    border-top: 1px solid rgba(200, 200, 200, 0.7) !important;
+    border-top: 0.5px solid rgba(200, 200, 200, 0.7) !important;
     border-left: 0.5px solid rgba(255, 255, 255, 0.18) !important;
     border-right: 0.5px solid rgba(255, 255, 255, 0.18) !important;
     box-shadow: 0 -15px 22px rgba(var(--theme-color-rgb), 0.35) !important;
@@ -4037,6 +4053,9 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     border-left: 0.99px solid rgba(var(--theme-color-rgb), 0.55) !important;
     border-right: 0.99px solid rgba(var(--theme-color-rgb), 0.55) !important;
   }
+  html.driver-pwa-standalone .login-page .driver-dashboard-container::before {
+    bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important;
+  }
   html.driver-pwa-standalone .dashboard-page .driver-scroll-area {
     padding-top: 0 !important;
   }
@@ -4071,10 +4090,15 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   html.driver-pwa-standalone .login-page .hero.hero-two-rows .hero-title-block .hero-title-line {
     font-size: clamp(13px, 3.5vw, 17px) !important;
   }
+  html.driver-pwa-standalone .login-page .hero-title-block .hero-panel-subtitle {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
   html.driver-pwa-standalone .dashboard-page #app-footer,
   html.driver-pwa-standalone .login-page #app-footer.login-footer {
     max-width: 100% !important;
-    border-top: 1px solid rgba(200, 200, 200, 0.7) !important;
+    border-top: 0.5px solid rgba(200, 200, 200, 0.7) !important;
     border-left: 0.5px solid rgba(255, 255, 255, 0.18) !important;
     border-right: 0.5px solid rgba(255, 255, 255, 0.18) !important;
     box-shadow: 0 -15px 22px rgba(var(--theme-color-rgb), 0.35) !important;
