@@ -3384,12 +3384,35 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     overflow: hidden !important;
     overscroll-behavior: none !important;
   }
-  /* Geçmiş Kayıtlar + Düzeltme Talebi: kayıt modalı ile aynı footer boşluğu (kayit.css +6px) */
+  /* Geçmiş Kayıtlar + Düzeltme Talebi: overlay tam yükseklik, alt padding ile 6px boşluk; boşlukta çerçeve parçaları görünmesin */
   #history-modal.driver-modal,
   #edit-request-modal.driver-modal {
-    bottom: calc(var(--modal-gap-above-footer, 10px) + var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0) + 6px) !important;
-    max-height: calc(100vh - var(--modal-gap-above-footer, 10px) - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0) - 6px) !important;
-    max-height: calc(100dvh - var(--modal-gap-above-footer, 10px) - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0) - 6px) !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    max-height: none !important;
+    padding-bottom: calc(var(--modal-gap-above-footer, 10px) + var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0) + 6px) !important;
+  }
+  /* Modal açıkken üst kırmızı çerçeve görünsün (başlık rengi kesmesin) */
+  #history-modal.driver-modal.show::after,
+  #edit-request-modal.driver-modal.show::after,
+  #driver-event-menu-modal.driver-modal.show::after,
+  #driver-anahtar-modal.driver-modal.show::after,
+  #driver-lastik-modal.driver-modal.show::after,
+  #driver-utts-modal.driver-modal.show::after,
+  #driver-muayene-modal.driver-modal.show::after,
+  #driver-sigorta-modal.driver-modal.show::after,
+  #driver-kasko-modal.driver-modal.show::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1.2px;
+    background: var(--border-red-tech);
+    z-index: 10012;
+    pointer-events: none;
   }
   #history-modal.driver-modal::before,
   #edit-request-modal.driver-modal::before,
@@ -3978,7 +4001,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
 }
 
-/* --- Sadece iOS PWA: 2. satır 1pt küçük (eski halinden) + sağ grid buton yüksekliği --- */
+/* --- Sadece iOS PWA: 2. satır 1pt küçük (eski halinden) + sağ grid buton yüksekliği + üst çerçeve kalınlığı --- */
 @media (max-width: 768px) and (display-mode: standalone) {
   /* 1. satıra dokunulmaz. 2. satır (subtitle) eski halinden 1pt küçük */
   .dashboard-page .hero-title-wrap .hero-panel-subtitle,
@@ -3991,6 +4014,11 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   /* Sağ grid butonları: dikey yükseklik +2px */
   .dashboard-page .driver-report-btn {
     min-height: 74px !important; /* 72 + 2 */
+  }
+  /* Üst kırmızı çerçeve yanlara göre ince kalmaması için kalınlık (0.99px → 1.2px) */
+  .dashboard-page .driver-header-fixed,
+  .login-page .driver-header-fixed {
+    border-top-width: 1.2px !important;
   }
 }
 
