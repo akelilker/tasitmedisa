@@ -630,52 +630,6 @@ setTimeout(() => { if (window.hideLoading) window.hideLoading(); }, 8000);
 })();
 
 /* =========================================
-   MANIFEST.JSON CORS HATASI YÖNETİMİ
-   ========================================= */
-// Manifest.json CORS/404 hatası için sessizce devam et
-// Bu hata PWA özelliklerini etkileyebilir ama uygulama çalışmaya devam eder
-(function() {
-  // Error event listener - manifest.json hatalarını yakala (sessizce)
-  const originalError = window.onerror;
-  window.onerror = function(message, source, lineno, colno, error) {
-    // Manifest.json ile ilgili hataları filtrele
-    if (message && typeof message === 'string' && (
-      message.includes('manifest.json') ||
-      message.includes('CORS') ||
-      message.includes('blocked')
-    )) {
-      return true; // Hata handle edildi, sessizce devam et
-    }
-    // Diğer hataları normal şekilde işle
-    if (originalError) {
-      return originalError.apply(this, arguments);
-    }
-    return false;
-  };
-  
-  // Link element error'ları için
-  document.addEventListener('error', (event) => {
-    if (event.target && event.target.tagName === 'LINK' && event.target.rel === 'manifest') {
-      event.preventDefault();
-      event.stopPropagation();
-      return true;
-    }
-  }, true);
-  
-  // Unhandled promise rejection'ları için
-  window.addEventListener('unhandledrejection', (event) => {
-    const reason = event.reason;
-    if (reason && (
-      (reason.message && reason.message.includes('manifest.json')) ||
-      (reason.message && reason.message.includes('CORS')) ||
-      (reason.message && reason.message.includes('blocked'))
-    )) {
-      event.preventDefault(); // Sessizce handle et
-    }
-  });
-})();
-
-/* =========================================
    EXCELJS LAZY LOAD
    ========================================= */
 window.loadExcelJS = function() {
