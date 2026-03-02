@@ -54,19 +54,6 @@ function clearSessionGreenFeedback() { lastCompletedActionInSession = null; }
 window.addEventListener('pagehide', clearSessionGreenFeedback);
 document.addEventListener('visibilitychange', function() { if (document.hidden) clearSessionGreenFeedback(); });
 
-/** iOS/Android PWA + mobil: çentik safe-area kurallarının uygulanması için (display-mode: standalone bazen eşleşmeyebilir) */
-// #region agent log
-(function ensurePwaStandaloneClass() {
-  function isPWA() {
-    return (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || (window.navigator && window.navigator.standalone === true);
-  }
-  if (isPWA() && window.innerWidth <= 768 && document.documentElement) {
-    document.documentElement.classList.add('driver-pwa-standalone');
-    fetch('http://127.0.0.1:7824/ingest/aaeefe94-e582-470c-8671-3dbfa48b74c7',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'58ef87'},body:JSON.stringify({sessionId:'58ef87',location:'driver-script.js:ensurePwaStandaloneClass',message:'PWA class added',data:{innerWidth:window.innerWidth},timestamp:Date.now(),hypothesisId:'H3'})}).catch(function(){});
-  }
-})();
-// #endregion agent log
-
 // #region agent log
 (function debugLayoutShift() {
   function sendLayout(eventName, hypothesisId) {
