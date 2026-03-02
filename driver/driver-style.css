@@ -3484,14 +3484,12 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .dashboard-page .driver-header-fixed {
     border-top: 0.99px solid rgba(var(--theme-color-rgb), 0.55) !important;
   }
-  .dashboard-page .driver-dashboard-container { --driver-header-height: 108px; }
-  .login-page .driver-dashboard-container { --driver-header-height: 64px; }
   .dashboard-page .driver-dashboard-container::before,
   .login-page .driver-dashboard-container::before {
     border-left: 0.99px solid rgba(var(--theme-color-rgb), 0.55) !important;
     border-right: 0.99px solid rgba(var(--theme-color-rgb), 0.55) !important;
-    top: var(--driver-header-height, 70px) !important;
-    bottom: 0 !important; /* Padding box container'da zaten footer yüksekliği; çizgiler footer'a değsin */
+    top: 0 !important; /* Container tepesinden; header'da kesilmesin */
+    bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important; /* Footer üstünde dursun, aşağı taşmasın */
   }
   /* Footer anasayfa ile aynı: belirgin gri üst çizgi, yan soluk çizgiler (footerdan yükselen), kırmızı glow */
   .dashboard-page #app-footer,
@@ -3978,17 +3976,14 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     max-width: 100% !important;
     margin: 0 !important;
   }
-  /* Header/footer yüksekliği: çerçeve çizgileri sadece içerik bandında (header altı – footer üstü) */
-  .dashboard-page .driver-dashboard-container { --driver-header-height: 108px; }
-  .login-page .driver-dashboard-container { --driver-header-height: 64px; }
-  /* ::before yan çizgiler: footer'a kadar insin (bottom:0 = padding box dibi = footer üstü) */
+  /* ::before yan çizgiler: tepeden (header dahil), footer üstünde bitsin */
   .dashboard-page .driver-dashboard-container::before,
   .login-page .driver-dashboard-container::before {
     border-radius: 38px !important;
     border-left: 0.99px solid rgba(var(--theme-color-rgb), 0.55) !important;
     border-right: 0.99px solid rgba(var(--theme-color-rgb), 0.55) !important;
-    top: var(--driver-header-height, 70px) !important;
-    bottom: 0 !important;
+    top: 0 !important;
+    bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important;
   }
 
   /* Content-wrap: iOS PWA'da safe-area sadece html'de; çift çentik yok */
@@ -4124,15 +4119,13 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     max-width: 100% !important;
     margin: 0 !important;
   }
-  html.driver-pwa-standalone .dashboard-page .driver-dashboard-container { --driver-header-height: 108px; }
-  html.driver-pwa-standalone .login-page .driver-dashboard-container { --driver-header-height: 64px; }
   html.driver-pwa-standalone .dashboard-page .driver-dashboard-container::before,
   html.driver-pwa-standalone .login-page .driver-dashboard-container::before {
     border-radius: 38px !important;
     border-left: 0.99px solid rgba(var(--theme-color-rgb), 0.55) !important;
     border-right: 0.99px solid rgba(var(--theme-color-rgb), 0.55) !important;
-    top: var(--driver-header-height, 70px) !important;
-    bottom: 0 !important; /* Çizgiler footer'a değsin */
+    top: 0 !important; /* Header'da kesilmesin */
+    bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important; /* Footerdan aşağı taşmasın */
   }
   html.driver-pwa-standalone .dashboard-page .driver-scroll-area {
     padding-top: 0 !important;
