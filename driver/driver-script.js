@@ -1011,10 +1011,36 @@ function renderSlidingWarning(vehicles, records) {
     let cycleCount = 0;
     let idx = 0;
     
+    function applyMarqueeIfOverflow(container) {
+        var textSpan = container.querySelector('.driver-warning-text');
+        if (!textSpan) return;
+        container.classList.remove('driver-warning-scroll');
+        /* Taşma kontrolü: metin genişliği mevcut alandan fazlaysa marquee yap */
+        var raw = (textSpan.textContent || '').trim();
+        if (raw.length === 0) return;
+        var measure = document.createElement('span');
+        measure.style.cssText = 'position:absolute;visibility:hidden;white-space:nowrap;font:inherit;';
+        measure.textContent = raw;
+        document.body.appendChild(measure);
+        var textW = measure.offsetWidth;
+        document.body.removeChild(measure);
+        var iconEl = container.querySelector('.driver-warning-icon');
+        var iconW = iconEl ? (iconEl.offsetWidth || 24) + 4 : 28;
+        var availW = container.clientWidth - iconW - 16;
+        if (textW > availW) {
+            var safe = escapeHtmlDriver(raw);
+            var marqueeHtml = '<span class="driver-warning-marquee-outer"><span class="driver-warning-marquee-inner"><span>' + safe + '</span><span aria-hidden="true">' + safe + '</span></span></span>';
+            textSpan.outerHTML = marqueeHtml;
+            container.classList.add('driver-warning-scroll');
+        }
+    }
+    
     function showNext() {
         const text = texts[idx];
-        el.innerHTML = '<span class="driver-warning-icon" aria-hidden="true">⚠</span> ' + escapeHtmlDriver(text);
+        el.innerHTML = '<span class="driver-warning-icon" aria-hidden="true">⚠</span> <span class="driver-warning-text">' + escapeHtmlDriver(text) + '</span>';
         el.className = 'driver-sliding-warning' + (cycleCount >= 3 ? ' driver-warning-pulse' : '');
+        /* Taşma varsa sola kayan marquee uygula (requestAnimationFrame ile ölçüm doğru yapılsın) */
+        requestAnimationFrame(function() { applyMarqueeIfOverflow(el); });
         idx = (idx + 1) % texts.length;
         if (idx === 0) {
             cycleCount++;
