@@ -1657,7 +1657,12 @@ function formatPeriod(period) {
     return `${months[parseInt(month) - 1]} ${year}`;
 }
 
-function formatKm(value) { return (typeof window.formatKm === 'function' ? window.formatKm(value) : (value == null || value === '' ? '' : String(value).replace(/[^\d]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, '.'))); }
+function formatKm(value) {
+  if (value == null || value === '') return '';
+  var numStr = String(value).replace(/[^\d]/g, '');
+  if (!numStr) return '';
+  return numStr.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+}
 
 function updateHistoryTriggerTone(selectedValue) {
     const trigger = document.querySelector('.history-vehicle-trigger');
