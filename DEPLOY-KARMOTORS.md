@@ -74,6 +74,15 @@ Manifest ve HTML **apple-touch-icon.svg** kullanıyor. Tarayıcı bazen otomatik
 
 ---
 
+## Service Worker (sw.js 404 / scope hatası)
+
+- **sw.js** proje kökünde olmalı; deploy sonrası `medisa/sw.js` erişilebilir olmalı (https://karmotors.com.tr/medisa/sw.js).
+- Scope otomatik: `/medisa/` altındaysa scope `/medisa/`, kök deploy'da `/`.
+- Eski SW kaydı hata verebilir: Chrome DevTools → Application → Service Workers → Unregister; sonra sayfayı yenile.
+- `.htaccess` içinde `Service-Worker-Allowed: /` header'ı tanımlı (mod_headers gerekir).
+
+---
+
 ## Dosya Yapısı (örnek)
 
 ```
