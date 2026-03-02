@@ -333,7 +333,19 @@ function getExistingRecord(vehicleId) {
     return matches[0];
 }
 
-function checkDateWarningsDriver(dateStr) { return (typeof window.checkDateWarnings === 'function' ? window.checkDateWarnings(dateStr) : { class: '', days: null }); }
+function checkDateWarningsDriver(dateStr) {
+  if (!dateStr) return { class: '', days: null };
+  var date = new Date(dateStr + 'T00:00:00');
+  if (isNaN(date.getTime())) return { class: '', days: null };
+  var today = new Date();
+  today.setHours(0, 0, 0, 0);
+  date.setHours(0, 0, 0, 0);
+  var diffDays = Math.ceil((date - today) / (1000 * 60 * 60 * 24));
+  if (diffDays < 0) return { class: 'date-warning-red', days: diffDays };
+  if (diffDays <= 3) return { class: 'date-warning-red', days: diffDays };
+  if (diffDays <= 21) return { class: 'date-warning-orange', days: diffDays };
+  return { class: '', days: diffDays };
+}
 
 function renderLeftPanel(vehicles, records) {
     const vehicle = getSelectedVehicle();
@@ -379,20 +391,25 @@ function renderLeftPanel(vehicles, records) {
     const infoEl = document.getElementById('driver-vehicle-info');
     if (infoEl) {
         infoEl.innerHTML = `
-            <div class="driver-info-item"><span class="label">Şube</span><span class="value">${(typeof window.escapeHtml === 'function' ? window.escapeHtml : escapeHtmlDriver)(vehicle.branchName || '-')}</span></div>
+            <div class="driver-info-item"><span class="label">Şube</span><span class="value">${escapeHtmlDriver(vehicle.branchName || '-')}</span></div>
             <div class="driver-info-item"><span class="label">Üretim Yılı</span><span class="value">${escapeHtmlDriver(vehicle.year || '-')}</span></div>
-            <div class="driver-info-item ${kmSavedClass}"><span class="label">KM</span><span class="value ${kmClass}">${(typeof window.escapeHtml === 'function' ? window.escapeHtml : escapeHtmlDriver)(kmFormatted)}</span></div>
+            <div class="driver-info-item ${kmSavedClass}"><span class="label">KM</span><span class="value ${kmClass}">${escapeHtmlDriver(kmFormatted)}</span></div>
             <div class="driver-info-item"><span class="label">Sigorta Bitiş</span><span class="value ${sigortaW.class}">${formatDriverDate(vehicle.sigortaDate) || '-'}</span></div>
             <div class="driver-info-item"><span class="label">Kasko Bitiş</span><span class="value ${kaskoW.class}">${formatDriverDate(vehicle.kaskoDate) || '-'}</span></div>
             <div class="driver-info-item"><span class="label">Muayene Bitiş</span><span class="value ${muayeneW.class}">${formatDriverDate(vehicle.muayeneDate) || '-'}</span></div>
-            <div class="driver-info-item ${anahtarSavedClass}"><span class="label">Yedek Anahtar</span><span class="value">${(typeof window.escapeHtml === 'function' ? window.escapeHtml : escapeHtmlDriver)(anahtarLabel)}</span></div>
-            <div class="driver-info-item ${lastikSavedClass}"><span class="label">Lastik Durumu</span><span class="value">${(typeof window.escapeHtml === 'function' ? window.escapeHtml : escapeHtmlDriver)(lastikLabel)}</span></div>
-            <div class="driver-info-item"><span class="label">UTTS</span><span class="value">${(typeof window.escapeHtml === 'function' ? window.escapeHtml : escapeHtmlDriver)(uttsLabel)}</span></div>
+            <div class="driver-info-item ${anahtarSavedClass}"><span class="label">Yedek Anahtar</span><span class="value">${escapeHtmlDriver(anahtarLabel)}</span></div>
+            <div class="driver-info-item ${lastikSavedClass}"><span class="label">Lastik Durumu</span><span class="value">${escapeHtmlDriver(lastikLabel)}</span></div>
+            <div class="driver-info-item"><span class="label">UTTS</span><span class="value">${escapeHtmlDriver(uttsLabel)}</span></div>
         `;
     }
 }
 
-function escapeHtmlDriver(t) { if (typeof window.escapeHtml === 'function') return window.escapeHtml(t); if (t == null || t === '') return ''; var d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
+function escapeHtmlDriver(t) {
+  if (t == null || t === '') return '';
+  var d = document.createElement('div');
+  d.textContent = t;
+  return d.innerHTML;
+}
 
 var _plateCloseBound = false;
 function setupPlateDropdown(vehicles) {
@@ -1079,7 +1096,10 @@ function setupEkstraNotAutoResize() {
    OLAY EKLE - Event Menu & Modals
    ========================================= */
 
-function escapeDriverAttr(s) { return (typeof window.escapeAttr === 'function' ? window.escapeAttr(s) : (s == null ? '' : String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;'))); }
+function escapeDriverAttr(s) {
+  if (s == null) return '';
+  return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
 
 window.openDriverEventMenu = function(vehicleId) {
     currentDriverEventVehicleId = vehicleId;
@@ -1824,7 +1844,12 @@ function formatHistoryPeriod(item) {
     return '';
 }
 
-function capitalizeWords(str) { return (typeof window.capitalizeWords === 'function' ? window.capitalizeWords(str) : str); }
+function capitalizeWords(str) {
+  if (!str || typeof str !== 'string') return str;
+  return str.split(/\s+/).map(function(w) {
+    return w.charAt(0).toLocaleUpperCase('tr-TR') + w.slice(1).toLocaleLowerCase('tr-TR');
+  }).join(' ');
+}
 
 function renderHistoryList() {
     const sorted = buildCombinedHistoryList();
