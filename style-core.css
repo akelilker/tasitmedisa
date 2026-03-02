@@ -1509,6 +1509,19 @@ body.modal-open .user-panel-link {
             padding-bottom: calc(var(--app-footer-height) + env(safe-area-inset-bottom, 0)) !important;
         }
     }
+
+    /* Mobil+PWA: modal açıkken footer ile modal arasındaki boşlukta kırmızı yan ışıklar görünmesin */
+    body.modal-open::after {
+        content: '';
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: calc(var(--app-footer-height) + env(safe-area-inset-bottom, 0));
+        height: var(--modal-gap-above-footer);
+        background: var(--bg);
+        z-index: 500;
+        pointer-events: none;
+    }
     
     /* Header ikonları (sağ üst): SVG 24px, padding artırıldı */
     .icons-row .icon-btn svg {
