@@ -81,10 +81,10 @@
         ? {
             'year': '30px',
             'plate': '62px',
-            'brand': '2.55fr',
+            'brand': '2.6fr',   /* mobil+iOS PWA: şubeden 2px marka'ya */
             'km': '52px',
-            'user': '1.87fr',   /* mobilde KULL. sütunu +2px */
-            'branch': '2.48fr'  /* mobilde ŞUBE sütunu -2px */
+            'user': '1.95fr',   /* mobil+iOS PWA: şubeden 3px kullanıcıya */
+            'branch': '2.35fr'   /* mobil+iOS PWA: şube 5px daraltıldı */
           }
         : {
             'year': '32px',
