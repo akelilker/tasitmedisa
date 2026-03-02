@@ -15,8 +15,8 @@ body::-webkit-scrollbar,
 :root {
   --theme-color: #e1061b;
   --theme-color-rgb: 225, 6, 27;
-  /* Footer'dan yukarı süzen ışık: Türk bayrağı kırmızısı (#E30A17) */
-  --footer-glow-rgb: 227, 10, 23;
+  /* Footer'dan yukarı süzen ışık: hafif açık kırmızı (bordo değil) */
+  --footer-glow-rgb: 232, 35, 40;
   --bg: #080d16;
   --bg-2: #151515;
   --card-bg: #1a1a1a;
@@ -1224,8 +1224,8 @@ body.modal-open .user-panel-link {
     border-top: 0.8px solid rgba(128, 128, 128, 0.5);  /* Gri çizgi */
     border-left: 0.5px solid rgba(255, 255, 255, 0.20);  /* Masaüstü: ince + soluk */
     border-right: 0.5px solid rgba(255, 255, 255, 0.20);
-    /* Footer'dan yukarı doğru ışık (açık kırmızı ton) */
-    box-shadow: 0 -10px 20px rgba(var(--footer-glow-rgb), 0.22);
+    /* Footer'dan yukarı ışıldama (3px daha yukarı, açık kırmızı) */
+    box-shadow: 0 -13px 20px rgba(var(--footer-glow-rgb), 0.22);
 }
 
 .footer-content {
