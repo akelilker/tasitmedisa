@@ -3491,7 +3491,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     border-right: 0.99px solid rgba(var(--theme-color-rgb), 0.68) !important;
     top: 0 !important;
     bottom: 0 !important;
-    clip-path: inset(0 0 calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) 0) !important; /* Çizgiler footer üstünde kesilsin, taşmasın */
+    clip-path: inset(0 0 var(--app-footer-height, 48px) 0) !important; /* Çerçeve altta footer'a sıfır konumda değsin (safe-area clip kaldırıldı) */
   }
   /* Footer anasayfa ile aynı: belirgin gri üst çizgi, yan soluk çizgiler (footerdan yükselen), kırmızı glow */
   .dashboard-page #app-footer,
@@ -3540,8 +3540,9 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     border-left: none !important;
     border-right: none !important;
   }
+  /* Mobil: header ile içerik tek parça görünsün, üstü sonradan eklenmiş hissi kalkması için gölge hafif */
   .dashboard-page .hero {
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45), 0 4px 24px rgba(var(--theme-color-rgb), 0.18) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2), 0 2px 12px rgba(var(--theme-color-rgb), 0.08) !important;
   }
 
   /* Çerçevelere yan boşluk – modal/panel sağdan kesilmesin diye 0 (önceden 4px) */
