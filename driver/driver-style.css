@@ -1418,18 +1418,26 @@ body.driver-modal-open {
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
+  align-items: center;
 }
-/* Anahtar/Lastik Var/Yok: normal metin+çerçeve; hover/seçili: yeşil/kırmızı border+metin+yarı saydam arka plan */
+/* Anahtar/Lastik Var/Yok: Bildir/Vazgeç ile aynı dikey yükseklik ve yapı (32px, 8px radius, flex ortalama) */
 .driver-radio-btn {
   background: transparent;
   border: 1px solid rgba(255, 255, 255, 0.35);
-  border-radius: 6px;
-  padding: 6px 14px;
+  border-radius: 8px;
+  height: 32px;
+  min-height: 32px;
+  padding: 0 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
   font-weight: 600;
-  font-size: 16px;
+  font-size: 15px;
+  line-height: 1;
   color: rgba(255, 255, 255, 0.5);
   transition: color 0.2s, border-color 0.2s, background 0.2s;
+  box-sizing: border-box;
 }
 /* Var: hover ve seçili – yeşil border, yeşil metin, yarı saydam yeşil arka plan */
 .driver-radio-btn[data-group="anahtar"][data-value="var"]:hover,
@@ -1449,10 +1457,10 @@ body.driver-modal-open {
   color: var(--theme-color, #e1061b);
   background: rgba(225, 6, 27, 0.2);
 }
-/* UTTS Evet/Hayır: çerçevesiz, sadece renk */
+/* UTTS Evet/Hayır: çerçevesiz, sadece renk; yükseklik Bildir/Vazgeç ile aynı */
 .driver-radio-btn[data-group="utts"] {
   border: none;
-  padding: 0 4px;
+  padding: 0 10px;
 }
 .driver-radio-btn[data-value="evet"],
 .driver-radio-btn[data-group="utts"].active[data-value="evet"] {
