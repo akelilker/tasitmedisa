@@ -506,6 +506,8 @@ document.addEventListener('DOMContentLoaded', () => {
    VERSION DISPLAY (Anasayfa - v78.1)
    ========================================= */
 document.addEventListener('DOMContentLoaded', function() {
+    var path = (document.location.pathname || '');
+    if (path.indexOf('/driver') !== -1 || path.indexOf('/admin') !== -1) return; /* Kullanıcı paneli 78.2, raporlar 78.3 kendi scriptlerinde */
     const APP_VERSION = "v78.1";
     const versionEl = document.getElementById('version-display');
 

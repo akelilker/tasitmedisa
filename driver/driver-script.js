@@ -33,8 +33,23 @@ const DRIVER_PAGE_BASE = (function(){
   return '';
 })();
 
-// Uygulama sürümü (footer #version-display tek kaynak)
+// Uygulama sürümü (footer #version-display – kullanıcı girişi ve paneli 78.2)
 const APP_VERSION = 'v78.2';
+
+(function setDriverVersion() {
+  function apply() {
+    var el = document.getElementById('version-display');
+    if (!el) return;
+    var ua = navigator.userAgent || '';
+    var isIOS = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
+    var isPWA = window.matchMedia('(display-mode: standalone)').matches || (window.navigator.standalone === true);
+    var isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
+    var suffix = isPWA ? (isIOS ? ' iOS PWA' : ' PWA') : (isMobile ? ' Mobil' : '');
+    el.textContent = APP_VERSION + suffix;
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', apply);
+  else apply();
+})();
 
 // Global değişkenler
 let currentToken = null;
