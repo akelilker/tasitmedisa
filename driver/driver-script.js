@@ -2000,7 +2000,7 @@ window.closeHistory = function() {
     updateDriverModalBodyClass();
 };
 
-// Düzeltme talebi
+// Düzeltme talebi – kartla aynı kural: sadece ilgili bölüm gösterilir (kaza > bakım > km)
 window.showEditRequest = function(recordId) {
     const record = window._historyRecordMap && window._historyRecordMap[recordId];
     if (!record) return;
@@ -2012,6 +2012,24 @@ window.showEditRequest = function(recordId) {
     document.getElementById('current-kaza').textContent = record.kaza_durumu ? capitalizeWords(record.kaza_aciklama || 'Var') : 'Yok';
     document.getElementById('new-kaza').value = record.kaza_durumu ? capitalizeWords(record.kaza_aciklama || '') : '';
     document.getElementById('edit-reason').value = '';
+
+    var sectionKm = document.getElementById('edit-section-km');
+    var sectionBakim = document.getElementById('edit-section-bakim');
+    var sectionKaza = document.getElementById('edit-section-kaza');
+    if (sectionKm) sectionKm.style.display = 'none';
+    if (sectionBakim) sectionBakim.style.display = 'none';
+    if (sectionKaza) sectionKaza.style.display = 'none';
+    if (record.kaza_durumu) {
+        if (sectionKaza) sectionKaza.style.display = 'block';
+        window._editRequestVisibleSection = 'kaza';
+    } else if (record.bakim_durumu) {
+        if (sectionBakim) sectionBakim.style.display = 'block';
+        window._editRequestVisibleSection = 'bakim';
+    } else {
+        if (sectionKm) sectionKm.style.display = 'block';
+        window._editRequestVisibleSection = 'km';
+    }
+
     document.getElementById('edit-request-modal').classList.add('show');
     updateDriverModalBodyClass();
 };
@@ -2025,28 +2043,38 @@ window.closeEditRequest = function() {
 window.submitEditRequest = async function() {
     const record = window._historyRecordMap && window._historyRecordMap[currentRecordId];
     if (!record) return;
-    const newKmVal = document.getElementById('new-km').value.trim();
-    const newKm = newKmVal ? parseInt(newKmVal.replace(/\./g, ''), 10) : null;
-    const newBakim = document.getElementById('new-bakim').value.trim();
-    const newKaza = document.getElementById('new-kaza').value.trim();
+    const visibleSection = window._editRequestVisibleSection || 'km';
     const reason = document.getElementById('edit-reason').value.trim();
-    const currentBakim = record.bakim_durumu ? (record.bakim_aciklama || '') : '';
-    const currentKaza = record.kaza_durumu ? (record.kaza_aciklama || '') : '';
-    const kmChanged = newKm !== null && newKm !== (record.guncel_km || 0);
-    const bakimChanged = (newBakim || '') !== (currentBakim || '');
-    const kazaChanged = (newKaza || '') !== (currentKaza || '');
-    if (!kmChanged && !bakimChanged && !kazaChanged) {
-        alert('En az bir alanda değişiklik yapmalısınız!');
-        return;
-    }
     if (!reason) {
         alert('Düzeltme sebebini yazmalısınız!');
         return;
     }
-    if (newKm !== null && newKm <= 0) {
-        alert('Geçerli bir KM değeri girin!');
+
+    var kmChanged = false, bakimChanged = false, kazaChanged = false;
+    var newKm = null, newBakim = '', newKaza = '';
+    if (visibleSection === 'km') {
+        var newKmVal = document.getElementById('new-km').value.trim();
+        newKm = newKmVal ? parseInt(newKmVal.replace(/\./g, ''), 10) : null;
+        kmChanged = newKm !== null && newKm !== (record.guncel_km || 0);
+        if (newKm !== null && newKm <= 0) {
+            alert('Geçerli bir KM değeri girin!');
+            return;
+        }
+    } else if (visibleSection === 'bakim') {
+        newBakim = document.getElementById('new-bakim').value.trim();
+        var currentBakim = record.bakim_durumu ? (record.bakim_aciklama || '') : '';
+        bakimChanged = (newBakim || '') !== (currentBakim || '');
+    } else if (visibleSection === 'kaza') {
+        newKaza = document.getElementById('new-kaza').value.trim();
+        var currentKaza = record.kaza_durumu ? (record.kaza_aciklama || '') : '';
+        kazaChanged = (newKaza || '') !== (currentKaza || '');
+    }
+
+    if (!kmChanged && !bakimChanged && !kazaChanged) {
+        alert('En az bir alanda değişiklik yapmalısınız!');
         return;
     }
+
     const payload = { kayit_id: currentRecordId, sebep: reason };
     if (kmChanged && newKm !== null) payload.yeni_km = newKm;
     if (bakimChanged) {

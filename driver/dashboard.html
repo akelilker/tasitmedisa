@@ -196,26 +196,32 @@
                 </button>
             </div>
             <div class="modal-body">
-                <p class="driver-current-km">
-                    Mevcut KM: <strong id="current-km">0</strong>
-                </p>
-                <div class="form-group">
-                    <label for="new-km">Yeni KM Değeri</label>
-                    <input type="number" id="new-km" placeholder="Örn: 54230" inputmode="numeric" pattern="[0-9]*">
+                <div id="edit-section-km" class="edit-request-section">
+                    <p class="driver-current-km">
+                        Mevcut KM: <strong id="current-km">0</strong>
+                    </p>
+                    <div class="form-group">
+                        <label for="new-km">Yeni KM Değeri</label>
+                        <input type="number" id="new-km" placeholder="Örn: 54230" inputmode="numeric" pattern="[0-9]*">
+                    </div>
                 </div>
-                <p class="driver-current-km">
-                    Mevcut Bakım: <strong id="current-bakim">-</strong>
-                </p>
-                <div class="form-group">
-                    <label for="new-bakim">Yeni Bakım Açıklama</label>
-                    <input type="text" id="new-bakim" placeholder="Boş bırakırsanız 'Yok' sayılır">
+                <div id="edit-section-bakim" class="edit-request-section">
+                    <p class="driver-current-km">
+                        Mevcut Bakım: <strong id="current-bakim">-</strong>
+                    </p>
+                    <div class="form-group">
+                        <label for="new-bakim">Yeni Bakım Açıklama</label>
+                        <input type="text" id="new-bakim" placeholder="Boş bırakırsanız 'Yok' sayılır">
+                    </div>
                 </div>
-                <p class="driver-current-km">
-                    Mevcut Kaza: <strong id="current-kaza">-</strong>
-                </p>
-                <div class="form-group">
-                    <label for="new-kaza">Yeni Kaza Açıklama</label>
-                    <input type="text" id="new-kaza" placeholder="Boş bırakırsanız 'Yok' sayılır">
+                <div id="edit-section-kaza" class="edit-request-section">
+                    <p class="driver-current-km">
+                        Mevcut Kaza: <strong id="current-kaza">-</strong>
+                    </p>
+                    <div class="form-group">
+                        <label for="new-kaza">Yeni Kaza Açıklama</label>
+                        <input type="text" id="new-kaza" placeholder="Boş bırakırsanız 'Yok' sayılır">
+                    </div>
                 </div>
                 <div class="form-group">
                     <label for="edit-reason">Düzeltme Sebebi</label>
