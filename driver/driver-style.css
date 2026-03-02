@@ -177,13 +177,17 @@ body.driver-modal-open {
   z-index: 10004;
 }
 
-/* Dashboard: footer sabit altta; bandı kaldırmak için en az rezerve yükseklik kadar doldur */
+/* Dashboard: footer sabit altta; anasayfa ile aynı – gri üst çizgi, yan soluk çizgiler, kırmızı glow */
 .dashboard-page #app-footer {
   flex-shrink: 0;
   z-index: 10002 !important;
   min-height: var(--app-footer-height, 48px) !important;
   display: flex !important;
   align-items: center !important;
+  border-top: 0.8px solid rgba(128, 128, 128, 0.5) !important;
+  border-left: 0.5px solid rgba(255, 255, 255, 0.20) !important;
+  border-right: 0.5px solid rgba(255, 255, 255, 0.20) !important;
+  box-shadow: 0 -10px 20px rgba(var(--theme-color-rgb), 0.16) !important;
 }
 
 .driver-content-wrap {
