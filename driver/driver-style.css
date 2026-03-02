@@ -2144,6 +2144,21 @@ body.driver-modal-open {
   z-index: 10011 !important;
 }
 
+/* Masaüstü: kayıt modalı ile aynı – overlay üst padding yok, sadece container margin (style-core ile uyumlu) */
+@media (min-width: 641px) {
+  #history-modal.driver-modal,
+  #edit-request-modal.driver-modal,
+  #driver-event-menu-modal.driver-modal,
+  #driver-anahtar-modal.driver-modal,
+  #driver-lastik-modal.driver-modal,
+  #driver-utts-modal.driver-modal,
+  #driver-muayene-modal.driver-modal,
+  #driver-sigorta-modal.driver-modal,
+  #driver-kasko-modal.driver-modal {
+    padding: 0 !important;
+  }
+}
+
 #history-modal.driver-modal::before,
 #edit-request-modal.driver-modal::before,
 #driver-event-menu-modal.driver-modal::before,
@@ -2160,8 +2175,8 @@ body.driver-modal-open {
   transform: translateX(-50%);
   width: 100%;
   max-width: 500px;
-  height: calc(100vh - max(12px, env(safe-area-inset-top)) - var(--modal-margin-bottom-desktop, 54px));
-  height: calc(100dvh - max(12px, env(safe-area-inset-top)) - var(--modal-margin-bottom-desktop, 54px));
+  height: calc(100vh - max(12px, env(safe-area-inset-top)) - var(--modal-margin-bottom-desktop));
+  height: calc(100dvh - max(12px, env(safe-area-inset-top)) - var(--modal-margin-bottom-desktop));
   background: rgba(0, 0, 0, 0.85);
   backdrop-filter: blur(5px);
   z-index: -1;
@@ -2190,11 +2205,11 @@ body.driver-modal-open {
   background: var(--modal-bg) !important;
   width: 100%;
   max-width: 500px;
-  margin: max(12px, env(safe-area-inset-top)) auto var(--modal-margin-bottom-desktop, 54px) auto;
-  height: calc(100vh - max(12px, env(safe-area-inset-top)) - var(--modal-margin-bottom-desktop, 54px));
-  height: calc(100dvh - max(12px, env(safe-area-inset-top)) - var(--modal-margin-bottom-desktop, 54px));
-  max-height: calc(100vh - max(12px, env(safe-area-inset-top)) - var(--modal-margin-bottom-desktop, 54px));
-  max-height: calc(100dvh - max(12px, env(safe-area-inset-top)) - var(--modal-margin-bottom-desktop, 54px));
+  margin: max(12px, env(safe-area-inset-top)) auto var(--modal-margin-bottom-desktop) auto;
+  height: calc(100vh - max(12px, env(safe-area-inset-top)) - var(--modal-margin-bottom-desktop));
+  height: calc(100dvh - max(12px, env(safe-area-inset-top)) - var(--modal-margin-bottom-desktop));
+  max-height: calc(100vh - max(12px, env(safe-area-inset-top)) - var(--modal-margin-bottom-desktop));
+  max-height: calc(100dvh - max(12px, env(safe-area-inset-top)) - var(--modal-margin-bottom-desktop));
   overflow: hidden;
   overflow-x: hidden; /* Yatay kayma engelle */
   display: flex;
@@ -3368,6 +3383,13 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     justify-content: center !important;
     overflow: hidden !important;
     overscroll-behavior: none !important;
+  }
+  /* Geçmiş Kayıtlar + Düzeltme Talebi: kayıt modalı ile aynı footer boşluğu (kayit.css +6px) */
+  #history-modal.driver-modal,
+  #edit-request-modal.driver-modal {
+    bottom: calc(var(--modal-gap-above-footer, 10px) + var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0) + 6px) !important;
+    max-height: calc(100vh - var(--modal-gap-above-footer, 10px) - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0) - 6px) !important;
+    max-height: calc(100dvh - var(--modal-gap-above-footer, 10px) - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0) - 6px) !important;
   }
   #history-modal.driver-modal::before,
   #edit-request-modal.driver-modal::before,
