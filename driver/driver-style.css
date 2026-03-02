@@ -3350,8 +3350,9 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     max-width: 100% !important;
     width: 100% !important;
     margin: 0 !important;
-    height: calc(100% - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0)) !important;
-    max-height: calc(100% - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0)) !important;
+    /* Kapsayıcı zaten footerı kestiği için burada tekrar hesaplama yapmıyoruz. Esnek bırakıyoruz. */
+    height: auto !important;
+    max-height: 100% !important;
     background: #080d16 !important;
     border-radius: 10px !important;
     border-top: none !important;
@@ -3989,7 +3990,8 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   #driver-kasko-modal .driver-modal-content,
   #driver-kasko-modal .modal-container {
     margin: 0 !important;
-    height: calc(100% - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0)) !important;
+    /* Klavye açıldığında bozulmayı engellemek için height serbest bırakılır, sadece max limit konur */
+    height: auto !important;
     max-height: calc(100% - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0)) !important;
   }
 }
@@ -4103,7 +4105,8 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   html.driver-pwa-standalone #driver-kasko-modal .driver-modal-content,
   html.driver-pwa-standalone #driver-kasko-modal .modal-container {
     margin: 0 !important;
-    height: calc(100% - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0)) !important;
+    /* PWA'larda sıkışmayı önlemek için height: auto yapıldı */
+    height: auto !important;
     max-height: calc(100% - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0)) !important;
   }
 }
