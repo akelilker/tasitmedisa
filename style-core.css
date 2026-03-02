@@ -37,7 +37,7 @@ body::-webkit-scrollbar,
   --modal-margin-bottom-mobile: calc(var(--modal-gap-above-footer) + var(--app-footer-height));
 
   --border-red-tech: rgba(var(--theme-color-rgb), 0.4);
-  --border-red-side: rgba(var(--theme-color-rgb), 0.22);  /* Container sağ-sol çizgi (hafif) */
+  --border-red-side: rgba(var(--theme-color-rgb), 0.45);  /* Anasayfa sağ-sol kırmızı çerçeve */
   --red-glow-subtle: rgba(var(--theme-color-rgb), 0.12);
 
   --green: #4ade80;
@@ -1513,16 +1513,17 @@ body.modal-open .user-panel-link {
         }
     }
 
-    /* Mobil+PWA: modal açıkken footer ile modal arasındaki boşlukta kırmızı yan ışıklar görünmesin */
+    /* Mobil+PWA: modal açıkken footer–modal arası boşluktaki kırmızı çizgi kalıntısı tamamen kapansın */
     body.modal-open::after {
         content: '';
         position: fixed;
         left: 0;
         right: 0;
+        width: 100vw;
         bottom: calc(var(--app-footer-height) + env(safe-area-inset-bottom, 0));
         height: var(--modal-gap-above-footer);
         background: var(--bg);
-        z-index: 500;
+        z-index: 9998; /* Modal (9999) altında, container/çizgilerin üstünde */
         pointer-events: none;
     }
     
@@ -1565,18 +1566,18 @@ body.modal-open .user-panel-link {
         left: 0;
         right: 0;
         bottom: 0;
-        border-left: 0.5px solid rgba(var(--theme-color-rgb), 0.22);
-        border-right: 0.5px solid rgba(var(--theme-color-rgb), 0.22);
+        border-left: 0.5px solid rgba(var(--theme-color-rgb), 0.45);
+        border-right: 0.5px solid rgba(var(--theme-color-rgb), 0.45);
         pointer-events: none;
         z-index: 20;
         box-sizing: border-box;
     }
     
-    /* CONTAINER'DAN YAN ÇİZGİLER KALDIRILDI; üst çizgi hafif */
+    /* CONTAINER üst + yan çizgi (anasayfada kırmızı çerçeve) */
     .app-container {
         border-left: none;
         border-right: none;
-        border-top: 0.5px solid rgba(var(--theme-color-rgb), 0.22) !important;
+        border-top: 0.5px solid rgba(var(--theme-color-rgb), 0.45) !important;
     }
     
     /* Kırmızı çerçeve mobilde havada: iç ışık tam (kırmızı ile eşit) */
@@ -1683,9 +1684,9 @@ body.modal-open .user-panel-link {
         border-bottom-left-radius: 0 !important;
         border-bottom-right-radius: 0 !important;
         overflow: hidden !important;
-        border-top: 0.5px solid rgba(var(--theme-color-rgb), 0.22) !important;
-        border-left: 0.5px solid rgba(var(--theme-color-rgb), 0.22) !important;
-        border-right: 0.5px solid rgba(var(--theme-color-rgb), 0.22) !important;
+        border-top: 0.5px solid rgba(var(--theme-color-rgb), 0.45) !important;
+        border-left: 0.5px solid rgba(var(--theme-color-rgb), 0.45) !important;
+        border-right: 0.5px solid rgba(var(--theme-color-rgb), 0.45) !important;
         box-shadow: 0 2px 14px rgba(var(--theme-color-rgb), 0.1) !important;
         min-height: calc(100vh - env(safe-area-inset-bottom)) !important;
         min-height: calc(100dvh - env(safe-area-inset-bottom)) !important;
