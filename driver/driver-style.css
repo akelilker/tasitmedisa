@@ -2043,7 +2043,7 @@ body.driver-modal-open {
 #driver-kasko-modal.driver-modal {
   background: transparent !important;
   padding: env(safe-area-inset-top) 0 0 0 !important;
-  z-index: 9999;
+  z-index: 10010;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
@@ -2062,9 +2062,10 @@ body.driver-modal-open {
 #driver-kasko-modal.driver-modal.show {
   display: flex !important;
   pointer-events: auto !important;
+  z-index: 10010 !important;
 }
 #edit-request-modal.driver-modal.show {
-  z-index: 10001 !important;
+  z-index: 10011 !important;
 }
 
 #history-modal.driver-modal::before,
