@@ -1203,9 +1203,9 @@ body.driver-modal-open {
   .driver-left-panel {
     border-right-width: 1.2px !important;
   }
-  /* Şube etiketinden itibaren 3px aşağı */
+  /* Şube ve altı mobilde bir satır aşağı (3px + bir satır yüksekliği) */
   .driver-left-panel .driver-vehicle-info {
-    margin-top: 3px !important;
+    margin-top: 20px !important;
   }
 
 }
