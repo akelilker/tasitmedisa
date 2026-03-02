@@ -1554,7 +1554,7 @@ body.modal-open .user-panel-link {
         gap: 8px !important;
     }
     
-    /* MOBİLDE YAN ÇİZGİLER - çok hafif (belirginliği azaltıldı) */
+    /* MOBİLDE YAN ÇİZGİLER – ufak belirginleştirme (0.72) */
     .content-wrap { 
         border-left: none;
         border-right: none;
@@ -1566,18 +1566,18 @@ body.modal-open .user-panel-link {
         left: 0;
         right: 0;
         bottom: 0;
-        border-left: 0.5px solid rgba(var(--theme-color-rgb), 0.6);
-        border-right: 0.5px solid rgba(var(--theme-color-rgb), 0.6);
+        border-left: 0.5px solid rgba(var(--theme-color-rgb), 0.72);
+        border-right: 0.5px solid rgba(var(--theme-color-rgb), 0.72);
         pointer-events: none;
         z-index: 20;
         box-sizing: border-box;
     }
     
-    /* CONTAINER üst + yan çizgi (anasayfada kırmızı çerçeve) */
+    /* CONTAINER üst çizgi (mobil anasayfa kırmızı çerçeve) */
     .app-container {
         border-left: none;
         border-right: none;
-        border-top: 0.5px solid rgba(var(--theme-color-rgb), 0.6) !important;
+        border-top: 0.5px solid rgba(var(--theme-color-rgb), 0.72) !important;
     }
     
     /* Kırmızı çerçeve mobilde havada: iç ışık tam (kırmızı ile eşit) */
@@ -1684,9 +1684,9 @@ body.modal-open .user-panel-link {
         border-bottom-left-radius: 0 !important;
         border-bottom-right-radius: 0 !important;
         overflow: hidden !important;
-        border-top: 0.5px solid rgba(var(--theme-color-rgb), 0.6) !important;
-        border-left: 0.5px solid rgba(var(--theme-color-rgb), 0.6) !important;
-        border-right: 0.5px solid rgba(var(--theme-color-rgb), 0.6) !important;
+        border-top: 0.5px solid rgba(var(--theme-color-rgb), 0.72) !important;
+        border-left: 0.5px solid rgba(var(--theme-color-rgb), 0.72) !important;
+        border-right: 0.5px solid rgba(var(--theme-color-rgb), 0.72) !important;
         box-shadow: 0 2px 14px rgba(var(--theme-color-rgb), 0.1) !important;
         min-height: calc(100vh - env(safe-area-inset-bottom)) !important;
         min-height: calc(100dvh - env(safe-area-inset-bottom)) !important;
