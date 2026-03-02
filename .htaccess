@@ -1,6 +1,14 @@
 # MEDISA Taşıt Yönetim Sistemi
 # RewriteBase /medisa/ veya / gerektiğinde script tarafından ayarlanır
 
+# Service Worker: scope hatasını önlemek için (mod_headers gerekir)
+<IfModule mod_headers.c>
+  <Files "sw.js">
+    Header set Service-Worker-Allowed "/"
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+  </Files>
+</IfModule>
+
 # Dokümantasyon (.md) sunucuda servis edilmesin
 <FilesMatch "\.md$">
     Require all denied

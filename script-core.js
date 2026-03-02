@@ -550,7 +550,7 @@ setTimeout(() => { if (window.hideLoading) window.hideLoading(); }, 8000);
   var p = (typeof document !== 'undefined' && document.location) ? document.location.pathname : '';
   var base = (p.indexOf('/tasitmedisa') === 0) ? '/tasitmedisa' : (p.indexOf('/medisa') === 0) ? '/medisa' : '';
   var scope = base ? base + '/' : '/';
-  var paths = base ? [base + '/sw.js'] : ['./sw.js', '/sw.js', '/tasitmedisa/sw.js', '/medisa/sw.js'];
+  var paths = base ? [base + '/sw.js', './sw.js'] : ['./sw.js', '/sw.js', '/tasitmedisa/sw.js', '/medisa/sw.js'];
   window.registerServiceWorker({
     paths: paths,
     scope: scope,
