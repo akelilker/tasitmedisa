@@ -2118,7 +2118,7 @@ body.driver-modal-open {
 #driver-sigorta-modal.driver-modal,
 #driver-kasko-modal.driver-modal {
   background: transparent !important;
-  padding: env(safe-area-inset-top) 0 0 0 !important;
+  padding: max(12px, env(safe-area-inset-top)) 0 0 0 !important; /* Çentik/notch altında kalmaması için */
   z-index: 10010;
   flex-direction: column;
   justify-content: flex-start;
@@ -3348,7 +3348,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 
 /* #history-modal, #edit-request-modal, Olay Ekle modalları mobil: overlay-bottom stratejisi (style-core ile uyumlu) */
 @media (max-width: 640px) {
-  /* Taşıtlar modalı ile aynı: overlay alt boşluk = footer + gap (style-core değişkenleri) */
+  /* Taşıtlar modalı ile aynı: overlay alt boşluk = footer + gap (style-core değişkenleri). Üst: çentik altında kalmaması için safe-area. */
   #history-modal.driver-modal,
   #edit-request-modal.driver-modal,
   #driver-event-menu-modal.driver-modal,
@@ -3358,7 +3358,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   #driver-muayene-modal.driver-modal,
   #driver-sigorta-modal.driver-modal,
   #driver-kasko-modal.driver-modal {
-    padding: 0 !important;
+    padding: max(12px, env(safe-area-inset-top)) 0 0 0 !important;
     top: 0 !important;
     bottom: calc(var(--modal-gap-above-footer, 10px) + var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important;
     height: auto !important;
@@ -3396,6 +3396,11 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   #driver-kasko-modal .modal-header h2 {
     font-size: 21px !important;
     letter-spacing: 0.2em !important;
+  }
+  /* Geçmiş Kayıtlar + Düzeltme Talebi: kayıt modalı ile aynı başlık gölgesi */
+  #history-modal .modal-header h2,
+  #edit-request-modal .modal-header h2 {
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.5), 0 4px 12px rgba(0, 0, 0, 0.3), 0 0 15px rgba(255, 255, 255, 0.08) !important;
   }
 
   /* Mobil modal container: footer arkasında kalmayacak şekilde yükseklik sınırla */
@@ -3447,6 +3452,12 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     padding-top: 12px !important;
     border-top-left-radius: 0 !important;
     border-top-right-radius: 0 !important;
+  }
+
+  /* Geçmiş Kayıtlar + Düzeltme Talebi: kayıt modalı ile aynı kapatma butonu boyutu */
+  #history-modal .modal-close,
+  #edit-request-modal .modal-close {
+    font-size: 21px !important;
   }
 
   /* modal-body: dikey scroll, alt içerik footer'a yapışmasın */
