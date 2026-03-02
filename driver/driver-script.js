@@ -240,8 +240,17 @@ async function loadDashboard() {
             headers: { 'Authorization': 'Bearer ' + token },
             cache: 'no-store'
         });
-        
-        const data = await response.json();
+        var data;
+        try {
+            var text = await response.text();
+            data = text ? JSON.parse(text) : {};
+        } catch (parseErr) {
+            console.error('Veri yükleme hatası (JSON parse):', parseErr);
+            throw new Error('Sunucu yanıtı işlenemedi.');
+        }
+        if (!data || typeof data !== 'object') data = {};
+        if (!Array.isArray(data.vehicles)) data.vehicles = [];
+        if (!Array.isArray(data.records)) data.records = [];
         
         if (!data.success) {
             const spinner = document.getElementById('loading-spinner');
@@ -272,9 +281,9 @@ async function loadDashboard() {
         if (emptyStateEl) emptyStateEl.style.display = 'none';
         const vehicles = data.vehicles;
         const records = data.records;
-        selectedVehicleId = selectedVehicleId || (vehicles[0] && vehicles[0].id);
-        if (!getSelectedVehicle() && vehicles && vehicles.length) {
-            selectedVehicleId = vehicles[0].id;
+        selectedVehicleId = selectedVehicleId || (vehicles[0] != null && vehicles[0].id != null ? String(vehicles[0].id) : null);
+        if (!getSelectedVehicle() && vehicles && vehicles.length && vehicles[0] != null) {
+            selectedVehicleId = String(vehicles[0].id);
         }
         
         renderLeftPanel(vehicles, records);
@@ -473,11 +482,16 @@ function renderRightPanel(vehicles, records) {
 }
 
 function buildDriverActionArea(vehicle, existingRecord, bakimVar, kazaVar, opts) {
-    const vid = opts.vid || vehicle.id;
+    const vid = String(opts.vid != null ? opts.vid : (vehicle && vehicle.id != null ? vehicle.id : ''));
     const today = new Date().toISOString().split('T')[0];
     const esc = (s) => (s == null ? '' : String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'));
+    var boyaliJson = '{}';
+    try {
+        var bp = vehicle && (vehicle.boyaliParcalar || {});
+        if (bp && typeof bp === 'object' && !Array.isArray(bp)) boyaliJson = JSON.stringify(bp);
+    } catch (e) { boyaliJson = '{}'; }
     /* Son güncellenen km: taşıt guncelKm (kayıt sonrası) veya mevcut dönem kaydı - binlik ayırıcı ile */
-    const lastKm = vehicle.guncelKm != null ? vehicle.guncelKm : (existingRecord && existingRecord.guncel_km != null ? existingRecord.guncel_km : '');
+    const lastKm = vehicle && (vehicle.guncelKm != null ? vehicle.guncelKm : (existingRecord && existingRecord.guncel_km != null ? existingRecord.guncel_km : ''));
     const kmVal = (lastKm !== '' && lastKm != null) ? esc(formatKm(lastKm)) : '';
     const bakimTarih = existingRecord && existingRecord.bakim_tarih ? existingRecord.bakim_tarih : today;
     const kazaTarih = existingRecord && existingRecord.kaza_tarih ? existingRecord.kaza_tarih : today;
@@ -520,7 +534,7 @@ function buildDriverActionArea(vehicle, existingRecord, bakimVar, kazaVar, opts)
                     <div class="form-group"><label for="kaza-tarih-${vid}">Kaza Tarihi</label><input type="date" id="kaza-tarih-${vid}" class="driver-kaza-input" value="${kazaTarih}"></div>
                     <div class="form-group"><label for="kaza-detay-${vid}">Açıklama</label><textarea id="kaza-detay-${vid}" class="driver-report-textarea-auto driver-kaza-textarea" rows="1" placeholder="Kaza açıklamasını yazın..." maxlength="500">${kazaAciklama}</textarea></div>
                     <div class="form-group"><label for="kaza-tutar-${vid}">Hasar Tutarı (TL)</label><input type="text" id="kaza-tutar-${vid}" class="driver-kaza-input" placeholder="5.000" inputmode="numeric"></div>
-                    <div class="form-group"><label class="driver-kaporta-label">Hasar gören parçaları işaretleyin (isteğe bağlı)</label><div id="kaza-kaporta-${vid}" class="driver-kaporta-container" data-vehicle-id="${vid}" data-boyali-parcalar='${JSON.stringify(vehicle.boyaliParcalar || {})}'></div></div>
+                    <div class="form-group"><label class="driver-kaporta-label">Hasar gören parçaları işaretleyin (isteğe bağlı)</label><div id="kaza-kaporta-${vid}" class="driver-kaporta-container" data-vehicle-id="${vid}" data-boyali-parcalar='${boyaliJson}'></div></div>
                     <div class="universal-btn-group">
                         <button type="button" class="universal-btn-save" onclick="submitDriverAction('kaza','${vid}')">Bildir</button>
                         <button type="button" class="universal-btn-cancel" onclick="cancelDriverActionForm('kaza','${vid}')">Vazgeç</button>
