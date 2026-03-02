@@ -1487,6 +1487,7 @@ body.modal-open .user-panel-link {
         }
         .tasitlar-modal-overlay {
             padding-top: env(safe-area-inset-top) !important;
+            padding-bottom: 0 !important; /* Diğer modallarla aynı: overlay bottom zaten safe-area içeriyor, ek boşluk olmasın */
             bottom: calc(var(--modal-gap-above-footer) + var(--app-footer-height) + env(safe-area-inset-bottom, 0)) !important;
             max-height: calc(100vh - var(--modal-gap-above-footer) - var(--app-footer-height) - env(safe-area-inset-bottom, 0)) !important;
             max-height: calc(100dvh - var(--modal-gap-above-footer) - var(--app-footer-height) - env(safe-area-inset-bottom, 0)) !important;
