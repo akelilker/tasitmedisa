@@ -94,12 +94,12 @@
   font-family: 'Source Sans 3', sans-serif;
 }
 
-/* --- Overflow: yatay taşma yok; giriş ve panel sayfaları --- */
+/* --- Overflow: yatay taşma yok; safe-area sadece html'de (style-core) – çift padding önlenir --- */
 body.login-page,
 body.dashboard-page {
   overflow-x: hidden !important;
-  padding-top: env(safe-area-inset-top, 0px) !important;
-  padding-bottom: env(safe-area-inset-bottom, 0px) !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
 }
 /* Modal açıkken arka plan scroll kilitlensin (sadece modal içi kayar) */
 body.driver-modal-open {
@@ -3488,11 +3488,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .login-page .driver-dashboard-container::before {
     border-left: 0.99px solid rgba(var(--theme-color-rgb), 0.55) !important;
     border-right: 0.99px solid rgba(var(--theme-color-rgb), 0.55) !important;
-  }
-  /* Panel + şifre ekranı: kırmızı çizgiler footer üzerinde dursun, aşağı taşmasın */
-  .dashboard-page .driver-dashboard-container::before,
-  .login-page .driver-dashboard-container::before {
-    bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important;
+    bottom: 0 !important; /* Container dibine kadar; çerçeve asılı kalmasın */
   }
   /* Footer anasayfa ile aynı: belirgin gri üst çizgi, yan soluk çizgiler (footerdan yükselen), kırmızı glow */
   .dashboard-page #app-footer,
@@ -3985,10 +3981,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     border-radius: 38px !important;
     border-left: 0.99px solid rgba(var(--theme-color-rgb), 0.55) !important;
     border-right: 0.99px solid rgba(var(--theme-color-rgb), 0.55) !important;
-  }
-  .dashboard-page .driver-dashboard-container::before,
-  .login-page .driver-dashboard-container::before {
-    bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important;
+    bottom: 0 !important; /* Container dibine kadar; footer üstünde asılı çerçeve kalmasın */
   }
 
   /* Content-wrap: iOS PWA'da ekstra safe-area padding kaldır (dashboard scroll) */
@@ -4130,10 +4123,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     border-radius: 38px !important;
     border-left: 0.99px solid rgba(var(--theme-color-rgb), 0.55) !important;
     border-right: 0.99px solid rgba(var(--theme-color-rgb), 0.55) !important;
-  }
-  html.driver-pwa-standalone .dashboard-page .driver-dashboard-container::before,
-  html.driver-pwa-standalone .login-page .driver-dashboard-container::before {
-    bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important;
+    bottom: 0 !important; /* Container dibine kadar; çerçeve asılı kalmasın */
   }
   html.driver-pwa-standalone .dashboard-page .driver-scroll-area {
     padding-top: 0 !important;
@@ -4143,7 +4133,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
   html.driver-pwa-standalone .dashboard-page .driver-header-fixed,
   html.driver-pwa-standalone .login-page .driver-header-fixed {
-    padding-top: max(12px, env(safe-area-inset-top)) !important;
+    padding-top: 12px !important; /* Safe-area html'de; çift boşluk yok */
     border-top: 0.99px solid rgba(var(--theme-color-rgb), 0.55) !important;
     border-top-left-radius: 38px !important;
     border-top-right-radius: 38px !important;
