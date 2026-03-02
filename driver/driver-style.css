@@ -1185,6 +1185,10 @@ body.driver-modal-open {
     overflow: hidden !important;
     text-overflow: ellipsis !important;
   }
+  /* Şifre ekranı mobil: header metinleri 1pt küçük */
+  .login-page .hero.hero-two-rows .hero-title-block .hero-title-line {
+    font-size: clamp(18px, 5vw, 22px) !important;
+  }
   .dashboard-page .hero-logo img {
     width: 100% !important;
     height: auto !important;
@@ -3576,10 +3580,10 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
   .login-page .login-card-title,
   .login-page .hero h1 {
-    font-size: 24px !important;
+    font-size: 23px !important;
   }
   .login-page .hero-panel-subtitle {
-    font-size: 22px !important; /* h1’e göre 1pt küçük */
+    font-size: 21px !important; /* h1’e göre 1pt küçük */
   }
   .login-page #app-footer.login-footer .footer-content {
     font-size: 14px !important;
@@ -3940,6 +3944,9 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     letter-spacing: clamp(0.7px, 0.2vw, 1.2px) !important;
     line-height: 1.15 !important;
   }
+  .login-page .hero.hero-two-rows .hero-title-block .hero-title-line {
+    font-size: clamp(13px, 3.5vw, 17px) !important;
+  }
 
   /* Footer: anasayfa mobil ile aynı – belirgin gri üst çizgi, yan soluk çizgiler, kırmızı glow */
   .dashboard-page #app-footer,
@@ -4060,6 +4067,9 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     font-size: clamp(14px, 3.75vw, 18px) !important;
     letter-spacing: clamp(0.7px, 0.2vw, 1.2px) !important;
     line-height: 1.15 !important;
+  }
+  html.driver-pwa-standalone .login-page .hero.hero-two-rows .hero-title-block .hero-title-line {
+    font-size: clamp(13px, 3.5vw, 17px) !important;
   }
   html.driver-pwa-standalone .dashboard-page #app-footer,
   html.driver-pwa-standalone .login-page #app-footer.login-footer {
