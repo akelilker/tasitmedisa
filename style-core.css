@@ -37,7 +37,7 @@ body::-webkit-scrollbar,
   --modal-margin-bottom-mobile: calc(var(--modal-gap-above-footer) + var(--app-footer-height));
 
   --border-red-tech: rgba(var(--theme-color-rgb), 0.4);
-  --border-red-side: rgba(var(--theme-color-rgb), 0.47);  /* Anasayfa sağ-sol kırmızı çerçeve */
+  --border-red-side: rgba(var(--theme-color-rgb), 0.6);  /* Anasayfa sağ-sol kırmızı çerçeve */
   --red-glow-subtle: rgba(var(--theme-color-rgb), 0.12);
 
   --green: #4ade80;
@@ -1566,8 +1566,8 @@ body.modal-open .user-panel-link {
         left: 0;
         right: 0;
         bottom: 0;
-        border-left: 0.5px solid rgba(var(--theme-color-rgb), 0.47);
-        border-right: 0.5px solid rgba(var(--theme-color-rgb), 0.47);
+        border-left: 0.5px solid rgba(var(--theme-color-rgb), 0.6);
+        border-right: 0.5px solid rgba(var(--theme-color-rgb), 0.6);
         pointer-events: none;
         z-index: 20;
         box-sizing: border-box;
@@ -1577,7 +1577,7 @@ body.modal-open .user-panel-link {
     .app-container {
         border-left: none;
         border-right: none;
-        border-top: 0.5px solid rgba(var(--theme-color-rgb), 0.47) !important;
+        border-top: 0.5px solid rgba(var(--theme-color-rgb), 0.6) !important;
     }
     
     /* Kırmızı çerçeve mobilde havada: iç ışık tam (kırmızı ile eşit) */
@@ -1684,9 +1684,9 @@ body.modal-open .user-panel-link {
         border-bottom-left-radius: 0 !important;
         border-bottom-right-radius: 0 !important;
         overflow: hidden !important;
-        border-top: 0.5px solid rgba(var(--theme-color-rgb), 0.47) !important;
-        border-left: 0.5px solid rgba(var(--theme-color-rgb), 0.47) !important;
-        border-right: 0.5px solid rgba(var(--theme-color-rgb), 0.47) !important;
+        border-top: 0.5px solid rgba(var(--theme-color-rgb), 0.6) !important;
+        border-left: 0.5px solid rgba(var(--theme-color-rgb), 0.6) !important;
+        border-right: 0.5px solid rgba(var(--theme-color-rgb), 0.6) !important;
         box-shadow: 0 2px 14px rgba(var(--theme-color-rgb), 0.1) !important;
         min-height: calc(100vh - env(safe-area-inset-bottom)) !important;
         min-height: calc(100dvh - env(safe-area-inset-bottom)) !important;
