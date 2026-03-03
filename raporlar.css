@@ -187,7 +187,7 @@ margin: 0;
 }
 /* Detay Ekleme butonu varsayılan beyaz; seçiliyken yeşil */
 #reports-modal .reports-list-header-actions .stok-detail-add-btn {
-color: var(--txt-light) !important;
+color: var(--txt) !important;
 margin: 0;
 }
 #reports-modal .reports-list-header-actions .stok-detail-add-btn.active {
@@ -208,7 +208,7 @@ flex-shrink: 0 !important;
 align-self: flex-start !important;
 }
 #reports-modal .reports-list-header-actions .stok-detail-add-btn:hover {
-color: var(--txt-light) !important;
+color: var(--txt) !important;
 }
 #reports-modal .reports-list-header-actions .stok-detail-add-btn.active:hover {
 color: #4ade80 !important;
@@ -359,7 +359,7 @@ border-color: var(--theme-color);
 }
 
 .report-filters select option {
-background-color: #080d16;
+background-color: var(--bg);
 color: #e0e0e0;
 }
 
@@ -583,10 +583,10 @@ min-width: 800px;
 .stok-list-header {
 position: sticky;
 top: 0;
-background: #080d16;
+background: var(--bg);
 z-index: 10;
 border-bottom: 1px solid rgba(255, 255, 255, 0.22);
-box-shadow: 0 2px 0 0 #080d16;
+box-shadow: 0 2px 0 0 var(--bg);
 backdrop-filter: none;
 -webkit-backdrop-filter: none;
 }
@@ -594,13 +594,13 @@ backdrop-filter: none;
 /* Taşıtlar listesi formatı: grid, gap, arka plan, çizgi */
 .stok-list-header-row {
 display: grid;
-background: #080d16;
+background: var(--bg);
 gap: 4px;
 align-items: center;
 padding: 6px 2px 4px 2px;
 margin-bottom: 4px;
 border-bottom: 1px solid rgba(255, 255, 255, 0.22);
-box-shadow: 0 2px 0 0 #080d16;
+box-shadow: 0 2px 0 0 var(--bg);
 backdrop-filter: none;
 -webkit-backdrop-filter: none;
 }
@@ -1926,7 +1926,7 @@ scrollbar-color: rgba(128, 128, 128, 0.35) transparent;
 position: sticky;
 top: 0;
 z-index: 10;
-background: #080d16;
+background: var(--bg);
 }
 
 .stok-search-container { max-width: calc(100vw - 120px); }

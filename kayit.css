@@ -281,7 +281,7 @@ select:focus {
 
 select option,
 select.form-input option {
-    background-color: #080d16;
+    background-color: var(--bg);
     color: #e0e0e0;
 }
 
@@ -289,7 +289,7 @@ select option:checked,
 select option:hover,
 select option:focus,
 select option:active {
-    background: #080d16;
+    background: var(--bg);
     color: #fff;
 }
 
