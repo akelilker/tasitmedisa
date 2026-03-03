@@ -932,7 +932,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         max-height: 100% !important;
         margin-bottom: 0 !important;
         border-radius: 10px !important;
-        background: #080d16 !important;
+        background: var(--modal-bg) !important;
         overflow: hidden !important;
         overflow-x: hidden !important;
         touch-action: pan-y !important;
@@ -973,7 +973,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         margin-top: 10px;
         padding-top: 8px !important;
         padding-bottom: 10px !important;
-        background: #080d16 !important;
+        background: var(--modal-bg) !important;
         z-index: 2;
         border-top: 1px solid rgba(255, 255, 255, 0.06);
         align-items: center !important;
