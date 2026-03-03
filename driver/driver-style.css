@@ -3576,8 +3576,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     border-left: 0.99px solid rgba(var(--theme-color-rgb), 0.68) !important;
     border-right: 0.99px solid rgba(var(--theme-color-rgb), 0.68) !important;
     top: 0 !important;
-    bottom: 0 !important;
-    clip-path: inset(0 0 var(--app-footer-height, 48px) 0) !important; /* Çerçeve altta footer'a sıfır konumda değsin (safe-area clip kaldırıldı) */
+    bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important; /* Footer'da biter, 768px ile aynı */
   }
   /* Footer anasayfa ile aynı: belirgin gri üst çizgi, yan soluk çizgiler (footerdan yükselen), kırmızı glow */
   .dashboard-page #app-footer,
