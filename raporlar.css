@@ -1852,6 +1852,17 @@ border-color: rgba(255, 255, 255, 0.28) !important;
 margin-left: 0 !important;
 margin-right: 0 !important;
 }
+/* Mobil/PWA: tarih inputu içi yatay + dikey ortalı */
+#stok-list-container .stok-controls-row-2 .stok-date-input::-webkit-datetime-edit {
+text-align: center !important;
+width: 100% !important;
+}
+#stok-list-container .stok-controls-row-2 .stok-date-input::-webkit-datetime-edit-fields-wrapper {
+display: flex !important;
+justify-content: center !important;
+align-items: center !important;
+width: 100% !important;
+}
 #stok-date-start,
 #stok-date-end {
 height: 32px !important;
