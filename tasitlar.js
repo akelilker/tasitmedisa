@@ -73,7 +73,7 @@
 
   // Grid genişlikleri sütun kimliğine göre (sürükle-bırak sonrası genişlik doğru sütunla kalsın)
   function getVehicleColumnWidths(columnOrder) {
-    const defaultCols = '32px 70px 3.2fr 60px 65px 1.8fr 2fr';
+    const defaultCols = '32px 70px 3.15fr 60px 65px 1.85fr 2fr'; /* Marka -3px, Kullanıcı +3px */
     try {
       if (!columnOrder || !Array.isArray(columnOrder) || columnOrder.length === 0) return defaultCols;
       const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
@@ -89,10 +89,10 @@
         : {
             'year': '32px',
             'plate': '70px',
-            'brand': '3.2fr',
+            'brand': '3.15fr',   /* Marka 3px dar */
             'km': '60px',
             'type': '65px',
-            'user': '1.8fr',
+            'user': '1.85fr',   /* Kullanıcı 3px geniş */
             'branch': '2fr'
           };
       return columnOrder.map(key => widthMap[key] || '1fr').join(' ');
