@@ -17,7 +17,7 @@ body::-webkit-scrollbar,
   --theme-color-rgb: 225, 6, 27;
   /* Footer'dan yukarı süzen ışık: bordo ile açık kırmızı arası orta ton */
   --footer-glow-rgb: 230, 22, 32;
-  --bg: #0b1120;
+  --bg: #080d16;
   --bg-2: #151515;
   --card-bg: #1a1a1a;
   --txt: #f0f0f0;
@@ -30,7 +30,7 @@ body::-webkit-scrollbar,
   --modal-footer-reserve: calc(var(--app-footer-height) + var(--modal-footer-gap));
   --modal-gap-above-footer: 10px; /* Masaüstünde 6px override edilir */
 
-  --modal-bg: #111827;
+  --modal-bg: #080d16;
   --modal-max-width: 500px;
   --modal-radius: 10px;
   --modal-margin-bottom-desktop: calc(var(--app-footer-height) + var(--modal-gap-above-footer));
@@ -46,9 +46,9 @@ body::-webkit-scrollbar,
   /* Girilen veri / açıklama metin rengi (beyaz-gri hiyerarşisi) */
   --data-value-color: #a0aec0;
 
-  --bg-content: #101728;
-  --bg-input: #111820;
-  --bg-input-focus: #111a2a;
+  --bg-content: #0d131f;
+  --bg-input: #0f1418;
+  --bg-input-focus: #0f1622;
   --txt-white: #ffffff;
   --txt-muted: #e0e0e0;
   --txt-gray: #ccc;
@@ -78,8 +78,8 @@ body::-webkit-scrollbar,
   --link-blue: #5b9bd5;
   --link-blue-hover: #7ab3e8;
   --br-medium: #555;
-  --hero-gradient-start: #080f20;
-  --hero-gradient-end: #0b0f18;
+  --hero-gradient-start: #060d16;
+  --hero-gradient-end: #08090c;
   --hero-logo-width: 69px;
   --hero-spacer-width: 30px;
 }
