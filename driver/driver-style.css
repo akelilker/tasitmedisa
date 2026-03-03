@@ -1164,17 +1164,17 @@ body.driver-modal-open {
     width: 120px !important;
     height: 69px !important;
   }
-  /* Mobil (640px altı): MEDISA hero logosu – 1px sola (toplam: -14px, 10px) */
+  /* Mobil (640px altı): MEDISA hero logosu – 2px sola (toplam: -16px, 10px) */
   .dashboard-page .hero.hero-two-rows .hero-logo {
     flex: 0 0 56px !important;
     width: 56px !important;
-    transform: translate(-14px, 10px) !important;
+    transform: translate(-16px, 10px) !important;
     margin-top: 0 !important;
   }
   .login-page .hero.hero-two-rows .hero-logo {
     flex: 0 0 56px !important;
     width: 56px !important;
-    transform: translate(-14px, 10px) !important;
+    transform: translate(-16px, 10px) !important;
     margin-top: 0 !important;
   }
   /* Mobil: 56px logo sütunları, başlık ortada */
@@ -3059,6 +3059,10 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     overflow-x: hidden !important;
     overflow-y: visible !important; /* Footer’dan çıkan kırmızı ışık (box-shadow) kesilmesin */
   }
+  /* Login footer 56px; yan çizgiler ve boşluk buna göre */
+  .login-page .driver-dashboard-container {
+    --app-footer-height: 56px;
+  }
   /* Mobil 768px'e kadar: yan kırmızı çizgiler footer'da kalsın (641–768px arası da dahil) */
   .dashboard-page .driver-dashboard-container::before,
   .login-page .driver-dashboard-container::before {
@@ -3099,6 +3103,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     box-sizing: border-box !important;
   }
   .login-page #app-footer.login-footer {
+    bottom: env(safe-area-inset-bottom, 0) !important;
     padding-bottom: max(20px, env(safe-area-inset-bottom, 0)) !important;
     box-shadow: 0 -9px 22px rgba(var(--theme-color-rgb), 0.35) !important;
     border-top: 0.5px solid rgba(200, 200, 200, 0.7) !important;
