@@ -441,12 +441,8 @@ body.driver-modal-open {
     width: 19px !important;
     height: 19px !important;
   }
-  /* Footer: masaüstünde yan sensörler (border-left/right) yok; kırmızı ışık footer’a değdiği yerde sıfır */
-  .dashboard-page #app-footer {
-    border-left: none !important;
-    border-right: none !important;
-    box-shadow: none !important;
-  }
+  /* Footer: masaüstünde gri üst, yan sensör çizgileri + kırmızı glow (dashboard = login); kırmızı ışık footer’a değdiği yerde sıfır */
+  .dashboard-page #app-footer,
   .login-page #app-footer.login-footer {
     border-top: 0.5px solid rgba(200, 200, 200, 0.7) !important;
     border-left: 0.5px solid rgba(255, 255, 255, 0.20) !important;
@@ -3427,27 +3423,9 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     max-height: calc(100dvh - var(--modal-gap-above-footer, 10px) - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0) - 6px) !important;
     box-shadow: 0 6px 0 0 var(--bg) !important; /* 6px boşlukta çerçeve parçaları görünmesin */
   }
-  /* Modal açıkken üst kırmızı çerçeve görünsün (başlık rengi kesmesin). Geçmiş Kayıtlarım'da gizli. */
-  #edit-request-modal.driver-modal.show::after,
-  #driver-event-menu-modal.driver-modal.show::after,
-  #driver-anahtar-modal.driver-modal.show::after,
-  #driver-lastik-modal.driver-modal.show::after,
-  #driver-utts-modal.driver-modal.show::after,
-  #driver-muayene-modal.driver-modal.show::after,
-  #driver-sigorta-modal.driver-modal.show::after,
-  #driver-kasko-modal.driver-modal.show::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1.2px;
-    background: var(--border-red-tech);
-    z-index: 10012;
-    pointer-events: none;
-  }
-  #history-modal.driver-modal.show::after {
-    display: none;
+  /* Mobilde modal açıkken header üstündeki kırmızı yatay çizgi görünmesin */
+  .driver-modal.show::after {
+    display: none !important;
   }
   #history-modal.driver-modal::before,
   #edit-request-modal.driver-modal::before,
