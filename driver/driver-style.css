@@ -3056,6 +3056,8 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .dashboard-page .driver-dashboard-container,
   .login-page .driver-dashboard-container {
     padding-bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important;
+    overflow-x: hidden !important;
+    overflow-y: visible !important; /* Footer’dan çıkan kırmızı ışık (box-shadow) kesilmesin */
   }
   .dashboard-page .driver-right-panel {
     padding-bottom: 5px !important;
