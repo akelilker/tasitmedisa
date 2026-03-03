@@ -454,12 +454,12 @@ body.driver-modal-open {
     border-right: 0.5px solid rgba(255, 255, 255, 0.20) !important;
     box-shadow: 0 -10px 20px rgba(var(--theme-color-rgb), 0.16) !important;
   }
-  /* ========== MASAÜSTÜ (769px+) – Header logo: 1px sağ (-20px, 9.5px) ========== */
+  /* ========== MASAÜSTÜ (769px+) – Header logo: sol çerçeveye 3px daha yakın (-20px → -23px) ========== */
   .dashboard-page .hero.hero-two-rows .hero-logo,
   .login-page .hero.hero-two-rows .hero-logo {
     flex: 0 0 76px !important;
     width: 76px !important;
-    transform: translate(-20px, 9.5px) !important;
+    transform: translate(-23px, 9.5px) !important;
   }
   .dashboard-page .hero.hero-two-rows .hero-logo img,
   .login-page .hero.hero-two-rows .hero-logo img {
@@ -1164,17 +1164,17 @@ body.driver-modal-open {
     width: 120px !important;
     height: 69px !important;
   }
-  /* Mobil (640px altı): MEDISA hero logosu – 1px sola (toplam: -14px, 10px) */
+  /* Mobil (640px altı): MEDISA hero logosu – sol çerçeveye 3px daha yakın (-14px → -17px) */
   .dashboard-page .hero.hero-two-rows .hero-logo {
     flex: 0 0 56px !important;
     width: 56px !important;
-    transform: translate(-14px, 10px) !important;
+    transform: translate(-17px, 10px) !important;
     margin-top: 0 !important;
   }
   .login-page .hero.hero-two-rows .hero-logo {
     flex: 0 0 56px !important;
     width: 56px !important;
-    transform: translate(-14px, 10px) !important;
+    transform: translate(-17px, 10px) !important;
     margin-top: 0 !important;
   }
   /* Mobil: 56px logo sütunları, başlık ortada */
@@ -3574,7 +3574,8 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     border-left: 0.99px solid rgba(var(--theme-color-rgb), 0.68) !important;
     border-right: 0.99px solid rgba(var(--theme-color-rgb), 0.68) !important;
     top: 0 !important;
-    bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important; /* Yan çizgiler footerda kalsın, aşağı inmesin (iOS PWA dahil) */
+    bottom: auto !important;
+    height: calc(100% - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0)) !important; /* Yan çizgiler footerda kalsın, aşağı inmesin (iOS PWA dahil) */
     clip-path: inset(0 0 calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) 0) !important;
   }
   /* Footer: kullanıcı paneli sadece ince gri üst çizgi (yan/glow yok); login aynı kalır */
@@ -4045,10 +4046,12 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 
 /* --- Sadece iOS PWA: çentik/notch + 2. satır 1pt küçük + sağ grid buton yüksekliği + üst çerçeve kalınlığı --- */
 @media (max-width: 768px) and (display-mode: standalone) {
-  /* Yan kırmızı dikey çizgiler footerda kalsın, aşağı inmesin */
+  /* Yan kırmızı dikey çizgiler footerda kalsın, aşağı inmesin (height + clip-path ile kesin kesim) */
   .dashboard-page .driver-dashboard-container::before,
   .login-page .driver-dashboard-container::before {
-    bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important;
+    bottom: auto !important;
+    height: calc(100% - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0)) !important;
+    clip-path: inset(0 0 calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) 0) !important;
   }
   /* Geçmiş Kayıtlar + Düzeltme Talebi: modal–footer arası 6px; aşağı taşmasın */
   #history-modal.driver-modal,
