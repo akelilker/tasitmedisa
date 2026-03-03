@@ -3111,6 +3111,10 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     max-width: 100% !important;
     box-sizing: border-box !important;
   }
+  /* Mobil: footer'dan yukarı kırmızı ışık (login + kullanıcı paneli modallarında) */
+  .dashboard-page #app-footer {
+    box-shadow: 0 -9px 22px rgba(var(--theme-color-rgb), 0.35) !important;
+  }
   .login-page #app-footer.login-footer {
     bottom: env(safe-area-inset-bottom, 0) !important;
     padding-bottom: max(20px, env(safe-area-inset-bottom, 0)) !important;
@@ -3455,6 +3459,11 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .driver-modal.show::after {
     display: none !important;
   }
+  /* Modal açıkken footer ve footer ışıkları üstte kalsın */
+  body.driver-modal-open .dashboard-page #app-footer,
+  body.driver-modal-open .login-page #app-footer.login-footer {
+    z-index: 10012 !important;
+  }
   #history-modal.driver-modal::before,
   #edit-request-modal.driver-modal::before,
   #driver-event-menu-modal.driver-modal::before,
@@ -3597,13 +3606,13 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important; /* Yan çizgiler footerda kalsın, aşağı inmesin (iOS PWA dahil) */
     clip-path: inset(0 0 calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) 0) !important;
   }
-  /* Footer: kullanıcı paneli sadece ince gri üst çizgi (yan/glow yok); login aynı kalır */
+  /* Footer: mobilde footer'dan yukarı kırmızı ışık (login + kullanıcı paneli modallarında görünsün) */
   .dashboard-page #app-footer {
     background: var(--bg) !important;
     border-top: 0.5px solid rgba(200, 200, 200, 0.45) !important;
     border-left: 0.5px solid rgba(255, 255, 255, 0.10) !important;
     border-right: 0.5px solid rgba(255, 255, 255, 0.10) !important;
-    box-shadow: none !important;
+    box-shadow: 0 -9px 22px rgba(var(--theme-color-rgb), 0.35) !important;
   }
   .login-page #app-footer.login-footer {
     background: var(--bg) !important;
