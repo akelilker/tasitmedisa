@@ -1084,7 +1084,9 @@
       toolbarLeft.appendChild(backBar);
       
       // Orta taraf (tahsis butonu - sadece tahsis edilmemiş taşıtlar için)
+      // Yatayda ortalı: sol ok ve Taşıtlar dikkate alınmadan, tam ekran ortası
       const toolbarCenter = document.createElement('div');
+      toolbarCenter.className = 'detail-toolbar-center-absolute';
       toolbarCenter.style.display = 'flex';
       toolbarCenter.style.alignItems = 'center';
       toolbarCenter.style.justifyContent = 'center';
