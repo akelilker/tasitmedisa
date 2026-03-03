@@ -875,7 +875,7 @@ html { overflow-x: hidden; }
   font-weight: 600;
   font-size: 13px;
   cursor: pointer;
-  transition:h background 0.2s ease, border-color 0.2s ease, color 0.2s ease, font-size 0.2s ease, box-shadow 0.2s ease;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, font-size 0.2s ease, box-shadow 0.2s ease;
   margin: 0;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
   height: 48px;
