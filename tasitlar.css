@@ -671,10 +671,18 @@
 #vehicle-history-modal .history-empty-msg {
     color: var(--txt-placeholder);
 }
-/* Tarihçe: işlemler arası ince kırmızı ayırıcı çizgi (son eleman hariç) */
+/* Tarihçe (5 sekme): her işlem sonrası 3px boşluk, hafif kırmızı yatay çizgi (taşıt detay ortadaki dikey çizgi ile aynı ton), altında 3px boşluk */
 #vehicle-history-modal .history-item:not(:last-child),
 .modal-overlay:has(.history-tabs) .history-item:not(:last-child) {
-    border-bottom: 0.5px solid rgba(var(--theme-color-rgb), 0.4) !important;
+    border-bottom: none !important;
+}
+#vehicle-history-modal .history-item:not(:last-child)::after,
+.modal-overlay:has(.history-tabs) .history-item:not(:last-child)::after {
+    content: '';
+    display: block;
+    border-top: 1px solid rgba(var(--theme-color-rgb), 0.28);
+    margin-top: 3px;
+    margin-bottom: 3px;
 }
 
 /* Tarihçe: sekme ile içerik arası 5px azaltma (history-content padding-top style-core'da 15px yapıldı) */

@@ -1832,6 +1832,11 @@ min-width: 0 !important;
 font-size: 12px !important;
 text-align: center !important;
 }
+/* Mobil (iOS/Android PWA dahil): tarih etiketleri tam metin */
+#stok-list-container .stok-controls-row-2 label[for="stok-date-start"] { font-size: 0 !important; line-height: 0 !important; }
+#stok-list-container .stok-controls-row-2 label[for="stok-date-start"]::before { content: "Başlangıç Tarihi"; font-size: 12px !important; line-height: 1.3; color: var(--form-label-color); display: block; }
+#stok-list-container .stok-controls-row-2 label[for="stok-date-end"] { font-size: 0 !important; line-height: 0 !important; }
+#stok-list-container .stok-controls-row-2 label[for="stok-date-end"]::before { content: "Bitiş Tarihi"; font-size: 12px !important; line-height: 1.3; color: var(--form-label-color); display: block; }
 .stok-date-input {
 font-size: 15px !important;
 text-align: center !important;
