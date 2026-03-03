@@ -30,7 +30,7 @@ body::-webkit-scrollbar,
   --modal-footer-reserve: calc(var(--app-footer-height) + var(--modal-footer-gap));
   --modal-gap-above-footer: 10px; /* Masaüstünde 6px override edilir */
 
-  --modal-bg: #0a0b0d;
+  --modal-bg: #090c12;
   --modal-max-width: 500px;
   --modal-radius: 10px;
   --modal-margin-bottom-desktop: calc(var(--app-footer-height) + var(--modal-gap-above-footer));
