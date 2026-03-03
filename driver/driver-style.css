@@ -441,8 +441,12 @@ body.driver-modal-open {
     width: 19px !important;
     height: 19px !important;
   }
-  /* Footer anasayfa ile aynı: belirgin gri üst çizgi, yan soluk çizgiler, kırmızı glow */
-  .dashboard-page #app-footer,
+  /* Footer: masaüstünde yan sensörler (border-left/right) yok; kırmızı ışık footer’a değdiği yerde sıfır */
+  .dashboard-page #app-footer {
+    border-left: none !important;
+    border-right: none !important;
+    box-shadow: none !important;
+  }
   .login-page #app-footer.login-footer {
     border-top: 0.5px solid rgba(200, 200, 200, 0.7) !important;
     border-left: 0.5px solid rgba(255, 255, 255, 0.20) !important;
