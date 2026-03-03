@@ -3573,8 +3573,8 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     border-left: 0.99px solid rgba(var(--theme-color-rgb), 0.68) !important;
     border-right: 0.99px solid rgba(var(--theme-color-rgb), 0.68) !important;
     top: 0 !important;
-    bottom: 0 !important;
-    clip-path: inset(0 0 calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) 0) !important; /* Çerçeve footer + safe-area bitiminde kessin (iOS PWA) */
+    bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important; /* Yan çizgiler footerda kalsın, aşağı inmesin (iOS PWA dahil) */
+    clip-path: inset(0 0 calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) 0) !important;
   }
   /* Footer: kullanıcı paneli sadece ince gri üst çizgi (yan/glow yok); login aynı kalır */
   .dashboard-page #app-footer {
@@ -4044,6 +4044,11 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 
 /* --- Sadece iOS PWA: çentik/notch + 2. satır 1pt küçük + sağ grid buton yüksekliği + üst çerçeve kalınlığı --- */
 @media (max-width: 768px) and (display-mode: standalone) {
+  /* Yan kırmızı dikey çizgiler footerda kalsın, aşağı inmesin */
+  .dashboard-page .driver-dashboard-container::before,
+  .login-page .driver-dashboard-container::before {
+    bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important;
+  }
   /* Splash: çentik altında logo kalmasın */
   .driver-splash {
     padding: env(safe-area-inset-top, 0) env(safe-area-inset-right, 0) env(safe-area-inset-bottom, 0) env(safe-area-inset-left, 0);
