@@ -390,10 +390,15 @@ body.driver-modal-open {
   .login-page .hero.hero-two-rows .hero-logo img {
     width: 100% !important;
   }
+  /* Başlık metinleri 1pt küçük (641–768px) */
   .dashboard-page .hero.hero-two-rows .hero-title-block .hero-title-line,
   .login-page .hero.hero-two-rows .hero-title-block .hero-title-line {
-    font-size: clamp(16px, 4.2vw, 20px) !important;
+    font-size: clamp(calc(16px - 1pt), 4.2vw, calc(20px - 1pt)) !important;
     letter-spacing: clamp(1px, 0.4vw, 3px) !important;
+  }
+  .dashboard-page .hero-title-block .hero-panel-subtitle,
+  .login-page .hero-title-block .hero-panel-subtitle {
+    font-size: calc(17px - 1pt) !important;
   }
 }
 
@@ -1182,19 +1187,23 @@ body.driver-modal-open {
   .login-page .hero.hero-two-rows {
     grid-template-columns: 56px 1fr 56px !important;
   }
+  /* Mobil başlık metinleri 1pt küçük */
   .dashboard-page .hero.hero-two-rows .hero-title-block .hero-title-line {
     width: 100%;
     max-width: 100%;
-    font-size: clamp(19px, 5.5vw, 23px) !important;
+    font-size: clamp(calc(19px - 1pt), 5.5vw, calc(23px - 1pt)) !important;
     letter-spacing: 2.5px !important;
     line-height: 1.25 !important;
     white-space: nowrap !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
   }
-  /* Şifre ekranı mobil: header metinleri 1pt küçük */
   .login-page .hero.hero-two-rows .hero-title-block .hero-title-line {
-    font-size: clamp(18px, 5vw, 22px) !important;
+    font-size: clamp(calc(18px - 1pt), 5vw, calc(22px - 1pt)) !important;
+  }
+  .dashboard-page .hero-title-block .hero-panel-subtitle,
+  .login-page .hero-title-block .hero-panel-subtitle {
+    font-size: calc(17px - 1pt) !important;
   }
   .login-page .hero-title-block .hero-panel-subtitle {
     white-space: nowrap !important;
