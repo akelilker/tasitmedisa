@@ -874,6 +874,7 @@
   }
   .vehicle-detail-left #detail-boya-container .kaporta-schema-wrapper {
     max-width: 100% !important;
+    margin-top: 1px !important; /* 5px→1px: 4px dikey küçültme */
   }
   /* Tarihçe modal: sol ok ve Taşıt Detayları sabit (scroll ile gitmesin) */
   #vehicle-history-modal .modal-container > div:nth-child(2) {
