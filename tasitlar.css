@@ -861,9 +861,9 @@
   #vehicle-detail-modal .detail-plate-row {
     margin-bottom: 2px !important;
   }
-  /* Plaka üstten kesilmesin (masaüstü) */
+  /* Plaka üstten kesilmesin (masaüstü) – 2px aşağı */
   #vehicle-detail-modal #vehicle-detail-content {
-    padding-top: 15px !important;
+    padding-top: 17px !important;
   }
   #vehicle-detail-modal .vehicle-detail-columns {
     margin-top: 13px !important;
