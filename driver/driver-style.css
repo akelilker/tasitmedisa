@@ -2088,13 +2088,6 @@ body.driver-modal-open {
   flex-shrink: 0;
 }
 
-.driver-modal .modal-header h2 {
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--txt);
-  margin: 0;
-}
-
 .driver-modal .modal-close {
   width: 36px;
   height: 36px;
@@ -2289,9 +2282,6 @@ body.driver-modal-open {
 #driver-muayene-modal .modal-header h2,
 #driver-sigorta-modal .modal-header h2,
 #driver-kasko-modal .modal-header h2 {
-  font-size: 17px !important;
-  font-weight: 600 !important;
-  letter-spacing: 0.05em !important;
   color: #f0f0f0 !important;
   text-shadow: none !important;
   opacity: 1 !important;
@@ -3479,18 +3469,6 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     left: 0;
     transform: none;
   }
-  #history-modal .modal-header h2,
-  #edit-request-modal .modal-header h2,
-  #driver-event-menu-modal .modal-header h2,
-  #driver-anahtar-modal .modal-header h2,
-  #driver-lastik-modal .modal-header h2,
-  #driver-utts-modal .modal-header h2,
-  #driver-muayene-modal .modal-header h2,
-  #driver-sigorta-modal .modal-header h2,
-  #driver-kasko-modal .modal-header h2 {
-    font-size: 21px !important;
-    letter-spacing: 0.2em !important;
-  }
   /* Geçmiş Kayıtlar + Düzeltme Talebi: kayıt modalı ile aynı başlık gölgesi */
   #history-modal .modal-header h2,
   #edit-request-modal .modal-header h2 {
@@ -3868,10 +3846,6 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
   .dashboard-page .driver-footer-back-wrap .universal-back-label {
     font-size: 16px !important;
-  }
-  #history-modal .modal-header h2,
-  #edit-request-modal .modal-header h2 {
-    font-size: 22px !important;
   }
   #history-modal .history-filter-label,
   #history-modal .history-vehicle-trigger {

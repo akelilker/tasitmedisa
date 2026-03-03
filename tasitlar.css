@@ -703,9 +703,6 @@
 #vehicle-detail-modal .modal-header h2,
 #vehicle-history-modal .modal-header h2,
 .modal-overlay:has(.history-tabs) .modal-header h2 {
-    font-size: 17px !important;
-    font-weight: 600 !important;
-    letter-spacing: 0.05em !important;
     color: var(--txt) !important;
     text-shadow: none !important;
     opacity: 1 !important;
@@ -2368,7 +2365,6 @@
   }
 
   .tasitlar-modal-overlay .modal-header h2 {
-    font-size: 19px !important; /* 18px + 1 punto (sadece mobil) */
     color: var(--txt-white) !important;
     text-shadow: none !important;
   }
@@ -2541,10 +2537,6 @@
   }
 
   /* --- OLAY EKLE MODALLARI - TÜM METİNLER +2px --- */
-  .olay-ekle-modal .modal-header h2 {
-    font-size: 19px !important; /* +2px */
-  }
-
   .olay-ekle-modal .modal-body {
     padding-top: 16px !important; /* Olay Ekle – Tarih arası 4px az (mobil) */
     padding-bottom: 40px !important; /* Chrome fix: Logoların kesilmemesi */
@@ -2983,10 +2975,6 @@
     }
   }
   /* Ortak mobil container + iOS PWA: style-core.css (.modal-overlay .modal-container) */
-  #vehicles-modal .modal-header h2 { 
-    font-size: 21px !important; /* 20px + 1 punto (1px) */
-    letter-spacing: 0.2em !important; /* Harfler arası boşluk artırıldı (0.15em → 0.2em) */
-  }
   .tasitlar-modal-overlay .modal-close { font-size: 21px; }
   
   /* --- MODAL KARARTMA (mobil): overlay ile aynı alan (top 0, height 100%) --- */
@@ -3028,10 +3016,6 @@
   /* Kullanıcı–Şube arası 1px azalt (4px→3px) */
   #vehicle-detail-modal .vehicle-detail-left .detail-row:first-child { padding-bottom: 3px !important; }
   
-  /* Taşıt detay modal başlık +1 punto daha (sadece mobil) */
-  #vehicle-detail-modal .modal-header h2 {
-    font-size: 23px !important;
-  }
   #vehicle-detail-modal .modal-close {
     font-size: 23px !important;
   }

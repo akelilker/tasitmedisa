@@ -64,9 +64,6 @@ border-top-right-radius: var(--modal-radius, 10px);
 
 /* BAŞLIK */
 #reports-modal .modal-header h2 {
-font-size: 17px !important;
-font-weight: 600 !important;
-letter-spacing: 0.05em !important; /* Masaüstü */
 color: #f0f0f0 !important;
 text-shadow: none !important;
 opacity: 1 !important;
@@ -1582,8 +1579,6 @@ font-size: 11px;
 /* Raporlar modal mobil: ortak ölçü style-core’da (.modal-overlay .modal-container) */
 #reports-modal .modal-header h2 {
 color: #ffffff !important;
-font-size: 22px !important;
-letter-spacing: 0.2em !important;
 text-shadow: none !important;
 }
 #reports-modal .modal-close { font-size: 21px; }
