@@ -2080,6 +2080,7 @@
     position: relative;
     display: flex !important;
     align-items: center !important; /* İkon ve metin kendi içinde hizalı */
+    align-self: center !important; /* Olay Ekle ile aynı satırda, aşağı kaymasın */
     gap: 4px;
     color: var(--txt-gray);
     font-size: 15px;
@@ -3117,6 +3118,7 @@
   #vehicle-detail-modal .detail-brand-year-row .history-btn-minimal {
     font-size: 17px !important;
     color: var(--form-label-color) !important;
+    align-self: center !important; /* Olay Ekle ile aynı satırda, aşağı kaymasın */
   }
   #vehicle-detail-modal .detail-brand-year-row .history-btn-minimal:hover {
     font-size: 18px !important;
