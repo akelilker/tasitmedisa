@@ -2262,7 +2262,7 @@ body.driver-modal-open {
 #driver-muayene-modal .modal-header,
 #driver-sigorta-modal .modal-header,
 #driver-kasko-modal .modal-header {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, transparent 40%), linear-gradient(180deg, rgba(255, 0, 0, 0.38) 0%, rgba(255, 0, 0, 0.28) 25%, rgba(255, 0, 0, 0.18) 50%, rgba(255, 0, 0, 0.10) 75%, transparent 100%) !important;
+  background: linear-gradient(180deg, rgba(255, 0, 0, 0.30) 0%, rgba(255, 0, 0, 0.22) 25%, rgba(255, 0, 0, 0.16) 50%, rgba(255, 0, 0, 0.10) 75%, transparent 100%) !important;
   padding: 2px 20px !important;
   height: 60px !important;
   border-bottom: none !important;
