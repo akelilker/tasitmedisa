@@ -2216,7 +2216,7 @@ body.driver-modal-open {
 #driver-sigorta-modal .modal-container,
 #driver-kasko-modal .driver-modal-content,
 #driver-kasko-modal .modal-container {
-  background: rgba(8, 13, 22, 0.78) !important;
+  background: #0a0b0d !important;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   width: 100%;
@@ -3504,7 +3504,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     /* Kapsayıcı zaten footerı kestiği için burada tekrar hesaplama yapmıyoruz. Esnek bırakıyoruz. */
     height: auto !important;
     max-height: 100% !important;
-    background: rgba(8, 13, 22, 0.78) !important;
+    background: #0a0b0d !important;
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border-radius: 10px !important;
