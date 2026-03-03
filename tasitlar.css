@@ -913,7 +913,7 @@
     min-height: 38px !important;
     height: 38px !important;
     box-sizing: border-box;
-    border: 1.1px solid #e1061b !important;
+    border: 1.1px solid #d40000 !important;
     background: var(--bg) !important;
     color: var(--data-value-color, #a0aec0) !important;
   }
@@ -2593,7 +2593,7 @@
   #sube-degisiklik-modal .modal-body .form-input {
     min-height: 32px !important;
     height: 32px !important;
-    border: 1.1px solid #e1061b !important;
+    border: 1.1px solid #d40000 !important;
     background: var(--bg) !important;
     color: var(--data-value-color, #a0aec0) !important;
   }

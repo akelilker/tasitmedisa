@@ -13,10 +13,13 @@ body::-webkit-scrollbar,
  
 /* ========== TÜM :root DEĞİŞKENLERİ (tek kaynak) ========== */
 :root {
-  --theme-color: #e1061b;
-  --theme-color-rgb: 225, 6, 27;
-  /* Footer'dan yukarı süzen ışık: bordo ile açık kırmızı arası orta ton */
-  --footer-glow-rgb: 230, 22, 32;
+  --theme-color: #d40000;
+  --theme-color-rgb: 212, 0, 0;
+  /* Footer'dan yukarı süzen ışık: MEDISA tonu ile aynı */
+  --footer-glow-rgb: 212, 0, 0;
+  /* MEDISA marka kırmızısı (theme ile aynı; alias) */
+  --brand-red: #d40000;
+  --brand-red-rgb: 212, 0, 0;
   --bg: #080d16;
   --bg-2: #151515;
   --card-bg: #1a1a1a;
@@ -234,13 +237,13 @@ body::-webkit-scrollbar,
 
 /* Vazgeç (Kırmızı) - Dinamik Hover Efekti */
 .universal-btn-cancel {
-  color: var(--theme-color, #e1061b) !important;
-  border: 1px solid rgba(225, 6, 27, 0.45) !important;
+  color: var(--theme-color, #d40000) !important;
+  border: 1px solid rgba(212, 0, 0, 0.45) !important;
 }
 .universal-btn-cancel:hover {
-  background: rgba(225, 6, 27, 0.12) !important;
+  background: rgba(212, 0, 0, 0.12) !important;
   font-weight: 600 !important;
-  border-color: var(--theme-color, #e1061b) !important;
+  border-color: var(--theme-color, #d40000) !important;
   -webkit-text-stroke: 0.2px currentColor;
 }
 
@@ -312,8 +315,8 @@ body::-webkit-scrollbar,
   width: 100% !important;
   max-width: none !important;
   margin-top: 4px !important;
-  color: var(--theme-color, #e1061b) !important;
-  border: 1px solid rgba(225, 6, 27, 0.5) !important;
+  color: var(--theme-color, #d40000) !important;
+  border: 1px solid rgba(212, 0, 0, 0.5) !important;
 }
 
 /* Tüm input/select/textarea içerik metni: beyaz-gri hiyerarşisi */
