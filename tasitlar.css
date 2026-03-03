@@ -2968,6 +2968,10 @@
       padding-top: env(safe-area-inset-top) !important;
       padding-bottom: 0 !important;
     }
+    /* iOS PWA: Taşıtlar modalı liste başlıkları 1 punto küçük */
+    #vehicles-modal .list-header-row {
+      --list-header-font-size: 14px !important;
+    }
   }
   /* Ortak mobil container + iOS PWA: style-core.css (.modal-overlay .modal-container) */
   #vehicles-modal .modal-header h2 { 
