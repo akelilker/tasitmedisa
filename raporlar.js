@@ -459,17 +459,20 @@
 
     // Sütun genişliklerini hesapla (key bazlı: sürükle-bırak sonrası genişlik doğru sütunla kalır)
     // 7 sütun: fr ile sığar; 8+ sütun: sabit px; mobilde şube +2px, marka -2px
+    // Masaüstü: marka 3px dar, şanzıman 3px geniş
     function getColumnWidths(allColumns) {
         const hasDetail = allColumns.length > 7;
         const isMobile = window.innerWidth <= 640;
         const subeAdj = isMobile ? 2 : 0;
         const markaAdj = isMobile ? -2 : 0;
+        const desktopMarkaNarrow = isMobile ? 0 : 3;
+        const desktopSanzimanWide = isMobile ? 0 : 3;
 
         if (hasDetail) {
             // Sabit px: temel sütunlar ekrana sığdıklarındaki orana yakın (~496px tablo)
             const basePx = {
-                'sira': 32, 'sube': 79 + subeAdj, 'yil': 41, 'marka': 136 + markaAdj,
-                'plaka': 68, 'sanziman': 64, 'km': 54
+                'sira': 32, 'sube': 79 + subeAdj, 'yil': 41, 'marka': 136 + markaAdj - desktopMarkaNarrow,
+                'plaka': 68, 'sanziman': 64 + desktopSanzimanWide, 'km': 54
             };
             const detailPx = {
                 'sigorta': 72, 'kasko': 72, 'muayene': 72, 'kredi': 56,
@@ -482,13 +485,14 @@
             }).join(' ');
         }
 
-        // Sadece temel: fr ile ekrana sığar (mobilde şube +2px, marka -2px)
+        // Sadece temel: fr ile ekrana sığar (mobilde şube +2px, marka -2px; masaüstü marka -3px, şanzıman +3px)
         const subeMin = 45 + subeAdj;
-        const markaMin = 60 + markaAdj;
+        const markaMin = 60 + markaAdj - desktopMarkaNarrow;
+        const sanzimanMin = 59 + desktopSanzimanWide;
         const columnWidths = {
             'sira': 'minmax(26px, 0.5fr)', 'sube': 'minmax(' + subeMin + 'px, 1.2fr)',
             'yil': 'minmax(40px, 0.6fr)', 'marka': 'minmax(' + markaMin + 'px, 1.85fr)',
-            'plaka': 'minmax(56px, 1fr)', 'sanziman': 'minmax(59px, 0.95fr)',
+            'plaka': 'minmax(56px, 1fr)', 'sanziman': 'minmax(' + sanzimanMin + 'px, 0.95fr)',
             'km': 'minmax(48px, 0.8fr)'
         };
         return allColumns.map(col => columnWidths[col.key] || '80px').join(' ');
