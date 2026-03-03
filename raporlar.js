@@ -1300,7 +1300,7 @@
                             value = vehicle.brandModel || '-';
                             break;
                         case 'plaka':
-                            value = vehicle.plate || '-';
+                            value = formatPlaka(vehicle.plate || '-');
                             break;
                         case 'sanziman':
                             value = vehicle.transmission === 'manuel' ? 'Manuel' : vehicle.transmission === 'otomatik' ? 'Otomatik' : '-';

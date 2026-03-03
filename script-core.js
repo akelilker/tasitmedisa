@@ -172,10 +172,12 @@ window.toTitleCase = function(str) {
   }).join(' ');
 };
 
-/** Plaka: tamamen büyük (tr-TR) */
+/** Plaka: bitişik + tamamen büyük harf (örn. 34ABC123); boşluklar kaldırılır */
 window.formatPlaka = function(str) {
-  if (str == null || str === '' || str === '-') return str === '' ? '-' : (str || '-');
-  return String(str).trim().toLocaleUpperCase('tr-TR');
+  if (str == null || str === '') return '-';
+  if (str === '-') return '-';
+  var s = String(str).replace(/\s+/g, '').trim();
+  return s === '' ? '-' : s.toLocaleUpperCase('tr-TR');
 };
 
 /** Ad Soyad: soyad büyük, ad(lar) title case */
