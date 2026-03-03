@@ -76,9 +76,6 @@
 }
 
 #vehicle-modal .modal-header h2 {
-    font-size: 17px !important;
-    font-weight: 600 !important;
-    letter-spacing: 0.05em !important;
     color: #f0f0f0 !important;
     text-shadow: none !important;
     opacity: 1 !important;
@@ -990,17 +987,6 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     }
     
     #vehicle-modal .modal-header { position: relative; }
-    #vehicle-modal .modal-header h2 { 
-        font-size: 21px !important; /* 20px + 1 punto (1px) – Taşıtlar/Raporlar ile aynı */
-        letter-spacing: 0.2em !important; /* Taşıtlar/Raporlar ile aynı */
-        text-shadow: none !important;
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 100%;
-        text-align: center;
-        pointer-events: none;
-    }
     .modal-close { font-size: 21px; }
     textarea.form-input { font-size: 13px; }
     
@@ -1802,9 +1788,6 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
 }
 
 #vehicle-modal .modal-header h2 {
-    font-size: 17px !important;
-    font-weight: 600 !important;
-    letter-spacing: 0.05em !important;
     color: #f0f0f0 !important;
     text-shadow: none !important;
     opacity: 1 !important;
