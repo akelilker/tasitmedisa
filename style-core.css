@@ -1678,8 +1678,8 @@ body.modal-open .user-panel-link {
     .content-wrap {
         padding-top: max(12px, env(safe-area-inset-top)) !important;
     }
-    /* Çerçeve viewport içinde kalır; çift padding yok, content-wrap halleder; minimal belirgin */
-    .app-container {
+    /* Çerçeve viewport içinde kalır; çift padding yok, content-wrap halleder; minimal belirgin. Kullanıcı girişi/paneli kendi çerçevesini kullanır (driver-style). */
+    body:not(.dashboard-page):not(.login-page) .app-container {
         margin-top: 0 !important;
         padding-top: 0 !important;
         border-radius: 20px !important;
