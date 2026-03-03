@@ -61,7 +61,7 @@
 /* Boya/Değişen ile Notlar alt hizası: sol sütun flex, son blok alta yapışır */
 /* Modal Header */
 #vehicle-modal .modal-header {
-    background: linear-gradient(180deg, rgba(255, 0, 0, 0.36) 0%, rgba(255, 0, 0, 0.26) 25%, rgba(255, 0, 0, 0.18) 50%, rgba(255, 0, 0, 0.12) 75%, transparent 100%);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, transparent 40%), linear-gradient(180deg, rgba(255, 0, 0, 0.44) 0%, rgba(255, 0, 0, 0.34) 25%, rgba(255, 0, 0, 0.22) 50%, rgba(255, 0, 0, 0.12) 75%, transparent 100%);
     padding: 2px 20px;
     height: 60px;
     display: flex;
@@ -1776,7 +1776,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
 
 /* === STANDART MODAL HEADER (v79) === */
 #vehicle-modal .modal-header {
-    background: linear-gradient(180deg, rgba(255, 0, 0, 0.36) 0%, rgba(255, 0, 0, 0.26) 25%, rgba(255, 0, 0, 0.18) 50%, rgba(255, 0, 0, 0.12) 75%, transparent 100%);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, transparent 40%), linear-gradient(180deg, rgba(255, 0, 0, 0.44) 0%, rgba(255, 0, 0, 0.34) 25%, rgba(255, 0, 0, 0.22) 50%, rgba(255, 0, 0, 0.12) 75%, transparent 100%);
     padding: 2px 20px;
     height: 60px;
     display: flex;
