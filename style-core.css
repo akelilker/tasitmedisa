@@ -1744,7 +1744,7 @@ body.modal-open .app-container {
 #info-modal .modal-header,
 #tescil-tarih-confirm-modal .modal-header,
 #tescil-tarih-input-modal .modal-header {
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, transparent 40%), linear-gradient(180deg, rgba(255, 0, 0, 0.38) 0%, rgba(255, 0, 0, 0.28) 25%, rgba(255, 0, 0, 0.18) 50%, rgba(255, 0, 0, 0.10) 75%, transparent 100%);
+    background: linear-gradient(180deg, rgba(255, 0, 0, 0.30) 0%, rgba(255, 0, 0, 0.22) 25%, rgba(255, 0, 0, 0.16) 50%, rgba(255, 0, 0, 0.10) 75%, transparent 100%);
     padding: 8px 20px;
     height: 60px;
     display: flex;
