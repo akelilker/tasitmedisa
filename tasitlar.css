@@ -886,18 +886,18 @@
     margin-top: -1px !important;
   }
   #vehicles-modal .list-header-row .list-cell {
-    font-size: 12px;
+    font-size: 11.5px; /* 12px - 0.5pt */
     color: var(--form-label-color);
     opacity: 1;
   }
   /* Tüm sütun başlıkları aynı font boyutu (Kullanıcı küçülüyorsa hepsi aynı) */
   #vehicles-modal .list-header-row .list-cell span {
-    font-size: clamp(10px, 1.6vw, 13px) !important;
+    font-size: clamp(9.5px, 1.6vw, 12.5px) !important; /* 0.5pt küçültme */
     color: var(--form-label-color) !important;
   }
   #vehicles-modal .list-header-row .list-cell.list-brand .sortable-header span,
   #vehicles-modal .list-header-row .list-cell.list-user span {
-    font-size: clamp(10px, 1.6vw, 13px) !important;
+    font-size: clamp(9.5px, 1.6vw, 12.5px) !important; /* 0.5pt küçültme */
     color: var(--form-label-color) !important;
   }
   /* Taşıt listesi: ilk satır dikey hizalama (masaüstü); arka plan alternating’e bırakıldı */
