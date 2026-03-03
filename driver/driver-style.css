@@ -449,12 +449,12 @@ body.driver-modal-open {
     border-right: 0.5px solid rgba(255, 255, 255, 0.20) !important;
     box-shadow: 0 -10px 20px rgba(var(--theme-color-rgb), 0.16) !important;
   }
-  /* ========== MASAÜSTÜ (769px+) – Header logo: 1px sağ (-20px, 9.5px) ========== */
+  /* ========== MASAÜSTÜ (769px+) – Header logo: sol çerçeveye 3px daha yakın (-20px → -23px) ========== */
   .dashboard-page .hero.hero-two-rows .hero-logo,
   .login-page .hero.hero-two-rows .hero-logo {
     flex: 0 0 76px !important;
     width: 76px !important;
-    transform: translate(-20px, 9.5px) !important;
+    transform: translate(-23px, 9.5px) !important;
   }
   .dashboard-page .hero.hero-two-rows .hero-logo img,
   .login-page .hero.hero-two-rows .hero-logo img {
@@ -3597,8 +3597,19 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     padding-bottom: max(12px, env(safe-area-inset-bottom, 0)) !important;
   }
 
-  /* Plaka dropdown dışarı taşabilsin; panels-inner overflow: hidden kalsın ki sağ panel yüksekliği kısıtlansın ve Not+Bildir kaydırılabilir */
+  /* Plaka dropdown dışarı taşabilsin; sağ gride taşıp kesilmesin (overflow zincirini kır) */
+  .dashboard-page .driver-dashboard-container,
+  .dashboard-page .driver-scroll-area,
+  .dashboard-page .driver-panels-inner {
+    overflow-x: visible !important;
+    overflow-y: visible !important;
+  }
+  .dashboard-page .driver-right-panel {
+    overflow-y: auto !important; /* Sağ panel kaydırma korunsun */
+    overflow-x: hidden !important;
+  }
   .dashboard-page .driver-left-panel,
+  .dashboard-page .driver-left-panel-content,
   .dashboard-page .driver-plate-dropdown-row {
     overflow: visible !important;
   }
@@ -3613,9 +3624,10 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .dashboard-page .driver-left-panel .driver-plate-dropdown {
     left: 0 !important;
     transform: none !important;
-    width: 140% !important; /* Mobilde yatay +%40 */
+    width: 140% !important; /* Mobilde sağ gride taşabilsin */
     max-width: none !important;
-    min-width: 280px !important; /* 200px + %40 */
+    min-width: 280px !important;
+    z-index: 1000 !important;
   }
   .driver-plate-dropdown {
     background: var(--bg) !important;
