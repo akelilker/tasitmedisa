@@ -962,6 +962,34 @@ justify-content: flex-start;
 /* Başlangıç / Bitiş Tarihi etiketleri 5px yukarı */
 #stok-list-container .stok-controls-row-2 label[for="stok-date-start"],
 #stok-list-container .stok-controls-row-2 label[for="stok-date-end"] { margin-top: -5px; }
+/* Masaüstü: tarih inputları içindeki metin/sayılar yatay ve dikey ortalı */
+#stok-list-container .stok-controls-row-2 .stok-date-input {
+  text-align: center !important;
+  padding-top: 6px !important;
+  padding-bottom: 6px !important;
+  line-height: 1.3 !important;
+}
+#stok-list-container .stok-controls-row-2 .stok-date-input::-webkit-datetime-edit {
+  text-align: center !important;
+  width: 100% !important;
+}
+#stok-list-container .stok-controls-row-2 .stok-date-input::-webkit-datetime-edit-fields-wrapper {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 100% !important;
+}
+/* Başlangıç tarihi boşken gg.aa.yyyy daha saydam, dikkat çekmesin */
+#stok-list-container .stok-controls-row-2 #stok-date-start:invalid::-webkit-datetime-edit,
+#stok-list-container .stok-controls-row-2 #stok-date-start:invalid::-webkit-datetime-edit-fields-wrapper,
+#stok-list-container .stok-controls-row-2 #stok-date-start:invalid::-webkit-datetime-edit-text,
+#stok-list-container .stok-controls-row-2 #stok-date-start:invalid::-webkit-datetime-edit-month-field,
+#stok-list-container .stok-controls-row-2 #stok-date-start:invalid::-webkit-datetime-edit-day-field,
+#stok-list-container .stok-controls-row-2 #stok-date-start:invalid::-webkit-datetime-edit-year-field {
+  opacity: 0.4 !important;
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.35) !important;
+  color: rgba(255, 255, 255, 0.35) !important;
+}
 }
 
 /* Masaüstü: İki satırlık layout */
