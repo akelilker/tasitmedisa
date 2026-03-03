@@ -1007,7 +1007,7 @@ html { overflow-x: hidden; }
   height: calc(100dvh - max(12px, env(safe-area-inset-top)) - var(--modal-margin-bottom-desktop));
   border-radius: var(--modal-radius);
   border: 0.5px solid var(--border-medium);
-  box-shadow: 0 0 40px var(--shadow-modal);
+  box-shadow: 0 0 40px var(--shadow-modal), inset 0 1px 0 rgba(255, 255, 255, 0.06);
   overflow-x: hidden;
   pointer-events: auto;
   overscroll-behavior: none;
@@ -1449,7 +1449,7 @@ body.modal-open .user-panel-link {
         max-height: 100% !important;
         border-radius: 10px !important;
         border: 0.5px solid rgba(255, 255, 255, 0.47) !important;
-        box-shadow: 0 0 40px var(--shadow-modal);
+        box-shadow: 0 0 40px var(--shadow-modal), inset 0 1px 0 rgba(255, 255, 255, 0.06);
         background: var(--modal-bg) !important;
         padding: 0 !important;
         padding-top: 0 !important;
