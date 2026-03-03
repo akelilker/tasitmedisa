@@ -2014,6 +2014,16 @@
   margin-bottom: 0 !important; /* Alt boşluk yok - plakayı yukarı çekmek için */
 }
 
+/* Şubeye Tahsis Etmek İçin + yatayda ortalı (sol ok/Taşıtlar dikkate alınmadan) */
+.vehicle-detail-toolbar .detail-toolbar-center-absolute {
+  position: absolute !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  width: auto !important;
+  flex: none !important;
+  pointer-events: auto !important;
+}
+
 /* Vehicle Detail Modal Body - SCROLL BURADA OLACAK */
 #vehicle-detail-modal .modal-body {
   margin-top: 0 !important;
@@ -2057,8 +2067,9 @@
     text-align: left !important;
     margin: 0 !important; /* Hizayı bozan dış boşlukları kaldır */
     margin-left: 0 !important;
-    align-self: center;
+    align-self: center !important;
     line-height: 1 !important; /* Font yüksekliğinden kaynaklı kaymaları önler */
+    white-space: nowrap !important;
 }
 
 .detail-brand-year-row .history-add-event-btn svg {
@@ -2081,12 +2092,13 @@
     gap: 4px;
     color: var(--txt-gray);
     font-size: 15px;
-    padding: 5px 8px 5px 8px; /* Olay Ekle ile aynı dikey 5px – tek satır hizası */
+    padding: 5px 8px 5px 8px !important; /* Olay Ekle ile aynı dikey 5px – tek satır hizası */
     flex-shrink: 0;
     z-index: 2;
     transition: color 0.2s ease, font-size 0.2s ease;
     margin: 0 !important; /* Hizayı bozan dış boşlukları kaldır */
     line-height: 1 !important; /* Font yüksekliğinden kaynaklı kaymaları önler */
+    white-space: nowrap !important;
 }
 
 .detail-brand-year-row .history-btn-minimal:hover {
@@ -2098,6 +2110,8 @@
     width: 16px;
     height: 14px; /* Dikeyde küçültüldü (16px → 14px) */
     flex-shrink: 0;
+    display: block !important; /* Inline SVG boşluk kaymasını önler */
+    vertical-align: middle;
 }
 .detail-brand-year-row .history-btn-minimal:hover svg {
     transform: scale(1.08);
@@ -3093,11 +3107,14 @@
     margin-top: 0 !important;
     position: relative;
     z-index: 1;
+    align-items: center !important; /* Olay Ekle ve Tarihçe dikeyde aynı hizada */
+    min-height: 36px !important; /* Butonlar aynı satırda, kayma önlenir */
   }
 
   /* Taşıt detay: Olay Ekle ve Tarihçe mobilde +1pt (17px, hover 18px); Tarihçe rengi etiket beyazı */
   #vehicle-detail-modal .detail-brand-year-row .history-add-event-btn {
     font-size: 17px !important;
+    align-self: center !important;
   }
   #vehicle-detail-modal .detail-brand-year-row .history-btn-minimal {
     font-size: 17px !important;
