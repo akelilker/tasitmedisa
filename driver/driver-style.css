@@ -464,7 +464,7 @@ body.driver-modal-open {
   .login-page .hero.hero-two-rows .hero-logo {
     flex: 0 0 76px !important;
     width: 76px !important;
-    transform: translate(-23px, 9.5px) !important;
+    transform: translate(-25px, 9.5px) !important; /* 2px daha sola */
   }
   .dashboard-page .hero.hero-two-rows .hero-logo img,
   .login-page .hero.hero-two-rows .hero-logo img {
@@ -1169,17 +1169,17 @@ body.driver-modal-open {
     width: 120px !important;
     height: 69px !important;
   }
-  /* Mobil (640px altı): MEDISA hero logosu – sol çerçeveye 3px daha yakın (-17px) */
+  /* Mobil (640px altı): MEDISA hero logosu – sol çerçeveye 2px daha yakın (-17px → -19px) */
   .dashboard-page .hero.hero-two-rows .hero-logo {
     flex: 0 0 56px !important;
     width: 56px !important;
-    transform: translate(-17px, 10px) !important;
+    transform: translate(-19px, 10px) !important;
     margin-top: 0 !important;
   }
   .login-page .hero.hero-two-rows .hero-logo {
     flex: 0 0 56px !important;
     width: 56px !important;
-    transform: translate(-17px, 10px) !important;
+    transform: translate(-19px, 10px) !important;
     margin-top: 0 !important;
   }
   /* Mobil: 56px logo sütunları, başlık ortada */
@@ -3630,8 +3630,19 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     padding-bottom: max(12px, env(safe-area-inset-bottom, 0)) !important;
   }
 
-  /* Plaka dropdown dışarı taşabilsin; panels-inner overflow: hidden kalsın ki sağ panel yüksekliği kısıtlansın ve Not+Bildir kaydırılabilir */
+  /* Plaka dropdown dışarı taşabilsin; sağ gride taşıp kesilmesin (overflow zincirini kır) */
+  .dashboard-page .driver-dashboard-container,
+  .dashboard-page .driver-scroll-area,
+  .dashboard-page .driver-panels-inner {
+    overflow-x: visible !important;
+    overflow-y: visible !important;
+  }
+  .dashboard-page .driver-right-panel {
+    overflow-y: auto !important; /* Sağ panel kaydırma korunsun */
+    overflow-x: hidden !important;
+  }
   .dashboard-page .driver-left-panel,
+  .dashboard-page .driver-left-panel-content,
   .dashboard-page .driver-plate-dropdown-row {
     overflow: visible !important;
   }
@@ -3646,9 +3657,10 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .dashboard-page .driver-left-panel .driver-plate-dropdown {
     left: 0 !important;
     transform: none !important;
-    width: 140% !important; /* Mobilde yatay +%40 */
+    width: 140% !important; /* Mobilde sağ gride taşabilsin */
     max-width: none !important;
-    min-width: 280px !important; /* 200px + %40 */
+    min-width: 280px !important;
+    z-index: 1000 !important;
   }
   .driver-plate-dropdown {
     background: var(--bg) !important;
