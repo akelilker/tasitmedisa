@@ -795,7 +795,7 @@
           thirdLine = v.tahsisKisi || '';
         }
         const thirdLineDisplay = thirdLine ? (isArchive ? toTitleCase(thirdLine) : (activeBranchId === 'all' ? toTitleCase(thirdLine) : formatAdSoyad(thirdLine))) : '';
-        const satildiSpan = isArchive ? ' <span style="color:#e1061b;font-size:12px;">(SATILDI)</span>' : '';
+        const satildiSpan = isArchive ? ' <span style="color:#d40000;font-size:12px;">(SATILDI)</span>' : '';
 
         // Tahsis edilmemiş taşıtlar için kırmızı class (liste ve kartta her zaman)
         const isUnassigned = !v.branchId;
@@ -960,7 +960,7 @@
       const plateEl = document.createElement('div');
       plateEl.className = 'detail-plate';
       if (vehicle.satildiMi) {
-        plateEl.innerHTML = `${escapeHtml(vehicle.plate || '-')} <span style="color: #e1061b; font-size: 16px; margin-left: 8px;">SATILDI</span>`;
+        plateEl.innerHTML = `${escapeHtml(vehicle.plate || '-')} <span style="color: #d40000; font-size: 16px; margin-left: 8px;">SATILDI</span>`;
       } else {
         plateEl.textContent = vehicle.plate || '-';
       }
@@ -978,7 +978,7 @@
       const plateEl = plateRow.querySelector('.detail-plate');
       if (plateEl) {
         if (vehicle.satildiMi) {
-          plateEl.innerHTML = `${escapeHtml(vehicle.plate || '-')} <span style="color: #e1061b; font-size: 16px; margin-left: 8px;">SATILDI</span>`;
+          plateEl.innerHTML = `${escapeHtml(vehicle.plate || '-')} <span style="color: #d40000; font-size: 16px; margin-left: 8px;">SATILDI</span>`;
         } else {
           plateEl.textContent = vehicle.plate || '-';
         }
@@ -1817,8 +1817,8 @@ function renderVehicleDetailLeft(vehicle) {
               part.setAttribute('fill', '#5cb85c');
               part.style.fill = '#5cb85c';
             } else if (state === 'degisen') {
-              part.setAttribute('fill', '#e1061b');
-              part.style.fill = '#e1061b';
+              part.setAttribute('fill', '#d40000');
+              part.style.fill = '#d40000';
             }
             const partName = partNames[partId] || partId;
             const stateLabel = state === 'boyali' ? 'Boyalı' : state === 'degisen' ? 'Değişen' : 'Orijinal';
@@ -1842,7 +1842,7 @@ function renderVehicleDetailLeft(vehicle) {
         legend.innerHTML = `
           <div class="boya-legend-item"><span class="boya-legend-dot" style="background:#757575;"></span> Orijinal</div>
           <div class="boya-legend-item"><span class="boya-legend-dot" style="background:#28a745;"></span> Boyalı</div>
-          <div class="boya-legend-item"><span class="boya-legend-dot" style="background:#e1061b;"></span> Değişen</div>
+          <div class="boya-legend-item"><span class="boya-legend-dot" style="background:#d40000;"></span> Değişen</div>
         `;
         container.appendChild(legend);
 
@@ -1926,8 +1926,8 @@ function renderVehicleDetailLeft(vehicle) {
       menuList.innerHTML = events.map(event => {
         const isKaza = event.id === 'kaza';
         const isSatis = event.id === 'satis';
-        const borderColor = (isKaza || isSatis) ? '#e1061b' : 'rgba(255, 255, 255, 0.3)';
-        const textColor = (isKaza || isSatis) ? '#e1061b' : '#ccc';
+        const borderColor = (isKaza || isSatis) ? '#d40000' : 'rgba(255, 255, 255, 0.3)';
+        const textColor = (isKaza || isSatis) ? '#d40000' : '#ccc';
         const borderWidth = (isKaza || isSatis) ? '0.3px' : '1px';
         return `<button type="button" data-event-id="${event.id}" data-vehicle-id="${vid}" style="width: 100%; padding: 12px; background: transparent; border: ${borderWidth} solid ${borderColor}; color: ${textColor}; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px; text-align: left;">${event.label}</button>`;
       }).join('');
@@ -2368,8 +2368,8 @@ function renderVehicleDetailLeft(vehicle) {
               part.setAttribute('fill', '#28a745');
               part.style.fill = '#28a745';
             } else if (state === 'degisen') {
-              part.setAttribute('fill', '#e1061b');
-              part.style.fill = '#e1061b';
+              part.setAttribute('fill', '#d40000');
+              part.style.fill = '#d40000';
             } else {
               part.setAttribute('fill', defaultGrayKaza);
               part.style.fill = defaultGrayKaza;
@@ -2403,8 +2403,8 @@ function renderVehicleDetailLeft(vehicle) {
               } else if (currentState === 'boyali') {
                 // İkinci tık: Kırmızı (değişen/hasar)
                 this.dataset.state = 'degisen';
-                this.setAttribute('fill', '#e1061b');
-                this.style.fill = '#e1061b';
+                this.setAttribute('fill', '#d40000');
+                this.style.fill = '#d40000';
               } else {
                 // Üçüncü tık: Geri boyasız (temiz)
                 this.dataset.state = 'boyasiz';
@@ -2429,7 +2429,7 @@ function renderVehicleDetailLeft(vehicle) {
         legend.innerHTML = `
           <div class="boya-legend-item" style="display: flex; align-items: center; gap: 6px;"><span class="boya-legend-dot" style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #888888;"></span> Boyasız</div>
           <div class="boya-legend-item" style="display: flex; align-items: center; gap: 6px;"><span class="boya-legend-dot" style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #28a745;"></span> Boyalı (Mevcut)</div>
-          <div class="boya-legend-item" style="display: flex; align-items: center; gap: 6px;"><span class="boya-legend-dot" style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #e1061b;"></span> Değişen/Hasar</div>
+          <div class="boya-legend-item" style="display: flex; align-items: center; gap: 6px;"><span class="boya-legend-dot" style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #d40000;"></span> Değişen/Hasar</div>
         `;
         // Legend'i wrapper'a ekle (şemanın sağına)
         schemaWrapper.appendChild(legend);
@@ -3241,7 +3241,7 @@ function renderVehicleDetailLeft(vehicle) {
       tab.classList.remove('active');
       if (tab.dataset.tab === tabType) {
         tab.classList.add('active');
-        tab.style.borderBottomColor = '#e1061b';
+        tab.style.borderBottomColor = '#d40000';
         tab.style.color = '#ffffff';
       } else {
         tab.style.borderBottomColor = 'transparent';
@@ -3652,7 +3652,7 @@ function renderVehicleDetailLeft(vehicle) {
                           notif.days === 1 ? 'Yarın' :
                           `${notif.days} gün kaldı`;
           const borderColor = notif.warningClass === 'date-warning-red'
-            ? 'rgba(225, 6, 27, 0.6)'
+            ? 'rgba(212, 0, 0, 0.6)'
             : 'rgba(255, 140, 0, 0.6)';
           const safePlate = (notif.plate || '').replace(/"/g, '&quot;');
           html += `<button type="button" data-plate="${safePlate}" style="width: 100%; padding: 12px; background: transparent; border: 1px solid ${borderColor}; color: #ccc; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 13px; text-align: left; margin-bottom: 4px; transition: all 0.2s ease;" class="notification-item ${notif.warningClass}-border">
@@ -3687,7 +3687,7 @@ function renderVehicleDetailLeft(vehicle) {
           const safeKey = notifKey.replace(/"/g, '&quot;');
           const isUnread = viewedKeys.indexOf(notifKey) === -1;
           const unreadClass = isUnread ? ' notification-unread' : '';
-          const unreadStyle = isUnread ? ' border: 1px solid rgba(225, 6, 27, 0.85) !important;' : '';
+          const unreadStyle = isUnread ? ' border: 1px solid rgba(212, 0, 0, 0.85) !important;' : '';
           html += `<button type="button" data-plate="${safePlate}" data-vehicle-id="${safeVid}" data-open-history="1" data-history-tab="${historyTab}" data-notif-key="${safeKey}" style="width: 100%; padding: 10px 12px; background: transparent; color: #ccc; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 12px; text-align: left; margin-bottom: 4px; transition: all 0.2s ease;${unreadStyle}" class="notification-item notification-item-activity${unreadClass}">
           <div class="notif-line1" style="font-weight: 600; color: #fff; margin-bottom: 2px;">${escapeHtml(item.plate)} ${escapeHtml(typeLabel)}</div>
           <div class="notif-line2" style="font-size: 11px; color: #999;">${escapeHtml(dateDisplay)}</div>

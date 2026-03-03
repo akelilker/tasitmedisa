@@ -61,7 +61,7 @@
 /* Boya/Değişen ile Notlar alt hizası: sol sütun flex, son blok alta yapışır */
 /* Modal Header */
 #vehicle-modal .modal-header {
-    background: linear-gradient(180deg, rgba(255, 0, 0, 0.30) 0%, rgba(255, 0, 0, 0.22) 25%, rgba(255, 0, 0, 0.16) 50%, rgba(255, 0, 0, 0.10) 75%, transparent 100%);
+    background: linear-gradient(180deg, rgba(var(--theme-color-rgb), 0.36) 0%, rgba(var(--theme-color-rgb), 0.26) 25%, rgba(var(--theme-color-rgb), 0.18) 50%, rgba(var(--theme-color-rgb), 0.12) 75%, transparent 100%);
     padding: 2px 20px;
     height: 60px;
     display: flex;
@@ -281,7 +281,7 @@ select:focus {
 
 select option,
 select.form-input option {
-    background-color: #080d16;
+    background-color: var(--bg);
     color: #e0e0e0;
 }
 
@@ -289,7 +289,7 @@ select option:checked,
 select option:hover,
 select option:focus,
 select option:active {
-    background: #080d16;
+    background: var(--bg);
     color: #fff;
 }
 
@@ -759,20 +759,20 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
 }
 
-.radio-btn:not(.active).hover-red:hover { background: rgba(var(--theme-color-rgb), 0.1) !important; border-color: var(--theme-color, #e1061b) !important; color: var(--theme-color, #e1061b) !important; }
+.radio-btn:not(.active).hover-red:hover { background: rgba(var(--theme-color-rgb), 0.1) !important; border-color: var(--theme-color, #d40000) !important; color: var(--theme-color, #d40000) !important; }
 .radio-btn:not(.active).hover-green:hover { background: rgba(40, 167, 69, 0.1) !important; border-color: var(--green-success, #28a745) !important; color: var(--green-success, #28a745) !important; }
 .radio-btn:focus { outline: none; }
 /* Var/Yok – solukluk giderildi: canlı renkler */
-/* Yok (Olumsuz): border ve color KESİNLİKLE var(--theme-color); hover/active arka plan rgba(225, 6, 27, 0.1) */
+/* Yok (Olumsuz): border ve color KESİNLİKLE var(--theme-color); hover/active arka plan rgba(212, 0, 0, 0.1) */
 .radio-btn.active:not(.green),
 #vehicle-modal .radio-btn.active:not(.green) {
-  background: rgba(225, 6, 27, 0.1) !important;
-  border-color: var(--theme-color, #e1061b) !important;
-  color: var(--theme-color, #e1061b) !important;
+  background: rgba(212, 0, 0, 0.1) !important;
+  border-color: var(--theme-color, #d40000) !important;
+  color: var(--theme-color, #d40000) !important;
 }
 .radio-btn.active:not(.green):hover, .radio-btn.active:not(.green):focus,
 #vehicle-modal .radio-btn.active:not(.green):hover, #vehicle-modal .radio-btn.active:not(.green):focus {
-  background: rgba(225, 6, 27, 0.1) !important; border-color: var(--theme-color, #e1061b) !important; color: var(--theme-color, #e1061b) !important; box-shadow: none; outline: none;
+  background: rgba(212, 0, 0, 0.1) !important; border-color: var(--theme-color, #d40000) !important; color: var(--theme-color, #d40000) !important; box-shadow: none; outline: none;
 }
 /* Var (Olumlu): border ve color KESİNLİKLE var(--green-success); hover/active arka plan rgba(40, 167, 69, 0.1) */
 .radio-btn.active.green,
@@ -879,9 +879,9 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     }
     
     .radio-btn.active:not(.green) {
-        border-color: var(--theme-color, #e1061b) !important;
-        color: var(--theme-color, #e1061b) !important;
-        background: rgba(225, 6, 27, 0.1) !important;
+        border-color: var(--theme-color, #d40000) !important;
+        color: var(--theme-color, #d40000) !important;
+        background: rgba(212, 0, 0, 0.1) !important;
     }
     
     .radio-btn.active.green {
@@ -932,7 +932,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         max-height: 100% !important;
         margin-bottom: 0 !important;
         border-radius: 10px !important;
-        background: #080d16 !important;
+        background: var(--modal-bg) !important;
         overflow: hidden !important;
         overflow-x: hidden !important;
         touch-action: pan-y !important;
@@ -973,7 +973,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         margin-top: 10px;
         padding-top: 8px !important;
         padding-bottom: 10px !important;
-        background: #080d16 !important;
+        background: var(--modal-bg) !important;
         z-index: 2;
         border-top: 1px solid rgba(255, 255, 255, 0.06);
         align-items: center !important;
@@ -991,17 +991,15 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     
     #vehicle-modal .modal-header { position: relative; }
     #vehicle-modal .modal-header h2 { 
-        font-size: 21px !important; /* 20px + 1 punto (1px) */
+        font-size: 21px !important; /* 20px + 1 punto (1px) – Taşıtlar/Raporlar ile aynı */
+        letter-spacing: 0.2em !important; /* Taşıtlar/Raporlar ile aynı */
+        text-shadow: none !important;
         position: absolute;
         left: 50%;
         transform: translateX(-50%);
         width: 100%;
         text-align: center;
         pointer-events: none;
-        /* Havada durma efekti - mobil */
-        text-shadow: 0 2px 6px rgba(0, 0, 0, 0.5),
-                     0 4px 12px rgba(0, 0, 0, 0.3),
-                     0 0 15px rgba(255, 255, 255, 0.08) !important;
     }
     .modal-close { font-size: 21px; }
     textarea.form-input { font-size: 13px; }
@@ -1792,7 +1790,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
 
 /* === STANDART MODAL HEADER (v79) === */
 #vehicle-modal .modal-header {
-    background: linear-gradient(180deg, rgba(255, 0, 0, 0.30) 0%, rgba(255, 0, 0, 0.22) 25%, rgba(255, 0, 0, 0.16) 50%, rgba(255, 0, 0, 0.10) 75%, transparent 100%);
+    background: linear-gradient(180deg, rgba(var(--theme-color-rgb), 0.36) 0%, rgba(var(--theme-color-rgb), 0.26) 25%, rgba(var(--theme-color-rgb), 0.18) 50%, rgba(var(--theme-color-rgb), 0.12) 75%, transparent 100%);
     padding: 2px 20px;
     height: 60px;
     display: flex;

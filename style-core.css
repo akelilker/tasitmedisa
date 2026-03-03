@@ -13,10 +13,13 @@ body::-webkit-scrollbar,
  
 /* ========== TÜM :root DEĞİŞKENLERİ (tek kaynak) ========== */
 :root {
-  --theme-color: #e1061b;
-  --theme-color-rgb: 225, 6, 27;
-  /* Footer'dan yukarı süzen ışık: bordo ile açık kırmızı arası orta ton */
-  --footer-glow-rgb: 230, 22, 32;
+  --theme-color: #d40000;
+  --theme-color-rgb: 212, 0, 0;
+  /* Footer'dan yukarı süzen ışık: MEDISA tonu ile aynı */
+  --footer-glow-rgb: 212, 0, 0;
+  /* MEDISA marka kırmızısı (theme ile aynı; alias) */
+  --brand-red: #d40000;
+  --brand-red-rgb: 212, 0, 0;
   --bg: #080d16;
   --bg-2: #151515;
   --card-bg: #1a1a1a;
@@ -30,7 +33,7 @@ body::-webkit-scrollbar,
   --modal-footer-reserve: calc(var(--app-footer-height) + var(--modal-footer-gap));
   --modal-gap-above-footer: 10px; /* Masaüstünde 6px override edilir */
 
-  --modal-bg: var(--bg);
+  --modal-bg: #080d16;
   --modal-max-width: 500px;
   --modal-radius: 10px;
   --modal-margin-bottom-desktop: calc(var(--app-footer-height) + var(--modal-gap-above-footer));
@@ -50,7 +53,6 @@ body::-webkit-scrollbar,
   --bg-input: #0f1418;
   --bg-input-focus: #0f1622;
   --txt-white: #ffffff;
-  --txt-light: #f0f0f0;
   --txt-muted: #e0e0e0;
   --txt-gray: #ccc;
   --txt-gray-dark: #b5b9c0;
@@ -141,7 +143,7 @@ body::-webkit-scrollbar,
   background: none;
   border: none;
   padding: 8px 0 8px 0 !important; /* Yatay padding yok – gap 3px kalır */
-  color: var(--txt-light);
+  color: var(--txt);
 }
 .universal-back-btn:hover { color: var(--txt-white); }
 
@@ -235,13 +237,13 @@ body::-webkit-scrollbar,
 
 /* Vazgeç (Kırmızı) - Dinamik Hover Efekti */
 .universal-btn-cancel {
-  color: var(--theme-color, #e1061b) !important;
-  border: 1px solid rgba(225, 6, 27, 0.45) !important;
+  color: var(--theme-color, #d40000) !important;
+  border: 1px solid rgba(212, 0, 0, 0.45) !important;
 }
 .universal-btn-cancel:hover {
-  background: rgba(225, 6, 27, 0.12) !important;
+  background: rgba(212, 0, 0, 0.12) !important;
   font-weight: 600 !important;
-  border-color: var(--theme-color, #e1061b) !important;
+  border-color: var(--theme-color, #d40000) !important;
   -webkit-text-stroke: 0.2px currentColor;
 }
 
@@ -313,8 +315,8 @@ body::-webkit-scrollbar,
   width: 100% !important;
   max-width: none !important;
   margin-top: 4px !important;
-  color: var(--theme-color, #e1061b) !important;
-  border: 1px solid rgba(225, 6, 27, 0.5) !important;
+  color: var(--theme-color, #d40000) !important;
+  border: 1px solid rgba(212, 0, 0, 0.5) !important;
 }
 
 /* Tüm input/select/textarea içerik metni: beyaz-gri hiyerarşisi */
@@ -402,7 +404,7 @@ html, body {
   min-height: 100dvh;
   overflow: hidden;
   overflow-x: hidden; /* Yatay taşma kesin kapalı */
-  font-family: 'Source Sans 3', sans-serif;
+  font-family: 'Inter', sans-serif;
   background-color: var(--bg);
   color: var(--txt);
   -webkit-tap-highlight-color: transparent;
@@ -607,7 +609,7 @@ html { overflow-x: hidden; }
   padding: 8px 14px;
   border-radius: 8px;
   border: 1px solid rgba(34, 197, 94, 0.65);
-  background: #080d16;
+  background: var(--bg);
   color: #22c55e;
   font-size: 13px;
   font-weight: 600;
@@ -873,7 +875,7 @@ html { overflow-x: hidden; }
   font-weight: 600;
   font-size: 13px;
   cursor: pointer;
-  transition:h background 0.2s ease, border-color 0.2s ease, color 0.2s ease, font-size 0.2s ease, box-shadow 0.2s ease;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, font-size 0.2s ease, box-shadow 0.2s ease;
   margin: 0;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
   height: 48px;
@@ -1007,7 +1009,7 @@ html { overflow-x: hidden; }
   height: calc(100dvh - max(12px, env(safe-area-inset-top)) - var(--modal-margin-bottom-desktop));
   border-radius: var(--modal-radius);
   border: 0.5px solid var(--border-medium);
-  box-shadow: 0 0 40px var(--shadow-modal);
+  box-shadow: 0 0 40px var(--shadow-modal), inset 0 1px 0 rgba(255, 255, 255, 0.06);
   overflow-x: hidden;
   pointer-events: auto;
   overscroll-behavior: none;
@@ -1032,7 +1034,7 @@ html { overflow-x: hidden; }
   margin: 0;
   font-size: 16px;
   font-weight: 700;
-  color: var(--txt-light);
+  color: var(--txt);
   letter-spacing: 1px;
   text-align: center;
 }
@@ -1449,7 +1451,7 @@ body.modal-open .user-panel-link {
         max-height: 100% !important;
         border-radius: 10px !important;
         border: 0.5px solid rgba(255, 255, 255, 0.47) !important;
-        box-shadow: 0 0 40px var(--shadow-modal);
+        box-shadow: 0 0 40px var(--shadow-modal), inset 0 1px 0 rgba(255, 255, 255, 0.06);
         background: var(--modal-bg) !important;
         padding: 0 !important;
         padding-top: 0 !important;
@@ -1676,8 +1678,8 @@ body.modal-open .user-panel-link {
     .content-wrap {
         padding-top: max(12px, env(safe-area-inset-top)) !important;
     }
-    /* Çerçeve viewport içinde kalır; çift padding yok, content-wrap halleder; minimal belirgin */
-    .app-container {
+    /* Çerçeve viewport içinde kalır; çift padding yok, content-wrap halleder; minimal belirgin. Kullanıcı girişi/paneli kendi çerçevesini kullanır (driver-style). */
+    body:not(.dashboard-page):not(.login-page) .app-container {
         margin-top: 0 !important;
         padding-top: 0 !important;
         border-radius: 20px !important;
@@ -1756,7 +1758,7 @@ body.modal-open .app-container {
     font-size: 19px !important; /* 17px + 1.5 punto (2px) */
     font-weight: 600 !important;
     letter-spacing: 0.05em !important;
-    color: var(--txt-light) !important;
+    color: var(--txt) !important;
     text-shadow: none !important;
     opacity: 1 !important;
     margin: 0;
@@ -1785,7 +1787,7 @@ body.modal-open .app-container {
     transform: translateX(-50%) translateY(0);
 }
 .update-toast-text {
-    color: var(--txt-light);
+    color: var(--txt);
     font-size: 14px;
     font-weight: 600;
 }

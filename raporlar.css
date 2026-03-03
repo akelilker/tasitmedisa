@@ -187,7 +187,7 @@ margin: 0;
 }
 /* Detay Ekleme butonu varsayılan beyaz; seçiliyken yeşil */
 #reports-modal .reports-list-header-actions .stok-detail-add-btn {
-color: var(--txt-light) !important;
+color: var(--txt) !important;
 margin: 0;
 }
 #reports-modal .reports-list-header-actions .stok-detail-add-btn.active {
@@ -208,7 +208,7 @@ flex-shrink: 0 !important;
 align-self: flex-start !important;
 }
 #reports-modal .reports-list-header-actions .stok-detail-add-btn:hover {
-color: var(--txt-light) !important;
+color: var(--txt) !important;
 }
 #reports-modal .reports-list-header-actions .stok-detail-add-btn.active:hover {
 color: #4ade80 !important;
@@ -359,7 +359,7 @@ border-color: var(--theme-color);
 }
 
 .report-filters select option {
-background-color: #080d16;
+background-color: var(--bg);
 color: #e0e0e0;
 }
 
@@ -583,10 +583,10 @@ min-width: 800px;
 .stok-list-header {
 position: sticky;
 top: 0;
-background: #080d16;
+background: var(--bg);
 z-index: 10;
 border-bottom: 1px solid rgba(255, 255, 255, 0.22);
-box-shadow: 0 2px 0 0 #080d16;
+box-shadow: 0 2px 0 0 var(--bg);
 backdrop-filter: none;
 -webkit-backdrop-filter: none;
 }
@@ -594,13 +594,13 @@ backdrop-filter: none;
 /* Taşıtlar listesi formatı: grid, gap, arka plan, çizgi */
 .stok-list-header-row {
 display: grid;
-background: #080d16;
+background: var(--bg);
 gap: 4px;
 align-items: center;
 padding: 6px 2px 4px 2px;
 margin-bottom: 4px;
 border-bottom: 1px solid rgba(255, 255, 255, 0.22);
-box-shadow: 0 2px 0 0 #080d16;
+box-shadow: 0 2px 0 0 var(--bg);
 backdrop-filter: none;
 -webkit-backdrop-filter: none;
 }
@@ -962,6 +962,34 @@ justify-content: flex-start;
 /* Başlangıç / Bitiş Tarihi etiketleri 5px yukarı */
 #stok-list-container .stok-controls-row-2 label[for="stok-date-start"],
 #stok-list-container .stok-controls-row-2 label[for="stok-date-end"] { margin-top: -5px; }
+/* Masaüstü: tarih inputları içindeki metin/sayılar yatay ve dikey ortalı */
+#stok-list-container .stok-controls-row-2 .stok-date-input {
+  text-align: center !important;
+  padding-top: 6px !important;
+  padding-bottom: 6px !important;
+  line-height: 1.3 !important;
+}
+#stok-list-container .stok-controls-row-2 .stok-date-input::-webkit-datetime-edit {
+  text-align: center !important;
+  width: 100% !important;
+}
+#stok-list-container .stok-controls-row-2 .stok-date-input::-webkit-datetime-edit-fields-wrapper {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 100% !important;
+}
+/* Başlangıç tarihi boşken gg.aa.yyyy daha saydam, dikkat çekmesin */
+#stok-list-container .stok-controls-row-2 #stok-date-start:invalid::-webkit-datetime-edit,
+#stok-list-container .stok-controls-row-2 #stok-date-start:invalid::-webkit-datetime-edit-fields-wrapper,
+#stok-list-container .stok-controls-row-2 #stok-date-start:invalid::-webkit-datetime-edit-text,
+#stok-list-container .stok-controls-row-2 #stok-date-start:invalid::-webkit-datetime-edit-month-field,
+#stok-list-container .stok-controls-row-2 #stok-date-start:invalid::-webkit-datetime-edit-day-field,
+#stok-list-container .stok-controls-row-2 #stok-date-start:invalid::-webkit-datetime-edit-year-field {
+  opacity: 0.4 !important;
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.35) !important;
+  color: rgba(255, 255, 255, 0.35) !important;
+}
 }
 
 /* Masaüstü: İki satırlık layout */
@@ -1232,7 +1260,7 @@ color: #fff;
 font-weight: 700;
 font-size: 12px;
 border-radius: 3px;
-font-family: Arial, sans-serif;
+font-family: 'Inter', sans-serif;
 transition: transform 0.2s, background 0.2s;
 }
 
@@ -1788,12 +1816,12 @@ line-height: 1.2;
 .stok-date-range-controls {
 display: flex;
 flex-direction: row;
-gap: 2px !important;
+gap: 3px !important;
 width: 100%;
 margin-left: 0;
 margin-top: 0;
-padding-left: 3px !important;
-padding-right: 3px !important;
+padding-left: 4px !important;
+padding-right: 4px !important;
 box-sizing: border-box !important;
 }
 .stok-date-input-group {
@@ -1804,6 +1832,11 @@ min-width: 0 !important;
 font-size: 12px !important;
 text-align: center !important;
 }
+/* Mobil (iOS/Android PWA dahil): tarih etiketleri tam metin */
+#stok-list-container .stok-controls-row-2 label[for="stok-date-start"] { font-size: 0 !important; line-height: 0 !important; }
+#stok-list-container .stok-controls-row-2 label[for="stok-date-start"]::before { content: "Başlangıç Tarihi"; font-size: 12px !important; line-height: 1.3; color: var(--form-label-color); display: block; }
+#stok-list-container .stok-controls-row-2 label[for="stok-date-end"] { font-size: 0 !important; line-height: 0 !important; }
+#stok-list-container .stok-controls-row-2 label[for="stok-date-end"]::before { content: "Bitiş Tarihi"; font-size: 12px !important; line-height: 1.3; color: var(--form-label-color); display: block; }
 .stok-date-input {
 font-size: 15px !important;
 text-align: center !important;
@@ -1818,6 +1851,17 @@ text-overflow: ellipsis !important;
 border-color: rgba(255, 255, 255, 0.28) !important;
 margin-left: 0 !important;
 margin-right: 0 !important;
+}
+/* Mobil/PWA: tarih inputu içi yatay + dikey ortalı */
+#stok-list-container .stok-controls-row-2 .stok-date-input::-webkit-datetime-edit {
+text-align: center !important;
+width: 100% !important;
+}
+#stok-list-container .stok-controls-row-2 .stok-date-input::-webkit-datetime-edit-fields-wrapper {
+display: flex !important;
+justify-content: center !important;
+align-items: center !important;
+width: 100% !important;
 }
 #stok-date-start,
 #stok-date-end {
@@ -1926,7 +1970,7 @@ scrollbar-color: rgba(128, 128, 128, 0.35) transparent;
 position: sticky;
 top: 0;
 z-index: 10;
-background: #080d16;
+background: var(--bg);
 }
 
 .stok-search-container { max-width: calc(100vw - 120px); }

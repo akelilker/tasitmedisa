@@ -260,7 +260,7 @@
 .detail-plate {
     font-size: 15px; /* Plaka 15px */
     font-weight: 700;
-    color: var(--txt-light);
+    color: var(--txt);
     text-align: center;
     width: 100%; /* Tam genişlik */
     letter-spacing: 2px;
@@ -615,7 +615,7 @@
 .detail-total {
     font-size: 14px;
     font-weight: 600;
-    color: var(--txt-light);
+    color: var(--txt);
     margin-top: 12px;
     padding-top: 12px;
     border-top: 1px solid var(--border-faint);
@@ -671,10 +671,18 @@
 #vehicle-history-modal .history-empty-msg {
     color: var(--txt-placeholder);
 }
-/* Tarihçe: işlemler arası ince kırmızı ayırıcı çizgi (son eleman hariç) */
+/* Tarihçe (5 sekme): her işlem sonrası 3px boşluk, hafif kırmızı yatay çizgi (taşıt detay ortadaki dikey çizgi ile aynı ton), altında 3px boşluk */
 #vehicle-history-modal .history-item:not(:last-child),
 .modal-overlay:has(.history-tabs) .history-item:not(:last-child) {
-    border-bottom: 0.5px solid rgba(var(--theme-color-rgb), 0.4) !important;
+    border-bottom: none !important;
+}
+#vehicle-history-modal .history-item:not(:last-child)::after,
+.modal-overlay:has(.history-tabs) .history-item:not(:last-child)::after {
+    content: '';
+    display: block;
+    border-top: 1px solid rgba(var(--theme-color-rgb), 0.28);
+    margin-top: 3px;
+    margin-bottom: 3px;
 }
 
 /* Tarihçe: sekme ile içerik arası 5px azaltma (history-content padding-top style-core'da 15px yapıldı) */
@@ -698,7 +706,7 @@
     font-size: 17px !important;
     font-weight: 600 !important;
     letter-spacing: 0.05em !important;
-    color: var(--txt-light) !important;
+    color: var(--txt) !important;
     text-shadow: none !important;
     opacity: 1 !important;
     margin: 0 !important;
@@ -913,12 +921,12 @@
     min-height: 38px !important;
     height: 38px !important;
     box-sizing: border-box;
-    border: 1.1px solid #e1061b !important;
-    background: var(--bg, #080d16) !important;
+    border: 1.1px solid #d40000 !important;
+    background: var(--bg) !important;
     color: var(--data-value-color, #a0aec0) !important;
   }
   #sube-degisiklik-modal .modal-body select#sube-select option {
-    background: var(--bg, #080d16);
+    background: var(--bg);
     color: var(--data-value-color, #a0aec0);
   }
 
@@ -1281,7 +1289,7 @@
 .branch-name {
     font-size: 13px; /* +1 punto (12→13) */
     font-weight: 700;
-    color: var(--txt-light);
+    color: var(--txt);
     text-transform: uppercase;
     margin-bottom: 2px;
     line-height: 1.1;
@@ -1372,7 +1380,7 @@
 .card-plate {
     font-size: 12px;
     font-weight: 700;
-    color: var(--txt-light);
+    color: var(--txt);
     text-align: center;
     margin-bottom: 4px;
     line-height: 1.2;
@@ -1682,7 +1690,7 @@
 
 .sort-icon.active {
     opacity: 1;
-    color: var(--txt-light);
+    color: var(--txt);
 }
 
 .sortable-header:hover .sort-icon {
@@ -1815,7 +1823,7 @@
     border-bottom: none;
 }
 
-.view-list .list-info h4 { margin: 0; font-size: 14px; color: var(--txt-light); }
+.view-list .list-info h4 { margin: 0; font-size: 14px; color: var(--txt); }
 .view-list .list-info span { font-size: 11px; color: var(--txt-gray-darker); }
 
 .branch-card.unassigned-branch-card {
@@ -1936,7 +1944,7 @@
 /* Select'te bir şey seçildiğinde rengi değiştir */
 .assign-select:not([value=""]),
 .assign-select.has-value {
-  color: var(--txt-light) !important;
+  color: var(--txt) !important;
 }
 
 .assign-select:focus {
@@ -1947,7 +1955,7 @@
 
 .assign-select option {
   background: var(--bg);
-  color: var(--txt-light); 
+  color: var(--txt); 
   padding: 8px;
   font-size: 12px;
   font-weight: 600;
@@ -2072,6 +2080,7 @@
     position: relative;
     display: flex !important;
     align-items: center !important; /* İkon ve metin kendi içinde hizalı */
+    align-self: center !important; /* Olay Ekle ile aynı satırda, aşağı kaymasın */
     gap: 4px;
     color: var(--txt-gray);
     font-size: 15px;
@@ -2593,12 +2602,12 @@
   #sube-degisiklik-modal .modal-body .form-input {
     min-height: 32px !important;
     height: 32px !important;
-    border: 1.1px solid #e1061b !important;
-    background: var(--bg, #080d16) !important;
+    border: 1.1px solid #d40000 !important;
+    background: var(--bg) !important;
     color: var(--data-value-color, #a0aec0) !important;
   }
   #sube-degisiklik-modal .modal-body select option {
-    background: var(--bg, #080d16);
+    background: var(--bg);
     color: var(--data-value-color, #a0aec0);
   }
 
@@ -2770,7 +2779,7 @@
 
   /* Yılı - yatay 1px, dikey 2px */
   .view-list .list-cell.list-year {
-    color: var(--txt-light) !important;
+    color: var(--txt) !important;
     font-weight: inherit !important;
     font-size: inherit !important;
     display: flex !important;
@@ -2968,6 +2977,10 @@
       padding-top: env(safe-area-inset-top) !important;
       padding-bottom: 0 !important;
     }
+    /* iOS PWA: Taşıtlar modalı liste başlıkları 1 punto küçük */
+    #vehicles-modal .list-header-row {
+      --list-header-font-size: 14px !important;
+    }
   }
   /* Ortak mobil container + iOS PWA: style-core.css (.modal-overlay .modal-container) */
   #vehicles-modal .modal-header h2 { 
@@ -3105,6 +3118,7 @@
   #vehicle-detail-modal .detail-brand-year-row .history-btn-minimal {
     font-size: 17px !important;
     color: var(--form-label-color) !important;
+    align-self: center !important; /* Olay Ekle ile aynı satırda, aşağı kaymasın */
   }
   #vehicle-detail-modal .detail-brand-year-row .history-btn-minimal:hover {
     font-size: 18px !important;

@@ -172,10 +172,12 @@ window.toTitleCase = function(str) {
   }).join(' ');
 };
 
-/** Plaka: tamamen büyük (tr-TR) */
+/** Plaka: bitişik + tamamen büyük harf (örn. 34ABC123); boşluklar kaldırılır */
 window.formatPlaka = function(str) {
-  if (str == null || str === '' || str === '-') return str === '' ? '-' : (str || '-');
-  return String(str).trim().toLocaleUpperCase('tr-TR');
+  if (str == null || str === '') return '-';
+  if (str === '-') return '-';
+  var s = String(str).replace(/\s+/g, '').trim();
+  return s === '' ? '-' : s.toLocaleUpperCase('tr-TR');
 };
 
 /** Ad Soyad: soyad büyük, ad(lar) title case */
@@ -399,42 +401,11 @@ document.addEventListener('DOMContentLoaded', () => {
   // Modal kontrolü için ilk kontrol
   window.updateFooterDim();
 
-  // #region agent log
-  function logModalOverlayGap(overlay) {
-    if (!overlay || !overlay.classList.contains('active')) return;
-    var id = overlay.id || '';
-    if (id !== 'vehicles-modal' && id !== 'reports-modal') return;
-    requestAnimationFrame(function() {
-      var cs = window.getComputedStyle(overlay);
-      var standalone = window.matchMedia('(display-mode: standalone)').matches;
-      var payload = {
-        sessionId: 'f40416',
-        runId: 'modal-gap',
-        hypothesisId: id === 'vehicles-modal' ? 'A' : 'B',
-        location: 'script-core.js:modalObserver',
-        message: 'Modal overlay computed styles (iOS PWA gap)',
-        data: {
-          modalId: id,
-          bottom: cs.bottom,
-          paddingBottom: cs.paddingBottom,
-          maxHeight: cs.maxHeight,
-          height: cs.height,
-          standalone: standalone,
-          innerHeight: window.innerHeight
-        },
-        timestamp: Date.now()
-      };
-      fetch('http://127.0.0.1:7824/ingest/aaeefe94-e582-470c-8671-3dbfa48b74c7', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': 'f40416' }, body: JSON.stringify(payload) }).catch(function() {});
-    });
-  }
-  // #endregion
-  
   // Modal Observer: Body class yönetimi (Scroll engelleme vb.)
   const modalObserver = new MutationObserver((mutations) => {
     mutations.forEach(function(m) {
       if (m.type === 'attributes' && (m.attributeName === 'class' || m.attributeName === 'style')) {
-        var el = m.target;
-        if (el.id === 'vehicles-modal' || el.id === 'reports-modal') logModalOverlayGap(el);
+        // Sınıf/stil değişince aşağıdaki refreshModalOverlays ve updateFooterDim çalışır
       }
     });
     refreshModalOverlays();
