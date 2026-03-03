@@ -313,9 +313,6 @@
 /* Header action buttons: form altında */
 
 .modal-header h2 {
-    font-size: 17px !important;
-    font-weight: 600 !important;
-    letter-spacing: 0.05em !important;
     color: var(--txt) !important;
     text-shadow: none !important;
     opacity: 1 !important;
@@ -1018,9 +1015,6 @@ input.settings-form-input:-moz-autofill,
     }
     #branch-form-modal .modal-header h2,
     #user-form-modal .modal-header h2 {
-        font-size: 17px !important;
-        font-weight: 600 !important;
-        letter-spacing: 0.05em !important;
         color: var(--txt) !important;
         text-shadow: none !important;
         margin: 0;
@@ -1139,7 +1133,6 @@ input.settings-form-input:-moz-autofill,
         color: var(--form-label-color) !important;
     }
     .ayarlar-modal-overlay .modal-header h2 {
-        font-size: 19px !important;
         color: #ffffff !important;
         text-shadow: none !important;
     }

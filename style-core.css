@@ -1032,10 +1032,10 @@ html { overflow-x: hidden; }
 }
 .modal-overlay .modal-header h2 {
   margin: 0;
-  font-size: 16px;
-  font-weight: 700;
+  font-size: 17px;
+  font-weight: 600;
   color: var(--txt);
-  letter-spacing: 1px;
+  letter-spacing: 0.05em;
   text-align: center;
 }
 
@@ -1408,9 +1408,10 @@ body.modal-open .user-panel-link {
         letter-spacing: 2px !important;
     }
     
-    /* Modal başlıkları mobilde 19px */
+    /* Modal başlıkları mobilde 19px, letter-spacing 0.2em */
     .modal-header h2 {
         font-size: 19px !important;
+        letter-spacing: 0.2em !important;
     }
     
     /* Mobil: overlay footer+8px üstünde biter, 8px boşluk sayfa arka planıyla görünsün */
@@ -1758,9 +1759,6 @@ body.modal-open .app-container {
 #info-modal .modal-header h2,
 #tescil-tarih-confirm-modal .modal-header h2,
 #tescil-tarih-input-modal .modal-header h2 {
-    font-size: 19px !important; /* 17px + 1.5 punto (2px) */
-    font-weight: 600 !important;
-    letter-spacing: 0.05em !important;
     color: var(--txt) !important;
     text-shadow: none !important;
     opacity: 1 !important;
