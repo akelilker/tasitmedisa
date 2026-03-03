@@ -1296,7 +1296,7 @@ body.driver-modal-open {
 }
 
 .vehicle-card {
-  background: linear-gradient(180deg, #060d16, #08090c);
+  background: linear-gradient(180deg, var(--hero-gradient-start), var(--hero-gradient-end));
   border: none;
   border-radius: 12px;
   padding: 20px;
@@ -2216,7 +2216,7 @@ body.driver-modal-open {
 #driver-sigorta-modal .modal-container,
 #driver-kasko-modal .driver-modal-content,
 #driver-kasko-modal .modal-container {
-  background: #0e1219 !important;
+  background: var(--modal-bg) !important;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   width: 100%;
@@ -2853,7 +2853,7 @@ body.driver-modal-open {
   min-height: 56px !important;
   margin: 0 !important;
   padding: 0 !important;
-  background: #080d16 !important;
+  background: var(--bg) !important;
   border-top: 0.5px solid rgba(200, 200, 200, 0.7) !important;
   border-left: 0.5px solid rgba(255, 255, 255, 0.20) !important;
   border-right: 0.5px solid rgba(255, 255, 255, 0.20) !important;
@@ -3421,7 +3421,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     height: auto !important;
     max-height: calc(100vh - var(--modal-gap-above-footer, 10px) - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0) - 6px) !important;
     max-height: calc(100dvh - var(--modal-gap-above-footer, 10px) - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0) - 6px) !important;
-    box-shadow: 0 6px 0 0 #080d16 !important; /* 6px boşlukta çerçeve parçaları görünmesin */
+    box-shadow: 0 6px 0 0 var(--bg) !important; /* 6px boşlukta çerçeve parçaları görünmesin */
   }
   /* Modal açıkken üst kırmızı çerçeve görünsün (başlık rengi kesmesin). Geçmiş Kayıtlarım'da gizli. */
   #edit-request-modal.driver-modal.show::after,
@@ -3504,7 +3504,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     /* Kapsayıcı zaten footerı kestiği için burada tekrar hesaplama yapmıyoruz. Esnek bırakıyoruz. */
     height: auto !important;
     max-height: 100% !important;
-    background: #0e1219 !important;
+    background: var(--modal-bg) !important;
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border-radius: 10px !important;
@@ -3566,13 +3566,13 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     padding-bottom: 0 !important;
   }
 
-  /* Mobil arka plan tüm sayfalarla aynı (#080d16) */
+  /* Mobil arka plan tüm sayfalarla aynı (--bg) */
   .dashboard-page .driver-header-fixed,
   .dashboard-page .driver-scroll-area {
-    background: #080d16 !important;
+    background: var(--bg) !important;
   }
   .dashboard-page .vehicle-card {
-    background: #080d16 !important;
+    background: var(--bg) !important;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25) !important;
   }
   /* Mobil/PWA: üst/yan çizgiler biraz daha belirgin (0.68) */
@@ -3590,7 +3590,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   /* Footer anasayfa ile aynı: belirgin gri üst çizgi, yan soluk çizgiler (footerdan yükselen), kırmızı glow */
   .dashboard-page #app-footer,
   .login-page #app-footer.login-footer {
-    background: #080d16 !important;
+    background: var(--bg) !important;
     border-top: 0.5px solid rgba(200, 200, 200, 0.7) !important;
     border-left: 0.5px solid rgba(255, 255, 255, 0.18) !important;
     border-right: 0.5px solid rgba(255, 255, 255, 0.18) !important;

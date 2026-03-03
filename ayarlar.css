@@ -234,7 +234,7 @@
 }
 
 .history-tab:hover {
-    color: var(--txt-light) !important;
+    color: var(--txt) !important;
 }
 
 #info-modal .modal-container {
@@ -316,7 +316,7 @@
     font-size: 17px !important;
     font-weight: 600 !important;
     letter-spacing: 0.05em !important;
-    color: var(--txt-light) !important;
+    color: var(--txt) !important;
     text-shadow: none !important;
     opacity: 1 !important;
     margin: 0;
@@ -444,7 +444,7 @@
 .settings-dropdown button {
     background: var(--bg);
     border: 1px solid var(--border-subtle); 
-    color: var(--txt-light);
+    color: var(--txt);
     padding: 8px 20px;
     height: 40px;
     width: 100%;
@@ -518,7 +518,7 @@
 .list-item:last-child { border-bottom: none; }
 
 .item-info { display: flex; flex-direction: column; }
-.item-title { font-weight: 600; color: var(--txt-light); font-size: 15px; margin-bottom: 2px; }
+.item-title { font-weight: 600; color: var(--txt); font-size: 15px; margin-bottom: 2px; }
 .item-subtitle { font-size: 13px; color: var(--txt-gray-darker); }
 
 .item-actions { display: flex; gap: 8px; }
@@ -1021,7 +1021,7 @@ input.settings-form-input:-moz-autofill,
         font-size: 17px !important;
         font-weight: 600 !important;
         letter-spacing: 0.05em !important;
-        color: var(--txt-light) !important;
+        color: var(--txt) !important;
         text-shadow: none !important;
         margin: 0;
         text-align: center;

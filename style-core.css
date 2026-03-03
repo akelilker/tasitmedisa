@@ -17,7 +17,7 @@ body::-webkit-scrollbar,
   --theme-color-rgb: 225, 6, 27;
   /* Footer'dan yukarı süzen ışık: bordo ile açık kırmızı arası orta ton */
   --footer-glow-rgb: 230, 22, 32;
-  --bg: #080d16;
+  --bg: #0b1120;
   --bg-2: #151515;
   --card-bg: #1a1a1a;
   --txt: #f0f0f0;
@@ -30,7 +30,7 @@ body::-webkit-scrollbar,
   --modal-footer-reserve: calc(var(--app-footer-height) + var(--modal-footer-gap));
   --modal-gap-above-footer: 10px; /* Masaüstünde 6px override edilir */
 
-  --modal-bg: #0e1219;
+  --modal-bg: #111827;
   --modal-max-width: 500px;
   --modal-radius: 10px;
   --modal-margin-bottom-desktop: calc(var(--app-footer-height) + var(--modal-gap-above-footer));
@@ -46,11 +46,10 @@ body::-webkit-scrollbar,
   /* Girilen veri / açıklama metin rengi (beyaz-gri hiyerarşisi) */
   --data-value-color: #a0aec0;
 
-  --bg-content: #0d131f;
-  --bg-input: #0f1418;
-  --bg-input-focus: #0f1622;
+  --bg-content: #101728;
+  --bg-input: #111820;
+  --bg-input-focus: #111a2a;
   --txt-white: #ffffff;
-  --txt-light: #f0f0f0;
   --txt-muted: #e0e0e0;
   --txt-gray: #ccc;
   --txt-gray-dark: #b5b9c0;
@@ -79,8 +78,8 @@ body::-webkit-scrollbar,
   --link-blue: #5b9bd5;
   --link-blue-hover: #7ab3e8;
   --br-medium: #555;
-  --hero-gradient-start: #060d16;
-  --hero-gradient-end: #08090c;
+  --hero-gradient-start: #080f20;
+  --hero-gradient-end: #0b0f18;
   --hero-logo-width: 69px;
   --hero-spacer-width: 30px;
 }
@@ -141,7 +140,7 @@ body::-webkit-scrollbar,
   background: none;
   border: none;
   padding: 8px 0 8px 0 !important; /* Yatay padding yok – gap 3px kalır */
-  color: var(--txt-light);
+  color: var(--txt);
 }
 .universal-back-btn:hover { color: var(--txt-white); }
 
@@ -607,7 +606,7 @@ html { overflow-x: hidden; }
   padding: 8px 14px;
   border-radius: 8px;
   border: 1px solid rgba(34, 197, 94, 0.65);
-  background: #080d16;
+  background: var(--bg);
   color: #22c55e;
   font-size: 13px;
   font-weight: 600;
@@ -1032,7 +1031,7 @@ html { overflow-x: hidden; }
   margin: 0;
   font-size: 16px;
   font-weight: 700;
-  color: var(--txt-light);
+  color: var(--txt);
   letter-spacing: 1px;
   text-align: center;
 }
@@ -1756,7 +1755,7 @@ body.modal-open .app-container {
     font-size: 19px !important; /* 17px + 1.5 punto (2px) */
     font-weight: 600 !important;
     letter-spacing: 0.05em !important;
-    color: var(--txt-light) !important;
+    color: var(--txt) !important;
     text-shadow: none !important;
     opacity: 1 !important;
     margin: 0;
@@ -1785,7 +1784,7 @@ body.modal-open .app-container {
     transform: translateX(-50%) translateY(0);
 }
 .update-toast-text {
-    color: var(--txt-light);
+    color: var(--txt);
     font-size: 14px;
     font-weight: 600;
 }
