@@ -638,7 +638,7 @@ body.admin-report-page::-webkit-scrollbar {
   transform: translateX(-50%);
   width: 100%;
   max-width: 1200px;
-  background: #080d16;
+  background: var(--bg);
   border-top: 0.8px solid rgba(128, 128, 128, 0.5);
   border-left: 0.5px solid rgba(255, 255, 255, 0.20);
   border-right: 0.5px solid rgba(255, 255, 255, 0.20);
