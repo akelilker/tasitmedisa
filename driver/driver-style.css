@@ -79,7 +79,7 @@
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  font-family: 'Source Sans 3', sans-serif;
+  font-family: 'Inter', sans-serif;
 }
 /* KULLANICI PANELİ: başlık altında, 1pt küçük, aynı renk */
 .driver-splash-subtitle {
@@ -93,7 +93,7 @@
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  font-family: 'Source Sans 3', sans-serif;
+  font-family: 'Inter', sans-serif;
 }
 
 /* --- Overflow: yatay taşma yok; safe-area sadece html'de (style-core) – çift padding önlenir --- */

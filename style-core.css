@@ -404,7 +404,7 @@ html, body {
   min-height: 100dvh;
   overflow: hidden;
   overflow-x: hidden; /* Yatay taşma kesin kapalı */
-  font-family: 'Source Sans 3', sans-serif;
+  font-family: 'Inter', sans-serif;
   background-color: var(--bg);
   color: var(--txt);
   -webkit-tap-highlight-color: transparent;
