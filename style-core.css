@@ -1575,7 +1575,10 @@ body.modal-open .user-panel-link {
         box-sizing: border-box;
     }
     
-    /* CONTAINER üst çizgi (mobil anasayfa kırmızı çerçeve) */
+    /* CONTAINER üst çizgi (mobil anasayfa kırmızı çerçeve); footer boşluğu driver ile tutarlı */
+    body:not(.dashboard-page):not(.login-page) .app-container {
+        padding-bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important;
+    }
     .app-container {
         border-left: none;
         border-right: none;
