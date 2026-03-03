@@ -519,7 +519,7 @@
     if (state === 'boyali') {
       color = '#4ade80'; // Yeşil
     } else if (state === 'degisen') {
-      color = '#e1061b'; // Kırmızı
+      color = '#d40000'; // Kırmızı
     } else {
       color = '#888888'; // Hafif gri (boyasız)
     }
@@ -1431,13 +1431,13 @@
       const year = match[3];
       
       // Overlay içeriği: gg kısmı kırmızı, geri kalanı normal renk
-      overlayEl.innerHTML = `<span class="tescil-day" style="color: #e1061b;">${day}</span>/${month}/${year}`;
+      overlayEl.innerHTML = `<span class="tescil-day" style="color: #d40000;">${day}</span>/${month}/${year}`;
     } else if (value) {
       // Format henüz tamamlanmamışsa, başlangıçtaki rakamları kırmızı yap
       const digitsOnly = value.replace(/[^\d]/g, '');
       const remaining = value.substring(digitsOnly.length);
       if (digitsOnly.length >= 1 && digitsOnly.length <= 2) {
-        overlayEl.innerHTML = `<span class="tescil-day" style="color: #e1061b;">${digitsOnly}</span>${remaining}`;
+        overlayEl.innerHTML = `<span class="tescil-day" style="color: #d40000;">${digitsOnly}</span>${remaining}`;
       } else {
         overlayEl.innerHTML = value;
       }
