@@ -1543,8 +1543,8 @@ function initDriverKaporta(vehicleId, boyaliParcalar) {
                     part.setAttribute('fill', '#28a745');
                     part.style.fill = '#28a745';
                 } else if (state === 'degisen') {
-                    part.setAttribute('fill', '#e1061b');
-                    part.style.fill = '#e1061b';
+                    part.setAttribute('fill', '#d40000');
+                    part.style.fill = '#d40000';
                 }
                 part.style.pointerEvents = 'none';
                 part.style.opacity = '0.7';
@@ -1571,8 +1571,8 @@ function initDriverKaporta(vehicleId, boyaliParcalar) {
                         this.setAttribute('fill', '#28a745');
                         this.style.fill = '#28a745';
                     } else {
-                        this.setAttribute('fill', '#e1061b');
-                        this.style.fill = '#e1061b';
+                        this.setAttribute('fill', '#d40000');
+                        this.style.fill = '#d40000';
                     }
                 });
             });
@@ -1583,7 +1583,7 @@ function initDriverKaporta(vehicleId, boyaliParcalar) {
             legend.style.gap = '4px';
             legend.style.fontSize = '11px';
             legend.style.color = '#aaa';
-            legend.innerHTML = '<div class="boya-legend-item"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#888;margin-right:6px;"></span>Boyasız</div><div class="boya-legend-item"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#28a745;margin-right:6px;"></span>Boyalı</div><div class="boya-legend-item"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#e1061b;margin-right:6px;"></span>Değişen</div>';
+            legend.innerHTML = '<div class="boya-legend-item"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#888;margin-right:6px;"></span>Boyasız</div><div class="boya-legend-item"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#28a745;margin-right:6px;"></span>Boyalı</div><div class="boya-legend-item"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#d40000;margin-right:6px;"></span>Değişen</div>';
             schemaWrapper.appendChild(legend);
             container.appendChild(schemaWrapper);
         })

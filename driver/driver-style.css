@@ -1455,9 +1455,9 @@ body.driver-modal-open {
 .driver-radio-btn[data-group="anahtar"].active[data-value="yok"],
 .driver-radio-btn[data-group="lastik"][data-value="yok"]:hover,
 .driver-radio-btn[data-group="lastik"].active[data-value="yok"] {
-  border-color: var(--theme-color, #e1061b);
-  color: var(--theme-color, #e1061b);
-  background: rgba(225, 6, 27, 0.2);
+  border-color: var(--theme-color, #d40000);
+  color: var(--theme-color, #d40000);
+  background: rgba(212, 0, 0, 0.2);
 }
 /* UTTS Evet/Hayır: çerçevesiz, sadece renk; yükseklik Bildir/Vazgeç ile aynı */
 .driver-radio-btn[data-group="utts"] {
