@@ -3067,11 +3067,12 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     margin-left: 0 !important;
     margin-right: 0 !important;
   }
-  /* Giriş formu yatayda ortalı */
+  /* Giriş formu yatayda ve dikeyde ortalı (iOS PWA) */
   .login-page .content-wrap.driver-content-wrap.driver-scroll-area {
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
+    justify-content: center !important;
   }
   .login-page .login-container {
     max-width: min(400px, 100%) !important;
@@ -3363,10 +3364,10 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   padding: 6px 12px !important;
 }
 
-/* Bakım paneli input/textarea: odakta yeşil çerçeve, metin beyaz */
+/* Bakım paneli input/textarea: odakta kırmızı çerçeve, metin beyaz */
 .vehicle-card .form-group input.driver-bakim-input:focus,
 .vehicle-card .form-group textarea.driver-bakim-textarea:focus {
-  box-shadow: inset 0 0 0 0.5px #4ade80 !important;
+  box-shadow: inset 0 0 0 0.5px var(--theme-color) !important;
   color: var(--txt) !important;
   -webkit-text-fill-color: var(--txt) !important;
   outline: none !important;
@@ -3422,8 +3423,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     max-height: calc(100dvh - var(--modal-gap-above-footer, 10px) - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0) - 6px) !important;
     box-shadow: 0 6px 0 0 #080d16 !important; /* 6px boşlukta çerçeve parçaları görünmesin */
   }
-  /* Modal açıkken üst kırmızı çerçeve görünsün (başlık rengi kesmesin) */
-  #history-modal.driver-modal.show::after,
+  /* Modal açıkken üst kırmızı çerçeve görünsün (başlık rengi kesmesin). Geçmiş Kayıtlarım'da gizli. */
   #edit-request-modal.driver-modal.show::after,
   #driver-event-menu-modal.driver-modal.show::after,
   #driver-anahtar-modal.driver-modal.show::after,
@@ -3441,6 +3441,9 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     background: var(--border-red-tech);
     z-index: 10012;
     pointer-events: none;
+  }
+  #history-modal.driver-modal.show::after {
+    display: none;
   }
   #history-modal.driver-modal::before,
   #edit-request-modal.driver-modal::before,
@@ -3512,6 +3515,11 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     touch-action: pan-y !important;
     overscroll-behavior: none !important;
     overscroll-behavior-x: none !important;
+  }
+  /* Düzeltme Talebi: diğer modaller gibi ekranı kaplasın (içerik az olsa bile) */
+  #edit-request-modal .driver-modal-content,
+  #edit-request-modal .modal-container {
+    min-height: 100% !important;
   }
 
   /* Modal header: safe-area padding overlay seviyesinde, kenardan kenara tasarımda köşe 0 */
