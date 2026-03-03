@@ -1816,12 +1816,12 @@ line-height: 1.2;
 .stok-date-range-controls {
 display: flex;
 flex-direction: row;
-gap: 2px !important;
+gap: 3px !important;
 width: 100%;
 margin-left: 0;
 margin-top: 0;
-padding-left: 3px !important;
-padding-right: 3px !important;
+padding-left: 4px !important;
+padding-right: 4px !important;
 box-sizing: border-box !important;
 }
 .stok-date-input-group {
