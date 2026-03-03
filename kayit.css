@@ -991,17 +991,15 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     
     #vehicle-modal .modal-header { position: relative; }
     #vehicle-modal .modal-header h2 { 
-        font-size: 21px !important; /* 20px + 1 punto (1px) */
+        font-size: 21px !important; /* 20px + 1 punto (1px) – Taşıtlar/Raporlar ile aynı */
+        letter-spacing: 0.2em !important; /* Taşıtlar/Raporlar ile aynı */
+        text-shadow: none !important;
         position: absolute;
         left: 50%;
         transform: translateX(-50%);
         width: 100%;
         text-align: center;
         pointer-events: none;
-        /* Havada durma efekti - mobil */
-        text-shadow: 0 2px 6px rgba(0, 0, 0, 0.5),
-                     0 4px 12px rgba(0, 0, 0, 0.3),
-                     0 0 15px rgba(255, 255, 255, 0.08) !important;
     }
     .modal-close { font-size: 21px; }
     textarea.form-input { font-size: 13px; }
