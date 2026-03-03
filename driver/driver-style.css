@@ -3059,6 +3059,12 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     overflow-x: hidden !important;
     overflow-y: visible !important; /* Footer’dan çıkan kırmızı ışık (box-shadow) kesilmesin */
   }
+  /* Mobil 768px'e kadar: yan kırmızı çizgiler footer'da kalsın (641–768px arası da dahil) */
+  .dashboard-page .driver-dashboard-container::before,
+  .login-page .driver-dashboard-container::before {
+    bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important;
+    clip-path: inset(0 0 calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) 0) !important;
+  }
   .dashboard-page .driver-right-panel {
     padding-bottom: 5px !important;
   }
@@ -4045,6 +4051,13 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 
 /* --- Sadece iOS PWA: çentik/notch + 2. satır 1pt küçük + sağ grid buton yüksekliği + üst çerçeve kalınlığı --- */
 @media (max-width: 768px) and (display-mode: standalone) {
+  /* Yedek: style-core PWA çerçevesi driver/login'e uygulanmasa bile; çift çizgi ve kıvrım olmasın */
+  .dashboard-page .app-container.driver-dashboard-container,
+  .login-page .app-container.driver-dashboard-container {
+    border-left: none !important;
+    border-right: none !important;
+    border-radius: 0 !important;
+  }
   /* Yan kırmızı dikey çizgiler footerda kalsın, aşağı inmesin */
   .dashboard-page .driver-dashboard-container::before,
   .login-page .driver-dashboard-container::before {
