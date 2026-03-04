@@ -1051,6 +1051,8 @@ html { overflow-x: hidden; }
   align-items: center !important;
   flex-shrink: 0 !important;
   box-sizing: border-box !important;
+  border-top-left-radius: var(--modal-radius, 10px) !important;
+  border-top-right-radius: var(--modal-radius, 10px) !important;
 }
 
 /* TÜM MODAL BAŞLIKLARI (H2) MUTLAK MERKEZE SABİTLEME – X butonu ile itişmesin */
