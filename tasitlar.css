@@ -554,7 +554,7 @@
     display: none;
     max-width: 280px;
     padding: 8px 10px;
-    background: var(--card-bg, #1a1f2e);
+    background: var(--card-bg);
     border: 1px solid rgba(var(--theme-color-rgb), 0.4);
     border-radius: 8px;
     font-size: 12px;
