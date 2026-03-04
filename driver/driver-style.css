@@ -1111,6 +1111,10 @@ body.driver-modal-open {
     padding: 0;
     font-size: 12.5px;
   }
+  /* Sol bölüm: etiketler arası 2px dikey boşluk ekle (dashboard) */
+  .dashboard-page .driver-left-panel .driver-vehicle-info {
+    gap: 6px !important; /* base 4px + 2px */
+  }
   .driver-info-item .label { font-size: 12.5px; text-transform: none; }
   .driver-info-item .value { font-size: 12.5px; }
   .driver-left-panel .driver-info-item .label { font-size: 13.5px; }
@@ -1128,9 +1132,9 @@ body.driver-modal-open {
   .driver-left-panel .driver-info-item:has(.value) .label::after {
     margin-right: 0.2em;
   }
-  /* Sağ grid butonları: mobilde dikey yükseklik +2px (6→7 üst/alt) */
+  /* Sağ grid butonları: mobilde dikey yükseklik +3px (6→7→8 üst/alt) */
   .driver-action-btn {
-    padding: 7px 10px;
+    padding: 8px 10px;
     font-size: 12.5px;
     display: flex;
     justify-content: center;
