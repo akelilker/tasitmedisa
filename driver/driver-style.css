@@ -2625,7 +2625,7 @@ body.driver-modal-open {
   min-width: 160px;
   max-height: 200px;
   overflow-y: auto;
-  background: var(--card-bg, #0f1418);
+  background: var(--card-bg);
   color: var(--txt);
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 8px;
@@ -2638,7 +2638,7 @@ body.driver-modal-open {
   width: 6px;
 }
 .history-vehicle-dropdown::-webkit-scrollbar-track {
-  background: #151a20;
+  background: var(--bg-2);
 }
 .history-vehicle-dropdown::-webkit-scrollbar-thumb {
   background: #444;
@@ -2686,7 +2686,7 @@ body.driver-modal-open {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  background: rgba(18, 22, 28, 0.98);
+  background: var(--card-bg);
   border: 1px solid rgba(128, 128, 128, 0.42);
   border-radius: 8px;
   padding: 8px 14px;
