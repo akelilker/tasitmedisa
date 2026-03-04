@@ -1060,6 +1060,12 @@ body.driver-modal-open {
   height: calc(1.1em - 10px);
   resize: none;
   color: rgba(255, 255, 255, 0.7) !important;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+#driver-input-area .form-group textarea.driver-ekstra-not::-webkit-scrollbar,
+.driver-action-area .form-group textarea.driver-ekstra-not::-webkit-scrollbar {
+  display: none;
 }
 #driver-input-area .form-group textarea.driver-ekstra-not::placeholder,
 .driver-action-area .form-group textarea.driver-ekstra-not::placeholder {
