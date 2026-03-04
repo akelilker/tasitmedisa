@@ -2971,7 +2971,7 @@ body.driver-modal-open {
 }
 
 .login-page #app-footer.login-footer.dimmed.delayed .brand img {
-  opacity: 0.7 !important;
+  opacity: 0.8 !important;
 }
 
 /* Yönetim Sistemi (evrensel geri çubuğu) – ortak stil (konum sayfa bazlı) */
@@ -4116,17 +4116,14 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .login-page {
     padding-left: 0 !important;
     padding-right: 0 !important;
-    min-height: 100vh !important;
-    min-height: -webkit-fill-available !important;
-    min-height: 100dvh !important;
+    min-height: calc(100vh - env(safe-area-inset-bottom)) !important;
+    min-height: calc(100dvh - env(safe-area-inset-bottom)) !important;
   }
   .driver-dashboard-container {
-    height: 100vh !important;
-    height: -webkit-fill-available !important;
-    height: 100dvh !important;
-    min-height: 100vh !important;
-    min-height: -webkit-fill-available !important;
-    min-height: 100dvh !important;
+    height: calc(100vh - env(safe-area-inset-bottom)) !important;
+    height: calc(100dvh - env(safe-area-inset-bottom)) !important;
+    min-height: calc(100vh - env(safe-area-inset-bottom)) !important;
+    min-height: calc(100dvh - env(safe-area-inset-bottom)) !important;
   }
   /* PWA: yan kırmızı çizgiler footer'da biter (ne yukarıda ne aşağıda taşma) */
   .dashboard-page .driver-dashboard-container::before,
