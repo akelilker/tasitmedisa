@@ -3081,10 +3081,6 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     overflow-x: hidden !important;
     overflow-y: visible !important; /* Footer’dan çıkan kırmızı ışık (box-shadow) kesilmesin */
   }
-  /* Login footer 56px; yan çizgiler ve boşluk buna göre */
-  .login-page .driver-dashboard-container {
-    --app-footer-height: 56px;
-  }
   /* Yan çizgiler footer'da biter, aşağı inmez. bottom = footer + safe-area */
   .dashboard-page .driver-dashboard-container::before,
   .login-page .driver-dashboard-container::before {
@@ -3123,20 +3119,19 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     max-width: 100% !important;
     box-sizing: border-box !important;
   }
-  /* Mobil: footer'dan yukarı kırmızı ışık (login + kullanıcı paneli modallarında) */
+  /* Mobil: footer'dan yukarı kırmızı ışık (login + kullanıcı paneli modallarında). Login footer = dashboard birebir aynı */
   .dashboard-page #app-footer {
     box-shadow: 0 -9px 22px rgba(var(--theme-color-rgb), 0.35) !important;
   }
   .login-page #app-footer.login-footer {
-    bottom: env(safe-area-inset-bottom, 0) !important;
-    padding-bottom: max(20px, env(safe-area-inset-bottom, 0)) !important;
+    min-height: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important;
+    padding-bottom: env(safe-area-inset-bottom, 0) !important;
     box-shadow: 0 -9px 22px rgba(var(--theme-color-rgb), 0.35) !important;
-    border-top: 0.5px solid rgba(200, 200, 200, 0.45) !important;
-    border-left: 0.5px solid rgba(255, 255, 255, 0.18) !important;
-    border-right: 0.5px solid rgba(255, 255, 255, 0.18) !important;
+    border-left: 0.5px solid rgba(255, 255, 255, 0.10) !important;
+    border-right: 0.5px solid rgba(255, 255, 255, 0.10) !important;
   }
   .login-page #app-footer.login-footer .footer-content {
-    padding-bottom: max(20px, calc(env(safe-area-inset-bottom, 0) + 12px)) !important;
+    padding-bottom: max(12px, env(safe-area-inset-bottom, 0)) !important;
   }
 }
 
@@ -3620,12 +3615,14 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     border-right: 0.5px solid rgba(255, 255, 255, 0.18) !important;
     box-shadow: 0 -15px 22px rgba(var(--theme-color-rgb), 0.35) !important;
   }
-  /* iOS PWA / çentik: Dashboard footer alt safe-area (home indicator üstünde içerik kalsın) */
-  .dashboard-page #app-footer {
+  /* iOS PWA / çentik: Dashboard + Login footer alt safe-area (home indicator üstünde içerik kalsın). Birebir aynı. */
+  .dashboard-page #app-footer,
+  .login-page #app-footer.login-footer {
     min-height: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important;
     padding-bottom: env(safe-area-inset-bottom, 0) !important;
   }
-  .dashboard-page #app-footer .footer-content {
+  .dashboard-page #app-footer .footer-content,
+  .login-page #app-footer.login-footer .footer-content {
     padding-bottom: max(12px, env(safe-area-inset-bottom, 0)) !important;
   }
 
@@ -3952,18 +3949,15 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     height: 22px !important;
   }
 
-  /* 4. Footer stil birleştirme - login anasayfa mobil ile aynı (kırmızı ışık, belirgin çizgiler) */
+  /* 4. Footer stil birleştirme - login = dashboard birebir aynı (min-height, padding 640px bloğundan gelir) */
   .login-page #app-footer.login-footer {
-    min-height: 0 !important;
-    padding-bottom: 0 !important;
     box-shadow: 0 -9px 22px rgba(var(--theme-color-rgb), 0.35) !important;
     border-top: 0.5px solid rgba(200, 200, 200, 0.45) !important;
-    border-left: 0.5px solid rgba(255, 255, 255, 0.18) !important;
-    border-right: 0.5px solid rgba(255, 255, 255, 0.18) !important;
+    border-left: 0.5px solid rgba(255, 255, 255, 0.10) !important;
+    border-right: 0.5px solid rgba(255, 255, 255, 0.10) !important;
   }
   .login-page #app-footer.login-footer .footer-content {
     padding: 8px 12px !important;
-    padding-bottom: max(12px, env(safe-area-inset-bottom, 0)) !important;
   }
 
   /* 5. Şifre ekranı header: kullanıcı paneli ile aynı (yan çizgiler container'da, padding panel ile aynı) */
