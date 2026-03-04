@@ -739,7 +739,8 @@ window.toggleDriverActionBlock = function(type, vehicleId) {
                 if (inp) { inp.focus(); inp.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
             }, 50);
         } else {
-            target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            var group = target.closest('.driver-action-group');
+            (group || target).scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
     }
 };

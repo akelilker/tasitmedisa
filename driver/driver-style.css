@@ -539,6 +539,11 @@ body.driver-modal-open {
   .dashboard-page .driver-action-area .form-group label {
     margin-bottom: 4px !important;
   }
+  /* Sağ grid Var/Yok butonları: masaüstünde dikey yükseklik 3px az (32→29px) */
+  .dashboard-page .driver-action-area .driver-radio-btn {
+    height: 29px !important;
+    min-height: 29px !important;
+  }
   /* Not input: masaüstünde dar – Kaydet butonu yukarı gelsin */
   .dashboard-page .driver-action-area .form-group textarea.driver-ekstra-not {
     padding-top: 2px !important;
@@ -985,7 +990,7 @@ body.driver-modal-open {
   text-align: center;
   font-weight: 600;
   color: #22c55e;
-  font-size: 16px;
+  font-size: 13px;
 }
 .driver-success-msg.show {
   display: block;
@@ -998,7 +1003,7 @@ body.driver-modal-open {
   text-align: center;
   font-weight: 600;
   color: #22c55e;
-  font-size: 16px;
+  font-size: 13px;
 }
 .driver-km-success-msg.show {
   display: block;
@@ -1026,7 +1031,7 @@ body.driver-modal-open {
   box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.38) !important;
   border-radius: 8px;
   color: var(--data-value-color, #a0aec0);
-  font-size: 16px;
+  font-size: 14px;
   font-family: inherit;
   transition: box-shadow 0.2s;
   box-sizing: border-box;
@@ -1076,7 +1081,7 @@ body.driver-modal-open {
 .driver-action-area .form-group label {
   display: block;
   margin-bottom: 6px;
-  font-size: 14px; /* +1 punto (13→14) */
+  font-size: 13px;
   color: #ffffff;
   font-weight: 500;
 }
@@ -1100,7 +1105,7 @@ body.driver-modal-open {
   top: 50%;
   transform: translateY(-50%);
   pointer-events: none;
-  font-size: 16px;
+  font-size: 14px;
   font-family: inherit;
   color: rgba(255, 255, 255, 0.12) !important;
   line-height: 1;
@@ -1178,16 +1183,16 @@ body.driver-modal-open {
   .driver-footer-back-wrap .universal-back-label { font-size: 14.5px; }
   .driver-btn-logout { font-size: 12.5px; }
   #driver-input-area .form-group label,
-  .driver-action-area .form-group label { font-size: 14.5px; }
+  .driver-action-area .form-group label { font-size: 13px; }
   #driver-input-area .form-group input,
   #driver-input-area .form-group textarea,
   .driver-action-area .form-group input,
-  .driver-action-area .form-group textarea { font-size: 16.5px; }
+  .driver-action-area .form-group textarea { font-size: 14px; }
   #driver-input-area .driver-km-fake-placeholder,
-  .driver-action-area .driver-km-fake-placeholder { font-size: 16.5px; }
-  .driver-km-error { font-size: 13.5px; }
-  .driver-success-msg { font-size: 16.5px; }
-  .driver-km-success-msg { font-size: 16.5px; }
+  .driver-action-area .driver-km-fake-placeholder { font-size: 14px; }
+  .driver-km-error { font-size: 13px; }
+  .driver-success-msg { font-size: 13px; }
+  .driver-km-success-msg { font-size: 13px; }
 
   /* Splash logosu mobilde 120x69 */
   .driver-splash-logo {
@@ -3863,10 +3868,12 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .dashboard-page .hero h1 {
     font-size: 23px !important; /* 24px - 1pt */
   }
-  .dashboard-page .driver-report-block .form-group label,
+  .dashboard-page .driver-report-block .form-group label {
+    font-size: 13px !important;
+  }
   .dashboard-page .driver-report-block .form-group input,
   .dashboard-page .driver-report-block .form-group textarea {
-    font-size: 15px !important;
+    font-size: 14px !important;
   }
   .dashboard-page .history-period {
     font-size: 17px !important;
