@@ -1501,11 +1501,10 @@ function initDriverKaporta(vehicleId, boyaliParcalar) {
             const schemaWrapper = document.createElement('div');
             schemaWrapper.className = 'driver-kaporta-schema-wrapper';
             schemaWrapper.style.display = 'flex';
-            schemaWrapper.style.flexDirection = 'row';
-            schemaWrapper.style.alignItems = 'flex-start';
-            schemaWrapper.style.justifyContent = 'center';
-            schemaWrapper.style.gap = '12px';
-            schemaWrapper.style.maxHeight = '180px';
+            schemaWrapper.style.flexDirection = 'column';
+            schemaWrapper.style.alignItems = 'center';
+            schemaWrapper.style.justifyContent = 'flex-start';
+            schemaWrapper.style.gap = '8px';
             schemaWrapper.style.overflow = 'visible';
             const svgClone = svg.cloneNode(true);
             schemaWrapper.appendChild(svgClone);
@@ -1571,8 +1570,10 @@ function initDriverKaporta(vehicleId, boyaliParcalar) {
             const legend = document.createElement('div');
             legend.className = 'boya-legend';
             legend.style.display = 'flex';
-            legend.style.flexDirection = 'column';
-            legend.style.gap = '4px';
+            legend.style.flexDirection = 'row';
+            legend.style.flexWrap = 'nowrap';
+            legend.style.gap = '12px';
+            legend.style.justifyContent = 'center';
             legend.style.fontSize = '11px';
             legend.style.color = '#aaa';
             legend.innerHTML = '<div class="boya-legend-item"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#888;margin-right:6px;"></span>Boyasız</div><div class="boya-legend-item"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#28a745;margin-right:6px;"></span>Boyalı</div><div class="boya-legend-item"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#d40000;margin-right:6px;"></span>Değişen</div>';
