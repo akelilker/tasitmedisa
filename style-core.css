@@ -1682,7 +1682,7 @@ body.modal-open .user-panel-link {
     .content-wrap {
         padding-top: max(12px, env(safe-area-inset-top)) !important;
     }
-    /* Çerçeve viewport içinde kalır; ana uygulama container */
+    /* Ana uygulama container – çerçeve kuralları */
     body:not(.dashboard-page):not(.login-page) .app-container {
         margin-top: 0 !important;
         padding-top: 0 !important;
@@ -1697,13 +1697,17 @@ body.modal-open .user-panel-link {
         min-height: calc(100vh - env(safe-area-inset-bottom)) !important;
         min-height: calc(100dvh - env(safe-area-inset-bottom)) !important;
     }
-    /* Driver (login + dashboard): ilk boyamada kesin yükseklik – içerik kısa olsa bile çerçeve yerinde */
+    /* Driver: anasayfa ile AYNI boyut/overflow (çerçeve ::before ile) */
     .driver-dashboard-container {
-        height: calc(100vh - env(safe-area-inset-bottom)) !important;
-        height: calc(100dvh - env(safe-area-inset-bottom)) !important;
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+        border-radius: 20px !important;
+        border-bottom-left-radius: 0 !important;
+        border-bottom-right-radius: 0 !important;
+        overflow: hidden !important;
+        box-shadow: 0 2px 14px rgba(var(--theme-color-rgb), 0.1) !important;
         min-height: calc(100vh - env(safe-area-inset-bottom)) !important;
         min-height: calc(100dvh - env(safe-area-inset-bottom)) !important;
-        overflow: hidden !important;
     }
     /* Admin rapor sayfası: kavislere uyumlu çerçeve (anasayfa ile aynı) */
     .admin-app-container {

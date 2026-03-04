@@ -4109,23 +4109,14 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
 }
 
-/* --- Sadece iOS/Android PWA: ana uygulama ile aynı yapı – ilk boyamada çerçeve yerinde --- */
+/* --- Sadece iOS/Android PWA: anasayfa ile aynı (style-core kuralları geçerli) – sadece ::before ve tipografi --- */
 @media (max-width: 768px) and (display-mode: standalone) {
-  /* style-core html zaten left/right/bottom safe-area veriyor; body'de çift padding olmasın */
-  .dashboard-page,
-  .login-page {
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-    min-height: calc(100vh - env(safe-area-inset-bottom)) !important;
-    min-height: calc(100dvh - env(safe-area-inset-bottom)) !important;
+  /* Body: style-core ile aynı */
+  body.dashboard-page,
+  body.login-page {
+    padding: 0 !important;
   }
-  .driver-dashboard-container {
-    height: calc(100vh - env(safe-area-inset-bottom)) !important;
-    height: calc(100dvh - env(safe-area-inset-bottom)) !important;
-    min-height: calc(100vh - env(safe-area-inset-bottom)) !important;
-    min-height: calc(100dvh - env(safe-area-inset-bottom)) !important;
-  }
-  /* PWA: yan kırmızı çizgiler footer'da biter (ne yukarıda ne aşağıda taşma) */
+  /* PWA: yan kırmızı çizgiler footer'da biter */
   .dashboard-page .driver-dashboard-container::before,
   .login-page .driver-dashboard-container::before {
     top: 0 !important;
