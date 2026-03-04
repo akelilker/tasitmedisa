@@ -1909,10 +1909,10 @@ body.driver-modal-open {
   display: none;
 }
 
-/* Kaza bloku: kaporta SVG container – taşma önleme, mobil uyumlu; %20 küçültme */
+/* Kaza bloku: kaporta SVG container – taşma önleme, mobil uyumlu */
 .driver-kaporta-container {
-  max-height: 160px; /* 200 * 0.8 */
-  overflow: hidden;
+  max-height: 200px;
+  overflow: visible;
   margin-top: 8px;
   margin-bottom: 4px;
 }
@@ -1927,21 +1927,28 @@ body.driver-modal-open {
   font-size: 12px;
   color: var(--muted, #888);
 }
+/* Mobil: sağ grid – kenarlara 5px; şema alana sığsın; legend altta yatay */
 @media (max-width: 480px) {
+  .driver-report-block-kaza .form-group:has(.driver-kaporta-container) {
+    padding-left: 5px !important;
+    padding-right: 5px !important;
+  }
   .driver-kaporta-container {
-    max-height: 180px !important;
+    max-height: none !important;
     overflow: visible !important;
-    width: calc(100% - 10px) !important; /* Kırmızı çizgiye 5px kalacak kadar genişle */
-    margin-left: 5px !important;
-    margin-right: 5px !important;
+    width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
   }
   .driver-kaporta-container .driver-kaporta-schema-wrapper {
     width: 100% !important;
+    max-width: 100% !important;
   }
   .driver-kaporta-container .driver-kaporta-schema-wrapper svg {
     width: 100% !important;
-    max-width: 100% !important;
+    max-width: 160px !important; /* Alana sığsın, kocaman olmasın */
     height: auto !important;
+    object-fit: contain !important;
   }
   .driver-kaporta-container .boya-legend {
     font-size: 10px;
