@@ -4066,7 +4066,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
 }
 
-/* --- Sadece iOS PWA: çentik/notch + 100vh düzeltmesi + 2. satır 1pt küçük + sağ grid buton yüksekliği + üst çerçeve kalınlığı --- */
+/* --- Sadece iOS/Android PWA: çentik/notch + 100vh düzeltmesi + 2. satır 1pt küçük + sağ grid buton yüksekliği + üst çerçeve kalınlığı --- */
 @media (max-width: 768px) and (display-mode: standalone) {
   /* iOS Safari 100vh düzeltmesi: -webkit-fill-available ile gerçek görünür alan kullanılır */
   .dashboard-page,
@@ -4082,6 +4082,12 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     min-height: 100vh !important;
     min-height: -webkit-fill-available !important;
     min-height: 100dvh !important;
+  }
+  /* PWA: yan kırmızı çizgiler footer'da biter (ne yukarıda ne aşağıda taşma) */
+  .dashboard-page .driver-dashboard-container::before,
+  .login-page .driver-dashboard-container::before {
+    top: 0 !important;
+    bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important;
   }
   /* 1. satıra dokunulmaz. 2. satır (subtitle) 768px'ten 1pt küçük */
   .dashboard-page .hero-title-wrap .hero-panel-subtitle,
