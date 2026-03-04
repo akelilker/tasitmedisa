@@ -990,7 +990,7 @@
     const brandYearEl = contentEl.querySelector('.detail-brand-year');
     
     if (brandYearRow && brandYearEl) {
-      const brandModel = vehicle.brandModel || '-';
+      const brandModel = toTitleCase(vehicle.brandModel || '-');
       brandYearEl.textContent = brandModel;
       
       // Mevcut butonları kaldır (eğer varsa)
@@ -1396,7 +1396,7 @@
               return `
               <div class="list-item" data-vehicle-id="${vid}" style="cursor:pointer">
                 <div class="list-info">
-                  <h4>${escapeHtml(v.brandModel)}</h4>
+                  <h4>${escapeHtml(toTitleCase(v.brandModel || '-'))}</h4>
                   <span>${v.year} • ${v.tahsisKisi || 'Boşta'}</span>
                 </div>
               </div>
@@ -3543,7 +3543,7 @@ function renderVehicleDetailLeft(vehicle) {
       if (vehicle.satildiMi) return; // Satılmış taşıtları atla
 
       const plate = vehicle.plate || '-';
-      const brandModel = vehicle.brandModel || '-';
+      const brandModel = toTitleCase(vehicle.brandModel || '-');
 
       // Sigorta kontrolü
       if (vehicle.sigortaDate) {
@@ -3612,7 +3612,7 @@ function renderVehicleDetailLeft(vehicle) {
       if (vehicle.satildiMi) return;
       const events = vehicle.events || [];
       const plate = vehicle.plate || '-';
-      const brandModel = vehicle.brandModel || '-';
+      const brandModel = toTitleCase(vehicle.brandModel || '-');
       events.forEach(ev => {
         recentEvents.push({
           vehicleId: vehicle.id,

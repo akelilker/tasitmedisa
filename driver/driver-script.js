@@ -379,7 +379,7 @@ function renderLeftPanel(vehicles, records) {
     const plakaEl = document.getElementById('driver-current-plaka');
     if (plakaEl) plakaEl.textContent = vehicle.plaka;
     const subtitleEl = document.getElementById('driver-plate-subtitle');
-    if (subtitleEl) subtitleEl.textContent = vehicle.brandModel || [vehicle.marka, vehicle.model].filter(Boolean).join(' ') || '';
+    if (subtitleEl) subtitleEl.textContent = (typeof window.toTitleCase === 'function' ? window.toTitleCase : function(x){ return x; })(vehicle.brandModel || [vehicle.marka, vehicle.model].filter(Boolean).join(' ') || '') || '';
     
     const existingRecord = getExistingRecord(vehicle.id);
     const kmVal = vehicle.guncelKm || (existingRecord && existingRecord.guncel_km) || '-';
@@ -449,7 +449,8 @@ function setupPlateDropdown(vehicles) {
     }
     
     dropdown.innerHTML = vehicles.map(v => {
-        const brandModel = v.brandModel || [v.marka, v.model].filter(Boolean).join(' ');
+        const raw = v.brandModel || [v.marka, v.model].filter(Boolean).join(' ');
+        const brandModel = (typeof window.toTitleCase === 'function' ? window.toTitleCase : function(x){ return x; })(raw || '') || '';
         return `<div class="driver-plate-dropdown-item" role="option" data-vehicle-id="${v.id}" tabindex="0">${escapeHtmlDriver(v.plaka)}${brandModel ? ' – ' + escapeHtmlDriver(brandModel) : ''}</div>`;
     }).join('');
     
@@ -1756,7 +1757,8 @@ window.showHistory = function() {
         var opt = document.createElement('div');
         opt.className = 'history-vehicle-option';
         opt.dataset.value = String(v.id);
-        var brandModel = v.brandModel || [v.marka, v.model].filter(Boolean).join(' ');
+        var raw = v.brandModel || [v.marka, v.model].filter(Boolean).join(' ');
+        var brandModel = (typeof window.toTitleCase === 'function' ? window.toTitleCase : function(x){ return x; })(raw || '') || '';
         opt.textContent = [v.plaka, brandModel].filter(Boolean).join(' – ');
         opt.onclick = function() { selectHistoryVehicle(String(v.id), opt.textContent); };
         dropdown.appendChild(opt);
@@ -1765,7 +1767,8 @@ window.showHistory = function() {
     var defaultText = 'Tüm Taşıtlar';
     if (allHistoryVehicles && allHistoryVehicles.length === 1) {
         defaultVal = String(allHistoryVehicles[0].id);
-        var bm = allHistoryVehicles[0].brandModel || [allHistoryVehicles[0].marka, allHistoryVehicles[0].model].filter(Boolean).join(' ');
+        var rawBm = allHistoryVehicles[0].brandModel || [allHistoryVehicles[0].marka, allHistoryVehicles[0].model].filter(Boolean).join(' ');
+        var bm = (typeof window.toTitleCase === 'function' ? window.toTitleCase : function(x){ return x; })(rawBm || '') || '';
         defaultText = [allHistoryVehicles[0].plaka, bm].filter(Boolean).join(' – ');
     }
     hiddenInput.value = defaultVal;

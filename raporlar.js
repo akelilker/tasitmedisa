@@ -1297,7 +1297,7 @@
                             value = String(vehicle.year || '-');
                             break;
                         case 'marka':
-                            value = vehicle.brandModel || '-';
+                            value = toTitleCase(vehicle.brandModel || '-');
                             break;
                         case 'plaka':
                             value = formatPlaka(vehicle.plate || '-');
