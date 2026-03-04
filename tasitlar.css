@@ -2073,6 +2073,7 @@
     align-self: center !important;
     line-height: 1 !important; /* Font yüksekliğinden kaynaklı kaymaları önler */
     white-space: nowrap !important;
+    min-height: 26px;
 }
 
 .detail-brand-year-row .history-add-event-btn svg {
@@ -2102,6 +2103,13 @@
     margin: 0 !important; /* Hizayı bozan dış boşlukları kaldır */
     line-height: 1 !important; /* Font yüksekliğinden kaynaklı kaymaları önler */
     white-space: nowrap !important;
+    min-height: 26px;
+}
+
+.detail-brand-year-row .history-add-event-btn span,
+.detail-brand-year-row .history-btn-minimal span {
+    display: block;
+    line-height: 1;
 }
 
 .detail-brand-year-row .history-btn-minimal:hover {
