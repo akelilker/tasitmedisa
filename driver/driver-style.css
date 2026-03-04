@@ -3659,7 +3659,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     border-right: 0.5px solid rgba(255, 255, 255, 0.18) !important;
     box-shadow: 0 -15px 22px rgba(var(--theme-color-rgb), 0.35) !important;
   }
-  /* iOS PWA / çentik: Dashboard + Login footer alt safe-area (home indicator üstünde içerik kalsın). Birebir aynı. */
+  /* iOS PWA / çentik: Dashboard + Login footer alt safe-area (ana uygulama ile aynı) */
   .dashboard-page #app-footer,
   .login-page #app-footer.login-footer {
     min-height: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important;
@@ -4109,7 +4109,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
 }
 
-/* --- Sadece iOS/Android PWA: çentik/notch + 100vh düzeltmesi + 2. satır 1pt küçük + sağ grid buton yüksekliği + üst çerçeve kalınlığı --- */
+/* --- Sadece iOS/Android PWA: ana uygulama ile aynı yapı (style-core .driver-dashboard-container) – sadece görsel ayarlar --- */
 @media (max-width: 768px) and (display-mode: standalone) {
   /* style-core html zaten left/right/bottom safe-area veriyor; body'de çift padding olmasın */
   .dashboard-page,
@@ -4143,7 +4143,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .dashboard-page .driver-report-btn {
     min-height: 74px !important; /* 72 + 2 */
   }
-  /* PWA: üst çizgi de ::before'da, 1.2px (yanlara göre ince kalmasın) */
+  /* PWA: üst çizgi ::before'da, 1.2px */
   .dashboard-page .driver-header-fixed,
   .login-page .driver-header-fixed {
     border-top: none !important;
