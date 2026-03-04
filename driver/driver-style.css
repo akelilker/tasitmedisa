@@ -1930,6 +1930,17 @@ body.driver-modal-open {
 @media (max-width: 480px) {
   .driver-kaporta-container {
     max-height: 144px; /* 180 * 0.8 */
+    width: calc(100% - 10px) !important; /* Kırmızı çizgiye 5px kalacak kadar genişle */
+    margin-left: 5px !important;
+    margin-right: 5px !important;
+  }
+  .driver-kaporta-container .driver-kaporta-schema-wrapper {
+    width: 100% !important;
+  }
+  .driver-kaporta-container .driver-kaporta-schema-wrapper svg {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
   }
   .driver-kaporta-container .boya-legend {
     font-size: 10px;
