@@ -153,15 +153,6 @@ self.addEventListener('fetch', (event) => {
   );
 });
 
-// Background Sync (opsiyonel)
-self.addEventListener('sync', (event) => {
-  if (event.tag === 'sync-vehicles') {
-    event.waitUntil(syncVehicleData());
-  }
-});
-
-async function syncVehicleData() {}
-
 // Push Notifications
 self.addEventListener('push', (event) => {
   const data = event.data ? event.data.json() : {};
