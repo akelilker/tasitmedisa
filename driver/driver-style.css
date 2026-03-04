@@ -2549,7 +2549,7 @@ body.driver-modal-open {
   font-size: 13.5px;
 }
 
-/* Masaüstü: Geçmiş modalı – sol ok+etiket 6px yukarı, Taşıt Seç 2px yukarı + Tüm Taşıtlar gri, kart içi dikey 1px daralt */
+/* Masaüstü: Geçmiş modalı – sol ok+etiket 6px yukarı, Taşıt Seç 2px yukarı + Tüm Taşıtlar gri, kart içi dikey daralt */
 @media (min-width: 769px) {
   #history-modal .universal-back-bar,
   #edit-request-modal .universal-back-bar {
@@ -2561,9 +2561,19 @@ body.driver-modal-open {
   #history-modal .history-card {
     padding: 7px 14px !important;
   }
-  /* Tarih (01 MART 2026) ile Bildirilen KM arası dikey boşluk 6px daralt */
+  /* Tarih satırı ile etiket+açıklama satırı arası dikey boşluk 2px daralt */
   #history-modal .history-header {
-    margin-bottom: -2px !important;
+    margin-bottom: -4px !important;
+  }
+  /* Masaüstü: punto 0.5 küçült */
+  #history-modal .history-period {
+    font-size: 14.5px !important;
+  }
+  #history-modal .history-vehicle {
+    font-size: 13.5px !important;
+  }
+  #history-modal .history-details p {
+    font-size: 13.5px !important;
   }
 }
 
