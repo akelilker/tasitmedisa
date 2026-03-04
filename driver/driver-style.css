@@ -100,8 +100,8 @@
 body.login-page,
 body.dashboard-page {
   overflow-x: hidden !important;
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
+  padding-top: env(safe-area-inset-top) !important;
+  padding-bottom: env(safe-area-inset-bottom) !important;
 }
 /* Modal açıkken arka plan scroll kilitlensin (sadece modal içi kayar) */
 body.driver-modal-open {
@@ -134,6 +134,8 @@ body.driver-modal-open {
   box-sizing: border-box;
   overflow: hidden;
   position: relative;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
 }
 /* Dashboard + şifre ekranı: fixed footer alanı kadar alt boşluk */
 .dashboard-page .driver-dashboard-container,
@@ -147,9 +149,11 @@ body.driver-modal-open {
   top: 0;
   left: 0;
   right: 0;
-  bottom: 0;
+  bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0));
   border-left: 0.5px solid var(--border-red-tech);
   border-right: 0.5px solid var(--border-red-tech);
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
   pointer-events: none;
   z-index: 10010;
 }
@@ -1169,17 +1173,17 @@ body.driver-modal-open {
     width: 120px !important;
     height: 69px !important;
   }
-  /* Mobil (640px altı): MEDISA hero logosu – 2px sola (toplam: -16px, 10px) */
+  /* Mobil (640px altı): MEDISA hero logosu – 2px sola (toplam: -16px, 13px) */
   .dashboard-page .hero.hero-two-rows .hero-logo {
     flex: 0 0 56px !important;
     width: 56px !important;
-    transform: translate(-16px, 10px) !important;
+    transform: translate(-16px, 13px) !important;
     margin-top: 0 !important;
   }
   .login-page .hero.hero-two-rows .hero-logo {
     flex: 0 0 56px !important;
     width: 56px !important;
-    transform: translate(-16px, 10px) !important;
+    transform: translate(-16px, 13px) !important;
     margin-top: 0 !important;
   }
   /* Mobil: 56px logo sütunları, başlık ortada */
