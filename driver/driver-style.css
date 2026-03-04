@@ -3764,6 +3764,20 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.35) !important;
   }
 
+  /* Foto 4: Kaza şema mobil – Açıklama ile Şema arası 2px; şema yatay 5px ek; dikey 12px daralma */
+  .dashboard-page .driver-report-block-kaza .form-group:nth-of-type(3) {
+    margin-bottom: 2px !important;
+  }
+  .dashboard-page .driver-report-block-kaza .form-group:has(.driver-kaporta-container) {
+    margin-top: 2px !important;
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+  .dashboard-page .driver-report-block-kaza .driver-kaporta-container {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+  }
+
   /* Not input: placeholder yatay+dikey ortalı, iç dikey 3px daraltıldı */
   .dashboard-page .vehicle-card .form-group textarea.driver-ekstra-not {
     line-height: 1.4 !important;
