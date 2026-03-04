@@ -49,6 +49,9 @@
   align-items: center;
   justify-content: center;
   transition: opacity 0.4s ease;
+  /* iOS PWA: çentik/home indicator alanına taşmasın */
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  box-sizing: border-box;
 }
 .driver-splash.hidden {
   opacity: 0;
@@ -4063,8 +4066,23 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
 }
 
-/* --- Sadece iOS PWA: çentik/notch + 2. satır 1pt küçük + sağ grid buton yüksekliği + üst çerçeve kalınlığı --- */
+/* --- Sadece iOS PWA: çentik/notch + 100vh düzeltmesi + 2. satır 1pt küçük + sağ grid buton yüksekliği + üst çerçeve kalınlığı --- */
 @media (max-width: 768px) and (display-mode: standalone) {
+  /* iOS Safari 100vh düzeltmesi: -webkit-fill-available ile gerçek görünür alan kullanılır */
+  .dashboard-page,
+  .login-page {
+    min-height: 100vh !important;
+    min-height: -webkit-fill-available !important;
+    min-height: 100dvh !important;
+  }
+  .driver-dashboard-container {
+    height: 100vh !important;
+    height: -webkit-fill-available !important;
+    height: 100dvh !important;
+    min-height: 100vh !important;
+    min-height: -webkit-fill-available !important;
+    min-height: 100dvh !important;
+  }
   /* 1. satıra dokunulmaz. 2. satır (subtitle) 768px'ten 1pt küçük */
   .dashboard-page .hero-title-wrap .hero-panel-subtitle,
   .dashboard-page .hero-title-block .hero-panel-subtitle {
