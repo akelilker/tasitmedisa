@@ -3098,6 +3098,10 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     padding-left: env(safe-area-inset-left, 0) !important;
     padding-right: env(safe-area-inset-right, 0) !important;
   }
+  .dashboard-page {
+    padding-left: env(safe-area-inset-left, 0) !important;
+    padding-right: env(safe-area-inset-right, 0) !important;
+  }
   .login-page .app-container {
     width: 100% !important;
     max-width: 100% !important;
@@ -3593,7 +3597,8 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25) !important;
   }
   /* Mobil/PWA: üst/yan çizgiler biraz daha belirgin (0.68 → 0.82) */
-  .dashboard-page .driver-header-fixed {
+  .dashboard-page .driver-header-fixed,
+  .login-page .driver-header-fixed {
     border-top: 0.99px solid rgba(var(--theme-color-rgb), 0.82) !important;
   }
   .dashboard-page .driver-dashboard-container::before,
