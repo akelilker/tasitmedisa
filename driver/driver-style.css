@@ -4113,6 +4113,17 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .login-page .driver-header-fixed {
     border-top-width: 1.2px !important;
   }
+  /* Header logosu: 3px sola, %97 ölçek (100→97) */
+  .dashboard-page .hero.hero-two-rows .hero-logo,
+  .login-page .hero.hero-two-rows .hero-logo {
+    transform: translate(-19px, 13px) scale(0.97) !important;
+  }
+}
+@media (min-width: 641px) and (max-width: 768px) and (display-mode: standalone) {
+  .dashboard-page .hero.hero-two-rows .hero-logo,
+  .login-page .hero.hero-two-rows .hero-logo {
+    transform: translate(-23px, 9.5px) scale(0.97) !important;
+  }
 }
 
 /* --- h1 Metalik Gradient (anasayfa ile aynı) --- */
