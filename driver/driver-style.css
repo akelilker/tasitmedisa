@@ -883,11 +883,10 @@ body.driver-modal-open {
   border-color: var(--theme-color) !important;
   outline: none;
 }
-/* Input açıkken ve içlerden biri focus olduğunda ana buton kırmızı kalsın, sabit dursun */
-.driver-action-group:has(.driver-action-block.show):focus-within .driver-action-btn {
-  border-color: var(--theme-color) !important;
-  background: rgba(var(--theme-color-rgb), 0.15) !important;
-  color: var(--theme-color);
+.driver-action-group:has(.driver-action-block.show) .driver-action-btn {
+  border-color: #22c55e !important;
+  background: rgba(34, 197, 94, 0.15) !important;
+  color: #22c55e !important;
 }
 .driver-action-btn.saved {
   border-color: #22c55e;
@@ -1791,36 +1790,6 @@ body.driver-modal-open {
   color: var(--theme-color);
 }
 
-.driver-report-btn-bakim {
-  border-color: rgba(var(--theme-color-rgb), 0.85) !important;
-}
-
-.driver-report-btn-kaza {
-  border-color: rgba(var(--theme-color-rgb), 0.85) !important;
-}
-
-.driver-report-btn-kaza:hover,
-.driver-report-btn-kaza:focus,
-.driver-report-btn-kaza:active {
-  border-color: var(--theme-color) !important;
-}
-
-.driver-report-item:has(.driver-report-block-kaza.show) .driver-report-btn-kaza {
-  border-color: var(--theme-color) !important;
-  background: rgba(var(--theme-color-rgb), 0.12) !important;
-  color: var(--theme-color) !important;
-}
-
-/* Bakım Bildir: aktifken (panel açık veya hover/focus) tema rengi – Kaza ile aynı */
-.driver-report-btn-bakim:hover,
-.driver-report-btn-bakim:focus,
-.driver-report-btn-bakim:active,
-.driver-report-item:has(.driver-report-block-bakim.show) .driver-report-btn-bakim {
-  border-color: var(--theme-color) !important;
-  background: rgba(var(--theme-color-rgb), 0.12) !important;
-  color: var(--theme-color) !important;
-}
-
 .driver-report-block {
   display: none;
   margin-top: 8px;
@@ -1887,16 +1856,6 @@ body.driver-modal-open {
   padding-left: 10px !important;
   padding-right: 10px !important;
 }
-/* Kaza/Bakım blokları açıkken (mobil+masaüstü): input çerçevesi aksiyon rengi */
-.dashboard-page .driver-report-block-kaza.show .form-group input.driver-kaza-input:not(:focus),
-.dashboard-page .driver-report-block-kaza.show .form-group textarea.driver-kaza-textarea:not(:focus) {
-  box-shadow: inset 0 0 0 0.5px var(--theme-color) !important;
-}
-.dashboard-page .driver-report-block-bakim.show .form-group input.driver-bakim-input:not(:focus),
-.dashboard-page .driver-report-block-bakim.show .form-group textarea.driver-bakim-textarea:not(:focus) {
-  box-shadow: inset 0 0 0 0.5px var(--theme-color) !important;
-}
-
 /* Bakım/Kaza Açıklama: varsayılan 1 satır, içerik uzadıkça otomatik büyür, kesilme yok */
 .driver-report-block .form-group textarea.driver-report-textarea-auto {
   min-height: 2em;
@@ -3799,12 +3758,6 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
   .dashboard-page .driver-report-btn {
     border-color: rgba(255, 255, 255, 0.35) !important;
-  }
-  .dashboard-page .driver-report-btn-bakim {
-    border-color: rgba(var(--theme-color-rgb), 0.85) !important;
-  }
-  .dashboard-page .driver-report-btn-kaza {
-    border-color: rgba(var(--theme-color-rgb), 0.85) !important;
   }
   .dashboard-page .driver-report-block .form-group input:not(:focus),
   .dashboard-page .driver-report-block .form-group textarea:not(:focus) {
