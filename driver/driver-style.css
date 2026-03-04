@@ -4073,9 +4073,11 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 
 /* --- Sadece iOS/Android PWA: çentik/notch + 100vh düzeltmesi + 2. satır 1pt küçük + sağ grid buton yüksekliği + üst çerçeve kalınlığı --- */
 @media (max-width: 768px) and (display-mode: standalone) {
-  /* iOS Safari 100vh düzeltmesi: -webkit-fill-available ile gerçek görünür alan kullanılır */
+  /* style-core html zaten left/right/bottom safe-area veriyor; body'de çift padding olmasın */
   .dashboard-page,
   .login-page {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
     min-height: 100vh !important;
     min-height: -webkit-fill-available !important;
     min-height: 100dvh !important;
