@@ -252,7 +252,6 @@ body::-webkit-scrollbar,
 #user-form-modal .form-section,
 .settings-modal .form-section,
 .ayarlar-modal-overlay .modal-body .form-section,
-.modal-body:has(#sube-adi) .form-section,
 .modal-body:has(#branch-name) .form-section {
   width: 100% !important;
   max-width: 100% !important;
@@ -267,7 +266,6 @@ body::-webkit-scrollbar,
 #user-form-modal .form-label,
 .settings-modal .form-label,
 .ayarlar-modal-overlay .modal-body .form-label,
-.modal-body:has(#sube-adi) .form-label,
 .modal-body:has(#branch-name) .form-label {
   text-align: left !important;
   width: 100% !important;
@@ -278,7 +276,6 @@ body::-webkit-scrollbar,
 #user-form-modal .form-input,
 .settings-modal .form-input,
 .ayarlar-modal-overlay .modal-body .form-input,
-.modal-body:has(#sube-adi) .form-input,
 .modal-body:has(#branch-name) .form-input,
 #branch-form-modal .modal-body .form-input,
 #branch-form-modal .modal-body select.form-input,
@@ -294,7 +291,6 @@ body::-webkit-scrollbar,
 #user-form-modal .universal-btn-group,
 .settings-modal .universal-btn-group,
 .ayarlar-modal-overlay .modal-body .universal-btn-group,
-.modal-body:has(#sube-adi) .universal-btn-group,
 .modal-body:has(#branch-name) .universal-btn-group {
   max-width: 100% !important;
   width: 100% !important;
@@ -1819,8 +1815,6 @@ body.modal-open .app-container {
     #branch-modal,
     #user-modal,
     .settings-modal,
-    .modal-overlay:has(#sube-adi),
-    .modal-overlay:has(#kullanici-adi),
     .modal-overlay:has(#branch-name),
     .modal-overlay:has(#user-form) {
         & .modal-body {
