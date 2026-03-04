@@ -486,9 +486,10 @@ body.driver-modal-open {
   .dashboard-page .driver-left-panel .driver-current-plaka {
     font-size: 15px !important;
   }
-  /* Sol grid: etiket + açıklama sonrası 3px boşluk (masaüstü) */
+  /* Sol grid: etiket + açıklama sonrası 3px boşluk (masaüstü); şube ve altı plaka/modelden bir satır aşağı */
   .dashboard-page .driver-left-panel .driver-vehicle-info {
     gap: 8px !important;
+    margin-top: 1.25em !important;
   }
   /* Açıklama alt satıra inince etiket–açıklama arası 0; etiket+açıklama arası 1.6px (masaüstü) */
   .dashboard-page .driver-left-panel .driver-info-item:has(.value) {
@@ -1193,17 +1194,17 @@ body.driver-modal-open {
     width: 120px !important;
     height: 69px !important;
   }
-  /* Mobil (640px altı): MEDISA hero logosu – 2px sola (toplam: -16px, 13px) */
+  /* Mobil (640px altı): MEDISA hero logosu – 2px sola (toplam: -18px, 13px) */
   .dashboard-page .hero.hero-two-rows .hero-logo {
     flex: 0 0 56px !important;
     width: 56px !important;
-    transform: translate(-16px, 13px) !important;
+    transform: translate(-18px, 13px) !important;
     margin-top: 0 !important;
   }
   .login-page .hero.hero-two-rows .hero-logo {
     flex: 0 0 56px !important;
     width: 56px !important;
-    transform: translate(-16px, 13px) !important;
+    transform: translate(-18px, 13px) !important;
     margin-top: 0 !important;
   }
   /* Mobil: 56px logo sütunları, başlık ortada */
