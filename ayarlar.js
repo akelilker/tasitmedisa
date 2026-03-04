@@ -346,7 +346,8 @@
       activeVehicles.forEach(v => {
         const vid = String(v.id);
         const plaka = v.plate || v.plaka || '';
-        const markaModel = (v.brandModel || (v.brand || v.marka || '') + ' ' + (v.model || '')).trim();
+        const raw = (v.brandModel || (v.brand || v.marka || '') + ' ' + (v.model || '')).trim();
+        const markaModel = (typeof window.toTitleCase === 'function' ? window.toTitleCase(raw) : raw);
         const label = plaka + (markaModel ? ' (' + markaModel + ')' : '');
         const labelEl = document.createElement('label');
         labelEl.style.display = 'block';
