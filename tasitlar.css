@@ -272,11 +272,12 @@
 /* Taşıt Detay Alt Başlık Satırı: Olay Ekle | Marka/Model | Tarihçe – dikeyde kusursuz hizalı */
 .detail-brand-year-row {
     display: flex !important;
-    align-items: center !important; /* DİKEYDE KUSURSUZ HİZALAR */
+    align-items: center !important;
     justify-content: space-between !important;
     flex-wrap: nowrap;
     width: 100% !important;
-    margin-top: -9px !important;
+    margin-top: -2px !important; /* Plakaya bindirmemesi için boşluk artırıldı */
+    min-height: 34px !important; /* İkinci satıra inince alanın korunması için */
     position: relative;
     padding-left: 0;
     padding-right: 0;
@@ -287,13 +288,14 @@
     font-weight: 600;
     color: var(--txt-gray);
     text-align: center;
-    line-height: 1 !important; /* Dikey kaymayı önler, satırla aynı hizada */
+    line-height: 1.2 !important; /* İkinci satırla arayı açmak için 1'den 1.2'ye çıkarıldı */
     margin: 0 !important;
     flex: 1;
     position: absolute;
     left: 50%;
     top: 50%;
-    transform: translate(-50%, -50%); /* Yatay + dikey ortala, butonlarla aynı hizada */
+    transform: translate(-50%, -50%);
+    width: 55%; /* Metin uzadığında yanlardaki butonların üstüne taşmasını engeller */
     pointer-events: none;
 }
 
