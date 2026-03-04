@@ -1697,13 +1697,12 @@ body.modal-open .user-panel-link {
         min-height: calc(100vh - env(safe-area-inset-bottom)) !important;
         min-height: calc(100dvh - env(safe-area-inset-bottom)) !important;
     }
-    /* Driver (login + dashboard): ana uygulama ile AYNI min-height/overflow – taşma çözümü */
+    /* Driver (login + dashboard): ilk boyamada kesin yükseklik – içerik kısa olsa bile çerçeve yerinde */
     .driver-dashboard-container {
-        height: 100% !important; /* 100vh yerine body'den miras – ana uygulama ile aynı */
+        height: calc(100vh - env(safe-area-inset-bottom)) !important;
+        height: calc(100dvh - env(safe-area-inset-bottom)) !important;
         min-height: calc(100vh - env(safe-area-inset-bottom)) !important;
         min-height: calc(100dvh - env(safe-area-inset-bottom)) !important;
-        max-height: calc(100vh - env(safe-area-inset-bottom)) !important;
-        max-height: calc(100dvh - env(safe-area-inset-bottom)) !important;
         overflow: hidden !important;
     }
     /* Admin rapor sayfası: kavislere uyumlu çerçeve (anasayfa ile aynı) */
