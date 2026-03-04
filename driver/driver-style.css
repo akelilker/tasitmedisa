@@ -3571,14 +3571,14 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     background: var(--bg) !important;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25) !important;
   }
-  /* Mobil/PWA: üst/yan çizgiler biraz daha belirgin (0.68) */
+  /* Mobil/PWA: üst/yan çizgiler biraz daha belirgin (0.68 → 0.82) */
   .dashboard-page .driver-header-fixed {
-    border-top: 0.99px solid rgba(var(--theme-color-rgb), 0.68) !important;
+    border-top: 0.99px solid rgba(var(--theme-color-rgb), 0.82) !important;
   }
   .dashboard-page .driver-dashboard-container::before,
   .login-page .driver-dashboard-container::before {
-    border-left: 0.99px solid rgba(var(--theme-color-rgb), 0.68) !important;
-    border-right: 0.99px solid rgba(var(--theme-color-rgb), 0.68) !important;
+    border-left: 0.99px solid rgba(var(--theme-color-rgb), 0.82) !important;
+    border-right: 0.99px solid rgba(var(--theme-color-rgb), 0.82) !important;
     top: 0 !important;
     bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important; /* Footer'da biter, aşağı inmez */
   }
@@ -3760,12 +3760,14 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .login-page .btn-login {
     font-size: 16px !important;
   }
-  .login-page .login-card-title,
-  .login-page .hero h1 {
+  .login-page .login-card-title {
     font-size: 23px !important;
   }
+  .login-page .hero h1 {
+    font-size: 22px !important; /* 23px - 1pt */
+  }
   .login-page .hero-panel-subtitle {
-    font-size: 21px !important; /* h1’e göre 1pt küçük */
+    font-size: 20px !important; /* h1’e göre 1pt küçük */
   }
   .login-page #app-footer.login-footer .footer-content {
     font-size: 14px !important;
@@ -3797,10 +3799,10 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
   .dashboard-page .hero-title-wrap .hero-panel-subtitle,
   .dashboard-page .hero-title-block .hero-panel-subtitle {
-    font-size: 22px !important; /* h1 (23px) - 1pt küçük */
+    font-size: 21px !important; /* 22px - 1pt */
   }
   .dashboard-page .hero h1 {
-    font-size: 24px !important;
+    font-size: 23px !important; /* 24px - 1pt */
   }
   .dashboard-page .driver-report-block .form-group label,
   .dashboard-page .driver-report-block .form-group input,
@@ -4008,11 +4010,11 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     height: 2em !important;
   }
 
-  /* Mobil: h1 boyut ve harf aralığı */
+  /* Mobil: h1 boyut ve harf aralığı (1pt küçük) */
   .hero-title-wrap h1,
   .login-page .hero h1,
   .dashboard-page .hero h1 {
-    font-size: 23px !important;
+    font-size: 22px !important; /* 23px - 1pt */
     letter-spacing: 2.5px !important;
   }
 
@@ -4046,13 +4048,13 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 
 /* --- Sadece iOS PWA: çentik/notch + 2. satır 1pt küçük + sağ grid buton yüksekliği + üst çerçeve kalınlığı --- */
 @media (max-width: 768px) and (display-mode: standalone) {
-  /* 1. satıra dokunulmaz. 2. satır (subtitle) eski halinden 1pt küçük */
+  /* 1. satıra dokunulmaz. 2. satır (subtitle) 768px'ten 1pt küçük */
   .dashboard-page .hero-title-wrap .hero-panel-subtitle,
   .dashboard-page .hero-title-block .hero-panel-subtitle {
-    font-size: 21px !important; /* eski 22px, 1pt küçük */
+    font-size: 20px !important; /* 21px - 1pt */
   }
   .login-page .hero-title-block .hero-panel-subtitle {
-    font-size: 20px !important; /* eski 21px, 1pt küçük */
+    font-size: 19px !important; /* 20px - 1pt */
   }
   /* Sağ grid butonları: dikey yükseklik +2px */
   .dashboard-page .driver-report-btn {
