@@ -3059,8 +3059,9 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .login-page .driver-dashboard-container {
     --app-footer-height: 56px;
   }
-  /* Masaüstü kullanıcı paneli: kırmızı çizgiler tam footer'da biter, aşağı inmez */
-  .dashboard-page .driver-dashboard-container::before {
+  /* Masaüstü kullanıcı paneli + şifre ekranı: kırmızı çizgiler tam footer'da biter, aşağı inmez */
+  .dashboard-page .driver-dashboard-container::before,
+  .login-page .driver-dashboard-container::before {
     bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important;
   }
 }
