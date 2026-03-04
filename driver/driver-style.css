@@ -458,7 +458,7 @@ body.driver-modal-open {
     box-shadow: none !important;
   }
   .login-page #app-footer.login-footer {
-    border-top: 0.5px solid rgba(200, 200, 200, 0.7) !important;
+    border-top: 0.5px solid rgba(200, 200, 200, 0.45) !important;
     border-left: 0.5px solid rgba(255, 255, 255, 0.20) !important;
     border-right: 0.5px solid rgba(255, 255, 255, 0.20) !important;
     box-shadow: 0 -10px 20px rgba(var(--theme-color-rgb), 0.16) !important;
@@ -2862,7 +2862,7 @@ body.driver-modal-open {
   margin: 0 !important;
   padding: 0 !important;
   background: var(--bg) !important;
-  border-top: 0.5px solid rgba(200, 200, 200, 0.7) !important;
+  border-top: 0.5px solid rgba(200, 200, 200, 0.45) !important;
   border-left: 0.5px solid rgba(255, 255, 255, 0.20) !important;
   border-right: 0.5px solid rgba(255, 255, 255, 0.20) !important;
   box-shadow: 0 -10px 20px rgba(var(--theme-color-rgb), 0.16) !important;
@@ -3127,7 +3127,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     bottom: env(safe-area-inset-bottom, 0) !important;
     padding-bottom: max(20px, env(safe-area-inset-bottom, 0)) !important;
     box-shadow: 0 -9px 22px rgba(var(--theme-color-rgb), 0.35) !important;
-    border-top: 0.5px solid rgba(200, 200, 200, 0.7) !important;
+    border-top: 0.5px solid rgba(200, 200, 200, 0.45) !important;
     border-left: 0.5px solid rgba(255, 255, 255, 0.18) !important;
     border-right: 0.5px solid rgba(255, 255, 255, 0.18) !important;
   }
@@ -3611,7 +3611,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
   .login-page #app-footer.login-footer {
     background: var(--bg) !important;
-    border-top: 0.5px solid rgba(200, 200, 200, 0.7) !important;
+    border-top: 0.5px solid rgba(200, 200, 200, 0.45) !important;
     border-left: 0.5px solid rgba(255, 255, 255, 0.18) !important;
     border-right: 0.5px solid rgba(255, 255, 255, 0.18) !important;
     box-shadow: 0 -15px 22px rgba(var(--theme-color-rgb), 0.35) !important;
@@ -3953,7 +3953,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     min-height: 0 !important;
     padding-bottom: 0 !important;
     box-shadow: 0 -9px 22px rgba(var(--theme-color-rgb), 0.35) !important;
-    border-top: 0.5px solid rgba(200, 200, 200, 0.7) !important;
+    border-top: 0.5px solid rgba(200, 200, 200, 0.45) !important;
     border-left: 0.5px solid rgba(255, 255, 255, 0.18) !important;
     border-right: 0.5px solid rgba(255, 255, 255, 0.18) !important;
   }
