@@ -4109,7 +4109,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
 }
 
-/* --- Sadece iOS/Android PWA: anasayfa ile aynı (style-core kuralları geçerli) – sadece ::before ve tipografi --- */
+/* --- Sadece iOS/Android PWA: ana uygulama ile aynı yapı – ilk boyamada çerçeve yerinde --- */
 @media (max-width: 768px) and (display-mode: standalone) {
   /* Body: style-core ile aynı */
   body.dashboard-page,
