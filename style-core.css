@@ -1670,7 +1670,9 @@ body.modal-open .user-panel-link {
         box-sizing: border-box !important;
         min-height: calc(100% + env(safe-area-inset-top)) !important; /* iOS PWA position:fixed workaround */
     }
-    body {
+    body,
+    body.dashboard-page,
+    body.login-page {
         padding: 0 !important;
         min-height: 100vh !important;
         min-height: 100dvh !important;
@@ -1680,7 +1682,7 @@ body.modal-open .user-panel-link {
     .content-wrap {
         padding-top: max(12px, env(safe-area-inset-top)) !important;
     }
-    /* Çerçeve viewport içinde kalır; çift padding yok, content-wrap halleder; minimal belirgin. Kullanıcı girişi/paneli kendi çerçevesini kullanır (driver-style). */
+    /* Çerçeve viewport içinde kalır; ana uygulama container */
     body:not(.dashboard-page):not(.login-page) .app-container {
         margin-top: 0 !important;
         padding-top: 0 !important;
@@ -1694,6 +1696,15 @@ body.modal-open .user-panel-link {
         box-shadow: 0 2px 14px rgba(var(--theme-color-rgb), 0.1) !important;
         min-height: calc(100vh - env(safe-area-inset-bottom)) !important;
         min-height: calc(100dvh - env(safe-area-inset-bottom)) !important;
+    }
+    /* Driver (login + dashboard): ana uygulama ile AYNI min-height/overflow – taşma çözümü */
+    .driver-dashboard-container {
+        height: 100% !important; /* 100vh yerine body'den miras – ana uygulama ile aynı */
+        min-height: calc(100vh - env(safe-area-inset-bottom)) !important;
+        min-height: calc(100dvh - env(safe-area-inset-bottom)) !important;
+        max-height: calc(100vh - env(safe-area-inset-bottom)) !important;
+        max-height: calc(100dvh - env(safe-area-inset-bottom)) !important;
+        overflow: hidden !important;
     }
     /* Admin rapor sayfası: kavislere uyumlu çerçeve (anasayfa ile aynı) */
     .admin-app-container {
