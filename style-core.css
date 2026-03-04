@@ -1326,7 +1326,7 @@ body.modal-open .user-panel-link {
   opacity: 0.3 !important; 
 } 
 #app-footer.dimmed.delayed .brand img { 
-  opacity: 0.7 !important; 
+  opacity: 0.8 !important; 
 }
 .status-ready { 
   color: var(--green) !important; /* Zorla yeşil */
