@@ -698,7 +698,7 @@ background: var(--border-faint-02);
 }
 
 .stok-list-row:hover {
-background: rgba(255, 255, 255, 0.04);
+background: var(--border-ultra);
 }
 
 .stok-list-cell {
@@ -1646,6 +1646,10 @@ display: grid !important;
 gap: 4px !important;
 width: 100% !important;
 /* grid-template-columns inline style ile gelir (getStokGridTemplate) */
+}
+/* Mobil: açık satır rengi daha belirgin (0.02 → 0.06) */
+.stok-list-row:nth-child(even) {
+background: rgba(255, 255, 255, 0.06) !important;
 }
 
 .stok-list-header-cell {

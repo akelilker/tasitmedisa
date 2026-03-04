@@ -2691,7 +2691,7 @@
     transition: background 0.2s ease !important;
   }
   .view-list .list-item:nth-child(even) {
-    background: var(--border-faint-02) !important; /* Alternating: bir koyu bir açık */
+    background: rgba(255, 255, 255, 0.06) !important; /* Mobil: açık satır daha belirgin */
   }
 
   .view-list .list-item:hover {
