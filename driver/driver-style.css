@@ -16,7 +16,7 @@
 }
 
 /* --- style-core.css border çakışmalarını temizle (driver sayfalarında border tek kaynaktan gelsin) --- */
-/* style-core .app-container üst border → driver-header-fixed zaten veriyor, iptal */
+/* style-core .app-container üst border → ::before ile çiziliyor, iptal */
 .dashboard-page .app-container.driver-dashboard-container,
 .login-page .app-container.driver-dashboard-container {
   border-top: none !important;
@@ -145,7 +145,7 @@ body.driver-modal-open {
 .login-page .driver-dashboard-container {
   padding-bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0));
 }
-/* Kullanıcı paneli + şifre ekranı: yan kırmızı çizgiler anasayfa ile aynı (0.5px masaüstü) – içerik üstünde kalması için yüksek z-index */
+/* Kullanıcı paneli + şifre ekranı: tüm kırmızı çerçeve tek kaynaktan (köşe birleşme sorunu yok) */
 .driver-dashboard-container::before {
   content: '';
   position: absolute;
@@ -153,6 +153,7 @@ body.driver-modal-open {
   left: 0;
   right: 0;
   bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0));
+  border-top: 0.5px solid var(--border-red-tech);
   border-left: 0.5px solid var(--border-red-tech);
   border-right: 0.5px solid var(--border-red-tech);
   border-top-left-radius: 20px;
@@ -161,14 +162,14 @@ body.driver-modal-open {
   z-index: 10010;
 }
 
-/* Ana başlık (hero + driver-below-hero) sabit üstte – plaka yukarı, container çerçevesi devam (anasayfa ile aynı: 0.5px masaüstü) */
+/* Ana başlık (hero + driver-below-hero) sabit üstte – üst çizgi ::before'da, header'da yok */
 .driver-header-fixed {
   flex-shrink: 0;
   background: var(--bg);
   z-index: 5;
   padding: max(12px, env(safe-area-inset-top)) 4px 4px 4px;
   box-sizing: border-box;
-  border-top: 0.5px solid var(--border-red-tech);
+  border-top: none !important;
 }
 
 /* Ortadaki bölüm: sol grid sabit, sadece sağ grid kendi içinde kayar; barın üstüne binmemesi için z-index */
@@ -3596,13 +3597,14 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     background: var(--bg) !important;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25) !important;
   }
-  /* Mobil/PWA: üst/yan çizgiler biraz daha belirgin (0.68 → 0.82) */
+  /* Mobil/PWA: tüm çerçeve ::before'da (0.99px), köşe birleşme sorunu yok */
   .dashboard-page .driver-header-fixed,
   .login-page .driver-header-fixed {
-    border-top: 0.99px solid rgba(var(--theme-color-rgb), 0.82) !important;
+    border-top: none !important;
   }
   .dashboard-page .driver-dashboard-container::before,
   .login-page .driver-dashboard-container::before {
+    border-top: 0.99px solid rgba(var(--theme-color-rgb), 0.82) !important;
     border-left: 0.99px solid rgba(var(--theme-color-rgb), 0.82) !important;
     border-right: 0.99px solid rgba(var(--theme-color-rgb), 0.82) !important;
     top: 0 !important;
@@ -4108,9 +4110,13 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .dashboard-page .driver-report-btn {
     min-height: 74px !important; /* 72 + 2 */
   }
-  /* Üst kırmızı çerçeve yanlara göre ince kalmaması için kalınlık (0.99px → 1.2px) */
+  /* PWA: üst çizgi de ::before'da, 1.2px (yanlara göre ince kalmasın) */
   .dashboard-page .driver-header-fixed,
   .login-page .driver-header-fixed {
+    border-top: none !important;
+  }
+  .dashboard-page .driver-dashboard-container::before,
+  .login-page .driver-dashboard-container::before {
     border-top-width: 1.2px !important;
   }
 }
