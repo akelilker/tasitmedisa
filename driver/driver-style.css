@@ -4083,10 +4083,14 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 
 /* --- Sadece iOS/Android PWA: ana uygulama ile aynı yapı – ilk boyamada çerçeve yerinde --- */
 @media (max-width: 768px) and (display-mode: standalone) {
-  /* Body: style-core ile aynı */
-  body.dashboard-page,
-  body.login-page {
-    padding: 0 !important;
+  /* style-core html zaten left/right/bottom safe-area veriyor; body'de çift padding olmasın */
+  .dashboard-page,
+  .login-page {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    min-height: 100vh !important;
+    min-height: -webkit-fill-available !important;
+    min-height: 100dvh !important;
   }
   /* PWA: yan kırmızı çizgiler footer'da biter */
   .dashboard-page .driver-dashboard-container::before,
@@ -4114,6 +4118,17 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .dashboard-page .driver-dashboard-container::before,
   .login-page .driver-dashboard-container::before {
     border-top-width: 1.2px !important;
+  }
+  /* Header logosu: 3px sola, %97 ölçek (100→97) */
+  .dashboard-page .hero.hero-two-rows .hero-logo,
+  .login-page .hero.hero-two-rows .hero-logo {
+    transform: translate(-19px, 13px) scale(0.97) !important;
+  }
+}
+@media (min-width: 641px) and (max-width: 768px) and (display-mode: standalone) {
+  .dashboard-page .hero.hero-two-rows .hero-logo,
+  .login-page .hero.hero-two-rows .hero-logo {
+    transform: translate(-23px, 9.5px) scale(0.97) !important;
   }
 }
 
