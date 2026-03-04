@@ -1505,8 +1505,8 @@ function initDriverKaporta(vehicleId, boyaliParcalar) {
             schemaWrapper.style.alignItems = 'center';
             schemaWrapper.style.justifyContent = 'flex-start';
             schemaWrapper.style.gap = '8px';
-            schemaWrapper.style.maxHeight = '180px';
-            schemaWrapper.style.overflow = 'hidden';
+            schemaWrapper.style.maxHeight = 'none';
+            schemaWrapper.style.overflow = 'visible';
             const svgClone = svg.cloneNode(true);
             schemaWrapper.appendChild(svgClone);
             svgClone.setAttribute('width', '120');

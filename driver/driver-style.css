@@ -1929,7 +1929,8 @@ body.driver-modal-open {
 }
 @media (max-width: 480px) {
   .driver-kaporta-container {
-    max-height: 144px; /* 180 * 0.8 */
+    max-height: 170px !important; /* SVG + legend altında görünsün */
+    overflow: visible !important;
     width: calc(100% - 10px) !important; /* Kırmızı çizgiye 5px kalacak kadar genişle */
     margin-left: 5px !important;
     margin-right: 5px !important;
