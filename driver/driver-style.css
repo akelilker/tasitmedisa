@@ -3042,9 +3042,9 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 }
 
 @media (min-width: 769px) {
-  /* Masaüstü: footer modal (app-container) altında ortalanmış olsun */
+  /* Masaüstü: footer modal (app-container) altında ortalanmış olsun; 56px yükseklik kırmızı çizgilerle hizalansın */
   .login-page #app-footer.login-footer {
-    min-height: 0 !important;
+    min-height: 56px !important;
     left: 50% !important;
     right: auto !important;
     width: 100% !important;
