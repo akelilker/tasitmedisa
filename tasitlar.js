@@ -3324,12 +3324,14 @@ function renderVehicleDetailLeft(vehicle) {
         kmEvents.forEach(event => {
           const eskiKm = event.data?.eskiKm || '-';
           const yeniKm = event.data?.yeniKm || '-';
-          const surucuVal = event.data?.surucu;
-          const surucuStr = surucuVal ? `<span class="history-label">Kullanıcı:</span> ${escapeHtml(toTitleCase(surucuVal))}` : '';
+          const surucuVal = (event.data?.surucu || '').trim();
+          const surucu = surucuVal
+            ? toTitleCase(surucuVal).toLocaleUpperCase('tr-TR')
+            : 'BİLİNMİYOR';
+          const kmCumle = `${escapeHtml(surucu)}, Güncel Km: ${escapeHtml(formatNumber(yeniKm))} Olarak Bildirdi. (Önceki Km: ${escapeHtml(formatNumber(eskiKm))})`;
           html += `<div class="history-item">
-            <div class="history-item-date" style="font-weight: 600; font-size: 12px; margin-bottom: 4px;">${escapeHtml(event.date)} - Km Revize</div>
-            <div class="history-item-body" style="font-size: 12px; margin-top: 4px;"><span class="history-label">Önceki Km;</span> ${escapeHtml(formatNumber(eskiKm))} - <span class="history-label">Güncellenen Km;</span> ${escapeHtml(formatNumber(yeniKm))}</div>
-            ${surucuStr ? `<div class="history-item-body" style="font-size: 12px; margin-top: 4px;">${surucuStr}</div>` : ''}
+            <div class="history-item-date" style="font-weight: 600; font-size: 12px; margin-bottom: 4px;">${escapeHtml(event.date)}</div>
+            <div class="history-item-body" style="font-size: 12px; margin-top: 4px;">${kmCumle}</div>
           </div>`;
         });
       }
