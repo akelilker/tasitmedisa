@@ -474,6 +474,9 @@ body.driver-modal-open {
     width: 76px !important;
     transform: translate(-18px, 6.5px) !important;
   }
+  .dashboard-page .hero.hero-two-rows .hero-logo {
+    transform: translate(-18px, 3.5px) scale(0.97) !important;
+  }
   .dashboard-page .hero.hero-two-rows .hero-logo img,
   .login-page .hero.hero-two-rows .hero-logo img {
     width: 100% !important; 
@@ -541,8 +544,8 @@ body.driver-modal-open {
   }
   /* Sağ grid Var/Yok butonları: masaüstünde dikey yükseklik 3px az (32→29px) */
   .dashboard-page .driver-action-area .driver-radio-btn {
-    height: 29px !important;
-    min-height: 29px !important;
+    height: auto !important;
+    min-height: 0 !important;
   }
   /* Not input: masaüstünde dar – Kaydet butonu yukarı gelsin */
   .dashboard-page .driver-action-area .form-group textarea.driver-ekstra-not {
@@ -1481,9 +1484,9 @@ body.driver-modal-open {
   background: transparent;
   border: 1px solid rgba(255, 255, 255, 0.35);
   border-radius: 8px;
-  height: 32px;
-  min-height: 32px;
-  padding: 0 14px;
+  height: auto;
+  min-height: 0;
+  padding: 5px 17px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
