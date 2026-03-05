@@ -3194,11 +3194,13 @@ function renderVehicleDetailLeft(vehicle) {
     }
 
     const users = readUsers();
-    const user = users.find(u => u.id === yeniKullaniciId);
+    const user = users.find(u => String(u.id) === String(yeniKullaniciId));
     const eskiKullaniciId = vehicle.assignedUserId || '';
-    const eskiUser = users.find(u => u.id === eskiKullaniciId);
+    const eskiUser = users.find(u => String(u.id) === String(eskiKullaniciId));
 
-    vehicle.assignedUserId = yeniKullaniciId;
+    const normalizedKullaniciId = user ? user.id : yeniKullaniciId;
+
+    vehicle.assignedUserId = normalizedKullaniciId;
     vehicle.tahsisKisi = user?.name || '';
     if (user && !vehicle.branchId && user.branchId) vehicle.branchId = user.branchId;
     vehicle.updatedAt = new Date().toISOString();
@@ -3209,7 +3211,7 @@ function renderVehicleDetailLeft(vehicle) {
       date: formatDateForDisplay(new Date()),
       timestamp: new Date().toISOString(),
       data: {
-        kullaniciId: yeniKullaniciId,
+        kullaniciId: normalizedKullaniciId,
         kullaniciAdi: user?.name || '',
         eskiKullaniciAdi: eskiUser?.name || (eskiKullaniciId ? 'Bilinmeyen' : '')
       }
