@@ -436,10 +436,10 @@ body.driver-modal-open {
   }
   /* Geçmiş ve kapı simgeleri çerçeveden 4px daha içeri (masaüstü: 12px + 8px) */
   .dashboard-page .driver-below-hero-row .driver-btn-history {
-    margin-left: 12px !important;
+    margin-left: 16px !important;
   }
   .dashboard-page .driver-below-hero-row .driver-btn-logout {
-    margin-right: 8px !important;
+    margin-right: 12px !important;
   }
   /* Tarihçe ile çıkış butonu arası 2px daralt (masaüstü) */
   .dashboard-page .driver-below-hero-row {
