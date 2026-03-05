@@ -3749,11 +3749,11 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
   /* Adım 1: İkon ve metin çakışmasının giderilmesi – metnin ok alanına girmemesi, ok güvenli köşede */
   .dashboard-page .driver-plate-dropdown-row .driver-current-plaka {
-    padding-right: 28px !important;
+    padding-right: 36px !important;
     padding-left: 12px !important;
   }
   .dashboard-page .driver-plate-dropdown-row .driver-plate-trigger {
-    right: 4px !important;
+    right: 0 !important;
     top: 50% !important;
     transform: translateY(-50%) !important;
     background: var(--bg) !important;
@@ -3762,7 +3762,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .dashboard-page .driver-left-panel .driver-plate-dropdown,
   body.dashboard-page #driver-plate-dropdown.driver-plate-dropdown {
     position: fixed !important;
-    top: 15vh !important;
+    top: 20vh !important;
     left: 50% !important;
     right: auto !important;
     transform: translateX(-50%) !important;
