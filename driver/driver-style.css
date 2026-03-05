@@ -4149,11 +4149,19 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .dashboard-page .driver-multi-vehicle-wrap .driver-plate-row {
     margin-bottom: 6px !important;
   }
-  .dashboard-page .driver-plate-dropdown-row .driver-plate-trigger {
-    right: -5px !important;
-    top: 50% !important;
-    transform: translateY(-50%) !important;
-  }
+/* Oku sağa kaydırıyoruz (-12px veya -15px zevkine göre ayarlayabilirsin) */
+.dashboard-page .driver-plate-dropdown-row .driver-plate-trigger {
+  right: -12px !important; 
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  background: var(--bg) !important; /* Altında kalan metni gizlemek istersen zemin rengi eklenebilir */
+}
+
+/* Metnin okun altına girmemesi (çakışmaması) için güvenli bölge bırakıyoruz */
+.dashboard-page .driver-plate-dropdown-row .driver-current-plaka {
+  padding-left: 12px !important;
+  padding-right: 18px !important; 
+}
   .dashboard-page .driver-action-area .driver-report-block input[type="date"] {
     box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.35) !important;
     border: 0.5px solid rgba(255, 255, 255, 0.35) !important;
