@@ -3754,7 +3754,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   /* Mobil: liste plaka satırının hemen altında, sola hizalı (absolute = satıra göre; fixed/ortaya değil) */
   .dashboard-page .driver-left-panel .driver-plate-dropdown {
     position: absolute !important;
-    top: 100% !important;
+    top: 100% !important; 
     left: -4px !important;
     right: auto !important;
     transform: none !important;
