@@ -494,6 +494,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
 
 /* Masaüstü: çerçeve kalınlığı (ince) */
 @media (min-width: 769px) {
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-container::before {
+        bottom: 0;
+    }
     .app-container {
         border-top-width: 0.5px;
     }
