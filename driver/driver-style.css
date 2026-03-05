@@ -2492,12 +2492,6 @@ body.driver-modal-open {
   min-height: 100px;
 }
 
-/* Düzeltme Talebi: input/textarea dikey 3px dar, tek satır varsayılan */
-#edit-request-modal .form-group input,
-#edit-request-modal .form-group textarea {
-  padding-top: 5px !important;
-  padding-bottom: 5px !important;
-}
 #edit-request-modal .form-group textarea {
   min-height: 1.2em !important;
   resize: none;

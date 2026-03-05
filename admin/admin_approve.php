@@ -97,7 +97,25 @@ if ($action === 'approve') {
                 foreach ($data['tasitlar'] as $idx => $v) {
                     $vid = isset($v['id']) ? (is_numeric($v['id']) ? intval($v['id']) : $v['id']) : null;
                     if ($vid !== null && (string)$vid === (string)$aracId) {
+                        $eskiKm = $data['tasitlar'][$idx]['guncelKm'] ?? $data['tasitlar'][$idx]['km'] ?? null;
                         $data['tasitlar'][$idx]['guncelKm'] = $talep['yeni_km'];
+                        if (!isset($data['tasitlar'][$idx]['events']) || !is_array($data['tasitlar'][$idx]['events'])) {
+                            $data['tasitlar'][$idx]['events'] = [];
+                        }
+                        $talepTarihiRaw = isset($talep['talep_tarihi']) ? (string)$talep['talep_tarihi'] : '';
+                        $talepTarihYmd = $talepTarihiRaw !== '' ? substr($talepTarihiRaw, 0, 10) : date('Y-m-d');
+                        array_unshift($data['tasitlar'][$idx]['events'], [
+                            'id' => (string)(time() . $idx . 'kmreq' . $requestId),
+                            'type' => 'km-revize',
+                            'date' => $talepTarihYmd,
+                            'timestamp' => date('c'),
+                            'data' => [
+                                'eskiKm' => $eskiKm !== null ? (string)$eskiKm : '',
+                                'yeniKm' => (string)$talep['yeni_km'],
+                                'duzeltmeTalebi' => true,
+                                'duzeltmeTalepTarihi' => $talepTarihiRaw
+                            ]
+                        ]);
                         break;
                     }
                 }

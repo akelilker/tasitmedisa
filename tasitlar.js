@@ -1523,6 +1523,35 @@
 
   function checkDateWarnings(dateString) { return (typeof window.checkDateWarnings === 'function' ? window.checkDateWarnings(dateString) : { class: '', days: null }); }
   function formatDateForDisplay(dateStr) { return (typeof window.formatDateShort === 'function' ? window.formatDateShort(dateStr) : (dateStr ? String(dateStr) : '')); }
+  function getLatestApprovedKmCorrection(vehicleId, kmEvents) {
+    const appData = (window.appData && typeof window.appData === 'object') ? window.appData : {};
+    const duzeltmeTalepleri = Array.isArray(appData.duzeltme_talepleri) ? appData.duzeltme_talepleri : [];
+    const aylikHareketler = Array.isArray(appData.arac_aylik_hareketler) ? appData.arac_aylik_hareketler : [];
+    const kayitAracMap = new Map();
+    aylikHareketler.forEach(k => {
+      if (k && k.id != null && k.arac_id != null) kayitAracMap.set(String(k.id), String(k.arac_id));
+    });
+    const aracIdStr = String(vehicleId);
+    const onayliKmTalepleri = duzeltmeTalepleri
+      .filter(t => t && t.durum === 'onaylandi' && t.yeni_km != null && kayitAracMap.get(String(t.kayit_id)) === aracIdStr)
+      .sort((a, b) => String(b.admin_yanit_tarihi || b.talep_tarihi || '').localeCompare(String(a.admin_yanit_tarihi || a.talep_tarihi || '')));
+    const duzeltmeEvent = kmEvents.find(e => e && e.data && e.data.duzeltmeTalebi === true);
+    if (duzeltmeEvent) {
+      return {
+        talep_tarihi: duzeltmeEvent.data?.duzeltmeTalepTarihi || duzeltmeEvent.timestamp || duzeltmeEvent.date || '',
+        yeni_km: duzeltmeEvent.data?.yeniKm || ''
+      };
+    }
+    return onayliKmTalepleri[0] || null;
+  }
+
+  function buildKmCorrectionNoteHtml(talep) {
+    if (!talep) return '';
+    const talepTarihi = formatDateForDisplay(talep.talep_tarihi || '');
+    const talepKm = formatNumber(talep.yeni_km || '');
+    const notMetni = `Not; Km Bilgisi, ${talepTarihi || '-'} Tarihli D\u00fczeltme Talebine \u0130stinaden ${talepKm || '-'} Km Olarak G\u00fcncellenmi\u015ftir.`;
+    return `<div class="history-item-body" style="font-size: 11px; margin-top: 4px; color: #d40000; line-height: 1.35;">${escapeHtml(notMetni)}</div>`;
+  }
 
   /**
    * Taşıt tipi görünen adını döndürür
@@ -3318,20 +3347,29 @@ function renderVehicleDetailLeft(vehicle) {
       }
     } else if (tabType === 'km') {
       const kmEvents = events.filter(e => e.type === 'km-revize');
+      const oncelikliTalep = getLatestApprovedKmCorrection(vehicle.id, kmEvents);
+      const duzeltmeNotHtml = buildKmCorrectionNoteHtml(oncelikliTalep);
+
       if (kmEvents.length === 0) {
-        html = '<div class="history-empty-msg" style="text-align: center; padding: 20px;">' + escapeHtml(toTitleCase('Km güncelleme kaydı bulunmamaktadır.')) + '</div>';
+        if (duzeltmeNotHtml) {
+          const sentetikTarih = formatDateForDisplay(oncelikliTalep.talep_tarihi || '') || '-';
+          html = `<div class="history-item"><div class="history-item-date" style="font-weight: 600; font-size: 12px; margin-bottom: 4px;">${escapeHtml(sentetikTarih)}</div>${duzeltmeNotHtml}</div>`;
+        } else {
+          html = '<div class="history-empty-msg" style="text-align: center; padding: 20px;">' + escapeHtml(toTitleCase('Km g\u00fcncelleme kayd\u0131 bulunmamaktad\u0131r.')) + '</div>';
+        }
       } else {
-        kmEvents.forEach(event => {
+        kmEvents.forEach((event, index) => {
           const eskiKm = event.data?.eskiKm || '-';
           const yeniKm = event.data?.yeniKm || '-';
           const surucuVal = (event.data?.surucu || '').trim();
           const surucu = surucuVal
             ? toTitleCase(surucuVal).toLocaleUpperCase('tr-TR')
-            : 'BİLİNMİYOR';
-          const kmCumle = `${escapeHtml(surucu)}, Güncel Km: ${escapeHtml(formatNumber(yeniKm))} Olarak Bildirdi. (Önceki Km: ${escapeHtml(formatNumber(eskiKm))})`;
+            : 'B\u0130L\u0130NM\u0130YOR';
+          const kmCumle = `${escapeHtml(surucu)}, G\u00fcncel Km: ${escapeHtml(formatNumber(yeniKm))} Olarak Bildirdi. (\u00d6nceki Km: ${escapeHtml(formatNumber(eskiKm))})`;
           html += `<div class="history-item">
             <div class="history-item-date" style="font-weight: 600; font-size: 12px; margin-bottom: 4px;">${escapeHtml(event.date)}</div>
             <div class="history-item-body" style="font-size: 12px; margin-top: 4px;">${kmCumle}</div>
+            ${index === 0 ? duzeltmeNotHtml : ''}
           </div>`;
         });
       }
