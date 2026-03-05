@@ -491,8 +491,11 @@ body.driver-modal-open {
   }
   /* Sol grid: etiket + açıklama sonrası 3px boşluk (masaüstü); şube ve altı plaka/modelden bir satır aşağı */
   .dashboard-page .driver-left-panel .driver-vehicle-info {
-    gap: 8px !important;
+    gap: 6px !important;
     margin-top: 1.25em !important;
+  }
+  .dashboard-page .driver-left-panel-content {
+    overflow-y: hidden !important;
   }
   /* Açıklama alt satıra inince etiket–açıklama arası 0; etiket+açıklama arası 1.6px (masaüstü) */
   .dashboard-page .driver-left-panel .driver-info-item:has(.value) {
@@ -503,6 +506,15 @@ body.driver-modal-open {
     margin-top: 0 !important;
     padding-top: 0 !important;
     line-height: 1.25;
+  }
+  .dashboard-page .driver-report-block-kaza .form-group .driver-kaporta-label {
+    margin-bottom: 5px !important;
+  }
+  .dashboard-page .driver-report-block-kaza .driver-kaporta-container {
+    margin-top: 0 !important;
+  }
+  .dashboard-page .driver-report-block-kaza .driver-kaporta-container .driver-kaporta-schema-wrapper svg {
+    margin-top: -10px !important;
   }
   /* Plaka liste çerçevesi: ince gri, parlak (masaüstü) */
   .dashboard-page .driver-left-panel .driver-plate-dropdown {
