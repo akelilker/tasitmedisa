@@ -1092,6 +1092,17 @@ body.driver-modal-open {
   background-color: #0f1418 !important;
   color: var(--data-value-color, #a0aec0);
 }
+.driver-action-area .driver-km-block .form-group input.driver-km-input,
+.driver-action-area .driver-report-block .form-group input,
+.driver-action-area .driver-report-block .form-group textarea {
+  box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.35) !important;
+}
+.driver-action-area .driver-km-block .form-group input.driver-km-input:focus,
+.driver-action-area .driver-report-block .form-group input:focus,
+.driver-action-area .driver-report-block .form-group textarea:focus {
+  box-shadow: inset 0 0 0 0.5px var(--theme-color) !important;
+  outline: none !important;
+}
 #driver-input-area .driver-km-input-wrap,
 .driver-action-area .driver-km-input-wrap {
   position: relative;
