@@ -1,8 +1,8 @@
 /* =========================================
-   MEDISA KULLANICI MODùLù - SCRIPT
+   MEDISA KULLANICI MOD?L? - SCRIPT
    ========================================= */
 
-// API Base URL: /tasitmedisa/ veya /medisa/ alt?ndaysa mutlak yol (PHP'ler driver klasùrùnde)
+// API Base URL: /tasitmedisa/ veya /medisa/ alt?ndaysa mutlak yol (PHP'ler driver klas?r?nde)
 const API_BASE = (function(){
   var p = document.location.pathname;
   if (p.indexOf('/tasitmedisa') === 0) return '/tasitmedisa/driver/';
@@ -17,7 +17,7 @@ const API_BASE = (function(){
   return (base === '/' ? '/driver/' : base + 'driver/');
 })();
 
-// ?kon/kaporta SVG base path (sùrùcù paneli farkl? dizinde)
+// ?kon/kaporta SVG base path (s?r?c? paneli farkl? dizinde)
 const ICON_BASE = (function(){
   var p = document.location.pathname;
   if (p.indexOf('/tasitmedisa') === 0) return '/tasitmedisa/icon/';
@@ -25,7 +25,7 @@ const ICON_BASE = (function(){
   return '../icon/';
 })();
 
-// Sayfa yùnlendirmeleri: subpath alt?nda de?ilse relative path (localhost/driver iùin)
+// Sayfa y?nlendirmeleri: subpath alt?nda de?ilse relative path (localhost/driver i?in)
 const DRIVER_PAGE_BASE = (function(){
   var p = document.location.pathname;
   if (p.indexOf('/tasitmedisa') === 0) return '/tasitmedisa/driver/';
@@ -33,7 +33,7 @@ const DRIVER_PAGE_BASE = (function(){
   return '';
 })();
 
-// Uygulama sùrùmù (footer #version-display ù kullan?c? giri?i ve paneli 78.2)
+// Uygulama s?r?m? (footer #version-display ? kullan?c? giri?i ve paneli 78.2)
 const APP_VERSION = 'v78.2';
 
 (function setDriverVersion() {
@@ -60,16 +60,16 @@ let allHistoryVehicles = [];
 let currentDriverEventVehicleId = null;
 let currentPeriod = '';
 let selectedVehicleId = null;
-/** Bu oturumda (ekran kapanana kadar) son bildirilen aksiyon: { action, vehicleId }. Ekran kapan?nca temizlenir, ye?il geri bildirim beyaz/griye dùner. */
+/** Bu oturumda (ekran kapanana kadar) son bildirilen aksiyon: { action, vehicleId }. Ekran kapan?nca temizlenir, ye?il geri bildirim beyaz/griye d?ner. */
 let lastCompletedActionInSession = null;
-/** KM bildirimi sonras? uyar?n?n hemen kaybolmas? iùin: vehicleId -> period e?lemesi. loadDashboard cache veya geù yan?t verse bile uyar? kalks?n. */
+/** KM bildirimi sonras? uyar?n?n hemen kaybolmas? i?in: vehicleId -> period e?lemesi. loadDashboard cache veya ge? yan?t verse bile uyar? kalks?n. */
 let lastSuccessfulKmSubmissions = {};
 
 function clearSessionGreenFeedback() { lastCompletedActionInSession = null; }
 window.addEventListener('pagehide', clearSessionGreenFeedback);
 document.addEventListener('visibilitychange', function() { if (document.hidden) clearSessionGreenFeedback(); });
 
-/** iOS PWA: modal iùi input/textarea focus'ta klavye aù?ld?ktan sonra alan gùrùnùr kals?n */
+/** iOS PWA: modal i?i input/textarea focus'ta klavye a??ld?ktan sonra alan g?r?n?r kals?n */
 document.addEventListener('focusin', function(ev) {
   var el = ev.target;
   if (el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') && el.closest && el.closest('.driver-modal')) {
@@ -79,7 +79,7 @@ document.addEventListener('focusin', function(ev) {
   }
 });
 
-/** Modal aù?kken body scroll kilitlensin (sadece modal iùi kayar) */
+/** Modal a??kken body scroll kilitlensin (sadece modal i?i kayar) */
 function updateDriverModalBodyClass() {
   var open = document.querySelector('.driver-modal.show');
   if (open) document.body.classList.add('driver-modal-open');
@@ -90,7 +90,7 @@ function updateDriverModalBodyClass() {
    LOGIN SAYFASI
    ========================================= */
 
-/* Footer dimmer (sùrùm metni script-core.js taraf?ndan PWA/Mobil soneki ile yaz?l?r) */
+/* Footer dimmer (s?r?m metni script-core.js taraf?ndan PWA/Mobil soneki ile yaz?l?r) */
 (function initLoginFooterDim() {
   const footer = document.getElementById('app-footer');
   if (!footer) return;
@@ -102,11 +102,11 @@ function updateDriverModalBodyClass() {
 })();
 
 if (document.getElementById('login-form')) {
-    /* Beni Hat?rla ile giri? yap?ld?ysa token localStorage'da; giri? sayfas?na gelince do?rudan dashboard'a yùnlendir */
+    /* Beni Hat?rla ile giri? yap?ld?ysa token localStorage'da; giri? sayfas?na gelince do?rudan dashboard'a y?nlendir */
     var savedToken = localStorage.getItem('driver_token');
     if (savedToken) {
         window.location.href = DRIVER_PAGE_BASE + 'dashboard.html';
-        /* Sayfa yùnleniyor, a?a??daki event listener'lar bir kez ùal??acak; dashboard aù?l?nca sorun olmaz */
+        /* Sayfa y?nleniyor, a?a??daki event listener'lar bir kez ?al??acak; dashboard a??l?nca sorun olmaz */
     }
 
     var usernameInput = document.getElementById('username');
@@ -122,7 +122,7 @@ if (document.getElementById('login-form')) {
         if (passwordInput && savedPass) passwordInput.value = savedPass;
     }
 
-    /* iOS PWA: klavye aù?ld???nda alan gùrùnùr kals?n ù focus sonras? gecikmeli scroll */
+    /* iOS PWA: klavye a??ld???nda alan g?r?n?r kals?n ? focus sonras? gecikmeli scroll */
     function scrollInputIntoView(el) {
       if (el && typeof el.scrollIntoView === 'function') {
         setTimeout(function() { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 350);
@@ -182,7 +182,7 @@ if (document.getElementById('login-form')) {
                             sessionStorage.setItem('driver_token', tokenToStore);
                         }
                     } catch (storageErr) {
-                        console.warn('localStorage/sessionStorage yaz?lamad?, oturum bu sekme iùin geùerli olacak.', storageErr);
+                        console.warn('localStorage/sessionStorage yaz?lamad?, oturum bu sekme i?in ge?erli olacak.', storageErr);
                         try {
                             sessionStorage.setItem('driver_token', tokenToStore);
                         } catch (e2) {
@@ -200,7 +200,7 @@ if (document.getElementById('login-form')) {
             }
         } catch (error) {
             console.error('Hata:', error);
-            errorDiv.textContent = 'Ba?lant? hatas?! Lùtfen tekrar deneyin.';
+            errorDiv.textContent = 'Ba?lant? hatas?! L?tfen tekrar deneyin.';
             errorDiv.classList.add('show');
             loginBtn.disabled = false;
             btnText.style.display = 'inline';
@@ -213,7 +213,7 @@ if (document.getElementById('login-form')) {
    SPLASH (3 sn) + DASHBOARD / LOGIN
    ========================================= */
 
-/** Splash 2 sn gùster, sonra gizle ve normal ak??a devam et */
+/** Splash 2 sn g?ster, sonra gizle ve normal ak??a devam et */
 function initDriverSplash(onComplete) {
   const splash = document.getElementById('driver-splash');
   if (!splash) {
@@ -265,7 +265,7 @@ async function loadDashboard() {
             var text = await response.text();
             data = text ? JSON.parse(text) : {};
         } catch (parseErr) {
-            console.error('Veri yùkleme hatas? (JSON parse):', parseErr);
+            console.error('Veri y?kleme hatas? (JSON parse):', parseErr);
             throw new Error('Sunucu yan?t? i?lenemedi.');
         }
         if (!data || typeof data !== 'object') data = {};
@@ -275,7 +275,7 @@ async function loadDashboard() {
         if (!data.success) {
             const spinner = document.getElementById('loading-spinner');
             if (spinner) spinner.style.display = 'none';
-            alert('Oturum sùresi doldu! Lùtfen tekrar giri? yap?n.');
+            alert('Oturum s?resi doldu! L?tfen tekrar giri? yap?n.');
             logout();
             return;
         }
@@ -323,7 +323,7 @@ async function loadDashboard() {
         setupKmInputs();
         
     } catch (error) {
-        console.error('Veri yùkleme hatas?:', error);
+        console.error('Veri y?kleme hatas?:', error);
         const spinner = document.getElementById('loading-spinner');
         const emptyEl = document.getElementById('empty-state');
         if (spinner) spinner.style.display = 'none';
@@ -331,8 +331,8 @@ async function loadDashboard() {
             emptyEl.style.display = 'block';
             const h3 = emptyEl.querySelector('h3');
             const p = emptyEl.querySelector('p');
-            if (h3) h3.textContent = 'Yùkleme Hatas?';
-            if (p) p.textContent = 'Veriler yùklenemedi! Lùtfen sayfay? yenileyin.';
+            if (h3) h3.textContent = 'Y?kleme Hatas?';
+            if (p) p.textContent = 'Veriler y?klenemedi! L?tfen sayfay? yenileyin.';
             const icon = emptyEl.querySelector('.driver-empty-icon');
             if (icon) icon.textContent = '??';
         }
@@ -401,7 +401,7 @@ function renderLeftPanel(vehicles, records) {
     const kaskoSaved = !!(vehicle.kaskoDate && vehicle.kaskoDate.trim());
     const muayeneSaved = !!(vehicle.muayeneDate && vehicle.muayeneDate.trim());
     const uttsSaved = vehicle.uttsTanimlandi === true || vehicle.uttsTanimlandi === false;
-    /* Ye?il (saved) sadece bu oturumda bildirim yap?ld?ysa; pencere kapan?nca lastCompletedActionInSession temizlenir, orijinal gùrùnùme dùner */
+    /* Ye?il (saved) sadece bu oturumda bildirim yap?ld?ysa; pencere kapan?nca lastCompletedActionInSession temizlenir, orijinal g?r?n?me d?ner */
     const vid = String(vehicle.id);
     const sessionMatch = (action) => lastCompletedActionInSession && lastCompletedActionInSession.action === action && String(lastCompletedActionInSession.vehicleId) === vid;
     const kmSavedClass = sessionMatch('km') ? 'saved' : '';
@@ -411,12 +411,12 @@ function renderLeftPanel(vehicles, records) {
     const infoEl = document.getElementById('driver-vehicle-info');
     if (infoEl) {
         infoEl.innerHTML = `
-            <div class="driver-info-item"><span class="label">?ube</span><span class="value">${escapeHtmlDriver(vehicle.branchName || '-')}</span></div>
-            <div class="driver-info-item"><span class="label">ùretim Y?l?</span><span class="value">${escapeHtmlDriver(vehicle.year || '-')}</span></div>
+            <div class="driver-info-item"><span class="label">≈ûube</span><span class="value">${escapeHtmlDriver(vehicle.branchName || '-')}</span></div>
+            <div class="driver-info-item"><span class="label">√úretim Yƒ±lƒ±</span><span class="value">${escapeHtmlDriver(vehicle.year || '-')}</span></div>
             <div class="driver-info-item ${kmSavedClass}"><span class="label">KM</span><span class="value ${kmClass}">${escapeHtmlDriver(kmFormatted)}</span></div>
-            <div class="driver-info-item"><span class="label">Sigorta Biti?</span><span class="value ${sigortaW.class}">${formatDriverDate(vehicle.sigortaDate) || '-'}</span></div>
-            <div class="driver-info-item"><span class="label">Kasko Biti?</span><span class="value ${kaskoW.class}">${formatDriverDate(vehicle.kaskoDate) || '-'}</span></div>
-            <div class="driver-info-item"><span class="label">Muayene Biti?</span><span class="value ${muayeneW.class}">${formatDriverDate(vehicle.muayeneDate) || '-'}</span></div>
+            <div class="driver-info-item"><span class="label">Sigorta Biti≈ü</span><span class="value ${sigortaW.class}">${formatDriverDate(vehicle.sigortaDate) || '-'}</span></div>
+            <div class="driver-info-item"><span class="label">Kasko Biti≈ü</span><span class="value ${kaskoW.class}">${formatDriverDate(vehicle.kaskoDate) || '-'}</span></div>
+            <div class="driver-info-item"><span class="label">Muayene Biti≈ü</span><span class="value ${muayeneW.class}">${formatDriverDate(vehicle.muayeneDate) || '-'}</span></div>
             <div class="driver-info-item ${anahtarSavedClass}"><span class="label">Yedek Anahtar</span><span class="value">${escapeHtmlDriver(anahtarLabel)}</span></div>
             <div class="driver-info-item ${lastikSavedClass}"><span class="label">Lastik Durumu</span><span class="value">${escapeHtmlDriver(lastikLabel)}</span></div>
             <div class="driver-info-item"><span class="label">UTTS</span><span class="value">${escapeHtmlDriver(uttsLabel)}</span></div>
@@ -451,7 +451,7 @@ function setupPlateDropdown(vehicles) {
     dropdown.innerHTML = vehicles.map(v => {
         const raw = v.brandModel || [v.marka, v.model].filter(Boolean).join(' ');
         const brandModel = (typeof window.toTitleCase === 'function' ? window.toTitleCase : function(x){ return x; })(raw || '') || '';
-        return `<div class="driver-plate-dropdown-item" role="option" data-vehicle-id="${v.id}" tabindex="0">${escapeHtmlDriver(v.plaka)}${brandModel ? ' ù ' + escapeHtmlDriver(brandModel) : ''}</div>`;
+        return `<div class="driver-plate-dropdown-item" role="option" data-vehicle-id="${v.id}" tabindex="0">${escapeHtmlDriver(v.plaka)}${brandModel ? ' ? ' + escapeHtmlDriver(brandModel) : ''}</div>`;
     }).join('');
     
     dropdown.querySelectorAll('.driver-plate-dropdown-item').forEach(item => {
@@ -488,7 +488,7 @@ function setupPlateDropdown(vehicles) {
                 var payload = {
                     sessionId: 'ed325e',
                     location: 'driver-script.js:setupPlateDropdown',
-                    message: 'Plate dropdown open ù computed styles',
+                    message: 'Plate dropdown open ? computed styles',
                     runId: 'debug',
                     hypothesisId: 'H1-H5',
                     data: {
@@ -573,7 +573,7 @@ function buildDriverActionArea(vehicle, existingRecord, bakimVar, kazaVar, opts)
         var bp = vehicle && (vehicle.boyaliParcalar || {});
         if (bp && typeof bp === 'object' && !Array.isArray(bp)) boyaliJson = JSON.stringify(bp);
     } catch (e) { boyaliJson = '{}'; }
-    /* Son gùncellenen km: ta??t guncelKm (kay?t sonras?) veya mevcut dùnem kayd? - binlik ay?r?c? ile */
+    /* Son g?ncellenen km: ta??t guncelKm (kay?t sonras?) veya mevcut d?nem kayd? - binlik ay?r?c? ile */
     const lastKm = vehicle && (vehicle.guncelKm != null ? vehicle.guncelKm : (existingRecord && existingRecord.guncel_km != null ? existingRecord.guncel_km : ''));
     const kmVal = (lastKm !== '' && lastKm != null) ? esc(formatKm(lastKm)) : '';
     const bakimTarih = existingRecord && existingRecord.bakim_tarih ? existingRecord.bakim_tarih : today;
@@ -596,15 +596,15 @@ function buildDriverActionArea(vehicle, existingRecord, bakimVar, kazaVar, opts)
                 <div id="km-block-${vid}" class="driver-input-form driver-km-form-wrap driver-action-block">
                     <div class="driver-km-form-content">
                         <div class="form-group driver-km-form">
-                            <label for="km-${vid}">Gùncel KM</label>
+                            <label for="km-${vid}">G?ncel KM</label>
                             <div class="driver-km-input-wrap">
-                                <span class="driver-km-fake-placeholder" id="km-placeholder-${vid}">ùrn: 45.230</span>
-                                <input type="text" id="km-${vid}" class="driver-km-input" inputmode="numeric" pattern="[0-9]*" maxlength="8" data-vehicle-id="${vid}" value="${kmVal}" required autocomplete="off" aria-label="Gùncel kilometre">
+                                <span class="driver-km-fake-placeholder" id="km-placeholder-${vid}">?rn: 45.230</span>
+                                <input type="text" id="km-${vid}" class="driver-km-input" inputmode="numeric" pattern="[0-9]*" maxlength="8" data-vehicle-id="${vid}" value="${kmVal}" required autocomplete="off" aria-label="G?ncel kilometre">
                             </div>
                         </div>
                         <div class="universal-btn-group">
                             <button type="button" class="universal-btn-save" onclick="submitKmOnly('${vid}')">Bildir</button>
-                            <button type="button" class="universal-btn-cancel" onclick="cancelKmForm('${vid}')">Vazgeù</button>
+                            <button type="button" class="universal-btn-cancel" onclick="cancelKmForm('${vid}')">Vazge?</button>
                         </div>
                     </div>
                     <div class="driver-km-success-msg" id="km-success-${vid}">Bildirildi</div>
@@ -615,12 +615,12 @@ function buildDriverActionArea(vehicle, existingRecord, bakimVar, kazaVar, opts)
                 <button type="button" class="driver-action-btn${kazaBtnClass}" data-action="kaza" onclick="toggleDriverActionBlock('kaza','${vid}')">Kaza Bildir</button>
                 <div id="kaza-block-${vid}" class="driver-report-block driver-report-block-kaza driver-action-block">
                     <div class="form-group"><label for="kaza-tarih-${vid}">Kaza Tarihi</label><input type="date" id="kaza-tarih-${vid}" class="driver-kaza-input" value="${kazaTarih}"></div>
-                    <div class="form-group"><label for="kaza-detay-${vid}">Aù?klama</label><textarea id="kaza-detay-${vid}" class="driver-report-textarea-auto driver-kaza-textarea" rows="1" placeholder="Kaza aù?klamas?n? yaz?n..." maxlength="500">${kazaAciklama}</textarea></div>
+                    <div class="form-group"><label for="kaza-detay-${vid}">A??klama</label><textarea id="kaza-detay-${vid}" class="driver-report-textarea-auto driver-kaza-textarea" rows="1" placeholder="Kaza a??klamas?n? yaz?n..." maxlength="500">${kazaAciklama}</textarea></div>
                     <div class="form-group"><label for="kaza-tutar-${vid}">Hasar Tutar? (TL)</label><input type="text" id="kaza-tutar-${vid}" class="driver-kaza-input" placeholder="5.000" inputmode="numeric"></div>
-                    <div class="form-group"><label class="driver-kaporta-label">Varsa Boyanan/ De?i?en Parùalar? ??aretleyin</label><div id="kaza-kaporta-${vid}" class="driver-kaporta-container" data-vehicle-id="${vid}" data-boyali-parcalar='${boyaliJson}'></div></div>
+                    <div class="form-group"><label class="driver-kaporta-label">Varsa Boyanan/ De?i?en Par?alar? ??aretleyin</label><div id="kaza-kaporta-${vid}" class="driver-kaporta-container" data-vehicle-id="${vid}" data-boyali-parcalar='${boyaliJson}'></div></div>
                     <div class="universal-btn-group">
                         <button type="button" class="universal-btn-save" onclick="submitDriverAction('kaza','${vid}')">Bildir</button>
-                        <button type="button" class="universal-btn-cancel" onclick="cancelDriverActionForm('kaza','${vid}')">Vazgeù</button>
+                        <button type="button" class="universal-btn-cancel" onclick="cancelDriverActionForm('kaza','${vid}')">Vazge?</button>
                     </div>
                     <div class="driver-success-msg" id="kaza-success-${vid}">Bildirildi</div>
                 </div>
@@ -629,14 +629,14 @@ function buildDriverActionArea(vehicle, existingRecord, bakimVar, kazaVar, opts)
                 <button type="button" class="driver-action-btn${bakimBtnClass}" data-action="bakim" onclick="toggleDriverActionBlock('bakim','${vid}')">Bak?m Bildir</button>
                 <div id="bakim-block-${vid}" class="driver-report-block driver-report-block-bakim driver-action-block">
                     <div class="form-group"><label for="bakim-tarih-${vid}">Bak?m Tarihi</label><input type="date" id="bakim-tarih-${vid}" class="driver-bakim-input" value="${bakimTarih}"></div>
-                    <div class="form-group"><label for="bakim-detay-${vid}">Aù?klama</label><textarea id="bakim-detay-${vid}" class="driver-report-textarea-auto driver-bakim-textarea" rows="1" placeholder="Bak?m detay?n? yaz?n..." maxlength="500">${bakimAciklama}</textarea></div>
+                    <div class="form-group"><label for="bakim-detay-${vid}">A??klama</label><textarea id="bakim-detay-${vid}" class="driver-report-textarea-auto driver-bakim-textarea" rows="1" placeholder="Bak?m detay?n? yaz?n..." maxlength="500">${bakimAciklama}</textarea></div>
                     <div class="form-group"><label for="bakim-servis-${vid}">??lemi Yapan Servis</label><input type="text" id="bakim-servis-${vid}" class="driver-bakim-input" placeholder="Servis ad?"></div>
-                    <div class="form-group"><label for="bakim-kisi-${vid}">Ta??t? Bak?ma Gùtùren Ki?i</label><input type="text" id="bakim-kisi-${vid}" class="driver-bakim-input" placeholder="Ki?i ad?"></div>
+                    <div class="form-group"><label for="bakim-kisi-${vid}">Ta??t? Bak?ma G?t?ren Ki?i</label><input type="text" id="bakim-kisi-${vid}" class="driver-bakim-input" placeholder="Ki?i ad?"></div>
                     <div class="form-group"><label for="bakim-km-${vid}">Bak?m Km</label><input type="text" id="bakim-km-${vid}" class="driver-bakim-input" placeholder="50.000" inputmode="numeric"></div>
                     <div class="form-group"><label for="bakim-tutar-${vid}">Tutar (TL)</label><input type="text" id="bakim-tutar-${vid}" class="driver-bakim-input" placeholder="2.500" inputmode="numeric"></div>
                     <div class="universal-btn-group">
                         <button type="button" class="universal-btn-save" onclick="submitDriverAction('bakim','${vid}')">Bildir</button>
-                        <button type="button" class="universal-btn-cancel" onclick="cancelDriverActionForm('bakim','${vid}')">Vazgeù</button>
+                        <button type="button" class="universal-btn-cancel" onclick="cancelDriverActionForm('bakim','${vid}')">Vazge?</button>
                     </div>
                     <div class="driver-success-msg" id="bakim-success-${vid}">Bildirildi</div>
                 </div>
@@ -644,26 +644,26 @@ function buildDriverActionArea(vehicle, existingRecord, bakimVar, kazaVar, opts)
             <div class="driver-action-group">
                 <button type="button" class="driver-action-btn${sigortaBtnClass}" data-action="sigorta" onclick="toggleDriverActionBlock('sigorta','${vid}')">Trafik Sigortas? Yenileme</button>
                 <div id="sigorta-block-${vid}" class="driver-report-block driver-report-block-sigorta driver-action-block">
-                    <div class="form-group"><label for="driver-sigorta-tarih-${vid}">Yenileme / Ba?lang?ù Tarihi</label><input type="date" id="driver-sigorta-tarih-${vid}" class="form-input" style="width:100%"></div>
+                    <div class="form-group"><label for="driver-sigorta-tarih-${vid}">Yenileme / Ba?lang?? Tarihi</label><input type="date" id="driver-sigorta-tarih-${vid}" class="form-input" style="width:100%"></div>
                     <div class="form-group"><label for="driver-sigorta-firma-${vid}">Firma (iste?e ba?l?)</label><input type="text" id="driver-sigorta-firma-${vid}" class="form-input" placeholder="Sigorta firmas?" style="width:100%"></div>
                     <div class="form-group"><label for="driver-sigorta-acente-${vid}">Acente (iste?e ba?l?)</label><input type="text" id="driver-sigorta-acente-${vid}" class="form-input" placeholder="Acente ad?" style="width:100%"></div>
                     <div class="form-group"><label for="driver-sigorta-iletisim-${vid}">?leti?im (iste?e ba?l?)</label><input type="text" id="driver-sigorta-iletisim-${vid}" class="form-input" placeholder="Telefon / e-posta" inputmode="tel" style="width:100%"></div>
                     <div class="universal-btn-group">
                         <button type="button" class="universal-btn-save" onclick="saveDriverEventFromBlock('sigorta','${vid}')">Bildir</button>
-                        <button type="button" class="universal-btn-cancel" onclick="cancelDriverActionForm('sigorta','${vid}')">Vazgeù</button>
+                        <button type="button" class="universal-btn-cancel" onclick="cancelDriverActionForm('sigorta','${vid}')">Vazge?</button>
                     </div>
                 </div>
             </div>
             <div class="driver-action-group">
                 <button type="button" class="driver-action-btn${kaskoBtnClass}" data-action="kasko" onclick="toggleDriverActionBlock('kasko','${vid}')">Kasko Yenileme</button>
                 <div id="kasko-block-${vid}" class="driver-report-block driver-report-block-kasko driver-action-block">
-                    <div class="form-group"><label for="driver-kasko-tarih-${vid}">Yenileme / Ba?lang?ù Tarihi</label><input type="date" id="driver-kasko-tarih-${vid}" class="form-input" style="width:100%"></div>
+                    <div class="form-group"><label for="driver-kasko-tarih-${vid}">Yenileme / Ba?lang?? Tarihi</label><input type="date" id="driver-kasko-tarih-${vid}" class="form-input" style="width:100%"></div>
                     <div class="form-group"><label for="driver-kasko-firma-${vid}">Firma (iste?e ba?l?)</label><input type="text" id="driver-kasko-firma-${vid}" class="form-input" placeholder="Kasko firmas?" style="width:100%"></div>
                     <div class="form-group"><label for="driver-kasko-acente-${vid}">Acente (iste?e ba?l?)</label><input type="text" id="driver-kasko-acente-${vid}" class="form-input" placeholder="Acente ad?" style="width:100%"></div>
                     <div class="form-group"><label for="driver-kasko-iletisim-${vid}">?leti?im (iste?e ba?l?)</label><input type="text" id="driver-kasko-iletisim-${vid}" class="form-input" placeholder="Telefon / e-posta" inputmode="tel" style="width:100%"></div>
                     <div class="universal-btn-group">
                         <button type="button" class="universal-btn-save" onclick="saveDriverEventFromBlock('kasko','${vid}')">Bildir</button>
-                        <button type="button" class="universal-btn-cancel" onclick="cancelDriverActionForm('kasko','${vid}')">Vazgeù</button>
+                        <button type="button" class="universal-btn-cancel" onclick="cancelDriverActionForm('kasko','${vid}')">Vazge?</button>
                     </div>
                 </div>
             </div>
@@ -673,7 +673,7 @@ function buildDriverActionArea(vehicle, existingRecord, bakimVar, kazaVar, opts)
                     <div class="form-group"><label for="driver-muayene-tarih-${vid}">Yapt?r?lan Tarih</label><input type="date" id="driver-muayene-tarih-${vid}" class="form-input" style="width:100%"></div>
                     <div class="universal-btn-group">
                         <button type="button" class="universal-btn-save" onclick="saveDriverEventFromBlock('muayene','${vid}')">Bildir</button>
-                        <button type="button" class="universal-btn-cancel" onclick="cancelDriverActionForm('muayene','${vid}')">Vazgeù</button>
+                        <button type="button" class="universal-btn-cancel" onclick="cancelDriverActionForm('muayene','${vid}')">Vazge?</button>
                     </div>
                 </div>
             </div>
@@ -688,12 +688,12 @@ function buildDriverActionArea(vehicle, existingRecord, bakimVar, kazaVar, opts)
                         </div>
                     </div>
                     <div id="driver-anahtar-detay-wrap-${vid}" class="form-group" style="display:none">
-                        <label for="driver-anahtar-detay-${vid}" style="color:#ccc;font-size:15px;">Aù?klama:</label>
+                        <label for="driver-anahtar-detay-${vid}" style="color:#ccc;font-size:15px;">A??klama:</label>
                         <input type="text" id="driver-anahtar-detay-${vid}" class="form-input" placeholder="Anahtar nerede?" style="width:100%">
                     </div>
                     <div class="universal-btn-group">
                         <button type="button" class="universal-btn-save" onclick="saveDriverEventFromBlock('anahtar','${vid}')">Bildir</button>
-                        <button type="button" class="universal-btn-cancel" onclick="cancelDriverActionForm('anahtar','${vid}')">Vazgeù</button>
+                        <button type="button" class="universal-btn-cancel" onclick="cancelDriverActionForm('anahtar','${vid}')">Vazge?</button>
                     </div>
                 </div>
             </div>
@@ -713,7 +713,7 @@ function buildDriverActionArea(vehicle, existingRecord, bakimVar, kazaVar, opts)
                     </div>
                     <div class="universal-btn-group">
                         <button type="button" class="universal-btn-save" onclick="saveDriverEventFromBlock('lastik','${vid}')">Bildir</button>
-                        <button type="button" class="universal-btn-cancel" onclick="cancelDriverActionForm('lastik','${vid}')">Vazgeù</button>
+                        <button type="button" class="universal-btn-cancel" onclick="cancelDriverActionForm('lastik','${vid}')">Vazge?</button>
                     </div>
                 </div>
             </div>
@@ -825,34 +825,34 @@ window.submitDriverAction = async function(type, vid) {
         if (rec != null && rec.guncel_km != null) guncelKm = parseInt(String(rec.guncel_km).replace(/\D/g, ''), 10);
     }
     if (!guncelKm || guncelKm <= 0) {
-        alert('Lùtfen geùerli bir KM de?eri girin (Km alan? veya mevcut kay?t).');
+        alert('L?tfen ge?erli bir KM de?eri girin (Km alan? veya mevcut kay?t).');
         if (guncelKmEl) guncelKmEl.focus();
         return;
     }
-    var btnBildir, btnVazgec, formActions, successMsg;
+    var btnBildir, btnVazge?c, formActions, successMsg;
     if (type === 'kaza') {
         var kazaAciklama = (document.getElementById('kaza-detay-' + vid) || {}).value.trim();
         if (!kazaAciklama) {
-            alert('Kaza bildirimi iùin aù?klama girin.');
+            alert('Kaza bildirimi i?in a??klama girin.');
             return;
         }
         btnBildir = document.querySelector('#kaza-block-' + vid + ' .universal-btn-save');
-        btnVazgec = document.querySelector('#kaza-block-' + vid + ' .universal-btn-cancel');
+        btnVazge?c = document.querySelector('#kaza-block-' + vid + ' .universal-btn-cancel');
         formActions = document.querySelector('#kaza-block-' + vid + ' .universal-btn-group');
         successMsg = document.getElementById('kaza-success-' + vid);
     } else {
         var bakimAciklama = (document.getElementById('bakim-detay-' + vid) || {}).value.trim();
         if (!bakimAciklama) {
-            alert('Bak?m bildirimi iùin aù?klama girin.');
+            alert('Bak?m bildirimi i?in a??klama girin.');
             return;
         }
         btnBildir = document.querySelector('#bakim-block-' + vid + ' .universal-btn-save');
-        btnVazgec = document.querySelector('#bakim-block-' + vid + ' .universal-btn-cancel');
+        btnVazge?c = document.querySelector('#bakim-block-' + vid + ' .universal-btn-cancel');
         formActions = document.querySelector('#bakim-block-' + vid + ' .universal-btn-group');
         successMsg = document.getElementById('bakim-success-' + vid);
     }
     if (btnBildir) btnBildir.disabled = true;
-    if (btnVazgec) btnVazgec.disabled = true;
+    if (btnVazge?c) btnVazge?c.disabled = true;
     var payload = {
         arac_id: parseInt(vid, 10),
         guncel_km: guncelKm,
@@ -927,7 +927,7 @@ window.submitDriverAction = async function(type, vid) {
         alert('Ba?lant? hatas?.');
     } finally {
         if (btnBildir) btnBildir.disabled = false;
-        if (btnVazgec) btnVazgec.disabled = false;
+        if (btnVazge?c) btnVazge?c.disabled = false;
     }
 };
 
@@ -935,7 +935,7 @@ window.submitKmOnly = async function(vid) {
     const kmEl = document.getElementById('km-' + vid);
     const km = kmEl ? parseInt(String(kmEl.value).replace(/\D/g, ''), 10) : 0;
     if (!km || km <= 0) {
-        alert('Lùtfen geùerli bir KM de?eri girin!');
+        alert('L?tfen ge?erli bir KM de?eri girin!');
         if (kmEl) kmEl.focus();
         return;
     }
@@ -944,18 +944,18 @@ window.submitKmOnly = async function(vid) {
     var oncekiKm = (vehicle && (vehicle.guncelKm != null ? vehicle.guncelKm : '')) || (rec && rec.guncel_km != null ? rec.guncel_km : '');
     var oncekiKmNum = parseInt(String(oncekiKm).replace(/\D/g, ''), 10) || 0;
     if (oncekiKmNum > 0 && km < oncekiKmNum) {
-        alert('Bildirilmek ?stenen Km, ùnceki Kay?tlarla Uyu?mamaktad?r. ?irket Yetkilisi ?le Gùrù?ùn');
+        alert('Bildirilmek ?stenen Km, ?nceki Kay?tlarla Uyu?mamaktad?r. ?irket Yetkilisi ?le G?r???n');
         if (kmEl) kmEl.focus();
         return;
     }
     const btnBildir = document.querySelector('#km-block-' + vid + ' .universal-btn-save');
-    const btnVazgec = document.querySelector('#km-block-' + vid + ' .universal-btn-cancel');
+    const btnVazge?c = document.querySelector('#km-block-' + vid + ' .universal-btn-cancel');
     const formContent = document.querySelector('#km-block-' + vid + ' .driver-km-form-content');
     const successMsg = document.getElementById('km-success-' + vid);
     const errorEl = document.getElementById('km-error-' + vid);
     if (errorEl) { errorEl.classList.remove('show'); errorEl.textContent = ''; }
     if (btnBildir) btnBildir.disabled = true;
-    if (btnVazgec) btnVazgec.disabled = true;
+    if (btnVazge?c) btnVazge?c.disabled = true;
     try {
         const response = await fetch(API_BASE + 'driver_save.php', {
             method: 'POST',
@@ -1017,7 +1017,7 @@ window.submitKmOnly = async function(vid) {
         if (errorEl) { errorEl.textContent = 'Ba?lant? hatas?.'; errorEl.classList.add('show'); }
     } finally {
         if (btnBildir) btnBildir.disabled = false;
-        if (btnVazgec) btnVazgec.disabled = false;
+        if (btnVazge?c) btnVazge?c.disabled = false;
     }
 };
 
@@ -1031,21 +1031,21 @@ function buildSlidingWarnings(vehicles, records) {
         const optVal = lastSuccessfulKmSubmissions[vid] || lastSuccessfulKmSubmissions[String(v.id)];
         const fromOptimistic = optVal && String(optVal).trim() === period;
         const hasKmThisMonth = fromRecords || !!fromOptimistic;
-        /* Yeni al?nan araù: bu ay sisteme eklenen araù iùin km uyar?s? gùsterme */
+        /* Yeni al?nan ara?: bu ay sisteme eklenen ara? i?in km uyar?s? g?sterme */
         const createdAt = v.createdAt || '';
         const createdPeriod = createdAt ? String(createdAt).slice(0, 7).replace(/-/g, '') : '';
         const periodNum = period.replace(/-/g, '');
         const isNewThisMonth = createdPeriod && createdPeriod === periodNum;
         if (!hasKmThisMonth && !isNewThisMonth) {
-            warnings.push({ text: v.plaka + ' Plakal? Ta??t?n Gùncel Km Bildirimi Yap?lmam??t?r', plaka: v.plaka });
+            warnings.push({ text: v.plaka + ' Plakal? Ta??t?n G?ncel Km Bildirimi Yap?lmam??t?r', plaka: v.plaka });
         }
         const checkDate = (dateStr, label) => {
             if (!dateStr) return;
             const w = checkDateWarningsDriver(dateStr);
             if (w.class && w.days != null) {
                 let msg;
-                if (w.days < 0) msg = v.plaka + ' Plakal? Ta??t?n ' + label + ' Tarihi ' + Math.abs(w.days) + ' Gùn Geùmi?tir';
-                else msg = v.plaka + ' Plakal? Ta??t?n ' + label + ' Tarihine ' + w.days + ' Gùn Kalm??t?r';
+                if (w.days < 0) msg = v.plaka + ' Plakal? Ta??t?n ' + label + ' Tarihi ' + Math.abs(w.days) + ' G?n Ge?mi?tir';
+                else msg = v.plaka + ' Plakal? Ta??t?n ' + label + ' Tarihine ' + w.days + ' G?n Kalm??t?r';
                 warnings.push({ text: msg, plaka: v.plaka });
             }
         };
@@ -1082,7 +1082,7 @@ function renderSlidingWarning(vehicles, records) {
         var textSpan = container.querySelector('.driver-warning-text');
         if (!textSpan) return;
         container.classList.remove('driver-warning-scroll');
-        /* Ta?ma kontrolù: metin geni?li?i mevcut alandan fazlaysa marquee yap */
+        /* Ta?ma kontrol?: metin geni?li?i mevcut alandan fazlaysa marquee yap */
         var raw = (textSpan.textContent || '').trim();
         if (raw.length === 0) return;
         var measure = document.createElement('span');
@@ -1106,7 +1106,7 @@ function renderSlidingWarning(vehicles, records) {
         const text = texts[idx];
         el.innerHTML = '<span class="driver-warning-icon" aria-hidden="true">?</span> <span class="driver-warning-text">' + escapeHtmlDriver(text) + '</span>';
         el.className = 'driver-sliding-warning' + (cycleCount >= 3 ? ' driver-warning-pulse' : '');
-        /* Ta?ma varsa sola kayan marquee uygula (requestAnimationFrame ile ùlùùm do?ru yap?ls?n) */
+        /* Ta?ma varsa sola kayan marquee uygula (requestAnimationFrame ile ?l??m do?ru yap?ls?n) */
         requestAnimationFrame(function() { applyMarqueeIfOverflow(el); });
         idx = (idx + 1) % texts.length;
         if (idx === 0) {
@@ -1200,13 +1200,13 @@ window.openDriverEventMenu = function(vehicleId) {
     const list = document.getElementById('driver-event-menu-list');
     if (!modal || !list) return;
     const events = [
-        { id: 'km', label: 'Km Gùncelle' },
+        { id: 'km', label: 'Km G?ncelle' },
         { id: 'bakim', label: 'Bak?m Bilgisi Ekle' },
         { id: 'kaza', label: 'Kaza Bilgisi Ekle' },
-        { id: 'anahtar', label: 'Yedek Anahtar Bilgisi Gùncelle' },
-        { id: 'lastik', label: 'Yazl?k/K??l?k Lastik Durumu Gùncelle' },
-        { id: 'utts', label: 'UTTS Bilgisi Gùncelle' },
-        { id: 'muayene', label: 'Muayene Bilgisi Gùncelle' },
+        { id: 'anahtar', label: 'Yedek Anahtar Bilgisi G?ncelle' },
+        { id: 'lastik', label: 'Yazl?k/K??l?k Lastik Durumu G?ncelle' },
+        { id: 'utts', label: 'UTTS Bilgisi G?ncelle' },
+        { id: 'muayene', label: 'Muayene Bilgisi G?ncelle' },
         { id: 'sigorta', label: 'Trafik Sigortas? Yenileme' },
         { id: 'kasko', label: 'Kasko Yenileme' }
     ];
@@ -1375,13 +1375,13 @@ window.saveDriverEventFromBlock = async function(type, vehicleId) {
     if (type === 'anahtar') {
         const block = document.getElementById('anahtar-block-' + vehicleId);
         const active = block ? block.querySelector('.driver-radio-btn.active') : null;
-        if (!active) { alert('Lùtfen Durum seùiniz!'); return; }
+        if (!active) { alert('L?tfen Durum se?iniz!'); return; }
         const durum = active.dataset.value;
         data = { durum: durum, detay: durum === 'var' ? (document.getElementById('driver-anahtar-detay-' + vehicleId)?.value.trim() || '') : '' };
     } else if (type === 'lastik') {
         const block = document.getElementById('lastik-block-' + vehicleId);
         const active = block ? block.querySelector('.driver-radio-btn.active') : null;
-        if (!active) { alert('Lùtfen Durum seùiniz!'); return; }
+        if (!active) { alert('L?tfen Durum se?iniz!'); return; }
         const durum = active.dataset.value;
         data = { durum: durum, adres: durum === 'var' ? (document.getElementById('driver-lastik-adres-' + vehicleId)?.value.trim() || '') : '' };
     } else if (type === 'muayene') {
@@ -1433,12 +1433,12 @@ window.saveDriverEvent = async function(type) {
     let data = {};
     if (type === 'anahtar') {
         const active = document.querySelector('#driver-anahtar-modal .driver-radio-btn.active');
-        if (!active) { alert('Lùtfen Durum seùiniz!'); return; }
+        if (!active) { alert('L?tfen Durum se?iniz!'); return; }
         const durum = active.dataset.value;
         data = { durum: durum, detay: durum === 'var' ? (document.getElementById('driver-anahtar-detay')?.value.trim() || '') : '' };
     } else if (type === 'lastik') {
         const active = document.querySelector('#driver-lastik-modal .driver-radio-btn.active');
-        if (!active) { alert('Lùtfen Durum seùiniz!'); return; }
+        if (!active) { alert('L?tfen Durum se?iniz!'); return; }
         const durum = active.dataset.value;
         data = { durum: durum, adres: durum === 'var' ? (document.getElementById('driver-lastik-adres')?.value.trim() || '') : '' };
     } else if (type === 'utts') {
@@ -1495,7 +1495,7 @@ window.saveDriverEvent = async function(type) {
     }
 };
 
-// Blok Aù/Kapa (aksiyon butonlar?ndan ùa?r?l?r)
+// Blok A?/Kapa (aksiyon butonlar?ndan ?a?r?l?r)
 window.toggleAndScrollToBlock = function(type, vehicleId) {
     toggleReportBlock(type, vehicleId);
     const block = document.getElementById(type + '-block-' + vehicleId);
@@ -1511,12 +1511,12 @@ window.toggleReportBlock = function(type, vehicleId) {
         block.classList.remove('show');
     } else {
         block.classList.add('show');
-        // Aù?l?nca tarih bo?sa bugùnùn tarihini ver
+        // A??l?nca tarih bo?sa bug?n?n tarihini ver
         const dateEl = document.getElementById(`${type}-tarih-${vehicleId}`);
         if(dateEl && !dateEl.value) {
              dateEl.value = new Date().toISOString().split('T')[0];
         }
-        // Kaza bloku aù?ld???nda kaporta SVG'yi ilk kez yùkle (container bo?sa)
+        // Kaza bloku a??ld???nda kaporta SVG'yi ilk kez y?kle (container bo?sa)
         if (type === 'kaza') {
             const container = document.getElementById('kaza-kaporta-' + vehicleId);
             if (container && !container.querySelector('svg')) {
@@ -1532,7 +1532,7 @@ window.toggleReportBlock = function(type, vehicleId) {
 };
 
 /**
- * Sùrùcù paneli kaza blokunda kaporta SVG yùkler; mevcut boyaliParcalar uygulan?r, parùalar t?klanarak boyasiz/boyali/degisen dùngùsù
+ * S?r?c? paneli kaza blokunda kaporta SVG y?kler; mevcut boyaliParcalar uygulan?r, par?alar t?klanarak boyasiz/boyali/degisen d?ng?s?
  */
 function initDriverKaporta(vehicleId, boyaliParcalar) {
     const container = document.getElementById('kaza-kaporta-' + vehicleId);
@@ -1572,7 +1572,7 @@ function initDriverKaporta(vehicleId, boyaliParcalar) {
                 part.setAttribute('fill', '#888888');
                 part.style.fill = '#888888';
             });
-            // ùnceki kazalardan gelen parùalar: sadece gùrsel, readonly, dataset.state atanmaz (yeni kayda dahil edilmez)
+            // ?nceki kazalardan gelen par?alar: sadece g?rsel, readonly, dataset.state atanmaz (yeni kayda dahil edilmez)
             Object.keys(boyaliParcalar).forEach(function(partId) {
                 if (partId === 'araba-govde') return;
                 const part = svgClone.querySelector('#' + CSS.escape(partId));
@@ -1588,7 +1588,7 @@ function initDriverKaporta(vehicleId, boyaliParcalar) {
                 part.style.pointerEvents = 'none';
                 part.style.opacity = '0.7';
             });
-            // Bu kazada seùilebilecek parùalar: t?klanabilir, sadece bunlar kayda gider
+            // Bu kazada se?ilebilecek par?alar: t?klanabilir, sadece bunlar kayda gider
             allParts.forEach(function(part) {
                 const partId = part.getAttribute('id');
                 if (partId === 'araba-govde') return;
@@ -1628,7 +1628,7 @@ function initDriverKaporta(vehicleId, boyaliParcalar) {
             schemaWrapper.appendChild(legend);
             container.appendChild(schemaWrapper);
         })
-        .catch(function(err) { console.error('Kaporta SVG yùklenemedi:', err); });
+        .catch(function(err) { console.error('Kaporta SVG y?klenemedi:', err); });
 }
 
 // Kaydetme
@@ -1650,29 +1650,29 @@ window.saveVehicleData = async function(vehicleId) {
 
     const not = document.getElementById(`not-${vehicleId}`).value;
 
-    // Panel aù?k veya aù?klama doluysa "Var" say
+    // Panel a??k veya a??klama doluysa "Var" say
     const bakimVar = bakimBlock.classList.contains('show') || bakimAciklama.length > 0;
     const kazaVar = kazaBlock.classList.contains('show') || kazaAciklama.length > 0;
 
     if (!km || km <= 0) {
-        alert('Lùtfen geùerli bir KM de?eri girin!');
+        alert('L?tfen ge?erli bir KM de?eri girin!');
         document.getElementById(`km-${vehicleId}`).focus();
         return;
     }
 
     if (bakimVar && bakimAciklama === '') {
-        alert('Bak?m bildirdiniz, lùtfen aù?klama girin veya iptal etmek iùin paneli kapat?n.');
+        alert('Bak?m bildirdiniz, l?tfen a??klama girin veya iptal etmek i?in paneli kapat?n.');
         bakimBlock.classList.add('show');
         return;
     }
 
     if (kazaVar && kazaAciklama === '') {
-        alert('Kaza bildirdiniz, lùtfen aù?klama girin veya iptal etmek iùin paneli kapat?n.');
+        alert('Kaza bildirdiniz, l?tfen a??klama girin veya iptal etmek i?in paneli kapat?n.');
         kazaBlock.classList.add('show');
         return;
     }
     
-    // Kaporta: sadece boyal?/de?i?en parùalar? topla
+    // Kaporta: sadece boyal?/de?i?en par?alar? topla
     let boyaParcalar = {};
     const kaportaContainer = document.getElementById('kaza-kaporta-' + vehicleId);
     if (kaportaContainer) {
@@ -1719,7 +1719,7 @@ window.saveVehicleData = async function(vehicleId) {
         
         if (data.success) {
             showStatus(vehicleId, 'success', '? Kaydedildi!');
-            btn.textContent = 'GùNCELLE';
+            btn.textContent = 'G?NCELLE';
 
             lastCompletedActionInSession = { action: 'km', vehicleId: vehicleId };
             const period = (currentPeriod || new Date().toISOString().slice(0, 7)).toString().trim();
@@ -1768,11 +1768,11 @@ function showStatus(vehicleId, type, message) {
     }, 5000);
 }
 
-// Dùnem format?
+// D?nem format?
 function formatPeriod(period) {
     const [year, month] = period.split('-');
     const months = ['OCAK', '?UBAT', 'MART', 'N?SAN', 'MAYIS', 'HAZ?RAN',
-                    'TEMMUZ', 'A?USTOS', 'EYLùL', 'EK?M', 'KASIM', 'ARALIK'];
+                    'TEMMUZ', 'A?USTOS', 'EYL?L', 'EK?M', 'KASIM', 'ARALIK'];
     return `${months[parseInt(month) - 1]} ${year}`;
 }
 
@@ -1790,7 +1790,7 @@ function updateHistoryTriggerTone(selectedValue) {
     trigger.classList.toggle('history-all-selected', isAllSelected);
 }
 
-// Geùmi? kay?tlar - custom dropdown
+// Ge?mi? kay?tlar - custom dropdown
 window.showHistory = function() {
     var modal = document.getElementById('history-modal');
     var hiddenInput = document.getElementById('history-vehicle-filter');
@@ -1802,8 +1802,8 @@ window.showHistory = function() {
     var optAll = document.createElement('div');
     optAll.className = 'history-vehicle-option';
     optAll.dataset.value = '';
-    optAll.textContent = 'Tùm Ta??tlar';
-    optAll.onclick = function() { selectHistoryVehicle('', 'Tùm Ta??tlar'); };
+    optAll.textContent = 'T?m Ta??tlar';
+    optAll.onclick = function() { selectHistoryVehicle('', 'T?m Ta??tlar'); };
     dropdown.appendChild(optAll);
     (allHistoryVehicles || []).forEach(function(v) {
         var opt = document.createElement('div');
@@ -1811,17 +1811,17 @@ window.showHistory = function() {
         opt.dataset.value = String(v.id);
         var raw = v.brandModel || [v.marka, v.model].filter(Boolean).join(' ');
         var brandModel = (typeof window.toTitleCase === 'function' ? window.toTitleCase : function(x){ return x; })(raw || '') || '';
-        opt.textContent = [v.plaka, brandModel].filter(Boolean).join(' ù ');
+        opt.textContent = [v.plaka, brandModel].filter(Boolean).join(' ? ');
         opt.onclick = function() { selectHistoryVehicle(String(v.id), opt.textContent); };
         dropdown.appendChild(opt);
     });
     var defaultVal = '';
-    var defaultText = 'Tùm Ta??tlar';
+    var defaultText = 'T?m Ta??tlar';
     if (allHistoryVehicles && allHistoryVehicles.length === 1) {
         defaultVal = String(allHistoryVehicles[0].id);
         var rawBm = allHistoryVehicles[0].brandModel || [allHistoryVehicles[0].marka, allHistoryVehicles[0].model].filter(Boolean).join(' ');
         var bm = (typeof window.toTitleCase === 'function' ? window.toTitleCase : function(x){ return x; })(rawBm || '') || '';
-        defaultText = [allHistoryVehicles[0].plaka, bm].filter(Boolean).join(' ù ');
+        defaultText = [allHistoryVehicles[0].plaka, bm].filter(Boolean).join(' ? ');
     }
     hiddenInput.value = defaultVal;
     if (triggerText) triggerText.textContent = defaultText;
@@ -1972,12 +1972,12 @@ function renderHistoryList() {
     try {
         sorted = buildCombinedHistoryList();
     } catch (e) {
-        listEl.innerHTML = '<p class="history-empty">Kay?tlar yùklenirken hata olu?tu.</p>';
+        listEl.innerHTML = '<p class="history-empty">Kay?tlar y?klenirken hata olu?tu.</p>';
         return;
     }
     listEl.innerHTML = '';
     if (!sorted || sorted.length === 0) {
-        listEl.innerHTML = '<p class="history-empty">Geùmi? kay?t bulunamad?.</p>';
+        listEl.innerHTML = '<p class="history-empty">Ge?mi? kay?t bulunamad?.</p>';
         return;
     }
     window._historyRecordMap = window._historyRecordMap || {};
@@ -2007,15 +2007,15 @@ function renderHistoryList() {
             const d = item.data || {};
             if (item.eventType === 'anahtar-guncelle') {
                 const durum = (d.durum === 'var') ? 'Var' : 'Yok';
-                detailsHtml = `<p>${escapeHtmlDriver(capitalizeWords('Yedek anahtar durumu ' + durum + ' olarak gùncellendi'))}</p>`;
+                detailsHtml = `<p>${escapeHtmlDriver(capitalizeWords('Yedek anahtar durumu ' + durum + ' olarak g?ncellendi'))}</p>`;
             } else if (item.eventType === 'lastik-guncelle') {
                 const durum = (d.durum === 'var') ? 'Var' : 'Yok';
-                detailsHtml = `<p>${escapeHtmlDriver(capitalizeWords('Lastik durumu ' + durum + ' olarak gùncellendi'))}</p>`;
+                detailsHtml = `<p>${escapeHtmlDriver(capitalizeWords('Lastik durumu ' + durum + ' olarak g?ncellendi'))}</p>`;
             } else if (item.eventType === 'utts-guncelle') {
                 const durum = d.durum ? 'Evet' : 'Hay?r';
-                detailsHtml = `<p>${escapeHtmlDriver(capitalizeWords('UTTS bilgisi ' + durum + ' olarak gùncellendi'))}</p>`;
+                detailsHtml = `<p>${escapeHtmlDriver(capitalizeWords('UTTS bilgisi ' + durum + ' olarak g?ncellendi'))}</p>`;
             } else if (item.eventType === 'muayene-guncelle') {
-                let txt = 'Muayene Bilgisi Gùncellendi';
+                let txt = 'Muayene Bilgisi G?ncellendi';
                 if (d.bitisTarihi) txt += ` (Biti?: ${escapeHtmlDriver(d.bitisTarihi)})`;
                 detailsHtml = `<p>${escapeHtmlDriver(txt)}</p>`;
             } else if (item.eventType === 'kasko-guncelle') {
@@ -2027,7 +2027,7 @@ function renderHistoryList() {
                 if (d.bitisTarihi) txt += ` (Biti?: ${escapeHtmlDriver(d.bitisTarihi)})`;
                 detailsHtml = `<p>${escapeHtmlDriver(txt)}</p>`;
             } else {
-                detailsHtml = `<p>${escapeHtmlDriver(item.eventType || 'Gùncelleme')}</p>`;
+                detailsHtml = `<p>${escapeHtmlDriver(item.eventType || 'G?ncelleme')}</p>`;
             }
         }
 
@@ -2043,7 +2043,7 @@ function renderHistoryList() {
                 </div>
                 <div class="history-details-row">
                     <div class="history-details">${detailsHtml}</div>
-                    ${showEditBtn ? `<button type="button" onclick="showEditRequest(${editId})" class="history-edit-icon" title="Dùzeltme Talep Et" aria-label="Dùzeltme Talep Et">${pencilSvg}</button>` : ''}
+                    ${showEditBtn ? `<button type="button" onclick="showEditRequest(${editId})" class="history-edit-icon" title="D?zeltme Talep Et" aria-label="D?zeltme Talep Et">${pencilSvg}</button>` : ''}
                 </div>
             </div>
         `;
@@ -2056,7 +2056,7 @@ window.closeHistory = function() {
     updateDriverModalBodyClass();
 };
 
-// Dùzeltme talebi ù kartla ayn? kural: sadece ilgili bùlùm gùsterilir (kaza > bak?m > km)
+// D?zeltme talebi ? kartla ayn? kural: sadece ilgili b?l?m g?sterilir (kaza > bak?m > km)
 window.showEditRequest = function(recordId) {
     const record = window._historyRecordMap && window._historyRecordMap[recordId];
     if (!record) return;
@@ -2102,7 +2102,7 @@ window.submitEditRequest = async function() {
     const visibleSection = window._editRequestVisibleSection || 'km';
     const reason = document.getElementById('edit-reason').value.trim();
     if (!reason) {
-        alert('Dùzeltme sebebini yazmal?s?n?z!');
+        alert('D?zeltme sebebini yazmal?s?n?z!');
         return;
     }
 
@@ -2113,7 +2113,7 @@ window.submitEditRequest = async function() {
         newKm = newKmVal ? parseInt(newKmVal.replace(/\./g, ''), 10) : null;
         kmChanged = newKm !== null && newKm !== (record.guncel_km || 0);
         if (newKm !== null && newKm <= 0) {
-            alert('Geùerli bir KM de?eri girin!');
+            alert('Ge?erli bir KM de?eri girin!');
             return;
         }
     } else if (visibleSection === 'bakim') {
@@ -2154,7 +2154,7 @@ window.submitEditRequest = async function() {
         const data = await response.json();
         
         if (data.success) {
-            alert('? Dùzeltme talebiniz gùnderildi. Admin onay? bekleniyor.');
+            alert('? D?zeltme talebiniz g?nderildi. Admin onay? bekleniyor.');
             closeEditRequest();
             if (document.getElementById('history-list').parentElement && document.getElementById('history-modal').classList.contains('show')) {
                 renderHistoryList();
@@ -2168,7 +2168,7 @@ window.submitEditRequest = async function() {
     }
 };
 
-// ù?k??
+// ??k??
 window.logout = function() {
     localStorage.removeItem('driver_token');
     sessionStorage.removeItem('driver_token');
