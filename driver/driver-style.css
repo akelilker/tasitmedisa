@@ -1181,7 +1181,7 @@ body.driver-modal-open {
   }
   /* Sağ grid butonları: mobilde dikey yükseklik +3px (6→7→8 üst/alt) */
   .driver-action-btn {
-    padding: 8px 10px;
+    padding: 9px 10px;
     font-size: 12.5px;
     display: flex;
     justify-content: center;
@@ -3868,7 +3868,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     font-size: 13px !important;
   }
   .dashboard-page .vehicle-card .form-group label {
-    font-size: 16px !important;
+    font-size: 17px !important;
   }
   .dashboard-page .vehicle-card .form-group input,
   .dashboard-page .vehicle-card .form-group textarea {
@@ -3894,7 +3894,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     font-size: 23px !important; /* 24px - 1pt */
   }
   .dashboard-page .driver-report-block .form-group label {
-    font-size: 13px !important;
+    font-size: 14px !important;
   }
   .dashboard-page .driver-report-block .form-group input,
   .dashboard-page .driver-report-block .form-group textarea {
@@ -4067,6 +4067,9 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .dashboard-page .driver-multi-vehicle-wrap .driver-plate-row {
     margin-bottom: 6px !important;
   }
+  .dashboard-page .driver-plate-dropdown-row .driver-plate-trigger {
+    right: 5px !important;
+  }
 
   /* Foto 4: KM input dikey yükseklik %15 daralsın */
   .dashboard-page .vehicle-card .form-group input.driver-km-input,
@@ -4084,7 +4087,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     width: 100%;
   }
   .dashboard-page .driver-report-btn {
-    min-height: 62px !important;
+    min-height: 63px !important;
     padding: 5px 12px !important;
   }
 
