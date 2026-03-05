@@ -561,7 +561,7 @@ body.driver-modal-open {
   /* Sa� grid Var/Yok butonlar�: masa�st�nde dikey y�kseklik 3px az (32�29px) */
   .dashboard-page .driver-action-area .driver-radio-btn {
     height: auto !important;
-    min-height: 0 !important;
+    min-height: 26px !important;
   }
   /* Not input: masa�st�nde dar � Kaydet butonu yukar� gelsin */
   .dashboard-page .driver-action-area .form-group textarea.driver-ekstra-not {
@@ -887,7 +887,7 @@ body.driver-modal-open {
   border: 1px solid rgba(255, 255, 255, 0.25);
   color: var(--txt);
   padding: 8px 12px;
-  font-size: 13px;
+  font-size: 14px;
   text-align: left;
   cursor: pointer;
   border-radius: 6px;
@@ -1182,7 +1182,7 @@ body.driver-modal-open {
   /* Sağ grid butonları: mobilde dikey yükseklik +3px (6→7→8 üst/alt) */
   .driver-action-btn {
     padding: 9px 10px;
-    font-size: 12.5px;
+    font-size: 13.5px;
     display: flex;
     justify-content: center;
     text-align: center;
@@ -1501,8 +1501,8 @@ body.driver-modal-open {
   border: 1px solid rgba(255, 255, 255, 0.35);
   border-radius: 8px;
   height: auto;
-  min-height: 0;
-  padding: 5px 17px;
+  min-height: 26px;
+  padding: 5px 21px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1987,7 +1987,7 @@ body.driver-modal-open {
 /* Sağ grid: Bildir / Vazgeç butonları – çerçeveye dokunmadan metin 1pt büyük */
 .dashboard-page .vehicle-card .universal-btn-save,
 .dashboard-page .vehicle-card .universal-btn-cancel {
-  font-size: 15px !important;
+  font-size: 16px !important;
 }
 
 .status-message {
@@ -3869,7 +3869,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   /* 2. Kullanıcı paneli – tüm metinler +1pt (paneldeki bütün harfler 1 punto büyük) */
   /* .label, .value, .driver-current-plaka, .driver-user-name → aşağıdaki Sol panel bloğunda */
   .dashboard-page .driver-action-btn {
-    font-size: 13px !important;
+    font-size: 14px !important;
   }
   .dashboard-page .vehicle-card .form-group label {
     font-size: 17px !important;
