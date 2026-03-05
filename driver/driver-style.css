@@ -517,8 +517,11 @@ body.driver-modal-open {
   .dashboard-page .driver-report-block-kaza .driver-kaporta-container {
     margin-top: 0 !important;
   }
+  .dashboard-page .driver-report-block-kaza .driver-kaporta-container .driver-kaporta-schema-wrapper {
+    gap: 5px !important;
+  }
   .dashboard-page .driver-report-block-kaza .driver-kaporta-container .driver-kaporta-schema-wrapper svg {
-    margin-top: -10px !important;
+    margin-top: 0 !important;
   }
   /* Plaka liste çerçevesi: ince gri, parlak (masaüstü) */
   .dashboard-page .driver-left-panel .driver-plate-dropdown {

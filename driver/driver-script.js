@@ -638,7 +638,7 @@ function buildDriverActionArea(vehicle, existingRecord, bakimVar, kazaVar, opts)
                     <div class="form-group driver-radio-row">
                         <label class="driver-radio-label">Durum:</label>
                         <div class="driver-radio-group" data-group="anahtar" data-vid="${vid}">
-                            <button type="button" class="driver-radio-btn active" data-value="var" data-group="anahtar">Var</button>
+                            <button type="button" class="driver-radio-btn" data-value="var" data-group="anahtar">Var</button>
                             <button type="button" class="driver-radio-btn" data-value="yok" data-group="anahtar">Yok</button>
                         </div>
                     </div>
@@ -659,7 +659,7 @@ function buildDriverActionArea(vehicle, existingRecord, bakimVar, kazaVar, opts)
                         <label class="driver-radio-label">Durum:</label>
                         <div class="driver-radio-group" data-group="lastik" data-vid="${vid}">
                             <button type="button" class="driver-radio-btn" data-value="var" data-group="lastik">Var</button>
-                            <button type="button" class="driver-radio-btn active" data-value="yok" data-group="lastik">Yok</button>
+                            <button type="button" class="driver-radio-btn" data-value="yok" data-group="lastik">Yok</button>
                         </div>
                     </div>
                     <div id="driver-lastik-adres-wrap-${vid}" class="form-group" style="display:none">
@@ -1283,8 +1283,8 @@ function setupDriverEventRadioHandlersForBlock(group, vid) {
     const btns = block.querySelectorAll('.driver-radio-btn[data-group="' + group + '"]');
     var wrap = document.getElementById('driver-' + group + (group === 'anahtar' ? '-detay-wrap' : '-adres-wrap') + '-' + vid);
     var input = document.getElementById('driver-' + group + (group === 'anahtar' ? '-detay' : '-adres') + '-' + vid);
-    var isVarDefault = group === 'anahtar';
-    if (wrap) wrap.style.display = isVarDefault ? 'block' : 'none';
+    var activeBtn = block.querySelector('.driver-radio-btn.active');
+    if (wrap) wrap.style.display = (activeBtn && activeBtn.dataset.value === 'var') ? 'block' : 'none';
     btns.forEach(function(btn) {
         btn.onclick = function() {
             btns.forEach(function(b) { b.classList.remove('active'); });
@@ -1330,12 +1330,14 @@ window.saveDriverEventFromBlock = async function(type, vehicleId) {
     if (type === 'anahtar') {
         const block = document.getElementById('anahtar-block-' + vehicleId);
         const active = block ? block.querySelector('.driver-radio-btn.active') : null;
-        const durum = active ? active.dataset.value : 'yok';
+        if (!active) { alert('Lütfen Durum seçiniz!'); return; }
+        const durum = active.dataset.value;
         data = { durum: durum, detay: durum === 'var' ? (document.getElementById('driver-anahtar-detay-' + vehicleId)?.value.trim() || '') : '' };
     } else if (type === 'lastik') {
         const block = document.getElementById('lastik-block-' + vehicleId);
         const active = block ? block.querySelector('.driver-radio-btn.active') : null;
-        const durum = active ? active.dataset.value : 'yok';
+        if (!active) { alert('Lütfen Durum seçiniz!'); return; }
+        const durum = active.dataset.value;
         data = { durum: durum, adres: durum === 'var' ? (document.getElementById('driver-lastik-adres-' + vehicleId)?.value.trim() || '') : '' };
     } else if (type === 'muayene') {
         const tarih = document.getElementById('driver-muayene-tarih-' + vehicleId)?.value.trim() || '';
@@ -1386,11 +1388,13 @@ window.saveDriverEvent = async function(type) {
     let data = {};
     if (type === 'anahtar') {
         const active = document.querySelector('#driver-anahtar-modal .driver-radio-btn.active');
-        const durum = active ? active.dataset.value : 'yok';
+        if (!active) { alert('Lütfen Durum seçiniz!'); return; }
+        const durum = active.dataset.value;
         data = { durum: durum, detay: durum === 'var' ? (document.getElementById('driver-anahtar-detay')?.value.trim() || '') : '' };
     } else if (type === 'lastik') {
         const active = document.querySelector('#driver-lastik-modal .driver-radio-btn.active');
-        const durum = active ? active.dataset.value : 'yok';
+        if (!active) { alert('Lütfen Durum seçiniz!'); return; }
+        const durum = active.dataset.value;
         data = { durum: durum, adres: durum === 'var' ? (document.getElementById('driver-lastik-adres')?.value.trim() || '') : '' };
     } else if (type === 'utts') {
         const active = document.querySelector('#driver-utts-modal .driver-radio-btn.active');
