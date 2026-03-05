@@ -442,6 +442,31 @@ html { overflow-x: hidden; }
     z-index: 0; /* içerik altı */
 }
 
+/* Ana uygulama: kavisli ust cerceveyi tek pseudo-element cizer */
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-container {
+    border-top: none;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    overflow: hidden;
+}
+
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0));
+    border-top: 0.5px solid var(--border-red-tech);
+    border-left: 0.5px solid var(--border-red-tech);
+    border-right: 0.5px solid var(--border-red-tech);
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    box-sizing: border-box;
+    pointer-events: none;
+    z-index: 2;
+}
+
 /* İÇERİK ALANI - Havada durma (yan kırmızı çerçeve), taşma yok */
 .content-wrap {
     flex: 1;
@@ -459,6 +484,12 @@ html { overflow-x: hidden; }
     border-right: 0.5px solid var(--border-red-side);
     box-shadow: 0 0 24px var(--red-glow-subtle);
     transition: border-color 0.3s ease;
+}
+
+/* Ana uygulama: yan cizgiler container::before tarafindan cizilir */
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap {
+    border-left: none;
+    border-right: none;
 }
 
 /* Masaüstü: çerçeve kalınlığı (ince) */
@@ -1573,12 +1604,16 @@ body.modal-open .user-panel-link {
         z-index: 20;
         box-sizing: border-box;
     }
+
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap::before {
+        display: none;
+    }
     
     /* CONTAINER üst çizgi (mobil anasayfa kırmızı çerçeve); footer boşluğu driver ile tutarlı */
     body:not(.dashboard-page):not(.login-page) .app-container {
         padding-bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important;
     }
-    .app-container {
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-container {
         border-left: none;
         border-right: none;
         border-top: 0.5px solid rgba(var(--theme-color-rgb), 0.78) !important;
