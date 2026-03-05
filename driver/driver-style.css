@@ -511,6 +511,11 @@ body.driver-modal-open {
     padding-top: 0 !important;
     line-height: 1.25;
   }
+  /* Masaüstü Kaza Formu: Açýklama ve Hasar Tutarý etiket üst boþluðu 3px */
+  .dashboard-page .driver-report-block-kaza .form-group:has(label[for^="kaza-tarih-"]),
+  .dashboard-page .driver-report-block-kaza .form-group:has(label[for^="kaza-detay-"]) {
+    margin-bottom: 3px !important;
+  }
   .dashboard-page .driver-report-block-kaza .form-group .driver-kaporta-label {
     margin-bottom: 5px !important;
   }
@@ -3856,6 +3861,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .dashboard-page .driver-report-block-kaza .form-group .driver-kaporta-label {
     margin-bottom: 5px !important;
   }
+
   .dashboard-page .driver-report-block-kaza .driver-kaporta-container .boya-legend {
     display: flex !important;
     justify-content: center;
