@@ -3788,8 +3788,9 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 
   /* Çıkış butonu: kapı simgesi */
   .dashboard-page .driver-btn-logout .driver-btn-logout-icon {
-    width: 28px !important;
-    height: 28px !important;
+    width: 24px !important;
+    height: 24px !important;
+    stroke-width: 1.5 !important;
   }
 
   /* Vehicle card içi: elementler arası +3px (12→15) */
