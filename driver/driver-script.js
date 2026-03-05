@@ -1884,24 +1884,32 @@ function parseHistoryDate(str) {
 }
 
 function formatHistoryPeriod(item) {
+    function formatDateDDMMYYYY(d) {
+        if (!d || isNaN(d.getTime())) return '';
+        const dd = String(d.getDate()).padStart(2, '0');
+        const mm = String(d.getMonth() + 1).padStart(2, '0');
+        const yyyy = String(d.getFullYear());
+        return `${dd}/${mm}/${yyyy}`;
+    }
+
     if (item._type === 'hareket') {
-        const months = ['OCAK', 'ŞUBAT', 'MART', 'NİSAN', 'MAYIS', 'HAZİRAN', 'TEMMUZ', 'AĞUSTOS', 'EYLÜL', 'EKİM', 'KASIM', 'ARALIK'];
         const ts = item.guncelleme_tarihi || item.kayit_tarihi || '';
         const d = ts ? (parseHistoryDate(ts) || new Date(ts)) : null;
-        if (d && !isNaN(d.getTime())) return `${String(d.getDate()).padStart(2, '0')} ${months[d.getMonth()]} ${d.getFullYear()}`;
-        return formatPeriod(item.donem || '');
+        const f = d && !isNaN(d.getTime()) ? formatDateDDMMYYYY(d) : '';
+        return f || formatPeriod(item.donem || '');
     }
-    const months = ['OCAK', 'ŞUBAT', 'MART', 'NİSAN', 'MAYIS', 'HAZİRAN', 'TEMMUZ', 'AĞUSTOS', 'EYLÜL', 'EKİM', 'KASIM', 'ARALIK'];
+
     if (item.date) {
         const d = parseHistoryDate(item.date);
-        if (d) return `${String(d.getDate()).padStart(2, '0')} ${months[d.getMonth()]} ${d.getFullYear()}`;
-        return item.date;
+        const f = d ? formatDateDDMMYYYY(d) : '';
+        return f || item.date;
     }
+
     if (item.timestamp) {
         const d = parseHistoryDate(item.timestamp) || new Date(item.timestamp);
-        if (d && !isNaN(d.getTime())) return `${String(d.getDate()).padStart(2, '0')} ${months[d.getMonth()]} ${d.getFullYear()}`;
-        return '';
+        return d && !isNaN(d.getTime()) ? formatDateDDMMYYYY(d) : '';
     }
+
     return '';
 }
 
@@ -2121,3 +2129,4 @@ window.logout = function() {
     sessionStorage.removeItem('driver_token');
     window.location.href = DRIVER_PAGE_BASE + 'index.html';
 };
+

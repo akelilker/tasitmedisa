@@ -2780,7 +2780,7 @@ body.driver-modal-open {
 
 .history-period {
   font-weight: 700;
-  color: var(--theme-color);
+  color: var(--form-label-color, #ffffff);
   font-size: 15px;
 }
 
@@ -3126,9 +3126,28 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
 }
 
+
 @media (max-width: 768px) {
   .driver-footer-back-wrap .universal-back-btn {
     transform: translateY(3px);
+  }
+  .dashboard-page .driver-left-panel .driver-footer-back-wrap .universal-back-btn {
+    transform: none !important;
+    font-size: 12px !important;
+    letter-spacing: 0.2px !important;
+    gap: 2px !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+  }
+  .dashboard-page .driver-left-panel .driver-footer-back-wrap .universal-back-label {
+    font-size: 12px !important;
+    line-height: 1.1 !important;
+  }
+  .dashboard-page .driver-left-panel .driver-footer-back-wrap .back-icon-svg {
+    width: 15px !important;
+    height: 15px !important;
+    min-width: 15px !important;
+    min-height: 15px !important;
   }
   /* Mobil: fixed footer için alt boşluk; yan çizgiler footer'a kadar (bottom ile) */
   .dashboard-page .driver-dashboard-container,
@@ -3516,11 +3535,11 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   /* Geçmiş Kayıtlar + Düzeltme Talebi: overlay footer'ın ÜSTÜNDE bitsin; modal–footer arası tam 6px, koyu gölge ile kapansın */
   #history-modal.driver-modal,
   #edit-request-modal.driver-modal {
-    bottom: calc(6px + var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important;
+    bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important;
     height: auto !important;
-    max-height: calc(100vh - max(12px, env(safe-area-inset-top)) - 6px - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0)) !important;
-    max-height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 6px - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0)) !important;
-    box-shadow: 0 6px 0 0 var(--bg) !important; /* 6px boşlukta çerçeve parçaları görünmesin */
+    max-height: calc(100vh - max(12px, env(safe-area-inset-top)) - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0)) !important;
+    max-height: calc(100dvh - max(12px, env(safe-area-inset-top)) - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0)) !important;
+    box-shadow: none !important;
   }
   /* Mobilde modal açıkken header üstündeki kırmızı yatay çizgi görünmesin */
   .driver-modal.show::after {
@@ -4096,6 +4115,8 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
   .dashboard-page .driver-plate-dropdown-row .driver-plate-trigger {
     right: 5px !important;
+    top: 50% !important;
+    transform: translateY(calc(-50% + 6px)) !important;
   }
   .dashboard-page .driver-action-area .driver-report-block input[type="date"] {
     box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.35) !important;
@@ -4271,3 +4292,4 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   line-height: 1.6;
   margin: 0;
 }
+
