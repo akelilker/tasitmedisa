@@ -456,11 +456,17 @@ body.driver-modal-open {
   }
   /* Footer: masaüstünde gri üst, yan sensör çizgileri + kırmızı glow (dashboard = login); kırmızı ışık footer’a değdiği yerde sıfır */
   .dashboard-page #app-footer {
-    border-top: 0.5px solid rgba(200, 200, 200, 0.45) !important;
-    border-left: 0.5px solid rgba(255, 255, 255, 0.10) !important;
-    border-right: 0.5px solid rgba(255, 255, 255, 0.10) !important;
-    box-shadow: 0 -10px 20px rgba(var(--theme-color-rgb), 0.16) !important;
+    min-height: 0 !important;
+    border-top: 1px solid rgba(200, 200, 200, 0.52) !important;
+    border-left: 0.6px solid rgba(255, 255, 255, 0.24) !important;
+    border-right: 0.6px solid rgba(255, 255, 255, 0.24) !important;
+    box-shadow: 0 -16px 26px rgba(var(--footer-glow-rgb), 0.34) !important;
   }
+  .dashboard-page #app-footer .footer-content {
+    padding: 8px 12px !important;
+    padding-bottom: max(8px, env(safe-area-inset-bottom, 0)) !important;
+  }
+
   .login-page #app-footer.login-footer {
     border-top: 0.5px solid rgba(200, 200, 200, 0.45) !important;
     border-left: 0.5px solid rgba(255, 255, 255, 0.20) !important;
