@@ -1879,9 +1879,15 @@ body.driver-modal-open {
   max-width: 100%;
   display: block;
 }
-$15px;
+.driver-report-block-kaza .driver-kaporta-label {
+  text-align: center;
+  display: block;
+  margin-bottom: 5px;
   font-size: 12px;
   color: var(--muted, #888);
+}
+.driver-report-block-kaza .driver-kaporta-container {
+  margin-top: 0;
 }
 /* Mobil: sağ grid – kenarlara 5px; şema alana sığsın; legend altta yatay */
 @media (max-width: 480px) {
