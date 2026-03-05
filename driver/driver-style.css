@@ -1879,10 +1879,7 @@ body.driver-modal-open {
   max-width: 100%;
   display: block;
 }
-.driver-report-block-kaza .driver-kaporta-label {
-  text-align: center;
-  display: block;
-  margin-bottom: 2px;
+$15px;
   font-size: 12px;
   color: var(--muted, #888);
 }
