@@ -1632,7 +1632,7 @@ function renderVehicleDetailLeft(vehicle) {
       html += `<div class="detail-row detail-row-block"><div class="detail-row-header"><span class="detail-row-label">Tramer Kaydı</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> `;
       vehicle.tramerRecords.forEach((record, index) => {
           if (index > 0) html += '<br>';
-          html += `${escapeHtml(record.date)} - ${escapeHtml(record.amount)}`;
+          html += `${escapeHtml(formatDateForDisplay(record.date) || '-')} - ${escapeHtml(record.amount)}`;
       });
 
       let total = 0;
@@ -3305,7 +3305,7 @@ function renderVehicleDetailLeft(vehicle) {
           const servis = toTitleCase(event.data?.servis || '-');
           const kisi = toTitleCase(event.data?.kisi || '-');
           html += `<div class="history-item">
-            <div class="history-item-date" style="font-weight: 600; font-size: 12px; margin-bottom: 4px;">${escapeHtml(event.date)}</div>
+            <div class="history-item-date" style="font-weight: 600; font-size: 12px; margin-bottom: 4px;">${escapeHtml(formatDateForDisplay(event.date) || '-')}</div>
             <div class="history-item-body" style="font-size: 12px;">${escapeHtml(islemler)}</div>
             <div class="history-item-body" style="font-size: 12px; margin-top: 4px;"><span class="history-label">Servis:</span> ${escapeHtml(servis)} | <span class="history-label">Kişi:</span> ${escapeHtml(kisi)}${ekStr ? ' | ' + ekStr : ''}</div>
           </div>`;
@@ -3336,10 +3336,10 @@ function renderVehicleDetailLeft(vehicle) {
             if (degisenList.length) partParts.push(`<span class="history-label">Değişen:</span> ${escapeHtml(degisenList.join(', '))}`);
             if (partParts.length) parcalarHtml = `<div class="history-item-body" style="font-size: 12px; margin-top: 4px;">${partParts.join(' | ')}</div>`;
           }
-          const surucu = toTitleCase(event.data?.surucu || '-');
+          const kullanici = toTitleCase(event.data?.surucu || '-');
           html += `<div class="history-item">
-            <div class="history-item-date" style="font-weight: 600; font-size: 12px; margin-bottom: 4px;">${escapeHtml(event.date)}</div>
-            <div class="history-item-body" style="font-size: 12px;"><span class="history-label">Kullanıcı:</span> ${escapeHtml(surucu)}${hasarStr}</div>
+            <div class="history-item-date" style="font-weight: 600; font-size: 12px; margin-bottom: 4px;">${escapeHtml(formatDateForDisplay(event.date) || '-')}</div>
+            <div class="history-item-body" style="font-size: 12px;"><span class="history-label">Kullanıcı:</span> ${escapeHtml(kullanici)}${hasarStr}</div>
             ${parcalarHtml}
             ${aciklamaHtml}
           </div>`;
@@ -3361,13 +3361,13 @@ function renderVehicleDetailLeft(vehicle) {
         kmEvents.forEach((event, index) => {
           const eskiKm = event.data?.eskiKm || '-';
           const yeniKm = event.data?.yeniKm || '-';
-          const surucuVal = (event.data?.surucu || '').trim();
-          const surucu = surucuVal
-            ? toTitleCase(surucuVal).toLocaleUpperCase('tr-TR')
+          const kullaniciVal = (event.data?.surucu || '').trim();
+          const kullanici = kullaniciVal
+            ? toTitleCase(kullaniciVal).toLocaleUpperCase('tr-TR')
             : 'B\u0130L\u0130NM\u0130YOR';
-          const kmCumle = `${escapeHtml(surucu)}, G\u00fcncel Km: ${escapeHtml(formatNumber(yeniKm))} Olarak Bildirdi. (\u00d6nceki Km: ${escapeHtml(formatNumber(eskiKm))})`;
+          const kmCumle = `${escapeHtml(kullanici)}, G\u00fcncel Km: ${escapeHtml(formatNumber(yeniKm))} Olarak Bildirdi. (\u00d6nceki Km: ${escapeHtml(formatNumber(eskiKm))})`;
           html += `<div class="history-item">
-            <div class="history-item-date" style="font-weight: 600; font-size: 12px; margin-bottom: 4px;">${escapeHtml(event.date)}</div>
+            <div class="history-item-date" style="font-weight: 600; font-size: 12px; margin-bottom: 4px;">${escapeHtml(formatDateForDisplay(event.date) || '-')}</div>
             <div class="history-item-body" style="font-size: 12px; margin-top: 4px;">${kmCumle}</div>
             ${index === 0 ? duzeltmeNotHtml : ''}
           </div>`;
@@ -3445,7 +3445,7 @@ function renderVehicleDetailLeft(vehicle) {
             const bitis = event.data?.bitisTarihi || '-';
             detailText = 'Bitiş Tarihi: ' + escapeHtml(bitis) + ' olarak güncellendi';
           } else if (event.type === 'not-guncelle') {
-            label = 'Sürücü Notu';
+            label = 'Kullanıcı Notu';
             const notStr = String(event.data?.not || '');
             const notDisplay = notStr.length > 60 ? notStr.slice(0, 60) + '…' : notStr;
             detailText = notDisplay ? escapeHtml(toTitleCase(notDisplay)) : '-';
@@ -3457,7 +3457,7 @@ function renderVehicleDetailLeft(vehicle) {
           }
           
           const labelHtml = escapeHtml(toTitleCase(label));
-          const dateLabelHtml = `${escapeHtml(event.date)} - ${labelHtml}`;
+          const dateLabelHtml = `${escapeHtml(formatDateForDisplay(event.date) || '-')} - ${labelHtml}`;
           const bodyHtml = detailText ? `<div class="history-item-body" style="font-size: 12px; margin-top: 4px;">${detailText}</div>` : '';
           html += `<div class="history-item history-item-sube">
             <div class="history-item-date" style="font-weight: 600; font-size: 12px; margin-bottom: 4px;">${dateLabelHtml}</div>
@@ -3556,7 +3556,7 @@ function renderVehicleDetailLeft(vehicle) {
       'kullanici-atama': 'Kullanıcı atama',
       'kredi-guncelle': 'Kredi/Rehin',
       'takip-cihaz-guncelle': 'Takip cihazı',
-      'not-guncelle': 'Sürücü notu',
+      'not-guncelle': 'Kullanıcı notu',
       'satis': 'Satış/Pert'
     };
     return labels[type] || (type ? toTitleCase(String(type)) : 'Olay');
@@ -4026,3 +4026,4 @@ function renderVehicleDetailLeft(vehicle) {
   }, true);
 
 })();
+
