@@ -3725,16 +3725,20 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     position: relative;
     z-index: 3;
   }
+  .dashboard-page .driver-left-panel-content {
+    overflow-x: visible !important;
+  }
   .dashboard-page .driver-right-panel {
     position: relative;
     z-index: 1;
   }
   .dashboard-page .driver-left-panel .driver-plate-dropdown {
     left: 0 !important;
+    right: auto !important;
     transform: none !important;
-    width: 140% !important; /* Mobilde yatay +%40 */
-    max-width: none !important;
-    min-width: 280px !important; /* 200px + %40 */
+    width: calc(100vw - 24px - env(safe-area-inset-left, 0) - env(safe-area-inset-right, 0)) !important;
+    max-width: calc(100vw - 24px - env(safe-area-inset-left, 0) - env(safe-area-inset-right, 0)) !important;
+    min-width: 280px !important;
   }
   .driver-plate-dropdown {
     background: var(--bg) !important;
@@ -4122,9 +4126,9 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     margin-bottom: 6px !important;
   }
   .dashboard-page .driver-plate-dropdown-row .driver-plate-trigger {
-    right: 5px !important;
+    right: 3px !important;
     top: 50% !important;
-    transform: translateY(calc(-50% + 6px)) !important;
+    transform: translateY(-50%) !important;
   }
   .dashboard-page .driver-action-area .driver-report-block input[type="date"] {
     box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.35) !important;
