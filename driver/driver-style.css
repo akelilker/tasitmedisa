@@ -485,6 +485,10 @@ body.driver-modal-open {
   .login-page .hero.hero-two-rows .hero-title-line {
     line-height: 1.35 !important;
   }
+  .dashboard-page .driver-report-block-kaza .driver-kaporta-container .driver-kaporta-schema-wrapper svg {
+    width: 136px !important;
+    height: 190px !important;
+  }
   /* Plaka 1 punto küçült (masaüstü) */
   .dashboard-page .driver-left-panel .driver-current-plaka {
     font-size: 15px !important;
