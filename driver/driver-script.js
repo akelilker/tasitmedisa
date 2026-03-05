@@ -8,7 +8,7 @@ const API_BASE = (function(){
   if (p.indexOf('/tasitmedisa') === 0) return '/tasitmedisa/driver/';
   if (p.indexOf('/medisa') === 0) return '/medisa/driver/';
   var base = '/';
-  var driverIdx = p.indexOf('/driver');
+  var driverIdx = p.indexOf('/driver'); 
   if (driverIdx !== -1) {
     base = p.substring(0, driverIdx) + '/';
   } else if (p && p !== '/') {
