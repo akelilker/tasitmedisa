@@ -166,8 +166,8 @@
             <div class="modal-body">
                 <div class="history-filters">
                     <div class="history-vehicle-dropdown-wrap">
-                        <label class="history-filter-label" for="history-vehicle-trigger">Taşıt Seç:</label>
-                        <div id="history-vehicle-trigger" class="history-vehicle-trigger" onclick="toggleHistoryVehicleDropdown(event)" role="button" tabindex="0" aria-haspopup="listbox" aria-expanded="false">
+                        <label id="history-vehicle-label" class="history-filter-label">Taşıt Seç:</label>
+                        <div id="history-vehicle-trigger" class="history-vehicle-trigger" onclick="toggleHistoryVehicleDropdown(event)" role="button" tabindex="0" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="history-vehicle-label">
                             <span class="history-vehicle-trigger-text">Tüm Taşıtlar</span>
                             <span class="history-vehicle-chevron">▾</span>
                         </div>
@@ -415,3 +415,4 @@
     <script defer src="driver-script.js?v=20260220"></script>
 </body>
 </html>
+
