@@ -3751,8 +3751,8 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     left: 0 !important;
     right: auto !important;
     transform: none !important;
-    width: calc(100vw - 24px - env(safe-area-inset-left, 0) - env(safe-area-inset-right, 0)) !important;
-    max-width: calc(100vw - 24px - env(safe-area-inset-left, 0) - env(safe-area-inset-right, 0)) !important;
+    width: calc(100% + 300px) !important;
+    max-width: calc(100vw - env(safe-area-inset-left, 0) - env(safe-area-inset-right, 0) - 12px) !important;
     min-width: 280px !important;
     overflow-x: visible !important;
   }
@@ -4144,7 +4144,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     margin-bottom: 6px !important;
   }
   .dashboard-page .driver-plate-dropdown-row .driver-plate-trigger {
-    right: 3px !important;
+    right: -1px !important;
     top: 50% !important;
     transform: translateY(-50%) !important;
   }
