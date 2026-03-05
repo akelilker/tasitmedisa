@@ -682,7 +682,7 @@ body.driver-modal-open {
   overflow: hidden;
 }
 .driver-left-panel {
-  flex: 0 0 35%;
+  flex: 0 0 30%;
   min-width: 0;
   display: flex;
   flex-direction: column;
@@ -1133,7 +1133,7 @@ body.driver-modal-open {
   }
   .driver-panels-inner { gap: 8px; }
   .driver-left-panel {
-    flex: 0 0 35%;
+    flex: 0 0 30%;
     border-right-width: 1.2px;
     border-right-color: var(--border-red-tech);
   }
