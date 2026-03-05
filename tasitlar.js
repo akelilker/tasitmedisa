@@ -3399,88 +3399,81 @@ function renderVehicleDetailLeft(vehicle) {
         html = '<div class="history-empty-msg" style="text-align: center; padding: 20px;">' + escapeHtml(toTitleCase('Diğer kayıt bulunmamaktadır.')) + '</div>';
       } else {
         digerEvents.forEach(event => {
-          let label = '';
-          let detailText = '';
-          
-          if (event.type === 'sube-degisiklik') {
-            label = 'Şube Değişikliği';
-            const yeniRaw = event.data?.yeniSubeAdi || branches.find(b => b.id === event.data?.yeniSubeId)?.name || '-';
-            const eskiRaw = event.data?.eskiSubeAdi || branches.find(b => b.id === event.data?.eskiSubeId)?.name || '';
-            const yeni = toTitleCase(yeniRaw);
-            const eski = eskiRaw ? toTitleCase(eskiRaw) : '';
-            detailText = eski ? escapeHtml(yeni) + ' (Önceki: ' + escapeHtml(eski) + ')' : escapeHtml(yeni);
-          } else if (event.type === 'kullanici-atama') {
-            label = 'Kullanıcı Ataması';
-            const yeni = toTitleCase(event.data?.kullaniciAdi || '-');
-            const eski = event.data?.eskiKullaniciAdi ? toTitleCase(event.data.eskiKullaniciAdi) : '';
-            detailText = eski ? escapeHtml(yeni) + ' (Önceki: ' + escapeHtml(eski) + ')' : escapeHtml(yeni);
-          } else if (event.type === 'anahtar-guncelle') {
-            label = 'Anahtar İşlemi';
-            const durum = event.data?.durum || 'yok';
-            const detay = (event.data?.detay || '').trim();
-            detailText = durum === 'var'
-              ? (detay ? 'Anahtar Var Olarak Bildirildi. Yeri: ' + escapeHtml(toTitleCase(detay)) : 'Anahtar Var Olarak Bildirildi')
-              : 'Anahtar Yok Olarak Bildirildi';
-          } else if (event.type === 'lastik-guncelle') {
-            label = 'Lastik İşlemi';
-            const durum = event.data?.durum || 'yok';
-            const adres = (event.data?.adres || '').trim();
-            detailText = durum === 'var'
-              ? (adres ? 'Lastik Var Olarak Bildirildi. Adres: ' + escapeHtml(toTitleCase(adres)) : 'Lastik Var Olarak Bildirildi')
-              : 'Lastik Yok Olarak Bildirildi';
-          } else if (event.type === 'kredi-guncelle') {
-            label = 'Kredi/Rehin İşlemi';
-            const durum = event.data?.durum || 'yok';
-            const detay = (event.data?.detay || '').trim();
-            detailText = durum === 'var'
-              ? (detay ? 'Kredi Var Olarak Bildirildi. Detay: ' + escapeHtml(toTitleCase(detay)) : 'Kredi Var Olarak Bildirildi')
-              : 'Kredi Yok Olarak Bildirildi';
-          } else if (event.type === 'utts-guncelle') {
-            label = 'UTTS İşlemi';
-            const durum = event.data?.durum;
-            detailText = durum === true || durum === 'evet' ? 'UTTS Evet Olarak Güncellendi' : 'UTTS Hayır Olarak Güncellendi';
-          } else if (event.type === 'takip-cihaz-guncelle') {
-            label = 'Takip Cihazı İşlemi';
-            const durum = event.data?.durum;
-            detailText = durum === true || durum === 'var' ? 'Takip Cihazı Var Olarak Güncellendi' : 'Takip Cihazı Yok Olarak Güncellendi';
-          } else if (event.type === 'sigorta-guncelle') {
-            label = 'Sigorta İşlemi';
-            const bitis = event.data?.bitisTarihi || '-';
-            const firma = (event.data?.firma || '').trim();
-            const acente = (event.data?.acente || '').trim();
-            detailText = 'Bitiş Tarihi: ' + escapeHtml(bitis);
-            if (firma) detailText += ' | Firma: ' + escapeHtml(toTitleCase(firma));
-            if (acente) detailText += ' | Acente: ' + escapeHtml(toTitleCase(acente));
-          } else if (event.type === 'kasko-guncelle') {
-            label = 'Kasko İşlemi';
-            const bitis = event.data?.bitisTarihi || '-';
-            const firma = (event.data?.firma || '').trim();
-            const acente = (event.data?.acente || '').trim();
-            detailText = 'Bitiş Tarihi: ' + escapeHtml(bitis);
-            if (firma) detailText += ' | Firma: ' + escapeHtml(toTitleCase(firma));
-            if (acente) detailText += ' | Acente: ' + escapeHtml(toTitleCase(acente));
-          } else if (event.type === 'muayene-guncelle') {
-            label = 'Muayene İşlemi';
-            const bitis = event.data?.bitisTarihi || '-';
-            detailText = 'Bitiş Tarihi: ' + escapeHtml(bitis) + ' olarak güncellendi';
-          } else if (event.type === 'not-guncelle') {
-            label = 'Kullanıcı Notu';
-            const notStr = String(event.data?.not || '');
-            const notDisplay = notStr.length > 60 ? notStr.slice(0, 60) + '…' : notStr;
-            detailText = notDisplay ? escapeHtml(toTitleCase(notDisplay)) : '-';
-          } else if (event.type === 'satis') {
-            label = 'Satış/Pert İşlemi';
-            detailText = 'Satış/Pert olarak kaydedildi';
+          const eventType = String(event.type || '').trim();
+          const dateText = formatDateForDisplay(event.date) || '-';
+          const eventData = event.data || {};
+          const userRaw = eventData.kullaniciAdi || eventData.surucu || eventData.kisi || '';
+          const userText = userRaw ? toTitleCase(String(userRaw)) : 'Bilinmiyor';
+          let summaryText = '';
+          const details = [];
+
+          if (eventType === 'anahtar-guncelle') {
+            const durum = String(eventData.durum || 'yok').toLowerCase();
+            summaryText = `Yedek Anahtar\u0131 ${durum === 'var' ? 'Var' : 'Yok'} Olarak Bildirdi.`;
+            const konum = (eventData.detay || '').trim();
+            if (konum) details.push(`Konum: ${toTitleCase(konum)}`);
+          } else if (eventType === 'lastik-guncelle') {
+            const durum = String(eventData.durum || 'yok').toLowerCase();
+            summaryText = `Yazl\u0131k/K\u0131\u015fl\u0131k Var ${durum === 'var' ? 'Olarak' : 'Olmad\u0131\u011f\u0131n\u0131'} Bildirdi.`;
+            const adres = (eventData.adres || '').trim();
+            if (adres) details.push(`Konum: ${toTitleCase(adres)}`);
+          } else if (eventType === 'kasko-guncelle') {
+            summaryText = 'Kasko Yenilemesi Bildirdi.';
+            const bitis = formatDateForDisplay(eventData.bitisTarihi || '');
+            const firma = (eventData.firma || '').trim();
+            const acente = (eventData.acente || '').trim();
+            if (bitis) details.push(`Biti\u015f Tarihi: ${bitis}`);
+            if (firma) details.push(`Firma: ${toTitleCase(firma)}`);
+            if (acente) details.push(`Acente: ${toTitleCase(acente)}`);
+          } else if (eventType === 'sigorta-guncelle') {
+            summaryText = 'Trafik Sigortas\u0131 Yenilemesi Bildirdi.';
+            const bitis = formatDateForDisplay(eventData.bitisTarihi || '');
+            const firma = (eventData.firma || '').trim();
+            const acente = (eventData.acente || '').trim();
+            if (bitis) details.push(`Biti\u015f Tarihi: ${bitis}`);
+            if (firma) details.push(`Firma: ${toTitleCase(firma)}`);
+            if (acente) details.push(`Acente: ${toTitleCase(acente)}`);
+          } else if (eventType === 'muayene-guncelle') {
+            summaryText = 'Muayene Yenilemesi Bildirdi.';
+            const bitis = formatDateForDisplay(eventData.bitisTarihi || '');
+            if (bitis) details.push(`Biti\u015f Tarihi: ${bitis}`);
+          } else if (eventType === 'kullanici-atama') {
+            summaryText = 'Kullan\u0131c\u0131 Atamas\u0131 Bildirdi.';
+            const yeni = (eventData.kullaniciAdi || '').trim();
+            const eski = (eventData.eskiKullaniciAdi || '').trim();
+            if (yeni) details.push(`Yeni Kullan\u0131c\u0131: ${toTitleCase(yeni)}`);
+            if (eski) details.push(`\u00d6nceki Kullan\u0131c\u0131: ${toTitleCase(eski)}`);
+          } else if (eventType === 'sube-degisiklik') {
+            summaryText = '\u015eube De\u011fi\u015fikli\u011fi Bildirdi.';
+            const yeniRaw = eventData.yeniSubeAdi || branches.find(b => b.id === eventData.yeniSubeId)?.name || '';
+            const eskiRaw = eventData.eskiSubeAdi || branches.find(b => b.id === eventData.eskiSubeId)?.name || '';
+            if (yeniRaw) details.push(`Yeni \u015eube: ${toTitleCase(String(yeniRaw))}`);
+            if (eskiRaw) details.push(`\u00d6nceki \u015eube: ${toTitleCase(String(eskiRaw))}`);
+          } else if (eventType === 'kredi-guncelle') {
+            const durum = String(eventData.durum || 'yok').toLowerCase();
+            summaryText = `Kredi/Rehin ${durum === 'var' ? 'Var' : 'Yok'} Olarak Bildirdi.`;
+            const detay = (eventData.detay || '').trim();
+            if (detay) details.push(`Detay: ${toTitleCase(detay)}`);
+          } else if (eventType === 'utts-guncelle') {
+            summaryText = `UTTS ${(eventData.durum === true || eventData.durum === 'evet') ? 'Evet' : 'Hay\u0131r'} Olarak Bildirdi.`;
+          } else if (eventType === 'takip-cihaz-guncelle') {
+            summaryText = `Takip Cihaz\u0131 ${(eventData.durum === true || eventData.durum === 'var') ? 'Var' : 'Yok'} Olarak Bildirdi.`;
+          } else if (eventType === 'not-guncelle') {
+            summaryText = 'Kullan\u0131c\u0131 Notu Bildirdi.';
+            const note = String(eventData.not || '').trim();
+            if (note) details.push(`Not: ${note.length > 120 ? note.slice(0, 120) + '...' : note}`);
+          } else if (eventType === 'satis') {
+            summaryText = 'Sat\u0131\u015f/Pert Bilgisi Bildirdi.';
           } else {
-            label = event.type;
+            const fallbackLabel = toTitleCase(eventType || 'Di\u011fer \u0130\u015flem');
+            summaryText = `${fallbackLabel} Bildirildi.`;
           }
-          
-          const labelHtml = escapeHtml(toTitleCase(label));
-          const dateLabelHtml = `${escapeHtml(formatDateForDisplay(event.date) || '-')} - ${labelHtml}`;
-          const bodyHtml = detailText ? `<div class="history-item-body" style="font-size: 12px; margin-top: 4px;">${detailText}</div>` : '';
+
+          const firstLine = `${dateText} - "${userText}" ${summaryText}`;
+          const secondLine = details.length ? details.join(' | ') : '';
           html += `<div class="history-item history-item-sube">
-            <div class="history-item-date" style="font-weight: 600; font-size: 12px; margin-bottom: 4px;">${dateLabelHtml}</div>
-            ${bodyHtml}
+            <div class="history-item-date" style="font-weight: 600; font-size: 12px; margin-bottom: 4px;">${escapeHtml(firstLine)}</div>
+            ${secondLine ? `<div class="history-item-body" style="font-size: 12px; margin-top: 4px;">${escapeHtml(secondLine)}</div>` : ''}
           </div>`;
         });
       }
