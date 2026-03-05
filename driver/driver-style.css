@@ -428,7 +428,7 @@ body.driver-modal-open {
   }
   .dashboard-page .driver-below-hero {
     margin-top: 0 !important;
-    margin-bottom: 1px !important;
+    margin-bottom: -1px !important;
   }
   /* Tarihçe/çıkış butonları alanı ile alttaki içerik arası 1px */
   .dashboard-page .driver-header-fixed {
