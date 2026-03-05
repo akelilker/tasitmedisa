@@ -3782,7 +3782,13 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2), 0 2px 12px rgba(var(--theme-color-rgb), 0.08) !important;
   }
 
-  /* Cercevelere yan bosluk; plaka dropdown sag panele tasabilsin diye yatay overflow acik */
+  /* Çerçevelere yan boşluk; plaka dropdown sağ panele taşabilsin diye yatay overflow açık */
+  .dashboard-page .driver-dashboard-container {
+    overflow-x: visible !important;
+  }
+  .dashboard-page .content-wrap.driver-content-wrap.driver-scroll-area {
+    overflow-x: visible !important;
+  }
   .dashboard-page .driver-scroll-area {
     padding-left: 0 !important;
     padding-right: 0 !important;
