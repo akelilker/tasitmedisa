@@ -3611,6 +3611,13 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     overscroll-behavior: none !important;
     overscroll-behavior-x: none !important;
   }
+  /* Geçmiş İşlemler modal çerçevesi gri kalmalı (kırmızı tema çerçevesini ez) */
+  #history-modal .driver-modal-content,
+  #history-modal .modal-container {
+    border-top: 0.5px solid rgba(200, 200, 200, 0.45) !important;
+    border-left: 0.5px solid rgba(255, 255, 255, 0.18) !important;
+    border-right: 0.5px solid rgba(255, 255, 255, 0.18) !important;
+  }
   /* Düzeltme Talebi: diğer modaller gibi ekranı kaplasın (içerik az olsa bile) */
   #edit-request-modal .driver-modal-content,
   #edit-request-modal .modal-container {
