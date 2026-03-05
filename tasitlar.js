@@ -1522,7 +1522,26 @@
   // --- VEHICLE DETAIL - NEW FUNCTIONS ---
 
   function checkDateWarnings(dateString) { return (typeof window.checkDateWarnings === 'function' ? window.checkDateWarnings(dateString) : { class: '', days: null }); }
-  function formatDateForDisplay(dateStr) { return (typeof window.formatDateShort === 'function' ? window.formatDateShort(dateStr) : (dateStr ? String(dateStr) : '')); }
+  function formatDateForDisplay(dateStr) {
+    if (!dateStr) return '';
+    if (typeof window.formatDateShort === 'function') {
+      const formatted = window.formatDateShort(dateStr);
+      if (formatted) return String(formatted);
+    }
+    const raw = String(dateStr).trim();
+    const iso = raw.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (iso) return `${iso[3]}/${iso[2]}/${iso[1]}`;
+    const dot = raw.match(/^(\d{2})[./-](\d{2})[./-](\d{4})$/);
+    if (dot) return `${dot[1]}/${dot[2]}/${dot[3]}`;
+    const parsed = new Date(raw);
+    if (!isNaN(parsed.getTime())) {
+      const d = String(parsed.getDate()).padStart(2, '0');
+      const m = String(parsed.getMonth() + 1).padStart(2, '0');
+      const y = String(parsed.getFullYear());
+      return `${d}/${m}/${y}`;
+    }
+    return raw;
+  }
   function getLatestApprovedKmCorrection(vehicleId, kmEvents) {
     const appData = (window.appData && typeof window.appData === 'object') ? window.appData : {};
     const duzeltmeTalepleri = Array.isArray(appData.duzeltme_talepleri) ? appData.duzeltme_talepleri : [];
@@ -4026,4 +4045,3 @@ function renderVehicleDetailLeft(vehicle) {
   }, true);
 
 })();
-
