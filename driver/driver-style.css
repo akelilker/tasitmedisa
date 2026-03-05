@@ -1893,7 +1893,7 @@ body.driver-modal-open {
   max-width: 100%;
   display: block;
 }
-.driver-report-block-kaza .driver-kaporta-label {
+.driver-report-block-kaza .form-group .driver-kaporta-label {
   text-align: center;
   display: block;
   margin-bottom: 5px;
