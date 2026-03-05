@@ -3747,10 +3747,10 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     position: relative;
     z-index: 1;
   }
-  /* Adım 1: İkon ve metin çakışmasının giderilmesi – metnin ok alanına girmemesi, ok güvenli köşede */
+  /* Adım 1: Plaka yatayda ortada (kırmızı ok hesaba katılmaz); ok alanına metin girmesin diye simetrik padding */
   .dashboard-page .driver-plate-dropdown-row .driver-current-plaka {
+    padding-left: 36px !important;
     padding-right: 36px !important;
-    padding-left: 12px !important;
   }
   .dashboard-page .driver-plate-dropdown-row .driver-plate-trigger {
     right: 0 !important;
@@ -4167,7 +4167,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .dashboard-page .driver-multi-vehicle-wrap .driver-plate-row {
     margin-bottom: 6px !important;
   }
-/* Masaüstü: ok sağda, plaka metni ok alanına girmesin */
+/* Masaüstü: plaka yatayda ortada (kırmızı ok hesaba katılmaz), ok çerçeve dışında */
 @media (min-width: 641px) {
   .dashboard-page .driver-plate-dropdown-row .driver-plate-trigger {
     right: -12px !important;
@@ -4176,7 +4176,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     background: var(--bg) !important;
   }
   .dashboard-page .driver-plate-dropdown-row .driver-current-plaka {
-    padding-left: 12px !important;
+    padding-left: 18px !important;
     padding-right: 18px !important;
   }
 }
