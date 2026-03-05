@@ -2114,7 +2114,7 @@
 
 .detail-brand-year-row .history-btn-minimal:hover {
     color: var(--txt-white);
-    font-size: 16px; /* Hover'da metin de büyüsün (15px → 16px) */
+    font-size: 15px; /* Hover'da metin de büyüsün (15px → 16px) */
 }
 
 .detail-brand-year-row .history-btn-minimal svg {
@@ -2480,12 +2480,12 @@
   .branch-grid { gap: 2px; }
   .branch-card { 
     padding: 3px; 
-    width: clamp(90px, 26vw, 104px);
-    max-width: clamp(90px, 26vw, 104px);
-    flex: 0 0 clamp(90px, 26vw, 104px);
+    width: clamp(93px, 27vw, 107px);
+    max-width: clamp(93px, 27vw, 107px);
+    flex: 0 0 clamp(93px, 27vw, 107px);
     aspect-ratio: 1 / 1;
   }
-  .branch-name { font-size: 15px; } /* +1 punto daha (sadece mobil) */
+  .branch-name { font-size: clamp(13px, 4.1vw, 15px); line-height: 1.12; overflow-wrap: anywhere; word-break: break-word; } /* Sigmazsa bir miktar kuculerek kutu icinde kalsin */
   .branch-count { font-size: 15px; } /* +1 punto daha (sadece mobil) */
   
   /* Mobil: 2'li grid, kartlar eşit yükseklik, alt satır (fiyat/buton) hep aynı hizada */
@@ -2738,7 +2738,7 @@
     color: var(--form-label-color) !important; /* Kayıt modalı etiketleri ile aynı beyaz */
   }
   .list-header-row .list-cell {
-    font-size: var(--list-header-font-size, 15px) !important;
+    font-size: var(--list-header-font-size, 14px) !important;
     padding-left: 1px !important;
     padding-right: 1px !important;
   }
@@ -2889,7 +2889,7 @@
 
   /* Başlık Hücreleri - font-size tek kaynak; üst hizalı; ikinci satıra geçebilir */
   .list-header-row .list-cell {
-    font-size: var(--list-header-font-size, 15px) !important;
+    font-size: var(--list-header-font-size, 14px) !important;
     font-weight: 600 !important;
     letter-spacing: 0.3px !important;
     text-transform: uppercase !important;
@@ -2908,7 +2908,7 @@
 
   /* Başlık metinleri - tümü aynı punto; ikinci satıra geçebilir */
   .list-header-row .list-cell span {
-    font-size: var(--list-header-font-size, 15px) !important;
+    font-size: var(--list-header-font-size, 14px) !important;
     font-weight: 700 !important;
     text-transform: uppercase !important;
     color: var(--form-label-color) !important; /* Kayıt etiketleri ile aynı beyaz */
@@ -2918,7 +2918,7 @@
   /* Marka/Model ve Kullanıcı başlıkları da aynı punto (base clamp mobilde ezilsin) */
   .list-header-row .list-cell.list-brand .sortable-header span,
   .list-header-row .list-cell.list-user span {
-    font-size: var(--list-header-font-size, 15px) !important;
+    font-size: var(--list-header-font-size, 14px) !important;
   }
 
   /* Sıralanabilir başlık: üst hizalı, metin ikinci satıra geçebilir (ilk satır hep aynı hizada) */
@@ -3133,7 +3133,7 @@
     align-self: center !important; /* Olay Ekle ile aynı satırda, aşağı kaymasın */
   }
   #vehicle-detail-modal .detail-brand-year-row .history-btn-minimal:hover {
-    font-size: 18px !important;
+    font-size: 17px !important;
   }
 
   #event-menu-modal .universal-back-bar {
