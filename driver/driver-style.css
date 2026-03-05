@@ -3777,6 +3777,12 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     margin-top: 0 !important;
     margin-bottom: 0 !important;
   }
+  .dashboard-page .driver-report-block-kaza .driver-kaporta-container .driver-kaporta-schema-wrapper svg {
+    width: 100% !important;
+    max-width: 152px !important;
+    max-height: 228px !important;
+    height: auto !important;
+  }
 
   /* Not input: placeholder yatay+dikey ortalı, iç dikey 3px daraltıldı */
   .dashboard-page .vehicle-card .form-group textarea.driver-ekstra-not {
