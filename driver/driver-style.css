@@ -3782,10 +3782,11 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2), 0 2px 12px rgba(var(--theme-color-rgb), 0.08) !important;
   }
 
-  /* ?er?evelere yan bo?luk ? modal/panel sa?dan kesilmesin diye 0 (?nceden 4px) */
+  /* Cercevelere yan bosluk; plaka dropdown sag panele tasabilsin diye yatay overflow acik */
   .dashboard-page .driver-scroll-area {
     padding-left: 0 !important;
     padding-right: 0 !important;
+    overflow-x: visible !important;
   }
 
   /* Elemanlar yatay geni?lik art?r ? ?er?eveye yakla? */
