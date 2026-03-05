@@ -1,0 +1,20 @@
+# Runtime-unrelated local artifacts
+.cursor/debug-*.log
+.cursor/plans/*.plan.md
+.cursor/sessions/
+
+# Local backup snapshots (do not version)
+data/backups/*.json
+
+# OS/editor noise
+Thumbs.db
+.DS_Store
+*.tmp
+*.bak
+*.orig
+*.rej
+*.swp
+*.swo
+
+# Local docs/exports not used by runtime
+tanitim*.docx
