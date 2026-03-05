@@ -829,7 +829,7 @@ window.submitDriverAction = async function(type, vid) {
         if (guncelKmEl) guncelKmEl.focus();
         return;
     }
-    var btnBildir, btnVazge?c, formActions, successMsg;
+    var btnBildir, btnVazgec, formActions, successMsg;
     if (type === 'kaza') {
         var kazaAciklama = (document.getElementById('kaza-detay-' + vid) || {}).value.trim();
         if (!kazaAciklama) {
@@ -837,7 +837,7 @@ window.submitDriverAction = async function(type, vid) {
             return;
         }
         btnBildir = document.querySelector('#kaza-block-' + vid + ' .universal-btn-save');
-        btnVazge?c = document.querySelector('#kaza-block-' + vid + ' .universal-btn-cancel');
+        btnVazgec = document.querySelector('#kaza-block-' + vid + ' .universal-btn-cancel');
         formActions = document.querySelector('#kaza-block-' + vid + ' .universal-btn-group');
         successMsg = document.getElementById('kaza-success-' + vid);
     } else {
@@ -847,12 +847,12 @@ window.submitDriverAction = async function(type, vid) {
             return;
         }
         btnBildir = document.querySelector('#bakim-block-' + vid + ' .universal-btn-save');
-        btnVazge?c = document.querySelector('#bakim-block-' + vid + ' .universal-btn-cancel');
+        btnVazgec = document.querySelector('#bakim-block-' + vid + ' .universal-btn-cancel');
         formActions = document.querySelector('#bakim-block-' + vid + ' .universal-btn-group');
         successMsg = document.getElementById('bakim-success-' + vid);
     }
     if (btnBildir) btnBildir.disabled = true;
-    if (btnVazge?c) btnVazge?c.disabled = true;
+    if (btnVazgec) btnVazgec.disabled = true;
     var payload = {
         arac_id: parseInt(vid, 10),
         guncel_km: guncelKm,
@@ -927,7 +927,7 @@ window.submitDriverAction = async function(type, vid) {
         alert('Ba?lant? hatas?.');
     } finally {
         if (btnBildir) btnBildir.disabled = false;
-        if (btnVazge?c) btnVazge?c.disabled = false;
+        if (btnVazgec) btnVazgec.disabled = false;
     }
 };
 
@@ -949,13 +949,13 @@ window.submitKmOnly = async function(vid) {
         return;
     }
     const btnBildir = document.querySelector('#km-block-' + vid + ' .universal-btn-save');
-    const btnVazge?c = document.querySelector('#km-block-' + vid + ' .universal-btn-cancel');
+    const btnVazgec = document.querySelector('#km-block-' + vid + ' .universal-btn-cancel');
     const formContent = document.querySelector('#km-block-' + vid + ' .driver-km-form-content');
     const successMsg = document.getElementById('km-success-' + vid);
     const errorEl = document.getElementById('km-error-' + vid);
     if (errorEl) { errorEl.classList.remove('show'); errorEl.textContent = ''; }
     if (btnBildir) btnBildir.disabled = true;
-    if (btnVazge?c) btnVazge?c.disabled = true;
+    if (btnVazgec) btnVazgec.disabled = true;
     try {
         const response = await fetch(API_BASE + 'driver_save.php', {
             method: 'POST',
@@ -1017,7 +1017,7 @@ window.submitKmOnly = async function(vid) {
         if (errorEl) { errorEl.textContent = 'Ba?lant? hatas?.'; errorEl.classList.add('show'); }
     } finally {
         if (btnBildir) btnBildir.disabled = false;
-        if (btnVazge?c) btnVazge?c.disabled = false;
+        if (btnVazgec) btnVazgec.disabled = false;
     }
 };
 
