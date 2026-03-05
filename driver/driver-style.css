@@ -3736,10 +3736,6 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .dashboard-page .driver-plate-dropdown-row {
     overflow: visible !important;
   }
-  /* Plaka dropdown'un containing block'u satır olsun; böylece liste plaka satırının hemen altında açılır */
-  .dashboard-page .driver-plate-dropdown-row {
-    position: relative !important;
-  }
   .dashboard-page .driver-left-panel {
     position: relative;
     z-index: 3;
@@ -3751,20 +3747,30 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     position: relative;
     z-index: 1;
   }
-  /* Mobil: liste plaka satırının hemen altında, sola hizalı (absolute = satıra göre; fixed/ortaya değil) */
+  /* Adım 1: İkon ve metin çakışmasının giderilmesi – metnin ok alanına girmemesi, ok güvenli köşede */
+  .dashboard-page .driver-plate-dropdown-row .driver-current-plaka {
+    padding-right: 28px !important;
+    padding-left: 12px !important;
+  }
+  .dashboard-page .driver-plate-dropdown-row .driver-plate-trigger {
+    right: 4px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    background: var(--bg) !important;
+  }
+  /* Adım 2–3: Liste sol panel kafesinden çıkarıldı (position: fixed), ekranda göz hizası – ortada, belirgin gölge */
   .dashboard-page .driver-left-panel .driver-plate-dropdown {
-    position: absolute !important;
-    top: 100% !important; 
-    left: -4px !important;
-    right: auto !important;
-    transform: none !important;
-    width: 260px !important;
-    max-width: 85vw !important;
+    position: fixed !important;
+    top: 15vh !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 85vw !important;
+    max-width: 380px !important;
     min-width: auto !important;
-    margin-top: 8px !important;
+    margin-top: 0 !important;
     z-index: 99999 !important;
     overflow-x: hidden !important;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 2px 10px rgba(var(--theme-color-rgb), 0.3) !important;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), 0 2px 10px rgba(var(--theme-color-rgb), 0.3) !important;
   }
   .driver-plate-dropdown {
     background: var(--bg) !important;
@@ -4159,18 +4165,18 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .dashboard-page .driver-multi-vehicle-wrap .driver-plate-row {
     margin-bottom: 6px !important;
   }
-/* Oku sağa kaydırıyoruz (-12px veya -15px zevkine göre ayarlayabilirsin) */
-.dashboard-page .driver-plate-dropdown-row .driver-plate-trigger {
-  right: -12px !important; 
-  top: 50% !important;
-  transform: translateY(-50%) !important;
-  background: var(--bg) !important; /* Altında kalan metni gizlemek istersen zemin rengi eklenebilir */
-}
-
-/* Metnin okun altına girmemesi (çakışmaması) için güvenli bölge bırakıyoruz */
-.dashboard-page .driver-plate-dropdown-row .driver-current-plaka {
-  padding-left: 12px !important;
-  padding-right: 18px !important; 
+/* Masaüstü: ok sağda, plaka metni ok alanına girmesin */
+@media (min-width: 641px) {
+  .dashboard-page .driver-plate-dropdown-row .driver-plate-trigger {
+    right: -12px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    background: var(--bg) !important;
+  }
+  .dashboard-page .driver-plate-dropdown-row .driver-current-plaka {
+    padding-left: 12px !important;
+    padding-right: 18px !important;
+  }
 }
   .dashboard-page .driver-action-area .driver-report-block input[type="date"] {
     box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.35) !important;
