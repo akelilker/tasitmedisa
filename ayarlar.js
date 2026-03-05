@@ -971,50 +971,110 @@
     };
   
     // — SON YEDEKTEN GERİ YÜKLE (medisa_server_backup - önbellek temizleme sonrası) —
-    window.restoreFromLastBackup = function restoreFromLastBackup() {
+    // � SON YEDEKTEN GERI YUKLE (once sunucu yedegi, sonra local fallback) �
+    function normalizeBackupPayload(raw, source) {
+      if (!raw || typeof raw !== "object") return null;
+      const vehicles = Array.isArray(raw.vehicles) ? raw.vehicles : (Array.isArray(raw.tasitlar) ? raw.tasitlar : []);
+      const branches = Array.isArray(raw.branches) ? raw.branches : [];
+      const users = Array.isArray(raw.users) ? raw.users : [];
+      if (!Array.isArray(vehicles) || !Array.isArray(branches) || !Array.isArray(users)) return null;
+      return {
+        source: source || "unknown",
+        upload_date: raw.upload_date || raw.backup_date || raw._backup_file_mtime || null,
+        branches: branches,
+        users: users,
+        vehicles: vehicles,
+        kayitlar: Array.isArray(raw.kayitlar) ? raw.kayitlar : null,
+        ayarlar: raw.ayarlar && typeof raw.ayarlar === "object" ? raw.ayarlar : null,
+        sifreler: Array.isArray(raw.sifreler) ? raw.sifreler : null,
+        arac_aylik_hareketler: Array.isArray(raw.arac_aylik_hareketler) ? raw.arac_aylik_hareketler : null,
+        duzeltme_talepleri: Array.isArray(raw.duzeltme_talepleri) ? raw.duzeltme_talepleri : null
+      };
+    }
+
+    async function fetchServerLastBackup() {
       try {
-        const raw = localStorage.getItem('medisa_server_backup');
-        if (!raw) {
-          alert('Son yedek bulunamadı.');
+        const res = await fetch("restore.php?source=backup", { cache: "no-store" });
+        if (!res.ok) return null;
+        const payload = await res.json();
+        return normalizeBackupPayload(payload, "server");
+      } catch (_e) {
+        return null;
+      }
+    }
+
+    function applyRestoredBackup(backup) {
+      writeBranches(backup.branches);
+      writeUsers(backup.users);
+      localStorage.setItem(VEHICLES_KEY, JSON.stringify(backup.vehicles));
+
+      const existingApp = window.appData || {};
+      const normalizedUsers = (window.appData && Array.isArray(window.appData.users)) ? window.appData.users : backup.users;
+      const restoredBlob = {
+        tasitlar: backup.vehicles,
+        kayitlar: backup.kayitlar != null ? backup.kayitlar : (existingApp.kayitlar || []),
+        branches: backup.branches,
+        users: normalizedUsers,
+        ayarlar: backup.ayarlar || existingApp.ayarlar || { sirketAdi: "Medisa", yetkiliKisi: "", telefon: "", eposta: "" },
+        sifreler: backup.sifreler != null ? backup.sifreler : (existingApp.sifreler || []),
+        arac_aylik_hareketler: backup.arac_aylik_hareketler != null ? backup.arac_aylik_hareketler : (existingApp.arac_aylik_hareketler || []),
+        duzeltme_talepleri: backup.duzeltme_talepleri != null ? backup.duzeltme_talepleri : (existingApp.duzeltme_talepleri || [])
+      };
+
+      localStorage.setItem("medisa_data_v1", JSON.stringify(restoredBlob));
+      localStorage.setItem("medisa_server_backup", JSON.stringify({
+        ...backup,
+        upload_date: new Date().toISOString()
+      }));
+      sessionStorage.setItem("medisa_just_restored", "1");
+      window.appData = restoredBlob;
+    }
+
+    window.restoreFromLastBackup = async function restoreFromLastBackup() {
+      try {
+        let backup = await fetchServerLastBackup();
+        if (!backup) {
+          const raw = localStorage.getItem("medisa_server_backup");
+          if (raw) backup = normalizeBackupPayload(JSON.parse(raw), "local");
+        }
+
+        if (!backup) {
+          alert("Son yedek bulunamadi.");
           return;
         }
-        const backup = JSON.parse(raw);
-        if (!backup.branches || !backup.users || !backup.vehicles) {
-          alert('Geçersiz yedek formatı.');
-          return;
-        }
-        const dateStr = backup.upload_date ? new Date(backup.upload_date).toLocaleString('tr-TR') : 'Bilinmiyor';
-        const message = `Yedek Tarihi: ${dateStr}\n\n` +
-          `Şubeler: ${backup.branches.length}\n` +
-          `Kullanıcılar: ${backup.users.length}\n` +
-          `Taşıtlar: ${backup.vehicles.length}\n\n` +
+
+        const dateStr = backup.upload_date ? new Date(backup.upload_date).toLocaleString("tr-TR") : "Bilinmiyor";
+        const sourceLabel = backup.source === "server" ? "Sunucu yedegi" : "Yerel yedek";
+        const message = `Kaynak: ${sourceLabel}\nYedek Tarihi: ${dateStr}\n\n` +
+          `Subeler: ${backup.branches.length}\n` +
+          `Kullanicilar: ${backup.users.length}\n` +
+          `Tasitlar: ${backup.vehicles.length}\n\n` +
           `Mevcut veriler silinecek. Emin misiniz?`;
         if (!confirm(message)) return;
-        writeBranches(backup.branches);
-        writeUsers(backup.users);
-        localStorage.setItem(VEHICLES_KEY, JSON.stringify(backup.vehicles));
-        const existingApp = window.appData || {};
-        const restoredBlob = {
-          tasitlar: backup.vehicles,
-          kayitlar: existingApp.kayitlar || [],
-          branches: backup.branches,
-          users: backup.users,
-          ayarlar: existingApp.ayarlar || { sirketAdi: 'Medisa', yetkiliKisi: '', telefon: '', eposta: '' },
-          sifreler: existingApp.sifreler || []
-        };
-        localStorage.setItem('medisa_data_v1', JSON.stringify(restoredBlob));
-        sessionStorage.setItem('medisa_just_restored', '1');
-        window.appData = restoredBlob;
-        alert('Yedek başarıyla geri yüklendi!\n\nSayfa yenilenecek.');
-        setTimeout(() => window.location.reload(), 500);
+
+        applyRestoredBackup(backup);
+
+        if (typeof window.saveDataToServer === "function") {
+          try {
+            await Promise.race([
+              window.saveDataToServer(),
+              new Promise(function(resolve) { setTimeout(resolve, 8000); })
+            ]);
+          } catch (_syncErr) {
+            // Sync hatasi restore islemini kesmesin
+          }
+        }
+
+        alert("Yedek basariyla geri yuklendi!\n\nSayfa yenilenecek.");
+        setTimeout(function() { window.location.reload(); }, 500);
       } catch (err) {
-        if (typeof window.__medisaLogError === 'function') window.__medisaLogError('Yedek geri yükle (restoreFromLastBackup)', err);
-        else console.error('Yedek geri yükle hatası:', err);
-        alert('Yedek okunamadı. Lütfen geçerli bir yedek dosyası ile tekrar deneyin.');
+        if (typeof window.__medisaLogError === "function") window.__medisaLogError("Yedek geri yukle (restoreFromLastBackup)", err);
+        else console.error("Yedek geri yukle hatasi:", err);
+        alert("Yedek okunamadi. Lutfen gecerli bir yedek dosyasi ile tekrar deneyin.");
       }
     };
 
-    // — YEDEKTEN GERİ YÜKLE (Import - dosyadan) —
+    // � YEDEKTEN GERI YUKLE (Import - dosyadan) �
     window.importData = function importData() {
       try {
         const input = document.createElement('input');
@@ -1106,29 +1166,36 @@
         const branches = readBranches();
         const users = readUsers();
         const vehicles = readVehicles();
+        const existingApp = window.appData || {};
 
         const backup = {
           branches: branches,
           users: users,
           vehicles: vehicles,
-          upload_date: new Date().toISOString()
+          kayitlar: Array.isArray(existingApp.kayitlar) ? existingApp.kayitlar : [],
+          ayarlar: existingApp.ayarlar || { sirketAdi: "Medisa", yetkiliKisi: "", telefon: "", eposta: "" },
+          sifreler: Array.isArray(existingApp.sifreler) ? existingApp.sifreler : [],
+          arac_aylik_hareketler: Array.isArray(existingApp.arac_aylik_hareketler) ? existingApp.arac_aylik_hareketler : [],
+          duzeltme_talepleri: Array.isArray(existingApp.duzeltme_talepleri) ? existingApp.duzeltme_talepleri : [],
+          upload_date: new Date().toISOString(),
+          version: "1.1"
         };
 
-        // 1) Yedek localStorage'a kaydedilir (clear sonrası korunacak)
-        localStorage.setItem('medisa_server_backup', JSON.stringify(backup));
+        // 1) Yedek localStorage'a kaydedilir (clear sonrasi korunacak)
+        localStorage.setItem("medisa_server_backup", JSON.stringify(backup));
 
-        // 2) Sunucu kayıt fonksiyonu yoksa yerel yedek ile devam et
-        if (typeof window.saveDataToServer !== 'function') {
+        // 2) Sunucu kayit fonksiyonu yoksa yerel yedek ile devam et
+        if (typeof window.saveDataToServer !== "function") {
           return {
             success: true,
             localBackup: true,
             serverBackup: false,
-            message: 'Yerel yedek oluşturuldu.'
+            message: "Yerel yedek olusturuldu."
           };
         }
 
-        // 3) Sunucuya gönderilecek appData'yi güncel verilerle hizala
-        if (window.appData && typeof window.appData === 'object') {
+        // 3) Sunucuya gonderilecek appData'yi guncel verilerle hizala
+        if (window.appData && typeof window.appData === "object") {
           const hasAppUsers = Array.isArray(window.appData.users) && window.appData.users.length > 0;
           window.appData = {
             ...window.appData,
@@ -1145,7 +1212,7 @@
             success: false,
             localBackup: true,
             serverBackup: false,
-            message: 'Yerel yedek oluşturuldu ancak sunucuya yüklenemedi.'
+            message: "Yerel yedek olusturuldu ancak sunucuya yuklenemedi."
           };
         }
 
@@ -1153,16 +1220,16 @@
           success: true,
           localBackup: true,
           serverBackup: true,
-          message: 'Veriler sunucuya yedeklendi.'
+          message: "Veriler sunucuya yedeklendi."
         };
       } catch (error) {
-        if (typeof window.__medisaLogError === 'function') window.__medisaLogError('Yedekleme (uploadToServer)', error);
-        else console.error('Yedekleme hatası:', error);
+        if (typeof window.__medisaLogError === "function") window.__medisaLogError("Yedekleme (uploadToServer)", error);
+        else console.error("Yedekleme hatasi:", error);
         return {
           success: false,
           localBackup: false,
           serverBackup: false,
-          message: 'Yedekleme sırasında hata oluştu. Lütfen tekrar deneyin.'
+          message: "Yedekleme sirasinda hata olustu. Lutfen tekrar deneyin."
         };
       }
     }
