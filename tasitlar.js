@@ -547,10 +547,13 @@
     let unassignedCount = 0;
     activeVehicles.forEach(v => {
         if (!v.branchId) { unassignedCount++; }
-        else { countByBranch.set(v.branchId, (countByBranch.get(v.branchId) || 0) + 1); }
+        else {
+            const branchKey = String(v.branchId);
+            countByBranch.set(branchKey, (countByBranch.get(branchKey) || 0) + 1);
+        }
     });
     branches.forEach(branch => {
-        html += createBranchCard(branch.id, branch.name, countByBranch.get(branch.id) || 0);
+        html += createBranchCard(branch.id, branch.name, countByBranch.get(String(branch.id)) || 0);
     });
 
     // 3. Tahsis Edilmemiş — sadece aktif taşıtlar
@@ -652,7 +655,7 @@
         } else if (activeBranchId === '') {
             vehicles = vehicles.filter(v => !v.branchId);
         } else {
-            vehicles = vehicles.filter(v => v.branchId === activeBranchId);
+            vehicles = vehicles.filter(v => String(v.branchId) === String(activeBranchId));
         }
         // Normal listelerde satılanları gösterme
         vehicles = vehicles.filter(v => v.satildiMi !== true);
@@ -1223,8 +1226,9 @@
     
     const branches = readBranches();
     const eskiSubeId = vehicle.branchId || '';
-    const eskiSube = branches.find(b => b.id === eskiSubeId);
-    const yeniSube = branches.find(b => b.id === branchId);
+    const eskiSube = branches.find(b => String(b.id) === String(eskiSubeId));
+    const yeniSube = branches.find(b => String(b.id) === String(branchId));
+    const normalizedBranchId = yeniSube ? yeniSube.id : branchId;
 
     if (!vehicle.events) vehicle.events = [];
     vehicle.events.unshift({
@@ -1234,13 +1238,13 @@
       timestamp: new Date().toISOString(),
       data: {
         eskiSubeId: eskiSubeId,
-        yeniSubeId: branchId,
+        yeniSubeId: normalizedBranchId,
         eskiSubeAdi: eskiSube?.name || '',
         yeniSubeAdi: yeniSube?.name || ''
       }
     });
 
-    vehicle.branchId = branchId;
+    vehicle.branchId = normalizedBranchId;
     writeVehicles(vehicles);
 
     closeVehicleDetailModal();
@@ -1467,7 +1471,7 @@
       const branches = sortColumn === 'branch' ? (readBranches() || []) : null;
       const getBranchName = branches && branches.length >= 0 ? (branchId) => {
           if (!branchId) return 'zzz_tahsis_edilmemis';
-          const branch = branches.find(b => b.id === branchId);
+          const branch = branches.find(b => String(b.id) === String(branchId));
           return branch ? branch.name.toLowerCase() : 'zzz_unknown';
       } : null;
 
@@ -1611,7 +1615,7 @@ function renderVehicleDetailLeft(vehicle) {
   const branches = readBranches();
   const branchId = vehicle.branchId || '';
   const branchName = branchId ?
-      (branches.find(b => b.id === branchId)?.name || '') :
+      (branches.find(b => String(b.id) === String(branchId))?.name || '') :
       'Tahsis Edilmemiş';
   html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Şube</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(branchName)}</span></div>`;
 
@@ -3123,9 +3127,10 @@ function renderVehicleDetailLeft(vehicle) {
     
     const branches = readBranches();
     const eskiSubeId = vehicle.branchId || '';
-    const eskiSube = branches.find(b => b.id === eskiSubeId);
-    const yeniSube = branches.find(b => b.id === yeniSubeId);
-    vehicle.branchId = yeniSubeId;
+    const eskiSube = branches.find(b => String(b.id) === String(eskiSubeId));
+    const yeniSube = branches.find(b => String(b.id) === String(yeniSubeId));
+    const normalizedSubeId = yeniSube ? yeniSube.id : yeniSubeId;
+    vehicle.branchId = normalizedSubeId;
     
     const event = {
       id: Date.now().toString(),
@@ -3134,7 +3139,7 @@ function renderVehicleDetailLeft(vehicle) {
       timestamp: new Date().toISOString(),
       data: {
         eskiSubeId: eskiSubeId,
-        yeniSubeId: yeniSubeId,
+        yeniSubeId: normalizedSubeId,
         eskiSubeAdi: eskiSube?.name || '',
         yeniSubeAdi: yeniSube?.name || ''
       }
