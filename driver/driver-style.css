@@ -725,6 +725,13 @@ body.driver-modal-open {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.driver-left-panel-content::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }
 .driver-right-panel {
   flex: 1;
