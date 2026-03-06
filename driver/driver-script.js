@@ -495,51 +495,6 @@ const API_BASE = (function(){
           const isOpen = dropdown.style.display === 'block';
           dropdown.style.display = isOpen ? 'none' : 'block';
           if (!isOpen) positionPlateDropdownToTrigger(dropdown, trigger);
-          // #region agent log
-          if (!isOpen) {
-              requestAnimationFrame(function() {
-                  var panelsInner = document.querySelector('.driver-panels-inner');
-                  var twoPanel = document.querySelector('.driver-two-panel');
-                  var scrollArea = document.querySelector('.driver-scroll-area');
-                  var firstItem = dropdown.querySelector('.driver-plate-dropdown-item');
-                  var triggerStyle = trigger && window.getComputedStyle(trigger);
-                  var dropdownStyle = dropdown && window.getComputedStyle(dropdown);
-                  var panelsStyle = panelsInner && window.getComputedStyle(panelsInner);
-                  var twoPanelStyle = twoPanel && window.getComputedStyle(twoPanel);
-                  var scrollStyle = scrollArea && window.getComputedStyle(scrollArea);
-                  var itemStyle = firstItem && window.getComputedStyle(firstItem);
-                  var payload = {
-                      sessionId: 'ed325e',
-                      location: 'driver-script.js:setupPlateDropdown',
-                      message: 'Plate dropdown open - computed styles',
-                      runId: 'debug',
-                      hypothesisId: 'H1-H5',
-                      data: {
-                          innerWidth: window.innerWidth,
-                          media640: window.innerWidth <= 640,
-                          media768: window.innerWidth <= 768,
-                          triggerRight: triggerStyle ? triggerStyle.getPropertyValue('right') : null,
-                          triggerPosition: triggerStyle ? triggerStyle.getPropertyValue('position') : null,
-                          dropdownWidth: dropdownStyle ? dropdownStyle.getPropertyValue('width') : null,
-                          dropdownMaxWidth: dropdownStyle ? dropdownStyle.getPropertyValue('max-width') : null,
-                          dropdownOverflowX: dropdownStyle ? dropdownStyle.getPropertyValue('overflow-x') : null,
-                          dropdownLeft: dropdownStyle ? dropdownStyle.getPropertyValue('left') : null,
-                          panelsOverflowX: panelsStyle ? panelsStyle.getPropertyValue('overflow-x') : null,
-                          panelsOverflow: panelsStyle ? panelsStyle.getPropertyValue('overflow') : null,
-                          itemOverflow: itemStyle ? itemStyle.getPropertyValue('overflow') : null,
-                          itemMaxWidth: itemStyle ? itemStyle.getPropertyValue('max-width') : null,
-                          itemWhiteSpace: itemStyle ? itemStyle.getPropertyValue('white-space') : null,
-                          twoPanelOverflow: twoPanelStyle ? twoPanelStyle.getPropertyValue('overflow') : null,
-                          twoPanelOverflowX: twoPanelStyle ? twoPanelStyle.getPropertyValue('overflow-x') : null,
-                          scrollAreaOverflow: scrollStyle ? scrollStyle.getPropertyValue('overflow') : null,
-                          scrollAreaOverflowX: scrollStyle ? scrollStyle.getPropertyValue('overflow-x') : null
-                      },
-                      timestamp: Date.now()
-                  };
-                  fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'ed325e'},body:JSON.stringify(payload)}).catch(function(){});
-              });
-          }
-          // #endregion
       };
   }
   
@@ -585,25 +540,6 @@ const API_BASE = (function(){
       if (kaportaContainer && vehicle) {
           initKaportaForDriver(kaportaContainer, vehicle);
       }
-      // #region agent log
-      setTimeout(function() {
-          var two = document.querySelector('.driver-two-panel');
-          var right = document.querySelector('.driver-right-panel');
-          var action = document.getElementById('driver-action-area');
-          var btn = document.querySelector('.driver-action-area .driver-action-btn');
-          var container = document.querySelector('.driver-dashboard-container');
-          var data = {
-              innerWidth: window.innerWidth,
-              clientWidth: document.documentElement ? document.documentElement.clientWidth : null,
-              twoPanel: two ? { right: two.getBoundingClientRect().right, paddingRight: getComputedStyle(two).paddingRight } : null,
-              rightPanel: right ? { right: right.getBoundingClientRect().right, paddingRight: getComputedStyle(right).paddingRight } : null,
-              actionArea: action ? { right: action.getBoundingClientRect().right, paddingRight: getComputedStyle(action).paddingRight } : null,
-              btnRight: btn ? btn.getBoundingClientRect().right : null,
-              containerRight: container ? container.getBoundingClientRect().right : null
-          };
-          fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'8af0c9'},body:JSON.stringify({sessionId:'8af0c9',location:'driver-script.js:renderRightPanel',message:'layout right edge',data:data,timestamp:Date.now(),hypothesisId:'H1'})}).catch(function(){});
-      }, 100);
-      // #endregion
   }
   
   function buildDriverActionArea(vehicle, existingRecord, bakimVar, kazaVar, opts) {
