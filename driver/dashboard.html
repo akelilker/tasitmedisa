@@ -166,7 +166,7 @@
             <div class="modal-body">
                 <div class="history-filters">
                     <div class="history-vehicle-dropdown-wrap">
-                        <label id="history-vehicle-label" class="history-filter-label">Taşıt Seç:</label>
+                        <label id="history-vehicle-label" class="history-filter-label" for="history-vehicle-filter">Taşıt Seç:</label>
                         <div id="history-vehicle-trigger" class="history-vehicle-trigger" onclick="toggleHistoryVehicleDropdown(event)" role="button" tabindex="0" aria-haspopup="listbox" aria-expanded="false" aria-labelledby="history-vehicle-label">
                             <span class="history-vehicle-trigger-text">Tüm Taşıtlar</span>
                             <span class="history-vehicle-chevron">▾</span>
@@ -260,7 +260,8 @@
                 </div>
                 <div class="modal-body">
                     <div class="form-group driver-radio-row">
-                        <label class="driver-radio-label">Durum:</label>
+                        <input type="hidden" id="driver-anahtar-durum" aria-hidden="true">
+                        <label class="driver-radio-label" for="driver-anahtar-durum">Durum:</label>
                         <div class="driver-radio-group">
                             <button type="button" class="driver-radio-btn active" data-value="var" data-group="anahtar">Var</button>
                             <button type="button" class="driver-radio-btn" data-value="yok" data-group="anahtar">Yok</button>
@@ -287,7 +288,8 @@
                 </div>
                 <div class="modal-body">
                     <div class="form-group driver-radio-row">
-                        <label class="driver-radio-label">Durum:</label>
+                        <input type="hidden" id="driver-lastik-durum" aria-hidden="true">
+                        <label class="driver-radio-label" for="driver-lastik-durum">Durum:</label>
                         <div class="driver-radio-group">
                             <button type="button" class="driver-radio-btn" data-value="var" data-group="lastik">Var</button>
                             <button type="button" class="driver-radio-btn active" data-value="yok" data-group="lastik">Yok</button>
@@ -314,7 +316,8 @@
                 </div>
                 <div class="modal-body">
                     <div class="form-group driver-radio-row">
-                        <label class="driver-radio-label">UTTS Tanımlandı mı:</label>
+                        <input type="hidden" id="driver-utts-durum" aria-hidden="true">
+                        <label class="driver-radio-label" for="driver-utts-durum">UTTS Tanımlandı mı:</label>
                         <div class="driver-radio-group">
                             <button type="button" class="driver-radio-btn" data-value="evet" data-group="utts">Evet</button>
                             <button type="button" class="driver-radio-btn active" data-value="hayir" data-group="utts">Hayır</button>
