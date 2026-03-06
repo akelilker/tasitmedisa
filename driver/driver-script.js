@@ -440,16 +440,9 @@ const API_BASE = (function(){
 
       if (window.innerWidth <= 640) {
           const rowRect = row.getBoundingClientRect();
-          const dropdownWidth = dropdown.offsetWidth || Math.min(Math.round(window.innerWidth * 0.85), 380);
-          const viewportPadding = 10;
-          const targetCenterX = rowRect.left + (rowRect.width / 2);
-          const minCenterX = viewportPadding + (dropdownWidth / 2);
-          const maxCenterX = window.innerWidth - viewportPadding - (dropdownWidth / 2);
-          const clampedCenterX = Math.max(minCenterX, Math.min(maxCenterX, targetCenterX));
-
           dropdown.style.position = 'fixed';
           dropdown.style.top = `${Math.round(rowRect.bottom + 2)}px`;
-          dropdown.style.left = `${Math.round(clampedCenterX)}px`;
+          dropdown.style.left = `${Math.round(rowRect.left + (rowRect.width / 2))}px`;
           dropdown.style.right = 'auto';
           dropdown.style.transform = 'translateX(-50%)';
       } else {
@@ -592,6 +585,25 @@ const API_BASE = (function(){
       if (kaportaContainer && vehicle) {
           initKaportaForDriver(kaportaContainer, vehicle);
       }
+      // #region agent log
+      setTimeout(function() {
+          var two = document.querySelector('.driver-two-panel');
+          var right = document.querySelector('.driver-right-panel');
+          var action = document.getElementById('driver-action-area');
+          var btn = document.querySelector('.driver-action-area .driver-action-btn');
+          var container = document.querySelector('.driver-dashboard-container');
+          var data = {
+              innerWidth: window.innerWidth,
+              clientWidth: document.documentElement ? document.documentElement.clientWidth : null,
+              twoPanel: two ? { right: two.getBoundingClientRect().right, paddingRight: getComputedStyle(two).paddingRight } : null,
+              rightPanel: right ? { right: right.getBoundingClientRect().right, paddingRight: getComputedStyle(right).paddingRight } : null,
+              actionArea: action ? { right: action.getBoundingClientRect().right, paddingRight: getComputedStyle(action).paddingRight } : null,
+              btnRight: btn ? btn.getBoundingClientRect().right : null,
+              containerRight: container ? container.getBoundingClientRect().right : null
+          };
+          fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'8af0c9'},body:JSON.stringify({sessionId:'8af0c9',location:'driver-script.js:renderRightPanel',message:'layout right edge',data:data,timestamp:Date.now(),hypothesisId:'H1'})}).catch(function(){});
+      }, 100);
+      // #endregion
   }
   
   function buildDriverActionArea(vehicle, existingRecord, bakimVar, kazaVar, opts) {
