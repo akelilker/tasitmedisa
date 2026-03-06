@@ -1719,9 +1719,7 @@ body.modal-open .user-panel-link {
         box-sizing: border-box !important;
         min-height: calc(100% + env(safe-area-inset-top)) !important; /* iOS PWA position:fixed workaround */
     }
-    body,
-    body.dashboard-page,
-    body.login-page {
+    body {
         padding: 0 !important;
         min-height: 100vh !important;
         min-height: 100dvh !important;
@@ -1745,14 +1743,6 @@ body.modal-open .user-panel-link {
         box-shadow: 0 2px 14px rgba(var(--theme-color-rgb), 0.1) !important;
         min-height: calc(100vh - env(safe-area-inset-bottom)) !important;
         min-height: calc(100dvh - env(safe-area-inset-bottom)) !important;
-    }
-    /* Driver (login + dashboard): ilk boyamada kesin yükseklik – içerik kısa olsa bile çerçeve yerinde */
-    .driver-dashboard-container {
-        height: calc(100vh - env(safe-area-inset-bottom)) !important;
-        height: calc(100dvh - env(safe-area-inset-bottom)) !important;
-        min-height: calc(100vh - env(safe-area-inset-bottom)) !important;
-        min-height: calc(100dvh - env(safe-area-inset-bottom)) !important;
-        overflow: hidden !important;
     }
     /* Admin rapor sayfası: kavislere uyumlu çerçeve (anasayfa ile aynı) */
     .admin-app-container {
