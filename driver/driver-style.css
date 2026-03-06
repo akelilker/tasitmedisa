@@ -4194,6 +4194,10 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
 }
   .dashboard-page .driver-action-area .driver-report-block input[type="date"] {
+    width: calc(100% - 3px) !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    min-height: 38px !important;
     padding-top: 5px !important;
     padding-bottom: 6px !important;
     text-align: center !important;
@@ -4203,6 +4207,10 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .dashboard-page .driver-action-area .driver-report-block input[type="date"]:focus {
     box-shadow: inset 0 0 0 0.5px var(--theme-color) !important;
     border-color: var(--theme-color) !important;
+  }
+  /* Taşma garantisi: form-group flex'ta küçülebilsin, tarih input calc(100% - 3px) doğru hesaplansın */
+  .dashboard-page .driver-action-area .driver-report-block .form-group {
+    min-width: 0 !important;
   }
   .dashboard-page .driver-action-area .driver-km-form label {
     margin-top: 5px !important;
