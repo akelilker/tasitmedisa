@@ -3227,14 +3227,9 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     box-shadow: 0 -9px 22px rgba(var(--theme-color-rgb), 0.35) !important;
   }
   .login-page #app-footer.login-footer {
-    min-height: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important;
-    padding-bottom: env(safe-area-inset-bottom, 0) !important;
     box-shadow: 0 -9px 22px rgba(var(--theme-color-rgb), 0.35) !important;
     border-left: 0.5px solid rgba(255, 255, 255, 0.10) !important;
     border-right: 0.5px solid rgba(255, 255, 255, 0.10) !important;
-  }
-  .login-page #app-footer.login-footer .footer-content {
-    padding-bottom: max(12px, env(safe-area-inset-bottom, 0)) !important;
   }
 }
 
@@ -3729,17 +3724,6 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     border-right: 0.5px solid rgba(255, 255, 255, 0.18) !important;
     box-shadow: 0 -15px 22px rgba(var(--theme-color-rgb), 0.35) !important;
   }
-  /* iOS PWA / ?entik: Dashboard + Login footer alt safe-area (ana uygulama ile ayn?) */
-  .dashboard-page #app-footer,
-  .login-page #app-footer.login-footer {
-    min-height: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important;
-    padding-bottom: env(safe-area-inset-bottom, 0) !important;
-  }
-  .dashboard-page #app-footer .footer-content,
-  .login-page #app-footer.login-footer .footer-content {
-    padding-bottom: max(12px, env(safe-area-inset-bottom, 0)) !important;
-  }
-
   /* Plaka dropdown d??ar? ta?abilsin; panels-inner overflow: hidden kals?n ki sa? panel y?ksekli?i k?s?tlans?n ve Not+Bildir kayd?r?labilir */
   .dashboard-page .driver-panels-inner {
     overflow-x: visible !important;
