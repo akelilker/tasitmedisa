@@ -3797,6 +3797,8 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     z-index: 99999 !important;
     overflow-x: hidden !important;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), 0 2px 10px rgba(var(--theme-color-rgb), 0.3) !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
   }
   .driver-plate-dropdown {
     background: var(--bg) !important;
