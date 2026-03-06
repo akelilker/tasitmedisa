@@ -743,6 +743,21 @@ const API_BASE = (function(){
                   try { const raw = container.getAttribute('data-boyali-parcalar'); if (raw) boyaliParcalar = JSON.parse(raw); } catch (e) {}
                   initDriverKaporta(vid, boyaliParcalar);
               }
+              // #region agent log
+              requestAnimationFrame(function() {
+                  var panel = document.querySelector('.driver-right-panel');
+                  var dateInp = document.getElementById('kaza-tarih-' + vid);
+                  var tutarInp = document.getElementById('kaza-tutar-' + vid);
+                  var dateFg = dateInp ? dateInp.closest('.form-group') : null;
+                  var tutarFg = tutarInp ? tutarInp.closest('.form-group') : null;
+                  var pr = panel ? panel.getBoundingClientRect() : null;
+                  var dr = dateInp ? dateInp.getBoundingClientRect() : null;
+                  var tr = tutarInp ? tutarInp.getBoundingClientRect() : null;
+                  var dfr = dateFg ? dateFg.getBoundingClientRect() : null;
+                  var tfr = tutarFg ? tutarFg.getBoundingClientRect() : null;
+                  fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'0e8ee9'},body:JSON.stringify({sessionId:'0e8ee9',location:'driver-script.js:kaza-layout',message:'Kaza block layout',data:{panelRight:pr?pr.right:null,panelWidth:pr?pr.width:null,dateRight:dr?dr.right:null,dateWidth:dr?dr.width:null,dateHeight:dr?dr.height:null,tutarRight:tr?tr.right:null,tutarWidth:tr?tr.width:null,tutarHeight:tr?tr.height:null,dateFgRight:dfr?dfr.right:null,tutarFgRight:tfr?tfr.right:null,innerWidth:window.innerWidth},timestamp:Date.now(),hypothesisId:'H1-H4'})}).catch(function(){});
+              });
+              // #endregion
           }
           if (type === 'bakim') {
               const dateEl = document.getElementById('bakim-tarih-' + vid);
