@@ -432,6 +432,35 @@ const API_BASE = (function(){
   }
   
   var _plateCloseBound = false;
+
+  function positionPlateDropdownToTrigger(dropdown, trigger) {
+      if (!dropdown || !trigger) return;
+      const row = trigger.closest('.driver-plate-dropdown-row');
+      if (!row) return;
+
+      if (window.innerWidth <= 640) {
+          const rowRect = row.getBoundingClientRect();
+          const dropdownWidth = Math.min(Math.round(window.innerWidth * 0.85), 380);
+          const viewportPadding = 10;
+          const minLeft = viewportPadding;
+          const maxLeft = window.innerWidth - viewportPadding - dropdownWidth;
+          const targetLeft = rowRect.left;
+          const clampedLeft = Math.max(minLeft, Math.min(maxLeft, targetLeft));
+
+          dropdown.style.position = 'fixed';
+          dropdown.style.top = `${Math.round(rowRect.bottom + 2)}px`;
+          dropdown.style.left = `${Math.round(clampedLeft)}px`;
+          dropdown.style.right = 'auto';
+          dropdown.style.transform = 'none';
+      } else {
+          dropdown.style.position = '';
+          dropdown.style.top = '';
+          dropdown.style.left = '';
+          dropdown.style.right = '';
+          dropdown.style.transform = '';
+      }
+  }
+
   function setupPlateDropdown(vehicles) {
       const dropdown = document.getElementById('driver-plate-dropdown');
       const currentPlakaEl = document.getElementById('driver-current-plaka');
@@ -472,6 +501,7 @@ const API_BASE = (function(){
           ev.stopPropagation();
           const isOpen = dropdown.style.display === 'block';
           dropdown.style.display = isOpen ? 'none' : 'block';
+          if (!isOpen) positionPlateDropdownToTrigger(dropdown, trigger);
           // #region agent log
           if (!isOpen) {
               requestAnimationFrame(function() {
