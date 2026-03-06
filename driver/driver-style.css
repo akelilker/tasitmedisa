@@ -1137,26 +1137,32 @@ body.driver-modal-open {
   background-color: #0f1418 !important;
   color: var(--data-value-color, #a0aec0);
 }
-/* Tüm viewport'larda sağdan taşma önleme (iPhone dahil); sadece 640px media'ya bağlı kalmıyor */
+/* Tüm viewport'larda sağdan taşma/kesilme önleme (iPhone dahil); dikey daralma önleme */
+.dashboard-page .driver-right-panel {
+  padding-right: 10px !important;
+  box-sizing: border-box !important;
+}
 .dashboard-page .driver-action-area .driver-report-block .form-group {
   max-width: 100% !important;
   min-width: 0 !important;
-  overflow: hidden !important;
+  overflow: visible !important; /* Kesilme olmasın; genişlik input ile sınırlı */
   box-sizing: border-box !important;
 }
 .dashboard-page .driver-action-area .driver-report-block .form-group input,
 .dashboard-page .driver-action-area .driver-report-block .form-group textarea {
-  width: calc(100% - 3px) !important;
+  width: 100% !important;
   max-width: 100% !important;
   box-sizing: border-box !important;
 }
 .dashboard-page .driver-action-area .driver-report-block input[type="date"],
 .dashboard-page .driver-action-area .driver-report-block .form-group input.driver-bakim-input,
 .dashboard-page .driver-action-area .driver-report-block .form-group input.driver-kaza-input {
-  min-height: 38px !important;
-  width: calc(100% - 3px) !important;
+  min-height: 42px !important;
+  width: 100% !important;
   max-width: 100% !important;
   box-sizing: border-box !important;
+  padding: 8px 12px !important; /* Dikey rahatlık; sağda takvim ikonu için yer */
+  line-height: 1.35 !important;
 }
 .driver-action-area .driver-km-block .form-group input.driver-km-input,
 .driver-action-area .driver-report-block .form-group input,
@@ -4214,10 +4220,11 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     padding-right: 18px !important;
   }
 }
-  /* Mobil özel: padding/görünüm; width/max-width/box-sizing/min-height media dışında global */
+  /* Mobil özel: görünüm; dikey daralma olmasın (min-height/padding global) */
   .dashboard-page .driver-action-area .driver-report-block input[type="date"] {
-    padding-top: 3px !important;
-    padding-bottom: 6px !important;
+    min-height: 42px !important;
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
     text-align: center !important;
     box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.35) !important;
     border: 0.5px solid rgba(255, 255, 255, 0.35) !important;
