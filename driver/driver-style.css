@@ -103,8 +103,8 @@
 body.login-page,
 body.dashboard-page {
   overflow-x: hidden !important;
-  padding-top: env(safe-area-inset-top) !important;
-  padding-bottom: env(safe-area-inset-bottom) !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
 }
 /* Modal a??kken arka plan scroll kilitlensin (sadece modal i?i kayar) */
 body.driver-modal-open {
@@ -4349,6 +4349,65 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .dashboard-page .hero.hero-two-rows .hero-logo,
   .login-page .hero.hero-two-rows .hero-logo {
     transform: translate(-23px, 9.5px) scale(0.97) !important;
+  }
+}
+
+
+/* --- Mobil/PWA stabilizasyonu: sol panel sabit, sağ panel tek dikey scroll, çerçeve ilk boyamada zıplamaz --- */
+@media (max-width: 768px) {
+  body.dashboard-page,
+  body.login-page {
+    overflow: hidden !important;
+    overscroll-behavior-y: none !important;
+  }
+
+  .dashboard-page .driver-dashboard-container,
+  .login-page .driver-dashboard-container {
+    height: 100svh !important;
+    height: 100dvh !important;
+    min-height: 100svh !important;
+    min-height: 100dvh !important;
+    overflow: hidden !important;
+  }
+
+  .dashboard-page .driver-scroll-area {
+    overflow: hidden !important;
+  }
+
+  .dashboard-page .driver-panels-inner {
+    height: 100% !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+    align-items: stretch !important;
+  }
+
+  .dashboard-page .driver-left-panel {
+    position: sticky !important;
+    top: 0 !important;
+    align-self: stretch !important;
+    overflow: hidden !important;
+  }
+
+  .dashboard-page .driver-left-panel-content {
+    overflow-y: hidden !important;
+    overflow-x: hidden !important;
+  }
+
+  .dashboard-page .driver-right-panel {
+    height: 100% !important;
+    min-height: 0 !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    overscroll-behavior-y: contain !important;
+    -webkit-overflow-scrolling: touch !important;
+    touch-action: pan-y !important;
+  }
+}
+
+@media (max-width: 768px) and (display-mode: standalone) {
+  .dashboard-page .driver-header-fixed,
+  .login-page .driver-header-fixed {
+    padding-top: 12px !important;
   }
 }
 
