@@ -1,4 +1,4 @@
-﻿/* =========================================
+/* =========================================
    MEDISA KULLANICI MOD?L? - ANA TEMA UYUMLU
    style-core.css de?i?kenleri kullan?l?r: --theme-color, --bg, --card-bg, --txt, --muted, --br
    ========================================= */
@@ -4207,8 +4207,8 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
 }
   .dashboard-page .driver-action-area .driver-report-block input[type="date"] {
-    padding-top: 7px !important;
-    padding-bottom: 7px !important;
+    padding-top: 5px !important;
+    padding-bottom: 6px !important;
     text-align: center !important;
     box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.35) !important;
     border: 0.5px solid rgba(255, 255, 255, 0.35) !important;
