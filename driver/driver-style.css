@@ -1180,6 +1180,10 @@ body.driver-modal-open {
     border-right-color: var(--border-red-tech);
   }
   .driver-right-panel { flex: 1; }
+  .dashboard-page .driver-right-panel {
+    padding-right: 12px !important;
+    box-sizing: border-box !important;
+  }
   .driver-vehicle-info {
     padding: 0;
     font-size: 12.5px;
@@ -1207,7 +1211,7 @@ body.driver-modal-open {
   }
   /* Sa? grid butonlar?: mobilde dikey y?kseklik +3px (6?7?8 ?st/alt) */
   .driver-action-btn {
-    padding: 9px 10px;
+    padding: 9px 9px;
     font-size: 13.5px;
     display: flex;
     justify-content: center;
@@ -1243,6 +1247,13 @@ body.driver-modal-open {
   #driver-input-area .form-group textarea,
   .driver-action-area .form-group input,
   .driver-action-area .form-group textarea { font-size: 15px; }
+  #driver-input-area .form-group input,
+  #driver-input-area .form-group textarea,
+  .driver-action-area .form-group input,
+  .driver-action-area .form-group textarea {
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+  }
   #driver-input-area .driver-km-fake-placeholder,
   .driver-action-area .driver-km-fake-placeholder { font-size: 15px; }
   .driver-km-error { font-size: 13px; }
@@ -3174,6 +3185,8 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
   .dashboard-page .driver-right-panel {
     padding-bottom: 5px !important;
+    padding-right: 12px !important;
+    box-sizing: border-box !important;
   }
   .login-page {
     max-width: 100% !important;
@@ -3747,14 +3760,14 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     position: relative;
     z-index: 1;
   }
-  /* Sol panelin 12px'lik asimetrik sağ boşluğunu ezip satırı tam ortalar */
+  /* Sol panelin 12px'lik asimetrik saÄŸ boÅŸluÄŸunu ezip satÄ±rÄ± tam ortalar */
   .dashboard-page .driver-plate-dropdown-row {
     margin-right: 0 !important;
     padding-left: 0 !important;
     padding-right: 0 !important;
     box-sizing: border-box !important;
   }
-  /* Adım 1: Plaka yatayda ortada (kırmızı ok hesaba katılmaz); ok alanına metin girmesin diye simetrik padding */
+  /* AdÄ±m 1: Plaka yatayda ortada (kÄ±rmÄ±zÄ± ok hesaba katÄ±lmaz); ok alanÄ±na metin girmesin diye simetrik padding */
   .dashboard-page .driver-plate-dropdown-row .driver-current-plaka {
     flex: 1 1 auto !important;
     display: block !important;
@@ -3774,7 +3787,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     transform: translateY(-50%) !important;
     background: var(--bg) !important;
   }
-  /* Mobil: Taşıt listesi ölçüsü sabit kalsın (konum JS ile tıklanan satıra göre verilir) */
+  /* AdÄ±m 2â€“3: Liste sol panel kafesinden Ã§Ä±karÄ±ldÄ± (position: fixed), ekranda gÃ¶z hizasÄ± â€“ ortada, belirgin gÃ¶lge */
   .dashboard-page .driver-left-panel .driver-plate-dropdown,
   body.dashboard-page #driver-plate-dropdown.driver-plate-dropdown {
     width: 85vw !important;
@@ -3811,7 +3824,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2), 0 2px 12px rgba(var(--theme-color-rgb), 0.08) !important;
   }
 
-  /* Çerçevelere yan boşluk; plaka dropdown sağ panele taşabilsin diye yatay overflow açık */
+  /* Ã‡erÃ§evelere yan boÅŸluk; plaka dropdown saÄŸ panele taÅŸabilsin diye yatay overflow aÃ§Ä±k */
   .dashboard-page .driver-dashboard-container {
     overflow-x: visible !important;
   }
@@ -4178,7 +4191,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .dashboard-page .driver-multi-vehicle-wrap .driver-plate-row {
     margin-bottom: 6px !important;
   }
-/* Masaüstü: plaka yatayda ortada (kırmızı ok hesaba katılmaz), ok çerçeve dışında */
+/* MasaÃ¼stÃ¼: plaka yatayda ortada (kÄ±rmÄ±zÄ± ok hesaba katÄ±lmaz), ok Ã§erÃ§eve dÄ±ÅŸÄ±nda */
 @media (min-width: 641px) {
   .dashboard-page .driver-plate-dropdown-row {
     margin-right: -12px !important;
@@ -4195,8 +4208,9 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
 }
   .dashboard-page .driver-action-area .driver-report-block input[type="date"] {
-    padding-top: 9px !important;
-    padding-bottom: 9px !important;
+    padding-top: 5px !important;
+    padding-bottom: 6px !important;
+    text-align: center !important;
     box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.35) !important;
     border: 0.5px solid rgba(255, 255, 255, 0.35) !important;
   }
