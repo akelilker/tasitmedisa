@@ -1,4 +1,4 @@
-/* =========================================
+﻿/* =========================================
    MEDISA KULLANICI MOD?L? - ANA TEMA UYUMLU
    style-core.css de?i?kenleri kullan?l?r: --theme-color, --bg, --card-bg, --txt, --muted, --br
    ========================================= */
@@ -1157,11 +1157,11 @@ body.driver-modal-open {
 .dashboard-page .driver-action-area .driver-report-block input[type="date"],
 .dashboard-page .driver-action-area .driver-report-block .form-group input.driver-bakim-input,
 .dashboard-page .driver-action-area .driver-report-block .form-group input.driver-kaza-input {
-  min-height: 42px !important;
+  min-height: 40px !important;
   width: 100% !important;
   max-width: 100% !important;
   box-sizing: border-box !important;
-  padding: 8px 12px !important; /* Dikey rahatlık; sağda takvim ikonu için yer */
+  padding: 0 10px !important; /* Dikey rahatlık; sağda takvim ikonu için yer */
   line-height: 1.35 !important;
 }
 .driver-action-area .driver-km-block .form-group input.driver-km-input,
@@ -4222,7 +4222,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 }
   /* Mobil özel: görünüm; dikey daralma olmasın (min-height/padding global) */
   .dashboard-page .driver-action-area .driver-report-block input[type="date"] {
-    min-height: 42px !important;
+    min-height: 40px !important;
     padding-top: 8px !important;
     padding-bottom: 8px !important;
     text-align: center !important;
