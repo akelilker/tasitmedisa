@@ -66,7 +66,7 @@ self.addEventListener('activate', (event) => {
     // #region agent log
     (function () {
       try {
-        fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': '0e8ee9' }, body: JSON.stringify({ sessionId: '0e8ee9', location: 'sw.js:activate', message: 'SW activate started', data: { cacheVersion: CACHE_VERSION }, timestamp: Date.now(), hypothesisId: 'SW-claim-order' }) }).catch(function () {});
+        fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': '0e8ee9' }, body: JSON.stringify({ sessionId: '0e8ee9', location: 'sw.js:activate', message: 'SW activate started', data: { cacheVersion: CACHE_VERSION }, timestamp: Date.now(), hypothesisId: 'SW-claim-order' }) } ).catch(function () {});
       } catch (e) {}
     })();
     // #endregion
@@ -81,7 +81,7 @@ self.addEventListener('activate', (event) => {
         console.warn('SW activate:', err);
         // #region agent log
         try {
-          fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': '0e8ee9' }, body: JSON.stringify({ sessionId: '0e8ee9', location: 'sw.js:activate', message: 'SW activate error', data: { err: String(err && err.message || err) }, timestamp: Date.now(), hypothesisId: 'SW-claim-order' }) }).catch(function () {});
+          fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': '0e8ee9' }, body: JSON.stringify({ sessionId: '0e8ee9', location: 'sw.js:activate', message: 'SW activate error', data: { err: String(err && err.message || err) }, timestamp: Date.now(), hypothesisId: 'SW-claim-order' }) } ).catch(function () {});
         } catch (e) {}
         // #endregion
       })
