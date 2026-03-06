@@ -432,6 +432,35 @@ const API_BASE = (function(){
   }
   
   var _plateCloseBound = false;
+
+  function positionPlateDropdownToTrigger(dropdown, trigger) {
+      if (!dropdown || !trigger) return;
+      const row = trigger.closest('.driver-plate-dropdown-row');
+      if (!row) return;
+
+      if (window.innerWidth <= 640) {
+          const rowRect = row.getBoundingClientRect();
+          const dropdownWidth = dropdown.offsetWidth || Math.min(Math.round(window.innerWidth * 0.85), 380);
+          const viewportPadding = 10;
+          const targetCenterX = rowRect.left + (rowRect.width / 2);
+          const minCenterX = viewportPadding + (dropdownWidth / 2);
+          const maxCenterX = window.innerWidth - viewportPadding - (dropdownWidth / 2);
+          const clampedCenterX = Math.max(minCenterX, Math.min(maxCenterX, targetCenterX));
+
+          dropdown.style.position = 'fixed';
+          dropdown.style.top = `${Math.round(rowRect.bottom + 2)}px`;
+          dropdown.style.left = `${Math.round(clampedCenterX)}px`;
+          dropdown.style.right = 'auto';
+          dropdown.style.transform = 'translateX(-50%)';
+      } else {
+          dropdown.style.position = '';
+          dropdown.style.top = '';
+          dropdown.style.left = '';
+          dropdown.style.right = '';
+          dropdown.style.transform = '';
+      }
+  }
+
   function setupPlateDropdown(vehicles) {
       const dropdown = document.getElementById('driver-plate-dropdown');
       const currentPlakaEl = document.getElementById('driver-current-plaka');
@@ -472,6 +501,7 @@ const API_BASE = (function(){
           ev.stopPropagation();
           const isOpen = dropdown.style.display === 'block';
           dropdown.style.display = isOpen ? 'none' : 'block';
+          if (!isOpen) positionPlateDropdownToTrigger(dropdown, trigger);
           // #region agent log
           if (!isOpen) {
               requestAnimationFrame(function() {
