@@ -4305,6 +4305,13 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     min-height: 100dvh !important;
   }
 
+  /* Çentik payı container'da: çerçeve + başlık birlikte aşağı iner */
+  .dashboard-page .driver-dashboard-container,
+  .login-page .driver-dashboard-container {
+    padding-top: var(--driver-safe-top) !important;
+    padding-bottom: calc(var(--app-footer-height, 48px)) !important;
+  }
+
   /* PWA: yan kırmızı çizgiler footer'da biter (safe-area html'den geldiği için burada bottom sadece footer boyutu kadar kalmalı) */
   .dashboard-page .driver-dashboard-container::before,
   .login-page .driver-dashboard-container::before {
