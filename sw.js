@@ -59,19 +59,31 @@ self.addEventListener('install', (event) => {
   );
 });
 
-// Activate - Önceki cache sürümlerini temizle, sonra kontrolü al
+// Activate - Önce claim (henüz activating state'teyken), sonra eski cache'leri temizle
+// InvalidStateError: claim() async iş (cache delete) bitince çağrılırsa worker artık "active" olmayabiliyor; bu yüzden claim önce yapılır.
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches.keys()
+    // #region agent log
+    (function () {
+      try {
+        fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': '0e8ee9' }, body: JSON.stringify({ sessionId: '0e8ee9', location: 'sw.js:activate', message: 'SW activate started', data: { cacheVersion: CACHE_VERSION }, timestamp: Date.now(), hypothesisId: 'SW-claim-order' }) }).catch(function () {});
+      } catch (e) {}
+    })();
+    // #endregion
+    Promise.resolve()
+      .then(() => self.clients.claim())
+      .then(() => caches.keys())
       .then((cacheNames) => {
         const toDelete = cacheNames.filter((name) => name !== CACHE_VERSION);
         return Promise.all(toDelete.map((name) => caches.delete(name)));
       })
-      .then(() => {
-        return self.clients.claim();
-      })
       .catch((err) => {
         console.warn('SW activate:', err);
+        // #region agent log
+        try {
+          fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': '0e8ee9' }, body: JSON.stringify({ sessionId: '0e8ee9', location: 'sw.js:activate', message: 'SW activate error', data: { err: String(err && err.message || err) }, timestamp: Date.now(), hypothesisId: 'SW-claim-order' }) }).catch(function () {});
+        } catch (e) {}
+        // #endregion
       })
   );
 });
