@@ -2790,8 +2790,8 @@ body.driver-modal-open {
 }
 
 .history-period {
-  font-weight: 700;
-  color: var(--form-label-color, #ffffff);
+  font-weight: 400;
+  color: var(--data-value-color, #a0aec0);
   font-size: 15px;
 }
 
@@ -3774,14 +3774,9 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     transform: translateY(-50%) !important;
     background: var(--bg) !important;
   }
-  /* Adım 2–3: Liste sol panel kafesinden çıkarıldı (position: fixed), ekranda göz hizası – ortada, belirgin gölge */
+  /* Mobil: Taşıt listesi ölçüsü sabit kalsın (konum JS ile tıklanan satıra göre verilir) */
   .dashboard-page .driver-left-panel .driver-plate-dropdown,
   body.dashboard-page #driver-plate-dropdown.driver-plate-dropdown {
-    position: fixed !important;
-    top: 20vh !important;
-    left: 50% !important;
-    right: auto !important;
-    transform: translateX(-50%) !important;
     width: 85vw !important;
     max-width: 380px !important;
     min-width: auto !important;
@@ -4200,6 +4195,8 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
 }
   .dashboard-page .driver-action-area .driver-report-block input[type="date"] {
+    padding-top: 9px !important;
+    padding-bottom: 9px !important;
     box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.35) !important;
     border: 0.5px solid rgba(255, 255, 255, 0.35) !important;
   }
