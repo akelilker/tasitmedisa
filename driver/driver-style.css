@@ -3750,20 +3750,23 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   /* Sol panelin 12px'lik asimetrik sağ boşluğunu ezip satırı tam ortalar */
   .dashboard-page .driver-plate-dropdown-row {
     margin-right: 0 !important;
-    padding-left: 28px !important;
-    padding-right: 28px !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
     box-sizing: border-box !important;
   }
   /* Adım 1: Plaka yatayda ortada (kırmızı ok hesaba katılmaz); ok alanına metin girmesin diye simetrik padding */
   .dashboard-page .driver-plate-dropdown-row .driver-current-plaka {
     flex: 1 1 auto !important;
+    display: block !important;
+    width: 100% !important;
     min-width: 0 !important;
     max-width: 100% !important;
+    box-sizing: border-box !important;
     white-space: nowrap !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    padding-left: 12px !important;
+    padding-right: 32px !important;
   }
   .dashboard-page .driver-plate-dropdown-row .driver-plate-trigger {
     right: 0 !important;
