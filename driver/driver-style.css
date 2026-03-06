@@ -3747,13 +3747,17 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     position: relative;
     z-index: 1;
   }
+  /* Sol panelin 12px'lik asimetrik sağ boşluğunu ezip satırı tam ortalar */
+  .dashboard-page .driver-plate-dropdown-row {
+    margin-right: -12px !important;
+  }
   /* Adım 1: Plaka yatayda ortada (kırmızı ok hesaba katılmaz); ok alanına metin girmesin diye simetrik padding */
   .dashboard-page .driver-plate-dropdown-row .driver-current-plaka {
     padding-left: 36px !important;
     padding-right: 36px !important;
   }
   .dashboard-page .driver-plate-dropdown-row .driver-plate-trigger {
-    right: -12px !important;
+    right: 0 !important;
     top: 50% !important;
     transform: translateY(-50%) !important;
     background: var(--bg) !important;
@@ -4169,8 +4173,11 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
 /* Masaüstü: plaka yatayda ortada (kırmızı ok hesaba katılmaz), ok çerçeve dışında */
 @media (min-width: 641px) {
+  .dashboard-page .driver-plate-dropdown-row {
+    margin-right: -12px !important;
+  }
   .dashboard-page .driver-plate-dropdown-row .driver-plate-trigger {
-    right: -12px !important;
+    right: 0 !important;
     top: 50% !important;
     transform: translateY(-50%) !important;
     background: var(--bg) !important;
