@@ -3769,7 +3769,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     padding-right: 32px !important;
   }
   .dashboard-page .driver-plate-dropdown-row .driver-plate-trigger {
-    right: 0 !important;
+    right: 3px !important;
     top: 50% !important;
     transform: translateY(-50%) !important;
     background: var(--bg) !important;
