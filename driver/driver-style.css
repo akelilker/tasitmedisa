@@ -1,4 +1,4 @@
-﻿/* =========================================
+/* =========================================
    MEDISA KULLANICI MOD?L? - ANA TEMA UYUMLU
    style-core.css de?i?kenleri kullan?l?r: --theme-color, --bg, --card-bg, --txt, --muted, --br
    ========================================= */
@@ -1157,12 +1157,35 @@ body.driver-modal-open {
 .dashboard-page .driver-action-area .driver-report-block input[type="date"],
 .dashboard-page .driver-action-area .driver-report-block .form-group input.driver-bakim-input,
 .dashboard-page .driver-action-area .driver-report-block .form-group input.driver-kaza-input {
-  min-height: 40px !important;
+  min-height: 44px !important;
+  min-width: 0 !important;
   width: 100% !important;
   max-width: 100% !important;
   box-sizing: border-box !important;
-  padding: 0 10px !important; /* Dikey rahatlık; sağda takvim ikonu için yer */
+  padding: 10px 36px 10px 12px !important; /* Dikey rahatlık; sağda takvim ikonu için alan */
   line-height: 1.35 !important;
+  overflow: hidden !important;
+  position: relative !important;
+}
+/* Kaza/Bakım tarih input: WebKit içi sağdan taşmasın; dikey hizalı olsun */
+.dashboard-page .driver-action-area .driver-report-block input[type="date"]::-webkit-datetime-edit,
+.dashboard-page .driver-action-area .driver-report-block input[type="date"]::-webkit-datetime-edit-fields-wrapper {
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  height: 100% !important;
+  min-height: 100% !important;
+  margin: 0 !important;
+}
+.dashboard-page .driver-action-area .driver-report-block input[type="date"]::-webkit-calendar-picker-indicator {
+  position: absolute !important;
+  right: 8px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  margin: 0 !important;
+  cursor: pointer !important;
 }
 .driver-action-area .driver-km-block .form-group input.driver-km-input,
 .driver-action-area .driver-report-block .form-group input,
@@ -4220,11 +4243,11 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     padding-right: 18px !important;
   }
 }
-  /* Mobil özel: görünüm; dikey daralma olmasın (min-height/padding global) */
+  /* Mobil özel: görünüm; dikey daralma olmasın (min-height 44px global) */
   .dashboard-page .driver-action-area .driver-report-block input[type="date"] {
-    min-height: 40px !important;
-    padding-top: 8px !important;
-    padding-bottom: 8px !important;
+    min-height: 44px !important;
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
     text-align: center !important;
     box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.35) !important;
     border: 0.5px solid rgba(255, 255, 255, 0.35) !important;
