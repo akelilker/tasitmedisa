@@ -4306,24 +4306,18 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     min-height: 100dvh !important;
   }
 
-  /* Çentik payı container'da: çerçeve + başlık birlikte aşağı iner */
+  /* Çentik payı + container alt boşluğu tek kuralda (çerçeve + başlık birlikte aşağı iner) */
   .dashboard-page .driver-dashboard-container,
   .login-page .driver-dashboard-container {
     padding-top: var(--driver-safe-top) !important;
     padding-bottom: calc(var(--app-footer-height, 48px)) !important;
   }
 
-  /* PWA: yan kırmızı çizgiler footer'da biter (safe-area html'den geldiği için burada bottom sadece footer boyutu kadar kalmalı) */
+  /* PWA: yan kırmızı çizgiler footer'da biter */
   .dashboard-page .driver-dashboard-container::before,
   .login-page .driver-dashboard-container::before {
     top: 0 !important;
     bottom: calc(var(--app-footer-height, 48px)) !important;
-  }
-  
-  /* Container alt boşluğu (çift boşluk hatasını önler) */
-  .dashboard-page .driver-dashboard-container,
-  .login-page .driver-dashboard-container {
-    padding-bottom: calc(var(--app-footer-height, 48px)) !important;
   }
 
   /* 1. satıra dokunulmaz. 2. satır (subtitle) 768px'ten 1pt küçük */
@@ -4338,10 +4332,11 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .dashboard-page .driver-report-btn {
     min-height: 74px !important; /* 72 + 2 */
   }
-  /* PWA: üst çizgi ::before'da, 1.2px */
+  /* PWA: üst çizgi ::before'da, 1.2px; header çentik altında kalmaması için üst padding */
   .dashboard-page .driver-header-fixed,
   .login-page .driver-header-fixed {
     border-top: none !important;
+    padding-top: 12px !important;
   }
   .dashboard-page .driver-dashboard-container::before,
   .login-page .driver-dashboard-container::before {
@@ -4409,13 +4404,6 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     overscroll-behavior-y: contain !important;
     -webkit-overflow-scrolling: touch !important;
     touch-action: pan-y !important;
-  }
-}
-
-@media (max-width: 768px) and (display-mode: standalone) {
-  .dashboard-page .driver-header-fixed,
-  .login-page .driver-header-fixed {
-    padding-top: 12px !important;
   }
 }
 
