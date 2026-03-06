@@ -1145,7 +1145,7 @@ body.driver-modal-open {
 .dashboard-page .driver-action-area .driver-report-block .form-group {
   max-width: 100% !important;
   min-width: 0 !important;
-  overflow: visible !important; /* Kesilme olmasın; genişlik input ile sınırlı */
+  overflow: hidden !important; /* Tarih input sağdan taşmasın */
   box-sizing: border-box !important;
 }
 .dashboard-page .driver-action-area .driver-report-block .form-group input,
@@ -1154,18 +1154,27 @@ body.driver-modal-open {
   max-width: 100% !important;
   box-sizing: border-box !important;
 }
-.dashboard-page .driver-action-area .driver-report-block input[type="date"],
-.dashboard-page .driver-action-area .driver-report-block .form-group input.driver-bakim-input,
-.dashboard-page .driver-action-area .driver-report-block .form-group input.driver-kaza-input {
-  min-height: 44px !important;
+/* Sadece tarih input’u: dikey yükseklik ve sağda takvim alanı; metin input’ları (Hasar Tutarı vb.) bu kurala bağlı değil */
+.dashboard-page .driver-action-area .driver-report-block input[type="date"] {
+  min-height: 38px !important;
   min-width: 0 !important;
   width: 100% !important;
   max-width: 100% !important;
   box-sizing: border-box !important;
-  padding: 10px 36px 10px 12px !important; /* Dikey rahatlık; sağda takvim ikonu için alan */
+  padding: 8px 36px 8px 12px !important;
   line-height: 1.35 !important;
   overflow: hidden !important;
   position: relative !important;
+}
+/* Kaza/Bakım rapor bloklarındaki metin input’ları (Hasar Tutarı, Açıklama alanı dışındaki input’lar): normal yükseklik ve padding */
+.dashboard-page .driver-action-area .driver-report-block .form-group input.driver-bakim-input,
+.dashboard-page .driver-action-area .driver-report-block .form-group input.driver-kaza-input {
+  min-width: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  padding: 6px 12px !important;
+  min-height: 0 !important;
 }
 /* Kaza/Bakım tarih input: WebKit içi sağdan taşmasın; dikey hizalı olsun */
 .dashboard-page .driver-action-area .driver-report-block input[type="date"]::-webkit-datetime-edit,
@@ -4243,11 +4252,11 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     padding-right: 18px !important;
   }
 }
-  /* Mobil özel: görünüm; dikey daralma olmasın (min-height 44px global) */
+  /* Mobil özel: tarih input görünümü (min-height 38px global) */
   .dashboard-page .driver-action-area .driver-report-block input[type="date"] {
-    min-height: 44px !important;
-    padding-top: 10px !important;
-    padding-bottom: 10px !important;
+    min-height: 38px !important;
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
     text-align: center !important;
     box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.35) !important;
     border: 0.5px solid rgba(255, 255, 255, 0.35) !important;
