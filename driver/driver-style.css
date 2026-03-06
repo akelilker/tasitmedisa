@@ -3790,11 +3790,6 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   /* AdÄ±m 2â€“3: Liste sol panel kafesinden Ã§Ä±karÄ±ldÄ± (position: fixed), ekranda gÃ¶z hizasÄ± â€“ ortada, belirgin gÃ¶lge */
   .dashboard-page .driver-left-panel .driver-plate-dropdown,
   body.dashboard-page #driver-plate-dropdown.driver-plate-dropdown {
-    position: fixed !important;
-    top: 20vh !important;
-    left: 50% !important;
-    right: auto !important;
-    transform: translateX(-50%) !important;
     width: 85vw !important;
     max-width: 380px !important;
     min-width: auto !important;
