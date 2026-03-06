@@ -4294,10 +4294,11 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 
 /* --- Sadece iOS/Android PWA: ana uygulama ile aynı yapı ? ilk boyamada çerçeve yerinde --- */
 @media (max-width: 768px) and (display-mode: standalone) {
-  /* style-core html zaten left/right/bottom safe-area veriyor; çift padding olmasını kesin engelliyoruz */
+  /* Tek kaynak: çentik payı sadece container'da (--driver-safe-top); body üst padding yok, çift boşluk önlenir */
   body.dashboard-page,
   body.login-page {
-    padding-top: env(safe-area-inset-top) !important;
+    --driver-safe-top: max(12px, env(safe-area-inset-top));
+    padding-top: 0 !important;
     padding-bottom: 0 !important;
     padding-left: 0 !important;
     padding-right: 0 !important;

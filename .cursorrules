@@ -15,7 +15,7 @@ Sen kıdemli bir yazılım geliştiricisisin. Projenin son aşamasına geldik, b
 
 4. RESPONSIVE (MOBİL/MASAÜSTÜ) İZOLASYONU:
 - Masaüstü için yapılan bir düzenleme MOBİLİ BOZMAYACAK. Mobil için yapılan MASAÜSTÜNÜ BOZMAYACAK.
-- PWA ve Safe-Area (çentik) ayarları globalde (env) yapılmıştır. Zorlama `display-mode: standalone` veya JS ile PWA class'ı basma gibi hack yöntemleri KULLANMA.
+- PWA ve Safe-Area (çentik): env(safe-area-inset-*) globalde kullanılır. Layout için @media (display-mode: standalone) mevcut; bu blokları kaldırma, env() ile birlikte kullanılacak. JS ile PWA class'ı basma gibi hack yöntemleri KULLANMA.
 
 5. KAPSAM VE ONAY SİSTEMİ (SIKIYÖNETİM):
 - Sana verdiğim görevin kapsamı dışına KESİNLİKLE çıkma. "Burayı da iyileştirdim" diyerek alakasız yerlere dokunma.
