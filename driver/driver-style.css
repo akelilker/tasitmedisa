@@ -3749,10 +3749,13 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
   /* Sol panelin 12px'lik asimetrik sağ boşluğunu ezip satırı tam ortalar */
   .dashboard-page .driver-plate-dropdown-row {
-    margin-right: -12px !important;
+    margin-right: 0 !important;
   }
   /* Adım 1: Plaka yatayda ortada (kırmızı ok hesaba katılmaz); ok alanına metin girmesin diye simetrik padding */
   .dashboard-page .driver-plate-dropdown-row .driver-current-plaka {
+    display: block !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
     padding-left: 36px !important;
     padding-right: 36px !important;
   }
