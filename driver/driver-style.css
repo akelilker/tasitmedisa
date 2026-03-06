@@ -1137,6 +1137,16 @@ body.driver-modal-open {
   background-color: #0f1418 !important;
   color: var(--data-value-color, #a0aec0);
 }
+/* Tüm viewport'larda sağdan taşma önleme (iPhone dahil); sadece 640px media'ya bağlı kalmıyor */
+.dashboard-page .driver-action-area .driver-report-block .form-group input,
+.dashboard-page .driver-action-area .driver-report-block .form-group textarea {
+  width: calc(100% - 3px) !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+.dashboard-page .driver-action-area .driver-report-block input[type="date"] {
+  min-height: 38px !important;
+}
 .driver-action-area .driver-km-block .form-group input.driver-km-input,
 .driver-action-area .driver-report-block .form-group input,
 .driver-action-area .driver-report-block .form-group textarea {
@@ -4193,11 +4203,8 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     padding-right: 18px !important;
   }
 }
+  /* Mobil özel: padding/görünüm; width/max-width/box-sizing/min-height media dışında global */
   .dashboard-page .driver-action-area .driver-report-block input[type="date"] {
-    width: calc(100% - 3px) !important;
-    max-width: 100% !important;
-    box-sizing: border-box !important;
-    min-height: 12px !important;
     padding-top: 3px !important;
     padding-bottom: 6px !important;
     text-align: center !important;
