@@ -1171,12 +1171,12 @@ body.driver-modal-open {
 }
 
 .dashboard-page .driver-action-area .driver-report-block input[type="date"] {
-  min-height: 35px !important;
+  min-height: 32px !important;
   min-width: 0 !important;
   width: 100% !important;
   max-width: 100% !important;
   box-sizing: border-box !important;
-  padding: 7px 36px 7px 12px !important;
+  padding: 6px 36px 6px 12px !important;
   line-height: 1.35 !important;
   overflow: hidden !important;
   position: relative !important;
@@ -1985,9 +1985,9 @@ body.driver-modal-open {
 .driver-report-block-bakim .form-group input.driver-bakim-input[type="date"] {
   padding-left: 12px !important;
   padding-right: 36px !important;
-  padding-top: 7px !important;
-  padding-bottom: 7px !important;
-  min-height: 35px !important;
+  padding-top: 6px !important;
+  padding-bottom: 6px !important;
+  min-height: 32px !important;
   box-sizing: border-box !important;
 }
 
@@ -2010,9 +2010,9 @@ body.driver-modal-open {
 .driver-report-block-kaza .form-group input.driver-kaza-input[type="date"] {
   padding-left: 12px !important;
   padding-right: 36px !important;
-  padding-top: 7px !important;
-  padding-bottom: 7px !important;
-  min-height: 35px !important;
+  padding-top: 6px !important;
+  padding-bottom: 6px !important;
+  min-height: 32px !important;
   box-sizing: border-box !important;
 }
 /* Bak?m/Kaza A??klama: varsay?lan 1 sat?r, i?erik uzad?k?a otomatik b?y?r, kesilme yok */
@@ -4207,8 +4207,8 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   /* Tarih input'ları: yukarıdaki padding override'ını geri al; sağda takvim alanı ve düşük dikey yükseklik */
   .dashboard-page .driver-action-area .driver-report-block input[type="date"],
   .dashboard-page .driver-action-area .driver-report-block .form-group input[type="date"] {
-    padding: 7px 36px 7px 12px !important;
-    min-height: 35px !important;
+    padding: 6px 36px 6px 12px !important;
+    min-height: 32px !important;
   }
   .dashboard-page .driver-report-block .form-group textarea.driver-report-textarea-auto {
     min-height: 2.6em !important;
@@ -4291,11 +4291,11 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     padding-right: 18px !important;
   }
 }
-  /* Mobil özel: tarih input görünümü (min-height 35px) */
+  /* Mobil özel: tarih input görünümü (min-height 32px) */
   .dashboard-page .driver-action-area .driver-report-block input[type="date"] {
-    min-height: 35px !important;
-    padding-top: 7px !important;
-    padding-bottom: 7px !important;
+    min-height: 32px !important;
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
     text-align: center !important;
     box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.35) !important;
     border: 0.5px solid rgba(255, 255, 255, 0.35) !important;
@@ -4357,8 +4357,8 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
   .dashboard-page .driver-action-area .driver-report-block input[type="date"],
   .dashboard-page .driver-action-area .driver-report-block .form-group input[type="date"] {
-    padding: 7px 36px 7px 12px !important;
-    min-height: 35px !important;
+    padding: 6px 36px 6px 12px !important;
+    min-height: 32px !important;
   }
   .dashboard-page .driver-report-block .form-group textarea.driver-report-textarea-auto {
     min-height: 2em !important;
@@ -4548,8 +4548,8 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 .dashboard-page .driver-action-area .driver-report-block-bakim .form-group input.driver-bakim-input[type="date"],
 .dashboard-page .driver-action-area .driver-report-block-kaza .form-group input.driver-kaza-input[type="date"] {
   box-sizing: border-box !important;
-  min-height: 35px !important;
-  padding: 7px 36px 7px 12px !important;
+  min-height: 32px !important;
+  padding: 6px 36px 6px 12px !important;
   width: 100% !important;
   max-width: 100% !important;
   min-width: 0 !important;
