@@ -1106,9 +1106,17 @@
         toolbarCenter.appendChild(assignBtn);
       }
       
-      // Sağ taraf (boş - denge için)
+      // Sağ taraf (yazdır butonu)
       const toolbarRight = document.createElement('div');
-      toolbarRight.style.width = '20px'; // Geri butonu ile aynı genişlik (denge için)
+      toolbarRight.className = 'toolbar-right';
+      const printBtn = document.createElement('button');
+      printBtn.type = 'button';
+      printBtn.className = 'vehicle-print-btn';
+      printBtn.title = 'Taşıt Kartı Yazdır';
+      printBtn.setAttribute('aria-label', 'Taşıt Kartı Yazdır');
+      printBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v8H6z"/></svg>`;
+      printBtn.onclick = () => window.printVehicleCard(vehicle.id);
+      toolbarRight.appendChild(printBtn);
       
       // Toolbar'a bölümleri ekle
       detailToolbar.appendChild(toolbarLeft);
@@ -1587,6 +1595,91 @@
     };
     return labels[type] || type;
   }
+
+  function getVehiclePrintRows(vehicle) {
+    const users = readUsers();
+    const branches = readBranches();
+    const assignedUserId = vehicle.assignedUserId || '';
+    const assignedUser = assignedUserId ? users.find(u => u.id === assignedUserId) : null;
+    const assignedUserName = (assignedUser && assignedUser.name) ? assignedUser.name : (vehicle.tahsisKisi || '-');
+    const branchName = vehicle.branchId
+      ? (branches.find(b => String(b.id) === String(vehicle.branchId))?.name || '-')
+      : 'Tahsis Edilmemiş';
+    const kmValue = vehicle.guncelKm ? formatNumber(vehicle.guncelKm) : (vehicle.km ? formatNumber(vehicle.km) : '-');
+    const anahtarLabel = vehicle.anahtar === 'var' ? (vehicle.anahtarNerede || 'Var') : 'Yoktur.';
+    const krediLabel = vehicle.kredi === 'var' ? (vehicle.krediDetay || 'Var') : 'Yoktur.';
+    const lastikLabel = vehicle.lastikDurumu === 'var' ? (vehicle.lastikAdres || 'Var') : 'Yoktur.';
+
+    return [
+      ['Plaka', vehicle.plate || '-'],
+      ['Marka / Model', toTitleCase(vehicle.brandModel || '-')],
+      ['Kullanıcı', assignedUserName || '-'],
+      ['Şube', branchName],
+      ['Taşıt Tipi', getVehicleTypeLabel(vehicle.vehicleType || '-')],
+      ['Üretim Yılı', vehicle.year || '-'],
+      ['Tescil Tarihi', vehicle.tescilTarihi || '-'],
+      ['Km', kmValue],
+      ['Şanzıman', vehicle.transmission || '-'],
+      ['Yakıt Tipi', vehicle.yakitTipi || '-'],
+      ['Sigorta Bitiş Tarihi', vehicle.sigorta || '-'],
+      ['Kasko Bitiş Tarihi', vehicle.kasko || '-'],
+      ['Muayene Bitiş Tarihi', vehicle.muayene || '-'],
+      ['Yedek Anahtar', anahtarLabel],
+      ['Kredi/Rehin', krediLabel],
+      ['Yazlık/Kışlık Lastik', lastikLabel],
+      ['UTTS', vehicle.uttsTanimlandi ? 'Evet' : 'Hayır'],
+      ['Taşıt Takip', vehicle.takipCihaziMontaj ? 'Evet' : 'Hayır'],
+      ['Kasko Kodu', vehicle.kaskoKodu || '-'],
+      ['Notlar', vehicle.notes || '-']
+    ];
+  }
+
+  window.printVehicleCard = function(vehicleId) {
+    const vehicles = readVehicles();
+    const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
+    if (!vehicle) {
+      alert('Taşıt bulunamadı!');
+      return;
+    }
+
+    const rows = getVehiclePrintRows(vehicle)
+      .map(([label, value]) => `<tr><th>${escapeHtml(label)}</th><td>${escapeHtml(String(value || '-')).replace(/\n/g, '<br>')}</td></tr>`)
+      .join('');
+    const printWindow = window.open('', '_blank', 'noopener,noreferrer,width=900,height=700');
+    if (!printWindow) {
+      alert('Yazdırma penceresi açılamadı. Lütfen açılır pencere izni verin.');
+      return;
+    }
+
+    const now = new Date();
+    const printedAt = `${String(now.getDate()).padStart(2, '0')}.${String(now.getMonth() + 1).padStart(2, '0')}.${now.getFullYear()} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    printWindow.document.write(`<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <title>Taşıt Kartı - ${escapeHtml(vehicle.plate || '-')}</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 24px; color: #111; }
+    h1 { margin: 0 0 4px; font-size: 24px; }
+    .subtitle { margin: 0 0 16px; color: #555; font-size: 13px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { border: 1px solid #ddd; padding: 8px 10px; text-align: left; vertical-align: top; font-size: 14px; }
+    th { width: 240px; background: #f4f4f4; }
+    @media print { body { margin: 8mm; } }
+  </style>
+</head>
+<body>
+  <h1>Taşıt Kartı</h1>
+  <p class="subtitle">Plaka: ${escapeHtml(vehicle.plate || '-')} • Oluşturma: ${printedAt}</p>
+  <table>${rows}</table>
+</body>
+</html>`);
+    printWindow.document.close();
+    printWindow.focus();
+    setTimeout(() => {
+      printWindow.print();
+    }, 120);
+  };
 
   /**
    * /**
