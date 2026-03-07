@@ -2103,6 +2103,30 @@ body.driver-modal-open {
   }
 }
 
+/* Mobil: Bakım formu – Açıklama, İşlemi Yapan Servis, Taşıtı Bakıma Götüren Kişi, Bakım Km, Tutar etiketlerinden önce 2px boşluk */
+@media (max-width: 768px) {
+  .dashboard-page .driver-report-block-bakim .form-group label[for^="bakim-detay-"],
+  .dashboard-page .driver-report-block-bakim .form-group label[for^="bakim-servis-"],
+  .dashboard-page .driver-report-block-bakim .form-group label[for^="bakim-kisi-"],
+  .dashboard-page .driver-report-block-bakim .form-group label[for^="bakim-km-"],
+  .dashboard-page .driver-report-block-bakim .form-group label[for^="bakim-tutar-"] {
+    margin-top: 2px !important;
+  }
+  /* Mobil: Trafik Sigortası / Kasko – Firma, Acente, İletişim etiketlerinden önce 3px boşluk */
+  .dashboard-page .driver-report-block-sigorta .form-group label[for^="driver-sigorta-firma-"],
+  .dashboard-page .driver-report-block-sigorta .form-group label[for^="driver-sigorta-acente-"],
+  .dashboard-page .driver-report-block-sigorta .form-group label[for^="driver-sigorta-iletisim-"],
+  .dashboard-page .driver-report-block-kasko .form-group label[for^="driver-kasko-firma-"],
+  .dashboard-page .driver-report-block-kasko .form-group label[for^="driver-kasko-acente-"],
+  .dashboard-page .driver-report-block-kasko .form-group label[for^="driver-kasko-iletisim-"] {
+    margin-top: 3px !important;
+  }
+  /* Mobil: Muayene Yenileme – etiket ile input arası 3px */
+  .dashboard-page .driver-report-block-muayene .form-group label[for^="driver-muayene-tarih-"] {
+    margin-bottom: 3px !important;
+  }
+}
+
 /* Bakım paneli: etiket ortada, içerik sola yasla, gri çerçeve varsayılan, aktifken yeşil */
 .driver-report-block-bakim .form-group label {
   text-align: center;
@@ -2201,10 +2225,12 @@ body.driver-modal-open {
   .driver-kaporta-container .driver-kaporta-schema-wrapper {
     width: 100% !important;
     max-width: 100% !important;
+    padding: 2px !important; /* talep: şema 4px daralsın dikey + 4px yatay (2px her yönde) */
+    box-sizing: border-box !important;
   }
   .driver-kaporta-container .driver-kaporta-schema-wrapper svg {
     width: 100% !important;
-    max-width: 160px !important; /* Alana sığsın, kocaman olmasın */
+    max-width: 156px !important; /* 160 - 4 (talep: yatayda 4px daraltma) */
     height: auto !important;
     object-fit: contain !important;
   }
@@ -3651,6 +3677,14 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     font-size: 18px;
   }
 }
+/* Mobil 480px: KM input dikeyde +2px (talep) */
+@media (max-width: 480px) {
+  .vehicle-card .form-group input.driver-km-input,
+  .vehicle-card .form-group input.driver-km-input:invalid,
+  .vehicle-card .form-group input.driver-km-input:placeholder-shown {
+    padding: 7px 16px !important;
+  }
+}
 /* === MOBİL İYİLEŞTİRMELER 2026.01.31 === */
 
 /* Güncel KM etiketi sola yasla, harfler arası 2px boşluk */
@@ -3674,7 +3708,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 .vehicle-card .form-group input.driver-km-input,
 .vehicle-card .form-group input.driver-km-input:invalid,
 .vehicle-card .form-group input.driver-km-input:placeholder-shown {
-  padding: 5px 16px !important;
+  padding: 5px 16px !important; /* mobil 480px’te 7px override edilir */
   text-align: left !important;
   color: rgba(255, 255, 255, 0.7) !important;
   -webkit-text-fill-color: rgba(255, 255, 255, 0.7) !important;
@@ -4332,7 +4366,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     height: 22px !important;
   }
   .dashboard-page .vehicle-card .form-group input.driver-km-input {
-    padding: 9px 16px !important;
+    padding: 11px 16px !important; /* mobil talebi: dikeyde +2px */
   }
   .dashboard-page .vehicle-card .form-group textarea {
     padding: 12px 16px !important;
@@ -4495,11 +4529,11 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     font-size: 16px !important;
   }
 
-  /* Foto 4: KM input dikey yükseklik %15 daralsın */
+  /* Foto 4: KM input dikey yükseklik %15 daralsın; mobil talebi: dikeyde +2px */
   .dashboard-page .vehicle-card .form-group input.driver-km-input,
   .dashboard-page .vehicle-card .form-group input.driver-km-input:invalid,
   .dashboard-page .vehicle-card .form-group input.driver-km-input:placeholder-shown {
-    padding: 9px 16px !important;
+    padding: 11px 16px !important;
   }
 
   /* Foto 4: Bakım/Kaza – tıklanmamış durumda da genişlemiş genişlikte (layout shift yok) */
@@ -4731,6 +4765,8 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
   .dashboard-page .driver-report-block-kaza .driver-kaporta-container .driver-kaporta-schema-wrapper {
     gap: 6px !important;
+    padding: 2px !important; /* talep: şema 4px daralsın dikey + 4px yatay (2px her yönde) */
+    box-sizing: border-box !important;
   }
   .dashboard-page .driver-report-block-kaza .driver-kaporta-container .boya-legend {
     margin-top: 0 !important;
