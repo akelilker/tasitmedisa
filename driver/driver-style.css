@@ -2508,17 +2508,17 @@ body.driver-modal-open {
   #driver-kasko-modal.driver-modal {
     padding: 0 !important;
   }
-  /* Geçmiş Kayıtlar + Düzeltme Talebi: overlay footer üstünde bitsin; driver footer ~33px, 7px gap */
+  /* Geçmiş Kayıtlar + Düzeltme Talebi: overlay footer üstünde bitsin (33px); 7px gap = margin-bottom */
   #history-modal.driver-modal,
   #edit-request-modal.driver-modal {
-    bottom: 40px !important; /* 7px + 33px (gerçek footer yüksekliği) */
+    bottom: 33px !important; /* footer yüksekliği; 7px boşluk sadece modal margin-bottom ile */
     height: auto !important;
-    max-height: calc(100vh - 40px) !important;
+    max-height: calc(100vh - 33px) !important;
   }
   #history-modal.driver-modal::before,
   #edit-request-modal.driver-modal::before {
-    height: calc(100vh - max(12px, env(safe-area-inset-top)) - 40px) !important;
-    height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 40px) !important;
+    height: calc(100vh - max(12px, env(safe-area-inset-top)) - 33px) !important;
+    height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 33px) !important;
   }
 }
 
@@ -2583,16 +2583,16 @@ body.driver-modal-open {
   overscroll-behavior: none;
   overscroll-behavior-x: none;
 }
-/* Geçmiş Kayıtlar + Düzeltme Talebi masaüstü: overlay 40px (7+33), modal+7px = overlay → modal 47px reserve */
+/* Geçmiş Kayıtlar + Düzeltme Talebi masaüstü: overlay bottom 33px; modal = 100vh - 51.5px → computedGap ~7px */
 #history-modal .driver-modal-content,
 #history-modal .modal-container,
 #edit-request-modal .driver-modal-content,
 #edit-request-modal .modal-container {
   margin-bottom: 7px !important;
-  height: calc(100vh - 47px) !important; /* 40px overlay reserve + 7px margin */
-  height: calc(100dvh - 47px) !important;
-  max-height: calc(100vh - 47px) !important;
-  max-height: calc(100dvh - 47px) !important;
+  height: calc(100vh - 51.5px) !important;
+  height: calc(100dvh - 51.5px) !important;
+  max-height: calc(100vh - 51.5px) !important;
+  max-height: calc(100dvh - 51.5px) !important;
 }
 
 #history-modal .modal-header,
