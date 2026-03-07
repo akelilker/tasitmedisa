@@ -2028,13 +2028,20 @@ body.driver-modal-open {
 .dashboard-page .driver-action-area .driver-report-block .form-group:last-child {
   margin-bottom: 0 !important;
 }
-/* Mobil: etiket-input arası 0, bölümler arası 2px */
+/* Mobil: etiket-input arası 0, bölümler arası 2px, buton-İçerik arası 2px, kaporta şeması üst/alt 5px */
 @media (max-width: 768px) {
+  .dashboard-page .driver-action-area .driver-action-group .driver-report-block {
+    margin-top: 2px !important;
+  }
   .dashboard-page .driver-action-area .driver-report-block .form-group label {
     margin-bottom: 0 !important;
   }
   .dashboard-page .driver-action-area .driver-report-block .form-group {
     margin-bottom: 2px !important;
+  }
+  .dashboard-page .driver-report-block-kaza .driver-kaporta-container {
+    margin-top: 5px !important;
+    margin-bottom: 5px !important;
   }
 }
 
