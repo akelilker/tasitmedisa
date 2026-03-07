@@ -599,6 +599,27 @@ body.driver-modal-open {
     transform-origin: center bottom !important;
     align-self: flex-end !important;
   }
+  /* Masaüstü: tarih input dikey yükseklik 2px az (32->30px) */
+  .dashboard-page .driver-date-wrap {
+    height: 30px !important;
+    min-height: 30px;
+  }
+  .dashboard-page .driver-date-display {
+    min-height: 30px;
+    padding-top: 5px !important;
+    padding-bottom: 5px !important;
+  }
+  .dashboard-page .driver-action-area .driver-report-block input[type="date"] {
+    min-height: 30px !important;
+    padding-top: 5px !important;
+    padding-bottom: 5px !important;
+  }
+  .driver-report-block-bakim .form-group input.driver-bakim-input[type="date"],
+  .driver-report-block-kaza .form-group input.driver-kaza-input[type="date"] {
+    min-height: 30px !important;
+    padding-top: 5px !important;
+    padding-bottom: 5px !important;
+  }
 }
 
 /* Scroll alan? ??elerinde ?st ?izgi yok */
@@ -2000,12 +2021,21 @@ body.driver-modal-open {
 .driver-report-block .form-group:last-child {
   margin-bottom: 0;
 }
-/* Kaza/Bakım/Sigorta/Kasko/Muayene: tüm form-group alt boşlukları eşit (3px) */
+/* Kaza/Bakım/Sigorta/Kasko/Muayene: tüm form-group alt boşlukları eşit (3px); mobilde 2px */
 .dashboard-page .driver-action-area .driver-report-block .form-group {
   margin-bottom: 3px !important;
 }
 .dashboard-page .driver-action-area .driver-report-block .form-group:last-child {
   margin-bottom: 0 !important;
+}
+/* Mobil: etiket-input arası 0, bölümler arası 2px */
+@media (max-width: 768px) {
+  .dashboard-page .driver-action-area .driver-report-block .form-group label {
+    margin-bottom: 0 !important;
+  }
+  .dashboard-page .driver-action-area .driver-report-block .form-group {
+    margin-bottom: 2px !important;
+  }
 }
 
 /* Bak?m paneli: etiket ortada, i?erik sola yasl?, gri ?er?eve varsay?lan, aktifken ye?il */
