@@ -4171,6 +4171,12 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .dashboard-page .driver-report-block .form-group textarea {
     padding: 10px 10px !important;
   }
+  /* Tarih input'ları: yukarıdaki padding override'ını geri al; sağda takvim alanı ve düşük dikey yükseklik */
+  .dashboard-page .driver-action-area .driver-report-block input[type="date"],
+  .dashboard-page .driver-action-area .driver-report-block .form-group input[type="date"] {
+    padding: 8px 36px 8px 12px !important;
+    min-height: 38px !important;
+  }
   .dashboard-page .driver-report-block .form-group textarea.driver-report-textarea-auto {
     min-height: 2.6em !important;
     height: 2.6em !important;
@@ -4315,6 +4321,11 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .dashboard-page .driver-report-block .form-group input,
   .dashboard-page .driver-report-block .form-group textarea {
     padding: 8px 10px !important;
+  }
+  .dashboard-page .driver-action-area .driver-report-block input[type="date"],
+  .dashboard-page .driver-action-area .driver-report-block .form-group input[type="date"] {
+    padding: 8px 36px 8px 12px !important;
+    min-height: 38px !important;
   }
   .dashboard-page .driver-report-block .form-group textarea.driver-report-textarea-auto {
     min-height: 2em !important;
