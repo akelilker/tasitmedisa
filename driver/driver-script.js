@@ -356,24 +356,6 @@ const API_BASE = (function(){
           setupEkstraNotAutoResize();
           setupKmInputs();
 
-          // #region agent log
-          requestAnimationFrame(function() {
-            setTimeout(function() {
-              var el = document.querySelector('.driver-kaporta-container');
-              var bodyCl = document.body ? document.body.className || '' : '';
-              var vw = window.innerWidth || 0;
-              var data = { hypothesisId: 'H1-H5', viewportWidth: vw, bodyClass: bodyCl, hasKaporta: !!el };
-              if (el) {
-                var cs = window.getComputedStyle ? window.getComputedStyle(el) : null;
-                if (cs) { data.marginTop = cs.marginTop; data.marginBottom = cs.marginBottom; }
-                var link = document.querySelector('link[href*="driver-style"]');
-                if (link) data.cssHref = (link.getAttribute && link.getAttribute('href')) || '';
-              }
-              try { window.__debugKaporta = data; console.log('[Kaporta debug]', data); } catch (e) {}
-              fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'0e8ee9'},body:JSON.stringify({sessionId:'0e8ee9',location:'driver-script.js:post-render',message:'Kaporta debug',data:data,timestamp:Date.now(),hypothesisId:'H1-H5'})}).catch(function(){});
-            }, 300);
-          });
-          // #endregion
 
       } catch (error) {
           console.error('Veri yükleme hatası:', error);
@@ -803,34 +785,10 @@ const API_BASE = (function(){
                   try { const raw = container.getAttribute('data-boyali-parcalar'); if (raw) boyaliParcalar = JSON.parse(raw); } catch (e) {}
                   initDriverKaporta(vid, boyaliParcalar);
               }
-              // #region agent log
-              requestAnimationFrame(function() {
-                  var panel = document.querySelector('.driver-right-panel');
-                  var dateInp = document.getElementById('kaza-tarih-' + vid);
-                  var tutarInp = document.getElementById('kaza-tutar-' + vid);
-                  var dateFg = dateInp ? dateInp.closest('.form-group') : null;
-                  var tutarFg = tutarInp ? tutarInp.closest('.form-group') : null;
-                  var pr = panel ? panel.getBoundingClientRect() : null;
-                  var dr = dateInp ? dateInp.getBoundingClientRect() : null;
-                  var tr = tutarInp ? tutarInp.getBoundingClientRect() : null;
-                  var dfr = dateFg ? dateFg.getBoundingClientRect() : null;
-                  var tfr = tutarFg ? tutarFg.getBoundingClientRect() : null;
-                  fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'0e8ee9'},body:JSON.stringify({sessionId:'0e8ee9',location:'driver-script.js:kaza-layout',message:'Kaza block layout',data:{panelRight:pr?pr.right:null,panelWidth:pr?pr.width:null,dateRight:dr?dr.right:null,dateWidth:dr?dr.width:null,dateHeight:dr?dr.height:null,tutarRight:tr?tr.right:null,tutarWidth:tr?tr.width:null,tutarHeight:tr?tr.height:null,dateFgRight:dfr?dfr.right:null,tutarFgRight:tfr?tfr.right:null,innerWidth:window.innerWidth},timestamp:Date.now(),hypothesisId:'H1-H4'})}).catch(function(){});
-              });
-              // #endregion
           }
           if (type === 'bakim') {
               const dateEl = document.getElementById('bakim-tarih-' + vid);
               if (dateEl && !dateEl.value) { dateEl.value = new Date().toISOString().split('T')[0]; syncDriverDateDisplay(dateEl); }
-              // #region agent log
-              requestAnimationFrame(function() {
-                  var el = document.getElementById('bakim-tarih-' + vid);
-                  if (!el) return;
-                  var s = window.getComputedStyle(el);
-                  var r = el.getBoundingClientRect();
-                  fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'0e8ee9'},body:JSON.stringify({sessionId:'0e8ee9',location:'driver-script.js:bakim-date-style',message:'Bakım tarih computed style',data:{paddingLeft:s.paddingLeft,paddingRight:s.paddingRight,boxSizing:s.boxSizing,minHeight:s.minHeight,width:r.width,right:r.right,innerWidth:window.innerWidth},timestamp:Date.now(),hypothesisId:'date-padding'})}).catch(function(){});
-              });
-              // #endregion
           }
           if (type === 'sigorta' || type === 'kasko' || type === 'muayene') {
               var dateId = type === 'muayene' ? 'driver-muayene-tarih' : (type === 'sigorta' ? 'driver-sigorta-tarih' : 'driver-kasko-tarih');
