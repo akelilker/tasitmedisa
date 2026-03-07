@@ -1167,8 +1167,8 @@ body.driver-modal-open {
   position: relative !important;
 }
 /* Kaza/Bakım rapor bloklarındaki metin input’ları (Hasar Tutarı, Açıklama alanı dışındaki input’lar): normal yükseklik ve padding */
-.dashboard-page .driver-action-area .driver-report-block .form-group input.driver-bakim-input,
-.dashboard-page .driver-action-area .driver-report-block .form-group input.driver-kaza-input {
+.dashboard-page .driver-action-area .driver-report-block .form-group input.driver-bakim-input:not([type="date"]),
+.dashboard-page .driver-action-area .driver-report-block .form-group input.driver-kaza-input:not([type="date"]) {
   min-width: 0 !important;
   width: 100% !important;
   max-width: 100% !important;
