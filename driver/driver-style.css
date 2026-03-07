@@ -2473,17 +2473,17 @@ body.driver-modal-open {
   #driver-kasko-modal.driver-modal {
     padding: 0 !important;
   }
-  /* Ge?mi? Kay?tlar + D?zeltme Talebi: overlay footer ?st?nde bitsin; modal?footer aras? tam 6px */
+  /* Ge?mi? Kay?tlar + D?zeltme Talebi: overlay footer ?st?nde bitsin; modal?footer aras? tam 4px */
   #history-modal.driver-modal,
   #edit-request-modal.driver-modal {
-    bottom: calc(6px + var(--app-footer-height, 48px)) !important;
+    bottom: calc(4px + var(--app-footer-height, 48px)) !important;
     height: auto !important;
-    max-height: calc(100vh - 6px - var(--app-footer-height, 48px)) !important;
+    max-height: calc(100vh - 4px - var(--app-footer-height, 48px)) !important;
   }
   #history-modal.driver-modal::before,
   #edit-request-modal.driver-modal::before {
-    height: calc(100vh - max(12px, env(safe-area-inset-top)) - 6px - var(--app-footer-height, 48px)) !important;
-    height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 6px - var(--app-footer-height, 48px)) !important;
+    height: calc(100vh - max(12px, env(safe-area-inset-top)) - 4px - var(--app-footer-height, 48px)) !important;
+    height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 4px - var(--app-footer-height, 48px)) !important;
   }
 }
 
@@ -2548,16 +2548,16 @@ body.driver-modal-open {
   overscroll-behavior: none;
   overscroll-behavior-x: none;
 }
-/* Ge?mi? Kay?tlar + D?zeltme Talebi masa?st?: modal?footer aras? tam 6px */
+/* Ge?mi? Kay?tlar + D?zeltme Talebi masa?st?: modal?footer aras? tam 4px */
 #history-modal .driver-modal-content,
 #history-modal .modal-container,
 #edit-request-modal .driver-modal-content,
 #edit-request-modal .modal-container {
-  margin-bottom: 6px !important;
-  height: calc(100vh - max(12px, env(safe-area-inset-top)) - 6px - var(--app-footer-height, 48px)) !important;
-  height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 6px - var(--app-footer-height, 48px)) !important;
-  max-height: calc(100vh - max(12px, env(safe-area-inset-top)) - 6px - var(--app-footer-height, 48px)) !important;
-  max-height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 6px - var(--app-footer-height, 48px)) !important;
+  margin-bottom: 4px !important;
+  height: calc(100vh - max(12px, env(safe-area-inset-top)) - 4px - var(--app-footer-height, 48px)) !important;
+  height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 4px - var(--app-footer-height, 48px)) !important;
+  max-height: calc(100vh - max(12px, env(safe-area-inset-top)) - 4px - var(--app-footer-height, 48px)) !important;
+  max-height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 4px - var(--app-footer-height, 48px)) !important;
 }
 
 #history-modal .modal-header,
@@ -3782,7 +3782,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     overflow: hidden !important;
     overscroll-behavior: none !important;
   }
-  /* Ge?mi? Kay?tlar + D?zeltme Talebi: overlay footer'?n ?ST?NDE bitsin; modal?footer aras? tam 6px, koyu g?lge ile kapans?n */
+  /* Ge?mi? Kay?tlar + D?zeltme Talebi: overlay footer'?n ?ST?NDE bitsin; modal?footer aras? tam 4px, koyu g?lge ile kapans?n */
   #history-modal.driver-modal,
   #edit-request-modal.driver-modal {
     bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important;
