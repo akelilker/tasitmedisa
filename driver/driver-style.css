@@ -1155,6 +1155,21 @@ body.driver-modal-open {
   box-sizing: border-box !important;
 }
 /* Sadece tarih input’u: dikey yükseklik ve sağda takvim alanı; metin input’ları (Hasar Tutarı vb.) bu kurala bağlı değil */
+/* Kullanıcı Paneli - iOS Safari Date Input Düzeltmesi */
+.dashboard-page input[type="date"] {
+  -webkit-appearance: none !important;
+  appearance: none !important;
+  box-sizing: border-box !important;
+  width: 100%;
+  max-width: 100%;
+  min-height: unset !important;
+  line-height: normal;
+}
+.dashboard-page input[type="date"]::-webkit-date-and-time-value {
+  margin: 0;
+  line-height: normal;
+}
+
 .dashboard-page .driver-action-area .driver-report-block input[type="date"] {
   min-height: 38px !important;
   min-width: 0 !important;
