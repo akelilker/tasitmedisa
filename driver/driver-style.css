@@ -102,6 +102,8 @@
 /* --- Overflow: yatay taşma yok; safe-area sadece html'de (style-core) – çift padding önlenir --- */
 body.login-page,
 body.dashboard-page {
+  --modal-gap-above-footer: 6px; /* Driver panel modal-footer bosluk standardi */
+  --driver-footer-visual-height: 33px; /* Masaustunde footer'in gorsel efektif yuksekligi */
   overflow-x: hidden !important;
   padding-top: 0 !important;
   padding-bottom: 0 !important;
@@ -2516,14 +2518,14 @@ body.driver-modal-open .login-page #app-footer.login-footer {
   /* Geçmiş Kayıtlar + Düzeltme Talebi: overlay footer üstünde bitsin (33px); 7px boşluk = modal margin-bottom */
   #history-modal.driver-modal,
   #edit-request-modal.driver-modal {
-    bottom: 33px !important; /* footer yüksekliği; 7px boşluk sadece modal margin-bottom ile */
-    height: calc(100vh - 33px) !important; /* Sabit yükseklik ki boşluk kapanmasın */
-    max-height: calc(100vh - 33px) !important;
+    bottom: var(--driver-footer-visual-height, 33px) !important;
+    height: calc(100vh - var(--driver-footer-visual-height, 33px)) !important;
+    max-height: calc(100vh - var(--driver-footer-visual-height, 33px)) !important;
   }
   #history-modal.driver-modal::before,
   #edit-request-modal.driver-modal::before {
-    height: calc(100vh - max(12px, env(safe-area-inset-top)) - 33px) !important;
-    height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 33px) !important;
+    height: calc(100vh - max(12px, env(safe-area-inset-top)) - var(--driver-footer-visual-height, 33px)) !important;
+    height: calc(100dvh - max(12px, env(safe-area-inset-top)) - var(--driver-footer-visual-height, 33px)) !important;
   }
 }
 
@@ -2593,11 +2595,11 @@ body.driver-modal-open .login-page #app-footer.login-footer {
 #history-modal .modal-container,
 #edit-request-modal .driver-modal-content,
 #edit-request-modal .modal-container {
-  margin-bottom: 5px !important;
-  height: calc(100vh - 49.5px) !important;  /* 33 (footer) + 5 (boşluk) + 11.5 (üst) */
-  height: calc(100dvh - 49.5px) !important;
-  max-height: calc(100vh - 49.5px) !important;
-  max-height: calc(100dvh - 49.5px) !important;
+  margin-bottom: var(--modal-gap-above-footer, 6px) !important;
+  height: calc(100vh - max(12px, env(safe-area-inset-top)) - var(--driver-footer-visual-height, 33px) - var(--modal-gap-above-footer, 6px)) !important;
+  height: calc(100dvh - max(12px, env(safe-area-inset-top)) - var(--driver-footer-visual-height, 33px) - var(--modal-gap-above-footer, 6px)) !important;
+  max-height: calc(100vh - max(12px, env(safe-area-inset-top)) - var(--driver-footer-visual-height, 33px) - var(--modal-gap-above-footer, 6px)) !important;
+  max-height: calc(100dvh - max(12px, env(safe-area-inset-top)) - var(--driver-footer-visual-height, 33px) - var(--modal-gap-above-footer, 6px)) !important;
   min-height: 0 !important; /* Boşluğu ezen min-height: 100% olmasın */
 }
 
@@ -2706,6 +2708,9 @@ body.driver-modal-open .login-page #app-footer.login-footer {
 }
 #history-modal .history-filters {
   flex-shrink: 0 !important;
+  position: relative;
+  z-index: 3;
+  overflow: visible !important;
 }
 #history-modal #history-list,
 #history-modal .history-container {
@@ -2714,7 +2719,9 @@ body.driver-modal-open .login-page #app-footer.login-footer {
   overflow-y: auto !important;
   overflow-x: hidden !important;
   -webkit-overflow-scrolling: touch !important;
-  padding-bottom: max(10px, env(safe-area-inset-bottom, 0)) !important; /* Dikey boşluk azaltıldı (20px → 10px) */
+  padding-bottom: max(10px, env(safe-area-inset-bottom, 0)) !important; /* Dikey bosluk azaltildi (20px -> 10px) */
+  position: relative;
+  z-index: 1;
 }
 /* Düzeltme Talebi modalı: İşlem Geçmişi ile aynı yapı – body flex column, scroll #edit-request-content içinde */
 #edit-request-modal .modal-body {
@@ -2923,6 +2930,7 @@ body.driver-modal-open .login-page #app-footer.login-footer {
   align-items: center;
   gap: 8px;
   position: relative;
+  z-index: 4;
 }
 
 .history-filter-label {
@@ -3814,7 +3822,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   /* Driver panel: modal–footer arası 7px (masaüstü ile aynı) */
   body.dashboard-page,
   body.login-page {
-    --modal-gap-above-footer: 7px;
+    --modal-gap-above-footer: 6px;
   }
   /* Taşıtlar modalı ile aynı: overlay alt boşluk = footer + gap (style-core değişkenleri). Üst: çentik altında kalmaması için safe-area. */
   #history-modal.driver-modal,
@@ -3828,10 +3836,10 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   #driver-kasko-modal.driver-modal {
     padding: max(12px, env(safe-area-inset-top)) 0 0 0 !important;
     top: 0 !important;
-    bottom: calc(var(--modal-gap-above-footer, 10px) + var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important;
+    bottom: calc(var(--modal-gap-above-footer, 6px) + var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important;
     height: auto !important;
-    max-height: calc(100vh - var(--modal-gap-above-footer, 10px) - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0)) !important;
-    max-height: calc(100dvh - var(--modal-gap-above-footer, 10px) - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0)) !important;
+    max-height: calc(100vh - var(--modal-gap-above-footer, 6px) - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0)) !important;
+    max-height: calc(100dvh - var(--modal-gap-above-footer, 6px) - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0)) !important;
     align-items: stretch !important;
     justify-content: center !important;
     overflow: hidden !important;
@@ -3840,11 +3848,11 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   /* Geçmiş Kayıtlar + Düzeltme Talebi: overlay footer üstünde, 7px boşluk; sabit height ki boşluk kapanmasın. */
   #history-modal.driver-modal,
   #edit-request-modal.driver-modal {
-    bottom: calc(7px + var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important;
-    height: calc(100vh - max(12px, env(safe-area-inset-top)) - 7px - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0)) !important;
-    height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 7px - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0)) !important;
-    max-height: calc(100vh - max(12px, env(safe-area-inset-top)) - 7px - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0)) !important;
-    max-height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 7px - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0)) !important;
+    bottom: calc(var(--modal-gap-above-footer, 6px) + var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important;
+    height: calc(100vh - max(12px, env(safe-area-inset-top)) - var(--modal-gap-above-footer, 6px) - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0)) !important;
+    height: calc(100dvh - max(12px, env(safe-area-inset-top)) - var(--modal-gap-above-footer, 6px) - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0)) !important;
+    max-height: calc(100vh - max(12px, env(safe-area-inset-top)) - var(--modal-gap-above-footer, 6px) - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0)) !important;
+    max-height: calc(100dvh - max(12px, env(safe-area-inset-top)) - var(--modal-gap-above-footer, 6px) - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0)) !important;
     justify-content: flex-end !important;
     align-items: center !important;
     box-shadow: none !important;
@@ -4841,5 +4849,27 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .dashboard-page .driver-report-block-kaza .driver-kaporta-container .driver-kaporta-schema-wrapper svg {
     margin-top: -12px !important;
     margin-bottom: -12px !important;
+  }
+}
+
+
+/* 641-768: plaka dropdown icin masaustu overflow/z-index kurali mobil stabilizasyon blogunda ezilmesin */
+@media (min-width: 641px) and (max-width: 768px) {
+  .dashboard-page .driver-dashboard-container,
+  .dashboard-page .driver-scroll-area,
+  .dashboard-page .driver-panels-inner,
+  .dashboard-page .content-wrap.driver-content-wrap.driver-scroll-area {
+    overflow-x: visible !important;
+  }
+  .dashboard-page .driver-panels-inner {
+    overflow-y: hidden !important;
+  }
+  .dashboard-page .driver-left-panel,
+  .dashboard-page .driver-left-panel-content,
+  .dashboard-page .driver-plate-dropdown-row {
+    overflow: visible !important;
+  }
+  .dashboard-page .driver-left-panel-content {
+    overflow-y: hidden !important;
   }
 }
