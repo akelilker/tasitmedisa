@@ -106,9 +106,10 @@ body.dashboard-page {
   padding-top: 0 !important;
   padding-bottom: 0 !important;
 }
-/* Modal açıkken arka plan scroll kilitlensin (sadece modal içi kayar) */
+/* Modal açıkken arka plan scroll kilitlensin (sadece modal içi kayar). overflow-y: visible ki footer ışığı kesilmesin. */
 body.driver-modal-open {
-  overflow: hidden !important;
+  overflow-x: hidden !important;
+  overflow-y: visible !important;
   position: fixed;
   width: 100%;
 }
@@ -4682,7 +4683,8 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 @media (max-width: 768px) {
   body.dashboard-page,
   body.login-page {
-    overflow: hidden !important;
+    overflow-x: hidden !important;
+    overflow-y: visible !important; /* Footer ışığı (box-shadow) kesilmesin */
     overscroll-behavior-y: none !important;
   }
 
@@ -4692,7 +4694,8 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     height: 100dvh !important;
     min-height: 100svh !important;
     min-height: 100dvh !important;
-    overflow: hidden !important;
+    overflow-x: hidden !important;
+    overflow-y: visible !important; /* Footer ışığı kesilmesin */
   }
 
   .dashboard-page .driver-scroll-area {
