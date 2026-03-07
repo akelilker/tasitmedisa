@@ -2588,16 +2588,16 @@ body.driver-modal-open .login-page #app-footer.login-footer {
   overscroll-behavior: none;
   overscroll-behavior-x: none;
 }
-/* Geçmiş Kayıtlar + Düzeltme Talebi masaüstü: overlay bottom 33px; modal = 100vh - 51.5px → ~7px boşluk */
+/* Geçmiş Kayıtlar + Düzeltme Talebi masaüstü: overlay bottom 33px; modal = 100vh - 51.5px → ~5px boşluk */
 #history-modal .driver-modal-content,
 #history-modal .modal-container,
 #edit-request-modal .driver-modal-content,
 #edit-request-modal .modal-container {
-  margin-bottom: 7px !important;
-  height: calc(100vh - 51.5px) !important;
-  height: calc(100dvh - 51.5px) !important;
-  max-height: calc(100vh - 51.5px) !important;
-  max-height: calc(100dvh - 51.5px) !important;
+  margin-bottom: 5px !important;
+  height: calc(100vh - 49.5px) !important;  /* 33 (footer) + 5 (boşluk) + 11.5 (üst) */
+  height: calc(100dvh - 49.5px) !important;
+  max-height: calc(100vh - 49.5px) !important;
+  max-height: calc(100dvh - 49.5px) !important;
   min-height: 0 !important; /* Boşluğu ezen min-height: 100% olmasın */
 }
 
@@ -2702,6 +2702,7 @@ body.driver-modal-open .login-page #app-footer.login-footer {
   overflow: hidden !important;
   min-height: 0 !important;
   padding-top: 2px !important;
+  padding-bottom: 8px !important; /* Dikey boşluk azaltıldı (12px → 8px) */
 }
 #history-modal .history-filters {
   flex-shrink: 0 !important;
@@ -2713,7 +2714,7 @@ body.driver-modal-open .login-page #app-footer.login-footer {
   overflow-y: auto !important;
   overflow-x: hidden !important;
   -webkit-overflow-scrolling: touch !important;
-  padding-bottom: max(20px, env(safe-area-inset-bottom, 0)) !important;
+  padding-bottom: max(10px, env(safe-area-inset-bottom, 0)) !important; /* Dikey boşluk azaltıldı (20px → 10px) */
 }
 /* Düzeltme Talebi modalı: İşlem Geçmişi ile aynı yapı – body flex column, scroll #edit-request-content içinde */
 #edit-request-modal .modal-body {
@@ -2729,7 +2730,7 @@ body.driver-modal-open .login-page #app-footer.login-footer {
   overflow-y: auto !important;
   overflow-x: hidden !important;
   -webkit-overflow-scrolling: touch !important;
-  padding-bottom: max(20px, env(safe-area-inset-bottom, 0)) !important;
+  padding-bottom: max(10px, env(safe-area-inset-bottom, 0)) !important; /* Dikey boşluk azaltıldı (20px → 10px) */
   scrollbar-width: none !important;
   -ms-overflow-style: none !important;
 }
