@@ -2499,17 +2499,17 @@ body.driver-modal-open {
   #driver-kasko-modal.driver-modal {
     padding: 0 !important;
   }
-  /* Geçmiş Kayıtlar + Düzeltme Talebi: overlay footer üstünde bitsin; modal-footer arası 5px */
+  /* Geçmiş Kayıtlar + Düzeltme Talebi: overlay footer üstünde bitsin; driver footer ~33px (runtime: footerHeight 32.5), 5px gap */
   #history-modal.driver-modal,
   #edit-request-modal.driver-modal {
-    bottom: calc(5px + var(--app-footer-height, 48px)) !important;
+    bottom: 38px !important; /* 5px + 33px (gerçek footer yüksekliği) */
     height: auto !important;
-    max-height: calc(100vh - 5px - var(--app-footer-height, 48px)) !important;
+    max-height: calc(100vh - 38px) !important;
   }
   #history-modal.driver-modal::before,
   #edit-request-modal.driver-modal::before {
-    height: calc(100vh - max(12px, env(safe-area-inset-top)) - 5px - var(--app-footer-height, 48px)) !important;
-    height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 5px - var(--app-footer-height, 48px)) !important;
+    height: calc(100vh - max(12px, env(safe-area-inset-top)) - 38px) !important;
+    height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 38px) !important;
   }
 }
 
@@ -2574,16 +2574,16 @@ body.driver-modal-open {
   overscroll-behavior: none;
   overscroll-behavior-x: none;
 }
-/* Geçmiş Kayıtlar + Düzeltme Talebi masaüstü: modal yüksekliği = overlay - 5px (modal + margin 5px = overlay, tek boşluk 5px) */
+/* Geçmiş Kayıtlar + Düzeltme Talebi masaüstü: overlay 38px (5+33), modal+5px = overlay → modal 43px reserve */
 #history-modal .driver-modal-content,
 #history-modal .modal-container,
 #edit-request-modal .driver-modal-content,
 #edit-request-modal .modal-container {
   margin-bottom: 5px !important;
-  height: calc(100vh - 58px) !important; /* 5px gap + 48px footer + 5px margin = 58px */
-  height: calc(100dvh - 58px) !important;
-  max-height: calc(100vh - 58px) !important;
-  max-height: calc(100dvh - 58px) !important;
+  height: calc(100vh - 43px) !important; /* 38px overlay reserve + 5px margin */
+  height: calc(100dvh - 43px) !important;
+  max-height: calc(100vh - 43px) !important;
+  max-height: calc(100dvh - 43px) !important;
 }
 
 #history-modal .modal-header,
