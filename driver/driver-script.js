@@ -94,12 +94,25 @@ const API_BASE = (function(){
     wraps.forEach(function(wrap) {
       var input = wrap.querySelector('input[type="date"]');
       if (!input) return;
+      var openPicker = function(ev) {
+        if (ev) ev.preventDefault();
+        if (typeof input.showPicker === 'function') {
+          try { input.showPicker(); return; } catch (e) {}
+        }
+        try { input.focus({ preventScroll: true }); } catch (e) { input.focus(); }
+        try { input.click(); } catch (e) {}
+      };
       syncDriverDateDisplay(input);
       input.removeEventListener('input', wrap._driverDateInputHandler);
       input.removeEventListener('change', wrap._driverDateInputHandler);
+      wrap.removeEventListener('click', wrap._driverDateOpenHandler);
+      wrap.removeEventListener('touchend', wrap._driverDateOpenHandler);
       wrap._driverDateInputHandler = function() { syncDriverDateDisplay(input); };
       input.addEventListener('input', wrap._driverDateInputHandler);
       input.addEventListener('change', wrap._driverDateInputHandler);
+      wrap._driverDateOpenHandler = openPicker;
+      wrap.addEventListener('click', wrap._driverDateOpenHandler);
+      wrap.addEventListener('touchend', wrap._driverDateOpenHandler, { passive: false });
     });
   }
   
