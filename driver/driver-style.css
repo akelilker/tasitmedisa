@@ -4694,10 +4694,11 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   min-width: 0 !important;
 }
 
-/* Mobile: kaza kaporta spacing stabilization (label->schema and schema->legend = 6px) */
+
+/* Mobile: kaza kaporta spacing stabilization (label->schema -4px, schema->legend stable) */
 @media (max-width: 768px) {
   .dashboard-page .driver-report-block-kaza .form-group .driver-kaporta-label {
-    margin-bottom: 6px !important;
+    margin-bottom: 2px !important;
   }
   .dashboard-page .driver-report-block-kaza .driver-kaporta-container {
     margin-top: 0 !important;
