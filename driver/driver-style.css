@@ -4873,3 +4873,12 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     overflow-y: hidden !important;
   }
 }
+
+/* Masaustu: modal-footer bosluk +2px (6px -> 8px) */
+@media (min-width: 769px) {
+  body.dashboard-page,
+  body.login-page {
+    --modal-gap-above-footer: 8px;
+  }
+}
+
