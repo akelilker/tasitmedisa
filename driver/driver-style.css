@@ -2574,16 +2574,16 @@ body.driver-modal-open {
   overscroll-behavior: none;
   overscroll-behavior-x: none;
 }
-/* Geçmiş Kayıtlar + Düzeltme Talebi masaüstü: modal-footer arası tam 5px (overlay 100vh-53px, modal+5px aynı yükseklikte) */
+/* Geçmiş Kayıtlar + Düzeltme Talebi masaüstü: modal yüksekliği = overlay - 5px (modal + margin 5px = overlay, tek boşluk 5px) */
 #history-modal .driver-modal-content,
 #history-modal .modal-container,
 #edit-request-modal .driver-modal-content,
 #edit-request-modal .modal-container {
   margin-bottom: 5px !important;
-  height: calc(100vh - 5px - var(--app-footer-height, 48px)) !important;
-  height: calc(100dvh - 5px - var(--app-footer-height, 48px)) !important;
-  max-height: calc(100vh - 5px - var(--app-footer-height, 48px)) !important;
-  max-height: calc(100dvh - 5px - var(--app-footer-height, 48px)) !important;
+  height: calc(100vh - 58px) !important; /* 5px gap + 48px footer + 5px margin = 58px */
+  height: calc(100dvh - 58px) !important;
+  max-height: calc(100vh - 58px) !important;
+  max-height: calc(100dvh - 58px) !important;
 }
 
 #history-modal .modal-header,

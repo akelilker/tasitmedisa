@@ -1887,7 +1887,9 @@ const API_BASE = (function(){
               var rContainer = container.getBoundingClientRect();
               var rFooter = footer.getBoundingClientRect();
               var gap = rFooter.top - rContainer.bottom;
-              fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'3cb83d'},body:JSON.stringify({sessionId:'3cb83d',location:'driver-script.js:showHistory',message:'modal-footer layout',data:{overlayBottom:csOverlay.bottom,overlayHeight:csOverlay.height,containerMarginBottom:csContainer.marginBottom,containerHeight:csContainer.height,viewportHeight:window.innerHeight,rectOverlayBottom:rOverlay.bottom,rectContainerBottom:rContainer.bottom,rectFooterTop:rFooter.top,footerHeight:rFooter.height,computedGap:Math.round(gap)},hypothesisId:'A,B,C,D,E',timestamp:Date.now()})}).catch(function(){});
+              var payload = {overlayBottom:csOverlay.bottom,overlayHeight:csOverlay.height,containerMarginBottom:csContainer.marginBottom,containerHeight:csContainer.height,viewportHeight:window.innerHeight,rectOverlayBottom:rOverlay.bottom,rectContainerBottom:rContainer.bottom,rectFooterTop:rFooter.top,footerHeight:rFooter.height,computedGap:Math.round(gap)};
+              console.log('[DEBUG modal-footer]', JSON.stringify(payload, null, 2));
+              fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'3cb83d'},body:JSON.stringify({sessionId:'3cb83d',location:'driver-script.js:showHistory',message:'modal-footer layout',data:payload,hypothesisId:'A,B,C,D,E',timestamp:Date.now()})}).catch(function(){});
           });
       });
       // #endregion
