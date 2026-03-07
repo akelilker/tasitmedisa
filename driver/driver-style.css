@@ -145,6 +145,10 @@ body.driver-modal-open {
 .login-page .driver-dashboard-container {
   padding-bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0));
 }
+/* Kullanıcı paneli: footer ~33px (runtime), kırmızı çizgiler footer'a değsin */
+.dashboard-page .driver-dashboard-container {
+  --app-footer-height: 33px;
+}
 /* Kullanıcı paneli + şifre ekranı: tüm kırmızı çerçeve tek kaynaktan (köşe birleşme sorunu yok) */
 .driver-dashboard-container::before {
   content: '';
@@ -2499,17 +2503,17 @@ body.driver-modal-open {
   #driver-kasko-modal.driver-modal {
     padding: 0 !important;
   }
-  /* Geçmiş Kayıtlar + Düzeltme Talebi: overlay footer üstünde bitsin; driver footer ~33px (runtime: footerHeight 32.5), 5px gap */
+  /* Geçmiş Kayıtlar + Düzeltme Talebi: overlay footer üstünde bitsin; driver footer ~33px, 7px gap */
   #history-modal.driver-modal,
   #edit-request-modal.driver-modal {
-    bottom: 38px !important; /* 5px + 33px (gerçek footer yüksekliği) */
+    bottom: 40px !important; /* 7px + 33px (gerçek footer yüksekliği) */
     height: auto !important;
-    max-height: calc(100vh - 38px) !important;
+    max-height: calc(100vh - 40px) !important;
   }
   #history-modal.driver-modal::before,
   #edit-request-modal.driver-modal::before {
-    height: calc(100vh - max(12px, env(safe-area-inset-top)) - 38px) !important;
-    height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 38px) !important;
+    height: calc(100vh - max(12px, env(safe-area-inset-top)) - 40px) !important;
+    height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 40px) !important;
   }
 }
 
@@ -2574,16 +2578,16 @@ body.driver-modal-open {
   overscroll-behavior: none;
   overscroll-behavior-x: none;
 }
-/* Geçmiş Kayıtlar + Düzeltme Talebi masaüstü: overlay 38px (5+33), modal+5px = overlay → modal 43px reserve */
+/* Geçmiş Kayıtlar + Düzeltme Talebi masaüstü: overlay 40px (7+33), modal+7px = overlay → modal 47px reserve */
 #history-modal .driver-modal-content,
 #history-modal .modal-container,
 #edit-request-modal .driver-modal-content,
 #edit-request-modal .modal-container {
-  margin-bottom: 5px !important;
-  height: calc(100vh - 43px) !important; /* 38px overlay reserve + 5px margin */
-  height: calc(100dvh - 43px) !important;
-  max-height: calc(100vh - 43px) !important;
-  max-height: calc(100dvh - 43px) !important;
+  margin-bottom: 7px !important;
+  height: calc(100vh - 47px) !important; /* 40px overlay reserve + 7px margin */
+  height: calc(100dvh - 47px) !important;
+  max-height: calc(100vh - 47px) !important;
+  max-height: calc(100dvh - 47px) !important;
 }
 
 #history-modal .modal-header,
@@ -3798,7 +3802,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   /* Driver panel: modal–footer arası 5px */
   body.dashboard-page,
   body.login-page {
-    --modal-gap-above-footer: 5px;
+    --modal-gap-above-footer: 7px;
   }
   /* Taşıtlar modalı ile aynı: overlay alt boşluk = footer + gap (style-core değişkenleri). Üst: çentik altında kalmaması için safe-area. */
   #history-modal.driver-modal,
