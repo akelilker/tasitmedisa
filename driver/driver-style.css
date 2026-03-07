@@ -4709,3 +4709,9 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     margin-top: 0 !important;
   }
 }
+@media (max-width: 768px) {
+  .dashboard-page .driver-report-block-kaza .driver-kaporta-container .driver-kaporta-schema-wrapper svg {
+    margin-top: -12px !important;
+    margin-bottom: -12px !important;
+  }
+}
