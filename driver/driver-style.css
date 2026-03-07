@@ -2518,14 +2518,14 @@ body.driver-modal-open .login-page #app-footer.login-footer {
   /* Geçmiş Kayıtlar + Düzeltme Talebi: overlay footer üstünde bitsin (33px); 7px boşluk = modal margin-bottom */
   #history-modal.driver-modal,
   #edit-request-modal.driver-modal {
-    bottom: var(--driver-footer-visual-height, 33px) !important;
-    height: calc(100vh - var(--driver-footer-visual-height, 33px)) !important;
-    max-height: calc(100vh - var(--driver-footer-visual-height, 33px)) !important;
+    bottom: calc(var(--driver-footer-visual-height, 33px) + var(--modal-gap-above-footer, 6px)) !important;
+    height: calc(100vh - var(--driver-footer-visual-height, 33px) - var(--modal-gap-above-footer, 6px)) !important;
+    max-height: calc(100vh - var(--driver-footer-visual-height, 33px) - var(--modal-gap-above-footer, 6px)) !important;
   }
   #history-modal.driver-modal::before,
   #edit-request-modal.driver-modal::before {
-    height: calc(100vh - max(12px, env(safe-area-inset-top)) - var(--driver-footer-visual-height, 33px)) !important;
-    height: calc(100dvh - max(12px, env(safe-area-inset-top)) - var(--driver-footer-visual-height, 33px)) !important;
+    height: calc(100vh - max(12px, env(safe-area-inset-top)) - var(--driver-footer-visual-height, 33px) - var(--modal-gap-above-footer, 6px)) !important;
+    height: calc(100dvh - max(12px, env(safe-area-inset-top)) - var(--driver-footer-visual-height, 33px) - var(--modal-gap-above-footer, 6px)) !important;
   }
 }
 
@@ -2595,7 +2595,7 @@ body.driver-modal-open .login-page #app-footer.login-footer {
 #history-modal .modal-container,
 #edit-request-modal .driver-modal-content,
 #edit-request-modal .modal-container {
-  margin-bottom: var(--modal-gap-above-footer, 6px) !important;
+  margin-bottom: 0 !important;
   height: calc(100vh - max(12px, env(safe-area-inset-top)) - var(--driver-footer-visual-height, 33px) - var(--modal-gap-above-footer, 6px)) !important;
   height: calc(100dvh - max(12px, env(safe-area-inset-top)) - var(--driver-footer-visual-height, 33px) - var(--modal-gap-above-footer, 6px)) !important;
   max-height: calc(100vh - max(12px, env(safe-area-inset-top)) - var(--driver-footer-visual-height, 33px) - var(--modal-gap-above-footer, 6px)) !important;
