@@ -2518,14 +2518,14 @@ body.driver-modal-open .login-page #app-footer.login-footer {
   /* Geçmiş Kayıtlar + Düzeltme Talebi: overlay footer üstünde bitsin (33px); 7px boşluk = modal margin-bottom */
   #history-modal.driver-modal,
   #edit-request-modal.driver-modal {
-    bottom: calc(var(--driver-footer-visual-height, 33px) + var(--modal-gap-above-footer, 6px)) !important;
-    height: calc(100vh - var(--driver-footer-visual-height, 33px) - var(--modal-gap-above-footer, 6px)) !important;
-    max-height: calc(100vh - var(--driver-footer-visual-height, 33px) - var(--modal-gap-above-footer, 6px)) !important;
+    bottom: calc(var(--driver-footer-visual-height, 33px) + var(--modal-gap-above-footer, 6px) + var(--modal-gap-visual-compensation, 0px)) !important;
+    height: calc(100vh - var(--driver-footer-visual-height, 33px) - var(--modal-gap-above-footer, 6px) - var(--modal-gap-visual-compensation, 0px)) !important;
+    max-height: calc(100vh - var(--driver-footer-visual-height, 33px) - var(--modal-gap-above-footer, 6px) - var(--modal-gap-visual-compensation, 0px)) !important;
   }
   #history-modal.driver-modal::before,
   #edit-request-modal.driver-modal::before {
-    height: calc(100vh - max(12px, env(safe-area-inset-top)) - var(--driver-footer-visual-height, 33px) - var(--modal-gap-above-footer, 6px)) !important;
-    height: calc(100dvh - max(12px, env(safe-area-inset-top)) - var(--driver-footer-visual-height, 33px) - var(--modal-gap-above-footer, 6px)) !important;
+    height: calc(100vh - max(12px, env(safe-area-inset-top)) - var(--driver-footer-visual-height, 33px) - var(--modal-gap-above-footer, 6px) - var(--modal-gap-visual-compensation, 0px)) !important;
+    height: calc(100dvh - max(12px, env(safe-area-inset-top)) - var(--driver-footer-visual-height, 33px) - var(--modal-gap-above-footer, 6px) - var(--modal-gap-visual-compensation, 0px)) !important;
   }
 }
 
@@ -2596,10 +2596,10 @@ body.driver-modal-open .login-page #app-footer.login-footer {
 #edit-request-modal .driver-modal-content,
 #edit-request-modal .modal-container {
   margin-bottom: 0 !important;
-  height: calc(100vh - max(12px, env(safe-area-inset-top)) - var(--driver-footer-visual-height, 33px) - var(--modal-gap-above-footer, 6px)) !important;
-  height: calc(100dvh - max(12px, env(safe-area-inset-top)) - var(--driver-footer-visual-height, 33px) - var(--modal-gap-above-footer, 6px)) !important;
-  max-height: calc(100vh - max(12px, env(safe-area-inset-top)) - var(--driver-footer-visual-height, 33px) - var(--modal-gap-above-footer, 6px)) !important;
-  max-height: calc(100dvh - max(12px, env(safe-area-inset-top)) - var(--driver-footer-visual-height, 33px) - var(--modal-gap-above-footer, 6px)) !important;
+  height: calc(100vh - max(12px, env(safe-area-inset-top)) - var(--driver-footer-visual-height, 33px) - var(--modal-gap-above-footer, 6px) - var(--modal-gap-visual-compensation, 0px)) !important;
+  height: calc(100dvh - max(12px, env(safe-area-inset-top)) - var(--driver-footer-visual-height, 33px) - var(--modal-gap-above-footer, 6px) - var(--modal-gap-visual-compensation, 0px)) !important;
+  max-height: calc(100vh - max(12px, env(safe-area-inset-top)) - var(--driver-footer-visual-height, 33px) - var(--modal-gap-above-footer, 6px) - var(--modal-gap-visual-compensation, 0px)) !important;
+  max-height: calc(100dvh - max(12px, env(safe-area-inset-top)) - var(--driver-footer-visual-height, 33px) - var(--modal-gap-above-footer, 6px) - var(--modal-gap-visual-compensation, 0px)) !important;
   min-height: 0 !important; /* Boşluğu ezen min-height: 100% olmasın */
 }
 
@@ -4879,6 +4879,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   body.dashboard-page,
   body.login-page {
     --modal-gap-above-footer: 8px;
+    --modal-gap-visual-compensation: 2px;
   }
 }
 
