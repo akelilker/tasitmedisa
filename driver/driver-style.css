@@ -1998,9 +1998,12 @@ body.driver-modal-open {
 .driver-report-block .form-group:last-child {
   margin-bottom: 0;
 }
-/* Tarih input form-group: Kaza/Bakım/Sigorta/Kasko/Muayene'de alt boşluk eşit (3px) */
-.dashboard-page .driver-action-area .driver-report-block .form-group:has(.driver-date-wrap) {
+/* Kaza/Bakım/Sigorta/Kasko/Muayene: tüm form-group alt boşlukları eşit (3px) */
+.dashboard-page .driver-action-area .driver-report-block .form-group {
   margin-bottom: 3px !important;
+}
+.dashboard-page .driver-action-area .driver-report-block .form-group:last-child {
+  margin-bottom: 0 !important;
 }
 
 /* Bak?m paneli: etiket ortada, i?erik sola yasl?, gri ?er?eve varsay?lan, aktifken ye?il */
