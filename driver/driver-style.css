@@ -2598,6 +2598,7 @@ body.driver-modal-open .login-page #app-footer.login-footer {
   height: calc(100dvh - 51.5px) !important;
   max-height: calc(100vh - 51.5px) !important;
   max-height: calc(100dvh - 51.5px) !important;
+  min-height: 0 !important; /* Boşluğu ezen min-height: 100% olmasın */
 }
 
 #history-modal .modal-header,
@@ -3933,10 +3934,10 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     border-left: 0.5px solid rgba(255, 255, 255, 0.18) !important;
     border-right: 0.5px solid rgba(255, 255, 255, 0.18) !important;
   }
-  /* Düzeltme Talebi: diğer modaller gibi ekranı kaplasın (içerik az olsa bile) */
+  /* Düzeltme Talebi: 7px footer boşluğu kalsın (min-height: 100% boşluğu ezer, kaldırıldı) */
   #edit-request-modal .driver-modal-content,
   #edit-request-modal .modal-container {
-    min-height: 100% !important;
+    min-height: 0 !important;
   }
 
   /* Modal header: üst köşe radius container ile aynı (10px) – kırmızı çerçeve üstü ezilmesin */
