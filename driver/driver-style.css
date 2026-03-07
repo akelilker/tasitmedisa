@@ -3824,6 +3824,9 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   body.login-page {
     --modal-gap-above-footer: 6px;
   }
+  #history-modal.driver-modal {
+    --modal-gap-above-footer: 8px;
+  }
   /* TaÅŸÄ±tlar modalÄ± ile aynÄ±: overlay alt boÅŸluk = footer + gap (style-core deÄŸiÅŸkenleri). Ãœst: Ã§entik altÄ±nda kalmamasÄ± iÃ§in safe-area. */
   #history-modal.driver-modal,
   #edit-request-modal.driver-modal,
@@ -4902,3 +4905,4 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     bottom: calc(var(--app-footer-height, 48px) + var(--modal-gap-above-footer, 8px) + var(--modal-gap-visual-compensation, 2px) + env(safe-area-inset-bottom, 0)) !important;
   }
 }
+
