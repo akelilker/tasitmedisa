@@ -1824,7 +1824,7 @@ body.driver-modal-open {
   top: 100%;
   margin-top: 6px;
   min-width: 200px;
-  max-width: 90vw;
+  max-width: calc(90vw - 14px);
   max-height: 240px;
   overflow-y: auto;
   scrollbar-width: none;
@@ -4004,8 +4004,8 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   /* AdÄ±m 2â€“3: Liste sol panel kafesinden Ã§Ä±karÄ±ldÄ± (position: fixed), ekranda gÃ¶z hizasÄ± â€“ ortada, belirgin gÃ¶lge */
   .dashboard-page .driver-left-panel .driver-plate-dropdown,
   body.dashboard-page #driver-plate-dropdown.driver-plate-dropdown {
-    width: 85vw !important;
-    max-width: 380px !important;
+    width: calc(85vw - 14px) !important;
+    max-width: 366px !important;
     min-width: auto !important;
     margin: 0 !important;
     z-index: 99999 !important;
