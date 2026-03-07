@@ -711,7 +711,7 @@ const API_BASE = (function(){
               <div class="driver-action-group">
                   <button type="button" class="driver-action-btn${muayeneBtnClass}" data-action="muayene" onclick="toggleDriverActionBlock('muayene','${vid}')">Muayene Yenileme</button>
                   <div id="muayene-block-${vid}" class="driver-report-block driver-report-block-muayene driver-action-block">
-                      <div class="form-group"><label for="driver-muayene-tarih-${vid}">Yaptırılan Tarih</label><div class="driver-date-wrap"><span class="driver-date-display" aria-hidden="true"></span><input type="date" id="driver-muayene-tarih-${vid}" class="form-input" style="width:100%"></div></div>
+                      <div class="form-group"><label for="driver-muayene-tarih-${vid}">Muayene Tarihi</label><div class="driver-date-wrap"><span class="driver-date-display" aria-hidden="true"></span><input type="date" id="driver-muayene-tarih-${vid}" class="form-input" style="width:100%"></div></div>
                       <div class="universal-btn-group">
                           <button type="button" class="universal-btn-save" onclick="saveDriverEventFromBlock('muayene','${vid}')">Bildir</button>
                           <button type="button" class="universal-btn-cancel" onclick="cancelDriverActionForm('muayene','${vid}')">Vazgeç</button>
