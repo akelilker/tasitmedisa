@@ -118,6 +118,7 @@ const API_BASE = (function(){
       input.addEventListener('focus', function() {
         var s = input.ownerDocument.defaultView.getComputedStyle(input);
         fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'8e8010'},body:JSON.stringify({sessionId:'8e8010',hypothesisId:'B',location:'driver-script.js:focus',message:'date input focus',data:{id:input.id,opacity:s.opacity,position:s.position,zIndex:s.zIndex,pointerEvents:s.pointerEvents},timestamp:Date.now()})}).catch(function(){});
+        if (typeof input.showPicker === 'function') { try { input.showPicker(); } catch (e) {} }
       });
       // #endregion
     });
