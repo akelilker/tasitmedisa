@@ -3821,13 +3821,14 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     overflow: hidden !important;
     overscroll-behavior: none !important;
   }
-  /* Geçmiş Kayıtlar + Düzeltme Talebi: overlay footer'ın ÜSTÜNDE bitsin; modal-footer arası 5px, koyu gölge ile kapansın */
+  /* Geçmiş Kayıtlar + Düzeltme Talebi: overlay footer'ın ÜSTÜNDE bitsin; modal alta yaslı, sadece 5px boşluk */
   #history-modal.driver-modal,
   #edit-request-modal.driver-modal {
     bottom: calc(5px + var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important;
     height: auto !important;
     max-height: calc(100vh - max(12px, env(safe-area-inset-top)) - 5px - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0)) !important;
     max-height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 5px - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0)) !important;
+    justify-content: flex-end !important; /* Modal alta yaslı, ortalanmayla oluşan fazla boşluk yok */
     box-shadow: none !important;
   }
   /* Mobilde modal açıkken header üstündeki kırmızı yatay çizgi görünmesin */

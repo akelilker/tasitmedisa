@@ -31,7 +31,7 @@ body::-webkit-scrollbar,
   --modal-footer-gap: 12px;
   --app-footer-height: 48px;
   --modal-footer-reserve: calc(var(--app-footer-height) + var(--modal-footer-gap));
-  --modal-gap-above-footer: 10px; /* Masaüstünde 4px override edilir */
+  --modal-gap-above-footer: 5px; /* Mobil/masaüstü tek değer */
 
   --modal-bg: #080d16;
   --modal-max-width: 500px;
@@ -87,10 +87,10 @@ body::-webkit-scrollbar,
   --hero-spacer-width: 30px;
 }
 
-/* Masaüstü (641px+): modal–footer arası 4px */
+/* Masaüstü (641px+): modal–footer arası 5px (anasayfa RAPORLAR/Taşıtlar vb.) */
 @media (min-width: 641px) {
   :root {
-    --modal-gap-above-footer: 4px;
+    --modal-gap-above-footer: 5px;
   }
 }
 
