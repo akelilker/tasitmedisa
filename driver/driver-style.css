@@ -2513,18 +2513,6 @@ body.driver-modal-open .login-page #app-footer.login-footer {
   #driver-kasko-modal.driver-modal {
     padding: 0 !important;
   }
-  /* Geçmiş Kayıtlar + Düzeltme Talebi: overlay footer üstünde bitsin (33px); 7px boşluk = modal margin-bottom */
-  #history-modal.driver-modal,
-  #edit-request-modal.driver-modal {
-    bottom: 33px !important; /* footer yüksekliği; 7px boşluk sadece modal margin-bottom ile */
-    height: calc(100vh - 33px) !important; /* Sabit yükseklik ki boşluk kapanmasın */
-    max-height: calc(100vh - 33px) !important;
-  }
-  #history-modal.driver-modal::before,
-  #edit-request-modal.driver-modal::before {
-    height: calc(100vh - max(12px, env(safe-area-inset-top)) - 33px) !important;
-    height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 33px) !important;
-  }
 }
 
 #history-modal.driver-modal::before,
@@ -2588,17 +2576,40 @@ body.driver-modal-open .login-page #app-footer.login-footer {
   overscroll-behavior: none;
   overscroll-behavior-x: none;
 }
-/* Geçmiş Kayıtlar + Düzeltme Talebi masaüstü: overlay bottom 33px; modal = 100vh - 51.5px → ~5px boşluk */
+
+/* --- GEÇMİŞ KAYITLAR VE DÜZELTME TALEBİ MODALI (TEMİZ FLEX YAPI) --- */
+#history-modal.driver-modal,
+#edit-request-modal.driver-modal {
+  top: 0 !important;
+  bottom: 0 !important;
+  padding-top: max(12px, env(safe-area-inset-top)) !important;
+  padding-bottom: calc(var(--app-footer-height, 48px) + 7px + env(safe-area-inset-bottom, 0)) !important;
+  box-sizing: border-box !important;
+  display: none;
+  height: 100% !important;
+  max-height: 100% !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+#history-modal.driver-modal.show,
+#edit-request-modal.driver-modal.show {
+  display: flex !important;
+}
 #history-modal .driver-modal-content,
 #history-modal .modal-container,
 #edit-request-modal .driver-modal-content,
 #edit-request-modal .modal-container {
-  margin-bottom: 5px !important;
-  height: calc(100vh - 49.5px) !important;  /* 33 (footer) + 5 (boşluk) + 11.5 (üst) */
-  height: calc(100dvh - 49.5px) !important;
-  max-height: calc(100vh - 49.5px) !important;
-  max-height: calc(100dvh - 49.5px) !important;
-  min-height: 0 !important; /* Boşluğu ezen min-height: 100% olmasın */
+  height: 100% !important;
+  max-height: 100% !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  min-height: 0 !important;
+}
+@media (max-width: 640px) {
+  #history-modal.driver-modal,
+  #edit-request-modal.driver-modal {
+    justify-content: flex-end !important;
+  }
 }
 
 #history-modal .modal-header,
@@ -3836,18 +3847,6 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     justify-content: center !important;
     overflow: hidden !important;
     overscroll-behavior: none !important;
-  }
-  /* Geçmiş Kayıtlar + Düzeltme Talebi: overlay footer üstünde, 7px boşluk; sabit height ki boşluk kapanmasın. */
-  #history-modal.driver-modal,
-  #edit-request-modal.driver-modal {
-    bottom: calc(7px + var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important;
-    height: calc(100vh - max(12px, env(safe-area-inset-top)) - 7px - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0)) !important;
-    height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 7px - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0)) !important;
-    max-height: calc(100vh - max(12px, env(safe-area-inset-top)) - 7px - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0)) !important;
-    max-height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 7px - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0)) !important;
-    justify-content: flex-end !important;
-    align-items: center !important;
-    box-shadow: none !important;
   }
   /* Mobilde modal açıkken header üstündeki kırmızı yatay çizgi görünmesin */
   .driver-modal.show::after {
