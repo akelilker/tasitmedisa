@@ -2049,6 +2049,26 @@
   gap: 8px;
 }
 
+.vehicle-print-btn {
+  width: 30px;
+  height: 30px;
+  background: transparent;
+  border: none;
+  color: var(--form-label-color);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  cursor: pointer;
+}
+.vehicle-print-btn svg {
+  width: 19px;
+  height: 19px;
+}
+.vehicle-print-btn:hover {
+  color: var(--theme-color);
+}
+
 /* Olay Ekle butonu - Marka/model satırında solda */
 .detail-brand-year-row .history-add-event-btn {
     width: auto;
@@ -2315,6 +2335,14 @@
   .olay-ekle-modal .back-icon-svg {
     width: 28px !important;
     height: 28px !important;
+  }
+  .vehicle-print-btn {
+    width: 44px !important;
+    height: 44px !important;
+  }
+  .vehicle-print-btn svg {
+    width: 22px !important;
+    height: 22px !important;
   }
   /* Mobil: sol ok ile etiket (Taşıtlar) dikeyde hizalı */
   #vehicle-detail-modal .vehicle-detail-toolbar .universal-back-bar {
