@@ -1874,6 +1874,23 @@ const API_BASE = (function(){
       requestAnimationFrame(function() {
           renderHistoryList();
       });
+      // #region agent log
+      requestAnimationFrame(function() {
+          requestAnimationFrame(function() {
+              var overlay = document.getElementById('history-modal');
+              var container = overlay ? overlay.querySelector('.driver-modal-content') || overlay.querySelector('.modal-container') : null;
+              var footer = document.getElementById('app-footer');
+              if (!overlay || !container || !footer) return;
+              var csOverlay = window.getComputedStyle(overlay);
+              var csContainer = window.getComputedStyle(container);
+              var rOverlay = overlay.getBoundingClientRect();
+              var rContainer = container.getBoundingClientRect();
+              var rFooter = footer.getBoundingClientRect();
+              var gap = rFooter.top - rContainer.bottom;
+              fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'3cb83d'},body:JSON.stringify({sessionId:'3cb83d',location:'driver-script.js:showHistory',message:'modal-footer layout',data:{overlayBottom:csOverlay.bottom,overlayHeight:csOverlay.height,containerMarginBottom:csContainer.marginBottom,containerHeight:csContainer.height,viewportHeight:window.innerHeight,rectOverlayBottom:rOverlay.bottom,rectContainerBottom:rContainer.bottom,rectFooterTop:rFooter.top,footerHeight:rFooter.height,computedGap:Math.round(gap)},hypothesisId:'A,B,C,D,E',timestamp:Date.now()})}).catch(function(){});
+          });
+      });
+      // #endregion
   };
   
   window.toggleHistoryVehicleDropdown = function(ev) {
