@@ -3391,7 +3391,7 @@ function renderVehicleDetailLeft(vehicle) {
   window.switchHistoryTab = function(tabType, vehicleId) {
     const vid = vehicleId || window.currentDetailVehicleId;
     if (!vid) return;
-    
+
     // Tab'ları güncelle
     (DOM.vehicleHistoryModal ? DOM.vehicleHistoryModal.querySelectorAll('.history-tab') : []).forEach(tab => {
       tab.classList.remove('active');
@@ -3404,19 +3404,17 @@ function renderVehicleDetailLeft(vehicle) {
         tab.style.color = '#ffffff';
       }
     });
-    
-    // İçeriği render et
+
     const contentEl = DOM.historyContent;
     if (!contentEl) return;
-    
+
     const vehicles = readVehicles();
     const vehicle = vehicles.find(v => String(v.id) === String(vid));
     if (!vehicle) return;
-    
+
     const events = vehicle.events || [];
-    
     let html = '';
-    
+
     if (tabType === 'bakim') {
       const bakimEvents = events.filter(e => e.type === 'bakim');
       if (bakimEvents.length === 0) {
@@ -3584,7 +3582,7 @@ function renderVehicleDetailLeft(vehicle) {
         });
       }
     }
-    
+
     contentEl.innerHTML = html;
   };
 
