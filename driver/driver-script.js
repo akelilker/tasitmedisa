@@ -81,7 +81,12 @@ const API_BASE = (function(){
     var wrap = inputEl.closest('.driver-date-wrap');
     if (!wrap) return;
     var display = wrap.querySelector('.driver-date-display');
-    if (display) display.textContent = formatDateDDMMYYYY(inputEl.value || '');
+    if (!display) return;
+    var formatted = formatDateDDMMYYYY(inputEl.value || '');
+    // iOS tarih secicide gecici bos deger aninda yaziyi silme.
+    if (!formatted && document.activeElement === inputEl && display.dataset.lastShown) return;
+    display.textContent = formatted;
+    if (formatted) display.dataset.lastShown = formatted;
   }
   function initDriverDateDisplays(container) {
     var root = container && container.nodeType ? container : document;
@@ -469,6 +474,12 @@ const API_BASE = (function(){
               <div class="driver-info-item ${lastikSavedClass}"><span class="label">Lastik Durumu</span><span class="value">${escapeHtmlDriver(lastikLabel)}</span></div>
               <div class="driver-info-item"><span class="label">UTTS</span><span class="value">${escapeHtmlDriver(uttsLabel)}</span></div>
           `;
+          infoEl.querySelectorAll('.driver-info-item .value').forEach(function(valueEl) {
+              var txt = (valueEl.textContent || '').trim();
+              if (txt !== '-') return;
+              valueEl.classList.add('driver-value-pending');
+              valueEl.innerHTML = '<span class="driver-pending-indicator" title="Bekleniyor" aria-label="Bekleniyor"></span>';
+          });
       }
   }
   
@@ -832,7 +843,7 @@ const API_BASE = (function(){
           if (type === 'km') {
               setTimeout(function() {
                   const inp = document.getElementById('km-' + vid);
-                  if (inp) { inp.focus(); inp.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+                  if (inp) inp.scrollIntoView({ behavior: 'smooth', block: 'center' });
               }, 50);
           } else {
               var group = target.closest('.driver-action-group');
