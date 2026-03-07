@@ -3183,3 +3183,15 @@
   }
 }
 
+
+/* Sube Degisikligi: normal gri, focus/aktifte kirmizi */
+#sube-degisiklik-modal .modal-body select#sube-select:focus,
+#sube-degisiklik-modal .modal-body select.form-input:focus,
+#sube-degisiklik-modal .modal-body select#sube-select:focus-visible,
+#sube-degisiklik-modal .modal-body select.form-input:focus-visible,
+#sube-degisiklik-modal .modal-body select#sube-select:active,
+#sube-degisiklik-modal .modal-body select.form-input:active {
+  border: 1.1px solid var(--theme-color) !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
