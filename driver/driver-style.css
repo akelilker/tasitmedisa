@@ -4451,6 +4451,24 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     box-shadow: inset 0 0 0 0.5px var(--theme-color) !important;
     border-color: var(--theme-color) !important;
   }
+  /* Focus: sağ panel (Kaza/Bakım/Sigorta/Kasko/Muayene) tüm input/textarea seçiliyken kırmızı çerçeve */
+  .dashboard-page .driver-action-area .driver-report-block .form-group input:focus,
+  .dashboard-page .driver-action-area .driver-report-block .form-group textarea:focus {
+    box-shadow: inset 0 0 0 0.5px var(--theme-color) !important;
+    outline: none !important;
+  }
+  /* Focus: tüm driver modalları (Sigorta, Kasko, Muayene, Anahtar, Lastik, UTTS, Geçmiş) */
+  .driver-modal .form-group input:focus,
+  .driver-modal .form-group textarea:focus {
+    box-shadow: inset 0 0 0 0.5px var(--theme-color) !important;
+    outline: none !important;
+  }
+  /* Focus: Düzeltme Talebi modalı */
+  #edit-request-modal .form-group input:focus,
+  #edit-request-modal .form-group textarea:focus {
+    box-shadow: inset 0 0 0 0.5px var(--theme-color) !important;
+    outline: none !important;
+  }
   /* Taşma garantisi: form-group flex'ta küçülebilsin, tarih input calc(100% - 3px) doğru hesaplansın */
   .dashboard-page .driver-action-area .driver-report-block .form-group {
     min-width: 0 !important;
