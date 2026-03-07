@@ -4896,3 +4896,9 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 }
 
 
+@media (min-width: 769px) {
+  body.dashboard-page.driver-modal-open:has(#history-modal.show) .driver-dashboard-container::before,
+  body.dashboard-page.driver-modal-open:has(#edit-request-modal.show) .driver-dashboard-container::before {
+    bottom: calc(var(--app-footer-height, 48px) + var(--modal-gap-above-footer, 8px) + var(--modal-gap-visual-compensation, 2px) + env(safe-area-inset-bottom, 0)) !important;
+  }
+}
