@@ -68,6 +68,35 @@ const API_BASE = (function(){
   function clearSessionGreenFeedback() { lastCompletedActionInSession = null; }
   window.addEventListener('pagehide', clearSessionGreenFeedback);
   document.addEventListener('visibilitychange', function() { if (document.hidden) clearSessionGreenFeedback(); });
+
+  /** Tarih input değerini DD/MM/YYYY olarak göster (örn. 2025-12-01 -> 01/12/2025) */
+  function formatDateDDMMYYYY(isoDate) {
+    if (!isoDate || typeof isoDate !== 'string') return '';
+    var parts = isoDate.trim().split('-');
+    if (parts.length !== 3) return isoDate;
+    return parts[2] + '/' + parts[1] + '/' + parts[0];
+  }
+  function syncDriverDateDisplay(inputEl) {
+    if (!inputEl || inputEl.type !== 'date') return;
+    var wrap = inputEl.closest('.driver-date-wrap');
+    if (!wrap) return;
+    var display = wrap.querySelector('.driver-date-display');
+    if (display) display.textContent = formatDateDDMMYYYY(inputEl.value || '');
+  }
+  function initDriverDateDisplays(container) {
+    var root = container && container.nodeType ? container : document;
+    var wraps = root.querySelectorAll ? root.querySelectorAll('.driver-date-wrap') : [];
+    wraps.forEach(function(wrap) {
+      var input = wrap.querySelector('input[type="date"]');
+      if (!input) return;
+      syncDriverDateDisplay(input);
+      input.removeEventListener('input', wrap._driverDateInputHandler);
+      input.removeEventListener('change', wrap._driverDateInputHandler);
+      wrap._driverDateInputHandler = function() { syncDriverDateDisplay(input); };
+      input.addEventListener('input', wrap._driverDateInputHandler);
+      input.addEventListener('change', wrap._driverDateInputHandler);
+    });
+  }
   
   /** iOS PWA: modal içi input/textarea focus'ta klavye açıldıktan sonra alan görünür kalsın */
   document.addEventListener('focusin', function(ev) {
@@ -535,7 +564,8 @@ const API_BASE = (function(){
       areaEl.innerHTML = buildDriverActionArea(vehicle, existingRecord, bakimVar, kazaVar, {
           kmBtnClass, kazaBtnClass, bakimBtnClass, sigortaBtnClass, kaskoBtnClass, muayeneBtnClass, anahtarBtnClass, lastikBtnClass, vid
       });
-      
+      initDriverDateDisplays(areaEl);
+
       const kaportaContainer = document.getElementById('kaza-kaporta-' + vid);
       if (kaportaContainer && vehicle) {
           initKaportaForDriver(kaportaContainer, vehicle);
@@ -592,7 +622,7 @@ const API_BASE = (function(){
               <div class="driver-action-group">
                   <button type="button" class="driver-action-btn${kazaBtnClass}" data-action="kaza" onclick="toggleDriverActionBlock('kaza','${vid}')">Kaza Bildir</button>
                   <div id="kaza-block-${vid}" class="driver-report-block driver-report-block-kaza driver-action-block">
-                      <div class="form-group"><label for="kaza-tarih-${vid}">Kaza Tarihi</label><input type="date" id="kaza-tarih-${vid}" class="driver-kaza-input" value="${kazaTarih}"></div>
+                      <div class="form-group"><label for="kaza-tarih-${vid}">Kaza Tarihi</label><div class="driver-date-wrap"><span class="driver-date-display" aria-hidden="true"></span><input type="date" id="kaza-tarih-${vid}" class="driver-kaza-input" value="${kazaTarih}"></div></div>
                       <div class="form-group"><label for="kaza-detay-${vid}">Açıklama</label><textarea id="kaza-detay-${vid}" class="driver-report-textarea-auto driver-kaza-textarea" rows="1" placeholder="Kaza açıklamasını yazın..." maxlength="500">${kazaAciklama}</textarea></div>
                       <div class="form-group"><label for="kaza-tutar-${vid}">Hasar Tutarı (TL)</label><input type="text" id="kaza-tutar-${vid}" class="driver-kaza-input" placeholder="5.000" inputmode="numeric"></div>
                       <div class="form-group" role="group" aria-labelledby="kaza-kaporta-label-${vid}"><span id="kaza-kaporta-label-${vid}" class="driver-kaporta-label">Varsa Boyanan/ Değişen Parçaları İşaretleyin</span><div id="kaza-kaporta-${vid}" class="driver-kaporta-container" data-vehicle-id="${vid}" data-boyali-parcalar='${boyaliJson}'></div></div>
@@ -606,7 +636,7 @@ const API_BASE = (function(){
               <div class="driver-action-group">
                   <button type="button" class="driver-action-btn${bakimBtnClass}" data-action="bakim" onclick="toggleDriverActionBlock('bakim','${vid}')">Bakım Bildir</button>
                   <div id="bakim-block-${vid}" class="driver-report-block driver-report-block-bakim driver-action-block">
-                      <div class="form-group"><label for="bakim-tarih-${vid}">Bakım Tarihi</label><input type="date" id="bakim-tarih-${vid}" class="driver-bakim-input" value="${bakimTarih}"></div>
+                      <div class="form-group"><label for="bakim-tarih-${vid}">Bakım Tarihi</label><div class="driver-date-wrap"><span class="driver-date-display" aria-hidden="true"></span><input type="date" id="bakim-tarih-${vid}" class="driver-bakim-input" value="${bakimTarih}"></div></div>
                       <div class="form-group"><label for="bakim-detay-${vid}">Açıklama</label><textarea id="bakim-detay-${vid}" class="driver-report-textarea-auto driver-bakim-textarea" rows="1" placeholder="Bakım detayını yazın..." maxlength="500">${bakimAciklama}</textarea></div>
                       <div class="form-group"><label for="bakim-servis-${vid}">İşlemi Yapan Servis</label><input type="text" id="bakim-servis-${vid}" class="driver-bakim-input" placeholder="Servis adı"></div>
                       <div class="form-group"><label for="bakim-kisi-${vid}">Taşıtı Bakıma Götüren Kişi</label><input type="text" id="bakim-kisi-${vid}" class="driver-bakim-input" placeholder="Kişi adı"></div>
@@ -622,7 +652,7 @@ const API_BASE = (function(){
               <div class="driver-action-group">
                   <button type="button" class="driver-action-btn${sigortaBtnClass}" data-action="sigorta" onclick="toggleDriverActionBlock('sigorta','${vid}')">Trafik Sigortası Yenileme</button>
                   <div id="sigorta-block-${vid}" class="driver-report-block driver-report-block-sigorta driver-action-block">
-                      <div class="form-group"><label for="driver-sigorta-tarih-${vid}">Yenileme / Başlangıç Tarihi</label><input type="date" id="driver-sigorta-tarih-${vid}" class="form-input" style="width:100%"></div>
+                      <div class="form-group"><label for="driver-sigorta-tarih-${vid}">Yenileme / Başlangıç Tarihi</label><div class="driver-date-wrap"><span class="driver-date-display" aria-hidden="true"></span><input type="date" id="driver-sigorta-tarih-${vid}" class="form-input" style="width:100%"></div></div>
                       <div class="form-group"><label for="driver-sigorta-firma-${vid}">Firma (isteğe bağlı)</label><input type="text" id="driver-sigorta-firma-${vid}" class="form-input" placeholder="Sigorta firması" style="width:100%"></div>
                       <div class="form-group"><label for="driver-sigorta-acente-${vid}">Acente (isteğe bağlı)</label><input type="text" id="driver-sigorta-acente-${vid}" class="form-input" placeholder="Acente adı" style="width:100%"></div>
                       <div class="form-group"><label for="driver-sigorta-iletisim-${vid}">İletişim (isteğe bağlı)</label><input type="text" id="driver-sigorta-iletisim-${vid}" class="form-input" placeholder="Telefon / e-posta" inputmode="tel" style="width:100%"></div>
@@ -635,7 +665,7 @@ const API_BASE = (function(){
               <div class="driver-action-group">
                   <button type="button" class="driver-action-btn${kaskoBtnClass}" data-action="kasko" onclick="toggleDriverActionBlock('kasko','${vid}')">Kasko Yenileme</button>
                   <div id="kasko-block-${vid}" class="driver-report-block driver-report-block-kasko driver-action-block">
-                      <div class="form-group"><label for="driver-kasko-tarih-${vid}">Yenileme / Başlangıç Tarihi</label><input type="date" id="driver-kasko-tarih-${vid}" class="form-input" style="width:100%"></div>
+                      <div class="form-group"><label for="driver-kasko-tarih-${vid}">Yenileme / Başlangıç Tarihi</label><div class="driver-date-wrap"><span class="driver-date-display" aria-hidden="true"></span><input type="date" id="driver-kasko-tarih-${vid}" class="form-input" style="width:100%"></div></div>
                       <div class="form-group"><label for="driver-kasko-firma-${vid}">Firma (isteğe bağlı)</label><input type="text" id="driver-kasko-firma-${vid}" class="form-input" placeholder="Kasko firması" style="width:100%"></div>
                       <div class="form-group"><label for="driver-kasko-acente-${vid}">Acente (isteğe bağlı)</label><input type="text" id="driver-kasko-acente-${vid}" class="form-input" placeholder="Acente adı" style="width:100%"></div>
                       <div class="form-group"><label for="driver-kasko-iletisim-${vid}">İletişim (isteğe bağlı)</label><input type="text" id="driver-kasko-iletisim-${vid}" class="form-input" placeholder="Telefon / e-posta" inputmode="tel" style="width:100%"></div>
@@ -648,7 +678,7 @@ const API_BASE = (function(){
               <div class="driver-action-group">
                   <button type="button" class="driver-action-btn${muayeneBtnClass}" data-action="muayene" onclick="toggleDriverActionBlock('muayene','${vid}')">Muayene Yenileme</button>
                   <div id="muayene-block-${vid}" class="driver-report-block driver-report-block-muayene driver-action-block">
-                      <div class="form-group"><label for="driver-muayene-tarih-${vid}">Yaptırılan Tarih</label><input type="date" id="driver-muayene-tarih-${vid}" class="form-input" style="width:100%"></div>
+                      <div class="form-group"><label for="driver-muayene-tarih-${vid}">Yaptırılan Tarih</label><div class="driver-date-wrap"><span class="driver-date-display" aria-hidden="true"></span><input type="date" id="driver-muayene-tarih-${vid}" class="form-input" style="width:100%"></div></div>
                       <div class="universal-btn-group">
                           <button type="button" class="universal-btn-save" onclick="saveDriverEventFromBlock('muayene','${vid}')">Bildir</button>
                           <button type="button" class="universal-btn-cancel" onclick="cancelDriverActionForm('muayene','${vid}')">Vazgeç</button>
@@ -736,7 +766,7 @@ const API_BASE = (function(){
           }
           if (type === 'kaza') {
               const dateEl = document.getElementById('kaza-tarih-' + vid);
-              if (dateEl && !dateEl.value) dateEl.value = new Date().toISOString().split('T')[0];
+              if (dateEl && !dateEl.value) { dateEl.value = new Date().toISOString().split('T')[0]; syncDriverDateDisplay(dateEl); }
               const container = document.getElementById('kaza-kaporta-' + vid);
               if (container && !container.querySelector('svg')) {
                   let boyaliParcalar = {};
@@ -761,7 +791,7 @@ const API_BASE = (function(){
           }
           if (type === 'bakim') {
               const dateEl = document.getElementById('bakim-tarih-' + vid);
-              if (dateEl && !dateEl.value) dateEl.value = new Date().toISOString().split('T')[0];
+              if (dateEl && !dateEl.value) { dateEl.value = new Date().toISOString().split('T')[0]; syncDriverDateDisplay(dateEl); }
               // #region agent log
               requestAnimationFrame(function() {
                   var el = document.getElementById('bakim-tarih-' + vid);
@@ -775,7 +805,7 @@ const API_BASE = (function(){
           if (type === 'sigorta' || type === 'kasko' || type === 'muayene') {
               var dateId = type === 'muayene' ? 'driver-muayene-tarih' : (type === 'sigorta' ? 'driver-sigorta-tarih' : 'driver-kasko-tarih');
               var dateEl = document.getElementById(dateId + '-' + vid);
-              if (dateEl && !dateEl.value) dateEl.value = new Date().toISOString().split('T')[0];
+              if (dateEl && !dateEl.value) { dateEl.value = new Date().toISOString().split('T')[0]; syncDriverDateDisplay(dateEl); }
           }
           if (type === 'anahtar' || type === 'lastik') {
               setupDriverEventRadioHandlersForBlock(type, vid);

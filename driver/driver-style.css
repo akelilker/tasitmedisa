@@ -1170,6 +1170,39 @@ body.driver-modal-open {
   line-height: normal;
 }
 
+/* Tarih input DD/MM/YYYY gösterimi: görünen metin span'da, tıklanınca native picker açılsın */
+.dashboard-page .driver-date-wrap {
+  position: relative;
+  min-height: 32px;
+  display: block;
+}
+.dashboard-page .driver-date-display {
+  display: block;
+  padding: 6px 36px 6px 12px;
+  min-height: 32px;
+  box-sizing: border-box;
+  line-height: 1.35;
+  color: var(--data-value-color, #a0aec0);
+  font-family: inherit;
+  font-size: 14px;
+  background: rgb(15, 20, 24);
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.35);
+  white-space: nowrap;
+}
+.dashboard-page .driver-date-wrap input[type="date"] {
+  position: absolute !important;
+  left: 0 !important;
+  top: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  opacity: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  cursor: pointer !important;
+}
+
 .dashboard-page .driver-action-area .driver-report-block input[type="date"] {
   min-height: 32px !important;
   min-width: 0 !important;
