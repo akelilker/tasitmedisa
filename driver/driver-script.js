@@ -350,7 +350,25 @@ const API_BASE = (function(){
           
           setupEkstraNotAutoResize();
           setupKmInputs();
-          
+
+          // #region agent log
+          requestAnimationFrame(function() {
+            setTimeout(function() {
+              var el = document.querySelector('.driver-kaporta-container');
+              var bodyCl = document.body ? document.body.className || '' : '';
+              var vw = window.innerWidth || 0;
+              var data = { hypothesisId: 'H1-H5', viewportWidth: vw, bodyClass: bodyCl, hasKaporta: !!el };
+              if (el) {
+                var cs = window.getComputedStyle ? window.getComputedStyle(el) : null;
+                if (cs) { data.marginTop = cs.marginTop; data.marginBottom = cs.marginBottom; }
+                var link = document.querySelector('link[href*="driver-style"]');
+                if (link) data.cssHref = (link.getAttribute && link.getAttribute('href')) || '';
+              }
+              fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'0e8ee9'},body:JSON.stringify({sessionId:'0e8ee9',location:'driver-script.js:post-render',message:'Kaporta debug',data:data,timestamp:Date.now(),hypothesisId:'H1-H5'})}).catch(function(){});
+            }, 300);
+          });
+          // #endregion
+
       } catch (error) {
           console.error('Veri yükleme hatası:', error);
           const spinner = document.getElementById('loading-spinner');
