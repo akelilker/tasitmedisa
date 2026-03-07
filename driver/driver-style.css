@@ -2517,7 +2517,7 @@ body.driver-modal-open .login-page #app-footer.login-footer {
   #history-modal.driver-modal,
   #edit-request-modal.driver-modal {
     bottom: 33px !important; /* footer yüksekliği; 7px boşluk sadece modal margin-bottom ile */
-    height: auto !important;
+    height: calc(100vh - 33px) !important; /* Sabit yükseklik ki boşluk kapanmasın */
     max-height: calc(100vh - 33px) !important;
   }
   #history-modal.driver-modal::before,
