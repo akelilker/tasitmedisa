@@ -1635,8 +1635,11 @@
   }
 
   window.printVehicleCard = function(vehicleId) {
+    // #region agent log
     const vehicles = readVehicles();
     const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
+    fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'3db21c'},body:JSON.stringify({sessionId:'3db21c',location:'tasitlar.js:printVehicleCard',message:'entry',data:{vehicleId,String:vehicleId,vehicleFound:!!vehicle},hypothesisId:'E',timestamp:Date.now()})}).catch(()=>{});
+    // #endregion
     if (!vehicle) {
       alert('Taşıt bulunamadı!');
       return;
@@ -1646,6 +1649,9 @@
       .map(([label, value]) => `<tr><th>${escapeHtml(label)}</th><td>${escapeHtml(String(value || '-')).replace(/\n/g, '<br>')}</td></tr>`)
       .join('');
     const printWindow = window.open('', '_blank', 'noopener,noreferrer,width=900,height=700');
+    // #region agent log
+    fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'3db21c'},body:JSON.stringify({sessionId:'3db21c',location:'tasitlar.js:afterOpen',message:'window.open result',data:{openOk:!!printWindow},hypothesisId:'A',timestamp:Date.now()})}).catch(()=>{});
+    // #endregion
     if (!printWindow) {
       alert('Yazdırma penceresi açılamadı. Lütfen açılır pencere izni verin.');
       return;
@@ -1653,7 +1659,8 @@
 
     const now = new Date();
     const printedAt = `${String(now.getDate()).padStart(2, '0')}.${String(now.getMonth() + 1).padStart(2, '0')}.${now.getFullYear()} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-    printWindow.document.write(`<!doctype html>
+    try {
+      printWindow.document.write(`<!doctype html>
 <html lang="tr">
 <head>
   <meta charset="utf-8">
@@ -1674,10 +1681,32 @@
   <table>${rows}</table>
 </body>
 </html>`);
-    printWindow.document.close();
+      printWindow.document.close();
+      // #region agent log
+      fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'3db21c'},body:JSON.stringify({sessionId:'3db21c',location:'tasitlar.js:afterWrite',message:'document.write done',data:{},hypothesisId:'B',timestamp:Date.now()})}).catch(()=>{});
+      // #endregion
+    } catch (errWrite) {
+      // #region agent log
+      fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'3db21c'},body:JSON.stringify({sessionId:'3db21c',location:'tasitlar.js:writeCatch',message:'document.write error',data:{err:String(errWrite && errWrite.message)},hypothesisId:'B',timestamp:Date.now()})}).catch(()=>{});
+      // #endregion
+      if (printWindow && !printWindow.closed) printWindow.close();
+      return;
+    }
     printWindow.focus();
     setTimeout(() => {
-      printWindow.print();
+      // #region agent log
+      fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'3db21c'},body:JSON.stringify({sessionId:'3db21c',location:'tasitlar.js:beforePrint',message:'before print()',data:{windowClosed:!!(printWindow && printWindow.closed)},hypothesisId:'C',timestamp:Date.now()})}).catch(()=>{});
+      // #endregion
+      try {
+        if (printWindow && !printWindow.closed) printWindow.print();
+        // #region agent log
+        fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'3db21c'},body:JSON.stringify({sessionId:'3db21c',location:'tasitlar.js:afterPrint',message:'print() called',data:{},hypothesisId:'D',timestamp:Date.now()})}).catch(()=>{});
+        // #endregion
+      } catch (errPrint) {
+        // #region agent log
+        fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'3db21c'},body:JSON.stringify({sessionId:'3db21c',location:'tasitlar.js:printCatch',message:'print() error',data:{err:String(errPrint && errPrint.message)},hypothesisId:'D',timestamp:Date.now()})}).catch(()=>{});
+        // #endregion
+      }
     }, 120);
   };
 
