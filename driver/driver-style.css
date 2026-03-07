@@ -3825,7 +3825,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     --modal-gap-above-footer: 6px;
   }
   #history-modal.driver-modal {
-    --modal-gap-above-footer: 8px;
+    --modal-gap-above-footer: 12px;
   }
   /* TaÅŸÄ±tlar modalÄ± ile aynÄ±: overlay alt boÅŸluk = footer + gap (style-core deÄŸiÅŸkenleri). Ãœst: Ã§entik altÄ±nda kalmamasÄ± iÃ§in safe-area. */
   #history-modal.driver-modal,
@@ -4905,4 +4905,31 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     bottom: calc(var(--app-footer-height, 48px) + var(--modal-gap-above-footer, 8px) + var(--modal-gap-visual-compensation, 2px) + env(safe-area-inset-bottom, 0)) !important;
   }
 }
+
+
+
+@media (max-width: 768px) {
+  /* Tek kaynak: mobilde history modal-footer boşluğu */
+  body.dashboard-page,
+  body.login-page {
+    --history-modal-gap-mobile: 12px;
+  }
+  #history-modal.driver-modal {
+    --modal-gap-above-footer: var(--history-modal-gap-mobile) !important;
+  }
+  /* 640-768 dahil tüm mobil/PWA genişliklerinde aynı boşluk hesabı */
+  #history-modal.driver-modal,
+  #history-modal.driver-modal.show {
+    bottom: calc(var(--app-footer-height, 48px) + var(--history-modal-gap-mobile) + env(safe-area-inset-bottom, 0)) !important;
+    height: calc(100vh - max(12px, env(safe-area-inset-top)) - var(--app-footer-height, 48px) - var(--history-modal-gap-mobile) - env(safe-area-inset-bottom, 0)) !important;
+    height: calc(100dvh - max(12px, env(safe-area-inset-top)) - var(--app-footer-height, 48px) - var(--history-modal-gap-mobile) - env(safe-area-inset-bottom, 0)) !important;
+    max-height: calc(100vh - max(12px, env(safe-area-inset-top)) - var(--app-footer-height, 48px) - var(--history-modal-gap-mobile) - env(safe-area-inset-bottom, 0)) !important;
+    max-height: calc(100dvh - max(12px, env(safe-area-inset-top)) - var(--app-footer-height, 48px) - var(--history-modal-gap-mobile) - env(safe-area-inset-bottom, 0)) !important;
+  }
+  /* Alt kenarda kalan kırmızı dikey çizgi parçalarını history modal açıkken temizle */
+  body.dashboard-page.driver-modal-open:has(#history-modal.show) .driver-dashboard-container::before {
+    bottom: calc(var(--app-footer-height, 48px) + var(--history-modal-gap-mobile) + env(safe-area-inset-bottom, 0)) !important;
+  }
+}
+
 
