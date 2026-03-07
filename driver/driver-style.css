@@ -4522,3 +4522,14 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   line-height: 1.6;
   margin: 0;
 }
+
+/* Son çare: Kaza/Bakım tarih input’ları – tüm viewport/media’da aynı padding (cascade/cache sonrası da kazansın) */
+.dashboard-page .driver-action-area .driver-report-block-bakim .form-group input.driver-bakim-input[type="date"],
+.dashboard-page .driver-action-area .driver-report-block-kaza .form-group input.driver-kaza-input[type="date"] {
+  box-sizing: border-box !important;
+  min-height: 38px !important;
+  padding: 8px 36px 8px 12px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+}
