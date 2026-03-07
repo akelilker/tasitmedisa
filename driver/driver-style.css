@@ -4051,7 +4051,15 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .dashboard-page .driver-scroll-area {
     padding-left: 0 !important;
     padding-right: 0 !important;
+    padding-top: 0 !important;
     overflow-x: visible !important;
+  }
+  /* İşlem geçmişi/çıkış ile kullanıcı adı/Km Bildir arası dikey boşluk 1px */
+  .dashboard-page .driver-below-hero {
+    margin-bottom: 1px !important;
+  }
+  .dashboard-page .driver-two-panel {
+    padding-top: 0 !important;
   }
 
   /* Elemanlar yatay geni?lik art?r ? ?er?eveye yakla? */
