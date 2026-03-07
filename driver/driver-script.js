@@ -762,6 +762,15 @@ const API_BASE = (function(){
           if (type === 'bakim') {
               const dateEl = document.getElementById('bakim-tarih-' + vid);
               if (dateEl && !dateEl.value) dateEl.value = new Date().toISOString().split('T')[0];
+              // #region agent log
+              requestAnimationFrame(function() {
+                  var el = document.getElementById('bakim-tarih-' + vid);
+                  if (!el) return;
+                  var s = window.getComputedStyle(el);
+                  var r = el.getBoundingClientRect();
+                  fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'0e8ee9'},body:JSON.stringify({sessionId:'0e8ee9',location:'driver-script.js:bakim-date-style',message:'Bakım tarih computed style',data:{paddingLeft:s.paddingLeft,paddingRight:s.paddingRight,boxSizing:s.boxSizing,minHeight:s.minHeight,width:r.width,right:r.right,innerWidth:window.innerWidth},timestamp:Date.now(),hypothesisId:'date-padding'})}).catch(function(){});
+              });
+              // #endregion
           }
           if (type === 'sigorta' || type === 'kasko' || type === 'muayene') {
               var dateId = type === 'muayene' ? 'driver-muayene-tarih' : (type === 'sigorta' ? 'driver-sigorta-tarih' : 'driver-kasko-tarih');
