@@ -1,6 +1,12 @@
 # MEDISA Taşıt Yönetim Sistemi
 # RewriteBase /medisa/ veya / gerektiğinde script tarafından ayarlanır
 
+# Favicon: bu dizinde favicon.ico isteği icon/favicon.ico'dan servis edilsin
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteRule ^favicon\.ico$ icon/favicon.ico [L]
+</IfModule>
+
 # Service Worker: scope hatasını önlemek için (mod_headers gerekir)
 <IfModule mod_headers.c>
   <Files "sw.js">

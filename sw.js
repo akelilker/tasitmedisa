@@ -1,7 +1,7 @@
 // Service Worker - Medisa Taşıt Yönetim Sistemi
 // Version 2.11 - Activate: claim önce (InvalidStateError düzeltmesi); syntax temiz
 
-const CACHE_VERSION = 'medisa-v2.11';
+const CACHE_VERSION = 'medisa-v2.12';
 
 // Subpath desteği: /medisa/sw.js ise base = '/medisa', kök deploy'da base = ''
 function getBase() {
@@ -59,17 +59,15 @@ self.addEventListener('install', (event) => {
   );
 });
 
-// Activate - Önce claim (henüz activating state'teyken), sonra eski cache'leri temizle
-// InvalidStateError: claim() async iş (cache delete) bitince çağrılırsa worker artık "active" olmayabiliyor; bu yüzden claim önce yapılır.
+// Activate - Önce eski cache'leri temizle, sonra claim (claim() sadece "active" worker'da çalışır; önce yapılırsa InvalidStateError olabiliyor)
 self.addEventListener('activate', (event) => {
   event.waitUntil(
-    Promise.resolve()
-      .then(() => self.clients.claim())
-      .then(() => caches.keys())
+    caches.keys()
       .then((cacheNames) => {
         const toDelete = cacheNames.filter((name) => name !== CACHE_VERSION);
         return Promise.all(toDelete.map((name) => caches.delete(name)));
       })
+      .then(() => self.clients.claim())
       .catch((err) => {
         console.warn('SW activate:', err);
       })
