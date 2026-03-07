@@ -2574,16 +2574,16 @@ body.driver-modal-open {
   overscroll-behavior: none;
   overscroll-behavior-x: none;
 }
-/* Geçmiş Kayıtlar + Düzeltme Talebi masaüstü: modal-footer arası 5px */
+/* Geçmiş Kayıtlar + Düzeltme Talebi masaüstü: modal-footer arası tam 5px (overlay 100vh-53px, modal+5px aynı yükseklikte) */
 #history-modal .driver-modal-content,
 #history-modal .modal-container,
 #edit-request-modal .driver-modal-content,
 #edit-request-modal .modal-container {
   margin-bottom: 5px !important;
-  height: calc(100vh - max(12px, env(safe-area-inset-top)) - 5px - var(--app-footer-height, 48px)) !important;
-  height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 5px - var(--app-footer-height, 48px)) !important;
-  max-height: calc(100vh - max(12px, env(safe-area-inset-top)) - 5px - var(--app-footer-height, 48px)) !important;
-  max-height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 5px - var(--app-footer-height, 48px)) !important;
+  height: calc(100vh - 5px - var(--app-footer-height, 48px)) !important;
+  height: calc(100dvh - 5px - var(--app-footer-height, 48px)) !important;
+  max-height: calc(100vh - 5px - var(--app-footer-height, 48px)) !important;
+  max-height: calc(100dvh - 5px - var(--app-footer-height, 48px)) !important;
 }
 
 #history-modal .modal-header,
