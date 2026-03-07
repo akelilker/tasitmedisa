@@ -4069,8 +4069,8 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     padding-right: 10px !important;
   }
   .dashboard-page .driver-report-block-kaza .driver-kaporta-container {
-    margin-top: 0 !important;
-    margin-bottom: 0 !important;
+    margin-top: 5px !important;
+    margin-bottom: 5px !important;
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
