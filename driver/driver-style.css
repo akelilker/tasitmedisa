@@ -1174,6 +1174,8 @@ body.driver-modal-open {
 .dashboard-page .driver-date-wrap {
   position: relative;
   min-height: 32px;
+  height: 32px !important;
+  overflow: hidden;
   display: block;
 }
 .dashboard-page .driver-date-display {
