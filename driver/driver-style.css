@@ -4488,7 +4488,8 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .dashboard-page .driver-multi-vehicle-wrap .driver-plate-row {
     margin-bottom: 6px !important;
   }
-/* MasaÃ¼stÃ¼: plaka yatayda ortada (kÄ±rmÄ±zÄ± ok hesaba katÄ±lmaz), ok Ã§erÃ§eve dÄ±ÅŸÄ±nda */
+/* Masaüstü: plaka yatayda ortada (kırmızı ok hesaba katılmaz), ok çerçeve dışında */
+/* Masaüstü: plaka listesi açıldığında sağ panel de görünsün (mobildeki overflow/z-index mantığı) */
 @media (min-width: 641px) {
   .dashboard-page .driver-plate-dropdown-row {
     margin-right: -12px !important;
@@ -4502,6 +4503,35 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .dashboard-page .driver-plate-dropdown-row .driver-current-plaka {
     padding-left: 18px !important;
     padding-right: 18px !important;
+  }
+  /* Plaka dropdown dışarı taşabilsin; sağ panel kesilmesin */
+  .dashboard-page .driver-panels-inner {
+    overflow-x: visible !important;
+    overflow-y: hidden;
+  }
+  .dashboard-page .driver-left-panel,
+  .dashboard-page .driver-plate-dropdown-row {
+    overflow: visible !important;
+  }
+  .dashboard-page .driver-left-panel {
+    position: relative;
+    z-index: 3;
+  }
+  .dashboard-page .driver-left-panel-content {
+    overflow-x: visible !important;
+  }
+  .dashboard-page .driver-right-panel {
+    position: relative;
+    z-index: 1;
+  }
+  .dashboard-page .driver-dashboard-container {
+    overflow-x: visible !important;
+  }
+  .dashboard-page .content-wrap.driver-content-wrap.driver-scroll-area {
+    overflow-x: visible !important;
+  }
+  .dashboard-page .driver-scroll-area {
+    overflow-x: visible !important;
   }
 }
   /* Mobil özel: tarih input görünümü (min-height 32px) */
