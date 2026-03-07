@@ -135,7 +135,8 @@ body.driver-modal-open {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: visible; /* Footer box-shadow (ışık) kesilmesin, modal arkasında görünsün */
   position: relative;
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
@@ -149,7 +150,8 @@ body.driver-modal-open {
 .dashboard-page .driver-dashboard-container {
   --app-footer-height: 33px;
 }
-/* Kullanıcı paneli + şifre ekranı: tüm kırmızı çerçeve tek kaynaktan (köşe birleşme sorunu yok) */
+/* Kullanıcı paneli + şifre ekranı: tüm kırmızı çerçeve tek kaynaktan (köşe birleşme sorunu yok).
+   clip-path: alt köşelerdeki dikey çizgi artıklarını keser (sadece yatay çizgi kalır). */
 .driver-dashboard-container::before {
   content: '';
   position: absolute;
@@ -162,6 +164,8 @@ body.driver-modal-open {
   border-right: 0.5px solid var(--border-red-tech);
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
+  /* Alt köşelerde 2px: sol/sağ border aşağı taşmasın, sadece yatay çizgi görünsün */
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 2px), calc(100% - 2px) calc(100% - 2px), calc(100% - 2px) 100%, 2px 100%, 2px calc(100% - 2px), 0 calc(100% - 2px));
   pointer-events: none;
   z-index: 10010;
 }
