@@ -3809,7 +3809,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 
 /* #history-modal, #edit-request-modal, Olay Ekle modalları mobil: overlay-bottom stratejisi (style-core ile uyumlu) */
 @media (max-width: 640px) {
-  /* Driver panel: modal–footer arası 5px */
+  /* Driver panel: modal–footer arası 7px (masaüstü ile aynı) */
   body.dashboard-page,
   body.login-page {
     --modal-gap-above-footer: 7px;
@@ -3835,15 +3835,16 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     overflow: hidden !important;
     overscroll-behavior: none !important;
   }
-  /* Geçmiş Kayıtlar + Düzeltme Talebi: overlay footer'ın ÜSTÜNDE bitsin; modal alta yaslı. Yatayda ortada (taşma yok). */
+  /* Geçmiş Kayıtlar + Düzeltme Talebi: overlay footer üstünde, 7px boşluk; sabit height ki boşluk kapanmasın. */
   #history-modal.driver-modal,
   #edit-request-modal.driver-modal {
-    bottom: calc(5px + var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important;
-    height: auto !important;
-    max-height: calc(100vh - max(12px, env(safe-area-inset-top)) - 5px - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0)) !important;
-    max-height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 5px - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0)) !important;
+    bottom: calc(7px + var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important;
+    height: calc(100vh - max(12px, env(safe-area-inset-top)) - 7px - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0)) !important;
+    height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 7px - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0)) !important;
+    max-height: calc(100vh - max(12px, env(safe-area-inset-top)) - 7px - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0)) !important;
+    max-height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 7px - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0)) !important;
     justify-content: flex-end !important;
-    align-items: center !important; /* Ekran daralsa da modal yatayda ortada kalsın */
+    align-items: center !important;
     box-shadow: none !important;
   }
   /* Mobilde modal açıkken header üstündeki kırmızı yatay çizgi görünmesin */
