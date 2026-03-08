@@ -1067,7 +1067,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     }
     #vehicle-modal #vehicle-notes,
     #vehicle-modal .modal-column-right .form-section:has(#vehicle-notes) textarea {
-        min-height: 60px !important; /* iç dikey 1px dar (61→60) */
+        min-height: 30px !important; /* Sol grid alt hizasıyla eşitlemek için 1 satır yüksekliğine indirildi */
         height: auto !important;
     }
     #vehicle-modal .modal-column-right .form-section,
