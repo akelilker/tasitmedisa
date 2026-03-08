@@ -730,6 +730,26 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
 #notifications-dropdown .notification-item.date-warning-orange-border:hover {
   border-color: rgba(var(--orange-warn-rgb), 0.85) !important;
 }
+/* Tarih uyar� kartlar�: settings-dropdown button miras�n� ez, dikey s�k��may� kald�r */
+#notifications-dropdown .notification-item:not(.notification-item-activity) {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  height: auto !important;
+  min-height: 72px !important;
+  padding: 10px 12px !important;
+  white-space: normal !important;
+  overflow: hidden !important;
+}
+#notifications-dropdown .notification-item:not(.notification-item-activity) > div {
+  width: 100% !important;
+  line-height: 1.25 !important;
+  margin-bottom: 3px !important;
+}
+#notifications-dropdown .notification-item:not(.notification-item-activity) > div:last-child {
+  margin-bottom: 0 !important;
+}
 
 /* Bildirim: Plaka + açıklama (uzarsa alt satıra iner), tarih ikinci satırda sola dayalı */
 #notifications-dropdown .notification-item-activity {
@@ -1684,7 +1704,7 @@ body.modal-open .user-panel-link {
     }
     
     /* Mobil bildirimlerde plaka font boyutunu 2 punto küçült */
-    .notification-item > div:first-child {
+    #notifications-dropdown .notification-item-activity > div:first-child {
         font-size: 11px !important; /* 13px - 2pt (≈2px) = 11px */
     }
     
@@ -1796,7 +1816,11 @@ body.modal-open {
 
 /* --- YENİ EKLENEN KISIM: Modal açıkken çizgileri gizle --- */
 body.modal-open .app-container {
-    border-top-color: transparent !important;
+    border-color: transparent !important;
+}
+body.modal-open .app-container::before,
+body.modal-open .content-wrap::before {
+    display: none !important;
 }
 
 /* === KÜÇÜK MODALLAR İÇİN STANDART HEADER (v79) === */
