@@ -3551,13 +3551,13 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     overflow: hidden !important;
     overscroll-behavior: none !important;
   }
-  /* Ge?mi? Kay?tlar + D?zeltme Talebi: overlay footer'?n ?ST?NDE bitsin; modal?footer aras? tam 6px, koyu g?lge ile kapans?n */
+  /* Ge?mi? Kay?tlar + D?zeltme Talebi: overlay footer'?n ?ST?NDE bitsin; modal?footer aras? tam 2px, koyu g?lge ile kapans?n */
   #history-modal.driver-modal,
   #edit-request-modal.driver-modal {
-    bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important;
+    bottom: calc(2px + var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important;
     height: auto !important;
-    max-height: calc(100vh - max(12px, env(safe-area-inset-top)) - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0)) !important;
-    max-height: calc(100dvh - max(12px, env(safe-area-inset-top)) - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0)) !important;
+    max-height: calc(100vh - max(12px, env(safe-area-inset-top)) - 2px - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0)) !important;
+    max-height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 2px - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0)) !important;
     box-shadow: none !important;
   }
   /* Mobilde modal a??kken header ?st?ndeki k?rm?z? yatay ?izgi g?r?nmesin */
@@ -3630,17 +3630,14 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     overscroll-behavior: none !important;
     overscroll-behavior-x: none !important;
   }
-  /* Ge?mi? ??lemler modal ?er?evesi gri kalmal? (k?rm?z? tema ?er?evesini ez) */
+  /* Ge?mi? Kay?tlar + D?zeltme Talebi: mobilde ayn? gri ?er?eve */
   #history-modal .driver-modal-content,
-  #history-modal .modal-container {
+  #history-modal .modal-container,
+  #edit-request-modal .driver-modal-content,
+  #edit-request-modal .modal-container {
     border-top: 0.5px solid rgba(200, 200, 200, 0.45) !important;
     border-left: 0.5px solid rgba(255, 255, 255, 0.18) !important;
     border-right: 0.5px solid rgba(255, 255, 255, 0.18) !important;
-  }
-  /* D?zeltme Talebi: di?er modaller gibi ekran? kaplas?n (i?erik az olsa bile) */
-  #edit-request-modal .driver-modal-content,
-  #edit-request-modal .modal-container {
-    min-height: 100% !important;
   }
 
   /* Modal header: ?st k??e radius container ile ayn? (10px) ? k?rm?z? ?er?eve ?st? ezilmesin */
@@ -3684,6 +3681,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   /* Ge?mi? Kay?tlar + D?zeltme Talebi: scroll kendi alan?nda, body padding-bottom gereksiz */
   #history-modal .modal-body,
   #edit-request-modal .modal-body {
+    padding-top: 2px !important;
     padding-bottom: 0 !important;
   }
 
@@ -3760,13 +3758,13 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     max-width: 100% !important;
     box-sizing: border-box !important;
     white-space: nowrap !important;
-    overflow: visible !important;
-    text-overflow: clip !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
     padding-left: 12px !important;
     padding-right: 32px !important;
   }
   .dashboard-page .driver-plate-dropdown-row .driver-plate-trigger {
-    right: -11px !important;
+    right: 0 !important;
     top: 50% !important;
     transform: translateY(-50%) !important;
     background: var(--bg) !important;
