@@ -90,7 +90,7 @@ body::-webkit-scrollbar,
 /* Masaüstü (641px+): modal–footer arası 5px (anasayfa RAPORLAR/Taşıtlar vb.) */
 @media (min-width: 641px) {
   :root {
-    --modal-gap-above-footer: 5px;
+    --modal-gap-above-footer: 1px;
   }
 }
 
