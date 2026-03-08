@@ -2350,6 +2350,13 @@ body.driver-modal-open {
     max-height: calc(100dvh - max(12px, env(safe-area-inset-top)) + 1px - var(--app-footer-height, 48px)) !important;
   }
 }
+/* Desktop: avoid double bottom line on Edit Request modal */
+@media (min-width: 641px) {
+  #edit-request-modal .driver-modal-content,
+  #edit-request-modal .modal-container {
+    border-bottom-color: transparent !important;
+  }
+}
 #history-modal .modal-header,
 #edit-request-modal .modal-header,
 #driver-event-menu-modal .modal-header,
