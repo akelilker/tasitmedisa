@@ -79,12 +79,12 @@
       const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
       const widthMap = isMobile
         ? {
-            'year': '30px',
+            'year': '32px',
             'plate': '62px',
             'brand': '2.6fr',   /* mobil+iOS PWA: şubeden 2px marka'ya */
             'km': '52px',
             'user': '1.95fr',   /* mobil+iOS PWA: şubeden 3px kullanıcıya */
-            'branch': '2.35fr'   /* mobil+iOS PWA: şube 5px daraltıldı */
+            'branch': '2.25fr'   /* mobil+iOS PWA: şubeden bir kademe alan alındı */
           }
         : {
             'year': '32px',
@@ -102,7 +102,7 @@
   }
 
   /**
-   * Mobil taşıt listesi: başlıklar tek punto, en fazla 1.5pt küçülebilir (biri sığmazsa hepsi küçülür).
+   * Mobil taşıt listesi: başlıklar tek punto, en fazla 1pt küçülebilir (biri sığmazsa hepsi küçülür).
    * listContainer içindeki .list-header-row üzerinde --list-header-font-size ayarlar.
    */
   function applyMobileListHeaderFontSize(listContainer) {
@@ -110,7 +110,7 @@
     if (!headerRow) return;
     requestAnimationFrame(function() {
       const baseSize = 15;
-      const minSize = 13.5;
+      const minSize = 14;
       let size = baseSize;
       headerRow.style.setProperty('--list-header-font-size', size + 'px');
       const cells = headerRow.querySelectorAll('.list-cell');
@@ -902,7 +902,7 @@
           }
       }
       
-      // Mobil: başlıklar tek punto, en fazla 1.5pt küçülebilir (biri sığmazsa hepsi küçülür)
+      // Mobil: başlıklar tek punto, en fazla 1pt küçülebilir (biri sığmazsa hepsi küçülür)
       if (viewMode === 'list' && window.innerWidth <= 640) {
           applyMobileListHeaderFontSize(listContainer);
       }
