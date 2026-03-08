@@ -1273,6 +1273,25 @@ body.modal-open .user-panel-link {
     box-shadow: 0 -13px 20px rgba(var(--footer-glow-rgb), 0.22);
 }
 
+/* Modal açıkken footer glow modal çerçevesine sızmasın */
+body.modal-open #app-footer {
+    box-shadow: none !important;
+}
+
+/* Modal-footer boşluğunu opak maskele; ışık/çizgi sızıntısını kes */
+body.modal-open::after {
+    content: '';
+    position: fixed;
+    left: 0;
+    right: 0;
+    width: 100vw;
+    bottom: calc(var(--app-footer-height) + env(safe-area-inset-bottom, 0));
+    height: max(var(--modal-gap-above-footer), 1px);
+    background: var(--bg);
+    z-index: 10001;
+    pointer-events: none;
+}
+
 .footer-content {
     display: flex;
     justify-content: space-between; 
@@ -1569,7 +1588,7 @@ body.modal-open .user-panel-link {
         bottom: calc(var(--app-footer-height) + env(safe-area-inset-bottom, 0));
         height: var(--modal-gap-above-footer);
         background: var(--bg);
-        z-index: 9998; /* Modal (9999) altında, container/çizgilerin üstünde */
+        z-index: 10001; /* Footer glow üstünde; boşluk maskesi */
         pointer-events: none;
     }
     
