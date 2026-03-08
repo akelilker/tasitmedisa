@@ -4457,7 +4457,11 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 
   .dashboard-page .driver-left-panel-content {
     overflow-y: hidden !important;
-    overflow-x: hidden !important;
+    overflow-x: visible !important;
+  }
+
+  .dashboard-page .driver-plate-dropdown-row {
+    overflow: visible !important;
   }
 
   .dashboard-page .driver-right-panel {
