@@ -2066,11 +2066,11 @@ const API_BASE = (function(){
               showEditBtn = true;
               if (item.kaza_durumu) {
                   detailsHtml = `<p><strong>Kaza:</strong> ${escapeHtmlDriver(capitalizeWords(item.kaza_aciklama || 'Var'))}</p>`;
-                  if (item.kaza_tarih) detailsHtml += `<p><strong>Tarih:</strong> ${item.kaza_tarih}</p>`;
-                  if (item.kaza_hasar_tutari) detailsHtml += `<p><strong>Hasar Tutarı:</strong> ${escapeHtmlDriver(item.kaza_hasar_tutari)} TL</p>`;
+                  if (item.kaza_tarih) detailsHtml += `<p><strong>Tarih:</strong> ${escapeHtmlDriver(item.kaza_tarih)}</p>`;
+                  if (item.kaza_hasar_tutari) detailsHtml += `<p><strong>Hasar Tutar\u0131:</strong> ${escapeHtmlDriver(item.kaza_hasar_tutari)} TL</p>`;
               } else if (item.bakim_durumu) {
-                  detailsHtml = `<p>${escapeHtmlDriver(capitalizeWords('Bakım Bildirildi') + ': ')}${escapeHtmlDriver(capitalizeWords(item.bakim_aciklama || 'Var'))}</p>`;
-                  if (item.bakim_tarih) detailsHtml += `<p><strong>Tarih:</strong> ${item.bakim_tarih}</p>`;
+                  detailsHtml = `<p><strong>Bak\u0131m:</strong> ${escapeHtmlDriver(capitalizeWords(item.bakim_aciklama || 'Var'))}</p>`;
+                  if (item.bakim_tarih) detailsHtml += `<p><strong>Tarih:</strong> ${escapeHtmlDriver(item.bakim_tarih)}</p>`;
                   if (item.guncel_km) detailsHtml += `<p><strong>Bildirilen KM:</strong> ${formatKm(item.guncel_km)}</p>`;
               } else {
                   detailsHtml = `<p><strong>Bildirilen KM:</strong> ${formatKm(item.guncel_km) || '0'}</p>`;
@@ -2079,27 +2079,26 @@ const API_BASE = (function(){
               const d = item.data || {};
               if (item.eventType === 'anahtar-guncelle') {
                   const durum = (d.durum === 'var') ? 'Var' : 'Yok';
-                  detailsHtml = `<p>${escapeHtmlDriver(capitalizeWords('Yedek anahtar durumu ' + durum + ' olarak güncellendi'))}</p>`;
+                  detailsHtml = `<p><strong>Yedek Anahtar:</strong> ${escapeHtmlDriver(durum)}</p>`;
+                  if (d.detay) detailsHtml += `<p><strong>Konum:</strong> ${escapeHtmlDriver(d.detay)}</p>`;
               } else if (item.eventType === 'lastik-guncelle') {
                   const durum = (d.durum === 'var') ? 'Var' : 'Yok';
-                  detailsHtml = `<p>${escapeHtmlDriver(capitalizeWords('Lastik durumu ' + durum + ' olarak güncellendi'))}</p>`;
+                  detailsHtml = `<p><strong>Yazl\u0131k/K\u0131\u015fl\u0131k:</strong> ${escapeHtmlDriver(durum)}</p>`;
+                  if (d.adres) detailsHtml += `<p><strong>Adres:</strong> ${escapeHtmlDriver(d.adres)}</p>`;
               } else if (item.eventType === 'utts-guncelle') {
-                  const durum = d.durum ? 'Evet' : 'Hayır';
-                  detailsHtml = `<p>${escapeHtmlDriver(capitalizeWords('UTTS bilgisi ' + durum + ' olarak güncellendi'))}</p>`;
+                  const durum = d.durum ? 'Evet' : 'Hay\u0131r';
+                  detailsHtml = `<p><strong>UTTS:</strong> ${escapeHtmlDriver(durum)}</p>`;
               } else if (item.eventType === 'muayene-guncelle') {
-                  let txt = 'Muayene Bilgisi Güncellendi';
-                  if (d.bitisTarihi) txt += ` (Bitiş: ${escapeHtmlDriver(d.bitisTarihi)})`;
-                  detailsHtml = `<p>${escapeHtmlDriver(txt)}</p>`;
+                  detailsHtml = `<p><strong>\u0130\u015flem:</strong> ${escapeHtmlDriver('Muayene Bilgisi G\u00fcncellendi')}</p>`;
+                  if (d.bitisTarihi) detailsHtml += `<p><strong>Biti\u015f Tarihi:</strong> ${escapeHtmlDriver(d.bitisTarihi)}</p>`;
               } else if (item.eventType === 'kasko-guncelle') {
-                  let txt = 'Kasko Yenilemesi Bildirildi';
-                  if (d.bitisTarihi) txt += ` (Bitiş: ${escapeHtmlDriver(d.bitisTarihi)})`;
-                  detailsHtml = `<p>${escapeHtmlDriver(txt)}</p>`;
+                  detailsHtml = `<p><strong>\u0130\u015flem:</strong> ${escapeHtmlDriver('Kasko Yenilemesi Bildirildi')}</p>`;
+                  if (d.bitisTarihi) detailsHtml += `<p><strong>Biti\u015f Tarihi:</strong> ${escapeHtmlDriver(d.bitisTarihi)}</p>`;
               } else if (item.eventType === 'sigorta-guncelle') {
-                  let txt = 'Trafik Sigortası Yenileme Bildirildi';
-                  if (d.bitisTarihi) txt += ` (Bitiş: ${escapeHtmlDriver(d.bitisTarihi)})`;
-                  detailsHtml = `<p>${escapeHtmlDriver(txt)}</p>`;
+                  detailsHtml = `<p><strong>\u0130\u015flem:</strong> ${escapeHtmlDriver('Trafik Sigortas\u0131 Yenileme Bildirildi')}</p>`;
+                  if (d.bitisTarihi) detailsHtml += `<p><strong>Biti\u015f Tarihi:</strong> ${escapeHtmlDriver(d.bitisTarihi)}</p>`;
               } else {
-                  detailsHtml = `<p>${escapeHtmlDriver(item.eventType || 'Güncelleme')}</p>`;
+                  detailsHtml = `<p><strong>\u0130\u015flem:</strong> ${escapeHtmlDriver(item.eventType || 'G\u00fcncelleme')}</p>`;
               }
           }
   
