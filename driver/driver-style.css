@@ -1280,6 +1280,48 @@ body.driver-modal-open {
   .driver-modal .driver-modal-content .form-group input {
     height: 26px !important; min-height: 26px !important;
   }
+
+  /* iOS Safari: flex + input taşması (WebKit bug); tüm zincirde min-width:0 + overflow */
+  @supports (-webkit-touch-callout: none) {
+    .dashboard-page .driver-right-panel,
+    .dashboard-page .driver-panels-inner,
+    .dashboard-page .driver-action-area-inner,
+    .dashboard-page .driver-action-area,
+    .dashboard-page .vehicle-card,
+    .dashboard-page .driver-report-block,
+    .dashboard-page .driver-action-area .form-group,
+    .dashboard-page .driver-action-area .driver-date-wrap {
+      min-width: 0 !important;
+    }
+    .dashboard-page .driver-right-panel {
+      overflow-x: hidden !important;
+      -webkit-overflow-scrolling: touch;
+    }
+    .dashboard-page .driver-action-area .driver-report-block .form-group,
+    .dashboard-page .driver-action-area .driver-date-wrap {
+      overflow: hidden !important;
+      max-width: 100% !important;
+    }
+    .dashboard-page .driver-action-area .driver-report-block .form-group input,
+    .dashboard-page .driver-action-area .driver-report-block .form-group textarea,
+    .dashboard-page .driver-action-area input[type="date"],
+    .dashboard-page .driver-right-panel input[type="date"].form-input {
+      min-width: 0 !important;
+      max-width: 100% !important;
+      width: 100% !important;
+      box-sizing: border-box !important;
+    }
+    .driver-modal .driver-modal-content .form-group {
+      min-width: 0 !important;
+      overflow: hidden !important;
+    }
+    .driver-modal .driver-modal-content .form-group input,
+    .driver-modal .driver-modal-content .form-group textarea {
+      min-width: 0 !important;
+      max-width: 100% !important;
+    }
+  }
+
   #driver-input-area .driver-km-fake-placeholder,
   .driver-action-area .driver-km-fake-placeholder { font-size: 15px; }
   .driver-km-error { font-size: 13px; }
