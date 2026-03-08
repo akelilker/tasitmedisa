@@ -4114,13 +4114,15 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
   .dashboard-page .driver-action-area .universal-btn-save,
   .dashboard-page .driver-action-area .universal-btn-cancel {
-    font-size: 17px !important;
+    font-size: 16.5px !important;
   }
   .dashboard-page .driver-action-area .universal-btn-save {
-    border-color: rgba(40, 167, 69, 0.58) !important;
+    color: rgba(74, 222, 128, 0.96) !important;
+    border-color: rgba(40, 167, 69, 0.62) !important;
   }
   .dashboard-page .driver-action-area .universal-btn-cancel {
-    border-color: rgba(212, 0, 0, 0.58) !important;
+    color: rgba(232, 72, 72, 0.96) !important;
+    border-color: rgba(212, 0, 0, 0.62) !important;
   }
   .dashboard-page .hero-title-wrap .hero-panel-subtitle,
   .dashboard-page .hero-title-block .hero-panel-subtitle {
