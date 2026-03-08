@@ -4449,3 +4449,25 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   line-height: 1.6;
   margin: 0;
 }
+
+/* Desktop plate dropdown: expand right from left panel anchor */
+@media (min-width: 769px) {
+  .dashboard-page .driver-plate-dropdown-row {
+    overflow: visible !important;
+  }
+
+  .dashboard-page .driver-left-panel-content {
+    overflow-x: visible !important;
+  }
+
+  .dashboard-page .driver-left-panel .driver-plate-dropdown,
+  body.dashboard-page #driver-plate-dropdown.driver-plate-dropdown {
+    position: absolute !important;
+    left: 0 !important;
+    right: auto !important;
+    transform: none !important;
+    width: min(420px, calc(100vw - 120px)) !important;
+    min-width: 300px !important;
+    max-width: min(420px, calc(100vw - 120px)) !important;
+  }
+}
