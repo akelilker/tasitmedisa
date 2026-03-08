@@ -1182,10 +1182,11 @@ body.driver-modal-open {
     border-right-width: 1.2px;
     border-right-color: var(--border-red-tech);
   }
-  .driver-right-panel { flex: 1; }
+  .driver-right-panel { flex: 1; min-width: 0; }
   .dashboard-page .driver-right-panel {
     padding-right: 12px !important;
     box-sizing: border-box !important;
+    overflow-x: hidden !important;
   }
   .driver-vehicle-info {
     padding: 0;
@@ -1257,13 +1258,27 @@ body.driver-modal-open {
     padding-left: 15px !important;
     padding-right: 15px !important;
   }
-  /* Kullanıcı paneli mobil: tarih inputları sağdan taşmasın, dikey yükseklik diğer inputlarla aynı */
+  /* Kullanıcı paneli mobil: sağ kolon tüm input/textarea sağdan taşmasın, dikey yükseklik 3–4px azaltılmış */
   .dashboard-page .driver-action-area .driver-date-wrap,
-  .dashboard-page .driver-action-area .form-group:has(input[type="date"]) { min-width: 0 !important; overflow: hidden !important; }
+  .dashboard-page .driver-action-area .driver-report-block .form-group { min-width: 0 !important; overflow: hidden !important; }
+  .dashboard-page .driver-action-area .driver-report-block .form-group input,
+  .dashboard-page .driver-action-area .driver-report-block .form-group textarea {
+    width: 100% !important; max-width: 100% !important; min-width: 0 !important; overflow: hidden !important; box-sizing: border-box !important;
+  }
+  .dashboard-page .driver-action-area .driver-report-block .form-group input {
+    height: 26px !important; min-height: 26px !important;
+  }
   .dashboard-page .driver-action-area input[type="date"],
   .dashboard-page .driver-right-panel input[type="date"].form-input,
   .driver-modal input[type="date"].form-input {
-    height: 29px !important; min-height: 29px !important; width: 100% !important; max-width: 100% !important; min-width: 0 !important; overflow: hidden !important; box-sizing: border-box !important;
+    height: 26px !important; min-height: 26px !important; width: 100% !important; max-width: 100% !important; min-width: 0 !important; overflow: hidden !important; box-sizing: border-box !important;
+  }
+  .driver-modal .driver-modal-content .form-group input,
+  .driver-modal .driver-modal-content .form-group textarea {
+    width: 100% !important; max-width: 100% !important; min-width: 0 !important; box-sizing: border-box !important;
+  }
+  .driver-modal .driver-modal-content .form-group input {
+    height: 26px !important; min-height: 26px !important;
   }
   #driver-input-area .driver-km-fake-placeholder,
   .driver-action-area .driver-km-fake-placeholder { font-size: 15px; }
