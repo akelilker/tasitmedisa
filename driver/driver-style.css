@@ -1,4 +1,4 @@
-﻿/* =========================================
+/* =========================================
    MEDISA KULLANICI MODÃœLÃœ - ANA TEMA UYUMLU
    style-core.css deÄŸiÅŸkenleri kullanÄ±lÄ±r: --theme-color, --bg, --card-bg, --txt, --muted, --br
    ========================================= */
@@ -4033,7 +4033,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     border-right: 0.5px solid rgba(255, 255, 255, 0.18) !important;
     box-shadow: 0 -15px 22px rgba(var(--theme-color-rgb), 0.35) !important;
   }
-  /* Plaka dropdown dÄ±ÅŸarÄ± taÅŸabilsin; panels-inner overflow: hidden kalsÄ±n ki saÄŸ panel yÃ¼ksekliÄŸi kÄ±sÄ±tlansÄ±n ve Not+Bildir kaydÄ±rÄ±labilir */
+  /* Plaka dropdown dışarı taşabilsin; panels-inner overflow: hidden kalsın ki sağ panel yüksekliği kısıtlansın ve Not+Bildir kaydırılabilir */
   .dashboard-page .driver-panels-inner {
     overflow-x: visible !important;
     overflow-y: hidden;
