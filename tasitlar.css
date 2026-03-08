@@ -546,7 +546,8 @@
 }
 #vehicle-detail-modal .muayene-detail-tooltip-wrap {
     position: absolute;
-    left: 0;
+    right: 0; /* Sola doğru açılmasını sağlar, masaüstünde taşmayı önler */
+    left: auto;
     top: 100%;
     margin-top: 4px;
     z-index: 10;
