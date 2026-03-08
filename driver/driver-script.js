@@ -502,13 +502,15 @@ const API_BASE = (function(){
 
       if (window.innerWidth <= 640) {
           const rowRect = row.getBoundingClientRect();
+          const viewportPadding = 8;
+          const targetWidth = Math.min(380, Math.max(220, Math.floor(window.innerWidth - (viewportPadding * 2))));
           dropdown.style.setProperty('position', 'fixed', 'important');
           dropdown.style.setProperty('top', `${Math.round(rowRect.bottom + 2)}px`, 'important');
-          dropdown.style.setProperty('left', `${Math.round(rowRect.left + (rowRect.width / 2))}px`, 'important');
+          dropdown.style.setProperty('left', `${Math.round(window.innerWidth / 2)}px`, 'important');
           dropdown.style.setProperty('right', 'auto', 'important');
           dropdown.style.setProperty('transform', 'translateX(-50%)', 'important');
-          dropdown.style.removeProperty('width');
-          dropdown.style.removeProperty('max-width');
+          dropdown.style.setProperty('width', `${targetWidth}px`, 'important');
+          dropdown.style.setProperty('max-width', `${targetWidth}px`, 'important');
       } else {
           // Desktop: anchor dropdown to the left edge and expand right.
           const rowRect = row.getBoundingClientRect();
