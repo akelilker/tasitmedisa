@@ -2244,17 +2244,17 @@ body.driver-modal-open {
   #driver-kasko-modal.driver-modal {
     padding: 0 !important;
   }
-  /* Ge?mi? Kay?tlar + D?zeltme Talebi: overlay footer ?st?nde bitsin; modal?footer aras? tam 6px */
+  /* Ge?mi? Kay?tlar + D?zeltme Talebi: overlay footer ?st?nde bitsin; modal?footer aras? tam 3px */
   #history-modal.driver-modal,
   #edit-request-modal.driver-modal {
-    bottom: calc(6px + var(--app-footer-height, 48px)) !important;
+    bottom: calc(3px + var(--app-footer-height, 48px)) !important;
     height: auto !important;
-    max-height: calc(100vh - 6px - var(--app-footer-height, 48px)) !important;
+    max-height: calc(100vh - 3px - var(--app-footer-height, 48px)) !important;
   }
   #history-modal.driver-modal::before,
   #edit-request-modal.driver-modal::before {
-    height: calc(100vh - max(12px, env(safe-area-inset-top)) - 6px - var(--app-footer-height, 48px)) !important;
-    height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 6px - var(--app-footer-height, 48px)) !important;
+    height: calc(100vh - max(12px, env(safe-area-inset-top)) - 3px - var(--app-footer-height, 48px)) !important;
+    height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 3px - var(--app-footer-height, 48px)) !important;
   }
 }
 
@@ -2319,16 +2319,16 @@ body.driver-modal-open {
   overscroll-behavior: none;
   overscroll-behavior-x: none;
 }
-/* Ge?mi? Kay?tlar + D?zeltme Talebi masa?st?: modal?footer aras? tam 6px */
+/* Ge?mi? Kay?tlar + D?zeltme Talebi masa?st?: modal?footer aras? tam 3px */
 #history-modal .driver-modal-content,
 #history-modal .modal-container,
 #edit-request-modal .driver-modal-content,
 #edit-request-modal .modal-container {
-  margin-bottom: 6px !important;
-  height: calc(100vh - max(12px, env(safe-area-inset-top)) - 6px - var(--app-footer-height, 48px)) !important;
-  height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 6px - var(--app-footer-height, 48px)) !important;
-  max-height: calc(100vh - max(12px, env(safe-area-inset-top)) - 6px - var(--app-footer-height, 48px)) !important;
-  max-height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 6px - var(--app-footer-height, 48px)) !important;
+  margin-bottom: 3px !important;
+  height: calc(100vh - max(12px, env(safe-area-inset-top)) - 3px - var(--app-footer-height, 48px)) !important;
+  height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 3px - var(--app-footer-height, 48px)) !important;
+  max-height: calc(100vh - max(12px, env(safe-area-inset-top)) - 3px - var(--app-footer-height, 48px)) !important;
+  max-height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 3px - var(--app-footer-height, 48px)) !important;
 }
 
 #history-modal .modal-header,
