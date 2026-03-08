@@ -4750,12 +4750,12 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 }
 
 
-/* --- Mobil/PWA stabilizasyonu: sol panel sabit, saÄŸ panel tek dikey scroll, Ã§erÃ§eve ilk boyamada zÄ±plamaz --- */
+/* --- Mobil/PWA stabilizasyonu: sol panel sabit, sağ panel tek dikey scroll, çerçeve ilk boyamada zıplamaz --- */
 @media (max-width: 768px) {
   body.dashboard-page,
   body.login-page {
     overflow-x: hidden !important;
-    overflow-y: visible !important; /* Footer Ä±ÅŸÄ±ÄŸÄ± (box-shadow) kesilmesin */
+    overflow-y: visible !important; /* Footer ışığı (box-shadow) kesilmesin */
     overscroll-behavior-y: none !important;
   }
 
@@ -4766,7 +4766,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     min-height: 100svh !important;
     min-height: 100dvh !important;
     overflow-x: hidden !important;
-    overflow-y: visible !important; /* Footer Ä±ÅŸÄ±ÄŸÄ± kesilmesin */
+    overflow-y: visible !important; /* Footer ışığı kesilmesin */
   }
 
   .dashboard-page .driver-scroll-area {
@@ -4803,7 +4803,14 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
 }
 
-/* --- h1 Metalik Gradient (anasayfa ile aynÄ±) --- */
+@media (max-width: 768px) and (display-mode: standalone) {
+  .dashboard-page .driver-header-fixed,
+  .login-page .driver-header-fixed {
+    padding-top: 12px !important;
+  }
+}
+
+/* --- h1 Metalik Gradient (anasayfa ile aynı) --- */
 .hero-title-wrap h1,
 .login-page .hero h1,
 .dashboard-page .hero h1 {
