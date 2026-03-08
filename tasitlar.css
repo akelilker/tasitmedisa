@@ -2069,7 +2069,7 @@
   color: var(--theme-color);
 }
 
-/* Olay Ekle butonu - Marka/model satÄ±rÄ±nda solda */
+/* Olay Ekle butonu - Marka/model satırında solda */
 .detail-brand-year-row .history-add-event-btn {
     width: auto;
     padding: 5px 8px 5px 0 !important;
@@ -2091,7 +2091,7 @@
     margin: 0 !important; /* HizayÄ± bozan dÄ±ÅŸ boÅŸluklarÄ± kaldÄ±r */
     margin-left: 0 !important;
     align-self: center !important;
-    line-height: 1 !important; /* Font yÃ¼ksekliÄŸinden kaynaklÄ± kaymalarÄ± Ã¶nler */
+    line-height: 1 !important; /* Font yüksekliğinden kaynaklı kaymaları önler */
     white-space: nowrap !important;
     min-height: 26px;
 }
@@ -2107,7 +2107,7 @@
     transform: scale(1.08); /* GÃ¶rsel olarak bÃ¼yÃ¼t (sayfa kÄ±pÄ±rdamasÄ±n diye transform kullanÄ±ldÄ±) */
 }
 
-/* TarihÃ§e butonu - Marka/model satÄ±rÄ±nda saÄŸda (Olay Ekle ile aynÄ± satÄ±r, aynÄ± dikey padding) */
+/* Tarihçe butonu - Marka/model satırında sağda (Olay Ekle ile aynı satır, aynı dikey padding) */
 .detail-brand-year-row .history-btn-minimal {
     position: relative;
     display: flex !important;
@@ -2120,8 +2120,8 @@
     flex-shrink: 0;
     z-index: 2;
     transition: color 0.2s ease, font-size 0.2s ease;
-    margin: 0 !important; /* HizayÄ± bozan dÄ±ÅŸ boÅŸluklarÄ± kaldÄ±r */
-    line-height: 1 !important; /* Font yÃ¼ksekliÄŸinden kaynaklÄ± kaymalarÄ± Ã¶nler */
+    margin: 0 !important; /* Hizayı bozan dış boşlukları kaldır */
+    line-height: 1 !important; /* Font yüksekliğinden kaynaklı kaymaları önler */
     white-space: nowrap !important;
     min-height: 26px;
 }
