@@ -962,17 +962,16 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-body .modal-columns::-webkit-scrollbar {
         display: none;
     }
-    /* Kaydet/Vazgeç her zaman görünsün: scroll ederken altta sabit; yatayda aynı satırda */
+    /* Kaydet/Vazgeç butonları içeriğin en altında scroll ile aksın */
     #vehicle-modal .modal-body .universal-btn-group {
         flex-shrink: 0;
-        position: sticky !important;
-        bottom: 0 !important;
-        margin-top: 10px;
+        position: static !important;
+        margin-top: 16px;
         padding-top: 8px !important;
-        padding-bottom: 10px !important;
-        background: var(--modal-bg) !important;
+        padding-bottom: 30px !important; /* En alta rahat bir boşluk */
+        background: transparent !important;
         z-index: 2;
-        border-top: 1px solid rgba(255, 255, 255, 0.06);
+        border-top: none;
         align-items: center !important;
     }
 
@@ -1503,18 +1502,16 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-body {
         display: flex !important;
         flex-direction: column !important;
-        overflow: hidden !important;
+        overflow-y: auto !important; /* Kaydırmayı ana gövdeye geri verdik */
+        overflow-x: hidden !important;
     }
     #vehicle-modal .modal-body .modal-columns {
-        flex: 1 1 0;
+        flex: none !important; /* İç scroll'u kapattık, tam uzunluğuna çıksın */
         min-height: 0;
         align-items: stretch;
         margin-top: -5px !important;
-        margin-bottom: 6px !important;
-        overflow-y: auto;
-        overflow-x: hidden;
-        scrollbar-width: none;
-        -ms-overflow-style: none;
+        margin-bottom: 16px !important;
+        overflow: visible !important; /* İç scroll iptal */
     }
     #vehicle-modal .modal-body .modal-columns::-webkit-scrollbar {
         display: none;
