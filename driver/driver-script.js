@@ -502,17 +502,27 @@ const API_BASE = (function(){
 
       if (window.innerWidth <= 640) {
           const rowRect = row.getBoundingClientRect();
-          dropdown.style.position = 'fixed';
-          dropdown.style.top = `${Math.round(rowRect.bottom + 2)}px`;
-          dropdown.style.left = `${Math.round(rowRect.left + (rowRect.width / 2))}px`;
-          dropdown.style.right = 'auto';
-          dropdown.style.transform = 'translateX(-50%)';
+          dropdown.style.setProperty('position', 'fixed', 'important');
+          dropdown.style.setProperty('top', `${Math.round(rowRect.bottom + 2)}px`, 'important');
+          dropdown.style.setProperty('left', `${Math.round(rowRect.left + (rowRect.width / 2))}px`, 'important');
+          dropdown.style.setProperty('right', 'auto', 'important');
+          dropdown.style.setProperty('transform', 'translateX(-50%)', 'important');
+          dropdown.style.removeProperty('width');
+          dropdown.style.removeProperty('max-width');
       } else {
-          dropdown.style.position = '';
-          dropdown.style.top = '';
-          dropdown.style.left = '';
-          dropdown.style.right = '';
-          dropdown.style.transform = '';
+          // Desktop: anchor dropdown to the left edge and expand right.
+          const rowRect = row.getBoundingClientRect();
+          const viewportPadding = 16;
+          const availableWidth = Math.max(220, Math.floor(window.innerWidth - rowRect.left - viewportPadding));
+          const targetWidth = Math.min(420, availableWidth);
+
+          dropdown.style.setProperty('position', 'fixed', 'important');
+          dropdown.style.setProperty('top', `${Math.round(rowRect.bottom + 4)}px`, 'important');
+          dropdown.style.setProperty('left', `${Math.round(rowRect.left)}px`, 'important');
+          dropdown.style.setProperty('right', 'auto', 'important');
+          dropdown.style.setProperty('transform', 'none', 'important');
+          dropdown.style.setProperty('width', `${targetWidth}px`, 'important');
+          dropdown.style.setProperty('max-width', `${availableWidth}px`, 'important');
       }
   }
 
