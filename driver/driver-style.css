@@ -1257,6 +1257,14 @@ body.driver-modal-open {
     padding-left: 15px !important;
     padding-right: 15px !important;
   }
+  /* Kullanıcı paneli mobil: tarih inputları sağdan taşmasın, dikey yükseklik diğer inputlarla aynı */
+  .dashboard-page .driver-action-area .driver-date-wrap,
+  .dashboard-page .driver-action-area .form-group:has(input[type="date"]) { min-width: 0 !important; overflow: hidden !important; }
+  .dashboard-page .driver-action-area input[type="date"],
+  .dashboard-page .driver-right-panel input[type="date"].form-input,
+  .driver-modal input[type="date"].form-input {
+    height: 29px !important; min-height: 29px !important; width: 100% !important; max-width: 100% !important; min-width: 0 !important; overflow: hidden !important; box-sizing: border-box !important;
+  }
   #driver-input-area .driver-km-fake-placeholder,
   .driver-action-area .driver-km-fake-placeholder { font-size: 15px; }
   .driver-km-error { font-size: 13px; }
