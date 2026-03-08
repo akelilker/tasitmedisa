@@ -4183,6 +4183,12 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     border-left: 0.5px solid rgba(255, 255, 255, 0.10) !important;
     border-right: 0.5px solid rgba(255, 255, 255, 0.10) !important;
   }
+
+  /* Mobil footer: ustte ince gri cerceve */
+  .dashboard-page #app-footer,
+  .login-page #app-footer.login-footer {
+    border-top: 0.35px solid rgba(200, 200, 200, 0.55) !important;
+  }
   .login-page #app-footer.login-footer .footer-content {
     padding: 8px 12px !important;
   }
