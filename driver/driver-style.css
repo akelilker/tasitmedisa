@@ -3586,6 +3586,12 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     max-height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 5px - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0)) !important;
     box-shadow: none !important;
   }
+  /* Gecmis Kayitlar mobil: footer boslugu +2px (5px -> 7px) */
+  #history-modal.driver-modal {
+    bottom: calc(7px + var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important;
+    max-height: calc(100vh - max(12px, env(safe-area-inset-top)) - 7px - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0)) !important;
+    max-height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 7px - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0)) !important;
+  }
   /* Mobilde modal a??kken header ?st?ndeki k?rm?z? yatay ?izgi g?r?nmesin */
   .driver-modal.show::after {
     display: none !important;
@@ -3721,6 +3727,10 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   #edit-request-modal .modal-body {
     padding-top: 2px !important;
     padding-bottom: 0 !important;
+  }
+  /* Gecmis Kayitlar mobil: alt cerceveye degmemesi icin 4px atil alan */
+  #history-modal .modal-body {
+    padding-bottom: 4px !important;
   }
 
   /* Mobil arka plan t?m sayfalarla ayn? (--bg) */
