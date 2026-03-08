@@ -1139,6 +1139,15 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     
     .form-input { height: 26px; font-size: 13px; padding: 4px 8px; }
     
+    /* Sağ kolon çerçeveleri: mobilde 4px daralt (sağa taşmayı engelle) */
+    #vehicle-modal .modal-column-right .form-input,
+    #vehicle-modal .modal-column-right select {
+        width: calc(100% - 4px) !important;
+        max-width: calc(100% - 4px) !important;
+        margin-right: 0 !important;
+        box-sizing: border-box;
+    }
+
     /* Sağ kolon inputları: +1px dikey yükseklik (27px) */
     #vehicle-modal .modal-column-right .form-input:not(textarea),
     #vehicle-modal .modal-column-right select {
@@ -1171,20 +1180,20 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     .modal-body input[type="date"].form-input::-webkit-datetime-edit { font-size: 11px !important; }
     .modal-body input[type="date"].form-input::-webkit-datetime-edit-fields-wrapper { padding: 0; }
     
-    /* Sağ kolon tarih inputları: +1px dikey (29px), gg.aa.yyyy kutudan taşmasın */
+    /* Sağ kolon tarih inputları: yükseklik hizalı (27px), gg.aa.yyyy kutudan taşmasın */
     #vehicle-modal .modal-column-right input[type="date"].form-input { 
-        height: 29px !important;
+        height: 27px !important;
         font-size: 11px !important;
-        width: 100%; 
-        max-width: 100%; 
+        width: calc(100% - 4px) !important;
+        max-width: calc(100% - 4px) !important;
         margin-right: 0; 
-        padding-right: 22px !important;
+        padding-right: 20px !important;
         padding-left: 10px !important;
         text-align: center;
         overflow: hidden;
         box-sizing: border-box;
     }
-    #vehicle-modal .modal-column-right input[type="date"].form-input::-webkit-datetime-edit { font-size: 11px !important; max-width: 100%; box-sizing: border-box; }
+    #vehicle-modal .modal-column-right input[type="date"].form-input::-webkit-datetime-edit { font-size: 11px !important; max-width: 100%; box-sizing: border-box; line-height: 1.2; }
     #vehicle-modal .modal-column-right input[type="date"].form-input::-webkit-datetime-edit-fields-wrapper { padding: 0 2px; box-sizing: border-box; }
     .modal-body input[type="date"].form-input::-webkit-calendar-picker-indicator { right: 3px !important; transform: translateY(-50%) !important; }
     .date-placeholder { left: 50%; transform: translateX(-50%); font-size: 11px; text-align: center; }
