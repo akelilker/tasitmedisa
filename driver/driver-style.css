@@ -2098,8 +2098,8 @@ body.driver-modal-open {
 }
 
 /* Sağ grid: Bildir / Vazgeç butonları – çerçeveye dokunmadan metin 1pt büyük */
-.dashboard-page .vehicle-card .universal-btn-save,
-.dashboard-page .vehicle-card .universal-btn-cancel {
+.dashboard-page .driver-action-area .universal-btn-save,
+.dashboard-page .driver-action-area .universal-btn-cancel {
   font-size: 16px !important;
 }
 
@@ -4112,14 +4112,14 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .dashboard-page .driver-report-btn {
     font-size: 16px !important;
   }
-  .dashboard-page .vehicle-card .universal-btn-save,
-  .dashboard-page .vehicle-card .universal-btn-cancel {
+  .dashboard-page .driver-action-area .universal-btn-save,
+  .dashboard-page .driver-action-area .universal-btn-cancel {
     font-size: 17px !important;
   }
-  .dashboard-page .vehicle-card .universal-btn-save {
+  .dashboard-page .driver-action-area .universal-btn-save {
     border-color: rgba(40, 167, 69, 0.58) !important;
   }
-  .dashboard-page .vehicle-card .universal-btn-cancel {
+  .dashboard-page .driver-action-area .universal-btn-cancel {
     border-color: rgba(212, 0, 0, 0.58) !important;
   }
   .dashboard-page .hero-title-wrap .hero-panel-subtitle,
