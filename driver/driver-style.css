@@ -4349,7 +4349,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   /* style-core html zaten left/right/bottom safe-area veriyor; çift padding olmasını kesin engelliyoruz */
   body.dashboard-page,
   body.login-page {
-    padding-top: env(safe-area-inset-top) !important;
+    padding-top: 0 !important;
     padding-bottom: 0 !important;
     padding-left: 0 !important;
     padding-right: 0 !important;
@@ -4426,10 +4426,11 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 
   .dashboard-page .driver-dashboard-container,
   .login-page .driver-dashboard-container {
-    height: 100svh !important;
     height: 100dvh !important;
-    min-height: 100svh !important;
+    height: 100svh !important;
     min-height: 100dvh !important;
+    min-height: 100svh !important;
+    max-height: 100svh !important;
     overflow: hidden !important;
   }
 
