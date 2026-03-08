@@ -3577,13 +3577,13 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     overflow: hidden !important;
     overscroll-behavior: none !important;
   }
-  /* Ge?mi? Kay?tlar + D?zeltme Talebi: overlay footer'?n ?ST?NDE bitsin; modal?footer aras? tam 2px, koyu g?lge ile kapans?n */
+  /* Ge?mi? Kay?tlar + D?zeltme Talebi: overlay footer'?n ?ST?NDE bitsin; modal?footer aras? tam 5px, koyu g?lge ile kapans?n */
   #history-modal.driver-modal,
   #edit-request-modal.driver-modal {
-    bottom: calc(2px + var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important;
+    bottom: calc(5px + var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important;
     height: auto !important;
-    max-height: calc(100vh - max(12px, env(safe-area-inset-top)) - 2px - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0)) !important;
-    max-height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 2px - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0)) !important;
+    max-height: calc(100vh - max(12px, env(safe-area-inset-top)) - 5px - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0)) !important;
+    max-height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 5px - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0)) !important;
     box-shadow: none !important;
   }
   /* Mobilde modal a??kken header ?st?ndeki k?rm?z? yatay ?izgi g?r?nmesin */
@@ -3661,9 +3661,21 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   #history-modal .modal-container,
   #edit-request-modal .driver-modal-content,
   #edit-request-modal .modal-container {
-    border-top: 0.5px solid rgba(200, 200, 200, 0.45) !important;
-    border-left: 0.5px solid rgba(255, 255, 255, 0.18) !important;
-    border-right: 0.5px solid rgba(255, 255, 255, 0.18) !important;
+    border-top: 0.8px solid rgba(200, 200, 200, 0.62) !important;
+    border-left: 0.8px solid rgba(255, 255, 255, 0.28) !important;
+    border-right: 0.8px solid rgba(255, 255, 255, 0.28) !important;
+  }
+
+  /* Duzeltme Talebi mobil: ekrana tam otur, altta sadece footer-gap kadar bosluk birak */
+  #edit-request-modal.driver-modal {
+    padding-top: 0 !important;
+    top: 0 !important;
+  }
+  #edit-request-modal .driver-modal-content,
+  #edit-request-modal .modal-container {
+    height: 100% !important;
+    min-height: 100% !important;
+    max-height: 100% !important;
   }
 
   /* Modal header: ?st k??e radius container ile ayn? (10px) ? k?rm?z? ?er?eve ?st? ezilmesin */
