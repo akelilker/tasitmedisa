@@ -1632,6 +1632,12 @@ body.modal-open .user-panel-link {
         border-right: none;
         border-top: 0.5px solid rgba(var(--theme-color-rgb), 0.78) !important;
     }
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-container::before {
+        border-left-width: 0.7px;
+        border-right-width: 0.7px;
+        border-left-color: rgba(var(--theme-color-rgb), 0.72);
+        border-right-color: rgba(var(--theme-color-rgb), 0.72);
+    }
     
     /* Kırmızı çerçeve mobilde havada: iç ışık tam (kırmızı ile eşit) */
     .app-container::after {
