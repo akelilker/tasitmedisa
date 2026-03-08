@@ -3846,8 +3846,6 @@ function renderVehicleDetailLeft(vehicle) {
 
       // Kullanıcı paneli işlemleri bölümü
       if (recentSlice.length > 0) {
-        if (html) html += '<div style="margin-top: 12px; font-size: 11px; color: #999; text-align: center; margin-bottom: 6px;">Kullanıcı paneli işlemleri</div>';
-        else html += '<div style="margin-bottom: 6px; font-size: 11px; color: #999; text-align: center;">Kullanıcı paneli işlemleri</div>';
         const viewedRaw = sessionStorage.getItem('notifViewedKeysV2');
         const viewedKeys = viewedRaw ? JSON.parse(viewedRaw) : [];
         recentSlice.forEach(item => {
