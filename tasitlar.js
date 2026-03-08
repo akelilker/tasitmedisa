@@ -1200,6 +1200,7 @@
     modal.style.display = 'flex';
     requestAnimationFrame(() => {
       modal.classList.add('active');
+      requestAnimationFrame(() => { applyVehicleDetailSubeShrink(); });
     });
     };
     if (typeof window.loadDataFromServer === 'function') {
@@ -1207,6 +1208,29 @@
     } else {
       runDetail();
     }
+  };
+
+  /**
+   * Mobil (≤768px) Taşıtlar detay modalında şube ismi tek satıra sığmıyorsa 1pt küçült.
+   * Satırdaki mevcut alan ile metnin tek satır genişliği karşılaştırılır; taşma varsa -shrink eklenir.
+   */
+  window.applyVehicleDetailSubeShrink = function() {
+    if (window.innerWidth > 768) return;
+    const modal = DOM.vehicleDetailModal;
+    if (!modal || modal.style.display !== 'flex') return;
+    const el = modal.querySelector('.detail-row-value-sube');
+    if (!el) return;
+    const row = el.closest('.detail-row-inline');
+    if (!row) return;
+    el.classList.remove('detail-row-value-sube-shrink');
+    var prevWhiteSpace = el.style.whiteSpace;
+    el.style.whiteSpace = 'nowrap';
+    var textWidth = el.scrollWidth;
+    el.style.whiteSpace = prevWhiteSpace || '';
+    var headerWidth = row.querySelector('.detail-row-header') ? row.querySelector('.detail-row-header').offsetWidth : 0;
+    var gap = 5;
+    var availableWidth = row.clientWidth - headerWidth - gap;
+    if (textWidth > availableWidth) el.classList.add('detail-row-value-sube-shrink');
   };
 
   // --- Şube Atama Formunu Aç/Kapat ---
@@ -1710,7 +1734,7 @@ function renderVehicleDetailLeft(vehicle) {
   const branchName = branchId ?
       (branches.find(b => String(b.id) === String(branchId))?.name || '') :
       'Tahsis Edilmemiş';
-  html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Şube</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(branchName)}</span></div>`;
+  html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Şube</span><span class="detail-row-colon">:</span></div><span class="detail-row-value detail-row-value-sube"> ${escapeHtml(branchName)}</span></div>`;
 
   // Taşıt Tipi
   const vehicleType = vehicle.vehicleType || '';
