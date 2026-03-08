@@ -1645,9 +1645,15 @@
     const rows = getVehiclePrintRows(vehicle)
       .map(([label, value]) => `<tr><th>${escapeHtml(label)}</th><td>${escapeHtml(String(value || '-')).replace(/\n/g, '<br>')}</td></tr>`)
       .join('');
+    const printWindow = window.open('', '_blank', 'noopener,noreferrer,width=900,height=700');
+    if (!printWindow) {
+      alert('Yazdırma penceresi açılamadı. Lütfen açılır pencere izni verin.');
+      return;
+    }
+
     const now = new Date();
     const printedAt = `${String(now.getDate()).padStart(2, '0')}.${String(now.getMonth() + 1).padStart(2, '0')}.${now.getFullYear()} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-    const html = `<!doctype html>
+    printWindow.document.write(`<!doctype html>
 <html lang="tr">
 <head>
   <meta charset="utf-8">
@@ -1667,24 +1673,12 @@
   <p class="subtitle">Plaka: ${escapeHtml(vehicle.plate || '-')} • Oluşturma: ${printedAt}</p>
   <table>${rows}</table>
 </body>
-</html>`;
-
-    // Açılır pencere izni gerektirmez; iframe ile aynı sayfada yazdır
-    const iframe = document.createElement('iframe');
-    iframe.setAttribute('style', 'position:fixed;left:0;top:0;width:1px;height:1px;border:0;opacity:0;pointer-events:none;');
-    iframe.title = 'Taşıt Kartı Yazdır';
-    document.body.appendChild(iframe);
-    const doc = iframe.contentWindow.document;
-    doc.open();
-    doc.write(html);
-    doc.close();
-    iframe.contentWindow.onload = function() {
-      iframe.contentWindow.print();
-      // Yazdırma sonrası iframe'i kaldır (afterprint bazı tarayıcılarda güvenilir değil)
-      setTimeout(function() {
-        if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
-      }, 500);
-    };
+</html>`);
+    printWindow.document.close();
+    printWindow.focus();
+    setTimeout(() => {
+      printWindow.print();
+    }, 120);
   };
 
   /**
