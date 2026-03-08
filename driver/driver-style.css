@@ -3873,7 +3873,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     padding-right: 0 !important;
     box-sizing: border-box !important;
   }
-  /* AdÄ±m 1: Plaka yatayda ortada (kÄ±rmÄ±zÄ± ok hesaba katÄ±lmaz); ok alanÄ±na metin girmesin diye simetrik padding */
+  /* Adım 1: Plaka yatayda ortada (kırmızı ok hesaba katılmaz); ok alanına metin girmesin diye simetrik padding */
   .dashboard-page .driver-plate-dropdown-row .driver-current-plaka {
     flex: 1 1 auto !important;
     display: block !important;
@@ -3885,10 +3885,10 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     overflow: hidden !important;
     text-overflow: ellipsis !important;
     padding-left: 12px !important;
-    padding-right: 32px !important;
+    padding-right: 24px !important; /* Plakaya daha fazla yer açmak için daralttık (eskisi 32px) */
   }
   .dashboard-page .driver-plate-dropdown-row .driver-plate-trigger {
-    right: -6px !important;
+    right: -10px !important; /* Oku 4px daha sağa aldık (eskisi -6px) */
     top: 50% !important;
     transform: translateY(-50%) !important;
     background: var(--bg) !important;
