@@ -4248,17 +4248,42 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     padding-right: 18px !important;
   }
 }
+@media (max-width: 640px) {
+  /* Mobil sağ panel: tarih inputu taşmasın, çerçeve 4px dar ve dikey hizalı olsun */
+  .dashboard-page .driver-action-area .driver-report-block .driver-date-wrap {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    overflow: hidden;
+    box-sizing: border-box;
+  }
   .dashboard-page .driver-action-area .driver-report-block input[type="date"] {
-    padding-top: 5px !important;
-    padding-bottom: 6px !important;
+    width: calc(100% - 4px) !important;
+    max-width: calc(100% - 4px) !important;
+    min-width: 0 !important;
+    height: 38px !important;
+    margin-right: 0 !important;
+    padding: 8px 28px 8px 10px !important;
     text-align: center !important;
+    box-sizing: border-box !important;
+    overflow: hidden;
+    -webkit-appearance: none;
+    appearance: none;
     box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.35) !important;
     border: 0.5px solid rgba(255, 255, 255, 0.35) !important;
+  }
+  .dashboard-page .driver-action-area .driver-report-block input[type="date"]::-webkit-datetime-edit {
+    line-height: 1.2 !important;
+    padding: 0 !important;
+  }
+  .dashboard-page .driver-action-area .driver-report-block input[type="date"]::-webkit-calendar-picker-indicator {
+    right: 8px !important;
   }
   .dashboard-page .driver-action-area .driver-report-block input[type="date"]:focus {
     box-shadow: inset 0 0 0 0.5px var(--theme-color) !important;
     border-color: var(--theme-color) !important;
   }
+}
   .dashboard-page .driver-action-area .driver-km-form label {
     margin-top: 5px !important;
   }
