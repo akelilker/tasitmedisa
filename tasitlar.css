@@ -1,4 +1,4 @@
-﻿/* =========================================
+/* =========================================
    TAÅITLAR MODAL CSS - Ortak kurallar style-core.css'te; burada sadece sayfa Ã¶zel override'lar
    ========================================= */
 
@@ -2344,7 +2344,7 @@
     width: 22px !important;
     height: 22px !important;
   }
-  /* Mobil: sol ok ile etiket (TaÅŸÄ±tlar) dikeyde hizalÄ± */
+  /* Mobil: sol ok ile etiket (Taşıtlar) dikeyde hizalı */
   #vehicle-detail-modal .vehicle-detail-toolbar .universal-back-bar {
     display: inline-flex !important;
     align-items: center !important;
