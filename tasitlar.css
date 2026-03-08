@@ -1632,6 +1632,31 @@
     font-size: clamp(10px, 1.6vw, 12px) !important;
 }
 
+
+/* Masaüstü: Taşıt Tipi / Kullanıcı başlıkları birbirine girmesin */
+@media (min-width: 641px) {
+  .list-header-row .list-cell.list-type {
+    padding-right: 6px !important;
+    overflow: hidden !important;
+    text-overflow: clip !important;
+    white-space: nowrap !important;
+  }
+
+  .list-header-row .list-cell.list-user {
+    padding-left: 6px !important;
+    overflow: hidden !important;
+    text-overflow: clip !important;
+    white-space: nowrap !important;
+  }
+
+  .list-header-row .list-cell.list-type span,
+  .list-header-row .list-cell.list-user span {
+    overflow: hidden !important;
+    text-overflow: clip !important;
+    white-space: nowrap !important;
+    font-size: clamp(9px, 1.5vw, 11px) !important;
+  }
+}
 .list-header-row .list-cell.list-branch {
     text-align: center !important;
     padding-left: 2px !important;
