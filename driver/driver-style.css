@@ -2331,6 +2331,25 @@ body.driver-modal-open {
   max-height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 1px - var(--app-footer-height, 48px)) !important;
 }
 
+/* Masaüstü: Geçmiş İşlemler modalı footer'a 2px daha yaklaşsın */
+@media (min-width: 641px) {
+  #history-modal.driver-modal {
+    bottom: calc(-1px + var(--app-footer-height, 48px)) !important;
+    max-height: calc(100vh + 1px - var(--app-footer-height, 48px)) !important;
+  }
+  #history-modal.driver-modal::before {
+    height: calc(100vh - max(12px, env(safe-area-inset-top)) + 1px - var(--app-footer-height, 48px)) !important;
+    height: calc(100dvh - max(12px, env(safe-area-inset-top)) + 1px - var(--app-footer-height, 48px)) !important;
+  }
+  #history-modal .driver-modal-content,
+  #history-modal .modal-container {
+    margin-bottom: -1px !important;
+    height: calc(100vh - max(12px, env(safe-area-inset-top)) + 1px - var(--app-footer-height, 48px)) !important;
+    height: calc(100dvh - max(12px, env(safe-area-inset-top)) + 1px - var(--app-footer-height, 48px)) !important;
+    max-height: calc(100vh - max(12px, env(safe-area-inset-top)) + 1px - var(--app-footer-height, 48px)) !important;
+    max-height: calc(100dvh - max(12px, env(safe-area-inset-top)) + 1px - var(--app-footer-height, 48px)) !important;
+  }
+}
 #history-modal .modal-header,
 #edit-request-modal .modal-header,
 #driver-event-menu-modal .modal-header,
