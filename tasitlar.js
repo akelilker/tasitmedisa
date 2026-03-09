@@ -3727,6 +3727,7 @@ function renderVehicleDetailLeft(vehicle) {
           const status = days < 0 ? 'geçmiş' : days <= 3 ? 'çok yakın' : 'yaklaşıyor';
           notifications.push({
             type: 'sigorta',
+            vehicleId: vehicle.id,
             plate: plate,
             brandModel: brandModel,
             date: vehicle.sigortaDate,
@@ -3747,6 +3748,7 @@ function renderVehicleDetailLeft(vehicle) {
           const status = days < 0 ? 'geçmiş' : days <= 3 ? 'çok yakın' : 'yaklaşıyor';
           notifications.push({
             type: 'kasko',
+            vehicleId: vehicle.id,
             plate: plate,
             brandModel: brandModel,
             date: vehicle.kaskoDate,
@@ -3767,6 +3769,7 @@ function renderVehicleDetailLeft(vehicle) {
           const status = days < 0 ? 'geçmiş' : days <= 3 ? 'çok yakın' : 'yaklaşıyor';
           notifications.push({
             type: 'muayene',
+            vehicleId: vehicle.id,
             plate: plate,
             brandModel: brandModel,
             date: vehicle.muayeneDate,
@@ -3838,8 +3841,9 @@ function renderVehicleDetailLeft(vehicle) {
             ? 'rgba(212, 0, 0, 0.6)'
             : 'rgba(255, 140, 0, 0.6)';
           const safePlate = (notif.plate || '').replace(/"/g, '&quot;');
+          const safeVid = (notif.vehicleId || '').toString().replace(/"/g, '&quot;');
 
-          html += `<button type="button" data-plate="${safePlate}" style="width: 100%; padding: 12px; background: transparent; border: 1px solid ${borderColor}; color: #ccc; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 13px; text-align: left; margin-bottom: 4px; transition: all 0.2s ease; height: auto; white-space: normal;" class="notification-item ${notif.warningClass}-border">
+          html += `<button type="button" data-plate="${safePlate}" data-vehicle-id="${safeVid}" style="width: 100%; padding: 12px; background: transparent; border: 1px solid ${borderColor}; color: #ccc; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 13px; text-align: left; margin-bottom: 4px; transition: all 0.2s ease; height: auto; white-space: normal;" class="notification-item ${notif.warningClass}-border">
           <div style="font-weight: 500; color: #fff; line-height: 1.4;">
             <span class="${notif.warningClass}">${escapeHtml(messageText)}</span>
           </div>
