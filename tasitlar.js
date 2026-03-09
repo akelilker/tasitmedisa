@@ -247,20 +247,20 @@
         } catch (err) {}
       }
       if (!plate && !vehicleId) return;
-      if (typeof window.openVehiclesView === 'function') window.openVehiclesView();
-      setTimeout(function() {
-        var vehicles = (window.getMedisaVehicles && window.getMedisaVehicles()) || parseLocalStorageArray(VEHICLES_KEY);
-        var v = vehicleId
-          ? vehicles.find(function(v) { return String(v.id) === String(vehicleId); })
-          : vehicles.find(function(v) { return v.plate === plate; });
-        if (v && typeof window.showVehicleDetail === 'function') {
-          window.showVehicleDetail(v.id);
-          if (openHistory && typeof window.showVehicleHistory === 'function') {
-            var tab = (/^(bakim|kaza|km|diger)$/.test(historyTab)) ? historyTab : null;
-            setTimeout(function() { window.showVehicleHistory(v.id, tab); }, 150);
-          }
-        }
-      }, 100);
+      var vehicles = readVehicles();
+      if (!Array.isArray(vehicles) || vehicles.length === 0) {
+        vehicles = (window.getMedisaVehicles && window.getMedisaVehicles()) || parseLocalStorageArray(VEHICLES_KEY);
+      }
+      var plateNorm = String(plate || '').trim().toUpperCase();
+      var v = vehicleId
+        ? vehicles.find(function(v) { return String(v.id) === String(vehicleId); })
+        : vehicles.find(function(v) { return String(v.plate || '').trim().toUpperCase() === plateNorm; });
+      if (!v || typeof window.showVehicleDetail !== 'function') return;
+      window.showVehicleDetail(v.id);
+      if (openHistory && typeof window.showVehicleHistory === 'function') {
+        var tab = (/^(bakim|kaza|km|diger)$/.test(historyTab)) ? historyTab : null;
+        setTimeout(function() { window.showVehicleHistory(v.id, tab); }, 180);
+      }
     });
   }
 
