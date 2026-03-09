@@ -1134,8 +1134,12 @@ const API_BASE = (function(){
               const w = checkDateWarningsDriver(dateStr);
               if (w.class && w.days != null) {
                   let msg;
-                  if (w.days < 0) msg = formatDriverPlaka(v.plaka) + ' Plakalı Taşıtın ' + label + ' Tarihi ' + Math.abs(w.days) + ' Gün Geçmiştir';
-                  else msg = formatDriverPlaka(v.plaka) + ' Plakalı Taşıtın ' + label + ' Tarihine ' + w.days + ' Gün Kalmıştır';
+                  if (w.days <= 0) {
+                      const bitmistirLabel = label === 'Sigorta' ? 'Trafik Sigortası' : label;
+                      msg = formatDriverPlaka(v.plaka) + ' Plakalı Taşıtın ' + bitmistirLabel + ' Bitmiştir.';
+                  } else {
+                      msg = formatDriverPlaka(v.plaka) + ' Plakalı Taşıtın ' + label + ' Tarihine ' + w.days + ' Gün Kalmıştır';
+                  }
                   warnings.push({ text: msg, plaka: formatDriverPlaka(v.plaka) });
               }
           };
