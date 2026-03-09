@@ -45,6 +45,7 @@
   let sortDirection = 'asc'; // 'asc' | 'desc'
   let currentFilter = 'az'; // 'az' | 'newest' | 'oldest' | 'type' (liste filtre dropdown)
   let transmissionFilter = ''; // '' | 'otomatik' | 'manuel' (şanzıman filtresi)
+  let lastListContext = null; // Son açılan liste bağlamı (geri dönüş hedefi)
   
   // Sütun Sıralaması State
   let vehicleColumnOrder = ['year', 'plate', 'brand', 'km', 'type', 'user', 'branch']; // Varsayılan sıralama
@@ -256,6 +257,9 @@
         ? vehicles.find(function(v) { return String(v.id) === String(vehicleId); })
         : vehicles.find(function(v) { return String(v.plate || '').trim().toUpperCase() === plateNorm; });
       if (!v || typeof window.showVehicleDetail !== 'function') return;
+      if (!lastListContext) {
+        lastListContext = { mode: 'branch', branchId: 'all', branchName: 'Taşıtlar' };
+      }
       window.showVehicleDetail(v.id);
       if (openHistory && typeof window.showVehicleHistory === 'function') {
         var tab = (/^(bakim|kaza|km|diger)$/.test(historyTab)) ? historyTab : null;
