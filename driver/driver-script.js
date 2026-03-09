@@ -381,6 +381,12 @@ const API_BASE = (function(){
           setupEkstraNotAutoResize();
           setupKmInputs();
 
+          // PWA butonunu sol paneldeki marka/model altına, şube üstüne taşı
+          const pwaWrapper = document.getElementById('pwa-install-wrapper');
+          const targetContainer = document.querySelector('.driver-user-plate-in-panel');
+          if (pwaWrapper && targetContainer) {
+              targetContainer.appendChild(pwaWrapper);
+          }
 
       } catch (error) {
           console.error('Veri yükleme hatası:', error);
