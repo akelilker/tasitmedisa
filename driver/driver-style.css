@@ -4027,23 +4027,34 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     flex-direction: column !important;
     align-items: center !important;
   }
+  /* Üstündeki açıklama metnini şemaya yaklaştırdık */
   .dashboard-page .driver-report-block-kaza .form-group .driver-kaporta-label {
-    margin-bottom: 5px !important;
+    margin-bottom: 0 !important;
+    position: relative;
+    z-index: 2;
   }
 
+  /* Altındaki bilgi toplarını (legend) şemaya yaklaştırdık */
   .dashboard-page .driver-report-block-kaza .driver-kaporta-container .boya-legend {
     display: flex !important;
     justify-content: center;
     flex-wrap: wrap;
     width: 100% !important;
-    margin-top: 5px !important;
+    margin-top: 0 !important;
+    position: relative;
+    z-index: 2;
   }
+
+  /* 90 derece dönen şemanın üstte ve altta bıraktığı "hayalet" alanları negatif margin ile yuttuk */
   .dashboard-page .driver-report-block-kaza .driver-kaporta-container .driver-kaporta-schema-wrapper svg {
     width: 100% !important;
     max-width: 144px !important;
     max-height: 212px !important;
-    margin-top: 0 !important;
     height: auto !important;
+    margin-top: -34px !important;
+    margin-bottom: -34px !important;
+    position: relative;
+    z-index: 1;
   }
 
   /* Not input: placeholder yatay+dikey ortala, iç dikey 3px daraltıldı */
