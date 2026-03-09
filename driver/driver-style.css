@@ -3001,8 +3001,8 @@ body.driver-modal-open {
   }
 
   .dashboard-page .driver-user-plate-in-panel .pwa-install-bar {
-    background: rgba(255, 255, 255, 0.05) !important;
-    border: 0.5px solid rgba(255, 255, 255, 0.2) !important;
+    background: transparent !important;
+    border: none !important;
     padding: 4px 8px !important;
     border-radius: 6px !important;
     width: auto !important;
