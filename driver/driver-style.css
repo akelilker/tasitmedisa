@@ -2989,14 +2989,20 @@ body.driver-modal-open {
   .login-page .pwa-install-bar .pwa-install-close {
     margin-left: 0 !important;
   }
-  /* PWA Butonu Sol Panel Yerleşimi */
+  /* PWA Butonu Sol Panel Yerleşimi – akışta yer kaplamaz, mevcut boşluğa oturur */
+  .dashboard-page .driver-user-plate-in-panel {
+    position: relative !important;
+  }
   .dashboard-page .driver-user-plate-in-panel #pwa-install-wrapper {
+    position: absolute !important;
+    top: 100% !important;
+    left: 0 !important;
+    right: 0 !important;
     width: 100% !important;
     display: flex !important;
     justify-content: center !important;
-    margin-top: 8px !important;
-    margin-bottom: 4px !important;
-    position: static !important;
+    margin-top: 4px !important;
+    margin-bottom: 0 !important;
     transform: none !important;
   }
 
