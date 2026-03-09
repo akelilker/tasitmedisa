@@ -2989,15 +2989,35 @@ body.driver-modal-open {
   .login-page .pwa-install-bar .pwa-install-close {
     margin-left: 0 !important;
   }
-  /* Masaüstü Kullanıcı Paneli: Uygulamayı Yükle butonu footer'ın hemen üstünde ortalı */
-  .dashboard-page #pwa-install-wrapper.pwa-install-center {
-    position: fixed !important;
-    bottom: calc(var(--app-footer-height, 48px) + 16px) !important;
-    left: 50% !important;
-    transform: translateX(-50%) !important;
-    width: max-content !important;
-    margin: 0 !important;
-    z-index: 10003 !important;
+  /* PWA Butonu Sol Panel Yerleşimi */
+  .dashboard-page .driver-user-plate-in-panel #pwa-install-wrapper {
+    width: 100% !important;
+    display: flex !important;
+    justify-content: center !important;
+    margin-top: 8px !important;
+    margin-bottom: 4px !important;
+    position: static !important;
+    transform: none !important;
+  }
+
+  .dashboard-page .driver-user-plate-in-panel .pwa-install-bar {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 0.5px solid rgba(255, 255, 255, 0.2) !important;
+    padding: 4px 8px !important;
+    border-radius: 6px !important;
+    width: auto !important;
+    max-width: 95% !important;
+  }
+
+  .dashboard-page .driver-user-plate-in-panel .pwa-install-btn {
+    font-size: 11px !important;
+    padding: 4px 8px !important;
+    white-space: nowrap !important;
+  }
+
+  .dashboard-page .driver-user-plate-in-panel .pwa-install-close {
+    font-size: 14px !important;
+    margin-left: 4px !important;
   }
 }
 
