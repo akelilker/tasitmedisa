@@ -1680,22 +1680,25 @@
       return;
     }
 
-    const rows = getVehiclePrintRows(vehicle)
-      .map(([label, value]) => `<tr><th>${escapeHtml(label)}</th><td>${escapeHtml(String(value || '-')).replace(/\n/g, '<br>')}</td></tr>`)
-      .join('');
+    // Açılış penceresi kullanıcı tıklamasıyla aynı senkron turda açılsın (mobil popup izni + uzun click handler ihlali önleme)
     const printWindow = window.open('', '_blank', 'noopener,noreferrer,width=900,height=700');
     // #region agent log
-    var _d = { sessionId: '4da7db', location: 'tasitlar.js:after open', message: 'window.open result', data: { openNull: !printWindow, innerWidth: window.innerWidth }, timestamp: Date.now(), hypothesisId: 'H2' };
-    (window.__debugLog = window.__debugLog || []).push(_d); console.log('[DEBUG]', _d);
+    var _d2 = { sessionId: '4da7db', location: 'tasitlar.js:after open', message: 'window.open result', data: { openNull: !printWindow, innerWidth: window.innerWidth }, timestamp: Date.now(), hypothesisId: 'H2' };
+    (window.__debugLog = window.__debugLog || []).push(_d2); console.log('[DEBUG]', _d2);
     // #endregion
     if (!printWindow) {
       alert('Yazdırma penceresi açılamadı. Lütfen açılır pencere izni verin.');
       return;
     }
 
-    const now = new Date();
-    const printedAt = `${String(now.getDate()).padStart(2, '0')}.${String(now.getMonth() + 1).padStart(2, '0')}.${now.getFullYear()} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-    printWindow.document.write(`<!doctype html>
+    // Ağır işi (document.write + print) sonraki tick'e at: click handler hemen dönsün, mobilde yazdırma diyaloğu açılabilsin
+    setTimeout(function() {
+      const rows = getVehiclePrintRows(vehicle)
+        .map(([label, value]) => `<tr><th>${escapeHtml(label)}</th><td>${escapeHtml(String(value || '-')).replace(/\n/g, '<br>')}</td></tr>`)
+        .join('');
+      const now = new Date();
+      const printedAt = `${String(now.getDate()).padStart(2, '0')}.${String(now.getMonth() + 1).padStart(2, '0')}.${now.getFullYear()} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+      printWindow.document.write(`<!doctype html>
 <html lang="tr">
 <head>
   <meta charset="utf-8">
@@ -1716,15 +1719,16 @@
   <table>${rows}</table>
 </body>
 </html>`);
-    printWindow.document.close();
-    printWindow.focus();
-    setTimeout(() => {
-      // #region agent log
-      var _d = { sessionId: '4da7db', location: 'tasitlar.js:before print', message: 'calling printWindow.print()', data: { innerWidth: window.innerWidth }, timestamp: Date.now(), hypothesisId: 'H4' };
-      (window.__debugLog = window.__debugLog || []).push(_d); console.log('[DEBUG]', _d);
-      // #endregion
-      printWindow.print();
-    }, 120);
+      printWindow.document.close();
+      printWindow.focus();
+      setTimeout(function() {
+        // #region agent log
+        var _d3 = { sessionId: '4da7db', location: 'tasitlar.js:before print', message: 'calling printWindow.print()', data: { innerWidth: window.innerWidth }, timestamp: Date.now(), hypothesisId: 'H4' };
+        (window.__debugLog = window.__debugLog || []).push(_d3); console.log('[DEBUG]', _d3);
+        // #endregion
+        printWindow.print();
+      }, 120);
+    }, 0);
   };
 
   /**
