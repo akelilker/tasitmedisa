@@ -889,10 +889,19 @@ body.driver-modal-open {
   font-size: 13px;
   min-width: min-content; /* Sığmazsa açıklama daralmadan tamamı alt satıra geçer, ortadan bölünmez */
 }
-.driver-info-item .value.date-warning-red { color: #ef4444; }
-.driver-info-item .value.date-warning-orange { color: #f97316; }
-.driver-info-item:has(.value.date-warning-red) .label { color: #ef4444 !important; }
-.driver-info-item:has(.value.date-warning-orange) .label { color: #f97316 !important; }
+/* İzole Edilmiş Tarih / KM Uyarı Renkleri ve Sızıntı Engeli */
+.driver-info-item.driver-warn-red .label,
+.driver-info-item.driver-warn-red .value {
+  color: #ef4444 !important;
+}
+.driver-info-item.driver-warn-orange .label,
+.driver-info-item.driver-warn-orange .value {
+  color: #f97316 !important;
+}
+.driver-info-item.driver-warn-red::before,
+.driver-info-item.driver-warn-orange::before {
+  display: none !important;
+}
 
 /* Kullanıcı paneli sol panel: etiket ve açıklama aynı boyut, aynı satırda hizalı */
 .driver-left-panel .driver-info-item .label { font-size: 13px; }
@@ -2979,6 +2988,16 @@ body.driver-modal-open {
   }
   .login-page .pwa-install-bar .pwa-install-close {
     margin-left: 0 !important;
+  }
+  /* Masaüstü Kullanıcı Paneli: Uygulamayı Yükle butonu footer'ın hemen üstünde ortalı */
+  .dashboard-page #pwa-install-wrapper.pwa-install-center {
+    position: fixed !important;
+    bottom: calc(var(--app-footer-height, 48px) + 16px) !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: max-content !important;
+    margin: 0 !important;
+    z-index: 10003 !important;
   }
 }
 
