@@ -817,33 +817,71 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   display: none !important;
 }
 
-/* MTV Bildirim Özelleştirmesi */
-#notifications-dropdown .notification-item.mtv-notification {
+/* MTV Bildirimi - Global Çakışma Önleyici */
+#notifications-dropdown .mtv-notification {
+  display: flex !important;
   flex-direction: row !important;
   align-items: center !important;
+  justify-content: space-between !important;
+  border: 1px solid rgba(255, 140, 0, 0.6) !important;
+  box-shadow: 0 0 8px rgba(255, 140, 0, 0.2) !important;
+  padding: 10px 12px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+#notifications-dropdown .mtv-notification > div {
+  width: auto !important;
+  margin-bottom: 0 !important;
+}
+
+.mtv-text-container {
+  flex: 1 1 auto !important;
+  text-align: left !important;
+  padding-right: 8px !important;
+  min-width: 0 !important;
+}
+
+.mtv-text-container strong {
+  color: var(--orange-warn) !important;
+  font-size: 13px !important;
+  display: block !important;
+  margin-bottom: 3px !important;
+}
+
+.mtv-text-container span {
+  font-size: 11.5px !important;
+  color: var(--txt-muted) !important;
+  white-space: normal !important;
+  display: inline-block !important;
+  line-height: 1.3 !important;
 }
 
 .mtv-dismiss-wrapper {
+  flex: 0 0 auto !important;
   position: relative;
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
 }
 
 .mtv-dismiss-btn {
   background: transparent !important;
   border: none !important;
-  color: var(--green-success);
-  width: 24px !important;
-  height: 24px !important;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  padding: 0;
+  color: var(--green-success) !important;
+  width: 28px !important;
+  height: 28px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  padding: 0 !important;
   outline: none !important;
+}
+
+.mtv-dismiss-btn svg {
+  width: 22px !important;
+  height: 22px !important;
 }
 
 .mtv-dismiss-btn:hover,
@@ -851,7 +889,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
 .mtv-dismiss-btn:focus {
   background: transparent !important;
   border: none !important;
-  transform: scale(1.15);
+  transform: scale(1.15) !important;
 }
 
 .mtv-tooltip {
