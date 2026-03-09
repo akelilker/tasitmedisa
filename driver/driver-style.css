@@ -3694,6 +3694,11 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   body.driver-modal-open .login-page #app-footer.login-footer {
     z-index: 10012 !important;
   }
+  /* Geçmiş Kayıtlar / Düzeltme Talebi açıkken modal–footer boşluğunda kırmızı yan çizgiler kalmasın */
+  body:has(#history-modal.driver-modal.show) .dashboard-page .driver-dashboard-container::before,
+  body:has(#edit-request-modal.driver-modal.show) .dashboard-page .driver-dashboard-container::before {
+    bottom: calc(7px + var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important;
+  }
   #history-modal.driver-modal::before,
   #edit-request-modal.driver-modal::before,
   #driver-event-menu-modal.driver-modal::before,
