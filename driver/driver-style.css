@@ -4059,14 +4059,14 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     z-index: 2;
   }
 
-  /* 90 derece dönen şema: üst/alt metinler şemaya binmesin diye toplam 8px ekstra boşluk */
+  /* 90 derece dönen şema: üst/alt metinler şemaya binmesin diye 6px ekstra boşluk */
   .dashboard-page .driver-report-block-kaza .driver-kaporta-container .driver-kaporta-schema-wrapper svg {
     width: 100% !important;
     max-width: 126px !important; /* Dikey boyut 8px daha daraltıldı (134 -> 126) */
     max-height: 204px !important; /* Yatay boyut sabit kaldı */
     height: auto !important;
-    margin-top: -31px !important; /* -33px -> -31px: üstte +2px ek nefes payı (toplam +8px) */
-    margin-bottom: -31px !important; /* -33px -> -31px: altta +2px ek nefes payı (toplam +8px) */
+    margin-top: -33px !important; /* -39px -> -33px: üstte +6px nefes payı */
+    margin-bottom: -33px !important; /* -39px -> -33px: altta +6px nefes payı */
     position: relative;
     z-index: 1;
   }
