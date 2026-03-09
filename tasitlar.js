@@ -4235,7 +4235,7 @@ function renderVehicleDetailLeft(vehicle) {
     const m = today.getMonth();
     const d = today.getDate();
     const y = today.getFullYear();
-    if (true) {
+    if ((m === 0 || m === 6) && d >= 21) {
       const mtvKey = 'mtv_paid_' + y + '_' + m;
       if (!localStorage.getItem(mtvKey)) {
         const mtvKeyEsc = (mtvKey || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
