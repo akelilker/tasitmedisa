@@ -703,7 +703,7 @@
               'brand': { label: 'Marka / Model', class: 'list-brand' },
               'km': { label: 'Km', class: 'list-km' },
               'type': { label: 'Taşıt Tipi', class: 'list-type' },
-              'user': { label: isMobileList ? 'Kull.' : 'Kullanıcı', class: 'list-user' },
+              'user': { label: 'Kull.', class: 'list-user' },
               'branch': { label: 'Şube', class: 'list-branch' }
             };
             let emptyHtml = '<div class="list-header-row" style="grid-template-columns: ' + gridStr + '">';
@@ -747,7 +747,7 @@
           'brand': { label: 'Marka / Model', class: 'list-brand' },
           'km': { label: 'Km', class: 'list-km' },
           'type': { label: 'Taşıt Tipi', class: 'list-type' },
-          'user': { label: isMobile ? 'Kull.' : 'Kullanıcı', class: 'list-user' },
+          'user': { label: 'Kull.', class: 'list-user' },
           'branch': { label: 'Şube', class: 'list-branch' }
         };
         html += '<div class="list-header-row" style="grid-template-columns: ' + gridStr + '">';
