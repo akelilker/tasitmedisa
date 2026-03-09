@@ -3302,10 +3302,12 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .login-page .driver-dashboard-container {
     --app-footer-height: 56px;
   }
-  /* Masaüstü kullanıcı paneli + Şifre ekranı: kırmızı çizgiler tam footer'da biter, aşağı inmez */
+  /* Masaüstü kullanıcı paneli + Şifre ekranı: kırmızı çizgiler footer'ın tam üstünde (0) biter, erken kesilmesin */
   .dashboard-page .driver-dashboard-container::before,
   .login-page .driver-dashboard-container::before {
-    bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important;
+    top: 0 !important;
+    bottom: auto !important;
+    height: calc(100vh - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0)) !important;
   }
 }
 
