@@ -1847,6 +1847,82 @@
 
     const historySectionsHtml = buildPrintHistorySections(vehicle);
 
+    function buildKaportaPrintSectionHtml(vehicleRecord) {
+      const partNames = (typeof getKaportaPartNames === 'function') ? getKaportaPartNames() : {};
+      const stateMap = (vehicleRecord && vehicleRecord.boyaliParcalar && typeof vehicleRecord.boyaliParcalar === 'object')
+        ? vehicleRecord.boyaliParcalar
+        : {};
+      const boyaliList = [];
+      const degisenList = [];
+
+      Object.keys(stateMap).forEach(function(partId) {
+        const partName = toTitleCase(String(partNames[partId] || partId));
+        if (stateMap[partId] === 'boyali') boyaliList.push(partName);
+        if (stateMap[partId] === 'degisen') degisenList.push(partName);
+      });
+
+      boyaliList.sort(function(a, b) { return a.localeCompare(b, 'tr'); });
+      degisenList.sort(function(a, b) { return a.localeCompare(b, 'tr'); });
+
+      function listHtml(items) {
+        if (!items.length) return '<div class="kaporta-print-empty">Yok</div>';
+        return `<ul class="kaporta-print-list">${items.map(function(name) { return `<li>${escapeHtml(name)}</li>`; }).join('')}</ul>`;
+      }
+
+      let svgMarkup = '';
+      try {
+        if (parsedKaportaSvgCache) {
+          const svgClone = parsedKaportaSvgCache.cloneNode(true);
+          const defaultGray = '#b5b5b5';
+          const allParts = svgClone.querySelectorAll('path[id]');
+          allParts.forEach(function(part) {
+            part.setAttribute('fill', defaultGray);
+            part.style.fill = defaultGray;
+          });
+          Object.keys(stateMap).forEach(function(partId) {
+            const part = svgClone.querySelector('#' + partId);
+            if (!part) return;
+            if (stateMap[partId] === 'boyali') {
+              part.setAttribute('fill', '#28a745');
+              part.style.fill = '#28a745';
+            } else if (stateMap[partId] === 'degisen') {
+              part.setAttribute('fill', '#d40000');
+              part.style.fill = '#d40000';
+            }
+          });
+          svgClone.style.width = '260px';
+          svgClone.style.height = '170px';
+          svgClone.style.display = 'block';
+          svgClone.style.margin = '0 auto';
+          svgMarkup = svgClone.outerHTML;
+        }
+      } catch (e) {
+        svgMarkup = '';
+      }
+
+      if (!svgMarkup) {
+        const fallbackSrc = new URL('icon/kaporta.svg', window.location.href).href;
+        svgMarkup = `<img src="${escapeHtml(fallbackSrc)}" alt="Kaporta Şeması" class="kaporta-print-fallback">`;
+      }
+
+      return `<section class="kaporta-print-section">
+        <h2>Kaporta Şeması</h2>
+        <div class="kaporta-print-schema-wrap">${svgMarkup}</div>
+        <div class="kaporta-print-state-grid">
+          <div class="kaporta-print-col">
+            <h3>Boyalı Parçalar</h3>
+            ${listHtml(boyaliList)}
+          </div>
+          <div class="kaporta-print-col">
+            <h3>Değişen Parçalar</h3>
+            ${listHtml(degisenList)}
+          </div>
+        </div>
+      </section>`;
+    }
+
+    const kaportaPrintSectionHtml = buildKaportaPrintSectionHtml(vehicle);
+
     const printHtml = `<!doctype html>
 <html lang="tr">
 <head>
@@ -1859,6 +1935,15 @@
     table { width: 100%; border-collapse: collapse; }
     th, td { border: 1px solid #ddd; padding: 8px 10px; text-align: left; vertical-align: top; font-size: 14px; }
     th { width: 240px; background: #f4f4f4; }
+    .kaporta-print-section { margin-top: 14px; border: 1px solid #ddd; border-radius: 8px; padding: 10px; }
+    .kaporta-print-section h2 { margin: 0 0 8px; font-size: 16px; }
+    .kaporta-print-schema-wrap { margin-bottom: 8px; }
+    .kaporta-print-fallback { display: block; width: 260px; height: 170px; margin: 0 auto; object-fit: contain; }
+    .kaporta-print-state-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .kaporta-print-col h3 { margin: 0 0 6px; font-size: 13px; }
+    .kaporta-print-list { margin: 0; padding-left: 18px; }
+    .kaporta-print-list li { font-size: 12px; line-height: 1.3; margin-bottom: 2px; }
+    .kaporta-print-empty { font-size: 12px; color: #666; }
     .print-page-break { page-break-before: always; break-before: page; margin: 16px 0 0; }
     .history-page { margin-top: 0; }
     .history-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
@@ -1880,6 +1965,7 @@
     <h1>Taşıt Kartı</h1>
     <p class="subtitle">Plaka: ${escapeHtml(vehicle.plate || '-')} • Oluşturma: ${printedAt}</p>
     <table>${rows}</table>
+    ${kaportaPrintSectionHtml}
   </section>
 
   <div class="print-page-break"></div>
