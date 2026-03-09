@@ -833,7 +833,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
 
 .mtv-dismiss-btn {
   background: transparent;
-  border: 1px solid var(--border-subtle);
   border-radius: 6px;
   color: var(--green-success);
   width: 28px;
