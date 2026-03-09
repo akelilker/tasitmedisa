@@ -4239,7 +4239,7 @@ function renderVehicleDetailLeft(vehicle) {
       const mtvKey = 'mtv_paid_' + y + '_' + m;
       if (!localStorage.getItem(mtvKey)) {
         const mtvKeyEsc = (mtvKey || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
-        mtvHtml = '<div class="notification-item date-warning-orange-border mtv-notification" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; padding: 10px 12px; border-radius: 6px; min-height: 72px; box-sizing: border-box;"><div style="flex: 1; min-width: 0; text-align: left; padding-right: 10px;"><strong style="color: var(--orange-warn);">MTV Hatırlatması</strong><br><span style="font-size: 12px; color: var(--txt-muted);">Ayın Son Gününe Kadar MTV Ödemelerinin Yapılması Gerekmektedir.</span></div><div class="mtv-dismiss-wrapper" style="position: relative; flex-shrink: 0;"><button type="button" class="mtv-dismiss-btn" onclick="dismissMTVNotif(event, \'' + mtvKeyEsc + '\')" aria-label="Bildirimi Kapat"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></button><div class="mtv-tooltip">Ödeme Yapıldıysa Bildirimi Silebilirsiniz.</div></div></div>';
+        mtvHtml = '<div class="notification-item date-warning-orange-border mtv-notification" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 12px;"><div style="flex: 1; text-align: left; padding-right: 10px;"><strong style="color: var(--orange-warn); font-size: 13px;">MTV Hatırlatması</strong><br><span style="font-size: 12px; color: var(--txt-muted);">Ayın Son Gününe Kadar MTV Ödemelerinin Yapılması Gerekmektedir.</span></div><div class="mtv-dismiss-wrapper"><button type="button" class="mtv-dismiss-btn" onclick="dismissMTVNotif(event, \'' + mtvKeyEsc + '\')" aria-label="Bildirimi Kapat"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></button><div class="mtv-tooltip">Ödeme Yapıldıysa Bildirimi Silebilirsiniz.</div></div></div>';
         hasOrange = true;
       }
     }
@@ -4345,6 +4345,7 @@ function renderVehicleDetailLeft(vehicle) {
 
   window.dismissMTVNotif = function(event, key) {
     event.stopPropagation();
+    event.preventDefault();
     localStorage.setItem(key, 'true');
     if (typeof window.updateNotifications === 'function') {
       window.updateNotifications();

@@ -817,21 +817,18 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   display: none !important;
 }
 
-/* MTV hatırlatması kartı: flex taşma olmasın, kullanıcı hizalaması korunsun */
-#notifications-dropdown .mtv-notification {
+/* MTV Bildirim Özelleştirmesi */
+#notifications-dropdown .notification-item.mtv-notification {
   flex-direction: row !important;
-  overflow: hidden !important;
-}
-#notifications-dropdown .mtv-notification > div:first-of-type {
-  min-width: 0 !important;
+  align-items: center !important;
 }
 
-/* MTV Onay Butonu ve Tooltip */
 .mtv-dismiss-wrapper {
   position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .mtv-dismiss-btn {
