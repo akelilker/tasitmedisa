@@ -2965,16 +2965,28 @@ body.driver-modal-open {
   padding-bottom: 10px !important;
 }
 
-/* Login (masaustu): PWA kurulum bildirimi header altinda yatay ortali */
+/* Login (masaüstü): PWA kurulum çubuğu header alt çerçevesinin 4px altında; sadece buton yatayda ortada (X hesaba katılmaz) */
 @media (min-width: 769px) {
   .login-page #pwa-install-wrapper.pwa-install-center {
-    position: fixed !important;
-    left: 50% !important;
-    transform: translateX(-50%) !important;
-    top: calc(env(safe-area-inset-top, 0px) + 88px) !important;
-    z-index: 10060 !important;
-    width: max-content !important;
-    margin: 0 !important;
+    margin-top: 4px !important;
+    margin-bottom: 0 !important;
+    width: 100% !important;
+    flex-shrink: 0 !important;
+  }
+  .login-page .pwa-install-bar {
+    display: grid !important;
+    grid-template-columns: 1fr auto auto !important;
+    align-items: center !important;
+    gap: 10px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  .login-page .pwa-install-bar .pwa-install-btn {
+    grid-column: 2 !important;
+  }
+  .login-page .pwa-install-bar .pwa-install-close {
+    grid-column: 3 !important;
+    justify-self: start !important;
   }
 }
 
