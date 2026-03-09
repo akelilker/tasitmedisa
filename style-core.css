@@ -832,23 +832,26 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
 }
 
 .mtv-dismiss-btn {
-  background: transparent;
-  border-radius: 6px;
+  background: transparent !important;
+  border: none !important;
   color: var(--green-success);
-  width: 28px;
-  height: 28px;
+  width: 24px !important;
+  height: 24px !important;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s ease;
   padding: 0;
+  outline: none !important;
 }
 
 .mtv-dismiss-btn:hover,
-.mtv-dismiss-btn:active {
-  background: rgba(40, 167, 69, 0.15);
-  border-color: var(--green-success);
+.mtv-dismiss-btn:active,
+.mtv-dismiss-btn:focus {
+  background: transparent !important;
+  border: none !important;
+  transform: scale(1.15);
 }
 
 .mtv-tooltip {
