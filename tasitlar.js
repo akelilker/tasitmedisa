@@ -3824,31 +3824,33 @@ function renderVehicleDetailLeft(vehicle) {
           return a.days - b.days;
         });
         notifications.forEach(notif => {
-          const typeLabel = notif.type === 'sigorta' ? 'Sigorta' : notif.type === 'kasko' ? 'Kasko' : 'Muayene';
-          const dateDisplay = formatDateForDisplay(notif.date);
-          let messageText = '';
-          if (notif.days < 0) {
-              messageText = `${notif.plate} Plakalı Taşıtın ${typeLabel} Tarihi ${Math.abs(notif.days)} Gün Geçti.`;
-          } else if (notif.days === 0) {
-              messageText = `${notif.plate} Plakalı Taşıtın ${typeLabel} Tarihi Bugün Bitiyor.`;
-          } else if (notif.days === 1) {
-              messageText = `${notif.plate} Plakalı Taşıtın ${typeLabel} Tarihi Yarın Bitiyor.`;
-          } else {
-              messageText = `${notif.plate} Plakalı Taşıtın ${typeLabel} Tarihi ${notif.days} Gün Sonra Bitecek.`;
-          }
+            const typeLabel = notif.type === 'sigorta' ? 'Sigorta' : notif.type === 'kasko' ? 'Kasko' : 'Muayene';
+            const dateDisplay = formatDateForDisplay(notif.date);
 
-          const borderColor = notif.warningClass === 'date-warning-red'
-            ? 'rgba(212, 0, 0, 0.6)'
-            : 'rgba(255, 140, 0, 0.6)';
-          const safePlate = (notif.plate || '').replace(/"/g, '&quot;');
-          const safeVid = (notif.vehicleId || '').toString().replace(/"/g, '&quot;');
+            let messageText = '';
+            if (notif.days < 0) {
+                messageText = `${notif.plate} Plakalı Taşıtın ${typeLabel} Tarihi ${Math.abs(notif.days)} Gün Geçti.`;
+            } else if (notif.days === 0) {
+                messageText = `${notif.plate} Plakalı Taşıtın ${typeLabel} Tarihi Bugün Bitiyor.`;
+            } else if (notif.days === 1) {
+                messageText = `${notif.plate} Plakalı Taşıtın ${typeLabel} Tarihi Yarın Bitiyor.`;
+            } else {
+                messageText = `${notif.plate} Plakalı Taşıtın ${typeLabel} Tarihi ${notif.days} Gün Sonra Bitecek.`;
+            }
 
-          html += `<button type="button" data-plate="${safePlate}" data-vehicle-id="${safeVid}" style="width: 100%; padding: 12px; background: transparent; border: 1px solid ${borderColor}; color: #ccc; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 13px; text-align: left; margin-bottom: 4px; transition: all 0.2s ease; height: auto; white-space: normal;" class="notification-item ${notif.warningClass}-border">
-          <div style="font-weight: 500; color: #fff; line-height: 1.4;">
-            <span class="${notif.warningClass}">${escapeHtml(messageText)}</span>
-          </div>
-          <div style="font-size: 11px; color: #999; margin-top: 6px;">Son Tarih: ${escapeHtml(dateDisplay)}</div>
-        </button>`;
+            const borderColor = notif.warningClass === 'date-warning-red'
+              ? 'rgba(212, 0, 0, 0.6)'
+              : 'rgba(255, 140, 0, 0.6)';
+
+            const safePlate = (notif.plate || '').replace(/"/g, '&quot;');
+            const safeVid = (notif.vehicleId || '').toString().replace(/"/g, '&quot;');
+
+            html += `<button type="button" data-plate="${safePlate}" data-vehicle-id="${safeVid}" style="width: 100%; padding: 12px; background: transparent; border: 1px solid ${borderColor}; color: #ccc; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 13px; text-align: left; margin-bottom: 4px; transition: all 0.2s ease; height: auto; white-space: normal;" class="notification-item ${notif.warningClass}-border">
+            <div style="font-weight: 500; color: #fff; line-height: 1.4;">
+              <span class="${notif.warningClass}">${escapeHtml(messageText)}</span>
+            </div>
+            <div style="font-size: 11px; color: #999; margin-top: 6px;">Son Tarih: ${escapeHtml(dateDisplay)}</div>
+          </button>`;
         });
       }
 
