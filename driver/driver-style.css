@@ -3666,20 +3666,14 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     overflow: hidden !important;
     overscroll-behavior: none !important;
   }
-  /* Geçmiş Kayıtlar + Düzeltme Talebi: overlay footer'ın ÜSTÜNDE bitsin; modali-footer arası tam 5px, koyu gölge ile kapansın */
+  /* Geçmiş Kayıtlar + Düzeltme Talebi: modal–footer arası 6px; koyu dolgu (box-shadow) köşeler dahil kapatsın */
   #history-modal.driver-modal,
   #edit-request-modal.driver-modal {
-    bottom: calc(5px + var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important;
+    bottom: calc(6px + var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important;
     height: auto !important;
-    max-height: calc(100vh - max(12px, env(safe-area-inset-top)) - 5px - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0)) !important;
-    max-height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 5px - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0)) !important;
-    box-shadow: none !important;
-  }
-  /* Gecmis Kayitlar mobil: footer boslugu +2px (5px -> 7px) */
-  #history-modal.driver-modal {
-    bottom: calc(7px + var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important;
-    max-height: calc(100vh - max(12px, env(safe-area-inset-top)) - 7px - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0)) !important;
-    max-height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 7px - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0)) !important;
+    max-height: calc(100vh - max(12px, env(safe-area-inset-top)) - 6px - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0)) !important;
+    max-height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 6px - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0)) !important;
+    box-shadow: 0 6px 0 0 #080d16 !important;
   }
   /* Mobilde modal açıkken header üstündeki kırmızı yatay çizgi görünmesin */
   .driver-modal.show::after {
@@ -3690,12 +3684,14 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   body.driver-modal-open .login-page #app-footer.login-footer {
     z-index: 10012 !important;
   }
-  /* Geçmiş Kayıtlar / Düzeltme Talebi açıkken modal–footer 6px boşluğunda kırmızı dikey parçalar kalmasın */
+  /* Geçmiş Kayıtlar / Düzeltme Talebi açıkken kırmızı çerçeve (::before) tamamen gizlensin – dikey parça kalmasın */
   body:has(#history-modal.driver-modal.show) .dashboard-page .driver-dashboard-container::before,
   body:has(#history-modal.driver-modal.show) .login-page .driver-dashboard-container::before,
   body:has(#edit-request-modal.driver-modal.show) .dashboard-page .driver-dashboard-container::before,
   body:has(#edit-request-modal.driver-modal.show) .login-page .driver-dashboard-container::before {
-    clip-path: inset(0 0 calc(6px + var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) 0) !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
   }
   #history-modal.driver-modal::before,
   #edit-request-modal.driver-modal::before,
