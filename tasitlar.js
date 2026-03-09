@@ -1890,10 +1890,12 @@
               part.style.fill = '#d40000';
             }
           });
-          svgClone.style.width = '260px';
-          svgClone.style.height = '170px';
+          svgClone.style.width = '170px';
+          svgClone.style.height = '260px';
           svgClone.style.display = 'block';
           svgClone.style.margin = '0 auto';
+          svgClone.style.transform = 'rotate(90deg)';
+          svgClone.style.transformOrigin = 'center center';
           svgMarkup = svgClone.outerHTML;
         }
       } catch (e) {
@@ -1931,33 +1933,33 @@
   <style>
     body { font-family: Arial, sans-serif; margin: 24px; color: #111; }
     h1 { margin: 0 0 4px; font-size: 24px; }
-    .subtitle { margin: 0 0 16px; color: #555; font-size: 13px; }
+    .subtitle { margin: 0 0 10px; color: #555; font-size: 13px; }
     table { width: 100%; border-collapse: collapse; }
-    th, td { border: 1px solid #ddd; padding: 8px 10px; text-align: left; vertical-align: top; font-size: 14px; }
+    th, td { border: 1px solid #ddd; padding: 6px 8px; text-align: left; vertical-align: top; font-size: 13px; line-height: 1.3; }
     th { width: 240px; background: #f4f4f4; }
     .kaporta-print-section { margin-top: 14px; border: 1px solid #ddd; border-radius: 8px; padding: 10px; }
     .kaporta-print-section h2 { margin: 0 0 8px; font-size: 16px; }
-    .kaporta-print-schema-wrap { margin-bottom: 8px; }
-    .kaporta-print-fallback { display: block; width: 260px; height: 170px; margin: 0 auto; object-fit: contain; }
+    .kaporta-print-schema-wrap { margin-bottom: 6px; min-height: 180px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+    .kaporta-print-fallback { display: block; width: 170px; height: 260px; margin: 0 auto; object-fit: contain; transform: rotate(90deg); transform-origin: center center; }
     .kaporta-print-state-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
     .kaporta-print-col h3 { margin: 0 0 6px; font-size: 13px; }
     .kaporta-print-list { margin: 0; padding-left: 18px; }
     .kaporta-print-list li { font-size: 12px; line-height: 1.3; margin-bottom: 2px; }
     .kaporta-print-empty { font-size: 12px; color: #666; }
     .print-page-break { page-break-before: always; break-before: page; margin: 16px 0 0; }
-    .history-page { margin-top: 0; }
-    .history-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-    .history-print-card { border: 1px solid #ddd; border-radius: 8px; padding: 10px; break-inside: avoid; page-break-inside: avoid; }
-    .history-print-card h2 { margin: 0 0 8px; font-size: 15px; }
-    .history-print-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
-    .history-print-item { border-top: 1px solid #eee; padding-top: 8px; }
+    .history-page { margin-top: 0; break-inside: auto; page-break-inside: auto; }
+    .history-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; align-items: start; }
+    .history-print-card { border: 1px solid #ddd; border-radius: 8px; padding: 8px; break-inside: auto; page-break-inside: auto; }
+    .history-print-card h2 { margin: 0 0 5px; font-size: 14px; page-break-after: avoid; break-after: avoid-page; }
+    .history-print-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+    .history-print-item { border-top: 1px solid #eee; padding-top: 4px; }
     .history-print-item:first-child { border-top: none; padding-top: 0; }
-    .history-print-date { font-size: 11px; color: #666; font-weight: 600; margin-bottom: 3px; }
-    .history-print-text { font-size: 12px; line-height: 1.35; }
-    .history-print-extra { font-size: 11px; color: #444; margin-top: 3px; line-height: 1.3; }
+    .history-print-date { font-size: 11px; color: #666; font-weight: 600; margin-bottom: 1px; }
+    .history-print-text { font-size: 12px; line-height: 1.25; }
+    .history-print-extra { font-size: 11px; color: #444; margin-top: 1px; line-height: 1.2; }
     .history-print-empty { font-size: 12px; color: #666; }
-    @media (max-width: 760px) { .history-grid { grid-template-columns: 1fr; } }
-    @media print { body { margin: 8mm; } .history-grid { gap: 10px; } }
+    @media (max-width: 760px) { .history-grid { grid-template-columns: 1fr; } .kaporta-print-state-grid { grid-template-columns: 1fr; } }
+    @media print { body { margin: 8mm; } .history-page h1, .history-page .subtitle { page-break-after: avoid; break-after: avoid-page; } .history-grid { gap: 8px; } }
   </style>
 </head>
 <body>
