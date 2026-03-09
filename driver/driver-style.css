@@ -3333,6 +3333,23 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     border-left: 0.5px solid rgba(255, 255, 255, 0.10) !important;
     border-right: 0.5px solid rgba(255, 255, 255, 0.10) !important;
   }
+
+  /* Sol panel araç bilgisi (Sigorta/Kasko/Muayene dahil): Plaka/Marka ile aynı sol hiza */
+  .dashboard-page .driver-left-panel .driver-vehicle-info {
+    text-align: left !important;
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
+  }
+  .dashboard-page .driver-left-panel .driver-info-item {
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+  }
+  /* Tarih uyarı çerçevesi kalsın; sola itmeyi kaldırdık, hiza için negatif margin */
+  .dashboard-page .driver-left-panel .driver-info-item:has(.value.date-warning-red),
+  .dashboard-page .driver-left-panel .driver-info-item:has(.value.date-warning-orange) {
+    margin-left: -3px !important;
+    padding-left: 3px !important;
+  }
 }
 
 .login-container {
