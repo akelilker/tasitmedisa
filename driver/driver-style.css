@@ -3001,7 +3001,7 @@ body.driver-modal-open {
     width: 100% !important;
     display: flex !important;
     justify-content: center !important;
-    margin-top: -2px !important;
+    margin-top: -5px !important;
     margin-bottom: 0 !important;
     transform: none !important;
   }
