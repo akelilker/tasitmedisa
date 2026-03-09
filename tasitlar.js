@@ -3828,6 +3828,8 @@ function renderVehicleDetailLeft(vehicle) {
               messageText = `${notif.plate} Plakalı Taşıtın ${typeLabel} Tarihi ${Math.abs(notif.days)} Gün Geçti.`;
           } else if (notif.days === 0) {
               messageText = `${notif.plate} Plakalı Taşıtın ${typeLabel} Tarihi Bugün Bitiyor.`;
+          } else if (notif.days === 1) {
+              messageText = `${notif.plate} Plakalı Taşıtın ${typeLabel} Tarihi Yarın Bitiyor.`;
           } else {
               messageText = `${notif.plate} Plakalı Taşıtın ${typeLabel} Tarihi ${notif.days} Gün Sonra Bitecek.`;
           }
@@ -3837,7 +3839,7 @@ function renderVehicleDetailLeft(vehicle) {
             : 'rgba(255, 140, 0, 0.6)';
           const safePlate = (notif.plate || '').replace(/"/g, '&quot;');
 
-          html += `<button type="button" data-plate="${safePlate}" style="width: 100%; padding: 12px; background: transparent; border: 1px solid ${borderColor}; color: #ccc; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 13px; text-align: left; margin-bottom: 4px; transition: all 0.2s ease;" class="notification-item ${notif.warningClass}-border">
+          html += `<button type="button" data-plate="${safePlate}" style="width: 100%; padding: 12px; background: transparent; border: 1px solid ${borderColor}; color: #ccc; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 13px; text-align: left; margin-bottom: 4px; transition: all 0.2s ease; height: auto; white-space: normal;" class="notification-item ${notif.warningClass}-border">
           <div style="font-weight: 500; color: #fff; line-height: 1.4;">
             <span class="${notif.warningClass}">${escapeHtml(messageText)}</span>
           </div>
