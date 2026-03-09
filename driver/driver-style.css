@@ -892,14 +892,10 @@ body.driver-modal-open {
 .driver-info-item .value.date-warning-red { color: #ef4444; }
 .driver-info-item .value.date-warning-orange { color: #f97316; }
 .driver-info-item:has(.value.date-warning-red) {
-  border-left: 3px solid #ef4444;
-  padding-left: 6px;
-  margin-left: -6px;
+  box-shadow: inset 3px 0 0 #ef4444;
 }
 .driver-info-item:has(.value.date-warning-orange) {
-  border-left: 3px solid #f97316;
-  padding-left: 6px;
-  margin-left: -6px;
+  box-shadow: inset 3px 0 0 #f97316;
 }
 
 /* Kullanıcı paneli sol panel: etiket ve açıklama aynı boyut, aynı satırda hizalı */
@@ -3695,8 +3691,8 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     z-index: 10012 !important;
   }
   /* Geçmiş Kayıtlar / Düzeltme Talebi açıkken modal–footer boşluğunda kırmızı yan çizgiler kalmasın */
-  body:has(#history-modal.driver-modal.show) .dashboard-page .driver-dashboard-container::before,
-  body:has(#edit-request-modal.driver-modal.show) .dashboard-page .driver-dashboard-container::before {
+  body:has(#history-modal.driver-modal.show) .driver-dashboard-container::before,
+  body:has(#edit-request-modal.driver-modal.show) .driver-dashboard-container::before {
     bottom: calc(7px + var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important;
   }
   #history-modal.driver-modal::before,
