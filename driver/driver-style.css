@@ -4531,7 +4531,8 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 @media (max-width: 768px) {
   body.dashboard-page,
   body.login-page {
-    overflow: hidden !important;
+    overflow-x: visible !important;
+    overflow-y: hidden !important;
     overscroll-behavior-y: none !important;
   }
 
@@ -4542,17 +4543,20 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     min-height: 100dvh !important;
     min-height: 100svh !important;
     max-height: 100svh !important;
-    overflow: hidden !important;
+    overflow-x: visible !important;
+    overflow-y: hidden !important;
   }
 
   .dashboard-page .driver-scroll-area {
-    overflow: hidden !important;
+    overflow-x: visible !important;
+    overflow-y: hidden !important;
   }
 
   .dashboard-page .driver-panels-inner {
     height: 100% !important;
     min-height: 0 !important;
-    overflow: hidden !important;
+    overflow-x: visible !important;
+    overflow-y: hidden !important;
     align-items: stretch !important;
   }
 
