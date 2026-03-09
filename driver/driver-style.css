@@ -3749,7 +3749,16 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   body:has(#history-modal.driver-modal.show) .login-page .driver-dashboard-container::before,
   body:has(#edit-request-modal.driver-modal.show) .dashboard-page .driver-dashboard-container::before,
   body:has(#edit-request-modal.driver-modal.show) .login-page .driver-dashboard-container::before {
+    -webkit-clip-path: inset(0 0 calc(6px + var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) 0) !important;
     clip-path: inset(0 0 calc(6px + var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) 0) !important;
+  }
+  @supports not selector(body:has(*)) {
+    /* Safari fallback: :has desteği yoksa modal açıkken yan kırmızı çizgileri footer boşluğundan kırp */
+    body.driver-modal-open .dashboard-page .driver-dashboard-container::before,
+    body.driver-modal-open .login-page .driver-dashboard-container::before {
+      -webkit-clip-path: inset(0 0 calc(6px + var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) 0) !important;
+      clip-path: inset(0 0 calc(6px + var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) 0) !important;
+    }
   }
   #history-modal.driver-modal::before,
   #edit-request-modal.driver-modal::before,
@@ -3963,7 +3972,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     font-size: 14px !important;
   }
   .dashboard-page .driver-plate-dropdown-row .driver-plate-trigger {
-    right: -14px !important;
+    right: 0 !important;
     top: 50% !important;
     transform: translateY(-50%) !important;
     background: var(--bg) !important;
@@ -4119,23 +4128,14 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     z-index: 2;
   }
 
-<<<<<<< ours
-  /* 90 derece dönen şema: üst/alt metinler şemaya binmesin diye 6px ekstra boşluk */
-=======
   /* 90 derece dönen şema: üst/alt metinler şemaya binmesin diye toplam 8px ekstra boşluk */
->>>>>>> theirs
   .dashboard-page .driver-report-block-kaza .driver-kaporta-container .driver-kaporta-schema-wrapper svg {
     width: 100% !important;
     max-width: 126px !important; /* Dikey boyut 8px daha daraltıldı (134 -> 126) */
     max-height: 204px !important; /* Yatay boyut sabit kaldı */
     height: auto !important;
-<<<<<<< ours
-    margin-top: -33px !important; /* -39px -> -33px: üstte +6px nefes payı */
-    margin-bottom: -33px !important; /* -39px -> -33px: altta +6px nefes payı */
-=======
     margin-top: -31px !important; /* -33px -> -31px: üstte +2px ek nefes payı (toplam +8px) */
     margin-bottom: -31px !important; /* -33px -> -31px: altta +2px ek nefes payı (toplam +8px) */
->>>>>>> theirs
     position: relative;
     z-index: 1;
   }
@@ -4238,6 +4238,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
   .dashboard-page .history-period {
     font-size: 17px !important;
+    color: #fff !important;
   }
   .dashboard-page .history-vehicle {
     font-size: 16px !important;
@@ -4305,8 +4306,10 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
   #edit-request-modal .btn-submit {
     font-size: 17px !important;
+    width: calc(100% - 30px) !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
   }
-
   /* 3. Input ve buton dikey yükseklik +4px (login + panel) */
   .login-form .form-group input {
     padding: 14px 16px !important;
@@ -4347,7 +4350,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     padding: 5px 16px !important;
   }
   #edit-request-modal .btn-submit {
-    padding: 15px 18px 16px !important;
+    padding: 10px 3px 11px !important;
   }
 
   /* 3. Beni Hatırla checkbox mobilde 22px (base'de zaten gri + kırmızı) */
