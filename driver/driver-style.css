@@ -891,12 +891,8 @@ body.driver-modal-open {
 }
 .driver-info-item .value.date-warning-red { color: #ef4444; }
 .driver-info-item .value.date-warning-orange { color: #f97316; }
-.driver-info-item:has(.value.date-warning-red) {
-  box-shadow: inset 3px 0 0 #ef4444;
-}
-.driver-info-item:has(.value.date-warning-orange) {
-  box-shadow: inset 3px 0 0 #f97316;
-}
+.driver-info-item:has(.value.date-warning-red) .label { color: #ef4444 !important; }
+.driver-info-item:has(.value.date-warning-orange) .label { color: #f97316 !important; }
 
 /* Kullanıcı paneli sol panel: etiket ve açıklama aynı boyut, aynı satırda hizalı */
 .driver-left-panel .driver-info-item .label { font-size: 13px; }
@@ -3362,11 +3358,6 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     padding-left: 0 !important;
   }
   /* Tarih uyarı çerçevesi kalsın; sola itmeyi kaldırdık, hiza için negatif margin */
-  .dashboard-page .driver-left-panel .driver-info-item:has(.value.date-warning-red),
-  .dashboard-page .driver-left-panel .driver-info-item:has(.value.date-warning-orange) {
-    margin-left: -3px !important;
-    padding-left: 3px !important;
-  }
 }
 
 .login-container {
