@@ -1687,6 +1687,166 @@
       .join('');
     const now = new Date();
     const printedAt = `${String(now.getDate()).padStart(2, '0')}.${String(now.getMonth() + 1).padStart(2, '0')}.${now.getFullYear()} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+    function renderPrintHistorySection(title, items) {
+      const bodyHtml = items.length
+        ? `<ul class="history-print-list">${items.map(item => `
+            <li class="history-print-item">
+              <div class="history-print-date">${escapeHtml(item.date || '-')}</div>
+              <div class="history-print-text">${escapeHtml(item.text || '-')}</div>
+              ${item.extra ? `<div class="history-print-extra">${escapeHtml(item.extra)}</div>` : ''}
+            </li>`).join('')}</ul>`
+        : '<div class="history-print-empty">Kayıt bulunmamaktadır.</div>';
+      return `<section class="history-print-card"><h2>${escapeHtml(title)}</h2>${bodyHtml}</section>`;
+    }
+
+    function summarizeOtherHistoryEvent(event, branches) {
+      const eventType = String(event.type || '').trim();
+      const d = event.data || {};
+      let text = '';
+      let extra = '';
+
+      if (eventType === 'anahtar-guncelle') {
+        const durum = String(d.durum || 'yok').toLowerCase();
+        text = `Yedek Anahtar: ${durum === 'var' ? 'Var' : 'Yok'}`;
+        if (d.detay) extra = `Konum: ${toTitleCase(String(d.detay))}`;
+      } else if (eventType === 'lastik-guncelle') {
+        const durum = String(d.durum || 'yok').toLowerCase();
+        text = `Yazlık/Kışlık Lastik: ${durum === 'var' ? 'Var' : 'Yok'}`;
+        if (d.adres) extra = `Konum: ${toTitleCase(String(d.adres))}`;
+      } else if (eventType === 'kasko-guncelle') {
+        text = 'Kasko Güncelleme';
+        const details = [];
+        if (d.bitisTarihi) details.push(`Bitiş: ${formatDateForDisplay(d.bitisTarihi) || '-'}`);
+        if (d.firma) details.push(`Firma: ${toTitleCase(String(d.firma))}`);
+        if (d.acente) details.push(`Acente: ${toTitleCase(String(d.acente))}`);
+        extra = details.join(' | ');
+      } else if (eventType === 'sigorta-guncelle') {
+        text = 'Sigorta Güncelleme';
+        const details = [];
+        if (d.bitisTarihi) details.push(`Bitiş: ${formatDateForDisplay(d.bitisTarihi) || '-'}`);
+        if (d.firma) details.push(`Firma: ${toTitleCase(String(d.firma))}`);
+        if (d.acente) details.push(`Acente: ${toTitleCase(String(d.acente))}`);
+        extra = details.join(' | ');
+      } else if (eventType === 'muayene-guncelle') {
+        text = 'Muayene Güncelleme';
+        if (d.bitisTarihi) extra = `Bitiş: ${formatDateForDisplay(d.bitisTarihi) || '-'}`;
+      } else if (eventType === 'kullanici-atama') {
+        text = 'Kullanıcı Ataması';
+        const details = [];
+        if (d.kullaniciAdi) details.push(`Yeni: ${toTitleCase(String(d.kullaniciAdi))}`);
+        if (d.eskiKullaniciAdi) details.push(`Önceki: ${toTitleCase(String(d.eskiKullaniciAdi))}`);
+        extra = details.join(' | ');
+      } else if (eventType === 'sube-degisiklik') {
+        text = 'Şube Değişikliği';
+        const yeni = d.yeniSubeAdi || branches.find(b => String(b.id) === String(d.yeniSubeId))?.name || '';
+        const eski = d.eskiSubeAdi || branches.find(b => String(b.id) === String(d.eskiSubeId))?.name || '';
+        const details = [];
+        if (yeni) details.push(`Yeni: ${toTitleCase(String(yeni))}`);
+        if (eski) details.push(`Önceki: ${toTitleCase(String(eski))}`);
+        extra = details.join(' | ');
+      } else if (eventType === 'kredi-guncelle') {
+        const durum = String(d.durum || 'yok').toLowerCase();
+        text = `Kredi/Rehin: ${durum === 'var' ? 'Var' : 'Yok'}`;
+        if (d.detay) extra = `Detay: ${toTitleCase(String(d.detay))}`;
+      } else if (eventType === 'utts-guncelle') {
+        text = `UTTS: ${(d.durum === true || d.durum === 'evet') ? 'Evet' : 'Hayır'}`;
+      } else if (eventType === 'takip-cihaz-guncelle') {
+        text = `Takip Cihazı: ${(d.durum === true || d.durum === 'var') ? 'Var' : 'Yok'}`;
+      } else if (eventType === 'not-guncelle') {
+        text = 'Not Güncelleme';
+        if (d.not) extra = String(d.not).length > 120 ? String(d.not).slice(0, 120) + '...' : String(d.not);
+      } else if (eventType === 'satis') {
+        text = 'Satış / Pert';
+      } else {
+        text = toTitleCase(eventType || 'Diğer İşlem');
+      }
+
+      return { text: text || '-', extra: extra || '' };
+    }
+
+    function buildPrintHistorySections(vehicleRecord) {
+      const sections = { bakim: [], kaza: [], km: [], diger: [] };
+      const events = Array.isArray(vehicleRecord.events) ? vehicleRecord.events : [];
+      const branches = readBranches();
+      const partNames = (typeof getKaportaPartNames === 'function') ? getKaportaPartNames() : {};
+
+      events.forEach(function(event) {
+        const dateText = formatDateForDisplay(event.date) || '-';
+        const data = event.data || {};
+
+        if (event.type === 'bakim') {
+          const details = [
+            `Servis: ${toTitleCase(String(data.servis || '-'))}`,
+            `Kişi: ${toTitleCase(String(data.kisi || '-'))}`
+          ];
+          if (data.km) details.push(`Km: ${formatNumber(data.km)}`);
+          if (data.tutar) details.push(`Tutar: ${data.tutar}`);
+          sections.bakim.push({
+            date: dateText,
+            text: toTitleCase(String(data.islemler || '-')),
+            extra: details.join(' | ')
+          });
+          return;
+        }
+
+        if (event.type === 'kaza') {
+          const details = [`Kullanıcı: ${toTitleCase(String(data.surucu || '-'))}`];
+          if (data.hasarTutari) details.push(`Hasar Tutarı: ${data.hasarTutari}`);
+
+          const hasarParcalari = data.hasarParcalari;
+          if (hasarParcalari && typeof hasarParcalari === 'object') {
+            const boyaliList = [];
+            const degisenList = [];
+            Object.keys(hasarParcalari).forEach(partId => {
+              const partName = toTitleCase(String(partNames[partId] || partId));
+              if (hasarParcalari[partId] === 'boyali') boyaliList.push(partName);
+              if (hasarParcalari[partId] === 'degisen') degisenList.push(partName);
+            });
+            if (boyaliList.length) details.push(`Boyalı: ${boyaliList.join(', ')}`);
+            if (degisenList.length) details.push(`Değişen: ${degisenList.join(', ')}`);
+          }
+
+          const aciklama = String(data.aciklama || '').trim();
+          sections.kaza.push({
+            date: dateText,
+            text: details.join(' | '),
+            extra: aciklama ? `Açıklama: ${toTitleCase(aciklama)}` : ''
+          });
+          return;
+        }
+
+        if (event.type === 'km-revize') {
+          const userRaw = String(data.surucu || data.kullaniciAdi || '').trim();
+          const userText = userRaw ? toTitleCase(userRaw) : 'Bilinmiyor';
+          const eskiKm = data.eskiKm ? formatNumber(data.eskiKm) : '-';
+          const yeniKm = data.yeniKm ? formatNumber(data.yeniKm) : '-';
+          sections.km.push({
+            date: dateText,
+            text: `${userText}: ${eskiKm} → ${yeniKm}`,
+            extra: ''
+          });
+          return;
+        }
+
+        const otherSummary = summarizeOtherHistoryEvent(event, branches);
+        sections.diger.push({
+          date: dateText,
+          text: otherSummary.text,
+          extra: otherSummary.extra
+        });
+      });
+
+      return [
+        renderPrintHistorySection('Bakım', sections.bakim),
+        renderPrintHistorySection('Kaza', sections.kaza),
+        renderPrintHistorySection('Km', sections.km),
+        renderPrintHistorySection('Diğer', sections.diger)
+      ].join('');
+    }
+
+    const historySectionsHtml = buildPrintHistorySections(vehicle);
+
     const printHtml = `<!doctype html>
 <html lang="tr">
 <head>
@@ -1699,13 +1859,36 @@
     table { width: 100%; border-collapse: collapse; }
     th, td { border: 1px solid #ddd; padding: 8px 10px; text-align: left; vertical-align: top; font-size: 14px; }
     th { width: 240px; background: #f4f4f4; }
-    @media print { body { margin: 8mm; } }
+    .print-page-break { page-break-before: always; break-before: page; margin: 16px 0 0; }
+    .history-page { margin-top: 0; }
+    .history-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .history-print-card { border: 1px solid #ddd; border-radius: 8px; padding: 10px; break-inside: avoid; page-break-inside: avoid; }
+    .history-print-card h2 { margin: 0 0 8px; font-size: 15px; }
+    .history-print-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+    .history-print-item { border-top: 1px solid #eee; padding-top: 8px; }
+    .history-print-item:first-child { border-top: none; padding-top: 0; }
+    .history-print-date { font-size: 11px; color: #666; font-weight: 600; margin-bottom: 3px; }
+    .history-print-text { font-size: 12px; line-height: 1.35; }
+    .history-print-extra { font-size: 11px; color: #444; margin-top: 3px; line-height: 1.3; }
+    .history-print-empty { font-size: 12px; color: #666; }
+    @media (max-width: 760px) { .history-grid { grid-template-columns: 1fr; } }
+    @media print { body { margin: 8mm; } .history-grid { gap: 10px; } }
   </style>
 </head>
 <body>
-  <h1>Taşıt Kartı</h1>
-  <p class="subtitle">Plaka: ${escapeHtml(vehicle.plate || '-')} • Oluşturma: ${printedAt}</p>
-  <table>${rows}</table>
+  <section class="summary-page">
+    <h1>Taşıt Kartı</h1>
+    <p class="subtitle">Plaka: ${escapeHtml(vehicle.plate || '-')} • Oluşturma: ${printedAt}</p>
+    <table>${rows}</table>
+  </section>
+
+  <div class="print-page-break"></div>
+
+  <section class="history-page">
+    <h1>Taşıt Tarihçesi</h1>
+    <p class="subtitle">Plaka: ${escapeHtml(vehicle.plate || '-')} • Oluşturma: ${printedAt}</p>
+    <div class="history-grid">${historySectionsHtml}</div>
+  </section>
 </body>
 </html>`;
 
