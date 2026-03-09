@@ -114,7 +114,7 @@ self.addEventListener('fetch', (event) => {
         })
         .catch(() => {
           if (request.method === 'GET' && !url.pathname.includes('load.php')) {
-            return caches.match(request);
+            return caches.match(request).then((cached) => cached || new Response('Network error', { status: 503 }));
           }
           return new Response('Network error', { status: 503 });
         })
@@ -137,16 +137,20 @@ self.addEventListener('fetch', (event) => {
         return response;
       })
       .catch(() => {
-        // İnternet yoksa eski önbellekten getir
+        // İnternet yoksa eski önbellekten getir; hiçbir zaman undefined dönme (Response gerekli)
+        const origin = self.location.origin;
         return caches.match(request)
           .then((cachedResponse) => {
             if (cachedResponse) return cachedResponse;
             if (request.destination === 'document') {
               const base = getBase();
               const fallbackPath = base ? base + '/' : '/';
-              return caches.match(fallbackPath);
+              const fallbackUrl = origin + fallbackPath;
+              return caches.match(fallbackUrl);
             }
-          });
+            return new Response('Not in cache', { status: 503 });
+          })
+          .then((res) => res || new Response('Not in cache', { status: 503 }));
       })
   );
 });
