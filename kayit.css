@@ -1243,7 +1243,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         min-height: 73px !important;
     }
     #vehicle-modal #vehicle-notes {
-        min-height: 60px !important; /* iç dikey 1px dar (mobil) */
+        min-height: 66px !important; /* Sol grid alt hizasıyla tam eşitlemek için 6px genişletildi */
     }
     
     /* Tarih inputları: gg.aa.yyyy kutudan taşmasın – font küçük, overflow gizli */
