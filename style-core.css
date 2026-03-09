@@ -1184,10 +1184,10 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   display: flex !important;
 }
 
-/* Ana uygulama modalÄ±: footer (10000) Ã¼stÃ¼ne alÄ±nÄ±r, glow gÃ¶rÃ¼nÃ¼r kalÄ±r */
+/* Ana uygulama modalı: Modallar her zaman footer (10000) altında kalır, footer beton gibi sabit görünür */
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay.active,
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay.open {
-  z-index: 10002 !important;
+  z-index: 9999 !important;
 }
 .modal-overlay .modal-container,
 .login-container,
