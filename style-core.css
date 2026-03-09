@@ -632,6 +632,35 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   justify-content: center;
   align-items: center;
 }
+
+/* PWA yükleme çubuğu: buton + iptal (X) */
+.pwa-install-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.pwa-install-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--txt-placeholder, rgba(255, 255, 255, 0.5));
+  cursor: pointer;
+  transition: color 0.2s, background 0.2s;
+}
+.pwa-install-close:hover {
+  color: var(--txt, #f0f0f0);
+  background: rgba(255, 255, 255, 0.08);
+}
+.pwa-install-close svg {
+  display: block;
+}
+
 .icons-row-right {
   flex: 1;
   min-width: 0;

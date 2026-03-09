@@ -554,15 +554,23 @@ setTimeout(() => { if (window.hideLoading) window.hideLoading(); }, 8000);
     return document.getElementById('pwa-install-btn');
   }
 
+  function getInstallBar() {
+    return document.getElementById('pwa-install-bar');
+  }
+
   function removeInstallButton() {
-    const existing = getInstallButton();
-    if (existing && existing.parentNode) existing.parentNode.removeChild(existing);
+    const bar = getInstallBar();
+    if (bar && bar.parentNode) bar.parentNode.removeChild(bar);
   }
 
   function showInstallButton() {
     if (isStandaloneMode()) return;
     if (!deferredInstallPrompt) return;
-    if (getInstallButton()) return;
+    if (getInstallBar()) return;
+
+    const bar = document.createElement('div');
+    bar.id = 'pwa-install-bar';
+    bar.className = 'pwa-install-bar';
 
     const btn = document.createElement('button');
     btn.id = 'pwa-install-btn';
@@ -582,11 +590,23 @@ setTimeout(() => { if (window.hideLoading) window.hideLoading(); }, 8000);
       removeInstallButton();
     });
 
+    const closeBtn = document.createElement('button');
+    closeBtn.type = 'button';
+    closeBtn.className = 'pwa-install-close';
+    closeBtn.setAttribute('aria-label', 'İptal');
+    closeBtn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
+    closeBtn.addEventListener('click', function() {
+      removeInstallButton();
+    });
+
+    bar.appendChild(btn);
+    bar.appendChild(closeBtn);
+
     var wrapper = document.getElementById('pwa-install-wrapper');
     if (wrapper) {
-      wrapper.appendChild(btn);
+      wrapper.appendChild(bar);
     } else {
-      document.body.appendChild(btn);
+      document.body.appendChild(bar);
     }
   }
 
