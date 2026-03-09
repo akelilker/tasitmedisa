@@ -817,6 +817,72 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   display: none !important;
 }
 
+/* MTV hatırlatması kartı: flex taşma olmasın, kullanıcı hizalaması korunsun */
+#notifications-dropdown .mtv-notification {
+  flex-direction: row !important;
+  overflow: hidden !important;
+}
+#notifications-dropdown .mtv-notification > div:first-of-type {
+  min-width: 0 !important;
+}
+
+/* MTV Onay Butonu ve Tooltip */
+.mtv-dismiss-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mtv-dismiss-btn {
+  background: transparent;
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  color: var(--green-success);
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0;
+}
+
+.mtv-dismiss-btn:hover,
+.mtv-dismiss-btn:active {
+  background: rgba(40, 167, 69, 0.15);
+  border-color: var(--green-success);
+}
+
+.mtv-tooltip {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 6px;
+  background: var(--bg-2);
+  color: var(--txt-white);
+  border: 1px solid var(--border-medium);
+  padding: 6px 10px;
+  font-size: 11px;
+  border-radius: 6px;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s ease;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+}
+
+/* Hover ve mobil focus/active: tooltip görünsün */
+.mtv-dismiss-wrapper:hover .mtv-tooltip,
+.mtv-dismiss-btn:focus + .mtv-tooltip,
+.mtv-dismiss-btn:active + .mtv-tooltip {
+  opacity: 1;
+  visibility: visible;
+}
+
 /* MENÃœ â€“ hover scale taÅŸma olmasÄ±n */
 .menu-container {
   display: flex;
