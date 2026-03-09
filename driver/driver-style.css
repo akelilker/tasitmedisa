@@ -2980,6 +2980,7 @@ body.driver-modal-open {
     gap: 10px !important;
     width: 100% !important;
     max-width: 100% !important;
+    padding-right: 6px !important;
   }
   .login-page .pwa-install-bar .pwa-install-btn {
     grid-column: 2 !important;
