@@ -1414,10 +1414,9 @@ body.modal-open .user-panel-link {
 #app-footer.dimmed.delayed .brand img { 
   opacity: 0.8 !important; 
 }
-.status-ready { 
+.status-ready {
   color: var(--green) !important; /* Zorla yeÅŸil */
   font-weight: 600; /* Durum bilgisi kalÄ±n */
-        transform: scaleX(1.18); /* Harf aralıklarını mobilde biraz daha aç */
   text-shadow: 0 0 8px rgba(74, 222, 128, 0.4); /* YeÅŸil glow */
 }
 .status-error { 
