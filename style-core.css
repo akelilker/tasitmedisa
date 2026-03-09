@@ -1184,10 +1184,13 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   display: flex !important;
 }
 
-/* Ana uygulama modalı: Modallar her zaman footer (10000) altında kalır, footer beton gibi sabit görünür */
+/* Ana uygulama modalı: Modal her zaman footer ışığının üstünde kalır (10002), böylece kırmızı ışık içeri sızamaz.
+   clip-path ile karanlık overlay'in alt kısmı kesilir, böylece footer ve aradaki boşluk kararmadan pırıl pırıl parlar. */
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay.active,
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay.open {
-  z-index: 9999 !important;
+  z-index: 10002 !important;
+  -webkit-clip-path: inset(0 0 calc(var(--app-footer-height, 48px) + var(--modal-gap-above-footer, 5px) + env(safe-area-inset-bottom, 0)) 0) !important;
+  clip-path: inset(0 0 calc(var(--app-footer-height, 48px) + var(--modal-gap-above-footer, 5px) + env(safe-area-inset-bottom, 0)) 0) !important;
 }
 .modal-overlay .modal-container,
 .login-container,
