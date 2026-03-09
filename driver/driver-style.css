@@ -3740,22 +3740,22 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     display: none !important;
   }
   /* Modal açıkken footer ve footer ışıkları üstte kalsın */
-  body.driver-modal-open .dashboard-page #app-footer,
-  body.driver-modal-open .login-page #app-footer.login-footer {
+  body.driver-modal-open.dashboard-page #app-footer,
+  body.driver-modal-open.login-page #app-footer.login-footer {
     z-index: 10012 !important;
   }
   /* Geçmiş Kayıtlar / Düzeltme Talebi açıkken modal–footer 6px boşluğunda kırmızı dikey parçalar kalmasın */
-  body:has(#history-modal.driver-modal.show) .dashboard-page .driver-dashboard-container::before,
-  body:has(#history-modal.driver-modal.show) .login-page .driver-dashboard-container::before,
-  body:has(#edit-request-modal.driver-modal.show) .dashboard-page .driver-dashboard-container::before,
-  body:has(#edit-request-modal.driver-modal.show) .login-page .driver-dashboard-container::before {
+  body.dashboard-page:has(#history-modal.driver-modal.show) .driver-dashboard-container::before,
+  body.login-page:has(#history-modal.driver-modal.show) .driver-dashboard-container::before,
+  body.dashboard-page:has(#edit-request-modal.driver-modal.show) .driver-dashboard-container::before,
+  body.login-page:has(#edit-request-modal.driver-modal.show) .driver-dashboard-container::before {
     -webkit-clip-path: inset(0 0 calc(6px + var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) 0) !important;
     clip-path: inset(0 0 calc(6px + var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) 0) !important;
   }
   @supports not selector(body:has(*)) {
     /* Safari fallback: :has desteği yoksa modal açıkken yan kırmızı çizgileri footer boşluğundan kırp */
-    body.driver-modal-open .dashboard-page .driver-dashboard-container::before,
-    body.driver-modal-open .login-page .driver-dashboard-container::before {
+    body.driver-modal-open.dashboard-page .driver-dashboard-container::before,
+    body.driver-modal-open.login-page .driver-dashboard-container::before {
       -webkit-clip-path: inset(0 0 calc(6px + var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) 0) !important;
       clip-path: inset(0 0 calc(6px + var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) 0) !important;
     }
@@ -3972,7 +3972,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     font-size: 14px !important;
   }
   .dashboard-page .driver-plate-dropdown-row .driver-plate-trigger {
-    right: 0 !important;
+    right: -4px !important;
     top: 50% !important;
     transform: translateY(-50%) !important;
     background: var(--bg) !important;
@@ -4240,6 +4240,9 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     font-size: 17px !important;
     color: #fff !important;
   }
+  #history-modal .history-details strong {
+    color: #fff !important;
+  }
   .dashboard-page .history-vehicle {
     font-size: 16px !important;
   }
@@ -4306,6 +4309,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
   #edit-request-modal .btn-submit {
     font-size: 17px !important;
+    display: block !important;
     width: calc(100% - 30px) !important;
     margin-left: auto !important;
     margin-right: auto !important;
