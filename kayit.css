@@ -1183,11 +1183,16 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-column-right .form-section:has(#vehicle-kasko-kodu) {
         margin-top: 0 !important;
     }
+    /* Kredi Rehin ve Tahsis Edilen Şube için sıfır boşluk kuralı korundu */
     #vehicle-modal .modal-column-right .form-section-inline:has([data-group="kredi"]) .form-label,
-    #vehicle-modal .modal-column-right .form-section:has(#vehicle-branch-select) .form-label,
+    #vehicle-modal .modal-column-right .form-section:has(#vehicle-branch-select) .form-label {
+        margin-top: 0 !important;
+    }
+
+    /* Kasko Kodu ve Notlar etiketlerinin üstüne tam denge için 3px eklendi */
     #vehicle-modal .modal-column-right .form-section:has(#vehicle-kasko-kodu) .form-label,
     #vehicle-modal .modal-column-right .form-section:has(#vehicle-notes) .form-label {
-        margin-top: 0 !important;
+        margin-top: 3px !important;
     }
     /* Tahsis Edilen Şube ve Notlar: etiket altı 1px (önceki margin shorthand’i ezer) */
     #vehicle-modal .modal-column-right .form-section:has(#vehicle-branch-select) .form-label,
