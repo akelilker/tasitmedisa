@@ -1341,6 +1341,19 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     .modal-column-right .form-section-inline:has(.radio-group) .radio-group { position: static; transform: none; right: auto; top: auto; }
     .modal-column-left .form-section-inline:not(:first-child) { justify-content: space-between; }
     .modal-column-left .form-section-inline:not(:first-child) .radio-group { justify-content: flex-end; margin-left: auto; }
+
+    /* Mobil kayıt: sağ kolon bitişini sol kolonla hizala */
+    #vehicle-modal .modal-columns {
+        align-items: stretch !important;
+    }
+    #vehicle-modal .modal-column-right {
+        display: flex !important;
+        flex-direction: column !important;
+    }
+    #vehicle-modal .modal-column-right .form-section:has(#vehicle-notes) {
+        margin-top: auto !important;
+        padding-bottom: 0 !important;
+    }
 }
 
 /* === MASAÜSTÜ OPTİMİZASYONLARI === */
