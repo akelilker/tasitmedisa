@@ -1119,7 +1119,12 @@
       printBtn.title = 'Taşıt Kartı Yazdır';
       printBtn.setAttribute('aria-label', 'Taşıt Kartı Yazdır');
       printBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v8H6z"/></svg>`;
-      printBtn.onclick = () => window.printVehicleCard(vehicle.id);
+      // #region agent log
+      printBtn.onclick = () => {
+        fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'4da7db'},body:JSON.stringify({sessionId:'4da7db',location:'tasitlar.js:printBtn.onclick',message:'Print button clicked',data:{vehicleId:vehicle.id,innerWidth:window.innerWidth},timestamp:Date.now(),hypothesisId:'H1_H3_H5'})}).catch(()=>{});
+        window.printVehicleCard(vehicle.id);
+      };
+      // #endregion
       toolbarRight.appendChild(printBtn);
       
       // Toolbar'a bölümleri ekle
@@ -1663,8 +1668,11 @@
   }
 
   window.printVehicleCard = function(vehicleId) {
+    // #region agent log
     const vehicles = readVehicles();
     const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
+    fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'4da7db'},body:JSON.stringify({sessionId:'4da7db',location:'tasitlar.js:printVehicleCard',message:'printVehicleCard entered',data:{vehicleId,vehicleFound:!!vehicle,innerWidth:window.innerWidth},timestamp:Date.now(),hypothesisId:'H3'})}).catch(()=>{});
+    // #endregion
     if (!vehicle) {
       alert('Taşıt bulunamadı!');
       return;
@@ -1674,6 +1682,9 @@
       .map(([label, value]) => `<tr><th>${escapeHtml(label)}</th><td>${escapeHtml(String(value || '-')).replace(/\n/g, '<br>')}</td></tr>`)
       .join('');
     const printWindow = window.open('', '_blank', 'noopener,noreferrer,width=900,height=700');
+    // #region agent log
+    fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'4da7db'},body:JSON.stringify({sessionId:'4da7db',location:'tasitlar.js:after open',message:'window.open result',data:{openNull:!printWindow,innerWidth:window.innerWidth},timestamp:Date.now(),hypothesisId:'H2'})}).catch(()=>{});
+    // #endregion
     if (!printWindow) {
       alert('Yazdırma penceresi açılamadı. Lütfen açılır pencere izni verin.');
       return;
@@ -1705,6 +1716,9 @@
     printWindow.document.close();
     printWindow.focus();
     setTimeout(() => {
+      // #region agent log
+      fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'4da7db'},body:JSON.stringify({sessionId:'4da7db',location:'tasitlar.js:before print',message:'calling printWindow.print()',data:{innerWidth:window.innerWidth},timestamp:Date.now(),hypothesisId:'H4'})}).catch(()=>{});
+      // #endregion
       printWindow.print();
     }, 120);
   };
