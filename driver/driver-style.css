@@ -454,13 +454,13 @@ body.driver-modal-open {
     width: 19px !important;
     height: 19px !important;
   }
-  /* Footer: masaüstünde gri üst, yan sensör çizgileri + kırmızı glow (dashboard = login); kırmızı ışık footer'a değdiği yerde sıfır */
+  /* Footer: masaüstünde gri üst, yan sensör çizgileri + kırmızı glow (dashboard); yoğunluk hafif azaltıldı */
   .dashboard-page #app-footer {
     min-height: 0 !important;
     border-top: 1px solid rgba(200, 200, 200, 0.52) !important;
     border-left: 0.6px solid rgba(255, 255, 255, 0.24) !important;
     border-right: 0.6px solid rgba(255, 255, 255, 0.24) !important;
-    box-shadow: 0 -16px 26px rgba(var(--footer-glow-rgb), 0.34) !important;
+    box-shadow: 0 -16px 26px rgba(var(--footer-glow-rgb), 0.24) !important;
   }
   .dashboard-page #app-footer .footer-content {
     padding: 8px 12px !important;
