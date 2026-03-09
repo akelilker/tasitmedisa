@@ -1326,10 +1326,12 @@ body.modal-open .user-panel-link {
     opacity: 1; /* VarsayÄ±lan opacity */
 }
 
-/* Versiyon solda - daha belirgin */
+/* Versiyon solda - daha belirgin; ezilmesin, taşmasın */
 #app-footer .version {
     text-align: left;
     flex: 1;
+    flex-shrink: 0 !important;
+    white-space: nowrap !important;
     color: var(--txt-gray);
     font-weight: 500;
 }
@@ -1337,28 +1339,40 @@ body.modal-open .user-panel-link {
 /* MEDISA Brand SVG - Ortada, ince detay + Ä±ÅŸÄ±k efekti */
 #app-footer .brand {
     text-align: center;
-    flex: 0 0 auto;
+    min-width: 0;
+    flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
     letter-spacing: 2.5px; /* 1px â†’ 2.5px daha geniÅŸ */
 }
 
-/* --- DÃœZELTME: img olarak deÄŸiÅŸtirildi ve 13px yapÄ±ldÄ± --- */
+/* --- DÃœZELTME: img olarak deÄŸiÅŸtirildi; taÅŸmayÄ± Ã¶nlemek iÃ§in alan iÃ§inde Ã¶lÃ§eklenir --- */
 #app-footer .brand img {
-    height: 12.5px; /* MasaÃ¼stÃ¼ 12.5px */
+    max-width: 100%;
+    height: auto;
+    max-height: 12.5px;
     width: auto;
     opacity: 0.4; /* BaÅŸlangÄ±Ã§ Ã§ok soluk */
     filter: none;
     transition: opacity 1s ease;
     /* Harfler arasÄ± boÅŸluk efekti iÃ§in resmi yayvanlaÅŸtÄ±r */
     transform: scaleX(1.1);
+    object-fit: contain;
+}
+#app-footer .brand svg {
+    max-width: 100%;
+    height: auto;
+    max-height: 12.5px;
+    flex-shrink: 1;
 }
 
-/* Durum saÄŸda */
+/* Durum saÄŸda; ezilmesin, taÅŸmasÄ±n */
 #app-footer .status {
     text-align: right;
-    flex: 1; /* SaÄŸdaki boÅŸluÄŸu kapla */
+    flex: 1;
+    flex-shrink: 0 !important;
+    white-space: nowrap !important;
     display: flex;
     justify-content: flex-end; /* Ä°Ã§eriÄŸi saÄŸa it */
     align-items: center;
