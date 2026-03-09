@@ -1120,7 +1120,11 @@
       printBtn.setAttribute('aria-label', 'Taşıt Kartı Yazdır');
       printBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v8H6z"/></svg>`;
       // #region agent log
-      printBtn.onclick = () => {
+      printBtn.onclick = (e) => {
+        if (e) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
         var _d = { sessionId: '4da7db', location: 'tasitlar.js:printBtn.onclick', message: 'Print button clicked', data: { vehicleId: vehicle.id, innerWidth: window.innerWidth }, timestamp: Date.now(), hypothesisId: 'H1_H3_H5' };
         (window.__debugLog = window.__debugLog || []).push(_d); console.log('[DEBUG]', _d);
         window.printVehicleCard(vehicle.id);
@@ -1669,36 +1673,21 @@
   }
 
   window.printVehicleCard = function(vehicleId) {
-    // #region agent log
     const vehicles = readVehicles();
     const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
     var _d = { sessionId: '4da7db', location: 'tasitlar.js:printVehicleCard', message: 'printVehicleCard entered', data: { vehicleId: vehicleId, vehicleFound: !!vehicle, innerWidth: window.innerWidth }, timestamp: Date.now(), hypothesisId: 'H3' };
     (window.__debugLog = window.__debugLog || []).push(_d); console.log('[DEBUG]', _d);
-    // #endregion
     if (!vehicle) {
       alert('Taşıt bulunamadı!');
       return;
     }
 
-    // Açılış penceresi kullanıcı tıklamasıyla aynı senkron turda açılsın (mobil popup izni + uzun click handler ihlali önleme)
-    const printWindow = window.open('', '_blank', 'noopener,noreferrer,width=900,height=700');
-    // #region agent log
-    var _d2 = { sessionId: '4da7db', location: 'tasitlar.js:after open', message: 'window.open result', data: { openNull: !printWindow, innerWidth: window.innerWidth }, timestamp: Date.now(), hypothesisId: 'H2' };
-    (window.__debugLog = window.__debugLog || []).push(_d2); console.log('[DEBUG]', _d2);
-    // #endregion
-    if (!printWindow) {
-      alert('Yazdırma penceresi açılamadı. Lütfen açılır pencere izni verin.');
-      return;
-    }
-
-    // Ağır işi (document.write + print) sonraki tick'e at: click handler hemen dönsün, mobilde yazdırma diyaloğu açılabilsin
-    setTimeout(function() {
-      const rows = getVehiclePrintRows(vehicle)
-        .map(([label, value]) => `<tr><th>${escapeHtml(label)}</th><td>${escapeHtml(String(value || '-')).replace(/\n/g, '<br>')}</td></tr>`)
-        .join('');
-      const now = new Date();
-      const printedAt = `${String(now.getDate()).padStart(2, '0')}.${String(now.getMonth() + 1).padStart(2, '0')}.${now.getFullYear()} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-      printWindow.document.write(`<!doctype html>
+    const rows = getVehiclePrintRows(vehicle)
+      .map(([label, value]) => `<tr><th>${escapeHtml(label)}</th><td>${escapeHtml(String(value || '-')).replace(/\n/g, '<br>')}</td></tr>`)
+      .join('');
+    const now = new Date();
+    const printedAt = `${String(now.getDate()).padStart(2, '0')}.${String(now.getMonth() + 1).padStart(2, '0')}.${now.getFullYear()} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+    const printHtml = `<!doctype html>
 <html lang="tr">
 <head>
   <meta charset="utf-8">
@@ -1718,19 +1707,160 @@
   <p class="subtitle">Plaka: ${escapeHtml(vehicle.plate || '-')} • Oluşturma: ${printedAt}</p>
   <table>${rows}</table>
 </body>
-</html>`);
-      printWindow.document.close();
-      printWindow.focus();
-      setTimeout(function() {
-        // #region agent log
-        var _d3 = { sessionId: '4da7db', location: 'tasitlar.js:before print', message: 'calling printWindow.print()', data: { innerWidth: window.innerWidth }, timestamp: Date.now(), hypothesisId: 'H4' };
-        (window.__debugLog = window.__debugLog || []).push(_d3); console.log('[DEBUG]', _d3);
-        // #endregion
-        printWindow.print();
-      }, 120);
-    }, 0);
-  };
+</html>`;
 
+    function pushPrintDebug(location, message, data, hypothesisId) {
+      var dbg = {
+        sessionId: '4da7db',
+        location: location,
+        message: message,
+        data: data || {},
+        timestamp: Date.now(),
+        hypothesisId: hypothesisId || 'PRINT'
+      };
+      (window.__debugLog = window.__debugLog || []).push(dbg);
+      console.log('[DEBUG]', dbg);
+    }
+
+    function printWithIframeFallback(sourceError) {
+      var iframe = document.createElement('iframe');
+      iframe.setAttribute('aria-hidden', 'true');
+      iframe.style.position = 'fixed';
+      iframe.style.right = '0';
+      iframe.style.bottom = '0';
+      iframe.style.width = '0';
+      iframe.style.height = '0';
+      iframe.style.border = '0';
+      iframe.style.opacity = '0';
+      iframe.style.pointerEvents = 'none';
+
+      var done = false;
+      function cleanup() {
+        try { iframe.onload = null; } catch (e) {}
+        if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
+      }
+      function fail(err) {
+        if (done) return;
+        done = true;
+        cleanup();
+        pushPrintDebug('tasitlar.js:iframeFallbackFail', 'Iframe fallback failed', {
+          error: (err && err.message) ? err.message : String(err || 'unknown_error'),
+          sourceError: sourceError || ''
+        }, 'H_IFRAME_FAIL');
+        alert('Yazdırma başlatılamadı. Lütfen tekrar deneyin.');
+      }
+
+      try {
+        document.body.appendChild(iframe);
+        var frameWindow = iframe.contentWindow;
+        var frameDoc = frameWindow ? frameWindow.document : iframe.contentDocument;
+        if (!frameWindow || !frameDoc) {
+          throw new Error('iframe_unavailable');
+        }
+
+        frameDoc.open();
+        frameDoc.write(printHtml);
+        frameDoc.close();
+
+        setTimeout(function() {
+          if (done) return;
+          try {
+            var cleanupTimer = setTimeout(function() {
+              if (done) return;
+              done = true;
+              cleanup();
+            }, 2000);
+            var onAfterPrint = function() {
+              clearTimeout(cleanupTimer);
+              if (done) return;
+              done = true;
+              cleanup();
+              frameWindow.removeEventListener('afterprint', onAfterPrint);
+            };
+            frameWindow.addEventListener('afterprint', onAfterPrint);
+            pushPrintDebug('tasitlar.js:before iframe print', 'calling iframe print()', { innerWidth: window.innerWidth }, 'H_IFRAME_PRINT');
+            frameWindow.focus();
+            frameWindow.print();
+          } catch (printErr) {
+            fail(printErr);
+          }
+        }, 60);
+      } catch (iframeErr) {
+        fail(iframeErr);
+      }
+    }
+
+    function tryPopupPrint(printWindow) {
+      return new Promise(function(resolve, reject) {
+        var settled = false;
+        var printTriggered = false;
+
+        function finalizeSuccess() {
+          if (settled) return;
+          settled = true;
+          resolve(true);
+        }
+        function finalizeFail(err) {
+          if (settled) return;
+          settled = true;
+          reject(err);
+        }
+        function triggerPrint() {
+          if (settled || printTriggered) return;
+          printTriggered = true;
+          try {
+            pushPrintDebug('tasitlar.js:before print', 'calling printWindow.print()', { innerWidth: window.innerWidth }, 'H4');
+            printWindow.focus();
+            printWindow.print();
+            finalizeSuccess();
+          } catch (printErr) {
+            finalizeFail(printErr);
+          }
+        }
+
+        try {
+          printWindow.document.open();
+          printWindow.document.write(printHtml);
+          printWindow.document.close();
+        } catch (writeErr) {
+          finalizeFail(writeErr);
+          return;
+        }
+
+        try {
+          printWindow.onload = triggerPrint;
+        } catch (e) {}
+
+        setTimeout(triggerPrint, 180);
+      });
+    }
+
+    let printWindow = null;
+    try {
+      printWindow = window.open('', '_blank', 'width=900,height=700');
+    } catch (popupOpenErr) {
+      pushPrintDebug('tasitlar.js:popupOpenError', 'window.open threw', {
+        error: (popupOpenErr && popupOpenErr.message) ? popupOpenErr.message : String(popupOpenErr || 'unknown_error')
+      }, 'H_POPUP_THROW');
+    }
+
+    pushPrintDebug('tasitlar.js:after open', 'window.open result', {
+      openNull: !printWindow,
+      innerWidth: window.innerWidth
+    }, 'H2');
+
+    if (!printWindow) {
+      printWithIframeFallback('popup_blocked_or_null');
+      return;
+    }
+
+    tryPopupPrint(printWindow).catch(function(popupErr) {
+      pushPrintDebug('tasitlar.js:popupPrintFail', 'Popup print failed, switching to iframe fallback', {
+        error: (popupErr && popupErr.message) ? popupErr.message : String(popupErr || 'unknown_error')
+      }, 'H_POPUP_FAIL');
+      printWithIframeFallback((popupErr && popupErr.message) ? popupErr.message : 'popup_print_failed');
+    });
+  };
   /**
    * /**
  * Sol kolon render (Taşıt özellikleri + Kaporta Şeması)
