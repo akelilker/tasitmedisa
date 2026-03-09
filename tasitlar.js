@@ -3823,23 +3823,25 @@ function renderVehicleDetailLeft(vehicle) {
         notifications.forEach(notif => {
           const typeLabel = notif.type === 'sigorta' ? 'Sigorta' : notif.type === 'kasko' ? 'Kasko' : 'Muayene';
           const dateDisplay = formatDateForDisplay(notif.date);
-          const daysText = notif.days < 0 ? `${Math.abs(notif.days)} gün geçmiş` :
-                          notif.days === 0 ? 'Bugün' :
-                          notif.days === 1 ? 'Yarın' :
-                          `${notif.days} gün kaldı`;
+          let messageText = '';
+          if (notif.days < 0) {
+              messageText = `${notif.plate} Plakalı Taşıtın ${typeLabel} Tarihi ${Math.abs(notif.days)} Gün Geçti.`;
+          } else if (notif.days === 0) {
+              messageText = `${notif.plate} Plakalı Taşıtın ${typeLabel} Tarihi Bugün Bitiyor.`;
+          } else {
+              messageText = `${notif.plate} Plakalı Taşıtın ${typeLabel} Tarihi ${notif.days} Gün Sonra Bitecek.`;
+          }
+
           const borderColor = notif.warningClass === 'date-warning-red'
             ? 'rgba(212, 0, 0, 0.6)'
             : 'rgba(255, 140, 0, 0.6)';
           const safePlate = (notif.plate || '').replace(/"/g, '&quot;');
+
           html += `<button type="button" data-plate="${safePlate}" style="width: 100%; padding: 12px; background: transparent; border: 1px solid ${borderColor}; color: #ccc; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 13px; text-align: left; margin-bottom: 4px; transition: all 0.2s ease;" class="notification-item ${notif.warningClass}-border">
-          <div style="font-weight: 600; color: #fff; margin-bottom: 4px; text-align: center;">${escapeHtml(notif.plate)}</div>
-          <div style="font-size: 11px; color: #999; margin-bottom: 4px; text-align: center;">${escapeHtml(notif.brandModel)}</div>
-          <div style="font-size: 11px; text-align: center; margin-bottom: 4px;">
-            <span class="${notif.warningClass}">${escapeHtml(typeLabel)}</span> - ${escapeHtml(dateDisplay)}
+          <div style="font-weight: 500; color: #fff; line-height: 1.4;">
+            <span class="${notif.warningClass}">${escapeHtml(messageText)}</span>
           </div>
-          <div style="text-align: center;">
-            <span class="${notif.warningClass}" style="font-size: 11px;">${escapeHtml(daysText)}</span>
-          </div>
+          <div style="font-size: 11px; color: #999; margin-top: 6px;">Son Tarih: ${escapeHtml(dateDisplay)}</div>
         </button>`;
         });
       }
