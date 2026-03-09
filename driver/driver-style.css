@@ -4560,7 +4560,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     position: sticky !important;
     top: 0 !important;
     align-self: stretch !important;
-    overflow: hidden !important;
+    overflow: visible !important;
   }
 
   .dashboard-page .driver-left-panel-content {
