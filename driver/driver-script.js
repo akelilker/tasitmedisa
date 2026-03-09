@@ -652,7 +652,7 @@ const API_BASE = (function(){
                               <label for="km-${vid}">Güncel KM</label>
                               <div class="driver-km-input-wrap">
                                   <span class="driver-km-fake-placeholder" id="km-placeholder-${vid}">Örn: 45.230</span>
-                                  <input type="text" id="km-${vid}" class="driver-km-input" inputmode="numeric" pattern="[0-9]*" maxlength="8" data-vehicle-id="${vid}" value="${kmVal}" required autocomplete="off" aria-label="Güncel kilometre">
+                                  <input type="text" id="km-${vid}" class="driver-km-input" inputmode="numeric" pattern="[0-9]*" maxlength="8" data-vehicle-id="${vid}" value="${kmVal}" required autocomplete="off" aria-label="Güncel kilometre" onfocus="this.select()">
                               </div>
                           </div>
                           <div class="universal-btn-group">
@@ -1247,7 +1247,7 @@ const API_BASE = (function(){
               this.value = (this.value + (text || '')).replace(/\D/g, '').slice(0, 8);
               togglePlaceholder();
           });
-          input.addEventListener('focus', togglePlaceholder);
+          input.addEventListener('focus', function() { togglePlaceholder(); this.select(); });
           input.addEventListener('blur', togglePlaceholder);
       });
   }

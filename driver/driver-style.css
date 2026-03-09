@@ -828,10 +828,10 @@ body.driver-modal-open {
   text-align: center;
   min-width: 0;
 }
-/* Kırmızı chevron akıştan çıkarılır, plaka ortalama etkilenmez */
+/* Kırmızı chevron akıştan çıkarılır, plaka ortalama etkilenmez; sağdan 3px boşluk (harf kesilmesin) */
 .driver-plate-dropdown-row .driver-plate-trigger {
   position: absolute;
-  right: 0;
+  right: -3px;
   top: 50%;
   transform: translateY(-50%);
 }
@@ -3903,7 +3903,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     font-size: 14px !important;
   }
   .dashboard-page .driver-plate-dropdown-row .driver-plate-trigger {
-    right: -11px !important;
+    right: -14px !important;
     top: 50% !important;
     transform: translateY(-50%) !important;
     background: var(--bg) !important;
@@ -4346,14 +4346,14 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     margin-right: -12px !important;
   }
   .dashboard-page .driver-plate-dropdown-row .driver-plate-trigger {
-    right: 0 !important;
+    right: -3px !important;
     top: 50% !important;
     transform: translateY(-50%) !important;
     background: var(--bg) !important;
   }
   .dashboard-page .driver-plate-dropdown-row .driver-current-plaka {
     padding-left: 18px !important;
-    padding-right: 18px !important;
+    padding-right: 21px !important;
   }
 }
   .dashboard-page .driver-action-area .driver-report-block input[type="date"] {
