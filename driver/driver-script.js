@@ -76,6 +76,10 @@ const API_BASE = (function(){
     if (parts.length !== 3) return isoDate;
     return parts[2] + '/' + parts[1] + '/' + parts[0];
   }
+  function formatDriverPlaka(plaka) {
+    if (!plaka) return '';
+    return window.innerWidth <= 768 ? String(plaka).replace(/\s+/g, '') : plaka;
+  }
   function syncDriverDateDisplay(inputEl) {
     if (!inputEl || inputEl.type !== 'date') return;
     var wrap = inputEl.closest('.driver-date-wrap');
@@ -433,7 +437,7 @@ const API_BASE = (function(){
       }
       
       const plakaEl = document.getElementById('driver-current-plaka');
-      if (plakaEl) plakaEl.textContent = vehicle.plaka;
+      if (plakaEl) plakaEl.textContent = formatDriverPlaka(vehicle.plaka);
       const subtitleEl = document.getElementById('driver-plate-subtitle');
       if (subtitleEl) subtitleEl.textContent = (typeof window.toTitleCase === 'function' ? window.toTitleCase : function(x){ return x; })(vehicle.brandModel || [vehicle.marka, vehicle.model].filter(Boolean).join(' ') || '') || '';
       
@@ -547,7 +551,7 @@ const API_BASE = (function(){
       dropdown.innerHTML = vehicles.map(v => {
           const raw = v.brandModel || [v.marka, v.model].filter(Boolean).join(' ');
           const brandModel = (typeof window.toTitleCase === 'function' ? window.toTitleCase : function(x){ return x; })(raw || '') || '';
-          return `<div class="driver-plate-dropdown-item" role="option" data-vehicle-id="${v.id}" tabindex="0">${escapeHtmlDriver(v.plaka)}${brandModel ? ' - ' + escapeHtmlDriver(brandModel) : ''}</div>`;
+          return `<div class="driver-plate-dropdown-item" role="option" data-vehicle-id="${v.id}" tabindex="0">${escapeHtmlDriver(formatDriverPlaka(v.plaka))}${brandModel ? ' - ' + escapeHtmlDriver(brandModel) : ''}</div>`;
       }).join('');
       
       dropdown.querySelectorAll('.driver-plate-dropdown-item').forEach(item => {
@@ -558,7 +562,7 @@ const API_BASE = (function(){
               if (vid == null || vid === '') return;
               selectedVehicleId = vid;
               const sel = getSelectedVehicle();
-              if (sel) currentPlakaEl.textContent = sel.plaka;
+              if (sel) currentPlakaEl.textContent = formatDriverPlaka(sel.plaka);
               dropdown.style.display = 'none';
               loadDashboard();
           });
@@ -1123,16 +1127,16 @@ const API_BASE = (function(){
           const periodNum = period.replace(/-/g, '');
           const isNewThisMonth = createdPeriod && createdPeriod === periodNum;
           if (!hasKmThisMonth && !isNewThisMonth) {
-              warnings.push({ text: v.plaka + ' Plakalı Taşıtın Güncel Km Bildirimi Yapılmamıştır', plaka: v.plaka });
+              warnings.push({ text: formatDriverPlaka(v.plaka) + ' Plakalı Taşıtın Güncel Km Bildirimi Yapılmamıştır', plaka: formatDriverPlaka(v.plaka) });
           }
           const checkDate = (dateStr, label) => {
               if (!dateStr) return;
               const w = checkDateWarningsDriver(dateStr);
               if (w.class && w.days != null) {
                   let msg;
-                  if (w.days < 0) msg = v.plaka + ' Plakalı Taşıtın ' + label + ' Tarihi ' + Math.abs(w.days) + ' Gün Geçmiştir';
-                  else msg = v.plaka + ' Plakalı Taşıtın ' + label + ' Tarihine ' + w.days + ' Gün Kalmıştır';
-                  warnings.push({ text: msg, plaka: v.plaka });
+                  if (w.days < 0) msg = formatDriverPlaka(v.plaka) + ' Plakalı Taşıtın ' + label + ' Tarihi ' + Math.abs(w.days) + ' Gün Geçmiştir';
+                  else msg = formatDriverPlaka(v.plaka) + ' Plakalı Taşıtın ' + label + ' Tarihine ' + w.days + ' Gün Kalmıştır';
+                  warnings.push({ text: msg, plaka: formatDriverPlaka(v.plaka) });
               }
           };
           checkDate(v.muayeneDate, 'Muayene');
@@ -1897,7 +1901,7 @@ const API_BASE = (function(){
           opt.dataset.value = String(v.id);
           var raw = v.brandModel || [v.marka, v.model].filter(Boolean).join(' ');
           var brandModel = (typeof window.toTitleCase === 'function' ? window.toTitleCase : function(x){ return x; })(raw || '') || '';
-          opt.textContent = [v.plaka, brandModel].filter(Boolean).join(' - ');
+          opt.textContent = [formatDriverPlaka(v.plaka), brandModel].filter(Boolean).join(' - ');
           opt.onclick = function() { selectHistoryVehicle(String(v.id), opt.textContent); };
           dropdown.appendChild(opt);
       });
@@ -1907,7 +1911,7 @@ const API_BASE = (function(){
           defaultVal = String(allHistoryVehicles[0].id);
           var rawBm = allHistoryVehicles[0].brandModel || [allHistoryVehicles[0].marka, allHistoryVehicles[0].model].filter(Boolean).join(' ');
           var bm = (typeof window.toTitleCase === 'function' ? window.toTitleCase : function(x){ return x; })(rawBm || '') || '';
-          defaultText = [allHistoryVehicles[0].plaka, bm].filter(Boolean).join(' - ');
+          defaultText = [formatDriverPlaka(allHistoryVehicles[0].plaka), bm].filter(Boolean).join(' - ');
       }
       hiddenInput.value = defaultVal;
       if (triggerText) triggerText.textContent = defaultText;
@@ -2088,7 +2092,7 @@ const API_BASE = (function(){
       window._historyRecordMap = window._historyRecordMap || {};
       sorted.forEach(item => {
           const vehicle = allHistoryVehicles.find(v => String(v.id) === String(item.arac_id));
-          const plaka = vehicle ? vehicle.plaka : item.arac_id;
+          const plaka = vehicle ? formatDriverPlaka(vehicle.plaka) : item.arac_id;
           const periodLabel = formatHistoryPeriod(item);
   
           let detailsHtml = '';
