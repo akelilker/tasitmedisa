@@ -4027,14 +4027,14 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     flex-direction: column !important;
     align-items: center !important;
   }
-  /* Üstündeki açıklama metnini şemaya yaklaştırdık */
+  /* Üstündeki açıklama metnine 3px rahatlama boşluğu eklendi */
   .dashboard-page .driver-report-block-kaza .form-group .driver-kaporta-label {
-    margin-bottom: 0 !important;
+    margin-bottom: 3px !important;
     position: relative;
     z-index: 2;
   }
 
-  /* Altındaki bilgi toplarını (legend) şemaya yaklaştırdık */
+  /* Altındaki bilgi topları (legend) aynı kaldı */
   .dashboard-page .driver-report-block-kaza .driver-kaporta-container .boya-legend {
     display: flex !important;
     justify-content: center;
@@ -4045,14 +4045,14 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     z-index: 2;
   }
 
-  /* 90 derece dönen şemanın boyutunu daralttık ve hayalet boşlukları yeni boyuta göre güncelledik */
+  /* 90 derece dönen şema 8px daha daraltıldı ve hayalet boşluklar (-39px) ona göre ayarlandı */
   .dashboard-page .driver-report-block-kaza .driver-kaporta-container .driver-kaporta-schema-wrapper svg {
     width: 100% !important;
-    max-width: 134px !important; /* Dikey boyut 10px daraltıldı (144 -> 134) */
-    max-height: 204px !important; /* Yatay boyut 8px daraltıldı (212 -> 204) */
+    max-width: 126px !important; /* Dikey boyut 8px daha daraltıldı (134 -> 126) */
+    max-height: 204px !important; /* Yatay boyut sabit kaldı */
     height: auto !important;
-    margin-top: -35px !important; /* Yeni boyuta göre hayalet boşluk matematiği */
-    margin-bottom: -35px !important;
+    margin-top: -39px !important; /* Yeni boyuta göre hayalet boşluk süpürüldü */
+    margin-bottom: -39px !important;
     position: relative;
     z-index: 1;
   }
