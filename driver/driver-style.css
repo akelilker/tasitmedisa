@@ -2342,17 +2342,10 @@ body.driver-modal-open {
   #driver-kasko-modal.driver-modal {
     padding: 0 !important;
   }
-  /* GeÃ§miÅŸ KayÄ±tlar + DÃ¼zeltme Talebi: overlay footer Ã¼stÃ¼nde bitsin; modali-footer arasÄ± tam 1px */
+  /* GeÃ§miÅŸ KayÄ±tlar + DÃ¼zeltme Talebi: style-core standardÄ± (footer + 6px) */
   #history-modal.driver-modal,
   #edit-request-modal.driver-modal {
-    bottom: calc(1px + var(--app-footer-height, 30px)) !important;
-    height: auto !important;
-    max-height: calc(100vh - 1px - var(--app-footer-height, 30px)) !important;
-  }
-  #history-modal.driver-modal::before,
-  #edit-request-modal.driver-modal::before {
-    height: calc(100vh - max(12px, env(safe-area-inset-top)) - 1px - var(--app-footer-height, 30px)) !important;
-    height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 1px - var(--app-footer-height, 30px)) !important;
+    bottom: calc(var(--app-footer-height, 34px) + 6px + env(safe-area-inset-bottom, 0)) !important;
   }
 }
 
@@ -2421,32 +2414,7 @@ body.driver-modal-open {
   overscroll-behavior: none;
   overscroll-behavior-x: none;
 }
-/* GeÃ§miÅŸ KayÄ±tlar + DÃ¼zeltme Talebi masaÃ¼stÃ¼: modali-footer arasÄ± tam 1px */
-#history-modal .driver-modal-content,
-#history-modal .modal-container,
-#edit-request-modal .driver-modal-content,
-#edit-request-modal .modal-container {
-  margin-bottom: 1px !important;
-  height: calc(100vh - max(12px, env(safe-area-inset-top)) - 1px - var(--app-footer-height, 30px)) !important;
-  height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 1px - var(--app-footer-height, 30px)) !important;
-  max-height: calc(100vh - max(12px, env(safe-area-inset-top)) - 1px - var(--app-footer-height, 30px)) !important;
-  max-height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 1px - var(--app-footer-height, 30px)) !important;
-}
-
-@media (min-width: 641px) {
-  #history-modal.driver-modal::before {
-    height: calc(100vh - max(12px, env(safe-area-inset-top)) + 1px - var(--app-footer-height, 30px)) !important;
-    height: calc(100dvh - max(12px, env(safe-area-inset-top)) + 1px - var(--app-footer-height, 30px)) !important;
-  }
-  #history-modal .driver-modal-content,
-  #history-modal .modal-container {
-    margin-bottom: -1px !important;
-    height: calc(100vh - max(12px, env(safe-area-inset-top)) + 1px - var(--app-footer-height, 30px)) !important;
-    height: calc(100dvh - max(12px, env(safe-area-inset-top)) + 1px - var(--app-footer-height, 30px)) !important;
-    max-height: calc(100vh - max(12px, env(safe-area-inset-top)) + 1px - var(--app-footer-height, 30px)) !important;
-    max-height: calc(100dvh - max(12px, env(safe-area-inset-top)) + 1px - var(--app-footer-height, 30px)) !important;
-  }
-}
+/* GeÃ§miÅŸ KayÄ±tlar + DÃ¼zeltme Talebi: overlay bottom +6px (641px+); iÃ§ yÃ¼kseklik genel driver modal kurallarÄ±ndan */
 /* Desktop: avoid double bottom line on Edit Request modal */
 @media (min-width: 641px) {
   #edit-request-modal .driver-modal-content,
@@ -3336,7 +3304,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .login-page .driver-dashboard-container::before {
     top: 0 !important;
     bottom: auto !important;
-    height: calc(100vh - var(--app-footer-height, 30px) - env(safe-area-inset-bottom, 0)) !important;
+    height: calc(100vh - var(--app-footer-height, 34px) - env(safe-area-inset-bottom, 0)) !important;
   }
 }
 
@@ -4771,7 +4739,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 @media (min-width: 769px) {
   .dashboard-page .driver-dashboard-container::before,
   .login-page .driver-dashboard-container::before {
-    height: calc(100vh - var(--app-footer-height, 30px) - env(safe-area-inset-bottom, 0)) !important;
+    height: calc(100vh - var(--app-footer-height, 34px) - env(safe-area-inset-bottom, 0)) !important;
   }
 }
 

@@ -29,7 +29,7 @@ body::-webkit-scrollbar,
   --border-shiny: rgba(255, 255, 255, 0.25);
 
   --modal-footer-gap: 12px;
-  --app-footer-height: 48px;
+  --app-footer-height: 30px;
   --modal-footer-reserve: calc(var(--app-footer-height) + var(--modal-footer-gap));
   --modal-gap-above-footer: 5px; /* Mobil/masaÃƒÂ¼stÃƒÂ¼ tek deÃ„Å¸er */
 
@@ -90,6 +90,7 @@ body::-webkit-scrollbar,
 /* MasaÃƒÂ¼stÃƒÂ¼ (641px+): modalÃ¢â‚¬â€œfooter arasÃ„Â± 5px (anasayfa RAPORLAR/TaÃ…Å¸Ã„Â±tlar vb.) */
 @media (min-width: 641px) {
   :root {
+    --app-footer-height: 34px;
     --modal-gap-above-footer: 1px;
   }
 }
@@ -1571,20 +1572,16 @@ body.modal-open .user-panel-link {
   text-shadow: 0 0 8px rgba(239, 68, 68, 0.4); /* KÃ„Â±rmÃ„Â±zÃ„Â± glow */
 }
 
-/* MOBÃ„Â°L AYARLARI: 768px ve altÃ„Â±nda modal alt ÃƒÂ§erÃƒÂ§eve footer Ã„Â±Ã…Å¸Ã„Â±Ã„Å¸Ã„Â±nda ezilmesin, 4px nefes payÃ„Â± + iÃƒÂ§ kaydÃ„Â±rma boÃ…Å¸luÃ„Å¸u */
+/* MOBÃ„Â°L AYARLARI: 768px ve altÃ„Â±nda modal alt ÃƒÂ§erÃƒÂ§eve footer Ã„Â±Ã…Å¸Ã„Â±Ã„Å¸Ã„Â±nda ezilmesin; sÃ„Â±nÃ„Â±r sadece top/bottom */
 @media (max-width: 768px) {
     /* clip-path kaldÄ±rÄ±ldÄ±: overlay iÃ§indeki modal kutusunun alt Ã§erÃ§evesi kesilmesin */
     .modal-overlay {
-        bottom: calc(var(--app-footer-height, 30px) + 7px + env(safe-area-inset-bottom, 0)) !important;
-        max-height: calc(100vh - var(--app-footer-height, 30px) - 7px - env(safe-area-inset-bottom, 0)) !important;
-        max-height: calc(100dvh - var(--app-footer-height, 30px) - 7px - env(safe-area-inset-bottom, 0)) !important;
+        bottom: calc(var(--app-footer-height, 30px) + 6px + env(safe-area-inset-bottom, 0)) !important;
     }
     #vehicle-modal.modal-overlay,
     #reports-modal.modal-overlay,
     #vehicles-modal.modal-overlay {
-        bottom: calc(var(--app-footer-height, 30px) + 7px + env(safe-area-inset-bottom, 0)) !important;
-        max-height: calc(100vh - var(--app-footer-height, 30px) - 7px - env(safe-area-inset-bottom, 0)) !important;
-        max-height: calc(100dvh - var(--app-footer-height, 30px) - 7px - env(safe-area-inset-bottom, 0)) !important;
+        bottom: calc(var(--app-footer-height, 30px) + 6px + env(safe-area-inset-bottom, 0)) !important;
     }
     .modal-overlay .modal-body {
         padding-bottom: 24px !important;
@@ -1663,7 +1660,7 @@ body.modal-open .user-panel-link {
         letter-spacing: 0.2em !important;
     }
     
-    /* Mobil: overlay footer+4px ÃƒÂ¼stÃƒÂ¼nde biter; alt ÃƒÂ§erÃƒÂ§eve gÃƒÂ¶rÃƒÂ¼nsÃƒÂ¼n, ezilmesin */
+    /* Mobil: overlay footer+6px ÃƒÂ¼stÃƒÂ¼nde biter; sÃ„Â±nÃ„Â±r sadece top/bottom, taÃ…Å¸ma yok */
     .modal-overlay {
         top: 0 !important;
         padding: 0 !important;
@@ -1671,19 +1668,13 @@ body.modal-open .user-panel-link {
         justify-content: center !important;
         overflow: hidden !important;
         overscroll-behavior: none !important;
-        bottom: calc(var(--app-footer-height, 30px) + 7px + env(safe-area-inset-bottom, 0)) !important;
-        height: auto !important; /* 100vh base kurallarÃ„Â±nÃ„Â± ezer, overlay top-bottom arasÃ„Â± olur */
-        max-height: calc(100vh - var(--app-footer-height, 30px) - 7px - env(safe-area-inset-bottom, 0)) !important;
-        max-height: calc(100dvh - var(--app-footer-height, 30px) - 7px - env(safe-area-inset-bottom, 0)) !important;
+        bottom: calc(var(--app-footer-height, 30px) + 6px + env(safe-area-inset-bottom, 0)) !important;
     }
     #vehicle-modal.modal-overlay,
     #reports-modal.modal-overlay,
     #vehicles-modal.modal-overlay {
         top: 0 !important;
-        bottom: calc(var(--app-footer-height, 30px) + 7px + env(safe-area-inset-bottom, 0)) !important;
-        height: auto !important;
-        max-height: calc(100vh - var(--app-footer-height, 30px) - 7px - env(safe-area-inset-bottom, 0)) !important;
-        max-height: calc(100dvh - var(--app-footer-height, 30px) - 7px - env(safe-area-inset-bottom, 0)) !important;
+        bottom: calc(var(--app-footer-height, 30px) + 6px + env(safe-area-inset-bottom, 0)) !important;
     }
 
     /* Modal container mobil: ÃƒÂ¼st sÃ„Â±fÃ„Â±r, overlay'Ã„Â± doldur, 10px kÃƒÂ¶Ã…Å¸e, ince ÃƒÂ§erÃƒÂ§eve */
@@ -1727,27 +1718,21 @@ body.modal-open .user-panel-link {
         overscroll-behavior-x: none !important;
     }
 
-    /* iOS PWA: modal alt ÃƒÂ§erÃƒÂ§eve 4px nefes payÃ„Â± ile footer ÃƒÂ¼stÃƒÂ¼nde */
+    /* iOS PWA: modal alt ÃƒÂ§erÃƒÂ§eve 6px ile footer ÃƒÂ¼stÃƒÂ¼nde; sÃ„Â±nÃ„Â±r top/bottom */
     @media (display-mode: standalone) {
         .modal-overlay {
             padding-top: env(safe-area-inset-top) !important;
-            bottom: calc(var(--app-footer-height, 30px) + 7px + env(safe-area-inset-bottom, 0)) !important;
-            max-height: calc(100vh - var(--app-footer-height, 30px) - 7px - env(safe-area-inset-bottom, 0)) !important;
-            max-height: calc(100dvh - var(--app-footer-height, 30px) - 7px - env(safe-area-inset-bottom, 0)) !important;
+            bottom: calc(var(--app-footer-height, 30px) + 6px + env(safe-area-inset-bottom, 0)) !important;
         }
         #vehicle-modal.modal-overlay,
         #reports-modal.modal-overlay,
         #vehicles-modal.modal-overlay {
-            bottom: calc(var(--app-footer-height, 30px) + 7px + env(safe-area-inset-bottom, 0)) !important;
-            max-height: calc(100vh - var(--app-footer-height, 30px) - 7px - env(safe-area-inset-bottom, 0)) !important;
-            max-height: calc(100dvh - var(--app-footer-height, 30px) - 7px - env(safe-area-inset-bottom, 0)) !important;
+            bottom: calc(var(--app-footer-height, 30px) + 6px + env(safe-area-inset-bottom, 0)) !important;
         }
         .tasitlar-modal-overlay {
             padding-top: env(safe-area-inset-top) !important;
             padding-bottom: 0 !important;
-            bottom: calc(var(--app-footer-height, 30px) + 7px + env(safe-area-inset-bottom, 0)) !important;
-            max-height: calc(100vh - var(--app-footer-height, 30px) - 7px - env(safe-area-inset-bottom, 0)) !important;
-            max-height: calc(100dvh - var(--app-footer-height, 30px) - 7px - env(safe-area-inset-bottom, 0)) !important;
+            bottom: calc(var(--app-footer-height, 30px) + 6px + env(safe-area-inset-bottom, 0)) !important;
         }
         .tasitlar-modal-overlay::before {
             top: 0 !important;
@@ -2127,14 +2112,12 @@ body.modal-open .content-wrap::before {
   gap: 8px;
 }
 
-/* === NOKTA ATIÅžI: Ana uygulama modallarÄ± alt Ã§erÃ§eve (KayÄ±t, TaÅŸÄ±t, Rapor) - overlay clip-path yok, alt Ã§erÃ§eve gÃ¶rÃ¼nsÃ¼n === */
+/* === NOKTA ATIÅžI: Ana uygulama modallarÄ± alt Ã§erÃ§eve (KayÄ±t, TaÅŸÄ±t, Rapor) - overlay clip-path yok, alt Ã§erÃ§eve gÃ¶rÃ¼nsÃ¼n; boÃ…Å¸luk 6px === */
 @media (max-width: 768px) {
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicle-modal.modal-overlay,
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #reports-modal.modal-overlay,
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicles-modal.modal-overlay {
-    bottom: calc(var(--app-footer-height, 30px) + 9px + env(safe-area-inset-bottom, 0)) !important;
-    max-height: calc(100vh - var(--app-footer-height, 30px) - 9px - env(safe-area-inset-bottom, 0)) !important;
-    max-height: calc(100dvh - var(--app-footer-height, 30px) - 9px - env(safe-area-inset-bottom, 0)) !important;
+    bottom: calc(var(--app-footer-height, 30px) + 6px + env(safe-area-inset-bottom, 0)) !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicle-modal.modal-overlay .modal-container,
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #reports-modal.modal-overlay .modal-container,
