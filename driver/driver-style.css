@@ -2360,13 +2360,12 @@ body.driver-modal-open {
 #driver-kasko-modal.driver-modal::before {
   content: '';
   position: absolute;
-  top: max(12px, env(safe-area-inset-top));
+  top: 0;
   left: 50%;
   transform: translateX(-50%);
   width: 100%;
   max-width: 500px;
-  height: calc(100vh - max(12px, env(safe-area-inset-top)) - var(--modal-margin-bottom-desktop));
-  height: calc(100dvh - max(12px, env(safe-area-inset-top)) - var(--modal-margin-bottom-desktop));
+  height: 100%;
   background: rgba(0, 0, 0, 0.85);
   backdrop-filter: none; /* IÅŸÄ±k vakumlamasÄ±n */
   -webkit-backdrop-filter: none;
@@ -2401,11 +2400,10 @@ body.driver-modal-open {
   -webkit-backdrop-filter: none !important;
   width: 100%;
   max-width: 500px;
-  margin: max(12px, env(safe-area-inset-top)) auto var(--modal-margin-bottom-desktop) auto;
-  height: calc(100vh - max(12px, env(safe-area-inset-top)) - var(--modal-margin-bottom-desktop));
-  height: calc(100dvh - max(12px, env(safe-area-inset-top)) - var(--modal-margin-bottom-desktop));
-  max-height: calc(100vh - max(12px, env(safe-area-inset-top)) - var(--modal-margin-bottom-desktop));
-  max-height: calc(100dvh - max(12px, env(safe-area-inset-top)) - var(--modal-margin-bottom-desktop));
+  margin: max(12px, env(safe-area-inset-top)) auto 0 auto !important;
+  margin-bottom: 0 !important;
+  height: 100% !important;
+  max-height: 100% !important;
   overflow: hidden;
   overflow-x: hidden;
   display: flex;
@@ -3813,9 +3811,9 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     max-width: 100% !important;
     width: 100% !important;
     margin: 0 !important;
-    /* KapsayÄ±cÄ± zaten footer'Ä± kestiÄŸi iÃ§in burada tekrar hesaplama yapmÄ±yoruz. Esnek bÄ±rakÄ±yoruz. */
-    height: auto !important;
+    height: 100% !important;
     max-height: 100% !important;
+    margin-bottom: 0 !important;
     background: var(--modal-bg) !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
