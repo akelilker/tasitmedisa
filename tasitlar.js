@@ -2535,7 +2535,33 @@ function renderVehicleDetailLeft(vehicle) {
       }).join('');
       
       modal.style.display = 'flex';
-      requestAnimationFrame(() => modal.classList.add('active'));
+      requestAnimationFrame(() => {
+        modal.classList.add('active');
+        // #region agent log
+        requestAnimationFrame(function() {
+          var body = modal.querySelector('.modal-body');
+          var list = document.getElementById('event-menu-list');
+          var firstBtn = list && list.querySelector('button');
+          var backBar = modal.querySelector('.universal-back-bar');
+          var bodyStyle = body ? getComputedStyle(body) : null;
+          var listStyle = list ? getComputedStyle(list) : null;
+          var btnStyle = firstBtn ? getComputedStyle(firstBtn) : null;
+          var backStyle = backBar ? getComputedStyle(backBar) : null;
+          var pt = bodyStyle ? parseFloat(bodyStyle.paddingTop) : 0;
+          var pb = bodyStyle ? parseFloat(bodyStyle.paddingBottom) : 0;
+          var gap = listStyle ? parseFloat(listStyle.gap) : 0;
+          var btnPt = btnStyle ? parseFloat(btnStyle.paddingTop) : 0;
+          var btnPb = btnStyle ? parseFloat(btnStyle.paddingBottom) : 0;
+          var backPt = backStyle ? parseFloat(backStyle.paddingTop) : 0;
+          var backMb = backStyle ? parseFloat(backStyle.marginBottom) : 0;
+          fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'d16886'},body:JSON.stringify({sessionId:'d16886',location:'tasitlar.js:openEventModal(menu)',message:'Olay Ekle modal vertical spacing',data:{modalBodyPaddingTop:pt,modalBodyPaddingBottom:pb,modalBodyHeight:body?body.clientHeight:0,listGap:gap,listHeight:list?list.clientHeight:0,listScrollHeight:list?list.scrollHeight:0,buttonPaddingTop:btnPt,buttonPaddingBottom:btnPb,buttonCount:list?list.querySelectorAll('button').length:0,backBarPaddingTop:backPt,backBarMarginBottom:backMb},timestamp:Date.now(),hypothesisId:'A'})}).catch(function(){});
+          fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'d16886'},body:JSON.stringify({sessionId:'d16886',location:'tasitlar.js:openEventModal(menu)',message:'event-menu-list gap',data:{gap:gap,buttonCount:list?list.querySelectorAll('button').length:0},timestamp:Date.now(),hypothesisId:'B'})}).catch(function(){});
+          fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'d16886'},body:JSON.stringify({sessionId:'d16886',location:'tasitlar.js:openEventModal(menu)',message:'button padding',data:{buttonPaddingTop:btnPt,buttonPaddingBottom:btnPb},timestamp:Date.now(),hypothesisId:'C'})}).catch(function(){});
+          fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'d16886'},body:JSON.stringify({sessionId:'d16886',location:'tasitlar.js:openEventModal(menu)',message:'back-bar spacing',data:{backBarPaddingTop:backPt,backBarMarginBottom:backMb},timestamp:Date.now(),hypothesisId:'D'})}).catch(function(){});
+          fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'d16886'},body:JSON.stringify({sessionId:'d16886',location:'tasitlar.js:openEventModal(menu)',message:'body vs list height',data:{bodyHeight:body?body.clientHeight:0,listHeight:list?list.clientHeight:0,listScrollHeight:list?list.scrollHeight:0,emptyBottom:body&&list?body.clientHeight-list.scrollHeight:0},timestamp:Date.now(),hypothesisId:'E'})}).catch(function(){});
+        });
+        // #endregion
+      });
     } else {
       // Belirli bir olay modal'ını aç
       const modalId = type === 'km' ? 'km-guncelle-modal' :
