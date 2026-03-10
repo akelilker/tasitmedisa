@@ -10,6 +10,7 @@
 
   let isEditMode = false;
   let editingVehicleId = null;
+  let editingVehicleVersion = 1; // Çakışma kontrolü (Phase 3) – düzenleme açıldığında kaydedilir
   const NOTES_MIN_HEIGHT_PX = 58; // Mobilde ~2.5 satır başlangıç yüksekliği
 
   function $(sel, root = document) { return root.querySelector(sel); }
@@ -909,6 +910,7 @@
     if (modal) {
       isEditMode = false;
       editingVehicleId = null;
+      editingVehicleVersion = 1;
       resetVehicleForm();
 
       modal.style.display = 'flex';
@@ -941,6 +943,7 @@
       resetVehicleForm();
       isEditMode = false;
       editingVehicleId = null;
+      editingVehicleVersion = 1;
     }
   };
 
@@ -958,6 +961,7 @@
 
     isEditMode = true;
     editingVehicleId = vehicleId;
+    editingVehicleVersion = (vehicle.version != null && vehicle.version !== undefined) ? Number(vehicle.version) : 1;
 
     // Formu doldur
     const plateInput = document.getElementById("vehicle-plate");
@@ -1571,11 +1575,12 @@
    */
   function performSave(recordData, tescilTarihi) {
     try {
-      // Tescil tarihini record'a ekle
+      // Tescil tarihini record'a ekle; düzenlemede versiyon bilgisini ekle (çakışma kontrolü)
       const record = {
         ...recordData,
         tescilTarihi: tescilTarihi || ''
       };
+      if (isEditMode) record.version = editingVehicleVersion;
 
       let vehicles = readVehicles();
       
@@ -1612,7 +1617,11 @@
         alert(isEditMode ? "Kayıt Güncellendi!" : "Yeni Kayıt Oluşturuldu!");
         window.closeVehicleModal();
         pendingRecordData = null;
-      }).catch(function() {
+      }).catch(function(err) {
+        if (err && err.conflict) {
+          alert('Dikkat! Bu araç siz ekranı açtıktan sonra başka biri tarafından güncellenmiş. Veri ezilmesini önlemek için lütfen sayfayı yenileyip güncel durumu kontrol edin.');
+          return;
+        }
         alert('Sunucuya kayıt yapılamadı. Lütfen tekrar deneyin.');
       });
     } catch (error) {
