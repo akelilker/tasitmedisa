@@ -32,7 +32,7 @@ body::-webkit-scrollbar,
   --app-footer-height: 30px;
   /* Codex standart: modal overlay bottom tek formül (footer + 6px boşluk) */
   --app-footer-real-height: 34px;
-  --app-footer-gap: 6px;
+  --app-footer-gap: 11px;
   --modal-footer-reserve: calc(var(--app-footer-height) + var(--modal-footer-gap));
   --modal-gap-above-footer: 5px; /* Mobil/masaÃƒÂ¼stÃƒÂ¼ tek deÃ„Å¸er */
 
@@ -1460,20 +1460,9 @@ body.modal-open .user-panel-link {
     box-shadow: 0 -10px 20px rgba(var(--footer-glow-rgb), 0.22);
 }
 
-/* Görsel Yalıtım: modal açıkken footer glow kapatılır, 6px gap siyah maske ile doldurulur */
+/* Görsel Yalıtım: modal açıkken footer glow 11px boşluktan asil süzülsün */
 body.modal-open #app-footer {
-    box-shadow: none !important;
-}
-body.modal-open::after {
-    content: '';
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: calc(var(--app-footer-real-height, 34px) + env(safe-area-inset-bottom, 0));
-    height: var(--app-footer-gap, 6px);
-    background: #000 !important;
-    z-index: 9998;
-    pointer-events: none;
+    box-shadow: 0 -15px 30px rgba(var(--theme-color-rgb), 0.45) !important;
 }
 
 #app-footer .footer-content {
@@ -1794,7 +1783,7 @@ body.modal-open::after {
         width: 100vw;
         bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0));
         height: var(--app-footer-gap); /* Modalâ€“footer arasÃ„Â± 4px nefes payÃ„Â± ile uyumlu */
-        background: #000 !important;
+        background: transparent !important;
         z-index: 9998;
         pointer-events: none;
     }

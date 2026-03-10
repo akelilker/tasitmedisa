@@ -2256,7 +2256,7 @@ body.driver-modal-open {
   display: flex;
   flex-direction: column;
   border: 1px solid var(--br);
-  border-bottom: 1px solid var(--modal-bg) !important; /* Alt Ã§erÃ§eve solid */
+  border-bottom: 1px solid var(--border-medium) !important;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
 }
 
@@ -2410,7 +2410,7 @@ body.driver-modal-open {
   isolation: isolate !important;
   background: var(--modal-bg) !important;
   background-color: var(--modal-bg) !important;
-  border-bottom: 1px solid var(--modal-bg) !important;
+  border-bottom: 1px solid var(--border-medium) !important;
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
   width: 100%;
