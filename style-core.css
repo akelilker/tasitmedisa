@@ -1825,7 +1825,7 @@ body.modal-open .user-panel-link {
     #app-footer {
         position: fixed;
         bottom: 0;
-        box-shadow: 0 -15px 22px rgba(var(--footer-glow-rgb), 0.52);
+        box-shadow: 0 -15px 22px rgba(var(--footer-glow-rgb), 0.45);
         border-left: none; /* Mobilde yan yok */
         border-right: none;
         border-top: 1px solid rgba(128, 128, 128, 0.5) !important; /* Gri ÃƒÂ§izgi */
