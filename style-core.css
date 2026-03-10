@@ -678,7 +678,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
 .pwa-install-btn {
   padding: 8px 14px;
   border-radius: 8px;
-  border: 1px solid rgba(34, 197, 94, 0.65);
+  border: none;
   background: var(--bg);
   color: #22c55e;
   font-size: 13px;
@@ -1119,7 +1119,11 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   .hero h1 {
     transform: translateY(0);
   }
-  /* Anasayfa masaÃƒÂ¼stÃƒÂ¼: baÃ…Å¸lÃ„Â±k kutunun iÃƒÂ§ine sÃ„Â±Ã„Å¸sÃ„Â±n */
+  /* Ana sayfa masaüstü/tablet: footer ışığı belirgin kalsın */
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer {
+    box-shadow: 0 -16px 26px rgba(var(--footer-glow-rgb), 0.52);
+  }
+  /* Anasayfa masaüstü: başlık kutunun içine sığsın */
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-spacer {
     flex: 0 0 16px;
     min-width: 0;
