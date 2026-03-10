@@ -1169,6 +1169,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
 
 /* --- MODALLAR: ORTAK OVERLAY + CONTAINER (tek yerden yÃƒÂ¶netim) --- */
 .modal-overlay {
+  isolation: isolate !important; /* Yeni stacking context; footer glow modal iÃ§ine sÄ±zamaz */
   display: none;
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
@@ -1204,6 +1205,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
   box-sizing: border-box;
 }
 .modal-overlay .modal-container {
+  isolation: isolate !important; /* Yeni stacking context; footer glow iÃ§eri sÄ±zamaz */
   position: relative;
   z-index: 9999 !important; /* Footer ve footer Ä±ÅŸÄ±ÄŸÄ±nÄ±n Ã¼stÃ¼nde; Ä±ÅŸÄ±k sÄ±zmasÄ±n */
   background: var(--modal-bg) !important;
