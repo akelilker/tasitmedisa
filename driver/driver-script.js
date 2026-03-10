@@ -814,39 +814,6 @@ const API_BASE = (function(){
       inner.querySelectorAll('.driver-action-block').forEach(function(b) { if (b) b.classList.remove('show'); });
       if (!isShown) {
           target.classList.add('show');
-          // #region agent log
-          requestAnimationFrame(function() {
-            try {
-              var inputs = target.querySelectorAll('.form-group input, .form-group textarea');
-              var container = target.closest('.driver-right-panel') || target.closest('.driver-action-area');
-              var parent = target.querySelector('.form-group');
-              var firstInput = inputs[0];
-              var s = firstInput ? window.getComputedStyle(firstInput) : null;
-              var ps = parent ? window.getComputedStyle(parent) : null;
-              var cs = container ? window.getComputedStyle(container) : null;
-              var data = {
-                blockType: type,
-                inputCount: inputs.length,
-                firstInputTag: firstInput ? firstInput.tagName : null,
-                firstInputType: firstInput && firstInput.type !== undefined ? firstInput.type : null,
-                firstInputClasses: firstInput ? (firstInput.className || '') : '',
-                width: s ? s.width : null,
-                maxWidth: s ? s.maxWidth : null,
-                height: s ? s.height : null,
-                minHeight: s ? s.minHeight : null,
-                boxSizing: s ? s.boxSizing : null,
-                paddingLeft: s ? s.paddingLeft : null,
-                paddingRight: s ? s.paddingRight : null,
-                parentWidth: ps ? ps.width : null,
-                parentOverflow: ps ? ps.overflow : null,
-                parentMinWidth: ps ? ps.minWidth : null,
-                containerOverflow: cs ? cs.overflow : null,
-                containerMinWidth: cs ? cs.minWidth : null
-              };
-              fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'e955e3'},body:JSON.stringify({sessionId:'e955e3',location:'driver-script.js:report-block-show',message:'report block opened computed styles',data:data,timestamp:Date.now(),hypothesisId:'H1'})}).catch(function(){});
-            } catch (e) {}
-          });
-          // #endregion
           var expandTypes = ['km', 'kaza', 'bakim', 'sigorta', 'kasko', 'muayene', 'anahtar', 'lastik'];
           if (expandTypes.indexOf(type) !== -1) {
               inner.classList.add('driver-km-open');
