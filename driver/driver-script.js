@@ -100,9 +100,6 @@ const API_BASE = (function(){
       var wrap = ev.target.closest && ev.target.closest('.driver-date-wrap');
       if (!wrap) return;
       var input = wrap.querySelector && wrap.querySelector('input[type="date"]');
-      var isInput = ev.target === input;
-      var isDisplay = ev.target.classList && ev.target.classList.contains('driver-date-display');
-      fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'8e8010'},body:JSON.stringify({sessionId:'8e8010',hypothesisId:'A',location:'driver-script.js:click',message:'date-wrap click',data:{tagName:ev.target.tagName,type:ev.target.type||'',id:ev.target.id||'',isInput:!!isInput,isDisplay:!!isDisplay,defaultPrevented:ev.defaultPrevented},timestamp:Date.now()})}).catch(function(){});
     }, true);
   })();
   // #endregion
@@ -118,13 +115,9 @@ const API_BASE = (function(){
       wrap._driverDateInputHandler = function() { syncDriverDateDisplay(input); };
       input.addEventListener('input', wrap._driverDateInputHandler);
       input.addEventListener('change', wrap._driverDateInputHandler);
-      // #region agent log
       input.addEventListener('focus', function() {
-        var s = input.ownerDocument.defaultView.getComputedStyle(input);
-        fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'8e8010'},body:JSON.stringify({sessionId:'8e8010',hypothesisId:'B',location:'driver-script.js:focus',message:'date input focus',data:{id:input.id,opacity:s.opacity,position:s.position,zIndex:s.zIndex,pointerEvents:s.pointerEvents},timestamp:Date.now()})}).catch(function(){});
         if (typeof input.showPicker === 'function') { try { input.showPicker(); } catch (e) {} }
       });
-      // #endregion
     });
   }
   
@@ -1908,25 +1901,6 @@ const API_BASE = (function(){
       requestAnimationFrame(function() {
           renderHistoryList();
       });
-      // #region agent log
-      requestAnimationFrame(function() {
-          requestAnimationFrame(function() {
-              var overlay = document.getElementById('history-modal');
-              var container = overlay ? overlay.querySelector('.driver-modal-content') || overlay.querySelector('.modal-container') : null;
-              var footer = document.getElementById('app-footer');
-              if (!overlay || !container || !footer) return;
-              var csOverlay = window.getComputedStyle(overlay);
-              var csContainer = window.getComputedStyle(container);
-              var rOverlay = overlay.getBoundingClientRect();
-              var rContainer = container.getBoundingClientRect();
-              var rFooter = footer.getBoundingClientRect();
-              var gap = rFooter.top - rContainer.bottom;
-              var payload = {overlayBottom:csOverlay.bottom,overlayHeight:csOverlay.height,containerMarginBottom:csContainer.marginBottom,containerHeight:csContainer.height,viewportHeight:window.innerHeight,rectOverlayBottom:rOverlay.bottom,rectContainerBottom:rContainer.bottom,rectFooterTop:rFooter.top,footerHeight:rFooter.height,computedGap:Math.round(gap)};
-              console.log('[DEBUG modal-footer]', JSON.stringify(payload, null, 2));
-              fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'3cb83d'},body:JSON.stringify({sessionId:'3cb83d',location:'driver-script.js:showHistory',message:'modal-footer layout',data:payload,hypothesisId:'A,B,C,D,E',timestamp:Date.now()})}).catch(function(){});
-          });
-      });
-      // #endregion
   };
   
   window.toggleHistoryVehicleDropdown = function(ev) {
