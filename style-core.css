@@ -1231,7 +1231,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
   max-height: 100% !important;
   border-radius: var(--modal-radius);
   border: 0.5px solid var(--border-medium);
-  border-bottom: 1px solid var(--modal-bg) !important; /* Alt Ã§erÃ§eve Ä±ÅŸÄ±k sÄ±zmasÄ±n diye solid */
+  border-bottom: 1px solid var(--border-medium) !important;
   box-shadow: 0 0 40px var(--shadow-modal), inset 0 1px 0 rgba(255, 255, 255, 0.06);
   overflow-x: hidden;
   pointer-events: auto;
@@ -1458,6 +1458,22 @@ body.modal-open .user-panel-link {
     border-left: 0.5px solid rgba(255, 255, 255, 0.20);
     border-right: 0.5px solid rgba(255, 255, 255, 0.20);
     box-shadow: 0 -13px 20px rgba(var(--footer-glow-rgb), 0.22);
+}
+
+/* Görsel Yalıtım: modal açıkken footer glow kapatılır, 6px gap siyah maske ile doldurulur */
+body.modal-open #app-footer {
+    box-shadow: none !important;
+}
+body.modal-open::after {
+    content: '';
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: calc(var(--app-footer-real-height, 34px) + env(safe-area-inset-bottom, 0));
+    height: var(--app-footer-gap, 6px);
+    background: #000 !important;
+    z-index: 9998;
+    pointer-events: none;
 }
 
 #app-footer .footer-content {
@@ -1778,11 +1794,11 @@ body.modal-open .user-panel-link {
         width: 100vw;
         bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0));
         height: var(--app-footer-gap); /* Modalâ€“footer arasÃ„Â± 4px nefes payÃ„Â± ile uyumlu */
-        background: var(--bg);
-        z-index: 9998; /* Modal (9999) altÃ„Â±nda, container/ÃƒÂ§izgilerin ÃƒÂ¼stÃƒÂ¼nde */
+        background: #000 !important;
+        z-index: 9998;
         pointer-events: none;
     }
-    
+
     /* Header ikonlarÃ„Â± (saÃ„Å¸ ÃƒÂ¼st): SVG 24px, padding artÃ„Â±rÃ„Â±ldÃ„Â± */
     .icons-row .icon-btn svg {
         width: 24px !important;
