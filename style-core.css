@@ -1,4 +1,4 @@
-/* --- Scrollbar Gizleme --- */
+﻿/* --- Scrollbar Gizleme --- */
 html, body, .modal-body, .modal-container, .content-wrap {
   scrollbar-width: none !important;
   -ms-overflow-style: none !important;
@@ -11,13 +11,13 @@ body::-webkit-scrollbar,
   display: none !important;
 }
  
-/* ========== TÃœM :root DEÄžÄ°ÅžKENLERÄ° (tek kaynak) ========== */
+/* ========== TÃƒÅ“M :root DEÃ„Å¾Ã„Â°Ã…Å¾KENLERÃ„Â° (tek kaynak) ========== */
 :root {
   --theme-color: #d40000;
   --theme-color-rgb: 212, 0, 0;
-  /* Footer'dan yukarÄ± sÃ¼zen Ä±ÅŸÄ±k: MEDISA tonu ile aynÄ± */
+  /* Footer'dan yukarÃ„Â± sÃƒÂ¼zen Ã„Â±Ã…Å¸Ã„Â±k: MEDISA tonu ile aynÃ„Â± */
   --footer-glow-rgb: 212, 0, 0;
-  /* MEDISA marka kÄ±rmÄ±zÄ±sÄ± (theme ile aynÄ±; alias) */
+  /* MEDISA marka kÃ„Â±rmÃ„Â±zÃ„Â±sÃ„Â± (theme ile aynÃ„Â±; alias) */
   --brand-red: #d40000;
   --brand-red-rgb: 212, 0, 0;
   --bg: #080d16;
@@ -31,7 +31,7 @@ body::-webkit-scrollbar,
   --modal-footer-gap: 12px;
   --app-footer-height: 48px;
   --modal-footer-reserve: calc(var(--app-footer-height) + var(--modal-footer-gap));
-  --modal-gap-above-footer: 5px; /* Mobil/masaÃ¼stÃ¼ tek deÄŸer */
+  --modal-gap-above-footer: 5px; /* Mobil/masaÃƒÂ¼stÃƒÂ¼ tek deÃ„Å¸er */
 
   --modal-bg: #080d16;
   --modal-max-width: 500px;
@@ -40,13 +40,13 @@ body::-webkit-scrollbar,
   --modal-margin-bottom-mobile: calc(var(--modal-gap-above-footer) + var(--app-footer-height));
 
   --border-red-tech: rgba(var(--theme-color-rgb), 0.4);
-  --border-red-side: rgba(var(--theme-color-rgb), 0.6);  /* Anasayfa saÄŸ-sol kÄ±rmÄ±zÄ± Ã§erÃ§eve */
+  --border-red-side: rgba(var(--theme-color-rgb), 0.6);  /* Anasayfa saÃ„Å¸-sol kÃ„Â±rmÃ„Â±zÃ„Â± ÃƒÂ§erÃƒÂ§eve */
   --red-glow-subtle: rgba(var(--theme-color-rgb), 0.12);
 
   --green: #4ade80;
   --red: #ef4444;
   --form-label-color: #ffffff;
-  /* Girilen veri / aÃ§Ä±klama metin rengi (beyaz-gri hiyerarÅŸisi) */
+  /* Girilen veri / aÃƒÂ§Ã„Â±klama metin rengi (beyaz-gri hiyerarÃ…Å¸isi) */
   --data-value-color: #a0aec0;
 
   --bg-content: #0d131f;
@@ -87,21 +87,21 @@ body::-webkit-scrollbar,
   --hero-spacer-width: 30px;
 }
 
-/* MasaÃ¼stÃ¼ (641px+): modalâ€“footer arasÄ± 5px (anasayfa RAPORLAR/TaÅŸÄ±tlar vb.) */
+/* MasaÃƒÂ¼stÃƒÂ¼ (641px+): modalÃ¢â‚¬â€œfooter arasÃ„Â± 5px (anasayfa RAPORLAR/TaÃ…Å¸Ã„Â±tlar vb.) */
 @media (min-width: 641px) {
   :root {
     --modal-gap-above-footer: 1px;
   }
 }
 
-/* Mobil (640px ve altÄ±): kontrast artÄ±rma */
+/* Mobil (640px ve altÃ„Â±): kontrast artÃ„Â±rma */
 @media (max-width: 640px) {
   :root {
     --txt: #ffffff;
     --muted: rgba(255, 255, 255, 0.7);
     --br: #444;
     --border-shiny: rgba(255, 255, 255, 0.35);
-    --border-red-tech: rgba(var(--theme-color-rgb), 0.52);  /* Mobil/PWA: Ã§erÃ§eve biraz daha belirgin */
+    --border-red-tech: rgba(var(--theme-color-rgb), 0.52);  /* Mobil/PWA: ÃƒÂ§erÃƒÂ§eve biraz daha belirgin */
     --red-glow-subtle: rgba(var(--theme-color-rgb), 0.18);
     --bg-2: #1a1a1a;
     --card-bg: #1f1f1f;
@@ -110,18 +110,18 @@ body::-webkit-scrollbar,
   }
 }
 
-/* --- EVRENSEL GERÄ° DÃ–N NAVÄ°GASYONU (tÃ¼m uygulama) --- */
-/* MasaÃ¼stÃ¼ ve mobil ortak: geri dÃ¶n ok + etiket hizalamasÄ± (3px gap, ok 5px aÅŸaÄŸÄ±, etiket 1px kÃ¼Ã§Ã¼k) */
+/* --- EVRENSEL GERÃ„Â° DÃƒâ€“N NAVÃ„Â°GASYONU (tÃƒÂ¼m uygulama) --- */
+/* MasaÃƒÂ¼stÃƒÂ¼ ve mobil ortak: geri dÃƒÂ¶n ok + etiket hizalamasÃ„Â± (3px gap, ok 5px aÃ…Å¸aÃ„Å¸Ã„Â±, etiket 1px kÃƒÂ¼ÃƒÂ§ÃƒÂ¼k) */
 
 .universal-back-bar {
   display: flex !important;
-  align-items: flex-start !important; /* Buton dikey hizasÄ± bozulmasÄ±n */
+  align-items: flex-start !important; /* Buton dikey hizasÃ„Â± bozulmasÃ„Â±n */
   justify-content: flex-start !important;
   padding: 8px 0 0 0 !important;
   width: 100% !important;
   margin: 0 !important;
   box-sizing: border-box !important;
-  gap: 3px !important; /* Bar iÃ§i boÅŸluk tutarlÄ± */
+  gap: 3px !important; /* Bar iÃƒÂ§i boÃ…Å¸luk tutarlÃ„Â± */
 }
 .universal-back-bar svg,
 .universal-back-bar i,
@@ -132,31 +132,31 @@ body::-webkit-scrollbar,
   padding: 0 !important;
 }
 
-/* Geri dÃ¶n butonu/linki: ok ile etiket arasÄ± KESÄ°N 3px, tÃ¼m ekranlar */
+/* Geri dÃƒÂ¶n butonu/linki: ok ile etiket arasÃ„Â± KESÃ„Â°N 3px, tÃƒÂ¼m ekranlar */
 .universal-back-btn,
 .universal-back-bar a.universal-back-btn {
   display: inline-flex !important;
-  align-items: center !important; /* Ok ve etiket aynÄ± satÄ±rda dikey ortalÄ± */
+  align-items: center !important; /* Ok ve etiket aynÃ„Â± satÃ„Â±rda dikey ortalÃ„Â± */
   gap: 3px !important;
   text-decoration: none !important;
   cursor: pointer;
   background: none;
   border: none;
-  padding: 8px 0 8px 0 !important; /* Yatay padding yok â€“ gap 3px kalÄ±r */
+  padding: 8px 0 8px 0 !important; /* Yatay padding yok Ã¢â‚¬â€œ gap 3px kalÃ„Â±r */
   color: var(--txt);
 }
 .universal-back-btn:hover { color: var(--txt-white); }
 
-/* Etiket: 1 punto kÃ¼Ã§Ã¼k (14px â†’ 13px), tÃ¼m ekranlar */
+/* Etiket: 1 punto kÃƒÂ¼ÃƒÂ§ÃƒÂ¼k (14px Ã¢â€ â€™ 13px), tÃƒÂ¼m ekranlar */
 .universal-back-label {
   color: #adb5bd !important;
-  font-size: 13px !important; /* 14px â†’ 13px (1 punto kÃ¼Ã§Ã¼ltme) */
+  font-size: 13px !important; /* 14px Ã¢â€ â€™ 13px (1 punto kÃƒÂ¼ÃƒÂ§ÃƒÂ¼ltme) */
   font-weight: 500 !important;
   line-height: 1 !important;
   margin: 0 !important;
 }
 
-/* Sol oku aÅŸaÄŸÄ± kaydÄ±rma (global, masaÃ¼stÃ¼ + mobil) â€“ metin baseline ile hizalÄ± */
+/* Sol oku aÃ…Å¸aÃ„Å¸Ã„Â± kaydÃ„Â±rma (global, masaÃƒÂ¼stÃƒÂ¼ + mobil) Ã¢â‚¬â€œ metin baseline ile hizalÃ„Â± */
 .universal-back-btn i,
 .universal-back-btn svg,
 .universal-back-btn .back-icon-svg,
@@ -166,9 +166,9 @@ body::-webkit-scrollbar,
 .universal-back-bar .universal-back-btn .back-icon-svg,
 .universal-back-bar .universal-back-btn img {
   position: relative !important;
-  top: 0 !important; /* Ok metin baselineâ€™a daha iyi hizalanÄ±r */
+  top: 0 !important; /* Ok metin baselineÃ¢â‚¬â„¢a daha iyi hizalanÃ„Â±r */
   margin: 0 !important;
-  padding: 0 !important; /* 3px gap bozulmasÄ±n */
+  padding: 0 !important; /* 3px gap bozulmasÃ„Â±n */
 }
 .universal-back-btn .universal-back-label,
 .universal-back-bar .universal-back-btn .universal-back-label {
@@ -182,35 +182,35 @@ body::-webkit-scrollbar,
   flex-shrink: 0;
 }
 
-/* --- EVRENSEL Ä°ÅžLEM BUTONLARI (Orijinal kayit.css matematiÄŸi ve zarafeti) --- */
-/* Buton Grubu (KapsayÄ±cÄ±) - Aradaki BoÅŸluÄŸu AÃ§; minmax(0,1fr) taÅŸmayÄ± Ã¶nler */
+/* --- EVRENSEL Ã„Â°Ã…Å¾LEM BUTONLARI (Orijinal kayit.css matematiÃ„Å¸i ve zarafeti) --- */
+/* Buton Grubu (KapsayÃ„Â±cÃ„Â±) - Aradaki BoÃ…Å¸luÃ„Å¸u AÃƒÂ§; minmax(0,1fr) taÃ…Å¸mayÃ„Â± ÃƒÂ¶nler */
 .universal-btn-group {
   display: grid !important;
-  grid-template-columns: 1fr 1fr !important; /* 2 eÅŸit kolon */
-  gap: 16px !important; /* Aradaki boÅŸluk */
+  grid-template-columns: 1fr 1fr !important; /* 2 eÃ…Å¸it kolon */
+  gap: 16px !important; /* Aradaki boÃ…Å¸luk */
   width: 100% !important;
-  max-width: 100% !important; /* KapsayÄ±cÄ±yÄ± tam yay */
-  padding: 16px 0 !important; /* Yatay 0: inputlarla aynÄ± hizada (modal-body zaten 20px veriyor) */
+  max-width: 100% !important; /* KapsayÃ„Â±cÃ„Â±yÃ„Â± tam yay */
+  padding: 16px 0 !important; /* Yatay 0: inputlarla aynÃ„Â± hizada (modal-body zaten 20px veriyor) */
   box-sizing: border-box !important;
-  justify-items: stretch !important; /* ButonlarÄ± hÃ¼creye tam yay */
+  justify-items: stretch !important; /* ButonlarÃ„Â± hÃƒÂ¼creye tam yay */
   background: transparent !important;
   border: none !important;
 }
 
-/* ButonlarÄ±n Orijinal Zarif Formu (Ä°nce Ã‡erÃ§eve ve Sabit YÃ¼kseklik) */
+/* ButonlarÃ„Â±n Orijinal Zarif Formu (Ã„Â°nce Ãƒâ€¡erÃƒÂ§eve ve Sabit YÃƒÂ¼kseklik) */
 .universal-btn-save,
 .universal-btn-cancel {
   background: transparent !important;
-  height: 32px !important; /* Form estetiÄŸi iÃ§in ideal yÃ¼kseklik */
+  height: 32px !important; /* Form estetiÃ„Å¸i iÃƒÂ§in ideal yÃƒÂ¼kseklik */
   border-radius: 8px !important;
-  border-width: 1px !important; /* 1px ince Ã§erÃ§eve */
+  border-width: 1px !important; /* 1px ince ÃƒÂ§erÃƒÂ§eve */
   font-size: 11.5px !important;
   font-weight: 400 !important;
-  width: 100% !important; /* HÃ¼crenin tamamÄ±nÄ± kapla */
-  max-width: none !important; /* Ã–nceki kÄ±sÄ±tlamalarÄ± kaldÄ±r */
+  width: 100% !important; /* HÃƒÂ¼crenin tamamÃ„Â±nÃ„Â± kapla */
+  max-width: none !important; /* Ãƒâ€“nceki kÃ„Â±sÃ„Â±tlamalarÃ„Â± kaldÃ„Â±r */
   min-width: 0 !important;
-  justify-self: stretch !important; /* Grid hÃ¼cresine yaslan */
-  margin: 0 !important; /* Kenar boÅŸluklarÄ±nÄ± sÄ±fÄ±rla */
+  justify-self: stretch !important; /* Grid hÃƒÂ¼cresine yaslan */
+  margin: 0 !important; /* Kenar boÃ…Å¸luklarÃ„Â±nÃ„Â± sÃ„Â±fÃ„Â±rla */
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -223,19 +223,19 @@ body::-webkit-scrollbar,
   transition: all 0.2s ease-in-out !important;
 }
 
-/* Kaydet (YeÅŸil) - Dinamik Hover Efekti (Ãœzerine Gelince Kaslanma) */
+/* Kaydet (YeÃ…Å¸il) - Dinamik Hover Efekti (ÃƒÅ“zerine Gelince Kaslanma) */
 .universal-btn-save {
   color: var(--green-success, #28a745) !important;
   border: 1px solid rgba(40, 167, 69, 0.45) !important;
 }
 .universal-btn-save:hover {
   background: rgba(40, 167, 69, 0.12) !important;
-  font-weight: 600 !important; /* Ãœzerine gelince metin kalÄ±nlaÅŸÄ±r */
+  font-weight: 600 !important; /* ÃƒÅ“zerine gelince metin kalÃ„Â±nlaÃ…Å¸Ã„Â±r */
   border-color: var(--green-success, #28a745) !important;
-  -webkit-text-stroke: 0.2px currentColor; /* Net kalÄ±nlÄ±k efekti */
+  -webkit-text-stroke: 0.2px currentColor; /* Net kalÃ„Â±nlÃ„Â±k efekti */
 }
 
-/* VazgeÃ§ (KÄ±rmÄ±zÄ±) - Dinamik Hover Efekti */
+/* VazgeÃƒÂ§ (KÃ„Â±rmÃ„Â±zÃ„Â±) - Dinamik Hover Efekti */
 .universal-btn-cancel {
   color: var(--theme-color, #d40000) !important;
   border: 1px solid rgba(212, 0, 0, 0.45) !important;
@@ -247,7 +247,7 @@ body::-webkit-scrollbar,
   -webkit-text-stroke: 0.2px currentColor;
 }
 
-/* Ayarlar/Åžube modallarÄ±: Olay Ekle standardÄ± â€“ tam geniÅŸlik, sol hizalama */
+/* Ayarlar/Ã…Å¾ube modallarÃ„Â±: Olay Ekle standardÃ„Â± Ã¢â‚¬â€œ tam geniÃ…Å¸lik, sol hizalama */
 #branch-form-modal .form-section,
 #user-form-modal .form-section,
 .settings-modal .form-section,
@@ -286,7 +286,7 @@ body::-webkit-scrollbar,
   box-sizing: border-box !important;
 }
 
-/* Buton grubu da tam geniÅŸlik (400px kÄ±sÄ±tlamasÄ± kaldÄ±rÄ±ldÄ±) */
+/* Buton grubu da tam geniÃ…Å¸lik (400px kÃ„Â±sÃ„Â±tlamasÃ„Â± kaldÃ„Â±rÃ„Â±ldÃ„Â±) */
 #branch-form-modal .universal-btn-group,
 #user-form-modal .universal-btn-group,
 .settings-modal .universal-btn-group,
@@ -298,7 +298,7 @@ body::-webkit-scrollbar,
   padding-right: 0 !important;
 }
 
-/* Sil butonunu grid'de tam geniÅŸlikte, simetrik (3. buton alt satÄ±rda tam boy) */
+/* Sil butonunu grid'de tam geniÃ…Å¸likte, simetrik (3. buton alt satÃ„Â±rda tam boy) */
 #branch-form-modal .settings-btn-delete,
 #user-form-modal .settings-btn-delete,
 .settings-modal .btn-delete,
@@ -315,7 +315,7 @@ body::-webkit-scrollbar,
   border: 1px solid rgba(212, 0, 0, 0.5) !important;
 }
 
-/* TÃ¼m input/select/textarea iÃ§erik metni: beyaz-gri hiyerarÅŸisi */
+/* TÃƒÂ¼m input/select/textarea iÃƒÂ§erik metni: beyaz-gri hiyerarÃ…Å¸isi */
 .form-input,
 select.form-input,
 select,
@@ -327,17 +327,17 @@ input[type="date"].form-input:focus {
   color: var(--data-value-color, #a0aec0) !important;
 }
 
-/* TARÄ°H KUTUSU: metin yatay+dikey ortada, ikon metnin hemen yanÄ±nda 3px boÅŸlukla */
+/* TARÃ„Â°H KUTUSU: metin yatay+dikey ortada, ikon metnin hemen yanÃ„Â±nda 3px boÃ…Å¸lukla */
 input[type="date"].form-input {
   position: relative !important;
   display: flex !important;
   align-items: center !important;
   height: 36px !important;
   box-sizing: border-box !important;
-  padding: 0 22px 0 12px !important; /* SaÄŸ: 3px kenar + ~16px ikon + 3px boÅŸluk = metne yakÄ±n */
+  padding: 0 22px 0 12px !important; /* SaÃ„Å¸: 3px kenar + ~16px ikon + 3px boÃ…Å¸luk = metne yakÃ„Â±n */
 }
 
-/* Ä°Ã§ metin yatayda ve dikeyde ortada; taÅŸma yok (hem boÅŸ hem dolu hem focus) */
+/* Ã„Â°ÃƒÂ§ metin yatayda ve dikeyde ortada; taÃ…Å¸ma yok (hem boÃ…Å¸ hem dolu hem focus) */
 input[type="date"].form-input::-webkit-datetime-edit,
 input[type="date"].form-input::-webkit-datetime-edit-fields-wrapper,
 input[type="date"].form-input:focus::-webkit-datetime-edit,
@@ -367,7 +367,7 @@ input[type="date"].form-input.has-value::-webkit-datetime-edit {
   align-items: center !important;
 }
 
-/* Takvim ikonu: saÄŸdan 3px, dikey ortalÄ±; metinle arasÄ±nda 3px boÅŸluk (padding-right ile) */
+/* Takvim ikonu: saÃ„Å¸dan 3px, dikey ortalÃ„Â±; metinle arasÃ„Â±nda 3px boÃ…Å¸luk (padding-right ile) */
 input[type="date"].form-input::-webkit-calendar-picker-indicator {
   position: absolute !important;
   right: 3px !important;
@@ -399,7 +399,7 @@ html, body {
   min-height: 100vh;
   min-height: 100dvh;
   overflow: hidden;
-  overflow-x: hidden; /* Yatay taÅŸma kesin kapalÄ± */
+  overflow-x: hidden; /* Yatay taÃ…Å¸ma kesin kapalÃ„Â± */
   font-family: 'Inter', sans-serif;
   background-color: var(--bg);
   color: var(--txt);
@@ -409,9 +409,9 @@ html, body {
 }
 html { overflow-x: hidden; }
 
-/* ANA KAPSAYICI - Havada durma (kÄ±rmÄ±zÄ± Ã§erÃ§eve ile uyumlu), taÅŸma yok */
+/* ANA KAPSAYICI - Havada durma (kÃ„Â±rmÃ„Â±zÃ„Â± ÃƒÂ§erÃƒÂ§eve ile uyumlu), taÃ…Å¸ma yok */
 .app-container {
-    isolation: isolate; /* pseudo katman gÃ¼venli */
+    isolation: isolate; /* pseudo katman gÃƒÂ¼venli */
     position: relative;
     max-width: 500px;
     width: 100%;
@@ -421,25 +421,25 @@ html { overflow-x: hidden; }
     margin: 0 auto;
     display: flex;
     flex-direction: column;
-    overflow-x: hidden; /* Ä°Ã§erik yan taÅŸmasÄ±n */
+    overflow-x: hidden; /* Ã„Â°ÃƒÂ§erik yan taÃ…Å¸masÃ„Â±n */
     box-sizing: border-box;
-    /* KIRMIZI Ã‡ERÃ‡EVE - sadece Ã¼st (ince) */
+    /* KIRMIZI Ãƒâ€¡ERÃƒâ€¡EVE - sadece ÃƒÂ¼st (ince) */
     border-top: 0.5px solid var(--border-red-tech);
-    box-shadow: 0 2px 14px rgba(var(--theme-color-rgb), 0.1), inset 0 0 80px rgba(10, 13, 28, 0.22);  /* Havada: kÄ±rmÄ±zÄ± gÃ¶lge + iÃ§ parlaklÄ±k (#0a0d1c tonu) */
+    box-shadow: 0 2px 14px rgba(var(--theme-color-rgb), 0.1), inset 0 0 80px rgba(10, 13, 28, 0.22);  /* Havada: kÃ„Â±rmÃ„Â±zÃ„Â± gÃƒÂ¶lge + iÃƒÂ§ parlaklÃ„Â±k (#0a0d1c tonu) */
     background: var(--bg);
     transition: border-color 0.3s ease;
 }
 
-/* KÄ±rmÄ±zÄ± IÅŸÄ±k Efekti (Overlay) */
+/* KÃ„Â±rmÃ„Â±zÃ„Â± IÃ…Å¸Ã„Â±k Efekti (Overlay) */
 .app-container::after {
     content: '';
     position: absolute;
     top: 0;
     bottom: 0;
-    /* Ä°Ã§e vuran kÄ±rmÄ±zÄ± Ä±ÅŸÄ±k */
+    /* Ã„Â°ÃƒÂ§e vuran kÃ„Â±rmÃ„Â±zÃ„Â± Ã„Â±Ã…Å¸Ã„Â±k */
     box-shadow: inset 0 0 25px var(--red-glow-subtle);
-    pointer-events: none; /* TÄ±klamayÄ± engelleme */
-    z-index: 0; /* iÃ§erik altÄ± */
+    pointer-events: none; /* TÃ„Â±klamayÃ„Â± engelleme */
+    z-index: 0; /* iÃƒÂ§erik altÃ„Â± */
 }
 
 /* Ana uygulama: kavisli ust cerceveyi tek pseudo-element cizer */
@@ -467,10 +467,10 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
     z-index: 2;
 }
 
-/* Ä°Ã‡ERÄ°K ALANI - Havada durma (yan kÄ±rmÄ±zÄ± Ã§erÃ§eve), taÅŸma yok */
+/* Ã„Â°Ãƒâ€¡ERÃ„Â°K ALANI - Havada durma (yan kÃ„Â±rmÃ„Â±zÃ„Â± ÃƒÂ§erÃƒÂ§eve), taÃ…Å¸ma yok */
 .content-wrap {
     flex: 1;
-    min-width: 0; /* Flex Ã§ocukta taÅŸmayÄ± Ã¶nler */
+    min-width: 0; /* Flex ÃƒÂ§ocukta taÃ…Å¸mayÃ„Â± ÃƒÂ¶nler */
     overflow-y: auto;
     overflow-x: hidden;
     padding: 4px;
@@ -479,7 +479,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
     position: relative;
     z-index: 10;
     box-sizing: border-box;
-    /* YAN Ã‡Ä°ZGÄ°LER - hafif (footer'a gitmeyecek) */
+    /* YAN Ãƒâ€¡Ã„Â°ZGÃ„Â°LER - hafif (footer'a gitmeyecek) */
     border-left: 0.5px solid var(--border-red-side);
     border-right: 0.5px solid var(--border-red-side);
     box-shadow: 0 0 24px var(--red-glow-subtle);
@@ -492,7 +492,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
     border-right: none;
 }
 
-/* MasaÃ¼stÃ¼: Ã§erÃ§eve kalÄ±nlÄ±ÄŸÄ± (ince) */
+/* MasaÃƒÂ¼stÃƒÂ¼: ÃƒÂ§erÃƒÂ§eve kalÃ„Â±nlÃ„Â±Ã„Å¸Ã„Â± (ince) */
 @media (min-width: 769px) {
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-container::before {
         bottom: 0;
@@ -520,11 +520,11 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
     }
 }
 
-/* HERO ALANI - Havada durma + kÄ±rmÄ±zÄ± uyum, taÅŸma yok */
+/* HERO ALANI - Havada durma + kÃ„Â±rmÃ„Â±zÃ„Â± uyum, taÃ…Å¸ma yok */
 .hero {
   position: relative;
   min-width: 0;
-  overflow: hidden; /* BaÅŸlÄ±k ellipsis hero iÃ§inde kalsÄ±n */
+  overflow: hidden; /* BaÃ…Å¸lÃ„Â±k ellipsis hero iÃƒÂ§inde kalsÃ„Â±n */
   background: linear-gradient(180deg, var(--hero-gradient-start), var(--hero-gradient-end));
   border: 1px solid var(--border-medium);
   border-radius: 18px;
@@ -539,8 +539,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
 .hero-logo {
   flex: 0 0 var(--hero-logo-width);
   width: var(--hero-logo-width);
-  margin-left: -5px;  /* Sola kaydÄ±r */
-  transform: translateY(-1px);  /* Logo 1px yukarÄ± (masaÃ¼stÃ¼) */
+  margin-left: -5px;  /* Sola kaydÃ„Â±r */
+  transform: translateY(-1px);  /* Logo 1px yukarÃ„Â± (masaÃƒÂ¼stÃƒÂ¼) */
   opacity: 1 !important;
   filter: none !important;
   backdrop-filter: none !important;
@@ -550,19 +550,19 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   width: 100%;
 }
 
-/* DÃœZELTME: SVG ve IMG width ayarÄ± */
+/* DÃƒÅ“ZELTME: SVG ve IMG width ayarÃ„Â± */
 .hero-logo svg,
 .hero-logo img {
-  width: 100%; /* Container geniÅŸliÄŸini doldur */
+  width: 100%; /* Container geniÃ…Å¸liÃ„Å¸ini doldur */
   height: auto;
   display: block;
   opacity: 1 !important; /* Tam opak, zorla */
-  filter: brightness(0.88) !important; /* Koyu temada kÄ±rmÄ±zÄ± biraz koyu, parlama azalsÄ±n */
-  object-fit: contain; /* Logo oranlarÄ±nÄ± koru */
+  filter: brightness(0.88) !important; /* Koyu temada kÃ„Â±rmÃ„Â±zÃ„Â± biraz koyu, parlama azalsÃ„Â±n */
+  object-fit: contain; /* Logo oranlarÃ„Â±nÃ„Â± koru */
 }
 
 .hero h1 {
-  /* Orta alan - esneyebilir, taÅŸma yok; dar ekranda ellipsis */
+  /* Orta alan - esneyebilir, taÃ…Å¸ma yok; dar ekranda ellipsis */
   flex: 1;
   min-width: 0;
   text-align: center;
@@ -575,7 +575,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   text-overflow: ellipsis;
   padding: 0 4px;
 
-  /* METALÄ°K GRADYAN - Parlak krom */
+  /* METALÃ„Â°K GRADYAN - Parlak krom */
   background: linear-gradient(to bottom, #c2d4df 0%, #ffffff 40%, #9aadba 52%, #d6e0e8 100%) !important;
   -webkit-background-clip: text !important;
   background-clip: text !important;
@@ -592,12 +592,12 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   transform: translateY(-2px);
 }
 
-/* HERO SPACER - Logo yarÄ±sÄ± geniÅŸlikte denge alanÄ± */
+/* HERO SPACER - Logo yarÃ„Â±sÃ„Â± geniÃ…Å¸likte denge alanÃ„Â± */
 .hero-spacer {
   flex: 0 0 var(--hero-spacer-width);
 }
 
-/* KÄ±rmÄ±zÄ± Ã§izgi - Havada durma (kÄ±rmÄ±zÄ± Ã§erÃ§eve ile eÅŸit) */
+/* KÃ„Â±rmÃ„Â±zÃ„Â± ÃƒÂ§izgi - Havada durma (kÃ„Â±rmÃ„Â±zÃ„Â± ÃƒÂ§erÃƒÂ§eve ile eÃ…Å¸it) */
 .animated-line {
   position: absolute;
   bottom: 22px;
@@ -608,10 +608,10 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   background: linear-gradient(90deg, transparent, var(--theme-color), transparent);
   border-radius: 1.6px;
   opacity: 0.6;
-  box-shadow: 0 2px 10px rgba(var(--theme-color-rgb), 0.3);  /* Havada: kÄ±rmÄ±zÄ± glow */
+  box-shadow: 0 2px 10px rgba(var(--theme-color-rgb), 0.3);  /* Havada: kÃ„Â±rmÃ„Â±zÃ„Â± glow */
 }
 
-/* Ä°KON SATIRI â€“ sol/orta/saÄŸ: PWA butonu ortada, bildirim+ayarlar saÄŸda */
+/* Ã„Â°KON SATIRI Ã¢â‚¬â€œ sol/orta/saÃ„Å¸: PWA butonu ortada, bildirim+ayarlar saÃ„Å¸da */
 .icons-row {
   display: flex;
   align-items: center;
@@ -633,7 +633,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   align-items: center;
 }
 
-/* PWA yükleme çubuğu: buton + iptal (X) */
+/* PWA yÃ¼kleme Ã§ubuÄŸu: buton + iptal (X) */
 .pwa-install-bar {
   display: flex;
   align-items: center;
@@ -673,7 +673,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   flex-shrink: 0;
 }
 
-/* PWA "UygulamayÄ± YÃ¼kle" butonu â€“ yeÅŸil metin + yeÅŸil Ã§erÃ§eve, satÄ±rda ortalÄ± */
+/* PWA "UygulamayÃ„Â± YÃƒÂ¼kle" butonu Ã¢â‚¬â€œ yeÃ…Å¸il metin + yeÃ…Å¸il ÃƒÂ§erÃƒÂ§eve, satÃ„Â±rda ortalÃ„Â± */
 #pwa-install-btn,
 .pwa-install-btn {
   padding: 8px 14px;
@@ -728,7 +728,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   }
 }
 
-/* Bildirim Ã¶ÄŸeleri Ã§erÃ§eve renkleri */
+/* Bildirim ÃƒÂ¶Ã„Å¸eleri ÃƒÂ§erÃƒÂ§eve renkleri */
 .notification-item {
   background: var(--bg) !important;
 }
@@ -743,7 +743,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   box-shadow: 0 0 8px rgba(var(--orange-warn-rgb), 0.2);
 }
 
-/* Bildirim kutularÄ± hover: sadece Ã§erÃ§eve belirginleÅŸir, arka plan ve yazÄ± deÄŸiÅŸmez */
+/* Bildirim kutularÃ„Â± hover: sadece ÃƒÂ§erÃƒÂ§eve belirginleÃ…Å¸ir, arka plan ve yazÃ„Â± deÃ„Å¸iÃ…Å¸mez */
 .notification-item:hover {
   border-color: rgba(255, 255, 255, 0.5) !important;
 }
@@ -759,7 +759,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
 #notifications-dropdown .notification-item.date-warning-orange-border:hover {
   border-color: rgba(var(--orange-warn-rgb), 0.85) !important;
 }
-/* Tarih uyarý kartlarý: settings-dropdown button mirasýný ez, dikey sýkýþmayý kaldýr */
+/* Tarih uyarÃ½ kartlarÃ½: settings-dropdown button mirasÃ½nÃ½ ez, dikey sÃ½kÃ½Ã¾mayÃ½ kaldÃ½r */
 #notifications-dropdown .notification-item:not(.notification-item-activity) {
   display: flex !important;
   flex-direction: column !important;
@@ -780,7 +780,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   margin-bottom: 0 !important;
 }
 
-/* Bildirim: Plaka + aÃ§Ä±klama (uzarsa alt satÄ±ra iner), tarih ikinci satÄ±rda sola dayalÄ± */
+/* Bildirim: Plaka + aÃƒÂ§Ã„Â±klama (uzarsa alt satÃ„Â±ra iner), tarih ikinci satÃ„Â±rda sola dayalÃ„Â± */
 #notifications-dropdown .notification-item-activity {
   border: 1px solid rgba(255,255,255,0.25) !important;
   flex-direction: column !important;
@@ -792,7 +792,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   text-align: left !important;
 }
 
-/* OkunmamÄ±ÅŸ bildirimler: sadece kÄ±rmÄ±zÄ± Ã§erÃ§eve, arka plan deÄŸiÅŸmez */
+/* OkunmamÃ„Â±Ã…Å¸ bildirimler: sadece kÃ„Â±rmÃ„Â±zÃ„Â± ÃƒÂ§erÃƒÂ§eve, arka plan deÃ„Å¸iÃ…Å¸mez */
 #notifications-dropdown .notification-item-activity.notification-unread {
   border: 1px solid rgba(var(--theme-color-rgb), 0.8) !important;
 }
@@ -805,7 +805,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   text-align: left !important;
 }
 
-/* Bildirim dropdown: kaydÄ±rÄ±labilir, scrollbar gizli */
+/* Bildirim dropdown: kaydÃ„Â±rÃ„Â±labilir, scrollbar gizli */
 #notifications-dropdown {
   overflow-y: auto !important;
   overflow-x: hidden !important;
@@ -817,7 +817,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   display: none !important;
 }
 
-/* MTV Bildirimi - Global Çakışma Önleyici */
+/* MTV Bildirimi - Global Ã‡akÄ±ÅŸma Ã–nleyici */
 #notifications-dropdown .mtv-notification {
   display: flex !important;
   flex-direction: row !important;
@@ -913,7 +913,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   pointer-events: none;
 }
 
-/* Hover ve mobil focus/active: tooltip görünsün */
+/* Hover ve mobil focus/active: tooltip gÃ¶rÃ¼nsÃ¼n */
 .mtv-dismiss-wrapper:hover .mtv-tooltip,
 .mtv-dismiss-btn:focus + .mtv-tooltip,
 .mtv-dismiss-btn:active + .mtv-tooltip {
@@ -921,7 +921,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   visibility: visible;
 }
 
-/* MENÃœ â€“ hover scale taÅŸma olmasÄ±n */
+/* MENÃƒÅ“ Ã¢â‚¬â€œ hover scale taÃ…Å¸ma olmasÃ„Â±n */
 .menu-container {
   display: flex;
   flex-direction: column;
@@ -930,22 +930,22 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   max-width: 100%;
 }
 
-/* MenÃ¼ butonlarÄ± - Havada durma + kÄ±rmÄ±zÄ± uyum */
+/* MenÃƒÂ¼ butonlarÃ„Â± - Havada durma + kÃ„Â±rmÃ„Â±zÃ„Â± uyum */
 .menu-btn {
   max-width: 500px;
   width: 100%;
   margin: 0 auto;
   padding: 18px;
-  background: linear-gradient(180deg, var(--hero-gradient-start), var(--hero-gradient-end)); /* Hero ile aynÄ± gradient */
+  background: linear-gradient(180deg, var(--hero-gradient-start), var(--hero-gradient-end)); /* Hero ile aynÃ„Â± gradient */
   border: 1px solid var(--border-subtle);
   border-radius: 12px;
   cursor: pointer;
   text-align: center;
   transition: border-color 0.2s, background 0.2s, transform 0.2s, box-shadow 0.2s;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2), 0 4px 16px rgba(var(--theme-color-rgb), 0.1);  /* Havada + kÄ±rmÄ±zÄ± */
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2), 0 4px 16px rgba(var(--theme-color-rgb), 0.1);  /* Havada + kÃ„Â±rmÃ„Â±zÃ„Â± */
   margin-bottom: 5px;
-  height: 54px; /* Sabit yÃ¼kseklik - taÅŸma engellendi */
-  overflow: hidden; /* Metin bÃ¼yÃ¼rse taÅŸma gizlensin */
+  height: 54px; /* Sabit yÃƒÂ¼kseklik - taÃ…Å¸ma engellendi */
+  overflow: hidden; /* Metin bÃƒÂ¼yÃƒÂ¼rse taÃ…Å¸ma gizlensin */
   box-sizing: border-box;
   display: flex;
   align-items: center;
@@ -954,22 +954,22 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
 }
 .menu-btn:last-child { margin-bottom: 0; }
 
-/* Hover efekti sadece masaÃ¼stÃ¼ (mouse ile) â€“ mobilde yok */
+/* Hover efekti sadece masaÃƒÂ¼stÃƒÂ¼ (mouse ile) Ã¢â‚¬â€œ mobilde yok */
 @media (hover: hover) {
   .menu-btn:hover {
     border-color: var(--border-light);
-    background: linear-gradient(180deg, var(--hero-gradient-start), var(--hero-gradient-end)); /* Arka plan aynÄ± kalÄ±r */
-    /* Clip-safe hover: yukarÄ± taÅŸÄ±ma yok (Ã¼stten kÄ±rpÄ±lmasÄ±n) */
+    background: linear-gradient(180deg, var(--hero-gradient-start), var(--hero-gradient-end)); /* Arka plan aynÃ„Â± kalÃ„Â±r */
+    /* Clip-safe hover: yukarÃ„Â± taÃ…Å¸Ã„Â±ma yok (ÃƒÂ¼stten kÃ„Â±rpÃ„Â±lmasÃ„Â±n) */
     transform: none;
     box-shadow: 0 6px 14px rgba(0,0,0,0.25), 0 6px 20px rgba(var(--theme-color-rgb), 0.12);
   }
   .menu-btn:hover .ttl {
     color: var(--txt-white);
-    transform: scale(1.02); /* Hafif bÃ¼yÃ¼me (buton iÃ§inde, kesilmez) */
+    transform: scale(1.02); /* Hafif bÃƒÂ¼yÃƒÂ¼me (buton iÃƒÂ§inde, kesilmez) */
   }
 }
 
-/* MenÃ¼ metinleri - taÅŸma yok, uzun metin sÄ±ÄŸsÄ±n veya ellipsis */
+/* MenÃƒÂ¼ metinleri - taÃ…Å¸ma yok, uzun metin sÃ„Â±Ã„Å¸sÃ„Â±n veya ellipsis */
 .menu-btn .ttl {
   font-size: clamp(12px, 2.8vw, 14px);
   font-weight: 700;
@@ -986,11 +986,11 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   padding: 0 6px;
 }
 
-/* DROPDOWN - Her buton ayrÄ± Ã§erÃ§eve */
+/* DROPDOWN - Her buton ayrÃ„Â± ÃƒÂ§erÃƒÂ§eve */
 .settings-dropdown {
   display: none;
   position: absolute;
-  top: 32px; /* AzaltÄ±ldÄ±: 35px â†’ 32px (daha yakÄ±n) */
+  top: 32px; /* AzaltÃ„Â±ldÃ„Â±: 35px Ã¢â€ â€™ 32px (daha yakÃ„Â±n) */
   right: 0;
   background: transparent;
   border: none;
@@ -1000,7 +1000,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   z-index: 100;
   padding: 0;
   box-shadow: none;
-  overflow: visible; /* Submenu'nun dÄ±ÅŸarÄ± Ã§Ä±kabilmesi iÃ§in */
+  overflow: visible; /* Submenu'nun dÃ„Â±Ã…Å¸arÃ„Â± ÃƒÂ§Ã„Â±kabilmesi iÃƒÂ§in */
 }
 .settings-dropdown.open { display: block; }
 .settings-dropdown button {
@@ -1037,7 +1037,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   box-shadow: 0 6px 15px rgba(0,0,0,0.4);
 }
 
-/* SUB-MENU (Veri YÃ¶netimi iÃ§in sola aÃ§Ä±lan menÃ¼) */
+/* SUB-MENU (Veri YÃƒÂ¶netimi iÃƒÂ§in sola aÃƒÂ§Ã„Â±lan menÃƒÂ¼) */
 .settings-submenu {
   display: none;
   position: absolute;
@@ -1051,11 +1051,11 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   padding: 8px;
   box-shadow: 0 4px 12px var(--shadow-dark);
   flex-direction: column;
-  gap: 4px; /* Butonlar arasÄ± boÅŸluk */
+  gap: 4px; /* Butonlar arasÃ„Â± boÃ…Å¸luk */
 }
 
 .settings-submenu.open {
-  display: flex; /* Flex container olarak gÃ¶ster */
+  display: flex; /* Flex container olarak gÃƒÂ¶ster */
 }
 
 .settings-submenu button {
@@ -1090,36 +1090,36 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
 
 .has-submenu-wrapper {
   position: relative;
-  padding-right: 8px; /* Submenu ile buton arasÄ±nda gÃ¶rsel boÅŸluk */
+  padding-right: 8px; /* Submenu ile buton arasÃ„Â±nda gÃƒÂ¶rsel boÃ…Å¸luk */
 }
 
 .has-submenu {
   display: flex !important;
   align-items: center !important;
-  justify-content: flex-start !important; /* Ok solda olduÄŸu iÃ§in flex-start */
-  padding: 12px !important; /* DiÄŸerleri ile aynÄ± yÃ¼kseklik */
+  justify-content: flex-start !important; /* Ok solda olduÃ„Å¸u iÃƒÂ§in flex-start */
+  padding: 12px !important; /* DiÃ„Å¸erleri ile aynÃ„Â± yÃƒÂ¼kseklik */
   width: 100%;
 }
 
-/* Ã–nbellek Temizle Butonu - KÄ±rmÄ±zÄ± + Hover BÃ¼yÃ¼me */
+/* Ãƒâ€“nbellek Temizle Butonu - KÃ„Â±rmÃ„Â±zÃ„Â± + Hover BÃƒÂ¼yÃƒÂ¼me */
 .settings-dropdown .cache-clear-btn {
-  color: var(--theme-color) !important; /* KÄ±rmÄ±zÄ± metin */
-  border: 1px solid rgba(var(--theme-color-rgb), 0.5) !important; /* KÄ±rmÄ±zÄ± Ã§erÃ§eve */
+  color: var(--theme-color) !important; /* KÃ„Â±rmÃ„Â±zÃ„Â± metin */
+  border: 1px solid rgba(var(--theme-color-rgb), 0.5) !important; /* KÃ„Â±rmÃ„Â±zÃ„Â± ÃƒÂ§erÃƒÂ§eve */
 }
 
 .settings-dropdown .cache-clear-btn:hover {
-  font-size: 17px !important; /* Fare ile Ã¼zerine gidince metin bÃ¼yÃ¼sÃ¼n */
+  font-size: 17px !important; /* Fare ile ÃƒÂ¼zerine gidince metin bÃƒÂ¼yÃƒÂ¼sÃƒÂ¼n */
   color: var(--theme-color) !important;
-  border-color: rgba(var(--theme-color-rgb), 0.7) !important; /* Hover'da daha parlak kÄ±rmÄ±zÄ± */
+  border-color: rgba(var(--theme-color-rgb), 0.7) !important; /* Hover'da daha parlak kÃ„Â±rmÃ„Â±zÃ„Â± */
 }
 
-/* MasaÃ¼stÃ¼nde container'Ä±n %45'i + metin ortalÄ± */
+/* MasaÃƒÂ¼stÃƒÂ¼nde container'Ã„Â±n %45'i + metin ortalÃ„Â± */
 @media (min-width: 641px) {
-  /* Ana baÅŸlÄ±k: 2px aÅŸaÄŸÄ± (base translateY(-2px) â†’ 0) */
+  /* Ana baÃ…Å¸lÃ„Â±k: 2px aÃ…Å¸aÃ„Å¸Ã„Â± (base translateY(-2px) Ã¢â€ â€™ 0) */
   .hero h1 {
     transform: translateY(0);
   }
-  /* Anasayfa masaÃ¼stÃ¼: baÅŸlÄ±k kutunun iÃ§ine sÄ±ÄŸsÄ±n */
+  /* Anasayfa masaÃƒÂ¼stÃƒÂ¼: baÃ…Å¸lÃ„Â±k kutunun iÃƒÂ§ine sÃ„Â±Ã„Å¸sÃ„Â±n */
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-spacer {
     flex: 0 0 16px;
     min-width: 0;
@@ -1129,31 +1129,31 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
     letter-spacing: clamp(1px, 0.45vw, 3px);
   }
   .settings-dropdown {
-    width: 45%; /* MasaÃ¼stÃ¼nde container'Ä±n %45'i */
+    width: 45%; /* MasaÃƒÂ¼stÃƒÂ¼nde container'Ã„Â±n %45'i */
     max-width: 225px;
   }
-  /* MasaÃ¼stÃ¼: 6 bildirim ekranda gÃ¶rÃ¼nsÃ¼n, fazlasÄ± iÃ§in aÅŸaÄŸÄ± kaydÄ±rÄ±labilir */
+  /* MasaÃƒÂ¼stÃƒÂ¼: 6 bildirim ekranda gÃƒÂ¶rÃƒÂ¼nsÃƒÂ¼n, fazlasÃ„Â± iÃƒÂ§in aÃ…Å¸aÃ„Å¸Ã„Â± kaydÃ„Â±rÃ„Â±labilir */
   #notifications-dropdown {
     max-height: 380px !important;
   }
   .settings-dropdown button {
-    text-align: center; /* MasaÃ¼stÃ¼nde ortalÄ± */
-    justify-content: center; /* Flexbox iÃ§in ortalama */
+    text-align: center; /* MasaÃƒÂ¼stÃƒÂ¼nde ortalÃ„Â± */
+    justify-content: center; /* Flexbox iÃƒÂ§in ortalama */
   }
   .has-submenu {
-    justify-content: center !important; /* MasaÃ¼stÃ¼nde ok ve metin ortada */
+    justify-content: center !important; /* MasaÃƒÂ¼stÃƒÂ¼nde ok ve metin ortada */
   }
   .settings-submenu button {
-    text-align: center; /* MasaÃ¼stÃ¼nde ortalÄ± */
-    justify-content: center; /* Flexbox iÃ§in ortalama */
+    text-align: center; /* MasaÃƒÂ¼stÃƒÂ¼nde ortalÃ„Â± */
+    justify-content: center; /* Flexbox iÃƒÂ§in ortalama */
   }
   
-  /* Footer MEDISA - MasaÃ¼stÃ¼nde hafif soldur (0.7 -> 0.5) */
+  /* Footer MEDISA - MasaÃƒÂ¼stÃƒÂ¼nde hafif soldur (0.7 -> 0.5) */
   #app-footer.dimmed.delayed .brand img {
     opacity: 0.5 !important;
   }
   
-  /* MasaÃ¼stÃ¼: Modal butonlarÄ± full-width (input ile aynÄ± hizada) */
+  /* MasaÃƒÂ¼stÃƒÂ¼: Modal butonlarÃ„Â± full-width (input ile aynÃ„Â± hizada) */
   .universal-btn-save,
   .universal-btn-cancel {
     min-width: 0 !important;
@@ -1163,7 +1163,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
 
 .card { background: var(--card-bg); padding: 16px; border-radius: 12px; border: 1px solid var(--br); }
 
-/* --- MODALLAR: ORTAK OVERLAY + CONTAINER (tek yerden yÃ¶netim) --- */
+/* --- MODALLAR: ORTAK OVERLAY + CONTAINER (tek yerden yÃƒÂ¶netim) --- */
 .modal-overlay {
   display: none;
   position: fixed;
@@ -1177,15 +1177,15 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   box-sizing: border-box;
   overflow: hidden !important;
   overscroll-behavior: none !important;
-  touch-action: none !important; /* Arka plan ve ana kutu ASLA kaydÄ±rÄ±lamaz (iOS zÄ±plama engeli) */
+  touch-action: none !important; /* Arka plan ve ana kutu ASLA kaydÃ„Â±rÃ„Â±lamaz (iOS zÃ„Â±plama engeli) */
 }
 .modal-overlay.active,
 .modal-overlay.open {
   display: flex !important;
 }
 
-/* Ana uygulama modalı: Modal her zaman footer ışığının üstünde kalır (10002), böylece kırmızı ışık içeri sızamaz.
-   clip-path ile karanlık overlay'in alt kısmı kesilir, böylece footer ve aradaki boşluk kararmadan pırıl pırıl parlar. */
+/* Ana uygulama modalÄ±: Modal her zaman footer Ä±ÅŸÄ±ÄŸÄ±nÄ±n Ã¼stÃ¼nde kalÄ±r (10002), bÃ¶ylece kÄ±rmÄ±zÄ± Ä±ÅŸÄ±k iÃ§eri sÄ±zamaz.
+   clip-path ile karanlÄ±k overlay'in alt kÄ±smÄ± kesilir, bÃ¶ylece footer ve aradaki boÅŸluk kararmadan pÄ±rÄ±l pÄ±rÄ±l parlar. */
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay.active,
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay.open {
   z-index: 10002 !important;
@@ -1197,8 +1197,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
 .user-panel-container {
   display: flex !important;
   flex-direction: column !important;
-  overflow: hidden !important; /* DÄ±ÅŸ Ã§erÃ§evenin kaymasÄ±nÄ± kesin kilitler */
-  touch-action: none !important; /* Kutu dÃ¼zeyinde esnemeyi yasaklar (iOS) */
+  overflow: hidden !important; /* DÃ„Â±Ã…Å¸ ÃƒÂ§erÃƒÂ§evenin kaymasÃ„Â±nÃ„Â± kesin kilitler */
+  touch-action: none !important; /* Kutu dÃƒÂ¼zeyinde esnemeyi yasaklar (iOS) */
   max-height: 90vh !important;
   box-sizing: border-box;
 }
@@ -1218,7 +1218,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
   overscroll-behavior: none;
   overscroll-behavior-x: none;
 }
-/* Header, geri Ã§ubuÄŸu ve footer sabit kalÄ±r, kaydÄ±rmadan etkilenmez (Strict Flex-Scroll) */
+/* Header, geri ÃƒÂ§ubuÃ„Å¸u ve footer sabit kalÃ„Â±r, kaydÃ„Â±rmadan etkilenmez (Strict Flex-Scroll) */
 .modal-overlay .modal-header,
 .modal-overlay .universal-back-bar,
 .universal-btn-group {
@@ -1242,9 +1242,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
   text-align: center;
 }
 
-/* SÄ°STEMDEKÄ° TÃœM MODALLARIN BAÅžLIK YÃœKSEKLÄ°ÄžÄ°NÄ° 60PX'E KÄ°LÄ°TLEME */
+/* SÃ„Â°STEMDEKÃ„Â° TÃƒÅ“M MODALLARIN BAÃ…Å¾LIK YÃƒÅ“KSEKLÃ„Â°Ã„Å¾Ã„Â°NÃ„Â° 60PX'E KÃ„Â°LÃ„Â°TLEME */
 .modal-overlay .modal-header {
-  position: relative !important; /* Ä°Ã§indeki absolute h2 ve X butonu iÃ§in referans */
+  position: relative !important; /* Ã„Â°ÃƒÂ§indeki absolute h2 ve X butonu iÃƒÂ§in referans */
   height: 60px !important;
   min-height: 60px !important;
   max-height: 60px !important;
@@ -1258,7 +1258,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
   border-top-right-radius: var(--modal-radius, 10px) !important;
 }
 
-/* TÃœM MODAL BAÅžLIKLARI (H2) MUTLAK MERKEZE SABÄ°TLEME â€“ X butonu ile itiÅŸmesin */
+/* TÃƒÅ“M MODAL BAÃ…Å¾LIKLARI (H2) MUTLAK MERKEZE SABÃ„Â°TLEME Ã¢â‚¬â€œ X butonu ile itiÃ…Å¸mesin */
 .modal-overlay .modal-header h2 {
   position: absolute !important;
   left: 50% !important;
@@ -1273,7 +1273,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
   line-height: 1 !important;
 }
 
-/* Kapat (X) butonu saÄŸ kÃ¶ÅŸede, baÅŸlÄ±ÄŸÄ±n Ã¼stÃ¼nde tÄ±klanabilir */
+/* Kapat (X) butonu saÃ„Å¸ kÃƒÂ¶Ã…Å¸ede, baÃ…Å¸lÃ„Â±Ã„Å¸Ã„Â±n ÃƒÂ¼stÃƒÂ¼nde tÃ„Â±klanabilir */
 .modal-overlay .modal-close {
   position: absolute !important;
   right: 15px !important;
@@ -1294,23 +1294,23 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
 .modal-overlay .modal-close:hover {
   color: var(--theme-color);
 }
-/* Sadece gÃ¶vde (body) kaydÄ±rÄ±labilir â€“ Ã§erÃ§eve sabit (iOS zÄ±plama engeli) */
+/* Sadece gÃƒÂ¶vde (body) kaydÃ„Â±rÃ„Â±labilir Ã¢â‚¬â€œ ÃƒÂ§erÃƒÂ§eve sabit (iOS zÃ„Â±plama engeli) */
 .modal-overlay .modal-body,
 .login-body,
 .user-panel-body {
   flex: 1 1 auto !important;
-  min-height: 0 !important; /* Flex iÃ§inde kÃ¼Ã§Ã¼lebilsin, taÅŸan iÃ§erik scroll olsun */
+  min-height: 0 !important; /* Flex iÃƒÂ§inde kÃƒÂ¼ÃƒÂ§ÃƒÂ¼lebilsin, taÃ…Å¸an iÃƒÂ§erik scroll olsun */
   overflow-y: auto !important;
   overflow-x: hidden !important;
   touch-action: pan-y !important; /* Sadece bu alanda dikey parmak hareketine izin */
-  -webkit-overflow-scrolling: touch !important; /* iOS momentum kaydÄ±rma */
-  overscroll-behavior-y: contain !important; /* KaydÄ±rma bitince dÄ±ÅŸ kutuyu zÄ±platmayÄ± yasaklar */
+  -webkit-overflow-scrolling: touch !important; /* iOS momentum kaydÃ„Â±rma */
+  overscroll-behavior-y: contain !important; /* KaydÃ„Â±rma bitince dÃ„Â±Ã…Å¸ kutuyu zÃ„Â±platmayÃ„Â± yasaklar */
   overscroll-behavior-x: none !important;
 }
 .modal-overlay .modal-body {
   padding: 20px;
 }
-/* Modal body varyantlarÄ± (inline stil yerine) */
+/* Modal body varyantlarÃ„Â± (inline stil yerine) */
 #cache-confirm-modal .modal-body { padding: 20px 20px 12px 20px; }
 #kaza-ekle-modal .modal-body { padding-top: 20px; }
 #vehicle-history-modal .modal-body {
@@ -1330,7 +1330,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
   flex: 1 !important;
   overflow-y: auto !important;
   min-height: 0 !important;
-  padding: 15px 20px 20px 20px !important; /* Sekmeler ile iÃ§erik arasÄ± 5px azaltÄ±ldÄ± (20â†’15) */
+  padding: 15px 20px 20px 20px !important; /* Sekmeler ile iÃƒÂ§erik arasÃ„Â± 5px azaltÃ„Â±ldÃ„Â± (20Ã¢â€ â€™15) */
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none !important;
   -ms-overflow-style: none !important;
@@ -1366,7 +1366,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
   pointer-events: none;
 }
 
-/* KullanÄ±cÄ± Paneli linki - footer Ã¼stÃ¼nde, saÄŸa yaslÄ± (mobilde 2px aÅŸaÄŸÄ± override ile); yarÄ± saydam */
+/* KullanÃ„Â±cÃ„Â± Paneli linki - footer ÃƒÂ¼stÃƒÂ¼nde, saÃ„Å¸a yaslÃ„Â± (mobilde 2px aÃ…Å¸aÃ„Å¸Ã„Â± override ile); yarÃ„Â± saydam */
 .user-panel-link {
   position: fixed;
   bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0) + 7px);
@@ -1407,7 +1407,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
 .user-panel-link-inner:hover {
   color: var(--theme-color);
 }
-/* Sadece anasayfada gÃ¶rÃ¼nÃ¼r; modal aÃ§Ä±kken gizle */
+/* Sadece anasayfada gÃƒÂ¶rÃƒÂ¼nÃƒÂ¼r; modal aÃƒÂ§Ã„Â±kken gizle */
 body.modal-open .user-panel-link {
   display: none !important;
 }
@@ -1418,7 +1418,7 @@ body.modal-open .user-panel-link {
   flex-shrink: 0;
 }
 
-/* 4. FOOTER (GÃœÃ‡LI KIRMIZI TEMA + AYRILIK) */
+/* 4. FOOTER (GÃƒÅ“Ãƒâ€¡LI KIRMIZI TEMA + AYRILIK) */
 #app-footer {
     position: fixed;
     bottom: 0;
@@ -1427,11 +1427,11 @@ body.modal-open .user-panel-link {
     width: 100%;
     margin: 0 auto;
     background: var(--bg);
-    z-index: 10000; /* Modal overlay (9999) Ã¼stÃ¼nde */ 
-    border-top: 0.8px solid rgba(128, 128, 128, 0.5);  /* Gri Ã§izgi */
-    border-left: 0.5px solid rgba(255, 255, 255, 0.20);  /* MasaÃ¼stÃ¼: ince + soluk */
+    z-index: 10000; /* Modal overlay (9999) ÃƒÂ¼stÃƒÂ¼nde */ 
+    border-top: 0.8px solid rgba(128, 128, 128, 0.5);  /* Gri ÃƒÂ§izgi */
+    border-left: 0.5px solid rgba(255, 255, 255, 0.20);  /* MasaÃƒÂ¼stÃƒÂ¼: ince + soluk */
     border-right: 0.5px solid rgba(255, 255, 255, 0.20);
-    /* Footer'dan yukarÄ± Ä±ÅŸÄ±ldama (3px daha yukarÄ±, aÃ§Ä±k kÄ±rmÄ±zÄ±) */
+    /* Footer'dan yukarÃ„Â± Ã„Â±Ã…Å¸Ã„Â±ldama (3px daha yukarÃ„Â±, aÃƒÂ§Ã„Â±k kÃ„Â±rmÃ„Â±zÃ„Â±) */
     box-shadow: 0 -13px 20px rgba(var(--footer-glow-rgb), 0.22);
 }
 
@@ -1444,9 +1444,9 @@ body.modal-open .user-panel-link {
     width: 100%;
     margin: 0 auto;
     
-    /* ðŸ‘‡ DÄ°KEY YÃœKSEKLÄ°ÄžÄ° BURADAN KISABÄ°LÄ°RSÄ°N ðŸ‘‡ */
+    /* Ã°Å¸â€˜â€¡ DÃ„Â°KEY YÃƒÅ“KSEKLÃ„Â°Ã„Å¾Ã„Â° BURADAN KISABÃ„Â°LÃ„Â°RSÃ„Â°N Ã°Å¸â€˜â€¡ */
     padding: 12px 12px; 
-    /* Ã–rneÄŸin bunu 'padding: 8px 16px;' yaparsan footer incelir. */
+    /* Ãƒâ€“rneÃ„Å¸in bunu 'padding: 8px 16px;' yaparsan footer incelir. */
 
     padding-bottom: max(12px, env(safe-area-inset-bottom));
     box-sizing: border-box;
@@ -1454,15 +1454,15 @@ body.modal-open .user-panel-link {
 
 #app-footer span {
     transition: opacity 1s ease;
-    font-weight: 400; /* 300 â†’ 400 daha belirgin */
+    font-weight: 400; /* 300 Ã¢â€ â€™ 400 daha belirgin */
     letter-spacing: 0.5px;
     font-size: 13px;
     color: var(--txt-gray);
     white-space: nowrap;
-    opacity: 1; /* VarsayÄ±lan opacity */
+    opacity: 1; /* VarsayÃ„Â±lan opacity */
 }
 
-/* Versiyon solda - daha belirgin; ezilmesin, taşmasın */
+/* Versiyon solda - daha belirgin; ezilmesin, taÅŸmasÄ±n */
 #app-footer .version {
     text-align: left;
     flex: 1;
@@ -1472,7 +1472,7 @@ body.modal-open .user-panel-link {
     font-weight: 500;
 }
 
-/* MEDISA Brand SVG - Ortada, ince detay + Ä±ÅŸÄ±k efekti */
+/* MEDISA Brand SVG - Ortada, ince detay + Ã„Â±Ã…Å¸Ã„Â±k efekti */
 #app-footer .brand {
     text-align: center;
     min-width: 0;
@@ -1480,19 +1480,19 @@ body.modal-open .user-panel-link {
     display: flex;
     align-items: center;
     justify-content: center;
-    letter-spacing: 2.5px; /* 1px â†’ 2.5px daha geniÅŸ */
+    letter-spacing: 2.5px; /* 1px Ã¢â€ â€™ 2.5px daha geniÃ…Å¸ */
 }
 
-/* --- DÃœZELTME: img olarak deÄŸiÅŸtirildi; taÅŸmayÄ± Ã¶nlemek iÃ§in alan iÃ§inde Ã¶lÃ§eklenir --- */
+/* --- DÃƒÅ“ZELTME: img olarak deÃ„Å¸iÃ…Å¸tirildi; taÃ…Å¸mayÃ„Â± ÃƒÂ¶nlemek iÃƒÂ§in alan iÃƒÂ§inde ÃƒÂ¶lÃƒÂ§eklenir --- */
 #app-footer .brand img {
     max-width: 100%;
     height: auto;
     max-height: 12.5px;
     width: auto;
-    opacity: 0.4; /* BaÅŸlangÄ±Ã§ Ã§ok soluk */
+    opacity: 0.4; /* BaÃ…Å¸langÃ„Â±ÃƒÂ§ ÃƒÂ§ok soluk */
     filter: none;
     transition: opacity 1s ease;
-    /* Harfler arasÄ± boÅŸluk efekti iÃ§in resmi yayvanlaÅŸtÄ±r */
+    /* Harfler arasÃ„Â± boÃ…Å¸luk efekti iÃƒÂ§in resmi yayvanlaÃ…Å¸tÃ„Â±r */
     transform: scaleX(1.1);
     object-fit: contain;
 }
@@ -1503,27 +1503,27 @@ body.modal-open .user-panel-link {
     flex-shrink: 1;
 }
 
-/* Durum saÄŸda; ezilmesin, taÅŸmasÄ±n */
+/* Durum saÃ„Å¸da; ezilmesin, taÃ…Å¸masÃ„Â±n */
 #app-footer .status {
     text-align: right;
     flex: 1;
     flex-shrink: 0 !important;
     white-space: nowrap !important;
     display: flex;
-    justify-content: flex-end; /* Ä°Ã§eriÄŸi saÄŸa it */
+    justify-content: flex-end; /* Ã„Â°ÃƒÂ§eriÃ„Å¸i saÃ„Å¸a it */
     align-items: center;
-    gap: 4px; /* Ä°kon ve yazÄ± arasÄ± */
-    min-width: 0; /* Flexbox taÅŸmasÄ±nÄ± Ã¶nler */
+    gap: 4px; /* Ã„Â°kon ve yazÃ„Â± arasÃ„Â± */
+    min-width: 0; /* Flexbox taÃ…Å¸masÃ„Â±nÃ„Â± ÃƒÂ¶nler */
 }
 
-/* Transition'larÄ± her zaman aktif tut */
+/* Transition'larÃ„Â± her zaman aktif tut */
 #app-footer .version,
 #app-footer .status,
 #app-footer .brand img {
   transition: opacity 1s ease !important;
 }
 
-/* Sayfa aÃ§Ä±ldÄ±ÄŸÄ±nda: Versiyon ve durum normal, MEDISA soluk */
+/* Sayfa aÃƒÂ§Ã„Â±ldÃ„Â±Ã„Å¸Ã„Â±nda: Versiyon ve durum normal, MEDISA soluk */
 #app-footer.dimmed .version,
 #app-footer.dimmed .version#version-display { 
   opacity: 1 !important; 
@@ -1551,31 +1551,31 @@ body.modal-open .user-panel-link {
   opacity: 0.8 !important; 
 }
 .status-ready {
-  color: var(--green) !important; /* Zorla yeÅŸil */
-  font-weight: 600; /* Durum bilgisi kalÄ±n */
-  text-shadow: 0 0 8px rgba(74, 222, 128, 0.4); /* YeÅŸil glow */
+  color: var(--green) !important; /* Zorla yeÃ…Å¸il */
+  font-weight: 600; /* Durum bilgisi kalÃ„Â±n */
+  text-shadow: 0 0 8px rgba(74, 222, 128, 0.4); /* YeÃ…Å¸il glow */
 }
 .status-error { 
   color: var(--red); 
-  font-weight: 600; /* Durum bilgisi kalÄ±n */
-  text-shadow: 0 0 8px rgba(239, 68, 68, 0.4); /* KÄ±rmÄ±zÄ± glow */
+  font-weight: 600; /* Durum bilgisi kalÃ„Â±n */
+  text-shadow: 0 0 8px rgba(239, 68, 68, 0.4); /* KÃ„Â±rmÃ„Â±zÃ„Â± glow */
 }
 
-/* MOBÄ°L AYARLARI */
+/* MOBÃ„Â°L AYARLARI */
 @media (max-width: 640px) {
-    /* :root override'larÄ± dosya baÅŸÄ±nda birleÅŸtirildi */
-    /* âœ¨ iOS FOOTER ALTI RENK SORUNU âœ¨ - Body/container aynÄ± renk */
+    /* :root override'larÃ„Â± dosya baÃ…Å¸Ã„Â±nda birleÃ…Å¸tirildi */
+    /* Ã¢Å“Â¨ iOS FOOTER ALTI RENK SORUNU Ã¢Å“Â¨ - Body/container aynÃ„Â± renk */
     html, body {
         background-color: var(--bg);
         color: #ffffff !important; /* Metin rengi zorla beyaz */
     }
     
-    /* TÃ¼m metin elementleri iÃ§in kontrast artÄ±rma */
+    /* TÃƒÂ¼m metin elementleri iÃƒÂ§in kontrast artÃ„Â±rma */
     h1, h2, h3, h4, h5, h6, p, span, div, label, button {
         color: inherit; /* Parent'tan renk al */
     }
     
-    /* Mobil Footer MEDISA yazÄ±sÄ± */
+    /* Mobil Footer MEDISA yazÃ„Â±sÃ„Â± */
     #app-footer .brand img {
         height: 13px !important; /* Mobil 13px */
     }
@@ -1588,7 +1588,7 @@ body.modal-open .user-panel-link {
     
     /* Mobil header logo boyutu ve dengesi */
     .hero-logo img {
-        height: 38px !important; /* Mobil header logosu 2px kÃ¼Ã§Ã¼ltÃ¼ldÃ¼ */
+        height: 38px !important; /* Mobil header logosu 2px kÃƒÂ¼ÃƒÂ§ÃƒÂ¼ltÃƒÂ¼ldÃƒÂ¼ */
         width: auto !important;
         display: block !important;
         object-fit: contain !important;
@@ -1598,43 +1598,43 @@ body.modal-open .user-panel-link {
         display: flex !important;
         align-items: center !important;
         margin-right: 12px !important;
-        transform: translate(-2px, 1px);  /* 2px sola, 1px aÅŸaÄŸÄ± (mobil) */
+        transform: translate(-2px, 1px);  /* 2px sola, 1px aÃ…Å¸aÃ„Å¸Ã„Â± (mobil) */
     }
     
-    /* Hero mobilde havada + kÄ±rmÄ±zÄ± (anasayfa ile eÅŸit), dikey yÃ¼kseklik +5px */
+    /* Hero mobilde havada + kÃ„Â±rmÃ„Â±zÃ„Â± (anasayfa ile eÃ…Å¸it), dikey yÃƒÂ¼kseklik +5px */
     .hero {
         min-height: 65px !important;
         box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45), 0 4px 24px rgba(var(--theme-color-rgb), 0.18);
     }
     
     .hero h1 {
-        padding: 0 2px;  /* Mobilde logoâ€“metin arasÄ± 2px */
-        letter-spacing: 2.5px;  /* Mobilde harfler arasÄ± boÅŸluk 2.5px */
-        font-size: clamp(19px, 5.5vw, 23px); /* Uzun baÅŸlÄ±kta minimum dÃ¼zeyde kÃ¼Ã§Ã¼lebilir */
-        /* PÄ±rÄ±l pÄ±rÄ±l: sis yok, keskin metin */
+        padding: 0 2px;  /* Mobilde logoÃ¢â‚¬â€œmetin arasÃ„Â± 2px */
+        letter-spacing: 2.5px;  /* Mobilde harfler arasÃ„Â± boÃ…Å¸luk 2.5px */
+        font-size: clamp(19px, 5.5vw, 23px); /* Uzun baÃ…Å¸lÃ„Â±kta minimum dÃƒÂ¼zeyde kÃƒÂ¼ÃƒÂ§ÃƒÂ¼lebilir */
+        /* PÃ„Â±rÃ„Â±l pÃ„Â±rÃ„Â±l: sis yok, keskin metin */
         text-shadow: none !important;
         filter: none !important;
         -webkit-font-smoothing: antialiased;
         text-rendering: optimizeLegibility;
-        transform: translateY(-2px);  /* Havada - kÄ±rmÄ±zÄ± ile eÅŸit */
+        transform: translateY(-2px);  /* Havada - kÃ„Â±rmÃ„Â±zÃ„Â± ile eÃ…Å¸it */
     }
-    /* Anasayfa mobil header: logo yuvarlaÄŸÄ± bÃ¼yÃ¼se de baÅŸlÄ±k tek satÄ±ra sÄ±ÄŸsÄ±n */
+    /* Anasayfa mobil header: logo yuvarlaÃ„Å¸Ã„Â± bÃƒÂ¼yÃƒÂ¼se de baÃ…Å¸lÃ„Â±k tek satÃ„Â±ra sÃ„Â±Ã„Å¸sÃ„Â±n */
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-logo {
         margin-right: 8px !important;
     }
-    /* Ana uygulama ana ekran header mobil: ana baÅŸlÄ±k +0.6pt (â‰ˆ0.8px) */
+    /* Ana uygulama ana ekran header mobil: ana baÃ…Å¸lÃ„Â±k +0.6pt (Ã¢â€°Ë†0.8px) */
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero h1 {
         font-size: clamp(17.8px, 5.1vw, 21.8px) !important;
         letter-spacing: 2px !important;
     }
     
-    /* Modal baÅŸlÄ±klarÄ± mobilde 19px, letter-spacing 0.2em */
+    /* Modal baÃ…Å¸lÃ„Â±klarÃ„Â± mobilde 19px, letter-spacing 0.2em */
     .modal-header h2 {
         font-size: 19px !important;
         letter-spacing: 0.2em !important;
     }
     
-    /* Mobil: overlay footer+8px Ã¼stÃ¼nde biter, 8px boÅŸluk sayfa arka planÄ±yla gÃ¶rÃ¼nsÃ¼n */
+    /* Mobil: overlay footer+8px ÃƒÂ¼stÃƒÂ¼nde biter, 8px boÃ…Å¸luk sayfa arka planÃ„Â±yla gÃƒÂ¶rÃƒÂ¼nsÃƒÂ¼n */
     .modal-overlay {
         top: 0 !important;
         padding: 0 !important;
@@ -1643,7 +1643,7 @@ body.modal-open .user-panel-link {
         overflow: hidden !important;
         overscroll-behavior: none !important;
         bottom: calc(var(--modal-gap-above-footer) + var(--app-footer-height) + env(safe-area-inset-bottom, 0)) !important;
-        height: auto !important; /* 100vh base kurallarÄ±nÄ± ezer, overlay top-bottom arasÄ± olur */
+        height: auto !important; /* 100vh base kurallarÃ„Â±nÃ„Â± ezer, overlay top-bottom arasÃ„Â± olur */
         max-height: calc(100vh - var(--modal-gap-above-footer) - var(--app-footer-height) - env(safe-area-inset-bottom, 0)) !important;
         max-height: calc(100dvh - var(--modal-gap-above-footer) - var(--app-footer-height) - env(safe-area-inset-bottom, 0)) !important;
     }
@@ -1657,7 +1657,7 @@ body.modal-open .user-panel-link {
         max-height: calc(100dvh - var(--modal-gap-above-footer) - var(--app-footer-height) - env(safe-area-inset-bottom, 0)) !important;
     }
 
-    /* Modal container mobil: Ã¼st sÄ±fÄ±r, overlay'Ä± doldur, 10px kÃ¶ÅŸe, ince Ã§erÃ§eve */
+    /* Modal container mobil: ÃƒÂ¼st sÃ„Â±fÃ„Â±r, overlay'Ã„Â± doldur, 10px kÃƒÂ¶Ã…Å¸e, ince ÃƒÂ§erÃƒÂ§eve */
     .modal-overlay .modal-container {
         position: relative !important;
         max-width: 100% !important;
@@ -1684,21 +1684,21 @@ body.modal-open .user-panel-link {
         overscroll-behavior-x: none !important;
     }
 
-    /* Modal header: Ã¼stten nefes almasÄ± iÃ§in 12px, Ã¼st kÃ¶ÅŸeler 10px (container ile uyumlu) */
+    /* Modal header: ÃƒÂ¼stten nefes almasÃ„Â± iÃƒÂ§in 12px, ÃƒÂ¼st kÃƒÂ¶Ã…Å¸eler 10px (container ile uyumlu) */
     .modal-overlay .modal-header {
         padding-top: 12px !important;
         border-top-left-radius: 10px !important;
         border-top-right-radius: 10px !important;
     }
 
-    /* Mobil: modal body â€“ sadece dikey scroll, yatay kayma yok */
+    /* Mobil: modal body Ã¢â‚¬â€œ sadece dikey scroll, yatay kayma yok */
     .modal-overlay .modal-body {
         padding-bottom: 40px !important;
         overflow-x: hidden !important;
         overscroll-behavior-x: none !important;
     }
 
-    /* iOS PWA: 10px boÅŸluk --modal-gap-above-footer ile; footer + safe-area uyumlu */
+    /* iOS PWA: 10px boÃ…Å¸luk --modal-gap-above-footer ile; footer + safe-area uyumlu */
     @media (display-mode: standalone) {
         .modal-overlay {
             padding-top: env(safe-area-inset-top) !important;
@@ -1715,7 +1715,7 @@ body.modal-open .user-panel-link {
         }
         .tasitlar-modal-overlay {
             padding-top: env(safe-area-inset-top) !important;
-            padding-bottom: 0 !important; /* DiÄŸer modallarla aynÄ±: overlay bottom zaten safe-area iÃ§eriyor, ek boÅŸluk olmasÄ±n */
+            padding-bottom: 0 !important; /* DiÃ„Å¸er modallarla aynÃ„Â±: overlay bottom zaten safe-area iÃƒÂ§eriyor, ek boÃ…Å¸luk olmasÃ„Â±n */
             bottom: calc(var(--modal-gap-above-footer) + var(--app-footer-height) + env(safe-area-inset-bottom, 0)) !important;
             max-height: calc(100vh - var(--modal-gap-above-footer) - var(--app-footer-height) - env(safe-area-inset-bottom, 0)) !important;
             max-height: calc(100dvh - var(--modal-gap-above-footer) - var(--app-footer-height) - env(safe-area-inset-bottom, 0)) !important;
@@ -1730,13 +1730,13 @@ body.modal-open .user-panel-link {
             height: 100% !important;
             max-height: 100% !important;
         }
-        /* Modal iÃ§eriÄŸi footer arkasÄ±nda kalmasÄ±n */
+        /* Modal iÃƒÂ§eriÃ„Å¸i footer arkasÃ„Â±nda kalmasÃ„Â±n */
         .modal-overlay .modal-body {
             padding-bottom: calc(var(--app-footer-height) + env(safe-area-inset-bottom, 0)) !important;
         }
     }
 
-    /* Mobil+PWA: modal aÃ§Ä±kken footerâ€“modal arasÄ± boÅŸluktaki kÄ±rmÄ±zÄ± Ã§izgi kalÄ±ntÄ±sÄ± tamamen kapansÄ±n */
+    /* Mobil+PWA: modal aÃƒÂ§Ã„Â±kken footerÃ¢â‚¬â€œmodal arasÃ„Â± boÃ…Å¸luktaki kÃ„Â±rmÃ„Â±zÃ„Â± ÃƒÂ§izgi kalÃ„Â±ntÃ„Â±sÃ„Â± tamamen kapansÃ„Â±n */
     body.modal-open::after {
         content: '';
         position: fixed;
@@ -1746,11 +1746,11 @@ body.modal-open .user-panel-link {
         bottom: calc(var(--app-footer-height) + env(safe-area-inset-bottom, 0));
         height: var(--modal-gap-above-footer);
         background: var(--bg);
-        z-index: 9998; /* Modal (9999) altÄ±nda, container/Ã§izgilerin Ã¼stÃ¼nde */
+        z-index: 9998; /* Modal (9999) altÃ„Â±nda, container/ÃƒÂ§izgilerin ÃƒÂ¼stÃƒÂ¼nde */
         pointer-events: none;
     }
     
-    /* Header ikonlarÄ± (saÄŸ Ã¼st): SVG 24px, padding artÄ±rÄ±ldÄ± */
+    /* Header ikonlarÃ„Â± (saÃ„Å¸ ÃƒÂ¼st): SVG 24px, padding artÃ„Â±rÃ„Â±ldÃ„Â± */
     .icons-row .icon-btn svg {
         width: 24px !important;
         height: 24px !important;
@@ -1758,26 +1758,26 @@ body.modal-open .user-panel-link {
     .icons-row .icon-btn {
         padding: 8px !important;
     }
-    /* Modal geri/kapat butonlarÄ± mobilde daha bÃ¼yÃ¼k tÄ±klanabilir alan */
+    /* Modal geri/kapat butonlarÃ„Â± mobilde daha bÃƒÂ¼yÃƒÂ¼k tÃ„Â±klanabilir alan */
     .modal-overlay .modal-close {
         padding: 12px !important;
         min-width: 44px !important;
         min-height: 44px !important;
     }
     
-    /* Ana sayfa butonlarÄ± mobilde: yÃ¼kseklik +2px (64px), gri Ã§erÃ§eve parlak, havada kÄ±rmÄ±zÄ± gÃ¶lge */
+    /* Ana sayfa butonlarÃ„Â± mobilde: yÃƒÂ¼kseklik +2px (64px), gri ÃƒÂ§erÃƒÂ§eve parlak, havada kÃ„Â±rmÃ„Â±zÃ„Â± gÃƒÂ¶lge */
     .menu-btn {
         height: 64px !important; /* 62px + 2px */
         box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25), 0 4px 20px rgba(var(--theme-color-rgb), 0.14);
-        border-color: rgba(255, 255, 255, 0.55); /* Ã‡erÃ§eve gri daha parlak (0.45â†’0.55, kalÄ±nlÄ±k aynÄ±) */
+        border-color: rgba(255, 255, 255, 0.55); /* Ãƒâ€¡erÃƒÂ§eve gri daha parlak (0.45Ã¢â€ â€™0.55, kalÃ„Â±nlÃ„Â±k aynÃ„Â±) */
     }
     
-    /* MenÃ¼ butonlarÄ± arasÄ± dikey boÅŸluk +2px */
+    /* MenÃƒÂ¼ butonlarÃ„Â± arasÃ„Â± dikey boÃ…Å¸luk +2px */
     .menu-container {
         gap: 8px !important;
     }
     
-    /* MOBÄ°LDE YAN Ã‡Ä°ZGÄ°LER â€“ ufak belirginleÅŸtirme (0.72) */
+    /* MOBÃ„Â°LDE YAN Ãƒâ€¡Ã„Â°ZGÃ„Â°LER Ã¢â‚¬â€œ ufak belirginleÃ…Å¸tirme (0.72) */
     .content-wrap { 
         border-left: none;
         border-right: none;
@@ -1800,7 +1800,7 @@ body.modal-open .user-panel-link {
         display: none;
     }
     
-    /* CONTAINER Ã¼st Ã§izgi (mobil anasayfa kÄ±rmÄ±zÄ± Ã§erÃ§eve); footer boÅŸluÄŸu driver ile tutarlÄ± */
+    /* CONTAINER ÃƒÂ¼st ÃƒÂ§izgi (mobil anasayfa kÃ„Â±rmÃ„Â±zÃ„Â± ÃƒÂ§erÃƒÂ§eve); footer boÃ…Å¸luÃ„Å¸u driver ile tutarlÃ„Â± */
     body:not(.dashboard-page):not(.login-page) .app-container {
         padding-bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important;
     }
@@ -1816,49 +1816,49 @@ body.modal-open .user-panel-link {
         border-right-color: rgba(var(--theme-color-rgb), 0.72);
     }
     
-    /* KÄ±rmÄ±zÄ± Ã§erÃ§eve mobilde havada: iÃ§ Ä±ÅŸÄ±k tam (kÄ±rmÄ±zÄ± ile eÅŸit) */
+    /* KÃ„Â±rmÃ„Â±zÃ„Â± ÃƒÂ§erÃƒÂ§eve mobilde havada: iÃƒÂ§ Ã„Â±Ã…Å¸Ã„Â±k tam (kÃ„Â±rmÃ„Â±zÃ„Â± ile eÃ…Å¸it) */
     .app-container::after {
         box-shadow: inset 0 0 25px var(--red-glow-subtle);
     }
     
-    /* FOOTER IÅžIKLARI: TÃ¼rk bayraÄŸÄ± kÄ±rmÄ±zÄ±sÄ±, Ä±ÅŸÄ±k yukarÄ± */
+    /* FOOTER IÃ…Å¾IKLARI: TÃƒÂ¼rk bayraÃ„Å¸Ã„Â± kÃ„Â±rmÃ„Â±zÃ„Â±sÃ„Â±, Ã„Â±Ã…Å¸Ã„Â±k yukarÃ„Â± */
     #app-footer {
         position: fixed;
         bottom: 0;
-        box-shadow: 0 -15px 22px rgba(var(--footer-glow-rgb), 0.38);
+        box-shadow: 0 -15px 22px rgba(var(--footer-glow-rgb), 0.52);
         border-left: none; /* Mobilde yan yok */
         border-right: none;
-        border-top: 1px solid rgba(128, 128, 128, 0.5) !important; /* Gri Ã§izgi */
+        border-top: 1px solid rgba(128, 128, 128, 0.5) !important; /* Gri ÃƒÂ§izgi */
     }
     
-    /* HEADER KIRMIZI Ã‡Ä°ZGÄ° - Havada (kÄ±rmÄ±zÄ± Ã§erÃ§eve ile eÅŸit) */
+    /* HEADER KIRMIZI Ãƒâ€¡Ã„Â°ZGÃ„Â° - Havada (kÃ„Â±rmÃ„Â±zÃ„Â± ÃƒÂ§erÃƒÂ§eve ile eÃ…Å¸it) */
     .animated-line {
         opacity: 0.8;  /* Mobilde daha belirgin */
-        box-shadow: 0 2px 12px rgba(var(--theme-color-rgb), 0.4);  /* Havada: kÄ±rmÄ±zÄ± glow */
+        box-shadow: 0 2px 12px rgba(var(--theme-color-rgb), 0.4);  /* Havada: kÃ„Â±rmÃ„Â±zÃ„Â± glow */
     }
     
     .menu-btn .ttl {
-        font-size: clamp(15.5px, 3.2vw, 17.5px) !important; /* +1pt daha (14.5â†’15.5, 16.5â†’17.5) */
+        font-size: clamp(15.5px, 3.2vw, 17.5px) !important; /* +1pt daha (14.5Ã¢â€ â€™15.5, 16.5Ã¢â€ â€™17.5) */
         letter-spacing: 1.5px;
         text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);  /* Havada, metin berrak */
     }
     
-    /* Mobil: KullanÄ±cÄ± paneli giriÅŸ butonu 2px aÅŸaÄŸÄ± */
+    /* Mobil: KullanÃ„Â±cÃ„Â± paneli giriÃ…Å¸ butonu 2px aÃ…Å¸aÃ„Å¸Ã„Â± */
     .user-panel-link {
         bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0) + 5px) !important;
     }
     
-    /* Mobil bildirim Ã§erÃ§eveleri - arka plan opak */
+    /* Mobil bildirim ÃƒÂ§erÃƒÂ§eveleri - arka plan opak */
     .notification-item {
         background: var(--bg) !important;
     }
     
-    /* Mobil bildirimlerde plaka font boyutunu 2 punto kÃ¼Ã§Ã¼lt */
+    /* Mobil bildirimlerde plaka font boyutunu 2 punto kÃƒÂ¼ÃƒÂ§ÃƒÂ¼lt */
     #notifications-dropdown .notification-item-activity > div:first-child {
-        font-size: 11px !important; /* 13px - 2pt (â‰ˆ2px) = 11px */
+        font-size: 11px !important; /* 13px - 2pt (Ã¢â€°Ë†2px) = 11px */
     }
     
-    /* Mobil: 5 bildirim ekranda gÃ¶rÃ¼nsÃ¼n, fazlasÄ± iÃ§in aÅŸaÄŸÄ± kaydÄ±rÄ±labilir */
+    /* Mobil: 5 bildirim ekranda gÃƒÂ¶rÃƒÂ¼nsÃƒÂ¼n, fazlasÃ„Â± iÃƒÂ§in aÃ…Å¸aÃ„Å¸Ã„Â± kaydÃ„Â±rÃ„Â±labilir */
     #notifications-dropdown {
         max-height: 320px !important;
         overflow-y: auto !important;
@@ -1866,7 +1866,7 @@ body.modal-open .user-panel-link {
         -webkit-overflow-scrolling: touch;
     }
 
-    /* === ANA KAYIT MODALI KURTARMA (Dar alana sÄ±ÄŸmasÄ± iÃ§in alt alta dizilmek zorundadÄ±r) === */
+    /* === ANA KAYIT MODALI KURTARMA (Dar alana sÃ„Â±Ã„Å¸masÃ„Â± iÃƒÂ§in alt alta dizilmek zorundadÃ„Â±r) === */
     #vehicle-modal .modal-body .form-section-inline:has(.radio-group),
     #vehicle-modal .modal-body .form-section-inline:has([data-group]) {
         flex-direction: column !important;
@@ -1884,7 +1884,7 @@ body.modal-open .user-panel-link {
         flex-wrap: nowrap !important;
         gap: 4px !important;
     }
-    /* Ana formda butonlarÄ±n saÄŸa sola taÅŸmamasÄ± iÃ§in orijinal dar Ã¶lÃ§Ã¼lerine dÃ¶nÃ¼yoruz */
+    /* Ana formda butonlarÃ„Â±n saÃ„Å¸a sola taÃ…Å¸mamasÃ„Â± iÃƒÂ§in orijinal dar ÃƒÂ¶lÃƒÂ§ÃƒÂ¼lerine dÃƒÂ¶nÃƒÂ¼yoruz */
     #vehicle-modal .modal-body .radio-btn,
     #vehicle-modal .modal-body .toggle-btn {
         height: 27px !important;
@@ -1895,7 +1895,7 @@ body.modal-open .user-panel-link {
     }
 }
 
-/* --- iOS PWA: KÄ±rmÄ±zÄ± Ã§erÃ§eve ekran Ã¼stÃ¼ + kÄ±vrÄ±mlar paralel --- */
+/* --- iOS PWA: KÃ„Â±rmÃ„Â±zÃ„Â± ÃƒÂ§erÃƒÂ§eve ekran ÃƒÂ¼stÃƒÂ¼ + kÃ„Â±vrÃ„Â±mlar paralel --- */
 @media (max-width: 768px) and (display-mode: standalone) {
     html {
         padding: 0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left) !important;
@@ -1908,11 +1908,11 @@ body.modal-open .user-panel-link {
         min-height: 100dvh !important;
         box-sizing: border-box !important;
     }
-    /* iOS PWA: anabaÅŸlÄ±k kulaklÄ±k/sensÃ¶r arkasÄ±nda kalmasÄ±n - content-wrap Ã¼st padding */
+    /* iOS PWA: anabaÃ…Å¸lÃ„Â±k kulaklÃ„Â±k/sensÃƒÂ¶r arkasÃ„Â±nda kalmasÃ„Â±n - content-wrap ÃƒÂ¼st padding */
     .content-wrap {
         padding-top: max(12px, env(safe-area-inset-top)) !important;
     }
-    /* Ana uygulama container â€“ Ã§erÃ§eve kurallarÄ± */
+    /* Ana uygulama container Ã¢â‚¬â€œ ÃƒÂ§erÃƒÂ§eve kurallarÃ„Â± */
     body:not(.dashboard-page):not(.login-page) .app-container {
         margin-top: 0 !important;
         padding-top: 0 !important;
@@ -1927,7 +1927,7 @@ body.modal-open .user-panel-link {
         min-height: calc(100vh - env(safe-area-inset-bottom)) !important;
         min-height: calc(100dvh - env(safe-area-inset-bottom)) !important;
     }
-    /* Admin rapor sayfasÄ±: kavislere uyumlu Ã§erÃ§eve (anasayfa ile aynÄ±) */
+    /* Admin rapor sayfasÃ„Â±: kavislere uyumlu ÃƒÂ§erÃƒÂ§eve (anasayfa ile aynÃ„Â±) */
     .admin-app-container {
         border-radius: 20px !important;
         overflow: hidden !important;
@@ -1943,16 +1943,16 @@ body.modal-open .user-panel-link {
     }
 }
 
-/* --- MasaÃ¼stÃ¼ PWA: window-controls-overlay - baÅŸlÄ±k Ã§ubuÄŸu altÄ±nda iÃ§erik --- */
+/* --- MasaÃƒÂ¼stÃƒÂ¼ PWA: window-controls-overlay - baÃ…Å¸lÃ„Â±k ÃƒÂ§ubuÃ„Å¸u altÃ„Â±nda iÃƒÂ§erik --- */
 @media (display-mode: window-controls-overlay) {
     body {
         padding-top: env(title-bar-area-height, 0px) !important;
     }
 }
 
-/* Ä°Ã§erik pseudo overlay'in Ã¼stÃ¼nde kalsÄ±n */
+/* Ã„Â°ÃƒÂ§erik pseudo overlay'in ÃƒÂ¼stÃƒÂ¼nde kalsÃ„Â±n */
 .app-container > * { position: relative; z-index: 1; }
-/* Modal aÃ§Ä±kken body kaymasÄ±nÄ± ve yatay kaymayÄ± engelle */
+/* Modal aÃƒÂ§Ã„Â±kken body kaymasÃ„Â±nÃ„Â± ve yatay kaymayÃ„Â± engelle */
 body.modal-open {
     overflow: hidden;
     overflow-x: hidden;
@@ -1964,7 +1964,7 @@ body.modal-open {
     touch-action: none;
 }
 
-/* --- YENÄ° EKLENEN KISIM: Modal aÃ§Ä±kken Ã§izgileri gizle --- */
+/* --- YENÃ„Â° EKLENEN KISIM: Modal aÃƒÂ§Ã„Â±kken ÃƒÂ§izgileri gizle --- */
 body.modal-open .app-container {
     border-color: transparent !important;
 }
@@ -1973,7 +1973,7 @@ body.modal-open .content-wrap::before {
     display: none !important;
 }
 
-/* === KÃœÃ‡ÃœK MODALLAR Ä°Ã‡Ä°N STANDART HEADER (v79) === */
+/* === KÃƒÅ“Ãƒâ€¡ÃƒÅ“K MODALLAR Ã„Â°Ãƒâ€¡Ã„Â°N STANDART HEADER (v79) === */
 #cache-confirm-modal .modal-header,
 #info-modal .modal-header,
 #tescil-tarih-confirm-modal .modal-header,
@@ -2042,8 +2042,8 @@ body.modal-open .content-wrap::before {
     color: var(--bg);
 }
 
-/* ========== MASAÃœSTÃœ FERAHLAMA OPERASYONU ========== */
-/* Åžube ve KullanÄ±cÄ± YÃ¶netimi bilgi kutularÄ±nÄ± masaÃ¼stÃ¼nde bÃ¼yÃ¼tme: +1 punto metin, +3px dikey/yatay, padding kÄ±sÄ±tma ile simetri */
+/* ========== MASAÃƒÅ“STÃƒÅ“ FERAHLAMA OPERASYONU ========== */
+/* Ã…Å¾ube ve KullanÃ„Â±cÃ„Â± YÃƒÂ¶netimi bilgi kutularÃ„Â±nÃ„Â± masaÃƒÂ¼stÃƒÂ¼nde bÃƒÂ¼yÃƒÂ¼tme: +1 punto metin, +3px dikey/yatay, padding kÃ„Â±sÃ„Â±tma ile simetri */
 @media (min-width: 641px) {
     #kullanici-modal,
     #branch-form-modal,
@@ -2097,3 +2097,4 @@ body.modal-open .content-wrap::before {
   flex-direction: column;
   gap: 8px;
 }
+
