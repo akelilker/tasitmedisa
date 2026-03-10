@@ -2353,6 +2353,16 @@ body.driver-modal-open {
   }
 }
 
+/* MasaÃ¼stÃ¼ (769px+): modalâ€“footer 6px boÅŸluk kesin (overlay footer Ã¼stÃ¼nde bitsin) */
+@media (min-width: 769px) {
+  body.dashboard-page #history-modal.driver-modal,
+  body.dashboard-page #edit-request-modal.driver-modal,
+  body.login-page #history-modal.driver-modal,
+  body.login-page #edit-request-modal.driver-modal {
+    bottom: calc(var(--app-footer-height, 34px) + 6px + env(safe-area-inset-bottom, 0)) !important;
+  }
+}
+
 #history-modal.driver-modal::before,
 #edit-request-modal.driver-modal::before,
 #driver-event-menu-modal.driver-modal::before,
@@ -3313,8 +3323,8 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .dashboard-page .driver-dashboard-container::before,
   .login-page .driver-dashboard-container::before {
     top: 0 !important;
-    bottom: auto !important;
-    height: calc(100vh - var(--app-footer-height, 34px) - env(safe-area-inset-bottom, 0)) !important;
+    bottom: calc(var(--app-footer-height, 34px) + env(safe-area-inset-bottom, 0)) !important;
+    height: auto !important;
   }
 }
 
@@ -4746,7 +4756,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
 }
 
-/* === NOKTA ATIÅžI: KÄ±rmÄ±zÄ± yan Ã§izgiler footer hizasÄ±nda Ã§ivili (sarkan/kÄ±sa kalma yok) === */
+/* === NOKTA ATIÅžI: KÄ±rmÄ±zÄ± yan Ã§izgiler footer Ã¼stÃ¼nde jilet gibi biter (taÅŸma yok) === */
 @media (max-width: 768px) {
   .dashboard-page .driver-dashboard-container::before,
   .login-page .driver-dashboard-container::before {
@@ -4756,7 +4766,8 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 @media (min-width: 769px) {
   .dashboard-page .driver-dashboard-container::before,
   .login-page .driver-dashboard-container::before {
-    height: calc(100vh - var(--app-footer-height, 34px) - env(safe-area-inset-bottom, 0)) !important;
+    bottom: calc(var(--app-footer-height, 34px) + env(safe-area-inset-bottom, 0)) !important;
+    height: auto !important;
   }
 }
 
