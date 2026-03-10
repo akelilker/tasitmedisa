@@ -2060,7 +2060,6 @@
           if (settled || printTriggered) return;
           printTriggered = true;
           try {
-            pushPrintDebug('tasitlar.js:before print', 'calling printWindow.print()', { innerWidth: window.innerWidth }, 'H4');
             printWindow.focus();
             printWindow.print();
             finalizeSuccess();
@@ -2089,16 +2088,7 @@
     let printWindow = null;
     try {
       printWindow = window.open('', '_blank', 'width=900,height=700');
-    } catch (popupOpenErr) {
-      pushPrintDebug('tasitlar.js:popupOpenError', 'window.open threw', {
-        error: (popupOpenErr && popupOpenErr.message) ? popupOpenErr.message : String(popupOpenErr || 'unknown_error')
-      }, 'H_POPUP_THROW');
-    }
-
-    pushPrintDebug('tasitlar.js:after open', 'window.open result', {
-      openNull: !printWindow,
-      innerWidth: window.innerWidth
-    }, 'H2');
+    } catch (popupOpenErr) {}
 
     if (!printWindow) {
       printWithIframeFallback('popup_blocked_or_null');
@@ -2106,9 +2096,6 @@
     }
 
     tryPopupPrint(printWindow).catch(function(popupErr) {
-      pushPrintDebug('tasitlar.js:popupPrintFail', 'Popup print failed, switching to iframe fallback', {
-        error: (popupErr && popupErr.message) ? popupErr.message : String(popupErr || 'unknown_error')
-      }, 'H_POPUP_FAIL');
       printWithIframeFallback((popupErr && popupErr.message) ? popupErr.message : 'popup_print_failed');
     });
   };
