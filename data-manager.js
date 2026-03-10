@@ -412,14 +412,10 @@ document.addEventListener('DOMContentLoaded', async function() {
     }));
 });
 
-// Ortak veri okuyucu (tasitlar.js ve raporlar.js tek kaynaktan okusun; önce medisa_data_v1)
+// Ortak veri okuyucu — operasyonel veri (taşıt, şube, kullanıcı) yalnızca appData'dan; ana kaynak sunucu
 function getMedisaData(key, localKey) {
     if (window.appData && Array.isArray(window.appData[key])) return window.appData[key];
-    try {
-        const raw = localStorage.getItem('medisa_data_v1');
-        if (raw) { const d = JSON.parse(raw); if (d && Array.isArray(d[key])) return d[key]; }
-        return JSON.parse(localStorage.getItem(localKey) || '[]');
-    } catch { return []; }
+    return [];
 }
 function getMedisaVehicles() { return getMedisaData('tasitlar', 'medisa_vehicles_v1'); }
 function getMedisaBranches() { return getMedisaData('branches', 'medisa_branches_v1'); }

@@ -16,24 +16,14 @@
   function $all(sel, root = document) { return Array.from(root.querySelectorAll(sel)); }
   function getModal() { return document.getElementById("vehicle-modal"); }
 
-  function readBranches() { return (typeof window.getMedisaBranches === 'function' ? window.getMedisaBranches() : null) || (function() { try { var r = localStorage.getItem(BRANCHES_KEY); return r ? JSON.parse(r) : []; } catch (e) { return []; } })(); }
-  function readVehicles() { return (typeof window.getMedisaVehicles === 'function' ? window.getMedisaVehicles() : null) || (function() { try { var r = localStorage.getItem(STORAGE_KEY); return r ? JSON.parse(r) : []; } catch (e) { return []; } })(); }
-  function writeVehicles(arr) {
-    if (typeof window.writeVehicles === 'function') {
-      window.writeVehicles(arr);
-      return;
+  function readBranches() { return (typeof window.getMedisaBranches === 'function' ? window.getMedisaBranches() : null) || []; }
+  function readVehicles() { return (typeof window.getMedisaVehicles === 'function' ? window.getMedisaVehicles() : null) || []; }
+
+  function saveVehiclesViaApi(vehicles) {
+    if (typeof window.dataApi !== 'undefined' && typeof window.dataApi.saveVehiclesList === 'function') {
+      return window.dataApi.saveVehiclesList(vehicles);
     }
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
-    if (window.appData) {
-      window.appData.tasitlar = arr;
-      if (window.saveDataToServer) {
-        return window.saveDataToServer().then(function(ok) {
-          if (ok !== true) return Promise.reject(new Error('Sunucuya kayıt yapılamadı.'));
-          return ok;
-        });
-      }
-    }
-    return Promise.resolve();
+    return Promise.reject(new Error('dataApi kullanılamıyor.'));
   }
 
 
@@ -1157,37 +1147,22 @@
     }
   };
 
-  // --- Delete Vehicle Function ---
+  // --- Delete Vehicle Function (server-first, dataApi) ---
   window.deleteVehicle = function(vehicleId) {
     if (!confirm("Bu taşıtı silmek istediğinize emin misiniz?")) {
       return;
     }
-
-    const vehicles = readVehicles();
-    const filtered = vehicles.filter(v => v.id !== vehicleId);
-
-    if (window.appData && window.saveDataToServer) {
-      var previousTasitlar = window.appData.tasitlar ? window.appData.tasitlar.slice() : [];
-      window.appData.tasitlar = filtered;
-      window.saveDataToServer().then(function(ok) {
-        if (ok === true) {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(filtered));
-          if (window.updateNotifications) window.updateNotifications();
-          alert("Taşıt silindi!");
-          if (window.renderVehicles) window.renderVehicles();
-        } else {
-          window.appData.tasitlar = previousTasitlar;
-          alert("Sunucuya silme kaydedilemedi. Lütfen tekrar deneyin.");
-        }
-      }).catch(function() {
-        window.appData.tasitlar = previousTasitlar;
-        alert("Sunucuya silme kaydedilemedi. Lütfen tekrar deneyin.");
-      });
-    } else {
-      writeVehicles(filtered);
+    if (typeof window.dataApi === 'undefined' || typeof window.dataApi.deleteVehicle !== 'function') {
+      alert("Veri servisi kullanılamıyor.");
+      return;
+    }
+    window.dataApi.deleteVehicle(vehicleId).then(function() {
+      if (window.updateNotifications) window.updateNotifications();
       alert("Taşıt silindi!");
       if (window.renderVehicles) window.renderVehicles();
-    }
+    }).catch(function() {
+      alert("Sunucuya silme kaydedilemedi. Lütfen tekrar deneyin.");
+    });
   };
 
   // --- Save Function ---
@@ -1632,23 +1607,14 @@
         vehicles.unshift(record);
       }
 
-      var savePromise = writeVehicles(vehicles);
-
-      if (savePromise && typeof savePromise.then === 'function') {
-        savePromise.then(function() {
-          if (window.updateNotifications) window.updateNotifications();
-          alert(isEditMode ? "Kayıt Güncellendi!" : "Yeni Kayıt Oluşturuldu!");
-          window.closeVehicleModal();
-          pendingRecordData = null;
-        }).catch(function() {
-          alert('Sunucuya kayıt yapılamadı. Lütfen tekrar deneyin.');
-        });
-      } else {
+      saveVehiclesViaApi(vehicles).then(function() {
         if (window.updateNotifications) window.updateNotifications();
         alert(isEditMode ? "Kayıt Güncellendi!" : "Yeni Kayıt Oluşturuldu!");
         window.closeVehicleModal();
         pendingRecordData = null;
-      }
+      }).catch(function() {
+        alert('Sunucuya kayıt yapılamadı. Lütfen tekrar deneyin.');
+      });
     } catch (error) {
       alert('Kayıt sırasında bir hata oluştu! Lütfen tekrar deneyin.');
     }
@@ -1835,7 +1801,9 @@
             const vehicle = vehicles.find(v => v.id === fromDetailId);
             if (vehicle) {
               vehicle.vehicleType = type;
-              writeVehicles(vehicles);
+              if (window.dataApi && window.dataApi.saveVehiclesList) {
+                window.dataApi.saveVehiclesList(vehicles).catch(function() {});
+              }
               if (typeof window.showVehicleDetail === 'function') window.showVehicleDetail(fromDetailId);
             }
             pickerOverlay.style.display = 'none';

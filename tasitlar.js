@@ -11,9 +11,9 @@
     try { return JSON.parse(localStorage.getItem(key) || '[]'); } catch { return []; }
   }
 
-  function readBranches() { return (typeof window.getMedisaBranches === 'function' ? window.getMedisaBranches() : null) || parseLocalStorageArray(BRANCHES_KEY); }
-  function readVehicles() { return (typeof window.getMedisaVehicles === 'function' ? window.getMedisaVehicles() : null) || parseLocalStorageArray(VEHICLES_KEY); }
-  function readUsers() { return (typeof window.getMedisaUsers === 'function' ? window.getMedisaUsers() : null) || parseLocalStorageArray(USERS_KEY); }
+  function readBranches() { return (typeof window.getMedisaBranches === 'function' ? window.getMedisaBranches() : null) || []; }
+  function readVehicles() { return (typeof window.getMedisaVehicles === 'function' ? window.getMedisaVehicles() : null) || []; }
+  function readUsers() { return (typeof window.getMedisaUsers === 'function' ? window.getMedisaUsers() : null) || []; }
 
   var parsedKaportaSvgCache = null;
   function getKaportaSvg() {
@@ -32,9 +32,13 @@
   }
 
   function writeVehicles(arr) {
-    if (typeof window.writeVehicles === 'function') { window.writeVehicles(arr); return; }
-    localStorage.setItem(VEHICLES_KEY, JSON.stringify(arr));
-    if (window.appData) { window.appData.tasitlar = arr; if (window.saveDataToServer) window.saveDataToServer().catch(function(err) { console.error('Sunucuya kaydetme hatası (sessiz):', err); }); }
+    if (window.dataApi && typeof window.dataApi.saveVehiclesList === 'function') {
+      window.dataApi.saveVehiclesList(arr).catch(function(err) {
+        console.warn('[Medisa] Sunucuya kayıt yapılamadı:', err && err.message);
+      });
+      return;
+    }
+    if (window.appData) window.appData.tasitlar = Array.isArray(arr) ? arr : [];
   }
 
   // Global State
@@ -250,7 +254,7 @@
       if (!plate && !vehicleId) return;
       var vehicles = readVehicles();
       if (!Array.isArray(vehicles) || vehicles.length === 0) {
-        vehicles = (window.getMedisaVehicles && window.getMedisaVehicles()) || parseLocalStorageArray(VEHICLES_KEY);
+        vehicles = (window.getMedisaVehicles && window.getMedisaVehicles()) || [];
       }
       var plateNorm = String(plate || '').trim().toUpperCase();
       var v = vehicleId
