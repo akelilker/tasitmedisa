@@ -611,7 +611,7 @@ setTimeout(() => { if (window.hideLoading) window.hideLoading(); }, 8000);
   }
 
   window.addEventListener('beforeinstallprompt', function(e) {
-    e.preventDefault();
+    // preventDefault kaldırıldı: tarayıcının standart "Ana Ekrana Ekle" afişi doğal akışında gösterilsin
     deferredInstallPrompt = e;
     showInstallButton();
   });
