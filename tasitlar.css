@@ -2,15 +2,10 @@
    TAÅITLAR MODAL CSS - Ortak kurallar style-core.css'te; burada sadece sayfa Ã¶zel override'lar
    ========================================= */
 
-/* === ORTAK MODAL YAPISI (sÄ±nÄ±f ile; liste & detay) === */
+/* Overlay konumu style-core .modal-overlay (6px) kullanÄ±lÄ±r; ezme yok */
 .tasitlar-modal-overlay {
     display: none !important;
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
     background: transparent !important;
-    z-index: 9999 !important;
     flex-direction: column !important;
     justify-content: flex-start !important;
     align-items: center !important;
@@ -19,8 +14,6 @@
     padding-bottom: env(safe-area-inset-bottom, 0px) !important;
     padding-left: 0 !important;
     padding-right: 0 !important;
-    top: 0 !important;
-    bottom: calc(var(--app-footer-height, 30px) + 3px + env(safe-area-inset-bottom, 0)) !important; /* Taşma engelle: footer üstünde kes */
     overflow: hidden !important;
     touch-action: pan-y !important;
 }
