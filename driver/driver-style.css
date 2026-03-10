@@ -1,6 +1,6 @@
-/* =========================================
-   MEDISA KULLANICI MODÜLÜ - ANA TEMA UYUMLU
-   style-core.css değişkenleri kullanılır: --theme-color, --bg, --card-bg, --txt, --muted, --br
+﻿/* =========================================
+   MEDISA KULLANICI MODÃœLÃœ - ANA TEMA UYUMLU
+   style-core.css deÄŸiÅŸkenleri kullanÄ±lÄ±r: --theme-color, --bg, --card-bg, --txt, --muted, --br
    ========================================= */
 
 /* --- Scrollbar Gizleme (html/body/modal style-core'da; sadece driver-spesifik) --- */
@@ -15,31 +15,31 @@
   display: none !important;
 }
 
-/* --- style-core.css border çakışmalarını temizle (driver sayfalarında border tek kaynaktan gelsin) --- */
-/* style-core .app-container üst border – ::before ile çiziliyor, iptal */
+/* --- style-core.css border Ã§akÄ±ÅŸmalarÄ±nÄ± temizle (driver sayfalarÄ±nda border tek kaynaktan gelsin) --- */
+/* style-core .app-container Ã¼st border â€“ ::before ile Ã§iziliyor, iptal */
 .dashboard-page .app-container.driver-dashboard-container,
 .login-page .app-container.driver-dashboard-container {
   border-top: none !important;
 }
-/* style-core .app-container::after inset red glow – container kendi glow'unu kullanır, iptal */
+/* style-core .app-container::after inset red glow â€“ container kendi glow'unu kullanÄ±r, iptal */
 .dashboard-page .app-container.driver-dashboard-container::after,
 .login-page .app-container.driver-dashboard-container::after {
   box-shadow: none !important;
 }
-/* style-core .content-wrap sol/sağ border + glow – container zaten veriyor, iptal */
+/* style-core .content-wrap sol/saÄŸ border + glow â€“ container zaten veriyor, iptal */
 .dashboard-page .content-wrap.driver-content-wrap,
 .login-page .content-wrap.driver-content-wrap {
   border-left: none !important;
   border-right: none !important;
   box-shadow: none !important;
 }
-/* Mobil: style-core .content-wrap::before da yan çizgi çiziyor; çift görünmesin, sadece container ::before kalsın */
+/* Mobil: style-core .content-wrap::before da yan Ã§izgi Ã§iziyor; Ã§ift gÃ¶rÃ¼nmesin, sadece container ::before kalsÄ±n */
 .dashboard-page .content-wrap.driver-content-wrap::before,
 .login-page .content-wrap.driver-content-wrap::before {
   display: none !important;
 }
 
-/* --- Splash ekranı –  link/PWA ile açılışta 3 sn --- */
+/* --- Splash ekranÄ± â€“  link/PWA ile aÃ§Ä±lÄ±ÅŸta 3 sn --- */
 .driver-splash {
   position: fixed;
   inset: 0;
@@ -49,7 +49,7 @@
   align-items: center;
   justify-content: center;
   transition: opacity 0.4s ease;
-  /* iOS PWA: Çentik/home indicator alanına taşmasın */
+  /* iOS PWA: Ã‡entik/home indicator alanÄ±na taÅŸmasÄ±n */
   padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
   box-sizing: border-box;
 }
@@ -62,12 +62,12 @@
   flex-direction: column;
   align-items: center;
   gap: 16px;
-  min-width: 120px; /* Logo yüklenmeden önce layout kaymasını önler */
+  min-width: 120px; /* Logo yÃ¼klenmeden Ã¶nce layout kaymasÄ±nÄ± Ã¶nler */
 }
-/* Splash: açılış logosu 120px, aspect-ratio ile alan rezerve */
+/* Splash: aÃ§Ä±lÄ±ÅŸ logosu 120px, aspect-ratio ile alan rezerve */
 .driver-splash-logo {
   width: 120px;
-  height: 69px; /* SVG oranı 624.89:357.04 – layout shift önleme */
+  height: 69px; /* SVG oranÄ± 624.89:357.04 â€“ layout shift Ã¶nleme */
   flex-shrink: 0;
   object-fit: contain;
   filter: brightness(0.88);
@@ -84,7 +84,7 @@
   -webkit-text-fill-color: transparent;
   font-family: 'Inter', sans-serif;
 }
-/* KULLANICI PANELİ: başlık altında, 1pt küçük, aynı renk */
+/* KULLANICI PANELÄ°: baÅŸlÄ±k altÄ±nda, 1pt kÃ¼Ã§Ã¼k, aynÄ± renk */
 .driver-splash-subtitle {
   font-size: clamp(15px, 4vw, 22px);
   font-weight: 800;
@@ -99,14 +99,14 @@
   font-family: 'Inter', sans-serif;
 }
 
-/* --- Overflow: yatay taşma yok; safe-area sadece html'de (style-core) – çift padding önlenir --- */
+/* --- Overflow: yatay taÅŸma yok; safe-area sadece html'de (style-core) â€“ Ã§ift padding Ã¶nlenir --- */
 body.login-page,
 body.dashboard-page {
   overflow-x: hidden !important;
   padding-top: 0 !important;
   padding-bottom: 0 !important;
 }
-/* Modal açıkken arka plan scroll kilitlensin (sadece modal içi kayar) */
+/* Modal aÃ§Ä±kken arka plan scroll kilitlensin (sadece modal iÃ§i kayar) */
 body.driver-modal-open {
   overflow: hidden !important;
   position: fixed;
@@ -120,7 +120,7 @@ body.driver-modal-open {
   padding: 0;
 }
 
-/* Header dikey yükseklik 4px daralt (12px -> 10px) – panel ve giriş aynı */
+/* Header dikey yÃ¼kseklik 4px daralt (12px -> 10px) â€“ panel ve giriÅŸ aynÄ± */
 .dashboard-page .hero,
 .login-page .hero {
   padding-top: 10px !important;
@@ -140,12 +140,12 @@ body.driver-modal-open {
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
 }
-/* Dashboard + Şifre ekranı: fixed footer alanı kadar alt boşluk */
+/* Dashboard + Åifre ekranÄ±: fixed footer alanÄ± kadar alt boÅŸluk */
 .dashboard-page .driver-dashboard-container,
 .login-page .driver-dashboard-container {
   padding-bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0));
 }
-/* Kullanıcı paneli + Şifre ekranı: tüm kırmızı çerçeve tek kaynaktan (köşe birleşme sorunu yok) */
+/* KullanÄ±cÄ± paneli + Åifre ekranÄ±: tÃ¼m kÄ±rmÄ±zÄ± Ã§erÃ§eve tek kaynaktan (kÃ¶ÅŸe birleÅŸme sorunu yok) */
 .driver-dashboard-container::before {
   content: '';
   position: absolute;
@@ -162,7 +162,7 @@ body.driver-modal-open {
   z-index: 10010;
 }
 
-/* Ana başlık (hero + driver-below-hero) sabit üstte – üst çizgi ::before'da, header'da yok */
+/* Ana baÅŸlÄ±k (hero + driver-below-hero) sabit Ã¼stte â€“ Ã¼st Ã§izgi ::before'da, header'da yok */
 .driver-header-fixed {
   flex-shrink: 0;
   background: var(--bg);
@@ -172,7 +172,7 @@ body.driver-modal-open {
   border-top: none !important;
 }
 
-/* Ortadaki bölüm: sol grid sabit, sadece sağ grid kendi içinde kayar; barın üstüne binmemesi için z-index */
+/* Ortadaki bÃ¶lÃ¼m: sol grid sabit, sadece saÄŸ grid kendi iÃ§inde kayar; barÄ±n Ã¼stÃ¼ne binmemesi iÃ§in z-index */
 .driver-scroll-area {
   flex: 1;
   min-height: 0;
@@ -187,7 +187,7 @@ body.driver-modal-open {
   z-index: 10004;
 }
 
-/* Dashboard: footer sabit altta; ince gri üst + ince yan çizgiler */
+/* Dashboard: footer sabit altta; ince gri Ã¼st + ince yan Ã§izgiler */
 .dashboard-page #app-footer {
   position: fixed !important;
   left: 0 !important;
@@ -229,7 +229,7 @@ body.driver-modal-open {
   text-align: center !important;
 }
 
-/* Driver: Başlık alanı – 3 sütunlu grid (logo | başlık bloğu | spacer), tam ortalama */
+/* Driver: BaÅŸlÄ±k alanÄ± â€“ 3 sÃ¼tunlu grid (logo | baÅŸlÄ±k bloÄŸu | spacer), tam ortalama */
 .hero.hero-two-rows {
   display: grid !important;
   grid-template-columns: var(--hero-logo-width) 1fr var(--hero-logo-width);
@@ -241,7 +241,7 @@ body.driver-modal-open {
   grid-column: 1;
   justify-self: start;
   flex-shrink: 0;
-  margin-left: 10px; /* Soldan viraja takılmaması için hafif sağa */
+  margin-left: 10px; /* Soldan viraja takÄ±lmamasÄ± iÃ§in hafif saÄŸa */
   transform: translateY(-6px);
 }
 .hero.hero-two-rows .hero-logo img {
@@ -308,7 +308,7 @@ body.driver-modal-open {
   white-space: nowrap;
 }
 
-/* --- Geçmiş Kayıtlar (sol) + Çıkış (sağ) - header dışında --- */
+/* --- GeÃ§miÅŸ KayÄ±tlar (sol) + Ã‡Ä±kÄ±ÅŸ (saÄŸ) - header dÄ±ÅŸÄ±nda --- */
 .driver-below-hero {
   margin-top: 0;
   margin-bottom: 1px;
@@ -355,7 +355,7 @@ body.driver-modal-open {
   flex: none;
 }
 
-/* KULLANICI PANELİ: h1 altında, 1pt küçük, aynı renk (metalik gradient) */
+/* KULLANICI PANELÄ°: h1 altÄ±nda, 1pt kÃ¼Ã§Ã¼k, aynÄ± renk (metalik gradient) */
 .hero-title-wrap .hero-panel-subtitle,
 .hero-title-block .hero-panel-subtitle {
   font-size: 17px;
@@ -381,7 +381,7 @@ body.driver-modal-open {
   text-rendering: optimizeLegibility;
 }
 
-/* Ara aralık (641px–768px): logo başlık üzerine binmesin – 56px sütunlar, margin yok */
+/* Ara aralÄ±k (641pxâ€“768px): logo baÅŸlÄ±k Ã¼zerine binmesin â€“ 56px sÃ¼tunlar, margin yok */
 @media (min-width: 641px) and (max-width: 768px) {
   .dashboard-page .hero.hero-two-rows,
   .login-page .hero.hero-two-rows {
@@ -398,7 +398,7 @@ body.driver-modal-open {
   .login-page .hero.hero-two-rows .hero-logo img {
     width: 100% !important;
   }
-  /* Başlık metinleri 1pt küçük (641–768px) */
+  /* BaÅŸlÄ±k metinleri 1pt kÃ¼Ã§Ã¼k (641â€“768px) */
   .dashboard-page .hero.hero-two-rows .hero-title-block .hero-title-line,
   .login-page .hero.hero-two-rows .hero-title-block .hero-title-line {
     font-size: clamp(calc(16px - 1pt), 4.2vw, calc(20px - 1pt)) !important;
@@ -410,14 +410,14 @@ body.driver-modal-open {
   }
 }
 
-/* Masaüstü: Kullanıcı Paneli başlığı, driver-below-hero boşluk, çerçeve kalınlığı, logo boyutu */
+/* MasaÃ¼stÃ¼: KullanÄ±cÄ± Paneli baÅŸlÄ±ÄŸÄ±, driver-below-hero boÅŸluk, Ã§erÃ§eve kalÄ±nlÄ±ÄŸÄ±, logo boyutu */
 @media (min-width: 769px) {
   .hero-title-wrap .hero-panel-subtitle,
   .hero-title-block .hero-panel-subtitle {
     font-size: 17px;
     letter-spacing: 3px;
   }
-  /* Kullanıcı Paneli + Login: başlık kutunun içine sığsın */
+  /* KullanÄ±cÄ± Paneli + Login: baÅŸlÄ±k kutunun iÃ§ine sÄ±ÄŸsÄ±n */
   .dashboard-page .hero.hero-two-rows .hero-title-line,
   .login-page .hero.hero-two-rows .hero-title-line {
     font-size: clamp(16px, 4.5vw, 20px) !important;
@@ -430,22 +430,22 @@ body.driver-modal-open {
     margin-top: 0 !important;
     margin-bottom: -1px !important;
   }
-  /* Tarihçe/Çıkış butonları alanı ile alttaki içerik arası 1px */
+  /* TarihÃ§e/Ã‡Ä±kÄ±ÅŸ butonlarÄ± alanÄ± ile alttaki iÃ§erik arasÄ± 1px */
   .dashboard-page .driver-header-fixed {
     padding-bottom: 0 !important;
   }
-  /* Geçmiş ve kapı simgeleri çerçeveden 4px daha içeri (masaüstü: 12px + 8px) */
+  /* GeÃ§miÅŸ ve kapÄ± simgeleri Ã§erÃ§eveden 4px daha iÃ§eri (masaÃ¼stÃ¼: 12px + 8px) */
   .dashboard-page .driver-below-hero-row .driver-btn-history {
     margin-left: 8px !important;
   }
   .dashboard-page .driver-below-hero-row .driver-btn-logout {
     margin-right: 4px !important;
   }
-  /* Tarihçe ile Çıkış butonu arası 2px daralt (masaüstü) */
+  /* TarihÃ§e ile Ã‡Ä±kÄ±ÅŸ butonu arasÄ± 2px daralt (masaÃ¼stÃ¼) */
   .dashboard-page .driver-below-hero-row {
     gap: 10px !important;
   }
-  /* Tarihçe ve Çıkış butonları masaüstü: 1px küçült */
+  /* TarihÃ§e ve Ã‡Ä±kÄ±ÅŸ butonlarÄ± masaÃ¼stÃ¼: 1px kÃ¼Ã§Ã¼lt */
   .dashboard-page .driver-below-hero-row .driver-btn-history .driver-btn-history-icon {
     width: 23px !important;
     height: 23px !important;
@@ -454,7 +454,7 @@ body.driver-modal-open {
     width: 19px !important;
     height: 19px !important;
   }
-  /* Footer: masaüstünde gri üst, yan sensör çizgileri + kırmızı glow (dashboard); yoğunluk hafif azaltıldı */
+  /* Footer: masaÃ¼stÃ¼nde gri Ã¼st, yan sensÃ¶r Ã§izgileri + kÄ±rmÄ±zÄ± glow (dashboard); yoÄŸunluk hafif azaltÄ±ldÄ± */
   .dashboard-page #app-footer {
     min-height: 0 !important;
     border-top: 1px solid rgba(200, 200, 200, 0.52) !important;
@@ -473,7 +473,7 @@ body.driver-modal-open {
     border-right: 0.5px solid rgba(255, 255, 255, 0.20) !important;
     box-shadow: 0 -10px 20px rgba(var(--theme-color-rgb), 0.16) !important;
   }
-  /* ========== MASAÜSTÜ (769px+) – Header logo: 76×76px, pozisyon (-18px, 6.5px) ========== */
+  /* ========== MASAÃœSTÃœ (769px+) â€“ Header logo: 76Ã—76px, pozisyon (-18px, 6.5px) ========== */
   .dashboard-page .hero.hero-two-rows .hero-logo,
   .login-page .hero.hero-two-rows .hero-logo {
     flex: 0 0 76px !important;
@@ -495,11 +495,11 @@ body.driver-modal-open {
     width: 136px !important;
     height: 190px !important;
   }
-  /* Plaka 1 punto küçült (masaüstü) */
+  /* Plaka 1 punto kÃ¼Ã§Ã¼lt (masaÃ¼stÃ¼) */
   .dashboard-page .driver-left-panel .driver-current-plaka {
     font-size: 15px !important;
   }
-  /* Sol grid: etiket + açıklama sonrası 3px boşluk (masaüstü); Şube ve altı plaka/modelden bir satır aşağı */
+  /* Sol grid: etiket + aÃ§Ä±klama sonrasÄ± 3px boÅŸluk (masaÃ¼stÃ¼); Åube ve altÄ± plaka/modelden bir satÄ±r aÅŸaÄŸÄ± */
   .dashboard-page .driver-left-panel .driver-vehicle-info {
     gap: 6px !important;
     margin-top: 1.25em !important;
@@ -507,7 +507,7 @@ body.driver-modal-open {
   .dashboard-page .driver-left-panel-content {
     overflow-y: hidden !important;
   }
-  /* Açıklama alt satıra inince etiket–açıklama arası 0; etiket+açıklama arası 1.6px (masaüstü) */
+  /* AÃ§Ä±klama alt satÄ±ra inince etiketâ€“aÃ§Ä±klama arasÄ± 0; etiket+aÃ§Ä±klama arasÄ± 1.6px (masaÃ¼stÃ¼) */
   .dashboard-page .driver-left-panel .driver-info-item:has(.value) {
     row-gap: 0 !important;
     column-gap: 1.6px !important;
@@ -517,7 +517,7 @@ body.driver-modal-open {
     padding-top: 0 !important;
     line-height: 1.25;
   }
-  /* Masaüstü Kaza Formu: Açıklama ve Hasar Tutarı etiket üst boşluğu 3px */
+  /* MasaÃ¼stÃ¼ Kaza Formu: AÃ§Ä±klama ve Hasar TutarÄ± etiket Ã¼st boÅŸluÄŸu 3px */
   .dashboard-page .driver-report-block-kaza .form-group:has(label[for^="kaza-tarih-"]),
   .dashboard-page .driver-report-block-kaza .form-group:has(label[for^="kaza-detay-"]) {
     margin-bottom: 3px !important;
@@ -539,28 +539,28 @@ body.driver-modal-open {
     margin-top: -8px !important;
     margin-bottom: -8px !important;
   }
-  /* Plaka liste çerçevesi: ince gri, parlak (masaüstü) */
+  /* Plaka liste Ã§erÃ§evesi: ince gri, parlak (masaÃ¼stÃ¼) */
   .dashboard-page .driver-left-panel .driver-plate-dropdown {
     border: 1px solid rgba(255, 255, 255, 0.38) !important;
     box-shadow: 0 2px 14px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.08) !important;
   }
-  /* Plakalar arası yatay çizgi: çerçeve ile aynı gri ton */
+  /* Plakalar arasÄ± yatay Ã§izgi: Ã§erÃ§eve ile aynÄ± gri ton */
   .dashboard-page .driver-left-panel .driver-plate-dropdown-item {
     border-bottom: 1px solid rgba(255, 255, 255, 0.38) !important;
   }
   .dashboard-page .driver-left-panel .driver-plate-dropdown-item:last-child {
     border-bottom: none !important;
   }
-  /* Sağ grid: butonlar arası dikey boşluk 0 (1px daha daraltıldı) */
+  /* SaÄŸ grid: butonlar arasÄ± dikey boÅŸluk 0 (1px daha daraltÄ±ldÄ±) */
   .dashboard-page .driver-action-buttons {
     gap: 0 !important;
   }
-  /* Sağ grid: butonların iç dikey yüksekliği masaüstünde 1px daha dar (6px) */
+  /* SaÄŸ grid: butonlarÄ±n iÃ§ dikey yÃ¼ksekliÄŸi masaÃ¼stÃ¼nde 1px daha dar (6px) */
   .dashboard-page .driver-action-buttons .driver-action-btn {
     padding-top: 6px !important;
     padding-bottom: 6px !important;
   }
-  /* Sağ grid: alt boşluk sıfır – çerçeveye tam yanaşsın */
+  /* SaÄŸ grid: alt boÅŸluk sÄ±fÄ±r â€“ Ã§erÃ§eveye tam yanaÅŸsÄ±n */
   .dashboard-page .driver-two-panel {
     padding-bottom: 0 !important;
   }
@@ -577,19 +577,19 @@ body.driver-modal-open {
   .dashboard-page .driver-action-area .form-group label {
     margin-bottom: 4px !important;
   }
-  /* Sağ grid Var/Yok butonları: masaüstünde dikey yükseklik 3px az (32–29px) */
+  /* SaÄŸ grid Var/Yok butonlarÄ±: masaÃ¼stÃ¼nde dikey yÃ¼kseklik 3px az (32â€“29px) */
   .dashboard-page .driver-action-area .driver-radio-btn {
     height: auto !important;
     min-height: 26px !important;
   }
-  /* Not input: masaüstünde dar – Kaydet butonu yukarı gelsin */
+  /* Not input: masaÃ¼stÃ¼nde dar â€“ Kaydet butonu yukarÄ± gelsin */
   .dashboard-page .driver-action-area .form-group textarea.driver-ekstra-not {
     padding-top: 2px !important;
     padding-bottom: 2px !important;
   }
 }
 
-/* Masaüstü: Tarihçe modali – düzeltme simgesi %85, 2. satırda sağa yaslı */
+/* MasaÃ¼stÃ¼: TarihÃ§e modali â€“ dÃ¼zeltme simgesi %85, 2. satÄ±rda saÄŸa yaslÄ± */
 @media (min-width: 769px) {
   #history-modal .history-details-row {
     align-items: flex-end !important;
@@ -604,7 +604,7 @@ body.driver-modal-open {
   }
 }
 
-/* Scroll alanı öğelerinde üst çizgi yok */
+/* Scroll alanÄ± Ã¶ÄŸelerinde Ã¼st Ã§izgi yok */
 .driver-scroll-area #loading-spinner,
 .driver-scroll-area .driver-vehicles-list,
 .driver-scroll-area .driver-empty-state {
@@ -618,7 +618,7 @@ body.driver-modal-open {
   flex-direction: column;
 }
 
-/* --- KAYAN UYARI (Tarihçe ile Çıkış arasında) --- */
+/* --- KAYAN UYARI (TarihÃ§e ile Ã‡Ä±kÄ±ÅŸ arasÄ±nda) --- */
 .driver-sliding-warning {
   flex: 1;
   min-width: 0;
@@ -686,7 +686,7 @@ body.driver-modal-open {
   50% { transform: scale(1.15); }
 }
 
-/* --- İKİ PANELLİ LAYOUT --- */
+/* --- Ä°KÄ° PANELLÄ° LAYOUT --- */
 .driver-two-panel {
   display: flex !important;
   flex-direction: column;
@@ -703,11 +703,11 @@ body.driver-modal-open {
 .driver-user-plate-in-panel {
   display: flex;
   flex-direction: column;
-  gap: 1px;       /* Plaka ile marka/model arası total 1px */
+  gap: 1px;       /* Plaka ile marka/model arasÄ± total 1px */
   align-items: center;
   text-align: center;
   flex-shrink: 0;
-  margin-bottom: 4px; /* Plaka altı: plaka ile araç bilgisi arası 4px */
+  margin-bottom: 4px; /* Plaka altÄ±: plaka ile araÃ§ bilgisi arasÄ± 4px */
   width: 100%;
 }
 .driver-panels-inner {
@@ -730,7 +730,7 @@ body.driver-modal-open {
   overflow: hidden;
   flex-shrink: 0;
 }
-/* Sol panel: Üst içerik (plaka + araç bilgisi) kayar, Yönetim Sistemi altta sabit */
+/* Sol panel: Ãœst iÃ§erik (plaka + araÃ§ bilgisi) kayar, YÃ¶netim Sistemi altta sabit */
 .driver-left-panel-content {
   flex: 1;
   min-height: 0;
@@ -755,7 +755,7 @@ body.driver-modal-open {
   flex-direction: column;
   gap: 8px;
   overflow-y: auto !important;
-  overflow-x: hidden !important; /* Sadece aşağı-yukarı kayma; sağa-sola hareket yok */
+  overflow-x: hidden !important; /* Sadece aÅŸaÄŸÄ±-yukarÄ± kayma; saÄŸa-sola hareket yok */
   scrollbar-width: none;
   -ms-overflow-style: none;
   -webkit-overflow-scrolling: touch;
@@ -775,7 +775,7 @@ body.driver-modal-open {
   text-align: center;
 }
 .driver-user-plate-row.driver-user-plate-in-panel {
-  gap: 1px; /* Panelde plaka–model arası toplam 1px (.driver-user-plate-row 4px'i override eder) */
+  gap: 1px; /* Panelde plakaâ€“model arasÄ± toplam 1px (.driver-user-plate-row 4px'i override eder) */
 }
 .driver-user-plate-row .driver-user-name {
   font-size: 14px;
@@ -786,7 +786,7 @@ body.driver-modal-open {
   display: block;
   width: 100%;
 }
-/* Panel: isim ve marka/model kendi gridinde ortalanır */
+/* Panel: isim ve marka/model kendi gridinde ortalanÄ±r */
 .driver-user-plate-in-panel .driver-user-name,
 .driver-user-plate-in-panel .driver-plate-subtitle {
   text-align: center;
@@ -799,7 +799,7 @@ body.driver-modal-open {
   line-height: 1.2;
 }
 .driver-user-plate-in-panel .driver-plate-subtitle {
-  font-size: 15px; /* 1 punto büyük */
+  font-size: 15px; /* 1 punto bÃ¼yÃ¼k */
   margin-top: 0;
   text-align: center;
   align-self: center;
@@ -822,13 +822,13 @@ body.driver-modal-open {
   overflow-x: hidden;
   box-sizing: border-box;
 }
-/* Plaka ortalanırken kırmızı işaret (chevron) hesaba katılmaz; sanki yokmuş gibi tam ortada */
+/* Plaka ortalanÄ±rken kÄ±rmÄ±zÄ± iÅŸaret (chevron) hesaba katÄ±lmaz; sanki yokmuÅŸ gibi tam ortada */
 .driver-plate-dropdown-row .driver-current-plaka {
   flex: 1;
   text-align: center;
   min-width: 0;
 }
-/* Kırmızı chevron akıştan çıkarılır, plaka ortalama etkilenmez; sağdan 3px boşluk (harf kesilmesin) */
+/* KÄ±rmÄ±zÄ± chevron akÄ±ÅŸtan Ã§Ä±karÄ±lÄ±r, plaka ortalama etkilenmez; saÄŸdan 3px boÅŸluk (harf kesilmesin) */
 .driver-plate-dropdown-row .driver-plate-trigger {
   position: absolute;
   right: -3px;
@@ -846,7 +846,7 @@ body.driver-modal-open {
   border: none;
   color: var(--muted);
   cursor: pointer;
-  padding: 6px; /* Tıklanabilir alan 1.6x (100–160) */
+  padding: 6px; /* TÄ±klanabilir alan 1.6x (100â€“160) */
   min-width: 28px;
   min-height: 28px;
   display: inline-flex;
@@ -854,7 +854,7 @@ body.driver-modal-open {
   justify-content: center;
 }
 .driver-plate-trigger:hover { color: var(--txt); }
-.driver-plate-chevron { font-size: 19px; } /* 100–160 (1.6x): 12px → 19px */
+.driver-plate-chevron { font-size: 19px; } /* 100â€“160 (1.6x): 12px â†’ 19px */
 
 .driver-vehicle-info {
   display: flex;
@@ -868,7 +868,7 @@ body.driver-modal-open {
   flex-direction: row;
   flex-wrap: wrap;
   align-items: baseline;
-  gap: 0; /* Etiket ile açıklama arası 0 */
+  gap: 0; /* Etiket ile aÃ§Ä±klama arasÄ± 0 */
   text-align: left;
 }
 .driver-info-item .label {
@@ -876,20 +876,20 @@ body.driver-modal-open {
   font-weight: 500;
   font-size: 11px;
   flex-shrink: 0;
-  text-transform: none; /* Etiketler JS'teki Title Case ile görünsün */
+  text-transform: none; /* Etiketler JS'teki Title Case ile gÃ¶rÃ¼nsÃ¼n */
 }
 .driver-info-item .label::after {
   content: ':';
   margin-left: 2px;
-  margin-right: 0.3em; /* ":" ile açıklamanın ilk harfi arasında bir boşluk */
+  margin-right: 0.3em; /* ":" ile aÃ§Ä±klamanÄ±n ilk harfi arasÄ±nda bir boÅŸluk */
 }
 .driver-info-item .value {
   color: var(--data-value-color, #a0aec0) !important;
   word-break: break-word;
   font-size: 13px;
-  min-width: min-content; /* Sığmazsa açıklama daralmadan tamamı alt satıra geçer, ortadan bölünmez */
+  min-width: min-content; /* SÄ±ÄŸmazsa aÃ§Ä±klama daralmadan tamamÄ± alt satÄ±ra geÃ§er, ortadan bÃ¶lÃ¼nmez */
 }
-/* İzole Edilmiş Tarih / KM Uyarı Renkleri ve Sızıntı Engeli */
+/* Ä°zole EdilmiÅŸ Tarih / KM UyarÄ± Renkleri ve SÄ±zÄ±ntÄ± Engeli */
 .driver-info-item.driver-warn-red .label,
 .driver-info-item.driver-warn-red .value {
   color: #ef4444 !important;
@@ -903,7 +903,7 @@ body.driver-modal-open {
   display: none !important;
 }
 
-/* Kullanıcı paneli sol panel: etiket ve açıklama aynı boyut, aynı satırda hizalı */
+/* KullanÄ±cÄ± paneli sol panel: etiket ve aÃ§Ä±klama aynÄ± boyut, aynÄ± satÄ±rda hizalÄ± */
 .driver-left-panel .driver-info-item .label { font-size: 13px; }
 .driver-left-panel .driver-info-item .value { font-size: 13px; }
 
@@ -954,7 +954,7 @@ body.driver-modal-open {
   color: #f87171;
 }
 .driver-action-btn.data-entered {
-  border: 1px solid rgba(255, 255, 255, 0.25); /* Aynı ince parlak gri çerçeve */
+  border: 1px solid rgba(255, 255, 255, 0.25); /* AynÄ± ince parlak gri Ã§erÃ§eve */
   color: rgba(255, 255, 255, 0.9);
 }
 .driver-action-btn.data-entered:hover {
@@ -965,13 +965,13 @@ body.driver-modal-open {
 .driver-info-item.saved .value {
   color: #22c55e;
 }
-/* Sigorta/Kasko/Muayene: sadece uyarı çerçevesi */
+/* Sigorta/Kasko/Muayene: sadece uyarÄ± Ã§erÃ§evesi */
 
 .driver-input-area {
   min-height: 0;
 }
 
-/* Aksiyon alanı: buton + form/blok yatayda yan yana (her grup buton altında form) */
+/* Aksiyon alanÄ±: buton + form/blok yatayda yan yana (her grup buton altÄ±nda form) */
 .driver-action-area {
   display: flex;
   flex-direction: column;
@@ -1017,7 +1017,7 @@ body.driver-modal-open {
   margin-bottom: 3px !important;
 }
 
-/* Km (veya tek aksiyon) açıkken sadece o grubu göster */
+/* Km (veya tek aksiyon) aÃ§Ä±kken sadece o grubu gÃ¶ster */
 .driver-action-area-inner.driver-km-open .driver-action-group {
   display: none;
 }
@@ -1026,7 +1026,7 @@ body.driver-modal-open {
   display: flex;
 }
 
-/* Modal açıkken panel butonları gizle */
+/* Modal aÃ§Ä±kken panel butonlarÄ± gizle */
 .driver-action-area-inner.driver-modal-open .driver-action-group {
   display: none;
 }
@@ -1171,7 +1171,7 @@ body.driver-modal-open {
   white-space: nowrap;
 }
 
-/* Mobil: 35/65, compact; etiket+açıklama yan yana, sadece sığmazsa açıklama tamamı alta */
+/* Mobil: 35/65, compact; etiket+aÃ§Ä±klama yan yana, sadece sÄ±ÄŸmazsa aÃ§Ä±klama tamamÄ± alta */
 @media (max-width: 640px) {
   .driver-two-panel {
     padding: 6px 8px 12px;
@@ -1193,7 +1193,7 @@ body.driver-modal-open {
     padding: 0;
     font-size: 12.5px;
   }
-  /* Sol bölüm: etiketler arası 2px dikey boşluk ekle (dashboard) */
+  /* Sol bÃ¶lÃ¼m: etiketler arasÄ± 2px dikey boÅŸluk ekle (dashboard) */
   .dashboard-page .driver-left-panel .driver-vehicle-info {
     gap: 6px !important; /* base 4px + 2px */
   }
@@ -1201,7 +1201,7 @@ body.driver-modal-open {
   .driver-info-item .value { font-size: 12.5px; }
   .driver-left-panel .driver-info-item .label { font-size: 13.5px; }
   .driver-left-panel .driver-info-item .value { font-size: 13.5px; }
-  /* Mobil sol grid: etiket + açıklama yatayda hizalı (baseline, açıklama yukarıda görünmesin) */
+  /* Mobil sol grid: etiket + aÃ§Ä±klama yatayda hizalÄ± (baseline, aÃ§Ä±klama yukarÄ±da gÃ¶rÃ¼nmesin) */
   .driver-left-panel .driver-info-item:has(.value) {
     align-items: baseline !important;
     row-gap: 0 !important;
@@ -1214,7 +1214,7 @@ body.driver-modal-open {
   .driver-left-panel .driver-info-item:has(.value) .label::after {
     margin-right: 0.2em;
   }
-  /* Sağ grid butonları: mobilde dikey yükseklik +3px (6–7–8 üst/alt) */
+  /* SaÄŸ grid butonlarÄ±: mobilde dikey yÃ¼kseklik +3px (6â€“7â€“8 Ã¼st/alt) */
   .driver-action-btn {
     padding: 9px 9px;
     font-size: 13.5px;
@@ -1259,7 +1259,7 @@ body.driver-modal-open {
     padding-left: 15px !important;
     padding-right: 15px !important;
   }
-  /* Kullanıcı paneli mobil: sağ kolon tüm input/textarea sağdan taşmasın, dikey yükseklik 3–4px azaltılmış */
+  /* KullanÄ±cÄ± paneli mobil: saÄŸ kolon tÃ¼m input/textarea saÄŸdan taÅŸmasÄ±n, dikey yÃ¼kseklik 3â€“4px azaltÄ±lmÄ±ÅŸ */
   .dashboard-page .driver-action-area .driver-date-wrap,
   .dashboard-page .driver-action-area .driver-report-block .form-group { min-width: 0 !important; overflow: hidden !important; }
   .dashboard-page .driver-action-area .driver-report-block .form-group input,
@@ -1290,7 +1290,7 @@ body.driver-modal-open {
     height: 26px !important; min-height: 26px !important;
   }
 
-  /* iOS Safari: flex + input taşması (WebKit bug); tüm zincirde min-width:0 + overflow */
+  /* iOS Safari: flex + input taÅŸmasÄ± (WebKit bug); tÃ¼m zincirde min-width:0 + overflow */
   @supports (-webkit-touch-callout: none) {
     .dashboard-page .driver-right-panel,
     .dashboard-page .driver-panels-inner,
@@ -1342,7 +1342,7 @@ body.driver-modal-open {
     width: 120px !important;
     height: 69px !important;
   }
-  /* Mobil (640px altı): MEDISA hero logosu – 2px sola (toplam: -18px, 13px) */
+  /* Mobil (640px altÄ±): MEDISA hero logosu â€“ 2px sola (toplam: -18px, 13px) */
   .dashboard-page .hero.hero-two-rows .hero-logo {
     flex: 0 0 56px !important;
     width: 56px !important;
@@ -1355,12 +1355,12 @@ body.driver-modal-open {
     transform: translate(-18px, 13px) !important;
     margin-top: 0 !important;
   }
-  /* Mobil: 56px logo sütunları, başlık ortada */
+  /* Mobil: 56px logo sÃ¼tunlarÄ±, baÅŸlÄ±k ortada */
   .dashboard-page .hero.hero-two-rows,
   .login-page .hero.hero-two-rows {
     grid-template-columns: 56px 1fr 56px !important;
   }
-  /* Mobil başlık metinleri 1pt küçük */
+  /* Mobil baÅŸlÄ±k metinleri 1pt kÃ¼Ã§Ã¼k */
   .dashboard-page .hero.hero-two-rows .hero-title-block .hero-title-line {
     width: 100%;
     max-width: 100%;
@@ -1383,7 +1383,7 @@ body.driver-modal-open {
     overflow: hidden !important;
     text-overflow: ellipsis !important;
   }
-  /* iOS: başlık metinleri ince/bozuk görünmesin – font smoothing + hafif gölge */
+  /* iOS: baÅŸlÄ±k metinleri ince/bozuk gÃ¶rÃ¼nmesin â€“ font smoothing + hafif gÃ¶lge */
   .login-page .hero.hero-two-rows .hero-title-block .hero-title-line,
   .login-page .hero-title-block .hero-panel-subtitle {
     -webkit-font-smoothing: antialiased !important;
@@ -1400,7 +1400,7 @@ body.driver-modal-open {
     width: 100% !important;
     height: auto !important;
   }
-  /* Login logosu mobilde – 56px (logo ufak büyütme) */
+  /* Login logosu mobilde â€“ 56px (logo ufak bÃ¼yÃ¼tme) */
   .login-page .hero-logo {
     flex: 0 0 56px !important;
     width: 56px !important;
@@ -1409,12 +1409,12 @@ body.driver-modal-open {
     width: 100% !important;
     height: auto !important;
   }
-  /* Şifre ekranı başlık: kullanıcı paneli ile aynı (ekstra kaydırma yok) */
-  /* Ortadaki dikey kırmızı çizgi – yan çizgilerle aynı */
+  /* Åifre ekranÄ± baÅŸlÄ±k: kullanÄ±cÄ± paneli ile aynÄ± (ekstra kaydÄ±rma yok) */
+  /* Ortadaki dikey kÄ±rmÄ±zÄ± Ã§izgi â€“ yan Ã§izgilerle aynÄ± */
   .driver-left-panel {
     border-right-width: 1.2px !important;
   }
-  /* Şube ve altı mobilde bir satır aşağı (3px + bir satır yüksekliği) */
+  /* Åube ve altÄ± mobilde bir satÄ±r aÅŸaÄŸÄ± (3px + bir satÄ±r yÃ¼ksekliÄŸi) */
   .driver-left-panel .driver-vehicle-info {
     margin-top: 20px !important;
   }
@@ -1447,7 +1447,7 @@ body.driver-modal-open {
   transform: scale(1.08);
 }
 
-/* --- YÜKLEME --- */
+/* --- YÃœKLEME --- */
 .driver-loading {
   text-align: center;
   padding: 48px 20px;
@@ -1473,7 +1473,7 @@ body.driver-modal-open {
   to { transform: rotate(360deg); }
 }
 
-/* --- TAŞIT KARTLARI --- */
+/* --- TAÅIT KARTLARI --- */
 .driver-vehicles-list {
   display: flex;
   flex-direction: column;
@@ -1490,12 +1490,12 @@ body.driver-modal-open {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2), 0 4px 16px rgba(var(--theme-color-rgb), 0.08);
 }
 
-/* İlk kart: Kullanıcı Paneli ile plaka arası 12px */
+/* Ä°lk kart: KullanÄ±cÄ± Paneli ile plaka arasÄ± 12px */
 .driver-vehicles-list .vehicle-card:first-child {
   padding-top: 0;
 }
 
-/* Kart Başlığı (Plaka ortalan, çizgi yok) - Güncel KM 12px altında */
+/* Kart BaÅŸlÄ±ÄŸÄ± (Plaka ortalan, Ã§izgi yok) - GÃ¼ncel KM 12px altÄ±nda */
 .vehicle-header {
   border-bottom: none;
   padding-bottom: 0;
@@ -1516,7 +1516,7 @@ body.driver-modal-open {
   margin: 0;
 }
 
-/* Bilgi satırları: Yedek Anahtar, Lastik, UTTS, Muayene */
+/* Bilgi satÄ±rlarÄ±: Yedek Anahtar, Lastik, UTTS, Muayene */
 .driver-info-rows {
   margin-bottom: 12px;
   padding: 10px 12px;
@@ -1558,7 +1558,7 @@ body.driver-modal-open {
   background: rgba(var(--theme-color-rgb), 0.15) !important;
 }
 
-/* Olay Ekle menü modal */
+/* Olay Ekle menÃ¼ modal */
 .driver-event-menu-list {
   display: flex;
   flex-direction: column;
@@ -1589,7 +1589,7 @@ body.driver-modal-open {
   background: rgba(var(--theme-color-rgb), 0.1);
 }
 
-/* Event modalleri: radio butonları */
+/* Event modalleri: radio butonlarÄ± */
 .driver-radio-row {
   display: flex;
   flex-direction: row;
@@ -1609,7 +1609,7 @@ body.driver-modal-open {
   flex-wrap: wrap;
   align-items: center;
 }
-/* Anahtar/Lastik Var/Yok: Bildir/Vazgeç ile aynı dikey yükseklik ve yapı (32px, 8px radius, flex ortalama) */
+/* Anahtar/Lastik Var/Yok: Bildir/VazgeÃ§ ile aynÄ± dikey yÃ¼kseklik ve yapÄ± (32px, 8px radius, flex ortalama) */
 .driver-radio-btn {
   background: transparent;
   border: 1px solid rgba(255, 255, 255, 0.35);
@@ -1628,7 +1628,7 @@ body.driver-modal-open {
   transition: color 0.2s, border-color 0.2s, background 0.2s;
   box-sizing: border-box;
 }
-/* Var: hover ve seçili – yeşil border, yeşil metin, yarı saydam yeşil arka plan */
+/* Var: hover ve seÃ§ili â€“ yeÅŸil border, yeÅŸil metin, yarÄ± saydam yeÅŸil arka plan */
 .driver-radio-btn[data-group="anahtar"][data-value="var"]:hover,
 .driver-radio-btn[data-group="anahtar"].active[data-value="var"],
 .driver-radio-btn[data-group="lastik"][data-value="var"]:hover,
@@ -1637,7 +1637,7 @@ body.driver-modal-open {
   color: #28a745;
   background: rgba(40, 167, 69, 0.2);
 }
-/* Yok: hover ve seçili – kırmızı border, kırmızı metin, yarı saydam kırmızı arka plan */
+/* Yok: hover ve seÃ§ili â€“ kÄ±rmÄ±zÄ± border, kÄ±rmÄ±zÄ± metin, yarÄ± saydam kÄ±rmÄ±zÄ± arka plan */
 .driver-radio-btn[data-group="anahtar"][data-value="yok"]:hover,
 .driver-radio-btn[data-group="anahtar"].active[data-value="yok"],
 .driver-radio-btn[data-group="lastik"][data-value="yok"]:hover,
@@ -1646,7 +1646,7 @@ body.driver-modal-open {
   color: var(--theme-color, #d40000);
   background: rgba(212, 0, 0, 0.2);
 }
-/* UTTS Evet/Hayır: çerçevesiz, sadece renk; yükseklik Bildir/Vazgeç ile aynı */
+/* UTTS Evet/HayÄ±r: Ã§erÃ§evesiz, sadece renk; yÃ¼kseklik Bildir/VazgeÃ§ ile aynÄ± */
 .driver-radio-btn[data-group="utts"] {
   border: none;
   padding: 0 10px;
@@ -1667,7 +1667,7 @@ body.driver-modal-open {
   text-decoration: underline;
 }
 
-/* Birden fazla araç: plaka satırı + sağda işaret (dropdown), liste plaka altında/ortada */
+/* Birden fazla araÃ§: plaka satÄ±rÄ± + saÄŸda iÅŸaret (dropdown), liste plaka altÄ±nda/ortada */
 .driver-multi-vehicle-wrap {
   position: relative;
 }
@@ -1705,7 +1705,7 @@ body.driver-modal-open {
   opacity: 0.95;
 }
 .driver-plate-chevron {
-  font-size: 34px; /* 100–160 (1.6x): 21px → 34px */
+  font-size: 34px; /* 100â€“160 (1.6x): 21px â†’ 34px */
   line-height: 1;
 }
 .driver-plate-dropdown {
@@ -1767,7 +1767,7 @@ body.driver-modal-open {
   margin-bottom: 16px;
 }
 
-/* KM input, Bakım/Kaza, Ekstra Not, Kaydet – aynı genişlik (280px), yatayda hizalı */
+/* KM input, BakÄ±m/Kaza, Ekstra Not, Kaydet â€“ aynÄ± geniÅŸlik (280px), yatayda hizalÄ± */
 .vehicle-card .driver-km-input-wrap {
   position: relative;
   width: 100%;
@@ -1804,7 +1804,7 @@ body.driver-modal-open {
 .vehicle-card .form-group label {
   display: block;
   margin-bottom: 6px;
-  font-size: 14px; /* +1 punto (13–14) */
+  font-size: 14px; /* +1 punto (13â€“14) */
   color: #ffffff;
   font-weight: 500;
 }
@@ -1835,7 +1835,7 @@ body.driver-modal-open {
   box-shadow: inset 0 0 0 0.5px var(--theme-color) !important;
 }
 
-/* KM ve Ekstra Not: gri çerçeve, tıklayınca kırmızı */
+/* KM ve Ekstra Not: gri Ã§erÃ§eve, tÄ±klayÄ±nca kÄ±rmÄ±zÄ± */
 .vehicle-card .form-group input.driver-km-input,
 .vehicle-card .form-group textarea.driver-ekstra-not {
   box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.38) !important;
@@ -1850,7 +1850,7 @@ body.driver-modal-open {
   min-height: 80px;
 }
 
-/* Ekstra Not: etiket ve içerik sola yaslı; tek satır, yazı girildikçe uzar, scrollbar gizli */
+/* Ekstra Not: etiket ve iÃ§erik sola yaslÄ±; tek satÄ±r, yazÄ± girildikÃ§e uzar, scrollbar gizli */
 .vehicle-card .form-group.driver-ekstra-not-form label {
   text-align: left;
 }
@@ -1875,7 +1875,7 @@ body.driver-modal-open {
   opacity: 0 !important;
 }
 
-/* YENİ BUTONLAR (Bakım/Kaza Bildir) – alt alta eşit genişlik (KM input ile uyumlu) */
+/* YENÄ° BUTONLAR (BakÄ±m/Kaza Bildir) â€“ alt alta eÅŸit geniÅŸlik (KM input ile uyumlu) */
 .driver-report-actions,
 .driver-report-blocks {
   display: flex;
@@ -1951,7 +1951,7 @@ body.driver-modal-open {
   display: block;
 }
 
-/* Kaza/Bakım panel açılınca içerik ekranın tamamını kullansın */
+/* Kaza/BakÄ±m panel aÃ§Ä±lÄ±nca iÃ§erik ekranÄ±n tamamÄ±nÄ± kullansÄ±n */
 .driver-report-item:has(.driver-report-block.show) {
   flex-basis: 100%;
   min-width: 0;
@@ -1969,7 +1969,7 @@ body.driver-modal-open {
   margin-bottom: 0;
 }
 
-/* Bakım paneli: etiket ortada, içerik sola yaslı, gri çerçeve varsayılan, aktifken yeşil */
+/* BakÄ±m paneli: etiket ortada, iÃ§erik sola yaslÄ±, gri Ã§erÃ§eve varsayÄ±lan, aktifken yeÅŸil */
 .driver-report-block-bakim .form-group label {
   text-align: center;
   display: block;
@@ -1985,7 +1985,7 @@ body.driver-modal-open {
   padding-right: 10px !important;
 }
 
-/* Kaza paneli: etiket ortada, içerik sola yaslı, gri çerçeve varsayılan, aktifken kırmızı */
+/* Kaza paneli: etiket ortada, iÃ§erik sola yaslÄ±, gri Ã§erÃ§eve varsayÄ±lan, aktifken kÄ±rmÄ±zÄ± */
 .driver-report-block-kaza .form-group label {
   text-align: center;
   display: block;
@@ -2000,7 +2000,7 @@ body.driver-modal-open {
   padding-left: 10px !important;
   padding-right: 10px !important;
 }
-/* Bakım/Kaza Açıklama: varsayılan 1 satır, içerik uzadıkça otomatik büyür, kesilme yok */
+/* BakÄ±m/Kaza AÃ§Ä±klama: varsayÄ±lan 1 satÄ±r, iÃ§erik uzadÄ±kÃ§a otomatik bÃ¼yÃ¼r, kesilme yok */
 .driver-report-block .form-group textarea.driver-report-textarea-auto {
   min-height: 2em;
   height: 2em;
@@ -2012,7 +2012,7 @@ body.driver-modal-open {
   display: none;
 }
 
-/* Kaza bloku: kaporta SVG container – taşma önleme, mobil uyumlu */
+/* Kaza bloku: kaporta SVG container â€“ taÅŸma Ã¶nleme, mobil uyumlu */
 .driver-kaporta-container {
   max-height: 200px;
   overflow: visible;
@@ -2033,7 +2033,7 @@ body.driver-modal-open {
 .driver-report-block-kaza .driver-kaporta-container {
   margin-top: 0;
 }
-/* Mobil: sağ grid – kenarlara 5px; şema alana sığsın; legend altta yatay */
+/* Mobil: saÄŸ grid â€“ kenarlara 5px; ÅŸema alana sÄ±ÄŸsÄ±n; legend altta yatay */
 @media (max-width: 480px) {
   .driver-report-block-kaza .form-group:has(.driver-kaporta-container) {
     padding-left: 5px !important;
@@ -2052,7 +2052,7 @@ body.driver-modal-open {
   }
   .driver-kaporta-container .driver-kaporta-schema-wrapper svg {
     width: 100% !important;
-    max-width: 160px !important; /* Alana sığsın, kocaman olmasın */
+    max-width: 160px !important; /* Alana sÄ±ÄŸsÄ±n, kocaman olmasÄ±n */
     height: auto !important;
     object-fit: contain !important;
   }
@@ -2061,7 +2061,7 @@ body.driver-modal-open {
   }
 }
 
-/* Bildir Butonu: çerçevesiz, arka plansız; ince yeşil metin + çok ince yeşil çerçeve */
+/* Bildir Butonu: Ã§erÃ§evesiz, arka plansÄ±z; ince yeÅŸil metin + Ã§ok ince yeÅŸil Ã§erÃ§eve */
 .btn-save {
   display: block;
   width: 100%;
@@ -2098,7 +2098,7 @@ body.driver-modal-open {
   transform: none;
 }
 
-/* Sağ grid: Bildir / Vazgeç butonları – çerçeveye dokunmadan metin 1pt büyük */
+/* SaÄŸ grid: Bildir / VazgeÃ§ butonlarÄ± â€“ Ã§erÃ§eveye dokunmadan metin 1pt bÃ¼yÃ¼k */
 .dashboard-page .driver-action-area .universal-btn-save,
 .dashboard-page .driver-action-area .universal-btn-cancel {
   font-size: 16px !important;
@@ -2131,7 +2131,7 @@ body.driver-modal-open {
   color: #ffc107;
 }
 
-/* --- BOŞ DURUM --- */
+/* --- BOÅ DURUM --- */
 .driver-empty-state {
   text-align: center;
   padding: 48px 24px;
@@ -2156,7 +2156,7 @@ body.driver-modal-open {
   margin: 0;
 }
 
-/* --- GEÇMİŞ KAYITLAR BAR --- */
+/* --- GEÃ‡MÄ°Å KAYITLAR BAR --- */
 .driver-history-bar {
   margin-top: 16px;
   margin-bottom: 12px;
@@ -2271,7 +2271,7 @@ body.driver-modal-open {
   padding: 20px;
 }
 
-/* #history-modal, #edit-request-modal, Olay Ekle modalları: Taşıtlar modali ile aynı ayarlar */
+/* #history-modal, #edit-request-modal, Olay Ekle modallarÄ±: TaÅŸÄ±tlar modali ile aynÄ± ayarlar */
 #history-modal.driver-modal,
 #edit-request-modal.driver-modal,
 #driver-event-menu-modal.driver-modal,
@@ -2282,7 +2282,7 @@ body.driver-modal-open {
 #driver-sigorta-modal.driver-modal,
 #driver-kasko-modal.driver-modal {
   background: transparent !important;
-  padding: max(12px, env(safe-area-inset-top)) 0 0 0 !important; /* Çentik/notch altında kalmaması için */
+  padding: max(12px, env(safe-area-inset-top)) 0 0 0 !important; /* Ã‡entik/notch altÄ±nda kalmamasÄ± iÃ§in */
   z-index: 10010;
   flex-direction: column;
   justify-content: flex-start;
@@ -2308,7 +2308,7 @@ body.driver-modal-open {
   z-index: 10011 !important;
 }
 
-/* Masaüstü: kayıt modali ile aynı – overlay üst padding yok; overlay footer'ı örtmesin, footer görünsün */
+/* MasaÃ¼stÃ¼: kayÄ±t modali ile aynÄ± â€“ overlay Ã¼st padding yok; overlay footer'Ä± Ã¶rtmesin, footer gÃ¶rÃ¼nsÃ¼n */
 @media (min-width: 641px) {
   #history-modal.driver-modal,
   #edit-request-modal.driver-modal,
@@ -2321,7 +2321,7 @@ body.driver-modal-open {
   #driver-kasko-modal.driver-modal {
     padding: 0 !important;
   }
-  /* Geçmiş Kayıtlar + Düzeltme Talebi: overlay footer üstünde bitsin; modali-footer arası tam 1px */
+  /* GeÃ§miÅŸ KayÄ±tlar + DÃ¼zeltme Talebi: overlay footer Ã¼stÃ¼nde bitsin; modali-footer arasÄ± tam 1px */
   #history-modal.driver-modal,
   #edit-request-modal.driver-modal {
     bottom: calc(1px + var(--app-footer-height, 48px)) !important;
@@ -2359,7 +2359,7 @@ body.driver-modal-open {
   pointer-events: none;
 }
 
-/* Taşıtlar modali ile aynı: genişlik 500px, yatay çerçeve. Diğer modallar: --modal-margin-bottom-desktop */
+/* TaÅŸÄ±tlar modali ile aynÄ±: geniÅŸlik 500px, yatay Ã§erÃ§eve. DiÄŸer modallar: --modal-margin-bottom-desktop */
 #history-modal .driver-modal-content,
 #history-modal .modal-container,
 #edit-request-modal .driver-modal-content,
@@ -2396,7 +2396,7 @@ body.driver-modal-open {
   overscroll-behavior: none;
   overscroll-behavior-x: none;
 }
-/* Geçmiş Kayıtlar + Düzeltme Talebi masaüstü: modali-footer arası tam 1px */
+/* GeÃ§miÅŸ KayÄ±tlar + DÃ¼zeltme Talebi masaÃ¼stÃ¼: modali-footer arasÄ± tam 1px */
 #history-modal .driver-modal-content,
 #history-modal .modal-container,
 #edit-request-modal .driver-modal-content,
@@ -2408,7 +2408,7 @@ body.driver-modal-open {
   max-height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 1px - var(--app-footer-height, 48px)) !important;
 }
 
-/* Masaüstü: Geçmiş İşlemler modalı footer'a 2px daha yaklaşsın */
+/* MasaÃ¼stÃ¼: GeÃ§miÅŸ Ä°ÅŸlemler modalÄ± footer'a 2px daha yaklaÅŸsÄ±n */
 @media (min-width: 641px) {
   #history-modal.driver-modal {
     bottom: calc(-1px + var(--app-footer-height, 48px)) !important;
@@ -2527,7 +2527,7 @@ body.driver-modal-open {
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
-/* Geçmiş Kayıtlar modali: tarihçe/kayıt modali ile aynı yapı – body flex column, scroll sadece liste alanında */
+/* GeÃ§miÅŸ KayÄ±tlar modali: tarihÃ§e/kayÄ±t modali ile aynÄ± yapÄ± â€“ body flex column, scroll sadece liste alanÄ±nda */
 #history-modal .modal-body {
   display: flex !important;
   flex-direction: column !important;
@@ -2547,7 +2547,7 @@ body.driver-modal-open {
   -webkit-overflow-scrolling: touch !important;
   padding-bottom: max(20px, env(safe-area-inset-bottom, 0)) !important;
 }
-/* Düzeltme Talebi modali: İşlem Geçmişi ile aynı yapı – body flex column, scroll #edit-request-content içinde */
+/* DÃ¼zeltme Talebi modali: Ä°ÅŸlem GeÃ§miÅŸi ile aynÄ± yapÄ± â€“ body flex column, scroll #edit-request-content iÃ§inde */
 #edit-request-modal .modal-body {
   display: flex !important;
   flex-direction: column !important;
@@ -2602,7 +2602,7 @@ body.driver-modal-open {
 .driver-modal .form-group label {
   display: block;
   margin-bottom: 6px;
-  font-size: 14px; /* +1 punto (13–14) */
+  font-size: 14px; /* +1 punto (13â€“14) */
   color: #ffffff;
   font-weight: 500;
 }
@@ -2639,7 +2639,7 @@ body.driver-modal-open {
   resize: none;
 }
 
-/* Düzeltme Talebi: etiket beyaz, açıklama gri (mobil + masaüstü) */
+/* DÃ¼zeltme Talebi: etiket beyaz, aÃ§Ä±klama gri (mobil + masaÃ¼stÃ¼) */
 #edit-request-modal .driver-current-km {
   color: #ffffff !important;
   margin-bottom: 13px !important;
@@ -2651,7 +2651,7 @@ body.driver-modal-open {
   color: #ffffff !important;
 }
 
-/* Düzeltme Talebi: input iç yükseklik 3px dar, bölümler arası 3px dar, Bildir ince */
+/* DÃ¼zeltme Talebi: input iÃ§ yÃ¼kseklik 3px dar, bÃ¶lÃ¼mler arasÄ± 3px dar, Bildir ince */
 #edit-request-modal .form-group {
   margin-bottom: 13px !important;
 }
@@ -2680,7 +2680,7 @@ body.driver-modal-open {
   color: rgba(255, 255, 255, 0.22) !important;
 }
 
-/* Düzeltme Talebi: KM input spinner gizli */
+/* DÃ¼zeltme Talebi: KM input spinner gizli */
 .driver-modal .form-group input[type="number"] {
   -moz-appearance: textfield;
   appearance: textfield;
@@ -2718,7 +2718,7 @@ body.driver-modal-open {
   font-size: 13.5px;
 }
 
-/* Masaüstü: Geçmiş modali – sol ok+etiket 6px yukarı, Taşıt Seç 2px yukarı + Tüm Taşıtlar gri, kart içi dikey daralt */
+/* MasaÃ¼stÃ¼: GeÃ§miÅŸ modali â€“ sol ok+etiket 6px yukarÄ±, TaÅŸÄ±t SeÃ§ 2px yukarÄ± + TÃ¼m TaÅŸÄ±tlar gri, kart iÃ§i dikey daralt */
 @media (min-width: 769px) {
   #history-modal .universal-back-bar,
   #edit-request-modal .universal-back-bar {
@@ -2730,11 +2730,11 @@ body.driver-modal-open {
   #history-modal .history-card {
     padding: 7px 14px !important;
   }
-  /* Tarih satırı ile etiket+açıklama satırı arası dikey boşluk 2px daralt */
+  /* Tarih satÄ±rÄ± ile etiket+aÃ§Ä±klama satÄ±rÄ± arasÄ± dikey boÅŸluk 2px daralt */
   #history-modal .history-header {
     margin-bottom: -4px !important;
   }
-  /* Masaüstü: punto 0.5 küçült */
+  /* MasaÃ¼stÃ¼: punto 0.5 kÃ¼Ã§Ã¼lt */
   #history-modal .history-period {
     font-size: 14.5px !important;
   }
@@ -2746,7 +2746,7 @@ body.driver-modal-open {
   }
 }
 
-/* Geçmiş kayıtlar modal içi */
+/* GeÃ§miÅŸ kayÄ±tlar modal iÃ§i */
 .history-filters {
   margin-bottom: 16px;
 }
@@ -2866,7 +2866,7 @@ body.driver-modal-open {
   gap: 12px;
 }
 
-/* Kayıt kartı: kayıt modali input arka planı ile aynı (#0f1418) */
+/* KayÄ±t kartÄ±: kayÄ±t modali input arka planÄ± ile aynÄ± (#0f1418) */
 .history-card {
   display: flex;
   flex-direction: column;
@@ -2895,7 +2895,7 @@ body.driver-modal-open {
   min-width: 0;
 }
 
-/* Üst satır: tarih sola, plaka sağa – aynı satırda */
+/* Ãœst satÄ±r: tarih sola, plaka saÄŸa â€“ aynÄ± satÄ±rda */
 .history-header {
   display: flex;
   flex-direction: row;
@@ -2917,7 +2917,7 @@ body.driver-modal-open {
   text-align: right;
 }
 
-/* Etiket beyaz, açıklama gri: p varsayılan gri; strong etiket (beyaz) */
+/* Etiket beyaz, aÃ§Ä±klama gri: p varsayÄ±lan gri; strong etiket (beyaz) */
 .history-details p {
   font-size: 14px;
   color: var(--data-value-color, #a0aec0);
@@ -2930,7 +2930,7 @@ body.driver-modal-open {
   color: var(--data-value-color, #a0aec0);
 }
 
-/* Kalem ikonu: sağda dikeyde ortalan, arka plan ve çerçeve yok */
+/* Kalem ikonu: saÄŸda dikeyde ortalan, arka plan ve Ã§erÃ§eve yok */
 .history-edit-icon {
   flex-shrink: 0;
   align-self: center;
@@ -2953,7 +2953,7 @@ body.driver-modal-open {
 }
 
 /* =========================================
-   LOGIN SAYFASI (Değişiklik yok)
+   LOGIN SAYFASI (DeÄŸiÅŸiklik yok)
    ========================================= */
 .login-page {
   overflow-x: hidden !important;
@@ -2972,7 +2972,7 @@ body.driver-modal-open {
   padding-bottom: 10px !important;
 }
 
-/* Login (masaüstü): PWA kurulum çubuğu header alt çerçevesinin 4px altında; sadece buton yatayda ortada (X hesaba katılmaz) */
+/* Login (masaÃ¼stÃ¼): PWA kurulum Ã§ubuÄŸu header alt Ã§erÃ§evesinin 4px altÄ±nda; sadece buton yatayda ortada (X hesaba katÄ±lmaz) */
 @media (min-width: 769px) {
   .login-page #pwa-install-wrapper.pwa-install-center {
     margin-top: 4px !important;
@@ -2991,7 +2991,7 @@ body.driver-modal-open {
   .login-page .pwa-install-bar .pwa-install-close {
     margin-left: 0 !important;
   }
-  /* PWA Butonu Sol Panel Yerleşimi – akışta yer kaplamaz, mevcut boşluğa oturur */
+  /* PWA Butonu Sol Panel YerleÅŸimi â€“ akÄ±ÅŸta yer kaplamaz, mevcut boÅŸluÄŸa oturur */
   .dashboard-page .driver-user-plate-in-panel {
     position: relative !important;
   }
@@ -3044,7 +3044,7 @@ body.driver-modal-open {
   overflow: hidden !important;
 }
 
-/* Login content-wrap: anasayfa ile aynı hizalama (padding, safe-area) */
+/* Login content-wrap: anasayfa ile aynÄ± hizalama (padding, safe-area) */
 .login-page .content-wrap {
   flex: 1 1 auto !important;
   min-height: 0 !important;
@@ -3059,7 +3059,7 @@ body.driver-modal-open {
   -webkit-overflow-scrolling: touch !important;
 }
 
-/* Şifre ekranı: header/hero kullanıcı paneli ile aynı (padding vb. ortak) */
+/* Åifre ekranÄ±: header/hero kullanÄ±cÄ± paneli ile aynÄ± (padding vb. ortak) */
 .login-page .content-wrap {
   padding-left: 0 !important;
 }
@@ -3067,7 +3067,7 @@ body.driver-modal-open {
   padding-left: 22px !important;
   padding-right: 30px !important;
 }
-/* Şifre ekranı: Yönetim Sistemi butonu container içinde, footerdan 6px yukarıda; fixed footer üstünde görünsün (dashboard ile aynı) */
+/* Åifre ekranÄ±: YÃ¶netim Sistemi butonu container iÃ§inde, footerdan 6px yukarÄ±da; fixed footer Ã¼stÃ¼nde gÃ¶rÃ¼nsÃ¼n (dashboard ile aynÄ±) */
 .login-page .driver-footer-back-wrap {
   position: relative;
   bottom: auto;
@@ -3179,8 +3179,8 @@ body.driver-modal-open {
   opacity: 0.8 !important;
 }
 
-/* Yönetim Sistemi (evrensel geri düğmesi) – ortak stil (konum sayfa bazlı) */
-/* Form açıkken arka plana tıklanmasın; Yönetim Sistemi linki her zaman tıklanabilsin */
+/* YÃ¶netim Sistemi (evrensel geri dÃ¼ÄŸmesi) â€“ ortak stil (konum sayfa bazlÄ±) */
+/* Form aÃ§Ä±kken arka plana tÄ±klanmasÄ±n; YÃ¶netim Sistemi linki her zaman tÄ±klanabilsin */
 body.driver-action-block-open .driver-footer-back-wrap {
   pointer-events: none;
 }
@@ -3195,7 +3195,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   display: flex;
   justify-content: flex-start;
 }
-/* Dashboard: Yönetim Sistemi barı footer'ın 5px üstünde, sola yaslı (sadece login / eski yer – dashboard'ta artık sol panelde) */
+/* Dashboard: YÃ¶netim Sistemi barÄ± footer'Ä±n 5px Ã¼stÃ¼nde, sola yaslÄ± (sadece login / eski yer â€“ dashboard'ta artÄ±k sol panelde) */
 .dashboard-page .driver-footer-back-wrap {
   position: relative;
   bottom: auto;
@@ -3209,7 +3209,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   justify-content: flex-start;
   padding-left: 12px !important;
 }
-/* Sol panel içindeki Yönetim Sistemi: altta sabit, sola yaslı; negatif margin yok ki ok kesilmesin */
+/* Sol panel iÃ§indeki YÃ¶netim Sistemi: altta sabit, sola yaslÄ±; negatif margin yok ki ok kesilmesin */
 .driver-left-panel .driver-footer-back-wrap {
   margin-top: auto !important;
   margin-bottom: 0 !important;
@@ -3231,7 +3231,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   min-width: 18px;
   min-height: 18px;
 }
-/* Empty state: Yönetim Sistemi linki (sol panel görünmeyince), sola yaslı */
+/* Empty state: YÃ¶netim Sistemi linki (sol panel gÃ¶rÃ¼nmeyince), sola yaslÄ± */
 .driver-back-in-empty {
   margin-top: 16px !important;
   justify-content: flex-start !important;
@@ -3243,7 +3243,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   align-items: center !important;
   gap: 3px !important;
   max-width: 100%;
-  color: var(--theme-color) !important; /* Kırmızı, pasifken yarı saydam */
+  color: var(--theme-color) !important; /* KÄ±rmÄ±zÄ±, pasifken yarÄ± saydam */
   opacity: 0.55;
   font-size: 14px;
   font-weight: 500;
@@ -3265,7 +3265,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   color: var(--theme-color) !important;
   opacity: 1;
 }
-/* Yönetim Sistemi butonunun solundaki ok işareti – demet gibi yarı saydam */
+/* YÃ¶netim Sistemi butonunun solundaki ok iÅŸareti â€“ demet gibi yarÄ± saydam */
 .driver-footer-back-wrap .universal-back-btn .back-icon-svg {
   opacity: 0.6;
   transition: opacity 0.2s;
@@ -3287,7 +3287,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 }
 
 @media (min-width: 769px) {
-  /* Masaüstü: footer modal (app-container) altında ortalanmış olsun; 56px yükseklik kırmızı çizgilerle hizalansın */
+  /* MasaÃ¼stÃ¼: footer modal (app-container) altÄ±nda ortalanmÄ±ÅŸ olsun; 56px yÃ¼kseklik kÄ±rmÄ±zÄ± Ã§izgilerle hizalansÄ±n */
   .login-page #app-footer.login-footer {
     min-height: 56px !important;
     left: 50% !important;
@@ -3300,11 +3300,11 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     padding: 8px 12px !important;
     padding-bottom: max(12px, env(safe-area-inset-bottom, 0)) !important;
   }
-  /* Login footer 56px; kırmızı çizgiler footer'a değsin */
+  /* Login footer 56px; kÄ±rmÄ±zÄ± Ã§izgiler footer'a deÄŸsin */
   .login-page .driver-dashboard-container {
     --app-footer-height: 56px;
   }
-  /* Masaüstü kullanıcı paneli + Şifre ekranı: kırmızı çizgiler footer'ın tam üstünde (0) biter, erken kesilmesin */
+  /* MasaÃ¼stÃ¼ kullanÄ±cÄ± paneli + Åifre ekranÄ±: kÄ±rmÄ±zÄ± Ã§izgiler footer'Ä±n tam Ã¼stÃ¼nde (0) biter, erken kesilmesin */
   .dashboard-page .driver-dashboard-container::before,
   .login-page .driver-dashboard-container::before {
     top: 0 !important;
@@ -3336,14 +3336,14 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     min-width: 15px !important;
     min-height: 15px !important;
   }
-  /* Mobil: fixed footer için alt boşluk; yan çizgiler footer'a kadar (bottom ile) */
+  /* Mobil: fixed footer iÃ§in alt boÅŸluk; yan Ã§izgiler footer'a kadar (bottom ile) */
   .dashboard-page .driver-dashboard-container,
   .login-page .driver-dashboard-container {
     padding-bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important;
     overflow-x: hidden !important;
-    overflow-y: visible !important; /* Footer'dan çıkan kırmızı ışık (box-shadow) kesilmesin */
+    overflow-y: visible !important; /* Footer'dan Ã§Ä±kan kÄ±rmÄ±zÄ± Ä±ÅŸÄ±k (box-shadow) kesilmesin */
   }
-  /* Yan çizgiler footer'da biter, aşağı inmez. bottom = footer + safe-area */
+  /* Yan Ã§izgiler footer'da biter, aÅŸaÄŸÄ± inmez. bottom = footer + safe-area */
   .dashboard-page .driver-dashboard-container::before,
   .login-page .driver-dashboard-container::before {
     bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important;
@@ -3369,7 +3369,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     margin-left: 0 !important;
     margin-right: 0 !important;
   }
-  /* Giriş formu yatayda ve dikeyde ortalan (iOS PWA) */
+  /* GiriÅŸ formu yatayda ve dikeyde ortalan (iOS PWA) */
   .login-page .content-wrap.driver-content-wrap.driver-scroll-area {
     display: flex !important;
     flex-direction: column !important;
@@ -3387,7 +3387,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     max-width: 100% !important;
     box-sizing: border-box !important;
   }
-  /* Mobil: footer'dan yukarı kırmızı ışık (login + kullanıcı paneli modallarında). Login footer = dashboard birebir aynı */
+  /* Mobil: footer'dan yukarÄ± kÄ±rmÄ±zÄ± Ä±ÅŸÄ±k (login + kullanÄ±cÄ± paneli modallarÄ±nda). Login footer = dashboard birebir aynÄ± */
   .dashboard-page #app-footer {
     box-shadow: 0 -22px 40px rgba(var(--theme-color-rgb), 0.52) !important;
   }
@@ -3397,7 +3397,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     border-right: 0.5px solid rgba(255, 255, 255, 0.10) !important;
   }
 
-  /* Sol panel araç bilgisi (Sigorta/Kasko/Muayene dahil): Plaka/Marka ile aynı sol hiza */
+  /* Sol panel araÃ§ bilgisi (Sigorta/Kasko/Muayene dahil): Plaka/Marka ile aynÄ± sol hiza */
   .dashboard-page .driver-left-panel .driver-vehicle-info {
     text-align: left !important;
     align-items: flex-start !important;
@@ -3407,7 +3407,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     margin-left: 0 !important;
     padding-left: 0 !important;
   }
-  /* Tarih uyarı çerçevesi kalsın; sola itmeyi kaldırdık, hiza için negatif margin */
+  /* Tarih uyarÄ± Ã§erÃ§evesi kalsÄ±n; sola itmeyi kaldÄ±rdÄ±k, hiza iÃ§in negatif margin */
 }
 
 .login-container {
@@ -3448,7 +3448,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   color: #ffffff;
 }
 
-/* Şifre ekranı: varsayılan gri çerçeve, focus'ta kırmızı */
+/* Åifre ekranÄ±: varsayÄ±lan gri Ã§erÃ§eve, focus'ta kÄ±rmÄ±zÄ± */
 .login-form .form-group input {
   width: 100%;
   max-width: 100%;
@@ -3481,7 +3481,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   transition: background-color 5000s ease-in-out 0s;
 }
 
-/* Boş / invalid durumda da gri çerçeve (focus'ta kırmızı) */
+/* BoÅŸ / invalid durumda da gri Ã§erÃ§eve (focus'ta kÄ±rmÄ±zÄ±) */
 .login-form .form-group input:invalid,
 .login-form .form-group input:placeholder-shown {
   box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.35) !important;
@@ -3493,7 +3493,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 }
 
 .login-form .form-group input::placeholder {
-  color: rgba(160, 174, 192, 0.6) !important; /* örn: Savaş – çok az daha silik */
+  color: rgba(160, 174, 192, 0.6) !important; /* Ã¶rn: SavaÅŸ â€“ Ã§ok az daha silik */
   opacity: 1;
 }
 
@@ -3516,7 +3516,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   cursor: pointer;
 }
 
-/* Beni Hatırla: gri arka plan + kırmızı çerçeve (masaüstü + mobil) */
+/* Beni HatÄ±rla: gri arka plan + kÄ±rmÄ±zÄ± Ã§erÃ§eve (masaÃ¼stÃ¼ + mobil) */
 .login-page .form-group-checkbox input[type="checkbox"] {
   -webkit-appearance: none !important;
   appearance: none !important;
@@ -3551,7 +3551,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   padding: 12px;
   background: transparent;
   color: var(--green);
-  border: 1px solid #1a5d35; /* GÜNCELLENDİ: Solid koyu yeşil */
+  border: 1px solid #1a5d35; /* GÃœNCELLENDÄ°: Solid koyu yeÅŸil */
   border-radius: 8px;
   font-size: 15px;
   font-weight: 300;
@@ -3588,7 +3588,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
   .hero-title-wrap .hero-panel-subtitle,
   .hero-title-block .hero-panel-subtitle {
-    font-size: 22px; /* h1 (23px) - 1pt küçük */
+    font-size: 22px; /* h1 (23px) - 1pt kÃ¼Ã§Ã¼k */
   }
   .driver-user-name {
     display: none;
@@ -3597,26 +3597,26 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     font-size: 18px;
   }
 }
-/* === MOBİL GÜNCELLEMELER 2026.01.31 === */
+/* === MOBÄ°L GÃœNCELLEMELER 2026.01.31 === */
 
-/* Güncel KM etiketi sola yaslı, harfler arası 2px boşluk */
+/* GÃ¼ncel KM etiketi sola yaslÄ±, harfler arasÄ± 2px boÅŸluk */
 .vehicle-card .form-group.driver-km-form label {
   text-align: left !important;
   letter-spacing: 2px;
 }
 
-/* Geçmiş simgesi büyüt */
+/* GeÃ§miÅŸ simgesi bÃ¼yÃ¼t */
 .driver-btn-history .driver-btn-history-icon {
   width: 24px !important;
   height: 24px !important;
 }
 
-/* Çıkış butonu büyüt */
+/* Ã‡Ä±kÄ±ÅŸ butonu bÃ¼yÃ¼t */
 .driver-btn-logout {
   font-size: 14px !important;
 }
 
-/* KM input yükseklik (4px daraltıldı), placeholder ve metin sola yaslı, sağdaki spin simgeleri gizli */
+/* KM input yÃ¼kseklik (4px daraltÄ±ldÄ±), placeholder ve metin sola yaslÄ±, saÄŸdaki spin simgeleri gizli */
 .vehicle-card .form-group input.driver-km-input,
 .vehicle-card .form-group input.driver-km-input:invalid,
 .vehicle-card .form-group input.driver-km-input:placeholder-shown {
@@ -3647,7 +3647,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   transition: background-color 5000s ease-in-out 0s;
 }
 
-/* Autofill: Bakım/Kaza ve modal inputları – beyaz arka planı önle, temaya uyumlu */
+/* Autofill: BakÄ±m/Kaza ve modal inputlarÄ± â€“ beyaz arka planÄ± Ã¶nle, temaya uyumlu */
 .vehicle-card .form-group input.driver-bakim-input:-webkit-autofill,
 .vehicle-card .form-group input.driver-bakim-input:-webkit-autofill:hover,
 .vehicle-card .form-group input.driver-bakim-input:-webkit-autofill:focus,
@@ -3672,12 +3672,12 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   transition: background-color 5000s ease-in-out 0s;
 }
 
-/* Bakım/Kaza butonları yükseklik (4px daraltıldı) */
+/* BakÄ±m/Kaza butonlarÄ± yÃ¼kseklik (4px daraltÄ±ldÄ±) */
 .driver-report-btn {
   padding: 6px 12px !important;
 }
 
-/* Bakım paneli input/textarea: odakta kırmızı çerçeve, metin beyaz */
+/* BakÄ±m paneli input/textarea: odakta kÄ±rmÄ±zÄ± Ã§erÃ§eve, metin beyaz */
 .vehicle-card .form-group input.driver-bakim-input:focus,
 .vehicle-card .form-group textarea.driver-bakim-textarea:focus {
   box-shadow: inset 0 0 0 0.5px var(--theme-color) !important;
@@ -3691,7 +3691,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   opacity: 0 !important;
 }
 
-/* Kaza paneli input/textarea: odakta kırmızı çerçeve, metin beyaz */
+/* Kaza paneli input/textarea: odakta kÄ±rmÄ±zÄ± Ã§erÃ§eve, metin beyaz */
 .vehicle-card .form-group input.driver-kaza-input:focus,
 .vehicle-card .form-group textarea.driver-kaza-textarea:focus {
   box-shadow: inset 0 0 0 0.5px var(--theme-color) !important;
@@ -3705,9 +3705,9 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   opacity: 0 !important;
 }
 
-/* #history-modal, #edit-request-modal, Olay Ekle modalları mobil: overlay-bottom stratejisi (style-core ile uyumlu) */
+/* #history-modal, #edit-request-modal, Olay Ekle modallarÄ± mobil: overlay-bottom stratejisi (style-core ile uyumlu) */
 @media (max-width: 640px) {
-  /* Taşıtlar modali ile aynı: overlay alt boşluk = footer + gap (style-core değişkenleri). Üst: Çentik altında kalmaması için safe-area. */
+  /* TaÅŸÄ±tlar modali ile aynÄ±: overlay alt boÅŸluk = footer + gap (style-core deÄŸiÅŸkenleri). Ãœst: Ã‡entik altÄ±nda kalmamasÄ± iÃ§in safe-area. */
   #history-modal.driver-modal,
   #edit-request-modal.driver-modal,
   #driver-event-menu-modal.driver-modal,
@@ -3728,7 +3728,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     overflow: hidden !important;
     overscroll-behavior: none !important;
   }
-  /* Geçmiş Kayıtlar + Düzeltme Talebi: modal–footer arası 6px; koyu dolgu (box-shadow) köşeler dahil kapatsın */
+  /* GeÃ§miÅŸ KayÄ±tlar + DÃ¼zeltme Talebi: modalâ€“footer arasÄ± 6px; koyu dolgu (box-shadow) kÃ¶ÅŸeler dahil kapatsÄ±n */
   #history-modal.driver-modal,
   #edit-request-modal.driver-modal {
     bottom: calc(6px + var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important;
@@ -3737,16 +3737,16 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     max-height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 6px - var(--app-footer-height, 48px) - env(safe-area-inset-bottom, 0)) !important;
     box-shadow: 0 6px 0 0 #080d16 !important;
   }
-  /* Mobilde modal açıkken header üstündeki kırmızı yatay çizgi görünmesin */
+  /* Mobilde modal aÃ§Ä±kken header Ã¼stÃ¼ndeki kÄ±rmÄ±zÄ± yatay Ã§izgi gÃ¶rÃ¼nmesin */
   .driver-modal.show::after {
     display: none !important;
   }
-  /* Modal açıkken footer ve footer ışıkları üstte kalsın */
+  /* Modal aÃ§Ä±kken footer ve footer Ä±ÅŸÄ±klarÄ± Ã¼stte kalsÄ±n */
   body.driver-modal-open.dashboard-page #app-footer,
   body.driver-modal-open.login-page #app-footer.login-footer {
     z-index: 10012 !important;
   }
-  /* Geçmiş Kayıtlar / Düzeltme Talebi açıkken modal–footer 6px boşluğunda kırmızı dikey parçalar kalmasın */
+  /* GeÃ§miÅŸ KayÄ±tlar / DÃ¼zeltme Talebi aÃ§Ä±kken modalâ€“footer 6px boÅŸluÄŸunda kÄ±rmÄ±zÄ± dikey parÃ§alar kalmasÄ±n */
   body.dashboard-page:has(#history-modal.driver-modal.show) .driver-dashboard-container::before,
   body.login-page:has(#history-modal.driver-modal.show) .driver-dashboard-container::before,
   body.dashboard-page:has(#edit-request-modal.driver-modal.show) .driver-dashboard-container::before,
@@ -3805,13 +3805,13 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     left: 0;
     transform: none;
   }
-  /* Geçmiş Kayıtlar + Düzeltme Talebi: kayıt modali ile aynı başlık gölgesi */
+  /* GeÃ§miÅŸ KayÄ±tlar + DÃ¼zeltme Talebi: kayÄ±t modali ile aynÄ± baÅŸlÄ±k gÃ¶lgesi */
   #history-modal .modal-header h2,
   #edit-request-modal .modal-header h2 {
     text-shadow: 0 2px 6px rgba(0, 0, 0, 0.5), 0 4px 12px rgba(0, 0, 0, 0.3), 0 0 15px rgba(255, 255, 255, 0.08) !important;
   }
 
-  /* Mobil modal container: footer arkasında kalmayacak şekilde yükseklik sınırla */
+  /* Mobil modal container: footer arkasÄ±nda kalmayacak ÅŸekilde yÃ¼kseklik sÄ±nÄ±rla */
   #history-modal .driver-modal-content,
   #history-modal .modal-container,
   #edit-request-modal .driver-modal-content,
@@ -3833,7 +3833,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     max-width: 100% !important;
     width: 100% !important;
     margin: 0 !important;
-    /* Kapsayıcı zaten footer'ı kestiği için burada tekrar hesaplama yapmıyoruz. Esnek bırakıyoruz. */
+    /* KapsayÄ±cÄ± zaten footer'Ä± kestiÄŸi iÃ§in burada tekrar hesaplama yapmÄ±yoruz. Esnek bÄ±rakÄ±yoruz. */
     height: auto !important;
     max-height: 100% !important;
     background: var(--modal-bg) !important;
@@ -3850,7 +3850,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     overscroll-behavior: none !important;
     overscroll-behavior-x: none !important;
   }
-  /* Geçmiş Kayıtlar + Düzeltme Talebi: mobilde aynı gri çerçeve */
+  /* GeÃ§miÅŸ KayÄ±tlar + DÃ¼zeltme Talebi: mobilde aynÄ± gri Ã§erÃ§eve */
   #history-modal .driver-modal-content,
   #history-modal .modal-container,
   #edit-request-modal .driver-modal-content,
@@ -3872,7 +3872,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     max-height: 100% !important;
   }
 
-  /* Modal header: Üst köşe radius container ile aynı (10px) – kırmızı çerçeve üstü ezilmesin */
+  /* Modal header: Ãœst kÃ¶ÅŸe radius container ile aynÄ± (10px) â€“ kÄ±rmÄ±zÄ± Ã§erÃ§eve Ã¼stÃ¼ ezilmesin */
   #history-modal .modal-header,
   #edit-request-modal .modal-header,
   #driver-event-menu-modal .modal-header,
@@ -3887,13 +3887,13 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     border-top-right-radius: 10px !important;
   }
 
-  /* Geçmiş Kayıtlar + Düzeltme Talebi: kayıt modali ile aynı kapatma butonu boyutu */
+  /* GeÃ§miÅŸ KayÄ±tlar + DÃ¼zeltme Talebi: kayÄ±t modali ile aynÄ± kapatma butonu boyutu */
   #history-modal .modal-close,
   #edit-request-modal .modal-close {
     font-size: 21px !important;
   }
 
-  /* modal-body: dikey scroll, alt içerik footer'a yapışmasın */
+  /* modal-body: dikey scroll, alt iÃ§erik footer'a yapÄ±ÅŸmasÄ±n */
   #history-modal .modal-body,
   #edit-request-modal .modal-body,
   #driver-event-menu-modal .modal-body,
@@ -3910,7 +3910,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     -webkit-overflow-scrolling: touch;
     padding-bottom: max(20px, env(safe-area-inset-bottom, 0)) !important;
   }
-  /* Geçmiş Kayıtlar + Düzeltme Talebi: scroll kendi alanında, body padding-bottom gereksiz */
+  /* GeÃ§miÅŸ KayÄ±tlar + DÃ¼zeltme Talebi: scroll kendi alanÄ±nda, body padding-bottom gereksiz */
   #history-modal .modal-body,
   #edit-request-modal .modal-body {
     padding-top: 2px !important;
@@ -3921,7 +3921,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     padding-bottom: 4px !important;
   }
 
-  /* Mobil arka plan tüm sayfalarla aynı (--bg) */
+  /* Mobil arka plan tÃ¼m sayfalarla aynÄ± (--bg) */
   .dashboard-page .driver-header-fixed,
   .dashboard-page .driver-scroll-area {
     background: var(--bg) !important;
@@ -3930,7 +3930,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     background: var(--bg) !important;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25) !important;
   }
-  /* Mobil/PWA: tüm çerçeve ::before'da (0.99px), köşe birleşme sorunu yok */
+  /* Mobil/PWA: tÃ¼m Ã§erÃ§eve ::before'da (0.99px), kÃ¶ÅŸe birleÅŸme sorunu yok */
   .dashboard-page .driver-header-fixed,
   .login-page .driver-header-fixed {
     border-top: none !important;
@@ -3941,24 +3941,22 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     border-left: 0.99px solid rgba(var(--theme-color-rgb), 0.82) !important;
     border-right: 0.99px solid rgba(var(--theme-color-rgb), 0.82) !important;
     top: 0 !important;
-    bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important; /* Footer'da biter, aşağı inmez */
+    bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important; /* Footer'da biter, aÅŸaÄŸÄ± inmez */
   }
-  /* Footer: mobilde footer'dan yukarı kırmızı ışık (login + kullanıcı paneli modallarında görünsün) */
+  /* Footer: mobilde footer'dan yukarÄ± kÄ±rmÄ±zÄ± Ä±ÅŸÄ±k (login + kullanÄ±cÄ± paneli modallarÄ±nda gÃ¶rÃ¼nsÃ¼n) */
   .dashboard-page #app-footer {
     background: var(--bg) !important;
     border-top: 0.5px solid rgba(200, 200, 200, 0.45) !important;
     border-left: 0.5px solid rgba(255, 255, 255, 0.10) !important;
     border-right: 0.5px solid rgba(255, 255, 255, 0.10) !important;
-    box-shadow: 0 -9px 22px rgba(var(--theme-color-rgb), 0.35) !important;
   }
   .login-page #app-footer.login-footer {
     background: var(--bg) !important;
     border-top: 0.5px solid rgba(200, 200, 200, 0.45) !important;
     border-left: 0.5px solid rgba(255, 255, 255, 0.18) !important;
     border-right: 0.5px solid rgba(255, 255, 255, 0.18) !important;
-    box-shadow: 0 -15px 22px rgba(var(--theme-color-rgb), 0.35) !important;
   }
-  /* Plaka dropdown dışarı taşabilsin; panels-inner overflow: hidden kalsın ki sağ panel yüksekliği kısıtlansın ve Not+Bildir kaydırılabilir */
+  /* Plaka dropdown dÄ±ÅŸarÄ± taÅŸabilsin; panels-inner overflow: hidden kalsÄ±n ki saÄŸ panel yÃ¼ksekliÄŸi kÄ±sÄ±tlansÄ±n ve Not+Bildir kaydÄ±rÄ±labilir */
   .dashboard-page .driver-panels-inner {
     overflow-x: visible !important;
     overflow-y: hidden;
@@ -3978,14 +3976,14 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     position: relative;
     z-index: 1;
   }
-  /* Sol panelin 12px'lik asimetrik saÄŸ boÅŸluÄŸunu ezip satÄ±rÄ± tam ortalar */
+  /* Sol panelin 12px'lik asimetrik saÃ„Å¸ boÃ…Å¸luÃ„Å¸unu ezip satÃ„Â±rÃ„Â± tam ortalar */
   .dashboard-page .driver-plate-dropdown-row {
     margin-right: 0 !important;
     padding-left: 0 !important;
     padding-right: 0 !important;
     box-sizing: border-box !important;
   }
-  /* Adım 1: Plaka yatayda ortada (kırmızı ok hesaba katılmaz); ok alanına metin girmesin diye simetrik padding */
+  /* AdÄ±m 1: Plaka yatayda ortada (kÄ±rmÄ±zÄ± ok hesaba katÄ±lmaz); ok alanÄ±na metin girmesin diye simetrik padding */
   .dashboard-page .driver-plate-dropdown-row .driver-current-plaka {
     flex: 1 1 auto !important;
     display: block !important;
@@ -4006,7 +4004,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     transform: translateY(-50%) !important;
     background: var(--bg) !important;
   }
-  /* AdÄ±m 2â€“3: Liste sol panel kafesinden Ã§Ä±karÄ±ldÄ± (position: fixed), ekranda gÃ¶z hizasÄ± â€“ ortada, belirgin gÃ¶lge */
+  /* AdÃ„Â±m 2Ã¢â‚¬â€œ3: Liste sol panel kafesinden ÃƒÂ§Ã„Â±karÃ„Â±ldÃ„Â± (position: fixed), ekranda gÃƒÂ¶z hizasÃ„Â± Ã¢â‚¬â€œ ortada, belirgin gÃƒÂ¶lge */
   .dashboard-page .driver-left-panel .driver-plate-dropdown,
   body.dashboard-page #driver-plate-dropdown.driver-plate-dropdown {
     width: 85vw !important;
@@ -4021,7 +4019,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
   .driver-plate-dropdown {
     background: var(--bg) !important;
-    border: 1px solid rgba(255, 255, 255, 0.25) !important; /* Ana uygulama masaüstü menü butonlarıyla aynı gri ton */
+    border: 1px solid rgba(255, 255, 255, 0.25) !important; /* Ana uygulama masaÃ¼stÃ¼ menÃ¼ butonlarÄ±yla aynÄ± gri ton */
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(var(--theme-color-rgb), 0.08) !important;
   }
   .dashboard-page .driver-plate-dropdown-item {
@@ -4031,21 +4029,21 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     padding-bottom: 8.5px !important;
   }
 
-  /* Ana başlık: yan çizgiler sadece container'da (çift border olmasın) */
+  /* Ana baÅŸlÄ±k: yan Ã§izgiler sadece container'da (Ã§ift border olmasÄ±n) */
   .dashboard-page .driver-header-fixed {
     border-left: none !important;
     border-right: none !important;
   }
-  /* Mobil: header ile içerik tek parça görünsün, Üstü sonradan eklenmiş hissi kalkması için gölge hafif */
+  /* Mobil: header ile iÃ§erik tek parÃ§a gÃ¶rÃ¼nsÃ¼n, ÃœstÃ¼ sonradan eklenmiÅŸ hissi kalkmasÄ± iÃ§in gÃ¶lge hafif */
   .dashboard-page .hero {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2), 0 2px 12px rgba(var(--theme-color-rgb), 0.08) !important;
   }
-  /* Login header: tamamı panel (dashboard ile aynı görünüm) */
+  /* Login header: tamamÄ± panel (dashboard ile aynÄ± gÃ¶rÃ¼nÃ¼m) */
   .login-page .hero {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2), 0 2px 12px rgba(var(--theme-color-rgb), 0.08) !important;
   }
 
-  /* Ã‡erÃ§evelere yan boÅŸluk; plaka dropdown saÄŸ panele taÅŸabilsin diye yatay overflow aÃ§Ä±k */
+  /* Ãƒâ€¡erÃƒÂ§evelere yan boÃ…Å¸luk; plaka dropdown saÃ„Å¸ panele taÃ…Å¸abilsin diye yatay overflow aÃƒÂ§Ã„Â±k */
   .dashboard-page .driver-dashboard-container {
     overflow-x: visible !important;
   }
@@ -4058,7 +4056,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     overflow-x: visible !important;
   }
 
-  /* Elemanlar yatay genişlik artır – çerçeveye yaklaş */
+  /* Elemanlar yatay geniÅŸlik artÄ±r â€“ Ã§erÃ§eveye yaklaÅŸ */
   .dashboard-page .vehicle-card {
     padding-left: 12px !important;
     padding-right: 12px !important;
@@ -4071,19 +4069,19 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     max-width: 100% !important;
   }
 
-  /* Geçmiş simgesi 2px aşağı */
+  /* GeÃ§miÅŸ simgesi 2px aÅŸaÄŸÄ± */
   .dashboard-page .driver-btn-history .driver-btn-history-icon {
     transform: translateY(2px) !important;
   }
 
-  /* Çıkış butonu: kapı simgesi */
+  /* Ã‡Ä±kÄ±ÅŸ butonu: kapÄ± simgesi */
   .dashboard-page .driver-btn-logout .driver-btn-logout-icon {
     width: 24px !important;
     height: 24px !important;
     stroke-width: 1.5 !important;
   }
 
-  /* Vehicle card içi: elementler arası +3px (12→15) */
+  /* Vehicle card iÃ§i: elementler arasÄ± +3px (12â†’15) */
   .dashboard-page .vehicle-card .form-group {
     margin-bottom: 15px !important;
   }
@@ -4098,7 +4096,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     margin-top: calc(15px + 2em) !important;
   }
 
-  /* Gri çerçevelere parlaklık (sadece varsayılan, focus kırmızı/yeşil kalır) */
+  /* Gri Ã§erÃ§evelere parlaklÄ±k (sadece varsayÄ±lan, focus kÄ±rmÄ±zÄ±/yeÅŸil kalÄ±r) */
   .dashboard-page .vehicle-card .form-group input.driver-km-input:not(:focus),
   .dashboard-page .vehicle-card .form-group input.driver-km-input:invalid:not(:focus),
   .dashboard-page .vehicle-card .form-group textarea.driver-ekstra-not:not(:focus) {
@@ -4139,14 +4137,14 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     flex-direction: column !important;
     align-items: center !important;
   }
-  /* Üstündeki açıklama metnine 3px rahatlama boşluğu eklendi */
+  /* ÃœstÃ¼ndeki aÃ§Ä±klama metnine 3px rahatlama boÅŸluÄŸu eklendi */
   .dashboard-page .driver-report-block-kaza .form-group .driver-kaporta-label {
     margin-bottom: 3px !important;
     position: relative;
     z-index: 2;
   }
 
-  /* Altındaki bilgi topları (legend) aynı kaldı */
+  /* AltÄ±ndaki bilgi toplarÄ± (legend) aynÄ± kaldÄ± */
   .dashboard-page .driver-report-block-kaza .driver-kaporta-container .boya-legend {
     display: flex !important;
     justify-content: center;
@@ -4157,19 +4155,19 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     z-index: 2;
   }
 
-  /* 90 derece dönen şema: üst/alt metinler şemaya binmesin diye toplam 8px ekstra boşluk */
+  /* 90 derece dÃ¶nen ÅŸema: Ã¼st/alt metinler ÅŸemaya binmesin diye toplam 8px ekstra boÅŸluk */
   .dashboard-page .driver-report-block-kaza .driver-kaporta-container .driver-kaporta-schema-wrapper svg {
     width: 100% !important;
-    max-width: 126px !important; /* Dikey boyut 8px daha daraltıldı (134 -> 126) */
-    max-height: 204px !important; /* Yatay boyut sabit kaldı */
+    max-width: 126px !important; /* Dikey boyut 8px daha daraltÄ±ldÄ± (134 -> 126) */
+    max-height: 204px !important; /* Yatay boyut sabit kaldÄ± */
     height: auto !important;
-    margin-top: -31px !important; /* -33px -> -31px: üstte +2px ek nefes payı (toplam +8px) */
-    margin-bottom: -31px !important; /* -33px -> -31px: altta +2px ek nefes payı (toplam +8px) */
+    margin-top: -31px !important; /* -33px -> -31px: Ã¼stte +2px ek nefes payÄ± (toplam +8px) */
+    margin-bottom: -31px !important; /* -33px -> -31px: altta +2px ek nefes payÄ± (toplam +8px) */
     position: relative;
     z-index: 1;
   }
 
-  /* Not input: placeholder yatay+dikey ortala, iç dikey 3px daraltıldı */
+  /* Not input: placeholder yatay+dikey ortala, iÃ§ dikey 3px daraltÄ±ldÄ± */
   .dashboard-page .vehicle-card .form-group textarea.driver-ekstra-not {
     line-height: 1.4 !important;
     padding: calc(0.35em - 1.5px) 16px !important;
@@ -4185,7 +4183,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     text-align: left !important;
   }
 
-  /* 1. İsim/şifre ekranı –  tüm metinler +1pt */
+  /* 1. Ä°sim/ÅŸifre ekranÄ± â€“  tÃ¼m metinler +1pt */
   .login-form .form-group label {
     font-size: 17px !important;
   }
@@ -4208,14 +4206,14 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     font-size: 22px !important; /* 23px - 1pt */
   }
   .login-page .hero-panel-subtitle {
-    font-size: 20px !important; /* h1'e göre 1pt küçük */
+    font-size: 20px !important; /* h1'e gÃ¶re 1pt kÃ¼Ã§Ã¼k */
   }
   .login-page #app-footer.login-footer .footer-content {
     font-size: 14px !important;
   }
 
-  /* 2. Kullanıcı paneli – tüm metinler +1pt (paneldeki bütün harfler 1 punto büyük) */
-  /* .label, .value, .driver-current-plaka, .driver-user-name – aşağıdaki Sol panel bloğunda */
+  /* 2. KullanÄ±cÄ± paneli â€“ tÃ¼m metinler +1pt (paneldeki bÃ¼tÃ¼n harfler 1 punto bÃ¼yÃ¼k) */
+  /* .label, .value, .driver-current-plaka, .driver-user-name â€“ aÅŸaÄŸÄ±daki Sol panel bloÄŸunda */
   .dashboard-page .driver-action-btn {
     font-size: 14px !important;
   }
@@ -4282,7 +4280,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     width: 44px;
     height: 44px;
   }
-  /* Sol panel: etiket ve açıklama aynı boyut, aynı satırda hizalı; +1pt (mobil sol grid) */
+  /* Sol panel: etiket ve aÃ§Ä±klama aynÄ± boyut, aynÄ± satÄ±rda hizalÄ±; +1pt (mobil sol grid) */
   .dashboard-page .driver-left-panel .driver-info-item .label {
     font-size: 15px !important;
     text-transform: none !important;
@@ -4348,7 +4346,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     margin-right: auto !important;
     margin-top: 8px !important;
   }
-  /* 3. Input ve buton dikey yükseklik +4px (login + panel) */
+  /* 3. Input ve buton dikey yÃ¼kseklik +4px (login + panel) */
   .login-form .form-group input {
     padding: 14px 16px !important;
   }
@@ -4391,15 +4389,14 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     padding: 10px 3px 11px !important;
   }
 
-  /* 3. Beni Hatırla checkbox mobilde 22px (base'de zaten gri + kırmızı) */
+  /* 3. Beni HatÄ±rla checkbox mobilde 22px (base'de zaten gri + kÄ±rmÄ±zÄ±) */
   .login-page .form-group-checkbox input[type="checkbox"] {
     width: 22px !important;
     height: 22px !important;
   }
 
-  /* 4. Footer stil birleştirme - login = dashboard birebir aynı (min-height, padding 640px bloğundan gelir) */
+  /* 4. Footer stil birleÅŸtirme - login = dashboard birebir aynÄ± (min-height, padding 640px bloÄŸundan gelir) */
   .login-page #app-footer.login-footer {
-    box-shadow: 0 -9px 22px rgba(var(--theme-color-rgb), 0.35) !important;
     border-top: 0.5px solid rgba(200, 200, 200, 0.45) !important;
     border-left: 0.5px solid rgba(255, 255, 255, 0.10) !important;
     border-right: 0.5px solid rgba(255, 255, 255, 0.10) !important;
@@ -4414,7 +4411,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     padding: 8px 12px !important;
   }
 
-  /* 5. Şifre ekranı header: kullanıcı paneli ile aynı (yan çizgiler container'da, padding panel ile aynı) */
+  /* 5. Åifre ekranÄ± header: kullanÄ±cÄ± paneli ile aynÄ± (yan Ã§izgiler container'da, padding panel ile aynÄ±) */
   .login-page .driver-header-fixed {
     border-left: none !important;
     border-right: none !important;
@@ -4425,7 +4422,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     padding-top: 12px !important;
   }
 
-  /* 7. History kartı: mobilde metin-çerçeve dikey boşlukları sıkılaştır */
+  /* 7. History kartÄ±: mobilde metin-Ã§erÃ§eve dikey boÅŸluklarÄ± sÄ±kÄ±laÅŸtÄ±r */
   #history-modal .history-card {
     padding-top: 1px !important;
     padding-bottom: 1px !important;
@@ -4443,14 +4440,14 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     align-self: flex-start !important;
   }
 
-  /* Foto 4: Kullanıcı adı-plaka arası boşluk yarıya (12px -> 6px) */
+  /* Foto 4: KullanÄ±cÄ± adÄ±-plaka arasÄ± boÅŸluk yarÄ±ya (12px -> 6px) */
   .dashboard-page .driver-vehicles-list {
     margin-top: -6px !important;
   }
   .dashboard-page .driver-multi-vehicle-wrap .driver-plate-row {
     margin-bottom: 6px !important;
   }
-/* MasaÃ¼stÃ¼: plaka yatayda ortada (kÄ±rmÄ±zÄ± ok hesaba katÄ±lmaz), ok Ã§erÃ§eve dÄ±ÅŸÄ±nda */
+/* MasaÃƒÂ¼stÃƒÂ¼: plaka yatayda ortada (kÃ„Â±rmÃ„Â±zÃ„Â± ok hesaba katÃ„Â±lmaz), ok ÃƒÂ§erÃƒÂ§eve dÃ„Â±Ã…Å¸Ã„Â±nda */
 @media (min-width: 641px) {
   .dashboard-page .driver-plate-dropdown-row {
     margin-right: -12px !important;
@@ -4499,14 +4496,14 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     font-size: 16px !important;
   }
 
-  /* Foto 4: KM input dikey yükseklik %15 daralsın */
+  /* Foto 4: KM input dikey yÃ¼kseklik %15 daralsÄ±n */
   .dashboard-page .vehicle-card .form-group input.driver-km-input,
   .dashboard-page .vehicle-card .form-group input.driver-km-input:invalid,
   .dashboard-page .vehicle-card .form-group input.driver-km-input:placeholder-shown {
     padding: 9px 16px !important;
   }
 
-  /* Foto 4: Bakım/Kaza – tıklanmamış durumda da genişlemiş genişlikte (layout shift yok) */
+  /* Foto 4: BakÄ±m/Kaza â€“ tÄ±klanmamÄ±ÅŸ durumda da geniÅŸlemiÅŸ geniÅŸlikte (layout shift yok) */
   .dashboard-page .driver-report-actions {
     flex-direction: column !important;
   }
@@ -4519,7 +4516,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     padding: 5px 12px !important;
   }
 
-  /* Foto 4: Kaza/bakım tıklayınca gelen inputların dikey yükseklikleri %10 daralsın */
+  /* Foto 4: Kaza/bakÄ±m tÄ±klayÄ±nca gelen inputlarÄ±n dikey yÃ¼kseklikleri %10 daralsÄ±n */
   .dashboard-page .driver-report-block .form-group input,
   .dashboard-page .driver-report-block .form-group textarea {
     padding: 8px 10px !important;
@@ -4529,7 +4526,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     height: 2em !important;
   }
 
-  /* Mobil: h1 boyut ve harf aralığı (1pt küçük) */
+  /* Mobil: h1 boyut ve harf aralÄ±ÄŸÄ± (1pt kÃ¼Ã§Ã¼k) */
   .hero-title-wrap h1,
   .login-page .hero h1,
   .dashboard-page .hero h1 {
@@ -4539,13 +4536,13 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 
 }
 
-/* Masaüstü (641px+): Bakım/Kaza butonları – 66px yükseklik, 2px dikey boşluk (mobil kurallardan sonra uygulanması için ayrı blok) */
+/* MasaÃ¼stÃ¼ (641px+): BakÄ±m/Kaza butonlarÄ± â€“ 66px yÃ¼kseklik, 2px dikey boÅŸluk (mobil kurallardan sonra uygulanmasÄ± iÃ§in ayrÄ± blok) */
 @media (min-width: 641px) {
-  /* Login başlık: mobil translate kullanılmaz, masaüstü eski hali */
+  /* Login baÅŸlÄ±k: mobil translate kullanÄ±lmaz, masaÃ¼stÃ¼ eski hali */
   .login-page .hero.hero-two-rows .hero-title-block {
     transform: none;
   }
-  /* Geçmiş Kayıtlarım: kalem ikonu */
+  /* GeÃ§miÅŸ KayÄ±tlarÄ±m: kalem ikonu */
   .dashboard-page .history-edit-icon svg {
     width: 20px;
     height: 20px;
@@ -4554,20 +4551,20 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     padding: 2px 12px !important;
     min-height: 66px !important;
   }
-  /* Not input: masaüstü 0.9cm – 3px yükseklik */
+  /* Not input: masaÃ¼stÃ¼ 0.9cm â€“ 3px yÃ¼kseklik */
   .dashboard-page .vehicle-card .form-group textarea.driver-ekstra-not {
     min-height: calc(0.9cm - 3px) !important;
     height: calc(0.9cm - 3px) !important;
   }
-  /* Bildir butonu: masaüstü bir satır kadar aşağı */
+  /* Bildir butonu: masaÃ¼stÃ¼ bir satÄ±r kadar aÅŸaÄŸÄ± */
   .dashboard-page .vehicle-card .btn-save {
     margin-top: calc(16px + 1em) !important;
   }
 }
 
-/* --- Sadece iOS/Android PWA: ana uygulama ile aynı yapı – ilk boyamada çerçeve yerinde --- */
+/* --- Sadece iOS/Android PWA: ana uygulama ile aynÄ± yapÄ± â€“ ilk boyamada Ã§erÃ§eve yerinde --- */
 @media (max-width: 768px) and (display-mode: standalone) {
-  /* style-core html zaten left/right/bottom safe-area veriyor; çift padding olmasını kesin engelliyoruz */
+  /* style-core html zaten left/right/bottom safe-area veriyor; Ã§ift padding olmasÄ±nÄ± kesin engelliyoruz */
   body.dashboard-page,
   body.login-page {
     padding-top: 0 !important;
@@ -4578,20 +4575,20 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     min-height: 100dvh !important;
   }
 
-  /* PWA: yan kırmızı çizgiler footer'da biter (safe-area html'den geldiği için burada bottom sadece footer boyutu kadar kalmalı) */
+  /* PWA: yan kÄ±rmÄ±zÄ± Ã§izgiler footer'da biter (safe-area html'den geldiÄŸi iÃ§in burada bottom sadece footer boyutu kadar kalmalÄ±) */
   .dashboard-page .driver-dashboard-container::before,
   .login-page .driver-dashboard-container::before {
     top: 0 !important;
     bottom: calc(var(--app-footer-height, 48px)) !important;
   }
   
-  /* Container alt boşluğu (çift boşluk hatasını önler) */
+  /* Container alt boÅŸluÄŸu (Ã§ift boÅŸluk hatasÄ±nÄ± Ã¶nler) */
   .dashboard-page .driver-dashboard-container,
   .login-page .driver-dashboard-container {
     padding-bottom: calc(var(--app-footer-height, 48px)) !important;
   }
 
-  /* PWA: footer yüksekliği html safe-area ile çakışmasın (çift alt boşluk engeli) */
+  /* PWA: footer yÃ¼ksekliÄŸi html safe-area ile Ã§akÄ±ÅŸmasÄ±n (Ã§ift alt boÅŸluk engeli) */
   .dashboard-page #app-footer,
   .login-page #app-footer.login-footer {
     min-height: var(--app-footer-height, 48px) !important;
@@ -4602,7 +4599,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     padding-bottom: 12px !important;
   }
 
-  /* 1. satıra dokunulmaz. 2. satır (subtitle) 768px'ten 1pt küçük */
+  /* 1. satÄ±ra dokunulmaz. 2. satÄ±r (subtitle) 768px'ten 1pt kÃ¼Ã§Ã¼k */
   .dashboard-page .hero-title-wrap .hero-panel-subtitle,
   .dashboard-page .hero-title-block .hero-panel-subtitle {
     font-size: 20px !important; /* 21px - 1pt */
@@ -4610,11 +4607,11 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .login-page .hero-title-block .hero-panel-subtitle {
     font-size: 19px !important; /* 20px - 1pt */
   }
-  /* Sağ grid butonları: dikey yükseklik +2px */
+  /* SaÄŸ grid butonlarÄ±: dikey yÃ¼kseklik +2px */
   .dashboard-page .driver-report-btn {
     min-height: 74px !important; /* 72 + 2 */
   }
-  /* PWA: üst çizgi ::before'da, 1.2px */
+  /* PWA: Ã¼st Ã§izgi ::before'da, 1.2px */
   .dashboard-page .driver-header-fixed,
   .login-page .driver-header-fixed {
     border-top: none !important;
@@ -4623,7 +4620,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .login-page .driver-dashboard-container::before {
     border-top-width: 1.2px !important;
   }
-  /* Header logosu: 3px sola, %97 ölçek (100→97) */
+  /* Header logosu: 3px sola, %97 Ã¶lÃ§ek (100â†’97) */
   .dashboard-page .hero.hero-two-rows .hero-logo,
   .login-page .hero.hero-two-rows .hero-logo {
     transform: translate(-19px, 13px) scale(0.97) !important;
@@ -4637,7 +4634,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 }
 
 
-/* --- Mobil/PWA stabilizasyonu: sol panel sabit, sağ panel tek dikey scroll, çerçeve ilk boyamada zıplamaz --- */
+/* --- Mobil/PWA stabilizasyonu: sol panel sabit, saÄŸ panel tek dikey scroll, Ã§erÃ§eve ilk boyamada zÄ±plamaz --- */
 @media (max-width: 768px) {
   body.dashboard-page,
   body.login-page {
@@ -4704,7 +4701,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
 }
 
-/* --- h1 Metalik Gradient (anasayfa ile aynı) --- */
+/* --- h1 Metalik Gradient (anasayfa ile aynÄ±) --- */
 .hero-title-wrap h1,
 .login-page .hero h1,
 .dashboard-page .hero h1 {
@@ -4753,4 +4750,5 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     max-width: min(420px, calc(100vw - 120px)) !important;
   }
 }
+
 
