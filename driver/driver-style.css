@@ -2927,7 +2927,7 @@ body.driver-modal-open {
 }
 
 .history-details strong {
-  color: var(--form-label-color, #ffffff);
+  color: var(--data-value-color, #a0aec0);
 }
 
 /* Kalem ikonu: sağda dikeyde ortalan, arka plan ve çerçeve yok */
@@ -4270,7 +4270,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     color: #fff !important;
   }
   #history-modal .history-details strong {
-    color: #fff !important;
+    color: var(--data-value-color, #a0aec0) !important;
   }
   .dashboard-page .history-vehicle {
     font-size: 16px !important;
