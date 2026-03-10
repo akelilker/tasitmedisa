@@ -188,7 +188,7 @@ body.driver-modal-open {
   z-index: 10004;
 }
 
-/* Dashboard: footer sabit altta; yÃ¼kseklik ve padding ezilmesin */
+/* Dashboard: footer sabit altta; gerÃ§ek yÃ¼kseklik 34px kilitli (bottom hesabÄ± ÅŸaÅŸmasÄ±n) */
 .dashboard-page #app-footer {
   position: fixed !important;
   left: 0 !important;
@@ -196,7 +196,9 @@ body.driver-modal-open {
   bottom: 0 !important;
   flex-shrink: 0;
   z-index: 10005 !important;
-  min-height: var(--app-footer-height, 34px) !important;
+  height: 34px !important;
+  min-height: 34px !important;
+  box-sizing: border-box !important;
   padding-top: 4px !important;
   padding-bottom: calc(4px + env(safe-area-inset-bottom, 0)) !important;
   display: flex !important;
@@ -2416,7 +2418,7 @@ body.driver-modal-open {
   max-width: 500px;
   margin: max(12px, env(safe-area-inset-top)) auto 0 auto !important;
   margin-bottom: 0 !important;
-  height: 100% !important;
+  height: auto !important;
   max-height: 100% !important;
   overflow: hidden;
   overflow-x: hidden;
@@ -3103,7 +3105,9 @@ body.driver-modal-open {
   align-items: center !important;
   justify-content: center !important;
   width: 100% !important;
+  height: 38px !important;
   min-height: 38px !important;
+  box-sizing: border-box !important;
   margin: 0 !important;
   padding-top: 4px !important;
   padding-bottom: calc(4px + env(safe-area-inset-bottom, 0)) !important;
@@ -3112,7 +3116,6 @@ body.driver-modal-open {
   border-left: 0.5px solid rgba(255, 255, 255, 0.20) !important;
   border-right: 0.5px solid rgba(255, 255, 255, 0.20) !important;
   box-shadow: 0 -10px 20px rgba(var(--theme-color-rgb), 0.16) !important;
-  box-sizing: border-box !important;
 }
 
 .login-page #app-footer.login-footer .footer-content {
@@ -3289,7 +3292,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 }
 
 @media (min-width: 769px) {
-  /* Masaüstü: footer tabanda sabit; glow scroll alanı üstünde (z-index 10006) */
+  /* Masaüstü: footer tabanda sabit; gerçek yükseklik kilitli (34px/38px) */
   .dashboard-page #app-footer,
   .login-page #app-footer.login-footer {
     box-shadow: 0 -15px 35px rgba(var(--theme-color-rgb), 0.35) !important;
@@ -3298,9 +3301,15 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     left: 0 !important;
     right: 0 !important;
     z-index: 10006 !important;
+    box-sizing: border-box !important;
+  }
+  .dashboard-page #app-footer {
+    height: 34px !important;
+    min-height: 34px !important;
   }
   /* Masaüstü: login footer ferah min-height, içerik ortalanmış (max-width 500px) */
   .login-page #app-footer.login-footer {
+    height: 38px !important;
     min-height: 38px !important;
     width: 100% !important;
     max-width: 500px !important;
@@ -3833,7 +3842,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     max-width: 100% !important;
     width: 100% !important;
     margin: 0 !important;
-    height: 100% !important;
+    height: auto !important;
     max-height: 100% !important;
     margin-bottom: 0 !important;
     background: var(--modal-bg) !important;
@@ -4586,14 +4595,18 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     padding-bottom: calc(var(--app-footer-height, 30px) + env(safe-area-inset-bottom, 0)) !important;
   }
 
-  /* PWA: footer yÃ¼kseklik ve padding ferah (ezilme yok) */
+  /* PWA: footer gerÃ§ek yÃ¼kseklik kilitli (34px / 38px), bottom hesabÄ± ÅŸaÅŸmasÄ±n */
   .dashboard-page #app-footer {
-    min-height: var(--app-footer-height, 34px) !important;
+    height: 34px !important;
+    min-height: 34px !important;
+    box-sizing: border-box !important;
     padding-top: 4px !important;
     padding-bottom: calc(4px + env(safe-area-inset-bottom, 0)) !important;
   }
   .login-page #app-footer.login-footer {
+    height: 38px !important;
     min-height: 38px !important;
+    box-sizing: border-box !important;
     padding-top: 4px !important;
     padding-bottom: calc(4px + env(safe-area-inset-bottom, 0)) !important;
   }
