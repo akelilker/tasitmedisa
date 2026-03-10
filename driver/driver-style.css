@@ -2556,6 +2556,8 @@ body.driver-modal-open {
 }
 #edit-request-modal #edit-request-content,
 #edit-request-modal .edit-request-scroll {
+  display: flex !important;
+  flex-direction: column !important;
   flex: 1 1 auto !important;
   min-height: 0 !important;
   overflow-y: auto !important;
@@ -3749,15 +3751,42 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   body.login-page:has(#history-modal.driver-modal.show) .driver-dashboard-container::before,
   body.dashboard-page:has(#edit-request-modal.driver-modal.show) .driver-dashboard-container::before,
   body.login-page:has(#edit-request-modal.driver-modal.show) .driver-dashboard-container::before {
+    bottom: calc(6px + var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important;
     -webkit-clip-path: inset(0 0 calc(6px + var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) 0) !important;
     clip-path: inset(0 0 calc(6px + var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) 0) !important;
   }
+  /* Modal-footer arasindaki 6px boslukta sag/sol kirmizi kalintilari maskele */
+  body.dashboard-page:has(#history-modal.driver-modal.show)::after,
+  body.dashboard-page:has(#edit-request-modal.driver-modal.show)::after {
+    content: '';
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0));
+    height: 6px;
+    background: #080d16;
+    pointer-events: none;
+    z-index: 10013;
+  }
   @supports not selector(body:has(*)) {
-    /* Safari fallback: :has desteği yoksa modal açıkken yan kırmızı çizgileri footer boşluğundan kırp */
+    /* Safari fallback: :has destegi yoksa modal acikken yan kirmizi cizgileri footer boslugundan kirp */
     body.driver-modal-open.dashboard-page .driver-dashboard-container::before,
     body.driver-modal-open.login-page .driver-dashboard-container::before {
+      bottom: calc(6px + var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important;
       -webkit-clip-path: inset(0 0 calc(6px + var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) 0) !important;
       clip-path: inset(0 0 calc(6px + var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) 0) !important;
+    }
+    body.driver-modal-open.dashboard-page::after,
+    body.driver-modal-open.login-page::after {
+      content: '';
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0));
+      height: 6px;
+      background: #080d16;
+      pointer-events: none;
+      z-index: 10013;
     }
   }
   #history-modal.driver-modal::before,
@@ -3972,7 +4001,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     font-size: 14px !important;
   }
   .dashboard-page .driver-plate-dropdown-row .driver-plate-trigger {
-    right: -4px !important;
+    right: -8px !important;
     top: 50% !important;
     transform: translateY(-50%) !important;
     background: var(--bg) !important;
@@ -4309,10 +4338,15 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
   #edit-request-modal .btn-submit {
     font-size: 17px !important;
-    display: block !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    align-self: center !important;
     width: calc(100% - 30px) !important;
+    max-width: calc(100% - 30px) !important;
     margin-left: auto !important;
     margin-right: auto !important;
+    margin-top: 8px !important;
   }
   /* 3. Input ve buton dikey yükseklik +4px (login + panel) */
   .login-form .form-group input {
@@ -4719,3 +4753,4 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     max-width: min(420px, calc(100vw - 120px)) !important;
   }
 }
+
