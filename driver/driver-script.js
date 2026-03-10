@@ -557,7 +557,15 @@ const API_BASE = (function(){
       dropdown.innerHTML = vehicles.map(v => {
           const raw = v.brandModel || [v.marka, v.model].filter(Boolean).join(' ');
           const brandModel = (typeof window.toTitleCase === 'function' ? window.toTitleCase : function(x){ return x; })(raw || '') || '';
-          return `<div class="driver-plate-dropdown-item" role="option" data-vehicle-id="${v.id}" tabindex="0">${escapeHtmlDriver(formatDriverPlaka(v.plaka))}${brandModel ? ' - ' + escapeHtmlDriver(brandModel) : ''}</div>`;
+          const plate = escapeHtmlDriver(formatDriverPlaka(v.plaka));
+          const brandModelHtml = escapeHtmlDriver(brandModel);
+          const hasBrandModel = !!brandModel;
+          return `
+              <div class="driver-plate-dropdown-item" role="option" data-vehicle-id="${v.id}" tabindex="0">
+                  <span class="driver-plate-dropdown-item-plate">${plate}</span>
+                  <span class="driver-plate-dropdown-item-separator${hasBrandModel ? '' : ' is-hidden'}" aria-hidden="true">-</span>
+                  <span class="driver-plate-dropdown-item-brand">${brandModelHtml}</span>
+              </div>`;
       }).join('');
       
       dropdown.querySelectorAll('.driver-plate-dropdown-item').forEach(item => {
