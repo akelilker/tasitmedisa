@@ -3726,13 +3726,13 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     overflow: hidden !important;
     overscroll-behavior: none !important;
   }
-  /* GeÃ§miÅŸ KayÄ±tlar + DÃ¼zeltme Talebi: modalâ€“footer arasÄ± 6px; koyu dolgu (box-shadow) kÃ¶ÅŸeler dahil kapatsÄ±n */
+  /* GeÃ§miÅŸ KayÄ±tlar + DÃ¼zeltme Talebi: modalâ€“footer arasÄ± 10px; koyu dolgu (box-shadow) kÃ¶ÅŸeler dahil kapatsÄ±n */
   #history-modal.driver-modal,
   #edit-request-modal.driver-modal {
-    bottom: calc(6px + var(--app-footer-height, 30px) + env(safe-area-inset-bottom, 0)) !important;
+    bottom: calc(10px + var(--app-footer-height, 30px) + env(safe-area-inset-bottom, 0)) !important;
     height: auto !important;
-    max-height: calc(100vh - max(12px, env(safe-area-inset-top)) - 6px - var(--app-footer-height, 30px) - env(safe-area-inset-bottom, 0)) !important;
-    max-height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 6px - var(--app-footer-height, 30px) - env(safe-area-inset-bottom, 0)) !important;
+    max-height: calc(100vh - max(12px, env(safe-area-inset-top)) - 10px - var(--app-footer-height, 30px) - env(safe-area-inset-bottom, 0)) !important;
+    max-height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 10px - var(--app-footer-height, 30px) - env(safe-area-inset-bottom, 0)) !important;
     box-shadow: 0 6px 0 0 #080d16 !important;
   }
   /* Mobilde modal aÃ§Ä±kken header Ã¼stÃ¼ndeki kÄ±rmÄ±zÄ± yatay Ã§izgi gÃ¶rÃ¼nmesin */
@@ -3749,11 +3749,11 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   body.login-page:has(#history-modal.driver-modal.show) .driver-dashboard-container::before,
   body.dashboard-page:has(#edit-request-modal.driver-modal.show) .driver-dashboard-container::before,
   body.login-page:has(#edit-request-modal.driver-modal.show) .driver-dashboard-container::before {
-    bottom: calc(6px + var(--app-footer-height, 30px) + env(safe-area-inset-bottom, 0)) !important;
-    -webkit-clip-path: inset(0 0 calc(6px + var(--app-footer-height, 30px) + env(safe-area-inset-bottom, 0)) 0) !important;
-    clip-path: inset(0 0 calc(6px + var(--app-footer-height, 30px) + env(safe-area-inset-bottom, 0)) 0) !important;
+    bottom: calc(10px + var(--app-footer-height, 30px) + env(safe-area-inset-bottom, 0)) !important;
+    -webkit-clip-path: inset(0 0 calc(10px + var(--app-footer-height, 30px) + env(safe-area-inset-bottom, 0)) 0) !important;
+    clip-path: inset(0 0 calc(10px + var(--app-footer-height, 30px) + env(safe-area-inset-bottom, 0)) 0) !important;
   }
-  /* Modal-footer arasindaki 6px boslukta sag/sol kirmizi kalintilari maskele */
+  /* Modal-footer arasindaki 10px boslukta sag/sol kirmizi kalintilari maskele */
   body.dashboard-page:has(#history-modal.driver-modal.show)::after,
   body.dashboard-page:has(#edit-request-modal.driver-modal.show)::after {
     content: '';
@@ -3761,7 +3761,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     left: 0;
     right: 0;
     bottom: calc(var(--app-footer-height, 30px) + env(safe-area-inset-bottom, 0));
-    height: 6px;
+    height: 10px;
     background: #080d16;
     pointer-events: none;
     z-index: 10013;
@@ -3770,9 +3770,9 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     /* Safari fallback: :has destegi yoksa modal acikken yan kirmizi cizgileri footer boslugundan kirp */
     body.driver-modal-open.dashboard-page .driver-dashboard-container::before,
     body.driver-modal-open.login-page .driver-dashboard-container::before {
-      bottom: calc(6px + var(--app-footer-height, 30px) + env(safe-area-inset-bottom, 0)) !important;
-      -webkit-clip-path: inset(0 0 calc(6px + var(--app-footer-height, 30px) + env(safe-area-inset-bottom, 0)) 0) !important;
-      clip-path: inset(0 0 calc(6px + var(--app-footer-height, 30px) + env(safe-area-inset-bottom, 0)) 0) !important;
+      bottom: calc(10px + var(--app-footer-height, 30px) + env(safe-area-inset-bottom, 0)) !important;
+      -webkit-clip-path: inset(0 0 calc(10px + var(--app-footer-height, 30px) + env(safe-area-inset-bottom, 0)) 0) !important;
+      clip-path: inset(0 0 calc(10px + var(--app-footer-height, 30px) + env(safe-area-inset-bottom, 0)) 0) !important;
     }
     body.driver-modal-open.dashboard-page::after,
     body.driver-modal-open.login-page::after {
