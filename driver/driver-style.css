@@ -188,7 +188,7 @@ body.driver-modal-open {
   z-index: 10004;
 }
 
-/* Dashboard: footer sabit altta; ince gri Ã¼st + ince yan Ã§izgiler (box-shadow medya ile veriliyor) */
+/* Dashboard: footer sabit altta; yÃ¼kseklik ve padding ezilmesin */
 .dashboard-page #app-footer {
   position: fixed !important;
   left: 0 !important;
@@ -196,7 +196,9 @@ body.driver-modal-open {
   bottom: 0 !important;
   flex-shrink: 0;
   z-index: 10005 !important;
-  min-height: var(--app-footer-height, 30px) !important;
+  min-height: var(--app-footer-height, 34px) !important;
+  padding-top: 4px !important;
+  padding-bottom: calc(4px + env(safe-area-inset-bottom, 0)) !important;
   display: flex !important;
   align-items: center !important;
   border-top: 0.5px solid rgba(200, 200, 200, 0.45) !important;
@@ -454,17 +456,19 @@ body.driver-modal-open {
     width: 19px !important;
     height: 19px !important;
   }
-  /* Footer: masaÃ¼stÃ¼nde gri Ã¼st, yan sensÃ¶r Ã§izgileri + kÄ±rmÄ±zÄ± glow (dashboard); yoÄŸunluk hafif azaltÄ±ldÄ± */
+  /* Footer: masaÃ¼stÃ¼nde gri Ã¼st, yan sensÃ¶r Ã§izgileri + kÄ±rmÄ±zÄ± glow (dashboard) */
   .dashboard-page #app-footer {
-    min-height: 0 !important;
     border-top: 1px solid rgba(200, 200, 200, 0.52) !important;
     border-left: 0.6px solid rgba(255, 255, 255, 0.24) !important;
     border-right: 0.6px solid rgba(255, 255, 255, 0.24) !important;
     box-shadow: 0 -16px 26px rgba(var(--footer-glow-rgb), 0.24) !important;
   }
   .dashboard-page #app-footer .footer-content {
+    display: flex !important;
+    align-items: center !important;
+    height: 100% !important;
     padding: 3px 12px !important;
-    padding-bottom: max(3px, env(safe-area-inset-bottom, 0)) !important;
+    padding-bottom: max(4px, env(safe-area-inset-bottom, 0)) !important;
   }
 
   .login-page #app-footer.login-footer {
@@ -3089,9 +3093,10 @@ body.driver-modal-open {
   align-items: center !important;
   justify-content: center !important;
   width: 100% !important;
-  min-height: 56px !important;
+  min-height: 38px !important;
   margin: 0 !important;
-  padding: 0 !important;
+  padding-top: 4px !important;
+  padding-bottom: calc(4px + env(safe-area-inset-bottom, 0)) !important;
   background: var(--bg) !important;
   border-top: 0.5px solid rgba(200, 200, 200, 0.45) !important;
   border-left: 0.5px solid rgba(255, 255, 255, 0.20) !important;
@@ -3103,6 +3108,7 @@ body.driver-modal-open {
 .login-page #app-footer.login-footer .footer-content {
   display: flex !important;
   align-items: center !important;
+  height: 100% !important;
   justify-content: space-between !important;
   width: 100% !important;
   max-width: 500px !important;
@@ -3283,9 +3289,9 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     right: 0 !important;
     z-index: 10006 !important;
   }
-  /* Masaüstü: login footer ince yükseklik, içerik ortalanmış (max-width 500px) */
+  /* Masaüstü: login footer ferah min-height, içerik ortalanmış (max-width 500px) */
   .login-page #app-footer.login-footer {
-    min-height: 34px !important;
+    min-height: 38px !important;
     width: 100% !important;
     max-width: 500px !important;
     left: 50% !important;
@@ -3293,6 +3299,9 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     transform: translateX(-50%) !important;
   }
   .login-page #app-footer.login-footer .footer-content {
+    display: flex !important;
+    align-items: center !important;
+    height: 100% !important;
     padding: 3px 12px !important;
     padding-bottom: max(4px, env(safe-area-inset-bottom, 0)) !important;
   }
@@ -4567,15 +4576,22 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     padding-bottom: calc(var(--app-footer-height, 30px) + env(safe-area-inset-bottom, 0)) !important;
   }
 
-  /* PWA: footer yÃ¼ksekliÄŸi html safe-area ile Ã§akÄ±ÅŸmasÄ±n (Ã§ift alt boÅŸluk engeli) */
-  .dashboard-page #app-footer,
+  /* PWA: footer yÃ¼kseklik ve padding ferah (ezilme yok) */
+  .dashboard-page #app-footer {
+    min-height: var(--app-footer-height, 34px) !important;
+    padding-top: 4px !important;
+    padding-bottom: calc(4px + env(safe-area-inset-bottom, 0)) !important;
+  }
   .login-page #app-footer.login-footer {
-    min-height: var(--app-footer-height, 30px) !important;
-    padding-bottom: 0 !important;
+    min-height: 38px !important;
+    padding-top: 4px !important;
+    padding-bottom: calc(4px + env(safe-area-inset-bottom, 0)) !important;
   }
   .dashboard-page #app-footer .footer-content,
   .login-page #app-footer.login-footer .footer-content {
-    padding-bottom: 4px !important;
+    display: flex !important;
+    align-items: center !important;
+    height: 100% !important;
   }
 
   /* 1. satÄ±ra dokunulmaz. 2. satÄ±r (subtitle) 768px'ten 1pt kÃ¼Ã§Ã¼k */

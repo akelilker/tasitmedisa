@@ -1435,36 +1435,46 @@ body.modal-open .user-panel-link {
   flex-shrink: 0;
 }
 
-/* 4. FOOTER (GÃƒÅ“Ãƒâ€¡LI KIRMIZI TEMA + AYRILIK) */
+/* 4. FOOTER (GÃƒÅ“Ãƒâ€¡LI KIRMIZI TEMA + AYRILIK) – yÃ¼kseklik/padding ezilmesin */
 #app-footer {
     position: fixed;
     bottom: 0;
-    flex-shrink: 0; 
+    flex-shrink: 0;
     max-width: 500px;
     width: 100%;
     margin: 0 auto;
     background: var(--bg);
-    z-index: 10000; /* Modal overlay (9999) ÃƒÂ¼stÃƒÂ¼nde */ 
-    border-top: 0.8px solid rgba(128, 128, 128, 0.5);  /* Gri ÃƒÂ§izgi */
-    border-left: 0.5px solid rgba(255, 255, 255, 0.20);  /* MasaÃƒÂ¼stÃƒÂ¼: ince + soluk */
+    z-index: 10000; /* Modal overlay (9999) Ã¼stÃ¼nde */
+    min-height: var(--app-footer-height, 34px) !important;
+    padding-top: 4px !important;
+    padding-bottom: calc(4px + env(safe-area-inset-bottom, 0)) !important;
+    border-top: 0.8px solid rgba(128, 128, 128, 0.5);
+    border-left: 0.5px solid rgba(255, 255, 255, 0.20);
     border-right: 0.5px solid rgba(255, 255, 255, 0.20);
-    /* Footer'dan yukarÃ„Â± Ã„Â±Ã…Å¸Ã„Â±ldama (3px daha yukarÃ„Â±, aÃƒÂ§Ã„Â±k kÃ„Â±rmÃ„Â±zÃ„Â±) */
     box-shadow: 0 -13px 20px rgba(var(--footer-glow-rgb), 0.22);
 }
 
+#app-footer .footer-content {
+    display: flex !important;
+    align-items: center !important;
+    height: 100% !important;
+    justify-content: space-between;
+    max-width: 500px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 12px 12px;
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
+    box-sizing: border-box;
+}
 
 .footer-content {
     display: flex;
-    justify-content: space-between; 
+    justify-content: space-between;
     align-items: center;
     max-width: 500px;
     width: 100%;
     margin: 0 auto;
-    
-    /* Ã°Å¸â€˜â€¡ DÃ„Â°KEY YÃƒÅ“KSEKLÃ„Â°Ã„Å¾Ã„Â° BURADAN KISABÃ„Â°LÃ„Â°RSÃ„Â°N Ã°Å¸â€˜â€¡ */
-    padding: 12px 12px; 
-    /* Ãƒâ€“rneÃ„Å¸in bunu 'padding: 8px 16px;' yaparsan footer incelir. */
-
+    padding: 12px 12px;
     padding-bottom: max(12px, env(safe-area-inset-bottom));
     box-sizing: border-box;
 }
