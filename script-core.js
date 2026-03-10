@@ -397,7 +397,7 @@ document.addEventListener('keydown', function(e) {
 document.addEventListener('DOMContentLoaded', () => {
   // Sayfa yüklendiğinde footer animasyonunu başlat
   startFooterAnimation();
-  
+
   // Modal kontrolü için ilk kontrol
   window.updateFooterDim();
 

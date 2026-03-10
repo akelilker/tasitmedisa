@@ -1458,6 +1458,8 @@ body.modal-open .user-panel-link {
     border-left: 0.5px solid rgba(255, 255, 255, 0.20);
     border-right: 0.5px solid rgba(255, 255, 255, 0.20);
     box-shadow: 0 -10px 20px rgba(var(--footer-glow-rgb), 0.2);
+    overflow-x: hidden;
+    overflow-y: visible;
 }
 
 /* Görsel Yalıtım: modal açıkken footer glow 11px boşluktan asil süzülsün */

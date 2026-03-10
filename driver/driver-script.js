@@ -92,17 +92,6 @@ const API_BASE = (function(){
     display.textContent = formatted;
     if (formatted) display.dataset.lastShown = formatted;
   }
-  // #region agent log
-  (function() {
-    document.addEventListener('click', function(ev) {
-      var area = document.getElementById('driver-action-area');
-      if (!area || !area.contains(ev.target)) return;
-      var wrap = ev.target.closest && ev.target.closest('.driver-date-wrap');
-      if (!wrap) return;
-      var input = wrap.querySelector && wrap.querySelector('input[type="date"]');
-    }, true);
-  })();
-  // #endregion
   function initDriverDateDisplays(container) {
     var root = container && container.nodeType ? container : document;
     var wraps = root.querySelectorAll ? root.querySelectorAll('.driver-date-wrap') : [];
