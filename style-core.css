@@ -1783,7 +1783,7 @@ body.modal-open #app-footer {
         width: 100vw;
         bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0));
         height: var(--app-footer-gap); /* Modalâ€“footer arasÃ„Â± 4px nefes payÃ„Â± ile uyumlu */
-        background: transparent !important;
+        background: var(--bg) !important;
         z-index: 9998;
         pointer-events: none;
     }
@@ -2149,6 +2149,25 @@ body.modal-open .content-wrap::before {
     border-bottom: 1px solid var(--border-medium) !important;
     border-bottom-left-radius: 12px !important;
     border-bottom-right-radius: 12px !important;
+  }
+}
+
+/* Modal aÃ§Ä±kken footer Ã¼stÃ¼ndeki boÅŸluk (gap) her viewport'ta dolsun â€“ modal gÃ¶lge/Ã§erÃ§eve parÃ§alarÄ± gÃ¶rÃ¼nmesin */
+body.modal-open::after {
+  content: '';
+  position: fixed;
+  left: 0;
+  right: 0;
+  width: 100%;
+  bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0));
+  height: var(--app-footer-gap);
+  background: var(--bg) !important;
+  z-index: 9998;
+  pointer-events: none;
+}
+@media (max-width: 640px) {
+  body.modal-open::after {
+    height: var(--app-footer-gap);
   }
 }
 
