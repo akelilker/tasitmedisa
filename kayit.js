@@ -18,7 +18,23 @@
 
   function readBranches() { return (typeof window.getMedisaBranches === 'function' ? window.getMedisaBranches() : null) || (function() { try { var r = localStorage.getItem(BRANCHES_KEY); return r ? JSON.parse(r) : []; } catch (e) { return []; } })(); }
   function readVehicles() { return (typeof window.getMedisaVehicles === 'function' ? window.getMedisaVehicles() : null) || (function() { try { var r = localStorage.getItem(STORAGE_KEY); return r ? JSON.parse(r) : []; } catch (e) { return []; } })(); }
-  function writeVehicles(arr) { if (typeof window.writeVehicles === 'function') { window.writeVehicles(arr); return; } localStorage.setItem(STORAGE_KEY, JSON.stringify(arr)); if (window.appData) { window.appData.tasitlar = arr; if (window.saveDataToServer) window.saveDataToServer().catch(function(err) { console.error('Sunucuya kaydetme hatası (sessiz):', err); }); } }
+  function writeVehicles(arr) {
+    if (typeof window.writeVehicles === 'function') {
+      window.writeVehicles(arr);
+      return;
+    }
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
+    if (window.appData) {
+      window.appData.tasitlar = arr;
+      if (window.saveDataToServer) {
+        return window.saveDataToServer().then(function(ok) {
+          if (ok !== true) return Promise.reject(new Error('Sunucuya kayıt yapılamadı.'));
+          return ok;
+        });
+      }
+    }
+    return Promise.resolve();
+  }
 
 
   // --- Helper Functions ---
@@ -1149,13 +1165,28 @@
 
     const vehicles = readVehicles();
     const filtered = vehicles.filter(v => v.id !== vehicleId);
-    writeVehicles(filtered);
 
-    alert("Taşıt silindi!");
-    
-    // Eğer taşıtlar modalı açıksa listeyi yenile
-    if (window.renderVehicles) {
-      window.renderVehicles();
+    if (window.appData && window.saveDataToServer) {
+      var previousTasitlar = window.appData.tasitlar ? window.appData.tasitlar.slice() : [];
+      window.appData.tasitlar = filtered;
+      window.saveDataToServer().then(function(ok) {
+        if (ok === true) {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(filtered));
+          if (window.updateNotifications) window.updateNotifications();
+          alert("Taşıt silindi!");
+          if (window.renderVehicles) window.renderVehicles();
+        } else {
+          window.appData.tasitlar = previousTasitlar;
+          alert("Sunucuya silme kaydedilemedi. Lütfen tekrar deneyin.");
+        }
+      }).catch(function() {
+        window.appData.tasitlar = previousTasitlar;
+        alert("Sunucuya silme kaydedilemedi. Lütfen tekrar deneyin.");
+      });
+    } else {
+      writeVehicles(filtered);
+      alert("Taşıt silindi!");
+      if (window.renderVehicles) window.renderVehicles();
     }
   };
 
@@ -1601,27 +1632,23 @@
         vehicles.unshift(record);
       }
 
-      writeVehicles(vehicles);
-      
-      // window.appData'yı güncelle ve sunucuya kaydet
-      if (window.appData) {
-        window.appData.tasitlar = vehicles;
-        // Sunucuya kaydet (async, hata durumunda sessizce devam et)
-        if (window.saveDataToServer) {
-          window.saveDataToServer().catch(err => {
-            console.error('Sunucuya kaydetme hatası (sessiz):', err);
-          });
-        }
+      var savePromise = writeVehicles(vehicles);
+
+      if (savePromise && typeof savePromise.then === 'function') {
+        savePromise.then(function() {
+          if (window.updateNotifications) window.updateNotifications();
+          alert(isEditMode ? "Kayıt Güncellendi!" : "Yeni Kayıt Oluşturuldu!");
+          window.closeVehicleModal();
+          pendingRecordData = null;
+        }).catch(function() {
+          alert('Sunucuya kayıt yapılamadı. Lütfen tekrar deneyin.');
+        });
+      } else {
+        if (window.updateNotifications) window.updateNotifications();
+        alert(isEditMode ? "Kayıt Güncellendi!" : "Yeni Kayıt Oluşturuldu!");
+        window.closeVehicleModal();
+        pendingRecordData = null;
       }
-      
-      // Bildirimleri güncelle
-      if (window.updateNotifications) window.updateNotifications();
-      
-      alert(isEditMode ? "Kayıt Güncellendi!" : "Yeni Kayıt Oluşturuldu!");
-      window.closeVehicleModal();
-      
-      // Temizle
-      pendingRecordData = null;
     } catch (error) {
       alert('Kayıt sırasında bir hata oluştu! Lütfen tekrar deneyin.');
     }
