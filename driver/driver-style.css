@@ -2349,7 +2349,7 @@ body.driver-modal-open {
   /* GeÃ§miÅŸ KayÄ±tlar + DÃ¼zeltme Talebi: style-core standardÄ± (footer + 6px) */
   #history-modal.driver-modal,
   #edit-request-modal.driver-modal {
-    bottom: calc(var(--app-footer-height, 34px) + 6px + env(safe-area-inset-bottom, 0)) !important;
+    bottom: calc(34px + 6px + env(safe-area-inset-bottom, 0)) !important;
   }
 }
 
@@ -2359,7 +2359,7 @@ body.driver-modal-open {
   body.dashboard-page #edit-request-modal.driver-modal,
   body.login-page #history-modal.driver-modal,
   body.login-page #edit-request-modal.driver-modal {
-    bottom: calc(var(--app-footer-height, 34px) + 6px + env(safe-area-inset-bottom, 0)) !important;
+    bottom: calc(34px + 6px + env(safe-area-inset-bottom, 0)) !important;
   }
 }
 
