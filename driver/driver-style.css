@@ -3291,6 +3291,8 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .dashboard-page #app-footer,
   .login-page #app-footer.login-footer {
     box-shadow: 0 -15px 35px rgba(var(--theme-color-rgb), 0.35) !important;
+    position: relative !important;
+    z-index: 99 !important;
   }
   /* MasaÃ¼stÃ¼: footer modal (app-container) altÄ±nda ortalanmÄ±ÅŸ olsun; 56px yÃ¼kseklik kÄ±rmÄ±zÄ± Ã§izgilerle hizalansÄ±n */
   .login-page #app-footer.login-footer {
@@ -4402,7 +4404,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .dashboard-page #app-footer,
   .login-page #app-footer.login-footer {
     border-top: 0.35px solid rgba(200, 200, 200, 0.55) !important;
-    box-shadow: 0 -22px 40px rgba(var(--theme-color-rgb), 0.45) !important;
+    box-shadow: 0 -14px 28px rgba(var(--theme-color-rgb), 0.45) !important;
   }
   .login-page #app-footer.login-footer .footer-content {
     padding: 8px 12px !important;
