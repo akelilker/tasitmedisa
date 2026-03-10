@@ -108,19 +108,20 @@
   cursor: pointer !important;
 }
 
-/* Olay Ekle 14 modal: TaÅŸÄ±tlar modalÄ± ile aynÄ± yapÄ± (500px, footer 54px, Ã§erÃ§eve) */
+/* Olay Ekle modalları: footer+gap değişken ile (style-core ile uyumlu) */
 .olay-ekle-modal .modal-container {
     max-width: 500px !important;
     width: 100%;
     background: var(--modal-bg) !important;
-    margin: max(12px, env(safe-area-inset-top)) auto 54px auto !important;
-    height: calc(100vh - max(12px, env(safe-area-inset-top)) - 54px) !important;
-    height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 54px) !important;
-    max-height: calc(100vh - max(12px, env(safe-area-inset-top)) - 54px) !important;
-    max-height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 54px) !important;
+    margin: max(12px, env(safe-area-inset-top)) auto 0 auto !important;
+    margin-bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
+    height: calc(100vh - max(12px, env(safe-area-inset-top)) - var(--app-footer-real-height) - var(--app-footer-gap) - env(safe-area-inset-bottom, 0)) !important;
+    height: calc(100dvh - max(12px, env(safe-area-inset-top)) - var(--app-footer-real-height) - var(--app-footer-gap) - env(safe-area-inset-bottom, 0)) !important;
+    max-height: calc(100vh - max(12px, env(safe-area-inset-top)) - var(--app-footer-real-height) - var(--app-footer-gap) - env(safe-area-inset-bottom, 0)) !important;
+    max-height: calc(100dvh - max(12px, env(safe-area-inset-top)) - var(--app-footer-real-height) - var(--app-footer-gap) - env(safe-area-inset-bottom, 0)) !important;
     overflow: hidden !important;
     overflow-x: hidden !important;
-    touch-action: pan-y !important; /* Ä°Ã§eride dikey kaydÄ±rma Ã§alÄ±ÅŸsÄ±n */
+    touch-action: pan-y !important;
     display: flex !important;
     flex-direction: column !important;
 }
@@ -206,8 +207,8 @@
     transform: translateX(-50%);
     width: 100%;
     max-width: 500px;
-    height: calc(100vh - max(12px, env(safe-area-inset-top)) - 54px);
-    height: calc(100dvh - max(12px, env(safe-area-inset-top)) - 54px);
+    height: calc(100vh - max(12px, env(safe-area-inset-top)) - var(--app-footer-real-height) - var(--app-footer-gap) - env(safe-area-inset-bottom, 0));
+    height: calc(100dvh - max(12px, env(safe-area-inset-top)) - var(--app-footer-real-height) - var(--app-footer-gap) - env(safe-area-inset-bottom, 0));
     background: var(--shadow-overlay);
     backdrop-filter: blur(5px);
     z-index: -1;
@@ -2423,7 +2424,7 @@
     isolation: isolate !important;
     background: var(--modal-bg) !important;
     background-color: var(--modal-bg) !important;
-    border-bottom: 1px solid var(--modal-bg) !important;
+    border-bottom: 1px solid var(--border-medium) !important;
     overflow: hidden !important;
     overflow-x: hidden !important; /* Yatay kayma engelle */
     touch-action: pan-y !important;
