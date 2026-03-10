@@ -140,20 +140,20 @@ body.driver-modal-open {
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
 }
-/* Dashboard + Åifre ekranÄ±: fixed footer alanÄ± kadar alt boÅŸluk (ince footer) */
+/* Codex standart: driver sayfalarında footer yüksekliği merkezi değişkenden */
+.dashboard-page { --app-footer-real-height: 34px; }
+.login-page { --app-footer-real-height: 38px; }
 .dashboard-page .driver-dashboard-container,
 .login-page .driver-dashboard-container {
-  --app-footer-height: 30px;
-  padding-bottom: calc(var(--app-footer-height, 30px) + env(safe-area-inset-bottom, 0));
+  padding-bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0));
 }
-/* KullanÄ±cÄ± paneli + Åifre ekranÄ±: tÃ¼m kÄ±rmÄ±zÄ± Ã§erÃ§eve tek kaynaktan (kÃ¶ÅŸe birleÅŸme sorunu yok) */
 .driver-dashboard-container::before {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  bottom: calc(var(--app-footer-height, 30px) + env(safe-area-inset-bottom, 0)) !important; /* Nokta atÄ±ÅŸÄ±: footer hizasÄ±nda kesilsin */
+  bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
   border-top: 0.5px solid var(--border-red-tech);
   border-left: 0.5px solid var(--border-red-tech);
   border-right: 0.5px solid var(--border-red-tech);
@@ -188,7 +188,7 @@ body.driver-modal-open {
   z-index: 10004;
 }
 
-/* Dashboard: footer sabit altta; gerÃ§ek yÃ¼kseklik 34px kilitli (bottom hesabÄ± ÅŸaÅŸmasÄ±n) */
+/* Dashboard: footer yüksekliği merkezi değişkenden (modal bottom ile uyumlu) */
 .dashboard-page #app-footer {
   position: fixed !important;
   left: 0 !important;
@@ -196,8 +196,8 @@ body.driver-modal-open {
   bottom: 0 !important;
   flex-shrink: 0;
   z-index: 10005 !important;
-  height: 34px !important;
-  min-height: 34px !important;
+  height: var(--app-footer-real-height) !important;
+  min-height: var(--app-footer-real-height) !important;
   box-sizing: border-box !important;
   padding-top: 4px !important;
   padding-bottom: calc(4px + env(safe-area-inset-bottom, 0)) !important;
@@ -2348,10 +2348,9 @@ body.driver-modal-open {
   #driver-kasko-modal.driver-modal {
     padding: 0 !important;
   }
-  /* GeÃ§miÅŸ KayÄ±tlar + DÃ¼zeltme Talebi: style-core standardÄ± (footer + 6px) */
   #history-modal.driver-modal,
   #edit-request-modal.driver-modal {
-    bottom: calc(34px + 6px + env(safe-area-inset-bottom, 0)) !important;
+    bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
   }
 }
 
@@ -2361,7 +2360,7 @@ body.driver-modal-open {
   body.dashboard-page #edit-request-modal.driver-modal,
   body.login-page #history-modal.driver-modal,
   body.login-page #edit-request-modal.driver-modal {
-    bottom: calc(34px + 6px + env(safe-area-inset-bottom, 0)) !important;
+    bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
   }
 }
 
@@ -2418,7 +2417,7 @@ body.driver-modal-open {
   max-width: 500px;
   margin: max(12px, env(safe-area-inset-top)) auto 0 auto !important;
   margin-bottom: 0 !important;
-  height: auto !important;
+  height: 100% !important;
   max-height: 100% !important;
   overflow: hidden;
   overflow-x: hidden;
@@ -2428,7 +2427,6 @@ body.driver-modal-open {
   overscroll-behavior: none;
   overscroll-behavior-x: none;
 }
-/* GeÃ§miÅŸ KayÄ±tlar + DÃ¼zeltme Talebi: overlay bottom +6px (641px+); iÃ§ yÃ¼kseklik genel driver modal kurallarÄ±ndan */
 /* Desktop: avoid double bottom line on Edit Request modal */
 @media (min-width: 641px) {
   #edit-request-modal .driver-modal-content,
@@ -3105,8 +3103,8 @@ body.driver-modal-open {
   align-items: center !important;
   justify-content: center !important;
   width: 100% !important;
-  height: 38px !important;
-  min-height: 38px !important;
+  height: var(--app-footer-real-height) !important;
+  min-height: var(--app-footer-real-height) !important;
   box-sizing: border-box !important;
   margin: 0 !important;
   padding-top: 4px !important;
@@ -3309,8 +3307,8 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
   /* Masaüstü: login footer ferah min-height, içerik ortalanmış (max-width 500px) */
   .login-page #app-footer.login-footer {
-    height: 38px !important;
-    min-height: 38px !important;
+    height: var(--app-footer-real-height) !important;
+    min-height: var(--app-footer-real-height) !important;
     width: 100% !important;
     max-width: 500px !important;
     left: 50% !important;
@@ -3324,15 +3322,11 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     padding: 3px 12px !important;
     padding-bottom: max(4px, env(safe-area-inset-bottom, 0)) !important;
   }
-  /* Login footer ince; kÄ±rmÄ±zÄ± Ã§izgiler footer'a deÄŸsin */
-  .login-page .driver-dashboard-container {
-    --app-footer-height: 34px;
-  }
-  /* MasaÃ¼stÃ¼ kullanÄ±cÄ± paneli + Åifre ekranÄ±: kÄ±rmÄ±zÄ± Ã§izgiler footer'Ä±n tam Ã¼stÃ¼nde (0) biter, erken kesilmesin */
+  /* Masaüstü: kırmızı çizgiler footer'ın tam üstünde biter */
   .dashboard-page .driver-dashboard-container::before,
   .login-page .driver-dashboard-container::before {
     top: 0 !important;
-    bottom: calc(var(--app-footer-height, 34px) + env(safe-area-inset-bottom, 0)) !important;
+    bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
     height: auto !important;
   }
 }
@@ -3360,17 +3354,15 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     min-width: 15px !important;
     min-height: 15px !important;
   }
-  /* Mobil: fixed footer iÃ§in alt boÅŸluk; yan Ã§izgiler footer'a kadar (bottom ile) */
   .dashboard-page .driver-dashboard-container,
   .login-page .driver-dashboard-container {
-    padding-bottom: calc(var(--app-footer-height, 30px) + env(safe-area-inset-bottom, 0)) !important;
+    padding-bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
     overflow-x: hidden !important;
     overflow-y: visible !important; /* Footer'dan Ã§Ä±kan kÄ±rmÄ±zÄ± Ä±ÅŸÄ±k (box-shadow) kesilmesin */
   }
-  /* Yan Ã§izgiler footer'da biter, aÅŸaÄŸÄ± inmez. bottom = footer + safe-area */
   .dashboard-page .driver-dashboard-container::before,
   .login-page .driver-dashboard-container::before {
-    bottom: calc(var(--app-footer-height, 30px) + env(safe-area-inset-bottom, 0)) !important;
+    bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
   }
   .dashboard-page .driver-right-panel {
     padding-bottom: 5px !important;
@@ -3760,9 +3752,9 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   body.login-page:has(#history-modal.driver-modal.show) .driver-dashboard-container::before,
   body.dashboard-page:has(#edit-request-modal.driver-modal.show) .driver-dashboard-container::before,
   body.login-page:has(#edit-request-modal.driver-modal.show) .driver-dashboard-container::before {
-    bottom: calc(var(--app-footer-height, 30px) + 6px + env(safe-area-inset-bottom, 0)) !important;
-    -webkit-clip-path: inset(0 0 calc(var(--app-footer-height, 30px) + 6px + env(safe-area-inset-bottom, 0)) 0) !important;
-    clip-path: inset(0 0 calc(var(--app-footer-height, 30px) + 6px + env(safe-area-inset-bottom, 0)) 0) !important;
+    bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
+    -webkit-clip-path: inset(0 0 calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) 0) !important;
+    clip-path: inset(0 0 calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) 0) !important;
   }
   body.dashboard-page:has(#history-modal.driver-modal.show)::after,
   body.dashboard-page:has(#edit-request-modal.driver-modal.show)::after {
@@ -3770,19 +3762,18 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     position: fixed;
     left: 0;
     right: 0;
-    bottom: calc(var(--app-footer-height, 30px) + env(safe-area-inset-bottom, 0));
-    height: 6px;
+    bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0));
+    height: var(--app-footer-gap);
     background: #080d16;
     pointer-events: none;
     z-index: 10013;
   }
   @supports not selector(body:has(*)) {
-    /* Safari fallback: :has destegi yoksa modal acikken yan kirmizi cizgileri footer boslugundan kirp */
     body.driver-modal-open.dashboard-page .driver-dashboard-container::before,
     body.driver-modal-open.login-page .driver-dashboard-container::before {
-      bottom: calc(var(--app-footer-height, 30px) + 6px + env(safe-area-inset-bottom, 0)) !important;
-      -webkit-clip-path: inset(0 0 calc(var(--app-footer-height, 30px) + 6px + env(safe-area-inset-bottom, 0)) 0) !important;
-      clip-path: inset(0 0 calc(var(--app-footer-height, 30px) + 6px + env(safe-area-inset-bottom, 0)) 0) !important;
+      bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
+      -webkit-clip-path: inset(0 0 calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) 0) !important;
+      clip-path: inset(0 0 calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) 0) !important;
     }
     body.driver-modal-open.dashboard-page::after,
     body.driver-modal-open.login-page::after {
@@ -3790,8 +3781,8 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
       position: fixed;
       left: 0;
       right: 0;
-      bottom: calc(var(--app-footer-height, 30px) + env(safe-area-inset-bottom, 0));
-      height: 6px;
+      bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0));
+      height: var(--app-footer-gap);
       background: #080d16;
       pointer-events: none;
       z-index: 10013;
@@ -3842,7 +3833,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     max-width: 100% !important;
     width: 100% !important;
     margin: 0 !important;
-    height: auto !important;
+    height: 100% !important;
     max-height: 100% !important;
     margin-bottom: 0 !important;
     background: var(--modal-bg) !important;
@@ -4592,20 +4583,20 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   /* Container alt boÅŸluÄŸu: footer yüksekliÄŸi + safe-area (Ã§ift boÅŸluk Ã¶nlenir) */
   .dashboard-page .driver-dashboard-container,
   .login-page .driver-dashboard-container {
-    padding-bottom: calc(var(--app-footer-height, 30px) + env(safe-area-inset-bottom, 0)) !important;
+    padding-bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
   }
 
-  /* PWA: footer gerÃ§ek yÃ¼kseklik kilitli (34px / 38px), bottom hesabÄ± ÅŸaÅŸmasÄ±n */
+  /* PWA: footer yüksekliği merkezi değişkenden */
   .dashboard-page #app-footer {
-    height: 34px !important;
-    min-height: 34px !important;
+    height: var(--app-footer-real-height) !important;
+    min-height: var(--app-footer-real-height) !important;
     box-sizing: border-box !important;
     padding-top: 4px !important;
     padding-bottom: calc(4px + env(safe-area-inset-bottom, 0)) !important;
   }
   .login-page #app-footer.login-footer {
-    height: 38px !important;
-    min-height: 38px !important;
+    height: var(--app-footer-real-height) !important;
+    min-height: var(--app-footer-real-height) !important;
     box-sizing: border-box !important;
     padding-top: 4px !important;
     padding-bottom: calc(4px + env(safe-area-inset-bottom, 0)) !important;
