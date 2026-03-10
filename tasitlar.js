@@ -4346,6 +4346,25 @@ function renderVehicleDetailLeft(vehicle) {
   window.dismissMTVNotif = function(event, key) {
     event.stopPropagation();
     event.preventDefault();
+
+    const btn = event.currentTarget;
+    const container = btn ? btn.closest('.mtv-notification') : null;
+    const textSpan = container ? container.querySelector('.mtv-main-text') : null;
+
+    // Görsel Geri Bildirim: Butonu kilitle ve metni güncelle
+    if (btn) {
+      btn.style.pointerEvents = 'none';
+      btn.style.opacity = '0.5';
+    }
+    if (container) {
+      container.style.cursor = 'wait';
+    }
+    if (textSpan) {
+      textSpan.style.transition = 'all 0.3s ease';
+      textSpan.innerText = 'Bildirim işleniyor, lütfen bekleyin...';
+      textSpan.style.color = 'var(--txt-muted)';
+    }
+
     localStorage.setItem(key, 'true');
     if (typeof window.updateNotifications === 'function') {
       window.updateNotifications();
