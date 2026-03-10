@@ -1299,6 +1299,16 @@
     text-overflow: clip;
 }
 
+/* Masaüstü: şube kutusu dar olduğunda (harf alta düşerse) yazı en fazla 1.5pt küçülebilir (13px → 11px) */
+@media (min-width: 769px) {
+    .branch-card {
+        container-type: inline-size;
+    }
+    .branch-name {
+        font-size: clamp(11px, 12cqw, 13px);
+    }
+}
+
 .branch-count {
     font-size: 12px; /* +1 punto (11â†’12) */
     color: var(--txt-gray-darker); 
