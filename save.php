@@ -63,6 +63,42 @@ if (file_exists($dataFile)) {
                     $data['tasitlar'][$i]['guncelKm'] = $cur['guncelKm'];
                 }
             }
+
+            // Çakışma (Conflict) kontrolü – gelen version sunucudakinden küçükse kaydetme
+            foreach ($data['tasitlar'] as $v) {
+                $id = $v['id'] ?? null;
+                if ($id === null) continue;
+                if (!isset($v['version'])) continue;
+                $cur = $currentById[(string)$id] ?? null;
+                if ($cur === null) continue;
+                $curVer = isset($cur['version']) ? (int)$cur['version'] : 0;
+                $inVer = (int)$v['version'];
+                if ($inVer < $curVer) {
+                    http_response_code(409);
+                    echo json_encode(['conflict' => true], JSON_UNESCAPED_UNICODE);
+                    exit;
+                }
+            }
+
+            // Kaydetmeden önce version değerini 1 artır (yazılacak veriye uygula)
+            foreach ($data['tasitlar'] as $i => $v) {
+                $id = $v['id'] ?? null;
+                if ($id === null) {
+                    $data['tasitlar'][$i]['version'] = 1;
+                    continue;
+                }
+                $cur = $currentById[(string)$id] ?? null;
+                $data['tasitlar'][$i]['version'] = $cur !== null ? ((int)($cur['version'] ?? 0)) + 1 : 1;
+            }
+        }
+    }
+}
+
+// Henüz version atanmamış taşıt kayıtlarına 1 ver (yeni dosya veya yeni kayıt)
+if (!empty($data['tasitlar'])) {
+    foreach ($data['tasitlar'] as $i => $v) {
+        if (!array_key_exists('version', $data['tasitlar'][$i])) {
+            $data['tasitlar'][$i]['version'] = 1;
         }
     }
 }
