@@ -512,7 +512,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
         border-top: 1px solid rgba(200, 200, 200, 0.52);
         border-left: 0.6px solid rgba(255, 255, 255, 0.24);
         border-right: 0.6px solid rgba(255, 255, 255, 0.24);
-        box-shadow: 0 -16px 26px rgba(var(--footer-glow-rgb), 0.34);
+        /* TEŞHİS: kırmızı ışık geçici kapalı */ box-shadow: none !important; /* box-shadow: 0 -16px 26px rgba(var(--footer-glow-rgb), 0.34); */
     }
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer .footer-content {
         padding: 8px 12px;
@@ -1121,7 +1121,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   }
   /* Ana sayfa masaüstü/tablet: footer ışığı belirgin kalsın */
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer {
-    box-shadow: 0 -16px 26px rgba(var(--footer-glow-rgb), 0.52);
+    /* TEŞHİS: kırmızı ışık geçici kapalı */ box-shadow: none !important; /* box-shadow: 0 -16px 26px rgba(var(--footer-glow-rgb), 0.52); */
   }
   /* Anasayfa masaüstü: başlık kutunun içine sığsın */
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-spacer {
@@ -1438,7 +1438,7 @@ body.modal-open .user-panel-link {
     border-left: 0.5px solid rgba(255, 255, 255, 0.20);  /* MasaÃƒÂ¼stÃƒÂ¼: ince + soluk */
     border-right: 0.5px solid rgba(255, 255, 255, 0.20);
     /* Footer'dan yukarÃ„Â± Ã„Â±Ã…Å¸Ã„Â±ldama (3px daha yukarÃ„Â±, aÃƒÂ§Ã„Â±k kÃ„Â±rmÃ„Â±zÃ„Â±) */
-    box-shadow: 0 -13px 20px rgba(var(--footer-glow-rgb), 0.22);
+    /* TEŞHİS: kırmızı ışık geçici kapalı */ box-shadow: none !important; /* box-shadow: 0 -13px 20px rgba(var(--footer-glow-rgb), 0.22); */
 }
 
 
@@ -1850,7 +1850,7 @@ body.modal-open .user-panel-link {
     #app-footer {
         position: fixed;
         bottom: 0;
-        box-shadow: 0 -15px 22px rgba(var(--footer-glow-rgb), 0.45);
+        /* TEŞHİS: kırmızı ışık geçici kapalı */ box-shadow: none !important; /* box-shadow: 0 -15px 22px rgba(var(--footer-glow-rgb), 0.45); */
         border-left: none; /* Mobilde yan yok */
         border-right: none;
         border-top: 1px solid rgba(128, 128, 128, 0.5) !important; /* Gri ÃƒÂ§izgi */

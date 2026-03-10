@@ -460,7 +460,7 @@ body.driver-modal-open {
     border-top: 1px solid rgba(200, 200, 200, 0.52) !important;
     border-left: 0.6px solid rgba(255, 255, 255, 0.24) !important;
     border-right: 0.6px solid rgba(255, 255, 255, 0.24) !important;
-    box-shadow: 0 -16px 26px rgba(var(--footer-glow-rgb), 0.24) !important;
+    /* TEŞHİS: kırmızı ışık geçici kapalı */ box-shadow: none !important; /* box-shadow: 0 -16px 26px rgba(var(--footer-glow-rgb), 0.24) !important; */
   }
   .dashboard-page #app-footer .footer-content {
     padding: 3px 12px !important;
@@ -471,7 +471,7 @@ body.driver-modal-open {
     border-top: 0.5px solid rgba(200, 200, 200, 0.45) !important;
     border-left: 0.5px solid rgba(255, 255, 255, 0.20) !important;
     border-right: 0.5px solid rgba(255, 255, 255, 0.20) !important;
-    box-shadow: 0 -10px 20px rgba(var(--theme-color-rgb), 0.16) !important;
+    /* TEŞHİS: kırmızı ışık geçici kapalı */ box-shadow: none !important; /* box-shadow: 0 -10px 20px rgba(var(--theme-color-rgb), 0.16) !important; */
   }
   /* ========== MASAÃœSTÃœ (769px+) â€“ Header logo: 76Ã—76px, pozisyon (-18px, 6.5px) ========== */
   .dashboard-page .hero.hero-two-rows .hero-logo,
@@ -3140,7 +3140,7 @@ body.driver-modal-open {
   border-top: 0.5px solid rgba(200, 200, 200, 0.45) !important;
   border-left: 0.5px solid rgba(255, 255, 255, 0.20) !important;
   border-right: 0.5px solid rgba(255, 255, 255, 0.20) !important;
-  box-shadow: 0 -10px 20px rgba(var(--theme-color-rgb), 0.16) !important;
+  /* TEŞHİS: kırmızı ışık geçici kapalı */ box-shadow: none !important; /* box-shadow: 0 -10px 20px rgba(var(--theme-color-rgb), 0.16) !important; */
   box-sizing: border-box !important;
 }
 
@@ -3320,7 +3320,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   /* Masaüstü: footer ışığı (glow); scroll alanı (z-index:10004) üstünde kalması için 10006 */
   .dashboard-page #app-footer,
   .login-page #app-footer.login-footer {
-    box-shadow: 0 -15px 35px rgba(var(--theme-color-rgb), 0.35) !important;
+    /* TEŞHİS: kırmızı ışık geçici kapalı */ box-shadow: none !important; /* box-shadow: 0 -15px 35px rgba(var(--theme-color-rgb), 0.35) !important; */
     position: relative !important;
     z-index: 10006 !important;
   }
