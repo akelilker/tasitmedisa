@@ -1,4 +1,4 @@
-﻿/* =========================================
+/* =========================================
    MEDISA KULLANICI MODÃœLÃœ - ANA TEMA UYUMLU
    style-core.css deÄŸiÅŸkenleri kullanÄ±lÄ±r: --theme-color, --bg, --card-bg, --txt, --muted, --br
    ========================================= */
@@ -3940,14 +3940,12 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     border-top: 0.5px solid rgba(200, 200, 200, 0.45) !important;
     border-left: 0.5px solid rgba(255, 255, 255, 0.10) !important;
     border-right: 0.5px solid rgba(255, 255, 255, 0.10) !important;
-    box-shadow: 0 -22px 40px rgba(var(--theme-color-rgb), 0.45) !important;
   }
   .login-page #app-footer.login-footer {
     background: var(--bg) !important;
     border-top: 0.5px solid rgba(200, 200, 200, 0.45) !important;
     border-left: 0.5px solid rgba(255, 255, 255, 0.18) !important;
     border-right: 0.5px solid rgba(255, 255, 255, 0.18) !important;
-    box-shadow: 0 -22px 40px rgba(var(--theme-color-rgb), 0.45) !important;
   }
   /* Plaka dropdown dÄ±ÅŸarÄ± taÅŸabilsin; panels-inner overflow: hidden kalsÄ±n ki saÄŸ panel yÃ¼ksekliÄŸi kÄ±sÄ±tlansÄ±n ve Not+Bildir kaydÄ±rÄ±labilir */
   .dashboard-page .driver-panels-inner {
@@ -4395,10 +4393,11 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     border-right: 0.5px solid rgba(255, 255, 255, 0.10) !important;
   }
 
-  /* Mobil footer: ustte ince gri cerceve */
+  /* Mobil footer: ustte ince gri cerceve + tek glow */
   .dashboard-page #app-footer,
   .login-page #app-footer.login-footer {
     border-top: 0.35px solid rgba(200, 200, 200, 0.55) !important;
+    box-shadow: 0 -22px 40px rgba(var(--theme-color-rgb), 0.45) !important;
   }
   .login-page #app-footer.login-footer .footer-content {
     padding: 8px 12px !important;
