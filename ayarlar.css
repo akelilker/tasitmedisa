@@ -3,20 +3,16 @@
    ========================================= */
 
 /* === AYARLAR MODAL OVERLAY (sınıf ile) === */
+/* Overlay konumu style-core .modal-overlay (6px) kullanÄ±lÄ±r */
 .ayarlar-modal-overlay {
     display: none;
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
     background: transparent;
-    z-index: 9999;
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
     pointer-events: none;
     padding-top: 0;
     padding-bottom: 0;
-    height: 100vh;
-    height: 100dvh;
     overflow: hidden;
     touch-action: pan-y;
 }
