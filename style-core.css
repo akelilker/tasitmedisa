@@ -1188,10 +1188,10 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   display: flex !important;
 }
 
-/* Ana uygulama modalÄ±: Modal footer Ä±ÅŸÄ±ÄŸÄ±nÄ±n Ã¼stÃ¼nde kalÄ±r (10002). Overlay'e zaten bottom/max-height verildiÄŸi iÃ§in clip-path KULLANILMAZ â€“ clip-path iÃ§indeki .modal-container'Ä± da kestiÄŸi iÃ§in alt Ã§erÃ§eve/radius makaslanÄ±yordu (kÃ¶k neden). */
+/* Ana uygulama modalÄ±: En dÄ±ÅŸ overlay footer ve glow'un KESÄ°N Ã¼stÃ¼nde (Ä±ÅŸÄ±k sÄ±zmasÄ±n). */
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay.active,
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay.open {
-  z-index: 10002 !important;
+  z-index: 99999 !important;
 }
 .modal-overlay .modal-container,
 .login-container,
@@ -1206,7 +1206,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
 .modal-overlay .modal-container {
   position: relative;
   z-index: 9999 !important; /* Footer ve footer Ä±ÅŸÄ±ÄŸÄ±nÄ±n Ã¼stÃ¼nde; Ä±ÅŸÄ±k sÄ±zmasÄ±n */
-  background: var(--modal-bg);
+  background: var(--modal-bg) !important;
+  background-color: var(--modal-bg) !important; /* Cam etkisini beton: saydamlÄ±k yok */
   width: 100%;
   max-width: var(--modal-max-width);
   margin: max(12px, env(safe-area-inset-top)) auto var(--modal-margin-bottom-desktop) auto;
@@ -1214,6 +1215,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
   height: calc(100dvh - max(12px, env(safe-area-inset-top)) - var(--modal-margin-bottom-desktop));
   border-radius: var(--modal-radius);
   border: 0.5px solid var(--border-medium);
+  border-bottom: 1px solid var(--modal-bg) !important; /* Alt Ã§erÃ§eve Ä±ÅŸÄ±k sÄ±zmasÄ±n diye solid */
   box-shadow: 0 0 40px var(--shadow-modal), inset 0 1px 0 rgba(255, 255, 255, 0.06);
   overflow-x: hidden;
   pointer-events: auto;

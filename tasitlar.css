@@ -2428,6 +2428,8 @@
 
   .tasitlar-modal-overlay .modal-container {
     background: var(--modal-bg) !important;
+    background-color: var(--modal-bg) !important;
+    border-bottom: 1px solid var(--modal-bg) !important;
     overflow: hidden !important;
     overflow-x: hidden !important; /* Yatay kayma engelle */
     touch-action: pan-y !important;
