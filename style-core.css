@@ -1188,13 +1188,10 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   display: flex !important;
 }
 
-/* Ana uygulama modalÄ±: Modal her zaman footer Ä±ÅŸÄ±ÄŸÄ±nÄ±n Ã¼stÃ¼nde kalÄ±r (10002), bÃ¶ylece kÄ±rmÄ±zÄ± Ä±ÅŸÄ±k iÃ§eri sÄ±zamaz.
-   clip-path ile karanlÄ±k overlay'in alt kÄ±smÄ± kesilir, bÃ¶ylece footer ve aradaki boÅŸluk kararmadan pÄ±rÄ±l pÄ±rÄ±l parlar. */
+/* Ana uygulama modalÄ±: Modal footer Ä±ÅŸÄ±ÄŸÄ±nÄ±n Ã¼stÃ¼nde kalÄ±r (10002). Overlay'e zaten bottom/max-height verildiÄŸi iÃ§in clip-path KULLANILMAZ â€“ clip-path iÃ§indeki .modal-container'Ä± da kestiÄŸi iÃ§in alt Ã§erÃ§eve/radius makaslanÄ±yordu (kÃ¶k neden). */
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay.active,
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay.open {
   z-index: 10002 !important;
-  -webkit-clip-path: inset(0 0 calc(var(--app-footer-height, 30px) + var(--modal-gap-above-footer, 5px) + env(safe-area-inset-bottom, 0)) 0) !important;
-  clip-path: inset(0 0 calc(var(--app-footer-height, 30px) + var(--modal-gap-above-footer, 5px) + env(safe-area-inset-bottom, 0)) 0) !important;
 }
 .modal-overlay .modal-container,
 .login-container,
@@ -1567,11 +1564,7 @@ body.modal-open .user-panel-link {
 
 /* MOBÃ„Â°L AYARLARI: 768px ve altÃ„Â±nda modal alt ÃƒÂ§erÃƒÂ§eve footer Ã„Â±Ã…Å¸Ã„Â±Ã„Å¸Ã„Â±nda ezilmesin, 4px nefes payÃ„Â± + iÃƒÂ§ kaydÃ„Â±rma boÃ…Å¸luÃ„Å¸u */
 @media (max-width: 768px) {
-    body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay.active,
-    body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay.open {
-        -webkit-clip-path: inset(0 0 calc(var(--app-footer-height, 30px) + 4px + env(safe-area-inset-bottom, 0)) 0) !important;
-        clip-path: inset(0 0 calc(var(--app-footer-height, 30px) + 4px + env(safe-area-inset-bottom, 0)) 0) !important;
-    }
+    /* clip-path kaldÄ±rÄ±ldÄ±: overlay iÃ§indeki modal kutusunun alt Ã§erÃ§evesi kesilmesin */
     .modal-overlay {
         bottom: calc(var(--app-footer-height, 30px) + 4px + env(safe-area-inset-bottom, 0)) !important;
         max-height: calc(100vh - var(--app-footer-height, 30px) - 4px - env(safe-area-inset-bottom, 0)) !important;
@@ -2125,13 +2118,8 @@ body.modal-open .content-wrap::before {
   gap: 8px;
 }
 
-/* === NOKTA ATIÅžI: Ana uygulama modallarÄ± alt Ã§erÃ§eve (KayÄ±t, TaÅŸÄ±t, Rapor) - yÃ¼ksek Ã¶ncelik === */
+/* === NOKTA ATIÅžI: Ana uygulama modallarÄ± alt Ã§erÃ§eve (KayÄ±t, TaÅŸÄ±t, Rapor) - overlay clip-path yok, alt Ã§erÃ§eve gÃ¶rÃ¼nsÃ¼n === */
 @media (max-width: 768px) {
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay.active,
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay.open {
-    -webkit-clip-path: inset(0 0 calc(var(--app-footer-height, 30px) + 6px + env(safe-area-inset-bottom, 0)) 0) !important;
-    clip-path: inset(0 0 calc(var(--app-footer-height, 30px) + 6px + env(safe-area-inset-bottom, 0)) 0) !important;
-  }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicle-modal.modal-overlay,
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #reports-modal.modal-overlay,
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicles-modal.modal-overlay {
