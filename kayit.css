@@ -998,10 +998,10 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     /* Kayıt modalı mobil: overlay konumu (style-core ile aynı, taşıtlar gibi kendi dosyasında) */
     #vehicle-modal.modal-overlay {
         top: 0 !important;
-        bottom: calc(var(--modal-gap-above-footer) + var(--app-footer-height) + env(safe-area-inset-bottom, 0) + 6px) !important;
+        bottom: calc(var(--modal-gap-above-footer) + var(--app-footer-height) + env(safe-area-inset-bottom, 0) + 9px) !important;
         height: auto !important;
-        max-height: calc(100vh - var(--modal-gap-above-footer) - var(--app-footer-height) - env(safe-area-inset-bottom, 0) - 6px) !important;
-        max-height: calc(100dvh - var(--modal-gap-above-footer) - var(--app-footer-height) - env(safe-area-inset-bottom, 0) - 6px) !important;
+        max-height: calc(100vh - var(--modal-gap-above-footer) - var(--app-footer-height) - env(safe-area-inset-bottom, 0) - 9px) !important;
+        max-height: calc(100dvh - var(--modal-gap-above-footer) - var(--app-footer-height) - env(safe-area-inset-bottom, 0) - 9px) !important;
     }
     
     #vehicle-modal .modal-container {
