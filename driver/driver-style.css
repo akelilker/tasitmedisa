@@ -140,10 +140,11 @@ body.driver-modal-open {
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
 }
-/* Dashboard + Åifre ekranÄ±: fixed footer alanÄ± kadar alt boÅŸluk */
+/* Dashboard + Åifre ekranÄ±: fixed footer alanÄ± kadar alt boÅŸluk (ince footer) */
 .dashboard-page .driver-dashboard-container,
 .login-page .driver-dashboard-container {
-  padding-bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0));
+  --app-footer-height: 36px;
+  padding-bottom: calc(var(--app-footer-height, 36px) + env(safe-area-inset-bottom, 0));
 }
 /* KullanÄ±cÄ± paneli + Åifre ekranÄ±: tÃ¼m kÄ±rmÄ±zÄ± Ã§erÃ§eve tek kaynaktan (kÃ¶ÅŸe birleÅŸme sorunu yok) */
 .driver-dashboard-container::before {
@@ -152,7 +153,7 @@ body.driver-modal-open {
   top: 0;
   left: 0;
   right: 0;
-  bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0));
+  bottom: calc(var(--app-footer-height, 36px) + env(safe-area-inset-bottom, 0));
   border-top: 0.5px solid var(--border-red-tech);
   border-left: 0.5px solid var(--border-red-tech);
   border-right: 0.5px solid var(--border-red-tech);
@@ -195,7 +196,7 @@ body.driver-modal-open {
   bottom: 0 !important;
   flex-shrink: 0;
   z-index: 10005 !important;
-  min-height: var(--app-footer-height, 48px) !important;
+  min-height: var(--app-footer-height, 36px) !important;
   display: flex !important;
   align-items: center !important;
   border-top: 0.5px solid rgba(200, 200, 200, 0.45) !important;
@@ -462,8 +463,8 @@ body.driver-modal-open {
     box-shadow: 0 -16px 26px rgba(var(--footer-glow-rgb), 0.24) !important;
   }
   .dashboard-page #app-footer .footer-content {
-    padding: 8px 12px !important;
-    padding-bottom: max(8px, env(safe-area-inset-bottom, 0)) !important;
+    padding: 4px 12px !important;
+    padding-bottom: max(4px, env(safe-area-inset-bottom, 0)) !important;
   }
 
   .login-page #app-footer.login-footer {
@@ -3119,8 +3120,8 @@ body.driver-modal-open {
   justify-content: space-between !important;
   width: 100% !important;
   max-width: 500px !important;
-  padding: 8px 12px !important;
-  padding-bottom: max(12px, env(safe-area-inset-bottom, 0)) !important;
+  padding: 4px 12px !important;
+  padding-bottom: max(6px, env(safe-area-inset-bottom, 0)) !important;
   box-sizing: border-box !important;
   font-size: 13px !important;
   color: #bbb !important;
@@ -3293,9 +3294,9 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     position: relative !important;
     z-index: 10006 !important;
   }
-  /* MasaÃ¼stÃ¼: footer modal (app-container) altÄ±nda ortalanmÄ±ÅŸ olsun; 56px yÃ¼kseklik kÄ±rmÄ±zÄ± Ã§izgilerle hizalansÄ±n */
+  /* MasaÃ¼stÃ¼: footer modal (app-container) altÄ±nda ortalanmÄ±ÅŸ olsun; ince yÃ¼kseklik */
   .login-page #app-footer.login-footer {
-    min-height: 56px !important;
+    min-height: 40px !important;
     left: 50% !important;
     right: auto !important;
     width: 100% !important;
@@ -3303,12 +3304,12 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     transform: translateX(-50%) !important;
   }
   .login-page #app-footer.login-footer .footer-content {
-    padding: 8px 12px !important;
-    padding-bottom: max(12px, env(safe-area-inset-bottom, 0)) !important;
+    padding: 4px 12px !important;
+    padding-bottom: max(6px, env(safe-area-inset-bottom, 0)) !important;
   }
-  /* Login footer 56px; kÄ±rmÄ±zÄ± Ã§izgiler footer'a deÄŸsin */
+  /* Login footer ince; kÄ±rmÄ±zÄ± Ã§izgiler footer'a deÄŸsin */
   .login-page .driver-dashboard-container {
-    --app-footer-height: 56px;
+    --app-footer-height: 40px;
   }
   /* MasaÃ¼stÃ¼ kullanÄ±cÄ± paneli + Åifre ekranÄ±: kÄ±rmÄ±zÄ± Ã§izgiler footer'Ä±n tam Ã¼stÃ¼nde (0) biter, erken kesilmesin */
   .dashboard-page .driver-dashboard-container::before,
@@ -4406,7 +4407,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     box-shadow: 0 -14px 28px rgba(var(--theme-color-rgb), 0.45) !important;
   }
   .login-page #app-footer.login-footer .footer-content {
-    padding: 8px 12px !important;
+    padding: 4px 12px !important;
   }
 
   /* 5. Åifre ekranÄ± header: kullanÄ±cÄ± paneli ile aynÄ± (yan Ã§izgiler container'da, padding panel ile aynÄ±) */
@@ -4589,12 +4590,12 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   /* PWA: footer yÃ¼ksekliÄŸi html safe-area ile Ã§akÄ±ÅŸmasÄ±n (Ã§ift alt boÅŸluk engeli) */
   .dashboard-page #app-footer,
   .login-page #app-footer.login-footer {
-    min-height: var(--app-footer-height, 48px) !important;
+    min-height: var(--app-footer-height, 36px) !important;
     padding-bottom: 0 !important;
   }
   .dashboard-page #app-footer .footer-content,
   .login-page #app-footer.login-footer .footer-content {
-    padding-bottom: 12px !important;
+    padding-bottom: 6px !important;
   }
 
   /* 1. satÄ±ra dokunulmaz. 2. satÄ±r (subtitle) 768px'ten 1pt kÃ¼Ã§Ã¼k */
