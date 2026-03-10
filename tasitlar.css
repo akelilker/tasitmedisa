@@ -645,6 +645,15 @@
     color: #ffffff !important;
     padding-bottom: 1px !important; /* Sekme metni ile altındaki yatay çizgi arası 1px */
 }
+/* Masaüstü: Tarihçe sekme başlıkları 1pt büyük; sol ok + Taşıt Detayları 6px yukarı (mobil etkilenmez) */
+@media (min-width: 641px) {
+  #vehicle-history-modal #history-tabs .history-tab {
+    font-size: 13px !important;
+  }
+  #vehicle-history-modal .universal-back-bar {
+    margin-top: -6px;
+  }
+}
 
 /* Tarihçe: sadece etiketler (tarih, başlık) beyaz; kullanıcı verileri gri */
 #vehicle-history-modal .history-item-date {
