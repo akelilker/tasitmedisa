@@ -3273,20 +3273,23 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 }
 
 @media (min-width: 769px) {
-  /* Masaüstü: footer ışığı (glow); scroll alanı (z-index:10004) üstünde kalması için 10006 */
+  /* Masaüstü: footer tabanda sabit; glow scroll alanı üstünde (z-index 10006) */
   .dashboard-page #app-footer,
   .login-page #app-footer.login-footer {
     box-shadow: 0 -15px 35px rgba(var(--theme-color-rgb), 0.35) !important;
-    position: relative !important;
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
     z-index: 10006 !important;
   }
-  /* MasaÃ¼stÃ¼: footer modal (app-container) altÄ±nda ortalanmÄ±ÅŸ olsun; ince yÃ¼kseklik */
+  /* Masaüstü: login footer ince yükseklik, içerik ortalanmış (max-width 500px) */
   .login-page #app-footer.login-footer {
     min-height: 34px !important;
-    left: 50% !important;
-    right: auto !important;
     width: 100% !important;
     max-width: 500px !important;
+    left: 50% !important;
+    right: auto !important;
     transform: translateX(-50%) !important;
   }
   .login-page #app-footer.login-footer .footer-content {
@@ -4558,10 +4561,10 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     bottom: calc(var(--app-footer-height, 30px) + env(safe-area-inset-bottom, 0)) !important;
   }
   
-  /* Container alt boÅŸluÄŸu (Ã§ift boÅŸluk hatasÄ±nÄ± Ã¶nler) */
+  /* Container alt boÅŸluÄŸu: footer yüksekliÄŸi + safe-area (Ã§ift boÅŸluk Ã¶nlenir) */
   .dashboard-page .driver-dashboard-container,
   .login-page .driver-dashboard-container {
-    padding-bottom: calc(var(--app-footer-height, 30px)) !important;
+    padding-bottom: calc(var(--app-footer-height, 30px) + env(safe-area-inset-bottom, 0)) !important;
   }
 
   /* PWA: footer yÃ¼ksekliÄŸi html safe-area ile Ã§akÄ±ÅŸmasÄ±n (Ã§ift alt boÅŸluk engeli) */
