@@ -512,7 +512,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
         border-top: 1px solid rgba(200, 200, 200, 0.52);
         border-left: 0.6px solid rgba(255, 255, 255, 0.24);
         border-right: 0.6px solid rgba(255, 255, 255, 0.24);
-        /* TEŞHİS: kırmızı ışık geçici kapalı */ box-shadow: none !important; /* box-shadow: 0 -16px 26px rgba(var(--footer-glow-rgb), 0.34); */
+        box-shadow: 0 -16px 26px rgba(var(--footer-glow-rgb), 0.34);
     }
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer .footer-content {
         padding: 8px 12px;
@@ -1121,7 +1121,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   }
   /* Ana sayfa masaüstü/tablet: footer ışığı belirgin kalsın */
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer {
-    /* TEŞHİS: kırmızı ışık geçici kapalı */ box-shadow: none !important; /* box-shadow: 0 -16px 26px rgba(var(--footer-glow-rgb), 0.52); */
+    box-shadow: 0 -16px 26px rgba(var(--footer-glow-rgb), 0.52);
   }
   /* Anasayfa masaüstü: başlık kutunun içine sığsın */
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-spacer {
@@ -1172,7 +1172,10 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   isolation: isolate !important; /* Yeni stacking context; footer glow modal iÃ§ine sÄ±zamaz */
   display: none;
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
+  top: 0 !important;
+  left: 0;
+  right: 0;
+  bottom: calc(var(--app-footer-height, 30px) + 3px + env(safe-area-inset-bottom, 0)) !important; /* TaÅŸma engelle: footer Ã¼stÃ¼nde kes */
   background: var(--shadow-overlay);
   backdrop-filter: blur(5px);
   z-index: 9999;
@@ -1306,6 +1309,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
 .user-panel-body {
   flex: 1 1 auto !important;
   min-height: 0 !important; /* Flex iÃƒÂ§inde kÃƒÂ¼ÃƒÂ§ÃƒÂ¼lebilsin, taÃ…Å¸an iÃƒÂ§erik scroll olsun */
+  max-height: 100% !important;
   overflow-y: auto !important;
   overflow-x: hidden !important;
   touch-action: pan-y !important; /* Sadece bu alanda dikey parmak hareketine izin */
@@ -1438,7 +1442,7 @@ body.modal-open .user-panel-link {
     border-left: 0.5px solid rgba(255, 255, 255, 0.20);  /* MasaÃƒÂ¼stÃƒÂ¼: ince + soluk */
     border-right: 0.5px solid rgba(255, 255, 255, 0.20);
     /* Footer'dan yukarÃ„Â± Ã„Â±Ã…Å¸Ã„Â±ldama (3px daha yukarÃ„Â±, aÃƒÂ§Ã„Â±k kÃ„Â±rmÃ„Â±zÃ„Â±) */
-    /* TEŞHİS: kırmızı ışık geçici kapalı */ box-shadow: none !important; /* box-shadow: 0 -13px 20px rgba(var(--footer-glow-rgb), 0.22); */
+    box-shadow: 0 -13px 20px rgba(var(--footer-glow-rgb), 0.22);
 }
 
 
@@ -1850,7 +1854,7 @@ body.modal-open .user-panel-link {
     #app-footer {
         position: fixed;
         bottom: 0;
-        /* TEŞHİS: kırmızı ışık geçici kapalı */ box-shadow: none !important; /* box-shadow: 0 -15px 22px rgba(var(--footer-glow-rgb), 0.45); */
+        box-shadow: 0 -15px 22px rgba(var(--footer-glow-rgb), 0.45);
         border-left: none; /* Mobilde yan yok */
         border-right: none;
         border-top: 1px solid rgba(128, 128, 128, 0.5) !important; /* Gri ÃƒÂ§izgi */
