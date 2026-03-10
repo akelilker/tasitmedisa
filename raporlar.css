@@ -3,7 +3,7 @@ RAPORLAR MODAL CSS - FINAL (PWA FIX & DESKTOP 52PX)
 ========================================= */
 
 /* Modal Overlay */
-/* Overlay konumu style-core .modal-overlay (6px) kullanÄ±lÄ±r */
+/* Overlay konumu style-core .modal-overlay (6px) kullanılır */
 #reports-modal.modal-overlay {
 display: none !important;
 background: transparent;

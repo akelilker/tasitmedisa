@@ -2,7 +2,7 @@
    TAŞIT KAYIT FORMU - FINAL (PWA FIX & DESKTOP 52PX)
    ========================================= */
 
-/* Overlay konumu/style-core .modal-overlay (6px boÅŸluk, z-index, isolation) kullanÄ±lÄ±r */
+/* Overlay konumu/style-core .modal-overlay (6px boşluk, z-index, isolation) kullanılır */
 #vehicle-modal.modal-overlay {
     display: none;
     background: transparent;

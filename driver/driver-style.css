@@ -1,6 +1,6 @@
 /* =========================================
-   MEDISA KULLANICI MODÃœLÃœ - ANA TEMA UYUMLU
-   style-core.css deÄŸiÅŸkenleri kullanÄ±lÄ±r: --theme-color, --bg, --card-bg, --txt, --muted, --br
+   MEDISA KULLANICI MODÜLÜ - ANA TEMA UYUMLU
+   style-core.css değişkenleri kullanılır: --theme-color, --bg, --card-bg, --txt, --muted, --br
    ========================================= */
 
 /* --- Scrollbar Gizleme (html/body/modal style-core'da; sadece driver-spesifik) --- */
@@ -15,7 +15,7 @@
   display: none !important;
 }
 
-/* --- style-core.css border Ã§akÄ±ÅŸmalarÄ±nÄ± temizle (driver sayfalarÄ±nda border tek kaynaktan gelsin) --- */
+/* --- style-core.css border çakışmalarını temizle (driver sayfalarında border tek kaynaktan gelsin) --- */
 /* style-core .app-container Ã¼st border â€“ ::before ile Ã§iziliyor, iptal */
 .dashboard-page .app-container.driver-dashboard-container,
 .login-page .app-container.driver-dashboard-container {
