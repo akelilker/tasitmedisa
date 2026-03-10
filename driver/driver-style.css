@@ -2427,13 +2427,6 @@ body.driver-modal-open {
   overscroll-behavior: none;
   overscroll-behavior-x: none;
 }
-/* Desktop: avoid double bottom line on Edit Request modal */
-@media (min-width: 641px) {
-  #edit-request-modal .driver-modal-content,
-  #edit-request-modal .modal-container {
-    border-bottom-color: transparent !important;
-  }
-}
 #history-modal .modal-header,
 #edit-request-modal .modal-header,
 #driver-event-menu-modal .modal-header,
