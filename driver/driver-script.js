@@ -2113,7 +2113,6 @@ const API_BASE = (function(){
               showEditBtn = true;
               if (item.kaza_durumu) {
                   detailsHtml = `<p><strong>Kaza:</strong> ${escapeHtmlDriver(capitalizeWords(item.kaza_aciklama || 'Var'))}</p>`;
-                  if (item.kaza_tarih) detailsHtml += `<p><strong>Tarih:</strong> ${escapeHtmlDriver(item.kaza_tarih)}</p>`;
                   if (item.kaza_hasar_tutari) detailsHtml += `<p><strong>Hasar Tutar\u0131:</strong> ${escapeHtmlDriver(item.kaza_hasar_tutari)} TL</p>`;
               } else if (item.bakim_durumu) {
                   detailsHtml = `<p><strong>Bak\u0131m:</strong> ${escapeHtmlDriver(capitalizeWords(item.bakim_aciklama || 'Var'))}</p>`;
