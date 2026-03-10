@@ -1448,8 +1448,10 @@ body.modal-open .user-panel-link {
     width: 100%;
     margin: 0 auto;
     background: var(--bg);
-    z-index: 10000; /* Modal overlay (9999) Ã¼stÃ¼nde */
+    z-index: 10000;
+    height: var(--app-footer-real-height, 34px) !important;
     min-height: var(--app-footer-real-height, 34px) !important;
+    box-sizing: border-box !important;
     padding-top: 4px !important;
     padding-bottom: calc(4px + env(safe-area-inset-bottom, 0)) !important;
     border-top: 0.8px solid rgba(128, 128, 128, 0.5);
