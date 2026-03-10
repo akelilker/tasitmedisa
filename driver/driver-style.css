@@ -3389,10 +3389,10 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
   /* Mobil: footer'dan yukarı kırmızı ışık (login + kullanıcı paneli modallarında). Login footer = dashboard birebir aynı */
   .dashboard-page #app-footer {
-    box-shadow: 0 -12px 28px rgba(var(--theme-color-rgb), 0.50) !important;
+    box-shadow: 0 -22px 40px rgba(var(--theme-color-rgb), 0.52) !important;
   }
   .login-page #app-footer.login-footer {
-    box-shadow: 0 -12px 28px rgba(var(--theme-color-rgb), 0.50) !important;
+    box-shadow: 0 -22px 40px rgba(var(--theme-color-rgb), 0.52) !important;
     border-left: 0.5px solid rgba(255, 255, 255, 0.10) !important;
     border-right: 0.5px solid rgba(255, 255, 255, 0.10) !important;
   }
