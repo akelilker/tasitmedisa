@@ -1188,7 +1188,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   align-items: center;
   padding: 20px;
   box-sizing: border-box;
-  overflow: hidden !important;
+  overflow: visible !important; /* Modal glow'un altta kesilmemesi için */
   overscroll-behavior: none !important;
   touch-action: none !important;
 }
@@ -2161,7 +2161,7 @@ body.modal-open::after {
   width: 100%;
   bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0));
   height: var(--app-footer-gap);
-  background: var(--bg) !important;
+  background: linear-gradient(to bottom, transparent, var(--bg)) !important;
   z-index: 9998;
   pointer-events: none;
 }
