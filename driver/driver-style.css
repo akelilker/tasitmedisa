@@ -2242,7 +2242,8 @@ body.driver-modal-open {
 }
 
 .driver-modal-content {
-  background: var(--modal-bg);
+  background: var(--modal-bg) !important;
+  background-color: var(--modal-bg) !important; /* Cam etkisini beton: Ä±ÅŸÄ±k alttan sÄ±zmasÄ±n */
   border-radius: var(--modal-radius, 10px);
   width: 100%;
   max-width: min(500px, calc(100vw - 40px));
@@ -2251,6 +2252,7 @@ body.driver-modal-open {
   display: flex;
   flex-direction: column;
   border: 1px solid var(--br);
+  border-bottom: 1px solid var(--modal-bg) !important; /* Alt Ã§erÃ§eve solid */
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
 }
 
@@ -2399,6 +2401,8 @@ body.driver-modal-open {
 #driver-kasko-modal .driver-modal-content,
 #driver-kasko-modal .modal-container {
   background: var(--modal-bg) !important;
+  background-color: var(--modal-bg) !important;
+  border-bottom: 1px solid var(--modal-bg) !important;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   width: 100%;
@@ -3765,7 +3769,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     z-index: 10012 !important;
   }
   body.driver-modal-open .driver-modal.show {
-    z-index: 10013 !important;
+    z-index: 99999 !important; /* En dÄ±ÅŸ overlay footer (10012) ve glow'un KESÄ°N Ã¼stÃ¼nde */
   }
   /* GeÃ§miÅŸ KayÄ±tlar / DÃ¼zeltme Talebi aÃ§Ä±kken modalâ€“footer 6px boÅŸluÄŸunda kÄ±rmÄ±zÄ± dikey parÃ§alar kalmasÄ±n */
   body.dashboard-page:has(#history-modal.driver-modal.show) .driver-dashboard-container::before,
