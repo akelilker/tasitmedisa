@@ -1462,7 +1462,7 @@ body.modal-open .user-panel-link {
 
 /* Görsel Yalıtım: modal açıkken footer glow 11px boşluktan asil süzülsün */
 body.modal-open #app-footer {
-    box-shadow: 0 -15px 30px rgba(var(--theme-color-rgb), 0.45) !important;
+    box-shadow: 0 -5px 10px rgba(var(--theme-color-rgb), 0.5) !important;
 }
 
 #app-footer .footer-content {
