@@ -817,6 +817,110 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   display: none !important;
 }
 
+/* MTV Bildirimi - Global Çakışma Önleyici */
+#notifications-dropdown .mtv-notification {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  border: 1px solid rgba(255, 140, 0, 0.6) !important;
+  border-radius: 12px !important;
+  background: var(--bg-2) !important;
+  padding: 10px 12px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  transition: all 0.2s ease !important;
+}
+
+#notifications-dropdown .mtv-notification:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(255, 140, 0, 0.25) !important;
+}
+
+#notifications-dropdown .mtv-notification > div {
+  width: auto !important;
+  margin-bottom: 0 !important;
+}
+
+.mtv-text-container {
+  flex: 1 1 auto !important;
+  text-align: left !important;
+  padding-right: 8px !important;
+  min-width: 0 !important;
+}
+
+.mtv-text-container span.mtv-main-text {
+  font-size: 12.5px !important;
+  font-weight: 500 !important;
+  color: var(--orange-warn) !important;
+  white-space: normal !important;
+  display: inline-block !important;
+  line-height: 1.4 !important;
+}
+
+.mtv-dismiss-wrapper {
+  flex: 0 0 auto !important;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mtv-dismiss-btn {
+  background: transparent !important;
+  border: none !important;
+  color: var(--green-success) !important;
+  width: 28px !important;
+  height: 28px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  padding: 0 !important;
+  outline: none !important;
+}
+
+.mtv-dismiss-btn svg {
+  width: 22px !important;
+  height: 22px !important;
+}
+
+.mtv-dismiss-btn:hover,
+.mtv-dismiss-btn:active,
+.mtv-dismiss-btn:focus {
+  background: transparent !important;
+  border: none !important;
+  transform: scale(1.15) !important;
+}
+
+.mtv-tooltip {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 6px;
+  background: var(--bg-2);
+  color: var(--txt-white);
+  border: 1px solid var(--border-medium);
+  padding: 6px 10px;
+  font-size: 11px;
+  border-radius: 6px;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s ease;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+}
+
+/* Hover ve mobil focus/active: tooltip görünsün */
+.mtv-dismiss-wrapper:hover .mtv-tooltip,
+.mtv-dismiss-btn:focus + .mtv-tooltip,
+.mtv-dismiss-btn:active + .mtv-tooltip {
+  opacity: 1;
+  visibility: visible;
+}
+
 /* MENÃœ â€“ hover scale taÅŸma olmasÄ±n */
 .menu-container {
   display: flex;
@@ -1080,10 +1184,13 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   display: flex !important;
 }
 
-/* Ana uygulama modalÄ±: footer (10000) Ã¼stÃ¼ne alÄ±nÄ±r, glow gÃ¶rÃ¼nÃ¼r kalÄ±r */
+/* Ana uygulama modalı: Modal her zaman footer ışığının üstünde kalır (10002), böylece kırmızı ışık içeri sızamaz.
+   clip-path ile karanlık overlay'in alt kısmı kesilir, böylece footer ve aradaki boşluk kararmadan pırıl pırıl parlar. */
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay.active,
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay.open {
   z-index: 10002 !important;
+  -webkit-clip-path: inset(0 0 calc(var(--app-footer-height, 48px) + var(--modal-gap-above-footer, 5px) + env(safe-area-inset-bottom, 0)) 0) !important;
+  clip-path: inset(0 0 calc(var(--app-footer-height, 48px) + var(--modal-gap-above-footer, 5px) + env(safe-area-inset-bottom, 0)) 0) !important;
 }
 .modal-overlay .modal-container,
 .login-container,

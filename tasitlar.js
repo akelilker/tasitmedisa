@@ -4229,11 +4229,26 @@ function renderVehicleDetailLeft(vehicle) {
     recentEvents.sort((a, b) => getEventSortTime(b.event) - getEventSortTime(a.event));
     const recentSlice = recentEvents.slice(0, 15);
 
+    // MTV hatırlatması: Ocak (0) veya Temmuz (6), ayın 21'i ve sonrası, ödeme yapılmadıysa
+    let mtvHtml = '';
+    const today = new Date();
+    const m = today.getMonth();
+    const d = today.getDate();
+    const y = today.getFullYear();
+    if ((m === 0 || m === 6) && d >= 21) {
+      const mtvKey = 'mtv_paid_' + y + '_' + m;
+      if (!localStorage.getItem(mtvKey)) {
+        const mtvKeyEsc = (mtvKey || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+        mtvHtml = '<div class="notification-item mtv-notification"><div class="mtv-text-container"><span class="mtv-main-text">Ayın Son Gününe Kadar MTV Ödemelerinin Yapılması Gerekmektedir.</span></div><div class="mtv-dismiss-wrapper"><button type="button" class="mtv-dismiss-btn" onclick="dismissMTVNotif(event, \'' + mtvKeyEsc + '\')" aria-label="Bildirimi Kapat"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></button><div class="mtv-tooltip">Ödeme Yapıldıysa Bildirimi Silebilirsiniz.</div></div></div>';
+        hasOrange = true;
+      }
+    }
+
     // Bildirimleri güncelle
     const notifDropdown = DOM.notificationsDropdown;
     const notifIcon = document.querySelector('.icon-btn[onclick="toggleNotifications(event)"]');
 
-    if (notifications.length === 0 && recentSlice.length === 0) {
+    if (notifications.length === 0 && recentSlice.length === 0 && !mtvHtml) {
       if (notifDropdown) {
         notifDropdown.innerHTML = '<button disabled>Bildirim Yok</button>';
       }
@@ -4241,7 +4256,7 @@ function renderVehicleDetailLeft(vehicle) {
         notifIcon.classList.remove('notification-red', 'notification-orange', 'notification-pulse');
       }
     } else {
-      let html = '';
+      let html = mtvHtml;
 
       // Tarih uyarıları (sigorta, kasko, muayene)
       if (notifications.length > 0) {
@@ -4255,7 +4270,11 @@ function renderVehicleDetailLeft(vehicle) {
             const dateDisplay = formatDateForDisplay(notif.date);
 
             let messageText = '';
-            if (notif.days < 0) {
+            if (notif.days <= 0 && notif.type === 'kasko') {
+                messageText = `${notif.plate} Plakalı Taşıtın Kasko Süresi Bitmiştir.`;
+            } else if (notif.days <= 0 && notif.type === 'muayene') {
+                messageText = `${notif.plate} Plakalı Taşıtın Muayene Süresi Bitmiştir.`;
+            } else if (notif.days < 0) {
                 messageText = `${notif.plate} Plakalı Taşıtın ${typeLabel} Tarihi ${Math.abs(notif.days)} Gün Geçti.`;
             } else if (notif.days === 0) {
                 messageText = `${notif.plate} Plakalı Taşıtın ${typeLabel} Tarihi Bugün Bitiyor.`;
@@ -4321,6 +4340,15 @@ function renderVehicleDetailLeft(vehicle) {
           notifIcon.classList.add('notification-red');
         }
       }
+    }
+  };
+
+  window.dismissMTVNotif = function(event, key) {
+    event.stopPropagation();
+    event.preventDefault();
+    localStorage.setItem(key, 'true');
+    if (typeof window.updateNotifications === 'function') {
+      window.updateNotifications();
     }
   };
 

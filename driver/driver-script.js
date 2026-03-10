@@ -381,6 +381,12 @@ const API_BASE = (function(){
           setupEkstraNotAutoResize();
           setupKmInputs();
 
+          // PWA butonunu sol paneldeki marka/model altına, şube üstüne taşı
+          const pwaWrapper = document.getElementById('pwa-install-wrapper');
+          const targetContainer = document.querySelector('.driver-user-plate-in-panel');
+          if (pwaWrapper && targetContainer) {
+              targetContainer.appendChild(pwaWrapper);
+          }
 
       } catch (error) {
           console.error('Veri yükleme hatası:', error);
@@ -421,9 +427,9 @@ const API_BASE = (function(){
     today.setHours(0, 0, 0, 0);
     date.setHours(0, 0, 0, 0);
     var diffDays = Math.ceil((date - today) / (1000 * 60 * 60 * 24));
-    if (diffDays < 0) return { class: 'date-warning-red', days: diffDays };
-    if (diffDays <= 3) return { class: 'date-warning-red', days: diffDays };
-    if (diffDays <= 21) return { class: 'date-warning-orange', days: diffDays };
+    if (diffDays < 0) return { class: 'driver-warn-red', days: diffDays };
+    if (diffDays <= 3) return { class: 'driver-warn-red', days: diffDays };
+    if (diffDays <= 21) return { class: 'driver-warn-orange', days: diffDays };
     return { class: '', days: diffDays };
   }
   
@@ -448,7 +454,7 @@ const API_BASE = (function(){
           const hasKmThisMonth = existingRecord && existingRecord.guncel_km != null && String(existingRecord.guncel_km).trim() !== '';
           return !hasKmThisMonth;
       })();
-      const kmClass = needsKmWarning ? 'date-warning-red' : '';
+      const kmClass = needsKmWarning ? 'driver-warn-red' : '';
       
       const sigortaW = checkDateWarningsDriver(vehicle.sigortaDate);
       const kaskoW = checkDateWarningsDriver(vehicle.kaskoDate);
@@ -473,10 +479,10 @@ const API_BASE = (function(){
           infoEl.innerHTML = `
               <div class="driver-info-item"><span class="label">Şube</span><span class="value">${escapeHtmlDriver(vehicle.branchName || '-')}</span></div>
               <div class="driver-info-item"><span class="label">Üretim Yılı</span><span class="value">${escapeHtmlDriver(vehicle.year || '-')}</span></div>
-              <div class="driver-info-item ${kmSavedClass}"><span class="label">KM</span><span class="value ${kmClass}">${escapeHtmlDriver(kmFormatted)}</span></div>
-              <div class="driver-info-item"><span class="label">Sigorta Bitiş</span><span class="value ${sigortaW.class}">${formatDriverDate(vehicle.sigortaDate) || '-'}</span></div>
-              <div class="driver-info-item"><span class="label">Kasko Bitiş</span><span class="value ${kaskoW.class}">${formatDriverDate(vehicle.kaskoDate) || '-'}</span></div>
-              <div class="driver-info-item"><span class="label">Muayene Bitiş</span><span class="value ${muayeneW.class}">${formatDriverDate(vehicle.muayeneDate) || '-'}</span></div>
+              <div class="driver-info-item ${kmSavedClass} ${kmClass}"><span class="label">KM</span><span class="value">${escapeHtmlDriver(kmFormatted)}</span></div>
+              <div class="driver-info-item ${sigortaW.class}"><span class="label">Sigorta Bitiş</span><span class="value">${formatDriverDate(vehicle.sigortaDate) || '-'}</span></div>
+              <div class="driver-info-item ${kaskoW.class}"><span class="label">Kasko Bitiş</span><span class="value">${formatDriverDate(vehicle.kaskoDate) || '-'}</span></div>
+              <div class="driver-info-item ${muayeneW.class}"><span class="label">Muayene Bitiş</span><span class="value">${formatDriverDate(vehicle.muayeneDate) || '-'}</span></div>
               <div class="driver-info-item ${anahtarSavedClass}"><span class="label">Yedek Anahtar</span><span class="value">${escapeHtmlDriver(anahtarLabel)}</span></div>
               <div class="driver-info-item ${lastikSavedClass}"><span class="label">Lastik Durumu</span><span class="value">${escapeHtmlDriver(lastikLabel)}</span></div>
               <div class="driver-info-item"><span class="label">UTTS</span><span class="value">${escapeHtmlDriver(uttsLabel)}</span></div>
@@ -1134,8 +1140,12 @@ const API_BASE = (function(){
               const w = checkDateWarningsDriver(dateStr);
               if (w.class && w.days != null) {
                   let msg;
-                  if (w.days < 0) msg = formatDriverPlaka(v.plaka) + ' Plakalı Taşıtın ' + label + ' Tarihi ' + Math.abs(w.days) + ' Gün Geçmiştir';
-                  else msg = formatDriverPlaka(v.plaka) + ' Plakalı Taşıtın ' + label + ' Tarihine ' + w.days + ' Gün Kalmıştır';
+                  if (w.days <= 0) {
+                      const bitmistirLabel = label === 'Sigorta' ? 'Trafik Sigortası' : label;
+                      msg = formatDriverPlaka(v.plaka) + ' Plakalı Taşıtın ' + bitmistirLabel + ' Bitmiştir.';
+                  } else {
+                      msg = formatDriverPlaka(v.plaka) + ' Plakalı Taşıtın ' + label + ' Tarihine ' + w.days + ' Gün Kalmıştır';
+                  }
                   warnings.push({ text: msg, plaka: formatDriverPlaka(v.plaka) });
               }
           };
@@ -2103,7 +2113,6 @@ const API_BASE = (function(){
               showEditBtn = true;
               if (item.kaza_durumu) {
                   detailsHtml = `<p><strong>Kaza:</strong> ${escapeHtmlDriver(capitalizeWords(item.kaza_aciklama || 'Var'))}</p>`;
-                  if (item.kaza_tarih) detailsHtml += `<p><strong>Tarih:</strong> ${escapeHtmlDriver(item.kaza_tarih)}</p>`;
                   if (item.kaza_hasar_tutari) detailsHtml += `<p><strong>Hasar Tutar\u0131:</strong> ${escapeHtmlDriver(item.kaza_hasar_tutari)} TL</p>`;
               } else if (item.bakim_durumu) {
                   detailsHtml = `<p><strong>Bak\u0131m:</strong> ${escapeHtmlDriver(capitalizeWords(item.bakim_aciklama || 'Var'))}</p>`;
