@@ -2125,3 +2125,39 @@ body.modal-open .content-wrap::before {
   gap: 8px;
 }
 
+/* === NOKTA ATIÅžI: Ana uygulama modallarÄ± alt Ã§erÃ§eve (KayÄ±t, TaÅŸÄ±t, Rapor) - yÃ¼ksek Ã¶ncelik === */
+@media (max-width: 768px) {
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay.active,
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay.open {
+    -webkit-clip-path: inset(0 0 calc(var(--app-footer-height, 30px) + 6px + env(safe-area-inset-bottom, 0)) 0) !important;
+    clip-path: inset(0 0 calc(var(--app-footer-height, 30px) + 6px + env(safe-area-inset-bottom, 0)) 0) !important;
+  }
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicle-modal.modal-overlay,
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #reports-modal.modal-overlay,
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicles-modal.modal-overlay {
+    bottom: calc(var(--app-footer-height, 30px) + 6px + env(safe-area-inset-bottom, 0)) !important;
+    max-height: calc(100vh - var(--app-footer-height, 30px) - 6px - env(safe-area-inset-bottom, 0)) !important;
+    max-height: calc(100dvh - var(--app-footer-height, 30px) - 6px - env(safe-area-inset-bottom, 0)) !important;
+  }
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicle-modal.modal-overlay .modal-container,
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #reports-modal.modal-overlay .modal-container,
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicles-modal.modal-overlay .modal-container {
+    border-bottom: 1px solid var(--border-red-tech, rgba(255,0,0,0.4)) !important;
+    border-bottom-left-radius: 12px !important;
+    border-bottom-right-radius: 12px !important;
+  }
+}
+
+/* === NOKTA ATIÅžI: KÄ±rmÄ±zÄ± yan Ã§izgiler footer hizasÄ±nda Ã§ivili (sarkan/kÄ±sa kalma yok) === */
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-container::before {
+  bottom: calc(var(--app-footer-height, 30px) + env(safe-area-inset-bottom, 0)) !important;
+}
+@media (max-width: 640px) {
+  .content-wrap::before {
+    bottom: calc(var(--app-footer-height, 30px) + env(safe-area-inset-bottom, 0)) !important;
+  }
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-container::before {
+    bottom: calc(var(--app-footer-height, 30px) + env(safe-area-inset-bottom, 0)) !important;
+  }
+}
+

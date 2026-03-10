@@ -153,7 +153,7 @@ body.driver-modal-open {
   top: 0;
   left: 0;
   right: 0;
-  bottom: calc(var(--app-footer-height, 30px) + env(safe-area-inset-bottom, 0));
+  bottom: calc(var(--app-footer-height, 30px) + env(safe-area-inset-bottom, 0)) !important; /* Nokta atÄ±ÅŸÄ±: footer hizasÄ±nda kesilsin */
   border-top: 0.5px solid var(--border-red-tech);
   border-left: 0.5px solid var(--border-red-tech);
   border-right: 0.5px solid var(--border-red-tech);
@@ -4767,6 +4767,20 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     width: min(420px, calc(100vw - 120px)) !important;
     min-width: 300px !important;
     max-width: min(420px, calc(100vw - 120px)) !important;
+  }
+}
+
+/* === NOKTA ATIÅžI: KÄ±rmÄ±zÄ± yan Ã§izgiler footer hizasÄ±nda Ã§ivili (sarkan/kÄ±sa kalma yok) === */
+@media (max-width: 768px) {
+  .dashboard-page .driver-dashboard-container::before,
+  .login-page .driver-dashboard-container::before {
+    bottom: calc(var(--app-footer-height, 30px) + env(safe-area-inset-bottom, 0)) !important;
+  }
+}
+@media (min-width: 769px) {
+  .dashboard-page .driver-dashboard-container::before,
+  .login-page .driver-dashboard-container::before {
+    height: calc(100vh - var(--app-footer-height, 30px) - env(safe-area-inset-bottom, 0)) !important;
   }
 }
 
