@@ -11,13 +11,13 @@ body::-webkit-scrollbar,
   display: none !important;
 }
  
-/* ========== TÃƒÅ“M :root DEÃ„Å¾Ã„Â°Ã…Å¾KENLERÃ„Â° (tek kaynak) ========== */
+/* ========== TÜM :root DEĞİŞKENLERİ (tek kaynak) ========== */
 :root {
   --theme-color: #d40000;
   --theme-color-rgb: 212, 0, 0;
-  /* Footer'dan yukarÃ„Â± sÃƒÂ¼zen Ã„Â±Ã…Å¸Ã„Â±k: MEDISA tonu ile aynÃ„Â± */
+  /* Footer'dan yukarı süzen ışık: MEDISA tonu ile aynı */
   --footer-glow-rgb: 212, 0, 0;
-  /* MEDISA marka kÃ„Â±rmÃ„Â±zÃ„Â±sÃ„Â± (theme ile aynÃ„Â±; alias) */
+  /* MEDISA marka kırmızısı (theme ile aynı; alias) */
   --brand-red: #d40000;
   --brand-red-rgb: 212, 0, 0;
   --bg: #080d16;
@@ -34,7 +34,7 @@ body::-webkit-scrollbar,
   --app-footer-real-height: 34px;
   --app-footer-gap: 14px;
   --modal-footer-reserve: calc(var(--app-footer-height) + var(--modal-footer-gap));
-  --modal-gap-above-footer: 5px; /* Mobil/masaÃƒÂ¼stÃƒÂ¼ tek deÃ„Å¸er */
+  --modal-gap-above-footer: 5px; /* Mobil/masaüstü tek değer */
 
   --modal-bg: #080d16;
   --modal-max-width: 500px;
@@ -43,13 +43,13 @@ body::-webkit-scrollbar,
   --modal-margin-bottom-mobile: calc(var(--modal-gap-above-footer) + var(--app-footer-height));
 
   --border-red-tech: rgba(var(--theme-color-rgb), 0.4);
-  --border-red-side: rgba(var(--theme-color-rgb), 0.6);  /* Anasayfa saÃ„Å¸-sol kÃ„Â±rmÃ„Â±zÃ„Â± ÃƒÂ§erÃƒÂ§eve */
+  --border-red-side: rgba(var(--theme-color-rgb), 0.6);  /* Anasayfa sağ-sol kırmızı çerçeve */
   --red-glow-subtle: rgba(var(--theme-color-rgb), 0.12);
 
   --green: #4ade80;
   --red: #ef4444;
   --form-label-color: #ffffff;
-  /* Girilen veri / aÃƒÂ§Ã„Â±klama metin rengi (beyaz-gri hiyerarÃ…Å¸isi) */
+  /* Girilen veri / açıklama metin rengi (beyaz-gri hiyerarşisi) */
   --data-value-color: #a0aec0;
 
   --bg-content: #0d131f;
@@ -90,7 +90,7 @@ body::-webkit-scrollbar,
   --hero-spacer-width: 30px;
 }
 
-/* MasaÃƒÂ¼stÃƒÂ¼ (641px+): modalÃ¢â‚¬â€œfooter arasÃ„Â± 5px (anasayfa RAPORLAR/TaÃ…Å¸Ã„Â±tlar vb.) */
+/* Masaüstü (641px+): modal–footer arası 5px (anasayfa RAPORLAR/Taşıtlar vb.) */
 @media (min-width: 641px) {
   :root {
     --app-footer-height: 34px;
@@ -99,14 +99,14 @@ body::-webkit-scrollbar,
   }
 }
 
-/* Mobil (640px ve altÃ„Â±): kontrast artÃ„Â±rma */
+/* Mobil (640px ve altı): kontrast artırma */
 @media (max-width: 640px) {
   :root {
     --txt: #ffffff;
     --muted: rgba(255, 255, 255, 0.7);
     --br: #444;
     --border-shiny: rgba(255, 255, 255, 0.35);
-    --border-red-tech: rgba(var(--theme-color-rgb), 0.52);  /* Mobil/PWA: ÃƒÂ§erÃƒÂ§eve biraz daha belirgin */
+    --border-red-tech: rgba(var(--theme-color-rgb), 0.52);  /* Mobil/PWA: çerçeve biraz daha belirgin */
     --red-glow-subtle: rgba(var(--theme-color-rgb), 0.18);
     --bg-2: #1a1a1a;
     --card-bg: #1f1f1f;
@@ -115,18 +115,18 @@ body::-webkit-scrollbar,
   }
 }
 
-/* --- EVRENSEL GERÃ„Â° DÃƒâ€“N NAVÃ„Â°GASYONU (tÃƒÂ¼m uygulama) --- */
-/* MasaÃƒÂ¼stÃƒÂ¼ ve mobil ortak: geri dÃƒÂ¶n ok + etiket hizalamasÃ„Â± (3px gap, ok 5px aÃ…Å¸aÃ„Å¸Ã„Â±, etiket 1px kÃƒÂ¼ÃƒÂ§ÃƒÂ¼k) */
+/* --- EVRENSEL GERİ DÃƒâ€“N NAVİGASYONU (tüm uygulama) --- */
+/* Masaüstü ve mobil ortak: geri dön ok + etiket hizalaması (3px gap, ok 5px aşağı, etiket 1px küçük) */
 
 .universal-back-bar {
   display: flex !important;
-  align-items: flex-start !important; /* Buton dikey hizasÃ„Â± bozulmasÃ„Â±n */
+  align-items: flex-start !important; /* Buton dikey hizası bozulmasın */
   justify-content: flex-start !important;
   padding: 8px 0 0 0 !important;
   width: 100% !important;
   margin: 0 !important;
   box-sizing: border-box !important;
-  gap: 3px !important; /* Bar iÃƒÂ§i boÃ…Å¸luk tutarlÃ„Â± */
+  gap: 3px !important; /* Bar içi boşluk tutarlı */
 }
 .universal-back-bar svg,
 .universal-back-bar i,
@@ -137,31 +137,31 @@ body::-webkit-scrollbar,
   padding: 0 !important;
 }
 
-/* Geri dÃƒÂ¶n butonu/linki: ok ile etiket arasÃ„Â± KESÃ„Â°N 3px, tÃƒÂ¼m ekranlar */
+/* Geri dön butonu/linki: ok ile etiket arası KESİN 3px, tüm ekranlar */
 .universal-back-btn,
 .universal-back-bar a.universal-back-btn {
   display: inline-flex !important;
-  align-items: center !important; /* Ok ve etiket aynÃ„Â± satÃ„Â±rda dikey ortalÃ„Â± */
+  align-items: center !important; /* Ok ve etiket aynı satırda dikey ortalı */
   gap: 3px !important;
   text-decoration: none !important;
   cursor: pointer;
   background: none;
   border: none;
-  padding: 8px 0 8px 0 !important; /* Yatay padding yok Ã¢â‚¬â€œ gap 3px kalÃ„Â±r */
+  padding: 8px 0 8px 0 !important; /* Yatay padding yok – gap 3px kalır */
   color: var(--txt);
 }
 .universal-back-btn:hover { color: var(--txt-white); }
 
-/* Etiket: 1 punto kÃƒÂ¼ÃƒÂ§ÃƒÂ¼k (14px Ã¢â€ â€™ 13px), tÃƒÂ¼m ekranlar */
+/* Etiket: 1 punto küçük (14px Ã¢â€ â€™ 13px), tüm ekranlar */
 .universal-back-label {
   color: #adb5bd !important;
-  font-size: 13px !important; /* 14px Ã¢â€ â€™ 13px (1 punto kÃƒÂ¼ÃƒÂ§ÃƒÂ¼ltme) */
+  font-size: 13px !important; /* 14px Ã¢â€ â€™ 13px (1 punto küçültme) */
   font-weight: 500 !important;
   line-height: 1 !important;
   margin: 0 !important;
 }
 
-/* Sol oku aÃ…Å¸aÃ„Å¸Ã„Â± kaydÃ„Â±rma (global, masaÃƒÂ¼stÃƒÂ¼ + mobil) Ã¢â‚¬â€œ metin baseline ile hizalÃ„Â± */
+/* Sol oku aşağı kaydırma (global, masaüstü + mobil) – metin baseline ile hizalı */
 .universal-back-btn i,
 .universal-back-btn svg,
 .universal-back-btn .back-icon-svg,
@@ -171,9 +171,9 @@ body::-webkit-scrollbar,
 .universal-back-bar .universal-back-btn .back-icon-svg,
 .universal-back-bar .universal-back-btn img {
   position: relative !important;
-  top: 0 !important; /* Ok metin baselineÃ¢â‚¬â„¢a daha iyi hizalanÃ„Â±r */
+  top: 0 !important; /* Ok metin baselineÃ¢â‚¬â„¢a daha iyi hizalanır */
   margin: 0 !important;
-  padding: 0 !important; /* 3px gap bozulmasÃ„Â±n */
+  padding: 0 !important; /* 3px gap bozulmasın */
 }
 .universal-back-btn .universal-back-label,
 .universal-back-bar .universal-back-btn .universal-back-label {
@@ -187,35 +187,35 @@ body::-webkit-scrollbar,
   flex-shrink: 0;
 }
 
-/* --- EVRENSEL Ã„Â°Ã…Å¾LEM BUTONLARI (Orijinal kayit.css matematiÃ„Å¸i ve zarafeti) --- */
-/* Buton Grubu (KapsayÃ„Â±cÃ„Â±) - Aradaki BoÃ…Å¸luÃ„Å¸u AÃƒÂ§; minmax(0,1fr) taÃ…Å¸mayÃ„Â± ÃƒÂ¶nler */
+/* --- EVRENSEL İŞLEM BUTONLARI (Orijinal kayit.css matematiği ve zarafeti) --- */
+/* Buton Grubu (Kapsayıcı) - Aradaki Boşluğu Aç; minmax(0,1fr) taşmayı önler */
 .universal-btn-group {
   display: grid !important;
-  grid-template-columns: 1fr 1fr !important; /* 2 eÃ…Å¸it kolon */
-  gap: 16px !important; /* Aradaki boÃ…Å¸luk */
+  grid-template-columns: 1fr 1fr !important; /* 2 eşit kolon */
+  gap: 16px !important; /* Aradaki boşluk */
   width: 100% !important;
-  max-width: 100% !important; /* KapsayÃ„Â±cÃ„Â±yÃ„Â± tam yay */
-  padding: 16px 0 !important; /* Yatay 0: inputlarla aynÃ„Â± hizada (modal-body zaten 20px veriyor) */
+  max-width: 100% !important; /* Kapsayıcıyı tam yay */
+  padding: 16px 0 !important; /* Yatay 0: inputlarla aynı hizada (modal-body zaten 20px veriyor) */
   box-sizing: border-box !important;
-  justify-items: stretch !important; /* ButonlarÃ„Â± hÃƒÂ¼creye tam yay */
+  justify-items: stretch !important; /* Butonları hücreye tam yay */
   background: transparent !important;
   border: none !important;
 }
 
-/* ButonlarÃ„Â±n Orijinal Zarif Formu (Ã„Â°nce Ãƒâ€¡erÃƒÂ§eve ve Sabit YÃƒÂ¼kseklik) */
+/* Butonların Orijinal Zarif Formu (İnce Çerçeve ve Sabit Yükseklik) */
 .universal-btn-save,
 .universal-btn-cancel {
   background: transparent !important;
-  height: 32px !important; /* Form estetiÃ„Å¸i iÃƒÂ§in ideal yÃƒÂ¼kseklik */
+  height: 32px !important; /* Form estetiği için ideal yükseklik */
   border-radius: 8px !important;
-  border-width: 1px !important; /* 1px ince ÃƒÂ§erÃƒÂ§eve */
+  border-width: 1px !important; /* 1px ince çerçeve */
   font-size: 11.5px !important;
   font-weight: 400 !important;
-  width: 100% !important; /* HÃƒÂ¼crenin tamamÃ„Â±nÃ„Â± kapla */
-  max-width: none !important; /* Ãƒâ€“nceki kÃ„Â±sÃ„Â±tlamalarÃ„Â± kaldÃ„Â±r */
+  width: 100% !important; /* Hücrenin tamamını kapla */
+  max-width: none !important; /* Ãƒâ€“nceki kısıtlamaları kaldır */
   min-width: 0 !important;
-  justify-self: stretch !important; /* Grid hÃƒÂ¼cresine yaslan */
-  margin: 0 !important; /* Kenar boÃ…Å¸luklarÃ„Â±nÃ„Â± sÃ„Â±fÃ„Â±rla */
+  justify-self: stretch !important; /* Grid hücresine yaslan */
+  margin: 0 !important; /* Kenar boşluklarını sıfırla */
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -228,19 +228,19 @@ body::-webkit-scrollbar,
   transition: all 0.2s ease-in-out !important;
 }
 
-/* Kaydet (YeÃ…Å¸il) - Dinamik Hover Efekti (ÃƒÅ“zerine Gelince Kaslanma) */
+/* Kaydet (Yeşil) - Dinamik Hover Efekti (Üzerine Gelince Kaslanma) */
 .universal-btn-save {
   color: var(--green-success, #28a745) !important;
   border: 1px solid rgba(40, 167, 69, 0.45) !important;
 }
 .universal-btn-save:hover {
   background: rgba(40, 167, 69, 0.12) !important;
-  font-weight: 600 !important; /* ÃƒÅ“zerine gelince metin kalÃ„Â±nlaÃ…Å¸Ã„Â±r */
+  font-weight: 600 !important; /* Üzerine gelince metin kalınlaşır */
   border-color: var(--green-success, #28a745) !important;
-  -webkit-text-stroke: 0.2px currentColor; /* Net kalÃ„Â±nlÃ„Â±k efekti */
+  -webkit-text-stroke: 0.2px currentColor; /* Net kalınlık efekti */
 }
 
-/* VazgeÃƒÂ§ (KÃ„Â±rmÃ„Â±zÃ„Â±) - Dinamik Hover Efekti */
+/* Vazgeç (Kırmızı) - Dinamik Hover Efekti */
 .universal-btn-cancel {
   color: var(--theme-color, #d40000) !important;
   border: 1px solid rgba(212, 0, 0, 0.45) !important;
@@ -252,7 +252,7 @@ body::-webkit-scrollbar,
   -webkit-text-stroke: 0.2px currentColor;
 }
 
-/* Ayarlar/Ã…Å¾ube modallarÃ„Â±: Olay Ekle standardÃ„Â± Ã¢â‚¬â€œ tam geniÃ…Å¸lik, sol hizalama */
+/* Ayarlar/Şube modalları: Olay Ekle standardı – tam genişlik, sol hizalama */
 #branch-form-modal .form-section,
 #user-form-modal .form-section,
 .settings-modal .form-section,
@@ -291,7 +291,7 @@ body::-webkit-scrollbar,
   box-sizing: border-box !important;
 }
 
-/* Buton grubu da tam geniÃ…Å¸lik (400px kÃ„Â±sÃ„Â±tlamasÃ„Â± kaldÃ„Â±rÃ„Â±ldÃ„Â±) */
+/* Buton grubu da tam genişlik (400px kısıtlaması kaldırıldı) */
 #branch-form-modal .universal-btn-group,
 #user-form-modal .universal-btn-group,
 .settings-modal .universal-btn-group,
@@ -303,7 +303,7 @@ body::-webkit-scrollbar,
   padding-right: 0 !important;
 }
 
-/* Sil butonunu grid'de tam geniÃ…Å¸likte, simetrik (3. buton alt satÃ„Â±rda tam boy) */
+/* Sil butonunu grid'de tam genişlikte, simetrik (3. buton alt satırda tam boy) */
 #branch-form-modal .settings-btn-delete,
 #user-form-modal .settings-btn-delete,
 .settings-modal .btn-delete,
@@ -320,7 +320,7 @@ body::-webkit-scrollbar,
   border: 1px solid rgba(212, 0, 0, 0.5) !important;
 }
 
-/* TÃƒÂ¼m input/select/textarea iÃƒÂ§erik metni: beyaz-gri hiyerarÃ…Å¸isi */
+/* Tüm input/select/textarea içerik metni: beyaz-gri hiyerarşisi */
 .form-input,
 select.form-input,
 select,
@@ -332,17 +332,17 @@ input[type="date"].form-input:focus {
   color: var(--data-value-color, #a0aec0) !important;
 }
 
-/* TARÃ„Â°H KUTUSU: metin yatay+dikey ortada, ikon metnin hemen yanÃ„Â±nda 3px boÃ…Å¸lukla */
+/* TARİH KUTUSU: metin yatay+dikey ortada, ikon metnin hemen yanında 3px boşlukla */
 input[type="date"].form-input {
   position: relative !important;
   display: flex !important;
   align-items: center !important;
   height: 36px !important;
   box-sizing: border-box !important;
-  padding: 0 22px 0 12px !important; /* SaÃ„Å¸: 3px kenar + ~16px ikon + 3px boÃ…Å¸luk = metne yakÃ„Â±n */
+  padding: 0 22px 0 12px !important; /* Sağ: 3px kenar + ~16px ikon + 3px boşluk = metne yakın */
 }
 
-/* Ã„Â°ÃƒÂ§ metin yatayda ve dikeyde ortada; taÃ…Å¸ma yok (hem boÃ…Å¸ hem dolu hem focus) */
+/* İç metin yatayda ve dikeyde ortada; taşma yok (hem boş hem dolu hem focus) */
 input[type="date"].form-input::-webkit-datetime-edit,
 input[type="date"].form-input::-webkit-datetime-edit-fields-wrapper,
 input[type="date"].form-input:focus::-webkit-datetime-edit,
@@ -372,7 +372,7 @@ input[type="date"].form-input.has-value::-webkit-datetime-edit {
   align-items: center !important;
 }
 
-/* Takvim ikonu: saÃ„Å¸dan 3px, dikey ortalÃ„Â±; metinle arasÃ„Â±nda 3px boÃ…Å¸luk (padding-right ile) */
+/* Takvim ikonu: sağdan 3px, dikey ortalı; metinle arasında 3px boşluk (padding-right ile) */
 input[type="date"].form-input::-webkit-calendar-picker-indicator {
   position: absolute !important;
   right: 3px !important;
@@ -404,7 +404,7 @@ html, body {
   min-height: 100vh;
   min-height: 100dvh;
   overflow: hidden;
-  overflow-x: hidden; /* Yatay taÃ…Å¸ma kesin kapalÃ„Â± */
+  overflow-x: hidden; /* Yatay taşma kesin kapalı */
   font-family: 'Inter', sans-serif;
   background-color: var(--bg);
   color: var(--txt);
@@ -414,9 +414,9 @@ html, body {
 }
 html { overflow-x: hidden; }
 
-/* ANA KAPSAYICI - Havada durma (kÃ„Â±rmÃ„Â±zÃ„Â± ÃƒÂ§erÃƒÂ§eve ile uyumlu), taÃ…Å¸ma yok */
+/* ANA KAPSAYICI - Havada durma (kırmızı çerçeve ile uyumlu), taşma yok */
 .app-container {
-    isolation: isolate; /* pseudo katman gÃƒÂ¼venli */
+    isolation: isolate; /* pseudo katman güvenli */
     position: relative;
     max-width: 500px;
     width: 100%;
@@ -426,25 +426,25 @@ html { overflow-x: hidden; }
     margin: 0 auto;
     display: flex;
     flex-direction: column;
-    overflow-x: hidden; /* Ã„Â°ÃƒÂ§erik yan taÃ…Å¸masÃ„Â±n */
+    overflow-x: hidden; /* İçerik yan taşmasın */
     box-sizing: border-box;
-    /* KIRMIZI Ãƒâ€¡ERÃƒâ€¡EVE - sadece ÃƒÂ¼st (ince) */
+    /* KIRMIZI ÇERÇEVE - sadece üst (ince) */
     border-top: 0.5px solid var(--border-red-tech);
-    box-shadow: 0 2px 14px rgba(var(--theme-color-rgb), 0.1), inset 0 0 80px rgba(10, 13, 28, 0.22);  /* Havada: kÃ„Â±rmÃ„Â±zÃ„Â± gÃƒÂ¶lge + iÃƒÂ§ parlaklÃ„Â±k (#0a0d1c tonu) */
+    box-shadow: 0 2px 14px rgba(var(--theme-color-rgb), 0.1), inset 0 0 80px rgba(10, 13, 28, 0.22);  /* Havada: kırmızı gölge + iç parlaklık (#0a0d1c tonu) */
     background: var(--bg);
     transition: border-color 0.3s ease;
 }
 
-/* KÃ„Â±rmÃ„Â±zÃ„Â± IÃ…Å¸Ã„Â±k Efekti (Overlay) */
+/* Kırmızı Işık Efekti (Overlay) */
 .app-container::after {
     content: '';
     position: absolute;
     top: 0;
     bottom: 0;
-    /* Ã„Â°ÃƒÂ§e vuran kÃ„Â±rmÃ„Â±zÃ„Â± Ã„Â±Ã…Å¸Ã„Â±k */
+    /* İçe vuran kırmızı ışık */
     box-shadow: inset 0 0 25px var(--red-glow-subtle);
-    pointer-events: none; /* TÃ„Â±klamayÃ„Â± engelleme */
-    z-index: 0; /* iÃƒÂ§erik altÃ„Â± */
+    pointer-events: none; /* Tıklamayı engelleme */
+    z-index: 0; /* içerik altı */
 }
 
 /* Ana uygulama: kavisli ust cerceveyi tek pseudo-element cizer */
@@ -472,10 +472,10 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
     z-index: 2;
 }
 
-/* Ã„Â°Ãƒâ€¡ERÃ„Â°K ALANI - Havada durma (yan kÃ„Â±rmÃ„Â±zÃ„Â± ÃƒÂ§erÃƒÂ§eve), taÃ…Å¸ma yok */
+/* İÇERİK ALANI - Havada durma (yan kırmızı çerçeve), taşma yok */
 .content-wrap {
     flex: 1;
-    min-width: 0; /* Flex ÃƒÂ§ocukta taÃ…Å¸mayÃ„Â± ÃƒÂ¶nler */
+    min-width: 0; /* Flex çocukta taşmayı önler */
     overflow-y: auto;
     overflow-x: hidden;
     padding: 4px;
@@ -484,7 +484,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
     position: relative;
     z-index: 10;
     box-sizing: border-box;
-    /* YAN Ãƒâ€¡Ã„Â°ZGÃ„Â°LER - hafif (footer'a gitmeyecek) */
+    /* YAN ÇİZGİLER - hafif (footer'a gitmeyecek) */
     border-left: 0.5px solid var(--border-red-side);
     border-right: 0.5px solid var(--border-red-side);
     box-shadow: 0 0 24px var(--red-glow-subtle);
@@ -497,7 +497,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
     border-right: none;
 }
 
-/* MasaÃƒÂ¼stÃƒÂ¼: ÃƒÂ§erÃƒÂ§eve kalÃ„Â±nlÃ„Â±Ã„Å¸Ã„Â± (ince) */
+/* Masaüstü: çerçeve kalınlığı (ince) */
 @media (min-width: 769px) {
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-container::before {
         bottom: 0;
@@ -525,11 +525,11 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
     }
 }
 
-/* HERO ALANI - Havada durma + kÃ„Â±rmÃ„Â±zÃ„Â± uyum, taÃ…Å¸ma yok */
+/* HERO ALANI - Havada durma + kırmızı uyum, taşma yok */
 .hero {
   position: relative;
   min-width: 0;
-  overflow: hidden; /* BaÃ…Å¸lÃ„Â±k ellipsis hero iÃƒÂ§inde kalsÃ„Â±n */
+  overflow: hidden; /* Başlık ellipsis hero içinde kalsın */
   background: linear-gradient(180deg, var(--hero-gradient-start), var(--hero-gradient-end));
   border: 1px solid var(--border-medium);
   border-radius: 18px;
@@ -544,8 +544,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
 .hero-logo {
   flex: 0 0 var(--hero-logo-width);
   width: var(--hero-logo-width);
-  margin-left: -5px;  /* Sola kaydÃ„Â±r */
-  transform: translateY(-1px);  /* Logo 1px yukarÃ„Â± (masaÃƒÂ¼stÃƒÂ¼) */
+  margin-left: -5px;  /* Sola kaydır */
+  transform: translateY(-1px);  /* Logo 1px yukarı (masaüstü) */
   opacity: 1 !important;
   filter: none !important;
   backdrop-filter: none !important;
@@ -555,19 +555,19 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   width: 100%;
 }
 
-/* DÃƒÅ“ZELTME: SVG ve IMG width ayarÃ„Â± */
+/* DÜZELTME: SVG ve IMG width ayarı */
 .hero-logo svg,
 .hero-logo img {
-  width: 100%; /* Container geniÃ…Å¸liÃ„Å¸ini doldur */
+  width: 100%; /* Container genişliğini doldur */
   height: auto;
   display: block;
   opacity: 1 !important; /* Tam opak, zorla */
-  filter: brightness(0.88) !important; /* Koyu temada kÃ„Â±rmÃ„Â±zÃ„Â± biraz koyu, parlama azalsÃ„Â±n */
-  object-fit: contain; /* Logo oranlarÃ„Â±nÃ„Â± koru */
+  filter: brightness(0.88) !important; /* Koyu temada kırmızı biraz koyu, parlama azalsın */
+  object-fit: contain; /* Logo oranlarını koru */
 }
 
 .hero h1 {
-  /* Orta alan - esneyebilir, taÃ…Å¸ma yok; dar ekranda ellipsis */
+  /* Orta alan - esneyebilir, taşma yok; dar ekranda ellipsis */
   flex: 1;
   min-width: 0;
   text-align: center;
@@ -580,7 +580,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   text-overflow: ellipsis;
   padding: 0 4px;
 
-  /* METALÃ„Â°K GRADYAN - Parlak krom */
+  /* METALİK GRADYAN - Parlak krom */
   background: linear-gradient(to bottom, #c2d4df 0%, #ffffff 40%, #9aadba 52%, #d6e0e8 100%) !important;
   -webkit-background-clip: text !important;
   background-clip: text !important;
@@ -597,12 +597,12 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   transform: translateY(-2px);
 }
 
-/* HERO SPACER - Logo yarÃ„Â±sÃ„Â± geniÃ…Å¸likte denge alanÃ„Â± */
+/* HERO SPACER - Logo yarısı genişlikte denge alanı */
 .hero-spacer {
   flex: 0 0 var(--hero-spacer-width);
 }
 
-/* KÃ„Â±rmÃ„Â±zÃ„Â± ÃƒÂ§izgi - Havada durma (kÃ„Â±rmÃ„Â±zÃ„Â± ÃƒÂ§erÃƒÂ§eve ile eÃ…Å¸it) */
+/* Kırmızı çizgi - Havada durma (kırmızı çerçeve ile eşit) */
 .animated-line {
   position: absolute;
   bottom: 22px;
@@ -613,10 +613,10 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   background: linear-gradient(90deg, transparent, var(--theme-color), transparent);
   border-radius: 1.6px;
   opacity: 0.6;
-  box-shadow: 0 2px 10px rgba(var(--theme-color-rgb), 0.3);  /* Havada: kÃ„Â±rmÃ„Â±zÃ„Â± glow */
+  box-shadow: 0 2px 10px rgba(var(--theme-color-rgb), 0.3);  /* Havada: kırmızı glow */
 }
 
-/* Ã„Â°KON SATIRI Ã¢â‚¬â€œ sol/orta/saÃ„Å¸: PWA butonu ortada, bildirim+ayarlar saÃ„Å¸da */
+/* İKON SATIRI – sol/orta/sağ: PWA butonu ortada, bildirim+ayarlar sağda */
 .icons-row {
   display: flex;
   align-items: center;
@@ -678,7 +678,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   flex-shrink: 0;
 }
 
-/* PWA "UygulamayÃ„Â± YÃƒÂ¼kle" butonu Ã¢â‚¬â€œ yeÃ…Å¸il metin + yeÃ…Å¸il ÃƒÂ§erÃƒÂ§eve, satÃ„Â±rda ortalÃ„Â± */
+/* PWA "Uygulamayı Yükle" butonu – yeşil metin + yeşil çerçeve, satırda ortalı */
 #pwa-install-btn,
 .pwa-install-btn {
   padding: 8px 14px;
@@ -733,7 +733,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   }
 }
 
-/* Bildirim ÃƒÂ¶Ã„Å¸eleri ÃƒÂ§erÃƒÂ§eve renkleri */
+/* Bildirim öğeleri çerçeve renkleri */
 .notification-item {
   background: var(--bg) !important;
 }
@@ -748,7 +748,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   box-shadow: 0 0 8px rgba(var(--orange-warn-rgb), 0.2);
 }
 
-/* Bildirim kutularÃ„Â± hover: sadece ÃƒÂ§erÃƒÂ§eve belirginleÃ…Å¸ir, arka plan ve yazÃ„Â± deÃ„Å¸iÃ…Å¸mez */
+/* Bildirim kutuları hover: sadece çerçeve belirginleşir, arka plan ve yazı değişmez */
 .notification-item:hover {
   border-color: rgba(255, 255, 255, 0.5) !important;
 }
@@ -785,7 +785,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   margin-bottom: 0 !important;
 }
 
-/* Bildirim: Plaka + aÃƒÂ§Ã„Â±klama (uzarsa alt satÃ„Â±ra iner), tarih ikinci satÃ„Â±rda sola dayalÃ„Â± */
+/* Bildirim: Plaka + açıklama (uzarsa alt satıra iner), tarih ikinci satırda sola dayalı */
 #notifications-dropdown .notification-item-activity {
   border: 1px solid rgba(255,255,255,0.25) !important;
   flex-direction: column !important;
@@ -797,7 +797,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   text-align: left !important;
 }
 
-/* OkunmamÃ„Â±Ã…Å¸ bildirimler: sadece kÃ„Â±rmÃ„Â±zÃ„Â± ÃƒÂ§erÃƒÂ§eve, arka plan deÃ„Å¸iÃ…Å¸mez */
+/* Okunmamış bildirimler: sadece kırmızı çerçeve, arka plan değişmez */
 #notifications-dropdown .notification-item-activity.notification-unread {
   border: 1px solid rgba(var(--theme-color-rgb), 0.8) !important;
 }
@@ -810,7 +810,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   text-align: left !important;
 }
 
-/* Bildirim dropdown: kaydÃ„Â±rÃ„Â±labilir, scrollbar gizli */
+/* Bildirim dropdown: kaydırılabilir, scrollbar gizli */
 #notifications-dropdown {
   overflow-y: auto !important;
   overflow-x: hidden !important;
@@ -926,7 +926,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   visibility: visible;
 }
 
-/* MENÃƒÅ“ Ã¢â‚¬â€œ hover scale taÃ…Å¸ma olmasÃ„Â±n */
+/* MENÜ – hover scale taşma olmasın */
 .menu-container {
   display: flex;
   flex-direction: column;
@@ -935,22 +935,22 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   max-width: 100%;
 }
 
-/* MenÃƒÂ¼ butonlarÃ„Â± - Havada durma + kÃ„Â±rmÃ„Â±zÃ„Â± uyum */
+/* Menü butonları - Havada durma + kırmızı uyum */
 .menu-btn {
   max-width: 500px;
   width: 100%;
   margin: 0 auto;
   padding: 18px;
-  background: linear-gradient(180deg, var(--hero-gradient-start), var(--hero-gradient-end)); /* Hero ile aynÃ„Â± gradient */
+  background: linear-gradient(180deg, var(--hero-gradient-start), var(--hero-gradient-end)); /* Hero ile aynı gradient */
   border: 1px solid var(--border-subtle);
   border-radius: 12px;
   cursor: pointer;
   text-align: center;
   transition: border-color 0.2s, background 0.2s, transform 0.2s, box-shadow 0.2s;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2), 0 4px 16px rgba(var(--theme-color-rgb), 0.1);  /* Havada + kÃ„Â±rmÃ„Â±zÃ„Â± */
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2), 0 4px 16px rgba(var(--theme-color-rgb), 0.1);  /* Havada + kırmızı */
   margin-bottom: 5px;
-  height: 54px; /* Sabit yÃƒÂ¼kseklik - taÃ…Å¸ma engellendi */
-  overflow: hidden; /* Metin bÃƒÂ¼yÃƒÂ¼rse taÃ…Å¸ma gizlensin */
+  height: 54px; /* Sabit yükseklik - taşma engellendi */
+  overflow: hidden; /* Metin büyürse taşma gizlensin */
   box-sizing: border-box;
   display: flex;
   align-items: center;
@@ -959,22 +959,22 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
 }
 .menu-btn:last-child { margin-bottom: 0; }
 
-/* Hover efekti sadece masaÃƒÂ¼stÃƒÂ¼ (mouse ile) Ã¢â‚¬â€œ mobilde yok */
+/* Hover efekti sadece masaüstü (mouse ile) – mobilde yok */
 @media (hover: hover) {
   .menu-btn:hover {
     border-color: var(--border-light);
-    background: linear-gradient(180deg, var(--hero-gradient-start), var(--hero-gradient-end)); /* Arka plan aynÃ„Â± kalÃ„Â±r */
-    /* Clip-safe hover: yukarÃ„Â± taÃ…Å¸Ã„Â±ma yok (ÃƒÂ¼stten kÃ„Â±rpÃ„Â±lmasÃ„Â±n) */
+    background: linear-gradient(180deg, var(--hero-gradient-start), var(--hero-gradient-end)); /* Arka plan aynı kalır */
+    /* Clip-safe hover: yukarı taşıma yok (üstten kırpılmasın) */
     transform: none;
     box-shadow: 0 6px 14px rgba(0,0,0,0.25), 0 6px 20px rgba(var(--theme-color-rgb), 0.12);
   }
   .menu-btn:hover .ttl {
     color: var(--txt-white);
-    transform: scale(1.02); /* Hafif bÃƒÂ¼yÃƒÂ¼me (buton iÃƒÂ§inde, kesilmez) */
+    transform: scale(1.02); /* Hafif büyüme (buton içinde, kesilmez) */
   }
 }
 
-/* MenÃƒÂ¼ metinleri - taÃ…Å¸ma yok, uzun metin sÃ„Â±Ã„Å¸sÃ„Â±n veya ellipsis */
+/* Menü metinleri - taşma yok, uzun metin sığsın veya ellipsis */
 .menu-btn .ttl {
   font-size: clamp(12px, 2.8vw, 14px);
   font-weight: 700;
@@ -991,11 +991,11 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   padding: 0 6px;
 }
 
-/* DROPDOWN - Her buton ayrÃ„Â± ÃƒÂ§erÃƒÂ§eve */
+/* DROPDOWN - Her buton ayrı çerçeve */
 .settings-dropdown {
   display: none;
   position: absolute;
-  top: 32px; /* AzaltÃ„Â±ldÃ„Â±: 35px Ã¢â€ â€™ 32px (daha yakÃ„Â±n) */
+  top: 32px; /* Azaltıldı: 35px Ã¢â€ â€™ 32px (daha yakın) */
   right: 0;
   background: transparent;
   border: none;
@@ -1005,7 +1005,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   z-index: 100;
   padding: 0;
   box-shadow: none;
-  overflow: visible; /* Submenu'nun dÃ„Â±Ã…Å¸arÃ„Â± ÃƒÂ§Ã„Â±kabilmesi iÃƒÂ§in */
+  overflow: visible; /* Submenu'nun dışarı çıkabilmesi için */
 }
 .settings-dropdown.open { display: block; }
 .settings-dropdown button {
@@ -1042,7 +1042,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   box-shadow: 0 6px 15px rgba(0,0,0,0.4);
 }
 
-/* SUB-MENU (Veri YÃƒÂ¶netimi iÃƒÂ§in sola aÃƒÂ§Ã„Â±lan menÃƒÂ¼) */
+/* SUB-MENU (Veri Yönetimi için sola açılan menü) */
 .settings-submenu {
   display: none;
   position: absolute;
@@ -1056,11 +1056,11 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   padding: 8px;
   box-shadow: 0 4px 12px var(--shadow-dark);
   flex-direction: column;
-  gap: 4px; /* Butonlar arasÃ„Â± boÃ…Å¸luk */
+  gap: 4px; /* Butonlar arası boşluk */
 }
 
 .settings-submenu.open {
-  display: flex; /* Flex container olarak gÃƒÂ¶ster */
+  display: flex; /* Flex container olarak göster */
 }
 
 .settings-submenu button {
@@ -1095,32 +1095,32 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
 
 .has-submenu-wrapper {
   position: relative;
-  padding-right: 8px; /* Submenu ile buton arasÃ„Â±nda gÃƒÂ¶rsel boÃ…Å¸luk */
+  padding-right: 8px; /* Submenu ile buton arasında görsel boşluk */
 }
 
 .has-submenu {
   display: flex !important;
   align-items: center !important;
-  justify-content: flex-start !important; /* Ok solda olduÃ„Å¸u iÃƒÂ§in flex-start */
-  padding: 12px !important; /* DiÃ„Å¸erleri ile aynÃ„Â± yÃƒÂ¼kseklik */
+  justify-content: flex-start !important; /* Ok solda olduğu için flex-start */
+  padding: 12px !important; /* Diğerleri ile aynı yükseklik */
   width: 100%;
 }
 
-/* Ãƒâ€“nbellek Temizle Butonu - KÃ„Â±rmÃ„Â±zÃ„Â± + Hover BÃƒÂ¼yÃƒÂ¼me */
+/* Ãƒâ€“nbellek Temizle Butonu - Kırmızı + Hover Büyüme */
 .settings-dropdown .cache-clear-btn {
-  color: var(--theme-color) !important; /* KÃ„Â±rmÃ„Â±zÃ„Â± metin */
-  border: 1px solid rgba(var(--theme-color-rgb), 0.5) !important; /* KÃ„Â±rmÃ„Â±zÃ„Â± ÃƒÂ§erÃƒÂ§eve */
+  color: var(--theme-color) !important; /* Kırmızı metin */
+  border: 1px solid rgba(var(--theme-color-rgb), 0.5) !important; /* Kırmızı çerçeve */
 }
 
 .settings-dropdown .cache-clear-btn:hover {
-  font-size: 17px !important; /* Fare ile ÃƒÂ¼zerine gidince metin bÃƒÂ¼yÃƒÂ¼sÃƒÂ¼n */
+  font-size: 17px !important; /* Fare ile üzerine gidince metin büyüsün */
   color: var(--theme-color) !important;
-  border-color: rgba(var(--theme-color-rgb), 0.7) !important; /* Hover'da daha parlak kÃ„Â±rmÃ„Â±zÃ„Â± */
+  border-color: rgba(var(--theme-color-rgb), 0.7) !important; /* Hover'da daha parlak kırmızı */
 }
 
-/* MasaÃƒÂ¼stÃƒÂ¼nde container'Ã„Â±n %45'i + metin ortalÃ„Â± */
+/* Masaüstünde container'ın %45'i + metin ortalı */
 @media (min-width: 641px) {
-  /* Ana baÃ…Å¸lÃ„Â±k: 2px aÃ…Å¸aÃ„Å¸Ã„Â± (base translateY(-2px) Ã¢â€ â€™ 0) */
+  /* Ana başlık: 2px aşağı (base translateY(-2px) Ã¢â€ â€™ 0) */
   .hero h1 {
     transform: translateY(0);
   }
@@ -1138,31 +1138,31 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
     letter-spacing: clamp(1px, 0.45vw, 3px);
   }
   .settings-dropdown {
-    width: 45%; /* MasaÃƒÂ¼stÃƒÂ¼nde container'Ã„Â±n %45'i */
+    width: 45%; /* Masaüstünde container'ın %45'i */
     max-width: 225px;
   }
-  /* MasaÃƒÂ¼stÃƒÂ¼: 6 bildirim ekranda gÃƒÂ¶rÃƒÂ¼nsÃƒÂ¼n, fazlasÃ„Â± iÃƒÂ§in aÃ…Å¸aÃ„Å¸Ã„Â± kaydÃ„Â±rÃ„Â±labilir */
+  /* Masaüstü: 6 bildirim ekranda görünsün, fazlası için aşağı kaydırılabilir */
   #notifications-dropdown {
     max-height: 380px !important;
   }
   .settings-dropdown button {
-    text-align: center; /* MasaÃƒÂ¼stÃƒÂ¼nde ortalÃ„Â± */
-    justify-content: center; /* Flexbox iÃƒÂ§in ortalama */
+    text-align: center; /* Masaüstünde ortalı */
+    justify-content: center; /* Flexbox için ortalama */
   }
   .has-submenu {
-    justify-content: center !important; /* MasaÃƒÂ¼stÃƒÂ¼nde ok ve metin ortada */
+    justify-content: center !important; /* Masaüstünde ok ve metin ortada */
   }
   .settings-submenu button {
-    text-align: center; /* MasaÃƒÂ¼stÃƒÂ¼nde ortalÃ„Â± */
-    justify-content: center; /* Flexbox iÃƒÂ§in ortalama */
+    text-align: center; /* Masaüstünde ortalı */
+    justify-content: center; /* Flexbox için ortalama */
   }
   
-  /* Footer MEDISA - MasaÃƒÂ¼stÃƒÂ¼nde hafif soldur (0.7 -> 0.5) */
+  /* Footer MEDISA - Masaüstünde hafif soldur (0.7 -> 0.5) */
   #app-footer.dimmed.delayed .brand img {
     opacity: 0.5 !important;
   }
   
-  /* MasaÃƒÂ¼stÃƒÂ¼: Modal butonlarÃ„Â± full-width (input ile aynÃ„Â± hizada) */
+  /* Masaüstü: Modal butonları full-width (input ile aynı hizada) */
   .universal-btn-save,
   .universal-btn-cancel {
     min-width: 0 !important;
@@ -1207,8 +1207,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
 .user-panel-container {
   display: flex !important;
   flex-direction: column !important;
-  overflow: hidden !important; /* DÃ„Â±Ã…Å¸ ÃƒÂ§erÃƒÂ§evenin kaymasÃ„Â±nÃ„Â± kesin kilitler */
-  touch-action: none !important; /* Kutu dÃƒÂ¼zeyinde esnemeyi yasaklar (iOS) */
+  overflow: hidden !important; /* Dış çerçevenin kaymasını kesin kilitler */
+  touch-action: none !important; /* Kutu düzeyinde esnemeyi yasaklar (iOS) */
   max-height: 90vh !important;
   box-sizing: border-box;
 }
@@ -1238,7 +1238,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
   overscroll-behavior: none;
   overscroll-behavior-x: none;
 }
-/* Header, geri ÃƒÂ§ubuÃ„Å¸u ve footer sabit kalÃ„Â±r, kaydÃ„Â±rmadan etkilenmez (Strict Flex-Scroll) */
+/* Header, geri çubuğu ve footer sabit kalır, kaydırmadan etkilenmez (Strict Flex-Scroll) */
 .modal-overlay .modal-header,
 .modal-overlay .universal-back-bar,
 .universal-btn-group {
@@ -1262,9 +1262,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
   text-align: center;
 }
 
-/* SÃ„Â°STEMDEKÃ„Â° TÃƒÅ“M MODALLARIN BAÃ…Å¾LIK YÃƒÅ“KSEKLÃ„Â°Ã„Å¾Ã„Â°NÃ„Â° 60PX'E KÃ„Â°LÃ„Â°TLEME */
+/* SİSTEMDEKİ TÜM MODALLARIN BAŞLIK YÜKSEKLİĞİNİ 60PX'E KİLİTLEME */
 .modal-overlay .modal-header {
-  position: relative !important; /* Ã„Â°ÃƒÂ§indeki absolute h2 ve X butonu iÃƒÂ§in referans */
+  position: relative !important; /* İçindeki absolute h2 ve X butonu için referans */
   height: 60px !important;
   min-height: 60px !important;
   max-height: 60px !important;
@@ -1278,7 +1278,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
   border-top-right-radius: var(--modal-radius, 10px) !important;
 }
 
-/* TÃƒÅ“M MODAL BAÃ…Å¾LIKLARI (H2) MUTLAK MERKEZE SABÃ„Â°TLEME Ã¢â‚¬â€œ X butonu ile itiÃ…Å¸mesin */
+/* TÜM MODAL BAŞLIKLARI (H2) MUTLAK MERKEZE SABİTLEME – X butonu ile itişmesin */
 .modal-overlay .modal-header h2 {
   position: absolute !important;
   left: 50% !important;
@@ -1293,7 +1293,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
   line-height: 1 !important;
 }
 
-/* Kapat (X) butonu saÃ„Å¸ kÃƒÂ¶Ã…Å¸ede, baÃ…Å¸lÃ„Â±Ã„Å¸Ã„Â±n ÃƒÂ¼stÃƒÂ¼nde tÃ„Â±klanabilir */
+/* Kapat (X) butonu sağ köşede, başlığın üstünde tıklanabilir */
 .modal-overlay .modal-close {
   position: absolute !important;
   right: 15px !important;
@@ -1314,24 +1314,24 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
 .modal-overlay .modal-close:hover {
   color: var(--theme-color);
 }
-/* Sadece gÃƒÂ¶vde (body) kaydÃ„Â±rÃ„Â±labilir Ã¢â‚¬â€œ ÃƒÂ§erÃƒÂ§eve sabit (iOS zÃ„Â±plama engeli) */
+/* Sadece gövde (body) kaydırılabilir – çerçeve sabit (iOS zıplama engeli) */
 .modal-overlay .modal-body,
 .login-body,
 .user-panel-body {
   flex: 1 1 auto !important;
-  min-height: 0 !important; /* Flex iÃƒÂ§inde kÃƒÂ¼ÃƒÂ§ÃƒÂ¼lebilsin, taÃ…Å¸an iÃƒÂ§erik scroll olsun */
+  min-height: 0 !important; /* Flex içinde küçülebilsin, taşan içerik scroll olsun */
   max-height: 100% !important;
   overflow-y: auto !important;
   overflow-x: hidden !important;
   touch-action: pan-y !important; /* Sadece bu alanda dikey parmak hareketine izin */
-  -webkit-overflow-scrolling: touch !important; /* iOS momentum kaydÃ„Â±rma */
-  overscroll-behavior-y: contain !important; /* KaydÃ„Â±rma bitince dÃ„Â±Ã…Å¸ kutuyu zÃ„Â±platmayÃ„Â± yasaklar */
+  -webkit-overflow-scrolling: touch !important; /* iOS momentum kaydırma */
+  overscroll-behavior-y: contain !important; /* Kaydırma bitince dış kutuyu zıplatmayı yasaklar */
   overscroll-behavior-x: none !important;
 }
 .modal-overlay .modal-body {
   padding: 20px;
 }
-/* Modal body varyantlarÃ„Â± (inline stil yerine) */
+/* Modal body varyantları (inline stil yerine) */
 #cache-confirm-modal .modal-body { padding: 20px 20px 12px 20px; }
 #kaza-ekle-modal .modal-body { padding-top: 20px; }
 #vehicle-history-modal .modal-body {
@@ -1351,7 +1351,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
   flex: 1 !important;
   overflow-y: auto !important;
   min-height: 0 !important;
-  padding: 15px 20px 20px 20px !important; /* Sekmeler ile iÃƒÂ§erik arasÃ„Â± 5px azaltÃ„Â±ldÃ„Â± (20Ã¢â€ â€™15) */
+  padding: 15px 20px 20px 20px !important; /* Sekmeler ile içerik arası 5px azaltıldı (20Ã¢â€ â€™15) */
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none !important;
   -ms-overflow-style: none !important;
@@ -1387,7 +1387,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
   pointer-events: none;
 }
 
-/* KullanÃ„Â±cÃ„Â± Paneli linki - footer ÃƒÂ¼stÃƒÂ¼nde, saÃ„Å¸a yaslÃ„Â± (mobilde 2px aÃ…Å¸aÃ„Å¸Ã„Â± override ile); yarÃ„Â± saydam */
+/* Kullanıcı Paneli linki - footer üstünde, sağa yaslı (mobilde 2px aşağı override ile); yarı saydam */
 .user-panel-link {
   position: fixed;
   bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0));
@@ -1428,7 +1428,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
 .user-panel-link-inner:hover {
   color: var(--theme-color);
 }
-/* Sadece anasayfada gÃƒÂ¶rÃƒÂ¼nÃƒÂ¼r; modal aÃƒÂ§Ã„Â±kken gizle */
+/* Sadece anasayfada görünür; modal açıkken gizle */
 body.modal-open .user-panel-link {
   display: none !important;
 }
@@ -1439,7 +1439,7 @@ body.modal-open .user-panel-link {
   flex-shrink: 0;
 }
 
-/* 4. FOOTER (GÃƒÅ“Ãƒâ€¡LI KIRMIZI TEMA + AYRILIK) – yÃ¼kseklik/padding ezilmesin */
+/* 4. FOOTER (GÜÇLI KIRMIZI TEMA + AYRILIK) – yÃ¼kseklik/padding ezilmesin */
 #app-footer {
     position: fixed;
     bottom: 0;
@@ -1497,7 +1497,7 @@ body.modal-open #app-footer {
     font-size: 13px;
     color: var(--txt-gray);
     white-space: nowrap;
-    opacity: 1; /* VarsayÃ„Â±lan opacity */
+    opacity: 1; /* Varsayılan opacity */
 }
 
 /* Versiyon solda - daha belirgin; ezilmesin, taÅŸmasÄ±n */
@@ -1510,7 +1510,7 @@ body.modal-open #app-footer {
     font-weight: 500;
 }
 
-/* MEDISA Brand SVG - Ortada, ince detay + Ã„Â±Ã…Å¸Ã„Â±k efekti */
+/* MEDISA Brand SVG - Ortada, ince detay + ışık efekti */
 #app-footer .brand {
     text-align: center;
     min-width: 0;
@@ -1518,19 +1518,19 @@ body.modal-open #app-footer {
     display: flex;
     align-items: center;
     justify-content: center;
-    letter-spacing: 2.5px; /* 1px Ã¢â€ â€™ 2.5px daha geniÃ…Å¸ */
+    letter-spacing: 2.5px; /* 1px Ã¢â€ â€™ 2.5px daha geniş */
 }
 
-/* --- DÃƒÅ“ZELTME: img olarak deÃ„Å¸iÃ…Å¸tirildi; taÃ…Å¸mayÃ„Â± ÃƒÂ¶nlemek iÃƒÂ§in alan iÃƒÂ§inde ÃƒÂ¶lÃƒÂ§eklenir --- */
+/* --- DÜZELTME: img olarak değiştirildi; taşmayı önlemek için alan içinde ölçeklenir --- */
 #app-footer .brand img {
     max-width: 100%;
     height: auto;
     max-height: 12.5px;
     width: auto;
-    opacity: 0.4; /* BaÃ…Å¸langÃ„Â±ÃƒÂ§ ÃƒÂ§ok soluk */
+    opacity: 0.4; /* Başlangıç çok soluk */
     filter: none;
     transition: opacity 1s ease;
-    /* Harfler arasÃ„Â± boÃ…Å¸luk efekti iÃƒÂ§in resmi yayvanlaÃ…Å¸tÃ„Â±r */
+    /* Harfler arası boşluk efekti için resmi yayvanlaştır */
     transform: scaleX(1.1);
     object-fit: contain;
 }
@@ -1541,27 +1541,27 @@ body.modal-open #app-footer {
     flex-shrink: 1;
 }
 
-/* Durum saÃ„Å¸da; ezilmesin, taÃ…Å¸masÃ„Â±n */
+/* Durum sağda; ezilmesin, taşmasın */
 #app-footer .status {
     text-align: right;
     flex: 1;
     flex-shrink: 0 !important;
     white-space: nowrap !important;
     display: flex;
-    justify-content: flex-end; /* Ã„Â°ÃƒÂ§eriÃ„Å¸i saÃ„Å¸a it */
+    justify-content: flex-end; /* İçeriği sağa it */
     align-items: center;
-    gap: 4px; /* Ã„Â°kon ve yazÃ„Â± arasÃ„Â± */
-    min-width: 0; /* Flexbox taÃ…Å¸masÃ„Â±nÃ„Â± ÃƒÂ¶nler */
+    gap: 4px; /* İkon ve yazı arası */
+    min-width: 0; /* Flexbox taşmasını önler */
 }
 
-/* Transition'larÃ„Â± her zaman aktif tut */
+/* Transition'ları her zaman aktif tut */
 #app-footer .version,
 #app-footer .status,
 #app-footer .brand img {
   transition: opacity 1s ease !important;
 }
 
-/* Sayfa aÃƒÂ§Ã„Â±ldÃ„Â±Ã„Å¸Ã„Â±nda: Versiyon ve durum normal, MEDISA soluk */
+/* Sayfa açıldığında: Versiyon ve durum normal, MEDISA soluk */
 #app-footer.dimmed .version,
 #app-footer.dimmed .version#version-display { 
   opacity: 1 !important; 
@@ -1589,17 +1589,17 @@ body.modal-open #app-footer {
   opacity: 0.8 !important; 
 }
 .status-ready {
-  color: var(--green) !important; /* Zorla yeÃ…Å¸il */
-  font-weight: 600; /* Durum bilgisi kalÃ„Â±n */
-  text-shadow: 0 0 8px rgba(74, 222, 128, 0.4); /* YeÃ…Å¸il glow */
+  color: var(--green) !important; /* Zorla yeşil */
+  font-weight: 600; /* Durum bilgisi kalın */
+  text-shadow: 0 0 8px rgba(74, 222, 128, 0.4); /* Yeşil glow */
 }
 .status-error { 
   color: var(--red); 
-  font-weight: 600; /* Durum bilgisi kalÃ„Â±n */
-  text-shadow: 0 0 8px rgba(239, 68, 68, 0.4); /* KÃ„Â±rmÃ„Â±zÃ„Â± glow */
+  font-weight: 600; /* Durum bilgisi kalın */
+  text-shadow: 0 0 8px rgba(239, 68, 68, 0.4); /* Kırmızı glow */
 }
 
-/* MOBÃ„Â°L AYARLARI: 768px ve altÃ„Â±nda modal alt ÃƒÂ§erÃƒÂ§eve footer Ã„Â±Ã…Å¸Ã„Â±Ã„Å¸Ã„Â±nda ezilmesin; sÃ„Â±nÃ„Â±r sadece top/bottom */
+/* MOBİL AYARLARI: 768px ve altında modal alt çerçeve footer ışığında ezilmesin; sınır sadece top/bottom */
 @media (max-width: 768px) {
     .modal-overlay {
         bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
@@ -1615,19 +1615,19 @@ body.modal-open #app-footer {
 }
 
 @media (max-width: 640px) {
-    /* :root override'larÃ„Â± dosya baÃ…Å¸Ã„Â±nda birleÃ…Å¸tirildi */
-    /* Ã¢Å“Â¨ iOS FOOTER ALTI RENK SORUNU Ã¢Å“Â¨ - Body/container aynÃ„Â± renk */
+    /* :root override'ları dosya başında birleştirildi */
+    /* Ã¢Å“Â¨ iOS FOOTER ALTI RENK SORUNU Ã¢Å“Â¨ - Body/container aynı renk */
     html, body {
         background-color: var(--bg);
         color: #ffffff !important; /* Metin rengi zorla beyaz */
     }
     
-    /* TÃƒÂ¼m metin elementleri iÃƒÂ§in kontrast artÃ„Â±rma */
+    /* Tüm metin elementleri için kontrast artırma */
     h1, h2, h3, h4, h5, h6, p, span, div, label, button {
         color: inherit; /* Parent'tan renk al */
     }
     
-    /* Mobil Footer MEDISA yazÃ„Â±sÃ„Â± */
+    /* Mobil Footer MEDISA yazısı */
     #app-footer .brand img {
         height: 13px !important; /* Mobil 13px */
     }
@@ -1640,7 +1640,7 @@ body.modal-open #app-footer {
     
     /* Mobil header logo boyutu ve dengesi */
     .hero-logo img {
-        height: 38px !important; /* Mobil header logosu 2px kÃƒÂ¼ÃƒÂ§ÃƒÂ¼ltÃƒÂ¼ldÃƒÂ¼ */
+        height: 38px !important; /* Mobil header logosu 2px küçültüldü */
         width: auto !important;
         display: block !important;
         object-fit: contain !important;
@@ -1650,37 +1650,37 @@ body.modal-open #app-footer {
         display: flex !important;
         align-items: center !important;
         margin-right: 12px !important;
-        transform: translate(-2px, 1px);  /* 2px sola, 1px aÃ…Å¸aÃ„Å¸Ã„Â± (mobil) */
+        transform: translate(-2px, 1px);  /* 2px sola, 1px aşağı (mobil) */
     }
     
-    /* Hero mobilde havada + kÃ„Â±rmÃ„Â±zÃ„Â± (anasayfa ile eÃ…Å¸it), dikey yÃƒÂ¼kseklik +5px */
+    /* Hero mobilde havada + kırmızı (anasayfa ile eşit), dikey yükseklik +5px */
     .hero {
         min-height: 65px !important;
         box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45), 0 4px 24px rgba(var(--theme-color-rgb), 0.18);
     }
     
     .hero h1 {
-        padding: 0 2px;  /* Mobilde logoÃ¢â‚¬â€œmetin arasÃ„Â± 2px */
-        letter-spacing: 2.5px;  /* Mobilde harfler arasÃ„Â± boÃ…Å¸luk 2.5px */
-        font-size: clamp(19px, 5.5vw, 23px); /* Uzun baÃ…Å¸lÃ„Â±kta minimum dÃƒÂ¼zeyde kÃƒÂ¼ÃƒÂ§ÃƒÂ¼lebilir */
-        /* PÃ„Â±rÃ„Â±l pÃ„Â±rÃ„Â±l: sis yok, keskin metin */
+        padding: 0 2px;  /* Mobilde logo–metin arası 2px */
+        letter-spacing: 2.5px;  /* Mobilde harfler arası boşluk 2.5px */
+        font-size: clamp(19px, 5.5vw, 23px); /* Uzun başlıkta minimum düzeyde küçülebilir */
+        /* Pırıl pırıl: sis yok, keskin metin */
         text-shadow: none !important;
         filter: none !important;
         -webkit-font-smoothing: antialiased;
         text-rendering: optimizeLegibility;
-        transform: translateY(-2px);  /* Havada - kÃ„Â±rmÃ„Â±zÃ„Â± ile eÃ…Å¸it */
+        transform: translateY(-2px);  /* Havada - kırmızı ile eşit */
     }
-    /* Anasayfa mobil header: logo yuvarlaÃ„Å¸Ã„Â± bÃƒÂ¼yÃƒÂ¼se de baÃ…Å¸lÃ„Â±k tek satÃ„Â±ra sÃ„Â±Ã„Å¸sÃ„Â±n */
+    /* Anasayfa mobil header: logo yuvarlağı büyüse de başlık tek satıra sığsın */
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-logo {
         margin-right: 8px !important;
     }
-    /* Ana uygulama ana ekran header mobil: ana baÃ…Å¸lÃ„Â±k +0.6pt (Ã¢â€°Ë†0.8px) */
+    /* Ana uygulama ana ekran header mobil: ana başlık +0.6pt (Ã¢â€°Ë†0.8px) */
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero h1 {
         font-size: clamp(17.8px, 5.1vw, 21.8px) !important;
         letter-spacing: 2px !important;
     }
     
-    /* Modal baÃ…Å¸lÃ„Â±klarÃ„Â± mobilde 19px, letter-spacing 0.2em */
+    /* Modal başlıkları mobilde 19px, letter-spacing 0.2em */
     .modal-header h2 {
         font-size: 19px !important;
         letter-spacing: 0.2em !important;
@@ -1702,7 +1702,7 @@ body.modal-open #app-footer {
         bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
     }
 
-    /* Modal container mobil: ÃƒÂ¼st sÃ„Â±fÃ„Â±r, overlay'Ã„Â± doldur, 10px kÃƒÂ¶Ã…Å¸e, ince ÃƒÂ§erÃƒÂ§eve */
+    /* Modal container mobil: üst sıfır, overlay'ı doldur, 10px köşe, ince çerçeve */
     .modal-overlay .modal-container {
         position: relative !important;
         max-width: 100% !important;
@@ -1729,14 +1729,14 @@ body.modal-open #app-footer {
         overscroll-behavior-x: none !important;
     }
 
-    /* Modal header: ÃƒÂ¼stten nefes almasÃ„Â± iÃƒÂ§in 12px, ÃƒÂ¼st kÃƒÂ¶Ã…Å¸eler 10px (container ile uyumlu) */
+    /* Modal header: üstten nefes alması için 12px, üst köşeler 10px (container ile uyumlu) */
     .modal-overlay .modal-header {
         padding-top: 12px !important;
         border-top-left-radius: 10px !important;
         border-top-right-radius: 10px !important;
     }
 
-    /* Mobil: modal body Ã¢â‚¬â€œ dikey scroll, alt butonlar iÃƒÂ§in fazladan kaydÃ„Â±rma boÃ…Å¸luÃ„Å¸u */
+    /* Mobil: modal body – dikey scroll, alt butonlar için fazladan kaydırma boşluğu */
     .modal-overlay .modal-body {
         padding-bottom: 24px !important;
         overflow-x: hidden !important;
@@ -1768,13 +1768,13 @@ body.modal-open #app-footer {
             height: 100% !important;
             max-height: 100% !important;
         }
-        /* Modal iÃƒÂ§eriÃ„Å¸i footer arkasÃ„Â±nda kalmasÃ„Â±n */
+        /* Modal içeriği footer arkasında kalmasın */
         .modal-overlay .modal-body {
             padding-bottom: calc(var(--app-footer-height) + env(safe-area-inset-bottom, 0)) !important;
         }
     }
 
-    /* Mobil+PWA: modal aÃƒÂ§Ã„Â±kken footerÃ¢â‚¬â€œmodal arasÃ„Â± boÃ…Å¸luktaki kÃ„Â±rmÃ„Â±zÃ„Â± ÃƒÂ§izgi kalÃ„Â±ntÃ„Â±sÃ„Â± tamamen kapansÃ„Â±n */
+    /* Mobil+PWA: modal açıkken footer–modal arası boşluktaki kırmızı çizgi kalıntısı tamamen kapansın */
     body.modal-open::after {
         content: '';
         position: fixed;
@@ -1782,13 +1782,13 @@ body.modal-open #app-footer {
         right: 0;
         width: 100vw;
         bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0));
-        height: var(--app-footer-gap); /* Modalâ€“footer arasÃ„Â± 4px nefes payÃ„Â± ile uyumlu */
+        height: var(--app-footer-gap); /* Modalâ€“footer arası 4px nefes payı ile uyumlu */
         background: var(--bg) !important;
         z-index: 9998;
         pointer-events: none;
     }
 
-    /* Header ikonlarÃ„Â± (saÃ„Å¸ ÃƒÂ¼st): SVG 24px, padding artÃ„Â±rÃ„Â±ldÃ„Â± */
+    /* Header ikonları (sağ üst): SVG 24px, padding artırıldı */
     .icons-row .icon-btn svg {
         width: 24px !important;
         height: 24px !important;
@@ -1796,26 +1796,26 @@ body.modal-open #app-footer {
     .icons-row .icon-btn {
         padding: 8px !important;
     }
-    /* Modal geri/kapat butonlarÃ„Â± mobilde daha bÃƒÂ¼yÃƒÂ¼k tÃ„Â±klanabilir alan */
+    /* Modal geri/kapat butonları mobilde daha büyük tıklanabilir alan */
     .modal-overlay .modal-close {
         padding: 12px !important;
         min-width: 44px !important;
         min-height: 44px !important;
     }
     
-    /* Ana sayfa butonlarÃ„Â± mobilde: yÃƒÂ¼kseklik +2px (64px), gri ÃƒÂ§erÃƒÂ§eve parlak, havada kÃ„Â±rmÃ„Â±zÃ„Â± gÃƒÂ¶lge */
+    /* Ana sayfa butonları mobilde: yükseklik +2px (64px), gri çerçeve parlak, havada kırmızı gölge */
     .menu-btn {
         height: 64px !important; /* 62px + 2px */
         box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25), 0 4px 20px rgba(var(--theme-color-rgb), 0.14);
-        border-color: rgba(255, 255, 255, 0.55); /* Ãƒâ€¡erÃƒÂ§eve gri daha parlak (0.45Ã¢â€ â€™0.55, kalÃ„Â±nlÃ„Â±k aynÃ„Â±) */
+        border-color: rgba(255, 255, 255, 0.55); /* Çerçeve gri daha parlak (0.45Ã¢â€ â€™0.55, kalınlık aynı) */
     }
     
-    /* MenÃƒÂ¼ butonlarÃ„Â± arasÃ„Â± dikey boÃ…Å¸luk +2px */
+    /* Menü butonları arası dikey boşluk +2px */
     .menu-container {
         gap: 8px !important;
     }
     
-    /* MOBÃ„Â°LDE YAN Ãƒâ€¡Ã„Â°ZGÃ„Â°LER Ã¢â‚¬â€œ ufak belirginleÃ…Å¸tirme (0.72) */
+    /* MOBİLDE YAN ÇİZGİLER – ufak belirginleştirme (0.72) */
     .content-wrap { 
         border-left: none;
         border-right: none;
@@ -1838,7 +1838,7 @@ body.modal-open #app-footer {
         display: none;
     }
     
-    /* CONTAINER ÃƒÂ¼st ÃƒÂ§izgi (mobil anasayfa kÃ„Â±rmÃ„Â±zÃ„Â± ÃƒÂ§erÃƒÂ§eve); footer boÃ…Å¸luÃ„Å¸u driver ile tutarlÃ„Â± */
+    /* CONTAINER üst çizgi (mobil anasayfa kırmızı çerçeve); footer boşluğu driver ile tutarlı */
     body:not(.dashboard-page):not(.login-page) .app-container {
         padding-bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
     }
@@ -1854,25 +1854,25 @@ body.modal-open #app-footer {
         border-right-color: rgba(var(--theme-color-rgb), 0.72);
     }
     
-    /* KÃ„Â±rmÃ„Â±zÃ„Â± ÃƒÂ§erÃƒÂ§eve mobilde havada: iÃƒÂ§ Ã„Â±Ã…Å¸Ã„Â±k tam (kÃ„Â±rmÃ„Â±zÃ„Â± ile eÃ…Å¸it) */
+    /* Kırmızı çerçeve mobilde havada: iç ışık tam (kırmızı ile eşit) */
     .app-container::after {
         box-shadow: inset 0 0 25px var(--red-glow-subtle);
     }
     
-    /* FOOTER IÃ…Å¾IKLARI: TÃƒÂ¼rk bayraÃ„Å¸Ã„Â± kÃ„Â±rmÃ„Â±zÃ„Â±sÃ„Â±, Ã„Â±Ã…Å¸Ã„Â±k yukarÃ„Â± */
+    /* FOOTER IŞIKLARI: Türk bayrağı kırmızısı, ışık yukarı */
     #app-footer {
         position: fixed;
         bottom: 0;
         box-shadow: 0 -12px 22px rgba(var(--footer-glow-rgb), 0.45);
         border-left: none; /* Mobilde yan yok */
         border-right: none;
-        border-top: 1px solid rgba(128, 128, 128, 0.5) !important; /* Gri ÃƒÂ§izgi */
+        border-top: 1px solid rgba(128, 128, 128, 0.5) !important; /* Gri çizgi */
     }
     
-    /* HEADER KIRMIZI Ãƒâ€¡Ã„Â°ZGÃ„Â° - Havada (kÃ„Â±rmÃ„Â±zÃ„Â± ÃƒÂ§erÃƒÂ§eve ile eÃ…Å¸it) */
+    /* HEADER KIRMIZI ÇİZGİ - Havada (kırmızı çerçeve ile eşit) */
     .animated-line {
         opacity: 0.8;  /* Mobilde daha belirgin */
-        box-shadow: 0 2px 12px rgba(var(--theme-color-rgb), 0.4);  /* Havada: kÃ„Â±rmÃ„Â±zÃ„Â± glow */
+        box-shadow: 0 2px 12px rgba(var(--theme-color-rgb), 0.4);  /* Havada: kırmızı glow */
     }
     
     .menu-btn .ttl {
@@ -1881,22 +1881,22 @@ body.modal-open #app-footer {
         text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);  /* Havada, metin berrak */
     }
     
-    /* Mobil: KullanÃ„Â±cÃ„Â± paneli giriÃ…Å¸ butonu 2px aÃ…Å¸aÃ„Å¸Ã„Â± */
+    /* Mobil: Kullanıcı paneli giriş butonu 2px aşağı */
     .user-panel-link {
         bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
     }
     
-    /* Mobil bildirim ÃƒÂ§erÃƒÂ§eveleri - arka plan opak */
+    /* Mobil bildirim çerçeveleri - arka plan opak */
     .notification-item {
         background: var(--bg) !important;
     }
     
-    /* Mobil bildirimlerde plaka font boyutunu 2 punto kÃƒÂ¼ÃƒÂ§ÃƒÂ¼lt */
+    /* Mobil bildirimlerde plaka font boyutunu 2 punto küçült */
     #notifications-dropdown .notification-item-activity > div:first-child {
         font-size: 11px !important; /* 13px - 2pt (Ã¢â€°Ë†2px) = 11px */
     }
     
-    /* Mobil: 5 bildirim ekranda gÃƒÂ¶rÃƒÂ¼nsÃƒÂ¼n, fazlasÃ„Â± iÃƒÂ§in aÃ…Å¸aÃ„Å¸Ã„Â± kaydÃ„Â±rÃ„Â±labilir */
+    /* Mobil: 5 bildirim ekranda görünsün, fazlası için aşağı kaydırılabilir */
     #notifications-dropdown {
         max-height: 320px !important;
         overflow-y: auto !important;
@@ -1904,7 +1904,7 @@ body.modal-open #app-footer {
         -webkit-overflow-scrolling: touch;
     }
 
-    /* === ANA KAYIT MODALI KURTARMA (Dar alana sÃ„Â±Ã„Å¸masÃ„Â± iÃƒÂ§in alt alta dizilmek zorundadÃ„Â±r) === */
+    /* === ANA KAYIT MODALI KURTARMA (Dar alana sığması için alt alta dizilmek zorundadır) === */
     #vehicle-modal .modal-body .form-section-inline:has(.radio-group),
     #vehicle-modal .modal-body .form-section-inline:has([data-group]) {
         flex-direction: column !important;
@@ -1922,7 +1922,7 @@ body.modal-open #app-footer {
         flex-wrap: nowrap !important;
         gap: 4px !important;
     }
-    /* Ana formda butonlarÃ„Â±n saÃ„Å¸a sola taÃ…Å¸mamasÃ„Â± iÃƒÂ§in orijinal dar ÃƒÂ¶lÃƒÂ§ÃƒÂ¼lerine dÃƒÂ¶nÃƒÂ¼yoruz */
+    /* Ana formda butonların sağa sola taşmaması için orijinal dar ölçülerine dönüyoruz */
     #vehicle-modal .modal-body .radio-btn,
     #vehicle-modal .modal-body .toggle-btn {
         height: 27px !important;
@@ -1933,7 +1933,7 @@ body.modal-open #app-footer {
     }
 }
 
-/* --- iOS PWA: KÃ„Â±rmÃ„Â±zÃ„Â± ÃƒÂ§erÃƒÂ§eve ekran ÃƒÂ¼stÃƒÂ¼ + kÃ„Â±vrÃ„Â±mlar paralel --- */
+/* --- iOS PWA: Kırmızı çerçeve ekran üstü + kıvrımlar paralel --- */
 @media (max-width: 768px) and (display-mode: standalone) {
     html {
         padding: 0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left) !important;
@@ -1946,11 +1946,11 @@ body.modal-open #app-footer {
         min-height: 100dvh !important;
         box-sizing: border-box !important;
     }
-    /* iOS PWA: anabaÃ…Å¸lÃ„Â±k kulaklÃ„Â±k/sensÃƒÂ¶r arkasÃ„Â±nda kalmasÃ„Â±n - content-wrap ÃƒÂ¼st padding */
+    /* iOS PWA: anabaşlık kulaklık/sensör arkasında kalmasın - content-wrap üst padding */
     .content-wrap {
         padding-top: max(12px, env(safe-area-inset-top)) !important;
     }
-    /* Ana uygulama container Ã¢â‚¬â€œ ÃƒÂ§erÃƒÂ§eve kurallarÃ„Â± */
+    /* Ana uygulama container – çerçeve kuralları */
     body:not(.dashboard-page):not(.login-page) .app-container {
         margin-top: 0 !important;
         padding-top: 0 !important;
@@ -1965,7 +1965,7 @@ body.modal-open #app-footer {
         min-height: calc(100vh - env(safe-area-inset-bottom)) !important;
         min-height: calc(100dvh - env(safe-area-inset-bottom)) !important;
     }
-    /* Admin rapor sayfasÃ„Â±: kavislere uyumlu ÃƒÂ§erÃƒÂ§eve (anasayfa ile aynÃ„Â±) */
+    /* Admin rapor sayfası: kavislere uyumlu çerçeve (anasayfa ile aynı) */
     .admin-app-container {
         border-radius: 20px !important;
         overflow: hidden !important;
@@ -1981,16 +1981,16 @@ body.modal-open #app-footer {
     }
 }
 
-/* --- MasaÃƒÂ¼stÃƒÂ¼ PWA: window-controls-overlay - baÃ…Å¸lÃ„Â±k ÃƒÂ§ubuÃ„Å¸u altÃ„Â±nda iÃƒÂ§erik --- */
+/* --- Masaüstü PWA: window-controls-overlay - başlık çubuğu altında içerik --- */
 @media (display-mode: window-controls-overlay) {
     body {
         padding-top: env(title-bar-area-height, 0px) !important;
     }
 }
 
-/* Ã„Â°ÃƒÂ§erik pseudo overlay'in ÃƒÂ¼stÃƒÂ¼nde kalsÃ„Â±n */
+/* İçerik pseudo overlay'in üstünde kalsın */
 .app-container > * { position: relative; z-index: 1; }
-/* Modal aÃƒÂ§Ã„Â±kken body kaymasÃ„Â±nÃ„Â± ve yatay kaymayÃ„Â± engelle */
+/* Modal açıkken body kaymasını ve yatay kaymayı engelle */
 body.modal-open {
     overflow: hidden;
     overflow-x: hidden;
@@ -2002,7 +2002,7 @@ body.modal-open {
     touch-action: none;
 }
 
-/* --- YENÃ„Â° EKLENEN KISIM: Modal aÃƒÂ§Ã„Â±kken ÃƒÂ§izgileri gizle --- */
+/* --- YENİ EKLENEN KISIM: Modal açıkken çizgileri gizle --- */
 body.modal-open .app-container {
     border-color: transparent !important;
 }
@@ -2011,7 +2011,7 @@ body.modal-open .content-wrap::before {
     display: none !important;
 }
 
-/* === KÃƒÅ“Ãƒâ€¡ÃƒÅ“K MODALLAR Ã„Â°Ãƒâ€¡Ã„Â°N STANDART HEADER (v79) === */
+/* === KÜÇÜK MODALLAR İÇİN STANDART HEADER (v79) === */
 #cache-confirm-modal .modal-header,
 #info-modal .modal-header,
 #tescil-tarih-confirm-modal .modal-header,
@@ -2080,8 +2080,8 @@ body.modal-open .content-wrap::before {
     color: var(--bg);
 }
 
-/* ========== MASAÃƒÅ“STÃƒÅ“ FERAHLAMA OPERASYONU ========== */
-/* Ã…Å¾ube ve KullanÃ„Â±cÃ„Â± YÃƒÂ¶netimi bilgi kutularÃ„Â±nÃ„Â± masaÃƒÂ¼stÃƒÂ¼nde bÃƒÂ¼yÃƒÂ¼tme: +1 punto metin, +3px dikey/yatay, padding kÃ„Â±sÃ„Â±tma ile simetri */
+/* ========== MASAÜSTÜ FERAHLAMA OPERASYONU ========== */
+/* Şube ve Kullanıcı Yönetimi bilgi kutularını masaüstünde büyütme: +1 punto metin, +3px dikey/yatay, padding kısıtma ile simetri */
 @media (min-width: 641px) {
     #kullanici-modal,
     #branch-form-modal,
@@ -2136,7 +2136,7 @@ body.modal-open .content-wrap::before {
   gap: 8px;
 }
 
-/* === NOKTA ATIÅžI: Ana uygulama modallarÄ± alt Ã§erÃ§eve (KayÄ±t, TaÅŸÄ±t, Rapor) - overlay clip-path yok, alt Ã§erÃ§eve gÃ¶rÃ¼nsÃ¼n; boÃ…Å¸luk 6px === */
+/* === NOKTA ATIÅžI: Ana uygulama modallarÄ± alt Ã§erÃ§eve (KayÄ±t, TaÅŸÄ±t, Rapor) - overlay clip-path yok, alt Ã§erÃ§eve gÃ¶rÃ¼nsÃ¼n; boşluk 6px === */
 @media (max-width: 768px) {
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicle-modal.modal-overlay,
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #reports-modal.modal-overlay,
