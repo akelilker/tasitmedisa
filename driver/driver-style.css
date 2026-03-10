@@ -463,7 +463,7 @@ body.driver-modal-open {
     border-top: 1px solid rgba(200, 200, 200, 0.52) !important;
     border-left: 0.6px solid rgba(255, 255, 255, 0.24) !important;
     border-right: 0.6px solid rgba(255, 255, 255, 0.24) !important;
-    box-shadow: 0 -16px 26px rgba(var(--footer-glow-rgb), 0.24) !important;
+    box-shadow: 0 -13px 26px rgba(var(--footer-glow-rgb), 0.24) !important;
   }
   .dashboard-page #app-footer .footer-content {
     display: flex !important;
@@ -3293,7 +3293,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   /* Masaüstü: footer tabanda sabit; gerçek yükseklik kilitli (34px/38px) */
   .dashboard-page #app-footer,
   .login-page #app-footer.login-footer {
-    box-shadow: 0 -15px 35px rgba(var(--theme-color-rgb), 0.35) !important;
+    box-shadow: 0 -12px 35px rgba(var(--theme-color-rgb), 0.35) !important;
     position: fixed !important;
     bottom: 0 !important;
     left: 0 !important;
@@ -4403,7 +4403,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .dashboard-page #app-footer,
   .login-page #app-footer.login-footer {
     border-top: 0.35px solid rgba(200, 200, 200, 0.55) !important;
-    box-shadow: 0 -14px 28px rgba(var(--theme-color-rgb), 0.45) !important;
+    box-shadow: 0 -11px 28px rgba(var(--theme-color-rgb), 0.45) !important;
   }
   .login-page #app-footer.login-footer .footer-content {
     padding: 3px 12px !important;
