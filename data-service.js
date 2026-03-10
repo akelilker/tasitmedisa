@@ -55,9 +55,14 @@
       const idx = list.findIndex(function(v) { return String(v.id) === String(record.id); });
       if (idx !== -1) list[idx] = record;
     }
-    const ok = await window.saveDataToServer();
-    if (ok !== true) return Promise.reject(new Error('Sunucuya kayıt yapılamadı.'));
-    return true;
+    try {
+      const ok = await window.saveDataToServer();
+      if (ok !== true) return Promise.reject(new Error('Sunucuya kayıt yapılamadı.'));
+      return true;
+    } catch (e) {
+      if (e && e.conflict === true) throw e;
+      return Promise.reject(new Error('Sunucuya kayıt yapılamadı.'));
+    }
   }
 
   /**
@@ -81,8 +86,13 @@
   async function saveVehiclesList(vehicles) {
     ensureAppData();
     window.appData.tasitlar = Array.isArray(vehicles) ? vehicles : [];
-    const ok = await window.saveDataToServer();
-    if (ok !== true) return Promise.reject(new Error('Sunucuya kayıt yapılamadı.'));
+    try {
+      const ok = await window.saveDataToServer();
+      if (ok !== true) return Promise.reject(new Error('Sunucuya kayıt yapılamadı.'));
+    } catch (e) {
+      if (e && e.conflict === true) throw e;
+      return Promise.reject(new Error('Sunucuya kayıt yapılamadı.'));
+    }
   }
 
   window.dataApi = {

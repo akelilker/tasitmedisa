@@ -294,18 +294,35 @@ async function saveDataToServer() {
         });
 
         if (!response.ok) {
+            if (response.status === 409) {
+                const conflictErr = new Error('Conflict');
+                conflictErr.conflict = true;
+                throw conflictErr;
+            }
             throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        await response.json();
+        const data = await response.json();
+        if (data && data.conflict === true) {
+            const conflictErr = new Error('Conflict');
+            conflictErr.conflict = true;
+            throw conflictErr;
+        }
         return true;
 
     } catch (error) {
+        if (error && error.conflict === true) {
+            throw error;
+        }
         // HTTP 405 hatası (Method Not Allowed) - Sunucu yapılandırması sorunu
         if (error.message && error.message.includes('405')) {
             return false; // Sessizce false dön
         }
-        
+        if (error.message && error.message.includes('409')) {
+            const conflictErr = new Error('Conflict');
+            conflictErr.conflict = true;
+            throw conflictErr;
+        }
         // PHP çalışmıyorsa sessizce devam et (localStorage zaten kaydedildi)
         const responseText = error.message || '';
         if (responseText.includes('<?php') || responseText.includes('Unexpected token')) {
