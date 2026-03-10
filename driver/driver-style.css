@@ -3387,15 +3387,6 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     max-width: 100% !important;
     box-sizing: border-box !important;
   }
-  /* Mobil: footer'dan yukarÄ± kÄ±rmÄ±zÄ± Ä±ÅŸÄ±k (login + kullanÄ±cÄ± paneli modallarÄ±nda). Login footer = dashboard birebir aynÄ± */
-  .dashboard-page #app-footer {
-    box-shadow: 0 -22px 40px rgba(var(--theme-color-rgb), 0.45) !important;
-  }
-  .login-page #app-footer.login-footer {
-    box-shadow: 0 -22px 40px rgba(var(--theme-color-rgb), 0.45) !important;
-    border-left: 0.5px solid rgba(255, 255, 255, 0.10) !important;
-    border-right: 0.5px solid rgba(255, 255, 255, 0.10) !important;
-  }
 
   /* Sol panel araÃ§ bilgisi (Sigorta/Kasko/Muayene dahil): Plaka/Marka ile aynÄ± sol hiza */
   .dashboard-page .driver-left-panel .driver-vehicle-info {
@@ -3943,18 +3934,20 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     top: 0 !important;
     bottom: calc(var(--app-footer-height, 48px) + env(safe-area-inset-bottom, 0)) !important; /* Footer'da biter, aÅŸaÄŸÄ± inmez */
   }
-  /* Footer: mobilde footer'dan yukarÄ± kÄ±rmÄ±zÄ± Ä±ÅŸÄ±k (login + kullanÄ±cÄ± paneli modallarÄ±nda gÃ¶rÃ¼nsÃ¼n) */
+    /* Footer: mobilde footer'dan yukarı kırmızı ışık (login + kullanıcı paneli modallarında görünsün) */
   .dashboard-page #app-footer {
     background: var(--bg) !important;
     border-top: 0.5px solid rgba(200, 200, 200, 0.45) !important;
     border-left: 0.5px solid rgba(255, 255, 255, 0.10) !important;
     border-right: 0.5px solid rgba(255, 255, 255, 0.10) !important;
+    box-shadow: 0 -22px 40px rgba(var(--theme-color-rgb), 0.45) !important;
   }
   .login-page #app-footer.login-footer {
     background: var(--bg) !important;
     border-top: 0.5px solid rgba(200, 200, 200, 0.45) !important;
     border-left: 0.5px solid rgba(255, 255, 255, 0.18) !important;
     border-right: 0.5px solid rgba(255, 255, 255, 0.18) !important;
+    box-shadow: 0 -22px 40px rgba(var(--theme-color-rgb), 0.45) !important;
   }
   /* Plaka dropdown dÄ±ÅŸarÄ± taÅŸabilsin; panels-inner overflow: hidden kalsÄ±n ki saÄŸ panel yÃ¼ksekliÄŸi kÄ±sÄ±tlansÄ±n ve Not+Bildir kaydÄ±rÄ±labilir */
   .dashboard-page .driver-panels-inner {
