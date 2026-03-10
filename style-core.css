@@ -30,6 +30,9 @@ body::-webkit-scrollbar,
 
   --modal-footer-gap: 12px;
   --app-footer-height: 30px;
+  /* Codex standart: modal overlay bottom tek formül (footer + 6px boşluk) */
+  --app-footer-real-height: 34px;
+  --app-footer-gap: 6px;
   --modal-footer-reserve: calc(var(--app-footer-height) + var(--modal-footer-gap));
   --modal-gap-above-footer: 5px; /* Mobil/masaÃƒÂ¼stÃƒÂ¼ tek deÃ„Å¸er */
 
@@ -91,6 +94,7 @@ body::-webkit-scrollbar,
 @media (min-width: 641px) {
   :root {
     --app-footer-height: 34px;
+    --app-footer-real-height: 38px;
     --modal-gap-above-footer: 1px;
   }
 }
@@ -457,7 +461,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
     top: 0;
     left: 0;
     right: 0;
-    bottom: calc(var(--app-footer-height, 30px) + env(safe-area-inset-bottom, 0));
+    bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0));
     border-top: 0.5px solid var(--border-red-tech);
     border-left: 0.5px solid var(--border-red-tech);
     border-right: 0.5px solid var(--border-red-tech);
@@ -1174,7 +1178,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   top: 0 !important;
   left: 0;
   right: 0;
-  bottom: calc(var(--app-footer-height, 30px) + 6px + env(safe-area-inset-bottom, 0)) !important; /* Footer ile modal arasÄ± 6px; taÅŸma engelle */
+  bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
   z-index: 9999 !important;
   isolation: isolate !important; /* IÅŸÄ±k sÄ±zmasÄ±nÄ± engeller */
   display: none;
@@ -1386,7 +1390,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
 /* KullanÃ„Â±cÃ„Â± Paneli linki - footer ÃƒÂ¼stÃƒÂ¼nde, saÃ„Å¸a yaslÃ„Â± (mobilde 2px aÃ…Å¸aÃ„Å¸Ã„Â± override ile); yarÃ„Â± saydam */
 .user-panel-link {
   position: fixed;
-  bottom: calc(var(--app-footer-height, 30px) + env(safe-area-inset-bottom, 0) + 7px);
+  bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0));
   left: 50%;
   transform: translateX(-50%);
   max-width: 500px;
@@ -1410,7 +1414,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
     opacity: 1;
   }
   .user-panel-link {
-    bottom: calc(var(--app-footer-height, 30px) + env(safe-area-inset-bottom, 0) + 3px);
+    bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0));
     font-size: 13px;
     padding: 2px 12px;
     transform: translateX(calc(-50% + 5px));
@@ -1445,7 +1449,7 @@ body.modal-open .user-panel-link {
     margin: 0 auto;
     background: var(--bg);
     z-index: 10000; /* Modal overlay (9999) Ã¼stÃ¼nde */
-    min-height: var(--app-footer-height, 34px) !important;
+    min-height: var(--app-footer-real-height, 34px) !important;
     padding-top: 4px !important;
     padding-bottom: calc(4px + env(safe-area-inset-bottom, 0)) !important;
     border-top: 0.8px solid rgba(128, 128, 128, 0.5);
@@ -1590,14 +1594,13 @@ body.modal-open .user-panel-link {
 
 /* MOBÃ„Â°L AYARLARI: 768px ve altÃ„Â±nda modal alt ÃƒÂ§erÃƒÂ§eve footer Ã„Â±Ã…Å¸Ã„Â±Ã„Å¸Ã„Â±nda ezilmesin; sÃ„Â±nÃ„Â±r sadece top/bottom */
 @media (max-width: 768px) {
-    /* clip-path kaldÄ±rÄ±ldÄ±: overlay iÃ§indeki modal kutusunun alt Ã§erÃ§evesi kesilmesin */
     .modal-overlay {
-        bottom: calc(var(--app-footer-height, 30px) + 6px + env(safe-area-inset-bottom, 0)) !important;
+        bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
     }
     #vehicle-modal.modal-overlay,
     #reports-modal.modal-overlay,
     #vehicles-modal.modal-overlay {
-        bottom: calc(var(--app-footer-height, 30px) + 6px + env(safe-area-inset-bottom, 0)) !important;
+        bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
     }
     .modal-overlay .modal-body {
         padding-bottom: 24px !important;
@@ -1676,7 +1679,6 @@ body.modal-open .user-panel-link {
         letter-spacing: 0.2em !important;
     }
     
-    /* Mobil: overlay footer+6px ÃƒÂ¼stÃƒÂ¼nde biter; sÃ„Â±nÃ„Â±r sadece top/bottom, taÃ…Å¸ma yok */
     .modal-overlay {
         top: 0 !important;
         padding: 0 !important;
@@ -1684,13 +1686,13 @@ body.modal-open .user-panel-link {
         justify-content: center !important;
         overflow: hidden !important;
         overscroll-behavior: none !important;
-        bottom: calc(var(--app-footer-height, 30px) + 6px + env(safe-area-inset-bottom, 0)) !important;
+        bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
     }
     #vehicle-modal.modal-overlay,
     #reports-modal.modal-overlay,
     #vehicles-modal.modal-overlay {
         top: 0 !important;
-        bottom: calc(var(--app-footer-height, 30px) + 6px + env(safe-area-inset-bottom, 0)) !important;
+        bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
     }
 
     /* Modal container mobil: ÃƒÂ¼st sÃ„Â±fÃ„Â±r, overlay'Ã„Â± doldur, 10px kÃƒÂ¶Ã…Å¸e, ince ÃƒÂ§erÃƒÂ§eve */
@@ -1734,21 +1736,20 @@ body.modal-open .user-panel-link {
         overscroll-behavior-x: none !important;
     }
 
-    /* iOS PWA: modal alt ÃƒÂ§erÃƒÂ§eve 6px ile footer ÃƒÂ¼stÃƒÂ¼nde; sÃ„Â±nÃ„Â±r top/bottom */
     @media (display-mode: standalone) {
         .modal-overlay {
             padding-top: env(safe-area-inset-top) !important;
-            bottom: calc(var(--app-footer-height, 30px) + 6px + env(safe-area-inset-bottom, 0)) !important;
+            bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
         }
         #vehicle-modal.modal-overlay,
         #reports-modal.modal-overlay,
         #vehicles-modal.modal-overlay {
-            bottom: calc(var(--app-footer-height, 30px) + 6px + env(safe-area-inset-bottom, 0)) !important;
+            bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
         }
         .tasitlar-modal-overlay {
             padding-top: env(safe-area-inset-top) !important;
             padding-bottom: 0 !important;
-            bottom: calc(var(--app-footer-height, 30px) + 6px + env(safe-area-inset-bottom, 0)) !important;
+            bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
         }
         .tasitlar-modal-overlay::before {
             top: 0 !important;
@@ -1773,8 +1774,8 @@ body.modal-open .user-panel-link {
         left: 0;
         right: 0;
         width: 100vw;
-        bottom: calc(var(--app-footer-height, 30px) + env(safe-area-inset-bottom, 0));
-        height: 7px; /* Modalâ€“footer arasÃ„Â± 4px nefes payÃ„Â± ile uyumlu */
+        bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0));
+        height: var(--app-footer-gap); /* Modalâ€“footer arasÃ„Â± 4px nefes payÃ„Â± ile uyumlu */
         background: var(--bg);
         z-index: 9998; /* Modal (9999) altÃ„Â±nda, container/ÃƒÂ§izgilerin ÃƒÂ¼stÃƒÂ¼nde */
         pointer-events: none;
@@ -1818,7 +1819,7 @@ body.modal-open .user-panel-link {
         top: 0;
         left: 0;
         right: 0;
-        bottom: calc(var(--app-footer-height, 30px) + env(safe-area-inset-bottom, 0));
+        bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0));
         border-left: 0.5px solid rgba(var(--theme-color-rgb), 0.78);
         border-right: 0.5px solid rgba(var(--theme-color-rgb), 0.78);
         pointer-events: none;
@@ -1832,7 +1833,7 @@ body.modal-open .user-panel-link {
     
     /* CONTAINER ÃƒÂ¼st ÃƒÂ§izgi (mobil anasayfa kÃ„Â±rmÃ„Â±zÃ„Â± ÃƒÂ§erÃƒÂ§eve); footer boÃ…Å¸luÃ„Å¸u driver ile tutarlÃ„Â± */
     body:not(.dashboard-page):not(.login-page) .app-container {
-        padding-bottom: calc(var(--app-footer-height, 30px) + env(safe-area-inset-bottom, 0)) !important;
+        padding-bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
     }
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-container {
         border-left: none;
@@ -1875,7 +1876,7 @@ body.modal-open .user-panel-link {
     
     /* Mobil: KullanÃ„Â±cÃ„Â± paneli giriÃ…Å¸ butonu 2px aÃ…Å¸aÃ„Å¸Ã„Â± */
     .user-panel-link {
-        bottom: calc(var(--app-footer-height, 30px) + env(safe-area-inset-bottom, 0) + 5px) !important;
+        bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
     }
     
     /* Mobil bildirim ÃƒÂ§erÃƒÂ§eveleri - arka plan opak */
@@ -2033,7 +2034,7 @@ body.modal-open .content-wrap::before {
 /* PWA Update Toast */
 .update-toast {
     position: fixed;
-    bottom: calc(var(--app-footer-height) + 16px);
+    bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + 10px);
     left: 50%;
     transform: translateX(-50%) translateY(100%);
     z-index: 99999;
@@ -2133,7 +2134,7 @@ body.modal-open .content-wrap::before {
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicle-modal.modal-overlay,
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #reports-modal.modal-overlay,
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicles-modal.modal-overlay {
-    bottom: calc(var(--app-footer-height, 30px) + 6px + env(safe-area-inset-bottom, 0)) !important;
+    bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicle-modal.modal-overlay .modal-container,
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #reports-modal.modal-overlay .modal-container,
@@ -2146,14 +2147,14 @@ body.modal-open .content-wrap::before {
 
 /* === NOKTA ATIÅžI: KÄ±rmÄ±zÄ± yan Ã§izgiler footer hizasÄ±nda Ã§ivili (sarkan/kÄ±sa kalma yok) === */
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-container::before {
-  bottom: calc(var(--app-footer-height, 30px) + env(safe-area-inset-bottom, 0)) !important;
+  bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
 }
 @media (max-width: 640px) {
   .content-wrap::before {
-    bottom: calc(var(--app-footer-height, 30px) + env(safe-area-inset-bottom, 0)) !important;
+    bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-container::before {
-    bottom: calc(var(--app-footer-height, 30px) + env(safe-area-inset-bottom, 0)) !important;
+    bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
   }
 }
 
