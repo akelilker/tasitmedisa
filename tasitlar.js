@@ -1123,17 +1123,13 @@
       printBtn.title = 'Taşıt Kartı Yazdır';
       printBtn.setAttribute('aria-label', 'Taşıt Kartı Yazdır');
       printBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v8H6z"/></svg>`;
-      // #region agent log
       printBtn.onclick = (e) => {
         if (e) {
           e.preventDefault();
           e.stopPropagation();
         }
-        var _d = { sessionId: '4da7db', location: 'tasitlar.js:printBtn.onclick', message: 'Print button clicked', data: { vehicleId: vehicle.id, innerWidth: window.innerWidth }, timestamp: Date.now(), hypothesisId: 'H1_H3_H5' };
-        (window.__debugLog = window.__debugLog || []).push(_d); console.log('[DEBUG]', _d);
         window.printVehicleCard(vehicle.id);
       };
-      // #endregion
       toolbarRight.appendChild(printBtn);
       
       // Toolbar'a bölümleri ekle
@@ -1679,8 +1675,6 @@
   window.printVehicleCard = function(vehicleId) {
     const vehicles = readVehicles();
     const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
-    var _d = { sessionId: '4da7db', location: 'tasitlar.js:printVehicleCard', message: 'printVehicleCard entered', data: { vehicleId: vehicleId, vehicleFound: !!vehicle, innerWidth: window.innerWidth }, timestamp: Date.now(), hypothesisId: 'H3' };
-    (window.__debugLog = window.__debugLog || []).push(_d); console.log('[DEBUG]', _d);
     if (!vehicle) {
       alert('Taşıt bulunamadı!');
       return;
@@ -1984,19 +1978,6 @@
 </body>
 </html>`;
 
-    function pushPrintDebug(location, message, data, hypothesisId) {
-      var dbg = {
-        sessionId: '4da7db',
-        location: location,
-        message: message,
-        data: data || {},
-        timestamp: Date.now(),
-        hypothesisId: hypothesisId || 'PRINT'
-      };
-      (window.__debugLog = window.__debugLog || []).push(dbg);
-      console.log('[DEBUG]', dbg);
-    }
-
     function printWithIframeFallback(sourceError) {
       var iframe = document.createElement('iframe');
       iframe.setAttribute('aria-hidden', 'true');
@@ -2018,10 +1999,6 @@
         if (done) return;
         done = true;
         cleanup();
-        pushPrintDebug('tasitlar.js:iframeFallbackFail', 'Iframe fallback failed', {
-          error: (err && err.message) ? err.message : String(err || 'unknown_error'),
-          sourceError: sourceError || ''
-        }, 'H_IFRAME_FAIL');
         alert('Yazdırma başlatılamadı. Lütfen tekrar deneyin.');
       }
 
@@ -2053,7 +2030,6 @@
               frameWindow.removeEventListener('afterprint', onAfterPrint);
             };
             frameWindow.addEventListener('afterprint', onAfterPrint);
-            pushPrintDebug('tasitlar.js:before iframe print', 'calling iframe print()', { innerWidth: window.innerWidth }, 'H_IFRAME_PRINT');
             frameWindow.focus();
             frameWindow.print();
           } catch (printErr) {
