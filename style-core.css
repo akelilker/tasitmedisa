@@ -2146,7 +2146,7 @@ body.modal-open .content-wrap::before {
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicle-modal.modal-overlay .modal-container,
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #reports-modal.modal-overlay .modal-container,
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicles-modal.modal-overlay .modal-container {
-    border-bottom: 1px solid var(--border-red-tech, rgba(255,0,0,0.4)) !important;
+    border-bottom: 1px solid var(--border-medium) !important;
     border-bottom-left-radius: 12px !important;
     border-bottom-right-radius: 12px !important;
   }
