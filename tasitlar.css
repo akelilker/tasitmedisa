@@ -2427,6 +2427,7 @@
   }
 
   .tasitlar-modal-overlay .modal-container {
+    isolation: isolate !important;
     background: var(--modal-bg) !important;
     background-color: var(--modal-bg) !important;
     border-bottom: 1px solid var(--modal-bg) !important;
