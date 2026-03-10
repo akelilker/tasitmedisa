@@ -2,15 +2,10 @@
    TAŞIT KAYIT FORMU - FINAL (PWA FIX & DESKTOP 52PX)
    ========================================= */
 
-/* Modal Overlay */
+/* Overlay konumu/style-core .modal-overlay (6px boÅŸluk, z-index, isolation) kullanÄ±lÄ±r */
 #vehicle-modal.modal-overlay {
     display: none;
-    position: fixed;
-    top: 0 !important;
-    left: 0; right: 0;
-    bottom: calc(var(--app-footer-height, 30px) + 3px + env(safe-area-inset-bottom, 0)) !important; /* Taşma engelle: footer üstünde kes */
     background: transparent;
-    z-index: 9999;
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
@@ -996,18 +991,9 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         border-color: var(--theme-color) !important; /* Aktif taşıt tipi daha belirgin */
     }
     
-    /* Kayıt modalı mobil: overlay konumu (style-core ile aynı, taşıtlar gibi kendi dosyasında) */
-    #vehicle-modal.modal-overlay {
-        top: 0 !important;
-        bottom: calc(var(--modal-gap-above-footer) + var(--app-footer-height) + env(safe-area-inset-bottom, 0) + 9px) !important;
-        height: auto !important;
-        max-height: calc(100vh - var(--modal-gap-above-footer) - var(--app-footer-height) - env(safe-area-inset-bottom, 0) - 9px) !important;
-        max-height: calc(100dvh - var(--modal-gap-above-footer) - var(--app-footer-height) - env(safe-area-inset-bottom, 0) - 9px) !important;
-    }
-    
+    /* Overlay konumu style-core .modal-overlay (6px) kullanÄ±lÄ±r; ezme yok */
     #vehicle-modal .modal-container {
         isolation: isolate !important;
-        height: 100% !important;
         max-height: 100% !important;
         margin-bottom: 0 !important;
         border-radius: 10px !important;
