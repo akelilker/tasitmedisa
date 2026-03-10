@@ -2085,7 +2085,6 @@ body.modal-open .content-wrap::before {
 /* ========== MASAÜSTÜ FERAHLAMA OPERASYONU ========== */
 /* Şube ve Kullanıcı Yönetimi bilgi kutularını masaüstünde büyütme: +1 punto metin, +3px dikey/yatay, padding kısıtma ile simetri */
 @media (min-width: 641px) {
-    #kullanici-modal,
     #branch-form-modal,
     #user-form-modal,
     #branch-modal,
