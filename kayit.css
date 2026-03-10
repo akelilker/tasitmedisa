@@ -26,7 +26,7 @@
     --save-green-rgb: 40, 167, 69;
 }
 
-/* Karartma Efekti (Masaüstü İçin) */
+/* Karartma Efekti: overlay ile aynı bitiş (footer+gap); footer glow kesilmez, modal altından geçiyormuş gibi görünür */
 #vehicle-modal.modal-overlay::before {
     content: '';
     position: absolute;
@@ -35,8 +35,8 @@
     transform: translateX(-50%);
     width: 100%;
     max-width: 500px;
-    height: calc(100vh - max(12px, env(safe-area-inset-top)) - var(--modal-margin-bottom-desktop));
-    height: calc(100dvh - max(12px, env(safe-area-inset-top)) - var(--modal-margin-bottom-desktop));
+    height: calc(100vh - max(12px, env(safe-area-inset-top)) - var(--app-footer-real-height) - var(--app-footer-gap) - env(safe-area-inset-bottom, 0));
+    height: calc(100dvh - max(12px, env(safe-area-inset-top)) - var(--app-footer-real-height) - var(--app-footer-gap) - env(safe-area-inset-bottom, 0));
     background: rgba(0, 0, 0, 0.85);
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
