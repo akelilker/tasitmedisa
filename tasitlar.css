@@ -24,12 +24,12 @@
     pointer-events: auto !important; /* Aktif olduÄŸunda tÄ±klamalarÄ± al */
 }
 
-/* Åube kartÄ± hover Ã¼stten kesilmesin â€“- taÅŸÄ±tlar modalÄ±nda overflow serbest */
-#vehicles-modal.tasitlar-modal-overlay.active,
-#vehicles-modal.tasitlar-modal-overlay.open {
+/* Åube kartÄ± hover Ã¼stten kesilmesin â€“ overflow sadece dashboard/ÅŸube kartÄ± gÃ¶rÃ¼nÃ¼mÃ¼nde; liste gÃ¶rÃ¼nÃ¼mÃ¼nde kesilmesin */
+#vehicles-modal.tasitlar-modal-overlay.active:not(:has(.vehicles-list-scroll)),
+#vehicles-modal.tasitlar-modal-overlay.open:not(:has(.vehicles-list-scroll)) {
     overflow: visible !important;
 }
-#vehicles-modal .modal-container {
+#vehicles-modal:not(:has(.vehicles-list-scroll)) .modal-container {
     overflow: visible !important;
 }
 
@@ -108,17 +108,15 @@
   cursor: pointer !important;
 }
 
-/* Olay Ekle modalları: footer+gap değişken ile (style-core ile uyumlu) */
+/* Olay Ekle modallarÄ±: footer+gap sadece overlay'de rezerve (style-core .modal-overlay bottom); container overlay'i doldurur, Ã§ift rezervasyon yok */
 .olay-ekle-modal .modal-container {
     max-width: 500px !important;
     width: 100%;
     background: var(--modal-bg) !important;
     margin: max(12px, env(safe-area-inset-top)) auto 0 auto !important;
-    margin-bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
-    height: calc(100vh - max(12px, env(safe-area-inset-top)) - var(--app-footer-real-height) - var(--app-footer-gap) - env(safe-area-inset-bottom, 0)) !important;
-    height: calc(100dvh - max(12px, env(safe-area-inset-top)) - var(--app-footer-real-height) - var(--app-footer-gap) - env(safe-area-inset-bottom, 0)) !important;
-    max-height: calc(100vh - max(12px, env(safe-area-inset-top)) - var(--app-footer-real-height) - var(--app-footer-gap) - env(safe-area-inset-bottom, 0)) !important;
-    max-height: calc(100dvh - max(12px, env(safe-area-inset-top)) - var(--app-footer-real-height) - var(--app-footer-gap) - env(safe-area-inset-bottom, 0)) !important;
+    margin-bottom: 0 !important;
+    height: 100% !important;
+    max-height: 100% !important;
     overflow: hidden !important;
     overflow-x: hidden !important;
     touch-action: pan-y !important;
