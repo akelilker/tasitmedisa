@@ -4383,22 +4383,20 @@ function renderVehicleDetailLeft(vehicle) {
       }
     }
 
-    // Kasko Excel hatırlatması: Ayın 1'inden itibaren, liste bu aya ait değilse (Excel yüklenince otomatik kalkar)
+    // Kasko Excel hatırlatması: Liste bu aya ait değilse (Excel yüklenince veya X ile silinene kadar kırmızı kalır)
     let kaskoExcelHtml = '';
-    if (d >= 1) {
-      const kaskoUploadDate = localStorage.getItem('medisa_kasko_liste_date');
-      let kaskoListeGuncel = false;
-      if (kaskoUploadDate) {
-        const uploadDate = new Date(kaskoUploadDate);
-        if (uploadDate.getMonth() === m && uploadDate.getFullYear() === y) kaskoListeGuncel = true;
-      }
-      if (!kaskoListeGuncel) {
-        const kaskoKey = 'kasko_excel_dismiss_' + y + '_' + m;
-        if (!localStorage.getItem(kaskoKey)) {
-          const kaskoKeyEsc = (kaskoKey || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
-          kaskoExcelHtml = '<div class="notification-item kasko-excel-notification"><div class="mtv-text-container"><span class="mtv-main-text">Güncel Kasko Değer Listesinin Yüklenmesi Gerekmektedir.</span></div><div class="mtv-dismiss-wrapper"><button type="button" class="mtv-dismiss-btn" onclick="dismissKaskoExcelNotif(event, \'' + kaskoKeyEsc + '\')" aria-label="Bildirimi Kapat"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button><div class="mtv-tooltip">Kapat</div></div></div>';
-          hasOrange = true;
-        }
+    const kaskoUploadDate = localStorage.getItem('medisa_kasko_liste_date');
+    let kaskoListeGuncel = false;
+    if (kaskoUploadDate) {
+      const uploadDate = new Date(kaskoUploadDate);
+      if (uploadDate.getMonth() === m && uploadDate.getFullYear() === y) kaskoListeGuncel = true;
+    }
+    if (!kaskoListeGuncel) {
+      const kaskoKey = 'kasko_excel_dismiss_' + y + '_' + m;
+      if (!localStorage.getItem(kaskoKey)) {
+        const kaskoKeyEsc = (kaskoKey || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+        kaskoExcelHtml = '<div class="notification-item kasko-excel-notification"><div class="mtv-text-container"><span class="mtv-main-text">Güncel Kasko Değer Listesinin Yüklenmesi Gerekmektedir.</span></div><div class="mtv-dismiss-wrapper"><button type="button" class="mtv-dismiss-btn" onclick="dismissKaskoExcelNotif(event, \'' + kaskoKeyEsc + '\')" aria-label="Bildirimi Kapat"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button><div class="mtv-tooltip">Kapat</div></div></div>';
+        hasRed = true;
       }
     }
 
