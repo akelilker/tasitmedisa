@@ -37,102 +37,54 @@ let isDataLoading = false;
 let loadPromise = null;
 let isSaving = false;
 
-/* =========================================
-   LOCALSTORAGE'DAN VERİ YÜKLEME (Fallback)
-   ========================================= */
-function loadDataFromLocalStorage() {
-    try {
-        // Önce yeni formatı dene (medisa_data_v1)
-        const savedData = localStorage.getItem('medisa_data_v1');
-        if (savedData) {
-            try {
-                const data = JSON.parse(savedData);
-                const rawUsers = data.users || [];
-                const users = rawUsers.map(u => {
-                    const u2 = { ...u };
-                    if (!u2.name && u2.isim) u2.name = u2.isim;
-                    return u2;
-                });
-                window.appData = {
-                    tasitlar: data.tasitlar || [],
-                    kayitlar: data.kayitlar || [],
-                    branches: data.branches || [],
-                    users: users,
-                    ayarlar: data.ayarlar || {
-                        sirketAdi: 'Medisa',
-                        yetkiliKisi: '',
-                        telefon: '',
-                        eposta: ''
-                    },
-                    sifreler: data.sifreler || [],
-                    arac_aylik_hareketler: data.arac_aylik_hareketler || [],
-                    duzeltme_talepleri: data.duzeltme_talepleri || []
-                };
-                isDataLoaded = true;
-                return window.appData;
-            } catch (e) {
-                // Yeni format parse hatası, eski format deneniyor
-            }
-        }
-        
-        // Eski formatı dene (geriye dönük uyumluluk)
-        const vehicles = JSON.parse(localStorage.getItem('medisa_vehicles_v1') || '[]');
-        const branches = JSON.parse(localStorage.getItem('medisa_branches_v1') || '[]');
-        const rawUsers = JSON.parse(localStorage.getItem('medisa_users_v1') || '[]');
-        const users = Array.isArray(rawUsers) ? rawUsers.map(u => {
-            const u2 = { ...u };
-            if (!u2.name && u2.isim) u2.name = u2.isim;
-            return u2;
-        }) : [];
-        
-        // window.appData'yı güncelle
-        window.appData = {
-            tasitlar: vehicles,
-            kayitlar: [],
-            branches: branches,
-            users: users,
-            ayarlar: {
-                sirketAdi: 'Medisa',
-                yetkiliKisi: '',
-                telefon: '',
-                eposta: ''
-            },
-            sifreler: [],
-            arac_aylik_hareketler: [],
-            duzeltme_talepleri: []
-        };
-        
-        isDataLoaded = true;
-        return window.appData;
-    } catch (error) {
-        isDataLoaded = true;
-        return window.appData; // Varsayılan boş veri
-    }
+/* Varsayılan boş veri (sunucu yüklenemeyince veya hata durumunda) */
+function getDefaultAppData() {
+    return {
+        tasitlar: [],
+        kayitlar: [],
+        branches: [],
+        users: [],
+        ayarlar: {
+            sirketAdi: 'Medisa',
+            yetkiliKisi: '',
+            telefon: '',
+            eposta: ''
+        },
+        sifreler: [],
+        arac_aylik_hareketler: [],
+        duzeltme_talepleri: []
+    };
 }
 
-/* =========================================
-   TAŞIT BİRLEŞTİRME (yerel + sunucu - olay/işaretleme kaybı önleme)
-   ========================================= */
-function mergeVehicleEvents(localEvents, serverEvents) {
-    const local = Array.isArray(localEvents) ? localEvents : [];
-    const server = Array.isArray(serverEvents) ? serverEvents : [];
-    const byId = new Map();
-    local.forEach(e => {
-        if (e && (e.id || e.timestamp)) byId.set(e.id || e.timestamp, e);
-    });
-    server.forEach(e => {
-        if (e && (e.id || e.timestamp)) {
-            const key = e.id || e.timestamp;
-            if (!byId.has(key)) byId.set(key, e);
+/* Sadece yedekten geri yükleme sonrası kullanılır (restore script veriyi localStorage'a yazmış olabilir) */
+function loadDataFromLocalStorage() {
+    try {
+        const savedData = localStorage.getItem('medisa_data_v1');
+        if (savedData) {
+            const data = JSON.parse(savedData);
+            const rawUsers = data.users || [];
+            const users = rawUsers.map(u => {
+                const u2 = { ...u };
+                if (!u2.name && u2.isim) u2.name = u2.isim;
+                return u2;
+            });
+            window.appData = {
+                tasitlar: data.tasitlar || [],
+                kayitlar: data.kayitlar || [],
+                branches: data.branches || [],
+                users: users,
+                ayarlar: data.ayarlar || { sirketAdi: 'Medisa', yetkiliKisi: '', telefon: '', eposta: '' },
+                sifreler: data.sifreler || [],
+                arac_aylik_hareketler: data.arac_aylik_hareketler || [],
+                duzeltme_talepleri: data.duzeltme_talepleri || []
+            };
+            isDataLoaded = true;
+            return window.appData;
         }
-    });
-    const merged = Array.from(byId.values());
-    merged.sort((a, b) => {
-        const ta = (a.timestamp || a.date || '').toString();
-        const tb = (b.timestamp || b.date || '').toString();
-        return tb.localeCompare(ta);
-    });
-    return merged;
+    } catch (e) { /* ignore */ }
+    window.appData = getDefaultAppData();
+    isDataLoaded = true;
+    return window.appData;
 }
 
 /* =========================================
@@ -167,68 +119,33 @@ async function loadDataFromServer(forceRefresh = true) {
                 } else {
                     console.error('[Medisa] loadDataFromServer HTTP hatası', response.status, errorText.substring(0, 200));
                 }
-                return loadDataFromLocalStorage();
+                window.appData = getDefaultAppData();
+                isDataLoaded = true;
+                return window.appData;
             }
 
-            // Önce text olarak oku, JSON olup olmadığını kontrol et
             const responseText = await response.text();
-            
-            // Boş response kontrolü
             if (!responseText || responseText.trim() === '') {
-                return loadDataFromLocalStorage();
+                window.appData = getDefaultAppData();
+                isDataLoaded = true;
+                return window.appData;
             }
-            
-            // PHP kodu döndüyse (<?php ile başlıyorsa), localStorage'dan yükle
+
             const trimmedResponse = responseText.trim();
             if (trimmedResponse.startsWith('<?php') || (trimmedResponse.startsWith('<') && trimmedResponse.includes('html'))) {
-                return loadDataFromLocalStorage();
+                window.appData = getDefaultAppData();
+                isDataLoaded = true;
+                return window.appData;
             }
 
             let data;
             try {
                 data = JSON.parse(responseText);
             } catch (parseError) {
-                return loadDataFromLocalStorage();
+                window.appData = getDefaultAppData();
+                isDataLoaded = true;
+                return window.appData;
             }
-
-            // Yerel taşıtları oku ve sunucu taşıtları ile birleştir (olay/işaretleme kaybı önleme)
-            let localTasitlar = [];
-            try {
-                const raw = localStorage.getItem('medisa_vehicles_v1');
-                if (raw) localTasitlar = JSON.parse(raw);
-                if (!Array.isArray(localTasitlar)) localTasitlar = [];
-            } catch (e) {
-                localTasitlar = [];
-            }
-            const serverTasitlar = data.tasitlar || [];
-            const localMap = new Map(localTasitlar.map(lv => [String(lv.id), lv]));
-            const mergedTasitlar = serverTasitlar.map(sv => {
-                const local = localMap.get(String(sv.id));
-                if (!local) return sv;
-                const localEvents = local.events;
-                const serverEvents = sv.events;
-                const mergedEvents = mergeVehicleEvents(localEvents, serverEvents);
-                const localBoyaliParcalar = local.boyaliParcalar && typeof local.boyaliParcalar === 'object' && Object.keys(local.boyaliParcalar).length > 0
-                    ? local.boyaliParcalar
-                    : null;
-                const serverBoyaliParcalar = sv.boyaliParcalar && typeof sv.boyaliParcalar === 'object' && Object.keys(sv.boyaliParcalar).length > 0
-                    ? sv.boyaliParcalar
-                    : null;
-                const localBoyaVar = local.boya === 'var';
-                const localTahsisKisi = (local.tahsisKisi && String(local.tahsisKisi).trim()) || null;
-                const localAssignedUserId = local.assignedUserId !== undefined && local.assignedUserId !== null && local.assignedUserId !== ''
-                    ? local.assignedUserId
-                    : null;
-                return {
-                    ...sv,
-                    events: mergedEvents,
-                    boyaliParcalar: serverBoyaliParcalar || localBoyaliParcalar || {},
-                    boya: (serverBoyaliParcalar ? 'var' : (localBoyaVar ? 'var' : (sv.boya || local.boya))),
-                    tahsisKisi: localTahsisKisi || sv.tahsisKisi || local.tahsisKisi || '',
-                    assignedUserId: localAssignedUserId !== null ? localAssignedUserId : (sv.assignedUserId !== undefined ? sv.assignedUserId : local.assignedUserId)
-                };
-            });
-            data.tasitlar = mergedTasitlar;
 
             // Kullanıcıları normalize et (isim -> name, tüm modüller tek alan kullansın)
             const rawUsers = data.users || [];
@@ -255,20 +172,15 @@ async function loadDataFromServer(forceRefresh = true) {
                 duzeltme_talepleri: data.duzeltme_talepleri || []
             };
 
-            // Sunucudan başarıyla yüklendiğinde localStorage'ı da güncelle (tek key: medisa_data_v1)
-            try {
-                localStorage.setItem('medisa_data_v1', JSON.stringify(window.appData));
-            } catch (e) {
-                // localStorage güncellenemedi - sessizce devam et
-            }
-
             isDataLoaded = true;
             return window.appData;
 
         } catch (error) {
             if (typeof window.__medisaLogError === 'function') window.__medisaLogError('loadDataFromServer', error);
-            else console.warn('[Medisa] Veri yüklenemedi, yerel veri kullanılıyor:', error && error.message);
-            return loadDataFromLocalStorage();
+            else console.warn('[Medisa] Veri yüklenemedi:', error && error.message);
+            window.appData = getDefaultAppData();
+            isDataLoaded = true;
+            return window.appData;
         } finally {
             isDataLoading = false;
             loadPromise = null;
@@ -323,14 +235,12 @@ async function saveDataToServer() {
             conflictErr.conflict = true;
             throw conflictErr;
         }
-        // PHP çalışmıyorsa sessizce devam et (localStorage zaten kaydedildi)
         const responseText = error.message || '';
         if (responseText.includes('<?php') || responseText.includes('Unexpected token')) {
-            return false; // Sessizce false dön
+            return false;
         }
-        // 404 veya ağ hatası - sessizce devam et (localStorage zaten güncel)
         if (error.message && (error.message.includes('404') || error.message.includes('Failed to fetch') || error.message.includes('NetworkError'))) {
-            console.warn('[Medisa] save.php erişilemedi, localStorage ile devam ediliyor.');
+            console.warn('[Medisa] Kayıt sunucuya ulaşamadı. Lütfen bağlantıyı kontrol edip tekrar deneyin.');
             return false;
         }
         // Diğer hatalar için konsola yaz (alert rahatsız edici)
@@ -399,34 +309,17 @@ document.addEventListener('DOMContentLoaded', async function() {
     isDataLoaded = false;
     isDataLoading = false;
 
-    // Yedekten geri yükleme sonrası: sunucudan çekme, localStorage'daki yedek veriyi kullan
+    // Yedekten geri yükleme sonrası: restore script veriyi localStorage'a yazmış olabilir, bir kez oradan oku
     if (sessionStorage.getItem('medisa_just_restored') === '1') {
         sessionStorage.removeItem('medisa_just_restored');
-        const loadedData = loadDataFromLocalStorage();
-        try {
-            localStorage.setItem('medisa_data_v1', JSON.stringify(window.appData));
-        } catch (e) { }
+        loadDataFromLocalStorage();
         window.dispatchEvent(new CustomEvent('dataLoaded', { detail: window.appData }));
         return;
     }
 
-    // Normal açılış: sunucudan güncel veriyi çek; başarısızsa (yerel/offline) localStorage kullan
-    let loadedData;
-    try {
-        loadedData = await loadDataFromServer(true);
-    } catch (e) {
-        loadedData = loadDataFromLocalStorage();
-    }
-
-    try {
-        localStorage.setItem('medisa_data_v1', JSON.stringify(window.appData));
-    } catch (e) {
-        // localStorage güncellenemedi - sessizce devam et
-    }
-
-    window.dispatchEvent(new CustomEvent('dataLoaded', { 
-        detail: window.appData 
-    }));
+    // Normal açılış: sadece sunucudan veri çek (başarısızsa boş veri)
+    await loadDataFromServer(true);
+    window.dispatchEvent(new CustomEvent('dataLoaded', { detail: window.appData }));
 });
 
 // Ortak veri okuyucu — operasyonel veri (taşıt, şube, kullanıcı) yalnızca appData'dan; ana kaynak sunucu
@@ -438,31 +331,25 @@ function getMedisaVehicles() { return getMedisaData('tasitlar', 'medisa_vehicles
 function getMedisaBranches() { return getMedisaData('branches', 'medisa_branches_v1'); }
 function getMedisaUsers() { return getMedisaData('users', 'medisa_users_v1'); }
 
-/** Taşıt listesini güncelle: appData + localStorage + sunucuya kaydet */
+/** Taşıt listesini güncelle: appData + sadece sunucuya kaydet */
 window.writeVehicles = function(arr) {
-    if (!window.appData) window.appData = { tasitlar: [], kayitlar: [], branches: [], users: [], ayarlar: {}, sifreler: [], arac_aylik_hareketler: [], duzeltme_talepleri: [] };
+    if (!window.appData) window.appData = getDefaultAppData();
     window.appData.tasitlar = Array.isArray(arr) ? arr : [];
-    try { localStorage.setItem('medisa_vehicles_v1', JSON.stringify(window.appData.tasitlar)); } catch (e) {}
-    try { localStorage.setItem('medisa_data_v1', JSON.stringify(window.appData)); } catch (e) {}
-    if (typeof window.saveDataToServer === 'function') window.saveDataToServer().catch(function(err) { console.error('Sunucuya kaydetme hatası (sessiz):', err); });
+    if (typeof window.saveDataToServer === 'function') window.saveDataToServer().catch(function(err) { console.error('Sunucuya kaydetme hatası:', err); });
 };
 
-/** Şube listesini güncelle: appData + localStorage + sunucuya kaydet */
+/** Şube listesini güncelle: appData + sadece sunucuya kaydet */
 window.writeBranches = function(arr) {
     if (!window.appData) return;
     window.appData.branches = Array.isArray(arr) ? arr : [];
-    try { localStorage.setItem('medisa_branches_v1', JSON.stringify(window.appData.branches)); } catch (e) {}
-    try { localStorage.setItem('medisa_data_v1', JSON.stringify(window.appData)); } catch (e) {}
-    if (typeof window.saveDataToServer === 'function') window.saveDataToServer().catch(function(err) { console.error('Sunucuya kaydetme hatası (sessiz):', err); });
+    if (typeof window.saveDataToServer === 'function') window.saveDataToServer().catch(function(err) { console.error('Sunucuya kaydetme hatası:', err); });
 };
 
-/** Kullanıcı listesini güncelle: appData + localStorage + sunucuya kaydet */
+/** Kullanıcı listesini güncelle: appData + sadece sunucuya kaydet */
 window.writeUsers = function(arr) {
     if (!window.appData) return;
     window.appData.users = Array.isArray(arr) ? arr : [];
-    try { localStorage.setItem('medisa_users_v1', JSON.stringify(window.appData.users)); } catch (e) {}
-    try { localStorage.setItem('medisa_data_v1', JSON.stringify(window.appData)); } catch (e) {}
-    if (typeof window.saveDataToServer === 'function') window.saveDataToServer().catch(function(err) { console.error('Sunucuya kaydetme hatası (sessiz):', err); });
+    if (typeof window.saveDataToServer === 'function') window.saveDataToServer().catch(function(err) { console.error('Sunucuya kaydetme hatası:', err); });
 };
 
 window.getMedisaVehicles = getMedisaVehicles;
