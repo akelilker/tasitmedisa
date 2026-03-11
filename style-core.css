@@ -1479,9 +1479,14 @@ body.modal-open .user-panel-link {
     overflow-y: visible;
 }
 
-/* Modal açıkken overlay tam opak (ışık sızmasın), footer ışıkları kalsın */
-body.modal-open #app-footer {
-    box-shadow: 0 -18px 36px rgba(var(--theme-color-rgb), 0.45), 0 -8px 16px rgba(var(--theme-color-rgb), 0.25) !important;
+/* Modal açıkken footer glow AYNI kalsın (ışık şiddeti artmasın); overlay tam opak */
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #app-footer {
+    box-shadow: 0 -13px 26px rgba(var(--footer-glow-rgb), 0.5) !important;
+}
+@media (max-width: 640px) {
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #app-footer {
+    box-shadow: 0 -12px 22px rgba(var(--footer-glow-rgb), 0.45) !important;
+  }
 }
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay.active,
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay.open {
@@ -2184,7 +2189,7 @@ body.modal-open::after {
   width: 100%;
   bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0));
   height: var(--app-footer-gap);
-  background: linear-gradient(to bottom, transparent, rgba(var(--theme-color-rgb), 0.06), var(--bg)) !important;
+  background: var(--bg) !important;
   z-index: 9998;
   pointer-events: none;
 }
