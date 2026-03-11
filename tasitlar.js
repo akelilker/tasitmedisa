@@ -4383,11 +4383,30 @@ function renderVehicleDetailLeft(vehicle) {
       }
     }
 
+    // Kasko Excel hatırlatması: Ayın 1'inden itibaren, liste bu aya ait değilse (Excel yüklenince otomatik kalkar)
+    let kaskoExcelHtml = '';
+    if (d >= 1) {
+      const kaskoUploadDate = localStorage.getItem('medisa_kasko_liste_date');
+      let kaskoListeGuncel = false;
+      if (kaskoUploadDate) {
+        const uploadDate = new Date(kaskoUploadDate);
+        if (uploadDate.getMonth() === m && uploadDate.getFullYear() === y) kaskoListeGuncel = true;
+      }
+      if (!kaskoListeGuncel) {
+        const kaskoKey = 'kasko_excel_dismiss_' + y + '_' + m;
+        if (!localStorage.getItem(kaskoKey)) {
+          const kaskoKeyEsc = (kaskoKey || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+          kaskoExcelHtml = '<div class="notification-item kasko-excel-notification"><div class="mtv-text-container"><span class="mtv-main-text">Güncel Kasko Değer Listesinin Yüklenmesi Gerekmektedir.</span></div><div class="mtv-dismiss-wrapper"><button type="button" class="mtv-dismiss-btn" onclick="dismissKaskoExcelNotif(event, \'' + kaskoKeyEsc + '\')" aria-label="Bildirimi Kapat"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button><div class="mtv-tooltip">Kapat</div></div></div>';
+          hasOrange = true;
+        }
+      }
+    }
+
     // Bildirimleri güncelle
     const notifDropdown = DOM.notificationsDropdown;
     const notifIcon = document.querySelector('.icon-btn[onclick="toggleNotifications(event)"]');
 
-    if (notifications.length === 0 && recentSlice.length === 0 && !mtvHtml) {
+    if (notifications.length === 0 && recentSlice.length === 0 && !mtvHtml && !kaskoExcelHtml) {
       if (notifDropdown) {
         notifDropdown.innerHTML = '<button disabled>Bildirim Yok</button>';
       }
@@ -4395,7 +4414,7 @@ function renderVehicleDetailLeft(vehicle) {
         notifIcon.classList.remove('notification-red', 'notification-orange', 'notification-pulse');
       }
     } else {
-      let html = mtvHtml;
+      let html = mtvHtml + kaskoExcelHtml;
 
       // Tarih uyarıları (sigorta, kasko, muayene)
       if (notifications.length > 0) {
@@ -4491,6 +4510,33 @@ function renderVehicleDetailLeft(vehicle) {
     const textSpan = container ? container.querySelector('.mtv-main-text') : null;
 
     // Görsel Geri Bildirim: Butonu kilitle ve metni güncelle
+    if (btn) {
+      btn.style.pointerEvents = 'none';
+      btn.style.opacity = '0.5';
+    }
+    if (container) {
+      container.style.cursor = 'wait';
+    }
+    if (textSpan) {
+      textSpan.style.transition = 'all 0.3s ease';
+      textSpan.innerText = 'Bildirim işleniyor, lütfen bekleyin...';
+      textSpan.style.color = 'var(--txt-muted)';
+    }
+
+    localStorage.setItem(key, 'true');
+    if (typeof window.updateNotifications === 'function') {
+      window.updateNotifications();
+    }
+  };
+
+  window.dismissKaskoExcelNotif = function(event, key) {
+    event.stopPropagation();
+    event.preventDefault();
+
+    const btn = event.currentTarget;
+    const container = btn ? btn.closest('.kasko-excel-notification') : null;
+    const textSpan = container ? container.querySelector('.mtv-main-text') : null;
+
     if (btn) {
       btn.style.pointerEvents = 'none';
       btn.style.opacity = '0.5';

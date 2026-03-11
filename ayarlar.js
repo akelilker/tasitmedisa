@@ -1014,6 +1014,9 @@
             if (typeof window.guncelleTumKaskoDegerleri === 'function') {
               window.guncelleTumKaskoDegerleri();
             }
+            if (typeof window.updateNotifications === 'function') {
+              window.updateNotifications();
+            }
 
             if (typeof window.closeInfoModal === 'function') {
               window.closeInfoModal();
