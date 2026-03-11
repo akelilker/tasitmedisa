@@ -58,6 +58,8 @@ const API_BASE = (function(){
   let allHistoryRecords = [];
   let allHistoryVehicles = [];
   let currentDriverEventVehicleId = null;
+  /** Muayene bildirimi teyit edildi mi (Hayır/Evet akışı). Modal kapanınca sıfırlanır. */
+  let isMuayeneConfirmed = false;
   let currentPeriod = '';
   let selectedVehicleId = null;
   /** Bu oturumda (ekran kapanana kadar) son bildirilen aksiyon: { action, vehicleId }. Ekran kapanınca temizlenir, yeşil geri bildirim beyaz/griye döner. */
@@ -75,6 +77,34 @@ const API_BASE = (function(){
     var parts = isoDate.trim().split('-');
     if (parts.length !== 3) return isoDate;
     return parts[2] + '/' + parts[1] + '/' + parts[0];
+  }
+
+  /** Muayene bitiş tarihi hesapla (PHP calculateNextMuayene ile aynı kural: ilk muayene otomobil +3 diğer +2, sonraki otomobil +2 diğer +1). */
+  function calculateNextMuayeneDate(tarihStr, vehicle) {
+    if (!tarihStr) return '';
+    var events = (vehicle && vehicle.events) ? vehicle.events : [];
+    var isFirstMuayene = true;
+    for (var i = 0; i < events.length; i++) {
+      if (events[i] && events[i].type === 'muayene-guncelle') {
+        isFirstMuayene = false;
+        break;
+      }
+    }
+    var vehicleType = (vehicle && (vehicle.vehicleType || vehicle.tip)) ? (vehicle.vehicleType || vehicle.tip) : 'otomobil';
+    var years = 0;
+    if (isFirstMuayene) {
+      years = vehicleType === 'otomobil' ? 3 : 2;
+    } else {
+      years = vehicleType === 'otomobil' ? 2 : 1;
+    }
+    try {
+      var dt = new Date(tarihStr + 'T00:00:00');
+      if (isNaN(dt.getTime())) return '';
+      dt.setFullYear(dt.getFullYear() + years);
+      return dt.getFullYear() + '-' + String(dt.getMonth() + 1).padStart(2, '0') + '-' + String(dt.getDate()).padStart(2, '0');
+    } catch (e) {
+      return '';
+    }
   }
   function formatDriverPlaka(plaka) {
     if (!plaka) return '';
@@ -1425,6 +1455,18 @@ const API_BASE = (function(){
       });
   }
   
+  window.cancelMuayeneSubmit = function() {
+      const popover = document.getElementById('muayene-confirm-popover');
+      if (popover) popover.style.display = 'none';
+  };
+
+  window.confirmMuayeneSubmit = function() {
+      isMuayeneConfirmed = true;
+      const popover = document.getElementById('muayene-confirm-popover');
+      if (popover) popover.style.display = 'none';
+      saveDriverEvent('muayene');
+  };
+
   window.closeDriverEventModal = function(type) {
       const vid = currentDriverEventVehicleId;
       if (vid) {
@@ -1435,6 +1477,11 @@ const API_BASE = (function(){
       if (modal) modal.classList.remove('show');
       currentDriverEventVehicleId = null;
       updateDriverModalBodyClass();
+      if (type === 'muayene') {
+          isMuayeneConfirmed = false;
+          const popover = document.getElementById('muayene-confirm-popover');
+          if (popover) popover.style.display = 'none';
+      }
   };
   
   window.saveDriverEventFromBlock = async function(type, vehicleId) {
@@ -1517,6 +1564,15 @@ const API_BASE = (function(){
           const tarih = document.getElementById('driver-muayene-tarih')?.value.trim() || '';
           if (!tarih) {
               alert('Tarih zorunludur!');
+              return;
+          }
+          if (!isMuayeneConfirmed) {
+              const vehicle = allHistoryVehicles && allHistoryVehicles.find(function(v) { return String(v.id) === String(vehicleId); });
+              const bitisStr = calculateNextMuayeneDate(tarih, vehicle);
+              const dateEl = document.getElementById('muayene-calc-date');
+              if (dateEl) dateEl.textContent = bitisStr ? formatDateDDMMYYYY(bitisStr) : '--/--/----';
+              const popover = document.getElementById('muayene-confirm-popover');
+              if (popover) popover.style.display = 'block';
               return;
           }
           data = { tarih: tarih };
