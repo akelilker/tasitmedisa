@@ -2345,7 +2345,18 @@ function renderVehicleDetailLeft(vehicle) {
 
     // Kasko Değeri (TSB Excel verisinden otomatik)
     const kaskoDegeri = getKaskoDegeri(vehicle.kaskoKodu, vehicle.year);
-    html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Kasko Değeri</span><span class="detail-row-colon">:</span></div><span class="detail-row-value kasko-degeri-text"> ${escapeHtml(kaskoDegeri)}</span></div>`;
+    let isKaskoOutdated = true;
+    const kaskoUploadDate = localStorage.getItem('medisa_kasko_liste_date');
+    if (kaskoUploadDate) {
+      const uploadDate = new Date(kaskoUploadDate);
+      const now = new Date();
+      if (uploadDate.getMonth() === now.getMonth() && uploadDate.getFullYear() === now.getFullYear()) {
+        isKaskoOutdated = false;
+      }
+    }
+    const kaskoDegeriStyle = isKaskoOutdated ? 'color: var(--red) !important;' : '';
+    const kaskoDegeriExtra = isKaskoOutdated ? ' <span style="font-size: 0.8em; opacity: 0.8;">(Güncel Değil)</span>' : '';
+    html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Kasko Değeri</span><span class="detail-row-colon">:</span></div><span class="detail-row-value kasko-degeri-text" style="${kaskoDegeriStyle}"> ${escapeHtml(kaskoDegeri)}${kaskoDegeriExtra}</span></div>`;
 
     // Notlar (kayıt formundan) + Kullanıcı Notu (varsa, kullanıcı panelinden)
     const notes = vehicle.notes || '';
