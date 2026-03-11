@@ -363,7 +363,7 @@
     margin-top: -24px;
 }
 
-/* Veri Yönetimi Butonları */
+/* Veri Yedekleme Butonları */
 .data-management-text-btn {
     background: none;
     border: none;
@@ -385,7 +385,7 @@
     box-sizing: border-box;
 }
 
-/* Veri Yönetimi: Yedek Al / Yedekten Geri Yükle - modal üst/alt çerçeve dikkate alarak ortalanmış */
+/* Veri Yedekleme: Yedek Al / Yedekten Geri Yükle - modal üst/alt çerçeve dikkate alarak ortalanmış */
 #data-management-modal .modal-container {
     position: relative;
 }
@@ -415,6 +415,55 @@
 .data-management-text-btn:last-child { margin-bottom: 0; }
 .data-management-text-btn:hover { 
     font-size: 18px;
+}
+
+/* Dış Veri Yönetimi: Ayarlar menüsü butonu (ikon + metin) */
+.settings-dropdown #dis-veri-btn {
+    gap: 8px;
+}
+
+/* Dış Veri Yönetimi paneli: buton ızgarası */
+#dis-veri-panel .dis-veri-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+    padding: 16px;
+    max-width: 100%;
+}
+.dis-veri-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 14px 20px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid;
+    transition: background 0.2s, border-color 0.2s, transform 0.15s;
+    box-sizing: border-box;
+}
+.dis-veri-btn:hover {
+    transform: translateY(-1px);
+}
+.dis-veri-btn-secondary {
+    background: rgba(59, 130, 246, 0.15);
+    border-color: rgba(59, 130, 246, 0.5);
+    color: #60a5fa;
+}
+.dis-veri-btn-secondary:hover {
+    background: rgba(59, 130, 246, 0.25);
+    border-color: rgba(59, 130, 246, 0.7);
+}
+.dis-veri-btn-success {
+    background: rgba(34, 197, 94, 0.15);
+    border-color: rgba(34, 197, 94, 0.5);
+    color: #4ade80;
+}
+.dis-veri-btn-success:hover {
+    background: rgba(34, 197, 94, 0.25);
+    border-color: rgba(34, 197, 94, 0.7);
 }
 
 /* Ayarlar Menüsü ve Listeler */
@@ -453,7 +502,7 @@
 }
 .settings-dropdown button:last-child { margin-bottom: 0; }
 
-/* Veri Yönetimi wrapper ve buton eşitleme */
+/* Veri Yedekleme wrapper ve buton eşitleme */
 .settings-dropdown .has-submenu-wrapper {
     width: 100%;
     margin-bottom: 8px;
@@ -1170,7 +1219,7 @@ input.settings-form-input:-moz-autofill,
     #data-management-modal .modal-container {
         background: var(--bg) !important;
     }
-    /* Veri Yönetimi mobil: Yedek Al 5px yukarı, butonlar sağa yaslı, metin beyaz */
+    /* Veri Yedekleme mobil: Yedek Al 5px yukarı, butonlar sağa yaslı, metin beyaz */
     #data-management-modal .data-management-actions {
         transform: translateY(calc(-50% - 5px));
         align-items: flex-end;

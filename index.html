@@ -170,9 +170,10 @@
                     <div id="settings-menu" class="settings-dropdown">
                         <button onclick="openBranchManagement()">Şube Yönetimi</button>
                         <button onclick="openUserManagement()">Kullanıcı Yönetimi</button>
+                        <button id="dis-veri-btn" onclick="openDisVeriPanel()"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg> Dış Veri Yönetimi</button>
                         <div class="has-submenu-wrapper" onmouseenter="showDataSubmenu()" onmouseleave="hideDataSubmenu(event)">
                             <button class="has-submenu" onclick="openDataManagement(event)" onpointerdown="openDataManagement(event)">
-                                Veri Yönetimi
+                                Veri Yedekleme
                             </button>
                             <div id="data-submenu" class="settings-submenu" onmouseenter="showDataSubmenu()" onmouseleave="hideDataSubmenu(event)">
                                 <button onclick="exportData()">Yedek Al</button>
@@ -566,7 +567,7 @@
         <div id="data-management-modal" class="modal-overlay ayarlar-modal-overlay">
             <div class="modal-container" onclick="if(event.target.closest('.universal-back-btn')) { event.stopPropagation(); closeDataManagement(); var m=document.getElementById('settings-menu'); if(m)m.classList.add('open'); }">
                 <div class="modal-header">
-                    <h2>VERİ YÖNETİMİ</h2>
+                    <h2>VERİ YEDEKLEME</h2>
                     <button class="modal-close" onclick="closeDataManagement()">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -585,6 +586,38 @@
                         <button onclick="exportData()" class="data-management-text-btn">Yedek Al</button>
                         <button onclick="restoreFromLastBackup()" class="data-management-text-btn">Son Yedekten Geri Yükle</button>
                         <button onclick="importData()" class="data-management-text-btn">Dosyadan Geri Yükle</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="dis-veri-panel" class="modal-overlay ayarlar-modal-overlay">
+            <div class="modal-container" onclick="if(event.target.closest('.universal-back-btn')) { event.stopPropagation(); closeDisVeriPanel(); var m=document.getElementById('settings-menu'); if(m)m.classList.add('open'); }">
+                <div class="modal-header">
+                    <h2>Dış Veri Yönetimi</h2>
+                    <button class="modal-close" onclick="closeDisVeriPanel()">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="universal-back-bar">
+                    <button type="button" class="universal-back-btn" aria-label="Ayarlar">
+                        <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        <span class="universal-back-label">Ayarlar</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="dis-veri-grid">
+                        <button type="button" class="dis-veri-btn dis-veri-btn-secondary" onclick="tsbKaskoListesiIndir()">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                            TSB Kasko Listesi İndir
+                        </button>
+                        <button type="button" class="dis-veri-btn dis-veri-btn-success" onclick="kaskoExcelYukle()">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M8 13h2"/><path d="M8 17h2"/><path d="M14 13h2"/><path d="M14 17h2"/></svg>
+                            Kasko Excel Yükle
+                        </button>
                     </div>
                 </div>
             </div>

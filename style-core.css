@@ -1059,7 +1059,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   box-shadow: 0 6px 15px rgba(0,0,0,0.4);
 }
 
-/* SUB-MENU (Veri Yönetimi için sola açılan menü) */
+/* SUB-MENU (Veri Yedekleme için sola açılan menü) */
 .settings-submenu {
   display: none;
   position: absolute;
