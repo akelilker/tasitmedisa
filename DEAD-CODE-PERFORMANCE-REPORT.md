@@ -58,8 +58,27 @@ Diğer kontrol edilen #id ve tekil class'lar (app-footer, notifications-dropdown
 | JS dead-code | Yok | - |
 | CSS dead-code | 1 selector: `#kullanici-modal` | style-core.css’ten kaldırıldı |
 | Tekrarlayan kod | Optional dependency pattern’leri | Sadece rapor |
-| Performans | Düşük risk; opsiyonel cache önerisi | Sadece rapor |
+| Performans | Düşük risk; opsiyonel cache önerisi | tasitlar.js: v-search-input cache (getVSearchInput) uygulandı |
 
-**Yapılan tek kod değişikliği:** [style-core.css](style-core.css) içinde masaüstü ferahlama kuralındaki `#kullanici-modal` selector’ı kaldırıldı. Diğer tüm değişiklikler raporlama ve öneri düzeyinde bırakıldı.
+**Yapılan kod değişiklikleri:**
+- [style-core.css](style-core.css): `#kullanici-modal` selector’ı kaldırıldı.
+- [tasitlar.js](tasitlar.js): Arama/toolbar elementleri için getter’lar eklendi: `getVSearchInput()`, `getVSearchContainer()`, `getVTransmissionDropdown()`, `getFilterDropdown()`; ilgili tüm `getElementById` kullanımları bu getter’lara taşındı.
 
 Tarama, build aracı olmadan grep ve manuel inceleme ile yapıldı. Temizlik sonrası manuel tarayıcı kontrolü önerilir.
+
+---
+
+## 6. En yoğun modül (taşıtlar) taraması
+
+**Modül:** tasitlar.js (~4354 satır). Diğer modüller: script-core 598, kayit 1952, raporlar 1739, ayarlar 1366, data-manager 436 satır. Taşıtlar hem en büyük hem de ana kullanıcı akışının (şube/taşıt listesi, detay, olay modalleri) merkezinde.
+
+| Kontrol | Sonuç |
+|--------|--------|
+| **DOM cache** | `bindDOM()` ile ana modal/detay elementleri bir kere alınıyor; `getVSearchInput()` ile arama kutusu tek referansta. |
+| **renderVehicles** | `DOM.vehiclesModalContent` kullanılıyor; döngü içinde getElementById/querySelector yok. HTML string birleştirilip tek `innerHTML` atanıyor. |
+| **getBoundingClientRect** | Sadece 1 kullanım (satır ~2423): kaporta/boya şeması boyutlandırması, `requestAnimationFrame` içinde tek seferlik. Scroll/resize döngüsünde değil. **Risk: yok.** |
+| **getComputedStyle** | tasitlar.js içinde kullanılmıyor. |
+| **Event listener** | Listener’lar tekil kayıt (modalContent, dropdown, document); `_vehicleClickBound` vb. ile duplicate önlenmiş. Duplicate tespit edilmedi. |
+| **Tekrarlayan getElementById** | `v-search-container`, `v-transmission-dropdown`, `filter-dropdown` için getter’lar eklendi; tüm kullanımlar bu getter’lara taşındı. |
+
+**Özet:** Taşıtlar modülünde kritik performans riski yok. DOM erişimi getter’lar üzerinden tek noktadan; ağır layout/style okuması hot path’te değil. **Uygulandı:** `getVSearchContainer()`, `getVTransmissionDropdown()`, `getFilterDropdown()` eklendi.

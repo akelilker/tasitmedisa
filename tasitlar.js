@@ -76,8 +76,11 @@
     else try { localStorage.setItem('vehicle_column_order', JSON.stringify(vehicleColumnOrder)); } catch (e) {}
   }
 
-  /** Arama kutusu referansı (tek getElementById ile cache amaçlı kullanım) */
+  /** Arama/toolbar elementleri (tek getElementById ile tutarlı kullanım) */
   function getVSearchInput() { return document.getElementById('v-search-input'); }
+  function getVSearchContainer() { return document.getElementById('v-search-container'); }
+  function getVTransmissionDropdown() { return document.getElementById('v-transmission-dropdown'); }
+  function getFilterDropdown() { return document.getElementById('filter-dropdown'); }
 
   // Grid genişlikleri sütun kimliğine göre (sürükle-bırak sonrası genişlik doğru sütunla kalsın)
   function getVehicleColumnWidths(columnOrder) {
@@ -299,7 +302,7 @@
       if (!btn) return;
       var val = btn.getAttribute('data-value') || '';
       setTransmissionFilter(val);
-      var dd = document.getElementById('v-transmission-dropdown');
+      var dd = getVTransmissionDropdown();
       if (dd) {
         var opts = dd.querySelectorAll('.v-transmission-option');
         var labels = { '': 'Tümü', 'otomatik': 'Otomatik', 'manuel': 'Manuel' };
@@ -352,7 +355,7 @@
     // Arama kutusu artık toolbar içinde (v-search-container)
 
     // Filtre Dropdown (sadece List modunda kullanılır, modal-container'a eklenir)
-    let filterDrop = document.getElementById('filter-dropdown');
+    let filterDrop = getFilterDropdown();
     if (!filterDrop && modalContainer) {
         filterDrop = document.createElement('div');
         filterDrop.id = 'filter-dropdown';
@@ -1354,7 +1357,7 @@
 
   window.toggleSearchBox = function(mode) {
       searchMode = mode;
-      const box = document.getElementById('v-search-container');
+      const box = getVSearchContainer();
       const input = getVSearchInput();
       if (!box || !input) return;
       
@@ -1369,7 +1372,7 @@
   };
 
   window.closeSearchBox = function() {
-      const box = document.getElementById('v-search-container');
+      const box = getVSearchContainer();
       if (box) box.classList.remove('open');
       const input = getVSearchInput();
       if (input) input.value = '';
@@ -1384,7 +1387,7 @@
 
   // Dış tıklama: arama açıkken kutu veya büyüteç dışına tıklanınca kapat
   document.addEventListener('click', function(e) {
-      const box = document.getElementById('v-search-container');
+      const box = getVSearchContainer();
       if (!box || !box.classList.contains('open')) return;
       if (e.target.closest('#v-search-container') || e.target.closest('.search-toggle-btn')) return;
       closeSearchBox();
@@ -1392,7 +1395,7 @@
   // Esc: arama açıkken kapat
   document.addEventListener('keydown', function(e) {
       if (e.key !== 'Escape') return;
-      const box = document.getElementById('v-search-container');
+      const box = getVSearchContainer();
       if (!box || !box.classList.contains('open')) return;
       closeSearchBox();
   });
@@ -1403,7 +1406,7 @@
 
   window.toggleTransmissionMenu = function(ev) {
       if (ev) ev.stopPropagation();
-      var dd = document.getElementById('v-transmission-dropdown');
+      var dd = getVTransmissionDropdown();
       if (!dd) return;
       var isOpen = dd.classList.contains('open');
       closeTransmissionMenu();
@@ -1416,7 +1419,7 @@
   };
 
   window.closeTransmissionMenu = function() {
-      var dd = document.getElementById('v-transmission-dropdown');
+      var dd = getVTransmissionDropdown();
       if (dd) {
           dd.classList.remove('open');
           dd.setAttribute('aria-hidden', 'true');
@@ -1464,13 +1467,13 @@
 
   // --- FİLTRE DROPDOWN ---
   window.closeFilterMenu = function() {
-      const fd = document.getElementById('filter-dropdown');
+      const fd = getFilterDropdown();
       if (fd) fd.classList.remove('open');
   };
 
   window.toggleFilterMenu = function(e) {
       if (e) e.stopPropagation();
-      const fd = document.getElementById('filter-dropdown');
+      const fd = getFilterDropdown();
       if (!fd) return;
       if (fd.classList.contains('open')) {
           closeFilterMenu();
@@ -1485,10 +1488,10 @@
   
   // Filtreleme ve şanzıman menüsü: dışarı tıklandığında kapat
   document.addEventListener('click', function(e) {
-      const fd = document.getElementById('filter-dropdown');
+      const fd = getFilterDropdown();
       const filterBtn = document.querySelector('.vt-icon-btn[onclick*="toggleFilterMenu"]');
       const transWrap = e.target.closest('.v-transmission-wrap');
-      const transDd = document.getElementById('v-transmission-dropdown');
+      const transDd = getVTransmissionDropdown();
 
       if (fd && fd.contains(e.target)) return;
       if (filterBtn && filterBtn.contains(e.target)) return;
