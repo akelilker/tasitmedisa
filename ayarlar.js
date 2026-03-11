@@ -97,7 +97,7 @@
       setTimeout(() => modal.style.display = 'none', 300);
     };
   
-    // ? CRUD ??lemleri ?
+    // ? CRUD ?i?lemleri ?
     /**
      * ?ube kayd?n? formdan okuyup localStorage'a kaydeder (Create/Update)
      * 
@@ -193,7 +193,7 @@
         return;
       }
   
-      if (!confirm('Bu ?ubeyi silmek istedi?inizden emin misiniz?')) return;
+      if (!confirm('Bu ºubeyi silmek istedi?inizden emin misiniz?')) return;
   
       const branches = readBranches();
       const filtered = branches.filter(b => b.id !== id);
@@ -601,7 +601,7 @@
       });
     }
   
-    // ? CRUD ??lemleri ?
+    // ? CRUD ?i?lemleri ?
     /**
      * Kullan?c? kayd?n? formdan okuyup localStorage'a kaydeder (Create/Update)
      * 
@@ -1349,7 +1349,7 @@
 
         if (!result.success && !allowCacheClearWithLocalBackupOnly) {
           // Sunucu yede?i ba?ar?s?z: kullan?c?ya yerel yedekle devam etme se?ene?i ver
-          const retryMessage = 'Veriler Sunucuya Yüklenemedi!\nYerel Yedek Olu?turuldu.\n\nYine De Temizlemek ?stiyor Musunuz?';
+          const retryMessage = 'Veriler Sunucuya Y?klenemedi!\nYerel Yedek Olu?turuldu.\n\nYine De Temizlemek ?stiyor Musunuz?';
           if (typeof window.closeInfoModal === 'function') {
             window.closeInfoModal();
           }
