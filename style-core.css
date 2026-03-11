@@ -1893,7 +1893,11 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
         border-right: none;
         border-top: 1px solid rgba(128, 128, 128, 0.5) !important; /* Gri çizgi */
     }
-    
+    /* Mobilde modal açıkken footer ışıkları kapansın (modal içine girmesin) */
+    body.modal-open #app-footer {
+        box-shadow: none !important;
+    }
+
     /* HEADER KIRMIZI ÇİZGİ - Havada (kırmızı çerçeve ile eşit) */
     .animated-line {
         opacity: 0.8;  /* Mobilde daha belirgin */
