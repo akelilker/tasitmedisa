@@ -62,13 +62,13 @@
           if (idInput) idInput.value = branch.id;
           if (nameInput) nameInput.value = branch.name;
           if (cityInput) cityInput.value = branch.city || '';
-          if (title) title.textContent = '?UBE D?ZENLE';
+          if (title) title.textContent = '?ube Dùzenle';
         }
         // Sil butonunu g?ster
         if (deleteBtn) deleteBtn.style.display = 'flex';
       } else {
         // YEN? EKLEME MODU
-        if (title) title.textContent = 'YEN? ?UBE EKLE';
+        if (title) title.textContent = 'YEN? ?ube Ekle';
         // Sil butonunu gizle
         if (deleteBtn) deleteBtn.style.display = 'none';
       }
@@ -162,9 +162,9 @@
         // Ana modal? g?ncelle
         renderBranchList();
   
-        alert(id ? '?ube G?ncellendi.' : '?ube Eklendi.');
+        alert(id ? '?ube Gùùncellendi.' : '?ube Eklendi.');
       } catch (error) {
-        alert('?ube kayd? s?ras?nda bir hata olu?tu! L?tfen tekrar deneyin.');
+        alert('?ube kayd? s?ras?nda bir hata olu?tu! Lùtfen tekrar deneyin.');
       } finally {
         if (saveBtn) saveBtn.disabled = false;
       }
@@ -186,14 +186,14 @@
       const userCount = users.filter(u => u.branchId === id).length;
   
       if (vehicleCount > 0 || userCount > 0) {
-        let msg = '?ubeye ?li?kin Kay?tl? Veri Bulundu?undan Silme Yap?lamaz!\n\n';
-        if (vehicleCount > 0) msg += `? ${vehicleCount} Adet Ta??t\n`;
-        if (userCount > 0) msg += `? ${userCount} Adet Kullan?c?\n`;
+        let msg = '?ubeye ili?kin kay?tl? veri bulundu?undan silme yap?lamaz!\n\n';
+        if (vehicleCount > 0) msg += `ù ${vehicleCount} Adet Ta??t\n`;
+        if (userCount > 0) msg += `ù ${userCount} Adet Kullan?c?\n`;
         alert(msg);
         return;
       }
   
-      if (!confirm('Bu ?ubeyi Silmek ?stedi?inizden Emin Misiniz?')) return;
+      if (!confirm('Bu ?ubeyi silmek istedi?inizden emin misiniz?')) return;
   
       const branches = readBranches();
       const filtered = branches.filter(b => b.id !== id);
@@ -219,7 +219,7 @@
       if (branches.length === 0) {
         container.innerHTML = `
           <div style="text-align:center; padding:20px; color:var(--muted);">
-            Hen?z ?ube eklenmemi?.
+            Henùz ?ube eklenmemi?.
           </div>
         `;
         return;
@@ -384,7 +384,8 @@
       if (!trigger || !container) return;
       const checked = container.querySelectorAll('input[name=user-vehicle]:checked');
       const n = checked.length;
-      trigger.textContent = n === 0 ? 'Ta??t Se?in' : (n === 1 ? '1 Ta??t Se?ildi' : n + ' Ta??t Se?ildi');
+      trigger.textContent = n === 0 ? 'Ta??t Seùin' : (n === 1 ? '1 Ta??t Seùildi' : n + ' Ta??t Seùildi');
+      // trigger line fixed above
     }
   
     function toggleUserVehiclesDropdown() {
@@ -545,13 +546,13 @@
             });
             updateUserVehiclesTriggerText();
           }
-          if (title) title.textContent = 'KULLANICI D?ZENLE';
+          if (title) title.textContent = 'Kullan?c? Dùzenle';
         }
         // Sil butonunu g?ster
         if (deleteBtn) deleteBtn.style.display = 'flex';
       } else {
         // YEN? EKLEME MODU
-        if (title) title.textContent = 'YEN? KULLANICI EKLE';
+        if (title) title.textContent = 'Yeni Kullan?c? Ekle';
         // Sil butonunu gizle
         if (deleteBtn) deleteBtn.style.display = 'none';
       }
@@ -590,7 +591,7 @@
   
       const branches = readBranches();
   
-      select.innerHTML = '<option value="">?ube Se?in</option>';
+      select.innerHTML = '<option value="">?ube Seùin</option>';
   
       branches.forEach(branch => {
         const option = document.createElement('option');
@@ -690,7 +691,7 @@
   
         // ?of?r portal giri?i: Ta??t atanm??sa Kullan?c? Ad? ve ?ifre zorunlu
         if (hasAssignedVehicles && (!kullanici_adi || !sifre)) {
-          alert('Portal Giri?i ??in Ta??t Atad???n?z Kullan?c?lar?n "Kullan?c? Ad? (portal giri?i)" ve "?ifre (portal giri?i)" alanlar?n? doldurman?z gerekir. Kullan?c? bu bilgilerle driver sayfas?nda giri? yapacakt?r.');
+          alert('Portal giri?i iùin ta??t atad???n?z kullan?c?lar?n "Kullan?c? Ad? (portal giri?i)" ve "?ifre (portal giri?i)" alanlar?n? doldurman?z gerekir. Kullan?c? bu bilgilerle driver sayfas?nda giri? yapacakt?r.');
           if (usernameInput) usernameInput.focus();
           return;
         }
@@ -751,14 +752,14 @@
         // Ana modal? g?ncelle
         renderUserList();
   
-        alert(id ? 'Kullan?c? G?ncellendi.' : 'Kullan?c? Eklendi.');
+        alert(id ? 'Kullan?c? Gùncellendi.' : 'Kullan?c? Eklendi.');
   
         if (savedUserId) {
           window.dispatchEvent(new CustomEvent('userSaved', { detail: { id: savedUserId } }));
         }
       } catch (error) {
         console.error('Kullan?c? kay?t hatas?:', error);
-        alert('Kullan?c? kayd? s?ras?nda bir hata olu?tu! L?tfen tekrar deneyin.');
+        alert('Kullan?c? kayd? s?ras?nda bir hata olu?tu! Lùtfen tekrar deneyin.');
       } finally {
         if (saveBtn) saveBtn.disabled = false;
       }
@@ -776,11 +777,11 @@
       const count = vehicles.filter(v => v.assignedUserId === id).length;
   
       if (count > 0) {
-        alert(`Bu Kullan?c?ya ${count} Adet Ta??t Tahsis Edilmi?. ?nce Ta??tlar? Ba?ka Kullan?c?ya Aktar?n.`);
+        alert(`Bu kullan?c?ya ${count} adet ta??t tahsis edilmi?. ùnce ta??tlar? ba?ka kullan?c?ya aktar?n.`);
         return;
       }
   
-      if (!confirm('Bu Kullan?c?y? Silmek ?stedi?inizden Emin Misiniz?')) return;
+      if (!confirm('Bu kullan?c?y? silmek istedi?inizden emin misiniz?')) return;
   
       const users = readUsers();
       const filtered = users.filter(u => u.id !== id);
@@ -806,7 +807,7 @@
       if (users.length === 0) {
         container.innerHTML = `
           <div style="text-align:center; padding:20px; color:var(--muted);">
-            Hen?z kullan?c? eklenmemi?.
+            Henùz kullan?c? eklenmemi?.
           </div>
         `;
         return;
@@ -817,7 +818,7 @@
         const branchName = branch ? branch.name : '-';
         
         const roleLabels = {
-          'admin': 'Y?netici',
+          'admin': 'Yˆùnetici',
           'sales': 'Sat?? Temsilcisi',
           'driver': 'Kullan?c?'
         };
@@ -1074,7 +1075,7 @@
       }
     };
 
-    // YEDEKTEN GER? Y‹KLE (Import - dosyadan)
+    // YEDEKTEN GER? YùKLE (Import - dosyadan)
     window.importData = function importData() {
       try {
         const input = document.createElement('input');
@@ -1102,7 +1103,7 @@
                             `?ubeler: ${backup.branches.length}\n` +
                             `Kullan?c?lar: ${backup.users.length}\n` +
                             `Ta??tlar: ${backup.vehicles.length}\n\n` +
-                            `Mevcut Veriler Silinecek! Emin Misiniz?`;
+                            `Mevcut veriler silinecek! Emin misiniz?`;
   
               if (!confirm(message)) return;
   
