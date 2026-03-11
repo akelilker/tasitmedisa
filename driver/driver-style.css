@@ -2711,6 +2711,60 @@ body.driver-modal-open {
   color: rgba(74, 222, 128, 0.95);
 }
 
+/* Muayene teyit popover */
+.muayene-confirm-popover {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  right: 0;
+  width: 280px;
+  background: var(--card-bg, #1a1a1a);
+  border: 1px solid var(--theme-color);
+  border-radius: 8px;
+  padding: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5), 0 0 15px rgba(var(--theme-color-rgb, 59, 130, 246), 0.2);
+  z-index: 100;
+  font-size: 13px;
+  color: #fff;
+}
+
+.muayene-confirm-popover p {
+  margin: 0 0 12px 0;
+  line-height: 1.4;
+}
+
+.muayene-confirm-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.muayene-confirm-actions .btn-confirm-yes {
+  background: var(--green, #4ade80);
+  color: #0f1418;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.muayene-confirm-actions .btn-confirm-no {
+  background: rgba(255, 255, 255, 0.1);
+  color: #a0aec0;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.muayene-confirm-actions .btn-confirm-no:hover {
+  background: rgba(239, 68, 68, 0.2);
+  color: #f87171;
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
 #history-modal .universal-back-bar .universal-back-label,
 #edit-request-modal .universal-back-bar .universal-back-label {
   color: var(--muted, #adb5bd) !important;
