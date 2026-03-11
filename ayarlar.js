@@ -67,8 +67,8 @@
         // Sil butonunu g?ster
         if (deleteBtn) deleteBtn.style.display = 'flex';
       } else {
-        // YEN? EKLEME MODU
-        if (title) title.textContent = 'YEN? ?ube Ekle';
+        // Yeni EKLEME MODU
+        if (title) title.textContent = 'Yeni ?ube Ekle';
         // Sil butonunu gizle
         if (deleteBtn) deleteBtn.style.display = 'none';
       }
@@ -144,7 +144,7 @@
           branches[idx].city = city;
         }
       } else {
-        // YEN? EKLEME
+        // Yeni EKLEME
         const newBranch = {
           id: Date.now().toString(),
           name: name,
@@ -162,7 +162,7 @@
         // Ana modal? g?ncelle
         renderBranchList();
   
-        alert(id ? '?ube G??ncellendi.' : '?ube Eklendi.');
+        alert(id ? '?ube G?ncellendi.' : '?ube Eklendi.');
       } catch (error) {
         alert('?ube kayd? s?ras?nda bir hata olu?tu! L?tfen tekrar deneyin.');
       } finally {
@@ -551,7 +551,7 @@
         // Sil butonunu g?ster
         if (deleteBtn) deleteBtn.style.display = 'flex';
       } else {
-        // YEN? EKLEME MODU
+        // Yeni EKLEME MODU
         if (title) title.textContent = 'Yeni Kullan?c? Ekle';
         // Sil butonunu gizle
         if (deleteBtn) deleteBtn.style.display = 'none';
@@ -710,7 +710,7 @@
             users[idx].sifre = sifre;
           }
         } else {
-          // YEN? EKLEME
+          // Yeni EKLEME
           const newUser = {
             id: 'u' + Date.now().toString(),
             name: name,
@@ -1349,7 +1349,7 @@
 
         if (!result.success && !allowCacheClearWithLocalBackupOnly) {
           // Sunucu yede?i ba?ar?s?z: kullan?c?ya yerel yedekle devam etme se?ene?i ver
-          const retryMessage = 'Veriler Sunucuya Y?klenemedi!\nYerel Yedek Olu?turuldu.\n\nYine De Temizlemek ?stiyor Musunuz?';
+          const retryMessage = 'Veriler Sunucuya Yüklenemedi!\nYerel Yedek Olu?turuldu.\n\nYine De Temizlemek ?stiyor Musunuz?';
           if (typeof window.closeInfoModal === 'function') {
             window.closeInfoModal();
           }

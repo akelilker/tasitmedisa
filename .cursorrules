@@ -32,7 +32,8 @@ Sen kıdemli bir yazılım geliştiricisisin. Projenin son aşamasına geldik, b
 
 Bu çalışma raconunu anladıysan sadece şunu yaz: "Hazırım kanka, yeni sayfaya hoş geldin! İlk sorunu yolla, jilet gibi çözelim!"
 
-IMPORTANT:
-All files must be saved as UTF-8 without BOM.
-Do not change file encoding.
-Do not introduce character encoding issues with Turkish characters.
+IMPORTANT - TÜRKÇE KARAKTER / ENCODING:
+- Tüm dosyalar UTF-8 (BOM olmadan) kaydedilmelidir.
+- Dosya encoding'ini değiştirme.
+- Türkçe karakterlerde (ş, ğ, ü, ö, ç, ı, İ) sorun çıkarma.
+- Proje .vscode/settings.json ve .editorconfig ile UTF-8 zorunlu kılmıştır; yeni dosyalar otomatik UTF-8 açılır.
