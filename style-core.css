@@ -1481,7 +1481,7 @@ body.modal-open .user-panel-link {
 
 /* Modal açıkken footer ışığı modal alt çerçevesine kadar uzansın (kesilmeden, modal üstte duruyormuş gibi) */
 body.modal-open #app-footer {
-    box-shadow: 0 -18px 36px rgba(var(--theme-color-rgb), 0.45), 0 -8px 16px rgba(var(--theme-color-rgb), 0.25) !important;
+    box-shadow: none !important;
 }
 
 #app-footer .footer-content {
@@ -2179,8 +2179,8 @@ body.modal-open::after {
   width: 100%;
   bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0));
   height: var(--app-footer-gap);
-  background: linear-gradient(to bottom, transparent, rgba(var(--theme-color-rgb), 0.06), var(--bg)) !important;
-  z-index: 9998;
+  background: var(--bg) !important;
+  z-index: 10001;
   pointer-events: none;
 }
 @media (max-width: 640px) {
