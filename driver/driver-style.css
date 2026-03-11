@@ -2731,10 +2731,11 @@ body.driver-modal-open {
   line-height: 1.4;
 }
 
+/* Mobil + masaüstü: çerçeve ikiye bölünmüş, her buton kendi alanında yatay ortalı */
 .muayene-confirm-actions {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
 }
 
 /* Hayır: yeşil metin + yeşil çerçeve. Hover: sadece scale + arka plan (layout değişmez, modal esnemez) */
@@ -2742,11 +2743,12 @@ body.driver-modal-open {
   background: transparent;
   color: var(--green, #4ade80);
   border: 1px solid var(--green, #4ade80);
-  padding: 8px 16px;
+  padding: 5px 20px;
   border-radius: 6px;
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
+  justify-self: center;
   transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
 }
 
@@ -2761,11 +2763,12 @@ body.driver-modal-open {
   background: transparent;
   color: #ef4444;
   border: 1px solid #ef4444;
-  padding: 8px 16px;
+  padding: 5px 20px;
   border-radius: 6px;
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
+  justify-self: center;
   transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
 }
 
@@ -2775,17 +2778,11 @@ body.driver-modal-open {
   transform: scale(1.02);
 }
 
-/* Masaüstü: butonlar 4px daha kısa, çerçeve ikiye bölünmüş her buton kendi alanında yatay ortalı */
+/* Masaüstü: butonlar 4px daha kısa (dikey), yatayda 8px daha geniş */
 @media (min-width: 769px) {
-  .muayene-confirm-actions {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0;
-  }
   .muayene-confirm-actions .btn-confirm-no,
   .muayene-confirm-actions .btn-confirm-yes {
-    padding: 6px 16px;
-    justify-self: center;
+    padding: 6px 24px;
   }
 }
 
