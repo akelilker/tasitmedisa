@@ -968,21 +968,26 @@
       setTimeout(() => { panel.style.display = 'none'; }, 300);
     };
     window.tsbKaskoListesiIndir = function tsbKaskoListesiIndir() {
-      var msg = 'TSB Kasko Listesi \u0130ndir \u2013 hen\u00fcz uygulanmad\u0131.';
-      if (typeof window.showInfoModal === 'function') {
-        window.showInfoModal(msg);
-      } else {
-        alert(msg);
-      }
+      window.open('https://www.tsb.org.tr/tr/kasko-deger-listesi', '_blank');
     };
     window.kaskoExcelYukle = function kaskoExcelYukle() {
-      var msg = 'Kasko Excel Y\u00fckle \u2013 hen\u00fcz uygulanmad\u0131.';
-      if (typeof window.showInfoModal === 'function') {
-        window.showInfoModal(msg);
-      } else {
-        alert(msg);
-      }
+      var input = document.getElementById('kasko-excel-input');
+      if (input) input.click();
     };
+    (function initKaskoExcelInput() {
+      var input = document.getElementById('kasko-excel-input');
+      if (!input) return;
+      input.addEventListener('change', function() {
+        if (this.files && this.files.length > 0) {
+          if (typeof window.showInfoModal === 'function') {
+            window.showInfoModal('Excel dosyas? seçildi. Okuma modülü haz?rlan?yor...');
+          } else {
+            alert('Excel dosyas? seçildi. Okuma modülü haz?rlan?yor...');
+          }
+        }
+        this.value = '';
+      });
+    })();
 
     // ? YEDEKLE (Export) ?
     window.exportData = function exportData() {
