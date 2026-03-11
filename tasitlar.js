@@ -1644,88 +1644,51 @@
     return labels[type] || type;
   }
 
-  /**
-   * TSB Excel verisinden (localStorage medisa_kasko_liste) kasko değerini hesaplar.
-   * @param {string} kaskoKodu - Araç kasko kodu (örn: 01123)
-   * @param {string|number} modelYili - Model yılı (örn: 2024)
-   * @returns {string} Formatlı değer (örn: "1.450.000 ₺") veya "Bulunamadı"
-   */
+  let cachedKaskoData = null;
   function getKaskoDegeri(kaskoKodu, modelYili) {
     if (!kaskoKodu || String(kaskoKodu).trim() === '') return '-';
-    var raw = null;
     try {
-      raw = localStorage.getItem('medisa_kasko_liste');
-      if (!raw) return '-';
-      var data = JSON.parse(raw);
+      if (!cachedKaskoData) {
+        var raw = localStorage.getItem('medisa_kasko_liste');
+        if (!raw) return '-';
+        cachedKaskoData = JSON.parse(raw);
+      }
+      var data = cachedKaskoData;
       if (!Array.isArray(data) || data.length < 2) return '-';
+
+      var headerRowIndex = -1;
+      for(var i=0; i<5; i++) {
+        if(data[i] && (data[i].includes("2025") || data[i].includes(2025) || data[i].includes("2026") || data[i].includes(2026))) {
+          headerRowIndex = i;
+          break;
+        }
+      }
+      if (headerRowIndex === -1) headerRowIndex = 1;
+
+      var headers = data[headerRowIndex];
+      var yearIndex = headers.indexOf(String(modelYili)) !== -1 ? headers.indexOf(String(modelYili)) : headers.indexOf(Number(modelYili));
+      if (yearIndex === -1) return 'Bulunamadı';
+
+      var targetKodu = String(kaskoKodu).trim().padStart(5, '0');
+
+      for (var r = headerRowIndex + 1; r < data.length; r++) {
+        var row = data[r];
+        if (!row || row.length < 2) continue;
+
+        var marka = String(row[0] || '').trim().padStart(2, '0');
+        var tip = String(row[1] || '').trim().padStart(3, '0');
+        var currentKodu = marka + tip;
+
+        if (currentKodu === targetKodu || String(row[0]).trim() === targetKodu) {
+          var val = row[yearIndex];
+          if (val) return Number(val).toLocaleString('tr-TR') + ' ₺';
+        }
+      }
+      return 'Bulunamadı';
     } catch (e) {
+      console.error("Kasko hesaplama hatası:", e);
       return '-';
     }
-    var yearStr = String(modelYili || '').trim();
-    if (!yearStr) return '-';
-    var yearNum = parseInt(yearStr, 10);
-    if (isNaN(yearNum) || yearNum < 1990 || yearNum > 2030) return '-';
-
-    var headerRowIdx = -1;
-    var yearColIdx = -1;
-    for (var hr = 0; hr < Math.min(5, data.length); hr++) {
-      var row = data[hr];
-      if (!row) continue;
-      var arr = Array.isArray(row) ? row : (typeof row === 'object' ? Object.values(row) : []);
-      var idx = arr.findIndex(function(h) {
-        var v = h != null ? String(h).trim() : '';
-        if (!v) return false;
-        var n = parseInt(v, 10);
-        return (v === yearStr || n === yearNum) && n >= 1990 && n <= 2030;
-      });
-      if (idx >= 0) {
-        headerRowIdx = hr;
-        yearColIdx = idx;
-        break;
-      }
-    }
-    if (headerRowIdx < 0 || yearColIdx < 0) return '-';
-
-    var headers = Array.isArray(data[headerRowIdx]) ? data[headerRowIdx] : Object.values(data[headerRowIdx] || {});
-    var kodColIdx = -1;
-    var markaColIdx = -1;
-    var tipColIdx = -1;
-    for (var i = 0; i < headers.length; i++) {
-      var v = (String(headers[i] || '').toLowerCase()).replace(/\s+/g, ' ').trim();
-      if (v === 'kod') kodColIdx = i;
-      else if (v.indexOf('marka') !== -1 && markaColIdx < 0) markaColIdx = i;
-      else if (v.indexOf('tip') !== -1 && tipColIdx < 0) tipColIdx = i;
-    }
-    if (kodColIdx < 0 && markaColIdx < 0 && tipColIdx < 0) kodColIdx = 0;
-    if (kodColIdx < 0 && tipColIdx >= 0 && markaColIdx < 0) kodColIdx = tipColIdx;
-
-    var searchKod = String(kaskoKodu).replace(/[^\d]/g, '');
-    if (!searchKod) return '-';
-    var dataStart = headerRowIdx + 1;
-    for (var r = dataStart; r < data.length; r++) {
-      var dataRow = data[r];
-      if (!dataRow) continue;
-      var row = Array.isArray(dataRow) ? dataRow : (typeof dataRow === 'object' ? Object.values(dataRow) : []);
-      var rowKod = '';
-      if (kodColIdx >= 0 && row[kodColIdx] != null && row[kodColIdx] !== '') {
-        rowKod = String(row[kodColIdx]).replace(/[^\d]/g, '');
-      } else if (markaColIdx >= 0 && tipColIdx >= 0) {
-        var m = String(row[markaColIdx] != null ? row[markaColIdx] : '').replace(/[^\d]/g, '');
-        var t = String(row[tipColIdx] != null ? row[tipColIdx] : '').replace(/[^\d]/g, '');
-        rowKod = m + t;
-      }
-      if (!rowKod) continue;
-      var len = Math.max(rowKod.length, searchKod.length);
-      if (rowKod.padStart(len, '0') === searchKod.padStart(len, '0')) {
-        var val = row[yearColIdx];
-        if (val == null || val === '') return '-';
-        var numStr = String(val).replace(/[^\d]/g, '');
-        if (!numStr) return '-';
-        var formatted = numStr.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-        return formatted + ' ₺';
-      }
-    }
-    return 'Bulunamadı';
   }
 
   /**
@@ -3594,9 +3557,15 @@ function renderVehicleDetailLeft(vehicle) {
     const vehicleId = window.currentDetailVehicleId;
     if (!vehicleId) return;
 
-    const yeniKaskoKodu = document.getElementById('kasko-kodu-guncelle-input')?.value.trim() || '';
+    const inputElement = document.getElementById('kasko-kodu-guncelle-input');
+    const yeniKaskoKodu = inputElement ? inputElement.value.trim() : '';
+
     if (!yeniKaskoKodu) {
-      alert('Lütfen Kasko Kodunu giriniz.');
+      if (typeof window.showInfoModal === 'function') {
+        window.showInfoModal('Lütfen Kasko Kodunu giriniz.');
+      } else {
+        alert('Lütfen Kasko Kodunu giriniz.');
+      }
       return;
     }
 
@@ -3605,10 +3574,9 @@ function renderVehicleDetailLeft(vehicle) {
     if (!vehicle) return;
 
     if (!vehicle.events) vehicle.events = [];
-
     vehicle.kaskoKodu = yeniKaskoKodu;
 
-    vehicle.events.unshift({
+    vehicle.events.push({
       id: Date.now().toString(),
       type: 'kasko-kodu-guncelle',
       date: formatDateForDisplay(new Date()),
@@ -3617,8 +3585,19 @@ function renderVehicleDetailLeft(vehicle) {
     });
 
     writeVehicles(vehicles);
+
+    if (typeof window.showSuccessModal === 'function') {
+      window.showSuccessModal('Kasko Kodu başarıyla güncellendi!');
+    } else if (typeof showToast === 'function') {
+      showToast('Kasko Kodu başarıyla güncellendi', 'success');
+    }
+
+    if (inputElement) inputElement.value = '';
     closeEventModal('kaskokodu');
-    showVehicleDetail(vehicleId);
+
+    setTimeout(() => {
+      showVehicleDetail(vehicleId);
+    }, 200);
   };
 
   /**
