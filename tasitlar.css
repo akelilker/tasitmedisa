@@ -473,6 +473,11 @@
     white-space: nowrap !important; /* Tek satırda kal */
 }
 
+/* Kasko Değeri (TSB otomatik hesaplama) - belirgin renk */
+.detail-row-value.kasko-degeri-text {
+    color: var(--green-success) !important;
+    font-weight: 600;
+}
 
 /* DÜZELTİLDİ: Sığıyorsa yan yana, sığmıyorsa alt alta (0px dikey boşlukla) */
 .detail-row-inline {

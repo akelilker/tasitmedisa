@@ -1642,6 +1642,69 @@
     return labels[type] || type;
   }
 
+  /**
+   * TSB Excel verisinden (localStorage medisa_kasko_liste) kasko değerini hesaplar.
+   * @param {string} kaskoKodu - Araç kasko kodu (örn: 01123)
+   * @param {string|number} modelYili - Model yılı (örn: 2024)
+   * @returns {string} Formatlı değer (örn: "1.450.000 ₺") veya "Bulunamadı"
+   */
+  function getKaskoDegeri(kaskoKodu, modelYili) {
+    if (!kaskoKodu || String(kaskoKodu).trim() === '') return '-';
+    var raw = null;
+    try {
+      raw = localStorage.getItem('medisa_kasko_liste');
+      if (!raw) return '-';
+      var data = JSON.parse(raw);
+      if (!Array.isArray(data) || data.length < 2) return '-';
+    } catch (e) {
+      return '-';
+    }
+    var headers = data[0];
+    if (!Array.isArray(headers)) return '-';
+    var yearStr = String(modelYili || '').trim();
+    if (!yearStr) return '-';
+    var yearColIdx = headers.findIndex(function(h) {
+      var v = String(h || '').trim();
+      return v === yearStr || v === String(parseInt(v, 10));
+    });
+    if (yearColIdx < 0) return '-';
+    var kodColIdx = -1;
+    var markaColIdx = -1;
+    var tipColIdx = -1;
+    headers.forEach(function(h, i) {
+      var v = (String(h || '').toLowerCase()).trim();
+      if (v === 'kod') kodColIdx = i;
+      else if (v === 'marka kodu' || v === 'markakodu') markaColIdx = i;
+      else if (v === 'tip kodu' || v === 'tipkodu') tipColIdx = i;
+    });
+    if (kodColIdx < 0 && markaColIdx < 0 && tipColIdx < 0) kodColIdx = 0;
+    if (kodColIdx < 0 && tipColIdx >= 0 && markaColIdx < 0) kodColIdx = tipColIdx;
+    var searchKod = String(kaskoKodu).trim().replace(/\s/g, '');
+    for (var r = 1; r < data.length; r++) {
+      var row = data[r];
+      if (!Array.isArray(row)) continue;
+      var rowKod = '';
+      if (kodColIdx >= 0 && row[kodColIdx] != null) {
+        rowKod = String(row[kodColIdx]).trim().replace(/\s/g, '');
+      } else if (markaColIdx >= 0 && tipColIdx >= 0) {
+        var m = String(row[markaColIdx] != null ? row[markaColIdx] : '').trim();
+        var t = String(row[tipColIdx] != null ? row[tipColIdx] : '').trim();
+        rowKod = (m + t).replace(/\s/g, '');
+      }
+      if (!rowKod) continue;
+      var len = Math.max(rowKod.length, searchKod.length);
+      if (rowKod.padStart(len, '0') === searchKod.padStart(len, '0')) {
+        var val = row[yearColIdx];
+        if (val == null || val === '') return '-';
+        var numStr = String(val).replace(/[^\d]/g, '');
+        if (!numStr) return '-';
+        var formatted = numStr.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        return formatted + ' ₺';
+      }
+    }
+    return 'Bulunamadı';
+  }
+
   function getVehiclePrintRows(vehicle) {
     const users = readUsers();
     const branches = readBranches();
@@ -2279,6 +2342,10 @@ function renderVehicleDetailLeft(vehicle) {
     // Kasko Kodu (sadece taşıt detayda bilgi olarak)
     const kaskoKodu = vehicle.kaskoKodu || '';
     html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Kasko Kodu</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(kaskoKodu || '-')}</span></div>`;
+
+    // Kasko Değeri (TSB Excel verisinden otomatik)
+    const kaskoDegeri = getKaskoDegeri(vehicle.kaskoKodu, vehicle.year);
+    html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Kasko Değeri</span><span class="detail-row-colon">:</span></div><span class="detail-row-value kasko-degeri-text"> ${escapeHtml(kaskoDegeri)}</span></div>`;
 
     // Notlar (kayıt formundan) + Kullanıcı Notu (varsa, kullanıcı panelinden)
     const notes = vehicle.notes || '';
