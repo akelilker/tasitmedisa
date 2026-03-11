@@ -991,16 +991,52 @@
     (function initKaskoExcelInput() {
       var input = document.getElementById('kasko-excel-input');
       if (!input) return;
-      input.addEventListener('change', function() {
-        if (this.files && this.files.length > 0) {
-          var msg = 'Excel dosyas\u0131 se\u00e7ildi. Okuma mod\u00fcl\u00fc haz\u0131rlan\u0131yor...';
-          if (typeof window.showInfoModal === 'function') {
-            window.showInfoModal(msg);
-          } else {
-            alert(msg);
-          }
+      input.addEventListener('change', function(e) {
+        var file = e.target.files[0];
+        if (!file) return;
+
+        if (typeof window.showInfoModal === 'function') {
+          window.showInfoModal('Excel okunuyor, lütfen bekleyin...');
         }
-        this.value = '';
+
+        var reader = new FileReader();
+        reader.onload = function(e) {
+          try {
+            var data = new Uint8Array(e.target.result);
+            var workbook = XLSX.read(data, { type: 'array' });
+            var firstSheetName = workbook.SheetNames[0];
+            var worksheet = workbook.Sheets[firstSheetName];
+            var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+            localStorage.setItem('medisa_kasko_liste', JSON.stringify(jsonData));
+
+            if (typeof window.closeInfoModal === 'function') {
+              window.closeInfoModal();
+            }
+            if (typeof window.showSuccessModal === 'function') {
+              window.showSuccessModal('Kasko listesi baºar?yla güncellendi!');
+            } else if (typeof window.showInfoModal === 'function') {
+              window.showInfoModal('Kasko listesi baºar?yla güncellendi!');
+            } else {
+              alert('Kasko listesi baºar?yla güncellendi!');
+            }
+          } catch (error) {
+            console.error('Excel okuma hatas?:', error);
+            if (typeof window.closeInfoModal === 'function') {
+              window.closeInfoModal();
+            }
+            if (typeof window.showErrorModal === 'function') {
+              window.showErrorModal('Excel okunurken hata oluºtu! Dosya bozuk veya yanl?º formatta olabilir.');
+            } else if (typeof window.showInfoModal === 'function') {
+              window.showInfoModal('Excel okunurken hata oluºtu! Dosya bozuk veya yanl?º formatta olabilir.');
+            } else {
+              alert('Excel okunurken hata oluºtu!');
+            }
+          } finally {
+            input.value = '';
+          }
+        };
+        reader.readAsArrayBuffer(file);
       });
     })();
 
