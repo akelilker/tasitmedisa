@@ -869,8 +869,11 @@
       const disVeriPanel = document.getElementById('dis-veri-panel');
       const infoModal = document.getElementById('info-modal');
       const cacheConfirmModal = document.getElementById('cache-confirm-modal');
+      const centeredInfoBox = document.getElementById('centered-info-box');
 
-      if (infoModal && infoModal.classList.contains('active')) {
+      if (centeredInfoBox && centeredInfoBox.style.display === 'flex') {
+        closeCenteredInfoBox();
+      } else if (infoModal && infoModal.classList.contains('active')) {
         closeInfoModal();
       } else if (cacheConfirmModal && cacheConfirmModal.classList.contains('active')) {
         closeCacheConfirmModal();
@@ -995,7 +998,9 @@
         var file = e.target.files[0];
         if (!file) return;
 
-        if (typeof window.showInfoModal === 'function') {
+        if (typeof window.showCenteredInfoBox === 'function') {
+          window.showCenteredInfoBox('Excel okunuyor, l?tfen bekleyin...');
+        } else if (typeof window.showInfoModal === 'function') {
           window.showInfoModal('Excel okunuyor, l?tfen bekleyin...');
         }
 
@@ -1018,22 +1023,20 @@
               window.updateNotifications();
             }
 
-            if (typeof window.closeInfoModal === 'function') {
-              window.closeInfoModal();
-            }
-            if (typeof window.showSuccessModal === 'function') {
-              window.showSuccessModal('Kasko listesi ba\u015far\u0131yla g\u00fcncellendi!');
+            if (typeof window.showCenteredInfoBox === 'function') {
+              window.showCenteredInfoBox('Kasko listesi ba?ar?yla g?ncellendi!');
+            } else if (typeof window.showSuccessModal === 'function') {
+              window.showSuccessModal('Kasko listesi ba?ar?yla g?ncellendi!');
             } else if (typeof window.showInfoModal === 'function') {
-              window.showInfoModal('Kasko listesi ba\u015far\u0131yla g\u00fcncellendi!');
+              window.showInfoModal('Kasko listesi ba?ar?yla g?ncellendi!');
             } else {
-              alert('Kasko listesi ba\u015far\u0131yla g\u00fcncellendi!');
+              alert('Kasko listesi ba?ar?yla g?ncellendi!');
             }
           } catch (error) {
             console.error('Excel okuma hatas?:', error);
-            if (typeof window.closeInfoModal === 'function') {
-              window.closeInfoModal();
-            }
-            if (typeof window.showErrorModal === 'function') {
+            if (typeof window.showCenteredInfoBox === 'function') {
+              window.showCenteredInfoBox('Excel okunurken hata olu?tu! Dosya bozuk veya yanl?? formatta olabilir.');
+            } else if (typeof window.showErrorModal === 'function') {
               window.showErrorModal('Excel okunurken hata olu?tu! Dosya bozuk veya yanl?? formatta olabilir.');
             } else if (typeof window.showInfoModal === 'function') {
               window.showInfoModal('Excel okunurken hata olu?tu! Dosya bozuk veya yanl?? formatta olabilir.');
@@ -1477,6 +1480,21 @@
         // Body'den modal-open class'?n? kald?r
         document.body.classList.remove('modal-open');
       }, 300);
+    };
+
+    // Ortada bilgi kutusu ? ?stteki modal (dis-veri-panel vb.) kapanmaz
+    window.showCenteredInfoBox = function showCenteredInfoBox(message) {
+      const overlay = document.getElementById('centered-info-box');
+      const msgEl = document.getElementById('centered-info-message');
+      if (!overlay || !msgEl) return;
+      var safeMsg = (typeof window.escapeHtml === 'function' ? window.escapeHtml(message) : String(message).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'));
+      msgEl.innerHTML = safeMsg.replace(/\n/g, '<br>');
+      overlay.style.display = 'flex';
+    };
+    window.closeCenteredInfoBox = function closeCenteredInfoBox() {
+      const overlay = document.getElementById('centered-info-box');
+      if (!overlay) return;
+      overlay.style.display = 'none';
     };
   
     // ========================================
