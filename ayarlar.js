@@ -1,5 +1,5 @@
 /* =========================================
-   AYARLAR MOD?L? - ?UBE & KULLANICI Y?NET?M?
+   AYARLAR MODÜLÜ - ªUBE & KULLANICI YÖNET?M?
    ========================================= */
 
    (function () {
@@ -11,14 +11,14 @@
     function $all(sel, root = document) { return Array.from(root.querySelectorAll(sel)); }
   
     // ========================================
-    // ?UBE Y?NET?M?
+    // ªube YÖNET?M?
     // ========================================
   
     function readBranches() { return (typeof window.getMedisaBranches === 'function' ? window.getMedisaBranches() : null) || (function() { try { var r = localStorage.getItem(BRANCHES_KEY); return r ? JSON.parse(r) : []; } catch (e) { return []; } })(); }
     function writeBranches(arr) { if (typeof window.writeBranches === 'function') { window.writeBranches(arr); return; } localStorage.setItem(BRANCHES_KEY, JSON.stringify(arr)); if (window.appData) { window.appData.branches = arr; if (window.saveDataToServer) window.saveDataToServer().catch(function(err) { console.error('Sunucuya kaydetme hatas? (sessiz):', err); }); } }
     function readVehicles() { return (typeof window.getMedisaVehicles === 'function' ? window.getMedisaVehicles() : null) || (function() { try { var r = localStorage.getItem(VEHICLES_KEY); return r ? JSON.parse(r) : []; } catch (e) { return []; } })(); }
   
-    // ? Modal Kontrol? (Ana Liste) ?
+    // ? Modal Kontrolü (Ana Liste) ?
     window.openBranchManagement = function openBranchManagement() {
       const modal = document.getElementById('branch-modal');
       if (!modal) return;
@@ -26,7 +26,7 @@
       // Listeyi render et
       renderBranchList();
   
-      // Modal? a?
+      // Modal? aç
       modal.style.display = 'flex';
       requestAnimationFrame(() => modal.classList.add('active'));
     };
@@ -38,7 +38,7 @@
       setTimeout(() => modal.style.display = 'none', 300);
     };
 
-    // ? Modal Kontrol? (Form) ?
+    // ? Modal Kontrolü (Form) ?
     window.openBranchFormModal = function openBranchFormModal(editId = null) {
       const modal = document.getElementById('branch-form-modal');
       if (!modal) return;
@@ -55,25 +55,25 @@
       if (idInput) idInput.value = '';
   
       if (editId) {
-        // D?ZENLEME MODU
+        // DÜZENLEME MODU
         const branches = readBranches();
         const branch = branches.find(b => b.id === editId);
         if (branch) {
           if (idInput) idInput.value = branch.id;
           if (nameInput) nameInput.value = branch.name;
           if (cityInput) cityInput.value = branch.city || '';
-          if (title) title.textContent = '?ube D?zenle';
+          if (title) title.textContent = 'ªube Düzenle';
         }
-        // Sil butonunu g?ster
+        // Sil butonunu göster
         if (deleteBtn) deleteBtn.style.display = 'flex';
       } else {
         // Yeni EKLEME MODU
-        if (title) title.textContent = 'Yeni ?ube Ekle';
+        if (title) title.textContent = 'Yeni ªube Ekle';
         // Sil butonunu gizle
         if (deleteBtn) deleteBtn.style.display = 'none';
       }
   
-      // Modal? a?
+      // Modal? aç
       modal.style.display = 'flex';
       requestAnimationFrame(() => modal.classList.add('active'));
   
@@ -97,20 +97,20 @@
       setTimeout(() => modal.style.display = 'none', 300);
     };
   
-    // ? CRUD ?i?lemleri ?
+    // ? CRUD ?ºlemleri ?
     /**
-     * ?ube kayd?n? formdan okuyup localStorage'a kaydeder (Create/Update)
+     * ªube kayd?n? formdan okuyup localStorage'a kaydeder (Create/Update)
      * 
-     * Validasyon + Kaydetme ak???:
+     * Validasyon + Kaydetme ak?º?:
      * 1. Form alanlar?n? oku (id, name, city)
-     * 2. ?ube ad? validasyonu yap (zorunlu alan)
-     * 3. ID varsa g?ncelleme, yoksa yeni ekleme modu
+     * 2. ªube Ad? validasyonu yap (zorunlu alan)
+     * 3. ID varsa güncelleme, yoksa yeni ekleme modu
      * 4. localStorage'a yaz
-     * 5. Form modal?n? kapat ve ana listeyi g?ncelle
-     * 6. Kullan?c?ya ba?ar? mesaj? g?ster
+     * 5. Form modal?n? kapat ve ana listeyi güncelle
+     * 6. Kullan?c?ya baºar? mesaj? göster
      * 
      * @throws {Error} localStorage yazma hatas? durumunda uygulama crash olabilir
-     * (Hata yakalama hen?z eklenmedi - rapor ?nerisi #6)
+     * (Hata yakalama henüz eklenmedi - rapor önerisi #6)
      */
     window.saveBranch = function saveBranch() {
       const modal = document.getElementById('branch-form-modal');
@@ -129,7 +129,7 @@
   
       // Validasyon
       if (!name) {
-        alert('?ube Ad? Giriniz.');
+        alert('ªube Ad? Giriniz.');
         if (nameInput) nameInput.focus();
         return;
       }
@@ -137,7 +137,7 @@
       const branches = readBranches();
   
       if (id) {
-        // G?NCELLEME
+        // güncelleME
         const idx = branches.findIndex(b => b.id === id);
         if (idx !== -1) {
           branches[idx].name = name;
@@ -159,12 +159,12 @@
         // Form modal?n? kapat
         closeBranchFormModal();
   
-        // Ana modal? g?ncelle
+        // Ana modal? güncelle
         renderBranchList();
   
-        alert(id ? '?ube G?ncellendi.' : '?ube Eklendi.');
+        alert(id ? 'ªube güncellendi.' : 'ªube Eklendi.');
       } catch (error) {
-        alert('?ube kayd? s?ras?nda bir hata olu?tu! L?tfen tekrar deneyin.');
+        alert('ªube kayd? s?ras?nda bir hata Olu?tu! L?tfen tekrar deneyin.');
       } finally {
         if (saveBtn) saveBtn.disabled = false;
       }
@@ -177,23 +177,23 @@
     window.deleteBranch = function deleteBranch(id) {
       if (!id) return; // ID yoksa i?lem yapma
       
-      // Ta??t kontrol?
+      // Ta??t kontrolü
       const vehicles = readVehicles();
       const vehicleCount = vehicles.filter(v => v.branchId === id).length;
   
-      // Kullan?c? kontrol? (?ubeye atanm?? kullan?c?lar)
+      // Kullan?c? kontrolü (?UBEye atanm?? Kullan?c?lar)
       const users = readUsers();
       const userCount = users.filter(u => u.branchId === id).length;
   
       if (vehicleCount > 0 || userCount > 0) {
-        let msg = '?ubeye ili?kin kay?tl? veri bulundu?undan silme yap?lamaz!\n\n';
+        let msg = '?UBEye ili?kin kay?tl? veri bulundu?undan silme yap?lamaz!\n\n';
         if (vehicleCount > 0) msg += `? ${vehicleCount} Adet Ta??t\n`;
         if (userCount > 0) msg += `? ${userCount} Adet Kullan?c?\n`;
         alert(msg);
         return;
       }
   
-      if (!confirm('Bu ?ubeyi silmek istedi?inizden emin misiniz?')) return;
+      if (!confirm('Bu ?UBEyi silmek istedi?inizden emin misiniz?')) return;
   
       const branches = readBranches();
       const filtered = branches.filter(b => b.id !== id);
@@ -202,10 +202,10 @@
       // Form modal?n? kapat
       closeBranchFormModal();
       
-      // Ana modal? g?ncelle
+      // Ana modal? güncelle
       renderBranchList();
   
-      alert('?ube Silindi.');
+      alert('ªube Silindi.');
     };
 
     // ? Liste Render ?
@@ -219,7 +219,7 @@
       if (branches.length === 0) {
         container.innerHTML = `
           <div style="text-align:center; padding:20px; color:var(--muted);">
-            Hen?z ?ube eklenmemi?.
+            henüz ªube eklenmemi?.
           </div>
         `;
         return;
@@ -242,7 +242,7 @@
     }
   
     // ========================================
-    // KULLANICI Y?NET?M?
+    // KULLANICI YÖNET?M?
     // ========================================
   
     function readUsers() {
@@ -266,9 +266,9 @@
     function writeVehicles(arr) { if (typeof window.writeVehicles === 'function') { window.writeVehicles(arr); return; } localStorage.setItem(VEHICLES_KEY, JSON.stringify(arr)); if (window.appData) { window.appData.tasitlar = arr; if (window.saveDataToServer) window.saveDataToServer().catch(function(err) { console.error('Sunucuya kaydetme hatas? (sessiz):', err); }); } }
   
     /**
-     * localStorage kullan?c? listesini appData.users format?na d?n??t?r?p senkron eder.
+     * localStorage Kullan?c? listesini appData.users format?na d?n??t?r?p senkron eder.
      * Portal (driver_login) ve raporlar tek kaynaktan (appData) okur.
-     * zimmetli_araclar: driver_save.php i?in atanm?? ta??t ID'leri (assignedUserId e?le?en ta??tlar)
+     * zimmetli_araclar: driver_save.php i?in atanm?? Ta??t ID'leri (assignedUserId e?le?en Ta??tlar)
      */
     function syncUsersToAppData(arr) {
       if (!window.appData) return;
@@ -307,7 +307,7 @@
       }
     }
   
-    // ? Modal Kontrol? (Ana Liste) ?
+    // ? Modal Kontrolü (Ana Liste) ?
     window.openUserManagement = function openUserManagement() {
       const modal = document.getElementById('user-modal');
       if (!modal) return;
@@ -315,7 +315,7 @@
       // Listeyi render et
       renderUserList();
   
-      // Modal? a?
+      // Modal? aç
       modal.style.display = 'flex';
       requestAnimationFrame(() => modal.classList.add('active'));
     };
@@ -327,7 +327,7 @@
       setTimeout(() => modal.style.display = 'none', 300);
     };
   
-    // ? Kullan?c? formu: Atanm?? ta??tlar checkbox listesi doldur (arama + filtreleme) ?
+    // ? Kullan?c? formu: atanm?? Ta??tlar checkbox listesi doldur (arama + filtreleme) ?
     function populateUserVehiclesMulti(searchFilter = '') {
       const container = document.getElementById('user-vehicles-container');
       if (!container) return;
@@ -419,7 +419,7 @@
       }
     });
   
-    // ? Modal Kontrol? (Form) ?
+    // ? Modal Kontrolü (Form) ?
     window.openUserFormModal = function openUserFormModal(editId = null) {
       const modal = document.getElementById('user-form-modal');
       if (!modal) return;
@@ -436,15 +436,15 @@
       const title = $('.modal-header h2', modal);
       const deleteBtn = $('#user-delete-btn', modal);
   
-      // ?ube dropdown'?n? doldur
+      // ªube dropdown'?n? doldur
       populateBranchDropdown();
-      // Atanacak ta??t dropdown'?n? kapat, arama temizle ve listeyi doldur
+      // Atanacak Ta??t dropdown'?n? kapat, arama temizle ve listeyi doldur
       closeUserVehiclesDropdown();
       const searchInput = document.getElementById('user-vehicles-search');
       if (searchInput) searchInput.value = '';
       populateUserVehiclesMulti();
   
-      // ?ube select'e t?klan?nca veya focus al?nd???nda otomatik a??lmas? i?in event listener ekle
+      // ªube select'e t?klan?nca veya focus al?nd???nda otomatik a??lmas? i?in event listener ekle
       setTimeout(() => {
         const updatedBranchSelect = $('#user-branch', modal);
         if (updatedBranchSelect && !updatedBranchSelect.dataset.dropdownHandler) {
@@ -524,7 +524,7 @@
       if (idInput) idInput.value = '';
   
       if (editId) {
-        // D?ZENLEME MODU
+        // DÜZENLEME MODU
         const users = readUsers();
         const user = users.find(u => u.id === editId);
         if (user) {
@@ -546,9 +546,9 @@
             });
             updateUserVehiclesTriggerText();
           }
-          if (title) title.textContent = 'Kullan?c? D?zenle';
+          if (title) title.textContent = 'Kullan?c? Düzenle';
         }
-        // Sil butonunu g?ster
+        // Sil butonunu göster
         if (deleteBtn) deleteBtn.style.display = 'flex';
       } else {
         // Yeni EKLEME MODU
@@ -557,7 +557,7 @@
         if (deleteBtn) deleteBtn.style.display = 'none';
       }
   
-      // Modal? a?
+      // Modal? aç
       modal.style.display = 'flex';
       requestAnimationFrame(() => modal.classList.add('active'));
   
@@ -591,7 +591,7 @@
   
       const branches = readBranches();
   
-      select.innerHTML = '<option value="">?ube Se?in</option>';
+      select.innerHTML = '<option value="">ªube Se?in</option>';
   
       branches.forEach(branch => {
         const option = document.createElement('option');
@@ -601,20 +601,20 @@
       });
     }
   
-    // ? CRUD ?i?lemleri ?
+    // ? CRUD ?ºlemleri ?
     /**
      * Kullan?c? kayd?n? formdan okuyup localStorage'a kaydeder (Create/Update)
      * 
-     * Validasyon + Kaydetme ak???:
+     * Validasyon + Kaydetme ak?º?:
      * 1. Form alanlar?n? oku (id, name, branchId, phone, email, role)
-     * 2. Ad Soyad ve ?ube validasyonu yap (zorunlu alanlar)
-     * 3. ID varsa g?ncelleme, yoksa yeni ekleme modu
+     * 2. Ad Soyad ve ªube validasyonu yap (zorunlu alanlar)
+     * 3. ID varsa güncelleme, yoksa yeni ekleme modu
      * 4. localStorage'a yaz
-     * 5. Form modal?n? kapat ve ana listeyi g?ncelle
-     * 6. Kullan?c?ya ba?ar? mesaj? g?ster
+     * 5. Form modal?n? kapat ve ana listeyi güncelle
+     * 6. Kullan?c?ya baºar? mesaj? göster
      * 
      * @throws {Error} localStorage yazma hatas? durumunda uygulama crash olabilir
-     * (Hata yakalama hen?z eklenmedi - rapor ?nerisi #6)
+     * (Hata yakalama henüz eklenmedi - rapor önerisi #6)
      */
     function formatUserFullName(rawName) {
       const cleaned = (rawName || '').trim().replace(/\s+/g, ' ');
@@ -641,7 +641,7 @@
       if (saveBtn) saveBtn.disabled = true;
       try {
         if (!modal) {
-          alert('Form modal? bulunamad?!');
+          alert('Form modal? bulunamAd?!');
           return;
         }
   
@@ -656,7 +656,7 @@
         const vehiclesContainer = document.getElementById('user-vehicles-container');
   
         if (!nameInput || !branchSelect) {
-          alert('Form alanlar? bulunamad?!');
+          alert('Form alanlar? bulunamAd?!');
           return;
         }
   
@@ -680,7 +680,7 @@
           return;
         }
         if (!branchId) {
-          alert('?ube Se?iniz.');
+          alert('ªube Se?iniz.');
           branchSelect.focus();
           return;
         }
@@ -691,14 +691,14 @@
   
         // ?of?r portal giri?i: Ta??t atanm??sa Kullan?c? Ad? ve ?ifre zorunlu
         if (hasAssignedVehicles && (!kullanici_adi || !sifre)) {
-          alert('Portal giri?i i?in ta??t atad???n?z kullan?c?lar?n "Kullan?c? Ad? (portal giri?i)" ve "?ifre (portal giri?i)" alanlar?n? doldurman?z gerekir. Kullan?c? bu bilgilerle driver sayfas?nda giri? yapacakt?r.');
+          alert('Portal giri?i i?in Ta??t atAd???n?z Kullan?c?lar?n "Kullan?c? Ad? (portal giri?i)" ve "?ifre (portal giri?i)" alanlar?n? doldurman?z gerekir. Kullan?c? bu bilgilerle driver sayfas?nda giri? yapacakt?r.');
           if (usernameInput) usernameInput.focus();
           return;
         }
   
         let savedUserId = id;
         if (id) {
-          // G?NCELLEME
+          // güncelleME
           const idx = users.findIndex(u => u.id === id);
           if (idx !== -1) {
             users[idx].name = name;
@@ -726,7 +726,7 @@
           savedUserId = newUser.id;
         }
   
-        // Atanm?? ta??tlar: tek kaynak vehicle.assignedUserId
+        // atanm?? Ta??tlar: tek kaynak vehicle.assignedUserId
         vehicles.forEach(v => {
           const vid = String(v.id);
           const wasAssigned = v.assignedUserId === savedUserId;
@@ -738,7 +738,7 @@
             v.assignedUserId = savedUserId;
             const u = users.find(u => u.id === savedUserId);
             if (u && v.tahsisKisi !== undefined) v.tahsisKisi = u.name || '';
-            // Ta??tta ?ube yoksa, kullan?c?n?n ?ubesini otomatik ata (?ube kullan?c?da zorunlu)
+            // Ta??tta ªube yoksa, Kullan?c?n?n ?UBEsini otomatik ata (ªube Kullan?c?da zorunlu)
             if (u && !v.branchId && u.branchId) v.branchId = u.branchId;
           }
         });
@@ -749,17 +749,17 @@
         // Form modal?n? kapat
         closeUserFormModal();
   
-        // Ana modal? g?ncelle
+        // Ana modal? güncelle
         renderUserList();
   
-        alert(id ? 'Kullan?c? G?ncellendi.' : 'Kullan?c? Eklendi.');
+        alert(id ? 'Kullan?c? güncellendi.' : 'Kullan?c? Eklendi.');
   
         if (savedUserId) {
           window.dispatchEvent(new CustomEvent('userSaved', { detail: { id: savedUserId } }));
         }
       } catch (error) {
         console.error('Kullan?c? kay?t hatas?:', error);
-        alert('Kullan?c? kayd? s?ras?nda bir hata olu?tu! L?tfen tekrar deneyin.');
+        alert('Kullan?c? kayd? s?ras?nda bir hata Olu?tu! L?tfen tekrar deneyin.');
       } finally {
         if (saveBtn) saveBtn.disabled = false;
       }
@@ -772,16 +772,16 @@
     window.deleteUser = function deleteUser(id) {
       if (!id) return; // ID yoksa i?lem yapma
       
-      // Ta??t kontrol?
+      // Ta??t kontrolü
       const vehicles = readVehicles();
       const count = vehicles.filter(v => v.assignedUserId === id).length;
   
       if (count > 0) {
-        alert(`Bu kullan?c?ya ${count} adet ta??t tahsis edilmi?. ?nce ta??tlar? ba?ka kullan?c?ya aktar?n.`);
+        alert(`Bu Kullan?c?ya ${count} adet Ta??t tahsis edilmi?. ?nce Ta??tlar? ba?ka Kullan?c?ya aktar?n.`);
         return;
       }
   
-      if (!confirm('Bu kullan?c?y? silmek istedi?inizden emin misiniz?')) return;
+      if (!confirm('Bu Kullan?c?y? silmek istedi?inizden emin misiniz?')) return;
   
       const users = readUsers();
       const filtered = users.filter(u => u.id !== id);
@@ -790,7 +790,7 @@
       // Form modal?n? kapat
       closeUserFormModal();
       
-      // Ana modal? g?ncelle
+      // Ana modal? güncelle
       renderUserList();
   
       alert('Kullan?c? Silindi.');
@@ -807,7 +807,7 @@
       if (users.length === 0) {
         container.innerHTML = `
           <div style="text-align:center; padding:20px; color:var(--muted);">
-            Hen?z kullan?c? eklenmemi?.
+            henüz Kullan?c? eklenmemi?.
           </div>
         `;
         return;
@@ -818,7 +818,7 @@
         const branchName = branch ? branch.name : '-';
         
         const roleLabels = {
-          'admin': 'Y??netici',
+          'admin': 'Y?netici',
           'sales': 'Sat?? Temsilcisi',
           'driver': 'Kullan?c?'
         };
@@ -912,7 +912,7 @@
     });
   
     // ========================================
-    // VER? Y?NET?M?
+    // VER? YÖNET?M?
     // ========================================
   
     // ? Modal Kontrol? ?
@@ -948,7 +948,7 @@
     };
 
     // ========================================
-    // DI? VER? Y?NET?M?
+    // DI? VER? YÖNET?M?
     // ========================================
     window.openDisVeriPanel = function openDisVeriPanel() {
       const settingsMenu = document.getElementById('settings-menu');
@@ -1015,9 +1015,9 @@
         
         URL.revokeObjectURL(link.href);
   
-        alert('Yedek Ba?ar?yla ?ndirildi!');
+        alert('Yedek baºar?yla ?ndirildi!');
       } catch (error) {
-        alert('Yedekleme s?ras?nda hata olu?tu!');
+        alert('Yedekleme s?ras?nda hata Olu?tu!');
       }
     };
   
@@ -1150,7 +1150,7 @@
               }
   
               const message = `Yedek Tarih: ${new Date(backup.backup_date).toLocaleString('tr-TR')}\n\n` +
-                            `?ubeler: ${backup.branches.length}\n` +
+                            `?UBEler: ${backup.branches.length}\n` +
                             `Kullan?c?lar: ${backup.users.length}\n` +
                             `Ta??tlar: ${backup.vehicles.length}\n\n` +
                             `Mevcut veriler silinecek! Emin misiniz?`;
@@ -1176,7 +1176,7 @@
               window.appData = restoredBlob;
   
               var doReload = function() {
-                alert('Yedek Ba?ar?yla Geri Y?klendi!\n\nSayfa Yenilenecek.');
+                alert('Yedek baºar?yla Geri Y?klendi!\n\nSayfa Yenilenecek.');
                 setTimeout(function() { window.location.reload(); }, 500);
               };
   
@@ -1193,7 +1193,7 @@
                 doReload();
               }
             } catch (error) {
-              alert('Yedek Dosyas? Okunamad?!');
+              alert('Yedek Dosyas? OkunamAd?!');
             }
           };
   
@@ -1207,7 +1207,7 @@
           if (input.parentNode) input.parentNode.removeChild(input);
         }, 30000);
       } catch (err) {
-        alert('Dosya se?ici a??lamad?. L?tfen tekrar deneyin.');
+        alert('Dosya se?ici a??lamAd?. L?tfen tekrar deneyin.');
       }
     };
   
@@ -1241,7 +1241,7 @@
             success: true,
             localBackup: true,
             serverBackup: false,
-            message: "Yerel yedek olusturuldu."
+            message: "Yerel yedek Olu?turuldu."
           };
         }
 
@@ -1263,7 +1263,7 @@
             success: false,
             localBackup: true,
             serverBackup: false,
-            message: "Yerel yedek olusturuldu ancak sunucuya yuklenemedi."
+            message: "Yerel yedek Olu?turuldu ancak sunucuya Y?klenemedi."
           };
         }
 
@@ -1280,17 +1280,17 @@
           success: false,
           localBackup: false,
           serverBackup: false,
-          message: "Yedekleme sirasinda hata olustu. Lutfen tekrar deneyin."
+          message: "Yedekleme s?ras?nda hata Olu?tu. L?tfen tekrar deneyin."
         };
       }
     }
   
-    // ? ?NBELLEK TEM?ZLE ?
+    // ? ?nbellek TEM?ZLE ?
     /**
      * Taray?c? ?nbelle?ini (cache) temizler
      * 
-     * ??lem ak???:
-     * 1. Kullan?c?ya onay modal'? g?ster (cache-confirm-modal)
+     * ??lem ak?º?:
+     * 1. Kullan?c?ya onay modal'? göster (cache-confirm-modal)
      * 2. Onayland???nda confirmCacheClear() fonksiyonu ?a?r?l?r
      * 3. confirmCacheClear i?inde:
      *    - T?m localStorage verileri silinir (vehicles, branches, users)
@@ -1299,12 +1299,12 @@
      * Not: Bu i?lem geri al?namaz! T?m veriler silinir.
      * 
      * @async
-     * @throws {Error} Modal a?ma hatas? durumunda info modal g?sterilir
+     * @throws {Error} Modal a?ma hatas? durumunda info modal gösterilir
      */
     window.clearCache = async function clearCache() {
       try {
-        // Modal ile kullan?c?ya sor (sunucu yedekleme yaln?zca onaydan sonra yap?l?r)
-        const confirmMessage = 'Taray?c? Belle?i Temizlenecektir, Devam Etmek ?stedi?inize Emin Misiniz?';
+        // Modal ile Kullan?c?ya sor (sunucu yedekleme yaln?zca onaydan sonra yap?l?r)
+        const confirmMessage = 'Taray?c? Belle?i Temizlenecektir, Devam Etmek istedi?inize Emin Misiniz?';
         window.openCacheConfirmModal(confirmMessage);
    
       } catch (error) {
@@ -1312,7 +1312,7 @@
       }
     };
   
-    // ? ?NBELLEK TEM?ZLEME ONAY MODALI ?
+    // ? ?NBELLEK TEM?ZLEME ?ONAY MODALI ?
     let cacheClearConfirmed = false;
     let allowCacheClearWithLocalBackupOnly = false;
   
@@ -1321,7 +1321,7 @@
       const messageEl = document.getElementById('cache-confirm-message');
       if (!modal || !messageEl) return;
 
-      // Mesaj? g?venli ?ekilde formatla (?nce escape, sonra sat?r sonlar?n? <br> ile de?i?tir)
+      // mesaj? g?venli ?ekilde formatla (?nce escape, sonra sat?r sonlar?n? <br> ile de?i?tir)
       var safeMsg = (typeof window.escapeHtml === 'function' ? window.escapeHtml(message) : String(message).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'));
       messageEl.innerHTML = safeMsg.replace(/\n/g, '<br>');
       cacheClearConfirmed = false;
@@ -1353,18 +1353,18 @@
       closeCacheConfirmModal();
   
       try {
-        // 1. ?NCE YEDEKLEME YAP (yerel + m?mk?nse sunucu)
+        // 1. ?nce YEDEKLEME YAP (yerel + m?mk?nse sunucu)
         window.showInfoModal('Veriler Yedekleniyor...');
         const result = await uploadToServer();
 
-        // Yerel yedek bile olu?turulamad?ysa i?lem iptal
+        // Yerel yedek bile Olu?turulamAd?ysa i?lem iptal
         if (!result.localBackup) {
-          window.showInfoModal('Yedekleme Ba?ar?s?z! Taray?c? Belle?i Temizlenmedi.');
+          window.showInfoModal('Yedekleme baºar?s?z! Taray?c? Belle?i Temizlenmedi.');
           return;
         }
 
         if (!result.success && !allowCacheClearWithLocalBackupOnly) {
-          // Sunucu yede?i ba?ar?s?z: kullan?c?ya yerel yedekle devam etme se?ene?i ver
+          // Sunucu yede?i baºar?s?z: Kullan?c?ya yerel yedekle devam etme se?ene?i ver
           const retryMessage = 'Veriler Sunucuya Y?klenemedi!\nYerel Yedek Olu?turuldu.\n\nYine De Temizlemek ?stiyor Musunuz?';
           if (typeof window.closeInfoModal === 'function') {
             window.closeInfoModal();
@@ -1380,7 +1380,7 @@
         
         const backupResultMessage = result.serverBackup
           ? 'Veriler Sunucuya Yedeklendi Ve Taray?c? Belle?i Temizlendi!\n\nYedek korundu. Geri y?klemek i?in Ayarlar > Veri Yedekleme > Son Yedekten Geri Y?kle kullan?n.\n\nSayfa Yenilenecek.'
-          : 'Sunucuya Yedekleme Yap?lamad? Ancak Yerel Yedek Korunarak Taray?c? Belle?i Temizlendi!\n\nGeri y?klemek i?in Ayarlar > Veri Yedekleme > Son Yedekten Geri Y?kle kullan?n.\n\nSayfa Yenilenecek.';
+          : 'Sunucuya Yedekleme Yap?lamAd? Ancak Yerel Yedek Korunarak Taray?c? Belle?i Temizlendi!\n\nGeri y?klemek i?in Ayarlar > Veri Yedekleme > Son Yedekten Geri Y?kle kullan?n.\n\nSayfa Yenilenecek.';
         window.showInfoModal(backupResultMessage);
         
         // 3. Sayfay? yenile
@@ -1393,13 +1393,13 @@
       }
     };
   
-    // ? B?LG? MODALI (Alert yerine) ?
+    // ? B?LG? MODALI ?(Alert yerine) ?
     window.showInfoModal = function showInfoModal(message) {
       const modal = document.getElementById('info-modal');
       const messageEl = document.getElementById('info-message');
       if (!modal || !messageEl) return;
 
-      // Mesaj? g?venli ?ekilde formatla (?nce escape, sonra sat?r sonlar?n? <br> ile de?i?tir)
+      // mesaj? g?venli ?ekilde formatla (?nce escape, sonra sat?r sonlar?n? <br> ile de?i?tir)
       var safeMsg = (typeof window.escapeHtml === 'function' ? window.escapeHtml(message) : String(message).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'));
       messageEl.innerHTML = safeMsg.replace(/\n/g, '<br>');
 
