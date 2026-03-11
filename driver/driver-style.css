@@ -680,7 +680,7 @@ body.driver-modal-open {
   50% { opacity: 0.5; }
 }
 .driver-warning-icon {
-  color: #ef4444;
+  color: var(--theme-color);
   display: inline-block;
   flex-shrink: 0;
   animation: driver-warning-scale 1.2s ease-in-out infinite;
@@ -898,7 +898,7 @@ body.driver-modal-open {
 /* Ä°zole EdilmiÅŸ Tarih / KM UyarÄ± Renkleri ve SÄ±zÄ±ntÄ± Engeli */
 .driver-info-item.driver-warn-red .label,
 .driver-info-item.driver-warn-red .value {
-  color: #ef4444 !important;
+  color: var(--theme-color) !important;
 }
 .driver-info-item.driver-warn-orange .label,
 .driver-info-item.driver-warn-orange .value {
@@ -952,12 +952,12 @@ body.driver-modal-open {
   color: #4ade80;
 }
 .driver-action-btn.warning {
-  border-color: #ef4444;
-  color: #ef4444;
+  border-color: var(--theme-color);
+  color: var(--theme-color);
 }
 .driver-action-btn.warning:hover {
-  border-color: #f87171;
-  color: #f87171;
+  border-color: rgba(var(--theme-color-rgb), 0.9);
+  color: rgba(var(--theme-color-rgb), 0.95);
 }
 .driver-action-btn.data-entered {
   border: 1px solid rgba(255, 255, 255, 0.25); /* AynÄ± ince parlak gri Ã§erÃ§eve */
@@ -1066,7 +1066,7 @@ body.driver-modal-open {
   display: none;
   margin-top: 8px;
   font-size: 13px;
-  color: #ef4444;
+  color: var(--theme-color);
 }
 .driver-km-error.show {
   display: block;
@@ -1707,7 +1707,7 @@ body.driver-modal-open {
   transition: color 0.2s, opacity 0.2s;
 }
 .driver-plate-trigger:hover {
-  color: #ff3d4a;
+  color: var(--theme-color);
   opacity: 0.95;
 }
 .driver-plate-chevron {
@@ -2761,8 +2761,8 @@ body.driver-modal-open {
 /* Evet: kırmızı metin + kırmızı çerçeve. Hover: sadece scale + arka plan (layout değişmez, modal esnemez) */
 .muayene-confirm-actions .btn-confirm-yes {
   background: transparent;
-  color: #ef4444;
-  border: 1px solid #ef4444;
+  color: var(--theme-color);
+  border: 1px solid var(--theme-color);
   padding: 5px 20px;
   border-radius: 6px;
   font-size: 13px;
@@ -2773,8 +2773,8 @@ body.driver-modal-open {
 }
 
 .muayene-confirm-actions .btn-confirm-yes:hover {
-  background: rgba(239, 68, 68, 0.2);
-  box-shadow: 0 0 0 1px #ef4444;
+  background: rgba(var(--theme-color-rgb), 0.2);
+  box-shadow: 0 0 0 1px var(--theme-color);
   transform: scale(1.02);
 }
 
@@ -4339,8 +4339,8 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     border-color: rgba(40, 167, 69, 0.62) !important;
   }
   .dashboard-page .driver-action-area .universal-btn-cancel {
-    color: rgba(232, 72, 72, 0.96) !important;
-    border-color: rgba(212, 0, 0, 0.62) !important;
+    color: var(--theme-color) !important;
+    border-color: rgba(var(--theme-color-rgb), 0.62) !important;
   }
   .dashboard-page .hero-title-wrap .hero-panel-subtitle,
   .dashboard-page .hero-title-block .hero-panel-subtitle {
