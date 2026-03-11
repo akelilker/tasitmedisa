@@ -2388,12 +2388,11 @@ body.driver-modal-open {
   pointer-events: none;
 }
 
-/* Geçmiş Kayıtlar + Düzeltme Talep: fuar (header + ikonlar) kararmasın, ışıklar sabit renkte kalsın */
+/* Geçmiş Kayıtlar + Düzeltme Talep: footer kararmasın, footer ışıkları/rengi sabit kalsın */
 #history-modal.driver-modal.show::before,
 #edit-request-modal.driver-modal.show::before {
-  --driver-fuar-height: 130px; /* hero + driver-below-hero (ikon satırı) */
-  clip-path: inset(var(--driver-fuar-height) 0 0 0) !important;
-  -webkit-clip-path: inset(var(--driver-fuar-height) 0 0 0) !important;
+  clip-path: inset(0 0 calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) 0) !important;
+  -webkit-clip-path: inset(0 0 calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) 0) !important;
 }
 
 /* TaÅŸÄ±tlar modali ile aynÄ±: geniÅŸlik 500px, yatay Ã§erÃ§eve. DiÄŸer modallar: --modal-margin-bottom-desktop */
