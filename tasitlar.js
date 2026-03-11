@@ -76,6 +76,9 @@
     else try { localStorage.setItem('vehicle_column_order', JSON.stringify(vehicleColumnOrder)); } catch (e) {}
   }
 
+  /** Arama kutusu referansı (tek getElementById ile cache amaçlı kullanım) */
+  function getVSearchInput() { return document.getElementById('v-search-input'); }
+
   // Grid genişlikleri sütun kimliğine göre (sürükle-bırak sonrası genişlik doğru sütunla kalsın)
   function getVehicleColumnWidths(columnOrder) {
     const defaultCols = '32px 70px 3.15fr 60px 65px 1.85fr 2fr'; /* Marka -3px, Kullanıcı +3px */
@@ -307,10 +310,12 @@
         });
       }
       closeTransmissionMenu();
+      var _inp = getVSearchInput();
+      var _val = _inp ? _inp.value : '';
       if (searchMode === 'local') {
-        renderVehicles(document.getElementById('v-search-input') && document.getElementById('v-search-input').value || '');
+        renderVehicles(_val);
       } else {
-        handleSearch(document.getElementById('v-search-input') && document.getElementById('v-search-input').value || '');
+        handleSearch(_val);
       }
     });
   }
@@ -376,7 +381,7 @@
                     sortDirection = 'asc';
                 }
                 closeFilterMenu();
-                renderVehicles(document.getElementById('v-search-input')?.value || '');
+                renderVehicles(getVSearchInput()?.value || '');
         });
         modalContainer.appendChild(filterDrop);
     }
@@ -402,7 +407,7 @@
         const m = DOM.vehiclesModal;
         if (m && m.classList.contains('active')) {
           if (currentView === 'dashboard') renderBranchDashboard();
-          else renderVehicles(document.getElementById('v-search-input') && document.getElementById('v-search-input').value || '');
+          else renderVehicles(getVSearchInput()?.value || '');
         }
       }).catch(function() {});
     }
@@ -1350,7 +1355,7 @@
   window.toggleSearchBox = function(mode) {
       searchMode = mode;
       const box = document.getElementById('v-search-container');
-      const input = document.getElementById('v-search-input');
+      const input = getVSearchInput();
       if (!box || !input) return;
       
       if (box.classList.contains('open')) {
@@ -1366,7 +1371,7 @@
   window.closeSearchBox = function() {
       const box = document.getElementById('v-search-container');
       if (box) box.classList.remove('open');
-      const input = document.getElementById('v-search-input');
+      const input = getVSearchInput();
       if (input) input.value = '';
       
       // Arama kapanınca listeyi resetle (eğer global aramadaysak dashboarda dön)
@@ -1503,7 +1508,7 @@
       sortColumn = column;
       sortDirection = 'asc';
     }
-    renderVehicles(document.getElementById('v-search-input')?.value || '');
+    renderVehicles(getVSearchInput()?.value || '');
   };
 
   function applyFilter(list) {
@@ -1566,7 +1571,7 @@
   window.toggleViewMode = function() {
       viewMode = (viewMode === 'card') ? 'list' : 'card';
       updateToolbar('detail', document.querySelector('.active-branch-title')?.textContent || '');
-      renderVehicles(document.getElementById('v-search-input')?.value || '');
+      renderVehicles(getVSearchInput()?.value || '');
   };
 
   // --- VEHICLE DETAIL - NEW FUNCTIONS ---
