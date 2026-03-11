@@ -422,48 +422,31 @@
     gap: 8px;
 }
 
-/* Dış Veri Yönetimi paneli: buton ızgarası */
-#dis-veri-panel .dis-veri-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 16px;
-    padding: 16px;
-    max-width: 100%;
+/* Dış Veri Yönetimi paneli: Veri Yedekleme ile aynı format (çerçevesiz, arka plansız, alt alta) */
+#dis-veri-panel .modal-container {
+    position: relative;
 }
-.dis-veri-btn {
+#dis-veri-panel .modal-body {
+    flex: 1;
+    min-height: 0;
+}
+#dis-veri-panel .data-management-actions {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    transform: translateY(-50%);
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 10px;
-    padding: 14px 20px;
-    border-radius: 10px;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    border: 1px solid;
-    transition: background 0.2s, border-color 0.2s, transform 0.15s;
+    text-align: center;
+    padding: 16px;
     box-sizing: border-box;
+    pointer-events: none;
 }
-.dis-veri-btn:hover {
-    transform: translateY(-1px);
-}
-.dis-veri-btn-secondary {
-    background: rgba(59, 130, 246, 0.15);
-    border-color: rgba(59, 130, 246, 0.5);
-    color: #60a5fa;
-}
-.dis-veri-btn-secondary:hover {
-    background: rgba(59, 130, 246, 0.25);
-    border-color: rgba(59, 130, 246, 0.7);
-}
-.dis-veri-btn-success {
-    background: rgba(34, 197, 94, 0.15);
-    border-color: rgba(34, 197, 94, 0.5);
-    color: #4ade80;
-}
-.dis-veri-btn-success:hover {
-    background: rgba(34, 197, 94, 0.25);
-    border-color: rgba(34, 197, 94, 0.7);
+#dis-veri-panel .data-management-actions .data-management-text-btn {
+    pointer-events: auto;
 }
 
 /* Ayarlar Menüsü ve Listeler */
@@ -1205,7 +1188,8 @@ input.settings-form-input:-moz-autofill,
     }
     #branch-modal.modal-overlay,
     #user-modal.modal-overlay,
-    #data-management-modal.modal-overlay {
+    #data-management-modal.modal-overlay,
+    #dis-veri-panel.modal-overlay {
         padding-left: 0 !important;
         padding-right: 0 !important;
         padding-bottom: 0 !important;
@@ -1216,16 +1200,19 @@ input.settings-form-input:-moz-autofill,
     }
     #branch-modal .modal-container,
     #user-modal .modal-container,
-    #data-management-modal .modal-container {
+    #data-management-modal .modal-container,
+    #dis-veri-panel .modal-container {
         background: var(--bg) !important;
     }
-    /* Veri Yedekleme mobil: Yedek Al 5px yukarı, butonlar sağa yaslı, metin beyaz */
-    #data-management-modal .data-management-actions {
+    /* Veri Yedekleme & Dış Veri Yönetimi mobil: butonlar 5px yukarı, sağa yaslı, metin beyaz */
+    #data-management-modal .data-management-actions,
+    #dis-veri-panel .data-management-actions {
         transform: translateY(calc(-50% - 5px));
         align-items: flex-end;
         text-align: right;
     }
-    #data-management-modal .data-management-text-btn {
+    #data-management-modal .data-management-text-btn,
+    #dis-veri-panel .data-management-text-btn {
         color: #ffffff !important;
     }
     #branch-form-modal.modal-overlay,
