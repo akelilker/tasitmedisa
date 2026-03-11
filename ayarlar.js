@@ -968,10 +968,20 @@
       setTimeout(() => { panel.style.display = 'none'; }, 300);
     };
     window.tsbKaskoListesiIndir = function tsbKaskoListesiIndir() {
-      alert('TSB Kasko Listesi \u0130ndir \u2013 hen\u00fcz uygulanmad\u0131.');
+      var msg = 'TSB Kasko Listesi \u0130ndir \u2013 hen\u00fcz uygulanmad\u0131.';
+      if (typeof window.showInfoModal === 'function') {
+        window.showInfoModal(msg);
+      } else {
+        alert(msg);
+      }
     };
     window.kaskoExcelYukle = function kaskoExcelYukle() {
-      alert('Kasko Excel Y\u00fckle \u2013 hen\u00fcz uygulanmad\u0131.');
+      var msg = 'Kasko Excel Y\u00fckle \u2013 hen\u00fcz uygulanmad\u0131.';
+      if (typeof window.showInfoModal === 'function') {
+        window.showInfoModal(msg);
+      } else {
+        alert(msg);
+      }
     };
 
     // ? YEDEKLE (Export) ?
