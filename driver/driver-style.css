@@ -2711,12 +2711,9 @@ body.driver-modal-open {
   color: rgba(74, 222, 128, 0.95);
 }
 
-/* Muayene teyit popover - Bildir/Vazgeç butonlarının altında, yatay ortalı (mobil + masaüstü) */
+/* Muayene teyit popover - tarih inputu altında 5px, sağ grid içinde yatay ortalı (top/left JS ile) */
 .muayene-confirm-popover {
   position: fixed;
-  bottom: 80px;
-  left: 50%;
-  transform: translateX(-50%);
   width: min(280px, calc(100vw - 32px));
   max-width: 320px;
   background: var(--card-bg, #1a1a1a);

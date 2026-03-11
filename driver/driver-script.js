@@ -62,6 +62,8 @@ const API_BASE = (function(){
   let isMuayeneConfirmed = false;
   /** Bloktan (sliding block) muayene bildirimi bekliyorsa vehicleId. Teyit sonrası API çağrısı için. */
   let pendingMuayeneVehicleId = null;
+  /** Popover gösterildiğinde hangi kaynaktan: 'modal' | 'block'. Butonları geri göstermek için. */
+  let muayeneConfirmSource = null;
   let currentPeriod = '';
   let selectedVehicleId = null;
   /** Bu oturumda (ekran kapanana kadar) son bildirilen aksiyon: { action, vehicleId }. Ekran kapanınca temizlenir, yeşil geri bildirim beyaz/griye döner. */
@@ -1457,16 +1459,52 @@ const API_BASE = (function(){
       });
   }
   
-  window.cancelMuayeneSubmit = function() {
-      pendingMuayeneVehicleId = null;
-      const popover = document.getElementById('muayene-confirm-popover');
+  function positionAndShowMuayenePopover(dateInputEl, source) {
+      var popover = document.getElementById('muayene-confirm-popover');
+      if (!popover || !dateInputEl) return;
+      muayeneConfirmSource = source;
+      var inputRect = dateInputEl.getBoundingClientRect();
+      var container = dateInputEl.closest('.driver-report-block') || dateInputEl.closest('.driver-modal-content');
+      if (!container) container = dateInputEl.closest('.modal-body') || document.body;
+      var containerRect = container.getBoundingClientRect();
+      if (source === 'modal') {
+          var wrap = document.querySelector('#driver-muayene-modal .muayene-submit-wrap');
+          if (wrap) wrap.style.visibility = 'hidden';
+      } else if (source === 'block' && pendingMuayeneVehicleId) {
+          var btnGroup = document.querySelector('#muayene-block-' + pendingMuayeneVehicleId + ' .universal-btn-group');
+          if (btnGroup) btnGroup.style.visibility = 'hidden';
+      }
+      popover.style.visibility = 'hidden';
+      popover.style.display = 'block';
+      var popoverRect = popover.getBoundingClientRect();
+      var top = inputRect.bottom + 5;
+      var left = containerRect.left + (containerRect.width / 2) - (popoverRect.width / 2);
+      popover.style.top = top + 'px';
+      popover.style.left = Math.max(16, Math.min(left, window.innerWidth - popoverRect.width - 16)) + 'px';
+      popover.style.visibility = '';
+  }
+
+  function hideMuayenePopoverAndRestore() {
+      var popover = document.getElementById('muayene-confirm-popover');
       if (popover) popover.style.display = 'none';
+      if (muayeneConfirmSource === 'modal') {
+          var wrap = document.querySelector('#driver-muayene-modal .muayene-submit-wrap');
+          if (wrap) wrap.style.visibility = '';
+      } else if (muayeneConfirmSource === 'block' && pendingMuayeneVehicleId) {
+          var btnGroup = document.querySelector('#muayene-block-' + pendingMuayeneVehicleId + ' .universal-btn-group');
+          if (btnGroup) btnGroup.style.visibility = '';
+      }
+      muayeneConfirmSource = null;
+  }
+
+  window.cancelMuayeneSubmit = function() {
+      hideMuayenePopoverAndRestore();
+      pendingMuayeneVehicleId = null;
   };
 
   window.confirmMuayeneSubmit = async function() {
       isMuayeneConfirmed = true;
-      const popover = document.getElementById('muayene-confirm-popover');
-      if (popover) popover.style.display = 'none';
+      hideMuayenePopoverAndRestore();
       if (pendingMuayeneVehicleId) {
           const vid = pendingMuayeneVehicleId;
           pendingMuayeneVehicleId = null;
@@ -1511,8 +1549,7 @@ const API_BASE = (function(){
       if (type === 'muayene') {
           isMuayeneConfirmed = false;
           pendingMuayeneVehicleId = null;
-          const popover = document.getElementById('muayene-confirm-popover');
-          if (popover) popover.style.display = 'none';
+          hideMuayenePopoverAndRestore();
       }
   };
   
@@ -1540,9 +1577,9 @@ const API_BASE = (function(){
               const bitisStr = calculateNextMuayeneDate(tarih, vehicle);
               const dateEl = document.getElementById('muayene-calc-date');
               if (dateEl) dateEl.textContent = bitisStr ? formatDateDDMMYYYY(bitisStr) : '--/--/----';
-              const popover = document.getElementById('muayene-confirm-popover');
-              if (popover) popover.style.display = 'block';
               pendingMuayeneVehicleId = vehicleId;
+              var dateInput = document.getElementById('driver-muayene-tarih-' + vehicleId);
+              positionAndShowMuayenePopover(dateInput, 'block');
               return;
           }
           data = { tarih: tarih };
@@ -1613,8 +1650,8 @@ const API_BASE = (function(){
               const bitisStr = calculateNextMuayeneDate(tarih, vehicle);
               const dateEl = document.getElementById('muayene-calc-date');
               if (dateEl) dateEl.textContent = bitisStr ? formatDateDDMMYYYY(bitisStr) : '--/--/----';
-              const popover = document.getElementById('muayene-confirm-popover');
-              if (popover) popover.style.display = 'block';
+              var dateInput = document.getElementById('driver-muayene-tarih');
+              positionAndShowMuayenePopover(dateInput, 'modal');
               return;
           }
           data = { tarih: tarih };
