@@ -2711,11 +2711,12 @@ body.driver-modal-open {
   color: rgba(74, 222, 128, 0.95);
 }
 
-/* Muayene teyit popover - body seviyesinde, overflow'dan etkilenmez, sağ alttan yukarı */
+/* Muayene teyit popover - Bildir/Vazgeç butonlarının altında, yatay ortalı (mobil + masaüstü) */
 .muayene-confirm-popover {
   position: fixed;
   bottom: 80px;
-  right: 16px;
+  left: 50%;
+  transform: translateX(-50%);
   width: min(280px, calc(100vw - 32px));
   max-width: 320px;
   background: var(--card-bg, #1a1a1a);
@@ -2735,35 +2736,48 @@ body.driver-modal-open {
 
 .muayene-confirm-actions {
   display: flex;
-  gap: 8px;
-  justify-content: flex-end;
+  gap: 12px;
+  justify-content: center;
 }
 
-.muayene-confirm-actions .btn-confirm-yes {
-  background: var(--green, #4ade80);
-  color: #0f1418;
-  border: none;
+/* Hayır: yeşil metin + yeşil çerçeve, arka plan yok. Hover: çerçeve/metin büyüme, yarı saydam yeşil arka plan */
+.muayene-confirm-actions .btn-confirm-no {
+  background: transparent;
+  color: var(--green, #4ade80);
+  border: 1px solid var(--green, #4ade80);
   padding: 8px 16px;
   border-radius: 6px;
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-}
-
-.muayene-confirm-actions .btn-confirm-no {
-  background: rgba(255, 255, 255, 0.1);
-  color: #a0aec0;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 8px 16px;
-  border-radius: 6px;
-  font-size: 13px;
-  cursor: pointer;
+  transition: transform 0.2s, border-width 0.2s, font-size 0.2s, background 0.2s;
 }
 
 .muayene-confirm-actions .btn-confirm-no:hover {
+  background: rgba(74, 222, 128, 0.2);
+  border-width: 2px;
+  font-size: 14px;
+  transform: scale(1.02);
+}
+
+/* Evet: kırmızı metin + kırmızı çerçeve. Hover: çerçeve/metin büyüme, yarı saydam kırmızı arka plan */
+.muayene-confirm-actions .btn-confirm-yes {
+  background: transparent;
+  color: #ef4444;
+  border: 1px solid #ef4444;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, border-width 0.2s, font-size 0.2s, background 0.2s;
+}
+
+.muayene-confirm-actions .btn-confirm-yes:hover {
   background: rgba(239, 68, 68, 0.2);
-  color: #f87171;
-  border-color: rgba(239, 68, 68, 0.4);
+  border-width: 2px;
+  font-size: 14px;
+  transform: scale(1.02);
 }
 
 #history-modal .universal-back-bar .universal-back-label,
