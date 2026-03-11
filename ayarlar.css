@@ -842,7 +842,7 @@ input.settings-form-input:-moz-autofill,
     min-width: 0; /* Flexbox taşmasını önle */
     flex: 0 0 calc((100% - (4 * 8px)) / 5); /* Flexbox'ta sabit genişlik */
     background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.35);
     border-radius: 8px;
     padding: 8px 4px;
     text-align: center;
@@ -1080,6 +1080,19 @@ input.settings-form-input:-moz-autofill,
         font-size: 11px !important;
         border-radius: 8px !important;
     }
+}
+
+/* Masaüstü: Şube/Kullanıcı form – Kaydet/Vazgeç/Sil aynı satırda */
+@media (min-width: 769px) {
+  #branch-form-modal .universal-btn-group,
+  #user-form-modal .universal-btn-group {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr 1fr !important;
+  }
+  /* Kullanıcı Yönetimi: kişi kutuları isimleri etiket beyazı (kayıt modu etiketleri ile aynı) */
+  #user-modal .settings-card-title {
+    color: var(--form-label-color, #ffffff) !important;
+  }
 }
 
 /* Masaüstü: Kullanıcı ekle modalında Ad Soyad header'a yakın */

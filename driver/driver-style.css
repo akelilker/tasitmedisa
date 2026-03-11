@@ -601,7 +601,7 @@ body.driver-modal-open {
     align-items: flex-end !important;
   }
   #history-modal .history-period {
-    color: #ffffff !important;
+    color: var(--form-label-color, #ffffff) !important;
   }
   #history-modal .history-edit-icon {
     transform: scale(0.85) !important;
@@ -931,7 +931,7 @@ body.driver-modal-open {
 }
 .driver-action-btn:hover {
   border-color: rgba(255, 255, 255, 0.5);
-  color: #fff;
+  color: var(--txt-white, #fff);
 }
 .driver-action-btn:active,
 .driver-action-btn:focus {
@@ -965,7 +965,7 @@ body.driver-modal-open {
 }
 .driver-action-btn.data-entered:hover {
   border-color: rgba(255, 255, 255, 0.5);
-  color: #fff;
+  color: var(--txt-white, #fff);
 }
 .driver-info-item.saved .label,
 .driver-info-item.saved .value {
@@ -1136,7 +1136,7 @@ body.driver-modal-open {
   display: block;
   margin-bottom: 6px;
   font-size: 13px;
-  color: #ffffff;
+  color: var(--form-label-color, #ffffff);
   font-weight: 500;
 }
 #driver-input-area .driver-report-block .form-group input,
@@ -1831,7 +1831,7 @@ body.driver-modal-open {
   display: block;
   margin-bottom: 6px;
   font-size: 14px; /* +1 punto (13â€“14) */
-  color: #ffffff;
+  color: var(--form-label-color, #ffffff);
   font-weight: 500;
 }
 
@@ -2000,7 +2000,7 @@ body.driver-modal-open {
   text-align: center;
   display: block;
   margin-bottom: 2px;
-  color: #ffffff;
+  color: var(--form-label-color, #ffffff);
   font-weight: 500;
 }
 .driver-report-block-bakim .form-group input.driver-bakim-input,
@@ -2016,7 +2016,7 @@ body.driver-modal-open {
   text-align: center;
   display: block;
   margin-bottom: 2px;
-  color: #ffffff;
+  color: var(--form-label-color, #ffffff);
   font-weight: 500;
 }
 .driver-report-block-kaza .form-group input.driver-kaza-input,
@@ -2500,7 +2500,7 @@ body.driver-modal-open {
 #driver-muayene-modal .modal-close:hover,
 #driver-sigorta-modal .modal-close:hover,
 #driver-kasko-modal .modal-close:hover {
-  color: #fff !important;
+  color: var(--txt-white, #fff) !important;
   background: transparent !important;
 }
 
@@ -2596,7 +2596,7 @@ body.driver-modal-open {
   display: block;
   margin-bottom: 6px;
   font-size: 14px; /* +1 punto (13â€“14) */
-  color: #ffffff;
+  color: var(--form-label-color, #ffffff);
   font-weight: 500;
 }
 
@@ -2634,14 +2634,14 @@ body.driver-modal-open {
 
 /* DÃ¼zeltme Talebi: etiket beyaz, aÃ§Ä±klama gri (mobil + masaÃ¼stÃ¼) */
 #edit-request-modal .driver-current-km {
-  color: #ffffff !important;
+  color: var(--form-label-color, #ffffff) !important;
   margin-bottom: 13px !important;
 }
 #edit-request-modal .driver-current-km strong {
   color: var(--data-value-color, #a0aec0) !important;
 }
 #edit-request-modal .form-group label {
-  color: #ffffff !important;
+  color: var(--form-label-color, #ffffff) !important;
 }
 
 /* DÃ¼zeltme Talebi: input iÃ§ yÃ¼kseklik 3px dar, bÃ¶lÃ¼mler arasÄ± 3px dar, Bildir ince */
@@ -3445,7 +3445,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   margin-bottom: 8px;
   font-size: 14px;
   font-weight: 500;
-  color: #ffffff;
+  color: var(--form-label-color, #ffffff);
 }
 
 /* Åifre ekranÄ±: varsayÄ±lan gri Ã§erÃ§eve, focus'ta kÄ±rmÄ±zÄ± */
@@ -4255,7 +4255,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
   .dashboard-page .history-period {
     font-size: 17px !important;
-    color: #fff !important;
+    color: var(--form-label-color, #fff) !important;
   }
   #history-modal .history-details strong {
     color: var(--data-value-color, #a0aec0) !important;
@@ -4314,7 +4314,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
   #edit-request-modal .form-group label {
     font-size: 14px !important;
-    color: #ffffff !important;
+    color: var(--form-label-color, #ffffff) !important;
   }
   #edit-request-modal .form-group input,
   #edit-request-modal .form-group textarea {

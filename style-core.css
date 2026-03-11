@@ -303,6 +303,12 @@ body::-webkit-scrollbar,
   padding-right: 0 !important;
 }
 
+/* Şube/Kullanıcı formu: Kaydet, Vazgeç, Sil aynı satırda (mobil + masaüstü) */
+#branch-form-modal .universal-btn-group,
+#user-form-modal .universal-btn-group {
+  grid-template-columns: 1fr 1fr 1fr !important;
+}
+
 /* Sil butonunu grid'de tam genişlikte, simetrik (3. buton alt satırda tam boy) */
 #branch-form-modal .settings-btn-delete,
 #user-form-modal .settings-btn-delete,
@@ -318,6 +324,17 @@ body::-webkit-scrollbar,
   margin-top: 4px !important;
   color: var(--theme-color, #d40000) !important;
   border: 1px solid rgba(212, 0, 0, 0.5) !important;
+}
+
+/* Şube/Kullanıcı formu: 3. buton ve Sil aynı satırda kalsın (override) */
+#branch-form-modal .universal-btn-group .settings-btn-delete,
+#branch-form-modal .universal-btn-group button:nth-child(3),
+#user-form-modal .universal-btn-group .settings-btn-delete,
+#user-form-modal .universal-btn-group button:nth-child(3) {
+  grid-column: auto !important;
+  margin-top: 0 !important;
+  width: 100% !important;
+  max-width: none !important;
 }
 
 /* Tüm input/select/textarea içerik metni: beyaz-gri hiyerarşisi */
