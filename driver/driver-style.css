@@ -2737,7 +2737,7 @@ body.driver-modal-open {
   justify-content: center;
 }
 
-/* Hayır: yeşil metin + yeşil çerçeve, arka plan yok. Hover: çerçeve/metin büyüme, yarı saydam yeşil arka plan */
+/* Hayır: yeşil metin + yeşil çerçeve. Hover: sadece scale + arka plan (layout değişmez, modal esnemez) */
 .muayene-confirm-actions .btn-confirm-no {
   background: transparent;
   color: var(--green, #4ade80);
@@ -2747,17 +2747,16 @@ body.driver-modal-open {
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  transition: transform 0.2s, border-width 0.2s, font-size 0.2s, background 0.2s;
+  transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
 }
 
 .muayene-confirm-actions .btn-confirm-no:hover {
   background: rgba(74, 222, 128, 0.2);
-  border-width: 2px;
-  font-size: 14px;
+  box-shadow: 0 0 0 1px var(--green, #4ade80);
   transform: scale(1.02);
 }
 
-/* Evet: kırmızı metin + kırmızı çerçeve. Hover: çerçeve/metin büyüme, yarı saydam kırmızı arka plan */
+/* Evet: kırmızı metin + kırmızı çerçeve. Hover: sadece scale + arka plan (layout değişmez, modal esnemez) */
 .muayene-confirm-actions .btn-confirm-yes {
   background: transparent;
   color: #ef4444;
@@ -2767,13 +2766,12 @@ body.driver-modal-open {
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  transition: transform 0.2s, border-width 0.2s, font-size 0.2s, background 0.2s;
+  transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
 }
 
 .muayene-confirm-actions .btn-confirm-yes:hover {
   background: rgba(239, 68, 68, 0.2);
-  border-width: 2px;
-  font-size: 14px;
+  box-shadow: 0 0 0 1px #ef4444;
   transform: scale(1.02);
 }
 

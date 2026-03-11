@@ -1467,20 +1467,11 @@ const API_BASE = (function(){
       var container = dateInputEl.closest('.driver-report-block') || dateInputEl.closest('.driver-modal-content');
       if (!container) container = dateInputEl.closest('.modal-body') || document.body;
       var containerRect = container.getBoundingClientRect();
-      // #region agent log
-      fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'d16886'},body:JSON.stringify({sessionId:'d16886',location:'driver-script.js:positionAndShowMuayenePopover',message:'container+rects',data:{source:source,containerClass:container.className,containerId:container.id||'',containerLeft:containerRect.left,containerWidth:containerRect.width,inputBottom:inputRect.bottom,innerWidth:window.innerWidth,pendingVid:pendingMuayeneVehicleId},timestamp:Date.now(),hypothesisId:'A'})}).catch(function(){});
-      // #endregion
       if (source === 'modal') {
           var wrap = document.querySelector('#driver-muayene-modal .muayene-submit-wrap');
-          // #region agent log
-          fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'d16886'},body:JSON.stringify({sessionId:'d16886',location:'driver-script.js:modal-wrap',message:'wrap found',data:{wrapFound:!!wrap},timestamp:Date.now(),hypothesisId:'E'})}).catch(function(){});
-          // #endregion
           if (wrap) wrap.style.visibility = 'hidden';
       } else if (source === 'block' && pendingMuayeneVehicleId) {
           var btnGroup = document.querySelector('#muayene-block-' + pendingMuayeneVehicleId + ' .universal-btn-group');
-          // #region agent log
-          fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'d16886'},body:JSON.stringify({sessionId:'d16886',location:'driver-script.js:block-btnGroup',message:'btnGroup found',data:{btnGroupFound:!!btnGroup,selector:'#muayene-block-'+pendingMuayeneVehicleId+' .universal-btn-group'},timestamp:Date.now(),hypothesisId:'C'})}).catch(function(){});
-          // #endregion
           if (btnGroup) btnGroup.style.visibility = 'hidden';
       }
       popover.style.visibility = 'hidden';
@@ -1489,9 +1480,6 @@ const API_BASE = (function(){
       var top = inputRect.bottom + 5;
       var left = containerRect.left + (containerRect.width / 2) - (popoverRect.width / 2);
       var leftClamped = Math.max(16, Math.min(left, window.innerWidth - popoverRect.width - 16));
-      // #region agent log
-      fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'d16886'},body:JSON.stringify({sessionId:'d16886',location:'driver-script.js:position-calc',message:'left calc',data:{leftRaw:left,leftClamped:leftClamped,popoverWidth:popoverRect.width,top:top},timestamp:Date.now(),hypothesisId:'B,D'})}).catch(function(){});
-      // #endregion
       popover.style.top = top + 'px';
       popover.style.left = leftClamped + 'px';
       popover.style.visibility = '';
