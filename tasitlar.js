@@ -1693,13 +1693,14 @@
     for (var i = 0; i < headers.length; i++) {
       var v = (String(headers[i] || '').toLowerCase()).replace(/\s+/g, ' ').trim();
       if (v === 'kod') kodColIdx = i;
-      else if (v.indexOf('marka') !== -1 && (v.indexOf('kod') !== -1 || v === 'marka')) markaColIdx = i;
-      else if (v.indexOf('tip') !== -1 && (v.indexOf('kod') !== -1 || v === 'tip')) tipColIdx = i;
+      else if (v.indexOf('marka') !== -1 && markaColIdx < 0) markaColIdx = i;
+      else if (v.indexOf('tip') !== -1 && tipColIdx < 0) tipColIdx = i;
     }
     if (kodColIdx < 0 && markaColIdx < 0 && tipColIdx < 0) kodColIdx = 0;
     if (kodColIdx < 0 && tipColIdx >= 0 && markaColIdx < 0) kodColIdx = tipColIdx;
 
-    var searchKod = String(kaskoKodu).trim().replace(/\s/g, '');
+    var searchKod = String(kaskoKodu).replace(/[^\d]/g, '');
+    if (!searchKod) return '-';
     var dataStart = headerRowIdx + 1;
     for (var r = dataStart; r < data.length; r++) {
       var dataRow = data[r];
@@ -1707,11 +1708,11 @@
       var row = Array.isArray(dataRow) ? dataRow : (typeof dataRow === 'object' ? Object.values(dataRow) : []);
       var rowKod = '';
       if (kodColIdx >= 0 && row[kodColIdx] != null && row[kodColIdx] !== '') {
-        rowKod = String(row[kodColIdx]).trim().replace(/\s/g, '');
+        rowKod = String(row[kodColIdx]).replace(/[^\d]/g, '');
       } else if (markaColIdx >= 0 && tipColIdx >= 0) {
-        var m = String(row[markaColIdx] != null ? row[markaColIdx] : '').trim();
-        var t = String(row[tipColIdx] != null ? row[tipColIdx] : '').trim();
-        rowKod = (m + t).replace(/\s/g, '');
+        var m = String(row[markaColIdx] != null ? row[markaColIdx] : '').replace(/[^\d]/g, '');
+        var t = String(row[tipColIdx] != null ? row[tipColIdx] : '').replace(/[^\d]/g, '');
+        rowKod = m + t;
       }
       if (!rowKod) continue;
       var len = Math.max(rowKod.length, searchKod.length);
