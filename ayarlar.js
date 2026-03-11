@@ -996,7 +996,7 @@
         if (!file) return;
 
         if (typeof window.showInfoModal === 'function') {
-          window.showInfoModal('Excel okunuyor, lütfen bekleyin...');
+          window.showInfoModal('Excel okunuyor, l?tfen bekleyin...');
         }
 
         var reader = new FileReader();
@@ -1015,11 +1015,11 @@
               window.closeInfoModal();
             }
             if (typeof window.showSuccessModal === 'function') {
-              window.showSuccessModal('Kasko listesi baºar?yla güncellendi!');
+              window.showSuccessModal('Kasko listesi ba\u015far\u0131yla g\u00fcncellendi!');
             } else if (typeof window.showInfoModal === 'function') {
-              window.showInfoModal('Kasko listesi baºar?yla güncellendi!');
+              window.showInfoModal('Kasko listesi ba\u015far\u0131yla g\u00fcncellendi!');
             } else {
-              alert('Kasko listesi baºar?yla güncellendi!');
+              alert('Kasko listesi ba\u015far\u0131yla g\u00fcncellendi!');
             }
           } catch (error) {
             console.error('Excel okuma hatas?:', error);
@@ -1027,11 +1027,11 @@
               window.closeInfoModal();
             }
             if (typeof window.showErrorModal === 'function') {
-              window.showErrorModal('Excel okunurken hata oluºtu! Dosya bozuk veya yanl?º formatta olabilir.');
+              window.showErrorModal('Excel okunurken hata olu?tu! Dosya bozuk veya yanl?? formatta olabilir.');
             } else if (typeof window.showInfoModal === 'function') {
-              window.showInfoModal('Excel okunurken hata oluºtu! Dosya bozuk veya yanl?º formatta olabilir.');
+              window.showInfoModal('Excel okunurken hata olu?tu! Dosya bozuk veya yanl?? formatta olabilir.');
             } else {
-              alert('Excel okunurken hata oluºtu!');
+              alert('Excel okunurken hata olu?tu!');
             }
           } finally {
             input.value = '';
