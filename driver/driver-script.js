@@ -60,6 +60,8 @@ const API_BASE = (function(){
   let currentDriverEventVehicleId = null;
   /** Muayene bildirimi teyit edildi mi (Hayır/Evet akışı). Modal kapanınca sıfırlanır. */
   let isMuayeneConfirmed = false;
+  /** Bloktan (sliding block) muayene bildirimi bekliyorsa vehicleId. Teyit sonrası API çağrısı için. */
+  let pendingMuayeneVehicleId = null;
   let currentPeriod = '';
   let selectedVehicleId = null;
   /** Bu oturumda (ekran kapanana kadar) son bildirilen aksiyon: { action, vehicleId }. Ekran kapanınca temizlenir, yeşil geri bildirim beyaz/griye döner. */
@@ -1456,15 +1458,44 @@ const API_BASE = (function(){
   }
   
   window.cancelMuayeneSubmit = function() {
+      pendingMuayeneVehicleId = null;
       const popover = document.getElementById('muayene-confirm-popover');
       if (popover) popover.style.display = 'none';
   };
 
-  window.confirmMuayeneSubmit = function() {
+  window.confirmMuayeneSubmit = async function() {
       isMuayeneConfirmed = true;
       const popover = document.getElementById('muayene-confirm-popover');
       if (popover) popover.style.display = 'none';
-      saveDriverEvent('muayene');
+      if (pendingMuayeneVehicleId) {
+          const vid = pendingMuayeneVehicleId;
+          pendingMuayeneVehicleId = null;
+          const tarih = document.getElementById('driver-muayene-tarih-' + vid)?.value.trim() || '';
+          if (!tarih) { alert('Tarih zorunludur!'); isMuayeneConfirmed = false; return; }
+          try {
+              const res = await fetch(API_BASE + 'driver_event.php', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + currentToken },
+                  body: JSON.stringify({ arac_id: parseInt(vid, 10), event_type: 'muayene', data: { tarih: tarih } })
+              });
+              const result = await res.json();
+              if (result.success) {
+                  lastCompletedActionInSession = { action: 'muayene', vehicleId: vid };
+                  cancelDriverActionForm('muayene', vid);
+                  await loadDashboard();
+              } else {
+                  alert(result.message || 'Kayıt başarısız!');
+              }
+          } catch (err) {
+              console.error(err);
+              alert('Bağlantı hatası!');
+          } finally {
+              isMuayeneConfirmed = false;
+          }
+      } else {
+          await saveDriverEvent('muayene');
+          isMuayeneConfirmed = false;
+      }
   };
 
   window.closeDriverEventModal = function(type) {
@@ -1479,6 +1510,7 @@ const API_BASE = (function(){
       updateDriverModalBodyClass();
       if (type === 'muayene') {
           isMuayeneConfirmed = false;
+          pendingMuayeneVehicleId = null;
           const popover = document.getElementById('muayene-confirm-popover');
           if (popover) popover.style.display = 'none';
       }
@@ -1503,6 +1535,16 @@ const API_BASE = (function(){
       } else if (type === 'muayene') {
           const tarih = document.getElementById('driver-muayene-tarih-' + vehicleId)?.value.trim() || '';
           if (!tarih) { alert('Tarih zorunludur!'); return; }
+          if (!isMuayeneConfirmed) {
+              const vehicle = allHistoryVehicles && allHistoryVehicles.find(function(v) { return String(v.id) === String(vehicleId); });
+              const bitisStr = calculateNextMuayeneDate(tarih, vehicle);
+              const dateEl = document.getElementById('muayene-calc-date');
+              if (dateEl) dateEl.textContent = bitisStr ? formatDateDDMMYYYY(bitisStr) : '--/--/----';
+              const popover = document.getElementById('muayene-confirm-popover');
+              if (popover) popover.style.display = 'block';
+              pendingMuayeneVehicleId = vehicleId;
+              return;
+          }
           data = { tarih: tarih };
       } else if (type === 'sigorta') {
           const tarih = document.getElementById('driver-sigorta-tarih-' + vehicleId)?.value.trim() || '';
