@@ -193,7 +193,7 @@
         return;
       }
   
-      if (!confirm('Bu ºubeyi silmek istedi?inizden emin misiniz?')) return;
+      if (!confirm('Bu ?ubeyi silmek istedi?inizden emin misiniz?')) return;
   
       const branches = readBranches();
       const filtered = branches.filter(b => b.id !== id);
@@ -968,10 +968,10 @@
       setTimeout(() => { panel.style.display = 'none'; }, 300);
     };
     window.tsbKaskoListesiIndir = function tsbKaskoListesiIndir() {
-      alert('TSB Kasko Listesi ?ndir ? hen?z uygulanmad?.');
+      alert('TSB Kasko Listesi \u0130ndir \u2013 hen\u00fcz uygulanmad\u0131.');
     };
     window.kaskoExcelYukle = function kaskoExcelYukle() {
-      alert('Kasko Excel Y?kle ? hen?z uygulanmad?.');
+      alert('Kasko Excel Y\u00fckle \u2013 hen\u00fcz uygulanmad\u0131.');
     };
 
     // ? YEDEKLE (Export) ?
