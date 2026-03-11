@@ -1009,6 +1009,7 @@
             var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
             localStorage.setItem('medisa_kasko_liste', JSON.stringify(jsonData));
+            localStorage.setItem('medisa_kasko_liste_date', new Date().toISOString());
 
             if (typeof window.closeInfoModal === 'function') {
               window.closeInfoModal();
