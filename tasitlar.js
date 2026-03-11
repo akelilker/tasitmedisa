@@ -175,6 +175,7 @@
     lastik: 'lastik-guncelle-modal',
     utts: 'utts-guncelle-modal',
     takip: 'takip-cihaz-guncelle-modal',
+    kaskokodu: 'kasko-kodu-guncelle-modal',
     sube: 'sube-degisiklik-modal',
     kullanici: 'kullanici-atama-modal',
     satis: 'satis-pert-modal'
@@ -1324,6 +1325,7 @@
       'utts-guncelle-modal',
       'takip-cihaz-guncelle-modal',
       'kullanici-atama-modal',
+      'kasko-kodu-guncelle-modal',
       'sube-degisiklik-modal',
       'satis-pert-modal'
     ];
@@ -2536,7 +2538,7 @@ function renderVehicleDetailLeft(vehicle) {
         'bakim-ekle-modal', 'kaza-ekle-modal', 'sigorta-guncelle-modal',
         'kasko-guncelle-modal', 'muayene-guncelle-modal', 'anahtar-guncelle-modal',
         'kredi-guncelle-modal', 'km-guncelle-modal', 'lastik-guncelle-modal',
-        'utts-guncelle-modal', 'takip-cihaz-guncelle-modal', 'sube-degisiklik-modal',
+        'utts-guncelle-modal', 'takip-cihaz-guncelle-modal', 'kasko-kodu-guncelle-modal', 'sube-degisiklik-modal',
         'kullanici-atama-modal', 'satis-pert-modal'
       ];
       allEventModals.forEach(modalId => {
@@ -2568,6 +2570,7 @@ function renderVehicleDetailLeft(vehicle) {
         { id: 'lastik', label: 'Yazlık/Kışlık Lastik Durumu Güncelle' },
         { id: 'utts', label: 'UTTS Bilgisi Güncelle' },
         { id: 'takip', label: takipLabel },
+        { id: 'kaskokodu', label: 'Kasko Kodu Güncelleme' },
         { id: 'sube', label: 'Şube Değişikliği Bilgisi Güncelle' },
         { id: 'kullanici', label: 'Kullanıcı Atama/Değişikliği Bilgisi Güncelle' },
         { id: 'satis', label: 'Satış/Pert Bildirimi Yap' }
@@ -2600,6 +2603,7 @@ function renderVehicleDetailLeft(vehicle) {
                       type === 'lastik' ? 'lastik-guncelle-modal' :
                       type === 'utts' ? 'utts-guncelle-modal' :
                       type === 'takip' ? 'takip-cihaz-guncelle-modal' :
+                      type === 'kaskokodu' ? 'kasko-kodu-guncelle-modal' :
                       type === 'sube' ? 'sube-degisiklik-modal' :
                       type === 'kullanici' ? 'kullanici-atama-modal' :
                       type === 'satis' ? 'satis-pert-modal' : null;
@@ -2641,6 +2645,12 @@ function renderVehicleDetailLeft(vehicle) {
         if (muayeneTarihInput) {
           const today = new Date().toISOString().split('T')[0];
           muayeneTarihInput.value = today;
+        }
+      } else if (type === 'kaskokodu') {
+        const vehicle = readVehicles().find(v => String(v.id) === String(vehicleId || window.currentDetailVehicleId));
+        const input = document.getElementById('kasko-kodu-guncelle-input');
+        if (input && vehicle) {
+          input.value = vehicle.kaskoKodu || '';
         }
       } else if (type === 'sube') {
         // Şube değişikliği modal'ında şubeleri doldur
@@ -3527,6 +3537,40 @@ function renderVehicleDetailLeft(vehicle) {
   };
 
   /**
+   * Kasko Kodu güncelle
+   */
+  window.updateKaskoKoduInfo = function() {
+    const vehicleId = window.currentDetailVehicleId;
+    if (!vehicleId) return;
+
+    const yeniKaskoKodu = document.getElementById('kasko-kodu-guncelle-input')?.value.trim() || '';
+    if (!yeniKaskoKodu) {
+      alert('Lütfen Kasko Kodunu giriniz.');
+      return;
+    }
+
+    const vehicles = readVehicles();
+    const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
+    if (!vehicle) return;
+
+    if (!vehicle.events) vehicle.events = [];
+
+    vehicle.kaskoKodu = yeniKaskoKodu;
+
+    vehicle.events.unshift({
+      id: Date.now().toString(),
+      type: 'kasko-kodu-guncelle',
+      date: formatDateForDisplay(new Date()),
+      timestamp: new Date().toISOString(),
+      data: { kaskoKodu: yeniKaskoKodu }
+    });
+
+    writeVehicles(vehicles);
+    closeEventModal('kaskokodu');
+    showVehicleDetail(vehicleId);
+  };
+
+  /**
    * Km bilgisi güncelle
    */
   window.updateKmInfo = function() {
@@ -4134,6 +4178,7 @@ function renderVehicleDetailLeft(vehicle) {
     window.updateLastikInfo = withSaveButtonGuard('lastik-guncelle-modal', window.updateLastikInfo);
     window.updateUTTSInfo = withSaveButtonGuard('utts-guncelle-modal', window.updateUTTSInfo);
     window.updateTakipCihazInfo = withSaveButtonGuard('takip-cihaz-guncelle-modal', window.updateTakipCihazInfo);
+    window.updateKaskoKoduInfo = withSaveButtonGuard('kasko-kodu-guncelle-modal', window.updateKaskoKoduInfo);
     window.updateSubeDegisiklik = withSaveButtonGuard('sube-degisiklik-modal', window.updateSubeDegisiklik);
     window.updateKullaniciAtama = withSaveButtonGuard('kullanici-atama-modal', window.updateKullaniciAtama);
     window.saveSatisPert = withSaveButtonGuard('satis-pert-modal', window.saveSatisPert);
