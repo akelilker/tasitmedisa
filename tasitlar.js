@@ -1661,32 +1661,52 @@
     } catch (e) {
       return '-';
     }
-    var headers = data[0];
-    if (!Array.isArray(headers)) return '-';
     var yearStr = String(modelYili || '').trim();
     if (!yearStr) return '-';
-    var yearColIdx = headers.findIndex(function(h) {
-      var v = String(h || '').trim();
-      return v === yearStr || v === String(parseInt(v, 10));
-    });
-    if (yearColIdx < 0) return '-';
+    var yearNum = parseInt(yearStr, 10);
+    if (isNaN(yearNum) || yearNum < 1990 || yearNum > 2030) return '-';
+
+    var headerRowIdx = -1;
+    var yearColIdx = -1;
+    for (var hr = 0; hr < Math.min(5, data.length); hr++) {
+      var row = data[hr];
+      if (!row) continue;
+      var arr = Array.isArray(row) ? row : (typeof row === 'object' ? Object.values(row) : []);
+      var idx = arr.findIndex(function(h) {
+        var v = h != null ? String(h).trim() : '';
+        if (!v) return false;
+        var n = parseInt(v, 10);
+        return (v === yearStr || n === yearNum) && n >= 1990 && n <= 2030;
+      });
+      if (idx >= 0) {
+        headerRowIdx = hr;
+        yearColIdx = idx;
+        break;
+      }
+    }
+    if (headerRowIdx < 0 || yearColIdx < 0) return '-';
+
+    var headers = Array.isArray(data[headerRowIdx]) ? data[headerRowIdx] : Object.values(data[headerRowIdx] || {});
     var kodColIdx = -1;
     var markaColIdx = -1;
     var tipColIdx = -1;
-    headers.forEach(function(h, i) {
-      var v = (String(h || '').toLowerCase()).trim();
+    for (var i = 0; i < headers.length; i++) {
+      var v = (String(headers[i] || '').toLowerCase()).replace(/\s+/g, ' ').trim();
       if (v === 'kod') kodColIdx = i;
-      else if (v === 'marka kodu' || v === 'markakodu') markaColIdx = i;
-      else if (v === 'tip kodu' || v === 'tipkodu') tipColIdx = i;
-    });
+      else if (v.indexOf('marka') !== -1 && (v.indexOf('kod') !== -1 || v === 'marka')) markaColIdx = i;
+      else if (v.indexOf('tip') !== -1 && (v.indexOf('kod') !== -1 || v === 'tip')) tipColIdx = i;
+    }
     if (kodColIdx < 0 && markaColIdx < 0 && tipColIdx < 0) kodColIdx = 0;
     if (kodColIdx < 0 && tipColIdx >= 0 && markaColIdx < 0) kodColIdx = tipColIdx;
+
     var searchKod = String(kaskoKodu).trim().replace(/\s/g, '');
-    for (var r = 1; r < data.length; r++) {
-      var row = data[r];
-      if (!Array.isArray(row)) continue;
+    var dataStart = headerRowIdx + 1;
+    for (var r = dataStart; r < data.length; r++) {
+      var dataRow = data[r];
+      if (!dataRow) continue;
+      var row = Array.isArray(dataRow) ? dataRow : (typeof dataRow === 'object' ? Object.values(dataRow) : []);
       var rowKod = '';
-      if (kodColIdx >= 0 && row[kodColIdx] != null) {
+      if (kodColIdx >= 0 && row[kodColIdx] != null && row[kodColIdx] !== '') {
         rowKod = String(row[kodColIdx]).trim().replace(/\s/g, '');
       } else if (markaColIdx >= 0 && tipColIdx >= 0) {
         var m = String(row[markaColIdx] != null ? row[markaColIdx] : '').trim();
