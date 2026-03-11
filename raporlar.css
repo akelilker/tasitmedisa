@@ -633,9 +633,9 @@ border-right: 2px solid #4ade80;
 background: rgba(74, 222, 128, 0.1);
 }
 
-/* Tüm sütun başlıkları aynı clamp – küçülünce hepsi birlikte küçülsün (Taşıtlar gibi); 0.5pt küçük */
+/* Tüm sütun başlıkları aynı clamp – başlık sığmazsa 1.5pt kadar küçülebilir (min 7.5px) */
 .stok-list-header-cell .stok-header-text {
-font-size: clamp(9.5px, 1.5vw, 11.5px) !important;
+font-size: clamp(7.5px, 1.5vw, 11.5px) !important;
 font-weight: 500 !important;
 color: #ffffff !important;
 }
@@ -938,7 +938,7 @@ justify-content: flex-start;
 }
 /* Masaüstü: Taşıtlar başlık formatı – 12px, beyaza yakın renk, birlikte küçülme (clamp 13px) */
 .stok-list-header-cell { font-size: 12px !important; color: #ffffff !important; opacity: 1 !important; padding: 4px !important; font-weight: 500 !important; }
-.stok-list-header-cell .stok-header-text { font-size: clamp(9.5px, 1.5vw, 12.5px) !important; color: #ffffff !important; font-weight: 500 !important; }
+.stok-list-header-cell .stok-header-text { font-size: clamp(7.5px, 1.5vw, 12.5px) !important; color: #ffffff !important; font-weight: 500 !important; }
 .stok-list-cell { font-size: 13px !important; padding: 2px !important; color: var(--data-value-color, #a0aec0); }
 .stok-list-header-cell[data-col="sira"],
 .stok-list-cell[data-col="sira"],

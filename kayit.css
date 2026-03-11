@@ -307,10 +307,11 @@ select option:active {
     box-sizing: border-box;
     cursor: pointer;
     text-align: center;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23888' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23ffffff' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 8px center;
     padding-right: 28px;
+    color: var(--form-label-color, #ffffff);
 }
 .vehicle-branch-trigger.placeholder {
     color: rgba(255, 255, 255, 0.38) !important;
@@ -340,15 +341,16 @@ select option:active {
 .vehicle-branch-option {
     padding: 8px 10px;
     font-size: 14px;
-    color: #e0e0e0;
+    color: var(--form-label-color, #ffffff);
     cursor: pointer;
 }
 .vehicle-branch-option:hover {
     background: rgba(var(--theme-color-rgb), 0.22);
-    color: #e0e0e0;
+    color: var(--form-label-color, #ffffff);
 }
 .vehicle-branch-option.selected {
     background: rgba(var(--theme-color-rgb), 0.12);
+    color: var(--form-label-color, #ffffff);
 }
 #vehicle-modal #vehicle-branch-select.branch-placeholder {
     color: rgba(255, 255, 255, 0.38) !important;
