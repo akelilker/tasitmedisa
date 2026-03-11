@@ -62,7 +62,7 @@
           if (idInput) idInput.value = branch.id;
           if (nameInput) nameInput.value = branch.name;
           if (cityInput) cityInput.value = branch.city || '';
-          if (title) title.textContent = '?ube Dùzenle';
+          if (title) title.textContent = '?ube D?zenle';
         }
         // Sil butonunu g?ster
         if (deleteBtn) deleteBtn.style.display = 'flex';
@@ -162,9 +162,9 @@
         // Ana modal? g?ncelle
         renderBranchList();
   
-        alert(id ? '?ube Gùùncellendi.' : '?ube Eklendi.');
+        alert(id ? '?ube G??ncellendi.' : '?ube Eklendi.');
       } catch (error) {
-        alert('?ube kayd? s?ras?nda bir hata olu?tu! Lùtfen tekrar deneyin.');
+        alert('?ube kayd? s?ras?nda bir hata olu?tu! L?tfen tekrar deneyin.');
       } finally {
         if (saveBtn) saveBtn.disabled = false;
       }
@@ -187,8 +187,8 @@
   
       if (vehicleCount > 0 || userCount > 0) {
         let msg = '?ubeye ili?kin kay?tl? veri bulundu?undan silme yap?lamaz!\n\n';
-        if (vehicleCount > 0) msg += `ù ${vehicleCount} Adet Ta??t\n`;
-        if (userCount > 0) msg += `ù ${userCount} Adet Kullan?c?\n`;
+        if (vehicleCount > 0) msg += `? ${vehicleCount} Adet Ta??t\n`;
+        if (userCount > 0) msg += `? ${userCount} Adet Kullan?c?\n`;
         alert(msg);
         return;
       }
@@ -219,7 +219,7 @@
       if (branches.length === 0) {
         container.innerHTML = `
           <div style="text-align:center; padding:20px; color:var(--muted);">
-            Henùz ?ube eklenmemi?.
+            Hen?z ?ube eklenmemi?.
           </div>
         `;
         return;
@@ -384,7 +384,7 @@
       if (!trigger || !container) return;
       const checked = container.querySelectorAll('input[name=user-vehicle]:checked');
       const n = checked.length;
-      trigger.textContent = n === 0 ? 'Ta??t Seùin' : (n === 1 ? '1 Ta??t Seùildi' : n + ' Ta??t Seùildi');
+      trigger.textContent = n === 0 ? 'Ta??t Se?in' : (n === 1 ? '1 Ta??t Se?ildi' : n + ' Ta??t Se?ildi');
       // trigger line fixed above
     }
   
@@ -546,7 +546,7 @@
             });
             updateUserVehiclesTriggerText();
           }
-          if (title) title.textContent = 'Kullan?c? Dùzenle';
+          if (title) title.textContent = 'Kullan?c? D?zenle';
         }
         // Sil butonunu g?ster
         if (deleteBtn) deleteBtn.style.display = 'flex';
@@ -591,7 +591,7 @@
   
       const branches = readBranches();
   
-      select.innerHTML = '<option value="">?ube Seùin</option>';
+      select.innerHTML = '<option value="">?ube Se?in</option>';
   
       branches.forEach(branch => {
         const option = document.createElement('option');
@@ -691,7 +691,7 @@
   
         // ?of?r portal giri?i: Ta??t atanm??sa Kullan?c? Ad? ve ?ifre zorunlu
         if (hasAssignedVehicles && (!kullanici_adi || !sifre)) {
-          alert('Portal giri?i iùin ta??t atad???n?z kullan?c?lar?n "Kullan?c? Ad? (portal giri?i)" ve "?ifre (portal giri?i)" alanlar?n? doldurman?z gerekir. Kullan?c? bu bilgilerle driver sayfas?nda giri? yapacakt?r.');
+          alert('Portal giri?i i?in ta??t atad???n?z kullan?c?lar?n "Kullan?c? Ad? (portal giri?i)" ve "?ifre (portal giri?i)" alanlar?n? doldurman?z gerekir. Kullan?c? bu bilgilerle driver sayfas?nda giri? yapacakt?r.');
           if (usernameInput) usernameInput.focus();
           return;
         }
@@ -752,14 +752,14 @@
         // Ana modal? g?ncelle
         renderUserList();
   
-        alert(id ? 'Kullan?c? Gùncellendi.' : 'Kullan?c? Eklendi.');
+        alert(id ? 'Kullan?c? G?ncellendi.' : 'Kullan?c? Eklendi.');
   
         if (savedUserId) {
           window.dispatchEvent(new CustomEvent('userSaved', { detail: { id: savedUserId } }));
         }
       } catch (error) {
         console.error('Kullan?c? kay?t hatas?:', error);
-        alert('Kullan?c? kayd? s?ras?nda bir hata olu?tu! Lùtfen tekrar deneyin.');
+        alert('Kullan?c? kayd? s?ras?nda bir hata olu?tu! L?tfen tekrar deneyin.');
       } finally {
         if (saveBtn) saveBtn.disabled = false;
       }
@@ -777,7 +777,7 @@
       const count = vehicles.filter(v => v.assignedUserId === id).length;
   
       if (count > 0) {
-        alert(`Bu kullan?c?ya ${count} adet ta??t tahsis edilmi?. ùnce ta??tlar? ba?ka kullan?c?ya aktar?n.`);
+        alert(`Bu kullan?c?ya ${count} adet ta??t tahsis edilmi?. ?nce ta??tlar? ba?ka kullan?c?ya aktar?n.`);
         return;
       }
   
@@ -807,7 +807,7 @@
       if (users.length === 0) {
         container.innerHTML = `
           <div style="text-align:center; padding:20px; color:var(--muted);">
-            Henùz kullan?c? eklenmemi?.
+            Hen?z kullan?c? eklenmemi?.
           </div>
         `;
         return;
@@ -818,7 +818,7 @@
         const branchName = branch ? branch.name : '-';
         
         const roleLabels = {
-          'admin': 'Yˆùnetici',
+          'admin': 'Y??netici',
           'sales': 'Sat?? Temsilcisi',
           'driver': 'Kullan?c?'
         };
@@ -866,8 +866,11 @@
       const branchFormModal = document.getElementById('branch-form-modal');
       const userFormModal = document.getElementById('user-form-modal');
       const dataModal = document.getElementById('data-management-modal');
-  
-      if (dataModal && dataModal.classList.contains('active')) {
+      const disVeriPanel = document.getElementById('dis-veri-panel');
+
+      if (disVeriPanel && disVeriPanel.classList.contains('active')) {
+        closeDisVeriPanel();
+      } else if (dataModal && dataModal.classList.contains('active')) {
         closeDataManagement();
       } else if (branchFormModal && branchFormModal.classList.contains('active')) {
         closeBranchFormModal();
@@ -886,7 +889,11 @@
       const branchFormModal = document.getElementById('branch-form-modal');
       const userFormModal = document.getElementById('user-form-modal');
       const dataModal = document.getElementById('data-management-modal');
-  
+      const disVeriPanel = document.getElementById('dis-veri-panel');
+
+      if (disVeriPanel && disVeriPanel.classList.contains('active') && e.target === disVeriPanel) {
+        closeDisVeriPanel();
+      }
       if (branchModal && branchModal.classList.contains('active') && e.target === branchModal) {
         closeBranchManagement();
       }
@@ -939,7 +946,34 @@
       modal.classList.remove('active');
       setTimeout(() => modal.style.display = 'none', 300);
     };
-  
+
+    // ========================================
+    // DI? VER? Y?NET?M?
+    // ========================================
+    window.openDisVeriPanel = function openDisVeriPanel() {
+      const settingsMenu = document.getElementById('settings-menu');
+      if (settingsMenu) settingsMenu.classList.remove('open');
+      const dataSubmenu = document.getElementById('data-submenu');
+      if (dataSubmenu) dataSubmenu.classList.remove('open');
+      const panel = document.getElementById('dis-veri-panel');
+      if (!panel) return;
+      if (panel.classList.contains('active') || panel.style.display === 'flex') return;
+      panel.style.display = 'flex';
+      requestAnimationFrame(() => panel.classList.add('active'));
+    };
+    window.closeDisVeriPanel = function closeDisVeriPanel() {
+      const panel = document.getElementById('dis-veri-panel');
+      if (!panel) return;
+      panel.classList.remove('active');
+      setTimeout(() => { panel.style.display = 'none'; }, 300);
+    };
+    window.tsbKaskoListesiIndir = function tsbKaskoListesiIndir() {
+      alert('TSB Kasko Listesi ?ndir ? hen?z uygulanmad?.');
+    };
+    window.kaskoExcelYukle = function kaskoExcelYukle() {
+      alert('Kasko Excel Y?kle ? hen?z uygulanmad?.');
+    };
+
     // ? YEDEKLE (Export) ?
     window.exportData = function exportData() {
       try {
@@ -1075,7 +1109,7 @@
       }
     };
 
-    // YEDEKTEN GER? YùKLE (Import - dosyadan)
+    // YEDEKTEN GER? Y?KLE (Import - dosyadan)
     window.importData = function importData() {
       try {
         const input = document.createElement('input');
@@ -1329,8 +1363,8 @@
         ['vehicle_column_order', 'stok_active_columns', 'stok_column_order', 'stok_base_column_order'].forEach(k => localStorage.removeItem(k));
         
         const backupResultMessage = result.serverBackup
-          ? 'Veriler Sunucuya Yedeklendi Ve Taray?c? Belle?i Temizlendi!\n\nYedek korundu. Geri y?klemek i?in Ayarlar > Veri Y?netimi > Son Yedekten Geri Y?kle kullan?n.\n\nSayfa Yenilenecek.'
-          : 'Sunucuya Yedekleme Yap?lamad? Ancak Yerel Yedek Korunarak Taray?c? Belle?i Temizlendi!\n\nGeri y?klemek i?in Ayarlar > Veri Y?netimi > Son Yedekten Geri Y?kle kullan?n.\n\nSayfa Yenilenecek.';
+          ? 'Veriler Sunucuya Yedeklendi Ve Taray?c? Belle?i Temizlendi!\n\nYedek korundu. Geri y?klemek i?in Ayarlar > Veri Yedekleme > Son Yedekten Geri Y?kle kullan?n.\n\nSayfa Yenilenecek.'
+          : 'Sunucuya Yedekleme Yap?lamad? Ancak Yerel Yedek Korunarak Taray?c? Belle?i Temizlendi!\n\nGeri y?klemek i?in Ayarlar > Veri Yedekleme > Son Yedekten Geri Y?kle kullan?n.\n\nSayfa Yenilenecek.';
         window.showInfoModal(backupResultMessage);
         
         // 3. Sayfay? yenile
