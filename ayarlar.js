@@ -867,8 +867,14 @@
       const userFormModal = document.getElementById('user-form-modal');
       const dataModal = document.getElementById('data-management-modal');
       const disVeriPanel = document.getElementById('dis-veri-panel');
+      const infoModal = document.getElementById('info-modal');
+      const cacheConfirmModal = document.getElementById('cache-confirm-modal');
 
-      if (disVeriPanel && disVeriPanel.classList.contains('active')) {
+      if (infoModal && infoModal.classList.contains('active')) {
+        closeInfoModal();
+      } else if (cacheConfirmModal && cacheConfirmModal.classList.contains('active')) {
+        closeCacheConfirmModal();
+      } else if (disVeriPanel && disVeriPanel.classList.contains('active')) {
         closeDisVeriPanel();
       } else if (dataModal && dataModal.classList.contains('active')) {
         closeDataManagement();
@@ -890,7 +896,15 @@
       const userFormModal = document.getElementById('user-form-modal');
       const dataModal = document.getElementById('data-management-modal');
       const disVeriPanel = document.getElementById('dis-veri-panel');
+      const infoModal = document.getElementById('info-modal');
+      const cacheConfirmModal = document.getElementById('cache-confirm-modal');
 
+      if (infoModal && infoModal.classList.contains('active') && e.target === infoModal) {
+        closeInfoModal();
+      }
+      if (cacheConfirmModal && cacheConfirmModal.classList.contains('active') && e.target === cacheConfirmModal) {
+        closeCacheConfirmModal();
+      }
       if (disVeriPanel && disVeriPanel.classList.contains('active') && e.target === disVeriPanel) {
         closeDisVeriPanel();
       }
