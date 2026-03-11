@@ -2711,18 +2711,19 @@ body.driver-modal-open {
   color: rgba(74, 222, 128, 0.95);
 }
 
-/* Muayene teyit popover */
+/* Muayene teyit popover - body seviyesinde, overflow'dan etkilenmez, sağ alttan yukarı */
 .muayene-confirm-popover {
-  position: absolute;
-  bottom: calc(100% + 10px);
-  right: 0;
-  width: 280px;
+  position: fixed;
+  bottom: 80px;
+  right: 16px;
+  width: min(280px, calc(100vw - 32px));
+  max-width: 320px;
   background: var(--card-bg, #1a1a1a);
   border: 1px solid var(--theme-color);
   border-radius: 8px;
   padding: 12px;
   box-shadow: 0 4px 20px rgba(0,0,0,0.5), 0 0 15px rgba(var(--theme-color-rgb, 59, 130, 246), 0.2);
-  z-index: 100;
+  z-index: 10020;
   font-size: 13px;
   color: #fff;
 }
