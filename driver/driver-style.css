@@ -2775,6 +2775,20 @@ body.driver-modal-open {
   transform: scale(1.02);
 }
 
+/* Masaüstü: butonlar 4px daha kısa, çerçeve ikiye bölünmüş her buton kendi alanında yatay ortalı */
+@media (min-width: 769px) {
+  .muayene-confirm-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+  }
+  .muayene-confirm-actions .btn-confirm-no,
+  .muayene-confirm-actions .btn-confirm-yes {
+    padding: 6px 16px;
+    justify-self: center;
+  }
+}
+
 #history-modal .universal-back-bar .universal-back-label,
 #edit-request-modal .universal-back-bar .universal-back-label {
   color: var(--muted, #adb5bd) !important;
