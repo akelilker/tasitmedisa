@@ -610,8 +610,9 @@
                 </div>
                 <div class="modal-body">
                     <div class="data-management-actions">
-                        <button type="button" class="data-management-text-btn" onclick="tsbKaskoListesiIndir()">TSB Kasko Listesi İndir</button>
-                        <button type="button" class="data-management-text-btn" onclick="kaskoExcelYukle()">Kasko Excel Yükle</button>
+                        <button type="button" id="tsb-indir-btn" class="data-management-text-btn" onclick="tsbKaskoListesiIndir()">TSB Kasko Listesi İndir</button>
+                        <button type="button" id="kasko-yukle-btn" class="data-management-text-btn" onclick="kaskoExcelYukle()">Kasko Excel Yükle</button>
+                        <input type="file" id="kasko-excel-input" accept=".xlsx,.xls" style="display: none;">
                     </div>
                 </div>
             </div>
