@@ -840,8 +840,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
 }
 
 /* MTV Bildirimi - Global Ã‡akÄ±ÅŸma Ã–nleyici */
-#notifications-dropdown .mtv-notification,
-#notifications-dropdown .kasko-excel-notification {
+#notifications-dropdown .mtv-notification {
   display: flex !important;
   flex-direction: row !important;
   align-items: center !important;
@@ -855,10 +854,28 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   transition: all 0.2s ease !important;
 }
 
-#notifications-dropdown .mtv-notification:hover,
-#notifications-dropdown .kasko-excel-notification:hover {
+#notifications-dropdown .mtv-notification:hover {
   transform: translateY(-2px) !important;
   box-shadow: 0 4px 12px rgba(255, 140, 0, 0.25) !important;
+}
+
+#notifications-dropdown .kasko-excel-notification {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  border: 1px solid rgba(212, 0, 0, 0.6) !important;
+  border-radius: 12px !important;
+  background: var(--bg-2) !important;
+  padding: 10px 12px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  transition: all 0.2s ease !important;
+}
+
+#notifications-dropdown .kasko-excel-notification:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(212, 0, 0, 0.25) !important;
 }
 
 #notifications-dropdown .mtv-notification > div,
@@ -881,6 +898,10 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   white-space: normal !important;
   display: inline-block !important;
   line-height: 1.4 !important;
+}
+
+.kasko-excel-notification .mtv-main-text {
+  color: var(--theme-color) !important;
 }
 
 .mtv-dismiss-wrapper {
