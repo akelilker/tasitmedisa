@@ -1728,6 +1728,21 @@
     return 'Bulunamadı';
   }
 
+  /**
+   * Excel yüklendiğinde tüm taşıtların kasko değerini hesaplayıp kaydeder.
+   * Sunucuya yazılır; böylece Excel olmayan cihazlarda da değer görünür.
+   */
+  window.guncelleTumKaskoDegerleri = function() {
+    var vehicles = readVehicles();
+    if (!Array.isArray(vehicles) || vehicles.length === 0) return;
+    var tarih = new Date().toISOString();
+    vehicles.forEach(function(v) {
+      v.kaskoDegeri = getKaskoDegeri(v.kaskoKodu, v.year);
+      v.kaskoDegeriYuklemeTarihi = tarih;
+    });
+    writeVehicles(vehicles);
+  };
+
   function getVehiclePrintRows(vehicle) {
     const users = readUsers();
     const branches = readBranches();
@@ -2366,12 +2381,15 @@ function renderVehicleDetailLeft(vehicle) {
     const kaskoKodu = vehicle.kaskoKodu || '';
     html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Kasko Kodu</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(kaskoKodu || '-')}</span></div>`;
 
-    // Kasko Değeri (TSB Excel verisinden otomatik)
-    const kaskoDegeri = getKaskoDegeri(vehicle.kaskoKodu, vehicle.year);
+    // Kasko Değeri (önce kayıtlı değer, yoksa Excel'den hesapla)
+    let kaskoDegeri = vehicle.kaskoDegeri;
+    if (kaskoDegeri == null || kaskoDegeri === '') {
+      kaskoDegeri = getKaskoDegeri(vehicle.kaskoKodu, vehicle.year);
+    }
     let isKaskoOutdated = true;
-    const kaskoUploadDate = localStorage.getItem('medisa_kasko_liste_date');
-    if (kaskoUploadDate) {
-      const uploadDate = new Date(kaskoUploadDate);
+    const kaskoTarihKaynak = vehicle.kaskoDegeriYuklemeTarihi || localStorage.getItem('medisa_kasko_liste_date');
+    if (kaskoTarihKaynak) {
+      const uploadDate = new Date(kaskoTarihKaynak);
       const now = new Date();
       if (uploadDate.getMonth() === now.getMonth() && uploadDate.getFullYear() === now.getFullYear()) {
         isKaskoOutdated = false;
