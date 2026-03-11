@@ -1737,7 +1737,8 @@
     if (!Array.isArray(vehicles) || vehicles.length === 0) return;
     var tarih = new Date().toISOString();
     vehicles.forEach(function(v) {
-      v.kaskoDegeri = getKaskoDegeri(v.kaskoKodu, v.year);
+      const yearForKasko = v.year || v.modelYili || '';
+      v.kaskoDegeri = getKaskoDegeri(v.kaskoKodu, yearForKasko);
       v.kaskoDegeriYuklemeTarihi = tarih;
     });
     writeVehicles(vehicles);
@@ -2384,7 +2385,16 @@ function renderVehicleDetailLeft(vehicle) {
     // Kasko Değeri (önce kayıtlı değer, yoksa Excel'den hesapla)
     let kaskoDegeri = vehicle.kaskoDegeri;
     if (kaskoDegeri == null || kaskoDegeri === '') {
-      kaskoDegeri = getKaskoDegeri(vehicle.kaskoKodu, vehicle.year);
+      const yearForKasko = vehicle.year || vehicle.modelYili || '';
+      kaskoDegeri = getKaskoDegeri(vehicle.kaskoKodu, yearForKasko);
+    }
+    if (kaskoDegeri == null || String(kaskoDegeri).trim() === '') {
+      kaskoDegeri = '-';
+    }
+    if (kaskoDegeri === '-' && (!vehicle.kaskoKodu || String(vehicle.kaskoKodu).trim() === '')) {
+      kaskoDegeri = 'Kasko kodu girilmedi';
+    } else if (kaskoDegeri === '-' && !localStorage.getItem('medisa_kasko_liste')) {
+      kaskoDegeri = 'Excel yüklenmedi';
     }
     let isKaskoOutdated = true;
     const kaskoTarihKaynak = vehicle.kaskoDegeriYuklemeTarihi || localStorage.getItem('medisa_kasko_liste_date');
@@ -2395,9 +2405,11 @@ function renderVehicleDetailLeft(vehicle) {
         isKaskoOutdated = false;
       }
     }
-    const kaskoDegeriStyle = isKaskoOutdated ? 'color: var(--red) !important;' : '';
-    const kaskoDegeriExtra = isKaskoOutdated ? ' <span style="font-size: 0.8em; opacity: 0.8;">(Güncel Değil)</span>' : '';
-    html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Kasko Değeri</span><span class="detail-row-colon">:</span></div><span class="detail-row-value kasko-degeri-text" style="${kaskoDegeriStyle}"> ${escapeHtml(kaskoDegeri)}${kaskoDegeriExtra}</span></div>`;
+    const isPlaceholderMsg = (kaskoDegeri === 'Kasko kodu girilmedi' || kaskoDegeri === 'Excel yüklenmedi');
+    const kaskoDegeriStyle = isKaskoOutdated && !isPlaceholderMsg ? 'color: var(--red) !important;' : '';
+    const kaskoDegeriExtra = (isKaskoOutdated && !isPlaceholderMsg) ? ' <span style="font-size: 0.8em; opacity: 0.8;">(Güncel Değil)</span>' : '';
+    const kaskoDegeriDisplay = String(kaskoDegeri).trim() || '-';
+    html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Kasko Değeri</span><span class="detail-row-colon">:</span></div><span class="detail-row-value kasko-degeri-text" style="${kaskoDegeriStyle}"> ${escapeHtml(kaskoDegeriDisplay)}${kaskoDegeriExtra}</span></div>`;
 
     // Notlar (kayıt formundan) + Kullanıcı Notu (varsa, kullanıcı panelinden)
     const notes = vehicle.notes || '';
