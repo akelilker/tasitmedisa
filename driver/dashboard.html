@@ -340,14 +340,7 @@
                         <label for="driver-muayene-tarih" style="color: var(--form-label-color); font-size: 15px;">Yaptırılan Tarih:</label>
                         <input type="date" id="driver-muayene-tarih" class="form-input" style="width: 100%;">
                     </div>
-                    <div class="muayene-submit-wrap" style="position: relative; display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
-                        <div id="muayene-confirm-popover" class="muayene-confirm-popover" style="display: none;">
-                            <p>Muayene Bitiş Tarihi <strong id="muayene-calc-date">--/--/----</strong> olarak belirlenmiştir. Evrak üzerinden doğruluğunu teyit etmeniz gerekmektedir. Teyit edildi mi?</p>
-                            <div class="muayene-confirm-actions">
-                                <button type="button" class="btn-confirm-no" onclick="cancelMuayeneSubmit()">Hayır</button>
-                                <button type="button" class="btn-confirm-yes" onclick="confirmMuayeneSubmit()">Evet</button>
-                            </div>
-                        </div>
+                    <div class="muayene-submit-wrap" style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
                         <button type="button" class="btn-submit" onclick="saveDriverEvent('muayene')">Bildir</button>
                         <button type="button" class="universal-btn-cancel" onclick="closeDriverEventModal('muayene')">Vazgeç</button>
                     </div>
@@ -417,6 +410,14 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+    <!-- Muayene teyit popover: body seviyesinde, overflow'dan etkilenmez -->
+    <div id="muayene-confirm-popover" class="muayene-confirm-popover" style="display: none;">
+        <p>Muayene Bitiş Tarihi <strong id="muayene-calc-date">--/--/----</strong> olarak belirlenmiştir. Evrak üzerinden doğruluğunu teyit etmeniz gerekmektedir. Teyit edildi mi?</p>
+        <div class="muayene-confirm-actions">
+            <button type="button" class="btn-confirm-no" onclick="cancelMuayeneSubmit()">Hayır</button>
+            <button type="button" class="btn-confirm-yes" onclick="confirmMuayeneSubmit()">Evet</button>
         </div>
     </div>
     <script defer src="driver-script.js?v=20260309"></script>
