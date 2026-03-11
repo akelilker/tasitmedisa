@@ -3851,7 +3851,7 @@ function renderVehicleDetailLeft(vehicle) {
           const kisi = toTitleCase(event.data?.kisi || '-');
           html += `<div class="history-item">
             <div class="history-item-date" style="font-weight: 600; font-size: 12px; margin-bottom: 4px;">${escapeHtml(formatDateForDisplay(event.date) || '-')}</div>
-            <div class="history-item-body" style="font-size: 12px;">${escapeHtml(islemler)}</div>
+            <div class="history-item-body" style="font-size: 12px;"><span class="history-label">${escapeHtml(islemler)}</span></div>
             <div class="history-item-body" style="font-size: 12px; margin-top: 4px;"><span class="history-label">Servis:</span> ${escapeHtml(servis)} | <span class="history-label">Kişi:</span> ${escapeHtml(kisi)}${ekStr ? ' | ' + ekStr : ''}</div>
           </div>`;
         });
@@ -3913,7 +3913,7 @@ function renderVehicleDetailLeft(vehicle) {
           const kmCumle = `${escapeHtml(kullanici)}, G\u00fcncel Km: ${escapeHtml(formatNumber(yeniKm))} Olarak Bildirdi. (\u00d6nceki Km: ${escapeHtml(formatNumber(eskiKm))})`;
           html += `<div class="history-item">
             <div class="history-item-date" style="font-weight: 600; font-size: 12px; margin-bottom: 4px;">${escapeHtml(formatDateForDisplay(event.date) || '-')}</div>
-            <div class="history-item-body" style="font-size: 12px; margin-top: 4px;">${kmCumle}</div>
+            <div class="history-item-body" style="font-size: 12px; margin-top: 4px;"><span class="history-label">${kmCumle}</span></div>
             ${index === 0 ? duzeltmeNotHtml : ''}
           </div>`;
         });

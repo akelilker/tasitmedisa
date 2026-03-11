@@ -655,24 +655,35 @@
   }
 }
 
-/* Tarihçe: sadece etiketler (tarih, başlık) beyaz; kullanıcı verileri gri */
-#vehicle-history-modal .history-item-date {
+/* Tarihçe RENK SÖZLEŞMESİ (değiştirme): Tarih + etiketler beyaz; açıklamalar gri.
+   Başka selector'lar (detail-row, modal-body, mobil) bu alanı ezmesin diye yüksek özgüllük + !important. */
+#vehicle-history-modal #history-content,
+.modal-overlay:has(.history-tabs) #history-content {
+    color: var(--data-value-color, #a0aec0);
+}
+#vehicle-history-modal .history-item-date,
+.modal-overlay:has(.history-tabs) .history-item-date {
     color: #ffffff !important;
     margin-bottom: 2px !important;
 }
-#vehicle-history-modal .history-item-date + .history-item-body {
+#vehicle-history-modal .history-item-date + .history-item-body,
+.modal-overlay:has(.history-tabs) .history-item-date + .history-item-body {
     margin-top: 4px !important;
 }
-#vehicle-history-modal .history-item-label {
+#vehicle-history-modal .history-item-label,
+.modal-overlay:has(.history-tabs) .history-item-label {
     color: #ffffff !important;
 }
-#vehicle-history-modal .history-item-body {
+#vehicle-history-modal .history-item-body,
+.modal-overlay:has(.history-tabs) .history-item-body {
     color: var(--data-value-color, #a0aec0) !important;
 }
-#vehicle-history-modal .history-item-body .history-label {
+#vehicle-history-modal .history-item-body .history-label,
+.modal-overlay:has(.history-tabs) .history-item-body .history-label {
     color: #ffffff !important;
 }
-#vehicle-history-modal .history-empty-msg {
+#vehicle-history-modal .history-empty-msg,
+.modal-overlay:has(.history-tabs) .history-empty-msg {
     color: var(--txt-placeholder);
 }
 /* Tarihçe (5 sekme): her işlem sonrası 3px boşluk, hafif kırmızı yatay çizgi (taşıt detay ortadaki dikey çizgi ile aynı ton), altında 3px boşluk */
