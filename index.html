@@ -681,6 +681,14 @@
             </div>
         </div>
 
+        <!-- Ortada Bilgi Kutusu (Excel vb. – üstteki modal kapanmaz) -->
+        <div id="centered-info-box" class="centered-info-box-overlay" style="display: none;" onclick="if(event.target === this) closeCenteredInfoBox();">
+            <div class="centered-info-box-inner" onclick="event.stopPropagation();">
+                <p id="centered-info-message"></p>
+                <button type="button" class="centered-info-tamam" onclick="closeCenteredInfoBox()">Tamam</button>
+            </div>
+        </div>
+
         <!-- Bilgi Modalı (Alert yerine) -->
         <div id="info-modal" class="modal-overlay ayarlar-modal-overlay">
             <div class="modal-container">
