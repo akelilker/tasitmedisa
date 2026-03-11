@@ -979,10 +979,11 @@
       if (!input) return;
       input.addEventListener('change', function() {
         if (this.files && this.files.length > 0) {
+          var msg = 'Excel dosyas\u0131 se\u00e7ildi. Okuma mod\u00fcl\u00fc haz\u0131rlan\u0131yor...';
           if (typeof window.showInfoModal === 'function') {
-            window.showInfoModal('Excel dosyas? seçildi. Okuma modülü haz?rlan?yor...');
+            window.showInfoModal(msg);
           } else {
-            alert('Excel dosyas? seçildi. Okuma modülü haz?rlan?yor...');
+            alert(msg);
           }
         }
         this.value = '';
