@@ -2178,7 +2178,7 @@ body.modal-open::after {
   right: 0;
   width: 100%;
   bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0));
-  height: calc(var(--app-footer-gap) + 24px);
+  height: calc(var(--app-footer-gap) + 8px);
   background: var(--bg) !important;
   z-index: 10001;
   pointer-events: none;
