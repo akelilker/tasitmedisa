@@ -958,6 +958,13 @@
     width: 100% !important;
     max-width: none !important;
     min-width: 0 !important;
+    border-width: 1.2px !important;
+  }
+  .olay-ekle-modal .modal-body .universal-btn-save {
+    border-color: rgba(40, 167, 69, 0.65) !important;
+  }
+  .olay-ekle-modal .modal-body .universal-btn-cancel {
+    border-color: rgba(212, 0, 0, 0.65) !important;
   }
   .olay-ekle-modal .modal-body > div > div:has(label) label {
     text-align: left !important;
@@ -2552,6 +2559,7 @@
     max-width: clamp(93px, 27vw, 107px);
     flex: 0 0 clamp(93px, 27vw, 107px);
     aspect-ratio: 1 / 1;
+    border: 1px solid rgba(255, 255, 255, 0.4) !important;
   }
   .branch-name { font-size: clamp(11.5px, 4.1vw, 15px); line-height: 1.12; overflow-wrap: anywhere; word-break: break-word; } /* Sığmazsa en fazla 1.5pt küçülme (15→11.5px), Karmotors vb. kutuya sığsın */
   .branch-count { font-size: 15px; } /* +1 punto daha (sadece mobil) */

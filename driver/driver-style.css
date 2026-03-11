@@ -2945,6 +2945,12 @@ body.driver-modal-open {
   color: var(--green);
 }
 
+/* Modal açıkken tıklanan satırın kırmızı vurgusu korunsun (focus modal'a geçince kaybolmasın) */
+#history-modal .history-card.history-row-editing {
+  box-shadow: inset 0 0 0 1.5px rgba(var(--theme-color-rgb), 0.7);
+  border-radius: 8px;
+}
+
 /* =========================================
    LOGIN SAYFASI (DeÄŸiÅŸiklik yok)
    ========================================= */
@@ -3492,6 +3498,10 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   box-shadow: inset 0 0 0 0.5px var(--theme-color) !important;
 }
 
+.login-form .form-group input.has-value {
+  box-shadow: inset 0 0 0 0.5px var(--theme-color) !important;
+}
+
 .login-form .form-group input::placeholder {
   color: rgba(160, 174, 192, 0.6) !important; /* Ã¶rn: SavaÅŸ â€“ Ã§ok az daha silik */
   opacity: 1;
@@ -4031,6 +4041,17 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   /* Login header: tamamÄ± panel (dashboard ile aynÄ± gÃ¶rÃ¼nÃ¼m) */
   .login-page .hero {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2), 0 2px 12px rgba(var(--theme-color-rgb), 0.08) !important;
+  }
+  /* Mobil login: Kullanıcı adı etiketi ve altındakiler 8px yukarı */
+  .login-page .login-form {
+    margin-top: -8px !important;
+  }
+  /* Mobil login: yan kırmızı çizgiler ve footer doğru konumda (container bottom = footer üstü) */
+  .login-page .driver-dashboard-container::before {
+    bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
+  }
+  .login-page #app-footer.login-footer {
+    bottom: 0 !important;
   }
 
   /* Ãƒâ€¡erÃƒÂ§evelere yan boÃ…Å¸luk; plaka dropdown saÃ„Å¸ panele taÃ…Å¸abilsin diye yatay overflow aÃƒÂ§Ã„Â±k */
