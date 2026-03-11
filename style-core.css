@@ -1479,9 +1479,9 @@ body.modal-open .user-panel-link {
     overflow-y: visible;
 }
 
-/* Modal açıkken footer ışığı modal içine girmesin, çerçeve rengi değişmesin: glow kapat, overlay tam opak */
+/* Modal açıkken overlay tam opak (ışık sızmasın), footer ışıkları kalsın */
 body.modal-open #app-footer {
-    box-shadow: none !important;
+    box-shadow: 0 -18px 36px rgba(var(--theme-color-rgb), 0.45), 0 -8px 16px rgba(var(--theme-color-rgb), 0.25) !important;
 }
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay.active,
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay.open {
@@ -1893,11 +1893,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
         border-right: none;
         border-top: 1px solid rgba(128, 128, 128, 0.5) !important; /* Gri çizgi */
     }
-    /* Mobilde modal açıkken footer ışıkları kapansın (modal içine girmesin) */
-    body.modal-open #app-footer {
-        box-shadow: none !important;
-    }
-
     /* HEADER KIRMIZI ÇİZGİ - Havada (kırmızı çerçeve ile eşit) */
     .animated-line {
         opacity: 0.8;  /* Mobilde daha belirgin */
