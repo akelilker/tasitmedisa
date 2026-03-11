@@ -3829,7 +3829,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   /* GeÃ§miÅŸ KayÄ±tlar + DÃ¼zeltme Talebi: modalâ€“footer arasÄ± 10px; koyu dolgu (box-shadow) kÃ¶ÅŸeler dahil kapatsÄ±n */
   #history-modal.driver-modal,
   #edit-request-modal.driver-modal {
-    box-shadow: 0 6px 0 0 #080d16 !important;
+    box-shadow: 0 calc(var(--app-footer-gap, 14px) + 8px) 0 0 #080d16 !important;
   }
   /* Mobilde modal aÃ§Ä±kken header Ã¼stÃ¼ndeki kÄ±rmÄ±zÄ± yatay Ã§izgi gÃ¶rÃ¼nmesin */
   .driver-modal.show::after {
@@ -3856,11 +3856,15 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   body.dashboard-page:has(#edit-request-modal.driver-modal.show) .driver-dashboard-container::before,
   body.login-page:has(#edit-request-modal.driver-modal.show) .driver-dashboard-container::before {
     bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
+    border-left: none !important;
+    border-right: none !important;
     -webkit-clip-path: inset(0 0 calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) 0) !important;
     clip-path: inset(0 0 calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) 0) !important;
   }
   body.dashboard-page:has(#history-modal.driver-modal.show)::after,
-  body.dashboard-page:has(#edit-request-modal.driver-modal.show)::after {
+  body.dashboard-page:has(#edit-request-modal.driver-modal.show)::after,
+  body.login-page:has(#history-modal.driver-modal.show)::after,
+  body.login-page:has(#edit-request-modal.driver-modal.show)::after {
     content: '';
     position: fixed;
     left: 0;
@@ -3875,6 +3879,8 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     body.driver-modal-open.dashboard-page .driver-dashboard-container::before,
     body.driver-modal-open.login-page .driver-dashboard-container::before {
       bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
+      border-left: none !important;
+      border-right: none !important;
       -webkit-clip-path: inset(0 0 calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) 0) !important;
       clip-path: inset(0 0 calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) 0) !important;
     }
