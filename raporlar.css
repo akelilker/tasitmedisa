@@ -1598,7 +1598,20 @@ left: 0;
 transform: none;
 }
 #reports-modal .modal-body {
-padding-bottom: 40px !important;
+padding-bottom: 16px !important;
+min-height: 0 !important;
+display: flex !important;
+flex-direction: column !important;
+}
+#reports-modal .modal-body #view-stok {
+flex: 1 !important;
+min-height: 0 !important;
+display: flex !important;
+flex-direction: column !important;
+}
+#reports-modal .modal-body #view-stok .stok-list-container {
+flex: 1 !important;
+min-height: 0 !important;
 }
 .report-summary-grid {
 grid-template-columns: 1fr;
