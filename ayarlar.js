@@ -1,5 +1,5 @@
 /* =========================================
-   AYARLAR MODÜLÜ - ªUBE & KULLANICI YÖNET?M?
+   AYARLAR MOD?L? - ?UBE & KULLANICI Y?NET?M?
    ========================================= */
 
    (function () {
@@ -11,14 +11,14 @@
     function $all(sel, root = document) { return Array.from(root.querySelectorAll(sel)); }
   
     // ========================================
-    // ªube YÖNET?M?
+    // ?ube Y?NET?M?
     // ========================================
   
     function readBranches() { return (typeof window.getMedisaBranches === 'function' ? window.getMedisaBranches() : null) || (function() { try { var r = localStorage.getItem(BRANCHES_KEY); return r ? JSON.parse(r) : []; } catch (e) { return []; } })(); }
     function writeBranches(arr) { if (typeof window.writeBranches === 'function') { window.writeBranches(arr); return; } localStorage.setItem(BRANCHES_KEY, JSON.stringify(arr)); if (window.appData) { window.appData.branches = arr; if (window.saveDataToServer) window.saveDataToServer().catch(function(err) { console.error('Sunucuya kaydetme hatas? (sessiz):', err); }); } }
     function readVehicles() { return (typeof window.getMedisaVehicles === 'function' ? window.getMedisaVehicles() : null) || (function() { try { var r = localStorage.getItem(VEHICLES_KEY); return r ? JSON.parse(r) : []; } catch (e) { return []; } })(); }
   
-    // ? Modal Kontrolü (Ana Liste) ?
+    // ? Modal Kontrol? (Ana Liste) ?
     window.openBranchManagement = function openBranchManagement() {
       const modal = document.getElementById('branch-modal');
       if (!modal) return;
@@ -26,7 +26,7 @@
       // Listeyi render et
       renderBranchList();
   
-      // Modal? aç
+      // Modal? a?
       modal.style.display = 'flex';
       requestAnimationFrame(() => modal.classList.add('active'));
     };
@@ -38,7 +38,7 @@
       setTimeout(() => modal.style.display = 'none', 300);
     };
 
-    // ? Modal Kontrolü (Form) ?
+    // ? Modal Kontrol? (Form) ?
     window.openBranchFormModal = function openBranchFormModal(editId = null) {
       const modal = document.getElementById('branch-form-modal');
       if (!modal) return;
@@ -55,25 +55,25 @@
       if (idInput) idInput.value = '';
   
       if (editId) {
-        // DÜZENLEME MODU
+        // D?ZENLEME MODU
         const branches = readBranches();
         const branch = branches.find(b => b.id === editId);
         if (branch) {
           if (idInput) idInput.value = branch.id;
           if (nameInput) nameInput.value = branch.name;
           if (cityInput) cityInput.value = branch.city || '';
-          if (title) title.textContent = 'ªube Düzenle';
+          if (title) title.textContent = '?ube D?zenle';
         }
-        // Sil butonunu göster
+        // Sil butonunu g?ster
         if (deleteBtn) deleteBtn.style.display = 'flex';
       } else {
         // Yeni EKLEME MODU
-        if (title) title.textContent = 'Yeni ªube Ekle';
+        if (title) title.textContent = 'Yeni ?ube Ekle';
         // Sil butonunu gizle
         if (deleteBtn) deleteBtn.style.display = 'none';
       }
   
-      // Modal? aç
+      // Modal? a?
       modal.style.display = 'flex';
       requestAnimationFrame(() => modal.classList.add('active'));
   
@@ -97,20 +97,20 @@
       setTimeout(() => modal.style.display = 'none', 300);
     };
   
-    // ? CRUD ?ºlemleri ?
+    // ? CRUD ??lemleri ?
     /**
-     * ªube kayd?n? formdan okuyup localStorage'a kaydeder (Create/Update)
+     * ?ube kayd?n? formdan okuyup localStorage'a kaydeder (Create/Update)
      * 
-     * Validasyon + Kaydetme ak?º?:
+     * Validasyon + Kaydetme ak???:
      * 1. Form alanlar?n? oku (id, name, city)
-     * 2. ªube Ad? validasyonu yap (zorunlu alan)
-     * 3. ID varsa güncelleme, yoksa yeni ekleme modu
+     * 2. ?ube Ad? validasyonu yap (zorunlu alan)
+     * 3. ID varsa g?ncelleme, yoksa yeni ekleme modu
      * 4. localStorage'a yaz
-     * 5. Form modal?n? kapat ve ana listeyi güncelle
-     * 6. Kullan?c?ya baºar? mesaj? göster
+     * 5. Form modal?n? kapat ve ana listeyi g?ncelle
+     * 6. Kullan?c?ya ba?ar? mesaj? g?ster
      * 
      * @throws {Error} localStorage yazma hatas? durumunda uygulama crash olabilir
-     * (Hata yakalama henüz eklenmedi - rapor önerisi #6)
+     * (Hata yakalama hen?z eklenmedi - rapor ?nerisi #6)
      */
     window.saveBranch = function saveBranch() {
       const modal = document.getElementById('branch-form-modal');
@@ -129,7 +129,7 @@
   
       // Validasyon
       if (!name) {
-        alert('ªube Ad? Giriniz.');
+        alert('?ube Ad? Giriniz.');
         if (nameInput) nameInput.focus();
         return;
       }
@@ -137,7 +137,7 @@
       const branches = readBranches();
   
       if (id) {
-        // güncelleME
+        // g?ncelleME
         const idx = branches.findIndex(b => b.id === id);
         if (idx !== -1) {
           branches[idx].name = name;
@@ -159,12 +159,12 @@
         // Form modal?n? kapat
         closeBranchFormModal();
   
-        // Ana modal? güncelle
+        // Ana modal? g?ncelle
         renderBranchList();
   
-        alert(id ? 'ªube güncellendi.' : 'ªube Eklendi.');
+        alert(id ? '?ube g?ncellendi.' : '?ube Eklendi.');
       } catch (error) {
-        alert('ªube kayd? s?ras?nda bir hata Olu?tu! L?tfen tekrar deneyin.');
+        alert('?ube kayd? s?ras?nda bir hata Olu?tu! L?tfen tekrar deneyin.');
       } finally {
         if (saveBtn) saveBtn.disabled = false;
       }
@@ -177,11 +177,11 @@
     window.deleteBranch = function deleteBranch(id) {
       if (!id) return; // ID yoksa i?lem yapma
       
-      // Ta??t kontrolü
+      // Ta??t kontrol?
       const vehicles = readVehicles();
       const vehicleCount = vehicles.filter(v => v.branchId === id).length;
   
-      // Kullan?c? kontrolü (?UBEye atanm?? Kullan?c?lar)
+      // Kullan?c? kontrol? (?UBEye atanm?? Kullan?c?lar)
       const users = readUsers();
       const userCount = users.filter(u => u.branchId === id).length;
   
@@ -202,10 +202,10 @@
       // Form modal?n? kapat
       closeBranchFormModal();
       
-      // Ana modal? güncelle
+      // Ana modal? g?ncelle
       renderBranchList();
   
-      alert('ªube Silindi.');
+      alert('?ube Silindi.');
     };
 
     // ? Liste Render ?
@@ -219,7 +219,7 @@
       if (branches.length === 0) {
         container.innerHTML = `
           <div style="text-align:center; padding:20px; color:var(--muted);">
-            henüz ªube eklenmemi?.
+            hen?z ?ube eklenmemi?.
           </div>
         `;
         return;
@@ -242,7 +242,7 @@
     }
   
     // ========================================
-    // KULLANICI YÖNET?M?
+    // KULLANICI Y?NET?M?
     // ========================================
   
     function readUsers() {
@@ -307,7 +307,7 @@
       }
     }
   
-    // ? Modal Kontrolü (Ana Liste) ?
+    // ? Modal Kontrol? (Ana Liste) ?
     window.openUserManagement = function openUserManagement() {
       const modal = document.getElementById('user-modal');
       if (!modal) return;
@@ -315,7 +315,7 @@
       // Listeyi render et
       renderUserList();
   
-      // Modal? aç
+      // Modal? a?
       modal.style.display = 'flex';
       requestAnimationFrame(() => modal.classList.add('active'));
     };
@@ -419,7 +419,7 @@
       }
     });
   
-    // ? Modal Kontrolü (Form) ?
+    // ? Modal Kontrol? (Form) ?
     window.openUserFormModal = function openUserFormModal(editId = null) {
       const modal = document.getElementById('user-form-modal');
       if (!modal) return;
@@ -436,7 +436,7 @@
       const title = $('.modal-header h2', modal);
       const deleteBtn = $('#user-delete-btn', modal);
   
-      // ªube dropdown'?n? doldur
+      // ?ube dropdown'?n? doldur
       populateBranchDropdown();
       // Atanacak Ta??t dropdown'?n? kapat, arama temizle ve listeyi doldur
       closeUserVehiclesDropdown();
@@ -444,7 +444,7 @@
       if (searchInput) searchInput.value = '';
       populateUserVehiclesMulti();
   
-      // ªube select'e t?klan?nca veya focus al?nd???nda otomatik a??lmas? i?in event listener ekle
+      // ?ube select'e t?klan?nca veya focus al?nd???nda otomatik a??lmas? i?in event listener ekle
       setTimeout(() => {
         const updatedBranchSelect = $('#user-branch', modal);
         if (updatedBranchSelect && !updatedBranchSelect.dataset.dropdownHandler) {
@@ -524,7 +524,7 @@
       if (idInput) idInput.value = '';
   
       if (editId) {
-        // DÜZENLEME MODU
+        // D?ZENLEME MODU
         const users = readUsers();
         const user = users.find(u => u.id === editId);
         if (user) {
@@ -546,9 +546,9 @@
             });
             updateUserVehiclesTriggerText();
           }
-          if (title) title.textContent = 'Kullan?c? Düzenle';
+          if (title) title.textContent = 'Kullan?c? D?zenle';
         }
-        // Sil butonunu göster
+        // Sil butonunu g?ster
         if (deleteBtn) deleteBtn.style.display = 'flex';
       } else {
         // Yeni EKLEME MODU
@@ -557,7 +557,7 @@
         if (deleteBtn) deleteBtn.style.display = 'none';
       }
   
-      // Modal? aç
+      // Modal? a?
       modal.style.display = 'flex';
       requestAnimationFrame(() => modal.classList.add('active'));
   
@@ -591,7 +591,7 @@
   
       const branches = readBranches();
   
-      select.innerHTML = '<option value="">ªube Se?in</option>';
+      select.innerHTML = '<option value="">?ube Se?in</option>';
   
       branches.forEach(branch => {
         const option = document.createElement('option');
@@ -601,20 +601,20 @@
       });
     }
   
-    // ? CRUD ?ºlemleri ?
+    // ? CRUD ??lemleri ?
     /**
      * Kullan?c? kayd?n? formdan okuyup localStorage'a kaydeder (Create/Update)
      * 
-     * Validasyon + Kaydetme ak?º?:
+     * Validasyon + Kaydetme ak???:
      * 1. Form alanlar?n? oku (id, name, branchId, phone, email, role)
-     * 2. Ad Soyad ve ªube validasyonu yap (zorunlu alanlar)
-     * 3. ID varsa güncelleme, yoksa yeni ekleme modu
+     * 2. Ad Soyad ve ?ube validasyonu yap (zorunlu alanlar)
+     * 3. ID varsa g?ncelleme, yoksa yeni ekleme modu
      * 4. localStorage'a yaz
-     * 5. Form modal?n? kapat ve ana listeyi güncelle
-     * 6. Kullan?c?ya baºar? mesaj? göster
+     * 5. Form modal?n? kapat ve ana listeyi g?ncelle
+     * 6. Kullan?c?ya ba?ar? mesaj? g?ster
      * 
      * @throws {Error} localStorage yazma hatas? durumunda uygulama crash olabilir
-     * (Hata yakalama henüz eklenmedi - rapor önerisi #6)
+     * (Hata yakalama hen?z eklenmedi - rapor ?nerisi #6)
      */
     function formatUserFullName(rawName) {
       const cleaned = (rawName || '').trim().replace(/\s+/g, ' ');
@@ -680,7 +680,7 @@
           return;
         }
         if (!branchId) {
-          alert('ªube Se?iniz.');
+          alert('?ube Se?iniz.');
           branchSelect.focus();
           return;
         }
@@ -698,7 +698,7 @@
   
         let savedUserId = id;
         if (id) {
-          // güncelleME
+          // g?ncelleME
           const idx = users.findIndex(u => u.id === id);
           if (idx !== -1) {
             users[idx].name = name;
@@ -738,7 +738,7 @@
             v.assignedUserId = savedUserId;
             const u = users.find(u => u.id === savedUserId);
             if (u && v.tahsisKisi !== undefined) v.tahsisKisi = u.name || '';
-            // Ta??tta ªube yoksa, Kullan?c?n?n ?UBEsini otomatik ata (ªube Kullan?c?da zorunlu)
+            // Ta??tta ?ube yoksa, Kullan?c?n?n ?UBEsini otomatik ata (?ube Kullan?c?da zorunlu)
             if (u && !v.branchId && u.branchId) v.branchId = u.branchId;
           }
         });
@@ -749,10 +749,10 @@
         // Form modal?n? kapat
         closeUserFormModal();
   
-        // Ana modal? güncelle
+        // Ana modal? g?ncelle
         renderUserList();
   
-        alert(id ? 'Kullan?c? güncellendi.' : 'Kullan?c? Eklendi.');
+        alert(id ? 'Kullan?c? g?ncellendi.' : 'Kullan?c? Eklendi.');
   
         if (savedUserId) {
           window.dispatchEvent(new CustomEvent('userSaved', { detail: { id: savedUserId } }));
@@ -772,7 +772,7 @@
     window.deleteUser = function deleteUser(id) {
       if (!id) return; // ID yoksa i?lem yapma
       
-      // Ta??t kontrolü
+      // Ta??t kontrol?
       const vehicles = readVehicles();
       const count = vehicles.filter(v => v.assignedUserId === id).length;
   
@@ -790,7 +790,7 @@
       // Form modal?n? kapat
       closeUserFormModal();
       
-      // Ana modal? güncelle
+      // Ana modal? g?ncelle
       renderUserList();
   
       alert('Kullan?c? Silindi.');
@@ -807,7 +807,7 @@
       if (users.length === 0) {
         container.innerHTML = `
           <div style="text-align:center; padding:20px; color:var(--muted);">
-            henüz Kullan?c? eklenmemi?.
+            hen?z Kullan?c? eklenmemi?.
           </div>
         `;
         return;
@@ -912,7 +912,7 @@
     });
   
     // ========================================
-    // VER? YÖNET?M?
+    // VER? Y?NET?M?
     // ========================================
   
     // ? Modal Kontrol? ?
@@ -948,7 +948,7 @@
     };
 
     // ========================================
-    // DI? VER? YÖNET?M?
+    // DI? VER? Y?NET?M?
     // ========================================
     window.openDisVeriPanel = function openDisVeriPanel() {
       const settingsMenu = document.getElementById('settings-menu');
@@ -1015,7 +1015,7 @@
         
         URL.revokeObjectURL(link.href);
   
-        alert('Yedek baºar?yla ?ndirildi!');
+        alert('Yedek ba?ar?yla ?ndirildi!');
       } catch (error) {
         alert('Yedekleme s?ras?nda hata Olu?tu!');
       }
@@ -1066,7 +1066,7 @@
         kayitlar: backup.kayitlar != null ? backup.kayitlar : (existingApp.kayitlar || []),
         branches: backup.branches,
         users: normalizedUsers,
-        ayarlar: backup.ayarlar || existingApp.ayarlar || { sirketAdi: "Medisa", yetkiliKisi: "", telefon: "", eposta: "" },
+        ayarlar: backup.ayarlar || existingApp.ayarlar || { sirketAdi: 'Medisa', yetkiliKisi: '', telefon: '', eposta: '' },
         sifreler: backup.sifreler != null ? backup.sifreler : (existingApp.sifreler || []),
         arac_aylik_hareketler: backup.arac_aylik_hareketler != null ? backup.arac_aylik_hareketler : (existingApp.arac_aylik_hareketler || []),
         duzeltme_talepleri: backup.duzeltme_talepleri != null ? backup.duzeltme_talepleri : (existingApp.duzeltme_talepleri || [])
@@ -1176,7 +1176,7 @@
               window.appData = restoredBlob;
   
               var doReload = function() {
-                alert('Yedek baºar?yla Geri Y?klendi!\n\nSayfa Yenilenecek.');
+                alert('Yedek ba?ar?yla Geri Y?klendi!\n\nSayfa Yenilenecek.');
                 setTimeout(function() { window.location.reload(); }, 500);
               };
   
@@ -1224,7 +1224,7 @@
           users: users,
           vehicles: vehicles,
           kayitlar: Array.isArray(existingApp.kayitlar) ? existingApp.kayitlar : [],
-          ayarlar: existingApp.ayarlar || { sirketAdi: "Medisa", yetkiliKisi: "", telefon: "", eposta: "" },
+          ayarlar: existingApp.ayarlar || { sirketAdi: 'Medisa', yetkiliKisi: '', telefon: '', eposta: '' },
           sifreler: Array.isArray(existingApp.sifreler) ? existingApp.sifreler : [],
           arac_aylik_hareketler: Array.isArray(existingApp.arac_aylik_hareketler) ? existingApp.arac_aylik_hareketler : [],
           duzeltme_talepleri: Array.isArray(existingApp.duzeltme_talepleri) ? existingApp.duzeltme_talepleri : [],
@@ -1289,8 +1289,8 @@
     /**
      * Taray?c? ?nbelle?ini (cache) temizler
      * 
-     * ??lem ak?º?:
-     * 1. Kullan?c?ya onay modal'? göster (cache-confirm-modal)
+     * ??lem ak???:
+     * 1. Kullan?c?ya onay modal'? g?ster (cache-confirm-modal)
      * 2. Onayland???nda confirmCacheClear() fonksiyonu ?a?r?l?r
      * 3. confirmCacheClear i?inde:
      *    - T?m localStorage verileri silinir (vehicles, branches, users)
@@ -1299,7 +1299,7 @@
      * Not: Bu i?lem geri al?namaz! T?m veriler silinir.
      * 
      * @async
-     * @throws {Error} Modal a?ma hatas? durumunda info modal gösterilir
+     * @throws {Error} Modal a?ma hatas? durumunda info modal g?sterilir
      */
     window.clearCache = async function clearCache() {
       try {
@@ -1359,12 +1359,12 @@
 
         // Yerel yedek bile Olu?turulamAd?ysa i?lem iptal
         if (!result.localBackup) {
-          window.showInfoModal('Yedekleme baºar?s?z! Taray?c? Belle?i Temizlenmedi.');
+          window.showInfoModal('Yedekleme ba?ar?s?z! Taray?c? Belle?i Temizlenmedi.');
           return;
         }
 
         if (!result.success && !allowCacheClearWithLocalBackupOnly) {
-          // Sunucu yede?i baºar?s?z: Kullan?c?ya yerel yedekle devam etme se?ene?i ver
+          // Sunucu yede?i ba?ar?s?z: Kullan?c?ya yerel yedekle devam etme se?ene?i ver
           const retryMessage = 'Veriler Sunucuya Y?klenemedi!\nYerel Yedek Olu?turuldu.\n\nYine De Temizlemek ?stiyor Musunuz?';
           if (typeof window.closeInfoModal === 'function') {
             window.closeInfoModal();
