@@ -32,7 +32,7 @@ body::-webkit-scrollbar,
   --modal-footer-gap: 12px;
   --app-footer-height: 30px;
   /* Codex standart: modal overlay bottom tek formül (footer + 6px boşluk) */
-  --app-footer-real-height: 42px;
+  --app-footer-real-height: 38px;
   --app-footer-gap: 14px;
   --modal-footer-reserve: calc(var(--app-footer-height) + var(--modal-footer-gap));
   --modal-gap-above-footer: 5px; /* Mobil/masaüstü tek değer */
@@ -94,8 +94,8 @@ body::-webkit-scrollbar,
 /* Masaüstü (641px+): modal–footer arası 5px (anasayfa RAPORLAR/Taşıtlar vb.) */
 @media (min-width: 641px) {
   :root {
-    --app-footer-height: 38px;
-    --app-footer-real-height: 46px;
+    --app-footer-height: 34px;
+    --app-footer-real-height: 42px;
     --modal-gap-above-footer: 1px;
   }
 }
@@ -1507,8 +1507,8 @@ body.modal-open .user-panel-link {
     height: var(--app-footer-real-height, 34px) !important;
     min-height: var(--app-footer-real-height, 34px) !important;
     box-sizing: border-box !important;
-    padding-top: 4px !important;
-    padding-bottom: calc(4px + env(safe-area-inset-bottom, 0)) !important;
+    padding-top: 2px !important;
+    padding-bottom: calc(2px + env(safe-area-inset-bottom, 0)) !important;
     border-top: 0.8px solid rgba(128, 128, 128, 0.5);
     border-left: 0.5px solid rgba(255, 255, 255, 0.20);
     border-right: 0.5px solid rgba(255, 255, 255, 0.20);
@@ -1541,8 +1541,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
     max-width: 500px;
     width: 100%;
     margin: 0 auto;
-    padding: 12px 12px;
-    padding-bottom: max(12px, env(safe-area-inset-bottom));
+    padding: 6px 12px;
+    padding-bottom: max(6px, env(safe-area-inset-bottom));
     box-sizing: border-box;
 }
 
