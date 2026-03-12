@@ -1738,6 +1738,8 @@
     }
   }
 
+  window.getKaskoDegeri = getKaskoDegeri;
+
   /**
    * Excel yüklendiğinde tüm taşıtların kasko değerini hesaplayıp kaydeder.
    * Sunucuya yazılır; böylece Excel olmayan cihazlarda da değer görünür.

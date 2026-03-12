@@ -26,6 +26,7 @@
     let stokActiveColumns = {
         sigorta: false,
         kasko: false,
+        kaskoDegeri: false,
         muayene: false,
         kredi: false,
         lastik: false,
@@ -135,7 +136,8 @@
             'tramer': 'Tramer',
             'boya': isVerySmall ? 'Boy.' : isMobile ? 'Boya' : 'Boya Değişen',
             'kullanici': isVerySmall ? 'Kull.' : isMobile ? 'Kullanıcı' : 'Kullanıcı',
-            'tescil': isVerySmall ? 'Tescil' : isMobile ? 'Tescil T.' : 'Tescil Tarihi'
+            'tescil': isVerySmall ? 'Tescil' : isMobile ? 'Tescil T.' : 'Tescil Tarihi',
+            'kaskoDegeri': isVerySmall ? 'Kas.' : isMobile ? 'Kasko Değeri' : 'Kasko Değeri'
         };
         
         return headers[colKey] || colKey;
@@ -475,7 +477,7 @@
                 'plaka': 68, 'sanziman': 64 + desktopSanzimanWide, 'km': 54
             };
             const detailPx = {
-                'sigorta': 72, 'kasko': 72, 'muayene': 72, 'kredi': 56,
+                'sigorta': 72, 'kasko': 72, 'kaskoDegeri': 72, 'muayene': 72, 'kredi': 56,
                 'lastik': 56, 'utts': 52, 'takip': 56, 'tramer': 52,
                 'boya': 56, 'kullanici': 72, 'tescil': 72
             };
@@ -513,6 +515,7 @@
         const detailColumns = [
             { key: 'sigorta', sortable: true },
             { key: 'kasko', sortable: true },
+            { key: 'kaskoDegeri', sortable: true },
             { key: 'muayene', sortable: true },
             { key: 'kredi', sortable: true },
             { key: 'lastik', sortable: true },
@@ -627,6 +630,20 @@
         const detailCells = [
             { key: 'sigorta', value: vehicle.sigortaDate ? formatDate(vehicle.sigortaDate) : '-' },
             { key: 'kasko', value: vehicle.kaskoDate ? formatDate(vehicle.kaskoDate) : '-' },
+            { key: 'kaskoDegeri', value: (function() {
+                var yearForKasko = vehicle.year || vehicle.modelYili || '';
+                var kaskoDegeri = vehicle.kaskoDegeri;
+                if (kaskoDegeri == null || kaskoDegeri === '') {
+                    kaskoDegeri = (typeof window.getKaskoDegeri === 'function') ? window.getKaskoDegeri(vehicle.kaskoKodu, yearForKasko) : '-';
+                }
+                if (kaskoDegeri == null || String(kaskoDegeri).trim() === '') kaskoDegeri = '-';
+                if (kaskoDegeri === '-' && (!vehicle.kaskoKodu || String(vehicle.kaskoKodu).trim() === '')) {
+                    kaskoDegeri = 'Kasko kodu girilmedi';
+                } else if (kaskoDegeri === '-' && !localStorage.getItem('medisa_kasko_liste')) {
+                    kaskoDegeri = 'Excel yüklenmedi';
+                }
+                return String(kaskoDegeri).trim() || '-';
+            })() },
             { key: 'muayene', value: vehicle.muayeneDate ? formatDate(vehicle.muayeneDate) : '-' },
             { key: 'kredi', value: vehicle.kredi === 'var' ? 'Var' : vehicle.kredi === 'yok' ? 'Yok' : '-' },
             { key: 'lastik', value: vehicle.lastikDurumu === 'var' ? 'Var' : vehicle.lastikDurumu === 'yok' ? 'Yok' : '-' },
@@ -801,6 +818,7 @@
         const detailOptions = [
             { key: 'sigorta', label: 'Sigorta T.' },
             { key: 'kasko', label: 'Kasko T.' },
+            { key: 'kaskoDegeri', label: 'Kasko Değeri' },
             { key: 'muayene', label: 'Muayene' },
             { key: 'kredi', label: 'Kredi/Rehin' },
             { key: 'lastik', label: 'Lastik D.' },
@@ -899,7 +917,7 @@
 
     // Sütun başlığından sürükle başlatıldığında
     window.handleColumnHeaderDragStart = function(event, columnKey) {
-        const detailColumns = ['sigorta', 'kasko', 'muayene', 'kredi', 'lastik', 'utts', 'takip', 'tramer', 'boya', 'kullanici', 'tescil'];
+        const detailColumns = ['sigorta', 'kasko', 'kaskoDegeri', 'muayene', 'kredi', 'lastik', 'utts', 'takip', 'tramer', 'boya', 'kullanici', 'tescil'];
         const baseColumns = ['sira', 'sube', 'yil', 'marka', 'plaka', 'sanziman', 'km'];
         
         // Detay sütunları için aktif kontrolü
@@ -935,7 +953,7 @@
     window.handleColumnHeaderDragEnter = function(event) {
         if (draggedColumnKey) {
             const targetKey = event.currentTarget.dataset.col;
-            const detailColumns = ['sigorta', 'kasko', 'muayene', 'kredi', 'lastik', 'utts', 'takip', 'tramer', 'boya', 'kullanici', 'tescil'];
+            const detailColumns = ['sigorta', 'kasko', 'kaskoDegeri', 'muayene', 'kredi', 'lastik', 'utts', 'takip', 'tramer', 'boya', 'kullanici', 'tescil'];
             const baseColumns = ['sira', 'sube', 'yil', 'marka', 'plaka', 'sanziman', 'km'];
             
             if (targetKey && targetKey !== draggedColumnKey) {
@@ -969,7 +987,7 @@
             return;
         }
 
-        const detailColumns = ['sigorta', 'kasko', 'muayene', 'kredi', 'lastik', 'utts', 'takip', 'tramer', 'boya', 'kullanici', 'tescil'];
+        const detailColumns = ['sigorta', 'kasko', 'kaskoDegeri', 'muayene', 'kredi', 'lastik', 'utts', 'takip', 'tramer', 'boya', 'kullanici', 'tescil'];
         const baseColumns = ['sira', 'sube', 'yil', 'marka', 'plaka', 'sanziman', 'km'];
         
         const isDraggedBase = baseColumns.includes(draggedColumnKey);
@@ -1160,6 +1178,20 @@
             switch (col.key) {
                 case 'sigorta': value = vehicle.sigortaDate ? formatDate(vehicle.sigortaDate) : '-'; break;
                 case 'kasko': value = vehicle.kaskoDate ? formatDate(vehicle.kaskoDate) : '-'; break;
+                case 'kaskoDegeri': value = (function() {
+                    var yearForKasko = vehicle.year || vehicle.modelYili || '';
+                    var kaskoDegeri = vehicle.kaskoDegeri;
+                    if (kaskoDegeri == null || kaskoDegeri === '') {
+                        kaskoDegeri = (typeof window.getKaskoDegeri === 'function') ? window.getKaskoDegeri(vehicle.kaskoKodu, yearForKasko) : '-';
+                    }
+                    if (kaskoDegeri == null || String(kaskoDegeri).trim() === '') kaskoDegeri = '-';
+                    if (kaskoDegeri === '-' && (!vehicle.kaskoKodu || String(vehicle.kaskoKodu).trim() === '')) {
+                        kaskoDegeri = 'Kasko kodu girilmedi';
+                    } else if (kaskoDegeri === '-' && !localStorage.getItem('medisa_kasko_liste')) {
+                        kaskoDegeri = 'Excel yüklenmedi';
+                    }
+                    return String(kaskoDegeri).trim() || '-';
+                })(); break;
                 case 'muayene': value = vehicle.muayeneDate ? formatDate(vehicle.muayeneDate) : '-'; break;
                 case 'kredi': value = vehicle.kredi === 'var' ? 'Var' : vehicle.kredi === 'yok' ? 'Yok' : '-'; break;
                 case 'lastik': value = vehicle.lastikDurumu === 'var' ? 'Var' : vehicle.lastikDurumu === 'yok' ? 'Yok' : '-'; break;
@@ -1317,6 +1349,20 @@
                         case 'kasko':
                             value = vehicle.kaskoDate ? formatDate(vehicle.kaskoDate) : '-';
                             break;
+                        case 'kaskoDegeri':
+                            var yearForKasko = vehicle.year || vehicle.modelYili || '';
+                            var kaskoDegeri = vehicle.kaskoDegeri;
+                            if (kaskoDegeri == null || kaskoDegeri === '') {
+                                kaskoDegeri = (typeof window.getKaskoDegeri === 'function') ? window.getKaskoDegeri(vehicle.kaskoKodu, yearForKasko) : '-';
+                            }
+                            if (kaskoDegeri == null || String(kaskoDegeri).trim() === '') kaskoDegeri = '-';
+                            if (kaskoDegeri === '-' && (!vehicle.kaskoKodu || String(vehicle.kaskoKodu).trim() === '')) {
+                                kaskoDegeri = 'Kasko kodu girilmedi';
+                            } else if (kaskoDegeri === '-' && !localStorage.getItem('medisa_kasko_liste')) {
+                                kaskoDegeri = 'Excel yüklenmedi';
+                            }
+                            value = String(kaskoDegeri).trim() || '-';
+                            break;
                         case 'muayene':
                             value = vehicle.muayeneDate ? formatDate(vehicle.muayeneDate) : '-';
                             break;
@@ -1411,7 +1457,7 @@
     window.handleStokSearch = (typeof window.debounce === 'function') ? window.debounce(handleStokSearchImpl, 200) : handleStokSearchImpl;
 
     // Yazdır – Excel ile aynı veriyi tablo olarak yazdırır (ekran görüntüsü değil)
-    const stokPrintHeaders = { sira:'No.', sube:'Şube', yil:'Yıl', marka:'Marka/Model', plaka:'Plaka', sanziman:'Şanzıman', km:'KM', sigorta:'Sigorta Bitiş', kasko:'Kasko Bitiş', muayene:'Muayene T.', kredi:'Kredi/Rehin', lastik:'Lastikler', utts:'UTTS', takip:'Takip Cihazı', tramer:'Tramer', boya:'Boya Değişen', kullanici:'Kullanıcı', tescil:'Tescil Tarihi' };
+    const stokPrintHeaders = { sira:'No.', sube:'Şube', yil:'Yıl', marka:'Marka/Model', plaka:'Plaka', sanziman:'Şanzıman', km:'KM', sigorta:'Sigorta Bitiş', kasko:'Kasko Bitiş', kaskoDegeri:'Kasko Değeri', muayene:'Muayene T.', kredi:'Kredi/Rehin', lastik:'Lastikler', utts:'UTTS', takip:'Takip Cihazı', tramer:'Tramer', boya:'Boya Değişen', kullanici:'Kullanıcı', tescil:'Tescil Tarihi' };
     window.printStokReport = function() {
         const data = getStokReportExportData();
         if (!data) {
