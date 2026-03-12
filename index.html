@@ -1273,9 +1273,9 @@
                     </button>
                 </div>
                 <div class="universal-back-bar">
-                    <button type="button" class="universal-back-btn" onclick="openEventModal('menu', window.currentDetailVehicleId)" aria-label="Olay menüsüne dön">
+                    <button type="button" class="universal-back-btn" onclick="closeRuhsatAndBackToDetail()" aria-label="Taşıt Detay'a dön">
                         <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-                        <span class="universal-back-label">Olay Ekle</span>
+                        <span class="universal-back-label">Taşıt Detay</span>
                     </button>
                 </div>
                 <div class="modal-body" onclick="event.stopPropagation();">
@@ -1284,7 +1284,7 @@
                     </div>
                     <div class="universal-btn-group" id="ruhsat-btn-group" style="margin-top: 12px;">
                         <button type="button" class="universal-btn-save" id="ruhsat-save-btn" onclick="event.stopPropagation(); saveRuhsatUpload();" style="display: none;">Yükle</button>
-                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); closeEventModalAndShowEventMenu('ruhsat');">Vazgeç</button>
+                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); closeRuhsatAndBackToDetail();">Vazgeç</button>
                     </div>
                 </div>
             </div>
