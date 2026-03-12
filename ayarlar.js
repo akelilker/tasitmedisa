@@ -1011,13 +1011,13 @@
         var reader = new FileReader();
         reader.onerror = function() {
           console.error('Kasko Excel FileReader hatası:', reader.error);
-          showKaskoError('Dosya okunamadı. Mobil cihazda dosya erişim sorunu olabilir. Lütfen masaüstü bilgisayardan deneyin.');
+          showKaskoError('Dosya Okunamadı. Mobil Cihazda Dosya Erişim Sorunu Olabilir. Lütfen Masaüstü Bilgisayardan Deneyin.');
           input.value = '';
         };
         reader.onload = function(e) {
           try {
             if (typeof XLSX === 'undefined') {
-              showKaskoError('Excel kütüphanesi yüklenemedi. İnternet bağlantınızı kontrol edip sayfayı yenileyin.');
+              showKaskoError('Excel Kütüphanesi Yüklenemedi. İnternet Bağlantınızı Kontrol Edip Sayfayı Yenileyin.');
               input.value = '';
               return;
             }
@@ -1032,7 +1032,7 @@
               localStorage.setItem('medisa_kasko_liste', jsonStr);
             } catch (storageErr) {
               if (storageErr.name === 'QuotaExceededError' || storageErr.code === 22) {
-                showKaskoError('Kasko listesi mobil cihazda depolama sınırını aşıyor. Lütfen masaüstü bilgisayardan Excel yükleyin.');
+                showKaskoError('Kasko Listesi Mobil Cihazda Depolama Sınırını Aşıyor. Lütfen Masaüstü Bilgisayardan Excel Yükleyin.');
                 input.value = '';
                 return;
               }
@@ -1061,9 +1061,9 @@
           } catch (error) {
             console.error('Excel okuma hatası:', error);
             if (error.name === 'QuotaExceededError' || error.code === 22) {
-              showKaskoError('Kasko listesi mobil cihazda depolama sınırını aşıyor. Lütfen masaüstü bilgisayardan Excel yükleyin.');
+              showKaskoError('Kasko Listesi Mobil Cihazda Depolama Sınırını Aşıyor. Lütfen Masaüstü Bilgisayardan Excel Yükleyin.');
             } else {
-              showKaskoError('Excel okunurken hata oluştu! Dosya bozuk veya yanlış formatta olabilir.');
+              showKaskoError('Excel Okunurken Hata Oluştu! Dosya Bozuk Veya Yanlış Formatta Olabilir.');
             }
           } finally {
             input.value = '';
