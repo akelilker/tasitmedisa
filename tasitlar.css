@@ -2182,6 +2182,23 @@
   margin-right: auto;
 }
 
+/* Ruhsat modal: Dosya Seç butonu - şeffaf arka plan, beyaz metin (etiket rengi) */
+#ruhsat-yukleme-modal #ruhsat-file-input {
+  color: var(--form-label-color, #ffffff) !important;
+  background: transparent !important;
+}
+#ruhsat-yukleme-modal #ruhsat-file-input::file-selector-button,
+#ruhsat-yukleme-modal #ruhsat-file-input::-webkit-file-upload-button {
+  background: transparent !important;
+  color: var(--form-label-color, #ffffff) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  padding: 6px 12px;
+  cursor: pointer;
+  margin-right: 8px;
+  font-size: 14px;
+}
+
 /* Olay Ekle butonu - Marka/model satırında solda */
 .detail-brand-year-row .history-add-event-btn {
     width: auto;
