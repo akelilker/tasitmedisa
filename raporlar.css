@@ -90,6 +90,7 @@ overflow: hidden !important;
 min-height: 0 !important;
 display: flex !important;
 flex-direction: column !important;
+padding-bottom: 6px !important;
 /* scrollbar gizleme: style-core.css’teki .modal-body kuralı kullanılır */
 }
 
@@ -1659,6 +1660,7 @@ padding-bottom: 16px !important;
 min-height: 0 !important;
 display: flex !important;
 flex-direction: column !important;
+padding-bottom: 6px !important;
 }
 #reports-modal .modal-body:has(#stok-list-container .stok-list-top-controls) #view-stok {
 flex: 1 !important;
