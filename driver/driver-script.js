@@ -75,6 +75,68 @@ const API_BASE = (function(){
   window.addEventListener('pagehide', clearSessionGreenFeedback);
   document.addEventListener('visibilitychange', function() { if (document.hidden) clearSessionGreenFeedback(); });
 
+  function placePwaWrapper() {
+    var pwaWrapper = document.getElementById('pwa-install-wrapper');
+    var desktopPwaSlot = document.getElementById('driver-below-hero-pwa-slot');
+    var mobilePwaTarget = document.querySelector('.driver-user-plate-in-panel');
+    if (!pwaWrapper) return;
+    if (window.innerWidth >= 769 && desktopPwaSlot) {
+      desktopPwaSlot.appendChild(pwaWrapper);
+    } else if (mobilePwaTarget) {
+      mobilePwaTarget.appendChild(pwaWrapper);
+    }
+  }
+  function placeNotificationSlot() {
+    var el = document.getElementById('driver-sliding-warning');
+    if (!el) return;
+    var heroSlot = document.getElementById('driver-hero-notification-slot');
+    var mobileSlot = document.getElementById('driver-mobile-notification-slot');
+    var belowHeroSlot = document.getElementById('driver-below-hero-notification-slot');
+    var hasContent = (el.innerHTML || '').trim().length > 0;
+    if (!hasContent && belowHeroSlot && el.parentNode !== belowHeroSlot) {
+      belowHeroSlot.appendChild(el);
+      if (heroSlot) heroSlot.setAttribute('aria-hidden', 'true');
+      if (mobileSlot) mobileSlot.setAttribute('aria-hidden', 'true');
+      return;
+    }
+    if (!hasContent) return;
+    if (window.innerWidth >= 769 && heroSlot) {
+      heroSlot.appendChild(el);
+      heroSlot.setAttribute('aria-hidden', 'false');
+      if (mobileSlot) mobileSlot.setAttribute('aria-hidden', 'true');
+    } else if (mobileSlot) {
+      mobileSlot.appendChild(el);
+      mobileSlot.setAttribute('aria-hidden', 'false');
+      if (heroSlot) heroSlot.setAttribute('aria-hidden', 'true');
+    } else if (belowHeroSlot) {
+      belowHeroSlot.appendChild(el);
+    }
+  }
+  (function initPwaPlacement() {
+    function run() {
+      if (document.body.classList.contains('dashboard-page')) placePwaWrapper();
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', run);
+    } else {
+      run();
+    }
+  })();
+  (function initPwaResizePlacement() {
+    var ticking = false;
+    window.addEventListener('resize', function() {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(function() {
+        if (document.body.classList.contains('dashboard-page')) {
+          placePwaWrapper();
+          placeNotificationSlot();
+        }
+        ticking = false;
+      });
+    });
+  })();
+
   /** Tarih input değerini DD/MM/YYYY olarak göster (örn. 2025-12-01 -> 01/12/2025) */
   function formatDateDDMMYYYY(isoDate) {
     if (!isoDate || typeof isoDate !== 'string') return '';
@@ -409,12 +471,7 @@ const API_BASE = (function(){
           setupEkstraNotAutoResize();
           setupKmInputs();
 
-          // PWA butonunu sol paneldeki marka/model altına, şube üstüne taşı
-          const pwaWrapper = document.getElementById('pwa-install-wrapper');
-          const targetContainer = document.querySelector('.driver-user-plate-in-panel');
-          if (pwaWrapper && targetContainer) {
-              targetContainer.appendChild(pwaWrapper);
-          }
+          placePwaWrapper();
 
       } catch (error) {
           console.error('Veri yükleme hatası:', error);
@@ -1185,10 +1242,27 @@ const API_BASE = (function(){
       }
       
       const warnings = buildSlidingWarnings(vehicles, records);
+      var heroSlot = document.getElementById('driver-hero-notification-slot');
+      var mobileSlot = document.getElementById('driver-mobile-notification-slot');
+      var belowHeroSlot = document.getElementById('driver-below-hero-notification-slot');
       if (warnings.length === 0) {
           el.innerHTML = '';
           el.className = 'driver-sliding-warning';
+          if (belowHeroSlot && el.parentNode !== belowHeroSlot) belowHeroSlot.appendChild(el);
+          if (heroSlot) heroSlot.setAttribute('aria-hidden', 'true');
+          if (mobileSlot) mobileSlot.setAttribute('aria-hidden', 'true');
           return;
+      }
+      if (window.innerWidth >= 769 && heroSlot) {
+          heroSlot.appendChild(el);
+          heroSlot.setAttribute('aria-hidden', 'false');
+          if (mobileSlot) mobileSlot.setAttribute('aria-hidden', 'true');
+      } else if (mobileSlot) {
+          mobileSlot.appendChild(el);
+          mobileSlot.setAttribute('aria-hidden', 'false');
+          if (heroSlot) heroSlot.setAttribute('aria-hidden', 'true');
+      } else if (belowHeroSlot) {
+          belowHeroSlot.appendChild(el);
       }
       
       const texts = warnings.map(w => w.text);
