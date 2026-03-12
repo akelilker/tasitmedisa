@@ -3047,18 +3047,21 @@ function renderVehicleDetailLeft(vehicle) {
     saveBtn.style.display = 'none';
     const hasRuhsat = !!(vehicle && vehicle.ruhsatPath);
     if (hasRuhsat) {
+      const btnGroup = document.createElement('div');
+      btnGroup.className = 'universal-btn-group';
       const viewBtn = document.createElement('button');
       viewBtn.type = 'button';
       viewBtn.className = 'universal-btn-save';
       viewBtn.textContent = 'Ruhsatı Görüntüle';
       viewBtn.onclick = function() { viewRuhsatPdf(vid); };
-      content.appendChild(viewBtn);
+      btnGroup.appendChild(viewBtn);
       const replaceBtn = document.createElement('button');
       replaceBtn.type = 'button';
       replaceBtn.className = 'universal-btn-cancel';
       replaceBtn.textContent = 'Yeni Ruhsat Yükle';
       replaceBtn.onclick = function() { renderRuhsatUploadForm(content, saveBtn); };
-      content.appendChild(replaceBtn);
+      btnGroup.appendChild(replaceBtn);
+      content.appendChild(btnGroup);
     } else {
       renderRuhsatUploadForm(content, saveBtn);
     }
