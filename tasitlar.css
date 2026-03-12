@@ -2149,6 +2149,23 @@
   color: var(--theme-color);
 }
 
+/* Ruhsat modal: Yükle butonu tema uyumlu (şeffaf arka plan + beyaz metin) */
+#ruhsat-yukleme-modal #ruhsat-save-btn {
+  background: transparent !important;
+  color: #ffffff !important;
+  border-color: rgba(40, 167, 69, 0.65) !important;
+}
+#ruhsat-yukleme-modal #ruhsat-save-btn:hover {
+  background: rgba(40, 167, 69, 0.12) !important;
+  color: #ffffff !important;
+}
+
+/* Ruhsat modal: üst/alt buton grupları aynı genişlikte hizalı */
+#ruhsat-yukleme-modal #ruhsat-modal-content {
+  max-width: 390px;
+  width: 100%;
+}
+
 /* Olay Ekle butonu - Marka/model satırında solda */
 .detail-brand-year-row .history-add-event-btn {
     width: auto;
