@@ -280,8 +280,35 @@ body.dashboard-page {
   gap: 2px;
   min-width: 0;
 }
-.hero.hero-two-rows .hero-spacer {
+.hero.hero-two-rows .hero-spacer,
+.hero.hero-two-rows .driver-hero-notification-slot {
   grid-column: 3;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-width: 0;
+}
+.driver-hero-notification-slot[aria-hidden="true"] {
+  visibility: hidden;
+}
+.driver-hero-notification-slot .driver-sliding-warning {
+  flex: 1;
+  min-width: 0;
+  max-width: 100%;
+  font-size: 12px;
+}
+.driver-mobile-notification-slot {
+  width: 100%;
+  margin-top: 6px;
+  margin-bottom: 4px;
+  min-height: 0;
+}
+.driver-mobile-notification-slot[aria-hidden="true"] {
+  display: none !important;
+}
+.driver-mobile-notification-slot .driver-sliding-warning {
+  flex: 1;
+  min-width: 0;
 }
 .hero.hero-two-rows .hero-title-block .hero-title-line {
   flex: 0 1 auto;
@@ -342,16 +369,35 @@ body.dashboard-page {
 
 .driver-below-hero-row {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   gap: 12px;
+  flex-wrap: wrap;
+}
+.driver-below-hero-pwa-slot {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.driver-below-hero-pwa-slot:empty {
+  display: none;
+}
+.driver-below-hero-notification-slot {
+  flex: 0 0 auto;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.driver-below-hero-notification-slot .driver-sliding-warning {
+  flex: 0 0 auto;
 }
 
 .driver-below-hero-row .driver-btn-history {
   width: auto;
   flex: none;
   margin: 0;
-  margin-left: 4px;
   padding: 2px;
   background: transparent !important;
   background-color: transparent !important;
@@ -455,12 +501,9 @@ body.dashboard-page {
   .dashboard-page .driver-header-fixed {
     padding-bottom: 0 !important;
   }
-  /* GeÃ§miÅŸ ve kapÄ± simgeleri Ã§erÃ§eveden 4px daha iÃ§eri (masaÃ¼stÃ¼: 12px + 8px) */
-  .dashboard-page .driver-below-hero-row .driver-btn-history {
-    margin-left: 8px !important;
-  }
+  .dashboard-page .driver-below-hero-row .driver-btn-history,
   .dashboard-page .driver-below-hero-row .driver-btn-logout {
-    margin-right: 4px !important;
+    margin: 0 !important;
   }
   /* TarihÃ§e ile Ã‡Ä±kÄ±ÅŸ butonu arasÄ± 2px daralt (masaÃ¼stÃ¼) */
   .dashboard-page .driver-below-hero-row {
@@ -641,7 +684,7 @@ body.dashboard-page {
   flex-direction: column;
 }
 
-/* --- KAYAN UYARI (TarihÃ§e ile Ã‡Ä±kÄ±ÅŸ arasÄ±nda) --- */
+/* --- KAYAN UYARI (hero, mobil slot veya below-hero) --- */
 .driver-sliding-warning {
   flex: 1;
   min-width: 0;
@@ -3097,42 +3140,46 @@ body.login-page:has(#edit-request-modal.driver-modal.show) #app-footer.login-foo
   .login-page .pwa-install-bar .pwa-install-close {
     margin-left: 0 !important;
   }
-  /* PWA Butonu Sol Panel YerleÅŸimi â€“ akÄ±ÅŸta yer kaplamaz, mevcut boÅŸluÄŸa oturur */
-  .dashboard-page .driver-user-plate-in-panel {
-    position: relative !important;
-  }
-  .dashboard-page .driver-user-plate-in-panel #pwa-install-wrapper {
-    position: absolute !important;
-    top: 100% !important;
-    left: 0 !important;
-    right: 0 !important;
-    width: 100% !important;
+  /* PWA Butonu MasaÃ¼stÃ¼: driver-below-hero-row iÃ§inde, GeÃ§miÅŸ/Ã‡Ä±kÄ±ÅŸ ile aynÄ± satÄ±rda */
+  .dashboard-page .driver-below-hero-pwa-slot #pwa-install-wrapper {
     display: flex !important;
     justify-content: center !important;
-    margin-top: -5px !important;
-    margin-bottom: 0 !important;
-    transform: none !important;
+    align-items: center !important;
   }
 
-  .dashboard-page .driver-user-plate-in-panel .pwa-install-bar {
+  .dashboard-page .driver-below-hero-pwa-slot .pwa-install-bar {
     background: transparent !important;
     border: none !important;
-    padding: 4px 8px 4px 8px !important;
+    padding: 4px 8px !important;
     padding-right: 14px !important;
     border-radius: 6px !important;
     width: auto !important;
-    max-width: 95% !important;
+    max-width: 100% !important;
   }
 
-  .dashboard-page .driver-user-plate-in-panel .pwa-install-btn {
+  .dashboard-page .driver-below-hero-pwa-slot .pwa-install-btn {
     font-size: 11px !important;
     padding: 4px 8px !important;
     white-space: nowrap !important;
   }
 
-  .dashboard-page .driver-user-plate-in-panel .pwa-install-close {
+  .dashboard-page .driver-below-hero-pwa-slot .pwa-install-close {
     font-size: 14px !important;
     margin-left: 4px !important;
+  }
+}
+
+/* Mobil: PWA sol panelde (driver-user-plate-in-panel) */
+@media (max-width: 768px) {
+  .dashboard-page .driver-user-plate-in-panel #pwa-install-wrapper {
+    display: flex !important;
+    justify-content: center !important;
+    margin-top: 4px !important;
+  }
+  .dashboard-page .driver-user-plate-in-panel .pwa-install-bar {
+    background: transparent !important;
+    border: none !important;
+    padding: 4px 8px !important;
   }
 }
 
