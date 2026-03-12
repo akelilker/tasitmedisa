@@ -141,8 +141,8 @@ body.driver-modal-open {
   border-top-right-radius: 20px;
 }
 /* Codex standart: driver sayfalarında footer yüksekliği merkezi değişkenden */
-.dashboard-page { --app-footer-real-height: 34px; }
-.login-page { --app-footer-real-height: 38px; }
+.dashboard-page { --app-footer-real-height: 42px; }
+.login-page { --app-footer-real-height: 46px; }
 .dashboard-page .driver-dashboard-container,
 .login-page .driver-dashboard-container {
   padding-bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0));
@@ -3390,8 +3390,8 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     box-sizing: border-box !important;
   }
   .dashboard-page #app-footer {
-    height: 34px !important;
-    min-height: 34px !important;
+    height: 42px !important;
+    min-height: 42px !important;
   }
   /* Masaüstü: login footer ferah min-height, içerik ortalanmış (max-width 500px) */
   .login-page #app-footer.login-footer {
