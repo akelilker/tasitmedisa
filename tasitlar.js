@@ -176,6 +176,7 @@
     utts: 'utts-guncelle-modal',
     takip: 'takip-cihaz-guncelle-modal',
     kaskokodu: 'kasko-kodu-guncelle-modal',
+    ruhsat: 'ruhsat-yukleme-modal',
     sube: 'sube-degisiklik-modal',
     kullanici: 'kullanici-atama-modal',
     satis: 'satis-pert-modal'
@@ -1123,9 +1124,17 @@
         toolbarCenter.appendChild(assignBtn);
       }
       
-      // Sağ taraf (yazdır butonu)
+      // Sağ taraf (ruhsat simgesi + yazdır butonu)
       const toolbarRight = document.createElement('div');
       toolbarRight.className = 'toolbar-right';
+      const ruhsatBtn = document.createElement('button');
+      ruhsatBtn.type = 'button';
+      ruhsatBtn.className = 'vehicle-ruhsat-btn';
+      ruhsatBtn.title = vehicle.ruhsatPath ? 'Ruhsatı Görüntüle' : 'Ruhsat Yükle';
+      ruhsatBtn.setAttribute('aria-label', 'Ruhsat');
+      ruhsatBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg>';
+      ruhsatBtn.onclick = (e) => { e.stopPropagation(); if (typeof window.openRuhsatModal === 'function') window.openRuhsatModal(vehicleId); };
+      toolbarRight.appendChild(ruhsatBtn);
       const printBtn = document.createElement('button');
       printBtn.type = 'button';
       printBtn.className = 'vehicle-print-btn';
@@ -2590,7 +2599,7 @@ function renderVehicleDetailLeft(vehicle) {
         'bakim-ekle-modal', 'kaza-ekle-modal', 'sigorta-guncelle-modal',
         'kasko-guncelle-modal', 'muayene-guncelle-modal', 'anahtar-guncelle-modal',
         'kredi-guncelle-modal', 'km-guncelle-modal', 'lastik-guncelle-modal',
-        'utts-guncelle-modal', 'takip-cihaz-guncelle-modal', 'kasko-kodu-guncelle-modal', 'sube-degisiklik-modal',
+        'utts-guncelle-modal', 'takip-cihaz-guncelle-modal', 'kasko-kodu-guncelle-modal', 'ruhsat-yukleme-modal', 'sube-degisiklik-modal',
         'kullanici-atama-modal', 'satis-pert-modal'
       ];
       allEventModals.forEach(modalId => {
