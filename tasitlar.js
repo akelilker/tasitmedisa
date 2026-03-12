@@ -1656,48 +1656,65 @@
       var data = cachedKaskoData;
       if (!Array.isArray(data) || data.length < 2) return '-';
 
-      // TSB Excel'de başlıkların (Marka Kodu, Tip Kodu, Yıllar) olduğu satırı bul
+      // Başlık satırını bul
       var headerRowIndex = -1;
       for(var i=0; i<5; i++) {
         var rowStr = JSON.stringify(data[i] || []).toLowerCase();
-        if(rowStr.includes("marka kodu") && rowStr.includes("tip kodu")) {
+        if(rowStr.includes("marka") && rowStr.includes("tip")) {
           headerRowIndex = i;
           break;
         }
       }
-      if (headerRowIndex === -1) headerRowIndex = 1; // Varsayılan 2. satır
+      if (headerRowIndex === -1) headerRowIndex = 1;
 
       var headers = data[headerRowIndex];
 
-      // Model yılının hangi sütunda olduğunu bul (örn: 2024 sütunu)
+      // Yıl sütununu bul
       var yearIndex = -1;
+      var targetYear = String(modelYili).trim();
       for (var c = 0; c < headers.length; c++) {
-        if (String(headers[c]).trim() === String(modelYili).trim()) {
+        var h = String(headers[c]).trim();
+        if (h === targetYear || h === targetYear + ".0") {
           yearIndex = c;
           break;
         }
       }
-      if (yearIndex === -1) return 'Bulunamadı'; // O yıl yoksa
+      if (yearIndex === -1) return 'Bulunamadı';
 
-      // Hedef kasko kodunu temizle (başındaki sıfırları atarak karşılaştırma yapmak daha güvenli)
-      var targetKodu = String(kaskoKodu).trim().replace(/^0+/, '');
+      var targetKodu = String(kaskoKodu).trim();
 
       for (var r = headerRowIndex + 1; r < data.length; r++) {
         var row = data[r];
         if (!row || row.length < 2) continue;
 
-        // Marka ve Tip kodunu birleştir (başındaki sıfırları atarak)
-        var marka = String(row[0] || '').trim().replace(/^0+/, '');
-        var tip = String(row[1] || '').trim().replace(/^0+/, '');
-        var currentKodu = marka + tip; // Örn: 3 + 210 = 3210 (03210 için)
+        var m = String(row[0] || '').trim();
+        var t = String(row[1] || '').trim();
 
-        // Hem birleşik haliyle hem de (eğer TSB tek kolona yazmışsa) ilk kolonla kıyasla
-        if (currentKodu === targetKodu || String(row[0]).trim().replace(/^0+/, '') === targetKodu) {
-          var val = row[yearIndex];
-          if (val && !isNaN(val) && Number(val) > 0) {
-            return Number(val).toLocaleString('tr-TR') + ' ₺';
+        // Olası TSB Kod Kombinasyonları (Sıfır dolgulu veya dolgusuz)
+        var c1 = m + t;
+        var c2 = m.padStart(2, '0') + t.padStart(3, '0');
+        var c3 = m.padStart(3, '0') + t.padStart(3, '0');
+        var c4 = m.padStart(3, '0') + t.padStart(4, '0');
+        var c5 = m.padStart(2, '0') + t.padStart(4, '0');
+
+        if (targetKodu === c1 || targetKodu === c2 || targetKodu === c3 || targetKodu === c4 || targetKodu === c5 || targetKodu === m) {
+
+          var rawVal = String(row[yearIndex] || '').trim();
+
+          // Excel'den gelen noktalı/virgüllü karmaşık sayıyı saf matematiğe çevir
+          var cleanVal = rawVal.replace(/[^0-9,.]/g, '');
+          if (cleanVal.includes(',') && cleanVal.includes('.')) {
+            cleanVal = cleanVal.replace(/\./g, '').replace(',', '.');
+          } else if (cleanVal.includes(',')) {
+            cleanVal = cleanVal.replace(',', '.');
+          }
+
+          var numVal = parseFloat(cleanVal);
+
+          if (!isNaN(numVal) && numVal > 0) {
+            return numVal.toLocaleString('tr-TR') + ' ₺';
           } else {
-            return 'Değer Yok'; // O yıl için fiyat 0 veya boşsa
+            return 'Değer Yok'; // O yıla ait kasko değeri sıfırsa
           }
         }
       }
