@@ -1014,16 +1014,48 @@
           window.showInfoModal('Excel okunuyor, lütfen bekleyin...');
         }
 
+        function showKaskoError(msg) {
+          if (typeof window.showCenteredInfoBox === 'function') {
+            window.showCenteredInfoBox(msg);
+          } else if (typeof window.showErrorModal === 'function') {
+            window.showErrorModal(msg);
+          } else if (typeof window.showInfoModal === 'function') {
+            window.showInfoModal(msg);
+          } else {
+            alert(msg);
+          }
+        }
+
         var reader = new FileReader();
+        reader.onerror = function() {
+          console.error('Kasko Excel FileReader hatası:', reader.error);
+          showKaskoError('Dosya okunamadı. Mobil cihazda dosya erişim sorunu olabilir. Lütfen masaüstü bilgisayardan deneyin.');
+          input.value = '';
+        };
         reader.onload = function(e) {
           try {
+            if (typeof XLSX === 'undefined') {
+              showKaskoError('Excel kütüphanesi yüklenemedi. İnternet bağlantınızı kontrol edip sayfayı yenileyin.');
+              input.value = '';
+              return;
+            }
             var data = new Uint8Array(e.target.result);
             var workbook = XLSX.read(data, { type: 'array' });
             var firstSheetName = workbook.SheetNames[0];
             var worksheet = workbook.Sheets[firstSheetName];
             var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
-            localStorage.setItem('medisa_kasko_liste', JSON.stringify(jsonData));
+            var jsonStr = JSON.stringify(jsonData);
+            try {
+              localStorage.setItem('medisa_kasko_liste', jsonStr);
+            } catch (storageErr) {
+              if (storageErr.name === 'QuotaExceededError' || storageErr.code === 22) {
+                showKaskoError('Kasko listesi mobil cihazda depolama sınırını aşıyor. Lütfen masaüstü bilgisayardan Excel yükleyin.');
+                input.value = '';
+                return;
+              }
+              throw storageErr;
+            }
             localStorage.setItem('medisa_kasko_liste_date', new Date().toISOString());
 
             if (typeof window.clearKaskoCache === 'function') window.clearKaskoCache();
@@ -1046,14 +1078,10 @@
             }
           } catch (error) {
             console.error('Excel okuma hatası:', error);
-            if (typeof window.showCenteredInfoBox === 'function') {
-              window.showCenteredInfoBox('Excel okunurken hata oluştu! Dosya bozuk veya yanlış formatta olabilir.');
-            } else if (typeof window.showErrorModal === 'function') {
-              window.showErrorModal('Excel okunurken hata oluştu! Dosya bozuk veya yanlış formatta olabilir.');
-            } else if (typeof window.showInfoModal === 'function') {
-              window.showInfoModal('Excel okunurken hata oluştu! Dosya bozuk veya yanlış formatta olabilir.');
+            if (error.name === 'QuotaExceededError' || error.code === 22) {
+              showKaskoError('Kasko listesi mobil cihazda depolama sınırını aşıyor. Lütfen masaüstü bilgisayardan Excel yükleyin.');
             } else {
-              alert('Excel okunurken hata oluştu!');
+              showKaskoError('Excel okunurken hata oluştu! Dosya bozuk veya yanlış formatta olabilir.');
             }
           } finally {
             input.value = '';
