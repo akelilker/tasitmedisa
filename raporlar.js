@@ -313,6 +313,7 @@
         const headerActions = document.getElementById('reports-list-header-actions');
         if (headerActions) {
             const firstRow = listContainer.querySelector('.stok-controls-row-1');
+            const secondRow = listContainer.querySelector('.stok-controls-row-2');
             const menu = document.getElementById('stok-detail-menu');
             headerActions.innerHTML = '';
             const wrap = document.createElement('div');
@@ -335,6 +336,32 @@
                 wrap.appendChild(row);
             }
             if (menu) wrap.appendChild(menu);
+            const topControls = listContainer.querySelector('.stok-list-top-controls');
+            /* Masaüstü: row-2 (export + tarihler) header'a taşı, Detay Ekleme ile aynı satırda */
+            if (secondRow && window.matchMedia('(min-width: 641px)').matches) {
+                wrap.appendChild(secondRow);
+                wrap.classList.add('desktop-single-row');
+            }
+            /* Resize: mobilde row-2 body'ye geri taşı */
+            if (secondRow && topControls) {
+                const mq = window.matchMedia('(min-width: 641px)');
+                const syncRow2 = function() {
+                    const r2 = wrap.querySelector('.stok-controls-row-2') || topControls.querySelector('.stok-controls-row-2');
+                    if (!r2) return;
+                    if (mq.matches) {
+                        if (r2.parentElement === topControls) {
+                            wrap.appendChild(r2);
+                            wrap.classList.add('desktop-single-row');
+                        }
+                    } else {
+                        if (r2.parentElement === wrap) {
+                            topControls.appendChild(r2);
+                            wrap.classList.remove('desktop-single-row');
+                        }
+                    }
+                };
+                mq.addEventListener('change', syncRow2);
+            }
             headerActions.appendChild(wrap);
             headerActions.setAttribute('aria-hidden', 'false');
             headerActions.classList.add('has-stok-actions');
