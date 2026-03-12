@@ -363,24 +363,19 @@
         const markaModel = (typeof window.toTitleCase === 'function' ? window.toTitleCase(raw) : raw);
         const label = plaka + (markaModel ? ' (' + markaModel + ')' : '');
         const labelEl = document.createElement('label');
-        labelEl.style.display = 'block';
-        labelEl.style.padding = '6px 8px';
-        labelEl.style.cursor = 'pointer';
-        labelEl.style.borderRadius = '4px';
-        labelEl.style.marginBottom = '2px';
+        labelEl.className = 'user-vehicle-row';
         labelEl.style.userSelect = 'none';
-        labelEl.addEventListener('mouseenter', function() { this.style.background = 'rgba(255,255,255,0.06)'; });
-        labelEl.addEventListener('mouseleave', function() { this.style.background = 'transparent'; });
         const cb = document.createElement('input');
         cb.type = 'checkbox';
         cb.value = vid;
         cb.name = 'user-vehicle';
         cb.checked = assignedIds.indexOf(vid) !== -1;
-        cb.style.marginRight = '8px';
-        cb.style.verticalAlign = 'middle';
-        labelEl.appendChild(cb);
-        labelEl.appendChild(document.createTextNode(' ' + label));
         cb.addEventListener('change', updateUserVehiclesTriggerText);
+        const span = document.createElement('span');
+        span.className = 'user-vehicle-label';
+        span.textContent = label;
+        labelEl.appendChild(cb);
+        labelEl.appendChild(span);
         container.appendChild(labelEl);
       });
       updateUserVehiclesTriggerText();
@@ -397,8 +392,8 @@
       if (!trigger || !container) return;
       const checked = container.querySelectorAll('input[name=user-vehicle]:checked');
       const n = checked.length;
-      trigger.textContent = n === 0 ? 'Taşıt Seçin' : (n === 1 ? '1 Taşıt Seçildi' : n + ' Taşıt Seçildi');
-      // trigger line fixed above
+      const textEl = trigger.querySelector('.user-vehicles-trigger-text');
+      if (textEl) textEl.textContent = n === 0 ? 'Taşıt seçin' : (n === 1 ? '1 Taşıt Seçildi' : n + ' Taşıt Seçildi');
     }
   
     function toggleUserVehiclesDropdown() {
@@ -409,9 +404,11 @@
       if (isOpen) {
         dropdown.style.display = 'none';
         trigger.classList.remove('user-vehicles-trigger-open');
+        trigger.setAttribute('aria-expanded', 'false');
       } else {
         dropdown.style.display = 'block';
         trigger.classList.add('user-vehicles-trigger-open');
+        trigger.setAttribute('aria-expanded', 'true');
       }
     }
   
@@ -425,7 +422,7 @@
     window.toggleUserVehiclesDropdown = toggleUserVehiclesDropdown;
   
     document.addEventListener('click', function(ev) {
-      const wrap = document.querySelector('.user-vehicles-dropdown-wrap');
+      const wrap = document.querySelector('.user-vehicles-wrap');
       const dropdown = document.getElementById('user-vehicles-dropdown');
       if (wrap && dropdown && dropdown.style.display !== 'none' && !wrap.contains(ev.target)) {
         closeUserVehiclesDropdown();
