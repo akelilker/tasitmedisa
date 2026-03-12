@@ -2129,6 +2129,26 @@
   color: var(--theme-color);
 }
 
+.vehicle-ruhsat-btn {
+  width: 30px;
+  height: 30px;
+  background: transparent;
+  border: none;
+  color: var(--form-label-color);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  cursor: pointer;
+}
+.vehicle-ruhsat-btn svg {
+  width: 19px;
+  height: 19px;
+}
+.vehicle-ruhsat-btn:hover {
+  color: var(--theme-color);
+}
+
 /* Olay Ekle butonu - Marka/model satırında solda */
 .detail-brand-year-row .history-add-event-btn {
     width: auto;
