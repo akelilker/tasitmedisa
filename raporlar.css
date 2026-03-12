@@ -1028,10 +1028,16 @@ flex-shrink: 0 !important;
 align-items: center !important;
 gap: 6px !important;
 }
-/* Masaüstü: menü overlay – butonun hemen altında, sol kenar metnin son harfinde */
+/* Masaüstü: menü açıkken overflow visible – tüm butonlar görünsün */
+#reports-modal .reports-list-header-actions:has(.stok-detail-menu-open),
+#reports-modal .stok-detail-add-wrap.desktop-single-row:has(.stok-detail-menu-open),
+#reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-1:has(.stok-detail-menu-open) {
+overflow: visible !important;
+}
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-detail-add-btn-wrap {
 position: relative;
 display: inline-block;
+overflow: visible;
 }
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-detail-add-btn-wrap .stok-detail-menu {
 position: absolute !important;
@@ -1042,6 +1048,7 @@ margin-left: 0;
 z-index: 50;
 width: auto;
 max-width: calc(100vw - 80px);
+overflow: visible !important;
 }
 #stok-list-container .stok-list-top-controls {
 padding-top: 0 !important;
