@@ -467,7 +467,7 @@ const API_BASE = (function(){
       
       const userNameEl = document.getElementById('driver-user-name');
       if (userNameEl && currentUser) {
-          userNameEl.textContent = currentUser.isim || currentUser.ad_soyad || currentUser.name || '-';
+          userNameEl.textContent = currentUser.name || currentUser.isim || currentUser.ad_soyad || '-';
       }
       
       const plakaEl = document.getElementById('driver-current-plaka');

@@ -867,7 +867,7 @@
                   break;
                 case 'user':
                   const assignedUser = v.assignedUserId ? userMap.get(String(v.assignedUserId)) : null;
-                  const userNameRaw = assignedUser?.isim || v.tahsisKisi || '-';
+                  const userNameRaw = assignedUser?.name || v.tahsisKisi || '-';
                   const userName = formatAdSoyad(userNameRaw);
                   if (isMobile && userName && userName !== '-') {
                     const parts = String(userName).trim().split(/\s+/);
@@ -4020,7 +4020,7 @@ function renderVehicleDetailLeft(vehicle) {
 
     vehicle.assignedUserId = normalizedKullaniciId;
     vehicle.tahsisKisi = user?.name || '';
-    var userBranchId = user ? (user.branchId || (user.sube_id != null ? String(user.sube_id) : '')) : '';
+    var userBranchId = user ? (user.branchId || '') : '';
     if (user && !vehicle.branchId && userBranchId) vehicle.branchId = userBranchId;
     vehicle.updatedAt = new Date().toISOString();
 
