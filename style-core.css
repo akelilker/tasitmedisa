@@ -535,7 +535,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
         border-top: 1px solid rgba(200, 200, 200, 0.52);
         border-left: 0.6px solid rgba(255, 255, 255, 0.24);
         border-right: 0.6px solid rgba(255, 255, 255, 0.24);
-        box-shadow: 0 -13px 26px rgba(var(--footer-glow-rgb), 0.48);
+        box-shadow: 0 -13px 26px rgba(var(--footer-glow-rgb), 0.44);
     }
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer .footer-content {
         padding: 8px 12px;
@@ -1168,7 +1168,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   }
   /* Ana sayfa masaüstü/tablet: footer ışığı belirgin kalsın */
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer {
-    box-shadow: 0 -13px 26px rgba(var(--footer-glow-rgb), 0.48);
+    box-shadow: 0 -13px 26px rgba(var(--footer-glow-rgb), 0.44);
   }
   /* Anasayfa masaüstü: başlık kutunun içine sığsın */
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-spacer {
@@ -1499,18 +1499,18 @@ body.modal-open .user-panel-link {
     border-top: 0.8px solid rgba(128, 128, 128, 0.5);
     border-left: 0.5px solid rgba(255, 255, 255, 0.20);
     border-right: 0.5px solid rgba(255, 255, 255, 0.20);
-    box-shadow: 0 -10px 20px rgba(var(--footer-glow-rgb), 0.48);
+    box-shadow: 0 -10px 20px rgba(var(--footer-glow-rgb), 0.44);
     overflow-x: hidden;
     overflow-y: visible;
 }
 
 /* Modal açıkken footer glow AYNI kalsın (ışık şiddeti artmasın); overlay tam opak */
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #app-footer {
-    box-shadow: 0 -13px 26px rgba(var(--footer-glow-rgb), 0.48) !important;
+    box-shadow: 0 -13px 26px rgba(var(--footer-glow-rgb), 0.44) !important;
 }
 @media (max-width: 640px) {
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #app-footer {
-    box-shadow: 0 -12px 22px rgba(var(--footer-glow-rgb), 0.48) !important;
+    box-shadow: 0 -12px 22px rgba(var(--footer-glow-rgb), 0.44) !important;
   }
 }
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay.active,
@@ -1918,7 +1918,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
     #app-footer {
         position: fixed;
         bottom: 0;
-        box-shadow: 0 -12px 22px rgba(var(--footer-glow-rgb), 0.48);
+        box-shadow: 0 -12px 22px rgba(var(--footer-glow-rgb), 0.44);
         border-left: none; /* Mobilde yan yok */
         border-right: none;
         border-top: 1px solid rgba(128, 128, 128, 0.5) !important; /* Gri çizgi */
