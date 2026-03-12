@@ -970,19 +970,16 @@ height: 0 !important;
 display: flex !important;
 flex-direction: row !important;
 flex-wrap: wrap !important;
-align-items: flex-start !important;
+align-items: center !important;
 justify-content: space-between !important;
 gap: 8px !important;
 width: 100% !important;
-overflow: visible !important;
 }
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-1 {
 flex-direction: column !important;
 align-items: flex-start !important;
 gap: 6px !important;
 flex: 0 0 auto !important;
-width: auto !important;
-min-width: 0 !important;
 margin: 0 !important;
 }
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-2 {
@@ -994,33 +991,14 @@ padding-top: 0 !important;
 min-width: 0 !important;
 justify-content: space-between !important;
 flex-wrap: nowrap !important;
-align-items: flex-start !important;
+align-items: center !important;
 order: 1 !important;
-margin-left: 0 !important;
 }
 /* Büyüteç Excel'in solunda, aynı satırda */
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-export-left {
 display: flex !important;
 flex-direction: row !important;
-align-items: flex-end !important;
-gap: 10px !important;
-}
-#reports-modal .stok-detail-add-wrap.desktop-single-row .stok-export-controls {
-display: flex !important;
 align-items: center !important;
-flex: 0 0 auto !important;
-margin-top: 24px !important;
-}
-#reports-modal .stok-detail-add-wrap.desktop-single-row .stok-date-range-controls {
-margin-left: auto !important;
-margin-bottom: 0 !important;
-align-items: flex-start !important;
-flex: 0 0 auto !important;
-}
-#reports-modal .stok-detail-add-wrap.desktop-single-row .stok-search-wrap,
-#reports-modal .stok-detail-add-wrap.desktop-single-row .stok-export-btn,
-#reports-modal .stok-detail-add-wrap.desktop-single-row .stok-print-btn {
-align-self: center !important;
 }
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-detail-menu {
 order: 10 !important;
@@ -1037,15 +1015,15 @@ margin-top: 0 !important; /* Sütun başlıkları üzerindeki boşluk 6px azalt�
 }
 /* Row-2: export + tarih (detay menü header’da, buton altında) */
 #stok-list-container .stok-list-top-controls > .stok-controls-row-1 { order: 0; }
-#stok-list-container .stok-list-top-controls > .stok-controls-row-2 { order: 2 !important; margin-top: 0 !important; padding-top: 0 !important; display: flex !important; flex-wrap: nowrap !important; justify-content: flex-end !important; align-items: flex-start !important; gap: 14px !important; }
+#stok-list-container .stok-list-top-controls > .stok-controls-row-2 { order: 2 !important; margin-top: 8px !important; padding-top: 14px !important; display: flex !important; flex-wrap: wrap !important; justify-content: space-between !important; align-items: flex-end !important; gap: 6px; }
 #stok-list-container .stok-controls-row-2 > .stok-export-controls { order: 0; }
-#stok-list-container .stok-controls-row-2 > .stok-date-range-controls { order: 1; }
-#stok-list-container .stok-controls-row-2 .stok-export-controls { padding-bottom: 0 !important; margin-bottom: 0 !important; align-items: flex-start !important; flex: 0 0 auto !important; }
-#stok-list-container .stok-controls-row-2 .stok-export-left { align-items: center !important; margin-top: 0 !important; gap: 10px !important; }
+#stok-list-container .stok-controls-row-2 > .stok-date-range-controls { order: 0; }
+#stok-list-container .stok-controls-row-2 .stok-export-controls { padding-bottom: 0 !important; margin-bottom: 0 !important; align-items: flex-end !important; }
+#stok-list-container .stok-controls-row-2 .stok-export-left { align-items: flex-end !important; margin-top: -11px !important; }
 #stok-list-container .stok-controls-row-2 .stok-export-btn,
 #stok-list-container .stok-controls-row-2 .stok-print-btn,
 #stok-list-container .stok-controls-row-2 .stok-search-wrap { min-height: 38px !important; box-sizing: border-box !important; }
-#stok-list-container .stok-controls-row-2 .stok-search-wrap { position: relative; display: flex; align-items: center; overflow: visible; flex: 0 0 auto !important; }
+#stok-list-container .stok-controls-row-2 .stok-search-wrap { position: relative; display: flex; align-items: flex-end; overflow: visible; }
 /* Tek büyüteç (desktop/mobile ortak) */
 #stok-list-container .stok-controls-row-2 .stok-search-wrap .stok-search-btn {
 font-size: 18px !important;
@@ -1055,9 +1033,9 @@ align-items: center;
 justify-content: center;
 box-sizing: border-box;
 }
-#stok-list-container .stok-controls-row-2 .stok-date-range-controls { margin-left: 0 !important; margin-top: 0 !important; padding-bottom: 0 !important; margin-bottom: 0 !important; align-items: flex-start !important; flex: 0 0 auto !important; }
+#stok-list-container .stok-controls-row-2 .stok-date-range-controls { margin-left: auto; margin-top: 0 !important; padding-bottom: 0 !important; margin-bottom: 8px !important; align-items: flex-end !important; }
 #stok-list-container .stok-controls-row-2 .stok-date-input-group { margin-bottom: 0 !important; padding-bottom: 0 !important; }
-#stok-list-container .stok-controls-row-2 .stok-date-input-group label { padding-top: 0 !important; }
+#stok-list-container .stok-controls-row-2 .stok-date-input-group label { padding-top: 4px !important; }
 /* Arama inputu: absolute, layout HİÇ OYNAMAZ */
 #stok-list-container .stok-controls-row-2 .stok-search-container.open,
 #reports-modal .stok-detail-add-wrap .stok-controls-row-2 .stok-search-container.open {
