@@ -268,12 +268,6 @@
                 <div class="stok-controls-row-2">
                     <div class="stok-export-controls">
                         <div class="stok-export-left">
-                            <button class="stok-export-btn" onclick="exportStokToExcel()" title="Excel'e Aktar">
-                                <span class="excel-icon">X</span>
-                            </button>
-                            <button class="stok-print-btn" onclick="printStokReport()" title="Yazdır">
-                                🖨️
-                            </button>
                             <div class="stok-search-wrap">
                                 <button class="stok-search-btn" onclick="toggleStokSearch()" title="Ara">
                                     🔍
@@ -282,6 +276,12 @@
                                     <input type="text" id="stok-search-input" class="stok-search-input" placeholder="Üretim yılı, marka/model, kullanıcı, şube ara..." oninput="handleStokSearch(this.value)">
                                 </div>
                             </div>
+                            <button class="stok-export-btn" onclick="exportStokToExcel()" title="Excel'e Aktar">
+                                <span class="excel-icon">X</span>
+                            </button>
+                            <button class="stok-print-btn" onclick="printStokReport()" title="Yazdır">
+                                🖨️
+                            </button>
                         </div>
                     </div>
                     <div id="stok-detail-menu" class="stok-detail-menu ${stokDetailMenuOpen ? 'stok-detail-menu-open' : ''}"></div>

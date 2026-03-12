@@ -1000,9 +1000,6 @@ display: flex !important;
 flex-direction: row !important;
 align-items: center !important;
 }
-#reports-modal .stok-detail-add-wrap.desktop-single-row .stok-export-left .stok-search-wrap {
-order: -1 !important;
-}
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-detail-menu {
 order: 10 !important;
 flex-basis: 100% !important;
@@ -1026,7 +1023,7 @@ margin-top: 0 !important; /* Sütun başlıkları üzerindeki boşluk 6px azalt�
 #stok-list-container .stok-controls-row-2 .stok-export-btn,
 #stok-list-container .stok-controls-row-2 .stok-print-btn,
 #stok-list-container .stok-controls-row-2 .stok-search-wrap { min-height: 38px !important; box-sizing: border-box !important; }
-#stok-list-container .stok-controls-row-2 .stok-search-wrap { position: relative; display: flex; align-items: flex-end; }
+#stok-list-container .stok-controls-row-2 .stok-search-wrap { position: relative; display: flex; align-items: flex-end; overflow: visible; }
 /* Tek büyüteç (desktop/mobile ortak) */
 #stok-list-container .stok-controls-row-2 .stok-search-wrap .stok-search-btn {
 font-size: 18px !important;
@@ -1039,10 +1036,10 @@ box-sizing: border-box;
 #stok-list-container .stok-controls-row-2 .stok-date-range-controls { margin-left: auto; margin-top: 0 !important; padding-bottom: 0 !important; margin-bottom: 8px !important; align-items: flex-end !important; }
 #stok-list-container .stok-controls-row-2 .stok-date-input-group { margin-bottom: 0 !important; padding-bottom: 0 !important; }
 #stok-list-container .stok-controls-row-2 .stok-date-input-group label { padding-top: 4px !important; }
-/* Arama inputu büyüteçin altında açılsın (Detay Ekleme ile çakışmasın) */
+/* Arama inputu: absolute, layout HİÇ OYNAMAZ */
 #stok-list-container .stok-controls-row-2 .stok-search-container.open,
 #reports-modal .stok-detail-add-wrap .stok-controls-row-2 .stok-search-container.open {
-position: absolute;
+position: absolute !important;
 top: 100%;
 left: 0;
 width: 250px;
@@ -1050,6 +1047,7 @@ margin-top: 4px;
 height: auto;
 min-height: 0;
 justify-content: flex-start;
+z-index: 100;
 }
 /* Masaüstü: Taşıtlar başlık formatı – 12px, beyaza yakın renk, birlikte küçülme (clamp 13px) */
 .stok-list-header-cell { font-size: 12px !important; color: #ffffff !important; opacity: 1 !important; padding: 4px !important; font-weight: 500 !important; }
@@ -2026,16 +2024,18 @@ align-items: center;
 .stok-print-btn { font-size: 20px !important; }
 .stok-export-btn,
 .stok-print-btn { width: auto; }
-/* Mobil: Arama kutusu büyütecın sağına açılır, büyüteç sabit kalır */
+/* Input açıldığında HİÇBİR YER OYNAMASIN: her zaman absolute, layout değişmez */
 #stok-list-container .stok-controls-row-2 .stok-search-wrap:has(.stok-search-container.open) {
 flex-direction: row !important;
 align-items: center !important;
 }
 #stok-list-container .stok-controls-row-2 .stok-search-container.open {
-position: relative !important;
+position: absolute !important;
+top: 100% !important;
+left: 0 !important;
 width: 200px !important;
-margin-left: 6px !important;
-margin-top: 0 !important;
+margin-left: 0 !important;
+margin-top: 4px !important;
 }
 #stok-list-container .stok-controls-row-2 .stok-search-container.open .stok-search-input {
 margin-top: 0 !important;
