@@ -63,16 +63,11 @@ function loadDataFromLocalStorage() {
         if (savedData) {
             const data = JSON.parse(savedData);
             const rawUsers = data.users || [];
-            const users = rawUsers.map(u => {
-                const u2 = { ...u };
-                if (!u2.name && u2.isim) u2.name = u2.isim;
-                return u2;
-            });
             window.appData = {
                 tasitlar: data.tasitlar || [],
                 kayitlar: data.kayitlar || [],
                 branches: data.branches || [],
-                users: users,
+                users: rawUsers,
                 ayarlar: data.ayarlar || { sirketAdi: 'Medisa', yetkiliKisi: '', telefon: '', eposta: '' },
                 sifreler: data.sifreler || [],
                 arac_aylik_hareketler: data.arac_aylik_hareketler || [],
@@ -147,20 +142,14 @@ async function loadDataFromServer(forceRefresh = true) {
                 return window.appData;
             }
 
-            // Kullanıcıları normalize et (isim -> name, tüm modüller tek alan kullansın)
             const rawUsers = data.users || [];
-            const users = rawUsers.map(u => {
-                const u2 = { ...u };
-                if (!u2.name && u2.isim) u2.name = u2.isim;
-                return u2;
-            });
 
             // Global veri nesnesini güncelle (arac_aylik_hareketler, duzeltme_talepleri save sırasında silinmesin)
             window.appData = {
                 tasitlar: data.tasitlar || [],
                 kayitlar: data.kayitlar || [],
                 branches: data.branches || [],
-                users: users,
+                users: rawUsers,
                 ayarlar: data.ayarlar || {
                     sirketAdi: 'Medisa',
                     yetkiliKisi: '',
@@ -322,6 +311,25 @@ document.addEventListener('DOMContentLoaded', async function() {
     window.dispatchEvent(new CustomEvent('dataLoaded', { detail: window.appData }));
 });
 
+// Merkezi kullanıcı normalizasyonu — frontend tek format (name, phone, branchId, role)
+function normalizeUser(u) {
+    if (!u || typeof u !== 'object') return { id: '', name: '', phone: '', branchId: '', role: 'driver' };
+    const id = u.id != null ? String(u.id) : '';
+    let name = u.name || u.isim || '';
+    if (!name && (u.firstName || u.lastName)) name = ((u.firstName || '') + ' ' + (u.lastName || '')).trim();
+    const phone = u.phone != null ? String(u.phone) : (u.telefon != null ? String(u.telefon) : '');
+    const branchId = u.branchId != null && u.branchId !== '' ? String(u.branchId) : (u.sube_id != null && u.sube_id !== '' ? String(u.sube_id) : '');
+    let role = u.role || '';
+    if (!role && u.tip) role = u.tip === 'admin' ? 'admin' : (u.tip === 'surucu' ? 'driver' : (u.tip === 'kullanici' ? 'sales' : 'driver'));
+    if (!role) role = 'driver';
+    return Object.assign({}, u, { id, name, phone, branchId, role });
+}
+function normalizeUsers(arr) {
+    return Array.isArray(arr) ? arr.map(normalizeUser) : [];
+}
+
+const MEDISA_DEBUG_USERS = typeof window !== 'undefined' && window.location && window.location.search && window.location.search.includes('medisa_debug=1');
+
 // Ortak veri okuyucu — operasyonel veri (taşıt, şube, kullanıcı) yalnızca appData'dan; ana kaynak sunucu
 function getMedisaData(key, localKey) {
     if (window.appData && Array.isArray(window.appData[key])) return window.appData[key];
@@ -329,7 +337,12 @@ function getMedisaData(key, localKey) {
 }
 function getMedisaVehicles() { return getMedisaData('tasitlar', 'medisa_vehicles_v1'); }
 function getMedisaBranches() { return getMedisaData('branches', 'medisa_branches_v1'); }
-function getMedisaUsers() { return getMedisaData('users', 'medisa_users_v1'); }
+function getMedisaUsers() {
+    const raw = getMedisaData('users', 'medisa_users_v1');
+    const normalized = normalizeUsers(raw);
+    if (MEDISA_DEBUG_USERS) console.log('[Medisa] getMedisaUsers', { rawCount: (raw && raw.length) || 0, normalized });
+    return normalized;
+}
 
 /** Taşıt listesini güncelle: appData + sadece sunucuya kaydet */
 window.writeVehicles = function(arr) {
@@ -355,6 +368,7 @@ window.writeUsers = function(arr) {
 window.getMedisaVehicles = getMedisaVehicles;
 window.getMedisaBranches = getMedisaBranches;
 window.getMedisaUsers = getMedisaUsers;
+window.normalizeUsers = normalizeUsers;
 
 // Export fonksiyonları
 window.loadDataFromServer = loadDataFromServer;

@@ -122,7 +122,7 @@ echo json_encode([
     'success' => true,
     'user' => [
         'id' => $user['id'],
-        'isim' => $user['isim']
+        'isim' => $user['isim'] ?? $user['name'] ?? ''
     ],
     'vehicles' => $vehicles,
     'records' => $records,
