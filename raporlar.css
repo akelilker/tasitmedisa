@@ -84,6 +84,9 @@ flex: 1;
 overflow-y: auto;
 padding: 16px 4px 40px 4px;
 color: var(--form-label-color);
+}
+#reports-modal .modal-body:has(#stok-list-container .stok-list-top-controls) {
+overflow: hidden !important;
 /* scrollbar gizleme: style-core.css’teki .modal-body kuralı kullanılır */
 }
 
@@ -536,6 +539,19 @@ font-weight: 500;
 }
 
 /* === STOK LİSTE GÖRÜNÜMÜ === */
+/* Stok listesi: kontroller ve sütun başlıkları sabit, sadece satırlar kaydırılır */
+#stok-list-container:has(.stok-list-top-controls) {
+display: flex !important;
+flex-direction: column !important;
+flex: 1 !important;
+min-height: 0 !important;
+}
+#stok-list-container:has(.stok-list-top-controls) > .stok-list-container {
+flex: 1 !important;
+min-height: 0 !important;
+overflow-y: auto !important;
+-webkit-overflow-scrolling: touch;
+}
 /* Yatay kaydırma: sadece içerik taşınca (overflow-x: auto); çubuk belirginliği minimum */
 .stok-list-container {
 width: 100%;
