@@ -969,7 +969,7 @@ height: 0 !important;
 #reports-modal .stok-detail-add-wrap.desktop-single-row {
 display: flex !important;
 flex-direction: row !important;
-flex-wrap: nowrap !important;
+flex-wrap: wrap !important;
 align-items: flex-start !important;
 justify-content: space-between !important;
 gap: 8px !important;
@@ -986,23 +986,41 @@ min-width: 0 !important;
 margin: 0 !important;
 }
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-2 {
-flex: 0 0 auto !important;
-width: auto !important;
-margin-top: 0 !important;
+flex-basis: 100% !important;
+flex: 1 1 100% !important;
+width: 100% !important;
+margin-top: 6px !important;
 padding-top: 0 !important;
 min-width: 0 !important;
-justify-content: flex-end !important;
+justify-content: space-between !important;
 flex-wrap: nowrap !important;
-align-items: center !important;
+align-items: flex-start !important;
 order: 1 !important;
-margin-left: auto !important;
+margin-left: 0 !important;
 }
 /* Büyüteç Excel'in solunda, aynı satırda */
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-export-left {
 display: flex !important;
 flex-direction: row !important;
-align-items: center !important;
+align-items: flex-end !important;
 gap: 10px !important;
+}
+#reports-modal .stok-detail-add-wrap.desktop-single-row .stok-export-controls {
+display: flex !important;
+align-items: center !important;
+flex: 0 0 auto !important;
+margin-top: 24px !important;
+}
+#reports-modal .stok-detail-add-wrap.desktop-single-row .stok-date-range-controls {
+margin-left: auto !important;
+margin-bottom: 0 !important;
+align-items: flex-start !important;
+flex: 0 0 auto !important;
+}
+#reports-modal .stok-detail-add-wrap.desktop-single-row .stok-search-wrap,
+#reports-modal .stok-detail-add-wrap.desktop-single-row .stok-export-btn,
+#reports-modal .stok-detail-add-wrap.desktop-single-row .stok-print-btn {
+align-self: center !important;
 }
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-detail-menu {
 order: 10 !important;
