@@ -4047,7 +4047,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     border-left: 0.99px solid rgba(var(--theme-color-rgb), 0.82) !important;
     border-right: 0.99px solid rgba(var(--theme-color-rgb), 0.82) !important;
     top: 0 !important;
-    bottom: calc(var(--app-footer-height, 30px) + env(safe-area-inset-bottom, 0)) !important; /* Footer'da biter, aÅŸaÄŸÄ± inmez */
+    bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important; /* Footer'da biter, aşağı inmez */
   }
     /* Footer: mobilde footer'dan yukarı kırmızı ışık (login + kullanıcı paneli modallarında görünsün) */
   .dashboard-page #app-footer {
@@ -4693,11 +4693,11 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     min-height: 100dvh !important;
   }
 
-  /* PWA: yan kÄ±rmÄ±zÄ± Ã§izgiler footer Ã¼st hizasÄ±nda jilet gibi biter */
+  /* PWA: yan kırmızı çizgiler footer üst hizasında jilet gibi biter */
   .dashboard-page .driver-dashboard-container::before,
   .login-page .driver-dashboard-container::before {
     top: 0 !important;
-    bottom: calc(var(--app-footer-height, 30px) + env(safe-area-inset-bottom, 0)) !important;
+    bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
   }
   
   /* Container alt boÅŸluÄŸu: footer yüksekliÄŸi + safe-area (Ã§ift boÅŸluk Ã¶nlenir) */
@@ -4905,17 +4905,17 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
 }
 
-/* === NOKTA ATIÅžI: KÄ±rmÄ±zÄ± yan Ã§izgiler footer Ã¼stÃ¼nde jilet gibi biter (taÅŸma yok) === */
+/* === NOKTA ATIŞI: Kırmızı yan çizgiler footer üstünde jilet gibi biter (taşma yok) === */
 @media (max-width: 768px) {
   .dashboard-page .driver-dashboard-container::before,
   .login-page .driver-dashboard-container::before {
-    bottom: calc(var(--app-footer-height, 30px) + env(safe-area-inset-bottom, 0)) !important;
+    bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
   }
 }
 @media (min-width: 769px) {
   .dashboard-page .driver-dashboard-container::before,
   .login-page .driver-dashboard-container::before {
-    bottom: calc(var(--app-footer-height, 34px) + env(safe-area-inset-bottom, 0)) !important;
+    bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
     height: auto !important;
   }
 }
