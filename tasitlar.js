@@ -4670,7 +4670,7 @@ function renderVehicleDetailLeft(vehicle) {
         const viewedKeys = viewedRaw ? JSON.parse(viewedRaw) : [];
         recentSlice.forEach(item => {
           const ev = item.event;
-          const dateDisplay = (ev.date || '-').toString().trim();
+          const dateDisplay = formatDateForDisplay(ev.date) || '-';
           const historyTab = getHistoryTabForEventType(ev.type);
           const safePlate = (item.plate || '').replace(/"/g, '&quot;');
           const safeVid = String(item.vehicleId || '').replace(/"/g, '&quot;');
