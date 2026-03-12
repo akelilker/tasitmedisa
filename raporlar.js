@@ -959,19 +959,21 @@
         if (!btnWrap) return;
         if (menu.parentElement === overlay) {
             const r = btn.getBoundingClientRect();
+            const pad = 20;
             menu.style.position = 'fixed';
-            menu.style.left = r.left + 'px';
+            menu.style.left = 'auto';
+            menu.style.right = pad + 'px';
             menu.style.top = (r.bottom - 28) + 'px';
-            menu.style.right = 'auto';
             menu.style.bottom = 'auto';
             return;
         }
         overlay.appendChild(menu);
         const r = btn.getBoundingClientRect();
+        const pad = 20;
         menu.style.position = 'fixed';
-        menu.style.left = r.left + 'px';
+        menu.style.left = 'auto';
+        menu.style.right = pad + 'px';
         menu.style.top = (r.bottom - 28) + 'px';
-        menu.style.right = 'auto';
         menu.style.bottom = 'auto';
     }
     function returnStokDetailMenuFromPortal() {
