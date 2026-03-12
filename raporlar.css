@@ -965,7 +965,7 @@ width: 0 !important;
 height: 0 !important;
 }
 }
-/* Masaüstü: Detay Ekleme + tarihler aynı satırda (desktop-single-row JS ile eklenir) */
+/* Masaüstü: row-1 üstte, row-2 (büyüteç/Excel/yazıcı/tarihler) ALT SATIRDA */
 #reports-modal .stok-detail-add-wrap.desktop-single-row {
 display: flex !important;
 flex-direction: row !important;
@@ -983,13 +983,16 @@ flex: 0 0 auto !important;
 margin: 0 !important;
 }
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-2 {
-margin-top: 0 !important;
+flex-basis: 100% !important;
+flex: 1 1 100% !important;
+width: 100% !important;
+margin-top: 6px !important;
 padding-top: 0 !important;
-flex: 1 1 auto !important;
 min-width: 0 !important;
 justify-content: flex-end !important;
 flex-wrap: nowrap !important;
 align-items: center !important;
+order: 1 !important;
 }
 /* Büyüteç Excel'in solunda, aynı satırda */
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-export-left {
@@ -1036,16 +1039,14 @@ box-sizing: border-box;
 #stok-list-container .stok-controls-row-2 .stok-date-range-controls { margin-left: auto; margin-top: 0 !important; padding-bottom: 0 !important; margin-bottom: 8px !important; align-items: flex-end !important; }
 #stok-list-container .stok-controls-row-2 .stok-date-input-group { margin-bottom: 0 !important; padding-bottom: 0 !important; }
 #stok-list-container .stok-controls-row-2 .stok-date-input-group label { padding-top: 4px !important; }
-/* Arama inputu büyüteçin ÜSTÜNDE açılsın (üstte boşluk var) */
+/* Arama inputu büyüteçin altında açılsın (Detay Ekleme ile çakışmasın) */
 #stok-list-container .stok-controls-row-2 .stok-search-container.open,
 #reports-modal .stok-detail-add-wrap .stok-controls-row-2 .stok-search-container.open {
 position: absolute;
-bottom: 100%;
-top: auto;
+top: 100%;
 left: 0;
 width: 250px;
-margin-bottom: 4px;
-margin-top: 0;
+margin-top: 4px;
 height: auto;
 min-height: 0;
 justify-content: flex-start;
