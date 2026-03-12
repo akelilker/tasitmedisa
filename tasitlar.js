@@ -1778,7 +1778,6 @@
       ['Tescil Tarihi', vehicle.tescilTarihi || '-'],
       ['Km', kmValue],
       ['Şanzıman', vehicle.transmission || '-'],
-      ['Yakıt Tipi', vehicle.yakitTipi || '-'],
       ['Sigorta Bitiş Tarihi', vehicle.sigorta || '-'],
       ['Kasko Bitiş Tarihi', vehicle.kasko || '-'],
       ['Muayene Bitiş Tarihi', vehicle.muayene || '-'],
@@ -1800,9 +1799,15 @@
       return;
     }
 
-    const rows = getVehiclePrintRows(vehicle)
-      .map(([label, value]) => `<tr><th>${escapeHtml(label)}</th><td>${escapeHtml(String(value || '-')).replace(/\n/g, '<br>')}</td></tr>`)
-      .join('');
+    const allRows = getVehiclePrintRows(vehicle);
+    const sigortaIdx = allRows.findIndex(([l]) => l === 'Sigorta Bitiş Tarihi');
+    const leftRows = sigortaIdx >= 0 ? allRows.slice(0, sigortaIdx) : allRows.slice(0, 9);
+    const rightRows = sigortaIdx >= 0 ? allRows.slice(sigortaIdx) : [];
+    const leftTable = leftRows.map(([label, value]) => `<tr><th>${escapeHtml(label)}</th><td>${escapeHtml(String(value || '-')).replace(/\n/g, '<br>')}</td></tr>`).join('');
+    const rightTable = rightRows.map(([label, value]) => `<tr><th>${escapeHtml(label)}</th><td>${escapeHtml(String(value || '-')).replace(/\n/g, '<br>')}</td></tr>`).join('');
+    const rows = rightTable
+      ? `<div class="vehicle-card-print-grid"><table>${leftTable}</table><table>${rightTable}</table></div>`
+      : `<table>${leftTable}</table>`;
     const now = new Date();
     const printedAt = `${String(now.getDate()).padStart(2, '0')}.${String(now.getMonth() + 1).padStart(2, '0')}.${now.getFullYear()} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
 
@@ -2055,6 +2060,9 @@
     table { width: 100%; border-collapse: collapse; }
     th, td { border: 1px solid #ddd; padding: 6px 8px; text-align: left; vertical-align: top; font-size: 13px; line-height: 1.3; }
     th { width: 240px; background: #f4f4f4; }
+    .vehicle-card-print-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+    .vehicle-card-print-grid table { width: 100%; }
+    @media (max-width: 760px) { .vehicle-card-print-grid { grid-template-columns: 1fr; } }
     .kaporta-print-section { margin-top: 14px; border: 1px solid #ddd; border-radius: 8px; padding: 10px; }
     .kaporta-print-section h2 { margin: 0 0 8px; font-size: 16px; }
     .kaporta-print-schema-wrap { margin-bottom: 6px; min-height: 180px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
@@ -2084,7 +2092,7 @@
   <section class="summary-page">
     <h1>Taşıt Kartı</h1>
     <p class="subtitle">Plaka: ${escapeHtml(vehicle.plate || '-')} • Oluşturma: ${printedAt}</p>
-    <table>${rows}</table>
+    ${rows}
     ${kaportaPrintSectionHtml}
   </section>
 
