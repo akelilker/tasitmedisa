@@ -34,6 +34,16 @@
   function writeVehicles(arr) {
     if (window.dataApi && typeof window.dataApi.saveVehiclesList === 'function') {
       window.dataApi.saveVehiclesList(arr).catch(function(err) {
+        if (err && err.conflict) {
+          alert('Dikkat! Bu araç siz işlem yaparken başka biri tarafından güncellenmiş. Veri ezilmesini önlemek için lütfen sayfayı yenileyip güncel durumu kontrol edin.');
+          if (typeof window.loadDataFromServer === 'function') {
+            window.loadDataFromServer(true).then(function() {
+              if (typeof window.renderBranchDashboard === 'function') window.renderBranchDashboard();
+              if (typeof window.renderVehicles === 'function') window.renderVehicles();
+            });
+          }
+          return;
+        }
         console.warn('[Medisa] Sunucuya kayıt yapılamadı:', err && err.message);
       });
       return;

@@ -103,6 +103,37 @@ if (!empty($data['tasitlar'])) {
     }
 }
 
+// Çoklu kullanıcı çakışması önleme: Yazmadan hemen önce dosyayı tekrar oku.
+// driver_save veya başka bir işlem arada yazmış olabilir; güncel driver/admin verilerini koru.
+if (file_exists($dataFile)) {
+    $latest = loadData();
+    if ($latest && is_array($latest)) {
+        if (isset($latest['arac_aylik_hareketler'])) {
+            $data['arac_aylik_hareketler'] = $latest['arac_aylik_hareketler'];
+        }
+        if (isset($latest['duzeltme_talepleri'])) {
+            $data['duzeltme_talepleri'] = $latest['duzeltme_talepleri'];
+        }
+        if (!empty($latest['tasitlar']) && !empty($data['tasitlar'])) {
+            $latestById = [];
+            foreach ($latest['tasitlar'] as $t) {
+                $id = $t['id'] ?? null;
+                if ($id !== null) {
+                    $latestById[(string)$id] = $t;
+                }
+            }
+            foreach ($data['tasitlar'] as $i => $v) {
+                $id = $v['id'] ?? null;
+                if ($id === null) continue;
+                $cur = $latestById[(string)$id] ?? null;
+                if ($cur && isset($cur['guncelKm'])) {
+                    $data['tasitlar'][$i]['guncelKm'] = $cur['guncelKm'];
+                }
+            }
+        }
+    }
+}
+
 // Yedek oluştur (önceki veriyi .backup olarak kaydet)
 if (file_exists($dataFile)) {
     $backupFile = $dataDir . '/data.json.backup';
