@@ -463,7 +463,7 @@ body.driver-modal-open {
     border-top: 1px solid rgba(200, 200, 200, 0.52) !important;
     border-left: 0.6px solid rgba(255, 255, 255, 0.24) !important;
     border-right: 0.6px solid rgba(255, 255, 255, 0.24) !important;
-    box-shadow: 0 -13px 26px rgba(var(--footer-glow-rgb), 0.24) !important;
+    box-shadow: 0 -13px 26px rgba(var(--footer-glow-rgb), 0.42) !important;
   }
   .dashboard-page #app-footer .footer-content {
     display: flex !important;
@@ -477,7 +477,7 @@ body.driver-modal-open {
     border-top: 0.5px solid rgba(200, 200, 200, 0.45) !important;
     border-left: 0.5px solid rgba(255, 255, 255, 0.20) !important;
     border-right: 0.5px solid rgba(255, 255, 255, 0.20) !important;
-    box-shadow: 0 -10px 20px rgba(var(--theme-color-rgb), 0.16) !important;
+    box-shadow: 0 -10px 20px rgba(var(--theme-color-rgb), 0.38) !important;
   }
   /* ========== MASAÃœSTÃœ (769px+) â€“ Header logo: 76Ã—76px, pozisyon (-18px, 6.5px) ========== */
   .dashboard-page .hero.hero-two-rows .hero-logo,
@@ -4519,11 +4519,11 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     border-right: 0.5px solid rgba(255, 255, 255, 0.10) !important;
   }
 
-  /* Mobil footer: ustte ince gri cerceve + tek glow */
+  /* Mobil footer: ustte ince gri cerceve + net kırmızı glow */
   .dashboard-page #app-footer,
   .login-page #app-footer.login-footer {
     border-top: 0.35px solid rgba(200, 200, 200, 0.55) !important;
-    box-shadow: 0 -11px 28px rgba(var(--theme-color-rgb), 0.45) !important;
+    box-shadow: 0 -11px 28px rgba(var(--theme-color-rgb), 0.58) !important;
   }
   .login-page #app-footer.login-footer .footer-content {
     padding: 3px 12px !important;
