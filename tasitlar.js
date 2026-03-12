@@ -3012,6 +3012,16 @@ function renderVehicleDetailLeft(vehicle) {
   };
 
   /**
+   * Ruhsat modalından Taşıt Detay ekranına dön (geri ok ve Vazgeç için)
+   */
+  window.closeRuhsatAndBackToDetail = function() {
+    closeEventModal('ruhsat');
+    setTimeout(function() {
+      if (window.currentDetailVehicleId) showVehicleDetail(window.currentDetailVehicleId);
+    }, 300);
+  };
+
+  /**
    * Olay Ekle alt modalından Vazgeç: modalı kapat, Olay Ekle menüsünü tekrar aç (taşıt detaya dönme).
    */
   window.closeEventModalAndShowEventMenu = function(type) {

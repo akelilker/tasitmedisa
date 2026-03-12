@@ -2149,21 +2149,37 @@
   color: var(--theme-color);
 }
 
-/* Ruhsat modal: Yükle butonu tema uyumlu (şeffaf arka plan + beyaz metin) */
-#ruhsat-yukleme-modal #ruhsat-save-btn {
-  background: transparent !important;
-  color: #ffffff !important;
-  border-color: rgba(40, 167, 69, 0.65) !important;
+/* Ruhsat modal: Ruhsatı Görüntüle ve Yeni Ruhsat Yükle - çerçevesiz, arka plansız, beyaz metin */
+#ruhsat-yukleme-modal #ruhsat-modal-content .universal-btn-group {
+  justify-content: center;
+  margin-left: auto;
+  margin-right: auto;
 }
-#ruhsat-yukleme-modal #ruhsat-save-btn:hover {
-  background: rgba(40, 167, 69, 0.12) !important;
-  color: #ffffff !important;
+#ruhsat-yukleme-modal #ruhsat-modal-content .universal-btn-group button {
+  background: transparent !important;
+  border: none !important;
+  color: var(--form-label-color, #ffffff) !important;
 }
 
-/* Ruhsat modal: üst/alt buton grupları aynı genişlikte hizalı */
+/* Ruhsat modal: Yükle butonu - yeşil metin, yeşil çerçeve, hover büyüme + yarı saydam yeşil */
+#ruhsat-yukleme-modal #ruhsat-save-btn {
+  background: transparent !important;
+  color: var(--green-success, #28a745) !important;
+  border: 1px solid rgba(40, 167, 69, 0.65) !important;
+  transition: transform 0.2s, background 0.2s;
+}
+#ruhsat-yukleme-modal #ruhsat-save-btn:hover {
+  background: rgba(40, 167, 69, 0.25) !important;
+  color: var(--green-success, #28a745) !important;
+  transform: scale(1.05);
+}
+
+/* Ruhsat modal: üst/alt buton grupları aynı genişlikte, yatayda ortalanmış */
 #ruhsat-yukleme-modal #ruhsat-modal-content {
   max-width: 390px;
   width: 100%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* Olay Ekle butonu - Marka/model satırında solda */
