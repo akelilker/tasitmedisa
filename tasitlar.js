@@ -3912,7 +3912,8 @@ function renderVehicleDetailLeft(vehicle) {
 
     vehicle.assignedUserId = normalizedKullaniciId;
     vehicle.tahsisKisi = user?.name || '';
-    if (user && !vehicle.branchId && user.branchId) vehicle.branchId = user.branchId;
+    var userBranchId = user ? (user.branchId || (user.sube_id != null ? String(user.sube_id) : '')) : '';
+    if (user && !vehicle.branchId && userBranchId) vehicle.branchId = userBranchId;
     vehicle.updatedAt = new Date().toISOString();
 
     const event = {
@@ -3931,7 +3932,9 @@ function renderVehicleDetailLeft(vehicle) {
     writeVehicles(vehicles);
 
     closeEventModal('kullanici');
-    showVehicleDetail(vehicleId);
+    setTimeout(function() {
+      showVehicleDetail(vehicleId);
+    }, 250);
   };
 
   /**
