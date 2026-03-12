@@ -246,7 +246,20 @@
     // ========================================
   
     function readUsers() {
-      if (typeof window.getMedisaUsers === 'function') return window.getMedisaUsers();
+      if (typeof window.getMedisaUsers === 'function') {
+        var raw = window.getMedisaUsers();
+        if (!Array.isArray(raw)) return [];
+        return raw.map(function(u) {
+          var u2 = Object.assign({}, u);
+          if (!u2.name && u2.isim) u2.name = u2.isim;
+          if (!u2.name && (u2.firstName || u2.lastName)) u2.name = ((u2.firstName || '') + ' ' + (u2.lastName || '')).trim();
+          if (!u2.name) u2.name = '';
+          if (!u2.phone && u2.telefon) u2.phone = u2.telefon;
+          if (!u2.branchId && u2.sube_id != null && u2.sube_id !== '') u2.branchId = String(u2.sube_id);
+          if (!u2.role && u2.tip) u2.role = u2.tip === 'admin' ? 'admin' : (u2.tip === 'surucu' ? 'driver' : (u2.tip === 'kullanici' ? 'sales' : 'driver'));
+          return u2;
+        });
+      }
       try {
         var raw = localStorage.getItem(USERS_KEY);
         var arr = raw ? JSON.parse(raw) : [];
