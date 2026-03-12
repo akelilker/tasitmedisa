@@ -1700,10 +1700,10 @@
         var t = String(row[tipIndex] || '').replace(/[^0-9]/g, '').replace(/^0+/, '');
         var currentClean = m + t;
 
-        if (targetClean === currentClean || targetClean === m) {
+        // YALNIZCA TAM EŞLEŞME (İlk bulduğu yanlış markaya atlamaması için targetClean === m KALDIRILDI)
+        if (targetClean === currentClean) {
           var rawVal = String(row[yearIndex] || '').trim();
 
-          // Nokta ve virgülleri matematiksel sayıya dönüştür
           var cleanVal = rawVal.replace(/[^0-9,.]/g, '');
           if (cleanVal.includes(',') && cleanVal.includes('.')) {
             cleanVal = cleanVal.replace(/\./g, '').replace(',', '.');
@@ -3599,11 +3599,8 @@ function renderVehicleDetailLeft(vehicle) {
     const yeniKaskoKodu = inputElement ? inputElement.value.trim() : '';
 
     if (!yeniKaskoKodu) {
-      if (typeof window.showInfoModal === 'function') {
-        window.showInfoModal('Lütfen Kasko Kodunu giriniz.');
-      } else {
-        alert('Lütfen Kasko Kodunu giriniz.');
-      }
+      if (typeof showToast === 'function') showToast('Lütfen Kasko Kodunu giriniz.', 'error');
+      else alert('Lütfen Kasko Kodunu giriniz.');
       return;
     }
 
@@ -3611,9 +3608,8 @@ function renderVehicleDetailLeft(vehicle) {
     const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
     if (!vehicle) return;
 
-    if (!vehicle.events) vehicle.events = [];
     vehicle.kaskoKodu = yeniKaskoKodu;
-
+    if (!vehicle.events) vehicle.events = [];
     vehicle.events.push({
       id: Date.now().toString(),
       type: 'kasko-kodu-guncelle',
@@ -3624,18 +3620,21 @@ function renderVehicleDetailLeft(vehicle) {
 
     writeVehicles(vehicles);
 
-    if (typeof window.showSuccessModal === 'function') {
-      window.showSuccessModal('Kasko Kodu başarıyla güncellendi!');
-    } else if (typeof showToast === 'function') {
-      showToast('Kasko Kodu başarıyla güncellendi', 'success');
-    }
-
     if (inputElement) inputElement.value = '';
+
+    // UI'daki tüm karartıları temizle ve modalı kapat
     closeEventModal('kaskokodu');
+    document.querySelectorAll('.modal-overlay.active').forEach(m => {
+      m.classList.remove('active');
+      m.style.display = 'none';
+    });
+
+    // Modal çakışmasını engellemek için sadece Toast mesajı kullan
+    if (typeof showToast === 'function') showToast('Kasko Kodu güncellendi', 'success');
 
     setTimeout(() => {
       showVehicleDetail(vehicleId);
-    }, 200);
+    }, 250);
   };
 
   /**
