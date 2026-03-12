@@ -1054,6 +1054,14 @@ max-width: calc(100vw - 80px);
 overflow: visible !important;
 display: none !important;
 }
+/* Portal: menü #reports-modal doğrudan altındayken (JS ile taşındı) position:fixed, inline left/top */
+#reports-modal > .stok-detail-menu.stok-detail-menu-open {
+position: fixed !important;
+z-index: 100000 !important;
+display: grid !important;
+grid-template-columns: repeat(4, 1fr);
+gap: 6px;
+}
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-detail-add-btn-wrap .stok-detail-menu.stok-detail-menu-open {
 display: grid !important;
 grid-template-columns: repeat(4, 1fr);
