@@ -365,6 +365,18 @@
             headerActions.appendChild(wrap);
             headerActions.setAttribute('aria-hidden', 'false');
             headerActions.classList.add('has-stok-actions');
+
+            // #region agent log
+            requestAnimationFrame(() => {
+                const r1 = wrap.querySelector('.stok-controls-row-1');
+                const r2 = wrap.querySelector('.stok-controls-row-2');
+                const hasDesktop = wrap.classList.contains('desktop-single-row');
+                const rect1 = r1 ? r1.getBoundingClientRect() : null;
+                const rect2 = r2 ? r2.getBoundingClientRect() : null;
+                const sameLine = rect1 && rect2 ? Math.abs(rect1.top - rect2.top) < 5 : null;
+                fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'e39545'},body:JSON.stringify({sessionId:'e39545',location:'raporlar.js:renderStokList',message:'Row layout check',data:{hasDesktop,rect1:rect1?{top:rect1.top,left:rect1.left}:null,rect2:rect2?{top:rect2.top,left:rect2.left}:null,sameLine},timestamp:Date.now(),hypothesisId:'A'})}).catch(()=>{});
+            });
+            // #endregion
         }
 
         // Detay menüsünü render et
