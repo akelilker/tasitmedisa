@@ -1645,6 +1645,10 @@
   }
 
   let cachedKaskoData = null;
+  window.clearKaskoCache = function() {
+    cachedKaskoData = null;
+  };
+
   function getKaskoDegeri(kaskoKodu, modelYili) {
     if (!kaskoKodu || String(kaskoKodu).trim() === '') return '-';
     try {
@@ -1656,11 +1660,11 @@
       var data = cachedKaskoData;
       if (!Array.isArray(data) || data.length < 2) return '-';
 
-      // Başlık satırını bul
+      // 1. Başlık satırını bul
       var headerRowIndex = -1;
-      for(var i=0; i<5; i++) {
+      for(var i=0; i<10; i++) {
         var rowStr = JSON.stringify(data[i] || []).toLowerCase();
-        if(rowStr.includes("marka") && rowStr.includes("tip")) {
+        if(rowStr.includes("marka") && rowStr.includes("kod")) {
           headerRowIndex = i;
           break;
         }
@@ -1669,52 +1673,58 @@
 
       var headers = data[headerRowIndex];
 
-      // Yıl sütununu bul
-      var yearIndex = -1;
+      // 2. Dinamik Sütun İndekslerini Bul
+      var markaIndex = -1, tipIndex = -1, yearIndex = -1;
       var targetYear = String(modelYili).trim();
-      for (var c = 0; c < headers.length; c++) {
-        var h = String(headers[c]).trim();
-        if (h === targetYear || h === targetYear + ".0") {
-          yearIndex = c;
-          break;
-        }
-      }
-      if (yearIndex === -1) return 'Bulunamadı';
 
+      for (var c = 0; c < headers.length; c++) {
+        var h = String(headers[c] || '').toLowerCase().trim();
+        var hRaw = String(headers[c] || '').trim();
+
+        if (h.includes('marka') && h.includes('kod')) markaIndex = c;
+        if ((h.includes('tip') || h.includes('model')) && h.includes('kod')) tipIndex = c;
+        if (hRaw === targetYear || hRaw === targetYear + ".0") yearIndex = c;
+      }
+
+      // Fallback (Başlıklar bozuksa varsayılan kolonlar)
+      if (markaIndex === -1) markaIndex = 0;
+      if (tipIndex === -1) tipIndex = 1;
+      if (yearIndex === -1) return 'Yıl Bulunamadı';
+
+      // 3. Kod Araması
       var targetKodu = String(kaskoKodu).trim();
 
       for (var r = headerRowIndex + 1; r < data.length; r++) {
         var row = data[r];
-        if (!row || row.length < 2) continue;
+        if (!row || row.length < Math.max(markaIndex, tipIndex, yearIndex)) continue;
 
-        var m = String(row[0] || '').trim();
-        var t = String(row[1] || '').trim();
+        var m = String(row[markaIndex] || '').trim();
+        var t = String(row[tipIndex] || '').trim();
 
-        // Olası TSB Kod Kombinasyonları (Sıfır dolgulu veya dolgusuz)
-        var c1 = m + t;
-        var c2 = m.padStart(2, '0') + t.padStart(3, '0');
-        var c3 = m.padStart(3, '0') + t.padStart(3, '0');
-        var c4 = m.padStart(3, '0') + t.padStart(4, '0');
-        var c5 = m.padStart(2, '0') + t.padStart(4, '0');
+        var combined1 = m + t;
+        var combined2 = m.replace(/^0+/, '') + t.replace(/^0+/, '');
+        var targetClean = targetKodu.replace(/^0+/, '');
 
-        if (targetKodu === c1 || targetKodu === c2 || targetKodu === c3 || targetKodu === c4 || targetKodu === c5 || targetKodu === m) {
+        if (targetKodu === combined1 || targetClean === combined2 || targetKodu === m) {
 
           var rawVal = String(row[yearIndex] || '').trim();
 
-          // Excel'den gelen noktalı/virgüllü karmaşık sayıyı saf matematiğe çevir
+          // Güvenli Sayı Dönüşümü (Ondalık/Binlik ayırıcı korumalı)
           var cleanVal = rawVal.replace(/[^0-9,.]/g, '');
           if (cleanVal.includes(',') && cleanVal.includes('.')) {
             cleanVal = cleanVal.replace(/\./g, '').replace(',', '.');
           } else if (cleanVal.includes(',')) {
             cleanVal = cleanVal.replace(',', '.');
+          } else if (cleanVal.includes('.') && !cleanVal.includes(',')) {
+            cleanVal = cleanVal.replace(/\./g, '');
           }
 
-          var numVal = parseFloat(cleanVal);
+          var numVal = parseFloat(cleanVal) || parseInt(cleanVal.replace(/\D/g, ''), 10);
 
           if (!isNaN(numVal) && numVal > 0) {
             return numVal.toLocaleString('tr-TR') + ' ₺';
           } else {
-            return 'Değer Yok'; // O yıla ait kasko değeri sıfırsa
+            return 'Değer Yok';
           }
         }
       }

@@ -1016,6 +1016,8 @@
             localStorage.setItem('medisa_kasko_liste', JSON.stringify(jsonData));
             localStorage.setItem('medisa_kasko_liste_date', new Date().toISOString());
 
+            if (typeof window.clearKaskoCache === 'function') window.clearKaskoCache();
+
             if (typeof window.guncelleTumKaskoDegerleri === 'function') {
               window.guncelleTumKaskoDegerleri();
             }
