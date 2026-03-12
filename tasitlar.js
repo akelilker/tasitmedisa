@@ -1644,23 +1644,23 @@
     return labels[type] || type;
   }
 
-  let cachedKaskoData = null;
+  window._kaskoCache = null;
   window.clearKaskoCache = function() {
-    cachedKaskoData = null;
+    window._kaskoCache = null;
   };
 
   function getKaskoDegeri(kaskoKodu, modelYili) {
-    if (!kaskoKodu || String(kaskoKodu).trim() === '') return '-';
+    if (!kaskoKodu) return '-';
     try {
-      if (!cachedKaskoData) {
+      if (!window._kaskoCache) {
         var raw = localStorage.getItem('medisa_kasko_liste');
         if (!raw) return '-';
-        cachedKaskoData = JSON.parse(raw);
+        window._kaskoCache = JSON.parse(raw);
       }
-      var data = cachedKaskoData;
+      var data = window._kaskoCache;
       if (!Array.isArray(data) || data.length < 2) return '-';
 
-      // 1. Başlık satırını bul
+      // 1. Başlıkları Bul
       var headerRowIndex = -1;
       for(var i=0; i<10; i++) {
         var rowStr = JSON.stringify(data[i] || []).toLowerCase();
@@ -1670,46 +1670,40 @@
         }
       }
       if (headerRowIndex === -1) headerRowIndex = 1;
-
       var headers = data[headerRowIndex];
 
-      // 2. Dinamik Sütun İndekslerini Bul
+      // 2. Kolonları Bul
       var markaIndex = -1, tipIndex = -1, yearIndex = -1;
       var targetYear = String(modelYili).trim();
 
       for (var c = 0; c < headers.length; c++) {
         var h = String(headers[c] || '').toLowerCase().trim();
         var hRaw = String(headers[c] || '').trim();
-
         if (h.includes('marka') && h.includes('kod')) markaIndex = c;
         if ((h.includes('tip') || h.includes('model')) && h.includes('kod')) tipIndex = c;
         if (hRaw === targetYear || hRaw === targetYear + ".0") yearIndex = c;
       }
 
-      // Fallback (Başlıklar bozuksa varsayılan kolonlar)
       if (markaIndex === -1) markaIndex = 0;
       if (tipIndex === -1) tipIndex = 1;
-      if (yearIndex === -1) return 'Yıl Bulunamadı';
+      if (yearIndex === -1) return 'Yıl Bulunamadı (' + targetYear + ')';
 
-      // 3. Kod Araması
-      var targetKodu = String(kaskoKodu).trim();
+      // Hedef kasko kodunu rakam yap ve başındaki sıfırları at (Örn: 03210 -> 3210)
+      var targetClean = String(kaskoKodu).replace(/[^0-9]/g, '').replace(/^0+/, '');
 
       for (var r = headerRowIndex + 1; r < data.length; r++) {
         var row = data[r];
-        if (!row || row.length < Math.max(markaIndex, tipIndex, yearIndex)) continue;
+        if (!row || row.length < 2) continue;
 
-        var m = String(row[markaIndex] || '').trim();
-        var t = String(row[tipIndex] || '').trim();
+        // Excel'deki Marka ve Tip kodunu birleştir, sıfırları at
+        var m = String(row[markaIndex] || '').replace(/[^0-9]/g, '').replace(/^0+/, '');
+        var t = String(row[tipIndex] || '').replace(/[^0-9]/g, '').replace(/^0+/, '');
+        var currentClean = m + t;
 
-        var combined1 = m + t;
-        var combined2 = m.replace(/^0+/, '') + t.replace(/^0+/, '');
-        var targetClean = targetKodu.replace(/^0+/, '');
-
-        if (targetKodu === combined1 || targetClean === combined2 || targetKodu === m) {
-
+        if (targetClean === currentClean || targetClean === m) {
           var rawVal = String(row[yearIndex] || '').trim();
 
-          // Güvenli Sayı Dönüşümü (Ondalık/Binlik ayırıcı korumalı)
+          // Nokta ve virgülleri matematiksel sayıya dönüştür
           var cleanVal = rawVal.replace(/[^0-9,.]/g, '');
           if (cleanVal.includes(',') && cleanVal.includes('.')) {
             cleanVal = cleanVal.replace(/\./g, '').replace(',', '.');
@@ -1724,13 +1718,13 @@
           if (!isNaN(numVal) && numVal > 0) {
             return numVal.toLocaleString('tr-TR') + ' ₺';
           } else {
-            return 'Değer Yok';
+            return 'Değer Yok (Excel: 0)';
           }
         }
       }
-      return 'Bulunamadı';
+      return 'Kasko Kodu Bulunamadı';
     } catch (e) {
-      console.error("Kasko hesaplama hatası:", e);
+      console.error("Kasko Hata:", e);
       return '-';
     }
   }
