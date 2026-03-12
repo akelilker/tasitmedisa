@@ -1036,12 +1036,16 @@ box-sizing: border-box;
 #stok-list-container .stok-controls-row-2 .stok-date-range-controls { margin-left: auto; margin-top: 0 !important; padding-bottom: 0 !important; margin-bottom: 8px !important; align-items: flex-end !important; }
 #stok-list-container .stok-controls-row-2 .stok-date-input-group { margin-bottom: 0 !important; padding-bottom: 0 !important; }
 #stok-list-container .stok-controls-row-2 .stok-date-input-group label { padding-top: 4px !important; }
-#stok-list-container .stok-controls-row-2 .stok-search-container.open {
+/* Arama inputu büyüteçin ÜSTÜNDE açılsın (üstte boşluk var) */
+#stok-list-container .stok-controls-row-2 .stok-search-container.open,
+#reports-modal .stok-detail-add-wrap .stok-controls-row-2 .stok-search-container.open {
 position: absolute;
-top: 100%;
+bottom: 100%;
+top: auto;
 left: 0;
 width: 250px;
-margin-top: 4px;
+margin-bottom: 4px;
+margin-top: 0;
 height: auto;
 min-height: 0;
 justify-content: flex-start;
