@@ -86,12 +86,25 @@ padding: 16px 4px 40px 4px;
 color: var(--form-label-color);
 }
 #reports-modal .modal-body:has(#stok-list-container .stok-list-top-controls) {
-overflow-y: auto !important;
-overflow-x: hidden !important;
+overflow: hidden !important;
 min-height: 0 !important;
 display: flex !important;
 flex-direction: column !important;
 /* scrollbar gizleme: style-core.css’teki .modal-body kuralı kullanılır */
+}
+
+
+#reports-modal .modal-body:has(#stok-list-container .stok-list-top-controls) #view-stok {
+flex: 1 !important;
+min-height: 0 !important;
+display: flex !important;
+flex-direction: column !important;
+overflow: hidden !important;
+}
+#reports-modal .modal-body:has(#stok-list-container .stok-list-top-controls) #view-stok #stok-list-container {
+flex: 1 !important;
+min-height: 0 !important;
+overflow: hidden !important;
 }
 
 /* Sol ok + etiket: tüm viewport’larda aynı satırda, 3px gap, ikon 5px aşağı */
@@ -1638,6 +1651,18 @@ padding-bottom: 16px !important;
 min-height: 0 !important;
 display: flex !important;
 flex-direction: column !important;
+}
+#reports-modal .modal-body:has(#stok-list-container .stok-list-top-controls) #view-stok {
+flex: 1 !important;
+min-height: 0 !important;
+display: flex !important;
+flex-direction: column !important;
+overflow: hidden !important;
+}
+#reports-modal .modal-body:has(#stok-list-container .stok-list-top-controls) #view-stok #stok-list-container {
+flex: 1 !important;
+min-height: 0 !important;
+overflow: hidden !important;
 }
 #reports-modal .modal-body #view-stok {
 flex: 1 !important;
