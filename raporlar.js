@@ -336,9 +336,14 @@
                 wrap.appendChild(row);
             }
             const row1 = wrap.querySelector('.stok-controls-row-1');
+            const addBtn = row1.querySelector('.stok-detail-add-btn');
             if (menu) {
-                if (window.matchMedia('(min-width: 641px)').matches) {
-                    row1.appendChild(menu);
+                if (window.matchMedia('(min-width: 641px)').matches && addBtn) {
+                    const btnWrap = document.createElement('div');
+                    btnWrap.className = 'stok-detail-add-btn-wrap';
+                    addBtn.parentNode.insertBefore(btnWrap, addBtn);
+                    btnWrap.appendChild(addBtn);
+                    btnWrap.appendChild(menu);
                 } else {
                     wrap.appendChild(menu);
                 }
@@ -369,15 +374,24 @@
                 };
                 mq.addEventListener('change', syncRow2);
             }
-            if (menu && row1) {
+            if (menu && row1 && addBtn) {
                 const syncMenu = function() {
+                    const btnWrap = row1.querySelector('.stok-detail-add-btn-wrap');
                     if (mq.matches) {
-                        if (menu.parentElement !== row1) {
-                            row1.appendChild(menu);
+                        if (!btnWrap) {
+                            const wrap = document.createElement('div');
+                            wrap.className = 'stok-detail-add-btn-wrap';
+                            addBtn.parentNode.insertBefore(wrap, addBtn);
+                            wrap.appendChild(addBtn);
+                            wrap.appendChild(menu);
+                        } else if (menu.parentElement !== btnWrap) {
+                            btnWrap.appendChild(menu);
                         }
                     } else {
-                        if (menu.parentElement === row1) {
+                        if (btnWrap) {
+                            row1.insertBefore(addBtn, btnWrap);
                             wrap.insertBefore(menu, row1.nextSibling);
+                            btnWrap.remove();
                         }
                     }
                 };
