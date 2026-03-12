@@ -864,10 +864,24 @@ const API_BASE = (function(){
                   try { const raw = container.getAttribute('data-boyali-parcalar'); if (raw) boyaliParcalar = JSON.parse(raw); } catch (e) {}
                   initDriverKaporta(vid, boyaliParcalar);
               }
+              var kazaTa = document.getElementById('kaza-detay-' + vid);
+              if (kazaTa && kazaTa.classList.contains('driver-report-textarea-auto')) {
+                  requestAnimationFrame(function() {
+                      kazaTa.style.height = 'auto';
+                      kazaTa.style.height = kazaTa.scrollHeight + 'px';
+                  });
+              }
           }
           if (type === 'bakim') {
               const dateEl = document.getElementById('bakim-tarih-' + vid);
               if (dateEl && !dateEl.value) { dateEl.value = new Date().toISOString().split('T')[0]; syncDriverDateDisplay(dateEl); }
+              var bakimTa = document.getElementById('bakim-detay-' + vid);
+              if (bakimTa && bakimTa.classList.contains('driver-report-textarea-auto')) {
+                  requestAnimationFrame(function() {
+                      bakimTa.style.height = 'auto';
+                      bakimTa.style.height = bakimTa.scrollHeight + 'px';
+                  });
+              }
           }
           if (type === 'sigorta' || type === 'kasko' || type === 'muayene') {
               var dateId = type === 'muayene' ? 'driver-muayene-tarih' : (type === 'sigorta' ? 'driver-sigorta-tarih' : 'driver-kasko-tarih');

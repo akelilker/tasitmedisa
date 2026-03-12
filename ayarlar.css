@@ -462,7 +462,7 @@
 }
 .centered-info-box-inner {
     background: var(--bg);
-    border: 1px solid var(--border-light);
+    border: 1px solid var(--border-light, rgba(255, 255, 255, 0.15));
     border-radius: 10px;
     padding: 20px 24px;
     max-width: 320px;
@@ -471,7 +471,7 @@
 }
 .centered-info-box-inner #centered-info-message,
 .centered-info-box-inner p {
-    color: var(--form-label-color);
+    color: var(--txt, var(--form-label-color, #e2e8f0));
     font-size: 14px;
     line-height: 1.5;
     margin: 0 0 16px 0;
@@ -1330,6 +1330,13 @@ input.settings-form-input:-moz-autofill,
         min-height: 40px !important;
         height: auto !important;
         padding: 10px 12px !important;
+    }
+    /* Mobil: Tahsis Edilecek Taşıt listesi yukarı açılsın – ekran kaymasın */
+    #user-form-modal .user-vehicles-dropdown {
+        top: auto !important;
+        bottom: 100% !important;
+        margin-top: 0 !important;
+        margin-bottom: 6px !important;
     }
     .settings-dropdown button {
         text-align: right !important;
