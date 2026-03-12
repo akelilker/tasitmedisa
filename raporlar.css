@@ -920,6 +920,10 @@ min-height: 48px !important;
 padding-top: 4px !important;
 padding-bottom: 4px !important;
 }
+/* Detay kapalıyken: Detay Ekleme ile takvim satırı arası minimum (1px) */
+#reports-modal:not(:has(.stok-detail-menu-open)) .reports-list-header-actions:not(:empty) {
+padding-bottom: 1px !important;
+}
 #reports-body:has(#stok-list-container .stok-list-top-controls) {
 padding-top: 0 !important;
 }
@@ -937,12 +941,16 @@ padding-top: 0 !important; /* ezen 14px kaldır; aralık sadece header padding-b
 /* Detay menüsü açılınca alttaki içerik aşağı kaysın (menü akışta, overlay değil) */
 #reports-modal .stok-detail-add-wrap .stok-detail-menu {
 position: static !important;
-margin-top: 8px;
+margin-top: 4px;
 }
-/* Detay Ekle açıkken: menü ile Başlangıç/Bitiş Tarihi satırı arası dikey boşluk 5px */
+/* Detay Ekle açıkken: menü ile Başlangıç/Bitiş Tarihi satırı arası minimum (2px) */
 #reports-modal:has(.stok-detail-menu-open) #stok-list-container .stok-list-top-controls > .stok-controls-row-2 {
-margin-top: 5px !important;
+margin-top: 2px !important;
 padding-top: 0 !important;
+}
+/* Detay açıkken header slot alt boşluğu minimum */
+#reports-modal:has(.stok-detail-menu-open) .reports-list-header-actions:not(:empty) {
+padding-bottom: 2px !important;
 }
 #stok-list-container .stok-list-top-controls {
 padding-top: 0 !important;
@@ -1777,10 +1785,10 @@ padding: 6px 4px 4px 4px !important;
 /* Mobil: Detay menüsü akışta olsun – liste ve kontroller aşağı kaysın (üst üste binmesin) */
 #reports-modal .stok-detail-add-wrap .stok-detail-menu {
 position: static !important;
-margin-top: 8px;
+margin-top: 4px;
 }
 #reports-modal:has(.stok-detail-menu-open) .reports-list-header-actions {
-padding-bottom: 8px !important;
+padding-bottom: 4px !important;
 }
 .stok-controls-row-1 {
 display: flex;
