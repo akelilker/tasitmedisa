@@ -348,7 +348,16 @@ function getMedisaUsers() {
 window.writeVehicles = function(arr) {
     if (!window.appData) window.appData = getDefaultAppData();
     window.appData.tasitlar = Array.isArray(arr) ? arr : [];
-    if (typeof window.saveDataToServer === 'function') window.saveDataToServer().catch(function(err) { console.error('Sunucuya kaydetme hatası:', err); });
+    if (typeof window.saveDataToServer === 'function') {
+        window.saveDataToServer().catch(function(err) {
+            if (err && err.conflict) {
+                if (typeof window.onMedisaConflict === 'function') window.onMedisaConflict();
+                else alert('Dikkat! Veri başka biri tarafından güncellenmiş. Lütfen sayfayı yenileyin.');
+                return;
+            }
+            console.error('Sunucuya kaydetme hatası:', err);
+        });
+    }
 };
 
 /** Şube listesini güncelle: appData + sadece sunucuya kaydet */
