@@ -102,6 +102,7 @@
 /* --- Overflow: yatay taÅŸma yok; safe-area sadece html'de (style-core) â€“ Ã§ift padding Ã¶nlenir --- */
 body.login-page,
 body.dashboard-page {
+  overflow: hidden !important;
   overflow-x: hidden !important;
   padding-top: 0 !important;
   padding-bottom: 0 !important;
@@ -111,6 +112,20 @@ body.driver-modal-open {
   overflow: hidden !important;
   position: fixed;
   width: 100%;
+}
+
+/* --- DASHBOARD: html/body scroll kilidi (mobil bounce onarımı) --- */
+html:has(body.dashboard-page) {
+  height: 100%;
+  overflow: hidden !important;
+  overscroll-behavior: none;
+}
+body.dashboard-page {
+  height: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow: hidden !important;
+  overscroll-behavior: none;
 }
 
 /* --- DASHBOARD SAYFA YAPISI --- */
@@ -136,6 +151,7 @@ body.driver-modal-open {
   flex-direction: column;
   box-sizing: border-box;
   overflow: hidden;
+  overscroll-behavior: none;
   position: relative;
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
@@ -173,13 +189,14 @@ body.driver-modal-open {
   border-top: none !important;
 }
 
-/* Ortadaki bÃ¶lÃ¼m: sol grid sabit, sadece saÄŸ grid kendi iÃ§inde kayar; barÄ±n Ã¼stÃ¼ne binmemesi iÃ§in z-index */
+/* Ortadaki bölüm: sol grid sabit, sadece sağ grid kendi içinde kayar; barın üstüne binmemesi için z-index */
 .driver-scroll-area {
   flex: 1;
   min-height: 0;
   min-width: 0;
   overflow: hidden;
   overflow-x: hidden;
+  overscroll-behavior: none;
   padding-top: 0 !important;
   box-sizing: border-box;
   display: flex;
@@ -761,7 +778,8 @@ body.driver-modal-open {
   flex-direction: column;
   gap: 8px;
   overflow-y: auto !important;
-  overflow-x: hidden !important; /* Sadece aÅŸaÄŸÄ±-yukarÄ± kayma; saÄŸa-sola hareket yok */
+  overflow-x: hidden !important; /* Sadece asagi-yukari kayma; saga-sola hareket yok */
+  overscroll-behavior-y: contain; /* Bounce sadece icerikte kalsin, body'ye yansimasin */
   scrollbar-width: none;
   -ms-overflow-style: none;
   -webkit-overflow-scrolling: touch;
