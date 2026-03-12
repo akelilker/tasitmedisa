@@ -3032,6 +3032,92 @@ function renderVehicleDetailLeft(vehicle) {
   };
 
   /**
+   * Ruhsat Yükleme modalını açar; vehicle.ruhsatPath varsa görüntüleme/yenileme, yoksa yükleme UI gösterir
+   */
+  window.openRuhsatModal = function(vehicleId) {
+    const vid = (vehicleId || window.currentDetailVehicleId || '').toString();
+    if (!vid) return;
+    window.currentDetailVehicleId = vid;
+    const vehicle = readVehicles().find(v => String(v.id) === vid);
+    const modal = document.getElementById('ruhsat-yukleme-modal');
+    const content = document.getElementById('ruhsat-modal-content');
+    const saveBtn = document.getElementById('ruhsat-save-btn');
+    if (!modal || !content || !saveBtn) return;
+    content.innerHTML = '';
+    saveBtn.style.display = 'none';
+    const hasRuhsat = !!(vehicle && vehicle.ruhsatPath);
+    if (hasRuhsat) {
+      const viewBtn = document.createElement('button');
+      viewBtn.type = 'button';
+      viewBtn.className = 'universal-btn-save';
+      viewBtn.textContent = 'Ruhsatı Görüntüle';
+      viewBtn.onclick = function() { viewRuhsatPdf(vid); };
+      content.appendChild(viewBtn);
+      const replaceBtn = document.createElement('button');
+      replaceBtn.type = 'button';
+      replaceBtn.className = 'universal-btn-cancel';
+      replaceBtn.textContent = 'Yeni Ruhsat Yükle';
+      replaceBtn.onclick = function() { renderRuhsatUploadForm(content, saveBtn); };
+      content.appendChild(replaceBtn);
+    } else {
+      renderRuhsatUploadForm(content, saveBtn);
+    }
+    modal.style.display = 'flex';
+    requestAnimationFrame(function() { modal.classList.add('active'); });
+  };
+
+  function renderRuhsatUploadForm(content, saveBtn) {
+    content.innerHTML = '';
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.pdf';
+    input.id = 'ruhsat-file-input';
+    input.style.marginBottom = '8px';
+    input.onchange = function() { saveBtn.style.display = input.files.length ? 'inline-block' : 'none'; };
+    content.appendChild(input);
+    saveBtn.style.display = input.files.length ? 'inline-block' : 'none';
+  }
+
+  /**
+   * Ruhsat dosyasını upload_ruhsat.php'ye POST eder
+   */
+  window.saveRuhsatUpload = function() {
+    const input = document.getElementById('ruhsat-file-input');
+    const vehicleId = (window.currentDetailVehicleId || '').toString();
+    if (!input || !input.files || !input.files[0] || !vehicleId) {
+      alert('Lütfen PDF dosyası seçin.');
+      return;
+    }
+    const formData = new FormData();
+    formData.append('vehicleId', vehicleId);
+    formData.append('ruhsat', input.files[0]);
+    fetch('upload_ruhsat.php', { method: 'POST', body: formData })
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        if (data.success) {
+          closeEventModal('ruhsat');
+          showVehicleDetail(vehicleId);
+        } else {
+          alert(data.error || 'Yükleme başarısız');
+        }
+      })
+      .catch(function(err) {
+        console.error(err);
+        alert('Yükleme sırasında hata oluştu.');
+      });
+  };
+
+  /**
+   * Ruhsat PDF'ini yeni sekmede açar
+   */
+  window.viewRuhsatPdf = function(vehicleId) {
+    const vid = (vehicleId || window.currentDetailVehicleId || '').toString();
+    if (!vid) return;
+    const url = 'ruhsat.php?id=' + encodeURIComponent(vid);
+    window.open(url, '_blank', 'noopener');
+  };
+
+  /**
    * Kaza modal'ında boya şemasını render et (readonly mevcut, yeni hasarlar eklenebilir)
    */
   function renderBoyaSchemaKaza(vehicle, container) {
