@@ -86,7 +86,11 @@ padding: 16px 4px 40px 4px;
 color: var(--form-label-color);
 }
 #reports-modal .modal-body:has(#stok-list-container .stok-list-top-controls) {
-overflow: hidden !important;
+overflow-y: auto !important;
+overflow-x: hidden !important;
+min-height: 0 !important;
+display: flex !important;
+flex-direction: column !important;
 /* scrollbar gizleme: style-core.css’teki .modal-body kuralı kullanılır */
 }
 
