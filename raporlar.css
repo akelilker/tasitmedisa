@@ -1028,7 +1028,10 @@ flex-shrink: 0 !important;
 align-items: center !important;
 gap: 6px !important;
 }
-/* Masaüstü: menü açıkken overflow visible – tüm butonlar görünsün */
+/* Masaüstü: menü açıkken overflow visible – header alt çizgisine takılmasın */
+#reports-modal:has(.stok-detail-menu-open) .modal-container {
+overflow: visible !important;
+}
 #reports-modal .reports-list-header-actions:has(.stok-detail-menu-open),
 #reports-modal .stok-detail-add-wrap.desktop-single-row:has(.stok-detail-menu-open),
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-1:has(.stok-detail-menu-open) {
