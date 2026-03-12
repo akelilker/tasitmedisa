@@ -1028,15 +1028,20 @@ flex-shrink: 0 !important;
 align-items: center !important;
 gap: 6px !important;
 }
-/* Masaüstü: menü overlay – butonun hemen altında, layout kaydırmaz */
-#reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-1 .stok-detail-menu {
+/* Masaüstü: menü overlay – butonun hemen altında, sol kenar metnin son harfinde */
+#reports-modal .stok-detail-add-wrap.desktop-single-row .stok-detail-add-btn-wrap {
+position: relative;
+display: inline-block;
+}
+#reports-modal .stok-detail-add-wrap.desktop-single-row .stok-detail-add-btn-wrap .stok-detail-menu {
 position: absolute !important;
 top: 100%;
-left: 0;
+left: 100%;
 margin-top: 4px;
+margin-left: 0;
 z-index: 50;
 width: auto;
-max-width: 100%;
+max-width: calc(100vw - 80px);
 }
 #stok-list-container .stok-list-top-controls {
 padding-top: 0 !important;
