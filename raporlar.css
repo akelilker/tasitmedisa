@@ -991,6 +991,15 @@ justify-content: flex-end !important;
 flex-wrap: nowrap !important;
 align-items: center !important;
 }
+/* Büyüteç Excel'in solunda, aynı satırda */
+#reports-modal .stok-detail-add-wrap.desktop-single-row .stok-export-left {
+display: flex !important;
+flex-direction: row !important;
+align-items: center !important;
+}
+#reports-modal .stok-detail-add-wrap.desktop-single-row .stok-export-left .stok-search-wrap {
+order: -1 !important;
+}
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-detail-menu {
 order: 10 !important;
 flex-basis: 100% !important;
