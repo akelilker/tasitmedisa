@@ -15,6 +15,13 @@
   function readVehicles() { return (typeof window.getMedisaVehicles === 'function' ? window.getMedisaVehicles() : null) || []; }
   function readUsers() { return (typeof window.getMedisaUsers === 'function' ? window.getMedisaUsers() : null) || []; }
 
+  function getEventPerformerName(vehicle) {
+    const users = readUsers();
+    const assignedId = vehicle.assignedUserId || '';
+    const user = assignedId ? users.find(function(u) { return String(u.id) === String(assignedId); }) : null;
+    return (user && (user.name || user.isim)) ? toTitleCase(String(user.name || user.isim)) : 'Yönetim';
+  }
+
   var parsedKaportaSvgCache = null;
   function getKaportaSvg() {
     return window.getKaportaSvg();
@@ -3310,18 +3317,19 @@ function renderVehicleDetailLeft(vehicle) {
     
     if (!vehicle.events) vehicle.events = [];
     
+    const data = {
+      islemler: islemler,
+      servis: servis,
+      kisi: kisi || getEventPerformerName(vehicle),
+      km: km,
+      tutar: tutar
+    };
     const event = {
       id: Date.now().toString(),
       type: 'bakim',
       date: tarih,
       timestamp: new Date().toISOString(),
-      data: {
-        islemler: islemler,
-        servis: servis,
-        kisi: kisi,
-        km: km,
-        tutar: tutar
-      }
+      data: data
     };
     
     vehicle.events.unshift(event);
@@ -3401,7 +3409,7 @@ function renderVehicleDetailLeft(vehicle) {
       date: tarih,
       timestamp: new Date().toISOString(),
       data: {
-        surucu: surucu,
+        surucu: surucu || getEventPerformerName(vehicle),
         hasarParcalari: newDamages,
         hasarTutari: hasarTutari
       }
@@ -3528,7 +3536,8 @@ function renderVehicleDetailLeft(vehicle) {
         firma: firma,
         acente: acente,
         iletisim: iletisim,
-        bitisTarihi: bitisTarihi
+        bitisTarihi: bitisTarihi,
+        surucu: getEventPerformerName(vehicle)
       }
     };
     
@@ -3579,7 +3588,8 @@ function renderVehicleDetailLeft(vehicle) {
         firma: firma,
         acente: acente,
         iletisim: iletisim,
-        bitisTarihi: bitisTarihi
+        bitisTarihi: bitisTarihi,
+        surucu: getEventPerformerName(vehicle)
       }
     };
     
@@ -3624,7 +3634,8 @@ function renderVehicleDetailLeft(vehicle) {
       date: tarih,
       timestamp: new Date().toISOString(),
       data: {
-        bitisTarihi: bitisTarihi
+        bitisTarihi: bitisTarihi,
+        surucu: getEventPerformerName(vehicle)
       }
     };
     
@@ -3666,7 +3677,8 @@ function renderVehicleDetailLeft(vehicle) {
       timestamp: new Date().toISOString(),
       data: {
         durum: durum,
-        detay: detay
+        detay: detay,
+        surucu: getEventPerformerName(vehicle)
       }
     };
     
@@ -3705,7 +3717,8 @@ function renderVehicleDetailLeft(vehicle) {
       timestamp: new Date().toISOString(),
       data: {
         durum: durum,
-        detay: detay
+        detay: detay,
+        surucu: getEventPerformerName(vehicle)
       }
     };
     
@@ -3743,7 +3756,7 @@ function renderVehicleDetailLeft(vehicle) {
       type: 'kasko-kodu-guncelle',
       date: formatDateForDisplay(new Date()),
       timestamp: new Date().toISOString(),
-      data: { kaskoKodu: yeniKaskoKodu }
+      data: { kaskoKodu: yeniKaskoKodu, surucu: getEventPerformerName(vehicle) }
     });
 
     writeVehicles(vehicles);
@@ -3813,7 +3826,8 @@ function renderVehicleDetailLeft(vehicle) {
       timestamp: new Date().toISOString(),
       data: {
         eskiKm: eskiKm,
-        yeniKm: yeniKm
+        yeniKm: yeniKm,
+        surucu: getEventPerformerName(vehicle)
       }
     };
     
@@ -3852,7 +3866,8 @@ function renderVehicleDetailLeft(vehicle) {
       date: formatDateForDisplay(new Date()),
       timestamp: new Date().toISOString(),
       data: {
-        durum: durum
+        durum: durum,
+        surucu: getEventPerformerName(vehicle)
       }
     };
     
@@ -3888,7 +3903,8 @@ function renderVehicleDetailLeft(vehicle) {
       date: formatDateForDisplay(new Date()),
       timestamp: new Date().toISOString(),
       data: {
-        durum: durum
+        durum: durum,
+        surucu: getEventPerformerName(vehicle)
       }
     };
     
@@ -3927,7 +3943,8 @@ function renderVehicleDetailLeft(vehicle) {
       timestamp: new Date().toISOString(),
       data: {
         durum: durum,
-        adres: adres
+        adres: adres,
+        surucu: getEventPerformerName(vehicle)
       }
     };
     
@@ -3979,7 +3996,8 @@ function renderVehicleDetailLeft(vehicle) {
         eskiSubeId: eskiSubeId,
         yeniSubeId: normalizedSubeId,
         eskiSubeAdi: eskiSube?.name || '',
-        yeniSubeAdi: yeniSube?.name || ''
+        yeniSubeAdi: yeniSube?.name || '',
+        surucu: getEventPerformerName(vehicle)
       }
     };
     
@@ -4052,7 +4070,7 @@ function renderVehicleDetailLeft(vehicle) {
       data: {
         kullaniciId: normalizedKullaniciId,
         kullaniciAdi: user?.name || '',
-        eskiKullaniciAdi: eskiUser?.name || (eskiKullaniciId ? 'Bilinmeyen' : '')
+        eskiKullaniciAdi: eskiUser?.name || (eskiKullaniciId ? 'Bilinmiyor' : '')
       }
     };
 
@@ -4098,7 +4116,8 @@ function renderVehicleDetailLeft(vehicle) {
       timestamp: new Date().toISOString(),
       data: {
         tutar: tutar,
-        aciklama: aciklama
+        aciklama: aciklama,
+        surucu: getEventPerformerName(vehicle)
       }
     };
     
@@ -4421,6 +4440,36 @@ function renderVehicleDetailLeft(vehicle) {
     return labels[type] || (type ? toTitleCase(String(type)) : 'Olay');
   }
 
+  /**
+   * Bildirim satırı için "{İsim}, {Plaka} Plakalı Taşıt İçin {Olay Mesajı}." formatında metin üretir.
+   */
+  function getNotificationActivityMessage(ev, plate) {
+    const evData = ev.data || {};
+    const isim = evData.surucu || evData.kisi || evData.kullaniciAdi;
+    const isimStr = isim ? toTitleCase(String(isim)) : 'Bilinmiyor';
+    const plateStr = (plate || '-').toString().trim();
+    const type = (ev.type || '').toString().trim();
+    const typeMessages = {
+      'km-revize': 'Km Bildirimi Yaptı',
+      'bakim': 'Bakım Bildirimi Yaptı',
+      'kaza': 'Kaza Bildirimi Yaptı',
+      'sigorta-guncelle': 'Sigorta Bilgisini Güncelledi',
+      'kasko-guncelle': 'Kasko Bilgisini Güncelledi',
+      'muayene-guncelle': 'Muayene Bilgisini Güncelledi',
+      'anahtar-guncelle': 'Yedek Anahtar Bilgisini Güncelledi',
+      'lastik-guncelle': 'Lastik Durumunu Güncelledi',
+      'utts-guncelle': 'UTTS Bilgisini Güncelledi',
+      'kredi-guncelle': 'Kredi/Rehin Bilgisini Güncelledi',
+      'takip-cihaz-guncelle': 'Takip Cihazı Bilgisini Güncelledi',
+      'not-guncelle': 'Not Bilgisini Güncelledi',
+      'sube-degisiklik': 'Şube Bilgisini Güncelledi',
+      'kullanici-atama': 'Kullanıcı Ataması Yaptı',
+      'satis': 'Satış/Pert Bildirdi'
+    };
+    const mesaj = typeMessages[type] || 'Bilgi Güncelledi';
+    return isimStr + ', ' + plateStr + ' Plakalı Taşıt İçin ' + mesaj + '.';
+  }
+
   /** Olay tipinden tarihçe sekme id'si (bakim, kaza, km, diger) */
   function getHistoryTabForEventType(type) {
     if (type === 'bakim') return 'bakim';
@@ -4621,7 +4670,6 @@ function renderVehicleDetailLeft(vehicle) {
         const viewedKeys = viewedRaw ? JSON.parse(viewedRaw) : [];
         recentSlice.forEach(item => {
           const ev = item.event;
-          const typeLabel = getNotificationEventTypeLabel(ev.type);
           const dateDisplay = (ev.date || '-').toString().trim();
           const historyTab = getHistoryTabForEventType(ev.type);
           const safePlate = (item.plate || '').replace(/"/g, '&quot;');
@@ -4633,8 +4681,9 @@ function renderVehicleDetailLeft(vehicle) {
           const isUnread = viewedKeys.indexOf(notifKey) === -1;
           const unreadClass = isUnread ? ' notification-unread' : '';
           const unreadStyle = isUnread ? ' border: 1px solid rgba(212, 0, 0, 0.85) !important;' : '';
+          const activityMsg = getNotificationActivityMessage(ev, item.plate);
           html += `<button type="button" data-plate="${safePlate}" data-vehicle-id="${safeVid}" data-open-history="1" data-history-tab="${historyTab}" data-notif-key="${safeKey}" style="width: 100%; padding: 10px 12px; background: transparent; color: #ccc; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 12px; text-align: left; margin-bottom: 4px; transition: all 0.2s ease;${unreadStyle}" class="notification-item notification-item-activity${unreadClass}">
-          <div class="notif-line1" style="font-weight: 600; color: #fff; margin-bottom: 2px;">${escapeHtml(item.plate)} ${escapeHtml(typeLabel)}</div>
+          <div class="notif-line1" style="font-weight: 600; color: #fff; margin-bottom: 2px;">${escapeHtml(activityMsg)}</div>
           <div class="notif-line2" style="font-size: 11px; color: #999;">${escapeHtml(dateDisplay)}</div>
         </button>`;
         });
