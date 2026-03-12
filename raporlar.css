@@ -983,6 +983,7 @@ flex: 0 0 auto !important;
 margin: 0 !important;
 }
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-2 {
+flex-direction: row !important; /* Mobil column override – tek satır için */
 flex-basis: 100% !important;
 flex: 1 1 100% !important;
 width: 100% !important;
@@ -996,6 +997,8 @@ order: 1 !important;
 }
 /* Masaüstü: [büyüteç][excel][yazıcı] ................ [başlangıç][bitiş] tek satır */
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-2 > .stok-export-controls {
+display: flex !important;
+flex-direction: row !important;
 flex-wrap: nowrap !important;
 align-items: center !important;
 margin-top: 0 !important;
@@ -1008,13 +1011,21 @@ align-items: center !important;
 margin-top: 0 !important;
 }
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-2 .stok-search-wrap {
+display: flex !important;
 flex-shrink: 0 !important;
 align-items: center !important;
 }
+#reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-2 .stok-export-btn,
+#reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-2 .stok-print-btn {
+flex-shrink: 0 !important;
+}
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-2 .stok-date-range-controls {
+display: flex !important;
+flex-direction: row !important;
 margin-left: auto !important;
 flex-shrink: 0 !important;
 align-items: center !important;
+gap: 6px !important;
 }
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-detail-menu {
 order: 10 !important;
@@ -1056,11 +1067,10 @@ box-sizing: border-box;
 #stok-list-container .stok-controls-row-2 .stok-search-container.open,
 #reports-modal .stok-detail-add-wrap .stok-controls-row-2 .stok-search-container.open {
 position: absolute !important;
-top: auto;
-bottom: calc(100% + 8px);
+top: 100%;
 left: 0;
 width: 250px;
-margin-top: 0;
+margin-top: 4px;
 height: auto;
 min-height: 0;
 justify-content: flex-start;
