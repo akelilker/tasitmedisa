@@ -1043,12 +1043,15 @@ overflow: visible;
 position: absolute !important;
 top: 100%;
 left: 100%;
-margin-top: 4px;
+margin-top: -26px;
 margin-left: 0;
 z-index: 50;
 width: auto;
 max-width: calc(100vw - 80px);
 overflow: visible !important;
+display: none !important;
+}
+#reports-modal .stok-detail-add-wrap.desktop-single-row .stok-detail-add-btn-wrap .stok-detail-menu.stok-detail-menu-open {
 display: grid !important;
 grid-template-columns: repeat(4, 1fr);
 gap: 6px;
