@@ -335,16 +335,23 @@
                 `;
                 wrap.appendChild(row);
             }
-            if (menu) wrap.appendChild(menu);
+            const row1 = wrap.querySelector('.stok-controls-row-1');
+            if (menu) {
+                if (window.matchMedia('(min-width: 641px)').matches) {
+                    row1.appendChild(menu);
+                } else {
+                    wrap.appendChild(menu);
+                }
+            }
             const topControls = listContainer.querySelector('.stok-list-top-controls');
             /* Masaüstü: row-2 (export + tarihler) header'a taşı, Detay Ekleme ile aynı satırda */
             if (secondRow && window.matchMedia('(min-width: 641px)').matches) {
                 wrap.appendChild(secondRow);
                 wrap.classList.add('desktop-single-row');
             }
-            /* Resize: mobilde row-2 body'ye geri taşı */
+            /* Resize: mobilde row-2 body'ye geri taşı; menü row-1 ↔ wrap arasında senkronize et */
+            const mq = window.matchMedia('(min-width: 641px)');
             if (secondRow && topControls) {
-                const mq = window.matchMedia('(min-width: 641px)');
                 const syncRow2 = function() {
                     const r2 = wrap.querySelector('.stok-controls-row-2') || topControls.querySelector('.stok-controls-row-2');
                     if (!r2) return;
@@ -361,6 +368,20 @@
                     }
                 };
                 mq.addEventListener('change', syncRow2);
+            }
+            if (menu && row1) {
+                const syncMenu = function() {
+                    if (mq.matches) {
+                        if (menu.parentElement !== row1) {
+                            row1.appendChild(menu);
+                        }
+                    } else {
+                        if (menu.parentElement === row1) {
+                            wrap.insertBefore(menu, row1.nextSibling);
+                        }
+                    }
+                };
+                mq.addEventListener('change', syncMenu);
             }
             headerActions.appendChild(wrap);
             headerActions.setAttribute('aria-hidden', 'false');
