@@ -939,7 +939,7 @@ padding-top: 0 !important;
 margin-top: 0 !important;
 padding-top: 0 !important; /* ezen 14px kaldır; aralık sadece header padding-bottom 4px */
 }
-/* Detay menüsü açılınca alttaki içerik aşağı kaysın (menü akışta, overlay değil) */
+/* Detay menüsü: mobilde akışta; masaüstü overlay (desktop-single-row override ile) */
 #reports-modal .stok-detail-add-wrap .stok-detail-menu {
 position: static !important;
 margin-top: 4px;
@@ -976,6 +976,7 @@ gap: 8px !important;
 width: 100% !important;
 }
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-1 {
+position: relative;
 flex-direction: column !important;
 align-items: flex-start !important;
 gap: 6px !important;
@@ -1027,11 +1028,15 @@ flex-shrink: 0 !important;
 align-items: center !important;
 gap: 6px !important;
 }
-#reports-modal .stok-detail-add-wrap.desktop-single-row .stok-detail-menu {
-order: 1 !important; /* Detay Ekleme butonunun hemen altında */
-flex-basis: 100% !important;
-margin-top: 4px !important;
-align-self: flex-start !important; /* Sola hizalı, butonun altında */
+/* Masaüstü: menü overlay – butonun hemen altında, layout kaydırmaz */
+#reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-1 .stok-detail-menu {
+position: absolute !important;
+top: 100%;
+left: 0;
+margin-top: 4px;
+z-index: 50;
+width: auto;
+max-width: 100%;
 }
 #stok-list-container .stok-list-top-controls {
 padding-top: 0 !important;
