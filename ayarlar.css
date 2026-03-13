@@ -58,6 +58,31 @@
     margin-bottom: 18px !important;
 }
 
+/* Önbellek modalı: Arka plan görünür kalsın (overlay hafif karartma) */
+body.modal-open #cache-confirm-modal.active,
+body.modal-open #cache-confirm-modal.open {
+    background: rgba(0, 0, 0, 0.4) !important;
+    backdrop-filter: none !important;
+}
+
+/* Önbellek modalı butonları: Evet=kırmızı, Hayır=yeşil */
+#cache-confirm-modal .universal-btn-save {
+    color: var(--theme-color) !important;
+    border: 1px solid rgba(var(--theme-color-rgb), 0.45) !important;
+}
+#cache-confirm-modal .universal-btn-save:hover {
+    background: rgba(var(--theme-color-rgb), 0.12) !important;
+    border-color: var(--theme-color) !important;
+}
+#cache-confirm-modal .universal-btn-cancel {
+    color: var(--green-success) !important;
+    border: 1px solid rgba(var(--green-success-rgb), 0.45) !important;
+}
+#cache-confirm-modal .universal-btn-cancel:hover {
+    background: rgba(var(--green-success-rgb), 0.12) !important;
+    border-color: var(--green-success) !important;
+}
+
 /* === TESCİL TARİHİ MODALLARI === */
 #tescil-tarih-confirm-modal .modal-container {
     background: var(--bg); 
