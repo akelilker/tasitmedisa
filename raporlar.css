@@ -998,7 +998,7 @@ order: 2 !important; /* row-1 altında, menü sonra */
 }
 /* Masaüstü: [büyüteç][excel][yazıcı] ................ [başlangıç][bitiş] tek satır */
 #reports-modal:has(.stok-detail-menu-open) .stok-detail-add-wrap.desktop-single-row .stok-controls-row-2 {
-margin-top: 19px !important;
+margin-top: 23px !important;
 }
 #reports-modal:not(:has(.stok-detail-menu-open)) .stok-detail-add-wrap.desktop-single-row .stok-controls-row-2 {
 margin-top: 6px !important;
@@ -1073,6 +1073,14 @@ padding: 0 !important;
 #reports-modal .stok-detail-add-wrap .stok-detail-menu.stok-detail-menu-open .stok-detail-menu-item {
 margin: 0 !important;
 padding: 0 !important;
+}
+/* Desktop: Detay menü buton metinlerini çerçeveye yaklaştır, sığma için 1 punto küçült */
+#reports-modal .stok-detail-add-wrap.desktop-single-row .stok-detail-menu-btn {
+padding-left: 0.5px !important;
+padding-right: 0.5px !important;
+}
+#reports-modal .stok-detail-add-wrap.desktop-single-row .stok-detail-menu-btn span {
+font-size: 9px !important;
 }
 #stok-list-container .stok-list-top-controls {
 padding-top: 0 !important;
