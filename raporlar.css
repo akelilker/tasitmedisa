@@ -981,6 +981,8 @@ flex-direction: column !important;
 align-items: flex-start !important;
 gap: 6px !important;
 flex: 0 0 auto !important;
+width: 100% !important;
+box-sizing: border-box !important;
 margin: 0 !important;
 }
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-2 {
@@ -1057,7 +1059,7 @@ margin-top: -48px;
 margin-left: 0;
 z-index: 50;
 width: auto;
-max-width: calc(100vw - 80px);
+max-width: min(calc(100% - 200px), calc(100vw - 80px));
 overflow: visible !important;
 display: none !important;
 }
