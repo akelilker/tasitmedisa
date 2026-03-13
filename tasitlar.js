@@ -424,9 +424,6 @@
         renderBranchDashboard();
       }
     };
-    // #region agent log
-    fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'1715c1'},body:JSON.stringify({sessionId:'1715c1',location:'tasitlar.js:428',message:'openVehiclesView',data:{isDataLoaded:!!(window.appData&&window.appData.tasitlar)},timestamp:Date.now(),hypothesisId:'H2'})}).catch(()=>{});
-    // #endregion
     openView();
     if (typeof window.loadDataFromServer === 'function') {
       window.loadDataFromServer().then(function() {
@@ -560,7 +557,6 @@
    * - 3+ kart: Mobil 4 kolon, Desktop 5 kolon
    */
   window.renderBranchDashboard = function() {
-    const _d0 = Date.now();
     currentView = 'dashboard';
     activeBranchId = null;
     closeSearchBox();
@@ -603,9 +599,6 @@
     
     html += '</div>';
     modalContent.innerHTML = html;
-    // #region agent log
-    fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'1715c1'},body:JSON.stringify({sessionId:'1715c1',location:'tasitlar.js:605',message:'renderBranchDashboard done',data:{vehicleCount:vehicles.length,branchCount:branches.length,elapsed:Date.now()-_d0},timestamp:Date.now(),hypothesisId:'H3'})}).catch(()=>{});
-    // #endregion
     
     // Grid'i dinamik yap: kart sayısına göre kolon sayısını ayarla
     const gridEl = modalContent.querySelector('.branch-grid');
@@ -680,7 +673,6 @@
    * - List: Marka/Model, Yıl/Km, Düzenle/Sil butonları
    */
   function renderVehicles(query = '') {
-    const _r0 = Date.now();
     try {
       const listContainer = DOM.vehiclesModalContent;
       if (!listContainer) return;
@@ -759,9 +751,6 @@
           } else {
             listContainer.innerHTML = `<div style="text-align:center; padding:40px; color:#666">${emptyMsg}</div>`;
           }
-          // #region agent log
-          fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'1715c1'},body:JSON.stringify({sessionId:'1715c1',location:'tasitlar.js:756',message:'renderVehicles empty',data:{vehicleCount:0,elapsed:Date.now()-_r0},timestamp:Date.now(),hypothesisId:'H3'})}).catch(()=>{});
-          // #endregion
           return;
       }
 
@@ -930,9 +919,6 @@
     }).join('') + '</div>' + (viewMode === 'list' ? '</div>' : '') + '';
 
       listContainer.innerHTML = html;
-      // #region agent log
-      fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'1715c1'},body:JSON.stringify({sessionId:'1715c1',location:'tasitlar.js:930',message:'renderVehicles done',data:{vehicleCount:vehicles.length,htmlLen:html.length,elapsed:Date.now()-_r0},timestamp:Date.now(),hypothesisId:'H3'})}).catch(()=>{});
-      // #endregion
 
       // Taşıt kartları için grid'i dinamik yap (sadece card view'da)
       if (viewMode === 'card') {
@@ -1267,9 +1253,6 @@
       requestAnimationFrame(() => { applyVehicleDetailSubeShrink(); });
     });
     };
-    // #region agent log
-    fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'1715c1'},body:JSON.stringify({sessionId:'1715c1',location:'tasitlar.js:1256',message:'openVehicleDetail',data:{vehicleId,hasLoadData:typeof window.loadDataFromServer==='function',isDataLoaded:!!(window.appData&&window.appData.tasitlar)},timestamp:Date.now(),hypothesisId:'H2'})}).catch(()=>{});
-    // #endregion
     if (typeof window.loadDataFromServer === 'function') {
       window.loadDataFromServer().then(runDetail).catch(runDetail);
     } else {
@@ -1860,14 +1843,7 @@
       return;
     }
     /* Şema yazdırmada kaybolmasın diye önce SVG yükle */
-    // #region agent log
-    const _print0 = Date.now();
-    fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'1715c1'},body:JSON.stringify({sessionId:'1715c1',location:'tasitlar.js:1851',message:'printVehicleCard getParsedKaportaSvg start',data:{vehicleId},timestamp:Date.now(),hypothesisId:'H5'})}).catch(()=>{});
-    // #endregion
     getParsedKaportaSvg().then(function() {
-      // #region agent log
-      fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'1715c1'},body:JSON.stringify({sessionId:'1715c1',location:'tasitlar.js:1851',message:'printVehicleCard getParsedKaportaSvg done',data:{elapsed:Date.now()-_print0},timestamp:Date.now(),hypothesisId:'H5'})}).catch(()=>{});
-      // #endregion
       doPrintVehicleCard(vehicle);
     }).catch(function() {
       doPrintVehicleCard(vehicle);
@@ -2550,14 +2526,7 @@ function renderVehicleDetailLeft(vehicle) {
     const container = document.getElementById('detail-boya-container');
     if (!container) return;
 
-    // #region agent log
-    const _svg0 = Date.now();
-    fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'1715c1'},body:JSON.stringify({sessionId:'1715c1',location:'tasitlar.js:2530',message:'getParsedKaportaSvg start',data:{vehicleId:vehicle?.id},timestamp:Date.now(),hypothesisId:'H4'})}).catch(()=>{});
-    // #endregion
     getParsedKaportaSvg().then(function(svgClone) {
-        // #region agent log
-        fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'1715c1'},body:JSON.stringify({sessionId:'1715c1',location:'tasitlar.js:2530',message:'getParsedKaportaSvg done',data:{hasSvg:!!svgClone,elapsed:Date.now()-_svg0},timestamp:Date.now(),hypothesisId:'H4'})}).catch(()=>{});
-        // #endregion
         if (!svgClone) return;
 
         container.innerHTML = '';
