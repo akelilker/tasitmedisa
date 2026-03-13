@@ -1033,7 +1033,7 @@ flex-direction: row !important; /* Mobil column override – tek satır için */
 flex-basis: 100% !important;
 flex: 1 1 100% !important;
 width: 100% !important;
-margin-top: 6px !important;
+margin-top: 1px !important;
 padding-top: 0 !important;
 min-width: 0 !important;
 justify-content: space-between !important;
@@ -1243,11 +1243,9 @@ flex: 0 0 auto !important;
 width: auto !important;
 }
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-2,
-#reports-modal:not(:has(.stok-detail-menu-open)) .stok-detail-add-wrap.desktop-single-row .stok-controls-row-2 {
-margin-top: 6px !important;
-}
+#reports-modal:not(:has(.stok-detail-menu-open)) .stok-detail-add-wrap.desktop-single-row .stok-controls-row-2,
 #reports-modal:has(.stok-detail-menu-open) .stok-detail-add-wrap.desktop-single-row .stok-controls-row-2 {
-margin-top: 88px !important;
+margin-top: 1px !important;
 }
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-1 .stok-detail-add-btn {
 align-self: flex-start !important;
