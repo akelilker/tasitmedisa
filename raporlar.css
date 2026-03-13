@@ -1006,7 +1006,7 @@ order: 2 !important; /* row-1 altında, menü sonra */
 }
 /* Masaüstü: [büyüteç][excel][yazıcı] ................ [başlangıç][bitiş] tek satır */
 #reports-modal:has(.stok-detail-menu-open) .stok-detail-add-wrap.desktop-single-row .stok-controls-row-2 {
-margin-top: 26px !important;
+margin-top: 56px !important;
 }
 #reports-modal:not(:has(.stok-detail-menu-open)) .stok-detail-add-wrap.desktop-single-row .stok-controls-row-2 {
 margin-top: 6px !important;
@@ -1052,8 +1052,11 @@ overflow: visible !important;
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-1:has(.stok-detail-menu-open) {
 overflow: visible !important;
 }
+/* Kök sorun: Menü position:absolute ile wrap'e göre konumlanıyordu (btn-wrap position:static).
+   Wrap row-1+row-2 içeriyor, top:100% = bitiş tarihi altı; margin-top:-48px ile bitiş tarihine biniyordu.
+   Çözüm: btn-wrap position:relative → menü sadece butonun altına göre konumlanır. */
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-detail-add-btn-wrap {
-position: static !important;
+position: relative !important;
 display: inline-block;
 overflow: visible;
 }
@@ -1062,7 +1065,7 @@ position: absolute !important;
 top: 100% !important;
 left: auto !important;
 right: 2px !important;
-margin-top: -48px;
+margin-top: 4px !important;
 margin-left: 0;
 z-index: 50;
 width: calc(100% - 140px) !important;
