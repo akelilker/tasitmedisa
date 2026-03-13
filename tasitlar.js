@@ -40,7 +40,7 @@
 
   function writeVehicles(arr) {
     if (window.dataApi && typeof window.dataApi.saveVehiclesList === 'function') {
-      window.dataApi.saveVehiclesList(arr).catch(function(err) {
+      return window.dataApi.saveVehiclesList(arr).catch(function(err) {
         if (err && err.conflict) {
           alert('Dikkat! Bu araç siz işlem yaparken başka biri tarafından güncellenmiş. Veri ezilmesini önlemek için lütfen sayfayı yenileyip güncel durumu kontrol edin.');
           if (typeof window.loadDataFromServer === 'function') {
@@ -49,13 +49,14 @@
               if (typeof window.renderVehicles === 'function') window.renderVehicles();
             });
           }
-          return;
+          throw err;
         }
         console.warn('[Medisa] Sunucuya kayıt yapılamadı:', err && err.message);
+        throw err;
       });
-      return;
     }
     if (window.appData) window.appData.tasitlar = Array.isArray(arr) ? arr : [];
+    return Promise.resolve();
   }
 
   // Global State
@@ -1787,6 +1788,28 @@
     const krediLabel = vehicle.kredi === 'var' ? (vehicle.krediDetay || 'Var') : 'Yoktur.';
     const lastikLabel = vehicle.lastikDurumu === 'var' ? (vehicle.lastikAdres || 'Var') : 'Yoktur.';
 
+    let tramerLabel = 'Yoktur.';
+    if (vehicle.tramer === 'var' && vehicle.tramerRecords && vehicle.tramerRecords.length > 0) {
+      tramerLabel = vehicle.tramerRecords.map(function(r) {
+        return (formatDateForDisplay(r.date) || '-') + ' - ' + (r.amount || '');
+      }).join(' | ');
+      if (vehicle.tramerRecords.length > 1) {
+        var total = 0;
+        vehicle.tramerRecords.forEach(function(record) {
+          var amountStr = (record.amount || '').replace(/\./g, '').replace(',', '.').replace(/TL/gi, '').trim();
+          total += parseFloat(amountStr) || 0;
+        });
+        tramerLabel += ' | Toplam: ' + total.toFixed(2).replace('.', ',') + ' TL';
+      }
+    }
+
+    var kaskoDegeri = vehicle.kaskoDegeri;
+    if (kaskoDegeri == null || kaskoDegeri === '') {
+      var yearForKasko = vehicle.year || vehicle.modelYili || '';
+      kaskoDegeri = getKaskoDegeri(vehicle.kaskoKodu, yearForKasko);
+    }
+    var kaskoDegeriDisplay = (kaskoDegeri != null && String(kaskoDegeri).trim() !== '') ? String(kaskoDegeri).trim() : '-';
+
     return [
       ['Plaka', vehicle.plate || '-'],
       ['Marka / Model', toTitleCase(vehicle.brandModel || '-')],
@@ -1797,6 +1820,7 @@
       ['Tescil Tarihi', vehicle.tescilTarihi || '-'],
       ['Km', kmValue],
       ['Şanzıman', vehicle.transmission || '-'],
+      ['Tramer Kaydı', tramerLabel],
       ['Sigorta Bitiş Tarihi', vehicle.sigorta || '-'],
       ['Kasko Bitiş Tarihi', vehicle.kasko || '-'],
       ['Muayene Bitiş Tarihi', vehicle.muayene || '-'],
@@ -1806,6 +1830,7 @@
       ['UTTS', vehicle.uttsTanimlandi ? 'Evet' : 'Hayır'],
       ['Taşıt Takip', vehicle.takipCihaziMontaj ? 'Evet' : 'Hayır'],
       ['Kasko Kodu', vehicle.kaskoKodu || '-'],
+      ['Kasko Değeri', kaskoDegeriDisplay],
       ['Notlar', vehicle.notes || '-']
     ];
   }
@@ -2076,18 +2101,19 @@
     body { font-family: Arial, sans-serif; margin: 24px; color: #111; }
     h1 { margin: 0 0 4px; font-size: 24px; }
     .subtitle { margin: 0 0 10px; color: #555; font-size: 13px; }
-    table { width: 100%; border-collapse: collapse; }
+    table { width: 100%; border-collapse: collapse; table-layout: fixed; }
     th, td { border: 1px solid #ddd; padding: 6px 8px; text-align: left; vertical-align: top; font-size: 13px; line-height: 1.3; }
-    th { width: 240px; background: #f4f4f4; }
+    th { width: 35%; min-width: 100px; max-width: 160px; background: #f4f4f4; }
+    td { width: 65%; }
     .vehicle-card-print-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
     .vehicle-card-print-grid table { width: 100%; }
     @media (max-width: 760px) { .vehicle-card-print-grid { grid-template-columns: 1fr; } }
-    .kaporta-print-section { margin-top: 14px; border: 1px solid #ddd; border-radius: 8px; padding: 10px; }
-    .kaporta-print-section h2 { margin: 0 0 8px; font-size: 16px; }
+    .kaporta-print-section { margin-top: 6px; border: 1px solid #ddd; border-radius: 8px; padding: 6px; }
+    .kaporta-print-section h2 { margin: 0 0 6px; font-size: 16px; }
     .kaporta-print-schema-wrap { margin-bottom: 6px; min-height: 180px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
     .kaporta-print-fallback { display: block; width: 170px; height: 260px; margin: 0 auto; object-fit: contain; transform: rotate(90deg); transform-origin: center center; }
     .kaporta-print-state-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-    .kaporta-print-col h3 { margin: 0 0 6px; font-size: 13px; }
+    .kaporta-print-col h3 { margin: 0 0 4px; font-size: 13px; }
     .kaporta-print-list { margin: 0; padding-left: 18px; }
     .kaporta-print-list li { font-size: 12px; line-height: 1.3; margin-bottom: 2px; }
     .kaporta-print-empty { font-size: 12px; color: #666; }
@@ -2115,9 +2141,7 @@
     ${kaportaPrintSectionHtml}
   </section>
 
-  <div class="print-page-break"></div>
-
-  <section class="history-page">
+  <section class="history-page" style="margin-top: 12px;">
     <h1>Taşıt Tarihçesi</h1>
     <p class="subtitle">Plaka: ${escapeHtml(vehicle.plate || '-')} • Oluşturma: ${printedAt}</p>
     <div class="history-grid">${historySectionsHtml}</div>
@@ -3542,13 +3566,11 @@ function renderVehicleDetailLeft(vehicle) {
     };
     
     vehicle.events.unshift(event);
-    writeVehicles(vehicles);
-    
-    // Bildirimleri güncelle
-    if (window.updateNotifications) window.updateNotifications();
-    
-    closeEventModal('sigorta');
-    showVehicleDetail(vehicleId);
+    return writeVehicles(vehicles).then(function() {
+      if (window.updateNotifications) window.updateNotifications();
+      closeEventModal('sigorta');
+      showVehicleDetail(vehicleId);
+    });
   };
 
   /**
@@ -3594,13 +3616,11 @@ function renderVehicleDetailLeft(vehicle) {
     };
     
     vehicle.events.unshift(event);
-    writeVehicles(vehicles);
-    
-    // Bildirimleri güncelle
-    if (window.updateNotifications) window.updateNotifications();
-    
-    closeEventModal('kasko');
-    showVehicleDetail(vehicleId);
+    return writeVehicles(vehicles).then(function() {
+      if (window.updateNotifications) window.updateNotifications();
+      closeEventModal('kasko');
+      showVehicleDetail(vehicleId);
+    });
   };
 
   /**
@@ -3683,10 +3703,10 @@ function renderVehicleDetailLeft(vehicle) {
     };
     
     vehicle.events.unshift(event);
-    writeVehicles(vehicles);
-    
-    closeEventModal('anahtar');
-    showVehicleDetail(vehicleId);
+    return writeVehicles(vehicles).then(function() {
+      closeEventModal('anahtar');
+      showVehicleDetail(vehicleId);
+    });
   };
 
   /**
@@ -3723,10 +3743,10 @@ function renderVehicleDetailLeft(vehicle) {
     };
     
     vehicle.events.unshift(event);
-    writeVehicles(vehicles);
-    
-    closeEventModal('kredi');
-    showVehicleDetail(vehicleId);
+    return writeVehicles(vehicles).then(function() {
+      closeEventModal('kredi');
+      showVehicleDetail(vehicleId);
+    });
   };
 
   /**
@@ -3759,23 +3779,16 @@ function renderVehicleDetailLeft(vehicle) {
       data: { kaskoKodu: yeniKaskoKodu, surucu: getEventPerformerName(vehicle) }
     });
 
-    writeVehicles(vehicles);
-
-    if (inputElement) inputElement.value = '';
-
-    // UI'daki tüm karartıları temizle ve modalı kapat
-    closeEventModal('kaskokodu');
-    document.querySelectorAll('.modal-overlay.active').forEach(m => {
-      m.classList.remove('active');
-      m.style.display = 'none';
+    return writeVehicles(vehicles).then(function() {
+      if (inputElement) inputElement.value = '';
+      closeEventModal('kaskokodu');
+      document.querySelectorAll('.modal-overlay.active').forEach(m => {
+        m.classList.remove('active');
+        m.style.display = 'none';
+      });
+      if (typeof showToast === 'function') showToast('Kasko Kodu güncellendi', 'success');
+      setTimeout(() => showVehicleDetail(vehicleId), 250);
     });
-
-    // Modal çakışmasını engellemek için sadece Toast mesajı kullan
-    if (typeof showToast === 'function') showToast('Kasko Kodu güncellendi', 'success');
-
-    setTimeout(() => {
-      showVehicleDetail(vehicleId);
-    }, 250);
   };
 
   /**
@@ -3832,13 +3845,11 @@ function renderVehicleDetailLeft(vehicle) {
     };
     
     vehicle.events.unshift(event);
-    writeVehicles(vehicles);
-    
-    // Modal input'u temizle
-    kmInput.value = '';
-    
-    closeEventModal('km');
-    showVehicleDetail(vehicleId);
+    return writeVehicles(vehicles).then(function() {
+      kmInput.value = '';
+      closeEventModal('km');
+      showVehicleDetail(vehicleId);
+    });
   };
 
   /**
@@ -3872,10 +3883,10 @@ function renderVehicleDetailLeft(vehicle) {
     };
     
     vehicle.events.unshift(event);
-    writeVehicles(vehicles);
-    
-    closeEventModal('utts');
-    showVehicleDetail(vehicleId);
+    return writeVehicles(vehicles).then(function() {
+      closeEventModal('utts');
+      showVehicleDetail(vehicleId);
+    });
   };
 
   /**
@@ -3909,10 +3920,10 @@ function renderVehicleDetailLeft(vehicle) {
     };
     
     vehicle.events.unshift(event);
-    writeVehicles(vehicles);
-    
-    closeEventModal('takip');
-    showVehicleDetail(vehicleId);
+    return writeVehicles(vehicles).then(function() {
+      closeEventModal('takip');
+      showVehicleDetail(vehicleId);
+    });
   };
 
   /**
@@ -3949,13 +3960,11 @@ function renderVehicleDetailLeft(vehicle) {
     };
     
     vehicle.events.unshift(event);
-    writeVehicles(vehicles);
-    
-    // Bildirimleri güncelle
-    if (window.updateNotifications) window.updateNotifications();
-    
-    closeEventModal('lastik');
-    showVehicleDetail(vehicleId);
+    return writeVehicles(vehicles).then(function() {
+      if (window.updateNotifications) window.updateNotifications();
+      closeEventModal('lastik');
+      showVehicleDetail(vehicleId);
+    });
   };
 
   /**
@@ -4002,10 +4011,10 @@ function renderVehicleDetailLeft(vehicle) {
     };
     
     vehicle.events.unshift(event);
-    writeVehicles(vehicles);
-    
-    closeEventModal('sube');
-    showVehicleDetail(vehicleId);
+    return writeVehicles(vehicles).then(function() {
+      closeEventModal('sube');
+      showVehicleDetail(vehicleId);
+    });
   };
 
   /**
@@ -4043,10 +4052,10 @@ function renderVehicleDetailLeft(vehicle) {
         data: { kullaniciId: '', kullaniciAdi: 'Henüz Tanımlanmadı' }
       };
       vehicle.events.unshift(event);
-      writeVehicles(vehicles);
-      closeEventModal('kullanici');
-      showVehicleDetail(vehicleId);
-      return;
+      return writeVehicles(vehicles).then(function() {
+        closeEventModal('kullanici');
+        showVehicleDetail(vehicleId);
+      });
     }
 
     const users = readUsers();
@@ -4075,12 +4084,10 @@ function renderVehicleDetailLeft(vehicle) {
     };
 
     vehicle.events.unshift(event);
-    writeVehicles(vehicles);
-
-    closeEventModal('kullanici');
-    setTimeout(function() {
-      showVehicleDetail(vehicleId);
-    }, 250);
+    return writeVehicles(vehicles).then(function() {
+      closeEventModal('kullanici');
+      setTimeout(function() { showVehicleDetail(vehicleId); }, 250);
+    });
   };
 
   /**
@@ -4122,11 +4129,11 @@ function renderVehicleDetailLeft(vehicle) {
     };
     
     vehicle.events.unshift(event);
-    writeVehicles(vehicles);
-    
-    closeEventModal('satis');
-    closeVehicleDetailModal(); // Detay modal'ını kapat
-    alert('Taşıt satış/pert işlemi kaydedildi. Taşıt arşive taşındı.');
+    return writeVehicles(vehicles).then(function() {
+      closeEventModal('satis');
+      closeVehicleDetailModal();
+      alert('Taşıt satış/pert işlemi kaydedildi. Taşıt arşive taşındı.');
+    });
   };
 
   /**
