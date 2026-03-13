@@ -1058,7 +1058,7 @@ display: none !important;
 /* Detay menü: container içinde, butonlar arası yatay/dikey 3px */
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-detail-add-btn-wrap .stok-detail-menu.stok-detail-menu-open {
 display: grid !important;
-grid-template-columns: repeat(4, 1fr);
+grid-template-columns: repeat(5, max-content);
 column-gap: 3px !important;
 row-gap: 3px !important;
 gap: 3px !important;
