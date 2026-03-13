@@ -3147,6 +3147,7 @@ function renderVehicleDetailLeft(vehicle) {
     input.type = 'file';
     input.accept = '.pdf';
     input.id = 'ruhsat-file-input';
+    input.setAttribute('aria-label', 'Ruhsat PDF dosyası seç');
     input.style.marginBottom = '8px';
     input.onchange = function() { saveBtn.style.display = input.files.length ? 'inline-block' : 'none'; };
     content.appendChild(input);

@@ -1214,6 +1214,7 @@
         const input = document.createElement('input');
         input.type = 'file';
         input.accept = '.json';
+        input.setAttribute('aria-label', 'Yedek JSON dosyası seç');
         input.style.position = 'fixed';
         input.style.left = '-9999px';
         input.style.opacity = '0';
