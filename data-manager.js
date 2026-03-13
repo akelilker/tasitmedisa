@@ -86,6 +86,10 @@ function loadDataFromLocalStorage() {
    SUNUCUDAN VERİ YÜKLEME
    ========================================= */
 async function loadDataFromServer(forceRefresh = true) {
+    // #region agent log
+    const _t0 = Date.now();
+    fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'1715c1'},body:JSON.stringify({sessionId:'1715c1',location:'data-manager.js:88',message:'loadDataFromServer entry',data:{loadPromise:!!loadPromise,isDataLoading},timestamp:Date.now(),hypothesisId:'H1'})}).catch(()=>{});
+    // #endregion
     if (loadPromise) {
         return loadPromise;
     }
@@ -120,6 +124,9 @@ async function loadDataFromServer(forceRefresh = true) {
             }
 
             const responseText = await response.text();
+            // #region agent log
+            fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'1715c1'},body:JSON.stringify({sessionId:'1715c1',location:'data-manager.js:122',message:'loadDataFromServer fetch done',data:{textLen:responseText?.length||0,elapsed:Date.now()-_t0},timestamp:Date.now(),hypothesisId:'H1'})}).catch(()=>{});
+            // #endregion
             if (!responseText || responseText.trim() === '') {
                 window.appData = getDefaultAppData();
                 isDataLoaded = true;
@@ -134,6 +141,7 @@ async function loadDataFromServer(forceRefresh = true) {
             }
 
             let data;
+            const _parseStart = Date.now();
             try {
                 data = JSON.parse(responseText);
             } catch (parseError) {
@@ -142,6 +150,9 @@ async function loadDataFromServer(forceRefresh = true) {
                 return window.appData;
             }
 
+            // #region agent log
+            fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'1715c1'},body:JSON.stringify({sessionId:'1715c1',location:'data-manager.js:145',message:'loadDataFromServer JSON.parse done',data:{parseMs:Date.now()-_parseStart,tasitCount:(data.tasitlar||[]).length,elapsed:Date.now()-_t0},timestamp:Date.now(),hypothesisId:'H1'})}).catch(()=>{});
+            // #endregion
             const rawUsers = data.users || [];
 
             // Global veri nesnesini güncelle (arac_aylik_hareketler, duzeltme_talepleri save sırasında silinmesin)
@@ -171,6 +182,9 @@ async function loadDataFromServer(forceRefresh = true) {
             isDataLoaded = true;
             return window.appData;
         } finally {
+            // #region agent log
+            fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'1715c1'},body:JSON.stringify({sessionId:'1715c1',location:'data-manager.js:178',message:'loadDataFromServer finally',data:{totalMs:Date.now()-_t0},timestamp:Date.now(),hypothesisId:'H1'})}).catch(()=>{});
+            // #endregion
             isDataLoading = false;
             loadPromise = null;
         }
