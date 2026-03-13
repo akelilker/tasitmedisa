@@ -1669,6 +1669,24 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
 
 /* MOBİL AYARLARI: 768px ve altında modal alt çerçeve footer ışığında ezilmesin; sınır sadece top/bottom */
 @media (max-width: 768px) {
+    /* Kasko Değer Listesi bildirimi: X sağda, metin solda, dikey kompakt */
+    #notifications-dropdown .kasko-excel-notification {
+        flex-wrap: nowrap !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        padding: 8px 12px !important;
+        min-height: unset !important;
+    }
+    #notifications-dropdown .kasko-excel-notification .mtv-text-container {
+        order: 1 !important;
+        flex: 1 1 auto !important;
+        min-width: 0 !important;
+    }
+    #notifications-dropdown .kasko-excel-notification .mtv-dismiss-wrapper {
+        order: 2 !important;
+        flex: 0 0 auto !important;
+        margin-left: 8px !important;
+    }
     .modal-overlay {
         bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
     }
