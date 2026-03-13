@@ -1842,7 +1842,15 @@
       alert('Taşıt bulunamadı!');
       return;
     }
+    /* Şema yazdırmada kaybolmasın diye önce SVG yükle */
+    getParsedKaportaSvg().then(function() {
+      doPrintVehicleCard(vehicle);
+    }).catch(function() {
+      doPrintVehicleCard(vehicle);
+    });
+  };
 
+  function doPrintVehicleCard(vehicle) {
     const allRows = getVehiclePrintRows(vehicle);
     const sigortaIdx = allRows.findIndex(([l]) => l === 'Sigorta Bitiş Tarihi');
     const leftRows = sigortaIdx >= 0 ? allRows.slice(0, sigortaIdx) : allRows.slice(0, 9);
@@ -2076,17 +2084,19 @@
 
       return `<section class="kaporta-print-section">
         <h2>Kaporta Şeması</h2>
-        <div class="kaporta-print-state-grid">
-          <div class="kaporta-print-col">
-            <h3>Boyalı Parçalar</h3>
-            ${listHtml(boyaliList)}
+        <div class="kaporta-print-row">
+          <div class="kaporta-print-state-grid">
+            <div class="kaporta-print-col">
+              <h3>Boyalı Parçalar</h3>
+              ${listHtml(boyaliList)}
+            </div>
+            <div class="kaporta-print-col">
+              <h3>Değişen Parçalar</h3>
+              ${listHtml(degisenList)}
+            </div>
           </div>
-          <div class="kaporta-print-col">
-            <h3>Değişen Parçalar</h3>
-            ${listHtml(degisenList)}
-          </div>
+          <div class="kaporta-print-schema-wrap">${svgMarkup}</div>
         </div>
-        <div class="kaporta-print-schema-wrap">${svgMarkup}</div>
       </section>`;
     }
 
@@ -2108,10 +2118,11 @@
     .vehicle-card-print-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
     .vehicle-card-print-grid table { width: 100%; }
     @media (max-width: 760px) { .vehicle-card-print-grid { grid-template-columns: 1fr; } }
-    .kaporta-print-section { margin-top: 4px; border: 1px solid #ddd; border-radius: 8px; padding: 4px; }
+    .kaporta-print-section { margin-top: 4px; border: 1px solid #ddd; border-radius: 8px; padding: 4px; page-break-inside: avoid; break-inside: avoid; }
     .kaporta-print-section h2 { margin: 0 0 4px; font-size: 16px; }
-    .kaporta-print-state-grid { margin-bottom: 4px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; }
-    .kaporta-print-schema-wrap { margin-top: 4px; margin-bottom: 0; min-height: 180px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+    .kaporta-print-row { display: flex; flex-direction: row; align-items: flex-start; gap: 8px; flex-wrap: nowrap; }
+    .kaporta-print-state-grid { flex: 0 0 auto; display: grid; grid-template-columns: auto auto; gap: 4px 6px; }
+    .kaporta-print-schema-wrap { flex: 0 0 auto; min-width: 180px; min-height: 180px; display: flex; align-items: center; justify-content: center; overflow: visible; }
     .kaporta-print-fallback { display: block; width: 170px; height: 260px; margin: 0 auto; object-fit: contain; transform: rotate(90deg); transform-origin: center center; }
     .kaporta-print-col h3 { margin: 0 0 4px; font-size: 13px; }
     .kaporta-print-list { margin: 0; padding-left: 18px; }
@@ -2129,8 +2140,8 @@
     .history-print-text { font-size: 12px; line-height: 1.25; }
     .history-print-extra { font-size: 11px; color: #444; margin-top: 1px; line-height: 1.2; }
     .history-print-empty { font-size: 12px; color: #666; }
-    @media (max-width: 760px) { .history-grid { grid-template-columns: 1fr; } .kaporta-print-state-grid { grid-template-columns: 1fr; } }
-    @media print { body { margin: 8mm; } .history-page h1, .history-page .subtitle { page-break-after: avoid; break-after: avoid-page; } .history-page { page-break-before: avoid; break-before: avoid-page; page-break-inside: avoid; break-inside: avoid; } .history-grid { gap: 8px; } }
+    @media (max-width: 760px) { .history-grid { grid-template-columns: 1fr; } .kaporta-print-row { flex-wrap: wrap; } .kaporta-print-state-grid { grid-template-columns: 1fr; } }
+    @media print { body { margin: 8mm; } .kaporta-print-section { page-break-inside: avoid; break-inside: avoid; } .history-page h1, .history-page .subtitle { page-break-after: avoid; break-after: avoid-page; } .history-page { page-break-before: avoid; break-before: avoid-page; page-break-inside: avoid; break-inside: avoid; } .history-grid { gap: 8px; } }
   </style>
 </head>
 <body>
@@ -2269,7 +2280,7 @@
     tryPopupPrint(printWindow).catch(function(popupErr) {
       printWithIframeFallback((popupErr && popupErr.message) ? popupErr.message : 'popup_print_failed');
     });
-  };
+  }
   /**
    * /**
  * Sol kolon render (Taşıt özellikleri + Kaporta Şeması)
