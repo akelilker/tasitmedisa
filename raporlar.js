@@ -948,9 +948,13 @@
         if (menu) {
             menu.classList.toggle('stok-detail-menu-open', stokDetailMenuOpen);
             if (stokDetailMenuOpen && window.matchMedia('(min-width: 641px)').matches) {
-                requestAnimationFrame(() => positionStokDetailMenuPortal());
+                if (typeof window.positionStokDetailMenuPortal === 'function') {
+                    requestAnimationFrame(() => window.positionStokDetailMenuPortal());
+                }
             } else if (!stokDetailMenuOpen) {
-                returnStokDetailMenuFromPortal();
+                if (typeof window.returnStokDetailMenuFromPortal === 'function') {
+                    window.returnStokDetailMenuFromPortal();
+                }
             }
         }
         buttons.forEach(function(btn) {
