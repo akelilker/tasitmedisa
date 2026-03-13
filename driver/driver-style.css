@@ -878,7 +878,7 @@ body.dashboard-page {
   line-height: 1.2;
 }
 .driver-user-plate-in-panel .driver-plate-subtitle {
-  font-size: 15px; /* 1 punto bÃ¼yÃ¼k */
+  font-size: calc(15px - 1pt); /* Marka/model 1pt küçük */
   margin-top: 0;
   text-align: center;
   align-self: center;
@@ -915,7 +915,7 @@ body.dashboard-page {
   transform: translateY(-50%);
 }
 .driver-current-plaka {
-  font-size: 14px; /* 15px - 1pt */
+  font-size: calc(14px - 1pt); /* Plaka 1pt küçük */
   font-weight: 700;
   color: var(--txt);
 }
@@ -4204,7 +4204,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     text-overflow: clip !important;
     padding-left: 8px !important;
     padding-right: 18px !important;
-    font-size: 13px !important; /* 14px - 1pt */
+    font-size: calc(13px - 1pt) !important; /* 14px - 2pt */
   }
   .dashboard-page .driver-plate-dropdown-row .driver-plate-trigger {
     right: -8px !important;
@@ -4254,6 +4254,10 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .dashboard-page .driver-below-hero-row {
     justify-content: center !important;
     align-items: center !important;
+    gap: 8px !important;
+  }
+  .dashboard-page .driver-below-hero-notification-slot {
+    flex: 0 0 auto !important; /* Grubu ortada tutar, bildirim alanı genişlemez */
   }
   /* Mobil login: Kullanıcı adı etiketi ve altındakiler 8px yukarı */
   .login-page .login-form {
@@ -4528,14 +4532,14 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     font-size: 15px !important;
   }
   .dashboard-page .driver-left-panel .driver-current-plaka {
-    font-size: 15px !important; /* 16px - 1pt */
+    font-size: calc(15px - 1pt) !important; /* Plaka 1pt küçük */
   }
   .dashboard-page .driver-left-panel .driver-user-name,
   .dashboard-page .driver-user-plate-in-panel .driver-user-name {
     font-size: 15px !important;
   }
   .dashboard-page .driver-left-panel .driver-plate-subtitle {
-    font-size: 16px !important; /* 17px - 1pt */
+    font-size: calc(16px - 1pt) !important; /* Marka/model 1pt küçük */
   }
   .dashboard-page .driver-sliding-warning {
     font-size: 15px !important;
