@@ -2076,7 +2076,6 @@
 
       return `<section class="kaporta-print-section">
         <h2>Kaporta Şeması</h2>
-        <div class="kaporta-print-schema-wrap">${svgMarkup}</div>
         <div class="kaporta-print-state-grid">
           <div class="kaporta-print-col">
             <h3>Boyalı Parçalar</h3>
@@ -2087,6 +2086,7 @@
             ${listHtml(degisenList)}
           </div>
         </div>
+        <div class="kaporta-print-schema-wrap">${svgMarkup}</div>
       </section>`;
     }
 
@@ -2108,17 +2108,17 @@
     .vehicle-card-print-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
     .vehicle-card-print-grid table { width: 100%; }
     @media (max-width: 760px) { .vehicle-card-print-grid { grid-template-columns: 1fr; } }
-    .kaporta-print-section { margin-top: 6px; border: 1px solid #ddd; border-radius: 8px; padding: 6px; }
-    .kaporta-print-section h2 { margin: 0 0 6px; font-size: 16px; }
-    .kaporta-print-schema-wrap { margin-bottom: 6px; min-height: 180px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+    .kaporta-print-section { margin-top: 4px; border: 1px solid #ddd; border-radius: 8px; padding: 4px; }
+    .kaporta-print-section h2 { margin: 0 0 4px; font-size: 16px; }
+    .kaporta-print-state-grid { margin-bottom: 4px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; }
+    .kaporta-print-schema-wrap { margin-top: 4px; margin-bottom: 0; min-height: 180px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
     .kaporta-print-fallback { display: block; width: 170px; height: 260px; margin: 0 auto; object-fit: contain; transform: rotate(90deg); transform-origin: center center; }
-    .kaporta-print-state-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
     .kaporta-print-col h3 { margin: 0 0 4px; font-size: 13px; }
     .kaporta-print-list { margin: 0; padding-left: 18px; }
     .kaporta-print-list li { font-size: 12px; line-height: 1.3; margin-bottom: 2px; }
     .kaporta-print-empty { font-size: 12px; color: #666; }
     .print-page-break { page-break-before: always; break-before: page; margin: 16px 0 0; }
-    .history-page { margin-top: 0; break-inside: auto; page-break-inside: auto; }
+    .history-page { margin-top: 8px; page-break-before: avoid; break-before: avoid-page; page-break-inside: avoid; break-inside: avoid; }
     .history-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; align-items: start; }
     .history-print-card { border: 1px solid #ddd; border-radius: 8px; padding: 8px; break-inside: auto; page-break-inside: auto; }
     .history-print-card h2 { margin: 0 0 5px; font-size: 14px; page-break-after: avoid; break-after: avoid-page; }
@@ -2130,7 +2130,7 @@
     .history-print-extra { font-size: 11px; color: #444; margin-top: 1px; line-height: 1.2; }
     .history-print-empty { font-size: 12px; color: #666; }
     @media (max-width: 760px) { .history-grid { grid-template-columns: 1fr; } .kaporta-print-state-grid { grid-template-columns: 1fr; } }
-    @media print { body { margin: 8mm; } .history-page h1, .history-page .subtitle { page-break-after: avoid; break-after: avoid-page; } .history-grid { gap: 8px; } }
+    @media print { body { margin: 8mm; } .history-page h1, .history-page .subtitle { page-break-after: avoid; break-after: avoid-page; } .history-page { page-break-before: avoid; break-before: avoid-page; page-break-inside: avoid; break-inside: avoid; } .history-grid { gap: 8px; } }
   </style>
 </head>
 <body>
@@ -2141,7 +2141,7 @@
     ${kaportaPrintSectionHtml}
   </section>
 
-  <section class="history-page" style="margin-top: 12px;">
+  <section class="history-page">
     <h1>Taşıt Tarihçesi</h1>
     <p class="subtitle">Plaka: ${escapeHtml(vehicle.plate || '-')} • Oluşturma: ${printedAt}</p>
     <div class="history-grid">${historySectionsHtml}</div>
