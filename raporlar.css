@@ -1038,15 +1038,16 @@ overflow: visible !important;
 overflow: visible !important;
 }
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-detail-add-btn-wrap {
-position: relative;
+position: static !important;
 display: inline-block;
 overflow: visible;
 }
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-detail-add-btn-wrap .stok-detail-menu {
 position: absolute !important;
-top: 100%;
-left: 100%;
-margin-top: -28px;
+top: 100% !important;
+left: auto !important;
+right: 2px !important;
+margin-top: -42px;
 margin-left: 0;
 z-index: 50;
 width: auto;
