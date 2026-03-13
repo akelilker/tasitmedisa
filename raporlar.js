@@ -959,20 +959,26 @@
         if (!btnWrap) return;
         if (menu.parentElement === overlay) {
             const r = btn.getBoundingClientRect();
+            const modalContainer = overlay.querySelector('.modal-container');
             const pad = 20;
             menu.style.position = 'fixed';
             menu.style.left = 'auto';
-            menu.style.right = pad + 'px';
+            menu.style.right = modalContainer
+                ? (window.innerWidth - modalContainer.getBoundingClientRect().right + pad) + 'px'
+                : pad + 'px';
             menu.style.top = (r.bottom - 28) + 'px';
             menu.style.bottom = 'auto';
             return;
         }
         overlay.appendChild(menu);
         const r = btn.getBoundingClientRect();
+        const modalContainer = overlay.querySelector('.modal-container');
         const pad = 20;
         menu.style.position = 'fixed';
         menu.style.left = 'auto';
-        menu.style.right = pad + 'px';
+        menu.style.right = modalContainer
+            ? (window.innerWidth - modalContainer.getBoundingClientRect().right + pad) + 'px'
+            : pad + 'px';
         menu.style.top = (r.bottom - 28) + 'px';
         menu.style.bottom = 'auto';
     }
