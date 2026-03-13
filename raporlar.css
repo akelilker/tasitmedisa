@@ -1130,16 +1130,26 @@ height: auto !important;
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-detail-menu-btn {
 height: 25px !important;
 min-height: 25px !important;
-padding-left: 0.5px !important;
-padding-right: 0.5px !important;
+padding-left: 1px !important;
+padding-right: 1px !important;
 padding-top: 0 !important;
 padding-bottom: 0 !important;
 width: 100% !important;
 max-width: 100% !important;
+min-width: 0 !important;
 box-sizing: border-box !important;
+overflow: visible !important;
+display: flex !important;
+align-items: center !important;
+justify-content: center !important;
 }
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-detail-menu-btn span {
 font-size: 10px !important;
+overflow: visible !important;
+text-overflow: clip !important;
+white-space: nowrap !important;
+max-width: 100% !important;
+min-width: 0 !important;
 }
 /* Uzun 3 etiket için ekstra sıkıştırma */
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-detail-menu-item[data-column-key="kaskoDegeri"] .stok-detail-menu-btn span,
