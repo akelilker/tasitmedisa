@@ -1080,11 +1080,17 @@ padding: 0 !important;
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-detail-menu-btn {
 padding-left: 0.5px !important;
 padding-right: 0.5px !important;
-width: 84px !important;
-max-width: 84px !important;
+width: 74px !important;
+max-width: 74px !important;
 }
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-detail-menu-btn span {
 font-size: 9px !important;
+}
+/* Uzun 3 etiket için ekstra sıkıştırma */
+#reports-modal .stok-detail-add-wrap.desktop-single-row .stok-detail-menu-item[data-column-key="kaskoDegeri"] .stok-detail-menu-btn span,
+#reports-modal .stok-detail-add-wrap.desktop-single-row .stok-detail-menu-item[data-column-key="kredi"] .stok-detail-menu-btn span,
+#reports-modal .stok-detail-add-wrap.desktop-single-row .stok-detail-menu-item[data-column-key="tescil"] .stok-detail-menu-btn span {
+font-size: 8px !important;
 }
 #stok-list-container .stok-list-top-controls {
 padding-top: 0 !important;
