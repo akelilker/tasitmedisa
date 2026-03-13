@@ -380,6 +380,9 @@ body.dashboard-page {
   align-items: center;
   justify-content: center;
 }
+.driver-below-hero-notification-slot:empty {
+  display: none;
+}
 .driver-below-hero-notification-slot .driver-sliding-warning {
   flex: 0 0 auto;
   max-width: 100%;
@@ -5036,15 +5039,23 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 
 /* === NOKTA ATIŞI: Kırmızı yan çizgiler footer üstünde jilet gibi biter (taşma yok) === */
 @media (max-width: 768px) {
+  .dashboard-page .driver-below-hero-row {
+    justify-content: space-between;
+  }
+
+  .dashboard-page .driver-below-hero-row .driver-btn-logout {
+    margin-left: auto;
+  }
+
   .dashboard-page .driver-dashboard-container::before,
   .login-page .driver-dashboard-container::before {
-    bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
+    bottom: 0 !important;
   }
 }
 @media (min-width: 769px) {
   .dashboard-page .driver-dashboard-container::before,
   .login-page .driver-dashboard-container::before {
-    bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
+    bottom: 0 !important;
     height: auto !important;
   }
 }
@@ -5069,4 +5080,3 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     padding-right: max(12px, env(safe-area-inset-right, 0)) !important;
   }
 }
-
