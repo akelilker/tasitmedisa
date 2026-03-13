@@ -93,11 +93,9 @@ async function loadDataFromServer(forceRefresh = true) {
     isDataLoading = true;
     loadPromise = (async function() {
         try {
-            // Cache-busting parametresi ekle (her seferinde güncel veri çekmek için)
             const cacheBuster = new Date().getTime();
             const url = `${API_LOAD}?t=${cacheBuster}`;
-            
-            const response = await fetch(url, {
+            const fetchOpts = {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -105,7 +103,17 @@ async function loadDataFromServer(forceRefresh = true) {
                     'Pragma': 'no-cache'
                 },
                 cache: 'no-store'
-            });
+            };
+
+            let response = await fetch(url, fetchOpts);
+
+            /* 503 (Service Unavailable) geçici olabilir – Docker/sunucu hazır olana kadar bir kez tekrar dene */
+            if (!response.ok && response.status === 503) {
+                isDataLoading = false;
+                loadPromise = null;
+                await new Promise(function(r) { setTimeout(r, 2000); });
+                return loadDataFromServer(forceRefresh);
+            }
 
             if (!response.ok) {
                 const errorText = await response.text().catch(() => 'Yanıt okunamadı');
