@@ -89,27 +89,21 @@ const API_BASE = (function(){
   function placeNotificationSlot() {
     var el = document.getElementById('driver-sliding-warning');
     if (!el) return;
-    var heroSlot = document.getElementById('driver-hero-notification-slot');
     var mobileSlot = document.getElementById('driver-mobile-notification-slot');
     var belowHeroSlot = document.getElementById('driver-below-hero-notification-slot');
     var hasContent = (el.innerHTML || '').trim().length > 0;
     if (!hasContent && belowHeroSlot && el.parentNode !== belowHeroSlot) {
       belowHeroSlot.appendChild(el);
-      if (heroSlot) heroSlot.setAttribute('aria-hidden', 'true');
       if (mobileSlot) mobileSlot.setAttribute('aria-hidden', 'true');
       return;
     }
     if (!hasContent) return;
-    if (window.innerWidth >= 769 && heroSlot) {
-      heroSlot.appendChild(el);
-      heroSlot.setAttribute('aria-hidden', 'false');
-      if (mobileSlot) mobileSlot.setAttribute('aria-hidden', 'true');
-    } else if (mobileSlot) {
+    if (mobileSlot && window.innerWidth < 769) {
       mobileSlot.appendChild(el);
       mobileSlot.setAttribute('aria-hidden', 'false');
-      if (heroSlot) heroSlot.setAttribute('aria-hidden', 'true');
     } else if (belowHeroSlot) {
       belowHeroSlot.appendChild(el);
+      if (mobileSlot) mobileSlot.setAttribute('aria-hidden', 'true');
     }
   }
   (function initPwaPlacement() {
@@ -1242,27 +1236,21 @@ const API_BASE = (function(){
       }
       
       const warnings = buildSlidingWarnings(vehicles, records);
-      var heroSlot = document.getElementById('driver-hero-notification-slot');
       var mobileSlot = document.getElementById('driver-mobile-notification-slot');
       var belowHeroSlot = document.getElementById('driver-below-hero-notification-slot');
       if (warnings.length === 0) {
           el.innerHTML = '';
           el.className = 'driver-sliding-warning';
           if (belowHeroSlot && el.parentNode !== belowHeroSlot) belowHeroSlot.appendChild(el);
-          if (heroSlot) heroSlot.setAttribute('aria-hidden', 'true');
           if (mobileSlot) mobileSlot.setAttribute('aria-hidden', 'true');
           return;
       }
-      if (window.innerWidth >= 769 && heroSlot) {
-          heroSlot.appendChild(el);
-          heroSlot.setAttribute('aria-hidden', 'false');
-          if (mobileSlot) mobileSlot.setAttribute('aria-hidden', 'true');
-      } else if (mobileSlot) {
+      if (mobileSlot && window.innerWidth < 769) {
           mobileSlot.appendChild(el);
           mobileSlot.setAttribute('aria-hidden', 'false');
-          if (heroSlot) heroSlot.setAttribute('aria-hidden', 'true');
       } else if (belowHeroSlot) {
           belowHeroSlot.appendChild(el);
+          if (mobileSlot) mobileSlot.setAttribute('aria-hidden', 'true');
       }
       
       const texts = warnings.map(w => w.text);

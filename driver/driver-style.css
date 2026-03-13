@@ -280,22 +280,12 @@ body.dashboard-page {
   gap: 2px;
   min-width: 0;
 }
-.hero.hero-two-rows .hero-spacer,
-.hero.hero-two-rows .driver-hero-notification-slot {
+.hero.hero-two-rows .hero-spacer {
   grid-column: 3;
   display: flex;
   align-items: center;
   justify-content: flex-end;
   min-width: 0;
-}
-.driver-hero-notification-slot[aria-hidden="true"] {
-  visibility: hidden;
-}
-.driver-hero-notification-slot .driver-sliding-warning {
-  flex: 1;
-  min-width: 0;
-  max-width: 100%;
-  font-size: 12px;
 }
 .driver-mobile-notification-slot {
   width: 100%;
@@ -356,11 +346,11 @@ body.dashboard-page {
   white-space: nowrap;
 }
 
-/* --- GeÃ§miÅŸ KayÄ±tlar (sol) + Ã‡Ä±kÄ±ÅŸ (saÄŸ) - header dÄ±ÅŸÄ±nda --- */
+/* --- İşlem geçmişi (sol) + Bildirimler (orta) + Çıkış (sağ) - 8px çerçeve boşluğu --- */
 .driver-below-hero {
   margin-top: 0;
   margin-bottom: 1px;
-  padding: 0 4px;
+  padding: 0 8px;
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -369,10 +359,10 @@ body.dashboard-page {
 
 .driver-below-hero-row {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
+  gap: 8px;
+  flex-wrap: nowrap;
 }
 .driver-below-hero-pwa-slot {
   flex: 0 0 auto;
@@ -384,7 +374,7 @@ body.dashboard-page {
   display: none;
 }
 .driver-below-hero-notification-slot {
-  flex: 0 0 auto;
+  flex: 1 1 auto;
   min-width: 0;
   display: flex;
   align-items: center;
@@ -392,6 +382,7 @@ body.dashboard-page {
 }
 .driver-below-hero-notification-slot .driver-sliding-warning {
   flex: 0 0 auto;
+  max-width: 100%;
 }
 
 .driver-below-hero-row .driver-btn-history {
@@ -399,6 +390,9 @@ body.dashboard-page {
   flex: none;
   margin: 0;
   padding: 2px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
   background: transparent !important;
   background-color: transparent !important;
   border: none !important;
@@ -417,9 +411,22 @@ body.dashboard-page {
   box-shadow: none !important;
   outline: none !important;
 }
+.driver-below-hero-row .driver-btn-history-text {
+  font-size: 12px;
+  color: var(--txt);
+  white-space: nowrap;
+}
 
 .driver-below-hero-row .driver-btn-logout {
   flex: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.driver-below-hero-row .driver-btn-logout-text {
+  font-size: 12px;
+  color: var(--txt);
+  white-space: nowrap;
 }
 
 /* KULLANICI PANELÄ°: h1 altÄ±nda, 1pt kÃ¼Ã§Ã¼k, aynÄ± renk (metalik gradient) */
@@ -505,9 +512,9 @@ body.dashboard-page {
   .dashboard-page .driver-below-hero-row .driver-btn-logout {
     margin: 0 !important;
   }
-  /* TarihÃ§e ile Ã‡Ä±kÄ±ÅŸ butonu arasÄ± 2px daralt (masaÃ¼stÃ¼) */
+  /* İşlem geçmişi / Bildirimler / Çıkış arası 8px (masaüstü) */
   .dashboard-page .driver-below-hero-row {
-    gap: 10px !important;
+    gap: 8px !important;
   }
   /* TarihÃ§e ve Ã‡Ä±kÄ±ÅŸ butonlarÄ± masaÃ¼stÃ¼: 1px kÃ¼Ã§Ã¼lt */
   .dashboard-page .driver-below-hero-row .driver-btn-history .driver-btn-history-icon {
@@ -3140,13 +3147,15 @@ body.login-page:has(#edit-request-modal.driver-modal.show) #app-footer.login-foo
   .login-page .pwa-install-bar .pwa-install-close {
     margin-left: 0 !important;
   }
-  /* PWA Butonu MasaÃ¼stÃ¼: driver-below-hero-row iÃ§inde, GeÃ§miÅŸ/Ã‡Ä±kÄ±ÅŸ ile aynÄ± satÄ±rda */
+  /* PWA Butonu Masaüstü: header'da başlığın sağında (driver-hero-pwa-slot) */
+  .dashboard-page .driver-hero-pwa-slot #pwa-install-wrapper,
   .dashboard-page .driver-below-hero-pwa-slot #pwa-install-wrapper {
     display: flex !important;
-    justify-content: center !important;
+    justify-content: flex-end !important;
     align-items: center !important;
   }
 
+  .dashboard-page .driver-hero-pwa-slot .pwa-install-bar,
   .dashboard-page .driver-below-hero-pwa-slot .pwa-install-bar {
     background: transparent !important;
     border: none !important;
@@ -3157,12 +3166,14 @@ body.login-page:has(#edit-request-modal.driver-modal.show) #app-footer.login-foo
     max-width: 100% !important;
   }
 
+  .dashboard-page .driver-hero-pwa-slot .pwa-install-btn,
   .dashboard-page .driver-below-hero-pwa-slot .pwa-install-btn {
     font-size: 11px !important;
     padding: 4px 8px !important;
     white-space: nowrap !important;
   }
 
+  .dashboard-page .driver-hero-pwa-slot .pwa-install-close,
   .dashboard-page .driver-below-hero-pwa-slot .pwa-install-close {
     font-size: 14px !important;
     margin-left: 4px !important;
