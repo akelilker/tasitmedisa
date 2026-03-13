@@ -2065,8 +2065,8 @@
               part.style.fill = '#d40000';
             }
           });
-          svgClone.style.width = '170px';
-          svgClone.style.height = '260px';
+          svgClone.style.width = '150px';
+          svgClone.style.height = '240px';
           svgClone.style.display = 'block';
           svgClone.style.margin = '0 auto';
           svgClone.style.transform = 'rotate(90deg)';
@@ -2120,17 +2120,18 @@
     @media (max-width: 760px) { .vehicle-card-print-grid { grid-template-columns: 1fr; } }
     .kaporta-print-section { margin-top: 2px; border: 1px solid #ddd; border-radius: 8px; padding: 4px; page-break-inside: auto; break-inside: auto; }
     .kaporta-print-section h2 { margin: 0 0 4px; font-size: 16px; }
-    .kaporta-print-row { display: flex; flex-direction: row; align-items: flex-start; gap: 8px; flex-wrap: nowrap; }
-    .kaporta-print-state-grid { flex: 0 0 auto; display: grid; grid-template-columns: auto auto; gap: 4px 6px; }
-    .kaporta-print-schema-wrap { flex: 0 0 auto; min-width: 180px; min-height: 180px; display: flex; align-items: center; justify-content: center; overflow: visible; }
-    .kaporta-print-fallback { display: block; width: 170px; height: 260px; margin: 0 auto; object-fit: contain; transform: rotate(90deg); transform-origin: center center; }
+    .kaporta-print-row { display: grid; grid-template-columns: minmax(240px, auto) minmax(0, 1fr); align-items: start; column-gap: 10px; }
+    .kaporta-print-state-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 4px 5px; align-content: start; }
+    .kaporta-print-schema-wrap { min-width: 0; min-height: 190px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+    .kaporta-print-schema-wrap svg,
+    .kaporta-print-fallback { display: block; width: 150px; height: 240px; margin: 0 auto; object-fit: contain; transform: rotate(90deg); transform-origin: center center; flex: 0 0 auto; }
     .kaporta-print-col h3 { margin: 0 0 4px; font-size: 13px; }
     .kaporta-print-list { margin: 0; padding-left: 18px; }
     .kaporta-print-list li { font-size: 12px; line-height: 1.3; margin-bottom: 2px; }
     .kaporta-print-empty { font-size: 12px; color: #666; }
     .print-page-break { page-break-before: always; break-before: page; margin: 16px 0 0; }
-    .history-page { margin-top: 6px; page-break-before: auto; break-before: auto; page-break-inside: auto; break-inside: auto; }
-    .history-page.force-new-page { page-break-before: always; break-before: page; margin-top: 8px; }
+    .history-page { margin-top: 5px; page-break-before: auto; break-before: auto; page-break-inside: auto; break-inside: auto; }
+    .history-page.force-new-page { page-break-before: always; break-before: page; margin-top: 5px; }
     .history-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; align-items: start; }
     .history-print-card { border: 1px solid #ddd; border-radius: 8px; padding: 8px; break-inside: auto; page-break-inside: auto; }
     .history-print-card h2 { margin: 0 0 5px; font-size: 14px; page-break-after: avoid; break-after: avoid-page; }
@@ -2141,7 +2142,7 @@
     .history-print-text { font-size: 12px; line-height: 1.25; }
     .history-print-extra { font-size: 11px; color: #444; margin-top: 1px; line-height: 1.2; }
     .history-print-empty { font-size: 12px; color: #666; }
-    @media (max-width: 760px) { .history-grid { grid-template-columns: 1fr; } .kaporta-print-row { flex-wrap: wrap; } .kaporta-print-state-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 760px) { .history-grid { grid-template-columns: 1fr; } .kaporta-print-row { grid-template-columns: 1fr; row-gap: 5px; } .kaporta-print-state-grid { grid-template-columns: 1fr; } }
     @media print { body { margin: 8mm; -webkit-print-color-adjust: exact; print-color-adjust: exact; } .kaporta-print-section { page-break-inside: auto; break-inside: auto; } .history-page h1, .history-page .subtitle { page-break-after: avoid; break-after: avoid-page; } .history-page { page-break-before: auto; break-before: auto; page-break-inside: auto; break-inside: auto; } .history-page.force-new-page { page-break-before: always; break-before: page; } .history-grid { gap: 8px; } }
   </style>
 </head>
@@ -2160,6 +2161,8 @@
   </section>
   <script>
     (function() {
+      var resizeTimer = null;
+
       function mmToPx(mm) {
         return (mm * 96) / 25.4;
       }
@@ -2174,9 +2177,11 @@
         var pageContentHeight = mmToPx(297 - (8 * 2)); // A4 portrait - top/bottom print margins
         var summaryHeight = Math.ceil(summaryPage.getBoundingClientRect().height);
         var historyHeight = Math.ceil(historyPage.getBoundingClientRect().height);
+        var availableHeight = Math.max(0, pageContentHeight - summaryHeight);
+        var safetyBuffer = 6;
 
-        // Kural: Ozet tek sayfaya sigiyor ama tarihce tamamen sigmiyorsa tarihce 2. sayfadan baslar.
-        if (summaryHeight <= pageContentHeight && (summaryHeight + historyHeight) > pageContentHeight) {
+        // Kural: Ozet ilk sayfaya sigarken tarihce tamamen sigmiyorsa tarihce 2. sayfadan baslar.
+        if (summaryHeight <= pageContentHeight && historyHeight > (availableHeight - safetyBuffer)) {
           historyPage.classList.add('force-new-page');
         }
       }
@@ -2187,14 +2192,38 @@
         });
       }
 
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', runPageFlowCheck);
-      } else {
+      function schedulePageFlowChecks() {
         runPageFlowCheck();
+        setTimeout(runPageFlowCheck, 80);
+        setTimeout(runPageFlowCheck, 200);
+        setTimeout(runPageFlowCheck, 360);
       }
 
-      window.addEventListener('beforeprint', runPageFlowCheck);
-      window.addEventListener('resize', runPageFlowCheck);
+      function bindMediaReflow() {
+        var mediaNodes = document.querySelectorAll('img');
+        mediaNodes.forEach(function(node) {
+          if (node.complete) return;
+          node.addEventListener('load', schedulePageFlowChecks, { once: true });
+          node.addEventListener('error', schedulePageFlowChecks, { once: true });
+        });
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() {
+          bindMediaReflow();
+          schedulePageFlowChecks();
+        });
+      } else {
+        bindMediaReflow();
+        schedulePageFlowChecks();
+      }
+
+      window.addEventListener('load', schedulePageFlowChecks);
+      window.addEventListener('beforeprint', schedulePageFlowChecks);
+      window.addEventListener('resize', function() {
+        if (resizeTimer) clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(schedulePageFlowChecks, 120);
+      });
     })();
   </script>
 </body>
