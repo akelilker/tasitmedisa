@@ -983,9 +983,11 @@ width: 100% !important;
 }
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-1 {
 position: relative;
-flex-direction: column !important;
-align-items: flex-start !important;
-gap: 6px !important;
+display: flex !important;
+flex-direction: row !important;
+align-items: center !important;
+justify-content: flex-start !important;
+gap: 8px !important;
 flex: 0 0 auto !important;
 width: 100% !important;
 box-sizing: border-box !important;
@@ -1006,7 +1008,7 @@ order: 2 !important; /* row-1 altında, menü sonra */
 }
 /* Masaüstü: [büyüteç][excel][yazıcı] ................ [başlangıç][bitiş] tek satır */
 #reports-modal:has(.stok-detail-menu-open) .stok-detail-add-wrap.desktop-single-row .stok-controls-row-2 {
-margin-top: 88px !important;
+margin-top: 6px !important;
 }
 #reports-modal:not(:has(.stok-detail-menu-open)) .stok-detail-add-wrap.desktop-single-row .stok-controls-row-2 {
 margin-top: 6px !important;
@@ -1048,7 +1050,7 @@ gap: 6px !important;
 }
 /* Masaüstü: menü açıkken overflow visible – header alt çizgisine takılmasın */
 #reports-modal:has(.stok-detail-menu-open) .modal-container {
-overflow: visible !important;
+overflow: hidden !important;
 }
 #reports-modal .reports-list-header-actions:has(.stok-detail-menu-open),
 #reports-modal .stok-detail-add-wrap.desktop-single-row:has(.stok-detail-menu-open),
@@ -1065,10 +1067,10 @@ overflow: visible;
 }
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-detail-add-btn-wrap .stok-detail-menu {
 position: absolute !important;
-top: 100% !important;
-left: 0 !important;
+top: 0 !important;
+left: calc(100% + 8px) !important;
 right: auto !important;
-margin-top: 4px !important;
+margin-top: 0 !important;
 margin-left: 0;
 z-index: 50;
 min-width: 320px !important;
@@ -1212,6 +1214,21 @@ z-index: 100;
   opacity: 0.4 !important;
   -webkit-text-fill-color: rgba(255, 255, 255, 0.35) !important;
   color: rgba(255, 255, 255, 0.35) !important;
+}
+/* Desktop düzeltme katmanı: Detay menü üst hiza + modal alt çerçeve sabit */
+#reports-modal .reports-list-header-actions .stok-controls-row-1 .universal-back-bar {
+margin-top: 0 !important;
+}
+#reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-2,
+#reports-modal:has(.stok-detail-menu-open) .stok-detail-add-wrap.desktop-single-row .stok-controls-row-2,
+#reports-modal:not(:has(.stok-detail-menu-open)) .stok-detail-add-wrap.desktop-single-row .stok-controls-row-2 {
+margin-top: 6px !important;
+}
+#reports-modal .modal-container {
+overflow: hidden !important;
+border-bottom: 1px solid var(--border-medium) !important;
+border-bottom-left-radius: var(--modal-radius, 10px) !important;
+border-bottom-right-radius: var(--modal-radius, 10px) !important;
 }
 }
 
