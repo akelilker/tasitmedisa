@@ -744,6 +744,13 @@ body.dashboard-page {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.5; }
 }
+.driver-sliding-warning.driver-warning-kaza-pulse .driver-warning-text {
+  animation: driver-warning-scale-text 1.2s ease-in-out infinite;
+}
+@keyframes driver-warning-scale-text {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.12); }
+}
 .driver-warning-icon {
   color: var(--theme-color);
   display: inline-block;
