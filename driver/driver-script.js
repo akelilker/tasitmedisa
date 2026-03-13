@@ -1188,9 +1188,12 @@ const API_BASE = (function(){
   function buildSlidingWarnings(vehicles, records) {
       const warnings = [];
       const period = (currentPeriod || new Date().toISOString().slice(0, 7)).toString().trim();
+      const userName = (currentUser && (currentUser.name || currentUser.isim || currentUser.ad_soyad)) || 'Kullanıcı';
   
       for (const v of vehicles) {
           const vid = String(v.id);
+          const plaka = formatDriverPlaka(v.plaka);
+          const recordForPeriod = records.find(r => String(r.arac_id) === vid && String(r.donem || '').trim() === period);
           const fromRecords = records.some(r => String(r.arac_id) === vid && String(r.donem || '').trim() === period && r.guncel_km != null && String(r.guncel_km).trim() !== '');
           const optVal = lastSuccessfulKmSubmissions[vid] || lastSuccessfulKmSubmissions[String(v.id)];
           const fromOptimistic = optVal && String(optVal).trim() === period;
@@ -1201,7 +1204,7 @@ const API_BASE = (function(){
           const periodNum = period.replace(/-/g, '');
           const isNewThisMonth = createdPeriod && createdPeriod === periodNum;
           if (!hasKmThisMonth && !isNewThisMonth) {
-              warnings.push({ text: formatDriverPlaka(v.plaka) + ' Plakalı Taşıtın Güncel Km Bildirimi Yapılmamıştır', plaka: formatDriverPlaka(v.plaka) });
+              warnings.push({ text: plaka + ' Plakalı Taşıtın Güncel Km Bildirimi Yapılmamıştır', plaka: plaka, type: null });
           }
           const checkDate = (dateStr, label) => {
               if (!dateStr) return;
@@ -1210,16 +1213,32 @@ const API_BASE = (function(){
                   let msg;
                   if (w.days <= 0) {
                       const bitmistirLabel = label === 'Sigorta' ? 'Trafik Sigortası' : label;
-                      msg = formatDriverPlaka(v.plaka) + ' Plakalı Taşıtın ' + bitmistirLabel + ' Bitmiştir.';
+                      msg = plaka + ' Plakalı Taşıtın ' + bitmistirLabel + ' Bitmiştir.';
                   } else {
-                      msg = formatDriverPlaka(v.plaka) + ' Plakalı Taşıtın ' + label + ' Tarihine ' + w.days + ' Gün Kalmıştır';
+                      msg = plaka + ' Plakalı Taşıtın ' + label + ' Tarihine ' + w.days + ' Gün Kalmıştır';
                   }
-                  warnings.push({ text: msg, plaka: formatDriverPlaka(v.plaka) });
+                  warnings.push({ text: msg, plaka: plaka, type: null });
               }
           };
           checkDate(v.muayeneDate, 'Muayene');
           checkDate(v.sigortaDate, 'Sigorta');
           checkDate(v.kaskoDate, 'Kasko');
+          /* Bakım bildirimi (bu dönem kaydında var) */
+          if (recordForPeriod && (recordForPeriod.bakim_durumu || (recordForPeriod.bakim_aciklama || '').trim())) {
+              warnings.push({ text: userName + ', ' + plaka + ' Plakalı Taşıt İle İlgili Bakım Bildirimi Yaptı.', plaka: plaka, type: 'bakim' });
+          }
+          /* Kaza bildirimi (bu dönem kaydında var) */
+          if (recordForPeriod && (recordForPeriod.kaza_durumu || (recordForPeriod.kaza_aciklama || '').trim())) {
+              warnings.push({ text: userName + ', ' + plaka + ' Plakalı Taşıt İle İlgili Kaza Bildirimi Yaptı.', plaka: plaka, type: 'kaza' });
+          }
+          /* Yedek anahtar bildirimi (taşıt seviyesinde değer var) */
+          if (v.anahtar && String(v.anahtar).trim()) {
+              warnings.push({ text: userName + ', ' + plaka + ' Plakalı Taşıt İle İlgili Yedek Anahtar Bildirimi Yaptı.', plaka: plaka, type: 'anahtar' });
+          }
+          /* Lastik durumu bildirimi (taşıt seviyesinde değer var) */
+          if (v.lastikDurumu && String(v.lastikDurumu).trim()) {
+              warnings.push({ text: userName + ', ' + plaka + ' Plakalı Taşıt İle İlgili Lastik Durumu Bildirimi Yaptı.', plaka: plaka, type: 'lastik' });
+          }
       }
       return warnings;
   }
@@ -1253,7 +1272,6 @@ const API_BASE = (function(){
           if (mobileSlot) mobileSlot.setAttribute('aria-hidden', 'true');
       }
       
-      const texts = warnings.map(w => w.text);
       let cycleCount = 0;
       let idx = 0;
       
@@ -1282,12 +1300,14 @@ const API_BASE = (function(){
       }
       
       function showNext() {
-          const text = texts[idx];
+          const w = warnings[idx];
+          const text = w ? w.text : '';
+          const isKaza = w && w.type === 'kaza';
           el.innerHTML = '<span class="driver-warning-icon" aria-hidden="true">⚠️</span> <span class="driver-warning-text">' + escapeHtmlDriver(text) + '</span>';
-          el.className = 'driver-sliding-warning' + (cycleCount >= 3 ? ' driver-warning-pulse' : '');
+          el.className = 'driver-sliding-warning' + (isKaza ? ' driver-warning-kaza-pulse' : (cycleCount >= 3 ? ' driver-warning-pulse' : ''));
           /* Taşma varsa sola kayan marquee uygula (requestAnimationFrame ile ölçüm doğru yapılsın) */
           requestAnimationFrame(function() { applyMarqueeIfOverflow(el); });
-          idx = (idx + 1) % texts.length;
+          idx = (idx + 1) % warnings.length;
           if (idx === 0) {
               cycleCount++;
           }
