@@ -1067,10 +1067,10 @@ overflow: visible;
 }
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-detail-add-btn-wrap .stok-detail-menu {
 position: absolute !important;
-top: 100% !important;
-left: 0 !important;
+top: 0 !important;
+left: calc(100% + 8px) !important;
 right: auto !important;
-margin-top: 4px !important;
+margin-top: 0 !important;
 margin-left: 0;
 z-index: 50;
 min-width: 320px !important;
