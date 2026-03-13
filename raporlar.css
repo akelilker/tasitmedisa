@@ -1078,6 +1078,8 @@ padding: 0 !important;
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-detail-menu-btn {
 padding-left: 0.5px !important;
 padding-right: 0.5px !important;
+width: 84px !important;
+max-width: 84px !important;
 }
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-detail-menu-btn span {
 font-size: 9px !important;
