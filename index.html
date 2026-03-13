@@ -315,7 +315,7 @@
                                 <textarea class="form-input form-input-reveal" rows="2" placeholder="Detay Ekleyin" id="kredi-detay"></textarea>
                             </div>
                             <div class="form-section">
-                                <label class="form-label" id="vehicle-branch-label">Tahsis Edilen Şube</label>
+                                <label class="form-label" id="vehicle-branch-label" for="vehicle-branch-select">Tahsis Edilen Şube</label>
                                 <div class="vehicle-branch-dropdown-wrap">
                                     <select id="vehicle-branch-select" class="form-input" aria-hidden="true" tabindex="-1">
                                         <option value="">Seçiniz</option>
@@ -542,7 +542,7 @@
                             <input type="password" id="user-password" class="form-input" placeholder="Şifre" autocomplete="new-password">
                         </div>
                         <div class="form-section form-section-vehicles">
-                            <label id="user-vehicles-label" class="form-label">Tahsis Edilecek Taşıt</label>
+                            <label id="user-vehicles-label" class="form-label" for="user-vehicles-search">Tahsis Edilecek Taşıt</label>
                             <div class="user-vehicles-wrap">
                                 <div id="user-vehicles-trigger" class="user-vehicles-trigger form-input" tabindex="0" role="combobox" aria-labelledby="user-vehicles-label" aria-expanded="false" onclick="if(window.toggleUserVehiclesDropdown) window.toggleUserVehiclesDropdown()">
                                     <span class="user-vehicles-trigger-text">Taşıt seçin</span>
@@ -873,7 +873,7 @@
                             <input type="text" id="kaza-tutar" class="form-input" placeholder="5.000" inputmode="numeric" style="width: 100%;">
                         </div>
                         <div class="kaza-kaporta-row" style="width: 100%;">
-                            <label id="kaza-kaporta-label" class="kaza-kaporta-label" style="color: var(--form-label-color); font-size: 14px; display: block; margin-bottom: 3px; text-align: left;">Hasar Gören Parça (Kaporta Şeması):</label>
+                            <span id="kaza-kaporta-label" class="kaza-kaporta-label" style="color: var(--form-label-color); font-size: 14px; display: block; margin-bottom: 3px; text-align: left;">Hasar Gören Parça (Kaporta Şeması):</span>
                             <div id="kaza-kaporta-container" role="group" aria-labelledby="kaza-kaporta-label" style="margin-top: 3px; margin-bottom: 8px; overflow: hidden;"></div>
                         </div>
                     </div>
