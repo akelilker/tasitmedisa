@@ -984,10 +984,10 @@ width: 100% !important;
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-1 {
 position: relative;
 display: flex !important;
-flex-direction: row !important;
-align-items: center !important;
+flex-direction: column !important;
+align-items: flex-start !important;
 justify-content: flex-start !important;
-gap: 8px !important;
+gap: 3px !important;
 flex: 0 0 auto !important;
 width: 100% !important;
 box-sizing: border-box !important;
@@ -1008,7 +1008,7 @@ order: 2 !important; /* row-1 altında, menü sonra */
 }
 /* Masaüstü: [büyüteç][excel][yazıcı] ................ [başlangıç][bitiş] tek satır */
 #reports-modal:has(.stok-detail-menu-open) .stok-detail-add-wrap.desktop-single-row .stok-controls-row-2 {
-margin-top: 6px !important;
+margin-top: 88px !important;
 }
 #reports-modal:not(:has(.stok-detail-menu-open)) .stok-detail-add-wrap.desktop-single-row .stok-controls-row-2 {
 margin-top: 6px !important;
@@ -1067,10 +1067,10 @@ overflow: visible;
 }
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-detail-add-btn-wrap .stok-detail-menu {
 position: absolute !important;
-top: 0 !important;
-left: calc(100% + 8px) !important;
+top: 100% !important;
+left: 0 !important;
 right: auto !important;
-margin-top: 0 !important;
+margin-top: 4px !important;
 margin-left: 0;
 z-index: 50;
 min-width: 320px !important;
@@ -1218,11 +1218,19 @@ z-index: 100;
 /* Desktop düzeltme katmanı: Detay menü üst hiza + modal alt çerçeve sabit */
 #reports-modal .reports-list-header-actions .stok-controls-row-1 .universal-back-bar {
 margin-top: 0 !important;
+flex: 0 0 auto !important;
+width: auto !important;
 }
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-2,
-#reports-modal:has(.stok-detail-menu-open) .stok-detail-add-wrap.desktop-single-row .stok-controls-row-2,
 #reports-modal:not(:has(.stok-detail-menu-open)) .stok-detail-add-wrap.desktop-single-row .stok-controls-row-2 {
 margin-top: 6px !important;
+}
+#reports-modal:has(.stok-detail-menu-open) .stok-detail-add-wrap.desktop-single-row .stok-controls-row-2 {
+margin-top: 88px !important;
+}
+#reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-1 .stok-detail-add-btn {
+align-self: flex-start !important;
+margin-left: 0 !important;
 }
 #reports-modal .modal-container {
 overflow: hidden !important;
