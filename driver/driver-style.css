@@ -4931,7 +4931,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     min-height: 0 !important;
     overflow-y: auto !important;
     overflow-x: hidden !important;
-    overscroll-behavior-y: contain !important;
+    overscroll-behavior-y: none !important; /* Sağ grid: parmakla aşağı esnemesin, çakılı gibi; sadece içerik uzarsa yukarı kaydırılır */
     -webkit-overflow-scrolling: touch !important;
     touch-action: pan-y !important;
     padding-bottom: 8px !important;
