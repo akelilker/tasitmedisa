@@ -12,8 +12,6 @@
 # Nginx'te location /medisa/ kullanılıyorsa container her zaman kökte (/) serve eder;
 # tarayıcı path'i /medisa/ olduğu için API base otomatik /medisa/ olur.
 
-version: '3.8'
-
 services:
   web:
     build:
