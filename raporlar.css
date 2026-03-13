@@ -1020,9 +1020,13 @@ flex-shrink: 0 !important;
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-1 .stok-left-controls .stok-detail-add-btn {
 flex-shrink: 0 !important;
 }
-/* Masaüstü: sol ok + Raporlar etiketi yukarı; padding ile overflow clipping önlenir */
+/* Masaüstü: sol ok + Raporlar etiketi yukarı; padding ile overflow clipping önlenir. Bütün blok 36px yukarı. */
+#reports-modal .reports-list-header-actions:has(.stok-detail-add-wrap.desktop-single-row) {
+padding-top: 36px !important;
+}
 #reports-modal .stok-detail-add-wrap.desktop-single-row {
 padding-top: 46px !important;
+margin-top: -36px !important;
 }
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-left-controls .universal-back-bar {
 margin-top: -58px !important;
