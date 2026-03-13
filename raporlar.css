@@ -1240,7 +1240,8 @@ z-index: 100;
   color: rgba(255, 255, 255, 0.35) !important;
 }
 /* Desktop düzeltme katmanı: Detay menü üst hiza + modal alt çerçeve sabit */
-#reports-modal .reports-list-header-actions .stok-controls-row-1 .universal-back-bar {
+/* Not: > ile sadece row-1'in direkt çocuğu (stok-left-controls yokken). stok-left-controls içindeki back-bar bu kuralı almaz, kendi -46px kuralı geçerli kalır. */
+#reports-modal .reports-list-header-actions .stok-controls-row-1 > .universal-back-bar {
 margin-top: 0 !important;
 flex: 0 0 auto !important;
 width: auto !important;
