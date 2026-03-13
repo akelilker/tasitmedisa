@@ -1925,3 +1925,15 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
 #vehicle-modal .modal-close:hover { 
     color: #fff; 
 }
+
+/* iOS PWA: içerik Kaydet/Vazgeç butonlarına 10px yaklaşsın */
+@media (max-width: 640px) and (display-mode: standalone) {
+    #vehicle-modal .modal-body .modal-columns {
+        margin-bottom: 6px !important;
+    }
+    #vehicle-modal .modal-body .universal-btn-group {
+        margin-top: 4px !important;
+        padding-top: 4px !important;
+        padding-bottom: 10px !important;
+    }
+}

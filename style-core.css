@@ -2250,3 +2250,33 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
   }
 }
 
+/* iOS PWA: ana panel footer ve header dengesi (safe-area tek katman) */
+@media (max-width: 768px) and (display-mode: standalone) {
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer {
+    height: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
+    min-height: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
+    padding-top: 2px !important;
+    padding-bottom: calc(2px + env(safe-area-inset-bottom, 0)) !important;
+    box-shadow: 0 -12px 24px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity, 0.38)) !important;
+  }
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer .footer-content {
+    height: 100% !important;
+    align-items: center !important;
+    padding: 4px 12px !important;
+    padding-bottom: 4px !important;
+  }
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-logo {
+    flex: 0 0 39px !important;
+    width: 39px !important;
+    margin-right: 8px !important;
+    transform: translate(-1px, 1px) !important;
+  }
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-logo img {
+    height: 35px !important;
+    width: auto !important;
+  }
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero h1 {
+    letter-spacing: 1.8px !important;
+  }
+}
+
