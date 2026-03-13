@@ -4993,3 +4993,24 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
 }
 
+/* iOS PWA: driver footer ölçek ve içerik hizası (dashboard + login) */
+@media (max-width: 768px) and (display-mode: standalone) {
+  .dashboard-page #app-footer,
+  .login-page #app-footer.login-footer {
+    height: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
+    min-height: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
+    padding-top: 4px !important;
+    padding-bottom: calc(4px + env(safe-area-inset-bottom, 0)) !important;
+    box-shadow: 0 -12px 24px rgba(var(--theme-color-rgb), 0.42) !important;
+  }
+  .dashboard-page #app-footer .footer-content,
+  .login-page #app-footer.login-footer .footer-content {
+    height: 100% !important;
+    align-items: center !important;
+    padding-top: 4px !important;
+    padding-bottom: 4px !important;
+    padding-left: max(12px, env(safe-area-inset-left, 0)) !important;
+    padding-right: max(12px, env(safe-area-inset-right, 0)) !important;
+  }
+}
+
