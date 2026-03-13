@@ -839,6 +839,12 @@ text-overflow: ellipsis;
 .stok-list-cell[data-col="sanziman"] {
 justify-content: center;
 }
+/* Masaüstü: Şanzıman başlığı 1.5 punto küçük – sütuna sığsın */
+@media (min-width: 641px) {
+.stok-list-header-cell[data-col="sanziman"] .stok-header-text {
+font-size: clamp(8px, 1.5vw, 11px) !important;
+}
+}
 
 .stok-list-header-cell[data-col="km"],
 .stok-list-cell[data-col="km"] {
