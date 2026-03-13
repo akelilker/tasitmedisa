@@ -340,26 +340,19 @@
             const row1 = wrap.querySelector('.stok-controls-row-1');
             const addBtn = row1.querySelector('.stok-detail-add-btn');
             const backBar = row1.querySelector('.universal-back-bar');
-            if (window.matchMedia('(min-width: 641px)').matches && backBar && addBtn) {
-                /* Geri Al + Detay Ekleme 15px arayla dikey; menü sağda */
-                const leftBlock = document.createElement('div');
-                leftBlock.className = 'stok-left-controls';
-                row1.insertBefore(leftBlock, backBar);
-                leftBlock.appendChild(backBar);
-                leftBlock.appendChild(addBtn);
-            }
+            /* Masaüstü: leftBlock oluşturma – backBar ve addBtn row1'de yan yana kalır (CSS ile ortalı) */
             if (menu) {
-                if (window.matchMedia('(min-width: 641px)').matches && addBtn) {
-                    /* Masaüstü: menü row1 içinde – sarı kutu alanını doldurur (5x2 grid) */
-                    row1.appendChild(menu);
-                } else {
+                if (!window.matchMedia('(min-width: 641px)').matches) {
                     wrap.appendChild(menu);
                 }
             }
             const topControls = listContainer.querySelector('.stok-list-top-controls');
-            /* Masaüstü: row-2 (export + tarihler) header'a taşı, Detay Ekleme ile aynı satırda */
+            /* Masaüstü: row-2 (export + tarihler) header'a taşı; menü row1 ile row2 arasında */
             if (secondRow && window.matchMedia('(min-width: 641px)').matches) {
                 wrap.appendChild(secondRow);
+                if (menu) {
+                    wrap.insertBefore(menu, wrap.querySelector('.stok-controls-row-2'));
+                }
                 wrap.classList.add('desktop-single-row');
             }
             /* Resize: mobilde row-2 body'ye geri taşı; menü row-1 ↔ wrap arasında senkronize et */
@@ -382,16 +375,21 @@
                 };
                 mq.addEventListener('change', syncRow2);
             }
-            if (menu && row1 && addBtn) {
+            if (menu && row1) {
                 const syncMenu = function() {
+                    const r2 = wrap.querySelector('.stok-controls-row-2') || topControls.querySelector('.stok-controls-row-2');
                     if (mq.matches) {
-                        if (menu.parentElement !== row1) {
-                            row1.appendChild(menu);
+                        /* Masaüstü: menü wrap içinde row1 ile row2 arasında */
+                        if (r2 && menu.parentElement === r2) {
+                            wrap.insertBefore(menu, r2);
+                        } else if (!r2 && wrap.contains(menu) && menu.parentElement !== wrap) {
+                            wrap.appendChild(menu);
                         }
                     } else {
-                        if (menu.parentElement === row1) {
-                            row1.removeChild(menu);
-                            wrap.insertBefore(menu, row1.nextSibling);
+                        /* Mobil: menü row2 içinde (export ile tarih arasında) */
+                        if (r2 && menu.parentElement !== r2) {
+                            const dateControls = r2.querySelector('.stok-date-range-controls');
+                            r2.insertBefore(menu, dateControls || null);
                         }
                     }
                 };
@@ -935,15 +933,7 @@
         const buttons = document.querySelectorAll('.stok-detail-add-btn');
         if (menu) {
             menu.classList.toggle('stok-detail-menu-open', stokDetailMenuOpen);
-            if (stokDetailMenuOpen && window.matchMedia('(min-width: 641px)').matches) {
-                if (typeof window.positionStokDetailMenuPortal === 'function') {
-                    requestAnimationFrame(() => window.positionStokDetailMenuPortal());
-                }
-            } else if (!stokDetailMenuOpen) {
-                if (typeof window.returnStokDetailMenuFromPortal === 'function') {
-                    window.returnStokDetailMenuFromPortal();
-                }
-            }
+            /* Masaüstü: menü normal akışta (wrap içinde row1 ile row2 arası), portal gerekmez */
         }
         buttons.forEach(function(btn) {
             if (stokDetailMenuOpen) {
