@@ -1054,10 +1054,8 @@ max-width: calc(100vw - 80px);
 overflow: visible !important;
 display: none !important;
 }
-/* Portal: menü #reports-modal doğrudan altındayken – ekranın sağına yaslı, butonlar arası 3px */
-#reports-modal > .stok-detail-menu.stok-detail-menu-open {
-position: fixed !important;
-z-index: 100000 !important;
+/* Detay menü: container içinde, butonlar arası yatay/dikey 3px */
+#reports-modal .stok-detail-add-wrap.desktop-single-row .stok-detail-add-btn-wrap .stok-detail-menu.stok-detail-menu-open {
 display: grid !important;
 grid-template-columns: repeat(4, 1fr);
 column-gap: 3px !important;
@@ -1065,12 +1063,8 @@ row-gap: 3px !important;
 gap: 3px !important;
 padding: 0 !important;
 }
-#reports-modal .stok-detail-add-wrap.desktop-single-row .stok-detail-add-btn-wrap .stok-detail-menu.stok-detail-menu-open {
-display: grid !important;
-grid-template-columns: repeat(4, 1fr);
-column-gap: 3px !important;
-row-gap: 3px !important;
-gap: 3px !important;
+#reports-modal .stok-detail-add-wrap .stok-detail-menu.stok-detail-menu-open .stok-detail-menu-item {
+margin: 0 !important;
 padding: 0 !important;
 }
 #stok-list-container .stok-list-top-controls {
