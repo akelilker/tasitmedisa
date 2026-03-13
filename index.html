@@ -197,6 +197,10 @@
                     <div class="ttl">RAPORLAR</div>
                 </button>
             </div>
+            <!-- Erken fallback: script-core/tasitlar yüklenmeden tıklanırsa ReferenceError önlenir -->
+            <script>
+            (function(){if(!window.openVehiclesView){window.openVehiclesView=function(){var m=document.getElementById('vehicles-modal');if(m){m.style.display='flex';requestAnimationFrame(function(){m.classList.add('active');if(typeof window.updateFooterDim==='function')window.updateFooterDim();});}};}if(!window.openReportsView){window.openReportsView=function(){var m=document.getElementById('reports-modal');if(m){m.style.display='flex';requestAnimationFrame(function(){m.classList.add('active');if(typeof window.updateFooterDim==='function')window.updateFooterDim();});}};}})();
+            </script>
 
         </main>
 
