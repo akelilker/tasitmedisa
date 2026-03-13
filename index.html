@@ -319,7 +319,7 @@
                                 <textarea class="form-input form-input-reveal" rows="2" placeholder="Detay Ekleyin" id="kredi-detay"></textarea>
                             </div>
                             <div class="form-section">
-                                <label class="form-label" id="vehicle-branch-label" for="vehicle-branch-select">Tahsis Edilen Şube</label>
+                                <span class="form-label" id="vehicle-branch-label">Tahsis Edilen Şube</span>
                                 <div class="vehicle-branch-dropdown-wrap">
                                     <select id="vehicle-branch-select" class="form-input" aria-hidden="true" tabindex="-1">
                                         <option value="">Seçiniz</option>
@@ -546,7 +546,7 @@
                             <input type="password" id="user-password" class="form-input" placeholder="Şifre" autocomplete="new-password">
                         </div>
                         <div class="form-section form-section-vehicles">
-                            <label id="user-vehicles-label" class="form-label" for="user-vehicles-search">Tahsis Edilecek Taşıt</label>
+                            <span id="user-vehicles-label" class="form-label">Tahsis Edilecek Taşıt</span>
                             <div class="user-vehicles-wrap">
                                 <div id="user-vehicles-trigger" class="user-vehicles-trigger form-input" tabindex="0" role="combobox" aria-labelledby="user-vehicles-label" aria-expanded="false" onclick="if(window.toggleUserVehiclesDropdown) window.toggleUserVehiclesDropdown()">
                                     <span class="user-vehicles-trigger-text">Taşıt seçin</span>
@@ -554,7 +554,7 @@
                                 </div>
                                 <div id="user-vehicles-dropdown" class="user-vehicles-dropdown" style="display:none;" role="listbox">
                                     <div class="user-vehicles-search-wrap">
-                                        <input type="text" id="user-vehicles-search" class="form-input user-vehicles-search-input" placeholder="Plaka ile ara..." oninput="if(window.handleUserVehiclesSearch) window.handleUserVehiclesSearch(this.value)">
+                                        <input type="text" id="user-vehicles-search" class="form-input user-vehicles-search-input" placeholder="Plaka ile ara..." aria-label="Plaka ile ara" oninput="if(window.handleUserVehiclesSearch) window.handleUserVehiclesSearch(this.value)">
                                     </div>
                                     <div id="user-vehicles-container" class="user-vehicles-checkbox-list" role="group"></div>
                                 </div>
