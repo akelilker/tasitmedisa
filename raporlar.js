@@ -341,11 +341,8 @@
             const addBtn = row1.querySelector('.stok-detail-add-btn');
             if (menu) {
                 if (window.matchMedia('(min-width: 641px)').matches && addBtn) {
-                    const btnWrap = document.createElement('div');
-                    btnWrap.className = 'stok-detail-add-btn-wrap';
-                    addBtn.parentNode.insertBefore(btnWrap, addBtn);
-                    btnWrap.appendChild(addBtn);
-                    btnWrap.appendChild(menu);
+                    /* Masaüstü: menü row1 içinde, addBtn'den sonra – sarı kutu alanını doldurur (5x2 grid) */
+                    row1.appendChild(menu);
                 } else {
                     wrap.appendChild(menu);
                 }
@@ -378,22 +375,14 @@
             }
             if (menu && row1 && addBtn) {
                 const syncMenu = function() {
-                    const btnWrap = row1.querySelector('.stok-detail-add-btn-wrap');
                     if (mq.matches) {
-                        if (!btnWrap) {
-                            const wrap = document.createElement('div');
-                            wrap.className = 'stok-detail-add-btn-wrap';
-                            addBtn.parentNode.insertBefore(wrap, addBtn);
-                            wrap.appendChild(addBtn);
-                            wrap.appendChild(menu);
-                        } else if (menu.parentElement !== btnWrap) {
-                            btnWrap.appendChild(menu);
+                        if (menu.parentElement !== row1) {
+                            row1.appendChild(menu);
                         }
                     } else {
-                        if (btnWrap) {
-                            row1.insertBefore(addBtn, btnWrap);
+                        if (menu.parentElement === row1) {
+                            row1.removeChild(menu);
                             wrap.insertBefore(menu, row1.nextSibling);
-                            btnWrap.remove();
                         }
                     }
                 };
