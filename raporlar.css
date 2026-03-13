@@ -1022,7 +1022,7 @@ flex-shrink: 0 !important;
 }
 /* Masaüstü: sol ok + Raporlar etiketi 28px yukarı (mobil dokunulmadı) */
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-left-controls .universal-back-bar {
-margin-top: -28px !important;
+margin-top: -40px !important;
 }
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-1 .universal-back-bar,
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-1 .stok-detail-add-btn {
