@@ -993,14 +993,14 @@ justify-content: space-between !important;
 gap: 8px !important;
 width: 100% !important;
 }
-/* Masaüstü: row-1 yatay – sol ok + Detay Ekleme + menü (5×2) sarı kutu alanında */
+/* Masaüstü: row-1 yatay – sol ok + Detay Ekleme + menü (5×2) sarı kutu alanında. align-items: flex-start ile menü açılınca sol ok aşağı kaymaz. */
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-1 {
 position: relative;
 display: flex !important;
 flex-direction: row !important;
 flex-wrap: nowrap !important;
-align-items: center !important;
-align-content: center !important;
+align-items: flex-start !important;
+align-content: flex-start !important;
 gap: 10px !important;
 flex: 1 1 auto !important;
 min-width: 0 !important;
