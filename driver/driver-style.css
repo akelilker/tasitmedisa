@@ -3147,15 +3147,13 @@ body.login-page:has(#edit-request-modal.driver-modal.show) #app-footer.login-foo
   .login-page .pwa-install-bar .pwa-install-close {
     margin-left: 0 !important;
   }
-  /* PWA Butonu Masaüstü: header'da başlığın sağında (driver-hero-pwa-slot) */
-  .dashboard-page .driver-hero-pwa-slot #pwa-install-wrapper,
+  /* PWA Butonu Masaüstü: driver-below-hero-row içinde, İşlem geçmişi/Bildirimler/Çıkış ile aynı satırda */
   .dashboard-page .driver-below-hero-pwa-slot #pwa-install-wrapper {
     display: flex !important;
-    justify-content: flex-end !important;
+    justify-content: center !important;
     align-items: center !important;
   }
 
-  .dashboard-page .driver-hero-pwa-slot .pwa-install-bar,
   .dashboard-page .driver-below-hero-pwa-slot .pwa-install-bar {
     background: transparent !important;
     border: none !important;
@@ -3166,14 +3164,12 @@ body.login-page:has(#edit-request-modal.driver-modal.show) #app-footer.login-foo
     max-width: 100% !important;
   }
 
-  .dashboard-page .driver-hero-pwa-slot .pwa-install-btn,
   .dashboard-page .driver-below-hero-pwa-slot .pwa-install-btn {
     font-size: 11px !important;
     padding: 4px 8px !important;
     white-space: nowrap !important;
   }
 
-  .dashboard-page .driver-hero-pwa-slot .pwa-install-close,
   .dashboard-page .driver-below-hero-pwa-slot .pwa-install-close {
     font-size: 14px !important;
     margin-left: 4px !important;
