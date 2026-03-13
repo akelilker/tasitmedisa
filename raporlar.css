@@ -188,10 +188,14 @@ gap: 4px;
 width: 100%;
 min-width: 0;
 }
-/* Sol ok + Raporlar etiketi 5px daha yukarı (dikey alan tasarrufu; toplam 20px yukarı) */
+/* Sol ok + Raporlar etiketi 5px daha yukarı (stok-left-controls dışında; eskilerine uyum) */
 #reports-modal .reports-list-header-actions .stok-controls-row-1 .universal-back-bar {
 margin-top: -20px !important;
 margin-bottom: 0;
+}
+/* Sol blok içinde: Geri Al doğal konumda (margin sıfır) */
+#reports-modal .reports-list-header-actions .stok-left-controls .universal-back-bar {
+margin-top: 0 !important;
 }
 /* Raporlar etiketi 2 punto küçük; sol ok yanındaki etiket gri (#adb5bd); line-height ikonla aynı (20px) hiza için */
 #reports-modal .reports-list-header-actions .universal-back-label {
@@ -210,6 +214,14 @@ color: #4ade80 !important;
 }
 #reports-modal .reports-list-header-actions .universal-back-bar {
 margin: 0;
+}
+/* Geri Al + Detay Ekleme: dikey, 15px aralık (sarı kutu sol bloğu) */
+#reports-modal .reports-list-header-actions .stok-left-controls {
+display: flex;
+flex-direction: column;
+gap: 15px;
+align-items: flex-start;
+flex-shrink: 0;
 }
 /* Header slotunda geri çubuğu küçülebilir yap */
 #reports-modal .reports-list-header-actions .stok-controls-row-1 .universal-back-bar {
@@ -995,6 +1007,18 @@ min-width: 0 !important;
 width: 100% !important;
 box-sizing: border-box !important;
 margin: 0 !important;
+}
+/* Sol blok: Geri Al üstte, + Detay Ekleme 15px altında */
+#reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-1 .stok-left-controls {
+display: flex !important;
+flex-direction: column !important;
+align-items: flex-start !important;
+gap: 15px !important;
+flex-shrink: 0 !important;
+}
+#reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-1 .stok-left-controls .universal-back-bar,
+#reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-1 .stok-left-controls .stok-detail-add-btn {
+flex-shrink: 0 !important;
 }
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-1 .universal-back-bar,
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-1 .stok-detail-add-btn {
