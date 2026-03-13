@@ -118,6 +118,7 @@
         const isMobile = window.innerWidth <= 640;
         const isVerySmall = window.innerWidth <= 480;
         const isTiny = window.innerWidth <= 360;
+        const isDesktop = window.innerWidth >= 641;
         
         const headers = {
             'sira': 'No.',
@@ -125,7 +126,7 @@
             'yil': 'Yıl',
             'marka': isTiny ? 'Mrk' : isVerySmall ? 'Marka' : 'Marka/Model',
             'plaka': 'Plaka',
-            'sanziman': isTiny ? 'Ş.' : isVerySmall ? 'Şanz.' : 'Şanzıman',
+            'sanziman': isTiny ? 'Ş.' : isVerySmall ? 'Şanz.' : isDesktop ? 'Şanz.' : 'Şanzıman',
             'km': 'KM',
             'sigorta': isVerySmall ? 'Sig.' : isMobile ? 'Sigorta' : 'Sigorta Bitiş',
             'kasko': isVerySmall ? 'Kas.' : isMobile ? 'Kasko' : 'Kasko Bitiş',
