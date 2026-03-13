@@ -339,9 +339,18 @@
             }
             const row1 = wrap.querySelector('.stok-controls-row-1');
             const addBtn = row1.querySelector('.stok-detail-add-btn');
+            const backBar = row1.querySelector('.universal-back-bar');
+            if (window.matchMedia('(min-width: 641px)').matches && backBar && addBtn) {
+                /* Geri Al + Detay Ekleme 15px arayla dikey; menü sağda */
+                const leftBlock = document.createElement('div');
+                leftBlock.className = 'stok-left-controls';
+                row1.insertBefore(leftBlock, backBar);
+                leftBlock.appendChild(backBar);
+                leftBlock.appendChild(addBtn);
+            }
             if (menu) {
                 if (window.matchMedia('(min-width: 641px)').matches && addBtn) {
-                    /* Masaüstü: menü row1 içinde, addBtn'den sonra – sarı kutu alanını doldurur (5x2 grid) */
+                    /* Masaüstü: menü row1 içinde – sarı kutu alanını doldurur (5x2 grid) */
                     row1.appendChild(menu);
                 } else {
                     wrap.appendChild(menu);
