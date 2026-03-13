@@ -1049,6 +1049,7 @@ justify-content: space-between !important;
 flex-wrap: nowrap !important;
 align-items: center !important;
 order: 2 !important; /* row-1 altında, menü sonra */
+transition: margin-top 0.2s ease;
 }
 /* Masaüstü: menü açıkken row-2 (5×2 menü yüksekliği ~56px) */
 #reports-modal:has(.stok-detail-menu-open) .stok-detail-add-wrap.desktop-single-row .stok-controls-row-2 {
@@ -1635,14 +1636,14 @@ margin-top: 2px;
 background: rgba(255, 255, 255, 0.05);
 border: 1px solid rgba(255, 255, 255, 0.2);
 color: #ccc;
-padding: 6px 10px;
+padding: 4px 1px;
 border-radius: 4px;
 font-size: 10px;
 font-weight: 600;
 cursor: pointer;
 transition: background 0.2s, color 0.2s, border-color 0.2s;
 white-space: nowrap;
-width: 74px;
+width: 100%;
 text-align: center;
 flex-shrink: 0;
 overflow: hidden;

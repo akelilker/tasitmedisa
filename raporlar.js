@@ -926,17 +926,6 @@
             </div>
         `;
         }).join('');
-        
-        // Buton metinlerini kontrol et ve gerekirse küçült
-        setTimeout(() => {
-            const buttons = menu.querySelectorAll('.stok-detail-menu-btn');
-            buttons.forEach(btn => {
-                const span = btn.querySelector('span');
-                if (span && span.scrollWidth > btn.offsetWidth) {
-                    span.style.fontSize = '9px';
-                }
-            });
-        }, 10);
     }
 
     // Detay menü toggle (tek tıkla aç, tek tıkla kapat)
