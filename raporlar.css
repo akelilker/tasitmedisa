@@ -1031,7 +1031,7 @@ padding-top: 0 !important;
 margin-top: 0 !important;
 }
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-left-controls .universal-back-bar {
-margin-top: 0 !important;
+margin-top: -10px !important;
 }
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-1 .universal-back-bar,
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-1 .stok-detail-add-btn {
