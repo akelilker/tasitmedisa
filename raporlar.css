@@ -1058,7 +1058,7 @@ right: 2px !important;
 margin-top: -48px;
 margin-left: 0;
 z-index: 50;
-width: calc(100% - 160px) !important;
+width: calc(100% - 140px) !important;
 max-width: calc(100% - 2px) !important;
 overflow: visible !important;
 display: none !important;
@@ -1067,6 +1067,7 @@ display: none !important;
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-detail-add-btn-wrap .stok-detail-menu.stok-detail-menu-open {
 display: grid !important;
 grid-template-columns: repeat(5, minmax(0, 1fr));
+grid-auto-rows: 34px;
 column-gap: 3px !important;
 row-gap: 3px !important;
 gap: 3px !important;
@@ -1077,11 +1078,19 @@ margin: 0 !important;
 padding: 0 !important;
 }
 /* Desktop: Detay menü buton metinlerini çerçeveye yaklaştır, sığma için 1 punto küçült */
+#reports-modal .stok-detail-add-wrap.desktop-single-row .stok-detail-menu-item {
+height: 100% !important;
+}
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-detail-menu-btn {
+height: 100% !important;
+min-height: 34px !important;
 padding-left: 0.5px !important;
 padding-right: 0.5px !important;
+padding-top: 0 !important;
+padding-bottom: 0 !important;
 width: 100% !important;
 max-width: 100% !important;
+box-sizing: border-box !important;
 }
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-detail-menu-btn span {
 font-size: 9px !important;
