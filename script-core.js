@@ -574,6 +574,10 @@ setTimeout(() => { if (window.hideLoading) window.hideLoading(); }, 8000);
   function removeInstallButton() {
     const bar = getInstallBar();
     if (bar && bar.parentNode) bar.parentNode.removeChild(bar);
+    var driverMobileSlot = document.getElementById('driver-mobile-notification-slot');
+    if (driverMobileSlot && !driverMobileSlot.querySelector('#pwa-install-bar')) {
+      driverMobileSlot.setAttribute('aria-hidden', 'true');
+    }
   }
 
   function showInstallButton() {
@@ -618,6 +622,10 @@ setTimeout(() => { if (window.hideLoading) window.hideLoading(); }, 8000);
     var wrapper = document.getElementById('pwa-install-wrapper');
     if (wrapper) {
       wrapper.appendChild(bar);
+      var driverMobileSlot = document.getElementById('driver-mobile-notification-slot');
+      if (driverMobileSlot && driverMobileSlot.contains(wrapper)) {
+        driverMobileSlot.setAttribute('aria-hidden', 'false');
+      }
     } else {
       document.body.appendChild(bar);
     }

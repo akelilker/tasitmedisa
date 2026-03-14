@@ -78,32 +78,28 @@ const API_BASE = (function(){
   function placePwaWrapper() {
     var pwaWrapper = document.getElementById('pwa-install-wrapper');
     var desktopPwaSlot = document.getElementById('driver-below-hero-pwa-slot');
-    var mobilePwaTarget = document.querySelector('.driver-user-plate-in-panel');
+    var mobilePwaTarget = document.getElementById('driver-mobile-notification-slot');
     if (!pwaWrapper) return;
     if (window.innerWidth >= 769 && desktopPwaSlot) {
       desktopPwaSlot.appendChild(pwaWrapper);
+      if (mobilePwaTarget) mobilePwaTarget.setAttribute('aria-hidden', 'true');
     } else if (mobilePwaTarget) {
       mobilePwaTarget.appendChild(pwaWrapper);
+      mobilePwaTarget.setAttribute('aria-hidden', pwaWrapper.querySelector('#pwa-install-bar') ? 'false' : 'true');
     }
   }
   function placeNotificationSlot() {
     var el = document.getElementById('driver-sliding-warning');
     if (!el) return;
-    var mobileSlot = document.getElementById('driver-mobile-notification-slot');
     var belowHeroSlot = document.getElementById('driver-below-hero-notification-slot');
     var hasContent = (el.innerHTML || '').trim().length > 0;
     if (!hasContent && belowHeroSlot && el.parentNode !== belowHeroSlot) {
       belowHeroSlot.appendChild(el);
-      if (mobileSlot) mobileSlot.setAttribute('aria-hidden', 'true');
       return;
     }
     if (!hasContent) return;
-    if (mobileSlot && window.innerWidth < 769) {
-      mobileSlot.appendChild(el);
-      mobileSlot.setAttribute('aria-hidden', 'false');
-    } else if (belowHeroSlot) {
+    if (belowHeroSlot) {
       belowHeroSlot.appendChild(el);
-      if (mobileSlot) mobileSlot.setAttribute('aria-hidden', 'true');
     }
   }
   (function initPwaPlacement() {
@@ -1255,21 +1251,15 @@ const API_BASE = (function(){
       }
       
       const warnings = buildSlidingWarnings(vehicles, records);
-      var mobileSlot = document.getElementById('driver-mobile-notification-slot');
       var belowHeroSlot = document.getElementById('driver-below-hero-notification-slot');
       if (warnings.length === 0) {
           el.innerHTML = '';
           el.className = 'driver-sliding-warning';
           if (belowHeroSlot && el.parentNode !== belowHeroSlot) belowHeroSlot.appendChild(el);
-          if (mobileSlot) mobileSlot.setAttribute('aria-hidden', 'true');
           return;
       }
-      if (mobileSlot && window.innerWidth < 769) {
-          mobileSlot.appendChild(el);
-          mobileSlot.setAttribute('aria-hidden', 'false');
-      } else if (belowHeroSlot) {
+      if (belowHeroSlot) {
           belowHeroSlot.appendChild(el);
-          if (mobileSlot) mobileSlot.setAttribute('aria-hidden', 'true');
       }
       
       let cycleCount = 0;

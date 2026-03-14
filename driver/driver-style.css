@@ -289,12 +289,19 @@ body.dashboard-page {
 }
 .driver-mobile-notification-slot {
   width: 100%;
-  margin-top: 6px;
-  margin-bottom: 4px;
-  min-height: 0;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  min-height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
 }
 .driver-mobile-notification-slot[aria-hidden="true"] {
   display: none !important;
+}
+.driver-mobile-notification-slot[aria-hidden="false"] {
+  display: flex !important;
 }
 .driver-mobile-notification-slot .driver-sliding-warning {
   flex: 1;
@@ -3216,17 +3223,21 @@ body.login-page:has(#history-modal.driver-modal.show) #app-footer.login-footer.d
   }
 }
 
-/* Mobil: PWA sol panelde (driver-user-plate-in-panel) */
+/* Mobil: PWA sol panelde (plaka/marka-model ile şube arası slot) */
 @media (max-width: 768px) {
-  .dashboard-page .driver-user-plate-in-panel #pwa-install-wrapper {
+  .dashboard-page #driver-mobile-notification-slot #pwa-install-wrapper {
     display: flex !important;
     justify-content: center !important;
-    margin-top: 4px !important;
+    align-items: center !important;
+    width: 100% !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
   }
-  .dashboard-page .driver-user-plate-in-panel .pwa-install-bar {
+  .dashboard-page #driver-mobile-notification-slot .pwa-install-bar {
     background: transparent !important;
     border: none !important;
     padding: 4px 8px !important;
+    margin: 0 auto !important;
   }
 }
 
@@ -5040,11 +5051,17 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 /* === NOKTA ATIŞI: Kırmızı yan çizgiler footer üstünde jilet gibi biter (taşma yok) === */
 @media (max-width: 768px) {
   .dashboard-page .driver-below-hero-row {
-    justify-content: space-between;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 8px !important;
+  }
+
+  .dashboard-page .driver-below-hero-notification-slot {
+    flex: 0 0 auto !important;
   }
 
   .dashboard-page .driver-below-hero-row .driver-btn-logout {
-    margin-left: auto;
+    margin-left: 0 !important;
   }
 
   .dashboard-page .driver-dashboard-container::before,
