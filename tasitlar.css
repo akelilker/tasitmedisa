@@ -1670,6 +1670,10 @@
 
 /* Masaüstü: Taşıt Tipi / Kullanıcı başlıkları birbirine girmesin */
 @media (min-width: 641px) {
+  /* Masaüstü liste başlıkları: sığmadığında en fazla 0.5pt küçülebilsin */
+  .list-header-row .list-cell span {
+    font-size: clamp(10.67px, 1.55vw, 11.33px) !important;
+  }
   .list-header-row .list-cell.list-type {
     padding-right: 6px !important;
     overflow: hidden !important;
@@ -1689,7 +1693,7 @@
     overflow: hidden !important;
     text-overflow: clip !important;
     white-space: nowrap !important;
-    font-size: clamp(9px, 1.5vw, 11px) !important;
+    font-size: clamp(9.67px, 1.45vw, 10.33px) !important;
   }
 }
 .list-header-row .list-cell.list-branch {
