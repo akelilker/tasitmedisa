@@ -2188,6 +2188,7 @@
   border: 1px solid rgba(255, 255, 255, 0.28);
   overflow: hidden;
   display: block;
+  position: relative;
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25) inset;
   background: #ffffff;
 }
@@ -2286,6 +2287,79 @@
 #ruhsat-yukleme-modal #ruhsat-btn-group.ruhsat-single-visible .universal-btn-cancel {
   width: calc((100% - 16px) / 2) !important;
   max-width: calc((100% - 16px) / 2) !important;
+}
+#ruhsat-yukleme-modal #ruhsat-btn-group.ruhsat-inline-view-mode {
+  display: none !important;
+}
+#ruhsat-yukleme-modal #ruhsat-modal-content.ruhsat-inline-view-mode {
+  max-width: 100% !important;
+}
+#ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-inline-back-btn {
+  width: auto !important;
+  margin: 0 auto 10px auto;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.28) !important;
+  border-radius: 8px;
+  background: transparent !important;
+  color: var(--form-label-color, #ffffff) !important;
+  font-size: 13px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+#ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-inline-frame-wrap {
+  width: 100%;
+  height: min(62vh, 560px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 10px;
+  overflow: hidden;
+  background: #0b1220;
+}
+#ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-inline-frame {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+@media (max-width: 640px) {
+  #ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-preview-link {
+    width: 136px;
+    height: 82px;
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.38);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: none;
+  }
+  #ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-preview-link iframe {
+    display: none;
+  }
+  #ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-preview-link::after {
+    content: 'Ruhsatı Aç';
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+  }
+  #ruhsat-yukleme-modal #ruhsat-modal-content .universal-btn-group.ruhsat-preview-row,
+  #ruhsat-yukleme-modal #ruhsat-modal-content .universal-btn-group:has(.ruhsat-preview-link) {
+    width: 136px !important;
+    max-width: 136px !important;
+  }
+  #ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-add-btn {
+    font-size: 40px;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0 !important;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+  }
+  #ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-inline-frame-wrap {
+    height: min(66vh, 620px);
+  }
 }
 
 /* Ruhsat modal: Dosya Seç butonu - şeffaf arka plan, beyaz metin (etiket rengi) */
