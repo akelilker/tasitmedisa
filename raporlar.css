@@ -1181,7 +1181,7 @@ margin-top: 0 !important; /* Sütun başlıkları üzerindeki boşluk 6px azalt�
 #stok-list-container .stok-controls-row-2 > .stok-export-controls { order: 0; }
 #stok-list-container .stok-controls-row-2 > .stok-date-range-controls { order: 0; }
 #stok-list-container .stok-controls-row-2 .stok-export-controls { padding-bottom: 0 !important; margin-bottom: 0 !important; align-items: flex-end !important; }
-#stok-list-container .stok-controls-row-2 .stok-export-left { align-items: center !important; margin-top: 0 !important; }
+#stok-list-container .stok-controls-row-2 .stok-export-left { align-items: flex-end !important; margin-top: 6px !important; }
 #stok-list-container .stok-controls-row-2 .stok-export-btn,
 #stok-list-container .stok-controls-row-2 .stok-print-btn,
 #stok-list-container .stok-controls-row-2 .stok-search-wrap { min-height: 38px !important; box-sizing: border-box !important; }
