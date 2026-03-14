@@ -2164,12 +2164,13 @@
   align-items: center;
 }
 #ruhsat-yukleme-modal #ruhsat-modal-content .universal-btn-group:has(.ruhsat-preview-link) {
-  display: flex !important;
-  justify-content: center !important;
-  align-items: center !important;
-  width: fit-content !important;
-  max-width: none !important;
+  position: relative;
+  display: block !important;
+  width: 120px !important;
+  max-width: 120px !important;
   margin: 0 auto !important;
+  justify-content: initial !important;
+  align-items: initial !important;
   gap: 0 !important;
   padding: 16px 0 !important;
 }
@@ -2209,9 +2210,19 @@
   width: auto !important;
   cursor: pointer;
 }
+#ruhsat-yukleme-modal #ruhsat-modal-content .universal-btn-group:has(.ruhsat-preview-link) .ruhsat-add-btn {
+  position: absolute;
+  left: calc(100% + 12px);
+  top: 50%;
+  margin-left: 0;
+  transform: translateY(-50%);
+}
 #ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-add-btn:hover {
   color: var(--theme-color, #dc2626) !important;
   transform: scale(1.08);
+}
+#ruhsat-yukleme-modal #ruhsat-modal-content .universal-btn-group:has(.ruhsat-preview-link) .ruhsat-add-btn:hover {
+  transform: translateY(-50%) scale(1.08);
 }
 #ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-keep-info {
   color: rgba(255, 255, 255, 0.75);
@@ -2260,6 +2271,17 @@
   width: 100%;
   margin-left: auto;
   margin-right: auto;
+}
+#ruhsat-yukleme-modal #ruhsat-btn-group.ruhsat-single-visible {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  grid-template-columns: none !important;
+  gap: 0 !important;
+}
+#ruhsat-yukleme-modal #ruhsat-btn-group.ruhsat-single-visible .universal-btn-cancel {
+  width: calc((100% - 16px) / 2) !important;
+  max-width: calc((100% - 16px) / 2) !important;
 }
 
 /* Ruhsat modal: Dosya Seç butonu - şeffaf arka plan, beyaz metin (etiket rengi) */
