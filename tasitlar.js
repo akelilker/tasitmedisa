@@ -3234,7 +3234,29 @@ function renderVehicleDetailLeft(vehicle) {
     input.id = 'ruhsat-file-input';
     input.setAttribute('aria-label', 'Ruhsat PDF dosyası seç');
     input.style.marginBottom = '8px';
-    input.onchange = function() { saveBtn.style.display = input.files.length ? 'inline-block' : 'none'; };
+    let selectBox = null;
+    if (!hasExistingRuhsat) {
+      input.style.display = 'none';
+      selectBox = document.createElement('button');
+      selectBox.type = 'button';
+      selectBox.className = 'ruhsat-select-box';
+      selectBox.textContent = 'Yükle';
+      selectBox.onclick = function() { input.click(); };
+      content.appendChild(selectBox);
+    }
+    input.onchange = function() {
+      const hasFile = input.files.length > 0;
+      saveBtn.style.display = hasFile ? 'inline-block' : 'none';
+      if (!hasExistingRuhsat && selectBox) {
+        if (hasFile) {
+          selectBox.textContent = input.files[0].name;
+          selectBox.classList.add('has-file');
+        } else {
+          selectBox.textContent = 'Yükle';
+          selectBox.classList.remove('has-file');
+        }
+      }
+    };
     content.appendChild(input);
     saveBtn.style.display = input.files.length ? 'inline-block' : 'none';
   }
