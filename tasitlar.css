@@ -2160,6 +2160,40 @@
   border: none !important;
   color: var(--form-label-color, #ffffff) !important;
 }
+#ruhsat-yukleme-modal #ruhsat-modal-content .universal-btn-group {
+  align-items: center;
+}
+#ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-preview-link {
+  width: 120px;
+  height: 72px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  overflow: hidden;
+  display: block;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25) inset;
+}
+#ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-preview-link iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  pointer-events: none;
+}
+#ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-add-btn {
+  margin-left: 12px;
+  font-size: 28px;
+  line-height: 1;
+  padding: 0 2px;
+  cursor: pointer;
+}
+#ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-add-btn:hover {
+  color: var(--theme-color, #dc2626) !important;
+  transform: scale(1.08);
+}
+#ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-keep-info {
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 13px;
+  text-align: center;
+}
 
 /* Ruhsat modal: Yükle butonu - yeşil metin, yeşil çerçeve, hover büyüme + yarı saydam yeşil */
 #ruhsat-yukleme-modal #ruhsat-save-btn {

@@ -3191,21 +3191,25 @@ function renderVehicleDetailLeft(vehicle) {
     if (hasRuhsat) {
       const btnGroup = document.createElement('div');
       btnGroup.className = 'universal-btn-group';
-      const viewBtn = document.createElement('button');
-      viewBtn.type = 'button';
-      viewBtn.className = 'universal-btn-save';
-      viewBtn.textContent = 'Ruhsatı Görüntüle';
-      viewBtn.onclick = function() { viewRuhsatPdf(vid); };
-      btnGroup.appendChild(viewBtn);
+      const previewLink = document.createElement('a');
+      previewLink.className = 'ruhsat-preview-link';
+      previewLink.href = 'ruhsat.php?id=' + encodeURIComponent(vid);
+      previewLink.target = '_blank';
+      previewLink.rel = 'noopener';
+      previewLink.setAttribute('aria-label', 'Ruhsatı görüntüle');
+      const previewFrame = document.createElement('iframe');
+      previewFrame.src = previewLink.href + '#toolbar=0&navpanes=0&scrollbar=0';
+      previewFrame.setAttribute('title', 'Ruhsat önizleme');
+      previewFrame.setAttribute('loading', 'lazy');
+      previewLink.appendChild(previewFrame);
+      btnGroup.appendChild(previewLink);
       const replaceBtn = document.createElement('button');
       replaceBtn.type = 'button';
       replaceBtn.className = 'ruhsat-add-btn';
       replaceBtn.setAttribute('aria-label', 'Ruhsatı Değiştir');
       replaceBtn.innerHTML = '+';
       replaceBtn.onclick = function() {
-        const confirmed = window.confirm('Eski ruhsat silinecektir. Emin misiniz?');
-        if (!confirmed) return;
-        renderRuhsatUploadForm(content, saveBtn);
+        renderRuhsatUploadForm(content, saveBtn, true);
       };
       btnGroup.appendChild(replaceBtn);
       content.appendChild(btnGroup);
@@ -3216,8 +3220,14 @@ function renderVehicleDetailLeft(vehicle) {
     requestAnimationFrame(function() { modal.classList.add('active'); });
   };
 
-  function renderRuhsatUploadForm(content, saveBtn) {
+  function renderRuhsatUploadForm(content, saveBtn, hasExistingRuhsat) {
     content.innerHTML = '';
+    if (hasExistingRuhsat) {
+      const keepInfo = document.createElement('div');
+      keepInfo.textContent = 'Yeni ruhsat yüklemesi başarılı olmazsa mevcut ruhsat korunur.';
+      keepInfo.className = 'ruhsat-keep-info';
+      content.appendChild(keepInfo);
+    }
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = '.pdf';
