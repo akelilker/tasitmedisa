@@ -1281,6 +1281,17 @@ margin-top: 1px !important;
 align-self: flex-start !important;
 margin-left: 0 !important;
 }
+/* Masaüstü düzenleme: Sol ok + Raporlar üstte, Detay Ekleme altta ve sola yaslı */
+#reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-1 {
+flex-direction: column !important;
+justify-content: flex-start !important;
+align-items: flex-start !important;
+gap: 4px !important;
+}
+#reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-1 .universal-back-bar,
+#reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-1 .stok-detail-add-btn {
+margin-left: 0 !important;
+}
 #reports-modal .modal-container {
 overflow: hidden !important;
 border-bottom: 1px solid var(--border-medium) !important;
