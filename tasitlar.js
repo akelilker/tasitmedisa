@@ -835,7 +835,7 @@
         }
         const thirdLineDisplay = thirdLine ? (isArchive ? toTitleCase(thirdLine) : (activeBranchId === 'all' ? toTitleCase(thirdLine) : formatAdSoyad(thirdLine))) : '';
         const satildiCardSpan = isArchive ? ' <span style="color:#d40000;font-size:12px;">(SATILDI)</span>' : '';
-        const satildiBrandLine = isArchive ? '<span style="color:#d40000;font-size:12px;display:block;line-height:1.1;margin-top:1px;">(SATILDI)</span>' : '';
+        const satildiBrandLine = isArchive ? '<span class="archive-satildi-line">(SATILDI)</span>' : '';
 
         // Tahsis edilmemiş taşıtlar için kırmızı class (liste ve kartta her zaman)
         const isUnassigned = !v.branchId;
@@ -873,7 +873,11 @@
                   cellClass = 'list-plate';
                   break;
                 case 'brand':
-                  cellContent = escapeHtml(toTitleCase(brandModel)) + satildiBrandLine;
+                  if (isArchive) {
+                    cellContent = '<span class="archive-brand-main" title="' + escapeHtml(toTitleCase(brandModel)) + '">' + escapeHtml(toTitleCase(brandModel)) + '</span>' + satildiBrandLine;
+                  } else {
+                    cellContent = escapeHtml(toTitleCase(brandModel));
+                  }
                   cellClass = 'list-brand';
                   break;
                 case 'km':
@@ -911,8 +915,9 @@
             });
             
             const vid = v.id != null ? String(v.id).replace(/"/g, '&quot;') : '';
+            const archiveRowClass = isArchive ? ' archive-vehicle-row' : '';
             return `
-              <div class="list-item${unassignedClass}" data-vehicle-id="${vid}" style="grid-template-columns: ${gridStr}; cursor:pointer">
+              <div class="list-item${unassignedClass}${archiveRowClass}" data-vehicle-id="${vid}" style="grid-template-columns: ${gridStr}; cursor:pointer">
                 ${cellHtml}
               </div>
             `;
