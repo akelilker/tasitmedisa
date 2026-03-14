@@ -2163,6 +2163,7 @@
 #ruhsat-yukleme-modal #ruhsat-modal-content .universal-btn-group {
   align-items: center;
 }
+#ruhsat-yukleme-modal #ruhsat-modal-content .universal-btn-group.ruhsat-preview-row,
 #ruhsat-yukleme-modal #ruhsat-modal-content .universal-btn-group:has(.ruhsat-preview-link) {
   position: relative;
   display: block !important;
@@ -2174,6 +2175,7 @@
   gap: 0 !important;
   padding: 16px 0 !important;
 }
+#ruhsat-yukleme-modal #ruhsat-modal-content .universal-btn-group.ruhsat-preview-row button,
 #ruhsat-yukleme-modal #ruhsat-modal-content .universal-btn-group:has(.ruhsat-preview-link) button {
   width: auto !important;
   max-width: none !important;
@@ -2210,6 +2212,7 @@
   width: auto !important;
   cursor: pointer;
 }
+#ruhsat-yukleme-modal #ruhsat-modal-content .universal-btn-group.ruhsat-preview-row .ruhsat-add-btn,
 #ruhsat-yukleme-modal #ruhsat-modal-content .universal-btn-group:has(.ruhsat-preview-link) .ruhsat-add-btn {
   position: absolute;
   left: calc(100% + 12px);
@@ -2221,6 +2224,7 @@
   color: var(--theme-color, #dc2626) !important;
   transform: scale(1.08);
 }
+#ruhsat-yukleme-modal #ruhsat-modal-content .universal-btn-group.ruhsat-preview-row .ruhsat-add-btn:hover,
 #ruhsat-yukleme-modal #ruhsat-modal-content .universal-btn-group:has(.ruhsat-preview-link) .ruhsat-add-btn:hover {
   transform: translateY(-50%) scale(1.08);
 }
