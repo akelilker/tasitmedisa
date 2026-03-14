@@ -3200,6 +3200,7 @@ function renderVehicleDetailLeft(vehicle) {
     if (hasRuhsat) {
       const btnGroup = document.createElement('div');
       btnGroup.className = 'universal-btn-group';
+      btnGroup.classList.add('ruhsat-preview-row');
       const previewLink = document.createElement('a');
       previewLink.className = 'ruhsat-preview-link';
       previewLink.href = 'ruhsat.php?id=' + encodeURIComponent(vid);
