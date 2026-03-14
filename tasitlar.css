@@ -1849,6 +1849,28 @@
     justify-content: center;
     align-items: center;
 }
+/* Arşiv listesi: Marka/Model üst satır, SATILDI daima alt satır */
+.view-list .list-item.archive-vehicle-row .list-cell.list-brand {
+    display: flex !important;
+    flex-direction: column !important;
+    -webkit-line-clamp: unset !important;
+    line-clamp: unset !important;
+    -webkit-box-orient: initial !important;
+}
+.view-list .list-item.archive-vehicle-row .list-cell.list-brand .archive-brand-main {
+    display: block;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.view-list .list-item.archive-vehicle-row .list-cell.list-brand .archive-satildi-line {
+    display: block;
+    color: #d40000;
+    font-size: 12px;
+    line-height: 1.1;
+    margin-top: 1px;
+}
 
 .view-list .list-cell.list-plate {
     font-size: inherit !important;
