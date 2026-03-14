@@ -5049,14 +5049,13 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 
   .dashboard-page .driver-dashboard-container::before,
   .login-page .driver-dashboard-container::before {
-    bottom: 0 !important;
+    bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
   }
 }
 @media (min-width: 769px) {
   .dashboard-page .driver-dashboard-container::before,
   .login-page .driver-dashboard-container::before {
-    bottom: 0 !important;
-    height: auto !important;
+    bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
   }
 }
 
