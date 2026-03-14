@@ -3186,6 +3186,7 @@ function renderVehicleDetailLeft(vehicle) {
     if (!modal || !content || !saveBtn) return;
     content.innerHTML = '';
     saveBtn.style.display = 'none';
+    saveBtn.textContent = 'Ruhsat Yükle';
     const hasRuhsat = !!(vehicle && vehicle.ruhsatPath);
     if (hasRuhsat) {
       const btnGroup = document.createElement('div');
@@ -3198,9 +3199,14 @@ function renderVehicleDetailLeft(vehicle) {
       btnGroup.appendChild(viewBtn);
       const replaceBtn = document.createElement('button');
       replaceBtn.type = 'button';
-      replaceBtn.className = 'universal-btn-cancel';
-      replaceBtn.textContent = 'Yeni Ruhsat Yükle';
-      replaceBtn.onclick = function() { renderRuhsatUploadForm(content, saveBtn); };
+      replaceBtn.className = 'ruhsat-add-btn';
+      replaceBtn.setAttribute('aria-label', 'Ruhsatı Değiştir');
+      replaceBtn.innerHTML = '+';
+      replaceBtn.onclick = function() {
+        const confirmed = window.confirm('Eski ruhsat silinecektir. Emin misiniz?');
+        if (!confirmed) return;
+        renderRuhsatUploadForm(content, saveBtn);
+      };
       btnGroup.appendChild(replaceBtn);
       content.appendChild(btnGroup);
     } else {
