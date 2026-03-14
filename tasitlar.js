@@ -4856,7 +4856,7 @@ function renderVehicleDetailLeft(vehicle) {
             <div style="font-weight: 500; color: #fff; line-height: 1.4;">
               <span class="${notif.warningClass}">${escapeHtml(messageText)}</span>
             </div>
-            <div style="font-size: 11px; color: #999; margin-top: 6px;">Bildirim Tarihi: ${escapeHtml(activeDateDisplay)}</div>
+            <div style="font-size: 11px; color: #999; margin-top: 0;">${escapeHtml(activeDateDisplay)}</div>
           </button>`;
         });
       }
