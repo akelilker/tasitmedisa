@@ -3303,8 +3303,8 @@ body.login-page:has(#history-modal.driver-modal.show) #app-footer.login-footer.d
   align-items: center !important;
   justify-content: center !important;
   width: 100% !important;
-  height: var(--app-footer-real-height) !important;
-  min-height: var(--app-footer-real-height) !important;
+  min-height: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
+  height: auto !important;
   box-sizing: border-box !important;
   margin: 0 !important;
   padding-top: 4px !important;
