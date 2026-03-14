@@ -206,11 +206,21 @@ const API_BASE = (function(){
     }
   });
   
-  /** Modal açıkken body scroll kilitlensin (sadece modal içi kayar) */
+  /** Modal açıkken body scroll kilitlensin (sadece modal içi kayar). Geçmiş Kayıt / Düzeltme Talebi açıkken footer :has() olmadan da üstte kalsın. */
   function updateDriverModalBodyClass() {
     var open = document.querySelector('.driver-modal.show');
-    if (open) document.body.classList.add('driver-modal-open');
-    else document.body.classList.remove('driver-modal-open');
+    if (open) {
+      document.body.classList.add('driver-modal-open');
+      var id = open.id;
+      if (id === 'history-modal' || id === 'edit-request-modal') {
+        document.body.classList.add('driver-history-or-edit-modal-open');
+      } else {
+        document.body.classList.remove('driver-history-or-edit-modal-open');
+      }
+    } else {
+      document.body.classList.remove('driver-modal-open');
+      document.body.classList.remove('driver-history-or-edit-modal-open');
+    }
   }
   
   /* =========================================
