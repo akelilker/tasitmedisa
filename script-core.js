@@ -520,6 +520,19 @@ setTimeout(() => { if (window.hideLoading) window.hideLoading(); }, 8000);
    SERVICE WORKER REGISTRATION (scope pathname'e göre: /medisa/, /tasitmedisa/ veya /)
    ========================================= */
 (function() {
+  var host = (typeof window !== 'undefined' && window.location && window.location.hostname) ? window.location.hostname : '';
+  var isLocalhost = host === 'localhost' || host === '127.0.0.1' || host === '[::1]';
+
+  // Local geliştirmede SW cache kaynaklı eski dosya/503 karışıklığını önle
+  if (isLocalhost && 'serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations()
+      .then(function(registrations) {
+        registrations.forEach(function(reg) { reg.unregister(); });
+      })
+      .catch(function() {});
+    return;
+  }
+
   var p = (typeof document !== 'undefined' && document.location) ? document.location.pathname : '';
   var base = (p.indexOf('/tasitmedisa') === 0) ? '/tasitmedisa' : (p.indexOf('/medisa') === 0) ? '/medisa' : '';
   var scope = base ? base + '/' : '/';
