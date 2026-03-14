@@ -1675,7 +1675,8 @@
     font-size: clamp(10.67px, 1.55vw, 11.33px) !important;
   }
   .list-header-row .list-cell.list-type {
-    padding-right: 6px !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
     overflow: hidden !important;
     text-overflow: clip !important;
     white-space: nowrap !important;
@@ -1695,9 +1696,19 @@
     white-space: nowrap !important;
     font-size: clamp(9.67px, 1.45vw, 10.33px) !important;
   }
-  /* Taşıt Tipi başlığı: gerekirse 1 puntoya kadar küçülebilsin */
+  /* Taşıt Tipi başlığı: masaüstünde metin kesin sığsın */
   .list-header-row .list-cell.list-type span {
-    font-size: clamp(9px, 1.4vw, 10.33px) !important;
+    font-size: clamp(8.4px, 1.25vw, 9.8px) !important;
+    letter-spacing: 0 !important;
+  }
+  .list-header-row .list-cell.list-type .sortable-header {
+    width: 100%;
+    justify-content: center !important;
+    padding-right: 10px !important; /* sağdaki sort ikonuna pay */
+    box-sizing: border-box;
+  }
+  .list-header-row .list-cell.list-type .sort-icon {
+    right: 1px !important;
   }
 }
 .list-header-row .list-cell.list-branch {
