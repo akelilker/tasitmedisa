@@ -791,7 +791,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   justify-content: flex-start !important;
   height: auto !important;
   min-height: 72px !important;
-  padding: 10px 12px !important;
+  padding: 10px 12px 1px 12px !important;
   white-space: normal !important;
   overflow: hidden !important;
 }
@@ -1206,7 +1206,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
     max-height: none !important;
     overflow: hidden !important;
     white-space: normal !important;
-    padding: 10px 12px !important;
+    padding: 10px 12px 1px 12px !important;
   }
   #notifications-dropdown .notification-item.date-warning-red-border > div,
   #notifications-dropdown .notification-item.date-warning-orange-border > div {

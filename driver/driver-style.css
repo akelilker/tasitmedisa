@@ -2517,6 +2517,38 @@ body.login-page:has(#history-modal.driver-modal.show) #app-footer.login-footer.d
   opacity: 1 !important;
 }
 
+/* :has() fallback: Geçmiş Kayıt / Düzeltme Talebi açıkken footer üstte ve ışıklı (JS body.driver-history-or-edit-modal-open) */
+body.dashboard-page.driver-history-or-edit-modal-open #app-footer,
+body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
+  z-index: 100020 !important;
+}
+body.dashboard-page.driver-history-or-edit-modal-open #app-footer.dimmed .version,
+body.dashboard-page.driver-history-or-edit-modal-open #app-footer.dimmed .version#version-display,
+body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer.dimmed .version,
+body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer.dimmed .version#version-display,
+body.dashboard-page.driver-history-or-edit-modal-open #app-footer.dimmed .status,
+body.dashboard-page.driver-history-or-edit-modal-open #app-footer.dimmed .status.status-ready,
+body.dashboard-page.driver-history-or-edit-modal-open #app-footer.dimmed .status.status-error,
+body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer.dimmed .status,
+body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer.dimmed .status.status-ready,
+body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer.dimmed .status.status-error,
+body.dashboard-page.driver-history-or-edit-modal-open #app-footer.dimmed .brand img,
+body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer.dimmed .brand img,
+body.dashboard-page.driver-history-or-edit-modal-open #app-footer.dimmed.delayed .version,
+body.dashboard-page.driver-history-or-edit-modal-open #app-footer.dimmed.delayed .version#version-display,
+body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer.dimmed.delayed .version,
+body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer.dimmed.delayed .version#version-display,
+body.dashboard-page.driver-history-or-edit-modal-open #app-footer.dimmed.delayed .status,
+body.dashboard-page.driver-history-or-edit-modal-open #app-footer.dimmed.delayed .status.status-ready,
+body.dashboard-page.driver-history-or-edit-modal-open #app-footer.dimmed.delayed .status.status-error,
+body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer.dimmed.delayed .status,
+body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer.dimmed.delayed .status.status-ready,
+body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer.dimmed.delayed .status.status-error,
+body.dashboard-page.driver-history-or-edit-modal-open #app-footer.dimmed.delayed .brand img,
+body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer.dimmed.delayed .brand img {
+  opacity: 1 !important;
+}
+
 /* TaÅŸÄ±tlar modali ile aynÄ±: geniÅŸlik 500px, yatay Ã§erÃ§eve. DiÄŸer modallar: --modal-margin-bottom-desktop */
 #history-modal .driver-modal-content,
 #history-modal .modal-container,
@@ -4132,15 +4164,16 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     -webkit-overflow-scrolling: touch;
     padding-bottom: max(20px, env(safe-area-inset-bottom, 0)) !important;
   }
-  /* GeÃ§miÅŸ KayÄ±tlar + DÃ¼zeltme Talebi: scroll kendi alanÄ±nda, body padding-bottom gereksiz */
+  /* GeÃ§miÅŸ KayÄ±tlar + DÃ¼zeltme Talebi: scroll kendi alanÄ±nda; mobilde son satır footer Ã¼stÃ¼nde kalsÄ±n */
   #history-modal .modal-body,
   #edit-request-modal .modal-body {
     padding-top: 2px !important;
     padding-bottom: 0 !important;
   }
-  /* Gecmis Kayitlar mobil: alt cerceveye degmemesi icin 4px atil alan */
-  #history-modal .modal-body {
-    padding-bottom: 4px !important;
+  /* Geçmiş Kayıtlar / Düzeltme Talebi mobil: scroll alanı footer yüksekliği kadar alt boşluk, son satır kesilmesin */
+  #history-modal .modal-body,
+  #edit-request-modal .modal-body {
+    padding-bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap, 14px) + env(safe-area-inset-bottom, 0)) !important;
   }
 
   /* Mobil arka plan tÃ¼m sayfalarla aynÄ± (--bg) */
@@ -5094,5 +5127,32 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     padding-bottom: 4px !important;
     padding-left: max(12px, env(safe-area-inset-left, 0)) !important;
     padding-right: max(12px, env(safe-area-inset-right, 0)) !important;
+  }
+}
+
+/* Mobil dashboard: alt yatay kesme ve buton clipping düzeltmesi */
+@media (max-width: 768px) {
+  /* Tam-genişlik fixed geri-barı sağ panelin üstüne biniyordu; sol panel akışına geri al */
+  .dashboard-page .driver-left-panel .driver-footer-back-wrap {
+    position: relative !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    z-index: auto !important;
+    margin: auto 0 0 0 !important;
+    padding: 0 !important;
+    max-width: none !important;
+    background: transparent !important;
+    border-top: none !important;
+  }
+
+  /* Fixed bar için eklenmiş yapay boşluk mobilde kesme üretiyordu */
+  .dashboard-page .driver-two-panel {
+    padding-bottom: 0 !important;
+  }
+
+  /* Sağ panel altına küçük güvenli boşluk */
+  .dashboard-page .driver-right-panel {
+    padding-bottom: 12px !important;
   }
 }
