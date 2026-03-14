@@ -15,6 +15,13 @@
   function readVehicles() { return (typeof window.getMedisaVehicles === 'function' ? window.getMedisaVehicles() : null) || []; }
   function readUsers() { return (typeof window.getMedisaUsers === 'function' ? window.getMedisaUsers() : null) || []; }
 
+  function getEventPerformerName(vehicle) {
+    const users = readUsers();
+    const assignedId = vehicle.assignedUserId || '';
+    const user = assignedId ? users.find(function(u) { return String(u.id) === String(assignedId); }) : null;
+    return (user && (user.name || user.isim)) ? toTitleCase(String(user.name || user.isim)) : 'Yönetim';
+  }
+
   var parsedKaportaSvgCache = null;
   function getKaportaSvg() {
     return window.getKaportaSvg();
@@ -33,12 +40,23 @@
 
   function writeVehicles(arr) {
     if (window.dataApi && typeof window.dataApi.saveVehiclesList === 'function') {
-      window.dataApi.saveVehiclesList(arr).catch(function(err) {
+      return window.dataApi.saveVehiclesList(arr).catch(function(err) {
+        if (err && err.conflict) {
+          alert('Dikkat! Bu araç siz işlem yaparken başka biri tarafından güncellenmiş. Veri ezilmesini önlemek için lütfen sayfayı yenileyip güncel durumu kontrol edin.');
+          if (typeof window.loadDataFromServer === 'function') {
+            window.loadDataFromServer(true).then(function() {
+              if (typeof window.renderBranchDashboard === 'function') window.renderBranchDashboard();
+              if (typeof window.renderVehicles === 'function') window.renderVehicles();
+            });
+          }
+          throw err;
+        }
         console.warn('[Medisa] Sunucuya kayıt yapılamadı:', err && err.message);
+        throw err;
       });
-      return;
     }
     if (window.appData) window.appData.tasitlar = Array.isArray(arr) ? arr : [];
+    return Promise.resolve();
   }
 
   // Global State
@@ -176,6 +194,7 @@
     utts: 'utts-guncelle-modal',
     takip: 'takip-cihaz-guncelle-modal',
     kaskokodu: 'kasko-kodu-guncelle-modal',
+    ruhsat: 'ruhsat-yukleme-modal',
     sube: 'sube-degisiklik-modal',
     kullanici: 'kullanici-atama-modal',
     satis: 'satis-pert-modal'
@@ -866,7 +885,7 @@
                   break;
                 case 'user':
                   const assignedUser = v.assignedUserId ? userMap.get(String(v.assignedUserId)) : null;
-                  const userNameRaw = assignedUser?.isim || v.tahsisKisi || '-';
+                  const userNameRaw = assignedUser?.name || v.tahsisKisi || '-';
                   const userName = formatAdSoyad(userNameRaw);
                   if (isMobile && userName && userName !== '-') {
                     const parts = String(userName).trim().split(/\s+/);
@@ -900,7 +919,7 @@
     }).join('') + '</div>' + (viewMode === 'list' ? '</div>' : '') + '';
 
       listContainer.innerHTML = html;
-      
+
       // Taşıt kartları için grid'i dinamik yap (sadece card view'da)
       if (viewMode === 'card') {
           const gridEl = listContainer.querySelector('.view-card');
@@ -1123,9 +1142,17 @@
         toolbarCenter.appendChild(assignBtn);
       }
       
-      // Sağ taraf (yazdır butonu)
+      // Sağ taraf (ruhsat simgesi + yazdır butonu)
       const toolbarRight = document.createElement('div');
       toolbarRight.className = 'toolbar-right';
+      const ruhsatBtn = document.createElement('button');
+      ruhsatBtn.type = 'button';
+      ruhsatBtn.className = 'vehicle-ruhsat-btn';
+      ruhsatBtn.title = vehicle.ruhsatPath ? 'Ruhsatı Görüntüle' : 'Ruhsat Yükle';
+      ruhsatBtn.setAttribute('aria-label', 'Ruhsat');
+      ruhsatBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg>';
+      ruhsatBtn.onclick = (e) => { e.stopPropagation(); if (typeof window.openRuhsatModal === 'function') window.openRuhsatModal(vehicleId); };
+      toolbarRight.appendChild(ruhsatBtn);
       const printBtn = document.createElement('button');
       printBtn.type = 'button';
       printBtn.className = 'vehicle-print-btn';
@@ -1644,86 +1671,92 @@
     return labels[type] || type;
   }
 
-  let cachedKaskoData = null;
+  window._kaskoCache = null;
+  window.clearKaskoCache = function() {
+    window._kaskoCache = null;
+  };
+
   function getKaskoDegeri(kaskoKodu, modelYili) {
-    if (!kaskoKodu || String(kaskoKodu).trim() === '') return '-';
+    if (!kaskoKodu) return '-';
     try {
-      if (!cachedKaskoData) {
+      if (!window._kaskoCache) {
         var raw = localStorage.getItem('medisa_kasko_liste');
         if (!raw) return '-';
-        cachedKaskoData = JSON.parse(raw);
+        window._kaskoCache = JSON.parse(raw);
       }
-      var data = cachedKaskoData;
+      var data = window._kaskoCache;
       if (!Array.isArray(data) || data.length < 2) return '-';
 
-      // Başlık satırını bul
+      // 1. Başlıkları Bul
       var headerRowIndex = -1;
-      for(var i=0; i<5; i++) {
+      for(var i=0; i<10; i++) {
         var rowStr = JSON.stringify(data[i] || []).toLowerCase();
-        if(rowStr.includes("marka") && rowStr.includes("tip")) {
+        if(rowStr.includes("marka") && rowStr.includes("kod")) {
           headerRowIndex = i;
           break;
         }
       }
       if (headerRowIndex === -1) headerRowIndex = 1;
-
       var headers = data[headerRowIndex];
 
-      // Yıl sütununu bul
-      var yearIndex = -1;
+      // 2. Kolonları Bul
+      var markaIndex = -1, tipIndex = -1, yearIndex = -1;
       var targetYear = String(modelYili).trim();
-      for (var c = 0; c < headers.length; c++) {
-        var h = String(headers[c]).trim();
-        if (h === targetYear || h === targetYear + ".0") {
-          yearIndex = c;
-          break;
-        }
-      }
-      if (yearIndex === -1) return 'Bulunamadı';
 
-      var targetKodu = String(kaskoKodu).trim();
+      for (var c = 0; c < headers.length; c++) {
+        var h = String(headers[c] || '').toLowerCase().trim();
+        var hRaw = String(headers[c] || '').trim();
+        if (h.includes('marka') && h.includes('kod')) markaIndex = c;
+        if ((h.includes('tip') || h.includes('model')) && h.includes('kod')) tipIndex = c;
+        if (hRaw === targetYear || hRaw === targetYear + ".0") yearIndex = c;
+      }
+
+      if (markaIndex === -1) markaIndex = 0;
+      if (tipIndex === -1) tipIndex = 1;
+      if (yearIndex === -1) return 'Yıl Bulunamadı (' + targetYear + ')';
+
+      // Hedef kasko kodunu rakam yap ve başındaki sıfırları at (Örn: 03210 -> 3210)
+      var targetClean = String(kaskoKodu).replace(/[^0-9]/g, '').replace(/^0+/, '');
 
       for (var r = headerRowIndex + 1; r < data.length; r++) {
         var row = data[r];
         if (!row || row.length < 2) continue;
 
-        var m = String(row[0] || '').trim();
-        var t = String(row[1] || '').trim();
+        // Excel'deki Marka ve Tip kodunu birleştir, sıfırları at
+        var m = String(row[markaIndex] || '').replace(/[^0-9]/g, '').replace(/^0+/, '');
+        var t = String(row[tipIndex] || '').replace(/[^0-9]/g, '').replace(/^0+/, '');
+        var currentClean = m + t;
 
-        // Olası TSB Kod Kombinasyonları (Sıfır dolgulu veya dolgusuz)
-        var c1 = m + t;
-        var c2 = m.padStart(2, '0') + t.padStart(3, '0');
-        var c3 = m.padStart(3, '0') + t.padStart(3, '0');
-        var c4 = m.padStart(3, '0') + t.padStart(4, '0');
-        var c5 = m.padStart(2, '0') + t.padStart(4, '0');
-
-        if (targetKodu === c1 || targetKodu === c2 || targetKodu === c3 || targetKodu === c4 || targetKodu === c5 || targetKodu === m) {
-
+        // YALNIZCA TAM EŞLEŞME (İlk bulduğu yanlış markaya atlamaması için targetClean === m KALDIRILDI)
+        if (targetClean === currentClean) {
           var rawVal = String(row[yearIndex] || '').trim();
 
-          // Excel'den gelen noktalı/virgüllü karmaşık sayıyı saf matematiğe çevir
           var cleanVal = rawVal.replace(/[^0-9,.]/g, '');
           if (cleanVal.includes(',') && cleanVal.includes('.')) {
             cleanVal = cleanVal.replace(/\./g, '').replace(',', '.');
           } else if (cleanVal.includes(',')) {
             cleanVal = cleanVal.replace(',', '.');
+          } else if (cleanVal.includes('.') && !cleanVal.includes(',')) {
+            cleanVal = cleanVal.replace(/\./g, '');
           }
 
-          var numVal = parseFloat(cleanVal);
+          var numVal = parseFloat(cleanVal) || parseInt(cleanVal.replace(/\D/g, ''), 10);
 
           if (!isNaN(numVal) && numVal > 0) {
             return numVal.toLocaleString('tr-TR') + ' ₺';
           } else {
-            return 'Değer Yok'; // O yıla ait kasko değeri sıfırsa
+            return 'Değer Yok (Excel: 0)';
           }
         }
       }
-      return 'Bulunamadı';
+      return 'Kasko Kodu Bulunamadı';
     } catch (e) {
-      console.error("Kasko hesaplama hatası:", e);
+      console.error("Kasko Hata:", e);
       return '-';
     }
   }
+
+  window.getKaskoDegeri = getKaskoDegeri;
 
   /**
    * Excel yüklendiğinde tüm taşıtların kasko değerini hesaplayıp kaydeder.
@@ -1755,6 +1788,28 @@
     const krediLabel = vehicle.kredi === 'var' ? (vehicle.krediDetay || 'Var') : 'Yoktur.';
     const lastikLabel = vehicle.lastikDurumu === 'var' ? (vehicle.lastikAdres || 'Var') : 'Yoktur.';
 
+    let tramerLabel = 'Yoktur.';
+    if (vehicle.tramer === 'var' && vehicle.tramerRecords && vehicle.tramerRecords.length > 0) {
+      tramerLabel = vehicle.tramerRecords.map(function(r) {
+        return (formatDateForDisplay(r.date) || '-') + ' - ' + (r.amount || '');
+      }).join(' | ');
+      if (vehicle.tramerRecords.length > 1) {
+        var total = 0;
+        vehicle.tramerRecords.forEach(function(record) {
+          var amountStr = (record.amount || '').replace(/\./g, '').replace(',', '.').replace(/TL/gi, '').trim();
+          total += parseFloat(amountStr) || 0;
+        });
+        tramerLabel += ' | Toplam: ' + total.toFixed(2).replace('.', ',') + ' TL';
+      }
+    }
+
+    var kaskoDegeri = vehicle.kaskoDegeri;
+    if (kaskoDegeri == null || kaskoDegeri === '') {
+      var yearForKasko = vehicle.year || vehicle.modelYili || '';
+      kaskoDegeri = getKaskoDegeri(vehicle.kaskoKodu, yearForKasko);
+    }
+    var kaskoDegeriDisplay = (kaskoDegeri != null && String(kaskoDegeri).trim() !== '') ? String(kaskoDegeri).trim() : '-';
+
     return [
       ['Plaka', vehicle.plate || '-'],
       ['Marka / Model', toTitleCase(vehicle.brandModel || '-')],
@@ -1765,7 +1820,7 @@
       ['Tescil Tarihi', vehicle.tescilTarihi || '-'],
       ['Km', kmValue],
       ['Şanzıman', vehicle.transmission || '-'],
-      ['Yakıt Tipi', vehicle.yakitTipi || '-'],
+      ['Tramer Kaydı', tramerLabel],
       ['Sigorta Bitiş Tarihi', vehicle.sigorta || '-'],
       ['Kasko Bitiş Tarihi', vehicle.kasko || '-'],
       ['Muayene Bitiş Tarihi', vehicle.muayene || '-'],
@@ -1775,6 +1830,7 @@
       ['UTTS', vehicle.uttsTanimlandi ? 'Evet' : 'Hayır'],
       ['Taşıt Takip', vehicle.takipCihaziMontaj ? 'Evet' : 'Hayır'],
       ['Kasko Kodu', vehicle.kaskoKodu || '-'],
+      ['Kasko Değeri', kaskoDegeriDisplay],
       ['Notlar', vehicle.notes || '-']
     ];
   }
@@ -1786,10 +1842,24 @@
       alert('Taşıt bulunamadı!');
       return;
     }
+    /* Şema yazdırmada kaybolmasın diye önce SVG yükle */
+    getParsedKaportaSvg().then(function() {
+      doPrintVehicleCard(vehicle);
+    }).catch(function() {
+      doPrintVehicleCard(vehicle);
+    });
+  };
 
-    const rows = getVehiclePrintRows(vehicle)
-      .map(([label, value]) => `<tr><th>${escapeHtml(label)}</th><td>${escapeHtml(String(value || '-')).replace(/\n/g, '<br>')}</td></tr>`)
-      .join('');
+  function doPrintVehicleCard(vehicle) {
+    const allRows = getVehiclePrintRows(vehicle);
+    const sigortaIdx = allRows.findIndex(([l]) => l === 'Sigorta Bitiş Tarihi');
+    const leftRows = sigortaIdx >= 0 ? allRows.slice(0, sigortaIdx) : allRows.slice(0, 9);
+    const rightRows = sigortaIdx >= 0 ? allRows.slice(sigortaIdx) : [];
+    const leftTable = leftRows.map(([label, value]) => `<tr><th>${escapeHtml(label)}</th><td>${escapeHtml(String(value || '-')).replace(/\n/g, '<br>')}</td></tr>`).join('');
+    const rightTable = rightRows.map(([label, value]) => `<tr><th>${escapeHtml(label)}</th><td>${escapeHtml(String(value || '-')).replace(/\n/g, '<br>')}</td></tr>`).join('');
+    const rows = rightTable
+      ? `<div class="vehicle-card-print-grid"><table>${leftTable}</table><table>${rightTable}</table></div>`
+      : `<table>${leftTable}</table>`;
     const now = new Date();
     const printedAt = `${String(now.getDate()).padStart(2, '0')}.${String(now.getMonth() + 1).padStart(2, '0')}.${now.getFullYear()} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
 
@@ -1995,8 +2065,8 @@
               part.style.fill = '#d40000';
             }
           });
-          svgClone.style.width = '170px';
-          svgClone.style.height = '260px';
+          svgClone.style.width = '150px';
+          svgClone.style.height = '240px';
           svgClone.style.display = 'block';
           svgClone.style.margin = '0 auto';
           svgClone.style.transform = 'rotate(90deg)';
@@ -2014,16 +2084,18 @@
 
       return `<section class="kaporta-print-section">
         <h2>Kaporta Şeması</h2>
-        <div class="kaporta-print-schema-wrap">${svgMarkup}</div>
-        <div class="kaporta-print-state-grid">
-          <div class="kaporta-print-col">
-            <h3>Boyalı Parçalar</h3>
-            ${listHtml(boyaliList)}
+        <div class="kaporta-print-row">
+          <div class="kaporta-print-state-grid">
+            <div class="kaporta-print-col">
+              <h3>Boyalı Parçalar</h3>
+              ${listHtml(boyaliList)}
+            </div>
+            <div class="kaporta-print-col">
+              <h3>Değişen Parçalar</h3>
+              ${listHtml(degisenList)}
+            </div>
           </div>
-          <div class="kaporta-print-col">
-            <h3>Değişen Parçalar</h3>
-            ${listHtml(degisenList)}
-          </div>
+          <div class="kaporta-print-schema-wrap">${svgMarkup}</div>
         </div>
       </section>`;
     }
@@ -2039,20 +2111,27 @@
     body { font-family: Arial, sans-serif; margin: 24px; color: #111; }
     h1 { margin: 0 0 4px; font-size: 24px; }
     .subtitle { margin: 0 0 10px; color: #555; font-size: 13px; }
-    table { width: 100%; border-collapse: collapse; }
+    table { width: 100%; border-collapse: collapse; table-layout: fixed; }
     th, td { border: 1px solid #ddd; padding: 6px 8px; text-align: left; vertical-align: top; font-size: 13px; line-height: 1.3; }
-    th { width: 240px; background: #f4f4f4; }
-    .kaporta-print-section { margin-top: 14px; border: 1px solid #ddd; border-radius: 8px; padding: 10px; }
-    .kaporta-print-section h2 { margin: 0 0 8px; font-size: 16px; }
-    .kaporta-print-schema-wrap { margin-bottom: 6px; min-height: 180px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-    .kaporta-print-fallback { display: block; width: 170px; height: 260px; margin: 0 auto; object-fit: contain; transform: rotate(90deg); transform-origin: center center; }
-    .kaporta-print-state-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-    .kaporta-print-col h3 { margin: 0 0 6px; font-size: 13px; }
+    th { width: 35%; min-width: 100px; max-width: 160px; background: #f4f4f4; }
+    td { width: 65%; }
+    .vehicle-card-print-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+    .vehicle-card-print-grid table { width: 100%; }
+    @media (max-width: 760px) { .vehicle-card-print-grid { grid-template-columns: 1fr; } }
+    .kaporta-print-section { margin-top: 2px; border: 1px solid #ddd; border-radius: 8px; padding: 4px; page-break-inside: auto; break-inside: auto; }
+    .kaporta-print-section h2 { margin: 0 0 4px; font-size: 16px; }
+    .kaporta-print-row { display: grid; grid-template-columns: minmax(240px, auto) minmax(0, 1fr); align-items: start; column-gap: 10px; }
+    .kaporta-print-state-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 4px 5px; align-content: start; }
+    .kaporta-print-schema-wrap { min-width: 0; min-height: 190px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+    .kaporta-print-schema-wrap svg,
+    .kaporta-print-fallback { display: block; width: 150px; height: 240px; margin: 0 auto; object-fit: contain; transform: rotate(90deg); transform-origin: center center; flex: 0 0 auto; }
+    .kaporta-print-col h3 { margin: 0 0 4px; font-size: 13px; }
     .kaporta-print-list { margin: 0; padding-left: 18px; }
     .kaporta-print-list li { font-size: 12px; line-height: 1.3; margin-bottom: 2px; }
     .kaporta-print-empty { font-size: 12px; color: #666; }
     .print-page-break { page-break-before: always; break-before: page; margin: 16px 0 0; }
-    .history-page { margin-top: 0; break-inside: auto; page-break-inside: auto; }
+    .history-page { margin-top: 5px; page-break-before: auto; break-before: auto; page-break-inside: auto; break-inside: auto; }
+    .history-page.force-new-page { page-break-before: always; break-before: page; margin-top: 5px; }
     .history-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; align-items: start; }
     .history-print-card { border: 1px solid #ddd; border-radius: 8px; padding: 8px; break-inside: auto; page-break-inside: auto; }
     .history-print-card h2 { margin: 0 0 5px; font-size: 14px; page-break-after: avoid; break-after: avoid-page; }
@@ -2063,25 +2142,90 @@
     .history-print-text { font-size: 12px; line-height: 1.25; }
     .history-print-extra { font-size: 11px; color: #444; margin-top: 1px; line-height: 1.2; }
     .history-print-empty { font-size: 12px; color: #666; }
-    @media (max-width: 760px) { .history-grid { grid-template-columns: 1fr; } .kaporta-print-state-grid { grid-template-columns: 1fr; } }
-    @media print { body { margin: 8mm; } .history-page h1, .history-page .subtitle { page-break-after: avoid; break-after: avoid-page; } .history-grid { gap: 8px; } }
+    @media (max-width: 760px) { .history-grid { grid-template-columns: 1fr; } .kaporta-print-row { grid-template-columns: 1fr; row-gap: 5px; } .kaporta-print-state-grid { grid-template-columns: 1fr; } }
+    @media print { body { margin: 8mm; -webkit-print-color-adjust: exact; print-color-adjust: exact; } .kaporta-print-section { page-break-inside: auto; break-inside: auto; } .history-page h1, .history-page .subtitle { page-break-after: avoid; break-after: avoid-page; } .history-page { page-break-before: auto; break-before: auto; page-break-inside: auto; break-inside: auto; } .history-page.force-new-page { page-break-before: always; break-before: page; } .history-grid { gap: 8px; } }
   </style>
 </head>
 <body>
   <section class="summary-page">
     <h1>Taşıt Kartı</h1>
     <p class="subtitle">Plaka: ${escapeHtml(vehicle.plate || '-')} • Oluşturma: ${printedAt}</p>
-    <table>${rows}</table>
+    ${rows}
     ${kaportaPrintSectionHtml}
   </section>
-
-  <div class="print-page-break"></div>
 
   <section class="history-page">
     <h1>Taşıt Tarihçesi</h1>
     <p class="subtitle">Plaka: ${escapeHtml(vehicle.plate || '-')} • Oluşturma: ${printedAt}</p>
     <div class="history-grid">${historySectionsHtml}</div>
   </section>
+  <script>
+    (function() {
+      var resizeTimer = null;
+
+      function mmToPx(mm) {
+        return (mm * 96) / 25.4;
+      }
+
+      function applyHistoryPageFlow() {
+        var summaryPage = document.querySelector('.summary-page');
+        var historyPage = document.querySelector('.history-page');
+        if (!summaryPage || !historyPage) return;
+
+        historyPage.classList.remove('force-new-page');
+
+        var pageContentHeight = mmToPx(297 - (8 * 2)); // A4 portrait - top/bottom print margins
+        var summaryHeight = Math.ceil(summaryPage.getBoundingClientRect().height);
+        var historyHeight = Math.ceil(historyPage.getBoundingClientRect().height);
+        var availableHeight = Math.max(0, pageContentHeight - summaryHeight);
+        var safetyBuffer = 6;
+
+        // Kural: Ozet ilk sayfaya sigarken tarihce tamamen sigmiyorsa tarihce 2. sayfadan baslar.
+        if (summaryHeight <= pageContentHeight && historyHeight > (availableHeight - safetyBuffer)) {
+          historyPage.classList.add('force-new-page');
+        }
+      }
+
+      function runPageFlowCheck() {
+        window.requestAnimationFrame(function() {
+          window.requestAnimationFrame(applyHistoryPageFlow);
+        });
+      }
+
+      function schedulePageFlowChecks() {
+        runPageFlowCheck();
+        setTimeout(runPageFlowCheck, 80);
+        setTimeout(runPageFlowCheck, 200);
+        setTimeout(runPageFlowCheck, 360);
+      }
+
+      function bindMediaReflow() {
+        var mediaNodes = document.querySelectorAll('img');
+        mediaNodes.forEach(function(node) {
+          if (node.complete) return;
+          node.addEventListener('load', schedulePageFlowChecks, { once: true });
+          node.addEventListener('error', schedulePageFlowChecks, { once: true });
+        });
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() {
+          bindMediaReflow();
+          schedulePageFlowChecks();
+        });
+      } else {
+        bindMediaReflow();
+        schedulePageFlowChecks();
+      }
+
+      window.addEventListener('load', schedulePageFlowChecks);
+      window.addEventListener('beforeprint', schedulePageFlowChecks);
+      window.addEventListener('resize', function() {
+        if (resizeTimer) clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(schedulePageFlowChecks, 120);
+      });
+    })();
+  </script>
 </body>
 </html>`;
 
@@ -2205,7 +2349,7 @@
     tryPopupPrint(printWindow).catch(function(popupErr) {
       printWithIframeFallback((popupErr && popupErr.message) ? popupErr.message : 'popup_print_failed');
     });
-  };
+  }
   /**
    * /**
  * Sol kolon render (Taşıt özellikleri + Kaporta Şeması)
@@ -2586,7 +2730,7 @@ function renderVehicleDetailLeft(vehicle) {
         'bakim-ekle-modal', 'kaza-ekle-modal', 'sigorta-guncelle-modal',
         'kasko-guncelle-modal', 'muayene-guncelle-modal', 'anahtar-guncelle-modal',
         'kredi-guncelle-modal', 'km-guncelle-modal', 'lastik-guncelle-modal',
-        'utts-guncelle-modal', 'takip-cihaz-guncelle-modal', 'kasko-kodu-guncelle-modal', 'sube-degisiklik-modal',
+        'utts-guncelle-modal', 'takip-cihaz-guncelle-modal', 'kasko-kodu-guncelle-modal', 'ruhsat-yukleme-modal', 'sube-degisiklik-modal',
         'kullanici-atama-modal', 'satis-pert-modal'
       ];
       allEventModals.forEach(modalId => {
@@ -2999,6 +3143,16 @@ function renderVehicleDetailLeft(vehicle) {
   };
 
   /**
+   * Ruhsat modalından Taşıt Detay ekranına dön (geri ok ve Vazgeç için)
+   */
+  window.closeRuhsatAndBackToDetail = function() {
+    closeEventModal('ruhsat');
+    setTimeout(function() {
+      if (window.currentDetailVehicleId) showVehicleDetail(window.currentDetailVehicleId);
+    }, 300);
+  };
+
+  /**
    * Olay Ekle alt modalından Vazgeç: modalı kapat, Olay Ekle menüsünü tekrar aç (taşıt detaya dönme).
    */
   window.closeEventModalAndShowEventMenu = function(type) {
@@ -3016,6 +3170,96 @@ function renderVehicleDetailLeft(vehicle) {
     if (window.currentDetailVehicleId) {
       showVehicleDetail(window.currentDetailVehicleId);
     }
+  };
+
+  /**
+   * Ruhsat Yükleme modalını açar; vehicle.ruhsatPath varsa görüntüleme/yenileme, yoksa yükleme UI gösterir
+   */
+  window.openRuhsatModal = function(vehicleId) {
+    const vid = (vehicleId || window.currentDetailVehicleId || '').toString();
+    if (!vid) return;
+    window.currentDetailVehicleId = vid;
+    const vehicle = readVehicles().find(v => String(v.id) === vid);
+    const modal = document.getElementById('ruhsat-yukleme-modal');
+    const content = document.getElementById('ruhsat-modal-content');
+    const saveBtn = document.getElementById('ruhsat-save-btn');
+    if (!modal || !content || !saveBtn) return;
+    content.innerHTML = '';
+    saveBtn.style.display = 'none';
+    const hasRuhsat = !!(vehicle && vehicle.ruhsatPath);
+    if (hasRuhsat) {
+      const btnGroup = document.createElement('div');
+      btnGroup.className = 'universal-btn-group';
+      const viewBtn = document.createElement('button');
+      viewBtn.type = 'button';
+      viewBtn.className = 'universal-btn-save';
+      viewBtn.textContent = 'Ruhsatı Görüntüle';
+      viewBtn.onclick = function() { viewRuhsatPdf(vid); };
+      btnGroup.appendChild(viewBtn);
+      const replaceBtn = document.createElement('button');
+      replaceBtn.type = 'button';
+      replaceBtn.className = 'universal-btn-cancel';
+      replaceBtn.textContent = 'Yeni Ruhsat Yükle';
+      replaceBtn.onclick = function() { renderRuhsatUploadForm(content, saveBtn); };
+      btnGroup.appendChild(replaceBtn);
+      content.appendChild(btnGroup);
+    } else {
+      renderRuhsatUploadForm(content, saveBtn);
+    }
+    modal.style.display = 'flex';
+    requestAnimationFrame(function() { modal.classList.add('active'); });
+  };
+
+  function renderRuhsatUploadForm(content, saveBtn) {
+    content.innerHTML = '';
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.pdf';
+    input.id = 'ruhsat-file-input';
+    input.setAttribute('aria-label', 'Ruhsat PDF dosyası seç');
+    input.style.marginBottom = '8px';
+    input.onchange = function() { saveBtn.style.display = input.files.length ? 'inline-block' : 'none'; };
+    content.appendChild(input);
+    saveBtn.style.display = input.files.length ? 'inline-block' : 'none';
+  }
+
+  /**
+   * Ruhsat dosyasını upload_ruhsat.php'ye POST eder
+   */
+  window.saveRuhsatUpload = function() {
+    const input = document.getElementById('ruhsat-file-input');
+    const vehicleId = (window.currentDetailVehicleId || '').toString();
+    if (!input || !input.files || !input.files[0] || !vehicleId) {
+      alert('Lütfen PDF dosyası seçin.');
+      return;
+    }
+    const formData = new FormData();
+    formData.append('vehicleId', vehicleId);
+    formData.append('ruhsat', input.files[0]);
+    fetch('upload_ruhsat.php', { method: 'POST', body: formData })
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        if (data.success) {
+          closeEventModal('ruhsat');
+          showVehicleDetail(vehicleId);
+        } else {
+          alert(data.error || 'Yükleme başarısız');
+        }
+      })
+      .catch(function(err) {
+        console.error(err);
+        alert('Yükleme sırasında hata oluştu.');
+      });
+  };
+
+  /**
+   * Ruhsat PDF'ini yeni sekmede açar
+   */
+  window.viewRuhsatPdf = function(vehicleId) {
+    const vid = (vehicleId || window.currentDetailVehicleId || '').toString();
+    if (!vid) return;
+    const url = 'ruhsat.php?id=' + encodeURIComponent(vid);
+    window.open(url, '_blank', 'noopener');
   };
 
   /**
@@ -3178,18 +3422,19 @@ function renderVehicleDetailLeft(vehicle) {
     
     if (!vehicle.events) vehicle.events = [];
     
+    const data = {
+      islemler: islemler,
+      servis: servis,
+      kisi: kisi || getEventPerformerName(vehicle),
+      km: km,
+      tutar: tutar
+    };
     const event = {
       id: Date.now().toString(),
       type: 'bakim',
       date: tarih,
       timestamp: new Date().toISOString(),
-      data: {
-        islemler: islemler,
-        servis: servis,
-        kisi: kisi,
-        km: km,
-        tutar: tutar
-      }
+      data: data
     };
     
     vehicle.events.unshift(event);
@@ -3269,7 +3514,7 @@ function renderVehicleDetailLeft(vehicle) {
       date: tarih,
       timestamp: new Date().toISOString(),
       data: {
-        surucu: surucu,
+        surucu: surucu || getEventPerformerName(vehicle),
         hasarParcalari: newDamages,
         hasarTutari: hasarTutari
       }
@@ -3396,18 +3641,17 @@ function renderVehicleDetailLeft(vehicle) {
         firma: firma,
         acente: acente,
         iletisim: iletisim,
-        bitisTarihi: bitisTarihi
+        bitisTarihi: bitisTarihi,
+        surucu: getEventPerformerName(vehicle)
       }
     };
     
     vehicle.events.unshift(event);
-    writeVehicles(vehicles);
-    
-    // Bildirimleri güncelle
-    if (window.updateNotifications) window.updateNotifications();
-    
-    closeEventModal('sigorta');
-    showVehicleDetail(vehicleId);
+    return writeVehicles(vehicles).then(function() {
+      if (window.updateNotifications) window.updateNotifications();
+      closeEventModal('sigorta');
+      showVehicleDetail(vehicleId);
+    });
   };
 
   /**
@@ -3447,18 +3691,17 @@ function renderVehicleDetailLeft(vehicle) {
         firma: firma,
         acente: acente,
         iletisim: iletisim,
-        bitisTarihi: bitisTarihi
+        bitisTarihi: bitisTarihi,
+        surucu: getEventPerformerName(vehicle)
       }
     };
     
     vehicle.events.unshift(event);
-    writeVehicles(vehicles);
-    
-    // Bildirimleri güncelle
-    if (window.updateNotifications) window.updateNotifications();
-    
-    closeEventModal('kasko');
-    showVehicleDetail(vehicleId);
+    return writeVehicles(vehicles).then(function() {
+      if (window.updateNotifications) window.updateNotifications();
+      closeEventModal('kasko');
+      showVehicleDetail(vehicleId);
+    });
   };
 
   /**
@@ -3492,7 +3735,8 @@ function renderVehicleDetailLeft(vehicle) {
       date: tarih,
       timestamp: new Date().toISOString(),
       data: {
-        bitisTarihi: bitisTarihi
+        bitisTarihi: bitisTarihi,
+        surucu: getEventPerformerName(vehicle)
       }
     };
     
@@ -3534,15 +3778,16 @@ function renderVehicleDetailLeft(vehicle) {
       timestamp: new Date().toISOString(),
       data: {
         durum: durum,
-        detay: detay
+        detay: detay,
+        surucu: getEventPerformerName(vehicle)
       }
     };
     
     vehicle.events.unshift(event);
-    writeVehicles(vehicles);
-    
-    closeEventModal('anahtar');
-    showVehicleDetail(vehicleId);
+    return writeVehicles(vehicles).then(function() {
+      closeEventModal('anahtar');
+      showVehicleDetail(vehicleId);
+    });
   };
 
   /**
@@ -3573,15 +3818,16 @@ function renderVehicleDetailLeft(vehicle) {
       timestamp: new Date().toISOString(),
       data: {
         durum: durum,
-        detay: detay
+        detay: detay,
+        surucu: getEventPerformerName(vehicle)
       }
     };
     
     vehicle.events.unshift(event);
-    writeVehicles(vehicles);
-    
-    closeEventModal('kredi');
-    showVehicleDetail(vehicleId);
+    return writeVehicles(vehicles).then(function() {
+      closeEventModal('kredi');
+      showVehicleDetail(vehicleId);
+    });
   };
 
   /**
@@ -3595,11 +3841,8 @@ function renderVehicleDetailLeft(vehicle) {
     const yeniKaskoKodu = inputElement ? inputElement.value.trim() : '';
 
     if (!yeniKaskoKodu) {
-      if (typeof window.showInfoModal === 'function') {
-        window.showInfoModal('Lütfen Kasko Kodunu giriniz.');
-      } else {
-        alert('Lütfen Kasko Kodunu giriniz.');
-      }
+      if (typeof showToast === 'function') showToast('Lütfen Kasko Kodunu giriniz.', 'error');
+      else alert('Lütfen Kasko Kodunu giriniz.');
       return;
     }
 
@@ -3607,31 +3850,26 @@ function renderVehicleDetailLeft(vehicle) {
     const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
     if (!vehicle) return;
 
-    if (!vehicle.events) vehicle.events = [];
     vehicle.kaskoKodu = yeniKaskoKodu;
-
+    if (!vehicle.events) vehicle.events = [];
     vehicle.events.push({
       id: Date.now().toString(),
       type: 'kasko-kodu-guncelle',
       date: formatDateForDisplay(new Date()),
       timestamp: new Date().toISOString(),
-      data: { kaskoKodu: yeniKaskoKodu }
+      data: { kaskoKodu: yeniKaskoKodu, surucu: getEventPerformerName(vehicle) }
     });
 
-    writeVehicles(vehicles);
-
-    if (typeof window.showSuccessModal === 'function') {
-      window.showSuccessModal('Kasko Kodu başarıyla güncellendi!');
-    } else if (typeof showToast === 'function') {
-      showToast('Kasko Kodu başarıyla güncellendi', 'success');
-    }
-
-    if (inputElement) inputElement.value = '';
-    closeEventModal('kaskokodu');
-
-    setTimeout(() => {
-      showVehicleDetail(vehicleId);
-    }, 200);
+    return writeVehicles(vehicles).then(function() {
+      if (inputElement) inputElement.value = '';
+      closeEventModal('kaskokodu');
+      document.querySelectorAll('.modal-overlay.active').forEach(m => {
+        m.classList.remove('active');
+        m.style.display = 'none';
+      });
+      if (typeof showToast === 'function') showToast('Kasko Kodu güncellendi', 'success');
+      setTimeout(() => showVehicleDetail(vehicleId), 250);
+    });
   };
 
   /**
@@ -3682,18 +3920,17 @@ function renderVehicleDetailLeft(vehicle) {
       timestamp: new Date().toISOString(),
       data: {
         eskiKm: eskiKm,
-        yeniKm: yeniKm
+        yeniKm: yeniKm,
+        surucu: getEventPerformerName(vehicle)
       }
     };
     
     vehicle.events.unshift(event);
-    writeVehicles(vehicles);
-    
-    // Modal input'u temizle
-    kmInput.value = '';
-    
-    closeEventModal('km');
-    showVehicleDetail(vehicleId);
+    return writeVehicles(vehicles).then(function() {
+      kmInput.value = '';
+      closeEventModal('km');
+      showVehicleDetail(vehicleId);
+    });
   };
 
   /**
@@ -3721,15 +3958,16 @@ function renderVehicleDetailLeft(vehicle) {
       date: formatDateForDisplay(new Date()),
       timestamp: new Date().toISOString(),
       data: {
-        durum: durum
+        durum: durum,
+        surucu: getEventPerformerName(vehicle)
       }
     };
     
     vehicle.events.unshift(event);
-    writeVehicles(vehicles);
-    
-    closeEventModal('utts');
-    showVehicleDetail(vehicleId);
+    return writeVehicles(vehicles).then(function() {
+      closeEventModal('utts');
+      showVehicleDetail(vehicleId);
+    });
   };
 
   /**
@@ -3757,15 +3995,16 @@ function renderVehicleDetailLeft(vehicle) {
       date: formatDateForDisplay(new Date()),
       timestamp: new Date().toISOString(),
       data: {
-        durum: durum
+        durum: durum,
+        surucu: getEventPerformerName(vehicle)
       }
     };
     
     vehicle.events.unshift(event);
-    writeVehicles(vehicles);
-    
-    closeEventModal('takip');
-    showVehicleDetail(vehicleId);
+    return writeVehicles(vehicles).then(function() {
+      closeEventModal('takip');
+      showVehicleDetail(vehicleId);
+    });
   };
 
   /**
@@ -3796,18 +4035,17 @@ function renderVehicleDetailLeft(vehicle) {
       timestamp: new Date().toISOString(),
       data: {
         durum: durum,
-        adres: adres
+        adres: adres,
+        surucu: getEventPerformerName(vehicle)
       }
     };
     
     vehicle.events.unshift(event);
-    writeVehicles(vehicles);
-    
-    // Bildirimleri güncelle
-    if (window.updateNotifications) window.updateNotifications();
-    
-    closeEventModal('lastik');
-    showVehicleDetail(vehicleId);
+    return writeVehicles(vehicles).then(function() {
+      if (window.updateNotifications) window.updateNotifications();
+      closeEventModal('lastik');
+      showVehicleDetail(vehicleId);
+    });
   };
 
   /**
@@ -3848,15 +4086,16 @@ function renderVehicleDetailLeft(vehicle) {
         eskiSubeId: eskiSubeId,
         yeniSubeId: normalizedSubeId,
         eskiSubeAdi: eskiSube?.name || '',
-        yeniSubeAdi: yeniSube?.name || ''
+        yeniSubeAdi: yeniSube?.name || '',
+        surucu: getEventPerformerName(vehicle)
       }
     };
     
     vehicle.events.unshift(event);
-    writeVehicles(vehicles);
-    
-    closeEventModal('sube');
-    showVehicleDetail(vehicleId);
+    return writeVehicles(vehicles).then(function() {
+      closeEventModal('sube');
+      showVehicleDetail(vehicleId);
+    });
   };
 
   /**
@@ -3894,10 +4133,10 @@ function renderVehicleDetailLeft(vehicle) {
         data: { kullaniciId: '', kullaniciAdi: 'Henüz Tanımlanmadı' }
       };
       vehicle.events.unshift(event);
-      writeVehicles(vehicles);
-      closeEventModal('kullanici');
-      showVehicleDetail(vehicleId);
-      return;
+      return writeVehicles(vehicles).then(function() {
+        closeEventModal('kullanici');
+        showVehicleDetail(vehicleId);
+      });
     }
 
     const users = readUsers();
@@ -3909,7 +4148,8 @@ function renderVehicleDetailLeft(vehicle) {
 
     vehicle.assignedUserId = normalizedKullaniciId;
     vehicle.tahsisKisi = user?.name || '';
-    if (user && !vehicle.branchId && user.branchId) vehicle.branchId = user.branchId;
+    var userBranchId = user ? (user.branchId || '') : '';
+    if (user && !vehicle.branchId && userBranchId) vehicle.branchId = userBranchId;
     vehicle.updatedAt = new Date().toISOString();
 
     const event = {
@@ -3920,15 +4160,15 @@ function renderVehicleDetailLeft(vehicle) {
       data: {
         kullaniciId: normalizedKullaniciId,
         kullaniciAdi: user?.name || '',
-        eskiKullaniciAdi: eskiUser?.name || (eskiKullaniciId ? 'Bilinmeyen' : '')
+        eskiKullaniciAdi: eskiUser?.name || (eskiKullaniciId ? 'Bilinmiyor' : '')
       }
     };
 
     vehicle.events.unshift(event);
-    writeVehicles(vehicles);
-
-    closeEventModal('kullanici');
-    showVehicleDetail(vehicleId);
+    return writeVehicles(vehicles).then(function() {
+      closeEventModal('kullanici');
+      setTimeout(function() { showVehicleDetail(vehicleId); }, 250);
+    });
   };
 
   /**
@@ -3964,16 +4204,17 @@ function renderVehicleDetailLeft(vehicle) {
       timestamp: new Date().toISOString(),
       data: {
         tutar: tutar,
-        aciklama: aciklama
+        aciklama: aciklama,
+        surucu: getEventPerformerName(vehicle)
       }
     };
     
     vehicle.events.unshift(event);
-    writeVehicles(vehicles);
-    
-    closeEventModal('satis');
-    closeVehicleDetailModal(); // Detay modal'ını kapat
-    alert('Taşıt satış/pert işlemi kaydedildi. Taşıt arşive taşındı.');
+    return writeVehicles(vehicles).then(function() {
+      closeEventModal('satis');
+      closeVehicleDetailModal();
+      alert('Taşıt satış/pert işlemi kaydedildi. Taşıt arşive taşındı.');
+    });
   };
 
   /**
@@ -4287,6 +4528,36 @@ function renderVehicleDetailLeft(vehicle) {
     return labels[type] || (type ? toTitleCase(String(type)) : 'Olay');
   }
 
+  /**
+   * Bildirim satırı için "{İsim}, {Plaka} Plakalı Taşıt İçin {Olay Mesajı}." formatında metin üretir.
+   */
+  function getNotificationActivityMessage(ev, plate) {
+    const evData = ev.data || {};
+    const isim = evData.surucu || evData.kisi || evData.kullaniciAdi;
+    const isimStr = isim ? toTitleCase(String(isim)) : 'Bilinmiyor';
+    const plateStr = (plate || '-').toString().trim();
+    const type = (ev.type || '').toString().trim();
+    const typeMessages = {
+      'km-revize': 'Km Bildirimi Yaptı',
+      'bakim': 'Bakım Bildirimi Yaptı',
+      'kaza': 'Kaza Bildirimi Yaptı',
+      'sigorta-guncelle': 'Sigorta Bilgisini Güncelledi',
+      'kasko-guncelle': 'Kasko Bilgisini Güncelledi',
+      'muayene-guncelle': 'Muayene Bilgisini Güncelledi',
+      'anahtar-guncelle': 'Yedek Anahtar Bilgisini Güncelledi',
+      'lastik-guncelle': 'Lastik Durumunu Güncelledi',
+      'utts-guncelle': 'UTTS Bilgisini Güncelledi',
+      'kredi-guncelle': 'Kredi/Rehin Bilgisini Güncelledi',
+      'takip-cihaz-guncelle': 'Takip Cihazı Bilgisini Güncelledi',
+      'not-guncelle': 'Not Bilgisini Güncelledi',
+      'sube-degisiklik': 'Şube Bilgisini Güncelledi',
+      'kullanici-atama': 'Kullanıcı Ataması Yaptı',
+      'satis': 'Satış/Pert Bildirdi'
+    };
+    const mesaj = typeMessages[type] || 'Bilgi Güncelledi';
+    return isimStr + ', ' + plateStr + ' Plakalı Taşıt İçin ' + mesaj + '.';
+  }
+
   /** Olay tipinden tarihçe sekme id'si (bakim, kaza, km, diger) */
   function getHistoryTabForEventType(type) {
     if (type === 'bakim') return 'bakim';
@@ -4487,8 +4758,7 @@ function renderVehicleDetailLeft(vehicle) {
         const viewedKeys = viewedRaw ? JSON.parse(viewedRaw) : [];
         recentSlice.forEach(item => {
           const ev = item.event;
-          const typeLabel = getNotificationEventTypeLabel(ev.type);
-          const dateDisplay = (ev.date || '-').toString().trim();
+          const dateDisplay = formatDateForDisplay(ev.date) || '-';
           const historyTab = getHistoryTabForEventType(ev.type);
           const safePlate = (item.plate || '').replace(/"/g, '&quot;');
           const safeVid = String(item.vehicleId || '').replace(/"/g, '&quot;');
@@ -4499,8 +4769,9 @@ function renderVehicleDetailLeft(vehicle) {
           const isUnread = viewedKeys.indexOf(notifKey) === -1;
           const unreadClass = isUnread ? ' notification-unread' : '';
           const unreadStyle = isUnread ? ' border: 1px solid rgba(212, 0, 0, 0.85) !important;' : '';
+          const activityMsg = getNotificationActivityMessage(ev, item.plate);
           html += `<button type="button" data-plate="${safePlate}" data-vehicle-id="${safeVid}" data-open-history="1" data-history-tab="${historyTab}" data-notif-key="${safeKey}" style="width: 100%; padding: 10px 12px; background: transparent; color: #ccc; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 12px; text-align: left; margin-bottom: 4px; transition: all 0.2s ease;${unreadStyle}" class="notification-item notification-item-activity${unreadClass}">
-          <div class="notif-line1" style="font-weight: 600; color: #fff; margin-bottom: 2px;">${escapeHtml(item.plate)} ${escapeHtml(typeLabel)}</div>
+          <div class="notif-line1" style="font-weight: 600; color: #fff; margin-bottom: 2px;">${escapeHtml(activityMsg)}</div>
           <div class="notif-line2" style="font-size: 11px; color: #999;">${escapeHtml(dateDisplay)}</div>
         </button>`;
         });
@@ -4516,10 +4787,9 @@ function renderVehicleDetailLeft(vehicle) {
           notifIcon.classList.add('notification-red', 'notification-pulse');
         } else if (hasOrange) {
           notifIcon.classList.add('notification-orange', 'notification-pulse');
-        } else {
-          /* Okunmamış bildirim varsa (tarih uyarısı veya kullanıcı paneli işlemi) simge kırmızı */
-          notifIcon.classList.add('notification-red');
         }
+        /* Kırmızı/turuncu sadece gerçek uyarılar için (sigorta/kasko/muayene, MTV, kasko excel).
+           Okunmamış aktivite bildirimleri (km, şube güncelleme vb.) simgeyi kırmızı yapmaz. */
       }
     }
   };

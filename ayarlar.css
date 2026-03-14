@@ -58,6 +58,31 @@
     margin-bottom: 18px !important;
 }
 
+/* Önbellek modalı: Arka plan görünür kalsın (overlay hafif karartma) */
+body.modal-open #cache-confirm-modal.active,
+body.modal-open #cache-confirm-modal.open {
+    background: rgba(0, 0, 0, 0.4) !important;
+    backdrop-filter: none !important;
+}
+
+/* Önbellek modalı butonları: Evet=kırmızı, Hayır=yeşil */
+#cache-confirm-modal .universal-btn-save {
+    color: var(--theme-color) !important;
+    border: 1px solid rgba(var(--theme-color-rgb), 0.45) !important;
+}
+#cache-confirm-modal .universal-btn-save:hover {
+    background: rgba(var(--theme-color-rgb), 0.12) !important;
+    border-color: var(--theme-color) !important;
+}
+#cache-confirm-modal .universal-btn-cancel {
+    color: var(--green-success) !important;
+    border: 1px solid rgba(var(--green-success-rgb), 0.45) !important;
+}
+#cache-confirm-modal .universal-btn-cancel:hover {
+    background: rgba(var(--green-success-rgb), 0.12) !important;
+    border-color: var(--green-success) !important;
+}
+
 /* === TESCİL TARİHİ MODALLARI === */
 #tescil-tarih-confirm-modal .modal-container {
     background: var(--bg); 
@@ -462,7 +487,7 @@
 }
 .centered-info-box-inner {
     background: var(--bg);
-    border: 1px solid var(--border-light);
+    border: 1px solid var(--border-light, rgba(255, 255, 255, 0.15));
     border-radius: 10px;
     padding: 20px 24px;
     max-width: 320px;
@@ -471,7 +496,7 @@
 }
 .centered-info-box-inner #centered-info-message,
 .centered-info-box-inner p {
-    color: var(--form-label-color);
+    color: var(--txt, var(--form-label-color, #e2e8f0));
     font-size: 14px;
     line-height: 1.5;
     margin: 0 0 16px 0;
@@ -750,95 +775,131 @@ input.settings-form-input:-moz-autofill,
     color: #fff !important;
     box-shadow: 0 0 0 1000px var(--bg-content) inset !important;
 }
-/* Atanacak Taşıt - Dropdown (tıklanınca açılan liste) */
-.user-vehicles-dropdown-wrap {
+/* Atanacak Taşıt - Görev Tanımı ile aynı form stili, okunaklı liste */
+.user-vehicles-wrap {
   position: relative;
 }
 .user-vehicles-trigger {
   width: 100%;
-  height: 26px;
-  padding: 2px 8px;
+  min-height: 36px;
+  padding: 8px 12px;
   background: var(--bg-content);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 6px;
-  color: var(--txt-gray-darker);
-  font-size: 13px;
-  line-height: 22px;
+  color: var(--data-value-color, #a0aec0);
+  font-size: 14px;
+  line-height: 1.4;
   cursor: pointer;
   box-sizing: border-box;
   outline: none;
-  transition: border-color 0.2s;
+  transition: border-color 0.2s, box-shadow 0.2s;
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  gap: 8px;
 }
 .user-vehicles-trigger:hover {
-  border-color: var(--border-medium);
+  border-color: rgba(255, 255, 255, 0.35);
 }
 .user-vehicles-trigger.user-vehicles-trigger-open {
   border-color: var(--theme-color);
   box-shadow: 0 0 0 1px var(--theme-color);
+}
+.user-vehicles-trigger-text { flex: 1; min-width: 0; }
+.user-vehicles-chevron {
+  width: 18px; height: 18px; flex-shrink: 0;
+  opacity: 0.7;
+  transition: transform 0.2s;
+}
+.user-vehicles-trigger.user-vehicles-trigger-open .user-vehicles-chevron {
+  transform: rotate(180deg);
 }
 .user-vehicles-dropdown {
   position: absolute;
   top: 100%;
   left: 0;
   right: 0;
-  margin-top: 4px;
-  background: #0f1418;
+  margin-top: 6px;
+  background: var(--bg-content);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 8px;
-  padding: 8px;
-  max-height: 200px;
-  overflow-y: auto;
-  z-index: 10;
-  box-shadow: 0 4px 12px var(--shadow-dark);
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-.user-vehicles-dropdown::-webkit-scrollbar {
-  display: none;
+  padding: 10px;
+  max-height: 320px;
+  overflow: hidden;
+  z-index: 20;
+  box-shadow: 0 6px 20px var(--shadow-dark);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 .user-vehicles-search-wrap {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 0 10px;
-  margin-bottom: 8px;
-  height: 26px;
-  background: var(--shadow-dark);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 6px;
-  box-sizing: border-box;
-}
-.user-vehicles-search-icon {
-  font-size: 12px;
-  opacity: 0.7;
+  flex-shrink: 0;
 }
 .user-vehicles-search-input {
-  flex: 1;
-  min-width: 0;
-  height: 24px;
-  padding: 0;
-  margin: 0;
-  background: transparent;
-  border: none;
-  color: #f0f0f0;
+  width: 100%;
+  padding: 8px 12px;
   font-size: 14px;
-  outline: none;
-  box-sizing: border-box;
-  line-height: 1;
-}
-.user-vehicles-search-input::placeholder {
-  color: var(--txt-gray-darker);
+  min-height: 36px;
 }
 .user-vehicles-checkbox-list {
-  max-height: 184px;
+  flex: 1;
+  min-height: 0;
+  max-height: 260px;
   overflow-y: auto;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 2px 0;
+}
+.user-vehicles-checkbox-list {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
 }
 .user-vehicles-checkbox-list::-webkit-scrollbar {
-  display: none;
+  width: 8px;
+}
+.user-vehicles-checkbox-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+.user-vehicles-checkbox-list::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+/* Her taşıt satırı: geniş, okunaklı, Görev Tanımı input gibi */
+.user-vehicle-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+  min-height: 44px;
+  box-sizing: border-box;
+}
+.user-vehicle-row:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+.user-vehicle-row input[type="checkbox"] {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--theme-color);
+  cursor: pointer;
+}
+.user-vehicle-row .user-vehicle-label {
+  flex: 1;
+  min-width: 0;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--data-value-color, #e0e0e0);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
 }
 
 .settings-btn-delete {
@@ -1285,11 +1346,22 @@ input.settings-form-input:-moz-autofill,
     #branch-form-modal .form-input,
     #user-form-modal .form-input,
     #branch-form-modal select.form-input,
-    #user-form-modal select.form-input,
-    #user-form-modal .user-vehicles-trigger {
+    #user-form-modal select.form-input {
         height: 26px !important;
         padding: 2px 8px;
         box-sizing: border-box;
+    }
+    #user-form-modal .user-vehicles-trigger {
+        min-height: 40px !important;
+        height: auto !important;
+        padding: 10px 12px !important;
+    }
+    /* Mobil: Tahsis Edilecek Taşıt listesi yukarı açılsın – ekran kaymasın */
+    #user-form-modal .user-vehicles-dropdown {
+        top: auto !important;
+        bottom: 100% !important;
+        margin-top: 0 !important;
+        margin-bottom: 6px !important;
     }
     .settings-dropdown button {
         text-align: right !important;

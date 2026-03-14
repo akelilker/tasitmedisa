@@ -6,6 +6,9 @@
 # Local backup snapshots (do not version)
 data/backups/*.json
 
+# Uploaded ruhsat PDFs (user data)
+data/ruhsat/*.pdf
+
 # OS/editor noise
 Thumbs.db
 .DS_Store

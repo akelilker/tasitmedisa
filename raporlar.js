@@ -26,6 +26,7 @@
     let stokActiveColumns = {
         sigorta: false,
         kasko: false,
+        kaskoDegeri: false,
         muayene: false,
         kredi: false,
         lastik: false,
@@ -100,6 +101,7 @@
     window.closeReportsModal = function() {
         const modal = document.getElementById('reports-modal');
         if (modal) {
+            if (stokDetailMenuOpen) stokDetailMenuOpen = false;
             modal.classList.remove('active');
             setTimeout(() => {
                 modal.style.display = 'none';
@@ -116,6 +118,7 @@
         const isMobile = window.innerWidth <= 640;
         const isVerySmall = window.innerWidth <= 480;
         const isTiny = window.innerWidth <= 360;
+        const isDesktop = window.innerWidth >= 641;
         
         const headers = {
             'sira': 'No.',
@@ -123,7 +126,7 @@
             'yil': 'Yıl',
             'marka': isTiny ? 'Mrk' : isVerySmall ? 'Marka' : 'Marka/Model',
             'plaka': 'Plaka',
-            'sanziman': isTiny ? 'Ş.' : isVerySmall ? 'Şanz.' : 'Şanzıman',
+            'sanziman': isTiny ? 'Ş.' : isVerySmall ? 'Şanz.' : isDesktop ? 'Şanz.' : 'Şanzıman',
             'km': 'KM',
             'sigorta': isVerySmall ? 'Sig.' : isMobile ? 'Sigorta' : 'Sigorta Bitiş',
             'kasko': isVerySmall ? 'Kas.' : isMobile ? 'Kasko' : 'Kasko Bitiş',
@@ -135,7 +138,8 @@
             'tramer': 'Tramer',
             'boya': isVerySmall ? 'Boy.' : isMobile ? 'Boya' : 'Boya Değişen',
             'kullanici': isVerySmall ? 'Kull.' : isMobile ? 'Kullanıcı' : 'Kullanıcı',
-            'tescil': isVerySmall ? 'Tescil' : isMobile ? 'Tescil T.' : 'Tescil Tarihi'
+            'tescil': isVerySmall ? 'Tescil' : isMobile ? 'Tescil T.' : 'Tescil Tarihi',
+            'kaskoDegeri': isVerySmall ? 'Kas.' : isMobile ? 'Kasko Değeri' : 'Kasko Değeri'
         };
         
         return headers[colKey] || colKey;
@@ -266,12 +270,6 @@
                 <div class="stok-controls-row-2">
                     <div class="stok-export-controls">
                         <div class="stok-export-left">
-                            <button class="stok-export-btn" onclick="exportStokToExcel()" title="Excel'e Aktar">
-                                <span class="excel-icon">X</span>
-                            </button>
-                            <button class="stok-print-btn" onclick="printStokReport()" title="Yazdır">
-                                🖨️
-                            </button>
                             <div class="stok-search-wrap">
                                 <button class="stok-search-btn" onclick="toggleStokSearch()" title="Ara">
                                     🔍
@@ -280,6 +278,12 @@
                                     <input type="text" id="stok-search-input" class="stok-search-input" placeholder="Üretim yılı, marka/model, kullanıcı, şube ara..." oninput="handleStokSearch(this.value)">
                                 </div>
                             </div>
+                            <button class="stok-export-btn" onclick="exportStokToExcel()" title="Excel'e Aktar">
+                                <span class="excel-icon">X</span>
+                            </button>
+                            <button class="stok-print-btn" onclick="printStokReport()" title="Yazdır">
+                                🖨️
+                            </button>
                         </div>
                     </div>
                     <div id="stok-detail-menu" class="stok-detail-menu ${stokDetailMenuOpen ? 'stok-detail-menu-open' : ''}"></div>
@@ -311,6 +315,7 @@
         const headerActions = document.getElementById('reports-list-header-actions');
         if (headerActions) {
             const firstRow = listContainer.querySelector('.stok-controls-row-1');
+            const secondRow = listContainer.querySelector('.stok-controls-row-2');
             const menu = document.getElementById('stok-detail-menu');
             headerActions.innerHTML = '';
             const wrap = document.createElement('div');
@@ -332,7 +337,64 @@
                 `;
                 wrap.appendChild(row);
             }
-            if (menu) wrap.appendChild(menu);
+            const row1 = wrap.querySelector('.stok-controls-row-1');
+            const addBtn = row1.querySelector('.stok-detail-add-btn');
+            const backBar = row1.querySelector('.universal-back-bar');
+            /* Masaüstü: leftBlock oluşturma – backBar ve addBtn row1'de yan yana kalır (CSS ile ortalı) */
+            if (menu) {
+                if (!window.matchMedia('(min-width: 641px)').matches) {
+                    wrap.appendChild(menu);
+                }
+            }
+            const topControls = listContainer.querySelector('.stok-list-top-controls');
+            /* Masaüstü: row-2 (export + tarihler) header'a taşı; menü row1 ile row2 arasında */
+            if (secondRow && window.matchMedia('(min-width: 641px)').matches) {
+                wrap.appendChild(secondRow);
+                if (menu) {
+                    wrap.insertBefore(menu, wrap.querySelector('.stok-controls-row-2'));
+                }
+                wrap.classList.add('desktop-single-row');
+            }
+            /* Resize: mobilde row-2 body'ye geri taşı; menü row-1 ↔ wrap arasında senkronize et */
+            const mq = window.matchMedia('(min-width: 641px)');
+            if (secondRow && topControls) {
+                const syncRow2 = function() {
+                    const r2 = wrap.querySelector('.stok-controls-row-2') || topControls.querySelector('.stok-controls-row-2');
+                    if (!r2) return;
+                    if (mq.matches) {
+                        if (r2.parentElement === topControls) {
+                            wrap.appendChild(r2);
+                            wrap.classList.add('desktop-single-row');
+                        }
+                    } else {
+                        if (r2.parentElement === wrap) {
+                            topControls.appendChild(r2);
+                            wrap.classList.remove('desktop-single-row');
+                        }
+                    }
+                };
+                mq.addEventListener('change', syncRow2);
+            }
+            if (menu && row1) {
+                const syncMenu = function() {
+                    const r2 = wrap.querySelector('.stok-controls-row-2') || topControls.querySelector('.stok-controls-row-2');
+                    if (mq.matches) {
+                        /* Masaüstü: menü wrap içinde row1 ile row2 arasında */
+                        if (r2 && menu.parentElement === r2) {
+                            wrap.insertBefore(menu, r2);
+                        } else if (!r2 && wrap.contains(menu) && menu.parentElement !== wrap) {
+                            wrap.appendChild(menu);
+                        }
+                    } else {
+                        /* Mobil: menü row2 içinde (export ile tarih arasında) */
+                        if (r2 && menu.parentElement !== r2) {
+                            const dateControls = r2.querySelector('.stok-date-range-controls');
+                            r2.insertBefore(menu, dateControls || null);
+                        }
+                    }
+                };
+                mq.addEventListener('change', syncMenu);
+            }
             headerActions.appendChild(wrap);
             headerActions.setAttribute('aria-hidden', 'false');
             headerActions.classList.add('has-stok-actions');
@@ -475,7 +537,7 @@
                 'plaka': 68, 'sanziman': 64 + desktopSanzimanWide, 'km': 54
             };
             const detailPx = {
-                'sigorta': 72, 'kasko': 72, 'muayene': 72, 'kredi': 56,
+                'sigorta': 72, 'kasko': 72, 'kaskoDegeri': 72, 'muayene': 72, 'kredi': 56,
                 'lastik': 56, 'utts': 52, 'takip': 56, 'tramer': 52,
                 'boya': 56, 'kullanici': 72, 'tescil': 72
             };
@@ -513,6 +575,7 @@
         const detailColumns = [
             { key: 'sigorta', sortable: true },
             { key: 'kasko', sortable: true },
+            { key: 'kaskoDegeri', sortable: true },
             { key: 'muayene', sortable: true },
             { key: 'kredi', sortable: true },
             { key: 'lastik', sortable: true },
@@ -627,6 +690,20 @@
         const detailCells = [
             { key: 'sigorta', value: vehicle.sigortaDate ? formatDate(vehicle.sigortaDate) : '-' },
             { key: 'kasko', value: vehicle.kaskoDate ? formatDate(vehicle.kaskoDate) : '-' },
+            { key: 'kaskoDegeri', value: (function() {
+                var yearForKasko = vehicle.year || vehicle.modelYili || '';
+                var kaskoDegeri = vehicle.kaskoDegeri;
+                if (kaskoDegeri == null || kaskoDegeri === '') {
+                    kaskoDegeri = (typeof window.getKaskoDegeri === 'function') ? window.getKaskoDegeri(vehicle.kaskoKodu, yearForKasko) : '-';
+                }
+                if (kaskoDegeri == null || String(kaskoDegeri).trim() === '') kaskoDegeri = '-';
+                if (kaskoDegeri === '-' && (!vehicle.kaskoKodu || String(vehicle.kaskoKodu).trim() === '')) {
+                    kaskoDegeri = 'Kasko kodu girilmedi';
+                } else if (kaskoDegeri === '-' && !localStorage.getItem('medisa_kasko_liste')) {
+                    kaskoDegeri = 'Excel yüklenmedi';
+                }
+                return String(kaskoDegeri).trim() || '-';
+            })() },
             { key: 'muayene', value: vehicle.muayeneDate ? formatDate(vehicle.muayeneDate) : '-' },
             { key: 'kredi', value: vehicle.kredi === 'var' ? 'Var' : vehicle.kredi === 'yok' ? 'Yok' : '-' },
             { key: 'lastik', value: vehicle.lastikDurumu === 'var' ? 'Var' : vehicle.lastikDurumu === 'yok' ? 'Yok' : '-' },
@@ -801,6 +878,7 @@
         const detailOptions = [
             { key: 'sigorta', label: 'Sigorta T.' },
             { key: 'kasko', label: 'Kasko T.' },
+            { key: 'kaskoDegeri', label: 'Kasko Değeri' },
             { key: 'muayene', label: 'Muayene' },
             { key: 'kredi', label: 'Kredi/Rehin' },
             { key: 'lastik', label: 'Lastik D.' },
@@ -846,17 +924,6 @@
             </div>
         `;
         }).join('');
-        
-        // Buton metinlerini kontrol et ve gerekirse küçült
-        setTimeout(() => {
-            const buttons = menu.querySelectorAll('.stok-detail-menu-btn');
-            buttons.forEach(btn => {
-                const span = btn.querySelector('span');
-                if (span && span.scrollWidth > btn.offsetWidth) {
-                    span.style.fontSize = '9px';
-                }
-            });
-        }, 10);
     }
 
     // Detay menü toggle (tek tıkla aç, tek tıkla kapat)
@@ -866,6 +933,7 @@
         const buttons = document.querySelectorAll('.stok-detail-add-btn');
         if (menu) {
             menu.classList.toggle('stok-detail-menu-open', stokDetailMenuOpen);
+            /* Masaüstü: menü normal akışta (wrap içinde row1 ile row2 arası), portal gerekmez */
         }
         buttons.forEach(function(btn) {
             if (stokDetailMenuOpen) {
@@ -899,7 +967,7 @@
 
     // Sütun başlığından sürükle başlatıldığında
     window.handleColumnHeaderDragStart = function(event, columnKey) {
-        const detailColumns = ['sigorta', 'kasko', 'muayene', 'kredi', 'lastik', 'utts', 'takip', 'tramer', 'boya', 'kullanici', 'tescil'];
+        const detailColumns = ['sigorta', 'kasko', 'kaskoDegeri', 'muayene', 'kredi', 'lastik', 'utts', 'takip', 'tramer', 'boya', 'kullanici', 'tescil'];
         const baseColumns = ['sira', 'sube', 'yil', 'marka', 'plaka', 'sanziman', 'km'];
         
         // Detay sütunları için aktif kontrolü
@@ -935,7 +1003,7 @@
     window.handleColumnHeaderDragEnter = function(event) {
         if (draggedColumnKey) {
             const targetKey = event.currentTarget.dataset.col;
-            const detailColumns = ['sigorta', 'kasko', 'muayene', 'kredi', 'lastik', 'utts', 'takip', 'tramer', 'boya', 'kullanici', 'tescil'];
+            const detailColumns = ['sigorta', 'kasko', 'kaskoDegeri', 'muayene', 'kredi', 'lastik', 'utts', 'takip', 'tramer', 'boya', 'kullanici', 'tescil'];
             const baseColumns = ['sira', 'sube', 'yil', 'marka', 'plaka', 'sanziman', 'km'];
             
             if (targetKey && targetKey !== draggedColumnKey) {
@@ -969,7 +1037,7 @@
             return;
         }
 
-        const detailColumns = ['sigorta', 'kasko', 'muayene', 'kredi', 'lastik', 'utts', 'takip', 'tramer', 'boya', 'kullanici', 'tescil'];
+        const detailColumns = ['sigorta', 'kasko', 'kaskoDegeri', 'muayene', 'kredi', 'lastik', 'utts', 'takip', 'tramer', 'boya', 'kullanici', 'tescil'];
         const baseColumns = ['sira', 'sube', 'yil', 'marka', 'plaka', 'sanziman', 'km'];
         
         const isDraggedBase = baseColumns.includes(draggedColumnKey);
@@ -1160,6 +1228,20 @@
             switch (col.key) {
                 case 'sigorta': value = vehicle.sigortaDate ? formatDate(vehicle.sigortaDate) : '-'; break;
                 case 'kasko': value = vehicle.kaskoDate ? formatDate(vehicle.kaskoDate) : '-'; break;
+                case 'kaskoDegeri': value = (function() {
+                    var yearForKasko = vehicle.year || vehicle.modelYili || '';
+                    var kaskoDegeri = vehicle.kaskoDegeri;
+                    if (kaskoDegeri == null || kaskoDegeri === '') {
+                        kaskoDegeri = (typeof window.getKaskoDegeri === 'function') ? window.getKaskoDegeri(vehicle.kaskoKodu, yearForKasko) : '-';
+                    }
+                    if (kaskoDegeri == null || String(kaskoDegeri).trim() === '') kaskoDegeri = '-';
+                    if (kaskoDegeri === '-' && (!vehicle.kaskoKodu || String(vehicle.kaskoKodu).trim() === '')) {
+                        kaskoDegeri = 'Kasko kodu girilmedi';
+                    } else if (kaskoDegeri === '-' && !localStorage.getItem('medisa_kasko_liste')) {
+                        kaskoDegeri = 'Excel yüklenmedi';
+                    }
+                    return String(kaskoDegeri).trim() || '-';
+                })(); break;
                 case 'muayene': value = vehicle.muayeneDate ? formatDate(vehicle.muayeneDate) : '-'; break;
                 case 'kredi': value = vehicle.kredi === 'var' ? 'Var' : vehicle.kredi === 'yok' ? 'Yok' : '-'; break;
                 case 'lastik': value = vehicle.lastikDurumu === 'var' ? 'Var' : vehicle.lastikDurumu === 'yok' ? 'Yok' : '-'; break;
@@ -1317,6 +1399,20 @@
                         case 'kasko':
                             value = vehicle.kaskoDate ? formatDate(vehicle.kaskoDate) : '-';
                             break;
+                        case 'kaskoDegeri':
+                            var yearForKasko = vehicle.year || vehicle.modelYili || '';
+                            var kaskoDegeri = vehicle.kaskoDegeri;
+                            if (kaskoDegeri == null || kaskoDegeri === '') {
+                                kaskoDegeri = (typeof window.getKaskoDegeri === 'function') ? window.getKaskoDegeri(vehicle.kaskoKodu, yearForKasko) : '-';
+                            }
+                            if (kaskoDegeri == null || String(kaskoDegeri).trim() === '') kaskoDegeri = '-';
+                            if (kaskoDegeri === '-' && (!vehicle.kaskoKodu || String(vehicle.kaskoKodu).trim() === '')) {
+                                kaskoDegeri = 'Kasko kodu girilmedi';
+                            } else if (kaskoDegeri === '-' && !localStorage.getItem('medisa_kasko_liste')) {
+                                kaskoDegeri = 'Excel yüklenmedi';
+                            }
+                            value = String(kaskoDegeri).trim() || '-';
+                            break;
                         case 'muayene':
                             value = vehicle.muayeneDate ? formatDate(vehicle.muayeneDate) : '-';
                             break;
@@ -1411,7 +1507,7 @@
     window.handleStokSearch = (typeof window.debounce === 'function') ? window.debounce(handleStokSearchImpl, 200) : handleStokSearchImpl;
 
     // Yazdır – Excel ile aynı veriyi tablo olarak yazdırır (ekran görüntüsü değil)
-    const stokPrintHeaders = { sira:'No.', sube:'Şube', yil:'Yıl', marka:'Marka/Model', plaka:'Plaka', sanziman:'Şanzıman', km:'KM', sigorta:'Sigorta Bitiş', kasko:'Kasko Bitiş', muayene:'Muayene T.', kredi:'Kredi/Rehin', lastik:'Lastikler', utts:'UTTS', takip:'Takip Cihazı', tramer:'Tramer', boya:'Boya Değişen', kullanici:'Kullanıcı', tescil:'Tescil Tarihi' };
+    const stokPrintHeaders = { sira:'No.', sube:'Şube', yil:'Yıl', marka:'Marka/Model', plaka:'Plaka', sanziman:'Şanzıman', km:'KM', sigorta:'Sigorta Bitiş', kasko:'Kasko Bitiş', kaskoDegeri:'Kasko Değeri', muayene:'Muayene T.', kredi:'Kredi/Rehin', lastik:'Lastikler', utts:'UTTS', takip:'Takip Cihazı', tramer:'Tramer', boya:'Boya Değişen', kullanici:'Kullanıcı', tescil:'Tescil Tarihi' };
     window.printStokReport = function() {
         const data = getStokReportExportData();
         if (!data) {
@@ -1806,5 +1902,6 @@
             closeReportsModal();
         }
     });
+
 
 })();

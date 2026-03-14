@@ -246,20 +246,15 @@
     // ========================================
   
     function readUsers() {
-      if (typeof window.getMedisaUsers === 'function') return window.getMedisaUsers();
+      if (typeof window.getMedisaUsers === 'function') {
+        var result = window.getMedisaUsers();
+        return Array.isArray(result) ? result.slice() : [];
+      }
       try {
         var raw = localStorage.getItem(USERS_KEY);
         var arr = raw ? JSON.parse(raw) : [];
         if (!Array.isArray(arr)) return [];
-        return arr.map(function(u) {
-          if (!u.name && u.isim) u.name = u.isim;
-          if (!u.name && (u.firstName || u.lastName)) u.name = ((u.firstName || '') + ' ' + (u.lastName || '')).trim();
-          if (!u.name) u.name = '';
-          if (!u.phone && u.telefon) u.phone = u.telefon;
-          if (!u.branchId && u.sube_id) u.branchId = String(u.sube_id);
-          if (!u.role && u.tip) u.role = u.tip === 'admin' ? 'admin' : 'driver';
-          return u;
-        });
+        return (typeof window.normalizeUsers === 'function' ? window.normalizeUsers(arr) : arr);
       } catch (e) { return []; }
     }
   
@@ -350,24 +345,19 @@
         const markaModel = (typeof window.toTitleCase === 'function' ? window.toTitleCase(raw) : raw);
         const label = plaka + (markaModel ? ' (' + markaModel + ')' : '');
         const labelEl = document.createElement('label');
-        labelEl.style.display = 'block';
-        labelEl.style.padding = '6px 8px';
-        labelEl.style.cursor = 'pointer';
-        labelEl.style.borderRadius = '4px';
-        labelEl.style.marginBottom = '2px';
+        labelEl.className = 'user-vehicle-row';
         labelEl.style.userSelect = 'none';
-        labelEl.addEventListener('mouseenter', function() { this.style.background = 'rgba(255,255,255,0.06)'; });
-        labelEl.addEventListener('mouseleave', function() { this.style.background = 'transparent'; });
         const cb = document.createElement('input');
         cb.type = 'checkbox';
         cb.value = vid;
         cb.name = 'user-vehicle';
         cb.checked = assignedIds.indexOf(vid) !== -1;
-        cb.style.marginRight = '8px';
-        cb.style.verticalAlign = 'middle';
-        labelEl.appendChild(cb);
-        labelEl.appendChild(document.createTextNode(' ' + label));
         cb.addEventListener('change', updateUserVehiclesTriggerText);
+        const span = document.createElement('span');
+        span.className = 'user-vehicle-label';
+        span.textContent = label;
+        labelEl.appendChild(cb);
+        labelEl.appendChild(span);
         container.appendChild(labelEl);
       });
       updateUserVehiclesTriggerText();
@@ -384,8 +374,8 @@
       if (!trigger || !container) return;
       const checked = container.querySelectorAll('input[name=user-vehicle]:checked');
       const n = checked.length;
-      trigger.textContent = n === 0 ? 'Taşıt Seçin' : (n === 1 ? '1 Taşıt Seçildi' : n + ' Taşıt Seçildi');
-      // trigger line fixed above
+      const textEl = trigger.querySelector('.user-vehicles-trigger-text');
+      if (textEl) textEl.textContent = n === 0 ? 'Taşıt seçin' : (n === 1 ? '1 Taşıt Seçildi' : n + ' Taşıt Seçildi');
     }
   
     function toggleUserVehiclesDropdown() {
@@ -396,9 +386,11 @@
       if (isOpen) {
         dropdown.style.display = 'none';
         trigger.classList.remove('user-vehicles-trigger-open');
+        trigger.setAttribute('aria-expanded', 'false');
       } else {
         dropdown.style.display = 'block';
         trigger.classList.add('user-vehicles-trigger-open');
+        trigger.setAttribute('aria-expanded', 'true');
       }
     }
   
@@ -412,7 +404,7 @@
     window.toggleUserVehiclesDropdown = toggleUserVehiclesDropdown;
   
     document.addEventListener('click', function(ev) {
-      const wrap = document.querySelector('.user-vehicles-dropdown-wrap');
+      const wrap = document.querySelector('.user-vehicles-wrap');
       const dropdown = document.getElementById('user-vehicles-dropdown');
       if (wrap && dropdown && dropdown.style.display !== 'none' && !wrap.contains(ev.target)) {
         closeUserVehiclesDropdown();
@@ -1004,17 +996,51 @@
           window.showInfoModal('Excel okunuyor, lütfen bekleyin...');
         }
 
+        function showKaskoError(msg) {
+          if (typeof window.showCenteredInfoBox === 'function') {
+            window.showCenteredInfoBox(msg);
+          } else if (typeof window.showErrorModal === 'function') {
+            window.showErrorModal(msg);
+          } else if (typeof window.showInfoModal === 'function') {
+            window.showInfoModal(msg);
+          } else {
+            alert(msg);
+          }
+        }
+
         var reader = new FileReader();
+        reader.onerror = function() {
+          console.error('Kasko Excel FileReader hatası:', reader.error);
+          showKaskoError('Dosya Okunamadı. Mobil Cihazda Dosya Erişim Sorunu Olabilir. Lütfen Masaüstü Bilgisayardan Deneyin.');
+          input.value = '';
+        };
         reader.onload = function(e) {
           try {
+            if (typeof XLSX === 'undefined') {
+              showKaskoError('Excel Kütüphanesi Yüklenemedi. İnternet Bağlantınızı Kontrol Edip Sayfayı Yenileyin.');
+              input.value = '';
+              return;
+            }
             var data = new Uint8Array(e.target.result);
             var workbook = XLSX.read(data, { type: 'array' });
             var firstSheetName = workbook.SheetNames[0];
             var worksheet = workbook.Sheets[firstSheetName];
             var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
-            localStorage.setItem('medisa_kasko_liste', JSON.stringify(jsonData));
+            var jsonStr = JSON.stringify(jsonData);
+            try {
+              localStorage.setItem('medisa_kasko_liste', jsonStr);
+            } catch (storageErr) {
+              if (storageErr.name === 'QuotaExceededError' || storageErr.code === 22) {
+                showKaskoError('Kasko Listesi Mobil Cihazda Depolama Sınırını Aşıyor. Lütfen Masaüstü Bilgisayardan Excel Yükleyin.');
+                input.value = '';
+                return;
+              }
+              throw storageErr;
+            }
             localStorage.setItem('medisa_kasko_liste_date', new Date().toISOString());
+
+            if (typeof window.clearKaskoCache === 'function') window.clearKaskoCache();
 
             if (typeof window.guncelleTumKaskoDegerleri === 'function') {
               window.guncelleTumKaskoDegerleri();
@@ -1034,14 +1060,10 @@
             }
           } catch (error) {
             console.error('Excel okuma hatası:', error);
-            if (typeof window.showCenteredInfoBox === 'function') {
-              window.showCenteredInfoBox('Excel okunurken hata oluştu! Dosya bozuk veya yanlış formatta olabilir.');
-            } else if (typeof window.showErrorModal === 'function') {
-              window.showErrorModal('Excel okunurken hata oluştu! Dosya bozuk veya yanlış formatta olabilir.');
-            } else if (typeof window.showInfoModal === 'function') {
-              window.showInfoModal('Excel okunurken hata oluştu! Dosya bozuk veya yanlış formatta olabilir.');
+            if (error.name === 'QuotaExceededError' || error.code === 22) {
+              showKaskoError('Kasko Listesi Mobil Cihazda Depolama Sınırını Aşıyor. Lütfen Masaüstü Bilgisayardan Excel Yükleyin.');
             } else {
-              alert('Excel okunurken hata oluştu!');
+              showKaskoError('Excel Okunurken Hata Oluştu! Dosya Bozuk Veya Yanlış Formatta Olabilir.');
             }
           } finally {
             input.value = '';
@@ -1192,6 +1214,7 @@
         const input = document.createElement('input');
         input.type = 'file';
         input.accept = '.json';
+        input.setAttribute('aria-label', 'Yedek JSON dosyası seç');
         input.style.position = 'fixed';
         input.style.left = '-9999px';
         input.style.opacity = '0';

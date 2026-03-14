@@ -2129,6 +2129,76 @@
   color: var(--theme-color);
 }
 
+.vehicle-ruhsat-btn {
+  width: 30px;
+  height: 30px;
+  background: transparent;
+  border: none;
+  color: var(--form-label-color);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  cursor: pointer;
+}
+.vehicle-ruhsat-btn svg {
+  width: 19px;
+  height: 19px;
+}
+.vehicle-ruhsat-btn:hover {
+  color: var(--theme-color);
+}
+
+/* Ruhsat modal: Ruhsatı Görüntüle ve Yeni Ruhsat Yükle - çerçevesiz, arka plansız, beyaz metin */
+#ruhsat-yukleme-modal #ruhsat-modal-content .universal-btn-group {
+  justify-content: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+#ruhsat-yukleme-modal #ruhsat-modal-content .universal-btn-group button {
+  background: transparent !important;
+  border: none !important;
+  color: var(--form-label-color, #ffffff) !important;
+}
+
+/* Ruhsat modal: Yükle butonu - yeşil metin, yeşil çerçeve, hover büyüme + yarı saydam yeşil */
+#ruhsat-yukleme-modal #ruhsat-save-btn {
+  background: transparent !important;
+  color: var(--green-success, #28a745) !important;
+  border: 1px solid rgba(40, 167, 69, 0.65) !important;
+  transition: transform 0.2s, background 0.2s;
+}
+#ruhsat-yukleme-modal #ruhsat-save-btn:hover {
+  background: rgba(40, 167, 69, 0.25) !important;
+  color: var(--green-success, #28a745) !important;
+  transform: scale(1.05);
+}
+
+/* Ruhsat modal: üst/alt buton grupları aynı genişlikte, yatayda ortalanmış */
+#ruhsat-yukleme-modal #ruhsat-modal-content {
+  max-width: 390px;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Ruhsat modal: Dosya Seç butonu - şeffaf arka plan, beyaz metin (etiket rengi) */
+#ruhsat-yukleme-modal #ruhsat-file-input {
+  color: var(--form-label-color, #ffffff) !important;
+  background: transparent !important;
+}
+#ruhsat-yukleme-modal #ruhsat-file-input::file-selector-button,
+#ruhsat-yukleme-modal #ruhsat-file-input::-webkit-file-upload-button {
+  background: transparent !important;
+  color: var(--form-label-color, #ffffff) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  padding: 6px 12px;
+  cursor: pointer;
+  margin-right: 8px;
+  font-size: 14px;
+}
+
 /* Olay Ekle butonu - Marka/model satırında solda */
 .detail-brand-year-row .history-add-event-btn {
     width: auto;

@@ -17,6 +17,7 @@ body::-webkit-scrollbar,
   --theme-color-rgb: 212, 0, 0;
   /* Footer'dan yukarı süzen ışık: MEDISA tonu ile aynı */
   --footer-glow-rgb: 212, 0, 0;
+  --footer-glow-opacity: 0.38;  /* Masaüstü footer üstü parlaklık */
   /* MEDISA marka kırmızısı (theme ile aynı; alias) */
   --brand-red: #d40000;
   --brand-red-rgb: 212, 0, 0;
@@ -31,7 +32,7 @@ body::-webkit-scrollbar,
   --modal-footer-gap: 12px;
   --app-footer-height: 30px;
   /* Codex standart: modal overlay bottom tek formül (footer + 6px boşluk) */
-  --app-footer-real-height: 34px;
+  --app-footer-real-height: 38px;
   --app-footer-gap: 14px;
   --modal-footer-reserve: calc(var(--app-footer-height) + var(--modal-footer-gap));
   --modal-gap-above-footer: 5px; /* Mobil/masaüstü tek değer */
@@ -94,20 +95,21 @@ body::-webkit-scrollbar,
 @media (min-width: 641px) {
   :root {
     --app-footer-height: 34px;
-    --app-footer-real-height: 38px;
+    --app-footer-real-height: 42px;
     --modal-gap-above-footer: 1px;
   }
 }
 
-/* Mobil (640px ve altı): kontrast artırma */
+/* Mobil (640px ve altı): kontrast artırma, kırmızılar daha net */
 @media (max-width: 640px) {
   :root {
     --txt: #ffffff;
     --muted: rgba(255, 255, 255, 0.7);
     --br: #444;
     --border-shiny: rgba(255, 255, 255, 0.35);
-    --border-red-tech: rgba(var(--theme-color-rgb), 0.52);  /* Mobil/PWA: çerçeve biraz daha belirgin */
-    --red-glow-subtle: rgba(var(--theme-color-rgb), 0.18);
+    --border-red-tech: rgba(var(--theme-color-rgb), 0.78);  /* Mobil/PWA: çerçeve net */
+    --border-red-side: rgba(var(--theme-color-rgb), 0.78);  /* Yan çizgiler net */
+    --red-glow-subtle: rgba(var(--theme-color-rgb), 0.32);
     --bg-2: #1a1a1a;
     --card-bg: #1f1f1f;
     --hero-logo-width: 43px;
@@ -534,7 +536,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
         border-top: 1px solid rgba(200, 200, 200, 0.52);
         border-left: 0.6px solid rgba(255, 255, 255, 0.24);
         border-right: 0.6px solid rgba(255, 255, 255, 0.24);
-        box-shadow: 0 -13px 26px rgba(var(--footer-glow-rgb), 0.3);
+        box-shadow: 0 -13px 26px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity, 0.38));
     }
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer .footer-content {
         padding: 8px 12px;
@@ -1167,7 +1169,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   }
   /* Ana sayfa masaüstü/tablet: footer ışığı belirgin kalsın */
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer {
-    box-shadow: 0 -13px 26px rgba(var(--footer-glow-rgb), 0.3);
+    box-shadow: 0 -13px 26px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity, 0.38));
   }
   /* Anasayfa masaüstü: başlık kutunun içine sığsın */
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-spacer {
@@ -1185,6 +1187,18 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   /* Masaüstü: 6 bildirim ekranda görünsün, fazlası için aşağı kaydırılabilir */
   #notifications-dropdown {
     max-height: 380px !important;
+  }
+  /* Masaüstü: Bildirim kartlarında tarih satırının kesilmemesi için height/overflow override */
+  #notifications-dropdown .notification-item-activity,
+  #notifications-dropdown .notification-item.date-warning-red-border,
+  #notifications-dropdown .notification-item.date-warning-orange-border {
+    height: auto !important;
+    min-height: 52px !important;
+    overflow: visible !important;
+  }
+  #notifications-dropdown .notification-item-activity .notif-line2 {
+    flex-shrink: 0 !important;
+    min-height: 1.2em !important;
   }
   .settings-dropdown button {
     text-align: center; /* Masaüstünde ortalı */
@@ -1493,23 +1507,23 @@ body.modal-open .user-panel-link {
     height: var(--app-footer-real-height, 34px) !important;
     min-height: var(--app-footer-real-height, 34px) !important;
     box-sizing: border-box !important;
-    padding-top: 4px !important;
-    padding-bottom: calc(4px + env(safe-area-inset-bottom, 0)) !important;
+    padding-top: 2px !important;
+    padding-bottom: calc(2px + env(safe-area-inset-bottom, 0)) !important;
     border-top: 0.8px solid rgba(128, 128, 128, 0.5);
     border-left: 0.5px solid rgba(255, 255, 255, 0.20);
     border-right: 0.5px solid rgba(255, 255, 255, 0.20);
-    box-shadow: 0 -10px 20px rgba(var(--footer-glow-rgb), 0.3);
+    box-shadow: 0 -10px 20px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity, 0.38));
     overflow-x: hidden;
     overflow-y: visible;
 }
 
 /* Modal açıkken footer glow AYNI kalsın (ışık şiddeti artmasın); overlay tam opak */
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #app-footer {
-    box-shadow: 0 -13px 26px rgba(var(--footer-glow-rgb), 0.3) !important;
+    box-shadow: 0 -13px 26px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity, 0.38)) !important;
 }
 @media (max-width: 640px) {
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #app-footer {
-    box-shadow: 0 -12px 22px rgba(var(--footer-glow-rgb), 0.3) !important;
+    box-shadow: 0 -12px 22px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity, 0.38)) !important;
   }
 }
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay.active,
@@ -1527,8 +1541,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
     max-width: 500px;
     width: 100%;
     margin: 0 auto;
-    padding: 12px 12px;
-    padding-bottom: max(12px, env(safe-area-inset-bottom));
+    padding: 6px 12px;
+    padding-bottom: max(6px, env(safe-area-inset-bottom));
     box-sizing: border-box;
 }
 
@@ -1655,6 +1669,24 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
 
 /* MOBİL AYARLARI: 768px ve altında modal alt çerçeve footer ışığında ezilmesin; sınır sadece top/bottom */
 @media (max-width: 768px) {
+    /* Kasko Değer Listesi bildirimi: X sağda, metin solda, dikey kompakt */
+    #notifications-dropdown .kasko-excel-notification {
+        flex-wrap: nowrap !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        padding: 8px 12px !important;
+        min-height: unset !important;
+    }
+    #notifications-dropdown .kasko-excel-notification .mtv-text-container {
+        order: 1 !important;
+        flex: 1 1 auto !important;
+        min-width: 0 !important;
+    }
+    #notifications-dropdown .kasko-excel-notification .mtv-dismiss-wrapper {
+        order: 2 !important;
+        flex: 0 0 auto !important;
+        margin-left: 8px !important;
+    }
     .modal-overlay {
         bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
     }
@@ -1917,7 +1949,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
     #app-footer {
         position: fixed;
         bottom: 0;
-        box-shadow: 0 -12px 22px rgba(var(--footer-glow-rgb), 0.3);
+        box-shadow: 0 -12px 22px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity, 0.38));
         border-left: none; /* Mobilde yan yok */
         border-right: none;
         border-top: 1px solid rgba(128, 128, 128, 0.5) !important; /* Gri çizgi */
@@ -2233,6 +2265,36 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-container::before {
     bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
+  }
+}
+
+/* iOS PWA: ana panel footer ve header dengesi (safe-area tek katman) */
+@media (max-width: 768px) and (display-mode: standalone) {
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer {
+    height: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
+    min-height: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
+    padding-top: 2px !important;
+    padding-bottom: calc(2px + env(safe-area-inset-bottom, 0)) !important;
+    box-shadow: 0 -12px 24px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity, 0.38)) !important;
+  }
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer .footer-content {
+    height: 100% !important;
+    align-items: center !important;
+    padding: 4px 12px !important;
+    padding-bottom: 4px !important;
+  }
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-logo {
+    flex: 0 0 39px !important;
+    width: 39px !important;
+    margin-right: 8px !important;
+    transform: translate(-1px, 1px) !important;
+  }
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-logo img {
+    height: 35px !important;
+    width: auto !important;
+  }
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero h1 {
+    letter-spacing: 1.8px !important;
   }
 }
 

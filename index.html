@@ -197,6 +197,34 @@
                     <div class="ttl">RAPORLAR</div>
                 </button>
             </div>
+            <!-- Erken fallback: script-core/tasitlar/kayit yüklenmeden tıklanırsa ReferenceError önlenir -->
+            <script>
+            (function() {
+                function openModal(id) {
+                    var m = document.getElementById(id);
+                    if (!m) return;
+                    m.style.display = 'flex';
+                    requestAnimationFrame(function() {
+                        m.classList.add('active');
+                        if (typeof window.updateFooterDim === 'function') window.updateFooterDim();
+                    });
+                }
+
+                if (!window.openVehiclesView) window.openVehiclesView = function() { openModal('vehicles-modal'); };
+                if (!window.openReportsView) window.openReportsView = function() { openModal('reports-modal'); };
+                if (!window.openVehicleModal) window.openVehicleModal = function() { openModal('vehicle-modal'); };
+
+                if (!window.closeVehicleModal) {
+                    window.closeVehicleModal = function() {
+                        var m = document.getElementById('vehicle-modal');
+                        if (!m) return;
+                        m.classList.remove('active');
+                        m.style.display = 'none';
+                        if (typeof window.updateFooterDim === 'function') window.updateFooterDim();
+                    };
+                }
+            })();
+            </script>
 
         </main>
 
@@ -315,7 +343,7 @@
                                 <textarea class="form-input form-input-reveal" rows="2" placeholder="Detay Ekleyin" id="kredi-detay"></textarea>
                             </div>
                             <div class="form-section">
-                                <label class="form-label" id="vehicle-branch-label">Tahsis Edilen Şube</label>
+                                <span class="form-label" id="vehicle-branch-label">Tahsis Edilen Şube</span>
                                 <div class="vehicle-branch-dropdown-wrap">
                                     <select id="vehicle-branch-select" class="form-input" aria-hidden="true" tabindex="-1">
                                         <option value="">Seçiniz</option>
@@ -542,15 +570,17 @@
                             <input type="password" id="user-password" class="form-input" placeholder="Şifre" autocomplete="new-password">
                         </div>
                         <div class="form-section form-section-vehicles">
-                            <span id="user-vehicles-label" class="form-label u-block">Atanacak Taşıt</span>
-                            <div class="user-vehicles-dropdown-wrap">
-                                <div id="user-vehicles-trigger" class="user-vehicles-trigger" tabindex="0" role="combobox" aria-labelledby="user-vehicles-label" onclick="if(window.toggleUserVehiclesDropdown) window.toggleUserVehiclesDropdown()">Taşıt seçin</div>
-                                <div id="user-vehicles-dropdown" class="user-vehicles-dropdown" style="display:none;">
+                            <span id="user-vehicles-label" class="form-label">Tahsis Edilecek Taşıt</span>
+                            <div class="user-vehicles-wrap">
+                                <div id="user-vehicles-trigger" class="user-vehicles-trigger form-input" tabindex="0" role="combobox" aria-labelledby="user-vehicles-label" aria-expanded="false" onclick="if(window.toggleUserVehiclesDropdown) window.toggleUserVehiclesDropdown()">
+                                    <span class="user-vehicles-trigger-text">Taşıt seçin</span>
+                                    <svg class="user-vehicles-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+                                </div>
+                                <div id="user-vehicles-dropdown" class="user-vehicles-dropdown" style="display:none;" role="listbox">
                                     <div class="user-vehicles-search-wrap">
-                                        <span class="user-vehicles-search-icon">🔍</span>
-                                        <input type="text" id="user-vehicles-search" class="user-vehicles-search-input" placeholder="Plaka" oninput="if(window.handleUserVehiclesSearch) window.handleUserVehiclesSearch(this.value)">
+                                        <input type="text" id="user-vehicles-search" class="form-input user-vehicles-search-input" placeholder="Plaka ile ara..." aria-label="Plaka ile ara" oninput="if(window.handleUserVehiclesSearch) window.handleUserVehiclesSearch(this.value)">
                                     </div>
-                                    <div id="user-vehicles-container" class="user-vehicles-checkbox-list"></div>
+                                    <div id="user-vehicles-container" class="user-vehicles-checkbox-list" role="group"></div>
                                 </div>
                             </div>
                         </div>
@@ -612,7 +642,7 @@
                     <div class="data-management-actions">
                         <button type="button" id="tsb-indir-btn" class="data-management-text-btn" onclick="tsbKaskoListesiIndir()">TSB Kasko Listesi İndir</button>
                         <button type="button" id="kasko-yukle-btn" class="data-management-text-btn" onclick="kaskoExcelYukle()">Kasko Excel Yükle</button>
-                        <input type="file" id="kasko-excel-input" accept=".xlsx,.xls" style="display: none;">
+                        <input type="file" id="kasko-excel-input" accept=".xlsx,.xls" style="display: none;" aria-label="Kasko Excel dosyası seç (.xlsx, .xls)">
                     </div>
                 </div>
             </div>
@@ -871,7 +901,7 @@
                             <input type="text" id="kaza-tutar" class="form-input" placeholder="5.000" inputmode="numeric" style="width: 100%;">
                         </div>
                         <div class="kaza-kaporta-row" style="width: 100%;">
-                            <label id="kaza-kaporta-label" class="kaza-kaporta-label" style="color: var(--form-label-color); font-size: 14px; display: block; margin-bottom: 3px; text-align: left;">Hasar Gören Parça (Kaporta Şeması):</label>
+                            <span id="kaza-kaporta-label" class="kaza-kaporta-label" style="color: var(--form-label-color); font-size: 14px; display: block; margin-bottom: 3px; text-align: left;">Hasar Gören Parça (Kaporta Şeması):</span>
                             <div id="kaza-kaporta-container" role="group" aria-labelledby="kaza-kaporta-label" style="margin-top: 3px; margin-bottom: 8px; overflow: hidden;"></div>
                         </div>
                     </div>
@@ -1256,6 +1286,33 @@
                     <div class="universal-btn-group">
                         <button type="button" class="universal-btn-save" onclick="event.stopPropagation(); updateKaskoKoduInfo();">Kaydet</button>
                         <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); closeEventModalAndShowEventMenu('kaskokodu');">Vazgeç</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ruhsat Yükleme Modal -->
+        <div id="ruhsat-yukleme-modal" class="modal-overlay tasitlar-modal-overlay ayarlar-modal-overlay olay-ekle-modal" onclick="if(event.target === this) { event.stopPropagation(); }">
+            <div class="modal-container" onclick="event.stopPropagation();">
+                <div class="modal-header">
+                    <h2>RUHSAT YÜKLEME</h2>
+                    <button class="modal-close" onclick="closeAllModals();">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                </div>
+                <div class="universal-back-bar">
+                    <button type="button" class="universal-back-btn" onclick="closeRuhsatAndBackToDetail()" aria-label="Taşıt Detay'a dön">
+                        <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        <span class="universal-back-label">Taşıt Detay</span>
+                    </button>
+                </div>
+                <div class="modal-body" onclick="event.stopPropagation();">
+                    <div id="ruhsat-modal-content" style="display: flex; flex-direction: column; gap: 12px;">
+                        <!-- Dinamik içerik: openRuhsatModal tarafından doldurulacak -->
+                    </div>
+                    <div class="universal-btn-group" id="ruhsat-btn-group" style="margin-top: 12px;">
+                        <button type="button" class="universal-btn-save" id="ruhsat-save-btn" onclick="event.stopPropagation(); saveRuhsatUpload();" style="display: none;">Yükle</button>
+                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); closeRuhsatAndBackToDetail();">Vazgeç</button>
                     </div>
                 </div>
             </div>
