@@ -1208,6 +1208,10 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
     white-space: normal !important;
     padding: 10px 12px !important;
   }
+  #notifications-dropdown .notification-item.date-warning-red-border > div,
+  #notifications-dropdown .notification-item.date-warning-orange-border > div {
+    margin-bottom: 0 !important;
+  }
   #notifications-dropdown .notification-item-activity .notif-line2 {
     flex-shrink: 0 !important;
     min-height: 1.2em !important;
