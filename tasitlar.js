@@ -3212,7 +3212,7 @@ function renderVehicleDetailLeft(vehicle) {
     const backBtn = document.createElement('button');
     backBtn.type = 'button';
     backBtn.className = 'ruhsat-inline-back-btn';
-    backBtn.textContent = '← Ruhsata Dön';
+    backBtn.textContent = '← Geri Dön';
     backBtn.onclick = function() {
       setRuhsatInlineViewerMode(false);
       window.openRuhsatModal(vehicleId);
