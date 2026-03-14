@@ -1188,13 +1188,25 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   #notifications-dropdown {
     max-height: 380px !important;
   }
-  /* Masaüstü: Bildirim kartlarında tarih satırının kesilmemesi için height/overflow override */
-  #notifications-dropdown .notification-item-activity,
-  #notifications-dropdown .notification-item.date-warning-red-border,
-  #notifications-dropdown .notification-item.date-warning-orange-border {
+  /* Masaüstü: Aktivite kartları kompakt kalsın */
+  #notifications-dropdown .notification-item-activity {
     height: auto !important;
     min-height: 52px !important;
     overflow: visible !important;
+  }
+  /* Masaüstü: Tarih uyarı kartlarında "Bildirim Tarihi" satırı kesilmesin */
+  #notifications-dropdown .notification-item.date-warning-red-border,
+  #notifications-dropdown .notification-item.date-warning-orange-border {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
+    height: auto !important;
+    min-height: 74px !important;
+    max-height: none !important;
+    overflow: hidden !important;
+    white-space: normal !important;
+    padding: 10px 12px !important;
   }
   #notifications-dropdown .notification-item-activity .notif-line2 {
     flex-shrink: 0 !important;
