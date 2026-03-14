@@ -834,7 +834,8 @@
           thirdLine = v.tahsisKisi || '';
         }
         const thirdLineDisplay = thirdLine ? (isArchive ? toTitleCase(thirdLine) : (activeBranchId === 'all' ? toTitleCase(thirdLine) : formatAdSoyad(thirdLine))) : '';
-        const satildiSpan = isArchive ? ' <span style="color:#d40000;font-size:12px;">(SATILDI)</span>' : '';
+        const satildiCardSpan = isArchive ? ' <span style="color:#d40000;font-size:12px;">(SATILDI)</span>' : '';
+        const satildiBrandLine = isArchive ? '<span style="color:#d40000;font-size:12px;display:block;line-height:1.1;margin-top:1px;">(SATILDI)</span>' : '';
 
         // Tahsis edilmemiş taşıtlar için kırmızı class (liste ve kartta her zaman)
         const isUnassigned = !v.branchId;
@@ -846,7 +847,7 @@
             const vid = v.id != null ? String(v.id).replace(/"/g, '&quot;') : '';
             return `
               <div class="card${unassignedClass}" data-vehicle-id="${vid}" style="cursor:pointer">
-                <div class="card-plate">${escapeHtml(formatPlaka(plate))}${satildiSpan}</div>
+                <div class="card-plate">${escapeHtml(formatPlaka(plate))}${satildiCardSpan}</div>
                 <div class="card-brand-model" title="${escapeHtml(brandModel)}">${escapeHtml(toTitleCase(brandModel))}</div>
                 ${thirdLineHtml}
               </div>
@@ -872,7 +873,7 @@
                   cellClass = 'list-plate';
                   break;
                 case 'brand':
-                  cellContent = escapeHtml(toTitleCase(brandModel)) + satildiSpan;
+                  cellContent = escapeHtml(toTitleCase(brandModel)) + satildiBrandLine;
                   cellClass = 'list-brand';
                   break;
                 case 'km':
