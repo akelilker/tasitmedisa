@@ -3184,6 +3184,53 @@ function renderVehicleDetailLeft(vehicle) {
     }
   }
 
+  function setRuhsatInlineViewerMode(active) {
+    const actionGroup = document.getElementById('ruhsat-btn-group');
+    const content = document.getElementById('ruhsat-modal-content');
+    if (actionGroup) actionGroup.classList.toggle('ruhsat-inline-view-mode', !!active);
+    if (content) content.classList.toggle('ruhsat-inline-view-mode', !!active);
+  }
+
+  function shouldUseInlineRuhsatViewer() {
+    const hasMatchMedia = typeof window.matchMedia === 'function';
+    const isMobileViewport = hasMatchMedia ? window.matchMedia('(max-width: 768px)').matches : window.innerWidth <= 768;
+    const isStandalone = hasMatchMedia && (window.matchMedia('(display-mode: standalone)').matches || window.matchMedia('(display-mode: fullscreen)').matches);
+    const ua = navigator.userAgent || '';
+    const isiOS = /iPhone|iPad|iPod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    return isMobileViewport || isStandalone || isiOS;
+  }
+
+  function renderInlineRuhsatViewer(vehicleId, url) {
+    const content = document.getElementById('ruhsat-modal-content');
+    const saveBtn = document.getElementById('ruhsat-save-btn');
+    if (!content || !saveBtn) return false;
+
+    setRuhsatInlineViewerMode(true);
+    setRuhsatSaveBtnVisibility(saveBtn, false);
+    content.innerHTML = '';
+
+    const backBtn = document.createElement('button');
+    backBtn.type = 'button';
+    backBtn.className = 'ruhsat-inline-back-btn';
+    backBtn.textContent = '← Ruhsata Dön';
+    backBtn.onclick = function() {
+      setRuhsatInlineViewerMode(false);
+      window.openRuhsatModal(vehicleId);
+    };
+
+    const frameWrap = document.createElement('div');
+    frameWrap.className = 'ruhsat-inline-frame-wrap';
+    const frame = document.createElement('iframe');
+    frame.className = 'ruhsat-inline-frame';
+    frame.src = url + '#toolbar=1&navpanes=0&view=FitH';
+    frame.setAttribute('title', 'Ruhsat PDF');
+    frameWrap.appendChild(frame);
+
+    content.appendChild(backBtn);
+    content.appendChild(frameWrap);
+    return true;
+  }
+
   window.openRuhsatModal = function(vehicleId) {
     const vid = (vehicleId || window.currentDetailVehicleId || '').toString();
     if (!vid) return;
@@ -3193,6 +3240,7 @@ function renderVehicleDetailLeft(vehicle) {
     const content = document.getElementById('ruhsat-modal-content');
     const saveBtn = document.getElementById('ruhsat-save-btn');
     if (!modal || !content || !saveBtn) return;
+    setRuhsatInlineViewerMode(false);
     content.innerHTML = '';
     setRuhsatSaveBtnVisibility(saveBtn, false);
     saveBtn.textContent = 'Ruhsat Yükle';
@@ -3207,6 +3255,10 @@ function renderVehicleDetailLeft(vehicle) {
       previewLink.target = '_blank';
       previewLink.rel = 'noopener';
       previewLink.setAttribute('aria-label', 'Ruhsatı görüntüle');
+      previewLink.onclick = function(e) {
+        e.preventDefault();
+        window.viewRuhsatPdf(vid);
+      };
       const previewFrame = document.createElement('iframe');
       previewFrame.src = previewLink.href + '#toolbar=0&navpanes=0&scrollbar=0';
       previewFrame.setAttribute('title', 'Ruhsat önizleme');
@@ -3307,6 +3359,9 @@ function renderVehicleDetailLeft(vehicle) {
     const vid = (vehicleId || window.currentDetailVehicleId || '').toString();
     if (!vid) return;
     const url = 'ruhsat.php?id=' + encodeURIComponent(vid);
+    if (shouldUseInlineRuhsatViewer() && renderInlineRuhsatViewer(vid, url)) {
+      return;
+    }
     window.open(url, '_blank', 'noopener');
   };
 
