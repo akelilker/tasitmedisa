@@ -4828,7 +4828,7 @@ function renderVehicleDetailLeft(vehicle) {
         });
         notifications.forEach(notif => {
             const typeLabel = notif.type === 'sigorta' ? 'Sigorta' : notif.type === 'kasko' ? 'Kasko' : 'Muayene';
-            const dateDisplay = formatDateForDisplay(notif.date);
+            const activeDateDisplay = formatDateForDisplay(new Date()) || '-';
 
             let messageText = '';
             if (notif.days <= 0 && notif.type === 'kasko') {
@@ -4856,7 +4856,7 @@ function renderVehicleDetailLeft(vehicle) {
             <div style="font-weight: 500; color: #fff; line-height: 1.4;">
               <span class="${notif.warningClass}">${escapeHtml(messageText)}</span>
             </div>
-            <div style="font-size: 11px; color: #999; margin-top: 6px;">Son Tarih: ${escapeHtml(dateDisplay)}</div>
+            <div style="font-size: 11px; color: #999; margin-top: 6px;">Bildirim Tarihi: ${escapeHtml(activeDateDisplay)}</div>
           </button>`;
         });
       }
