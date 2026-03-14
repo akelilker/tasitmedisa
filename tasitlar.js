@@ -3178,6 +3178,10 @@ function renderVehicleDetailLeft(vehicle) {
   function setRuhsatSaveBtnVisibility(saveBtn, visible) {
     if (!saveBtn) return;
     saveBtn.style.setProperty('display', visible ? 'inline-flex' : 'none', 'important');
+    const actionGroup = document.getElementById('ruhsat-btn-group');
+    if (actionGroup) {
+      actionGroup.classList.toggle('ruhsat-single-visible', !visible);
+    }
   }
 
   window.openRuhsatModal = function(vehicleId) {
