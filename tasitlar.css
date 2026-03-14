@@ -1695,6 +1695,10 @@
     white-space: nowrap !important;
     font-size: clamp(9.67px, 1.45vw, 10.33px) !important;
   }
+  /* Taşıt Tipi başlığı: gerekirse 1 puntoya kadar küçülebilsin */
+  .list-header-row .list-cell.list-type span {
+    font-size: clamp(9px, 1.4vw, 10.33px) !important;
+  }
 }
 .list-header-row .list-cell.list-branch {
     text-align: center !important;
