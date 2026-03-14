@@ -3175,6 +3175,11 @@ function renderVehicleDetailLeft(vehicle) {
   /**
    * Ruhsat Yükleme modalını açar; vehicle.ruhsatPath varsa görüntüleme/yenileme, yoksa yükleme UI gösterir
    */
+  function setRuhsatSaveBtnVisibility(saveBtn, visible) {
+    if (!saveBtn) return;
+    saveBtn.style.setProperty('display', visible ? 'inline-flex' : 'none', 'important');
+  }
+
   window.openRuhsatModal = function(vehicleId) {
     const vid = (vehicleId || window.currentDetailVehicleId || '').toString();
     if (!vid) return;
@@ -3185,7 +3190,7 @@ function renderVehicleDetailLeft(vehicle) {
     const saveBtn = document.getElementById('ruhsat-save-btn');
     if (!modal || !content || !saveBtn) return;
     content.innerHTML = '';
-    saveBtn.style.display = 'none';
+    setRuhsatSaveBtnVisibility(saveBtn, false);
     saveBtn.textContent = 'Ruhsat Yükle';
     const hasRuhsat = !!(vehicle && vehicle.ruhsatPath);
     if (hasRuhsat) {
@@ -3246,7 +3251,7 @@ function renderVehicleDetailLeft(vehicle) {
     }
     input.onchange = function() {
       const hasFile = input.files.length > 0;
-      saveBtn.style.display = hasFile ? 'inline-block' : 'none';
+      setRuhsatSaveBtnVisibility(saveBtn, hasFile);
       if (!hasExistingRuhsat && selectBox) {
         if (hasFile) {
           selectBox.textContent = input.files[0].name;
@@ -3258,7 +3263,7 @@ function renderVehicleDetailLeft(vehicle) {
       }
     };
     content.appendChild(input);
-    saveBtn.style.display = input.files.length ? 'inline-block' : 'none';
+    setRuhsatSaveBtnVisibility(saveBtn, input.files.length > 0);
   }
 
   /**
