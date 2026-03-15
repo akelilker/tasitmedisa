@@ -420,17 +420,22 @@
     width: 136px;
     display: block !important;
     margin: 0 auto;
-    margin-top: 5px !important; /* Ã…ÂemayÄ± 5px yukarÄ± kaydÄ±r */
+    margin-top: 4px !important; /* Üst çerçeveye milimetrik 4px */
     position: relative !important;
 }
 #detail-boya-container .kaporta-schema-wrapper {
     margin: 0 !important;
     margin-right: auto !important;
-    margin-top: 5px !important;
+    margin-top: 4px !important; /* Üst çerçeveye milimetrik 4px */
+}
+/* SVG'nin kendi iç viewBox (ölü) boşluğunu sıfırlayarak yukarı çekiyoruz */
+#detail-boya-container .kaporta-schema-wrapper svg {
+    margin-top: -20px !important; 
+    display: block !important;
 }
 #detail-boya-container .boya-legend {
     justify-content: flex-start !important;
-    margin-top: 0 !important; /* BoÅŸluk container gap ile 3px */
+    margin-top: -8px !important; /* Şema yukarı kaydığı için legend'ı da peşinden yaklaştır */
 }
 
 .detail-row-label {
@@ -894,7 +899,7 @@
   }
   .vehicle-detail-left #detail-boya-container .kaporta-schema-wrapper {
     max-width: 100% !important;
-    margin-top: 1px !important; /* 5pxÃ¢â€ â€™1px: 4px dikey kÃ¼Ã§Ã¼ltme */
+    margin-top: 4px !important; /* Desktop'ta da üst çerçeveye tam 4px boşluk */
   }
   /* TarihÃ§e modal: sol ok ve TaÅŸÄ±t DetaylarÄ± sabit (scroll ile gitmesin) */
   #vehicle-history-modal .modal-container > div:nth-child(2) {
