@@ -40,7 +40,32 @@ if ($file['size'] > $maxSize) {
 $finfo = finfo_open(FILEINFO_MIME_TYPE);
 $mime = finfo_file($finfo, $file['tmp_name']);
 finfo_close($finfo);
-if ($mime !== 'application/pdf') {
+
+$originalName = $file['name'] ?? '';
+$extension = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
+
+$allowedMimes = [
+    'application/pdf',
+    'application/x-pdf',
+    'application/acrobat',
+    'applications/vnd.pdf',
+    'text/pdf',
+    'text/x-pdf',
+    'binary/octet-stream',
+    'application/octet-stream'
+];
+
+$handle = fopen($file['tmp_name'], 'rb');
+$fileHeader = $handle ? fread($handle, 5) : '';
+if ($handle) {
+    fclose($handle);
+}
+
+$isPdfHeader = ($fileHeader === '%PDF-');
+$isPdfMime = in_array($mime, $allowedMimes, true);
+$isPdfExtension = ($extension === 'pdf');
+
+if (!$isPdfExtension || (!$isPdfMime && !$isPdfHeader)) {
     http_response_code(400);
     echo json_encode(['error' => 'Sadece PDF dosyası kabul edilir']);
     exit;
