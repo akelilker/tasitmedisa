@@ -1010,7 +1010,17 @@
         }
     }).join('') + '</div>' + (viewMode === 'list' ? '</div>' : '') + '';
 
-      listContainer.innerHTML = html;
+      const fragment = document.createDocumentFragment();
+
+      const temp = document.createElement('div');
+      temp.innerHTML = html;
+
+      while (temp.firstChild) {
+        fragment.appendChild(temp.firstChild);
+      }
+
+      listContainer.innerHTML = '';
+      listContainer.appendChild(fragment);
       listContainer.dataset.renderScope = 'vehicles';
       listContainer.dataset.renderSignature = renderSignature;
       lastVehiclesRenderSignature = renderSignature;
