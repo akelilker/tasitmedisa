@@ -1073,7 +1073,7 @@ flex-wrap: nowrap !important;
 align-items: center !important;
 margin-top: 0 !important;
 /* KESİN ÇÖZÜM: Flexbox yüksekliğine takılmadan kutuyu görsel olarak tam 12px aşağı kaydırır */
-transform: translateY(12px) !important;
+transform: translateY(9px) !important;
 }
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-2 .stok-search-wrap {
 display: flex !important;
