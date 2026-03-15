@@ -2556,7 +2556,7 @@ color: #fff;
     #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-1 {
         flex-direction: row !important;
         flex-wrap: nowrap !important;
-        justify-content: flex-start !important;
+        justify-content: center !important;
         align-items: center !important;
         gap: 10px !important;
         margin-top: -10px !important;
