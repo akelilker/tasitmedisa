@@ -1327,7 +1327,7 @@ body.dashboard-page {
   .driver-current-plaka { font-size: 13.5px; } /* 14.5 - 1pt */
   .driver-plate-subtitle { font-size: 14.5px; }
   .driver-user-plate-in-panel .driver-plate-subtitle { font-size: 15.5px; }
-  .driver-user-plate-in-panel { gap: 1px; margin-bottom: 3px; }
+  .driver-user-plate-in-panel { gap: 3px; margin-bottom: 3px; }
   .hero-subtitle { font-size: 13.5px; }
   .driver-info-row { font-size: 13.5px; }
   .vehicle-header h3 { font-size: 20.5px; }
@@ -4248,7 +4248,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     right: -8px !important;
     top: 50% !important;
     transform: translateY(-50%) !important;
-    background: var(--bg) !important;
+    background: transparent !important;
   }
   /* Ad???Ã¯Â¿Â½m 2Ã¢â‚¬â€œ3: Liste sol panel kafesinden ÃƒÂ§???Ã¯Â¿Â½kar???Ã¯Â¿Â½ld???Ã¯Â¿Â½ (position: fixed), ekranda gÃƒÂ¶z hizas???Ã¯Â¿Â½ Ã¢â‚¬â€œ ortada, belirgin gÃƒÂ¶lge */
   .dashboard-page .driver-left-panel .driver-plate-dropdown,
