@@ -5102,6 +5102,21 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .login-page .driver-dashboard-container::before {
     bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
   }
+
+  /* History/Edit modal acikken footer-gap korunur (genel kurali ezer). */
+  body.dashboard-page:has(#history-modal.driver-modal.show) .driver-dashboard-container::before,
+  body.dashboard-page:has(#edit-request-modal.driver-modal.show) .driver-dashboard-container::before,
+  body.login-page:has(#history-modal.driver-modal.show) .driver-dashboard-container::before,
+  body.login-page:has(#edit-request-modal.driver-modal.show) .driver-dashboard-container::before {
+    bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
+  }
+
+  @supports not selector(body:has(*)) {
+    body.dashboard-page.driver-history-or-edit-modal-open .driver-dashboard-container::before,
+    body.login-page.driver-history-or-edit-modal-open .driver-dashboard-container::before {
+      bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
+    }
+  }
 }
 @media (min-width: 769px) {
   .dashboard-page .driver-dashboard-container::before,
