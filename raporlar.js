@@ -534,8 +534,8 @@
                     'plaka': 68, 'sanziman': 64, 'km': 60
                 }
                 : {
-                    'sira': 24, 'sube': 78, 'yil': 41, 'marka': 124,
-                    'plaka': 68, 'sanziman': 67, 'km': 72
+                    'sira': 24, 'sube': 78, 'yil': 41, 'marka': 120,
+                    'plaka': 68, 'sanziman': 67, 'km': 76
                 };
             const detailPx = {
                 'sigorta': 72, 'kasko': 72, 'kaskoDegeri': 72, 'muayene': 72, 'kredi': 56,
@@ -558,9 +558,9 @@
             }
             : {
                 'sira': 'minmax(22px, 0.2fr)', 'sube': 'minmax(54px, 1.05fr)',
-                'yil': 'minmax(40px, 0.55fr)', 'marka': 'minmax(56px, 1.55fr)',
+                'yil': 'minmax(40px, 0.55fr)', 'marka': 'minmax(52px, 1.55fr)',
                 'plaka': 'minmax(62px, 1.05fr)', 'sanziman': 'minmax(62px, 0.95fr)',
-                'km': 'minmax(62px, 1.35fr)'
+                'km': 'minmax(66px, 1.35fr)'
             };
         return allColumns.map(col => columnWidths[col.key] || '80px').join(' ');
     }
