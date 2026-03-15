@@ -228,23 +228,47 @@
       .catch(function () {});
   }
 
-  // Admin sekme geçişi (container mevcutsa analitik sekmesini yükler)
-  window.switchAdminTab = function (tabId) {
-    var tabButtons = document.querySelectorAll('[data-admin-tab]');
-    var tabPanels = document.querySelectorAll('[data-admin-panel]');
-    if (tabButtons.length && tabPanels.length) {
-      tabButtons.forEach(function (btn) {
-        btn.classList.toggle('active', btn.getAttribute('data-admin-tab') === tabId);
-      });
-      tabPanels.forEach(function (panel) {
-        panel.style.display = panel.getAttribute('data-admin-panel') === tabId ? '' : 'none';
-      });
+  window.switchAdminTab = function(tabId) {
+    // 1. Tüm butonları pasife çek
+    document.querySelectorAll('.admin-tab-btn').forEach(function(btn) {
+      btn.classList.remove('active');
+    });
+    
+    // 2. Tüm panelleri gizle
+    document.querySelectorAll('.admin-tab-panel').forEach(function(panel) {
+      panel.classList.remove('active');
+      panel.style.display = 'none';
+    });
+
+    // 3. Seçilen butonu aktif et (data-admin-tab veya onclick ile bulur)
+    var activeBtn = document.querySelector('.admin-tab-btn[data-admin-tab="' + tabId + '"]') || 
+                    document.querySelector('.admin-tab-btn[onclick*="' + tabId + '"]');
+    if (activeBtn) {
+      activeBtn.classList.add('active');
     }
 
-    if (tabId === 'user-analytics') {
+    // 4. Seçilen paneli aktif et (id veya data-admin-panel ile bulur)
+    var activePanel = document.getElementById('tab-' + tabId) || 
+                      document.querySelector('.admin-tab-panel[data-admin-panel="' + tabId + '"]');
+    if (activePanel) {
+      activePanel.classList.add('active');
+      activePanel.style.display = 'block';
+    }
+
+    // 5. Kullanıcı Raporları sekmesi açıldıysa verileri yükle
+    if (tabId === 'kullanici' && typeof window.loadUserAnalytics === 'function') {
       window.loadUserAnalytics();
     }
   };
+
+  // Eğer HTML tarafındaki onclick özellikleri tamamen silindiyse, butonların çalışması için global dinleyici:
+  document.addEventListener('click', function(e) {
+    var tabBtn = e.target.closest('.admin-tab-btn[data-admin-tab]');
+    if (tabBtn && !tabBtn.hasAttribute('onclick')) {
+      var tabId = tabBtn.getAttribute('data-admin-tab');
+      if (tabId) window.switchAdminTab(tabId);
+    }
+  });
 
   window.loadUserAnalytics = function() {
     var container = document.getElementById('user-analytics-container');
