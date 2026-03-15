@@ -743,6 +743,20 @@
       // Veri Çek
       let vehicles = readVehicles();
       if (!Array.isArray(vehicles)) vehicles = [];
+      const branches = window.appData?.branches || [];
+      const users = window.appData?.users || [];
+
+      const branchMap = {};
+      for (let i = 0; i < branches.length; i++) {
+        const b = branches[i];
+        branchMap[String(b.id)] = b;
+      }
+
+      const userMap = {};
+      for (let i = 0; i < users.length; i++) {
+        const u = users[i];
+        userMap[String(u.id)] = u;
+      }
 
     // 1. Arşiv veya Şube Filtresi
     if (activeBranchId === '__archive__') {
@@ -831,9 +845,6 @@
           return;
       }
 
-    const branches = readBranches() || [];
-    const branchMap = new Map(branches.map(function(b) { return [String(b.id), b.name || '']; }));
-
     const isAllView = (activeBranchId === 'all');
     const extraClass = (viewMode === 'list' && isAllView) ? ' is-all-view' : '';
     const isMobile = window.innerWidth <= 640;
@@ -891,8 +902,6 @@
         html += '</div>';
         html += '<div class="vehicles-list-scroll">';
       }
-      const users = readUsers() || [];
-      const userMap = new Map(users.map(function(u) { return [String(u.id), u]; }));
       html += `<div class="view-${viewMode}${extraClass}">` + vehicles.map(v => {
         // Plaka (1. satır - tek satır maksimum)
         const plate = v.plate || '-';
@@ -906,7 +915,7 @@
         if (isArchive) {
           thirdLine = v.satisTarihi ? `Satış: ${v.satisTarihi}` : '';
         } else if (activeBranchId === 'all') {
-          thirdLine = branchMap.get(String(v.branchId)) || '';
+          thirdLine = branchMap[String(v.branchId)]?.name || '';
         } else {
           thirdLine = v.tahsisKisi || '';
         }
@@ -934,7 +943,7 @@
             const kmValue = v.guncelKm || v.km;
             const kmLabel = kmValue ? formatNumber(kmValue) : '-';
             const vehicleTypeLabel = toTitleCase(v.vehicleType || '-');
-            const branchLabel = toTitleCase(branchMap.get(String(v.branchId)) || 'Tahsis Edilmemiş');
+            const branchLabel = toTitleCase(branchMap[String(v.branchId)]?.name || 'Tahsis Edilmemiş');
             
             let cellHtml = '';
             listDisplayOrder.forEach(columnKey => {
@@ -966,7 +975,7 @@
                   cellClass = 'list-type';
                   break;
                 case 'user':
-                  const assignedUser = v.assignedUserId ? userMap.get(String(v.assignedUserId)) : null;
+                  const assignedUser = v.assignedUserId ? userMap[String(v.assignedUserId)] : null;
                   const userNameRaw = assignedUser?.name || v.tahsisKisi || '-';
                   const userName = formatAdSoyad(userNameRaw);
                   if (isMobile && userName && userName !== '-') {
