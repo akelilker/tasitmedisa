@@ -56,6 +56,26 @@ function getDefaultAppData() {
     };
 }
 
+function hasUsableAppData(data) {
+    return !!(
+        data &&
+        typeof data === 'object' &&
+        (
+            (Array.isArray(data.tasitlar) && data.tasitlar.length > 0) ||
+            (Array.isArray(data.branches) && data.branches.length > 0) ||
+            (Array.isArray(data.users) && data.users.length > 0) ||
+            (Array.isArray(data.kayitlar) && data.kayitlar.length > 0)
+        )
+    );
+}
+
+function getSafeAppDataFallback() {
+    if (hasUsableAppData(window.appData)) {
+        return window.appData;
+    }
+    return getDefaultAppData();
+}
+
 /* Sadece yedekten geri yükleme sonrası kullanılır (restore script veriyi localStorage'a yazmış olabilir) */
 function loadDataFromLocalStorage() {
     try {
@@ -122,21 +142,21 @@ async function loadDataFromServer(forceRefresh = true) {
                 } else {
                     console.error('[Medisa] loadDataFromServer HTTP hatası', response.status, errorText.substring(0, 200));
                 }
-                window.appData = getDefaultAppData();
+                window.appData = getSafeAppDataFallback();
                 isDataLoaded = true;
                 return window.appData;
             }
 
             const responseText = await response.text();
             if (!responseText || responseText.trim() === '') {
-                window.appData = getDefaultAppData();
+                window.appData = getSafeAppDataFallback();
                 isDataLoaded = true;
                 return window.appData;
             }
 
             const trimmedResponse = responseText.trim();
             if (trimmedResponse.startsWith('<?php') || (trimmedResponse.startsWith('<') && trimmedResponse.includes('html'))) {
-                window.appData = getDefaultAppData();
+                window.appData = getSafeAppDataFallback();
                 isDataLoaded = true;
                 return window.appData;
             }
@@ -145,7 +165,7 @@ async function loadDataFromServer(forceRefresh = true) {
             try {
                 data = JSON.parse(responseText);
             } catch (parseError) {
-                window.appData = getDefaultAppData();
+                window.appData = getSafeAppDataFallback();
                 isDataLoaded = true;
                 return window.appData;
             }
@@ -175,7 +195,7 @@ async function loadDataFromServer(forceRefresh = true) {
         } catch (error) {
             if (typeof window.__medisaLogError === 'function') window.__medisaLogError('loadDataFromServer', error);
             else console.warn('[Medisa] Veri yüklenemedi:', error && error.message);
-            window.appData = getDefaultAppData();
+            window.appData = getSafeAppDataFallback();
             isDataLoaded = true;
             return window.appData;
         } finally {
