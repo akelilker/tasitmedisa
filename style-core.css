@@ -2040,6 +2040,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
         left: 61% !important;
         right: auto !important;
         transform: translateX(-50%) !important;
+        padding-bottom: 8px !important; /* Son kutunun altı kesilmesin diye kaydırma payı */
     }
 
     /* === ANA KAYIT MODALI KURTARMA (Dar alana sığması için alt alta dizilmek zorundadır) === */
