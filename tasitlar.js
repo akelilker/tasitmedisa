@@ -80,13 +80,33 @@
   }
 
   function buildVehicleRenderSignature(vehicles, query, listDisplayOrder) {
+    const branches = window.appData?.branches || [];
+    const users = window.appData?.users || [];
+
+    const branchNameMap = {};
+    for (let i = 0; i < branches.length; i++) {
+      const b = branches[i];
+      branchNameMap[String(b.id)] = String(b.name || '');
+    }
+
+    const userNameMap = {};
+    for (let i = 0; i < users.length; i++) {
+      const u = users[i];
+      userNameMap[String(u.id)] = String(u.name || u.fullName || '');
+    }
+
     const compactVehicleState = vehicles.map(function(v) {
+      const branchName = branchNameMap[String(v.branchId)] || '';
+      const userName = userNameMap[String(v.assignedUserId)] || '';
+
       return [
         String(v.id ?? ''),
         String(v.version ?? ''),
         String(v.guncelKm ?? v.km ?? ''),
         String(v.branchId ?? ''),
+        branchName,
         String(v.assignedUserId ?? ''),
+        userName,
         String(v.tahsisKisi ?? ''),
         String(v.transmission ?? ''),
         String(v.satildiMi === true ? 1 : 0)
