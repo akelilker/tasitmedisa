@@ -347,7 +347,7 @@ body.dashboard-page {
 .driver-user-name {
   font-size: 14px; /* +2 punto */
   color: var(--muted);
-  max-width: 100px;
+  max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -808,7 +808,7 @@ body.dashboard-page {
   overflow: hidden;
 }
 .driver-left-panel {
-  flex: 0 0 30%;
+  flex: 0 0 36%;
   min-width: 0;
   display: flex;
   flex-direction: column;
@@ -1268,7 +1268,7 @@ body.dashboard-page {
   }
   .driver-panels-inner { gap: 8px; }
   .driver-left-panel {
-    flex: 0 0 30%;
+    flex: 0 0 36%;
     border-right-width: 1.2px;
     border-right-color: var(--border-red-tech);
   }
@@ -4245,7 +4245,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     font-size: calc(13px - 1pt) !important; /* 14px - 2pt */
   }
   .dashboard-page .driver-plate-dropdown-row .driver-plate-trigger {
-    right: -8px !important;
+    right: -2px !important;
     top: 50% !important;
     transform: translateY(-50%) !important;
     background: var(--bg) !important;
@@ -4952,10 +4952,8 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .dashboard-page .driver-dashboard-container,
   .login-page .driver-dashboard-container {
     height: 100dvh !important;
-    height: 100svh !important;
     min-height: 100dvh !important;
-    min-height: 100svh !important;
-    max-height: 100svh !important;
+    max-height: 100dvh !important;
     overflow-x: visible !important;
     overflow-y: hidden !important;
   }
@@ -5138,15 +5136,14 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
   }
 
-  /* Orta dikey Ã§izgi footer Ä±ÅŸÄ±klarÄ±na inmesin:
-     Ã§izgiyi tÃ¼m sol panel yerine sadece iÃ§erik bloÄŸunda tut. */
+  /* Orta dikey çizgi footer üst hizasına kadar devam etsin (sol panel boyunca). */
   .dashboard-page .driver-left-panel {
-    border-right: none !important;
-    padding-right: 0 !important;
-  }
-  .dashboard-page .driver-left-panel-content {
     border-right: 1.2px solid var(--border-red-tech) !important;
     padding-right: 12px !important;
+  }
+  .dashboard-page .driver-left-panel-content {
+    border-right: none !important;
+    padding-right: 0 !important;
     box-sizing: border-box !important;
   }
 
