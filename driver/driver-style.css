@@ -5234,11 +5234,14 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     max-width: 70% !important;
     min-width: 0 !important;
     overflow: hidden !important;
+    display: flex !important;
+    justify-content: flex-end !important; /* Bildirimi sağa yasla */
+    padding-right: 4px !important; /* Sağdaki butona/kenara tam 4px boşluk bırak */
   }
   .dashboard-page .driver-below-hero-notification-slot .driver-sliding-warning {
     width: 100% !important;
     max-width: 100% !important;
-    flex: 1 1 auto !important;
+    flex: 0 1 auto !important;
   }
 }
 
