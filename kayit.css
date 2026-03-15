@@ -1929,12 +1929,15 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
 /* iOS PWA: içerik Kaydet/Vazgeç butonlarına 10px daha yaklaşsın (elemanlar 10px üzerine kadar esnetilir) */
 @media (max-width: 640px) and (display-mode: standalone) {
     #vehicle-modal .modal-body .modal-columns {
-        margin-bottom: 0 !important;
+        flex: 0 0 auto !important;
+        height: auto !important;
+        margin-bottom: -8px !important;
+        padding-bottom: 0 !important;
     }
     #vehicle-modal .modal-body .universal-btn-group {
-        margin-top: 0 !important;
-        padding-top: 2px !important;
-        padding-bottom: 10px !important;
+        margin-top: -8px !important;
+        padding-top: 0 !important;
+        padding-bottom: 8px !important;
     }
     /* iOS PWA (sadece kayıt modalı): alt bölümdeki fazla boşluğu dengelemek için
        input/buton yükseklikleri +2px */
