@@ -2253,9 +2253,9 @@ display: flex !important;
 align-items: center !important;
 justify-content: center !important;
 }
-/* Mobil: sol ok + etiket (row-1) 5px yukarı */
+/* Mobil: sol ok + etiket (row-1) 3px yukarı */
 #reports-modal .reports-list-header-actions .stok-controls-row-1 {
-margin-top: -5px !important;
+margin-top: -3px !important;
 }
 /* Mobil: Detay Ekleme menü butonlarına +2px dikey yükseklik */
 #reports-modal .stok-detail-menu-btn {
