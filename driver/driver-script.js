@@ -598,12 +598,14 @@ const API_BASE = (function(){
       if (window.innerWidth <= 640) {
           const rowRect = row.getBoundingClientRect();
           const viewportPadding = 8;
-          const targetWidth = Math.min(380, Math.max(220, Math.floor(window.innerWidth - (viewportPadding * 2))));
+          const desiredWidth = Math.floor(window.innerWidth * 0.8);
+          const availableRightWidth = Math.floor(window.innerWidth - rowRect.left - viewportPadding);
+          const targetWidth = Math.max(180, Math.min(desiredWidth, availableRightWidth));
           dropdown.style.setProperty('position', 'fixed', 'important');
           dropdown.style.setProperty('top', `${Math.round(rowRect.bottom + 2)}px`, 'important');
-          dropdown.style.setProperty('left', `${Math.round(window.innerWidth / 2)}px`, 'important');
+          dropdown.style.setProperty('left', `${Math.round(rowRect.left)}px`, 'important');
           dropdown.style.setProperty('right', 'auto', 'important');
-          dropdown.style.setProperty('transform', 'translateX(-50%)', 'important');
+          dropdown.style.setProperty('transform', 'none', 'important');
           dropdown.style.setProperty('width', `${targetWidth}px`, 'important');
           dropdown.style.setProperty('max-width', `${targetWidth}px`, 'important');
       } else {
