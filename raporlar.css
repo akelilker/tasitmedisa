@@ -2503,3 +2503,20 @@ color: #fff;
 #stok-print-area .stok-print-table tbody tr.even { background: #fff; }
 #stok-print-area .stok-print-table tbody tr.odd { background: #e5e5e5; }
 }
+
+/* =========================================
+   MASAÜSTÜ: DETAY EKLEME İLE TARİHLER ARASI BOŞLUK SIFIRLAMA
+   ========================================= */
+@media (min-width: 641px) {
+    /* Üst bloğun (Detay Ekleme) altındaki olası gizli boşlukları kilitler */
+    #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-1 {
+        margin-bottom: 0 !important;
+        padding-bottom: 0 !important;
+    }
+    
+    /* Alt bloğu (Tarihler ve Simgeler) menü kapalıyken 8px yukarı çekerek boşluğu vakumlar */
+    #reports-modal:not(:has(.stok-detail-menu-open)) .stok-detail-add-wrap.desktop-single-row .stok-controls-row-2 {
+        margin-top: -8px !important; 
+        padding-top: 0 !important;
+    }
+}
