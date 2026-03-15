@@ -415,19 +415,19 @@
 
   // --- ANA GİRİŞ ---
   window.openVehiclesView = function() {
-    const openView = () => {
-      loadVehicleColumnOrder();
-      const modal = DOM.vehiclesModal;
-      if (modal) {
-        modal.style.display = 'flex';
-        requestAnimationFrame(() => modal.classList.add('active'));
-        ensureToolbar();
-        renderBranchDashboard();
-      }
-    };
-    openView();
-    if (typeof window.loadDataFromServer === 'function') {
-      window.loadDataFromServer().then(function() {
+    loadVehicleColumnOrder();
+
+    const modal = DOM.vehiclesModal;
+    if (modal) {
+      modal.style.display = 'flex';
+      requestAnimationFrame(() => modal.classList.add('active'));
+      ensureToolbar();
+      renderBranchDashboard();
+    }
+
+    const hasVehicles = Array.isArray(window.appData?.tasitlar) && window.appData.tasitlar.length > 0;
+    if (!hasVehicles && typeof window.loadDataFromServer === 'function') {
+      window.loadDataFromServer(true).then(function() {
         const m = DOM.vehiclesModal;
         if (m && m.classList.contains('active')) {
           if (currentView === 'dashboard') renderBranchDashboard();
@@ -1260,11 +1260,7 @@
       requestAnimationFrame(() => { applyVehicleDetailSubeShrink(); });
     });
     };
-    if (typeof window.loadDataFromServer === 'function') {
-      window.loadDataFromServer().then(runDetail).catch(runDetail);
-    } else {
-      runDetail();
-    }
+    runDetail();
   };
 
   /**
