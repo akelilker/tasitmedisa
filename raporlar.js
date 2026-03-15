@@ -520,23 +520,23 @@
     }
 
     // Sütun genişliklerini hesapla (key bazlı: sürükle-bırak sonrası genişlik doğru sütunla kalır)
-    // 7 sütun: fr ile sığar; 8+ sütun: sabit px; mobilde şube +2px, marka -2px
-    // Masaüstü: marka 3px dar, şanzıman 3px geniş
+    // Masaüstü dengeleme: No dar, Marka/Model kontrollü, KM daha geniş
+    // 7 sütun: fr ile sığar; 8+ sütun: sabit px
     function getColumnWidths(allColumns) {
         const hasDetail = allColumns.length > 7;
         const isMobile = window.innerWidth <= 640;
-        const subeAdj = isMobile ? 2 : 0;
-        const markaAdj = isMobile ? -2 : 0;
-        const desktopMarkaNarrow = isMobile ? 0 : 3;
-        const desktopSanzimanWide = isMobile ? 0 : 3;
 
         if (hasDetail) {
-            // Sabit px: temel sütunlar ekrana sığdıklarındaki orana yakın (~496px tablo)
-            // No(sira) daraltıldı (32 -> 26), KM genişletildi (54 -> 60)
-            const basePx = {
-                'sira': 26, 'sube': 79 + subeAdj, 'yil': 41, 'marka': 136 + markaAdj - desktopMarkaNarrow,
-                'plaka': 68, 'sanziman': 64 + desktopSanzimanWide, 'km': 60
-            };
+            // 8+ sütun: sabit px. Masaüstünde No/Marka daraltılıp KM genişletilir.
+            const basePx = isMobile
+                ? {
+                    'sira': 26, 'sube': 81, 'yil': 41, 'marka': 134,
+                    'plaka': 68, 'sanziman': 64, 'km': 60
+                }
+                : {
+                    'sira': 24, 'sube': 78, 'yil': 41, 'marka': 124,
+                    'plaka': 68, 'sanziman': 67, 'km': 72
+                };
             const detailPx = {
                 'sigorta': 72, 'kasko': 72, 'kaskoDegeri': 72, 'muayene': 72, 'kredi': 56,
                 'lastik': 56, 'utts': 52, 'takip': 56, 'tramer': 52,
@@ -548,17 +548,20 @@
             }).join(' ');
         }
 
-        // Sadece temel: fr ile ekrana sığar (mobilde şube +2px, marka -2px; masaüstü marka -3px, şanzıman +3px)
-        const subeMin = 45 + subeAdj;
-        const markaMin = 60 + markaAdj - desktopMarkaNarrow;
-        const sanzimanMin = 59 + desktopSanzimanWide;
-        // No(sira) fr değeri daraltıldı (0.5 -> 0.3), KM fr değeri genişletildi (0.8 -> 1fr)
-        const columnWidths = {
-            'sira': 'minmax(26px, 0.3fr)', 'sube': 'minmax(' + subeMin + 'px, 1.2fr)',
-            'yil': 'minmax(40px, 0.6fr)', 'marka': 'minmax(' + markaMin + 'px, 1.85fr)',
-            'plaka': 'minmax(56px, 1fr)', 'sanziman': 'minmax(' + sanzimanMin + 'px, 0.95fr)',
-            'km': 'minmax(48px, 1fr)'
-        };
+        // Sadece temel: mobil/masaüstü için ayrı orantı seti
+        const columnWidths = isMobile
+            ? {
+                'sira': 'minmax(26px, 0.3fr)', 'sube': 'minmax(47px, 1.2fr)',
+                'yil': 'minmax(40px, 0.6fr)', 'marka': 'minmax(58px, 1.8fr)',
+                'plaka': 'minmax(56px, 1fr)', 'sanziman': 'minmax(59px, 0.95fr)',
+                'km': 'minmax(48px, 1fr)'
+            }
+            : {
+                'sira': 'minmax(22px, 0.2fr)', 'sube': 'minmax(54px, 1.05fr)',
+                'yil': 'minmax(40px, 0.55fr)', 'marka': 'minmax(56px, 1.55fr)',
+                'plaka': 'minmax(62px, 1.05fr)', 'sanziman': 'minmax(62px, 0.95fr)',
+                'km': 'minmax(62px, 1.35fr)'
+            };
         return allColumns.map(col => columnWidths[col.key] || '80px').join(' ');
     }
 
