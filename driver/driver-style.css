@@ -5255,10 +5255,13 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     border-top: 1px solid rgba(255, 255, 255, 0.15) !important;
 }
 
-/* 2. Ortadaki kırmızı dikey çizgi footer ışıklarına değmeden havada kesilsin (Mobil) */
+/* 2. Ortadaki kırmızı dikey çizgi footera değmeden Bildir butonu hizasında kesilsin (Mobil) */
 @media (max-width: 768px) {
+    .dashboard-page .driver-left-panel {
+        margin-bottom: 75px !important; /* Sınır çizgisini taşıyan ana kutuyu alttan kırp */
+    }
     .dashboard-page .driver-left-panel-content {
-        margin-bottom: 55px !important; /* Çizgi aşağıya inmeden havada kesilir */
+        margin-bottom: 0 !important; 
     }
 }
 

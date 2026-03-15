@@ -2250,9 +2250,27 @@
     .kaporta-print-section h2 { margin: 0 0 4px; font-size: 16px; }
     .kaporta-print-row { display: grid; grid-template-columns: minmax(240px, auto) minmax(0, 1fr); align-items: start; column-gap: 10px; }
     .kaporta-print-state-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 4px 5px; align-content: start; }
-    .kaporta-print-schema-wrap { position: relative; width: 240px; height: 150px; margin: 4px auto 0; display: flex; align-items: center; justify-content: center; overflow: visible; }
+    .kaporta-print-schema-wrap {
+        position: relative;
+        width: 240px;
+        height: 150px;
+        margin: 4px auto 0; /* Üst çerçeveye net 4px sınır */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: visible;
+    }
     .kaporta-print-schema-wrap svg,
-    .kaporta-print-fallback { position: static; width: 150px; height: 240px; margin: 0; transform: rotate(90deg); transform-origin: center center; object-fit: contain; }
+    .kaporta-print-fallback {
+        position: static;
+        width: 150px;
+        height: 240px;
+        /* Döndürülmüş SVG'nin iç ön/arka ölü boşluğunu yok etmek için negatif margin */
+        margin-top: -24px; 
+        transform: rotate(90deg);
+        transform-origin: center center;
+        object-fit: contain;
+    }
     .kaporta-print-col h3 { margin: 0 0 4px; font-size: 13px; }
     .kaporta-print-list { margin: 0; padding-left: 18px; }
     .kaporta-print-list li { font-size: 12px; line-height: 1.3; margin-bottom: 2px; }
