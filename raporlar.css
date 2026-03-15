@@ -1062,10 +1062,9 @@ margin-top: 8px !important;
 display: flex !important;
 flex-direction: row !important;
 flex-wrap: nowrap !important;
-align-items: flex-end !important; /* Root fix 2 */
+align-items: center !important;
 margin-top: 0 !important;
-margin-bottom: 8px !important; /* Root fix 3: match date controls bottom gap */
-padding-bottom: 2px !important; /* Fine alignment with input underline */
+padding-bottom: 0 !important; /* Alt boşluk sıfırlanıp hizalama netleştirildi */
 }
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-2 .stok-export-left {
 display: flex !important;
