@@ -2209,27 +2209,25 @@
 
         historyPage.classList.remove('force-new-page');
 
-        var bodyStyles = window.getComputedStyle(document.body);
-        var marginTop = parseFloat(bodyStyles.marginTop) || mmToPx(8);
-        var marginBottom = parseFloat(bodyStyles.marginBottom) || mmToPx(8);
-        var pageContentHeight = mmToPx(297) - marginTop - marginBottom;
-        if (!isFinite(pageContentHeight) || pageContentHeight <= 0) {
-          pageContentHeight = mmToPx(297 - (8 * 2));
-        }
-        
+        // Print media'da body margin 8mm; ekran margin'inden etkilenmeden sabit hesapla.
+        var pageContentHeight = mmToPx(297 - (8 * 2));
+        if (!isFinite(pageContentHeight) || pageContentHeight <= 0) return;
+
         var summaryHeight = Math.ceil(summaryPage.getBoundingClientRect().height);
         var historyHeight = Math.ceil(historyPage.getBoundingClientRect().height);
-        
-        // O anki fiziksel sayfanın sonuna ne kadar boşluk kaldığını hesapla
-        var overflow = summaryHeight % pageContentHeight;
-        var availableHeight = pageContentHeight - overflow;
-        var safetyBuffer = 15; // 15px güvenlik payı
+        if (!isFinite(summaryHeight) || !isFinite(historyHeight)) return;
 
-        // Eğer kalan alan tarihçeyi kurtarmıyorsa ve zaten yeni sayfanın en başında değilsek
-        if (overflow > 30 && historyHeight > (availableHeight - safetyBuffer)) {
+        var safetyBuffer = 12;
+        var totalFirstPageNeed = summaryHeight + historyHeight;
+        // Tamamı ilk sayfaya sığmıyorsa tarihçeyi başlıktan itibaren yeni sayfaya taşı.
+        if (totalFirstPageNeed > (pageContentHeight - safetyBuffer)) {
           historyPage.classList.add('force-new-page');
         }
       }
+
+      window.__medisaPreparePrintLayout = function() {
+        applyHistoryPageFlow();
+      };
 
       function runPageFlowCheck() {
         window.requestAnimationFrame(function() {
@@ -2282,7 +2280,9 @@
       }
 
       window.addEventListener('load', schedulePageFlowChecks);
-      window.addEventListener('beforeprint', schedulePageFlowChecks);
+      window.addEventListener('beforeprint', function() {
+        applyHistoryPageFlow();
+      });
       window.addEventListener('resize', function() {
         if (resizeTimer) clearTimeout(resizeTimer);
         resizeTimer = setTimeout(schedulePageFlowChecks, 120);
@@ -2344,6 +2344,11 @@
               frameWindow.removeEventListener('afterprint', onAfterPrint);
             };
             frameWindow.addEventListener('afterprint', onAfterPrint);
+            try {
+              if (typeof frameWindow.__medisaPreparePrintLayout === 'function') {
+                frameWindow.__medisaPreparePrintLayout();
+              }
+            } catch (e) {}
             frameWindow.focus();
             frameWindow.print();
           } catch (printErr) {
@@ -2374,6 +2379,9 @@
           if (settled || printTriggered) return;
           printTriggered = true;
           try {
+            if (typeof printWindow.__medisaPreparePrintLayout === 'function') {
+              printWindow.__medisaPreparePrintLayout();
+            }
             printWindow.focus();
             printWindow.print();
             finalizeSuccess();
