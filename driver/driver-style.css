@@ -3949,6 +3949,35 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   body.login-page:has(#edit-request-modal.driver-modal.show) #app-footer.login-footer {
     z-index: 100020 !important;
   }
+  /* Geçmiş Kayıtlar / Düzeltme açıkken footer dimmer tonu bozulmasın. */
+  body.dashboard-page:has(#history-modal.driver-modal.show) #app-footer .version,
+  body.dashboard-page:has(#edit-request-modal.driver-modal.show) #app-footer .version,
+  body.login-page:has(#history-modal.driver-modal.show) #app-footer.login-footer .version,
+  body.login-page:has(#edit-request-modal.driver-modal.show) #app-footer.login-footer .version,
+  body.dashboard-page:has(#history-modal.driver-modal.show) #app-footer .version#version-display,
+  body.dashboard-page:has(#edit-request-modal.driver-modal.show) #app-footer .version#version-display,
+  body.login-page:has(#history-modal.driver-modal.show) #app-footer.login-footer .version#version-display,
+  body.login-page:has(#edit-request-modal.driver-modal.show) #app-footer.login-footer .version#version-display,
+  body.dashboard-page:has(#history-modal.driver-modal.show) #app-footer .status,
+  body.dashboard-page:has(#edit-request-modal.driver-modal.show) #app-footer .status,
+  body.login-page:has(#history-modal.driver-modal.show) #app-footer.login-footer .status,
+  body.login-page:has(#edit-request-modal.driver-modal.show) #app-footer.login-footer .status,
+  body.dashboard-page:has(#history-modal.driver-modal.show) #app-footer .status.status-ready,
+  body.dashboard-page:has(#edit-request-modal.driver-modal.show) #app-footer .status.status-ready,
+  body.login-page:has(#history-modal.driver-modal.show) #app-footer.login-footer .status.status-ready,
+  body.login-page:has(#edit-request-modal.driver-modal.show) #app-footer.login-footer .status.status-ready,
+  body.dashboard-page:has(#history-modal.driver-modal.show) #app-footer .status.status-error,
+  body.dashboard-page:has(#edit-request-modal.driver-modal.show) #app-footer .status.status-error,
+  body.login-page:has(#history-modal.driver-modal.show) #app-footer.login-footer .status.status-error,
+  body.login-page:has(#edit-request-modal.driver-modal.show) #app-footer.login-footer .status.status-error {
+    opacity: 0.3 !important;
+  }
+  body.dashboard-page:has(#history-modal.driver-modal.show) #app-footer .brand img,
+  body.dashboard-page:has(#edit-request-modal.driver-modal.show) #app-footer .brand img,
+  body.login-page:has(#history-modal.driver-modal.show) #app-footer.login-footer .brand img,
+  body.login-page:has(#edit-request-modal.driver-modal.show) #app-footer.login-footer .brand img {
+    opacity: 0.8 !important;
+  }
   body.driver-modal-open .driver-modal.show {
     z-index: 99999 !important; /* En dÄ±ÅŸ overlay footer (10012) ve glow'un KESÄ°N Ã¼stÃ¼nde */
   }
@@ -3974,6 +4003,22 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     z-index: 10013;
   }
   @supports not selector(body:has(*)) {
+    body.dashboard-page.driver-history-or-edit-modal-open #app-footer .version,
+    body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer .version,
+    body.dashboard-page.driver-history-or-edit-modal-open #app-footer .version#version-display,
+    body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer .version#version-display,
+    body.dashboard-page.driver-history-or-edit-modal-open #app-footer .status,
+    body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer .status,
+    body.dashboard-page.driver-history-or-edit-modal-open #app-footer .status.status-ready,
+    body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer .status.status-ready,
+    body.dashboard-page.driver-history-or-edit-modal-open #app-footer .status.status-error,
+    body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer .status.status-error {
+      opacity: 0.3 !important;
+    }
+    body.dashboard-page.driver-history-or-edit-modal-open #app-footer .brand img,
+    body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer .brand img {
+      opacity: 0.8 !important;
+    }
     body.driver-modal-open.dashboard-page .driver-dashboard-container::before,
     body.driver-modal-open.login-page .driver-dashboard-container::before {
       bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
