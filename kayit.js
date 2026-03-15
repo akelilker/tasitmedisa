@@ -406,11 +406,13 @@
     
     // SVG içeriğini ortak cache'den al (script-core.getKaportaSvg)
     window.getKaportaSvg().then(svgText => {
-        // SVG'yi container'a ekle
-        container.innerHTML = svgText;
+        // SVG'yi kendi sahne alanına ekle
+        container.innerHTML = '<div class="boya-svg-stage"></div>';
+        const stage = container.querySelector('.boya-svg-stage');
+        stage.innerHTML = svgText;
         
         // Her parça path'ine tıklama event'i ekle
-        const svg = container.querySelector('svg');
+        const svg = stage.querySelector('svg');
         if (svg) {
           // Tüm path elementlerini bul (g içinde olsa bile)
           const parts = svg.querySelectorAll('path[id]');

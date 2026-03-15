@@ -1454,20 +1454,17 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-body .modal-column-left .form-section:has(#vehicle-price) {
         margin-bottom: 12px !important;
     }
-    /* Boya/Değişen Şeması: Buton alanına taşmadan, kendi bloğunda kalsın */
+    /* Boya/Değişen Şeması: Masaüstünde kompakt sahne alanı */
     #vehicle-modal #boya-parts-container { 
-        margin-top: 8px !important;
-        padding-top: 0 !important;
-        overflow: visible !important;
+        margin-top: 8px !important; 
+    }
+    #vehicle-modal #boya-parts-container .boya-svg-stage {
+        width: 185px !important;
+        height: 123px !important;
+        margin: 0 auto !important;
     }
     #vehicle-modal #boya-parts-container svg {
-        transform: rotate(90deg) !important;
-        transform-origin: center center !important;
-        margin: 0 auto !important;
-        pointer-events: none !important;
-    }
-    #vehicle-modal #boya-parts-container svg .car-part {
-        pointer-events: auto !important;
+        margin: 0 !important;
     }
     #vehicle-modal #boya-parts-container .boya-legend {
         margin-top: 8px !important;
@@ -1842,17 +1839,35 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     display: none;
     width: 100%;
     padding: 0;
-    background: transparent !important; /* Arka plan yok */
-    border: none !important; /* Çerçeve yok */
+    background: transparent !important;
+    border: none !important;
     border-radius: 0;
     box-sizing: border-box;
 }
 
-#boya-parts-container svg {
-    width: 123px; /* %88 küçültüldü: 140 -> 123 */
-    height: 185px; /* %88 küçültüldü: 210 -> 185 */
-    display: block;
+#boya-parts-container .boya-svg-stage {
+    width: 185px;
+    height: 123px;
     margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: visible;
+    position: relative;
+}
+
+#boya-parts-container svg {
+    width: 123px;
+    height: 185px;
+    display: block;
+    margin: 0;
+    transform: rotate(90deg);
+    transform-origin: center center;
+    pointer-events: none;
+}
+
+#boya-parts-container svg .car-part {
+    pointer-events: auto;
 }
 
 .boya-legend {
@@ -1860,7 +1875,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     justify-content: center;
     align-items: center;
     gap: 16px;
-    margin-top: 12px;
+    margin-top: 8px;
     flex-wrap: wrap;
 }
 
