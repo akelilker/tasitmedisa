@@ -3379,6 +3379,16 @@
     #vehicles-modal .list-header-row {
       --list-header-font-size: 14px !important;
     }
+    /* iOS PWA: liste satır metinleri 0.5 punto büyüt (sadece Taşıtlar listesi) */
+    #vehicles-modal .view-list .list-cell {
+      font-size: calc(17.5px + 0.5pt) !important;
+    }
+    #vehicles-modal .view-list .list-cell.list-brand {
+      font-size: calc(16.5px + 0.5pt) !important;
+    }
+    #vehicles-modal .view-list .list-cell.list-user {
+      font-size: calc(16px + 0.5pt) !important;
+    }
   }
   /* Ortak mobil container + iOS PWA: style-core.css (.modal-overlay .modal-container) */
   .tasitlar-modal-overlay .modal-close { font-size: 21px; }
