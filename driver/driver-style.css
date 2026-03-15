@@ -5117,6 +5117,27 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
       bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
     }
   }
+
+  /* Geçmiş/Düzeltme modal açıkken footer-gap üstündeki yapay koyu şerit kapanır:
+     footer glow görünür, modal-footer arası boşluk net kalır. */
+  body.dashboard-page:has(#history-modal.driver-modal.show)::after,
+  body.dashboard-page:has(#edit-request-modal.driver-modal.show)::after,
+  body.login-page:has(#history-modal.driver-modal.show)::after,
+  body.login-page:has(#edit-request-modal.driver-modal.show)::after {
+    display: none !important;
+  }
+  @supports not selector(body:has(*)) {
+    body.dashboard-page.driver-history-or-edit-modal-open::after,
+    body.login-page.driver-history-or-edit-modal-open::after {
+      display: none !important;
+    }
+  }
+
+  /* Geçmiş/Düzeltme modalı için gap değeri show durumunda da kilitli kalsın. */
+  #history-modal.driver-modal.show,
+  #edit-request-modal.driver-modal.show {
+    bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
+  }
 }
 @media (min-width: 769px) {
   .dashboard-page .driver-dashboard-container::before,
