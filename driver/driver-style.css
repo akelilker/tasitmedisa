@@ -591,9 +591,9 @@ body.dashboard-page {
     margin-top: 0 !important;
   }
   
-  /* Etiket (Boya/Değişen) ile Şemanın kendi arasındaki boşluk tam 4px */
+  /* Etiket (Boya/Değişen) ile Şemanın kendi arasındaki boşluk tam 8px (4px daha eklendi) */
   .dashboard-page .driver-report-block-kaza .form-group .driver-kaporta-label {
-    margin-bottom: 4px !important;
+    margin-bottom: 8px !important;
     margin-top: 0 !important;
   }
   

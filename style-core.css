@@ -2034,7 +2034,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
         -webkit-overflow-scrolling: touch;
         width: 75vw !important;
         max-width: none !important;
-        left: 50% !important;
+        left: 61% !important;
         right: auto !important;
         transform: translateX(-50%) !important;
     }
