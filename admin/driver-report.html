@@ -42,7 +42,12 @@
 
   <div class="driver-report-page">
     <div id="report-error" class="report-error" style="display:none; color:#c62828; margin-bottom:0.5rem;"></div>
+    <div class="admin-tabs-container">
+      <button type="button" class="admin-tab-btn active" data-admin-tab="aylik" onclick="switchAdminTab('aylik')">Aylık KM İzleme</button>
+      <button type="button" class="admin-tab-btn" data-admin-tab="kullanici" onclick="switchAdminTab('kullanici')">Kullanıcı Raporları</button>
+    </div>
 
+    <div id="tab-aylik" class="admin-tab-panel active" data-admin-panel="aylik">
     <div class="report-stats">
       <div class="report-stat-box">
         <div class="label">Toplam Kullanıcı</div>
@@ -116,6 +121,13 @@
       <h2 id="pending-section-title">Düzeltme Talepleri</h2>
       <div id="pending-requests-list" class="pending-list"></div>
     </section>
+    </div>
+
+    <div id="tab-kullanici" class="admin-tab-panel" data-admin-panel="kullanici" style="display: none;">
+      <div id="user-analytics-container" class="user-analytics-wrap">
+        <p style="text-align:center; color: var(--muted); padding: 20px;">Kullanıcı verileri hesaplanıyor...</p>
+      </div>
+    </div>
   </div>
     </div>
 
