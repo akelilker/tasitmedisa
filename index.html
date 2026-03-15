@@ -913,6 +913,51 @@
             </div>
         </div>
 
+        <!-- Trafik Cezası Ekle Modal -->
+        <div id="ceza-ekle-modal" class="modal-overlay tasitlar-modal-overlay ayarlar-modal-overlay olay-ekle-modal" onclick="if(event.target === this) { event.stopPropagation(); event.preventDefault(); return false; }">
+            <div class="modal-container" onclick="event.stopPropagation();">
+                <div class="modal-header">
+                    <h2>TRAFİK CEZASI EKLE</h2>
+                    <button class="modal-close" onclick="closeAllModals();">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="universal-back-bar">
+                    <button type="button" class="universal-back-btn" onclick="openEventModal('menu', window.currentDetailVehicleId)" aria-label="Olay menüsüne dön">
+                        <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        <span class="universal-back-label">Olay Ekle</span>
+                    </button>
+                </div>
+                <div class="modal-body" onclick="event.stopPropagation();">
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                        <div>
+                            <label for="ceza-tarih" style="color: var(--form-label-color); font-size: 14px; display: block; margin-bottom: 3px;">Ceza Tarihi (gg.aa.yyyy):</label>
+                            <input type="date" id="ceza-tarih" class="form-input olay-tarih-input">
+                        </div>
+                        <div>
+                            <label for="ceza-surucu" style="color: var(--form-label-color); font-size: 14px; display: block; margin-bottom: 3px;">Sürücü / Kullanıcı:</label>
+                            <input type="text" id="ceza-surucu" class="form-input" placeholder="Cezayı yiyen kişi" style="width: 100%;">
+                        </div>
+                        <div>
+                            <label for="ceza-tutar" style="color: var(--form-label-color); font-size: 14px; display: block; margin-bottom: 3px;">Ceza Tutarı (TL):</label>
+                            <input type="text" id="ceza-tutar" class="form-input" placeholder="Örn: 1.500" inputmode="numeric" style="width: 100%;">
+                        </div>
+                        <div>
+                            <label for="ceza-aciklama" style="color: var(--form-label-color); font-size: 14px; display: block; margin-bottom: 3px;">Ceza Nedeni / Açıklama:</label>
+                            <textarea id="ceza-aciklama" class="form-input" rows="3" placeholder="Hız ihlali, hatalı park vb." style="width: 100%;"></textarea>
+                        </div>
+                    </div>
+                    <div class="universal-btn-group">
+                        <button type="button" class="universal-btn-save" onclick="event.stopPropagation(); saveCezaEvent();">Kaydet</button>
+                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); closeEventModalAndShowEventMenu('ceza');">Vazgeç</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Sigorta Güncelle Modal -->
         <div id="sigorta-guncelle-modal" class="modal-overlay tasitlar-modal-overlay ayarlar-modal-overlay olay-ekle-modal" onclick="if(event.target === this) { event.stopPropagation(); event.preventDefault(); return false; }">
             <div class="modal-container" onclick="event.stopPropagation();">

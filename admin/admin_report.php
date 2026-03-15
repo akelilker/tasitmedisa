@@ -23,7 +23,7 @@ if (!in_array($status, $allowedStatus, true)) {
     $status = '';
 }
 $action = $_GET['action'] ?? 'report';
-if (!in_array($action, ['report', 'branches', 'pending_requests'], true)) {
+if (!in_array($action, ['report', 'branches', 'user_analytics', 'pending_requests'], true)) {
     $action = 'report';
 }
 
@@ -39,6 +39,16 @@ if (!$data) {
 if ($action === 'branches') {
     $branches = $data['branches'] ?? [];
     echo json_encode(['success' => true, 'branches' => $branches], JSON_UNESCAPED_UNICODE);
+    exit;
+}
+
+// Kullanıcı Analitik Verileri (action=user_analytics)
+if ($action === 'user_analytics') {
+    echo json_encode([
+        'success' => true,
+        'users' => $data['users'] ?? [],
+        'tasitlar' => $data['tasitlar'] ?? []
+    ], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
