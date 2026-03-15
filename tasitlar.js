@@ -2117,6 +2117,9 @@
     body { font-family: Arial, sans-serif; margin: 24px; color: #111; }
     h1 { margin: 0 0 4px; font-size: 24px; }
     .subtitle { margin: 0 0 10px; color: #555; font-size: 13px; }
+    .print-preview-toolbar { display: flex; justify-content: flex-end; gap: 8px; margin: 0 0 10px; position: sticky; top: 0; background: #fff; z-index: 10; padding: 4px 0; }
+    .print-preview-btn { border: 1px solid #cfcfcf; background: #fff; color: #222; border-radius: 7px; font-size: 12px; line-height: 1; padding: 7px 10px; cursor: pointer; }
+    .print-preview-btn-primary { border-color: #999; }
     table { width: 100%; border-collapse: collapse; table-layout: fixed; }
     th, td { border: 1px solid #ddd; padding: 6px 8px; text-align: left; vertical-align: top; font-size: 13px; line-height: 1.3; }
     th { width: 35%; min-width: 100px; max-width: 160px; background: #f4f4f4; }
@@ -2128,7 +2131,7 @@
     .kaporta-print-section h2 { margin: 0 0 4px; font-size: 16px; }
     .kaporta-print-row { display: grid; grid-template-columns: minmax(240px, auto) minmax(0, 1fr); align-items: start; column-gap: 10px; }
     .kaporta-print-state-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 4px 5px; align-content: start; }
-    .kaporta-print-schema-wrap { min-width: 0; min-height: 190px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+    .kaporta-print-schema-wrap { min-width: 0; min-height: 190px; display: flex; align-items: flex-start; justify-content: center; overflow: hidden; padding-top: 6px; }
     .kaporta-print-schema-wrap svg,
     .kaporta-print-fallback { display: block; width: 150px; height: 240px; margin: 0 auto; object-fit: contain; transform: rotate(90deg); transform-origin: center center; flex: 0 0 auto; }
     .kaporta-print-col h3 { margin: 0 0 4px; font-size: 13px; }
@@ -2149,10 +2152,14 @@
     .history-print-extra { font-size: 11px; color: #444; margin-top: 1px; line-height: 1.2; }
     .history-print-empty { font-size: 12px; color: #666; }
     @media (max-width: 760px) { .history-grid { grid-template-columns: 1fr; } .kaporta-print-row { grid-template-columns: 1fr; row-gap: 5px; } .kaporta-print-state-grid { grid-template-columns: 1fr; } }
-    @media print { body { margin: 8mm; -webkit-print-color-adjust: exact; print-color-adjust: exact; } .kaporta-print-section { page-break-inside: auto; break-inside: auto; } .history-page h1, .history-page .subtitle { page-break-after: avoid; break-after: avoid-page; } .history-page { page-break-before: auto; break-before: auto; page-break-inside: auto; break-inside: auto; } .history-page.force-new-page { page-break-before: always; break-before: page; } .history-grid { gap: 8px; } }
+    @media print { body { margin: 8mm; -webkit-print-color-adjust: exact; print-color-adjust: exact; } .print-preview-toolbar { display: none !important; } .kaporta-print-section { page-break-inside: auto; break-inside: auto; } .history-page h1, .history-page .subtitle { page-break-after: avoid; break-after: avoid-page; } .history-page { page-break-before: auto; break-before: auto; page-break-inside: auto; break-inside: auto; } .history-page.force-new-page { page-break-before: always; break-before: page; } .history-grid { gap: 8px; } }
   </style>
 </head>
 <body>
+  <div class="print-preview-toolbar">
+    <button type="button" class="print-preview-btn" id="print-preview-back">← Geri Dön</button>
+    <button type="button" class="print-preview-btn print-preview-btn-primary" id="print-preview-close">Kapat</button>
+  </div>
   <section class="summary-page">
     <h1>Taşıt Kartı</h1>
     <p class="subtitle">Plaka: ${escapeHtml(vehicle.plate || '-')} • Oluşturma: ${printedAt}</p>
@@ -2168,6 +2175,25 @@
   <script>
     (function() {
       var resizeTimer = null;
+      var returnUrl = ${JSON.stringify(window.location.href)};
+
+      function safeReturnToApp() {
+        try {
+          if (window.opener && !window.opener.closed) {
+            window.close();
+            return;
+          }
+        } catch (e) {}
+        try {
+          if (window.history.length > 1) {
+            window.history.back();
+            return;
+          }
+        } catch (e) {}
+        if (returnUrl) {
+          window.location.href = returnUrl;
+        }
+      }
 
       function mmToPx(mm) {
         return (mm * 96) / 25.4;
@@ -2216,10 +2242,28 @@
 
       if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', function() {
+          var backBtn = document.getElementById('print-preview-back');
+          var closeBtn = document.getElementById('print-preview-close');
+          if (backBtn) backBtn.addEventListener('click', safeReturnToApp);
+          if (closeBtn) {
+            closeBtn.addEventListener('click', function() {
+              try { window.close(); } catch (e) {}
+              setTimeout(safeReturnToApp, 80);
+            });
+          }
           bindMediaReflow();
           schedulePageFlowChecks();
         });
       } else {
+        var backBtn = document.getElementById('print-preview-back');
+        var closeBtn = document.getElementById('print-preview-close');
+        if (backBtn) backBtn.addEventListener('click', safeReturnToApp);
+        if (closeBtn) {
+          closeBtn.addEventListener('click', function() {
+            try { window.close(); } catch (e) {}
+            setTimeout(safeReturnToApp, 80);
+          });
+        }
         bindMediaReflow();
         schedulePageFlowChecks();
       }
@@ -2340,6 +2384,16 @@
 
         setTimeout(triggerPrint, 180);
       });
+    }
+
+    var isStandaloneMode = false;
+    try {
+      isStandaloneMode = !!((window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone);
+    } catch (e) {}
+    var isIOSDevice = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    if (isStandaloneMode && isIOSDevice) {
+      printWithIframeFallback('ios_standalone_forced_iframe');
+      return;
     }
 
     let printWindow = null;
