@@ -50,7 +50,13 @@ if ($extension !== 'pdf') {
 }
 
 // MIME kontrolü
-if ($mime !== 'application/pdf') {
+$allowedMimes = [
+    'application/pdf',
+    'application/x-pdf',
+    'application/octet-stream'
+];
+
+if (!in_array($mime, $allowedMimes, true)) {
     http_response_code(400);
     echo json_encode(['error' => 'Sadece PDF dosyası kabul edilir']);
     exit;
@@ -58,12 +64,12 @@ if ($mime !== 'application/pdf') {
 
 // PDF imza kontrolü (%PDF)
 $handle = fopen($file['tmp_name'], 'rb');
-$header = $handle ? fread($handle, 4) : '';
+$header = $handle ? fread($handle, 5) : '';
 if ($handle) {
     fclose($handle);
 }
 
-if ($header !== '%PDF') {
+if (strpos($header, '%PDF') !== 0) {
     http_response_code(400);
     echo json_encode(['error' => 'Geçersiz PDF dosyası']);
     exit;
