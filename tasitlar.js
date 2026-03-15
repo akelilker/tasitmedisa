@@ -4783,7 +4783,7 @@ function renderVehicleDetailLeft(vehicle) {
       const mtvKey = 'mtv_paid_' + y + '_' + m;
       if (!localStorage.getItem(mtvKey)) {
         const mtvKeyEsc = (mtvKey || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
-        mtvHtml = '<div class="notification-item mtv-notification"><div class="mtv-text-container"><span class="mtv-main-text">Ayın Son Gününe Kadar MTV Ödemelerinin Yapılması Gerekmektedir.</span></div><div class="mtv-dismiss-wrapper"><button type="button" class="mtv-dismiss-btn" onclick="dismissMTVNotif(event, \'' + mtvKeyEsc + '\')" aria-label="Bildirimi Kapat"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></button><div class="mtv-tooltip">Ödeme Yapıldıysa Bildirimi Silebilirsiniz.</div></div></div>';
+        mtvHtml = '<div class="notification-item mtv-notification"><div class="mtv-text-container"><div class="mtv-main-text notif-line1">Ayın Son Gününe Kadar MTV Ödemelerinin Yapılması Gerekmektedir.</div></div><div class="mtv-dismiss-wrapper"><button type="button" class="mtv-dismiss-btn" onclick="dismissMTVNotif(event, \'' + mtvKeyEsc + '\')" aria-label="Bildirimi Kapat"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></button><div class="mtv-tooltip">Ödeme Yapıldıysa Bildirimi Silebilirsiniz.</div></div></div>';
         hasOrange = true;
       }
     }
@@ -4800,7 +4800,7 @@ function renderVehicleDetailLeft(vehicle) {
       const kaskoKey = 'kasko_excel_dismiss_' + y + '_' + m;
       if (!localStorage.getItem(kaskoKey)) {
         const kaskoKeyEsc = (kaskoKey || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
-        kaskoExcelHtml = '<div class="notification-item kasko-excel-notification"><div class="mtv-text-container"><span class="mtv-main-text">Güncel Kasko Değer Listesinin Yüklenmesi Gerekmektedir.</span></div><div class="mtv-dismiss-wrapper"><button type="button" class="mtv-dismiss-btn" onclick="dismissKaskoExcelNotif(event, \'' + kaskoKeyEsc + '\')" aria-label="Bildirimi Kapat"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button><div class="mtv-tooltip">Kapat</div></div></div>';
+        kaskoExcelHtml = '<div class="notification-item kasko-excel-notification"><div class="mtv-text-container"><div class="mtv-main-text notif-line1">Güncel Kasko Değer Listesinin Yüklenmesi Gerekmektedir.</div></div><div class="mtv-dismiss-wrapper"><button type="button" class="mtv-dismiss-btn" onclick="dismissKaskoExcelNotif(event, \'' + kaskoKeyEsc + '\')" aria-label="Bildirimi Kapat"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button><div class="mtv-tooltip">Kapat</div></div></div>';
         hasRed = true;
       }
     }
@@ -4852,11 +4852,11 @@ function renderVehicleDetailLeft(vehicle) {
             const safePlate = (notif.plate || '').replace(/"/g, '&quot;');
             const safeVid = (notif.vehicleId || '').toString().replace(/"/g, '&quot;');
 
-            html += `<button type="button" data-plate="${safePlate}" data-vehicle-id="${safeVid}" style="width: 100%; padding: 12px; background: transparent; border: 1px solid ${borderColor}; color: #ccc; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 13px; text-align: left; margin-bottom: 4px; transition: all 0.2s ease; height: auto; white-space: normal;" class="notification-item ${notif.warningClass}-border">
-            <div style="font-weight: 500; color: #fff; line-height: 1.4;">
+            html += `<button type="button" data-plate="${safePlate}" data-vehicle-id="${safeVid}" style="width: 100%; padding: 10px 12px 1px 12px; background: transparent; border: 1px solid ${borderColor}; color: #ccc; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 12px; text-align: left; margin-bottom: 4px; transition: all 0.2s ease; height: auto; white-space: normal;" class="notification-item ${notif.warningClass}-border">
+            <div class="notif-line1">
               <span class="${notif.warningClass}">${escapeHtml(messageText)}</span>
             </div>
-            <div style="font-size: 11px; color: #999; margin-top: 0;">${escapeHtml(activeDateDisplay)}</div>
+            <div class="notif-line2">${escapeHtml(activeDateDisplay)}</div>
           </button>`;
         });
       }
@@ -4879,9 +4879,9 @@ function renderVehicleDetailLeft(vehicle) {
           const unreadClass = isUnread ? ' notification-unread' : '';
           const unreadStyle = isUnread ? ' border: 1px solid rgba(212, 0, 0, 0.85) !important;' : '';
           const activityMsg = getNotificationActivityMessage(ev, item.plate);
-          html += `<button type="button" data-plate="${safePlate}" data-vehicle-id="${safeVid}" data-open-history="1" data-history-tab="${historyTab}" data-notif-key="${safeKey}" style="width: 100%; padding: 10px 12px; background: transparent; color: #ccc; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 12px; text-align: left; margin-bottom: 4px; transition: all 0.2s ease;${unreadStyle}" class="notification-item notification-item-activity${unreadClass}">
-          <div class="notif-line1" style="font-weight: 600; color: #fff; margin-bottom: 2px;">${escapeHtml(activityMsg)}</div>
-          <div class="notif-line2" style="font-size: 11px; color: #999;">${escapeHtml(dateDisplay)}</div>
+          html += `<button type="button" data-plate="${safePlate}" data-vehicle-id="${safeVid}" data-open-history="1" data-history-tab="${historyTab}" data-notif-key="${safeKey}" style="width: 100%; padding: 10px 12px 1px 12px; background: transparent; color: #ccc; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 12px; text-align: left; margin-bottom: 4px; transition: all 0.2s ease;${unreadStyle}" class="notification-item notification-item-activity${unreadClass}">
+          <div class="notif-line1">${escapeHtml(activityMsg)}</div>
+          <div class="notif-line2">${escapeHtml(dateDisplay)}</div>
         </button>`;
         });
       }
