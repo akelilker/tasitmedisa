@@ -789,10 +789,10 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   display: flex !important;
   flex-direction: column !important;
   align-items: flex-start !important;
-  justify-content: flex-start !important;
+  justify-content: center !important;
   height: auto !important;
   min-height: 48px !important;
-  padding: 10px 12px 1px 12px !important;
+  padding: 8px 12px !important;
   white-space: normal !important;
   overflow: hidden !important;
   text-align: left !important;
@@ -808,10 +808,11 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   border: 1px solid rgba(255,255,255,0.25) !important;
   flex-direction: column !important;
   align-items: flex-start !important;
-  justify-content: flex-start !important;
+  justify-content: center !important;
   height: auto !important;
   min-height: 48px !important;
   overflow: hidden !important;
+  padding: 8px 12px !important;
   text-align: left !important;
 }
 
@@ -862,7 +863,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   border: 1px solid rgba(255, 140, 0, 0.6) !important;
   border-radius: 6px !important;
   background: var(--bg) !important;
-  padding: 10px 12px 1px 12px !important;
+  padding: 8px 12px !important;
   width: 100% !important;
   min-height: 48px !important;
   box-sizing: border-box !important;
@@ -877,7 +878,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   border: 1px solid rgba(212, 0, 0, 0.6) !important;
   border-radius: 6px !important;
   background: var(--bg) !important;
-  padding: 10px 12px 1px 12px !important;
+  padding: 8px 12px !important;
   width: 100% !important;
   min-height: 48px !important;
   box-sizing: border-box !important;
@@ -1211,13 +1212,13 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
     display: flex !important;
     flex-direction: column !important;
     align-items: flex-start !important;
-    justify-content: flex-start !important;
+    justify-content: center !important;
     height: auto !important;
     min-height: 56px !important;
     max-height: none !important;
     overflow: visible !important;
     white-space: normal !important;
-    padding: 10px 12px 4px 12px !important;
+    padding: 8px 12px !important;
     box-sizing: border-box !important;
   }
   #notifications-dropdown .notification-item:not(.mtv-notification):not(.kasko-excel-notification) .notif-line1 {
@@ -1711,7 +1712,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
         flex-wrap: nowrap !important;
         align-items: center !important;
         justify-content: space-between !important;
-        padding: 10px 12px 1px 12px !important;
+        padding: 8px 12px !important;
         min-height: 48px !important;
     }
     #notifications-dropdown .mtv-notification .mtv-text-container,
