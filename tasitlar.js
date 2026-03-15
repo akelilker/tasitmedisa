@@ -3598,8 +3598,16 @@ function renderVehicleDetailLeft(vehicle) {
       .then(function(r) { return r.json(); })
       .then(function(data) {
         if (data.success) {
-          closeEventModal('ruhsat');
-          showVehicleDetail(vehicleId);
+          const box = document.querySelector('.ruhsat-select-box');
+          if (box) {
+            box.classList.remove('has-file');
+            box.classList.add('upload-success');
+            box.textContent = input.files[0].name + ' yüklendi';
+          }
+          setTimeout(function() {
+            closeEventModal('ruhsat');
+            showVehicleDetail(vehicleId);
+          }, 900);
         } else {
           alert(data.error || 'Yükleme başarısız');
         }
