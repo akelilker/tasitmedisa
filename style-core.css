@@ -866,6 +866,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   width: 100% !important;
   min-height: 48px !important;
   box-sizing: border-box !important;
+  margin-bottom: 4px !important;
 }
 
 #notifications-dropdown .kasko-excel-notification {
@@ -880,6 +881,12 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   width: 100% !important;
   min-height: 48px !important;
   box-sizing: border-box !important;
+  margin-bottom: 4px !important;
+}
+
+#notifications-dropdown .mtv-notification:last-child,
+#notifications-dropdown .kasko-excel-notification:last-child {
+  margin-bottom: 0 !important;
 }
 
 #notifications-dropdown .mtv-notification > div,
