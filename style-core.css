@@ -2015,9 +2015,15 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
         background: var(--bg) !important;
     }
     
-    /* Mobil bildirimlerde plaka font boyutunu 2 punto küçült */
+    /* Mobil bildirimlerde metin boyutları yaklaşık 0.75 punto (1px) büyütüldü */
     #notifications-dropdown .notification-item .notif-line1 {
-        font-size: 11px !important;
+        font-size: 12px !important; /* Plaka/Başlık 11px -> 12px */
+    }
+    #notifications-dropdown .notification-item .notif-line2 {
+        font-size: 11.5px !important; /* Alt bilgi/Tarih büyütüldü */
+    }
+    #notifications-dropdown .mtv-text-container .mtv-main-text {
+        font-size: 13px !important; /* MTV/Kasko metni 12px -> 13px */
     }
 /* Mobil: 5 bildirim ekranda görünsün, fazlası için aşağı kaydırılabilir */
     #notifications-dropdown {
