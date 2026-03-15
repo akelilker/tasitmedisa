@@ -532,9 +532,10 @@
 
         if (hasDetail) {
             // Sabit px: temel sütunlar ekrana sığdıklarındaki orana yakın (~496px tablo)
+            // No(sira) daraltıldı (32 -> 26), KM genişletildi (54 -> 60)
             const basePx = {
-                'sira': 32, 'sube': 79 + subeAdj, 'yil': 41, 'marka': 136 + markaAdj - desktopMarkaNarrow,
-                'plaka': 68, 'sanziman': 64 + desktopSanzimanWide, 'km': 54
+                'sira': 26, 'sube': 79 + subeAdj, 'yil': 41, 'marka': 136 + markaAdj - desktopMarkaNarrow,
+                'plaka': 68, 'sanziman': 64 + desktopSanzimanWide, 'km': 60
             };
             const detailPx = {
                 'sigorta': 72, 'kasko': 72, 'kaskoDegeri': 72, 'muayene': 72, 'kredi': 56,
@@ -551,11 +552,12 @@
         const subeMin = 45 + subeAdj;
         const markaMin = 60 + markaAdj - desktopMarkaNarrow;
         const sanzimanMin = 59 + desktopSanzimanWide;
+        // No(sira) fr değeri daraltıldı (0.5 -> 0.3), KM fr değeri genişletildi (0.8 -> 1fr)
         const columnWidths = {
-            'sira': 'minmax(26px, 0.5fr)', 'sube': 'minmax(' + subeMin + 'px, 1.2fr)',
+            'sira': 'minmax(26px, 0.3fr)', 'sube': 'minmax(' + subeMin + 'px, 1.2fr)',
             'yil': 'minmax(40px, 0.6fr)', 'marka': 'minmax(' + markaMin + 'px, 1.85fr)',
             'plaka': 'minmax(56px, 1fr)', 'sanziman': 'minmax(' + sanzimanMin + 'px, 0.95fr)',
-            'km': 'minmax(48px, 0.8fr)'
+            'km': 'minmax(48px, 1fr)'
         };
         return allColumns.map(col => columnWidths[col.key] || '80px').join(' ');
     }
