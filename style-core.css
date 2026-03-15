@@ -1206,36 +1206,35 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   #notifications-dropdown {
     max-height: 380px !important;
   }
-  /* Masaüstü: Aktivite kartları kompakt kalsın */
-  #notifications-dropdown .notification-item-activity {
-    height: auto !important;
-    min-height: 54px !important;
-    overflow: visible !important;
-    padding: 10px 12px 4px 12px !important;
-  }
-  /* Masaüstü: Tarih uyarı kartlarında "Bildirim Tarihi" satırı kesilmesin */
-  #notifications-dropdown .notification-item.date-warning-red-border,
-  #notifications-dropdown .notification-item.date-warning-orange-border {
+  /* Masaüstü: Bildirim kartları tek tip akış, tarih satırı kart içinde kalsın */
+  #notifications-dropdown .notification-item:not(.mtv-notification):not(.kasko-excel-notification) {
     display: flex !important;
     flex-direction: column !important;
     align-items: flex-start !important;
     justify-content: flex-start !important;
     height: auto !important;
-    min-height: 54px !important;
+    min-height: 56px !important;
     max-height: none !important;
-    overflow: hidden !important;
+    overflow: visible !important;
     white-space: normal !important;
     padding: 10px 12px 4px 12px !important;
+    box-sizing: border-box !important;
   }
-  #notifications-dropdown .notification-item.date-warning-red-border > div,
-  #notifications-dropdown .notification-item.date-warning-orange-border > div {
-    margin-bottom: 0 !important;
+  #notifications-dropdown .notification-item:not(.mtv-notification):not(.kasko-excel-notification) .notif-line1 {
+    width: 100% !important;
+    margin: 0 0 1px 0 !important;
   }
-  #notifications-dropdown .notification-item .notif-line2 {
+  #notifications-dropdown .notification-item:not(.mtv-notification):not(.kasko-excel-notification) .notif-line2 {
+    display: block !important;
+    width: 100% !important;
+    position: static !important;
+    top: auto !important;
+    transform: none !important;
     flex-shrink: 0 !important;
     min-height: 1.2em !important;
-    line-height: 1.25 !important;
-    margin-top: 1px !important;
+    line-height: 1.2 !important;
+    margin: 0 !important;
+    padding: 0 !important;
   }
   .settings-dropdown button:not(.notification-item) {
     text-align: center; /* Masaüstünde ortalı */
