@@ -3598,12 +3598,15 @@ function renderVehicleDetailLeft(vehicle) {
       .then(function(r) { return r.json(); })
       .then(function(data) {
         if (data.success) {
-          const box = document.querySelector('.ruhsat-select-box');
-          if (box) {
-            box.classList.remove('has-file');
-            box.classList.add('upload-success');
-            box.textContent = input.files[0].name + ' yüklendi';
+          const selectBox = document.querySelector('#ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-select-box');
+          if (selectBox && input.files && input.files[0]) {
+            selectBox.classList.remove('has-file');
+            selectBox.classList.add('upload-success');
+            selectBox.textContent = '✓ ' + input.files[0].name + ' yüklendi';
           }
+
+          setRuhsatSaveBtnVisibility(document.getElementById('ruhsat-save-btn'), false);
+
           setTimeout(function() {
             closeEventModal('ruhsat');
             showVehicleDetail(vehicleId);
