@@ -1229,22 +1229,6 @@ const API_BASE = (function(){
           checkDate(v.muayeneDate, 'Muayene');
           checkDate(v.sigortaDate, 'Sigorta');
           checkDate(v.kaskoDate, 'Kasko');
-          /* Bakım bildirimi (bu dönem kaydında var) */
-          if (recordForPeriod && (recordForPeriod.bakim_durumu || (recordForPeriod.bakim_aciklama || '').trim())) {
-              warnings.push({ text: userName + ', ' + plaka + ' Plakalı Taşıt İle İlgili Bakım Bildirimi Yaptı.', plaka: plaka, type: 'bakim' });
-          }
-          /* Kaza bildirimi (bu dönem kaydında var) */
-          if (recordForPeriod && (recordForPeriod.kaza_durumu || (recordForPeriod.kaza_aciklama || '').trim())) {
-              warnings.push({ text: userName + ', ' + plaka + ' Plakalı Taşıt İle İlgili Kaza Bildirimi Yaptı.', plaka: plaka, type: 'kaza' });
-          }
-          /* Yedek anahtar bildirimi (taşıt seviyesinde değer var) */
-          if (v.anahtar && String(v.anahtar).trim()) {
-              warnings.push({ text: userName + ', ' + plaka + ' Plakalı Taşıt İle İlgili Yedek Anahtar Bildirimi Yaptı.', plaka: plaka, type: 'anahtar' });
-          }
-          /* Lastik durumu bildirimi (taşıt seviyesinde değer var) */
-          if (v.lastikDurumu && String(v.lastikDurumu).trim()) {
-              warnings.push({ text: userName + ', ' + plaka + ' Plakalı Taşıt İle İlgili Lastik Durumu Bildirimi Yaptı.', plaka: plaka, type: 'lastik' });
-          }
       }
       return warnings;
   }
