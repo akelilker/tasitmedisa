@@ -11,6 +11,14 @@
   var branches = [];
   var dimTimeout = null;
 
+  // CSS Spinner Animasyonu için (eğer yoksa ekle)
+  if (!document.getElementById('spinner-style')) {
+    var style = document.createElement('style');
+    style.id = 'spinner-style';
+    style.innerHTML = '@keyframes spin { 100% { transform:rotate(360deg); } }';
+    document.head.appendChild(style);
+  }
+
   function getMonthOptions() {
     var opts = [];
     var d = new Date();
@@ -220,6 +228,130 @@
       .catch(function () {});
   }
 
+  // Admin sekme geçişi (container mevcutsa analitik sekmesini yükler)
+  window.switchAdminTab = function (tabId) {
+    var tabButtons = document.querySelectorAll('[data-admin-tab]');
+    var tabPanels = document.querySelectorAll('[data-admin-panel]');
+    if (tabButtons.length && tabPanels.length) {
+      tabButtons.forEach(function (btn) {
+        btn.classList.toggle('active', btn.getAttribute('data-admin-tab') === tabId);
+      });
+      tabPanels.forEach(function (panel) {
+        panel.style.display = panel.getAttribute('data-admin-panel') === tabId ? '' : 'none';
+      });
+    }
+
+    if (tabId === 'user-analytics') {
+      window.loadUserAnalytics();
+    }
+  };
+
+  window.loadUserAnalytics = function() {
+    var container = document.getElementById('user-analytics-container');
+    if (!container) return;
+
+    // Sadece ilk açılışta yükle
+    if (container.dataset.loaded === 'true') return;
+
+    container.innerHTML = '<div style="text-align:center; padding:40px;"><div class="loading-spinner" style="display:inline-block; width:30px; height:30px; border:3px solid rgba(255,255,255,0.1); border-top-color:var(--theme-color); border-radius:50%; animation:spin 1s linear infinite;"></div><p style="color:var(--muted); margin-top:15px;">Sürücü istatistikleri hesaplanıyor...</p></div>';
+
+    fetch(API_BASE + 'admin_report.php?action=user_analytics')
+      .then(function(res) { return res.json(); })
+      .then(function(data) {
+        if (!data.success) {
+          container.innerHTML = '<p style="color:#ef4444; text-align:center; padding:20px;">Veriler çekilemedi.</p>';
+          return;
+        }
+        container.dataset.loaded = 'true';
+        window.renderUserAnalytics(data.users || [], data.tasitlar || []);
+      })
+      .catch(function() {
+        container.innerHTML = '<p style="color:#ef4444; text-align:center; padding:20px;">Bağlantı hatası.</p>';
+      });
+  };
+
+  window.renderUserAnalytics = function(users, tasitlar) {
+    var html = '<div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; padding: 5px;">';
+    var hasActiveUser = false;
+
+    users.forEach(function(u) {
+      if (u.aktif === false) return; // Pasif kullanıcıları atla
+      var isim = u.isim || u.name || '';
+      if (!isim.trim()) return;
+
+      hasActiveUser = true;
+      var cezaCount = 0, cezaTutar = 0;
+      var kazaCount = 0, kazaTutar = 0;
+      var bakimCount = 0;
+
+      tasitlar.forEach(function(t) {
+        if (t.events && Array.isArray(t.events)) {
+          t.events.forEach(function(e) {
+            var eSurucu = (e.data && e.data.surucu) ? String(e.data.surucu).toLowerCase() : '';
+            var eTahsis = (e.data && e.data.tahsisKisi) ? String(e.data.tahsisKisi).toLowerCase() : '';
+            var uIsim = String(isim).toLowerCase();
+
+            // Event sürücüyle eşleşiyor mu?
+            var matched = false;
+            if (eSurucu && eSurucu.includes(uIsim)) matched = true;
+            else if (eTahsis && eTahsis.includes(uIsim)) matched = true;
+            else if (!eSurucu && !eTahsis && String(t.assignedUserId) === String(u.id)) matched = true;
+
+            if (matched) {
+              if (e.type === 'ceza') {
+                cezaCount++;
+                var cTutar = parseFloat(String((e.data && e.data.tutar) || '0').replace(/\./g, '').replace(/,/g, '.')) || 0;
+                cezaTutar += cTutar;
+              } else if (e.type === 'kaza') {
+                kazaCount++;
+                var kTutar = parseFloat(String((e.data && e.data.hasarTutari) || '0').replace(/\./g, '').replace(/,/g, '.')) || 0;
+                kazaTutar += kTutar;
+              } else if (e.type === 'bakim') {
+                bakimCount++;
+              }
+            }
+          });
+        }
+      });
+
+      // Güncel Aracı Bul
+      var aktifArac = tasitlar.find(function(t) { return String(t.assignedUserId) === String(u.id); });
+      var aracDisplay = aktifArac ? ((aktifArac.plaka || aktifArac.plate || '').toString().toUpperCase()) : 'Zimmetli Araç Yok';
+      var aracColor = aktifArac ? '#fff' : 'var(--muted)';
+
+      html += '<div style="background:rgba(0,0,0,0.2); border:1px solid #3d3d3d; border-radius:10px; padding:16px; position:relative; overflow:hidden;">';
+      html += '<div style="position:absolute; top:0; left:0; width:4px; height:100%; background:var(--theme-color); opacity:0.8;"></div>';
+      html += '<h3 style="margin:0 0 4px 0; color:#fff; font-size:1.1rem; padding-left:8px;">' + (typeof window.capitalizeWords === 'function' ? window.capitalizeWords(isim) : isim) + '</h3>';
+      html += '<div style="font-size:0.8rem; color:var(--muted); margin-bottom:15px; padding-left:8px;">Plaka: <span style="color:' + aracColor + '; font-weight:600;">' + escapeHtml(aracDisplay) + '</span></div>';
+
+      html += '<div style="display:flex; justify-content:space-between; align-items:center; padding:6px 8px; background:rgba(251,146,60,0.1); border-radius:6px; margin-bottom:6px;">';
+      html += '<span style="color:#fb923c; font-size:0.85rem; display:flex; align-items:center; gap:6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg> Cezalar (' + cezaCount + ')</span>';
+      html += '<span style="color:#fb923c; font-weight:700; font-size:0.9rem;">' + (typeof window.formatNumber === 'function' ? window.formatNumber(cezaTutar) : cezaTutar.toLocaleString('tr-TR')) + ' TL</span>';
+      html += '</div>';
+
+      html += '<div style="display:flex; justify-content:space-between; align-items:center; padding:6px 8px; background:rgba(239,68,68,0.1); border-radius:6px; margin-bottom:6px;">';
+      html += '<span style="color:#ef4444; font-size:0.85rem; display:flex; align-items:center; gap:6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg> Kazalar (' + kazaCount + ')</span>';
+      html += '<span style="color:#ef4444; font-weight:700; font-size:0.9rem;">' + (typeof window.formatNumber === 'function' ? window.formatNumber(kazaTutar) : kazaTutar.toLocaleString('tr-TR')) + ' TL</span>';
+      html += '</div>';
+
+      html += '<div style="display:flex; justify-content:space-between; align-items:center; padding:6px 8px; background:rgba(74,222,128,0.05); border-radius:6px;">';
+      html += '<span style="color:#4ade80; font-size:0.85rem; display:flex; align-items:center; gap:6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg> Bakımlar</span>';
+      html += '<span style="color:#4ade80; font-weight:700; font-size:0.9rem;">' + bakimCount + ' Adet</span>';
+      html += '</div>';
+
+      html += '</div>';
+    });
+
+    if (!hasActiveUser) {
+      html = '<p style="text-align:center; color:var(--muted); padding:20px;">Aktif kullanıcı bulunamadı.</p>';
+    } else {
+      html += '</div>';
+    }
+
+    var target = document.getElementById('user-analytics-container');
+    if (target) target.innerHTML = html;
+  };
+
   function approveRequest(id) {
     requestAction(id, 'approve');
   }
@@ -292,6 +424,7 @@
       loadReport();
     });
     loadPendingRequests();
+    window.loadUserAnalytics();
 
     var btnRefresh = document.getElementById('report-refresh');
     if (btnRefresh) btnRefresh.addEventListener('click', loadReport);

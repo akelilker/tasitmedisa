@@ -2134,9 +2134,9 @@
     .kaporta-print-section h2 { margin: 0 0 4px; font-size: 16px; }
     .kaporta-print-row { display: grid; grid-template-columns: minmax(240px, auto) minmax(0, 1fr); align-items: start; column-gap: 10px; }
     .kaporta-print-state-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 4px 5px; align-content: start; }
-    .kaporta-print-schema-wrap { position: relative; width: 240px; height: 150px; margin: 4px auto 0; display: block; overflow: visible; }
+    .kaporta-print-schema-wrap { min-width: 0; min-height: 184px; display: flex; align-items: flex-start; justify-content: center; overflow: hidden; padding-top: 6px; }
     .kaporta-print-schema-wrap svg,
-    .kaporta-print-fallback { position: absolute; top: 50%; left: 50%; width: 150px; height: 240px; margin: 0; transform: translate(-50%, -50%) rotate(90deg); object-fit: contain; }
+    .kaporta-print-fallback { display: block; width: 150px; height: 240px; margin: 0 auto; object-fit: contain; transform: translateY(-40px) rotate(90deg); transform-origin: center center; flex: 0 0 auto; }
     .kaporta-print-col h3 { margin: 0 0 4px; font-size: 13px; }
     .kaporta-print-list { margin: 0; padding-left: 18px; }
     .kaporta-print-list li { font-size: 12px; line-height: 1.3; margin-bottom: 2px; }
@@ -2144,8 +2144,8 @@
     .print-page-break { page-break-before: always; break-before: page; margin: 16px 0 0; }
     .history-page { margin-top: 5px; page-break-before: auto; break-before: auto; page-break-inside: auto; break-inside: auto; }
     .history-page.force-new-page { page-break-before: always; break-before: page; margin-top: 5px; }
-    .history-grid { display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-start; }
-    .history-print-card { width: calc(50% - 4px); box-sizing: border-box; border: 1px solid #ddd; border-radius: 8px; padding: 8px; page-break-inside: avoid; break-inside: avoid; }
+    .history-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; align-items: start; }
+    .history-print-card { border: 1px solid #ddd; border-radius: 8px; padding: 8px; break-inside: auto; page-break-inside: auto; }
     .history-print-card h2 { margin: 0 0 5px; font-size: 14px; page-break-after: avoid; break-after: avoid-page; }
     .history-print-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
     .history-print-item { border-top: 1px solid #eee; padding-top: 4px; }
@@ -2154,7 +2154,7 @@
     .history-print-text { font-size: 12px; line-height: 1.25; }
     .history-print-extra { font-size: 11px; color: #444; margin-top: 1px; line-height: 1.2; }
     .history-print-empty { font-size: 12px; color: #666; }
-    @media (max-width: 760px) { .history-grid { flex-direction: column; } .history-print-card { width: 100%; } .kaporta-print-row { grid-template-columns: 1fr; row-gap: 5px; } .kaporta-print-state-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 760px) { .history-grid { grid-template-columns: 1fr; } .kaporta-print-row { grid-template-columns: 1fr; row-gap: 5px; } .kaporta-print-state-grid { grid-template-columns: 1fr; } }
     @media print { body { margin: 8mm; -webkit-print-color-adjust: exact; print-color-adjust: exact; } .print-preview-toolbar { display: none !important; } .kaporta-print-section { page-break-inside: auto; break-inside: auto; } .history-page h1, .history-page .subtitle { page-break-after: avoid; break-after: avoid-page; } .history-page { page-break-before: auto; break-before: auto; page-break-inside: auto; break-inside: auto; } .history-page.force-new-page { page-break-before: always; break-before: page; } .history-grid { gap: 8px; } }
   </style>
 </head>
@@ -2207,25 +2207,9 @@
         var historyPage = document.querySelector('.history-page');
         if (!summaryPage || !historyPage) return;
 
-        historyPage.classList.remove('force-new-page');
-
-        var bodyStyles = window.getComputedStyle(document.body);
-        var marginTop = parseFloat(bodyStyles.marginTop) || 30;
-        var marginBottom = parseFloat(bodyStyles.marginBottom) || 30;
-        var pageContentHeight = 1122 - marginTop - marginBottom; // 96 DPI'da A4 yüksekliği
-
-        var summaryHeight = Math.ceil(summaryPage.getBoundingClientRect().height);
-        var historyHeight = Math.ceil(historyPage.getBoundingClientRect().height);
-
-        var overflow = summaryHeight % pageContentHeight;
-        var remainingSpace = pageContentHeight - overflow;
-        var safetyBuffer = 60;
-
-        // Eğer mevcut sayfadan kalan alan tarihçeyi kurtarmıyorsa ve zaten sayfa başında değilsek,
-        // Tarihçenin TAMAMI başlığıyla beraber yeni sayfadan başlasın.
-        if (overflow > 60 && historyHeight > (remainingSpace - safetyBuffer)) {
-          historyPage.classList.add('force-new-page');
-        }
+        // Deterministik kural: tarihce her zaman ikinci sayfadan baslar.
+        // Chrome print scale farklarinda yarim sayfaya dusmeyi engeller.
+        historyPage.classList.add('force-new-page');
       }
 
       function runPageFlowCheck() {
