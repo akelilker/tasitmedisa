@@ -2345,11 +2345,17 @@ const API_BASE = (function(){
       if (!record) return;
       currentRecordId = recordId;
       document.getElementById('current-km').textContent = formatKm(record.guncel_km) || '0';
-      document.getElementById('new-km').value = formatKm(record.guncel_km) || '';
+      document.getElementById('new-km').value = '';
+      document.getElementById('new-km').placeholder = formatKm(record.guncel_km) || 'Örn: 54230';
+      
       document.getElementById('current-bakim').textContent = record.bakim_durumu ? capitalizeWords(record.bakim_aciklama || 'Var') : 'Yok';
-      document.getElementById('new-bakim').value = record.bakim_durumu ? capitalizeWords(record.bakim_aciklama || '') : '';
+      document.getElementById('new-bakim').value = '';
+      document.getElementById('new-bakim').placeholder = record.bakim_durumu ? capitalizeWords(record.bakim_aciklama || '') : "Boş bırakırsanız 'Yok' sayılır";
+      
       document.getElementById('current-kaza').textContent = record.kaza_durumu ? capitalizeWords(record.kaza_aciklama || 'Var') : 'Yok';
-      document.getElementById('new-kaza').value = record.kaza_durumu ? capitalizeWords(record.kaza_aciklama || '') : '';
+      document.getElementById('new-kaza').value = '';
+      document.getElementById('new-kaza').placeholder = record.kaza_durumu ? capitalizeWords(record.kaza_aciklama || '') : "Boş bırakırsanız 'Yok' sayılır";
+      
       document.getElementById('edit-reason').value = '';
   
       var sectionKm = document.getElementById('edit-section-km');
