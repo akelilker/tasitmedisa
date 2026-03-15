@@ -43,33 +43,17 @@ finfo_close($finfo);
 
 $originalName = $file['name'] ?? '';
 $extension = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
-if ($extension !== 'pdf') {
-    http_response_code(400);
-    echo json_encode(['error' => 'Sadece PDF dosyası kabul edilir']);
-    exit;
-}
-
-// MIME kontrolü
-$allowedMimes = [
-    'application/pdf',
-    'application/x-pdf',
-    'application/octet-stream'
-];
-
-if (!in_array($mime, $allowedMimes, true)) {
-    http_response_code(400);
-    echo json_encode(['error' => 'Sadece PDF dosyası kabul edilir']);
-    exit;
-}
+// Uzanti/MIME degeri cihaz ve tarayiciya gore degisebildigi icin
+// (ozellikle iOS/Safari), kesin red kararini sadece imza kontrolu verir.
 
 // PDF imza kontrolü (%PDF)
 $handle = fopen($file['tmp_name'], 'rb');
-$header = $handle ? fread($handle, 5) : '';
+$header = $handle ? fread($handle, 1024) : '';
 if ($handle) {
     fclose($handle);
 }
 
-if (strpos($header, '%PDF') !== 0) {
+if (strpos($header, '%PDF') === false) {
     http_response_code(400);
     echo json_encode(['error' => 'Geçersiz PDF dosyası']);
     exit;
