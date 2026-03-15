@@ -2010,9 +2010,27 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
         bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
     }
     
-    /* Mobil bildirim çerçeveleri - arka plan opak */
+    /* Mobil bildirim çerçeveleri - metin büyümesine uyumlu (4 satır güvenli alan) */
     .notification-item {
         background: var(--bg) !important;
+    }
+    #notifications-dropdown .notification-item {
+        min-height: 92px !important;
+        height: auto !important;
+        padding: 10px 12px 8px 12px !important;
+        align-items: flex-start !important;
+        justify-content: flex-start !important;
+        overflow: visible !important;
+    }
+    #notifications-dropdown .mtv-notification,
+    #notifications-dropdown .kasko-excel-notification {
+        min-height: 92px !important;
+        align-items: flex-start !important;
+    }
+    #notifications-dropdown .mtv-dismiss-wrapper,
+    #notifications-dropdown .kasko-excel-notification .mtv-dismiss-wrapper {
+        align-self: flex-start !important;
+        margin-top: 2px !important;
     }
     
     /* Mobil bildirimlerde metin boyutları yaklaşık 0.75 punto (1px) büyütüldü */
