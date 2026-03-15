@@ -47,12 +47,12 @@
 
   function resizeVehicleNotesArea(textarea) {
     if (!textarea) return;
-    textarea.style.height = 'auto';
+    textarea.style.setProperty('height', 'auto', 'important');
     const minPx = parseFloat(getComputedStyle(textarea).minHeight) || NOTES_MIN_HEIGHT_PX;
     const maxPx = parseFloat(getComputedStyle(textarea).maxHeight) || 300;
     const targetHeight = Math.min(Math.max(textarea.scrollHeight, minPx), maxPx);
-    textarea.style.height = `${targetHeight}px`;
-    textarea.style.overflowY = targetHeight >= maxPx ? 'auto' : 'hidden';
+    textarea.style.setProperty('height', `${targetHeight}px`, 'important');
+    textarea.style.setProperty('overflow-y', targetHeight >= maxPx ? 'auto' : 'hidden', 'important');
   }
 
   // --- Tramer Kayıt Fonksiyonları ---
