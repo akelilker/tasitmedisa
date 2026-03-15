@@ -1203,9 +1203,12 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
     width: 45%; /* Masaüstünde container'ın %45'i */
     max-width: 225px;
   }
-  /* Masaüstü: 6 bildirim ekranda görünsün, fazlası için aşağı kaydırılabilir */
+  /* Masaüstü: Bildirim kutusu sağa dayalı kalsın, sola doğru %50 genişlesin */
   #notifications-dropdown {
     max-height: 380px !important;
+    width: 50% !important;
+    max-width: none !important;
+    right: 0 !important;
   }
   /* Masaüstü: Bildirim kartları tek tip akış, tarih satırı kart içinde kalsın */
   #notifications-dropdown .notification-item:not(.mtv-notification):not(.kasko-excel-notification) {
