@@ -2487,66 +2487,11 @@ body.login-page:has(#edit-request-modal.driver-modal.show) #app-footer.login-foo
 }
 
 /* GEÃ‡MÄ°ï¿½? KAYITLARIM + DÃ¼zeltme Talebi modal aÃ§Ä±kken footer Ä±ÅŸÄ±klarÄ± sÃ¶nmesin - dimmed override */
-body.dashboard-page:has(#history-modal.driver-modal.show) #app-footer.dimmed .version,
-body.dashboard-page:has(#edit-request-modal.driver-modal.show) #app-footer.dimmed .version,
-body.dashboard-page:has(#history-modal.driver-modal.show) #app-footer.dimmed .version#version-display,
-body.login-page:has(#history-modal.driver-modal.show) #app-footer.login-footer.dimmed .version,
-body.login-page:has(#history-modal.driver-modal.show) #app-footer.login-footer.dimmed .version#version-display,
-body.dashboard-page:has(#history-modal.driver-modal.show) #app-footer.dimmed .status,
-body.dashboard-page:has(#history-modal.driver-modal.show) #app-footer.dimmed .status.status-ready,
-body.dashboard-page:has(#history-modal.driver-modal.show) #app-footer.dimmed .status.status-error,
-body.login-page:has(#history-modal.driver-modal.show) #app-footer.login-footer.dimmed .status,
-body.login-page:has(#history-modal.driver-modal.show) #app-footer.login-footer.dimmed .status.status-ready,
-body.login-page:has(#history-modal.driver-modal.show) #app-footer.login-footer.dimmed .status.status-error,
-body.dashboard-page:has(#history-modal.driver-modal.show) #app-footer.dimmed .brand img,
-body.login-page:has(#history-modal.driver-modal.show) #app-footer.login-footer.dimmed .brand img {
-  opacity: 1 !important;
-}
-body.dashboard-page:has(#history-modal.driver-modal.show) #app-footer.dimmed.delayed .version,
-body.dashboard-page:has(#history-modal.driver-modal.show) #app-footer.dimmed.delayed .version#version-display,
-body.login-page:has(#history-modal.driver-modal.show) #app-footer.login-footer.dimmed.delayed .version,
-body.login-page:has(#history-modal.driver-modal.show) #app-footer.login-footer.dimmed.delayed .version#version-display,
-body.dashboard-page:has(#history-modal.driver-modal.show) #app-footer.dimmed.delayed .status,
-body.dashboard-page:has(#history-modal.driver-modal.show) #app-footer.dimmed.delayed .status.status-ready,
-body.dashboard-page:has(#history-modal.driver-modal.show) #app-footer.dimmed.delayed .status.status-error,
-body.login-page:has(#history-modal.driver-modal.show) #app-footer.login-footer.dimmed.delayed .status,
-body.login-page:has(#history-modal.driver-modal.show) #app-footer.login-footer.dimmed.delayed .status.status-ready,
-body.login-page:has(#history-modal.driver-modal.show) #app-footer.login-footer.dimmed.delayed .status.status-error,
-body.dashboard-page:has(#history-modal.driver-modal.show) #app-footer.dimmed.delayed .brand img,
-body.login-page:has(#history-modal.driver-modal.show) #app-footer.login-footer.dimmed.delayed .brand img {
-  opacity: 1 !important;
-}
 
 /* :has() fallback: Geçmiş Kayıt / Düzeltme Talebi açıkken footer üstte ve ışıklı (JS body.driver-history-or-edit-modal-open) */
 body.dashboard-page.driver-history-or-edit-modal-open #app-footer,
 body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   z-index: 100020 !important;
-}
-body.dashboard-page.driver-history-or-edit-modal-open #app-footer.dimmed .version,
-body.dashboard-page.driver-history-or-edit-modal-open #app-footer.dimmed .version#version-display,
-body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer.dimmed .version,
-body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer.dimmed .version#version-display,
-body.dashboard-page.driver-history-or-edit-modal-open #app-footer.dimmed .status,
-body.dashboard-page.driver-history-or-edit-modal-open #app-footer.dimmed .status.status-ready,
-body.dashboard-page.driver-history-or-edit-modal-open #app-footer.dimmed .status.status-error,
-body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer.dimmed .status,
-body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer.dimmed .status.status-ready,
-body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer.dimmed .status.status-error,
-body.dashboard-page.driver-history-or-edit-modal-open #app-footer.dimmed .brand img,
-body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer.dimmed .brand img,
-body.dashboard-page.driver-history-or-edit-modal-open #app-footer.dimmed.delayed .version,
-body.dashboard-page.driver-history-or-edit-modal-open #app-footer.dimmed.delayed .version#version-display,
-body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer.dimmed.delayed .version,
-body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer.dimmed.delayed .version#version-display,
-body.dashboard-page.driver-history-or-edit-modal-open #app-footer.dimmed.delayed .status,
-body.dashboard-page.driver-history-or-edit-modal-open #app-footer.dimmed.delayed .status.status-ready,
-body.dashboard-page.driver-history-or-edit-modal-open #app-footer.dimmed.delayed .status.status-error,
-body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer.dimmed.delayed .status,
-body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer.dimmed.delayed .status.status-ready,
-body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer.dimmed.delayed .status.status-error,
-body.dashboard-page.driver-history-or-edit-modal-open #app-footer.dimmed.delayed .brand img,
-body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer.dimmed.delayed .brand img {
-  opacity: 1 !important;
 }
 
 /* TaÅŸÄ±tlar modali ile aynÄ±: geniÅŸlik 500px, yatay Ã§erÃ§eve. DiÄŸer modallar: --modal-margin-bottom-desktop */

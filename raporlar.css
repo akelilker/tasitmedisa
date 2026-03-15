@@ -2253,7 +2253,17 @@ display: flex !important;
 align-items: center !important;
 justify-content: center !important;
 }
-.stok-list-container { margin-top: 4px; }
+/* Mobil: sol ok + etiket (row-1) 5px yukarı */
+#reports-modal .reports-list-header-actions .stok-controls-row-1 {
+margin-top: -5px !important;
+}
+/* Mobil: Detay Ekleme menü butonlarına +2px dikey yükseklik */
+#reports-modal .stok-detail-menu-btn {
+padding-top: 5px !important;
+padding-bottom: 5px !important;
+}
+/* Mobil: ikon satırı (büyüteç/excel/yazıcı) ile sütun başlıkları arası 4px daralsın */
+.stok-list-container { margin-top: 0 !important; }
 
 /* Liste görünümü: üst (kontroller + export) ve sütun başlıkları sabit, sadece veri satırları kayar */
 /* Grid ile detay listesi iç içe girmesin: list view’de grid tamamen gizli, liste izole */
