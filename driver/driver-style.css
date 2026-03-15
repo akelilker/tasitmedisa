@@ -584,35 +584,31 @@ body.dashboard-page {
     padding-top: 0 !important;
     line-height: 1.25;
   }
-  /* 1. Şemanın BİR ÜSTÜNDEKİ elemanın (Tutar) alt boşluğunu 4px'e eziyoruz */
-  .dashboard-page .driver-report-block-kaza .form-group:has(label[for^="kaza-tutar-"]) {
-    margin-bottom: 4px !important;
-  }
-  
-  /* 2. Şemanın KENDİ ana kutusunun (Açıklama kutusu ile arasındaki) alt boşluğunu 4px'e eziyoruz */
+  /* Masaüstü Kaza Formu: Tutar kutusu ve Şema ana dış kutusunun alt boşluklarını 4px'e eziyoruz */
+  .dashboard-page .driver-report-block-kaza .form-group:has(label[for^="kaza-tutar-"]),
   .dashboard-page .driver-report-block-kaza .form-group:has(.driver-kaporta-container) {
     margin-bottom: 4px !important;
     margin-top: 0 !important;
   }
   
-  /* 3. Etiket (Boya/Değişen) ile Şemanın kendi arasındaki boşluk tam 4px */
+  /* Etiket (Boya/Değişen) ile Şemanın kendi arasındaki boşluk tam 4px */
   .dashboard-page .driver-report-block-kaza .form-group .driver-kaporta-label {
     margin-bottom: 4px !important;
     margin-top: 0 !important;
   }
   
-  /* 4. Şema Taşıyıcısı: İç/dış boşluklar sıfırlandı */
+  /* Şema Taşıyıcısı: İç/dış boşluklar sıfırlandı */
   .dashboard-page .driver-report-block-kaza .driver-kaporta-container {
     margin-top: 0 !important;
     margin-bottom: 0 !important;
   }
   
-  /* 5. Renk topları (Legend) ile Şema arasındaki boşluk tam 4px */
+  /* Renk topları (Legend) ile Şema arasındaki boşluk tam 4px */
   .dashboard-page .driver-report-block-kaza .driver-kaporta-container .boya-legend {
     margin-top: 4px !important;
   }
   
-  /* 6. SVG'nin kendi içindeki olası şeffaf boşlukları vakumlamak için negatif margin (-6px) ve tam ortalama */
+  /* SVG'nin kendi içindeki olası şeffaf boşlukları vakumlamak için negatif margin (-6px) ve tam ortalama */
   .dashboard-page .driver-report-block-kaza .driver-kaporta-container .driver-kaporta-schema-wrapper svg {
     display: block !important;
     margin: -6px auto !important; 
