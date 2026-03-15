@@ -3305,6 +3305,13 @@ function renderVehicleDetailLeft(vehicle) {
     return isStandalone && isiOS;
   }
 
+  function buildPdfViewerUrl(baseUrl, fragment) {
+    const cleanBase = String(baseUrl || '').split('#')[0];
+    const cleanFragment = String(fragment || '').replace(/^#/, '');
+    if (!cleanBase) return '';
+    return cleanFragment ? (cleanBase + '#' + cleanFragment) : cleanBase;
+  }
+
   function renderInlineRuhsatViewer(vehicleId, url, options) {
     const content = document.getElementById('ruhsat-modal-content');
     const saveBtn = document.getElementById('ruhsat-save-btn');
@@ -3319,7 +3326,7 @@ function renderVehicleDetailLeft(vehicle) {
     frameWrap.className = 'ruhsat-inline-frame-wrap';
     const frame = document.createElement('iframe');
     frame.className = 'ruhsat-inline-frame';
-    frame.src = url + '#toolbar=1&navpanes=0&view=FitH';
+    frame.src = buildPdfViewerUrl(url, 'toolbar=1&navpanes=0&zoom=page-fit&view=FitH');
     frame.setAttribute('title', 'Ruhsat PDF');
     frameWrap.appendChild(frame);
 
@@ -3342,6 +3349,11 @@ function renderVehicleDetailLeft(vehicle) {
       printBtn.className = 'ruhsat-inline-print-btn';
       printBtn.textContent = '\u2399 Yazd\u0131r / Payla\u015F';
       printBtn.onclick = function() {
+        const fallbackUrl = viewerOptions.printUrl || url;
+        if (viewerOptions.forceExternalPrint) {
+          window.open(fallbackUrl, '_blank', 'noopener');
+          return;
+        }
         try {
           if (frame && frame.contentWindow && typeof frame.contentWindow.print === 'function') {
             frame.contentWindow.focus();
@@ -3351,7 +3363,6 @@ function renderVehicleDetailLeft(vehicle) {
         } catch (e) {
           console.warn('Inline print failed, fallback to new tab', e);
         }
-        const fallbackUrl = viewerOptions.printUrl || url;
         window.open(fallbackUrl, '_blank', 'noopener');
       };
       actionsWrap.appendChild(printBtn);
@@ -3493,10 +3504,11 @@ function renderVehicleDetailLeft(vehicle) {
     const isMobileViewport = hasMatchMedia ? window.matchMedia('(max-width: 768px)').matches : window.innerWidth <= 768;
     const isIosPwa = isIosStandalonePwa();
     const url = 'ruhsat.php?id=' + encodeURIComponent(vid);
-    const printableUrl = url + '#toolbar=1&navpanes=0&view=FitH';
+    const inlineViewerUrl = buildPdfViewerUrl(url, 'toolbar=1&navpanes=0&zoom=page-fit&view=FitH');
+    const printableUrl = url;
 
     // iOS PWA: modal icinde viewer ac (geri + yazdir/paylas), uygulamadan cikmak gerekmesin.
-    if (isIosPwa && renderInlineRuhsatViewer(vid, printableUrl, { showPrintButton: true, printUrl: printableUrl })) {
+    if (isIosPwa && renderInlineRuhsatViewer(vid, inlineViewerUrl, { showPrintButton: true, printUrl: printableUrl, forceExternalPrint: true })) {
       return;
     }
 
@@ -3506,7 +3518,7 @@ function renderVehicleDetailLeft(vehicle) {
       return;
     }
 
-    if (shouldUseInlineRuhsatViewer() && renderInlineRuhsatViewer(vid, printableUrl)) {
+    if (shouldUseInlineRuhsatViewer() && renderInlineRuhsatViewer(vid, inlineViewerUrl)) {
       return;
     }
     window.open(printableUrl, '_blank', 'noopener');
