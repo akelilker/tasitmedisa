@@ -2131,9 +2131,9 @@
     .kaporta-print-section h2 { margin: 0 0 4px; font-size: 16px; }
     .kaporta-print-row { display: grid; grid-template-columns: minmax(240px, auto) minmax(0, 1fr); align-items: start; column-gap: 10px; }
     .kaporta-print-state-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 4px 5px; align-content: start; }
-    .kaporta-print-schema-wrap { min-width: 0; min-height: 190px; display: flex; align-items: flex-start; justify-content: center; overflow: hidden; padding-top: 6px; }
+    .kaporta-print-schema-wrap { min-width: 0; min-height: 190px; display: flex; align-items: flex-start; justify-content: center; overflow: hidden; padding-top: 0; }
     .kaporta-print-schema-wrap svg,
-    .kaporta-print-fallback { display: block; width: 150px; height: 240px; margin: 0 auto; object-fit: contain; transform: rotate(90deg); transform-origin: center center; flex: 0 0 auto; }
+    .kaporta-print-fallback { display: block; width: 150px; height: 240px; margin: -6px auto 0; object-fit: contain; transform: rotate(90deg); transform-origin: center center; flex: 0 0 auto; }
     .kaporta-print-col h3 { margin: 0 0 4px; font-size: 13px; }
     .kaporta-print-list { margin: 0; padding-left: 18px; }
     .kaporta-print-list li { font-size: 12px; line-height: 1.3; margin-bottom: 2px; }
@@ -2206,14 +2206,20 @@
 
         historyPage.classList.remove('force-new-page');
 
-        var pageContentHeight = mmToPx(297 - (8 * 2)); // A4 portrait - top/bottom print margins
+        var bodyStyles = window.getComputedStyle(document.body);
+        var marginTop = parseFloat(bodyStyles.marginTop) || mmToPx(8);
+        var marginBottom = parseFloat(bodyStyles.marginBottom) || mmToPx(8);
+        var pageContentHeight = mmToPx(297) - marginTop - marginBottom;
+        if (!isFinite(pageContentHeight) || pageContentHeight <= 0) {
+          pageContentHeight = mmToPx(297 - (8 * 2));
+        }
         var summaryHeight = Math.ceil(summaryPage.getBoundingClientRect().height);
         var historyHeight = Math.ceil(historyPage.getBoundingClientRect().height);
-        var availableHeight = Math.max(0, pageContentHeight - summaryHeight);
+        var availableHeight = pageContentHeight - summaryHeight;
         var safetyBuffer = 6;
 
-        // Kural: Ozet ilk sayfaya sigarken tarihce tamamen sigmiyorsa tarihce 2. sayfadan baslar.
-        if (summaryHeight <= pageContentHeight && historyHeight > (availableHeight - safetyBuffer)) {
+        // Kural: Tarihce kalan alana tamamen sigmiyorsa, tamamı yeni sayfadan baslar.
+        if (historyHeight > (availableHeight - safetyBuffer)) {
           historyPage.classList.add('force-new-page');
         }
       }
