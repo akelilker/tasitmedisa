@@ -8,15 +8,16 @@ function getNotif() { return _cachedNotif || (_cachedNotif = document.getElement
 function getSubmenu() { return _cachedSubmenu || (_cachedSubmenu = document.getElementById('data-submenu')); }
 
 function toggleSettingsMenu(e) {
-  e.stopPropagation();
+  if (e && typeof e.stopPropagation === 'function') e.stopPropagation();
   const menu = getMenu();
   const notif = getNotif();
   if (notif) notif.classList.remove('open');
   if (menu) menu.classList.toggle('open');
 }
+window.toggleSettingsMenu = toggleSettingsMenu;
 
 function toggleNotifications(e) {
-  e.stopPropagation();
+  if (e && typeof e.stopPropagation === 'function') e.stopPropagation();
   const notif = getNotif();
   const menu = getMenu();
   if (menu) menu.classList.remove('open');
@@ -41,6 +42,7 @@ function toggleNotifications(e) {
     }
   }
 }
+window.toggleNotifications = toggleNotifications;
 
 function showDataSubmenu() {
   const submenu = getSubmenu();
