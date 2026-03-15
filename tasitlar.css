@@ -1341,7 +1341,9 @@
         container-type: inline-size;
     }
     .branch-name {
-        font-size: clamp(10px, 11cqw, 12px);
+        font-size: clamp(10.5px, 11cqw, 12px); /* 12px -> 10.5px: en fazla 1.5pt küçülme */
+        word-break: keep-all;
+        overflow-wrap: normal;
     }
 }
 
