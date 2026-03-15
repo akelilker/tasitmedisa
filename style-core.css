@@ -1209,8 +1209,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   /* Masaüstü: Aktivite kartları kompakt kalsın */
   #notifications-dropdown .notification-item-activity {
     height: auto !important;
-    min-height: 52px !important;
+    min-height: 54px !important;
     overflow: visible !important;
+    padding: 10px 12px 4px 12px !important;
   }
   /* Masaüstü: Tarih uyarı kartlarında "Bildirim Tarihi" satırı kesilmesin */
   #notifications-dropdown .notification-item.date-warning-red-border,
@@ -1220,11 +1221,11 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
     align-items: flex-start !important;
     justify-content: flex-start !important;
     height: auto !important;
-    min-height: 52px !important;
+    min-height: 54px !important;
     max-height: none !important;
     overflow: hidden !important;
     white-space: normal !important;
-    padding: 10px 12px 1px 12px !important;
+    padding: 10px 12px 4px 12px !important;
   }
   #notifications-dropdown .notification-item.date-warning-red-border > div,
   #notifications-dropdown .notification-item.date-warning-orange-border > div {
@@ -1233,6 +1234,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   #notifications-dropdown .notification-item .notif-line2 {
     flex-shrink: 0 !important;
     min-height: 1.2em !important;
+    line-height: 1.25 !important;
+    margin-top: 1px !important;
   }
   .settings-dropdown button:not(.notification-item) {
     text-align: center; /* Masaüstünde ortalı */
