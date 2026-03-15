@@ -3624,35 +3624,44 @@ function renderVehicleDetailLeft(vehicle) {
     formData.append('vehicleId', vehicleId);
     formData.append('ruhsat', input.files[0]);
     fetch('upload_ruhsat.php', { method: 'POST', body: formData })
-      .then(function(r) { return r.json(); })
+      .then(function(r) {
+        return r.text().then(function(raw) {
+          let data = {};
+          try {
+            data = raw ? JSON.parse(raw) : {};
+          } catch (parseErr) {
+            data = {};
+          }
+          if (!r.ok || !data.success) {
+            throw new Error((data && data.error) ? data.error : ('Yükleme başarısız (HTTP ' + r.status + ')'));
+          }
+          return data;
+        });
+      })
       .then(function(data) {
-        if (data.success) {
-          const vehicles = window.appData?.tasitlar || [];
-          const v = vehicles.find(function(x) { return String(x.id) === String(vehicleId); });
-          if (v) {
-            v.ruhsatPath = data.ruhsatPath;
-          }
-
-          const selectBox = document.querySelector('#ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-select-box');
-          if (selectBox && input.files && input.files[0]) {
-            selectBox.classList.remove('has-file');
-            selectBox.classList.add('upload-success');
-            selectBox.textContent = '✓ ' + input.files[0].name + ' yüklendi';
-          }
-
-          setRuhsatSaveBtnVisibility(document.getElementById('ruhsat-save-btn'), false);
-
-          setTimeout(function() {
-            closeEventModal('ruhsat');
-            showVehicleDetail(vehicleId);
-          }, 900);
-        } else {
-          alert(data.error || 'Yükleme başarısız');
+        const vehicles = window.appData?.tasitlar || [];
+        const v = vehicles.find(function(x) { return String(x.id) === String(vehicleId); });
+        if (v) {
+          v.ruhsatPath = data.ruhsatPath;
         }
+
+        const selectBox = document.querySelector('#ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-select-box');
+        if (selectBox && input.files && input.files[0]) {
+          selectBox.classList.remove('has-file');
+          selectBox.classList.add('upload-success');
+          selectBox.textContent = '✓ ' + input.files[0].name + ' yuklendi';
+        }
+
+        setRuhsatSaveBtnVisibility(document.getElementById('ruhsat-save-btn'), false);
+
+        setTimeout(function() {
+          closeEventModal('ruhsat');
+          showVehicleDetail(vehicleId);
+        }, 900);
       })
       .catch(function(err) {
         console.error(err);
-        alert('Yükleme sırasında hata oluştu.');
+        alert((err && err.message) ? err.message : 'Yukleme sirasinda hata olustu.');
       });
   };
 
