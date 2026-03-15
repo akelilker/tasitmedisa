@@ -2226,6 +2226,7 @@
     }
 
     const kaportaPrintSectionHtml = buildKaportaPrintSectionHtml(vehicle);
+    const isIosPwaPrint = typeof isIosStandalonePwa === 'function' && isIosStandalonePwa();
 
     const printHtml = `<!doctype html>
 <html lang="tr">
@@ -2289,10 +2290,14 @@
     .history-print-extra { font-size: 11px; color: #444; margin-top: 1px; line-height: 1.2; }
     .history-print-empty { font-size: 12px; color: #666; }
     @media (max-width: 760px) { .history-grid { flex-direction: column; } .history-print-card { width: 100%; } .kaporta-print-row { grid-template-columns: 1fr; row-gap: 5px; } .kaporta-print-state-grid { grid-template-columns: 1fr; } }
+    /* iOS PWA: Ekspertiz şeması üstteki çerçeveye 4px, sağdaki sahaya 12px */
+    body.ios-pwa-print .summary-page .vehicle-card-print-grid { margin-bottom: 0 !important; }
+    body.ios-pwa-print .kaporta-print-section { margin-top: 4px !important; }
+    body.ios-pwa-print .kaporta-print-schema-wrap { margin-right: 12px !important; margin-left: auto !important; }
     @media print { body { margin: 8mm; -webkit-print-color-adjust: exact; print-color-adjust: exact; } .print-preview-toolbar { display: none !important; } .kaporta-print-section { page-break-inside: auto; break-inside: auto; } .history-page h1, .history-page .subtitle { page-break-after: avoid; break-after: avoid-page; } .history-page { page-break-before: auto; break-before: auto; page-break-inside: auto; break-inside: auto; } .history-page.force-new-page { page-break-before: always; break-before: page; } .history-grid { gap: 8px; } }
   </style>
 </head>
-<body>
+<body class="${isIosPwaPrint ? 'ios-pwa-print' : ''}">
   <div class="print-preview-toolbar">
     <button type="button" class="print-preview-btn" id="print-preview-back">← Geri Dön</button>
     <button type="button" class="print-preview-btn print-preview-btn-primary" id="print-preview-close">Kapat</button>
