@@ -584,28 +584,38 @@ body.dashboard-page {
     padding-top: 0 !important;
     line-height: 1.25;
   }
-  /* Masaüstü Kaza Formu: Açıklama ve Hasar Tutarı etiket üst boşluğu 4px */
-  .dashboard-page .driver-report-block-kaza .form-group:has(label[for^="kaza-tarih-"]),
-  .dashboard-page .driver-report-block-kaza .form-group:has(label[for^="kaza-detay-"]) {
+  /* 1. Şemanın BİR ÜSTÜNDEKİ elemanın (Tutar) alt boşluğunu 4px'e eziyoruz */
+  .dashboard-page .driver-report-block-kaza .form-group:has(label[for^="kaza-tutar-"]) {
     margin-bottom: 4px !important;
   }
-  /* Masaüstü Kaza: taşıt şeması üst/alt tam 4px boşluk */
+  
+  /* 2. Şemanın KENDİ ana kutusunun (Açıklama kutusu ile arasındaki) alt boşluğunu 4px'e eziyoruz */
+  .dashboard-page .driver-report-block-kaza .form-group:has(.driver-kaporta-container) {
+    margin-bottom: 4px !important;
+    margin-top: 0 !important;
+  }
+  
+  /* 3. Etiket (Boya/Değişen) ile Şemanın kendi arasındaki boşluk tam 4px */
   .dashboard-page .driver-report-block-kaza .form-group .driver-kaporta-label {
     margin-bottom: 4px !important;
+    margin-top: 0 !important;
   }
+  
+  /* 4. Şema Taşıyıcısı: İç/dış boşluklar sıfırlandı */
   .dashboard-page .driver-report-block-kaza .driver-kaporta-container {
     margin-top: 0 !important;
     margin-bottom: 0 !important;
   }
-  .dashboard-page .driver-report-block-kaza .driver-kaporta-container .driver-kaporta-schema-wrapper {
-    gap: 4px !important;
-  }
+  
+  /* 5. Renk topları (Legend) ile Şema arasındaki boşluk tam 4px */
   .dashboard-page .driver-report-block-kaza .driver-kaporta-container .boya-legend {
-    margin-top: 4px !important; /* Şema ile legend arasi 4px */
+    margin-top: 4px !important;
   }
+  
+  /* 6. SVG'nin kendi içindeki olası şeffaf boşlukları vakumlamak için negatif margin (-6px) ve tam ortalama */
   .dashboard-page .driver-report-block-kaza .driver-kaporta-container .driver-kaporta-schema-wrapper svg {
     display: block !important;
-    margin: 0 auto !important; /* Şemayı yatayda tam ortalar */
+    margin: -6px auto !important; 
   }
   /* Plaka liste ÃƒÂ§erÃƒÂ§evesi: ince gri, parlak (masaÃƒÂ¼stÃƒÂ¼) */
   .dashboard-page .driver-left-panel .driver-plate-dropdown {
