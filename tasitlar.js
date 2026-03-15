@@ -3424,11 +3424,21 @@ function renderVehicleDetailLeft(vehicle) {
   window.viewRuhsatPdf = function(vehicleId) {
     const vid = (vehicleId || window.currentDetailVehicleId || '').toString();
     if (!vid) return;
+    const hasMatchMedia = typeof window.matchMedia === 'function';
+    const isMobileViewport = hasMatchMedia ? window.matchMedia('(max-width: 768px)').matches : window.innerWidth <= 768;
     const url = 'ruhsat.php?id=' + encodeURIComponent(vid);
-    if (shouldUseInlineRuhsatViewer() && renderInlineRuhsatViewer(vid, url)) {
+    const printableUrl = url + '#toolbar=1&navpanes=0&view=FitH';
+
+    // Mobil: inline viewer yerine ikinci sekmede (print toolbar açık) görüntüle.
+    if (isMobileViewport) {
+      window.open(printableUrl, '_blank', 'noopener');
       return;
     }
-    window.open(url, '_blank', 'noopener');
+
+    if (shouldUseInlineRuhsatViewer() && renderInlineRuhsatViewer(vid, printableUrl)) {
+      return;
+    }
+    window.open(printableUrl, '_blank', 'noopener');
   };
 
   /**
