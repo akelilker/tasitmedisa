@@ -2026,12 +2026,17 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
     #notifications-dropdown .mtv-text-container .mtv-main-text {
         font-size: 13px !important; /* MTV/Kasko metni 12px -> 13px */
     }
-/* Mobil: 5 bildirim ekranda görünsün, fazlası için aşağı kaydırılabilir */
+/* Mobil: 5 bildirim ekranda görünsün, %75 genişlikte ortalanmış */
     #notifications-dropdown {
         max-height: 320px !important;
         overflow-y: auto !important;
         overflow-x: hidden !important;
         -webkit-overflow-scrolling: touch;
+        width: 75vw !important;
+        max-width: none !important;
+        left: 50% !important;
+        right: auto !important;
+        transform: translateX(-50%) !important;
     }
 
     /* === ANA KAYIT MODALI KURTARMA (Dar alana sığması için alt alta dizilmek zorundadır) === */
