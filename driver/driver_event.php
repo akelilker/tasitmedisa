@@ -77,6 +77,8 @@ if (!$user) {
     exit;
 }
 
+$kullaniciAdi = trim((string)($user['isim'] ?? $user['name'] ?? $user['ad_soyad'] ?? ''));
+
 $hasAccess = false;
 foreach ($mainData['tasitlar'] ?? [] as $t) {
     $tid = $t['id'] ?? null;
@@ -130,7 +132,7 @@ switch ($eventType) {
         $vehicle['anahtarNerede'] = $detay;
         $eventBase['type'] = 'anahtar-guncelle';
         $eventBase['date'] = date('d.m.Y');
-        $eventBase['data'] = ['durum' => $durum, 'detay' => $detay];
+        $eventBase['data'] = ['durum' => $durum, 'detay' => $detay, 'surucu' => $kullaniciAdi];
         break;
 
     case 'lastik':
@@ -140,7 +142,7 @@ switch ($eventType) {
         $vehicle['lastikAdres'] = $adres;
         $eventBase['type'] = 'lastik-guncelle';
         $eventBase['date'] = date('d.m.Y');
-        $eventBase['data'] = ['durum' => $durum, 'adres' => $adres];
+        $eventBase['data'] = ['durum' => $durum, 'adres' => $adres, 'surucu' => $kullaniciAdi];
         break;
 
     case 'utts':
@@ -148,7 +150,7 @@ switch ($eventType) {
         $vehicle['uttsTanimlandi'] = $durum;
         $eventBase['type'] = 'utts-guncelle';
         $eventBase['date'] = date('d.m.Y');
-        $eventBase['data'] = ['durum' => $durum];
+        $eventBase['data'] = ['durum' => $durum, 'surucu' => $kullaniciAdi];
         break;
 
     case 'muayene':
@@ -161,7 +163,7 @@ switch ($eventType) {
         $vehicle['muayeneDate'] = $bitisTarihi;
         $eventBase['type'] = 'muayene-guncelle';
         $eventBase['date'] = $tarih;
-        $eventBase['data'] = ['bitisTarihi' => $bitisTarihi];
+        $eventBase['data'] = ['bitisTarihi' => $bitisTarihi, 'surucu' => $kullaniciAdi];
         break;
 
     case 'sigorta':
@@ -178,7 +180,8 @@ switch ($eventType) {
             'bitisTarihi' => $bitisTarihi,
             'firma' => mb_substr(strip_tags(trim($data['firma'] ?? '')), 0, 300),
             'acente' => mb_substr(strip_tags(trim($data['acente'] ?? '')), 0, 300),
-            'iletisim' => mb_substr(strip_tags(trim($data['iletisim'] ?? '')), 0, 300)
+            'iletisim' => mb_substr(strip_tags(trim($data['iletisim'] ?? '')), 0, 300),
+            'surucu' => $kullaniciAdi
         ];
         break;
 
@@ -196,7 +199,8 @@ switch ($eventType) {
             'bitisTarihi' => $bitisTarihi,
             'firma' => mb_substr(strip_tags(trim($data['firma'] ?? '')), 0, 300),
             'acente' => mb_substr(strip_tags(trim($data['acente'] ?? '')), 0, 300),
-            'iletisim' => mb_substr(strip_tags(trim($data['iletisim'] ?? '')), 0, 300)
+            'iletisim' => mb_substr(strip_tags(trim($data['iletisim'] ?? '')), 0, 300),
+            'surucu' => $kullaniciAdi
         ];
         break;
 
