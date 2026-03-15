@@ -1462,7 +1462,11 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         transform: rotate(90deg) !important;
         transform-origin: center center !important;
         /* Dönen SVG'nin üst ve altındaki 31px'lik hayalet boşlukları vakumla, yatayda ortala */
-        margin: -31px auto !important; 
+        margin: -31px auto !important;
+        pointer-events: none !important; /* Şeffaf SVG kutusu üstteki Var/Yok buton tıklamasını yutmasın */
+    }
+    #vehicle-modal #boya-parts-container svg .car-part {
+        pointer-events: auto !important; /* Sadece gerçek kaporta parçaları tıklanabilir kalsın */
     }
     #vehicle-modal #boya-parts-container .boya-legend {
         margin-top: 4px !important; /* SVG ile renk lejantı arası tam 4px */
