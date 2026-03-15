@@ -1754,7 +1754,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
     
     /* Mobil Footer MEDISA yazısı */
     #app-footer .brand img {
-        height: 13px !important; /* Mobil 13px */
+        height: 14px !important; /* Mobil 14px */
     }
     
     .hero-logo svg, 
