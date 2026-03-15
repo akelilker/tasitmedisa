@@ -1363,6 +1363,19 @@ input.settings-form-input:-moz-autofill,
         margin-top: 0 !important;
         margin-bottom: 6px !important;
     }
+    /* Kullanıcı yönetimi araç tahsis listesi darlık düzeltmesi */
+    .user-management-modal .form-group:has(select#user-assigned-vehicles),
+    .user-management-modal .form-group select#user-assigned-vehicles {
+        width: 60vw !important;
+        max-width: 60vw !important;
+        min-width: 60vw !important;
+        box-sizing: border-box !important;
+    }
+
+    .user-management-modal .form-group select#user-assigned-vehicles option {
+        white-space: normal !important;
+        word-break: break-all !important;
+    }
     .settings-dropdown button {
         text-align: right !important;
         font-size: 16px !important;
