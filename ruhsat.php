@@ -25,6 +25,6 @@ if (!is_file($filePath)) {
 }
 
 header('Content-Type: application/pdf');
-header('Content-Disposition: inline; filename="ruhsat-' . $safeId . '.pdf"');
+header('Content-Disposition: inline; filename="plaka(' . strtoupper($safeId) . ').pdf"');
 readfile($filePath);
 exit;
