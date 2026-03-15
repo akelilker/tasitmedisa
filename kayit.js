@@ -1708,18 +1708,21 @@
           section.classList.remove('field-error');
         }
         
-        // Renk mantığı: Var=yeşil, Yok=kırmızı. Şanzıman (Manuel/Otomatik)=hep yeşil.
+        // Renk mantığı: Bölüme göre olumlu/olumsuz renk ataması
         const sectionLabel = section?.querySelector(".form-label")?.textContent || "";
         const isTransmission = section?.dataset?.section === "transmission";
+        const isNegativeSection = sectionLabel.includes("Boya") || sectionLabel.includes("Değişen") || sectionLabel.includes("Tramer") || sectionLabel.includes("Kredi");
 
         if (isTransmission) {
-          // Şanzıman Tipi: seçili buton her zaman yeşil
-          btn.classList.add("green");
-        } else if (btn.dataset.value === "var") {
-          // Var/Yok alanlarında "Var" seçiliyse yeşil
-          btn.classList.add("green");
+            // Şanzıman Tipi: Her zaman yeşil
+            btn.classList.add("green");
+        } else if (isNegativeSection) {
+            // Boya, Tramer, Kredi: Yok = Yeşil (Olumlu), Var = Kırmızı (Olumsuz)
+            if (btn.dataset.value === "yok") btn.classList.add("green");
+        } else {
+            // Yedek Anahtar vb: Var = Yeşil (Olumlu), Yok = Kırmızı (Olumsuz)
+            if (btn.dataset.value === "var") btn.classList.add("green");
         }
-        // "Yok" seçiliyse .green eklenmez → kırmızı (CSS .radio-btn.active:not(.green))
         
         // Hover class'larını güncelle
         updateRadioButtonHover();
