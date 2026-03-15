@@ -5235,3 +5235,19 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
 }
 
+/* =========================================
+   SON RÖTUŞLAR VE İNCE AYARLAR
+   ========================================= */
+/* 1. Footer üstüne ana uygulamadaki gibi ince gri çizgi eklendi */
+.dashboard-page #app-footer,
+.login-page #app-footer.login-footer {
+    border-top: 1px solid rgba(255, 255, 255, 0.15) !important;
+}
+
+/* 2. Ortadaki kırmızı dikey çizgi footer ışıklarına değmeden havada kesilsin (Mobil) */
+@media (max-width: 768px) {
+    .dashboard-page .driver-left-panel-content {
+        margin-bottom: 55px !important; /* Çizgi aşağıya inmeden havada kesilir */
+    }
+}
+
