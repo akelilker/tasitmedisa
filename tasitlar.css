@@ -3430,12 +3430,29 @@
     #vehicles-modal .list-header-row {
       --list-header-font-size: 12px !important;
     }
+    /* iOS PWA: Plaka/KM kırpılmasın diye kolon dengesi */
+    #vehicles-modal .list-header-row,
+    #vehicles-modal .view-list .list-item {
+      grid-template-columns: 32px 78px 2.0fr 66px 1.55fr 1.75fr !important;
+    }
     /* iOS PWA: liste satır metinleri kutuya sığacak şekilde mobilden bir tık küçük */
     #vehicles-modal .view-list .list-cell {
       font-size: 14px !important;
       line-height: 1.32 !important;
       -webkit-text-size-adjust: 100% !important;
       text-size-adjust: 100% !important;
+    }
+    /* iOS PWA: dar kolonlarda kırpılma olmasın */
+    #vehicles-modal .view-list .list-cell.list-year,
+    #vehicles-modal .view-list .list-cell.list-plate,
+    #vehicles-modal .view-list .list-cell.list-km {
+      font-size: 13px !important;
+      line-height: 1.25 !important;
+    }
+    #vehicles-modal .view-list .list-cell.list-plate,
+    #vehicles-modal .view-list .list-cell.list-km {
+      padding-left: 2px !important;
+      padding-right: 2px !important;
     }
     #vehicles-modal .view-list .list-cell.list-brand {
       font-size: 13px !important;
