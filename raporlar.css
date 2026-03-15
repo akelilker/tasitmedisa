@@ -2520,3 +2520,32 @@ color: #fff;
         padding-top: 0 !important;
     }
 }
+
+/* =========================================
+   MASAUSTU: RAPORLAR UST BASLIK HIZALAMA
+   ========================================= */
+@media (min-width: 641px) {
+    /* Geri ok + Raporlar ve +Detay Ekleme ayni satirda, geri blogu 10px yukarida */
+    #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-1 {
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        justify-content: flex-start !important;
+        align-items: center !important;
+        gap: 10px !important;
+        margin-top: -10px !important;
+        margin-bottom: 0 !important;
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+    }
+
+    #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-1 .universal-back-bar,
+    #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-1 .stok-detail-add-btn {
+        margin: 0 !important;
+        align-self: center !important;
+    }
+
+    /* +Detay Ekleme acilinca gelen butonlar tetikleyicinin 4px altindan baslasin */
+    #reports-modal .stok-detail-add-wrap.desktop-single-row > .stok-detail-menu.stok-detail-menu-open {
+        margin-top: 4px !important;
+    }
+}
