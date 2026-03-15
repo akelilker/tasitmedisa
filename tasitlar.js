@@ -3666,7 +3666,7 @@ function renderVehicleDetailLeft(vehicle) {
   };
 
   /**
-   * Ruhsat PDF'ini yeni sekmede açar
+   * Ruhsat PDF'ini görüntüler / yazdırır
    */
   window.viewRuhsatPdf = function(vehicleId) {
     const vid = (vehicleId || window.currentDetailVehicleId || '').toString();
@@ -3675,28 +3675,41 @@ function renderVehicleDetailLeft(vehicle) {
     const vehicle = readVehicles().find(v => String(v.id) === vid);
     if (!vehicle || !vehicle.ruhsatPath) return;
 
-    const hasMatchMedia = typeof window.matchMedia === 'function';
-    const isMobileViewport = hasMatchMedia ? window.matchMedia('(max-width: 768px)').matches : window.innerWidth <= 768;
     const isIosPwa = isIosStandalonePwa();
     const url = resolveRuhsatUrl(vehicle.ruhsatPath);
-    const inlineViewerUrl = buildPdfViewerUrl(url, 'toolbar=1&navpanes=0&zoom=page-fit&view=FitH');
-    const printableUrl = url;
 
-    // iOS PWA: modal icinde viewer ac (geri + yazdir/paylas), uygulamadan cikmak gerekmesin.
-    if (isIosPwa && renderInlineRuhsatViewer(vid, inlineViewerUrl, { showPrintButton: true, printUrl: printableUrl, forceExternalPrint: true })) {
+    // iOS PWA: Kullanıcının mahsur kalmasını önlemek için inline viewer iptal edildi.
+    // Bunun yerine, taşıt kartı yazdırmadaki gibi doğrudan iOS Native Print Dialog'u tetikliyoruz.
+    if (isIosPwa) {
+      var iframe = document.createElement('iframe');
+      iframe.style.position = 'fixed';
+      iframe.style.right = '0';
+      iframe.style.bottom = '0';
+      iframe.style.width = '0';
+      iframe.style.height = '0';
+      iframe.style.border = '0';
+      iframe.src = url;
+      document.body.appendChild(iframe);
+
+      iframe.onload = function() {
+        setTimeout(function() {
+          try {
+            iframe.contentWindow.focus();
+            iframe.contentWindow.print();
+          } catch (e) {
+            window.open(url, '_blank', 'noopener');
+          }
+          // Dialog kapandıktan/işlem bittikten sonra temizle
+          setTimeout(function() {
+            if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
+          }, 3000);
+        }, 300);
+      };
       return;
     }
 
-    // Mobil tarayici: ikinci sekmede (print toolbar acik) goruntule.
-    if (isMobileViewport) {
-      window.open(printableUrl, '_blank', 'noopener');
-      return;
-    }
-
-    if (shouldUseInlineRuhsatViewer() && renderInlineRuhsatViewer(vid, inlineViewerUrl)) {
-      return;
-    }
-    window.open(printableUrl, '_blank', 'noopener');
+    // Diğer tüm platformlar (Android, Masaüstü): Doğrudan yeni sekmede aç (En stabil yöntem)
+    window.open(url, '_blank', 'noopener');
   };
 
   /**
