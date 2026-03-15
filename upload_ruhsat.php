@@ -43,31 +43,29 @@ finfo_close($finfo);
 
 $originalName = $file['name'] ?? '';
 $extension = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
+if ($extension !== 'pdf') {
+    http_response_code(400);
+    echo json_encode(['error' => 'Sadece PDF dosyası kabul edilir']);
+    exit;
+}
 
-$allowedMimes = [
-    'application/pdf',
-    'application/x-pdf',
-    'application/acrobat',
-    'applications/vnd.pdf',
-    'text/pdf',
-    'text/x-pdf',
-    'binary/octet-stream',
-    'application/octet-stream'
-];
+// MIME kontrolü
+if ($mime !== 'application/pdf') {
+    http_response_code(400);
+    echo json_encode(['error' => 'Sadece PDF dosyası kabul edilir']);
+    exit;
+}
 
+// PDF imza kontrolü (%PDF)
 $handle = fopen($file['tmp_name'], 'rb');
-$fileHeader = $handle ? fread($handle, 5) : '';
+$header = $handle ? fread($handle, 4) : '';
 if ($handle) {
     fclose($handle);
 }
 
-$isPdfHeader = ($fileHeader === '%PDF-');
-$isPdfMime = in_array($mime, $allowedMimes, true);
-$isPdfExtension = ($extension === 'pdf');
-
-if (!$isPdfExtension || (!$isPdfMime && !$isPdfHeader)) {
+if ($header !== '%PDF') {
     http_response_code(400);
-    echo json_encode(['error' => 'Sadece PDF dosyası kabul edilir']);
+    echo json_encode(['error' => 'Geçersiz PDF dosyası']);
     exit;
 }
 
@@ -77,19 +75,43 @@ if (empty($safeId)) {
     $safeId = 'vehicle_' . preg_replace('/\D/', '', $vehicleId) ?: 'unknown';
 }
 
+$plate = strtoupper(preg_replace('/[^A-Z0-9]/', '', $_POST['plaka'] ?? ''));
+if ($plate === '') {
+    $tmpData = loadData();
+    if (is_array($tmpData) && isset($tmpData['tasitlar']) && is_array($tmpData['tasitlar'])) {
+        foreach ($tmpData['tasitlar'] as $v) {
+            if (isset($v['id']) && (string)$v['id'] === (string)$vehicleId) {
+                $plate = strtoupper(preg_replace('/[^A-Z0-9]/', '', (string)($v['plate'] ?? '')));
+                break;
+            }
+        }
+    }
+}
+if ($plate === '') {
+    $plate = strtoupper($safeId);
+}
+
+$filename = $plate . '.pdf';
+
 $ruhsatDir = __DIR__ . '/data/ruhsat';
 if (!is_dir($ruhsatDir)) {
     mkdir($ruhsatDir, 0755, true);
 }
 
-$targetPath = $ruhsatDir . '/' . $safeId . '.pdf';
+$targetPath = $ruhsatDir . '/' . $filename;
 if (!move_uploaded_file($file['tmp_name'], $targetPath)) {
     http_response_code(500);
     echo json_encode(['error' => 'Dosya kaydedilemedi']);
     exit;
 }
 
-$ruhsatPath = 'ruhsat/' . $safeId . '.pdf';
+// Geriye uyumluluk: id bazlı erişim kullanan endpointler için ikinci kopya
+$legacyTargetPath = $ruhsatDir . '/' . $safeId . '.pdf';
+if ($legacyTargetPath !== $targetPath) {
+    @copy($targetPath, $legacyTargetPath);
+}
+
+$ruhsatPath = 'ruhsat/' . $filename;
 
 // data.json güncelle
 $data = loadData();
