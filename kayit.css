@@ -1936,6 +1936,27 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         padding-top: 2px !important;
         padding-bottom: 10px !important;
     }
+    /* iOS PWA (sadece kayıt modalı): alt bölümdeki fazla boşluğu dengelemek için
+       input/buton yükseklikleri +2px */
+    #vehicle-modal .modal-body .modal-column-left .form-input:not(textarea):not([type="date"]) {
+        height: 28px !important;
+    }
+    #vehicle-modal .modal-body .modal-column-right .form-input:not(textarea),
+    #vehicle-modal .modal-body .modal-column-right select,
+    #vehicle-modal .modal-body .modal-column-right input[type="date"].form-input {
+        height: 29px !important;
+    }
+    #vehicle-modal .modal-body .radio-btn,
+    #vehicle-modal .modal-body .toggle-btn {
+        height: 32px !important;
+    }
+    #vehicle-modal .modal-body #vehicle-notes {
+        min-height: 26px !important;
+    }
+    #vehicle-modal .modal-body .universal-btn-save,
+    #vehicle-modal .modal-body .universal-btn-cancel {
+        height: 34px !important;
+    }
 }
 
 /* Mobil kayıt modalı: tramer satır sıkışması + notlar yüksekliği düzeltmesi */
