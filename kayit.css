@@ -1937,3 +1937,40 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         padding-bottom: 10px !important;
     }
 }
+
+/* Mobil kayıt modalı: tramer satır sıkışması + notlar yüksekliği düzeltmesi */
+@media (max-width: 640px) {
+    #vehicle-modal #tramer-records-container .tramer-record-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-areas:
+            "date date"
+            "amount action";
+        column-gap: 8px;
+        row-gap: 6px;
+        align-items: center;
+    }
+
+    #vehicle-modal #tramer-records-container .tramer-date-input {
+        grid-area: date;
+        width: 100%;
+        min-width: 0;
+    }
+
+    #vehicle-modal #tramer-records-container .tramer-amount-input {
+        grid-area: amount;
+        width: 100%;
+        min-width: 0;
+    }
+
+    #vehicle-modal #tramer-records-container .tramer-add-btn,
+    #vehicle-modal #tramer-records-container .tramer-remove-btn {
+        grid-area: action;
+        justify-self: end;
+        align-self: center;
+    }
+
+    #vehicle-modal .modal-body #vehicle-notes {
+        min-height: 24px !important; /* mobilde 2px daha dar */
+    }
+}
