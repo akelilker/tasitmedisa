@@ -97,7 +97,7 @@ if ($plate === '') {
     $plate = strtoupper($safeId);
 }
 
-$filename = $plate . '.pdf';
+$filename = $plate . '_' . time() . '.pdf';
 
 $ruhsatDir = __DIR__ . '/data/ruhsat';
 if (!is_dir($ruhsatDir)) {
