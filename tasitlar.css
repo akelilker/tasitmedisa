@@ -1312,30 +1312,31 @@
 }
 
 .branch-name {
-    font-size: clamp(9.5px, 2.2vw, 13px); /* MasaÃ¼stÃ¼: tek harf sÄ±ÄŸmazsa 1.5pt kadar kÃ¼Ã§Ã¼lebilir */ /* +1 punto (12Ã¢â€ â€™13) */
+    font-size: clamp(9.5px, 2.2vw, 13px);
     font-weight: 700;
     color: var(--txt);
     text-transform: uppercase;
     margin-bottom: 2px;
-    line-height: 1.1;
+    line-height: 1.05;
     width: 100%;
     white-space: normal;
-    word-break: break-word;
+    word-break: normal;
+    overflow-wrap: anywhere;
     transition: transform 0.2s ease;
     display: block;
-    min-height: 2.2em;
-    max-height: 2.2em;
+    min-height: 2.1em;
+    max-height: 2.1em;
     overflow: hidden;
     text-overflow: clip;
 }
 
-/* MasaÃ¼stÃ¼: ÅŸube kutusu dar olduÄŸunda (harf alta dÃ¼ÅŸerse) yazÄ± en fazla 1.5pt kÃ¼Ã§Ã¼lebilir (13px â†’ 11px) */
+/* Masaüstü: şube adı kutuya sığsın diye bir kademe daha kontrollü küçül */
 @media (min-width: 769px) {
     .branch-card {
         container-type: inline-size;
     }
     .branch-name {
-        font-size: clamp(11px, 12cqw, 13px);
+        font-size: clamp(10px, 11cqw, 12px);
     }
 }
 
