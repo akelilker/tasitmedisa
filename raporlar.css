@@ -2578,6 +2578,7 @@ color: #fff;
         justify-self: center !important;
         margin: 0 !important;
         align-self: center !important;
+        transform: translateX(-3px) !important;
     }
 
     /* +Detay Ekleme acilinca gelen butonlar tetikleyicinin 4px altindan baslasin */
