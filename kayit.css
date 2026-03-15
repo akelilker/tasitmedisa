@@ -1454,22 +1454,23 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-body .modal-column-left .form-section:has(#vehicle-price) {
         margin-bottom: 12px !important;
     }
-    /* Boya/Değişen Şeması: Butonlardan 4px aşağı, yatay dönmüş ve ghost boşluğu alınmış (masaüstü) */
+    /* Boya/Değişen Şeması: Buton alanına taşmadan, kendi bloğunda kalsın */
     #vehicle-modal #boya-parts-container { 
-        margin-top: 4px !important; 
+        margin-top: 8px !important;
+        padding-top: 0 !important;
+        overflow: visible !important;
     }
     #vehicle-modal #boya-parts-container svg {
         transform: rotate(90deg) !important;
         transform-origin: center center !important;
-        /* Dönen SVG'nin üst ve altındaki 31px'lik hayalet boşlukları vakumla, yatayda ortala */
-        margin: -31px auto !important;
-        pointer-events: none !important; /* Şeffaf SVG kutusu üstteki Var/Yok buton tıklamasını yutmasın */
+        margin: 0 auto !important;
+        pointer-events: none !important;
     }
     #vehicle-modal #boya-parts-container svg .car-part {
-        pointer-events: auto !important; /* Sadece gerçek kaporta parçaları tıklanabilir kalsın */
+        pointer-events: auto !important;
     }
     #vehicle-modal #boya-parts-container .boya-legend {
-        margin-top: 4px !important; /* SVG ile renk lejantı arası tam 4px */
+        margin-top: 8px !important;
     }
     
     /* Sol grid: etiketlerin üstüne 1px (Plaka hariç) */
