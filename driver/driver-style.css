@@ -5229,9 +5229,10 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     justify-content: center !important;
   }
   .dashboard-page .driver-below-hero-notification-slot {
-    flex: 1 1 auto !important;
+    flex: 0 1 70% !important;
+    width: 70% !important;
+    max-width: 70% !important;
     min-width: 0 !important;
-    max-width: calc(100% - 72px) !important;
     overflow: hidden !important;
   }
   .dashboard-page .driver-below-hero-notification-slot .driver-sliding-warning {
