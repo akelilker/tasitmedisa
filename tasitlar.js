@@ -2121,10 +2121,10 @@
     th, td { border: 1px solid #ddd; padding: 6px 8px; text-align: left; vertical-align: top; font-size: 13px; line-height: 1.3; }
     th { width: 35%; min-width: 100px; max-width: 160px; background: #f4f4f4; }
     td { width: 65%; }
-    .vehicle-card-print-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 6px; }
+    .vehicle-card-print-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
     .vehicle-card-print-grid table { width: 100%; }
     @media (max-width: 760px) { .vehicle-card-print-grid { grid-template-columns: 1fr; } }
-    .kaporta-print-section { margin-top: 0; border: 1px solid #ddd; border-radius: 8px; padding: 4px; page-break-inside: auto; break-inside: auto; }
+    .kaporta-print-section { margin-top: 2px; border: 1px solid #ddd; border-radius: 8px; padding: 4px; page-break-inside: auto; break-inside: auto; }
     .kaporta-print-section h2 { margin: 0 0 4px; font-size: 16px; }
     .kaporta-print-row { display: grid; grid-template-columns: minmax(240px, auto) minmax(0, 1fr); align-items: start; column-gap: 10px; }
     .kaporta-print-state-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 4px 5px; align-content: start; }
