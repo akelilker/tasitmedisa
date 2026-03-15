@@ -3569,8 +3569,8 @@ function renderVehicleDetailLeft(vehicle) {
       setRuhsatSaveBtnVisibility(saveBtn, hasFile);
       if (!hasExistingRuhsat && selectBox) {
         if (hasFile) {
-          selectBox.textContent = input.files[0].name;
-          selectBox.classList.add('has-file');
+          selectBox.classList.add('upload-success');
+          selectBox.textContent = '✓ ' + input.files[0].name + ' yüklendi';
         } else {
           selectBox.textContent = 'Yükle';
           selectBox.classList.remove('has-file');
@@ -3598,6 +3598,12 @@ function renderVehicleDetailLeft(vehicle) {
       .then(function(r) { return r.json(); })
       .then(function(data) {
         if (data.success) {
+          const vehicles = window.appData?.tasitlar || [];
+          const v = vehicles.find(function(x) { return String(x.id) === String(vehicleId); });
+          if (v) {
+            v.ruhsatPath = data.ruhsatPath;
+          }
+
           const selectBox = document.querySelector('#ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-select-box');
           if (selectBox && input.files && input.files[0]) {
             selectBox.classList.remove('has-file');

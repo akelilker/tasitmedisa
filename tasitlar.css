@@ -2297,6 +2297,12 @@
   border-color: rgba(40, 167, 69, 0.65) !important;
   color: var(--green-success, #28a745) !important;
 }
+.ruhsat-select-box.upload-success {
+  border-color: var(--success);
+  background: rgba(0,200,120,0.18);
+  color: #7dffae;
+  box-shadow: 0 0 10px rgba(0,255,150,0.25);
+}
 
 #ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-select-box.upload-success {
   border-color: rgba(40, 167, 69, 0.85) !important;
