@@ -3509,7 +3509,7 @@ function renderVehicleDetailLeft(vehicle) {
       btnGroup.classList.add('ruhsat-preview-row');
       const previewLink = document.createElement('a');
       previewLink.className = 'ruhsat-preview-link';
-      previewLink.href = 'ruhsat.php?id=' + encodeURIComponent(vid);
+      previewLink.href = vehicle.ruhsatPath;
       previewLink.target = '_blank';
       previewLink.rel = 'noopener';
       previewLink.setAttribute('aria-label', 'Ruhsatı görüntüle');
@@ -3633,10 +3633,14 @@ function renderVehicleDetailLeft(vehicle) {
   window.viewRuhsatPdf = function(vehicleId) {
     const vid = (vehicleId || window.currentDetailVehicleId || '').toString();
     if (!vid) return;
+
+    const vehicle = readVehicles().find(v => String(v.id) === vid);
+    if (!vehicle || !vehicle.ruhsatPath) return;
+
     const hasMatchMedia = typeof window.matchMedia === 'function';
     const isMobileViewport = hasMatchMedia ? window.matchMedia('(max-width: 768px)').matches : window.innerWidth <= 768;
     const isIosPwa = isIosStandalonePwa();
-    const url = 'ruhsat.php?id=' + encodeURIComponent(vid);
+    const url = vehicle.ruhsatPath;
     const inlineViewerUrl = buildPdfViewerUrl(url, 'toolbar=1&navpanes=0&zoom=page-fit&view=FitH');
     const printableUrl = url;
 
