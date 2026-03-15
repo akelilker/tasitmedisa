@@ -68,6 +68,45 @@
   let currentFilter = 'az'; // 'az' | 'newest' | 'oldest' | 'type' (liste filtre dropdown)
   let transmissionFilter = ''; // '' | 'otomatik' | 'manuel' (şanzıman filtresi)
   let lastListContext = null; // Son açılan liste bağlamı (geri dönüş hedefi)
+
+  let lastVehiclesRenderSignature = '';
+
+  function invalidateVehicleListRenderCache() {
+    lastVehiclesRenderSignature = '';
+    if (DOM && DOM.vehiclesModalContent) {
+      delete DOM.vehiclesModalContent.dataset.renderScope;
+      delete DOM.vehiclesModalContent.dataset.renderSignature;
+    }
+  }
+
+  function buildVehicleRenderSignature(vehicles, query, listDisplayOrder) {
+    const compactVehicleState = vehicles.map(function(v) {
+      return [
+        String(v.id ?? ''),
+        String(v.version ?? ''),
+        String(v.guncelKm ?? v.km ?? ''),
+        String(v.branchId ?? ''),
+        String(v.assignedUserId ?? ''),
+        String(v.tahsisKisi ?? ''),
+        String(v.transmission ?? ''),
+        String(v.satildiMi === true ? 1 : 0)
+      ].join(':');
+    }).join('|');
+
+    return [
+      String(currentView),
+      String(viewMode),
+      String(activeBranchId),
+      String(query || ''),
+      String(transmissionFilter || ''),
+      String(sortColumn || ''),
+      String(sortDirection || ''),
+      String(currentFilter || ''),
+      window.innerWidth <= 768 ? 'mobile' : 'desktop',
+      Array.isArray(listDisplayOrder) ? listDisplayOrder.join(',') : '',
+      compactVehicleState
+    ].join('__');
+  }
   
   // Sütun Sıralaması State
   let vehicleColumnOrder = ['year', 'plate', 'brand', 'km', 'type', 'user', 'branch']; // Varsayılan sıralama
@@ -560,6 +599,7 @@
   window.renderBranchDashboard = function() {
     currentView = 'dashboard';
     activeBranchId = null;
+    invalidateVehicleListRenderCache();
     closeSearchBox();
     closeFilterMenu();
     updateToolbar('dashboard');
@@ -636,6 +676,7 @@
     viewMode = 'list';
     activeBranchId = branchId; // 'all', '', veya 'id'
     lastListContext = { mode: 'branch', branchId: branchId, branchName: branchName };
+    invalidateVehicleListRenderCache();
     closeSearchBox();
     const displayTitle = branchId === 'all' ? branchName : (branchName + ' Taşıtlar');
     updateToolbar('detail', displayTitle);
@@ -652,6 +693,7 @@
     viewMode = 'list';
     activeBranchId = '__archive__';
     lastListContext = { mode: 'archive' };
+    invalidateVehicleListRenderCache();
     closeSearchBox();
     updateToolbar('detail', 'Arşiv');
     renderVehicles();
@@ -724,6 +766,14 @@
       // Mobil/tablet (≤768px): Taşıt Tipi sütununu göstermiyoruz (yer kaplamasın)
       const listDisplayOrder = isMobileList ? displayColumnOrder.filter(function(k) { return k !== 'type'; }) : displayColumnOrder;
 
+      const renderSignature = buildVehicleRenderSignature(vehicles, query, listDisplayOrder);
+      if (
+        listContainer.dataset.renderScope === 'vehicles' &&
+        lastVehiclesRenderSignature === renderSignature
+      ) {
+        return;
+      }
+
       // 4. HTML – boş liste: liste görünümünde başlıkları koru, tek satırda mesaj göster
       if (vehicles.length === 0) {
           const emptyMsg = (activeBranchId === '__archive__') ? 'Arşivde kayıt bulunamadı.' : 'Kayıt bulunamadı.';
@@ -749,8 +799,14 @@
             });
             emptyHtml += '</div><div class="vehicles-list-scroll"><div class="view-list view-list-empty"><div class="list-item list-item-empty" style="grid-column: 1 / -1; justify-content: center; padding: 24px;"><span style="color:#666;">' + escapeHtml(emptyMsg) + '</span></div></div></div>';
             listContainer.innerHTML = emptyHtml;
+            listContainer.dataset.renderScope = 'vehicles';
+            listContainer.dataset.renderSignature = renderSignature;
+            lastVehiclesRenderSignature = renderSignature;
           } else {
             listContainer.innerHTML = `<div style="text-align:center; padding:40px; color:#666">${emptyMsg}</div>`;
+            listContainer.dataset.renderScope = 'vehicles';
+            listContainer.dataset.renderSignature = renderSignature;
+            lastVehiclesRenderSignature = renderSignature;
           }
           return;
       }
@@ -926,6 +982,9 @@
     }).join('') + '</div>' + (viewMode === 'list' ? '</div>' : '') + '';
 
       listContainer.innerHTML = html;
+      listContainer.dataset.renderScope = 'vehicles';
+      listContainer.dataset.renderSignature = renderSignature;
+      lastVehiclesRenderSignature = renderSignature;
 
       // Taşıt kartları için grid'i dinamik yap (sadece card view'da)
       if (viewMode === 'card') {
@@ -993,6 +1052,26 @@
 
     const contentEl = DOM.vehicleDetailContent;
     if (!contentEl) return;
+
+    const detailSignature = [
+      String(vehicle.id ?? ''),
+      String(vehicle.version ?? ''),
+      String(vehicle.guncelKm ?? vehicle.km ?? ''),
+      String(vehicle.branchId ?? ''),
+      String(vehicle.assignedUserId ?? ''),
+      String(vehicle.tahsisKisi ?? ''),
+      String(vehicle.ruhsatPath ?? ''),
+      String(vehicle.satildiMi === true ? 1 : 0),
+      String(Array.isArray(vehicle.events) ? vehicle.events.length : 0)
+    ].join('|');
+
+    if (
+      modal.classList.contains('active') &&
+      String(window.currentDetailVehicleId) === String(vehicleId) &&
+      modal.dataset.detailSignature === detailSignature
+    ) {
+      return;
+    }
 
     // Plaka (üstte yatayda ortalı) - Satıldı durumu için kırmızı yazı ekle
     // Plaka container'ını kontrol et, yoksa oluştur
@@ -1254,6 +1333,7 @@
     }
 
     // Modalı aç
+    modal.dataset.detailSignature = detailSignature;
     modal.style.display = 'flex';
     requestAnimationFrame(() => {
       modal.classList.add('active');
@@ -1381,6 +1461,7 @@
     if (modal) {
       resetModalState(modal);
       modal.classList.remove('active');
+      delete modal.dataset.detailSignature;
       setTimeout(() => modal.style.display = 'none', 300);
     }
   };
