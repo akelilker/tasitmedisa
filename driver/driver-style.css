@@ -5251,3 +5251,45 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     }
 }
 
+/* =========================================
+   MASAUSTU PANEL INCE AYARLARI
+   ========================================= */
+@media (min-width: 641px) {
+    /* Sol grid: okunabilirlik +0.7pt (~0.93px) */
+    .dashboard-page .driver-left-panel .driver-info-item .label,
+    .dashboard-page .driver-left-panel .driver-info-item .value {
+        font-size: calc(13px + 0.93px) !important;
+    }
+    .dashboard-page .driver-left-panel .driver-user-plate-row .driver-user-name,
+    .dashboard-page .driver-left-panel .driver-user-plate-in-panel .driver-user-name {
+        font-size: calc(14px + 0.93px) !important;
+    }
+    .dashboard-page .driver-left-panel .driver-current-plaka {
+        font-size: calc((14px - 1pt) + 0.93px) !important;
+    }
+    .dashboard-page .driver-left-panel .driver-plate-subtitle,
+    .dashboard-page .driver-left-panel .driver-user-plate-in-panel .driver-plate-subtitle {
+        font-size: calc((15px - 1pt) + 0.93px) !important;
+    }
+
+    /* Sag grid: butonlar dikeyde toplam 2px daraltildi */
+    .dashboard-page .driver-action-btn {
+        padding-top: 7px !important;
+        padding-bottom: 7px !important;
+    }
+    .dashboard-page .vehicle-card .btn-save {
+        padding-top: 7px !important;
+        padding-bottom: 7px !important;
+        margin-top: calc(14px + 1em) !important;
+    }
+    .dashboard-page .driver-action-area .universal-btn-save,
+    .dashboard-page .driver-action-area .universal-btn-cancel {
+        height: 30px !important;
+    }
+
+    /* Bildir butonu footer isiklarina gomulmesin */
+    .dashboard-page .driver-right-panel {
+        padding-bottom: 12px !important;
+    }
+}
+
