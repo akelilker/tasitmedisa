@@ -3426,19 +3426,22 @@
       padding-top: env(safe-area-inset-top) !important;
       padding-bottom: 0 !important;
     }
-    /* iOS PWA: Taşıtlar modalı liste başlıkları 1 punto küçük */
+    /* iOS PWA: Taşıtlar modalı liste başlıkları daha kompakt */
     #vehicles-modal .list-header-row {
-      --list-header-font-size: 14px !important;
+      --list-header-font-size: 13px !important;
     }
-    /* iOS PWA: liste satır metinleri 1 punto küçült (sadece Taşıtlar listesi) */
+    /* iOS PWA: liste satır metinleri kutuya sığacak şekilde mobilden bir tık küçük */
     #vehicles-modal .view-list .list-cell {
-      font-size: calc(17.5px - 1pt) !important;
+      font-size: 15px !important;
+      line-height: 1.32 !important;
     }
     #vehicles-modal .view-list .list-cell.list-brand {
-      font-size: calc(16.5px - 1pt) !important;
+      font-size: 14px !important;
+      line-height: 1.3 !important;
     }
     #vehicles-modal .view-list .list-cell.list-user {
-      font-size: calc(16px - 1pt) !important;
+      font-size: 14px !important;
+      line-height: 1.3 !important;
     }
   }
   /* Ortak mobil container + iOS PWA: style-core.css (.modal-overlay .modal-container) */
