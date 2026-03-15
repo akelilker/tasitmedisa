@@ -185,6 +185,7 @@
     km: 'km-guncelle-modal',
     bakim: 'bakim-ekle-modal',
     kaza: 'kaza-ekle-modal',
+    ceza: 'ceza-ekle-modal',
     sigorta: 'sigorta-guncelle-modal',
     kasko: 'kasko-guncelle-modal',
     muayene: 'muayene-guncelle-modal',
@@ -1348,6 +1349,7 @@
       'event-menu-modal',
       'bakim-ekle-modal',
       'kaza-ekle-modal',
+      'ceza-ekle-modal',
       'sigorta-guncelle-modal',
       'kasko-guncelle-modal',
       'muayene-guncelle-modal',
@@ -1934,6 +1936,12 @@
         text = `UTTS: ${(d.durum === true || d.durum === 'evet') ? 'Evet' : 'Hayır'}`;
       } else if (eventType === 'takip-cihaz-guncelle') {
         text = `Takip Cihazı: ${(d.durum === true || d.durum === 'var') ? 'Var' : 'Yok'}`;
+      } else if (eventType === 'ceza') {
+        text = 'Trafik Cezası';
+        const details = [];
+        if (d.tutar) details.push(`Tutar: ${d.tutar} TL`);
+        if (d.aciklama) details.push(`Nedeni: ${toTitleCase(String(d.aciklama))}`);
+        extra = details.join(' | ');
       } else if (eventType === 'not-guncelle') {
         text = 'Not Güncelleme';
         if (d.not) extra = String(d.not).length > 120 ? String(d.not).slice(0, 120) + '...' : String(d.not);
@@ -2126,9 +2134,9 @@
     .kaporta-print-section h2 { margin: 0 0 4px; font-size: 16px; }
     .kaporta-print-row { display: grid; grid-template-columns: minmax(240px, auto) minmax(0, 1fr); align-items: start; column-gap: 10px; }
     .kaporta-print-state-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 4px 5px; align-content: start; }
-    .kaporta-print-schema-wrap { min-width: 0; min-height: 184px; display: flex; align-items: flex-start; justify-content: center; overflow: hidden; padding-top: 6px; }
+    .kaporta-print-schema-wrap { position: relative; width: 240px; height: 150px; margin: 4px auto 0; display: block; overflow: visible; }
     .kaporta-print-schema-wrap svg,
-    .kaporta-print-fallback { display: block; width: 150px; height: 240px; margin: 0 auto; object-fit: contain; transform: translateY(-40px) rotate(90deg); transform-origin: center center; flex: 0 0 auto; }
+    .kaporta-print-fallback { position: absolute; top: 50%; left: 50%; width: 150px; height: 240px; margin: 0; transform: translate(-50%, -50%) rotate(90deg); object-fit: contain; }
     .kaporta-print-col h3 { margin: 0 0 4px; font-size: 13px; }
     .kaporta-print-list { margin: 0; padding-left: 18px; }
     .kaporta-print-list li { font-size: 12px; line-height: 1.3; margin-bottom: 2px; }
@@ -2136,8 +2144,8 @@
     .print-page-break { page-break-before: always; break-before: page; margin: 16px 0 0; }
     .history-page { margin-top: 5px; page-break-before: auto; break-before: auto; page-break-inside: auto; break-inside: auto; }
     .history-page.force-new-page { page-break-before: always; break-before: page; margin-top: 5px; }
-    .history-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; align-items: start; }
-    .history-print-card { border: 1px solid #ddd; border-radius: 8px; padding: 8px; break-inside: auto; page-break-inside: auto; }
+    .history-grid { display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-start; }
+    .history-print-card { width: calc(50% - 4px); box-sizing: border-box; border: 1px solid #ddd; border-radius: 8px; padding: 8px; page-break-inside: avoid; break-inside: avoid; }
     .history-print-card h2 { margin: 0 0 5px; font-size: 14px; page-break-after: avoid; break-after: avoid-page; }
     .history-print-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
     .history-print-item { border-top: 1px solid #eee; padding-top: 4px; }
@@ -2146,7 +2154,7 @@
     .history-print-text { font-size: 12px; line-height: 1.25; }
     .history-print-extra { font-size: 11px; color: #444; margin-top: 1px; line-height: 1.2; }
     .history-print-empty { font-size: 12px; color: #666; }
-    @media (max-width: 760px) { .history-grid { grid-template-columns: 1fr; } .kaporta-print-row { grid-template-columns: 1fr; row-gap: 5px; } .kaporta-print-state-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 760px) { .history-grid { flex-direction: column; } .history-print-card { width: 100%; } .kaporta-print-row { grid-template-columns: 1fr; row-gap: 5px; } .kaporta-print-state-grid { grid-template-columns: 1fr; } }
     @media print { body { margin: 8mm; -webkit-print-color-adjust: exact; print-color-adjust: exact; } .print-preview-toolbar { display: none !important; } .kaporta-print-section { page-break-inside: auto; break-inside: auto; } .history-page h1, .history-page .subtitle { page-break-after: avoid; break-after: avoid-page; } .history-page { page-break-before: auto; break-before: auto; page-break-inside: auto; break-inside: auto; } .history-page.force-new-page { page-break-before: always; break-before: page; } .history-grid { gap: 8px; } }
   </style>
 </head>
@@ -2199,9 +2207,25 @@
         var historyPage = document.querySelector('.history-page');
         if (!summaryPage || !historyPage) return;
 
-        // Deterministik kural: tarihce her zaman ikinci sayfadan baslar.
-        // Chrome print scale farklarinda yarim sayfaya dusmeyi engeller.
-        historyPage.classList.add('force-new-page');
+        historyPage.classList.remove('force-new-page');
+
+        var bodyStyles = window.getComputedStyle(document.body);
+        var marginTop = parseFloat(bodyStyles.marginTop) || 30;
+        var marginBottom = parseFloat(bodyStyles.marginBottom) || 30;
+        var pageContentHeight = 1122 - marginTop - marginBottom; // 96 DPI'da A4 yüksekliği
+
+        var summaryHeight = Math.ceil(summaryPage.getBoundingClientRect().height);
+        var historyHeight = Math.ceil(historyPage.getBoundingClientRect().height);
+
+        var overflow = summaryHeight % pageContentHeight;
+        var remainingSpace = pageContentHeight - overflow;
+        var safetyBuffer = 60;
+
+        // Eğer mevcut sayfadan kalan alan tarihçeyi kurtarmıyorsa ve zaten sayfa başında değilsek,
+        // Tarihçenin TAMAMI başlığıyla beraber yeni sayfadan başlasın.
+        if (overflow > 60 && historyHeight > (remainingSpace - safetyBuffer)) {
+          historyPage.classList.add('force-new-page');
+        }
       }
 
       function runPageFlowCheck() {
@@ -2773,7 +2797,7 @@ function renderVehicleDetailLeft(vehicle) {
     if (type === 'menu') {
       // Önce tüm açık alt modalları kapat
       const allEventModals = [
-        'bakim-ekle-modal', 'kaza-ekle-modal', 'sigorta-guncelle-modal',
+        'bakim-ekle-modal', 'kaza-ekle-modal', 'ceza-ekle-modal', 'sigorta-guncelle-modal',
         'kasko-guncelle-modal', 'muayene-guncelle-modal', 'anahtar-guncelle-modal',
         'kredi-guncelle-modal', 'km-guncelle-modal', 'lastik-guncelle-modal',
         'utts-guncelle-modal', 'takip-cihaz-guncelle-modal', 'kasko-kodu-guncelle-modal', 'ruhsat-yukleme-modal', 'sube-degisiklik-modal',
@@ -2797,6 +2821,7 @@ function renderVehicleDetailLeft(vehicle) {
       const isMobile = window.innerWidth <= 640;
       const takipLabel = isMobile ? 'Taşıt Takip Cih.Bilg. Günc.' : 'Taşıt Takip Cihaz Bilgisi Güncelle';
       const events = [
+        { id: 'ceza', label: 'Trafik Cezası Ekle' },
         { id: 'km', label: 'Km Güncelle' },
         { id: 'bakim', label: 'Bakım Bilgisi Ekle' },
         { id: 'kaza', label: 'Kaza Bilgisi Ekle' },
@@ -2818,9 +2843,10 @@ function renderVehicleDetailLeft(vehicle) {
       menuList.innerHTML = events.map(event => {
         const isKaza = event.id === 'kaza';
         const isSatis = event.id === 'satis';
-        const borderColor = (isKaza || isSatis) ? '#d40000' : 'rgba(255, 255, 255, 0.3)';
-        const textColor = (isKaza || isSatis) ? '#d40000' : '#ccc';
-        const borderWidth = (isKaza || isSatis) ? '0.3px' : '1px';
+        const isCeza = event.id === 'ceza';
+        const borderColor = (isKaza || isSatis || isCeza) ? '#d40000' : 'rgba(255, 255, 255, 0.3)';
+        const textColor = (isKaza || isSatis || isCeza) ? '#d40000' : '#ccc';
+        const borderWidth = (isKaza || isSatis || isCeza) ? '0.3px' : '1px';
         return `<button type="button" data-event-id="${event.id}" data-vehicle-id="${vid}" style="width: 100%; padding: 12px; background: transparent; border: ${borderWidth} solid ${borderColor}; color: ${textColor}; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px; text-align: left;">${event.label}</button>`;
       }).join('');
       
@@ -2833,6 +2859,7 @@ function renderVehicleDetailLeft(vehicle) {
       const modalId = type === 'km' ? 'km-guncelle-modal' :
                       type === 'bakim' ? 'bakim-ekle-modal' :
                       type === 'kaza' ? 'kaza-ekle-modal' :
+                      type === 'ceza' ? 'ceza-ekle-modal' :
                       type === 'sigorta' ? 'sigorta-guncelle-modal' :
                       type === 'kasko' ? 'kasko-guncelle-modal' :
                       type === 'muayene' ? 'muayene-guncelle-modal' :
@@ -2876,6 +2903,19 @@ function renderVehicleDetailLeft(vehicle) {
               }
             });
           }
+        }
+      } else if (type === 'ceza') {
+        const cezaSurucuInput = document.getElementById('ceza-surucu');
+        const vehicle = readVehicles().find(v => String(v.id) === String(vehicleId || window.currentDetailVehicleId));
+        if (cezaSurucuInput && vehicle?.tahsisKisi) {
+          cezaSurucuInput.value = vehicle.tahsisKisi;
+        }
+        const cezaTutarInput = document.getElementById('ceza-tutar');
+        if (cezaTutarInput) {
+          cezaTutarInput.addEventListener('blur', function() {
+            const value = this.value.replace(/[^\d]/g, '');
+            if (value) this.value = formatNumber(value);
+          });
         }
       } else if (type === 'muayene') {
         // Muayene modal'ında varsayılan bugünün tarihi
@@ -3723,6 +3763,44 @@ function renderVehicleDetailLeft(vehicle) {
     writeVehicles(vehicles);
     
     closeEventModal('kaza');
+    showVehicleDetail(vehicleId);
+  };
+
+  window.saveCezaEvent = function() {
+    const vehicleId = window.currentDetailVehicleId;
+    if (!vehicleId) return;
+
+    const tarih = document.getElementById('ceza-tarih')?.value.trim() || '';
+    const surucu = document.getElementById('ceza-surucu')?.value.trim() || '';
+    const tutar = document.getElementById('ceza-tutar')?.value.trim() || '';
+    const aciklama = document.getElementById('ceza-aciklama')?.value.trim() || '';
+
+    if (!tarih || !tutar) {
+      alert('Tarih ve Ceza Tutarı zorunludur!');
+      return;
+    }
+
+    const vehicles = readVehicles();
+    const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
+    if (!vehicle) return;
+    if (!vehicle.events) vehicle.events = [];
+
+    const event = {
+      id: Date.now().toString(),
+      type: 'ceza',
+      date: tarih,
+      timestamp: new Date().toISOString(),
+      data: {
+        surucu: surucu || getEventPerformerName(vehicle),
+        tutar: tutar,
+        aciklama: aciklama
+      }
+    };
+
+    vehicle.events.unshift(event);
+    writeVehicles(vehicles);
+
+    closeEventModal('ceza');
     showVehicleDetail(vehicleId);
   };
 
@@ -4610,6 +4688,12 @@ function renderVehicleDetailLeft(vehicle) {
             summaryText = `UTTS ${(eventData.durum === true || eventData.durum === 'evet') ? 'Evet' : 'Hay\u0131r'} Olarak Bildirdi.`;
           } else if (eventType === 'takip-cihaz-guncelle') {
             summaryText = `Takip Cihaz\u0131 ${(eventData.durum === true || eventData.durum === 'var') ? 'Var' : 'Yok'} Olarak Bildirdi.`;
+          } else if (eventType === 'ceza') {
+            summaryText = 'Trafik Cezas\u0131 \u0130\u015flendi.';
+            const tutar = (eventData.tutar || '').trim();
+            const aciklama = (eventData.aciklama || '').trim();
+            if (tutar) details.push(`Tutar: ${tutar} TL`);
+            if (aciklama) details.push(`A\u00e7\u0131klama: ${toTitleCase(aciklama)}`);
           } else if (eventType === 'not-guncelle') {
             summaryText = 'Kullan\u0131c\u0131 Notu Bildirdi.';
             const note = String(eventData.not || '').trim();
@@ -4673,6 +4757,7 @@ function renderVehicleDetailLeft(vehicle) {
     window.assignVehicleToBranch = withSaveButtonGuard('vehicle-detail-modal', window.assignVehicleToBranch);
     window.saveBakimEvent = withSaveButtonGuard('bakim-ekle-modal', window.saveBakimEvent);
     window.saveKazaEvent = withSaveButtonGuard('kaza-ekle-modal', window.saveKazaEvent);
+    window.saveCezaEvent = withSaveButtonGuard('ceza-ekle-modal', window.saveCezaEvent);
     window.updateSigortaInfo = withSaveButtonGuard('sigorta-guncelle-modal', window.updateSigortaInfo);
     window.updateKaskoInfo = withSaveButtonGuard('kasko-guncelle-modal', window.updateKaskoInfo);
     window.updateMuayeneInfo = withSaveButtonGuard('muayene-guncelle-modal', window.updateMuayeneInfo);
@@ -4710,6 +4795,7 @@ function renderVehicleDetailLeft(vehicle) {
     const labels = {
       'bakim': 'Bakım',
       'kaza': 'Kaza',
+      'ceza': 'Trafik Cezası',
       'km-revize': 'Km güncelleme',
       'anahtar-guncelle': 'Yedek anahtar',
       'lastik-guncelle': 'Lastik',
@@ -4740,6 +4826,7 @@ function renderVehicleDetailLeft(vehicle) {
       'km-revize': 'Km Bildirimi Yaptı',
       'bakim': 'Bakım Bildirimi Yaptı',
       'kaza': 'Kaza Bildirimi Yaptı',
+      'ceza': 'Trafik Cezası İşledi',
       'sigorta-guncelle': 'Sigorta Bilgisini Güncelledi',
       'kasko-guncelle': 'Kasko Bilgisini Güncelledi',
       'muayene-guncelle': 'Muayene Bilgisini Güncelledi',
