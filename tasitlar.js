@@ -3266,23 +3266,23 @@ function renderVehicleDetailLeft(vehicle) {
     return isMobileViewport || isStandalone || isiOS;
   }
 
-  function renderInlineRuhsatViewer(vehicleId, url) {
+  function isIosStandalonePwa() {
+    const hasMatchMedia = typeof window.matchMedia === 'function';
+    const isStandalone = hasMatchMedia && (window.matchMedia('(display-mode: standalone)').matches || window.matchMedia('(display-mode: fullscreen)').matches);
+    const ua = navigator.userAgent || '';
+    const isiOS = /iPhone|iPad|iPod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    return isStandalone && isiOS;
+  }
+
+  function renderInlineRuhsatViewer(vehicleId, url, options) {
     const content = document.getElementById('ruhsat-modal-content');
     const saveBtn = document.getElementById('ruhsat-save-btn');
     if (!content || !saveBtn) return false;
+    const viewerOptions = options || {};
 
     setRuhsatInlineViewerMode(true);
     setRuhsatSaveBtnVisibility(saveBtn, false);
     content.innerHTML = '';
-
-    const backBtn = document.createElement('button');
-    backBtn.type = 'button';
-    backBtn.className = 'ruhsat-inline-back-btn';
-    backBtn.textContent = '← Geri Dön';
-    backBtn.onclick = function() {
-      setRuhsatInlineViewerMode(false);
-      window.openRuhsatModal(vehicleId);
-    };
 
     const frameWrap = document.createElement('div');
     frameWrap.className = 'ruhsat-inline-frame-wrap';
@@ -3292,7 +3292,41 @@ function renderVehicleDetailLeft(vehicle) {
     frame.setAttribute('title', 'Ruhsat PDF');
     frameWrap.appendChild(frame);
 
-    content.appendChild(backBtn);
+    const actionsWrap = document.createElement('div');
+    actionsWrap.className = 'ruhsat-inline-actions';
+
+    const backBtn = document.createElement('button');
+    backBtn.type = 'button';
+    backBtn.className = 'ruhsat-inline-back-btn';
+    backBtn.textContent = '\u2190 Geri D\u00F6n';
+    backBtn.onclick = function() {
+      setRuhsatInlineViewerMode(false);
+      window.openRuhsatModal(vehicleId);
+    };
+    actionsWrap.appendChild(backBtn);
+
+    if (viewerOptions.showPrintButton) {
+      const printBtn = document.createElement('button');
+      printBtn.type = 'button';
+      printBtn.className = 'ruhsat-inline-print-btn';
+      printBtn.textContent = '\u2399 Yazd\u0131r / Payla\u015F';
+      printBtn.onclick = function() {
+        try {
+          if (frame && frame.contentWindow && typeof frame.contentWindow.print === 'function') {
+            frame.contentWindow.focus();
+            frame.contentWindow.print();
+            return;
+          }
+        } catch (e) {
+          console.warn('Inline print failed, fallback to new tab', e);
+        }
+        const fallbackUrl = viewerOptions.printUrl || url;
+        window.open(fallbackUrl, '_blank', 'noopener');
+      };
+      actionsWrap.appendChild(printBtn);
+    }
+
+    content.appendChild(actionsWrap);
     content.appendChild(frameWrap);
     return true;
   }
@@ -3426,10 +3460,16 @@ function renderVehicleDetailLeft(vehicle) {
     if (!vid) return;
     const hasMatchMedia = typeof window.matchMedia === 'function';
     const isMobileViewport = hasMatchMedia ? window.matchMedia('(max-width: 768px)').matches : window.innerWidth <= 768;
+    const isIosPwa = isIosStandalonePwa();
     const url = 'ruhsat.php?id=' + encodeURIComponent(vid);
     const printableUrl = url + '#toolbar=1&navpanes=0&view=FitH';
 
-    // Mobil: inline viewer yerine ikinci sekmede (print toolbar açık) görüntüle.
+    // iOS PWA: modal icinde viewer ac (geri + yazdir/paylas), uygulamadan cikmak gerekmesin.
+    if (isIosPwa && renderInlineRuhsatViewer(vid, printableUrl, { showPrintButton: true, printUrl: printableUrl })) {
+      return;
+    }
+
+    // Mobil tarayici: ikinci sekmede (print toolbar acik) goruntule.
     if (isMobileViewport) {
       window.open(printableUrl, '_blank', 'noopener');
       return;
