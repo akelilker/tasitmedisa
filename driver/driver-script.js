@@ -1909,8 +1909,8 @@ const API_BASE = (function(){
               legend.style.fontSize = '11px';
               legend.style.color = '#aaa';
               legend.innerHTML = '<div class="boya-legend-item"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#888;margin-right:6px;"></span>Boyasız</div><div class="boya-legend-item"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#28a745;margin-right:6px;"></span>Boyalı</div><div class="boya-legend-item"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#d40000;margin-right:6px;"></span>Değişen</div>';
-              schemaWrapper.appendChild(legend);
               container.appendChild(schemaWrapper);
+              container.appendChild(legend);
           })
           .catch(function(err) { console.error('Kaporta SVG yüklenemedi:', err); });
   }
