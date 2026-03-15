@@ -3428,6 +3428,17 @@ function renderVehicleDetailLeft(vehicle) {
     return cleanFragment ? (cleanBase + '#' + cleanFragment) : cleanBase;
   }
 
+  function resolveRuhsatUrl(path) {
+    const raw = String(path || '').trim();
+    if (!raw) return '';
+    if (/^(https?:)?\/\//i.test(raw) || raw.startsWith('data/ruhsat/') || raw.startsWith('/data/ruhsat/')) {
+      return raw;
+    }
+    if (raw.startsWith('ruhsat/')) return 'data/' + raw;
+    if (raw.startsWith('/ruhsat/')) return '/data' + raw;
+    return raw;
+  }
+
   function renderInlineRuhsatViewer(vehicleId, url, options) {
     const content = document.getElementById('ruhsat-modal-content');
     const saveBtn = document.getElementById('ruhsat-save-btn');
@@ -3509,7 +3520,7 @@ function renderVehicleDetailLeft(vehicle) {
       btnGroup.classList.add('ruhsat-preview-row');
       const previewLink = document.createElement('a');
       previewLink.className = 'ruhsat-preview-link';
-      previewLink.href = vehicle.ruhsatPath;
+      previewLink.href = resolveRuhsatUrl(vehicle.ruhsatPath);
       previewLink.target = '_blank';
       previewLink.rel = 'noopener';
       previewLink.setAttribute('aria-label', 'Ruhsatı görüntüle');
@@ -3640,7 +3651,7 @@ function renderVehicleDetailLeft(vehicle) {
     const hasMatchMedia = typeof window.matchMedia === 'function';
     const isMobileViewport = hasMatchMedia ? window.matchMedia('(max-width: 768px)').matches : window.innerWidth <= 768;
     const isIosPwa = isIosStandalonePwa();
-    const url = vehicle.ruhsatPath;
+    const url = resolveRuhsatUrl(vehicle.ruhsatPath);
     const inlineViewerUrl = buildPdfViewerUrl(url, 'toolbar=1&navpanes=0&zoom=page-fit&view=FitH');
     const printableUrl = url;
 
