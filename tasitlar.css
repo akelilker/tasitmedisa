@@ -2349,6 +2349,29 @@
   padding: 8px 12px;
   cursor: pointer;
 }
+#ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-inline-actions {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 auto 10px auto;
+}
+#ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-inline-print-btn {
+  width: auto !important;
+  margin: 0;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.28) !important;
+  border-radius: 8px;
+  background: transparent !important;
+  color: var(--form-label-color, #ffffff) !important;
+  font-size: 13px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
 #ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-inline-frame-wrap {
   width: 100%;
   height: min(62vh, 560px);
@@ -2417,6 +2440,17 @@
   }
   #ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-inline-frame-wrap {
     height: min(66vh, 620px);
+  }
+  #ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-inline-actions {
+    margin-bottom: 8px;
+    gap: 6px;
+  }
+  #ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-inline-back-btn,
+  #ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-inline-print-btn {
+    margin: 0;
+    min-height: 36px;
+    padding: 7px 10px;
+    font-size: 12px;
   }
 }
 
