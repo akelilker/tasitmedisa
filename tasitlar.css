@@ -1,4 +1,4 @@
-﻿/* =========================================
+/* =========================================
    TAÃ…ÂITLAR MODAL CSS - Ortak kurallar style-core.css'te; burada sadece sayfa Ã¶zel override'lar
    ========================================= */
 
@@ -2296,6 +2296,12 @@
 #ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-select-box.has-file {
   border-color: rgba(40, 167, 69, 0.65) !important;
   color: var(--green-success, #28a745) !important;
+}
+#ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-select-box.upload-success {
+  border-color: var(--success);
+  background: rgba(0, 200, 120, 0.15);
+  color: #00ff9c;
+  box-shadow: 0 0 12px rgba(0,255,150,0.25);
 }
 
 /* Ruhsat modal: YÃ¼kle butonu - yeÅŸil metin, yeÅŸil Ã§erÃ§eve, hover bÃ¼yÃ¼me + yarÄ± saydam yeÅŸil */
