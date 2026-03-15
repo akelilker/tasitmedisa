@@ -2427,6 +2427,9 @@
 </html>`;
 
     function printWithIframeFallback(sourceError) {
+      // #region agent log
+      fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'6fdf2b'},body:JSON.stringify({sessionId:'6fdf2b',location:'tasitlar.js:printWithIframeFallback',message:'iframe yolu kullanılıyor',data:{reason:String(sourceError||'')},timestamp:Date.now(),hypothesisId:'H1'})}).catch(function(){});
+      // #endregion
       var iframe = document.createElement('iframe');
       iframe.setAttribute('aria-hidden', 'true');
       iframe.style.position = 'fixed';
@@ -2546,7 +2549,13 @@
       isStandaloneMode = !!((window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone);
     } catch (e) {}
     var isIOSDevice = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    // #region agent log
+    fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'6fdf2b'},body:JSON.stringify({sessionId:'6fdf2b',location:'tasitlar.js:printPath',message:'Taşıt Kartı yazdırma dalı',data:{isStandaloneMode:isStandaloneMode,isIOSDevice:isIOSDevice,willForceIframe:!!(isStandaloneMode&&isIOSDevice)},timestamp:Date.now(),hypothesisId:'H1'})}).catch(function(){});
+    // #endregion
     if (isStandaloneMode && isIOSDevice) {
+      // #region agent log
+      fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'6fdf2b'},body:JSON.stringify({sessionId:'6fdf2b',location:'tasitlar.js:forceIframe',message:'iOS PWA iframe yolu kullanıldı',data:{reason:'ios_standalone_forced_iframe'},timestamp:Date.now(),hypothesisId:'H1'})}).catch(function(){});
+      // #endregion
       printWithIframeFallback('ios_standalone_forced_iframe');
       return;
     }
@@ -2555,7 +2564,9 @@
     try {
       printWindow = window.open('', '_blank', 'width=900,height=700');
     } catch (popupOpenErr) {}
-
+    // #region agent log
+    fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'6fdf2b'},body:JSON.stringify({sessionId:'6fdf2b',location:'tasitlar.js:popupOpen',message:'Popup açıldı mı',data:{popupIsNull:!printWindow},timestamp:Date.now(),hypothesisId:'H3'})}).catch(function(){});
+    // #endregion
     if (!printWindow) {
       printWithIframeFallback('popup_blocked_or_null');
       return;
