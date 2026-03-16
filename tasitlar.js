@@ -505,11 +505,10 @@
 
     const isDataLoaded = !!window.__medisaDataLoaded;
     const localVehicles = readVehicles();
-    // LocalStorage'da (önbellekte) veri var mı kontrol et
     const hasLocalData = Array.isArray(localVehicles) && localVehicles.length > 0;
 
-    // Yükleme (Loading) ekranını SADECE veri HİÇ YOKSA (sıfır kurulumda) göster
-    if (!hasLocalData && typeof window.loadDataFromServer === 'function') {
+    // SADECE HİÇ VERİ YOKSA (Sıfır Kurulum) YÜKLEME EKRANI GÖSTER
+    if (!isDataLoaded && !hasLocalData && typeof window.loadDataFromServer === 'function') {
       if (content) {
         content.innerHTML = `
           <div class="vehicles-loading-state" style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:200px; color:#888;">
@@ -521,42 +520,37 @@
         syncVehiclesListModeClass(false);
       }
 
-      // Kırmızı logonun yavaş yüklenmesini engellemek için CSS class'ı ekle
-      if (DOM.vehiclesModalContainer) {
-        DOM.vehiclesModalContainer.classList.add('hide-marker');
-      }
+      // Varsa arkaplandaki logoyu loading sırasında gizle (görsel iyileştirme)
+      if (DOM.vehiclesModalContainer) DOM.vehiclesModalContainer.classList.add('hide-marker');
 
-      window.loadDataFromServer(true).then(function() {
+      window.loadDataFromServer(false).then(function() {
         if (DOM.vehiclesModalContainer) DOM.vehiclesModalContainer.classList.remove('hide-marker');
         const m = DOM.vehiclesModal;
         if (m && m.classList.contains('active')) {
           if (currentView === 'dashboard') renderBranchDashboard(true);
           else renderVehicles(getVSearchInput()?.value || '');
         }
-      }).catch(function(err) {
-        console.error("Taşıtlar yüklenirken hata:", err);
+      }).catch(function() {
         if (DOM.vehiclesModalContainer) DOM.vehiclesModalContainer.classList.remove('hide-marker');
         if (content) {
-          content.innerHTML = '<div style="text-align:center; padding:24px; color:#d40000">Sunucu ile bağlantı kurulamadı. Lütfen sayfayı yenileyin veya internetinizi kontrol edin.</div>';
+          content.innerHTML = '<div style="text-align:center; padding:24px; color:#d40000">Veri yüklenemedi. Lütfen internet bağlantınızı kontrol edin.</div>';
           content.dataset.renderScope = 'loading-error';
           content.dataset.renderSignature = 'loading-error';
           syncVehiclesListModeClass(false);
         }
       });
-
       return;
     }
 
-    // ELİMİZDE LOCAL VERİ VARSA (Önbellek) ve sunucu arkada sync oluyorsa
+    // LOCAL VERİ VARSA VE SUNUCU GÜNCELLENİYORSA ARKA PLANDA SESSİZCE ÇALIŞTIR
     if ((!isDataLoaded || window.__medisaDataLoading) && typeof window.loadDataFromServer === 'function' && !window.__medisaBackgroundSyncing) {
       window.__medisaBackgroundSyncing = true; // Çifte isteği engelle
 
-      // Arka planda SESSİZCE sunucudan taze veriyi çek
       window.loadDataFromServer(false).then(function() {
         window.__medisaBackgroundSyncing = false;
         const m = DOM.vehiclesModal;
         if (m && m.classList.contains('active')) {
-          // Yeni taze veri inince ekranı anında hissettirmeden yenile
+          // Yeni taze veri inince ekranı hissettirmeden yenile
           if (currentView === 'dashboard') renderBranchDashboard(true);
           else renderVehicles(getVSearchInput()?.value || '');
         }
@@ -565,7 +559,7 @@
       });
     }
 
-    // Veri önbellekte olduğu için (10 saniye beklemeden) 0 milisaniyede ANINDA EKRANI ÇİZ!
+    // BEKLEMEDEN ANINDA MEVCUT VERİYLE EKRANI ÇİZ!
     if (currentView === 'dashboard') {
       renderBranchDashboard(true); // Force true ile kesin çiz
     } else {
