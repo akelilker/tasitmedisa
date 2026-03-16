@@ -440,7 +440,7 @@
 '    .history-print-text { font-size: 12px; line-height: 1.25; }' +
 '    .history-print-extra { font-size: 11px; color: #444; margin-top: 1px; line-height: 1.2; }' +
 '    .history-print-empty { font-size: 12px; color: #666; }' +
-'    @media (max-width: 760px) { .history-grid { grid-template-columns: 1fr; } }' +
+'    @media (max-width: 760px) { .history-grid { grid-template-columns: 1fr 1fr; } }' +
 '    @media print { body { margin: 8mm; -webkit-print-color-adjust: exact; print-color-adjust: exact; } .print-preview-toolbar { display: none !important; } .kaporta-print-section { page-break-inside: auto; break-inside: auto; } .print-history-block { break-inside: avoid; page-break-inside: avoid; } .history-page h3, .history-page .subtitle { page-break-after: avoid; break-after: avoid-page; } }' +
 '  </style>' +
 '</head>' +

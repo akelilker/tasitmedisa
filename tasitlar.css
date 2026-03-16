@@ -2196,7 +2196,7 @@
   margin-left: auto;
   margin-right: auto;
 }
-#ruhsat-yukleme-modal #ruhsat-modal-content .universal-btn-group button {
+#ruhsat-yukleme-modal #ruhsat-modal-content .universal-btn-group button:not(.ruhsat-preview-link) {
   background: transparent !important;
   border: none !important;
   color: var(--form-label-color, #ffffff) !important;
@@ -2245,6 +2245,26 @@
 }
 #ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-preview-link iframe::-webkit-scrollbar {
   display: none;
+}
+#ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-preview-link .ruhsat-preview-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+#ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-preview-link .ruhsat-preview-hint {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: block;
+  padding: 3px 0;
+  font-size: 11px;
+  text-align: center;
+  color: #ffffff;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.58), rgba(0, 0, 0, 0));
+  pointer-events: none;
 }
 #ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-add-btn {
   margin-left: 12px;
@@ -2405,8 +2425,8 @@
   display: block;
 }
 @media (max-width: 640px) {
-  /* Mobilde de ruhsat ÃƒÆ’Ã‚Â¶n izlemesi (iframe) aktif edilsin, kuru metin kaldÃƒâ€Ã‚Â±rÃƒâ€Ã‚Â±lsÃƒâ€Ã‚Â±n */
-  #ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-preview-link {
+  /* Mobilde ön izleme kapalı: yalnız Görüntüle / Yazdır kartı */
+  #ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-preview-link.ruhsat-preview-mobile-btn {
     height: 140px !important; /* Mobilde jilet gibi duracak ferah yÃƒÆ’Ã‚Â¼kseklik */
     display: flex !important;
     justify-content: center !important;
@@ -2415,14 +2435,14 @@
     border-radius: 8px !important;
     overflow: hidden !important;
   }
-  #ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-preview-link iframe {
-    display: block !important;
-    width: 100% !important;
-    height: 100% !important;
-    pointer-events: none !important; /* ÃƒÆ’Ã¢â‚¬â€œnizlemeye tÃƒâ€Ã‚Â±klandÃƒâ€Ã‚Â±Ãƒâ€Ã…Â¸Ãƒâ€Ã‚Â±nda direkt modal aÃƒÆ’Ã‚Â§Ãƒâ€Ã‚Â±lsÃƒâ€Ã‚Â±n */
+  #ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-preview-link.ruhsat-preview-mobile-btn iframe,
+  #ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-preview-link.ruhsat-preview-mobile-btn .ruhsat-preview-image,
+  #ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-preview-link.ruhsat-preview-mobile-btn .ruhsat-preview-hint {
+    display: none !important;
+    pointer-events: none !important;
   }
-  #ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-preview-link::after,
-  #ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-preview-link::before {
+  #ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-preview-link.ruhsat-preview-mobile-btn::after,
+  #ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-preview-link.ruhsat-preview-mobile-btn::before {
     display: none !important;
     content: none !important;
   }
