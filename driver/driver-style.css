@@ -5008,7 +5008,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
 
   .dashboard-page .driver-left-panel-content {
-    overflow-y: hidden !important;
+    overflow-y: auto !important;
     overflow-x: visible !important;
   }
 
@@ -5258,10 +5258,10 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 /* 2. Ortadaki kırmızı dikey çizgi footera değmeden Bildir butonu hizasında kesilsin (Mobil) */
 @media (max-width: 768px) {
     .dashboard-page .driver-left-panel {
-        margin-bottom: 75px !important; /* Sınır çizgisini taşıyan ana kutuyu alttan kırp */
+        margin-bottom: 0 !important;
     }
     .dashboard-page .driver-left-panel-content {
-        margin-bottom: 0 !important; 
+        margin-bottom: 0 !important;
     }
 }
 
