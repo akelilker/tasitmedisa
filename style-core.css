@@ -784,6 +784,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   border-color: rgba(var(--orange-warn-rgb), 0.85) !important;
 }
 /* Tarih uyarÃ½ kartlarÃ½: settings-dropdown button mirasÃ½nÃ½ ez, dikey sÃ½kÃ½Ã¾mayÃ½ kaldÃ½r */
+<<<<<<< ours
 #notifications-dropdown .notification-item.date-warning-red-border,
 #notifications-dropdown .notification-item.date-warning-orange-border {
   display: flex !important;
@@ -799,11 +800,30 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
 }
 #notifications-dropdown .notification-item.date-warning-red-border > div,
 #notifications-dropdown .notification-item.date-warning-orange-border > div {
+=======
+#notifications-dropdown .notification-item.date-warning-red-border,
+#notifications-dropdown .notification-item.date-warning-orange-border {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  justify-content: center !important;
+  height: auto !important;
+  min-height: 48px !important;
+  padding: 8px 12px !important;
+  white-space: normal !important;
+  overflow: hidden !important;
+  text-align: left !important;
+}
+#notifications-dropdown .notification-item.date-warning-red-border > div,
+#notifications-dropdown .notification-item.date-warning-orange-border > div {
+>>>>>>> theirs
   width: 100% !important;
   margin-bottom: 0 !important;
 }
 
 /* Bildirim: Plaka + açıklama (uzarsa alt satıra iner), tarih ikinci satırda sola dayalı */
+<<<<<<< ours
+<<<<<<< ours
 #notifications-dropdown .notification-item-activity {
   border: 1px solid rgba(255,255,255,0.25) !important;
   flex-direction: column !important;
@@ -815,6 +835,24 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   overflow: hidden !important;
   text-align: left !important;
 }
+=======
+=======
+>>>>>>> theirs
+#notifications-dropdown .notification-item-activity {
+  border: 1px solid rgba(255,255,255,0.25) !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  justify-content: center !important;
+  height: auto !important;
+  min-height: 48px !important;
+  overflow: hidden !important;
+  padding: 8px 12px !important;
+  text-align: left !important;
+}
+<<<<<<< ours
+>>>>>>> theirs
+=======
+>>>>>>> theirs
 
 /* Okunmamış bildirimler: sadece kırmızı çerçeve, arka plan değişmez */
 #notifications-dropdown .notification-item-activity.notification-unread {
@@ -861,6 +899,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   align-items: center !important;
   justify-content: space-between !important;
   border: 1px solid rgba(255, 140, 0, 0.6) !important;
+<<<<<<< ours
   border-radius: 6px !important;
   background: var(--bg) !important;
   padding: 10px 12px !important;
@@ -959,6 +998,106 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   border: none !important;
   transform: none !important;
 }
+=======
+  border-radius: 6px !important;
+  background: var(--bg) !important;
+  padding: 8px 12px !important;
+  width: 100% !important;
+  min-height: 48px !important;
+  box-sizing: border-box !important;
+  margin-bottom: 4px !important;
+}
+
+#notifications-dropdown .kasko-excel-notification {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  border: 1px solid rgba(212, 0, 0, 0.6) !important;
+  border-radius: 6px !important;
+  background: var(--bg) !important;
+  padding: 8px 12px !important;
+  width: 100% !important;
+  min-height: 48px !important;
+  box-sizing: border-box !important;
+  margin-bottom: 4px !important;
+}
+
+#notifications-dropdown .mtv-notification:last-child,
+#notifications-dropdown .kasko-excel-notification:last-child {
+  margin-bottom: 0 !important;
+}
+
+#notifications-dropdown .mtv-notification > div,
+#notifications-dropdown .kasko-excel-notification > div {
+  width: auto !important;
+  margin-bottom: 0 !important;
+}
+
+#notifications-dropdown .mtv-text-container {
+  flex: 1 1 auto !important;
+  text-align: left !important;
+  padding-right: 6px !important;
+  min-width: 0 !important;
+}
+
+#notifications-dropdown .mtv-text-container .mtv-main-text {
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: var(--orange-warn) !important;
+  white-space: normal !important;
+  display: block !important;
+  line-height: 1.35 !important;
+}
+
+#notifications-dropdown .kasko-excel-notification .mtv-main-text {
+  color: var(--theme-color) !important;
+  margin-bottom: 0 !important;
+}
+
+#notifications-dropdown .mtv-dismiss-wrapper {
+  flex: 0 0 auto !important;
+  position: relative;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin-left: 6px !important;
+}
+
+#notifications-dropdown .mtv-dismiss-btn {
+  background: transparent !important;
+  border: none !important;
+  width: 18px !important;
+  height: 18px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  padding: 0 !important;
+  outline: none !important;
+  color: var(--txt-muted) !important;
+}
+
+#notifications-dropdown .mtv-notification .mtv-dismiss-btn {
+  color: var(--orange-warn) !important;
+}
+#notifications-dropdown .kasko-excel-notification .mtv-dismiss-btn {
+  color: var(--theme-color) !important;
+}
+
+#notifications-dropdown .mtv-dismiss-btn svg {
+  width: 12px !important;
+  height: 12px !important;
+}
+
+#notifications-dropdown .mtv-dismiss-btn:hover,
+#notifications-dropdown .mtv-dismiss-btn:active,
+#notifications-dropdown .mtv-dismiss-btn:focus {
+  background: transparent !important;
+  border: none !important;
+  transform: none !important;
+}
+>>>>>>> theirs
 
 .mtv-tooltip {
   position: absolute;
@@ -1244,6 +1383,43 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
     text-align: center; /* Masaüstünde ortalı */
     justify-content: center; /* Flexbox için ortalama */
   }
+<<<<<<< ours
+=======
+  /* Masaüstü: Bildirim kartları tek tip akış, tarih satırı kart içinde kalsın */
+  #notifications-dropdown .notification-item:not(.mtv-notification):not(.kasko-excel-notification) {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    justify-content: center !important;
+    height: auto !important;
+    min-height: 56px !important;
+    max-height: none !important;
+    overflow: visible !important;
+    white-space: normal !important;
+    padding: 8px 12px !important;
+    box-sizing: border-box !important;
+  }
+  #notifications-dropdown .notification-item:not(.mtv-notification):not(.kasko-excel-notification) .notif-line1 {
+    width: 100% !important;
+    margin: 0 0 1px 0 !important;
+  }
+  #notifications-dropdown .notification-item:not(.mtv-notification):not(.kasko-excel-notification) .notif-line2 {
+    display: block !important;
+    width: 100% !important;
+    position: static !important;
+    top: auto !important;
+    transform: none !important;
+    flex-shrink: 0 !important;
+    min-height: 1.2em !important;
+    line-height: 1.2 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  .settings-dropdown button:not(.notification-item) {
+    text-align: center; /* Masaüstünde ortalı */
+    justify-content: center; /* Flexbox için ortalama */
+  }
+>>>>>>> theirs
   .has-submenu {
     justify-content: center !important; /* Masaüstünde ok ve metin ortada */
   }
@@ -1710,6 +1886,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
 /* MOBİL AYARLARI: 768px ve altında modal alt çerçeve footer ışığında ezilmesin; sınır sadece top/bottom */
 @media (max-width: 768px) {
     /* Kasko Değer Listesi bildirimi: X sağda, metin solda, dikey kompakt */
+<<<<<<< ours
+<<<<<<< ours
     #notifications-dropdown .mtv-notification,
     #notifications-dropdown .kasko-excel-notification {
         flex-wrap: nowrap !important;
@@ -1720,6 +1898,20 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
     }
     #notifications-dropdown .mtv-notification .mtv-text-container,
     #notifications-dropdown .kasko-excel-notification .mtv-text-container {
+=======
+=======
+>>>>>>> theirs
+    #notifications-dropdown .mtv-notification,
+    #notifications-dropdown .kasko-excel-notification {
+        flex-wrap: nowrap !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        padding: 8px 12px !important;
+        min-height: 48px !important;
+    }
+    #notifications-dropdown .mtv-notification .mtv-text-container,
+    #notifications-dropdown .kasko-excel-notification .mtv-text-container {
+>>>>>>> theirs
         order: 1 !important;
         flex: 1 1 auto !important;
         min-width: 0 !important;
