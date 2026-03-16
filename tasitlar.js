@@ -2911,26 +2911,22 @@ function renderVehicleDetailLeft(vehicle) {
     input.accept = '.pdf, image/jpeg, image/png, image/jpg, image/webp';
     input.id = 'ruhsat-file-input';
     input.setAttribute('aria-label', 'Ruhsat PDF dosyası seç');
-    input.style.marginBottom = '8px';
-    let selectBox = null;
-    if (!hasExistingRuhsat) {
-      input.style.display = 'none';
-      selectBox = document.createElement('button');
-      selectBox.type = 'button';
-      selectBox.className = 'ruhsat-select-box';
-      selectBox.textContent = 'Yükle';
-      selectBox.onclick = function() { input.click(); };
-      content.appendChild(selectBox);
-    }
+    input.style.display = 'none';
+    const selectBox = document.createElement('button');
+    selectBox.type = 'button';
+    selectBox.className = 'ruhsat-select-box';
+    selectBox.textContent = 'Dosya Se\u00e7';
+    selectBox.onclick = function() { input.click(); };
+    content.appendChild(selectBox);
     input.onchange = function() {
       const hasFile = input.files.length > 0;
       setRuhsatSaveBtnVisibility(saveBtn, hasFile);
-      if (!hasExistingRuhsat && selectBox) {
+      if (selectBox) {
         if (hasFile) {
           selectBox.classList.add('upload-success');
-          selectBox.textContent = '✓ ' + input.files[0].name + ' yüklendi';
+          selectBox.textContent = '\u2713 ' + input.files[0].name;
         } else {
-          selectBox.textContent = 'Yükle';
+          selectBox.textContent = 'Dosya Se\u00e7';
           selectBox.classList.remove('has-file');
         }
       }
@@ -2946,7 +2942,7 @@ function renderVehicleDetailLeft(vehicle) {
     const input = document.getElementById('ruhsat-file-input');
     const vehicleId = (window.currentDetailVehicleId || '').toString();
     if (!input || !input.files || !input.files[0] || !vehicleId) {
-      alert('Lütfen PDF dosyası seçin.');
+      alert('L\u00fctfen ruhsat dosyas\u0131 se\u00e7in.');
       return;
     }
     const formData = new FormData();
@@ -2978,19 +2974,25 @@ function renderVehicleDetailLeft(vehicle) {
         if (selectBox && input.files && input.files[0]) {
           selectBox.classList.remove('has-file');
           selectBox.classList.add('upload-success');
-          selectBox.textContent = '✓ ' + input.files[0].name + ' yuklendi';
+          selectBox.textContent = '\u2713 Ruhsat Ba\u015far\u0131yla Y\u00fcklendi';
         }
 
         setRuhsatSaveBtnVisibility(document.getElementById('ruhsat-save-btn'), false);
+        if (typeof showToast === 'function') {
+          showToast('Ruhsat Ba\u015far\u0131yla Y\u00fcklendi', 'success');
+        }
 
         setTimeout(function() {
-          closeEventModal('ruhsat');
-          showVehicleDetail(vehicleId);
-        }, 900);
+          const modal = document.getElementById('ruhsat-yukleme-modal');
+          const isStillOpen = !!(modal && modal.style.display !== 'none');
+          if (isStillOpen && String(window.currentDetailVehicleId || '') === String(vehicleId)) {
+            window.openRuhsatModal(vehicleId);
+          }
+        }, 2000);
       })
       .catch(function(err) {
         console.error(err);
-        alert((err && err.message) ? err.message : 'Yukleme sirasinda hata olustu.');
+        alert((err && err.message) ? err.message : 'Y\u00fckleme s\u0131ras\u0131nda hata olu\u015ftu.');
       });
   };
 
