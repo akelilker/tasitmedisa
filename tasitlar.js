@@ -581,22 +581,22 @@
             <div class="vt-left"></div>
             <div class="vt-right">
                 <div id="v-search-container" class="v-search-container">
-                    <input type="text" id="v-search-input" class="v-search-input" placeholder="Plaka, marka, kullanıcı ara..." oninput="handleSearch(this.value)">
+                    <input type="text" id="v-search-input" class="v-search-input" placeholder="Plaka, marka, kullan\u0131c\u0131 ara..." oninput="handleSearch(this.value)">
                 </div>
                 <button class="vt-icon-btn search-toggle-btn" onclick="toggleSearchBox('global')" title="Genel Arama">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></svg>
                 </button>
                 <div class="v-transmission-wrap">
-                    <button type="button" class="vt-icon-btn v-transmission-btn" onclick="toggleTransmissionMenu(event)" title="ÅanzÄ±man tipi" aria-label="ÅanzÄ±man tipi">
+                    <button type="button" class="vt-icon-btn v-transmission-btn" onclick="toggleTransmissionMenu(event)" title="\u015Eanz\u0131man tipi" aria-label="\u015Eanz\u0131man tipi">
                         <svg width="18" height="18" viewBox="0 0 20.54 21.99" xmlns="http://www.w3.org/2000/svg"><g transform="translate(-107.004,-166.832)"><path fill="currentColor" d="m 112.60032,188.78148 c -0.0256,-0.0273 -0.45199,-0.10191 -0.94757,-0.1658 -1.00413,-0.12944 -1.76325,-0.3714 -2.61428,-0.83327 -0.60697,-0.3294 -1.42327,-0.94066 -1.67886,-1.25715 -0.24607,-0.3047 -0.39492,-0.93627 -0.34676,-1.47131 0.0588,-0.65313 0.40257,-1.18851 1.06416,-1.65727 0.42671,-0.30234 0.53233,-0.43143 0.53275,-0.65118 0.001,-0.58859 0.20829,-1.06067 0.69682,-1.58801 0.2711,-0.29264 0.61074,-0.61367 0.75476,-0.71341 0.22266,-0.15421 0.26185,-0.25085 0.26185,-0.64578 0,-0.6564 0.30408,-1.2505 0.96856,-1.89238 0.6772,-0.65416 1.68052,-1.20789 2.64914,-1.46205 0.74747,-0.19613 0.81479,-0.2606 0.90601,-0.86768 0.0827,-0.55057 0.75544,-1.25924 1.28038,-1.34885 l 0.3852,-0.0658 v -1.04459 -1.0446 l -0.42049,-0.26304 c -0.93193,-0.58298 -1.36919,-1.51394 -1.2684,-2.70047 0.0787,-0.9269 0.75132,-1.85208 1.5617,-2.14823 0.46348,-0.16938 1.40296,-0.17188 1.85909,-0.005 0.45128,0.16516 1.09064,0.8283 1.3212,1.37035 0.20729,0.48735 0.24139,1.41667 0.0739,2.0135 -0.14208,0.5062 -0.64856,1.1355 -1.18295,1.4698 l -0.4205,0.26304 v 0.9986 0.99859 l 0.46673,0.16548 c 0.65969,0.2339 1.03079,0.64915 1.20006,1.34288 0.0767,0.31438 0.15784,0.5912 0.18028,0.61516 0.0224,0.024 0.37581,0.13516 0.78525,0.24713 1.14802,0.31393 2.01316,0.81253 2.71253,1.5633 0.69276,0.74366 0.83412,1.02672 0.84015,1.68222 0.004,0.43648 0.0369,0.49605 0.5042,0.91474 0.89187,0.799 1.1844,1.30079 1.20919,2.0742 0.008,0.24957 0.10008,0.36952 0.50722,0.66068 0.56645,0.40509 0.82954,0.71382 0.99011,1.1619 0.22508,0.62806 0.10975,1.58545 -0.24429,2.02798 -0.25087,0.31357 -1.06736,0.926 -1.67741,1.25818 -0.76119,0.41447 -1.64395,0.7082 -2.57019,0.85522 -0.74795,0.11871 -10.23927,0.24982 -10.33951,0.14282 z m 11.00764,-1.9907 c 1.0103,-0.27582 2.42651,-1.14038 2.42651,-1.48133 0,-0.17965 -0.44457,-0.61412 -0.78029,-0.76256 -0.23328,-0.10315 -0.3055,-0.0863 -0.57638,0.13401 -0.42551,0.34616 -1.39721,0.89061 -1.5895,0.89061 -0.0869,0 -0.19963,0.0445 -0.25052,0.0988 -0.21135,0.2256 -1.64301,0.30377 -5.56354,0.30377 -3.92052,0 -5.35218,-0.0782 -5.56353,-0.30377 -0.0509,-0.0543 -0.16362,-0.0988 -0.25052,-0.0988 -0.19229,0 -1.16399,-0.54445 -1.58951,-0.89061 -0.27087,-0.22036 -0.34309,-0.23716 -0.57637,-0.13401 -0.28526,0.12613 -0.7803,0.57408 -0.7803,0.70609 0,0.37349 1.96466,1.48453 2.95182,1.66928 0.13093,0.0245 2.74857,0.0508 5.81699,0.0584 5.29503,0.0131 5.61691,0.003 6.32514,-0.18988 z m -0.85857,-2.83357 c 0.73983,-0.37625 1.56517,-1.04986 1.56835,-1.28003 0.002,-0.11045 -0.17648,-0.37057 -0.39557,-0.57805 -0.41885,-0.39666 -0.50035,-0.39799 -0.88712,-0.0146 -0.32081,0.31802 -0.92008,0.65579 -1.61161,0.90835 -0.64685,0.23624 -0.72625,0.24083 -4.1655,0.24083 -3.33178,0 -3.53568,-0.0108 -4.10158,-0.21722 -0.69845,-0.25477 -1.30995,-0.61648 -1.72299,-1.01918 -0.1626,-0.15853 -0.31823,-0.28817 -0.34584,-0.2881 -0.13448,3.8e-4 -0.85956,0.78824 -0.85956,0.93399 0,0.29783 1.06234,1.07293 1.92113,1.40168 0.47644,0.18238 0.79667,0.19288 5.31558,0.17425 l 4.80861,-0.0198 z m -1.30853,-2.73338 c 0.58186,-0.33177 1.26092,-1.05572 1.26092,-1.34429 0,-0.50342 -1.42219,-1.60307 -2.30083,-1.77902 l -0.33705,-0.0675 -0.0527,0.54539 c -0.0643,0.66481 -0.33103,1.16688 -0.79931,1.50442 -0.34104,0.24581 -0.40427,0.2541 -1.93878,0.2541 -1.58521,0 -1.5865,-1.9e-4 -1.97402,-0.28685 -0.4415,-0.3266 -0.78619,-1.04961 -0.78619,-1.6491 v -0.37362 l -0.3512,0.0703 c -0.86017,0.17226 -2.31496,1.2742 -2.31496,1.75349 0,0.32344 1.0611,1.31622 1.59831,1.49541 0.36701,0.12242 1.10046,0.14597 4.01966,0.12908 3.51365,-0.0203 3.57723,-0.0244 3.97618,-0.25183 z m -3.04906,-2.58941 c 0.1148,-0.15606 -0.09,-2.57753 -0.23073,-2.72772 -0.0532,-0.0568 -0.46686,-0.0882 -0.94313,-0.0716 l -0.84829,0.0296 -0.0745,1.01642 c -0.041,0.55904 -0.10884,1.1326 -0.15082,1.27459 -0.15194,0.51395 0.0211,0.6058 1.14155,0.6058 0.69663,0 1.0416,-0.0396 1.1059,-0.12706 z m -0.43177,-8.51744 c 0.2573,-0.27466 0.28416,-0.35831 0.23661,-0.73675 -0.14496,-1.15367 -1.6699,-1.20492 -1.84026,-0.0618 -0.0463,0.31044 -0.009,0.42125 0.25113,0.7369 0.25542,0.31053 0.36769,0.37152 0.68392,0.37152 0.29475,0 0.44247,-0.0684 0.6686,-0.30983 z"/></g></svg>
                     </button>
                     <div id="v-transmission-dropdown" class="v-transmission-dropdown" role="menu" aria-hidden="true">
-                        <button type="button" class="v-transmission-option${transmissionFilter === '' ? ' active' : ''}" data-value="" role="menuitem">${transmissionFilter === '' ? '✓ ' : ''}Tümü</button>
+                        <button type="button" class="v-transmission-option${transmissionFilter === '' ? ' active' : ''}" data-value="" role="menuitem">${transmissionFilter === '' ? '\u2713 ' : ''}T\u00FCm\u00FC</button>
                         <button type="button" class="v-transmission-option${transmissionFilter === 'otomatik' ? ' active' : ''}" data-value="otomatik" role="menuitem">${transmissionFilter === 'otomatik' ? '✓ ' : ''}Otomatik</button>
                         <button type="button" class="v-transmission-option${transmissionFilter === 'manuel' ? ' active' : ''}" data-value="manuel" role="menuitem">${transmissionFilter === 'manuel' ? '✓ ' : ''}Manuel</button>
                     </div>
                 </div>
-                <button class="vt-icon-btn" onclick="openArchiveView()" title="Arşiv">
+                <button class="vt-icon-btn" onclick="openArchiveView()" title="Ar\u015Fiv">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="5" rx="1"></rect><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"></path><path d="M10 12h4"></path></svg>
                 </button>
             </div>
@@ -614,17 +614,17 @@
             </div>
             <div class="vt-right">
                 <div id="v-search-container" class="v-search-container">
-                    <input type="text" id="v-search-input" class="v-search-input" placeholder="Plaka, marka, kullanıcı ara..." oninput="handleSearch(this.value)">
+                    <input type="text" id="v-search-input" class="v-search-input" placeholder="Plaka, marka, kullan\u0131c\u0131 ara..." oninput="handleSearch(this.value)">
                 </div>
                 <button class="vt-icon-btn search-toggle-btn" onclick="toggleSearchBox('local')" title="Ara">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></svg>
                 </button>
                 <div class="v-transmission-wrap">
-                    <button type="button" class="vt-icon-btn v-transmission-btn" onclick="toggleTransmissionMenu(event)" title="ÅanzÄ±man tipi" aria-label="ÅanzÄ±man tipi">
+                    <button type="button" class="vt-icon-btn v-transmission-btn" onclick="toggleTransmissionMenu(event)" title="\u015Eanz\u0131man tipi" aria-label="\u015Eanz\u0131man tipi">
                         <svg width="18" height="18" viewBox="0 0 20.54 21.99" xmlns="http://www.w3.org/2000/svg"><g transform="translate(-107.004,-166.832)"><path fill="currentColor" d="m 112.60032,188.78148 c -0.0256,-0.0273 -0.45199,-0.10191 -0.94757,-0.1658 -1.00413,-0.12944 -1.76325,-0.3714 -2.61428,-0.83327 -0.60697,-0.3294 -1.42327,-0.94066 -1.67886,-1.25715 -0.24607,-0.3047 -0.39492,-0.93627 -0.34676,-1.47131 0.0588,-0.65313 0.40257,-1.18851 1.06416,-1.65727 0.42671,-0.30234 0.53233,-0.43143 0.53275,-0.65118 0.001,-0.58859 0.20829,-1.06067 0.69682,-1.58801 0.2711,-0.29264 0.61074,-0.61367 0.75476,-0.71341 0.22266,-0.15421 0.26185,-0.25085 0.26185,-0.64578 0,-0.6564 0.30408,-1.2505 0.96856,-1.89238 0.6772,-0.65416 1.68052,-1.20789 2.64914,-1.46205 0.74747,-0.19613 0.81479,-0.2606 0.90601,-0.86768 0.0827,-0.55057 0.75544,-1.25924 1.28038,-1.34885 l 0.3852,-0.0658 v -1.04459 -1.0446 l -0.42049,-0.26304 c -0.93193,-0.58298 -1.36919,-1.51394 -1.2684,-2.70047 0.0787,-0.9269 0.75132,-1.85208 1.5617,-2.14823 0.46348,-0.16938 1.40296,-0.17188 1.85909,-0.005 0.45128,0.16516 1.09064,0.8283 1.3212,1.37035 0.20729,0.48735 0.24139,1.41667 0.0739,2.0135 -0.14208,0.5062 -0.64856,1.1355 -1.18295,1.4698 l -0.4205,0.26304 v 0.9986 0.99859 l 0.46673,0.16548 c 0.65969,0.2339 1.03079,0.64915 1.20006,1.34288 0.0767,0.31438 0.15784,0.5912 0.18028,0.61516 0.0224,0.024 0.37581,0.13516 0.78525,0.24713 1.14802,0.31393 2.01316,0.81253 2.71253,1.5633 0.69276,0.74366 0.83412,1.02672 0.84015,1.68222 0.004,0.43648 0.0369,0.49605 0.5042,0.91474 0.89187,0.799 1.1844,1.30079 1.20919,2.0742 0.008,0.24957 0.10008,0.36952 0.50722,0.66068 0.56645,0.40509 0.82954,0.71382 0.99011,1.1619 0.22508,0.62806 0.10975,1.58545 -0.24429,2.02798 -0.25087,0.31357 -1.06736,0.926 -1.67741,1.25818 -0.76119,0.41447 -1.64395,0.7082 -2.57019,0.85522 -0.74795,0.11871 -10.23927,0.24982 -10.33951,0.14282 z m 11.00764,-1.9907 c 1.0103,-0.27582 2.42651,-1.14038 2.42651,-1.48133 0,-0.17965 -0.44457,-0.61412 -0.78029,-0.76256 -0.23328,-0.10315 -0.3055,-0.0863 -0.57638,0.13401 -0.42551,0.34616 -1.39721,0.89061 -1.5895,0.89061 -0.0869,0 -0.19963,0.0445 -0.25052,0.0988 -0.21135,0.2256 -1.64301,0.30377 -5.56354,0.30377 -3.92052,0 -5.35218,-0.0782 -5.56353,-0.30377 -0.0509,-0.0543 -0.16362,-0.0988 -0.25052,-0.0988 -0.19229,0 -1.16399,-0.54445 -1.58951,-0.89061 -0.27087,-0.22036 -0.34309,-0.23716 -0.57637,-0.13401 -0.28526,0.12613 -0.7803,0.57408 -0.7803,0.70609 0,0.37349 1.96466,1.48453 2.95182,1.66928 0.13093,0.0245 2.74857,0.0508 5.81699,0.0584 5.29503,0.0131 5.61691,0.003 6.32514,-0.18988 z m -0.85857,-2.83357 c 0.73983,-0.37625 1.56517,-1.04986 1.56835,-1.28003 0.002,-0.11045 -0.17648,-0.37057 -0.39557,-0.57805 -0.41885,-0.39666 -0.50035,-0.39799 -0.88712,-0.0146 -0.32081,0.31802 -0.92008,0.65579 -1.61161,0.90835 -0.64685,0.23624 -0.72625,0.24083 -4.1655,0.24083 -3.33178,0 -3.53568,-0.0108 -4.10158,-0.21722 -0.69845,-0.25477 -1.30995,-0.61648 -1.72299,-1.01918 -0.1626,-0.15853 -0.31823,-0.28817 -0.34584,-0.2881 -0.13448,3.8e-4 -0.85956,0.78824 -0.85956,0.93399 0,0.29783 1.06234,1.07293 1.92113,1.40168 0.47644,0.18238 0.79667,0.19288 5.31558,0.17425 l 4.80861,-0.0198 z m -1.30853,-2.73338 c 0.58186,-0.33177 1.26092,-1.05572 1.26092,-1.34429 0,-0.50342 -1.42219,-1.60307 -2.30083,-1.77902 l -0.33705,-0.0675 -0.0527,0.54539 c -0.0643,0.66481 -0.33103,1.16688 -0.79931,1.50442 -0.34104,0.24581 -0.40427,0.2541 -1.93878,0.2541 -1.58521,0 -1.5865,-1.9e-4 -1.97402,-0.28685 -0.4415,-0.3266 -0.78619,-1.04961 -0.78619,-1.6491 v -0.37362 l -0.3512,0.0703 c -0.86017,0.17226 -2.31496,1.2742 -2.31496,1.75349 0,0.32344 1.0611,1.31622 1.59831,1.49541 0.36701,0.12242 1.10046,0.14597 4.01966,0.12908 3.51365,-0.0203 3.57723,-0.0244 3.97618,-0.25183 z m -3.04906,-2.58941 c 0.1148,-0.15606 -0.09,-2.57753 -0.23073,-2.72772 -0.0532,-0.0568 -0.46686,-0.0882 -0.94313,-0.0716 l -0.84829,0.0296 -0.0745,1.01642 c -0.041,0.55904 -0.10884,1.1326 -0.15082,1.27459 -0.15194,0.51395 0.0211,0.6058 1.14155,0.6058 0.69663,0 1.0416,-0.0396 1.1059,-0.12706 z m -0.43177,-8.51744 c 0.2573,-0.27466 0.28416,-0.35831 0.23661,-0.73675 -0.14496,-1.15367 -1.6699,-1.20492 -1.84026,-0.0618 -0.0463,0.31044 -0.009,0.42125 0.25113,0.7369 0.25542,0.31053 0.36769,0.37152 0.68392,0.37152 0.29475,0 0.44247,-0.0684 0.6686,-0.30983 z"/></g></svg>
                     </button>
                     <div id="v-transmission-dropdown" class="v-transmission-dropdown" role="menu" aria-hidden="true">
-                        <button type="button" class="v-transmission-option${transmissionFilter === '' ? ' active' : ''}" data-value="" role="menuitem">${transmissionFilter === '' ? '✓ ' : ''}Tümü</button>
+                        <button type="button" class="v-transmission-option${transmissionFilter === '' ? ' active' : ''}" data-value="" role="menuitem">${transmissionFilter === '' ? '\u2713 ' : ''}T\u00FCm\u00FC</button>
                         <button type="button" class="v-transmission-option${transmissionFilter === 'otomatik' ? ' active' : ''}" data-value="otomatik" role="menuitem">${transmissionFilter === 'otomatik' ? '✓ ' : ''}Otomatik</button>
                         <button type="button" class="v-transmission-option${transmissionFilter === 'manuel' ? ' active' : ''}" data-value="manuel" role="menuitem">${transmissionFilter === 'manuel' ? '✓ ' : ''}Manuel</button>
                     </div>
@@ -884,19 +884,19 @@
             loadVehicleColumnOrder();
             const gridStr = getVehicleColumnWidths(listDisplayOrder);
             const columnDefs = {
-              'year': { label: 'Yılı', class: 'list-year' },
+              'year': { label: 'Y\u0131l\u0131', class: 'list-year' },
               'plate': { label: 'Plaka', class: 'list-plate' },
               'brand': { label: 'Marka / Model', class: 'list-brand' },
               'km': { label: 'Km', class: 'list-km' },
-              'type': { label: 'Taşıt Tipi', class: 'list-type' },
+              'type': { label: 'Ta\u015F\u0131t Tipi', class: 'list-type' },
               'user': { label: 'Kull.', class: 'list-user' },
-              'branch': { label: 'Åube', class: 'list-branch' }
+              'branch': { label: '\u015Eube', class: 'list-branch' }
             };
             let emptyHtml = '<div class="list-header-row" style="grid-template-columns: ' + gridStr + '">';
             listDisplayOrder.forEach(columnKey => {
               const def = columnDefs[columnKey];
               if (def) {
-                const labelHtml = (isMobileList && columnKey === 'brand') ? '<span class="header-first-line">Marka /</span><span class="header-second-line">Model</span>' : (isMobileList && columnKey === 'type') ? '<span class="header-first-line">Taşıt</span><span class="header-second-line">Tipi</span>' : `<span>${escapeHtml(def.label)}</span>`;
+                const labelHtml = (isMobileList && columnKey === 'brand') ? '<span class="header-first-line">Marka /</span><span class="header-second-line">Model</span>' : (isMobileList && columnKey === 'type') ? '<span class="header-first-line">Ta\u015F\u0131t</span><span class="header-second-line">Tipi</span>' : `<span>${escapeHtml(def.label)}</span>`;
                 emptyHtml += `<div class="list-cell ${def.class} sortable-header" data-col="${columnKey}">${labelHtml}</div>`;
               }
             });
@@ -933,13 +933,13 @@
         
         // Sütun başlık tanımları (mobilde Kullanıcı → Kull.)
         const columnDefs = {
-          'year': { label: 'Yılı', class: 'list-year' },
+          'year': { label: 'Y\u0131l\u0131', class: 'list-year' },
           'plate': { label: 'Plaka', class: 'list-plate' },
           'brand': { label: 'Marka / Model', class: 'list-brand' },
           'km': { label: 'Km', class: 'list-km' },
-          'type': { label: 'Taşıt Tipi', class: 'list-type' },
+          'type': { label: 'Ta\u015F\u0131t Tipi', class: 'list-type' },
           'user': { label: 'Kull.', class: 'list-user' },
-          'branch': { label: 'Åube', class: 'list-branch' }
+          'branch': { label: '\u015Eube', class: 'list-branch' }
         };
         html += '<div class="list-header-row" style="grid-template-columns: ' + gridStr + '">';
         // Sıralamaya göre sütun başlıklarını render et (mobilde Marka/Model iki satır; Taşıt Tipi mobilde yok)
@@ -1332,7 +1332,7 @@
       if (!vehicle.branchId) {
         const assignBtn = document.createElement('button');
         assignBtn.className = 'detail-assign-button-frameless';
-        assignBtn.innerHTML = '<span>Åubeye Tahsis Etmek Ä°Ã§in +</span>';
+        assignBtn.innerHTML = '<span>\u015Eubeye Tahsis Etmek \u0130\u00E7in +</span>';
         assignBtn.onclick = (e) => {
           e.stopPropagation();
           openEventModal('sube', vehicleId);
@@ -1346,7 +1346,7 @@
       const ruhsatBtn = document.createElement('button');
       ruhsatBtn.type = 'button';
       ruhsatBtn.className = 'vehicle-ruhsat-btn';
-      ruhsatBtn.title = vehicle.ruhsatPath ? 'Ruhsatı Görüntüle' : 'Ruhsat Yükle';
+      ruhsatBtn.title = vehicle.ruhsatPath ? 'Ruhsat\u0131 G\u00F6r\u00FCnt\u00FCle' : 'Ruhsat Y\u00FCkle';
       ruhsatBtn.setAttribute('aria-label', 'Ruhsat');
       ruhsatBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg>';
       ruhsatBtn.onclick = (e) => { e.stopPropagation(); if (typeof window.openRuhsatModal === 'function') window.openRuhsatModal(vehicleId); };
@@ -1354,8 +1354,8 @@
       const printBtn = document.createElement('button');
       printBtn.type = 'button';
       printBtn.className = 'vehicle-print-btn';
-      printBtn.title = 'Taşıt Kartı Yazdır';
-      printBtn.setAttribute('aria-label', 'Taşıt Kartı Yazdır');
+      printBtn.title = 'Ta\u015F\u0131t Kart\u0131 Yazd\u0131r';
+      printBtn.setAttribute('aria-label', 'Ta\u015F\u0131t Kart\u0131 Yazd\u0131r');
       printBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v8H6z"/></svg>`;
       printBtn.onclick = (e) => {
         if (e) {
@@ -1390,14 +1390,14 @@
       assignDiv.className = 'detail-branch-assign';
       
       assignDiv.innerHTML = `
-        <div class="assign-toggle" onclick="toggleBranchAssign()">+ Åubeye Tahsis Et</div>
+        <div class="assign-toggle" onclick="toggleBranchAssign()">+ \u015Eubeye Tahsis Et</div>
         <div class="assign-form" id="assign-form" style="display: none;">
           <select id="detail-branch-select" class="assign-select">
-            <option value="" disabled selected>Åube SeÃ§iniz</option>
+            <option value="" disabled selected>\u015Eube Se\u00E7iniz</option>
           </select>
           <div class="universal-btn-group">
             <button type="button" class="universal-btn-save" onclick="assignVehicleToBranch('${vehicleId}')">Kaydet</button>
-            <button type="button" class="universal-btn-cancel" onclick="closeVehicleDetailModal()">Vazgeç</button>
+            <button type="button" class="universal-btn-cancel" onclick="closeVehicleDetailModal()">Vazge\u00E7</button>
           </div>
         </div>
       `;
@@ -2330,19 +2330,21 @@
     /* Kaporta Çerçevesi Notların 2px altında */
     .kaporta-print-section { margin-top: 2px; border: 1px solid #ddd; border-radius: 8px; padding: 4px; page-break-inside: auto; break-inside: auto; }
     .kaporta-print-section h2 { margin: 0 0 4px; font-size: 16px; }
-    .kaporta-print-row { display: grid; grid-template-columns: minmax(240px, auto) minmax(0, 1fr); align-items: start; column-gap: 10px; }
-    .kaporta-print-state-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 4px 5px; align-content: start; }
-    
-    /* PWA ve Masaüstü Şema Hizalamasını Sağ Tarafta Sabitle */
+    /* Ekspertiz şemasını sayfaya göre tam ortalamak için bağımsız (absolute) hizalama kullanıldı */
+    .kaporta-print-row { position: relative; display: flex; min-height: 160px; }
+    .kaporta-print-state-grid { width: 35%; min-width: 200px; display: grid; grid-template-columns: 1fr 1fr; gap: 4px 5px; align-content: start; z-index: 2; }
     .kaporta-print-schema-wrap {
-        position: relative;
+        position: absolute;
+        left: 50%;
+        top: 2px;
+        margin-left: -120px; /* Genişliğin (240px) yarısı kadar sola çekilip kağıda milimetrik ortalanıyor */
         width: 240px;
         height: 150px;
-        margin: 4px 12px 0 auto;
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         justify-content: center;
         overflow: visible;
+        z-index: 1;
     }
     .kaporta-print-schema-wrap svg,
     .kaporta-print-fallback {
@@ -2622,16 +2624,16 @@ function renderVehicleDetailLeft(vehicle) {
   const branchId = vehicle.branchId || '';
   const branchName = branchId ?
       (branches.find(b => String(b.id) === String(branchId))?.name || '') :
-      'Tahsis Edilmemiş';
-  html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Åube</span><span class="detail-row-colon">:</span></div><span class="detail-row-value detail-row-value-sube"> ${escapeHtml(branchName)}</span></div>`;
+      'Tahsis Edilmemi\u015F';
+  html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">\u015Eube</span><span class="detail-row-colon">:</span></div><span class="detail-row-value detail-row-value-sube"> ${escapeHtml(branchName)}</span></div>`;
 
   // Taşıt Tipi
   const vehicleType = vehicle.vehicleType || '';
-  html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Taşıt Tipi</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(getVehicleTypeLabel(vehicleType))}</span></div>`;
+  html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Ta\u015F\u0131t Tipi</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(getVehicleTypeLabel(vehicleType))}</span></div>`;
 
   // Üretim Yılı
   const year = vehicle.year || '';
-  html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Üretim Yılı</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(year)}</span></div>`;
+  html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">\u00DCretim Y\u0131l\u0131</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(year)}</span></div>`;
 
   // Tescil Tarihi
   const tescilTarihi = vehicle.tescilTarihi || '';
@@ -2644,17 +2646,17 @@ function renderVehicleDetailLeft(vehicle) {
   } else {
       const km = vehicle.km || '';
       const formattedKm = km ? formatNumber(km) : '';
-      html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Km (Alındığı Tarih)</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(formattedKm || '-')}</span></div>`;
+      html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Km (Al\u0131nd\u0131\u011F\u0131 Tarih)</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(formattedKm || '-')}</span></div>`;
   }
 
   // ÅanzÄ±man
   const transmission = vehicle.transmission || '';
   const transmissionLabel = transmission === 'otomatik' ? 'Otomatik' : transmission === 'manuel' ? 'Manuel' : '';
-  html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">ÅanzÄ±man</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(transmissionLabel)}</span></div>`;
+  html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">\u015Eanz\u0131man</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(transmissionLabel)}</span></div>`;
 
   // Alım Bedeli
   const price = vehicle.price || '';
-  html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Alım Bedeli</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(price || '-')}</span></div>`;
+  html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Al\u0131m Bedeli</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(price || '-')}</span></div>`;
 
   // Tramer Kaydı
   if (vehicle.tramer === 'var' && vehicle.tramerRecords && vehicle.tramerRecords.length > 0) {
@@ -2985,16 +2987,16 @@ function renderVehicleDetailLeft(vehicle) {
         { id: 'kaza', label: 'Kaza Bilgisi Ekle' },
         { id: 'sigorta', label: 'Sigorta Bilgisi Güncelle' },
         { id: 'kasko', label: 'Kasko Bilgisi Güncelle' },
-        { id: 'muayene', label: 'Muayene Bilgisi Güncelle' },
-        { id: 'anahtar', label: 'Yedek Anahtar Bilgisi Güncelle' },
-        { id: 'kredi', label: 'Kredi/Rehin Bilgisi Güncelle' },
-        { id: 'lastik', label: 'Yazlık/Kışlık Lastik Durumu Güncelle' },
-        { id: 'utts', label: 'UTTS Bilgisi Güncelle' },
+        { id: 'muayene', label: 'Muayene Bilgisi G\u00FCncelle' },
+        { id: 'anahtar', label: 'Yedek Anahtar Bilgisi G\u00FCncelle' },
+        { id: 'kredi', label: 'Kredi/Rehin Bilgisi G\u00FCncelle' },
+        { id: 'lastik', label: 'Yazl\u0131k/K\u0131\u015Fl\u0131k Lastik Durumu G\u00FCncelle' },
+        { id: 'utts', label: 'UTTS Bilgisi G\u00FCncelle' },
         { id: 'takip', label: takipLabel },
-        { id: 'kaskokodu', label: 'Kasko Kodu Güncelleme' },
-        { id: 'sube', label: 'Åube DeÄŸiÅŸikliÄŸi Bilgisi GÃ¼ncelle' },
-        { id: 'kullanici', label: 'Kullanıcı Atama/Değişikliği Bilgisi Güncelle' },
-        { id: 'satis', label: 'Satış/Pert Bildirimi Yap' }
+        { id: 'kaskokodu', label: 'Kasko Kodu G\u00FCncelleme' },
+        { id: 'sube', label: '\u015Eube De\u011Fi\u015Fikli\u011Fi Bilgisi G\u00FCncelle' },
+        { id: 'kullanici', label: 'Kullan\u0131c\u0131 Atama/De\u011Fi\u015Fikli\u011Fi Bilgisi G\u00FCncelle' },
+        { id: 'satis', label: 'Sat\u0131\u015F/Pert Bildirimi Yap' }
       ];
       
       const vid = (window.currentDetailVehicleId || vehicleId || '').toString().replace(/"/g, '&quot;');
@@ -3092,7 +3094,7 @@ function renderVehicleDetailLeft(vehicle) {
         // Åube deÄŸiÅŸikliÄŸi modal'Ä±nda ÅŸubeleri doldur
         const selectEl = document.getElementById('sube-select');
         if (selectEl) {
-          selectEl.innerHTML = '<option value="">Åube SeÃ§iniz</option>';
+          selectEl.innerHTML = '<option value="">\u015Eube Se\u00E7iniz</option>';
           const branches = readBranches();
           branches.forEach(b => {
             const opt = document.createElement('option');
@@ -5047,15 +5049,15 @@ function renderVehicleDetailLeft(vehicle) {
       'anahtar-guncelle': 'Yedek anahtar',
       'lastik-guncelle': 'Lastik',
       'utts-guncelle': 'UTTS',
-      'muayene-guncelle': 'Muayene güncelleme',
-      'sigorta-guncelle': 'Sigorta güncelleme',
-      'kasko-guncelle': 'Kasko güncelleme',
-      'sube-degisiklik': 'Åube deÄŸiÅŸikliÄŸi',
-      'kullanici-atama': 'Kullanıcı atama',
+      'muayene-guncelle': 'Muayene g\u00FCncelleme',
+      'sigorta-guncelle': 'Sigorta g\u00FCncelleme',
+      'kasko-guncelle': 'Kasko g\u00FCncelleme',
+      'sube-degisiklik': '\u015Eube de\u011Fi\u015Fikli\u011Fi',
+      'kullanici-atama': 'Kullan\u0131c\u0131 atama',
       'kredi-guncelle': 'Kredi/Rehin',
-      'takip-cihaz-guncelle': 'Takip cihazı',
+      'takip-cihaz-guncelle': 'Takip cihaz\u0131',
       'not-guncelle': 'Kullanıcı notu',
-      'satis': 'Satış/Pert'
+      'satis': 'Sat\u0131\u015F/Pert'
     };
     return labels[type] || (type ? toTitleCase(String(type)) : 'Olay');
   }
@@ -5070,24 +5072,24 @@ function renderVehicleDetailLeft(vehicle) {
     const plateStr = (plate || '-').toString().trim();
     const type = (ev.type || '').toString().trim();
     const typeMessages = {
-      'km-revize': 'Km Bildirimi Yaptı',
-      'bakim': 'Bakım Bildirimi Yaptı',
-      'kaza': 'Kaza Bildirimi Yaptı',
-      'ceza': 'Trafik Cezası İşledi',
-      'sigorta-guncelle': 'Sigorta Bilgisini Güncelledi',
-      'kasko-guncelle': 'Kasko Bilgisini Güncelledi',
-      'muayene-guncelle': 'Muayene Bilgisini Güncelledi',
-      'anahtar-guncelle': 'Yedek Anahtar Bilgisini Güncelledi',
-      'lastik-guncelle': 'Lastik Durumunu Güncelledi',
-      'utts-guncelle': 'UTTS Bilgisini Güncelledi',
-      'kredi-guncelle': 'Kredi/Rehin Bilgisini Güncelledi',
-      'takip-cihaz-guncelle': 'Takip Cihazı Bilgisini Güncelledi',
-      'not-guncelle': 'Not Bilgisini Güncelledi',
-      'sube-degisiklik': 'Åube Bilgisini GÃ¼ncelledi',
-      'kullanici-atama': 'Kullanıcı Ataması Yaptı',
-      'satis': 'Satış/Pert Bildirdi'
+      'km-revize': 'Km Bildirimi Yapt\u0131',
+      'bakim': 'Bak\u0131m Bildirimi Yapt\u0131',
+      'kaza': 'Kaza Bildirimi Yapt\u0131',
+      'ceza': 'Trafik Cezas\u0131 \u0130\u015Fledi',
+      'sigorta-guncelle': 'Sigorta Bilgisini G\u00FCncelledi',
+      'kasko-guncelle': 'Kasko Bilgisini G\u00FCncelledi',
+      'muayene-guncelle': 'Muayene Bilgisini G\u00FCncelledi',
+      'anahtar-guncelle': 'Yedek Anahtar Bilgisini G\u00FCncelledi',
+      'lastik-guncelle': 'Lastik Durumunu G\u00FCncelledi',
+      'utts-guncelle': 'UTTS Bilgisini G\u00FCncelledi',
+      'kredi-guncelle': 'Kredi/Rehin Bilgisini G\u00FCncelledi',
+      'takip-cihaz-guncelle': 'Takip Cihaz\u0131 Bilgisini G\u00FCncelledi',
+      'not-guncelle': 'Not Bilgisini G\u00FCncelledi',
+      'sube-degisiklik': '\u015Eube Bilgisini G\u00FCncelledi',
+      'kullanici-atama': 'Kullan\u0131c\u0131 Atamas\u0131 Yapt\u0131',
+      'satis': 'Sat\u0131\u015F/Pert Bildirdi'
     };
-    const mesaj = typeMessages[type] || 'Bilgi Güncelledi';
+    const mesaj = typeMessages[type] || 'Bilgi G\u00FCncelledi';
     return isimStr + ', ' + plateStr + ' Plakalı Taşıt İçin ' + mesaj + '.';
   }
 
