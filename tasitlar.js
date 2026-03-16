@@ -2837,6 +2837,11 @@ function renderVehicleDetailLeft(vehicle) {
     saveBtn.textContent = 'Ruhsat Yükle';
     const hasRuhsat = !!(vehicle && vehicle.ruhsatPath);
     if (hasRuhsat) {
+      const ruhsatUrl = resolveRuhsatUrl(vehicle.ruhsatPath);
+      const ruhsatIsImage = /\.(jpeg|jpg|png|gif|webp)(\?.*)?$/i.test(ruhsatUrl);
+      const isMobileViewport = (typeof window.matchMedia === 'function')
+        ? window.matchMedia('(max-width: 640px)').matches
+        : (window.innerWidth <= 640);
       const btnGroup = document.createElement('div');
       btnGroup.className = 'universal-btn-group ruhsat-preview-row';
 
@@ -2845,9 +2850,10 @@ function renderVehicleDetailLeft(vehicle) {
       previewBtn.type = 'button';
       previewBtn.className = 'ruhsat-preview-link';
       previewBtn.setAttribute('aria-label', 'Ruhsatı Yazdır / Görüntüle');
-      previewBtn.style.cssText = 'background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.2); cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 140px; border-radius: 8px;';
-
-      previewBtn.innerHTML = `
+      if (isMobileViewport) {
+        previewBtn.classList.add('ruhsat-preview-mobile-btn');
+        previewBtn.style.cssText = 'background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.2); cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 140px; border-radius: 8px;';
+        previewBtn.innerHTML = `
           <span style="font-size:14px; font-weight:600; color:#fff; letter-spacing:0.5px;">Görüntüle</span>
           <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin:6px 0; color:#d40000;">
             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
@@ -2858,6 +2864,14 @@ function renderVehicleDetailLeft(vehicle) {
           </svg>
           <span style="font-size:14px; font-weight:600; color:#fff; letter-spacing:0.5px;">Yazdır</span>
         `;
+      } else {
+        const previewSrc = ruhsatIsImage
+          ? ruhsatUrl
+          : buildPdfViewerUrl(ruhsatUrl, 'toolbar=0&navpanes=0&zoom=page-fit&view=FitH');
+        previewBtn.innerHTML = ruhsatIsImage
+          ? `<img src="${escapeHtml(previewSrc)}" alt="Ruhsat Ön İzleme" class="ruhsat-preview-image" loading="lazy"><span class="ruhsat-preview-hint">Ön İzleme</span>`
+          : `<iframe src="${escapeHtml(previewSrc)}" title="Ruhsat Ön İzleme" loading="lazy" tabindex="-1" aria-hidden="true"></iframe><span class="ruhsat-preview-hint">Ön İzleme</span>`;
+      }
 
       previewBtn.onclick = function(e) {
         e.preventDefault();
@@ -2998,15 +3012,19 @@ function renderVehicleDetailLeft(vehicle) {
 
     // "Görüntüle" akışında gizli iframe + otomatik print yerine yeni sekme açıyoruz.
     // Böylece PDF viewer'ın performans uyarıları ana uygulama konsolunu kirletmez.
-    let opened = null;
+    // Bazı tarayıcılarda window.open null dönebildiği için (sekme yine açılmış olsa bile)
+    // false-positive uyarı üretmemek adına link tıklamasıyla yeni sekme açıyoruz.
     try {
-      opened = window.open(targetUrl, '_blank', 'noopener');
+      const a = document.createElement('a');
+      a.href = targetUrl;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      a.style.display = 'none';
+      document.body.appendChild(a);
+      a.click();
+      if (a.parentNode) a.parentNode.removeChild(a);
     } catch (e) {
-      opened = null;
-    }
-
-    if (!opened) {
-      alert('Ön izleme sekmesi açılamadı. Tarayıcıda pop-up iznini kontrol edin ve tekrar deneyin.');
+      try { window.open(targetUrl, '_blank'); } catch (ignored) {}
     }
   };
 
