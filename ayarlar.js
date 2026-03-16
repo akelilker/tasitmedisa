@@ -979,10 +979,34 @@
     window.tsbKaskoListesiIndir = function tsbKaskoListesiIndir() {
       window.open('https://www.tsb.org.tr/tr/kasko-deger-listesi', '_blank');
     };
+
+    // PERFORMANS: Excel kütüphanesi sadece butona tıklandığında (Lazy Load) indirilir.
     window.kaskoExcelYukle = function kaskoExcelYukle() {
-      var input = document.getElementById('kasko-excel-input');
-      if (input) input.click();
+      // Zaten yüklüyse direkt pencereyi aç
+      if (typeof XLSX !== 'undefined') {
+        var input = document.getElementById('kasko-excel-input');
+        if (input) input.click();
+        return;
+      }
+
+      if (typeof window.showCenteredInfoBox === 'function') {
+        window.showCenteredInfoBox('Excel modülü yükleniyor, lütfen bekleyin...');
+      }
+
+      var script = document.createElement('script');
+      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+      script.onload = function() {
+        if (typeof window.closeCenteredInfoBox === 'function') window.closeCenteredInfoBox();
+        var input = document.getElementById('kasko-excel-input');
+        if (input) input.click();
+      };
+      script.onerror = function() {
+        if (typeof window.closeCenteredInfoBox === 'function') window.closeCenteredInfoBox();
+        alert('Excel kütüphanesi yüklenemedi. Lütfen internet bağlantınızı kontrol edin.');
+      };
+      document.head.appendChild(script);
     };
+
     (function initKaskoExcelInput() {
       var input = document.getElementById('kasko-excel-input');
       if (!input) return;
