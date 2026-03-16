@@ -2843,7 +2843,7 @@ function renderVehicleDetailLeft(vehicle) {
         const svgOrgWidth = 148;
         const svgOrgHeight = 220;
         const shrinkX = 4;
-        const shrinkY = 13; // Dikeyde 5px daha küçük görünüm
+        const shrinkY = 18; // Dikeyde toplam 10px daha küçük görünüm
         const defaultTargetWidth = Math.round((220 - shrinkX) * schemaScale);
         const targetHeight = Math.round(defaultTargetWidth * (148 / 220)) - shrinkY;
 
