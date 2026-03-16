@@ -3819,12 +3819,13 @@ function renderVehicleDetailLeft(vehicle) {
         const isMobileKazaSchema = window.innerWidth <= 640;
 
         schemaWrapper.style.display = 'flex';
-        schemaWrapper.style.alignItems = 'center';
+        schemaWrapper.style.alignItems = isIosPwaKazaSchema ? 'flex-start' : 'center';
         schemaWrapper.style.justifyContent = 'center';
         schemaWrapper.style.gap = '24px';
-        schemaWrapper.style.maxHeight = '144px'; /* 180 * 0.8 */
+        schemaWrapper.style.maxHeight = isIosPwaKazaSchema ? '124px' : '144px'; /* iOS PWA'da üstten yapışsın */
         schemaWrapper.style.width = '100%';
         schemaWrapper.style.overflow = isMobileKazaSchema ? 'visible' : 'hidden';
+        schemaWrapper.style.paddingTop = isIosPwaKazaSchema ? '2px' : '0';
         
         schemaWrapper.appendChild(svgClone);
         
@@ -3836,8 +3837,9 @@ function renderVehicleDetailLeft(vehicle) {
           svgClone.style.margin = '0 auto';
 
           if (isIosPwaKazaSchema) {
-            svgClone.style.position = 'static';
+            svgClone.style.position = 'relative';
             svgClone.style.left = '0';
+            svgClone.style.top = '-2px';
           } else {
             // Normal mobilde mevcut sola yaslama kalsın
             svgClone.style.position = 'relative';
