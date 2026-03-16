@@ -2309,8 +2309,9 @@
 <html lang="tr">
 <head>
   <meta charset="utf-8">
-  <title>Ta\u015F\u0131t Kart\u0131 - ${escapeHtml(vehicle.plate || '-')}</title>
+  <title>Taşıt Kartı - ${escapeHtml(vehicle.plate || '-')}</title>
   <style>
+    /* TÜM PLATFORMLAR (Mobil, Masaüstü, iOS PWA) İÇİN BİRLEŞTİRİLMİŞ KUSURSUZ CSS */
     body { font-family: Arial, sans-serif; margin: 24px; color: #111; }
     h1 { margin: 0 0 4px; font-size: 24px; }
     .subtitle { margin: 0 0 10px; color: #555; font-size: 13px; }
@@ -2321,21 +2322,25 @@
     th, td { border: 1px solid #ddd; padding: 6px 8px; text-align: left; vertical-align: top; font-size: 13px; line-height: 1.3; }
     th { width: 35%; min-width: 100px; max-width: 160px; background: #f4f4f4; }
     td { width: 65%; }
+    
     .vehicle-card-print-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 0; }
     .vehicle-card-print-grid table { width: 100%; }
     @media (max-width: 760px) { .vehicle-card-print-grid { grid-template-columns: 1fr 1fr; } }
+    
+    /* Kaporta Çerçevesi Notların 2px altında */
     .kaporta-print-section { margin-top: 2px; border: 1px solid #ddd; border-radius: 8px; padding: 4px; page-break-inside: auto; break-inside: auto; }
-    .kaporta-print-box { padding-top: 2px; padding-bottom: 8px; }
-    .kaporta-print-section h2.kaporta-print-title { margin: 0 0 2px; font-size: 16px; }
+    .kaporta-print-section h2 { margin: 0 0 4px; font-size: 16px; }
     .kaporta-print-row { display: grid; grid-template-columns: minmax(240px, auto) minmax(0, 1fr); align-items: start; column-gap: 10px; }
     .kaporta-print-state-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 4px 5px; align-content: start; }
+    
+    /* PWA ve Masaüstü Şema Hizalamasını Sağ Tarafta Sabitle */
     .kaporta-print-schema-wrap {
         position: relative;
         width: 240px;
         height: 150px;
-        margin: 2px auto 0;
+        margin: 4px 12px 0 auto;
         display: flex;
-        align-items: flex-start;
+        align-items: center;
         justify-content: center;
         overflow: visible;
     }
@@ -2344,19 +2349,19 @@
         position: static;
         width: 150px;
         height: 240px;
-        margin-top: 0;
+        margin-top: -24px; 
         transform: rotate(90deg);
         transform-origin: center center;
         object-fit: contain;
     }
-    .kaporta-print-col h3 { margin: 0 0 4px; margin-bottom: 2px; font-size: 13px; }
+    .kaporta-print-col h3 { margin: 0 0 4px; font-size: 13px; }
     .kaporta-print-list { margin: 0; padding-left: 18px; }
     .kaporta-print-list li { font-size: 12px; line-height: 1.3; margin-bottom: 2px; }
     .kaporta-print-empty { font-size: 12px; color: #666; }
     .print-page-break { page-break-before: always; break-before: page; margin: 16px 0 0; }
     
-    /* TAR\u0130H\u00C7E (HISTORY) YAZDIRMA AYARI: E\u011Fer s\u0131\u011Fm\u0131yorsa ba\u015Fl\u0131\u011F\u0131yla beraber 2. sayfaya ge\u00E7sin */
-    .history-page { margin-top: 15px; page-break-inside: avoid; break-inside: avoid; }
+    /* TARİHÇE: Kaporta çerçevesi ile arasında tam 2 piksel kalacak şekilde yukarı çektik */
+    .history-page { margin-top: 2px; page-break-inside: avoid; break-inside: avoid; }
     
     .history-grid { display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-start; }
     .history-print-card { width: calc(50% - 4px); box-sizing: border-box; border: 1px solid #ddd; border-radius: 8px; padding: 8px; page-break-inside: avoid; break-inside: avoid; }
@@ -2368,8 +2373,22 @@
     .history-print-text { font-size: 12px; line-height: 1.25; }
     .history-print-extra { font-size: 11px; color: #444; margin-top: 1px; line-height: 1.2; }
     .history-print-empty { font-size: 12px; color: #666; }
-    @media (max-width: 760px) { .history-grid { flex-direction: column; } .history-print-card { width: 100%; } }
-    @media print { body { margin: 8mm; -webkit-print-color-adjust: exact; print-color-adjust: exact; } .print-preview-toolbar { display: none !important; } .kaporta-print-section { page-break-inside: auto; break-inside: auto; } .print-history-block { break-inside: avoid; page-break-inside: avoid; } .history-page h3, .history-page .subtitle { page-break-after: avoid; break-after: avoid-page; } .history-grid { gap: 8px; } }
+    
+    @media (max-width: 760px) { 
+        .history-grid { flex-direction: column; } 
+        .history-print-card { width: 100%; } 
+        .kaporta-print-row { grid-template-columns: 1fr; row-gap: 5px; } 
+        .kaporta-print-state-grid { grid-template-columns: 1fr; } 
+        .kaporta-print-schema-wrap { margin: 4px auto 0; } /* Mobilde ortala */
+    }
+    
+    @media print { 
+        body { margin: 8mm; -webkit-print-color-adjust: exact; print-color-adjust: exact; } 
+        .print-preview-toolbar { display: none !important; } 
+        .kaporta-print-section { page-break-inside: auto; break-inside: auto; } 
+        .history-page h1, .history-page .subtitle { page-break-after: avoid; break-after: avoid-page; } 
+        .history-grid { gap: 8px; } 
+    }
   </style>
 </head>
 <body>
