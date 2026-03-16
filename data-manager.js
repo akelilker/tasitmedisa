@@ -114,6 +114,10 @@ function loadDataFromLocalStorage() {
    SUNUCUDAN VERİ YÜKLEME
    ========================================= */
 async function loadDataFromServer(forceRefresh = true) {
+    // #region agent log
+    var _t0 = Date.now();
+    fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'13e385'},body:JSON.stringify({sessionId:'13e385',location:'data-manager.js:loadDataFromServer:entry',message:'loadDataFromServer called',data:{forceRefresh,hadLoadPromise:!!loadPromise,isDataLoaded},timestamp:_t0,hypothesisId:'H4,H5'})}).catch(function(){});
+    // #endregion
     if (!forceRefresh && isDataLoaded && window.appData && typeof window.appData === 'object') {
         return Promise.resolve(window.appData);
     }
@@ -139,9 +143,16 @@ async function loadDataFromServer(forceRefresh = true) {
             };
 
             let response = await fetch(url, fetchOpts);
+            // #region agent log
+            var _t1 = Date.now();
+            fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'13e385'},body:JSON.stringify({sessionId:'13e385',location:'data-manager.js:after fetch',message:'fetch returned',data:{status:response.status,ok:response.ok,msSinceStart:_t1-_t0},timestamp:_t1,hypothesisId:'H1'})}).catch(function(){});
+            // #endregion
 
             /* 503 (Service Unavailable) geçici olabilir – Docker/sunucu hazır olana kadar bir kez tekrar dene */
             if (!response.ok && response.status === 503) {
+                // #region agent log
+                fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'13e385'},body:JSON.stringify({sessionId:'13e385',location:'data-manager.js:503 retry',message:'503 received, will retry in 2s',data:{msSinceStart:_t1-_t0},timestamp:Date.now(),hypothesisId:'H3'})}).catch(function(){});
+                // #endregion
                 isDataLoading = false;
                 loadPromise = null;
                 syncDataLoadState();
@@ -162,6 +173,10 @@ async function loadDataFromServer(forceRefresh = true) {
             }
 
             const responseText = await response.text();
+            // #region agent log
+            var _t2 = Date.now();
+            fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'13e385'},body:JSON.stringify({sessionId:'13e385',location:'data-manager.js:after response.text',message:'response.text() done',data:{textLen:(responseText&&responseText.length)||0,msSinceStart:_t2-_t0},timestamp:_t2,hypothesisId:'H2'})}).catch(function(){});
+            // #endregion
             if (!responseText || responseText.trim() === '') {
                 window.appData = getSafeAppDataFallback();
                 isDataLoaded = true;
@@ -178,6 +193,10 @@ async function loadDataFromServer(forceRefresh = true) {
             let data;
             try {
                 data = JSON.parse(responseText);
+                // #region agent log
+                var _t3 = Date.now();
+                fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'13e385'},body:JSON.stringify({sessionId:'13e385',location:'data-manager.js:after JSON.parse',message:'JSON.parse done',data:{msSinceStart:_t3-_t0,parseMs:_t3-_t2},timestamp:_t3,hypothesisId:'H2'})}).catch(function(){});
+                // #endregion
             } catch (parseError) {
                 window.appData = getSafeAppDataFallback();
                 isDataLoaded = true;
@@ -204,6 +223,10 @@ async function loadDataFromServer(forceRefresh = true) {
             };
 
             isDataLoaded = true;
+            // #region agent log
+            var _t4 = Date.now();
+            fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'13e385'},body:JSON.stringify({sessionId:'13e385',location:'data-manager.js:loadDataFromServer:success',message:'load complete',data:{totalMs:_t4-_t0,tasitlarCount:(window.appData&&window.appData.tasitlar&&window.appData.tasitlar.length)||0},timestamp:_t4,hypothesisId:'H1,H2'})}).catch(function(){});
+            // #endregion
             return window.appData;
 
         } catch (error) {
@@ -338,6 +361,10 @@ window.deleteSifre = async function(sifreId) {
    SAYFA YÜKLENME
    ========================================= */
 document.addEventListener('DOMContentLoaded', async function() {
+    // #region agent log
+    var _dc = Date.now();
+    fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'13e385'},body:JSON.stringify({sessionId:'13e385',location:'data-manager.js:DOMContentLoaded',message:'DOMContentLoaded handler started',data:{},timestamp:_dc,hypothesisId:'H5'})}).catch(function(){});
+    // #endregion
     isDataLoaded = false;
     isDataLoading = false;
     syncDataLoadState();
@@ -352,6 +379,9 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     // Normal açılış: sadece sunucudan veri çek (başarısızsa boş veri)
     await loadDataFromServer(true);
+    // #region agent log
+    fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'13e385'},body:JSON.stringify({sessionId:'13e385',location:'data-manager.js:dataLoaded dispatch',message:'dispatching dataLoaded',data:{elapsedMs:Date.now()-_dc},timestamp:Date.now(),hypothesisId:'H5'})}).catch(function(){});
+    // #endregion
     window.dispatchEvent(new CustomEvent('dataLoaded', { detail: window.appData }));
 });
 
