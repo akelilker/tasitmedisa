@@ -3716,8 +3716,17 @@ function renderVehicleDetailLeft(vehicle) {
     if (!vehicle) return;
 
     vehicle.kaskoKodu = yeniKaskoKodu;
+
+    // YENİ EKLENEN FIX: Kasko değerini anında Excel'den yeniden hesapla ve eski değeri ez!
+    const yearForKasko = vehicle.year || vehicle.modelYili || '';
+    if (typeof window.getKaskoDegeri === 'function') {
+      vehicle.kaskoDegeri = window.getKaskoDegeri(yeniKaskoKodu, yearForKasko);
+      vehicle.kaskoDegeriYuklemeTarihi = new Date().toISOString();
+    }
+
     if (!vehicle.events) vehicle.events = [];
-    vehicle.events.push({
+    // PERFORMANS FIX: push yerine unshift kullanıyoruz ki tarihçenin en üstüne (en yeniye) düşsün
+    vehicle.events.unshift({
       id: Date.now().toString(),
       type: 'kasko-kodu-guncelle',
       date: formatDateForDisplay(new Date()),
