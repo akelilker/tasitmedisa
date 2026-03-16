@@ -1,5 +1,5 @@
 /* =========================================
-   TAŞITLAR MODÜLÜ - SABİT HEADER / DİNAMİK TOOLBAR
+   TAÅITLAR MODÃœLÃœ - SABÄ°T HEADER / DÄ°NAMÄ°K TOOLBAR
    ========================================= */
 
 (function() {
@@ -19,7 +19,7 @@
     const users = readUsers();
     const assignedId = vehicle.assignedUserId || '';
     const user = assignedId ? users.find(function(u) { return String(u.id) === String(assignedId); }) : null;
-    return (user && (user.name || user.isim)) ? toTitleCase(String(user.name || user.isim)) : 'Yönetim';
+    return (user && (user.name || user.isim)) ? toTitleCase(String(user.name || user.isim)) : 'YÃ¶netim';
   }
 
   var parsedKaportaSvgCache = null;
@@ -42,7 +42,7 @@
     if (window.dataApi && typeof window.dataApi.saveVehiclesList === 'function') {
       return window.dataApi.saveVehiclesList(arr).catch(function(err) {
         if (err && err.conflict) {
-          alert('Dikkat! Bu araç siz işlem yaparken başka biri tarafından güncellenmiş. Veri ezilmesini önlemek için lütfen sayfayı yenileyip güncel durumu kontrol edin.');
+          alert('Dikkat! Bu araÃ§ siz iÅŸlem yaparken baÅŸka biri tarafÄ±ndan gÃ¼ncellenmiÅŸ. Veri ezilmesini Ã¶nlemek iÃ§in lÃ¼tfen sayfayÄ± yenileyip gÃ¼ncel durumu kontrol edin.');
           if (typeof window.loadDataFromServer === 'function') {
             window.loadDataFromServer(true).then(function() {
               if (typeof window.renderBranchDashboard === 'function') window.renderBranchDashboard();
@@ -51,7 +51,7 @@
           }
           throw err;
         }
-        console.warn('[Medisa] Sunucuya kayıt yapılamadı:', err && err.message);
+        console.warn('[Medisa] Sunucuya kayÄ±t yapÄ±lamadÄ±:', err && err.message);
         throw err;
       });
     }
@@ -61,13 +61,13 @@
 
   // Global State
   let currentView = 'dashboard'; // 'dashboard' | 'list'
-  let activeBranchId = null; // null = dashboard, 'all' = tümü, 'id' = şube
+  let activeBranchId = null; // null = dashboard, 'all' = tÃ¼mÃ¼, 'id' = ÅŸube
   let viewMode = 'card'; 
   let sortColumn = null; // 'year', 'brand', 'km', 'type', 'branch'
   let sortDirection = 'asc'; // 'asc' | 'desc'
   let currentFilter = 'az'; // 'az' | 'newest' | 'oldest' | 'type' (liste filtre dropdown)
-  let transmissionFilter = ''; // '' | 'otomatik' | 'manuel' (şanzıman filtresi)
-  let lastListContext = null; // Son açılan liste bağlamı (geri dönüş hedefi)
+  let transmissionFilter = ''; // '' | 'otomatik' | 'manuel' (ÅŸanzÄ±man filtresi)
+  let lastListContext = null; // Son aÃ§Ä±lan liste baÄŸlamÄ± (geri dÃ¶nÃ¼ÅŸ hedefi)
 
   let lastVehiclesRenderSignature = '';
   let lastDashboardRenderSignature = '';
@@ -147,8 +147,8 @@
     ].join('__');
   }
   
-  // Sütun Sıralaması State
-  let vehicleColumnOrder = ['year', 'plate', 'brand', 'km', 'type', 'user', 'branch']; // Varsayılan sıralama
+  // SÃ¼tun SÄ±ralamasÄ± State
+  let vehicleColumnOrder = ['year', 'plate', 'brand', 'km', 'type', 'user', 'branch']; // VarsayÄ±lan sÄ±ralama
   
   var defaultVehicleColumnOrder = ['year', 'plate', 'brand', 'km', 'type', 'user', 'branch'];
   function loadVehicleColumnOrder() {
@@ -172,15 +172,15 @@
     else try { localStorage.setItem('vehicle_column_order', JSON.stringify(vehicleColumnOrder)); } catch (e) {}
   }
 
-  /** Arama/toolbar elementleri (tek getElementById ile tutarlı kullanım) */
+  /** Arama/toolbar elementleri (tek getElementById ile tutarlÄ± kullanÄ±m) */
   function getVSearchInput() { return document.getElementById('v-search-input'); }
   function getVSearchContainer() { return document.getElementById('v-search-container'); }
   function getVTransmissionDropdown() { return document.getElementById('v-transmission-dropdown'); }
   function getFilterDropdown() { return document.getElementById('filter-dropdown'); }
 
-  // Grid genişlikleri sütun kimliğine göre (sürükle-bırak sonrası genişlik doğru sütunla kalsın)
+  // Grid geniÅŸlikleri sÃ¼tun kimliÄŸine gÃ¶re (sÃ¼rÃ¼kle-bÄ±rak sonrasÄ± geniÅŸlik doÄŸru sÃ¼tunla kalsÄ±n)
   function getVehicleColumnWidths(columnOrder) {
-    const defaultCols = '32px 70px 3.15fr 60px 65px 1.85fr 2fr'; /* Marka -3px, Kullanıcı +3px */
+    const defaultCols = '32px 70px 3.15fr 60px 65px 1.85fr 2fr'; /* Marka -3px, KullanÄ±cÄ± +3px */
     try {
       if (!columnOrder || !Array.isArray(columnOrder) || columnOrder.length === 0) return defaultCols;
       const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
@@ -188,10 +188,10 @@
         ? {
             'year': '32px',
             'plate': '62px',
-            'brand': '2.6fr',   /* mobil+iOS PWA: şubeden 2px marka'ya */
+            'brand': '2.6fr',   /* mobil+iOS PWA: ÅŸubeden 2px marka'ya */
             'km': '52px',
-            'user': '1.95fr',   /* mobil+iOS PWA: şubeden 3px kullanıcıya */
-            'branch': '2.25fr'   /* mobil+iOS PWA: şubeden bir kademe alan alındı */
+            'user': '1.95fr',   /* mobil+iOS PWA: ÅŸubeden 3px kullanÄ±cÄ±ya */
+            'branch': '2.25fr'   /* mobil+iOS PWA: ÅŸubeden bir kademe alan alÄ±ndÄ± */
           }
         : {
             'year': '32px',
@@ -199,7 +199,7 @@
             'brand': '3.15fr',   /* Marka 3px dar */
             'km': '60px',
             'type': '65px',
-            'user': '1.85fr',   /* Kullanıcı 3px geniş */
+            'user': '1.85fr',   /* KullanÄ±cÄ± 3px geniÅŸ */
             'branch': '2fr'
           };
       return columnOrder.map(key => widthMap[key] || '1fr').join(' ');
@@ -209,8 +209,8 @@
   }
 
   /**
-   * Mobil taşıt listesi: başlıklar tek punto, en fazla 1pt küçülebilir (biri sığmazsa hepsi küçülür).
-   * listContainer içindeki .list-header-row üzerinde --list-header-font-size ayarlar.
+   * Mobil taÅŸÄ±t listesi: baÅŸlÄ±klar tek punto, en fazla 1pt kÃ¼Ã§Ã¼lebilir (biri sÄ±ÄŸmazsa hepsi kÃ¼Ã§Ã¼lÃ¼r).
+   * listContainer iÃ§indeki .list-header-row Ã¼zerinde --list-header-font-size ayarlar.
    */
   function applyMobileListHeaderFontSize(listContainer) {
     const headerRow = listContainer && listContainer.querySelector('.list-header-row');
@@ -237,10 +237,10 @@
   function formatPlaka(str) { return (typeof window.formatPlaka === 'function' ? window.formatPlaka(str) : (str == null ? '-' : String(str))); }
   function formatAdSoyad(str) { return (typeof window.formatAdSoyad === 'function' ? window.formatAdSoyad(str) : str); }
 
-  // Global Detail Vehicle ID (HTML onclick erişimi için)
+  // Global Detail Vehicle ID (HTML onclick eriÅŸimi iÃ§in)
   window.currentDetailVehicleId = null;
 
-  // DOM Cache (statik elementler - init aşamasında bir kere bağlanır)
+  // DOM Cache (statik elementler - init aÅŸamasÄ±nda bir kere baÄŸlanÄ±r)
   const DOM = {};
   function bindDOM() {
     DOM.vehiclesModal = document.getElementById('vehicles-modal');
@@ -309,7 +309,7 @@
 
   const modalContent = DOM.vehiclesModalContent;
   
-  // Taşıt listesi tıklama delegasyonu (card/list-item tıklanınca detay aç) - tek seferlik
+  // TaÅŸÄ±t listesi tÄ±klama delegasyonu (card/list-item tÄ±klanÄ±nca detay aÃ§) - tek seferlik
   if (modalContent && !modalContent._vehicleClickBound) {
     modalContent._vehicleClickBound = true;
     function handleVehicleRowClick(e) {
@@ -338,7 +338,7 @@
     modalContent.addEventListener('touchend', handleVehicleRowClick, { passive: false });
   }
 
-  // Bildirim listesi: delegation (her bildirime ayrı onclick yerine tek listener)
+  // Bildirim listesi: delegation (her bildirime ayrÄ± onclick yerine tek listener)
   if (DOM.notificationsDropdown && !DOM.notificationsDropdown._notifDelegationBound) {
     DOM.notificationsDropdown._notifDelegationBound = true;
     DOM.notificationsDropdown.addEventListener('click', function(e) {
@@ -367,7 +367,7 @@
         : vehicles.find(function(v) { return String(v.plate || '').trim().toUpperCase() === plateNorm; });
       if (!v || typeof window.showVehicleDetail !== 'function') return;
       if (!lastListContext) {
-        lastListContext = { mode: 'branch', branchId: 'all', branchName: 'Taşıtlar' };
+        lastListContext = { mode: 'branch', branchId: 'all', branchName: 'TaÅŸÄ±tlar' };
       }
       window.showVehicleDetail(v.id);
       if (openHistory && typeof window.showVehicleHistory === 'function') {
@@ -377,7 +377,7 @@
     });
   }
 
-  // Olay menü listesi: delegation (her butona ayrı onclick yerine tek listener)
+  // Olay menÃ¼ listesi: delegation (her butona ayrÄ± onclick yerine tek listener)
   if (DOM.eventMenuList && !DOM.eventMenuList._eventDelegationBound) {
     DOM.eventMenuList._eventDelegationBound = true;
     DOM.eventMenuList.addEventListener('click', function(e) {
@@ -393,7 +393,7 @@
     });
   }
 
-  // Şanzıman dropdown: delegation (her option'a ayrı listener yerine tek listener)
+  // ÅanzÄ±man dropdown: delegation (her option'a ayrÄ± listener yerine tek listener)
   if (DOM.vehiclesModalContainer && !DOM.vehiclesModalContainer._transmissionDelegationBound) {
     DOM.vehiclesModalContainer._transmissionDelegationBound = true;
     DOM.vehiclesModalContainer.addEventListener('click', function(e) {
@@ -404,11 +404,11 @@
       var dd = getVTransmissionDropdown();
       if (dd) {
         var opts = dd.querySelectorAll('.v-transmission-option');
-        var labels = { '': 'Tümü', 'otomatik': 'Otomatik', 'manuel': 'Manuel' };
+        var labels = { '': 'TÃ¼mÃ¼', 'otomatik': 'Otomatik', 'manuel': 'Manuel' };
         opts.forEach(function(b) {
           var v = b.getAttribute('data-value') || '';
           b.classList.toggle('active', v === val);
-          b.textContent = (v === val ? '✓ ' : '') + labels[v];
+          b.textContent = (v === val ? 'âœ“ ' : '') + labels[v];
         });
       }
       closeTransmissionMenu();
@@ -422,7 +422,7 @@
     });
   }
 
-  // Mobil: pencere boyutu değişince başlık font-size tekrar hesaplansın (debounce)
+  // Mobil: pencere boyutu deÄŸiÅŸince baÅŸlÄ±k font-size tekrar hesaplansÄ±n (debounce)
   if (modalContent && !modalContent._headerResizeBound) {
     modalContent._headerResizeBound = true;
     var onResize = window.debounce ? window.debounce(function () {
@@ -437,7 +437,7 @@
     window.addEventListener('resize', onResize);
   }
 
-  // Toolbar Container Oluştur (Eğer yoksa)
+  // Toolbar Container OluÅŸtur (EÄŸer yoksa)
   function ensureToolbar() {
     const modalContainer = DOM.vehiclesModalContainer;
     const header = DOM.vehiclesModalHeader;
@@ -447,28 +447,28 @@
     if (!toolbar && header) {
         toolbar = document.createElement('div');
         toolbar.className = 'vehicles-toolbar';
-        // Header'ın hemen altına ekle
+        // Header'Ä±n hemen altÄ±na ekle
         header.after(toolbar);
     }
 
-    // Arama kutusu artık toolbar içinde (v-search-container)
+    // Arama kutusu artÄ±k toolbar iÃ§inde (v-search-container)
 
-    // Filtre Dropdown (sadece List modunda kullanılır, modal-container'a eklenir)
+    // Filtre Dropdown (sadece List modunda kullanÄ±lÄ±r, modal-container'a eklenir)
     let filterDrop = getFilterDropdown();
     if (!filterDrop && modalContainer) {
         filterDrop = document.createElement('div');
         filterDrop.id = 'filter-dropdown';
         filterDrop.innerHTML = `
-            <button type="button" class="filter-dropdown-btn" data-filter="az">A-Z Sıralı</button>
+            <button type="button" class="filter-dropdown-btn" data-filter="az">A-Z SÄ±ralÄ±</button>
             <button type="button" class="filter-dropdown-btn" data-filter="newest">En Yeni</button>
             <button type="button" class="filter-dropdown-btn" data-filter="oldest">En Eski</button>
-            <button type="button" class="filter-dropdown-btn" data-filter="type">Tipe Göre</button>
+            <button type="button" class="filter-dropdown-btn" data-filter="type">Tipe GÃ¶re</button>
         `;
         filterDrop.addEventListener('click', function(e) {
             var btn = e.target.closest('.filter-dropdown-btn');
             if (!btn) return;
             currentFilter = btn.dataset.filter || 'az';
-                // Filtreye göre sıralama sütunu ve yönü
+                // Filtreye gÃ¶re sÄ±ralama sÃ¼tunu ve yÃ¶nÃ¼
                 if (currentFilter === 'az') {
                     sortColumn = 'plate';
                     sortDirection = 'asc';
@@ -491,7 +491,7 @@
     return { toolbar };
   }
 
-  // --- ANA GİRİŞ ---
+  // --- ANA GÄ°RÄ°Å ---
   window.openVehiclesView = function() {
     loadVehicleColumnOrder();
 
@@ -509,7 +509,7 @@
     // #endregion
     if (!isDataLoaded && typeof window.loadDataFromServer === 'function') {
       if (content) {
-        content.innerHTML = '<div class="vehicles-loading-state">Taşıtlar yükleniyor...</div>';
+        content.innerHTML = '<div class="vehicles-loading-state">TaÅŸÄ±tlar yÃ¼kleniyor...</div>';
         content.dataset.renderScope = 'loading';
         content.dataset.renderSignature = 'loading';
         syncVehiclesListModeClass(false);
@@ -522,7 +522,7 @@
         }
       }).catch(function() {
         if (content) {
-          content.innerHTML = '<div style="text-align:center; padding:24px; color:#888">Veri yüklenemedi. Lütfen tekrar deneyin.</div>';
+          content.innerHTML = '<div style="text-align:center; padding:24px; color:#888">Veri yÃ¼klenemedi. LÃ¼tfen tekrar deneyin.</div>';
           content.dataset.renderScope = 'loading-error';
           content.dataset.renderSignature = 'loading-error';
           syncVehiclesListModeClass(false);
@@ -535,7 +535,7 @@
   };
 
   window.closeVehiclesModal = function(event) {
-    // Event propagation'ı durdur (overlay click'i engelle)
+    // Event propagation'Ä± durdur (overlay click'i engelle)
     if (event) {
       event.stopPropagation();
       event.preventDefault();
@@ -550,59 +550,59 @@
         closeSearchBox(true);
         closeFilterMenu();
         syncVehiclesListModeClass(false);
-        // X butonu sadece modalı kapatır, geri gitme işlemi yapmaz
-        // Geri butonları zaten mevcut
-        // renderBranchDashboard() çağrılmaz
+        // X butonu sadece modalÄ± kapatÄ±r, geri gitme iÅŸlemi yapmaz
+        // Geri butonlarÄ± zaten mevcut
+        // renderBranchDashboard() Ã§aÄŸrÄ±lmaz
       }, 300);
     }
     return false;
   };
 
-  // --- TOOLBAR YÖNETİMİ ---
+  // --- TOOLBAR YÃ–NETÄ°MÄ° ---
   /**
-   * Toolbar içeriğini mode'a göre dinamik olarak günceller
+   * Toolbar iÃ§eriÄŸini mode'a gÃ¶re dinamik olarak gÃ¼nceller
    * 
-   * @param {string} mode - 'dashboard' | 'detail' (görünüm modu)
-   * @param {string} [title=''] - Detail modunda gösterilecek şube/başlık adı
+   * @param {string} mode - 'dashboard' | 'detail' (gÃ¶rÃ¼nÃ¼m modu)
+   * @param {string} [title=''] - Detail modunda gÃ¶sterilecek ÅŸube/baÅŸlÄ±k adÄ±
    * 
-   * Mantık:
-   * - Dashboard modu: Sağda Genel Arama + Arşiv butonları
-   * - Detail modu: Solda Geri butonu + başlık, Sağda Yerel Arama/Filtre/Görünüm butonları
+   * MantÄ±k:
+   * - Dashboard modu: SaÄŸda Genel Arama + ArÅŸiv butonlarÄ±
+   * - Detail modu: Solda Geri butonu + baÅŸlÄ±k, SaÄŸda Yerel Arama/Filtre/GÃ¶rÃ¼nÃ¼m butonlarÄ±
    * 
-   * Toolbar içeriği HTML olarak innerHTML'e set edilir
+   * Toolbar iÃ§eriÄŸi HTML olarak innerHTML'e set edilir
    */
   function updateToolbar(mode, title = '') {
     const { toolbar } = ensureToolbar();
     if (!toolbar) return;
 
     if (mode === 'dashboard') {
-        // DASHBOARD MODU: Sağda Genel Arama, Şanzıman filtresi ve Arşiv
+        // DASHBOARD MODU: SaÄŸda Genel Arama, ÅanzÄ±man filtresi ve ArÅŸiv
         toolbar.innerHTML = `
             <div class="vt-left"></div>
             <div class="vt-right">
                 <div id="v-search-container" class="v-search-container">
-                    <input type="text" id="v-search-input" class="v-search-input" placeholder="Plaka, marka, kullanıcı ara..." oninput="handleSearch(this.value)">
+                    <input type="text" id="v-search-input" class="v-search-input" placeholder="Plaka, marka, kullanÄ±cÄ± ara..." oninput="handleSearch(this.value)">
                 </div>
                 <button class="vt-icon-btn search-toggle-btn" onclick="toggleSearchBox('global')" title="Genel Arama">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></svg>
                 </button>
                 <div class="v-transmission-wrap">
-                    <button type="button" class="vt-icon-btn v-transmission-btn" onclick="toggleTransmissionMenu(event)" title="Şanzıman tipi" aria-label="Şanzıman tipi">
+                    <button type="button" class="vt-icon-btn v-transmission-btn" onclick="toggleTransmissionMenu(event)" title="ÅanzÄ±man tipi" aria-label="ÅanzÄ±man tipi">
                         <svg width="18" height="18" viewBox="0 0 20.54 21.99" xmlns="http://www.w3.org/2000/svg"><g transform="translate(-107.004,-166.832)"><path fill="currentColor" d="m 112.60032,188.78148 c -0.0256,-0.0273 -0.45199,-0.10191 -0.94757,-0.1658 -1.00413,-0.12944 -1.76325,-0.3714 -2.61428,-0.83327 -0.60697,-0.3294 -1.42327,-0.94066 -1.67886,-1.25715 -0.24607,-0.3047 -0.39492,-0.93627 -0.34676,-1.47131 0.0588,-0.65313 0.40257,-1.18851 1.06416,-1.65727 0.42671,-0.30234 0.53233,-0.43143 0.53275,-0.65118 0.001,-0.58859 0.20829,-1.06067 0.69682,-1.58801 0.2711,-0.29264 0.61074,-0.61367 0.75476,-0.71341 0.22266,-0.15421 0.26185,-0.25085 0.26185,-0.64578 0,-0.6564 0.30408,-1.2505 0.96856,-1.89238 0.6772,-0.65416 1.68052,-1.20789 2.64914,-1.46205 0.74747,-0.19613 0.81479,-0.2606 0.90601,-0.86768 0.0827,-0.55057 0.75544,-1.25924 1.28038,-1.34885 l 0.3852,-0.0658 v -1.04459 -1.0446 l -0.42049,-0.26304 c -0.93193,-0.58298 -1.36919,-1.51394 -1.2684,-2.70047 0.0787,-0.9269 0.75132,-1.85208 1.5617,-2.14823 0.46348,-0.16938 1.40296,-0.17188 1.85909,-0.005 0.45128,0.16516 1.09064,0.8283 1.3212,1.37035 0.20729,0.48735 0.24139,1.41667 0.0739,2.0135 -0.14208,0.5062 -0.64856,1.1355 -1.18295,1.4698 l -0.4205,0.26304 v 0.9986 0.99859 l 0.46673,0.16548 c 0.65969,0.2339 1.03079,0.64915 1.20006,1.34288 0.0767,0.31438 0.15784,0.5912 0.18028,0.61516 0.0224,0.024 0.37581,0.13516 0.78525,0.24713 1.14802,0.31393 2.01316,0.81253 2.71253,1.5633 0.69276,0.74366 0.83412,1.02672 0.84015,1.68222 0.004,0.43648 0.0369,0.49605 0.5042,0.91474 0.89187,0.799 1.1844,1.30079 1.20919,2.0742 0.008,0.24957 0.10008,0.36952 0.50722,0.66068 0.56645,0.40509 0.82954,0.71382 0.99011,1.1619 0.22508,0.62806 0.10975,1.58545 -0.24429,2.02798 -0.25087,0.31357 -1.06736,0.926 -1.67741,1.25818 -0.76119,0.41447 -1.64395,0.7082 -2.57019,0.85522 -0.74795,0.11871 -10.23927,0.24982 -10.33951,0.14282 z m 11.00764,-1.9907 c 1.0103,-0.27582 2.42651,-1.14038 2.42651,-1.48133 0,-0.17965 -0.44457,-0.61412 -0.78029,-0.76256 -0.23328,-0.10315 -0.3055,-0.0863 -0.57638,0.13401 -0.42551,0.34616 -1.39721,0.89061 -1.5895,0.89061 -0.0869,0 -0.19963,0.0445 -0.25052,0.0988 -0.21135,0.2256 -1.64301,0.30377 -5.56354,0.30377 -3.92052,0 -5.35218,-0.0782 -5.56353,-0.30377 -0.0509,-0.0543 -0.16362,-0.0988 -0.25052,-0.0988 -0.19229,0 -1.16399,-0.54445 -1.58951,-0.89061 -0.27087,-0.22036 -0.34309,-0.23716 -0.57637,-0.13401 -0.28526,0.12613 -0.7803,0.57408 -0.7803,0.70609 0,0.37349 1.96466,1.48453 2.95182,1.66928 0.13093,0.0245 2.74857,0.0508 5.81699,0.0584 5.29503,0.0131 5.61691,0.003 6.32514,-0.18988 z m -0.85857,-2.83357 c 0.73983,-0.37625 1.56517,-1.04986 1.56835,-1.28003 0.002,-0.11045 -0.17648,-0.37057 -0.39557,-0.57805 -0.41885,-0.39666 -0.50035,-0.39799 -0.88712,-0.0146 -0.32081,0.31802 -0.92008,0.65579 -1.61161,0.90835 -0.64685,0.23624 -0.72625,0.24083 -4.1655,0.24083 -3.33178,0 -3.53568,-0.0108 -4.10158,-0.21722 -0.69845,-0.25477 -1.30995,-0.61648 -1.72299,-1.01918 -0.1626,-0.15853 -0.31823,-0.28817 -0.34584,-0.2881 -0.13448,3.8e-4 -0.85956,0.78824 -0.85956,0.93399 0,0.29783 1.06234,1.07293 1.92113,1.40168 0.47644,0.18238 0.79667,0.19288 5.31558,0.17425 l 4.80861,-0.0198 z m -1.30853,-2.73338 c 0.58186,-0.33177 1.26092,-1.05572 1.26092,-1.34429 0,-0.50342 -1.42219,-1.60307 -2.30083,-1.77902 l -0.33705,-0.0675 -0.0527,0.54539 c -0.0643,0.66481 -0.33103,1.16688 -0.79931,1.50442 -0.34104,0.24581 -0.40427,0.2541 -1.93878,0.2541 -1.58521,0 -1.5865,-1.9e-4 -1.97402,-0.28685 -0.4415,-0.3266 -0.78619,-1.04961 -0.78619,-1.6491 v -0.37362 l -0.3512,0.0703 c -0.86017,0.17226 -2.31496,1.2742 -2.31496,1.75349 0,0.32344 1.0611,1.31622 1.59831,1.49541 0.36701,0.12242 1.10046,0.14597 4.01966,0.12908 3.51365,-0.0203 3.57723,-0.0244 3.97618,-0.25183 z m -3.04906,-2.58941 c 0.1148,-0.15606 -0.09,-2.57753 -0.23073,-2.72772 -0.0532,-0.0568 -0.46686,-0.0882 -0.94313,-0.0716 l -0.84829,0.0296 -0.0745,1.01642 c -0.041,0.55904 -0.10884,1.1326 -0.15082,1.27459 -0.15194,0.51395 0.0211,0.6058 1.14155,0.6058 0.69663,0 1.0416,-0.0396 1.1059,-0.12706 z m -0.43177,-8.51744 c 0.2573,-0.27466 0.28416,-0.35831 0.23661,-0.73675 -0.14496,-1.15367 -1.6699,-1.20492 -1.84026,-0.0618 -0.0463,0.31044 -0.009,0.42125 0.25113,0.7369 0.25542,0.31053 0.36769,0.37152 0.68392,0.37152 0.29475,0 0.44247,-0.0684 0.6686,-0.30983 z"/></g></svg>
                     </button>
                     <div id="v-transmission-dropdown" class="v-transmission-dropdown" role="menu" aria-hidden="true">
-                        <button type="button" class="v-transmission-option${transmissionFilter === '' ? ' active' : ''}" data-value="" role="menuitem">${transmissionFilter === '' ? '✓ ' : ''}Tümü</button>
-                        <button type="button" class="v-transmission-option${transmissionFilter === 'otomatik' ? ' active' : ''}" data-value="otomatik" role="menuitem">${transmissionFilter === 'otomatik' ? '✓ ' : ''}Otomatik</button>
-                        <button type="button" class="v-transmission-option${transmissionFilter === 'manuel' ? ' active' : ''}" data-value="manuel" role="menuitem">${transmissionFilter === 'manuel' ? '✓ ' : ''}Manuel</button>
+                        <button type="button" class="v-transmission-option${transmissionFilter === '' ? ' active' : ''}" data-value="" role="menuitem">${transmissionFilter === '' ? 'âœ“ ' : ''}TÃ¼mÃ¼</button>
+                        <button type="button" class="v-transmission-option${transmissionFilter === 'otomatik' ? ' active' : ''}" data-value="otomatik" role="menuitem">${transmissionFilter === 'otomatik' ? 'âœ“ ' : ''}Otomatik</button>
+                        <button type="button" class="v-transmission-option${transmissionFilter === 'manuel' ? ' active' : ''}" data-value="manuel" role="menuitem">${transmissionFilter === 'manuel' ? 'âœ“ ' : ''}Manuel</button>
                     </div>
                 </div>
-                <button class="vt-icon-btn" onclick="openArchiveView()" title="Arşiv">
+                <button class="vt-icon-btn" onclick="openArchiveView()" title="ArÅŸiv">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="5" rx="1"></rect><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"></path><path d="M10 12h4"></path></svg>
                 </button>
             </div>
         `;
     } else {
-        // DETAY MODU: Solda Geri+İsim, Sağda Yerel Arama/Filtre/Görünüm
+        // DETAY MODU: Solda Geri+Ä°sim, SaÄŸda Yerel Arama/Filtre/GÃ¶rÃ¼nÃ¼m
         toolbar.innerHTML = `
             <div class="vt-left">
                 <div class="universal-back-bar">
@@ -614,22 +614,22 @@
             </div>
             <div class="vt-right">
                 <div id="v-search-container" class="v-search-container">
-                    <input type="text" id="v-search-input" class="v-search-input" placeholder="Plaka, marka, kullanıcı ara..." oninput="handleSearch(this.value)">
+                    <input type="text" id="v-search-input" class="v-search-input" placeholder="Plaka, marka, kullanÄ±cÄ± ara..." oninput="handleSearch(this.value)">
                 </div>
                 <button class="vt-icon-btn search-toggle-btn" onclick="toggleSearchBox('local')" title="Ara">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path></svg>
                 </button>
                 <div class="v-transmission-wrap">
-                    <button type="button" class="vt-icon-btn v-transmission-btn" onclick="toggleTransmissionMenu(event)" title="Şanzıman tipi" aria-label="Şanzıman tipi">
+                    <button type="button" class="vt-icon-btn v-transmission-btn" onclick="toggleTransmissionMenu(event)" title="ÅanzÄ±man tipi" aria-label="ÅanzÄ±man tipi">
                         <svg width="18" height="18" viewBox="0 0 20.54 21.99" xmlns="http://www.w3.org/2000/svg"><g transform="translate(-107.004,-166.832)"><path fill="currentColor" d="m 112.60032,188.78148 c -0.0256,-0.0273 -0.45199,-0.10191 -0.94757,-0.1658 -1.00413,-0.12944 -1.76325,-0.3714 -2.61428,-0.83327 -0.60697,-0.3294 -1.42327,-0.94066 -1.67886,-1.25715 -0.24607,-0.3047 -0.39492,-0.93627 -0.34676,-1.47131 0.0588,-0.65313 0.40257,-1.18851 1.06416,-1.65727 0.42671,-0.30234 0.53233,-0.43143 0.53275,-0.65118 0.001,-0.58859 0.20829,-1.06067 0.69682,-1.58801 0.2711,-0.29264 0.61074,-0.61367 0.75476,-0.71341 0.22266,-0.15421 0.26185,-0.25085 0.26185,-0.64578 0,-0.6564 0.30408,-1.2505 0.96856,-1.89238 0.6772,-0.65416 1.68052,-1.20789 2.64914,-1.46205 0.74747,-0.19613 0.81479,-0.2606 0.90601,-0.86768 0.0827,-0.55057 0.75544,-1.25924 1.28038,-1.34885 l 0.3852,-0.0658 v -1.04459 -1.0446 l -0.42049,-0.26304 c -0.93193,-0.58298 -1.36919,-1.51394 -1.2684,-2.70047 0.0787,-0.9269 0.75132,-1.85208 1.5617,-2.14823 0.46348,-0.16938 1.40296,-0.17188 1.85909,-0.005 0.45128,0.16516 1.09064,0.8283 1.3212,1.37035 0.20729,0.48735 0.24139,1.41667 0.0739,2.0135 -0.14208,0.5062 -0.64856,1.1355 -1.18295,1.4698 l -0.4205,0.26304 v 0.9986 0.99859 l 0.46673,0.16548 c 0.65969,0.2339 1.03079,0.64915 1.20006,1.34288 0.0767,0.31438 0.15784,0.5912 0.18028,0.61516 0.0224,0.024 0.37581,0.13516 0.78525,0.24713 1.14802,0.31393 2.01316,0.81253 2.71253,1.5633 0.69276,0.74366 0.83412,1.02672 0.84015,1.68222 0.004,0.43648 0.0369,0.49605 0.5042,0.91474 0.89187,0.799 1.1844,1.30079 1.20919,2.0742 0.008,0.24957 0.10008,0.36952 0.50722,0.66068 0.56645,0.40509 0.82954,0.71382 0.99011,1.1619 0.22508,0.62806 0.10975,1.58545 -0.24429,2.02798 -0.25087,0.31357 -1.06736,0.926 -1.67741,1.25818 -0.76119,0.41447 -1.64395,0.7082 -2.57019,0.85522 -0.74795,0.11871 -10.23927,0.24982 -10.33951,0.14282 z m 11.00764,-1.9907 c 1.0103,-0.27582 2.42651,-1.14038 2.42651,-1.48133 0,-0.17965 -0.44457,-0.61412 -0.78029,-0.76256 -0.23328,-0.10315 -0.3055,-0.0863 -0.57638,0.13401 -0.42551,0.34616 -1.39721,0.89061 -1.5895,0.89061 -0.0869,0 -0.19963,0.0445 -0.25052,0.0988 -0.21135,0.2256 -1.64301,0.30377 -5.56354,0.30377 -3.92052,0 -5.35218,-0.0782 -5.56353,-0.30377 -0.0509,-0.0543 -0.16362,-0.0988 -0.25052,-0.0988 -0.19229,0 -1.16399,-0.54445 -1.58951,-0.89061 -0.27087,-0.22036 -0.34309,-0.23716 -0.57637,-0.13401 -0.28526,0.12613 -0.7803,0.57408 -0.7803,0.70609 0,0.37349 1.96466,1.48453 2.95182,1.66928 0.13093,0.0245 2.74857,0.0508 5.81699,0.0584 5.29503,0.0131 5.61691,0.003 6.32514,-0.18988 z m -0.85857,-2.83357 c 0.73983,-0.37625 1.56517,-1.04986 1.56835,-1.28003 0.002,-0.11045 -0.17648,-0.37057 -0.39557,-0.57805 -0.41885,-0.39666 -0.50035,-0.39799 -0.88712,-0.0146 -0.32081,0.31802 -0.92008,0.65579 -1.61161,0.90835 -0.64685,0.23624 -0.72625,0.24083 -4.1655,0.24083 -3.33178,0 -3.53568,-0.0108 -4.10158,-0.21722 -0.69845,-0.25477 -1.30995,-0.61648 -1.72299,-1.01918 -0.1626,-0.15853 -0.31823,-0.28817 -0.34584,-0.2881 -0.13448,3.8e-4 -0.85956,0.78824 -0.85956,0.93399 0,0.29783 1.06234,1.07293 1.92113,1.40168 0.47644,0.18238 0.79667,0.19288 5.31558,0.17425 l 4.80861,-0.0198 z m -1.30853,-2.73338 c 0.58186,-0.33177 1.26092,-1.05572 1.26092,-1.34429 0,-0.50342 -1.42219,-1.60307 -2.30083,-1.77902 l -0.33705,-0.0675 -0.0527,0.54539 c -0.0643,0.66481 -0.33103,1.16688 -0.79931,1.50442 -0.34104,0.24581 -0.40427,0.2541 -1.93878,0.2541 -1.58521,0 -1.5865,-1.9e-4 -1.97402,-0.28685 -0.4415,-0.3266 -0.78619,-1.04961 -0.78619,-1.6491 v -0.37362 l -0.3512,0.0703 c -0.86017,0.17226 -2.31496,1.2742 -2.31496,1.75349 0,0.32344 1.0611,1.31622 1.59831,1.49541 0.36701,0.12242 1.10046,0.14597 4.01966,0.12908 3.51365,-0.0203 3.57723,-0.0244 3.97618,-0.25183 z m -3.04906,-2.58941 c 0.1148,-0.15606 -0.09,-2.57753 -0.23073,-2.72772 -0.0532,-0.0568 -0.46686,-0.0882 -0.94313,-0.0716 l -0.84829,0.0296 -0.0745,1.01642 c -0.041,0.55904 -0.10884,1.1326 -0.15082,1.27459 -0.15194,0.51395 0.0211,0.6058 1.14155,0.6058 0.69663,0 1.0416,-0.0396 1.1059,-0.12706 z m -0.43177,-8.51744 c 0.2573,-0.27466 0.28416,-0.35831 0.23661,-0.73675 -0.14496,-1.15367 -1.6699,-1.20492 -1.84026,-0.0618 -0.0463,0.31044 -0.009,0.42125 0.25113,0.7369 0.25542,0.31053 0.36769,0.37152 0.68392,0.37152 0.29475,0 0.44247,-0.0684 0.6686,-0.30983 z"/></g></svg>
                     </button>
                     <div id="v-transmission-dropdown" class="v-transmission-dropdown" role="menu" aria-hidden="true">
-                        <button type="button" class="v-transmission-option${transmissionFilter === '' ? ' active' : ''}" data-value="" role="menuitem">${transmissionFilter === '' ? '✓ ' : ''}Tümü</button>
-                        <button type="button" class="v-transmission-option${transmissionFilter === 'otomatik' ? ' active' : ''}" data-value="otomatik" role="menuitem">${transmissionFilter === 'otomatik' ? '✓ ' : ''}Otomatik</button>
-                        <button type="button" class="v-transmission-option${transmissionFilter === 'manuel' ? ' active' : ''}" data-value="manuel" role="menuitem">${transmissionFilter === 'manuel' ? '✓ ' : ''}Manuel</button>
+                        <button type="button" class="v-transmission-option${transmissionFilter === '' ? ' active' : ''}" data-value="" role="menuitem">${transmissionFilter === '' ? 'âœ“ ' : ''}TÃ¼mÃ¼</button>
+                        <button type="button" class="v-transmission-option${transmissionFilter === 'otomatik' ? ' active' : ''}" data-value="otomatik" role="menuitem">${transmissionFilter === 'otomatik' ? 'âœ“ ' : ''}Otomatik</button>
+                        <button type="button" class="v-transmission-option${transmissionFilter === 'manuel' ? ' active' : ''}" data-value="manuel" role="menuitem">${transmissionFilter === 'manuel' ? 'âœ“ ' : ''}Manuel</button>
                     </div>
                 </div>
-                <button class="vt-icon-btn" onclick="toggleViewMode()" title="Görünüm">
+                <button class="vt-icon-btn" onclick="toggleViewMode()" title="GÃ¶rÃ¼nÃ¼m">
                     ${viewMode === 'card' 
                         ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>'
                         : '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>'
@@ -642,13 +642,13 @@
 
   // --- 1. DASHBOARD RENDER ---
   /**
-   * Ana şube dashboard grid'ini render eder
+   * Ana ÅŸube dashboard grid'ini render eder
    * 
-   * Render mantığı:
-   * 1. "TÜMÜ" kartı eklenir (tüm taşıtları gösterir)
-   * 2. Her şube için kart oluşturulur (şube adı + taşıt sayısı)
-   * 3. Tahsis edilmemiş taşıt varsa "Tahsis Edilmemiş" kartı eklenir
-   * 4. Grid kolon sayısı dinamik ayarlanır (kart sayısına göre)
+   * Render mantÄ±ÄŸÄ±:
+   * 1. "TÃœMÃœ" kartÄ± eklenir (tÃ¼m taÅŸÄ±tlarÄ± gÃ¶sterir)
+   * 2. Her ÅŸube iÃ§in kart oluÅŸturulur (ÅŸube adÄ± + taÅŸÄ±t sayÄ±sÄ±)
+   * 3. Tahsis edilmemiÅŸ taÅŸÄ±t varsa "Tahsis EdilmemiÅŸ" kartÄ± eklenir
+   * 4. Grid kolon sayÄ±sÄ± dinamik ayarlanÄ±r (kart sayÄ±sÄ±na gÃ¶re)
    * 
    * Grid kolon stratejisi:
    * - 1 kart: 1 kolon
@@ -666,7 +666,7 @@
     const vehicles = readVehicles();
     const activeVehicles = vehicles.filter(v => v.satildiMi !== true);
 
-    // Şube kartları için sayımlar (Map ile O(n))
+    // Åube kartlarÄ± iÃ§in sayÄ±mlar (Map ile O(n))
     const countByBranch = new Map();
     let unassignedCount = 0;
     activeVehicles.forEach(v => {
@@ -703,25 +703,25 @@
       return;
     }
 
-    // Grid HTML başlangıcı
+    // Grid HTML baÅŸlangÄ±cÄ±
     let html = '<div class="branch-grid">';
 
-    // 1. "TÜMÜ" Kartı (Manuel) — sadece aktif (satılmamış) taşıtlar
+    // 1. "TÃœMÃœ" KartÄ± (Manuel) â€” sadece aktif (satÄ±lmamÄ±ÅŸ) taÅŸÄ±tlar
     html += `
-      <div class="branch-card all-card" data-branch-id="all" data-branch-name="Taşıtlar">
-        <div class="branch-name">TÜMÜ</div>
-        <div class="branch-count">${activeVehicles.length} Taşıt</div>
+      <div class="branch-card all-card" data-branch-id="all" data-branch-name="TaÅŸÄ±tlar">
+        <div class="branch-name">TÃœMÃœ</div>
+        <div class="branch-count">${activeVehicles.length} TaÅŸÄ±t</div>
       </div>
     `;
 
-    // 2. Şube kartları
+    // 2. Åube kartlarÄ±
     branches.forEach(branch => {
       html += createBranchCard(branch.id, branch.name, countByBranch.get(String(branch.id)) || 0);
     });
 
-    // 3. Tahsis edilmemiş
+    // 3. Tahsis edilmemiÅŸ
     if (unassignedCount > 0) {
-      html += createBranchCard('', 'Tahsis Edilmemiş', unassignedCount, true);
+      html += createBranchCard('', 'Tahsis EdilmemiÅŸ', unassignedCount, true);
     }
 
     html += '</div>';
@@ -731,7 +731,7 @@
     lastDashboardRenderSignature = renderSignature;
     syncVehiclesListModeClass(false);
 
-    // Grid'i dinamik yap: kart sayısına göre kolon sayısını ayarla
+    // Grid'i dinamik yap: kart sayÄ±sÄ±na gÃ¶re kolon sayÄ±sÄ±nÄ± ayarla
     const gridEl = modalContent.querySelector('.branch-grid');
     if (gridEl) {
       const totalCards = 1 + branches.length + (unassignedCount > 0 ? 1 : 0);
@@ -741,7 +741,7 @@
       } else if (totalCards === 2) {
         cols = 2; // 2 kutu: 2 kolon
       } else {
-        cols = isMobile ? 4 : 5; // 3+ kutu: sabit kolon sayısı
+        cols = isMobile ? 4 : 5; // 3+ kutu: sabit kolon sayÄ±sÄ±
       }
       gridEl.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
     }
@@ -753,12 +753,12 @@
     return `
       <div class="branch-card${unassignedClass}" data-branch-id="${safeId}" data-branch-name="${safeName}">
         <div class="branch-name" title="${safeName}">${safeName}</div>
-        <div class="branch-count">${count} Taşıt</div>
+        <div class="branch-count">${count} TaÅŸÄ±t</div>
       </div>
     `;
   }
 
-  // --- 2. LİSTE RENDER (Şube Detayı) ---
+  // --- 2. LÄ°STE RENDER (Åube DetayÄ±) ---
   window.openBranchList = function(branchId, branchName) {
     currentView = 'list';
     viewMode = 'list';
@@ -766,15 +766,15 @@
     lastListContext = { mode: 'branch', branchId: branchId, branchName: branchName };
     invalidateVehicleListRenderCache();
     closeSearchBox(true);
-    const displayTitle = branchId === 'all' ? branchName : (branchName + ' Taşıtlar');
+    const displayTitle = branchId === 'all' ? branchName : (branchName + ' TaÅŸÄ±tlar');
     updateToolbar('detail', displayTitle);
 
     renderVehicles();
   };
 
   /**
-   * Arşiv görünümünü açar (satildiMi === true olan taşıtları listeler).
-   * Toolbar'da "Geri" ile dashboard'a dönülür.
+   * ArÅŸiv gÃ¶rÃ¼nÃ¼mÃ¼nÃ¼ aÃ§ar (satildiMi === true olan taÅŸÄ±tlarÄ± listeler).
+   * Toolbar'da "Geri" ile dashboard'a dÃ¶nÃ¼lÃ¼r.
    */
   window.openArchiveView = function() {
     currentView = 'list';
@@ -783,32 +783,32 @@
     lastListContext = { mode: 'archive' };
     invalidateVehicleListRenderCache();
     closeSearchBox(true);
-    updateToolbar('detail', 'Arşiv');
+    updateToolbar('detail', 'ArÅŸiv');
     renderVehicles();
   };
 
   /**
-   * Taşıt listesini filtreleyip render eder
+   * TaÅŸÄ±t listesini filtreleyip render eder
    * 
    * @param {string} [query=''] - Metin arama sorgusu (opsiyonel)
    * 
-   * Render akışı:
-   * 1. Şube filtresi uygula (all | '' | branchId)
-   * 2. Metin araması yap (marka/model, yıl, tahsis edilen kişi)
-   * 3. Sıralama/filtreleme uygula (applyFilter)
-   * 4. Card veya List view'da HTML oluştur
-   * 5. Grid kolon sayısını dinamik ayarla (card view için)
+   * Render akÄ±ÅŸÄ±:
+   * 1. Åube filtresi uygula (all | '' | branchId)
+   * 2. Metin aramasÄ± yap (marka/model, yÄ±l, tahsis edilen kiÅŸi)
+   * 3. SÄ±ralama/filtreleme uygula (applyFilter)
+   * 4. Card veya List view'da HTML oluÅŸtur
+   * 5. Grid kolon sayÄ±sÄ±nÄ± dinamik ayarla (card view iÃ§in)
    * 
-   * Görünüm modları:
-   * - Card: Plaka, Marka/Model, Şube/Kullanıcı (3 satır)
-   * - List: Marka/Model, Yıl/Km, Düzenle/Sil butonları
+   * GÃ¶rÃ¼nÃ¼m modlarÄ±:
+   * - Card: Plaka, Marka/Model, Åube/KullanÄ±cÄ± (3 satÄ±r)
+   * - List: Marka/Model, YÄ±l/Km, DÃ¼zenle/Sil butonlarÄ±
    */
   function renderVehicles(query = '') {
     try {
       const listContainer = DOM.vehiclesModalContent;
       if (!listContainer) return;
-      loadVehicleColumnOrder(); // Sütun sıralamasını yükle
-      // Veri Çek
+      loadVehicleColumnOrder(); // SÃ¼tun sÄ±ralamasÄ±nÄ± yÃ¼kle
+      // Veri Ã‡ek
       let vehicles = readVehicles();
       if (!Array.isArray(vehicles)) vehicles = [];
       const branches = window.appData?.branches || [];
@@ -826,11 +826,11 @@
         userMap[String(u.id)] = u;
       }
 
-    // 1. Arşiv veya Şube Filtresi
+    // 1. ArÅŸiv veya Åube Filtresi
     if (activeBranchId === '__archive__') {
         vehicles = vehicles.filter(v => v.satildiMi === true);
     } else {
-        // Şube filtresi
+        // Åube filtresi
         if (activeBranchId === 'all') {
             // Filtre yok
         } else if (activeBranchId === '') {
@@ -838,11 +838,11 @@
         } else {
             vehicles = vehicles.filter(v => String(v.branchId) === String(activeBranchId));
         }
-        // Normal listelerde satılanları gösterme
+        // Normal listelerde satÄ±lanlarÄ± gÃ¶sterme
         vehicles = vehicles.filter(v => v.satildiMi !== true);
     }
 
-    // 2. Metin Araması (plaka, marka/model, yıl, kullanıcı)
+    // 2. Metin AramasÄ± (plaka, marka/model, yÄ±l, kullanÄ±cÄ±)
     if (query) {
         const q = ('' + query).toLowerCase();
         vehicles = vehicles.filter(v => 
@@ -853,19 +853,19 @@
         );
     }
 
-    // 2b. Şanzıman filtresi (Otomatik/Manuel)
+    // 2b. ÅanzÄ±man filtresi (Otomatik/Manuel)
     if (transmissionFilter) {
         vehicles = vehicles.filter(v => v.transmission === transmissionFilter);
     }
 
-      // 3. Sıralama
+      // 3. SÄ±ralama
       vehicles = applyFilter(vehicles);
 
-      // Şube seçiliyken liste görünümünde şube sütunu gösterilmez
+      // Åube seÃ§iliyken liste gÃ¶rÃ¼nÃ¼mÃ¼nde ÅŸube sÃ¼tunu gÃ¶sterilmez
       const safeColumnOrder = Array.isArray(vehicleColumnOrder) ? vehicleColumnOrder : ['year', 'plate', 'brand', 'km', 'type', 'user', 'branch'];
       const displayColumnOrder = (activeBranchId === 'all' || activeBranchId === '__archive__') ? safeColumnOrder : safeColumnOrder.filter(function(k) { return k !== 'branch'; });
       const isMobileList = window.innerWidth <= 768;
-      // Mobil/tablet (≤768px): Taşıt Tipi sütununu göstermiyoruz (yer kaplamasın)
+      // Mobil/tablet (â‰¤768px): TaÅŸÄ±t Tipi sÃ¼tununu gÃ¶stermiyoruz (yer kaplamasÄ±n)
       const listDisplayOrder = isMobileList ? displayColumnOrder.filter(function(k) { return k !== 'type'; }) : displayColumnOrder;
 
       const renderSignature = buildVehicleRenderSignature(vehicles, query, listDisplayOrder);
@@ -877,26 +877,26 @@
         return;
       }
 
-      // 4. HTML – boş liste: liste görünümünde başlıkları koru, tek satırda mesaj göster
+      // 4. HTML â€“ boÅŸ liste: liste gÃ¶rÃ¼nÃ¼mÃ¼nde baÅŸlÄ±klarÄ± koru, tek satÄ±rda mesaj gÃ¶ster
       if (vehicles.length === 0) {
-          const emptyMsg = (activeBranchId === '__archive__') ? 'Arşivde kayıt bulunamadı.' : 'Kayıt bulunamadı.';
+          const emptyMsg = (activeBranchId === '__archive__') ? 'ArÅŸivde kayÄ±t bulunamadÄ±.' : 'KayÄ±t bulunamadÄ±.';
           if (viewMode === 'list') {
             loadVehicleColumnOrder();
             const gridStr = getVehicleColumnWidths(listDisplayOrder);
             const columnDefs = {
-              'year': { label: 'Yılı', class: 'list-year' },
+              'year': { label: 'YÄ±lÄ±', class: 'list-year' },
               'plate': { label: 'Plaka', class: 'list-plate' },
               'brand': { label: 'Marka / Model', class: 'list-brand' },
               'km': { label: 'Km', class: 'list-km' },
-              'type': { label: 'Taşıt Tipi', class: 'list-type' },
+              'type': { label: 'TaÅŸÄ±t Tipi', class: 'list-type' },
               'user': { label: 'Kull.', class: 'list-user' },
-              'branch': { label: 'Şube', class: 'list-branch' }
+              'branch': { label: 'Åube', class: 'list-branch' }
             };
             let emptyHtml = '<div class="list-header-row" style="grid-template-columns: ' + gridStr + '">';
             listDisplayOrder.forEach(columnKey => {
               const def = columnDefs[columnKey];
               if (def) {
-                const labelHtml = (isMobileList && columnKey === 'brand') ? '<span class="header-first-line">Marka /</span><span class="header-second-line">Model</span>' : (isMobileList && columnKey === 'type') ? '<span class="header-first-line">Taşıt</span><span class="header-second-line">Tipi</span>' : `<span>${escapeHtml(def.label)}</span>`;
+                const labelHtml = (isMobileList && columnKey === 'brand') ? '<span class="header-first-line">Marka /</span><span class="header-second-line">Model</span>' : (isMobileList && columnKey === 'type') ? '<span class="header-first-line">TaÅŸÄ±t</span><span class="header-second-line">Tipi</span>' : `<span>${escapeHtml(def.label)}</span>`;
                 emptyHtml += `<div class="list-cell ${def.class} sortable-header" data-col="${columnKey}">${labelHtml}</div>`;
               }
             });
@@ -931,18 +931,18 @@
             : '<svg class="sort-icon active" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 15l4 4 4-4"/></svg>';
         };
         
-        // Sütun başlık tanımları (mobilde Kullanıcı → Kull.)
+        // SÃ¼tun baÅŸlÄ±k tanÄ±mlarÄ± (mobilde KullanÄ±cÄ± â†’ Kull.)
         const columnDefs = {
-          'year': { label: 'Yılı', class: 'list-year' },
+          'year': { label: 'YÄ±lÄ±', class: 'list-year' },
           'plate': { label: 'Plaka', class: 'list-plate' },
           'brand': { label: 'Marka / Model', class: 'list-brand' },
           'km': { label: 'Km', class: 'list-km' },
-          'type': { label: 'Taşıt Tipi', class: 'list-type' },
+          'type': { label: 'TaÅŸÄ±t Tipi', class: 'list-type' },
           'user': { label: 'Kull.', class: 'list-user' },
-          'branch': { label: 'Şube', class: 'list-branch' }
+          'branch': { label: 'Åube', class: 'list-branch' }
         };
         html += '<div class="list-header-row" style="grid-template-columns: ' + gridStr + '">';
-        // Sıralamaya göre sütun başlıklarını render et (mobilde Marka/Model iki satır; Taşıt Tipi mobilde yok)
+        // SÄ±ralamaya gÃ¶re sÃ¼tun baÅŸlÄ±klarÄ±nÄ± render et (mobilde Marka/Model iki satÄ±r; TaÅŸÄ±t Tipi mobilde yok)
         listDisplayOrder.forEach(columnKey => {
           const def = columnDefs[columnKey];
           if (def) {
@@ -950,7 +950,7 @@
             if (isMobile && columnKey === 'brand') {
               labelHtml = '<span class="header-first-line">Marka /</span><span class="header-second-line">Model</span>';
             } else if (isMobile && columnKey === 'type') {
-              labelHtml = '<span class="header-first-line">Taşıt</span><span class="header-second-line">Tipi</span>';
+              labelHtml = '<span class="header-first-line">TaÅŸÄ±t</span><span class="header-second-line">Tipi</span>';
             } else {
               labelHtml = `<span>${escapeHtml(def.label)}</span>`;
             }
@@ -974,17 +974,17 @@
         html += '<div class="vehicles-list-scroll">';
       }
       html += `<div class="view-${viewMode}${extraClass}">` + vehicles.map(v => {
-        // Plaka (1. satır - tek satır maksimum)
+        // Plaka (1. satÄ±r - tek satÄ±r maksimum)
         const plate = v.plate || '-';
         
-        // Marka/Model (2. satır - 2 satıra inebilir)
+        // Marka/Model (2. satÄ±r - 2 satÄ±ra inebilir)
         const brandModel = v.brandModel || '-';
         
-        // 3. satır: Arşivde satış tarihi, Tümü'de şube, şube görünümünde kullanıcı
+        // 3. satÄ±r: ArÅŸivde satÄ±ÅŸ tarihi, TÃ¼mÃ¼'de ÅŸube, ÅŸube gÃ¶rÃ¼nÃ¼mÃ¼nde kullanÄ±cÄ±
         const isArchive = (activeBranchId === '__archive__');
         let thirdLine = '';
         if (isArchive) {
-          thirdLine = v.satisTarihi ? `Satış: ${v.satisTarihi}` : '';
+          thirdLine = v.satisTarihi ? `SatÄ±ÅŸ: ${v.satisTarihi}` : '';
         } else if (activeBranchId === 'all') {
           thirdLine = branchMap[String(v.branchId)]?.name || '';
         } else {
@@ -994,12 +994,12 @@
         const satildiCardSpan = isArchive ? ' <span style="color:#d40000;font-size:12px;">(SATILDI)</span>' : '';
         const satildiBrandLine = isArchive ? '<span class="archive-satildi-line">(SATILDI)</span>' : '';
 
-        // Tahsis edilmemiş taşıtlar için kırmızı class (liste ve kartta her zaman)
+        // Tahsis edilmemiÅŸ taÅŸÄ±tlar iÃ§in kÄ±rmÄ±zÄ± class (liste ve kartta her zaman)
         const isUnassigned = !v.branchId;
         const unassignedClass = isUnassigned ? ' unassigned-vehicle-card' : '';
         
         if (viewMode === 'card') {
-            // Üçüncü satır boşsa div'i render etme
+            // ÃœÃ§Ã¼ncÃ¼ satÄ±r boÅŸsa div'i render etme
             const thirdLineHtml = thirdLineDisplay ? `<div class="card-third-line" title="${escapeHtml(thirdLineDisplay)}">${escapeHtml(thirdLineDisplay)}</div>` : '';
             const vid = v.id != null ? String(v.id).replace(/"/g, '&quot;') : '';
             return `
@@ -1010,11 +1010,11 @@
               </div>
             `;
         } else {
-            // Liste görünümü: Sıralamaya göre dinamik
+            // Liste gÃ¶rÃ¼nÃ¼mÃ¼: SÄ±ralamaya gÃ¶re dinamik
             const kmValue = v.guncelKm || v.km;
             const kmLabel = kmValue ? formatNumber(kmValue) : '-';
             const vehicleTypeLabel = toTitleCase(v.vehicleType || '-');
-            const branchLabel = toTitleCase(branchMap[String(v.branchId)]?.name || 'Tahsis Edilmemiş');
+            const branchLabel = toTitleCase(branchMap[String(v.branchId)]?.name || 'Tahsis EdilmemiÅŸ');
             
             let cellHtml = '';
             listDisplayOrder.forEach(columnKey => {
@@ -1097,7 +1097,7 @@
       lastVehiclesRenderSignature = renderSignature;
       syncVehiclesListModeClass(viewMode === 'list');
 
-      // Taşıt kartları için grid'i dinamik yap (sadece card view'da)
+      // TaÅŸÄ±t kartlarÄ± iÃ§in grid'i dinamik yap (sadece card view'da)
       if (viewMode === 'card') {
           const gridEl = listContainer.querySelector('.view-card');
           if (gridEl) {
@@ -1109,51 +1109,51 @@
               } else if (totalCards === 2) {
                   cols = 2; // 2 kutu: 2 kolon
               } else {
-                  cols = isMobile ? 3 : 5; // 3+ kutu: sabit kolon sayısı
+                  cols = isMobile ? 3 : 5; // 3+ kutu: sabit kolon sayÄ±sÄ±
               }
               gridEl.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
           }
       }
       
-      // Mobil: başlıklar tek punto, en fazla 1pt küçülebilir (biri sığmazsa hepsi küçülür)
+      // Mobil: baÅŸlÄ±klar tek punto, en fazla 1pt kÃ¼Ã§Ã¼lebilir (biri sÄ±ÄŸmazsa hepsi kÃ¼Ã§Ã¼lÃ¼r)
       if (viewMode === 'list' && window.innerWidth <= 640) {
           applyMobileListHeaderFontSize(listContainer);
       }
       
-      // Mobil: sütun başlıklarına touch ile sürükle-bırak (yer değiştirme)
+      // Mobil: sÃ¼tun baÅŸlÄ±klarÄ±na touch ile sÃ¼rÃ¼kle-bÄ±rak (yer deÄŸiÅŸtirme)
       if (viewMode === 'list') {
           attachVehicleColumnTouchListeners(listContainer);
       }
     } catch (error) {
-      console.error('renderVehicles hatası:', error);
+      console.error('renderVehicles hatasÄ±:', error);
       const target = DOM.vehiclesModalContent;
       if (target) {
-        target.innerHTML = '<div style="text-align:center; padding:40px; color:#666">Bir hata oluştu. Lütfen sayfayı yenileyin.</div>';
+        target.innerHTML = '<div style="text-align:center; padding:40px; color:#666">Bir hata oluÅŸtu. LÃ¼tfen sayfayÄ± yenileyin.</div>';
       }
       syncVehiclesListModeClass(false);
     }
   }
 
-  // --- Taşıt Detay Göster (Kutuya tıklanınca) ---
+  // --- TaÅŸÄ±t Detay GÃ¶ster (Kutuya tÄ±klanÄ±nca) ---
   /**
-   * Taşıt detay modal'ını açar ve seçili taşıtın bilgilerini gösterir
+   * TaÅŸÄ±t detay modal'Ä±nÄ± aÃ§ar ve seÃ§ili taÅŸÄ±tÄ±n bilgilerini gÃ¶sterir
    * 
-   * @param {string} vehicleId - Gösterilecek taşıtın ID'si
+   * @param {string} vehicleId - GÃ¶sterilecek taÅŸÄ±tÄ±n ID'si
    * 
-   * Mantık:
-   * 1. Taşıt ID'si ile localStorage'dan taşıt bilgisini bul
-   * 2. Bulunamazsa kullanıcıya uyarı göster
-   * 3. vehicle-detail-modal'ı aç
-   * 4. Plaka ve Marka/Model + Yıl bilgilerini modal içine yerleştir
+   * MantÄ±k:
+   * 1. TaÅŸÄ±t ID'si ile localStorage'dan taÅŸÄ±t bilgisini bul
+   * 2. Bulunamazsa kullanÄ±cÄ±ya uyarÄ± gÃ¶ster
+   * 3. vehicle-detail-modal'Ä± aÃ§
+   * 4. Plaka ve Marka/Model + YÄ±l bilgilerini modal iÃ§ine yerleÅŸtir
    * 
-   * Not: Modal açma/kapama animasyonları CSS transition ile yönetilir
+   * Not: Modal aÃ§ma/kapama animasyonlarÄ± CSS transition ile yÃ¶netilir
    */
   window.showVehicleDetail = function(vehicleId) {
     const runDetail = () => {
       const vehicles = readVehicles();
       const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
       if (!vehicle) {
-        alert("Taşıt bulunamadı!");
+        alert("TaÅŸÄ±t bulunamadÄ±!");
         return;
       }
 
@@ -1185,15 +1185,15 @@
       return;
     }
 
-    // Plaka (üstte yatayda ortalı) - Satıldı durumu için kırmızı yazı ekle
-    // Plaka container'ını kontrol et, yoksa oluştur
+    // Plaka (Ã¼stte yatayda ortalÄ±) - SatÄ±ldÄ± durumu iÃ§in kÄ±rmÄ±zÄ± yazÄ± ekle
+    // Plaka container'Ä±nÄ± kontrol et, yoksa oluÅŸtur
     let plateRow = contentEl.querySelector('.detail-plate-row');
     if (!plateRow) {
       const existingPlateEl = contentEl.querySelector('.detail-plate');
       plateRow = document.createElement('div');
       plateRow.className = 'detail-plate-row';
       
-      // Yeni plaka elementi oluştur
+      // Yeni plaka elementi oluÅŸtur
       const plateEl = document.createElement('div');
       plateEl.className = 'detail-plate';
       if (vehicle.satildiMi) {
@@ -1204,14 +1204,14 @@
       
       plateRow.appendChild(plateEl);
       
-      // Mevcut plaka elementini değiştir veya ekle
+      // Mevcut plaka elementini deÄŸiÅŸtir veya ekle
       if (existingPlateEl && existingPlateEl.parentNode) {
         existingPlateEl.parentNode.replaceChild(plateRow, existingPlateEl);
       } else {
         contentEl.insertBefore(plateRow, contentEl.firstChild);
       }
     } else {
-      // Container varsa sadece plakayı güncelle
+      // Container varsa sadece plakayÄ± gÃ¼ncelle
       const plateEl = plateRow.querySelector('.detail-plate');
       if (plateEl) {
         if (vehicle.satildiMi) {
@@ -1222,7 +1222,7 @@
       }
     }
 
-    // Marka Model satırına butonları ekle (Olay Ekle solda, Marka/Model ortada, Tarihçe sağda)
+    // Marka Model satÄ±rÄ±na butonlarÄ± ekle (Olay Ekle solda, Marka/Model ortada, TarihÃ§e saÄŸda)
     const brandYearRow = contentEl.querySelector('.detail-brand-year-row');
     const brandYearEl = contentEl.querySelector('.detail-brand-year');
     
@@ -1230,7 +1230,7 @@
       const brandModel = toTitleCase(vehicle.brandModel || '-');
       brandYearEl.textContent = brandModel;
       
-      // Mevcut butonları kaldır (eğer varsa)
+      // Mevcut butonlarÄ± kaldÄ±r (eÄŸer varsa)
       const existingHistoryBtn = brandYearRow.querySelector('.history-btn-minimal');
       const existingAddEventBtn = brandYearRow.querySelector('.history-add-event-btn');
       if (existingHistoryBtn) existingHistoryBtn.remove();
@@ -1245,7 +1245,7 @@
       addEventBtn.onclick = () => openEventModal('menu', vehicle.id);
       brandYearRow.insertBefore(addEventBtn, brandYearEl);
       
-      // Tarihçe butonu (sağda)
+      // TarihÃ§e butonu (saÄŸda)
       const historyBtn = document.createElement('button');
       historyBtn.className = 'history-btn-minimal';
       historyBtn.innerHTML = `
@@ -1255,23 +1255,23 @@
           <path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22"/>
           <path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2"/>
         </svg>
-        <span>Tarihçe</span>
+        <span>TarihÃ§e</span>
       `;
-      historyBtn.title = 'Tarihçe';
-      historyBtn.setAttribute('aria-label', 'Tarihçe');
+      historyBtn.title = 'TarihÃ§e';
+      historyBtn.setAttribute('aria-label', 'TarihÃ§e');
       historyBtn.onclick = () => showVehicleHistory(null);
       brandYearRow.appendChild(historyBtn);
     }
 
-    // İki kolonlu layout'u render et
+    // Ä°ki kolonlu layout'u render et
     renderVehicleDetailLeft(vehicle);
     renderVehicleDetailRight(vehicle);
 
-    // Toolbar oluştur/kontrol et (detay modalında) - Her durumda geri tuşu ekle
+    // Toolbar oluÅŸtur/kontrol et (detay modalÄ±nda) - Her durumda geri tuÅŸu ekle
     const modalHeader = modal.querySelector('.modal-header');
     let detailToolbar = modal.querySelector('.vehicle-detail-toolbar');
     
-    // Toolbar yoksa oluştur
+    // Toolbar yoksa oluÅŸtur
     if (!detailToolbar && modalHeader) {
       detailToolbar = document.createElement('div');
       detailToolbar.className = 'vehicle-detail-toolbar';
@@ -1279,7 +1279,7 @@
     }
     
     if (detailToolbar) {
-      // Toolbar içeriğini temizle
+      // Toolbar iÃ§eriÄŸini temizle
       detailToolbar.innerHTML = '';
 
       // Sol taraf (geri butonu + hedef sayfa etiketi)
@@ -1288,19 +1288,19 @@
       toolbarLeft.style.alignItems = 'center';
       toolbarLeft.style.gap = '8px';
 
-      // Geri gidilecek hedef: lastListContext (geldiğimiz liste)
-      let backLabel = 'Taşıtlar';
+      // Geri gidilecek hedef: lastListContext (geldiÄŸimiz liste)
+      let backLabel = 'TaÅŸÄ±tlar';
       if (lastListContext) {
         if (lastListContext.mode === 'archive') {
-          backLabel = 'Arşiv';
+          backLabel = 'ArÅŸiv';
         } else if (lastListContext.branchId === 'all') {
-          backLabel = 'Taşıtlar';
+          backLabel = 'TaÅŸÄ±tlar';
         } else {
-          backLabel = lastListContext.branchName + ' Taşıtlar';
+          backLabel = lastListContext.branchName + ' TaÅŸÄ±tlar';
         }
       }
 
-      // Geri butonu (evrensel yapı)
+      // Geri butonu (evrensel yapÄ±)
       const backBar = document.createElement('div');
       backBar.className = 'universal-back-bar';
       const backBtn = document.createElement('button');
@@ -1320,8 +1320,8 @@
       backBar.appendChild(backBtn);
       toolbarLeft.appendChild(backBar);
       
-      // Orta taraf (tahsis butonu - sadece tahsis edilmemiş taşıtlar için)
-      // Yatayda ortalı: sol ok ve Taşıtlar dikkate alınmadan, tam ekran ortası
+      // Orta taraf (tahsis butonu - sadece tahsis edilmemiÅŸ taÅŸÄ±tlar iÃ§in)
+      // Yatayda ortalÄ±: sol ok ve TaÅŸÄ±tlar dikkate alÄ±nmadan, tam ekran ortasÄ±
       const toolbarCenter = document.createElement('div');
       toolbarCenter.className = 'detail-toolbar-center-absolute';
       toolbarCenter.style.display = 'flex';
@@ -1332,7 +1332,7 @@
       if (!vehicle.branchId) {
         const assignBtn = document.createElement('button');
         assignBtn.className = 'detail-assign-button-frameless';
-        assignBtn.innerHTML = '<span>Şubeye Tahsis Etmek İçin +</span>';
+        assignBtn.innerHTML = '<span>Åubeye Tahsis Etmek Ä°Ã§in +</span>';
         assignBtn.onclick = (e) => {
           e.stopPropagation();
           openEventModal('sube', vehicleId);
@@ -1340,13 +1340,13 @@
         toolbarCenter.appendChild(assignBtn);
       }
       
-      // Sağ taraf (ruhsat simgesi + yazdır butonu)
+      // SaÄŸ taraf (ruhsat simgesi + yazdÄ±r butonu)
       const toolbarRight = document.createElement('div');
       toolbarRight.className = 'toolbar-right';
       const ruhsatBtn = document.createElement('button');
       ruhsatBtn.type = 'button';
       ruhsatBtn.className = 'vehicle-ruhsat-btn';
-      ruhsatBtn.title = vehicle.ruhsatPath ? 'Ruhsatı Görüntüle' : 'Ruhsat Yükle';
+      ruhsatBtn.title = vehicle.ruhsatPath ? 'RuhsatÄ± GÃ¶rÃ¼ntÃ¼le' : 'Ruhsat YÃ¼kle';
       ruhsatBtn.setAttribute('aria-label', 'Ruhsat');
       ruhsatBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg>';
       ruhsatBtn.onclick = (e) => { e.stopPropagation(); if (typeof window.openRuhsatModal === 'function') window.openRuhsatModal(vehicleId); };
@@ -1354,8 +1354,8 @@
       const printBtn = document.createElement('button');
       printBtn.type = 'button';
       printBtn.className = 'vehicle-print-btn';
-      printBtn.title = 'Taşıt Kartı Yazdır';
-      printBtn.setAttribute('aria-label', 'Taşıt Kartı Yazdır');
+      printBtn.title = 'TaÅŸÄ±t KartÄ± YazdÄ±r';
+      printBtn.setAttribute('aria-label', 'TaÅŸÄ±t KartÄ± YazdÄ±r');
       printBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v8H6z"/></svg>`;
       printBtn.onclick = (e) => {
         if (e) {
@@ -1366,54 +1366,54 @@
       };
       toolbarRight.appendChild(printBtn);
       
-      // Toolbar'a bölümleri ekle
+      // Toolbar'a bÃ¶lÃ¼mleri ekle
       detailToolbar.appendChild(toolbarLeft);
       detailToolbar.appendChild(toolbarCenter);
       detailToolbar.appendChild(toolbarRight);
     }
     
-    // Eski buton container'ını kaldır (varsa)
+    // Eski buton container'Ä±nÄ± kaldÄ±r (varsa)
     const oldAssignContainer = modal.querySelector('.detail-assign-button-container');
     if (oldAssignContainer) {
       oldAssignContainer.remove();
     }
 
-    // Tahsis edilmemiş mi kontrol et
+    // Tahsis edilmemiÅŸ mi kontrol et
     const existingAssign = contentEl.querySelector('.detail-branch-assign');
-    if (existingAssign) existingAssign.remove(); // Önceki formu temizle
+    if (existingAssign) existingAssign.remove(); // Ã–nceki formu temizle
 
     if (!vehicle.branchId) {
-      // Tahsis edilmemiş - Şube atama formu göster
+      // Tahsis edilmemiÅŸ - Åube atama formu gÃ¶ster
       const branches = readBranches();
       
       const assignDiv = document.createElement('div');
       assignDiv.className = 'detail-branch-assign';
       
       assignDiv.innerHTML = `
-        <div class="assign-toggle" onclick="toggleBranchAssign()">+ Şubeye Tahsis Et</div>
+        <div class="assign-toggle" onclick="toggleBranchAssign()">+ Åubeye Tahsis Et</div>
         <div class="assign-form" id="assign-form" style="display: none;">
           <select id="detail-branch-select" class="assign-select">
-            <option value="" disabled selected>Şube Seçiniz</option>
+            <option value="" disabled selected>Åube SeÃ§iniz</option>
           </select>
           <div class="universal-btn-group">
             <button type="button" class="universal-btn-save" onclick="assignVehicleToBranch('${vehicleId}')">Kaydet</button>
-            <button type="button" class="universal-btn-cancel" onclick="closeVehicleDetailModal()">Vazgeç</button>
+            <button type="button" class="universal-btn-cancel" onclick="closeVehicleDetailModal()">VazgeÃ§</button>
           </div>
         </div>
       `;
       
       contentEl.appendChild(assignDiv);
       
-      // Şubeleri dinamik olarak ekle
+      // Åubeleri dinamik olarak ekle
       const selectEl = document.getElementById('detail-branch-select');
       if (selectEl) {
-        // Önce select'i resetle (placeholder'ı garanti görünür yap)
+        // Ã–nce select'i resetle (placeholder'Ä± garanti gÃ¶rÃ¼nÃ¼r yap)
         selectEl.value = '';
         selectEl.selectedIndex = 0;
         selectEl.classList.remove('has-value');
         selectEl.style.color = '#888';
         
-        // Şubeleri ekle
+        // Åubeleri ekle
         if (branches.length > 0) {
           branches.forEach(b => {
             const opt = document.createElement('option');
@@ -1423,7 +1423,7 @@
           });
         }
         
-        // Placeholder'ın seçili kalmasını garanti et
+        // Placeholder'Ä±n seÃ§ili kalmasÄ±nÄ± garanti et
         if (selectEl.options.length > 0) {
           selectEl.selectedIndex = 0;
           selectEl.value = '';
@@ -1431,7 +1431,7 @@
           selectEl.style.color = '#888';
         }
         
-        // Change event listener - seçim yapıldığında rengi değiştir
+        // Change event listener - seÃ§im yapÄ±ldÄ±ÄŸÄ±nda rengi deÄŸiÅŸtir
         selectEl.addEventListener('change', function() {
           if (this.value === '') {
             this.classList.remove('has-value');
@@ -1444,7 +1444,7 @@
       }
     }
 
-    // Modalı aç
+    // ModalÄ± aÃ§
     modal.dataset.detailSignature = detailSignature;
     modal.style.display = 'flex';
     requestAnimationFrame(() => {
@@ -1456,8 +1456,8 @@
   };
 
   /**
-   * Mobil (≤768px) Taşıtlar detay modalında şube ismi tek satıra sığmıyorsa 1pt küçült.
-   * Satırdaki mevcut alan ile metnin tek satır genişliği karşılaştırılır; taşma varsa -shrink eklenir.
+   * Mobil (â‰¤768px) TaÅŸÄ±tlar detay modalÄ±nda ÅŸube ismi tek satÄ±ra sÄ±ÄŸmÄ±yorsa 1pt kÃ¼Ã§Ã¼lt.
+   * SatÄ±rdaki mevcut alan ile metnin tek satÄ±r geniÅŸliÄŸi karÅŸÄ±laÅŸtÄ±rÄ±lÄ±r; taÅŸma varsa -shrink eklenir.
    */
   window.applyVehicleDetailSubeShrink = function() {
     if (window.innerWidth > 768) return;
@@ -1478,7 +1478,7 @@
     if (textWidth > availableWidth) el.classList.add('detail-row-value-sube-shrink');
   };
 
-  // --- Şube Atama Formunu Aç/Kapat ---
+  // --- Åube Atama Formunu AÃ§/Kapat ---
   window.toggleBranchAssign = function() {
     const form = document.getElementById('assign-form');
     if (form) {
@@ -1486,14 +1486,14 @@
     }
   };
 
-  // --- Şubeye Tahsis Et ---
+  // --- Åubeye Tahsis Et ---
   window.assignVehicleToBranch = function(vehicleId) {
     const selectEl = document.getElementById('detail-branch-select');
     if (!selectEl) return;
     
     const branchId = selectEl.value;
     if (!branchId) {
-      alert('Lütfen bir şube seçiniz!');
+      alert('LÃ¼tfen bir ÅŸube seÃ§iniz!');
       return;
     }
     
@@ -1528,7 +1528,7 @@
     renderBranchDashboard();
   };
 
-  // --- Tüm Modalları Kapat ---
+  // --- TÃ¼m ModallarÄ± Kapat ---
   window.closeAllModals = function() {
     const modalIds = [
       'vehicles-modal',
@@ -1567,7 +1567,7 @@
     window.currentDetailVehicleId = null;
   };
 
-  // --- Taşıt Detay Modalını Kapat ---
+  // --- TaÅŸÄ±t Detay ModalÄ±nÄ± Kapat ---
   window.closeVehicleDetailModal = function() {
     const modal = DOM.vehicleDetailModal;
     if (modal) {
@@ -1578,7 +1578,7 @@
     }
   };
 
-  // --- ARAMA İŞLEMLERİ ---
+  // --- ARAMA Ä°ÅLEMLERÄ° ---
   let searchMode = 'local'; // 'global' or 'local'
 
   window.toggleSearchBox = function(mode) {
@@ -1605,7 +1605,7 @@
 
       if (silent === true) return;
       
-      // Arama kapanınca listeyi resetle (eğer global aramadaysak dashboarda dön)
+      // Arama kapanÄ±nca listeyi resetle (eÄŸer global aramadaysak dashboarda dÃ¶n)
       if (currentView === 'dashboard' && modalContent && modalContent.dataset.renderScope === 'search-global') {
           renderBranchDashboard();
       } else if (currentView === 'list') {
@@ -1613,14 +1613,14 @@
       }
   };
 
-  // Dış tıklama: arama açıkken kutu veya büyüteç dışına tıklanınca kapat
+  // DÄ±ÅŸ tÄ±klama: arama aÃ§Ä±kken kutu veya bÃ¼yÃ¼teÃ§ dÄ±ÅŸÄ±na tÄ±klanÄ±nca kapat
   document.addEventListener('click', function(e) {
       const box = getVSearchContainer();
       if (!box || !box.classList.contains('open')) return;
       if (e.target.closest('#v-search-container') || e.target.closest('.search-toggle-btn')) return;
       closeSearchBox();
   });
-  // Esc: arama açıkken kapat
+  // Esc: arama aÃ§Ä±kken kapat
   document.addEventListener('keydown', function(e) {
       if (e.key !== 'Escape') return;
       const box = getVSearchContainer();
@@ -1658,7 +1658,7 @@
       if (searchMode === 'local') {
           renderVehicles(val);
       } else {
-          // Global Arama (Dashboard'ı geçici ez)
+          // Global Arama (Dashboard'Ä± geÃ§ici ez)
           if (!val) {
               renderBranchDashboard();
               return;
@@ -1675,15 +1675,15 @@
             filtered = filtered.filter(v => v.transmission === transmissionFilter);
           }
           
-          // Sonuçları Liste Modunda Göster (tıklanınca detay açılsın - event delegation ile)
-          let html = `<div style="padding:10px; color:#aaa; font-size:12px;">GENEL ARAMA SONUÇLARI (${filtered.length})</div>`;
+          // SonuÃ§larÄ± Liste Modunda GÃ¶ster (tÄ±klanÄ±nca detay aÃ§Ä±lsÄ±n - event delegation ile)
+          let html = `<div style="padding:10px; color:#aaa; font-size:12px;">GENEL ARAMA SONUÃ‡LARI (${filtered.length})</div>`;
           html += `<div class="view-list">` + filtered.map(v => {
               const vid = v.id != null ? String(v.id).replace(/"/g, '&quot;') : '';
               return `
               <div class="list-item" data-vehicle-id="${vid}" style="cursor:pointer">
                 <div class="list-info">
                   <h4>${escapeHtml(toTitleCase(v.brandModel || '-'))}</h4>
-                  <span>${v.year} • ${v.tahsisKisi || 'Boşta'}</span>
+                  <span>${v.year} â€¢ ${v.tahsisKisi || 'BoÅŸta'}</span>
                 </div>
               </div>
           `}).join('') + `</div>`;
@@ -1696,7 +1696,7 @@
   };
   window.handleSearch = (typeof window.debounce === 'function') ? window.debounce(handleSearchImpl, 200) : handleSearchImpl;
 
-  // --- FİLTRE DROPDOWN ---
+  // --- FÄ°LTRE DROPDOWN ---
   window.closeFilterMenu = function() {
       const fd = getFilterDropdown();
       if (fd) fd.classList.remove('open');
@@ -1717,7 +1717,7 @@
       }
   };
   
-  // Filtreleme ve şanzıman menüsü: dışarı tıklandığında kapat
+  // Filtreleme ve ÅŸanzÄ±man menÃ¼sÃ¼: dÄ±ÅŸarÄ± tÄ±klandÄ±ÄŸÄ±nda kapat
   document.addEventListener('click', function(e) {
       const fd = getFilterDropdown();
       const filterBtn = document.querySelector('.vt-icon-btn[onclick*="toggleFilterMenu"]');
@@ -1732,13 +1732,13 @@
       if (transDd && transDd.classList.contains('open')) closeTransmissionMenu();
   });
 
-  // Sütun başlığına tıklanınca sıralama yap
+  // SÃ¼tun baÅŸlÄ±ÄŸÄ±na tÄ±klanÄ±nca sÄ±ralama yap
   window.handleColumnSort = function(column) {
     if (sortColumn === column) {
-      // Aynı sütuna tekrar tıklanınca yön değiştir
+      // AynÄ± sÃ¼tuna tekrar tÄ±klanÄ±nca yÃ¶n deÄŸiÅŸtir
       sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
     } else {
-      // Yeni sütuna tıklanınca artan sıralama yap
+      // Yeni sÃ¼tuna tÄ±klanÄ±nca artan sÄ±ralama yap
       sortColumn = column;
       sortDirection = 'asc';
     }
@@ -1747,7 +1747,7 @@
 
   function applyFilter(list) {
       if (!sortColumn) {
-          // Varsayılan sıralama yoksa orijinal sırayı koru
+          // VarsayÄ±lan sÄ±ralama yoksa orijinal sÄ±rayÄ± koru
           return list;
       }
       
@@ -1862,13 +1862,13 @@
   }
 
   /**
-   * Taşıt tipi görünen adını döndürür
+   * TaÅŸÄ±t tipi gÃ¶rÃ¼nen adÄ±nÄ± dÃ¶ndÃ¼rÃ¼r
    */
   function getVehicleTypeLabel(type) {
     const labels = {
       'otomobil': 'Otomobil / SUV',
-      'minivan': 'Küçük Ticari',
-      'kamyon': 'Büyük Ticari'
+      'minivan': 'KÃ¼Ã§Ã¼k Ticari',
+      'kamyon': 'BÃ¼yÃ¼k Ticari'
     };
     return labels[type] || type;
   }
@@ -1889,7 +1889,7 @@
       var data = window._kaskoCache;
       if (!Array.isArray(data) || data.length < 2) return '-';
 
-      // 1. Başlıkları Bul
+      // 1. BaÅŸlÄ±klarÄ± Bul
       var headerRowIndex = -1;
       for(var i=0; i<10; i++) {
         var rowStr = JSON.stringify(data[i] || []).toLowerCase();
@@ -1901,7 +1901,7 @@
       if (headerRowIndex === -1) headerRowIndex = 1;
       var headers = data[headerRowIndex];
 
-      // 2. Kolonları Bul
+      // 2. KolonlarÄ± Bul
       var markaIndex = -1, tipIndex = -1, yearIndex = -1;
       var targetYear = String(modelYili).trim();
 
@@ -1915,21 +1915,21 @@
 
       if (markaIndex === -1) markaIndex = 0;
       if (tipIndex === -1) tipIndex = 1;
-      if (yearIndex === -1) return 'Yıl Bulunamadı (' + targetYear + ')';
+      if (yearIndex === -1) return 'YÄ±l BulunamadÄ± (' + targetYear + ')';
 
-      // Hedef kasko kodunu rakam yap ve başındaki sıfırları at (Örn: 03210 -> 3210)
+      // Hedef kasko kodunu rakam yap ve baÅŸÄ±ndaki sÄ±fÄ±rlarÄ± at (Ã–rn: 03210 -> 3210)
       var targetClean = String(kaskoKodu).replace(/[^0-9]/g, '').replace(/^0+/, '');
 
       for (var r = headerRowIndex + 1; r < data.length; r++) {
         var row = data[r];
         if (!row || row.length < 2) continue;
 
-        // Excel'deki Marka ve Tip kodunu birleştir, sıfırları at
+        // Excel'deki Marka ve Tip kodunu birleÅŸtir, sÄ±fÄ±rlarÄ± at
         var m = String(row[markaIndex] || '').replace(/[^0-9]/g, '').replace(/^0+/, '');
         var t = String(row[tipIndex] || '').replace(/[^0-9]/g, '').replace(/^0+/, '');
         var currentClean = m + t;
 
-        // YALNIZCA TAM EŞLEŞME (İlk bulduğu yanlış markaya atlamaması için targetClean === m KALDIRILDI)
+        // YALNIZCA TAM EÅLEÅME (Ä°lk bulduÄŸu yanlÄ±ÅŸ markaya atlamamasÄ± iÃ§in targetClean === m KALDIRILDI)
         if (targetClean === currentClean) {
           var rawVal = String(row[yearIndex] || '').trim();
 
@@ -1945,13 +1945,13 @@
           var numVal = parseFloat(cleanVal) || parseInt(cleanVal.replace(/\D/g, ''), 10);
 
           if (!isNaN(numVal) && numVal > 0) {
-            return numVal.toLocaleString('tr-TR') + ' ₺';
+            return numVal.toLocaleString('tr-TR') + ' â‚º';
           } else {
-            return 'Değer Yok (Excel: 0)';
+            return 'DeÄŸer Yok (Excel: 0)';
           }
         }
       }
-      return 'Kasko Kodu Bulunamadı';
+      return 'Kasko Kodu BulunamadÄ±';
     } catch (e) {
       console.error("Kasko Hata:", e);
       return '-';
@@ -1961,8 +1961,8 @@
   window.getKaskoDegeri = getKaskoDegeri;
 
   /**
-   * Excel yüklendiğinde tüm taşıtların kasko değerini hesaplayıp kaydeder.
-   * Sunucuya yazılır; böylece Excel olmayan cihazlarda da değer görünür.
+   * Excel yÃ¼klendiÄŸinde tÃ¼m taÅŸÄ±tlarÄ±n kasko deÄŸerini hesaplayÄ±p kaydeder.
+   * Sunucuya yazÄ±lÄ±r; bÃ¶ylece Excel olmayan cihazlarda da deÄŸer gÃ¶rÃ¼nÃ¼r.
    */
   window.guncelleTumKaskoDegerleri = function() {
     var vehicles = readVehicles();
@@ -1984,7 +1984,7 @@
     const assignedUserName = (assignedUser && assignedUser.name) ? assignedUser.name : (vehicle.tahsisKisi || '-');
     const branchName = vehicle.branchId
       ? (branches.find(b => String(b.id) === String(vehicle.branchId))?.name || '-')
-      : 'Tahsis Edilmemiş';
+      : 'Tahsis EdilmemiÅŸ';
     const kmValue = vehicle.guncelKm ? formatNumber(vehicle.guncelKm) : (vehicle.km ? formatNumber(vehicle.km) : '-');
     const anahtarLabel = vehicle.anahtar === 'var' ? (vehicle.anahtarNerede || 'Var') : 'Yoktur.';
     const krediLabel = vehicle.kredi === 'var' ? (vehicle.krediDetay || 'Var') : 'Yoktur.';
@@ -2015,24 +2015,24 @@
     return [
       ['Plaka', vehicle.plate || '-'],
       ['Marka / Model', toTitleCase(vehicle.brandModel || '-')],
-      ['Kullanıcı', assignedUserName || '-'],
-      ['Şube', branchName],
-      ['Taşıt Tipi', getVehicleTypeLabel(vehicle.vehicleType || '-')],
-      ['Üretim Yılı', vehicle.year || '-'],
+      ['KullanÄ±cÄ±', assignedUserName || '-'],
+      ['Åube', branchName],
+      ['TaÅŸÄ±t Tipi', getVehicleTypeLabel(vehicle.vehicleType || '-')],
+      ['Ãœretim YÄ±lÄ±', vehicle.year || '-'],
       ['Tescil Tarihi', vehicle.tescilTarihi || '-'],
       ['Km', kmValue],
-      ['Şanzıman', vehicle.transmission || '-'],
-      ['Tramer Kaydı', tramerLabel],
-      ['Sigorta Bitiş Tarihi', vehicle.sigorta || '-'],
-      ['Kasko Bitiş Tarihi', vehicle.kasko || '-'],
-      ['Muayene Bitiş Tarihi', vehicle.muayene || '-'],
+      ['ÅanzÄ±man', vehicle.transmission || '-'],
+      ['Tramer KaydÄ±', tramerLabel],
+      ['Sigorta BitiÅŸ Tarihi', vehicle.sigorta || '-'],
+      ['Kasko BitiÅŸ Tarihi', vehicle.kasko || '-'],
+      ['Muayene BitiÅŸ Tarihi', vehicle.muayene || '-'],
       ['Yedek Anahtar', anahtarLabel],
       ['Kredi/Rehin', krediLabel],
-      ['Yazlık/Kışlık Lastik', lastikLabel],
-      ['UTTS', vehicle.uttsTanimlandi ? 'Evet' : 'Hayır'],
-      ['Taşıt Takip', vehicle.takipCihaziMontaj ? 'Evet' : 'Hayır'],
+      ['YazlÄ±k/KÄ±ÅŸlÄ±k Lastik', lastikLabel],
+      ['UTTS', vehicle.uttsTanimlandi ? 'Evet' : 'HayÄ±r'],
+      ['TaÅŸÄ±t Takip', vehicle.takipCihaziMontaj ? 'Evet' : 'HayÄ±r'],
       ['Kasko Kodu', vehicle.kaskoKodu || '-'],
-      ['Kasko Değeri', kaskoDegeriDisplay],
+      ['Kasko DeÄŸeri', kaskoDegeriDisplay],
       ['Notlar', vehicle.notes || '-']
     ];
   }
@@ -2041,10 +2041,10 @@
     const vehicles = readVehicles();
     const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
     if (!vehicle) {
-      alert('Taşıt bulunamadı!');
+      alert('TaÅŸÄ±t bulunamadÄ±!');
       return;
     }
-    /* Şema yazdırmada kaybolmasın diye önce SVG yükle */
+    /* Åema yazdÄ±rmada kaybolmasÄ±n diye Ã¶nce SVG yÃ¼kle */
     getParsedKaportaSvg().then(function() {
       doPrintVehicleCard(vehicle);
     }).catch(function() {
@@ -2054,7 +2054,7 @@
 
   function doPrintVehicleCard(vehicle) {
     const allRows = getVehiclePrintRows(vehicle);
-    const sigortaIdx = allRows.findIndex(([l]) => l === 'Sigorta Bitiş Tarihi');
+    const sigortaIdx = allRows.findIndex(([l]) => l === 'Sigorta BitiÅŸ Tarihi');
     const leftRows = sigortaIdx >= 0 ? allRows.slice(0, sigortaIdx) : allRows.slice(0, 9);
     const rightRows = sigortaIdx >= 0 ? allRows.slice(sigortaIdx) : [];
     const leftTable = leftRows.map(([label, value]) => `<tr><th>${escapeHtml(label)}</th><td>${escapeHtml(String(value || '-')).replace(/\n/g, '<br>')}</td></tr>`).join('');
@@ -2073,7 +2073,7 @@
               <div class="history-print-text">${escapeHtml(item.text || '-')}</div>
               ${item.extra ? `<div class="history-print-extra">${escapeHtml(item.extra)}</div>` : ''}
             </li>`).join('')}</ul>`
-        : '<div class="history-print-empty">Kayıt bulunmamaktadır.</div>';
+        : '<div class="history-print-empty">KayÄ±t bulunmamaktadÄ±r.</div>';
       return `<section class="history-print-card"><h2>${escapeHtml(title)}</h2>${bodyHtml}</section>`;
     }
 
@@ -2089,60 +2089,60 @@
         if (d.detay) extra = `Konum: ${toTitleCase(String(d.detay))}`;
       } else if (eventType === 'lastik-guncelle') {
         const durum = String(d.durum || 'yok').toLowerCase();
-        text = `Yazlık/Kışlık Lastik: ${durum === 'var' ? 'Var' : 'Yok'}`;
+        text = `YazlÄ±k/KÄ±ÅŸlÄ±k Lastik: ${durum === 'var' ? 'Var' : 'Yok'}`;
         if (d.adres) extra = `Konum: ${toTitleCase(String(d.adres))}`;
       } else if (eventType === 'kasko-guncelle') {
-        text = 'Kasko Güncelleme';
+        text = 'Kasko GÃ¼ncelleme';
         const details = [];
-        if (d.bitisTarihi) details.push(`Bitiş: ${formatDateForDisplay(d.bitisTarihi) || '-'}`);
+        if (d.bitisTarihi) details.push(`BitiÅŸ: ${formatDateForDisplay(d.bitisTarihi) || '-'}`);
         if (d.firma) details.push(`Firma: ${toTitleCase(String(d.firma))}`);
         if (d.acente) details.push(`Acente: ${toTitleCase(String(d.acente))}`);
         extra = details.join(' | ');
       } else if (eventType === 'sigorta-guncelle') {
-        text = 'Sigorta Güncelleme';
+        text = 'Sigorta GÃ¼ncelleme';
         const details = [];
-        if (d.bitisTarihi) details.push(`Bitiş: ${formatDateForDisplay(d.bitisTarihi) || '-'}`);
+        if (d.bitisTarihi) details.push(`BitiÅŸ: ${formatDateForDisplay(d.bitisTarihi) || '-'}`);
         if (d.firma) details.push(`Firma: ${toTitleCase(String(d.firma))}`);
         if (d.acente) details.push(`Acente: ${toTitleCase(String(d.acente))}`);
         extra = details.join(' | ');
       } else if (eventType === 'muayene-guncelle') {
-        text = 'Muayene Güncelleme';
-        if (d.bitisTarihi) extra = `Bitiş: ${formatDateForDisplay(d.bitisTarihi) || '-'}`;
+        text = 'Muayene GÃ¼ncelleme';
+        if (d.bitisTarihi) extra = `BitiÅŸ: ${formatDateForDisplay(d.bitisTarihi) || '-'}`;
       } else if (eventType === 'kullanici-atama') {
-        text = 'Kullanıcı Ataması';
+        text = 'KullanÄ±cÄ± AtamasÄ±';
         const details = [];
         if (d.kullaniciAdi) details.push(`Yeni: ${toTitleCase(String(d.kullaniciAdi))}`);
-        if (d.eskiKullaniciAdi) details.push(`Önceki: ${toTitleCase(String(d.eskiKullaniciAdi))}`);
+        if (d.eskiKullaniciAdi) details.push(`Ã–nceki: ${toTitleCase(String(d.eskiKullaniciAdi))}`);
         extra = details.join(' | ');
       } else if (eventType === 'sube-degisiklik') {
-        text = 'Şube Değişikliği';
+        text = 'Åube DeÄŸiÅŸikliÄŸi';
         const yeni = d.yeniSubeAdi || branches.find(b => String(b.id) === String(d.yeniSubeId))?.name || '';
         const eski = d.eskiSubeAdi || branches.find(b => String(b.id) === String(d.eskiSubeId))?.name || '';
         const details = [];
         if (yeni) details.push(`Yeni: ${toTitleCase(String(yeni))}`);
-        if (eski) details.push(`Önceki: ${toTitleCase(String(eski))}`);
+        if (eski) details.push(`Ã–nceki: ${toTitleCase(String(eski))}`);
         extra = details.join(' | ');
       } else if (eventType === 'kredi-guncelle') {
         const durum = String(d.durum || 'yok').toLowerCase();
         text = `Kredi/Rehin: ${durum === 'var' ? 'Var' : 'Yok'}`;
         if (d.detay) extra = `Detay: ${toTitleCase(String(d.detay))}`;
       } else if (eventType === 'utts-guncelle') {
-        text = `UTTS: ${(d.durum === true || d.durum === 'evet') ? 'Evet' : 'Hayır'}`;
+        text = `UTTS: ${(d.durum === true || d.durum === 'evet') ? 'Evet' : 'HayÄ±r'}`;
       } else if (eventType === 'takip-cihaz-guncelle') {
-        text = `Takip Cihazı: ${(d.durum === true || d.durum === 'var') ? 'Var' : 'Yok'}`;
+        text = `Takip CihazÄ±: ${(d.durum === true || d.durum === 'var') ? 'Var' : 'Yok'}`;
       } else if (eventType === 'ceza') {
-        text = 'Trafik Cezası';
+        text = 'Trafik CezasÄ±';
         const details = [];
         if (d.tutar) details.push(`Tutar: ${d.tutar} TL`);
         if (d.aciklama) details.push(`Nedeni: ${toTitleCase(String(d.aciklama))}`);
         extra = details.join(' | ');
       } else if (eventType === 'not-guncelle') {
-        text = 'Not Güncelleme';
+        text = 'Not GÃ¼ncelleme';
         if (d.not) extra = String(d.not).length > 120 ? String(d.not).slice(0, 120) + '...' : String(d.not);
       } else if (eventType === 'satis') {
-        text = 'Satış / Pert';
+        text = 'SatÄ±ÅŸ / Pert';
       } else {
-        text = toTitleCase(eventType || 'Diğer İşlem');
+        text = toTitleCase(eventType || 'DiÄŸer Ä°ÅŸlem');
       }
 
       return { text: text || '-', extra: extra || '' };
@@ -2161,7 +2161,7 @@
         if (event.type === 'bakim') {
           const details = [
             `Servis: ${toTitleCase(String(data.servis || '-'))}`,
-            `Kişi: ${toTitleCase(String(data.kisi || '-'))}`
+            `KiÅŸi: ${toTitleCase(String(data.kisi || '-'))}`
           ];
           if (data.km) details.push(`Km: ${formatNumber(data.km)}`);
           if (data.tutar) details.push(`Tutar: ${data.tutar}`);
@@ -2174,8 +2174,8 @@
         }
 
         if (event.type === 'kaza') {
-          const details = [`Kullanıcı: ${toTitleCase(String(data.surucu || '-'))}`];
-          if (data.hasarTutari) details.push(`Hasar Tutarı: ${data.hasarTutari}`);
+          const details = [`KullanÄ±cÄ±: ${toTitleCase(String(data.surucu || '-'))}`];
+          if (data.hasarTutari) details.push(`Hasar TutarÄ±: ${data.hasarTutari}`);
 
           const hasarParcalari = data.hasarParcalari;
           if (hasarParcalari && typeof hasarParcalari === 'object') {
@@ -2186,15 +2186,15 @@
               if (hasarParcalari[partId] === 'boyali') boyaliList.push(partName);
               if (hasarParcalari[partId] === 'degisen') degisenList.push(partName);
             });
-            if (boyaliList.length) details.push(`Boyalı: ${boyaliList.join(', ')}`);
-            if (degisenList.length) details.push(`Değişen: ${degisenList.join(', ')}`);
+            if (boyaliList.length) details.push(`BoyalÄ±: ${boyaliList.join(', ')}`);
+            if (degisenList.length) details.push(`DeÄŸiÅŸen: ${degisenList.join(', ')}`);
           }
 
           const aciklama = String(data.aciklama || '').trim();
           sections.kaza.push({
             date: dateText,
             text: details.join(' | '),
-            extra: aciklama ? `Açıklama: ${toTitleCase(aciklama)}` : ''
+            extra: aciklama ? `AÃ§Ä±klama: ${toTitleCase(aciklama)}` : ''
           });
           return;
         }
@@ -2206,7 +2206,7 @@
           const yeniKm = data.yeniKm ? formatNumber(data.yeniKm) : '-';
           sections.km.push({
             date: dateText,
-            text: `${userText}: ${eskiKm} → ${yeniKm}`,
+            text: `${userText}: ${eskiKm} â†’ ${yeniKm}`,
             extra: ''
           });
           return;
@@ -2221,10 +2221,10 @@
       });
 
       return [
-        renderPrintHistorySection('Bakım', sections.bakim),
+        renderPrintHistorySection('BakÄ±m', sections.bakim),
         renderPrintHistorySection('Kaza', sections.kaza),
         renderPrintHistorySection('Km', sections.km),
-        renderPrintHistorySection('Diğer', sections.diger)
+        renderPrintHistorySection('DiÄŸer', sections.diger)
       ].join('');
     }
 
@@ -2282,7 +2282,7 @@
 
       if (!svgMarkup) {
         const fallbackSrc = new URL('icon/kaporta.svg', window.location.href).href;
-        svgMarkup = `<img src="${escapeHtml(fallbackSrc)}" alt="Kaporta Şeması" class="kaporta-print-fallback">`;
+        svgMarkup = `<img src="${escapeHtml(fallbackSrc)}" alt="Kaporta ÅemasÄ±" class="kaporta-print-fallback">`;
       }
 
       return `<section class="kaporta-print-section kaporta-print-box">
@@ -2290,11 +2290,11 @@
         <div class="kaporta-print-row">
           <div class="kaporta-print-state-grid">
             <div class="kaporta-print-col">
-              <h3>Boyalı Parçalar</h3>
+              <h3>BoyalÄ± ParÃ§alar</h3>
               ${listHtml(boyaliList)}
             </div>
             <div class="kaporta-print-col">
-              <h3>Değişen Parçalar</h3>
+              <h3>DeÄŸiÅŸen ParÃ§alar</h3>
               ${listHtml(degisenList)}
             </div>
           </div>
@@ -2304,13 +2304,12 @@
     }
 
     const kaportaPrintSectionHtml = buildKaportaPrintSectionHtml(vehicle);
-    const isIosPwaPrint = typeof isIosStandalonePwa === 'function' && isIosStandalonePwa();
 
     const printHtml = `<!doctype html>
 <html lang="tr">
 <head>
   <meta charset="utf-8">
-  <title>Taşıt Kartı - ${escapeHtml(vehicle.plate || '-')}</title>
+  <title>TaÅŸÄ±t KartÄ± - ${escapeHtml(vehicle.plate || '-')}</title>
   <style>
     body { font-family: Arial, sans-serif; margin: 24px; color: #111; }
     h1 { margin: 0 0 4px; font-size: 24px; }
@@ -2356,7 +2355,7 @@
     .kaporta-print-empty { font-size: 12px; color: #666; }
     .print-page-break { page-break-before: always; break-before: page; margin: 16px 0 0; }
     
-    /* TARİHÇE (HISTORY) YAZDIRMA AYARI: Eğer sığmıyorsa başlığıyla beraber 2. sayfaya geçsin */
+    /* TARÄ°HÃ‡E (HISTORY) YAZDIRMA AYARI: EÄŸer sÄ±ÄŸmÄ±yorsa baÅŸlÄ±ÄŸÄ±yla beraber 2. sayfaya geÃ§sin */
     .history-page { margin-top: 15px; page-break-inside: avoid; break-inside: avoid; }
     
     .history-grid { display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-start; }
@@ -2369,30 +2368,26 @@
     .history-print-text { font-size: 12px; line-height: 1.25; }
     .history-print-extra { font-size: 11px; color: #444; margin-top: 1px; line-height: 1.2; }
     .history-print-empty { font-size: 12px; color: #666; }
-    @media (max-width: 760px) { .history-grid { flex-direction: column; } .history-print-card { width: 100%; } .kaporta-print-row { grid-template-columns: 1fr; row-gap: 5px; } .kaporta-print-state-grid { grid-template-columns: 1fr; } }
-    /* iOS PWA: Ekspertiz şeması üstteki çerçeveye 4px, sağdaki sahaya 12px */
-    body.ios-pwa-print .summary-page .vehicle-card-print-grid { margin-bottom: 0 !important; }
-    body.ios-pwa-print .kaporta-print-section { margin-top: 2px !important; }
-    body.ios-pwa-print .kaporta-print-schema-wrap { margin-right: 0 !important; margin-left: auto !important; }
+    @media (max-width: 760px) { .history-grid { flex-direction: column; } .history-print-card { width: 100%; } }
     @media print { body { margin: 8mm; -webkit-print-color-adjust: exact; print-color-adjust: exact; } .print-preview-toolbar { display: none !important; } .kaporta-print-section { page-break-inside: auto; break-inside: auto; } .print-history-block { break-inside: avoid; page-break-inside: avoid; } .history-page h3, .history-page .subtitle { page-break-after: avoid; break-after: avoid-page; } .history-grid { gap: 8px; } }
   </style>
 </head>
-<body class="${isIosPwaPrint ? 'ios-pwa-print' : ''}">
+<body>
   <div class="print-preview-toolbar">
-    <button type="button" class="print-preview-btn" id="print-preview-back">← Geri Dön</button>
+    <button type="button" class="print-preview-btn" id="print-preview-back">â† Geri DÃ¶n</button>
     <button type="button" class="print-preview-btn print-preview-btn-primary" id="print-preview-close">Kapat</button>
   </div>
   <section class="summary-page print-summary">
-    <h1>Taşıt Kartı</h1>
-    <p class="subtitle">Plaka: ${escapeHtml(vehicle.plate || '-')} • Oluşturma: ${printedAt}</p>
+    <h1>TaÅŸÄ±t KartÄ±</h1>
+    <p class="subtitle">Plaka: ${escapeHtml(vehicle.plate || '-')} â€¢ OluÅŸturma: ${printedAt}</p>
     ${rows}
     ${kaportaPrintSectionHtml}
   </section>
 
   <section class="history-page">
     <div class="print-history-block">
-    <h3>Taşıt Tarihçesi</h3>
-    <p class="subtitle">Plaka: ${escapeHtml(vehicle.plate || '-')} • Oluşturma: ${printedAt}</p>
+    <h3>TaÅŸÄ±t TarihÃ§esi</h3>
+    <p class="subtitle">Plaka: ${escapeHtml(vehicle.plate || '-')} â€¢ OluÅŸturma: ${printedAt}</p>
     ${historySectionsHtml}
     </div>
   </section>
@@ -2419,7 +2414,7 @@
       }
 
       window.__medisaPreparePrintLayout = function() {
-        // Javascript tabanlı hesaplama kaldırıldı, yerini CSS (page-break-inside: avoid) aldı.
+        // Javascript tabanlÄ± hesaplama kaldÄ±rÄ±ldÄ±, yerini CSS (page-break-inside: avoid) aldÄ±.
       };
 
       if (document.readyState === 'loading') {
@@ -2471,7 +2466,7 @@
         if (done) return;
         done = true;
         cleanup();
-        alert('Yazdırma başlatılamadı. Lütfen tekrar deneyin.');
+        alert('YazdÄ±rma baÅŸlatÄ±lamadÄ±. LÃ¼tfen tekrar deneyin.');
       }
 
       try {
@@ -2576,13 +2571,13 @@
       });
     }
 
-    // Tüm platformlarda (Masaüstü, Android, iOS PWA) ikinci sekme (ön izleme) açılmasını 
-    // kökten engellemek için her zaman arka planda gizli iframe ile yazdırmayı tetikliyoruz.
+    // TÃ¼m platformlarda (MasaÃ¼stÃ¼, Android, iOS PWA) ikinci sekme (Ã¶n izleme) aÃ§Ä±lmasÄ±nÄ± 
+    // kÃ¶kten engellemek iÃ§in her zaman arka planda gizli iframe ile yazdÄ±rmayÄ± tetikliyoruz.
     printWithIframeFallback('forced_iframe_for_all');
   }
   /**
    * /**
- * Sol kolon render (Taşıt özellikleri + Kaporta Şeması)
+ * Sol kolon render (TaÅŸÄ±t Ã¶zellikleri + Kaporta ÅemasÄ±)
  */
 function renderVehicleDetailLeft(vehicle) {
   const leftEl = DOM.vehicleDetailLeft;
@@ -2590,7 +2585,7 @@ function renderVehicleDetailLeft(vehicle) {
 
   let html = '';
 
-  // Kullanıcı
+  // KullanÄ±cÄ±
   const users = readUsers();
   const assignedUserId = vehicle.assignedUserId || '';
   const assignedUser = assignedUserId ? users.find(u => u.id === assignedUserId) : null;
@@ -2598,26 +2593,26 @@ function renderVehicleDetailLeft(vehicle) {
 
   if (assignedUserId || (assignedUserName && assignedUserName.trim())) {
       const displayName = escapeHtml(assignedUserName).replace(/ /g, '&nbsp;');
-      html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Kullanıcı</span><span class="detail-row-colon">:</span></div><span class="detail-row-value detail-user-value"> ${displayName}</span></div>`;
+      html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">KullanÄ±cÄ±</span><span class="detail-row-colon">:</span></div><span class="detail-row-value detail-user-value"> ${displayName}</span></div>`;
   } else {
-      html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Kullanıcı</span><span class="detail-row-colon">:</span></div><span class="detail-row-value detail-user-empty" onclick="event.stopPropagation(); if (window.currentDetailVehicleId) openEventModal('kullanici', window.currentDetailVehicleId);"> Kullanıcı Eklemek İçin +</span></div>`;
+      html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">KullanÄ±cÄ±</span><span class="detail-row-colon">:</span></div><span class="detail-row-value detail-user-empty" onclick="event.stopPropagation(); if (window.currentDetailVehicleId) openEventModal('kullanici', window.currentDetailVehicleId);"> KullanÄ±cÄ± Eklemek Ä°Ã§in +</span></div>`;
   }
 
-  // Şube
+  // Åube
   const branches = readBranches();
   const branchId = vehicle.branchId || '';
   const branchName = branchId ?
       (branches.find(b => String(b.id) === String(branchId))?.name || '') :
-      'Tahsis Edilmemiş';
-  html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Şube</span><span class="detail-row-colon">:</span></div><span class="detail-row-value detail-row-value-sube"> ${escapeHtml(branchName)}</span></div>`;
+      'Tahsis EdilmemiÅŸ';
+  html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Åube</span><span class="detail-row-colon">:</span></div><span class="detail-row-value detail-row-value-sube"> ${escapeHtml(branchName)}</span></div>`;
 
-  // Taşıt Tipi
+  // TaÅŸÄ±t Tipi
   const vehicleType = vehicle.vehicleType || '';
-  html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Taşıt Tipi</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(getVehicleTypeLabel(vehicleType))}</span></div>`;
+  html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">TaÅŸÄ±t Tipi</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(getVehicleTypeLabel(vehicleType))}</span></div>`;
 
-  // Üretim Yılı
+  // Ãœretim YÄ±lÄ±
   const year = vehicle.year || '';
-  html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Üretim Yılı</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(year)}</span></div>`;
+  html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Ãœretim YÄ±lÄ±</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(year)}</span></div>`;
 
   // Tescil Tarihi
   const tescilTarihi = vehicle.tescilTarihi || '';
@@ -2630,21 +2625,21 @@ function renderVehicleDetailLeft(vehicle) {
   } else {
       const km = vehicle.km || '';
       const formattedKm = km ? formatNumber(km) : '';
-      html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Km (Alındığı Tarih)</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(formattedKm || '-')}</span></div>`;
+      html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Km (AlÄ±ndÄ±ÄŸÄ± Tarih)</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(formattedKm || '-')}</span></div>`;
   }
 
-  // Şanzıman
+  // ÅanzÄ±man
   const transmission = vehicle.transmission || '';
   const transmissionLabel = transmission === 'otomatik' ? 'Otomatik' : transmission === 'manuel' ? 'Manuel' : '';
-  html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Şanzıman</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(transmissionLabel)}</span></div>`;
+  html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">ÅanzÄ±man</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(transmissionLabel)}</span></div>`;
 
-  // Alım Bedeli
+  // AlÄ±m Bedeli
   const price = vehicle.price || '';
-  html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Alım Bedeli</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(price || '-')}</span></div>`;
+  html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">AlÄ±m Bedeli</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(price || '-')}</span></div>`;
 
-  // Tramer Kaydı
+  // Tramer KaydÄ±
   if (vehicle.tramer === 'var' && vehicle.tramerRecords && vehicle.tramerRecords.length > 0) {
-      html += `<div class="detail-row detail-row-block"><div class="detail-row-header"><span class="detail-row-label">Tramer Kaydı</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> `;
+      html += `<div class="detail-row detail-row-block"><div class="detail-row-header"><span class="detail-row-label">Tramer KaydÄ±</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> `;
       vehicle.tramerRecords.forEach((record, index) => {
           if (index > 0) html += '<br>';
           html += `${escapeHtml(formatDateForDisplay(record.date) || '-')} - ${escapeHtml(record.amount)}`;
@@ -2662,17 +2657,17 @@ function renderVehicleDetailLeft(vehicle) {
           const totalParts = totalFixed.split('.');
           const totalInteger = totalParts[0].replace(/\B(?=(\d{3})+(?!\d))/g, '.');
           const totalFormatted = `${totalInteger},${totalParts[1]}TL`;
-          html += `<br><strong>Olmak Üzere Toplam ${totalFormatted}</strong>`;
+          html += `<br><strong>Olmak Ãœzere Toplam ${totalFormatted}</strong>`;
       }
       html += `</span></div>`;
   } else {
-      html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Tramer Kaydı</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> Yoktur.</span></div>`;
+      html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Tramer KaydÄ±</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> Yoktur.</span></div>`;
   }
 
   // Kaporta Durumu (Legend eklendi)
   html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Kaporta Durumu</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> `;
   if (vehicle.boya === 'var' && vehicle.boyaliParcalar) {
-      html += 'Aşağıdaki şemada belirtilmiştir.';
+      html += 'AÅŸaÄŸÄ±daki ÅŸemada belirtilmiÅŸtir.';
   } else {
       html += 'Yoktur.';
   }
@@ -2681,7 +2676,7 @@ function renderVehicleDetailLeft(vehicle) {
   // HTML'i sol kolona bas
   leftEl.innerHTML = html;
 
-  // --- ŞEMA EKLEME: Sol grid (sol kolon) içinde; büyüklük sol kolona göre uyarlanır ---
+  // --- ÅEMA EKLEME: Sol grid (sol kolon) iÃ§inde; bÃ¼yÃ¼klÃ¼k sol kolona gÃ¶re uyarlanÄ±r ---
   const existingBoyaContainer = document.getElementById('detail-boya-container');
   if (existingBoyaContainer) existingBoyaContainer.remove();
 
@@ -2689,12 +2684,12 @@ function renderVehicleDetailLeft(vehicle) {
   boyaContainer.id = 'detail-boya-container';
   leftEl.appendChild(boyaContainer);
 
-  // Boya şemasını render et (içinde SVG + tam açıklama Orijinal/Boyalı/Değişen; O/B/D kısaltması yok)
+  // Boya ÅŸemasÄ±nÄ± render et (iÃ§inde SVG + tam aÃ§Ä±klama Orijinal/BoyalÄ±/DeÄŸiÅŸen; O/B/D kÄ±saltmasÄ± yok)
   renderBoyaSchemaDetail(vehicle);
 }
 
   /**
-   * Sağ kolon render (Tarihler, Anahtar, Kredi, UTTS, Takip Cihazı)
+   * SaÄŸ kolon render (Tarihler, Anahtar, Kredi, UTTS, Takip CihazÄ±)
    */
   function renderVehicleDetailRight(vehicle) {
     const rightEl = DOM.vehicleDetailRight;
@@ -2702,28 +2697,28 @@ function renderVehicleDetailLeft(vehicle) {
     
     let html = '';
     
-    // Sigorta bitiş tarihi
+    // Sigorta bitiÅŸ tarihi
     const sigortaDate = vehicle.sigortaDate || '';
     const sigortaWarning = checkDateWarnings(sigortaDate);
     const sigortaDisplay = formatDateForDisplay(sigortaDate);
-    html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Sigorta Bitiş Tarihi</span><span class="detail-row-colon">:</span></div><span class="detail-row-value ${sigortaWarning.class}"> ${escapeHtml(sigortaDisplay || '-')}</span></div>`;
+    html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Sigorta BitiÅŸ Tarihi</span><span class="detail-row-colon">:</span></div><span class="detail-row-value ${sigortaWarning.class}"> ${escapeHtml(sigortaDisplay || '-')}</span></div>`;
     
-    // Kasko bitiş tarihi
+    // Kasko bitiÅŸ tarihi
     const kaskoDate = vehicle.kaskoDate || '';
     const kaskoWarning = checkDateWarnings(kaskoDate);
     const kaskoDisplay = formatDateForDisplay(kaskoDate);
-    html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Kasko Bitiş Tarihi</span><span class="detail-row-colon">:</span></div><span class="detail-row-value ${kaskoWarning.class}"> ${escapeHtml(kaskoDisplay || '-')}</span></div>`;
+    html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Kasko BitiÅŸ Tarihi</span><span class="detail-row-colon">:</span></div><span class="detail-row-value ${kaskoWarning.class}"> ${escapeHtml(kaskoDisplay || '-')}</span></div>`;
     
-    // Muayene bitiş tarihi (taşıt tipi yoksa uyarı + tooltip + Tıklayınız)
+    // Muayene bitiÅŸ tarihi (taÅŸÄ±t tipi yoksa uyarÄ± + tooltip + TÄ±klayÄ±nÄ±z)
     const muayeneDate = vehicle.muayeneDate || '';
     const muayeneWarning = checkDateWarnings(muayeneDate);
     const muayeneDisplay = formatDateForDisplay(muayeneDate);
     const vt = vehicle.vehicleType ?? vehicle.tip ?? '';
     const noVehicleType = vt == null || (typeof vt === 'string' && !String(vt).trim());
     if (noVehicleType) {
-      html += `<div class="detail-row detail-row-inline detail-row-muayene-no-type"><div class="detail-row-header"><span class="detail-row-label">Muayene Bitiş Tarihi</span><span class="detail-row-colon">:</span></div><span class="detail-row-value detail-muayene-value-wrap ${muayeneWarning.class}"> ${escapeHtml(muayeneDisplay || '-')} <span class="muayene-detail-exclamation" aria-hidden="true" title="Taşıt tipi seçilmedi">!</span><span class="muayene-detail-tooltip-wrap"><span class="muayene-detail-tooltip" role="tooltip" hidden>Taşıt Tipi Seçilmediğinden, Muayene Bitiş Tarihi Hatalı Gözükebilir. Seçim Yapmak İçin <button type="button" class="muayene-detail-tooltip-link">Tıklayınız</button>.</span></span></span></div>`;
+      html += `<div class="detail-row detail-row-inline detail-row-muayene-no-type"><div class="detail-row-header"><span class="detail-row-label">Muayene BitiÅŸ Tarihi</span><span class="detail-row-colon">:</span></div><span class="detail-row-value detail-muayene-value-wrap ${muayeneWarning.class}"> ${escapeHtml(muayeneDisplay || '-')} <span class="muayene-detail-exclamation" aria-hidden="true" title="TaÅŸÄ±t tipi seÃ§ilmedi">!</span><span class="muayene-detail-tooltip-wrap"><span class="muayene-detail-tooltip" role="tooltip" hidden>TaÅŸÄ±t Tipi SeÃ§ilmediÄŸinden, Muayene BitiÅŸ Tarihi HatalÄ± GÃ¶zÃ¼kebilir. SeÃ§im Yapmak Ä°Ã§in <button type="button" class="muayene-detail-tooltip-link">TÄ±klayÄ±nÄ±z</button>.</span></span></span></div>`;
     } else {
-      html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Muayene Bitiş Tarihi</span><span class="detail-row-colon">:</span></div><span class="detail-row-value ${muayeneWarning.class}"> ${escapeHtml(muayeneDisplay || '-')}</span></div>`;
+      html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Muayene BitiÅŸ Tarihi</span><span class="detail-row-colon">:</span></div><span class="detail-row-value ${muayeneWarning.class}"> ${escapeHtml(muayeneDisplay || '-')}</span></div>`;
     }
     
     // Yedek Anahtar
@@ -2736,24 +2731,24 @@ function renderVehicleDetailLeft(vehicle) {
     const krediLabel = kredi === 'var' ? (vehicle.krediDetay || 'Var') : 'Yoktur.';
     html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Kredi/Rehin</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(krediLabel)}</span></div>`;
     
-    // Yazlık/ Kışlık Lastik (Yoktur "r" hizası için referans)
+    // YazlÄ±k/ KÄ±ÅŸlÄ±k Lastik (Yoktur "r" hizasÄ± iÃ§in referans)
     const lastikDurumu = vehicle.lastikDurumu || '';
     const lastikLabel = lastikDurumu === 'var' ? (vehicle.lastikAdres || 'Var') : 'Yoktur.';
-    html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Yazlık/ Kışlık Lastik</span><span class="detail-row-colon">:</span></div><span class="detail-row-value detail-yoktur-r-ref"> ${escapeHtml(lastikLabel)}</span></div>`;
+    html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">YazlÄ±k/ KÄ±ÅŸlÄ±k Lastik</span><span class="detail-row-colon">:</span></div><span class="detail-row-value detail-yoktur-r-ref"> ${escapeHtml(lastikLabel)}</span></div>`;
     
     // UTTS
-    const utts = vehicle.uttsTanimlandi ? 'Evet' : 'Hayır';
+    const utts = vehicle.uttsTanimlandi ? 'Evet' : 'HayÄ±r';
     html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">UTTS</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(utts)}</span></div>`;
     
-    // Taşıt Takip
-    const takipCihazi = vehicle.takipCihaziMontaj ? 'Evet' : 'Hayır';
-    html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Taşıt Takip</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(takipCihazi)}</span></div>`;
+    // TaÅŸÄ±t Takip
+    const takipCihazi = vehicle.takipCihaziMontaj ? 'Evet' : 'HayÄ±r';
+    html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">TaÅŸÄ±t Takip</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(takipCihazi)}</span></div>`;
 
-    // Kasko Kodu (sadece taşıt detayda bilgi olarak)
+    // Kasko Kodu (sadece taÅŸÄ±t detayda bilgi olarak)
     const kaskoKodu = vehicle.kaskoKodu || '';
     html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Kasko Kodu</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(kaskoKodu || '-')}</span></div>`;
 
-    // Kasko Değeri (önce kayıtlı değer, yoksa Excel'den hesapla)
+    // Kasko DeÄŸeri (Ã¶nce kayÄ±tlÄ± deÄŸer, yoksa Excel'den hesapla)
     let kaskoDegeri = vehicle.kaskoDegeri;
     if (kaskoDegeri == null || kaskoDegeri === '') {
       const yearForKasko = vehicle.year || vehicle.modelYili || '';
@@ -2765,7 +2760,7 @@ function renderVehicleDetailLeft(vehicle) {
     if (kaskoDegeri === '-' && (!vehicle.kaskoKodu || String(vehicle.kaskoKodu).trim() === '')) {
       kaskoDegeri = 'Kasko kodu girilmedi';
     } else if (kaskoDegeri === '-' && !localStorage.getItem('medisa_kasko_liste')) {
-      kaskoDegeri = 'Excel yüklenmedi';
+      kaskoDegeri = 'Excel yÃ¼klenmedi';
     }
     let isKaskoOutdated = true;
     const kaskoTarihKaynak = vehicle.kaskoDegeriYuklemeTarihi || localStorage.getItem('medisa_kasko_liste_date');
@@ -2776,19 +2771,19 @@ function renderVehicleDetailLeft(vehicle) {
         isKaskoOutdated = false;
       }
     }
-    const isPlaceholderMsg = (kaskoDegeri === 'Kasko kodu girilmedi' || kaskoDegeri === 'Excel yüklenmedi');
+    const isPlaceholderMsg = (kaskoDegeri === 'Kasko kodu girilmedi' || kaskoDegeri === 'Excel yÃ¼klenmedi');
     const kaskoDegeriStyle = isKaskoOutdated && !isPlaceholderMsg ? 'color: var(--red) !important;' : '';
-    const kaskoDegeriExtra = (isKaskoOutdated && !isPlaceholderMsg) ? ' <span style="font-size: 0.8em; opacity: 0.8;">(Güncel Değil)</span>' : '';
+    const kaskoDegeriExtra = (isKaskoOutdated && !isPlaceholderMsg) ? ' <span style="font-size: 0.8em; opacity: 0.8;">(GÃ¼ncel DeÄŸil)</span>' : '';
     const kaskoDegeriDisplay = String(kaskoDegeri).trim() || '-';
-    html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Kasko Değeri</span><span class="detail-row-colon">:</span></div><span class="detail-row-value kasko-degeri-text" style="${kaskoDegeriStyle}"> ${escapeHtml(kaskoDegeriDisplay)}${kaskoDegeriExtra}</span></div>`;
+    html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Kasko DeÄŸeri</span><span class="detail-row-colon">:</span></div><span class="detail-row-value kasko-degeri-text" style="${kaskoDegeriStyle}"> ${escapeHtml(kaskoDegeriDisplay)}${kaskoDegeriExtra}</span></div>`;
 
-    // Notlar (kayıt formundan) + Kullanıcı Notu (varsa, kullanıcı panelinden)
+    // Notlar (kayÄ±t formundan) + KullanÄ±cÄ± Notu (varsa, kullanÄ±cÄ± panelinden)
     const notes = vehicle.notes || '';
     const sonNot = vehicle.sonEkstraNot || '';
     const sonNotDonem = vehicle.sonEkstraNotDonem || '';
     let notesValue = notes ? escapeHtml(notes) : '';
     if (sonNot) {
-      const kullaniciNotu = 'Kullanıcı Notu: ' + escapeHtml(sonNot) + (sonNotDonem ? ' (' + escapeHtml(sonNotDonem) + ')' : '');
+      const kullaniciNotu = 'KullanÄ±cÄ± Notu: ' + escapeHtml(sonNot) + (sonNotDonem ? ' (' + escapeHtml(sonNotDonem) + ')' : '');
       notesValue = notesValue ? notesValue + '<br><br>' + kullaniciNotu : kullaniciNotu;
     }
     notesValue = notesValue || '-';
@@ -2798,28 +2793,28 @@ function renderVehicleDetailLeft(vehicle) {
   }
 
   /**
-   * Kaporta SVG parça ID'lerine göre okunabilir isim döndürür (kaporta.svg ile uyumlu)
+   * Kaporta SVG parÃ§a ID'lerine gÃ¶re okunabilir isim dÃ¶ndÃ¼rÃ¼r (kaporta.svg ile uyumlu)
    */
   function getKaportaPartNames() {
     return {
-      'on-tampon': 'Ön Tampon',
+      'on-tampon': 'Ã–n Tampon',
       'arka-tampon': 'Arka Tampon',
       'kaput': 'Kaput',
-      'bagaj': 'Bagaj Kapağı',
-      'sag-on-kapi': 'Sağ Ön Kapı',
-      'sol-on-kapi': 'Sol Ön Kapı',
-      'sag-arka-kapi': 'Sağ Arka Kapı',
-      'sol-arka-kapi': 'Sol Arka Kapı',
-      'sag-on-camurluk': 'Sağ Ön Çamurluk',
-      'sol-on-camurluk': 'Sol Ön Çamurluk',
-      'sag-arka-camurluk': 'Sağ Arka Çamurluk',
-      'sol-arka-camurluk': 'Sol Arka Çamurluk',
+      'bagaj': 'Bagaj KapaÄŸÄ±',
+      'sag-on-kapi': 'SaÄŸ Ã–n KapÄ±',
+      'sol-on-kapi': 'Sol Ã–n KapÄ±',
+      'sag-arka-kapi': 'SaÄŸ Arka KapÄ±',
+      'sol-arka-kapi': 'Sol Arka KapÄ±',
+      'sag-on-camurluk': 'SaÄŸ Ã–n Ã‡amurluk',
+      'sol-on-camurluk': 'Sol Ã–n Ã‡amurluk',
+      'sag-arka-camurluk': 'SaÄŸ Arka Ã‡amurluk',
+      'sol-arka-camurluk': 'Sol Arka Ã‡amurluk',
       'tavan': 'Tavan'
     };
   }
 
   /**
-   * Boya şemasını detay ekranında render et (readonly)
+   * Boya ÅŸemasÄ±nÄ± detay ekranÄ±nda render et (readonly)
    */
   function renderBoyaSchemaDetail(vehicle) {
     const container = document.getElementById('detail-boya-container');
@@ -2830,8 +2825,8 @@ function renderVehicleDetailLeft(vehicle) {
 
         container.innerHTML = '';
 
-        // Şema genişliği: sol grid içinde, sol kolon genişliğine göre requestAnimationFrame ile uyarlanır (yatay -4px, dikey -8px küçültme; %20 küçültme)
-        const schemaScale = 0.8; /* %20 küçültme */
+        // Åema geniÅŸliÄŸi: sol grid iÃ§inde, sol kolon geniÅŸliÄŸine gÃ¶re requestAnimationFrame ile uyarlanÄ±r (yatay -4px, dikey -8px kÃ¼Ã§Ã¼ltme; %20 kÃ¼Ã§Ã¼ltme)
+        const schemaScale = 0.8; /* %20 kÃ¼Ã§Ã¼ltme */
         const svgOrgWidth = 148;
         const svgOrgHeight = 220;
         const shrinkX = 4;
@@ -2839,7 +2834,7 @@ function renderVehicleDetailLeft(vehicle) {
         const defaultTargetWidth = Math.round((220 - shrinkX) * schemaScale);
         const targetHeight = Math.round(defaultTargetWidth * (148 / 220)) - shrinkY;
 
-        // Wrapper oluştur (Şemayı tutacak kutu); başlangıç değeri, ölçüm sonrası güncellenir
+        // Wrapper oluÅŸtur (ÅemayÄ± tutacak kutu); baÅŸlangÄ±Ã§ deÄŸeri, Ã¶lÃ§Ã¼m sonrasÄ± gÃ¼ncellenir
         const svgWrapper = document.createElement('div');
         svgWrapper.className = 'kaporta-schema-wrapper';
         svgWrapper.style.cssText = `
@@ -2850,7 +2845,7 @@ function renderVehicleDetailLeft(vehicle) {
             margin: 2px auto 0 0;
         `;
 
-        // SVG'yi hazırla (zaten clone geldi)
+        // SVG'yi hazÄ±rla (zaten clone geldi)
         svgClone.setAttribute('width', String(svgOrgWidth));
         svgClone.setAttribute('height', String(svgOrgHeight));
 
@@ -2862,7 +2857,7 @@ function renderVehicleDetailLeft(vehicle) {
         svgWrapper.appendChild(svgClone);
         container.appendChild(svgWrapper);
 
-        // --- RENKLENDİRME ---
+        // --- RENKLENDÄ°RME ---
         const partNames = getKaportaPartNames();
         const defaultGray = '#757575';
 
@@ -2885,7 +2880,7 @@ function renderVehicleDetailLeft(vehicle) {
               part.style.fill = '#d40000';
             }
             const partName = partNames[partId] || partId;
-            const stateLabel = state === 'boyali' ? 'Boyalı' : state === 'degisen' ? 'Değişen' : 'Orijinal';
+            const stateLabel = state === 'boyali' ? 'BoyalÄ±' : state === 'degisen' ? 'DeÄŸiÅŸen' : 'Orijinal';
             part.setAttribute('title', `${partName} - ${stateLabel}`);
             part.style.cursor = 'help';
           }
@@ -2905,12 +2900,12 @@ function renderVehicleDetailLeft(vehicle) {
         legend.className = 'boya-legend';
         legend.innerHTML = `
           <div class="boya-legend-item"><span class="boya-legend-dot" style="background:#757575;"></span> Orijinal</div>
-          <div class="boya-legend-item"><span class="boya-legend-dot" style="background:#28a745;"></span> Boyalı</div>
-          <div class="boya-legend-item"><span class="boya-legend-dot" style="background:#d40000;"></span> Değişen</div>
+          <div class="boya-legend-item"><span class="boya-legend-dot" style="background:#28a745;"></span> BoyalÄ±</div>
+          <div class="boya-legend-item"><span class="boya-legend-dot" style="background:#d40000;"></span> DeÄŸiÅŸen</div>
         `;
         container.appendChild(legend);
 
-        // Sol kolon genişliğine göre şema büyüklüğünü uyarla (sol grid içinde; yatay -4px, dikey -8px)
+        // Sol kolon geniÅŸliÄŸine gÃ¶re ÅŸema bÃ¼yÃ¼klÃ¼ÄŸÃ¼nÃ¼ uyarla (sol grid iÃ§inde; yatay -4px, dikey -8px)
         requestAnimationFrame(function alignSchemaToLeftColumn() {
           const leftCol = DOM.vehicleDetailLeft;
           if (leftCol && container.isConnected) {
@@ -2928,18 +2923,18 @@ function renderVehicleDetailLeft(vehicle) {
         });
       })
       .catch(err => {
-        console.error('SVG yükleme hatası:', err);
+        console.error('SVG yÃ¼kleme hatasÄ±:', err);
       });
   }
 
-  // --- OLAY MODAL FONKSİYONLARI ---
+  // --- OLAY MODAL FONKSÄ°YONLARI ---
   
   /**
-   * Olay modal menüsünü açar
+   * Olay modal menÃ¼sÃ¼nÃ¼ aÃ§ar
    */
   window.openEventModal = function(type, vehicleId) {
     if (type === 'menu') {
-      // Önce tüm açık alt modalları kapat
+      // Ã–nce tÃ¼m aÃ§Ä±k alt modallarÄ± kapat
       const allEventModals = [
         'bakim-ekle-modal', 'kaza-ekle-modal', 'ceza-ekle-modal', 'sigorta-guncelle-modal',
         'kasko-guncelle-modal', 'muayene-guncelle-modal', 'anahtar-guncelle-modal',
@@ -2961,26 +2956,26 @@ function renderVehicleDetailLeft(vehicle) {
       const menuList = DOM.eventMenuList;
       if (!menuList) return;
       
-      // Menü listesini oluştur
+      // MenÃ¼ listesini oluÅŸtur
       const isMobile = window.innerWidth <= 640;
-      const takipLabel = isMobile ? 'Taşıt Takip Cih.Bilg. Günc.' : 'Taşıt Takip Cihaz Bilgisi Güncelle';
+      const takipLabel = isMobile ? 'TaÅŸÄ±t Takip Cih.Bilg. GÃ¼nc.' : 'TaÅŸÄ±t Takip Cihaz Bilgisi GÃ¼ncelle';
       const events = [
-        { id: 'ceza', label: 'Trafik Cezası Ekle' },
-        { id: 'km', label: 'Km Güncelle' },
-        { id: 'bakim', label: 'Bakım Bilgisi Ekle' },
+        { id: 'ceza', label: 'Trafik CezasÄ± Ekle' },
+        { id: 'km', label: 'Km GÃ¼ncelle' },
+        { id: 'bakim', label: 'BakÄ±m Bilgisi Ekle' },
         { id: 'kaza', label: 'Kaza Bilgisi Ekle' },
-        { id: 'sigorta', label: 'Sigorta Bilgisi Güncelle' },
-        { id: 'kasko', label: 'Kasko Bilgisi Güncelle' },
-        { id: 'muayene', label: 'Muayene Bilgisi Güncelle' },
-        { id: 'anahtar', label: 'Yedek Anahtar Bilgisi Güncelle' },
-        { id: 'kredi', label: 'Kredi/Rehin Bilgisi Güncelle' },
-        { id: 'lastik', label: 'Yazlık/Kışlık Lastik Durumu Güncelle' },
-        { id: 'utts', label: 'UTTS Bilgisi Güncelle' },
+        { id: 'sigorta', label: 'Sigorta Bilgisi GÃ¼ncelle' },
+        { id: 'kasko', label: 'Kasko Bilgisi GÃ¼ncelle' },
+        { id: 'muayene', label: 'Muayene Bilgisi GÃ¼ncelle' },
+        { id: 'anahtar', label: 'Yedek Anahtar Bilgisi GÃ¼ncelle' },
+        { id: 'kredi', label: 'Kredi/Rehin Bilgisi GÃ¼ncelle' },
+        { id: 'lastik', label: 'YazlÄ±k/KÄ±ÅŸlÄ±k Lastik Durumu GÃ¼ncelle' },
+        { id: 'utts', label: 'UTTS Bilgisi GÃ¼ncelle' },
         { id: 'takip', label: takipLabel },
-        { id: 'kaskokodu', label: 'Kasko Kodu Güncelleme' },
-        { id: 'sube', label: 'Şube Değişikliği Bilgisi Güncelle' },
-        { id: 'kullanici', label: 'Kullanıcı Atama/Değişikliği Bilgisi Güncelle' },
-        { id: 'satis', label: 'Satış/Pert Bildirimi Yap' }
+        { id: 'kaskokodu', label: 'Kasko Kodu GÃ¼ncelleme' },
+        { id: 'sube', label: 'Åube DeÄŸiÅŸikliÄŸi Bilgisi GÃ¼ncelle' },
+        { id: 'kullanici', label: 'KullanÄ±cÄ± Atama/DeÄŸiÅŸikliÄŸi Bilgisi GÃ¼ncelle' },
+        { id: 'satis', label: 'SatÄ±ÅŸ/Pert Bildirimi Yap' }
       ];
       
       const vid = (window.currentDetailVehicleId || vehicleId || '').toString().replace(/"/g, '&quot;');
@@ -2999,7 +2994,7 @@ function renderVehicleDetailLeft(vehicle) {
         modal.classList.add('active');
       });
     } else {
-      // Belirli bir olay modal'ını aç
+      // Belirli bir olay modal'Ä±nÄ± aÃ§
       const modalId = type === 'km' ? 'km-guncelle-modal' :
                       type === 'bakim' ? 'bakim-ekle-modal' :
                       type === 'kaza' ? 'kaza-ekle-modal' :
@@ -3022,22 +3017,22 @@ function renderVehicleDetailLeft(vehicle) {
       const modal = document.getElementById(modalId);
       if (!modal) return;
       
-      // Modal'a göre özel işlemler
+      // Modal'a gÃ¶re Ã¶zel iÅŸlemler
       if (type === 'kaza') {
-        // Kaza modal'ında mevcut boya şemasını göster (readonly) ve varsayılan kullanıcı
+        // Kaza modal'Ä±nda mevcut boya ÅŸemasÄ±nÄ± gÃ¶ster (readonly) ve varsayÄ±lan kullanÄ±cÄ±
         const vehicle = readVehicles().find(v => String(v.id) === String(vehicleId || window.currentDetailVehicleId));
         if (vehicle) {
           const container = document.getElementById('kaza-kaporta-container');
           if (container) {
-            // Mevcut şemayı readonly göster
+            // Mevcut ÅŸemayÄ± readonly gÃ¶ster
             renderBoyaSchemaKaza(vehicle, container);
           }
-          // Varsayılan kullanıcı
+          // VarsayÄ±lan kullanÄ±cÄ±
           const kazaSurucuInput = document.getElementById('kaza-surucu');
           if (kazaSurucuInput && vehicle.tahsisKisi) {
             kazaSurucuInput.value = vehicle.tahsisKisi;
           }
-          // Hasar tutarı input'una format event'i ekle
+          // Hasar tutarÄ± input'una format event'i ekle
           const kazaTutarInput = document.getElementById('kaza-tutar');
           if (kazaTutarInput) {
             kazaTutarInput.addEventListener('blur', function() {
@@ -3062,7 +3057,7 @@ function renderVehicleDetailLeft(vehicle) {
           });
         }
       } else if (type === 'muayene') {
-        // Muayene modal'ında varsayılan bugünün tarihi
+        // Muayene modal'Ä±nda varsayÄ±lan bugÃ¼nÃ¼n tarihi
         const muayeneTarihInput = document.getElementById('muayene-tarih');
         if (muayeneTarihInput) {
           const today = new Date().toISOString().split('T')[0];
@@ -3075,10 +3070,10 @@ function renderVehicleDetailLeft(vehicle) {
           input.value = vehicle.kaskoKodu || '';
         }
       } else if (type === 'sube') {
-        // Şube değişikliği modal'ında şubeleri doldur
+        // Åube deÄŸiÅŸikliÄŸi modal'Ä±nda ÅŸubeleri doldur
         const selectEl = document.getElementById('sube-select');
         if (selectEl) {
-          selectEl.innerHTML = '<option value="">Şube Seçiniz</option>';
+          selectEl.innerHTML = '<option value="">Åube SeÃ§iniz</option>';
           const branches = readBranches();
           branches.forEach(b => {
             const opt = document.createElement('option');
@@ -3088,13 +3083,13 @@ function renderVehicleDetailLeft(vehicle) {
           });
         }
       } else if (type === 'kullanici') {
-        // Kullanıcı atama modal'ında kullanıcıları doldur; Henüz Tanımlanmadı + en alta "+ Yeni Kullanıcı Ekle"
+        // KullanÄ±cÄ± atama modal'Ä±nda kullanÄ±cÄ±larÄ± doldur; HenÃ¼z TanÄ±mlanmadÄ± + en alta "+ Yeni KullanÄ±cÄ± Ekle"
         const selectEl = document.getElementById('kullanici-select');
         if (selectEl) {
-          selectEl.innerHTML = '<option value="">Kullanıcı Seçiniz</option>';
+          selectEl.innerHTML = '<option value="">KullanÄ±cÄ± SeÃ§iniz</option>';
           const noneOpt = document.createElement('option');
           noneOpt.value = '__none__';
-          noneOpt.textContent = 'Henüz Tanımlanmadı';
+          noneOpt.textContent = 'HenÃ¼z TanÄ±mlanmadÄ±';
           selectEl.appendChild(noneOpt);
           const users = readUsers();
           users.forEach(u => {
@@ -3105,7 +3100,7 @@ function renderVehicleDetailLeft(vehicle) {
           });
           const addOpt = document.createElement('option');
           addOpt.value = '__add_user__';
-          addOpt.textContent = '+ Yeni Kullanıcı Ekle';
+          addOpt.textContent = '+ Yeni KullanÄ±cÄ± Ekle';
           selectEl.appendChild(addOpt);
           const vehicle = readVehicles().find(v => String(v.id) === String(vehicleId || window.currentDetailVehicleId));
           if (vehicle?.assignedUserId) {
@@ -3130,10 +3125,10 @@ function renderVehicleDetailLeft(vehicle) {
                   window.removeEventListener('userSaved', onUserSaved);
                   if (!newId || !selectEl.parentNode) return;
                   const users = readUsers();
-                  selectEl.innerHTML = '<option value="">Kullanıcı Seçiniz</option>';
+                  selectEl.innerHTML = '<option value="">KullanÄ±cÄ± SeÃ§iniz</option>';
                   const noneOpt2 = document.createElement('option');
                   noneOpt2.value = '__none__';
-                  noneOpt2.textContent = 'Henüz Tanımlanmadı';
+                  noneOpt2.textContent = 'HenÃ¼z TanÄ±mlanmadÄ±';
                   selectEl.appendChild(noneOpt2);
                   users.forEach(u => {
                     const opt = document.createElement('option');
@@ -3143,7 +3138,7 @@ function renderVehicleDetailLeft(vehicle) {
                   });
                   const addOpt2 = document.createElement('option');
                   addOpt2.value = '__add_user__';
-                  addOpt2.textContent = '+ Yeni Kullanıcı Ekle';
+                  addOpt2.textContent = '+ Yeni KullanÄ±cÄ± Ekle';
                   selectEl.appendChild(addOpt2);
                   selectEl.value = newId;
                   if (currentVehicleId) {
@@ -3156,7 +3151,7 @@ function renderVehicleDetailLeft(vehicle) {
           }
         }
       } else if (type === 'anahtar') {
-        // Anahtar modal'ında radio button handler'larını ekle
+        // Anahtar modal'Ä±nda radio button handler'larÄ±nÄ± ekle
         const radioBtns = refreshModalRadioButtons(modal);
         const detayWrapper = document.getElementById('anahtar-detay-wrapper');
         const detayInput = document.getElementById('anahtar-detay-event');
@@ -3182,7 +3177,7 @@ function renderVehicleDetailLeft(vehicle) {
           });
         });
       } else if (type === 'kredi') {
-        // Kredi modal'ında radio button handler'larını ekle
+        // Kredi modal'Ä±nda radio button handler'larÄ±nÄ± ekle
         const radioBtns = refreshModalRadioButtons(modal);
         const detayWrapper = document.getElementById('kredi-detay-wrapper-event');
         const detayInput = document.getElementById('kredi-detay-event');
@@ -3208,7 +3203,7 @@ function renderVehicleDetailLeft(vehicle) {
           });
         });
       } else if (type === 'lastik') {
-        // Lastik modal'ında radio button handler'larını ekle
+        // Lastik modal'Ä±nda radio button handler'larÄ±nÄ± ekle
         const radioBtns = refreshModalRadioButtons(modal);
         const adresWrapper = document.getElementById('lastik-adres-wrapper-event');
         const adresInput = document.getElementById('lastik-adres-event');
@@ -3216,7 +3211,7 @@ function renderVehicleDetailLeft(vehicle) {
         radioBtns.forEach(b => b.classList.remove('active', 'green'));
         if (adresWrapper) adresWrapper.style.display = 'none';
         if (adresInput) adresInput.value = '';
-        /* Varsayılan seçim yok: form nötr açılır */
+        /* VarsayÄ±lan seÃ§im yok: form nÃ¶tr aÃ§Ä±lÄ±r */
         radioBtns.forEach(btn => {
           btn.addEventListener('click', function(e) {
             e.preventDefault();
@@ -3238,13 +3233,13 @@ function renderVehicleDetailLeft(vehicle) {
       } else if (type === 'utts') {
         const radioBtns = modal.querySelectorAll('.radio-btn');
         radioBtns.forEach(b => b.classList.remove('active', 'green'));
-        /* Varsayılan seçim yok: form nötr açılır */
+        /* VarsayÄ±lan seÃ§im yok: form nÃ¶tr aÃ§Ä±lÄ±r */
       } else if (type === 'takip') {
         const radioBtns = modal.querySelectorAll('.radio-btn');
         radioBtns.forEach(b => b.classList.remove('active', 'green'));
-        /* Varsayılan seçim yok: form nötr açılır */
+        /* VarsayÄ±lan seÃ§im yok: form nÃ¶tr aÃ§Ä±lÄ±r */
       } else if (type === 'bakim') {
-        // Bakım modal'ında varsayılan kişi
+        // BakÄ±m modal'Ä±nda varsayÄ±lan kiÅŸi
         const bakimKisiInput = document.getElementById('bakim-kisi');
         if (bakimKisiInput) {
           const vehicle = readVehicles().find(v => String(v.id) === String(vehicleId || window.currentDetailVehicleId));
@@ -3253,31 +3248,31 @@ function renderVehicleDetailLeft(vehicle) {
           }
         }
       } else if (type === 'km') {
-        // Km modal'ında input'u temizle ve mevcut km'yi göster (opsiyonel)
+        // Km modal'Ä±nda input'u temizle ve mevcut km'yi gÃ¶ster (opsiyonel)
         const kmInput = document.getElementById('km-guncelle-input');
         if (kmInput) {
           const vehicle = readVehicles().find(v => String(v.id) === String(vehicleId || window.currentDetailVehicleId));
-          // Mevcut güncel km varsa göster, yoksa boş bırak
+          // Mevcut gÃ¼ncel km varsa gÃ¶ster, yoksa boÅŸ bÄ±rak
           const currentKm = vehicle?.guncelKm || '';
           kmInput.value = currentKm ? formatNumber(currentKm) : '';
         }
       }
       
-      // Modal'ı aç
+      // Modal'Ä± aÃ§
       if (modal) {
-        // Modal'ı hemen aç
+        // Modal'Ä± hemen aÃ§
         modal.style.display = 'flex';
         modal.classList.add('active');
         
-        // UTTS ve Takip modalları için event listener'ları modal açıldıktan sonra ekle
+        // UTTS ve Takip modallarÄ± iÃ§in event listener'larÄ± modal aÃ§Ä±ldÄ±ktan sonra ekle
         if (type === 'utts' || type === 'takip') {
           requestAnimationFrame(() => {
             const radioBtns = refreshModalRadioButtons(modal);
             if (radioBtns.length > 0) {
               radioBtns.forEach(b => b.classList.remove('active', 'green'));
-              /* Varsayılan seçim yok: nötr başlar */
+              /* VarsayÄ±lan seÃ§im yok: nÃ¶tr baÅŸlar */
               
-              // Event listener'ları ekle
+              // Event listener'larÄ± ekle
               radioBtns.forEach(btn => {
                 btn.addEventListener('click', function(e) {
                   e.preventDefault();
@@ -3291,20 +3286,20 @@ function renderVehicleDetailLeft(vehicle) {
           });
         }
         
-        // Event menu'yu kapat (modal açıldıktan sonra)
+        // Event menu'yu kapat (modal aÃ§Ä±ldÄ±ktan sonra)
         closeEventMenuModal();
         
-        // Tarih inputlarına placeholder ekle
+        // Tarih inputlarÄ±na placeholder ekle
         setTimeout(() => {
           const dateInputs = modal.querySelectorAll('input[type="date"]');
           dateInputs.forEach(input => {
-            // Eğer setupDatePlaceholder fonksiyonu varsa kullan
+            // EÄŸer setupDatePlaceholder fonksiyonu varsa kullan
             if (typeof window.setupDatePlaceholder === 'function') {
               window.setupDatePlaceholder(input);
             } else if (typeof setupDatePlaceholder === 'function') {
               setupDatePlaceholder(input);
             } else {
-              // Basit placeholder ekleme (kayit.js'teki mantığı kullan)
+              // Basit placeholder ekleme (kayit.js'teki mantÄ±ÄŸÄ± kullan)
               const existing = input.parentElement.querySelector('.date-placeholder');
               if (existing) existing.remove();
               
@@ -3345,7 +3340,7 @@ function renderVehicleDetailLeft(vehicle) {
   };
 
   /**
-   * Olay modal'ını kapat
+   * Olay modal'Ä±nÄ± kapat
    */
   window.closeEventModal = function(type) {
     const modalId = getEventModalId(type);
@@ -3361,7 +3356,7 @@ function renderVehicleDetailLeft(vehicle) {
   };
 
   /**
-   * Event menu modal'ını kapat
+   * Event menu modal'Ä±nÄ± kapat
    */
   window.closeEventMenuModal = function() {
     const modal = DOM.eventMenuModal;
@@ -3373,7 +3368,7 @@ function renderVehicleDetailLeft(vehicle) {
   };
 
   /**
-   * Ruhsat modalından Taşıt Detay ekranına dön (geri ok ve Vazgeç için)
+   * Ruhsat modalÄ±ndan TaÅŸÄ±t Detay ekranÄ±na dÃ¶n (geri ok ve VazgeÃ§ iÃ§in)
    */
   window.closeRuhsatAndBackToDetail = function() {
     closeEventModal('ruhsat');
@@ -3383,7 +3378,7 @@ function renderVehicleDetailLeft(vehicle) {
   };
 
   /**
-   * Olay Ekle alt modalından Vazgeç: modalı kapat, Olay Ekle menüsünü tekrar aç (taşıt detaya dönme).
+   * Olay Ekle alt modalÄ±ndan VazgeÃ§: modalÄ± kapat, Olay Ekle menÃ¼sÃ¼nÃ¼ tekrar aÃ§ (taÅŸÄ±t detaya dÃ¶nme).
    */
   window.closeEventModalAndShowEventMenu = function(type) {
     window.closeEventModal(type);
@@ -3393,7 +3388,7 @@ function renderVehicleDetailLeft(vehicle) {
   };
 
   /**
-   * Olay menüsünden taşıt detay ekranına dön (event-menu-modal içindeki "Taşıt Detay" butonu)
+   * Olay menÃ¼sÃ¼nden taÅŸÄ±t detay ekranÄ±na dÃ¶n (event-menu-modal iÃ§indeki "TaÅŸÄ±t Detay" butonu)
    */
   window.backToVehicleDetail = function() {
     closeEventMenuModal();
@@ -3403,7 +3398,7 @@ function renderVehicleDetailLeft(vehicle) {
   };
 
   /**
-   * Ruhsat Yükleme modalını açar; vehicle.ruhsatPath varsa görüntüleme/yenileme, yoksa yükleme UI gösterir
+   * Ruhsat YÃ¼kleme modalÄ±nÄ± aÃ§ar; vehicle.ruhsatPath varsa gÃ¶rÃ¼ntÃ¼leme/yenileme, yoksa yÃ¼kleme UI gÃ¶sterir
    */
   function setRuhsatSaveBtnVisibility(saveBtn, visible) {
     if (!saveBtn) return;
@@ -3529,21 +3524,21 @@ function renderVehicleDetailLeft(vehicle) {
     setRuhsatInlineViewerMode(false);
     content.innerHTML = '';
     setRuhsatSaveBtnVisibility(saveBtn, false);
-    saveBtn.textContent = 'Ruhsat Yükle';
+    saveBtn.textContent = 'Ruhsat YÃ¼kle';
     const hasRuhsat = !!(vehicle && vehicle.ruhsatPath);
     if (hasRuhsat) {
       const btnGroup = document.createElement('div');
       btnGroup.className = 'universal-btn-group ruhsat-preview-row';
 
-      // Mobilde basılı tutunca link gibi davranmasın diye <button> kullanıyoruz
+      // Mobilde basÄ±lÄ± tutunca link gibi davranmasÄ±n diye <button> kullanÄ±yoruz
       const previewBtn = document.createElement('button');
       previewBtn.type = 'button';
       previewBtn.className = 'ruhsat-preview-link';
-      previewBtn.setAttribute('aria-label', 'Ruhsatı Yazdır / Görüntüle');
+      previewBtn.setAttribute('aria-label', 'RuhsatÄ± YazdÄ±r / GÃ¶rÃ¼ntÃ¼le');
       previewBtn.style.cssText = 'background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.2); cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 140px; border-radius: 8px;';
 
       previewBtn.innerHTML = `
-          <span style="font-size:14px; font-weight:600; color:#fff; letter-spacing:0.5px;">Görüntüle</span>
+          <span style="font-size:14px; font-weight:600; color:#fff; letter-spacing:0.5px;">GÃ¶rÃ¼ntÃ¼le</span>
           <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin:6px 0; color:#d40000;">
             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
             <polyline points="14 2 14 8 20 8"></polyline>
@@ -3551,7 +3546,7 @@ function renderVehicleDetailLeft(vehicle) {
             <line x1="16" y1="17" x2="8" y2="17"></line>
             <polyline points="10 9 9 9 8 9"></polyline>
           </svg>
-          <span style="font-size:14px; font-weight:600; color:#fff; letter-spacing:0.5px;">Yazdır</span>
+          <span style="font-size:14px; font-weight:600; color:#fff; letter-spacing:0.5px;">YazdÄ±r</span>
         `;
 
       previewBtn.onclick = function(e) {
@@ -3564,7 +3559,7 @@ function renderVehicleDetailLeft(vehicle) {
       const replaceBtn = document.createElement('button');
       replaceBtn.type = 'button';
       replaceBtn.className = 'ruhsat-add-btn';
-      replaceBtn.setAttribute('aria-label', 'Ruhsatı Değiştir');
+      replaceBtn.setAttribute('aria-label', 'RuhsatÄ± DeÄŸiÅŸtir');
       replaceBtn.innerHTML = '+';
       replaceBtn.onclick = function() {
         renderRuhsatUploadForm(content, saveBtn, true);
@@ -3582,16 +3577,16 @@ function renderVehicleDetailLeft(vehicle) {
     content.innerHTML = '';
     if (hasExistingRuhsat) {
       const keepInfo = document.createElement('div');
-      keepInfo.textContent = 'Yeni ruhsat yüklemesi başarılı olmazsa mevcut ruhsat korunur.';
+      keepInfo.textContent = 'Yeni ruhsat yÃ¼klemesi baÅŸarÄ±lÄ± olmazsa mevcut ruhsat korunur.';
       keepInfo.className = 'ruhsat-keep-info';
       content.appendChild(keepInfo);
     }
     const input = document.createElement('input');
     input.type = 'file';
-    // Mobilde kameradan doğrudan fotoğraf çekilebilmesi için resim formatları eklendi
+    // Mobilde kameradan doÄŸrudan fotoÄŸraf Ã§ekilebilmesi iÃ§in resim formatlarÄ± eklendi
     input.accept = '.pdf, image/jpeg, image/png, image/jpg, image/webp';
     input.id = 'ruhsat-file-input';
-    input.setAttribute('aria-label', 'Ruhsat PDF dosyası seç');
+    input.setAttribute('aria-label', 'Ruhsat PDF dosyasÄ± seÃ§');
     input.style.marginBottom = '8px';
     let selectBox = null;
     if (!hasExistingRuhsat) {
@@ -3599,7 +3594,7 @@ function renderVehicleDetailLeft(vehicle) {
       selectBox = document.createElement('button');
       selectBox.type = 'button';
       selectBox.className = 'ruhsat-select-box';
-      selectBox.textContent = 'Yükle';
+      selectBox.textContent = 'YÃ¼kle';
       selectBox.onclick = function() { input.click(); };
       content.appendChild(selectBox);
     }
@@ -3609,9 +3604,9 @@ function renderVehicleDetailLeft(vehicle) {
       if (!hasExistingRuhsat && selectBox) {
         if (hasFile) {
           selectBox.classList.add('upload-success');
-          selectBox.textContent = '✓ ' + input.files[0].name + ' yüklendi';
+          selectBox.textContent = 'âœ“ ' + input.files[0].name + ' yÃ¼klendi';
         } else {
-          selectBox.textContent = 'Yükle';
+          selectBox.textContent = 'YÃ¼kle';
           selectBox.classList.remove('has-file');
         }
       }
@@ -3621,13 +3616,13 @@ function renderVehicleDetailLeft(vehicle) {
   }
 
   /**
-   * Ruhsat dosyasını upload_ruhsat.php'ye POST eder
+   * Ruhsat dosyasÄ±nÄ± upload_ruhsat.php'ye POST eder
    */
   window.saveRuhsatUpload = function() {
     const input = document.getElementById('ruhsat-file-input');
     const vehicleId = (window.currentDetailVehicleId || '').toString();
     if (!input || !input.files || !input.files[0] || !vehicleId) {
-      alert('Lütfen PDF dosyası seçin.');
+      alert('LÃ¼tfen PDF dosyasÄ± seÃ§in.');
       return;
     }
     const formData = new FormData();
@@ -3643,7 +3638,7 @@ function renderVehicleDetailLeft(vehicle) {
             data = {};
           }
           if (!r.ok || !data.success) {
-            throw new Error((data && data.error) ? data.error : ('Yükleme başarısız (HTTP ' + r.status + ')'));
+            throw new Error((data && data.error) ? data.error : ('YÃ¼kleme baÅŸarÄ±sÄ±z (HTTP ' + r.status + ')'));
           }
           return data;
         });
@@ -3659,7 +3654,7 @@ function renderVehicleDetailLeft(vehicle) {
         if (selectBox && input.files && input.files[0]) {
           selectBox.classList.remove('has-file');
           selectBox.classList.add('upload-success');
-          selectBox.textContent = '✓ ' + input.files[0].name + ' yuklendi';
+          selectBox.textContent = 'âœ“ ' + input.files[0].name + ' yuklendi';
         }
 
         setRuhsatSaveBtnVisibility(document.getElementById('ruhsat-save-btn'), false);
@@ -3676,7 +3671,7 @@ function renderVehicleDetailLeft(vehicle) {
   };
 
   /**
-   * Ruhsat PDF'ini görüntüler / yazdırır
+   * Ruhsat PDF'ini gÃ¶rÃ¼ntÃ¼ler / yazdÄ±rÄ±r
    */
   window.viewRuhsatPdf = function(vehicleId) {
     const vid = (vehicleId || window.currentDetailVehicleId || '').toString();
@@ -3686,7 +3681,7 @@ function renderVehicleDetailLeft(vehicle) {
     if (!vehicle || !vehicle.ruhsatPath) return;
 
     const url = resolveRuhsatUrl(vehicle.ruhsatPath);
-    // Belgenin resim mi yoksa PDF mi olduğunu uzantısından anlıyoruz
+    // Belgenin resim mi yoksa PDF mi olduÄŸunu uzantÄ±sÄ±ndan anlÄ±yoruz
     const isImage = /\.(jpeg|jpg|png|gif|webp)(\?.*)?$/i.test(url);
 
     var iframe = document.createElement('iframe');
@@ -3701,7 +3696,7 @@ function renderVehicleDetailLeft(vehicle) {
     document.body.appendChild(iframe);
 
     if (isImage) {
-      // Eğer fotoğraf/resim ise, HTML içine gömüp otomatik sayfa yönü ile yazdırıyoruz
+      // EÄŸer fotoÄŸraf/resim ise, HTML iÃ§ine gÃ¶mÃ¼p otomatik sayfa yÃ¶nÃ¼ ile yazdÄ±rÄ±yoruz
       const printHtml = `<!DOCTYPE html>
       <html><head><title>Ruhsat</title><style>
         @page { size: auto; margin: 0; }
@@ -3720,7 +3715,7 @@ function renderVehicleDetailLeft(vehicle) {
         if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
       }, 3000);
     } else {
-      // Eğer PDF ise doğrudan kaynağı veriyoruz (PDF'in kendi yönü geçerli olur)
+      // EÄŸer PDF ise doÄŸrudan kaynaÄŸÄ± veriyoruz (PDF'in kendi yÃ¶nÃ¼ geÃ§erli olur)
       const pdfPrintUrl = buildPdfViewerUrl(url, 'toolbar=1&navpanes=0&zoom=page-width&view=FitV');
       iframe.src = pdfPrintUrl;
       iframe.onload = function() {
@@ -3740,7 +3735,7 @@ function renderVehicleDetailLeft(vehicle) {
   };
 
   /**
-   * Kaza modal'ında boya şemasını render et (readonly mevcut, yeni hasarlar eklenebilir)
+   * Kaza modal'Ä±nda boya ÅŸemasÄ±nÄ± render et (readonly mevcut, yeni hasarlar eklenebilir)
    */
   function renderBoyaSchemaKaza(vehicle, container) {
     if (!container) {
@@ -3753,58 +3748,39 @@ function renderVehicleDetailLeft(vehicle) {
         
         container.innerHTML = '';
         
-        // Şema wrapper'ı oluştur
+        // Åema wrapper'Ä± oluÅŸtur
         const schemaWrapper = document.createElement('div');
-        const isIosPwaKazaSchema = typeof isIosStandalonePwa === 'function' && isIosStandalonePwa();
-        const isMobileKazaSchema = window.innerWidth <= 640;
-
         schemaWrapper.style.display = 'flex';
         schemaWrapper.style.alignItems = 'flex-start';
         schemaWrapper.style.justifyContent = 'center';
         schemaWrapper.style.gap = '24px';
         schemaWrapper.style.maxHeight = '144px';
         schemaWrapper.style.width = '100%';
-        schemaWrapper.style.overflow = isMobileKazaSchema ? 'visible' : 'hidden';
-        schemaWrapper.style.paddingTop = '0';
-        
+        schemaWrapper.style.overflow = 'hidden';
+        schemaWrapper.style.paddingTop = '2px';
+
         schemaWrapper.appendChild(svgClone);
-        
+
         svgClone.setAttribute('width', '140');
         svgClone.setAttribute('height', '210');
-        if (isMobileKazaSchema) {
-          svgClone.style.width = '186px';
-          svgClone.style.height = '124px';
-          svgClone.style.margin = '0 auto';
-
-          if (isIosPwaKazaSchema) {
-            svgClone.style.position = 'relative';
-            svgClone.style.left = '-18px';
-            svgClone.style.top = '-42px';
-          } else {
-            // Normal mobilde mevcut sola yaslama kalsın
-            svgClone.style.position = 'relative';
-            svgClone.style.left = '-18px';
-            svgClone.style.top = '0';
-          }
-        } else {
-          svgClone.style.width = '168px';  /* 210 * 0.8 */
-          svgClone.style.height = '112px'; /* 140 * 0.8 */
-          svgClone.style.margin = '0';
-          svgClone.style.position = 'static';
-          svgClone.style.left = '0';
-        }
+        svgClone.style.width = '168px';  /* 210 * 0.8 */
+        svgClone.style.height = '112px'; /* 140 * 0.8 */
+        svgClone.style.margin = '0';
+        svgClone.style.position = 'static';
+        svgClone.style.left = '0';
+        svgClone.style.top = '0';
         svgClone.style.display = 'block';
         svgClone.style.transform = 'rotate(90deg)';
         svgClone.style.transformOrigin = 'center center';
         
-        const defaultGrayKaza = '#959595'; /* Araç simgesi gri – çok az daha açık ton */
+        const defaultGrayKaza = '#959595'; /* AraÃ§ simgesi gri â€“ Ã§ok az daha aÃ§Ä±k ton */
         const allParts = svgClone.querySelectorAll('path[id]');
         allParts.forEach(part => {
           part.setAttribute('fill', defaultGrayKaza);
           part.style.fill = defaultGrayKaza;
         });
         
-        // Mevcut durumları uygula (readonly)
+        // Mevcut durumlarÄ± uygula (readonly)
         const boyaliParcalar = vehicle.boyaliParcalar || {};
         Object.keys(boyaliParcalar).forEach(partId => {
           const state = boyaliParcalar[partId];
@@ -3825,7 +3801,7 @@ function renderVehicleDetailLeft(vehicle) {
           }
         });
         
-        // Yeni hasarlar için tıklanabilir yap (sadece boyasız parçalar)
+        // Yeni hasarlar iÃ§in tÄ±klanabilir yap (sadece boyasÄ±z parÃ§alar)
         allParts.forEach(part => {
           const partId = part.getAttribute('id');
           if (!boyaliParcalar[partId]) {
@@ -3834,25 +3810,25 @@ function renderVehicleDetailLeft(vehicle) {
             part.style.cursor = 'pointer';
             part.dataset.state = 'boyasiz';
             
-            // Tıklama event'i ekle (sadece yeni hasarlar için)
+            // TÄ±klama event'i ekle (sadece yeni hasarlar iÃ§in)
             part.addEventListener('click', function(e) {
               e.preventDefault();
               e.stopPropagation();
               
-              // 3 durumlu toggle: boyasiz -> boyali (yeşil) -> degisen (kırmızı) -> boyasiz
+              // 3 durumlu toggle: boyasiz -> boyali (yeÅŸil) -> degisen (kÄ±rmÄ±zÄ±) -> boyasiz
               const currentState = this.dataset.state || 'boyasiz';
               if (currentState === 'boyasiz') {
-                // İlk tık: Yeşil (boyalı)
+                // Ä°lk tÄ±k: YeÅŸil (boyalÄ±)
                 this.dataset.state = 'boyali';
                 this.setAttribute('fill', '#28a745');
                 this.style.fill = '#28a745';
               } else if (currentState === 'boyali') {
-                // İkinci tık: Kırmızı (değişen/hasar)
+                // Ä°kinci tÄ±k: KÄ±rmÄ±zÄ± (deÄŸiÅŸen/hasar)
                 this.dataset.state = 'degisen';
                 this.setAttribute('fill', '#d40000');
                 this.style.fill = '#d40000';
               } else {
-                // Üçüncü tık: Geri boyasız (temiz)
+                // ÃœÃ§Ã¼ncÃ¼ tÄ±k: Geri boyasÄ±z (temiz)
                 this.dataset.state = 'boyasiz';
                 this.setAttribute('fill', defaultGrayKaza);
                 this.style.fill = defaultGrayKaza;
@@ -3861,7 +3837,7 @@ function renderVehicleDetailLeft(vehicle) {
           }
         });
         
-        // Legend ekle (şemanın sağına, alt alta)
+        // Legend ekle (ÅŸemanÄ±n saÄŸÄ±na, alt alta)
         const legend = document.createElement('div');
         legend.className = 'boya-legend';
         legend.style.display = 'flex';
@@ -3873,23 +3849,23 @@ function renderVehicleDetailLeft(vehicle) {
         legend.style.color = '#aaa';
         legend.style.marginTop = '30px';
         legend.innerHTML = `
-          <div class="boya-legend-item" style="display: flex; align-items: center; gap: 6px;"><span class="boya-legend-dot" style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #888888;"></span> Boyasız</div>
-          <div class="boya-legend-item" style="display: flex; align-items: center; gap: 6px;"><span class="boya-legend-dot" style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #28a745;"></span> Boyalı (Mevcut)</div>
-          <div class="boya-legend-item" style="display: flex; align-items: center; gap: 6px;"><span class="boya-legend-dot" style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #d40000;"></span> Değişen/Hasar</div>
+          <div class="boya-legend-item" style="display: flex; align-items: center; gap: 6px;"><span class="boya-legend-dot" style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #888888;"></span> BoyasÄ±z</div>
+          <div class="boya-legend-item" style="display: flex; align-items: center; gap: 6px;"><span class="boya-legend-dot" style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #28a745;"></span> BoyalÄ± (Mevcut)</div>
+          <div class="boya-legend-item" style="display: flex; align-items: center; gap: 6px;"><span class="boya-legend-dot" style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #d40000;"></span> DeÄŸiÅŸen/Hasar</div>
         `;
-        // Legend'i wrapper'a ekle (şemanın sağına)
+        // Legend'i wrapper'a ekle (ÅŸemanÄ±n saÄŸÄ±na)
         schemaWrapper.appendChild(legend);
         
-        // Wrapper'ı container'a ekle
+        // Wrapper'Ä± container'a ekle
         container.appendChild(schemaWrapper);
       })
       .catch(err => {
-        console.error('SVG yükleme hatası:', err);
+        console.error('SVG yÃ¼kleme hatasÄ±:', err);
       });
   }
 
   /**
-   * Bakım olayı kaydet
+   * BakÄ±m olayÄ± kaydet
    */
   window.saveBakimEvent = function() {
     const vehicleId = window.currentDetailVehicleId;
@@ -3903,7 +3879,7 @@ function renderVehicleDetailLeft(vehicle) {
     const tutar = document.getElementById('bakim-tutar')?.value.trim() || '';
     
     if (!tarih || !islemler) {
-      alert('Tarih ve Yapılan İşlemler zorunludur!');
+      alert('Tarih ve YapÄ±lan Ä°ÅŸlemler zorunludur!');
       return;
     }
     
@@ -3932,10 +3908,10 @@ function renderVehicleDetailLeft(vehicle) {
     writeVehicles(vehicles);
     
     closeEventModal('bakim');
-    showVehicleDetail(vehicleId); // Detay ekranını yenile
+    showVehicleDetail(vehicleId); // Detay ekranÄ±nÄ± yenile
   };
 
-  /** Yapılan İşlemler textarea: 2 satır açık, içerik uzadıkça aşağı açılsın */
+  /** YapÄ±lan Ä°ÅŸlemler textarea: 2 satÄ±r aÃ§Ä±k, iÃ§erik uzadÄ±kÃ§a aÅŸaÄŸÄ± aÃ§Ä±lsÄ±n */
   (function initBakimIslemlerExpand() {
     var el = document.getElementById('bakim-islemler');
     if (el) {
@@ -3952,7 +3928,7 @@ function renderVehicleDetailLeft(vehicle) {
   })();
 
   /**
-   * Kaza olayı kaydet
+   * Kaza olayÄ± kaydet
    */
   window.saveKazaEvent = function() {
     const vehicleId = window.currentDetailVehicleId;
@@ -3967,7 +3943,7 @@ function renderVehicleDetailLeft(vehicle) {
       return;
     }
     
-    // Kaza şemasından yeni hasarları topla
+    // Kaza ÅŸemasÄ±ndan yeni hasarlarÄ± topla
     const container = document.getElementById('kaza-kaporta-container');
     const newDamages = {};
     if (container) {
@@ -3991,7 +3967,7 @@ function renderVehicleDetailLeft(vehicle) {
     if (!vehicle.events) vehicle.events = [];
     if (!vehicle.boyaliParcalar) vehicle.boyaliParcalar = {};
     
-    // Yeni hasarları mevcut boyaliParcalar'a ekle
+    // Yeni hasarlarÄ± mevcut boyaliParcalar'a ekle
     Object.keys(newDamages).forEach(partId => {
       vehicle.boyaliParcalar[partId] = newDamages[partId];
     });
@@ -4028,7 +4004,7 @@ function renderVehicleDetailLeft(vehicle) {
     const aciklama = document.getElementById('ceza-aciklama')?.value.trim() || '';
 
     if (!tarih || !tutar) {
-      alert('Tarih ve Ceza Tutarı zorunludur!');
+      alert('Tarih ve Ceza TutarÄ± zorunludur!');
       return;
     }
 
@@ -4057,13 +4033,13 @@ function renderVehicleDetailLeft(vehicle) {
   };
 
   /**
-   * Yılları ekle (gg/aa/yyyy → +years → YYYY-MM-DD).
-   * Aynı iş kuralı driver_event.php içinde PHP ile kullanılır; değişiklikte her iki tarafı senkron tutun.
+   * YÄ±llarÄ± ekle (gg/aa/yyyy â†’ +years â†’ YYYY-MM-DD).
+   * AynÄ± iÅŸ kuralÄ± driver_event.php iÃ§inde PHP ile kullanÄ±lÄ±r; deÄŸiÅŸiklikte her iki tarafÄ± senkron tutun.
    */
   function addYears(dateStr, years) {
     if (!dateStr) return '';
     
-    // gg/aa/yyyy formatından parse et
+    // gg/aa/yyyy formatÄ±ndan parse et
     const datePattern = /^(\d{2})\/(\d{2})\/(\d{4})$/;
     const match = dateStr.match(datePattern);
     
@@ -4076,7 +4052,7 @@ function renderVehicleDetailLeft(vehicle) {
     const date = new Date(year, month - 1, day);
     date.setFullYear(date.getFullYear() + years);
     
-    // YYYY-MM-DD formatına çevir
+    // YYYY-MM-DD formatÄ±na Ã§evir
     const yyyy = date.getFullYear();
     const mm = String(date.getMonth() + 1).padStart(2, '0');
     const dd = String(date.getDate()).padStart(2, '0');
@@ -4085,12 +4061,12 @@ function renderVehicleDetailLeft(vehicle) {
   }
 
   /**
-   * Muayene bitiş tarihi hesapla (otomobil/ticari + sıfır/sonraki muayene kuralları).
-   * Aynı algoritma driver_event.php calculateNextMuayene ile paylaşılır; senkron tutulmalı.
-   * - Araç sıfır ise (üretim yılı == muayene yılı):
-   *     otomobil → +3 yıl, küçük/büyük ticari → +2 yıl
+   * Muayene bitiÅŸ tarihi hesapla (otomobil/ticari + sÄ±fÄ±r/sonraki muayene kurallarÄ±).
+   * AynÄ± algoritma driver_event.php calculateNextMuayene ile paylaÅŸÄ±lÄ±r; senkron tutulmalÄ±.
+   * - AraÃ§ sÄ±fÄ±r ise (Ã¼retim yÄ±lÄ± == muayene yÄ±lÄ±):
+   *     otomobil â†’ +3 yÄ±l, kÃ¼Ã§Ã¼k/bÃ¼yÃ¼k ticari â†’ +2 yÄ±l
    * - Sonraki muayeneler:
-   *     otomobil → +2 yıl, küçük/büyük ticari → +1 yıl
+   *     otomobil â†’ +2 yÄ±l, kÃ¼Ã§Ã¼k/bÃ¼yÃ¼k ticari â†’ +1 yÄ±l
    */
   function calculateNextMuayene(vehicle, muayeneDate) {
     if (!muayeneDate) return '';
@@ -4098,19 +4074,19 @@ function renderVehicleDetailLeft(vehicle) {
     const vehicleType = vehicle.vehicleType; // 'otomobil' | 'minivan' | 'kamyon'
     const productionYear = parseInt(vehicle.year) || new Date().getFullYear();
 
-    // Muayene yılını gg/aa/yyyy formatından çıkar
+    // Muayene yÄ±lÄ±nÄ± gg/aa/yyyy formatÄ±ndan Ã§Ä±kar
     const dateMatch = muayeneDate.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
     const muayeneYear = dateMatch ? parseInt(dateMatch[3]) : new Date().getFullYear();
 
-    // Üretim yılı ile muayene yılı aynıysa araç sıfır kabul edilir
+    // Ãœretim yÄ±lÄ± ile muayene yÄ±lÄ± aynÄ±ysa araÃ§ sÄ±fÄ±r kabul edilir
     const isSifir = productionYear === muayeneYear;
 
     if (isSifir) {
-      // Sıfır araç - ilk muayene süreleri
+      // SÄ±fÄ±r araÃ§ - ilk muayene sÃ¼releri
       if (vehicleType === 'otomobil') {
         return addYears(muayeneDate, 3);
       } else {
-        // küçük veya büyük ticari (minivan / kamyon)
+        // kÃ¼Ã§Ã¼k veya bÃ¼yÃ¼k ticari (minivan / kamyon)
         return addYears(muayeneDate, 2);
       }
     } else {
@@ -4118,14 +4094,14 @@ function renderVehicleDetailLeft(vehicle) {
       if (vehicleType === 'otomobil') {
         return addYears(muayeneDate, 2);
       } else {
-        // küçük veya büyük ticari
+        // kÃ¼Ã§Ã¼k veya bÃ¼yÃ¼k ticari
         return addYears(muayeneDate, 1);
       }
     }
   }
 
   /**
-   * Sigorta bilgisi güncelle (bitiş tarihi 1 yıl sonrasına ayarlanır)
+   * Sigorta bilgisi gÃ¼ncelle (bitiÅŸ tarihi 1 yÄ±l sonrasÄ±na ayarlanÄ±r)
    */
   window.updateSigortaInfo = function() {
     const vehicleId = window.currentDetailVehicleId;
@@ -4147,16 +4123,16 @@ function renderVehicleDetailLeft(vehicle) {
     
     if (!vehicle.events) vehicle.events = [];
     
-    // Bitmiş tarihi 1 yıl sonrasına ayarla
+    // BitmiÅŸ tarihi 1 yÄ±l sonrasÄ±na ayarla
     const bitisTarihi = addYears(tarih, 1);
     
-    // gg/aa/yyyy formatından YYYY-MM-DD'ye çevir (tarih input için)
+    // gg/aa/yyyy formatÄ±ndan YYYY-MM-DD'ye Ã§evir (tarih input iÃ§in)
     const dateParts = tarih.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
     if (dateParts) {
       const day = dateParts[1];
       const month = dateParts[2];
       const year = dateParts[3];
-      // Bitiş tarihini YYYY-MM-DD formatında sakla
+      // BitiÅŸ tarihini YYYY-MM-DD formatÄ±nda sakla
     }
     
     vehicle.sigortaDate = bitisTarihi;
@@ -4184,7 +4160,7 @@ function renderVehicleDetailLeft(vehicle) {
   };
 
   /**
-   * Kasko bilgisi güncelle (bitiş tarihi 1 yıl sonrasına ayarlanır)
+   * Kasko bilgisi gÃ¼ncelle (bitiÅŸ tarihi 1 yÄ±l sonrasÄ±na ayarlanÄ±r)
    */
   window.updateKaskoInfo = function() {
     const vehicleId = window.currentDetailVehicleId;
@@ -4206,7 +4182,7 @@ function renderVehicleDetailLeft(vehicle) {
     
     if (!vehicle.events) vehicle.events = [];
     
-    // Bitiş tarihi 1 yıl sonrasına ayarla
+    // BitiÅŸ tarihi 1 yÄ±l sonrasÄ±na ayarla
     const bitisTarihi = addYears(tarih, 1);
     
     vehicle.kaskoDate = bitisTarihi;
@@ -4234,7 +4210,7 @@ function renderVehicleDetailLeft(vehicle) {
   };
 
   /**
-   * Muayene bilgisi güncelle (bitiş tarihi otomatik hesaplanır)
+   * Muayene bilgisi gÃ¼ncelle (bitiÅŸ tarihi otomatik hesaplanÄ±r)
    */
   window.updateMuayeneInfo = function() {
     const vehicleId = window.currentDetailVehicleId;
@@ -4253,7 +4229,7 @@ function renderVehicleDetailLeft(vehicle) {
     
     if (!vehicle.events) vehicle.events = [];
     
-    // Muayene bitiş tarihi hesapla
+    // Muayene bitiÅŸ tarihi hesapla
     const bitisTarihi = calculateNextMuayene(vehicle, tarih);
     
     vehicle.muayeneDate = bitisTarihi;
@@ -4272,7 +4248,7 @@ function renderVehicleDetailLeft(vehicle) {
     vehicle.events.unshift(event);
     writeVehicles(vehicles);
     
-    // Bildirimleri güncelle
+    // Bildirimleri gÃ¼ncelle
     if (window.updateNotifications) window.updateNotifications();
     
     closeEventModal('muayene');
@@ -4280,7 +4256,7 @@ function renderVehicleDetailLeft(vehicle) {
   };
 
   /**
-   * Anahtar bilgisi güncelle
+   * Anahtar bilgisi gÃ¼ncelle
    */
   window.updateAnahtarInfo = function() {
     const vehicleId = window.currentDetailVehicleId;
@@ -4320,7 +4296,7 @@ function renderVehicleDetailLeft(vehicle) {
   };
 
   /**
-   * Kredi/Rehin bilgisi güncelle
+   * Kredi/Rehin bilgisi gÃ¼ncelle
    */
   window.updateKrediInfo = function() {
     const vehicleId = window.currentDetailVehicleId;
@@ -4360,7 +4336,7 @@ function renderVehicleDetailLeft(vehicle) {
   };
 
   /**
-   * Kasko Kodu güncelle
+   * Kasko Kodu gÃ¼ncelle
    */
   window.updateKaskoKoduInfo = function() {
     const vehicleId = window.currentDetailVehicleId;
@@ -4370,8 +4346,8 @@ function renderVehicleDetailLeft(vehicle) {
     const yeniKaskoKodu = inputElement ? inputElement.value.trim() : '';
 
     if (!yeniKaskoKodu) {
-      if (typeof showToast === 'function') showToast('Lütfen Kasko Kodunu giriniz.', 'error');
-      else alert('Lütfen Kasko Kodunu giriniz.');
+      if (typeof showToast === 'function') showToast('LÃ¼tfen Kasko Kodunu giriniz.', 'error');
+      else alert('LÃ¼tfen Kasko Kodunu giriniz.');
       return;
     }
 
@@ -4396,13 +4372,13 @@ function renderVehicleDetailLeft(vehicle) {
         m.classList.remove('active');
         m.style.display = 'none';
       });
-      if (typeof showToast === 'function') showToast('Kasko Kodu güncellendi', 'success');
+      if (typeof showToast === 'function') showToast('Kasko Kodu gÃ¼ncellendi', 'success');
       setTimeout(() => showVehicleDetail(vehicleId), 250);
     });
   };
 
   /**
-   * Km bilgisi güncelle
+   * Km bilgisi gÃ¼ncelle
    */
   window.updateKmInfo = function() {
     const vehicleId = window.currentDetailVehicleId;
@@ -4411,15 +4387,15 @@ function renderVehicleDetailLeft(vehicle) {
     const kmInput = document.getElementById('km-guncelle-input');
     if (!kmInput) return;
     
-    const yeniKm = kmInput.value.trim().replace(/\./g, ''); // Noktaları temizle
+    const yeniKm = kmInput.value.trim().replace(/\./g, ''); // NoktalarÄ± temizle
     if (!yeniKm) {
-      alert('Lütfen kilometre bilgisi giriniz!');
+      alert('LÃ¼tfen kilometre bilgisi giriniz!');
       return;
     }
     
     // Numeric kontrol
     if (isNaN(yeniKm) || !/^\d+$/.test(yeniKm)) {
-      alert('Lütfen geçerli bir kilometre değeri giriniz!');
+      alert('LÃ¼tfen geÃ§erli bir kilometre deÄŸeri giriniz!');
       return;
     }
     
@@ -4429,19 +4405,19 @@ function renderVehicleDetailLeft(vehicle) {
     
     if (!vehicle.events) vehicle.events = [];
     
-    // Eski km değerini al (guncelKm varsa onu, yoksa vehicle.km'i kullan)
+    // Eski km deÄŸerini al (guncelKm varsa onu, yoksa vehicle.km'i kullan)
     const eskiKm = vehicle.guncelKm || vehicle.km || '';
     const eskiKmNum = parseInt(String(eskiKm).replace(/\D/g, ''), 10) || 0;
     const yeniKmNum = parseInt(yeniKm, 10) || 0;
     if (eskiKmNum > 0 && yeniKmNum < eskiKmNum) {
-      alert('Bildirilmek İstenen Km, Önceki Kayıtlarla Uyuşmamaktadır. Şirket Yetkilisi İle Görüşün');
+      alert('Bildirilmek Ä°stenen Km, Ã–nceki KayÄ±tlarla UyuÅŸmamaktadÄ±r. Åirket Yetkilisi Ä°le GÃ¶rÃ¼ÅŸÃ¼n');
       return;
     }
     
-    // Güncel km'yi güncelle
+    // GÃ¼ncel km'yi gÃ¼ncelle
     vehicle.guncelKm = yeniKm;
     
-    // Event kaydı oluştur
+    // Event kaydÄ± oluÅŸtur
     const event = {
       id: Date.now().toString(),
       type: 'km-revize',
@@ -4463,7 +4439,7 @@ function renderVehicleDetailLeft(vehicle) {
   };
 
   /**
-   * UTTS Bilgisi güncelle
+   * UTTS Bilgisi gÃ¼ncelle
    */
   window.updateUTTSInfo = function() {
     const vehicleId = window.currentDetailVehicleId;
@@ -4500,7 +4476,7 @@ function renderVehicleDetailLeft(vehicle) {
   };
 
   /**
-   * Taşıt Takip Cihaz Bilgisi güncelle
+   * TaÅŸÄ±t Takip Cihaz Bilgisi gÃ¼ncelle
    */
   window.updateTakipCihazInfo = function() {
     const vehicleId = window.currentDetailVehicleId;
@@ -4537,7 +4513,7 @@ function renderVehicleDetailLeft(vehicle) {
   };
 
   /**
-   * Yazlık/Kışlık Lastik Durumu güncelle
+   * YazlÄ±k/KÄ±ÅŸlÄ±k Lastik Durumu gÃ¼ncelle
    */
   window.updateLastikInfo = function() {
     const vehicleId = window.currentDetailVehicleId;
@@ -4578,7 +4554,7 @@ function renderVehicleDetailLeft(vehicle) {
   };
 
   /**
-   * Şube değişikliği kaydet
+   * Åube deÄŸiÅŸikliÄŸi kaydet
    */
   window.updateSubeDegisiklik = function() {
     const vehicleId = window.currentDetailVehicleId;
@@ -4589,7 +4565,7 @@ function renderVehicleDetailLeft(vehicle) {
     
     const yeniSubeId = selectEl.value;
     if (!yeniSubeId) {
-      alert('Lütfen bir şube seçiniz!');
+      alert('LÃ¼tfen bir ÅŸube seÃ§iniz!');
       return;
     }
     
@@ -4628,7 +4604,7 @@ function renderVehicleDetailLeft(vehicle) {
   };
 
   /**
-   * Kullanıcı atama/değişiklik kaydet
+   * KullanÄ±cÄ± atama/deÄŸiÅŸiklik kaydet
    */
   window.updateKullaniciAtama = function() {
     const vehicleId = window.currentDetailVehicleId;
@@ -4639,7 +4615,7 @@ function renderVehicleDetailLeft(vehicle) {
 
     const yeniKullaniciId = selectEl.value;
     if (!yeniKullaniciId || yeniKullaniciId === '__add_user__') {
-      alert('Lütfen bir kullanıcı seçiniz!');
+      alert('LÃ¼tfen bir kullanÄ±cÄ± seÃ§iniz!');
       return;
     }
 
@@ -4649,7 +4625,7 @@ function renderVehicleDetailLeft(vehicle) {
 
     if (!vehicle.events) vehicle.events = [];
 
-    // Henüz Tanımlanmadı: tahsisi kaldır
+    // HenÃ¼z TanÄ±mlanmadÄ±: tahsisi kaldÄ±r
     if (yeniKullaniciId === '__none__') {
       vehicle.assignedUserId = undefined;
       vehicle.tahsisKisi = '';
@@ -4659,7 +4635,7 @@ function renderVehicleDetailLeft(vehicle) {
         type: 'kullanici-atama',
         date: formatDateForDisplay(new Date()),
         timestamp: new Date().toISOString(),
-        data: { kullaniciId: '', kullaniciAdi: 'Henüz Tanımlanmadı' }
+        data: { kullaniciId: '', kullaniciAdi: 'HenÃ¼z TanÄ±mlanmadÄ±' }
       };
       vehicle.events.unshift(event);
       return writeVehicles(vehicles).then(function() {
@@ -4701,7 +4677,7 @@ function renderVehicleDetailLeft(vehicle) {
   };
 
   /**
-   * Satış/Pert kaydet ve arşive taşı
+   * SatÄ±ÅŸ/Pert kaydet ve arÅŸive taÅŸÄ±
    */
   window.saveSatisPert = function() {
     const vehicleId = window.currentDetailVehicleId;
@@ -4712,7 +4688,7 @@ function renderVehicleDetailLeft(vehicle) {
     const aciklama = document.getElementById('satis-aciklama')?.value.trim() || '';
     
     if (!tarih) {
-      alert('Satış/Pert tarihi zorunludur!');
+      alert('SatÄ±ÅŸ/Pert tarihi zorunludur!');
       return;
     }
     
@@ -4742,12 +4718,12 @@ function renderVehicleDetailLeft(vehicle) {
     return writeVehicles(vehicles).then(function() {
       closeEventModal('satis');
       closeVehicleDetailModal();
-      alert('Taşıt satış/pert işlemi kaydedildi. Taşıt arşive taşındı.');
+      alert('TaÅŸÄ±t satÄ±ÅŸ/pert iÅŸlemi kaydedildi. TaÅŸÄ±t arÅŸive taÅŸÄ±ndÄ±.');
     });
   };
 
   /**
-   * Tarihçe modal'ını aç (initialTab: bakim | kaza | km | diger; yoksa bakım)
+   * TarihÃ§e modal'Ä±nÄ± aÃ§ (initialTab: bakim | kaza | km | diger; yoksa bakÄ±m)
    */
   window.showVehicleHistory = function(vehicleId, initialTab) {
     const vid = vehicleId || window.currentDetailVehicleId;
@@ -4764,13 +4740,13 @@ function renderVehicleDetailLeft(vehicle) {
   };
 
   /**
-   * Tarihçe tab değiştir
+   * TarihÃ§e tab deÄŸiÅŸtir
    */
   window.switchHistoryTab = function(tabType, vehicleId) {
     const vid = vehicleId || window.currentDetailVehicleId;
     if (!vid) return;
 
-    // Tab'ları güncelle
+    // Tab'larÄ± gÃ¼ncelle
     (DOM.vehicleHistoryModal ? DOM.vehicleHistoryModal.querySelectorAll('.history-tab') : []).forEach(tab => {
       tab.classList.remove('active');
       if (tab.dataset.tab === tabType) {
@@ -4796,7 +4772,7 @@ function renderVehicleDetailLeft(vehicle) {
     if (tabType === 'bakim') {
       const bakimEvents = events.filter(e => e.type === 'bakim');
       if (bakimEvents.length === 0) {
-        html = '<div class="history-empty-msg" style="text-align: center; padding: 20px;">' + escapeHtml(toTitleCase('Bakım kaydı bulunmamaktadır.')) + '</div>';
+        html = '<div class="history-empty-msg" style="text-align: center; padding: 20px;">' + escapeHtml(toTitleCase('BakÄ±m kaydÄ± bulunmamaktadÄ±r.')) + '</div>';
       } else {
         bakimEvents.forEach(event => {
           const kmStr = event.data?.km ? `<span class="history-label">Km:</span> ${escapeHtml(formatNumber(event.data.km))}` : '';
@@ -4808,7 +4784,7 @@ function renderVehicleDetailLeft(vehicle) {
           html += `<div class="history-item">
             <div class="history-item-date" style="font-weight: 600; font-size: 12px; margin-bottom: 4px;">${escapeHtml(formatDateForDisplay(event.date) || '-')}</div>
             <div class="history-item-body" style="font-size: 12px;"><span class="history-label">${escapeHtml(islemler)}</span></div>
-            <div class="history-item-body" style="font-size: 12px; margin-top: 4px;"><span class="history-label">Servis:</span> ${escapeHtml(servis)} | <span class="history-label">Kişi:</span> ${escapeHtml(kisi)}${ekStr ? ' | ' + ekStr : ''}</div>
+            <div class="history-item-body" style="font-size: 12px; margin-top: 4px;"><span class="history-label">Servis:</span> ${escapeHtml(servis)} | <span class="history-label">KiÅŸi:</span> ${escapeHtml(kisi)}${ekStr ? ' | ' + ekStr : ''}</div>
           </div>`;
         });
       }
@@ -4816,10 +4792,10 @@ function renderVehicleDetailLeft(vehicle) {
       const kazaEvents = events.filter(e => e.type === 'kaza');
       const partNames = getKaportaPartNames();
       if (kazaEvents.length === 0) {
-        html = '<div class="history-empty-msg" style="text-align: center; padding: 20px;">' + escapeHtml(toTitleCase('Kaza kaydı bulunmamaktadır.')) + '</div>';
+        html = '<div class="history-empty-msg" style="text-align: center; padding: 20px;">' + escapeHtml(toTitleCase('Kaza kaydÄ± bulunmamaktadÄ±r.')) + '</div>';
       } else {
         kazaEvents.forEach(event => {
-          const hasarStr = event.data?.hasarTutari ? ` | <span class="history-label">Hasar Tutarı:</span> ${escapeHtml(event.data.hasarTutari)}` : '';
+          const hasarStr = event.data?.hasarTutari ? ` | <span class="history-label">Hasar TutarÄ±:</span> ${escapeHtml(event.data.hasarTutari)}` : '';
           const aciklamaVal = event.data?.aciklama ? toTitleCase(event.data.aciklama) : '';
           const aciklamaHtml = aciklamaVal ? `<div class="history-item-body" style="font-size: 12px; margin-top: 4px;">${escapeHtml(aciklamaVal)}</div>` : '';
           let parcalarHtml = '';
@@ -4833,14 +4809,14 @@ function renderVehicleDetailLeft(vehicle) {
               else if (hasarParcalari[partId] === 'degisen') degisenList.push(toTitleCase(partName));
             });
             const partParts = [];
-            if (boyaliList.length) partParts.push(`<span class="history-label">Boyalı:</span> ${escapeHtml(boyaliList.join(', '))}`);
-            if (degisenList.length) partParts.push(`<span class="history-label">Değişen:</span> ${escapeHtml(degisenList.join(', '))}`);
+            if (boyaliList.length) partParts.push(`<span class="history-label">BoyalÄ±:</span> ${escapeHtml(boyaliList.join(', '))}`);
+            if (degisenList.length) partParts.push(`<span class="history-label">DeÄŸiÅŸen:</span> ${escapeHtml(degisenList.join(', '))}`);
             if (partParts.length) parcalarHtml = `<div class="history-item-body" style="font-size: 12px; margin-top: 4px;">${partParts.join(' | ')}</div>`;
           }
           const kullanici = toTitleCase(event.data?.surucu || '-');
           html += `<div class="history-item">
             <div class="history-item-date" style="font-weight: 600; font-size: 12px; margin-bottom: 4px;">${escapeHtml(formatDateForDisplay(event.date) || '-')}</div>
-            <div class="history-item-body" style="font-size: 12px;"><span class="history-label">Kullanıcı:</span> ${escapeHtml(kullanici)}${hasarStr}</div>
+            <div class="history-item-body" style="font-size: 12px;"><span class="history-label">KullanÄ±cÄ±:</span> ${escapeHtml(kullanici)}${hasarStr}</div>
             ${parcalarHtml}
             ${aciklamaHtml}
           </div>`;
@@ -4878,7 +4854,7 @@ function renderVehicleDetailLeft(vehicle) {
       const branches = readBranches();
       const digerEvents = events.filter(e => e.type !== 'bakim' && e.type !== 'kaza' && e.type !== 'km-revize');
       if (digerEvents.length === 0) {
-        html = '<div class="history-empty-msg" style="text-align: center; padding: 20px;">' + escapeHtml(toTitleCase('Diğer kayıt bulunmamaktadır.')) + '</div>';
+        html = '<div class="history-empty-msg" style="text-align: center; padding: 20px;">' + escapeHtml(toTitleCase('DiÄŸer kayÄ±t bulunmamaktadÄ±r.')) + '</div>';
       } else {
         digerEvents.forEach(event => {
           const eventType = String(event.type || '').trim();
@@ -4971,7 +4947,7 @@ function renderVehicleDetailLeft(vehicle) {
   };
 
   /**
-   * Tarihçe modal'ını kapat
+   * TarihÃ§e modal'Ä±nÄ± kapat
    */
   window.closeVehicleHistoryModal = function() {
     const modal = DOM.vehicleHistoryModal;
@@ -5026,7 +5002,7 @@ function renderVehicleDetailLeft(vehicle) {
     window.__medisaSaveGuardsApplied = true;
   }
 
-  /** Olay tarihini sıralama için sayıya çevir (dd.mm.yyyy veya timestamp) */
+  /** Olay tarihini sÄ±ralama iÃ§in sayÄ±ya Ã§evir (dd.mm.yyyy veya timestamp) */
   function getEventSortTime(ev) {
     if (ev.timestamp) {
       const t = new Date(ev.timestamp).getTime();
@@ -5042,31 +5018,31 @@ function renderVehicleDetailLeft(vehicle) {
     return isNaN(d.getTime()) ? 0 : d.getTime();
   }
 
-  /** Bildirim listesi için kısa olay tipi etiketi */
+  /** Bildirim listesi iÃ§in kÄ±sa olay tipi etiketi */
   function getNotificationEventTypeLabel(type) {
     const labels = {
-      'bakim': 'Bakım',
+      'bakim': 'BakÄ±m',
       'kaza': 'Kaza',
-      'ceza': 'Trafik Cezası',
-      'km-revize': 'Km güncelleme',
+      'ceza': 'Trafik CezasÄ±',
+      'km-revize': 'Km gÃ¼ncelleme',
       'anahtar-guncelle': 'Yedek anahtar',
       'lastik-guncelle': 'Lastik',
       'utts-guncelle': 'UTTS',
-      'muayene-guncelle': 'Muayene güncelleme',
-      'sigorta-guncelle': 'Sigorta güncelleme',
-      'kasko-guncelle': 'Kasko güncelleme',
-      'sube-degisiklik': 'Şube değişikliği',
-      'kullanici-atama': 'Kullanıcı atama',
+      'muayene-guncelle': 'Muayene gÃ¼ncelleme',
+      'sigorta-guncelle': 'Sigorta gÃ¼ncelleme',
+      'kasko-guncelle': 'Kasko gÃ¼ncelleme',
+      'sube-degisiklik': 'Åube deÄŸiÅŸikliÄŸi',
+      'kullanici-atama': 'KullanÄ±cÄ± atama',
       'kredi-guncelle': 'Kredi/Rehin',
-      'takip-cihaz-guncelle': 'Takip cihazı',
-      'not-guncelle': 'Kullanıcı notu',
-      'satis': 'Satış/Pert'
+      'takip-cihaz-guncelle': 'Takip cihazÄ±',
+      'not-guncelle': 'KullanÄ±cÄ± notu',
+      'satis': 'SatÄ±ÅŸ/Pert'
     };
     return labels[type] || (type ? toTitleCase(String(type)) : 'Olay');
   }
 
   /**
-   * Bildirim satırı için "{İsim}, {Plaka} Plakalı Taşıt İçin {Olay Mesajı}." formatında metin üretir.
+   * Bildirim satÄ±rÄ± iÃ§in "{Ä°sim}, {Plaka} PlakalÄ± TaÅŸÄ±t Ä°Ã§in {Olay MesajÄ±}." formatÄ±nda metin Ã¼retir.
    */
   function getNotificationActivityMessage(ev, plate) {
     const evData = ev.data || {};
@@ -5075,28 +5051,28 @@ function renderVehicleDetailLeft(vehicle) {
     const plateStr = (plate || '-').toString().trim();
     const type = (ev.type || '').toString().trim();
     const typeMessages = {
-      'km-revize': 'Km Bildirimi Yaptı',
-      'bakim': 'Bakım Bildirimi Yaptı',
-      'kaza': 'Kaza Bildirimi Yaptı',
-      'ceza': 'Trafik Cezası İşledi',
-      'sigorta-guncelle': 'Sigorta Bilgisini Güncelledi',
-      'kasko-guncelle': 'Kasko Bilgisini Güncelledi',
-      'muayene-guncelle': 'Muayene Bilgisini Güncelledi',
-      'anahtar-guncelle': 'Yedek Anahtar Bilgisini Güncelledi',
-      'lastik-guncelle': 'Lastik Durumunu Güncelledi',
-      'utts-guncelle': 'UTTS Bilgisini Güncelledi',
-      'kredi-guncelle': 'Kredi/Rehin Bilgisini Güncelledi',
-      'takip-cihaz-guncelle': 'Takip Cihazı Bilgisini Güncelledi',
-      'not-guncelle': 'Not Bilgisini Güncelledi',
-      'sube-degisiklik': 'Şube Bilgisini Güncelledi',
-      'kullanici-atama': 'Kullanıcı Ataması Yaptı',
-      'satis': 'Satış/Pert Bildirdi'
+      'km-revize': 'Km Bildirimi YaptÄ±',
+      'bakim': 'BakÄ±m Bildirimi YaptÄ±',
+      'kaza': 'Kaza Bildirimi YaptÄ±',
+      'ceza': 'Trafik CezasÄ± Ä°ÅŸledi',
+      'sigorta-guncelle': 'Sigorta Bilgisini GÃ¼ncelledi',
+      'kasko-guncelle': 'Kasko Bilgisini GÃ¼ncelledi',
+      'muayene-guncelle': 'Muayene Bilgisini GÃ¼ncelledi',
+      'anahtar-guncelle': 'Yedek Anahtar Bilgisini GÃ¼ncelledi',
+      'lastik-guncelle': 'Lastik Durumunu GÃ¼ncelledi',
+      'utts-guncelle': 'UTTS Bilgisini GÃ¼ncelledi',
+      'kredi-guncelle': 'Kredi/Rehin Bilgisini GÃ¼ncelledi',
+      'takip-cihaz-guncelle': 'Takip CihazÄ± Bilgisini GÃ¼ncelledi',
+      'not-guncelle': 'Not Bilgisini GÃ¼ncelledi',
+      'sube-degisiklik': 'Åube Bilgisini GÃ¼ncelledi',
+      'kullanici-atama': 'KullanÄ±cÄ± AtamasÄ± YaptÄ±',
+      'satis': 'SatÄ±ÅŸ/Pert Bildirdi'
     };
-    const mesaj = typeMessages[type] || 'Bilgi Güncelledi';
-    return isimStr + ', ' + plateStr + ' Plakalı Taşıt İçin ' + mesaj + '.';
+    const mesaj = typeMessages[type] || 'Bilgi GÃ¼ncelledi';
+    return isimStr + ', ' + plateStr + ' PlakalÄ± TaÅŸÄ±t Ä°Ã§in ' + mesaj + '.';
   }
 
-  /** Olay tipinden tarihçe sekme id'si (bakim, kaza, km, diger) */
+  /** Olay tipinden tarihÃ§e sekme id'si (bakim, kaza, km, diger) */
   function getHistoryTabForEventType(type) {
     if (type === 'bakim') return 'bakim';
     if (type === 'kaza') return 'kaza';
@@ -5105,26 +5081,26 @@ function renderVehicleDetailLeft(vehicle) {
   }
 
   /**
-   * Bildirimleri güncelle (muayene, sigorta, kasko + kullanıcı paneli işlemleri)
+   * Bildirimleri gÃ¼ncelle (muayene, sigorta, kasko + kullanÄ±cÄ± paneli iÅŸlemleri)
    */
   window.updateNotifications = function() {
     const vehicles = readVehicles();
     const notifications = [];
-    let hasRed = false; // Kırmızı bildirim var mı?
-    let hasOrange = false; // Turuncu bildirim var mı?
+    let hasRed = false; // KÄ±rmÄ±zÄ± bildirim var mÄ±?
+    let hasOrange = false; // Turuncu bildirim var mÄ±?
 
     vehicles.forEach(vehicle => {
-      if (vehicle.satildiMi) return; // Satılmış taşıtları atla
+      if (vehicle.satildiMi) return; // SatÄ±lmÄ±ÅŸ taÅŸÄ±tlarÄ± atla
 
       const plate = vehicle.plate || '-';
       const brandModel = toTitleCase(vehicle.brandModel || '-');
 
-      // Sigorta kontrolü
+      // Sigorta kontrolÃ¼
       if (vehicle.sigortaDate) {
         const warning = checkDateWarnings(vehicle.sigortaDate);
         if (warning.class) {
           const days = warning.days;
-          const status = days < 0 ? 'geçmiş' : days <= 3 ? 'çok yakın' : 'yaklaşıyor';
+          const status = days < 0 ? 'geÃ§miÅŸ' : days <= 3 ? 'Ã§ok yakÄ±n' : 'yaklaÅŸÄ±yor';
           notifications.push({
             type: 'sigorta',
             vehicleId: vehicle.id,
@@ -5140,12 +5116,12 @@ function renderVehicleDetailLeft(vehicle) {
         }
       }
 
-      // Kasko kontrolü
+      // Kasko kontrolÃ¼
       if (vehicle.kaskoDate) {
         const warning = checkDateWarnings(vehicle.kaskoDate);
         if (warning.class) {
           const days = warning.days;
-          const status = days < 0 ? 'geçmiş' : days <= 3 ? 'çok yakın' : 'yaklaşıyor';
+          const status = days < 0 ? 'geÃ§miÅŸ' : days <= 3 ? 'Ã§ok yakÄ±n' : 'yaklaÅŸÄ±yor';
           notifications.push({
             type: 'kasko',
             vehicleId: vehicle.id,
@@ -5161,12 +5137,12 @@ function renderVehicleDetailLeft(vehicle) {
         }
       }
 
-      // Muayene kontrolü
+      // Muayene kontrolÃ¼
       if (vehicle.muayeneDate) {
         const warning = checkDateWarnings(vehicle.muayeneDate);
         if (warning.class) {
           const days = warning.days;
-          const status = days < 0 ? 'geçmiş' : days <= 3 ? 'çok yakın' : 'yaklaşıyor';
+          const status = days < 0 ? 'geÃ§miÅŸ' : days <= 3 ? 'Ã§ok yakÄ±n' : 'yaklaÅŸÄ±yor';
           notifications.push({
             type: 'muayene',
             vehicleId: vehicle.id,
@@ -5183,7 +5159,7 @@ function renderVehicleDetailLeft(vehicle) {
       }
     });
 
-    // Kullanıcı paneli işlemleri: tüm taşıtlardan son olayları topla (en yeni 15)
+    // KullanÄ±cÄ± paneli iÅŸlemleri: tÃ¼m taÅŸÄ±tlardan son olaylarÄ± topla (en yeni 15)
     const recentEvents = [];
     vehicles.forEach(vehicle => {
       if (vehicle.satildiMi) return;
@@ -5202,7 +5178,7 @@ function renderVehicleDetailLeft(vehicle) {
     recentEvents.sort((a, b) => getEventSortTime(b.event) - getEventSortTime(a.event));
     const recentSlice = recentEvents.slice(0, 15);
 
-    // MTV hatırlatması: Ocak (0) veya Temmuz (6), ayın 21'i ve sonrası, ödeme yapılmadıysa
+    // MTV hatÄ±rlatmasÄ±: Ocak (0) veya Temmuz (6), ayÄ±n 21'i ve sonrasÄ±, Ã¶deme yapÄ±lmadÄ±ysa
     let mtvHtml = '';
     const today = new Date();
     const m = today.getMonth();
@@ -5212,12 +5188,12 @@ function renderVehicleDetailLeft(vehicle) {
       const mtvKey = 'mtv_paid_' + y + '_' + m;
       if (!localStorage.getItem(mtvKey)) {
         const mtvKeyEsc = (mtvKey || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
-        mtvHtml = '<div class="notification-item mtv-notification"><div class="mtv-text-container"><div class="mtv-main-text notif-line1">Ayın Son Gününe Kadar MTV Ödemelerinin Yapılması Gerekmektedir.</div></div><div class="mtv-dismiss-wrapper"><button type="button" class="mtv-dismiss-btn" onclick="dismissMTVNotif(event, \'' + mtvKeyEsc + '\')" aria-label="Bildirimi Kapat"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></button><div class="mtv-tooltip">Ödeme Yapıldıysa Bildirimi Silebilirsiniz.</div></div></div>';
+        mtvHtml = '<div class="notification-item mtv-notification"><div class="mtv-text-container"><div class="mtv-main-text notif-line1">AyÄ±n Son GÃ¼nÃ¼ne Kadar MTV Ã–demelerinin YapÄ±lmasÄ± Gerekmektedir.</div></div><div class="mtv-dismiss-wrapper"><button type="button" class="mtv-dismiss-btn" onclick="dismissMTVNotif(event, \'' + mtvKeyEsc + '\')" aria-label="Bildirimi Kapat"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></button><div class="mtv-tooltip">Ã–deme YapÄ±ldÄ±ysa Bildirimi Silebilirsiniz.</div></div></div>';
         hasOrange = true;
       }
     }
 
-    // Kasko Excel hatırlatması: Liste bu aya ait değilse (Excel yüklenince veya X ile silinene kadar kırmızı kalır)
+    // Kasko Excel hatÄ±rlatmasÄ±: Liste bu aya ait deÄŸilse (Excel yÃ¼klenince veya X ile silinene kadar kÄ±rmÄ±zÄ± kalÄ±r)
     let kaskoExcelHtml = '';
     const kaskoUploadDate = localStorage.getItem('medisa_kasko_liste_date');
     let kaskoListeGuncel = false;
@@ -5229,12 +5205,12 @@ function renderVehicleDetailLeft(vehicle) {
       const kaskoKey = 'kasko_excel_dismiss_' + y + '_' + m;
       if (!localStorage.getItem(kaskoKey)) {
         const kaskoKeyEsc = (kaskoKey || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
-        kaskoExcelHtml = '<div class="notification-item kasko-excel-notification"><div class="mtv-text-container"><div class="mtv-main-text notif-line1">Güncel Kasko Değer Listesinin Yüklenmesi Gerekmektedir.</div></div><div class="mtv-dismiss-wrapper"><button type="button" class="mtv-dismiss-btn" onclick="dismissKaskoExcelNotif(event, \'' + kaskoKeyEsc + '\')" aria-label="Bildirimi Kapat"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button><div class="mtv-tooltip">Kapat</div></div></div>';
+        kaskoExcelHtml = '<div class="notification-item kasko-excel-notification"><div class="mtv-text-container"><div class="mtv-main-text notif-line1">GÃ¼ncel Kasko DeÄŸer Listesinin YÃ¼klenmesi Gerekmektedir.</div></div><div class="mtv-dismiss-wrapper"><button type="button" class="mtv-dismiss-btn" onclick="dismissKaskoExcelNotif(event, \'' + kaskoKeyEsc + '\')" aria-label="Bildirimi Kapat"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button><div class="mtv-tooltip">Kapat</div></div></div>';
         hasRed = true;
       }
     }
 
-    // Bildirimleri güncelle
+    // Bildirimleri gÃ¼ncelle
     const notifDropdown = DOM.notificationsDropdown;
     const notifIcon = document.querySelector('.icon-btn[onclick="toggleNotifications(event)"]');
 
@@ -5248,7 +5224,7 @@ function renderVehicleDetailLeft(vehicle) {
     } else {
       let html = mtvHtml + kaskoExcelHtml;
 
-      // Tarih uyarıları (sigorta, kasko, muayene)
+      // Tarih uyarÄ±larÄ± (sigorta, kasko, muayene)
       if (notifications.length > 0) {
         notifications.sort((a, b) => {
           if (a.warningClass === 'date-warning-red' && b.warningClass !== 'date-warning-red') return -1;
@@ -5261,17 +5237,17 @@ function renderVehicleDetailLeft(vehicle) {
 
             let messageText = '';
             if (notif.days <= 0 && notif.type === 'kasko') {
-                messageText = `${notif.plate} Plakalı Taşıtın Kasko Süresi Bitmiştir.`;
+                messageText = `${notif.plate} PlakalÄ± TaÅŸÄ±tÄ±n Kasko SÃ¼resi BitmiÅŸtir.`;
             } else if (notif.days <= 0 && notif.type === 'muayene') {
-                messageText = `${notif.plate} Plakalı Taşıtın Muayene Süresi Bitmiştir.`;
+                messageText = `${notif.plate} PlakalÄ± TaÅŸÄ±tÄ±n Muayene SÃ¼resi BitmiÅŸtir.`;
             } else if (notif.days < 0) {
-                messageText = `${notif.plate} Plakalı Taşıtın ${typeLabel} Tarihi ${Math.abs(notif.days)} Gün Geçti.`;
+                messageText = `${notif.plate} PlakalÄ± TaÅŸÄ±tÄ±n ${typeLabel} Tarihi ${Math.abs(notif.days)} GÃ¼n GeÃ§ti.`;
             } else if (notif.days === 0) {
-                messageText = `${notif.plate} Plakalı Taşıtın ${typeLabel} Tarihi Bugün Bitiyor.`;
+                messageText = `${notif.plate} PlakalÄ± TaÅŸÄ±tÄ±n ${typeLabel} Tarihi BugÃ¼n Bitiyor.`;
             } else if (notif.days === 1) {
-                messageText = `${notif.plate} Plakalı Taşıtın ${typeLabel} Tarihi Yarın Bitiyor.`;
+                messageText = `${notif.plate} PlakalÄ± TaÅŸÄ±tÄ±n ${typeLabel} Tarihi YarÄ±n Bitiyor.`;
             } else {
-                messageText = `${notif.plate} Plakalı Taşıtın ${typeLabel} Tarihi ${notif.days} Gün Sonra Bitecek.`;
+                messageText = `${notif.plate} PlakalÄ± TaÅŸÄ±tÄ±n ${typeLabel} Tarihi ${notif.days} GÃ¼n Sonra Bitecek.`;
             }
 
             const borderColor = notif.warningClass === 'date-warning-red'
@@ -5290,7 +5266,7 @@ function renderVehicleDetailLeft(vehicle) {
         });
       }
 
-      // Kullanıcı paneli işlemleri bölümü
+      // KullanÄ±cÄ± paneli iÅŸlemleri bÃ¶lÃ¼mÃ¼
       if (recentSlice.length > 0) {
         const viewedRaw = sessionStorage.getItem('notifViewedKeysV2');
         const viewedKeys = viewedRaw ? JSON.parse(viewedRaw) : [];
@@ -5326,8 +5302,8 @@ function renderVehicleDetailLeft(vehicle) {
         } else if (hasOrange) {
           notifIcon.classList.add('notification-orange', 'notification-pulse');
         }
-        /* Kırmızı/turuncu sadece gerçek uyarılar için (sigorta/kasko/muayene, MTV, kasko excel).
-           Okunmamış aktivite bildirimleri (km, şube güncelleme vb.) simgeyi kırmızı yapmaz. */
+        /* KÄ±rmÄ±zÄ±/turuncu sadece gerÃ§ek uyarÄ±lar iÃ§in (sigorta/kasko/muayene, MTV, kasko excel).
+           OkunmamÄ±ÅŸ aktivite bildirimleri (km, ÅŸube gÃ¼ncelleme vb.) simgeyi kÄ±rmÄ±zÄ± yapmaz. */
       }
     }
   };
@@ -5340,7 +5316,7 @@ function renderVehicleDetailLeft(vehicle) {
     const container = btn ? btn.closest('.mtv-notification') : null;
     const textSpan = container ? container.querySelector('.mtv-main-text') : null;
 
-    // Görsel Geri Bildirim: Butonu kilitle ve metni güncelle
+    // GÃ¶rsel Geri Bildirim: Butonu kilitle ve metni gÃ¼ncelle
     if (btn) {
       btn.style.pointerEvents = 'none';
       btn.style.opacity = '0.5';
@@ -5350,7 +5326,7 @@ function renderVehicleDetailLeft(vehicle) {
     }
     if (textSpan) {
       textSpan.style.transition = 'all 0.3s ease';
-      textSpan.innerText = 'Bildirim işleniyor, lütfen bekleyin...';
+      textSpan.innerText = 'Bildirim iÅŸleniyor, lÃ¼tfen bekleyin...';
       textSpan.style.color = 'var(--txt-muted)';
     }
 
@@ -5377,7 +5353,7 @@ function renderVehicleDetailLeft(vehicle) {
     }
     if (textSpan) {
       textSpan.style.transition = 'all 0.3s ease';
-      textSpan.innerText = 'Bildirim işleniyor, lütfen bekleyin...';
+      textSpan.innerText = 'Bildirim iÅŸleniyor, lÃ¼tfen bekleyin...';
       textSpan.style.color = 'var(--txt-muted)';
     }
 
@@ -5387,29 +5363,29 @@ function renderVehicleDetailLeft(vehicle) {
     }
   };
 
-  // Sayfa yüklendiğinde ve veri değiştiğinde bildirimleri güncelle
+  // Sayfa yÃ¼klendiÄŸinde ve veri deÄŸiÅŸtiÄŸinde bildirimleri gÃ¼ncelle
   if (typeof window !== 'undefined') {
-    // İlk yüklemede
+    // Ä°lk yÃ¼klemede
     setTimeout(() => {
       if (window.updateNotifications) window.updateNotifications();
     }, 500);
 
-    // Veri değişikliklerini dinle (storage event)
+    // Veri deÄŸiÅŸikliklerini dinle (storage event)
     window.addEventListener('storage', () => {
       if (window.updateNotifications) window.updateNotifications();
     });
   }
 
-  // === SÜTUN SÜRÜKLE-BIRAK (DRAG & DROP) HANDLER'LARI ===
+  // === SÃœTUN SÃœRÃœKLE-BIRAK (DRAG & DROP) HANDLER'LARI ===
   let draggedVehicleColumnKey = null;
 
-  // Sütun başlığından sürükle başlatıldığında
+  // SÃ¼tun baÅŸlÄ±ÄŸÄ±ndan sÃ¼rÃ¼kle baÅŸlatÄ±ldÄ±ÄŸÄ±nda
   window.handleVehicleColumnDragStart = function(event, columnKey) {
     draggedVehicleColumnKey = columnKey;
     event.dataTransfer.effectAllowed = 'move';
     event.dataTransfer.setData('text/plain', columnKey);
     
-    // Tüm satırları vurgula
+    // TÃ¼m satÄ±rlarÄ± vurgula
     const allRows = document.querySelectorAll('.list-item');
     allRows.forEach(row => {
       const cell = row.querySelector(`.list-cell.${getColumnClass(columnKey)}`);
@@ -5420,7 +5396,7 @@ function renderVehicleDetailLeft(vehicle) {
     event.currentTarget.style.opacity = '0.5';
   };
 
-  // Sütun başlığı üzerine geldiğinde
+  // SÃ¼tun baÅŸlÄ±ÄŸÄ± Ã¼zerine geldiÄŸinde
   window.handleVehicleColumnDragOver = function(event) {
     if (draggedVehicleColumnKey) {
       event.preventDefault();
@@ -5428,7 +5404,7 @@ function renderVehicleDetailLeft(vehicle) {
     }
   };
 
-  // Sütun başlığına giriş yaptığında
+  // SÃ¼tun baÅŸlÄ±ÄŸÄ±na giriÅŸ yaptÄ±ÄŸÄ±nda
   window.handleVehicleColumnDragEnter = function(event) {
     if (draggedVehicleColumnKey) {
       const targetKey = event.currentTarget.dataset.col;
@@ -5439,12 +5415,12 @@ function renderVehicleDetailLeft(vehicle) {
     }
   };
 
-  // Sütun başlığından çıkış yaptığında
+  // SÃ¼tun baÅŸlÄ±ÄŸÄ±ndan Ã§Ä±kÄ±ÅŸ yaptÄ±ÄŸÄ±nda
   window.handleVehicleColumnDragLeave = function(event) {
     event.currentTarget.classList.remove('drag-over');
   };
 
-  // Sütun başlığına bırakıldığında
+  // SÃ¼tun baÅŸlÄ±ÄŸÄ±na bÄ±rakÄ±ldÄ±ÄŸÄ±nda
   window.handleVehicleColumnDrop = function(event, targetColumnKey) {
     event.preventDefault();
     event.stopPropagation();
@@ -5468,9 +5444,9 @@ function renderVehicleDetailLeft(vehicle) {
     draggedVehicleColumnKey = null;
   };
 
-  // Sütun başlığı drag bitince
+  // SÃ¼tun baÅŸlÄ±ÄŸÄ± drag bitince
   window.handleVehicleColumnDragEnd = function(event) {
-    // Tüm satırları normale döndür
+    // TÃ¼m satÄ±rlarÄ± normale dÃ¶ndÃ¼r
     const allRows = document.querySelectorAll('.list-item');
     allRows.forEach(row => {
       const cells = row.querySelectorAll('.list-cell');
@@ -5479,7 +5455,7 @@ function renderVehicleDetailLeft(vehicle) {
       });
     });
     
-    // Tüm başlıkları normale döndür
+    // TÃ¼m baÅŸlÄ±klarÄ± normale dÃ¶ndÃ¼r
     document.querySelectorAll('.list-header-row .list-cell').forEach(cell => {
       cell.style.opacity = '1';
       cell.classList.remove('drag-over');
@@ -5488,7 +5464,7 @@ function renderVehicleDetailLeft(vehicle) {
     draggedVehicleColumnKey = null;
   };
 
-  // Yardımcı fonksiyon: Sütun key'inden CSS class'ını al
+  // YardÄ±mcÄ± fonksiyon: SÃ¼tun key'inden CSS class'Ä±nÄ± al
   function getColumnClass(columnKey) {
     const classMap = {
       'year': 'list-year',
@@ -5502,7 +5478,7 @@ function renderVehicleDetailLeft(vehicle) {
     return classMap[columnKey] || '';
   }
 
-  // Mobil: sütun başlığı touch ile sürükle-bırak state
+  // Mobil: sÃ¼tun baÅŸlÄ±ÄŸÄ± touch ile sÃ¼rÃ¼kle-bÄ±rak state
   let touchColumnDrag = { active: false, columnKey: null, startX: 0, startY: 0, dragging: false, lastDropTarget: null };
 
   function attachVehicleColumnTouchListeners(container) {
@@ -5577,10 +5553,10 @@ function renderVehicleDetailLeft(vehicle) {
     });
   }
 
-  // kayit.js deleteVehicle sonrası liste yenilemesi için global erişim
+  // kayit.js deleteVehicle sonrasÄ± liste yenilemesi iÃ§in global eriÅŸim
   window.renderVehicles = renderVehicles;
 
-  // Taşıt detay: muayene tooltip (hover ile açık kalır, gecikmeli kapatma) + ünlem/link tıklama
+  // TaÅŸÄ±t detay: muayene tooltip (hover ile aÃ§Ä±k kalÄ±r, gecikmeli kapatma) + Ã¼nlem/link tÄ±klama
   let muayeneTooltipCloseTimeout = null;
   function openVehicleTypePickerFromDetail() {
     const vehicleId = window.currentDetailVehicleId;
@@ -5648,7 +5624,7 @@ function renderVehicleDetailLeft(vehicle) {
       openVehicleTypePickerFromDetail();
       return;
     }
-    // Dışarı tıklanınca tooltip kapat
+    // DÄ±ÅŸarÄ± tÄ±klanÄ±nca tooltip kapat
     if (!e.target.closest('.muayene-detail-tooltip-wrap') && !e.target.closest('.muayene-detail-exclamation')) {
       modal.querySelectorAll('.muayene-detail-tooltip.visible').forEach(function(t) {
         t.classList.remove('visible');
@@ -5658,3 +5634,4 @@ function renderVehicleDetailLeft(vehicle) {
   }, true);
 
 })();
+
