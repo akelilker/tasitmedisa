@@ -175,17 +175,36 @@
   }
 
   function guncelleTumKaskoDegerleri() {
-    ensureAppData();
-    var vehicles = (typeof window.getMedisaVehicles === 'function' ? window.getMedisaVehicles() : null) || [];
-    if (!Array.isArray(vehicles) || vehicles.length === 0) return;
-    var tarih = new Date().toISOString();
-    vehicles.forEach(function(v) {
-      var yearForKasko = v.year || v.modelYili || '';
-      v.kaskoDegeri = getKaskoDegeri(v.kaskoKodu, yearForKasko);
-      v.kaskoDegeriYuklemeTarihi = tarih;
-    });
-    saveVehiclesList(vehicles).catch(function(err) {
-      console.warn('[Medisa] Kasko değerleri kaydedilemedi:', err && err.message);
+    var refreshPromise = (typeof window.loadDataFromServer === 'function')
+      ? window.loadDataFromServer(true).catch(function() { return null; })
+      : Promise.resolve(null);
+
+    return refreshPromise.then(function() {
+      ensureAppData();
+      var vehicles = (typeof window.getMedisaVehicles === 'function' ? window.getMedisaVehicles() : null) || [];
+      if (!Array.isArray(vehicles) || vehicles.length === 0) return false;
+
+      var tarih = new Date().toISOString();
+      vehicles.forEach(function(v) {
+        var yearForKasko = v.year || v.modelYili || '';
+        v.kaskoDegeri = getKaskoDegeri(v.kaskoKodu, yearForKasko);
+        v.kaskoDegeriYuklemeTarihi = tarih;
+      });
+
+      return saveVehiclesList(vehicles).catch(function(err) {
+        if (err && err.conflict === true) {
+          alert('Dikkat! Bu araç siz işlem yaparken başka biri tarafından güncellenmiş. Veri ezilmesini önlemek için lütfen sayfayı yenileyip güncel durumu kontrol edin.');
+          if (typeof window.loadDataFromServer === 'function') {
+            window.loadDataFromServer(true).then(function() {
+              if (typeof window.renderBranchDashboard === 'function') window.renderBranchDashboard();
+              if (typeof window.renderVehicles === 'function') window.renderVehicles();
+            });
+          }
+          return false;
+        }
+        console.warn('[Medisa] Kasko değerleri kaydedilemedi:', err && err.message);
+        return false;
+      });
     });
   }
 
