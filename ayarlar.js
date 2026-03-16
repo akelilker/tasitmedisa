@@ -1259,22 +1259,21 @@
   
               window.appData = restoredBlob;
   
-              var doReload = function() {
+              if (typeof window.saveDataToServer === 'function') {
+                window.showCenteredInfoBox('Yedek sunucuya yükleniyor, lütfen bekleyin...'); // Kullanıcıyı tut
+                window.saveDataToServer().then(function() {
+                  window.closeCenteredInfoBox();
+                  alert('Yedek başarıyla Geri Yüklendi ve Sunucuya Kaydedildi!\n\nSayfa Yenilenecek.');
+                  setTimeout(function() { window.location.reload(); }, 500);
+                }).catch(function(err) {
+                  window.closeCenteredInfoBox();
+                  console.error("Yedek sunucuya yazılamadı:", err);
+                  alert('Uyarı: Yedek cihazınıza yüklendi ancak sunucuya gönderilirken bir hata oluştu. İnternet bağlantınızı kontrol edin.\n\nSayfa Yenilenecek.');
+                  setTimeout(function() { window.location.reload(); }, 500);
+                });
+              } else {
                 alert('Yedek başarıyla Geri Yüklendi!\n\nSayfa Yenilenecek.');
                 setTimeout(function() { window.location.reload(); }, 500);
-              };
-  
-              if (typeof window.saveDataToServer === 'function') {
-                var saveDone = false;
-                var done = function() {
-                  if (saveDone) return;
-                  saveDone = true;
-                  doReload();
-                };
-                window.saveDataToServer().then(done).catch(done);
-                setTimeout(done, 8000);
-              } else {
-                doReload();
               }
             } catch (error) {
               alert('Yedek Dosyası Okunamadı!');
