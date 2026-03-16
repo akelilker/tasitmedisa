@@ -3819,13 +3819,13 @@ function renderVehicleDetailLeft(vehicle) {
         const isMobileKazaSchema = window.innerWidth <= 640;
 
         schemaWrapper.style.display = 'flex';
-        schemaWrapper.style.alignItems = isIosPwaKazaSchema ? 'flex-start' : 'center';
+        schemaWrapper.style.alignItems = 'flex-start';
         schemaWrapper.style.justifyContent = 'center';
         schemaWrapper.style.gap = '24px';
-        schemaWrapper.style.maxHeight = isIosPwaKazaSchema ? '124px' : '144px'; /* iOS PWA'da üstten yapışsın */
+        schemaWrapper.style.maxHeight = '144px';
         schemaWrapper.style.width = '100%';
         schemaWrapper.style.overflow = isMobileKazaSchema ? 'visible' : 'hidden';
-        schemaWrapper.style.paddingTop = isIosPwaKazaSchema ? '2px' : '0';
+        schemaWrapper.style.paddingTop = '0';
         
         schemaWrapper.appendChild(svgClone);
         
@@ -3838,12 +3838,13 @@ function renderVehicleDetailLeft(vehicle) {
 
           if (isIosPwaKazaSchema) {
             svgClone.style.position = 'relative';
-            svgClone.style.left = '0';
-            svgClone.style.top = '-2px';
+            svgClone.style.left = '-18px';
+            svgClone.style.top = '-42px';
           } else {
             // Normal mobilde mevcut sola yaslama kalsın
             svgClone.style.position = 'relative';
             svgClone.style.left = '-18px';
+            svgClone.style.top = '0';
           }
         } else {
           svgClone.style.width = '168px';  /* 210 * 0.8 */
