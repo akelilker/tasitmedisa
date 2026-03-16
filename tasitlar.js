@@ -509,7 +509,7 @@
     const hasLocalData = Array.isArray(localVehicles) && localVehicles.length > 0;
 
     // Yükleme (Loading) ekranını SADECE veri HİÇ YOKSA (sıfır kurulumda) göster
-    if (!isDataLoaded && !hasLocalData && typeof window.loadDataFromServer === 'function') {
+    if (!hasLocalData && typeof window.loadDataFromServer === 'function') {
       if (content) {
         content.innerHTML = `
           <div class="vehicles-loading-state" style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:200px; color:#888;">
@@ -526,7 +526,7 @@
         DOM.vehiclesModalContainer.classList.add('hide-marker');
       }
 
-      window.loadDataFromServer(false).then(function() {
+      window.loadDataFromServer(true).then(function() {
         if (DOM.vehiclesModalContainer) DOM.vehiclesModalContainer.classList.remove('hide-marker');
         const m = DOM.vehiclesModal;
         if (m && m.classList.contains('active')) {
