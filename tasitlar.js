@@ -2247,7 +2247,7 @@
     .vehicle-card-print-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 0; }
     .vehicle-card-print-grid table { width: 100%; }
     @media (max-width: 760px) { .vehicle-card-print-grid { grid-template-columns: 1fr 1fr; } }
-    .kaporta-print-section { margin-top: 4px; border: 1px solid #ddd; border-radius: 8px; padding: 4px; page-break-inside: auto; break-inside: auto; }
+    .kaporta-print-section { margin-top: 2px; border: 1px solid #ddd; border-radius: 8px; padding: 4px; page-break-inside: auto; break-inside: auto; }
     .kaporta-print-section h2 { margin: 0 0 4px; font-size: 16px; }
     .kaporta-print-row { display: grid; grid-template-columns: minmax(240px, auto) minmax(0, 1fr); align-items: start; column-gap: 10px; }
     .kaporta-print-state-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 4px 5px; align-content: start; }
@@ -2292,7 +2292,7 @@
     @media (max-width: 760px) { .history-grid { flex-direction: column; } .history-print-card { width: 100%; } .kaporta-print-row { grid-template-columns: 1fr; row-gap: 5px; } .kaporta-print-state-grid { grid-template-columns: 1fr; } }
     /* iOS PWA: Ekspertiz şeması üstteki çerçeveye 4px, sağdaki sahaya 12px */
     body.ios-pwa-print .summary-page .vehicle-card-print-grid { margin-bottom: 0 !important; }
-    body.ios-pwa-print .kaporta-print-section { margin-top: 4px !important; }
+    body.ios-pwa-print .kaporta-print-section { margin-top: 2px !important; }
     body.ios-pwa-print .kaporta-print-schema-wrap { margin-right: 12px !important; margin-left: auto !important; }
     @media print { body { margin: 8mm; -webkit-print-color-adjust: exact; print-color-adjust: exact; } .print-preview-toolbar { display: none !important; } .kaporta-print-section { page-break-inside: auto; break-inside: auto; } .history-page h1, .history-page .subtitle { page-break-after: avoid; break-after: avoid-page; } .history-page { page-break-before: auto; break-before: auto; page-break-inside: auto; break-inside: auto; } .history-page.force-new-page { page-break-before: always; break-before: page; } .history-grid { gap: 8px; } }
   </style>
@@ -2470,7 +2470,7 @@
         frameDoc.write(printHtml);
         frameDoc.close();
 
-        setTimeout(function() {
+        function runPrint() {
           if (done) return;
           try {
             var cleanupTimer = setTimeout(function() {
@@ -2483,7 +2483,7 @@
               if (done) return;
               done = true;
               cleanup();
-              frameWindow.removeEventListener('afterprint', onAfterPrint);
+              try { frameWindow.removeEventListener('afterprint', onAfterPrint); } catch (e) {}
             };
             frameWindow.addEventListener('afterprint', onAfterPrint);
             try {
@@ -2496,7 +2496,18 @@
           } catch (printErr) {
             fail(printErr);
           }
-        }, 60);
+        }
+
+        var fallbackTimer = setTimeout(function() {
+          if (done) return;
+          try { iframe.onload = null; } catch (e) {}
+          runPrint();
+        }, 2500);
+        iframe.onload = function() {
+          clearTimeout(fallbackTimer);
+          if (done) return;
+          setTimeout(runPrint, 150);
+        };
       } catch (iframeErr) {
         fail(iframeErr);
       }
