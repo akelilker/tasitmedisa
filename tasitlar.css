@@ -418,6 +418,7 @@
     margin: 0 !important;
 }
 #detail-boya-container .boya-legend {
+    margin-top: 0 !important; /* Legend'i şemaya 3px yaklaştır */
     justify-content: flex-start !important;
 }
 
