@@ -3000,13 +3000,13 @@ function renderVehicleDetailLeft(vehicle) {
     // Böylece PDF viewer'ın performans uyarıları ana uygulama konsolunu kirletmez.
     let opened = null;
     try {
-      opened = window.open(targetUrl, '_blank', 'noopener,noreferrer');
+      opened = window.open(targetUrl, '_blank', 'noopener');
     } catch (e) {
       opened = null;
     }
 
     if (!opened) {
-      window.location.href = targetUrl;
+      alert('Ön izleme sekmesi açılamadı. Tarayıcıda pop-up iznini kontrol edin ve tekrar deneyin.');
     }
   };
 
