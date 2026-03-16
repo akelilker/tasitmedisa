@@ -2416,28 +2416,26 @@
   display: block;
 }
 @media (max-width: 640px) {
+  /* Mobilde de ruhsat ön izlemesi (iframe) aktif edilsin, kuru metin kaldırılsın */
   #ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-preview-link {
-    width: auto !important;
-    height: auto !important;
-    background: transparent !important;
-    border: none !important;
-    display: inline-flex !important;
-    align-items: center !important;
+    height: 140px !important; /* Mobilde jilet gibi duracak ferah yükseklik */
+    display: flex !important;
     justify-content: center !important;
-    box-shadow: none !important;
-    border-radius: 0 !important;
-    overflow: visible !important;
-    padding: 0 !important;
+    align-items: center !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 8px !important;
+    overflow: hidden !important;
   }
   #ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-preview-link iframe {
-    display: none;
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    pointer-events: none !important; /* Önizlemeye tıklandığında direkt modal açılsın */
   }
-  #ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-preview-link::after {
-    content: 'Ruhsat\0131 G\00F6r\00FCnt\00FCle';
-    color: #ffffff;
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 0.2px;
+  #ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-preview-link::after,
+  #ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-preview-link::before {
+    display: none !important;
+    content: none !important;
   }
   #ruhsat-yukleme-modal #ruhsat-modal-content .universal-btn-group.ruhsat-preview-row,
   #ruhsat-yukleme-modal #ruhsat-modal-content .universal-btn-group:has(.ruhsat-preview-link) {
