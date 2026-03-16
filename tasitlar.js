@@ -3623,23 +3623,35 @@ function renderVehicleDetailLeft(vehicle) {
       const btnGroup = document.createElement('div');
       btnGroup.className = 'universal-btn-group';
       btnGroup.classList.add('ruhsat-preview-row');
-      const previewLink = document.createElement('a');
+
+      const isMobileRuhsat = window.innerWidth <= 640;
+      // Mobilde div kullanıyoruz ki "basılı tutunca" link önizlemesi çıkmasın
+      const previewLink = document.createElement(isMobileRuhsat ? 'div' : 'a');
       previewLink.className = 'ruhsat-preview-link';
-      previewLink.href = resolveRuhsatUrl(vehicle.ruhsatPath);
-      previewLink.target = '_blank';
-      previewLink.rel = 'noopener';
+
+      if (!isMobileRuhsat) {
+        previewLink.href = resolveRuhsatUrl(vehicle.ruhsatPath);
+        previewLink.target = '_blank';
+        previewLink.rel = 'noopener';
+      } else {
+        previewLink.style.background = 'rgba(255, 255, 255, 0.05)';
+        previewLink.style.cursor = 'pointer';
+      }
+
       previewLink.setAttribute('aria-label', 'Ruhsatı görüntüle');
       previewLink.onclick = function(e) {
         e.preventDefault();
+        e.stopPropagation();
         window.viewRuhsatPdf(vid);
       };
 
-      const isMobileRuhsat = window.innerWidth <= 640;
       if (isMobileRuhsat) {
-        previewLink.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;color:#adb5bd;"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:8px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg><span style="font-size:12px;font-weight:600;">Ruhsatı Görüntüle / Yazdır</span></div>';
+        // Mobilde şık ve belirgin bir "Görüntüle/Yazdır" butonu tasarımı
+        previewLink.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;color:#f8f9fa;"><svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:12px; color:#d40000;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg><span style="font-size:14px;font-weight:600;letter-spacing:0.5px;">Ruhsatı Görüntüle / Yazdır</span></div>';
       } else {
         const previewFrame = document.createElement('iframe');
-        previewFrame.src = previewLink.href + '#toolbar=0&navpanes=0&scrollbar=0';
+        // Masaüstünde iframeli önizleme devam etsin
+        previewFrame.src = resolveRuhsatUrl(vehicle.ruhsatPath) + '#toolbar=0&navpanes=0&scrollbar=0';
         previewFrame.setAttribute('title', 'Ruhsat önizleme');
         previewFrame.setAttribute('loading', 'lazy');
         previewLink.appendChild(previewFrame);
@@ -3769,40 +3781,11 @@ function renderVehicleDetailLeft(vehicle) {
     const vehicle = readVehicles().find(v => String(v.id) === vid);
     if (!vehicle || !vehicle.ruhsatPath) return;
 
-    const isIosPwa = isIosStandalonePwa();
-    const isMobileDevice = window.innerWidth <= 768 || /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
     const url = resolveRuhsatUrl(vehicle.ruhsatPath);
 
-    // iOS PWA veya Mobil cihazlar: Yeni sekme yerine doğrudan yazdırma ekranını (print dialog) tetikliyoruz.
-    if (isIosPwa || isMobileDevice) {
-      var iframe = document.createElement('iframe');
-      iframe.style.position = 'fixed';
-      iframe.style.right = '0';
-      iframe.style.bottom = '0';
-      iframe.style.width = '0';
-      iframe.style.height = '0';
-      iframe.style.border = '0';
-      iframe.src = url;
-      document.body.appendChild(iframe);
-
-      iframe.onload = function() {
-        setTimeout(function() {
-          try {
-            iframe.contentWindow.focus();
-            iframe.contentWindow.print();
-          } catch (e) {
-            window.open(url, '_blank', 'noopener');
-          }
-          // Dialog kapandıktan/işlem bittikten sonra temizle
-          setTimeout(function() {
-            if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
-          }, 3000);
-        }, 300);
-      };
-      return;
-    }
-
-    // Diğer tüm platformlar (Masaüstü): Doğrudan yeni sekmede aç (En stabil yöntem)
+    // Tüm platformlarda (iOS PWA, Android, Masaüstü) PDF'ler için en stabil yöntem:
+    // Doğrudan tıklama olayı içinde window.open kullanmaktır. (Böylece popup engelleyicilere takılmaz)
+    // Açılan PWA veya tarayıcı sekmesinde cihazın orijinal "Yazdır/Paylaş" özelliği kullanılabilir.
     window.open(url, '_blank', 'noopener');
   };
 
