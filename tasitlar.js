@@ -2305,13 +2305,13 @@
 
     const kaportaPrintSectionHtml = buildKaportaPrintSectionHtml(vehicle);
 
-    const printHtml = `<!doctype html>
+        const printHtml = `<!doctype html>
 <html lang="tr">
 <head>
   <meta charset="utf-8">
   <title>Taşıt Kartı - ${escapeHtml(vehicle.plate || '-')}</title>
   <style>
-    /* TÜM PLATFORMLAR (Mobil, Masaüstü, iOS PWA) İÇİN BİRLEŞTİRİLMİŞ KUSURSUZ CSS */
+    /* TÜM PLATFORMLAR İÇİN BİRLEŞTİRİLMİŞ KUSURSUZ CSS */
     body { font-family: Arial, sans-serif; margin: 24px; color: #111; }
     h1 { margin: 0 0 4px; font-size: 24px; }
     .subtitle { margin: 0 0 10px; color: #555; font-size: 13px; }
@@ -2327,16 +2327,17 @@
     .vehicle-card-print-grid table { width: 100%; }
     @media (max-width: 760px) { .vehicle-card-print-grid { grid-template-columns: 1fr 1fr; } }
     
-    /* Kaporta Çerçevesi Notların 2px altında */
+    /* KAPORTA BÖLÜMÜ */
     .kaporta-print-section { margin-top: 2px; border: 1px solid #ddd; border-radius: 8px; padding: 4px; page-break-inside: auto; break-inside: auto; }
-    .kaporta-print-section h2 { margin: 0 0 4px; font-size: 16px; }
-    /* Ekspertiz şemasını sayfaya göre tam ortalamak için bağımsız (absolute) hizalama kullanıldı */
-    .kaporta-print-row { position: relative; display: flex; min-height: 160px; /* Alt çerçevenin şemayı kesmemesi için yüksekliği artırdık */ }
+    .kaporta-print-section h2.kaporta-print-title { margin: 0 0 2px; font-size: 16px; }
+    
+    /* ŞEMAYI MERKEZE ALMA (Absolute) */
+    .kaporta-print-row { position: relative; display: flex; min-height: 160px; }
     .kaporta-print-state-grid { width: 35%; min-width: 200px; display: grid; grid-template-columns: 1fr 1fr; gap: 4px 5px; align-content: start; z-index: 2; }
     .kaporta-print-schema-wrap {
         position: absolute;
         left: 50%;
-        top: -15px; /* Çerçeve genişlediği için araba artık özgürce aşağı inebilir */
+        top: -15px; 
         margin-left: -120px; 
         width: 240px;
         height: 150px;
@@ -2356,16 +2357,14 @@
         transform-origin: center center;
         object-fit: contain;
     }
-    .kaporta-print-col h3 { margin: 0 0 4px; font-size: 13px; }
+    
+    .kaporta-print-col h3 { margin: 0 0 4px; margin-bottom: 2px; font-size: 13px; }
     .kaporta-print-list { margin: 0; padding-left: 18px; }
     .kaporta-print-list li { font-size: 12px; line-height: 1.3; margin-bottom: 2px; }
     .kaporta-print-empty { font-size: 12px; color: #666; }
-    .print-page-break { page-break-before: always; break-before: page; margin: 16px 0 0; }
     
-    /* TARİHÇE (HISTORY) YAZDIRMA AYARI: Eğer sığmıyorsa başlığıyla beraber 2. sayfaya geçsin */
-    .history-page { margin-top: 15px; page-break-inside: avoid; break-inside: avoid; }
-    
-    /* 2x2 Grid yapısı: Üstte Bakım - Kaza, Altta Km - Diğer */
+    /* TARİHÇE (HISTORY) BÖLÜMÜ (2x2 Grid) */
+    .history-page { margin-top: 2px; page-break-inside: avoid; break-inside: avoid; }
     .history-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; align-items: start; }
     .history-print-card { width: 100%; box-sizing: border-box; border: 1px solid #ddd; border-radius: 8px; padding: 8px; page-break-inside: avoid; break-inside: avoid; }
     .history-print-card h2 { margin: 0 0 5px; font-size: 14px; page-break-after: avoid; break-after: avoid-page; }
@@ -2377,39 +2376,36 @@
     .history-print-extra { font-size: 11px; color: #444; margin-top: 1px; line-height: 1.2; }
     .history-print-empty { font-size: 12px; color: #666; }
     
-    @media (max-width: 760px) { 
-        .history-grid { grid-template-columns: 1fr; } 
-        .kaporta-print-row { grid-template-columns: 1fr; row-gap: 5px; } 
-        .kaporta-print-state-grid { grid-template-columns: 1fr; } 
-        .kaporta-print-schema-wrap { margin: 4px auto 0; } /* Mobilde ortala */
-    }
+    @media (max-width: 760px) { .history-grid { grid-template-columns: 1fr; } }
     
     @media print { 
         body { margin: 8mm; -webkit-print-color-adjust: exact; print-color-adjust: exact; } 
         .print-preview-toolbar { display: none !important; } 
         .kaporta-print-section { page-break-inside: auto; break-inside: auto; } 
-        .history-page h1, .history-page .subtitle { page-break-after: avoid; break-after: avoid-page; } 
-        .history-grid { gap: 8px; } 
+        .print-history-block { break-inside: avoid; page-break-inside: avoid; } 
+        .history-page h3, .history-page .subtitle { page-break-after: avoid; break-after: avoid-page; } 
     }
   </style>
 </head>
 <body>
   <div class="print-preview-toolbar">
-    <button type="button" class="print-preview-btn" id="print-preview-back">Geri D\u00F6n</button>
+    <button type="button" class="print-preview-btn" id="print-preview-back">Geri Dön</button>
     <button type="button" class="print-preview-btn print-preview-btn-primary" id="print-preview-close">Kapat</button>
   </div>
   <section class="summary-page print-summary">
-    <h1>Ta\u015F\u0131t Kart\u0131</h1>
-    <p class="subtitle">Plaka: ${escapeHtml(vehicle.plate || '-')} - Olu\u015Fturma: ${printedAt}</p>
+    <h1>Taşıt Kartı</h1>
+    <p class="subtitle">Plaka: ${escapeHtml(vehicle.plate || '-')} - Oluşturma: ${printedAt}</p>
     ${rows}
     ${kaportaPrintSectionHtml}
   </section>
 
   <section class="history-page">
     <div class="print-history-block">
-    <h3>Ta\u015F\u0131t Tarih\u00E7esi</h3>
-    <p class="subtitle">Plaka: ${escapeHtml(vehicle.plate || '-')} - Olu\u015Fturma: ${printedAt}</p>
-    ${historySectionsHtml}
+      <h3>Taşıt Tarihçesi</h3>
+      <p class="subtitle">Plaka: ${escapeHtml(vehicle.plate || '-')} - Oluşturma: ${printedAt}</p>
+      <div class="history-grid">
+        ${historySectionsHtml}
+      </div>
     </div>
   </section>
   <script>
@@ -2433,10 +2429,6 @@
           window.location.href = returnUrl;
         }
       }
-
-      window.__medisaPreparePrintLayout = function() {
-        // Javascript tabanl\u0131 hesaplama kald\u0131r\u0131ld\u0131, yerini CSS (page-break-inside: avoid) ald\u0131.
-      };
 
       if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', function() {
@@ -2861,9 +2853,12 @@ function renderVehicleDetailLeft(vehicle) {
         svgWrapper.style.cssText = `
             width: ${defaultTargetWidth}px;
             height: ${targetHeight}px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             overflow: visible;
             flex-shrink: 0;
-            margin: 2px auto 0 0;
+            margin: 20px auto 20px 0; /* Arabanın dönmesi için üstten alttan yer açtık */
         `;
 
         // SVG'yi hazırla (zaten clone geldi)
@@ -2873,6 +2868,8 @@ function renderVehicleDetailLeft(vehicle) {
         svgClone.style.cssText = `
             display: block;
             margin: 0;
+            transform: rotate(90deg); /* Kilit nokta: Arabayı yatay yaptık */
+            transform-origin: center center;
         `;
 
         svgWrapper.appendChild(svgClone);
@@ -2926,20 +2923,25 @@ function renderVehicleDetailLeft(vehicle) {
         `;
         container.appendChild(legend);
 
-        // Sol kolon genişliğine göre şema büyüklüğünü uyarla (sol grid içinde; yatay -4px, dikey -8px)
+        // Sol kolon genişliğine göre şema büyüklüğünü uyarla (sol grid içinde)
         requestAnimationFrame(function alignSchemaToLeftColumn() {
           const leftCol = DOM.vehicleDetailLeft;
           if (leftCol && container.isConnected) {
             const leftRect = leftCol.getBoundingClientRect();
             const padding = 16;
             const availableWidth = Math.max(0, leftRect.width - padding);
-            const minW = 128;   /* 160 * 0.8 */
-            const maxW = 304;   /* 380 * 0.8 */
+            const minW = 128;
+            const maxW = 304;
             const clamped = Math.max(minW, Math.min(maxW, Math.round(availableWidth * 0.8)));
             const w = clamped - shrinkX;
             const h = Math.round(clamped * (148 / 220)) - shrinkY;
             svgWrapper.style.width = w + 'px';
             svgWrapper.style.height = h + 'px';
+
+            // EKLENEN KISIM: Arabayı yatırdığımızda genişliği 220 oluyor.
+            // Konteynera (w) sığması için dinamik scale uyguluyoruz.
+            const scaleRatio = w / 220;
+            svgClone.style.transform = `rotate(90deg) scale(${scaleRatio})`;
           }
         });
       })
