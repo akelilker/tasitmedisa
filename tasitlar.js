@@ -2330,7 +2330,7 @@
         position: relative;
         width: 240px;
         height: 150px;
-        margin: 4px auto 0; /* Üst çerçeveye net 4px sınır */
+        margin: 4px auto 0;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -2341,7 +2341,6 @@
         position: static;
         width: 150px;
         height: 240px;
-        /* Döndürülmüş SVG'nin iç ön/arka ölü boşluğunu yok etmek için negatif margin */
         margin-top: -24px; 
         transform: rotate(90deg);
         transform-origin: center center;
@@ -2352,8 +2351,10 @@
     .kaporta-print-list li { font-size: 12px; line-height: 1.3; margin-bottom: 2px; }
     .kaporta-print-empty { font-size: 12px; color: #666; }
     .print-page-break { page-break-before: always; break-before: page; margin: 16px 0 0; }
-    .history-page { margin-top: 5px; page-break-before: auto; break-before: auto; page-break-inside: auto; break-inside: auto; }
-    .history-page.force-new-page { page-break-before: always; break-before: page; margin-top: 5px; }
+    
+    /* TARİHÇE (HISTORY) YAZDIRMA AYARI: Eğer sığmıyorsa başlığıyla beraber 2. sayfaya geçsin */
+    .history-page { margin-top: 15px; page-break-inside: avoid; break-inside: avoid; }
+    
     .history-grid { display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-start; }
     .history-print-card { width: calc(50% - 4px); box-sizing: border-box; border: 1px solid #ddd; border-radius: 8px; padding: 8px; page-break-inside: avoid; break-inside: avoid; }
     .history-print-card h2 { margin: 0 0 5px; font-size: 14px; page-break-after: avoid; break-after: avoid-page; }
@@ -2369,7 +2370,7 @@
     body.ios-pwa-print .summary-page .vehicle-card-print-grid { margin-bottom: 0 !important; }
     body.ios-pwa-print .kaporta-print-section { margin-top: 2px !important; }
     body.ios-pwa-print .kaporta-print-schema-wrap { margin-right: 12px !important; margin-left: auto !important; }
-    @media print { body { margin: 8mm; -webkit-print-color-adjust: exact; print-color-adjust: exact; } .print-preview-toolbar { display: none !important; } .kaporta-print-section { page-break-inside: auto; break-inside: auto; } .history-page h1, .history-page .subtitle { page-break-after: avoid; break-after: avoid-page; } .history-page { page-break-before: auto; break-before: auto; page-break-inside: auto; break-inside: auto; } .history-page.force-new-page { page-break-before: always; break-before: page; } .history-grid { gap: 8px; } }
+    @media print { body { margin: 8mm; -webkit-print-color-adjust: exact; print-color-adjust: exact; } .print-preview-toolbar { display: none !important; } .kaporta-print-section { page-break-inside: auto; break-inside: auto; } .history-page h1, .history-page .subtitle { page-break-after: avoid; break-after: avoid-page; } .history-grid { gap: 8px; } }
   </style>
 </head>
 <body class="${isIosPwaPrint ? 'ios-pwa-print' : ''}">
@@ -2391,7 +2392,6 @@
   </section>
   <script>
     (function() {
-      var resizeTimer = null;
       var returnUrl = ${JSON.stringify(window.location.href)};
 
       function safeReturnToApp() {
@@ -2412,55 +2412,9 @@
         }
       }
 
-      function mmToPx(mm) {
-        return (mm * 96) / 25.4;
-      }
-
-      function applyHistoryPageFlow(root) {
-        const summary = root.querySelector('.print-summary');
-        const historyPage = root.querySelector('.history-page');
-        if (!summary || !historyPage) return;
-
-        const pageHeightPx = mmToPx(297 - (8 * 2));
-        const summaryHeight = summary.getBoundingClientRect().height;
-        const historyHeight = historyPage.getBoundingClientRect().height;
-
-        const remainingFirstPage = pageHeightPx - summaryHeight;
-
-        // Eğer tarihçe tamamen ilk sayfaya sığmıyorsa
-        // başlığıyla birlikte ikinci sayfadan başlat
-        if (historyHeight > remainingFirstPage) {
-          historyPage.classList.add('force-new-page');
-        } else {
-          historyPage.classList.remove('force-new-page');
-        }
-      }
-
       window.__medisaPreparePrintLayout = function() {
-        applyHistoryPageFlow(document);
+        // Javascript tabanlı hesaplama kaldırıldı, yerini CSS (page-break-inside: avoid) aldı.
       };
-
-      function runPageFlowCheck() {
-        window.requestAnimationFrame(function() {
-          window.requestAnimationFrame(function() { applyHistoryPageFlow(document); });
-        });
-      }
-
-      function schedulePageFlowChecks() {
-        runPageFlowCheck();
-        setTimeout(runPageFlowCheck, 80);
-        setTimeout(runPageFlowCheck, 200);
-        setTimeout(runPageFlowCheck, 360);
-      }
-
-      function bindMediaReflow() {
-        var mediaNodes = document.querySelectorAll('img');
-        mediaNodes.forEach(function(node) {
-          if (node.complete) return;
-          node.addEventListener('load', schedulePageFlowChecks, { once: true });
-          node.addEventListener('error', schedulePageFlowChecks, { once: true });
-        });
-      }
 
       if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', function() {
@@ -2473,8 +2427,6 @@
               setTimeout(safeReturnToApp, 80);
             });
           }
-          bindMediaReflow();
-          schedulePageFlowChecks();
         });
       } else {
         var backBtn = document.getElementById('print-preview-back');
@@ -2486,18 +2438,7 @@
             setTimeout(safeReturnToApp, 80);
           });
         }
-        bindMediaReflow();
-        schedulePageFlowChecks();
       }
-
-      window.addEventListener('load', schedulePageFlowChecks);
-      window.addEventListener('beforeprint', function() {
-        applyHistoryPageFlow(document);
-      });
-      window.addEventListener('resize', function() {
-        if (resizeTimer) clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(schedulePageFlowChecks, 120);
-      });
     })();
   </script>
 </body>
@@ -3621,43 +3562,33 @@ function renderVehicleDetailLeft(vehicle) {
     const hasRuhsat = !!(vehicle && vehicle.ruhsatPath);
     if (hasRuhsat) {
       const btnGroup = document.createElement('div');
-      btnGroup.className = 'universal-btn-group';
-      btnGroup.classList.add('ruhsat-preview-row');
+      btnGroup.className = 'universal-btn-group ruhsat-preview-row';
 
-      const isMobileRuhsat = window.innerWidth <= 640;
-      // Mobilde div kullanıyoruz ki "basılı tutunca" link önizlemesi çıkmasın
-      const previewLink = document.createElement(isMobileRuhsat ? 'div' : 'a');
-      previewLink.className = 'ruhsat-preview-link';
+      // Mobilde basılı tutunca link gibi davranmasın diye <button> kullanıyoruz
+      const previewBtn = document.createElement('button');
+      previewBtn.type = 'button';
+      previewBtn.className = 'ruhsat-preview-link';
+      previewBtn.setAttribute('aria-label', 'Ruhsatı Yazdır / Görüntüle');
+      previewBtn.style.cssText = 'background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.2); cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 140px; border-radius: 8px;';
 
-      if (!isMobileRuhsat) {
-        previewLink.href = resolveRuhsatUrl(vehicle.ruhsatPath);
-        previewLink.target = '_blank';
-        previewLink.rel = 'noopener';
-      } else {
-        previewLink.style.background = 'rgba(255, 255, 255, 0.05)';
-        previewLink.style.cursor = 'pointer';
-      }
+      previewBtn.innerHTML = `
+          <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:12px; color:#d40000;">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+            <polyline points="10 9 9 9 8 9"></polyline>
+          </svg>
+          <span style="font-size:14px; font-weight:600; color:#fff; letter-spacing:0.5px;">Ruhsatı Görüntüle / Yazdır</span>
+        `;
 
-      previewLink.setAttribute('aria-label', 'Ruhsatı görüntüle');
-      previewLink.onclick = function(e) {
+      previewBtn.onclick = function(e) {
         e.preventDefault();
         e.stopPropagation();
         window.viewRuhsatPdf(vid);
       };
+      btnGroup.appendChild(previewBtn);
 
-      if (isMobileRuhsat) {
-        // Mobilde şık ve belirgin bir "Görüntüle/Yazdır" butonu tasarımı
-        previewLink.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;color:#f8f9fa;"><svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:12px; color:#d40000;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg><span style="font-size:14px;font-weight:600;letter-spacing:0.5px;">Ruhsatı Görüntüle / Yazdır</span></div>';
-      } else {
-        const previewFrame = document.createElement('iframe');
-        // Masaüstünde iframeli önizleme devam etsin
-        previewFrame.src = resolveRuhsatUrl(vehicle.ruhsatPath) + '#toolbar=0&navpanes=0&scrollbar=0';
-        previewFrame.setAttribute('title', 'Ruhsat önizleme');
-        previewFrame.setAttribute('loading', 'lazy');
-        previewLink.appendChild(previewFrame);
-      }
-
-      btnGroup.appendChild(previewLink);
       const replaceBtn = document.createElement('button');
       replaceBtn.type = 'button';
       replaceBtn.className = 'ruhsat-add-btn';
@@ -3783,10 +3714,33 @@ function renderVehicleDetailLeft(vehicle) {
 
     const url = resolveRuhsatUrl(vehicle.ruhsatPath);
 
-    // Tüm platformlarda (iOS PWA, Android, Masaüstü) PDF'ler için en stabil yöntem:
-    // Doğrudan tıklama olayı içinde window.open kullanmaktır. (Böylece popup engelleyicilere takılmaz)
-    // Açılan PWA veya tarayıcı sekmesinde cihazın orijinal "Yazdır/Paylaş" özelliği kullanılabilir.
-    window.open(url, '_blank', 'noopener');
+    // Tıklandığında doğrudan "Yazdır" iletişim kutusunu (Print Dialog) aç.
+    // Bu sayede kullanıcı uygulamadan çıkmadan ruhsatı yazdırabilir veya ön izleyebilir.
+    var iframe = document.createElement('iframe');
+    iframe.style.position = 'fixed';
+    iframe.style.right = '0';
+    iframe.style.bottom = '0';
+    iframe.style.width = '0';
+    iframe.style.height = '0';
+    iframe.style.border = '0';
+    iframe.src = url;
+    document.body.appendChild(iframe);
+
+    iframe.onload = function() {
+      setTimeout(function() {
+        try {
+          iframe.contentWindow.focus();
+          iframe.contentWindow.print();
+        } catch (e) {
+          // Eğer iframe yazdırılamazsa (bazı mobil tarayıcı kısıtlamaları), yeni sekmede aç.
+          window.open(url, '_blank', 'noopener');
+        }
+        // İşlem tamamlandıktan sonra DOM'u temizle
+        setTimeout(function() {
+          if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
+        }, 3000);
+      }, 500); // PDF'in render olması için yarım saniye bekle
+    };
   };
 
   /**
