@@ -3700,20 +3700,22 @@ function renderVehicleDetailLeft(vehicle) {
 
     var iframe = document.createElement('iframe');
     iframe.style.position = 'fixed';
-    iframe.style.right = '0';
+    iframe.style.right = '-9999px';
     iframe.style.bottom = '0';
-    iframe.style.width = '0';
-    iframe.style.height = '0';
+    iframe.style.width = '100vw';
+    iframe.style.height = '100vh';
     iframe.style.border = '0';
+    iframe.style.opacity = '0';
+    iframe.style.pointerEvents = 'none';
     document.body.appendChild(iframe);
 
     if (isImage) {
-      // Eğer fotoğraf/resim ise, HTML içine gömüp CSS ile YATAY (Landscape) basmaya zorluyoruz
+      // Eğer fotoğraf/resim ise, HTML içine gömüp otomatik sayfa yönü ile yazdırıyoruz
       const printHtml = `<!DOCTYPE html>
       <html><head><title>Ruhsat</title><style>
-        @page { size: landscape; margin: 0; }
+        @page { size: auto; margin: 0; }
         body { margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; background: #fff; }
-        img { max-width: 100vw; max-height: 100vh; object-fit: contain; }
+        img { max-width: 100%; max-height: 100vh; object-fit: contain; }
       </style></head><body>
         <img src="${url}" onload="setTimeout(function(){ window.print(); }, 250)">
       </body></html>`;
@@ -3728,7 +3730,8 @@ function renderVehicleDetailLeft(vehicle) {
       }, 3000);
     } else {
       // Eğer PDF ise doğrudan kaynağı veriyoruz (PDF'in kendi yönü geçerli olur)
-      iframe.src = url;
+      const pdfPrintUrl = buildPdfViewerUrl(url, 'toolbar=1&navpanes=0&zoom=page-width&view=FitV');
+      iframe.src = pdfPrintUrl;
       iframe.onload = function() {
         setTimeout(function() {
           try {
