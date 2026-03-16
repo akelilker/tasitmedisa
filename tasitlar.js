@@ -2336,7 +2336,7 @@
     .kaporta-print-schema-wrap {
         position: absolute;
         left: 50%;
-        top: -35px; /* Şemayı başlığa tam asmak için agresif yukarı çektik */
+        top: -30px; /* 5 piksel aşağı kaydırıldı, sakinleşildi :) */
         margin-left: -120px; 
         width: 240px;
         height: 150px;
