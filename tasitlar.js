@@ -2327,16 +2327,16 @@
     @media (max-width: 760px) { .vehicle-card-print-grid { grid-template-columns: 1fr 1fr; } }
     .kaporta-print-section { margin-top: 2px; border: 1px solid #ddd; border-radius: 8px; padding: 4px; page-break-inside: auto; break-inside: auto; }
     .kaporta-print-box { padding-top: 2px; padding-bottom: 8px; }
-    .kaporta-print-section h2.kaporta-print-title { margin: 0 0 4px; margin-top: 1em; font-size: 16px; }
+    .kaporta-print-section h2.kaporta-print-title { margin: 0 0 2px; font-size: 16px; }
     .kaporta-print-row { display: grid; grid-template-columns: minmax(240px, auto) minmax(0, 1fr); align-items: start; column-gap: 10px; }
     .kaporta-print-state-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 4px 5px; align-content: start; }
     .kaporta-print-schema-wrap {
         position: relative;
         width: 240px;
         height: 150px;
-        margin: 4px auto 0;
+        margin: 0 auto 0;
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         justify-content: center;
         overflow: visible;
     }
@@ -2373,7 +2373,7 @@
     /* iOS PWA: Ekspertiz şeması üstteki çerçeveye 4px, sağdaki sahaya 12px */
     body.ios-pwa-print .summary-page .vehicle-card-print-grid { margin-bottom: 0 !important; }
     body.ios-pwa-print .kaporta-print-section { margin-top: 2px !important; }
-    body.ios-pwa-print .kaporta-print-schema-wrap { margin-right: 12px !important; margin-left: auto !important; }
+    body.ios-pwa-print .kaporta-print-schema-wrap { margin-right: 0 !important; margin-left: auto !important; }
     @media print { body { margin: 8mm; -webkit-print-color-adjust: exact; print-color-adjust: exact; } .print-preview-toolbar { display: none !important; } .kaporta-print-section { page-break-inside: auto; break-inside: auto; } .print-history-block { break-inside: avoid; page-break-inside: avoid; } .history-page h3, .history-page .subtitle { page-break-after: avoid; break-after: avoid-page; } .history-grid { gap: 8px; } }
   </style>
 </head>
