@@ -37,6 +37,12 @@ let isDataLoading = false;
 let loadPromise = null;
 let isSaving = false;
 
+function syncDataLoadState() {
+    window.__medisaDataLoaded = !!isDataLoaded;
+    window.__medisaDataLoading = !!isDataLoading;
+}
+syncDataLoadState();
+
 /* Varsayılan boş veri (sunucu yüklenemeyince veya hata durumunda) */
 function getDefaultAppData() {
     return {
@@ -94,11 +100,13 @@ function loadDataFromLocalStorage() {
                 duzeltme_talepleri: data.duzeltme_talepleri || []
             };
             isDataLoaded = true;
+            syncDataLoadState();
             return window.appData;
         }
     } catch (e) { /* ignore */ }
     window.appData = getDefaultAppData();
     isDataLoaded = true;
+    syncDataLoadState();
     return window.appData;
 }
 
@@ -106,11 +114,16 @@ function loadDataFromLocalStorage() {
    SUNUCUDAN VERİ YÜKLEME
    ========================================= */
 async function loadDataFromServer(forceRefresh = true) {
+    if (!forceRefresh && isDataLoaded && window.appData && typeof window.appData === 'object') {
+        return Promise.resolve(window.appData);
+    }
+
     if (loadPromise) {
         return loadPromise;
     }
 
     isDataLoading = true;
+    syncDataLoadState();
     loadPromise = (async function() {
         try {
             const cacheBuster = new Date().getTime();
@@ -131,6 +144,7 @@ async function loadDataFromServer(forceRefresh = true) {
             if (!response.ok && response.status === 503) {
                 isDataLoading = false;
                 loadPromise = null;
+                syncDataLoadState();
                 await new Promise(function(r) { setTimeout(r, 2000); });
                 return loadDataFromServer(forceRefresh);
             }
@@ -201,6 +215,7 @@ async function loadDataFromServer(forceRefresh = true) {
         } finally {
             isDataLoading = false;
             loadPromise = null;
+            syncDataLoadState();
         }
     })();
     
@@ -325,6 +340,7 @@ window.deleteSifre = async function(sifreId) {
 document.addEventListener('DOMContentLoaded', async function() {
     isDataLoaded = false;
     isDataLoading = false;
+    syncDataLoadState();
 
     // Yedekten geri yükleme sonrası: restore script veriyi localStorage'a yazmış olabilir, bir kez oradan oku
     if (sessionStorage.getItem('medisa_just_restored') === '1') {
