@@ -3633,11 +3633,18 @@ function renderVehicleDetailLeft(vehicle) {
         e.preventDefault();
         window.viewRuhsatPdf(vid);
       };
-      const previewFrame = document.createElement('iframe');
-      previewFrame.src = previewLink.href + '#toolbar=0&navpanes=0&scrollbar=0';
-      previewFrame.setAttribute('title', 'Ruhsat önizleme');
-      previewFrame.setAttribute('loading', 'lazy');
-      previewLink.appendChild(previewFrame);
+
+      const isMobileRuhsat = window.innerWidth <= 640;
+      if (isMobileRuhsat) {
+        previewLink.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;color:#adb5bd;"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:8px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg><span style="font-size:12px;font-weight:600;">Ruhsatı Görüntüle / Yazdır</span></div>';
+      } else {
+        const previewFrame = document.createElement('iframe');
+        previewFrame.src = previewLink.href + '#toolbar=0&navpanes=0&scrollbar=0';
+        previewFrame.setAttribute('title', 'Ruhsat önizleme');
+        previewFrame.setAttribute('loading', 'lazy');
+        previewLink.appendChild(previewFrame);
+      }
+
       btnGroup.appendChild(previewLink);
       const replaceBtn = document.createElement('button');
       replaceBtn.type = 'button';
@@ -3763,11 +3770,11 @@ function renderVehicleDetailLeft(vehicle) {
     if (!vehicle || !vehicle.ruhsatPath) return;
 
     const isIosPwa = isIosStandalonePwa();
+    const isMobileDevice = window.innerWidth <= 768 || /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
     const url = resolveRuhsatUrl(vehicle.ruhsatPath);
 
-    // iOS PWA: Kullanıcının mahsur kalmasını önlemek için inline viewer iptal edildi.
-    // Bunun yerine, taşıt kartı yazdırmadaki gibi doğrudan iOS Native Print Dialog'u tetikliyoruz.
-    if (isIosPwa) {
+    // iOS PWA veya Mobil cihazlar: Yeni sekme yerine doğrudan yazdırma ekranını (print dialog) tetikliyoruz.
+    if (isIosPwa || isMobileDevice) {
       var iframe = document.createElement('iframe');
       iframe.style.position = 'fixed';
       iframe.style.right = '0';
@@ -3795,7 +3802,7 @@ function renderVehicleDetailLeft(vehicle) {
       return;
     }
 
-    // Diğer tüm platformlar (Android, Masaüstü): Doğrudan yeni sekmede aç (En stabil yöntem)
+    // Diğer tüm platformlar (Masaüstü): Doğrudan yeni sekmede aç (En stabil yöntem)
     window.open(url, '_blank', 'noopener');
   };
 
