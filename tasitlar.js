@@ -3597,7 +3597,8 @@ function renderVehicleDetailLeft(vehicle) {
     }
     const input = document.createElement('input');
     input.type = 'file';
-    input.accept = '.pdf';
+    // Mobilde kameradan doğrudan fotoğraf çekilebilmesi için resim formatları eklendi
+    input.accept = '.pdf, image/jpeg, image/png, image/jpg, image/webp';
     input.id = 'ruhsat-file-input';
     input.setAttribute('aria-label', 'Ruhsat PDF dosyası seç');
     input.style.marginBottom = '8px';
@@ -3694,9 +3695,9 @@ function renderVehicleDetailLeft(vehicle) {
     if (!vehicle || !vehicle.ruhsatPath) return;
 
     const url = resolveRuhsatUrl(vehicle.ruhsatPath);
+    // Belgenin resim mi yoksa PDF mi olduğunu uzantısından anlıyoruz
+    const isImage = /\.(jpeg|jpg|png|gif|webp)(\?.*)?$/i.test(url);
 
-    // Tıklandığında doğrudan "Yazdır" iletişim kutusunu (Print Dialog) aç.
-    // Bu sayede kullanıcı uygulamadan çıkmadan ruhsatı yazdırabilir veya ön izleyebilir.
     var iframe = document.createElement('iframe');
     iframe.style.position = 'fixed';
     iframe.style.right = '0';
@@ -3704,24 +3705,44 @@ function renderVehicleDetailLeft(vehicle) {
     iframe.style.width = '0';
     iframe.style.height = '0';
     iframe.style.border = '0';
-    iframe.src = url;
     document.body.appendChild(iframe);
 
-    iframe.onload = function() {
+    if (isImage) {
+      // Eğer fotoğraf/resim ise, HTML içine gömüp CSS ile YATAY (Landscape) basmaya zorluyoruz
+      const printHtml = `<!DOCTYPE html>
+      <html><head><title>Ruhsat</title><style>
+        @page { size: landscape; margin: 0; }
+        body { margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; background: #fff; }
+        img { max-width: 100vw; max-height: 100vh; object-fit: contain; }
+      </style></head><body>
+        <img src="${url}" onload="setTimeout(function(){ window.print(); }, 250)">
+      </body></html>`;
+
+      const doc = iframe.contentWindow.document;
+      doc.open();
+      doc.write(printHtml);
+      doc.close();
+
       setTimeout(function() {
-        try {
-          iframe.contentWindow.focus();
-          iframe.contentWindow.print();
-        } catch (e) {
-          // Eğer iframe yazdırılamazsa (bazı mobil tarayıcı kısıtlamaları), yeni sekmede aç.
-          window.open(url, '_blank', 'noopener');
-        }
-        // İşlem tamamlandıktan sonra DOM'u temizle
+        if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
+      }, 3000);
+    } else {
+      // Eğer PDF ise doğrudan kaynağı veriyoruz (PDF'in kendi yönü geçerli olur)
+      iframe.src = url;
+      iframe.onload = function() {
         setTimeout(function() {
-          if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
-        }, 3000);
-      }, 500); // PDF'in render olması için yarım saniye bekle
-    };
+          try {
+            iframe.contentWindow.focus();
+            iframe.contentWindow.print();
+          } catch (e) {
+            window.open(url, '_blank', 'noopener');
+          }
+          setTimeout(function() {
+            if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
+          }, 3000);
+        }, 500);
+      };
+    }
   };
 
   /**
