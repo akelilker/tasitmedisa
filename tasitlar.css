@@ -415,13 +415,11 @@
     width: 136px;
     display: block !important;
     margin: 0 auto;
-    margin-top: 4px !important; /* Üst çerçeveye milimetrik 4px */
     position: relative !important;
 }
 #detail-boya-container .kaporta-schema-wrapper {
     margin: 0 !important;
     margin-right: auto !important;
-    margin-top: 4px !important; /* Üst çerçeveye milimetrik 4px */
 }
 #detail-boya-container .kaporta-schema-wrapper svg {
     display: block !important;
@@ -3551,8 +3549,7 @@
     min-height: 0;
   }
   #detail-boya-container .kaporta-schema-wrapper {
-    margin: 0 auto !important;
-    padding: 0 !important; /* Ã…Âema Ã¼stÃ¼nde kendi padding'i olmasÄ±n */
+    padding: 0 !important;
   }
   #kaza-kaporta-container {
     flex-direction: row !important;

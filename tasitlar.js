@@ -2344,7 +2344,7 @@
         position: static;
         width: 150px;
         height: 240px;
-        margin-top: -24px; 
+        margin-top: 0;
         transform: rotate(90deg);
         transform-origin: center center;
         object-fit: contain;
