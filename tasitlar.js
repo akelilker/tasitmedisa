@@ -2362,11 +2362,12 @@
     .kaporta-print-empty { font-size: 12px; color: #666; }
     .print-page-break { page-break-before: always; break-before: page; margin: 16px 0 0; }
     
-    /* TARİHÇE: Kaporta çerçevesi ile arasında tam 2 piksel kalacak şekilde yukarı çektik */
-    .history-page { margin-top: 2px; page-break-inside: avoid; break-inside: avoid; }
+    /* TARİHÇE (HISTORY) YAZDIRMA AYARI: Eğer sığmıyorsa başlığıyla beraber 2. sayfaya geçsin */
+    .history-page { margin-top: 15px; page-break-inside: avoid; break-inside: avoid; }
     
-    .history-grid { display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-start; }
-    .history-print-card { width: calc(50% - 4px); box-sizing: border-box; border: 1px solid #ddd; border-radius: 8px; padding: 8px; page-break-inside: avoid; break-inside: avoid; }
+    /* 2x2 Grid yapısı: Üstte Bakım - Kaza, Altta Km - Diğer */
+    .history-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; align-items: start; }
+    .history-print-card { width: 100%; box-sizing: border-box; border: 1px solid #ddd; border-radius: 8px; padding: 8px; page-break-inside: avoid; break-inside: avoid; }
     .history-print-card h2 { margin: 0 0 5px; font-size: 14px; page-break-after: avoid; break-after: avoid-page; }
     .history-print-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
     .history-print-item { border-top: 1px solid #eee; padding-top: 4px; }
@@ -2377,8 +2378,7 @@
     .history-print-empty { font-size: 12px; color: #666; }
     
     @media (max-width: 760px) { 
-        .history-grid { flex-direction: column; } 
-        .history-print-card { width: 100%; } 
+        .history-grid { grid-template-columns: 1fr; } 
         .kaporta-print-row { grid-template-columns: 1fr; row-gap: 5px; } 
         .kaporta-print-state-grid { grid-template-columns: 1fr; } 
         .kaporta-print-schema-wrap { margin: 4px auto 0; } /* Mobilde ortala */
