@@ -2191,6 +2191,10 @@
 }
 
 /* Ruhsat modal: RuhsatÃƒÆ’Ã¢â‚¬ÂÃƒâ€šÃ‚Â± GÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¶rÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¼ntÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¼le ve Yeni Ruhsat YÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¼kle - ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§erÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§evesiz, arka plansÃƒÆ’Ã¢â‚¬ÂÃƒâ€šÃ‚Â±z, beyaz metin */
+#ruhsat-yukleme-modal .universal-back-bar {
+  transform: translateY(-8px);
+  margin-bottom: -8px;
+}
 #ruhsat-yukleme-modal #ruhsat-modal-content .universal-btn-group {
   justify-content: center;
   margin-left: auto;
