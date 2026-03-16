@@ -1481,6 +1481,10 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
   z-index: 0;
   pointer-events: none;
 }
+/* Yükleme ekranında (loading) marker ikonunu gizler */
+.modal-container.hide-marker::after {
+  display: none !important;
+}
 
 /* Kullanıcı Paneli linki - footer üstünde, sağa yaslı (mobilde 2px aşağı override ile); yarı saydam */
 .user-panel-link {
