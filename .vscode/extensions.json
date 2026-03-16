@@ -1,9 +1,0 @@
-{
-    "recommendations": [
-        "ms-vscode.live-server",
-        "github.vscode-github-actions",
-        "mohanrajoria.cursor-prompt-saver",
-        "github.vscode-pull-request-github",
-        "anysphere.remote-containers"
-    ]
-}
