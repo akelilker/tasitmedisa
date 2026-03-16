@@ -36,18 +36,22 @@ if ($content === false) {
     error_log('[Medisa load.php] Veri dosyası okunamadı: ' . $dataFile);
     http_response_code(500);
     echo json_encode([
-        'error' => 'Veri yüklenemedi. Lütfen daha sonra tekrar deneyin.'
+        'error' => 'Dosya okuma izni hatası (CHMOD 644 veya 755 yapın).'
     ], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
+// BOM TEMİZLİĞİ: Windows veya bazı editörlerin eklediği görünmez karakterleri sil
+$content = preg_replace('/^[\xef\xbb\xbf]+/', '', $content);
+
 // JSON geçerliliğini kontrol et
 $data = json_decode($content, true);
-if ($data === null) {
-    error_log('[Medisa load.php] Bozuk JSON: ' . json_last_error_msg());
+if ($data === null && json_last_error() !== JSON_ERROR_NONE) {
+    $errMsg = json_last_error_msg();
+    error_log('[Medisa load.php] Bozuk JSON: ' . $errMsg);
     http_response_code(500);
     echo json_encode([
-        'error' => 'Veri yüklenemedi. Lütfen daha sonra tekrar deneyin.'
+        'error' => 'JSON Format Hatası: ' . $errMsg
     ], JSON_UNESCAPED_UNICODE);
     exit;
 }
