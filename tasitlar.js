@@ -70,12 +70,31 @@
   let lastListContext = null; // Son açılan liste bağlamı (geri dönüş hedefi)
 
   let lastVehiclesRenderSignature = '';
+  let lastDashboardRenderSignature = '';
+
+  function syncVehiclesListModeClass(forceHasList) {
+    const modal = DOM && DOM.vehiclesModal;
+    const content = DOM && DOM.vehiclesModalContent;
+    if (!modal || !content) return;
+
+    const hasListScroll = (typeof forceHasList === 'boolean')
+      ? forceHasList
+      : !!content.querySelector('.vehicles-list-scroll');
+
+    modal.classList.toggle('has-vehicles-list-scroll', hasListScroll);
+    content.classList.toggle('has-vehicles-list-scroll', hasListScroll);
+  }
 
   function invalidateVehicleListRenderCache() {
     lastVehiclesRenderSignature = '';
+    lastDashboardRenderSignature = '';
     if (DOM && DOM.vehiclesModalContent) {
       delete DOM.vehiclesModalContent.dataset.renderScope;
       delete DOM.vehiclesModalContent.dataset.renderSignature;
+      DOM.vehiclesModalContent.classList.remove('has-vehicles-list-scroll');
+    }
+    if (DOM && DOM.vehiclesModal) {
+      DOM.vehiclesModal.classList.remove('has-vehicles-list-scroll');
     }
   }
 
@@ -477,23 +496,39 @@
     loadVehicleColumnOrder();
 
     const modal = DOM.vehiclesModal;
+    const content = DOM.vehiclesModalContent;
     if (modal) {
       modal.style.display = 'flex';
       requestAnimationFrame(() => modal.classList.add('active'));
       ensureToolbar();
-      renderBranchDashboard();
     }
 
-    const hasVehicles = Array.isArray(window.appData?.tasitlar) && window.appData.tasitlar.length > 0;
-    if (!hasVehicles && typeof window.loadDataFromServer === 'function') {
-      window.loadDataFromServer(true).then(function() {
+    const isDataLoaded = !!window.__medisaDataLoaded;
+    if (!isDataLoaded && typeof window.loadDataFromServer === 'function') {
+      if (content) {
+        content.innerHTML = '<div class="vehicles-loading-state">Taşıtlar yükleniyor...</div>';
+        content.dataset.renderScope = 'loading';
+        content.dataset.renderSignature = 'loading';
+        syncVehiclesListModeClass(false);
+      }
+      window.loadDataFromServer(false).then(function() {
         const m = DOM.vehiclesModal;
         if (m && m.classList.contains('active')) {
-          if (currentView === 'dashboard') renderBranchDashboard();
+          if (currentView === 'dashboard') renderBranchDashboard(true);
           else renderVehicles(getVSearchInput()?.value || '');
         }
-      }).catch(function() {});
+      }).catch(function() {
+        if (content) {
+          content.innerHTML = '<div style="text-align:center; padding:24px; color:#888">Veri yüklenemedi. Lütfen tekrar deneyin.</div>';
+          content.dataset.renderScope = 'loading-error';
+          content.dataset.renderSignature = 'loading-error';
+          syncVehiclesListModeClass(false);
+        }
+      });
+      return;
     }
+
+    renderBranchDashboard();
   };
 
   window.closeVehiclesModal = function(event) {
@@ -509,8 +544,9 @@
       modal.classList.remove('active');
       setTimeout(() => {
         modal.style.display = 'none';
-        closeSearchBox();
+        closeSearchBox(true);
         closeFilterMenu();
+        syncVehiclesListModeClass(false);
         // X butonu sadece modalı kapatır, geri gitme işlemi yapmaz
         // Geri butonları zaten mevcut
         // renderBranchDashboard() çağrılmaz
@@ -616,11 +652,10 @@
    * - 2 kart: 2 kolon
    * - 3+ kart: Mobil 4 kolon, Desktop 5 kolon
    */
-  window.renderBranchDashboard = function() {
+  window.renderBranchDashboard = function(forceRender = false) {
     currentView = 'dashboard';
     activeBranchId = null;
-    invalidateVehicleListRenderCache();
-    closeSearchBox();
+    closeSearchBox(true);
     closeFilterMenu();
     updateToolbar('dashboard');
 
@@ -628,7 +663,44 @@
     const vehicles = readVehicles();
     const activeVehicles = vehicles.filter(v => v.satildiMi !== true);
 
-    // Grid HTML Başlangıcı
+    // Şube kartları için sayımlar (Map ile O(n))
+    const countByBranch = new Map();
+    let unassignedCount = 0;
+    activeVehicles.forEach(v => {
+      if (!v.branchId) {
+        unassignedCount++;
+      } else {
+        const branchKey = String(v.branchId);
+        countByBranch.set(branchKey, (countByBranch.get(branchKey) || 0) + 1);
+      }
+    });
+
+    const isMobile = window.innerWidth <= 640;
+    const branchSig = branches.map(function(branch) {
+      const id = String(branch.id || '');
+      const name = String(branch.name || '');
+      const count = String(countByBranch.get(id) || 0);
+      return id + ':' + name + ':' + count;
+    }).join('|');
+    const renderSignature = [
+      'dashboard',
+      isMobile ? 'mobile' : 'desktop',
+      String(activeVehicles.length),
+      String(unassignedCount),
+      branchSig
+    ].join('__');
+
+    if (
+      !forceRender &&
+      modalContent &&
+      modalContent.dataset.renderScope === 'dashboard' &&
+      lastDashboardRenderSignature === renderSignature
+    ) {
+      syncVehiclesListModeClass(false);
+      return;
+    }
+
+    // Grid HTML başlangıcı
     let html = '<div class="branch-grid">';
 
     // 1. "TÜMÜ" Kartı (Manuel) — sadece aktif (satılmamış) taşıtlar
@@ -639,45 +711,38 @@
       </div>
     `;
 
-    // 2. Şube Kartları — sadece aktif taşıtlar (Map ile O(n) sayım)
-    const countByBranch = new Map();
-    let unassignedCount = 0;
-    activeVehicles.forEach(v => {
-        if (!v.branchId) { unassignedCount++; }
-        else {
-            const branchKey = String(v.branchId);
-            countByBranch.set(branchKey, (countByBranch.get(branchKey) || 0) + 1);
-        }
-    });
+    // 2. Şube kartları
     branches.forEach(branch => {
-        html += createBranchCard(branch.id, branch.name, countByBranch.get(String(branch.id)) || 0);
+      html += createBranchCard(branch.id, branch.name, countByBranch.get(String(branch.id)) || 0);
     });
 
-    // 3. Tahsis Edilmemiş — sadece aktif taşıtlar
+    // 3. Tahsis edilmemiş
     if (unassignedCount > 0) {
-        html += createBranchCard('', 'Tahsis Edilmemiş', unassignedCount, true); // true = unassigned flag
+      html += createBranchCard('', 'Tahsis Edilmemiş', unassignedCount, true);
     }
-    
+
     html += '</div>';
     modalContent.innerHTML = html;
-    
+    modalContent.dataset.renderScope = 'dashboard';
+    modalContent.dataset.renderSignature = renderSignature;
+    lastDashboardRenderSignature = renderSignature;
+    syncVehiclesListModeClass(false);
+
     // Grid'i dinamik yap: kart sayısına göre kolon sayısını ayarla
     const gridEl = modalContent.querySelector('.branch-grid');
     if (gridEl) {
-        const totalCards = 1 + branches.length + (unassignedCount > 0 ? 1 : 0);
-        const isMobile = window.innerWidth <= 640;
-        let cols;
-        if (totalCards === 1) {
-            cols = 1; // Tek kutu: 1 kolon
-        } else if (totalCards === 2) {
-            cols = 2; // 2 kutu: 2 kolon
-        } else {
-            cols = isMobile ? 4 : 5; // 3+ kutu: sabit kolon sayısı
-        }
-        gridEl.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+      const totalCards = 1 + branches.length + (unassignedCount > 0 ? 1 : 0);
+      let cols;
+      if (totalCards === 1) {
+        cols = 1; // Tek kutu: 1 kolon
+      } else if (totalCards === 2) {
+        cols = 2; // 2 kutu: 2 kolon
+      } else {
+        cols = isMobile ? 4 : 5; // 3+ kutu: sabit kolon sayısı
+      }
+      gridEl.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
     }
   };
-
   function createBranchCard(id, name, count, isUnassigned = false) {
     const unassignedClass = isUnassigned ? ' unassigned-branch-card' : '';
     const safeId = (id || '').replace(/"/g, '&quot;');
@@ -697,7 +762,7 @@
     activeBranchId = branchId; // 'all', '', veya 'id'
     lastListContext = { mode: 'branch', branchId: branchId, branchName: branchName };
     invalidateVehicleListRenderCache();
-    closeSearchBox();
+    closeSearchBox(true);
     const displayTitle = branchId === 'all' ? branchName : (branchName + ' Taşıtlar');
     updateToolbar('detail', displayTitle);
 
@@ -714,7 +779,7 @@
     activeBranchId = '__archive__';
     lastListContext = { mode: 'archive' };
     invalidateVehicleListRenderCache();
-    closeSearchBox();
+    closeSearchBox(true);
     updateToolbar('detail', 'Arşiv');
     renderVehicles();
   };
@@ -805,6 +870,7 @@
         listContainer.dataset.renderScope === 'vehicles' &&
         lastVehiclesRenderSignature === renderSignature
       ) {
+        syncVehiclesListModeClass(viewMode === 'list');
         return;
       }
 
@@ -836,11 +902,13 @@
             listContainer.dataset.renderScope = 'vehicles';
             listContainer.dataset.renderSignature = renderSignature;
             lastVehiclesRenderSignature = renderSignature;
+            syncVehiclesListModeClass(true);
           } else {
             listContainer.innerHTML = `<div style="text-align:center; padding:40px; color:#666">${emptyMsg}</div>`;
             listContainer.dataset.renderScope = 'vehicles';
             listContainer.dataset.renderSignature = renderSignature;
             lastVehiclesRenderSignature = renderSignature;
+            syncVehiclesListModeClass(false);
           }
           return;
       }
@@ -1024,6 +1092,7 @@
       listContainer.dataset.renderScope = 'vehicles';
       listContainer.dataset.renderSignature = renderSignature;
       lastVehiclesRenderSignature = renderSignature;
+      syncVehiclesListModeClass(viewMode === 'list');
 
       // Taşıt kartları için grid'i dinamik yap (sadece card view'da)
       if (viewMode === 'card') {
@@ -1058,6 +1127,7 @@
       if (target) {
         target.innerHTML = '<div style="text-align:center; padding:40px; color:#666">Bir hata oluştu. Lütfen sayfayı yenileyin.</div>';
       }
+      syncVehiclesListModeClass(false);
     }
   }
 
@@ -1524,14 +1594,16 @@
       }
   };
 
-  window.closeSearchBox = function() {
+  window.closeSearchBox = function(silent) {
       const box = getVSearchContainer();
       if (box) box.classList.remove('open');
       const input = getVSearchInput();
       if (input) input.value = '';
+
+      if (silent === true) return;
       
       // Arama kapanınca listeyi resetle (eğer global aramadaysak dashboarda dön)
-      if (currentView === 'dashboard' && modalContent.innerHTML.includes('Arama Sonuçları')) {
+      if (currentView === 'dashboard' && modalContent && modalContent.dataset.renderScope === 'search-global') {
           renderBranchDashboard();
       } else if (currentView === 'list') {
           renderVehicles('');
@@ -1564,7 +1636,7 @@
       var isOpen = dd.classList.contains('open');
       closeTransmissionMenu();
       if (!isOpen) {
-          closeSearchBox();
+          closeSearchBox(true);
           closeFilterMenu();
           dd.classList.add('open');
           dd.setAttribute('aria-hidden', 'false');
@@ -1614,6 +1686,9 @@
           `}).join('') + `</div>`;
           
           modalContent.innerHTML = html;
+          modalContent.dataset.renderScope = 'search-global';
+          modalContent.dataset.renderSignature = q + '__' + filtered.length;
+          syncVehiclesListModeClass(false);
       }
   };
   window.handleSearch = (typeof window.debounce === 'function') ? window.debounce(handleSearchImpl, 200) : handleSearchImpl;
@@ -1631,7 +1706,7 @@
       if (fd.classList.contains('open')) {
           closeFilterMenu();
       } else {
-          closeSearchBox();
+          closeSearchBox(true);
           fd.classList.add('open');
           fd.querySelectorAll('.filter-dropdown-btn').forEach(function(btn) {
               btn.classList.toggle('active', btn.dataset.filter === currentFilter);
@@ -2302,7 +2377,7 @@
     <button type="button" class="print-preview-btn" id="print-preview-back">← Geri Dön</button>
     <button type="button" class="print-preview-btn print-preview-btn-primary" id="print-preview-close">Kapat</button>
   </div>
-  <section class="summary-page">
+  <section class="summary-page print-summary">
     <h1>Taşıt Kartı</h1>
     <p class="subtitle">Plaka: ${escapeHtml(vehicle.plate || '-')} • Oluşturma: ${printedAt}</p>
     ${rows}
@@ -2341,36 +2416,33 @@
         return (mm * 96) / 25.4;
       }
 
-      function applyHistoryPageFlow() {
-        var summaryPage = document.querySelector('.summary-page');
-        var historyPage = document.querySelector('.history-page');
-        if (!summaryPage || !historyPage) return;
+      function applyHistoryPageFlow(root) {
+        const summary = root.querySelector('.print-summary');
+        const historyPage = root.querySelector('.history-page');
+        if (!summary || !historyPage) return;
 
-        historyPage.classList.remove('force-new-page');
+        const pageHeightPx = mmToPx(297 - (8 * 2));
+        const summaryHeight = summary.getBoundingClientRect().height;
+        const historyHeight = historyPage.getBoundingClientRect().height;
 
-        // Tek yer: Araç teması (detay+şema) sonrası tek satır bile 2. sayfaya taşacaksa taşıt tarihçesi başlığıyla birlikte tamamı 2. sayfadan başlar.
-        // Ekran ölçümü yazdırma düzeninden farklı olabildiği için bir satır payı (24px) düşüyoruz; taşma ihtimali varsa kesin 2. sayfa.
-        var pageContentHeight = mmToPx(297 - (8 * 2));
-        if (!isFinite(pageContentHeight) || pageContentHeight <= 0) return;
+        const remainingFirstPage = pageHeightPx - summaryHeight;
 
-        var summaryHeight = Math.ceil(summaryPage.getBoundingClientRect().height);
-        var historyHeight = Math.ceil(historyPage.getBoundingClientRect().height);
-        if (!isFinite(summaryHeight) || !isFinite(historyHeight)) return;
-
-        var oneLineReserve = 24;
-        var totalFirstPageNeed = summaryHeight + historyHeight;
-        if (totalFirstPageNeed > pageContentHeight - oneLineReserve) {
+        // Eğer tarihçe tamamen ilk sayfaya sığmıyorsa
+        // başlığıyla birlikte ikinci sayfadan başlat
+        if (historyHeight > remainingFirstPage) {
           historyPage.classList.add('force-new-page');
+        } else {
+          historyPage.classList.remove('force-new-page');
         }
       }
 
       window.__medisaPreparePrintLayout = function() {
-        applyHistoryPageFlow();
+        applyHistoryPageFlow(document);
       };
 
       function runPageFlowCheck() {
         window.requestAnimationFrame(function() {
-          window.requestAnimationFrame(applyHistoryPageFlow);
+          window.requestAnimationFrame(function() { applyHistoryPageFlow(document); });
         });
       }
 
@@ -2420,7 +2492,7 @@
 
       window.addEventListener('load', schedulePageFlowChecks);
       window.addEventListener('beforeprint', function() {
-        applyHistoryPageFlow();
+        applyHistoryPageFlow(document);
       });
       window.addEventListener('resize', function() {
         if (resizeTimer) clearTimeout(resizeTimer);
@@ -2432,9 +2504,6 @@
 </html>`;
 
     function printWithIframeFallback(sourceError) {
-      // #region agent log
-      fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'6fdf2b'},body:JSON.stringify({sessionId:'6fdf2b',location:'tasitlar.js:printWithIframeFallback',message:'iframe yolu kullanılıyor',data:{reason:String(sourceError||'')},timestamp:Date.now(),hypothesisId:'H1'})}).catch(function(){});
-      // #endregion
       var iframe = document.createElement('iframe');
       iframe.setAttribute('aria-hidden', 'true');
       iframe.style.position = 'fixed';
@@ -2565,13 +2634,7 @@
       isStandaloneMode = !!((window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone);
     } catch (e) {}
     var isIOSDevice = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-    // #region agent log
-    fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'6fdf2b'},body:JSON.stringify({sessionId:'6fdf2b',location:'tasitlar.js:printPath',message:'Taşıt Kartı yazdırma dalı',data:{isStandaloneMode:isStandaloneMode,isIOSDevice:isIOSDevice,willForceIframe:!!(isStandaloneMode&&isIOSDevice)},timestamp:Date.now(),hypothesisId:'H1'})}).catch(function(){});
-    // #endregion
     if (isStandaloneMode && isIOSDevice) {
-      // #region agent log
-      fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'6fdf2b'},body:JSON.stringify({sessionId:'6fdf2b',location:'tasitlar.js:forceIframe',message:'iOS PWA iframe yolu kullanıldı',data:{reason:'ios_standalone_forced_iframe'},timestamp:Date.now(),hypothesisId:'H1'})}).catch(function(){});
-      // #endregion
       printWithIframeFallback('ios_standalone_forced_iframe');
       return;
     }
@@ -2580,9 +2643,6 @@
     try {
       printWindow = window.open('', '_blank', 'width=900,height=700');
     } catch (popupOpenErr) {}
-    // #region agent log
-    fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'6fdf2b'},body:JSON.stringify({sessionId:'6fdf2b',location:'tasitlar.js:popupOpen',message:'Popup açıldı mı',data:{popupIsNull:!printWindow},timestamp:Date.now(),hypothesisId:'H3'})}).catch(function(){});
-    // #endregion
     if (!printWindow) {
       printWithIframeFallback('popup_blocked_or_null');
       return;
@@ -3755,12 +3815,15 @@ function renderVehicleDetailLeft(vehicle) {
         
         // Şema wrapper'ı oluştur
         const schemaWrapper = document.createElement('div');
+        const isIosPwaKazaSchema = typeof isIosStandalonePwa === 'function' && isIosStandalonePwa();
         const isMobileKazaSchema = window.innerWidth <= 640;
+
         schemaWrapper.style.display = 'flex';
-        schemaWrapper.style.alignItems = 'flex-start';
+        schemaWrapper.style.alignItems = 'center';
         schemaWrapper.style.justifyContent = 'center';
         schemaWrapper.style.gap = '24px';
         schemaWrapper.style.maxHeight = '144px'; /* 180 * 0.8 */
+        schemaWrapper.style.width = '100%';
         schemaWrapper.style.overflow = isMobileKazaSchema ? 'visible' : 'hidden';
         
         schemaWrapper.appendChild(svgClone);
@@ -3768,16 +3831,24 @@ function renderVehicleDetailLeft(vehicle) {
         svgClone.setAttribute('width', '140');
         svgClone.setAttribute('height', '210');
         if (isMobileKazaSchema) {
-          // Mobilde şemayı sola doğru 18px büyüt: sağ kenar sabit kalır.
           svgClone.style.width = '186px';
           svgClone.style.height = '124px';
-          svgClone.style.margin = '0';
-          svgClone.style.position = 'relative';
-          svgClone.style.left = '-18px';
+          svgClone.style.margin = '0 auto';
+
+          if (isIosPwaKazaSchema) {
+            svgClone.style.position = 'static';
+            svgClone.style.left = '0';
+          } else {
+            // Normal mobilde mevcut sola yaslama kalsın
+            svgClone.style.position = 'relative';
+            svgClone.style.left = '-18px';
+          }
         } else {
           svgClone.style.width = '168px';  /* 210 * 0.8 */
           svgClone.style.height = '112px'; /* 140 * 0.8 */
           svgClone.style.margin = '0';
+          svgClone.style.position = 'static';
+          svgClone.style.left = '0';
         }
         svgClone.style.display = 'block';
         svgClone.style.transform = 'rotate(90deg)';
