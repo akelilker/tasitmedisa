@@ -2877,7 +2877,23 @@
   .detail-plate-row {
     margin-top: -16px !important; /* Plaka 3px yukarÄ± (mobil) */
   }
-  
+
+  /* Taşıt kartı masaüstü ile aynı yapı: mobilde iki kolon üst üste (sol blok tam genişlik, sonra sağ blok) */
+  #vehicle-detail-modal .vehicle-detail-columns {
+    flex-direction: column !important;
+    gap: 16px !important;
+  }
+  #vehicle-detail-modal .vehicle-detail-left {
+    border-right: none !important;
+    box-shadow: none !important;
+    padding-right: 0 !important;
+  }
+  #vehicle-detail-modal .vehicle-detail-right {
+    padding-left: 0 !important;
+    border-top: 1px solid rgba(var(--theme-color-rgb), 0.28);
+    padding-top: 12px !important;
+  }
+
   /* TaÅŸÄ±t detay: layout base + container query ile; mobilde de yatay alan varsa yan yana */
   .detail-row-inline .detail-row-value {
     margin-top: 0 !important;
@@ -3649,6 +3665,21 @@
 
 /* TaÅŸÄ±tlar modalÄ± mobil (640/768): ÅŸube ismi tek satÄ±ra sÄ±ÄŸmÄ±yorsa 1pt kÃ¼Ã§Ã¼lt (JS ile -shrink class eklenir) */
 @media (max-width: 768px) {
+  /* Taşıt kartı: masaüstü ile aynı yapı – 768px ve altında iki kolon üst üste */
+  #vehicle-detail-modal .vehicle-detail-columns {
+    flex-direction: column !important;
+    gap: 16px !important;
+  }
+  #vehicle-detail-modal .vehicle-detail-left {
+    border-right: none !important;
+    box-shadow: none !important;
+    padding-right: 0 !important;
+  }
+  #vehicle-detail-modal .vehicle-detail-right {
+    padding-left: 0 !important;
+    border-top: 1px solid rgba(var(--theme-color-rgb), 0.28);
+    padding-top: 12px !important;
+  }
   #vehicle-detail-modal .detail-row-value-sube.detail-row-value-sube-shrink {
     font-size: calc(1em - 1pt);
   }
