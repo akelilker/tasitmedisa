@@ -2991,56 +2991,22 @@ function renderVehicleDetailLeft(vehicle) {
     if (!vehicle || !vehicle.ruhsatPath) return;
 
     const url = resolveRuhsatUrl(vehicle.ruhsatPath);
-    // Belgenin resim mi yoksa PDF mi olduğunu uzantısından anlıyoruz
     const isImage = /\.(jpeg|jpg|png|gif|webp)(\?.*)?$/i.test(url);
+    const targetUrl = isImage
+      ? url
+      : buildPdfViewerUrl(url, 'toolbar=1&navpanes=0&zoom=page-width&view=FitH');
 
-    var iframe = document.createElement('iframe');
-    iframe.style.position = 'fixed';
-    iframe.style.right = '-9999px';
-    iframe.style.bottom = '0';
-    iframe.style.width = '100vw';
-    iframe.style.height = '100vh';
-    iframe.style.border = '0';
-    iframe.style.opacity = '0';
-    iframe.style.pointerEvents = 'none';
-    document.body.appendChild(iframe);
+    // "Görüntüle" akışında gizli iframe + otomatik print yerine yeni sekme açıyoruz.
+    // Böylece PDF viewer'ın performans uyarıları ana uygulama konsolunu kirletmez.
+    let opened = null;
+    try {
+      opened = window.open(targetUrl, '_blank', 'noopener,noreferrer');
+    } catch (e) {
+      opened = null;
+    }
 
-    if (isImage) {
-      // Eğer fotoğraf/resim ise, HTML içine gömüp otomatik sayfa yönü ile yazdırıyoruz
-      const printHtml = `<!DOCTYPE html>
-      <html><head><title>Ruhsat</title><style>
-        @page { size: auto; margin: 0; }
-        body { margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; background: #fff; }
-        img { max-width: 100%; max-height: 100vh; object-fit: contain; }
-      </style></head><body>
-        <img src="${url}" onload="setTimeout(function(){ window.print(); }, 250)">
-      </body></html>`;
-
-      const doc = iframe.contentWindow.document;
-      doc.open();
-      doc.write(printHtml);
-      doc.close();
-
-      setTimeout(function() {
-        if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
-      }, 3000);
-    } else {
-      // Eğer PDF ise doğrudan kaynağı veriyoruz (PDF'in kendi yönü geçerli olur)
-      const pdfPrintUrl = buildPdfViewerUrl(url, 'toolbar=1&navpanes=0&zoom=page-width&view=FitV');
-      iframe.src = pdfPrintUrl;
-      iframe.onload = function() {
-        setTimeout(function() {
-          try {
-            iframe.contentWindow.focus();
-            iframe.contentWindow.print();
-          } catch (e) {
-            window.open(url, '_blank', 'noopener');
-          }
-          setTimeout(function() {
-            if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
-          }, 3000);
-        }, 500);
-      };
+    if (!opened) {
+      window.location.href = targetUrl;
     }
   };
 
