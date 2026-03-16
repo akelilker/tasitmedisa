@@ -1278,7 +1278,15 @@
     const kaskoKodu = document.getElementById("vehicle-kasko-kodu")?.value.trim() || '';
     const price = document.getElementById("vehicle-price")?.value.trim() || '';
     const notes = document.getElementById("vehicle-notes")?.value.trim() || '';
-    
+
+    // PERFORMANS VE FIX: Kasko kodu değiştiğinde anında fiyatı da yeniden hesapla
+    let kaskoDegeri = '';
+    let kaskoDegeriYuklemeTarihi = '';
+    if (kaskoKodu && typeof window.getKaskoDegeri === 'function') {
+        kaskoDegeri = window.getKaskoDegeri(kaskoKodu, year);
+        kaskoDegeriYuklemeTarihi = new Date().toISOString();
+    }
+
     /* UTTS / Takip Cihazı: Formda yok; düzenlemede mevcut değer korunur, yeni kayıtta false */
     let uttsTanimlandi = false;
     let takipCihaziMontaj = false;
@@ -1311,6 +1319,8 @@
       krediDetay: krediDetay,
       branchId: branchId,
       kaskoKodu: kaskoKodu,
+      kaskoDegeri: kaskoDegeri,
+      kaskoDegeriYuklemeTarihi: kaskoDegeriYuklemeTarihi,
       price: price,
       notes: notes,
       uttsTanimlandi: uttsTanimlandi,
