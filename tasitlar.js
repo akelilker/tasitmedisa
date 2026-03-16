@@ -1114,17 +1114,9 @@
         }
     }).join('') + '</div>' + (viewMode === 'list' ? '</div>' : '') + '';
 
-      const fragment = document.createDocumentFragment();
-
-      const temp = document.createElement('div');
-      temp.innerHTML = html;
-
-      while (temp.firstChild) {
-        fragment.appendChild(temp.firstChild);
-      }
-
-      listContainer.innerHTML = '';
-      listContainer.appendChild(fragment);
+      // PERFORMANS: Browser'ın yerleşik C++ HTML parser'ını doğrudan kullanıyoruz.
+      // Fragment ve tek tek node taşıma işlemi (Layout Thrashing) iptal edildi.
+      listContainer.innerHTML = html;
       listContainer.dataset.renderScope = 'vehicles';
       listContainer.dataset.renderSignature = renderSignature;
       lastVehiclesRenderSignature = renderSignature;
@@ -1786,12 +1778,19 @@
       
       const sorted = Array.isArray(list) ? [...list] : [];
       const dir = sortDirection === 'asc' ? 1 : -1;
-      const branches = sortColumn === 'branch' ? (readBranches() || []) : null;
-      const getBranchName = branches && branches.length >= 0 ? (branchId) => {
+      // PERFORMANS: Sort döngüsü içinde find() (O(N log N * M)) yapmak yerine
+      // şubeleri önden tek seferlik bir objeye (O(M)) mapliyoruz.
+      const branchNameCache = {};
+      if (sortColumn === 'branch') {
+          const branches = readBranches() || [];
+          for (let i = 0; i < branches.length; i++) {
+              branchNameCache[String(branches[i].id)] = (branches[i].name || '').toLowerCase();
+          }
+      }
+      const getBranchName = (branchId) => {
           if (!branchId) return 'zzz_tahsis_edilmemis';
-          const branch = branches.find(b => String(b.id) === String(branchId));
-          return branch ? branch.name.toLowerCase() : 'zzz_unknown';
-      } : null;
+          return branchNameCache[String(branchId)] || 'zzz_unknown';
+      };
 
       sorted.sort((a, b) => {
           let aVal, bVal;
