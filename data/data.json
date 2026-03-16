@@ -1,4 +1,4 @@
-﻿{
+{
     "tasitlar":  [
                      {
                          "id":  "1770080529726",
@@ -39,7 +39,7 @@
                                             "timestamp":  "2026-02-09T03:08:29+03:00",
                                             "data":  {
                                                          "aciklama":  "nyt",
-                                                         "surucu":  "Ä°lker AKEL",
+                                                         "surucu":  "İlker AKEL",
                                                          "hasarTutari":  "",
                                                          "hasarParcalari":  {
                                                                                 "kaput":  "degisen"
@@ -54,7 +54,7 @@
                                             "data":  {
                                                          "eskiKm":  "6644",
                                                          "yeniKm":  "6644",
-                                                         "surucu":  "Ä°lker AKEL"
+                                                         "surucu":  "İlker AKEL"
                                                      }
                                         },
                                         {
@@ -64,7 +64,7 @@
                                             "timestamp":  "2026-02-09T03:08:28+03:00",
                                             "data":  {
                                                          "aciklama":  "nyt",
-                                                         "surucu":  "Ä°lker AKEL",
+                                                         "surucu":  "İlker AKEL",
                                                          "hasarTutari":  "",
                                                          "hasarParcalari":  {
                                                                                 "kaput":  "degisen"
@@ -79,7 +79,7 @@
                                             "data":  {
                                                          "eskiKm":  "22555",
                                                          "yeniKm":  "6644",
-                                                         "surucu":  "Ä°lker AKEL"
+                                                         "surucu":  "İlker AKEL"
                                                      }
                                         },
                                         {
@@ -90,7 +90,7 @@
                                             "data":  {
                                                          "durum":  "var",
                                                          "adres":  "Sahin kardesler",
-                                                         "surucu":  "Ä°lker AKEL"
+                                                         "surucu":  "İlker AKEL"
                                                      }
                                         },
                                         {
@@ -100,11 +100,11 @@
                                             "timestamp":  "2026-02-07T17:25:21+03:00",
                                             "data":  {
                                                          "islemler":  "n",
-                                                         "servis":  "nÄ±sh",
+                                                         "servis":  "nısh",
                                                          "kisi":  "",
                                                          "km":  "",
                                                          "tutar":  "",
-                                                         "surucu":  "Ä°lker AKEL"
+                                                         "surucu":  "İlker AKEL"
                                                      }
                                         },
                                         {
@@ -115,7 +115,7 @@
                                             "data":  {
                                                          "eskiKm":  "22555",
                                                          "yeniKm":  "22555",
-                                                         "surucu":  "Ä°lker AKEL"
+                                                         "surucu":  "İlker AKEL"
                                                      }
                                         },
                                         {
@@ -125,11 +125,11 @@
                                             "timestamp":  "2026-02-07T17:25:20+03:00",
                                             "data":  {
                                                          "islemler":  "n",
-                                                         "servis":  "nÄ±sh",
+                                                         "servis":  "nısh",
                                                          "kisi":  "",
                                                          "km":  "",
                                                          "tutar":  "",
-                                                         "surucu":  "Ä°lker AKEL"
+                                                         "surucu":  "İlker AKEL"
                                                      }
                                         },
                                         {
@@ -140,7 +140,7 @@
                                             "data":  {
                                                          "eskiKm":  "180000",
                                                          "yeniKm":  "22555",
-                                                         "surucu":  "Ä°lker AKEL"
+                                                         "surucu":  "İlker AKEL"
                                                      }
                                         },
                                         {
@@ -150,7 +150,7 @@
                                             "timestamp":  "2026-02-07T07:42:04.712Z",
                                             "data":  {
                                                          "durum":  false,
-                                                         "surucu":  "Ä°lker AKEL"
+                                                         "surucu":  "İlker AKEL"
                                                      }
                                         },
                                         {
@@ -161,7 +161,7 @@
                                             "data":  {
                                                          "eskiSubeId":  "",
                                                          "yeniSubeId":  "1769175230543",
-                                                         "surucu":  "Ä°lker AKEL"
+                                                         "surucu":  "İlker AKEL"
                                                      }
                                         },
                                         {
@@ -171,7 +171,7 @@
                                             "timestamp":  "2026-02-03T01:07:11.107Z",
                                             "data":  {
                                                          "kullaniciId":  "u1769823278672",
-                                                         "kullaniciAdi":  "Ä°lker AKEL"
+                                                         "kullaniciAdi":  "İlker AKEL"
                                                      }
                                         },
                                         {
@@ -182,7 +182,7 @@
                                             "data":  {
                                                          "eskiKm":  "-",
                                                          "yeniKm":  "180000",
-                                                         "surucu":  "Ä°lker AKEL"
+                                                         "surucu":  "İlker AKEL"
                                                      }
                                         }
                                     ],
@@ -192,7 +192,7 @@
                          "tescilTarihi":  "03/02/2026",
                          "guncelKm":  6644,
                          "assignedUserId":  "u1769823278672",
-                         "tahsisKisi":  "Ä°lker AKEL",
+                         "tahsisKisi":  "İlker AKEL",
                          "lastikDurumu":  "var",
                          "lastikAdres":  "Sahin kardesler"
                      },
@@ -218,10 +218,10 @@
                          "anahtar":  "",
                          "anahtarNerede":  "",
                          "kredi":  "",
-                         "krediDetay":  "TÃ¼rk Ekonomi BankasÄ± A.Å.",
+                         "krediDetay":  "Türk Ekonomi Bankası A.Ş.",
                          "branchId":  "1769175251066",
                          "price":  "3.263.133",
-                         "notes":  "Tipi : KAMYON ACTROS 2632 LD 6x2 FL | Kurum: TÃ¼rk Ekonomi BankasÄ± A.Å.",
+                         "notes":  "Tipi : KAMYON ACTROS 2632 LD 6x2 FL | Kurum: Türk Ekonomi Bankası A.Ş.",
                          "uttsTanimlandi":  false,
                          "takipCihaziMontaj":  false,
                          "events":  [
@@ -232,7 +232,7 @@
                                             "timestamp":  "2026-01-31T01:30:46.223Z",
                                             "data":  {
                                                          "kullaniciId":  "",
-                                                         "kullaniciAdi":  "HenÃ¼z TanÄ±mlanmadÄ±"
+                                                         "kullaniciAdi":  "Henüz Tanımlanmadı"
                                                      }
                                         },
                                         {
@@ -268,7 +268,7 @@
                          "id":  "1737657600001",
                          "plate":  "78 DE 865",
                          "year":  "2017",
-                         "brandModel":  "FORD TRANSÄ°T CUSTOM",
+                         "brandModel":  "FORD TRANSİT CUSTOM",
                          "km":  "",
                          "vehicleType":  "",
                          "transmission":  "",
@@ -286,10 +286,10 @@
                          "anahtar":  "",
                          "anahtarNerede":  "",
                          "kredi":  "",
-                         "krediDetay":  "TÃ¼rkiye Ä°ÅŸ BankasÄ± A.Å.",
+                         "krediDetay":  "Türkiye İş Bankası A.Ş.",
                          "branchId":  "",
                          "price":  "560.942",
-                         "notes":  "Tipi : TRANSIT CUSTOM VAN 330 L (125) | Kurum: TÃ¼rkiye Ä°ÅŸ BankasÄ± A.Å.",
+                         "notes":  "Tipi : TRANSIT CUSTOM VAN 330 L (125) | Kurum: Türkiye İş Bankası A.Ş.",
                          "uttsTanimlandi":  false,
                          "takipCihaziMontaj":  false,
                          "events":  [
@@ -322,10 +322,10 @@
                          "anahtar":  "",
                          "anahtarNerede":  "",
                          "kredi":  "",
-                         "krediDetay":  "TÃ¼rkiye Ä°ÅŸ BankasÄ± A.Å.",
+                         "krediDetay":  "Türkiye İş Bankası A.Ş.",
                          "branchId":  "",
                          "price":  "1.044.348",
-                         "notes":  "RENAULT (OYAK) MEGANE SEDAN JOY 1.5 BLUEDCI EDC 115 | Kurum: TÃ¼rkiye Ä°ÅŸ BankasÄ± A.Å.",
+                         "notes":  "RENAULT (OYAK) MEGANE SEDAN JOY 1.5 BLUEDCI EDC 115 | Kurum: Türkiye İş Bankası A.Ş.",
                          "uttsTanimlandi":  false,
                          "takipCihaziMontaj":  false,
                          "events":  [
@@ -358,10 +358,10 @@
                          "anahtar":  "",
                          "anahtarNerede":  "",
                          "kredi":  "",
-                         "krediDetay":  "TÃ¼rkiye Ä°ÅŸ BankasÄ± A.Å.",
+                         "krediDetay":  "Türkiye İş Bankası A.Ş.",
                          "branchId":  "",
                          "price":  "2.682.689",
-                         "notes":  "KAMYON ACTROS 2632 LD E6 | Kurum: TÃ¼rkiye Ä°ÅŸ BankasÄ± A.Å.",
+                         "notes":  "KAMYON ACTROS 2632 LD E6 | Kurum: Türkiye İş Bankası A.Ş.",
                          "uttsTanimlandi":  false,
                          "takipCihaziMontaj":  false,
                          "events":  [
@@ -394,10 +394,10 @@
                          "anahtar":  "",
                          "anahtarNerede":  "",
                          "kredi":  "",
-                         "krediDetay":  "TÃ¼rkiye Ä°ÅŸ BankasÄ± A.Å.",
+                         "krediDetay":  "Türkiye İş Bankası A.Ş.",
                          "branchId":  "1769175273226",
                          "price":  "1.068.875",
-                         "notes":  "CANTER TF B85L KAMYON | Kurum: TÃ¼rkiye Ä°ÅŸ BankasÄ± A.Å. | Durum: Ä°CRA",
+                         "notes":  "CANTER TF B85L KAMYON | Kurum: Türkiye İş Bankası A.Ş. | Durum: İCRA",
                          "uttsTanimlandi":  false,
                          "takipCihaziMontaj":  false,
                          "events":  [
@@ -410,7 +410,7 @@
                                                          "eskiSubeId":  "",
                                                          "yeniSubeId":  "1769175273226",
                                                          "eskiSubeAdi":  "",
-                                                         "yeniSubeAdi":  "Åenay Mobilya",
+                                                         "yeniSubeAdi":  "Şenay Mobilya",
                                                          "surucu":  "Yönetim"
                                                      }
                                         }
@@ -442,10 +442,10 @@
                          "anahtar":  "",
                          "anahtarNerede":  "",
                          "kredi":  "",
-                         "krediDetay":  "TÃ¼rkiye Ä°ÅŸ BankasÄ± A.Å.",
+                         "krediDetay":  "Türkiye İş Bankası A.Ş.",
                          "branchId":  "",
                          "price":  "469.047",
-                         "notes":  "301 ACTIVE 1.6 HDI 92 (1038) | Kurum: TÃ¼rkiye Ä°ÅŸ BankasÄ± A.Å. | Durum: Ä°CRA",
+                         "notes":  "301 ACTIVE 1.6 HDI 92 (1038) | Kurum: Türkiye İş Bankası A.Ş. | Durum: İCRA",
                          "uttsTanimlandi":  false,
                          "takipCihaziMontaj":  false,
                          "events":  [
@@ -538,10 +538,10 @@
                          "anahtar":  "",
                          "anahtarNerede":  "",
                          "kredi":  "",
-                         "krediDetay":  "Akbank T.A.Å.",
+                         "krediDetay":  "Akbank T.A.Ş.",
                          "branchId":  "",
                          "price":  "1.033.512",
-                         "notes":  "EGEA SEDAN EASY 1.3M.JET 95 E6D | Kurum: Akbank T.A.Å. | Durum: Ä°CRA",
+                         "notes":  "EGEA SEDAN EASY 1.3M.JET 95 E6D | Kurum: Akbank T.A.Ş. | Durum: İCRA",
                          "uttsTanimlandi":  false,
                          "takipCihaziMontaj":  false,
                          "events":  [
@@ -556,7 +556,7 @@
                          "id":  "1737657600007",
                          "plate":  "34 CBS 866",
                          "year":  "2019",
-                         "brandModel":  "FORD TRANSÄ°T CUSTOM",
+                         "brandModel":  "FORD TRANSİT CUSTOM",
                          "km":  "",
                          "vehicleType":  "",
                          "transmission":  "",
@@ -574,10 +574,10 @@
                          "anahtar":  "",
                          "anahtarNerede":  "",
                          "kredi":  "",
-                         "krediDetay":  "Albaraka TÃ¼rk KatÄ±lÄ±m BankasÄ± A.Å.",
+                         "krediDetay":  "Albaraka Türk Katılım Bankası A.Ş.",
                          "branchId":  "",
                          "price":  "917.032",
-                         "notes":  "TRANSÄ°T CUSTOM KOMBÄ° ECOBLUE 130 320S TREND | Kurum: Albaraka TÃ¼rk KatÄ±lÄ±m BankasÄ± A.Å.",
+                         "notes":  "TRANSİT CUSTOM KOMBİ ECOBLUE 130 320S TREND | Kurum: Albaraka Türk Katılım Bankası A.Ş.",
                          "uttsTanimlandi":  false,
                          "takipCihaziMontaj":  false,
                          "events":  [
@@ -610,10 +610,10 @@
                          "anahtar":  "",
                          "anahtarNerede":  "",
                          "kredi":  "",
-                         "krediDetay":  "TÃ¼rkiye Ä°ÅŸ BankasÄ± A.Å.",
+                         "krediDetay":  "Türkiye İş Bankası A.Ş.",
                          "branchId":  "",
                          "price":  "825.374",
-                         "notes":  "MEGANE SEDAN TOUCH 1.5 DCI EDC 110 | Kurum: TÃ¼rkiye Ä°ÅŸ BankasÄ± A.Å. | Durum: Ä°CRA",
+                         "notes":  "MEGANE SEDAN TOUCH 1.5 DCI EDC 110 | Kurum: Türkiye İş Bankası A.Ş. | Durum: İCRA",
                          "uttsTanimlandi":  false,
                          "takipCihaziMontaj":  false,
                          "events":  [
@@ -646,10 +646,10 @@
                          "anahtar":  "",
                          "anahtarNerede":  "",
                          "kredi":  "",
-                         "krediDetay":  "TÃ¼rkiye Ä°ÅŸ BankasÄ± A.Å.",
+                         "krediDetay":  "Türkiye İş Bankası A.Ş.",
                          "branchId":  "",
                          "price":  "1.653.098",
-                         "notes":  "RANGER WILDTRAK 4x4 ECOBLUE 213 10A/T | Kurum: TÃ¼rkiye Ä°ÅŸ BankasÄ± A.Å.",
+                         "notes":  "RANGER WILDTRAK 4x4 ECOBLUE 213 10A/T | Kurum: Türkiye İş Bankası A.Ş.",
                          "uttsTanimlandi":  false,
                          "takipCihaziMontaj":  false,
                          "events":  [
@@ -665,7 +665,7 @@
                          "id":  "1737657600010",
                          "plate":  "78 AAV 277",
                          "year":  "2007",
-                         "brandModel":  "TIRSAN RÃ–MORK",
+                         "brandModel":  "TIRSAN RÖMORK",
                          "km":  "",
                          "vehicleType":  "",
                          "transmission":  "",
@@ -686,7 +686,7 @@
                          "krediDetay":  "",
                          "branchId":  "",
                          "price":  "500.000",
-                         "notes":  "RÃ–MORK",
+                         "notes":  "RÖMORK",
                          "uttsTanimlandi":  false,
                          "takipCihaziMontaj":  false,
                          "events":  [
@@ -701,7 +701,7 @@
                          "id":  "1737657600011",
                          "plate":  "78 ABC 862",
                          "year":  "2012",
-                         "brandModel":  "TIRSAN RÃ–MORK",
+                         "brandModel":  "TIRSAN RÖMORK",
                          "km":  "",
                          "vehicleType":  "",
                          "transmission":  "",
@@ -722,7 +722,7 @@
                          "krediDetay":  "",
                          "branchId":  "",
                          "price":  "700.000",
-                         "notes":  "RÃ–MORK | Durum: Ä°CRA",
+                         "notes":  "RÖMORK | Durum: İCRA",
                          "uttsTanimlandi":  false,
                          "takipCihaziMontaj":  false,
                          "events":  [
@@ -755,10 +755,10 @@
                          "anahtar":  "",
                          "anahtarNerede":  "",
                          "kredi":  "",
-                         "krediDetay":  "TÃ¼rkiye VakÄ±flar BankasÄ± T.A.O.",
+                         "krediDetay":  "Türkiye Vakıflar Bankası T.A.O.",
                          "branchId":  "",
                          "price":  "1.588.219",
-                         "notes":  "FOCUS TITANIUM X 4K 1,5 ECOBLUE 115 8AT | Kurum: TÃ¼rkiye VakÄ±flar BankasÄ± T.A.O. | Durum: Ä°CRA",
+                         "notes":  "FOCUS TITANIUM X 4K 1,5 ECOBLUE 115 8AT | Kurum: Türkiye Vakıflar Bankası T.A.O. | Durum: İCRA",
                          "uttsTanimlandi":  false,
                          "takipCihaziMontaj":  false,
                          "events":  [
@@ -791,10 +791,10 @@
                          "anahtar":  "",
                          "anahtarNerede":  "",
                          "kredi":  "",
-                         "krediDetay":  "TÃ¼rkiye VakÄ±flar BankasÄ± T.A.O.",
+                         "krediDetay":  "Türkiye Vakıflar Bankası T.A.O.",
                          "branchId":  "",
                          "price":  "3.395.046",
-                         "notes":  "KAMYON D 16 MED 4X2 280 E 6 | Kurum: TÃ¼rkiye VakÄ±flar BankasÄ± T.A.O. | Durum: Ä°CRA",
+                         "notes":  "KAMYON D 16 MED 4X2 280 E 6 | Kurum: Türkiye Vakıflar Bankası T.A.O. | Durum: İCRA",
                          "uttsTanimlandi":  false,
                          "takipCihaziMontaj":  false,
                          "events":  [
@@ -827,10 +827,10 @@
                          "anahtar":  "",
                          "anahtarNerede":  "",
                          "kredi":  "",
-                         "krediDetay":  "TÃ¼rkiye Garanti BankasÄ± A.Å.",
+                         "krediDetay":  "Türkiye Garanti Bankası A.Ş.",
                          "branchId":  "",
                          "price":  "4.000.000",
-                         "notes":  "KAMYON D 16 MED 4X2 280 E 6 | Kurum: TÃ¼rkiye Garanti BankasÄ± A.Å.",
+                         "notes":  "KAMYON D 16 MED 4X2 280 E 6 | Kurum: Türkiye Garanti Bankası A.Ş.",
                          "uttsTanimlandi":  false,
                          "takipCihaziMontaj":  false,
                          "events":  [
@@ -863,10 +863,10 @@
                          "anahtar":  "",
                          "anahtarNerede":  "",
                          "kredi":  "",
-                         "krediDetay":  "TÃ¼rkiye Garanti BankasÄ± A.Å.",
+                         "krediDetay":  "Türkiye Garanti Bankası A.Ş.",
                          "branchId":  "",
                          "price":  "4.000.000",
-                         "notes":  "KAMYON D 16 MED 4X2 280 E 6 | Kurum: TÃ¼rkiye Garanti BankasÄ± A.Å. | Durum: Ä°CRA",
+                         "notes":  "KAMYON D 16 MED 4X2 280 E 6 | Kurum: Türkiye Garanti Bankası A.Ş. | Durum: İCRA",
                          "uttsTanimlandi":  false,
                          "takipCihaziMontaj":  false,
                          "events":  [
@@ -899,10 +899,10 @@
                          "anahtar":  "",
                          "anahtarNerede":  "",
                          "kredi":  "",
-                         "krediDetay":  "TÃ¼rkiye VakÄ±flar BankasÄ± T.A.O.",
+                         "krediDetay":  "Türkiye Vakıflar Bankası T.A.O.",
                          "branchId":  "",
                          "price":  "2.980.148",
-                         "notes":  "F-PACE AWD R-SPORT SE 2.0D180 | Kurum: TÃ¼rkiye VakÄ±flar BankasÄ± T.A.O.",
+                         "notes":  "F-PACE AWD R-SPORT SE 2.0D180 | Kurum: Türkiye Vakıflar Bankası T.A.O.",
                          "uttsTanimlandi":  false,
                          "takipCihaziMontaj":  false,
                          "events":  [
@@ -938,7 +938,7 @@
                          "krediDetay":  "",
                          "branchId":  "",
                          "price":  "500.000",
-                         "notes":  "DUCATO | Durum: Ä°CRA",
+                         "notes":  "DUCATO | Durum: İCRA",
                          "uttsTanimlandi":  false,
                          "takipCihaziMontaj":  false,
                          "events":  [
@@ -974,7 +974,7 @@
                          "krediDetay":  "",
                          "branchId":  "",
                          "price":  "4.063.930",
-                         "notes":  "KAMYON D 26 WIDE 4X2 P E 6 | KUVEYTTÃœRK ADINA KAYITLI",
+                         "notes":  "KAMYON D 26 WIDE 4X2 P E 6 | KUVEYTTÜRK ADINA KAYITLI",
                          "uttsTanimlandi":  false,
                          "takipCihaziMontaj":  false,
                          "events":  [
@@ -1010,7 +1010,7 @@
                          "krediDetay":  "",
                          "branchId":  "1769175251066",
                          "price":  "1.062.497",
-                         "notes":  "1.0 TFSI 116 SPORT S TRONIC | IÅIL BOZKURT ADINA KAYITLI",
+                         "notes":  "1.0 TFSI 116 SPORT S TRONIC | IŞIL BOZKURT ADINA KAYITLI",
                          "uttsTanimlandi":  false,
                          "takipCihaziMontaj":  false,
                          "events":  [
@@ -1021,7 +1021,7 @@
                                             "timestamp":  "2026-02-02T13:02:41+03:00",
                                             "data":  {
                                                          "aciklama":  "kaza deneme",
-                                                         "surucu":  "Ä°lker AKEL"
+                                                         "surucu":  "İlker AKEL"
                                                      }
                                         },
                                         {
@@ -1031,7 +1031,7 @@
                                             "timestamp":  "2026-02-02T13:02:41+03:00",
                                             "data":  {
                                                          "islemler":  "deneme balata",
-                                                         "surucu":  "Ä°lker AKEL"
+                                                         "surucu":  "İlker AKEL"
                                                      }
                                         },
                                         {
@@ -1041,7 +1041,7 @@
                                             "timestamp":  "2026-02-02T13:02:37+03:00",
                                             "data":  {
                                                          "aciklama":  "kaza deneme",
-                                                         "surucu":  "Ä°lker AKEL"
+                                                         "surucu":  "İlker AKEL"
                                                      }
                                         },
                                         {
@@ -1051,7 +1051,7 @@
                                             "timestamp":  "2026-02-02T13:02:37+03:00",
                                             "data":  {
                                                          "islemler":  "deneme balata",
-                                                         "surucu":  "Ä°lker AKEL"
+                                                         "surucu":  "İlker AKEL"
                                                      }
                                         },
                                         {
@@ -1061,7 +1061,7 @@
                                             "timestamp":  "2026-02-02T02:29:39+03:00",
                                             "data":  {
                                                          "islemler":  "On freb balatalari",
-                                                         "surucu":  "Ä°lker AKEL"
+                                                         "surucu":  "İlker AKEL"
                                                      }
                                         },
                                         {
@@ -1071,7 +1071,7 @@
                                             "timestamp":  "2026-02-02T02:29:04+03:00",
                                             "data":  {
                                                          "islemler":  "On freb balatalari",
-                                                         "surucu":  "Ä°lker AKEL"
+                                                         "surucu":  "İlker AKEL"
                                                      }
                                         },
                                         {
@@ -1081,7 +1081,7 @@
                                             "timestamp":  "2026-02-02T02:28:52+03:00",
                                             "data":  {
                                                          "islemler":  "On freb balatalari",
-                                                         "surucu":  "Ä°lker AKEL"
+                                                         "surucu":  "İlker AKEL"
                                                      }
                                         },
                                         {
@@ -1091,7 +1091,7 @@
                                             "timestamp":  "2026-01-31T12:41:45.679Z",
                                             "data":  {
                                                          "kullaniciId":  "u1769823278672",
-                                                         "kullaniciAdi":  "Ä°lker AKEL"
+                                                         "kullaniciAdi":  "İlker AKEL"
                                                      }
                                         },
                                         {
@@ -1101,7 +1101,7 @@
                                             "timestamp":  "2026-01-31T01:31:13.673Z",
                                             "data":  {
                                                          "kullaniciId":  "",
-                                                         "kullaniciAdi":  "HenÃ¼z TanÄ±mlanmadÄ±"
+                                                         "kullaniciAdi":  "Henüz Tanımlanmadı"
                                                      }
                                         },
                                         {
@@ -1112,14 +1112,14 @@
                                             "data":  {
                                                          "eskiSubeId":  "",
                                                          "yeniSubeId":  "1769175251066",
-                                                         "surucu":  "Ä°lker AKEL"
+                                                         "surucu":  "İlker AKEL"
                                                      }
                                         }
                                     ],
                          "satildiMi":  false,
                          "createdAt":  "2025-01-23T00:00:00+00:00",
                          "updatedAt":  "2026-01-31T12:41:45.679Z",
-                         "tahsisKisi":  "Ä°lker AKEL",
+                         "tahsisKisi":  "İlker AKEL",
                          "assignedUserId":  "u1769823278672",
                          "guncelKm":  120000
                      },
@@ -1145,10 +1145,10 @@
                          "anahtar":  "",
                          "anahtarNerede":  "",
                          "kredi":  "",
-                         "krediDetay":  "VAKIF KATILIM BANKASI A.Å.",
+                         "krediDetay":  "VAKIF KATILIM BANKASI A.Ş.",
                          "branchId":  "",
                          "price":  "819.854",
-                         "notes":  "EGEA EASY 1.3 M.JET 95 E6 | Kurum: VAKIF KATILIM BANKASI A.Å. | Durum: Ä°CRA",
+                         "notes":  "EGEA EASY 1.3 M.JET 95 E6 | Kurum: VAKIF KATILIM BANKASI A.Ş. | Durum: İCRA",
                          "uttsTanimlandi":  false,
                          "takipCihaziMontaj":  false,
                          "events":  [
@@ -1181,10 +1181,10 @@
                          "anahtar":  "",
                          "anahtarNerede":  "",
                          "kredi":  "",
-                         "krediDetay":  "TÃ¼rk Ekonomi BankasÄ± A.Å.",
+                         "krediDetay":  "Türk Ekonomi Bankası A.Ş.",
                          "branchId":  "",
                          "price":  "1.033.512",
-                         "notes":  "EGEA EASY 1.3 M.JET 95 E6 | Kurum: TÃ¼rk Ekonomi BankasÄ± A.Å. | Durum: Ä°CRA",
+                         "notes":  "EGEA EASY 1.3 M.JET 95 E6 | Kurum: Türk Ekonomi Bankası A.Ş. | Durum: İCRA",
                          "uttsTanimlandi":  false,
                          "takipCihaziMontaj":  false,
                          "events":  [
@@ -1217,10 +1217,10 @@
                          "anahtar":  "",
                          "anahtarNerede":  "",
                          "kredi":  "",
-                         "krediDetay":  "VAKIF KATILIM BANKASI A.Å.",
+                         "krediDetay":  "VAKIF KATILIM BANKASI A.Ş.",
                          "branchId":  "",
                          "price":  "1.033.512",
-                         "notes":  "EGEA EASY 1.3 M.JET 95 E6 | Kurum: VAKIF KATILIM BANKASI A.Å.",
+                         "notes":  "EGEA EASY 1.3 M.JET 95 E6 | Kurum: VAKIF KATILIM BANKASI A.Ş.",
                          "uttsTanimlandi":  false,
                          "takipCihaziMontaj":  false,
                          "events":  [
@@ -1253,10 +1253,10 @@
                          "anahtar":  "",
                          "anahtarNerede":  "",
                          "kredi":  "",
-                         "krediDetay":  "TÃ¼rk Ekonomi BankasÄ± A.Å.",
+                         "krediDetay":  "Türk Ekonomi Bankası A.Ş.",
                          "branchId":  "",
                          "price":  "1.033.512",
-                         "notes":  "EGEA EASY 1.3 M.JET 95 E6 | Kurum: TÃ¼rk Ekonomi BankasÄ± A.Å.",
+                         "notes":  "EGEA EASY 1.3 M.JET 95 E6 | Kurum: Türk Ekonomi Bankası A.Ş.",
                          "uttsTanimlandi":  false,
                          "takipCihaziMontaj":  false,
                          "events":  [
@@ -1292,7 +1292,7 @@
                          "krediDetay":  "",
                          "branchId":  "",
                          "price":  "819.854",
-                         "notes":  "EGEA EASY 1.3 M.JET 95 E6 | Durum: Ä°CRA",
+                         "notes":  "EGEA EASY 1.3 M.JET 95 E6 | Durum: İCRA",
                          "uttsTanimlandi":  false,
                          "takipCihaziMontaj":  false,
                          "events":  [
@@ -1307,7 +1307,7 @@
                          "id":  "1737657600025",
                          "plate":  "34 GUA 145",
                          "year":  "2022",
-                         "brandModel":  "RENAULT CLÄ°O",
+                         "brandModel":  "RENAULT CLİO",
                          "km":  "",
                          "vehicleType":  "",
                          "transmission":  "",
@@ -1325,10 +1325,10 @@
                          "anahtar":  "",
                          "anahtarNerede":  "",
                          "kredi":  "",
-                         "krediDetay":  "VAKIF KATILIM BANKASI A.Å.",
+                         "krediDetay":  "VAKIF KATILIM BANKASI A.Ş.",
                          "branchId":  "",
                          "price":  "773.905",
-                         "notes":  "CLIO JOY 1.0 TCE 90 | Kurum: VAKIF KATILIM BANKASI A.Å.",
+                         "notes":  "CLIO JOY 1.0 TCE 90 | Kurum: VAKIF KATILIM BANKASI A.Ş.",
                          "uttsTanimlandi":  false,
                          "takipCihaziMontaj":  false,
                          "events":  [
@@ -1343,7 +1343,7 @@
                          "id":  "1737657600026",
                          "plate":  "34 MCF 184",
                          "year":  "2017",
-                         "brandModel":  "AUDI A4 LÄ°MOUSÄ°NE",
+                         "brandModel":  "AUDI A4 LİMOUSİNE",
                          "km":  "",
                          "vehicleType":  "",
                          "transmission":  "",
@@ -1361,10 +1361,10 @@
                          "anahtar":  "",
                          "anahtarNerede":  "",
                          "kredi":  "",
-                         "krediDetay":  "VAKIF KATILIM BANKASI A.Å.",
+                         "krediDetay":  "VAKIF KATILIM BANKASI A.Ş.",
                          "branchId":  "",
                          "price":  "1.697.348",
-                         "notes":  "2.0 TDI 190 QUATTRO DYNAMIC S TRONIC | Kurum: VAKIF KATILIM BANKASI A.Å.",
+                         "notes":  "2.0 TDI 190 QUATTRO DYNAMIC S TRONIC | Kurum: VAKIF KATILIM BANKASI A.Ş.",
                          "uttsTanimlandi":  false,
                          "takipCihaziMontaj":  false,
                          "events":  [
@@ -1408,10 +1408,10 @@
                          "anahtar":  "",
                          "anahtarNerede":  "",
                          "kredi":  "",
-                         "krediDetay":  "TÃ¼rkiye VakÄ±flar BankasÄ± T.A.O.",
+                         "krediDetay":  "Türkiye Vakıflar Bankası T.A.O.",
                          "branchId":  "",
                          "price":  "1.155.959",
-                         "notes":  "508 PRÄ°ME 1.5 BLUEHDI 130 EAT8 | Kurum: TÃ¼rkiye VakÄ±flar BankasÄ± T.A.O.",
+                         "notes":  "508 PRİME 1.5 BLUEHDI 130 EAT8 | Kurum: Türkiye Vakıflar Bankası T.A.O.",
                          "uttsTanimlandi":  false,
                          "takipCihaziMontaj":  false,
                          "events":  [
@@ -1447,7 +1447,7 @@
                          "krediDetay":  "",
                          "branchId":  "",
                          "price":  "1.496.704",
-                         "notes":  "508 PRÄ°ME 1.5 BLUEHDI 130 EAT8",
+                         "notes":  "508 PRİME 1.5 BLUEHDI 130 EAT8",
                          "uttsTanimlandi":  false,
                          "takipCihaziMontaj":  false,
                          "events":  [
@@ -1462,7 +1462,7 @@
                          "id":  "1737657600029",
                          "plate":  "26 ADK 608",
                          "year":  "2020",
-                         "brandModel":  "FORD TOURNEO COURÄ°ER",
+                         "brandModel":  "FORD TOURNEO COURİER",
                          "km":  "",
                          "vehicleType":  "",
                          "transmission":  "",
@@ -1483,7 +1483,7 @@
                          "krediDetay":  "",
                          "branchId":  "",
                          "price":  "611.541",
-                         "notes":  "KOMBÄ° 1.5 TDCI 75 E6.2 TREND | Durum: Ä°CRA",
+                         "notes":  "KOMBİ 1.5 TDCI 75 E6.2 TREND | Durum: İCRA",
                          "uttsTanimlandi":  false,
                          "takipCihaziMontaj":  false,
                          "events":  [
@@ -1519,7 +1519,7 @@
                          "krediDetay":  "",
                          "branchId":  "",
                          "price":  "815.052",
-                         "notes":  "EGEA EASY 1.3 M.JET 95 E6 | Durum: Ä°CRA",
+                         "notes":  "EGEA EASY 1.3 M.JET 95 E6 | Durum: İCRA",
                          "uttsTanimlandi":  false,
                          "takipCihaziMontaj":  false,
                          "events":  [
@@ -1534,7 +1534,7 @@
                          "id":  "1737657600031",
                          "plate":  "34 FDZ 597",
                          "year":  "2022",
-                         "brandModel":  "RENAULT CLÄ°O",
+                         "brandModel":  "RENAULT CLİO",
                          "km":  "",
                          "vehicleType":  "",
                          "transmission":  "",
@@ -1552,10 +1552,10 @@
                          "anahtar":  "",
                          "anahtarNerede":  "",
                          "kredi":  "",
-                         "krediDetay":  "Albaraka TÃ¼rk KatÄ±lÄ±m BankasÄ± A.Å.",
+                         "krediDetay":  "Albaraka Türk Katılım Bankası A.Ş.",
                          "branchId":  "",
                          "price":  "828.703",
-                         "notes":  "CLIO JOY 1.0 TCE 90 | Kurum: Albaraka TÃ¼rk KatÄ±lÄ±m BankasÄ± A.Å.",
+                         "notes":  "CLIO JOY 1.0 TCE 90 | Kurum: Albaraka Türk Katılım Bankası A.Ş.",
                          "uttsTanimlandi":  false,
                          "takipCihaziMontaj":  false,
                          "events":  [
@@ -1606,7 +1606,7 @@
                          "id":  "1737657600033",
                          "plate":  "78 AB 236",
                          "year":  "2006",
-                         "brandModel":  "FORD TRANSÄ°T 350L VAN",
+                         "brandModel":  "FORD TRANSİT 350L VAN",
                          "km":  "",
                          "vehicleType":  "",
                          "transmission":  "",
@@ -1627,7 +1627,7 @@
                          "krediDetay":  "",
                          "branchId":  "",
                          "price":  "300.000",
-                         "notes":  "TRANSÄ°T 350L VAN",
+                         "notes":  "TRANSİT 350L VAN",
                          "uttsTanimlandi":  false,
                          "takipCihaziMontaj":  false,
                          "events":  [
@@ -1642,7 +1642,7 @@
                          "id":  "1737657600034",
                          "plate":  "37 ACT 466",
                          "year":  "2023",
-                         "brandModel":  "FORD TRANSÄ°T",
+                         "brandModel":  "FORD TRANSİT",
                          "km":  "",
                          "vehicleType":  "",
                          "transmission":  "",
@@ -1663,7 +1663,7 @@
                          "krediDetay":  "",
                          "branchId":  "",
                          "price":  "1.500.705",
-                         "notes":  "TRANSÄ°T MCAI 350L VAN",
+                         "notes":  "TRANSİT MCAI 350L VAN",
                          "uttsTanimlandi":  false,
                          "takipCihaziMontaj":  false,
                          "events":  [
@@ -1678,7 +1678,7 @@
                          "id":  "1737657600035",
                          "plate":  "78 AAU 227",
                          "year":  "2020",
-                         "brandModel":  "FORD TRANSÄ°T",
+                         "brandModel":  "FORD TRANSİT",
                          "km":  "",
                          "vehicleType":  "",
                          "transmission":  "",
@@ -1699,7 +1699,7 @@
                          "krediDetay":  "",
                          "branchId":  "",
                          "price":  "774.176",
-                         "notes":  "TRANSÄ°T CUSTOMVAN 320L 130 E6.2 TREND",
+                         "notes":  "TRANSİT CUSTOMVAN 320L 130 E6.2 TREND",
                          "uttsTanimlandi":  false,
                          "takipCihaziMontaj":  false,
                          "events":  [
@@ -1807,7 +1807,7 @@
                          "krediDetay":  "",
                          "branchId":  "",
                          "price":  "3.492.777",
-                         "notes":  "SPORT 2.0 SD4 (240) SE | SATILDI DEVÄ°R YAPILMADI",
+                         "notes":  "SPORT 2.0 SD4 (240) SE | SATILDI DEVİR YAPILMADI",
                          "uttsTanimlandi":  false,
                          "takipCihaziMontaj":  false,
                          "events":  [
@@ -1822,7 +1822,7 @@
                          "id":  "1737657600039",
                          "plate":  "42 HE 312",
                          "year":  "2012",
-                         "brandModel":  "FORD TRANSÄ°T",
+                         "brandModel":  "FORD TRANSİT",
                          "km":  "",
                          "vehicleType":  "",
                          "transmission":  "",
@@ -1879,7 +1879,7 @@
                          "krediDetay":  "",
                          "branchId":  "",
                          "price":  "883.547",
-                         "notes":  "FOCUS III MCA TREND X 1.5 TDCI | Orijinal listede marka hatasÄ± dÃ¼zeltildi",
+                         "notes":  "FOCUS III MCA TREND X 1.5 TDCI | Orijinal listede marka hatası düzeltildi",
                          "uttsTanimlandi":  false,
                          "takipCihaziMontaj":  false,
                          "events":  [
@@ -1915,7 +1915,7 @@
                          "krediDetay":  "",
                          "branchId":  "",
                          "price":  "1.089.755",
-                         "notes":  "Focus Trend X 1.5 TdcÄ± 120 4 KapÄ± 8S At",
+                         "notes":  "Focus Trend X 1.5 Tdcı 120 4 Kapı 8S At",
                          "uttsTanimlandi":  false,
                          "takipCihaziMontaj":  false,
                          "events":  [
@@ -1930,7 +1930,7 @@
                          "id":  "1737657600042",
                          "plate":  "42 ABH 973",
                          "year":  "2018",
-                         "brandModel":  "FORD TRANSÄ°T",
+                         "brandModel":  "FORD TRANSİT",
                          "km":  "",
                          "vehicleType":  "",
                          "transmission":  "",
@@ -2002,7 +2002,7 @@
                          "id":  "1737657600044",
                          "plate":  "78 BT 351",
                          "year":  "2013",
-                         "brandModel":  "FORD TRANSÄ°T",
+                         "brandModel":  "FORD TRANSİT",
                          "km":  "",
                          "vehicleType":  "",
                          "transmission":  "",
@@ -2038,7 +2038,7 @@
                          "id":  "1737657600045",
                          "plate":  "42 ALS 178",
                          "year":  "2022",
-                         "brandModel":  "FORD TRANSÄ°T",
+                         "brandModel":  "FORD TRANSİT",
                          "km":  "",
                          "vehicleType":  "",
                          "transmission":  "",
@@ -2217,7 +2217,7 @@
                                                          "yeniSubeId":  "1769175230543",
                                                          "eskiSubeAdi":  "",
                                                          "yeniSubeAdi":  "Karmotors",
-                                                         "surucu":  "Ä°lker AKEL"
+                                                         "surucu":  "İlker AKEL"
                                                      }
                                         },
                                         {
@@ -2227,7 +2227,7 @@
                                             "timestamp":  "2026-02-06T16:13:43.187Z",
                                             "data":  {
                                                          "kullaniciId":  "u1769823278672",
-                                                         "kullaniciAdi":  "Ä°lker AKEL",
+                                                         "kullaniciAdi":  "İlker AKEL",
                                                          "eskiKullaniciAdi":  ""
                                                      }
                                         }
@@ -2236,13 +2236,13 @@
                          "createdAt":  "2025-01-23T00:00:00+00:00",
                          "updatedAt":  "2026-02-06T16:13:43.180Z",
                          "assignedUserId":  "u1769823278672",
-                         "tahsisKisi":  "Ä°lker AKEL"
+                         "tahsisKisi":  "İlker AKEL"
                      },
                      {
                          "id":  "1737657600050",
                          "plate":  "42 AYZ 122",
                          "year":  "2014",
-                         "brandModel":  "FIAT DOBLO COMBÄ°",
+                         "brandModel":  "FIAT DOBLO COMBİ",
                          "km":  "",
                          "vehicleType":  "",
                          "transmission":  "",
@@ -2263,7 +2263,7 @@
                          "krediDetay":  "",
                          "branchId":  "",
                          "price":  "294.330",
-                         "notes":  "DOBLO COMBÄ° 1.3 MJET 90 HP",
+                         "notes":  "DOBLO COMBİ 1.3 MJET 90 HP",
                          "uttsTanimlandi":  false,
                          "takipCihaziMontaj":  false,
                          "events":  [
@@ -2422,7 +2422,7 @@
                          "id":  "1737657600055",
                          "plate":  "35 LGT 36",
                          "year":  "2017",
-                         "brandModel":  "FORD FÄ°ESTA",
+                         "brandModel":  "FORD FİESTA",
                          "km":  "",
                          "vehicleType":  "",
                          "transmission":  "",
@@ -2443,7 +2443,7 @@
                          "krediDetay":  "",
                          "branchId":  "",
                          "price":  "651.397",
-                         "notes":  "1.0 TREND ECOBOOST 100 OV | GÄ°ZEM ATASOY ADINA KAYITLI",
+                         "notes":  "1.0 TREND ECOBOOST 100 OV | GİZEM ATASOY ADINA KAYITLI",
                          "uttsTanimlandi":  false,
                          "takipCihaziMontaj":  false,
                          "events":  [
@@ -2461,7 +2461,7 @@
     "branches":  [
                      {
                          "id":  "1769175216952",
-                         "name":  "KaryapÄ±",
+                         "name":  "Karyapı",
                          "city":  "Konya",
                          "createdAt":  "2026-01-23T13:33:36.952Z"
                      },
@@ -2474,20 +2474,20 @@
                      {
                          "id":  "1769175251066",
                          "name":  "Medisa",
-                         "city":  "KarabÃ¼k",
+                         "city":  "Karabük",
                          "createdAt":  "2026-01-23T13:34:11.066Z"
                      },
                      {
                          "id":  "1769175273226",
-                         "name":  "Åenay Mobilya",
-                         "city":  "KarabÃ¼k",
+                         "name":  "Şenay Mobilya",
+                         "city":  "Karabük",
                          "createdAt":  "2026-01-23T13:34:33.226Z"
                      }
                  ],
     "users":  [
                   {
                       "id":  "u1769823278672",
-                      "isim":  "Ä°lker AKEL",
+                      "isim":  "İlker AKEL",
                       "kullanici_adi":  "ilkerA",
                       "sifre":  "Akel6674",
                       "telefon":  "05335413410",
@@ -2505,7 +2505,7 @@
                   },
                   {
                       "id":  "u1769900543196",
-                      "isim":  "Serhan KÃ–SE",
+                      "isim":  "Serhan KÖSE",
                       "kullanici_adi":  "SerhanK",
                       "sifre":  "Serhan123",
                       "telefon":  "05067025500",
@@ -2521,7 +2521,7 @@
                   },
                   {
                       "id":  "u1770525709433",
-                      "isim":  "SavaÅŸ ÅENAY",
+                      "isim":  "Savaş ŞENAY",
                       "kullanici_adi":  "",
                       "sifre":  "",
                       "telefon":  "05334422720",
@@ -2538,7 +2538,7 @@
               ],
     "ayarlar":  {
                     "sirketAdi":  "Medisa",
-                    "yetkiliKisi":  "Ä°lker",
+                    "yetkiliKisi":  "İlker",
                     "telefon":  "905559876543",
                     "eposta":  "info@medisa.com"
                 },
@@ -2604,7 +2604,7 @@
                                    "kayit_id":  1,
                                    "surucu_id":  "u1769823278672",
                                    "talep_tarihi":  "2026-02-01T04:56:50+03:00",
-                                   "sebep":  "Ä±bnnj",
+                                   "sebep":  "ıbnnj",
                                    "eski_km":  112000,
                                    "yeni_km":  112000,
                                    "durum":  "onaylandi",
