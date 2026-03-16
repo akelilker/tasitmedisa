@@ -10,6 +10,8 @@ function getBase() {
 }
 
 // Sadece kritik giriş noktaları ve manifest; CSS/JS modülleri fetch ile network-first + cache fallback ile ilk kullanımda cache'lenir
+// PERFORMANS: Sadece uygulamanın ana "Shell" dosyaları (iskelet) önden yüklenir.
+// Admin ve Driver gibi alt modüller ilk girişte kullanıcının kotasını harcamaz.
 const CACHE_FILES = [
   '/',
   '/index.html',
@@ -20,18 +22,7 @@ const CACHE_FILES = [
   '/icon/logo-header2.svg',
   '/icon/apple-touch-icon.svg',
   '/icon/icon-192.svg',
-  '/icon/icon-512.svg',
-  '/driver/',
-  '/driver/index.html',
-  '/driver/dashboard.html',
-  '/driver/driver-style.css',
-  '/driver/driver-script.js',
-  '/driver/manifest.json',
-  '/admin/',
-  '/admin/driver-report.html',
-  '/admin/admin-report.css',
-  '/admin/admin-report.js',
-  '/admin/manifest.json'
+  '/icon/icon-512.svg'
 ];
 
 // Install - Cache tüm dosyaları (hata toleranslı, subpath destekli)
