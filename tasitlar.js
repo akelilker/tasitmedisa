@@ -2570,28 +2570,9 @@
       });
     }
 
-    var isStandaloneMode = false;
-    try {
-      isStandaloneMode = !!((window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone);
-    } catch (e) {}
-    var isIOSDevice = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-    if (isStandaloneMode && isIOSDevice) {
-      printWithIframeFallback('ios_standalone_forced_iframe');
-      return;
-    }
-
-    let printWindow = null;
-    try {
-      printWindow = window.open('', '_blank', 'width=900,height=700');
-    } catch (popupOpenErr) {}
-    if (!printWindow) {
-      printWithIframeFallback('popup_blocked_or_null');
-      return;
-    }
-
-    tryPopupPrint(printWindow).catch(function(popupErr) {
-      printWithIframeFallback((popupErr && popupErr.message) ? popupErr.message : 'popup_print_failed');
-    });
+    // Tüm platformlarda (Masaüstü, Android, iOS PWA) ikinci sekme (ön izleme) açılmasını 
+    // kökten engellemek için her zaman arka planda gizli iframe ile yazdırmayı tetikliyoruz.
+    printWithIframeFallback('forced_iframe_for_all');
   }
   /**
    * /**
