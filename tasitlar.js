@@ -2348,8 +2348,7 @@
 
         historyPage.classList.remove('force-new-page');
 
-        // Kural: Taşıt geçmişi tek sayfaya sığıyorsa detaylarla birlikte tek sayfada; bir satır bile taşıyorsa taşıt geçmişi başlıkla 2. sayfadan başlar.
-        // Print media: A4 yükseklik 297mm, üst+alt margin 8mm each → kullanılabilir yükseklik.
+        // Tek yer: Taşıt geçmişi tek sayfaya sığıyorsa detaylarla birlikte tek sayfa; bir satır bile taşıyorsa taşıt geçmişi başlıkla 2. sayfadan başlar.
         var pageContentHeight = mmToPx(297 - (8 * 2));
         if (!isFinite(pageContentHeight) || pageContentHeight <= 0) return;
 
@@ -2357,9 +2356,9 @@
         var historyHeight = Math.ceil(historyPage.getBoundingClientRect().height);
         if (!isFinite(summaryHeight) || !isFinite(historyHeight)) return;
 
+        var safetyBuffer = 12;
         var totalFirstPageNeed = summaryHeight + historyHeight;
-        // Bir piksel bile taşarsa taşıt geçmişi ikinci sayfadan başlasın (başlık dahil).
-        if (totalFirstPageNeed > pageContentHeight) {
+        if (totalFirstPageNeed > (pageContentHeight - safetyBuffer)) {
           historyPage.classList.add('force-new-page');
         }
       }
