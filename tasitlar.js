@@ -2348,7 +2348,7 @@
 
         historyPage.classList.remove('force-new-page');
 
-        // Tek yer: Taşıt geçmişi tek sayfaya sığıyorsa detaylarla birlikte tek sayfa; bir satır bile taşıyorsa taşıt geçmişi başlıkla 2. sayfadan başlar.
+        // Tek yer: Araç teması (detay+şema) sonrası tek satır bile 2. sayfaya taşacaksa taşıt tarihçesi başlığıyla birlikte tamamı 2. sayfadan başlar.
         var pageContentHeight = mmToPx(297 - (8 * 2));
         if (!isFinite(pageContentHeight) || pageContentHeight <= 0) return;
 
@@ -2356,9 +2356,8 @@
         var historyHeight = Math.ceil(historyPage.getBoundingClientRect().height);
         if (!isFinite(summaryHeight) || !isFinite(historyHeight)) return;
 
-        var safetyBuffer = 12;
         var totalFirstPageNeed = summaryHeight + historyHeight;
-        if (totalFirstPageNeed > (pageContentHeight - safetyBuffer)) {
+        if (totalFirstPageNeed > pageContentHeight) {
           historyPage.classList.add('force-new-page');
         }
       }
