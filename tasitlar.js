@@ -491,7 +491,7 @@
     return { toolbar };
   }
 
-  // --- ANA GÄ°RÄ°Å ---
+  // --- ANA GİRİŞ ---
   window.openVehiclesView = function() {
     loadVehicleColumnOrder();
 
@@ -504,34 +504,73 @@
     }
 
     const isDataLoaded = !!window.__medisaDataLoaded;
-    // #region agent log
-    fetch('http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'13e385'},body:JSON.stringify({sessionId:'13e385',location:'tasitlar.js:openVehiclesModal',message:'openVehiclesModal',data:{isDataLoaded,willShowLoading:!isDataLoaded},timestamp:Date.now(),hypothesisId:'H4'})}).catch(function(){});
-    // #endregion
-    if (!isDataLoaded && typeof window.loadDataFromServer === 'function') {
+    const localVehicles = readVehicles();
+    // LocalStorage'da (önbellekte) veri var mı kontrol et
+    const hasLocalData = Array.isArray(localVehicles) && localVehicles.length > 0;
+
+    // Yükleme (Loading) ekranını SADECE veri HİÇ YOKSA (sıfır kurulumda) göster
+    if (!isDataLoaded && !hasLocalData && typeof window.loadDataFromServer === 'function') {
       if (content) {
-        content.innerHTML = '<div class="vehicles-loading-state">Taşıtlar yükleniyor...</div>';
+        content.innerHTML = `
+          <div class="vehicles-loading-state" style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:200px; color:#888;">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="spin-animation" style="margin-bottom:12px; animation: spin 1s linear infinite;"><circle cx="12" cy="12" r="10" stroke-dasharray="31.4 31.4" stroke-linecap="round"></circle></svg>
+            <span>Veriler sunucudan alınıyor...</span>
+          </div>`;
         content.dataset.renderScope = 'loading';
         content.dataset.renderSignature = 'loading';
         syncVehiclesListModeClass(false);
       }
+
+      // Kırmızı logonun yavaş yüklenmesini engellemek için CSS class'ı ekle
+      if (DOM.vehiclesModalContainer) {
+        DOM.vehiclesModalContainer.classList.add('hide-marker');
+      }
+
       window.loadDataFromServer(false).then(function() {
+        if (DOM.vehiclesModalContainer) DOM.vehiclesModalContainer.classList.remove('hide-marker');
         const m = DOM.vehiclesModal;
         if (m && m.classList.contains('active')) {
           if (currentView === 'dashboard') renderBranchDashboard(true);
           else renderVehicles(getVSearchInput()?.value || '');
         }
-      }).catch(function() {
+      }).catch(function(err) {
+        console.error("Taşıtlar yüklenirken hata:", err);
+        if (DOM.vehiclesModalContainer) DOM.vehiclesModalContainer.classList.remove('hide-marker');
         if (content) {
-          content.innerHTML = '<div style="text-align:center; padding:24px; color:#888">Veri yüklenemedi. Lütfen tekrar deneyin.</div>';
+          content.innerHTML = '<div style="text-align:center; padding:24px; color:#d40000">Sunucu ile bağlantı kurulamadı. Lütfen sayfayı yenileyin veya internetinizi kontrol edin.</div>';
           content.dataset.renderScope = 'loading-error';
           content.dataset.renderSignature = 'loading-error';
           syncVehiclesListModeClass(false);
         }
       });
+
       return;
     }
 
-    renderBranchDashboard();
+    // ELİMİZDE LOCAL VERİ VARSA (Önbellek) ve sunucu arkada sync oluyorsa
+    if ((!isDataLoaded || window.__medisaDataLoading) && typeof window.loadDataFromServer === 'function' && !window.__medisaBackgroundSyncing) {
+      window.__medisaBackgroundSyncing = true; // Çifte isteği engelle
+
+      // Arka planda SESSİZCE sunucudan taze veriyi çek
+      window.loadDataFromServer(false).then(function() {
+        window.__medisaBackgroundSyncing = false;
+        const m = DOM.vehiclesModal;
+        if (m && m.classList.contains('active')) {
+          // Yeni taze veri inince ekranı anında hissettirmeden yenile
+          if (currentView === 'dashboard') renderBranchDashboard(true);
+          else renderVehicles(getVSearchInput()?.value || '');
+        }
+      }).catch(function() {
+        window.__medisaBackgroundSyncing = false;
+      });
+    }
+
+    // Veri önbellekte olduğu için (10 saniye beklemeden) 0 milisaniyede ANINDA EKRANI ÇİZ!
+    if (currentView === 'dashboard') {
+      renderBranchDashboard(true); // Force true ile kesin çiz
+    } else {
+      renderVehicles(getVSearchInput()?.value || '');
+    }
   };
 
   window.closeVehiclesModal = function(event) {
