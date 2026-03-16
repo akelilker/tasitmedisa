@@ -1309,7 +1309,7 @@
 }
 
 .branch-name {
-    font-size: clamp(9.5px, 2.2vw, 13px);
+    font-size: clamp(8.5px, 2.2vw, 13px); /* En fazla 1.5pt küçülebilir (KARMOTORS vb. tek satırda kalsın) */
     font-weight: 700;
     color: var(--txt);
     text-transform: uppercase;
@@ -1333,7 +1333,7 @@
         container-type: inline-size;
     }
     .branch-name {
-        font-size: clamp(10.5px, 11cqw, 12px); /* 12px -> 10.5px: en fazla 1.5pt kÃƒÆ’Ã‚Â¼ÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â¼lme */
+        font-size: clamp(9px, 11cqw, 10.5px); /* 1.5pt daha küçülebilir, KARMOTORS tek satırda */ /* 12px -> 10.5px: en fazla 1.5pt kÃƒÆ’Ã‚Â¼ÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â¼lme */
         word-break: keep-all;
         overflow-wrap: normal;
     }
