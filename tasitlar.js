@@ -2333,7 +2333,7 @@
         position: relative;
         width: 240px;
         height: 150px;
-        margin: 0 auto 0;
+        margin: 2px auto 0;
         display: flex;
         align-items: flex-start;
         justify-content: center;
