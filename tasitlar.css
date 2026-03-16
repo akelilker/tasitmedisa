@@ -368,18 +368,13 @@
 
 /* Boya ÅŸemasÄ± container Ã¢â‚¬â€œ taÅŸÄ±t detayda sol grid (sol kolon) iÃ§inde; bÃ¼yÃ¼klÃ¼k sol kolona gÃ¶re uyarlanÄ±r */
 #detail-boya-container {
-    width: 100% !important;
-    min-height: 140px;
-    margin: 12px 0 0 0 !important;
-    padding: 0 !important;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    justify-content: flex-start !important;
-    gap: 3px !important; /* Ã…Âema ile legend arasÄ± dikey boÅŸluk 3px */
-    row-gap: 3px !important;
-    overflow: visible !important;
-    box-sizing: border-box !important;
+  margin-top: 2px;
+  position: relative;
+}
+
+#detail-boya-container svg {
+  display: block;
+  margin: 0;
 }
 
 /* Ã…ÂemayÄ± saran kutu: sol yaslÄ±, saÄŸ kenar Yoktur metninin "r" harfine dikeyde paralel (max-width ile oranlanÄ±r); %20 kÃ¼Ã§Ã¼ltme */
@@ -428,14 +423,11 @@
     margin-right: auto !important;
     margin-top: 4px !important; /* Üst çerçeveye milimetrik 4px */
 }
-/* SVG'nin kendi iç viewBox (ölü) boşluğunu sıfırlayarak yukarı çekiyoruz */
 #detail-boya-container .kaporta-schema-wrapper svg {
-    margin-top: -20px !important; 
     display: block !important;
 }
 #detail-boya-container .boya-legend {
     justify-content: flex-start !important;
-    margin-top: -8px !important; /* Şema yukarı kaydığı için legend'ı da peşinden yaklaştır */
 }
 
 .detail-row-label {
@@ -3545,8 +3537,7 @@
     gap: 12px !important;
   }
   /* TaÅŸÄ±t detay: kaporta ekspertiz mobil Ã¢â‚¬â€œ ÅŸema Ã¼stÃ¼ boÅŸluk az; ÅŸema kendi padding/margin yok */
-  #detail-boya-container {
-    margin-top: 34px !important; /* Kaporta Durumu etiketi ile blok arasÄ± 4px daha dar */ /* 58Ã¢â€ â€™50: Ã¢â‚¬Å“AÅŸaÄŸÄ±daki ÅŸemadaÃ¢â‚¬Â¦Ã¢â‚¬Â ile ÅŸema arasÄ± 8px daraldÄ± */
+  #detail-boya-container { /* Kaporta Durumu etiketi ile blok arasÄ± 4px daha dar */ /* 58Ã¢â€ â€™50: Ã¢â‚¬Å“AÅŸaÄŸÄ±daki ÅŸemadaÃ¢â‚¬Â¦Ã¢â‚¬Â ile ÅŸema arasÄ± 8px daraldÄ± */
     gap: 3px 0 !important;
     row-gap: 3px !important;
     column-gap: 0 !important;
@@ -3555,14 +3546,12 @@
     padding: 0 !important;
   }
   #detail-boya-container .boya-legend {
-    margin: -18px 0 0 0 !important; /* 4px daha dar Ã¢â‚¬â€œ ÅŸema ile legend arasÄ± */
     padding: 0 !important;
     line-height: 1.2 !important;
     min-height: 0;
   }
   #detail-boya-container .kaporta-schema-wrapper {
-    margin: -12px auto 0 auto !important; /* Yatayda ortala */
-    transform: translateX(-6px) !important; /* 6px sola (2px daha sola) */
+    margin: 0 auto !important;
     padding: 0 !important; /* Ã…Âema Ã¼stÃ¼nde kendi padding'i olmasÄ±n */
   }
   #kaza-kaporta-container {
@@ -3590,10 +3579,8 @@
   #detail-boya-container svg {
     width: 100px !important;
     height: 158px !important;
-    transform: rotate(90deg) !important;
-    transform-origin: center !important;
     flex-shrink: 0 !important;
-    margin: 0 29px !important; /* Sadece yatay telafi; dikey 0 ile ÅŸemaÃ¢â‚¬â€œlegend boÅŸluÄŸu artmasÄ±n */
+    margin: 0 !important; /* Sadece yatay telafi; dikey 0 ile ÅŸemaÃ¢â‚¬â€œlegend boÅŸluÄŸu artmasÄ±n */
   }
 
   /* Detay modal: legendÃ¢â‚¬â€œfooter arasÄ± boÅŸluk 4px toplam (mobil) */

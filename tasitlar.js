@@ -2373,7 +2373,7 @@
     body.ios-pwa-print .summary-page .vehicle-card-print-grid { margin-bottom: 0 !important; }
     body.ios-pwa-print .kaporta-print-section { margin-top: 2px !important; }
     body.ios-pwa-print .kaporta-print-schema-wrap { margin-right: 12px !important; margin-left: auto !important; }
-    @media print { body { margin: 8mm; -webkit-print-color-adjust: exact; print-color-adjust: exact; } .print-preview-toolbar { display: none !important; } .kaporta-print-section { page-break-inside: auto; break-inside: auto; } .history-page h1, .history-page .subtitle { page-break-after: avoid; break-after: avoid-page; } .history-grid { gap: 8px; } }
+    @media print { body { margin: 8mm; -webkit-print-color-adjust: exact; print-color-adjust: exact; } .print-preview-toolbar { display: none !important; } .kaporta-print-section { page-break-inside: auto; break-inside: auto; } .print-history-block { page-break-inside: avoid; break-inside: avoid; } .history-page h3, .history-page .subtitle { page-break-after: avoid; break-after: avoid-page; } .history-grid { gap: 8px; } }
   </style>
 </head>
 <body class="${isIosPwaPrint ? 'ios-pwa-print' : ''}">
@@ -2389,9 +2389,11 @@
   </section>
 
   <section class="history-page">
-    <h1>Taşıt Tarihçesi</h1>
+    <div class="print-history-block">
+    <h3>Taşıt Tarihçesi</h3>
     <p class="subtitle">Plaka: ${escapeHtml(vehicle.plate || '-')} • Oluşturma: ${printedAt}</p>
     <div class="history-grid">${historySectionsHtml}</div>
+    </div>
   </section>
   <script>
     (function() {
@@ -2853,18 +2855,14 @@ function renderVehicleDetailLeft(vehicle) {
         svgClone.setAttribute('width', String(svgOrgWidth));
         svgClone.setAttribute('height', String(svgOrgHeight));
 
-        // SVG'yi döndür ve wrapper'ın tam ortasına oturt
+        // SVG'yi wrapper içinde konumla (top/transform JS ile verilmiyor)
         const targetWidth = defaultTargetWidth;
-        const topOff = (targetHeight - svgOrgHeight) / 2;
         const leftOff = (targetWidth - svgOrgWidth) / 2;
 
         svgClone.style.cssText = `
             display: block;
             position: absolute;
-            top: ${topOff}px;
             left: ${leftOff}px;
-            transform-origin: center center;
-            transform: rotate(90deg) scale(${targetWidth / svgOrgHeight});
         `;
 
         svgWrapper.appendChild(svgClone);
@@ -2932,11 +2930,8 @@ function renderVehicleDetailLeft(vehicle) {
             const h = Math.round(clamped * (148 / 220)) - shrinkY;
             svgWrapper.style.width = w + 'px';
             svgWrapper.style.height = h + 'px';
-            const topOff2 = (h - svgOrgHeight) / 2;
             const leftOff2 = (w - svgOrgWidth) / 2;
-            svgClone.style.top = topOff2 + 'px';
             svgClone.style.left = leftOff2 + 'px';
-            svgClone.style.transform = 'rotate(90deg) scale(' + (w / svgOrgHeight) + ')';
           }
         });
       })
