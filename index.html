@@ -98,12 +98,37 @@
             0%, 85% { opacity: 1; pointer-events: auto; }
             100% { opacity: 0; pointer-events: none; visibility: hidden; }
         }
+        /* CLS azaltma: CSS gelmeden önce modal/footer yerleşimini sabitle */
+        .modal-overlay,
+        .settings-dropdown,
+        #centered-info-box {
+            display: none;
+        }
+        .app-container {
+            min-height: 100vh;
+            min-height: 100dvh;
+            padding-bottom: 42px; /* footer rezervi */
+            box-sizing: border-box;
+        }
+        #app-footer {
+            position: fixed;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: 0;
+            width: 100%;
+            max-width: 500px;
+            height: 42px;
+            min-height: 42px;
+            box-sizing: border-box;
+            background: #080d16;
+            z-index: 10000;
+        }
     </style>
 
     <!-- CSS Preload + Async Load -->
-    <link rel="preload" href="style-core.css?v=20260203" as="style">
-    <link rel="stylesheet" href="style-core.css?v=20260203" media="print" onload="this.media='all'">
-    <noscript><link rel="stylesheet" href="style-core.css?v=20260203"></noscript>
+    <link rel="preload" href="style-core.css?v=20260316.1" as="style">
+    <link rel="stylesheet" href="style-core.css?v=20260316.1">
+    <noscript><link rel="stylesheet" href="style-core.css?v=20260316.1"></noscript>
     
     <link rel="preload" href="kayit.css?v=20260301" as="style">
     <link rel="stylesheet" href="kayit.css?v=20260301" media="print" onload="this.media='all'">
