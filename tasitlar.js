@@ -2373,7 +2373,7 @@
     body.ios-pwa-print .summary-page .vehicle-card-print-grid { margin-bottom: 0 !important; }
     body.ios-pwa-print .kaporta-print-section { margin-top: 2px !important; }
     body.ios-pwa-print .kaporta-print-schema-wrap { margin-right: 12px !important; margin-left: auto !important; }
-    @media print { body { margin: 8mm; -webkit-print-color-adjust: exact; print-color-adjust: exact; } .print-preview-toolbar { display: none !important; } .kaporta-print-section { page-break-inside: auto; break-inside: auto; } .print-history-block { page-break-inside: avoid; break-inside: avoid; } .history-page h3, .history-page .subtitle { page-break-after: avoid; break-after: avoid-page; } .history-grid { gap: 8px; } }
+    @media print { body { margin: 8mm; -webkit-print-color-adjust: exact; print-color-adjust: exact; } .print-preview-toolbar { display: none !important; } .kaporta-print-section { page-break-inside: auto; break-inside: auto; } .print-history-block { break-inside: avoid; page-break-inside: avoid; } .history-page h3, .history-page .subtitle { page-break-after: avoid; break-after: avoid-page; } .history-grid { gap: 8px; } }
   </style>
 </head>
 <body class="${isIosPwaPrint ? 'ios-pwa-print' : ''}">
@@ -2392,7 +2392,7 @@
     <div class="print-history-block">
     <h3>Taşıt Tarihçesi</h3>
     <p class="subtitle">Plaka: ${escapeHtml(vehicle.plate || '-')} • Oluşturma: ${printedAt}</p>
-    <div class="history-grid">${historySectionsHtml}</div>
+    ${historySectionsHtml}
     </div>
   </section>
   <script>
@@ -2844,25 +2844,18 @@ function renderVehicleDetailLeft(vehicle) {
         svgWrapper.style.cssText = `
             width: ${defaultTargetWidth}px;
             height: ${targetHeight}px;
-            position: relative;
             overflow: visible;
             flex-shrink: 0;
-            margin: 0;
-            margin-right: auto;
+            margin: 2px auto 0 0;
         `;
 
         // SVG'yi hazırla (zaten clone geldi)
         svgClone.setAttribute('width', String(svgOrgWidth));
         svgClone.setAttribute('height', String(svgOrgHeight));
 
-        // SVG'yi wrapper içinde konumla (top/transform JS ile verilmiyor)
-        const targetWidth = defaultTargetWidth;
-        const leftOff = (targetWidth - svgOrgWidth) / 2;
-
         svgClone.style.cssText = `
             display: block;
-            position: absolute;
-            left: ${leftOff}px;
+            margin: 0;
         `;
 
         svgWrapper.appendChild(svgClone);
@@ -2930,8 +2923,6 @@ function renderVehicleDetailLeft(vehicle) {
             const h = Math.round(clamped * (148 / 220)) - shrinkY;
             svgWrapper.style.width = w + 'px';
             svgWrapper.style.height = h + 'px';
-            const leftOff2 = (w - svgOrgWidth) / 2;
-            svgClone.style.left = leftOff2 + 'px';
           }
         });
       })
