@@ -482,21 +482,30 @@ body.modal-open #cache-confirm-modal.open {
     align-items: center;
     justify-content: center;
     z-index: 10010;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(7, 10, 18, 0.34);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
     pointer-events: auto;
 }
 .centered-info-box-inner {
-    background: var(--bg);
-    border: 1px solid var(--border-light, rgba(255, 255, 255, 0.15));
+    background: linear-gradient(
+      180deg,
+      rgba(var(--theme-color-rgb), 0.12) 0%,
+      rgba(8, 13, 22, 0.96) 30%,
+      rgba(8, 13, 22, 0.98) 100%
+    );
+    border: 0.5px solid rgba(var(--theme-color-rgb), 0.48);
     border-radius: 10px;
     padding: 20px 24px;
     max-width: 320px;
     text-align: center;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    box-shadow:
+      0 8px 28px rgba(0, 0, 0, 0.48),
+      0 0 0 1px rgba(var(--theme-color-rgb), 0.16) inset;
 }
 .centered-info-box-inner #centered-info-message,
 .centered-info-box-inner p {
-    color: var(--txt, var(--form-label-color, #e2e8f0));
+    color: var(--txt-white, #ffffff);
     font-size: 14px;
     line-height: 1.5;
     margin: 0 0 16px 0;
@@ -504,12 +513,18 @@ body.modal-open #cache-confirm-modal.open {
 .centered-info-box-inner .centered-info-tamam {
     padding: 10px 28px;
     background: transparent;
-    border: 0.3px solid var(--green-success);
-    color: var(--green-success);
+    border: 1px solid rgba(var(--green-success-rgb), 0.72);
+    color: var(--green-success, #28a745);
     border-radius: 6px;
     cursor: pointer;
     font-weight: 600;
     font-size: 14px;
+    transition: background 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+}
+.centered-info-box-inner .centered-info-tamam:hover {
+    background: rgba(var(--green-success-rgb), 0.16);
+    border-color: var(--green-success, #28a745);
+    transform: scale(1.03);
 }
 
 /* Ayarlar Menüsü ve Listeler */
