@@ -50,8 +50,8 @@ body::-webkit-scrollbar,
   --green: #4ade80;
   --red: #ef4444;
   --form-label-color: #ffffff;
-  /* Girilen veri / açıklama metin rengi (beyaz-gri hiyerarşisi) */
-  --data-value-color: #a0aec0;
+  /* Girilen veri / açıklama metin rengi (Kontrast problemi çözümü için beyaz-parlak) */
+  --data-value-color: #f8f9fa;
 
   --bg-content: #0d131f;
   --bg-input: #0f1418;
@@ -230,28 +230,30 @@ body::-webkit-scrollbar,
   transition: all 0.2s ease-in-out !important;
 }
 
-/* Kaydet (Yeşil) - Dinamik Hover Efekti (Üzerine Gelince Kaslanma) */
+/* Kaydet (Yeşil) - Kontrast Artırıldı */
 .universal-btn-save {
-  color: var(--green-success, #28a745) !important;
-  border: 1px solid rgba(40, 167, 69, 0.45) !important;
+  color: #4ade80 !important; /* #28a745 çok karanlıktı, parlak yeşil yapıldı */
+  border: 1px solid rgba(74, 222, 128, 0.6) !important;
+  font-weight: 500 !important;
 }
 .universal-btn-save:hover {
-  background: rgba(40, 167, 69, 0.12) !important;
-  font-weight: 600 !important; /* Üzerine gelince metin kalınlaşır */
-  border-color: var(--green-success, #28a745) !important;
-  -webkit-text-stroke: 0.2px currentColor; /* Net kalınlık efekti */
+  background: rgba(74, 222, 128, 0.15) !important;
+  font-weight: 700 !important;
+  border-color: #4ade80 !important;
+  -webkit-text-stroke: 0.3px currentColor;
 }
 
-/* Vazgeç (Kırmızı) - Dinamik Hover Efekti */
+/* Vazgeç (Kırmızı) - Kontrast Artırıldı */
 .universal-btn-cancel {
-  color: var(--theme-color, #d40000) !important;
-  border: 1px solid rgba(212, 0, 0, 0.45) !important;
+  color: #ff4d4d !important; /* #d40000 karanlık kalıyordu, parlak kırmızı yapıldı */
+  border: 1px solid rgba(255, 77, 77, 0.6) !important;
+  font-weight: 500 !important;
 }
 .universal-btn-cancel:hover {
-  background: rgba(212, 0, 0, 0.12) !important;
-  font-weight: 600 !important;
-  border-color: var(--theme-color, #d40000) !important;
-  -webkit-text-stroke: 0.2px currentColor;
+  background: rgba(255, 77, 77, 0.15) !important;
+  font-weight: 700 !important;
+  border-color: #ff4d4d !important;
+  -webkit-text-stroke: 0.3px currentColor;
 }
 
 /* Ayarlar/Şube modalları: Olay Ekle standardı – tam genişlik, sol hizalama */
