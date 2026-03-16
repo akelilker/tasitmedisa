@@ -163,15 +163,16 @@
 
 .form-input, select {
     width: 100%;
-    padding: 4px 8px; 
-    background: #0d131f; 
-    border: 1.1px solid rgba(255, 255, 255, 0.20);
+    padding: 4px 8px;
+    background: #0d131f;
+    border: 1.1px solid rgba(255, 255, 255, 0.40); /* Çerçeve belirginleştirildi */
     border-radius: 6px;
-    color: var(--data-value-color, #a0aec0);
+    color: var(--data-value-color, #f8f9fa); /* Renk parlatıldı */
     font-size: 9px;
-    height: 20px; 
+    font-weight: 500;
+    height: 20px;
     box-sizing: border-box;
-    outline: none; 
+    outline: none;
 }
 
 input[type="number"].form-input {
@@ -430,7 +431,7 @@ input[type="date"].form-input {
     transform: none !important; /* JS zaten ortalıyor, havaya uçmasın */
     width: auto !important;
     font-size: 13px !important; /* Standart input boyutu */
-    color: #6c757d !important; /* Şık placeholder grisi */
+    color: #a0aec0 !important; /* Kontrast için daha parlak gri yapıldı */
     letter-spacing: 0.5px !important;
     pointer-events: none;
     z-index: 100;
@@ -735,15 +736,16 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
 .form-section.input-visible .form-input-reveal { display: block; }
 
 .radio-btn {
-    width: 48px; 
-    flex: 0 0 48px; 
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.20);
-    color: #888;
+    width: 48px;
+    flex: 0 0 48px;
+    background: rgba(255, 255, 255, 0.08); /* Kontrast artırıldı */
+    border: 1px solid rgba(255, 255, 255, 0.35); /* Çerçeve belirginleştirildi */
+    color: #e0e0e0; /* #888 çok soluktu, parlaklaştırıldı */
     font-size: 10px;
+    font-weight: 500;
     cursor: pointer;
     border-radius: 4px;
-    height: 19px; 
+    height: 19px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -757,31 +759,33 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
 .radio-btn:not(.active).hover-red:hover { background: rgba(var(--theme-color-rgb), 0.1) !important; border-color: var(--theme-color, #d40000) !important; color: var(--theme-color, #d40000) !important; }
 .radio-btn:not(.active).hover-green:hover { background: rgba(40, 167, 69, 0.1) !important; border-color: var(--green-success, #28a745) !important; color: var(--green-success, #28a745) !important; }
 .radio-btn:focus { outline: none; }
-/* Var/Yok – solukluk giderildi: canlı renkler */
-/* Yok (Olumsuz): border ve color KESİNLİKLE var(--theme-color); hover/active arka plan rgba(212, 0, 0, 0.1) */
+/* Var/Yok – Kontrast artırıldı */
+/* Yok (Olumsuz): Kontrast artırıldı (Parlak Kırmızı) */
 .radio-btn.active:not(.green),
 #vehicle-modal .radio-btn.active:not(.green) {
-  background: rgba(212, 0, 0, 0.1) !important;
-  border-color: var(--theme-color, #d40000) !important;
-  color: var(--theme-color, #d40000) !important;
+  background: rgba(255, 77, 77, 0.15) !important;
+  border-color: #ff4d4d !important;
+  color: #ff4d4d !important;
+  font-weight: 600 !important;
 }
 .radio-btn.active:not(.green):hover, .radio-btn.active:not(.green):focus,
 #vehicle-modal .radio-btn.active:not(.green):hover, #vehicle-modal .radio-btn.active:not(.green):focus {
-  background: rgba(212, 0, 0, 0.1) !important; border-color: var(--theme-color, #d40000) !important; color: var(--theme-color, #d40000) !important; box-shadow: none; outline: none;
+  background: rgba(255, 77, 77, 0.2) !important; border-color: #ff4d4d !important; color: #ff4d4d !important; box-shadow: none; outline: none;
 }
-/* Var (Olumlu): border ve color KESİNLİKLE var(--green-success); hover/active arka plan rgba(40, 167, 69, 0.1) */
+/* Var (Olumlu): Kontrast artırıldı (Parlak Yeşil) */
 .radio-btn.active.green,
 #vehicle-modal .radio-btn.active.green {
-  background: rgba(40, 167, 69, 0.1) !important;
-  border-color: var(--green-success, #28a745) !important;
-  color: var(--green-success, #28a745) !important;
+  background: rgba(74, 222, 128, 0.15) !important;
+  border-color: #4ade80 !important;
+  color: #4ade80 !important;
+  font-weight: 600 !important;
 }
 .radio-btn.active.green:hover, .radio-btn.active.green:focus,
 #vehicle-modal .radio-btn.active.green:hover, #vehicle-modal .radio-btn.active.green:focus {
-  background: rgba(40, 167, 69, 0.1) !important; border-color: var(--green-success, #28a745) !important; color: var(--green-success, #28a745) !important; box-shadow: none; outline: none;
+  background: rgba(74, 222, 128, 0.2) !important; border-color: #4ade80 !important; color: #4ade80 !important; box-shadow: none; outline: none;
 }
 
-/* Şanzıman Tipi (Manuel/Otomatik): Kırmızı ASLA kullanılmaz. Seçili ve :hover KESİNLİKLE canlı yeşil. */
+/* Şanzıman Tipi (Manuel/Otomatik): Kontrast Artırıldı (Parlak Yeşil) */
 [data-section="transmission"] .radio-btn.active,
 [data-section="transmission"] .radio-btn.active:hover,
 [data-section="transmission"] .radio-btn.active:focus,
@@ -790,21 +794,21 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
 #vehicle-modal [data-section="transmission"] .radio-btn.active:hover,
 #vehicle-modal [data-section="transmission"] .radio-btn.active:focus,
 #vehicle-modal [data-section="transmission"] .radio-btn.active:not(.green) {
-  background: rgba(40, 167, 69, 0.1) !important;
-  border-color: var(--green-success, #28a745) !important;
-  color: var(--green-success, #28a745) !important;
+  background: rgba(74, 222, 128, 0.15) !important;
+  border-color: #4ade80 !important;
+  color: #4ade80 !important;
+  font-weight: 600 !important;
   box-shadow: none !important;
   outline: none !important;
 }
 [data-section="transmission"] .radio-btn:not(.active):hover,
 #vehicle-modal [data-section="transmission"] .radio-btn:not(.active):hover {
-  background: rgba(40, 167, 69, 0.1) !important;
-  border-color: var(--green-success, #28a745) !important;
-  color: var(--green-success, #28a745) !important;
+  background: rgba(74, 222, 128, 0.1) !important;
+  border-color: #4ade80 !important;
+  color: #4ade80 !important;
 }
 
-/* Var-Yok (Tramer, Boya, Anahtar, Kredi): Bölüme göre bağlamsal renkler */
-/* Tramer: Var=KIRMIZI (olumsuz), Yok=YEŞİL (olumlu) */
+/* Var-Yok (Tramer, Boya, Anahtar, Kredi): Bölüme göre bağlamsal renkler - Kontrast Artırıldı! */
 [data-section="tramer"] .radio-btn.active[data-value="var"],
 [data-section="tramer"] .radio-btn.active[data-value="var"]:hover,
 [data-section="tramer"] .radio-btn.active[data-value="var"]:focus,
@@ -820,72 +824,51 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
   box-shadow: none !important;
   outline: none !important;
 }
+
+/* KIRMIZI DURUMLAR: Tramer(Var), Boya(Var), Anahtar(Yok), Kredi(Var) */
 [data-section="tramer"] .radio-btn.active[data-value="var"],
 [data-section="tramer"] .radio-btn.active[data-value="var"]:hover,
 #vehicle-modal [data-section="tramer"] .radio-btn.active[data-value="var"],
-#vehicle-modal [data-section="tramer"] .radio-btn.active[data-value="var"]:hover {
-  background: rgba(212, 0, 0, 0.1) !important;
-  border-color: var(--theme-color, #d40000) !important;
-  color: var(--theme-color, #d40000) !important;
-}
-[data-section="tramer"] .radio-btn.active[data-value="yok"],
-[data-section="tramer"] .radio-btn.active[data-value="yok"]:hover,
-#vehicle-modal [data-section="tramer"] .radio-btn.active[data-value="yok"],
-#vehicle-modal [data-section="tramer"] .radio-btn.active[data-value="yok"]:hover {
-  background: rgba(40, 167, 69, 0.1) !important;
-  border-color: var(--green-success, #28a745) !important;
-  color: var(--green-success, #28a745) !important;
-}
-/* Boya/Değişen: Var=KIRMIZI, Yok=YEŞİL */
+#vehicle-modal [data-section="tramer"] .radio-btn.active[data-value="var"]:hover,
 [data-section="boya"] .radio-btn.active[data-value="var"],
 [data-section="boya"] .radio-btn.active[data-value="var"]:hover,
 #vehicle-modal [data-section="boya"] .radio-btn.active[data-value="var"],
-#vehicle-modal [data-section="boya"] .radio-btn.active[data-value="var"]:hover {
-  background: rgba(212, 0, 0, 0.1) !important;
-  border-color: var(--theme-color, #d40000) !important;
-  color: var(--theme-color, #d40000) !important;
-}
-[data-section="boya"] .radio-btn.active[data-value="yok"],
-[data-section="boya"] .radio-btn.active[data-value="yok"]:hover,
-#vehicle-modal [data-section="boya"] .radio-btn.active[data-value="yok"],
-#vehicle-modal [data-section="boya"] .radio-btn.active[data-value="yok"]:hover {
-  background: rgba(40, 167, 69, 0.1) !important;
-  border-color: var(--green-success, #28a745) !important;
-  color: var(--green-success, #28a745) !important;
-}
-/* Yedek Anahtar: Var=YEŞİL (olumlu), Yok=KIRMIZI (olumsuz) */
-[data-section="anahtar"] .radio-btn.active[data-value="var"],
-[data-section="anahtar"] .radio-btn.active[data-value="var"]:hover,
-#vehicle-modal [data-section="anahtar"] .radio-btn.active[data-value="var"],
-#vehicle-modal [data-section="anahtar"] .radio-btn.active[data-value="var"]:hover {
-  background: rgba(40, 167, 69, 0.1) !important;
-  border-color: var(--green-success, #28a745) !important;
-  color: var(--green-success, #28a745) !important;
-}
+#vehicle-modal [data-section="boya"] .radio-btn.active[data-value="var"]:hover,
 [data-section="anahtar"] .radio-btn.active[data-value="yok"],
 [data-section="anahtar"] .radio-btn.active[data-value="yok"]:hover,
 #vehicle-modal [data-section="anahtar"] .radio-btn.active[data-value="yok"],
-#vehicle-modal [data-section="anahtar"] .radio-btn.active[data-value="yok"]:hover {
-  background: rgba(212, 0, 0, 0.1) !important;
-  border-color: var(--theme-color, #d40000) !important;
-  color: var(--theme-color, #d40000) !important;
-}
-/* Kredi/Rehin: Var=KIRMIZI, Yok=YEŞİL */
+#vehicle-modal [data-section="anahtar"] .radio-btn.active[data-value="yok"]:hover,
 [data-section="kredi"] .radio-btn.active[data-value="var"],
 [data-section="kredi"] .radio-btn.active[data-value="var"]:hover,
 #vehicle-modal [data-section="kredi"] .radio-btn.active[data-value="var"],
 #vehicle-modal [data-section="kredi"] .radio-btn.active[data-value="var"]:hover {
-  background: rgba(212, 0, 0, 0.1) !important;
-  border-color: var(--theme-color, #d40000) !important;
-  color: var(--theme-color, #d40000) !important;
+  background: rgba(255, 77, 77, 0.15) !important;
+  border-color: #ff4d4d !important;
+  color: #ff4d4d !important;
+  font-weight: 600 !important;
 }
+
+/* YEŞİL DURUMLAR: Tramer(Yok), Boya(Yok), Anahtar(Var), Kredi(Yok) */
+[data-section="tramer"] .radio-btn.active[data-value="yok"],
+[data-section="tramer"] .radio-btn.active[data-value="yok"]:hover,
+#vehicle-modal [data-section="tramer"] .radio-btn.active[data-value="yok"],
+#vehicle-modal [data-section="tramer"] .radio-btn.active[data-value="yok"]:hover,
+[data-section="boya"] .radio-btn.active[data-value="yok"],
+[data-section="boya"] .radio-btn.active[data-value="yok"]:hover,
+#vehicle-modal [data-section="boya"] .radio-btn.active[data-value="yok"],
+#vehicle-modal [data-section="boya"] .radio-btn.active[data-value="yok"]:hover,
+[data-section="anahtar"] .radio-btn.active[data-value="var"],
+[data-section="anahtar"] .radio-btn.active[data-value="var"]:hover,
+#vehicle-modal [data-section="anahtar"] .radio-btn.active[data-value="var"],
+#vehicle-modal [data-section="anahtar"] .radio-btn.active[data-value="var"]:hover,
 [data-section="kredi"] .radio-btn.active[data-value="yok"],
 [data-section="kredi"] .radio-btn.active[data-value="yok"]:hover,
 #vehicle-modal [data-section="kredi"] .radio-btn.active[data-value="yok"],
 #vehicle-modal [data-section="kredi"] .radio-btn.active[data-value="yok"]:hover {
-  background: rgba(40, 167, 69, 0.1) !important;
-  border-color: var(--green-success, #28a745) !important;
-  color: var(--green-success, #28a745) !important;
+  background: rgba(74, 222, 128, 0.15) !important;
+  border-color: #4ade80 !important;
+  color: #4ade80 !important;
+  font-weight: 600 !important;
 }
 
 .modal-column-left { padding-right: 10px; padding-left: 0; border-right: 1px solid rgba(var(--theme-color-rgb), 0.28); box-shadow: 10px 0 18px -18px rgba(var(--theme-color-rgb), 0.45); }
