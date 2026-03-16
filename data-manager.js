@@ -289,15 +289,28 @@ async function saveDataToServer() {
             conflictErr.conflict = true;
             throw conflictErr;
         }
+
+        // PERFORMANS VE GÜVENLİK: Otomatik Gölge Yedek (Shadow Backup)
+        // Sunucuya canlı veri başarıyla yazıldığı an, sistemi yormadan otomatik bir "Geri Yükleme Noktası" oluşturur.
+        try {
+            const autoBackup = Object.assign({}, window.appData, {
+                upload_date: new Date().toISOString(),
+                version: "1.1",
+                source: "auto_shadow_backup"
+            });
+            localStorage.setItem("medisa_server_backup", JSON.stringify(autoBackup));
+        } catch (storageErr) {
+            // Cihaz hafızası dolarsa ana kayıt işlemini bozmamak için sessizce devam et
+        }
+
         return true;
 
     } catch (error) {
         if (error && error.conflict === true) {
             throw error;
         }
-        // HTTP 405 hatası (Method Not Allowed) - Sunucu yapılandırması sorunu
         if (error.message && error.message.includes('405')) {
-            return false; // Sessizce false dön
+            return false;
         }
         if (error.message && error.message.includes('409')) {
             const conflictErr = new Error('Conflict');
@@ -312,7 +325,6 @@ async function saveDataToServer() {
             console.warn('[Medisa] Kayıt sunucuya ulaşamadı. Lütfen bağlantıyı kontrol edip tekrar deneyin.');
             return false;
         }
-        // Diğer hatalar için konsola yaz (alert rahatsız edici)
         console.warn('[Medisa] Veri kaydedilemedi:', error.message);
         return false;
     } finally {
