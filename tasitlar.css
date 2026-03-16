@@ -2264,11 +2264,16 @@
 }
 #ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-add-btn {
   margin-left: 12px;
-  font-size: 28px;
+  font-size: 36px;
   line-height: 1;
-  padding: 0 2px;
+  padding: 0;
+  min-width: 52px;
+  min-height: 52px;
   width: auto !important;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 #ruhsat-yukleme-modal #ruhsat-modal-content .universal-btn-group.ruhsat-preview-row .ruhsat-add-btn,
 #ruhsat-yukleme-modal #ruhsat-modal-content .universal-btn-group:has(.ruhsat-preview-link) .ruhsat-add-btn {
@@ -2449,9 +2454,9 @@
     padding: 0 !important;
   }
   #ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-add-btn {
-    font-size: 40px;
-    min-width: 44px;
-    min-height: 44px;
+    font-size: 48px;
+    min-width: 56px;
+    min-height: 56px;
     padding: 0 !important;
     display: inline-flex !important;
     align-items: center;

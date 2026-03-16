@@ -2283,7 +2283,7 @@
       }
 
       return `<section class="kaporta-print-section">
-        <h2>Kaporta Şeması</h2>
+        <h2 class="kaporta-print-title">Kaporta Durumu</h2>
         <div class="kaporta-print-row">
           <div class="kaporta-print-state-grid">
             <div class="kaporta-print-col">
@@ -2323,7 +2323,7 @@
     .vehicle-card-print-grid table { width: 100%; }
     @media (max-width: 760px) { .vehicle-card-print-grid { grid-template-columns: 1fr 1fr; } }
     .kaporta-print-section { margin-top: 2px; border: 1px solid #ddd; border-radius: 8px; padding: 4px; page-break-inside: auto; break-inside: auto; }
-    .kaporta-print-section h2 { margin: 0 0 4px; font-size: 16px; }
+    .kaporta-print-section h2.kaporta-print-title { margin: 0 0 4px; margin-top: 1em; font-size: 16px; }
     .kaporta-print-row { display: grid; grid-template-columns: minmax(240px, auto) minmax(0, 1fr); align-items: start; column-gap: 10px; }
     .kaporta-print-state-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 4px 5px; align-content: start; }
     .kaporta-print-schema-wrap {
@@ -3553,14 +3553,15 @@ function renderVehicleDetailLeft(vehicle) {
       previewBtn.style.cssText = 'background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.2); cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 140px; border-radius: 8px;';
 
       previewBtn.innerHTML = `
-          <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:12px; color:#d40000;">
+          <span style="font-size:14px; font-weight:600; color:#fff; letter-spacing:0.5px;">Görüntüle</span>
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin:6px 0; color:#d40000;">
             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
             <polyline points="14 2 14 8 20 8"></polyline>
             <line x1="16" y1="13" x2="8" y2="13"></line>
             <line x1="16" y1="17" x2="8" y2="17"></line>
             <polyline points="10 9 9 9 8 9"></polyline>
           </svg>
-          <span style="font-size:14px; font-weight:600; color:#fff; letter-spacing:0.5px;">Ruhsatı Görüntüle / Yazdır</span>
+          <span style="font-size:14px; font-weight:600; color:#fff; letter-spacing:0.5px;">Yazdır</span>
         `;
 
       previewBtn.onclick = function(e) {
