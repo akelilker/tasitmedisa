@@ -2285,7 +2285,7 @@
         svgMarkup = `<img src="${escapeHtml(fallbackSrc)}" alt="Kaporta Şeması" class="kaporta-print-fallback">`;
       }
 
-      return `<section class="kaporta-print-section">
+      return `<section class="kaporta-print-section kaporta-print-box">
         <h2 class="kaporta-print-title">Kaporta Durumu</h2>
         <div class="kaporta-print-row">
           <div class="kaporta-print-state-grid">
@@ -2326,6 +2326,7 @@
     .vehicle-card-print-grid table { width: 100%; }
     @media (max-width: 760px) { .vehicle-card-print-grid { grid-template-columns: 1fr 1fr; } }
     .kaporta-print-section { margin-top: 2px; border: 1px solid #ddd; border-radius: 8px; padding: 4px; page-break-inside: auto; break-inside: auto; }
+    .kaporta-print-box { padding-top: 2px; padding-bottom: 8px; }
     .kaporta-print-section h2.kaporta-print-title { margin: 0 0 4px; margin-top: 1em; font-size: 16px; }
     .kaporta-print-row { display: grid; grid-template-columns: minmax(240px, auto) minmax(0, 1fr); align-items: start; column-gap: 10px; }
     .kaporta-print-state-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 4px 5px; align-content: start; }
@@ -2349,7 +2350,7 @@
         transform-origin: center center;
         object-fit: contain;
     }
-    .kaporta-print-col h3 { margin: 0 0 4px; font-size: 13px; }
+    .kaporta-print-col h3 { margin: 0 0 4px; margin-bottom: 2px; font-size: 13px; }
     .kaporta-print-list { margin: 0; padding-left: 18px; }
     .kaporta-print-list li { font-size: 12px; line-height: 1.3; margin-bottom: 2px; }
     .kaporta-print-empty { font-size: 12px; color: #666; }

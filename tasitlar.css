@@ -379,13 +379,12 @@
 
 /* Ã…ÂemayÄ± saran kutu: sol yaslÄ±, saÄŸ kenar Yoktur metninin "r" harfine dikeyde paralel (max-width ile oranlanÄ±r); %20 kÃ¼Ã§Ã¼ltme */
 .kaporta-schema-wrapper {
-    width: 136px !important; /* 170 * 0.8 */
+    width: 136px !important;
     display: block !important;
     margin: 0 !important;
     margin-right: auto !important;
+    margin-top: 0 !important;
     position: relative !important;
-    max-width: calc(100% - 1.2em) !important;
-    box-sizing: border-box !important;
 }
 
 /* Renk aÃ§Ä±klamalarÄ± Ã¢â‚¬â€œ ÅŸemadan 3px altÄ±nda */
@@ -412,9 +411,11 @@
 
 /* Ã…ÂemayÄ± saran kutu (detay dÄ±ÅŸÄ±nda 136px; detayda JS ile Yoktur "r" hizasÄ±; %20 kÃ¼Ã§Ã¼ltme) */
 .kaporta-schema-wrapper {
-    width: 136px;
+    width: 136px !important;
     display: block !important;
-    margin: 0 auto;
+    margin: 0 !important;
+    margin-right: auto !important;
+    margin-top: 0 !important;
     position: relative !important;
 }
 #detail-boya-container .kaporta-schema-wrapper {
