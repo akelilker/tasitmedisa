@@ -95,10 +95,108 @@
     }
   }
 
+  // Kasko Excel cache + hesaplama API'si (tasitlar.js'den taşındı)
+  window._kaskoCache = null;
+
+  function clearKaskoCache() {
+    window._kaskoCache = null;
+  }
+
+  function getKaskoDegeri(kaskoKodu, modelYili) {
+    if (!kaskoKodu) return '-';
+    try {
+      if (!window._kaskoCache) {
+        var raw = localStorage.getItem('medisa_kasko_liste');
+        if (!raw) return '-';
+        window._kaskoCache = JSON.parse(raw);
+      }
+      var data = window._kaskoCache;
+      if (!Array.isArray(data) || data.length < 2) return '-';
+
+      var headerRowIndex = -1;
+      for (var i = 0; i < 10; i++) {
+        var rowStr = JSON.stringify(data[i] || []).toLowerCase();
+        if (rowStr.includes('marka') && rowStr.includes('kod')) {
+          headerRowIndex = i;
+          break;
+        }
+      }
+      if (headerRowIndex === -1) headerRowIndex = 1;
+      var headers = data[headerRowIndex];
+
+      var markaIndex = -1, tipIndex = -1, yearIndex = -1;
+      var targetYear = String(modelYili || '').trim();
+
+      for (var c = 0; c < headers.length; c++) {
+        var h = String(headers[c] || '').toLowerCase().trim();
+        var hRaw = String(headers[c] || '').trim();
+        if (h.includes('marka') && h.includes('kod')) markaIndex = c;
+        if ((h.includes('tip') || h.includes('model')) && h.includes('kod')) tipIndex = c;
+        if (hRaw === targetYear || hRaw === targetYear + '.0') yearIndex = c;
+      }
+
+      if (markaIndex === -1) markaIndex = 0;
+      if (tipIndex === -1) tipIndex = 1;
+      if (yearIndex === -1) return 'Yıl Bulunamadı (' + targetYear + ')';
+
+      var targetClean = String(kaskoKodu).replace(/[^0-9]/g, '').replace(/^0+/, '');
+
+      for (var r = headerRowIndex + 1; r < data.length; r++) {
+        var row = data[r];
+        if (!row || row.length < 2) continue;
+
+        var m = String(row[markaIndex] || '').replace(/[^0-9]/g, '').replace(/^0+/, '');
+        var t = String(row[tipIndex] || '').replace(/[^0-9]/g, '').replace(/^0+/, '');
+        var currentClean = m + t;
+
+        if (targetClean === currentClean) {
+          var rawVal = String(row[yearIndex] || '').trim();
+          var cleanVal = rawVal.replace(/[^0-9,.]/g, '');
+          if (cleanVal.includes(',') && cleanVal.includes('.')) {
+            cleanVal = cleanVal.replace(/\./g, '').replace(',', '.');
+          } else if (cleanVal.includes(',')) {
+            cleanVal = cleanVal.replace(',', '.');
+          } else if (cleanVal.includes('.') && !cleanVal.includes(',')) {
+            cleanVal = cleanVal.replace(/\./g, '');
+          }
+
+          var numVal = parseFloat(cleanVal) || parseInt(cleanVal.replace(/\D/g, ''), 10);
+          if (!isNaN(numVal) && numVal > 0) {
+            return numVal.toLocaleString('tr-TR') + ' ₺';
+          }
+          return 'Değer Yok (Excel: 0)';
+        }
+      }
+      return 'Kasko Kodu Bulunamadı';
+    } catch (e) {
+      console.error('Kasko Hata:', e);
+      return '-';
+    }
+  }
+
+  function guncelleTumKaskoDegerleri() {
+    ensureAppData();
+    var vehicles = (typeof window.getMedisaVehicles === 'function' ? window.getMedisaVehicles() : null) || [];
+    if (!Array.isArray(vehicles) || vehicles.length === 0) return;
+    var tarih = new Date().toISOString();
+    vehicles.forEach(function(v) {
+      var yearForKasko = v.year || v.modelYili || '';
+      v.kaskoDegeri = getKaskoDegeri(v.kaskoKodu, yearForKasko);
+      v.kaskoDegeriYuklemeTarihi = tarih;
+    });
+    saveVehiclesList(vehicles).catch(function(err) {
+      console.warn('[Medisa] Kasko değerleri kaydedilemedi:', err && err.message);
+    });
+  }
+
   window.dataApi = {
     fetchVehicles: fetchVehicles,
     saveVehicle: saveVehicle,
     deleteVehicle: deleteVehicle,
     saveVehiclesList: saveVehiclesList
   };
+
+  window.clearKaskoCache = clearKaskoCache;
+  window.getKaskoDegeri = getKaskoDegeri;
+  window.guncelleTumKaskoDegerleri = guncelleTumKaskoDegerleri;
 })();
