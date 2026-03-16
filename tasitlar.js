@@ -2331,12 +2331,12 @@
     .kaporta-print-section { margin-top: 2px; border: 1px solid #ddd; border-radius: 8px; padding: 4px; page-break-inside: auto; break-inside: auto; }
     .kaporta-print-section h2 { margin: 0 0 4px; font-size: 16px; }
     /* Ekspertiz şemasını sayfaya göre tam ortalamak için bağımsız (absolute) hizalama kullanıldı */
-    .kaporta-print-row { position: relative; display: flex; min-height: 110px; }
+    .kaporta-print-row { position: relative; display: flex; min-height: 160px; /* Alt çerçevenin şemayı kesmemesi için yüksekliği artırdık */ }
     .kaporta-print-state-grid { width: 35%; min-width: 200px; display: grid; grid-template-columns: 1fr 1fr; gap: 4px 5px; align-content: start; z-index: 2; }
     .kaporta-print-schema-wrap {
         position: absolute;
         left: 50%;
-        top: -30px; /* 5 piksel aşağı kaydırıldı, sakinleşildi :) */
+        top: -15px; /* Çerçeve genişlediği için araba artık özgürce aşağı inebilir */
         margin-left: -120px; 
         width: 240px;
         height: 150px;
@@ -2351,7 +2351,7 @@
         position: static;
         width: 150px;
         height: 240px;
-        margin-top: -45px; /* SVG'nin içindeki inatçı ölü boşluğu tamamen kestik */
+        margin-top: -45px;
         transform: rotate(90deg);
         transform-origin: center center;
         object-fit: contain;
