@@ -366,11 +366,11 @@
       '<div class="kaporta-print-row">' +
         '<div class="kaporta-print-state-grid">' +
           '<div class="kaporta-print-col">' +
-            '<h3>Boyalı Parçalar</h3>' +
+            '<h3>Boyalı</h3>' +
             listHtml(boyaliList) +
           '</div>' +
           '<div class="kaporta-print-col">' +
-            '<h3>Değişen Parçalar</h3>' +
+            '<h3>Değişen</h3>' +
             listHtml(degisenList) +
           '</div>' +
         '</div>' +
