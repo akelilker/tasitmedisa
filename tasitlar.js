@@ -11,6 +11,21 @@
     try { return JSON.parse(localStorage.getItem(key) || '[]'); } catch { return []; }
   }
 
+  // --- DİNAMİK DOSYA YÜKLEYİCİ (LAZY LOAD) ---
+  function loadScript(src) {
+    return new Promise(function(resolve, reject) {
+      if (document.querySelector('script[src="' + src + '"]')) {
+        resolve(); // Zaten yüklü
+        return;
+      }
+      var script = document.createElement('script');
+      script.src = src;
+      script.onload = resolve;
+      script.onerror = reject;
+      document.head.appendChild(script);
+    });
+  }
+
   function readBranches() { return (typeof window.getMedisaBranches === 'function' ? window.getMedisaBranches() : null) || []; }
   function readVehicles() { return (typeof window.getMedisaVehicles === 'function' ? window.getMedisaVehicles() : null) || []; }
   function readUsers() { return (typeof window.getMedisaUsers === 'function' ? window.getMedisaUsers() : null) || []; }
@@ -1387,7 +1402,24 @@
           e.preventDefault();
           e.stopPropagation();
         }
-        window.printVehicleCard(vehicle.id);
+        // PERFORMANS: Yazdırma dosyası sadece ilk yazdırılmak istendiğinde (Lazy-Load) indirilir.
+        const originalText = printBtn.innerHTML;
+        printBtn.innerHTML = '<span class="spin-animation" style="display:inline-block; width:16px; height:16px; border:2px solid currentColor; border-right-color:transparent; border-radius:50%; margin-right:4px;"></span> Yükleniyor...';
+        printBtn.disabled = true;
+
+        loadScript('tasitlar-yazici.js?v=20260316').then(function() {
+          printBtn.innerHTML = originalText;
+          printBtn.disabled = false;
+          if (typeof window.printVehicleCard === 'function') {
+            window.printVehicleCard(vehicle.id);
+          } else {
+            alert('Yazdırma modülü yüklenemedi!');
+          }
+        }).catch(function() {
+          printBtn.innerHTML = originalText;
+          printBtn.disabled = false;
+          alert('Bağlantı hatası: Yazdırma modülü indirilemedi.');
+        });
       };
       toolbarRight.appendChild(printBtn);
       
