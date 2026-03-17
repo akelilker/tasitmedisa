@@ -582,11 +582,8 @@
     }
 
     // BEKLEMEDEN ANINDA MEVCUT VERİYLE EKRANI ÇİZ!
-    if (currentView === 'dashboard') {
-      renderBranchDashboard(true); // Force true ile kesin çiz
-    } else {
-      renderVehicles(getVSearchInput()?.value || '');
-    }
+    // Modal her açıldığında önce şube seçim ekranı (dashboard) gösterilsin; filtre butonu sadece şube seçildikten sonra görünsün.
+    renderBranchDashboard(true);
   };
 
   window.closeVehiclesModal = function(event) {
