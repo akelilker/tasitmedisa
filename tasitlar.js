@@ -2844,6 +2844,42 @@ function renderVehicleDetailLeft(vehicle) {
     return cleanFragment ? (cleanBase + '#' + cleanFragment) : cleanBase;
   }
 
+  /** Ruhsat URL'ini yazdırma penceresinde kullanmak için mutlak yap */
+  function toAbsoluteRuhsatUrl(url) {
+    const u = String(url || '').trim();
+    if (!u) return '';
+    if (/^https?:\/\//i.test(u)) return u;
+    try {
+      return new URL(u, window.location.origin).href;
+    } catch (e) {
+      return u;
+    }
+  }
+
+  /**
+   * Mobilde kullanım: ön izleme göstermeden doğrudan sistem yazdırma (Seçenekler) ekranını açar.
+   * Yeni pencerede ruhsat yüklenir ve window.print() tetiklenir.
+   */
+  function openRuhsatPrintDialog(ruhsatUrl) {
+    const url = toAbsoluteRuhsatUrl(ruhsatUrl);
+    if (!url) return;
+    const isImage = /\.(jpeg|jpg|png|gif|webp)(\?.*)?$/i.test(url);
+    const content = isImage
+      ? '<!DOCTYPE html><html><head><meta charset="utf-8"><title>Ruhsat</title></head><body style="margin:0;"><img src="' + escapeHtml(url) + '" style="max-width:100%;height:auto;display:block;" onload="window.print();"></body></html>'
+      : '<!DOCTYPE html><html><head><meta charset="utf-8"><title>Ruhsat</title></head><body style="margin:0;overflow:hidden;"><iframe src="' + escapeHtml(url) + '" style="width:100%;height:100%;border:0;position:fixed;top:0;left:0;right:0;bottom:0;"></iframe><script>window.onload=function(){setTimeout(function(){window.print();},500);};<\/script></body></html>';
+    try {
+      const w = window.open('', '_blank', 'noopener');
+      if (w) {
+        w.document.write(content);
+        w.document.close();
+      } else {
+        window.open(url, '_blank', 'noopener');
+      }
+    } catch (e) {
+      window.open(url, '_blank', 'noopener');
+    }
+  }
+
   function resolveRuhsatUrl(path) {
     const raw = String(path || '').trim();
     if (!raw) return '';
@@ -2953,25 +2989,30 @@ function renderVehicleDetailLeft(vehicle) {
       const btnGroup = document.createElement('div');
       btnGroup.className = 'universal-btn-group ruhsat-preview-row';
 
-      // Mobilde basılı tutunca link gibi davranmasın diye <button> kullanıyoruz
+      // Mobilde: ön izleme yok, sadece "Yazdır" butonu; tıklanınca doğrudan yazdırma (Seçenekler) ekranı açılır.
+      // Masaüstü: ön izleme alanı + tıklanınca inline görüntüleyici.
       const previewBtn = document.createElement('button');
       previewBtn.type = 'button';
       previewBtn.className = 'ruhsat-preview-link';
       previewBtn.setAttribute('aria-label', 'Ruhsatı Yazdır / Görüntüle');
       if (isMobileViewport) {
         previewBtn.classList.add('ruhsat-preview-mobile-btn');
-        previewBtn.style.cssText = 'background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.2); cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 140px; border-radius: 8px;';
+        previewBtn.style.cssText = 'background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.2); cursor: pointer; display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 8px; width: auto; min-width: 140px; height: 48px; border-radius: 8px; padding: 0 16px;';
         previewBtn.innerHTML = `
-          <span style="font-size:14px; font-weight:600; color:#fff; letter-spacing:0.5px;">Görüntüle</span>
-          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin:6px 0; color:#d40000;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; color:#d40000;">
             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
             <polyline points="14 2 14 8 20 8"></polyline>
             <line x1="16" y1="13" x2="8" y2="13"></line>
             <line x1="16" y1="17" x2="8" y2="17"></line>
             <polyline points="10 9 9 9 8 9"></polyline>
           </svg>
-          <span style="font-size:14px; font-weight:600; color:#fff; letter-spacing:0.5px;">Yazdır</span>
+          <span style="font-size:15px; font-weight:600; color:#fff; letter-spacing:0.5px;">Yazdır</span>
         `;
+        previewBtn.onclick = function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          openRuhsatPrintDialog(ruhsatUrl);
+        };
       } else {
         const previewSrc = ruhsatIsImage
           ? ruhsatUrl
@@ -2979,17 +3020,16 @@ function renderVehicleDetailLeft(vehicle) {
         previewBtn.innerHTML = ruhsatIsImage
           ? `<img src="${escapeHtml(previewSrc)}" alt="Ruhsat Ön İzleme" class="ruhsat-preview-image" loading="lazy"><span class="ruhsat-preview-hint">Ön İzleme</span>`
           : `<iframe src="${escapeHtml(previewSrc)}" title="Ruhsat Ön İzleme" loading="lazy" tabindex="-1" aria-hidden="true"></iframe><span class="ruhsat-preview-hint">Ön İzleme</span>`;
+        previewBtn.onclick = function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          if (shouldUseInlineRuhsatViewer()) {
+            renderInlineRuhsatViewer(vid, ruhsatUrl, { showPrintButton: true, forceExternalPrint: true });
+          } else {
+            window.viewRuhsatPdf(vid);
+          }
+        };
       }
-
-      previewBtn.onclick = function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        if (shouldUseInlineRuhsatViewer()) {
-          renderInlineRuhsatViewer(vid, ruhsatUrl, { showPrintButton: true, forceExternalPrint: true });
-        } else {
-          window.viewRuhsatPdf(vid);
-        }
-      };
       btnGroup.appendChild(previewBtn);
 
       const replaceBtn = document.createElement('button');

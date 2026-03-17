@@ -978,6 +978,18 @@ input.settings-form-input:-moz-autofill,
     padding-bottom: 6px;
 }
 
+/* Şube Yönetimi & Kullanıcı Yönetimi: kutulardaki metinler her zaman dikeyde ortada */
+#branch-modal #branch-list .settings-card,
+#user-modal #user-list .settings-card {
+    align-items: center !important;
+    justify-content: center !important;
+}
+#branch-modal #branch-list .settings-card-content,
+#user-modal #user-list .settings-card-content {
+    justify-content: center !important;
+    align-items: center !important;
+}
+
 .settings-card {
     /* DÜZELTME: Yükseklik %15 Küçüldü (100/85) */
     aspect-ratio: 100 / 85; 
