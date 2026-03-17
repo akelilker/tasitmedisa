@@ -117,7 +117,7 @@ body::-webkit-scrollbar,
   }
 }
 
-/* --- EVRENSEL GERİ DÃƒâ€“N NAVİGASYONU (tüm uygulama) --- */
+/* --- EVRENSEL GERİ DÖN NAVİGASYONU (tüm uygulama) --- */
 /* Masaüstü ve mobil ortak: geri dön ok + etiket hizalaması (3px gap, ok 5px aşağı, etiket 1px küçük) */
 
 .universal-back-bar {
@@ -173,7 +173,7 @@ body::-webkit-scrollbar,
 .universal-back-bar .universal-back-btn .back-icon-svg,
 .universal-back-bar .universal-back-btn img {
   position: relative !important;
-  top: 0 !important; /* Ok metin baselineÃ¢â‚¬â„¢a daha iyi hizalanır */
+  top: 0 !important; /* Ok metin baseline'a daha iyi hizalanır */
   margin: 0 !important;
   padding: 0 !important; /* 3px gap bozulmasın */
 }
@@ -214,7 +214,7 @@ body::-webkit-scrollbar,
   font-size: 11.5px !important;
   font-weight: 400 !important;
   width: 100% !important; /* Hücrenin tamamını kapla */
-  max-width: none !important; /* Ãƒâ€“nceki kısıtlamaları kaldır */
+  max-width: none !important; /* Önceki kısıtlamaları kaldır */
   min-width: 0 !important;
   justify-self: stretch !important; /* Grid hücresine yaslan */
   margin: 0 !important; /* Kenar boşluklarını sıfırla */
@@ -659,7 +659,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   align-items: center;
 }
 
-/* PWA yÃ¼kleme Ã§ubuÄŸu: buton + iptal (X) */
+/* PWA yükleme çubuğu: buton + iptal (X) */
 .pwa-install-bar {
   display: flex;
   align-items: center;
@@ -856,7 +856,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   display: none !important;
 }
 
-/* MTV Bildirimi - Global Ã‡akÄ±ÅŸma Ã–nleyici */
+/* MTV Bildirimi - Global Çakışma Ã–nleyici */
 #notifications-dropdown .mtv-notification {
   display: flex !important;
   flex-direction: row !important;
@@ -982,7 +982,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   pointer-events: none;
 }
 
-/* Hover ve mobil focus/active: tooltip gÃ¶rÃ¼nsÃ¼n */
+/* Hover ve mobil focus/active: tooltip görünsün */
 .mtv-dismiss-wrapper:hover .mtv-tooltip,
 .mtv-dismiss-btn:focus + .mtv-tooltip,
 .mtv-dismiss-btn:active + .mtv-tooltip {
@@ -1170,7 +1170,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   width: 100%;
 }
 
-/* Ãƒâ€“nbellek Temizle Butonu - Kırmızı + Hover Büyüme */
+/* Önbellek Temizle Butonu - Kırmızı + Hover Büyüme */
 .settings-dropdown .cache-clear-btn {
   color: var(--theme-color) !important; /* Kırmızı metin */
   border: 1px solid rgba(var(--theme-color-rgb), 0.5) !important; /* Kırmızı çerçeve */
@@ -1269,7 +1269,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
 
 .card { background: var(--card-bg); padding: 16px; border-radius: 12px; border: 1px solid var(--br); }
 
-/* --- MODALLAR: ORTAK OVERLAY + CONTAINER (tek yerden yÃ¶netim) --- */
+/* --- MODALLAR: ORTAK OVERLAY + CONTAINER (tek yerden yönetim) --- */
 .modal-overlay {
   position: fixed !important;
   top: 0 !important;
@@ -1277,7 +1277,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   right: 0;
   bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
   z-index: 9999 !important;
-  isolation: isolate !important; /* IÅŸÄ±k sÄ±zmasÄ±nÄ± engeller */
+  isolation: isolate !important; /* Işık sızmasını engeller */
   display: none;
   background: var(--shadow-overlay);
   backdrop-filter: blur(5px);
@@ -1294,7 +1294,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   display: flex !important;
 }
 
-/* Ana uygulama modalÄ±: En dÄ±ÅŸ overlay footer ve glow'un KESÄ°N Ã¼stÃ¼nde (Ä±ÅŸÄ±k sÄ±zmasÄ±n). */
+/* Ana uygulama modalı: En dış overlay footer ve glow'un KESÄ°N üstünde (ışık sÄ±zmasÄ±n). */
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay.active,
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay.open {
   z-index: 99999 !important;
@@ -1309,17 +1309,17 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
   max-height: 90vh !important;
   box-sizing: border-box;
 }
-/* Modal iÃ§ kapsayÄ±cÄ±: overlay'e %100 uyum (vh kullanma, giyotin Ã¶nlenir) */
+/* Modal iç kapsayıcı: overlay'e %100 uyum (vh kullanma, giyotin Ã¶nlenir) */
 .modal-overlay .modal-container {
   max-height: 100% !important;
   height: 100% !important;
 }
 .modal-overlay .modal-container {
-  isolation: isolate !important; /* Yeni stacking context; footer glow iÃ§eri sÄ±zamaz */
+  isolation: isolate !important; /* Yeni stacking context; footer glow içeri sızamaz */
   position: relative;
-  z-index: 9999 !important; /* Footer ve footer Ä±ÅŸÄ±ÄŸÄ±nÄ±n Ã¼stÃ¼nde; Ä±ÅŸÄ±k sÄ±zmasÄ±n */
+  z-index: 9999 !important; /* Footer ve footer Ä±ÅŸÄ±ÄŸÄ±nÄ±n üstünde; ışık sÄ±zmasÄ±n */
   background: var(--modal-bg) !important;
-  background-color: var(--modal-bg) !important; /* Cam etkisini beton: saydamlÄ±k yok */
+  background-color: var(--modal-bg) !important; /* Cam etkisini beton: saydamlık yok */
   width: 100%;
   max-width: var(--modal-max-width);
   margin: max(12px, env(safe-area-inset-top)) auto 0 auto !important;
@@ -1540,7 +1540,7 @@ body.modal-open .user-panel-link {
   flex-shrink: 0;
 }
 
-/* 4. FOOTER (GÜÇLI KIRMIZI TEMA + AYRILIK) – yÃ¼kseklik/padding ezilmesin */
+/* 4. FOOTER (GÜÇLI KIRMIZI TEMA + AYRILIK) – yükseklik/padding ezilmesin */
 #app-footer {
     position: fixed;
     bottom: 0;
@@ -1616,7 +1616,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
     opacity: 1; /* Varsayılan opacity */
 }
 
-/* Versiyon solda - daha belirgin; ezilmesin, taÅŸmasÄ±n */
+/* Versiyon solda - daha belirgin; ezilmesin, taşmasın */
 #app-footer .version {
     text-align: left;
     flex: 1;
@@ -2282,7 +2282,7 @@ body.modal-open .content-wrap::before {
   gap: 8px;
 }
 
-/* === NOKTA ATIÅžI: Ana uygulama modallarÄ± alt Ã§erÃ§eve (KayÄ±t, TaÅŸÄ±t, Rapor) - overlay clip-path yok, alt Ã§erÃ§eve gÃ¶rÃ¼nsÃ¼n; boşluk 6px === */
+/* === NOKTA ATIÅžI: Ana uygulama modallarÄ± alt Ã§erÃ§eve (KayÄ±t, TaÅŸÄ±t, Rapor) - overlay clip-path yok, alt Ã§erÃ§eve görünsün; boşluk 6px === */
 @media (max-width: 768px) {
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicle-modal.modal-overlay,
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #reports-modal.modal-overlay,
@@ -2298,7 +2298,7 @@ body.modal-open .content-wrap::before {
   }
 }
 
-/* Modal aÃ§Ä±kken footer Ã¼stÃ¼ndeki boÅŸluk (gap) her viewport'ta dolsun â€“ modal gÃ¶lge/Ã§erÃ§eve parÃ§alarÄ± gÃ¶rÃ¼nmesin */
+/* Modal aÃ§Ä±kken footer üstündeki boÅŸluk (gap) her viewport'ta dolsun â€“ modal gÃ¶lge/Ã§erÃ§eve parÃ§alarÄ± gÃ¶rÃ¼nmesin */
 body.modal-open::after {
   content: '';
   position: fixed;
