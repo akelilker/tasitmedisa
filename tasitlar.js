@@ -1946,8 +1946,8 @@ function renderVehicleDetailLeft(vehicle) {
       html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Tramer Kaydı</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> Yoktur.</span></div>`;
   }
 
-  // Kaporta Durumu (Legend eklendi)
-  html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Kaporta Durumu</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> `;
+  // Kaporta Durumu (Legend eklendi; açıklama metni 1.5pt küçük – CSS .detail-row-kaporta)
+  html += `<div class="detail-row detail-row-inline detail-row-kaporta"><div class="detail-row-header"><span class="detail-row-label">Kaporta Durumu</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> `;
   if (vehicle.boya === 'var' && vehicle.boyaliParcalar) {
       html += 'Aşağıdaki şemada belirtilmiştir.';
   } else {
@@ -2114,9 +2114,9 @@ function renderVehicleDetailLeft(vehicle) {
         const shrinkX = 4;
         const shrinkY = 18; // Dikeyde toplam 10px daha küçük görünüm
         const defaultTargetWidth = Math.round((220 - shrinkX) * schemaScale);
-        const targetHeight = Math.round(defaultTargetWidth * (148 / 220)) - shrinkY;
+        const targetHeight = Math.round(defaultTargetWidth * (148 / 220)) - shrinkY - 5; /* 5px daha kısa */
 
-        // Wrapper oluştur (Şemayı tutacak kutu); başlangıç değeri, ölçüm sonrası güncellenir
+        // Wrapper oluştur (Şemayı tutacak kutu); yatayda ortalı, üst boşluk container'da 3px
         const svgWrapper = document.createElement('div');
         svgWrapper.className = 'kaporta-schema-wrapper';
         svgWrapper.style.cssText = `
@@ -2127,7 +2127,7 @@ function renderVehicleDetailLeft(vehicle) {
             justify-content: center;
             overflow: visible;
             flex-shrink: 0;
-            margin: 20px auto 20px 0; /* Arabanın dönmesi için üstten alttan yer açtık */
+            margin: 0 auto 20px auto;
         `;
 
         // SVG'yi hazırla (zaten clone geldi)
@@ -2203,7 +2203,7 @@ function renderVehicleDetailLeft(vehicle) {
             const maxW = 304;
             const clamped = Math.max(minW, Math.min(maxW, Math.round(availableWidth * 0.8)));
             const w = clamped - shrinkX;
-            const h = Math.round(clamped * (148 / 220)) - shrinkY;
+            const h = Math.round(clamped * (148 / 220)) - shrinkY - 5; /* 5px daha kısa */
             svgWrapper.style.width = w + 'px';
             svgWrapper.style.height = h + 'px';
 
