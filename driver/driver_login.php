@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $input = json_decode(file_get_contents('php://input'), true);
 $username = trim($input['username'] ?? '');
 $username = mb_substr($username, 0, 255);
-$password = $input['password'] ?? '';
+$password = trim($input['password'] ?? '');
 
 if (empty($username) || empty($password)) {
     echo json_encode(['success' => false, 'message' => 'Kullanıcı adı ve şifre gerekli!'], JSON_UNESCAPED_UNICODE);
@@ -54,14 +54,13 @@ if (!$user) {
 }
 
 // Şifre kontrolü (basit - production'da password_verify kullan)
-// Eğer sifre_hash yoksa ve password alanı varsa (eski format), direkt karşılaştır
+// Girişte ve kayıtta trim uygula ki boşluktan eşleşmezlik olmasın
+$storedSifre = isset($user['sifre']) ? trim((string)$user['sifre']) : '';
 $passwordMatch = false;
 if (isset($user['sifre_hash'])) {
-    // Hash'lenmiş şifre var
     $passwordMatch = password_verify($password, $user['sifre_hash']);
-} elseif (isset($user['sifre'])) {
-    // Plain text şifre (geçici - güvenli değil)
-    $passwordMatch = ($password === $user['sifre']);
+} elseif ($storedSifre !== '') {
+    $passwordMatch = ($password === $storedSifre);
 }
 
 if (!$passwordMatch) {

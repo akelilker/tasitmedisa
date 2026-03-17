@@ -660,7 +660,7 @@
         const email = emailInput ? emailInput.value.trim() : '';
         const role = roleSelect ? roleSelect.value : 'driver';
         const kullanici_adi = usernameInput ? usernameInput.value.trim() : '';
-        const sifre = passwordInput ? passwordInput.value : '';
+        const sifre = passwordInput ? passwordInput.value.trim() : '';
         const selectedVehicleIds = vehiclesContainer
           ? Array.from(vehiclesContainer.querySelectorAll('input[name=user-vehicle]:checked')).map(cb => cb.value)
           : [];
@@ -699,7 +699,8 @@
             users[idx].email = email;
             users[idx].role = role;
             users[idx].kullanici_adi = kullanici_adi;
-            users[idx].sifre = sifre;
+            // Şifre: boş bırakılırsa eskisini koru (yanlışlıkla silinmesin)
+            if (sifre !== '') users[idx].sifre = sifre;
           }
         } else {
           // Yeni EKLEME
