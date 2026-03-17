@@ -1706,6 +1706,12 @@
   // --- Initialization ---
   function initVehicleModalListeners() {
     // Tarih placeholder'ları modal açıldığında kurulacak (openVehicleModal'da)
+    // #region agent log
+    (function () {
+      var modal = getModal();
+      fetch('http://127.0.0.1:7885/ingest/f748c7df-0c18-4178-a736-c89151ca12d1',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'ef30fa'},body:JSON.stringify({sessionId:'ef30fa',location:'kayit.js:initVehicleModalListeners',message:'init',data:{hasModal:!!modal,radioCount:modal?$all(".radio-btn",modal).length:0,hasBranchTrigger:!!document.getElementById("vehicle-branch-trigger"),hasBranchList:!!document.getElementById("vehicle-branch-list")},timestamp:Date.now(),hypothesisId:'H1'})}).catch(function(){});
+    })();
+    // #endregion
 
     // Radio Button Logic
     $all(".radio-btn", getModal()).forEach(btn => {
@@ -1716,6 +1722,9 @@
         
         // Hata sınıfını kaldır (Şanzıman veya Tramer için)
         const section = btn.closest(".form-section-inline");
+        // #region agent log
+        fetch('http://127.0.0.1:7885/ingest/f748c7df-0c18-4178-a736-c89151ca12d1',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'ef30fa'},body:JSON.stringify({sessionId:'ef30fa',location:'kayit.js:radioClick',message:'radio click',data:{sectionId:section?section.dataset.section:null,value:btn.dataset.value},timestamp:Date.now(),hypothesisId:'H5'})}).catch(function(){});
+        // #endregion
         if (section) {
           section.classList.remove('field-error');
         }
@@ -1738,7 +1747,10 @@
         
         // Hover class'larını güncelle
         updateRadioButtonHover();
-        
+        // #region agent log
+        fetch('http://127.0.0.1:7885/ingest/f748c7df-0c18-4178-a736-c89151ca12d1',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'ef30fa'},body:JSON.stringify({sessionId:'ef30fa',location:'kayit.js:radioClickAfterColor',message:'radio color',data:{sectionLabel:(sectionLabel||'').slice(0,50),hasGreen:btn.classList.contains('green'),hasActive:btn.classList.contains('active')},timestamp:Date.now(),hypothesisId:'H3'})}).catch(function(){});
+        // #endregion
+
         // Tramer kaydı için özel mantık (sectionLabel zaten tanımlı)
         const isTramer = sectionLabel.includes("Tramer");
         
@@ -1792,6 +1804,9 @@
                     nextElem.classList.remove("input-visible");
                 }
             }
+            // #region agent log
+            fetch('http://127.0.0.1:7885/ingest/f748c7df-0c18-4178-a736-c89151ca12d1',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'ef30fa'},body:JSON.stringify({sessionId:'ef30fa',location:'kayit.js:radioReveal',message:'reveal',data:{nextElemFound:!!nextElem,conditionalId:conditionalInput?conditionalInput.id:null,inputVisibleAdded:btn.dataset.value==='var'},timestamp:Date.now(),hypothesisId:'H2'})}).catch(function(){});
+            // #endregion
         }
       });
     });
@@ -2033,6 +2048,9 @@
         branchList.style.width = "";
       }
       branchTrigger.addEventListener("click", function () {
+        // #region agent log
+        fetch('http://127.0.0.1:7885/ingest/f748c7df-0c18-4178-a736-c89151ca12d1',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'ef30fa'},body:JSON.stringify({sessionId:'ef30fa',location:'kayit.js:branchTriggerClick',message:'branch trigger click',data:{wasOpen:branchList.classList.contains('open')},timestamp:Date.now(),hypothesisId:'H4'})}).catch(function(){});
+        // #endregion
         var isOpen = branchList.classList.contains("open");
         if (isOpen) {
           closeBranchList();
