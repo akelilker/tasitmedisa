@@ -1,5 +1,5 @@
 /* =========================================
-   TAÅITLAR MODÃœLÃœ - SABÄ°T HEADER / DÄ°NAMÄ°K TOOLBAR
+   TAŞITLAR MODÜLÜ - SABİT HEADER / DİNAMİK TOOLBAR
    ========================================= */
 
 (function() {
@@ -398,7 +398,7 @@
     });
   }
 
-  // ÅanzÄ±man dropdown: delegation (her option'a ayrı listener yerine tek listener)
+  // Şanzıman dropdown: delegation (her option'a ayrı listener yerine tek listener)
   if (DOM.vehiclesModalContainer && !DOM.vehiclesModalContainer._transmissionDelegationBound) {
     DOM.vehiclesModalContainer._transmissionDelegationBound = true;
     DOM.vehiclesModalContainer.addEventListener('click', function(e) {
@@ -614,7 +614,7 @@
     if (!toolbar) return;
 
     if (mode === 'dashboard') {
-        // DASHBOARD MODU: Sağda Genel Arama, ÅanzÄ±man filtresi ve Arşiv
+        // DASHBOARD MODU: Sağda Genel Arama, Şanzıman filtresi ve Arşiv
         toolbar.innerHTML = `
             <div class="vt-left"></div>
             <div class="vt-right">
@@ -891,7 +891,7 @@
         );
     }
 
-    // 2b. ÅanzÄ±man filtresi (Otomatik/Manuel)
+    // 2b. Şanzıman filtresi (Otomatik/Manuel)
     if (transmissionFilter) {
         vehicles = vehicles.filter(v => v.transmission === transmissionFilter);
     }
@@ -899,7 +899,7 @@
       // 3. Sıralama
       vehicles = applyFilter(vehicles);
 
-      // Şube seçiliyken liste görünümünde ÅŸube sütunu gösterilmez
+      // Şube seçiliyken liste görünümünde şube sütunu gösterilmez
       const safeColumnOrder = Array.isArray(vehicleColumnOrder) ? vehicleColumnOrder : ['year', 'plate', 'brand', 'km', 'type', 'user', 'branch'];
       const displayColumnOrder = (activeBranchId === 'all' || activeBranchId === '__archive__') ? safeColumnOrder : safeColumnOrder.filter(function(k) { return k !== 'branch'; });
       const isMobileList = window.innerWidth <= 768;
@@ -1612,7 +1612,7 @@
     }
   };
 
-  // --- ARAMA Ä°ÅLEMLERÄ° ---
+  // --- ARAMA İŞLEMLERİ ---
   let searchMode = 'local'; // 'global' or 'local'
 
   window.toggleSearchBox = function(mode) {
@@ -1918,7 +1918,7 @@
   // NOT: Yazdırma (Taşıt Kartı Print) işlemleri "tasitlar-yazici.js" dosyasına taşınmıştır.
   /**
    * /**
- * Sol kolon render (Taşıt özellikleri + Kaporta ŞemasÄ±)
+ * Sol kolon render (Taşıt özellikleri + Kaporta Şeması)
  */
 function renderVehicleDetailLeft(vehicle) {
   const leftEl = DOM.vehicleDetailLeft;
@@ -1969,7 +1969,7 @@ function renderVehicleDetailLeft(vehicle) {
       html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Km (Al\u0131nd\u0131\u011F\u0131 Tarih)</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(formattedKm || '-')}</span></div>`;
   }
 
-  // ÅanzÄ±man
+  // Şanzıman
   const transmission = vehicle.transmission || '';
   const transmissionLabel = transmission === 'otomatik' ? 'Otomatik' : transmission === 'manuel' ? 'Manuel' : '';
   html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">\u015Eanz\u0131man</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(transmissionLabel)}</span></div>`;
@@ -2017,7 +2017,7 @@ function renderVehicleDetailLeft(vehicle) {
   // HTML'i sol kolona bas
   leftEl.innerHTML = html;
 
-  // --- ÅEMA EKLEME: Sol grid (sol kolon) içinde; büyüklük sol kolona göre uyarlanır ---
+  // --- ŞEMA EKLEME: Sol grid (sol kolon) içinde; büyüklük sol kolona göre uyarlanır ---
   const existingBoyaContainer = document.getElementById('detail-boya-container');
   if (existingBoyaContainer) existingBoyaContainer.remove();
 
@@ -2175,7 +2175,7 @@ function renderVehicleDetailLeft(vehicle) {
         const defaultTargetWidth = Math.round((220 - shrinkX) * schemaScale);
         const targetHeight = Math.round(defaultTargetWidth * (148 / 220)) - shrinkY;
 
-        // Wrapper oluştur (ŞemayÄ± tutacak kutu); başlangıç değeri, ölçüm sonrası güncellenir
+        // Wrapper oluştur (Şemayı tutacak kutu); başlangıç değeri, ölçüm sonrası güncellenir
         const svgWrapper = document.createElement('div');
         svgWrapper.className = 'kaporta-schema-wrapper';
         svgWrapper.style.cssText = `
@@ -2540,7 +2540,7 @@ function renderVehicleDetailLeft(vehicle) {
           input.value = vehicle.kaskoKodu || '';
         }
       } else if (type === 'sube') {
-        // Şube değişikliği modal'ında ÅŸubeleri doldur
+        // Şube değişikliği modal'ında şubeleri doldur
         const selectEl = document.getElementById('sube-select');
         if (selectEl) {
           selectEl.innerHTML = '<option value="">\u015Eube Se\u00E7iniz</option>';
