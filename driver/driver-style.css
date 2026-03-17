@@ -978,9 +978,9 @@ body.dashboard-page {
   margin-left: 2px;
   margin-right: 0.3em; /* ":" ile açıklamanın ilk harfi arasında bir boşluk */
 }
-/* Açıklamalar (kullanıcı verisi) gri – hem mobil hem masaüstü */
+/* Açıklamalar (değerler) gri – etiket beyaz kuralı; global --data-value-color (#f8f9fa) bypass */
 .driver-info-item .value {
-  color: var(--data-value-color, #a0aec0) !important;
+  color: #a0aec0 !important;
   word-break: break-word;
   font-size: 13px;
   min-width: min-content; /* Sığmazsa açıklama daralmadan tamamı alt satıra geçer, ortadan bölünmez */
@@ -3101,18 +3101,17 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   text-align: right;
 }
 
-/* Etiket beyaz, açıklama gri: p varsayılan gri; strong etiket (beyaz) */
+/* Etiket beyaz, açıklama gri: değerler #a0aec0 (global --data-value-color bypass) */
 .history-details p {
   font-size: 14px;
-  color: var(--data-value-color, #a0aec0);
+  color: #a0aec0 !important;
   margin: 0;
   padding: 0;
   line-height: 1.3;
 }
 
-/* Etiketler beyaz, açıklamalar gri (paragraf rengi) */
 .history-details strong {
-  color: #ffffff;
+  color: #ffffff !important;
 }
 
 /* Kalem ikonu: sağda dikeyde ortalan, arka plan ve çerçeve yok */
