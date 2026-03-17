@@ -398,7 +398,7 @@
     });
   }
 
-  // ÅanzÄ±man dropdown: delegation (her option'a ayrÄ± listener yerine tek listener)
+  // ÅanzÄ±man dropdown: delegation (her option'a ayrı listener yerine tek listener)
   if (DOM.vehiclesModalContainer && !DOM.vehiclesModalContainer._transmissionDelegationBound) {
     DOM.vehiclesModalContainer._transmissionDelegationBound = true;
     DOM.vehiclesModalContainer.addEventListener('click', function(e) {
@@ -614,7 +614,7 @@
     if (!toolbar) return;
 
     if (mode === 'dashboard') {
-        // DASHBOARD MODU: SaÄŸda Genel Arama, ÅanzÄ±man filtresi ve ArÅŸiv
+        // DASHBOARD MODU: Sağda Genel Arama, ÅanzÄ±man filtresi ve Arşiv
         toolbar.innerHTML = `
             <div class="vt-left"></div>
             <div class="vt-right">
@@ -704,7 +704,7 @@
     const vehicles = readVehicles();
     const activeVehicles = vehicles.filter(v => v.satildiMi !== true);
 
-    // Åube kartlarÄ± iÃ§in sayÄ±mlar (Map ile O(n))
+    // Şube kartları için sayımlar (Map ile O(n))
     const countByBranch = new Map();
     let unassignedCount = 0;
     activeVehicles.forEach(v => {
@@ -752,7 +752,7 @@
       </div>
     `;
 
-    // 2. Åube kartlarÄ±
+    // 2. Şube kartları
     branches.forEach(branch => {
       html += createBranchCard(branch.id, branch.name, countByBranch.get(String(branch.id)) || 0);
     });
@@ -796,7 +796,7 @@
     `;
   }
 
-  // --- 2. LÄ°STE RENDER (Åube DetayÄ±) ---
+  // --- 2. LİSTE RENDER (Şube Detayı) ---
   window.openBranchList = function(branchId, branchName) {
     currentView = 'list';
     viewMode = 'list';
@@ -831,14 +831,14 @@
    * @param {string} [query=''] - Metin arama sorgusu (opsiyonel)
    * 
    * Render akışı:
-   * 1. Åube filtresi uygula (all | '' | branchId)
+   * 1. Şube filtresi uygula (all | '' | branchId)
    * 2. Metin araması yap (marka/model, yıl, tahsis edilen kişi)
    * 3. Sıralama/filtreleme uygula (applyFilter)
    * 4. Card veya List view'da HTML oluştur
    * 5. Grid kolon sayısını dinamik ayarla (card view için)
    * 
    * Görünüm modları:
-   * - Card: Plaka, Marka/Model, Åube/Kullanıcı (3 satÄ±r)
+   * - Card: Plaka, Marka/Model, Şube/Kullanıcı (3 satır)
    * - List: Marka/Model, Yıl/Km, Düzenle/Sil butonları
    */
   function renderVehicles(query = '') {
@@ -864,11 +864,11 @@
         userMap[String(u.id)] = u;
       }
 
-    // 1. ArÅŸiv veya Åube Filtresi
+    // 1. Arşiv veya Şube Filtresi
     if (activeBranchId === '__archive__') {
         vehicles = vehicles.filter(v => v.satildiMi === true);
     } else {
-        // Åube filtresi
+        // Şube filtresi
         if (activeBranchId === 'all') {
             // Filtre yok
         } else if (activeBranchId === '') {
@@ -899,7 +899,7 @@
       // 3. Sıralama
       vehicles = applyFilter(vehicles);
 
-      // Åube seÃ§iliyken liste gÃ¶rÃ¼nÃ¼mÃ¼nde ÅŸube sÃ¼tunu gÃ¶sterilmez
+      // Şube seçiliyken liste görünümünde ÅŸube sütunu gösterilmez
       const safeColumnOrder = Array.isArray(vehicleColumnOrder) ? vehicleColumnOrder : ['year', 'plate', 'brand', 'km', 'type', 'user', 'branch'];
       const displayColumnOrder = (activeBranchId === 'all' || activeBranchId === '__archive__') ? safeColumnOrder : safeColumnOrder.filter(function(k) { return k !== 'branch'; });
       const isMobileList = window.innerWidth <= 768;
@@ -1430,7 +1430,7 @@
     if (existingAssign) existingAssign.remove(); // Önceki formu temizle
 
     if (!vehicle.branchId) {
-      // Tahsis edilmemiÅŸ - Åube atama formu gÃ¶ster
+      // Tahsis edilmemiş - Şube atama formu göster
       const branches = readBranches();
       
       const assignDiv = document.createElement('div');
@@ -1451,7 +1451,7 @@
       
       contentEl.appendChild(assignDiv);
       
-      // Åubeleri dinamik olarak ekle
+      // Şubeleri dinamik olarak ekle
       const selectEl = document.getElementById('detail-branch-select');
       if (selectEl) {
         // Önce select'i resetle (placeholder'ı garanti görünür yap)
@@ -1460,7 +1460,7 @@
         selectEl.classList.remove('has-value');
         selectEl.style.color = '#888';
         
-        // Åubeleri ekle
+        // Şubeleri ekle
         if (branches.length > 0) {
           branches.forEach(b => {
             const opt = document.createElement('option');
@@ -1525,7 +1525,7 @@
     if (textWidth > availableWidth) el.classList.add('detail-row-value-sube-shrink');
   };
 
-  // --- Åube Atama Formunu AÃ§/Kapat ---
+  // --- Şube Atama Formunu Aç/Kapat ---
   window.toggleBranchAssign = function() {
     const form = document.getElementById('assign-form');
     if (form) {
@@ -1533,7 +1533,7 @@
     }
   };
 
-  // --- Åubeye Tahsis Et ---
+  // --- Şubeye Tahsis Et ---
   window.assignVehicleToBranch = function(vehicleId) {
     const selectEl = document.getElementById('detail-branch-select');
     if (!selectEl) return;
@@ -1918,7 +1918,7 @@
   // NOT: Yazdırma (Taşıt Kartı Print) işlemleri "tasitlar-yazici.js" dosyasına taşınmıştır.
   /**
    * /**
- * Sol kolon render (TaÅŸÄ±t Ã¶zellikleri + Kaporta ÅemasÄ±)
+ * Sol kolon render (Taşıt özellikleri + Kaporta ŞemasÄ±)
  */
 function renderVehicleDetailLeft(vehicle) {
   const leftEl = DOM.vehicleDetailLeft;
@@ -1939,7 +1939,7 @@ function renderVehicleDetailLeft(vehicle) {
       html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Kullanıcı</span><span class="detail-row-colon">:</span></div><span class="detail-row-value detail-user-empty" onclick="event.stopPropagation(); if (window.currentDetailVehicleId) openEventModal('kullanici', window.currentDetailVehicleId);"> Kullanıcı Eklemek İçin +</span></div>`;
   }
 
-  // Åube
+  // Şube
   const branches = readBranches();
   const branchId = vehicle.branchId || '';
   const branchName = branchId ?
@@ -2017,7 +2017,7 @@ function renderVehicleDetailLeft(vehicle) {
   // HTML'i sol kolona bas
   leftEl.innerHTML = html;
 
-  // --- ÅEMA EKLEME: Sol grid (sol kolon) iÃ§inde; bÃ¼yÃ¼klÃ¼k sol kolona gÃ¶re uyarlanÄ±r ---
+  // --- ÅEMA EKLEME: Sol grid (sol kolon) içinde; büyüklük sol kolona göre uyarlanır ---
   const existingBoyaContainer = document.getElementById('detail-boya-container');
   if (existingBoyaContainer) existingBoyaContainer.remove();
 
@@ -2166,7 +2166,7 @@ function renderVehicleDetailLeft(vehicle) {
 
         container.innerHTML = '';
 
-        // Åema geniÅŸliÄŸi: sol grid iÃ§inde, sol kolon geniÅŸliÄŸine gÃ¶re requestAnimationFrame ile uyarlanÄ±r (yatay -4px, dikey -8px kÃ¼Ã§Ã¼ltme; %20 kÃ¼Ã§Ã¼ltme)
+        // Şema genişliği: sol grid içinde, sol kolon genişliğine göre requestAnimationFrame ile uyarlanır (yatay -4px, dikey -8px küçültme; %20 küçültme)
         const schemaScale = 0.8; /* %20 küçültme */
         const svgOrgWidth = 148;
         const svgOrgHeight = 220;
@@ -2175,7 +2175,7 @@ function renderVehicleDetailLeft(vehicle) {
         const defaultTargetWidth = Math.round((220 - shrinkX) * schemaScale);
         const targetHeight = Math.round(defaultTargetWidth * (148 / 220)) - shrinkY;
 
-        // Wrapper oluÅŸtur (ÅemayÄ± tutacak kutu); baÅŸlangÄ±Ã§ deÄŸeri, Ã¶lÃ§Ã¼m sonrasÄ± gÃ¼ncellenir
+        // Wrapper oluştur (ŞemayÄ± tutacak kutu); başlangıç değeri, ölçüm sonrası güncellenir
         const svgWrapper = document.createElement('div');
         svgWrapper.className = 'kaporta-schema-wrapper';
         svgWrapper.style.cssText = `
@@ -2540,7 +2540,7 @@ function renderVehicleDetailLeft(vehicle) {
           input.value = vehicle.kaskoKodu || '';
         }
       } else if (type === 'sube') {
-        // Åube deÄŸiÅŸikliÄŸi modal'Ä±nda ÅŸubeleri doldur
+        // Şube değişikliği modal'ında ÅŸubeleri doldur
         const selectEl = document.getElementById('sube-select');
         if (selectEl) {
           selectEl.innerHTML = '<option value="">\u015Eube Se\u00E7iniz</option>';
@@ -3228,7 +3228,7 @@ function renderVehicleDetailLeft(vehicle) {
         
         container.innerHTML = '';
         
-        // Åema wrapper'Ä± oluÅŸtur
+        // Şema wrapper'ı oluştur
         const schemaWrapper = document.createElement('div');
         schemaWrapper.style.display = 'flex';
         schemaWrapper.style.alignItems = 'flex-start';
@@ -3899,7 +3899,7 @@ function renderVehicleDetailLeft(vehicle) {
     const eskiKmNum = parseInt(String(eskiKm).replace(/\D/g, ''), 10) || 0;
     const yeniKmNum = parseInt(yeniKm, 10) || 0;
     if (eskiKmNum > 0 && yeniKmNum < eskiKmNum) {
-      alert('Bildirilmek Ä°stenen Km, Önceki KayÄ±tlarla UyuÅŸmamaktadÄ±r. Åirket Yetkilisi Ä°le GÃ¶rÃ¼ÅŸÃ¼n');
+      alert('Bildirilmek İstenen Km, Önceki Kayıtlarla Uyuşmamaktadır. Şirket Yetkilisi İle Görüşün');
       return;
     }
     
@@ -4043,7 +4043,7 @@ function renderVehicleDetailLeft(vehicle) {
   };
 
   /**
-   * Åube deÄŸiÅŸikliÄŸi kaydet
+   * Şube değişikliği kaydet
    */
   window.updateSubeDegisiklik = function() {
     const vehicleId = window.currentDetailVehicleId;
