@@ -1010,8 +1010,8 @@ input.settings-form-input:-moz-autofill,
     justify-content: center;
     width: 100%;
     flex: 1;
+    min-height: 0;
     gap: 2px;
-    /* Metinleri yatayda ortala */
     text-align: center;
 }
 
