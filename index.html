@@ -869,6 +869,30 @@
             </div>
         </div>
 
+        <!-- Tarihçe modalı (bakım, kaza, km, diğer sekmeleri burada doldurulur) -->
+        <div id="vehicle-history-modal" class="modal-overlay tasitlar-modal-overlay ayarlar-modal-overlay" onclick="if(event.target === this) { event.stopPropagation(); }">
+            <div class="modal-container" onclick="event.stopPropagation();">
+                <div class="modal-header">
+                    <h2>TAŞIT TARİHÇESİ</h2>
+                    <button class="modal-close" onclick="closeAllModals();">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="history-tabs" style="display: flex; align-items: center; justify-content: center; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+                        <button type="button" class="history-tab active" data-tab="bakim" onclick="switchHistoryTab('bakim')" style="flex: 1; background: transparent; border: none; color: var(--form-label-color); padding: 8px 12px 4px 12px; cursor: pointer; font-weight: normal; font-size: 12px; border-bottom: 2px solid transparent; text-align: center;">Bakım Geçmişi</button>
+                        <button type="button" class="history-tab" data-tab="kaza" onclick="switchHistoryTab('kaza')" style="flex: 1; background: transparent; border: none; color: var(--form-label-color); padding: 8px 12px 4px 12px; cursor: pointer; font-weight: normal; font-size: 12px; border-bottom: 2px solid transparent; text-align: center;">Kaza Geçmişi</button>
+                        <button type="button" class="history-tab" data-tab="km" onclick="switchHistoryTab('km')" style="flex: 1; background: transparent; border: none; color: var(--form-label-color); padding: 8px 12px 4px 12px; cursor: pointer; font-weight: normal; font-size: 12px; border-bottom: 2px solid transparent; text-align: center;">Km Güncelle</button>
+                        <button type="button" class="history-tab" data-tab="diger" onclick="switchHistoryTab('diger')" style="flex: 1; background: transparent; border: none; color: var(--form-label-color); padding: 8px 12px 4px 12px; cursor: pointer; font-weight: normal; font-size: 12px; border-bottom: 2px solid transparent; text-align: center;">Diğer</button>
+                    </div>
+                    <div id="history-content"></div>
+                </div>
+            </div>
+        </div>
+
     <!-- INLINE KRITIK JS: Harici script dosyaları 404 olsa bile loading screen kapanır -->
     <script>
     (function(){
