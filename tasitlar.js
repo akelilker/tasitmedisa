@@ -612,8 +612,13 @@
   function updateToolbar(mode, title = '') {
     const { toolbar } = ensureToolbar();
     if (!toolbar) return;
+    var modalContainer = toolbar.parentElement;
+    var fd = getFilterDropdown();
+
     if (mode === 'dashboard') {
-        var fd = getFilterDropdown();
+        if (fd && fd.parentElement !== modalContainer) {
+          modalContainer.appendChild(fd);
+        }
         if (fd) {
           fd.classList.remove('open');
           fd.style.display = 'none';
@@ -648,14 +653,6 @@
             </div>
         `;
     } else {
-        var fd = getFilterDropdown();
-        if (fd) {
-          fd.style.display = '';
-          fd.style.position = '';
-          fd.style.top = '';
-          fd.style.right = '';
-          fd.style.left = '';
-        }
         // DETAY MODU: Solda Geri+İsim, Sağda Yerel Arama/Filtre/Görünüm
         toolbar.innerHTML = `
             <div class="vt-left">
@@ -694,6 +691,21 @@
                 </button>
             </div>
         `;
+        var vtRight = toolbar.querySelector('.vt-right');
+        if (fd && vtRight && fd.parentElement !== vtRight) {
+          fd.style.display = '';
+          fd.style.position = '';
+          fd.style.top = '';
+          fd.style.right = '';
+          fd.style.left = '';
+          vtRight.appendChild(fd);
+        } else if (fd) {
+          fd.style.display = '';
+          fd.style.position = '';
+          fd.style.top = '';
+          fd.style.right = '';
+          fd.style.left = '';
+        }
     }
   }
 
@@ -1763,23 +1775,6 @@
           fd.querySelectorAll('.filter-dropdown-btn').forEach(function(btn) {
               btn.classList.toggle('active', btn.dataset.filter === currentFilter);
           });
-          var filterBtn = document.querySelector('.vt-icon-btn[onclick*="toggleFilterMenu"]');
-          var modalContainer = (fd.parentElement && fd.parentElement.classList && fd.parentElement.classList.contains('modal-container')) ? fd.parentElement : fd.closest('.modal-container');
-          function applyPosition() {
-              if (!filterBtn || !modalContainer) {
-                  fd.style.left = 'auto';
-                  fd.style.right = '10px';
-                  return;
-              }
-              var br = filterBtn.getBoundingClientRect();
-              var mcRect = modalContainer.getBoundingClientRect();
-              fd.style.position = 'absolute';
-              fd.style.top = (br.bottom - mcRect.top + 4) + 'px';
-              fd.style.left = 'auto';
-              fd.style.right = (mcRect.right - br.right) + 'px';
-          }
-          applyPosition();
-          requestAnimationFrame(applyPosition);
       }
   };
 
