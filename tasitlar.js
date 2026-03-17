@@ -523,6 +523,8 @@
       modal.style.display = 'flex';
       requestAnimationFrame(() => modal.classList.add('active'));
       ensureToolbar();
+      currentView = 'dashboard';
+      updateToolbar('dashboard');
     }
 
     const isDataLoaded = !!window.__medisaDataLoaded;
@@ -630,7 +632,16 @@
     fetch('http://127.0.0.1:7885/ingest/f748c7df-0c18-4178-a736-c89151ca12d1',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'80748f'},body:JSON.stringify({sessionId:'80748f',location:'tasitlar.js:updateToolbar',message:'toolbar mode',data:{mode:mode,title:title},timestamp:Date.now(),hypothesisId:'H3'})}).catch(function(){});
     // #endregion
     if (mode === 'dashboard') {
-        // DASHBOARD MODU: Sağda Genel Arama, Şanzıman filtresi ve Arşiv
+        var fd = getFilterDropdown();
+        if (fd) {
+          fd.classList.remove('open');
+          fd.style.display = 'none';
+          fd.style.position = '';
+          fd.style.top = '';
+          fd.style.right = '';
+          fd.style.left = '';
+        }
+        // DASHBOARD MODU: Sağda Genel Arama, Şanzıman filtresi ve Arşiv (filtre butonu yok)
         toolbar.innerHTML = `
             <div class="vt-left"></div>
             <div class="vt-right">
@@ -656,6 +667,14 @@
             </div>
         `;
     } else {
+        var fd = getFilterDropdown();
+        if (fd) {
+          fd.style.display = '';
+          fd.style.position = '';
+          fd.style.top = '';
+          fd.style.right = '';
+          fd.style.left = '';
+        }
         // DETAY MODU: Solda Geri+İsim, Sağda Yerel Arama/Filtre/Görünüm
         toolbar.innerHTML = `
             <div class="vt-left">
@@ -1767,8 +1786,17 @@
           fd.querySelectorAll('.filter-dropdown-btn').forEach(function(btn) {
               btn.classList.toggle('active', btn.dataset.filter === currentFilter);
           });
-          fd.style.left = 'auto';
-          fd.style.right = '10px';
+          var filterBtn = document.querySelector('.vt-icon-btn[onclick*="toggleFilterMenu"]');
+          if (filterBtn) {
+              var br = filterBtn.getBoundingClientRect();
+              fd.style.position = 'fixed';
+              fd.style.top = (br.bottom + 4) + 'px';
+              fd.style.left = 'auto';
+              fd.style.right = (window.innerWidth - br.right) + 'px';
+          } else {
+              fd.style.left = 'auto';
+              fd.style.right = '10px';
+          }
           // #region agent log
           (function(){
             var p = fd.parentElement;
