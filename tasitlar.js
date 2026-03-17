@@ -57,17 +57,21 @@
     if (window.dataApi && typeof window.dataApi.saveVehiclesList === 'function') {
       return window.dataApi.saveVehiclesList(arr).catch(function(err) {
         if (err && err.conflict) {
-          alert('Dikkat! Bu araç siz işlem yaparken başka biri tarafından güncellenmiş. Veri ezilmesini önlemek için lütfen sayfayı yenileyip güncel durumu kontrol edin.');
+          if (typeof window.onMedisaConflict === 'function') {
+            window.onMedisaConflict();
+          } else {
+            alert('Dikkat! Veri siz işlem yaparken başka biri tarafından güncellenmiş. Güncel veriler yüklendi.');
+          }
           if (typeof window.loadDataFromServer === 'function') {
-            window.loadDataFromServer(true).then(function() {
+            return window.loadDataFromServer(true).then(function() {
               if (typeof window.renderBranchDashboard === 'function') window.renderBranchDashboard();
               if (typeof window.renderVehicles === 'function') window.renderVehicles();
             });
           }
-          throw err;
+          return Promise.resolve();
         }
         console.warn('[Medisa] Sunucuya kayıt yapılamadı:', err && err.message);
-        throw err;
+        return Promise.reject(err);
       });
     }
     if (window.appData) window.appData.tasitlar = Array.isArray(arr) ? arr : [];
