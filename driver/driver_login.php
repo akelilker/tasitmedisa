@@ -53,14 +53,20 @@ if (!$user) {
     exit;
 }
 
-// Şifre kontrolü (basit - production'da password_verify kullan)
-// Girişte ve kayıtta trim uygula ki boşluktan eşleşmezlik olmasın
-$storedSifre = isset($user['sifre']) ? trim((string)$user['sifre']) : '';
+// PERFORMANS VE FİX: Şifre kontrolü güçlendirildi (Tip ve boşluk uyuşmazlıkları giderildi)
 $passwordMatch = false;
-if (isset($user['sifre_hash'])) {
-    $passwordMatch = password_verify($password, $user['sifre_hash']);
-} elseif ($storedSifre !== '') {
-    $passwordMatch = ($password === $storedSifre);
+
+// Şifreleri her ihtimale karşı string'e çevirip boşlukları alıyoruz
+$girilenSifre = trim((string)$password);
+$kayitliSifre = isset($user['sifre']) ? trim((string)$user['sifre']) : '';
+$kayitliHash  = isset($user['sifre_hash']) ? trim((string)$user['sifre_hash']) : '';
+
+if (!empty($kayitliHash)) {
+    // Eğer veritabanında DOLU bir hash varsa onu doğrula
+    $passwordMatch = password_verify($girilenSifre, $kayitliHash);
+} elseif (!empty($kayitliSifre)) {
+    // Hash yoksa düz şifreyi (string olarak) doğrula
+    $passwordMatch = ($girilenSifre === $kayitliSifre);
 }
 
 if (!$passwordMatch) {
