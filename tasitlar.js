@@ -1578,6 +1578,7 @@
       'vehicle-detail-modal',
       'vehicle-history-modal',
       'event-menu-modal',
+      'ruhsat-yukleme-modal',
       DINAMIK_OLAY_MODAL_ID
     ];
 
@@ -3057,9 +3058,10 @@ function renderVehicleDetailLeft(vehicle) {
       keepInfo.className = 'ruhsat-keep-info';
       content.appendChild(keepInfo);
     }
+    const uploadBox = document.createElement('div');
+    uploadBox.className = 'ruhsat-upload-box';
     const input = document.createElement('input');
     input.type = 'file';
-    // Mobilde kameradan doğrudan fotoğraf çekilebilmesi için resim formatları eklendi
     input.accept = '.pdf, image/jpeg, image/png, image/jpg, image/webp';
     input.id = 'ruhsat-file-input';
     input.setAttribute('aria-label', 'Ruhsat PDF dosyası seç');
@@ -3067,23 +3069,27 @@ function renderVehicleDetailLeft(vehicle) {
     const selectBox = document.createElement('button');
     selectBox.type = 'button';
     selectBox.className = 'ruhsat-select-box';
-    selectBox.textContent = 'Dosya Se\u00e7';
+    selectBox.setAttribute('aria-label', 'Ruhsat dosyası seç');
+    selectBox.innerHTML = '<span class="ruhsat-select-box-icon" aria-hidden="true">+</span><span class="ruhsat-select-box-label">Dosya Seç</span>';
     selectBox.onclick = function() { input.click(); };
-    content.appendChild(selectBox);
+    uploadBox.appendChild(selectBox);
+    uploadBox.appendChild(input);
+    content.appendChild(uploadBox);
     input.onchange = function() {
       const hasFile = input.files.length > 0;
       setRuhsatSaveBtnVisibility(saveBtn, hasFile);
       if (selectBox) {
         if (hasFile) {
           selectBox.classList.add('upload-success');
-          selectBox.textContent = '\u2713 ' + input.files[0].name;
-        } else {
-          selectBox.textContent = 'Dosya Se\u00e7';
           selectBox.classList.remove('has-file');
+          selectBox.innerHTML = '<span class="ruhsat-select-box-icon" aria-hidden="true">\u2713</span><span class="ruhsat-select-box-label">' + (input.files[0].name || 'Seçildi') + '</span>';
+        } else {
+          selectBox.classList.remove('upload-success');
+          selectBox.classList.remove('has-file');
+          selectBox.innerHTML = '<span class="ruhsat-select-box-icon" aria-hidden="true">+</span><span class="ruhsat-select-box-label">Dosya Seç</span>';
         }
       }
     };
-    content.appendChild(input);
     setRuhsatSaveBtnVisibility(saveBtn, input.files.length > 0);
   }
 
