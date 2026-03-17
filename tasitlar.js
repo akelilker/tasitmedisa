@@ -693,14 +693,16 @@
         `;
         var vtRight = toolbar.querySelector('.vt-right');
         if (fd) {
-          closeFilterMenu();
+          fd.classList.remove('open');
+          fd.style.display = 'none';
           fd.style.position = '';
           fd.style.top = '';
           fd.style.right = '';
           fd.style.left = '';
-          if (vtRight && fd.parentElement !== vtRight) {
-            vtRight.appendChild(fd);
-          }
+        }
+
+        if (fd && vtRight && fd.parentElement !== vtRight) {
+          vtRight.appendChild(fd);
         }
     }
   }
@@ -831,6 +833,7 @@
     lastListContext = { mode: 'branch', branchId: branchId, branchName: branchName };
     invalidateVehicleListRenderCache();
     closeSearchBox(true);
+    closeFilterMenu();
     const displayTitle = branchId === 'all' ? branchName : (branchName + ' Taşıtlar');
     updateToolbar('detail', displayTitle);
 
@@ -848,6 +851,7 @@
     lastListContext = { mode: 'archive' };
     invalidateVehicleListRenderCache();
     closeSearchBox(true);
+    closeFilterMenu();
     updateToolbar('detail', 'Arşiv');
     renderVehicles();
   };
