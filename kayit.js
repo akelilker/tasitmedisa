@@ -1704,7 +1704,7 @@
   }
 
   // --- Initialization ---
-  document.addEventListener("DOMContentLoaded", () => {
+  function initVehicleModalListeners() {
     // Tarih placeholder'ları modal açıldığında kurulacak (openVehicleModal'da)
 
     // Radio Button Logic
@@ -2062,5 +2062,10 @@
         branchSelectEl.dispatchEvent(new Event("change"));
       });
     }
-  });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initVehicleModalListeners);
+  } else {
+    initVehicleModalListeners();
+  }
 })();
