@@ -1769,21 +1769,25 @@
           });
           var filterBtn = document.querySelector('.vt-icon-btn[onclick*="toggleFilterMenu"]');
           var modalContainer = (fd.parentElement && fd.parentElement.classList && fd.parentElement.classList.contains('modal-container')) ? fd.parentElement : fd.closest('.modal-container');
-          if (filterBtn && modalContainer) {
+          function applyPosition() {
+              if (!filterBtn || !modalContainer) {
+                  fd.style.left = 'auto';
+                  fd.style.right = '10px';
+                  return;
+              }
               var br = filterBtn.getBoundingClientRect();
               var mcRect = modalContainer.getBoundingClientRect();
               fd.style.position = 'absolute';
               fd.style.top = (br.bottom - mcRect.top + 4) + 'px';
               fd.style.left = 'auto';
               fd.style.right = (mcRect.right - br.right) + 'px';
-          } else {
-              fd.style.left = 'auto';
-              fd.style.right = '10px';
           }
+          applyPosition();
+          requestAnimationFrame(applyPosition);
       }
   };
-  
-  // Filtreleme ve şanzıman menüsü: dışarı tıklandığında kapat
+
+  // Capture phase: modal içinde stopPropagation olsa bile tıklamayı önce biz görürüz; dışarı tıklanınca menü kapansın
   document.addEventListener('click', function(e) {
       const fd = getFilterDropdown();
       const filterBtn = document.querySelector('.vt-icon-btn[onclick*="toggleFilterMenu"]');
@@ -1796,7 +1800,7 @@
 
       if (fd && fd.classList.contains('open')) closeFilterMenu();
       if (transDd && transDd.classList.contains('open')) closeTransmissionMenu();
-  });
+  }, true);
 
   // Sütun başlığına tıklanınca sıralama yap
   window.handleColumnSort = function(column) {
