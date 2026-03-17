@@ -484,8 +484,8 @@ cursor: pointer;
 transition: border-color 0.2s, box-shadow 0.2s;
 display: flex;
 flex-direction: column;
-align-items: center;
-justify-content: center;
+align-items: center !important;
+justify-content: center !important;
 overflow: hidden;
 box-sizing: border-box;
 }
