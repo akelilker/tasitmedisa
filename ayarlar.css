@@ -990,6 +990,20 @@ input.settings-form-input:-moz-autofill,
     align-items: center !important;
 }
 
+/* Şube Yönetimi & Kullanıcı Yönetimi: isimler ilk satıra sığmazsa ikinci satıra insın (diğer ayarlar bozulmasın) */
+#branch-modal #branch-list .settings-card .settings-card-title,
+#user-modal #user-list .settings-card .settings-card-title {
+    white-space: normal !important;
+    overflow: hidden !important;
+    text-overflow: clip !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+}
+
 .settings-card {
     /* DÜZELTME: Yükseklik %15 Küçüldü (100/85) */
     aspect-ratio: 100 / 85; 
