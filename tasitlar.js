@@ -2318,13 +2318,13 @@ function renderVehicleDetailLeft(vehicle) {
       case 'kaza':
         return '<div style="display:flex;flex-direction:column;gap:12px;">' +
           section('Tarih', 'kaza-tarih', 'input', [['type', 'date']]) +
-          section('Sürücü', 'kaza-surucu', 'input', [['type', 'text'], ['placeholder', 'Sürücü']]) +
+          section('Kullanıcı', 'kaza-surucu', 'input', [['type', 'text'], ['placeholder', 'Kullanıcı']]) +
           section('Hasar Tutarı', 'kaza-tutar', 'input', [['type', 'text'], ['placeholder', 'Tutar']]) +
           '<div><span class="' + labelCls + '">Kaporta / Hasar</span><div id="kaza-kaporta-container"></div></div></div>';
       case 'ceza':
         return '<div style="display:flex;flex-direction:column;gap:12px;">' +
           section('Tarih', 'ceza-tarih', 'input', [['type', 'date']]) +
-          section('Sürücü', 'ceza-surucu', 'input', [['type', 'text']]) +
+          section('Kullanıcı', 'ceza-surucu', 'input', [['type', 'text'], ['placeholder', 'Kullanıcı']]) +
           section('Ceza Tutarı', 'ceza-tutar', 'input', [['type', 'text']]) +
           section('Açıklama', 'ceza-aciklama', 'textarea', [['rows', '2'], ['placeholder', 'Açıklama']]) + '</div>';
       case 'sigorta':
@@ -4391,6 +4391,14 @@ function renderVehicleDetailLeft(vehicle) {
             if (note) details.push(`Not: ${note.length > 120 ? note.slice(0, 120) + '...' : note}`);
           } else if (eventType === 'satis') {
             summaryText = 'Sat\u0131\u015f/Pert Bilgisi Bildirdi.';
+            const tutar = (eventData.tutar || '').trim();
+            const aciklama = (eventData.aciklama || '').trim();
+            if (tutar) details.push(`Tutar: ${tutar} TL`);
+            if (aciklama) details.push(`A\u00e7\u0131klama: ${toTitleCase(aciklama)}`);
+          } else if (eventType === 'kasko-kodu-guncelle') {
+            summaryText = 'Kasko Kodu G\u00FCncellemesi Bildirdi.';
+            const yeniKod = (eventData.kaskoKodu || '').trim();
+            if (yeniKod) details.push(`Yeni Kod: ${yeniKod}`);
           } else {
             const fallbackLabel = toTitleCase(eventType || 'Di\u011fer \u0130\u015flem');
             summaryText = `${fallbackLabel} Bildirildi.`;
@@ -4520,6 +4528,7 @@ function renderVehicleDetailLeft(vehicle) {
       'ceza': 'Trafik Cezas\u0131 \u0130\u015Fledi',
       'sigorta-guncelle': 'Sigorta Bilgisini G\u00FCncelledi',
       'kasko-guncelle': 'Kasko Bilgisini G\u00FCncelledi',
+      'kasko-kodu-guncelle': 'Kasko Kodunu G\u00FCncelledi',
       'muayene-guncelle': 'Muayene Bilgisini G\u00FCncelledi',
       'anahtar-guncelle': 'Yedek Anahtar Bilgisini G\u00FCncelledi',
       'lastik-guncelle': 'Lastik Durumunu G\u00FCncelledi',
