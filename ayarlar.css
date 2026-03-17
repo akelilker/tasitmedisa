@@ -1025,25 +1025,13 @@ input.settings-form-input:-moz-autofill,
     font-size: 12px;
     font-weight: 600;
     color: var(--data-value-color, #a0aec0);
-    text-align: center !important; /* Yatayda ortala */
-    margin: 0 auto; /* Ortala */
+    text-align: center !important;
+    margin: 0 auto;
     line-height: 1.1;
     width: 100%;
-    white-space: normal;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    line-clamp: 2; 
-    -webkit-box-orient: vertical;
+    white-space: nowrap;
     overflow: hidden;
-}
-.settings-card-title-line1,
-.settings-card-title-line2 {
-    display: block;
-    text-align: center !important;
-    width: 100%;
-}
-.settings-card-title-line2 {
-    margin-top: 1px;
+    text-overflow: ellipsis;
 }
 
 .settings-card-subtitle {
