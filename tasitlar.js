@@ -2450,6 +2450,18 @@ function renderVehicleDetailLeft(vehicle) {
       const kaydetBtn = DOM.dinamikOlayKaydetBtn;
       if (!modal || !formIcerik || !kaydetBtn) return;
 
+      var backBarBtn = modal.querySelector('.universal-back-btn');
+      if (backBarBtn) {
+        var labelSpan = backBarBtn.querySelector('.universal-back-label');
+        if (labelSpan) labelSpan.textContent = 'Olay Ekle';
+        backBarBtn.onclick = function(e) { e.stopPropagation(); openEventModal('menu', window.currentDetailVehicleId); };
+      }
+      var modalCloseBtn = modal.querySelector('.modal-close');
+      if (modalCloseBtn) modalCloseBtn.onclick = function(e) { e.stopPropagation(); closeAllModals(); };
+      var ruhsatBtnGroup = document.getElementById('ruhsat-btn-group');
+      var cancelBtn = ruhsatBtnGroup ? ruhsatBtnGroup.querySelector('.universal-btn-cancel') : null;
+      if (cancelBtn) cancelBtn.onclick = function(e) { e.stopPropagation(); closeAllModals(); if (window.currentDetailVehicleId) openEventModal('menu', window.currentDetailVehicleId); };
+
       formIcerik.id = 'dinamik-olay-form-icerik';
       window.currentDetailVehicleId = (vehicleId || window.currentDetailVehicleId || '').toString();
       const title = EVENT_TITLES[type] || 'OLAY EKLE';
@@ -2987,6 +2999,16 @@ function renderVehicleDetailLeft(vehicle) {
     if (!modal || !content || !saveBtn) return;
     if (DOM.dinamikOlayBaslik) DOM.dinamikOlayBaslik.textContent = 'RUHSAT YÜKLEME';
     content.id = 'ruhsat-modal-content';
+    var backBarBtn = modal ? modal.querySelector('.universal-back-btn') : null;
+    if (backBarBtn) {
+      var labelSpan = backBarBtn.querySelector('.universal-back-label');
+      if (labelSpan) labelSpan.textContent = 'Taşıt Detay';
+      backBarBtn.onclick = function(e) { e.stopPropagation(); if (typeof window.closeRuhsatAndBackToDetail === 'function') window.closeRuhsatAndBackToDetail(); };
+    }
+    var modalCloseBtn = modal ? modal.querySelector('.modal-close') : null;
+    if (modalCloseBtn) modalCloseBtn.onclick = function(e) { e.stopPropagation(); if (typeof window.closeRuhsatAndBackToDetail === 'function') window.closeRuhsatAndBackToDetail(); };
+    var cancelBtn = document.getElementById('ruhsat-btn-group') ? document.getElementById('ruhsat-btn-group').querySelector('.universal-btn-cancel') : null;
+    if (cancelBtn) cancelBtn.onclick = function(e) { e.stopPropagation(); if (typeof window.closeRuhsatAndBackToDetail === 'function') window.closeRuhsatAndBackToDetail(); };
     saveBtn.onclick = function() { if (typeof window.saveRuhsatUpload === 'function') window.saveRuhsatUpload(); };
     setRuhsatInlineViewerMode(false);
     content.innerHTML = '';
