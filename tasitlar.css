@@ -362,9 +362,14 @@
     color: inherit;
 }
 
-/* Boya şeması container – taşıt detayda sola göre uyarlanır */
+/* Kaporta Durumu satırı: açıklama metni 1.5pt küçük (Aşağıdaki şemada belirtilmiştir.) */
+.vehicle-detail-left .detail-row-kaporta .detail-row-value {
+  font-size: 12px !important; /* ~1.5pt küçük (14px → 12px) */
+}
+
+/* Boya şeması container – metin ile şema arası 3px; şema yatayda ortalı */
 #detail-boya-container {
-  margin-top: 2px;
+  margin-top: 3px !important;
   position: relative;
 }
 
@@ -406,7 +411,7 @@
 
 Şemayı saran kutu (detay dışında 136px; detayda JS ile Yoktur "r" hizası; %20 küçültme) */
 #detail-boya-container .kaporta-schema-wrapper {
-    margin-top: 2px;
+    margin-left: auto !important;
     margin-right: auto !important;
 }
 #detail-boya-container .kaporta-schema-wrapper svg {
@@ -874,13 +879,14 @@ HİZALAMASI - KESÃƒÆ’Ã¢â‚¬ÂÃƒâ€šÃ‚Â°N KURAL (Taşıtlar
   #vehicle-detail-modal .vehicle-detail-columns {
     margin-top: 13px !important;
   }
-  /* Taşıt detay: ekspertiz şeması sol göre (masaüstü) */
+  /* Taşıt detay: ekspertiz şeması yatayda ortalı, metin-şema arası 3px (masaüstü) */
   .vehicle-detail-left #detail-boya-container {
-    margin-top: 2px !important;
+    margin-top: 3px !important;
   }
   .vehicle-detail-left #detail-boya-container .kaporta-schema-wrapper {
     max-width: 100% !important;
-    margin-top: 2px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
   }
   /* Tarihçe modal: sol ok ve Taşıt Detayları sabit (scroll ile gitmesin) */
   #vehicle-history-modal .modal-container > div:nth-child(2) {
