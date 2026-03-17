@@ -692,19 +692,15 @@
             </div>
         `;
         var vtRight = toolbar.querySelector('.vt-right');
-        if (fd && vtRight && fd.parentElement !== vtRight) {
-          fd.style.display = '';
+        if (fd) {
+          closeFilterMenu();
           fd.style.position = '';
           fd.style.top = '';
           fd.style.right = '';
           fd.style.left = '';
-          vtRight.appendChild(fd);
-        } else if (fd) {
-          fd.style.display = '';
-          fd.style.position = '';
-          fd.style.top = '';
-          fd.style.right = '';
-          fd.style.left = '';
+          if (vtRight && fd.parentElement !== vtRight) {
+            vtRight.appendChild(fd);
+          }
         }
     }
   }
