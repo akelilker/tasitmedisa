@@ -513,10 +513,13 @@ document.addEventListener('DOMContentLoaded', function() {
     if (window.hideLoading) window.hideLoading();
 });
 
-// Loading screen: index.html'deki window.hideLoading kullanılır (load + dataLoaded + 8 sn fallback)
-window.addEventListener('load', () => { if (window.hideLoading) window.hideLoading(); });
-window.addEventListener('dataLoaded', () => { setTimeout(() => { if (window.hideLoading) window.hideLoading(); }, 50); });
-setTimeout(() => { if (window.hideLoading) window.hideLoading(); }, 8000);
+// PERFORMANS FIX: Yükleme ekranı (Splash) kapanış tetikleri zaten index.html'de (inline) var.
+// Sadece veri yüklemesi bittiğinde (dataLoaded) ekranı anında açması için bu dinleyici bırakıldı.
+window.addEventListener('dataLoaded', () => { 
+    if (typeof window.hideLoading === 'function') {
+        setTimeout(window.hideLoading, 50); 
+    }
+});
 
 /* =========================================
    SERVICE WORKER REGISTRATION (scope pathname'e göre: /medisa/, /tasitmedisa/ veya /)
