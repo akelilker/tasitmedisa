@@ -492,6 +492,22 @@
                 renderVehicles(getVSearchInput()?.value || '');
         });
         modalContainer.appendChild(filterDrop);
+        // #region agent log
+        (function(){
+          var p = filterDrop.parentElement;
+          var cs = p && filterDrop.ownerDocument && filterDrop.ownerDocument.defaultView ? filterDrop.ownerDocument.defaultView.getComputedStyle(filterDrop) : null;
+          var rect = filterDrop.getBoundingClientRect();
+          var op = filterDrop.offsetParent;
+          var childOrder = [];
+          if (modalContainer && modalContainer.children) {
+            for (var i = 0; i < modalContainer.children.length; i++) {
+              var c = modalContainer.children[i];
+              childOrder.push((c.tagName || '').toLowerCase() + (c.id ? '#' + c.id : ''));
+            }
+          }
+          fetch('http://127.0.0.1:7885/ingest/f748c7df-0c18-4178-a736-c89151ca12d1',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'80748f'},body:JSON.stringify({sessionId:'80748f',location:'tasitlar.js:ensureToolbar.append',message:'filter-dropdown after append',data:{parentId:p?p.id:null,parentClass:p?p.className:'',parentTag:p?p.tagName:'',modalContainerId:modalContainer?modalContainer.id:null,computedLeft:cs?cs.left:null,computedRight:cs?cs.right:null,computedPosition:cs?cs.position:null,rectLeft:rect.left,rectRight:rect.right,offsetParentId:op?op.id:null,offsetParentClass:op?op.className:null,childOrder:childOrder},timestamp:Date.now(),hypothesisId:'H1'})}).catch(function(){});
+        })();
+        // #endregion
     }
     
     return { toolbar };
@@ -613,7 +629,9 @@
   function updateToolbar(mode, title = '') {
     const { toolbar } = ensureToolbar();
     if (!toolbar) return;
-
+    // #region agent log
+    fetch('http://127.0.0.1:7885/ingest/f748c7df-0c18-4178-a736-c89151ca12d1',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'80748f'},body:JSON.stringify({sessionId:'80748f',location:'tasitlar.js:updateToolbar',message:'toolbar mode',data:{mode:mode,title:title},timestamp:Date.now(),hypothesisId:'H3'})}).catch(function(){});
+    // #endregion
     if (mode === 'dashboard') {
         // DASHBOARD MODU: Sağda Genel Arama, Şanzıman filtresi ve Arşiv
         toolbar.innerHTML = `
@@ -1752,6 +1770,16 @@
           fd.querySelectorAll('.filter-dropdown-btn').forEach(function(btn) {
               btn.classList.toggle('active', btn.dataset.filter === currentFilter);
           });
+          // #region agent log
+          (function(){
+            var p = fd.parentElement;
+            var win = fd.ownerDocument && fd.ownerDocument.defaultView;
+            var cs = win ? win.getComputedStyle(fd) : null;
+            var rect = fd.getBoundingClientRect();
+            var op = fd.offsetParent;
+            fetch('http://127.0.0.1:7885/ingest/f748c7df-0c18-4178-a736-c89151ca12d1',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'80748f'},body:JSON.stringify({sessionId:'80748f',location:'tasitlar.js:toggleFilterMenu.open',message:'filter-dropdown when opened',data:{parentId:p?p.id:null,parentClass:p?p.className:'',parentTag:p?p.tagName:'',computedLeft:cs?cs.left:null,computedRight:cs?cs.right:null,computedPosition:cs?cs.position:null,rectLeft:rect.left,rectRight:rect.right,rectWidth:rect.width,offsetParentId:op?op.id:null,offsetParentClass:op?op.className:null},timestamp:Date.now(),hypothesisId:'H2'})}).catch(function(){});
+          })();
+          // #endregion
       }
   };
   
