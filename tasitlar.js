@@ -1787,7 +1787,7 @@
               btn.classList.toggle('active', btn.dataset.filter === currentFilter);
           });
           var filterBtn = document.querySelector('.vt-icon-btn[onclick*="toggleFilterMenu"]');
-          var modalContainer = fd.closest('#vehicles-modal .modal-container');
+          var modalContainer = (fd.parentElement && fd.parentElement.classList && fd.parentElement.classList.contains('modal-container')) ? fd.parentElement : fd.closest('.modal-container');
           if (filterBtn && modalContainer) {
               var br = filterBtn.getBoundingClientRect();
               var mcRect = modalContainer.getBoundingClientRect();
@@ -1795,12 +1795,6 @@
               fd.style.top = (br.bottom - mcRect.top + 4) + 'px';
               fd.style.left = 'auto';
               fd.style.right = (mcRect.right - br.right) + 'px';
-          } else if (filterBtn) {
-              var br = filterBtn.getBoundingClientRect();
-              fd.style.position = 'fixed';
-              fd.style.top = (br.bottom + 4) + 'px';
-              fd.style.left = 'auto';
-              fd.style.right = (window.innerWidth - br.right) + 'px';
           } else {
               fd.style.left = 'auto';
               fd.style.right = '10px';
