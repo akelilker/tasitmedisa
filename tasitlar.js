@@ -730,20 +730,7 @@
     lastDashboardRenderSignature = renderSignature;
     syncVehiclesListModeClass(false);
 
-    // Grid'i dinamik yap: kart sayısına göre kolon sayısını ayarla
-    const gridEl = modalContent.querySelector('.branch-grid');
-    if (gridEl) {
-      const totalCards = 1 + branches.length + (unassignedCount > 0 ? 1 : 0);
-      let cols;
-      if (totalCards === 1) {
-        cols = 1; // Tek kutu: 1 kolon
-      } else if (totalCards === 2) {
-        cols = 2; // 2 kutu: 2 kolon
-      } else {
-        cols = isMobile ? 4 : 5; // 3+ kutu: sabit kolon sayısı
-      }
-      gridEl.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
-    }
+    /* Layout flex ile; kolon sayısı .branch-card width/flex ile belirlenir */
   };
   function createBranchCard(id, name, count, isUnassigned = false) {
     const unassignedClass = isUnassigned ? ' unassigned-branch-card' : '';
