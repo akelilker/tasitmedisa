@@ -2307,12 +2307,35 @@ const API_BASE = (function(){
               } else if (item.eventType === 'kasko-guncelle') {
                   detailsHtml = `<p><strong>\u0130\u015flem:</strong> ${escapeHtmlDriver('Kasko Yenilemesi Bildirildi')}</p>`;
                   if (d.bitisTarihi) detailsHtml += `<p><strong>Biti\u015f Tarihi:</strong> ${escapeHtmlDriver(d.bitisTarihi)}</p>`;
-              } else if (item.eventType === 'sigorta-guncelle') {
-                  detailsHtml = `<p><strong>\u0130\u015flem:</strong> ${escapeHtmlDriver('Trafik Sigortas\u0131 Yenileme Bildirildi')}</p>`;
-                  if (d.bitisTarihi) detailsHtml += `<p><strong>Biti\u015f Tarihi:</strong> ${escapeHtmlDriver(d.bitisTarihi)}</p>`;
-              } else {
-                  detailsHtml = `<p><strong>\u0130\u015flem:</strong> ${escapeHtmlDriver(item.eventType || 'G\u00fcncelleme')}</p>`;
-              }
+            } else if (item.eventType === 'sigorta-guncelle') {
+                detailsHtml = `<p><strong>\u0130\u015flem:</strong> ${escapeHtmlDriver('Trafik Sigortas\u0131 Yenileme Bildirildi')}</p>`;
+                if (d.bitisTarihi) detailsHtml += `<p><strong>Biti\u015f Tarihi:</strong> ${escapeHtmlDriver(d.bitisTarihi)}</p>`;
+            } else if (item.eventType === 'kasko-kodu-guncelle') {
+                detailsHtml = `<p><strong>\u0130\u015flem:</strong> ${escapeHtmlDriver('Kasko Kodu G\u00fcncellendi')}</p>`;
+                if (d.kaskoKodu) detailsHtml += `<p><strong>Yeni Kod:</strong> ${escapeHtmlDriver(d.kaskoKodu)}</p>`;
+            } else if (item.eventType === 'satis') {
+                detailsHtml = `<p><strong>\u0130\u015flem:</strong> ${escapeHtmlDriver('Sat\u0131\u015f/Pert Bildirildi')}</p>`;
+                if (d.tutar) detailsHtml += `<p><strong>Tutar:</strong> ${escapeHtmlDriver(d.tutar)} TL</p>`;
+                if (d.aciklama) detailsHtml += `<p><strong>A\u00e7\u0131klama:</strong> ${escapeHtmlDriver(d.aciklama)}</p>`;
+            } else if (item.eventType === 'ceza') {
+                detailsHtml = `<p><strong>\u0130\u015flem:</strong> ${escapeHtmlDriver('Trafik Cezas\u0131')}</p>`;
+                if (d.tutar) detailsHtml += `<p><strong>Tutar:</strong> ${escapeHtmlDriver(d.tutar)} TL</p>`;
+                if (d.aciklama) detailsHtml += `<p><strong>A\u00e7\u0131klama:</strong> ${escapeHtmlDriver(d.aciklama)}</p>`;
+            } else if (item.eventType === 'kredi-guncelle') {
+                detailsHtml = `<p><strong>\u0130\u015flem:</strong> ${escapeHtmlDriver('Kredi/Rehin Bilgisi G\u00fcncellendi')}</p>`;
+            } else if (item.eventType === 'takip-cihaz-guncelle') {
+                detailsHtml = `<p><strong>\u0130\u015flem:</strong> ${escapeHtmlDriver('Takip Cihaz\u0131 Bilgisi G\u00fcncellendi')}</p>`;
+            } else if (item.eventType === 'not-guncelle') {
+                detailsHtml = `<p><strong>\u0130\u015flem:</strong> ${escapeHtmlDriver('Not Bilgisi G\u00fcncellendi')}</p>`;
+            } else if (item.eventType === 'sube-degisiklik') {
+                detailsHtml = `<p><strong>\u0130\u015flem:</strong> ${escapeHtmlDriver('\u015eube Bilgisi G\u00fcncellendi')}</p>`;
+            } else if (item.eventType === 'kullanici-atama') {
+                detailsHtml = `<p><strong>\u0130\u015flem:</strong> ${escapeHtmlDriver('Kullan\u0131c\u0131 Atamas\u0131 Yap\u0131ld\u0131')}</p>`;
+            } else {
+                let fallbackLabel = item.eventType || 'G\u00fcncelleme';
+                fallbackLabel = fallbackLabel.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                detailsHtml = `<p><strong>\u0130\u015flem:</strong> ${escapeHtmlDriver(fallbackLabel)}</p>`;
+            }
           }
   
           const card = document.createElement('div');
