@@ -1036,6 +1036,15 @@ input.settings-form-input:-moz-autofill,
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
+.settings-card-title-line1,
+.settings-card-title-line2 {
+    display: block;
+    text-align: center !important;
+    width: 100%;
+}
+.settings-card-title-line2 {
+    margin-top: 1px;
+}
 
 .settings-card-subtitle {
     font-size: 11px;
@@ -1228,12 +1237,15 @@ input.settings-form-input:-moz-autofill,
     }
 }
 
-/* Masaüstü: Şube/Kullanıcı form – Kaydet/Vazgeç/Sil aynı satırda */
+/* Masaüstü: Şube/Kullanıcı form – Kaydet/Vazgeç/Sil aynı satırda, yatayda ortada */
 @media (min-width: 769px) {
   #branch-form-modal .universal-btn-group,
   #user-form-modal .universal-btn-group {
     display: grid !important;
     grid-template-columns: 1fr 1fr 1fr !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    width: max-content !important;
   }
   /* Kullanıcı Yönetimi: kişi kutuları isimleri etiket beyazı (kayıt modu etiketleri ile aynı) */
   #user-modal .settings-card-title {
