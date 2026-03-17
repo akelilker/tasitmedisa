@@ -195,7 +195,6 @@
   function getVSearchInput() { return document.getElementById('v-search-input'); }
   function getVSearchContainer() { return document.getElementById('v-search-container'); }
   function getVTransmissionDropdown() { return document.getElementById('v-transmission-dropdown'); }
-  function getFilterDropdown() { return document.getElementById('filter-dropdown'); }
 
   // Grid genişlikleri sütun kimliğine göre (sürükle-bırak sonrası genişlik doğru sütunla kalsın)
   function getVehicleColumnWidths(columnOrder) {
@@ -550,7 +549,6 @@
       setTimeout(() => {
         modal.style.display = 'none';
         closeSearchBox(true);
-        closeFilterMenu();
         syncVehiclesListModeClass(false);
         // X butonu sadece modalı kapatır, geri gitme işlemi yapmaz
         // Geri butonları zaten mevcut
@@ -578,7 +576,6 @@
     if (!toolbar) return;
 
     if (mode === 'dashboard') {
-        closeFilterMenu();
         // DASHBOARD MODU: Sağda Genel Arama, Şanzıman filtresi ve Arşiv (filtre butonu yok)
         toolbar.innerHTML = `
             <div class="vt-left"></div>
@@ -632,17 +629,6 @@
                         <button type="button" class="v-transmission-option${transmissionFilter === 'manuel' ? ' active' : ''}" data-value="manuel" role="menuitem">${transmissionFilter === 'manuel' ? '✓ ' : ''}Manuel</button>
                     </div>
                 </div>
-                <div class="v-filter-wrap">
-                    <button class="vt-icon-btn" onclick="toggleFilterMenu(event)" title="Sırala / Filtrele">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
-                    </button>
-                    <div id="filter-dropdown" class="filter-dropdown">
-                        <button type="button" class="filter-dropdown-btn" data-filter="az">A-Z Sıralı</button>
-                        <button type="button" class="filter-dropdown-btn" data-filter="newest">En Yeni</button>
-                        <button type="button" class="filter-dropdown-btn" data-filter="oldest">En Eski</button>
-                        <button type="button" class="filter-dropdown-btn" data-filter="type">Tipe Göre</button>
-                    </div>
-                </div>
                 <button class="vt-icon-btn" onclick="toggleViewMode()" title="Görünüm">
                     ${viewMode === 'card' 
                         ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>'
@@ -651,7 +637,6 @@
                 </button>
             </div>
         `;
-        closeFilterMenu();
     }
   }
 
@@ -674,7 +659,6 @@
     currentView = 'dashboard';
     activeBranchId = null;
     closeSearchBox(true);
-    closeFilterMenu();
     updateToolbar('dashboard');
 
     const branches = readBranches();
@@ -781,7 +765,6 @@
     lastListContext = { mode: 'branch', branchId: branchId, branchName: branchName };
     invalidateVehicleListRenderCache();
     closeSearchBox(true);
-    closeFilterMenu();
     const displayTitle = branchId === 'all' ? branchName : (branchName + ' Taşıtlar');
     updateToolbar('detail', displayTitle);
 
@@ -799,7 +782,6 @@
     lastListContext = { mode: 'archive' };
     invalidateVehicleListRenderCache();
     closeSearchBox(true);
-    closeFilterMenu();
     updateToolbar('detail', 'Arşiv');
     renderVehicles();
   };
@@ -1603,7 +1585,6 @@
       if (box.classList.contains('open')) {
           closeSearchBox();
       } else {
-          closeFilterMenu();
           box.classList.add('open');
           input.value = '';
           setTimeout(() => input.focus(), 100);
@@ -1653,7 +1634,6 @@
       closeTransmissionMenu();
       if (!isOpen) {
           closeSearchBox(true);
-          closeFilterMenu();
           dd.classList.add('open');
           dd.setAttribute('aria-hidden', 'false');
       }
@@ -1709,80 +1689,22 @@
   };
   window.handleSearch = (typeof window.debounce === 'function') ? window.debounce(handleSearchImpl, 200) : handleSearchImpl;
 
-  // --- FİLTRE DROPDOWN ---
-  window.toggleFilterMenu = function(e) {
-      if (e) { e.stopPropagation(); e.preventDefault(); }
 
-      const fd = getFilterDropdown();
-      if (!fd) return;
-
-      if (!fd.dataset.bound) {
-          fd.addEventListener('click', function(ev) {
-              var btn = ev.target.closest('.filter-dropdown-btn');
-              if (!btn) return;
-
-              currentFilter = btn.dataset.filter || 'az';
-
-              if (currentFilter === 'az') {
-                  sortColumn = 'plate';
-                  sortDirection = 'asc';
-              } else if (currentFilter === 'newest') {
-                  sortColumn = 'year';
-                  sortDirection = 'desc';
-              } else if (currentFilter === 'oldest') {
-                  sortColumn = 'year';
-                  sortDirection = 'asc';
-              } else if (currentFilter === 'type') {
-                  sortColumn = 'type';
-                  sortDirection = 'asc';
-              }
-
-              closeFilterMenu();
-              renderVehicles(getVSearchInput()?.value || '');
-          });
-
-          fd.dataset.bound = '1';
-      }
-
-      if (fd.classList.contains('open')) {
-          closeFilterMenu();
-      } else {
-          closeSearchBox(true);
-          fd.style.display = 'flex';
-          fd.classList.add('open');
-          fd.querySelectorAll('.filter-dropdown-btn').forEach(function(btn) {
-              btn.classList.toggle('active', btn.dataset.filter === currentFilter);
-          });
-      }
-  };
-
-  window.closeFilterMenu = function() {
-      var fd = getFilterDropdown();
-      if (fd) {
-          fd.classList.remove('open');
-          fd.style.display = 'none';
-      }
-  };
-
-  // Filtre menüsünü kapat: hem document (capture) hem modal overlay (capture) – modal içi stopPropagation’ı aşmak için
-  function onFilterCloseCheck(e) {
-      var fd = getFilterDropdown();
-      if (!fd || !fd.classList.contains('open')) return;
-      var filterBtn = document.querySelector('.vt-icon-btn[onclick*="toggleFilterMenu"]');
-      var transWrap = e.target.closest('.v-transmission-wrap');
+  // Şanzıman menüsünü dış tıklamada kapat – modal içi stopPropagation’ı aşmak için
+  function onTransmissionCloseCheck(e) {
       var transDd = getVTransmissionDropdown();
-      if (fd.contains(e.target)) return;
-      if (filterBtn && filterBtn.contains(e.target)) return;
-      if (transWrap) return;
-      closeFilterMenu();
-      if (transDd && transDd.classList.contains('open')) closeTransmissionMenu();
+      if (!transDd || !transDd.classList.contains('open')) return;
+      var transWrap = e.target.closest('.v-transmission-wrap');
+      if (transWrap && transWrap.contains(e.target)) return;
+      if (transDd.contains(e.target)) return;
+      closeTransmissionMenu();
   }
-  document.addEventListener('mousedown', onFilterCloseCheck, true);
-  document.addEventListener('click', onFilterCloseCheck, true);
-  if (DOM.vehiclesModal && !DOM.vehiclesModal._filterCloseBound) {
-      DOM.vehiclesModal._filterCloseBound = true;
-      DOM.vehiclesModal.addEventListener('mousedown', onFilterCloseCheck, true);
-      DOM.vehiclesModal.addEventListener('click', onFilterCloseCheck, true);
+  document.addEventListener('mousedown', onTransmissionCloseCheck, true);
+  document.addEventListener('click', onTransmissionCloseCheck, true);
+  if (DOM.vehiclesModal && !DOM.vehiclesModal._transmissionCloseBound) {
+      DOM.vehiclesModal._transmissionCloseBound = true;
+      DOM.vehiclesModal.addEventListener('mousedown', onTransmissionCloseCheck, true);
+      DOM.vehiclesModal.addEventListener('click', onTransmissionCloseCheck, true);
   }
 
   // Sütun başlığına tıklanınca sıralama yap
