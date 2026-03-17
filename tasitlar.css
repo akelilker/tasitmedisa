@@ -108,6 +108,36 @@
   cursor: pointer !important;
 }
 
+/* Olay Ekle (13 modal): input/select/textarea arka planı – kayıt modalı ile aynı (#0d131f) */
+.olay-ekle-modal .modal-body .form-input,
+.olay-ekle-modal .modal-body select,
+.olay-ekle-modal .modal-body textarea {
+  background: #0d131f !important;
+  border: 1.1px solid rgba(255, 255, 255, 0.40) !important;
+  color: var(--data-value-color, #f8f9fa) !important;
+}
+.olay-ekle-modal .modal-body input[type="date"].form-input,
+.olay-ekle-modal .modal-body input[type="date"].olay-tarih-input {
+  background: #0d131f !important;
+}
+/* Olay Ekle: otomatik doldurma (autofill) arka planı tema uyumlu */
+.olay-ekle-modal .modal-body input.form-input:-webkit-autofill,
+.olay-ekle-modal .modal-body input.form-input:-webkit-autofill:hover,
+.olay-ekle-modal .modal-body input.form-input:-webkit-autofill:focus,
+.olay-ekle-modal .modal-body input.form-input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px #0d131f inset !important;
+  -webkit-text-fill-color: #888 !important;
+  background-color: #0d131f !important;
+  color: #888 !important;
+  caret-color: #888 !important;
+  transition: background-color 5000s ease-in-out 0s, color 5000s ease-in-out 0s !important;
+}
+.olay-ekle-modal .modal-body input.form-input:-moz-autofill {
+  background-color: #0d131f !important;
+  color: #888 !important;
+  box-shadow: 0 0 0 1000px #0d131f inset !important;
+}
+
 /* Olay Ekle modalları: footer+gap sadece overlay'de rezerve (style-core .modal-overlay bottom); container overlay'i doldurur, çift rezervasyon yok */
 .olay-ekle-modal .modal-container {
     max-width: 500px !important;
