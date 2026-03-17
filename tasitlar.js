@@ -271,31 +271,17 @@
     DOM.vehicleHistoryModal = document.getElementById('vehicle-history-modal');
     DOM.historyContent = document.getElementById('history-content');
     DOM.notificationsDropdown = document.getElementById('notifications-dropdown');
+    DOM.dinamikOlayModal = document.getElementById('dinamik-olay-modal');
+    DOM.dinamikOlayBaslik = document.getElementById('dinamik-olay-baslik');
+    DOM.dinamikOlayFormIcerik = document.getElementById('dinamik-olay-form-icerik');
+    DOM.dinamikOlayKaydetBtn = document.getElementById('dinamik-olay-kaydet-btn');
   }
   bindDOM();
 
-  const EVENT_MODAL_IDS = {
-    km: 'km-guncelle-modal',
-    bakim: 'bakim-ekle-modal',
-    kaza: 'kaza-ekle-modal',
-    ceza: 'ceza-ekle-modal',
-    sigorta: 'sigorta-guncelle-modal',
-    kasko: 'kasko-guncelle-modal',
-    muayene: 'muayene-guncelle-modal',
-    anahtar: 'anahtar-guncelle-modal',
-    kredi: 'kredi-guncelle-modal',
-    lastik: 'lastik-guncelle-modal',
-    utts: 'utts-guncelle-modal',
-    takip: 'takip-cihaz-guncelle-modal',
-    kaskokodu: 'kasko-kodu-guncelle-modal',
-    ruhsat: 'ruhsat-yukleme-modal',
-    sube: 'sube-degisiklik-modal',
-    kullanici: 'kullanici-atama-modal',
-    satis: 'satis-pert-modal'
-  };
+  const DINAMIK_OLAY_MODAL_ID = 'dinamik-olay-modal';
 
   function getEventModalId(type) {
-    return EVENT_MODAL_IDS[type] || null;
+    return DINAMIK_OLAY_MODAL_ID;
   }
 
   function refreshModalRadioButtons(modal) {
@@ -1589,32 +1575,18 @@
   window.closeAllModals = function() {
     const modalIds = [
       'vehicles-modal',
-      'vehicle-detail-modal', 
+      'vehicle-detail-modal',
       'vehicle-history-modal',
       'event-menu-modal',
-      'bakim-ekle-modal',
-      'kaza-ekle-modal',
-      'ceza-ekle-modal',
-      'sigorta-guncelle-modal',
-      'kasko-guncelle-modal',
-      'muayene-guncelle-modal',
-      'anahtar-guncelle-modal',
-      'kredi-guncelle-modal',
-      'km-guncelle-modal',
-      'lastik-guncelle-modal',
-      'utts-guncelle-modal',
-      'takip-cihaz-guncelle-modal',
-      'kullanici-atama-modal',
-      'kasko-kodu-guncelle-modal',
-      'sube-degisiklik-modal',
-      'satis-pert-modal'
+      DINAMIK_OLAY_MODAL_ID
     ];
-    
+
     modalIds.forEach(id => {
       const modal = (id === 'vehicles-modal' ? DOM.vehiclesModal :
                     id === 'vehicle-detail-modal' ? DOM.vehicleDetailModal :
                     id === 'vehicle-history-modal' ? DOM.vehicleHistoryModal :
-                    id === 'event-menu-modal' ? DOM.eventMenuModal : null) || document.getElementById(id);
+                    id === 'event-menu-modal' ? DOM.eventMenuModal :
+                    id === DINAMIK_OLAY_MODAL_ID ? DOM.dinamikOlayModal : null) || document.getElementById(id);
       if (modal) {
         resetModalState(modal);
         modal.classList.remove('active', 'open');
@@ -2301,29 +2273,123 @@ function renderVehicleDetailLeft(vehicle) {
       });
   }
 
-  // --- OLAY MODAL FONKSİYONLARI ---
-  
+  // --- OLAY MODAL FONKSİYONLARI (tek #dinamik-olay-modal) ---
+
+  const EVENT_TITLES = {
+    bakim: 'BAKIM BİLGİSİ EKLE',
+    kaza: 'KAZA BİLGİSİ EKLE',
+    ceza: 'TRAFİK CEZASI EKLE',
+    sigorta: 'SİGORTA BİLGİSİ GÜNCELLE',
+    kasko: 'KASKO BİLGİSİ GÜNCELLE',
+    muayene: 'MUAYENE BİLGİSİ GÜNCELLE',
+    anahtar: 'YEDEK ANAHTAR BİLGİSİ GÜNCELLE',
+    kredi: 'KREDİ/REHİN BİLGİSİ GÜNCELLE',
+    km: 'KM GÜNCELLE',
+    lastik: 'LASTİK DURUMU GÜNCELLE',
+    utts: 'UTTS BİLGİSİ GÜNCELLE',
+    takip: 'TAŞIT TAKİP CİHAZ BİLGİSİ GÜNCELLE',
+    kaskokodu: 'KASKO KODU GÜNCELLEME',
+    sube: 'ŞUBE DEĞİŞİKLİĞİ',
+    kullanici: 'KULLANICI ATAMA/DEĞİŞİKLİĞİ',
+    satis: 'SATIŞ/PERT BİLDİRİMİ'
+  };
+
+  function getEventFormHtml(type) {
+    const labelCls = 'form-label';
+    const inputCls = 'form-input';
+    const section = (labelText, id, tag, attrs, inner) => {
+      const att = (attrs || []).map(a => a[0] + '="' + String(a[1] || '').replace(/"/g, '&quot;') + '"').join(' ');
+      const open = tag === 'input' ? '<input id="' + id + '" class="' + inputCls + '" ' + att + '>' : tag === 'textarea' ? '<textarea id="' + id + '" class="' + inputCls + '" ' + att + '>' + (inner || '') + '</textarea>' : tag === 'select' ? '<select id="' + id + '" class="' + inputCls + '" ' + att + '>' + (inner || '') + '</select>' : '<div id="' + id + '" ' + att + '>' + (inner || '') + '</div>';
+      return '<div><label class="' + labelCls + '" for="' + id + '">' + labelText + '</label>' + open + '</div>';
+    };
+    const radioGroup = (name, options) => {
+      return '<div class="form-section-inline" style="display:flex;flex-wrap:wrap;gap:8px;"><span class="' + labelCls + '" style="width:100%;">Seçiniz</span>' + options.map(o => '<button type="button" class="radio-btn" data-value="' + o.v + '">' + o.l + '</button>').join('') + '</div>';
+    };
+    switch (type) {
+      case 'bakim':
+        return '<div style="display:flex;flex-direction:column;gap:12px;">' +
+          section('Tarih (gg.aa.yyyy)', 'bakim-tarih', 'input', [['type', 'date'], ['class', 'form-input olay-tarih-input']]) +
+          section('Yapılan İşlemler', 'bakim-islemler', 'textarea', [['rows', '2'], ['placeholder', 'Yapılan işlemler']]) +
+          section('Servis', 'bakim-servis', 'input', [['type', 'text'], ['placeholder', 'Servis adı']]) +
+          section('Kişi', 'bakim-kisi', 'input', [['type', 'text'], ['placeholder', 'İşlemi yapan']]) +
+          section('Km', 'bakim-km', 'input', [['type', 'text'], ['placeholder', 'Km'], ['inputmode', 'numeric']]) +
+          section('Tutar', 'bakim-tutar', 'input', [['type', 'text'], ['placeholder', 'Tutar']]) + '</div>';
+      case 'kaza':
+        return '<div style="display:flex;flex-direction:column;gap:12px;">' +
+          section('Tarih', 'kaza-tarih', 'input', [['type', 'date']]) +
+          section('Sürücü', 'kaza-surucu', 'input', [['type', 'text'], ['placeholder', 'Sürücü']]) +
+          section('Hasar Tutarı', 'kaza-tutar', 'input', [['type', 'text'], ['placeholder', 'Tutar']]) +
+          '<div><span class="' + labelCls + '">Kaporta / Hasar</span><div id="kaza-kaporta-container"></div></div></div>';
+      case 'ceza':
+        return '<div style="display:flex;flex-direction:column;gap:12px;">' +
+          section('Tarih', 'ceza-tarih', 'input', [['type', 'date']]) +
+          section('Sürücü', 'ceza-surucu', 'input', [['type', 'text']]) +
+          section('Ceza Tutarı', 'ceza-tutar', 'input', [['type', 'text']]) +
+          section('Açıklama', 'ceza-aciklama', 'textarea', [['rows', '2'], ['placeholder', 'Açıklama']]) + '</div>';
+      case 'sigorta':
+        return '<div style="display:flex;flex-direction:column;gap:12px;">' +
+          section('Yenileme/Başlangıç (gg/aa/yyyy)', 'sigorta-tarih', 'input', [['type', 'text'], ['placeholder', 'gg/aa/yyyy']]) +
+          section('Firma', 'sigorta-firma', 'input', [['type', 'text']]) +
+          section('Acente', 'sigorta-acente', 'input', [['type', 'text']]) +
+          section('İletişim', 'sigorta-iletisim', 'input', [['type', 'text']]) + '</div>';
+      case 'kasko':
+        return '<div style="display:flex;flex-direction:column;gap:12px;">' +
+          section('Yenileme/Başlangıç (gg/aa/yyyy)', 'kasko-tarih', 'input', [['type', 'text'], ['placeholder', 'gg/aa/yyyy']]) +
+          section('Firma', 'kasko-firma', 'input', [['type', 'text']]) +
+          section('Acente', 'kasko-acente', 'input', [['type', 'text']]) +
+          section('İletişim', 'kasko-iletisim', 'input', [['type', 'text']]) + '</div>';
+      case 'muayene':
+        return '<div style="display:flex;flex-direction:column;gap:12px;">' +
+          section('Muayene Tarihi (gg/aa/yyyy)', 'muayene-tarih', 'input', [['type', 'text'], ['placeholder', 'gg/aa/yyyy']]) + '</div>';
+      case 'anahtar':
+        return '<div style="display:flex;flex-direction:column;gap:12px;">' +
+          radioGroup('anahtar', [{ v: 'var', l: 'Var' }, { v: 'yok', l: 'Yok' }]) +
+          '<div id="anahtar-detay-wrapper" style="display:none;"><label class="' + labelCls + '" for="anahtar-detay-event">Detay (nerede)</label><input id="anahtar-detay-event" class="' + inputCls + '" type="text" placeholder="Nerede?"></div></div>';
+      case 'kredi':
+        return '<div style="display:flex;flex-direction:column;gap:12px;">' +
+          radioGroup('kredi', [{ v: 'var', l: 'Var' }, { v: 'yok', l: 'Yok' }]) +
+          '<div id="kredi-detay-wrapper-event" style="display:none;"><label class="' + labelCls + '" for="kredi-detay-event">Detay</label><input id="kredi-detay-event" class="' + inputCls + '" type="text"></div></div>';
+      case 'km':
+        return '<div style="display:flex;flex-direction:column;gap:12px;">' +
+          section('Güncel Km', 'km-guncelle-input', 'input', [['type', 'text'], ['placeholder', 'Km'], ['inputmode', 'numeric']]) + '</div>';
+      case 'lastik':
+        return '<div style="display:flex;flex-direction:column;gap:12px;">' +
+          radioGroup('lastik', [{ v: 'var', l: 'Var' }, { v: 'yok', l: 'Yok' }]) +
+          '<div id="lastik-adres-wrapper-event" style="display:none;"><label class="' + labelCls + '" for="lastik-adres-event">Adres</label><input id="lastik-adres-event" class="' + inputCls + '" type="text"></div></div>';
+      case 'utts':
+        return '<div style="display:flex;flex-direction:column;gap:12px;">' +
+          radioGroup('utts', [{ v: 'evet', l: 'Evet' }, { v: 'hayir', l: 'Hayır' }]) + '</div>';
+      case 'takip':
+        return '<div style="display:flex;flex-direction:column;gap:12px;">' +
+          radioGroup('takip', [{ v: 'evet', l: 'Evet' }, { v: 'hayir', l: 'Hayır' }]) + '</div>';
+      case 'kaskokodu':
+        return '<div style="display:flex;flex-direction:column;gap:12px;">' +
+          section('Kasko Kodu', 'kasko-kodu-guncelle-input', 'input', [['type', 'text'], ['placeholder', 'Kod']]) + '</div>';
+      case 'sube':
+        return '<div style="display:flex;flex-direction:column;gap:12px;">' +
+          section('Yeni Şube', 'sube-select', 'select', [], '<option value="">Şube Seçiniz</option>') + '</div>';
+      case 'kullanici':
+        return '<div style="display:flex;flex-direction:column;gap:12px;">' +
+          section('Kullanıcı', 'kullanici-select', 'select', [], '<option value="">Kullanıcı Seçiniz</option>') + '</div>';
+      case 'satis':
+        return '<div style="display:flex;flex-direction:column;gap:12px;">' +
+          section('Satış/Pert Tarihi', 'satis-tarih', 'input', [['type', 'date']]) +
+          section('Tutar', 'satis-tutar', 'input', [['type', 'text'], ['placeholder', 'Tutar']]) +
+          section('Açıklama', 'satis-aciklama', 'textarea', [['rows', '2'], ['placeholder', 'Açıklama']]) + '</div>';
+      default:
+        return '';
+    }
+  }
+
   /**
-   * Olay modal menüsünü açar
+   * Olay modal menüsünü veya tek dinamik olay form modal'ını açar
    */
   window.openEventModal = function(type, vehicleId) {
     if (type === 'menu') {
-      // Önce tüm açık alt modalları kapat
-      const allEventModals = [
-        'bakim-ekle-modal', 'kaza-ekle-modal', 'ceza-ekle-modal', 'sigorta-guncelle-modal',
-        'kasko-guncelle-modal', 'muayene-guncelle-modal', 'anahtar-guncelle-modal',
-        'kredi-guncelle-modal', 'km-guncelle-modal', 'lastik-guncelle-modal',
-        'utts-guncelle-modal', 'takip-cihaz-guncelle-modal', 'kasko-kodu-guncelle-modal', 'ruhsat-yukleme-modal', 'sube-degisiklik-modal',
-        'kullanici-atama-modal', 'satis-pert-modal'
-      ];
-      allEventModals.forEach(modalId => {
-        const modal = document.getElementById(modalId);
-        if (modal && modal.classList.contains('active')) {
-          modal.classList.remove('active');
-          modal.style.display = 'none';
-        }
-      });
-      
+      if (DOM.dinamikOlayModal && DOM.dinamikOlayModal.classList.contains('active')) {
+        DOM.dinamikOlayModal.classList.remove('active');
+        DOM.dinamikOlayModal.style.display = 'none';
+      }
       const modal = DOM.eventMenuModal;
       if (!modal) return;
       
@@ -2368,30 +2434,47 @@ function renderVehicleDetailLeft(vehicle) {
         modal.classList.add('active');
       });
     } else {
-      // Belirli bir olay modal'ını aç
-      const modalId = type === 'km' ? 'km-guncelle-modal' :
-                      type === 'bakim' ? 'bakim-ekle-modal' :
-                      type === 'kaza' ? 'kaza-ekle-modal' :
-                      type === 'ceza' ? 'ceza-ekle-modal' :
-                      type === 'sigorta' ? 'sigorta-guncelle-modal' :
-                      type === 'kasko' ? 'kasko-guncelle-modal' :
-                      type === 'muayene' ? 'muayene-guncelle-modal' :
-                      type === 'anahtar' ? 'anahtar-guncelle-modal' :
-                      type === 'kredi' ? 'kredi-guncelle-modal' :
-                      type === 'lastik' ? 'lastik-guncelle-modal' :
-                      type === 'utts' ? 'utts-guncelle-modal' :
-                      type === 'takip' ? 'takip-cihaz-guncelle-modal' :
-                      type === 'kaskokodu' ? 'kasko-kodu-guncelle-modal' :
-                      type === 'sube' ? 'sube-degisiklik-modal' :
-                      type === 'kullanici' ? 'kullanici-atama-modal' :
-                      type === 'satis' ? 'satis-pert-modal' : null;
-      
-      if (!modalId) return;
-      
-      const modal = document.getElementById(modalId);
-      if (!modal) return;
-      
-      // Modal'a göre özel işlemler
+      if (type === 'ruhsat') {
+        window.currentDetailVehicleId = (vehicleId || window.currentDetailVehicleId || '').toString();
+        if (typeof window.openRuhsatModal === 'function') window.openRuhsatModal(vehicleId || window.currentDetailVehicleId);
+        return;
+      }
+      const modal = DOM.dinamikOlayModal;
+      const formIcerik = DOM.dinamikOlayFormIcerik;
+      const baslikEl = DOM.dinamikOlayBaslik;
+      const kaydetBtn = DOM.dinamikOlayKaydetBtn;
+      if (!modal || !formIcerik || !kaydetBtn) return;
+
+      formIcerik.id = 'dinamik-olay-form-icerik';
+      window.currentDetailVehicleId = (vehicleId || window.currentDetailVehicleId || '').toString();
+      const title = EVENT_TITLES[type] || 'OLAY EKLE';
+      baslikEl.textContent = title;
+      formIcerik.innerHTML = getEventFormHtml(type);
+      if (!formIcerik.innerHTML.trim()) return;
+
+      kaydetBtn.onclick = null;
+      kaydetBtn.style.display = '';
+      const saveHandlers = {
+        bakim: window.saveBakimEvent,
+        kaza: window.saveKazaEvent,
+        ceza: window.saveCezaEvent,
+        sigorta: window.updateSigortaInfo,
+        kasko: window.updateKaskoInfo,
+        muayene: window.updateMuayeneInfo,
+        anahtar: window.updateAnahtarInfo,
+        kredi: window.updateKrediInfo,
+        km: window.updateKmInfo,
+        lastik: window.updateLastikInfo,
+        utts: window.updateUTTSInfo,
+        takip: window.updateTakipCihazInfo,
+        kaskokodu: window.updateKaskoKoduInfo,
+        sube: window.updateSubeDegisiklik,
+        kullanici: window.updateKullaniciAtama,
+        satis: window.saveSatisPert
+      };
+      const handler = saveHandlers[type];
+      if (handler) kaydetBtn.onclick = function() { handler(); };
+
       if (type === 'kaza') {
         // Kaza modal'ında mevcut boya şemasını göster (readonly) ve varsayılan kullanıcı
         const vehicle = readVehicles().find(v => String(v.id) === String(vehicleId || window.currentDetailVehicleId));
@@ -2431,12 +2514,8 @@ function renderVehicleDetailLeft(vehicle) {
           });
         }
       } else if (type === 'muayene') {
-        // Muayene modal'ında varsayılan bugünün tarihi
         const muayeneTarihInput = document.getElementById('muayene-tarih');
-        if (muayeneTarihInput) {
-          const today = new Date().toISOString().split('T')[0];
-          muayeneTarihInput.value = today;
-        }
+        if (muayeneTarihInput) muayeneTarihInput.value = formatDateForDisplay(new Date());
       } else if (type === 'kaskokodu') {
         const vehicle = readVehicles().find(v => String(v.id) === String(vehicleId || window.currentDetailVehicleId));
         const input = document.getElementById('kasko-kodu-guncelle-input');
@@ -2613,13 +2692,21 @@ function renderVehicleDetailLeft(vehicle) {
         radioBtns.forEach(b => b.classList.remove('active', 'green'));
         /* Varsayılan seçim yok: form nötr açılır */
       } else if (type === 'bakim') {
-        // Bakım modal'ında varsayılan kişi
         const bakimKisiInput = document.getElementById('bakim-kisi');
         if (bakimKisiInput) {
           const vehicle = readVehicles().find(v => String(v.id) === String(vehicleId || window.currentDetailVehicleId));
-          if (vehicle?.tahsisKisi) {
-            bakimKisiInput.value = vehicle.tahsisKisi;
-          }
+          if (vehicle && vehicle.tahsisKisi) bakimKisiInput.value = vehicle.tahsisKisi;
+        }
+        const bakimIslemler = document.getElementById('bakim-islemler');
+        if (bakimIslemler && !bakimIslemler.dataset.expandBound) {
+          bakimIslemler.dataset.expandBound = '1';
+          bakimIslemler.addEventListener('input', function() {
+            this.style.height = 'auto';
+            var lineHeight = 22, minH = lineHeight * 2, maxH = lineHeight * 10;
+            var newH = Math.min(Math.max(this.scrollHeight, minH), maxH);
+            this.style.height = newH + 'px';
+            this.style.overflow = this.scrollHeight > maxH ? 'auto' : 'hidden';
+          });
         }
       } else if (type === 'km') {
         // Km modal'ında input'u temizle ve mevcut km'yi göster (opsiyonel)
@@ -2777,15 +2864,13 @@ function renderVehicleDetailLeft(vehicle) {
   function setRuhsatSaveBtnVisibility(saveBtn, visible) {
     if (!saveBtn) return;
     saveBtn.style.setProperty('display', visible ? 'inline-flex' : 'none', 'important');
-    const actionGroup = document.getElementById('ruhsat-btn-group');
-    if (actionGroup) {
-      actionGroup.classList.toggle('ruhsat-single-visible', !visible);
-    }
+    const actionGroup = document.getElementById('ruhsat-btn-group') || (saveBtn.id === 'dinamik-olay-kaydet-btn' && saveBtn.closest && saveBtn.closest('.universal-btn-group'));
+    if (actionGroup) actionGroup.classList.toggle('ruhsat-single-visible', !visible);
   }
 
   function setRuhsatInlineViewerMode(active) {
-    const actionGroup = document.getElementById('ruhsat-btn-group');
-    const content = document.getElementById('ruhsat-modal-content');
+    const content = document.getElementById('ruhsat-modal-content') || (DOM.dinamikOlayFormIcerik && DOM.dinamikOlayModal && DOM.dinamikOlayModal.classList.contains('active') ? DOM.dinamikOlayFormIcerik : null);
+    const actionGroup = document.getElementById('ruhsat-btn-group') || (DOM.dinamikOlayKaydetBtn && DOM.dinamikOlayKaydetBtn.closest && DOM.dinamikOlayKaydetBtn.closest('.universal-btn-group'));
     if (actionGroup) actionGroup.classList.toggle('ruhsat-inline-view-mode', !!active);
     if (content) content.classList.toggle('ruhsat-inline-view-mode', !!active);
   }
@@ -2826,8 +2911,8 @@ function renderVehicleDetailLeft(vehicle) {
   }
 
   function renderInlineRuhsatViewer(vehicleId, url, options) {
-    const content = document.getElementById('ruhsat-modal-content');
-    const saveBtn = document.getElementById('ruhsat-save-btn');
+    const content = document.getElementById('ruhsat-modal-content') || DOM.dinamikOlayFormIcerik;
+    const saveBtn = document.getElementById('ruhsat-save-btn') || DOM.dinamikOlayKaydetBtn;
     if (!content || !saveBtn) return false;
     const viewerOptions = options || {};
 
@@ -2891,10 +2976,13 @@ function renderVehicleDetailLeft(vehicle) {
     if (!vid) return;
     window.currentDetailVehicleId = vid;
     const vehicle = readVehicles().find(v => String(v.id) === vid);
-    const modal = document.getElementById('ruhsat-yukleme-modal');
-    const content = document.getElementById('ruhsat-modal-content');
-    const saveBtn = document.getElementById('ruhsat-save-btn');
+    const modal = DOM.dinamikOlayModal;
+    const content = DOM.dinamikOlayFormIcerik;
+    const saveBtn = DOM.dinamikOlayKaydetBtn;
     if (!modal || !content || !saveBtn) return;
+    if (DOM.dinamikOlayBaslik) DOM.dinamikOlayBaslik.textContent = 'RUHSAT YÜKLEME';
+    content.id = 'ruhsat-modal-content';
+    saveBtn.onclick = function() { if (typeof window.saveRuhsatUpload === 'function') window.saveRuhsatUpload(); };
     setRuhsatInlineViewerMode(false);
     content.innerHTML = '';
     setRuhsatSaveBtnVisibility(saveBtn, false);
@@ -3034,20 +3122,20 @@ function renderVehicleDetailLeft(vehicle) {
           v.ruhsatPath = data.ruhsatPath;
         }
 
-        const selectBox = document.querySelector('#ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-select-box');
+        const selectBox = document.querySelector('#ruhsat-modal-content .ruhsat-select-box');
         if (selectBox && input.files && input.files[0]) {
           selectBox.classList.remove('has-file');
           selectBox.classList.add('upload-success');
           selectBox.textContent = '\u2713 Ruhsat Ba\u015far\u0131yla Y\u00fcklendi';
         }
 
-        setRuhsatSaveBtnVisibility(document.getElementById('ruhsat-save-btn'), false);
+        setRuhsatSaveBtnVisibility(document.getElementById('ruhsat-save-btn') || DOM.dinamikOlayKaydetBtn, false);
         if (typeof showToast === 'function') {
           showToast('Ruhsat Ba\u015far\u0131yla Y\u00fcklendi', 'success');
         }
 
         setTimeout(function() {
-          const modal = document.getElementById('ruhsat-yukleme-modal');
+          const modal = document.getElementById('ruhsat-yukleme-modal') || DOM.dinamikOlayModal;
           const isStillOpen = !!(modal && modal.style.display !== 'none');
           if (isStillOpen && String(window.currentDetailVehicleId || '') === String(vehicleId)) {
             window.openRuhsatModal(vehicleId);
@@ -3622,7 +3710,7 @@ function renderVehicleDetailLeft(vehicle) {
     const vehicleId = window.currentDetailVehicleId;
     if (!vehicleId) return;
     
-    const radioBtns = document.querySelectorAll('#anahtar-guncelle-modal .radio-btn');
+    const radioBtns = document.querySelectorAll('#dinamik-olay-modal .radio-btn');
     const activeBtn = Array.from(radioBtns).find(btn => btn.classList.contains('active'));
     const durum = activeBtn?.dataset.value || 'yok';
     const detay = durum === 'var' ? (document.getElementById('anahtar-detay-event')?.value.trim() || '') : '';
@@ -3662,7 +3750,7 @@ function renderVehicleDetailLeft(vehicle) {
     const vehicleId = window.currentDetailVehicleId;
     if (!vehicleId) return;
     
-    const radioBtns = document.querySelectorAll('#kredi-guncelle-modal .radio-btn');
+    const radioBtns = document.querySelectorAll('#dinamik-olay-modal .radio-btn');
     const activeBtn = Array.from(radioBtns).find(btn => btn.classList.contains('active'));
     const durum = activeBtn?.dataset.value || 'yok';
     const detay = durum === 'var' ? (document.getElementById('kredi-detay-event')?.value.trim() || '') : '';
@@ -3814,7 +3902,7 @@ function renderVehicleDetailLeft(vehicle) {
     const vehicleId = window.currentDetailVehicleId;
     if (!vehicleId) return;
     
-    const radioBtns = document.querySelectorAll('#utts-guncelle-modal .radio-btn');
+    const radioBtns = document.querySelectorAll('#dinamik-olay-modal .radio-btn');
     const activeBtn = Array.from(radioBtns).find(btn => btn.classList.contains('active'));
     const durum = activeBtn?.dataset.value === 'evet' ? true : false;
     
@@ -3851,7 +3939,7 @@ function renderVehicleDetailLeft(vehicle) {
     const vehicleId = window.currentDetailVehicleId;
     if (!vehicleId) return;
     
-    const radioBtns = document.querySelectorAll('#takip-cihaz-guncelle-modal .radio-btn');
+    const radioBtns = document.querySelectorAll('#dinamik-olay-modal .radio-btn');
     const activeBtn = Array.from(radioBtns).find(btn => btn.classList.contains('active'));
     const durum = activeBtn?.dataset.value === 'evet' ? true : false;
     
@@ -3888,7 +3976,7 @@ function renderVehicleDetailLeft(vehicle) {
     const vehicleId = window.currentDetailVehicleId;
     if (!vehicleId) return;
     
-    const radioBtns = document.querySelectorAll('#lastik-guncelle-modal .radio-btn');
+    const radioBtns = document.querySelectorAll('#dinamik-olay-modal .radio-btn');
     const activeBtn = Array.from(radioBtns).find(btn => btn.classList.contains('active'));
     const durum = activeBtn?.dataset.value || 'yok';
     const adres = durum === 'var' ? (document.getElementById('lastik-adres-event')?.value.trim() || '') : '';
@@ -4352,22 +4440,22 @@ function renderVehicleDetailLeft(vehicle) {
 
   if (!window.__medisaSaveGuardsApplied) {
     window.assignVehicleToBranch = withSaveButtonGuard('vehicle-detail-modal', window.assignVehicleToBranch);
-    window.saveBakimEvent = withSaveButtonGuard('bakim-ekle-modal', window.saveBakimEvent);
-    window.saveKazaEvent = withSaveButtonGuard('kaza-ekle-modal', window.saveKazaEvent);
-    window.saveCezaEvent = withSaveButtonGuard('ceza-ekle-modal', window.saveCezaEvent);
-    window.updateSigortaInfo = withSaveButtonGuard('sigorta-guncelle-modal', window.updateSigortaInfo);
-    window.updateKaskoInfo = withSaveButtonGuard('kasko-guncelle-modal', window.updateKaskoInfo);
-    window.updateMuayeneInfo = withSaveButtonGuard('muayene-guncelle-modal', window.updateMuayeneInfo);
-    window.updateAnahtarInfo = withSaveButtonGuard('anahtar-guncelle-modal', window.updateAnahtarInfo);
-    window.updateKrediInfo = withSaveButtonGuard('kredi-guncelle-modal', window.updateKrediInfo);
-    window.updateKmInfo = withSaveButtonGuard('km-guncelle-modal', window.updateKmInfo);
-    window.updateLastikInfo = withSaveButtonGuard('lastik-guncelle-modal', window.updateLastikInfo);
-    window.updateUTTSInfo = withSaveButtonGuard('utts-guncelle-modal', window.updateUTTSInfo);
-    window.updateTakipCihazInfo = withSaveButtonGuard('takip-cihaz-guncelle-modal', window.updateTakipCihazInfo);
-    window.updateKaskoKoduInfo = withSaveButtonGuard('kasko-kodu-guncelle-modal', window.updateKaskoKoduInfo);
-    window.updateSubeDegisiklik = withSaveButtonGuard('sube-degisiklik-modal', window.updateSubeDegisiklik);
-    window.updateKullaniciAtama = withSaveButtonGuard('kullanici-atama-modal', window.updateKullaniciAtama);
-    window.saveSatisPert = withSaveButtonGuard('satis-pert-modal', window.saveSatisPert);
+    window.saveBakimEvent = withSaveButtonGuard(DINAMIK_OLAY_MODAL_ID, window.saveBakimEvent);
+    window.saveKazaEvent = withSaveButtonGuard(DINAMIK_OLAY_MODAL_ID, window.saveKazaEvent);
+    window.saveCezaEvent = withSaveButtonGuard(DINAMIK_OLAY_MODAL_ID, window.saveCezaEvent);
+    window.updateSigortaInfo = withSaveButtonGuard(DINAMIK_OLAY_MODAL_ID, window.updateSigortaInfo);
+    window.updateKaskoInfo = withSaveButtonGuard(DINAMIK_OLAY_MODAL_ID, window.updateKaskoInfo);
+    window.updateMuayeneInfo = withSaveButtonGuard(DINAMIK_OLAY_MODAL_ID, window.updateMuayeneInfo);
+    window.updateAnahtarInfo = withSaveButtonGuard(DINAMIK_OLAY_MODAL_ID, window.updateAnahtarInfo);
+    window.updateKrediInfo = withSaveButtonGuard(DINAMIK_OLAY_MODAL_ID, window.updateKrediInfo);
+    window.updateKmInfo = withSaveButtonGuard(DINAMIK_OLAY_MODAL_ID, window.updateKmInfo);
+    window.updateLastikInfo = withSaveButtonGuard(DINAMIK_OLAY_MODAL_ID, window.updateLastikInfo);
+    window.updateUTTSInfo = withSaveButtonGuard(DINAMIK_OLAY_MODAL_ID, window.updateUTTSInfo);
+    window.updateTakipCihazInfo = withSaveButtonGuard(DINAMIK_OLAY_MODAL_ID, window.updateTakipCihazInfo);
+    window.updateKaskoKoduInfo = withSaveButtonGuard(DINAMIK_OLAY_MODAL_ID, window.updateKaskoKoduInfo);
+    window.updateSubeDegisiklik = withSaveButtonGuard(DINAMIK_OLAY_MODAL_ID, window.updateSubeDegisiklik);
+    window.updateKullaniciAtama = withSaveButtonGuard(DINAMIK_OLAY_MODAL_ID, window.updateKullaniciAtama);
+    window.saveSatisPert = withSaveButtonGuard(DINAMIK_OLAY_MODAL_ID, window.saveSatisPert);
     window.__medisaSaveGuardsApplied = true;
   }
 
