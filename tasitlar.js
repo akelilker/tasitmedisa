@@ -3031,6 +3031,16 @@ function renderVehicleDetailLeft(vehicle) {
     content.appendChild(uploadBox);
     input.onchange = function() {
       const hasFile = input.files.length > 0;
+      if (hasFile && input.files[0].size > 5 * 1024 * 1024) {
+        alert('Dosya en fazla 5MB olabilir.');
+        input.value = '';
+        setRuhsatSaveBtnVisibility(saveBtn, false);
+        if (selectBox) {
+          selectBox.classList.remove('upload-success', 'has-file');
+          selectBox.innerHTML = '<span class="ruhsat-select-box-icon" aria-hidden="true">+</span><span class="ruhsat-select-box-label">Dosya Seç</span>';
+        }
+        return;
+      }
       setRuhsatSaveBtnVisibility(saveBtn, hasFile);
       if (selectBox) {
         if (hasFile) {
