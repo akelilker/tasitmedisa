@@ -2511,6 +2511,81 @@
   font-size: 14px;
 }
 
+/* Ruhsat icerigi dinamik-olay-modal icinde: hizalama ve dropzone kutusu */
+#dinamik-olay-modal #ruhsat-modal-content {
+  max-width: 390px;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 8px 0;
+  box-sizing: border-box;
+}
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-upload-box {
+  width: 100%;
+  max-width: 280px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-keep-info {
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 13px;
+  text-align: center;
+  margin-bottom: 12px;
+}
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-select-box {
+  width: 100%;
+  max-width: 280px;
+  height: 80px;
+  min-height: 80px;
+  margin: 0 auto 8px auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: 1px dashed rgba(255, 255, 255, 0.35) !important;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03) !important;
+  color: var(--form-label-color, #ffffff) !important;
+  font-size: 14px;
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: border-color 0.2s, background 0.2s;
+}
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-select-box:hover {
+  border-color: rgba(255, 255, 255, 0.5) !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+}
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-select-box.has-file {
+  border-color: rgba(40, 167, 69, 0.65) !important;
+  color: var(--green-success, #28a745) !important;
+}
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-select-box.upload-success {
+  border-color: rgba(40, 167, 69, 0.85) !important;
+  background: rgba(40, 167, 69, 0.18) !important;
+  color: #7dffae !important;
+  box-shadow: 0 0 12px rgba(40, 167, 69, 0.22);
+}
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-select-box-icon {
+  font-size: 28px;
+  line-height: 1;
+  font-weight: 300;
+  opacity: 0.9;
+}
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-select-box-label {
+  font-size: 13px;
+  font-weight: 500;
+}
+
 /* Olay Ekle butonu - Marka/model satÃƒÆ’Ã¢â‚¬ÂÃƒâ€šÃ‚Â±rÃƒÆ’Ã¢â‚¬ÂÃƒâ€šÃ‚Â±nda solda */
 .detail-brand-year-row .history-add-event-btn {
     width: auto;
