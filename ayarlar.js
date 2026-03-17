@@ -227,13 +227,10 @@
   
       const rows = branches.map(branch => {
         const vehicleCount = vehicles.filter(v => v.branchId === branch.id).length;
-        const nameParts = String(branch.name || '').trim().split(/\s+/);
-        const nameFirst = nameParts[0] || '';
-        const nameRest = nameParts.slice(1).join(' ');
         return `
           <div class="settings-card" onclick="editBranch('${branch.id}')" style="cursor:pointer;">
             <div class="settings-card-content">
-              <div class="settings-card-title"><span class="settings-card-title-line1">${escapeHtml(nameFirst)}</span>${nameRest ? '<span class="settings-card-title-line2">' + escapeHtml(nameRest) + '</span>' : ''}</div>
+              <div class="settings-card-title">${escapeHtml(branch.name)}</div>
               <div class="settings-card-subtitle">${escapeHtml(branch.city || '')}</div>
               <div class="settings-card-count">${vehicleCount} Taşıt</div>
             </div>
@@ -820,13 +817,10 @@
         };
         const roleLabel = roleLabels[user.role] || 'Kullanıcı';
         
-        const nameParts = String(user.name || 'İsimsiz').trim().split(/\s+/);
-        const nameFirst = nameParts[0] || '';
-        const nameRest = nameParts.slice(1).join(' ');
         return `
           <div class="settings-card" onclick="editUser('${user.id}')" style="cursor:pointer;">
             <div class="settings-card-content">
-              <div class="settings-card-title"><span class="settings-card-title-line1">${escapeHtml(nameFirst)}</span>${nameRest ? '<span class="settings-card-title-line2">' + escapeHtml(nameRest) + '</span>' : ''}</div>
+              <div class="settings-card-title">${escapeHtml(user.name || 'İsimsiz')}</div>
               <div class="settings-card-subtitle">${escapeHtml(branchName)}</div>
               <div class="settings-card-gorev">${escapeHtml(roleLabel)}</div>
             </div>
