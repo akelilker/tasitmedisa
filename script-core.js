@@ -285,6 +285,76 @@ window.resetModalInputs = function(modalElement) {
   });
 };
 
+/* =========================================
+   LAZY LOAD – Modül JS/CSS dinamik yükleme (Faz 1 & 2)
+   ========================================= */
+window.__loadedAppModules = window.__loadedAppModules || Object.create(null);
+
+/**
+ * İstenen JS ve CSS dosyalarını document.createElement ile dinamik yükler.
+ * Zaten yüklüyse tekrar yüklemez. Yüklendikten sonra Promise döner.
+ * @param {string} jsPath - Örn. 'tasitlar.js?v=20260316'
+ * @param {string|null} cssPath - Örn. 'tasitlar.css?v=20260316.6' (opsiyonel)
+ * @returns {Promise<void>}
+ */
+window.loadAppModule = function(jsPath, cssPath) {
+  var key = (jsPath || '') + (cssPath || '');
+  if (window.__loadedAppModules[key]) {
+    return Promise.resolve();
+  }
+  function loadCss(href) {
+    return new Promise(function(resolve, reject) {
+      var link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = href;
+      link.onload = function() { resolve(); };
+      link.onerror = function() { resolve(); }
+      document.head.appendChild(link);
+    });
+  }
+  function loadScript(src) {
+    return new Promise(function(resolve, reject) {
+      var script = document.createElement('script');
+      script.src = src;
+      script.onload = function() { resolve(); };
+      script.onerror = function() { reject(new Error('Script yüklenemedi: ' + src)); };
+      document.head.appendChild(script);
+    });
+  }
+  var promises = [];
+  if (cssPath) promises.push(loadCss(cssPath));
+  if (jsPath) promises.push(loadScript(jsPath));
+  return Promise.all(promises).then(function() {
+    window.__loadedAppModules[key] = true;
+  });
+};
+
+var _moduleSpinnerEl = null;
+function showModuleSpinner() {
+  if (_moduleSpinnerEl) {
+    _moduleSpinnerEl.classList.add('active');
+    return;
+  }
+  var wrap = document.createElement('div');
+  wrap.id = 'module-load-spinner';
+  wrap.className = 'module-load-spinner';
+  wrap.setAttribute('aria-live', 'polite');
+  wrap.setAttribute('aria-label', 'Yükleniyor');
+  wrap.innerHTML = '<div class="module-load-spinner-dot"></div><div class="module-load-spinner-dot"></div><div class="module-load-spinner-dot"></div><span class="module-load-spinner-text">Yükleniyor…</span>';
+  document.body.appendChild(wrap);
+  _moduleSpinnerEl = wrap;
+  requestAnimationFrame(function() { wrap.classList.add('active'); });
+}
+function hideModuleSpinner() {
+  if (!_moduleSpinnerEl) return;
+  _moduleSpinnerEl.classList.remove('active');
+  setTimeout(function() {
+    if (_moduleSpinnerEl && !_moduleSpinnerEl.classList.contains('active')) {
+      _moduleSpinnerEl.style.visibility = 'hidden';
+    }
+  }, 200);
+}
+
 /** Kaporta SVG metni - tek fetch, cache paylaşımı (tasitlar + kayit) */
 var _kaportaSvgCache = null;
 window.getKaportaSvg = async function() {
@@ -423,35 +493,70 @@ document.addEventListener('DOMContentLoaded', () => {
   modalObserver.observe(document.body, { childList: true, subtree: true });
 });
 
-// Modal açma fonksiyonları: tasitlar.js ve raporlar.js kendi openVehiclesView/openReportsView tanımlar
-// (şube seçimi, renderBranchDashboard vb.). Burada sadece fallback - modüller yüklenmezse.
+// Modal açma fonksiyonları: Lazy load – modül yüklenir, sonra ilgili açma fonksiyonu tetiklenir.
+// tasitlar.js / raporlar.js / kayit.js / ayarlar.js yüklendiğinde kendi open* implementasyonlarını yazar.
 (function() {
-  if (!window.openVehiclesView) {
-    window.openVehiclesView = function() { 
-      const modal = document.getElementById('vehicles-modal');
-      if (modal) {
-        modal.style.display = 'flex';
-        requestAnimationFrame(() => {
-          modal.classList.add('active');
-          setTimeout(() => window.updateFooterDim(), 100);
-        });
-      }
+  var TASITLAR_JS = 'tasitlar.js?v=20260316';
+  var TASITLAR_CSS = 'tasitlar.css?v=20260316.6';
+  var RAPORLAR_JS = 'raporlar.js?v=20260225';
+  var RAPORLAR_CSS = 'raporlar.css?v=20260221';
+  var KAYIT_JS = 'kayit.js?v=20260225';
+  var KAYIT_CSS = 'kayit.css?v=20260301';
+  var AYARLAR_JS = 'ayarlar.js?v=20260311';
+  var AYARLAR_CSS = 'ayarlar.css?v=20260316.1';
+
+  window.openVehiclesView = function() {
+    showModuleSpinner();
+    window.loadAppModule(TASITLAR_JS, TASITLAR_CSS).then(function() {
+      hideModuleSpinner();
+      if (typeof window.openVehiclesView === 'function') window.openVehiclesView();
+    }).catch(function(err) {
+      hideModuleSpinner();
+      console.error('[Medisa] Taşıtlar modülü yüklenemedi:', err);
+    });
+  };
+
+  window.openReportsView = function() {
+    showModuleSpinner();
+    window.loadAppModule(RAPORLAR_JS, RAPORLAR_CSS).then(function() {
+      hideModuleSpinner();
+      if (typeof window.openReportsView === 'function') window.openReportsView();
+    }).catch(function(err) {
+      hideModuleSpinner();
+      console.error('[Medisa] Raporlar modülü yüklenemedi:', err);
+    });
+  };
+
+  window.openVehicleModal = function() {
+    showModuleSpinner();
+    window.loadAppModule(KAYIT_JS, KAYIT_CSS).then(function() {
+      hideModuleSpinner();
+      if (typeof window.openVehicleModal === 'function') window.openVehicleModal();
+    }).catch(function(err) {
+      hideModuleSpinner();
+      console.error('[Medisa] Kayıt modülü yüklenemedi:', err);
+    });
+  };
+
+  function wrapAyarlar(fnName) {
+    return function() {
+      var args = arguments;
+      showModuleSpinner();
+      window.loadAppModule(AYARLAR_JS, AYARLAR_CSS).then(function() {
+        hideModuleSpinner();
+        if (typeof window[fnName] === 'function') window[fnName].apply(window, args);
+      }).catch(function(err) {
+        hideModuleSpinner();
+        console.error('[Medisa] Ayarlar modülü yüklenemedi:', err);
+      });
     };
   }
-  
-  if (!window.openReportsView) {
-    window.openReportsView = function() {
-      const modal = document.getElementById('reports-modal');
-      if (modal) {
-        modal.style.display = 'flex';
-        requestAnimationFrame(() => {
-          modal.classList.add('active');
-          setTimeout(() => window.updateFooterDim(), 100);
-        });
-      }
-    };
-  }
-  
+  window.openBranchManagement = wrapAyarlar('openBranchManagement');
+  window.openUserManagement = wrapAyarlar('openUserManagement');
+  window.openDisVeriPanel = wrapAyarlar('openDisVeriPanel');
+  window.openDataManagement = wrapAyarlar('openDataManagement');
+  window.clearCache = wrapAyarlar('clearCache');
+
   window.closeVehiclesModal = function() {
     const modal = document.getElementById('vehicles-modal');
     if (modal) {
@@ -462,7 +567,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }, 300);
     }
   };
-  
+
   window.closeReportsModal = function() {
     const modal = document.getElementById('reports-modal');
     if (modal) {
