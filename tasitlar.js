@@ -2860,6 +2860,7 @@ function renderVehicleDetailLeft(vehicle) {
     const saveBtn = document.getElementById('ruhsat-save-btn') || DOM.dinamikOlayKaydetBtn;
     if (!content || !saveBtn) return false;
     const viewerOptions = options || {};
+    const isImage = /\.(jpeg|jpg|png|gif|webp)(\?.*)?$/i.test(String(url));
 
     setRuhsatInlineViewerMode(true);
     setRuhsatSaveBtnVisibility(saveBtn, false);
@@ -2869,8 +2870,8 @@ function renderVehicleDetailLeft(vehicle) {
     frameWrap.className = 'ruhsat-inline-frame-wrap';
     const frame = document.createElement('iframe');
     frame.className = 'ruhsat-inline-frame';
-    frame.src = buildPdfViewerUrl(url, 'toolbar=1&navpanes=0&zoom=page-fit&view=FitH');
-    frame.setAttribute('title', 'Ruhsat PDF');
+    frame.src = isImage ? url : buildPdfViewerUrl(url, 'toolbar=1&navpanes=0&zoom=page-fit&view=FitH');
+    frame.setAttribute('title', isImage ? 'Ruhsat Görsel' : 'Ruhsat PDF');
     frameWrap.appendChild(frame);
 
     const actionsWrap = document.createElement('div');
@@ -2983,7 +2984,11 @@ function renderVehicleDetailLeft(vehicle) {
       previewBtn.onclick = function(e) {
         e.preventDefault();
         e.stopPropagation();
-        window.viewRuhsatPdf(vid);
+        if (shouldUseInlineRuhsatViewer()) {
+          renderInlineRuhsatViewer(vid, ruhsatUrl, { showPrintButton: true, forceExternalPrint: true });
+        } else {
+          window.viewRuhsatPdf(vid);
+        }
       };
       btnGroup.appendChild(previewBtn);
 
