@@ -3089,14 +3089,15 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   margin-bottom: 4px;
 }
 
+/* Etiket beyaz (tarih/dönem); açıklama .history-details p ile gri */
 .history-period {
   font-weight: 400;
-  color: var(--data-value-color, #a0aec0);
+  color: #ffffff !important;
   font-size: 15px;
 }
 
 .history-vehicle {
-  color: var(--muted);
+  color: #ffffff !important;
   font-size: 14px;
   text-align: right;
 }
