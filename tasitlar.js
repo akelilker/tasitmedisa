@@ -349,8 +349,8 @@
         }
       }
     }
+    // PERFORMANS VE UX FIX: "touchend" eventi mobil kaydırmalarda (scroll) hayalet tıklamalara sebep olduğu için kaldırıldı.
     modalContent.addEventListener('click', handleVehicleRowClick);
-    modalContent.addEventListener('touchend', handleVehicleRowClick, { passive: false });
   }
 
   // Bildirim listesi: delegation (her bildirime ayrı onclick yerine tek listener)
