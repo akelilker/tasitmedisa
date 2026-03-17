@@ -39,18 +39,20 @@
     overflow-x: visible !important;
 }
 
-/* Muayene tarihi input: Kaydet butonu ile yatayda hizalı (aynı genişlik) */
-#muayene-guncelle-modal .muayene-tarih-row {
+/* Muayene tarihi input: Kaydet butonu ile yatayda hizalı (içerik #dinamik-olay-modal'da) */
+#muayene-guncelle-modal .muayene-tarih-row,
+#dinamik-olay-modal .muayene-tarih-row {
   display: flex !important;
   justify-content: center !important;
 }
-#muayene-guncelle-modal .muayene-tarih-inner {
+#muayene-guncelle-modal .muayene-tarih-inner,
+#dinamik-olay-modal .muayene-tarih-inner {
   width: 390px;
   max-width: 100%;
   box-sizing: border-box;
 }
-/* Tarih input genişliği = Kaydet butonu genişliği (grid 1fr 1fr, gap 16px) */
-#muayene-guncelle-modal #muayene-tarih {
+#muayene-guncelle-modal #muayene-tarih,
+#dinamik-olay-modal #muayene-tarih {
   width: calc((100% - 16px) / 2) !important;
   max-width: calc((100% - 16px) / 2) !important;
   min-width: min(140px, calc((100% - 16px) / 2)) !important;
@@ -167,7 +169,8 @@
 
 /* Kaza Modalı özel İçerik Düzeni (Ekle + Güncelle) */
 #kaza-guncelle-modal .modal-body,
-#kaza-ekle-modal .modal-body {
+#kaza-ekle-modal .modal-body,
+#dinamik-olay-modal .modal-body {
     display: flex !important;
     flex-direction: column !important;
     justify-content: flex-start !important;
@@ -177,7 +180,8 @@
 
 /* Şemayı saran kapsayıcı hizalama */
 #kaza-guncelle-modal #kaza-kaporta-container,
-#kaza-ekle-modal #kaza-kaporta-container {
+#kaza-ekle-modal #kaza-kaporta-container,
+#dinamik-olay-modal #kaza-kaporta-container {
     margin-top: 2px !important;
     margin-bottom: 0 !important;
     display: flex !important;
@@ -186,13 +190,15 @@
     width: 100% !important;
 }
 #kaza-guncelle-modal #kaza-kaporta-container .boya-legend,
-#kaza-ekle-modal #kaza-kaporta-container .boya-legend {
+#kaza-ekle-modal #kaza-kaporta-container .boya-legend,
+#dinamik-olay-modal #kaza-kaporta-container .boya-legend {
     margin-top: 0 !important;
 }
 
-/* Hasar Gören Parça etiketi: Hasar Tutarı sol hizada; üstteki dikey boşluşu kapat */
+/* Hasar Gören Parça etiketi: Hasar Tutarı sol hizada */
 #kaza-ekle-modal .modal-body .kaza-kaporta-row,
-#kaza-guncelle-modal .modal-body .kaza-kaporta-row {
+#kaza-guncelle-modal .modal-body .kaza-kaporta-row,
+#dinamik-olay-modal .modal-body .kaza-kaporta-row {
     width: 100% !important;
     padding-left: 0 !important;
     margin-left: 0 !important;
@@ -201,7 +207,8 @@
 }
 /* "H" (Hasar...) ilk harfi = 5.000 inputunun sol dikey çerçevesi – şema arası 4px */
 #kaza-ekle-modal .kaza-kaporta-label,
-#kaza-guncelle-modal .kaza-kaporta-label {
+#kaza-guncelle-modal .kaza-kaporta-label,
+#dinamik-olay-modal .kaza-kaporta-label {
     display: block !important;
     text-align: left !important;
     margin-left: 0 !important;
@@ -213,7 +220,8 @@
 
 /* Kaza modalı buton grubu: şemadan 10px aşaşıda */
 #kaza-guncelle-modal .universal-btn-group,
-#kaza-ekle-modal .universal-btn-group {
+#kaza-ekle-modal .universal-btn-group,
+#dinamik-olay-modal .modal-body .universal-btn-group {
     margin-top: 10px !important; /* ÃƒÆ’Ã†â€™âÃ¢â€šÂ¬Ã‚Â¦ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Âemadan 10px aşaşıda */
     flex-shrink: 0 !important;
     background: var(--bg) !important;

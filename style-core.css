@@ -293,6 +293,9 @@ body::-webkit-scrollbar,
   width: 100% !important;
   max-width: 100% !important;
   box-sizing: border-box !important;
+  background: var(--bg-content, #0d131f) !important;
+  color: var(--txt-white, #ffffff) !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
 }
 
 /* Buton grubu da tam genişlik (400px kısıtlaması kaldırıldı) */
