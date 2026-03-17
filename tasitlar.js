@@ -1779,28 +1779,31 @@
   };
 
   window.closeFilterMenu = function() {
-      const fd = getFilterDropdown();
+      var fd = getFilterDropdown();
       if (fd) {
           fd.classList.remove('open');
-          fd.style.display = '';
+          fd.style.display = 'none';
       }
   };
 
   // Filtre menüsünü kapat: hem document (capture) hem modal overlay (capture) – modal içi stopPropagation’ı aşmak için
   function onFilterCloseCheck(e) {
       var fd = getFilterDropdown();
+      if (!fd || !fd.classList.contains('open')) return;
       var filterBtn = document.querySelector('.vt-icon-btn[onclick*="toggleFilterMenu"]');
       var transWrap = e.target.closest('.v-transmission-wrap');
       var transDd = getVTransmissionDropdown();
-      if (fd && fd.contains(e.target)) return;
+      if (fd.contains(e.target)) return;
       if (filterBtn && filterBtn.contains(e.target)) return;
       if (transWrap) return;
-      if (fd && fd.classList.contains('open')) closeFilterMenu();
+      closeFilterMenu();
       if (transDd && transDd.classList.contains('open')) closeTransmissionMenu();
   }
+  document.addEventListener('mousedown', onFilterCloseCheck, true);
   document.addEventListener('click', onFilterCloseCheck, true);
   if (DOM.vehiclesModal && !DOM.vehiclesModal._filterCloseBound) {
       DOM.vehiclesModal._filterCloseBound = true;
+      DOM.vehiclesModal.addEventListener('mousedown', onFilterCloseCheck, true);
       DOM.vehiclesModal.addEventListener('click', onFilterCloseCheck, true);
   }
 
