@@ -1770,6 +1770,8 @@
           fd.querySelectorAll('.filter-dropdown-btn').forEach(function(btn) {
               btn.classList.toggle('active', btn.dataset.filter === currentFilter);
           });
+          fd.style.left = 'auto';
+          fd.style.right = '10px';
           // #region agent log
           (function(){
             var p = fd.parentElement;
