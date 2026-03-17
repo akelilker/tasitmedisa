@@ -458,42 +458,6 @@
 
     // Arama kutusu artık toolbar içinde (v-search-container)
 
-    // Filtre Dropdown (sadece List modunda kullanılır, modal-container'a eklenir)
-    let filterDrop = getFilterDropdown();
-    if (!filterDrop && modalContainer) {
-        filterDrop = document.createElement('div');
-        filterDrop.id = 'filter-dropdown';
-        filterDrop.className = 'filter-dropdown';
-        filterDrop.innerHTML = `
-            <button type="button" class="filter-dropdown-btn" data-filter="az">A-Z Sıralı</button>
-            <button type="button" class="filter-dropdown-btn" data-filter="newest">En Yeni</button>
-            <button type="button" class="filter-dropdown-btn" data-filter="oldest">En Eski</button>
-            <button type="button" class="filter-dropdown-btn" data-filter="type">Tipe Göre</button>
-        `;
-        filterDrop.addEventListener('click', function(e) {
-            var btn = e.target.closest('.filter-dropdown-btn');
-            if (!btn) return;
-            currentFilter = btn.dataset.filter || 'az';
-                // Filtreye göre sıralama sütunu ve yönü
-                if (currentFilter === 'az') {
-                    sortColumn = 'plate';
-                    sortDirection = 'asc';
-                } else if (currentFilter === 'newest') {
-                    sortColumn = 'year';
-                    sortDirection = 'desc';
-                } else if (currentFilter === 'oldest') {
-                    sortColumn = 'year';
-                    sortDirection = 'asc';
-                } else if (currentFilter === 'type') {
-                    sortColumn = 'type';
-                    sortDirection = 'asc';
-                }
-                closeFilterMenu();
-                renderVehicles(getVSearchInput()?.value || '');
-        });
-        modalContainer.appendChild(filterDrop);
-    }
-    
     return { toolbar };
   }
 
@@ -612,21 +576,9 @@
   function updateToolbar(mode, title = '') {
     const { toolbar } = ensureToolbar();
     if (!toolbar) return;
-    var modalContainer = toolbar.parentElement;
-    var fd = getFilterDropdown();
 
     if (mode === 'dashboard') {
-        if (fd && fd.parentElement !== modalContainer) {
-          modalContainer.appendChild(fd);
-        }
-        if (fd) {
-          fd.classList.remove('open');
-          fd.style.display = 'none';
-          fd.style.position = '';
-          fd.style.top = '';
-          fd.style.right = '';
-          fd.style.left = '';
-        }
+        closeFilterMenu();
         // DASHBOARD MODU: Sağda Genel Arama, Şanzıman filtresi ve Arşiv (filtre butonu yok)
         toolbar.innerHTML = `
             <div class="vt-left"></div>
@@ -680,9 +632,17 @@
                         <button type="button" class="v-transmission-option${transmissionFilter === 'manuel' ? ' active' : ''}" data-value="manuel" role="menuitem">${transmissionFilter === 'manuel' ? '✓ ' : ''}Manuel</button>
                     </div>
                 </div>
-                <button class="vt-icon-btn" onclick="toggleFilterMenu(event)" title="Sırala / Filtrele">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
-                </button>
+                <div class="v-filter-wrap">
+                    <button class="vt-icon-btn" onclick="toggleFilterMenu(event)" title="Sırala / Filtrele">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+                    </button>
+                    <div id="filter-dropdown" class="filter-dropdown">
+                        <button type="button" class="filter-dropdown-btn" data-filter="az">A-Z Sıralı</button>
+                        <button type="button" class="filter-dropdown-btn" data-filter="newest">En Yeni</button>
+                        <button type="button" class="filter-dropdown-btn" data-filter="oldest">En Eski</button>
+                        <button type="button" class="filter-dropdown-btn" data-filter="type">Tipe Göre</button>
+                    </div>
+                </div>
                 <button class="vt-icon-btn" onclick="toggleViewMode()" title="Görünüm">
                     ${viewMode === 'card' 
                         ? '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>'
@@ -691,19 +651,7 @@
                 </button>
             </div>
         `;
-        var vtRight = toolbar.querySelector('.vt-right');
-        if (fd) {
-          fd.classList.remove('open');
-          fd.style.display = 'none';
-          fd.style.position = '';
-          fd.style.top = '';
-          fd.style.right = '';
-          fd.style.left = '';
-        }
-
-        if (fd && vtRight && fd.parentElement !== vtRight) {
-          vtRight.appendChild(fd);
-        }
+        closeFilterMenu();
     }
   }
 
@@ -1764,8 +1712,38 @@
   // --- FİLTRE DROPDOWN ---
   window.toggleFilterMenu = function(e) {
       if (e) { e.stopPropagation(); e.preventDefault(); }
+
       const fd = getFilterDropdown();
       if (!fd) return;
+
+      if (!fd.dataset.bound) {
+          fd.addEventListener('click', function(ev) {
+              var btn = ev.target.closest('.filter-dropdown-btn');
+              if (!btn) return;
+
+              currentFilter = btn.dataset.filter || 'az';
+
+              if (currentFilter === 'az') {
+                  sortColumn = 'plate';
+                  sortDirection = 'asc';
+              } else if (currentFilter === 'newest') {
+                  sortColumn = 'year';
+                  sortDirection = 'desc';
+              } else if (currentFilter === 'oldest') {
+                  sortColumn = 'year';
+                  sortDirection = 'asc';
+              } else if (currentFilter === 'type') {
+                  sortColumn = 'type';
+                  sortDirection = 'asc';
+              }
+
+              closeFilterMenu();
+              renderVehicles(getVSearchInput()?.value || '');
+          });
+
+          fd.dataset.bound = '1';
+      }
+
       if (fd.classList.contains('open')) {
           closeFilterMenu();
       } else {
