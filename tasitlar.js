@@ -4275,7 +4275,7 @@ function renderVehicleDetailLeft(vehicle) {
           const kmCumle = `${escapeHtml(kullanici)}, G\u00fcncel Km: ${escapeHtml(formatNumber(yeniKm))} Olarak Bildirdi. (\u00d6nceki Km: ${escapeHtml(formatNumber(eskiKm))})`;
           html += `<div class="history-item">
             <div class="history-item-date" style="font-weight: 600; font-size: 12px; margin-bottom: 4px;">${escapeHtml(formatDateForDisplay(event.date) || '-')}</div>
-            <div class="history-item-body" style="font-size: 12px; margin-top: 4px;"><span class="history-label">${kmCumle}</span></div>
+            <div class="history-item-body" style="font-size: 12px; margin-top: 4px;">${kmCumle}</div>
             ${index === 0 ? duzeltmeNotHtml : ''}
           </div>`;
         });
