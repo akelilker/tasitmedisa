@@ -123,7 +123,7 @@
     align-items: start; 
 }
 
-/* Sol ve sağ sütun ilk elemanlarÄ± */
+/* Sol ve sağ sütun ilk elemanları */
 .modal-column-left .form-section-inline:first-child,
 .modal-column-right .form-section:first-child {
     margin-top: 0;
@@ -976,7 +976,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         border-color: var(--theme-color) !important; /* Aktif taşıt tipi daha belirgin */
     }
     
-    /* Overlay konumu style-core .modal-overlay (6px) kullanÄ±lÄ±r; ezme yok */
+    /* Overlay konumu style-core .modal-overlay (6px) kullanılır; ezme yok */
     #vehicle-modal .modal-container {
         isolation: isolate !important;
         max-height: 100% !important;
