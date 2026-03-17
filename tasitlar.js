@@ -1750,19 +1750,15 @@
   window.handleSearch = (typeof window.debounce === 'function') ? window.debounce(handleSearchImpl, 200) : handleSearchImpl;
 
   // --- FİLTRE DROPDOWN ---
-  window.closeFilterMenu = function() {
-      const fd = getFilterDropdown();
-      if (fd) fd.classList.remove('open');
-  };
-
   window.toggleFilterMenu = function(e) {
-      if (e) e.stopPropagation();
+      if (e) { e.stopPropagation(); e.preventDefault(); }
       const fd = getFilterDropdown();
       if (!fd) return;
       if (fd.classList.contains('open')) {
           closeFilterMenu();
       } else {
           closeSearchBox(true);
+          fd.style.display = 'flex';
           fd.classList.add('open');
           fd.querySelectorAll('.filter-dropdown-btn').forEach(function(btn) {
               btn.classList.toggle('active', btn.dataset.filter === currentFilter);
@@ -1787,20 +1783,31 @@
       }
   };
 
-  // Capture phase: modal içinde stopPropagation olsa bile tıklamayı önce biz görürüz; dışarı tıklanınca menü kapansın
-  document.addEventListener('click', function(e) {
+  window.closeFilterMenu = function() {
       const fd = getFilterDropdown();
-      const filterBtn = document.querySelector('.vt-icon-btn[onclick*="toggleFilterMenu"]');
-      const transWrap = e.target.closest('.v-transmission-wrap');
-      const transDd = getVTransmissionDropdown();
+      if (fd) {
+          fd.classList.remove('open');
+          fd.style.display = '';
+      }
+  };
 
+  // Filtre menüsünü kapat: hem document (capture) hem modal overlay (capture) – modal içi stopPropagation’ı aşmak için
+  function onFilterCloseCheck(e) {
+      var fd = getFilterDropdown();
+      var filterBtn = document.querySelector('.vt-icon-btn[onclick*="toggleFilterMenu"]');
+      var transWrap = e.target.closest('.v-transmission-wrap');
+      var transDd = getVTransmissionDropdown();
       if (fd && fd.contains(e.target)) return;
       if (filterBtn && filterBtn.contains(e.target)) return;
       if (transWrap) return;
-
       if (fd && fd.classList.contains('open')) closeFilterMenu();
       if (transDd && transDd.classList.contains('open')) closeTransmissionMenu();
-  }, true);
+  }
+  document.addEventListener('click', onFilterCloseCheck, true);
+  if (DOM.vehiclesModal && !DOM.vehiclesModal._filterCloseBound) {
+      DOM.vehiclesModal._filterCloseBound = true;
+      DOM.vehiclesModal.addEventListener('click', onFilterCloseCheck, true);
+  }
 
   // Sütun başlığına tıklanınca sıralama yap
   window.handleColumnSort = function(column) {
