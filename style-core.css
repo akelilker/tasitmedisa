@@ -1801,7 +1801,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
         margin-right: 12px !important;
         width: calc(var(--hero-logo-width) - 3px) !important;
         flex: 0 0 calc(var(--hero-logo-width) - 3px) !important;
-        transform: translate(-3px, 8px);  /* 3px sola, 8px aşağı (mobil: +1px sol, +3px aşağı) */
+        transform: translate(-1px, 3px);  /* 1px sola, 3px aşağı (mobil header logo planı) */
     }
     
     /* Hero mobilde havada + kırmızı (anasayfa ile eşit), dikey yükseklik +5px */

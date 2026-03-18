@@ -568,7 +568,7 @@
 
 /* Kaporta açıklaması: "Aşağıdaki şemada belirtilmiştir." – 2pt küçük (mobil + masaüstü ortak) */
 .detail-row-kaporta .detail-row-value {
-    font-size: calc(1em - 2px);
+    font-size: calc(1em - 4px);
 }
 
 /* Tarih uyarı renkleri */
