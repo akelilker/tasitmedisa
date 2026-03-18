@@ -706,7 +706,7 @@
 }
 /* Tarihçe modalı: sol ok + etiket global kurala uysun (style-core); ayarlar-modal-overlay -16px ezmesin */
 #vehicle-history-modal .universal-back-bar {
-  margin-top: -12px !important;
+  margin-top: -24px !important;
   padding: 8px 0 0 0 !important;
 }
 #vehicle-history-modal .universal-back-btn .universal-back-label {
@@ -800,7 +800,7 @@
 /* Tarihçe modalı başlığı 12px yukarı */
 #vehicle-history-modal .modal-header h2,
 .modal-overlay:has(.history-tabs) .modal-header h2 {
-    margin-top: -12px !important;
+    margin-top: -24px !important;
 }
 
 #vehicles-modal .modal-close {
@@ -3314,7 +3314,7 @@ FİLTRE DROPDOWN MENÜSÜ === */
   /* --- TARİHÇE MODAL --- */
   /* Mobil: sol ok + "Taşıt detay" 12px aşağı, sol asılı */
   #vehicle-history-modal .universal-back-bar {
-    margin-top: 0 !important;
+    margin-top: -12px !important;
   }
   #vehicle-history-modal .modal-header {
     justify-content: flex-start !important;
