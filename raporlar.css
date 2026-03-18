@@ -463,7 +463,7 @@ display: flex;
 flex-wrap: wrap;
 gap: 3px;
 align-content: start;
-justify-content: center;
+justify-content: flex-start !important;
 padding: 0 3px;
 box-sizing: border-box;
 }
@@ -478,6 +478,8 @@ background: rgba(255, 255, 255, 0.02);
 border: 1px solid rgba(255, 255, 255, 0.30);
 border-radius: 8px;
 padding: 4px;
+padding-top: 16px !important;
+padding-bottom: 12px !important;
 text-align: center;
 will-change: transform;
 cursor: pointer;
@@ -485,7 +487,7 @@ transition: border-color 0.2s, box-shadow 0.2s;
 display: flex;
 flex-direction: column;
 align-items: center !important;
-justify-content: center !important;
+justify-content: flex-start !important;
 overflow: hidden;
 box-sizing: border-box;
 }
@@ -544,17 +546,14 @@ font-size: 13px;
 font-weight: 500;
 color: #ffffff;
 text-transform: uppercase;
-margin-bottom: 2px;
+margin-bottom: 4px;
 line-height: 1.1;
 width: 100%;
 white-space: normal;
 word-break: break-word;
 transition: transform 0.2s ease;
 display: block;
-min-height: 2.2em;
-max-height: 2.2em;
-overflow: hidden;
-text-overflow: clip;
+height: auto !important;
 }
 
 /* Taşıtlar .branch-count ile birebir aynı */
@@ -566,6 +565,7 @@ padding: 0;
 border-radius: 0;
 transition: transform 0.2s ease;
 font-weight: 500;
+margin-top: auto !important;
 }
 
 /* === STOK LİSTE GÖRÜNÜMÜ === */
@@ -1966,7 +1966,7 @@ gap: 10px;
 width: clamp(90px, 26vw, 104px);
 max-width: clamp(90px, 26vw, 104px);
 flex: 0 0 clamp(90px, 26vw, 104px);
-padding: 3px;
+padding: 16px 3px 12px 3px !important;
 aspect-ratio: 1 / 1;
 }
 /* Mobil: hover büyümesi olmasın (ilk açılışta bir kutu büyümüş kalmasın) */
