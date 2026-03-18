@@ -1047,47 +1047,39 @@ input.settings-form-input:-moz-autofill,
     box-sizing: border-box; /* Padding dahil hesaplama */
 }
 
-/* Kullanıcı kartları – Şube kartları (.branch-card) ile birebir kutu ve tipografi */
-.user-card,
-#user-modal #user-list .settings-card {
-    background: var(--border-faint-02) !important;
-    border: 1px solid var(--border-subtle) !important;
-    border-radius: 8px;
-    padding: 8px 4px !important;
-    padding-top: 16px !important;
-    padding-bottom: 12px !important;
+/* Kullanıcı Kartları - Şube Kartları ile Birebir Eşitlenmiş Tok Yapı */
+.user-card {
+    background-color: var(--surface-color, #1e1e1e) !important;
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    border-radius: 12px !important;
+    padding: 16px !important;
     display: flex !important;
     flex-direction: column !important;
-    align-items: center !important;
     justify-content: center !important;
-}
-.user-name,
-#user-modal #user-list .settings-card-title {
-    font-size: clamp(10px, 2.5vw, 15px) !important;
-    font-weight: 600 !important;
-    color: var(--txt, #ffffff) !important;
+    align-items: center !important;
+    aspect-ratio: 1 / 1 !important;
     text-align: center !important;
-    line-height: 1.05 !important;
-    width: 100%;
-    white-space: normal;
-    word-break: break-word;
-    overflow-wrap: anywhere;
+    transition: all 0.2s ease !important;
+}
+
+.user-name {
     display: block !important;
+    color: #ffffff !important;
+    font-size: 15px !important;
+    font-weight: 600 !important;
     height: 2.5em !important;
     min-height: 2.5em !important;
     max-height: 2.5em !important;
     margin-bottom: 2px !important;
     overflow: hidden !important;
+    line-height: 1.25 !important;
 }
-.user-role,
-#user-modal #user-list .settings-card-subtitle,
-#user-modal #user-list .settings-card-gorev {
-    font-size: 12px !important;
+
+.user-role {
     color: #a0aec0 !important;
-    text-align: center !important;
+    font-size: 13px !important;
     margin-top: 0 !important;
-    line-height: 1.1;
-    width: 100%;
+    font-weight: 400 !important;
 }
 
 .settings-card-content {
@@ -1371,19 +1363,8 @@ input.settings-form-input:-moz-autofill,
         border-color: rgba(255, 255, 255, 0.4) !important;
         background: rgba(255, 255, 255, 0.03) !important;
     }
-    /* Kullanıcı kartları mobilde de Şube kartı ile aynı koyu kutu */
-    .user-card,
-    #user-modal #user-list .settings-card {
-        background: var(--border-faint-02) !important;
-        border: 1px solid var(--border-subtle) !important;
-    }
     .settings-card-title {
         color: #ffffff !important;
-    }
-    .user-name,
-    #user-modal #user-list .settings-card-title {
-        color: var(--txt, #ffffff) !important;
-        font-weight: 600 !important;
     }
     .settings-card-subtitle {
         color: rgba(255, 255, 255, 0.85) !important;
@@ -1391,11 +1372,10 @@ input.settings-form-input:-moz-autofill,
     .settings-card-gorev {
         color: rgba(255, 255, 255, 0.75) !important;
     }
-    .user-role,
-    #user-modal #user-list .settings-card-subtitle,
-    #user-modal #user-list .settings-card-gorev {
-        color: #a0aec0 !important;
-        font-size: 12px !important;
+    /* Kullanıcı kartları kapsayıcısı mobilde ortalanmış */
+    .users-grid,
+    #user-list {
+        justify-content: center !important;
     }
     .settings-btn-delete {
         border-color: var(--theme-color) !important;
