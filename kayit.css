@@ -424,6 +424,14 @@ input[type="date"].form-input {
     cursor: pointer !important;
 }
 
+/* Kayıt modalı: tüm placeholder ve tarih metinleri soluk (tek palet) */
+#vehicle-modal .form-input::placeholder {
+  color: #6c757d !important;
+}
+#vehicle-modal .date-placeholder {
+  color: #6c757d !important;
+}
+
 .date-placeholder {
     position: absolute;
     left: 12px !important;
