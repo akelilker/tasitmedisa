@@ -981,8 +981,7 @@ input.settings-form-input:-moz-autofill,
     flex-wrap: wrap;
     gap: 8px;
     align-content: start;
-    /* 1-5 kart arası yatayda ortalanmış görünsün */
-    justify-content: center;
+    justify-content: flex-start !important;
 }
 /* Şube Yönetimi: şube kutularına yukarı ve aşağı 6px */
 #branch-modal #branch-list {
@@ -995,15 +994,15 @@ input.settings-form-input:-moz-autofill,
     padding-bottom: 6px;
 }
 
-/* Şube Yönetimi & Kullanıcı Yönetimi: kutulardaki metinler her zaman dikeyde ortada */
+/* Şube Yönetimi & Kullanıcı Yönetimi: kutulardaki metinler üstten hizalı */
 #branch-modal #branch-list .settings-card,
 #user-modal #user-list .settings-card {
     align-items: center !important;
-    justify-content: center !important;
+    justify-content: flex-start !important;
 }
 #branch-modal #branch-list .settings-card-content,
 #user-modal #user-list .settings-card-content {
-    justify-content: center !important;
+    justify-content: flex-start !important;
     align-items: center !important;
 }
 
@@ -1034,13 +1033,15 @@ input.settings-form-input:-moz-autofill,
     border: 1px solid rgba(255, 255, 255, 0.35);
     border-radius: 8px;
     padding: 8px 4px;
+    padding-top: 16px !important;
+    padding-bottom: 12px !important;
     text-align: center;
     cursor: pointer;
     transition: border-color 0.2s, box-shadow 0.2s;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start !important;
     overflow: hidden;
     position: relative;
     box-sizing: border-box; /* Padding dahil hesaplama */
@@ -1050,7 +1051,7 @@ input.settings-form-input:-moz-autofill,
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start !important;
     width: 100%;
     flex: 1;
     min-height: 0;
@@ -1070,11 +1071,13 @@ input.settings-form-input:-moz-autofill,
     color: var(--data-value-color, #a0aec0);
     text-align: center !important;
     margin: 0 auto;
+    margin-bottom: 4px;
     line-height: 1.1;
     width: 100%;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    height: auto !important;
 }
 
 .settings-card-subtitle {
@@ -1082,6 +1085,7 @@ input.settings-form-input:-moz-autofill,
     color: var(--data-value-color, #a0aec0);
     text-align: center !important; /* Yatayda ortala */
     margin: 0 auto; /* Ortala */
+    margin-top: auto !important;
     line-height: 1.1;
     width: 100%;
     white-space: normal;
@@ -1097,6 +1101,7 @@ input.settings-form-input:-moz-autofill,
     color: var(--data-value-color, #a0aec0);
     text-align: center !important; /* Yatayda ortala */
     margin: 0 auto; /* Ortala */
+    margin-top: auto !important;
     line-height: 1.1;
     width: 100%;
     white-space: normal;
@@ -1112,6 +1117,7 @@ input.settings-form-input:-moz-autofill,
     color: var(--data-value-color, #a0aec0);
     text-align: center !important; /* Yatayda ortala */
     margin: 0 auto; /* Ortala */
+    margin-top: auto !important;
     line-height: 1.1;
     width: 100%;
 }
