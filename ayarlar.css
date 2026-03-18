@@ -1283,6 +1283,23 @@ input.settings-form-input:-moz-autofill,
   }
 }
 
+/* Şube Düzenle / Kullanıcı Düzenle: input focus kırmızı çerçeve (mobil + masaüstü, kayıt/olay-ekle ile aynı) */
+#branch-form-modal .form-input:focus,
+#branch-form-modal select.form-input:focus,
+#branch-form-modal select:focus,
+#user-form-modal .form-input:focus,
+#user-form-modal select.form-input:focus,
+#user-form-modal select:focus,
+#user-form-modal textarea.form-input:focus {
+  border: 1px solid var(--theme-color) !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+#user-form-modal .user-vehicles-trigger:focus {
+  border-color: var(--theme-color) !important;
+  outline: none !important;
+}
+
 /* === MOBİL AYARLAR === */
 @media (max-width: 640px) {
     .settings-card {
@@ -1314,6 +1331,22 @@ input.settings-form-input:-moz-autofill,
     #user-form-modal .user-vehicles-trigger {
         border-color: rgba(255, 255, 255, 0.4) !important;
         color: #888 !important;
+    }
+    /* Input focus: kırmızı çerçeve (kayıt/olay-ekle modalları ile aynı) */
+    #branch-form-modal .form-input:focus,
+    #branch-form-modal select.form-input:focus,
+    #branch-form-modal select:focus,
+    #user-form-modal .form-input:focus,
+    #user-form-modal select.form-input:focus,
+    #user-form-modal select:focus,
+    #user-form-modal textarea.form-input:focus {
+        border: 1px solid var(--theme-color) !important;
+        outline: none !important;
+        box-shadow: none !important;
+    }
+    #user-form-modal .user-vehicles-trigger:focus {
+        border-color: var(--theme-color) !important;
+        outline: none !important;
     }
     .form-label {
         color: var(--form-label-color) !important;
