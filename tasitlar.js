@@ -7,25 +7,6 @@
   const VEHICLES_KEY = "medisa_vehicles_v1";
   const USERS_KEY = "medisa_users_v1";
 
-  // #region agent log
-  function _logBackBarPosition(modalId) {
-    try {
-      var modal = document.getElementById(modalId);
-      if (!modal) return;
-      var bar = modal.querySelector('.universal-back-bar');
-      if (!bar) {
-        fetch('http://127.0.0.1:7885/ingest/f748c7df-0c18-4178-a736-c89151ca12d1', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': '70fa9c' }, body: JSON.stringify({ sessionId: '70fa9c', location: 'tasitlar.js:_logBackBarPosition', message: 'back bar position', data: { modalId: modalId, found: false }, timestamp: Date.now() }) }).catch(function() {});
-        return;
-      }
-      var rect = bar.getBoundingClientRect();
-      var parent = bar.parentElement;
-      var parentClass = parent ? parent.className : '';
-      var parentHeight = parent ? parent.getBoundingClientRect().height : 0;
-      fetch('http://127.0.0.1:7885/ingest/f748c7df-0c18-4178-a736-c89151ca12d1', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': '70fa9c' }, body: JSON.stringify({ sessionId: '70fa9c', location: 'tasitlar.js:_logBackBarPosition', message: 'back bar position', data: { modalId: modalId, backBarTop: Math.round(rect.top), backBarHeight: Math.round(rect.height), parentClass: parentClass, parentHeight: Math.round(parentHeight) }, timestamp: Date.now() }) }).catch(function() {});
-    } catch (e) {}
-  }
-  // #endregion
-
   function parseLocalStorageArray(key) {
     try { return JSON.parse(localStorage.getItem(key) || '[]'); } catch { return []; }
   }
@@ -491,7 +472,6 @@
       ensureToolbar();
       currentView = 'dashboard';
       updateToolbar('dashboard');
-      setTimeout(function() { _logBackBarPosition('vehicles-modal'); }, 200);
     }
 
     const isDataLoaded = !!window.__medisaDataLoaded;
@@ -1465,7 +1445,6 @@
     requestAnimationFrame(() => {
       modal.classList.add('active');
       requestAnimationFrame(() => { applyVehicleDetailSubeShrink(); });
-      setTimeout(function() { _logBackBarPosition('vehicle-detail-modal'); }, 200);
     });
     };
     runDetail();
@@ -4292,10 +4271,7 @@ function renderVehicleDetailLeft(vehicle) {
     switchHistoryTab(tab, vid);
     
     modal.style.display = 'flex';
-    requestAnimationFrame(() => {
-      modal.classList.add('active');
-      setTimeout(function() { _logBackBarPosition('vehicle-history-modal'); }, 200);
-    });
+    requestAnimationFrame(() => modal.classList.add('active'));
   };
 
   /**
