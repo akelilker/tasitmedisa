@@ -1047,7 +1047,15 @@ input.settings-form-input:-moz-autofill,
     box-sizing: border-box; /* Padding dahil hesaplama */
 }
 
-/* Kullanıcı Kartları - Şube Kartları ile Birebir Eşitlenmiş Tok Yapı */
+/* Kullanıcı Kartları - Şubeler sayfası ile jilet hizalı grid */
+.users-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 140px)) !important;
+    gap: 15px !important;
+    justify-content: center !important; /* Mobilde ve Masaüstünde TAM ORTALA */
+    padding: 20px !important;
+}
+
 .user-card {
     background-color: var(--surface-color, #1e1e1e) !important;
     border: 1px solid rgba(255, 255, 255, 0.05) !important;
@@ -1059,27 +1067,33 @@ input.settings-form-input:-moz-autofill,
     align-items: center !important;
     aspect-ratio: 1 / 1 !important;
     text-align: center !important;
-    transition: all 0.2s ease !important;
 }
 
+/* İsim Alanı: Şubelerle Aynı 2 Satır Kalıbı */
 .user-name {
     display: block !important;
     color: #ffffff !important;
-    font-size: 15px !important;
+    font-size: 14px !important;
     font-weight: 600 !important;
     height: 2.5em !important;
-    min-height: 2.5em !important;
-    max-height: 2.5em !important;
-    margin-bottom: 2px !important;
-    overflow: hidden !important;
     line-height: 1.25 !important;
+    margin-bottom: 4px !important;
+    overflow: hidden !important;
 }
 
-.user-role {
+.user-role,
+.user-branch {
     color: #a0aec0 !important;
-    font-size: 13px !important;
-    margin-top: 0 !important;
-    font-weight: 400 !important;
+    font-size: 12px !important;
+}
+
+/* YENİ KULLANICI EKLE KARTINA ÖZEL İSTİSNA */
+.add-user-card {
+    justify-content: center !important;
+}
+.add-user-card i, .add-user-card svg {
+    font-size: 2rem !important;
+    margin: 0 !important; /* İsim kalıbına girmediği için boşlukları sıfırla */
 }
 
 .settings-card-content {
