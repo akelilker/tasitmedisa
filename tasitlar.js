@@ -2238,6 +2238,10 @@ function renderVehicleDetailLeft(vehicle) {
     const radioGroup = (name, options) => {
       return '<div class="form-section-inline" style="display:flex;flex-wrap:wrap;gap:8px;"><span class="' + labelCls + '" style="width:100%;">Seçiniz</span>' + options.map(o => '<button type="button" class="radio-btn" data-value="' + o.v + '">' + o.l + '</button>').join('') + '</div>';
     };
+    /** Etiket + butonlar yan yana, 4px gap; Var/Evet=yeşil (hover-green), Yok/Hayır=kırmızı (hover-red) */
+    const radioRow = (labelText, varVal, yokVal, varLbl, yokLbl) => {
+      return '<div class="form-section-inline" style="display:flex;flex-wrap:wrap;align-items:center;gap:4px;"><span class="' + labelCls + '" style="width:auto;">' + labelText + '</span><button type="button" class="radio-btn hover-green" data-value="' + varVal + '">' + varLbl + '</button><button type="button" class="radio-btn hover-red" data-value="' + yokVal + '">' + yokLbl + '</button></div>';
+    };
     switch (type) {
       case 'bakim':
         return '<div style="display:flex;flex-direction:column;gap:12px;">' +
@@ -2280,25 +2284,25 @@ function renderVehicleDetailLeft(vehicle) {
           section('Muayene Tarihi (gg/aa/yyyy)', 'muayene-tarih', 'input', [['type', 'text'], ['placeholder', 'gg/aa/yyyy']]) + '</div>';
       case 'anahtar':
         return '<div style="display:flex;flex-direction:column;gap:12px;">' +
-          radioGroup('anahtar', [{ v: 'var', l: 'Var' }, { v: 'yok', l: 'Yok' }]) +
+          radioRow('Yedek Anahtar Var mı?', 'var', 'yok', 'Var', 'Yok') +
           '<div id="anahtar-detay-wrapper" style="display:none;"><label class="' + labelCls + '" for="anahtar-detay-event">Detay (nerede)</label><input id="anahtar-detay-event" class="' + inputCls + '" type="text" placeholder="Nerede?"></div></div>';
       case 'kredi':
         return '<div style="display:flex;flex-direction:column;gap:12px;">' +
-          radioGroup('kredi', [{ v: 'var', l: 'Var' }, { v: 'yok', l: 'Yok' }]) +
+          radioRow('Kredi/ Rehin Var mı?', 'var', 'yok', 'Var', 'Yok') +
           '<div id="kredi-detay-wrapper-event" style="display:none;"><label class="' + labelCls + '" for="kredi-detay-event">Detay</label><input id="kredi-detay-event" class="' + inputCls + '" type="text"></div></div>';
       case 'km':
         return '<div style="display:flex;flex-direction:column;gap:12px;">' +
           section('Güncel Km', 'km-guncelle-input', 'input', [['type', 'text'], ['placeholder', 'Km'], ['inputmode', 'numeric']]) + '</div>';
       case 'lastik':
         return '<div style="display:flex;flex-direction:column;gap:12px;">' +
-          radioGroup('lastik', [{ v: 'var', l: 'Var' }, { v: 'yok', l: 'Yok' }]) +
+          radioRow('Yazlık/ Kışlık Lastik Var mı?', 'var', 'yok', 'Var', 'Yok') +
           '<div id="lastik-adres-wrapper-event" style="display:none;"><label class="' + labelCls + '" for="lastik-adres-event">Adres</label><input id="lastik-adres-event" class="' + inputCls + '" type="text"></div></div>';
       case 'utts':
         return '<div style="display:flex;flex-direction:column;gap:12px;">' +
-          radioGroup('utts', [{ v: 'evet', l: 'Evet' }, { v: 'hayir', l: 'Hayır' }]) + '</div>';
+          radioRow('UTTS Cihazı Var mı?', 'evet', 'hayir', 'Evet', 'Hayır') + '</div>';
       case 'takip':
         return '<div style="display:flex;flex-direction:column;gap:12px;">' +
-          radioGroup('takip', [{ v: 'evet', l: 'Evet' }, { v: 'hayir', l: 'Hayır' }]) + '</div>';
+          radioRow('Taşıt Takip Cihazı Var mı?', 'evet', 'hayir', 'Evet', 'Hayır') + '</div>';
       case 'kaskokodu':
         return '<div style="display:flex;flex-direction:column;gap:12px;">' +
           section('Kasko Kodu', 'kasko-kodu-guncelle-input', 'input', [['type', 'text'], ['placeholder', 'Kod']]) + '</div>';
