@@ -1755,6 +1755,11 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
 }
 
 @media (max-width: 640px) {
+    /* Ayarlar menüsü: Veri Yedekleme satırı mobilde sağa yaslı (diğer butonlarla aynı) */
+    .settings-dropdown .has-submenu {
+        justify-content: flex-end !important;
+        text-align: right !important;
+    }
     /* :root override'ları dosya başında birleştirildi */
     /* Ã¢Å“Â¨ iOS FOOTER ALTI RENK SORUNU Ã¢Å“Â¨ - Body/container aynı renk */
     html, body {

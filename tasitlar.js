@@ -2242,11 +2242,10 @@ function renderVehicleDetailLeft(vehicle) {
       case 'bakim':
         return '<div style="display:flex;flex-direction:column;gap:12px;">' +
           section('Tarih (gg.aa.yyyy)', 'bakim-tarih', 'input', [['type', 'date'], ['class', 'form-input olay-tarih-input']]) +
-          section('Yapılan İşlemler', 'bakim-islemler', 'textarea', [['rows', '2'], ['placeholder', 'Yapılan işlemler']]) +
           section('Servis', 'bakim-servis', 'input', [['type', 'text'], ['placeholder', 'Servis adı']]) +
-          section('Kişi', 'bakim-kisi', 'input', [['type', 'text'], ['placeholder', 'İşlemi yapan']]) +
           section('Km', 'bakim-km', 'input', [['type', 'text'], ['placeholder', 'Km'], ['inputmode', 'numeric']]) +
-          section('Tutar', 'bakim-tutar', 'input', [['type', 'text'], ['placeholder', 'Tutar']]) + '</div>';
+          section('Tutar', 'bakim-tutar', 'input', [['type', 'text'], ['placeholder', 'Tutar']]) +
+          section('Yapılan İşlemler', 'bakim-islemler', 'textarea', [['rows', '2'], ['placeholder', 'Yapılan işlemler']]) + '</div>';
       case 'kaza':
         return '<div style="display:flex;flex-direction:column;gap:12px;">' +
           section('Tarih', 'kaza-tarih', 'input', [['type', 'date']]) +
