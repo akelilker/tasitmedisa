@@ -2844,13 +2844,13 @@ function renderVehicleDetailLeft(vehicle) {
     return cleanFragment ? (cleanBase + '#' + cleanFragment) : cleanBase;
   }
 
-  /** Ruhsat URL'ini yazdırma penceresinde kullanmak için mutlak yap */
+  /** Ruhsat URL'ini yazdırma penceresinde kullanmak için mutlak yap. Alt dizinde (örn. /medisa/) çalışır. */
   function toAbsoluteRuhsatUrl(url) {
     const u = String(url || '').trim();
     if (!u) return '';
     if (/^https?:\/\//i.test(u)) return u;
     try {
-      return new URL(u, window.location.origin).href;
+      return new URL(u, window.location.href).href;
     } catch (e) {
       return u;
     }
