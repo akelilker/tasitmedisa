@@ -724,11 +724,12 @@
    Başka selector'lar (detail-row, modal-body, mobil) bu alanı ezmesin diye yüksek özgüllük + !important. */
 #vehicle-history-modal #history-content,
 .modal-overlay:has(.history-tabs) #history-content {
-    color: var(--data-value-color, #a0aec0);
+    color: #a0aec0 !important;
 }
 #vehicle-history-modal .history-item-date,
 .modal-overlay:has(.history-tabs) .history-item-date {
     color: #ffffff !important;
+    font-weight: 600 !important;
     margin-bottom: 2px !important;
 }
 #vehicle-history-modal .history-item-date + .history-item-body,
@@ -738,20 +739,36 @@
 #vehicle-history-modal .history-item-label,
 .modal-overlay:has(.history-tabs) .history-item-label {
     color: #ffffff !important;
+    font-weight: 600 !important;
 }
 #vehicle-history-modal .history-item-body,
 .modal-overlay:has(.history-tabs) .history-item-body {
-    color: var(--data-value-color, #a0aec0) !important;
+    color: #a0aec0 !important;
 }
 /* Kısa etiketler (Servis:, Kullanıcı: vb.) beyaz; açıklama metni gri */
 #vehicle-history-modal .history-item-body .history-label,
 .modal-overlay:has(.history-tabs) .history-item-body .history-label {
     color: #ffffff !important;
+    font-weight: 600 !important;
 }
 #vehicle-history-modal .history-empty-msg,
 .modal-overlay:has(.history-tabs) .history-empty-msg {
-    color: var(--txt-placeholder);
+    color: #a0aec0 !important;
 }
+
+/* Taşıt Detay modalı: etiketler beyaz, veriler gri (Premium Dark) */
+#vehicle-detail-modal .detail-label,
+#vehicle-detail-modal .detail-row-label {
+    color: #ffffff !important;
+    font-weight: 600 !important;
+}
+#vehicle-detail-modal .detail-row-value {
+    color: #a0aec0 !important;
+}
+#vehicle-detail-modal .detail-item {
+    color: #a0aec0 !important;
+}
+
 /* Tarihçe (5 sekme): her işlem sonrası 3px boşluk, hafif kırmızı yatay çizgi (taşıt detay ortadaki dikey çizgi ile aynı ton), altında 3px boşluk */
 #vehicle-history-modal .history-item:not(:last-child),
 .modal-overlay:has(.history-tabs) .history-item:not(:last-child) {
@@ -2866,7 +2883,7 @@ FİLTRE DROPDOWN MENÜSÜ === */
 #vehicle-history-modal .history-item-sube .history-item-body,
 #vehicle-history-modal .history-item-sube .history-desc {
     font-weight: 400 !important;
-    color: var(--data-value-color, #a0aec0) !important;
+    color: #a0aec0 !important;
 }
 
 /* =========================================
@@ -2891,6 +2908,19 @@ FİLTRE DROPDOWN MENÜSÜ === */
   
   .detail-row-value {
     color: rgba(255, 255, 255, 0.85) !important; /* Gri açık ton (soluk kalmasın) */
+  }
+
+  /* Taşıt Detay modalı mobil: etiketler beyaz, veriler gri (Premium Dark) */
+  #vehicle-detail-modal .detail-label,
+  #vehicle-detail-modal .detail-row-label {
+    color: #ffffff !important;
+    font-weight: 600 !important;
+  }
+  #vehicle-detail-modal .detail-row-value {
+    color: #a0aec0 !important;
+  }
+  #vehicle-detail-modal .detail-item {
+    color: #a0aec0 !important;
   }
   
   .detail-plate {
@@ -3335,9 +3365,10 @@ FİLTRE DROPDOWN MENÜSÜ === */
   }
   #vehicle-history-modal .history-item .history-item-date {
     color: #ffffff !important;
+    font-weight: 600 !important;
   }
   #vehicle-history-modal .history-item .history-item-body {
-    color: var(--data-value-color, #a0aec0) !important;
+    color: #a0aec0 !important;
   }
   /* Tarih/Başlık kısmını bir tık daha belirgin yap */
   #vehicle-history-modal .history-item div:first-child {
