@@ -699,13 +699,19 @@
     color: #ffffff !important;
     padding-bottom: 1px !important; /* Sekme metni ile altındaki yatay çizgi arası 1px */
 }
-/* Masaüstü: Tarihçe sekme başlıkları 1pt büyük; sol ok + Taşıt Detayları 6px yukarı (mobil etkilenmez) */
+/* Tarihçe modalı: sol ok + etiket global kurala uysun (style-core); ayarlar-modal-overlay -16px ezmesin */
+#vehicle-history-modal .universal-back-bar {
+  margin-top: 0 !important;
+  padding: 8px 0 0 0 !important;
+}
+#vehicle-history-modal .universal-back-btn .universal-back-label {
+  color: #adb5bd !important;
+  font-size: 13px !important;
+}
+/* Masaüstü: Tarihçe sekme başlıkları 1pt büyük */
 @media (min-width: 641px) {
   #vehicle-history-modal #history-tabs .history-tab {
     font-size: 13px !important;
-  }
-  #vehicle-history-modal .universal-back-bar {
-    margin-top: -6px;
   }
 }
 
