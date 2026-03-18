@@ -231,7 +231,6 @@
           <div class="settings-card" onclick="editBranch('${branch.id}')" style="cursor:pointer;">
             <div class="settings-card-content">
               <div class="settings-card-title">${escapeHtml(branch.name)}</div>
-              <div class="settings-card-subtitle">${escapeHtml(branch.city || '')}</div>
               <div class="settings-card-count">${vehicleCount} Taşıt</div>
             </div>
           </div>
