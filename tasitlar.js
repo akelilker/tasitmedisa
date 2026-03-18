@@ -2255,7 +2255,7 @@ function renderVehicleDetailLeft(vehicle) {
           section('Tarih', 'kaza-tarih', 'input', [['type', 'date'], ['class', 'form-input olay-tarih-input']]) +
           section('Kullanıcı', 'kaza-surucu', 'input', [['type', 'text'], ['placeholder', 'Kullanıcı']]) +
           section('Hasar Tutarı', 'kaza-tutar', 'input', [['type', 'text'], ['placeholder', 'Tutar']]) +
-          '<div class="form-section-inline kaza-tramer-row"><span class="' + labelCls + '" style="width:100%;">Tramer Kaydı Oluşturuldu mu?</span><div style="display:flex;flex-wrap:wrap;gap:8px;"><button type="button" class="radio-btn tramer-evet hover-red" data-value="evet" data-tramer-group="kaza">Evet</button><button type="button" class="radio-btn tramer-hayir hover-green" data-value="hayir" data-tramer-group="kaza">Hayır</button></div></div>' +
+          '<div class="form-section-inline kaza-tramer-row"><span class="' + labelCls + '" style="width:100%;">Tramer Kaydı Oluştu mu?</span><div style="display:flex;flex-wrap:wrap;gap:8px;"><button type="button" class="radio-btn tramer-evet hover-red" data-value="evet" data-tramer-group="kaza">Evet</button><button type="button" class="radio-btn tramer-hayir hover-green" data-value="hayir" data-tramer-group="kaza">Hayır</button></div></div>' +
           '<div id="kaza-tramer-fields-wrap" style="display:none;">' +
           section('Tramer Tarih', 'kaza-tramer-tarih', 'input', [['type', 'date']]) +
           section('Tramer Tutar', 'kaza-tramer-tutar', 'input', [['type', 'text'], ['placeholder', 'Tutar']]) +
@@ -4509,6 +4509,23 @@ function renderVehicleDetailLeft(vehicle) {
       if (DOM.historyContent) DOM.historyContent.innerHTML = '';
       modal.classList.remove('active');
       setTimeout(() => modal.style.display = 'none', 300);
+    }
+  };
+
+  /**
+   * Tarihçe ekranından Taşıt detay ekranına geri dön (sol ok + "Taşıt detay" tıklanınca)
+   */
+  window.backFromHistoryToVehicleDetail = function() {
+    const historyModal = DOM.vehicleHistoryModal;
+    const detailModal = DOM.vehicleDetailModal;
+    if (historyModal) {
+      historyModal.classList.remove('active');
+      historyModal.style.display = 'none';
+      if (DOM.historyContent) DOM.historyContent.innerHTML = '';
+    }
+    if (detailModal && window.currentDetailVehicleId) {
+      detailModal.style.display = 'flex';
+      requestAnimationFrame(function() { detailModal.classList.add('active'); });
     }
   };
 

@@ -37,18 +37,9 @@ let isDataLoading = false;
 let loadPromise = null;
 let isSaving = false;
 
-// Yerel debug ingest kapalı (açmak için URL'e ?medisa_agent_log=1 eklenebilir)
-const MEDISA_AGENT_LOG_ENABLED = !!(typeof window !== 'undefined' && window.location && window.location.search && window.location.search.includes('medisa_agent_log=1'));
-const MEDISA_AGENT_INGEST_URL = 'http://127.0.0.1:7824/ingest/04dd9237-7037-48c1-b605-adbae39c06ee';
+// Yerel debug ingest kapalı (127.0.0.1 isteği atılmıyor; ERR_CONNECTION_REFUSED konsola düşmesin)
 function sendAgentLog(payload) {
-    if (!MEDISA_AGENT_LOG_ENABLED) return;
-    try {
-        fetch(MEDISA_AGENT_INGEST_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': '13e385' },
-            body: JSON.stringify(payload || {})
-        }).catch(function() {});
-    } catch (e) { /* no-op */ }
+    /* Hiçbir istek gönderilmiyor */
 }
 
 function syncDataLoadState() {
