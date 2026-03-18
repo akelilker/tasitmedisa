@@ -425,9 +425,11 @@
                 <div class="detail-brand-year-row">
                   <div class="detail-brand-year"></div>
                 </div>
-                <div class="vehicle-detail-columns">
-                  <div class="vehicle-detail-left"></div>
-                  <div class="vehicle-detail-right"></div>
+                <div class="vehicle-detail-scroll-wrap">
+                  <div class="vehicle-detail-columns">
+                    <div class="vehicle-detail-left"></div>
+                    <div class="vehicle-detail-right"></div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -857,6 +859,12 @@
         <div id="vehicle-history-modal" class="modal-overlay tasitlar-modal-overlay ayarlar-modal-overlay" onclick="if(event.target === this) { event.stopPropagation(); }">
             <div class="modal-container" onclick="event.stopPropagation();">
                 <div class="modal-header">
+                    <div class="universal-back-bar">
+                        <button type="button" class="universal-back-btn" onclick="if(window.backFromHistoryToVehicleDetail) window.backFromHistoryToVehicleDetail(); event.stopPropagation();" title="Taşıt detayına dön" aria-label="Taşıt detayına dön">
+                            <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                            <span class="universal-back-label">Taşıt detay</span>
+                        </button>
+                    </div>
                     <h2>TAŞIT TARİHÇESİ</h2>
                     <button class="modal-close" onclick="closeAllModals();">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
