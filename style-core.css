@@ -1799,7 +1799,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
         display: flex !important;
         align-items: center !important;
         margin-right: 12px !important;
-        transform: translate(-2px, 1px);  /* 2px sola, 1px aşağı (mobil) */
+        width: calc(var(--hero-logo-width) - 3px) !important;
+        flex: 0 0 calc(var(--hero-logo-width) - 3px) !important;
+        transform: translate(-2px, 5px);  /* 2px sola, 5px aşağı (mobil) */
     }
     
     /* Hero mobilde havada + kırmızı (anasayfa ile eşit), dikey yükseklik +5px */
@@ -2363,10 +2365,10 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
     padding-bottom: 4px !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-logo {
-    flex: 0 0 39px !important;
-    width: 39px !important;
+    flex: 0 0 36px !important;
+    width: 36px !important;
     margin-right: 8px !important;
-    transform: translate(-1px, 1px) !important;
+    transform: translate(-1px, 5px) !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-logo img {
     height: 35px !important;
