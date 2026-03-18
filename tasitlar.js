@@ -2857,26 +2857,48 @@ function renderVehicleDetailLeft(vehicle) {
   }
 
   /**
-   * Mobilde kullanım: ön izleme göstermeden doğrudan sistem yazdırma (Seçenekler) ekranını açar.
-   * Yeni pencerede ruhsat yüklenir ve window.print() tetiklenir.
+   * Mobil / iOS PWA: ön izleme ve yeni sekme açmadan doğrudan sistem yazdırma (Seçenekler) ekranını açar.
+   * Aynı sayfada gizli iframe kullanır; iOS PWA'da yeni sekme açılmadığı için geri dönüş mümkün olur.
+   * Masaüstü bu fonksiyonu kullanmaz (ön izleme + inline viewer kalır).
    */
   function openRuhsatPrintDialog(ruhsatUrl) {
     const url = toAbsoluteRuhsatUrl(ruhsatUrl);
     if (!url) return;
     const isImage = /\.(jpeg|jpg|png|gif|webp)(\?.*)?$/i.test(url);
-    const content = isImage
-      ? '<!DOCTYPE html><html><head><meta charset="utf-8"><title>Ruhsat</title></head><body style="margin:0;"><img src="' + escapeHtml(url) + '" style="max-width:100%;height:auto;display:block;" onload="window.print();"></body></html>'
-      : '<!DOCTYPE html><html><head><meta charset="utf-8"><title>Ruhsat</title></head><body style="margin:0;overflow:hidden;"><iframe src="' + escapeHtml(url) + '" style="width:100%;height:100%;border:0;position:fixed;top:0;left:0;right:0;bottom:0;"></iframe><script>window.onload=function(){setTimeout(function(){window.print();},500);};<\/script></body></html>';
-    try {
-      const w = window.open('', '_blank', 'noopener');
-      if (w) {
-        w.document.write(content);
-        w.document.close();
-      } else {
+
+    var iframe = document.getElementById('ruhsat-print-frame');
+    if (!iframe) {
+      iframe = document.createElement('iframe');
+      iframe.id = 'ruhsat-print-frame';
+      iframe.setAttribute('aria-hidden', 'true');
+      iframe.style.cssText = 'position:fixed;left:-9999px;top:0;width:1px;height:1px;border:0;visibility:hidden;pointer-events:none;';
+      document.body.appendChild(iframe);
+    }
+
+    function doPrint() {
+      try {
+        if (iframe.contentWindow && typeof iframe.contentWindow.print === 'function') {
+          iframe.contentWindow.print();
+        }
+      } catch (e) {
+        if (typeof console !== 'undefined' && console.warn) console.warn('Ruhsat print failed', e);
         window.open(url, '_blank', 'noopener');
       }
-    } catch (e) {
-      window.open(url, '_blank', 'noopener');
+    }
+
+    if (isImage) {
+      var html = '<!DOCTYPE html><html><head><meta charset="utf-8"><title>Ruhsat</title></head><body style="margin:0;"><img src="' + escapeHtml(url) + '" style="max-width:100%;height:auto;display:block;" onload="window.print();"></body></html>';
+      iframe.srcdoc = html;
+      iframe.onload = function() {
+        iframe.onload = null;
+        setTimeout(doPrint, 150);
+      };
+    } else {
+      iframe.onload = function() {
+        iframe.onload = null;
+        setTimeout(doPrint, 400);
+      };
+      iframe.src = url;
     }
   }
 
