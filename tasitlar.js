@@ -3238,7 +3238,7 @@ function renderVehicleDetailLeft(vehicle) {
         schemaWrapper.style.alignItems = 'flex-start';
         schemaWrapper.style.justifyContent = 'center';
         schemaWrapper.style.gap = '24px';
-        schemaWrapper.style.maxHeight = '144px';
+        schemaWrapper.style.maxHeight = '156px';
         schemaWrapper.style.width = '100%';
         schemaWrapper.style.overflow = 'hidden';
         schemaWrapper.style.paddingTop = '2px';
@@ -3247,8 +3247,8 @@ function renderVehicleDetailLeft(vehicle) {
 
         svgClone.setAttribute('width', '140');
         svgClone.setAttribute('height', '210');
-        svgClone.style.width = '168px';  /* 210 * 0.8 */
-        svgClone.style.height = '112px'; /* 140 * 0.8 */
+        svgClone.style.width = '188px';  /* +20px yatay */
+        svgClone.style.height = '124px'; /* +12px dikey */
         svgClone.style.margin = '0';
         svgClone.style.position = 'static';
         svgClone.style.left = '0';
