@@ -619,10 +619,32 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // PERFORMANS FIX: Yükleme ekranı (Splash) kapanış tetikleri zaten index.html'de (inline) var.
-// Sadece veri yüklemesi bittiğinde (dataLoaded) ekranı anında açması için bu dinleyici bırakıldı.
-window.addEventListener('dataLoaded', () => { 
+// Veri yüklendiğinde sadece splash kapatma değil, bildirim motorunu da garanti şekilde ayağa kaldır.
+window.addEventListener('dataLoaded', () => {
     if (typeof window.hideLoading === 'function') {
-        setTimeout(window.hideLoading, 50); 
+        setTimeout(window.hideLoading, 50);
+    }
+
+    // Bildirim motoru lazy-loaded tasitlar.js içinde tanımlı.
+    // Uygulama ilk açılışta taşıtlar ekranına girilmemiş olsa bile,
+    // veri geldikten sonra bildirimleri hesaplayabilmek için modülü sessizce yükle.
+    const runNotifications = () => {
+        if (typeof window.updateNotifications === 'function') {
+            window.updateNotifications();
+        }
+    };
+
+    if (typeof window.updateNotifications === 'function') {
+        runNotifications();
+        return;
+    }
+
+    if (typeof window.loadAppModule === 'function') {
+        window.loadAppModule('tasitlar.js?v=20260316', 'tasitlar.css?v=20260316.6')
+            .then(runNotifications)
+            .catch(function(err) {
+                console.error('[Medisa] Bildirim modülü yüklenemedi:', err);
+            });
     }
 });
 
