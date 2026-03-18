@@ -1368,15 +1368,18 @@ FİLTRE DROPDOWN MENÜSÜ === */
     font-weight: 700;
     color: var(--txt);
     text-transform: uppercase;
-    margin-bottom: 2px !important;
     line-height: 1.05;
     width: 100%;
     white-space: normal;
     word-break: normal;
     overflow-wrap: anywhere;
     transition: transform 0.2s ease;
-    display: block;
-    height: auto !important;
+    display: block !important;
+    height: 2.5em !important;
+    min-height: 2.5em !important;
+    max-height: 2.5em !important;
+    margin-bottom: 2px !important;
+    overflow: hidden !important;
 }
 
 /* MasaÃƒÆ’Ã‚Â¼stÃƒÆ’Ã‚Â¼: Ãƒâ€¦Ã…Â¸ube adÃƒâ€Ã‚Â± kutuya sÃƒâ€Ã‚Â±Ãƒâ€Ã…Â¸sÃƒâ€Ã‚Â±n diye bir kademe daha kontrollÃƒÆ’Ã‚Â¼ kÃƒÆ’Ã‚Â¼ÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â¼l */
@@ -1429,7 +1432,7 @@ FİLTRE DROPDOWN MENÜSÜ === */
     transition: border-color 0.2s, box-shadow 0.2s;
     display: flex !important;
     flex-direction: column !important;
-    align-items: center;
+    align-items: center !important;
     justify-content: center !important;
     overflow: hidden;
     box-shadow: none;
@@ -1486,14 +1489,18 @@ FİLTRE DROPDOWN MENÜSÜ === */
     font-weight: 400;
     color: var(--txt-placeholder);
     text-align: center;
-    margin-bottom: 2px !important;
     line-height: 1.3 !important; /* 2 satır için */
-    height: auto !important;
     width: 100%;
     white-space: normal !important;
     word-break: break-word;
     transition: transform 0.2s ease;
     flex-grow: 1; /* Kart içinde orta alan boşluşu doldurur, alt satır alta itilir */
+    display: block !important;
+    height: 2.5em !important;
+    min-height: 2.5em !important;
+    max-height: 2.5em !important;
+    margin-bottom: 2px !important;
+    overflow: hidden !important;
 }
 
 .card-third-line {

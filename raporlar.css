@@ -546,14 +546,17 @@ font-size: 13px;
 font-weight: 500;
 color: #ffffff;
 text-transform: uppercase;
-margin-bottom: 2px !important;
 line-height: 1.1;
 width: 100%;
 white-space: normal;
 word-break: break-word;
 transition: transform 0.2s ease;
-display: block;
-height: auto !important;
+display: block !important;
+height: 2.5em !important;
+min-height: 2.5em !important;
+max-height: 2.5em !important;
+margin-bottom: 2px !important;
+overflow: hidden !important;
 }
 
 /* Taşıtlar .branch-count ile birebir aynı */
