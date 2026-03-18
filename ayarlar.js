@@ -796,38 +796,43 @@
       const users = readUsers();
       const branches = readBranches();
   
+      const addCardHtml = `
+        <div class="user-card add-user-card" onclick="openUserFormModal()" style="cursor:pointer;" role="button" tabindex="0">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          <span>Yeni Kullanıcı</span>
+        </div>
+      `;
+
       if (users.length === 0) {
-        container.innerHTML = `
-          <div style="text-align:center; padding:20px; color:var(--muted);">
+        container.innerHTML = addCardHtml + `
+          <div style="text-align:center; padding:20px; color:var(--muted); grid-column: 1 / -1;">
             henüz Kullanıcı eklenmemiş.
           </div>
         `;
         return;
       }
-  
+
       const rows = users.map(user => {
         const branch = branches.find(b => b.id === user.branchId);
         const branchName = branch ? branch.name : '-';
-        
+
         const roleLabels = {
           'admin': 'Yönetici',
           'sales': 'Satış Temsilcisi',
           'driver': 'Kullanıcı'
         };
         const roleLabel = roleLabels[user.role] || 'Kullanıcı';
-        
+
         return `
-          <div class="settings-card" onclick="editUser('${user.id}')" style="cursor:pointer;">
-            <div class="settings-card-content">
-              <div class="settings-card-title">${escapeHtml(user.name || 'İsimsiz')}</div>
-              <div class="settings-card-subtitle">${escapeHtml(branchName)}</div>
-              <div class="settings-card-gorev">${escapeHtml(roleLabel)}</div>
-            </div>
+          <div class="user-card" onclick="editUser('${user.id}')" style="cursor:pointer;">
+            <div class="user-name">${escapeHtml(user.name || 'İsimsiz')}</div>
+            <div class="user-branch">${escapeHtml(branchName)}</div>
+            <div class="user-role">${escapeHtml(roleLabel)}</div>
           </div>
         `;
       }).join('');
-  
-      container.innerHTML = rows;
+
+      container.innerHTML = addCardHtml + rows;
     }
   
     // ========================================
