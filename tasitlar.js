@@ -2252,7 +2252,7 @@ function renderVehicleDetailLeft(vehicle) {
           section('Yapılan İşlemler', 'bakim-islemler', 'textarea', [['rows', '2'], ['placeholder', 'Yapılan işlemler']]) + '</div>';
       case 'kaza':
         return '<div style="display:flex;flex-direction:column;gap:12px;">' +
-          section('Tarih', 'kaza-tarih', 'input', [['type', 'date']]) +
+          section('Tarih', 'kaza-tarih', 'input', [['type', 'date'], ['class', 'form-input olay-tarih-input']]) +
           section('Kullanıcı', 'kaza-surucu', 'input', [['type', 'text'], ['placeholder', 'Kullanıcı']]) +
           section('Hasar Tutarı', 'kaza-tutar', 'input', [['type', 'text'], ['placeholder', 'Tutar']]) +
           '<div class="form-section-inline kaza-tramer-row"><span class="' + labelCls + '" style="width:100%;">Tramer Kaydı Oluşturuldu mu?</span><div style="display:flex;flex-wrap:wrap;gap:8px;"><button type="button" class="radio-btn tramer-evet hover-red" data-value="evet" data-tramer-group="kaza">Evet</button><button type="button" class="radio-btn tramer-hayir hover-green" data-value="hayir" data-tramer-group="kaza">Hayır</button></div></div>' +
@@ -2263,7 +2263,7 @@ function renderVehicleDetailLeft(vehicle) {
           '<div><span class="' + labelCls + '">Kaporta / Hasar</span><div id="kaza-kaporta-container"></div></div></div>';
       case 'ceza':
         return '<div style="display:flex;flex-direction:column;gap:12px;">' +
-          section('Tarih', 'ceza-tarih', 'input', [['type', 'date']]) +
+          section('Tarih', 'ceza-tarih', 'input', [['type', 'date'], ['class', 'form-input olay-tarih-input']]) +
           section('Kullanıcı', 'ceza-surucu', 'input', [['type', 'text'], ['placeholder', 'Kullanıcı']]) +
           section('Ceza Tutarı', 'ceza-tutar', 'input', [['type', 'text']]) +
           section('Açıklama', 'ceza-aciklama', 'textarea', [['rows', '2'], ['placeholder', 'Açıklama']]) + '</div>';
@@ -3364,7 +3364,7 @@ function renderVehicleDetailLeft(vehicle) {
         legend.style.gap = '8px';
         legend.style.fontSize = '12px';
         legend.style.color = '#aaa';
-        legend.style.marginTop = '30px';
+        legend.style.marginTop = '0';
         legend.innerHTML = `
           <div class="boya-legend-item" style="display: flex; align-items: center; gap: 6px;"><span class="boya-legend-dot" style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #888888;"></span> Boyasız</div>
           <div class="boya-legend-item" style="display: flex; align-items: center; gap: 6px;"><span class="boya-legend-dot" style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #28a745;"></span> Boyalı (Mevcut)</div>
