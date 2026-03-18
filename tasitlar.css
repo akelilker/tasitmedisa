@@ -755,17 +755,8 @@
 /* Tarihçe (5 sekme): her işlem sonrası 3px boşluk, hafif kırmızı yatay çizgi (taşıt detay ortadaki dikey çizgi ile aynı ton), altında 3px boşluk */
 #vehicle-history-modal .history-item:not(:last-child),
 .modal-overlay:has(.history-tabs) .history-item:not(:last-child) {
-    border-bottom: none !important;
+    border-bottom: 1px solid rgba(var(--theme-color-rgb), 0.28) !important;
 }
-#vehicle-history-modal .history-item:not(:last-child)::after,
-.modal-overlay:has(.history-tabs) .history-item:not(:last-child)::after {
-    content: '';
-    display: block;
-    border-top: 1px solid rgba(var(--theme-color-rgb), 0.28);
-    margin-top: 3px;
-    margin-bottom: 3px;
-}
-
 /* Tarihçe: sekme ile içerik arası 5px azaltma (history-content padding-top style-core'da 15px yapıldı) */
 #vehicle-history-modal #history-tabs {
     margin-bottom: 0;
@@ -774,8 +765,8 @@
 /* Tarihçe liste elemanları: üst/alt boşluk 2'şer px azaltma (12px – 10px) */
 #vehicle-history-modal .history-item,
 .modal-overlay:has(.history-tabs) .history-item {
-    padding-top: 10px !important;
-    padding-bottom: 10px !important;
+    padding-top: 5px !important;
+    padding-bottom: 5px !important;
     padding-left: 12px !important;
     padding-right: 12px !important;
 }
@@ -3355,7 +3346,7 @@ FİLTRE DROPDOWN MENÜSÜ === */
   }
   /* Tarihçe bölümler arası dikey boşluk 4px toplam (1.5+1+1.5, mobil) */
   #vehicle-history-modal .history-item {
-    padding: 1.5px 12px !important;
+    padding: 5px 12px !important;
   }
   
   /* --- LİSTE GÖRÜNÜMÜ MOBİL - MASAÜSTÜNE GÖRE UYARLANDI --- */
