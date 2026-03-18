@@ -706,7 +706,7 @@
 }
 /* Tarihçe modalı: sol ok + etiket global kurala uysun (style-core); ayarlar-modal-overlay -16px ezmesin */
 #vehicle-history-modal .universal-back-bar {
-  margin-top: 0 !important;
+  margin-top: -12px !important;
   padding: 8px 0 0 0 !important;
 }
 #vehicle-history-modal .universal-back-btn .universal-back-label {
@@ -720,7 +720,7 @@
   }
 }
 
-/* Tarihçe RENK Sştirme): Tarih + etiketler beyaz; açıklamalar gri.
+/* Tarihçe RENK (Stil): Tarih + etiketler beyaz; açıklamalar gri.
    Başka selector'lar (detail-row, modal-body, mobil) bu alanı ezmesin diye yüksek özgüllük + !important. */
 #vehicle-history-modal #history-content,
 .modal-overlay:has(.history-tabs) #history-content {
@@ -796,6 +796,11 @@
     width: 100% !important;
     pointer-events: none !important;
     white-space: nowrap;
+}
+/* Tarihçe modalı başlığı 12px yukarı */
+#vehicle-history-modal .modal-header h2,
+.modal-overlay:has(.history-tabs) .modal-header h2 {
+    margin-top: -12px !important;
 }
 
 #vehicles-modal .modal-close {
@@ -3304,10 +3309,10 @@ FİLTRE DROPDOWN MENÜSÜ === */
     transform: translateY(-50%) !important;
   }
 
-  /* --- TARİHÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢âÃ¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¡E MODAL --- */
+  /* --- TARİHÇE MODAL --- */
   /* Mobil: sol ok + "Taşıt detay" 12px aşağı, sol asılı */
   #vehicle-history-modal .universal-back-bar {
-    margin-top: 12px !important;
+    margin-top: 0 !important;
   }
   #vehicle-history-modal .modal-header {
     justify-content: flex-start !important;
@@ -3346,7 +3351,7 @@ FİLTRE DROPDOWN MENÜSÜ === */
     padding: 1.5px 12px !important;
   }
   
-  /* --- LİSTE GÃƒÆ’Ã†â€™âÃ¢â€šÂ¬Ã¢â‚¬Å“RÃƒÆ’Ã†â€™Ãƒâ€¦Ã¢â‚¬Å“NÃƒÆ’Ã†â€™Ãƒâ€¦Ã¢â‚¬Å“MÃƒÆ’Ã†â€™Ãƒâ€¦Ã¢â‚¬Å“ MOBİL - MASAÃƒÆ’Ã†â€™Ãƒâ€¦Ã¢â‚¬Å“STÃƒÆ’Ã†â€™Ãƒâ€¦Ã¢â‚¬Å“NE GÃƒÆ’Ã†â€™âÃ¢â€šÂ¬Ã¢â‚¬Å“RE UYARLANDI --- */
+  /* --- LİSTE GÖRÜNÜMÜ MOBİL - MASAÜSTÜNE GÖRE UYARLANDI --- */
   /* Satır Yapısı - Masaüstü referans alınarak uyarlandı */
   .view-list .list-item {
     display: grid !important;
