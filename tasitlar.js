@@ -2251,6 +2251,11 @@ function renderVehicleDetailLeft(vehicle) {
           section('Tarih', 'kaza-tarih', 'input', [['type', 'date']]) +
           section('Kullanıcı', 'kaza-surucu', 'input', [['type', 'text'], ['placeholder', 'Kullanıcı']]) +
           section('Hasar Tutarı', 'kaza-tutar', 'input', [['type', 'text'], ['placeholder', 'Tutar']]) +
+          '<div class="form-section-inline kaza-tramer-row"><span class="' + labelCls + '" style="width:100%;">Tramer Kaydı Oluşturuldu mu?</span><div style="display:flex;flex-wrap:wrap;gap:8px;"><button type="button" class="radio-btn tramer-evet hover-red" data-value="evet" data-tramer-group="kaza">Evet</button><button type="button" class="radio-btn tramer-hayir hover-green" data-value="hayir" data-tramer-group="kaza">Hayır</button></div></div>' +
+          '<div id="kaza-tramer-fields-wrap" style="display:none;">' +
+          section('Tramer Tarih', 'kaza-tramer-tarih', 'input', [['type', 'date']]) +
+          section('Tramer Tutar', 'kaza-tramer-tutar', 'input', [['type', 'text'], ['placeholder', 'Tutar']]) +
+          '</div>' +
           '<div><span class="' + labelCls + '">Kaporta / Hasar</span><div id="kaza-kaporta-container"></div></div></div>';
       case 'ceza':
         return '<div style="display:flex;flex-direction:column;gap:12px;">' +
@@ -2441,6 +2446,30 @@ function renderVehicleDetailLeft(vehicle) {
               if (value) {
                 this.value = formatNumber(value);
               }
+            });
+          }
+        }
+        // Tramer Kaydı Evet/Hayır: seçime göre Tarih/Tutar alanlarını göster/gizle
+        const tramerWrap = document.getElementById('kaza-tramer-fields-wrap');
+        const tramerEvet = document.querySelector('#dinamik-olay-modal .tramer-evet');
+        const tramerHayir = document.querySelector('#dinamik-olay-modal .tramer-hayir');
+        if (tramerWrap && tramerEvet && tramerHayir) {
+          tramerEvet.addEventListener('click', function() {
+            tramerEvet.classList.add('active');
+            tramerEvet.classList.remove('green');
+            tramerHayir.classList.remove('active', 'green');
+            tramerWrap.style.display = '';
+          });
+          tramerHayir.addEventListener('click', function() {
+            tramerHayir.classList.add('active', 'green');
+            tramerEvet.classList.remove('active');
+            tramerWrap.style.display = 'none';
+          });
+          const tramerTutarInput = document.getElementById('kaza-tramer-tutar');
+          if (tramerTutarInput) {
+            tramerTutarInput.addEventListener('blur', function() {
+              const value = this.value.replace(/[^\d]/g, '');
+              if (value) this.value = formatNumber(value);
             });
           }
         }
@@ -3459,6 +3488,12 @@ function renderVehicleDetailLeft(vehicle) {
       vehicle.boya = 'var';
     }
     
+    const tramerEvetEl = document.querySelector('#dinamik-olay-modal .tramer-evet');
+    const tramerHayirEl = document.querySelector('#dinamik-olay-modal .tramer-hayir');
+    const tramerKaydi = (tramerEvetEl && tramerEvetEl.classList.contains('active') && !tramerEvetEl.classList.contains('green')) ? 'evet'
+      : (tramerHayirEl && tramerHayirEl.classList.contains('active')) ? 'hayir' : '';
+    const tramerTarih = document.getElementById('kaza-tramer-tarih')?.value.trim() || '';
+    const tramerTutar = document.getElementById('kaza-tramer-tutar')?.value.trim() || '';
     const event = {
       id: Date.now().toString(),
       type: 'kaza',
@@ -3467,7 +3502,10 @@ function renderVehicleDetailLeft(vehicle) {
       data: {
         surucu: surucu || getEventPerformerName(vehicle),
         hasarParcalari: newDamages,
-        hasarTutari: hasarTutari
+        hasarTutari: hasarTutari,
+        tramerKaydi: tramerKaydi || undefined,
+        tramerTarih: tramerKaydi === 'evet' ? tramerTarih : undefined,
+        tramerTutar: tramerKaydi === 'evet' ? tramerTutar : undefined
       }
     };
     
@@ -4307,10 +4345,20 @@ function renderVehicleDetailLeft(vehicle) {
             if (partParts.length) parcalarHtml = `<div class="history-item-body" style="font-size: 12px; margin-top: 4px;">${partParts.join(' | ')}</div>`;
           }
           const kullanici = toTitleCase(event.data?.surucu || '-');
+          let tramerHtml = '';
+          if (event.data?.tramerKaydi === 'evet') {
+            const tramerTarihStr = event.data.tramerTarih ? formatDateForDisplay(event.data.tramerTarih) : '';
+            const tramerTutarStr = event.data.tramerTutar ? escapeHtml(event.data.tramerTutar) : '';
+            const tramerParts = ['<span class="history-label">Tramer:</span> Evet'];
+            if (tramerTarihStr) tramerParts.push(`<span class="history-label">Tarih:</span> ${escapeHtml(tramerTarihStr)}`);
+            if (tramerTutarStr) tramerParts.push(`<span class="history-label">Tutar:</span> ${tramerTutarStr}`);
+            tramerHtml = `<div class="history-item-body" style="font-size: 12px; margin-top: 4px;">${tramerParts.join(' | ')}</div>`;
+          }
           html += `<div class="history-item">
             <div class="history-item-date" style="font-weight: 600; font-size: 12px; margin-bottom: 4px;">${escapeHtml(formatDateForDisplay(event.date) || '-')}</div>
             <div class="history-item-body" style="font-size: 12px;"><span class="history-label">Kullanıcı:</span> ${escapeHtml(kullanici)}${hasarStr}</div>
             ${parcalarHtml}
+            ${tramerHtml}
             ${aciklamaHtml}
           </div>`;
         });
