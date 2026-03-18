@@ -484,8 +484,8 @@ text-align: center;
 will-change: transform;
 cursor: pointer;
 transition: border-color 0.2s, box-shadow 0.2s;
-display: flex;
-flex-direction: column;
+display: flex !important;
+flex-direction: column !important;
 align-items: center !important;
 justify-content: center !important;
 overflow: hidden;
@@ -554,7 +554,6 @@ word-break: break-word;
 transition: transform 0.2s ease;
 display: block;
 height: auto !important;
-min-height: 2.6em !important;
 }
 
 /* Taşıtlar .branch-count ile birebir aynı */

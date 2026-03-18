@@ -1038,8 +1038,8 @@ input.settings-form-input:-moz-autofill,
     text-align: center;
     cursor: pointer;
     transition: border-color 0.2s, box-shadow 0.2s;
-    display: flex;
-    flex-direction: column;
+    display: flex !important;
+    flex-direction: column !important;
     align-items: center;
     justify-content: center !important;
     overflow: hidden;
@@ -1078,7 +1078,6 @@ input.settings-form-input:-moz-autofill,
     overflow: hidden;
     text-overflow: ellipsis;
     height: auto !important;
-    min-height: 2.6em !important;
 }
 
 .settings-card-subtitle {
