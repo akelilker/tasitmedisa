@@ -2184,8 +2184,12 @@ const API_BASE = (function(){
           ? hareketler.filter(r => String(r.arac_id) === String(vehicleFilter))
           : hareketler;
       const combined = [...hareketFiltered, ...eventItems];
+      // En yeni kayıt listenin en başında: tarih+saat ile sırala (aynı gün içinde de yeni eklenen üstte).
       const sortKey = (item) => {
-          if (item._type === 'hareket') return (item.donem || '') + (item.kayit_tarihi || '');
+          if (item._type === 'hareket') {
+              const ts = item.guncelleme_tarihi || item.kayit_tarihi || '';
+              return ts + '\t' + (item.id != null ? String(item.id) : '');
+          }
           if (item.timestamp) return item.timestamp;
           const d = item.date ? parseHistoryDate(item.date) : null;
           return d ? d.toISOString() : '';
