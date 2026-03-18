@@ -998,11 +998,11 @@ input.settings-form-input:-moz-autofill,
 #branch-modal #branch-list .settings-card,
 #user-modal #user-list .settings-card {
     align-items: center !important;
-    justify-content: flex-start !important;
+    justify-content: center !important;
 }
 #branch-modal #branch-list .settings-card-content,
 #user-modal #user-list .settings-card-content {
-    justify-content: flex-start !important;
+    justify-content: center !important;
     align-items: center !important;
 }
 
@@ -1041,7 +1041,7 @@ input.settings-form-input:-moz-autofill,
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start !important;
+    justify-content: center !important;
     overflow: hidden;
     position: relative;
     box-sizing: border-box; /* Padding dahil hesaplama */
@@ -1051,7 +1051,7 @@ input.settings-form-input:-moz-autofill,
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start !important;
+    justify-content: center !important;
     width: 100%;
     flex: 1;
     min-height: 0;
@@ -1071,13 +1071,14 @@ input.settings-form-input:-moz-autofill,
     color: var(--data-value-color, #a0aec0);
     text-align: center !important;
     margin: 0 auto;
-    margin-bottom: 4px;
+    margin-bottom: 2px !important;
     line-height: 1.1;
     width: 100%;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     height: auto !important;
+    min-height: 2.6em !important;
 }
 
 .settings-card-subtitle {
@@ -1085,7 +1086,7 @@ input.settings-form-input:-moz-autofill,
     color: var(--data-value-color, #a0aec0);
     text-align: center !important; /* Yatayda ortala */
     margin: 0 auto; /* Ortala */
-    margin-top: auto !important;
+    margin-top: 0 !important;
     line-height: 1.1;
     width: 100%;
     white-space: normal;
@@ -1101,7 +1102,7 @@ input.settings-form-input:-moz-autofill,
     color: var(--data-value-color, #a0aec0);
     text-align: center !important; /* Yatayda ortala */
     margin: 0 auto; /* Ortala */
-    margin-top: auto !important;
+    margin-top: 0 !important;
     line-height: 1.1;
     width: 100%;
     white-space: normal;
@@ -1117,7 +1118,7 @@ input.settings-form-input:-moz-autofill,
     color: var(--data-value-color, #a0aec0);
     text-align: center !important; /* Yatayda ortala */
     margin: 0 auto; /* Ortala */
-    margin-top: auto !important;
+    margin-top: 0 !important;
     line-height: 1.1;
     width: 100%;
 }
