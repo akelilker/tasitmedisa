@@ -1040,7 +1040,7 @@ input.settings-form-input:-moz-autofill,
     transition: border-color 0.2s, box-shadow 0.2s;
     display: flex !important;
     flex-direction: column !important;
-    align-items: center;
+    align-items: center !important;
     justify-content: center !important;
     overflow: hidden;
     position: relative;
@@ -1070,21 +1070,22 @@ input.settings-form-input:-moz-autofill,
     font-weight: 600;
     color: var(--data-value-color, #a0aec0);
     text-align: center !important;
-    margin: 0 auto;
-    margin-bottom: 2px !important;
     line-height: 1.1;
     width: 100%;
     white-space: nowrap;
-    overflow: hidden;
     text-overflow: ellipsis;
-    height: auto !important;
+    display: block !important;
+    height: 2.5em !important;
+    min-height: 2.5em !important;
+    max-height: 2.5em !important;
+    margin-bottom: 2px !important;
+    overflow: hidden !important;
 }
 
 .settings-card-subtitle {
     font-size: 11px;
     color: var(--data-value-color, #a0aec0);
     text-align: center !important; /* Yatayda ortala */
-    margin: 0 auto; /* Ortala */
     margin-top: 0 !important;
     line-height: 1.1;
     width: 100%;
@@ -1100,7 +1101,6 @@ input.settings-form-input:-moz-autofill,
     font-size: 10px;
     color: var(--data-value-color, #a0aec0);
     text-align: center !important; /* Yatayda ortala */
-    margin: 0 auto; /* Ortala */
     margin-top: 0 !important;
     line-height: 1.1;
     width: 100%;
@@ -1116,7 +1116,6 @@ input.settings-form-input:-moz-autofill,
     font-size: 10px;
     color: var(--data-value-color, #a0aec0);
     text-align: center !important; /* Yatayda ortala */
-    margin: 0 auto; /* Ortala */
     margin-top: 0 !important;
     line-height: 1.1;
     width: 100%;
