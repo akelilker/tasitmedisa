@@ -426,9 +426,9 @@
     color: inherit;
 }
 
-/* Boya şeması container – metin ile şema arası 3px; şema yatayda ortalı */
+/* Boya şeması container – "Aşağıdaki şemada belirtilmiştir." ile şema arası tam 6px */
 #detail-boya-container {
-  margin-top: 3px !important;
+  margin-top: 6px !important;
   position: relative;
 }
 
@@ -440,7 +440,7 @@
 /* Şemayı saran kutu: sol yaslı, sağ kenar Yoktur metninin "r" harfine dikeyde paralel (max-width ile oranlanır); %20 küçültme */
 .kaporta-schema-wrapper {
     display: block;
-    margin: 2px 0 0;
+    margin: 0;
     margin-right: auto;
     position: relative;
     max-width: 100%;
@@ -566,7 +566,10 @@
     margin-top: 0;
 }
 
-/* Kaporta açıklaması: "Aşağıdaki şemada belirtilmiştir." – 2pt küçük (mobil + masaüstü ortak) */
+/* Kaporta açıklaması: "Aşağıdaki şemada belirtilmiştir." – 2pt küçük (mobil + masaüstü ortak); alt boşluk 0, 6px sadece şema container margin-top */
+.detail-row-kaporta {
+    margin-bottom: 0 !important;
+}
 .detail-row-kaporta .detail-row-value {
     font-size: calc(1em - 4px);
 }
@@ -969,9 +972,9 @@
   #vehicle-detail-modal .vehicle-detail-columns {
     margin-top: 13px !important;
   }
-  /* Taşıt detay: ekspertiz şeması yatayda ortalı, metin-şema arası 3px (masaüstü) */
+  /* Taşıt detay: ekspertiz şeması yatayda ortalı, metin-şema arası 6px (masaüstü) */
   .vehicle-detail-left #detail-boya-container {
-    margin-top: 3px !important;
+    margin-top: 6px !important;
   }
   .vehicle-detail-left #detail-boya-container .kaporta-schema-wrapper {
     max-width: 100% !important;
