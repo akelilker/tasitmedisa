@@ -2996,6 +2996,7 @@ function renderVehicleDetailLeft(vehicle) {
     const url = toAbsoluteRuhsatUrl(ruhsatUrl);
     if (!url) return;
     const isImage = /\.(jpeg|jpg|png|gif|webp)(\?.*)?$/i.test(url);
+    const printableUrl = isImage ? url : buildPdfViewerUrl(url, 'toolbar=0&navpanes=0&zoom=page-width&view=FitH');
 
     // iOS: print() geç tetiklenirse kullanıcı gesture dışına çıkıp prompt üretebilir.
     // Token geçersizleşince iframe.onload/setTimeout içinden gelen print çağrısını iptal ediyoruz.
@@ -3038,7 +3039,7 @@ function renderVehicleDetailLeft(vehicle) {
       iframeJustCreated = true;
     }
     // iOS basıma uygun: tam viewport, ekranda görünmez (opacity:0), tam sayfa baskı için 100vw/100vh
-    iframe.style.cssText = 'position:fixed;left:0;top:0;width:100vw;height:100vh;border:0;opacity:0;pointer-events:none;visibility:hidden;';
+    iframe.style.cssText = 'position:fixed;left:0;top:0;width:100vw;height:100vh;border:0;opacity:0.01;pointer-events:none;visibility:visible;transform:translateX(-200vw);background:#fff;z-index:-1;';
     if (iframeJustCreated) {
       // #region agent log
       try {
@@ -3069,6 +3070,20 @@ function renderVehicleDetailLeft(vehicle) {
     }
 
     var lastOnloadAt = 0;
+    var printTimer = null;
+    function clearPrintTimer() {
+      if (printTimer) {
+        clearTimeout(printTimer);
+        printTimer = null;
+      }
+    }
+    function schedulePrint(delayMs) {
+      clearPrintTimer();
+      printTimer = setTimeout(function() {
+        printTimer = null;
+        doPrint();
+      }, delayMs);
+    }
     function doPrint() {
       try {
         // #region agent log
@@ -3102,29 +3117,32 @@ function renderVehicleDetailLeft(vehicle) {
         }
 
         if (iframe.contentWindow && typeof iframe.contentWindow.print === 'function') {
+          try { iframe.contentWindow.focus(); } catch (focusErr) {}
           iframe.contentWindow.print();
         }
       } catch (e) {
         if (typeof console !== 'undefined' && console.warn) console.warn('Ruhsat print failed', e);
-        window.open(url, '_blank', 'noopener');
+        window.open(printableUrl, '_blank', 'noopener');
       }
     }
 
     if (isImage) {
       var printCss = '<style>@media print{ body{margin:0;} img{width:100% !important;height:auto !important;max-width:100%;display:block;} }</style>';
       var html = '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">' + printCss + '<title>Ruhsat</title></head><body style="margin:0;"><img src="' + escapeHtml(url) + '" style="width:100%;height:auto;max-width:100%;display:block;"></body></html>';
+      try { iframe.removeAttribute('src'); } catch (removeSrcErr) {}
       iframe.srcdoc = html;
       iframe.onload = function() {
         iframe.onload = null;
-        doPrint();
+        schedulePrint(120);
       };
     } else {
+      try { iframe.removeAttribute('srcdoc'); } catch (removeSrcdocErr) {}
       iframe.onload = function() {
         lastOnloadAt = Date.now();
         iframe.onload = null;
-        doPrint();
+        schedulePrint(900);
       };
-      iframe.src = url;
+      iframe.src = printableUrl;
     }
   }
 
