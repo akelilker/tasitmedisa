@@ -33,10 +33,16 @@
     overflow: visible !important;
 }
 
-/* Vehicle Detail Modal: scroll modal-body'de, yan taşmaya izin (ortak kurallar style-core'da) */
+/* Vehicle Detail Modal: scroll modal-body'de, yan taşmaya izin (ortak kurallar style-core'da); içerik kırpılmasın */
 #vehicle-detail-modal .modal-container {
+    height: auto !important;
+    max-height: 90vh !important;
     overflow: hidden !important;
     overflow-x: visible !important;
+}
+#vehicle-detail-modal .modal-content {
+    height: auto !important;
+    max-height: 90vh !important;
 }
 
 /* Muayene tarihi input: Kaydet butonu ile yatayda hizalı (içerik #dinamik-olay-modal'da) */
@@ -2193,12 +2199,13 @@
   pointer-events: auto !important;
 }
 
-/* Vehicle Detail Modal Body - scroll artık .vehicle-detail-scroll-wrap içinde */
+/* Vehicle Detail Modal Body - içerik yüksekliği kadar uzasın, uzun içerikte gövde kayar */
 #vehicle-detail-modal .modal-body {
   margin-top: 0 !important;
   padding: 0 !important;
-  padding-bottom: 40px !important; /* Chrome fix: Logoların kesilmemesi için artırıldı */
-  overflow: hidden !important;
+  padding-bottom: 24px !important;
+  height: auto !important;
+  overflow-y: auto !important;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -3744,11 +3751,11 @@
     padding-right: 8px !important;
   }
   #vehicle-detail-modal .modal-body {
-    overflow: hidden !important; /* Scroll .vehicle-detail-scroll-wrap içinde */
-    padding-bottom: 40px !important; /* Chrome fix: Logoların kesilmemesi için artırıldı */
+    overflow-y: auto !important;
+    padding-bottom: 24px !important;
     -webkit-overflow-scrolling: touch;
-    touch-action: pan-y !important; /* Sadece dikey kaydırma */
-    overscroll-behavior-x: none !important; /* Yatay overscroll'u engelle */
+    touch-action: pan-y !important;
+    overscroll-behavior-x: none !important;
   }
   
   /* Tüm taşıt modal body'leri için overflow-x kontrolü */
@@ -3772,7 +3779,7 @@
   /* --- KAPORTA ŞEMASI MOBİL --- */
   /* Detay modal: legendÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢âÃ¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢âÃ¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã¢â‚¬Å“footer arası boşluk 4px toplam (mobil) */
   #vehicle-detail-modal #vehicle-detail-content { padding-bottom: 4px !important; }
-  #vehicle-detail-modal .modal-body { padding-bottom: 8px !important; }
+  #vehicle-detail-modal .modal-body { padding-bottom: 24px !important; }
   /* Plaka üstten kesilmesin; plaka–marka arası 2px kalsın */
   #vehicle-detail-content { padding-top: 18px !important; }
   .detail-plate-row { margin-top: 0 !important; margin-bottom: 2px !important; }
