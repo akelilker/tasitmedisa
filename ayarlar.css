@@ -949,18 +949,18 @@ input.settings-form-input:-moz-autofill,
   width: 18px;
   height: 18px;
   margin: 0;
-  accent-color: var(--theme-color);
   cursor: pointer;
   background-color: var(--bg-content) !important;
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  border: 1px solid rgba(var(--theme-color-rgb), 0.65);
   border-radius: 4px;
   appearance: none;
   -webkit-appearance: none;
+  box-shadow: none !important;
 }
 .user-vehicle-row input[type="checkbox"]:checked {
-  background-color: var(--theme-color) !important;
+  background-color: var(--bg-content) !important;
   border-color: var(--theme-color);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E") !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ff2b2b' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E") !important;
   background-size: 12px 12px;
   background-position: center;
   background-repeat: no-repeat;
