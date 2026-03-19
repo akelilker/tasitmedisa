@@ -344,6 +344,26 @@ body::-webkit-scrollbar,
   max-width: none !important;
 }
 
+/* Şube Düzenle / Kullanıcı Düzenle: sağdan soldan boşluk (tüm ekranlar, style-core’da kesin uygulansın) */
+#branch-form-modal .modal-body,
+#user-form-modal .modal-body {
+  padding-left: 60px !important;
+  padding-right: 60px !important;
+}
+
+/* Kullanıcı Düzenle: Taşıt listesi yukarı açılsın, 5 satır görünsün, butonlar kaybolmasın */
+#user-form-modal .user-vehicles-dropdown {
+  top: auto !important;
+  bottom: 100% !important;
+  margin-top: 0 !important;
+  margin-bottom: 6px !important;
+  max-height: min(320px, 50vh) !important;
+}
+#user-form-modal .user-vehicles-checkbox-list {
+  max-height: 200px !important;
+  overflow-y: auto !important;
+}
+
 /* Tüm input/select/textarea içerik metni: beyaz-gri hiyerarşisi */
 .form-input,
 select.form-input,
