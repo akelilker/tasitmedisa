@@ -145,7 +145,7 @@
             'sira': 'No.',
             'sube': 'Şube',
             'yil': 'Yıl',
-            'marka': isTiny ? 'Mrk' : isVerySmall ? 'Marka' : 'Marka/Model',
+            'marka': isTiny ? 'Mrk' : isVerySmall ? 'Marka' : isDesktop ? 'Marka / Model' : 'Marka/Model',
             'plaka': 'Plaka',
             'sanziman': isTiny ? 'Ş.' : isVerySmall ? 'Şanz.' : isDesktop ? 'Şanz.' : 'Şanzıman',
             'km': 'KM',
@@ -583,10 +583,10 @@
                 'km': 'minmax(48px, 1fr)'
             }
             : {
-                'sira': 'minmax(22px, 0.2fr)', 'sube': 'minmax(54px, 1.05fr)',
-                'yil': 'minmax(40px, 0.55fr)', 'marka': 'minmax(52px, 1.55fr)',
-                'plaka': 'minmax(62px, 1.05fr)', 'sanziman': 'minmax(62px, 0.95fr)',
-                'km': 'minmax(66px, 1.35fr)'
+                'sira': 'minmax(22px, 0.2fr)', 'sube': 'minmax(54px, 0.98fr)',
+                'yil': 'minmax(40px, 0.55fr)', 'marka': 'minmax(72px, 1.85fr)',
+                'plaka': 'minmax(60px, 1fr)', 'sanziman': 'minmax(60px, 0.9fr)',
+                'km': 'minmax(64px, 1.22fr)'
             };
         return allColumns.map(col => columnWidths[col.key] || '80px').join(' ');
     }
