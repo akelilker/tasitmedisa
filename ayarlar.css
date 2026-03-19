@@ -1083,33 +1083,37 @@ input.settings-form-input:-moz-autofill,
 }
 
 .settings-card-subtitle {
-    font-size: 11px;
+    font-size: 12px;
+    font-family: inherit;
     color: var(--data-value-color, #a0aec0);
     text-align: center !important; /* Yatayda ortala */
     margin-top: 0 !important;
-    line-height: 1.1;
+    line-height: 1.2;
     width: 100%;
     white-space: normal;
     display: -webkit-box;
     -webkit-line-clamp: 2;
-    line-clamp: 2; 
+    line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    -webkit-font-smoothing: antialiased;
 }
 
 .settings-card-gorev {
-    font-size: 10px;
+    font-size: 11px;
+    font-family: inherit;
     color: var(--data-value-color, #a0aec0);
     text-align: center !important; /* Yatayda ortala */
     margin-top: 0 !important;
-    line-height: 1.1;
+    line-height: 1.2;
     width: 100%;
     white-space: normal;
     display: -webkit-box;
     -webkit-line-clamp: 2;
-    line-clamp: 2; 
+    line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    -webkit-font-smoothing: antialiased;
 }
 
 .settings-card-count {
@@ -1440,7 +1444,7 @@ input.settings-form-input:-moz-autofill,
     }
     .settings-card-title { font-size: 15px; }
     .settings-card-subtitle { font-size: 13px; }
-    .settings-card-gorev { font-size: 9px; }
+    .settings-card-gorev { font-size: 12px; }
     .settings-add-text-btn { font-size: 15px; }
     #branch-form-modal .form-label,
     #user-form-modal .form-label { font-size: 15px; }
