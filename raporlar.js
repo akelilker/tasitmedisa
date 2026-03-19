@@ -1167,11 +1167,234 @@
         // Tüm başlıkları normale döndür
         document.querySelectorAll('.stok-list-header-cell').forEach(cell => {
             cell.style.opacity = '1';
-            cell.classList.remove('drag-over');
+            cell.classList.remove('drag-over', 'touch-drag-source');
         });
         
         draggedColumnKey = null;
     };
+
+    function setStokColumnCellsOpacity(columnKey, opacity) {
+        document.querySelectorAll(`.stok-list-row .stok-list-cell[data-col="${columnKey}"]`).forEach(function(cell) {
+            cell.style.opacity = opacity;
+        });
+    }
+
+    function removeStokTouchGhost() {
+        if (stokTouchColumnDrag.ghostEl && stokTouchColumnDrag.ghostEl.parentNode) {
+            stokTouchColumnDrag.ghostEl.parentNode.removeChild(stokTouchColumnDrag.ghostEl);
+        }
+        stokTouchColumnDrag.ghostEl = null;
+    }
+
+    function cleanupStokTouchColumnDrag() {
+        clearTimeout(stokTouchColumnDrag.longPressTimer);
+        document.querySelectorAll('.stok-list-header-cell').forEach(function(cell) {
+            cell.style.opacity = '1';
+            cell.classList.remove('drag-over', 'touch-drag-source');
+        });
+        document.querySelectorAll('.stok-list-row .stok-list-cell').forEach(function(cell) {
+            cell.style.opacity = '1';
+        });
+        const listContainer = document.getElementById('stok-list-container');
+        if (listContainer) listContainer.classList.remove('touch-reorder-mode');
+        removeStokTouchGhost();
+        stokTouchColumnDrag.active = false;
+        stokTouchColumnDrag.dragging = false;
+        stokTouchColumnDrag.columnKey = null;
+        stokTouchColumnDrag.startX = 0;
+        stokTouchColumnDrag.startY = 0;
+        stokTouchColumnDrag.lastDropTarget = null;
+        stokTouchColumnDrag.longPressTimer = null;
+        stokTouchColumnDrag.sourceCell = null;
+    }
+
+    function canReorderStokColumn(sourceKey, targetKey) {
+        if (!sourceKey || !targetKey || sourceKey === targetKey) return false;
+        const isDraggedBase = STOK_BASE_COLUMNS.includes(sourceKey);
+        const isTargetBase = STOK_BASE_COLUMNS.includes(targetKey);
+        const isDraggedDetail = STOK_DETAIL_COLUMNS.includes(sourceKey);
+        const isTargetDetail = STOK_DETAIL_COLUMNS.includes(targetKey);
+        if (isDraggedBase && isTargetBase) return true;
+        if (isDraggedDetail && isTargetDetail) return !!(stokActiveColumns[sourceKey] && stokActiveColumns[targetKey]);
+        if (isDraggedBase && isTargetDetail) return !!stokActiveColumns[targetKey];
+        if (isDraggedDetail && isTargetBase) return !!stokActiveColumns[sourceKey];
+        return false;
+    }
+
+    function reorderStokColumns(sourceKey, targetKey) {
+        if (!canReorderStokColumn(sourceKey, targetKey)) return false;
+
+        const isDraggedBase = STOK_BASE_COLUMNS.includes(sourceKey);
+        const isTargetBase = STOK_BASE_COLUMNS.includes(targetKey);
+        const isDraggedDetail = STOK_DETAIL_COLUMNS.includes(sourceKey);
+        const isTargetDetail = STOK_DETAIL_COLUMNS.includes(targetKey);
+
+        if (isDraggedBase && isTargetBase) {
+            const draggedIndex = stokBaseColumnOrder.indexOf(sourceKey);
+            const targetIndex = stokBaseColumnOrder.indexOf(targetKey);
+            if (draggedIndex === -1 || targetIndex === -1) return false;
+            stokBaseColumnOrder.splice(draggedIndex, 1);
+            stokBaseColumnOrder.splice(targetIndex, 0, sourceKey);
+        } else if (isDraggedDetail && isTargetDetail) {
+            const draggedIndex = stokColumnOrder.indexOf(sourceKey);
+            const targetIndex = stokColumnOrder.indexOf(targetKey);
+            if (draggedIndex === -1 || targetIndex === -1) return false;
+            stokColumnOrder.splice(draggedIndex, 1);
+            stokColumnOrder.splice(targetIndex, 0, sourceKey);
+        } else if (isDraggedBase && isTargetDetail) {
+            const draggedIndex = stokBaseColumnOrder.indexOf(sourceKey);
+            const targetDetailIndex = stokColumnOrder.indexOf(targetKey);
+            if (draggedIndex === -1 || targetDetailIndex === -1) return false;
+            stokBaseColumnOrder.splice(draggedIndex, 1);
+            stokBaseColumnOrder.push(targetKey);
+            stokColumnOrder.splice(targetDetailIndex, 1);
+            stokColumnOrder.splice(targetDetailIndex, 0, sourceKey);
+        } else if (isDraggedDetail && isTargetBase) {
+            const draggedDetailIndex = stokColumnOrder.indexOf(sourceKey);
+            const targetIndex = stokBaseColumnOrder.indexOf(targetKey);
+            if (draggedDetailIndex === -1 || targetIndex === -1) return false;
+            stokColumnOrder.splice(draggedDetailIndex, 1);
+            stokColumnOrder.unshift(targetKey);
+            stokBaseColumnOrder.splice(targetIndex, 1);
+            stokBaseColumnOrder.splice(targetIndex, 0, sourceKey);
+        } else {
+            return false;
+        }
+
+        saveStokColumnState();
+        return true;
+    }
+
+    function createStokTouchGhost(sourceCell) {
+        removeStokTouchGhost();
+        const ghost = document.createElement('div');
+        ghost.className = 'stok-column-touch-ghost';
+        const sourceText = sourceCell.querySelector('.stok-header-text')
+            ? sourceCell.querySelector('.stok-header-text').textContent
+            : sourceCell.textContent;
+        ghost.textContent = String(sourceText || '').replace(/[↕↑↓]/g, ' ').replace(/\s+/g, ' ').trim();
+        document.body.appendChild(ghost);
+        stokTouchColumnDrag.ghostEl = ghost;
+    }
+
+    function updateStokTouchGhostPosition(x, y) {
+        if (!stokTouchColumnDrag.ghostEl) return;
+        stokTouchColumnDrag.ghostEl.style.left = `${x}px`;
+        stokTouchColumnDrag.ghostEl.style.top = `${y}px`;
+    }
+
+    function getStokTouchTargetCell(pointerX, sourceKey) {
+        const headerCells = Array.from(document.querySelectorAll('#stok-list-container .stok-list-header-row .stok-list-header-cell[data-col]'))
+            .filter(function(cell) { return canReorderStokColumn(sourceKey, cell.getAttribute('data-col')); });
+        if (!headerCells.length) return null;
+
+        const exactMatch = headerCells.find(function(cell) {
+            const rect = cell.getBoundingClientRect();
+            return pointerX >= rect.left && pointerX <= rect.right;
+        });
+        if (exactMatch) return exactMatch;
+
+        let nearestCell = null;
+        let nearestDistance = Infinity;
+        headerCells.forEach(function(cell) {
+            const rect = cell.getBoundingClientRect();
+            const centerX = rect.left + (rect.width / 2);
+            const distance = Math.abs(pointerX - centerX);
+            if (distance < nearestDistance) {
+                nearestDistance = distance;
+                nearestCell = cell;
+            }
+        });
+        return nearestCell;
+    }
+
+    function beginStokTouchColumnDrag(sourceCell, columnKey, touchPoint) {
+        stokTouchColumnDrag.dragging = true;
+        stokTouchColumnDrag.suppressClickUntil = Date.now() + 500;
+        stokTouchColumnDrag.sourceCell = sourceCell;
+        const listContainer = document.getElementById('stok-list-container');
+        if (listContainer) listContainer.classList.add('touch-reorder-mode');
+        sourceCell.classList.add('touch-drag-source');
+        sourceCell.style.opacity = '0.35';
+        setStokColumnCellsOpacity(columnKey, '0.35');
+        createStokTouchGhost(sourceCell);
+        updateStokTouchGhostPosition(touchPoint.clientX, touchPoint.clientY);
+    }
+
+    function attachStokColumnTouchListeners(listContainer) {
+        if (!isMobileStokViewport()) return;
+        const headerCells = listContainer.querySelectorAll('.stok-list-header-row .stok-list-header-cell[data-col]');
+        if (!headerCells.length) return;
+
+        headerCells.forEach(function(cell) {
+            const columnKey = cell.getAttribute('data-col');
+            if (!columnKey) return;
+
+            cell.addEventListener('touchstart', function(e) {
+                if (e.touches.length !== 1) return;
+                const startTouch = {
+                    clientX: e.touches[0].clientX,
+                    clientY: e.touches[0].clientY
+                };
+                cleanupStokTouchColumnDrag();
+                stokTouchColumnDrag.active = true;
+                stokTouchColumnDrag.columnKey = columnKey;
+                stokTouchColumnDrag.startX = startTouch.clientX;
+                stokTouchColumnDrag.startY = startTouch.clientY;
+                stokTouchColumnDrag.lastDropTarget = null;
+                stokTouchColumnDrag.sourceCell = cell;
+                stokTouchColumnDrag.longPressTimer = setTimeout(function() {
+                    if (!stokTouchColumnDrag.active || stokTouchColumnDrag.columnKey !== columnKey) return;
+                    beginStokTouchColumnDrag(cell, columnKey, startTouch);
+                }, 180);
+            }, { passive: true });
+
+            cell.addEventListener('touchmove', function(e) {
+                if (!stokTouchColumnDrag.active || stokTouchColumnDrag.columnKey !== columnKey || e.touches.length !== 1) return;
+                const touch = e.touches[0];
+                const dx = Math.abs(touch.clientX - stokTouchColumnDrag.startX);
+                const dy = Math.abs(touch.clientY - stokTouchColumnDrag.startY);
+
+                if (!stokTouchColumnDrag.dragging) {
+                    if (dx > 8 || dy > 8) {
+                        clearTimeout(stokTouchColumnDrag.longPressTimer);
+                        if (dx > 14 || dy > 14) {
+                            cleanupStokTouchColumnDrag();
+                        }
+                    }
+                    return;
+                }
+
+                e.preventDefault();
+                updateStokTouchGhostPosition(touch.clientX, touch.clientY);
+                const targetCell = getStokTouchTargetCell(touch.clientX, columnKey);
+                const targetKey = targetCell ? targetCell.getAttribute('data-col') : null;
+                listContainer.querySelectorAll('.stok-list-header-cell').forEach(function(headerCell) {
+                    headerCell.classList.toggle('drag-over', headerCell === targetCell && canReorderStokColumn(columnKey, targetKey));
+                });
+                stokTouchColumnDrag.lastDropTarget = (targetKey && canReorderStokColumn(columnKey, targetKey)) ? targetKey : null;
+            }, { passive: false });
+
+            function endTouch(e) {
+                if (!stokTouchColumnDrag.active && !stokTouchColumnDrag.dragging) return;
+                clearTimeout(stokTouchColumnDrag.longPressTimer);
+                const sourceKey = stokTouchColumnDrag.columnKey;
+                const targetKey = stokTouchColumnDrag.lastDropTarget;
+                const wasDragging = stokTouchColumnDrag.dragging;
+                if (wasDragging) {
+                    stokTouchColumnDrag.suppressClickUntil = Date.now() + 500;
+                    if (e && typeof e.preventDefault === 'function') e.preventDefault();
+                }
+                cleanupStokTouchColumnDrag();
+                if (wasDragging && sourceKey && targetKey && reorderStokColumns(sourceKey, targetKey)) {
+                    renderStokList();
+                }
+            }
+
+            cell.addEventListener('touchend', endTouch, { passive: false });
+            cell.addEventListener('touchcancel', endTouch, { passive: false });
+        });
+    }
 
     function formatDate(dateStr) { return (typeof window.formatDateShort === 'function' ? window.formatDateShort(dateStr) : (dateStr ? String(dateStr) : '-')) || '-'; }
 
