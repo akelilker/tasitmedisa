@@ -1547,6 +1547,9 @@
       }
     });
     window.currentDetailVehicleId = null;
+    // iOS: print() çağrısı iframe.onload/setTimeout ile geç tetiklenebiliyor.
+    // Kullanıcı başka ekrana giderken bekleyen print'in çalışmaması için token iptal ediyoruz.
+    window.__ruhsatPrintToken = null;
   };
 
   // --- Taşıt Detay Modalını Kapat ---
@@ -2861,6 +2864,8 @@ function renderVehicleDetailLeft(vehicle) {
    * Ruhsat modalından Taşıt Detay ekranına dön (geri ok ve Vazgeç için)
    */
   window.closeRuhsatAndBackToDetail = function() {
+    // iOS print() çağrısı geç tetiklenirse kullanıcı başka ekrana giderken prompt çıkmasını engelle.
+    window.__ruhsatPrintToken = null;
     closeEventModal('ruhsat');
     setTimeout(function() {
       if (window.currentDetailVehicleId) showVehicleDetail(window.currentDetailVehicleId);
@@ -2949,6 +2954,11 @@ function renderVehicleDetailLeft(vehicle) {
     const url = toAbsoluteRuhsatUrl(ruhsatUrl);
     if (!url) return;
     const isImage = /\.(jpeg|jpg|png|gif|webp)(\?.*)?$/i.test(url);
+
+    // iOS: print() geç tetiklenirse kullanıcı gesture dışına çıkıp prompt üretebilir.
+    // Token geçersizleşince iframe.onload/setTimeout içinden gelen print çağrısını iptal ediyoruz.
+    var printToken = 'ruhsatPrint_' + Date.now();
+    window.__ruhsatPrintToken = printToken;
 
     var iframe = document.getElementById('ruhsat-print-frame');
     // #region agent log
@@ -3040,6 +3050,10 @@ function renderVehicleDetailLeft(vehicle) {
         } catch (e) {}
         // #endregion
 
+        if (window.__ruhsatPrintToken !== printToken) {
+          return;
+        }
+
         if (iframe.contentWindow && typeof iframe.contentWindow.print === 'function') {
           iframe.contentWindow.print();
         }
@@ -3050,17 +3064,17 @@ function renderVehicleDetailLeft(vehicle) {
     }
 
     if (isImage) {
-      var html = '<!DOCTYPE html><html><head><meta charset="utf-8"><title>Ruhsat</title></head><body style="margin:0;"><img src="' + escapeHtml(url) + '" style="max-width:100%;height:auto;display:block;" onload="window.print();"></body></html>';
+      var html = '<!DOCTYPE html><html><head><meta charset="utf-8"><title>Ruhsat</title></head><body style="margin:0;"><img src="' + escapeHtml(url) + '" style="max-width:100%;height:auto;display:block;"></body></html>';
       iframe.srcdoc = html;
       iframe.onload = function() {
         iframe.onload = null;
-        setTimeout(doPrint, 150);
+        doPrint();
       };
     } else {
       iframe.onload = function() {
         lastOnloadAt = Date.now();
         iframe.onload = null;
-        setTimeout(doPrint, 400);
+        doPrint();
       };
       iframe.src = url;
     }
