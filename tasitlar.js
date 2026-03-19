@@ -381,6 +381,64 @@
     });
   }
 
+  function syncMobileNotificationsDropdownHeight() {
+    var dropdown = DOM.notificationsDropdown || document.getElementById('notifications-dropdown');
+    if (!dropdown) return;
+    if (window.innerWidth > 640) {
+      dropdown.style.removeProperty('--mobile-notifications-max-height');
+      return;
+    }
+    if (!dropdown.classList.contains('open')) {
+      dropdown.style.removeProperty('--mobile-notifications-max-height');
+      return;
+    }
+    var dropdownRect = dropdown.getBoundingClientRect();
+    if (!dropdownRect || dropdownRect.top <= 0) return;
+    var footer = document.getElementById('app-footer');
+    var footerTop = footer ? (footer.getBoundingClientRect().top - 3) : (window.innerHeight - 45);
+    var available = Math.floor(footerTop - dropdownRect.top);
+    if (available <= 0) return;
+
+    var dropdownStyles = window.getComputedStyle(dropdown);
+    var paddingTop = parseFloat(dropdownStyles.paddingTop) || 0;
+    var paddingBottom = parseFloat(dropdownStyles.paddingBottom) || 0;
+    var used = 0;
+    var fitted = 0;
+
+    Array.prototype.forEach.call(dropdown.children, function(child) {
+      if (!child || child.nodeType !== 1) return;
+      var childStyles = window.getComputedStyle(child);
+      var outerHeight = Math.ceil(
+        child.getBoundingClientRect().height +
+        (parseFloat(childStyles.marginTop) || 0) +
+        (parseFloat(childStyles.marginBottom) || 0)
+      );
+      if (!outerHeight) return;
+      if (used + outerHeight <= available) {
+        used += outerHeight;
+        fitted = used;
+      }
+    });
+
+    var fallback = Math.min(available, Math.ceil(dropdown.scrollHeight));
+    var target = fitted
+      ? Math.min(available, Math.ceil(fitted + paddingTop + paddingBottom))
+      : fallback;
+
+    dropdown.style.setProperty('--mobile-notifications-max-height', Math.max(0, target) + 'px');
+  }
+
+  window.syncMobileNotificationsDropdownHeight = syncMobileNotificationsDropdownHeight;
+
+  if (!window.__medisaNotifDropdownResizeBound) {
+    window.__medisaNotifDropdownResizeBound = true;
+    window.addEventListener('resize', function() {
+      if (typeof window.syncMobileNotificationsDropdownHeight === 'function') {
+        requestAnimationFrame(window.syncMobileNotificationsDropdownHeight);
+      }
+    }, { passive: true });
+  }
+
   // Olay menü listesi: delegation (her butona ayrı onclick yerine tek listener)
   if (DOM.eventMenuList && !DOM.eventMenuList._eventDelegationBound) {
     DOM.eventMenuList._eventDelegationBound = true;
@@ -2285,7 +2343,7 @@ function renderVehicleDetailLeft(vehicle) {
     };
     /** Etiket + butonlar yan yana, 4px gap; Var/Evet=yeşil (hover-green), Yok/Hayır=kırmızı (hover-red) */
     const radioRow = (labelText, varVal, yokVal, varLbl, yokLbl) => {
-      return '<div class="form-section-inline" style="display:flex;flex-wrap:wrap;align-items:center;gap:4px;"><span class="' + labelCls + '" style="width:auto;">' + labelText + '</span><button type="button" class="radio-btn hover-green" data-value="' + varVal + '">' + varLbl + '</button><button type="button" class="radio-btn hover-red" data-value="' + yokVal + '">' + yokLbl + '</button></div>';
+      return '<div class="form-section-inline event-radio-row"><span class="' + labelCls + ' event-radio-label">' + labelText + '</span><div class="event-radio-actions"><button type="button" class="radio-btn hover-green" data-value="' + varVal + '">' + varLbl + '</button><button type="button" class="radio-btn hover-red" data-value="' + yokVal + '">' + yokLbl + '</button></div></div>';
     };
     switch (type) {
       case 'bakim':
@@ -2315,15 +2373,15 @@ function renderVehicleDetailLeft(vehicle) {
       case 'sigorta':
         return '<div style="display:flex;flex-direction:column;gap:12px;">' +
           section('Yenileme/Başlangıç (gg/aa/yyyy)', 'sigorta-tarih', 'input', [['type', 'text'], ['placeholder', 'gg/aa/yyyy']]) +
-          section('Firma', 'sigorta-firma', 'input', [['type', 'text']]) +
-          section('Acente', 'sigorta-acente', 'input', [['type', 'text']]) +
-          section('İletişim', 'sigorta-iletisim', 'input', [['type', 'text']]) + '</div>';
+          section('Firma', 'sigorta-firma', 'input', [['type', 'text'], ['placeholder', 'ör. Anadolu']]) +
+          section('Acente', 'sigorta-acente', 'input', [['type', 'text'], ['placeholder', 'ör. Hayri Çetin']]) +
+          section('İletişim', 'sigorta-iletisim', 'input', [['type', 'text'], ['placeholder', '05** *******']]) + '</div>';
       case 'kasko':
         return '<div style="display:flex;flex-direction:column;gap:12px;">' +
           section('Yenileme/Başlangıç (gg/aa/yyyy)', 'kasko-tarih', 'input', [['type', 'text'], ['placeholder', 'gg/aa/yyyy']]) +
-          section('Firma', 'kasko-firma', 'input', [['type', 'text']]) +
-          section('Acente', 'kasko-acente', 'input', [['type', 'text']]) +
-          section('İletişim', 'kasko-iletisim', 'input', [['type', 'text']]) + '</div>';
+          section('Firma', 'kasko-firma', 'input', [['type', 'text'], ['placeholder', 'ör. Anadolu']]) +
+          section('Acente', 'kasko-acente', 'input', [['type', 'text'], ['placeholder', 'ör. Hayri Çetin']]) +
+          section('İletişim', 'kasko-iletisim', 'input', [['type', 'text'], ['placeholder', '05** *******']]) + '</div>';
       case 'muayene':
         return '<div style="display:flex;flex-direction:column;gap:12px;">' +
           section('Muayene Tarihi (gg/aa/yyyy)', 'muayene-tarih', 'input', [['type', 'text'], ['placeholder', 'gg/aa/yyyy']]) + '</div>';
@@ -2883,6 +2941,10 @@ function renderVehicleDetailLeft(vehicle) {
           });
         }, 100);
       }
+    }
+
+    if (typeof window.syncMobileNotificationsDropdownHeight === 'function') {
+      requestAnimationFrame(window.syncMobileNotificationsDropdownHeight);
     }
   };
 
