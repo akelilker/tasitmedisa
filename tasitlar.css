@@ -2467,7 +2467,7 @@
   border: 1px solid rgba(40, 167, 69, 0.65) !important;
   transition: transform 0.2s, background 0.2s;
 }
-/* Olay Ekle formlarında (Bakım, Ceza vb.): JS ile .olay-form-buttons eklenir; grid iki eşit buton, Kaydet dolu görünsün */
+/* Olay Ekle formlarında (Bakım, Ceza vb.): JS ile .olay-form-buttons eklenir; grid iki eşit buton */
 #dinamik-olay-modal #ruhsat-btn-group.olay-form-buttons {
   max-width: 390px !important;
   margin-left: auto !important;
@@ -2477,16 +2477,29 @@
   grid-template-columns: 1fr 1fr !important;
   gap: 12px !important;
 }
+/* Kaydet: yeşil çerçeve + yeşil metin, arka plan yok; hover/active’te yarı saydam yeşil */
 #dinamik-olay-modal #ruhsat-btn-group.olay-form-buttons #dinamik-olay-kaydet-btn {
-  background: rgba(40, 167, 69, 0.12) !important;
+  background: transparent !important;
+  color: var(--green-success, #28a745) !important;
+  border: 1px solid rgba(40, 167, 69, 0.65) !important;
+  transition: background 0.2s, transform 0.2s;
 }
-#dinamik-olay-modal #ruhsat-btn-group.olay-form-buttons #dinamik-olay-kaydet-btn:hover {
+#dinamik-olay-modal #ruhsat-btn-group.olay-form-buttons #dinamik-olay-kaydet-btn:hover,
+#dinamik-olay-modal #ruhsat-btn-group.olay-form-buttons #dinamik-olay-kaydet-btn:active {
   background: rgba(40, 167, 69, 0.28) !important;
+  color: var(--green-success, #28a745) !important;
 }
+/* Vazgeç: kırmızı çerçeve + kırmızı metin, arka plan yok; hover/active’te yarı saydam kırmızı */
 #dinamik-olay-modal #ruhsat-btn-group.olay-form-buttons .universal-btn-cancel {
   min-width: 0 !important;
-  background: rgba(255, 255, 255, 0.06) !important;
+  background: transparent !important;
   border: 1px solid rgba(212, 0, 0, 0.5) !important;
+  color: var(--theme-color, #d40000) !important;
+  transition: background 0.2s;
+}
+#dinamik-olay-modal #ruhsat-btn-group.olay-form-buttons .universal-btn-cancel:hover,
+#dinamik-olay-modal #ruhsat-btn-group.olay-form-buttons .universal-btn-cancel:active {
+  background: rgba(212, 0, 0, 0.2) !important;
   color: var(--theme-color, #d40000) !important;
 }
 #ruhsat-yukleme-modal #ruhsat-save-btn:hover,
