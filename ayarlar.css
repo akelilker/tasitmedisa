@@ -988,10 +988,11 @@ input.settings-form-input:-moz-autofill,
     padding-top: 6px;
     padding-bottom: 6px;
 }
-/* Kullanıcı Yönetimi: kullanıcı kutularına yukarı ve aşağı 6px */
+/* Kullanıcı Yönetimi: kullanıcı kutularına yukarı ve aşağı 6px, kutular yatayda ortada */
 #user-modal #user-list {
     padding-top: 6px;
     padding-bottom: 6px;
+    justify-content: center !important;
 }
 
 /* Şube Yönetimi & Kullanıcı Yönetimi: kutulardaki metinler üstten hizalı */
