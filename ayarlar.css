@@ -1004,9 +1004,6 @@ input.settings-form-input:-moz-autofill,
 #user-modal #user-list .settings-card-subtitle {
     display: none !important;
 }
-#user-modal #user-list .settings-card {
-    min-height: 104px !important; /* 110 - 6px */
-}
 #branch-modal #branch-list .settings-card-content,
 #user-modal #user-list .settings-card-content {
     justify-content: center !important;
@@ -1028,14 +1025,13 @@ input.settings-form-input:-moz-autofill,
 }
 
 .settings-card {
-    /* En az başlık + alt 2 satır (şube/rol) sığacak yükseklik; aspect-ratio'dan kısa kalırsa bu geçerli */
-    min-height: 110px;
-    aspect-ratio: 100 / 85;
-    /* MASAÜSTÜ: Her kart sabit genişlik (5 kart için eşit dağılım) */
+    /* Taşıtlar modu .branch-card ile birebir: kare kutu */
+    aspect-ratio: 1 / 1;
+    min-height: 0;
     width: calc((100% - (4 * 8px)) / 5); /* 5 kart + 4 gap */
     max-width: calc((100% - (4 * 8px)) / 5);
-    min-width: 0; /* Flexbox taşmasını önle */
-    flex: 0 0 calc((100% - (4 * 8px)) / 5); /* Flexbox'ta sabit genişlik */
+    min-width: 0;
+    flex: 0 0 calc((100% - (4 * 8px)) / 5);
     background: rgba(255, 255, 255, 0.02);
     border: 1px solid rgba(255, 255, 255, 0.35);
     border-radius: 8px;
@@ -1443,11 +1439,13 @@ input.settings-form-input:-moz-autofill,
     #branch-list, #user-list {
         gap: 8px;
     }
+    /* Mobil: taşıtlar .branch-card ile aynı ölçü (clamp + kare + padding) */
     .settings-card {
-        width: calc((100% - (2 * 8px)) / 3);
-        max-width: calc((100% - (2 * 8px)) / 3);
-        flex: 0 0 calc((100% - (2 * 8px)) / 3);
-        padding: 4px 2px;
+        width: clamp(93px, 27vw, 107px) !important;
+        max-width: clamp(93px, 27vw, 107px) !important;
+        flex: 0 0 clamp(93px, 27vw, 107px) !important;
+        aspect-ratio: 1 / 1 !important;
+        padding: 16px 3px 12px 3px !important;
     }
     .settings-card-title { font-size: 15px; }
     .settings-card-subtitle { font-size: 13px; }
