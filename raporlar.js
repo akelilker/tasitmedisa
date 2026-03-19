@@ -41,6 +41,21 @@
     let stokBaseColumnOrder = ['sira', 'sube', 'yil', 'marka', 'plaka', 'sanziman', 'km']; // Temel sütunların sırası
     let stokDetailMenuOpen = false; // Detay Ekleme menüsü açık mı (toggle için tek kaynak)
 
+    const STOK_BASE_COLUMNS = ['sira', 'sube', 'yil', 'marka', 'plaka', 'sanziman', 'km'];
+    const STOK_DETAIL_COLUMNS = ['sigorta', 'kasko', 'kaskoDegeri', 'muayene', 'kredi', 'lastik', 'utts', 'takip', 'tramer', 'boya', 'kullanici', 'tescil'];
+    let stokTouchColumnDrag = {
+        active: false,
+        dragging: false,
+        columnKey: null,
+        startX: 0,
+        startY: 0,
+        lastDropTarget: null,
+        longPressTimer: null,
+        sourceCell: null,
+        ghostEl: null,
+        suppressClickUntil: 0
+    };
+
     function loadStokColumnState() {
         var load = typeof window.loadColumnState === 'function' ? window.loadColumnState : function(k, def) { try { var r = localStorage.getItem(k); return r ? JSON.parse(r) : def; } catch (e) { return def; } };
         var savedCols = load('stok_active_columns', {});
@@ -60,6 +75,12 @@
         save('stok_active_columns', stokActiveColumns);
         save('stok_column_order', stokColumnOrder);
         save('stok_base_column_order', stokBaseColumnOrder);
+    }
+
+    function isMobileStokViewport() {
+        return (typeof window.matchMedia === 'function')
+            ? window.matchMedia('(max-width: 640px)').matches
+            : window.innerWidth <= 640;
     }
 
     // --- Modal ve Sekme Yönetimi ---
@@ -207,6 +228,7 @@
         const listContainer = document.getElementById('stok-list-container');
         
         if (!listContainer) return;
+        cleanupStokTouchColumnDrag();
         
         // Detay menü açık/kapalı tek kaynak: stokDetailMenuOpen (liste yeniden render'da korunur)
         
@@ -481,6 +503,7 @@
         }, 50);
         
         // Mobil: liste tek hamlede ya yatay ya dikey kaysın (eksen kilidi)
+        attachStokColumnTouchListeners(listContainer);
         setupStokListTouchAxisLock();
         // Marka hücreleri: sütun daraldıkça font küçülsün (Taşıtlar gibi)
         adjustStokMarkaFontSizes();
@@ -637,7 +660,7 @@
             const sortIcon = sortState === 'asc' ? '↑' : sortState === 'desc' ? '↓' : '↕';
             const sortClass = sortState ? 'active' : '';
             
-            const draggableAttr = 'draggable="true"';
+            const draggableAttr = isMobileStokViewport() ? '' : 'draggable="true"';
             
             if (col.sortable) {
                 return `
@@ -815,6 +838,7 @@
 
     // Sıralama fonksiyonu
     window.sortStokList = function(columnKey) {
+        if (stokTouchColumnDrag.suppressClickUntil > Date.now()) return;
         const currentState = stokSortState[columnKey];
         
         // Sıralama durumunu değiştir: null → asc → desc → null
@@ -841,6 +865,8 @@
         let startX = 0, startY = 0, startScrollLeft = 0, startScrollTop = 0, lockedAxis = null;
 
         const onStart = (e) => {
+            if (stokTouchColumnDrag.active || stokTouchColumnDrag.dragging) return;
+            if (e.target && e.target.closest && e.target.closest('.stok-list-header-row .stok-list-header-cell[data-col]')) return;
             if (e.touches.length !== 1) return;
             startX = e.touches[0].clientX;
             startY = e.touches[0].clientY;
@@ -849,6 +875,7 @@
             lockedAxis = null;
         };
         const onMove = (e) => {
+            if (stokTouchColumnDrag.active || stokTouchColumnDrag.dragging) return;
             if (e.touches.length !== 1) return;
             const x = e.touches[0].clientX;
             const y = e.touches[0].clientY;
@@ -869,7 +896,10 @@
                 e.preventDefault();
             }
         };
-        const onEnd = () => { lockedAxis = null; };
+        const onEnd = () => {
+            if (stokTouchColumnDrag.active || stokTouchColumnDrag.dragging) return;
+            lockedAxis = null;
+        };
 
         scrollEl.addEventListener('touchstart', onStart, { passive: true });
         scrollEl.addEventListener('touchmove', onMove, { passive: false });
