@@ -73,19 +73,24 @@
 .olay-ekle-modal .modal-body input[type="date"].form-input,
 .olay-ekle-modal .modal-body .olay-tarih-input {
   position: relative !important; /* Takvim simgesi absolute ile buna göre ortalanır */
+  display: flex !important;
+  align-items: center !important;
   width: 190px !important;
   max-width: 190px !important;
   min-width: min(165px, 100%) !important;
   box-sizing: border-box !important;
   overflow: hidden !important;
   font-size: 11px !important;
-  padding: 3px 28px 3px 10px !important; /* Dikeyde 4px daraltıldı (5→3) */
-  min-height: 26px !important;
-  height: 26px !important;
+  padding: 0 28px 0 12px !important;
+  min-height: 30px !important;
+  height: 30px !important;
+  line-height: 1 !important;
   text-align: center !important; /* gg.aa.yyyy ortada, sağdan taşmasın */
 }
 .olay-ekle-modal .modal-body input[type="date"].form-input::-webkit-datetime-edit,
-.olay-ekle-modal .modal-body .olay-tarih-input::-webkit-datetime-edit {
+.olay-ekle-modal .modal-body .olay-tarih-input::-webkit-datetime-edit,
+.olay-ekle-modal .modal-body input[type="date"].form-input::-webkit-date-and-time-value,
+.olay-ekle-modal .modal-body .olay-tarih-input::-webkit-date-and-time-value {
   font-size: 11px !important;
   max-width: 100% !important;
   box-sizing: border-box !important;
@@ -101,14 +106,19 @@
 .olay-ekle-modal .modal-body input[type="date"].form-input::-webkit-datetime-edit,
 .olay-ekle-modal .modal-body .olay-tarih-input::-webkit-datetime-edit,
 .olay-ekle-modal .modal-body input[type="date"].form-input::-webkit-datetime-edit-fields-wrapper,
-.olay-ekle-modal .modal-body .olay-tarih-input::-webkit-datetime-edit-fields-wrapper {
+.olay-ekle-modal .modal-body .olay-tarih-input::-webkit-datetime-edit-fields-wrapper,
+.olay-ekle-modal .modal-body input[type="date"].form-input::-webkit-date-and-time-value,
+.olay-ekle-modal .modal-body .olay-tarih-input::-webkit-date-and-time-value {
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   height: 100% !important;
+  width: 100% !important;
   min-height: 100% !important;
   margin: 0 !important;
+  padding: 0 !important;
   text-align: center !important;
+  line-height: 1 !important;
 }
 .olay-ekle-modal .modal-body input[type="date"].form-input::-webkit-calendar-picker-indicator,
 .olay-ekle-modal .modal-body .olay-tarih-input::-webkit-calendar-picker-indicator {
@@ -2924,19 +2934,23 @@
 
   /* Kaza Tramer Kaydı satırı: label solda, Evet/Hayır butonları sağda aynı satırda */
   #dinamik-olay-modal .kaza-tramer-row {
+    display: flex !important;
     flex-direction: row !important;
     align-items: center !important;
   }
-  #dinamik-olay-modal .kaza-tramer-row .form-label,
-  #dinamik-olay-modal .kaza-tramer-row span.form-label {
+  #dinamik-olay-modal .kaza-tramer-row .kaza-tramer-label {
     width: auto !important;
+    flex: 0 0 auto !important;
   }
-  #dinamik-olay-modal .kaza-tramer-row > div {
+  #dinamik-olay-modal .kaza-tramer-row .kaza-tramer-actions {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
     flex: 1 1 auto !important;
     min-width: 0 !important;
     justify-content: flex-end !important;
   }
-  #dinamik-olay-modal .kaza-tramer-row .radio-btn {
+  #dinamik-olay-modal .kaza-tramer-row .kaza-tramer-actions .radio-btn {
     padding-top: 5px !important;
     padding-bottom: 5px !important;
   }
@@ -3300,7 +3314,7 @@
   .card-brand-model { font-size: 16px; font-weight: 400; color: var(--form-label-color); } /* +1 punto daha (sadece mobil) */
   .card-third-line { font-size: 14px; } /* +1 punto daha (sadece mobil) */
 
-  /* --- TARİH INPUTLARI (Olay Ekle 14 modal) - gg.aa.yyyy kutudan taşmasın --- */
+  /* --- TARİH INPUTLARI (Olay Ekle 14 modal) - mobilde dar ama dikeyde ortalı kalsın --- */
   .olay-ekle-modal .modal-body .olay-tarih-input,
   .olay-ekle-modal .modal-body input[type="date"].form-input {
     width: 100% !important;
@@ -3308,44 +3322,36 @@
     min-width: min(140px, 100%) !important;
     overflow: hidden !important;
     font-size: 11px !important;
-    padding: 5px 28px 5px 10px !important;
-    text-align: left !important;
+    min-height: 30px !important;
+    height: 30px !important;
     box-sizing: border-box !important;
   }
   .olay-ekle-modal .modal-body .olay-tarih-input::-webkit-datetime-edit,
-  .olay-ekle-modal .modal-body input[type="date"].form-input::-webkit-datetime-edit {
+  .olay-ekle-modal .modal-body input[type="date"].form-input::-webkit-datetime-edit,
+  .olay-ekle-modal .modal-body .olay-tarih-input::-webkit-date-and-time-value,
+  .olay-ekle-modal .modal-body input[type="date"].form-input::-webkit-date-and-time-value {
     font-size: 11px !important;
     max-width: 100% !important;
     box-sizing: border-box !important;
   }
-  .olay-ekle-modal .modal-body .olay-tarih-input::-webkit-datetime-edit-fields-wrapper,
-  .olay-ekle-modal .modal-body input[type="date"].form-input::-webkit-datetime-edit-fields-wrapper {
-    padding: 0 !important;
-    max-width: 100% !important;
-    box-sizing: border-box !important;
-  }
-  /* Tarih input'un doşrudan parent'ı – taşan içerişi kırp */
+  /* Tarih input'un doğrudan parent'ı – taşan içeriği kırp */
   .olay-ekle-modal .modal-body div:has(> .olay-tarih-input),
   .olay-ekle-modal .modal-body div:has(> input[type="date"]) {
     overflow: hidden !important;
     min-width: 0 !important;
   }
-  /* Olay Ekle: tarih input gg.aa.yyyy ortada, dikeyde 4px dar (30→26px) */
-  .olay-ekle-modal .modal-body input[type="date"].form-input,
-  .olay-ekle-modal .modal-body .olay-tarih-input {
-    padding: 3px 28px 3px 12px !important;
-    text-align: center !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    min-height: 26px !important;
-    height: 26px !important;
+
+  #dinamik-olay-modal .kaza-tramer-row {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 8px !important;
   }
-  .olay-ekle-modal .modal-body input[type="date"].form-input::-webkit-datetime-edit-fields-wrapper,
-  .olay-ekle-modal .modal-body .olay-tarih-input::-webkit-datetime-edit-fields-wrapper {
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-    justify-content: center !important;
-    text-align: center !important;
+  #dinamik-olay-modal .kaza-tramer-row .kaza-tramer-label {
+    width: 100% !important;
+  }
+  #dinamik-olay-modal .kaza-tramer-row .kaza-tramer-actions {
+    width: 100% !important;
+    justify-content: flex-start !important;
   }
 
   /* --- OLAY EKLE MODALLARI - TÃƒÆ’Ã†â€™Ãƒâ€¦Ã¢â‚¬Å“M METİNLER +2px --- */
