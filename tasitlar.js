@@ -2326,6 +2326,9 @@ function renderVehicleDetailLeft(vehicle) {
    * Olay modal menüsünü veya tek dinamik olay form modal'ını açar
    */
   window.openEventModal = function(type, vehicleId) {
+    // #region agent log
+    fetch('http://127.0.0.1:7885/ingest/f748c7df-0c18-4178-a736-c89151ca12d1',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bcdaff'},body:JSON.stringify({sessionId:'bcdaff',location:'tasitlar.js:openEventModal',message:'openEventModal called',data:{type:type,vehicleId:vehicleId},timestamp:Date.now(),hypothesisId:'H2'})}).catch(()=>{});
+    // #endregion
     if (type === 'menu') {
       if (DOM.dinamikOlayModal && DOM.dinamikOlayModal.classList.contains('active')) {
         DOM.dinamikOlayModal.classList.remove('active');
@@ -2405,6 +2408,10 @@ function renderVehicleDetailLeft(vehicle) {
       formIcerik.innerHTML = getEventFormHtml(type);
       if (!formIcerik.innerHTML.trim()) return;
 
+      // #region agent log
+      var _btnTextBefore = kaydetBtn ? kaydetBtn.textContent : '';
+      fetch('http://127.0.0.1:7885/ingest/f748c7df-0c18-4178-a736-c89151ca12d1',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bcdaff'},body:JSON.stringify({sessionId:'bcdaff',location:'tasitlar.js:openEventModal(non-ruhsat)',message:'kaydetBtn state before',data:{type:type,kaydetBtnId:kaydetBtn?kaydetBtn.id:'',textContent:_btnTextBefore},timestamp:Date.now(),hypothesisId:'H1'})}).catch(()=>{});
+      // #endregion
       kaydetBtn.onclick = null;
       kaydetBtn.style.display = '';
       const saveHandlers = {
@@ -2427,6 +2434,9 @@ function renderVehicleDetailLeft(vehicle) {
       };
       const handler = saveHandlers[type];
       if (handler) kaydetBtn.onclick = function() { handler(); };
+      // #region agent log
+      fetch('http://127.0.0.1:7885/ingest/f748c7df-0c18-4178-a736-c89151ca12d1',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bcdaff'},body:JSON.stringify({sessionId:'bcdaff',location:'tasitlar.js:openEventModal(non-ruhsat)',message:'kaydetBtn state after setup',data:{type:type,textContent:kaydetBtn.textContent},timestamp:Date.now(),hypothesisId:'H1'})}).catch(()=>{});
+      // #endregion
 
       if (type === 'kaza') {
         // Kaza modal'ında mevcut boya şemasını göster (readonly) ve varsayılan kullanıcı
@@ -3033,6 +3043,9 @@ function renderVehicleDetailLeft(vehicle) {
     content.innerHTML = '';
     setRuhsatSaveBtnVisibility(saveBtn, false);
     saveBtn.textContent = 'Ruhsat Yükle';
+    // #region agent log
+    fetch('http://127.0.0.1:7885/ingest/f748c7df-0c18-4178-a736-c89151ca12d1',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bcdaff'},body:JSON.stringify({sessionId:'bcdaff',location:'tasitlar.js:openRuhsatModal',message:'set saveBtn to Ruhsat Yükle',data:{saveBtnId:saveBtn?saveBtn.id:''},timestamp:Date.now(),hypothesisId:'H2'})}).catch(()=>{});
+    // #endregion
     const hasRuhsat = !!(vehicle && vehicle.ruhsatPath);
     if (hasRuhsat) {
       const ruhsatUrl = resolveRuhsatUrl(vehicle.ruhsatPath);
