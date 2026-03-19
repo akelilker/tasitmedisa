@@ -205,13 +205,18 @@ body.dashboard-page {
   z-index: 10004;
 }
 
-/* Dashboard: footer yüksekliği merkezi değişkenden (modal bottom ile uyumlu) */
+/* Dashboard: footer yüksekliği merkezi değişkenden (modal bottom ile uyumlu).
+   style-core #app-footer miraslarını sıfırla: tam genişlik, merkez/kesme yok. */
 .dashboard-page #app-footer {
   position: fixed !important;
   left: 0 !important;
   right: 0 !important;
   bottom: 0 !important;
   transform: none !important;
+  max-width: none !important;
+  width: 100% !important;
+  margin: 0 !important;
+  clip-path: none !important;
   flex-shrink: 0;
   z-index: 10005 !important;
   height: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
@@ -221,6 +226,7 @@ body.dashboard-page {
   padding-bottom: calc(4px + env(safe-area-inset-bottom, 0)) !important;
   display: flex !important;
   align-items: center !important;
+  justify-content: center !important;
   border-top: none !important; /* Footer ışıkların bittiği yerdeki yatay çizgi kaldırıldı */
   border-left: 0.5px solid rgba(255, 255, 255, 0.10) !important;
   border-right: 0.5px solid rgba(255, 255, 255, 0.10) !important;
