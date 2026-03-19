@@ -1047,55 +1047,6 @@ input.settings-form-input:-moz-autofill,
     box-sizing: border-box; /* Padding dahil hesaplama */
 }
 
-/* Kullanıcı Kartları - Şubeler sayfası ile jilet hizalı grid */
-.users-grid {
-    display: grid !important;
-    grid-template-columns: repeat(auto-fill, minmax(140px, 140px)) !important;
-    gap: 15px !important;
-    justify-content: center !important; /* Mobilde ve Masaüstünde TAM ORTALA */
-    padding: 20px !important;
-}
-
-.user-card {
-    background-color: var(--surface-color, #1e1e1e) !important;
-    border: 1px solid rgba(255, 255, 255, 0.05) !important;
-    border-radius: 12px !important;
-    padding: 16px !important;
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: center !important;
-    align-items: center !important;
-    aspect-ratio: 1 / 1 !important;
-    text-align: center !important;
-}
-
-/* İsim Alanı: Şubelerle Aynı 2 Satır Kalıbı */
-.user-name {
-    display: block !important;
-    color: #ffffff !important;
-    font-size: 14px !important;
-    font-weight: 600 !important;
-    height: 2.5em !important;
-    line-height: 1.25 !important;
-    margin-bottom: 4px !important;
-    overflow: hidden !important;
-}
-
-.user-role,
-.user-branch {
-    color: #a0aec0 !important;
-    font-size: 12px !important;
-}
-
-/* YENİ KULLANICI EKLE KARTINA ÖZEL İSTİSNA */
-.add-user-card {
-    justify-content: center !important;
-}
-.add-user-card i, .add-user-card svg {
-    font-size: 2rem !important;
-    margin: 0 !important; /* İsim kalıbına girmediği için boşlukları sıfırla */
-}
-
 .settings-card-content {
     display: flex;
     flex-direction: column;
@@ -1385,11 +1336,6 @@ input.settings-form-input:-moz-autofill,
     }
     .settings-card-gorev {
         color: rgba(255, 255, 255, 0.75) !important;
-    }
-    /* Kullanıcı kartları kapsayıcısı mobilde ortalanmış */
-    .users-grid,
-    #user-list {
-        justify-content: center !important;
     }
     .settings-btn-delete {
         border-color: var(--theme-color) !important;
