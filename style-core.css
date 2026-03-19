@@ -1249,18 +1249,21 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
     display: flex !important;
     flex-direction: column !important;
     align-items: flex-start !important;
-    justify-content: center !important;
+    justify-content: flex-start !important;
     height: auto !important;
-    min-height: 56px !important;
+    min-height: 0 !important;
     max-height: none !important;
     overflow: visible !important;
     white-space: normal !important;
-    padding: 10px 12px !important;
+    padding: 1px 12px !important;
     box-sizing: border-box !important;
   }
   #notifications-dropdown .notification-item:not(.mtv-notification):not(.kasko-excel-notification) .notif-line1 {
     width: 100% !important;
-    margin: 0 0 1px 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-size: 11.5px !important;
+    line-height: 1.15 !important;
   }
   #notifications-dropdown .notification-item:not(.mtv-notification):not(.kasko-excel-notification) .notif-line2 {
     display: block !important;
@@ -1269,10 +1272,20 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
     top: auto !important;
     transform: none !important;
     flex-shrink: 0 !important;
-    min-height: 1.2em !important;
-    line-height: 1.2 !important;
+    min-height: 0 !important;
+    line-height: 1.05 !important;
     margin: 0 !important;
     padding: 0 !important;
+    font-size: 10.5px !important;
+  }
+  #notifications-dropdown .mtv-notification,
+  #notifications-dropdown .kasko-excel-notification {
+    padding: 1px 12px !important;
+    min-height: 0 !important;
+  }
+  #notifications-dropdown .mtv-text-container .mtv-main-text {
+    font-size: 11.5px !important;
+    line-height: 1.15 !important;
   }
   .settings-dropdown button:not(.notification-item) {
     text-align: center; /* Masaüstünde ortalı */
