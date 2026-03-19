@@ -2894,6 +2894,17 @@
     width: 100% !important;
     overflow: hidden !important;
   }
+
+  /* Kaza Tramer Kaydı satırı: label+Evet/Hayır butonları dar ekranda sağa taşmasın */
+  #dinamik-olay-modal .kaza-tramer-row {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+  #dinamik-olay-modal .kaza-tramer-row > div {
+    width: 100% !important;
+    max-width: 100% !important;
+    justify-content: flex-start !important;
+  }
   
   /* Olay Ekle (14 modal): Var/Yok, Evet/Hayır – pasif açık gri, hover/seçili renkli */
   .olay-ekle-modal .radio-btn {

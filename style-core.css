@@ -351,6 +351,11 @@ select,
 textarea.form-input {
   color: var(--data-value-color, #a0aec0) !important;
 }
+
+/* Olay Ekle modalları: girilen değerleri gri göster (şu an beyaz görünüyor) */
+.olay-ekle-modal .modal-body {
+  --data-value-color: #888;
+}
 input[type="date"].form-input.has-value,
 input[type="date"].form-input:focus {
   color: var(--data-value-color, #a0aec0) !important;
