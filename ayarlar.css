@@ -1021,9 +1021,9 @@ input.settings-form-input:-moz-autofill,
 }
 
 .settings-card {
-    /* DÜZELTME: Yükseklik %15 Küçüldü (100/85) */
-    aspect-ratio: 100 / 85; 
-    min-height: 0;
+    /* En az başlık + alt 2 satır (şube/rol) sığacak yükseklik; aspect-ratio'dan kısa kalırsa bu geçerli */
+    min-height: 110px;
+    aspect-ratio: 100 / 85;
     /* MASAÜSTÜ: Her kart sabit genişlik (5 kart için eşit dağılım) */
     width: calc((100% - (4 * 8px)) / 5); /* 5 kart + 4 gap */
     max-width: calc((100% - (4 * 8px)) / 5);
@@ -1053,7 +1053,7 @@ input.settings-form-input:-moz-autofill,
     align-items: center;
     justify-content: center !important;
     width: 100%;
-    flex: 1;
+    flex: 1 1 auto;
     min-height: 0;
     gap: 2px;
     text-align: center;
