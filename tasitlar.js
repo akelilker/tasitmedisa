@@ -3013,6 +3013,98 @@ function renderVehicleDetailLeft(vehicle) {
     }
   }
 
+  var ruhsatPreviewCache = new Map();
+
+  function getRuhsatPreviewCacheKey(vehicleId, ruhsatUrl) {
+    const rawId = String(vehicleId || window.currentDetailVehicleId || '').trim();
+    const absoluteUrl = toAbsoluteRuhsatUrl(ruhsatUrl);
+    if (!rawId || !absoluteUrl) return '';
+    return rawId + '::' + absoluteUrl;
+  }
+
+  function revokeRuhsatPreviewEntry(entry) {
+    if (!entry || !entry.objectUrl) return;
+    try {
+      URL.revokeObjectURL(entry.objectUrl);
+    } catch (e) {}
+    entry.objectUrl = '';
+  }
+
+  function invalidateRuhsatPreviewCache(vehicleId) {
+    const rawId = String(vehicleId || '').trim();
+    if (!rawId || !ruhsatPreviewCache.size) return;
+    const cachePrefix = rawId + '::';
+    ruhsatPreviewCache.forEach(function(entry, cacheKey) {
+      if (cacheKey.indexOf(cachePrefix) !== 0) return;
+      revokeRuhsatPreviewEntry(entry);
+      ruhsatPreviewCache.delete(cacheKey);
+    });
+  }
+
+  function fetchRuhsatPreviewObjectUrl(vehicleId, ruhsatUrl) {
+    const cacheKey = getRuhsatPreviewCacheKey(vehicleId, ruhsatUrl);
+    const previewUrl = buildRuhsatPreviewUrl(vehicleId);
+    if (!cacheKey || !previewUrl) {
+      return Promise.reject(new Error('preview-key-missing'));
+    }
+
+    const now = Date.now();
+    const existingEntry = ruhsatPreviewCache.get(cacheKey);
+    if (existingEntry) {
+      if (existingEntry.objectUrl) {
+        return Promise.resolve(existingEntry.objectUrl);
+      }
+      if (existingEntry.promise) {
+        return existingEntry.promise;
+      }
+      if (existingEntry.cooldownUntil && existingEntry.cooldownUntil > now) {
+        return Promise.reject(new Error('preview-cooldown'));
+      }
+    }
+
+    const entry = existingEntry || {
+      objectUrl: '',
+      promise: null,
+      cooldownUntil: 0
+    };
+
+    entry.promise = fetch(previewUrl, { method: 'GET', cache: 'no-store' })
+      .then(function(response) {
+        var contentType = (response.headers.get('Content-Type') || '').toLowerCase();
+        if (!response.ok || contentType.indexOf('image/') !== 0) {
+          throw new Error('preview-unavailable');
+        }
+        return response.blob();
+      })
+      .then(function(blob) {
+        revokeRuhsatPreviewEntry(entry);
+        entry.objectUrl = URL.createObjectURL(blob);
+        entry.promise = null;
+        entry.cooldownUntil = 0;
+        ruhsatPreviewCache.set(cacheKey, entry);
+        return entry.objectUrl;
+      })
+      .catch(function(err) {
+        entry.promise = null;
+        entry.cooldownUntil = Date.now() + 30000;
+        ruhsatPreviewCache.set(cacheKey, entry);
+        throw err;
+      });
+
+    ruhsatPreviewCache.set(cacheKey, entry);
+    return entry.promise;
+  }
+
+  function warmRuhsatPreview(vehicleId, ruhsatUrl) {
+    const url = toAbsoluteRuhsatUrl(ruhsatUrl);
+    if (!url || /\.(jpeg|jpg|png|gif|webp)(\?.*)?$/i.test(url)) {
+      return Promise.resolve('');
+    }
+    return fetchRuhsatPreviewObjectUrl(vehicleId, url).catch(function() {
+      return '';
+    });
+  }
+
   /**
    * Mobil / iOS PWA: ön izleme ve yeni sekme açmadan doğrudan sistem yazdırma (Seçenekler) ekranını açar.
    * Aynı sayfada gizli iframe kullanır; iOS PWA'da yeni sekme açılmadığı için geri dönüş mümkün olur.
@@ -3023,7 +3115,6 @@ function renderVehicleDetailLeft(vehicle) {
     if (!url) return;
     const isImage = /\.(jpeg|jpg|png|gif|webp)(\?.*)?$/i.test(url);
     const printableUrl = isImage ? url : buildPdfViewerUrl(url, 'toolbar=0&navpanes=0&zoom=page-width&view=FitH');
-    const previewUrl = isImage ? '' : buildRuhsatPreviewUrl(vehicleId);
 
     // iOS: print() geç tetiklenirse kullanıcı gesture dışına çıkıp prompt üretebilir.
     // Token geçersizleşince iframe.onload/setTimeout içinden gelen print çağrısını iptal ediyoruz.
@@ -3194,28 +3285,12 @@ function renderVehicleDetailLeft(vehicle) {
       return;
     }
 
-    if (!previewUrl) {
-      loadPdfForPrint(printableUrl);
-      return;
-    }
-
-    fetch(previewUrl, { method: 'GET', cache: 'no-store' })
-      .then(function(response) {
-        var contentType = (response.headers.get('Content-Type') || '').toLowerCase();
-        if (!response.ok || contentType.indexOf('image/') !== 0) {
-          throw new Error('preview-unavailable');
-        }
-        return response.blob();
-      })
-      .then(function(blob) {
+    fetchRuhsatPreviewObjectUrl(vehicleId, url)
+      .then(function(previewObjectUrl) {
         if (window.__ruhsatPrintToken !== printToken) {
           return;
         }
-        var previewObjectUrl = URL.createObjectURL(blob);
         loadImageForPrint(previewObjectUrl);
-        setTimeout(function() {
-          URL.revokeObjectURL(previewObjectUrl);
-        }, 180000);
       })
       .catch(function() {
         if (window.__ruhsatPrintToken !== printToken) {
@@ -3336,6 +3411,9 @@ function renderVehicleDetailLeft(vehicle) {
       const isMobileViewport = (typeof window.matchMedia === 'function')
         ? window.matchMedia('(max-width: 640px)').matches
         : (window.innerWidth <= 640);
+      if (isMobileViewport && !ruhsatIsImage) {
+        warmRuhsatPreview(vid, ruhsatUrl);
+      }
       const btnGroup = document.createElement('div');
       btnGroup.className = 'universal-btn-group ruhsat-preview-row';
 
@@ -3481,6 +3559,7 @@ function renderVehicleDetailLeft(vehicle) {
         });
       })
       .then(function(data) {
+        invalidateRuhsatPreviewCache(vehicleId);
         const vehicles = window.appData?.tasitlar || [];
         const v = vehicles.find(function(x) { return String(x.id) === String(vehicleId); });
         if (v) {
