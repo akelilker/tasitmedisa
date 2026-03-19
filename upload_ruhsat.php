@@ -101,6 +101,11 @@ if ($legacyTargetPath !== $targetPath) {
     @copy($targetPath, $legacyTargetPath);
 }
 
+$previewPath = __DIR__ . '/data/ruhsat_preview/' . $safeId . '.jpg';
+if (is_file($previewPath)) {
+    @unlink($previewPath);
+}
+
 $ruhsatPath = 'ruhsat/' . $filename;
 
 // data.json güncelle
