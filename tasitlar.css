@@ -3920,6 +3920,21 @@
     font-size: 17px !important;
   }
 
+  #vehicle-detail-modal #detail-boya-container .kaporta-schema-wrapper {
+    transform: translateX(-8px);
+  }
+  #vehicle-detail-modal #detail-boya-container .boya-legend {
+    gap: 10px !important;
+  }
+  #vehicle-detail-modal #detail-boya-container .boya-legend-item {
+    gap: 4px !important;
+    font-size: 10px !important;
+  }
+  #vehicle-detail-modal #detail-boya-container .boya-legend-dot {
+    width: 8px !important;
+    height: 8px !important;
+  }
+
   #event-menu-modal .universal-back-bar {
     margin-top: -6px !important;
   }
