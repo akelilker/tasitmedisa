@@ -539,6 +539,12 @@ body.dashboard-page {
     height: 100% !important;
     padding: 3px 12px !important;
     padding-bottom: max(4px, env(safe-area-inset-bottom, 0)) !important;
+    /* Container ile hizalı: footer içeriği panel genişliği (500px) ile sınırlı ve ortada */
+    max-width: 500px !important;
+    width: 100% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    box-sizing: border-box !important;
   }
 
   .login-page #app-footer.login-footer {
