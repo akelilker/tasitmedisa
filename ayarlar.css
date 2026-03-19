@@ -373,11 +373,11 @@ body.modal-open #cache-confirm-modal.open {
     scrollbar-width: none;
 }
 
-/* Şube Düzenle / Kullanıcı Düzenle: input ve butonlar 50px daha dar alanda (her yandan 25px) */
+/* Şube Düzenle / Kullanıcı Düzenle: sağdan soldan belirgin boşluk (sarı kutu gibi) */
 #branch-form-modal .modal-body,
 #user-form-modal .modal-body {
-    padding-left: 41px !important;  /* 16 + 25 */
-    padding-right: 41px !important;
+    padding-left: 60px !important;
+    padding-right: 60px !important;
 }
 
 /* Ayarlar içi bölümler: sola kaymayı önle, sol/sağ eşit */
@@ -1280,8 +1280,8 @@ input.settings-form-input:-moz-autofill,
     #branch-form-modal .modal-body,
     #user-form-modal .modal-body {
         padding: 20px;
-        padding-left: 45px !important;  /* 20 + 25: input/buton alanı 50px daha dar */
-        padding-right: 45px !important;
+        padding-left: 60px !important;  /* sağdan soldan belirgin boşluk */
+        padding-right: 60px !important;
         padding-top: 6px !important;
         padding-bottom: 40px !important; /* Raporlar modalı formatı: footer boşluğu */
     }
