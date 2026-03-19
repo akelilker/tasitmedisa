@@ -351,8 +351,13 @@ body.modal-open #cache-confirm-modal.open {
 }
 .modal-close:hover { color: var(--txt-white); }
 
-.ayarlar-modal-overlay .universal-back-bar {
-    margin-top: -16px;
+#branch-modal .universal-back-bar,
+#branch-form-modal .universal-back-bar,
+#user-modal .universal-back-bar,
+#user-form-modal .universal-back-bar,
+#data-management-modal .universal-back-bar,
+#dis-veri-panel .universal-back-bar {
+    margin-top: -32px;
     flex-shrink: 0;
 }
 .ayarlar-modal-overlay .universal-back-btn .universal-back-label {
