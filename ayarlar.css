@@ -830,6 +830,7 @@ input.settings-form-input:-moz-autofill,
 .user-vehicles-trigger.user-vehicles-trigger-open .user-vehicles-chevron {
   transform: rotate(180deg);
 }
+/* Kullanıcı paneli plaka listesi ile aynı görünüm: koyu arka plan, plaka - marka/model formatı */
 .user-vehicles-dropdown {
   position: absolute;
   top: 100%;
@@ -837,14 +838,14 @@ input.settings-form-input:-moz-autofill,
   right: 0;
   min-width: 100%;
   margin-top: 6px;
-  background: var(--bg-content);
-  border: 1px solid var(--border-subtle, rgba(255, 255, 255, 0.2));
+  background: var(--bg);
+  border: 1px solid rgba(var(--theme-color-rgb), 0.25);
   border-radius: 8px;
   padding: 10px;
   max-height: 320px;
   overflow: hidden;
   z-index: 20;
-  box-shadow: 0 6px 20px var(--shadow-dark);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(var(--theme-color-rgb), 0.08);
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -856,8 +857,12 @@ input.settings-form-input:-moz-autofill,
 .user-vehicles-search-input {
   width: 100%;
   padding: 8px 12px;
-  font-size: 14px;
+  font-size: 13px;
   min-height: 36px;
+  background: var(--bg-content);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  color: var(--txt);
 }
 .user-vehicles-checkbox-list {
   flex: 1;
@@ -866,40 +871,42 @@ input.settings-form-input:-moz-autofill,
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding: 2px 0 4px 0;
+  gap: 0;
+  padding: 0;
 }
 .user-vehicles-checkbox-list {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 .user-vehicles-checkbox-list::-webkit-scrollbar {
-  width: 8px;
+  display: none;
 }
-.user-vehicles-checkbox-list::-webkit-scrollbar-track {
-  background: transparent;
-}
-.user-vehicles-checkbox-list::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 4px;
-}
-/* Her taşıt satırı: geniş, okunaklı, Görev Tanımı input gibi; satırlar iç içe girmesin */
+/* Her taşıt satırı: kullanıcı paneli plaka listesi ile aynı (driver-plate-dropdown-item) */
 .user-vehicle-row {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 12px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 6px;
+  padding: 10px 14px;
+  font-size: 12px;
+  color: var(--txt);
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 0;
   cursor: pointer;
-  transition: background 0.15s, border-color 0.15s;
-  min-height: 48px;
+  transition: background 0.15s, color 0.15s;
+  min-height: 40px;
   box-sizing: border-box;
 }
+.user-vehicle-row:last-child {
+  border-bottom: none;
+}
 .user-vehicle-row:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(var(--theme-color-rgb), 0.12);
+  color: var(--txt);
+}
+.user-vehicle-row:focus-within {
+  background: rgba(var(--theme-color-rgb), 0.08);
 }
 /* Onay kutusu arka planı input ile aynı (beyaz olmasın) */
 .user-vehicle-row input[type="checkbox"] {
@@ -926,12 +933,30 @@ input.settings-form-input:-moz-autofill,
 .user-vehicle-row .user-vehicle-label {
   flex: 1;
   min-width: 0;
-  font-size: 14px;
-  line-height: 1.45;
-  color: var(--data-value-color, #e0e0e0);
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  white-space: normal;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--txt);
+  white-space: nowrap;
+  overflow: hidden;
+}
+.user-vehicle-row .user-vehicle-plate {
+  width: 85px;
+  min-width: 85px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.user-vehicle-row .user-vehicle-sep {
+  flex-shrink: 0;
+  opacity: 0.9;
+}
+.user-vehicle-row .user-vehicle-brand {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .settings-btn-delete {
