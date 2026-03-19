@@ -502,8 +502,8 @@ document.addEventListener('DOMContentLoaded', () => {
   var RAPORLAR_CSS = 'raporlar.css?v=20260221';
   var KAYIT_JS = 'kayit.js?v=20260225';
   var KAYIT_CSS = 'kayit.css?v=20260301';
-  var AYARLAR_JS = 'ayarlar.js?v=20260311';
-  var AYARLAR_CSS = 'ayarlar.css?v=20260316.1';
+  var AYARLAR_JS = 'ayarlar.js?v=20260319';
+  var AYARLAR_CSS = 'ayarlar.css?v=20260319.1';
 
   window.openVehiclesView = function() {
     showModuleSpinner();

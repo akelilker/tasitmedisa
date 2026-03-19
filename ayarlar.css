@@ -1387,7 +1387,7 @@ input.settings-form-input:-moz-autofill,
     #user-form-modal .form-input,
     #branch-form-modal select.form-input,
     #user-form-modal select.form-input {
-        color: #ffffff !important;
+        color: var(--txt-gray-darker, #888) !important;
         border-color: rgba(255, 255, 255, 0.4) !important;
         background: var(--bg-content, #0d131f) !important;
     }
@@ -1495,7 +1495,7 @@ input.settings-form-input:-moz-autofill,
         padding: 2px 8px;
         box-sizing: border-box;
         background: var(--bg-content, #0d131f) !important;
-        color: var(--txt-white, #ffffff) !important;
+        color: var(--txt-gray-darker, #888) !important; /* Ayarlar: input içi metin gri */
     }
     #user-form-modal .user-vehicles-trigger {
         min-height: 40px !important;
@@ -1578,12 +1578,12 @@ input.settings-form-input:-moz-autofill,
     #user-form-modal .form-input:-webkit-autofill:hover,
     #user-form-modal .form-input:-webkit-autofill:focus {
         -webkit-box-shadow: 0 0 0 1000px var(--bg-content, #0d131f) inset !important;
-        -webkit-text-fill-color: var(--txt-white, #ffffff) !important;
+        -webkit-text-fill-color: var(--txt-gray-darker, #888) !important;
         background-color: var(--bg-content, #0d131f) !important;
     }
     #branch-form-modal .form-input:-moz-autofill,
     #user-form-modal .form-input:-moz-autofill {
         background-color: var(--bg-content, #0d131f) !important;
-        color: var(--txt-white, #ffffff) !important;
+        color: var(--txt-gray-darker, #888) !important;
     }
 }
