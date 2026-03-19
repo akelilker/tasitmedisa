@@ -1339,13 +1339,20 @@ input.settings-form-input:-moz-autofill,
 
 /* Masaüstü: Şube/Kullanıcı form – Kaydet/Vazgeç/Sil aynı satırda, yatayda ortada */
 @media (min-width: 769px) {
+  #branch-form-modal .modal-body #branch-form,
+  #user-form-modal .modal-body #user-form.user-form-inner {
+    width: min(100%, 520px) !important;
+    max-width: 520px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
   #branch-form-modal .universal-btn-group,
   #user-form-modal .universal-btn-group {
     display: grid !important;
     grid-template-columns: 1fr 1fr 1fr !important;
     margin-left: auto !important;
     margin-right: auto !important;
-    width: max-content !important;
+    width: 100% !important;
   }
   /* Kullanıcı Yönetimi: kişi kutuları isimleri etiket beyazı (kayıt modu etiketleri ile aynı) */
   #user-modal .settings-card-title {
@@ -1362,7 +1369,8 @@ input.settings-form-input:-moz-autofill,
     padding-top: 6px !important;
   }
   #user-form-modal #user-form.user-form-inner {
-    padding-top: 8px !important;
+    margin-top: -12px !important;
+    padding-top: 0 !important;
     padding-left: 16px;
     padding-right: 16px;
     padding-bottom: 16px;
