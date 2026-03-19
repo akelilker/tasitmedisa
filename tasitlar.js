@@ -2414,6 +2414,7 @@ function renderVehicleDetailLeft(vehicle) {
       // #endregion
       kaydetBtn.onclick = null;
       kaydetBtn.style.display = '';
+      kaydetBtn.textContent = 'Kaydet';
       const saveHandlers = {
         bakim: window.saveBakimEvent,
         kaza: window.saveKazaEvent,
