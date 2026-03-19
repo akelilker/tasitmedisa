@@ -1000,6 +1000,13 @@ input.settings-form-input:-moz-autofill,
     align-items: center !important;
     justify-content: center !important;
 }
+/* Kullanıcı Yönetimi: şube ismi gizle, dikey yükseklik 6px azalt */
+#user-modal #user-list .settings-card-subtitle {
+    display: none !important;
+}
+#user-modal #user-list .settings-card {
+    min-height: 104px !important; /* 110 - 6px */
+}
 #branch-modal #branch-list .settings-card-content,
 #user-modal #user-list .settings-card-content {
     justify-content: center !important;
