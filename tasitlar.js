@@ -2393,13 +2393,37 @@ function renderVehicleDetailLeft(vehicle) {
       if (backBarBtn) {
         var labelSpan = backBarBtn.querySelector('.universal-back-label');
         if (labelSpan) labelSpan.textContent = 'Olay Ekle';
-        backBarBtn.onclick = function(e) { e.stopPropagation(); openEventModal('menu', window.currentDetailVehicleId); };
+        backBarBtn.onclick = function(e) {
+          e.stopPropagation();
+          const vid = window.currentDetailVehicleId;
+          // #region agent log
+          fetch('http://127.0.0.1:7885/ingest/f748c7df-0c18-4178-a736-c89151ca12d1',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bcdaff'},body:JSON.stringify({sessionId:'bcdaff',location:'tasitlar.js:dinamik-olay backBarBtn',message:'clickedBackFromEventAdd',data:{hadVid:!!vid,vid:vid},timestamp:Date.now(),hypothesisId:'H4'})}).catch(()=>{});
+          // #endregion
+          closeAllModals();
+          if (vid) showVehicleDetail(vid);
+        };
       }
       var modalCloseBtn = modal.querySelector('.modal-close');
-      if (modalCloseBtn) modalCloseBtn.onclick = function(e) { e.stopPropagation(); closeAllModals(); };
+      if (modalCloseBtn) modalCloseBtn.onclick = function(e) {
+        e.stopPropagation();
+        const vid = window.currentDetailVehicleId;
+        // #region agent log
+        fetch('http://127.0.0.1:7885/ingest/f748c7df-0c18-4178-a736-c89151ca12d1',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bcdaff'},body:JSON.stringify({sessionId:'bcdaff',location:'tasitlar.js:dinamik-olay modalCloseBtn',message:'clickedXFromEventAdd',data:{hadVid:!!vid,vid:vid},timestamp:Date.now(),hypothesisId:'H4'})}).catch(()=>{});
+        // #endregion
+        closeAllModals();
+        if (vid) showVehicleDetail(vid);
+      };
       var ruhsatBtnGroup = document.getElementById('ruhsat-btn-group');
       var cancelBtn = ruhsatBtnGroup ? ruhsatBtnGroup.querySelector('.universal-btn-cancel') : null;
-      if (cancelBtn) cancelBtn.onclick = function(e) { e.stopPropagation(); closeAllModals(); if (window.currentDetailVehicleId) openEventModal('menu', window.currentDetailVehicleId); };
+      if (cancelBtn) cancelBtn.onclick = function(e) {
+        e.stopPropagation();
+        const vid = window.currentDetailVehicleId;
+        // #region agent log
+        fetch('http://127.0.0.1:7885/ingest/f748c7df-0c18-4178-a736-c89151ca12d1',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bcdaff'},body:JSON.stringify({sessionId:'bcdaff',location:'tasitlar.js:dinamik-olay cancelBtn',message:'clickedCancelFromEventAdd',data:{hadVid:!!vid,vid:vid},timestamp:Date.now(),hypothesisId:'H4'})}).catch(()=>{});
+        // #endregion
+        closeAllModals();
+        if (vid) showVehicleDetail(vid);
+      };
 
       formIcerik.id = 'dinamik-olay-form-icerik';
       window.currentDetailVehicleId = (vehicleId || window.currentDetailVehicleId || '').toString();
@@ -2927,16 +2951,95 @@ function renderVehicleDetailLeft(vehicle) {
     const isImage = /\.(jpeg|jpg|png|gif|webp)(\?.*)?$/i.test(url);
 
     var iframe = document.getElementById('ruhsat-print-frame');
+    // #region agent log
+    try {
+      const preRect = iframe ? iframe.getBoundingClientRect() : null;
+      fetch('http://127.0.0.1:7885/ingest/f748c7df-0c18-4178-a736-c89151ca12d1', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': 'bcdaff' },
+        body: JSON.stringify({
+          sessionId: 'bcdaff',
+          runId: 'print-precheck',
+          hypothesisId: 'H5_iframe_geometry',
+          location: 'tasitlar.js:openRuhsatPrintDialog(start)',
+          message: 'openRuhsatPrintDialog called',
+          data: {
+            isImage: !!isImage,
+            iframeExists: !!iframe,
+            preW: iframe ? iframe.clientWidth : null,
+            preH: iframe ? iframe.clientHeight : null,
+            preRectW: preRect ? preRect.width : null,
+            preRectH: preRect ? preRect.height : null
+          },
+          timestamp: Date.now()
+        })
+      }).catch(()=>{});
+    } catch (e) {}
+    // #endregion
+
     if (!iframe) {
       iframe = document.createElement('iframe');
       iframe.id = 'ruhsat-print-frame';
       iframe.setAttribute('aria-hidden', 'true');
       iframe.style.cssText = 'position:fixed;left:-9999px;top:0;width:1px;height:1px;border:0;visibility:hidden;pointer-events:none;';
       document.body.appendChild(iframe);
+      // #region agent log
+      try {
+        const rect = iframe.getBoundingClientRect();
+        fetch('http://127.0.0.1:7885/ingest/f748c7df-0c18-4178-a736-c89151ca12d1', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': 'bcdaff' },
+          body: JSON.stringify({
+            sessionId: 'bcdaff',
+            runId: 'print-precheck',
+            hypothesisId: 'H5_iframe_geometry',
+            location: 'tasitlar.js:openRuhsatPrintDialog(iframe created)',
+            message: 'iframe created & css applied',
+            data: {
+              rectW: rect.width,
+              rectH: rect.height,
+              styleLeft: iframe.style.left,
+              styleTop: iframe.style.top,
+              styleWidth: iframe.style.width,
+              styleHeight: iframe.style.height,
+              styleVisibility: iframe.style.visibility
+            },
+            timestamp: Date.now()
+          })
+        }).catch(()=>{});
+      } catch (e) {}
+      // #endregion
     }
 
+    var lastOnloadAt = 0;
     function doPrint() {
       try {
+        // #region agent log
+        try {
+          const rect = iframe.getBoundingClientRect();
+          fetch('http://127.0.0.1:7885/ingest/f748c7df-0c18-4178-a736-c89151ca12d1', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': 'bcdaff' },
+            body: JSON.stringify({
+              sessionId: 'bcdaff',
+              runId: 'print-precheck',
+              hypothesisId: 'H6_print_timing',
+              location: 'tasitlar.js:openRuhsatPrintDialog(doPrint)',
+              message: 'doPrint invoked',
+              data: {
+                w: iframe.clientWidth,
+                h: iframe.clientHeight,
+                rectW: rect.width,
+                rectH: rect.height,
+                delayMs: lastOnloadAt ? (Date.now() - lastOnloadAt) : null,
+                hasContentWindow: !!iframe.contentWindow
+              },
+              timestamp: Date.now()
+            })
+          }).catch(()=>{});
+        } catch (e) {}
+        // #endregion
+
         if (iframe.contentWindow && typeof iframe.contentWindow.print === 'function') {
           iframe.contentWindow.print();
         }
@@ -2955,6 +3058,7 @@ function renderVehicleDetailLeft(vehicle) {
       };
     } else {
       iframe.onload = function() {
+        lastOnloadAt = Date.now();
         iframe.onload = null;
         setTimeout(doPrint, 400);
       };
