@@ -376,8 +376,8 @@ body.modal-open #cache-confirm-modal.open {
 /* Şube Düzenle / Kullanıcı Düzenle: sağdan soldan belirgin boşluk (sarı kutu gibi) */
 #branch-form-modal .modal-body,
 #user-form-modal .modal-body {
-    padding-left: 60px !important;
-    padding-right: 60px !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
 }
 
 /* Ayarlar içi bölümler: sola kaymayı önle, sol/sağ eşit */
