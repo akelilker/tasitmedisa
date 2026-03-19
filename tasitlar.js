@@ -2532,7 +2532,9 @@ function renderVehicleDetailLeft(vehicle) {
             tramerEvet.classList.add('active');
             tramerEvet.classList.remove('green');
             tramerHayir.classList.remove('active', 'green');
-            tramerWrap.style.display = '';
+            // Inline style `display:none` başlangıçta verildiği için `''` her cihazda aynı davranmayabilir.
+            // Evet seçilince alanların kesin açılması için net bir display değeri veriyoruz.
+            tramerWrap.style.display = 'block';
           });
           tramerHayir.addEventListener('click', function() {
             tramerHayir.classList.add('active', 'green');
