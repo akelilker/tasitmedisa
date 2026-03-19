@@ -498,7 +498,7 @@ document.addEventListener('DOMContentLoaded', () => {
 (function() {
   var TASITLAR_JS = 'tasitlar.js?v=20260319.4';
   var TASITLAR_CSS = 'tasitlar.css?v=20260319.6';
-  var RAPORLAR_JS = 'raporlar.js?v=20260319.2';
+  var RAPORLAR_JS = 'raporlar.js?v=20260319.3';
   var RAPORLAR_CSS = 'raporlar.css?v=20260319.3';
   var KAYIT_JS = 'kayit.js?v=20260225';
   var KAYIT_CSS = 'kayit.css?v=20260301';
