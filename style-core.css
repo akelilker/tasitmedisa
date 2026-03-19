@@ -1772,7 +1772,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
         flex-wrap: nowrap !important;
         align-items: center !important;
         justify-content: space-between !important;
-        padding: 8px 12px !important;
+        padding: 7px 10px !important;
         min-height: 0 !important;
     }
     #notifications-dropdown .mtv-notification .mtv-text-container,
@@ -1780,12 +1780,23 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
         order: 1 !important;
         flex: 1 1 auto !important;
         min-width: 0 !important;
+        padding-right: 4px !important;
     }
     #notifications-dropdown .mtv-notification .mtv-dismiss-wrapper,
     #notifications-dropdown .kasko-excel-notification .mtv-dismiss-wrapper {
         order: 2 !important;
         flex: 0 0 auto !important;
-        margin-left: 6px !important;
+        margin-left: 4px !important;
+    }
+    #notifications-dropdown .mtv-notification .mtv-dismiss-btn,
+    #notifications-dropdown .kasko-excel-notification .mtv-dismiss-btn {
+        width: 16px !important;
+        height: 16px !important;
+    }
+    #notifications-dropdown .mtv-notification .mtv-dismiss-btn svg,
+    #notifications-dropdown .kasko-excel-notification .mtv-dismiss-btn svg {
+        width: 10px !important;
+        height: 10px !important;
     }
     .modal-overlay {
         bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
@@ -2105,11 +2116,12 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
         font-size: 11.5px !important; /* Alt bilgi/Tarih büyütüldü */
     }
     #notifications-dropdown .mtv-text-container .mtv-main-text {
-        font-size: 13px !important; /* MTV/Kasko metni 12px -> 13px */
+        font-size: 12px !important;
+        line-height: 1.25 !important;
     }
 /* Mobil: 5 bildirim ekranda görünsün, %75 genişlikte ortalanmış; alt kesilmesin */
     #notifications-dropdown {
-        max-height: min(348px, calc(100dvh - 118px)) !important;
+        max-height: min(404px, calc(100dvh - 112px)) !important;
         overflow-y: auto !important;
         overflow-x: hidden !important;
         -webkit-overflow-scrolling: touch;
