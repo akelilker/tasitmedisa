@@ -196,18 +196,45 @@
     overflow-y: auto !important;
     padding-bottom: 20px !important;
 }
-/* Olay Ekle: Sadece form alanı kayar, buton satırı (footer) her zaman altta görünsün */
+/* Olay Ekle: Tek scroll modal-body'de; Kaydet/Vazgeç içerikle birlikte aşağı kaysın (sabit değil) */
 #dinamik-olay-modal .modal-body {
-    overflow: hidden !important;
-    padding-bottom: 20px !important;
-}
-#dinamik-olay-modal #dinamik-olay-form-icerik {
-    flex: 1 1 auto !important;
-    min-height: 0 !important;
     overflow-y: auto !important;
     overflow-x: hidden !important;
     -webkit-overflow-scrolling: touch !important;
-    overscroll-behavior-y: contain !important;
+    padding-bottom: 20px !important;
+}
+#dinamik-olay-modal #dinamik-olay-form-icerik {
+    flex: 0 0 auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+}
+/* Olay Ekle (#dinamik-olay-modal): tarih inputu gg.aa.yyyy dikey ortalama (iOS) */
+#dinamik-olay-modal input[type="date"].form-input::-webkit-datetime-edit,
+#dinamik-olay-modal .olay-tarih-input::-webkit-datetime-edit {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  line-height: 1 !important;
+  padding: 0 !important;
+}
+#dinamik-olay-modal input[type="date"].form-input::-webkit-datetime-edit-fields-wrapper,
+#dinamik-olay-modal .olay-tarih-input::-webkit-datetime-edit-fields-wrapper {
+  display: flex !important;
+  align-items: center !important;
+  padding: 0 !important;
+}
+
+/* Olay Ekle: kaydırma çubuğu hiç görünmesin */
+#dinamik-olay-modal .modal-body,
+#dinamik-olay-modal #dinamik-olay-form-icerik {
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+}
+#dinamik-olay-modal .modal-body::-webkit-scrollbar,
+#dinamik-olay-modal #dinamik-olay-form-icerik::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
 }
 
 /* Şemayı saran kapsayıcı hizalama */
@@ -1099,8 +1126,8 @@
   }
   .olay-ekle-modal .modal-body input.form-input,
   .olay-ekle-modal .modal-body select {
-    height: 30px !important;
-    min-height: 23px !important;
+    height: 27px !important;
+    min-height: 27px !important;
   }
   /* Etiket+input grupları arası 3px */
   .olay-ekle-modal .modal-body > div:first-of-type {
@@ -2895,17 +2922,25 @@
     overflow: hidden !important;
   }
 
-  /* Kaza Tramer Kaydı satırı: label+Evet/Hayır butonları dar ekranda sağa taşmasın */
+  /* Kaza Tramer Kaydı satırı: label solda, Evet/Hayır butonları sağda aynı satırda */
   #dinamik-olay-modal .kaza-tramer-row {
-    flex-direction: column !important;
-    align-items: flex-start !important;
+    flex-direction: row !important;
+    align-items: center !important;
+  }
+  #dinamik-olay-modal .kaza-tramer-row .form-label,
+  #dinamik-olay-modal .kaza-tramer-row span.form-label {
+    width: auto !important;
   }
   #dinamik-olay-modal .kaza-tramer-row > div {
-    width: 100% !important;
-    max-width: 100% !important;
-    justify-content: flex-start !important;
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    justify-content: flex-end !important;
   }
-  
+  #dinamik-olay-modal .kaza-tramer-row .radio-btn {
+    padding-top: 5px !important;
+    padding-bottom: 5px !important;
+  }
+
   /* Olay Ekle (14 modal): Var/Yok, Evet/Hayır – pasif açık gri, hover/seçili renkli */
   .olay-ekle-modal .radio-btn {
     background: rgba(255, 255, 255, 0.06) !important; /* Pasifken hafif gri zemin */

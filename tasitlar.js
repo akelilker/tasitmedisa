@@ -1137,6 +1137,11 @@
 
       window.currentDetailVehicleId = vehicleId;
 
+      // iOS yazıcı izin prompt'unu azaltmak için yazdırma script'ini önceden yükle
+      if (!window._printScriptPromise) {
+        window._printScriptPromise = loadScript('tasitlar-yazici.js?v=20260316');
+      }
+
     const modal = DOM.vehicleDetailModal;
     if (!modal) return;
 
@@ -1340,12 +1345,14 @@
           e.preventDefault();
           e.stopPropagation();
         }
-        // PERFORMANS: Yazdırma dosyası sadece ilk yazdırılmak istendiğinde (Lazy-Load) indirilir.
+        if (typeof window.printVehicleCard === 'function') {
+          window.printVehicleCard(vehicle.id);
+          return;
+        }
         const originalText = printBtn.innerHTML;
         printBtn.innerHTML = '<span class="spin-animation" style="display:inline-block; width:16px; height:16px; border:2px solid currentColor; border-right-color:transparent; border-radius:50%; margin-right:4px;"></span> Yükleniyor...';
         printBtn.disabled = true;
-
-        loadScript('tasitlar-yazici.js?v=20260316').then(function() {
+        (window._printScriptPromise || loadScript('tasitlar-yazici.js?v=20260316')).then(function() {
           printBtn.innerHTML = originalText;
           printBtn.disabled = false;
           if (typeof window.printVehicleCard === 'function') {
@@ -2106,7 +2113,7 @@ function renderVehicleDetailLeft(vehicle) {
         const defaultTargetWidth = Math.round((220 - shrinkX) * schemaScale);
         const targetHeight = Math.round(defaultTargetWidth * (148 / 220)) - shrinkY - 5; /* 5px daha kısa */
 
-        // Wrapper oluştur (Şemayı tutacak kutu); yatayda ortalı, üst boşluk container'da 3px
+        // Wrapper oluştur (Şemayı tutacak kutu); yatayda ortalı, üstte 6px boşluk (üst metinle overlap önlenir)
         const svgWrapper = document.createElement('div');
         svgWrapper.className = 'kaporta-schema-wrapper';
         svgWrapper.style.cssText = `
@@ -2117,7 +2124,7 @@ function renderVehicleDetailLeft(vehicle) {
             justify-content: center;
             overflow: visible;
             flex-shrink: 0;
-            margin: 0 auto 20px auto;
+            margin: 6px auto 20px auto;
         `;
 
         // SVG'yi hazırla (zaten clone geldi)
@@ -2533,8 +2540,9 @@ function renderVehicleDetailLeft(vehicle) {
             tramerEvet.classList.remove('green');
             tramerHayir.classList.remove('active', 'green');
             // Inline style `display:none` başlangıçta verildiği için `''` her cihazda aynı davranmayabilir.
-            // Evet seçilince alanların kesin açılması için net bir display değeri veriyoruz.
-            tramerWrap.style.display = 'block';
+            // Evet seçilince alanların kesin açılması için platformlarda sağlam display değeri.
+            tramerWrap.style.display = 'flex';
+            tramerWrap.style.flexDirection = 'column';
           });
           tramerHayir.addEventListener('click', function() {
             tramerHayir.classList.add('active', 'green');
@@ -3029,8 +3037,8 @@ function renderVehicleDetailLeft(vehicle) {
       document.body.appendChild(iframe);
       iframeJustCreated = true;
     }
-    // Yazdırma için içeriğin tam sayfa boyutunda layout alması gerekir (1x1 px yarım baskı yapıyordu).
-    iframe.style.cssText = 'position:fixed;left:-9999px;top:0;width:210mm;height:297mm;border:0;visibility:hidden;pointer-events:none;';
+    // iOS basıma uygun: tam viewport, ekranda görünmez (opacity:0), tam sayfa baskı için 100vw/100vh
+    iframe.style.cssText = 'position:fixed;left:0;top:0;width:100vw;height:100vh;border:0;opacity:0;pointer-events:none;visibility:hidden;';
     if (iframeJustCreated) {
       // #region agent log
       try {
@@ -3103,7 +3111,8 @@ function renderVehicleDetailLeft(vehicle) {
     }
 
     if (isImage) {
-      var html = '<!DOCTYPE html><html><head><meta charset="utf-8"><title>Ruhsat</title></head><body style="margin:0;"><img src="' + escapeHtml(url) + '" style="max-width:100%;height:auto;display:block;"></body></html>';
+      var printCss = '<style>@media print{ body{margin:0;} img{width:100% !important;height:auto !important;max-width:100%;display:block;} }</style>';
+      var html = '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">' + printCss + '<title>Ruhsat</title></head><body style="margin:0;"><img src="' + escapeHtml(url) + '" style="width:100%;height:auto;max-width:100%;display:block;"></body></html>';
       iframe.srcdoc = html;
       iframe.onload = function() {
         iframe.onload = null;
