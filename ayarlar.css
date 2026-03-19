@@ -1537,6 +1537,11 @@ input.settings-form-input:-moz-autofill,
     .settings-add-text-btn { font-size: 15px; }
     #branch-form-modal .form-label,
     #user-form-modal .form-label { font-size: 15px; }
+    #user-form-modal .form-section:first-child .form-label {
+        display: inline-block;
+        transform: translateY(-12px);
+        transform-origin: left center;
+    }
     #branch-form-modal .form-input,
     #user-form-modal .form-input,
     #branch-form-modal select.form-input,
@@ -1548,9 +1553,24 @@ input.settings-form-input:-moz-autofill,
         color: var(--txt-gray-darker, #888) !important; /* Ayarlar: input içi metin gri */
     }
     #user-form-modal .user-vehicles-trigger {
-        min-height: 40px !important;
-        height: auto !important;
-        padding: 10px 12px !important;
+        min-height: 29px !important;
+        height: 29px !important;
+        padding: 2px 12px !important;
+        line-height: 1.2 !important;
+    }
+    #user-form-modal .user-vehicles-trigger-text {
+        line-height: 1.2 !important;
+    }
+    #user-form-modal .settings-btn-delete {
+        height: 31px !important;
+        min-width: 0 !important;
+        width: 100% !important;
+        border-width: 1px !important;
+        border-radius: 8px !important;
+        font-size: 12.5px !important;
+        font-weight: 500 !important;
+        line-height: normal !important;
+        flex: 1 1 auto !important;
     }
     /* Mobil: Tahsis Edilecek Taşıt listesi yukarı açılsın – ekran kaymasın */
     #user-form-modal .user-vehicles-dropdown {

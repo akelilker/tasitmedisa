@@ -1623,7 +1623,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #a
 }
 @media (max-width: 640px) {
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #app-footer {
-    box-shadow: 0 -12px 22px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity, 0.38)) !important;
+    box-shadow: 0 -9px 19px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity, 0.38)) !important;
   }
 }
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay.active,
@@ -1817,6 +1817,10 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
 }
 
 @media (max-width: 640px) {
+    #settings-menu > button,
+    #settings-menu .settings-submenu button {
+        font-size: 14px !important;
+    }
     /* Ayarlar menüsü: Veri Yedekleme satırı mobilde sağa yaslı (diğer butonlarla aynı) */
     .settings-dropdown .has-submenu {
         justify-content: flex-end !important;
@@ -1998,7 +2002,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
         right: 0;
         width: 100vw;
         bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0));
-        height: var(--app-footer-gap); /* Modalâ€“footer arası 4px nefes payı ile uyumlu */
+        height: calc(var(--app-footer-gap) - 3px); /* Footer glow 3px daha yukarıda bitsin */
         background: var(--bg) !important;
         z-index: 9998;
         pointer-events: none;
@@ -2079,7 +2083,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
     #app-footer {
         position: fixed;
         bottom: 0;
-        box-shadow: 0 -12px 22px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity, 0.38));
+        box-shadow: 0 -9px 19px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity, 0.38));
         border-left: none; /* Mobilde yan yok */
         border-right: none;
         border-top: 1px solid rgba(128, 128, 128, 0.5) !important; /* Gri çizgi */
@@ -2126,7 +2130,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
     }
 /* Mobil: 5 bildirim ekranda görünsün, %75 genişlikte ortalanmış; alt kesilmesin */
     #notifications-dropdown {
-        max-height: min(356px, calc(100dvh - 112px)) !important;
+        max-height: var(--mobile-notifications-max-height, min(356px, calc(100dvh - 112px))) !important;
         overflow-y: auto !important;
         overflow-x: hidden !important;
         -webkit-overflow-scrolling: touch;
@@ -2408,7 +2412,7 @@ body.modal-open::after {
 }
 @media (max-width: 640px) {
   body.modal-open::after {
-    height: var(--app-footer-gap);
+    height: calc(var(--app-footer-gap) - 3px);
   }
 }
 
@@ -2432,7 +2436,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
     min-height: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
     padding-top: 2px !important;
     padding-bottom: calc(2px + env(safe-area-inset-bottom, 0)) !important;
-    box-shadow: 0 -12px 24px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity, 0.38)) !important;
+    box-shadow: 0 -9px 21px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity, 0.38)) !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer .footer-content {
     height: 100% !important;

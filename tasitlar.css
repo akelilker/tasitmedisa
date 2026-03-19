@@ -3030,6 +3030,23 @@
   .olay-ekle-modal .radio-group {
     justify-content: flex-start !important;
   }
+  .olay-ekle-modal .event-radio-row {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    gap: 4px !important;
+  }
+  .olay-ekle-modal .event-radio-label {
+    width: auto !important;
+    margin-bottom: 0 !important;
+    flex-shrink: 0 !important;
+  }
+  .olay-ekle-modal .event-radio-actions {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    gap: 4px !important;
+  }
   
   .detail-row-label { font-size: 14px; color: var(--form-label-color); }
   .detail-row-value { font-size: 15px; }
@@ -3420,29 +3437,47 @@
     text-align: left !important;
   }
 
-  /* Mobil Olay Ekle: Evet/Hayır, Var/Yok sorularında etiket + butonlar aynı satırda */
-  .olay-ekle-modal .modal-body > div > div:has(.radio-group) {
+  /* Mobil Olay Ekle: Var/Yok, Evet/Hayır satırları sola yaslı ve 3px dikey boşluklu */
+  .olay-ekle-modal .event-radio-row {
     display: flex !important;
-    flex-direction: row !important;
-    align-items: center !important;
-    gap: 8px !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 3px !important;
   }
-  .olay-ekle-modal .modal-body > div > div:has(.radio-group) label {
+  .olay-ekle-modal .event-radio-label {
+    width: 100% !important;
     margin-bottom: 0 !important;
-    flex-shrink: 0 !important;
   }
-  /* Mobil Olay Ekle 14 modal: Var/Yok, Evet/Hayır butonları yatayda 4er px daha geniş */
-  .olay-ekle-modal .radio-btn {
+  .olay-ekle-modal .event-radio-actions {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 8px !important;
+    width: 100% !important;
+  }
+  /* Mobil Olay Ekle 14 modal: hedef radio satırlarında butonlar 4px daha geniş */
+  .olay-ekle-modal .event-radio-actions .radio-btn {
     padding-top: 7px !important;
     padding-bottom: 7px !important;
-    padding-left: 32px !important;
-    padding-right: 32px !important;
+    padding-left: 36px !important;
+    padding-right: 36px !important;
   }
 
   .olay-ekle-modal .modal-body .form-input,
   .olay-ekle-modal .modal-body select,
   .olay-ekle-modal .modal-body textarea {
     font-size: 17px !important; /* 16px + 1 punto */
+  }
+  #dinamik-olay-modal #km-guncelle-input {
+    min-height: 33px !important;
+    height: 33px !important;
+  }
+  #dinamik-olay-modal #bakim-servis,
+  #dinamik-olay-modal #bakim-km,
+  #dinamik-olay-modal #bakim-tutar {
+    min-height: 32px !important;
+    height: 32px !important;
   }
 
   .olay-ekle-modal .modal-body button {
