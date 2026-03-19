@@ -196,6 +196,19 @@
     overflow-y: auto !important;
     padding-bottom: 20px !important;
 }
+/* Olay Ekle: Sadece form alanı kayar, buton satırı (footer) her zaman altta görünsün */
+#dinamik-olay-modal .modal-body {
+    overflow: hidden !important;
+    padding-bottom: 20px !important;
+}
+#dinamik-olay-modal #dinamik-olay-form-icerik {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch !important;
+    overscroll-behavior-y: contain !important;
+}
 
 /* Şemayı saran kapsayıcı hizalama */
 #kaza-guncelle-modal #kaza-kaporta-container,
