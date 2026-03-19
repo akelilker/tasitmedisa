@@ -858,6 +858,28 @@ input.settings-form-input:-moz-autofill,
   gap: 8px;
   box-sizing: border-box;
 }
+
+/* Kullanıcı Düzenle: liste yukarı açılsın, Kaydet/Vazgeç butonları hep görünsün */
+#user-form-modal .user-vehicles-dropdown {
+  top: auto !important;
+  bottom: 100% !important;
+  margin-top: 0 !important;
+  margin-bottom: 6px !important;
+  max-height: min(320px, 50vh);
+}
+#user-form-modal .user-vehicles-checkbox-list {
+  max-height: 200px !important; /* 5 satır (~40px/satır), gerisi kaydırılır */
+  overflow-y: auto !important;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
+}
+#user-form-modal .user-vehicles-checkbox-list::-webkit-scrollbar {
+  width: 6px;
+}
+#user-form-modal .user-vehicles-checkbox-list::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 3px;
+}
 .user-vehicles-search-wrap {
   flex-shrink: 0;
 }
@@ -888,6 +910,7 @@ input.settings-form-input:-moz-autofill,
 .user-vehicles-checkbox-list::-webkit-scrollbar {
   display: none;
 }
+/* #user-form-modal için scrollbar yukarıdaki özel blokta açıldı (5 satır + kaydırma) */
 /* Her taşıt satırı: kullanıcı paneli plaka listesi ile aynı (driver-plate-dropdown-item) */
 .user-vehicle-row {
   display: flex;
