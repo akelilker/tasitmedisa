@@ -347,8 +347,8 @@ body::-webkit-scrollbar,
 /* Şube Düzenle / Kullanıcı Düzenle: sağdan soldan boşluk (tüm ekranlar, style-core’da kesin uygulansın) */
 #branch-form-modal .modal-body,
 #user-form-modal .modal-body {
-  padding-left: 60px !important;
-  padding-right: 60px !important;
+  padding-left: 16px !important;
+  padding-right: 16px !important;
 }
 
 /* Kullanıcı Düzenle: Taşıt listesi yukarı açılsın, 5 satır görünsün, butonlar kaybolmasın */
