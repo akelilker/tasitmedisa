@@ -550,16 +550,8 @@
           }
         }
 
-        var fallbackTimer = setTimeout(function() {
-          if (done) return;
-          try { iframe.onload = null; } catch (e) {}
-          runPrint();
-        }, 2500);
-        iframe.onload = function() {
-          clearTimeout(fallbackTimer);
-          if (done) return;
-          setTimeout(runPrint, 150);
-        };
+        // iOS: print() aynı kullanıcı hareketi zincirinde çağrılmalı; setTimeout/onload izin istemesine yol açar.
+        runPrint();
       } catch (iframeErr) {
         fail();
       }

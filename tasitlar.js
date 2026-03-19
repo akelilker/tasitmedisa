@@ -2182,6 +2182,38 @@ function renderVehicleDetailLeft(vehicle) {
         `;
         container.appendChild(legend);
 
+        // #region agent log
+        try {
+          const prev = container.previousElementSibling;
+          const prevRect = prev ? prev.getBoundingClientRect() : null;
+          const svgRect = svgClone.getBoundingClientRect();
+          const containerRect = container.getBoundingClientRect();
+          const overlapPx = prevRect ? Math.round(prevRect.bottom - svgRect.top) : null;
+          fetch('http://127.0.0.1:7885/ingest/f748c7df-0c18-4178-a736-c89151ca12d1', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': 'bcdaff' },
+            body: JSON.stringify({
+              sessionId: 'bcdaff',
+              runId: 'schema-overlap-check',
+              hypothesisId: 'H9_schema_overlap',
+              location: 'tasitlar.js:renderBoyaSchemaDetail(afterLegend)',
+              message: 'schema vs previous row geometry',
+              data: {
+                prevExists: !!prev,
+                prevClass: prev ? prev.className : '',
+                overlapPx: overlapPx,
+                prevBottom: prevRect ? prevRect.bottom : null,
+                svgTop: svgRect ? svgRect.top : null,
+                svgBottom: svgRect ? svgRect.bottom : null,
+                containerTop: containerRect ? containerRect.top : null,
+                containerBottom: containerRect ? containerRect.bottom : null
+              },
+              timestamp: Date.now()
+            })
+          }).catch(()=>{});
+        } catch (e) {}
+        // #endregion
+
         // Sol kolon genişliğine göre şema büyüklüğünü uyarla (sol grid içinde)
         requestAnimationFrame(function alignSchemaToLeftColumn() {
           const leftCol = DOM.vehicleDetailLeft;
@@ -2987,12 +3019,17 @@ function renderVehicleDetailLeft(vehicle) {
     } catch (e) {}
     // #endregion
 
+    var iframeJustCreated = false;
     if (!iframe) {
       iframe = document.createElement('iframe');
       iframe.id = 'ruhsat-print-frame';
       iframe.setAttribute('aria-hidden', 'true');
-      iframe.style.cssText = 'position:fixed;left:-9999px;top:0;width:1px;height:1px;border:0;visibility:hidden;pointer-events:none;';
       document.body.appendChild(iframe);
+      iframeJustCreated = true;
+    }
+    // Yazdırma için içeriğin tam sayfa boyutunda layout alması gerekir (1x1 px yarım baskı yapıyordu).
+    iframe.style.cssText = 'position:fixed;left:-9999px;top:0;width:210mm;height:297mm;border:0;visibility:hidden;pointer-events:none;';
+    if (iframeJustCreated) {
       // #region agent log
       try {
         const rect = iframe.getBoundingClientRect();
