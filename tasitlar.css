@@ -2411,21 +2411,24 @@
 #ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-add-btn,
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-add-btn {
   margin-left: 12px;
-  font-size: 56px;
-  line-height: 1;
+  font-size: 42px;
+  font-weight: 300;
+  line-height: 0.9;
   padding: 0;
-  min-width: 80px;
-  min-height: 80px;
+  min-width: 64px;
+  min-height: 64px;
   width: auto !important;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: var(--bg, #0d131f) !important;
-  background-color: var(--bg, #0d131f) !important;
-  border: 1px solid rgba(255, 255, 255, 0.35) !important;
-  border-radius: 8px;
-  color: var(--form-label-color, #ffffff) !important;
+  background: rgba(255, 255, 255, 0.02) !important;
+  background-color: rgba(255, 255, 255, 0.02) !important;
+  border: 1px solid rgba(255, 255, 255, 0.22) !important;
+  border-radius: 14px;
+  color: rgba(255, 255, 255, 0.48) !important;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+  transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 #ruhsat-yukleme-modal #ruhsat-modal-content .universal-btn-group.ruhsat-preview-row .ruhsat-add-btn,
 #ruhsat-yukleme-modal #ruhsat-modal-content .universal-btn-group:has(.ruhsat-preview-link) .ruhsat-add-btn,
@@ -2438,22 +2441,38 @@
   transform: translateY(-50%);
 }
 #ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-add-btn:hover,
-#dinamik-olay-modal #ruhsat-modal-content .ruhsat-add-btn:hover {
-  color: var(--theme-color, #dc2626) !important;
-  transform: scale(1.08);
+#ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-add-btn:focus-visible,
+#ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-add-btn:active,
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-add-btn:hover,
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-add-btn:focus-visible,
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-add-btn:active {
+  color: #4ade80 !important;
+  border-color: rgba(74, 222, 128, 0.58) !important;
+  background: rgba(74, 222, 128, 0.08) !important;
+  background-color: rgba(74, 222, 128, 0.08) !important;
+  box-shadow: inset 0 0 0 1px rgba(74, 222, 128, 0.18), 0 10px 24px rgba(0, 0, 0, 0.18);
+  transform: scale(1.04);
 }
 #ruhsat-yukleme-modal #ruhsat-modal-content .universal-btn-group.ruhsat-preview-row .ruhsat-add-btn:hover,
+#ruhsat-yukleme-modal #ruhsat-modal-content .universal-btn-group.ruhsat-preview-row .ruhsat-add-btn:focus-visible,
+#ruhsat-yukleme-modal #ruhsat-modal-content .universal-btn-group.ruhsat-preview-row .ruhsat-add-btn:active,
 #ruhsat-yukleme-modal #ruhsat-modal-content .universal-btn-group:has(.ruhsat-preview-link) .ruhsat-add-btn:hover,
+#ruhsat-yukleme-modal #ruhsat-modal-content .universal-btn-group:has(.ruhsat-preview-link) .ruhsat-add-btn:focus-visible,
+#ruhsat-yukleme-modal #ruhsat-modal-content .universal-btn-group:has(.ruhsat-preview-link) .ruhsat-add-btn:active,
 #dinamik-olay-modal #ruhsat-modal-content .universal-btn-group.ruhsat-preview-row .ruhsat-add-btn:hover,
-#dinamik-olay-modal #ruhsat-modal-content .universal-btn-group:has(.ruhsat-preview-link) .ruhsat-add-btn:hover {
-  transform: translateY(-50%) scale(1.08);
+#dinamik-olay-modal #ruhsat-modal-content .universal-btn-group.ruhsat-preview-row .ruhsat-add-btn:focus-visible,
+#dinamik-olay-modal #ruhsat-modal-content .universal-btn-group.ruhsat-preview-row .ruhsat-add-btn:active,
+#dinamik-olay-modal #ruhsat-modal-content .universal-btn-group:has(.ruhsat-preview-link) .ruhsat-add-btn:hover,
+#dinamik-olay-modal #ruhsat-modal-content .universal-btn-group:has(.ruhsat-preview-link) .ruhsat-add-btn:focus-visible,
+#dinamik-olay-modal #ruhsat-modal-content .universal-btn-group:has(.ruhsat-preview-link) .ruhsat-add-btn:active {
+  transform: translateY(-50%) scale(1.04);
 }
 @media (min-width: 769px) {
   #ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-add-btn,
   #dinamik-olay-modal #ruhsat-modal-content .ruhsat-add-btn {
-    font-size: 70px; /* 2pt küçültme (72→70) */
-    min-width: 96px;
-    min-height: 96px;
+    font-size: 46px;
+    min-width: 72px;
+    min-height: 72px;
   }
 }
 #ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-keep-info,
@@ -2570,8 +2589,9 @@
 }
 #ruhsat-yukleme-modal #ruhsat-btn-group.ruhsat-single-visible .universal-btn-cancel,
 #dinamik-olay-modal #ruhsat-btn-group.ruhsat-single-visible .universal-btn-cancel {
-  width: auto !important;
-  max-width: none !important;
+  width: min(168px, 100%) !important;
+  max-width: 168px !important;
+  min-width: 168px !important;
 }
 #ruhsat-yukleme-modal #ruhsat-btn-group.ruhsat-inline-view-mode,
 #dinamik-olay-modal #ruhsat-btn-group.ruhsat-inline-view-mode {
@@ -2955,18 +2975,13 @@
     min-width: 0 !important;
     justify-content: flex-end !important;
   }
-  #dinamik-olay-modal .kaza-tramer-row .kaza-tramer-actions .radio-btn {
-    padding-top: 5px !important;
-    padding-bottom: 5px !important;
-  }
-
   /* Olay Ekle (14 modal): Var/Yok, Evet/Hayır – pasif açık gri, hover/seçili renkli */
   .olay-ekle-modal .radio-btn {
     background: rgba(255, 255, 255, 0.06) !important; /* Pasifken hafif gri zemin */
     border: 1px solid rgba(255, 255, 255, 0.25) !important; /* Parlak beyaz deşil, açık gri çerçeve */
     color: #9ca3af !important; /* Pasifken açık gri metin (parlak beyaz deşil) */
     border-radius: 4px !important;
-    padding: 7px 28px !important; /* Dikey 4px azaltıldı (9→7) */
+    padding: 5px 28px !important; /* Masaüstü olay butonları: dikey toplam 4px daha kısa */
     font-size: 14px !important;
     font-weight: 400 !important;
     cursor: pointer !important;
@@ -3390,6 +3405,8 @@
   }
   /* Mobil Olay Ekle 14 modal: Var/Yok, Evet/Hayır butonları yatayda 4er px daha geniş */
   .olay-ekle-modal .radio-btn {
+    padding-top: 7px !important;
+    padding-bottom: 7px !important;
     padding-left: 32px !important;
     padding-right: 32px !important;
   }

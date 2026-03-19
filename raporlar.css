@@ -84,6 +84,7 @@ flex: 1;
 overflow-y: auto;
 padding: 16px 4px 40px 4px;
 color: var(--form-label-color);
+--data-value-color: #a0aec0;
 }
 #reports-modal .modal-body:has(#stok-list-container .stok-list-top-controls) {
 overflow: hidden !important;
