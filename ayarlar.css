@@ -981,18 +981,17 @@ input.settings-form-input:-moz-autofill,
     flex-wrap: wrap;
     gap: 8px;
     align-content: start;
-    justify-content: flex-start !important;
 }
-/* Şube Yönetimi: şube kutularına yukarı ve aşağı 6px */
 #branch-modal #branch-list {
+    justify-content: flex-start !important;
     padding-top: 6px;
     padding-bottom: 6px;
 }
-/* Kullanıcı Yönetimi: kullanıcı kutularına yukarı ve aşağı 6px, kutular yatayda ortada */
-#user-modal #user-list {
+#user-modal #user-list,
+#user-modal .modal-body #user-list {
+    justify-content: center !important;
     padding-top: 6px;
     padding-bottom: 6px;
-    justify-content: center !important;
 }
 
 /* Şube Yönetimi & Kullanıcı Yönetimi: kutulardaki metinler üstten hizalı */
