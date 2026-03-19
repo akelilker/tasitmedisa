@@ -888,6 +888,16 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   display: none !important;
 }
 
+#notifications-dropdown > .notification-item {
+  width: 100% !important;
+  box-sizing: border-box !important;
+  margin-bottom: 4px !important;
+}
+
+#notifications-dropdown > .notification-item:last-child {
+  margin-bottom: 0 !important;
+}
+
 /* MTV Bildirimi - Global Çakışma Ã–nleyici */
 #notifications-dropdown .mtv-notification {
   display: flex !important;
@@ -901,7 +911,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   width: 100% !important;
   min-height: 48px !important;
   box-sizing: border-box !important;
-  margin-bottom: 4px !important;
 }
 
 #notifications-dropdown .kasko-excel-notification {
@@ -916,12 +925,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   width: 100% !important;
   min-height: 48px !important;
   box-sizing: border-box !important;
-  margin-bottom: 4px !important;
-}
-
-#notifications-dropdown .mtv-notification:last-child,
-#notifications-dropdown .kasko-excel-notification:last-child {
-  margin-bottom: 0 !important;
 }
 
 #notifications-dropdown .mtv-notification > div,
@@ -2123,7 +2126,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
     }
 /* Mobil: 5 bildirim ekranda görünsün, %75 genişlikte ortalanmış; alt kesilmesin */
     #notifications-dropdown {
-        max-height: min(404px, calc(100dvh - 112px)) !important;
+        max-height: min(356px, calc(100dvh - 112px)) !important;
         overflow-y: auto !important;
         overflow-x: hidden !important;
         -webkit-overflow-scrolling: touch;
@@ -2134,6 +2137,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
         transform: translateX(-50%) !important;
         padding-bottom: 8px !important; /* Son kutunun altı kesilmeden görünsün */
         box-sizing: border-box !important;
+        padding-bottom: 0 !important;
     }
 
     /* === ANA KAYIT MODALI KURTARMA (Dar alana sığması için alt alta dizilmek zorundadır) === */
