@@ -2710,19 +2710,24 @@ function renderVehicleDetailLeft(vehicle) {
       /* Ruhsat ekranından dönünce buton metni "Ruhsat Yükle" kalıyor; olay formlarında her zaman "Kaydet" olsun */
       var saveBtnEl = document.getElementById('dinamik-olay-kaydet-btn');
       if (saveBtnEl) saveBtnEl.textContent = 'Kaydet';
+      var grp = document.getElementById('ruhsat-btn-group');
+      if (grp) {
+        grp.classList.remove('ruhsat-inline-view-mode', 'ruhsat-single-visible');
+        grp.classList.add('olay-form-buttons');
+      }
 
       // Modal'ı aç
       if (modal) {
         // Modal'ı hemen aç
         modal.style.display = 'flex';
         modal.classList.add('active');
-        /* Ruhsat sonrası: buton metni ve btn-group sınıflarını olay formuna göre sıfırla (bir frame sonra, paint sonrası) */
         requestAnimationFrame(function() {
           var btn = document.getElementById('dinamik-olay-kaydet-btn');
           if (btn) btn.textContent = 'Kaydet';
-          var grp = document.getElementById('ruhsat-btn-group');
-          if (grp) {
-            grp.classList.remove('ruhsat-inline-view-mode', 'ruhsat-single-visible');
+          var g = document.getElementById('ruhsat-btn-group');
+          if (g) {
+            g.classList.remove('ruhsat-inline-view-mode', 'ruhsat-single-visible');
+            g.classList.add('olay-form-buttons');
           }
         });
         // UTTS ve Takip modalları için event listener'ları modal açıldıktan sonra ekle
@@ -3054,6 +3059,8 @@ function renderVehicleDetailLeft(vehicle) {
     saveBtn.onclick = function() { if (typeof window.saveRuhsatUpload === 'function') window.saveRuhsatUpload(); };
     setRuhsatInlineViewerMode(false);
     content.innerHTML = '';
+    var ruhsatGrp = document.getElementById('ruhsat-btn-group');
+    if (ruhsatGrp) ruhsatGrp.classList.remove('olay-form-buttons');
     setRuhsatSaveBtnVisibility(saveBtn, false);
     saveBtn.textContent = 'Ruhsat Yükle';
     // #region agent log
