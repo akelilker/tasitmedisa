@@ -2706,7 +2706,11 @@ function renderVehicleDetailLeft(vehicle) {
           kmInput.value = currentKm ? formatNumber(currentKm) : '';
         }
       }
-      
+
+      /* Ruhsat ekranından dönünce buton metni "Ruhsat Yükle" kalıyor; olay formlarında her zaman "Kaydet" olsun */
+      var saveBtnEl = document.getElementById('dinamik-olay-kaydet-btn');
+      if (saveBtnEl) saveBtnEl.textContent = 'Kaydet';
+
       // Modal'ı aç
       if (modal) {
         // Modal'ı hemen aç
