@@ -1772,8 +1772,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
         flex-wrap: nowrap !important;
         align-items: center !important;
         justify-content: space-between !important;
-        padding: 10px 12px !important;
-        min-height: 48px !important;
+        padding: 8px 12px !important;
+        min-height: 0 !important;
     }
     #notifications-dropdown .mtv-notification .mtv-text-container,
     #notifications-dropdown .kasko-excel-notification .mtv-text-container {
@@ -2089,6 +2089,13 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
     .notification-item {
         background: var(--bg) !important;
     }
+
+    #notifications-dropdown .notification-item.date-warning-red-border,
+    #notifications-dropdown .notification-item.date-warning-orange-border,
+    #notifications-dropdown .notification-item-activity {
+        padding: 8px 12px !important;
+        min-height: 0 !important;
+    }
     
     /* Mobil bildirimlerde metin boyutları yaklaşık 0.75 punto (1px) büyütüldü */
     #notifications-dropdown .notification-item .notif-line1 {
@@ -2102,7 +2109,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
     }
 /* Mobil: 5 bildirim ekranda görünsün, %75 genişlikte ortalanmış; alt kesilmesin */
     #notifications-dropdown {
-        max-height: min(320px, calc(100vh - 120px)) !important;
+        max-height: min(348px, calc(100dvh - 118px)) !important;
         overflow-y: auto !important;
         overflow-x: hidden !important;
         -webkit-overflow-scrolling: touch;
@@ -2111,7 +2118,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
         left: 61% !important;
         right: auto !important;
         transform: translateX(-50%) !important;
-        padding-bottom: 16px !important; /* Son kutunun altı kesilmeden görünsün */
+        padding-bottom: 8px !important; /* Son kutunun altı kesilmeden görünsün */
+        box-sizing: border-box !important;
     }
 
     /* === ANA KAYIT MODALI KURTARMA (Dar alana sığması için alt alta dizilmek zorundadır) === */
