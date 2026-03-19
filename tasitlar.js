@@ -2441,8 +2441,11 @@ function renderVehicleDetailLeft(vehicle) {
           // #region agent log
           fetch('http://127.0.0.1:7885/ingest/f748c7df-0c18-4178-a736-c89151ca12d1',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bcdaff'},body:JSON.stringify({sessionId:'bcdaff',location:'tasitlar.js:dinamik-olay backBarBtn',message:'clickedBackFromEventAdd',data:{hadVid:!!vid,vid:vid},timestamp:Date.now(),hypothesisId:'H4'})}).catch(()=>{});
           // #endregion
-          closeAllModals();
-          if (vid) showVehicleDetail(vid);
+          if (vid && typeof window.closeEventModalAndShowEventMenu === 'function') {
+            window.closeEventModalAndShowEventMenu(type);
+          } else {
+            closeAllModals();
+          }
         };
       }
       var modalCloseBtn = modal.querySelector('.modal-close');
@@ -2452,8 +2455,11 @@ function renderVehicleDetailLeft(vehicle) {
         // #region agent log
         fetch('http://127.0.0.1:7885/ingest/f748c7df-0c18-4178-a736-c89151ca12d1',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bcdaff'},body:JSON.stringify({sessionId:'bcdaff',location:'tasitlar.js:dinamik-olay modalCloseBtn',message:'clickedXFromEventAdd',data:{hadVid:!!vid,vid:vid},timestamp:Date.now(),hypothesisId:'H4'})}).catch(()=>{});
         // #endregion
-        closeAllModals();
-        if (vid) showVehicleDetail(vid);
+        if (vid && typeof window.closeEventModalAndShowEventMenu === 'function') {
+          window.closeEventModalAndShowEventMenu(type);
+        } else {
+          closeAllModals();
+        }
       };
       var ruhsatBtnGroup = document.getElementById('ruhsat-btn-group');
       var cancelBtn = ruhsatBtnGroup ? ruhsatBtnGroup.querySelector('.universal-btn-cancel') : null;
@@ -2463,8 +2469,11 @@ function renderVehicleDetailLeft(vehicle) {
         // #region agent log
         fetch('http://127.0.0.1:7885/ingest/f748c7df-0c18-4178-a736-c89151ca12d1',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bcdaff'},body:JSON.stringify({sessionId:'bcdaff',location:'tasitlar.js:dinamik-olay cancelBtn',message:'clickedCancelFromEventAdd',data:{hadVid:!!vid,vid:vid},timestamp:Date.now(),hypothesisId:'H4'})}).catch(()=>{});
         // #endregion
-        closeAllModals();
-        if (vid) showVehicleDetail(vid);
+        if (vid && typeof window.closeEventModalAndShowEventMenu === 'function') {
+          window.closeEventModalAndShowEventMenu(type);
+        } else {
+          closeAllModals();
+        }
       };
 
       formIcerik.id = 'dinamik-olay-form-icerik';

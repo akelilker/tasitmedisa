@@ -407,6 +407,7 @@
         setTimeout(() => {
             const startInput = document.getElementById('stok-date-start');
             const endInput = document.getElementById('stok-date-end');
+            const mutedDateColor = '#a0aec0';
             
             // Başlangıç tarihi için bitiş tarihi gibi normal yap (overlay placeholder kullanma)
             if (startInput) {
@@ -423,20 +424,20 @@
                 }
                 
                 // Input'u bitiş tarihi gibi normal yap - her zaman görünür
-                startInput.style.color = '#ccc';
-                startInput.style.setProperty('color', '#ccc', 'important');
-                startInput.style.setProperty('-webkit-text-fill-color', '#ccc', 'important');
+                startInput.style.color = mutedDateColor;
+                startInput.style.setProperty('color', mutedDateColor, 'important');
+                startInput.style.setProperty('-webkit-text-fill-color', mutedDateColor, 'important');
                 
                 // Webkit datetime-edit stillerini normal yap
                 const style = document.createElement('style');
                 style.id = 'stok-date-start-style';
                 style.textContent = `
-                    #stok-date-start::-webkit-datetime-edit { color: #ccc !important; -webkit-text-fill-color: #ccc !important; }
-                    #stok-date-start::-webkit-datetime-edit-fields-wrapper { color: #ccc !important; -webkit-text-fill-color: #ccc !important; }
-                    #stok-date-start::-webkit-datetime-edit-text { color: #ccc !important; -webkit-text-fill-color: #ccc !important; }
+                    #stok-date-start::-webkit-datetime-edit { color: ${mutedDateColor} !important; -webkit-text-fill-color: ${mutedDateColor} !important; }
+                    #stok-date-start::-webkit-datetime-edit-fields-wrapper { color: ${mutedDateColor} !important; -webkit-text-fill-color: ${mutedDateColor} !important; }
+                    #stok-date-start::-webkit-datetime-edit-text { color: ${mutedDateColor} !important; -webkit-text-fill-color: ${mutedDateColor} !important; }
                     #stok-date-start::-webkit-datetime-edit-month-field,
                     #stok-date-start::-webkit-datetime-edit-day-field,
-                    #stok-date-start::-webkit-datetime-edit-year-field { color: #ccc !important; -webkit-text-fill-color: #ccc !important; }
+                    #stok-date-start::-webkit-datetime-edit-year-field { color: ${mutedDateColor} !important; -webkit-text-fill-color: ${mutedDateColor} !important; }
                 `;
                 document.head.appendChild(style);
             }
@@ -449,9 +450,10 @@
                 const todayValue = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
                 endInput.value = todayValue;
                 
-                // Input'un rengini zorla beyaz yap
-                endInput.style.setProperty('color', '#fff', 'important');
-                endInput.style.color = '#fff';
+                // Input'un rengini gri tut
+                endInput.style.setProperty('color', mutedDateColor, 'important');
+                endInput.style.setProperty('-webkit-text-fill-color', mutedDateColor, 'important');
+                endInput.style.color = mutedDateColor;
                 
                 // Eğer bir şekilde placeholder oluşturulmuşsa kaldır
                 const existingPlaceholder = endInput.parentElement.querySelector('.date-placeholder');
@@ -460,20 +462,21 @@
                 }
                 
                 // Input'un rengini koru - herhangi bir değişiklikte tekrar set et
-                const keepColorWhite = () => {
+                const keepColorMuted = () => {
                     if (endInput.value) {
-                        endInput.style.setProperty('color', '#fff', 'important');
+                        endInput.style.setProperty('color', mutedDateColor, 'important');
+                        endInput.style.setProperty('-webkit-text-fill-color', mutedDateColor, 'important');
                     }
                 };
                 
                 // Input değiştiğinde rengi koru
-                endInput.addEventListener('change', keepColorWhite);
-                endInput.addEventListener('input', keepColorWhite);
-                endInput.addEventListener('focus', keepColorWhite);
-                endInput.addEventListener('blur', keepColorWhite);
+                endInput.addEventListener('change', keepColorMuted);
+                endInput.addEventListener('input', keepColorMuted);
+                endInput.addEventListener('focus', keepColorMuted);
+                endInput.addEventListener('blur', keepColorMuted);
                 
                 // İlk yüklemede de rengi set et
-                keepColorWhite();
+                keepColorMuted();
             }
         }, 50);
         
