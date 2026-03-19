@@ -2454,11 +2454,27 @@
   border: 1px solid rgba(40, 167, 69, 0.65) !important;
   transition: transform 0.2s, background 0.2s;
 }
+/* Olay Ekle formlarında (Bakım, Ceza vb.) Kaydet butonu dolu görünsün, ruhsat ekranında transparent kalır */
+#dinamik-olay-modal .modal-body:has(#dinamik-olay-form-icerik) #ruhsat-btn-group #dinamik-olay-kaydet-btn {
+  background: rgba(40, 167, 69, 0.12) !important;
+}
+#dinamik-olay-modal .modal-body:has(#dinamik-olay-form-icerik) #ruhsat-btn-group {
+  max-width: 390px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  width: 100% !important;
+  display: grid !important;
+  grid-template-columns: 1fr 1fr !important;
+  gap: 12px !important;
+}
 #ruhsat-yukleme-modal #ruhsat-save-btn:hover,
 #dinamik-olay-modal #ruhsat-btn-group #dinamik-olay-kaydet-btn:hover {
   background: rgba(40, 167, 69, 0.25) !important;
   color: var(--green-success, #28a745) !important;
   transform: scale(1.05);
+}
+#dinamik-olay-modal .modal-body:has(#dinamik-olay-form-icerik) #ruhsat-btn-group #dinamik-olay-kaydet-btn:hover {
+  background: rgba(40, 167, 69, 0.28) !important;
 }
 
 /* Ruhsat modal: üst/alt buton grupları aynı genişlikte, yatayda ortalanmış */
