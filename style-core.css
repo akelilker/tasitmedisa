@@ -1789,7 +1789,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
     
     /* Mobil header logo boyutu ve dengesi */
     .hero-logo img {
-        height: 38px !important; /* Mobil header logosu 2px küçültüldü */
+        height: 33px !important; /* Mobil header logosu 2px küçültüldü */
         width: auto !important;
         display: block !important;
         object-fit: contain !important;
