@@ -2716,7 +2716,15 @@ function renderVehicleDetailLeft(vehicle) {
         // Modal'ı hemen aç
         modal.style.display = 'flex';
         modal.classList.add('active');
-        
+        /* Ruhsat sonrası: buton metni ve btn-group sınıflarını olay formuna göre sıfırla (bir frame sonra, paint sonrası) */
+        requestAnimationFrame(function() {
+          var btn = document.getElementById('dinamik-olay-kaydet-btn');
+          if (btn) btn.textContent = 'Kaydet';
+          var grp = document.getElementById('ruhsat-btn-group');
+          if (grp) {
+            grp.classList.remove('ruhsat-inline-view-mode', 'ruhsat-single-visible');
+          }
+        });
         // UTTS ve Takip modalları için event listener'ları modal açıldıktan sonra ekle
         if (type === 'utts' || type === 'takip') {
           requestAnimationFrame(() => {
