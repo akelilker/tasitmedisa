@@ -294,7 +294,7 @@ body::-webkit-scrollbar,
   max-width: 100% !important;
   box-sizing: border-box !important;
   background: var(--bg-content, #0d131f) !important;
-  color: var(--txt-white, #ffffff) !important;
+  color: var(--txt-gray-darker, #888) !important; /* Ayarlar: input içi metin gri */
   border: 1px solid rgba(255, 255, 255, 0.25) !important;
 }
 
@@ -2296,6 +2296,12 @@ body.modal-open .content-wrap::before {
         & .settings-btn-delete {
             height: 31px !important;
         }
+    }
+    /* Şube Düzenle / Kullanıcı Düzenle: input ve buton alanı 50px daha dar (10.5px yerine 41px) */
+    #branch-form-modal .modal-body,
+    #user-form-modal .modal-body {
+        padding-left: 41px !important;
+        padding-right: 41px !important;
     }
 }
 
