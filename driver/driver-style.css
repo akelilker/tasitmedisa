@@ -211,6 +211,7 @@ body.dashboard-page {
   left: 0 !important;
   right: 0 !important;
   bottom: 0 !important;
+  transform: none !important;
   flex-shrink: 0;
   z-index: 10005 !important;
   height: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
