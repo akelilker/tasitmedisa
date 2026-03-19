@@ -2297,11 +2297,11 @@ body.modal-open .content-wrap::before {
             height: 31px !important;
         }
     }
-    /* Şube Düzenle / Kullanıcı Düzenle: input ve buton alanı 50px daha dar (10.5px yerine 41px) */
+    /* Şube Düzenle / Kullanıcı Düzenle: sağdan soldan belirgin boşluk (sarı kutu gibi) */
     #branch-form-modal .modal-body,
     #user-form-modal .modal-body {
-        padding-left: 41px !important;
-        padding-right: 41px !important;
+        padding-left: 60px !important;
+        padding-right: 60px !important;
     }
 }
 
