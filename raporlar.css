@@ -666,7 +666,7 @@ align-items: center;
 justify-content: center;
 gap: 2px;
 line-height: 1.2;
-transition: background 0.2s;
+transition: background 0.18s ease, opacity 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
 min-width: 0;
 overflow: hidden;
 text-overflow: ellipsis;
@@ -680,7 +680,35 @@ background: rgba(255, 255, 255, 0.05);
 .stok-list-header-cell.drag-over {
 border-left: 2px solid #4ade80;
 border-right: 2px solid #4ade80;
-background: rgba(74, 222, 128, 0.1);
+background: rgba(74, 222, 128, 0.12);
+box-shadow: 0 0 0 1px rgba(74, 222, 128, 0.16) inset, 0 8px 18px rgba(0, 0, 0, 0.16);
+}
+
+#stok-list-container.touch-reorder-mode .stok-list-header-cell.touch-drag-source {
+opacity: 0.35 !important;
+transform: scale(0.96);
+background: rgba(255, 255, 255, 0.08);
+box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.12) inset, 0 12px 24px rgba(0, 0, 0, 0.18);
+}
+
+.stok-column-touch-ghost {
+position: fixed;
+left: 0;
+top: 0;
+z-index: 10000;
+pointer-events: none;
+padding: 8px 10px;
+border-radius: 10px;
+border: 1px solid rgba(74, 222, 128, 0.58);
+background: rgba(8, 13, 22, 0.94);
+color: #ffffff;
+font-size: 11px;
+font-weight: 600;
+letter-spacing: 0.2px;
+white-space: nowrap;
+transform: translate(-50%, -135%);
+box-shadow: 0 14px 28px rgba(0, 0, 0, 0.32), 0 0 0 1px rgba(74, 222, 128, 0.16) inset;
+backdrop-filter: blur(10px);
 }
 
 /* Tüm sütun başlıkları aynı clamp – başlık sığmazsa 1.5pt kadar küçülebilir (min 7.5px) */

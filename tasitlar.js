@@ -863,6 +863,8 @@
         return;
       }
 
+      cleanupVehicleColumnTouchDrag(listContainer);
+
       // 4. HTML – boş liste: liste görünümünde başlıkları koru, tek satırda mesaj göster
       if (vehicles.length === 0) {
           const emptyMsg = (activeBranchId === '__archive__') ? 'Arşivde kayıt bulunamadı.' : 'Kayıt bulunamadı.';
@@ -943,7 +945,7 @@
             html += `
               <div class="list-cell ${def.class} sortable-header" 
                    data-col="${columnKey}"
-                   draggable="true"
+                   ${isMobile ? '' : 'draggable="true"'}
                    ondragstart="handleVehicleColumnDragStart(event, '${columnKey}')"
                    ondragover="handleVehicleColumnDragOver(event)"
                    ondrop="handleVehicleColumnDrop(event, '${columnKey}')"
@@ -1706,6 +1708,7 @@
 
   // Sütun başlığına tıklanınca sıralama yap
   window.handleColumnSort = function(column) {
+    if (touchColumnDrag.suppressClickUntil > Date.now()) return;
     if (sortColumn === column) {
       // Aynı sütuna tekrar tıklanınca yön değiştir
       sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
@@ -5322,7 +5325,7 @@ function renderVehicleDetailLeft(vehicle) {
     // Tüm başlıkları normale döndür
     document.querySelectorAll('.list-header-row .list-cell').forEach(cell => {
       cell.style.opacity = '1';
-      cell.classList.remove('drag-over');
+      cell.classList.remove('drag-over', 'touch-drag-source');
     });
     
     draggedVehicleColumnKey = null;
@@ -5342,78 +5345,199 @@ function renderVehicleDetailLeft(vehicle) {
     return classMap[columnKey] || '';
   }
 
+  function isMobileVehicleColumnViewport() {
+    return (typeof window.matchMedia === 'function')
+      ? window.matchMedia('(max-width: 640px)').matches
+      : window.innerWidth <= 640;
+  }
+
   // Mobil: sütun başlığı touch ile sürükle-bırak state
-  let touchColumnDrag = { active: false, columnKey: null, startX: 0, startY: 0, dragging: false, lastDropTarget: null };
+  let touchColumnDrag = {
+    active: false,
+    columnKey: null,
+    startX: 0,
+    startY: 0,
+    dragging: false,
+    lastDropTarget: null,
+    longPressTimer: null,
+    sourceCell: null,
+    ghostEl: null,
+    suppressClickUntil: 0
+  };
+
+  function removeVehicleColumnTouchGhost() {
+    if (touchColumnDrag.ghostEl && touchColumnDrag.ghostEl.parentNode) {
+      touchColumnDrag.ghostEl.parentNode.removeChild(touchColumnDrag.ghostEl);
+    }
+    touchColumnDrag.ghostEl = null;
+  }
+
+  function setVehicleColumnCellsOpacity(container, columnKey, opacity) {
+    const columnClass = getColumnClass(columnKey);
+    if (!columnClass) return;
+    container.querySelectorAll('.list-item').forEach(function(row) {
+      const cell = row.querySelector('.list-cell.' + columnClass);
+      if (cell) cell.style.opacity = opacity;
+    });
+  }
+
+  function cleanupVehicleColumnTouchDrag(container) {
+    clearTimeout(touchColumnDrag.longPressTimer);
+    if (container) {
+      container.classList.remove('touch-reorder-mode');
+      container.querySelectorAll('.list-header-row .list-cell').forEach(function(cell) {
+        cell.style.opacity = '1';
+        cell.classList.remove('drag-over', 'touch-drag-source');
+      });
+      container.querySelectorAll('.list-item .list-cell').forEach(function(cell) {
+        cell.style.opacity = '1';
+      });
+    }
+    removeVehicleColumnTouchGhost();
+    touchColumnDrag.active = false;
+    touchColumnDrag.columnKey = null;
+    touchColumnDrag.startX = 0;
+    touchColumnDrag.startY = 0;
+    touchColumnDrag.dragging = false;
+    touchColumnDrag.lastDropTarget = null;
+    touchColumnDrag.longPressTimer = null;
+    touchColumnDrag.sourceCell = null;
+  }
+
+  function reorderVehicleColumns(sourceKey, targetKey) {
+    if (!sourceKey || !targetKey || sourceKey === targetKey) return false;
+    const draggedIndex = vehicleColumnOrder.indexOf(sourceKey);
+    const targetIndex = vehicleColumnOrder.indexOf(targetKey);
+    if (draggedIndex === -1 || targetIndex === -1) return false;
+    vehicleColumnOrder.splice(draggedIndex, 1);
+    vehicleColumnOrder.splice(targetIndex, 0, sourceKey);
+    saveVehicleColumnOrder();
+    return true;
+  }
+
+  function createVehicleColumnTouchGhost(sourceCell) {
+    removeVehicleColumnTouchGhost();
+    const ghost = document.createElement('div');
+    ghost.className = 'vehicle-column-touch-ghost';
+    ghost.textContent = String(sourceCell.textContent || '').replace(/\s+/g, ' ').trim();
+    document.body.appendChild(ghost);
+    touchColumnDrag.ghostEl = ghost;
+  }
+
+  function updateVehicleColumnTouchGhost(x, y) {
+    if (!touchColumnDrag.ghostEl) return;
+    touchColumnDrag.ghostEl.style.left = `${x}px`;
+    touchColumnDrag.ghostEl.style.top = `${y}px`;
+  }
+
+  function getVehicleTouchTargetCell(container, pointerX, sourceKey) {
+    const headerCells = Array.from(container.querySelectorAll('.list-header-row .list-cell[data-col]'))
+      .filter(function(cell) { return cell.getAttribute('data-col') !== sourceKey; });
+    if (!headerCells.length) return null;
+
+    const exactMatch = headerCells.find(function(cell) {
+      const rect = cell.getBoundingClientRect();
+      return pointerX >= rect.left && pointerX <= rect.right;
+    });
+    if (exactMatch) return exactMatch;
+
+    let nearestCell = null;
+    let nearestDistance = Infinity;
+    headerCells.forEach(function(cell) {
+      const rect = cell.getBoundingClientRect();
+      const centerX = rect.left + (rect.width / 2);
+      const distance = Math.abs(pointerX - centerX);
+      if (distance < nearestDistance) {
+        nearestDistance = distance;
+        nearestCell = cell;
+      }
+    });
+    return nearestCell;
+  }
+
+  function beginVehicleColumnTouchDrag(container, sourceCell, columnKey, touchPoint) {
+    touchColumnDrag.dragging = true;
+    touchColumnDrag.suppressClickUntil = Date.now() + 500;
+    touchColumnDrag.sourceCell = sourceCell;
+    container.classList.add('touch-reorder-mode');
+    sourceCell.classList.add('touch-drag-source');
+    sourceCell.style.opacity = '0.35';
+    setVehicleColumnCellsOpacity(container, columnKey, '0.35');
+    createVehicleColumnTouchGhost(sourceCell);
+    updateVehicleColumnTouchGhost(touchPoint.clientX, touchPoint.clientY);
+  }
 
   function attachVehicleColumnTouchListeners(container) {
+    if (!isMobileVehicleColumnViewport()) return;
     const headerCells = container.querySelectorAll('.list-header-row .list-cell[data-col]');
     if (!headerCells.length) return;
     headerCells.forEach(function(cell) {
       const columnKey = cell.getAttribute('data-col');
       if (!columnKey) return;
+
       cell.addEventListener('touchstart', function(e) {
         if (e.touches.length !== 1) return;
+        const startTouch = {
+          clientX: e.touches[0].clientX,
+          clientY: e.touches[0].clientY
+        };
+        cleanupVehicleColumnTouchDrag(container);
         touchColumnDrag.active = true;
         touchColumnDrag.columnKey = columnKey;
-        touchColumnDrag.startX = e.touches[0].clientX;
-        touchColumnDrag.startY = e.touches[0].clientY;
-        touchColumnDrag.dragging = false;
+        touchColumnDrag.startX = startTouch.clientX;
+        touchColumnDrag.startY = startTouch.clientY;
         touchColumnDrag.lastDropTarget = null;
-        const allRows = container.querySelectorAll('.list-item');
-        allRows.forEach(function(row) {
-          const c = row.querySelector('.list-cell.' + getColumnClass(columnKey));
-          if (c) c.style.opacity = '0.5';
-        });
-        cell.style.opacity = '0.5';
+        touchColumnDrag.sourceCell = cell;
+        touchColumnDrag.longPressTimer = setTimeout(function() {
+          if (!touchColumnDrag.active || touchColumnDrag.columnKey !== columnKey) return;
+          beginVehicleColumnTouchDrag(container, cell, columnKey, startTouch);
+        }, 180);
       }, { passive: true });
+
       cell.addEventListener('touchmove', function(e) {
-        if (!touchColumnDrag.active || e.touches.length !== 1) return;
-        const x = e.touches[0].clientX;
-        const y = e.touches[0].clientY;
-        const dx = Math.abs(x - touchColumnDrag.startX);
-        const dy = Math.abs(y - touchColumnDrag.startY);
-        if (!touchColumnDrag.dragging && (dx > 10 || dy > 10)) {
-          touchColumnDrag.dragging = true;
+        if (!touchColumnDrag.active || touchColumnDrag.columnKey !== columnKey || e.touches.length !== 1) return;
+        const touch = e.touches[0];
+        const dx = Math.abs(touch.clientX - touchColumnDrag.startX);
+        const dy = Math.abs(touch.clientY - touchColumnDrag.startY);
+
+        if (!touchColumnDrag.dragging) {
+          if (dx > 8 || dy > 8) {
+            clearTimeout(touchColumnDrag.longPressTimer);
+            if (dx > 14 || dy > 14) {
+              cleanupVehicleColumnTouchDrag(container);
+            }
+          }
+          return;
         }
-        if (touchColumnDrag.dragging) {
-          e.preventDefault();
-          const under = document.elementFromPoint(x, y);
-          const headerCell = under && under.closest('.list-header-row .list-cell[data-col]');
-          const targetKey = headerCell ? headerCell.getAttribute('data-col') : null;
-          container.querySelectorAll('.list-header-row .list-cell').forEach(function(c) {
-            c.classList.toggle('drag-over', c === headerCell && targetKey && targetKey !== touchColumnDrag.columnKey);
-          });
-          touchColumnDrag.lastDropTarget = (targetKey && targetKey !== touchColumnDrag.columnKey) ? targetKey : null;
-        }
+
+        e.preventDefault();
+        updateVehicleColumnTouchGhost(touch.clientX, touch.clientY);
+        const targetCell = getVehicleTouchTargetCell(container, touch.clientX, columnKey);
+        const targetKey = targetCell ? targetCell.getAttribute('data-col') : null;
+        container.querySelectorAll('.list-header-row .list-cell').forEach(function(headerCell) {
+          headerCell.classList.toggle('drag-over', headerCell === targetCell && targetKey && targetKey !== columnKey);
+        });
+        touchColumnDrag.lastDropTarget = (targetKey && targetKey !== columnKey) ? targetKey : null;
       }, { passive: false });
-      function endTouch() {
-        if (!touchColumnDrag.active) return;
+
+      function endTouch(e) {
+        if (!touchColumnDrag.active && !touchColumnDrag.dragging) return;
+        clearTimeout(touchColumnDrag.longPressTimer);
         const sourceKey = touchColumnDrag.columnKey;
         const targetKey = touchColumnDrag.lastDropTarget;
-        container.querySelectorAll('.list-header-row .list-cell').forEach(function(c) {
-          c.style.opacity = '1';
-          c.classList.remove('drag-over');
-        });
-        container.querySelectorAll('.list-item .list-cell').forEach(function(c) {
-          c.style.opacity = '1';
-        });
-        touchColumnDrag.active = false;
-        touchColumnDrag.columnKey = null;
-        touchColumnDrag.dragging = false;
-        touchColumnDrag.lastDropTarget = null;
-        if (sourceKey && targetKey) {
-          const draggedIndex = vehicleColumnOrder.indexOf(sourceKey);
-          const targetIndex = vehicleColumnOrder.indexOf(targetKey);
-          if (draggedIndex !== -1 && targetIndex !== -1) {
-            vehicleColumnOrder.splice(draggedIndex, 1);
-            vehicleColumnOrder.splice(targetIndex, 0, sourceKey);
-            saveVehicleColumnOrder();
-            renderVehicles();
-          }
+        const wasDragging = touchColumnDrag.dragging;
+        if (wasDragging) {
+          touchColumnDrag.suppressClickUntil = Date.now() + 500;
+          if (e && typeof e.preventDefault === 'function') e.preventDefault();
+        }
+        cleanupVehicleColumnTouchDrag(container);
+        if (wasDragging && sourceKey && targetKey && reorderVehicleColumns(sourceKey, targetKey)) {
+          renderVehicles();
         }
       }
-      cell.addEventListener('touchend', endTouch, { passive: true });
-      cell.addEventListener('touchcancel', endTouch, { passive: true });
+
+      cell.addEventListener('touchend', endTouch, { passive: false });
+      cell.addEventListener('touchcancel', endTouch, { passive: false });
     });
   }
 
