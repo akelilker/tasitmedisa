@@ -1550,6 +1550,8 @@ body.modal-open .user-panel-link {
 /* 4. FOOTER (GÜÇLI KIRMIZI TEMA + AYRILIK) – yükseklik/padding ezilmesin */
 #app-footer {
     position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
     bottom: 0;
     flex-shrink: 0;
     max-width: 500px;
@@ -1570,6 +1572,10 @@ body.modal-open .user-panel-link {
     clip-path: inset(-28px 0 0 0);
     overflow-x: hidden;
     overflow-y: visible;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    visibility: visible !important;
 }
 
 /* Modal açıkken footer glow AYNI kalsın (ışık şiddeti artmasın); overlay tam opak */
