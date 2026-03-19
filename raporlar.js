@@ -1769,6 +1769,36 @@
 
     // Yazdır – Excel ile aynı veriyi tablo olarak yazdırır (ekran görüntüsü değil)
     const stokPrintHeaders = { sira:'No.', sube:'Şube', yil:'Yıl', marka:'Marka/Model', plaka:'Plaka', sanziman:'Şanzıman', km:'KM', sigorta:'Sigorta Bitiş', kasko:'Kasko Bitiş', kaskoDegeri:'Kasko Değeri', muayene:'Muayene T.', kredi:'Kredi/Rehin', lastik:'Lastikler', utts:'UTTS', takip:'Takip Cihazı', tramer:'Tramer', boya:'Boya Değişen', kullanici:'Kullanıcı', tescil:'Tescil Tarihi' };
+    const stokPrintColumnWeights = {
+        sira: 5,
+        yil: 7,
+        plaka: 13,
+        marka: 22,
+        sanziman: 11,
+        km: 10,
+        sube: 16,
+        sigorta: 10,
+        kasko: 10,
+        kaskoDegeri: 12,
+        muayene: 10,
+        kredi: 8,
+        lastik: 8,
+        utts: 7,
+        takip: 9,
+        tramer: 8,
+        boya: 8,
+        kullanici: 12,
+        tescil: 11
+    };
+
+    function buildStokPrintColgroup(activeColumns) {
+        const totalWeight = activeColumns.reduce((sum, col) => sum + (stokPrintColumnWeights[col.key] || 10), 0) || 1;
+        return `<colgroup>${activeColumns.map(col => {
+            const widthPercent = ((stokPrintColumnWeights[col.key] || 10) / totalWeight) * 100;
+            return `<col data-col="${col.key}" style="width:${widthPercent.toFixed(2)}%">`;
+        }).join('')}</colgroup>`;
+    }
+
     window.printStokReport = function() {
         const data = getStokReportExportData();
         if (!data) {
@@ -1780,14 +1810,15 @@
             return;
         }
         const { vehicles, activeColumns, titleText, dateRangeText } = data;
-        const thead = activeColumns.map(col => `<th>${escapeHtml(stokPrintHeaders[col.key] || col.key)}</th>`).join('');
+        const colgroup = buildStokPrintColgroup(activeColumns);
+        const thead = activeColumns.map(col => `<th data-col="${col.key}">${escapeHtml(stokPrintHeaders[col.key] || col.key)}</th>`).join('');
         const rows = vehicles.map((vehicle, index) => {
-            const cells = activeColumns.map(col => `<td>${escapeHtml(String(getStokCellValue(vehicle, col, index)))}</td>`).join('');
+            const cells = activeColumns.map(col => `<td data-col="${col.key}">${escapeHtml(String(getStokCellValue(vehicle, col, index)))}</td>`).join('');
             return `<tr class="${index % 2 === 0 ? 'even' : 'odd'}">${cells}</tr>`;
         }).join('');
         const el = document.createElement('div');
         el.id = 'stok-print-area';
-        el.innerHTML = `<h1 class="stok-print-title">${escapeHtml(titleText)}</h1><p class="stok-print-date">${escapeHtml(dateRangeText)}</p><table class="stok-print-table"><thead><tr>${thead}</tr></thead><tbody>${rows}</tbody></table>`;
+        el.innerHTML = `<h1 class="stok-print-title">${escapeHtml(titleText)}</h1><p class="stok-print-date">${escapeHtml(dateRangeText)}</p><table class="stok-print-table">${colgroup}<thead><tr>${thead}</tr></thead><tbody>${rows}</tbody></table>`;
         document.body.appendChild(el);
         /* Detay (sütun) çoksa yatay sayfa: 9+ sütunda landscape */
         let landscapeStyle = null;

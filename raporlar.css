@@ -2550,16 +2550,30 @@ margin: 0 0 12px 0;
 width: 100%;
 border-collapse: collapse;
 font-size: 10pt;
+table-layout: fixed;
 }
 #stok-print-area .stok-print-table th,
 #stok-print-area .stok-print-table td {
 border: 1px solid #333;
 padding: 4px 8px;
 text-align: center;
+box-sizing: border-box;
+overflow: hidden;
+text-overflow: ellipsis;
 }
 #stok-print-area .stok-print-table thead tr {
 background: #404040;
 color: #fff;
+}
+#stok-print-area .stok-print-table th[data-col="marka"],
+#stok-print-area .stok-print-table td[data-col="marka"],
+#stok-print-area .stok-print-table th[data-col="sube"],
+#stok-print-area .stok-print-table td[data-col="sube"],
+#stok-print-area .stok-print-table th[data-col="kullanici"],
+#stok-print-area .stok-print-table td[data-col="kullanici"] {
+white-space: normal;
+word-break: break-word;
+overflow-wrap: anywhere;
 }
 #stok-print-area .stok-print-table tbody tr.even { background: #fff; }
 #stok-print-area .stok-print-table tbody tr.odd { background: #e5e5e5; }
