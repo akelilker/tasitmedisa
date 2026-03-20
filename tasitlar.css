@@ -69,12 +69,19 @@
   box-sizing: border-box !important;
 }
 
-/* Olay Ekle modallarında tüm tarih inputları – gg.aa.yyyy kutudan taşmasın */
-.olay-ekle-modal .modal-body > div > div:has(> .olay-tarih-input),
-.olay-ekle-modal .modal-body > div > div:has(> input[type="date"].olay-tarih-input) {
-  width: min(190px, 100%) !important;
+/* Olay Ekle: tarih satırı — input, etiket div'inin doğrudan çocuğu (modal-body > #dinamik-olay-form-icerik > sarmalayıcı > satır > input) */
+.olay-ekle-modal .modal-body div:has(> input.olay-tarih-input),
+.olay-ekle-modal .modal-body div:has(> input[type="date"].olay-tarih-input) {
+  width: 100% !important;
   max-width: 100% !important;
   min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+@media (min-width: 641px) {
+  .olay-ekle-modal .modal-body div:has(> input.olay-tarih-input),
+  .olay-ekle-modal .modal-body div:has(> input[type="date"].olay-tarih-input) {
+    width: min(190px, 100%) !important;
+  }
 }
 .olay-ekle-modal .modal-body input[type="date"].form-input,
 .olay-ekle-modal .modal-body .olay-tarih-input {
@@ -250,6 +257,51 @@
     display: none !important;
     width: 0 !important;
     height: 0 !important;
+}
+
+/* Olay Ekle (#dinamik-olay-modal) mobil: Tarih / Trafik cezası vb. — satır ve inputlar viewport’tan taşmasın (iOS date min-intrinsic) */
+@media (max-width: 640px) {
+  #dinamik-olay-modal .modal-container {
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+  }
+  #dinamik-olay-modal .modal-body {
+    overflow-x: hidden !important;
+    min-width: 0 !important;
+  }
+  #dinamik-olay-modal #dinamik-olay-form-icerik,
+  #dinamik-olay-modal #dinamik-olay-form-icerik > div {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+  #dinamik-olay-modal #dinamik-olay-form-icerik > div > div {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+  #dinamik-olay-modal .modal-body .form-input,
+  #dinamik-olay-modal .modal-body select,
+  #dinamik-olay-modal .modal-body textarea {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+  #dinamik-olay-modal .modal-body input[type="date"].form-input,
+  #dinamik-olay-modal .modal-body .olay-tarih-input {
+    max-width: 100% !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+  }
+  #dinamik-olay-modal .modal-body .universal-btn-group {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
 }
 
 /* Şemayı saran kapsayıcı hizalama */
