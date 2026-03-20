@@ -2442,6 +2442,11 @@ body.dashboard-page {
   z-index: 10011 !important;
 }
 
+/* Düzeltme Talebi: style-core :root --data-value-color (#f8f9fa) neredeyse beyaz; bu modalda açıklama/değer metni gri kalsın */
+#edit-request-modal.driver-modal {
+  --data-value-color: #a0aec0;
+}
+
 /* Masaüstü: kayÃ„Â±t modali ile aynı – overlay üst padding yok; overlay footer'Ã„Â± ÃƒÂ¶rtmesin, footer görünsün */
 @media (min-width: 641px) {
   #history-modal.driver-modal,
@@ -2761,26 +2766,36 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   resize: none;
 }
 
-/* DÃƒÂ¼zeltme Talebi: etiket beyaz, açıklama gri (mobil + masaüstü) */
+/* Düzeltme Talebi: etiket beyaz, mevcut değer + alan içeriği gri (iOS WebKit metin rengi dahil) */
 #edit-request-modal .driver-current-km {
-  color: var(--form-label-color, #ffffff) !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
   margin-bottom: 13px !important;
 }
 #edit-request-modal .driver-current-km strong {
-  color: var(--data-value-color, #a0aec0) !important;
+  color: #a0aec0 !important;
+  -webkit-text-fill-color: #a0aec0 !important;
+  font-weight: 600;
 }
 #edit-request-modal .form-group label {
-  color: var(--form-label-color, #ffffff) !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
 }
-
 /* DÃƒÂ¼zeltme Talebi: input iÃƒÂ§ yükseklik 3px dar, bölümler arası 3px dar, Bildir ince */
 #edit-request-modal .form-group {
   margin-bottom: 13px !important;
 }
 #edit-request-modal .form-group input,
 #edit-request-modal .form-group textarea {
+  color: #a0aec0 !important;
+  -webkit-text-fill-color: #a0aec0 !important;
   padding-top: 3px !important;
   padding-bottom: 3px !important;
+}
+#edit-request-modal .form-group input:focus,
+#edit-request-modal .form-group textarea:focus {
+  color: #b8c5d0 !important;
+  -webkit-text-fill-color: #b8c5d0 !important;
 }
 #edit-request-modal .form-group input:not(:focus),
 #edit-request-modal .form-group textarea:not(:focus) {
@@ -2799,7 +2814,8 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 }
 #edit-request-modal .form-group input::placeholder,
 #edit-request-modal .form-group textarea::placeholder {
-  color: rgba(255, 255, 255, 0.22) !important;
+  color: rgba(160, 174, 192, 0.55) !important;
+  -webkit-text-fill-color: rgba(160, 174, 192, 0.55) !important;
 }
 
 /* DÃƒÂ¼zeltme Talebi: KM input spinner gizli */
@@ -4661,15 +4677,32 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
   #edit-request-modal .form-group label {
     font-size: 14px !important;
-    color: var(--form-label-color, #ffffff) !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
   }
   #edit-request-modal .form-group input,
   #edit-request-modal .form-group textarea {
     font-size: 17px !important;
+    color: #a0aec0 !important;
+    -webkit-text-fill-color: #a0aec0 !important;
+  }
+  #edit-request-modal .form-group input:focus,
+  #edit-request-modal .form-group textarea:focus {
+    color: #b8c5d0 !important;
+    -webkit-text-fill-color: #b8c5d0 !important;
+  }
+  #edit-request-modal .driver-current-km {
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
+  }
+  #edit-request-modal .driver-current-km strong {
+    color: #a0aec0 !important;
+    -webkit-text-fill-color: #a0aec0 !important;
   }
   #edit-request-modal .form-group input::placeholder,
   #edit-request-modal .form-group textarea::placeholder {
-    color: rgba(255, 255, 255, 0.22) !important;
+    color: rgba(160, 174, 192, 0.55) !important;
+    -webkit-text-fill-color: rgba(160, 174, 192, 0.55) !important;
   }
   #edit-request-modal .btn-submit {
     font-size: 17px !important;
