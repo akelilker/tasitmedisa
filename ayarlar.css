@@ -564,7 +564,7 @@ body.modal-open #cache-confirm-modal.open {
     height: 40px;
     width: 100%;
     text-align: center;
-    font-size: 15px;
+    font-size: calc(15px + 1pt);
     cursor: pointer;
     border-radius: 8px;
     margin-bottom: 8px;
@@ -610,7 +610,7 @@ body.modal-open #cache-confirm-modal.open {
     background: var(--bg-input); 
     color: var(--txt-white); 
     border-color: var(--border-light); 
-    font-size: 16px; 
+    font-size: calc(16px + 1pt); 
 } 
 
 .settings-dropdown .cache-clear-btn {
@@ -619,7 +619,7 @@ body.modal-open #cache-confirm-modal.open {
 }
 .settings-dropdown .cache-clear-btn:hover {
   border-color: rgba(var(--theme-color-rgb), 0.7) !important;
-  font-size: 17px !important;
+  font-size: calc(17px + 1pt) !important;
 }
 
 .list-item {
@@ -1594,7 +1594,7 @@ input.settings-form-input:-moz-autofill,
     }
     .settings-dropdown button {
         text-align: right !important;
-        font-size: 16px !important;
+        font-size: calc(16px + 1pt) !important;
         height: 52px !important;
         margin-bottom: 8px !important;
         display: flex !important;

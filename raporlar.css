@@ -2087,7 +2087,7 @@ position: static !important;
 margin-top: 4px;
 }
 #reports-modal:has(.stok-detail-menu-open) .reports-list-header-actions {
-padding-bottom: 4px !important;
+padding-bottom: 0 !important;
 }
 .stok-controls-row-1 {
 display: flex;

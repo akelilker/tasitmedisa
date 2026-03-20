@@ -1735,6 +1735,36 @@
         }
     };
 
+    function removeStokSearchOutsideListener() {
+        document.removeEventListener('pointerdown', stokSearchOutsidePointerDown, true);
+    }
+
+    function stokSearchOutsidePointerDown(e) {
+        const container = document.getElementById('stok-search-container');
+        if (!container || !container.classList.contains('open')) {
+            removeStokSearchOutsideListener();
+            return;
+        }
+        const wrap = container.closest('.stok-search-wrap');
+        if (wrap && e.target && typeof e.target.closest === 'function' && wrap.contains(e.target)) {
+            return;
+        }
+        container.classList.remove('open');
+        const input = document.getElementById('stok-search-input');
+        if (input) {
+            input.value = '';
+            window.handleStokSearch('');
+        }
+        removeStokSearchOutsideListener();
+    }
+
+    function bindStokSearchOutsideClose() {
+        removeStokSearchOutsideListener();
+        setTimeout(function() {
+            document.addEventListener('pointerdown', stokSearchOutsidePointerDown, true);
+        }, 0);
+    }
+
     // Arama kutusunu aç/kapat (tek büyüteç, mobil+masaüstü)
     window.toggleStokSearch = function() {
         const container = document.getElementById('stok-search-container');
@@ -1742,6 +1772,7 @@
         
         if (container) {
             if (container.classList.contains('open')) {
+                removeStokSearchOutsideListener();
                 container.classList.remove('open');
                 if (input) {
                     input.value = '';
@@ -1753,6 +1784,7 @@
                     const syncVal = window.stokSearchTerm || '';
                     if (input.value !== syncVal) input.value = syncVal;
                 }
+                bindStokSearchOutsideClose();
                 setTimeout(() => {
                     if (input) input.focus();
                 }, 100);
@@ -1993,6 +2025,36 @@
         renderKullaniciView();
     };
     
+    function removeKullaniciSearchOutsideListener() {
+        document.removeEventListener('pointerdown', kullaniciSearchOutsidePointerDown, true);
+    }
+
+    function kullaniciSearchOutsidePointerDown(e) {
+        const container = document.getElementById('kullanici-search-container');
+        if (!container || !container.classList.contains('open')) {
+            removeKullaniciSearchOutsideListener();
+            return;
+        }
+        const shell = container.closest('.kullanici-export-right');
+        if (shell && e.target && typeof shell.contains === 'function' && shell.contains(e.target)) {
+            return;
+        }
+        container.classList.remove('open');
+        const input = document.getElementById('kullanici-search-input');
+        if (input) {
+            input.value = '';
+            window.handleKullaniciSearch('');
+        }
+        removeKullaniciSearchOutsideListener();
+    }
+
+    function bindKullaniciSearchOutsideClose() {
+        removeKullaniciSearchOutsideListener();
+        setTimeout(function() {
+            document.addEventListener('pointerdown', kullaniciSearchOutsidePointerDown, true);
+        }, 0);
+    }
+
     // Arama kutusunu aç/kapat
     window.toggleKullaniciSearch = function() {
         const container = document.getElementById('kullanici-search-container');
@@ -2000,6 +2062,7 @@
         
         if (container) {
             if (container.classList.contains('open')) {
+                removeKullaniciSearchOutsideListener();
                 container.classList.remove('open');
                 if (input) {
                     input.value = '';
@@ -2007,6 +2070,7 @@
                 }
             } else {
                 container.classList.add('open');
+                bindKullaniciSearchOutsideClose();
                 setTimeout(() => {
                     if (input) input.focus();
                 }, 100);
