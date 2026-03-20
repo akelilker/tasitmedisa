@@ -2334,8 +2334,35 @@ function renderVehicleDetailLeft(vehicle) {
     const labelCls = 'form-label';
     const inputCls = 'form-input';
     const section = (labelText, id, tag, attrs, inner) => {
-      const att = (attrs || []).map(a => a[0] + '="' + String(a[1] || '').replace(/"/g, '&quot;') + '"').join(' ');
-      const open = tag === 'input' ? '<input id="' + id + '" class="' + inputCls + '" ' + att + '>' : tag === 'textarea' ? '<textarea id="' + id + '" class="' + inputCls + '" ' + att + '>' + (inner || '') + '</textarea>' : tag === 'select' ? '<select id="' + id + '" class="' + inputCls + '" ' + att + '>' + (inner || '') + '</select>' : '<div id="' + id + '" ' + att + '>' + (inner || '') + '</div>';
+      const list = attrs || [];
+      let attrClass = null;
+      const rest = [];
+      for (let i = 0; i < list.length; i++) {
+        const a = list[i];
+        if (a[0] === 'class') attrClass = String(a[1] || '');
+        else rest.push(a);
+      }
+      const escAttr = function (v) { return String(v || '').replace(/"/g, '&quot;'); };
+      const joinRest = function () {
+        return rest.map(function (a) { return a[0] + '="' + escAttr(a[1]) + '"'; }).join(' ');
+      };
+      const mergeClass = function (base, extra) {
+        if (!extra || !String(extra).trim()) return base;
+        var set = {};
+        base.split(/\s+/).filter(Boolean).forEach(function (t) { set[t] = true; });
+        String(extra).trim().split(/\s+/).forEach(function (t) { if (t) set[t] = true; });
+        return Object.keys(set).join(' ');
+      };
+      var open;
+      if (tag === 'input') {
+        open = '<input id="' + id + '" class="' + escAttr(mergeClass(inputCls, attrClass)) + '" ' + joinRest() + '>';
+      } else if (tag === 'textarea') {
+        open = '<textarea id="' + id + '" class="' + escAttr(mergeClass(inputCls, attrClass)) + '" ' + joinRest() + '>' + (inner || '') + '</textarea>';
+      } else if (tag === 'select') {
+        open = '<select id="' + id + '" class="' + escAttr(mergeClass(inputCls, attrClass)) + '" ' + joinRest() + '>' + (inner || '') + '</select>';
+      } else {
+        open = '<div id="' + id + '" ' + list.map(function (a) { return a[0] + '="' + escAttr(a[1]) + '"'; }).join(' ') + '>' + (inner || '') + '</div>';
+      }
       return '<div><label class="' + labelCls + '" for="' + id + '">' + labelText + '</label>' + open + '</div>';
     };
     const radioGroup = (name, options) => {
@@ -2348,25 +2375,25 @@ function renderVehicleDetailLeft(vehicle) {
     switch (type) {
       case 'bakim':
         return '<div style="display:flex;flex-direction:column;gap:12px;">' +
-          section('Tarih (gg.aa.yyyy)', 'bakim-tarih', 'input', [['type', 'date'], ['class', 'form-input olay-tarih-input']]) +
+          section('Tarih (gg.aa.yyyy)', 'bakim-tarih', 'input', [['type', 'date'], ['class', 'olay-tarih-input']]) +
           section('Servis', 'bakim-servis', 'input', [['type', 'text'], ['placeholder', 'Servis adı']]) +
           section('Km', 'bakim-km', 'input', [['type', 'text'], ['placeholder', 'Km'], ['inputmode', 'numeric']]) +
           section('Tutar', 'bakim-tutar', 'input', [['type', 'text'], ['placeholder', 'Tutar']]) +
           section('Yapılan İşlemler', 'bakim-islemler', 'textarea', [['rows', '2'], ['placeholder', 'Yapılan işlemler']]) + '</div>';
       case 'kaza':
         return '<div style="display:flex;flex-direction:column;gap:12px;">' +
-          section('Tarih', 'kaza-tarih', 'input', [['type', 'date'], ['class', 'form-input olay-tarih-input']]) +
+          section('Tarih', 'kaza-tarih', 'input', [['type', 'date'], ['class', 'olay-tarih-input']]) +
           section('Kullanıcı', 'kaza-surucu', 'input', [['type', 'text'], ['placeholder', 'Kullanıcı']]) +
           section('Hasar Tutarı', 'kaza-tutar', 'input', [['type', 'text'], ['placeholder', 'Tutar']]) +
           '<div class="form-section-inline kaza-tramer-row"><span class="' + labelCls + ' kaza-tramer-label">Tramer Kaydı Oluştu mu?</span><div class="kaza-tramer-actions"><button type="button" class="radio-btn tramer-evet hover-red" data-value="evet" data-tramer-group="kaza">Evet</button><button type="button" class="radio-btn tramer-hayir hover-green" data-value="hayir" data-tramer-group="kaza">Hayır</button></div></div>' +
           '<div id="kaza-tramer-fields-wrap" style="display:none;">' +
-          section('Tramer Tarih', 'kaza-tramer-tarih', 'input', [['type', 'date']]) +
+          section('Tramer Tarih', 'kaza-tramer-tarih', 'input', [['type', 'date'], ['class', 'olay-tarih-input']]) +
           section('Tramer Tutar', 'kaza-tramer-tutar', 'input', [['type', 'text'], ['placeholder', 'Tutar']]) +
           '</div>' +
           '<div><span class="' + labelCls + '">Kaporta / Hasar</span><div id="kaza-kaporta-container"></div></div></div>';
       case 'ceza':
         return '<div style="display:flex;flex-direction:column;gap:12px;">' +
-          section('Tarih', 'ceza-tarih', 'input', [['type', 'date'], ['class', 'form-input olay-tarih-input']]) +
+          section('Tarih', 'ceza-tarih', 'input', [['type', 'date'], ['class', 'olay-tarih-input']]) +
           section('Kullanıcı', 'ceza-surucu', 'input', [['type', 'text'], ['placeholder', 'Kullanıcı']]) +
           section('Ceza Tutarı', 'ceza-tutar', 'input', [['type', 'text']]) +
           section('Açıklama', 'ceza-aciklama', 'textarea', [['rows', '2'], ['placeholder', 'Açıklama']]) + '</div>';
@@ -2417,7 +2444,7 @@ function renderVehicleDetailLeft(vehicle) {
           section('Kullanıcı', 'kullanici-select', 'select', [], '<option value="">Kullanıcı Seçiniz</option>') + '</div>';
       case 'satis':
         return '<div style="display:flex;flex-direction:column;gap:12px;">' +
-          section('Satış/Pert Tarihi', 'satis-tarih', 'input', [['type', 'date']]) +
+          section('Satış/Pert Tarihi', 'satis-tarih', 'input', [['type', 'date'], ['class', 'olay-tarih-input']]) +
           section('Tutar', 'satis-tutar', 'input', [['type', 'text'], ['placeholder', 'Tutar']]) +
           section('Açıklama', 'satis-aciklama', 'textarea', [['rows', '2'], ['placeholder', 'Açıklama']]) + '</div>';
       default:
@@ -2911,12 +2938,25 @@ function renderVehicleDetailLeft(vehicle) {
               if (!input.value && input !== document.activeElement) {
                 const isMobile = window.innerWidth <= 640;
                 const leftPx = isMobile ? '12px' : '8px';
+                const st = window.getComputedStyle(input);
+                var pt = parseFloat(st.paddingTop); if (!Number.isFinite(pt)) pt = 0;
+                var pb = parseFloat(st.paddingBottom); if (!Number.isFinite(pb)) pb = 0;
+                var ih = parseFloat(st.height);
+                if (!Number.isFinite(ih) || ih <= 0) ih = input.getBoundingClientRect().height;
+                if (!Number.isFinite(ih) || ih <= 0) ih = 22;
+                const parent = input.parentElement;
+                const inputRect = input.getBoundingClientRect();
+                const parentRect = parent ? parent.getBoundingClientRect() : inputRect;
+                const inputOffsetTop = inputRect.top - parentRect.top;
+                const fs = parseFloat(st.fontSize) || 10;
+                const ph = fs * 1.2;
+                const contentCenter = inputOffsetTop + pt + (ih - pt - pb) / 2;
+                const topPx = contentCenter - ph / 2;
                 const placeholder = document.createElement('span');
                 placeholder.className = 'date-placeholder';
                 placeholder.textContent = 'gg.aa.yyyy';
-                placeholder.style.cssText = 'position: absolute; left: ' + leftPx + '; top: 50%; transform: translateY(-50%); color: #666 !important; pointer-events: none; font-size: 10px; z-index: 100;';
+                placeholder.style.cssText = 'position: absolute; left: ' + leftPx + '; top: ' + topPx + 'px; color: #666 !important; pointer-events: none; font-size: 10px; z-index: 100; line-height: ' + ph + 'px;';
                 
-                const parent = input.parentElement;
                 if (parent) {
                   parent.style.position = 'relative';
                   parent.appendChild(placeholder);

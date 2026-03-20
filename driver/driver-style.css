@@ -4156,6 +4156,13 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     border-top-right-radius: 10px !important;
   }
 
+  /* Anahtar/Lastik modal: Var/Yok dikey yükseklik −4px (padding 5px → 3px) */
+  #driver-anahtar-modal .driver-radio-btn[data-group="anahtar"],
+  #driver-lastik-modal .driver-radio-btn[data-group="lastik"] {
+    padding-top: 3px !important;
+    padding-bottom: 3px !important;
+  }
+
   /* GeÃƒÂ§miÃ…Å¸ KayÃ„Â±tlar + DÃƒÂ¼zeltme Talebi: kayÃ„Â±t modali ile aynı kapatma butonu boyutu */
   #history-modal .modal-close,
   #edit-request-modal .modal-close {
