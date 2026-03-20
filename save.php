@@ -134,16 +134,8 @@ if (file_exists($dataFile)) {
     }
 }
 
-// Yedek oluştur (önceki veriyi .backup olarak kaydet)
-if (file_exists($dataFile)) {
-    $backupFile = $dataDir . '/data.json.backup';
-    copy($dataFile, $backupFile);
-}
-
-// Merge edilmiş veriyi kaydet
-$output = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
-$result = file_put_contents($dataFile, $output, LOCK_EX);
-if ($result === false) {
+// Merge edilmiş veriyi kaydet (yedek + atomik yazım core.php saveData içinde)
+if (!saveData($data)) {
     http_response_code(500);
     echo json_encode(['error' => 'Veri kaydedilemedi']);
     exit;

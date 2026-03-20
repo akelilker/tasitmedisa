@@ -4237,21 +4237,37 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .dashboard-page .driver-panels-inner {
     overflow-x: visible !important;
     overflow-y: hidden;
+    position: relative;
+    isolation: isolate;
+  }
+  /* Kırmızı dikey ayırıcı: sol panel border yerine içeride çizilir; yükseklik panels-inner ile biter (footer/ışık bandının altına sarkmaz) */
+  .dashboard-page .driver-panels-inner::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: calc(30% + 4px);
+    width: 1.2px;
+    background: var(--border-red-tech);
+    pointer-events: none;
+    z-index: 2;
   }
   .dashboard-page .driver-left-panel,
   .dashboard-page .driver-plate-dropdown-row {
     overflow: visible !important;
   }
+  /* Sol bölme: uzun araç bilgisinde kendi içinde dikey kaydırma; yatay taşma kapalı (plaka listesi ayrı overflow ile) */
   .dashboard-page .driver-left-panel {
     position: relative;
     z-index: 3;
-  }
-  .dashboard-page .driver-left-panel-content {
-    overflow-x: visible !important;
+    border-right: none !important;
   }
   .dashboard-page .driver-right-panel {
     position: relative;
     z-index: 1;
+    align-self: stretch !important;
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
   }
   /* Sol panelin 12px'lik asimetrik sa???Ã¯Â¿Â½ boÃ…Å¸lu???Ã¯Â¿Â½unu ezip sat???Ã¯Â¿Â½r???Ã¯Â¿Â½ tam ortalar */
   .dashboard-page .driver-plate-dropdown-row {
@@ -5012,6 +5028,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     flex: 0 0 30% !important;
     width: 30% !important;
     min-width: 0 !important;
+    min-height: 0 !important;
     flex-shrink: 0 !important;
     z-index: 2 !important;
     background: var(--bg) !important; /* Sticky iken arkadan içerik geçmesin */
@@ -5041,8 +5058,14 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
 
   .dashboard-page .driver-left-panel-content {
+    flex: 1 1 0 !important;
+    min-height: 0 !important;
+    max-height: 100% !important;
     overflow-y: auto !important;
-    overflow-x: visible !important;
+    overflow-x: hidden !important;
+    overscroll-behavior-y: none !important;
+    -webkit-overflow-scrolling: touch !important;
+    touch-action: pan-y !important;
   }
 
   .dashboard-page .driver-plate-dropdown-row {

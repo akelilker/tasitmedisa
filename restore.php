@@ -8,7 +8,16 @@ header('Expires: 0');
 
 $dataFile = getDataFilePath();
 $dataDir = dirname($dataFile);
-$backupFile = $dataDir . '/data.json.backup';
+$backupFile = getMainBackupFilePath();
+$sourceTag = 'data.json.backup';
+
+if (!file_exists($backupFile)) {
+    $fallback = findLatestSnapshotPath();
+    if ($fallback !== null && is_readable($fallback)) {
+        $backupFile = $fallback;
+        $sourceTag = basename($fallback);
+    }
+}
 
 if (!file_exists($backupFile)) {
     http_response_code(404);
@@ -30,7 +39,7 @@ if (!is_array($data)) {
     exit;
 }
 
-$data['_backup_source'] = 'data.json.backup';
+$data['_backup_source'] = $sourceTag;
 $data['_backup_file_mtime'] = date('c', filemtime($backupFile));
 
 echo json_encode($data, JSON_UNESCAPED_UNICODE);
