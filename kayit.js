@@ -845,10 +845,21 @@
     
     // Input'un padding ve height değerlerini al
     const inputStyle = window.getComputedStyle(input);
-    const paddingTop = parseFloat(inputStyle.paddingTop) || 4;
-    const paddingBottom = parseFloat(inputStyle.paddingBottom) || 4;
-    const inputHeight = parseFloat(inputStyle.height) || 22;
-    const lineHeight = parseFloat(inputStyle.lineHeight) || parseFloat(inputStyle.fontSize) * 1.2;
+    var paddingTop = parseFloat(inputStyle.paddingTop);
+    var paddingBottom = parseFloat(inputStyle.paddingBottom);
+    if (!Number.isFinite(paddingTop)) paddingTop = 0;
+    if (!Number.isFinite(paddingBottom)) paddingBottom = 0;
+    var inputHeight = parseFloat(inputStyle.height);
+    if (!Number.isFinite(inputHeight) || inputHeight <= 0) {
+      inputHeight = input.getBoundingClientRect().height;
+    }
+    if (!Number.isFinite(inputHeight) || inputHeight <= 0) {
+      inputHeight = 22;
+    }
+    var lineHeight = parseFloat(inputStyle.lineHeight);
+    if (!Number.isFinite(lineHeight) || lineHeight <= 0) {
+      lineHeight = (parseFloat(inputStyle.fontSize) || 10) * 1.2;
+    }
     
     // Placeholder'ın line-height'ını da hesapla
     const placeholderLineHeight = parseFloat(inputStyle.fontSize) * 1.2;
@@ -863,8 +874,7 @@
     const contentCenter = inputOffsetTop + paddingTop + (contentHeight / 2);
     
     // Placeholder'ın top değerini, placeholder'ın ortası contentCenter'a denk gelecek şekilde ayarla
-    // Biraz daha aşağı kaydırmak için +1px offset ekle
-    const topValue = contentCenter - (placeholderLineHeight / 2) + 1;
+    const topValue = contentCenter - (placeholderLineHeight / 2);
     
     // Placeholder span oluştur
     const placeholder = document.createElement('span');
