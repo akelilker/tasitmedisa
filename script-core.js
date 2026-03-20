@@ -505,7 +505,7 @@ document.addEventListener('DOMContentLoaded', () => {
   var TASITLAR_JS = 'tasitlar.js?v=20260320.3';
   var TASITLAR_CSS = 'tasitlar.css?v=20260320.3';
   var RAPORLAR_JS = 'raporlar.js?v=20260320.4';
-  var RAPORLAR_CSS = 'raporlar.css?v=20260320.4';
+  var RAPORLAR_CSS = 'raporlar.css?v=20260320.5';
   var KAYIT_JS = 'kayit.js?v=20260320.1';
   var KAYIT_CSS = 'kayit.css?v=20260301';
   var AYARLAR_JS = 'ayarlar.js?v=20260319';

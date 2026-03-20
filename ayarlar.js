@@ -212,13 +212,7 @@
     window.renderBranchList = function renderBranchList() {
       const container = document.getElementById('branch-list');
       if (!container) return;
-      // #region agent log
-      try {
-        var first = container.firstElementChild;
-        fetch('http://127.0.0.1:7885/ingest/f748c7df-0c18-4178-a736-c89151ca12d1',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bcdaff'},body:JSON.stringify({sessionId:'bcdaff',location:'ayarlar.js:renderBranchList',message:'Branch list rendered',data:{containerClass:container.className||'',firstChildClass:first?first.className:'',childCount:container.children.length},timestamp:Date.now(),hypothesisId:'H1-H3'})}).catch(function(){});
-      } catch (e) {}
-      // #endregion
-  
+
       const branches = readBranches();
       const vehicles = readVehicles();
   
@@ -808,12 +802,7 @@
     window.renderUserList = function renderUserList() {
       const container = document.getElementById('user-list');
       if (!container) return;
-      // #region agent log
-      try {
-        var first = container.firstElementChild;
-        fetch('http://127.0.0.1:7885/ingest/f748c7df-0c18-4178-a736-c89151ca12d1',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bcdaff'},body:JSON.stringify({sessionId:'bcdaff',location:'ayarlar.js:renderUserList',message:'User list rendered',data:{containerClass:container.className||'',firstChildClass:first?first.className:'',childCount:container.children.length},timestamp:Date.now(),hypothesisId:'H1-H3'})}).catch(function(){});
-      } catch (e) {}
-      // #endregion
+
       const users = readUsers();
       const branches = readBranches();
   

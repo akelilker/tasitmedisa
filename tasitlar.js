@@ -2250,38 +2250,6 @@ function renderVehicleDetailLeft(vehicle) {
         `;
         container.appendChild(legend);
 
-        // #region agent log
-        try {
-          const prev = container.previousElementSibling;
-          const prevRect = prev ? prev.getBoundingClientRect() : null;
-          const svgRect = svgClone.getBoundingClientRect();
-          const containerRect = container.getBoundingClientRect();
-          const overlapPx = prevRect ? Math.round(prevRect.bottom - svgRect.top) : null;
-          fetch('http://127.0.0.1:7885/ingest/f748c7df-0c18-4178-a736-c89151ca12d1', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': 'bcdaff' },
-            body: JSON.stringify({
-              sessionId: 'bcdaff',
-              runId: 'schema-overlap-check',
-              hypothesisId: 'H9_schema_overlap',
-              location: 'tasitlar.js:renderBoyaSchemaDetail(afterLegend)',
-              message: 'schema vs previous row geometry',
-              data: {
-                prevExists: !!prev,
-                prevClass: prev ? prev.className : '',
-                overlapPx: overlapPx,
-                prevBottom: prevRect ? prevRect.bottom : null,
-                svgTop: svgRect ? svgRect.top : null,
-                svgBottom: svgRect ? svgRect.bottom : null,
-                containerTop: containerRect ? containerRect.top : null,
-                containerBottom: containerRect ? containerRect.bottom : null
-              },
-              timestamp: Date.now()
-            })
-          }).catch(()=>{});
-        } catch (e) {}
-        // #endregion
-
         // Sol kolon genişliğine göre şema büyüklüğünü uyarla (sol grid içinde)
         requestAnimationFrame(function alignSchemaToLeftColumn() {
           const leftCol = DOM.vehicleDetailLeft;
@@ -2456,9 +2424,6 @@ function renderVehicleDetailLeft(vehicle) {
    * Olay modal menüsünü veya tek dinamik olay form modal'ını açar
    */
   window.openEventModal = function(type, vehicleId) {
-    // #region agent log
-    fetch('http://127.0.0.1:7885/ingest/f748c7df-0c18-4178-a736-c89151ca12d1',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bcdaff'},body:JSON.stringify({sessionId:'bcdaff',location:'tasitlar.js:openEventModal',message:'openEventModal called',data:{type:type,vehicleId:vehicleId},timestamp:Date.now(),hypothesisId:'H2'})}).catch(()=>{});
-    // #endregion
     if (type === 'menu') {
       if (DOM.dinamikOlayModal && DOM.dinamikOlayModal.classList.contains('active')) {
         DOM.dinamikOlayModal.classList.remove('active');
@@ -2526,9 +2491,6 @@ function renderVehicleDetailLeft(vehicle) {
         backBarBtn.onclick = function(e) {
           e.stopPropagation();
           const vid = window.currentDetailVehicleId;
-          // #region agent log
-          fetch('http://127.0.0.1:7885/ingest/f748c7df-0c18-4178-a736-c89151ca12d1',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bcdaff'},body:JSON.stringify({sessionId:'bcdaff',location:'tasitlar.js:dinamik-olay backBarBtn',message:'clickedBackFromEventAdd',data:{hadVid:!!vid,vid:vid},timestamp:Date.now(),hypothesisId:'H4'})}).catch(()=>{});
-          // #endregion
           if (vid && typeof window.closeEventModalAndShowEventMenu === 'function') {
             window.closeEventModalAndShowEventMenu(type);
           } else {
@@ -2540,9 +2502,6 @@ function renderVehicleDetailLeft(vehicle) {
       if (modalCloseBtn) modalCloseBtn.onclick = function(e) {
         e.stopPropagation();
         const vid = window.currentDetailVehicleId;
-        // #region agent log
-        fetch('http://127.0.0.1:7885/ingest/f748c7df-0c18-4178-a736-c89151ca12d1',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bcdaff'},body:JSON.stringify({sessionId:'bcdaff',location:'tasitlar.js:dinamik-olay modalCloseBtn',message:'clickedXFromEventAdd',data:{hadVid:!!vid,vid:vid},timestamp:Date.now(),hypothesisId:'H4'})}).catch(()=>{});
-        // #endregion
         if (vid && typeof window.closeEventModalAndShowEventMenu === 'function') {
           window.closeEventModalAndShowEventMenu(type);
         } else {
@@ -2554,9 +2513,6 @@ function renderVehicleDetailLeft(vehicle) {
       if (cancelBtn) cancelBtn.onclick = function(e) {
         e.stopPropagation();
         const vid = window.currentDetailVehicleId;
-        // #region agent log
-        fetch('http://127.0.0.1:7885/ingest/f748c7df-0c18-4178-a736-c89151ca12d1',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bcdaff'},body:JSON.stringify({sessionId:'bcdaff',location:'tasitlar.js:dinamik-olay cancelBtn',message:'clickedCancelFromEventAdd',data:{hadVid:!!vid,vid:vid},timestamp:Date.now(),hypothesisId:'H4'})}).catch(()=>{});
-        // #endregion
         if (vid && typeof window.closeEventModalAndShowEventMenu === 'function') {
           window.closeEventModalAndShowEventMenu(type);
         } else {
@@ -2571,10 +2527,6 @@ function renderVehicleDetailLeft(vehicle) {
       formIcerik.innerHTML = getEventFormHtml(type);
       if (!formIcerik.innerHTML.trim()) return;
 
-      // #region agent log
-      var _btnTextBefore = kaydetBtn ? kaydetBtn.textContent : '';
-      fetch('http://127.0.0.1:7885/ingest/f748c7df-0c18-4178-a736-c89151ca12d1',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bcdaff'},body:JSON.stringify({sessionId:'bcdaff',location:'tasitlar.js:openEventModal(non-ruhsat)',message:'kaydetBtn state before',data:{type:type,kaydetBtnId:kaydetBtn?kaydetBtn.id:'',textContent:_btnTextBefore},timestamp:Date.now(),hypothesisId:'H1'})}).catch(()=>{});
-      // #endregion
       kaydetBtn.onclick = null;
       kaydetBtn.style.display = '';
       kaydetBtn.textContent = 'Kaydet';
@@ -2598,9 +2550,6 @@ function renderVehicleDetailLeft(vehicle) {
       };
       const handler = saveHandlers[type];
       if (handler) kaydetBtn.onclick = function() { handler(); };
-      // #region agent log
-      fetch('http://127.0.0.1:7885/ingest/f748c7df-0c18-4178-a736-c89151ca12d1',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bcdaff'},body:JSON.stringify({sessionId:'bcdaff',location:'tasitlar.js:openEventModal(non-ruhsat)',message:'kaydetBtn state after setup',data:{type:type,textContent:kaydetBtn.textContent},timestamp:Date.now(),hypothesisId:'H1'})}).catch(()=>{});
-      // #endregion
 
       if (type === 'kaza') {
         // Kaza modal'ında mevcut boya şemasını göster (readonly) ve varsayılan kullanıcı
@@ -3224,31 +3173,6 @@ function renderVehicleDetailLeft(vehicle) {
     window.__ruhsatPrintToken = printToken;
 
     var iframe = document.getElementById('ruhsat-print-frame');
-    // #region agent log
-    try {
-      const preRect = iframe ? iframe.getBoundingClientRect() : null;
-      fetch('http://127.0.0.1:7885/ingest/f748c7df-0c18-4178-a736-c89151ca12d1', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': 'bcdaff' },
-        body: JSON.stringify({
-          sessionId: 'bcdaff',
-          runId: 'print-precheck',
-          hypothesisId: 'H5_iframe_geometry',
-          location: 'tasitlar.js:openRuhsatPrintDialog(start)',
-          message: 'openRuhsatPrintDialog called',
-          data: {
-            isImage: !!isImage,
-            iframeExists: !!iframe,
-            preW: iframe ? iframe.clientWidth : null,
-            preH: iframe ? iframe.clientHeight : null,
-            preRectW: preRect ? preRect.width : null,
-            preRectH: preRect ? preRect.height : null
-          },
-          timestamp: Date.now()
-        })
-      }).catch(()=>{});
-    } catch (e) {}
-    // #endregion
 
     var iframeJustCreated = false;
     if (!iframe) {
@@ -3260,35 +3184,6 @@ function renderVehicleDetailLeft(vehicle) {
     }
     // iOS basıma uygun: tam viewport, ekranda görünmez (opacity:0), tam sayfa baskı için 100vw/100vh
     iframe.style.cssText = 'position:fixed;left:0;top:0;width:100vw;height:100vh;border:0;opacity:0.01;pointer-events:none;visibility:visible;transform:translateX(-200vw);background:#fff;z-index:-1;';
-    if (iframeJustCreated) {
-      // #region agent log
-      try {
-        const rect = iframe.getBoundingClientRect();
-        fetch('http://127.0.0.1:7885/ingest/f748c7df-0c18-4178-a736-c89151ca12d1', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': 'bcdaff' },
-          body: JSON.stringify({
-            sessionId: 'bcdaff',
-            runId: 'print-precheck',
-            hypothesisId: 'H5_iframe_geometry',
-            location: 'tasitlar.js:openRuhsatPrintDialog(iframe created)',
-            message: 'iframe created & css applied',
-            data: {
-              rectW: rect.width,
-              rectH: rect.height,
-              styleLeft: iframe.style.left,
-              styleTop: iframe.style.top,
-              styleWidth: iframe.style.width,
-              styleHeight: iframe.style.height,
-              styleVisibility: iframe.style.visibility
-            },
-            timestamp: Date.now()
-          })
-        }).catch(()=>{});
-      } catch (e) {}
-      // #endregion
-    }
-
     var lastOnloadAt = 0;
     var printTimer = null;
     function clearPrintTimer() {
@@ -3342,32 +3237,6 @@ function renderVehicleDetailLeft(vehicle) {
     }
     function doPrint() {
       try {
-        // #region agent log
-        try {
-          const rect = iframe.getBoundingClientRect();
-          fetch('http://127.0.0.1:7885/ingest/f748c7df-0c18-4178-a736-c89151ca12d1', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': 'bcdaff' },
-            body: JSON.stringify({
-              sessionId: 'bcdaff',
-              runId: 'print-precheck',
-              hypothesisId: 'H6_print_timing',
-              location: 'tasitlar.js:openRuhsatPrintDialog(doPrint)',
-              message: 'doPrint invoked',
-              data: {
-                w: iframe.clientWidth,
-                h: iframe.clientHeight,
-                rectW: rect.width,
-                rectH: rect.height,
-                delayMs: lastOnloadAt ? (Date.now() - lastOnloadAt) : null,
-                hasContentWindow: !!iframe.contentWindow
-              },
-              timestamp: Date.now()
-            })
-          }).catch(()=>{});
-        } catch (e) {}
-        // #endregion
-
         if (window.__ruhsatPrintToken !== printToken) {
           return;
         }
@@ -3503,9 +3372,6 @@ function renderVehicleDetailLeft(vehicle) {
     if (ruhsatGrp) ruhsatGrp.classList.remove('olay-form-buttons');
     setRuhsatSaveBtnVisibility(saveBtn, false);
     saveBtn.textContent = 'Ruhsat Yükle';
-    // #region agent log
-    fetch('http://127.0.0.1:7885/ingest/f748c7df-0c18-4178-a736-c89151ca12d1',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'bcdaff'},body:JSON.stringify({sessionId:'bcdaff',location:'tasitlar.js:openRuhsatModal',message:'set saveBtn to Ruhsat Yükle',data:{saveBtnId:saveBtn?saveBtn.id:''},timestamp:Date.now(),hypothesisId:'H2'})}).catch(()=>{});
-    // #endregion
     const hasRuhsat = !!(vehicle && vehicle.ruhsatPath);
     if (hasRuhsat) {
       const ruhsatUrl = resolveRuhsatUrl(vehicle.ruhsatPath);

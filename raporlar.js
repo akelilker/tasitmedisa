@@ -438,30 +438,6 @@
                 if (existingPlaceholder) {
                     existingPlaceholder.remove();
                 }
-                
-                // Eski style'ı temizle
-                const oldStyle = document.getElementById('stok-date-start-style');
-                if (oldStyle) {
-                    oldStyle.remove();
-                }
-                
-                // Input'u bitiş tarihi gibi normal yap - her zaman görünür
-                startInput.style.color = mutedDateColor;
-                startInput.style.setProperty('color', mutedDateColor, 'important');
-                startInput.style.setProperty('-webkit-text-fill-color', mutedDateColor, 'important');
-                
-                // Webkit datetime-edit stillerini normal yap
-                const style = document.createElement('style');
-                style.id = 'stok-date-start-style';
-                style.textContent = `
-                    #stok-date-start::-webkit-datetime-edit { color: ${mutedDateColor} !important; -webkit-text-fill-color: ${mutedDateColor} !important; }
-                    #stok-date-start::-webkit-datetime-edit-fields-wrapper { color: ${mutedDateColor} !important; -webkit-text-fill-color: ${mutedDateColor} !important; }
-                    #stok-date-start::-webkit-datetime-edit-text { color: ${mutedDateColor} !important; -webkit-text-fill-color: ${mutedDateColor} !important; }
-                    #stok-date-start::-webkit-datetime-edit-month-field,
-                    #stok-date-start::-webkit-datetime-edit-day-field,
-                    #stok-date-start::-webkit-datetime-edit-year-field { color: ${mutedDateColor} !important; -webkit-text-fill-color: ${mutedDateColor} !important; }
-                `;
-                document.head.appendChild(style);
             }
             
             // Bitiş tarihi için value zaten var, placeholder ekleme
