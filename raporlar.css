@@ -2,6 +2,10 @@
 RAPORLAR MODAL CSS - FINAL (PWA FIX & DESKTOP 52PX)
 ========================================= */
 
+/* Sorumluluk: Genel modal iskeleti, footer offset, #reports-modal için ortak .modal-overlay
+   davranışı style-core.css içinde. Stok / kullanıcı rapor içeriği ve #reports-modal’a özel
+   düzen bu dosyada. */
+
 /* Modal Overlay */
 /* Overlay konumu style-core .modal-overlay (6px) kullanılır */
 #reports-modal.modal-overlay {
@@ -956,6 +960,12 @@ margin-bottom: 2px;
 margin-top: 0 !important; /* -28px kesiliyordu, sıfırlandı */
 }
 
+/* Tarih aralığı etiketleri (Başlangıç/Bitiş): uzun metin — masaüstü + mobil ortak */
+#stok-list-container .stok-controls-row-2 label[for="stok-date-start"] { font-size: 0 !important; line-height: 0 !important; }
+#stok-list-container .stok-controls-row-2 label[for="stok-date-start"]::before { content: "Başlangıç Tarihi"; font-size: 12px !important; line-height: 1.3; color: var(--form-label-color); display: block; }
+#stok-list-container .stok-controls-row-2 label[for="stok-date-end"] { font-size: 0 !important; line-height: 0 !important; }
+#stok-list-container .stok-controls-row-2 label[for="stok-date-end"]::before { content: "Bitiş Tarihi"; font-size: 12px !important; line-height: 1.3; color: var(--form-label-color); display: block; }
+
 /* Masaüstü: Sol ok bir satır yukarı; detay menü buton altında, tarih ile yer değiştir */
 @media (min-width: 641px) {
 .report-view {
@@ -1264,12 +1274,7 @@ z-index: 100;
 .stok-list-cell[data-col="km"] { padding: 2px !important; }
 .stok-list-cell[data-col="marka"] { padding: 2px !important; }
 .stok-sort-icon { font-size: 10px !important; }
-/* Masaüstü: tarih etiketleri uzun metin (1 punto küçük: 12px) */
-#stok-list-container .stok-controls-row-2 label[for="stok-date-start"] { font-size: 0 !important; line-height: 0 !important; }
-#stok-list-container .stok-controls-row-2 label[for="stok-date-start"]::before { content: "Başlangıç Tarihi"; font-size: 12px !important; line-height: 1.3; color: var(--form-label-color); display: block; }
-#stok-list-container .stok-controls-row-2 label[for="stok-date-end"] { font-size: 0 !important; line-height: 0 !important; }
-#stok-list-container .stok-controls-row-2 label[for="stok-date-end"]::before { content: "Bitiş Tarihi"; font-size: 12px !important; line-height: 1.3; color: var(--form-label-color); display: block; }
-/* Başlangıç / Bitiş Tarihi etiketleri 5px yukarı */
+/* Masaüstü: Başlangıç / Bitiş etiketleri 5px yukarı (::before metinleri ortak blokta) */
 #stok-list-container .stok-controls-row-2 label[for="stok-date-start"],
 #stok-list-container .stok-controls-row-2 label[for="stok-date-end"] { margin-top: -5px; }
 /* Masaüstü: tarih inputları içindeki metin/sayılar yatay ve dikey ortalı */
@@ -1525,6 +1530,14 @@ display: flex !important;
 justify-content: center !important;
 align-items: center !important;
 width: 100% !important;
+}
+
+#stok-date-start::-webkit-datetime-edit-text,
+#stok-date-start::-webkit-datetime-edit-month-field,
+#stok-date-start::-webkit-datetime-edit-day-field,
+#stok-date-start::-webkit-datetime-edit-year-field {
+color: var(--data-value-color, #a0aec0) !important;
+-webkit-text-fill-color: var(--data-value-color, #a0aec0) !important;
 }
 
 /* Bitiş tarihi input - değer varken görünsün */
@@ -2269,11 +2282,6 @@ min-width: 0 !important;
 font-size: 12px !important;
 text-align: center !important;
 }
-/* Mobil (iOS/Android PWA dahil): tarih etiketleri tam metin */
-#stok-list-container .stok-controls-row-2 label[for="stok-date-start"] { font-size: 0 !important; line-height: 0 !important; }
-#stok-list-container .stok-controls-row-2 label[for="stok-date-start"]::before { content: "Başlangıç Tarihi"; font-size: 12px !important; line-height: 1.3; color: var(--form-label-color); display: block; }
-#stok-list-container .stok-controls-row-2 label[for="stok-date-end"] { font-size: 0 !important; line-height: 0 !important; }
-#stok-list-container .stok-controls-row-2 label[for="stok-date-end"]::before { content: "Bitiş Tarihi"; font-size: 12px !important; line-height: 1.3; color: var(--form-label-color); display: block; }
 .stok-date-input {
 font-size: 15px !important;
 text-align: center !important;
