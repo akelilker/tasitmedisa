@@ -1430,8 +1430,8 @@ padding-top: 2px; /* Üst kesilme önleme */
 }
 
 .stok-date-input {
-background: #151515;
-border: 1px solid rgba(255, 255, 255, 0.28);
+background: #0d131f;
+border: 1.1px solid rgba(255, 255, 255, 0.40);
 color: var(--data-value-color, #a0aec0) !important;
 padding: 1.2px 28px 1.2px 6px;
 min-width: 0;
@@ -1443,7 +1443,7 @@ outline: none;
 transition: border-color 0.2s;
 height: auto;
 line-height: 1.3;
-text-align: right; /* Masaüstü için sağa yasla */
+text-align: center;
 /* Çift görünüm önleme */
 -webkit-appearance: none;
 appearance: none;
@@ -1459,6 +1459,10 @@ width: 100% !important;
 box-sizing: border-box !important;
 overflow: hidden !important;
 text-overflow: ellipsis !important;
+display: flex !important;
+justify-content: center !important;
+align-items: center !important;
+text-align: center !important;
 }
 
 .stok-date-input::-webkit-datetime-edit-fields-wrapper {
@@ -1469,6 +1473,9 @@ margin: 0 !important;
 width: 100% !important;
 box-sizing: border-box !important;
 overflow: hidden !important;
+display: flex !important;
+justify-content: center !important;
+align-items: center !important;
 }
 
 /* Placeholder çift görünümünü önle */
@@ -1504,11 +1511,20 @@ color: var(--data-value-color, #a0aec0) !important;
 #stok-date-start::-webkit-datetime-edit {
 color: var(--data-value-color, #a0aec0) !important;
 -webkit-text-fill-color: var(--data-value-color, #a0aec0) !important;
+display: flex !important;
+justify-content: center !important;
+align-items: center !important;
+text-align: center !important;
+width: 100% !important;
 }
 
 #stok-date-start::-webkit-datetime-edit-fields-wrapper {
 color: var(--data-value-color, #a0aec0) !important;
 -webkit-text-fill-color: var(--data-value-color, #a0aec0) !important;
+display: flex !important;
+justify-content: center !important;
+align-items: center !important;
+width: 100% !important;
 }
 
 /* Bitiş tarihi input - değer varken görünsün */
@@ -1528,6 +1544,11 @@ color: var(--data-value-color, #a0aec0) !important;
 -webkit-text-fill-color: var(--data-value-color, #a0aec0) !important;
 padding: 0 !important;
 margin: 0 !important;
+display: flex !important;
+justify-content: center !important;
+align-items: center !important;
+text-align: center !important;
+width: 100% !important;
 }
 
 #stok-date-end::-webkit-datetime-edit-fields-wrapper {
@@ -1535,6 +1556,10 @@ color: var(--data-value-color, #a0aec0) !important;
 -webkit-text-fill-color: var(--data-value-color, #a0aec0) !important;
 padding: 0 !important;
 margin: 0 !important;
+display: flex !important;
+justify-content: center !important;
+align-items: center !important;
+width: 100% !important;
 }
 
 .stok-date-has-value {
@@ -1547,6 +1572,11 @@ color: var(--data-value-color, #a0aec0) !important;
 -webkit-text-fill-color: var(--data-value-color, #a0aec0) !important;
 padding: 0 !important;
 margin: 0 !important;
+display: flex !important;
+justify-content: center !important;
+align-items: center !important;
+text-align: center !important;
+width: 100% !important;
 }
 
 .stok-date-has-value::-webkit-datetime-edit-fields-wrapper {
@@ -1554,6 +1584,10 @@ color: var(--data-value-color, #a0aec0) !important;
 -webkit-text-fill-color: var(--data-value-color, #a0aec0) !important;
 padding: 0 !important;
 margin: 0 !important;
+display: flex !important;
+justify-content: center !important;
+align-items: center !important;
+width: 100% !important;
 }
 
 .stok-date-input:focus {
