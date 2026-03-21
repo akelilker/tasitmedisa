@@ -308,7 +308,7 @@
 #kaza-guncelle-modal #kaza-kaporta-container,
 #kaza-ekle-modal #kaza-kaporta-container,
 #dinamik-olay-modal #kaza-kaporta-container {
-    margin-top: 3px !important;
+    margin-top: 5px !important;
     margin-bottom: 0 !important;
     display: flex !important;
     justify-content: flex-start !important;
@@ -344,13 +344,23 @@
     box-sizing: border-box !important;
 }
 
-/* Kaza modalı buton grubu: şemadan 10px aşağıda */
+/* Kaza modalı buton grubu: form içeriğinin hemen altı */
 #kaza-guncelle-modal .universal-btn-group,
 #kaza-ekle-modal .universal-btn-group,
 #dinamik-olay-modal .modal-body .universal-btn-group {
-    margin-top: 6px !important; /* Şemadan 10px aşağıda */
+    margin-top: 6px !important;
     flex-shrink: 0 !important;
     background: var(--bg) !important;
+}
+/* Kaza (şema var): şema ile Kaydet/Vazgeç arası 10px daha sıkı */
+#dinamik-olay-modal .modal-body:has(#kaza-kaporta-container) .universal-btn-group,
+#kaza-ekle-modal .modal-body:has(#kaza-kaporta-container) .universal-btn-group,
+#kaza-guncelle-modal .modal-body:has(#kaza-kaporta-container) .universal-btn-group {
+    margin-top: -4px !important;
+}
+/* Tramer satırı ile Kaporta / Hasar arası (sütun gap 12px → 4px azalt) */
+#dinamik-olay-modal .kaza-kaporta-block {
+    margin-top: -4px !important;
 }
 
 /* === MODAL ÖZEL FARKLAR === */
