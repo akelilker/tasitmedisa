@@ -365,34 +365,29 @@
 
 /* Masaüstü: sadece Olay Ekle kaza şeması yatayda +10px (taşıt detay / diğer modallar etkilenmez) */
 @media (min-width: 641px) {
-  /* Kaporta / Hasar etiketi ile şema arası: flex gap 12px; iç satırda ekstra padding yok */
-  #dinamik-olay-modal .kaza-kaporta-block {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 12px !important;
-  }
+  /* Etiket–şema: flex gap'e güvenme; margin-top ile sabit 12px (global 5px / gap çakışması yok) */
   #dinamik-olay-modal .kaza-kaporta-section-label {
     margin: 0 !important;
     padding: 0 !important;
     line-height: 1.15 !important;
+    display: block !important;
   }
   #dinamik-olay-modal #kaza-kaporta-container {
-    margin-top: 0 !important;
+    margin-top: 12px !important;
+    justify-content: center !important;
   }
+  /* Global #kaza-kaporta-container > div { justify-content: flex-start } JS center'ı eziyordu */
   #dinamik-olay-modal #kaza-kaporta-container > div {
     padding-top: 0 !important;
+    justify-content: center !important;
   }
-  #dinamik-olay-modal #kaza-kaporta-container .kaporta-schema-wrapper {
+  /* +10px yatay: sadece sarmalayıcı (SVG'ye width:100% verilmez — rotate/piksel bozulmasın) */
+  #dinamik-olay-modal #kaza-kaporta-container .kaza-kaporta-schema-inner {
     width: calc(100% + 10px) !important;
     max-width: calc(100% + 10px) !important;
     margin-left: -5px !important;
     margin-right: -5px !important;
     box-sizing: border-box !important;
-  }
-  #dinamik-olay-modal #kaza-kaporta-container .kaporta-schema-wrapper svg {
-    width: 100% !important;
-    height: auto !important;
-    display: block !important;
   }
 }
 
