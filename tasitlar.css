@@ -396,15 +396,15 @@
     align-items: center;
     gap: 0; /* Boşluklar manuel ayarlanacak */
     overflow: visible !important;
-    flex: 1;
-    min-height: 0; /* Alt scroll wrapper'ın küçülebilmesi için */
+    flex: 0 1 auto; /* İçerik yüksekliği; alt yarı boş kalmayı önler */
+    min-height: 0;
 }
 /* Olay Ekle / Tarihçe altındaki alan kendi içinde kayar */
 .vehicle-detail-scroll-wrap {
-    flex: 1;
+    flex: 0 1 auto;
     min-height: 0;
     width: 100%;
-    overflow-y: auto;
+    overflow-y: visible;
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
@@ -622,7 +622,7 @@
 }
 
 .detail-user-empty {
-    color: var(--theme-color) !important;
+    color: #d40000 !important;
     font-weight: 600;
     cursor: pointer;
     text-decoration: none;
@@ -630,9 +630,15 @@
 
 /* detail-row-value ile birlikte kullanıldığında kırmızı renk */
 .detail-row-value.detail-user-empty {
-    color: var(--theme-color) !important;
+    color: #d40000 !important;
     font-size: 12px !important; /* 13px - 0.5px = 12.5px – 12px */
     white-space: nowrap !important; /* Tek satırda kal */
+}
+
+/* Tahsis edilmemiş şube metni (Taşıt Detay) */
+#vehicle-detail-modal .detail-row-value.detail-sube-unassigned {
+    color: #d40000 !important;
+    font-weight: 600;
 }
 
 /* Kasko Deşeri (TSB otomatik hesaplama) - belirgin renk */
@@ -2341,7 +2347,7 @@
   padding-bottom: 24px !important;
   height: auto !important;
   overflow-y: auto !important;
-  flex: 1;
+  flex: 0 1 auto;
   display: flex;
   flex-direction: column;
   min-height: 0;
@@ -3350,9 +3356,13 @@
     color: var(--txt-gray-darker) !important; /* Gri renk */
   }
   .detail-row-value.detail-user-empty {
-    color: var(--theme-color) !important;
+    color: #d40000 !important;
     font-size: 17px !important; /* +1pt (value 16px) */
     white-space: nowrap !important; /* Mobilde tek satırda kal */
+  }
+  #vehicle-detail-modal .detail-row-value.detail-sube-unassigned {
+    color: #d40000 !important;
+    font-weight: 600 !important;
   }
   .detail-plate {
     font-size: 22px !important; /* +1pt tutarlı (tek kaynak) */
