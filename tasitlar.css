@@ -365,6 +365,15 @@
 
 /* Masaüstü: sadece Olay Ekle kaza şeması yatayda +10px (taşıt detay / diğer modallar etkilenmez) */
 @media (min-width: 641px) {
+  /* Kaporta / Hasar etiketi ile şema arası toplam 12px */
+  #dinamik-olay-modal .kaza-kaporta-block {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+  #dinamik-olay-modal #kaza-kaporta-container {
+    margin-top: 0 !important;
+  }
   #dinamik-olay-modal #kaza-kaporta-container .kaporta-schema-wrapper {
     width: calc(100% + 10px) !important;
     max-width: calc(100% + 10px) !important;
@@ -1146,9 +1155,12 @@
   #vehicle-detail-modal .vehicle-detail-columns {
     margin-top: 13px !important;
   }
-  /* Taşıt detay: ekspertiz şeması yatayda ortalı, metin-şema arası 6px (masaüstü) */
+  /* Taşıt detay: Kaporta Durumu satırı ile şema arası toplam 12px (satır alt padding sıfır + üst boşluk) */
+  #vehicle-detail-modal .detail-row-kaporta {
+    padding-bottom: 0 !important;
+  }
   .vehicle-detail-left #detail-boya-container {
-    margin-top: 6px !important;
+    margin-top: 12px !important;
   }
   .vehicle-detail-left #detail-boya-container .kaporta-schema-wrapper {
     max-width: 100% !important;
