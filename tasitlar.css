@@ -363,13 +363,13 @@
     margin-top: -4px !important;
 }
 
-/* Masaüstü: sadece Olay Ekle kaza şeması yatayda +18px (taşıt detay / diğer modallar etkilenmez) */
+/* Masaüstü: sadece Olay Ekle kaza şeması yatayda +10px (taşıt detay / diğer modallar etkilenmez) */
 @media (min-width: 641px) {
   #dinamik-olay-modal #kaza-kaporta-container .kaporta-schema-wrapper {
-    width: calc(100% + 18px) !important;
-    max-width: calc(100% + 18px) !important;
-    margin-left: -9px !important;
-    margin-right: -9px !important;
+    width: calc(100% + 10px) !important;
+    max-width: calc(100% + 10px) !important;
+    margin-left: -5px !important;
+    margin-right: -5px !important;
     box-sizing: border-box !important;
   }
   #dinamik-olay-modal #kaza-kaporta-container .kaporta-schema-wrapper svg {
