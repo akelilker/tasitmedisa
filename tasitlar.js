@@ -3574,10 +3574,11 @@ function renderVehicleDetailLeft(vehicle) {
         
         container.innerHTML = '';
         
-        // Şema wrapper'ı oluştur
+        // Şema wrapper'ı oluştur (kaporta-schema-wrapper: masaüstü +10px CSS ile uyumlu)
         const schemaWrapper = document.createElement('div');
+        schemaWrapper.className = 'kaza-kaporta-schema-inner';
         schemaWrapper.style.display = 'flex';
-        schemaWrapper.style.alignItems = 'flex-start';
+        schemaWrapper.style.alignItems = 'center';
         schemaWrapper.style.justifyContent = 'center';
         schemaWrapper.style.gap = '24px';
         schemaWrapper.style.maxHeight = '156px';
