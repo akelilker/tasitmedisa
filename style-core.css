@@ -2254,6 +2254,24 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
 }
 }
 
+/* Masaüstü PWA: bildirim listesinin alt çerçevesi kesilmesin (sadece standalone desktop) */
+@media (min-width: 769px) and (display-mode: standalone) {
+    #notifications-dropdown.open {
+        z-index: 10060 !important;
+        padding-bottom: 4px !important;
+    }
+    #notifications-dropdown.open > .notification-item:last-child {
+        margin-bottom: 2px !important;
+    }
+    body:not(.modal-open):has(#notifications-dropdown.open) .content-wrap {
+        overflow-y: visible !important;
+    }
+    body:not(.modal-open):has(#notifications-dropdown.open) .icons-row {
+        position: relative;
+        z-index: 2;
+    }
+}
+
 /* --- Masaüstü PWA: window-controls-overlay - başlık çubuğu altında içerik --- */
 @media (display-mode: window-controls-overlay) {
     body {
