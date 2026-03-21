@@ -3578,12 +3578,12 @@ function renderVehicleDetailLeft(vehicle) {
         const schemaWrapper = document.createElement('div');
         schemaWrapper.className = 'kaza-kaporta-schema-inner';
         schemaWrapper.style.display = 'flex';
-        schemaWrapper.style.alignItems = 'center';
+        schemaWrapper.style.alignItems = 'flex-start';
         schemaWrapper.style.justifyContent = 'center';
         schemaWrapper.style.gap = '24px';
         schemaWrapper.style.maxHeight = '156px';
         schemaWrapper.style.width = '100%';
-        schemaWrapper.style.overflow = 'hidden';
+        schemaWrapper.style.overflow = 'visible';
         schemaWrapper.style.paddingTop = '0';
 
         schemaWrapper.appendChild(svgClone);
