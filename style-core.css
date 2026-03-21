@@ -110,7 +110,6 @@ body::-webkit-scrollbar,
     --border-red-tech: rgba(var(--theme-color-rgb), 0.78);  /* Mobil/PWA: çerçeve net */
     --border-red-side: rgba(var(--theme-color-rgb), 0.78);  /* Yan çizgiler net */
     --red-glow-subtle: rgba(var(--theme-color-rgb), 0.18);
-    --footer-glow-opacity: 0.22;
     --bg-2: #1a1a1a;
     --card-bg: #1f1f1f;
     --hero-logo-width: 43px;
@@ -2085,7 +2084,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
     #app-footer {
         position: fixed;
         bottom: 0;
-        box-shadow: 0 -6px 12px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity, 0.22));
+        box-shadow: 0 -9px 19px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity, 0.38));
         border-left: none; /* Mobilde yan yok */
         border-right: none;
         border-top: 1px solid rgba(128, 128, 128, 0.5) !important; /* Gri çizgi */

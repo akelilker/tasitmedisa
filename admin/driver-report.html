@@ -133,7 +133,20 @@
     </div>
 
     <div id="tab-kullanici" class="admin-tab-panel" data-admin-panel="kullanici" style="display: none;">
-      <div id="user-analytics-container" class="user-analytics-wrap">
+      <div class="user-analytics-toolbar">
+        <input
+          type="text"
+          id="user-analytics-search"
+          class="user-analytics-search-input"
+          placeholder="İsim Soyisim Ara"
+          autocomplete="off"
+        >
+        <div class="user-analytics-view-switch" role="group" aria-label="Görünüm Seçimi">
+          <button type="button" id="user-analytics-view-list" class="user-analytics-view-btn active" data-view="list">Liste</button>
+          <button type="button" id="user-analytics-view-card" class="user-analytics-view-btn" data-view="card">Kutu</button>
+        </div>
+      </div>
+      <div id="user-analytics-container" class="user-analytics-wrap view-list">
         <p style="text-align:center; color: var(--muted); padding: 20px;">Kullanıcı verileri hesaplanıyor...</p>
       </div>
     </div>
