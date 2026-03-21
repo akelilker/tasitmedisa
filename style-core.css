@@ -109,7 +109,8 @@ body::-webkit-scrollbar,
     --border-shiny: rgba(255, 255, 255, 0.35);
     --border-red-tech: rgba(var(--theme-color-rgb), 0.78);  /* Mobil/PWA: çerçeve net */
     --border-red-side: rgba(var(--theme-color-rgb), 0.78);  /* Yan çizgiler net */
-    --red-glow-subtle: rgba(var(--theme-color-rgb), 0.32);
+    --red-glow-subtle: rgba(var(--theme-color-rgb), 0.18);
+    --footer-glow-opacity: 0.22;
     --bg-2: #1a1a1a;
     --card-bg: #1f1f1f;
     --hero-logo-width: 43px;
@@ -1873,7 +1874,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
         border-color: rgba(190, 198, 208, 0.82) !important;
         box-shadow:
             0 4px 16px rgba(0, 0, 0, 0.45),
-            0 4px 24px rgba(var(--theme-color-rgb), 0.10),
+            0 4px 18px rgba(var(--theme-color-rgb), 0.06),
             inset 0 1px 0 rgba(255, 255, 255, 0.20),
             inset 0 -1px 0 rgba(88, 97, 108, 0.32) !important;
     }
@@ -2084,15 +2085,15 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
     #app-footer {
         position: fixed;
         bottom: 0;
-        box-shadow: 0 -9px 19px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity, 0.38));
+        box-shadow: 0 -6px 12px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity, 0.22));
         border-left: none; /* Mobilde yan yok */
         border-right: none;
         border-top: 1px solid rgba(128, 128, 128, 0.5) !important; /* Gri çizgi */
     }
     /* HEADER KIRMIZI ÇİZGİ - Havada (kırmızı çerçeve ile eşit) */
     .animated-line {
-        opacity: 0.8;  /* Mobilde daha belirgin */
-        box-shadow: 0 2px 12px rgba(var(--theme-color-rgb), 0.4);  /* Havada: kırmızı glow */
+        opacity: 0.62;
+        box-shadow: 0 1px 8px rgba(var(--theme-color-rgb), 0.24);
     }
     
     .menu-btn .ttl {
@@ -2576,4 +2577,3 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
   0%, 80%, 100% { transform: scale(0.6); opacity: 0.6; }
   40% { transform: scale(1); opacity: 1; }
 }
-
