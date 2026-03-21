@@ -2363,6 +2363,13 @@ margin-top: -3px !important;
 padding-top: 5px !important;
 padding-bottom: 5px !important;
 }
+/* Mobil: tabloda açık detay sütunları ince opak yeşil çerçeve; pasifler ince gri */
+#reports-modal .stok-detail-menu-btn.active {
+border: 1px solid #4ade80 !important;
+}
+#reports-modal .stok-detail-menu-btn:not(.active) {
+border: 1px solid rgba(255, 255, 255, 0.22) !important;
+}
 /* Mobil: ikon satırı (büyüteç/excel/yazıcı) ile sütun başlıkları arası 4px daralsın */
 .stok-list-container { margin-top: 0 !important; }
 

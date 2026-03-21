@@ -3568,11 +3568,39 @@
   #kullanici-atama-modal .form-input {
     height: 31px !important;
   }
+
+  /* Olay Ekle (dinamik modal): gg.aa.yyyy overlay kutuda dikey + yatay ortada */
+  #dinamik-olay-modal .modal-body .date-placeholder {
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    text-align: center !important;
+  }
+
+  /* Dinamik olay: şube/kullanıcı select — büyük font + yeterli yükseklik (iOS kırpma önleme) */
+  #dinamik-olay-modal .modal-body select.form-input {
+    min-height: 44px !important;
+    height: auto !important;
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+    line-height: 1.3 !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Taşıt detay: şube atama select */
+  #vehicle-detail-modal .assign-select {
+    min-height: 44px !important;
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+    line-height: 1.3 !important;
+    box-sizing: border-box !important;
+  }
+
   /* şi şube input/select dikey +4px */
   #sube-degisiklik-modal .modal-body select,
   #sube-degisiklik-modal .modal-body .form-input {
-    min-height: 32px !important;
-    height: 32px !important;
+    min-height: 40px !important;
+    height: auto !important;
     border: 1.1px solid var(--border-light) !important;
     background: var(--bg) !important;
     color: var(--data-value-color, #a0aec0) !important;
