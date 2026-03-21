@@ -361,11 +361,27 @@
 /* Tramer satırı ile Kaporta / Hasar arası (sütun gap 12px → 4px azalt) */
 #dinamik-olay-modal .kaza-kaporta-block {
     margin-top: -4px !important;
+    /* Etiket ile #kaza-kaporta-container arası tek kaynak: 12px gap (margin-top ile çifte boşluk yok) */
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 12px !important;
+}
+
+/* Olay Ekle: üstteki global 5px margin şemayı aşağı iter; gap zaten .kaza-kaporta-block'ta */
+#dinamik-olay-modal #kaza-kaporta-container {
+    margin-top: 0 !important;
+}
+
+/* Şema satırı: center dikeyde dönmüş SVG üstünde boşluk bırakıyor → flex-start */
+#dinamik-olay-modal #kaza-kaporta-container > div.kaza-kaporta-schema-inner {
+    align-items: flex-start !important;
+    justify-content: center !important;
+    padding-top: 0 !important;
 }
 
 /* Masaüstü: sadece Olay Ekle kaza şeması yatayda +10px (taşıt detay / diğer modallar etkilenmez) */
 @media (min-width: 641px) {
-  /* Etiket–şema: flex gap'e güvenme; margin-top ile sabit 12px (global 5px / gap çakışması yok) */
   #dinamik-olay-modal .kaza-kaporta-section-label {
     margin: 0 !important;
     padding: 0 !important;
@@ -373,11 +389,9 @@
     display: block !important;
   }
   #dinamik-olay-modal #kaza-kaporta-container {
-    margin-top: 12px !important;
     justify-content: center !important;
   }
-  /* Global #kaza-kaporta-container > div { justify-content: flex-start } JS center'ı eziyordu */
-  #dinamik-olay-modal #kaza-kaporta-container > div {
+  #dinamik-olay-modal #kaza-kaporta-container > div.kaza-kaporta-schema-inner {
     padding-top: 0 !important;
     justify-content: center !important;
   }
