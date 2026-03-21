@@ -1475,49 +1475,7 @@
     modal.style.display = 'flex';
     requestAnimationFrame(() => {
       modal.classList.add('active');
-      requestAnimationFrame(() => {
-        applyVehicleDetailSubeShrink();
-        // #region agent log
-        (function __medisaDetailModalLayoutProbe() {
-          try {
-            var root = document.getElementById('vehicle-detail-modal');
-            if (!root) return;
-            var cont = root.querySelector('.modal-container');
-            var body = root.querySelector('.modal-body');
-            var vdc = document.getElementById('vehicle-detail-content');
-            var hdr = root.querySelector('.modal-header');
-            var tb = root.querySelector('.vehicle-detail-toolbar');
-            if (!body || !vdc) return;
-            var csBody = window.getComputedStyle(body);
-            var csCont = cont ? window.getComputedStyle(cont) : null;
-            var br = body.getBoundingClientRect();
-            var vr = vdc.getBoundingClientRect();
-            var slack = Math.round(br.bottom - vr.bottom);
-            var data = {
-              hypothesisId: 'H1-H5',
-              innerW: window.innerWidth,
-              innerH: window.innerHeight,
-              overlayClientH: Math.round(root.getBoundingClientRect().height),
-              containerClientH: cont ? Math.round(cont.getBoundingClientRect().height) : null,
-              headerH: hdr ? Math.round(hdr.getBoundingClientRect().height) : null,
-              toolbarH: tb ? Math.round(tb.getBoundingClientRect().height) : null,
-              bodyClientH: Math.round(body.clientHeight),
-              bodyScrollH: Math.round(body.scrollHeight),
-              contentOffsetH: Math.round(vdc.offsetHeight),
-              slackBelowContentPx: slack,
-              bodyFlexGrow: csBody.flexGrow,
-              bodyFlexShrink: csBody.flexShrink,
-              bodyFlexBasis: csBody.flexBasis,
-              contComputedHeight: csCont ? csCont.height : null,
-              contComputedMaxH: csCont ? csCont.maxHeight : null,
-              bodyPadBottom: csBody.paddingBottom,
-              contentFlexGrow: window.getComputedStyle(vdc).flexGrow
-            };
-            fetch('http://127.0.0.1:7885/ingest/f748c7df-0c18-4178-a736-c89151ca12d1', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': 'f71c0c' }, body: JSON.stringify({ sessionId: 'f71c0c', location: 'tasitlar.js:showVehicleDetail', message: 'detail modal layout probe', data: data, timestamp: Date.now(), runId: 'pre-fix', hypothesisId: 'H1-H5' }) }).catch(function() {});
-          } catch (e) { /* ignore */ }
-        })();
-        // #endregion
-      });
+      requestAnimationFrame(() => { applyVehicleDetailSubeShrink(); });
     });
     };
     runDetail();
