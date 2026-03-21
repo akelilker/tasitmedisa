@@ -856,13 +856,15 @@
     if (!Number.isFinite(inputHeight) || inputHeight <= 0) {
       inputHeight = 22;
     }
+    var fontSizePx = parseFloat(inputStyle.fontSize) || 10;
     var lineHeight = parseFloat(inputStyle.lineHeight);
-    if (!Number.isFinite(lineHeight) || lineHeight <= 0) {
-      lineHeight = (parseFloat(inputStyle.fontSize) || 10) * 1.2;
+    /* Birimsiz line-height (örn. 1) parseFloat ile 1 olur; span'e 1px yazılmasın */
+    if (!Number.isFinite(lineHeight) || lineHeight <= 0 || lineHeight < 8) {
+      lineHeight = fontSizePx * 1.2;
     }
     
     // Placeholder'ın line-height'ını da hesapla
-    const placeholderLineHeight = parseFloat(inputStyle.fontSize) * 1.2;
+    const placeholderLineHeight = fontSizePx * 1.2;
     
     // Input'un pozisyonunu al (parent'a göre)
     const inputRect = input.getBoundingClientRect();
@@ -880,7 +882,7 @@
     const placeholder = document.createElement('span');
     placeholder.className = 'date-placeholder';
     placeholder.textContent = input.placeholder || 'gg.aa.yyyy';
-    placeholder.style.cssText = `position: absolute; left: ${leftValue}; top: ${topValue}px; color: #666 !important; pointer-events: none; font-size: 10px; z-index: 100; line-height: ${lineHeight}px;`;
+    placeholder.style.cssText = `position: absolute; left: ${leftValue}; top: ${topValue}px; color: #666 !important; pointer-events: none; font-size: ${fontSizePx}px; z-index: 100; line-height: ${lineHeight}px;`;
     
     // Input'un parent'ına ekle (input'un içinde görünmesi için)
     const parent = input.parentElement;
