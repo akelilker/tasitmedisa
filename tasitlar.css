@@ -3992,6 +3992,21 @@
       padding-top: env(safe-area-inset-top) !important;
       padding-bottom: 0 !important;
     }
+    /* iOS PWA: olay formlarında tarih kutusu + gg.aa.yyyy overlay dikey hiza (Safari date widget) */
+    #dinamik-olay-modal .modal-body input[type="date"].form-input,
+    #dinamik-olay-modal .modal-body .olay-tarih-input {
+      min-height: 34px !important;
+      height: 34px !important;
+      line-height: 34px !important;
+    }
+    #dinamik-olay-modal .modal-body .date-placeholder {
+      top: 50% !important;
+      left: 50% !important;
+      transform: translate(-50%, -50%) !important;
+      text-align: center !important;
+      font-size: 11px !important;
+      line-height: 1.3 !important;
+    }
     /* iOS PWA: Taşıtlar modalı liste başlıkları daha kompakt */
     #vehicles-modal .list-header-row {
       --list-header-font-size: calc(12px - 0.5pt) !important;
