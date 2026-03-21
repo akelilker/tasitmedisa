@@ -2947,10 +2947,22 @@ function renderVehicleDetailLeft(vehicle) {
    * Olay Ekle alt modalından Vazgeç: modalı kapat, Olay Ekle menüsünü tekrar aç (taşıt detaya dönme).
    */
   window.closeEventModalAndShowEventMenu = function(type) {
-    window.closeEventModal(type);
-    setTimeout(function() {
-      openEventModal('menu', window.currentDetailVehicleId);
-    }, 350);
+    const vehicleId = window.currentDetailVehicleId;
+    const dynamicModal = DOM.dinamikOlayModal || document.getElementById(DINAMIK_OLAY_MODAL_ID);
+
+    // Dinamik olay modalını anında gizleyip menüyü aynı frame'de aç:
+    // böylece arada Taşıt Detay ekranı bir an görünmez.
+    if (dynamicModal && dynamicModal.classList.contains('active')) {
+      resetModalState(dynamicModal);
+      dynamicModal.classList.remove('active');
+      dynamicModal.style.display = 'none';
+    } else {
+      window.closeEventModal(type);
+    }
+
+    requestAnimationFrame(function() {
+      openEventModal('menu', vehicleId);
+    });
   };
 
   /**
