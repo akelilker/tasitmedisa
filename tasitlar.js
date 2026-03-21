@@ -1440,71 +1440,8 @@
       oldAssignContainer.remove();
     }
 
-    // Tahsis edilmemiş mi kontrol et
     const existingAssign = contentEl.querySelector('.detail-branch-assign');
-    if (existingAssign) existingAssign.remove(); // Önceki formu temizle
-
-    if (!vehicle.branchId) {
-      // Tahsis edilmemiş - Şube atama formu göster
-      const branches = readBranches();
-      
-      const assignDiv = document.createElement('div');
-      assignDiv.className = 'detail-branch-assign';
-      
-      assignDiv.innerHTML = `
-        <div class="assign-toggle" onclick="toggleBranchAssign()">+ \u015Eubeye Tahsis Et</div>
-        <div class="assign-form" id="assign-form" style="display: none;">
-          <select id="detail-branch-select" class="assign-select">
-            <option value="" disabled selected>\u015Eube Se\u00E7iniz</option>
-          </select>
-          <div class="universal-btn-group">
-            <button type="button" class="universal-btn-save" onclick="assignVehicleToBranch('${vehicleId}')">Kaydet</button>
-            <button type="button" class="universal-btn-cancel" onclick="closeVehicleDetailModal()">Vazge\u00E7</button>
-          </div>
-        </div>
-      `;
-      
-      contentEl.appendChild(assignDiv);
-      
-      // Şubeleri dinamik olarak ekle
-      const selectEl = document.getElementById('detail-branch-select');
-      if (selectEl) {
-        // Önce select'i resetle (placeholder'ı garanti görünür yap)
-        selectEl.value = '';
-        selectEl.selectedIndex = 0;
-        selectEl.classList.remove('has-value');
-        selectEl.style.color = '#888';
-        
-        // Şubeleri ekle
-        if (branches.length > 0) {
-          branches.forEach(b => {
-            const opt = document.createElement('option');
-            opt.value = b.id;
-            opt.textContent = b.name;
-            selectEl.appendChild(opt);
-          });
-        }
-        
-        // Placeholder'ın seçili kalmasını garanti et
-        if (selectEl.options.length > 0) {
-          selectEl.selectedIndex = 0;
-          selectEl.value = '';
-          selectEl.classList.remove('has-value');
-          selectEl.style.color = '#888';
-        }
-        
-        // Change event listener - seçim yapıldığında rengi değiştir
-        selectEl.addEventListener('change', function() {
-          if (this.value === '') {
-            this.classList.remove('has-value');
-            this.style.color = '#888';
-          } else {
-            this.classList.add('has-value');
-            this.style.color = '#f0f0f0';
-          }
-        });
-      }
-    }
+    if (existingAssign) existingAssign.remove();
 
     // Modalı aç
     modal.dataset.detailSignature = detailSignature;
@@ -1944,7 +1881,8 @@ function renderVehicleDetailLeft(vehicle) {
   const branchName = branchId ?
       (branches.find(b => String(b.id) === String(branchId))?.name || '') :
       'Tahsis Edilmemi\u015F';
-  html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">\u015Eube</span><span class="detail-row-colon">:</span></div><span class="detail-row-value detail-row-value-sube"> ${escapeHtml(branchName)}</span></div>`;
+  const subeValueClass = branchId ? 'detail-row-value detail-row-value-sube' : 'detail-row-value detail-row-value-sube detail-sube-unassigned';
+  html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">\u015Eube</span><span class="detail-row-colon">:</span></div><span class="${subeValueClass}"> ${escapeHtml(branchName)}</span></div>`;
 
   // Taşıt Tipi
   const vehicleType = vehicle.vehicleType || '';
