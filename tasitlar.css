@@ -352,15 +352,31 @@
     flex-shrink: 0 !important;
     background: var(--bg) !important;
 }
-/* Kaza (şema var): şema ile Kaydet/Vazgeç arası 10px daha sıkı */
+/* Kaza (şema var): şema / ekspertiz alanı ile Kaydet-Vazgeç arası ek sıkı (önceki -4px + 18px) */
 #dinamik-olay-modal .modal-body:has(#kaza-kaporta-container) .universal-btn-group,
 #kaza-ekle-modal .modal-body:has(#kaza-kaporta-container) .universal-btn-group,
 #kaza-guncelle-modal .modal-body:has(#kaza-kaporta-container) .universal-btn-group {
-    margin-top: -4px !important;
+    margin-top: -22px !important;
 }
 /* Tramer satırı ile Kaporta / Hasar arası (sütun gap 12px → 4px azalt) */
 #dinamik-olay-modal .kaza-kaporta-block {
     margin-top: -4px !important;
+}
+
+/* Masaüstü: sadece Olay Ekle kaza şeması yatayda +18px (taşıt detay / diğer modallar etkilenmez) */
+@media (min-width: 641px) {
+  #dinamik-olay-modal #kaza-kaporta-container .kaporta-schema-wrapper {
+    width: calc(100% + 18px) !important;
+    max-width: calc(100% + 18px) !important;
+    margin-left: -9px !important;
+    margin-right: -9px !important;
+    box-sizing: border-box !important;
+  }
+  #dinamik-olay-modal #kaza-kaporta-container .kaporta-schema-wrapper svg {
+    width: 100% !important;
+    height: auto !important;
+    display: block !important;
+  }
 }
 
 /* === MODAL ÖZEL FARKLAR === */
@@ -3080,6 +3096,12 @@
     gap: 24px !important;
     width: 100% !important;
     overflow: hidden !important;
+  }
+  /* Masaüstü kaza şeması +18px: iç sarmalayıcı taşmayı kırpmasın (yalnız dinamik olay modalı) */
+  @media (min-width: 641px) {
+    #dinamik-olay-modal #kaza-kaporta-container > div {
+      overflow: visible !important;
+    }
   }
 
   /* Kaza Tramer Kaydı satırı: label solda, Evet/Hayır butonları sağda aynı satırda */
