@@ -3583,7 +3583,7 @@ function renderVehicleDetailLeft(vehicle) {
         schemaWrapper.style.maxHeight = '156px';
         schemaWrapper.style.width = '100%';
         schemaWrapper.style.overflow = 'hidden';
-        schemaWrapper.style.paddingTop = '2px';
+        schemaWrapper.style.paddingTop = '0';
 
         schemaWrapper.appendChild(svgClone);
 

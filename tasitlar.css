@@ -365,14 +365,22 @@
 
 /* Masaüstü: sadece Olay Ekle kaza şeması yatayda +10px (taşıt detay / diğer modallar etkilenmez) */
 @media (min-width: 641px) {
-  /* Kaporta / Hasar etiketi ile şema arası toplam 12px */
+  /* Kaporta / Hasar etiketi ile şema arası: flex gap 12px; iç satırda ekstra padding yok */
   #dinamik-olay-modal .kaza-kaporta-block {
     display: flex !important;
     flex-direction: column !important;
     gap: 12px !important;
   }
+  #dinamik-olay-modal .kaza-kaporta-section-label {
+    margin: 0 !important;
+    padding: 0 !important;
+    line-height: 1.15 !important;
+  }
   #dinamik-olay-modal #kaza-kaporta-container {
     margin-top: 0 !important;
+  }
+  #dinamik-olay-modal #kaza-kaporta-container > div {
+    padding-top: 0 !important;
   }
   #dinamik-olay-modal #kaza-kaporta-container .kaporta-schema-wrapper {
     width: calc(100% + 10px) !important;
@@ -1159,13 +1167,25 @@
   #vehicle-detail-modal .detail-row-kaporta {
     padding-bottom: 0 !important;
   }
-  .vehicle-detail-left #detail-boya-container {
+  /* Sol grid içinde ekspertiz şeması + lejant yatayda ortalı */
+  #vehicle-detail-modal .vehicle-detail-left #detail-boya-container {
     margin-top: 12px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
   }
-  .vehicle-detail-left #detail-boya-container .kaporta-schema-wrapper {
+  #vehicle-detail-modal .vehicle-detail-left #detail-boya-container .kaporta-schema-wrapper {
     max-width: 100% !important;
     margin-left: auto !important;
     margin-right: auto !important;
+  }
+  #vehicle-detail-modal #detail-boya-container .boya-legend {
+    justify-content: center !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
   }
   /* Tarihçe modal: sol ok ve Taşıt Detayları sabit (scroll ile gitmesin) */
   #vehicle-history-modal .modal-container > div:nth-child(2) {
