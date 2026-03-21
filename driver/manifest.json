@@ -14,27 +14,27 @@
   "categories": ["business", "productivity"],
   "icons": [
     {
-      "src": "../icon/icon-192.png",
+      "src": "../icon/icon-192.svg",
       "sizes": "192x192",
-      "type": "image/png",
+      "type": "image/svg+xml",
       "purpose": "any"
     },
     {
-      "src": "../icon/icon-512.png",
+      "src": "../icon/icon-512.svg",
       "sizes": "512x512",
-      "type": "image/png",
+      "type": "image/svg+xml",
       "purpose": "any"
     },
     {
-      "src": "../icon/icon-192.png",
+      "src": "../icon/icon-192.svg",
       "sizes": "192x192",
-      "type": "image/png",
+      "type": "image/svg+xml",
       "purpose": "maskable"
     },
     {
-      "src": "../icon/icon-512.png",
+      "src": "../icon/icon-512.svg",
       "sizes": "512x512",
-      "type": "image/png",
+      "type": "image/svg+xml",
       "purpose": "maskable"
     }
   ],
@@ -46,9 +46,9 @@
       "url": "./index.html",
       "icons": [
         {
-          "src": "../icon/icon-192.png",
+          "src": "../icon/icon-192.svg",
           "sizes": "192x192",
-          "type": "image/png"
+          "type": "image/svg+xml"
         }
       ]
     },
@@ -59,9 +59,9 @@
       "url": "./dashboard.html",
       "icons": [
         {
-          "src": "../icon/icon-192.png",
+          "src": "../icon/icon-192.svg",
           "sizes": "192x192",
-          "type": "image/png"
+          "type": "image/svg+xml"
         }
       ]
     }
