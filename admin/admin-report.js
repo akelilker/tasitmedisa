@@ -10,6 +10,10 @@
   var reportStatus = '';
   var branches = [];
   var dimTimeout = null;
+  var userAnalyticsUsers = [];
+  var userAnalyticsTasitlar = [];
+  var userAnalyticsView = 'list';
+  var userAnalyticsQuery = '';
 
   // CSS Spinner Animasyonu için (eğer yoksa ekle)
   if (!document.getElementById('spinner-style')) {
@@ -108,6 +112,12 @@
   }
 
   function capitalizeWords(str) { return (typeof window.capitalizeWords === 'function' ? window.capitalizeWords(str) : str); }
+  function normalizeForSearch(v) {
+    return String(v || '')
+      .toLocaleLowerCase('tr-TR')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '');
+  }
 
   var svgClock = '<svg class="durum-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>';
   var svgCheck = '<svg class="durum-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>';
@@ -287,23 +297,27 @@
           return;
         }
         container.dataset.loaded = 'true';
-        window.renderUserAnalytics(data.users || [], data.tasitlar || []);
+        userAnalyticsUsers = data.users || [];
+        userAnalyticsTasitlar = data.tasitlar || [];
+        window.renderUserAnalytics();
       })
       .catch(function() {
         container.innerHTML = '<p style="color:#ef4444; text-align:center; padding:20px;">Bağlantı hatası.</p>';
       });
   };
 
-  window.renderUserAnalytics = function(users, tasitlar) {
-    var html = '<div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; padding: 5px;">';
-    var hasActiveUser = false;
+  window.renderUserAnalytics = function() {
+    var users = userAnalyticsUsers || [];
+    var tasitlar = userAnalyticsTasitlar || [];
+    var query = normalizeForSearch(userAnalyticsQuery);
+    var cards = [];
 
     users.forEach(function(u) {
       if (u.aktif === false) return; // Pasif kullanıcıları atla
       var isim = u.isim || u.name || '';
       if (!isim.trim()) return;
+      if (query && normalizeForSearch(isim).indexOf(query) === -1) return;
 
-      hasActiveUser = true;
       var cezaCount = 0, cezaTutar = 0;
       var kazaCount = 0, kazaTutar = 0;
       var bakimCount = 0;
@@ -341,39 +355,55 @@
       // Güncel Aracı Bul
       var aktifArac = tasitlar.find(function(t) { return String(t.assignedUserId) === String(u.id); });
       var aracDisplay = aktifArac ? ((aktifArac.plaka || aktifArac.plate || '').toString().toUpperCase()) : 'Zimmetli Araç Yok';
-      var aracColor = aktifArac ? '#fff' : 'var(--muted)';
-
-      html += '<div style="background:rgba(0,0,0,0.2); border:1px solid #3d3d3d; border-radius:10px; padding:16px; position:relative; overflow:hidden;">';
-      html += '<div style="position:absolute; top:0; left:0; width:4px; height:100%; background:var(--theme-color); opacity:0.8;"></div>';
-      html += '<h3 style="margin:0 0 4px 0; color:#fff; font-size:1.1rem; padding-left:8px;">' + (typeof window.capitalizeWords === 'function' ? window.capitalizeWords(isim) : isim) + '</h3>';
-      html += '<div style="font-size:0.8rem; color:var(--muted); margin-bottom:15px; padding-left:8px;">Plaka: <span style="color:' + aracColor + '; font-weight:600;">' + escapeHtml(aracDisplay) + '</span></div>';
-
-      html += '<div style="display:flex; justify-content:space-between; align-items:center; padding:6px 8px; background:rgba(251,146,60,0.1); border-radius:6px; margin-bottom:6px;">';
-      html += '<span style="color:#fb923c; font-size:0.85rem; display:flex; align-items:center; gap:6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg> Cezalar (' + cezaCount + ')</span>';
-      html += '<span style="color:#fb923c; font-weight:700; font-size:0.9rem;">' + (typeof window.formatNumber === 'function' ? window.formatNumber(cezaTutar) : cezaTutar.toLocaleString('tr-TR')) + ' TL</span>';
-      html += '</div>';
-
-      html += '<div style="display:flex; justify-content:space-between; align-items:center; padding:6px 8px; background:rgba(239,68,68,0.1); border-radius:6px; margin-bottom:6px;">';
-      html += '<span style="color:#ef4444; font-size:0.85rem; display:flex; align-items:center; gap:6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg> Kazalar (' + kazaCount + ')</span>';
-      html += '<span style="color:#ef4444; font-weight:700; font-size:0.9rem;">' + (typeof window.formatNumber === 'function' ? window.formatNumber(kazaTutar) : kazaTutar.toLocaleString('tr-TR')) + ' TL</span>';
-      html += '</div>';
-
-      html += '<div style="display:flex; justify-content:space-between; align-items:center; padding:6px 8px; background:rgba(74,222,128,0.05); border-radius:6px;">';
-      html += '<span style="color:#4ade80; font-size:0.85rem; display:flex; align-items:center; gap:6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path></svg> Bakımlar</span>';
-      html += '<span style="color:#4ade80; font-weight:700; font-size:0.9rem;">' + bakimCount + ' Adet</span>';
-      html += '</div>';
-
-      html += '</div>';
+      cards.push({
+        isim: isim,
+        plaka: aracDisplay,
+        cezaCount: cezaCount,
+        cezaTutar: cezaTutar,
+        kazaCount: kazaCount,
+        kazaTutar: kazaTutar,
+        bakimCount: bakimCount
+      });
     });
 
-    if (!hasActiveUser) {
-      html = '<p style="text-align:center; color:var(--muted); padding:20px;">Aktif kullanıcı bulunamadı.</p>';
+    var target = document.getElementById('user-analytics-container');
+    if (!target) return;
+
+    if (!cards.length) {
+      target.innerHTML = '<p class="user-analytics-empty">Aramaya uygun kullanıcı bulunamadı.</p>';
+      return;
+    }
+
+    var html = '';
+    if (userAnalyticsView === 'list') {
+      html += '<div class="user-analytics-list">';
+      cards.forEach(function(c) {
+        html += '<div class="user-analytics-item">';
+        html += '<div class="user-analytics-head"><h3>' + escapeHtml(capitalizeWords(c.isim)) + '</h3><span class="user-analytics-plate">' + escapeHtml(c.plaka) + '</span></div>';
+        html += '<div class="user-analytics-metrics">';
+        html += '<div class="metric-row metric-ceza"><span>Cezalar (' + c.cezaCount + ')</span><strong>' + (typeof window.formatNumber === 'function' ? window.formatNumber(c.cezaTutar) : c.cezaTutar.toLocaleString('tr-TR')) + ' TL</strong></div>';
+        html += '<div class="metric-row metric-kaza"><span>Kazalar (' + c.kazaCount + ')</span><strong>' + (typeof window.formatNumber === 'function' ? window.formatNumber(c.kazaTutar) : c.kazaTutar.toLocaleString('tr-TR')) + ' TL</strong></div>';
+        html += '<div class="metric-row metric-bakim"><span>Bakımlar</span><strong>' + c.bakimCount + ' Adet</strong></div>';
+        html += '</div></div>';
+      });
+      html += '</div>';
     } else {
+      html += '<div class="user-analytics-cards">';
+      cards.forEach(function(c) {
+        html += '<div class="user-analytics-card">';
+        html += '<div class="card-accent"></div>';
+        html += '<h3>' + escapeHtml(capitalizeWords(c.isim)) + '</h3>';
+        html += '<div class="user-analytics-plate">Plaka: <span>' + escapeHtml(c.plaka) + '</span></div>';
+        html += '<div class="user-analytics-metrics">';
+        html += '<div class="metric-row metric-ceza"><span>Cezalar (' + c.cezaCount + ')</span><strong>' + (typeof window.formatNumber === 'function' ? window.formatNumber(c.cezaTutar) : c.cezaTutar.toLocaleString('tr-TR')) + ' TL</strong></div>';
+        html += '<div class="metric-row metric-kaza"><span>Kazalar (' + c.kazaCount + ')</span><strong>' + (typeof window.formatNumber === 'function' ? window.formatNumber(c.kazaTutar) : c.kazaTutar.toLocaleString('tr-TR')) + ' TL</strong></div>';
+        html += '<div class="metric-row metric-bakim"><span>Bakımlar</span><strong>' + c.bakimCount + ' Adet</strong></div>';
+        html += '</div></div>';
+      });
       html += '</div>';
     }
 
-    var target = document.getElementById('user-analytics-container');
-    if (target) target.innerHTML = html;
+    target.innerHTML = html;
   };
 
   function approveRequest(id) {
@@ -455,6 +485,41 @@
 
     var btnExport = document.getElementById('report-export');
     if (btnExport) btnExport.addEventListener('click', exportExcel);
+
+    var searchInput = document.getElementById('user-analytics-search');
+    if (searchInput) {
+      searchInput.addEventListener('input', function(e) {
+        userAnalyticsQuery = e.target.value || '';
+        window.renderUserAnalytics();
+      });
+    }
+
+    var viewListBtn = document.getElementById('user-analytics-view-list');
+    var viewCardBtn = document.getElementById('user-analytics-view-card');
+    function syncUserAnalyticsViewButtons() {
+      if (viewListBtn) viewListBtn.classList.toggle('active', userAnalyticsView === 'list');
+      if (viewCardBtn) viewCardBtn.classList.toggle('active', userAnalyticsView === 'card');
+      var container = document.getElementById('user-analytics-container');
+      if (container) {
+        container.classList.toggle('view-list', userAnalyticsView === 'list');
+        container.classList.toggle('view-card', userAnalyticsView === 'card');
+      }
+    }
+    if (viewListBtn) {
+      viewListBtn.addEventListener('click', function() {
+        userAnalyticsView = 'list';
+        syncUserAnalyticsViewButtons();
+        window.renderUserAnalytics();
+      });
+    }
+    if (viewCardBtn) {
+      viewCardBtn.addEventListener('click', function() {
+        userAnalyticsView = 'card';
+        syncUserAnalyticsViewButtons();
+        window.renderUserAnalytics();
+      });
+    }
+    syncUserAnalyticsViewButtons();
   }
 
   if (document.readyState === 'loading') {
