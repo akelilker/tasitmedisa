@@ -2231,11 +2231,27 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
     }
 }
 
-/* iOS PWA: bildirim listesi — güvenli alan + biraz daha yüksek panel (metin kesilmesin) */
+/* iOS PWA: bildirim altı kesilmesin — WebKit + standalone (Android Chrome PWA hariç) */
+@supports (-webkit-touch-callout: none) {
 @media (max-width: 640px) and (display-mode: standalone) {
     #notifications-dropdown {
         max-height: min(420px, calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 100px)) !important;
     }
+    #notifications-dropdown.open {
+        z-index: 10060 !important;
+        padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px)) !important;
+    }
+    body:not(.modal-open):has(#notifications-dropdown.open) .app-container {
+        z-index: 10050 !important;
+    }
+    body:not(.modal-open):has(#notifications-dropdown.open) .content-wrap {
+        overflow-y: visible !important;
+    }
+    body:not(.modal-open):has(#notifications-dropdown.open) .icons-row {
+        position: relative;
+        z-index: 2;
+    }
+}
 }
 
 /* --- Masaüstü PWA: window-controls-overlay - başlık çubuğu altında içerik --- */
