@@ -2258,10 +2258,23 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
 @media (min-width: 769px) and (display-mode: standalone) {
     #notifications-dropdown.open {
         z-index: 10060 !important;
-        padding-bottom: 4px !important;
+        padding-bottom: 10px !important; /* Son kartın alt çerçevesi kesilmesin */
     }
     #notifications-dropdown.open > .notification-item:last-child {
-        margin-bottom: 2px !important;
+        margin-bottom: 6px !important;
+    }
+    /* Masaüstü PWA: Kasko Değer Listesi kartı, standart bildirim kartlarıyla aynı boyutta aksın */
+    #notifications-dropdown .kasko-excel-notification {
+        padding: 1px 12px !important;
+        min-height: 0 !important;
+        box-sizing: border-box !important;
+    }
+    #notifications-dropdown .kasko-excel-notification .mtv-text-container .mtv-main-text {
+        font-size: 11.5px !important;
+        line-height: 1.15 !important;
+    }
+    #notifications-dropdown .kasko-excel-notification .mtv-dismiss-wrapper {
+        margin-left: 4px !important;
     }
     body:not(.modal-open):has(#notifications-dropdown.open) .content-wrap {
         overflow-y: visible !important;
