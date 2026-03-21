@@ -2301,7 +2301,7 @@ const API_BASE = (function(){
                   if (d.detay) detailsHtml += `<p>Konum: ${escapeHtmlDriver(d.detay)}.</p>`;
               } else if (item.eventType === 'lastik-guncelle') {
                   const durum = (d.durum === 'var') ? 'Var' : 'Yok';
-                  detailsHtml = `<p>Yazl\u0131k/K\u0131\u015fl\u0131k ${escapeHtmlDriver(durum)} olarak bildirildi.</p>`;
+                  detailsHtml = `<p>Yazl\u0131k/ K\u0131\u015fl\u0131k lastik durumu ${escapeHtmlDriver(durum)} olarak bildirildi.</p>`;
                   if (d.adres) detailsHtml += `<p>Adres: ${escapeHtmlDriver(d.adres)}.</p>`;
               } else if (item.eventType === 'utts-guncelle') {
                   const durum = d.durum ? 'Evet' : 'Hay\u0131r';
@@ -2316,7 +2316,7 @@ const API_BASE = (function(){
                   detailsHtml = '<p>Trafik sigortas\u0131 yenileme bildirildi.</p>';
                   if (d.bitisTarihi) detailsHtml += `<p>Biti\u015f tarihi: ${escapeHtmlDriver(d.bitisTarihi)}.</p>`;
               } else if (item.eventType === 'kasko-kodu-guncelle') {
-                  detailsHtml = '<p>Kasko kodu g\u00fcncellendi olarak bildirildi.</p>';
+                  detailsHtml = '<p>Kasko kodu g\u00fcncellendi.</p>';
                   if (d.kaskoKodu) detailsHtml += `<p>Yeni kod: ${escapeHtmlDriver(d.kaskoKodu)}.</p>`;
               } else if (item.eventType === 'satis') {
                   detailsHtml = '<p>Sat\u0131\u015f/pert bildirildi.</p>';
