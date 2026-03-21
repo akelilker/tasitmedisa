@@ -2111,11 +2111,21 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
         background: var(--bg) !important;
     }
 
+    /* Bildirim satırları <button>: .settings-dropdown button sabit 48px + overflow:hidden metni keser — çok satır için genişlet */
+    #notifications-dropdown > button.notification-item {
+        height: auto !important;
+        min-height: 52px !important;
+        max-height: none !important;
+        overflow: visible !important;
+        align-items: flex-start !important;
+        justify-content: flex-start !important;
+    }
     #notifications-dropdown .notification-item.date-warning-red-border,
     #notifications-dropdown .notification-item.date-warning-orange-border,
     #notifications-dropdown .notification-item-activity {
-        padding: 8px 12px !important;
-        min-height: 0 !important;
+        padding: 10px 12px !important;
+        min-height: 52px !important;
+        overflow: visible !important;
     }
     
     /* Mobil bildirimlerde metin boyutları yaklaşık 0.75 punto (1px) büyütüldü */
@@ -2140,9 +2150,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
         left: 61% !important;
         right: auto !important;
         transform: translateX(-50%) !important;
-        padding-bottom: 8px !important; /* Son kutunun altı kesilmeden görünsün */
+        padding-bottom: 10px !important; /* Son kutu + iOS home indicator alanı */
         box-sizing: border-box !important;
-        padding-bottom: 0 !important;
     }
 
     /* === ANA KAYIT MODALI KURTARMA (Dar alana sığması için alt alta dizilmek zorundadır) === */
@@ -2219,6 +2228,13 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
     }
     .content-wrap::before {
         display: none !important;
+    }
+}
+
+/* iOS PWA: bildirim listesi — güvenli alan + biraz daha yüksek panel (metin kesilmesin) */
+@media (max-width: 640px) and (display-mode: standalone) {
+    #notifications-dropdown {
+        max-height: min(420px, calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 100px)) !important;
     }
 }
 
