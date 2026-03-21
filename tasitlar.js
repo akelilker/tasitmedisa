@@ -5198,7 +5198,7 @@ function renderVehicleDetailLeft(vehicle) {
           const unreadClass = isUnread ? ' notification-unread' : '';
           const unreadStyle = isUnread ? ' border: 1px solid rgba(212, 0, 0, 0.85) !important;' : '';
           const activityMsg = getNotificationActivityMessage(ev, item.plate);
-          html += `<button type="button" data-plate="${safePlate}" data-vehicle-id="${safeVid}" data-open-history="1" data-history-tab="${historyTab}" data-notif-key="${safeKey}" style="width: 100%; padding: 10px 12px 1px 12px; background: transparent; color: #ccc; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 12px; text-align: left; transition: all 0.2s ease;${unreadStyle}" class="notification-item notification-item-activity${unreadClass}">
+          html += `<button type="button" data-plate="${safePlate}" data-vehicle-id="${safeVid}" data-open-history="1" data-history-tab="${historyTab}" data-notif-key="${safeKey}" style="width: 100%; padding: 10px 12px 1px 12px; background: transparent; color: #ccc; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 12px; text-align: left; transition: all 0.2s ease; height: auto; white-space: normal;${unreadStyle}" class="notification-item notification-item-activity${unreadClass}">
           <div class="notif-line1">${escapeHtml(activityMsg)}</div>
           <div class="notif-line2">${escapeHtml(dateDisplay)}</div>
         </button>`;
