@@ -3578,12 +3578,12 @@ function renderVehicleDetailLeft(vehicle) {
         const schemaWrapper = document.createElement('div');
         schemaWrapper.className = 'kaza-kaporta-schema-inner';
         schemaWrapper.style.display = 'flex';
-        schemaWrapper.style.alignItems = 'flex-start';
+        schemaWrapper.style.alignItems = 'center';
         schemaWrapper.style.justifyContent = 'center';
         schemaWrapper.style.gap = '24px';
         schemaWrapper.style.maxHeight = '156px';
         schemaWrapper.style.width = '100%';
-        schemaWrapper.style.overflow = 'visible';
+        schemaWrapper.style.overflow = 'hidden';
         schemaWrapper.style.paddingTop = '0';
 
         schemaWrapper.appendChild(svgClone);
@@ -3673,12 +3673,13 @@ function renderVehicleDetailLeft(vehicle) {
         legend.style.alignItems = 'flex-start';
         legend.style.gap = '8px';
         legend.style.fontSize = '12px';
+        legend.style.lineHeight = '1.2';
         legend.style.color = '#aaa';
         legend.style.marginTop = '0';
         legend.innerHTML = `
-          <div class="boya-legend-item" style="display: flex; align-items: center; gap: 6px;"><span class="boya-legend-dot" style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #888888;"></span> Boyasız</div>
-          <div class="boya-legend-item" style="display: flex; align-items: center; gap: 6px;"><span class="boya-legend-dot" style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #28a745;"></span> Boyalı (Mevcut)</div>
-          <div class="boya-legend-item" style="display: flex; align-items: center; gap: 6px;"><span class="boya-legend-dot" style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #d40000;"></span> Değişen/Hasar</div>
+          <div class="boya-legend-item" style="display: flex; align-items: center; gap: 6px; line-height: 1.2;"><span class="boya-legend-dot" style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #888888; flex: 0 0 8px;"></span> Boyasız</div>
+          <div class="boya-legend-item" style="display: flex; align-items: center; gap: 6px; line-height: 1.2;"><span class="boya-legend-dot" style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #28a745; flex: 0 0 8px;"></span> Boyalı (Mevcut)</div>
+          <div class="boya-legend-item" style="display: flex; align-items: center; gap: 6px; line-height: 1.2;"><span class="boya-legend-dot" style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #d40000; flex: 0 0 8px;"></span> Değişen/Hasar</div>
         `;
         // Legend'i wrapper'a ekle (şemanın sağına)
         schemaWrapper.appendChild(legend);

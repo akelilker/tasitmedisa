@@ -375,9 +375,10 @@
 
 /* Şema satırı: center dikeyde dönmüş SVG üstünde boşluk bırakıyor → flex-start */
 #dinamik-olay-modal #kaza-kaporta-container > div.kaza-kaporta-schema-inner {
-    align-items: flex-start !important;
+    align-items: center !important;
     justify-content: center !important;
     padding-top: 0 !important;
+    margin-top: -8px !important;
 }
 
 /* Masaüstü: sadece Olay Ekle kaza şeması yatayda +10px (taşıt detay / diğer modallar etkilenmez) */
@@ -392,8 +393,10 @@
     justify-content: center !important;
   }
   #dinamik-olay-modal #kaza-kaporta-container > div.kaza-kaporta-schema-inner {
+    align-items: center !important;
     padding-top: 0 !important;
     justify-content: center !important;
+    margin-top: -8px !important;
   }
   /* +10px yatay: sadece sarmalayıcı (SVG'ye width:100% verilmez — rotate/piksel bozulmasın) */
   #dinamik-olay-modal #kaza-kaporta-container .kaza-kaporta-schema-inner {
