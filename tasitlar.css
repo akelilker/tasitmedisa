@@ -388,7 +388,7 @@
 #vehicle-detail-content {
     padding: 20px;
     padding-top: 18px !important;
-    padding-bottom: 20px;
+    padding-bottom: 4px;
     padding-left: 18px; /* Container çerçevelerine 2px boşluk (16px – 18px) */
     padding-right: 18px;
     display: flex;
@@ -2340,17 +2340,17 @@
   pointer-events: auto !important;
 }
 
-/* Vehicle Detail Modal Body - içerik yüksekliği kadar uzasın, uzun içerikte gövde kayar */
+/* Vehicle Detail Modal Body: max-yükseklikte kalan alanı doldurur, içerik taşarsa burada kayar (kesilme önleme) */
 #vehicle-detail-modal .modal-body {
   margin-top: 0 !important;
   padding: 0 !important;
-  padding-bottom: 24px !important;
+  padding-bottom: 4px !important;
   height: auto !important;
   overflow-y: auto !important;
-  flex: 0 1 auto;
+  flex: 1 1 auto !important;
   display: flex;
   flex-direction: column;
-  min-height: 0;
+  min-height: 0 !important;
 }
 
 .vehicle-detail-toolbar .toolbar-right {
@@ -4070,7 +4070,9 @@
   }
   #vehicle-detail-modal .modal-body {
     overflow-y: auto !important;
-    padding-bottom: 24px !important;
+    padding-bottom: 4px !important;
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
     -webkit-overflow-scrolling: touch;
     touch-action: pan-y !important;
     overscroll-behavior-x: none !important;
@@ -4097,7 +4099,7 @@
   /* --- KAPORTA ŞEMASI MOBİL --- */
   /* Detay modal: legendÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢âÃ¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢âÃ¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã¢â‚¬Å“footer arası boşluk 4px toplam (mobil) */
   #vehicle-detail-modal #vehicle-detail-content { padding-bottom: 4px !important; }
-  #vehicle-detail-modal .modal-body { padding-bottom: 24px !important; }
+  #vehicle-detail-modal .modal-body { padding-bottom: 4px !important; }
   /* Plaka üstten kesilmesin; plaka–marka arası 2px kalsın */
   #vehicle-detail-content { padding-top: 18px !important; }
   .detail-plate-row { margin-top: 0 !important; margin-bottom: 2px !important; }
