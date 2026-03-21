@@ -167,7 +167,7 @@
       if (d.detay) extra = 'Konum: ' + toTitleCase(String(d.detay));
     } else if (eventType === 'lastik-guncelle') {
       var durum2 = String(d.durum || 'yok').toLowerCase();
-      text = 'Yazlık/Kışlık Lastik: ' + (durum2 === 'var' ? 'Var' : 'Yok');
+      text = 'Yazlık/ Kışlık Lastik Durumu: ' + (durum2 === 'var' ? 'Var' : 'Yok');
       if (d.adres) extra = 'Konum: ' + toTitleCase(String(d.adres));
     } else if (eventType === 'kasko-guncelle') {
       text = 'Kasko Güncelleme';
@@ -217,6 +217,9 @@
     } else if (eventType === 'not-guncelle') {
       text = 'Not Güncelleme';
       if (d.not) extra = String(d.not).length > 120 ? String(d.not).slice(0, 120) + '...' : String(d.not);
+    } else if (eventType === 'kasko-kodu-guncelle') {
+      text = 'Kasko kodu güncellendi';
+      if (d.kaskoKodu) extra = 'Yeni kod: ' + String(d.kaskoKodu);
     } else if (eventType === 'satis') {
       text = 'Satış / Pert';
     } else {

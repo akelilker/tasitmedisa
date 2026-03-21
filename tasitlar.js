@@ -4207,7 +4207,11 @@ function renderVehicleDetailLeft(vehicle) {
       type: 'kasko-kodu-guncelle',
       date: formatDateForDisplay(new Date()),
       timestamp: new Date().toISOString(),
-      data: { kaskoKodu: yeniKaskoKodu, surucu: getEventPerformerName(vehicle) }
+      data: {
+        kaskoKodu: yeniKaskoKodu,
+        surucu: getEventPerformerName(vehicle),
+        kaydeden: getRecorderDisplayName()
+      }
     });
 
     return writeVehicles(vehicles).then(function() {
@@ -4386,7 +4390,8 @@ function renderVehicleDetailLeft(vehicle) {
       data: {
         durum: durum,
         adres: adres,
-        surucu: getEventPerformerName(vehicle)
+        surucu: getEventPerformerName(vehicle),
+        kaydeden: getRecorderDisplayName()
       }
     };
     
@@ -4620,7 +4625,7 @@ function renderVehicleDetailLeft(vehicle) {
     } else if (eventType === 'lastik-guncelle') {
       const durum = String(eventData.durum || 'yok').toLowerCase();
       const durumTxt = durum === 'var' ? 'Var' : 'Yok';
-      summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Yazl\u0131k/K\u0131\u015Fl\u0131k Lastik Durumunu </span><span class="history-detail-inline">' + escapeHtml(durumTxt) + '</span><span class="history-action-text"> Olarak G\u00FCncelledi.</span>';
+      summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text"> Yazl\u0131k/ K\u0131\u015Fl\u0131k Lastik Durumunu </span><span class="history-detail-inline">' + escapeHtml(durumTxt) + '</span><span class="history-action-text"> olarak Bildirdi.</span>';
       const adres = (eventData.adres || '').trim();
       if (adres) pushDetail('Konum', toTitleCase(adres));
     } else if (eventType === 'kasko-guncelle') {
@@ -4694,7 +4699,7 @@ function renderVehicleDetailLeft(vehicle) {
       if (tutar) pushDetail('Tutar', tutar + ' TL');
       if (aciklama) pushDetail('A\u00e7\u0131klama', toTitleCase(aciklama));
     } else if (eventType === 'kasko-kodu-guncelle') {
-      summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Kasko Kodunu G\u00FCncelledi.</span>';
+      summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text"> Kasko Kodunu G\u00FCncelledi.</span>';
       const yeniKod = (eventData.kaskoKodu || '').trim();
       if (yeniKod) pushDetail('Yeni Kod', yeniKod);
     } else {
@@ -4972,6 +4977,18 @@ function renderVehicleDetailLeft(vehicle) {
     const isimStr = isim ? toTitleCase(String(isim)) : 'Bilinmiyor';
     const plateStr = (plate || '-').toString().trim();
     const type = (ev.type || '').toString().trim();
+    if (type === 'lastik-guncelle') {
+      const durum = String(evData.durum || 'yok').toLowerCase();
+      const durumTxt = durum === 'var' ? 'Var' : 'Yok';
+      const whoL = evData.kaydeden || evData.surucu || evData.kisi || evData.kullaniciAdi;
+      const whoLStr = whoL ? toTitleCase(String(whoL)) : 'Bilinmiyor';
+      return whoLStr + ', ' + plateStr + ' Plakal\u0131 Ta\u015F\u0131t \u0130\u00E7in Yazl\u0131k/ K\u0131\u015Fl\u0131k Lastik Durumunu ' + durumTxt + ' olarak Bildirdi.';
+    }
+    if (type === 'kasko-kodu-guncelle') {
+      const who = evData.kaydeden || evData.surucu || evData.kisi || evData.kullaniciAdi;
+      const whoU = who ? formatHistoryPerformerUpper(who) : 'B\u0130L\u0130NM\u0130YOR';
+      return whoU + ', ' + plateStr + ' Plakal\u0131 Ta\u015F\u0131t \u0130\u00E7in Kasko Kodunu G\u00FCncelledi.';
+    }
     const typeMessages = {
       'km-revize': 'Km Bildirimi Yapt\u0131',
       'bakim': 'Bak\u0131m Bildirimi Yapt\u0131',
@@ -4979,10 +4996,8 @@ function renderVehicleDetailLeft(vehicle) {
       'ceza': 'Trafik Cezas\u0131 \u0130\u015Fledi',
       'sigorta-guncelle': 'Sigorta Bilgisini G\u00FCncelledi',
       'kasko-guncelle': 'Kasko Bilgisini G\u00FCncelledi',
-      'kasko-kodu-guncelle': 'Kasko Kodunu G\u00FCncelledi',
       'muayene-guncelle': 'Muayene Bilgisini G\u00FCncelledi',
       'anahtar-guncelle': 'Yedek Anahtar Bilgisini G\u00FCncelledi',
-      'lastik-guncelle': 'Lastik Durumunu G\u00FCncelledi',
       'utts-guncelle': 'UTTS Bilgisini G\u00FCncelledi',
       'kredi-guncelle': 'Kredi/Rehin Bilgisini G\u00FCncelledi',
       'takip-cihaz-guncelle': 'Takip Cihaz\u0131 Bilgisini G\u00FCncelledi',
