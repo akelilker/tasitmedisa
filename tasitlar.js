@@ -2950,18 +2950,18 @@ function renderVehicleDetailLeft(vehicle) {
     const vehicleId = window.currentDetailVehicleId;
     const dynamicModal = DOM.dinamikOlayModal || document.getElementById(DINAMIK_OLAY_MODAL_ID);
 
-    // Dinamik olay modalını anında gizleyip menüyü aynı frame'de aç:
-    // böylece arada Taşıt Detay ekranı bir an görünmez.
-    if (dynamicModal && dynamicModal.classList.contains('active')) {
-      resetModalState(dynamicModal);
-      dynamicModal.classList.remove('active');
-      dynamicModal.style.display = 'none';
-    } else {
-      window.closeEventModal(type);
-    }
+    // Önce menüyü aç, sonra dinamik modalı kapat:
+    // böylece iki modal arasında boş frame kalmaz ve Taşıt Detay "flash" etmez.
+    openEventModal('menu', vehicleId);
 
     requestAnimationFrame(function() {
-      openEventModal('menu', vehicleId);
+      if (dynamicModal && dynamicModal.classList.contains('active')) {
+        resetModalState(dynamicModal);
+        dynamicModal.classList.remove('active');
+        dynamicModal.style.display = 'none';
+      } else {
+        window.closeEventModal(type);
+      }
     });
   };
 
