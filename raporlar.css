@@ -60,10 +60,7 @@ justify-content: center;
 align-items: center;
 flex-shrink: 0;
 position: relative;
-<<<<<<< HEAD
 border-top: 1px solid rgba(255, 255, 255, 0.48);
-=======
->>>>>>> b7411124d5140d32c8f4b1dfd840ccd6b63f629a
 border-bottom: none !important;
 border-top-left-radius: var(--modal-radius, 10px);
 border-top-right-radius: var(--modal-radius, 10px);
