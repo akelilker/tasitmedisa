@@ -867,6 +867,7 @@
     flex-shrink: 0;
     position: relative;
     border-bottom: none !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.35);
     border-top-left-radius: var(--modal-radius);
     border-top-right-radius: var(--modal-radius);
 }
