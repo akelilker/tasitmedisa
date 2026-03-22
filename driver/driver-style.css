@@ -2570,7 +2570,7 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 #driver-muayene-modal .modal-header,
 #driver-sigorta-modal .modal-header,
 #driver-kasko-modal .modal-header {
-  background: linear-gradient(180deg, rgba(255, 0, 0, 0.42) 0%, rgba(255, 0, 0, 0.32) 25%, rgba(255, 0, 0, 0.25) 50%, rgba(255, 0, 0, 0.18) 75%, transparent 100%) !important;
+  background: linear-gradient(180deg, rgba(255, 0, 0, 0.36) 0%, rgba(255, 0, 0, 0.27) 25%, rgba(255, 0, 0, 0.20) 50%, rgba(255, 0, 0, 0.14) 75%, transparent 100%) !important;
   background-size: 100% calc(100% + 3px) !important;
   padding: 2px 20px !important;
   height: 60px !important;
@@ -5343,6 +5343,21 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 .dashboard-page #app-footer,
 .login-page #app-footer.login-footer {
     border-top: 1px solid rgba(128, 128, 128, 0.52) !important;
+}
+
+@media (max-width: 640px) {
+  #history-modal .modal-header,
+  #edit-request-modal .modal-header,
+  #driver-event-menu-modal .modal-header,
+  #driver-anahtar-modal .modal-header,
+  #driver-lastik-modal .modal-header,
+  #driver-utts-modal .modal-header,
+  #driver-muayene-modal .modal-header,
+  #driver-sigorta-modal .modal-header,
+  #driver-kasko-modal .modal-header {
+    background: linear-gradient(180deg, rgba(255, 0, 0, 0.42) 0%, rgba(255, 0, 0, 0.32) 25%, rgba(255, 0, 0, 0.25) 50%, rgba(255, 0, 0, 0.18) 75%, transparent 100%) !important;
+    background-size: 100% calc(100% + 3px) !important;
+  }
 }
 
 /* 2. Ortadaki kırmızı dikey çizgi footera değmeden Bildir butonu hizasında kesilsin (Mobil) */
