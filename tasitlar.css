@@ -4,6 +4,10 @@
 
 /* Overlay konumu style-core .modal-overlay (6px) kullanılır; ezme yok */
 .tasitlar-modal-overlay {
+    --modal-mobile-border-color: rgba(var(--theme-color-rgb), 0.30);
+    --modal-mobile-top-border-color: rgba(var(--theme-color-rgb), 0.54);
+    --modal-mobile-header-top-border: rgba(255, 255, 255, 0.18);
+    --modal-mobile-inner-top-highlight: rgba(var(--theme-color-rgb), 0.20);
     display: none !important;
     background: transparent !important;
     flex-direction: column !important;
