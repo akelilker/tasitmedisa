@@ -2407,6 +2407,18 @@
   transform: scale(1.05);
 }
 
+.detail-sold-badge {
+  color: var(--theme-color);
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.7px;
+  line-height: 1;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
 @keyframes blink-red-text {
   0%, 100% {
     opacity: 1;
