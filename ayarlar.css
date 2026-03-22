@@ -1296,6 +1296,10 @@ input.settings-form-input:-moz-autofill,
 /* === MASAÜSTÜ AYARLAR === */
 @media (min-width: 641px) {
     .settings-dropdown button { text-align: center; }
+    #data-management-modal .universal-back-bar,
+    #dis-veri-panel .universal-back-bar {
+        margin-top: 0 !important;
+    }
 
     /* Şube/Kullanıcı modalları: çerçeve genişliği style-core varsayıanı (500px); input/buton genişlikleri aşağıdaki kurallarda */
 
