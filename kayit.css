@@ -893,8 +893,8 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     select.form-input,
     select {
         color: var(--data-value-color, #a0aec0) !important;
-        border-color: rgba(255, 255, 255, 0.4) !important; /* Border daha görünür */
-        background: rgba(255, 255, 255, 0.02) !important; /* Beyaz sis yoğunluğu azaltıldı (0.05 → 0.02) */
+        border-color: rgba(255, 255, 255, 0.58) !important; /* Kalinlik artmadan kontrast artisi */
+        background: rgba(255, 255, 255, 0.01) !important; /* Zemin sisi azaltilarak cerceve one cikiyor */
     }
     #vehicle-modal #vehicle-branch-select.branch-placeholder {
         color: rgba(255, 255, 255, 0.38) !important;
@@ -912,9 +912,9 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     }
     
     .radio-btn {
-        border-color: rgba(255, 255, 255, 0.4) !important; /* Radio buton border daha görünür */
+        border-color: rgba(255, 255, 255, 0.58) !important; /* Kalinlik artmadan kontrast artisi */
         color: rgba(255, 255, 255, 0.8) !important; /* Radio buton metni daha parlak */
-        background: rgba(255, 255, 255, 0.02) !important; /* Beyaz sis yoğunluğu azaltıldı */
+        background: rgba(255, 255, 255, 0.01) !important; /* Beyaz sis daha da azaltildi */
     }
     
     .radio-btn.active:not(.green) {
