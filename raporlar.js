@@ -536,7 +536,7 @@
                     'plaka': 68, 'sanziman': 64, 'km': 60
                 }
                 : {
-                    'sira': 24, 'sube': 78, 'yil': 41, 'marka': 120,
+                    'sira': 24, 'sube': 84, 'yil': 41, 'marka': 120,
                     'plaka': 68, 'sanziman': 67, 'km': 76
                 };
             const detailPx = {
@@ -559,7 +559,7 @@
                 'km': 'minmax(48px, 1fr)'
             }
             : {
-                'sira': 'minmax(22px, 0.2fr)', 'sube': 'minmax(54px, 0.98fr)',
+                'sira': 'minmax(22px, 0.2fr)', 'sube': 'minmax(60px, 0.98fr)',
                 'yil': 'minmax(40px, 0.55fr)', 'marka': 'minmax(72px, 1.85fr)',
                 'plaka': 'minmax(60px, 1fr)', 'sanziman': 'minmax(60px, 0.9fr)',
                 'km': 'minmax(64px, 1.22fr)'
