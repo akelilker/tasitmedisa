@@ -4311,6 +4311,7 @@
     bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
   }
   /* Sadece Taşıt Detayı açıkken footer üstündeki global gap katmanını kapat */
+  body.modal-open.vehicle-detail-open::after,
   body.modal-open:has(#vehicle-detail-modal.active)::after,
   body.modal-open:has(#vehicle-detail-modal.open)::after {
     display: none !important;

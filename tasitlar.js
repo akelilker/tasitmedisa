@@ -1473,6 +1473,7 @@
     // Modalı aç
     modal.dataset.detailSignature = detailSignature;
     modal.style.display = 'flex';
+    document.body.classList.add('vehicle-detail-open');
     requestAnimationFrame(() => {
       modal.classList.add('active');
       requestAnimationFrame(() => { applyVehicleDetailSubeShrink(); });
@@ -1578,6 +1579,7 @@
         modal.style.display = 'none';
       }
     });
+    document.body.classList.remove('vehicle-detail-open');
     window.currentDetailVehicleId = null;
     // iOS: print() çağrısı iframe.onload/setTimeout ile geç tetiklenebiliyor.
     // Kullanıcı başka ekrana giderken bekleyen print'in çalışmaması için token iptal ediyoruz.
@@ -1587,6 +1589,7 @@
   // --- Taşıt Detay Modalını Kapat ---
   window.closeVehicleDetailModal = function() {
     const modal = DOM.vehicleDetailModal;
+    document.body.classList.remove('vehicle-detail-open');
     if (modal) {
       resetModalState(modal);
       modal.classList.remove('active');
