@@ -70,8 +70,6 @@
     flex-shrink: 0;
     position: relative;
     border-bottom: none !important;
-    /* Üst çerçeve: container/gradient birleşiminde üst sınır kaybolmasın (mobilde style-core ile güçlendirilir) */
-    border-top: 0.5px solid rgba(255, 255, 255, 0.4);
     border-top-left-radius: var(--modal-radius, 10px);
     border-top-right-radius: var(--modal-radius, 10px);
     margin-top: 0;
