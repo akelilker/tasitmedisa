@@ -1951,11 +1951,12 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
         height: 100% !important;
         max-height: 100% !important;
         border-radius: 10px !important;
-        border: 0.5px solid rgba(255, 255, 255, 0.47) !important;
+        border: 0.5px solid var(--modal-mobile-border-color, rgba(255, 255, 255, 0.47)) !important;
+        border-top-color: var(--modal-mobile-top-border-color, var(--modal-mobile-border-color, rgba(255, 255, 255, 0.47))) !important;
         box-shadow:
             0 0 40px var(--shadow-modal),
             inset 0 1px 0 rgba(255, 255, 255, 0.06),
-            inset 0 0.5px 0 0 rgba(255, 255, 255, 0.5);
+            inset 0 0.5px 0 0 var(--modal-mobile-inner-top-highlight, rgba(255, 255, 255, 0.5));
         background: var(--modal-bg) !important;
         padding: 0 !important;
         padding-top: 0 !important;
@@ -1967,27 +1968,13 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
         overscroll-behavior-x: none !important;
     }
 
-    /* Kayıt / Taşıtlar / Raporlar: üst çerçeve 0.5px + kırmızı gradient birleşince üst sınır kayboluyor */
-    #vehicle-modal.modal-overlay .modal-container,
-    #reports-modal.modal-overlay .modal-container,
-    #vehicles-modal.modal-overlay .modal-container {
-        border-top-width: 1px !important;
-        border-top-color: rgba(255, 255, 255, 0.58) !important;
-    }
-
     /* Modal header: üstten nefes alması için 12px, üst köşeler 10px (container ile uyumlu) */
     .modal-overlay .modal-header {
         padding-top: 12px !important;
         border-top-left-radius: 10px !important;
         border-top-right-radius: 10px !important;
         overflow: hidden !important;
-    }
-
-    /* Başlık ile dış çerçeve arasında ayrıştırıcı çizgi (gradient üst kenarı yutmasın) */
-    #vehicle-modal .modal-header,
-    #reports-modal .modal-header,
-    .tasitlar-modal-overlay .modal-header {
-        border-top: 1px solid rgba(255, 255, 255, 0.48) !important;
+        border-top: 1px solid var(--modal-mobile-header-top-border, rgba(255, 255, 255, 0.48)) !important;
         box-sizing: border-box !important;
     }
     /* Mobilde modal header kirmizi vurgusunu guclendir */
