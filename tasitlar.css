@@ -872,10 +872,6 @@
     border-top-right-radius: var(--modal-radius);
 }
 
-/* Masaüstü: üst çizgi tema rengi — mobilde style-core #vehicles-modal.modal-overlay ile ezilir */
-#vehicles-modal .modal-container {
-    border-top-color: rgba(var(--theme-color-rgb), 0.62) !important;
-}
 
 /* Tarihçe modalı – sekme başlıkları yatüm viewport'lar) */
 #vehicle-history-modal #history-tabs {
