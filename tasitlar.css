@@ -4,6 +4,10 @@
 
 /* Overlay konumu style-core .modal-overlay (6px) kullanılır; ezme yok */
 .tasitlar-modal-overlay {
+    --modal-mobile-border-color: rgba(var(--theme-color-rgb), 0.30);
+    --modal-mobile-top-border-color: rgba(var(--theme-color-rgb), 0.54);
+    --modal-mobile-header-top-border: rgba(255, 255, 255, 0.18);
+    --modal-mobile-inner-top-highlight: rgba(var(--theme-color-rgb), 0.20);
     display: none !important;
     background: transparent !important;
     flex-direction: column !important;
@@ -868,10 +872,6 @@
     border-top-right-radius: var(--modal-radius);
 }
 
-/* Masaüstü: üst çizgi tema rengi — mobilde style-core #vehicles-modal.modal-overlay ile ezilir */
-#vehicles-modal .modal-container {
-    border-top-color: rgba(var(--theme-color-rgb), 0.62) !important;
-}
 
 /* Tarihçe modalı – sekme başlıkları yatüm viewport'lar) */
 #vehicle-history-modal #history-tabs {
