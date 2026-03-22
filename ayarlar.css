@@ -22,7 +22,7 @@
     /* Şube/Kullanıcı düzenle: etiketlerin header altında kesilmesini önle */
     #branch-form-modal .universal-back-bar,
     #user-form-modal .universal-back-bar {
-        margin-top: -36px !important;
+        margin-top: 0 !important;
     }
     #branch-form-modal #branch-form,
     #user-form-modal #user-form.user-form-inner {
@@ -39,7 +39,7 @@
     /* Dış Veri Yönetimi / Veri Yedekleme: sol ok + etiket 16px aşağı */
     #data-management-modal .universal-back-bar,
     #dis-veri-panel .universal-back-bar {
-        margin-top: -36px !important;
+        margin-top: 0 !important;
     }
 
     /* Veri Yedekleme: X tıklaması üst katman tarafından engellenmesin */
@@ -1386,11 +1386,17 @@ input.settings-form-input:-moz-autofill,
 
 /* Masaüstü: Şube/Kullanıcı form – Kaydet/Vazgeç/Sil aynı satırda, yatayda ortada */
 @media (min-width: 769px) {
+  #branch-modal .universal-back-bar,
+  #user-modal .universal-back-bar,
   #branch-form-modal .universal-back-bar,
   #user-form-modal .universal-back-bar,
   #data-management-modal .universal-back-bar,
   #dis-veri-panel .universal-back-bar {
-    margin-top: -52px !important;
+    margin-top: 0 !important;
+  }
+  #branch-modal .modal-body > div,
+  #user-modal .modal-body > div {
+    margin-top: 0 !important;
   }
   #branch-form-modal .modal-body #branch-form,
   #user-form-modal .modal-body #user-form.user-form-inner {
@@ -1419,14 +1425,14 @@ input.settings-form-input:-moz-autofill,
 }
 @media (min-width: 769px) {
   #branch-form-modal #branch-form {
-    margin-top: -20px !important;
+    margin-top: 0 !important;
     padding-top: 0 !important;
   }
   #user-form-modal .modal-body {
     padding-top: 6px !important;
   }
   #user-form-modal #user-form.user-form-inner {
-    margin-top: -32px !important;
+    margin-top: 0 !important;
     padding-top: 0 !important;
     padding-left: 16px;
     padding-right: 16px;
@@ -1434,7 +1440,7 @@ input.settings-form-input:-moz-autofill,
   }
   #data-management-modal .data-management-actions,
   #dis-veri-panel .data-management-actions {
-    transform: translateY(calc(-50% - 20px));
+    transform: translateY(-50%);
   }
 }
 
