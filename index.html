@@ -110,7 +110,7 @@
         .app-container {
             min-height: 100vh;
             min-height: 100dvh;
-            padding-bottom: 42px; /* footer rezervi */
+            padding-bottom: var(--app-footer-real-height, 42px); /* footer rezervi */
             box-sizing: border-box;
         }
         #app-footer {
@@ -120,8 +120,8 @@
             bottom: 0 !important;
             width: 100% !important;
             max-width: 500px !important;
-            height: 42px !important;
-            min-height: 42px !important;
+            height: var(--app-footer-real-height, 42px) !important;
+            min-height: var(--app-footer-real-height, 42px) !important;
             box-sizing: border-box !important;
             background: #080d16 !important;
             z-index: 10000 !important;
@@ -719,7 +719,7 @@
         </span>
     </a>
 
-    <footer id="app-footer" style="position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:500px;height:42px;min-height:42px;background:#080d16;z-index:10000;display:flex;align-items:center;justify-content:center;visibility:visible;box-sizing:border-box;">
+    <footer id="app-footer" style="position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:500px;height:var(--app-footer-real-height,42px);min-height:var(--app-footer-real-height,42px);background:#080d16;z-index:10000;display:flex;align-items:center;justify-content:center;visibility:visible;box-sizing:border-box;">
         <div class="footer-content">
             <span class="version" id="version-display">v78.1</span>
             <span class="brand"><img src="icon/logo-footer.svg" alt="MEDISA" style="height: 12.5px; width: auto;"></span>
