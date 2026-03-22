@@ -1392,10 +1392,12 @@ input.settings-form-input:-moz-autofill,
 @media (min-width: 769px) {
   #branch-modal .universal-back-bar,
   #user-modal .universal-back-bar,
-  #branch-form-modal .universal-back-bar,
-  #user-form-modal .universal-back-bar,
   #data-management-modal .universal-back-bar,
   #dis-veri-panel .universal-back-bar {
+    margin-top: -20px !important;
+  }
+  #branch-form-modal .universal-back-bar,
+  #user-form-modal .universal-back-bar {
     margin-top: 0 !important;
   }
   #branch-modal .modal-body > div,
