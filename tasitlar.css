@@ -4328,7 +4328,10 @@
     gap: 12px !important;
     margin-top: -12px !important;
   }
+  /* Şema satırı: 30px sola; rotate(90deg) kaynaklı hayalet dikey boşluğu margin ile telafi */
   #dinamik-olay-modal #kaza-kaporta-container > div.kaza-kaporta-schema-inner {
-    margin-top: -8px !important;
+    margin-top: -32px !important;
+    margin-bottom: -32px !important;
+    transform: translateX(-30px);
   }
 }
