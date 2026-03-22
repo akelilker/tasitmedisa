@@ -4310,6 +4310,13 @@
   #vehicle-detail-modal.modal-overlay {
     bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
   }
+  /* Container overlay'i tamamen doldursun (height:auto + 90vh kısıtı kalkıyor) */
+  #vehicle-detail-modal .modal-container {
+    height: 100% !important;
+    max-height: 100% !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+  }
   /* Sadece Taşıt Detayı açıkken footer üstündeki global gap katmanını kapat */
   body.modal-open.vehicle-detail-open::after,
   body.modal-open:has(#vehicle-detail-modal.active)::after,
