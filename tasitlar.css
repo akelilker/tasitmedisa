@@ -4292,6 +4292,21 @@
   }
 }
 
+/* Kaza / Kaporta şeması: mobilde etiket–şema 6px, şema +12px dikey (inline JS boyutlarını ezer) */
+@media (max-width: 640px) {
+  #dinamik-olay-modal .kaza-kaporta-block {
+    gap: 6px !important;
+  }
+  #dinamik-olay-modal #kaza-kaporta-container > div.kaza-kaporta-schema-inner {
+    max-height: 168px !important;
+    overflow: visible !important;
+  }
+  #dinamik-olay-modal #kaza-kaporta-container .kaza-kaporta-schema-inner svg {
+    height: 136px !important;
+    max-height: 136px !important;
+  }
+}
+
 /* Taşıtlar modalı mobil (640/768): şube ismi tek satıra sışmıyorsa 1pt küçült (JS ile -shrink class eklenir) */
 @media (max-width: 768px) {
   #vehicle-detail-modal .detail-row-value-sube.detail-row-value-sube-shrink {
