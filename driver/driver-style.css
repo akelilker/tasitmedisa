@@ -2570,7 +2570,8 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 #driver-muayene-modal .modal-header,
 #driver-sigorta-modal .modal-header,
 #driver-kasko-modal .modal-header {
-  background: linear-gradient(180deg, rgba(255, 0, 0, 0.30) 0%, rgba(255, 0, 0, 0.22) 25%, rgba(255, 0, 0, 0.16) 50%, rgba(255, 0, 0, 0.10) 75%, transparent 100%) !important;
+  background: linear-gradient(180deg, rgba(255, 0, 0, 0.42) 0%, rgba(255, 0, 0, 0.32) 25%, rgba(255, 0, 0, 0.25) 50%, rgba(255, 0, 0, 0.18) 75%, transparent 100%) !important;
+  background-size: 100% calc(100% + 3px) !important;
   padding: 2px 20px !important;
   height: 60px !important;
   border-bottom: none !important;
@@ -5341,7 +5342,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 /* 1. Footer üstüne ana uygulamadaki gibi ince gri çizgi eklendi */
 .dashboard-page #app-footer,
 .login-page #app-footer.login-footer {
-    border-top: 1px solid rgba(255, 255, 255, 0.15) !important;
+    border-top: 1px solid rgba(128, 128, 128, 0.52) !important;
 }
 
 /* 2. Ortadaki kırmızı dikey çizgi footera değmeden Bildir butonu hizasında kesilsin (Mobil) */
