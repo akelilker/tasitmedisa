@@ -1883,13 +1883,18 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
         letter-spacing: 2.5px;  /* Mobilde harfler arası boşluk 2.5px */
         font-size: clamp(19px, 5.5vw, 23px); /* Uzun başlıkta minimum düzeyde küçülebilir */
         /* Temiz, sis yok: keskin metin */
+        background: none !important;
+        -webkit-background-clip: border-box !important;
+        background-clip: border-box !important;
+        -webkit-text-fill-color: #f3f7fb !important;
+        color: #f3f7fb !important;
         text-shadow: none !important;
         filter: none !important;
         -webkit-font-smoothing: antialiased !important;
         -moz-osx-font-smoothing: grayscale !important;
         text-rendering: optimizeLegibility !important;
         backface-visibility: hidden;
-        transform: translateY(-2px);  /* Havada - kırmızı ile eşit */
+        transform: none !important;  /* Subpixel blur olmasın */
     }
     /* Anasayfa mobil header: logo yuvarlağı büyüse de başlık tek satıra sığsın */
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-logo {
