@@ -17,7 +17,7 @@ body::-webkit-scrollbar,
   --theme-color-rgb: 212, 0, 0;
   /* Footer'dan yukarı süzen ışık: MEDISA tonu ile aynı */
   --footer-glow-rgb: 212, 0, 0;
-  --footer-glow-opacity: 0.38;  /* Masaüstü footer üstü parlaklık */
+  --footer-glow-opacity: 0.41;  /* Masaüstü footer üstü parlaklık */
   /* MEDISA marka kırmızısı (theme ile aynı; alias) */
   --brand-red: #d40000;
   --brand-red-rgb: 212, 0, 0;
