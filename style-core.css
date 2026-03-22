@@ -104,20 +104,14 @@ body::-webkit-scrollbar,
 @media (max-width: 640px) {
   :root {
     --txt: #ffffff;
-    --muted: rgba(255, 255, 255, 0.78);
-    --br: #556070;
-    --border-shiny: rgba(255, 255, 255, 0.42);
+    --muted: rgba(255, 255, 255, 0.7);
+    --br: #444;
+    --border-shiny: rgba(255, 255, 255, 0.35);
     --border-red-tech: rgba(var(--theme-color-rgb), 0.78);  /* Mobil/PWA: çerçeve net */
     --border-red-side: rgba(var(--theme-color-rgb), 0.78);  /* Yan çizgiler net */
-    --red-glow-subtle: rgba(var(--theme-color-rgb), 0.24);
-    --bg: #0b1320;
-    --bg-content: #111b2a;
-    --bg-input: #142031;
-    --bg-input-focus: #182638;
-    --bg-2: #18212f;
-    --card-bg: #1d2736;
-    --hero-gradient-start: #0f1826;
-    --hero-gradient-end: #172334;
+    --red-glow-subtle: rgba(var(--theme-color-rgb), 0.18);
+    --bg-2: #1a1a1a;
+    --card-bg: #1f1f1f;
     --hero-logo-width: 43px;
     --hero-spacer-width: 1px;
   }
@@ -1879,7 +1873,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
         border-color: rgba(190, 198, 208, 0.82) !important;
         box-shadow:
             0 4px 16px rgba(0, 0, 0, 0.45),
-            0 4px 18px rgba(var(--theme-color-rgb), 0.10),
+            0 4px 18px rgba(var(--theme-color-rgb), 0.06),
             inset 0 1px 0 rgba(255, 255, 255, 0.20),
             inset 0 -1px 0 rgba(88, 97, 108, 0.32) !important;
     }
@@ -2038,8 +2032,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
     /* Ana sayfa butonları mobilde: yükseklik +2px (64px), gri çerçeve parlak, havada kırmızı gölge */
     .menu-btn {
         height: 64px !important; /* 62px + 2px */
-        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22), 0 4px 20px rgba(var(--theme-color-rgb), 0.18);
-        border-color: rgba(255, 255, 255, 0.62); /* Çerçeve gri daha parlak (0.45Ã¢â€ â€™0.55, kalınlık aynı) */
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25), 0 4px 20px rgba(var(--theme-color-rgb), 0.14);
+        border-color: rgba(255, 255, 255, 0.55); /* Çerçeve gri daha parlak (0.45Ã¢â€ â€™0.55, kalınlık aynı) */
     }
     
     /* Menü butonları arası dikey boşluk +2px */
