@@ -429,28 +429,30 @@
     var dropdownStyles = window.getComputedStyle(dropdown);
     var paddingTop = parseFloat(dropdownStyles.paddingTop) || 0;
     var paddingBottom = parseFloat(dropdownStyles.paddingBottom) || 0;
-    var used = 0;
-    var fitted = 0;
+    var visibleLimit = 5;
+    var measured = 0;
+    var counted = 0;
 
     Array.prototype.forEach.call(dropdown.children, function(child) {
-      if (!child || child.nodeType !== 1) return;
+      if (!child || child.nodeType !== 1 || counted >= visibleLimit) return;
+      var rect = child.getBoundingClientRect();
+      if (!rect || rect.height <= 0) return;
       var childStyles = window.getComputedStyle(child);
       var outerHeight = Math.ceil(
-        child.getBoundingClientRect().height +
+        rect.height +
         (parseFloat(childStyles.marginTop) || 0) +
         (parseFloat(childStyles.marginBottom) || 0)
       );
       if (!outerHeight) return;
-      if (used + outerHeight <= available) {
-        used += outerHeight;
-        fitted = used;
-      }
+      measured += outerHeight;
+      counted += 1;
     });
 
-    var fallback = Math.min(available, Math.ceil(dropdown.scrollHeight));
-    var target = fitted
-      ? Math.min(available, Math.ceil(fitted + paddingTop + paddingBottom))
-      : fallback;
+    var contentCap = Math.ceil(dropdown.scrollHeight);
+    var preferred = measured
+      ? Math.ceil(measured + paddingTop + paddingBottom)
+      : contentCap;
+    var target = Math.min(available, preferred, contentCap);
 
     dropdown.style.setProperty('--mobile-notifications-max-height', Math.max(0, target) + 'px');
   }
