@@ -1974,7 +1974,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
         border-top-left-radius: 10px !important;
         border-top-right-radius: 10px !important;
         overflow: hidden !important;
-        border-top: 1px solid var(--modal-mobile-header-top-border, rgba(255, 255, 255, 0.48)) !important;
         box-sizing: border-box !important;
     }
     /* Mobilde modal header kirmizi vurgusunu guclendir */
