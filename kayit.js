@@ -117,27 +117,69 @@
     return { valid: true, message: '' };
   }
 
+  /**
+   * Sadece rakamlar veya gg/aa/yyyy — 6 hane ggmmaa (yy pivot), 8 hane ggmmaaaa
+   */
   function formatTramerDate(value) {
     if (!value) return '';
-    
-    // Zaten formatlı ise (02/02/2025) olduğu gibi bırak
-    if (value.includes('/')) {
-      return value;
+    const trimmed = String(value).trim();
+    if (trimmed.includes('/')) {
+      return trimmed;
     }
-    
-    // Sadece rakamlardan oluşuyorsa formatla
-    const numericValue = value.replace(/[^\d]/g, '');
-    
-    // 6 haneli ise (020225) → gg/aa/yyyy formatına çevir
+    const numericValue = trimmed.replace(/[^\d]/g, '');
+    if (numericValue.length === 8) {
+      const day = numericValue.substring(0, 2);
+      const month = numericValue.substring(2, 4);
+      const year = numericValue.substring(4, 8);
+      return day + '/' + month + '/' + year;
+    }
     if (numericValue.length === 6) {
       const day = numericValue.substring(0, 2);
       const month = numericValue.substring(2, 4);
-      const year = '20' + numericValue.substring(4, 6);
-      return `${day}/${month}/${year}`;
+      const yy = parseInt(numericValue.substring(4, 6), 10);
+      const currentYear = new Date().getFullYear();
+      let fullYear = 2000 + yy;
+      if (fullYear > currentYear) fullYear -= 100;
+      return day + '/' + month + '/' + String(fullYear);
     }
-    
-    // Geçersiz format
     return '';
+  }
+
+  /** Tramer tarih alanı: blur/Enter sonrası 6 veya 8 rakamı gg/aa/yyyy yap + doğrula */
+  function finalizeTramerDateInput(el) {
+    if (!el) return;
+    const raw = el.value.replace(/[^\d]/g, '');
+    if (raw.length === 6 || raw.length === 8) {
+      const formatted = formatTramerDate(el.value);
+      if (formatted) el.value = formatted;
+    } else if (el.value && el.value.length < 10 && !el.value.includes('/')) {
+      const formatted = formatTramerDate(el.value);
+      if (formatted) el.value = formatted;
+    }
+    if (el.value.length === 10) {
+      const validation = validateTramerDate(el.value);
+      if (!validation.valid) {
+        el.classList.add('field-error');
+        el.title = validation.message;
+      } else {
+        el.classList.remove('field-error');
+        el.title = '';
+      }
+    }
+  }
+
+  /** Tescil tarih input: 6/8 rakamı gg/aa/yyyy yap + overlay */
+  function finalizeTescilDateInput(el) {
+    if (!el) return;
+    const raw = el.value.replace(/[^\d]/g, '');
+    if (raw.length === 6 || raw.length === 8) {
+      const formatted = formatTramerDate(el.value);
+      if (formatted) el.value = formatted;
+    } else if (el.value && el.value.length < 10 && !el.value.includes('/')) {
+      const formatted = formatTramerDate(el.value);
+      if (formatted) el.value = formatted;
+    }
+    if (typeof updateTescilTarihDisplay === 'function') updateTescilTarihDisplay();
   }
 
   /**
@@ -234,29 +276,18 @@
     dateInput.maxLength = 10;
     dateInput.setAttribute('inputmode', 'numeric');
     
-    // Tarih input event'leri
-    dateInput.addEventListener('input', function(e) {
-      const cursorPos = this.selectionStart;
+    // Tarih input event'leri: 8 rakamda anında gg/aa/yyyy; 6 rakam Tab/blur/Enter'da (ggmmaa yy pivot)
+    dateInput.addEventListener('input', function() {
       const inputValue = this.value.replace(/[^\d]/g, '');
-      
-      // 6 haneli sayı ise otomatik formatla
-      if (inputValue.length === 6) {
+      if (inputValue.length === 8) {
         const formatted = formatTramerDate(inputValue);
         this.value = formatted;
         this.setSelectionRange(this.value.length, this.value.length);
-      } else if (inputValue.length > 6) {
-        // 6 haneden fazla ise ilk 6 hanesini al ve formatla
-        const formatted = formatTramerDate(inputValue.substring(0, 6));
-        this.value = formatted;
-        this.setSelectionRange(this.value.length, this.value.length);
       }
-      
-      // Tarih validasyonu
       if (this.value.length === 10) {
         const validation = validateTramerDate(this.value);
         if (!validation.valid) {
           this.classList.add('field-error');
-          // Alert yerine title attribute ile göster (daha az rahatsız edici)
           this.title = validation.message;
         } else {
           this.classList.remove('field-error');
@@ -264,14 +295,16 @@
         }
       }
     });
-    
+
     dateInput.addEventListener('blur', function() {
-      if (this.value && this.value.length < 10) {
-        // Eksik format varsa düzeltmeyi dene
-        const formatted = formatTramerDate(this.value);
-        if (formatted) {
-          this.value = formatted;
-        }
+      finalizeTramerDateInput(this);
+    });
+
+    dateInput.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        finalizeTramerDateInput(this);
+        this.blur();
       }
     });
     
@@ -1503,24 +1536,25 @@
       if (!inputEl.hasAttribute('data-tescil-listener')) {
         inputEl.setAttribute('data-tescil-listener', 'true');
         
-        // Input formatlama (6 haneli giriş için otomatik formatlama) ve overlay güncelleme
-        inputEl.addEventListener('input', function(e) {
+        // 8 rakamda anında gg/aa/yyyy; 6 rakam blur/Enter'da; overlay güncelle
+        inputEl.addEventListener('input', function() {
           const inputValue = this.value.replace(/[^\d]/g, '');
-          
-          // 6 haneli sayı ise otomatik formatla
-          if (inputValue.length === 6) {
+          if (inputValue.length === 8) {
             const formatted = formatTramerDate(inputValue);
             this.value = formatted;
             this.setSelectionRange(this.value.length, this.value.length);
-          } else if (inputValue.length > 6) {
-            // 6 haneden fazla ise ilk 6 hanesini al ve formatla
-            const formatted = formatTramerDate(inputValue.substring(0, 6));
-            this.value = formatted;
-            this.setSelectionRange(this.value.length, this.value.length);
           }
-          
-          // Overlay'i güncelle
           updateTescilTarihDisplay();
+        });
+        inputEl.addEventListener('blur', function() {
+          finalizeTescilDateInput(this);
+        });
+        inputEl.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            finalizeTescilDateInput(this);
+            this.blur();
+          }
         });
       }
       
