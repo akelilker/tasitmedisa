@@ -81,27 +81,39 @@
   }
 
   function writeVehicles(arr) {
+    function notifyIfAvailable() {
+      if (typeof window.updateNotifications === 'function') {
+        window.updateNotifications();
+      }
+    }
     if (window.dataApi && typeof window.dataApi.saveVehiclesList === 'function') {
-      return window.dataApi.saveVehiclesList(arr).catch(function(err) {
-        if (err && err.conflict) {
-          if (typeof window.onMedisaConflict === 'function') {
-            window.onMedisaConflict();
-          } else {
-            alert('Dikkat! Veri siz işlem yaparken başka biri tarafından güncellenmiş. Güncel veriler yüklendi.');
+      return window.dataApi.saveVehiclesList(arr)
+        .then(function(result) {
+          notifyIfAvailable();
+          return result;
+        })
+        .catch(function(err) {
+          if (err && err.conflict) {
+            if (typeof window.onMedisaConflict === 'function') {
+              window.onMedisaConflict();
+            } else {
+              alert('Dikkat! Veri siz işlem yaparken başka biri tarafından güncellenmiş. Güncel veriler yüklendi.');
+            }
+            if (typeof window.loadDataFromServer === 'function') {
+              return window.loadDataFromServer(true).then(function() {
+                if (typeof window.renderBranchDashboard === 'function') window.renderBranchDashboard();
+                if (typeof window.renderVehicles === 'function') window.renderVehicles();
+                notifyIfAvailable();
+              });
+            }
+            return Promise.resolve();
           }
-          if (typeof window.loadDataFromServer === 'function') {
-            return window.loadDataFromServer(true).then(function() {
-              if (typeof window.renderBranchDashboard === 'function') window.renderBranchDashboard();
-              if (typeof window.renderVehicles === 'function') window.renderVehicles();
-            });
-          }
-          return Promise.resolve();
-        }
-        console.warn('[Medisa] Sunucuya kayıt yapılamadı:', err && err.message);
-        return Promise.reject(err);
-      });
+          console.warn('[Medisa] Sunucuya kayıt yapılamadı:', err && err.message);
+          return Promise.reject(err);
+        });
     }
     if (window.appData) window.appData.tasitlar = Array.isArray(arr) ? arr : [];
+    notifyIfAvailable();
     return Promise.resolve();
   }
 
@@ -3514,6 +3526,18 @@ function renderVehicleDetailLeft(vehicle) {
         const v = vehicles.find(function(x) { return String(x.id) === String(vehicleId); });
         if (v) {
           v.ruhsatPath = data.ruhsatPath;
+          if (!v.events) v.events = [];
+          const now = new Date();
+          const tarihRuhsat = String(now.getDate()).padStart(2, '0') + '/' + String(now.getMonth() + 1).padStart(2, '0') + '/' + now.getFullYear();
+          const kim = getRecorderDisplayName();
+          v.events.unshift({
+            id: Date.now().toString(),
+            type: 'ruhsat-yukle',
+            date: tarihRuhsat,
+            timestamp: now.toISOString(),
+            data: { kaydeden: kim, kisi: kim }
+          });
+          writeVehicles(vehicles);
         }
 
         const selectBox = document.querySelector('#ruhsat-modal-content .ruhsat-select-box');
@@ -4981,7 +5005,8 @@ function renderVehicleDetailLeft(vehicle) {
       'kredi-guncelle': 'Kredi/Rehin',
       'takip-cihaz-guncelle': 'Takip cihaz\u0131',
       'not-guncelle': 'Kullanıcı notu',
-      'satis': 'Sat\u0131\u015F/Pert'
+      'satis': 'Sat\u0131\u015F/Pert',
+      'ruhsat-yukle': 'Ruhsat'
     };
     return labels[type] || (type ? toTitleCase(String(type)) : 'Olay');
   }
@@ -5022,7 +5047,8 @@ function renderVehicleDetailLeft(vehicle) {
       'not-guncelle': 'Not Bilgisini G\u00FCncelledi',
       'sube-degisiklik': '\u015Eube Bilgisini G\u00FCncelledi',
       'kullanici-atama': 'Kullan\u0131c\u0131 Atamas\u0131 Yapt\u0131',
-      'satis': 'Sat\u0131\u015F/Pert Bildirdi'
+      'satis': 'Sat\u0131\u015F/Pert Bildirdi',
+      'ruhsat-yukle': 'Ruhsat Belgesi Y\u00fckledi'
     };
     const mesaj = typeMessages[type] || 'Bilgi G\u00FCncelledi';
     return isimStr + ', ' + plateStr + ' Plakalı Taşıt İçin ' + mesaj + '.';
