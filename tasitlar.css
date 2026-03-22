@@ -2446,14 +2446,21 @@
   margin-bottom: 0 !important; /* Alt boşluk yok - plakayı yukarı çekmek için */
 }
 
-/* Şubeye Tahsis Etmek iiiiiiçin + yatayda ortalı (sol ok/Taşıtlar dikkate alınmadan) */
+/* Şubeye Tahsis Etmek iiiiiiçin + yatayda ortalı (sol ok/Taşıtlar dikkate alınmadan); SATILDI + tahsis birlikte sarılabilsin */
 .vehicle-detail-toolbar .detail-toolbar-center-absolute {
   position: absolute !important;
   left: 50% !important;
   transform: translateX(-50%) !important;
   width: auto !important;
+  max-width: min(300px, calc(100% - 100px));
   flex: none !important;
   pointer-events: auto !important;
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
 }
 
 /* Vehicle Detail Modal Body: max-yükseklikte kalan alanı doldurur, içerik taşarsa burada kayar (kesilme önleme) */
