@@ -2601,3 +2601,15 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
   0%, 80%, 100% { transform: scale(0.6); opacity: 0.6; }
   40% { transform: scale(1); opacity: 1; }
 }
+
+/* Ayarlar listesi modalları (şube / kullanıcı / veri yedekleme / dış veri): geri çubuğu yukarı.
+   .universal-back-bar { margin: 0 !important } tüm kenarı sıfırladığı için düşük özgüllü margin-top eziliyordu.
+   Sadece masaüstü; mobil max-width kuralları ayrı. */
+@media (min-width: 769px) {
+  #branch-modal.modal-overlay.ayarlar-modal-overlay .universal-back-bar,
+  #user-modal.modal-overlay.ayarlar-modal-overlay .universal-back-bar,
+  #data-management-modal.modal-overlay.ayarlar-modal-overlay .universal-back-bar,
+  #dis-veri-panel.modal-overlay.ayarlar-modal-overlay .universal-back-bar {
+    margin-top: -32px !important;
+  }
+}
