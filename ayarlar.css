@@ -1467,6 +1467,15 @@ input.settings-form-input:-moz-autofill,
 
 /* === MOBİL AYARLAR === */
 @media (max-width: 640px) {
+    /* Geri ok + etiket: masaüstü -32px yerine 12px daha yukarı */
+    #branch-modal .universal-back-bar,
+    #branch-form-modal .universal-back-bar,
+    #user-modal .universal-back-bar,
+    #user-form-modal .universal-back-bar,
+    #data-management-modal .universal-back-bar,
+    #dis-veri-panel .universal-back-bar {
+        margin-top: -44px !important;
+    }
     .settings-card {
         border-color: rgba(255, 255, 255, 0.4) !important;
         background: rgba(255, 255, 255, 0.03) !important;
@@ -1613,15 +1622,22 @@ input.settings-form-input:-moz-autofill,
     #user-form-modal .user-vehicles-trigger-text {
         line-height: 1.2 !important;
     }
+    /* Sil: Kaydet/Vazgeç ile aynı ölçü (universal-btn-cancel ile hizalı, mobil) */
+    #branch-form-modal .settings-btn-delete,
     #user-form-modal .settings-btn-delete {
-        height: 31px !important;
+        height: 32px !important;
         min-width: 0 !important;
         width: 100% !important;
         border-width: 1px !important;
         border-radius: 8px !important;
-        font-size: 12.5px !important;
+        font-size: 11.5px !important;
         font-weight: 500 !important;
-        line-height: normal !important;
+        line-height: 1 !important;
+        padding: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        box-sizing: border-box !important;
         flex: 1 1 auto !important;
     }
     /* Mobil: Tahsis Edilecek Taşıt listesi yukarı açılsın – ekran kaymasın */
