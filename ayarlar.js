@@ -107,7 +107,7 @@
      * 3. ID varsa güncelleme, yoksa yeni ekleme modu
      * 4. localStorage'a yaz
      * 5. Form modalını kapat ve ana listeyi güncelle
-     * 6. Güncellemede kısa başarı uyarısı; yeni eklemede liste yeterli geri bildirim
+     * 6. Kullanıcıya başarı mesajı göster
      * 
      * @throws {Error} localStorage yazma hatası durumunda uygulama crash olabilir
      * (Hata yakalama henüz eklenmedi - rapor önerisi #6)
@@ -162,7 +162,7 @@
         // Ana modalı güncelle
         renderBranchList();
   
-        if (id) alert('Şube güncellendi.');
+        alert(id ? 'Şube güncellendi.' : 'Şube Eklendi.');
       } catch (error) {
         alert('Şube kaydı sırasında bir hata Oluştu! Lütfen tekrar deneyin.');
       } finally {
@@ -612,7 +612,7 @@
      * 3. ID varsa güncelleme, yoksa yeni ekleme modu
      * 4. localStorage'a yaz
      * 5. Form modalını kapat ve ana listeyi güncelle
-     * 6. Güncellemede kısa başarı uyarısı; yeni eklemede liste yeterli geri bildirim
+     * 6. Kullanıcıya başarı mesajı göster
      * 
      * @throws {Error} localStorage yazma hatası durumunda uygulama crash olabilir
      * (Hata yakalama henüz eklenmedi - rapor önerisi #6)
@@ -754,7 +754,7 @@
         // Ana modalı güncelle
         renderUserList();
   
-        if (id) alert('Kullanıcı güncellendi.');
+        alert(id ? 'Kullanıcı güncellendi.' : 'Kullanıcı Eklendi.');
   
         if (savedUserId) {
           window.dispatchEvent(new CustomEvent('userSaved', { detail: { id: savedUserId } }));
