@@ -1246,6 +1246,7 @@
       String(vehicle.satildiMi === true ? 1 : 0),
       String(Array.isArray(vehicle.events) ? vehicle.events.length : 0)
     ].join('|');
+    const isArchiveSoldDetail = vehicle.satildiMi === true && lastListContext && lastListContext.mode === 'archive';
 
     if (
       modal.classList.contains('active') &&
@@ -1266,7 +1267,7 @@
       // Yeni plaka elementi oluştur
       const plateEl = document.createElement('div');
       plateEl.className = 'detail-plate';
-      if (vehicle.satildiMi) {
+      if (vehicle.satildiMi && !isArchiveSoldDetail) {
         plateEl.innerHTML = `${escapeHtml(vehicle.plate || '-')} <span style="color: #d40000; font-size: 16px; margin-left: 8px;">SATILDI</span>`;
       } else {
         plateEl.textContent = vehicle.plate || '-';
@@ -1284,7 +1285,7 @@
       // Container varsa sadece plakayı güncelle
       const plateEl = plateRow.querySelector('.detail-plate');
       if (plateEl) {
-        if (vehicle.satildiMi) {
+        if (vehicle.satildiMi && !isArchiveSoldDetail) {
           plateEl.innerHTML = `${escapeHtml(vehicle.plate || '-')} <span style="color: #d40000; font-size: 16px; margin-left: 8px;">SATILDI</span>`;
         } else {
           plateEl.textContent = vehicle.plate || '-';
@@ -1334,7 +1335,7 @@
     }
 
     // İki kolonlu layout'u render et
-    renderVehicleDetailLeft(vehicle);
+    renderVehicleDetailLeft(vehicle, isArchiveSoldDetail);
     renderVehicleDetailRight(vehicle);
 
     // Toolbar oluştur/kontrol et (detay modalında) - Her durumda geri tuşu ekle
@@ -1399,7 +1400,12 @@
       toolbarCenter.style.justifyContent = 'center';
       toolbarCenter.style.flex = '1';
       
-      if (!vehicle.branchId) {
+      if (isArchiveSoldDetail) {
+        const soldBadge = document.createElement('span');
+        soldBadge.className = 'detail-sold-badge';
+        soldBadge.textContent = 'SATILDI';
+        toolbarCenter.appendChild(soldBadge);
+      } else if (!vehicle.branchId) {
         const assignBtn = document.createElement('button');
         assignBtn.className = 'detail-assign-button-frameless';
         assignBtn.innerHTML = '<span>\u015Eubeye Tahsis Etmek \u0130\u00E7in +</span>';
@@ -1884,7 +1890,7 @@
    * /**
  * Sol kolon render (Taşıt özellikleri + Kaporta Şeması)
  */
-function renderVehicleDetailLeft(vehicle) {
+function renderVehicleDetailLeft(vehicle, isArchiveSoldDetail = false) {
   const leftEl = DOM.vehicleDetailLeft;
   if (!leftEl) return;
 
@@ -1895,8 +1901,11 @@ function renderVehicleDetailLeft(vehicle) {
   const assignedUserId = vehicle.assignedUserId || '';
   const assignedUser = assignedUserId ? users.find(u => u.id === assignedUserId) : null;
   const assignedUserName = (assignedUser && assignedUser.name) ? assignedUser.name : (vehicle.tahsisKisi || '');
+  const hasAssignedUser = !!(assignedUserId || (assignedUserName && assignedUserName.trim()));
 
-  if (assignedUserId || (assignedUserName && assignedUserName.trim())) {
+  if (isArchiveSoldDetail && !hasAssignedUser) {
+      html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Kullan\u0131c\u0131</span><span class="detail-row-colon">:</span></div><span class="detail-row-value detail-user-value"> -</span></div>`;
+  } else if (assignedUserId || (assignedUserName && assignedUserName.trim())) {
       const displayName = escapeHtml(assignedUserName).replace(/ /g, '&nbsp;');
       html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Kullanıcı</span><span class="detail-row-colon">:</span></div><span class="detail-row-value detail-user-value"> ${displayName}</span></div>`;
   } else {
@@ -1906,11 +1915,16 @@ function renderVehicleDetailLeft(vehicle) {
   // Şube
   const branches = readBranches();
   const branchId = vehicle.branchId || '';
+  if (isArchiveSoldDetail) {
+      const soldBranchName = branchId ? ((branches.find(b => String(b.id) === String(branchId))?.name || '-')) : '-';
+      html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">\u015Eube</span><span class="detail-row-colon">:</span></div><span class="detail-row-value detail-row-value-sube"> ${escapeHtml(soldBranchName)}</span></div>`;
+  } else {
   const branchName = branchId ?
       (branches.find(b => String(b.id) === String(branchId))?.name || '') :
       'Tahsis Edilmemi\u015F';
   const subeValueClass = branchId ? 'detail-row-value detail-row-value-sube' : 'detail-row-value detail-row-value-sube detail-sube-unassigned';
   html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">\u015Eube</span><span class="detail-row-colon">:</span></div><span class="${subeValueClass}"> ${escapeHtml(branchName)}</span></div>`;
+  }
 
   // Taşıt Tipi
   const vehicleType = vehicle.vehicleType || '';
