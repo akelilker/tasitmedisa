@@ -1627,12 +1627,11 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #a
     box-shadow: 0 -13px 26px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity, 0.38)) !important;
 }
 @media (max-width: 640px) {
-  /* Footer glow: içeri ~4px daha az taşsın */
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer {
-    box-shadow: 0 -6px 16px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity, 0.38)) !important;
+    box-shadow: 0 -12px 24px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity, 0.38)) !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #app-footer {
-    box-shadow: 0 -9px 22px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity, 0.38)) !important;
+    box-shadow: 0 -13px 26px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity, 0.38)) !important;
   }
 }
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay.active,
@@ -1951,12 +1950,12 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
         height: 100% !important;
         max-height: 100% !important;
         border-radius: 10px !important;
-        border: 0.5px solid var(--modal-mobile-border-color, rgba(255, 255, 255, 0.47)) !important;
-        border-top-color: var(--modal-mobile-top-border-color, var(--modal-mobile-border-color, rgba(255, 255, 255, 0.47))) !important;
+        border: 0.5px solid var(--modal-mobile-border-color, rgba(255, 255, 255, 0.20)) !important;
+        border-top-color: var(--modal-mobile-top-border-color, var(--modal-mobile-border-color, rgba(255, 255, 255, 0.20))) !important;
         box-shadow:
             0 0 40px var(--shadow-modal),
-            inset 0 1px 0 rgba(255, 255, 255, 0.06),
-            inset 0 0.5px 0 0 var(--modal-mobile-inner-top-highlight, rgba(255, 255, 255, 0.5));
+            inset 0 1px 0 rgba(255, 255, 255, 0.04),
+            inset 0 0.5px 0 0 var(--modal-mobile-inner-top-highlight, rgba(255, 255, 255, 0.12));
         background: var(--modal-bg) !important;
         padding: 0 !important;
         padding-top: 0 !important;
@@ -1973,11 +1972,11 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
     #reports-modal.modal-overlay .modal-container,
     #vehicles-modal.modal-overlay .modal-container {
         border-top-width: 1px !important;
-        border-top-color: rgba(255, 255, 255, 0.58) !important;
+        border-top-color: rgba(255, 255, 255, 0.25) !important;
         border-left-width: 1px !important;
         border-right-width: 1px !important;
-        border-left-color: rgba(255, 255, 255, 0.47) !important;
-        border-right-color: rgba(255, 255, 255, 0.47) !important;
+        border-left-color: rgba(255, 255, 255, 0.20) !important;
+        border-right-color: rgba(255, 255, 255, 0.20) !important;
     }
     /* Modal header: üstten nefes alması için 12px, üst köşeler 10px (container ile uyumlu) */
     .modal-overlay .modal-header {
