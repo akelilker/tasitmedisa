@@ -2099,7 +2099,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
         box-shadow: 0 -12px 22px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity, 0.38));
         border-left: none; /* Mobilde yan yok */
         border-right: none;
-        border-top: 1px solid rgba(128, 128, 128, 0.5) !important; /* Gri çizgi */
+        border-top: 1px solid rgba(128, 128, 128, 0.52) !important; /* Gri çizgi */
     }
     /* HEADER KIRMIZI ÇİZGİ - Havada (kırmızı çerçeve ile eşit) */
     .animated-line {
