@@ -4323,4 +4323,11 @@
   body.modal-open:has(#vehicle-detail-modal.open)::after {
     display: none !important;
   }
+  /* Kaza Ekle: "Kaporta / Hasar" etiketi ile şema arası tam 8px */
+  #dinamik-olay-modal .kaza-kaporta-block {
+    gap: 8px !important;
+  }
+  #dinamik-olay-modal #kaza-kaporta-container > div.kaza-kaporta-schema-inner {
+    margin-top: 0 !important;
+  }
 }
