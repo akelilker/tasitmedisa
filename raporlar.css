@@ -1280,6 +1280,8 @@ z-index: 100;
 /* Masaüstü: tarih inputları içindeki metin/sayılar yatay ve dikey ortalı */
 #stok-list-container .stok-controls-row-2 .stok-date-input {
   text-align: center !important;
+  padding-left: 28px !important;
+  padding-right: 28px !important;
   padding-top: 6px !important;
   padding-bottom: 6px !important;
   line-height: 1.3 !important;
