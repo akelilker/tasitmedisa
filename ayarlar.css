@@ -1469,13 +1469,15 @@ input.settings-form-input:-moz-autofill,
 
 /* === MOBİL AYARLAR === */
 @media (max-width: 640px) {
-    /* Geri ok + etiket: masaüstü -32px yerine 12px daha yukarı */
+    /* Geri ok + etiket: ana 4 menüde mevcut konuma göre 12px daha aşağı */
     #branch-modal .universal-back-bar,
-    #branch-form-modal .universal-back-bar,
     #user-modal .universal-back-bar,
-    #user-form-modal .universal-back-bar,
     #data-management-modal .universal-back-bar,
     #dis-veri-panel .universal-back-bar {
+        margin-top: -32px !important;
+    }
+    #branch-form-modal .universal-back-bar,
+    #user-form-modal .universal-back-bar {
         margin-top: -44px !important;
     }
     .settings-card {
