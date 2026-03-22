@@ -863,10 +863,9 @@
     flex-shrink: 0;
     position: relative;
     border-bottom: none !important;
+    border-top: 0.5px solid rgba(255, 255, 255, 0.4);
     border-top-left-radius: var(--modal-radius);
     border-top-right-radius: var(--modal-radius);
-    /* Üst çerçeve: kırmızı başlık alanı dış modal sınırını yutmasın */
-    border-top: 0.5px solid rgba(255, 255, 255, 0.4);
 }
 
 /* Masaüstü: üst çizgi tema rengi — mobilde style-core #vehicles-modal.modal-overlay ile ezilir */
