@@ -1961,6 +1961,25 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
         border-top-left-radius: 10px !important;
         border-top-right-radius: 10px !important;
     }
+    /* Mobilde modal header kirmizi vurgusunu guclendir */
+    .modal-overlay .modal-header,
+    #vehicle-modal .modal-header,
+    #reports-modal .modal-header,
+    .tasitlar-modal-overlay .modal-header,
+    .ayarlar-modal-overlay .modal-header,
+    #cache-confirm-modal .modal-header,
+    #info-modal .modal-header,
+    #tescil-tarih-confirm-modal .modal-header,
+    #tescil-tarih-input-modal .modal-header {
+        background: linear-gradient(
+            180deg,
+            rgba(255, 0, 0, 0.42) 0%,
+            rgba(255, 0, 0, 0.32) 25%,
+            rgba(255, 0, 0, 0.25) 50%,
+            rgba(255, 0, 0, 0.18) 75%,
+            transparent 100%
+        ) !important;
+    }
 
     /* Mobil: modal body – dikey scroll, alt butonlar için fazladan kaydırma boşluğu */
     .modal-overlay .modal-body {
