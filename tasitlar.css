@@ -865,10 +865,11 @@
     border-bottom: none !important;
     border-top-left-radius: var(--modal-radius);
     border-top-right-radius: var(--modal-radius);
-    border-top: none;
+    /* Üst çerçeve: kırmızı başlık alanı dış modal sınırını yutmasın */
+    border-top: 0.5px solid rgba(255, 255, 255, 0.4);
 }
 
-/* Ust kivrimda cift cizgiyi kaldir: tek cizgi container'da kalsin ve kirmizi tonda gorunsun */
+/* Masaüstü: üst çizgi tema rengi — mobilde style-core #vehicles-modal.modal-overlay ile ezilir */
 #vehicles-modal .modal-container {
     border-top-color: rgba(var(--theme-color-rgb), 0.62) !important;
 }
