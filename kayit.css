@@ -24,6 +24,10 @@
 #vehicle-modal {
     --save-green: #28a745;
     --save-green-rgb: 40, 167, 69;
+    --modal-mobile-border-color: rgba(var(--theme-color-rgb), 0.30);
+    --modal-mobile-top-border-color: rgba(var(--theme-color-rgb), 0.52);
+    --modal-mobile-header-top-border: rgba(255, 255, 255, 0.18);
+    --modal-mobile-inner-top-highlight: rgba(var(--theme-color-rgb), 0.20);
 }
 
 /* Karartma Efekti: overlay ile aynı bitiş (footer+gap); footer glow kesilmez, modal altından geçiyormuş gibi görünür */
