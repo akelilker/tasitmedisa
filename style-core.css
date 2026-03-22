@@ -1623,7 +1623,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #a
 }
 @media (max-width: 640px) {
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #app-footer {
-    box-shadow: 0 -9px 19px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity, 0.38)) !important;
+    box-shadow: 0 -12px 22px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity, 0.38)) !important;
   }
 }
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay.active,
@@ -2109,7 +2109,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
     #app-footer {
         position: fixed;
         bottom: 0;
-        box-shadow: 0 -9px 19px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity, 0.38));
+        box-shadow: 0 -12px 22px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity, 0.38));
         border-left: none; /* Mobilde yan yok */
         border-right: none;
         border-top: 1px solid rgba(128, 128, 128, 0.5) !important; /* Gri çizgi */
@@ -2525,7 +2525,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
     min-height: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
     padding-top: 2px !important;
     padding-bottom: calc(2px + env(safe-area-inset-bottom, 0)) !important;
-    box-shadow: 0 -9px 21px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity, 0.38)) !important;
+    box-shadow: 0 -12px 24px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity, 0.38)) !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer .footer-content {
     height: 100% !important;
