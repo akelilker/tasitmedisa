@@ -1968,8 +1968,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
         overscroll-behavior-x: none !important;
     }
 
-<<<<<<< HEAD
-    /* Kayıt / Taşıtlar / Raporlar: üst çerçeve 0.5px + kırmızı gradient birleşince üst sınır kayboluyor; yan çerçeveler 0.5px mobilde görünmüyor */
+    /* Kayıt / Taşıtlar / Raporlar: üst ve yan çerçeveler 0.5px mobilde görünmüyor, 1px'e güçlendir */
     #vehicle-modal.modal-overlay .modal-container,
     #reports-modal.modal-overlay .modal-container,
     #vehicles-modal.modal-overlay .modal-container {
@@ -1980,9 +1979,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
         border-left-color: rgba(255, 255, 255, 0.47) !important;
         border-right-color: rgba(255, 255, 255, 0.47) !important;
     }
-
-=======
->>>>>>> b7411124d5140d32c8f4b1dfd840ccd6b63f629a
     /* Modal header: üstten nefes alması için 12px, üst köşeler 10px (container ile uyumlu) */
     .modal-overlay .modal-header {
         padding-top: 12px !important;
