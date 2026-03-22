@@ -1390,11 +1390,12 @@ input.settings-form-input:-moz-autofill,
 
 /* Masaüstü: Şube/Kullanıcı form – Kaydet/Vazgeç/Sil aynı satırda, yatayda ortada */
 @media (min-width: 769px) {
+  /* Şube / Kullanıcı / Veri yedekleme / Dış veri listesi: geri ok masaüstünde 12px yukarı */
   #branch-modal .universal-back-bar,
   #user-modal .universal-back-bar,
   #data-management-modal .universal-back-bar,
   #dis-veri-panel .universal-back-bar {
-    margin-top: -20px !important;
+    margin-top: -32px !important;
   }
   #branch-form-modal .universal-back-bar,
   #user-form-modal .universal-back-bar {
