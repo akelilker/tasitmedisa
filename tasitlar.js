@@ -4744,6 +4744,8 @@ function renderVehicleDetailLeft(vehicle) {
       summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text"> Kasko Kodunu G\u00FCncelledi.</span>';
       const yeniKod = (eventData.kaskoKodu || '').trim();
       if (yeniKod) pushDetail('Yeni Kod', yeniKod);
+    } else if (eventType === 'ruhsat-yukle') {
+      summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Ruhsat Belgesi Y\u00fckledi.</span>';
     } else {
       const fallback = toTitleCase(eventType || 'Di\u011fer i\u015flem');
       summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, ' + escapeHtml(fallback) + ' kayd\u0131n\u0131 sisteme iletti.</span>';
