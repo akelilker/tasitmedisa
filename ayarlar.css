@@ -758,6 +758,56 @@ select.settings-form-select option,
     color: var(--txt-muted) !important;
 }
 
+/* Şube + Kullanıcı form modalları: açılır liste paneli tema arka planı */
+#branch-form-modal select.form-input,
+#user-form-modal select.form-input,
+#branch-form-modal .modal-body select.form-input,
+#user-form-modal .modal-body select.form-input,
+#branch-form-modal #user-branch,
+#user-form-modal #user-branch,
+#user-form-modal #user-role {
+    color-scheme: dark;
+    background: var(--bg-content, #0d131f) !important;
+    color: var(--txt-gray-darker, #adb5bd) !important;
+}
+#branch-form-modal select.form-input option,
+#user-form-modal select.form-input option,
+#branch-form-modal .modal-body select.form-input option,
+#user-form-modal .modal-body select.form-input option,
+#branch-form-modal #user-branch option,
+#user-form-modal #user-branch option,
+#user-form-modal #user-role option {
+    background: var(--bg-content, #0d131f) !important;
+    color: var(--txt-white, #ffffff) !important;
+}
+#branch-form-modal select.form-input option:checked,
+#user-form-modal select.form-input option:checked,
+#branch-form-modal .modal-body select.form-input option:checked,
+#user-form-modal .modal-body select.form-input option:checked,
+#branch-form-modal #user-branch option:checked,
+#user-form-modal #user-branch option:checked,
+#user-form-modal #user-role option:checked {
+    background: rgba(var(--theme-color-rgb), 0.28) !important;
+    color: var(--txt-white, #ffffff) !important;
+}
+#branch-form-modal select.form-input option:hover,
+#user-form-modal select.form-input option:hover,
+#branch-form-modal .modal-body select.form-input option:hover,
+#user-form-modal .modal-body select.form-input option:hover,
+#branch-form-modal #user-branch option:hover,
+#user-form-modal #user-branch option:hover,
+#user-form-modal #user-role option:hover,
+#branch-form-modal select.form-input option:focus,
+#user-form-modal select.form-input option:focus,
+#branch-form-modal .modal-body select.form-input option:focus,
+#user-form-modal .modal-body select.form-input option:focus,
+#branch-form-modal #user-branch option:focus,
+#user-form-modal #user-branch option:focus,
+#user-form-modal #user-role option:focus {
+    background: rgba(var(--theme-color-rgb), 0.18) !important;
+    color: var(--txt-white, #ffffff) !important;
+}
+
 .settings-form-select option:checked,
 select.settings-form-select option:checked,
 #user-role option:checked,
