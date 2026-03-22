@@ -2363,12 +2363,19 @@ margin-top: -3px !important;
 padding-top: 5px !important;
 padding-bottom: 5px !important;
 }
-/* Mobil: tabloda açık detay sütunları ince opak yeşil çerçeve; pasifler ince gri */
-#reports-modal .stok-detail-menu-btn.active {
-border: 1px solid #4ade80 !important;
+/* Mobil: menü açıkken sarmalayıcı taşmayı kırpmasın (inputlar sağdan kesilmesin) */
+#reports-modal .stok-detail-add-wrap:has(.stok-detail-menu-open) {
+overflow: visible !important;
 }
-#reports-modal .stok-detail-menu-btn:not(.active) {
-border: 1px solid rgba(255, 255, 255, 0.22) !important;
+/* Mobil: menü açıkken tüm butonlar ince yeşil çerçeve + yeşil metin */
+#reports-modal .stok-detail-menu.stok-detail-menu-open .stok-detail-menu-btn {
+border: 1px solid rgba(74, 222, 128, 0.5) !important;
+color: #4ade80 !important;
+}
+/* Mobil: seçili butonlar yarı saydam yeşil arka plan */
+#reports-modal .stok-detail-menu.stok-detail-menu-open .stok-detail-menu-btn.active {
+background: rgba(74, 222, 128, 0.2) !important;
+border-color: #4ade80 !important;
 }
 /* Mobil: ikon satırı (büyüteç/excel/yazıcı) ile sütun başlıkları arası 4px daralsın */
 .stok-list-container { margin-top: 0 !important; }
