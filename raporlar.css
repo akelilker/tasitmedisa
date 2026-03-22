@@ -56,7 +56,6 @@ justify-content: center;
 align-items: center;
 flex-shrink: 0;
 position: relative;
-/* Üst çerçeve: kırmızı gradient container çerçevesini ezmesin diye header kendi çizgisini çizer */
 border-top: 1px solid rgba(255, 255, 255, 0.48);
 border-bottom: none !important;
 border-top-left-radius: var(--modal-radius, 10px);
