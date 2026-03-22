@@ -2021,19 +2021,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
     }
 
     /* Mobil+PWA: modal açıkken footer–modal arası boşluktaki kırmızı çizgi kalıntısı tamamen kapansın */
-    body.modal-open::after {
-        content: '';
-        position: fixed;
-        left: 0;
-        right: 0;
-        width: 100vw;
-        bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0));
-        height: calc(var(--app-footer-gap) - 3px); /* Footer glow 3px daha yukarıda bitsin */
-        background: var(--bg) !important;
-        z-index: 9998;
-        pointer-events: none;
-    }
-
     /* Header ikonları (sağ üst): SVG 24px, padding artırıldı */
     .icons-row .icon-btn svg {
         width: 24px !important;
@@ -2501,7 +2488,7 @@ body.modal-open::after {
 }
 @media (max-width: 640px) {
   body.modal-open::after {
-    height: calc(var(--app-footer-gap) - 3px);
+    height: calc(var(--app-footer-gap) - 6px);
   }
 }
 
