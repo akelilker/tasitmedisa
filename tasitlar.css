@@ -1334,6 +1334,23 @@
   }
 }
 
+/* Masaüstü taşıt detay: geri ok + etiket sadece bu ekranda 10px yukarı ve sola yaslı */
+@media (min-width: 769px) {
+  #vehicle-detail-modal .vehicle-detail-toolbar > .vt-left {
+    margin-top: -10px !important;
+    justify-content: flex-start !important;
+    margin-left: -10px !important;
+  }
+  #vehicle-detail-modal .vehicle-detail-toolbar > .vt-left .universal-back-bar {
+    width: auto !important;
+    margin-left: 0 !important;
+    justify-content: flex-start !important;
+  }
+  #vehicle-detail-modal .vehicle-detail-toolbar > .vt-left .universal-back-btn {
+    justify-content: flex-start !important;
+  }
+}
+
 /* === ARAMA KUTUSU: toolbar satırında, sağdan sola açılır – simgeleri kapatmaz === */
 /* Arama: .v-search-container toolbar içinde */
 /* === FİLTRE DROPDOWN MENÜSÜ === */
