@@ -115,6 +115,11 @@ body::-webkit-scrollbar,
     --hero-logo-width: 43px;
     --hero-spacer-width: 1px;
   }
+  /* Mobil ana panel footer: bir kademe büyük (dashboard/login hariç) */
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) {
+    --app-footer-height: 34px;
+    --app-footer-real-height: 42px;
+  }
 }
 
 /* --- EVRENSEL GERİ DÖN NAVİGASYONU (tüm uygulama) --- */
