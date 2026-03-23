@@ -2035,10 +2035,16 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
         overscroll-behavior-x: none !important;
     }
 
-    /* Kayıt / Raporlar / tüm taşıt modalları: mobilde yan+üst+alt krom çerçeve görünür */
+    /* Kayıt / Raporlar / tüm taşıt modalları / Ayarlar (şube-kullanıcı-veri): mobilde yan+üst+alt krom çerçeve görünür */
     #vehicle-modal.modal-overlay .modal-container,
     #reports-modal.modal-overlay .modal-container,
-    .tasitlar-modal-overlay.modal-overlay .modal-container {
+    .tasitlar-modal-overlay.modal-overlay .modal-container,
+    #branch-modal.modal-overlay .modal-container,
+    #branch-form-modal.modal-overlay .modal-container,
+    #user-modal.modal-overlay .modal-container,
+    #user-form-modal.modal-overlay .modal-container,
+    #data-management-modal.modal-overlay .modal-container,
+    #dis-veri-panel.modal-overlay .modal-container {
         border-top-width: 1px !important;
         border-top-color: rgba(255, 255, 255, 0.38) !important;
         border-left-width: 1px !important;
@@ -2566,7 +2572,13 @@ body.modal-open .content-wrap::before {
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicle-modal.modal-overlay .modal-container,
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #reports-modal.modal-overlay .modal-container,
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .tasitlar-modal-overlay.modal-overlay .modal-container {
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .tasitlar-modal-overlay.modal-overlay .modal-container,
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #branch-modal.modal-overlay .modal-container,
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #branch-form-modal.modal-overlay .modal-container,
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #user-modal.modal-overlay .modal-container,
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #user-form-modal.modal-overlay .modal-container,
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #data-management-modal.modal-overlay .modal-container,
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #dis-veri-panel.modal-overlay .modal-container {
     border-bottom: 1px solid rgba(255, 255, 255, 0.32) !important;
     border-bottom-left-radius: 12px !important;
     border-bottom-right-radius: 12px !important;

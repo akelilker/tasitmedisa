@@ -357,20 +357,22 @@ body.modal-open #cache-confirm-modal.open {
     flex-shrink: 0;
 }
 
-/* Genel Modal Header Stili */
-.ayarlar-modal-overlay .modal-header {
-    background: linear-gradient(180deg, rgba(255, 0, 0, 0.36) 0%, rgba(255, 0, 0, 0.27) 25%, rgba(255, 0, 0, 0.20) 50%, rgba(255, 0, 0, 0.14) 75%, transparent 100%);
-    padding: 8px 20px;
-    height: 60px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-shrink: 0;
-    position: relative;
-    border-bottom: none !important;
-}
-.ayarlar-modal-overlay .modal-header h2 {
-    text-align: center;
+/* Genel Modal Header Stili (masaüstü; mobilde style-core başlık/gradient) */
+@media (min-width: 641px) {
+    .ayarlar-modal-overlay .modal-header {
+        background: linear-gradient(180deg, rgba(255, 0, 0, 0.36) 0%, rgba(255, 0, 0, 0.27) 25%, rgba(255, 0, 0, 0.20) 50%, rgba(255, 0, 0, 0.14) 75%, transparent 100%);
+        padding: 8px 20px;
+        height: 60px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-shrink: 0;
+        position: relative;
+        border-bottom: none !important;
+    }
+    .ayarlar-modal-overlay .modal-header h2 {
+        text-align: center;
+    }
 }
 
 /* Header action buttons: form altında */
