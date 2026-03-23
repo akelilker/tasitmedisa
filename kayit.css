@@ -30,7 +30,7 @@
     --modal-mobile-inner-top-highlight: rgba(var(--theme-color-rgb), 0.20);
 }
 
-/* Karartma Efekti: overlay ile aynı bitiş (footer+gap); footer glow kesilmez, modal altından geçiyormuş gibi görünür */
+/* Karartma: overlay ile aynı bitiş (footer+gap). Footer–modal arası glow: style-core body.modal-open::after */
 #vehicle-modal.modal-overlay::before {
     content: '';
     position: absolute;
