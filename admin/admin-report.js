@@ -287,7 +287,7 @@
     // Sadece ilk açılışta yükle
     if (container.dataset.loaded === 'true') return;
 
-    container.innerHTML = '<div style="text-align:center; padding:40px;"><div class="loading-spinner" style="display:inline-block; width:30px; height:30px; border:3px solid rgba(255,255,255,0.1); border-top-color:var(--theme-color); border-radius:50%; animation:spin 1s linear infinite;"></div><p style="color:var(--muted); margin-top:15px;">Sürücü istatistikleri hesaplanıyor...</p></div>';
+    container.innerHTML = '<div style="text-align:center; padding:40px;"><div class="loading-spinner" style="display:inline-block; width:30px; height:30px; border:3px solid rgba(255,255,255,0.1); border-top-color:var(--theme-color); border-radius:50%; animation:spin 1s linear infinite;"></div><p style="color:var(--muted); margin-top:15px;">Kullanıcı istatistikleri hesaplanıyor...</p></div>';
 
     fetch(API_BASE + 'admin_report.php?action=user_analytics')
       .then(function(res) { return res.json(); })
@@ -329,7 +329,7 @@
             var eTahsis = (e.data && e.data.tahsisKisi) ? String(e.data.tahsisKisi).toLowerCase() : '';
             var uIsim = String(isim).toLowerCase();
 
-            // Event sürücüyle eşleşiyor mu?
+            // Event kullanıcıyla eşleşiyor mu?
             var matched = false;
             if (eSurucu && eSurucu.includes(uIsim)) matched = true;
             else if (eTahsis && eTahsis.includes(uIsim)) matched = true;

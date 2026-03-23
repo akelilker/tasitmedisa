@@ -11,7 +11,7 @@ function getBase() {
 
 // Sadece kritik giriş noktaları ve manifest; CSS/JS modülleri fetch ile network-first + cache fallback ile ilk kullanımda cache'lenir
 // PERFORMANS: Sadece uygulamanın ana "Shell" dosyaları (iskelet) önden yüklenir.
-// Admin ve Driver gibi alt modüller ilk girişte kullanıcının kotasını harcamaz.
+// Admin ve kullanıcı paneli gibi alt modüller ilk girişte kullanıcının kotasını harcamaz.
 const CACHE_FILES = [
   '/',
   '/index.html',

@@ -220,7 +220,7 @@ if (($context['role'] ?? '') === 'genel_yonetici') {
     $merged['sifreler'] = $currentData['sifreler'] ?? [];
 }
 
-// Ana uygulama kaydında driver/admin verilerini koru.
+// Ana uygulama kaydında kullanıcı paneli/admin verilerini koru.
 $merged['arac_aylik_hareketler'] = $currentData['arac_aylik_hareketler'] ?? [];
 $merged['duzeltme_talepleri'] = $currentData['duzeltme_talepleri'] ?? [];
 
