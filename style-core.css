@@ -1644,7 +1644,7 @@ body.modal-open .user-panel-link {
         rgba(var(--footer-glow-rgb), calc(var(--footer-glow-opacity) * 0.92)) 100%
     );
     pointer-events: none;
-    z-index: 0;
+    z-index: -1;
 }
 
 /* Ana uygulama: footer üstü her zaman belirgin gri çizgi + glow (sadece modal açıkken değil) */
