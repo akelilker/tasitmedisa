@@ -26,6 +26,15 @@
 .tasitlar-modal-overlay.open {
     display: flex !important;
     pointer-events: auto !important; /* Aktif olduğunda tıklamaları al */
+    background: var(--bg) !important; /* Altın şeffaf görünmesini engelle */
+    background-color: var(--bg) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+}
+.tasitlar-modal-overlay.active::before,
+.tasitlar-modal-overlay.open::before {
+    display: none !important;
+    content: none !important;
 }
 
 /* Şube kartı hover üstten kesilmesin – overflow sadece dashboard/şube kartı görünümünde; liste görünümünde kesilmesin */
