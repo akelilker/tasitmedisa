@@ -23,7 +23,7 @@ $allowed = [
     'tasitlar.css',
     'raporlar.css',
     'ayarlar.css',
-    // Driver
+// Kullanıcı paneli
     'driver/driver-script.js',
     'driver/driver-style.css',
     // Admin
