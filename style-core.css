@@ -1348,11 +1348,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   -webkit-backdrop-filter: none !important;
 }
 
-/* Ana uygulama modalı: En dış overlay footer ve glow'un KESÄ°N üstünde (ışık sÄ±zmasÄ±n). */
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay.active,
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay.open {
-  z-index: 99999 !important;
-}
 .modal-overlay .modal-container,
 .login-container,
 .user-panel-container {
@@ -1369,9 +1364,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
   height: 100% !important;
 }
 .modal-overlay .modal-container {
-  isolation: isolate !important; /* Yeni stacking context; footer glow içeri sızamaz */
   position: relative;
-  z-index: 9999 !important; /* Footer ve footer Ä±ÅŸÄ±ÄŸÄ±nÄ±n üstünde; ışık sÄ±zmasÄ±n */
   background: var(--modal-bg) !important;
   background-color: var(--modal-bg) !important; /* Cam etkisini beton: saydamlık yok */
   width: 100%;
@@ -2419,9 +2412,10 @@ body.modal-open {
     touch-action: none;
 }
 
-/* --- YENİ EKLENEN KISIM: Modal açıkken çizgileri gizle --- */
+/* --- YENİ EKLENEN KISIM: Modal açıkken çizgileri gizle ve katman hapsini kaldır --- */
 body.modal-open .app-container {
     border-color: transparent !important;
+    isolation: auto !important; /* ÇÖZÜM: Katman hapsini kaldırır, modallar özgürce footer'ın üstüne çıkar */
 }
 body.modal-open .app-container::before,
 body.modal-open .content-wrap::before {
