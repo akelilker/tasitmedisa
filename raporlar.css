@@ -27,6 +27,10 @@ touch-action: pan-y;
 #reports-modal.modal-overlay.active,
 #reports-modal.modal-overlay.open {
 display: flex !important;
+background: var(--bg) !important;
+background-color: var(--bg) !important;
+backdrop-filter: none !important;
+-webkit-backdrop-filter: none !important;
 }
 
 /* Çift katman / üst kırım: tam opak overlay (style-core); ::before kapalı */
@@ -2359,15 +2363,18 @@ padding-bottom: 5px !important;
 #reports-modal .stok-detail-add-wrap:has(.stok-detail-menu-open) {
 overflow: visible !important;
 }
-/* Mobil: menü açıkken tüm butonlar ince yeşil çerçeve + yeşil metin */
+/* Mobil: varsayılan butonlar yeşil çerçeve + gri metin */
 #reports-modal .stok-detail-menu.stok-detail-menu-open .stok-detail-menu-btn {
 border: 1px solid rgba(74, 222, 128, 0.5) !important;
-color: #4ade80 !important;
+color: #adb5bd !important;
+background: transparent !important;
 }
-/* Mobil: seçili butonlar yarı saydam yeşil arka plan */
+/* Mobil: hover/seçili butonlar yeşil metin + yarı saydam yeşil arka plan */
+#reports-modal .stok-detail-menu.stok-detail-menu-open .stok-detail-menu-btn:hover,
 #reports-modal .stok-detail-menu.stok-detail-menu-open .stok-detail-menu-btn.active {
 background: rgba(74, 222, 128, 0.2) !important;
 border-color: #4ade80 !important;
+color: #4ade80 !important;
 }
 /* Mobil: ikon satırı (büyüteç/excel/yazıcı) ile sütun başlıkları arası 4px daralsın */
 .stok-list-container { margin-top: 0 !important; }
