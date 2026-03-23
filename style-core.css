@@ -2427,29 +2427,6 @@ body.modal-open .content-wrap::before {
     display: none !important;
 }
 
-/* ═══ 3 HEDEF MODAL AÇIKKEN GAP IŞIK SIZMASI KAPATMA ═══
-   Kayıt (#vehicle-modal), Taşıtlar (.tasitlar-modal-overlay),
-   Raporlar (#reports-modal) açıkken footer glow + iç/dış kırmızı
-   parıltı kapatılır. Footer border-top ve gap geometrisi korunur.
-   Modal kapanınca glow otomatik geri döner. */
-
-/* 1) Footer üst glow kapatma (box-shadow none; border-top kalır) */
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page):has(#vehicle-modal.modal-overlay:is(.active, .open)) #app-footer,
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page):has(.tasitlar-modal-overlay:is(.active, .open)) #app-footer,
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page):has(#reports-modal.modal-overlay:is(.active, .open)) #app-footer {
-    box-shadow: none !important;
-}
-
-/* 2) App-container iç kırmızı glow + content-wrap dış kırmızı glow kapatma */
-body:has(#vehicle-modal.modal-overlay:is(.active, .open)) .app-container::after,
-body:has(.tasitlar-modal-overlay:is(.active, .open)) .app-container::after,
-body:has(#reports-modal.modal-overlay:is(.active, .open)) .app-container::after,
-body:has(#vehicle-modal.modal-overlay:is(.active, .open)) .content-wrap,
-body:has(.tasitlar-modal-overlay:is(.active, .open)) .content-wrap,
-body:has(#reports-modal.modal-overlay:is(.active, .open)) .content-wrap {
-    box-shadow: none !important;
-}
-
 /* === KÜÇÜK MODALLAR İÇİN STANDART HEADER (v79) === */
 #cache-confirm-modal .modal-header,
 #info-modal .modal-header,
