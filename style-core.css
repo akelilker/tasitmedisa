@@ -1640,10 +1640,12 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer {
 /* Modal açıkken: footer glow açık kalır (yalnız footer-gap bölgesinde görünür) */
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #app-footer {
     border-top: 1px solid rgba(255, 255, 255, 0.36) !important;
-    box-shadow: 0 -1px 0 rgba(255, 255, 255, 0.11) !important;
+    box-shadow:
+        0 -1px 0 rgba(255, 255, 255, 0.11),
+        0 -12px 24px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity)) !important;
 }
 @media (max-width: 640px) {
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page):not(.modal-open) #app-footer {
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer {
     border-top: 1px solid rgba(255, 255, 255, 0.40) !important;
     box-shadow:
         0 -1px 0 rgba(255, 255, 255, 0.12),
@@ -1651,7 +1653,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #a
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #app-footer {
     border-top: 1px solid rgba(255, 255, 255, 0.40) !important;
-    box-shadow: 0 -1px 0 rgba(255, 255, 255, 0.12) !important;
+    box-shadow:
+        0 -1px 0 rgba(255, 255, 255, 0.12),
+        0 -16px 30px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity)) !important;
   }
 }
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay.active,
@@ -2589,7 +2593,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
 
 /* iOS PWA: ana panel footer ve header dengesi (safe-area tek katman) */
 @media (max-width: 768px) and (display-mode: standalone) {
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page):not(.modal-open) #app-footer {
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer {
     height: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
     min-height: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
     padding-top: 2px !important;

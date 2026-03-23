@@ -1763,6 +1763,24 @@ input.settings-form-input:-moz-autofill,
         display: none !important;
         content: none !important;
     }
+
+    /*
+     * Ayarlar dişlisi menüsü (yalnız #settings-menu): mobilde ana sayfa .menu-btn ile aynı çerçeve.
+     * Bildirimler (#notifications-dropdown) dahil diğer .settings-dropdown örneklerine dokunulmaz.
+     */
+    #settings-menu > button,
+    #settings-menu .has-submenu-wrapper .has-submenu {
+        background: linear-gradient(180deg, var(--hero-gradient-start), var(--hero-gradient-end)) !important;
+        border: 1px solid var(--border-subtle) !important;
+        border-radius: 12px !important;
+        box-shadow:
+            0 4px 10px rgba(0, 0, 0, 0.2),
+            0 4px 16px rgba(var(--theme-color-rgb), 0.1) !important;
+    }
+    #settings-menu > button.cache-clear-btn {
+        border-color: var(--border-subtle) !important;
+    }
+
     /* Mobil: Şube/Kullanıcı form input autofill tema rengi */
     #branch-form-modal .form-input:-webkit-autofill,
     #branch-form-modal .form-input:-webkit-autofill:hover,
@@ -1778,5 +1796,21 @@ input.settings-form-input:-moz-autofill,
     #user-form-modal .form-input:-moz-autofill {
         background-color: var(--bg-content, #0d131f) !important;
         color: var(--txt-gray-darker, #888) !important;
+    }
+}
+
+/* Dar ekran + gerçek hover: ayarlar menüsü .menu-btn ile aynı hover (dokunmatikte devre dışı) */
+@media (max-width: 640px) and (hover: hover) {
+    #settings-menu > button:hover,
+    #settings-menu .has-submenu-wrapper .has-submenu:hover {
+        background: linear-gradient(180deg, var(--hero-gradient-start), var(--hero-gradient-end)) !important;
+        border-color: var(--border-light) !important;
+        color: var(--txt-white) !important;
+        box-shadow:
+            0 6px 14px rgba(0, 0, 0, 0.25),
+            0 6px 20px rgba(var(--theme-color-rgb), 0.12) !important;
+    }
+    #settings-menu > button.cache-clear-btn:hover {
+        color: var(--theme-color) !important;
     }
 }
