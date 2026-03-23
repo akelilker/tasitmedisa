@@ -571,7 +571,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
         border-top: 1px solid rgba(200, 200, 200, 0.52);
         border-left: 0.6px solid rgba(255, 255, 255, 0.24);
         border-right: 0.6px solid rgba(255, 255, 255, 0.24);
-        box-shadow: 0 -13px 26px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity, 0.38));
+        box-shadow: 0 -13px 26px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity));
     }
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer .footer-content {
         padding: 8px 12px;
@@ -1230,7 +1230,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   }
   /* Ana sayfa masaüstü/tablet: footer ışığı belirgin kalsın */
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer {
-    box-shadow: 0 -13px 26px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity, 0.38));
+    box-shadow: 0 -13px 26px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity));
   }
   /* Anasayfa masaüstü: başlık kutunun içine sığsın */
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-spacer {
@@ -1613,7 +1613,7 @@ body.modal-open .user-panel-link {
     border-top: 0.8px solid rgba(var(--footer-glow-rgb), 0.45);
     border-left: 0.5px solid rgba(255, 255, 255, 0.20);
     border-right: 0.5px solid rgba(255, 255, 255, 0.20);
-    box-shadow: 0 -10px 20px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity, 0.46));
+    box-shadow: 0 -10px 20px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity));
     overflow-x: hidden;
     overflow-y: visible;
     display: flex !important;
@@ -1622,16 +1622,13 @@ body.modal-open .user-panel-link {
     visibility: visible !important;
 }
 
-/* Modal açıkken footer glow AYNI kalsın (ışık şiddeti artmasın); overlay tam opak */
+/* Modal açıkken footer glow: tek opacity kaynağı (--footer-glow-opacity); gap bandı body.modal-open::after ile kapatılır */
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #app-footer {
-    box-shadow: 0 -13px 26px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity, 0.38)) !important;
+    box-shadow: 0 -13px 26px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity)) !important;
 }
 @media (max-width: 640px) {
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer {
-    box-shadow: 0 -16px 28px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity, 0.46)) !important;
-  }
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #app-footer {
-    box-shadow: 0 -16px 28px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity, 0.46)) !important;
+    box-shadow: 0 -16px 28px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity)) !important;
   }
 }
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay.active,
@@ -2121,7 +2118,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
     #app-footer {
         position: fixed;
         bottom: 0;
-        box-shadow: 0 -12px 22px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity, 0.38));
+        box-shadow: 0 -12px 22px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity));
         border-left: none; /* Mobilde yan yok */
         border-right: none;
         border-top: 1px solid rgba(var(--footer-glow-rgb), 0.50) !important;
@@ -2498,23 +2495,19 @@ body.modal-open .content-wrap::before {
   }
 }
 
-/* Modal aÃ§Ä±kken footer üstündeki boÅŸluk (gap) her viewport'ta dolsun â€“ modal gÃ¶lge/Ã§erÃ§eve parÃ§alarÄ± gÃ¶rÃ¼nmesin */
+/* Modal açıkken footer–modal arası şerit: tam gap + 2px üst bindirme (alt çerçeve / glow sızıntısı yok).
+   Kök sorun: mobilde gap-6px ile ~6px şerit maskesiz kalıyordu; footer box-shadow buradan modal altına sızıyordu. */
 body.modal-open::after {
   content: '';
   position: fixed;
   left: 0;
   right: 0;
   width: 100%;
-  bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0));
-  height: var(--app-footer-gap);
+  bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0) - 2px);
+  height: calc(var(--app-footer-gap) + 2px);
   background: var(--bg) !important;
-  z-index: 100000;
+  z-index: 10050;
   pointer-events: none;
-}
-@media (max-width: 640px) {
-  body.modal-open::after {
-    height: calc(var(--app-footer-gap) - 6px);
-  }
 }
 
 /* === NOKTA ATIÅžI: KÄ±rmÄ±zÄ± yan Ã§izgiler footer hizasÄ±nda Ã§ivili (sarkan/kÄ±sa kalma yok) === */
@@ -2537,7 +2530,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
     min-height: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
     padding-top: 2px !important;
     padding-bottom: calc(2px + env(safe-area-inset-bottom, 0)) !important;
-    box-shadow: 0 -12px 24px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity, 0.38)) !important;
+    box-shadow: 0 -12px 24px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity)) !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer .footer-content {
     height: 100% !important;
