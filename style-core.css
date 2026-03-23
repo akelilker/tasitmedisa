@@ -571,7 +571,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
         border-top: 1px solid rgba(200, 200, 200, 0.52);
         border-left: 0.6px solid rgba(255, 255, 255, 0.24);
         border-right: 0.6px solid rgba(255, 255, 255, 0.24);
-        box-shadow: 0 -13px 26px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity));
     }
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer .footer-content {
         padding: 8px 12px;
@@ -1228,10 +1227,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   .hero h1 {
     transform: translateY(0);
   }
-  /* Ana sayfa masaüstü/tablet: footer ışığı belirgin kalsın */
-    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer {
-    box-shadow: 0 -13px 26px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity));
-  }
+  /* Footer glow tek kaynaktan yönetilir (aşağıdaki ana footer bloğu) */
   /* Anasayfa masaüstü: başlık kutunun içine sığsın */
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-spacer {
     flex: 0 0 16px;
@@ -1329,7 +1325,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   left: 0;
   right: 0;
   bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
-  z-index: 9999 !important;
+  z-index: 10020 !important; /* Footer (10000) üstünde kalsın */
   isolation: isolate !important; /* Işık sızmasını engeller */
   display: none;
   background: var(--shadow-overlay);
@@ -1345,6 +1341,10 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
 .modal-overlay.active,
 .modal-overlay.open {
   display: flex !important;
+  background: var(--bg) !important;
+  background-color: var(--bg) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 /* Ana uygulama modalı: En dış overlay footer ve glow'un KESÄ°N üstünde (ışık sÄ±zmasÄ±n). */
@@ -1382,7 +1382,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
   border-radius: var(--modal-radius);
   border: 0.5px solid var(--border-medium);
   border-bottom: 1px solid var(--border-medium) !important;
-  box-shadow: 0 0 40px var(--shadow-modal), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  box-shadow: none !important;
   overflow-x: hidden;
   pointer-events: auto;
   overscroll-behavior: none;
@@ -1637,10 +1637,12 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer {
         0 -12px 24px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity)) !important;
 }
 
-/* Modal açıkken: footer glow kapalı (modal içinde ışık hissi olmasın) */
+/* Modal açıkken: footer glow açık kalır (yalnız footer-gap bölgesinde görünür) */
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #app-footer {
-    box-shadow: none !important;
-    border-top: 1px solid rgba(255, 255, 255, 0.34) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.36) !important;
+    box-shadow:
+        0 -1px 0 rgba(255, 255, 255, 0.11),
+        0 -12px 24px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity)) !important;
 }
 @media (max-width: 640px) {
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer {
@@ -1650,8 +1652,10 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #a
         0 -16px 30px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity)) !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #app-footer {
-    box-shadow: none !important;
-    border-top: 1px solid rgba(255, 255, 255, 0.36) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.40) !important;
+    box-shadow:
+        0 -1px 0 rgba(255, 255, 255, 0.12),
+        0 -16px 30px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity)) !important;
   }
 }
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay.active,
