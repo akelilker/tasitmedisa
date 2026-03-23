@@ -1,5 +1,5 @@
 /* =========================================
-   TAŞITLAR MODÜLÜ - SABİT HEADER / DİNAMİK TOOLBAR
+   TAޞITLAR MODÜLÜ - SABİT HEADER / DİNAMİK TOOLBAR
    ========================================= */
 
 (function() {
@@ -1998,7 +1998,7 @@ function renderVehicleDetailLeft(vehicle) {
   // HTML'i sol kolona bas
   leftEl.innerHTML = html;
 
-  // --- ŞEMA EKLEME: Sol grid (sol kolon) içinde; büyüklük sol kolona göre uyarlanır ---
+  // --- ޞEMA EKLEME: Sol grid (sol kolon) içinde; büyüklük sol kolona göre uyarlanır ---
   const existingBoyaContainer = document.getElementById('detail-boya-container');
   if (existingBoyaContainer) existingBoyaContainer.remove();
 
