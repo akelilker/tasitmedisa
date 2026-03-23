@@ -1622,19 +1622,28 @@ body.modal-open .user-panel-link {
     visibility: visible !important;
 }
 
-/* Modal açıkken footer: belirgin gri çizgi + güçlü kırmızı glow (gap maske yok — siyah şerit oluşturmaz) */
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #app-footer {
-    border-top: 1px solid rgba(255, 255, 255, 0.38) !important;
+/* Ana uygulama: footer üstü her zaman belirgin gri çizgi + glow (sadece modal açıkken değil) */
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer {
+    border-top: 1px solid rgba(255, 255, 255, 0.36) !important;
     box-shadow:
-        0 -1px 0 rgba(255, 255, 255, 0.12),
+        0 -1px 0 rgba(255, 255, 255, 0.11),
+        0 -12px 24px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity)) !important;
+}
+
+/* Modal açıkken: biraz daha güçlü glow */
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #app-footer {
+    box-shadow:
+        0 -1px 0 rgba(255, 255, 255, 0.13),
         0 -18px 36px rgba(var(--footer-glow-rgb), 0.52) !important;
 }
 @media (max-width: 640px) {
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer {
-    box-shadow: 0 -16px 28px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity)) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.40) !important;
+    box-shadow:
+        0 -1px 0 rgba(255, 255, 255, 0.12),
+        0 -16px 30px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity)) !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #app-footer {
-    border-top: 1px solid rgba(255, 255, 255, 0.42) !important;
     box-shadow:
         0 -1px 0 rgba(255, 255, 255, 0.14),
         0 -20px 42px rgba(var(--footer-glow-rgb), 0.56) !important;
@@ -1643,11 +1652,20 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #a
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay.active,
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay.open {
     background: var(--bg) !important;
+    background-color: var(--bg) !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
 }
 
-/* Ana modallar: footer glow alt çerçeveye sızarsa alt iç gölge; mobil üst inset ile uyumlu */
+/* Kayıt / taşıt / rapor overlay: şeffaf modül CSS’ini ez — alt bölgede glow sızmasın */
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicle-modal.modal-overlay,
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #reports-modal.modal-overlay,
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicles-modal.modal-overlay {
+    background: var(--bg) !important;
+    background-color: var(--bg) !important;
+}
+
+/* Ana modallar: alt iç gölge güçlü — footer glow “cam altı” etkisini keser */
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicle-modal .modal-container,
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #reports-modal .modal-container,
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicles-modal .modal-container {
@@ -1655,7 +1673,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         0 0 40px var(--shadow-modal),
         inset 0 1px 0 rgba(255, 255, 255, 0.05),
         inset 0 0.5px 0 0 var(--modal-mobile-inner-top-highlight, rgba(255, 255, 255, 0.1)),
-        inset 0 -14px 24px -12px var(--modal-bg) !important;
+        inset 0 -28px 40px -14px var(--modal-bg) !important;
 }
 
 #app-footer .footer-content {
