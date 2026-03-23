@@ -2350,15 +2350,14 @@ body.dashboard-page {
 }
 
 .driver-modal-content {
-  isolation: isolate !important; /* Yeni stacking context; footer glow iÃƒÂ§eri sÃ„Â±zamaz */
   background: var(--modal-bg) !important;
-  background-color: var(--modal-bg) !important; /* Cam etkisini beton: Ã„Â±Ã…Å¸Ã„Â±k alttan sÃ„Â±zmasÃ„Â±n */
-  backdrop-filter: none !important; /* Buzlu cam kırmızı Ã„Â±Ã…Å¸Ã„Â±Ã„Å¸Ã„Â± vakumlamasÃ„Â±n */
+  background-color: var(--modal-bg) !important; /* Cam etkisini beton: ışık alttan sızmasın */
+  backdrop-filter: none !important; /* Buzlu cam kırmızı ışığı vakumlamasın */
   -webkit-backdrop-filter: none !important;
   border-radius: var(--modal-radius, 10px);
   width: 100%;
   max-width: min(500px, calc(100vw - 40px));
-  max-height: 100% !important; /* Üst kapsayÃ„Â±cÃ„Â± (footer+3px) içinde kal */
+  max-height: 100% !important; /* Üst kapsayıcı (footer+gap) içinde kal */
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -2405,7 +2404,7 @@ body.dashboard-page {
   padding: 20px;
 }
 
-/* #history-modal, #edit-request-modal, Olay Ekle modallarÃ„Â±: TaÃ…Å¸Ã„Â±tlar modali ile aynı ayarlar */
+/* #history-modal, #edit-request-modal, Olay Ekle modalları: Taşıtlar modalı ile aynı ayarlar */
 #history-modal.driver-modal,
 #edit-request-modal.driver-modal,
 #driver-event-menu-modal.driver-modal,
@@ -2416,8 +2415,8 @@ body.dashboard-page {
 #driver-sigorta-modal.driver-modal,
 #driver-kasko-modal.driver-modal {
   background: transparent !important;
-  padding: max(12px, env(safe-area-inset-top)) 0 0 0 !important; /* Çentik/notch altında kalmamasÃ„Â± için */
-  z-index: 10010;
+  padding: max(12px, env(safe-area-inset-top)) 0 0 0 !important; /* Çentik/notch altında kalmaması için */
+  z-index: 10020;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
@@ -2436,10 +2435,10 @@ body.dashboard-page {
 #driver-kasko-modal.driver-modal.show {
   display: flex !important;
   pointer-events: auto !important;
-  z-index: 10010 !important;
+  z-index: 10020 !important;
 }
 #edit-request-modal.driver-modal.show {
-  z-index: 10011 !important;
+  z-index: 10021 !important;
 }
 
 /* Düzeltme Talebi: style-core :root --data-value-color (#f8f9fa) neredeyse beyaz; bu modalda açıklama/değer metni gri kalsın */
@@ -2447,7 +2446,7 @@ body.dashboard-page {
   --data-value-color: #a0aec0;
 }
 
-/* Masaüstü: kayÃ„Â±t modali ile aynı – overlay üst padding yok; overlay footer'Ã„Â± ÃƒÂ¶rtmesin, footer görünsün */
+/* Masaüstü: kayıt modalı ile aynı – overlay üst padding yok; overlay footer'ı örtmesin, footer görünsün */
 @media (min-width: 641px) {
   #history-modal.driver-modal,
   #edit-request-modal.driver-modal,
@@ -2466,7 +2465,7 @@ body.dashboard-page {
   }
 }
 
-/* Masaüstü (769px+): modal–footer 6px boşluk kesin (overlay footer üstÃƒÂ¼nde bitsin) */
+/* Masaüstü (769px+): modal–footer 6px boşluk kesin (overlay footer üstünde bitsin) */
 @media (min-width: 769px) {
   body.dashboard-page #history-modal.driver-modal,
   body.dashboard-page #edit-request-modal.driver-modal,
@@ -2494,19 +2493,19 @@ body.dashboard-page {
   max-width: 500px;
   height: 100%;
   background: rgba(0, 0, 0, 0.85);
-  backdrop-filter: none; /* IÃ…Å¸Ã„Â±k vakumlamasÃ„Â±n */
+  backdrop-filter: none; /* Işık vakumlamasın */
   -webkit-backdrop-filter: none;
   z-index: -1;
   pointer-events: none;
 }
 
-/* GeÃƒÂ§miÃ…Å¸ KayÃ„Â±tlar + DÃƒÂ¼zeltme Talep: footer kararmasÃ„Â±n, footer Ã„Â±Ã…Å¸Ã„Â±klarÃ„Â± kesilmesin (+4px tampon) */
+/* Geçmiş Kayıtlar + Düzeltme Talep: footer kararmasın, footer ışıkları kesilmesin (+4px tampon) */
 #history-modal.driver-modal.show::before,
 #edit-request-modal.driver-modal.show::before {
   clip-path: inset(0 0 calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0) + 4px) 0) !important;
   -webkit-clip-path: inset(0 0 calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0) + 4px) 0) !important;
 }
-/* GeÃƒÂ§miÃ…Å¸ KayÃ„Â±tlar / DÃƒÂ¼zeltme Talebi açıkken footer modalÃ„Â±n üstÃƒÂ¼nde, Ã„Â±Ã…Å¸Ã„Â±klarÃ„Â± sabit ton */
+/* Geçmiş Kayıtlar / Düzeltme Talebi açıkken footer modalın üstünde, ışıklar sabit ton */
 body.dashboard-page:has(#history-modal.driver-modal.show) #app-footer,
 body.dashboard-page:has(#edit-request-modal.driver-modal.show) #app-footer,
 body.login-page:has(#history-modal.driver-modal.show) #app-footer.login-footer,
@@ -2514,15 +2513,15 @@ body.login-page:has(#edit-request-modal.driver-modal.show) #app-footer.login-foo
   z-index: 100020 !important;
 }
 
-/* GEÃƒâ€¡MÃ„Â°Ã¯Â¿Â½? KAYITLARIM + DÃƒÂ¼zeltme Talebi modal açıkken footer Ã„Â±Ã…Å¸Ã„Â±klarÃ„Â± sÃƒÂ¶nmesin - dimmed override */
+/* Geçmiş Kayıtlarım + Düzeltme Talebi modal açıkken footer ışıkları sönmesin — dimmed override */
 
-/* :has() fallback: GeÃ§miÅŸ KayÄ±t / DÃ¼zeltme Talebi aÃ§Ä±kken footer Ã¼stte ve Ä±ÅŸÄ±klÄ± (JS body.driver-history-or-edit-modal-open) */
+/* :has() fallback: Geçmiş Kayıt / Düzeltme Talebi açıkken footer üstte ve ışıklı (JS body.driver-history-or-edit-modal-open) */
 body.dashboard-page.driver-history-or-edit-modal-open #app-footer,
 body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   z-index: 100020 !important;
 }
 
-/* TaÃ…Å¸Ã„Â±tlar modali ile aynı: genişlik 500px, yatay çerçeve. DiÃ„Å¸er modallar: --modal-margin-bottom-desktop */
+/* Taşıtlar modalı ile aynı: genişlik 500px, yatay çerçeve. Diğer modallar: --modal-margin-bottom-desktop */
 #history-modal .driver-modal-content,
 #history-modal .modal-container,
 #edit-request-modal .driver-modal-content,
@@ -2541,7 +2540,6 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 #driver-sigorta-modal .modal-container,
 #driver-kasko-modal .driver-modal-content,
 #driver-kasko-modal .modal-container {
-  isolation: isolate !important;
   background: var(--modal-bg) !important;
   background-color: var(--modal-bg) !important;
   border-bottom: 1px solid var(--border-medium) !important;
@@ -3950,9 +3948,9 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   opacity: 0 !important;
 }
 
-/* #history-modal, #edit-request-modal, Olay Ekle modallarÃ„Â± mobil: overlay-bottom stratejisi (style-core ile uyumlu) */
+/* #history-modal, #edit-request-modal, Olay Ekle modalları mobil: overlay-bottom stratejisi (style-core ile uyumlu) */
 @media (max-width: 640px) {
-  /* TaÃ…Å¸Ã„Â±tlar modali ile aynı: overlay alt boşluk = footer + gap (style-core değişkenleri). Üst: Çentik altında kalmamasÃ„Â± için safe-area. */
+  /* Taşıtlar modalı ile aynı: overlay alt boşluk = footer + gap (style-core değişkenleri). Üst: Çentik altında kalmaması için safe-area. */
   #history-modal.driver-modal,
   #edit-request-modal.driver-modal,
   #driver-event-menu-modal.driver-modal,
@@ -3968,29 +3966,29 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     overflow: hidden !important;
     overscroll-behavior: none !important;
   }
-  /* GeÃƒÂ§miÃ…Å¸ KayÃ„Â±tlar + DÃƒÂ¼zeltme Talebi: modal–footer arası 10px; koyu dolgu (box-shadow) kÃƒÂ¶Ã…Å¸eler dahil kapatsÃ„Â±n */
+  /* Geçmiş Kayıtlar + Düzeltme Talebi: modal–footer arası 10px; koyu dolgu (box-shadow) köşeler dahil kapatsın */
   #history-modal.driver-modal,
   #edit-request-modal.driver-modal {
     bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
     box-shadow: none !important;
   }
-  /* Mobilde modal açıkken header üstÃƒÂ¼ndeki kırmızı yatay çizgi görünmesin */
+  /* Mobilde modal açıkken header üstündeki kırmızı yatay çizgi görünmesin */
   .driver-modal.show::after {
     display: none !important;
   }
-  /* Modal açıkken footer ve footer Ã„Â±Ã…Å¸Ã„Â±klarÃ„Â± üstte kalsın */
+  /* Modal açıkken footer ve footer ışıkları üstte kalsın */
   body.driver-modal-open.dashboard-page #app-footer,
   body.driver-modal-open.login-page #app-footer.login-footer {
     z-index: 10012 !important;
   }
-  /* GeÃƒÂ§miÃ…Å¸ KayÃ„Â±tlar / DÃƒÂ¼zeltme Talebi: footer modalÃ„Â±n üstÃƒÂ¼nde, Ã„Â±Ã…Å¸Ã„Â±klar sabit ton */
+  /* Geçmiş Kayıtlar / Düzeltme Talebi: footer modalın üstünde, ışıklar sabit ton */
   body.dashboard-page:has(#history-modal.driver-modal.show) #app-footer,
   body.dashboard-page:has(#edit-request-modal.driver-modal.show) #app-footer,
   body.login-page:has(#history-modal.driver-modal.show) #app-footer.login-footer,
   body.login-page:has(#edit-request-modal.driver-modal.show) #app-footer.login-footer {
     z-index: 100020 !important;
   }
-  /* GeÃ§miÅŸ KayÄ±tlar / DÃ¼zeltme aÃ§Ä±kken footer dimmer tonu bozulmasÄ±n. */
+  /* Geçmiş Kayıtlar / Düzeltme açıkken footer dimmer tonu bozulmasın. */
   body.dashboard-page:has(#history-modal.driver-modal.show) #app-footer .version,
   body.dashboard-page:has(#edit-request-modal.driver-modal.show) #app-footer .version,
   body.login-page:has(#history-modal.driver-modal.show) #app-footer.login-footer .version,
@@ -4019,10 +4017,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   body.login-page:has(#edit-request-modal.driver-modal.show) #app-footer.login-footer .brand img {
     opacity: 0.8 !important;
   }
-  body.driver-modal-open .driver-modal.show {
-    z-index: 99999 !important; /* En dÃ„Â±Ã…Å¸ overlay footer (10012) ve glow'un KESÃ„Â°N üstÃƒÂ¼nde */
-  }
-  /* GeÃƒÂ§miÃ…Å¸ KayÃ„Â±tlar / DÃƒÂ¼zeltme Talebi açıkken modal–footer 6px boşluğunda kırmızı dikey parÃƒÂ§alar kalmasÃ„Â±n */
+  /* Geçmiş Kayıtlar / Düzeltme Talebi açıkken modal–footer 6px boşluğunda kırmızı dikey parçalar kalmasın */
   body.dashboard-page:has(#history-modal.driver-modal.show) .driver-dashboard-container::before,
   body.login-page:has(#history-modal.driver-modal.show) .driver-dashboard-container::before,
   body.dashboard-page:has(#edit-request-modal.driver-modal.show) .driver-dashboard-container::before,
@@ -4093,13 +4088,13 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     left: 0;
     transform: none;
   }
-  /* GeÃƒÂ§miÃ…Å¸ KayÃ„Â±tlar + DÃƒÂ¼zeltme Talebi: kayÃ„Â±t modali ile aynı başlık gölgesi */
+  /* Geçmiş Kayıtlar + Düzeltme Talebi: kayıt modalı ile aynı başlık gölgesi */
   #history-modal .modal-header h2,
   #edit-request-modal .modal-header h2 {
     text-shadow: 0 2px 6px rgba(0, 0, 0, 0.5), 0 4px 12px rgba(0, 0, 0, 0.3), 0 0 15px rgba(255, 255, 255, 0.08) !important;
   }
 
-  /* Mobil modal container: footer arkasÃ„Â±nda kalmayacak Ã…Å¸ekilde yükseklik sınırla */
+  /* Mobil modal container: footer arkasında kalmayacak şekilde yükseklik sınırla */
   #history-modal .driver-modal-content,
   #history-modal .modal-container,
   #edit-request-modal .driver-modal-content,
@@ -4118,7 +4113,6 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   #driver-sigorta-modal .modal-container,
   #driver-kasko-modal .driver-modal-content,
   #driver-kasko-modal .modal-container {
-    isolation: isolate !important;
     max-width: 100% !important;
     width: 100% !important;
     margin: 0 !important;
@@ -4250,7 +4244,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     border-left: 0.5px solid rgba(255, 255, 255, 0.18) !important;
     border-right: 0.5px solid rgba(255, 255, 255, 0.18) !important;
   }
-  /* Plaka dropdown dÃ„Â±Ã…Å¸arÃ„Â± taÃ…Å¸abilsin; panels-inner overflow: hidden kalsın ki sağ panel yüksekliği kÃ„Â±sÃ„Â±tlansÃ„Â±n ve Not+Bildir kaydÃ„Â±rÃ„Â±labilir */
+  /* Plaka dropdown dışarı taşabilsin; panels-inner overflow: hidden kalsın ki sağ panel yüksekliği kısıtlansın ve Not+Bildir kaydırılabilir */
   .dashboard-page .driver-panels-inner {
     overflow-x: visible !important;
     overflow-y: hidden;
@@ -4321,7 +4315,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     max-width: 380px !important;
     min-width: auto !important;
     margin: 0 !important;
-    z-index: 99999 !important;
+    z-index: 10050 !important;
     overflow-x: hidden !important;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), 0 2px 10px rgba(var(--theme-color-rgb), 0.3) !important;
     left: 0 !important; /* Sol tarafa çivile */
@@ -5211,8 +5205,8 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     }
   }
 
-  /* GeÃ§miÅŸ/DÃ¼zeltme modal aÃ§Ä±kken footer-gap Ã¼stÃ¼ndeki yapay koyu ÅŸerit kapanÄ±r:
-     footer glow gÃ¶rÃ¼nÃ¼r, modal-footer arasÄ± boÅŸluk net kalÄ±r. */
+  /* Geçmiş/Düzeltme modal açıkken footer-gap üstündeki yapay koyu şerit kapanır:
+     footer glow görünür, modal–footer arası boşluk net kalır. */
   body.dashboard-page:has(#history-modal.driver-modal.show)::after,
   body.dashboard-page:has(#edit-request-modal.driver-modal.show)::after,
   body.login-page:has(#history-modal.driver-modal.show)::after,
@@ -5226,7 +5220,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     }
   }
 
-  /* GeÃ§miÅŸ/DÃ¼zeltme modalÄ± iÃ§in gap deÄŸeri show durumunda da kilitli kalsÄ±n. */
+  /* Geçmiş/Düzeltme modalı için gap değeri show durumunda da kilitli kalsın. */
   #history-modal.driver-modal.show,
   #edit-request-modal.driver-modal.show {
     bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
