@@ -2777,7 +2777,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer {
     border-left: 0.6px solid rgba(255, 255, 255, 0.24) !important;
     border-right: 0.6px solid rgba(255, 255, 255, 0.24) !important;
-    border-top: 1px solid rgba(255, 255, 255, 0.36) !important;
+    border-top: 1px solid rgba(200, 200, 200, 0.52) !important;
     overflow: visible !important;
     box-shadow: 0 -1px 0 rgba(255, 255, 255, 0.11) !important;
   }
