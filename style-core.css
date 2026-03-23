@@ -1403,7 +1403,10 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   overscroll-behavior-x: none;
 }
 /* Header, geri çubuğu ve footer sabit kalır, kaydırmadan etkilenmez (Strict Flex-Scroll) */
-.modal-overlay .modal-header,
+.modal-overlay .modal-header {
+  flex-shrink: 0 !important;
+  z-index: 20 !important;
+}
 .modal-overlay .universal-back-bar,
 .universal-btn-group {
   flex-shrink: 0 !important;
@@ -1470,9 +1473,11 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   right: 15px !important;
   top: 50% !important;
   transform: translateY(-50%) !important;
-  z-index: 10 !important;
+  z-index: 30 !important;
   margin: 0 !important;
-  padding: 0 !important;
+  padding: 6px !important;
+  min-width: 36px;
+  min-height: 36px;
   background: transparent;
   border: none;
   color: var(--txt-gray-darker);
