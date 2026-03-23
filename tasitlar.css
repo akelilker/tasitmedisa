@@ -869,14 +869,8 @@
     border-bottom: none !important;
     border-top-left-radius: var(--modal-radius);
     border-top-right-radius: var(--modal-radius);
-    /* Üst çerçeve: kırmızı başlık alanı dış modal sınırını yutmasın */
-    border-top: 0.5px solid rgba(255, 255, 255, 0.4);
 }
 
-/* Masaüstü: üst çizgi tema rengi — mobilde style-core #vehicles-modal.modal-overlay ile ezilir */
-#vehicles-modal .modal-container {
-    border-top-color: rgba(var(--theme-color-rgb), 0.62) !important;
-}
 
 /* Tarihçe modalı – sekme başlıkları yatüm viewport'lar) */
 #vehicle-history-modal #history-tabs {
@@ -3441,9 +3435,9 @@
 
   .tasitlar-modal-overlay .modal-container {
     isolation: isolate !important;
+    margin-top: 0 !important;
     background: var(--modal-bg) !important;
     background-color: var(--modal-bg) !important;
-    border-bottom: 1px solid var(--border-medium) !important;
     overflow: hidden !important;
     overflow-x: hidden !important; /* Yatay kayma engelle */
     touch-action: pan-y !important;
@@ -4368,6 +4362,7 @@
   }
   /* Tüm taşıt modalları: container overlay'i doldursun (TAŞITLAR listesiyle aynı yapı) */
   .tasitlar-modal-overlay .modal-container {
+    margin-top: 0 !important;
     height: 100% !important;
     max-height: 100% !important;
   }
