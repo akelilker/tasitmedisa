@@ -960,9 +960,12 @@
       editingVehicleVersion = 1;
       resetVehicleForm();
 
+      modal.classList.add('active');
       modal.style.display = 'flex';
+      if (typeof window.updateFooterDim === 'function') {
+        window.updateFooterDim();
+      }
       requestAnimationFrame(() => {
-        modal.classList.add('active');
         // Modal açıldığında tarih placeholder'larını kur
         $all('input[type="date"].form-input', modal).forEach(input => {
           setupDatePlaceholder(input);
