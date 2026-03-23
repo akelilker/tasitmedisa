@@ -2729,7 +2729,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
   #user-modal.modal-overlay.ayarlar-modal-overlay .universal-back-bar,
   #data-management-modal.modal-overlay.ayarlar-modal-overlay .universal-back-bar,
   #dis-veri-panel.modal-overlay.ayarlar-modal-overlay .universal-back-bar {
-    margin-top: -32px !important;
+    margin-top: -22px !important;
   }
 }
 
