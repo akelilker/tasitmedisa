@@ -1269,27 +1269,46 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
     right: 0 !important;
   }
   /* Masaüstü: Bildirim kartları tek tip akış, tarih satırı kart içinde kalsın */
-  #notifications-dropdown .notification-item:not(.mtv-notification):not(.kasko-excel-notification) {
+  #notifications-dropdown .notification-item.date-warning-red-border,
+  #notifications-dropdown .notification-item.date-warning-orange-border,
+  #notifications-dropdown .notification-item-activity,
+  #notifications-dropdown .mtv-notification,
+  #notifications-dropdown .kasko-excel-notification {
+    box-sizing: border-box !important;
+    height: 76px !important;
+    min-height: 76px !important;
+    max-height: 76px !important;
+    overflow: hidden !important;
+    padding: 8px 12px !important;
+  }
+  #notifications-dropdown .notification-item.date-warning-red-border,
+  #notifications-dropdown .notification-item.date-warning-orange-border,
+  #notifications-dropdown .notification-item-activity {
     display: flex !important;
     flex-direction: column !important;
     align-items: flex-start !important;
     justify-content: flex-start !important;
-    height: auto !important;
-    min-height: 0 !important;
-    max-height: none !important;
-    overflow: visible !important;
-    white-space: normal !important;
-    padding: 1px 12px !important;
-    box-sizing: border-box !important;
   }
-  #notifications-dropdown .notification-item:not(.mtv-notification):not(.kasko-excel-notification) .notif-line1 {
+  #notifications-dropdown .notification-item.date-warning-red-border .notif-line1,
+  #notifications-dropdown .notification-item.date-warning-orange-border .notif-line1,
+  #notifications-dropdown .notification-item-activity .notif-line1,
+  #notifications-dropdown .mtv-text-container .mtv-main-text {
     width: 100% !important;
     margin: 0 !important;
     padding: 0 !important;
     font-size: 11.5px !important;
     line-height: 1.15 !important;
+    display: -webkit-box !important;
+    -webkit-box-orient: vertical !important;
+    -webkit-line-clamp: 3 !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: normal !important;
   }
-  #notifications-dropdown .notification-item:not(.mtv-notification):not(.kasko-excel-notification) .notif-line2 {
+  #notifications-dropdown .notification-item.date-warning-red-border .notif-line2,
+  #notifications-dropdown .notification-item.date-warning-orange-border .notif-line2,
+  #notifications-dropdown .notification-item-activity .notif-line2,
+  #notifications-dropdown .mtv-text-container .notif-line2 {
     display: block !important;
     width: 100% !important;
     position: static !important;
@@ -1298,18 +1317,38 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
     flex-shrink: 0 !important;
     min-height: 0 !important;
     line-height: 1.05 !important;
-    margin: 0 !important;
+    margin: auto 0 0 0 !important;
     padding: 0 !important;
     font-size: 10.5px !important;
   }
   #notifications-dropdown .mtv-notification,
   #notifications-dropdown .kasko-excel-notification {
-    padding: 1px 12px !important;
-    min-height: 0 !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: stretch !important;
+    justify-content: space-between !important;
   }
-  #notifications-dropdown .mtv-text-container .mtv-main-text {
-    font-size: 11.5px !important;
-    line-height: 1.15 !important;
+  #notifications-dropdown .mtv-text-container {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
+    align-self: stretch !important;
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    height: 100% !important;
+    padding-right: 8px !important;
+  }
+  #notifications-dropdown .mtv-dismiss-wrapper {
+    align-self: stretch !important;
+    display: flex !important;
+    align-items: flex-start !important;
+    justify-content: center !important;
+    margin-left: 8px !important;
+  }
+  #notifications-dropdown .mtv-dismiss-btn {
+    width: 20px !important;
+    height: 20px !important;
   }
   .settings-dropdown button:not(.notification-item) {
     text-align: center; /* Masaüstünde ortalı */
@@ -2769,3 +2808,4 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
     box-shadow: 0 2px 16px rgba(0, 0, 0, 0.32);
   }
 }
+

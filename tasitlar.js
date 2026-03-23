@@ -5064,12 +5064,44 @@ function renderVehicleDetailLeft(vehicle) {
     return 'diger';
   }
 
+  const SPECIAL_NOTIF_FIRST_SEEN_PREFIX = 'medisa_special_notif_first_seen_';
+
+  function getSpecialNotifFirstSeenStorageKey(notificationKey) {
+    return SPECIAL_NOTIF_FIRST_SEEN_PREFIX + String(notificationKey || '');
+  }
+
+  function getOrCreateSpecialNotifFirstSeen(notificationKey) {
+    const storageKey = getSpecialNotifFirstSeenStorageKey(notificationKey);
+    let firstSeenDisplay = localStorage.getItem(storageKey);
+    if (!firstSeenDisplay) {
+      firstSeenDisplay = formatDateForDisplay(new Date()) || '-';
+      localStorage.setItem(storageKey, firstSeenDisplay);
+    }
+    return firstSeenDisplay;
+  }
+
+  function cleanupSpecialNotifFirstSeen(activeNotificationKeys) {
+    const activeStorageKeys = (activeNotificationKeys || []).map(getSpecialNotifFirstSeenStorageKey);
+    const keysToRemove = [];
+
+    for (let i = 0; i < localStorage.length; i++) {
+      const storageKey = localStorage.key(i);
+      if (storageKey && storageKey.indexOf(SPECIAL_NOTIF_FIRST_SEEN_PREFIX) === 0 && activeStorageKeys.indexOf(storageKey) === -1) {
+        keysToRemove.push(storageKey);
+      }
+    }
+
+    keysToRemove.forEach(key => localStorage.removeItem(key));
+  }
+
   /**
    * Bildirimleri güncelle (muayene, sigorta, kasko + kullanıcı paneli işlemleri)
    */
   window.updateNotifications = function() {
     const vehicles = readVehicles();
     const notifications = [];
+    const activeSpecialNotificationKeys = [];
+    const showDesktopSpecialNotifDate = window.innerWidth >= 641;
     let hasRed = false; // Kırmızı bildirim var mı?
     let hasOrange = false; // Turuncu bildirim var mı?
 
@@ -5172,7 +5204,10 @@ function renderVehicleDetailLeft(vehicle) {
       const mtvKey = 'mtv_paid_' + y + '_' + m;
       if (!localStorage.getItem(mtvKey)) {
         const mtvKeyEsc = (mtvKey || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
-        mtvHtml = '<div class="notification-item mtv-notification"><div class="mtv-text-container"><div class="mtv-main-text notif-line1">Ayın Son Gününe Kadar MTV Ödemelerinin Yapılması Gerekmektedir.</div></div><div class="mtv-dismiss-wrapper"><button type="button" class="mtv-dismiss-btn" onclick="dismissMTVNotif(event, \'' + mtvKeyEsc + '\')" aria-label="Bildirimi Kapat"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></button><div class="mtv-tooltip">Ödeme Yapıldıysa Bildirimi Silebilirsiniz.</div></div></div>';
+        const mtvFirstSeenDisplay = getOrCreateSpecialNotifFirstSeen(mtvKey);
+        const mtvDateHtml = showDesktopSpecialNotifDate ? '<div class="notif-line2">' + escapeHtml(mtvFirstSeenDisplay) + '</div>' : '';
+        activeSpecialNotificationKeys.push(mtvKey);
+        mtvHtml = '<div class="notification-item mtv-notification"><div class="mtv-text-container"><div class="mtv-main-text notif-line1">Ayın Son Gününe Kadar MTV Ödemelerinin Yapılması Gerekmektedir.</div>' + mtvDateHtml + '</div><div class="mtv-dismiss-wrapper"><button type="button" class="mtv-dismiss-btn" onclick="dismissMTVNotif(event, \'' + mtvKeyEsc + '\')" aria-label="Bildirimi Kapat"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></button><div class="mtv-tooltip">Ödeme Yapıldıysa Bildirimi Silebilirsiniz.</div></div></div>';
         hasOrange = true;
       }
     }
@@ -5189,10 +5224,15 @@ function renderVehicleDetailLeft(vehicle) {
       const kaskoKey = 'kasko_excel_dismiss_' + y + '_' + m;
       if (!localStorage.getItem(kaskoKey)) {
         const kaskoKeyEsc = (kaskoKey || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
-        kaskoExcelHtml = '<div class="notification-item kasko-excel-notification"><div class="mtv-text-container"><div class="mtv-main-text notif-line1">Güncel Kasko Değer Listesinin Yüklenmesi Gerekmektedir.</div></div><div class="mtv-dismiss-wrapper"><button type="button" class="mtv-dismiss-btn" onclick="dismissKaskoExcelNotif(event, \'' + kaskoKeyEsc + '\')" aria-label="Bildirimi Kapat"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button><div class="mtv-tooltip">Kapat</div></div></div>';
+        const kaskoFirstSeenDisplay = getOrCreateSpecialNotifFirstSeen(kaskoKey);
+        const kaskoDateHtml = showDesktopSpecialNotifDate ? '<div class="notif-line2">' + escapeHtml(kaskoFirstSeenDisplay) + '</div>' : '';
+        activeSpecialNotificationKeys.push(kaskoKey);
+        kaskoExcelHtml = '<div class="notification-item kasko-excel-notification"><div class="mtv-text-container"><div class="mtv-main-text notif-line1">Güncel Kasko Değer Listesinin Yüklenmesi Gerekmektedir.</div>' + kaskoDateHtml + '</div><div class="mtv-dismiss-wrapper"><button type="button" class="mtv-dismiss-btn" onclick="dismissKaskoExcelNotif(event, \'' + kaskoKeyEsc + '\')" aria-label="Bildirimi Kapat"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button><div class="mtv-tooltip">Kapat</div></div></div>';
         hasRed = true;
       }
     }
+
+    cleanupSpecialNotifFirstSeen(activeSpecialNotificationKeys);
 
     // Bildirimleri güncelle
     const notifDropdown = DOM.notificationsDropdown;
