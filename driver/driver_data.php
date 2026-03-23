@@ -27,7 +27,7 @@ if (!$data) {
     exit;
 }
 
-// Taşıt objesini sürücü response formatına dönüştür (sol panel + uyarılar için)
+// Taşıt objesini kullanıcı paneli response formatına dönüştür (sol panel + uyarılar için)
 function buildVehicleForDriver($tasit, $branches = []) {
     $branchId = $tasit['branchId'] ?? null;
     $branchName = '';

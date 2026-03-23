@@ -28,7 +28,7 @@ sudo chmod 666 /var/run/docker.sock
 
 - `index.html` — main SPA entry point
 - `core.php`, `load.php`, `save.php` — PHP API (JSON read/write)
-- `driver/` — driver panel sub-app (login, dashboard, event reporting)
+- `driver/` — user portal sub-app (login, dashboard, event reporting)
 - `admin/` — admin reporting panel (approve requests, export Excel)
 - `data/data.json` — flat-file JSON data store (must be writable by Apache)
 - `docker/Dockerfile` — `php:8.2-apache` image with mod_rewrite
@@ -39,8 +39,8 @@ sudo chmod 666 /var/run/docker.sock
 | Module | URL | Description |
 |--------|-----|-------------|
 | Main dashboard | `http://localhost:8080/` | Main vehicle management dashboard |
-| Driver portal | `http://localhost:8080/driver/` | Driver login & dashboard |
-| Admin reports | `http://localhost:8080/admin/driver-report.html` | Monthly driver reports |
+| User portal | `http://localhost:8080/driver/` | User portal login & dashboard |
+| Admin reports | `http://localhost:8080/admin/driver-report.html` | Monthly user reports |
 
 ### Lint / Test / Build
 

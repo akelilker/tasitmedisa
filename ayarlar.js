@@ -264,8 +264,8 @@
   
     /**
      * localStorage Kullanıcı listesini appData.users formatına dönüştürüp senkron eder.
-     * Portal (driver_login) ve raporlar tek kaynaktan (appData) okur.
-     * zimmetli_araclar: driver_save.php için atanmış Taşıt ID'leri (assignedUserId eşleşen Taşıtlar)
+     * Portal girişi (`driver_login.php`) ve raporlar tek kaynaktan (appData) okur.
+     * zimmetli_araclar: portal kayıt akışı (`driver_save.php`) için atanmış Taşıt ID'leri (assignedUserId eşleşen Taşıtlar)
      */
     function mapUiRoleToRol(role) {
       if (role === 'admin') return 'genel_yonetici';
@@ -785,9 +785,9 @@
         const vehicles = readVehicles();
         const hasAssignedVehicles = selectedVehicleIds.length > 0;
   
-        // Şoför portal girişi: Taşıt atanmışsa Kullanıcı Adı ve Şifre zorunlu
+        // Kullanıcı paneli girişi: Taşıt atanmışsa Kullanıcı Adı ve Şifre zorunlu
         if (kullanici_paneli && hasAssignedVehicles && (!kullanici_adi || !sifre)) {
-          alert('Portal girişi için Taşıt atadığınız Kullanıcıların "Kullanıcı Adı (portal girişi)" ve "Şifre (portal girişi)" alanlarını doldurmanız gerekir. Kullanıcı bu bilgilerle driver sayfasında giriş yapacaktır.');
+          alert('Portal girişi için Taşıt atadığınız Kullanıcıların "Kullanıcı Adı (portal girişi)" ve "Şifre (portal girişi)" alanlarını doldurmanız gerekir. Kullanıcı bu bilgilerle kullanıcı panelinde giriş yapacaktır.');
           if (usernameInput) usernameInput.focus();
           return;
         }
