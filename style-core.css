@@ -2487,35 +2487,39 @@ body.modal-open .content-wrap::before {
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicle-modal.modal-overlay,
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #reports-modal.modal-overlay,
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicles-modal.modal-overlay {
-    bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
+    bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + 4px + env(safe-area-inset-bottom, 0)) !important;
   }
+
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicle-modal.modal-overlay .modal-container,
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #reports-modal.modal-overlay .modal-container,
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicles-modal.modal-overlay .modal-container {
-    border-bottom: 1px solid var(--border-medium) !important;
-    border-bottom-left-radius: 12px !important;
-    border-bottom-right-radius: 12px !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.32) !important;
+    border-bottom-left-radius: 10px !important;
+    border-bottom-right-radius: 10px !important;
+    box-shadow:
+      0 0 32px var(--shadow-modal),
+      inset 0 1px 0 rgba(255, 255, 255, 0.04),
+      inset 0 0.5px 0 0 rgba(255, 255, 255, 0.08),
+      inset 0 -10px 14px rgba(8, 13, 22, 0.96) !important;
+  }
+
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicle-modal.modal-overlay .modal-container::before,
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #reports-modal.modal-overlay .modal-container::before,
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicles-modal.modal-overlay .modal-container::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 12px;
+    background: linear-gradient(180deg, rgba(8, 13, 22, 0) 0%, rgba(8, 13, 22, 0.92) 58%, var(--modal-bg) 100%);
+    border-bottom-left-radius: inherit;
+    border-bottom-right-radius: inherit;
+    pointer-events: none;
+    z-index: 1;
   }
 }
 
-/* Modal aÃ§Ä±kken footer üstündeki boÅŸluk (gap) her viewport'ta dolsun â€“ modal gÃ¶lge/Ã§erÃ§eve parÃ§alarÄ± gÃ¶rÃ¼nmesin */
-body.modal-open::after {
-  content: '';
-  position: fixed;
-  left: 0;
-  right: 0;
-  width: 100%;
-  bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0));
-  height: var(--app-footer-gap);
-  background: var(--bg) !important;
-  z-index: 100000;
-  pointer-events: none;
-}
-@media (max-width: 640px) {
-  body.modal-open::after {
-    height: calc(var(--app-footer-gap) - 6px);
-  }
-}
 
 /* === NOKTA ATIÅžI: KÄ±rmÄ±zÄ± yan Ã§izgiler footer hizasÄ±nda Ã§ivili (sarkan/kÄ±sa kalma yok) === */
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-container::before {
