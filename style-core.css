@@ -586,11 +586,11 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
     .hero {
         border-width: 1.2px;
     }
-    /* Ana uygulama ana ekran (desktop): footer üst çizgi; yan border yok (köşe ışığı birikmez) */
+    /* Ana uygulama ana ekran (desktop): footer çerçevesi görünür */
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer {
         border-top: 1px solid rgba(200, 200, 200, 0.52);
-        border-left: none;
-        border-right: none;
+        border-left: 0.6px solid rgba(255, 255, 255, 0.24);
+        border-right: 0.6px solid rgba(255, 255, 255, 0.24);
     }
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer .footer-content {
         padding: 8px 12px;
@@ -2736,25 +2736,27 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
 /* Masaüstü: glow footer genişliği içinde üretilir; sağ-sol taşma olmaz */
 @media (min-width: 769px) {
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer {
-    border-left: none !important;
-    border-right: none !important;
+    border-left: 0.6px solid rgba(255, 255, 255, 0.24) !important;
+    border-right: 0.6px solid rgba(255, 255, 255, 0.24) !important;
     border-top: 1px solid rgba(255, 255, 255, 0.36) !important;
     overflow: visible !important;
     box-shadow: 0 -1px 0 rgba(255, 255, 255, 0.11) !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #app-footer {
+    border-left: 0.6px solid rgba(255, 255, 255, 0.24) !important;
+    border-right: 0.6px solid rgba(255, 255, 255, 0.24) !important;
     box-shadow: 0 -1px 0 rgba(255, 255, 255, 0.11) !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer::before {
-    height: 28px;
+    height: 20px;
     opacity: 1;
     background:
-      radial-gradient(
-        120% 135% at 50% 100%,
-        rgba(var(--footer-glow-rgb), 0.58) 0%,
-        rgba(var(--footer-glow-rgb), 0.28) 34%,
-        rgba(var(--footer-glow-rgb), 0.10) 56%,
-        rgba(var(--footer-glow-rgb), 0) 76%
+      linear-gradient(
+        180deg,
+        rgba(var(--footer-glow-rgb), 0) 0%,
+        rgba(var(--footer-glow-rgb), 0.14) 42%,
+        rgba(var(--footer-glow-rgb), 0.28) 72%,
+        rgba(var(--footer-glow-rgb), 0.52) 100%
       );
   }
   /* İç kırmızı inset footer şeridine inmesin */
