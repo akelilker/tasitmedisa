@@ -32,6 +32,12 @@ const API_BASE = (function(){
     if (p.indexOf('/medisa') === 0) return '/medisa/driver/';
     return '';
   })();
+  const MAIN_APP_URL = (function() {
+    var p = document.location.pathname;
+    if (p.indexOf('/tasitmedisa') === 0) return '/tasitmedisa/index.html';
+    if (p.indexOf('/medisa') === 0) return '/medisa/index.html';
+    return '../index.html';
+  })();
   
   // Uygulama sürümü (footer #version-display - kullanıcı girişi ve paneli 78.2)
   const APP_VERSION = 'v78.2';
@@ -50,6 +56,82 @@ const API_BASE = (function(){
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', apply);
     else apply();
   })();
+
+  function decodeDriverTokenPayload(token) {
+    if (!token || typeof token !== 'string') return null;
+    try {
+      if (token.indexOf('.') !== -1) {
+        var parts = token.split('.');
+        if (parts.length !== 3) return null;
+        var payload = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+        while (payload.length % 4) payload += '=';
+        return JSON.parse(atob(payload));
+      }
+      return JSON.parse(atob(token));
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function getStoredPortalToken() {
+    try {
+      return localStorage.getItem('medisa_portal_token')
+        || sessionStorage.getItem('medisa_portal_token')
+        || localStorage.getItem('driver_token')
+        || sessionStorage.getItem('driver_token')
+        || null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function clearStoredPortalTokens() {
+    try {
+      localStorage.removeItem('medisa_portal_token');
+      sessionStorage.removeItem('medisa_portal_token');
+      localStorage.removeItem('driver_token');
+      sessionStorage.removeItem('driver_token');
+    } catch (e) {}
+  }
+
+  function persistSessionToken(token, remember) {
+    if (!token) return;
+    clearStoredPortalTokens();
+    try {
+      if (remember) {
+        localStorage.setItem('medisa_portal_token', token);
+        localStorage.setItem('driver_token', token);
+      } else {
+        sessionStorage.setItem('medisa_portal_token', token);
+        sessionStorage.setItem('driver_token', token);
+      }
+    } catch (storageErr) {
+      console.warn('Token depolamasi sirasinda sorun olustu, oturum sekme bazli tutulacak.', storageErr);
+      try {
+        sessionStorage.setItem('medisa_portal_token', token);
+        sessionStorage.setItem('driver_token', token);
+      } catch (fallbackErr) {
+        console.error('Token kaydedilemedi.', fallbackErr);
+      }
+    }
+  }
+
+  function routeByToken(token, fallbackDashboard) {
+    var payload = decodeDriverTokenPayload(token);
+    var nowTs = Math.floor(Date.now() / 1000);
+    if (!payload || !payload.exp || Number(payload.exp) < nowTs) {
+      clearStoredPortalTokens();
+      return false;
+    }
+
+    if (payload.driver_dashboard === false || fallbackDashboard === false) {
+      window.location.href = MAIN_APP_URL;
+      return true;
+    }
+
+    window.location.href = DRIVER_PAGE_BASE + 'dashboard.html';
+    return true;
+  }
   
   // Global değişkenler
   let currentToken = null;
@@ -239,11 +321,10 @@ const API_BASE = (function(){
   })();
   
   if (document.getElementById('login-form')) {
-      /* Beni Hatırla ile giriş yapıldıysa token localStorage'da; giriş sayfasına gelince doğrudan dashboard'a yönlendir */
-      var savedToken = localStorage.getItem('driver_token');
-      if (savedToken) {
-          window.location.href = DRIVER_PAGE_BASE + 'dashboard.html';
-          /* Sayfa yönleniyor, aşağıdaki event listener'lar bir kez çalışacak; dashboard açılınca sorun olmaz */
+      /* Geçerli bir oturum varsa login ekranını atla ve token'ın işaret ettiği yüzeye git. */
+      var savedToken = getStoredPortalToken();
+      if (savedToken && routeByToken(savedToken, true)) {
+          /* Sayfa yönleniyor; login listener'ları güvenle kurulabilir. */
       }
   
       var usernameInput = document.getElementById('username');
@@ -323,29 +404,13 @@ const API_BASE = (function(){
                       } catch (e) {}
                   }
                   var tokenToStore = data.token && typeof data.token === 'string' ? data.token : null;
-                  if (tokenToStore) {
-                      try {
-                          if (remember) {
-                              localStorage.setItem('driver_token', tokenToStore);
-                          } else {
-                              sessionStorage.setItem('driver_token', tokenToStore);
-                          }
-                      } catch (storageErr) {
-                          console.warn('localStorage/sessionStorage yazılamadı, oturum bu sekme için geçerli olacak.', storageErr);
-                          try {
-                              sessionStorage.setItem('driver_token', tokenToStore);
-                          } catch (e2) {
-                              console.error('Token kaydedilemedi.', e2);
-                          }
-                      }
-                  }
-                  if (data.driverDashboard === false) {
-                      try {
-                          if (tokenToStore) sessionStorage.setItem('medisa_portal_token', tokenToStore);
-                      } catch (e) {}
-                      window.location.href = '../index.html';
-                  } else {
-                      window.location.href = DRIVER_PAGE_BASE + 'dashboard.html';
+                  if (tokenToStore) persistSessionToken(tokenToStore, remember);
+                  if (!routeByToken(tokenToStore, data.driverDashboard !== false)) {
+                      errorDiv.textContent = 'Oturum başlatılamadı.';
+                      errorDiv.classList.add('show');
+                      loginBtn.disabled = false;
+                      btnText.style.display = 'inline';
+                      btnLoader.style.display = 'none';
                   }
               } else {
                   errorDiv.textContent = data.message || 'Giriş başarısız!';
@@ -401,11 +466,16 @@ const API_BASE = (function(){
   }
   
   async function loadDashboard() {
-      const token = localStorage.getItem('driver_token') || 
-                    sessionStorage.getItem('driver_token');
+      const token = getStoredPortalToken();
       
       if (!token) {
           window.location.href = DRIVER_PAGE_BASE + 'index.html';
+          return;
+      }
+
+      var tokenPayload = decodeDriverTokenPayload(token);
+      if (tokenPayload && tokenPayload.driver_dashboard === false) {
+          window.location.href = MAIN_APP_URL;
           return;
       }
       
@@ -2499,7 +2569,6 @@ const API_BASE = (function(){
   
   // Çıkış
   window.logout = function() {
-      localStorage.removeItem('driver_token');
-      sessionStorage.removeItem('driver_token');
+      clearStoredPortalTokens();
       window.location.href = DRIVER_PAGE_BASE + 'index.html';
   };

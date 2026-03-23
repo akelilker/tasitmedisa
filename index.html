@@ -1,12 +1,12 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Taşıt Yönetim Sistemi</title>
-    <!-- Paylaşım önizlemesi (WhatsApp, vb.): logo ve başlık -->
+    <title>TaÅŸÄ±t YÃ¶netim Sistemi</title>
+    <!-- PaylaÅŸÄ±m Ã¶nizlemesi (WhatsApp, vb.): logo ve baÅŸlÄ±k -->
     <meta property="og:type" content="website">
-    <meta property="og:title" content="Medisa-Taşıt Yönetim Sistemi">
+    <meta property="og:title" content="Medisa-TaÅŸÄ±t YÃ¶netim Sistemi">
     <meta property="og:description" content="">
     <meta property="og:image" content="https://karmotors.com.tr/medisa/icon/medlogo.png">
     <meta property="og:image:width" content="516">
@@ -14,7 +14,7 @@
     <meta property="og:url" content="https://karmotors.com.tr/medisa/">
     <meta property="og:locale" content="tr_TR">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Medisa-Taşıt Yönetim Sistemi">
+    <meta name="twitter:title" content="Medisa-TaÅŸÄ±t YÃ¶netim Sistemi">
     <meta name="twitter:image" content="https://karmotors.com.tr/medisa/icon/medlogo.png">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -22,7 +22,7 @@
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" as="style">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 
-    <!-- İkonlar: sekme / PWA / iOS ana ekran / masaüstü kısayol (medlogo) -->
+    <!-- Ä°konlar: sekme / PWA / iOS ana ekran / masaÃ¼stÃ¼ kÄ±sayol (medlogo) -->
 <link rel="icon" type="image/png" href="./icon/medlogo.png?v=20260322-1">
 <link rel="icon" type="image/x-icon" href="./icon/favicon.ico?v=20260322-1">
 <link rel="apple-touch-icon" href="./icon/medlogo.png?v=20260322-1">
@@ -33,7 +33,7 @@
     <link rel="manifest" href="./manifest.json">
     <link rel="preload" href="icon/logo-header2.svg" as="image">
 
-    <!-- PWA: tema rengi (masaüstü sekme çubuğu, mobil status bar, iOS) -->
+    <!-- PWA: tema rengi (masaÃ¼stÃ¼ sekme Ã§ubuÄŸu, mobil status bar, iOS) -->
     <meta name="theme-color" content="#080d16">
     <meta name="msapplication-TileColor" content="#080d16">
     <!-- Mobil web app -->
@@ -41,9 +41,9 @@
     <!-- iOS PWA -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Medisa Taşıt">
+    <meta name="apple-mobile-web-app-title" content="Medisa TaÅŸÄ±t">
 
-    <!-- Critical CSS - Splash (logo + başlık 3 sn, JS gelmese bile otomatik kapanır) -->
+    <!-- Critical CSS - Splash (logo + baÅŸlÄ±k 3 sn, JS gelmese bile otomatik kapanÄ±r) -->
     <style>
         #loading-screen {
             position: fixed;
@@ -55,7 +55,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 10001; /* Footer (10000) üstünde; splash sırasında footer gizlenir */
+            z-index: 10001; /* Footer (10000) Ã¼stÃ¼nde; splash sÄ±rasÄ±nda footer gizlenir */
             opacity: 1;
             transition: opacity 0.4s ease;
             animation: autoHideLoading 2s forwards;
@@ -75,7 +75,7 @@
         }
         #loading-screen .splash-logo {
             width: 150px;
-            height: 86px; /* SVG oranı 624.89:357.04 – layout shift önleme */
+            height: 86px; /* SVG oranÄ± 624.89:357.04 â€“ layout shift Ã¶nleme */
             flex-shrink: 0;
             object-fit: contain;
             filter: brightness(0.88);
@@ -101,7 +101,7 @@
             0%, 85% { opacity: 1; pointer-events: auto; }
             100% { opacity: 0; pointer-events: none; visibility: hidden; }
         }
-        /* CLS azaltma: CSS gelmeden önce modal/footer yerleşimini sabitle */
+        /* CLS azaltma: CSS gelmeden Ã¶nce modal/footer yerleÅŸimini sabitle */
         .modal-overlay,
         .settings-dropdown,
         #centered-info-box {
@@ -159,11 +159,11 @@
 </head>
 <body>
 
-    <!-- Splash: logo + başlık 2 sn -->
+    <!-- Splash: logo + baÅŸlÄ±k 2 sn -->
     <div id="loading-screen">
         <div class="splash-inner">
             <img src="icon/logo-header2.svg" alt="MEDISA" class="splash-logo" width="150" height="86">
-            <h1 class="splash-title">TAŞIT YÖNETİM SİSTEMİ</h1>
+            <h1 class="splash-title">TAÅIT YÃ–NETÄ°M SÄ°STEMÄ°</h1>
         </div>
     </div>
 
@@ -178,7 +178,7 @@
                         <img src="icon/logo-header2.svg" alt="MEDISA Logo">
                     </picture>
                 </div>
-                <h1>TAŞIT YÖNETİM SİSTEMİ</h1>
+                <h1>TAÅIT YÃ–NETÄ°M SÄ°STEMÄ°</h1>
                 <div class="hero-spacer"></div>
                 <div class="animated-line"></div>
             </div>
@@ -204,36 +204,36 @@
                         </svg>
                     </button>
                     <div id="settings-menu" class="settings-dropdown">
-                        <button onclick="openBranchManagement()">Şube Yönetimi</button>
-                        <button onclick="openUserManagement()">Kullanıcı Yönetimi</button>
-                        <button id="dis-veri-btn" onclick="openDisVeriPanel()"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg> Dış Veri Yönetimi</button>
-                        <div class="has-submenu-wrapper" onmouseenter="showDataSubmenu()" onmouseleave="hideDataSubmenu(event)">
+                        <button id="settings-branch-btn" onclick="openBranchManagement()">Åube YÃ¶netimi</button>
+                        <button id="settings-user-btn" onclick="openUserManagement()">KullanÄ±cÄ± YÃ¶netimi</button>
+                        <button id="dis-veri-btn" onclick="openDisVeriPanel()"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg> DÄ±ÅŸ Veri YÃ¶netimi</button>
+                        <div id="settings-data-wrap" class="has-submenu-wrapper" onmouseenter="showDataSubmenu()" onmouseleave="hideDataSubmenu(event)">
                             <button class="has-submenu" onclick="openDataManagement(event)" onpointerdown="openDataManagement(event)">
                                 Veri Yedekleme
                             </button>
                             <div id="data-submenu" class="settings-submenu" onmouseenter="showDataSubmenu()" onmouseleave="hideDataSubmenu(event)">
                                 <button onclick="exportData()">Yedek Al</button>
-                                <button onclick="restoreFromLastBackup()">Son Yedekten Geri Yükle</button>
-                                <button onclick="importData()">Dosyadan Geri Yükle</button>
+                                <button onclick="restoreFromLastBackup()">Son Yedekten Geri YÃ¼kle</button>
+                                <button onclick="importData()">Dosyadan Geri YÃ¼kle</button>
                             </div>
                         </div>
-                        <button onclick="clearCache()" class="cache-clear-btn">🗑️ Önbellek Temizle</button>
+                        <button id="settings-clear-cache-btn" onclick="clearCache()" class="cache-clear-btn">ğŸ—‘ï¸ Ã–nbellek Temizle</button>
                     </div>
                 </div>
             </div>
 
             <div id="main-menu" class="menu-container">
                 <button class="menu-btn" onclick="openVehicleModal()">
-                    <div class="ttl">KAYIT İŞLEMLERİ</div>
+                    <div class="ttl">KAYIT Ä°ÅLEMLERÄ°</div>
                 </button>
                 <button class="menu-btn" onclick="openVehiclesView()">
-                    <div class="ttl">TAŞITLAR</div>
+                    <div class="ttl">TAÅITLAR</div>
                 </button>
                 <button class="menu-btn" onclick="openReportsView()">
                     <div class="ttl">RAPORLAR</div>
                 </button>
             </div>
-            <!-- Erken fallback: script-core/tasitlar/kayit yüklenmeden tıklanırsa ReferenceError önlenir -->
+            <!-- Erken fallback: script-core/tasitlar/kayit yÃ¼klenmeden tÄ±klanÄ±rsa ReferenceError Ã¶nlenir -->
             <script>
             (function() {
                 function openModal(id) {
@@ -267,7 +267,7 @@
         <div id="vehicle-modal" class="modal-overlay">
             <div class="modal-container">
                 <div class="modal-header">
-                    <h2>KAYIT İŞLEMLERİ</h2>
+                    <h2>KAYIT Ä°ÅLEMLERÄ°</h2>
                     <button class="modal-close" onclick="closeVehicleModal()">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -280,16 +280,16 @@
                     <div class="modal-columns">
                         <div class="modal-column-left">
                             <div class="form-section-inline">
-                                <label class="form-label" for="vehicle-type-otomobil">Taşıt Tipi</label>
+                                <label class="form-label" for="vehicle-type-otomobil">TaÅŸÄ±t Tipi</label>
                                 <div class="vehicle-type-group">
                                     <button type="button" id="vehicle-type-otomobil" class="vehicle-type-btn" data-type="otomobil" title="Otomobil / SUV">
                                         <img src="icon/otomobil.svg" alt="Otomobil" />
                                     </button>
-                                    <button class="vehicle-type-btn" data-type="minivan" title="Küçük Ticari">
-                                        <img src="icon/kucuk-ticari.svg" alt="Küçük Ticari" />
+                                    <button class="vehicle-type-btn" data-type="minivan" title="KÃ¼Ã§Ã¼k Ticari">
+                                        <img src="icon/kucuk-ticari.svg" alt="KÃ¼Ã§Ã¼k Ticari" />
                                     </button>
-                                    <button class="vehicle-type-btn" data-type="kamyon" title="Büyük Ticari">
-                                        <img src="icon/buyuk-ticari.svg" alt="Büyük Ticari" />
+                                    <button class="vehicle-type-btn" data-type="kamyon" title="BÃ¼yÃ¼k Ticari">
+                                        <img src="icon/buyuk-ticari.svg" alt="BÃ¼yÃ¼k Ticari" />
                                     </button>
                                 </div>
                             </div>
@@ -299,7 +299,7 @@
                                 <input type="text" id="vehicle-plate" class="form-input" placeholder="34 ABC 123" maxlength="15">
                             </div>
                             <div class="form-section">
-                                <label class="form-label" for="vehicle-year">Üretim Yılı</label>
+                                <label class="form-label" for="vehicle-year">Ãœretim YÄ±lÄ±</label>
                                 <input type="number" id="vehicle-year" class="form-input" placeholder="2026" min="1950" max="2030" inputmode="numeric">
                             </div>
                             <div class="form-section">
@@ -307,22 +307,22 @@
                                 <input type="text" id="vehicle-brand-model" class="form-input" placeholder="Hyundai Elantra">
                             </div>
                             <div class="form-section">
-                                <label class="form-label" for="vehicle-km">Km (Alındığı Tarih)</label>
+                                <label class="form-label" for="vehicle-km">Km (AlÄ±ndÄ±ÄŸÄ± Tarih)</label>
                                 <input type="text" id="vehicle-km" class="form-input" placeholder="50.000" inputmode="numeric" pattern="[0-9]*">
                             </div>
                             <div class="form-section">
-                                <label class="form-label" for="vehicle-price">Taşıtın Alım Bedeli</label>
+                                <label class="form-label" for="vehicle-price">TaÅŸÄ±tÄ±n AlÄ±m Bedeli</label>
                                 <input type="text" id="vehicle-price" class="form-input" placeholder="150.000 TL" inputmode="numeric">
                             </div>
                             <div class="form-section-inline" data-section="transmission">
-                                <label class="form-label" for="sanziman-manuel">Şanzıman Tipi</label>
+                                <label class="form-label" for="sanziman-manuel">ÅanzÄ±man Tipi</label>
                                 <div class="radio-group">
                                     <button type="button" id="sanziman-manuel" class="radio-btn" data-value="manuel">Manuel</button>
                                     <button class="radio-btn" data-value="otomatik">Otomatik</button>
                                 </div>
                             </div>
                             <div class="form-section-inline" data-section="tramer">
-                                <label class="form-label" for="tramer-var">Tramer Kaydı</label>
+                                <label class="form-label" for="tramer-var">Tramer KaydÄ±</label>
                                 <div class="radio-group">
                                     <button type="button" id="tramer-var" class="radio-btn" data-value="var">Var</button>
                                     <button type="button" class="radio-btn" data-value="yok">Yok</button>
@@ -332,7 +332,7 @@
                                 <div id="tramer-records-container" class="u-hidden u-mt-6"></div>
                             </div>
                             <div class="form-section-inline" data-section="boya">
-                                <label class="form-label" for="boya-var">Boya / Değişen</label>
+                                <label class="form-label" for="boya-var">Boya / DeÄŸiÅŸen</label>
                                 <div class="radio-group">
                                     <button type="button" id="boya-var" class="radio-btn" data-value="var">Var</button>
                                     <button type="button" class="radio-btn" data-value="yok">Yok</button>
@@ -345,15 +345,15 @@
 
                         <div class="modal-column-right">
                             <div class="form-section">
-                                <label class="form-label" for="vehicle-sigorta-date">Sigorta Bitiş Tarihi</label>
+                                <label class="form-label" for="vehicle-sigorta-date">Sigorta BitiÅŸ Tarihi</label>
                                 <input type="date" id="vehicle-sigorta-date" class="form-input" inputmode="numeric">
                             </div>
                             <div class="form-section">
-                                <label class="form-label" for="vehicle-kasko-date">Kasko Bitiş Tarihi</label>
+                                <label class="form-label" for="vehicle-kasko-date">Kasko BitiÅŸ Tarihi</label>
                                 <input type="date" id="vehicle-kasko-date" class="form-input" inputmode="numeric">
                             </div>
                             <div class="form-section">
-                                <label class="form-label" for="vehicle-muayene-date">Muayene Bitiş Tarihi</label>
+                                <label class="form-label" for="vehicle-muayene-date">Muayene BitiÅŸ Tarihi</label>
                                 <input type="date" id="vehicle-muayene-date" class="form-input" inputmode="numeric">
                             </div>
                             <div class="form-section-inline" data-section="anahtar">
@@ -368,7 +368,7 @@
                                 <input type="text" class="form-input form-input-reveal" placeholder="Nerede?" id="anahtar-nerede">
                             </div>
                             <div class="form-section-inline" data-section="kredi">
-                                <label class="form-label" for="kredi-var">Kredi / Rehin Var mı?</label>
+                                <label class="form-label" for="kredi-var">Kredi / Rehin Var mÄ±?</label>
                                 <div class="radio-group">
                                     <button type="button" id="kredi-var" class="radio-btn" data-value="var" data-group="kredi">Var</button>
                                     <button type="button" class="radio-btn" data-value="yok" data-group="kredi">Yok</button>
@@ -379,12 +379,12 @@
                                 <textarea class="form-input form-input-reveal" rows="2" placeholder="Detay Ekleyin" id="kredi-detay"></textarea>
                             </div>
                             <div class="form-section">
-                                <span class="form-label" id="vehicle-branch-label">Tahsis Edilen Şube</span>
+                                <span class="form-label" id="vehicle-branch-label">Tahsis Edilen Åube</span>
                                 <div class="vehicle-branch-dropdown-wrap">
                                     <select id="vehicle-branch-select" class="form-input" aria-hidden="true" tabindex="-1">
-                                        <option value="">Seçiniz</option>
+                                        <option value="">SeÃ§iniz</option>
                                     </select>
-                                    <div id="vehicle-branch-trigger" class="vehicle-branch-trigger form-input placeholder" tabindex="0" role="combobox" aria-expanded="false" aria-haspopup="listbox" aria-controls="vehicle-branch-list" aria-labelledby="vehicle-branch-label">Seçiniz</div>
+                                    <div id="vehicle-branch-trigger" class="vehicle-branch-trigger form-input placeholder" tabindex="0" role="combobox" aria-expanded="false" aria-haspopup="listbox" aria-controls="vehicle-branch-list" aria-labelledby="vehicle-branch-label">SeÃ§iniz</div>
                                     <div id="vehicle-branch-list" class="vehicle-branch-list" role="listbox" aria-hidden="true"></div>
                                 </div>
                             </div>
@@ -401,7 +401,7 @@
                     
                     <div class="universal-btn-group">
                         <button class="universal-btn-save" onclick="saveVehicleRecord()">Kaydet</button>
-                        <button class="universal-btn-cancel" onclick="closeVehicleModal()">Vazgeç</button>
+                        <button class="universal-btn-cancel" onclick="closeVehicleModal()">VazgeÃ§</button>
                     </div>
                 </div>
             </div>
@@ -410,19 +410,19 @@
         <div id="vehicle-type-picker-overlay" class="vehicle-type-picker-overlay u-hidden" aria-hidden="true">
             <div class="vehicle-type-picker-backdrop"></div>
             <div class="vehicle-type-picker-box">
-                <h3 class="vehicle-type-picker-title">Taşıt Tipi Seçin</h3>
+                <h3 class="vehicle-type-picker-title">TaÅŸÄ±t Tipi SeÃ§in</h3>
                 <div class="vehicle-type-picker-options">
                     <button type="button" class="vehicle-type-picker-option" data-type="otomobil">
                         <img src="icon/otomobil.svg" alt="Otomobil">
                         <span class="vehicle-type-picker-label">Otomobil/ SUV</span>
                     </button>
                     <button type="button" class="vehicle-type-picker-option" data-type="minivan">
-                        <img src="icon/kucuk-ticari.svg" alt="Küçük Ticari">
-                        <span class="vehicle-type-picker-label">Küçük Ticari</span>
+                        <img src="icon/kucuk-ticari.svg" alt="KÃ¼Ã§Ã¼k Ticari">
+                        <span class="vehicle-type-picker-label">KÃ¼Ã§Ã¼k Ticari</span>
                     </button>
                     <button type="button" class="vehicle-type-picker-option" data-type="kamyon">
-                        <img src="icon/buyuk-ticari.svg" alt="Büyük Ticari">
-                        <span class="vehicle-type-picker-label">Büyük Ticari</span>
+                        <img src="icon/buyuk-ticari.svg" alt="BÃ¼yÃ¼k Ticari">
+                        <span class="vehicle-type-picker-label">BÃ¼yÃ¼k Ticari</span>
                     </button>
                 </div>
             </div>
@@ -430,7 +430,7 @@
 
         <div id="vehicles-modal" class="modal-overlay tasitlar-modal-overlay" onclick="if(event.target === this) { event.stopPropagation(); }">
           <div class="modal-container" onclick="event.stopPropagation();">
-            <div class="modal-header"><h2>TAŞITLAR</h2><button class="modal-close" onclick="event.stopPropagation(); event.preventDefault(); closeVehiclesModal(event); return false;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div>
+            <div class="modal-header"><h2>TAÅITLAR</h2><button class="modal-close" onclick="event.stopPropagation(); event.preventDefault(); closeVehiclesModal(event); return false;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div>
             <div class="modal-body"><div id="vehicles-modal-content"></div></div>
           </div>
         </div>
@@ -438,7 +438,7 @@
         <div id="vehicle-detail-modal" class="modal-overlay tasitlar-modal-overlay" onclick="if(event.target === this) { event.stopPropagation(); event.preventDefault(); return false; }">
           <div class="modal-container" onclick="event.stopPropagation();">
             <div class="modal-header">
-              <h2>TAŞIT DETAYI</h2>
+              <h2>TAÅIT DETAYI</h2>
               <button class="modal-close" onclick="closeAllModals();">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -466,7 +466,7 @@
         <div id="branch-modal" class="modal-overlay ayarlar-modal-overlay">
             <div class="modal-container" onclick="if(event.target.closest('.universal-back-btn')) { event.stopPropagation(); closeBranchManagement(); var m=document.getElementById('settings-menu'); if(m)m.classList.add('open'); }">
                 <div class="modal-header">
-                    <h2>ŞUBE YÖNETİMİ</h2>
+                    <h2>ÅUBE YÃ–NETÄ°MÄ°</h2>
                     <button class="modal-close" onclick="closeBranchManagement()">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -482,7 +482,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="u-p-16">
-                        <button onclick="openBranchFormModal()" class="settings-add-text-btn user-add-btn u-mb-16">+ Yeni Şube</button>
+                        <button onclick="openBranchFormModal()" class="settings-add-text-btn user-add-btn u-mb-16">+ Yeni Åube</button>
                         <div id="branch-list"></div>
                     </div>
                 </div>
@@ -492,7 +492,7 @@
         <div id="branch-form-modal" class="modal-overlay ayarlar-modal-overlay">
             <div class="modal-container">
                 <div class="modal-header">
-                    <h2>YENİ ŞUBE EKLE</h2>
+                    <h2>YENÄ° ÅUBE EKLE</h2>
                     <button class="modal-close" onclick="closeBranchFormModal()">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -501,25 +501,25 @@
                     </button>
                 </div>
                 <div class="universal-back-bar">
-                    <button type="button" class="universal-back-btn" aria-label="Şube Yönetimi" onclick="closeBranchFormModal()">
+                    <button type="button" class="universal-back-btn" aria-label="Åube YÃ¶netimi" onclick="closeBranchFormModal()">
                         <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-                        <span class="universal-back-label">Şube Yönetimi</span>
+                        <span class="universal-back-label">Åube YÃ¶netimi</span>
                     </button>
                 </div>
                 <div class="modal-body">
                     <form id="branch-form" class="u-p-16">
                         <input type="hidden" id="branch-id">
                         <div class="form-section">
-                            <label class="form-label" for="branch-name">Şube Adı</label>
-                            <input type="text" id="branch-name" class="form-input" placeholder="Şube adı" required>
+                            <label class="form-label" for="branch-name">Åube AdÄ±</label>
+                            <input type="text" id="branch-name" class="form-input" placeholder="Åube adÄ±" required>
                         </div>
                         <div class="form-section">
-                            <label class="form-label" for="branch-city">Şehir</label>
-                            <input type="text" id="branch-city" class="form-input" placeholder="Şehir">
+                            <label class="form-label" for="branch-city">Åehir</label>
+                            <input type="text" id="branch-city" class="form-input" placeholder="Åehir">
                         </div>
                         <div class="universal-btn-group">
                             <button type="button" class="universal-btn-save" onclick="saveBranch()">Kaydet</button>
-                            <button type="button" class="universal-btn-cancel" onclick="closeBranchFormModal()">Vazgeç</button>
+                            <button type="button" class="universal-btn-cancel" onclick="closeBranchFormModal()">VazgeÃ§</button>
                             <button type="button" class="settings-btn-delete u-hidden" onclick="deleteBranch(document.getElementById('branch-id').value)" id="branch-delete-btn">Sil</button>
                         </div>
                     </form>
@@ -530,7 +530,7 @@
         <div id="user-modal" class="modal-overlay ayarlar-modal-overlay">
             <div class="modal-container" onclick="if(event.target.closest('.universal-back-btn')) { event.stopPropagation(); closeUserManagement(); var m=document.getElementById('settings-menu'); if(m)m.classList.add('open'); }">
                 <div class="modal-header">
-                    <h2>KULLANICI YÖNETİMİ</h2>
+                    <h2>KULLANICI YÃ–NETÄ°MÄ°</h2>
                     <button class="modal-close" onclick="closeUserManagement()">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -546,7 +546,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="u-p-16">
-                        <button onclick="openUserFormModal()" class="settings-add-text-btn user-add-btn u-mb-16">+ Yeni Kullanıcı</button>
+                        <button onclick="openUserFormModal()" class="settings-add-text-btn user-add-btn u-mb-16">+ Yeni KullanÄ±cÄ±</button>
                         <div id="user-list"></div>
                     </div>
                 </div>
@@ -556,7 +556,7 @@
         <div id="user-form-modal" class="modal-overlay ayarlar-modal-overlay">
             <div class="modal-container">
                 <div class="modal-header">
-                    <h2>YENİ KULLANICI EKLE</h2>
+                    <h2>YENÄ° KULLANICI EKLE</h2>
                     <button class="modal-close" onclick="closeUserFormModal()">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -565,9 +565,9 @@
                     </button>
                 </div>
                 <div class="universal-back-bar">
-                    <button type="button" class="universal-back-btn" aria-label="Kullanıcı Yönetimi" onclick="closeUserFormModal()">
+                    <button type="button" class="universal-back-btn" aria-label="KullanÄ±cÄ± YÃ¶netimi" onclick="closeUserFormModal()">
                         <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-                        <span class="universal-back-label">Kullanıcı Yönetimi</span>
+                        <span class="universal-back-label">KullanÄ±cÄ± YÃ¶netimi</span>
                     </button>
                 </div>
                 <div class="modal-body">
@@ -578,14 +578,14 @@
                             <input type="text" id="user-name" class="form-input" placeholder="Ad Soyad" required>
                         </div>
                         <div class="form-section" id="user-branch-single-wrap">
-                            <label class="form-label" for="user-branch">Şube</label>
+                            <label class="form-label" for="user-branch">Åube</label>
                             <select id="user-branch" class="form-input" required>
-                                <option value="">Şube Seçin</option>
+                                <option value="">Åube SeÃ§in</option>
                             </select>
                         </div>
                         <div class="form-section" id="user-branches-multi-wrap" style="display:none;">
-                            <span class="form-label">Şubeler (opsiyonel)</span>
-                            <div id="user-branches-multi" class="user-branches-checkbox-list" role="group" aria-label="Şubeler"></div>
+                            <span class="form-label">Åubeler (opsiyonel)</span>
+                            <div id="user-branches-multi" class="user-branches-checkbox-list" role="group" aria-label="Åubeler"></div>
                         </div>
                         <div class="form-section">
                             <label class="form-label" for="user-phone">Telefon</label>
@@ -596,30 +596,30 @@
                             <input type="email" id="user-email" class="form-input" placeholder="E-posta">
                         </div>
                         <div class="form-section">
-                            <label class="form-label" for="user-role">Kullanıcı Tipi</label>
+                            <label class="form-label" for="user-role">KullanÄ±cÄ± Tipi</label>
                             <select id="user-role" class="form-input">
-                                <option value="kullanici" selected>Kullanıcı</option>
-                                <option value="sube_yonetici">Yönetici</option>
-                                <option value="genel_yonetici">Genel Yönetici</option>
+                                <option value="kullanici" selected>KullanÄ±cÄ±</option>
+                                <option value="sube_yonetici">YÃ¶netici</option>
+                                <option value="genel_yonetici">Genel YÃ¶netici</option>
                             </select>
                         </div>
-                        <div class="form-section" id="user-surucu-paneli-wrap" style="display:none;">
-                            <label class="form-label user-surucu-paneli-label" for="user-surucu-paneli">Sürücü paneli</label>
-                            <label class="user-checkbox-inline"><input type="checkbox" id="user-surucu-paneli"> Ayrıca sürücü panelini kullanabilir (atanmış araç varsa)</label>
+                        <div class="form-section" id="user-kullanici-paneli-wrap" style="display:none;">
+                            <label class="form-label user-surucu-paneli-label" for="user-kullanici-paneli">KullanÄ±cÄ± paneli</label>
+                            <label class="user-checkbox-inline"><input type="checkbox" id="user-kullanici-paneli"> AyrÄ±ca kullanÄ±cÄ± panelini kullanabilir (atanmÄ±ÅŸ araÃ§ varsa)</label>
                         </div>
                         <div class="form-section">
-                            <label class="form-label" for="user-username">Kullanıcı Adı (portal girişi)</label>
-                            <input type="text" id="user-username" class="form-input" placeholder="Plaka veya kullanıcı adı" autocomplete="username">
+                            <label class="form-label" for="user-username">KullanÄ±cÄ± AdÄ± (portal giriÅŸi)</label>
+                            <input type="text" id="user-username" class="form-input" placeholder="Plaka veya kullanÄ±cÄ± adÄ±" autocomplete="username">
                         </div>
                         <div class="form-section">
-                            <label class="form-label" for="user-password">Şifre (portal girişi)</label>
-                            <input type="password" id="user-password" class="form-input" placeholder="Şifre" autocomplete="new-password">
+                            <label class="form-label" for="user-password">Åifre (portal giriÅŸi)</label>
+                            <input type="password" id="user-password" class="form-input" placeholder="Åifre" autocomplete="new-password">
                         </div>
                         <div class="form-section form-section-vehicles">
-                            <span id="user-vehicles-label" class="form-label">Tahsis Edilecek Taşıt</span>
+                            <span id="user-vehicles-label" class="form-label">Tahsis Edilecek TaÅŸÄ±t</span>
                             <div class="user-vehicles-wrap">
                                 <div id="user-vehicles-trigger" class="user-vehicles-trigger form-input" tabindex="0" role="combobox" aria-labelledby="user-vehicles-label" aria-expanded="false" onclick="if(window.toggleUserVehiclesDropdown) window.toggleUserVehiclesDropdown()">
-                                    <span class="user-vehicles-trigger-text">Taşıt seçin</span>
+                                    <span class="user-vehicles-trigger-text">TaÅŸÄ±t seÃ§in</span>
                                     <svg class="user-vehicles-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
                                 </div>
                                 <div id="user-vehicles-dropdown" class="user-vehicles-dropdown" style="display:none;" role="listbox">
@@ -632,7 +632,7 @@
                         </div>
                         <div class="universal-btn-group">
                             <button type="button" class="universal-btn-save" onclick="saveUser()">Kaydet</button>
-                            <button type="button" class="universal-btn-cancel" onclick="closeUserFormModal()">Vazgeç</button>
+                            <button type="button" class="universal-btn-cancel" onclick="closeUserFormModal()">VazgeÃ§</button>
                             <button type="button" class="settings-btn-delete u-hidden" onclick="deleteUser(document.getElementById('user-id').value)" id="user-delete-btn">Sil</button>
                         </div>
                     </form>
@@ -643,7 +643,7 @@
         <div id="data-management-modal" class="modal-overlay ayarlar-modal-overlay">
             <div class="modal-container" onclick="if(event.target.closest('.universal-back-btn')) { event.stopPropagation(); closeDataManagement(); var m=document.getElementById('settings-menu'); if(m)m.classList.add('open'); }">
                 <div class="modal-header">
-                    <h2>VERİ YEDEKLEME</h2>
+                    <h2>VERÄ° YEDEKLEME</h2>
                     <button class="modal-close" onclick="closeDataManagement()">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -660,8 +660,8 @@
                 <div class="modal-body">
                     <div class="data-management-actions">
                         <button onclick="exportData()" class="data-management-text-btn">Yedek Al</button>
-                        <button onclick="restoreFromLastBackup()" class="data-management-text-btn">Son Yedekten Geri Yükle</button>
-                        <button onclick="importData()" class="data-management-text-btn">Dosyadan Geri Yükle</button>
+                        <button onclick="restoreFromLastBackup()" class="data-management-text-btn">Son Yedekten Geri YÃ¼kle</button>
+                        <button onclick="importData()" class="data-management-text-btn">Dosyadan Geri YÃ¼kle</button>
                     </div>
                 </div>
             </div>
@@ -670,7 +670,7 @@
         <div id="dis-veri-panel" class="modal-overlay ayarlar-modal-overlay">
             <div class="modal-container" onclick="if(event.target.closest('.universal-back-btn')) { event.stopPropagation(); closeDisVeriPanel(); var m=document.getElementById('settings-menu'); if(m)m.classList.add('open'); }">
                 <div class="modal-header">
-                    <h2>Dış Veri Yönetimi</h2>
+                    <h2>DÄ±ÅŸ Veri YÃ¶netimi</h2>
                     <button class="modal-close" onclick="closeDisVeriPanel()">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -686,9 +686,9 @@
                 </div>
                 <div class="modal-body">
                     <div class="data-management-actions">
-                        <button type="button" id="tsb-indir-btn" class="data-management-text-btn" onclick="tsbKaskoListesiIndir()">TSB Kasko Listesi İndir</button>
-                        <button type="button" id="kasko-yukle-btn" class="data-management-text-btn" onclick="kaskoExcelYukle()">Kasko Excel Yükle</button>
-                        <input type="file" id="kasko-excel-input" accept=".xlsx,.xls" style="display: none;" aria-label="Kasko Excel dosyası seç (.xlsx, .xls)">
+                        <button type="button" id="tsb-indir-btn" class="data-management-text-btn" onclick="tsbKaskoListesiIndir()">TSB Kasko Listesi Ä°ndir</button>
+                        <button type="button" id="kasko-yukle-btn" class="data-management-text-btn" onclick="kaskoExcelYukle()">Kasko Excel YÃ¼kle</button>
+                        <input type="file" id="kasko-excel-input" accept=".xlsx,.xls" style="display: none;" aria-label="Kasko Excel dosyasÄ± seÃ§ (.xlsx, .xls)">
                     </div>
                 </div>
             </div>
@@ -705,6 +705,10 @@
                         </svg>
                     </button>
                 </div>
+                <div class="reports-tab-header" id="reports-tab-header">
+                    <button type="button" id="reports-tab-stok" class="tab-btn active" onclick="switchReportTab('stok')">Taşıt</button>
+                    <button type="button" id="reports-tab-kullanici" class="tab-btn" onclick="switchReportTab('kullanici')">Kullanıcı</button>
+                </div>
                 <div id="reports-list-header-actions" class="reports-list-header-actions" aria-hidden="true"></div>
 
                 <div class="modal-body" id="reports-body">
@@ -712,15 +716,20 @@
                         <div id="stok-branch-grid" class="stok-branch-grid"></div>
                         <div id="stok-list-container" class="stok-list-container u-hidden"></div>
                     </div>
+                    <div id="view-kullanici" class="report-view">
+                        <div id="kullanici-branch-grid" class="stok-branch-grid"></div>
+                        <div id="kullanici-list-container" class="stok-list-container u-hidden"></div>
+                    </div>
+                </div>
                 </div>
             </div>
         </div>
 
     </div>
 
-    <a href="driver/" class="user-panel-link" title="Kullanıcı Paneli">
+    <a href="driver/" class="user-panel-link" title="KullanÄ±cÄ± Paneli">
         <span class="user-panel-link-inner">
-            <span class="user-panel-link-text">Kullanıcı Paneli</span>
+            <span class="user-panel-link-text">KullanÄ±cÄ± Paneli</span>
             <svg class="user-panel-link-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="9 18 15 12 9 6"></polyline>
             </svg>
@@ -731,15 +740,15 @@
         <div class="footer-content">
             <span class="version" id="version-display">v78.1</span>
             <span class="brand"><img src="icon/logo-footer.svg" alt="MEDISA" style="height: 12.5px; width: auto;"></span>
-            <span class="status status-ready">● Sistem Hazır</span>
+            <span class="status status-ready">â— Sistem HazÄ±r</span>
         </div>
     </footer>
 
-        <!-- Önbellek Temizleme Onay Modalı -->
+        <!-- Ã–nbellek Temizleme Onay ModalÄ± -->
         <div id="cache-confirm-modal" class="modal-overlay ayarlar-modal-overlay">
             <div class="modal-container" style="max-width: 400px; height: 210px;" onclick="event.stopPropagation();">
                 <div class="modal-header">
-                    <h2>ÖNBELLEK TEMİZLEME</h2>
+                    <h2>Ã–NBELLEK TEMÄ°ZLEME</h2>
                     <button class="modal-close" onclick="closeCacheConfirmModal()">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -751,13 +760,13 @@
                     <p id="cache-confirm-message" style="color: var(--form-label-color); font-size: 14px; line-height: 1.6; margin-bottom: 18px; text-align: center;"></p>
                     <div class="universal-btn-group">
                         <button type="button" class="universal-btn-save" onclick="event.stopPropagation(); confirmCacheClear();">Evet</button>
-                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); closeCacheConfirmModal();">Hayır</button>
+                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); closeCacheConfirmModal();">HayÄ±r</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Ortada Bilgi Kutusu (Excel vb. – üstteki modal kapanmaz) -->
+        <!-- Ortada Bilgi Kutusu (Excel vb. â€“ Ã¼stteki modal kapanmaz) -->
         <div id="centered-info-box" class="centered-info-box-overlay" style="display: none;" onclick="if(event.target === this) closeCenteredInfoBox();">
             <div class="centered-info-box-inner" onclick="event.stopPropagation();">
                 <p id="centered-info-message"></p>
@@ -765,11 +774,11 @@
             </div>
         </div>
 
-        <!-- Bilgi Modalı (Alert yerine) -->
+        <!-- Bilgi ModalÄ± (Alert yerine) -->
         <div id="info-modal" class="modal-overlay ayarlar-modal-overlay">
             <div class="modal-container">
                 <div class="modal-header">
-                    <h2>BİLGİ</h2>
+                    <h2>BÄ°LGÄ°</h2>
                     <button class="modal-close" onclick="closeInfoModal()">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -786,11 +795,11 @@
             </div>
         </div>
 
-        <!-- Tescil Tarihi Onay Modalı -->
+        <!-- Tescil Tarihi Onay ModalÄ± -->
         <div id="tescil-tarih-confirm-modal" class="modal-overlay ayarlar-modal-overlay">
             <div class="modal-container" style="max-width: 400px; height: 190px;" onclick="event.stopPropagation();">
                 <div class="modal-header">
-                    <h2>TESCİL TARİHİ ONAY</h2>
+                    <h2>TESCÄ°L TARÄ°HÄ° ONAY</h2>
                     <button class="modal-close" onclick="cancelOnay()">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -802,17 +811,17 @@
                     <p id="tescil-confirm-message" style="color: var(--form-label-color); font-size: 14px; line-height: 1.6; margin-bottom: 20px; text-align: center;"></p>
                     <div class="universal-btn-group">
                         <button type="button" class="universal-btn-save" onclick="event.stopPropagation(); confirmOnay();">Evet</button>
-                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); cancelOnay();">Hayır</button>
+                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); cancelOnay();">HayÄ±r</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Tescil Tarihi Giriş Modalı -->
+        <!-- Tescil Tarihi GiriÅŸ ModalÄ± -->
         <div id="tescil-tarih-input-modal" class="modal-overlay ayarlar-modal-overlay">
             <div class="modal-container" style="max-width: 400px; height: 220px;" onclick="event.stopPropagation();">
                 <div class="modal-header">
-                    <h2>TESCİL TARİHİ</h2>
+                    <h2>TESCÄ°L TARÄ°HÄ°</h2>
                     <button class="modal-close" onclick="cancelTescilTarihi()">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -830,14 +839,14 @@
                     </div>
                     <div class="universal-btn-group">
                         <button type="button" class="universal-btn-save" onclick="event.stopPropagation(); saveTescilTarihi();">Kaydet</button>
-                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); cancelTescilTarihi();">Vazgeç</button>
+                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); cancelTescilTarihi();">VazgeÃ§</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Olay Ekleme Modal'ları -->
-        <!-- Event Menu Modal (Olay seçim menüsü) -->
+        <!-- Olay Ekleme Modal'larÄ± -->
+        <!-- Event Menu Modal (Olay seÃ§im menÃ¼sÃ¼) -->
         <div id="event-menu-modal" class="modal-overlay tasitlar-modal-overlay ayarlar-modal-overlay olay-ekle-modal" onclick="if(event.target === this) { event.stopPropagation(); event.preventDefault(); return false; }">
             <div class="modal-container" onclick="event.stopPropagation();">
                 <div class="modal-header">
@@ -850,9 +859,9 @@
                     </button>
                 </div>
                 <div class="universal-back-bar">
-                    <button type="button" class="universal-back-btn" onclick="event.stopPropagation(); backToVehicleDetail();" title="Taşıt Detay'a dön">
+                    <button type="button" class="universal-back-btn" onclick="event.stopPropagation(); backToVehicleDetail();" title="TaÅŸÄ±t Detay'a dÃ¶n">
                         <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-                        <span class="universal-back-label">Taşıt Detay</span>
+                        <span class="universal-back-label">TaÅŸÄ±t Detay</span>
                     </button>
                 </div>
                 <div class="modal-body" onclick="event.stopPropagation();">
@@ -873,7 +882,7 @@
                     </button>
                 </div>
                 <div class="universal-back-bar">
-                    <button type="button" class="universal-back-btn" onclick="openEventModal('menu', window.currentDetailVehicleId)" aria-label="Olay menüsüne dön">
+                    <button type="button" class="universal-back-btn" onclick="openEventModal('menu', window.currentDetailVehicleId)" aria-label="Olay menÃ¼sÃ¼ne dÃ¶n">
                         <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
                         <span class="universal-back-label">Olay Ekle</span>
                     </button>
@@ -884,17 +893,17 @@
                     
                     <div class="universal-btn-group" id="ruhsat-btn-group" style="margin-top: 16px;">
                         <button type="button" class="universal-btn-save" id="dinamik-olay-kaydet-btn">Kaydet</button>
-                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); closeAllModals(); if(window.currentDetailVehicleId) openEventModal('menu', window.currentDetailVehicleId);">Vazgeç</button>
+                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); closeAllModals(); if(window.currentDetailVehicleId) openEventModal('menu', window.currentDetailVehicleId);">VazgeÃ§</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Tarihçe modalı (bakım, kaza, km, diğer sekmeleri burada doldurulur) -->
+        <!-- TarihÃ§e modalÄ± (bakÄ±m, kaza, km, diÄŸer sekmeleri burada doldurulur) -->
         <div id="vehicle-history-modal" class="modal-overlay tasitlar-modal-overlay ayarlar-modal-overlay" onclick="if(event.target === this) { event.stopPropagation(); }">
             <div class="modal-container" onclick="event.stopPropagation();">
                 <div class="modal-header">
-                    <h2>TAŞIT TARİHÇESİ</h2>
+                    <h2>TAÅIT TARÄ°HÃ‡ESÄ°</h2>
                     <button class="modal-close" onclick="closeVehicleHistoryModal();">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -903,27 +912,27 @@
                     </button>
                 </div>
                 <div class="universal-back-bar">
-                    <button type="button" class="universal-back-btn" onclick="if(window.backFromHistoryToVehicleDetail) window.backFromHistoryToVehicleDetail(); event.stopPropagation();" title="Taşıt detayına dön" aria-label="Taşıt detayına dön">
+                    <button type="button" class="universal-back-btn" onclick="if(window.backFromHistoryToVehicleDetail) window.backFromHistoryToVehicleDetail(); event.stopPropagation();" title="TaÅŸÄ±t detayÄ±na dÃ¶n" aria-label="TaÅŸÄ±t detayÄ±na dÃ¶n">
                         <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-                        <span class="universal-back-label">Taşıt detay</span>
+                        <span class="universal-back-label">TaÅŸÄ±t detay</span>
                     </button>
                 </div>
                 <div class="modal-body">
                     <div id="history-tabs" style="display: flex; align-items: center; justify-content: center; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
-                        <button type="button" class="history-tab active" data-tab="bakim" onclick="switchHistoryTab('bakim')" style="flex: 1; background: transparent; border: none; color: var(--form-label-color); padding: 8px 12px 4px 12px; cursor: pointer; font-weight: normal; font-size: 12px; border-bottom: 2px solid transparent; text-align: center;">Bakım Geçmişi</button>
-                        <button type="button" class="history-tab" data-tab="kaza" onclick="switchHistoryTab('kaza')" style="flex: 1; background: transparent; border: none; color: var(--form-label-color); padding: 8px 12px 4px 12px; cursor: pointer; font-weight: normal; font-size: 12px; border-bottom: 2px solid transparent; text-align: center;">Kaza Geçmişi</button>
-                        <button type="button" class="history-tab" data-tab="km" onclick="switchHistoryTab('km')" style="flex: 1; background: transparent; border: none; color: var(--form-label-color); padding: 8px 12px 4px 12px; cursor: pointer; font-weight: normal; font-size: 12px; border-bottom: 2px solid transparent; text-align: center;">Km Güncelle</button>
-                        <button type="button" class="history-tab" data-tab="diger" onclick="switchHistoryTab('diger')" style="flex: 1; background: transparent; border: none; color: var(--form-label-color); padding: 8px 12px 4px 12px; cursor: pointer; font-weight: normal; font-size: 12px; border-bottom: 2px solid transparent; text-align: center;">Diğer</button>
+                        <button type="button" class="history-tab active" data-tab="bakim" onclick="switchHistoryTab('bakim')" style="flex: 1; background: transparent; border: none; color: var(--form-label-color); padding: 8px 12px 4px 12px; cursor: pointer; font-weight: normal; font-size: 12px; border-bottom: 2px solid transparent; text-align: center;">BakÄ±m GeÃ§miÅŸi</button>
+                        <button type="button" class="history-tab" data-tab="kaza" onclick="switchHistoryTab('kaza')" style="flex: 1; background: transparent; border: none; color: var(--form-label-color); padding: 8px 12px 4px 12px; cursor: pointer; font-weight: normal; font-size: 12px; border-bottom: 2px solid transparent; text-align: center;">Kaza GeÃ§miÅŸi</button>
+                        <button type="button" class="history-tab" data-tab="km" onclick="switchHistoryTab('km')" style="flex: 1; background: transparent; border: none; color: var(--form-label-color); padding: 8px 12px 4px 12px; cursor: pointer; font-weight: normal; font-size: 12px; border-bottom: 2px solid transparent; text-align: center;">Km GÃ¼ncelle</button>
+                        <button type="button" class="history-tab" data-tab="diger" onclick="switchHistoryTab('diger')" style="flex: 1; background: transparent; border: none; color: var(--form-label-color); padding: 8px 12px 4px 12px; cursor: pointer; font-weight: normal; font-size: 12px; border-bottom: 2px solid transparent; text-align: center;">DiÄŸer</button>
                     </div>
                     <div id="history-content"></div>
                 </div>
             </div>
         </div>
 
-    <!-- INLINE KRITIK JS: Harici script dosyaları 404 olsa bile loading screen kapanır -->
+    <!-- INLINE KRITIK JS: Harici script dosyalarÄ± 404 olsa bile loading screen kapanÄ±r -->
     <script>
     (function(){
-      // 1. Loading screen: logo+başlık en az 2 sn gösterilir, sonra kapanır
+      // 1. Loading screen: logo+baÅŸlÄ±k en az 2 sn gÃ¶sterilir, sonra kapanÄ±r
       var SPLASH_MIN = 2000;
       var _start = Date.now();
       window.hideLoading = function hideLoading() {
@@ -946,29 +955,33 @@
       window.addEventListener('load', hideLoading);
       setTimeout(hideLoading, 2500);
 
-      // 2. CSS async load fallback: onerror durumunda media='all' yap (print kalmayı önle)
+      // 2. CSS async load fallback: onerror durumunda media='all' yap (print kalmayÄ± Ã¶nle)
       document.querySelectorAll('link[rel="stylesheet"][media="print"]').forEach(function(link){
         if (!link.onload) {
           link.onload = function(){ this.media = 'all'; };
         }
         link.onerror = function(){
-          // CSS 404 olursa print modunda kalmasın, yine de dene
+          // CSS 404 olursa print modunda kalmasÄ±n, yine de dene
           this.media = 'all';
         };
       });
 
-      // 3. Harici script yükleme hatası tespiti (konsola yaz, kullanıcıyı bilgilendir)
+      // 3. Harici script yÃ¼kleme hatasÄ± tespiti (konsola yaz, kullanÄ±cÄ±yÄ± bilgilendir)
       window.addEventListener('error', function(e){
         if (e.target && e.target.tagName === 'SCRIPT' && e.target.src) {
-          console.warn('[Medisa] Script yüklenemedi:', e.target.src);
+          console.warn('[Medisa] Script yÃ¼klenemedi:', e.target.src);
           hideLoading(); // Script 404 ise loading'i kapat
         }
       }, true);
     })();
     </script>
 
-    <script defer src="data-manager.js?v=20260225"></script>
+    <script defer src="data-manager.js?v=20260324.1"></script>
     <script defer src="data-service.js?v=20260316"></script>
-    <script defer src="script-core.js?v=20260323.1"></script>
+    <script defer src="script-core.js?v=20260324.1"></script>
 </body>
 </html>
+
+
+
+

@@ -293,7 +293,9 @@
         const sube_id = firstSube !== undefined && firstSube !== ''
           ? (!isNaN(Number(firstSube)) ? Number(firstSube) : firstSube)
           : undefined;
-        const surucuPaneli = rol === 'kullanici' ? true : (u.surucu_paneli === true);
+        const kullaniciPaneli = rol === 'kullanici'
+          ? true
+          : ((u.kullanici_paneli === true) || (u.surucu_paneli === true));
         return {
           id: u.id,
           isim: u.name || u.isim || '',
@@ -305,7 +307,8 @@
           sube_ids: subeIds,
           rol: rol,
           tip: rol === 'genel_yonetici' ? 'admin' : (rol === 'sube_yonetici' ? 'yonetici' : 'kullanici'),
-          surucu_paneli: surucuPaneli,
+          kullanici_paneli: kullaniciPaneli,
+          surucu_paneli: kullaniciPaneli,
           zimmetli_araclar: zimmetliAraclar,
           aktif: u.aktif !== false,
           kayit_tarihi: u.createdAt || new Date().toISOString(),
@@ -566,8 +569,8 @@
           if (passwordInput) passwordInput.value = user.sifre || '';
           const bidList = (user.branchIds && user.branchIds.length) ? user.branchIds : (user.branchId ? [user.branchId] : []);
           populateBranchMulti(bidList);
-          const spEl = document.getElementById('user-surucu-paneli');
-          if (spEl) spEl.checked = !!user.surucu_paneli;
+          const spEl = document.getElementById('user-kullanici-paneli');
+          if (spEl) spEl.checked = !!(user.kullanici_paneli === true || user.surucu_paneli === true);
           const vehiclesContainer = document.getElementById('user-vehicles-container');
           if (vehiclesContainer) {
             const vehicles = readVehicles();
@@ -584,7 +587,7 @@
       } else {
         // Yeni EKLEME MODU
         if (title) title.textContent = 'Yeni Kullanıcı Ekle';
-        const spNew = document.getElementById('user-surucu-paneli');
+        const spNew = document.getElementById('user-kullanici-paneli');
         if (spNew) spNew.checked = false;
         // Sil butonunu gizle
         if (deleteBtn) deleteBtn.style.display = 'none';
@@ -665,7 +668,7 @@
       const roleSelect = document.getElementById('user-role');
       const singleWrap = document.getElementById('user-branch-single-wrap');
       const multiWrap = document.getElementById('user-branches-multi-wrap');
-      const surucuWrap = document.getElementById('user-surucu-paneli-wrap');
+      const surucuWrap = document.getElementById('user-kullanici-paneli-wrap');
       const branchSelect = document.getElementById('user-branch');
       const r = roleSelect ? roleSelect.value : 'kullanici';
       if (r === 'kullanici') {
@@ -755,8 +758,8 @@
         const phone = phoneInput ? phoneInput.value.trim() : '';
         const email = emailInput ? emailInput.value.trim() : '';
         const role = roleSelect ? roleSelect.value : 'kullanici';
-        const surucuEl = document.getElementById('user-surucu-paneli');
-        const surucu_paneli = role === 'kullanici' ? true : !!(surucuEl && surucuEl.checked);
+        const kullaniciPaneliEl = document.getElementById('user-kullanici-paneli');
+        const kullanici_paneli = role === 'kullanici' ? true : !!(kullaniciPaneliEl && kullaniciPaneliEl.checked);
         let branchIds = [];
         let branchId = '';
         if (role === 'kullanici') {
@@ -806,7 +809,8 @@
             users[idx].phone = phone;
             users[idx].email = email;
             users[idx].role = role;
-            users[idx].surucu_paneli = surucu_paneli;
+            users[idx].kullanici_paneli = kullanici_paneli;
+            users[idx].surucu_paneli = kullanici_paneli;
             users[idx].kullanici_adi = kullanici_adi;
             // Şifre: boş bırakılırsa eskisini koru (yanlışlıkla silinmesin)
             if (sifre !== '') users[idx].sifre = sifre;
@@ -821,7 +825,8 @@
             phone: phone,
             email: email,
             role: role,
-            surucu_paneli: surucu_paneli,
+            kullanici_paneli: kullanici_paneli,
+            surucu_paneli: kullanici_paneli,
             kullanici_adi: kullanici_adi,
             sifre: sifre,
             createdAt: new Date().toISOString()
