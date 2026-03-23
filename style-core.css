@@ -1629,6 +1629,7 @@ body.modal-open .user-panel-link {
     width: 100%;
     margin: 0 auto;
     background: var(--bg);
+    isolation: isolate;
     z-index: 10000;
     height: var(--app-footer-real-height, 34px) !important;
     min-height: var(--app-footer-real-height, 34px) !important;
@@ -1652,9 +1653,11 @@ body.modal-open .user-panel-link {
     left: 0;
     right: 0;
     bottom: 100%;
+    display: block;
     height: 0;
     opacity: 0;
     pointer-events: none;
+    z-index: 0;
 }
 
 /* Ana uygulama: footer üstü her zaman belirgin gri çizgi + glow (sadece modal açıkken değil) */
@@ -1746,6 +1749,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
 }
 
 #app-footer .footer-content {
+    position: relative;
+    z-index: 1;
     display: flex !important;
     align-items: center !important;
     height: 100% !important;
@@ -2741,13 +2746,14 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
     box-shadow: 0 -1px 0 rgba(255, 255, 255, 0.11) !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer::before {
-    height: 22px;
+    height: 28px;
     opacity: 1;
     background:
       radial-gradient(
-        130% 120% at 50% 100%,
-        rgba(var(--footer-glow-rgb), 0.32) 0%,
-        rgba(var(--footer-glow-rgb), 0.16) 38%,
+        120% 135% at 50% 100%,
+        rgba(var(--footer-glow-rgb), 0.58) 0%,
+        rgba(var(--footer-glow-rgb), 0.28) 34%,
+        rgba(var(--footer-glow-rgb), 0.10) 56%,
         rgba(var(--footer-glow-rgb), 0) 76%
       );
   }
