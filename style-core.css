@@ -1622,13 +1622,22 @@ body.modal-open .user-panel-link {
     visibility: visible !important;
 }
 
-/* Modal açıkken footer glow: tek opacity kaynağı (--footer-glow-opacity); gap bandı body.modal-open::after ile kapatılır */
+/* Modal açıkken footer: belirgin gri çizgi + güçlü kırmızı glow (gap maske yok — siyah şerit oluşturmaz) */
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #app-footer {
-    box-shadow: 0 -13px 26px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity)) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.38) !important;
+    box-shadow:
+        0 -1px 0 rgba(255, 255, 255, 0.12),
+        0 -18px 36px rgba(var(--footer-glow-rgb), 0.52) !important;
 }
 @media (max-width: 640px) {
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer {
     box-shadow: 0 -16px 28px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity)) !important;
+  }
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #app-footer {
+    border-top: 1px solid rgba(255, 255, 255, 0.42) !important;
+    box-shadow:
+        0 -1px 0 rgba(255, 255, 255, 0.14),
+        0 -20px 42px rgba(var(--footer-glow-rgb), 0.56) !important;
   }
 }
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay.active,
@@ -1636,6 +1645,17 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
     background: var(--bg) !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
+}
+
+/* Ana modallar: footer glow alt çerçeveye sızarsa alt iç gölge; mobil üst inset ile uyumlu */
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicle-modal .modal-container,
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #reports-modal .modal-container,
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicles-modal .modal-container {
+    box-shadow:
+        0 0 40px var(--shadow-modal),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05),
+        inset 0 0.5px 0 0 var(--modal-mobile-inner-top-highlight, rgba(255, 255, 255, 0.1)),
+        inset 0 -14px 24px -12px var(--modal-bg) !important;
 }
 
 #app-footer .footer-content {
@@ -2493,27 +2513,6 @@ body.modal-open .content-wrap::before {
     border-bottom-left-radius: 12px !important;
     border-bottom-right-radius: 12px !important;
   }
-}
-
-/* Modal açıkken footer–modal arası: tam gap, footer üstüne binme yok (gri çizgi + glow görünsün).
-   Üst %55 opak arka plan → kırmızı glow modal alt çerçevesine sızmasın; alt kısım gradient → ışık footer üstünde belirir. */
-body.modal-open::after {
-  content: '';
-  position: fixed;
-  left: 0;
-  right: 0;
-  width: 100%;
-  bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0));
-  height: var(--app-footer-gap);
-  background: linear-gradient(
-    to bottom,
-    var(--bg) 0%,
-    var(--bg) 55%,
-    rgba(8, 13, 22, 0.45) 82%,
-    transparent 100%
-  ) !important;
-  z-index: 10001;
-  pointer-events: none;
 }
 
 /* === NOKTA ATIÅžI: KÄ±rmÄ±zÄ± yan Ã§izgiler footer hizasÄ±nda Ã§ivili (sarkan/kÄ±sa kalma yok) === */
