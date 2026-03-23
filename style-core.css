@@ -1412,6 +1412,13 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
   text-align: center;
 }
 
+/* Dış çerçeve .modal-container’da: başlıkta üst border yok — çift katman / üst kırım önlenir */
+#vehicle-modal .modal-header,
+#reports-modal .modal-header,
+.tasitlar-modal-overlay .modal-header {
+  border-top: none !important;
+}
+
 /* SİSTEMDEKİ TÜM MODALLARIN BAŞLIK YÜKSEKLİĞİNİ 60PX'E KİLİTLEME */
 .modal-overlay .modal-header {
   position: relative !important; /* İçindeki absolute h2 ve X butonu için referans */
@@ -1657,23 +1664,47 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
     -webkit-backdrop-filter: none !important;
 }
 
-/* Kayıt / taşıt / rapor overlay: şeffaf modül CSS’ini ez — alt bölgede glow sızmasın */
+/* Kayıt / rapor / tüm taşıt modalları: şeffaf modül CSS’ini ez — footer ışığı sızmasın */
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicle-modal.modal-overlay,
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #reports-modal.modal-overlay,
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicles-modal.modal-overlay {
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicles-modal.modal-overlay,
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicle-detail-modal.modal-overlay,
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #dinamik-olay-modal.modal-overlay,
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #event-menu-modal.modal-overlay,
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicle-history-modal.modal-overlay,
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #ruhsat-yukleme-modal.modal-overlay {
     background: var(--bg) !important;
     background-color: var(--bg) !important;
 }
 
-/* Ana modallar: alt iç gölge güçlü — footer glow “cam altı” etkisini keser */
+/* Taşıt tarafı tasitlar.css’te de şeffaf !important var; modal-open’da kapat */
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .tasitlar-modal-overlay.modal-overlay.active,
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .tasitlar-modal-overlay.modal-overlay.open {
+    background: var(--bg) !important;
+    background-color: var(--bg) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+}
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .tasitlar-modal-overlay.modal-overlay.active::before,
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .tasitlar-modal-overlay.modal-overlay.open::before {
+    display: none !important;
+    content: none !important;
+}
+
+/* Ana modallar + taşıt detay / olay / menü / tarihçe / ruhsat: alt iç gölge güçlü — footer glow kesilsin */
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicle-modal .modal-container,
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #reports-modal .modal-container,
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicles-modal .modal-container {
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicles-modal .modal-container,
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicle-detail-modal .modal-container,
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #dinamik-olay-modal .modal-container,
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #event-menu-modal .modal-container,
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicle-history-modal .modal-container,
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #ruhsat-yukleme-modal .modal-container {
     box-shadow:
         0 0 40px var(--shadow-modal),
         inset 0 1px 0 rgba(255, 255, 255, 0.05),
         inset 0 0.5px 0 0 var(--modal-mobile-inner-top-highlight, rgba(255, 255, 255, 0.1)),
-        inset 0 -28px 40px -14px var(--modal-bg) !important;
+        inset 0 -40px 56px -16px var(--modal-bg) !important;
 }
 
 #app-footer .footer-content {
@@ -1850,9 +1881,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
     }
     #vehicle-modal.modal-overlay,
-    /* Raporlar içerik stilleri raporlar.css — burada yalnızca mobil footer/overlay hizası */
     #reports-modal.modal-overlay,
-    #vehicles-modal.modal-overlay {
+    .tasitlar-modal-overlay.modal-overlay {
         bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
     }
     .modal-overlay .modal-body {
@@ -1966,7 +1996,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     }
     #vehicle-modal.modal-overlay,
     #reports-modal.modal-overlay,
-    #vehicles-modal.modal-overlay {
+    .tasitlar-modal-overlay.modal-overlay {
         top: 0 !important;
         bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
     }
@@ -2002,16 +2032,18 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         overscroll-behavior-x: none !important;
     }
 
-    /* Kayıt / Taşıtlar / Raporlar: üst ve yan çerçeveler 0.5px mobilde görünmüyor, 1px'e güçlendir */
+    /* Kayıt / Raporlar / tüm taşıt modalları: mobilde yan+üst+alt krom çerçeve görünür */
     #vehicle-modal.modal-overlay .modal-container,
     #reports-modal.modal-overlay .modal-container,
-    #vehicles-modal.modal-overlay .modal-container {
+    .tasitlar-modal-overlay.modal-overlay .modal-container {
         border-top-width: 1px !important;
         border-top-color: rgba(255, 255, 255, 0.38) !important;
         border-left-width: 1px !important;
         border-right-width: 1px !important;
         border-left-color: rgba(255, 255, 255, 0.35) !important;
         border-right-color: rgba(255, 255, 255, 0.35) !important;
+        border-bottom-width: 1px !important;
+        border-bottom-color: rgba(255, 255, 255, 0.32) !important;
     }
     /* Modal header: üstten nefes alması için 12px, üst köşeler 10px (container ile uyumlu) */
     .modal-overlay .modal-header {
@@ -2055,8 +2087,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
             bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
         }
         #vehicle-modal.modal-overlay,
-        #reports-modal.modal-overlay,
-        #vehicles-modal.modal-overlay {
+        #reports-modal.modal-overlay {
             bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
         }
         .tasitlar-modal-overlay {
@@ -2517,17 +2548,22 @@ body.modal-open .content-wrap::before {
   gap: 8px;
 }
 
-/* === NOKTA ATIÅžI: Ana uygulama modallarÄ± alt Ã§erÃ§eve (KayÄ±t, TaÅŸÄ±t, Rapor) - overlay clip-path yok, alt Ã§erÃ§eve görünsün; boşluk 6px === */
+/* === NOKTA ATIÅžI: Ana + taşıt modalları alt çerçeve (768px) === */
 @media (max-width: 768px) {
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicle-modal.modal-overlay,
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #reports-modal.modal-overlay,
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicles-modal.modal-overlay {
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicles-modal.modal-overlay,
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicle-detail-modal.modal-overlay,
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #dinamik-olay-modal.modal-overlay,
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #event-menu-modal.modal-overlay,
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicle-history-modal.modal-overlay,
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #ruhsat-yukleme-modal.modal-overlay {
     bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicle-modal.modal-overlay .modal-container,
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #reports-modal.modal-overlay .modal-container,
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicles-modal.modal-overlay .modal-container {
-    border-bottom: 1px solid var(--border-medium) !important;
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .tasitlar-modal-overlay.modal-overlay .modal-container {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.32) !important;
     border-bottom-left-radius: 12px !important;
     border-bottom-right-radius: 12px !important;
   }
