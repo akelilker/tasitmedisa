@@ -30,21 +30,10 @@
     --modal-mobile-inner-top-highlight: rgba(var(--theme-color-rgb), 0.20);
 }
 
-/* Karartma: overlay ile aynı bitiş (footer+gap). Modal açıkken footer çizgi/glow: style-core .modal-open #app-footer */
+/* Çift katman / üst kırım: style-core tam opak overlay kullanır; ::before kapatıldı */
 #vehicle-modal.modal-overlay::before {
-    content: '';
-    position: absolute;
-    top: max(12px, env(safe-area-inset-top));
-    left: 50%;
-    transform: translateX(-50%);
-    width: 100%;
-    max-width: 500px;
-    height: calc(100vh - max(12px, env(safe-area-inset-top)) - var(--app-footer-real-height) - var(--app-footer-gap) - env(safe-area-inset-bottom, 0));
-    height: calc(100dvh - max(12px, env(safe-area-inset-top)) - var(--app-footer-real-height) - var(--app-footer-gap) - env(safe-area-inset-bottom, 0));
-    background: rgba(0, 0, 0, 0.85);
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    z-index: -1;
+    display: none !important;
+    content: none !important;
 }
 
 /* #vehicle-modal container: ortak kurallar style-core.css'te; sadece sayfa özel override'lar burada */
@@ -70,7 +59,8 @@
     flex-shrink: 0;
     position: relative;
     border-bottom: none !important;
-    border-top: 1px solid rgba(255, 255, 255, 0.35);
+    /* Üst çizgi container çerçevesinde (style-core); çift hat önlenir */
+    border-top: none !important;
     border-top-left-radius: var(--modal-radius, 10px);
     border-top-right-radius: var(--modal-radius, 10px);
     margin-top: 0;
