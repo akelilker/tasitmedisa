@@ -4388,3 +4388,10 @@
     transform: translateX(-30px);
   }
 }
+
+/* TAŞITLAR listesi (#vehicles-modal): masaüstünde modal–footer dikey boşluk 3px azaltılır; yalnız bu modal, mobil/tablet aynı */
+@media (min-width: 769px) {
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicles-modal.modal-overlay {
+    bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0) - 3px) !important;
+  }
+}
