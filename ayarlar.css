@@ -1432,12 +1432,6 @@ input.settings-form-input:-moz-autofill,
         font-size: 10px;
         box-sizing: border-box;
     }
-    #branch-form-modal .settings-btn-delete,
-    #user-form-modal .settings-btn-delete {
-        height: 30px !important;
-        font-size: 11px !important;
-        border-radius: 8px !important;
-    }
 }
 
 /* Masaüstü: Şube/Kullanıcı form – Kaydet/Vazgeç/Sil aynı satırda, yatayda ortada */
