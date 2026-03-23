@@ -269,9 +269,48 @@
      */
     function mapUiRoleToRol(role) {
       if (role === 'admin') return 'genel_yonetici';
-      if (role === 'driver') return 'kullanici';
-      if (role === 'sales') return 'kullanici';
+      if (role === 'genel_yonetici') return 'genel_yonetici';
+      if (role === 'yonetici' || role === 'sube_yonetici') return 'sube_yonetici';
+      if (role === 'driver' || role === 'sales' || role === 'surucu') return 'kullanici';
+      if (role === 'yonetici_kullanici') return 'sube_yonetici';
       return role || 'kullanici';
+    }
+
+    function getRoleConfigFromSelection(role) {
+      const selectedRole = role || 'kullanici';
+      if (selectedRole === 'yonetici_kullanici') {
+        return { role: 'sube_yonetici', kullanici_paneli: true };
+      }
+      if (selectedRole === 'sube_yonetici') {
+        return { role: 'sube_yonetici', kullanici_paneli: false };
+      }
+      if (selectedRole === 'genel_yonetici') {
+        return { role: 'genel_yonetici', kullanici_paneli: false };
+      }
+      return { role: 'kullanici', kullanici_paneli: true };
+    }
+
+    function getUiRoleFromUser(user) {
+      const role = mapUiRoleToRol(user && (user.role || user.rol || user.tip));
+      const kullaniciPaneli = role === 'kullanici'
+        ? true
+        : ((user && user.kullanici_paneli === true) || (user && user.surucu_paneli === true));
+      if (role === 'sube_yonetici' && kullaniciPaneli) return 'yonetici_kullanici';
+      return role;
+    }
+
+    function getUserRoleLabel(user) {
+      const roleLabels = {
+        genel_yonetici: 'Genel Yönetici',
+        sube_yonetici: 'Yönetici',
+        yonetici_kullanici: 'Yönetici+Kullanıcı',
+        kullanici: 'Kullanıcı',
+        admin: 'Genel Yönetici',
+        sales: 'Kullanıcı',
+        driver: 'Kullanıcı'
+      };
+      const uiRole = getUiRoleFromUser(user || {});
+      return roleLabels[uiRole] || roleLabels[mapUiRoleToRol(uiRole)] || uiRole || 'Kullanıcı';
     }
 
     function syncUsersToAppData(arr) {
@@ -282,10 +321,16 @@
         const zimmetliAraclar = vehicles
           .filter(v => (v.assignedUserId != null && String(v.assignedUserId) === String(u.id)))
           .map(v => (typeof v.id === 'number' ? v.id : Number(v.id)) || v.id);
-        const rol = mapUiRoleToRol(u.role);
-        const branchIds = Array.isArray(u.branchIds) && u.branchIds.length
-          ? u.branchIds.map(String).filter(Boolean)
-          : (u.branchId ? [String(u.branchId)] : []);
+        const roleConfig = getRoleConfigFromSelection(getUiRoleFromUser(u));
+        const rol = roleConfig.role;
+        const primaryBranchId = u.branchId != null && u.branchId !== ''
+          ? String(u.branchId)
+          : (
+              Array.isArray(u.branchIds) && u.branchIds.length
+                ? String(u.branchIds[0])
+                : ''
+            );
+        const branchIds = primaryBranchId ? [primaryBranchId] : [];
         const subeIds = branchIds.map(function (id) {
           return id !== '' && !isNaN(Number(id)) ? Number(id) : id;
         });
@@ -293,9 +338,7 @@
         const sube_id = firstSube !== undefined && firstSube !== ''
           ? (!isNaN(Number(firstSube)) ? Number(firstSube) : firstSube)
           : undefined;
-        const kullaniciPaneli = rol === 'kullanici'
-          ? true
-          : ((u.kullanici_paneli === true) || (u.surucu_paneli === true));
+        const kullaniciPaneli = roleConfig.kullanici_paneli;
         return {
           id: u.id,
           isim: u.name || u.isim || '',
@@ -467,7 +510,6 @@
   
       // Şube dropdown'ını doldur
       populateBranchDropdown();
-      populateBranchMulti([]);
       // Atanacak Taşıt dropdown'ını kapat, arama temizle ve listeyi doldur
       closeUserVehiclesDropdown();
       const searchInput = document.getElementById('user-vehicles-search');
@@ -561,16 +603,12 @@
           if (idInput) idInput.value = user.id;
           if (nameInput) nameInput.value = user.name;
           const currentBranchSelect = $('#user-branch', modal);
-          if (currentBranchSelect) currentBranchSelect.value = user.branchId || '';
+          if (currentBranchSelect) currentBranchSelect.value = user.branchId || ((user.branchIds && user.branchIds.length) ? user.branchIds[0] : '');
           if (phoneInput) phoneInput.value = user.phone || '';
           if (emailInput) emailInput.value = user.email || '';
-          if (roleSelect) roleSelect.value = user.role || 'kullanici';
+          if (roleSelect) roleSelect.value = getUiRoleFromUser(user);
           if (usernameInput) usernameInput.value = user.kullanici_adi || '';
           if (passwordInput) passwordInput.value = user.sifre || '';
-          const bidList = (user.branchIds && user.branchIds.length) ? user.branchIds : (user.branchId ? [user.branchId] : []);
-          populateBranchMulti(bidList);
-          const spEl = document.getElementById('user-kullanici-paneli');
-          if (spEl) spEl.checked = !!(user.kullanici_paneli === true || user.surucu_paneli === true);
           const vehiclesContainer = document.getElementById('user-vehicles-container');
           if (vehiclesContainer) {
             const vehicles = readVehicles();
@@ -587,8 +625,6 @@
       } else {
         // Yeni EKLEME MODU
         if (title) title.textContent = 'Yeni Kullanıcı Ekle';
-        const spNew = document.getElementById('user-kullanici-paneli');
-        if (spNew) spNew.checked = false;
         // Sil butonunu gizle
         if (deleteBtn) deleteBtn.style.display = 'none';
       }
@@ -639,49 +675,13 @@
       });
     }
 
-    function populateBranchMulti(selectedIds) {
-      const container = document.getElementById('user-branches-multi');
-      if (!container) return;
-      const branches = readBranches();
-      const sel = (selectedIds || []).map(function (x) { return String(x); });
-      container.innerHTML = '';
-      branches.forEach(function (branch) {
-        const bid = String(branch.id);
-        const label = document.createElement('label');
-        label.className = 'user-vehicle-row';
-        label.style.userSelect = 'none';
-        const cb = document.createElement('input');
-        cb.type = 'checkbox';
-        cb.value = bid;
-        cb.name = 'user-branch-multi';
-        cb.checked = sel.indexOf(bid) !== -1;
-        const span = document.createElement('span');
-        span.className = 'user-vehicle-label';
-        span.textContent = (branch.name || bid) + (branch.city ? ' (' + branch.city + ')' : '');
-        label.appendChild(cb);
-        label.appendChild(span);
-        container.appendChild(label);
-      });
-    }
-
     function syncUserRoleBranchUI() {
-      const roleSelect = document.getElementById('user-role');
       const singleWrap = document.getElementById('user-branch-single-wrap');
-      const multiWrap = document.getElementById('user-branches-multi-wrap');
-      const surucuWrap = document.getElementById('user-kullanici-paneli-wrap');
       const branchSelect = document.getElementById('user-branch');
-      const r = roleSelect ? roleSelect.value : 'kullanici';
-      if (r === 'kullanici') {
-        if (singleWrap) singleWrap.style.display = '';
-        if (multiWrap) multiWrap.style.display = 'none';
-        if (surucuWrap) surucuWrap.style.display = 'none';
-        if (branchSelect) branchSelect.required = true;
-      } else {
-        if (singleWrap) singleWrap.style.display = 'none';
-        if (multiWrap) multiWrap.style.display = '';
-        if (surucuWrap) surucuWrap.style.display = '';
-        if (branchSelect) branchSelect.required = false;
-      }
+      const roleSelect = document.getElementById('user-role');
+      const selectedRole = roleSelect ? roleSelect.value : 'kullanici';
+      if (singleWrap) singleWrap.style.display = '';
+      if (branchSelect) branchSelect.required = selectedRole !== 'genel_yonetici';
     }
     window.syncUserRoleBranchUI = syncUserRoleBranchUI;
 
@@ -757,22 +757,16 @@
         const name = formatUserFullName(nameRaw);
         const phone = phoneInput ? phoneInput.value.trim() : '';
         const email = emailInput ? emailInput.value.trim() : '';
-        const role = roleSelect ? roleSelect.value : 'kullanici';
-        const kullaniciPaneliEl = document.getElementById('user-kullanici-paneli');
-        const kullanici_paneli = role === 'kullanici' ? true : !!(kullaniciPaneliEl && kullaniciPaneliEl.checked);
-        let branchIds = [];
-        let branchId = '';
-        if (role === 'kullanici') {
-          branchId = branchSelect ? branchSelect.value : '';
-          if (!branchId) {
-            alert('Şube Seçiniz.');
-            if (branchSelect) branchSelect.focus();
-            return;
-          }
-          branchIds = [branchId];
-        } else {
-          branchIds = Array.from(document.querySelectorAll('input[name="user-branch-multi"]:checked')).map(function (cb) { return cb.value; });
-          branchId = branchIds[0] || '';
+        const selectedRole = roleSelect ? roleSelect.value : 'kullanici';
+        const roleConfig = getRoleConfigFromSelection(selectedRole);
+        const role = roleConfig.role;
+        const kullanici_paneli = roleConfig.kullanici_paneli;
+        const branchId = branchSelect ? branchSelect.value : '';
+        const branchIds = branchId ? [branchId] : [];
+        if (role !== 'genel_yonetici' && !branchId) {
+          alert('Şube Seçiniz.');
+          if (branchSelect) branchSelect.focus();
+          return;
         }
         const kullanici_adi = usernameInput ? usernameInput.value.trim() : '';
         const sifre = passwordInput ? passwordInput.value.trim() : '';
@@ -792,7 +786,7 @@
         const hasAssignedVehicles = selectedVehicleIds.length > 0;
   
         // Şoför portal girişi: Taşıt atanmışsa Kullanıcı Adı ve Şifre zorunlu
-        if (hasAssignedVehicles && (!kullanici_adi || !sifre)) {
+        if (kullanici_paneli && hasAssignedVehicles && (!kullanici_adi || !sifre)) {
           alert('Portal girişi için Taşıt atadığınız Kullanıcıların "Kullanıcı Adı (portal girişi)" ve "Şifre (portal girişi)" alanlarını doldurmanız gerekir. Kullanıcı bu bilgilerle driver sayfasında giriş yapacaktır.');
           if (usernameInput) usernameInput.focus();
           return;
@@ -923,22 +917,10 @@
       }
 
       const rows = users.map(user => {
-        const bidList = (user.branchIds && user.branchIds.length) ? user.branchIds : (user.branchId ? [user.branchId] : []);
-        const branchNames = bidList.map(function (bid) {
-          const b = branches.find(x => String(x.id) === String(bid));
-          return b ? b.name : '';
-        }).filter(Boolean);
-        const branchName = branchNames.length ? branchNames.join(', ') : '-';
-
-        const roleLabels = {
-          genel_yonetici: 'Genel Yönetici',
-          sube_yonetici: 'Yönetici',
-          kullanici: 'Kullanıcı',
-          admin: 'Genel Yönetici',
-          sales: 'Kullanıcı',
-          driver: 'Kullanıcı'
-        };
-        const roleLabel = roleLabels[user.role] || user.role || 'Kullanıcı';
+        const primaryBranchId = user.branchId || ((user.branchIds && user.branchIds.length) ? user.branchIds[0] : '');
+        const branch = branches.find(x => String(x.id) === String(primaryBranchId));
+        const branchName = branch ? branch.name : '-';
+        const roleLabel = getUserRoleLabel(user);
 
         return `
           <div class="settings-card" onclick="editUser('${user.id}')" style="cursor:pointer;">

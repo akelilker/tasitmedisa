@@ -2113,12 +2113,15 @@
         const roleLabels = {
             genel_yonetici: 'Genel Yönetici',
             sube_yonetici: 'Yönetici',
+            yonetici_kullanici: 'Yönetici+Kullanıcı',
             kullanici: 'Kullanıcı',
             admin: 'Genel Yönetici',
             sales: 'Satış Temsilcisi',
             driver: 'Kullanıcı'
         };
-        const roleLabel = toTitleCase(roleLabels[user.role] || user.role || 'Kullanıcı');
+        const isManagerWithPanel = user.role === 'sube_yonetici' && (user.kullanici_paneli === true || user.surucu_paneli === true);
+        const displayRole = isManagerWithPanel ? 'yonetici_kullanici' : user.role;
+        const roleLabel = toTitleCase(roleLabels[displayRole] || displayRole || 'Kullanıcı');
         
         const bidList = (user.branchIds && user.branchIds.length) ? user.branchIds : (user.branchId ? [user.branchId] : []);
         const branchNames = bidList.map(function (bid) {
