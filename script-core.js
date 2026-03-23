@@ -508,11 +508,11 @@ document.addEventListener('DOMContentLoaded', () => {
 (function() {
   var TASITLAR_JS = 'tasitlar.js?v=20260321.2';
   var TASITLAR_CSS = 'tasitlar.css?v=20260323.5';
-  var RAPORLAR_JS = 'raporlar.js?v=20260320.4';
+  var RAPORLAR_JS = 'raporlar.js?v=20260324.1';
   var RAPORLAR_CSS = 'raporlar.css?v=20260323.4';
   var KAYIT_JS = 'kayit.js?v=20260323.1';
   var KAYIT_CSS = 'kayit.css?v=20260323.4';
-  var AYARLAR_JS = 'ayarlar.js?v=20260319';
+  var AYARLAR_JS = 'ayarlar.js?v=20260324.1';
   var AYARLAR_CSS = 'ayarlar.css?v=20260323.8';
 
   window.openVehiclesView = function() {

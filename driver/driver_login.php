@@ -104,18 +104,25 @@ foreach ($data['tasitlar'] ?? [] as $t) {
     }
 }
 
-$surucuPaneli = array_key_exists('surucu_paneli', $user)
-    ? (bool)$user['surucu_paneli']
-    : ($rol === 'kullanici');
+$kullaniciPaneli = array_key_exists('kullanici_paneli', $user)
+    ? (bool)$user['kullanici_paneli']
+    : (
+        array_key_exists('surucu_paneli', $user)
+            ? (bool)$user['surucu_paneli']
+            : ($rol === 'kullanici')
+    );
 
 $driverDashboard = ($rol === 'kullanici')
-    || (($rol === 'sube_yonetici' || $rol === 'genel_yonetici') && $surucuPaneli && $hasVehicle);
+    || (($rol === 'sube_yonetici' || $rol === 'genel_yonetici') && $kullaniciPaneli && $hasVehicle);
 
-// Token oluştur (basit JWT benzeri)
-$token = base64_encode(json_encode([
+// İmzalı oturum token'ı oluştur.
+$token = medisaCreateSignedToken([
     'user_id' => $user['id'],
-    'exp' => time() + (30 * 24 * 60 * 60) // 30 gün
-]));
+    'rol' => $rol,
+    'sube_ids' => array_values(array_map('strval', $subeIds)),
+    'kullanici_paneli' => $kullaniciPaneli,
+    'driver_dashboard' => $driverDashboard
+], 30 * 24 * 60 * 60);
 
 // Son giriş zamanını güncelle
 foreach ($data['users'] as &$u) {
@@ -136,7 +143,8 @@ echo json_encode([
     'driverDashboard' => $driverDashboard,
     'rol' => $rol,
     'sube_ids' => $subeIds,
-    'surucu_paneli' => $surucuPaneli,
+    'kullanici_paneli' => $kullaniciPaneli,
+    'surucu_paneli' => $kullaniciPaneli,
     'user' => [
         'id' => $user['id'],
         'isim' => $user['isim'] ?? $user['name'] ?? ''

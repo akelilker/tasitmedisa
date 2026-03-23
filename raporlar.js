@@ -11,6 +11,10 @@
     function toTitleCase(str) { return (typeof window.toTitleCase === 'function' ? window.toTitleCase(str) : str); }
     function formatPlaka(str) { return (typeof window.formatPlaka === 'function' ? window.formatPlaka(str) : (str == null ? '-' : String(str))); }
     function formatAdSoyad(str) { return (typeof window.formatAdSoyad === 'function' ? window.formatAdSoyad(str) : str); }
+    function getUserBranchIds(user) {
+        if (!user) return [];
+        return (user.branchIds && user.branchIds.length) ? user.branchIds : (user.branchId ? [user.branchId] : []);
+    }
 
     // --- STOK Görünümü State ---
     let stokCurrentBranchId = null; // null = grid görünümü, 'all' = tümü listesi, 'id' = şube listesi
@@ -1873,7 +1877,9 @@
         
         // Şube kartları
         branches.forEach(branch => {
-            const branchUsers = users.filter(u => u.branchId === branch.id);
+            const branchUsers = users.filter(function(u) {
+                return getUserBranchIds(u).some(function(bid) { return String(bid) === String(branch.id); });
+            });
             const count = branchUsers.length;
             const isActive = kullaniciCurrentBranchId === branch.id;
             
@@ -1929,7 +1935,7 @@
                 const userName = (u.name || '').toLowerCase();
                 const userPhone = (u.phone || '').toLowerCase();
                 const userEmail = (u.email || '').toLowerCase();
-                const assignedVehicle = vehicles.find(v => v.assignedUserId === u.id);
+                const assignedVehicle = vehicles.find(v => String(v.assignedUserId || '') === String(u.id));
                 const vehiclePlate = assignedVehicle ? (assignedVehicle.plate || '').toLowerCase() : '';
                 const vehicleBrand = assignedVehicle ? (assignedVehicle.brandModel || '').toLowerCase() : '';
                 
@@ -1976,7 +1982,7 @@
         `;
         
         users.forEach(u => {
-            const assignedVehicle = vehicles.find(v => v.assignedUserId === u.id);
+            const assignedVehicle = vehicles.find(v => String(v.assignedUserId || '') === String(u.id));
             const vehiclePlate = formatPlaka(assignedVehicle ? (assignedVehicle.plate || '-') : '-');
             const vehicleBrand = toTitleCase(assignedVehicle ? (assignedVehicle.brandModel || '-') : '-');
             
@@ -2080,7 +2086,7 @@
         if (!listContainer) return;
         
         // Kullanıcıya atanmış tüm taşıtları bul
-        const assignedVehicles = vehicles.filter(v => v.assignedUserId === userId);
+        const assignedVehicles = vehicles.filter(v => String(v.assignedUserId || '') === String(userId));
         
         // Kullanıcıya atanmış taşıtların events'lerini topla
         const userEvents = [];
