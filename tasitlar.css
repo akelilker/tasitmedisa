@@ -3693,10 +3693,23 @@
     padding-right: 36px !important;
   }
 
-  .olay-ekle-modal .modal-body .form-input,
+  /* Tarih (type=date) hariç: aksi halde aynı özgüllükte .form-input 17px, .olay-tarih-input 11px’i ezer; gg.aa.yyyy taşar */
+  .olay-ekle-modal .modal-body .form-input:not([type="date"]),
   .olay-ekle-modal .modal-body select,
   .olay-ekle-modal .modal-body textarea {
     font-size: 17px !important; /* 16px + 1 punto */
+  }
+  #dinamik-olay-modal .modal-body input[type="date"].form-input,
+  #dinamik-olay-modal .modal-body .olay-tarih-input {
+    font-size: 11px !important;
+  }
+  #dinamik-olay-modal .modal-body .date-placeholder {
+    font-size: 11px !important;
+    max-width: calc(100% - 36px) !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+    text-overflow: clip !important;
+    white-space: nowrap !important;
   }
   #dinamik-olay-modal #km-guncelle-input {
     min-height: 33px !important;
