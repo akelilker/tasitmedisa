@@ -2487,7 +2487,7 @@ body.modal-open .content-wrap::before {
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicle-modal.modal-overlay,
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #reports-modal.modal-overlay,
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicles-modal.modal-overlay {
-    bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
+    bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + 4px + env(safe-area-inset-bottom, 0)) !important;
   }
 
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicle-modal.modal-overlay .modal-container,
@@ -2501,7 +2501,7 @@ body.modal-open .content-wrap::before {
       inset 0 1px 0 rgba(255, 255, 255, 0.04),
       inset 0 0.5px 0 0 rgba(255, 255, 255, 0.08) !important;
   }
-}
+
 
 
 /* === NOKTA ATIÅžI: KÄ±rmÄ±zÄ± yan Ã§izgiler footer hizasÄ±nda Ã§ivili (sarkan/kÄ±sa kalma yok) === */
