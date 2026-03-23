@@ -3436,9 +3436,9 @@
 
   .tasitlar-modal-overlay .modal-container {
     isolation: isolate !important;
+    margin-top: 0 !important;
     background: var(--modal-bg) !important;
     background-color: var(--modal-bg) !important;
-    border-bottom: 1px solid var(--border-medium) !important;
     overflow: hidden !important;
     overflow-x: hidden !important; /* Yatay kayma engelle */
     touch-action: pan-y !important;
@@ -4363,6 +4363,7 @@
   }
   /* Tüm taşıt modalları: container overlay'i doldursun (TAŞITLAR listesiyle aynı yapı) */
   .tasitlar-modal-overlay .modal-container {
+    margin-top: 0 !important;
     height: 100% !important;
     max-height: 100% !important;
   }
