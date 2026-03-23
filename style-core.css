@@ -2714,3 +2714,20 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
     margin-top: -32px !important;
   }
 }
+
+/* Masaüstü: footer yanlarından taşan kırmızı glow (ışın) — yan border kaldır, gölgeyi yukarı sıkıştır (negatif spread) */
+@media (min-width: 769px) {
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer {
+    border-left: none !important;
+    border-right: none !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.36) !important;
+    box-shadow:
+      0 -1px 0 rgba(255, 255, 255, 0.11),
+      0 -6px 14px -5px rgba(var(--footer-glow-rgb), 0.38) !important;
+  }
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #app-footer {
+    box-shadow:
+      0 -1px 0 rgba(255, 255, 255, 0.11),
+      0 -6px 14px -5px rgba(var(--footer-glow-rgb), 0.38) !important;
+  }
+}
