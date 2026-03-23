@@ -5,7 +5,7 @@
 /* Overlay konumu/style-core .modal-overlay (6px boşluk, z-index, isolation) kullanılır */
 #vehicle-modal.modal-overlay {
     display: none;
-    background: transparent;
+    background: var(--bg);
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;

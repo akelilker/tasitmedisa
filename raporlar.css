@@ -14,7 +14,7 @@ RAPORLAR MODAL CSS - FINAL (PWA FIX & DESKTOP 52PX)
 --modal-mobile-header-top-border: rgba(255, 255, 255, 0.18);
 --modal-mobile-inner-top-highlight: rgba(var(--theme-color-rgb), 0.20);
 display: none !important;
-background: transparent;
+background: var(--bg);
 flex-direction: column;
 justify-content: flex-start;
 align-items: center;

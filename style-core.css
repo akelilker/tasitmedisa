@@ -1328,8 +1328,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   z-index: 10020 !important; /* Footer (10000) üstünde kalsın */
   isolation: isolate !important; /* Işık sızmasını engeller */
   display: none;
-  background: var(--shadow-overlay);
-  backdrop-filter: blur(5px);
+  background: var(--bg);
+  backdrop-filter: none;
   justify-content: center;
   align-items: center;
   padding: 20px;
