@@ -219,20 +219,463 @@ function saveData($data) {
     return true;
 }
 
-/** Bearer token doğrula. Geçerliyse decode edilmiş token, değilse null döner. */
-function validateToken() {
-    $headers = getallheaders();
+function medisaBase64UrlEncode($input) {
+    return rtrim(strtr(base64_encode($input), '+/', '-_'), '=');
+}
+
+function medisaBase64UrlDecode($input) {
+    $padding = strlen($input) % 4;
+    if ($padding > 0) {
+        $input .= str_repeat('=', 4 - $padding);
+    }
+    return base64_decode(strtr($input, '-_', '+/'));
+}
+
+function medisaGetTokenSecretFilePath() {
+    return getDataDirPath() . '/.medisa_token_secret';
+}
+
+function medisaGetTokenSecret() {
+    $envSecret = getenv('MEDISA_TOKEN_SECRET');
+    if ($envSecret !== false && trim((string)$envSecret) !== '') {
+        return trim((string)$envSecret);
+    }
+
+    $secretPath = medisaGetTokenSecretFilePath();
+    if (file_exists($secretPath)) {
+        $secret = trim((string)file_get_contents($secretPath));
+        if ($secret !== '') {
+            return $secret;
+        }
+    }
+
+    $dir = getDataDirPath();
+    if (!is_dir($dir)) {
+        @mkdir($dir, 0755, true);
+    }
+
+    $secret = bin2hex(random_bytes(32));
+    @file_put_contents($secretPath, $secret, LOCK_EX);
+    @chmod($secretPath, 0600);
+    return $secret;
+}
+
+function medisaReadAuthorizationHeader() {
+    $headers = function_exists('getallheaders') ? getallheaders() : [];
     if (!is_array($headers)) {
         $headers = [];
     }
-    $authHeader = $headers['Authorization'] ?? '';
+
+    foreach ($headers as $key => $value) {
+        if (strcasecmp((string)$key, 'Authorization') === 0) {
+            return trim((string)$value);
+        }
+    }
+
+    if (!empty($_SERVER['HTTP_AUTHORIZATION'])) {
+        return trim((string)$_SERVER['HTTP_AUTHORIZATION']);
+    }
+
+    if (!empty($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) {
+        return trim((string)$_SERVER['REDIRECT_HTTP_AUTHORIZATION']);
+    }
+
+    return '';
+}
+
+function medisaNormalizeRoleValue($value) {
+    $role = trim((string)$value);
+    if ($role === '' || $role === 'surucu' || $role === 'driver' || $role === 'sales') {
+        return 'kullanici';
+    }
+    if ($role === 'admin') {
+        return 'genel_yonetici';
+    }
+    if ($role === 'yonetici') {
+        return 'sube_yonetici';
+    }
+    return $role;
+}
+
+function medisaResolveUserRole($user) {
+    if (!is_array($user)) {
+        return 'kullanici';
+    }
+
+    $role = medisaNormalizeRoleValue($user['rol'] ?? $user['role'] ?? '');
+    if ($role !== 'kullanici' || !empty($user['rol']) || !empty($user['role'])) {
+        return $role;
+    }
+
+    if (isset($user['tip'])) {
+        return medisaNormalizeRoleValue($user['tip']);
+    }
+
+    return 'kullanici';
+}
+
+function medisaExtractUserBranchIds($user) {
+    if (!is_array($user)) {
+        return [];
+    }
+
+    $branchIds = [];
+    if (!empty($user['branchIds']) && is_array($user['branchIds'])) {
+        $branchIds = $user['branchIds'];
+    } elseif (!empty($user['sube_ids']) && is_array($user['sube_ids'])) {
+        $branchIds = $user['sube_ids'];
+    } elseif (array_key_exists('branchId', $user) && $user['branchId'] !== '' && $user['branchId'] !== null) {
+        $branchIds = [$user['branchId']];
+    } elseif (array_key_exists('sube_id', $user) && $user['sube_id'] !== '' && $user['sube_id'] !== null) {
+        $branchIds = [$user['sube_id']];
+    }
+
+    $normalized = [];
+    foreach ($branchIds as $branchId) {
+        $value = trim((string)$branchId);
+        if ($value !== '') {
+            $normalized[$value] = $value;
+        }
+    }
+
+    return array_values($normalized);
+}
+
+function medisaResolvePanelFlag($user) {
+    $role = medisaResolveUserRole($user);
+    if (is_array($user) && array_key_exists('kullanici_paneli', $user)) {
+        return (bool)$user['kullanici_paneli'];
+    }
+    if (is_array($user) && array_key_exists('surucu_paneli', $user)) {
+        return (bool)$user['surucu_paneli'];
+    }
+    return $role === 'kullanici';
+}
+
+function medisaFindUserById($data, $userId) {
+    foreach (($data['users'] ?? []) as $user) {
+        if ((string)($user['id'] ?? '') === (string)$userId) {
+            return $user;
+        }
+    }
+    return null;
+}
+
+function medisaUserHasAssignedVehicle($data, $userId) {
+    foreach (($data['tasitlar'] ?? []) as $vehicle) {
+        if ((string)($vehicle['assignedUserId'] ?? '') === (string)$userId) {
+            return true;
+        }
+    }
+
+    $user = medisaFindUserById($data, $userId);
+    if ($user && !empty($user['zimmetli_araclar']) && is_array($user['zimmetli_araclar'])) {
+        return count($user['zimmetli_araclar']) > 0;
+    }
+
+    return false;
+}
+
+function medisaComputeDriverDashboard($user, $data) {
+    $role = medisaResolveUserRole($user);
+    $hasVehicle = medisaUserHasAssignedVehicle($data, $user['id'] ?? null);
+    $panelEnabled = medisaResolvePanelFlag($user);
+
+    if ($role === 'kullanici') {
+        return true;
+    }
+
+    return ($role === 'sube_yonetici' || $role === 'genel_yonetici') && $panelEnabled && $hasVehicle;
+}
+
+function medisaBuildPermissions($context) {
+    $role = $context['role'] ?? 'kullanici';
+    return [
+        'view_main_app' => $role === 'genel_yonetici' || $role === 'sube_yonetici',
+        'view_reports' => $role === 'genel_yonetici' || $role === 'sube_yonetici',
+        'manage_users' => $role === 'genel_yonetici' || $role === 'sube_yonetici',
+        'manage_branches' => $role === 'genel_yonetici',
+        'manage_data' => $role === 'genel_yonetici',
+        'manage_settings' => $role === 'genel_yonetici',
+    ];
+}
+
+function medisaBuildSessionPayload($context) {
+    $user = $context['user'] ?? null;
+    return [
+        'authenticated' => true,
+        'user' => [
+            'id' => $user['id'] ?? '',
+            'isim' => $user['isim'] ?? $user['name'] ?? '',
+            'role' => $context['role'] ?? 'kullanici',
+            'branch_ids' => $context['branch_ids'] ?? [],
+            'kullanici_paneli' => $context['kullanici_paneli'] ?? false,
+        ],
+        'role' => $context['role'] ?? 'kullanici',
+        'branch_ids' => $context['branch_ids'] ?? [],
+        'kullanici_paneli' => $context['kullanici_paneli'] ?? false,
+        'driver_dashboard' => $context['driver_dashboard'] ?? false,
+        'permissions' => medisaBuildPermissions($context),
+    ];
+}
+
+function medisaBuildAccessContext($data, $tokenData) {
+    if (!$tokenData || !isset($tokenData['user_id'])) {
+        return null;
+    }
+
+    $user = medisaFindUserById($data, $tokenData['user_id']);
+    if (!$user) {
+        return null;
+    }
+
+    $context = [
+        'user' => $user,
+        'user_id' => (string)($user['id'] ?? ''),
+        'role' => medisaResolveUserRole($user),
+        'branch_ids' => medisaExtractUserBranchIds($user),
+        'kullanici_paneli' => medisaResolvePanelFlag($user),
+    ];
+    $context['driver_dashboard'] = medisaComputeDriverDashboard($user, $data);
+    $context['permissions'] = medisaBuildPermissions($context);
+
+    return $context;
+}
+
+function medisaArrayHasId($ids, $needle) {
+    foreach ($ids as $id) {
+        if ((string)$id === (string)$needle) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function medisaUserBranchesWithinScope($user, $allowedBranchIds) {
+    $targetBranchIds = medisaExtractUserBranchIds($user);
+    if (count($targetBranchIds) === 0) {
+        return false;
+    }
+
+    foreach ($targetBranchIds as $branchId) {
+        if (!medisaArrayHasId($allowedBranchIds, $branchId)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+function medisaCanViewBranchRecord($branch, $context) {
+    $role = $context['role'] ?? 'kullanici';
+    if ($role === 'genel_yonetici') {
+        return true;
+    }
+
+    if (!is_array($branch) || !isset($branch['id'])) {
+        return false;
+    }
+
+    return medisaArrayHasId($context['branch_ids'] ?? [], $branch['id']);
+}
+
+function medisaCanViewVehicleRecord($vehicle, $context) {
+    $role = $context['role'] ?? 'kullanici';
+    if ($role === 'genel_yonetici') {
+        return true;
+    }
+
+    if (!is_array($vehicle)) {
+        return false;
+    }
+
+    if ($role === 'sube_yonetici') {
+        return medisaArrayHasId($context['branch_ids'] ?? [], $vehicle['branchId'] ?? '');
+    }
+
+    if ($role === 'kullanici') {
+        $userId = (string)($context['user_id'] ?? '');
+        if ($userId === '') {
+            return false;
+        }
+        if ((string)($vehicle['assignedUserId'] ?? '') === $userId) {
+            return true;
+        }
+
+        $zimmetliAraclar = $context['user']['zimmetli_araclar'] ?? [];
+        return is_array($zimmetliAraclar) && medisaArrayHasId($zimmetliAraclar, $vehicle['id'] ?? '');
+    }
+
+    return false;
+}
+
+function medisaCanManageVehicleRecord($vehicle, $context) {
+    $role = $context['role'] ?? 'kullanici';
+    if ($role === 'genel_yonetici') {
+        return true;
+    }
+
+    if ($role === 'sube_yonetici') {
+        return medisaArrayHasId($context['branch_ids'] ?? [], $vehicle['branchId'] ?? '');
+    }
+
+    return false;
+}
+
+function medisaCanManageUserRecord($user, $context) {
+    $role = $context['role'] ?? 'kullanici';
+    if ($role === 'genel_yonetici') {
+        return true;
+    }
+
+    if ($role !== 'sube_yonetici') {
+        return false;
+    }
+
+    $targetRole = medisaResolveUserRole($user);
+    if ($targetRole === 'genel_yonetici') {
+        return false;
+    }
+
+    return medisaUserBranchesWithinScope($user, $context['branch_ids'] ?? []);
+}
+
+function medisaCanViewUserRecord($user, $context) {
+    $role = $context['role'] ?? 'kullanici';
+    if ($role === 'genel_yonetici') {
+        return true;
+    }
+
+    if ($role === 'sube_yonetici') {
+        return medisaCanManageUserRecord($user, $context);
+    }
+
+    return (string)($user['id'] ?? '') === (string)($context['user_id'] ?? '');
+}
+
+function medisaFilterDataForContext($data, $context) {
+    $visibleVehicles = array_values(array_filter($data['tasitlar'] ?? [], function ($vehicle) use ($context) {
+        return medisaCanViewVehicleRecord($vehicle, $context);
+    }));
+
+    $visibleUsers = array_values(array_filter($data['users'] ?? [], function ($user) use ($context) {
+        return medisaCanViewUserRecord($user, $context);
+    }));
+
+    $visibleBranchIds = [];
+    foreach (($context['branch_ids'] ?? []) as $branchId) {
+        $visibleBranchIds[(string)$branchId] = (string)$branchId;
+    }
+    foreach ($visibleVehicles as $vehicle) {
+        $branchId = trim((string)($vehicle['branchId'] ?? ''));
+        if ($branchId !== '') {
+            $visibleBranchIds[$branchId] = $branchId;
+        }
+    }
+    foreach ($visibleUsers as $user) {
+        foreach (medisaExtractUserBranchIds($user) as $branchId) {
+            $visibleBranchIds[(string)$branchId] = (string)$branchId;
+        }
+    }
+
+    $visibleBranches = array_values(array_filter($data['branches'] ?? [], function ($branch) use ($visibleBranchIds, $context) {
+        if (($context['role'] ?? 'kullanici') === 'genel_yonetici') {
+            return true;
+        }
+        return medisaArrayHasId(array_values($visibleBranchIds), $branch['id'] ?? '');
+    }));
+
+    $visibleVehicleIds = [];
+    foreach ($visibleVehicles as $vehicle) {
+        $visibleVehicleIds[(string)($vehicle['id'] ?? '')] = true;
+    }
+
+    $visibleAylikKayitlar = array_values(array_filter($data['arac_aylik_hareketler'] ?? [], function ($record) use ($context, $visibleVehicleIds) {
+        $vehicleId = (string)($record['arac_id'] ?? '');
+        if (($context['role'] ?? 'kullanici') === 'kullanici') {
+            return (string)($record['surucu_id'] ?? '') === (string)($context['user_id'] ?? '') && isset($visibleVehicleIds[$vehicleId]);
+        }
+        return isset($visibleVehicleIds[$vehicleId]);
+    }));
+
+    $visibleAylikKayitIds = [];
+    foreach ($visibleAylikKayitlar as $record) {
+        $recordId = trim((string)($record['id'] ?? ''));
+        if ($recordId !== '') {
+            $visibleAylikKayitIds[$recordId] = true;
+        }
+    }
+
+    $visibleTalepler = array_values(array_filter($data['duzeltme_talepleri'] ?? [], function ($request) use ($context, $visibleAylikKayitIds) {
+        if (($context['role'] ?? 'kullanici') === 'kullanici') {
+            return (string)($request['surucu_id'] ?? '') === (string)($context['user_id'] ?? '');
+        }
+        return isset($visibleAylikKayitIds[(string)($request['kayit_id'] ?? '')]);
+    }));
+
+    return [
+        'tasitlar' => $visibleVehicles,
+        'kayitlar' => ($context['role'] ?? 'kullanici') === 'genel_yonetici' ? ($data['kayitlar'] ?? []) : [],
+        'branches' => $visibleBranches,
+        'users' => $visibleUsers,
+        'ayarlar' => $data['ayarlar'] ?? [
+            'sirketAdi' => 'Medisa',
+            'yetkiliKisi' => '',
+            'telefon' => '',
+            'eposta' => '',
+        ],
+        'sifreler' => ($context['role'] ?? 'kullanici') === 'genel_yonetici' ? ($data['sifreler'] ?? []) : [],
+        'arac_aylik_hareketler' => $visibleAylikKayitlar,
+        'duzeltme_talepleri' => $visibleTalepler,
+        'session' => medisaBuildSessionPayload($context),
+    ];
+}
+
+function medisaCreateSignedToken($payload, $ttlSeconds = 2592000) {
+    $now = time();
+    if (!isset($payload['iat'])) {
+        $payload['iat'] = $now;
+    }
+    if (!isset($payload['exp'])) {
+        $payload['exp'] = $now + $ttlSeconds;
+    }
+
+    $header = ['alg' => 'HS256', 'typ' => 'JWT'];
+    $encodedHeader = medisaBase64UrlEncode(json_encode($header, JSON_UNESCAPED_UNICODE));
+    $encodedPayload = medisaBase64UrlEncode(json_encode($payload, JSON_UNESCAPED_UNICODE));
+    $signature = hash_hmac('sha256', $encodedHeader . '.' . $encodedPayload, medisaGetTokenSecret(), true);
+    $encodedSignature = medisaBase64UrlEncode($signature);
+
+    return $encodedHeader . '.' . $encodedPayload . '.' . $encodedSignature;
+}
+
+/** Bearer token doğrula. Geçerliyse decode edilmiş token, değilse null döner. */
+function validateToken() {
+    $authHeader = medisaReadAuthorizationHeader();
     if (empty($authHeader)) {
         return null;
     }
-    $token = str_replace('Bearer ', '', $authHeader);
-    $decoded = json_decode(base64_decode($token), true);
-    if (!$decoded || !isset($decoded['exp']) || $decoded['exp'] < time()) {
+
+    $token = preg_replace('/^Bearer\s+/i', '', $authHeader);
+    if (!$token || strpos($token, '.') === false) {
         return null;
     }
+
+    $parts = explode('.', $token);
+    if (count($parts) !== 3) {
+        return null;
+    }
+
+    [$encodedHeader, $encodedPayload, $encodedSignature] = $parts;
+    $expectedSignature = medisaBase64UrlEncode(hash_hmac('sha256', $encodedHeader . '.' . $encodedPayload, medisaGetTokenSecret(), true));
+    if (!hash_equals($expectedSignature, $encodedSignature)) {
+        return null;
+    }
+
+    $decoded = json_decode((string)medisaBase64UrlDecode($encodedPayload), true);
+    if (!$decoded || !isset($decoded['exp']) || (int)$decoded['exp'] < time()) {
+        return null;
+    }
+
     return $decoded;
 }
