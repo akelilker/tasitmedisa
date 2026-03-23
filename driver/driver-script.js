@@ -339,7 +339,14 @@ const API_BASE = (function(){
                           }
                       }
                   }
-                  window.location.href = DRIVER_PAGE_BASE + 'dashboard.html';
+                  if (data.driverDashboard === false) {
+                      try {
+                          if (tokenToStore) sessionStorage.setItem('medisa_portal_token', tokenToStore);
+                      } catch (e) {}
+                      window.location.href = '../index.html';
+                  } else {
+                      window.location.href = DRIVER_PAGE_BASE + 'dashboard.html';
+                  }
               } else {
                   errorDiv.textContent = data.message || 'Giriş başarısız!';
                   errorDiv.classList.add('show');

@@ -1914,7 +1914,10 @@
         if (kullaniciCurrentBranchId === 'all') {
             // Tüm kullanıcılar
         } else if (kullaniciCurrentBranchId) {
-            users = users.filter(u => u.branchId === kullaniciCurrentBranchId);
+            users = users.filter(function (u) {
+                const ids = (u.branchIds && u.branchIds.length) ? u.branchIds : (u.branchId ? [u.branchId] : []);
+                return ids.some(function (bid) { return String(bid) === String(kullaniciCurrentBranchId); });
+            });
         } else {
             // Grid görünümünde, liste render edilmemeli
             return;
@@ -2100,17 +2103,23 @@
             return dateB - dateA;
         });
         
-        // Görev tanımı label
+        // Kullanıcı tipi etiketi
         const roleLabels = {
-            'admin': 'Yönetici',
-            'sales': 'Satış Temsilcisi',
-            'driver': 'Şoför'
+            genel_yonetici: 'Genel Yönetici',
+            sube_yonetici: 'Yönetici',
+            kullanici: 'Kullanıcı',
+            admin: 'Genel Yönetici',
+            sales: 'Satış Temsilcisi',
+            driver: 'Kullanıcı'
         };
         const roleLabel = toTitleCase(roleLabels[user.role] || user.role || 'Kullanıcı');
         
-        // Şube adı
-        const branch = user.branchId ? branches.find(b => b.id === user.branchId) : null;
-        const branchName = toTitleCase(branch ? branch.name : '-');
+        const bidList = (user.branchIds && user.branchIds.length) ? user.branchIds : (user.branchId ? [user.branchId] : []);
+        const branchNames = bidList.map(function (bid) {
+            const b = branches.find(function (x) { return String(x.id) === String(bid); });
+            return b ? b.name : '';
+        }).filter(Boolean);
+        const branchName = branchNames.length ? branchNames.map(function (n) { return toTitleCase(n); }).join(', ') : '-';
         
         let html = `
             <div class="kullanici-detail-header">
@@ -2141,7 +2150,7 @@
                             <span class="kullanici-detail-value">${escapeHtml(user.email || '-')}</span>
                         </div>
                         <div class="kullanici-detail-row">
-                            <span class="kullanici-detail-label">Görev Tanımı:</span>
+                            <span class="kullanici-detail-label">Kullanıcı Tipi:</span>
                             <span class="kullanici-detail-value">${escapeHtml(roleLabel)}</span>
                         </div>
                     </div>
