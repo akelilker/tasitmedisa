@@ -574,9 +574,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
 
 /* Masaüstü: çerçeve kalınlığı (ince) */
 @media (min-width: 769px) {
-    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-container::before {
-        bottom: 0;
-    }
+    /* .app-container::before bottom: 0 KULLANMA — yan kırmızı çizgiler footer köşelerinde birikir (ışın).
+       Ana uygulamada çerçeve taban kuralı (footer üstünde biter) geçerlidir. */
     .app-container {
         border-top-width: 0.5px;
     }
@@ -587,11 +586,11 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
     .hero {
         border-width: 1.2px;
     }
-    /* Ana uygulama ana ekran (desktop): footer daha ince, cerceve biraz daha belirgin, glow daha guclu */
+    /* Ana uygulama ana ekran (desktop): footer üst çizgi; yan border yok (köşe ışığı birikmez) */
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer {
         border-top: 1px solid rgba(200, 200, 200, 0.52);
-        border-left: 0.6px solid rgba(255, 255, 255, 0.24);
-        border-right: 0.6px solid rgba(255, 255, 255, 0.24);
+        border-left: none;
+        border-right: none;
     }
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer .footer-content {
         padding: 8px 12px;
@@ -2720,19 +2719,23 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
   }
 }
 
-/* Masaüstü: footer yanlarından taşan kırmızı glow (ışın) — yan border kaldır, gölgeyi yukarı sıkıştır (negatif spread) */
+/* Masaüstü: footer + ana gövde — kırmızı taşan ışık yok (gölge sadece nötr ince çizgi) */
 @media (min-width: 769px) {
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer {
     border-left: none !important;
     border-right: none !important;
     border-top: 1px solid rgba(255, 255, 255, 0.36) !important;
-    box-shadow:
-      0 -1px 0 rgba(255, 255, 255, 0.11),
-      0 -6px 14px -5px rgba(var(--footer-glow-rgb), 0.38) !important;
+    box-shadow: 0 -1px 0 rgba(255, 255, 255, 0.11) !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #app-footer {
-    box-shadow:
-      0 -1px 0 rgba(255, 255, 255, 0.11),
-      0 -6px 14px -5px rgba(var(--footer-glow-rgb), 0.38) !important;
+    box-shadow: 0 -1px 0 rgba(255, 255, 255, 0.11) !important;
+  }
+  /* İç kırmızı inset footer şeridine inmesin */
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-container::after {
+    bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0));
+  }
+  /* Omnidirectional kırmızımsı halo footer köşelerinde birikmez */
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap {
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.32);
   }
 }
