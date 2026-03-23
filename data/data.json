@@ -2493,7 +2493,12 @@
                       "telefon":  "05335413410",
                       "email":  "ilkerakel@hotmail.com",
                       "sube_id":  1769175251066,
+                      "sube_ids":  [
+                                         1769175251066
+                                     ],
+                      "rol":  "genel_yonetici",
                       "tip":  "admin",
+                      "surucu_paneli":  true,
                       "zimmetli_araclar":  [
                                                1770080529726,
                                                1737657600019,
@@ -2511,7 +2516,12 @@
                       "telefon":  "05067025500",
                       "email":  "",
                       "sube_id":  1769175251066,
+                      "sube_ids":  [
+                                         1769175251066
+                                     ],
+                      "rol":  "genel_yonetici",
                       "tip":  "admin",
+                      "surucu_paneli":  true,
                       "zimmetli_araclar":  [
                                                1737657600009
                                            ],
@@ -2527,7 +2537,12 @@
                       "telefon":  "05334422720",
                       "email":  "",
                       "sube_id":  1769175251066,
+                      "sube_ids":  [
+                                         1769175251066
+                                     ],
+                      "rol":  "genel_yonetici",
                       "tip":  "admin",
+                      "surucu_paneli":  true,
                       "zimmetli_araclar":  [
 
                                            ],

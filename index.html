@@ -577,11 +577,15 @@
                             <label class="form-label" for="user-name">Ad Soyad</label>
                             <input type="text" id="user-name" class="form-input" placeholder="Ad Soyad" required>
                         </div>
-                        <div class="form-section">
+                        <div class="form-section" id="user-branch-single-wrap">
                             <label class="form-label" for="user-branch">Şube</label>
                             <select id="user-branch" class="form-input" required>
                                 <option value="">Şube Seçin</option>
                             </select>
+                        </div>
+                        <div class="form-section" id="user-branches-multi-wrap" style="display:none;">
+                            <span class="form-label">Şubeler (opsiyonel)</span>
+                            <div id="user-branches-multi" class="user-branches-checkbox-list" role="group" aria-label="Şubeler"></div>
                         </div>
                         <div class="form-section">
                             <label class="form-label" for="user-phone">Telefon</label>
@@ -592,12 +596,16 @@
                             <input type="email" id="user-email" class="form-input" placeholder="E-posta">
                         </div>
                         <div class="form-section">
-                            <label class="form-label" for="user-role">Görev Tanımı</label>
+                            <label class="form-label" for="user-role">Kullanıcı Tipi</label>
                             <select id="user-role" class="form-input">
-                                <option value="admin">Yönetici</option>
-                                <option value="sales">Satış Temsilcisi</option>
-                                <option value="driver">Kullanıcı</option>
+                                <option value="kullanici" selected>Kullanıcı</option>
+                                <option value="sube_yonetici">Yönetici</option>
+                                <option value="genel_yonetici">Genel Yönetici</option>
                             </select>
+                        </div>
+                        <div class="form-section" id="user-surucu-paneli-wrap" style="display:none;">
+                            <label class="form-label user-surucu-paneli-label" for="user-surucu-paneli">Sürücü paneli</label>
+                            <label class="user-checkbox-inline"><input type="checkbox" id="user-surucu-paneli"> Ayrıca sürücü panelini kullanabilir (atanmış araç varsa)</label>
                         </div>
                         <div class="form-section">
                             <label class="form-label" for="user-username">Kullanıcı Adı (portal girişi)</label>

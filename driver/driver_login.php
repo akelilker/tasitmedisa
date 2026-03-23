@@ -74,6 +74,43 @@ if (!$passwordMatch) {
     exit;
 }
 
+$rol = isset($user['rol']) ? trim((string)$user['rol']) : '';
+if ($rol === '' && isset($user['tip'])) {
+    $t = trim((string)$user['tip']);
+    if ($t === 'admin') {
+        $rol = 'genel_yonetici';
+    } elseif ($t === 'yonetici' || $t === 'sube_yonetici') {
+        $rol = 'sube_yonetici';
+    } else {
+        $rol = 'kullanici';
+    }
+}
+if ($rol === '') {
+    $rol = 'kullanici';
+}
+
+$subeIds = [];
+if (!empty($user['sube_ids']) && is_array($user['sube_ids'])) {
+    $subeIds = array_values($user['sube_ids']);
+} elseif (isset($user['sube_id']) && $user['sube_id'] !== '' && $user['sube_id'] !== null) {
+    $subeIds = [$user['sube_id']];
+}
+
+$hasVehicle = false;
+foreach ($data['tasitlar'] ?? [] as $t) {
+    if (isset($t['assignedUserId']) && (string)$t['assignedUserId'] === (string)$user['id']) {
+        $hasVehicle = true;
+        break;
+    }
+}
+
+$surucuPaneli = array_key_exists('surucu_paneli', $user)
+    ? (bool)$user['surucu_paneli']
+    : ($rol === 'kullanici');
+
+$driverDashboard = ($rol === 'kullanici')
+    || (($rol === 'sube_yonetici' || $rol === 'genel_yonetici') && $surucuPaneli && $hasVehicle);
+
 // Token oluştur (basit JWT benzeri)
 $token = base64_encode(json_encode([
     'user_id' => $user['id'],
@@ -96,6 +133,10 @@ saveData($data);
 echo json_encode([
     'success' => true,
     'token' => $token,
+    'driverDashboard' => $driverDashboard,
+    'rol' => $rol,
+    'sube_ids' => $subeIds,
+    'surucu_paneli' => $surucuPaneli,
     'user' => [
         'id' => $user['id'],
         'isim' => $user['isim'] ?? $user['name'] ?? ''
