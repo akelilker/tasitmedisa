@@ -30,7 +30,7 @@
     --modal-mobile-inner-top-highlight: rgba(var(--theme-color-rgb), 0.20);
 }
 
-/* Karartma: overlay ile aynı bitiş (footer+gap). Footer–modal arası glow: style-core body.modal-open::after */
+/* Karartma: overlay ile aynı bitiş (footer+gap). Modal açıkken footer çizgi/glow: style-core .modal-open #app-footer */
 #vehicle-modal.modal-overlay::before {
     content: '';
     position: absolute;

@@ -423,7 +423,11 @@ window.updateFooterDim = function() {
   
   let isAnyModalOpen = false;
   getModalOverlays().forEach(modal => {
-    if (modal.classList.contains('active') || modal.style.display === 'flex') {
+    if (
+      modal.classList.contains('active') ||
+      modal.classList.contains('open') ||
+      modal.style.display === 'flex'
+    ) {
       isAnyModalOpen = true;
     }
   });
