@@ -1640,8 +1640,7 @@ body.modal-open .user-panel-link {
     border-left: 0.5px solid rgba(255, 255, 255, 0.20);
     border-right: 0.5px solid rgba(255, 255, 255, 0.20);
     box-shadow: 0 -10px 20px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity));
-    overflow-x: hidden;
-    overflow-y: visible;
+    overflow: visible;
     display: flex !important;
     align-items: center;
     justify-content: center;
@@ -2740,6 +2739,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
     border-left: none !important;
     border-right: none !important;
     border-top: 1px solid rgba(255, 255, 255, 0.36) !important;
+    overflow: visible !important;
     box-shadow: 0 -1px 0 rgba(255, 255, 255, 0.11) !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #app-footer {
