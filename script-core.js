@@ -507,11 +507,11 @@ document.addEventListener('DOMContentLoaded', () => {
 // tasitlar.js / raporlar.js / kayit.js / ayarlar.js yüklendiğinde kendi open* implementasyonlarını yazar.
 (function() {
   var TASITLAR_JS = 'tasitlar.js?v=20260321.2';
-  var TASITLAR_CSS = 'tasitlar.css?v=20260323.1';
+  var TASITLAR_CSS = 'tasitlar.css?v=20260323.2';
   var RAPORLAR_JS = 'raporlar.js?v=20260320.4';
-  var RAPORLAR_CSS = 'raporlar.css?v=20260323.1';
+  var RAPORLAR_CSS = 'raporlar.css?v=20260323.3';
   var KAYIT_JS = 'kayit.js?v=20260321.1';
-  var KAYIT_CSS = 'kayit.css?v=20260323.1';
+  var KAYIT_CSS = 'kayit.css?v=20260323.2';
   var AYARLAR_JS = 'ayarlar.js?v=20260319';
   var AYARLAR_CSS = 'ayarlar.css?v=20260322.1';
 
