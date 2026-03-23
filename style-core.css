@@ -1357,7 +1357,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   max-height: 90vh !important;
   box-sizing: border-box;
 }
-/* Modal iç kapsayıcı: overlay'e %100 uyum (vh kullanma, giyotin Ã¶nlenir) */
+/* Modal iç kapsayıcı: overlay'e %100 uyum (vh kullanma, giyotin önlenir) */
 .modal-overlay .modal-container {
   max-height: 100% !important;
   height: 100% !important;
@@ -1653,6 +1653,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #a
 }
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay.active,
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay.open {
+    isolation: auto !important; /* .modal-overlay isolate kilidini modal açıkken kaldırır; footer glow ile katman çakışması azalır */
     background: var(--bg) !important;
     background-color: var(--bg) !important;
     backdrop-filter: none !important;
