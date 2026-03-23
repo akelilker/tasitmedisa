@@ -248,16 +248,16 @@ body::-webkit-scrollbar,
   -webkit-text-stroke: 0.3px currentColor;
 }
 
-/* Vazgeç (Kırmızı) - Kontrast Artırıldı */
+/* Vazgeç (tema kırmızısı #d40000) */
 .universal-btn-cancel {
-  color: #ff4d4d !important; /* #d40000 karanlık kalıyordu, parlak kırmızı yapıldı */
-  border: 1px solid rgba(255, 77, 77, 0.6) !important;
+  color: #d40000 !important;
+  border: 1px solid rgba(var(--theme-color-rgb), 0.5) !important;
   font-weight: 500 !important;
 }
 .universal-btn-cancel:hover {
-  background: rgba(255, 77, 77, 0.15) !important;
+  background: rgba(var(--theme-color-rgb), 0.15) !important;
   font-weight: 700 !important;
-  border-color: #ff4d4d !important;
+  border-color: #d40000 !important;
   -webkit-text-stroke: 0.3px currentColor;
 }
 
@@ -347,6 +347,27 @@ body::-webkit-scrollbar,
   margin-top: 0 !important;
   width: 100% !important;
   max-width: none !important;
+}
+
+/* Şube/Kullanıcı düzenle: Vazgeç ile Sil birebir aynı (Sil referans: tema rengi, çerçeve, hover) */
+#branch-form-modal .universal-btn-group .universal-btn-cancel,
+#user-form-modal .universal-btn-group .universal-btn-cancel,
+#branch-form-modal .universal-btn-group .settings-btn-delete,
+#user-form-modal .universal-btn-group .settings-btn-delete {
+  color: var(--theme-color, #d40000) !important;
+  border: 1px solid rgba(var(--theme-color-rgb), 0.5) !important;
+  font-weight: 500 !important;
+  transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease, color 0.2s ease !important;
+}
+#branch-form-modal .universal-btn-group .universal-btn-cancel:hover,
+#user-form-modal .universal-btn-group .universal-btn-cancel:hover,
+#branch-form-modal .universal-btn-group .settings-btn-delete:hover,
+#user-form-modal .universal-btn-group .settings-btn-delete:hover {
+  background: rgba(var(--theme-color-rgb), 0.1) !important;
+  border-color: var(--theme-color) !important;
+  font-weight: 700 !important;
+  -webkit-text-stroke: 0.3px currentColor;
+  transform: scale(1.05);
 }
 
 /* Şube Düzenle / Kullanıcı Düzenle: sağdan soldan boşluk (tüm ekranlar, style-core’da kesin uygulansın) */
