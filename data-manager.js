@@ -367,18 +367,46 @@ document.addEventListener('DOMContentLoaded', async function() {
     window.dispatchEvent(new CustomEvent('dataLoaded', { detail: window.appData }));
 });
 
-// Merkezi kullanıcı normalizasyonu — frontend tek format (name, phone, branchId, role)
+// Merkezi kullanıcı normalizasyonu — name, branchId(s), rol (UI: genel_yonetici | sube_yonetici | kullanici)
 function normalizeUser(u) {
-    if (!u || typeof u !== 'object') return { id: '', name: '', phone: '', branchId: '', role: 'driver' };
+    if (!u || typeof u !== 'object') {
+        return { id: '', name: '', phone: '', branchId: '', branchIds: [], role: 'kullanici', surucu_paneli: true };
+    }
     const id = u.id != null ? String(u.id) : '';
     let name = u.name || u.isim || '';
     if (!name && (u.firstName || u.lastName)) name = ((u.firstName || '') + ' ' + (u.lastName || '')).trim();
     const phone = u.phone != null ? String(u.phone) : (u.telefon != null ? String(u.telefon) : '');
-    const branchId = u.branchId != null && u.branchId !== '' ? String(u.branchId) : (u.sube_id != null && u.sube_id !== '' ? String(u.sube_id) : '');
-    let role = u.role || '';
-    if (!role && u.tip) role = u.tip === 'admin' ? 'admin' : (u.tip === 'surucu' ? 'driver' : (u.tip === 'kullanici' ? 'sales' : 'driver'));
-    if (!role) role = 'driver';
-    return Object.assign({}, u, { id, name, phone, branchId, role });
+
+    let branchIds = [];
+    if (Array.isArray(u.branchIds)) {
+        branchIds = u.branchIds.map(function (x) { return String(x); }).filter(Boolean);
+    } else if (Array.isArray(u.sube_ids)) {
+        branchIds = u.sube_ids.map(function (x) { return String(x); }).filter(Boolean);
+    } else if (u.branchId != null && u.branchId !== '') {
+        branchIds = [String(u.branchId)];
+    } else if (u.sube_id != null && u.sube_id !== '') {
+        branchIds = [String(u.sube_id)];
+    }
+    const branchId = branchIds[0] || '';
+
+    let role = u.role || u.rol || '';
+    if (!role && u.tip) {
+        if (u.tip === 'admin') role = 'genel_yonetici';
+        else if (u.tip === 'yonetici' || u.tip === 'sube_yonetici') role = 'sube_yonetici';
+        else if (u.tip === 'surucu') role = 'kullanici';
+        else role = 'kullanici';
+    }
+    if (role === 'admin') role = 'genel_yonetici';
+    if (role === 'driver') role = 'kullanici';
+    if (role === 'sales') role = 'kullanici';
+    if (!role) role = 'kullanici';
+
+    let surucu_paneli = u.surucu_paneli;
+    if (surucu_paneli === undefined) {
+        surucu_paneli = role === 'kullanici';
+    }
+
+    return Object.assign({}, u, { id: id, name: name, phone: phone, branchId: branchId, branchIds: branchIds, role: role, surucu_paneli: !!surucu_paneli });
 }
 function normalizeUsers(arr) {
     return Array.isArray(arr) ? arr.map(normalizeUser) : [];
