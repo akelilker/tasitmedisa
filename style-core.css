@@ -119,7 +119,6 @@ body::-webkit-scrollbar,
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) {
     --app-footer-height: 34px;
     --app-footer-real-height: 42px;
-    --app-footer-gap: 20px;
   }
 }
 
