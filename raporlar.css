@@ -1988,9 +1988,9 @@ text-shadow: none !important;
 #reports-modal .modal-close { font-size: 21px; }
 #reports-modal .modal-container {
 isolation: isolate !important;
+margin-top: 0 !important;
 background: var(--modal-bg) !important;
 background-color: var(--modal-bg) !important;
-border-bottom: 1px solid var(--modal-bg) !important;
 overflow-x: hidden !important;
 touch-action: pan-y !important;
 overscroll-behavior: none !important;
