@@ -1637,11 +1637,10 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer {
         0 -12px 24px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity)) !important;
 }
 
-/* Modal açıkken: biraz daha güçlü glow */
+/* Modal açıkken: footer glow kapalı (modal içinde ışık hissi olmasın) */
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #app-footer {
-    box-shadow:
-        0 -1px 0 rgba(255, 255, 255, 0.13),
-        0 -18px 36px rgba(var(--footer-glow-rgb), 0.52) !important;
+    box-shadow: none !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.34) !important;
 }
 @media (max-width: 640px) {
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer {
@@ -1651,9 +1650,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #a
         0 -16px 30px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity)) !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #app-footer {
-    box-shadow:
-        0 -1px 0 rgba(255, 255, 255, 0.14),
-        0 -20px 42px rgba(var(--footer-glow-rgb), 0.56) !important;
+    box-shadow: none !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.36) !important;
   }
 }
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay.active,
@@ -1691,7 +1689,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .t
     content: none !important;
 }
 
-/* Ana modallar + taşıt detay / olay / menü / tarihçe / ruhsat: alt iç gölge güçlü — footer glow kesilsin */
+/* Ana modallar + taşıt detay / olay / menü / tarihçe / ruhsat:
+   Opak görünüm, iç/dış glow yok; sadece gri çerçeve */
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicle-modal .modal-container,
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #reports-modal .modal-container,
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicles-modal .modal-container,
@@ -1700,11 +1699,17 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #event-menu-modal .modal-container,
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicle-history-modal .modal-container,
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #ruhsat-yukleme-modal .modal-container {
-    box-shadow:
-        0 0 40px var(--shadow-modal),
-        inset 0 1px 0 rgba(255, 255, 255, 0.05),
-        inset 0 0.5px 0 0 var(--modal-mobile-inner-top-highlight, rgba(255, 255, 255, 0.1)),
-        inset 0 -40px 56px -16px var(--modal-bg) !important;
+    background: var(--modal-bg) !important;
+    background-color: var(--modal-bg) !important;
+    box-shadow: none !important;
+    border-color: rgba(184, 192, 201, 0.42) !important;
+    border-top-color: rgba(200, 208, 216, 0.48) !important;
+    border-bottom-color: rgba(168, 176, 186, 0.40) !important;
+}
+
+/* Modal içinde "ışık" olarak algılanan marker ikonunu kapat */
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-container::after {
+    display: none !important;
 }
 
 #app-footer .footer-content {
