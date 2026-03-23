@@ -1175,7 +1175,7 @@
   #vehicle-detail-modal .vehicle-detail-toolbar > div:first-child {
     margin-top: -6px;
   }
-  /* Taşıt detay: plaka 1pt büyük, plakaÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢âÃ¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢âÃ¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã¢â‚¬Å“marka/model arası 3px az (masaüstü) */
+  /* Taşıt detay: plaka 1pt büyük, plaka–marka/model arası 3px az (masaüstü) */
   #vehicle-detail-modal .detail-plate {
     font-size: 16px !important;
   }
@@ -1247,7 +1247,7 @@
     justify-content: center !important;
   }
 
-  /* şi modal – masaüstü: etiket-input arası 3px, input yükseklişi 106% (100ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢âÃ¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â ÃƒÆ’Ã‚Â¢âÃ¢â‚¬Å¡Ã‚Â¬âÃ¢â‚¬ÂÃ‚Â¢106) */
+  /* şi modal – masaüstü: etiket-input arası 3px, input yükseklişi 106% (100→106) */
   #sube-degisiklik-modal .modal-body .sube-degisiklik-label {
     margin-bottom: 3px !important;
   }
@@ -1269,7 +1269,7 @@
   .olay-ekle-modal .modal-body {
     padding-left: 1px !important;
     padding-right: 1px !important;
-    padding-top: 4px !important; /* Olay Ekle etiketi ile Tarih etiketi arası 4px azaltıldı (20ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢âÃ¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â ÃƒÆ’Ã‚Â¢âÃ¢â‚¬Å¡Ã‚Â¬âÃ¢â‚¬ÂÃ‚Â¢16) */
+    padding-top: 4px !important; /* Olay Ekle etiketi ile Tarih etiketi arası 4px azaltıldı (20→16) */
   }
   /* Sadece etiketli form satırları 390px (buton grubunu dahil etme – aşağıda ayrı kural) */
   .olay-ekle-modal .modal-body > div > div:has(label) {
@@ -1387,7 +1387,7 @@
 }
 .v-search-container.open {
     width: 360px;
-    max-width: min(360px, calc(100vw - 120px)); /* Büyüteç+vites+liste ikonları (ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢âÃ¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â°ÃƒÆ’Ã¢â‚¬Â¹âÃ¢â€šÂ¬Ã‚Â 120px) her zaman görünsün, taşma/kesilme olmasın */
+    max-width: min(360px, calc(100vw - 120px)); /* Büyüteç+vites+liste ikonları (≈120px) her zaman görünsün, taşma/kesilme olmasın */
 }
 .v-search-container .v-search-input {
     flex: 1;
@@ -1502,7 +1502,7 @@
     display: flex !important;
     flex-direction: column !important;
     min-height: 0;
-    padding-top: 0 !important; /* Sütun başlıkları üzerindeki dikey boşluk 6px azaltıldı (6pxÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢âÃ¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â ÃƒÆ’Ã‚Â¢âÃ¢â‚¬Å¡Ã‚Â¬âÃ¢â‚¬ÂÃ‚Â¢0) */
+    padding-top: 0 !important; /* Sütun başlıkları üzerindeki dikey boşluk 6px azaltıldı (6px→0) */
 }
 #vehicles-modal-content.has-vehicles-list-scroll {
     flex: 1;
@@ -1640,20 +1640,20 @@
     overflow: hidden !important;
 }
 
-/* MasaÃƒÆ’Ã‚Â¼stÃƒÆ’Ã‚Â¼: Ãƒâ€¦Ã…Â¸ube adÃƒâ€Ã‚Â± kutuya sÃƒâ€Ã‚Â±Ãƒâ€Ã…Â¸sÃƒâ€Ã‚Â±n diye bir kademe daha kontrollÃƒÆ’Ã‚Â¼ kÃƒÆ’Ã‚Â¼ÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â¼l */
+/* Masaüstü: ÅŸube adı kutuya sığsın diye bir kademe daha kontrollü küçül */
 @media (min-width: 769px) {
     .branch-card {
         container-type: inline-size;
     }
     .branch-name {
-        font-size: clamp(11.5px, 13cqw, 13px); /* +2pt; sığmazsa en fazla 1.3pt küçülme */ /* 1.5pt daha küçülebilir, KARMOTORS tek satırda */ /* 12px -> 10.5px: en fazla 1.5pt kÃƒÆ’Ã‚Â¼ÃƒÆ’Ã‚Â§ÃƒÆ’Ã‚Â¼lme */
+        font-size: clamp(11.5px, 13cqw, 13px); /* +2pt; sığmazsa en fazla 1.3pt küçülme */ /* 1.5pt daha küçülebilir, KARMOTORS tek satırda */ /* 12px -> 10.5px: en fazla 1.5pt küçülme */
         word-break: keep-all;
         overflow-wrap: normal;
     }
 }
 
 .branch-count {
-    font-size: 12px; /* +1 punto (11ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢âÃ¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â ÃƒÆ’Ã‚Â¢âÃ¢â‚¬Å¡Ã‚Â¬âÃ¢â‚¬ÂÃ‚Â¢12) */
+    font-size: 12px; /* +1 punto (11→12) */
     color: var(--txt-gray-darker); 
     background: transparent; 
     padding: 0; 
@@ -1805,7 +1805,7 @@
 
 #vehicles-modal .view-list .list-cell,
 .view-list .list-cell {
-    font-size: 12px !important; /* masaüstü içerik +1 punto (10ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢âÃ¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â ÃƒÆ’Ã‚Â¢âÃ¢â‚¬Å¡Ã‚Â¬âÃ¢â‚¬ÂÃ‚Â¢11) */
+    font-size: 12px !important; /* masaüstü içerik +1 punto (10→11) */
     font-weight: 500 !important;
     color: var(--txt-gray-dark) !important;
     display: flex;
@@ -1814,7 +1814,7 @@
     line-height: 1.3;
     min-width: 0;
     border-right: 1px solid var(--border-ultra) !important;
-    padding: 2px 4px; /* metinÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢âÃ¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢âÃ¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã¢â‚¬Å“çerçeve arası dikey 2px */
+    padding: 2px 4px; /* metin–çerçeve arası dikey 2px */
 }
 
 /* Son sütun (sağ) border yok */
@@ -1854,7 +1854,7 @@
     /* grid göre override eder */
     gap: 4px !important;
     align-items: center;
-    padding: 2px 2px; /* metinÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢âÃ¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢âÃ¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã¢â‚¬Å“çerçeve arası dikey 2px */
+    padding: 2px 2px; /* metin–çerçeve arası dikey 2px */
     margin-bottom: 4px;
     border-bottom: 1px solid var(--border-faint-22);
     background: var(--bg) !important;
@@ -1890,7 +1890,7 @@
     overflow: visible !important;
     text-overflow: clip;
     white-space: nowrap;
-    padding: 2px 4px; /* metinÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢âÃ¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢âÃ¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã¢â‚¬Å“çerçeve arası dikey 2px */
+    padding: 2px 4px; /* metin–çerçeve arası dikey 2px */
     min-width: 0;
     border-right: 1px solid var(--border-ultra) !important;
 }
@@ -3102,7 +3102,7 @@
 }
 
 .detail-brand-year-row .history-add-event-btn:hover {
-    color: var(--theme-color); /* Renk deşişmesin, aynı kırmÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢âÃ¢â‚¬Å¡Ã‚Â¬Ãƒâ€šızÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢âÃ¢â‚¬Å¡Ã‚Â¬Ãƒâ€šı kalacak */
+    color: var(--theme-color); /* Renk deşişmesin, aynı kırmÃâ€ÂızÃâ€Âı kalacak */
     transform: scale(1.08); /* Görsel olarak büyüt (sayfa kıpırdamasın diye transform kullanıldı) */
 }
 
@@ -3274,7 +3274,7 @@
 }
 
 /* =========================================
-   MOBİL GÃƒÆ’Ã†â€™âÃ¢â€šÂ¬Ã¢â‚¬Å“RÃƒÆ’Ã†â€™Ãƒâ€¦Ã¢â‚¬Å“NÃƒÆ’Ã†â€™Ãƒâ€¦Ã¢â‚¬Å“M - TÃƒÆ’Ã†â€™Ãƒâ€¦Ã¢â‚¬Å“M MEDIA QUERY'LER BİRLEŞTİRİLDİ
+   MOBİL GÖRÜNÜM - TÜM MEDIA QUERY'LER BİRLEŞTİRİLDİ
    ========================================= */
 @media (max-width: 640px) {
   /* ıman + arama (önceki bloktan taşındı) */
@@ -3348,7 +3348,7 @@
   }
   /* Taşıt detay toolbar sol 4px */
   #vehicle-detail-modal .vehicle-detail-toolbar {
-    padding-left: 1px !important; /* Sol ok 3px sola (4ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢âÃ¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â ÃƒÆ’Ã‚Â¢âÃ¢â‚¬Å¡Ã‚Â¬âÃ¢â‚¬ÂÃ‚Â¢1) */
+    padding-left: 1px !important; /* Sol ok 3px sola (4→1) */
   }
   /* Taşıt detaşmasın */
   #vehicle-detail-modal .muayene-detail-tooltip-wrap {
@@ -3517,7 +3517,7 @@
     font-size: 22px !important; /* +1pt tutarlı (tek kaynak) */
   }
   .detail-brand-year {
-    font-size: 19px !important; /* +1pt (base 15ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢âÃ¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â ÃƒÆ’Ã‚Â¢âÃ¢â‚¬Å¡Ã‚Â¬âÃ¢â‚¬ÂÃ‚Â¢16 civarı mobil) */
+    font-size: 19px !important; /* +1pt (base 15→16 civarı mobil) */
   }
   .detail-label {
     font-size: 15px !important; /* +1pt (base 14px) */
@@ -3654,7 +3654,7 @@
     justify-content: flex-start !important;
   }
 
-  /* --- OLAY EKLE MODALLARI - TÃƒÆ’Ã†â€™Ãƒâ€¦Ã¢â‚¬Å“M METİNLER +2px --- */
+  /* --- OLAY EKLE MODALLARI - TÜM METİNLER +2px --- */
   .olay-ekle-modal .modal-body {
     padding-top: 4px !important; /* Olay Ekle – Tarih arası 7px (mobil) */
     padding-bottom: 40px !important; /* Chrome fix: Logoların kesilmemesi */
@@ -3796,7 +3796,7 @@
   .olay-ekle-modal .modal-close {
     z-index: 25 !important;
   }
-  /* Olay ekle modalları sol ok/kapat ikonu 20pxÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢âÃ¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â ÃƒÆ’Ã‚Â¢âÃ¢â‚¬Å¡Ã‚Â¬âÃ¢â‚¬ÂÃ‚Â¢24px */
+  /* Olay ekle modalları sol ok/kapat ikonu 20px→24px */
   .olay-ekle-modal .modal-close svg {
     width: 24px !important;
     height: 24px !important;
@@ -3927,7 +3927,7 @@
     padding-left: 1px !important;
     padding-right: 1px !important;
   }
-  /* ücreleri: +1.5pt (16ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢âÃ¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â ÃƒÆ’Ã‚Â¢âÃ¢â‚¬Å¡Ã‚Â¬âÃ¢â‚¬ÂÃ‚Â¢17.5); metinÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢âÃ¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢âÃ¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã¢â‚¬Å“çerçeve yatay 1px, dikey 2px */
+  /* ücreleri: +1.5pt (16→17.5); metin–çerçeve yatay 1px, dikey 2px */
   .view-list .list-cell {
     font-size: 17.5px !important;
     font-weight: 500 !important;
@@ -3946,7 +3946,7 @@
     overflow: hidden !important;
   }
 
-  /* Marka/Model - en fazla 2 satır, 3. satır yok; 1 punto küçük (17.5ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢âÃ¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â ÃƒÆ’Ã‚Â¢âÃ¢â‚¬Å¡Ã‚Â¬âÃ¢â‚¬ÂÃ‚Â¢16.5px) */
+  /* Marka/Model - en fazla 2 satır, 3. satır yok; 1 punto küçük (17.5→16.5px) */
   .view-list .list-cell.list-brand {
     font-size: 16.5px !important;
     font-weight: inherit !important;
@@ -4032,7 +4032,7 @@
     text-overflow: ellipsis !important; /* Masaüstü ile aynı */
   }
 
-  /* Mobil/tablet (ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢âÃ¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â°ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¤768px): Taşıt Tipi sütununu gizle (JS de render etmiyor; bu yedek) */
+  /* Mobil/tablet (≤768px): Taşıt Tipi sütununu gizle (JS de render etmiyor; bu yedek) */
   .view-list .list-cell.list-type {
     display: none !important;
   }
@@ -4264,7 +4264,7 @@
   .detail-plate { margin-top: 0 !important; margin-bottom: 0 !important; } /* Plaka üstten kesilmesin */
   .detail-brand-year { margin-top: 0 !important; margin-bottom: 4px !important; }
   .detail-row { padding: 4px 0; gap: 1px; }
-  /* KullanıcıÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢âÃ¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢âÃ¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã¢â‚¬Å“ı 1px azalt (4pxÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢âÃ¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â ÃƒÆ’Ã‚Â¢âÃ¢â‚¬Å¡Ã‚Â¬âÃ¢â‚¬ÂÃ‚Â¢3px) */
+  /* Kullanıcı–ı 1px azalt (4px→3px) */
   #vehicle-detail-modal .vehicle-detail-left .detail-row:first-child { padding-bottom: 3px !important; }
   
   #vehicle-detail-modal .modal-close {
@@ -4272,7 +4272,7 @@
   }
   
   /* --- KAPORTA ŞEMASI MOBİL --- */
-  /* Detay modal: legendÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢âÃ¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢âÃ¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã¢â‚¬Å“footer arası boşluk 4px toplam (mobil) */
+  /* Detay modal: legend–footer arası boşluk 4px toplam (mobil) */
   #vehicle-detail-modal #vehicle-detail-content { padding-bottom: 4px !important; }
   #vehicle-detail-modal .modal-body { padding-bottom: 4px !important; }
   /* Plaka üstten kesilmesin; plaka–marka arası 2px kalsın */

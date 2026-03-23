@@ -159,10 +159,10 @@ body::-webkit-scrollbar,
 }
 .universal-back-btn:hover { color: var(--txt-white); }
 
-/* Etiket: 1 punto küçük (14px Ã¢â€ â€™ 13px), tüm ekranlar */
+/* Etiket: 1 punto küçük (14px → 13px), tüm ekranlar */
 .universal-back-label {
   color: #adb5bd !important;
-  font-size: 13px !important; /* 14px Ã¢â€ â€™ 13px (1 punto küçültme) */
+  font-size: 13px !important; /* 14px → 13px (1 punto küçültme) */
   font-weight: 500 !important;
   line-height: 1 !important;
   margin: 0 !important;
@@ -845,7 +845,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
 #notifications-dropdown .notification-item.date-warning-orange-border:hover {
   border-color: rgba(var(--orange-warn-rgb), 0.85) !important;
 }
-/* Tarih uyarÃ½ kartlarÃ½: settings-dropdown button mirasÃ½nÃ½ ez, dikey sÃ½kÃ½Ã¾mayÃ½ kaldÃ½r */
+/* Tarih uyarý kartlarý: settings-dropdown button mirasýný ez, dikey sýkýþmayý kaldýr */
 #notifications-dropdown .notification-item.date-warning-red-border,
 #notifications-dropdown .notification-item.date-warning-orange-border {
   display: flex !important;
@@ -926,7 +926,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   margin-bottom: 0 !important;
 }
 
-/* MTV Bildirimi - Global Çakışma Ã–nleyici */
+/* MTV Bildirimi - Global Çakışma Önleyici */
 #notifications-dropdown .mtv-notification {
   display: flex !important;
   flex-direction: row !important;
@@ -1122,7 +1122,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
 .settings-dropdown {
   display: none;
   position: absolute;
-  top: 32px; /* Azaltıldı: 35px Ã¢â€ â€™ 32px (daha yakın) */
+  top: 32px; /* Azaltıldı: 35px → 32px (daha yakın) */
   right: 0;
   background: transparent;
   border: none;
@@ -1247,7 +1247,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
 
 /* Masaüstünde container'ın %45'i + metin ortalı */
 @media (min-width: 641px) {
-  /* Ana başlık: 2px aşağı (base translateY(-2px) Ã¢â€ â€™ 0) */
+  /* Ana başlık: 2px aşağı (base translateY(-2px) → 0) */
   .hero h1 {
     transform: translateY(0);
   }
@@ -1569,7 +1569,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   flex: 1 !important;
   overflow-y: auto !important;
   min-height: 0 !important;
-  padding: 15px 20px 20px 20px !important; /* Sekmeler ile içerik arası 5px azaltıldı (20Ã¢â€ â€™15) */
+  padding: 15px 20px 20px 20px !important; /* Sekmeler ile içerik arası 5px azaltıldı (20→15) */
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none !important;
   -ms-overflow-style: none !important;
@@ -1819,7 +1819,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
 
 #app-footer span {
     transition: opacity 1s ease;
-    font-weight: 400; /* 300 Ã¢â€ â€™ 400 daha belirgin */
+    font-weight: 400; /* 300 → 400 daha belirgin */
     letter-spacing: 0.5px;
     font-size: 13px;
     color: var(--txt-gray);
@@ -1845,7 +1845,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
     display: flex;
     align-items: center;
     justify-content: center;
-    letter-spacing: 2.5px; /* 1px Ã¢â€ â€™ 2.5px daha geniş */
+    letter-spacing: 2.5px; /* 1px → 2.5px daha geniş */
 }
 
 /* --- DÜZELTME: img olarak değiştirildi; taşmayı önlemek için alan içinde ölçeklenir --- */
@@ -1986,7 +1986,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
         text-align: right !important;
     }
     /* :root override'ları dosya başında birleştirildi */
-    /* Ã¢Å“Â¨ iOS FOOTER ALTI RENK SORUNU Ã¢Å“Â¨ - Body/container aynı renk */
+    /* ✨ iOS FOOTER ALTI RENK SORUNU ✨ - Body/container aynı renk */
     html, body {
         background-color: var(--bg);
         color: #ffffff !important; /* Metin rengi zorla beyaz */
@@ -2058,7 +2058,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-logo {
         margin-right: 8px !important;
     }
-    /* Ana uygulama ana ekran header mobil: ana başlık +0.6pt (Ã¢â€°Ë†0.8px) */
+    /* Ana uygulama ana ekran header mobil: ana başlık +0.6pt (≈0.8px) */
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero h1 {
         font-size: clamp(17.8px, 5.1vw, 21.8px) !important;
         letter-spacing: 2px !important;
@@ -2222,7 +2222,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
     .menu-btn {
         height: 64px !important; /* 62px + 2px */
         box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25), 0 4px 20px rgba(var(--theme-color-rgb), 0.14);
-        border-color: rgba(255, 255, 255, 0.55); /* Çerçeve gri daha parlak (0.45Ã¢â€ â€™0.55, kalınlık aynı) */
+        border-color: rgba(255, 255, 255, 0.55); /* Çerçeve gri daha parlak (0.45→0.55, kalınlık aynı) */
     }
     
     /* Menü butonları arası dikey boşluk +2px */
@@ -2290,7 +2290,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
     }
     
     .menu-btn .ttl {
-        font-size: clamp(15.5px, 3.2vw, 17.5px) !important; /* +1pt daha (14.5Ã¢â€ â€™15.5, 16.5Ã¢â€ â€™17.5) */
+        font-size: clamp(15.5px, 3.2vw, 17.5px) !important; /* +1pt daha (14.5→15.5, 16.5→17.5) */
         letter-spacing: 1.5px;
         text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);  /* Havada, metin berrak */
     }
@@ -2667,7 +2667,7 @@ body.modal-open .content-wrap::before {
   }
 }
 
-/* === NOKTA ATIÅžI: KÄ±rmÄ±zÄ± yan Ã§izgiler footer hizasÄ±nda Ã§ivili (sarkan/kÄ±sa kalma yok) === */
+/* === NOKTA ATIÅžI: Kırmızı yan çizgiler footer hizasında çivili (sarkan/kısa kalma yok) === */
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-container::before {
   bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
 }
