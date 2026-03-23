@@ -1321,7 +1321,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
     flex-shrink: 0 !important;
     min-height: 0 !important;
     line-height: 1.05 !important;
-    margin: auto 0 0 0 !important;
+    margin: 0 !important;
     padding: 0 !important;
     font-size: 10.5px !important;
   }
