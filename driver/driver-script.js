@@ -132,6 +132,15 @@ const API_BASE = (function(){
     window.location.href = DRIVER_PAGE_BASE + 'dashboard.html';
     return true;
   }
+
+  function syncDashboardHomeLinkVisibility(role) {
+    if (!document.body || !document.body.classList.contains('dashboard-page')) return;
+    var normalizedRole = String(role || '').trim();
+    var shouldShow = normalizedRole === 'sube_yonetici' || normalizedRole === 'genel_yonetici';
+    document.querySelectorAll('.dashboard-page .driver-footer-back-wrap').forEach(function(el) {
+      el.style.display = shouldShow ? '' : 'none';
+    });
+  }
   
   // Global değişkenler
   let currentToken = null;
@@ -478,6 +487,7 @@ const API_BASE = (function(){
           window.location.href = MAIN_APP_URL;
           return;
       }
+      syncDashboardHomeLinkVisibility(tokenPayload ? tokenPayload.rol : '');
       
       currentToken = token;
       
