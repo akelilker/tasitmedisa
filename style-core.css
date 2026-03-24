@@ -1316,7 +1316,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   #notifications-dropdown .notification-item.date-warning-orange-border .notif-line2,
   #notifications-dropdown .notification-item-activity .notif-line2,
   #notifications-dropdown .mtv-text-container .notif-line2 {
-    margin-top: auto !important;
+    margin-top: 0 !important;
     display: block !important;
     width: 100% !important;
     position: static !important;
