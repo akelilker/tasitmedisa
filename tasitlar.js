@@ -2873,7 +2873,8 @@ function renderVehicleDetailLeft(vehicle) {
               
               if (!input.value && input !== document.activeElement) {
                 const isMobile = window.innerWidth <= 640;
-                const leftPx = isMobile ? '12px' : '8px';
+                const isDynamicEventModalDate = isMobile && !!input.closest('#dinamik-olay-modal');
+                const leftPx = isDynamicEventModalDate ? '50%' : (isMobile ? '12px' : '8px');
                 const st = window.getComputedStyle(input);
                 var pt = parseFloat(st.paddingTop); if (!Number.isFinite(pt)) pt = 0;
                 var pb = parseFloat(st.paddingBottom); if (!Number.isFinite(pb)) pb = 0;
@@ -2888,10 +2889,13 @@ function renderVehicleDetailLeft(vehicle) {
                 const ph = fs * 1.2;
                 const contentCenter = inputOffsetTop + pt + (ih - pt - pb) / 2;
                 const topPx = contentCenter - ph / 2;
+                const centeredPlaceholderStyles = isDynamicEventModalDate
+                  ? ' width: calc(100% - 36px); max-width: calc(100% - 36px); display: flex; align-items: center; justify-content: center; text-align: center; transform: translateX(-50%);'
+                  : '';
                 const placeholder = document.createElement('span');
                 placeholder.className = 'date-placeholder';
                 placeholder.textContent = 'gg.aa.yyyy';
-                placeholder.style.cssText = 'position: absolute; left: ' + leftPx + '; top: ' + topPx + 'px; color: #666 !important; pointer-events: none; font-size: 10px; z-index: 100; line-height: ' + ph + 'px;';
+                placeholder.style.cssText = 'position: absolute; left: ' + leftPx + '; top: ' + topPx + 'px; color: #666 !important; pointer-events: none; font-size: 10px; z-index: 100; line-height: ' + ph + 'px;' + centeredPlaceholderStyles;
                 
                 if (parent) {
                   parent.style.position = 'relative';
