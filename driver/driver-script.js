@@ -104,6 +104,16 @@ const API_BASE = (function(){
     }
   }
 
+  function isMainAppPortalEntry() {
+    try {
+      var search = window.location && window.location.search ? window.location.search : '';
+      if (!search) return false;
+      return new URLSearchParams(search).get('portal') === 'main-app';
+    } catch (e) {
+      return false;
+    }
+  }
+
   function persistSessionToken(token, remember) {
     if (!token) return;
     clearStoredPortalTokens();
@@ -126,7 +136,8 @@ const API_BASE = (function(){
     }
   }
 
-  function routeByToken(token, fallbackDashboard) {
+  function routeByToken(token, fallbackDashboard, options) {
+    var routeOptions = options && typeof options === 'object' ? options : {};
     var payload = decodeDriverTokenPayload(token);
     var nowTs = Math.floor(Date.now() / 1000);
     if (!payload || !payload.exp || Number(payload.exp) < nowTs) {
@@ -135,6 +146,9 @@ const API_BASE = (function(){
     }
 
     if (payload.driver_dashboard === false || fallbackDashboard === false) {
+      if (routeOptions.stayOnLoginWhenDashboardUnavailable === true) {
+        return false;
+      }
       window.location.href = MAIN_APP_URL;
       return true;
     }
@@ -346,7 +360,9 @@ const API_BASE = (function(){
   if (document.getElementById('login-form')) {
       /* Geçerli bir oturum varsa login ekranını atla ve token'ın işaret ettiği yüzeye git. */
       var savedToken = getStoredPortalToken();
-      if (!shouldForceDriverLoginView() && savedToken && routeByToken(savedToken, true)) {
+      if (!shouldForceDriverLoginView() && savedToken && routeByToken(savedToken, true, {
+        stayOnLoginWhenDashboardUnavailable: isMainAppPortalEntry()
+      })) {
           /* Sayfa yönleniyor; login listener'ları güvenle kurulabilir. */
       }
   

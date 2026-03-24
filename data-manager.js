@@ -218,13 +218,7 @@ function redirectToDriverDashboard() {
 }
 
 function resolveMainAppPortalLinkUrl(sessionData) {
-    var session = sessionData && typeof sessionData === 'object'
-        ? sessionData
-        : ((window.medisaSession && window.medisaSession.authenticated) ? window.medisaSession : getSessionFromToken());
-    if (session && session.authenticated && session.driver_dashboard === true) {
-        return DRIVER_DASHBOARD_URL;
-    }
-    return DRIVER_INDEX_URL + '?force=login';
+    return DRIVER_INDEX_URL + '?portal=main-app';
 }
 
 function syncMainAppPortalLinks() {
