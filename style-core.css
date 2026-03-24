@@ -1269,7 +1269,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   }
   /* Masaüstü: Bildirim kutusu stabil genişlikte kalsın, resize'da bozulmasın */
   #notifications-dropdown {
-    max-height: 380px !important;
+    max-height: 332px !important;
     width: 360px !important;
     max-width: calc(100vw - 32px) !important;
     right: 0 !important;

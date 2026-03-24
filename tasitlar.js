@@ -2471,40 +2471,56 @@ function renderVehicleDetailLeft(vehicle) {
       const kaydetBtn = DOM.dinamikOlayKaydetBtn;
       if (!modal || !formIcerik || !kaydetBtn) return;
 
-      var backBarBtn = modal.querySelector('.universal-back-btn');
-      if (backBarBtn) {
-        var labelSpan = backBarBtn.querySelector('.universal-back-label');
-        if (labelSpan) labelSpan.textContent = 'Olay Ekle';
-        backBarBtn.onclick = function(e) {
-          e.stopPropagation();
-          const vid = window.currentDetailVehicleId;
-          if (vid && typeof window.closeEventModalAndShowEventMenu === 'function') {
-            window.closeEventModalAndShowEventMenu(type);
-          } else {
-            closeAllModals();
+      const getDynamicEventCloseTarget = function() {
+        const currentVehicleId = (window.currentDetailVehicleId || vehicleId || '').toString();
+        if (!currentVehicleId) return 'all';
+        if (type !== 'sube') return 'menu';
+        const vehicle = readVehicles().find(v => String(v.id) === String(currentVehicleId));
+        return (vehicle && !vehicle.branchId) ? 'detail' : 'menu';
+      };
+
+      const closeDynamicEventByOrigin = function() {
+        const currentVehicleId = (window.currentDetailVehicleId || vehicleId || '').toString();
+        const closeTarget = getDynamicEventCloseTarget();
+
+        if (closeTarget === 'detail') {
+          if (typeof window.closeEventModal === 'function') {
+            window.closeEventModal(type);
           }
-        };
-      }
-      var modalCloseBtn = modal.querySelector('.modal-close');
-      if (modalCloseBtn) modalCloseBtn.onclick = function(e) {
-        e.stopPropagation();
-        const vid = window.currentDetailVehicleId;
-        if (vid && typeof window.closeEventModalAndShowEventMenu === 'function') {
+          setTimeout(function() {
+            if (currentVehicleId && typeof window.showVehicleDetail === 'function') {
+              window.showVehicleDetail(currentVehicleId);
+            }
+          }, 300);
+          return;
+        }
+
+        if (currentVehicleId && typeof window.closeEventModalAndShowEventMenu === 'function') {
           window.closeEventModalAndShowEventMenu(type);
         } else {
           closeAllModals();
         }
       };
+
+      var backBarBtn = modal.querySelector('.universal-back-btn');
+      if (backBarBtn) {
+        var labelSpan = backBarBtn.querySelector('.universal-back-label');
+        if (labelSpan) labelSpan.textContent = getDynamicEventCloseTarget() === 'detail' ? 'Taşıt Detay' : 'Olay Ekle';
+        backBarBtn.onclick = function(e) {
+          e.stopPropagation();
+          closeDynamicEventByOrigin();
+        };
+      }
+      var modalCloseBtn = modal.querySelector('.modal-close');
+      if (modalCloseBtn) modalCloseBtn.onclick = function(e) {
+        e.stopPropagation();
+        closeDynamicEventByOrigin();
+      };
       var ruhsatBtnGroup = document.getElementById('ruhsat-btn-group');
       var cancelBtn = ruhsatBtnGroup ? ruhsatBtnGroup.querySelector('.universal-btn-cancel') : null;
       if (cancelBtn) cancelBtn.onclick = function(e) {
         e.stopPropagation();
-        const vid = window.currentDetailVehicleId;
-        if (vid && typeof window.closeEventModalAndShowEventMenu === 'function') {
-          window.closeEventModalAndShowEventMenu(type);
-        } else {
-          closeAllModals();
-        }
+        closeDynamicEventByOrigin();
       };
 
       formIcerik.id = 'dinamik-olay-form-icerik';
