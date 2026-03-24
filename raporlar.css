@@ -2034,6 +2034,17 @@ gap: 10px;
 .report-row-subtitle { font-size: 13px !important; }
 .report-row-status { font-size: 13px !important; }
 .tab-btn { font-size: 16px !important; }
+#reports-modal .reports-tab-header:has(> .tab-btn:only-child) {
+display: none !important;
+padding: 0 !important;
+min-height: 0 !important;
+}
+#reports-modal .reports-tab-header:has(> .tab-btn:only-child) + #reports-list-header-actions + .modal-body {
+padding-top: 0 !important;
+}
+#reports-modal .reports-tab-header:has(> .tab-btn:only-child) + #reports-list-header-actions + .modal-body #view-stok {
+padding-top: 0 !important;
+}
 .report-filters select,
 .search-box-wrapper input { font-size: 15px !important; }
 
