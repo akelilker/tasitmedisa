@@ -471,6 +471,8 @@ body.modal-open #cache-confirm-modal.open {
     color: #adb5bd;
     cursor: pointer;
     flex: 0 0 auto;
+    box-shadow: none;
+    border-radius: 0;
 }
 #user-modal .user-management-search-toggle svg {
     width: 19px;
@@ -1810,6 +1812,10 @@ input.settings-form-input:-moz-autofill,
     #branch-form-modal .modal-container,
     #user-form-modal .modal-container {
         background: var(--bg) !important;
+    }
+    #branch-form-modal .modal-header,
+    #user-form-modal .modal-header {
+        border-bottom: none !important;
     }
     #branch-list, #user-list {
         gap: 8px;
