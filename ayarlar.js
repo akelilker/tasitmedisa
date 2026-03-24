@@ -313,7 +313,7 @@
       return roleLabels[uiRole] || roleLabels[mapUiRoleToRol(uiRole)] || uiRole || 'Kullanıcı';
     }
 
-    function syncUsersToAppData(arr) {
+    function syncUsersToAppData(arr, options) {
       if (!window.appData) return;
       const list = arr != null ? arr : readUsers();
       const vehicles = readVehicles();
@@ -358,7 +358,7 @@
           son_giris: u.son_giris || null
         };
       });
-      if (window.saveDataToServer) {
+      if (!(options && options.skipServerSave === true) && window.saveDataToServer) {
         window.saveDataToServer().catch(err => {
           console.error('Sunucuya kaydetme hatası (sessiz):', err);
         });
@@ -370,6 +370,31 @@
       if (window.appData) {
         syncUsersToAppData(arr);
       }
+    }
+
+    function cloneStorageState(arr) {
+      try {
+        return JSON.parse(JSON.stringify(Array.isArray(arr) ? arr : []));
+      } catch (e) {
+        return Array.isArray(arr) ? arr.slice() : [];
+      }
+    }
+
+    function setUserManagementLocalState(users, vehicles) {
+      localStorage.setItem(USERS_KEY, JSON.stringify(Array.isArray(users) ? users : []));
+      localStorage.setItem(VEHICLES_KEY, JSON.stringify(Array.isArray(vehicles) ? vehicles : []));
+      if (window.appData) {
+        window.appData.tasitlar = Array.isArray(vehicles) ? vehicles : [];
+        syncUsersToAppData(Array.isArray(users) ? users : [], { skipServerSave: true });
+      }
+    }
+
+    async function persistUserManagementState(users, vehicles) {
+      setUserManagementLocalState(users, vehicles);
+      if (typeof window.saveDataToServer === 'function') {
+        return await window.saveDataToServer();
+      }
+      return true;
     }
   
     // Modal Kontrolü (Ana Liste)
@@ -725,7 +750,7 @@
       return `${firstParts.join(' ')} ${lastName}`;
     }
   
-    window.saveUser = function saveUser() {
+    window.saveUser = async function saveUser() {
       const modal = document.getElementById('user-form-modal');
       if (!modal) return;
       const saveBtn = modal.querySelector('.universal-btn-save[onclick*="saveUser"]') || modal.querySelector('.universal-btn-save');
@@ -761,8 +786,17 @@
         const roleConfig = getRoleConfigFromSelection(selectedRole);
         const role = roleConfig.role;
         const kullanici_paneli = roleConfig.kullanici_paneli;
+        const sessionData = typeof window.getMedisaSession === 'function'
+          ? (window.getMedisaSession() || {})
+          : (window.medisaSession || {});
+        const currentSessionRole = sessionData.role || (sessionData.user && sessionData.user.role) || '';
         const branchId = branchSelect ? branchSelect.value : '';
         const branchIds = branchId ? [branchId] : [];
+        if (role === 'genel_yonetici' && currentSessionRole !== 'genel_yonetici') {
+          alert('Genel Yönetici kullanıcıyı yalnızca Genel Yönetici oturumu oluşturabilir.');
+          if (roleSelect) roleSelect.focus();
+          return;
+        }
         if (role !== 'genel_yonetici' && !branchId) {
           alert('Şube Seçiniz.');
           if (branchSelect) branchSelect.focus();
@@ -781,8 +815,10 @@
           return;
         }
   
-        const users = readUsers();
-        const vehicles = readVehicles();
+        const previousUsers = cloneStorageState(readUsers());
+        const previousVehicles = cloneStorageState(readVehicles());
+        const users = cloneStorageState(previousUsers);
+        const vehicles = cloneStorageState(previousVehicles);
         const hasAssignedVehicles = selectedVehicleIds.length > 0;
   
         // Kullanıcı paneli girişi: Taşıt atanmışsa Kullanıcı Adı ve Şifre zorunlu
@@ -845,9 +881,13 @@
             if (u && !v.branchId && primarySube) v.branchId = primarySube;
           }
         });
-        writeVehicles(vehicles);
-  
-        writeUsers(users);
+        const persisted = await persistUserManagementState(users, vehicles);
+        if (persisted !== true) {
+          setUserManagementLocalState(previousUsers, previousVehicles);
+          renderUserList();
+          alert('Kullanici sunucuya kaydedilemedi. Bu nedenle portal girisi acilmaz. Lutfen tekrar deneyin.');
+          return;
+        }
   
         // Form modalını kapat
         closeUserFormModal();
@@ -872,7 +912,7 @@
       openUserFormModal(id);
     };
   
-    window.deleteUser = function deleteUser(id) {
+    window.deleteUser = async function deleteUser(id) {
       if (!id) return; // ID yoksa işlem yapma
       
       // Taşıt kontrolü
@@ -886,9 +926,16 @@
   
       if (!confirm('Bu Kullanıcıyı silmek istediğinizden emin misiniz?')) return;
   
-      const users = readUsers();
-      const filtered = users.filter(u => u.id !== id);
-      writeUsers(filtered);
+      const previousUsers = cloneStorageState(readUsers());
+      const previousVehicles = cloneStorageState(vehicles);
+      const filtered = previousUsers.filter(u => u.id !== id);
+      const persisted = await persistUserManagementState(filtered, previousVehicles);
+      if (persisted !== true) {
+        setUserManagementLocalState(previousUsers, previousVehicles);
+        renderUserList();
+        alert('Kullanici silme islemi sunucuya kaydedilemedi. Lutfen tekrar deneyin.');
+        return;
+      }
       
       // Form modalını kapat
       closeUserFormModal();
