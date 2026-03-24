@@ -874,7 +874,8 @@
 
     // Mobil kontrolü
     const isMobile = window.innerWidth <= 640;
-    const leftValue = isMobile ? '12px' : '8px';
+    const isDynamicEventModalDate = isMobile && !!input.closest('#dinamik-olay-modal');
+    const leftValue = isDynamicEventModalDate ? '50%' : (isMobile ? '12px' : '8px');
     
     // Input'un padding ve height değerlerini al
     const inputStyle = window.getComputedStyle(input);
@@ -910,12 +911,15 @@
     
     // Placeholder'ın top değerini, placeholder'ın ortası contentCenter'a denk gelecek şekilde ayarla
     const topValue = contentCenter - (placeholderLineHeight / 2);
+    const centeredPlaceholderStyles = isDynamicEventModalDate
+      ? ' width: calc(100% - 36px); max-width: calc(100% - 36px); display: flex; align-items: center; justify-content: center; text-align: center; transform: translateX(-50%);'
+      : '';
     
     // Placeholder span oluştur
     const placeholder = document.createElement('span');
     placeholder.className = 'date-placeholder';
     placeholder.textContent = input.placeholder || 'gg.aa.yyyy';
-    placeholder.style.cssText = `position: absolute; left: ${leftValue}; top: ${topValue}px; color: #666 !important; pointer-events: none; font-size: ${fontSizePx}px; z-index: 100; line-height: ${lineHeight}px;`;
+    placeholder.style.cssText = `position: absolute; left: ${leftValue}; top: ${topValue}px; color: #666 !important; pointer-events: none; font-size: ${fontSizePx}px; z-index: 100; line-height: ${lineHeight}px;${centeredPlaceholderStyles}`;
     
     // Input'un parent'ına ekle (input'un içinde görünmesi için)
     const parent = input.parentElement;
