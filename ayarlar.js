@@ -402,20 +402,82 @@
     window.openUserManagement = function openUserManagement() {
       const modal = document.getElementById('user-modal');
       if (!modal) return;
-  
+
+      userManagementSearchQuery = '';
+      userManagementSearchOpen = false;
       // Listeyi render et
       renderUserList();
   
       // Modalı aç
       modal.style.display = 'flex';
-      requestAnimationFrame(() => modal.classList.add('active'));
+      requestAnimationFrame(() => {
+        modal.classList.add('active');
+        syncUserManagementSearchUi();
+      });
     };
   
     window.closeUserManagement = function closeUserManagement() {
       const modal = document.getElementById('user-modal');
       if (!modal) return;
+      userManagementSearchQuery = '';
+      userManagementSearchOpen = false;
+      syncUserManagementSearchUi();
       modal.classList.remove('active');
       setTimeout(() => modal.style.display = 'none', 300);
+    };
+
+    let userManagementSearchQuery = '';
+    let userManagementSearchOpen = false;
+
+    function normalizeUserManagementSearchText(value) {
+      return String(value || '')
+        .toLocaleLowerCase('tr-TR')
+        .replace(/ı/g, 'i')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .trim();
+    }
+
+    function syncUserManagementSearchUi(options = {}) {
+      const wrap = document.getElementById('user-management-search-wrap');
+      const input = document.getElementById('user-management-search-input');
+      const toggle = document.getElementById('user-management-search-toggle');
+      if (!wrap || !input || !toggle) return;
+
+      wrap.classList.toggle('open', !!userManagementSearchOpen);
+      input.value = userManagementSearchQuery;
+      toggle.setAttribute('aria-expanded', userManagementSearchOpen ? 'true' : 'false');
+
+      if (userManagementSearchOpen && options.focus === true) {
+        setTimeout(() => {
+          input.focus();
+          input.select();
+        }, 30);
+      } else if (!userManagementSearchOpen && document.activeElement === input) {
+        input.blur();
+      }
+    }
+
+    window.toggleUserManagementSearch = function toggleUserManagementSearch(forceOpen) {
+      const nextOpen = typeof forceOpen === 'boolean' ? forceOpen : !userManagementSearchOpen;
+
+      if (!nextOpen) {
+        userManagementSearchOpen = false;
+        userManagementSearchQuery = '';
+        syncUserManagementSearchUi();
+        renderUserList();
+        return;
+      }
+
+      userManagementSearchOpen = true;
+      syncUserManagementSearchUi({ focus: true });
+    };
+
+    window.setUserManagementSearch = function setUserManagementSearch(value) {
+      userManagementSearchQuery = String(value || '');
+      userManagementSearchOpen = true;
+      syncUserManagementSearchUi();
+      renderUserList();
     };
   
     // Kullanıcı formu: atanmış Taşıtlar checkbox listesi doldur (arama + filtreleme)
@@ -954,6 +1016,7 @@
 
       const users = readUsers();
       const branches = readBranches();
+      const normalizedQuery = normalizeUserManagementSearchText(userManagementSearchQuery);
   
       if (users.length === 0) {
         container.innerHTML = `
@@ -964,7 +1027,34 @@
         return;
       }
 
-      const rows = users.map(user => {
+      const filteredUsers = normalizedQuery
+        ? users.filter(user => {
+            const primaryBranchId = user.branchId || ((user.branchIds && user.branchIds.length) ? user.branchIds[0] : '');
+            const branch = branches.find(x => String(x.id) === String(primaryBranchId));
+            const branchName = branch ? branch.name : '-';
+            const roleLabel = getUserRoleLabel(user);
+            const haystack = normalizeUserManagementSearchText([
+              user.name || user.isim || '',
+              branchName,
+              roleLabel,
+              user.kullanici_adi || '',
+              user.phone || '',
+              user.email || ''
+            ].join(' '));
+            return haystack.includes(normalizedQuery);
+          })
+        : users;
+
+      if (filteredUsers.length === 0) {
+        container.innerHTML = `
+          <div style="text-align:center; padding:20px; color:var(--muted);">
+            arama sonucu bulunamadı.
+          </div>
+        `;
+        return;
+      }
+
+      const rows = filteredUsers.map(user => {
         const primaryBranchId = user.branchId || ((user.branchIds && user.branchIds.length) ? user.branchIds[0] : '');
         const branch = branches.find(x => String(x.id) === String(primaryBranchId));
         const branchName = branch ? branch.name : '-';
