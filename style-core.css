@@ -1267,25 +1267,25 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
     width: 45%; /* Masaüstünde container'ın %45'i */
     max-width: 225px;
   }
-  /* Masaüstü: Bildirim kutusu sağa dayalı kalsın, sola doğru %50 genişlesin */
+  /* Masaüstü: Bildirim kutusu stabil genişlikte kalsın, resize'da bozulmasın */
   #notifications-dropdown {
     max-height: 380px !important;
-    width: 50% !important;
-    max-width: none !important;
+    width: 360px !important;
+    max-width: calc(100vw - 32px) !important;
     right: 0 !important;
   }
-  /* Masaüstü: Bildirim kartları tek tip akış, tarih satırı kart içinde kalsın */
+  /* Masaüstü: Bildirim kartları mobildeki gibi içerik kadar aksın */
   #notifications-dropdown .notification-item.date-warning-red-border,
   #notifications-dropdown .notification-item.date-warning-orange-border,
   #notifications-dropdown .notification-item-activity,
   #notifications-dropdown .mtv-notification,
   #notifications-dropdown .kasko-excel-notification {
     box-sizing: border-box !important;
-    height: 76px !important;
-    min-height: 76px !important;
-    max-height: 76px !important;
-    overflow: hidden !important;
-    padding: 8px 12px 2px !important;
+    height: auto !important;
+    min-height: 52px !important;
+    max-height: none !important;
+    overflow: visible !important;
+    padding: 10px 12px 4px !important;
   }
   #notifications-dropdown .notification-item.date-warning-red-border,
   #notifications-dropdown .notification-item.date-warning-orange-border,
@@ -1344,7 +1344,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
     flex: 1 1 auto !important;
     min-width: 0 !important;
     min-height: 0 !important;
-    height: 100% !important;
+    height: auto !important;
     padding-right: 8px !important;
   }
   #notifications-dropdown .mtv-dismiss-wrapper {

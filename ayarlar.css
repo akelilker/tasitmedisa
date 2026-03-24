@@ -1784,6 +1784,18 @@ input.settings-form-input:-moz-autofill,
     .settings-card-title { font-size: 15px; }
     .settings-card-subtitle { font-size: 13px; }
     .settings-card-gorev { font-size: 12px; }
+    #branch-modal #branch-list .settings-card .settings-card-title {
+        font-size: 15.5px !important;
+        line-height: 1.12 !important;
+        white-space: normal !important;
+        text-overflow: clip !important;
+        word-break: break-word !important;
+        overflow-wrap: break-word !important;
+    }
+    #branch-modal #branch-list .settings-card .settings-card-subtitle {
+        font-size: 14px !important;
+        line-height: 1.18 !important;
+    }
     .settings-add-text-btn { font-size: 15px; }
     #branch-form-modal .form-label,
     #user-form-modal .form-label { font-size: 15px; }
