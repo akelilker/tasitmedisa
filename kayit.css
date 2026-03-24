@@ -313,6 +313,12 @@ select option:active {
     padding-right: 28px;
     color: var(--form-label-color, #ffffff);
 }
+.vehicle-branch-dropdown-wrap.single-branch .vehicle-branch-trigger,
+.vehicle-branch-trigger.readonly {
+    cursor: default;
+    background-image: none;
+    padding-right: 12px;
+}
 .vehicle-branch-trigger.placeholder {
     color: rgba(255, 255, 255, 0.38) !important;
 }
@@ -337,6 +343,9 @@ select option:active {
 }
 .vehicle-branch-list.open {
     display: block;
+}
+.vehicle-branch-dropdown-wrap.single-branch .vehicle-branch-list {
+    display: none !important;
 }
 .vehicle-branch-option {
     padding: 8px 10px;

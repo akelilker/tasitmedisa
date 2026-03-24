@@ -631,14 +631,53 @@
     if (titleElement) titleElement.textContent = title;
   }
 
+  function getBranchSelectionState() {
+    const branches = readBranches();
+    return {
+      branches: branches,
+      singleBranch: branches.length === 1 ? branches[0] : null
+    };
+  }
+
   /** Tahsis Edilen Şube: select placeholder sınıfı + custom trigger metni ve placeholder sınıfı */
   function syncBranchSelectPlaceholder() {
     const select = document.getElementById("vehicle-branch-select");
     if (!select) return;
+    const trigger = document.getElementById("vehicle-branch-trigger");
+    const listEl = document.getElementById("vehicle-branch-list");
+    const wrap = document.querySelector(".vehicle-branch-dropdown-wrap");
+    const branchState = getBranchSelectionState();
+
+    if (branchState.singleBranch) {
+      select.value = branchState.singleBranch.id;
+      select.classList.remove("branch-placeholder");
+      if (wrap) wrap.classList.add("single-branch");
+      if (trigger) {
+        trigger.textContent = branchState.singleBranch.name;
+        trigger.classList.remove("placeholder");
+        trigger.classList.add("readonly");
+        trigger.setAttribute("aria-disabled", "true");
+        trigger.setAttribute("aria-expanded", "false");
+        trigger.tabIndex = -1;
+      }
+      if (listEl) {
+        listEl.classList.remove("open");
+        listEl.setAttribute("aria-hidden", "true");
+        listEl.style.position = "";
+        listEl.style.top = "";
+        listEl.style.left = "";
+        listEl.style.width = "";
+      }
+      return;
+    }
+
+    if (wrap) wrap.classList.remove("single-branch");
     if (select.value === "") select.classList.add("branch-placeholder");
     else select.classList.remove("branch-placeholder");
-    const trigger = document.getElementById("vehicle-branch-trigger");
     if (trigger) {
+      trigger.classList.remove("readonly");
+      trigger.removeAttribute("aria-disabled");
+      trigger.tabIndex = 0;
       const opt = select.options[select.selectedIndex];
       trigger.textContent = opt ? opt.textContent : "Seçiniz";
       if (select.value === "") trigger.classList.add("placeholder");
@@ -664,15 +703,15 @@
       const select = document.getElementById("vehicle-branch-select");
       if (!select) return;
 
-      const branches = readBranches();
-
-      const firstOpt = document.createElement("option");
-      firstOpt.value = "";
-      firstOpt.textContent = "Seçiniz";
       select.innerHTML = "";
-      select.appendChild(firstOpt);
+      const branchState = getBranchSelectionState();
+      const branches = branchState.branches;
 
       if (branches.length === 0) {
+        const firstOpt = document.createElement("option");
+        firstOpt.value = "";
+        firstOpt.textContent = "Seçiniz";
+        select.appendChild(firstOpt);
         const opt = document.createElement("option");
         opt.disabled = true;
         opt.text = "Önce Şube Ekleyiniz";
@@ -681,6 +720,22 @@
         syncBranchSelectPlaceholder();
         return;
       }
+
+      if (branchState.singleBranch) {
+        const opt = document.createElement("option");
+        opt.value = branchState.singleBranch.id;
+        opt.textContent = branchState.singleBranch.name;
+        opt.selected = true;
+        select.appendChild(opt);
+        buildVehicleBranchDropdownList();
+        syncBranchSelectPlaceholder();
+        return;
+      }
+
+      const firstOpt = document.createElement("option");
+      firstOpt.value = "";
+      firstOpt.textContent = "Seçiniz";
+      select.appendChild(firstOpt);
 
       branches.forEach(b => {
         const opt = document.createElement("option");
@@ -703,6 +758,7 @@
     const listEl = document.getElementById("vehicle-branch-list");
     if (!select || !listEl) return;
     listEl.innerHTML = "";
+    if (getBranchSelectionState().singleBranch) return;
     for (let i = 0; i < select.options.length; i++) {
       const opt = select.options[i];
       const div = document.createElement("div");
@@ -2086,6 +2142,7 @@
         branchList.style.width = "";
       }
       branchTrigger.addEventListener("click", function () {
+        if (branchTrigger.classList.contains("readonly") || branchTrigger.getAttribute("aria-disabled") === "true") return;
         var isOpen = branchList.classList.contains("open");
         if (isOpen) {
           closeBranchList();
