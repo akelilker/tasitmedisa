@@ -314,6 +314,15 @@
       return roleLabels[uiRole] || roleLabels[mapUiRoleToRol(uiRole)] || uiRole || 'Kullanıcı';
     }
 
+    function buildUserRoleLabelMarkup(user) {
+      const uiRole = getUiRoleFromUser(user || {});
+      const roleLabel = getUserRoleLabel(user);
+      if (uiRole === 'yonetici_kullanici') {
+        return '<div class="settings-card-gorev settings-card-gorev--stacked"><span class="settings-card-gorev-line">Yönetici+</span><span class="settings-card-gorev-line">Kullanıcı</span></div>';
+      }
+      return `<div class="settings-card-gorev">${escapeHtml(roleLabel)}</div>`;
+    }
+
     function syncUsersToAppData(arr, options) {
       if (!window.appData) return;
       const list = arr != null ? arr : readUsers();
@@ -1058,14 +1067,14 @@
         const primaryBranchId = user.branchId || ((user.branchIds && user.branchIds.length) ? user.branchIds[0] : '');
         const branch = branches.find(x => String(x.id) === String(primaryBranchId));
         const branchName = branch ? branch.name : '-';
-        const roleLabel = getUserRoleLabel(user);
+        const roleLabelMarkup = buildUserRoleLabelMarkup(user);
 
         return `
           <div class="settings-card" onclick="editUser('${user.id}')" style="cursor:pointer;">
             <div class="settings-card-content">
               <div class="settings-card-title">${escapeHtml(user.name || 'İsimsiz')}</div>
               <div class="settings-card-subtitle">${escapeHtml(branchName)}</div>
-              <div class="settings-card-gorev">${escapeHtml(roleLabel)}</div>
+              ${roleLabelMarkup}
             </div>
           </div>
         `;
