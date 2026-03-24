@@ -117,6 +117,25 @@ function clearStoredPortalTokens() {
     } catch (e) {}
 }
 
+/** Ana uygulama ayarlar menüsü: oturumu kapat, portal girişine yönlendir */
+function medisaMainAppLogout() {
+    try {
+        clearStoredPortalTokens();
+        window.medisaSession = getDefaultSession();
+        if (typeof document !== 'undefined' && document.body) {
+            document.body.removeAttribute('data-medisa-role');
+        }
+        var menu = document.getElementById('settings-menu');
+        if (menu) menu.classList.remove('open');
+        var sub = document.getElementById('data-submenu');
+        if (sub) sub.classList.remove('open');
+    } catch (e) {}
+    if (typeof window === 'undefined') return;
+    window.__medisaRedirecting = true;
+    window.location.href = DRIVER_INDEX_URL;
+}
+window.medisaMainAppLogout = medisaMainAppLogout;
+
 function decodeTokenPayload(token) {
     if (!token || typeof token !== 'string') return null;
     try {
@@ -222,6 +241,11 @@ function applyMainAppSessionUiState() {
     if (getCurrentPathname().indexOf('/driver/') !== -1) return;
 
     var session = window.medisaSession || getDefaultSession();
+    var logoutBtn = document.getElementById('settings-logout-btn');
+    if (logoutBtn) {
+        logoutBtn.style.display = getStoredPortalToken() ? '' : 'none';
+    }
+
     if (!session.authenticated) return;
 
     document.body.dataset.medisaRole = session.role || '';
