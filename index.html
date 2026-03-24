@@ -1,10 +1,10 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Taşıt Yönetim Sistemi</title>
-    <!-- Paylaşım önizlemesi (WhatsApp, vb.): logo ve baÅŸlık -->
+    <!-- Paylaşım önizlemesi (WhatsApp, vb.): logo ve başlık -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="Medisa-Taşıt Yönetim Sistemi">
     <meta property="og:description" content="">
@@ -33,7 +33,7 @@
     <link rel="manifest" href="./manifest.json">
     <link rel="preload" href="icon/logo-header2.svg" as="image">
 
-    <!-- PWA: tema rengi (masaüstü sekme çubuÄŸu, mobil status bar, iOS) -->
+    <!-- PWA: tema rengi (masaüstü sekme çubuğu, mobil status bar, iOS) -->
     <meta name="theme-color" content="#080d16">
     <meta name="msapplication-TileColor" content="#080d16">
     <!-- Mobil web app -->
@@ -43,7 +43,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Medisa Taşıt">
 
-    <!-- Critical CSS - Splash (logo + baÅŸlık 3 sn, JS gelmese bile otomatik kapanır) -->
+    <!-- Critical CSS - Splash (logo + başlık 3 sn, JS gelmese bile otomatik kapanır) -->
     <style>
         #loading-screen {
             position: fixed;
@@ -101,7 +101,7 @@
             0%, 85% { opacity: 1; pointer-events: auto; }
             100% { opacity: 0; pointer-events: none; visibility: hidden; }
         }
-        /* CLS azaltma: CSS gelmeden önce modal/footer yerleÅŸimini sabitle */
+        /* CLS azaltma: CSS gelmeden önce modal/footer yerleşimini sabitle */
         .modal-overlay,
         .settings-dropdown,
         #centered-info-box {
@@ -159,7 +159,7 @@
 </head>
 <body>
 
-    <!-- Splash: logo + baÅŸlık 2 sn -->
+    <!-- Splash: logo + başlık 2 sn -->
     <div id="loading-screen">
         <div class="splash-inner">
             <img src="icon/logo-header2.svg" alt="MEDISA" class="splash-logo" width="150" height="86">
@@ -332,7 +332,7 @@
                                 <div id="tramer-records-container" class="u-hidden u-mt-6"></div>
                             </div>
                             <div class="form-section-inline" data-section="boya">
-                                <label class="form-label" for="boya-var">Boya / DeÄŸiÅŸen</label>
+                                <label class="form-label" for="boya-var">Boya / Değişen</label>
                                 <div class="radio-group">
                                     <button type="button" id="boya-var" class="radio-btn" data-value="var">Var</button>
                                     <button type="button" class="radio-btn" data-value="yok">Yok</button>
@@ -345,15 +345,15 @@
 
                         <div class="modal-column-right">
                             <div class="form-section">
-                                <label class="form-label" for="vehicle-sigorta-date">Sigorta BitiÅŸ Tarihi</label>
+                                <label class="form-label" for="vehicle-sigorta-date">Sigorta Bitiş Tarihi</label>
                                 <input type="date" id="vehicle-sigorta-date" class="form-input" inputmode="numeric">
                             </div>
                             <div class="form-section">
-                                <label class="form-label" for="vehicle-kasko-date">Kasko BitiÅŸ Tarihi</label>
+                                <label class="form-label" for="vehicle-kasko-date">Kasko Bitiş Tarihi</label>
                                 <input type="date" id="vehicle-kasko-date" class="form-input" inputmode="numeric">
                             </div>
                             <div class="form-section">
-                                <label class="form-label" for="vehicle-muayene-date">Muayene BitiÅŸ Tarihi</label>
+                                <label class="form-label" for="vehicle-muayene-date">Muayene Bitiş Tarihi</label>
                                 <input type="date" id="vehicle-muayene-date" class="form-input" inputmode="numeric">
                             </div>
                             <div class="form-section-inline" data-section="anahtar">
@@ -601,11 +601,11 @@
                             </select>
                         </div>
                         <div class="form-section">
-                            <label class="form-label" for="user-username">Kullanıcı Adı (portal giriÅŸi)</label>
+                            <label class="form-label" for="user-username">Kullanıcı Adı (portal girişi)</label>
                             <input type="text" id="user-username" class="form-input" placeholder="Plaka veya kullanıcı adı" autocomplete="username">
                         </div>
                         <div class="form-section">
-                            <label class="form-label" for="user-password">Şifre (portal giriÅŸi)</label>
+                            <label class="form-label" for="user-password">Şifre (portal girişi)</label>
                             <input type="password" id="user-password" class="form-input" placeholder="Şifre" autocomplete="new-password">
                         </div>
                         <div class="form-section form-section-vehicles">
@@ -810,7 +810,7 @@
             </div>
         </div>
 
-        <!-- Tescil Tarihi GiriÅŸ Modalı -->
+        <!-- Tescil Tarihi Giriş Modalı -->
         <div id="tescil-tarih-input-modal" class="modal-overlay ayarlar-modal-overlay">
             <div class="modal-container" style="max-width: 400px; height: 220px;" onclick="event.stopPropagation();">
                 <div class="modal-header">
@@ -892,7 +892,7 @@
             </div>
         </div>
 
-        <!-- Tarihçe modalı (bakım, kaza, km, diÄŸer sekmeleri burada doldurulur) -->
+        <!-- Tarihçe modalı (bakım, kaza, km, diğer sekmeleri burada doldurulur) -->
         <div id="vehicle-history-modal" class="modal-overlay tasitlar-modal-overlay ayarlar-modal-overlay" onclick="if(event.target === this) { event.stopPropagation(); }">
             <div class="modal-container" onclick="event.stopPropagation();">
                 <div class="modal-header">
@@ -912,10 +912,10 @@
                 </div>
                 <div class="modal-body">
                     <div id="history-tabs" style="display: flex; align-items: center; justify-content: center; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
-                        <button type="button" class="history-tab active" data-tab="bakim" onclick="switchHistoryTab('bakim')" style="flex: 1; background: transparent; border: none; color: var(--form-label-color); padding: 8px 12px 4px 12px; cursor: pointer; font-weight: normal; font-size: 12px; border-bottom: 2px solid transparent; text-align: center;">Bakım GeçmiÅŸi</button>
-                        <button type="button" class="history-tab" data-tab="kaza" onclick="switchHistoryTab('kaza')" style="flex: 1; background: transparent; border: none; color: var(--form-label-color); padding: 8px 12px 4px 12px; cursor: pointer; font-weight: normal; font-size: 12px; border-bottom: 2px solid transparent; text-align: center;">Kaza GeçmiÅŸi</button>
+                        <button type="button" class="history-tab active" data-tab="bakim" onclick="switchHistoryTab('bakim')" style="flex: 1; background: transparent; border: none; color: var(--form-label-color); padding: 8px 12px 4px 12px; cursor: pointer; font-weight: normal; font-size: 12px; border-bottom: 2px solid transparent; text-align: center;">Bakım Geçmişi</button>
+                        <button type="button" class="history-tab" data-tab="kaza" onclick="switchHistoryTab('kaza')" style="flex: 1; background: transparent; border: none; color: var(--form-label-color); padding: 8px 12px 4px 12px; cursor: pointer; font-weight: normal; font-size: 12px; border-bottom: 2px solid transparent; text-align: center;">Kaza Geçmişi</button>
                         <button type="button" class="history-tab" data-tab="km" onclick="switchHistoryTab('km')" style="flex: 1; background: transparent; border: none; color: var(--form-label-color); padding: 8px 12px 4px 12px; cursor: pointer; font-weight: normal; font-size: 12px; border-bottom: 2px solid transparent; text-align: center;">Km Güncelle</button>
-                        <button type="button" class="history-tab" data-tab="diger" onclick="switchHistoryTab('diger')" style="flex: 1; background: transparent; border: none; color: var(--form-label-color); padding: 8px 12px 4px 12px; cursor: pointer; font-weight: normal; font-size: 12px; border-bottom: 2px solid transparent; text-align: center;">DiÄŸer</button>
+                        <button type="button" class="history-tab" data-tab="diger" onclick="switchHistoryTab('diger')" style="flex: 1; background: transparent; border: none; color: var(--form-label-color); padding: 8px 12px 4px 12px; cursor: pointer; font-weight: normal; font-size: 12px; border-bottom: 2px solid transparent; text-align: center;">Diğer</button>
                     </div>
                     <div id="history-content"></div>
                 </div>
@@ -925,7 +925,7 @@
     <!-- INLINE KRITIK JS: Harici script dosyaları 404 olsa bile loading screen kapanır -->
     <script>
     (function(){
-      // 1. Loading screen: logo+baÅŸlık en az 2 sn gösterilir, sonra kapanır
+      // 1. Loading screen: logo+başlık en az 2 sn gösterilir, sonra kapanır
       var SPLASH_MIN = 2000;
       var _start = Date.now();
       window.hideLoading = function hideLoading() {

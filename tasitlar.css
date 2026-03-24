@@ -1247,7 +1247,7 @@
     justify-content: center !important;
   }
 
-  /* şi modal – masaüstü: etiket-input arası 3px, input yükseklişi 106% (100→106) */
+  /* Şube değişiklik modalı – masaüstü: etiket-input arası 3px, input yüksekliği 106% (100→106) */
   #sube-degisiklik-modal .modal-body .sube-degisiklik-label {
     margin-bottom: 3px !important;
   }
@@ -1640,7 +1640,7 @@
     overflow: hidden !important;
 }
 
-/* Masaüstü: ÅŸube adı kutuya sığsın diye bir kademe daha kontrollü küçül */
+/* Masaüstü: şube adı kutuya sığsın diye bir kademe daha kontrollü küçül */
 @media (min-width: 769px) {
     .branch-card {
         container-type: inline-size;
@@ -2384,7 +2384,7 @@
   display: block;
 }
 
-/* Select'te bir şey seçildişinde rengi deşiştir */
+/* Select'te bir şey seçildiğinde rengi değiştir */
 .assign-select:not([value=""]),
 .assign-select.has-value {
   color: var(--txt) !important;
@@ -3090,7 +3090,7 @@
     margin: 0 !important; /* Hizayı bozan dış boşlukları kaldır */
     margin-left: 0 !important;
     align-self: center !important;
-    line-height: 1 !important; /* Font yükseklişinden kaynaklı kaymaları önler */
+    line-height: 1 !important; /* Font yüksekliğinden kaynaklı kaymaları önler */
     white-space: nowrap !important;
     min-height: 26px;
 }
@@ -3102,7 +3102,7 @@
 }
 
 .detail-brand-year-row .history-add-event-btn:hover {
-    color: var(--theme-color); /* Renk deşişmesin, aynı kırmÃâ€ÂızÃâ€Âı kalacak */
+    color: var(--theme-color); /* Renk değişmesin, aynı kırmızı kalacak */
     transform: scale(1.08); /* Görsel olarak büyüt (sayfa kıpırdamasın diye transform kullanıldı) */
 }
 
@@ -3120,7 +3120,7 @@
     z-index: 2;
     transition: color 0.2s ease, font-size 0.2s ease;
     margin: 0 !important; /* Hizayı bozan dış boşlukları kaldır */
-    line-height: 1 !important; /* Font yükseklişinden kaynaklı kaymaları önler */
+    line-height: 1 !important; /* Font yüksekliğinden kaynaklı kaymaları önler */
     white-space: nowrap !important;
     min-height: 26px;
 }
@@ -3435,7 +3435,7 @@
   /* Yapılan şlemler: 2 satır varsayılan, içerik uzadıkça aşaşı açılsın */
   #bakim-islemler.olay-textarea-expand,
   .olay-ekle-modal textarea.olay-textarea-expand {
-    min-height: 3em !important; /* ~2 satır yükseklişi */
+    min-height: 3em !important; /* ~2 satır yüksekliği */
     height: auto !important;
     resize: none !important;
     overflow-y: auto !important;
@@ -3736,7 +3736,7 @@
     font-size: clamp(11px, 2.8vw, 17px) !important;
   }
 
-  /* Mobil kullanıcı atama input yükseklişi +3px */
+  /* Mobil kullanıcı atama input yüksekliği +3px */
   #kullanici-atama-modal .form-input {
     height: 31px !important;
   }
@@ -3917,7 +3917,7 @@
     box-sizing: border-box !important;
   }
 
-  /* Liste başlıkları - font-size JS deşişkeninden (tümü aynı), +1pt; renk #ffffff */
+  /* Liste başlıkları - font-size JS değişkeninden (tümü aynı), +1pt; renk #ffffff */
   .list-header-row .list-cell,
   .list-header-row .list-cell span {
     color: var(--form-label-color) !important; /* Kayıt modalı etiketleri ile aynı beyaz */
@@ -4166,7 +4166,7 @@
     padding: 1px !important; /*Çerçeveye 1px */
   } 
 
-  /* Mobil: overlay yükseklişi top-bottom ile (footer ile 10px boşluk style-core'da); padding-bottom 0 = Raporlar/Kayıt ile aynı boşluk */
+  /* Mobil: overlay yüksekliği top-bottom ile (footer ile 10px boşluk style-core'da); padding-bottom 0 = Raporlar/Kayıt ile aynı boşluk */
   .tasitlar-modal-overlay {
     height: auto !important;
     padding-bottom: 0 !important;
