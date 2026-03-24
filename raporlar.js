@@ -11,17 +11,12 @@
     function toTitleCase(str) { return (typeof window.toTitleCase === 'function' ? window.toTitleCase(str) : str); }
     function formatPlaka(str) { return (typeof window.formatPlaka === 'function' ? window.formatPlaka(str) : (str == null ? '-' : String(str))); }
     function formatAdSoyad(str) { return (typeof window.formatAdSoyad === 'function' ? window.formatAdSoyad(str) : str); }
-    function getUserBranchIds(user) {
-        if (!user) return [];
-        return (user.branchIds && user.branchIds.length) ? user.branchIds : (user.branchId ? [user.branchId] : []);
-    }
 
     // --- STOK Görünümü State ---
     let stokCurrentBranchId = null; // null = grid görünümü, 'all' = tümü listesi, 'id' = şube listesi
     let stokSortState = {}; // { columnKey: 'asc' | 'desc' | null }
     
     // --- Rapor Sekmesi State ---
-    let activeReportsTab = 'stok'; // 'stok' | 'kullanici'
     
     // --- KULLANICI Görünümü State ---
     let kullaniciCurrentBranchId = null; // null = grid görünümü, 'all' = tümü listesi, 'id' = şube listesi
@@ -93,8 +88,6 @@
         if (modal) {
             loadStokColumnState(); // Aktif sütunları yükle
             stokCurrentBranchId = null; // Grid görünümüne dön
-            kullaniciCurrentBranchId = null;
-            activeReportsTab = 'stok';
             switchReportTab('stok'); // Sekme UI + içerik render
             modal.style.display = 'flex';
             requestAnimationFrame(() => modal.classList.add('active'));
@@ -102,25 +95,16 @@
         }
     };
 
-    window.switchReportTab = function(tab) {
-        activeReportsTab = tab;
+    window.switchReportTab = function() {
         const viewStok = document.getElementById('view-stok');
         const viewKullanici = document.getElementById('view-kullanici');
         const tabStok = document.getElementById('reports-tab-stok');
         const tabKullanici = document.getElementById('reports-tab-kullanici');
-        if (tab === 'stok') {
-            if (viewStok) { viewStok.classList.add('active'); }
-            if (viewKullanici) { viewKullanici.classList.remove('active'); }
-            if (tabStok) { tabStok.classList.add('active'); }
-            if (tabKullanici) { tabKullanici.classList.remove('active'); }
-            renderStokView();
-        } else {
-            if (viewStok) { viewStok.classList.remove('active'); }
-            if (viewKullanici) { viewKullanici.classList.add('active'); }
-            if (tabStok) { tabStok.classList.remove('active'); }
-            if (tabKullanici) { tabKullanici.classList.add('active'); }
-            renderKullaniciView();
-        }
+        if (viewStok) { viewStok.classList.add('active'); }
+        if (viewKullanici) { viewKullanici.classList.remove('active'); }
+        if (tabStok) { tabStok.classList.add('active'); }
+        if (tabKullanici) { tabKullanici.classList.remove('active'); }
+        renderStokView();
     };
 
     window.closeReportsModal = function() {
