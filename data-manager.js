@@ -223,9 +223,10 @@ function syncMainAppPortalLinks() {
 
     var portalLinks = document.querySelectorAll('a.user-panel-link:not(.driver-home-link)');
     if (!portalLinks.length) return;
+    var driverLoginUrl = DRIVER_INDEX_URL + '?force=login';
 
     portalLinks.forEach(function(link) {
-        link.setAttribute('href', DRIVER_INDEX_URL);
+        link.setAttribute('href', driverLoginUrl);
     });
 }
 
