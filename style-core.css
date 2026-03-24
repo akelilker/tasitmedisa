@@ -1274,6 +1274,13 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
     max-width: calc(100vw - 32px) !important;
     right: 0 !important;
   }
+  #notifications-dropdown.open {
+    padding-bottom: 10px !important;
+    box-sizing: border-box !important;
+  }
+  #notifications-dropdown.open > .notification-item:last-child {
+    margin-bottom: 6px !important;
+  }
   /* Masaüstü: Bildirim kartları mobildeki gibi içerik kadar aksın */
   #notifications-dropdown .notification-item.date-warning-red-border,
   #notifications-dropdown .notification-item.date-warning-orange-border,
