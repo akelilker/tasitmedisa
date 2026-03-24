@@ -2497,8 +2497,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
     }
 }
 
-/* İçerik pseudo overlay'in üstünde kalsın */
-.app-container > * { position: relative; z-index: 1; }
+/* İçerik pseudo overlay'in üstünde kalsın (.user-panel-link position:fixed kalsın; bottom hesabı bozulmasın) */
+.app-container > *:not(.user-panel-link) { position: relative; z-index: 1; }
 /* Modal açıkken body kaymasını ve yatay kaymayı engelle */
 body.modal-open {
     overflow: hidden;
