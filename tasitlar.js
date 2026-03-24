@@ -564,6 +564,15 @@
     return { toolbar };
   }
 
+  function getSingleVisibleVehicleBranch() {
+    const branches = readBranches();
+    return branches.length === 1 ? branches[0] : null;
+  }
+
+  window.goBackToVehiclesDashboard = function() {
+    renderBranchDashboard(false, { allowSingleBranchBypass: false });
+  };
+
   // --- ANA GİRİŞ ---
   window.openVehiclesView = function() {
     loadVehicleColumnOrder();
@@ -710,7 +719,7 @@
         toolbar.innerHTML = `
             <div class="vt-left">
                 <div class="universal-back-bar">
-                    <button type="button" class="universal-back-btn" onclick="renderBranchDashboard()">
+                    <button type="button" class="universal-back-btn" onclick="goBackToVehiclesDashboard()">
                         <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
                         ${title ? `<span class="universal-back-label">${escapeHtml(title)}</span>` : ''}
                     </button>
@@ -759,13 +768,20 @@
    * - 2 kart: 2 kolon
    * - 3+ kart: Mobil 4 kolon, Desktop 5 kolon
    */
-  window.renderBranchDashboard = function(forceRender = false) {
+  window.renderBranchDashboard = function(forceRender = false, options = {}) {
     currentView = 'dashboard';
     activeBranchId = null;
     closeSearchBox(true);
     updateToolbar('dashboard');
 
     const branches = readBranches();
+    const allowSingleBranchBypass = options.allowSingleBranchBypass !== false;
+    const singleVisibleBranch = allowSingleBranchBypass ? getSingleVisibleVehicleBranch() : null;
+    if (singleVisibleBranch) {
+      openBranchList(singleVisibleBranch.id, singleVisibleBranch.name);
+      return;
+    }
+
     const vehicles = readVehicles();
     const activeVehicles = vehicles.filter(v => v.satildiMi !== true);
 
