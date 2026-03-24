@@ -4532,7 +4532,8 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     font-size: 23px !important;
   }
   .login-page .hero h1 {
-    font-size: 22px !important; /* 23px - 1pt */
+    font-size: clamp(17.8px, 5.1vw, 21.8px) !important;
+    letter-spacing: 2px !important;
   }
   .login-page .hero-panel-subtitle {
     font-size: 20px !important; /* h1'e göre 1pt küçük */
@@ -4750,11 +4751,14 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     height: 22px !important;
   }
 
-  /* 4. Footer stil birleştirme - yatay çizgi kaldırıldı (login = dashboard) */
+  /* 4. Footer stil birleştirme - login footer ana uygulamadaki üst çizgiyi korur */
   .login-page #app-footer.login-footer {
-    border-top: none !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.40) !important;
     border-left: 0.5px solid rgba(255, 255, 255, 0.10) !important;
     border-right: 0.5px solid rgba(255, 255, 255, 0.10) !important;
+    box-shadow:
+      0 -1px 0 rgba(255, 255, 255, 0.12),
+      0 -16px 30px rgba(var(--theme-color-rgb), 0.42) !important;
   }
 
   /* Mobil footer: dashboard kendi glow mantığını korur; login ana uygulama çizgisine döner */
@@ -4884,10 +4888,13 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 
   /* Mobil: h1 boyut ve harf aralığı (1pt küçük) */
   .hero-title-wrap h1,
-  .login-page .hero h1,
   .dashboard-page .hero h1 {
     font-size: 22px !important; /* 23px - 1pt */
     letter-spacing: 2.5px !important;
+  }
+  .login-page .hero h1 {
+    font-size: clamp(17.8px, 5.1vw, 21.8px) !important;
+    letter-spacing: 2px !important;
   }
 
 }
@@ -5243,26 +5250,6 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
 }
 
-/* iOS PWA: driver footer ölçek ve içerik hizası (dashboard + login) */
-@media (max-width: 768px) and (display-mode: standalone) {
-  .dashboard-page #app-footer,
-  .login-page #app-footer.login-footer {
-    height: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
-    min-height: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
-    padding-top: 4px !important;
-    padding-bottom: calc(4px + env(safe-area-inset-bottom, 0)) !important;
-    box-shadow: 0 -12px 24px rgba(var(--theme-color-rgb), 0.42) !important;
-  }
-  .dashboard-page #app-footer .footer-content,
-  .login-page #app-footer.login-footer .footer-content {
-    height: 100% !important;
-    align-items: center !important;
-    padding-top: 4px !important;
-    padding-bottom: 4px !important;
-    padding-left: max(12px, env(safe-area-inset-left, 0)) !important;
-    padding-right: max(12px, env(safe-area-inset-right, 0)) !important;
-  }
-}
 
 /* Mobil dashboard: alt yatay kesme ve buton clipping düzeltmesi */
 @media (max-width: 768px) {
