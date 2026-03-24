@@ -14,6 +14,8 @@
   var userAnalyticsTasitlar = [];
   var userAnalyticsView = 'list';
   var userAnalyticsQuery = '';
+  var userAnalyticsBranchId = null;
+  var userAnalyticsSelectedUserId = null;
 
   // CSS Spinner Animasyonu için (eğer yoksa ekle)
   if (!document.getElementById('spinner-style')) {
@@ -54,6 +56,9 @@
             opt.textContent = b.name || b.code || b.id;
             sel.appendChild(opt);
           });
+          if (userAnalyticsUsers.length && typeof window.renderUserAnalytics === 'function') {
+            window.renderUserAnalytics();
+          }
         }
       })
       .catch(function () {});
@@ -280,12 +285,448 @@
     }
   });
 
+  function toTitleCase(str) {
+    return (typeof window.toTitleCase === 'function' ? window.toTitleCase(str) : String(str || ''));
+  }
+
+  function formatAdSoyad(str) {
+    return (typeof window.formatAdSoyad === 'function' ? window.formatAdSoyad(str) : String(str || ''));
+  }
+
+  function formatPlaka(str) {
+    return (typeof window.formatPlaka === 'function' ? window.formatPlaka(str) : String(str || '-'));
+  }
+
+  function formatDateForDisplay(dateStr) {
+    if (!dateStr) return '-';
+    return (typeof window.formatDateShort === 'function' ? window.formatDateShort(dateStr) : String(dateStr));
+  }
+
+  function escapeHtmlLocal(value) {
+    if (typeof window.escapeHtml === 'function') return window.escapeHtml(value == null ? '' : String(value));
+    return String(value == null ? '' : value)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function formatMoney(value) {
+    var amount = Number(value || 0);
+    if (typeof window.formatNumber === 'function') return window.formatNumber(amount);
+    return amount.toLocaleString('tr-TR');
+  }
+
+  function getUserDisplayName(user) {
+    return String((user && (user.isim || user.name)) || '').trim();
+  }
+
+  function getUserPhone(user) {
+    return String((user && (user.telefon || user.phone)) || '').trim();
+  }
+
+  function getUserEmail(user) {
+    return String((user && (user.eposta || user.email)) || '').trim();
+  }
+
+  function getUserBranchIds(user) {
+    if (!user) return [];
+    if (Array.isArray(user.branchIds) && user.branchIds.length) return user.branchIds;
+    if (Array.isArray(user.subeIds) && user.subeIds.length) return user.subeIds;
+    if (user.branchId != null && user.branchId !== '') return [user.branchId];
+    if (user.subeId != null && user.subeId !== '') return [user.subeId];
+    return [];
+  }
+
+  function getBranchNameById(branchId) {
+    var branch = (branches || []).find(function(b) { return String(b.id) === String(branchId); });
+    return branch ? String(branch.name || branch.code || branch.id || '') : '';
+  }
+
+  function getUserBranchNames(user) {
+    return getUserBranchIds(user)
+      .map(getBranchNameById)
+      .filter(function(name) { return !!String(name || '').trim(); });
+  }
+
+  function getUserRoleLabel(user) {
+    var roleLabels = {
+      genel_yonetici: 'Genel Yönetici',
+      sube_yonetici: 'Yönetici',
+      yonetici_kullanici: 'Yönetici+Kullanıcı',
+      kullanici: 'Kullanıcı',
+      admin: 'Genel Yönetici',
+      sales: 'Satış Temsilcisi',
+      driver: 'Kullanıcı'
+    };
+    var role = user && user.role ? user.role : '';
+    var isManagerWithPanel = role === 'sube_yonetici' && user && (user.kullanici_paneli === true || user.surucu_paneli === true);
+    var displayRole = isManagerWithPanel ? 'yonetici_kullanici' : role;
+    return toTitleCase(roleLabels[displayRole] || displayRole || 'Kullanıcı');
+  }
+
+  function eventMatchesUser(event, vehicle, user) {
+    var eventData = event && event.data ? event.data : {};
+    var eventSurucu = normalizeForSearch(eventData.surucu || event.surucu || '');
+    var eventTahsis = normalizeForSearch(eventData.tahsisKisi || event.tahsisKisi || '');
+    var userName = normalizeForSearch(getUserDisplayName(user));
+    if (userName && ((eventSurucu && eventSurucu.indexOf(userName) !== -1) || (eventTahsis && eventTahsis.indexOf(userName) !== -1))) {
+      return true;
+    }
+    return !eventSurucu && !eventTahsis && String(vehicle.assignedUserId || '') === String(user.id);
+  }
+
+  function buildUserAnalyticsRecord(user) {
+    var tasitlar = userAnalyticsTasitlar || [];
+    var cezaCount = 0;
+    var cezaTutar = 0;
+    var kazaCount = 0;
+    var kazaTutar = 0;
+    var bakimCount = 0;
+    var assignedVehicles = [];
+
+    tasitlar.forEach(function(tasit) {
+      if (String(tasit.assignedUserId || '') === String(user.id)) {
+        assignedVehicles.push(tasit);
+      }
+      if (!tasit.events || !Array.isArray(tasit.events)) return;
+      tasit.events.forEach(function(event) {
+        if (!eventMatchesUser(event, tasit, user)) return;
+        if (event.type === 'ceza') {
+          cezaCount++;
+          cezaTutar += parseFloat(String(((event.data && event.data.tutar) || event.tutar || '0')).replace(/\./g, '').replace(/,/g, '.')) || 0;
+        } else if (event.type === 'kaza') {
+          kazaCount++;
+          kazaTutar += parseFloat(String(((event.data && event.data.hasarTutari) || event.tutar || '0')).replace(/\./g, '').replace(/,/g, '.')) || 0;
+        } else if (event.type === 'bakim') {
+          bakimCount++;
+        }
+      });
+    });
+
+    var activeVehicle = assignedVehicles[0] || null;
+    var vehiclePlate = activeVehicle ? formatPlaka(activeVehicle.plaka || activeVehicle.plate || '-') : 'Zimmetli Araç Yok';
+    var vehicleBrandSource = activeVehicle ? (activeVehicle.brandModel || [activeVehicle.arac_marka, activeVehicle.arac_model].filter(Boolean).join(' ') || '-') : '';
+    var vehicleBrand = activeVehicle ? toTitleCase(vehicleBrandSource) : 'Araç ataması yok';
+    var branchNames = getUserBranchNames(user);
+    var phone = getUserPhone(user);
+    var email = getUserEmail(user);
+    var searchHaystack = [
+      getUserDisplayName(user),
+      phone,
+      email,
+      vehiclePlate,
+      vehicleBrand,
+      branchNames.join(' ')
+    ].map(normalizeForSearch).join(' ');
+
+    return {
+      id: user.id,
+      raw: user,
+      isim: getUserDisplayName(user),
+      adSoyad: formatAdSoyad(getUserDisplayName(user) || '-'),
+      telefon: phone || '-',
+      email: email || '-',
+      branchIds: getUserBranchIds(user),
+      branchNames: branchNames,
+      branchLabel: branchNames.length ? branchNames.map(function(name) { return toTitleCase(name); }).join(', ') : '-',
+      roleLabel: getUserRoleLabel(user),
+      plaka: vehiclePlate,
+      marka: vehicleBrand,
+      assignedVehicles: assignedVehicles,
+      cezaCount: cezaCount,
+      cezaTutar: cezaTutar,
+      kazaCount: kazaCount,
+      kazaTutar: kazaTutar,
+      bakimCount: bakimCount,
+      searchHaystack: searchHaystack
+    };
+  }
+
+  function getFilteredUserAnalyticsRecords(options) {
+    var query = normalizeForSearch(userAnalyticsQuery);
+    var branchId = options && options.ignoreBranch ? null : userAnalyticsBranchId;
+    var records = [];
+
+    (userAnalyticsUsers || []).forEach(function(user) {
+      if (user.aktif === false) return;
+      if (!getUserDisplayName(user)) return;
+      var record = buildUserAnalyticsRecord(user);
+      if (branchId && branchId !== 'all') {
+        var inBranch = record.branchIds.some(function(id) { return String(id) === String(branchId); });
+        if (!inBranch) return;
+      }
+      if (!options || !options.ignoreQuery) {
+        if (query && record.searchHaystack.indexOf(query) === -1) return;
+      }
+      records.push(record);
+    });
+
+    records.sort(function(a, b) {
+      return a.isim.localeCompare(b.isim, 'tr');
+    });
+    return records;
+  }
+
+  function collectUserAnalyticsBranchItems() {
+    var users = (userAnalyticsUsers || []).filter(function(user) {
+      return user.aktif !== false && !!getUserDisplayName(user);
+    });
+    var items = [{
+      id: 'all',
+      name: 'Tümü',
+      count: users.length,
+      allCard: true
+    }];
+
+    (branches || []).forEach(function(branch) {
+      var count = users.filter(function(user) {
+        return getUserBranchIds(user).some(function(branchId) { return String(branchId) === String(branch.id); });
+      }).length;
+      items.push({
+        id: branch.id,
+        name: branch.name || branch.code || branch.id,
+        count: count,
+        allCard: false
+      });
+    });
+
+    return items;
+  }
+
+  function collectUserAnalyticsEvents(user) {
+    var events = [];
+    (userAnalyticsTasitlar || []).forEach(function(tasit) {
+      if (!tasit.events || !Array.isArray(tasit.events)) return;
+      tasit.events.forEach(function(event) {
+        if (!eventMatchesUser(event, tasit, user)) return;
+        events.push({
+          type: String(event.type || '').toLowerCase(),
+          date: event.date || '',
+          vehiclePlate: formatPlaka(tasit.plaka || tasit.plate || '-'),
+          vehicleBrand: toTitleCase(tasit.brandModel || [tasit.arac_marka, tasit.arac_model].filter(Boolean).join(' ') || '-'),
+          detail: buildUserEventDetail(event)
+        });
+      });
+    });
+    events.sort(function(a, b) {
+      var dateA = a.date ? new Date(a.date) : new Date(0);
+      var dateB = b.date ? new Date(b.date) : new Date(0);
+      return dateB - dateA;
+    });
+    return events;
+  }
+
+  function buildUserEventDetail(event) {
+    var eventData = event && event.data ? event.data : {};
+    if (event.type === 'ceza') {
+      var cezaTutar = (eventData.tutar || event.tutar) ? formatMoney(parseFloat(String(eventData.tutar || event.tutar || '0').replace(/\./g, '').replace(/,/g, '.')) || 0) + ' TL' : '-';
+      var cezaDetay = toTitleCase(eventData.aciklama || event.aciklama || 'Ceza bildirimi');
+      return 'Ceza: ' + cezaTutar + ' | ' + cezaDetay;
+    }
+    if (event.type === 'kaza') {
+      var hasarTutar = (eventData.hasarTutari || event.tutar) ? formatMoney(parseFloat(String(eventData.hasarTutari || event.tutar || '0').replace(/\./g, '').replace(/,/g, '.')) || 0) + ' TL' : '-';
+      var kazaDetay = toTitleCase(eventData.aciklama || event.aciklama || 'Kaza bildirimi');
+      return 'Hasar: ' + hasarTutar + ' | ' + kazaDetay;
+    }
+    if (event.type === 'bakim') {
+      return toTitleCase(eventData.islemler || event.islemler || event.aciklama || 'Bakım bildirimi');
+    }
+    if (event.type === 'km') {
+      return 'KM: ' + String(eventData.km || event.km || '-');
+    }
+    return toTitleCase(eventData.aciklama || event.aciklama || 'Kayıt mevcut');
+  }
+
+  function getSelectedBranchLabel() {
+    if (!userAnalyticsBranchId || userAnalyticsBranchId === 'all') return 'Tümü';
+    return toTitleCase(getBranchNameById(userAnalyticsBranchId) || userAnalyticsBranchId);
+  }
+
+  function syncUserAnalyticsToolbar() {
+    var toolbar = document.querySelector('#tab-kullanici .user-analytics-toolbar');
+    var searchInput = document.getElementById('user-analytics-search');
+    var listModeActive = userAnalyticsBranchId !== null && !userAnalyticsSelectedUserId;
+    if (toolbar) toolbar.classList.toggle('is-hidden', !listModeActive);
+    if (searchInput) {
+      searchInput.disabled = !listModeActive;
+      searchInput.value = userAnalyticsQuery;
+      searchInput.placeholder = 'İsim, telefon, e-posta, plaka, marka ara';
+    }
+  }
+
+  function renderUserAnalyticsBranchGrid() {
+    var target = document.getElementById('user-analytics-container');
+    if (!target) return;
+    var items = collectUserAnalyticsBranchItems();
+    if (!items.length) {
+      target.innerHTML = '<p class="user-analytics-empty">Gösterilecek kullanıcı bulunamadı.</p>';
+      return;
+    }
+
+    var html = '<div class="user-analytics-branch-grid">';
+    items.forEach(function(item) {
+      html += '<button type="button" class="user-analytics-branch-card' + (item.allCard ? ' all-card' : '') + '" data-user-branch-id="' + escapeHtmlLocal(item.id) + '">';
+      html += '<span class="user-analytics-branch-name">' + escapeHtmlLocal(toTitleCase(item.name)) + '</span>';
+      html += '<span class="user-analytics-branch-count">' + escapeHtmlLocal(item.count) + ' Kullanıcı</span>';
+      html += '</button>';
+    });
+    html += '</div>';
+    target.innerHTML = html;
+
+    Array.prototype.forEach.call(target.querySelectorAll('[data-user-branch-id]'), function(button) {
+      button.addEventListener('click', function() {
+        userAnalyticsBranchId = button.getAttribute('data-user-branch-id');
+        userAnalyticsSelectedUserId = null;
+        window.renderUserAnalytics();
+      });
+    });
+  }
+
+  function buildMetricRows(record) {
+    var html = '<div class="user-analytics-metrics">';
+    html += '<div class="metric-row metric-ceza"><span>Cezalar (' + record.cezaCount + ')</span><strong>' + formatMoney(record.cezaTutar) + ' TL</strong></div>';
+    html += '<div class="metric-row metric-kaza"><span>Kazalar (' + record.kazaCount + ')</span><strong>' + formatMoney(record.kazaTutar) + ' TL</strong></div>';
+    html += '<div class="metric-row metric-bakim"><span>Bakımlar</span><strong>' + record.bakimCount + ' Adet</strong></div>';
+    html += '</div>';
+    return html;
+  }
+
+  function renderUserAnalyticsList() {
+    var target = document.getElementById('user-analytics-container');
+    if (!target) return;
+    var records = getFilteredUserAnalyticsRecords();
+
+    var html = '<div class="user-analytics-list-shell">';
+    html += '<div class="universal-back-bar"><button type="button" class="universal-back-btn" id="user-analytics-back-to-branches" title="Geri Dön"><svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg><span class="universal-back-label">Şubelere Dön</span></button></div>';
+    html += '<div class="user-analytics-statebar"><span class="user-analytics-state-label">' + escapeHtmlLocal(getSelectedBranchLabel()) + '</span><strong>' + records.length + ' Kullanıcı</strong></div>';
+
+    if (!records.length) {
+      html += '<p class="user-analytics-empty">Aramaya veya şubeye uygun kullanıcı bulunamadı.</p></div>';
+      target.innerHTML = html;
+      var emptyBackBtn = document.getElementById('user-analytics-back-to-branches');
+      if (emptyBackBtn) {
+        emptyBackBtn.addEventListener('click', function() {
+          userAnalyticsBranchId = null;
+          userAnalyticsSelectedUserId = null;
+          userAnalyticsQuery = '';
+          window.renderUserAnalytics();
+        });
+      }
+      return;
+    }
+
+    if (userAnalyticsView === 'list') {
+      html += '<div class="user-analytics-list">';
+      records.forEach(function(record) {
+        html += '<button type="button" class="user-analytics-item user-analytics-clickable" data-user-id="' + escapeHtmlLocal(record.id) + '">';
+        html += '<div class="user-analytics-head"><h3>' + escapeHtmlLocal(capitalizeWords(record.adSoyad)) + '</h3><span class="user-analytics-plate">' + escapeHtmlLocal(record.plaka) + '</span></div>';
+        html += '<div class="user-analytics-submeta"><span>' + escapeHtmlLocal(record.marka) + '</span><span>' + escapeHtmlLocal(record.branchLabel) + '</span></div>';
+        html += '<div class="user-analytics-contact-row"><span>' + escapeHtmlLocal(record.telefon) + '</span><span>' + escapeHtmlLocal(record.email) + '</span></div>';
+        html += buildMetricRows(record);
+        html += '</button>';
+      });
+      html += '</div>';
+    } else {
+      html += '<div class="user-analytics-cards">';
+      records.forEach(function(record) {
+        html += '<button type="button" class="user-analytics-card user-analytics-clickable" data-user-id="' + escapeHtmlLocal(record.id) + '">';
+        html += '<div class="card-accent"></div>';
+        html += '<h3>' + escapeHtmlLocal(capitalizeWords(record.adSoyad)) + '</h3>';
+        html += '<div class="user-analytics-plate">Plaka: <span>' + escapeHtmlLocal(record.plaka) + '</span></div>';
+        html += '<div class="user-analytics-submeta"><span>' + escapeHtmlLocal(record.marka) + '</span><span>' + escapeHtmlLocal(record.branchLabel) + '</span></div>';
+        html += '<div class="user-analytics-contact-row"><span>' + escapeHtmlLocal(record.telefon) + '</span><span>' + escapeHtmlLocal(record.roleLabel) + '</span></div>';
+        html += buildMetricRows(record);
+        html += '</button>';
+      });
+      html += '</div>';
+    }
+
+    html += '</div>';
+    target.innerHTML = html;
+
+    var backBtn = document.getElementById('user-analytics-back-to-branches');
+    if (backBtn) {
+      backBtn.addEventListener('click', function() {
+        userAnalyticsBranchId = null;
+        userAnalyticsSelectedUserId = null;
+        userAnalyticsQuery = '';
+        window.renderUserAnalytics();
+      });
+    }
+
+    Array.prototype.forEach.call(target.querySelectorAll('[data-user-id]'), function(element) {
+      element.addEventListener('click', function() {
+        userAnalyticsSelectedUserId = element.getAttribute('data-user-id');
+        window.renderUserAnalytics();
+      });
+    });
+  }
+
+  function renderUserAnalyticsDetail() {
+    var target = document.getElementById('user-analytics-container');
+    if (!target) return;
+    var record = getFilteredUserAnalyticsRecords({ ignoreQuery: true }).find(function(item) {
+      return String(item.id) === String(userAnalyticsSelectedUserId);
+    });
+
+    if (!record) {
+      userAnalyticsSelectedUserId = null;
+      window.renderUserAnalytics();
+      return;
+    }
+
+    var userEvents = collectUserAnalyticsEvents(record.raw);
+    var html = '<div class="user-analytics-detail-shell">';
+    html += '<div class="universal-back-bar"><button type="button" class="universal-back-btn" id="user-analytics-back-to-list" title="Geri Dön"><svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg><span class="universal-back-label">Listeye Dön</span></button></div>';
+    html += '<div class="user-analytics-detail-grid">';
+    html += '<section class="user-analytics-detail-section">';
+    html += '<h3 class="user-analytics-detail-title">Kullanıcı Bilgileri</h3>';
+    html += '<div class="user-analytics-detail-row"><span class="user-analytics-detail-label">Ad Soyad</span><span class="user-analytics-detail-value">' + escapeHtmlLocal(record.adSoyad) + '</span></div>';
+    html += '<div class="user-analytics-detail-row"><span class="user-analytics-detail-label">Şube</span><span class="user-analytics-detail-value">' + escapeHtmlLocal(record.branchLabel) + '</span></div>';
+    html += '<div class="user-analytics-detail-row"><span class="user-analytics-detail-label">Telefon</span><span class="user-analytics-detail-value">' + escapeHtmlLocal(record.telefon) + '</span></div>';
+    html += '<div class="user-analytics-detail-row"><span class="user-analytics-detail-label">E-posta</span><span class="user-analytics-detail-value">' + escapeHtmlLocal(record.email) + '</span></div>';
+    html += '<div class="user-analytics-detail-row"><span class="user-analytics-detail-label">Kullanıcı Tipi</span><span class="user-analytics-detail-value">' + escapeHtmlLocal(record.roleLabel) + '</span></div>';
+    html += '<div class="user-analytics-detail-row"><span class="user-analytics-detail-label">Zimmetli Araç</span><span class="user-analytics-detail-value">' + escapeHtmlLocal(record.plaka) + ' - ' + escapeHtmlLocal(record.marka) + '</span></div>';
+    html += buildMetricRows(record);
+    html += '</section>';
+    html += '<section class="user-analytics-detail-section">';
+    html += '<h3 class="user-analytics-detail-title">Kullanıcı Hareketleri</h3>';
+    if (!userEvents.length) {
+      html += '<p class="user-analytics-empty user-analytics-empty-left">Henüz hareket kaydı bulunmamaktadır.</p>';
+    } else {
+      html += '<div class="user-analytics-events-list">';
+      userEvents.forEach(function(event) {
+        html += '<article class="user-analytics-event-item">';
+        html += '<div class="user-analytics-event-head"><span class="user-analytics-event-type">' + escapeHtmlLocal((event.type || 'olay').toUpperCase()) + '</span><span class="user-analytics-event-date">' + escapeHtmlLocal(formatDateForDisplay(event.date)) + '</span></div>';
+        html += '<div class="user-analytics-event-vehicle">' + escapeHtmlLocal(event.vehiclePlate) + ' - ' + escapeHtmlLocal(event.vehicleBrand) + '</div>';
+        html += '<div class="user-analytics-event-detail">' + escapeHtmlLocal(event.detail) + '</div>';
+        html += '</article>';
+      });
+      html += '</div>';
+    }
+    html += '</section>';
+    html += '</div></div>';
+    target.innerHTML = html;
+
+    var backBtn = document.getElementById('user-analytics-back-to-list');
+    if (backBtn) {
+      backBtn.addEventListener('click', function() {
+        userAnalyticsSelectedUserId = null;
+        window.renderUserAnalytics();
+      });
+    }
+  }
+
   window.loadUserAnalytics = function() {
     var container = document.getElementById('user-analytics-container');
     if (!container) return;
 
-    // Sadece ilk açılışta yükle
-    if (container.dataset.loaded === 'true') return;
+    if (container.dataset.loaded === 'true') {
+      window.renderUserAnalytics();
+      return;
+    }
 
     container.innerHTML = '<div style="text-align:center; padding:40px;"><div class="loading-spinner" style="display:inline-block; width:30px; height:30px; border:3px solid rgba(255,255,255,0.1); border-top-color:var(--theme-color); border-radius:50%; animation:spin 1s linear infinite;"></div><p style="color:var(--muted); margin-top:15px;">Kullanıcı istatistikleri hesaplanıyor...</p></div>';
 
@@ -307,103 +748,27 @@
   };
 
   window.renderUserAnalytics = function() {
-    var users = userAnalyticsUsers || [];
-    var tasitlar = userAnalyticsTasitlar || [];
-    var query = normalizeForSearch(userAnalyticsQuery);
-    var cards = [];
-
-    users.forEach(function(u) {
-      if (u.aktif === false) return; // Pasif kullanıcıları atla
-      var isim = u.isim || u.name || '';
-      if (!isim.trim()) return;
-      if (query && normalizeForSearch(isim).indexOf(query) === -1) return;
-
-      var cezaCount = 0, cezaTutar = 0;
-      var kazaCount = 0, kazaTutar = 0;
-      var bakimCount = 0;
-
-      tasitlar.forEach(function(t) {
-        if (t.events && Array.isArray(t.events)) {
-          t.events.forEach(function(e) {
-            var eSurucu = (e.data && e.data.surucu) ? String(e.data.surucu).toLowerCase() : '';
-            var eTahsis = (e.data && e.data.tahsisKisi) ? String(e.data.tahsisKisi).toLowerCase() : '';
-            var uIsim = String(isim).toLowerCase();
-
-            // Event kullanıcıyla eşleşiyor mu?
-            var matched = false;
-            if (eSurucu && eSurucu.includes(uIsim)) matched = true;
-            else if (eTahsis && eTahsis.includes(uIsim)) matched = true;
-            else if (!eSurucu && !eTahsis && String(t.assignedUserId) === String(u.id)) matched = true;
-
-            if (matched) {
-              if (e.type === 'ceza') {
-                cezaCount++;
-                var cTutar = parseFloat(String((e.data && e.data.tutar) || '0').replace(/\./g, '').replace(/,/g, '.')) || 0;
-                cezaTutar += cTutar;
-              } else if (e.type === 'kaza') {
-                kazaCount++;
-                var kTutar = parseFloat(String((e.data && e.data.hasarTutari) || '0').replace(/\./g, '').replace(/,/g, '.')) || 0;
-                kazaTutar += kTutar;
-              } else if (e.type === 'bakim') {
-                bakimCount++;
-              }
-            }
-          });
-        }
-      });
-
-      // Güncel Aracı Bul
-      var aktifArac = tasitlar.find(function(t) { return String(t.assignedUserId) === String(u.id); });
-      var aracDisplay = aktifArac ? ((aktifArac.plaka || aktifArac.plate || '').toString().toUpperCase()) : 'Zimmetli Araç Yok';
-      cards.push({
-        isim: isim,
-        plaka: aracDisplay,
-        cezaCount: cezaCount,
-        cezaTutar: cezaTutar,
-        kazaCount: kazaCount,
-        kazaTutar: kazaTutar,
-        bakimCount: bakimCount
-      });
-    });
-
     var target = document.getElementById('user-analytics-container');
     if (!target) return;
 
-    if (!cards.length) {
-      target.innerHTML = '<p class="user-analytics-empty">Aramaya uygun kullanıcı bulunamadı.</p>';
+    syncUserAnalyticsToolbar();
+
+    if (!(userAnalyticsUsers || []).length) {
+      target.innerHTML = '<p class="user-analytics-empty">Gösterilecek kullanıcı bulunamadı.</p>';
       return;
     }
 
-    var html = '';
-    if (userAnalyticsView === 'list') {
-      html += '<div class="user-analytics-list">';
-      cards.forEach(function(c) {
-        html += '<div class="user-analytics-item">';
-        html += '<div class="user-analytics-head"><h3>' + escapeHtml(capitalizeWords(c.isim)) + '</h3><span class="user-analytics-plate">' + escapeHtml(c.plaka) + '</span></div>';
-        html += '<div class="user-analytics-metrics">';
-        html += '<div class="metric-row metric-ceza"><span>Cezalar (' + c.cezaCount + ')</span><strong>' + (typeof window.formatNumber === 'function' ? window.formatNumber(c.cezaTutar) : c.cezaTutar.toLocaleString('tr-TR')) + ' TL</strong></div>';
-        html += '<div class="metric-row metric-kaza"><span>Kazalar (' + c.kazaCount + ')</span><strong>' + (typeof window.formatNumber === 'function' ? window.formatNumber(c.kazaTutar) : c.kazaTutar.toLocaleString('tr-TR')) + ' TL</strong></div>';
-        html += '<div class="metric-row metric-bakim"><span>Bakımlar</span><strong>' + c.bakimCount + ' Adet</strong></div>';
-        html += '</div></div>';
-      });
-      html += '</div>';
-    } else {
-      html += '<div class="user-analytics-cards">';
-      cards.forEach(function(c) {
-        html += '<div class="user-analytics-card">';
-        html += '<div class="card-accent"></div>';
-        html += '<h3>' + escapeHtml(capitalizeWords(c.isim)) + '</h3>';
-        html += '<div class="user-analytics-plate">Plaka: <span>' + escapeHtml(c.plaka) + '</span></div>';
-        html += '<div class="user-analytics-metrics">';
-        html += '<div class="metric-row metric-ceza"><span>Cezalar (' + c.cezaCount + ')</span><strong>' + (typeof window.formatNumber === 'function' ? window.formatNumber(c.cezaTutar) : c.cezaTutar.toLocaleString('tr-TR')) + ' TL</strong></div>';
-        html += '<div class="metric-row metric-kaza"><span>Kazalar (' + c.kazaCount + ')</span><strong>' + (typeof window.formatNumber === 'function' ? window.formatNumber(c.kazaTutar) : c.kazaTutar.toLocaleString('tr-TR')) + ' TL</strong></div>';
-        html += '<div class="metric-row metric-bakim"><span>Bakımlar</span><strong>' + c.bakimCount + ' Adet</strong></div>';
-        html += '</div></div>';
-      });
-      html += '</div>';
+    if (userAnalyticsSelectedUserId) {
+      renderUserAnalyticsDetail();
+      return;
     }
 
-    target.innerHTML = html;
+    if (userAnalyticsBranchId === null) {
+      renderUserAnalyticsBranchGrid();
+      return;
+    }
+
+    renderUserAnalyticsList();
   };
 
   function approveRequest(id) {
