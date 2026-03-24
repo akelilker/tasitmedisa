@@ -1275,11 +1275,11 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
     right: 0 !important;
   }
   #notifications-dropdown.open {
-    padding-bottom: 10px !important;
+    padding-bottom: 1px !important;
     box-sizing: border-box !important;
   }
   #notifications-dropdown.open > .notification-item:last-child {
-    margin-bottom: 6px !important;
+    margin-bottom: 0 !important;
   }
   /* Masaüstü: Bildirim kartları mobildeki gibi içerik kadar aksın */
   #notifications-dropdown .notification-item.date-warning-red-border,
