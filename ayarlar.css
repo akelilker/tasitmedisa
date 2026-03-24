@@ -1875,10 +1875,20 @@ input.settings-form-input:-moz-autofill,
     .settings-add-text-btn { font-size: 15px; }
     #branch-form-modal .form-label,
     #user-form-modal .form-label { font-size: 15px; }
+    #user-form-modal #user-form.user-form-inner {
+        transform: translateY(-15px);
+    }
     #user-form-modal .form-section:first-child .form-label {
-        display: inline-block;
-        transform: translateY(-18px);
-        transform-origin: left center;
+        display: block;
+        transform: none;
+    }
+    #branch-form-modal .modal-body .form-section,
+    #user-form-modal .modal-body .form-section {
+        margin-top: 2px !important;
+    }
+    #branch-form-modal .modal-body .form-section:first-child,
+    #user-form-modal .modal-body .form-section:first-child {
+        margin-top: 2px !important;
     }
     #branch-form-modal .form-input,
     #user-form-modal .form-input,
@@ -1889,6 +1899,12 @@ input.settings-form-input:-moz-autofill,
         box-sizing: border-box;
         background: var(--bg-content, #0d131f) !important;
         color: var(--txt-gray-darker, #888) !important; /* Ayarlar: input içi metin gri */
+    }
+    #user-form-modal .form-input,
+    #user-form-modal select.form-input,
+    #user-form-modal .user-vehicles-trigger {
+        border-color: rgba(255, 255, 255, 0.52) !important;
+        box-shadow: 0 0 0 0.5px rgba(255, 255, 255, 0.10) !important;
     }
     #user-form-modal .user-vehicles-trigger {
         min-height: 29px !important;
