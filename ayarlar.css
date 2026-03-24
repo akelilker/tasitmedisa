@@ -657,11 +657,13 @@ body.modal-open #cache-confirm-modal.open {
     font-size: calc(16px + 1pt); 
 } 
 
-.settings-dropdown .cache-clear-btn {
+.settings-dropdown .cache-clear-btn,
+.settings-dropdown .settings-logout-btn {
   border: 1px solid rgba(var(--theme-color-rgb), 0.5) !important;
   overflow: visible !important; /* Hover'da metin büyüsün, kesilmesin */
 }
-.settings-dropdown .cache-clear-btn:hover {
+.settings-dropdown .cache-clear-btn:hover,
+.settings-dropdown .settings-logout-btn:hover {
   border-color: rgba(var(--theme-color-rgb), 0.7) !important;
   font-size: calc(17px + 1pt) !important;
 }
@@ -959,18 +961,59 @@ input.settings-form-input:-moz-autofill,
 }
 
 /* Kullanıcı Düzenle: liste yukarı açılsın, Kaydet/Vazgeç butonları hep görünsün */
+/* Taşıt seçimi: ana sayfa ayarlar menüsü kutularıyla aynı çerçeve tonu; liste + arama ayrı kutu */
+#user-form-modal .user-vehicles-trigger {
+  border: 1px solid var(--border-subtle) !important;
+  border-radius: 10px !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3) !important;
+}
+#user-form-modal .user-vehicles-trigger:hover {
+  border-color: var(--border-mid) !important;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4) !important;
+}
+#user-form-modal .user-vehicles-trigger.user-vehicles-trigger-open {
+  border-color: var(--border-mid) !important;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4) !important;
+}
 #user-form-modal .user-vehicles-dropdown {
   top: auto !important;
   bottom: 100% !important;
   margin-top: 0 !important;
   margin-bottom: 6px !important;
   max-height: min(320px, 50vh);
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  gap: 8px !important;
 }
 #user-form-modal .user-vehicles-checkbox-list {
   max-height: 200px !important; /* 5 satır (~40px/satır), gerisi kaydırılır */
   overflow-y: auto !important;
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
+  border: 1px solid var(--border-subtle) !important;
+  border-radius: 10px !important;
+  background: var(--bg) !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3) !important;
+  padding: 2px 0 !important;
+  box-sizing: border-box !important;
+}
+#user-form-modal .user-vehicles-search-wrap {
+  border: 1px solid var(--border-subtle) !important;
+  border-radius: 10px !important;
+  background: var(--bg) !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3) !important;
+  padding: 8px !important;
+  box-sizing: border-box !important;
+}
+#user-form-modal .user-vehicles-search-input {
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 8px !important;
+}
+#user-form-modal .user-vehicles-search-input:focus {
+  border-color: var(--border-mid) !important;
+  outline: none !important;
 }
 #user-form-modal .user-vehicles-checkbox-list::-webkit-scrollbar {
   width: 6px;
@@ -1553,8 +1596,9 @@ input.settings-form-input:-moz-autofill,
   box-shadow: none !important;
 }
 #user-form-modal .user-vehicles-trigger:focus {
-  border-color: var(--theme-color) !important;
+  border-color: var(--border-mid) !important;
   outline: none !important;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4) !important;
 }
 
 /* === MOBİL AYARLAR === */
@@ -1846,6 +1890,11 @@ input.settings-form-input:-moz-autofill,
     #settings-menu > button.cache-clear-btn {
         border-color: var(--border-subtle) !important;
     }
+    /* Çıkış: diğer satırlarla aynı kutu, kırmızı çerçeve + kırmızı metin (üstteki genel buton stilini ezer) */
+    #settings-menu > button.settings-logout-btn {
+        border: 1px solid rgba(var(--theme-color-rgb), 0.5) !important;
+        color: var(--theme-color) !important;
+    }
 
     /* Mobil: Şube/Kullanıcı form input autofill tema rengi */
     #branch-form-modal .form-input:-webkit-autofill,
@@ -1876,8 +1925,10 @@ input.settings-form-input:-moz-autofill,
             0 6px 14px rgba(0, 0, 0, 0.25),
             0 6px 20px rgba(var(--theme-color-rgb), 0.12) !important;
     }
-    #settings-menu > button.cache-clear-btn:hover {
+    #settings-menu > button.cache-clear-btn:hover,
+    #settings-menu > button.settings-logout-btn:hover {
         color: var(--theme-color) !important;
+        border-color: rgba(var(--theme-color-rgb), 0.7) !important;
     }
 }
 
