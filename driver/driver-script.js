@@ -146,9 +146,13 @@ const API_BASE = (function(){
   function syncDashboardHomeLinkVisibility(role) {
     if (!document.body || !document.body.classList.contains('dashboard-page')) return;
     var normalizedRole = String(role || '').trim();
-    var shouldShow = normalizedRole === 'sube_yonetici' || normalizedRole === 'genel_yonetici';
+    var shouldShow = normalizedRole === 'sube_yonetici' || normalizedRole === 'genel_yonetici' || normalizedRole === 'yonetici_kullanici';
     document.querySelectorAll('.dashboard-page .driver-footer-back-wrap').forEach(function(el) {
-      el.style.display = shouldShow ? '' : 'none';
+      if (shouldShow) {
+        el.style.removeProperty('display');
+      } else {
+        el.style.setProperty('display', 'none', 'important');
+      }
     });
   }
   
