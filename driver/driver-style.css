@@ -3302,7 +3302,7 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 
 @media (min-width: 769px) {
   .login-page .user-panel-link.driver-home-link {
-    bottom: calc(var(--app-footer-real-height) + 14px) !important;
+    bottom: calc(var(--app-footer-real-height) + 34px) !important;
   }
 }
 
