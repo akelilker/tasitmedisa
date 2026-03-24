@@ -2433,14 +2433,14 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
 @supports (-webkit-touch-callout: none) {
 @media (max-width: 640px) and (display-mode: standalone) {
     #notifications-dropdown {
-        max-height: min(420px, calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 100px)) !important;
+        max-height: var(--mobile-notifications-max-height, min(356px, calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 112px))) !important;
     }
     #notifications-dropdown.open {
         z-index: 10060 !important;
         padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px)) !important;
     }
     body:not(.modal-open):has(#notifications-dropdown.open) .app-container {
-        z-index: 10050 !important;
+        overflow: visible !important;
     }
     body:not(.modal-open):has(#notifications-dropdown.open) .content-wrap {
         overflow-y: visible !important;
@@ -2816,4 +2816,3 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
     box-shadow: 0 2px 16px rgba(0, 0, 0, 0.32);
   }
 }
-
