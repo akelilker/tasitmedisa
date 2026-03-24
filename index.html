@@ -756,7 +756,28 @@
                 var base = '';
                 if (path.indexOf('/tasitmedisa') === 0) base = '/tasitmedisa/';
                 else if (path.indexOf('/medisa') === 0) base = '/medisa/';
-                link.setAttribute('href', base + 'driver/?force=login');
+                var portalUrl = base + 'driver/?force=login';
+                var token = '';
+                try {
+                    token = localStorage.getItem('medisa_portal_token')
+                        || sessionStorage.getItem('medisa_portal_token')
+                        || localStorage.getItem('driver_token')
+                        || sessionStorage.getItem('driver_token')
+                        || '';
+                } catch (storageErr) {}
+                if (token && token.indexOf('.') !== -1) {
+                    var parts = token.split('.');
+                    if (parts.length === 3) {
+                        var payload = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+                        while (payload.length % 4) payload += '=';
+                        var parsed = JSON.parse(atob(payload));
+                        var nowTs = Math.floor(Date.now() / 1000);
+                        if (parsed && parsed.exp && Number(parsed.exp) >= nowTs && parsed.driver_dashboard === true) {
+                            portalUrl = base + 'driver/dashboard.html';
+                        }
+                    }
+                }
+                link.setAttribute('href', portalUrl);
             } catch (e) {}
         })();
     </script>
@@ -1001,7 +1022,7 @@
     })();
     </script>
 
-    <script defer src="data-manager.js?v=20260325.1"></script>
+    <script defer src="data-manager.js?v=20260325.2"></script>
     <script defer src="data-service.js?v=20260316"></script>
     <script defer src="script-core.js?v=20260325.2"></script>
 </body>

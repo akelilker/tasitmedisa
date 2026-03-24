@@ -3300,9 +3300,10 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   z-index: 10003;
 }
 
+/* Masaüstü: link kutusunun altı ile footer üst (border) arası 8px */
 @media (min-width: 769px) {
   .login-page .user-panel-link.driver-home-link {
-    bottom: calc(var(--app-footer-real-height) + 34px) !important;
+    bottom: calc(var(--app-footer-real-height) + 8px + env(safe-area-inset-bottom, 0)) !important;
   }
 }
 
