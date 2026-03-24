@@ -1514,8 +1514,8 @@ body.dashboard-page {
   }
   /* Login logosu mobilde – 56px (logo ufak büyütme) */
   .login-page .hero-logo {
-    flex: 0 0 56px !important;
-    width: 56px !important;
+    flex: 0 0 48px !important;
+    width: 48px !important;
   }
   .login-page .hero-logo img {
     width: 100% !important;
@@ -4532,8 +4532,9 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     font-size: 23px !important;
   }
   .login-page .hero h1 {
-    font-size: clamp(17.8px, 5.1vw, 21.8px) !important;
-    letter-spacing: 2px !important;
+    font-size: clamp(15.8px, 4.45vw, 18.4px) !important;
+    letter-spacing: 1.15px !important;
+    padding: 0 1px !important;
   }
   .login-page .hero-panel-subtitle {
     font-size: 20px !important; /* h1'e göre 1pt küçük */
@@ -4893,8 +4894,9 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     letter-spacing: 2.5px !important;
   }
   .login-page .hero h1 {
-    font-size: clamp(17.8px, 5.1vw, 21.8px) !important;
-    letter-spacing: 2px !important;
+    font-size: clamp(15.8px, 4.45vw, 18.4px) !important;
+    letter-spacing: 1.15px !important;
+    padding: 0 1px !important;
   }
 
 }
