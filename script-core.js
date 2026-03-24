@@ -468,9 +468,6 @@ document.addEventListener('keydown', function(e) {
   if (!historyModal) return;
   var isVisible = historyModal.style.display === 'flex' || (historyModal.style.display !== 'none' && historyModal.offsetParent !== null);
   if (isVisible && historyModal.classList.contains('active')) {
-    if (typeof window.closeHistoryToHomeAndOpenNotifications === 'function') {
-      window.closeHistoryToHomeAndOpenNotifications();
-    }
     e.preventDefault();
     e.stopPropagation();
   }

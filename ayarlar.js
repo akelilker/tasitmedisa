@@ -1017,24 +1017,20 @@
       const cacheConfirmModal = document.getElementById('cache-confirm-modal');
       const centeredInfoBox = document.getElementById('centered-info-box');
 
-      if (centeredInfoBox && centeredInfoBox.style.display === 'flex') {
-        closeCenteredInfoBox();
-      } else if (infoModal && infoModal.classList.contains('active')) {
-        closeInfoModal();
-      } else if (cacheConfirmModal && cacheConfirmModal.classList.contains('active')) {
-        closeCacheConfirmModal();
-      } else if (disVeriPanel && disVeriPanel.classList.contains('active')) {
-        closeDisVeriPanel();
-      } else if (dataModal && dataModal.classList.contains('active')) {
-        closeDataManagement();
-      } else if (branchFormModal && branchFormModal.classList.contains('active')) {
-        closeBranchFormModal();
-      } else if (userFormModal && userFormModal.classList.contains('active')) {
-        closeUserFormModal();
-      } else if (branchModal && branchModal.classList.contains('active')) {
-        closeBranchManagement();
-      } else if (userModal && userModal.classList.contains('active')) {
-        closeUserManagement();
+      const isSettingsModalActive =
+        (centeredInfoBox && centeredInfoBox.style.display === 'flex') ||
+        (infoModal && infoModal.classList.contains('active')) ||
+        (cacheConfirmModal && cacheConfirmModal.classList.contains('active')) ||
+        (disVeriPanel && disVeriPanel.classList.contains('active')) ||
+        (dataModal && dataModal.classList.contains('active')) ||
+        (branchFormModal && branchFormModal.classList.contains('active')) ||
+        (userFormModal && userFormModal.classList.contains('active')) ||
+        (branchModal && branchModal.classList.contains('active')) ||
+        (userModal && userModal.classList.contains('active'));
+
+      if (isSettingsModalActive) {
+        e.preventDefault();
+        e.stopPropagation();
       }
     });
   
