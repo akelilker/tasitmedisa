@@ -1705,6 +1705,13 @@ input.settings-form-input:-moz-autofill,
     .settings-card {
         border-color: rgba(255, 255, 255, 0.4) !important;
         background: rgba(255, 255, 255, 0.03) !important;
+        transform: none !important;
+        transition: background-color 0.2s ease, border-color 0.2s ease !important;
+        will-change: auto !important;
+    }
+    .settings-card:hover,
+    .settings-card:active {
+        transform: none !important;
     }
     .settings-card-title {
         color: #ffffff !important;
@@ -1718,6 +1725,27 @@ input.settings-form-input:-moz-autofill,
     .settings-btn-delete {
         border-color: var(--theme-color) !important;
         color: var(--theme-color) !important;
+    }
+    #cache-confirm-modal .modal-container {
+        background: var(--bg) !important;
+        border-top: 0.8px solid rgba(200, 200, 200, 0.62) !important;
+        border-left: 0.8px solid rgba(255, 255, 255, 0.28) !important;
+        border-right: 0.8px solid rgba(255, 255, 255, 0.28) !important;
+        border-bottom: 0.8px solid rgba(255, 255, 255, 0.22) !important;
+        box-shadow: none !important;
+    }
+    #cache-confirm-modal .universal-btn-save,
+    #cache-confirm-modal .universal-btn-cancel {
+        border-color: rgba(255, 255, 255, 0.45) !important;
+        background: rgba(255, 255, 255, 0.02) !important;
+        box-shadow: 0 0 0 0.5px rgba(255, 255, 255, 0.10) !important;
+    }
+    #cache-confirm-modal .universal-btn-save:hover,
+    #cache-confirm-modal .universal-btn-save:active,
+    #cache-confirm-modal .universal-btn-cancel:hover,
+    #cache-confirm-modal .universal-btn-cancel:active {
+        border-color: rgba(255, 255, 255, 0.52) !important;
+        background: rgba(255, 255, 255, 0.04) !important;
     }
     .form-input,
     #branch-form-modal .form-input,
@@ -1860,17 +1888,25 @@ input.settings-form-input:-moz-autofill,
     .settings-card-title { font-size: 15px; }
     .settings-card-subtitle { font-size: 13px; }
     .settings-card-gorev { font-size: 12px; }
-    #branch-modal #branch-list .settings-card .settings-card-title {
+    #branch-modal #branch-list .settings-card .settings-card-title,
+    #user-modal #user-list .settings-card .settings-card-title {
         font-size: 15.5px !important;
         line-height: 1.12 !important;
+        min-height: calc(2 * 1.12em) !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
         white-space: normal !important;
         text-overflow: clip !important;
         word-break: break-word !important;
         overflow-wrap: break-word !important;
     }
-    #branch-modal #branch-list .settings-card .settings-card-subtitle {
+    #branch-modal #branch-list .settings-card .settings-card-subtitle,
+    #user-modal #user-list .settings-card .settings-card-subtitle,
+    #user-modal #user-list .settings-card .settings-card-gorev {
         font-size: 14px !important;
         line-height: 1.18 !important;
+        min-height: 1.18em !important;
     }
     .settings-add-text-btn { font-size: 15px; }
     #branch-form-modal .form-label,
@@ -1894,8 +1930,8 @@ input.settings-form-input:-moz-autofill,
     #user-form-modal .form-input,
     #branch-form-modal select.form-input,
     #user-form-modal select.form-input {
-        height: 29px !important;
-        padding: 2px 8px;
+        height: 32px !important;
+        padding: 3px 8px;
         box-sizing: border-box;
         background: var(--bg-content, #0d131f) !important;
         color: var(--txt-gray-darker, #888) !important; /* Ayarlar: input içi metin gri */
@@ -1907,9 +1943,9 @@ input.settings-form-input:-moz-autofill,
         box-shadow: 0 0 0 0.5px rgba(255, 255, 255, 0.10) !important;
     }
     #user-form-modal .user-vehicles-trigger {
-        min-height: 29px !important;
-        height: 29px !important;
-        padding: 2px 12px !important;
+        min-height: 32px !important;
+        height: 32px !important;
+        padding: 3px 12px !important;
         line-height: 1.2 !important;
     }
     #user-form-modal .user-vehicles-trigger-text {

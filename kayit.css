@@ -1235,8 +1235,8 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         font-size: 11px !important; 
         padding: 0 22px 0 6px !important; 
         min-width: 0;
-        width: calc(100% - 2px); 
-        max-width: calc(100% - 2px);
+        width: 100%;
+        max-width: 100%;
         box-sizing: border-box;
         overflow: hidden;
         -webkit-appearance: none;
@@ -1250,8 +1250,8 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-column-right input[type="date"].form-input { 
         height: 27px !important;
         font-size: 11px !important;
-        width: calc(100% - 4px) !important;
-        max-width: calc(100% - 4px) !important;
+        width: 100% !important;
+        max-width: 100% !important;
         margin-right: 0; 
         padding-right: 20px !important;
         padding-left: 10px !important;
