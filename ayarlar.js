@@ -151,6 +151,7 @@
           city: city,
           createdAt: new Date().toISOString()
         };
+
         branches.push(newBranch);
       }
   
@@ -1492,14 +1493,26 @@
           version: "1.1"
         };
 
-        // 1) Yedek localStorage'a kaydedilir (clear sonrasi korunacak)
-        localStorage.setItem("medisa_server_backup", JSON.stringify(backup));
+        function storeLocalBackup(payload) {
+          try {
+            localStorage.setItem("medisa_server_backup", JSON.stringify(payload));
+            return true;
+          } catch (storageError) {
+            if (typeof window.__medisaLogError === "function") {
+              window.__medisaLogError("Cache clear local backup", storageError);
+            } else {
+              console.warn("Local backup could not be written:", storageError);
+            }
+            return false;
+          }
+        }
 
-        // 2) Sunucu kayit fonksiyonu yoksa yerel yedek ile devam et
+        // Sunucu kayit fonksiyonu yoksa yerel yedek ile devam et
         if (typeof window.saveDataToServer !== "function") {
+          const localBackupOnly = storeLocalBackup(backup);
           return {
-            success: true,
-            localBackup: true,
+            success: localBackupOnly,
+            localBackup: localBackupOnly,
             serverBackup: false,
             message: "Yerel yedek Oluşturuldu."
           };
@@ -1519,9 +1532,10 @@
         // 4) Sunucuya kaydet
         const serverSaved = await window.saveDataToServer();
         if (!serverSaved) {
+          const localBackupFallback = storeLocalBackup(backup);
           return {
             success: false,
-            localBackup: true,
+            localBackup: localBackupFallback,
             serverBackup: false,
             message: "Yerel yedek Oluşturuldu ancak sunucuya Yüklenemedi."
           };
@@ -1529,7 +1543,7 @@
 
         return {
           success: true,
-          localBackup: true,
+          localBackup: false,
           serverBackup: true,
           message: "Veriler sunucuya yedeklendi."
         };
@@ -1618,7 +1632,7 @@
         const result = await uploadToServer();
 
         // Yerel yedek bile Oluşturulamadıysa işlem iptal
-        if (!result.localBackup) {
+        if (!result.success && !result.localBackup) {
           window.showInfoModal('Yedekleme başarısız! Tarayıcı Belleği Temizlenmedi.');
           return;
         }
