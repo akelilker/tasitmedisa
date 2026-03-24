@@ -1617,6 +1617,11 @@ input.settings-form-input:-moz-autofill,
     #branch-modal .modal-header {
         border-bottom: none !important;
     }
+    #user-modal .modal-header,
+    #data-management-modal .modal-header,
+    #dis-veri-panel .modal-header {
+        border-bottom: none !important;
+    }
     .settings-card {
         border-color: rgba(255, 255, 255, 0.4) !important;
         background: rgba(255, 255, 255, 0.03) !important;
@@ -1742,7 +1747,22 @@ input.settings-form-input:-moz-autofill,
         justify-content: flex-start !important;
         padding: 14px 4px 10px 4px !important;
     }
+    #user-modal #user-list,
+    #user-modal .modal-body #user-list {
+        justify-content: flex-start !important;
+    }
+    #user-modal #user-list .settings-card {
+        width: calc((100% - 16px) / 3) !important;
+        max-width: calc((100% - 16px) / 3) !important;
+        flex: 0 0 calc((100% - 16px) / 3) !important;
+        justify-content: flex-start !important;
+        padding: 14px 4px 10px 4px !important;
+    }
     #branch-modal #branch-list .settings-card-content {
+        justify-content: flex-start !important;
+        gap: 4px !important;
+    }
+    #user-modal #user-list .settings-card-content {
         justify-content: flex-start !important;
         gap: 4px !important;
     }
