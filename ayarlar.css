@@ -451,9 +451,12 @@ body.modal-open #cache-confirm-modal.open {
 #user-modal .user-management-search-wrap.open .user-management-search-input {
     width: 160px;
     padding: 0 8px !important;
-    border-color: rgba(255, 255, 255, 0.35);
+    border-color: rgba(var(--theme-color-rgb), 0.7);
     opacity: 1;
     pointer-events: auto;
+}
+#user-modal .user-management-search-wrap.open .user-management-search-toggle {
+    color: var(--theme-color);
 }
 #user-modal .user-management-search-input:focus {
     outline: none;
