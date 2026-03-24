@@ -623,6 +623,11 @@ body.modal-open #cache-confirm-modal.open {
     -webkit-backdrop-filter: none;
     pointer-events: auto;
 }
+.centered-info-box-overlay.centered-info-box-overlay--anchored {
+    align-items: flex-start;
+    justify-content: flex-start;
+    background: rgba(7, 10, 18, 0.08);
+}
 .centered-info-box-inner {
     background: linear-gradient(
       180deg,
@@ -638,6 +643,10 @@ body.modal-open #cache-confirm-modal.open {
     box-shadow:
       0 8px 28px rgba(0, 0, 0, 0.48),
       0 0 0 1px rgba(var(--theme-color-rgb), 0.16) inset;
+}
+.centered-info-box-overlay.centered-info-box-overlay--anchored .centered-info-box-inner {
+    position: fixed;
+    margin: 0;
 }
 .centered-info-box-inner #centered-info-message,
 .centered-info-box-inner p {
