@@ -309,8 +309,8 @@ body.modal-open #cache-confirm-modal.open {
     max-height: calc(100dvh - 80px - 52px);
     margin: 80px auto 52px auto;
     border-radius: 10px;
-    border: 0.5px solid var(--border-light);
-    box-shadow: none; 
+    border: 1px solid var(--border-light);
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.28); 
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -321,11 +321,12 @@ body.modal-open #cache-confirm-modal.open {
 
 /* Info Modal Body - içeriğe göre yükseklik; Tamam butonundan 8px sonra biter */
 #info-modal .modal-body {
-    padding: 2px 20px 8px 20px !important;
+    padding: 6px 20px 14px 20px !important;
     overflow-y: auto;
     flex: 0 0 auto !important;
     display: flex;
     flex-direction: column;
+    gap: 10px;
     min-height: 0;
 }
 
@@ -333,7 +334,7 @@ body.modal-open #cache-confirm-modal.open {
     color: var(--form-label-color) !important;
     font-size: 14px !important;
     line-height: 1.6 !important;
-    margin-bottom: 8px !important;
+    margin: 0 !important;
     text-align: center !important;
     word-wrap: break-word;
     overflow-wrap: break-word;
@@ -341,20 +342,34 @@ body.modal-open #cache-confirm-modal.open {
 }
 
 /* Metin ile Tamam butonu arasındaki boşluğu kapat (margin-top: auto etkisini kaldır) */
-#info-modal .modal-body > div {
-    margin-top: 0 !important;
+#info-modal .info-modal-actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-#info-modal .modal-body button {
-    padding: 10px 30px !important;
+#info-modal .info-modal-ok-btn {
+    min-width: 168px;
+    min-height: 44px;
+    padding: 0 30px !important;
     background: transparent !important;
-    border: 0.3px solid var(--green-success) !important;
+    border: 1px solid rgba(var(--green-success-rgb), 0.62) !important;
     color: var(--green-success) !important;
-    border-radius: 6px !important;
+    border-radius: 8px !important;
     cursor: pointer !important;
     font-weight: 600 !important;
     font-size: 14px !important;
+    line-height: 1.2 !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
     flex-shrink: 0;
+}
+
+#info-modal .info-modal-ok-btn:hover {
+    background: rgba(var(--green-success-rgb), 0.10) !important;
+    border-color: var(--green-success) !important;
 }
 
 /* Genel Modal Header Stili (masaüstü; mobilde style-core başlık/gradient) */
