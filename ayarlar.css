@@ -1540,7 +1540,7 @@ input.settings-form-input:-moz-autofill,
   }
   #branch-form-modal .universal-back-bar,
   #user-form-modal .universal-back-bar {
-    margin-top: 0 !important;
+    margin-top: -22px !important;
   }
   #branch-modal .modal-body > div,
   #user-modal .modal-body > div {
