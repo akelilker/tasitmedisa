@@ -85,14 +85,16 @@
     </div>
     <div class="app-container driver-dashboard-container">
         <div class="driver-header-fixed">
-            <div class="hero hero-two-rows">
+            <div class="hero">
                 <div class="hero-logo">
-                    <img src="../icon/logo-header2.svg" alt="MEDISA Logo" class="logo-small">
+                    <picture>
+                        <source media="(max-width: 640px)" srcset="../icon/logo-header2-mobile-header.svg">
+                        <img src="../icon/logo-header2.svg" alt="MEDISA Logo">
+                    </picture>
                 </div>
-                <div class="hero-title-block">
-                    <h1 class="hero-title-line">TAŞIT YÖNETİM SİSTEMİ</h1>
-                </div>
-                <span class="hero-spacer" aria-hidden="true"></span>
+                <h1>TAŞIT YÖNETİM SİSTEMİ</h1>
+                <div class="hero-spacer"></div>
+                <div class="animated-line"></div>
             </div>
         </div>
         <div id="pwa-install-wrapper" class="pwa-install-center"></div>
@@ -135,12 +137,14 @@
                 </form>
             </div>
         </main>
-        <div class="universal-back-bar driver-footer-back-wrap">
-            <a href="../" class="universal-back-btn" title="Yönetim Sistemi">
-                <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-                <span class="universal-back-label">Yönetim Sistemi</span>
-            </a>
-        </div>
+        <a href="../" class="user-panel-link driver-home-link" title="Yönetim Sistemi">
+            <span class="user-panel-link-inner">
+                <span class="user-panel-link-text">Yönetim Sistemi</span>
+                <svg class="user-panel-link-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+            </span>
+        </a>
         <footer id="app-footer" class="login-footer">
             <div class="footer-content">
                 <span class="version" id="version-display">v78.2</span>
