@@ -149,9 +149,9 @@ const API_BASE = (function(){
     var shouldShow = normalizedRole === 'sube_yonetici' || normalizedRole === 'genel_yonetici' || normalizedRole === 'yonetici_kullanici';
     document.querySelectorAll('.dashboard-page .driver-footer-back-wrap').forEach(function(el) {
       if (shouldShow) {
-        el.style.removeProperty('display');
+        el.style.display = '';
       } else {
-        el.style.setProperty('display', 'none', 'important');
+        el.style.display = 'none';
       }
     });
   }

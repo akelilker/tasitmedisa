@@ -4019,26 +4019,6 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     opacity: 0.8 !important;
   }
   /* Geçmiş Kayıtlar / Düzeltme Talebi açıkken modal–footer 6px boşluğunda kırmızı dikey parçalar kalmasın */
-  body.dashboard-page:has(#history-modal.driver-modal.show) .driver-dashboard-container::before,
-  body.login-page:has(#history-modal.driver-modal.show) .driver-dashboard-container::before,
-  body.dashboard-page:has(#edit-request-modal.driver-modal.show) .driver-dashboard-container::before,
-  body.login-page:has(#edit-request-modal.driver-modal.show) .driver-dashboard-container::before {
-    bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
-  }
-  body.dashboard-page:has(#history-modal.driver-modal.show)::after,
-  body.dashboard-page:has(#edit-request-modal.driver-modal.show)::after,
-  body.login-page:has(#history-modal.driver-modal.show)::after,
-  body.login-page:has(#edit-request-modal.driver-modal.show)::after {
-    content: '';
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0));
-    height: var(--app-footer-gap);
-    background: #080d16;
-    pointer-events: none;
-    z-index: 10013;
-  }
   @supports not selector(body:has(*)) {
     body.dashboard-page.driver-history-or-edit-modal-open #app-footer .version,
     body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer .version,
