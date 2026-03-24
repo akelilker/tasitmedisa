@@ -82,25 +82,30 @@
             : window.innerWidth <= 640;
     }
 
+    function getSingleVisibleStokBranch() {
+        const branches = getBranches();
+        return branches.length === 1 ? branches[0] : null;
+    }
+
     // --- Modal ve Sekme Yönetimi ---
     window.openReportsView = function() {
         const modal = document.getElementById('reports-modal');
         if (modal) {
             loadStokColumnState(); // Aktif sütunları yükle
             stokCurrentBranchId = null; // Grid görünümüne dön
-            switchReportTab('stok'); // Sekme UI + içerik render
+            switchReportTab({ allowSingleBranchBypass: true }); // Sekme UI + içerik render
             modal.style.display = 'flex';
             requestAnimationFrame(() => modal.classList.add('active'));
             document.body.classList.add('modal-open');
         }
     };
 
-    window.switchReportTab = function() {
+    window.switchReportTab = function(options) {
         const viewStok = document.getElementById('view-stok');
         const tabStok = document.getElementById('reports-tab-stok');
         if (viewStok) { viewStok.classList.add('active'); }
         if (tabStok) { tabStok.classList.add('active'); }
-        renderStokView();
+        renderStokView(options);
     };
 
     window.closeReportsModal = function() {
@@ -1375,12 +1380,19 @@
             headerActions.setAttribute('aria-hidden', 'true');
             headerActions.classList.remove('has-stok-actions');
         }
-        renderStokView();
+        renderStokView({ allowSingleBranchBypass: false });
     };
 
     // Ana render fonksiyonu
-    window.renderStokView = function() {
+    window.renderStokView = function(options) {
+        const allowSingleBranchBypass = !options || options.allowSingleBranchBypass !== false;
         if (stokCurrentBranchId === null) {
+            const singleVisibleBranch = allowSingleBranchBypass ? getSingleVisibleStokBranch() : null;
+            if (singleVisibleBranch) {
+                stokCurrentBranchId = singleVisibleBranch.id;
+                renderStokList();
+                return;
+            }
             // Grid görünümü
             renderStokBranchGrid();
         } else {
