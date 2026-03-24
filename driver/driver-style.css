@@ -3527,6 +3527,11 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .dashboard-page #app-footer {
     height: 42px !important;
     min-height: 42px !important;
+    width: 100% !important;
+    max-width: 500px !important;
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) !important;
   }
   /* Masaüstü: login footer ferah min-height, içerik ortalanmış (max-width 500px) */
   .login-page #app-footer.login-footer {
