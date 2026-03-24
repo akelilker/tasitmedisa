@@ -584,14 +584,6 @@
                             </select>
                         </div>
                         <div class="form-section">
-                            <label class="form-label" for="user-phone">Telefon</label>
-                            <input type="text" id="user-phone" class="form-input" placeholder="Telefon" inputmode="tel">
-                        </div>
-                        <div class="form-section">
-                            <label class="form-label" for="user-email">E-posta</label>
-                            <input type="email" id="user-email" class="form-input" placeholder="E-posta">
-                        </div>
-                        <div class="form-section">
                             <label class="form-label" for="user-role">Kullanıcı Tipi</label>
                             <select id="user-role" class="form-input">
                                 <option value="kullanici" selected>Kullanıcı</option>
@@ -599,6 +591,14 @@
                                 <option value="yonetici_kullanici">Yönetici+Kullanıcı</option>
                                 <option value="genel_yonetici">Genel Yönetici</option>
                             </select>
+                        </div>
+                        <div class="form-section">
+                            <label class="form-label" for="user-phone">Telefon</label>
+                            <input type="text" id="user-phone" class="form-input" placeholder="Telefon" inputmode="tel">
+                        </div>
+                        <div class="form-section">
+                            <label class="form-label" for="user-email">E-posta</label>
+                            <input type="email" id="user-email" class="form-input" placeholder="E-posta">
                         </div>
                         <div class="form-section">
                             <label class="form-label" for="user-username">Kullanıcı Adı (portal girişi)</label>
@@ -616,10 +616,10 @@
                                     <svg class="user-vehicles-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
                                 </div>
                                 <div id="user-vehicles-dropdown" class="user-vehicles-dropdown" style="display:none;" role="listbox">
+                                    <div id="user-vehicles-container" class="user-vehicles-checkbox-list" role="group"></div>
                                     <div class="user-vehicles-search-wrap">
                                         <input type="text" id="user-vehicles-search" class="form-input user-vehicles-search-input" placeholder="Plaka ile ara..." aria-label="Plaka ile ara" oninput="if(window.handleUserVehiclesSearch) window.handleUserVehiclesSearch(this.value)">
                                     </div>
-                                    <div id="user-vehicles-container" class="user-vehicles-checkbox-list" role="group"></div>
                                 </div>
                             </div>
                         </div>
