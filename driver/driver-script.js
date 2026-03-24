@@ -94,6 +94,16 @@ const API_BASE = (function(){
     } catch (e) {}
   }
 
+  function shouldForceDriverLoginView() {
+    try {
+      var search = window.location && window.location.search ? window.location.search : '';
+      if (!search) return false;
+      return new URLSearchParams(search).get('force') === 'login';
+    } catch (e) {
+      return false;
+    }
+  }
+
   function persistSessionToken(token, remember) {
     if (!token) return;
     clearStoredPortalTokens();
@@ -332,7 +342,7 @@ const API_BASE = (function(){
   if (document.getElementById('login-form')) {
       /* Geçerli bir oturum varsa login ekranını atla ve token'ın işaret ettiği yüzeye git. */
       var savedToken = getStoredPortalToken();
-      if (savedToken && routeByToken(savedToken, true)) {
+      if (!shouldForceDriverLoginView() && savedToken && routeByToken(savedToken, true)) {
           /* Sayfa yönleniyor; login listener'ları güvenle kurulabilir. */
       }
   
