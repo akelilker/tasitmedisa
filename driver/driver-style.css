@@ -3286,34 +3286,18 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   -webkit-overflow-scrolling: touch !important;
 }
 
-/* Şifre ekranı: header/hero kullanıcı paneli ile aynı (padding vb. ortak) */
+/* Şifre ekranı: ana uygulamadaki yan boşluk matematiği korunsun */
 .login-page .content-wrap {
-  padding-left: 0 !important;
+  padding-left: 4px !important;
+  padding-right: 4px !important;
 }
 .login-page .login-container {
-  padding-left: 22px !important;
-  padding-right: 30px !important;
+  padding-left: 16px !important;
+  padding-right: 16px !important;
 }
-/* Şifre ekranı: Yönetim Sistemi butonu container içinde, footerdan 6px yukarıda; fixed footer üstünde görünsün (dashboard ile aynı) */
-.login-page .driver-footer-back-wrap {
-  position: relative;
-  bottom: auto;
-  left: auto;
-  right: auto;
-  margin: 0 0 6px 0;
-  padding: 0 4px 0 4px !important;
-  flex-shrink: 0;
-  justify-content: flex-start;
-  width: 100%;
-  max-width: 100%;
-  box-sizing: border-box;
+/* Şifre ekranı: ana uygulamadaki footer üstü link iskeleti kullanılır */
+.login-page .user-panel-link.driver-home-link {
   z-index: 10003;
-}
-.login-page .driver-footer-back-wrap .universal-back-btn {
-  margin-left: 0;
-}
-.login-page #app-footer.login-footer .footer-content {
-  padding-left: 4px !important;
 }
 
 .login-page .content-wrap::-webkit-scrollbar {
@@ -3322,25 +3306,30 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 
 .login-page #app-footer.login-footer {
   position: fixed !important;
-  left: 0 !important;
-  right: 0 !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  right: auto !important;
   bottom: 0 !important;
   flex-shrink: 0 !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
   width: 100% !important;
+  max-width: 500px !important;
   min-height: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
-  height: auto !important;
+  height: var(--app-footer-real-height, 46px) !important;
   box-sizing: border-box !important;
-  margin: 0 !important;
-  padding-top: 4px !important;
-  padding-bottom: calc(4px + env(safe-area-inset-bottom, 0)) !important;
+  margin: 0 auto !important;
+  padding-top: 2px !important;
+  padding-bottom: calc(2px + env(safe-area-inset-bottom, 0)) !important;
   background: var(--bg) !important;
-  border-top: none !important; /* Footer ışıkların bittiği yerdeki yatay çizgi kaldırıldı */
+  isolation: isolate !important;
+  border-top: 1px solid rgba(128, 128, 128, 0.52) !important;
   border-left: 0.5px solid rgba(255, 255, 255, 0.20) !important;
   border-right: 0.5px solid rgba(255, 255, 255, 0.20) !important;
-  box-shadow: 0 -10px 20px rgba(var(--theme-color-rgb), 0.16) !important;
+  box-shadow:
+    0 -1px 0 rgba(255, 255, 255, 0.12),
+    0 -16px 30px rgba(var(--theme-color-rgb), 0.42) !important;
 }
 
 .login-page #app-footer.login-footer .footer-content {
@@ -3350,8 +3339,9 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   justify-content: space-between !important;
   width: 100% !important;
   max-width: 500px !important;
-  padding: 3px 12px !important;
-  padding-bottom: max(4px, env(safe-area-inset-bottom, 0)) !important;
+  margin: 0 auto !important;
+  padding: 6px 12px !important;
+  padding-bottom: max(6px, env(safe-area-inset-bottom, 0)) !important;
   box-sizing: border-box !important;
   font-size: 13px !important;
   color: #bbb !important;
@@ -4767,14 +4757,14 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     border-right: 0.5px solid rgba(255, 255, 255, 0.10) !important;
   }
 
-  /* Mobil footer: yatay çizgi kaldırıldı (footer ışıkların bittiği yer); net kırmızı glow korunur */
-  .dashboard-page #app-footer,
-  .login-page #app-footer.login-footer {
+  /* Mobil footer: dashboard kendi glow mantığını korur; login ana uygulama çizgisine döner */
+  .dashboard-page #app-footer {
     border-top: none !important;
     box-shadow: 0 -11px 28px rgba(var(--theme-color-rgb), 0.58) !important;
   }
   .login-page #app-footer.login-footer .footer-content {
-    padding: 3px 12px !important;
+    padding: 6px 12px !important;
+    padding-bottom: max(6px, env(safe-area-inset-bottom, 0)) !important;
   }
 
   /* 5. Şifre ekranı header: kullanıcı paneli ile aynı (yan çizgiler container'da, padding panel ile aynı) */
@@ -5413,4 +5403,3 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 .dashboard-page .driver-left-panel {
     border-right: 1.2px solid var(--border-red-tech) !important;
 }
-
