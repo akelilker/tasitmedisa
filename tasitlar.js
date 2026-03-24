@@ -385,8 +385,13 @@
   if (DOM.notificationsDropdown && !DOM.notificationsDropdown._notifDelegationBound) {
     DOM.notificationsDropdown._notifDelegationBound = true;
     DOM.notificationsDropdown.addEventListener('click', function(e) {
-      var btn = e.target.closest('.notification-item[data-plate]');
+      var btn = e.target.closest('.notification-item');
       if (!btn) return;
+      var action = (btn.getAttribute('data-action') || '').toString().trim();
+      if (action === 'open-dis-veri') {
+        if (typeof window.openDisVeriPanel === 'function') window.openDisVeriPanel();
+        return;
+      }
       var plate = btn.getAttribute('data-plate') || '';
       var vehicleId = btn.getAttribute('data-vehicle-id') || '';
       var openHistory = btn.getAttribute('data-open-history') === '1';
@@ -5227,7 +5232,7 @@ function renderVehicleDetailLeft(vehicle) {
         const kaskoFirstSeenDisplay = getOrCreateSpecialNotifFirstSeen(kaskoKey);
         const kaskoDateHtml = showDesktopSpecialNotifDate ? '<div class="notif-line2">' + escapeHtml(kaskoFirstSeenDisplay) + '</div>' : '';
         activeSpecialNotificationKeys.push(kaskoKey);
-        kaskoExcelHtml = '<div class="notification-item kasko-excel-notification"><div class="mtv-text-container"><div class="mtv-main-text notif-line1">Güncel Kasko Değer Listesinin Yüklenmesi Gerekmektedir.</div>' + kaskoDateHtml + '</div><div class="mtv-dismiss-wrapper"><button type="button" class="mtv-dismiss-btn" onclick="dismissKaskoExcelNotif(event, \'' + kaskoKeyEsc + '\')" aria-label="Bildirimi Kapat"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button><div class="mtv-tooltip">Kapat</div></div></div>';
+        kaskoExcelHtml = '<div class="notification-item kasko-excel-notification" data-action="open-dis-veri"><div class="mtv-text-container"><div class="mtv-main-text notif-line1">Güncel Kasko Değer Listesinin Yüklenmesi Gerekmektedir.</div>' + kaskoDateHtml + '</div><div class="mtv-dismiss-wrapper"><button type="button" class="mtv-dismiss-btn" onclick="dismissKaskoExcelNotif(event, \'' + kaskoKeyEsc + '\')" aria-label="Bildirimi Kapat"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button><div class="mtv-tooltip">Kapat</div></div></div>';
         hasRed = true;
       }
     }
