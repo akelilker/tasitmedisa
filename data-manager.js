@@ -217,6 +217,18 @@ function redirectToDriverDashboard() {
     window.location.href = DRIVER_DASHBOARD_URL;
 }
 
+function syncMainAppPortalLinks() {
+    if (typeof document === 'undefined') return;
+    if (getCurrentPathname().indexOf('/driver/') !== -1) return;
+
+    var portalLinks = document.querySelectorAll('a.user-panel-link:not(.driver-home-link)');
+    if (!portalLinks.length) return;
+
+    portalLinks.forEach(function(link) {
+        link.setAttribute('href', DRIVER_INDEX_URL);
+    });
+}
+
 function setMedisaSession(sessionData) {
     var tokenSession = getSessionFromToken();
     var nextSession = Object.assign({}, getDefaultSession(), tokenSession, sessionData || {});
@@ -239,6 +251,8 @@ function setMedisaSession(sessionData) {
 function applyMainAppSessionUiState() {
     if (typeof document === 'undefined') return;
     if (getCurrentPathname().indexOf('/driver/') !== -1) return;
+
+    syncMainAppPortalLinks();
 
     var session = window.medisaSession || getDefaultSession();
     var logoutBtn = document.getElementById('settings-logout-btn');
@@ -744,6 +758,7 @@ window.loadDataFromServer = loadDataFromServer;
 window.saveDataToServer = saveDataToServer;
 
 document.addEventListener('DOMContentLoaded', async function() {
+    syncMainAppPortalLinks();
     setMedisaSession(getSessionFromToken());
 
     if (sessionStorage.getItem('medisa_just_restored') === '1') {
