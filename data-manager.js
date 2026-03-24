@@ -217,16 +217,26 @@ function redirectToDriverDashboard() {
     window.location.href = DRIVER_DASHBOARD_URL;
 }
 
+function resolveMainAppPortalLinkUrl(sessionData) {
+    var session = sessionData && typeof sessionData === 'object'
+        ? sessionData
+        : ((window.medisaSession && window.medisaSession.authenticated) ? window.medisaSession : getSessionFromToken());
+    if (session && session.authenticated && session.driver_dashboard === true) {
+        return DRIVER_DASHBOARD_URL;
+    }
+    return DRIVER_INDEX_URL + '?force=login';
+}
+
 function syncMainAppPortalLinks() {
     if (typeof document === 'undefined') return;
     if (getCurrentPathname().indexOf('/driver/') !== -1) return;
 
     var portalLinks = document.querySelectorAll('a.user-panel-link:not(.driver-home-link)');
     if (!portalLinks.length) return;
-    var driverLoginUrl = DRIVER_INDEX_URL + '?force=login';
+    var portalUrl = resolveMainAppPortalLinkUrl();
 
     portalLinks.forEach(function(link) {
-        link.setAttribute('href', driverLoginUrl);
+        link.setAttribute('href', portalUrl);
     });
 }
 
