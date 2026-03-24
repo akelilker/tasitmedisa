@@ -617,10 +617,10 @@ body.modal-open #cache-confirm-modal.open {
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 10010;
-    background: rgba(7, 10, 18, 0.34);
-    backdrop-filter: blur(2px);
-    -webkit-backdrop-filter: blur(2px);
+    z-index: 10030;
+    background: rgba(7, 10, 18, 0.18);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
     pointer-events: auto;
 }
 .centered-info-box-inner {
