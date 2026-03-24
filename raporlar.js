@@ -97,13 +97,9 @@
 
     window.switchReportTab = function() {
         const viewStok = document.getElementById('view-stok');
-        const viewKullanici = document.getElementById('view-kullanici');
         const tabStok = document.getElementById('reports-tab-stok');
-        const tabKullanici = document.getElementById('reports-tab-kullanici');
         if (viewStok) { viewStok.classList.add('active'); }
-        if (viewKullanici) { viewKullanici.classList.remove('active'); }
         if (tabStok) { tabStok.classList.add('active'); }
-        if (tabKullanici) { tabKullanici.classList.remove('active'); }
         renderStokView();
     };
 

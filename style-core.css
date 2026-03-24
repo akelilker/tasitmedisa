@@ -126,7 +126,7 @@ body::-webkit-scrollbar,
 /* Masaüstü ve mobil ortak: geri dön ok + etiket hizalaması (3px gap, ok 5px aşağı, etiket 1px küçük) */
 
 .universal-back-bar {
-  display: flex !important;
+  display: flex;
   align-items: flex-start !important; /* Buton dikey hizası bozulmasın */
   justify-content: flex-start !important;
   padding: 8px 0 0 0 !important;
