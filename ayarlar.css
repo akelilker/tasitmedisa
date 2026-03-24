@@ -1088,6 +1088,15 @@ input.settings-form-input:-moz-autofill,
   white-space: nowrap;
 }
 
+/* Masaüstü: Kullanıcı ekle/düzenle — taşıt listesi satırları arası dikey boşluk ~5px az */
+@media (min-width: 769px) {
+  #user-form-modal .user-vehicle-row {
+    padding-top: 7.5px;
+    padding-bottom: 7.5px;
+    min-height: 35px;
+  }
+}
+
 .settings-btn-delete {
     background: transparent;
     border: 0.3px solid var(--theme-color); 
