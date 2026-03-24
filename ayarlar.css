@@ -1796,8 +1796,25 @@ input.settings-form-input:-moz-autofill,
         width: 36px;
         height: 36px;
     }
+    #user-modal .user-management-back-bar {
+        flex-wrap: wrap !important;
+        justify-content: flex-start !important;
+        align-items: center !important;
+        row-gap: 2px !important;
+    }
+    #user-modal .user-management-back-bar .universal-back-btn {
+        flex: 0 0 100% !important;
+        justify-content: flex-start !important;
+    }
+    #user-modal .user-management-search-wrap {
+        flex: 0 0 100% !important;
+        width: 100% !important;
+        margin-left: 0 !important;
+        justify-content: flex-end !important;
+    }
     #user-modal .user-management-search-wrap.open .user-management-search-input {
         width: clamp(116px, 38vw, 170px);
+        max-width: calc(100% - 40px);
     }
     #branch-modal.modal-overlay,
     #user-modal.modal-overlay,
