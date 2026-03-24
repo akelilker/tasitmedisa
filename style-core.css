@@ -1708,31 +1708,31 @@ body.modal-open .user-panel-link {
 
 /* Ana uygulama: footer üstü her zaman belirgin gri çizgi + glow (sadece modal açıkken değil) */
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer {
-    border-top: 1px solid rgba(255, 255, 255, 0.36) !important;
+    border-top: 1px solid rgba(128, 128, 128, 0.52) !important;
     box-shadow:
-        0 -1px 0 rgba(255, 255, 255, 0.11),
-        0 -12px 24px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity)) !important;
+        0 -1px 0 rgba(255, 255, 255, 0.12),
+        0 -16px 30px rgba(var(--theme-color-rgb), 0.42) !important;
 }
 
 /* Modal açıkken: footer glow açık kalır (yalnız footer-gap bölgesinde görünür) */
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #app-footer {
-    border-top: 1px solid rgba(255, 255, 255, 0.36) !important;
+    border-top: 1px solid rgba(128, 128, 128, 0.52) !important;
     box-shadow:
-        0 -1px 0 rgba(255, 255, 255, 0.11),
-        0 -12px 24px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity)) !important;
+        0 -1px 0 rgba(255, 255, 255, 0.12),
+        0 -16px 30px rgba(var(--theme-color-rgb), 0.42) !important;
 }
 @media (max-width: 640px) {
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer {
     border-top: 1px solid rgba(255, 255, 255, 0.40) !important;
     box-shadow:
         0 -1px 0 rgba(255, 255, 255, 0.12),
-        0 -16px 30px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity)) !important;
+        0 -16px 30px rgba(var(--theme-color-rgb), 0.42) !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #app-footer {
     border-top: 1px solid rgba(255, 255, 255, 0.40) !important;
     box-shadow:
         0 -1px 0 rgba(255, 255, 255, 0.12),
-        0 -16px 30px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity)) !important;
+        0 -16px 30px rgba(var(--theme-color-rgb), 0.42) !important;
   }
 }
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay.active,
@@ -2691,7 +2691,10 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
     min-height: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
     padding-top: 2px !important;
     padding-bottom: calc(2px + env(safe-area-inset-bottom, 0)) !important;
-    box-shadow: 0 -12px 24px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity)) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.40) !important;
+    box-shadow:
+      0 -1px 0 rgba(255, 255, 255, 0.12),
+      0 -16px 30px rgba(var(--theme-color-rgb), 0.42) !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer .footer-content {
     height: 100% !important;
@@ -2783,29 +2786,27 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
 /* Masaüstü: glow footer genişliği içinde üretilir; sağ-sol taşma olmaz */
 @media (min-width: 769px) {
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer {
-    border-left: 0.6px solid rgba(255, 255, 255, 0.24) !important;
-    border-right: 0.6px solid rgba(255, 255, 255, 0.24) !important;
-    border-top: 1px solid rgba(200, 200, 200, 0.52) !important;
+    border-left: 0.5px solid rgba(255, 255, 255, 0.20) !important;
+    border-right: 0.5px solid rgba(255, 255, 255, 0.20) !important;
+    border-top: 1px solid rgba(128, 128, 128, 0.52) !important;
     overflow: visible !important;
-    box-shadow: 0 -1px 0 rgba(255, 255, 255, 0.11) !important;
+    box-shadow:
+      0 -1px 0 rgba(255, 255, 255, 0.12),
+      0 -12px 35px rgba(var(--theme-color-rgb), 0.35) !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #app-footer {
-    border-left: 0.6px solid rgba(255, 255, 255, 0.24) !important;
-    border-right: 0.6px solid rgba(255, 255, 255, 0.24) !important;
-    box-shadow: 0 -1px 0 rgba(255, 255, 255, 0.11) !important;
+    border-left: 0.5px solid rgba(255, 255, 255, 0.20) !important;
+    border-right: 0.5px solid rgba(255, 255, 255, 0.20) !important;
+    border-top: 1px solid rgba(128, 128, 128, 0.52) !important;
+    box-shadow:
+      0 -1px 0 rgba(255, 255, 255, 0.12),
+      0 -12px 35px rgba(var(--theme-color-rgb), 0.35) !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer::before {
-    bottom: calc(100% + 4px);
-    height: 20px;
-    opacity: 1;
-    background:
-      linear-gradient(
-        180deg,
-        rgba(var(--footer-glow-rgb), 0) 0%,
-        rgba(var(--footer-glow-rgb), 0.10) 48%,
-        rgba(var(--footer-glow-rgb), 0.24) 76%,
-        rgba(var(--footer-glow-rgb), 0.52) 100%
-      );
+    bottom: 100%;
+    height: 0;
+    opacity: 0;
+    background: none;
   }
   /* İç kırmızı inset footer şeridine inmesin */
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-container::after {
