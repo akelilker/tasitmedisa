@@ -39,8 +39,8 @@ const API_BASE = (function(){
     return '../index.html';
   })();
   
-  // Uygulama sürümü (footer #version-display - kullanıcı girişi ve paneli 78.2)
-  const APP_VERSION = 'v78.2';
+  // Uygulama sürümü (footer #version-display - kullanıcı girişi ve paneli 78.1)
+  const APP_VERSION = 'v78.1';
   
   (function setDriverVersion() {
     function apply() {
