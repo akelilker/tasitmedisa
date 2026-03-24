@@ -2640,7 +2640,7 @@ body.modal-open .content-wrap::before {
   gap: 8px;
 }
 
-/* === NOKTA ATIÅžI: Ana + taşıt modalları alt çerçeve (768px) === */
+/* === NOKTA ATIŞI: Ana + taşıt modalları alt çerçeve (768px) === */
 @media (max-width: 768px) {
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicle-modal.modal-overlay,
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #reports-modal.modal-overlay,
@@ -2667,7 +2667,7 @@ body.modal-open .content-wrap::before {
   }
 }
 
-/* === NOKTA ATIÅžI: Kırmızı yan çizgiler footer hizasında çivili (sarkan/kısa kalma yok) === */
+/* === NOKTA ATIŞI: Kırmızı yan çizgiler footer hizasında çivili (sarkan/kısa kalma yok) === */
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-container::before {
   bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
 }

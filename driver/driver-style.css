@@ -689,7 +689,7 @@ body.dashboard-page {
   }
 }
 
-/* Masaüstü: Tarihçe modali – düzeltme simgesi %85, 2. satırda sağa yaslı */
+/* Masaüstü: Tarihçe modalı – düzeltme simgesi %85, 2. satırda sağa yaslı */
 @media (min-width: 769px) {
   #history-modal .history-details-row {
     align-items: flex-end !important;
@@ -1521,7 +1521,7 @@ body.dashboard-page {
     width: 100% !important;
     height: auto !important;
   }
-  /* ???ifre ekrani baslik: kullanici paneli ile ayni (ekstra kaydirma yok) */
+  /* Şifre ekranı başlık: kullanıcı paneli ile aynı (ekstra kaydırma yok) */
   /* Ortadaki dikey kırmızı çizgi – yan çizgilerle aynı */
   .driver-left-panel {
     border-right-width: 1.2px !important;
@@ -1585,7 +1585,7 @@ body.dashboard-page {
   to { transform: rotate(360deg); }
 }
 
-/* --- TA???IT KARTLARI --- */
+/* --- TAŞIT KARTLARI --- */
 .driver-vehicles-list {
   display: flex;
   flex-direction: column;
@@ -2264,7 +2264,7 @@ body.dashboard-page {
   color: #ffc107;
 }
 
-/* --- BO??? DURUM --- */
+/* --- BOŞ DURUM --- */
 .driver-empty-state {
   text-align: center;
   padding: 48px 24px;
@@ -2653,7 +2653,7 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
-/* GeçmiÅŸ Kayıtlar modali: tarihçe/kayıt modali ile aynı yapı – body flex column, scroll sadece liste alanında */
+/* Geçmiş Kayıtlar modalı: tarihçe/kayıt modalı ile aynı yapı – body flex column, scroll sadece liste alanında */
 #history-modal .modal-body {
   display: flex !important;
   flex-direction: column !important;
@@ -2673,7 +2673,7 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   -webkit-overflow-scrolling: touch !important;
   padding-bottom: max(calc(var(--app-footer-real-height) + var(--app-footer-gap, 14px) + env(safe-area-inset-bottom, 0) + 12px), 20px) !important; /* Modal altı footer'a gelmeden kesilmesin */
 }
-/* Düzeltme Talebi modali: İşlem GeçmiÅŸi ile aynı yapı – body flex column, scroll #edit-request-content içinde */
+/* Düzeltme Talebi modalı: İşlem Geçmişi ile aynı yapı – body flex column, scroll #edit-request-content içinde */
 #edit-request-modal .modal-body {
   display: flex !important;
   flex-direction: column !important;
@@ -2875,7 +2875,7 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   gap: 0;
 }
 
-/* Hayır: yeşil metin + yeşil çerçeve. Hover: sadece scale + arka plan (layout deÄŸiÅŸmez, modal esnemez) */
+/* Hayır: yeşil metin + yeşil çerçeve. Hover: sadece scale + arka plan (layout değişmez, modal esnemez) */
 .muayene-confirm-actions .btn-confirm-no {
   background: transparent;
   color: var(--green, #4ade80);
@@ -2895,7 +2895,7 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   transform: scale(1.02);
 }
 
-/* Evet: kırmızı metin + kırmızı çerçeve. Hover: sadece scale + arka plan (layout deÄŸiÅŸmez, modal esnemez) */
+/* Evet: kırmızı metin + kırmızı çerçeve. Hover: sadece scale + arka plan (layout değişmez, modal esnemez) */
 .muayene-confirm-actions .btn-confirm-yes {
   background: transparent;
   color: var(--theme-color);
@@ -2915,7 +2915,7 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   transform: scale(1.02);
 }
 
-/* Masaüstü: butonlar 4px daha kısa (dikey), yatayda 8px daha geniÅŸ */
+/* Masaüstü: butonlar 4px daha kısa (dikey), yatayda 8px daha geniş */
 @media (min-width: 769px) {
   .muayene-confirm-actions .btn-confirm-no,
   .muayene-confirm-actions .btn-confirm-yes {
@@ -2930,7 +2930,7 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   font-size: 13.5px;
 }
 
-/* Masaüstü: GeçmiÅŸ modali – sol ok+etiket 6px yukarı, Taşıt Seç 2px yukarı + Tüm Taşıtlar gri, kart içi dikey daralt */
+/* Masaüstü: Geçmiş modalı – sol ok+etiket 6px yukarı, Taşıt Seç 2px yukarı + Tüm Taşıtlar gri, kart içi dikey daralt */
 @media (min-width: 769px) {
   #history-modal .universal-back-bar,
   #edit-request-modal .universal-back-bar {
@@ -2958,7 +2958,7 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   }
 }
 
-/* GeçmiÅŸ kayıtlar modal içi */
+/* Geçmiş kayıtlar modal içi */
 .history-filters {
   margin-bottom: 16px;
 }
@@ -3078,7 +3078,7 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   gap: 12px;
 }
 
-/* Kayıt kartı: kayıt modali input arka planı ile aynı (#0f1418) */
+/* Kayıt kartı: kayıt modalı input arka planı ile aynı (#0f1418) */
 .history-card {
   display: flex;
   flex-direction: column;
@@ -3172,7 +3172,7 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 }
 
 /* =========================================
-   LOGIN SAYFASI (DeÄŸiÅŸiklik yok)
+   LOGIN SAYFASI (Değişiklik yok)
    ========================================= */
 .login-page {
   overflow-x: hidden !important;
@@ -3191,7 +3191,7 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   padding-bottom: 10px !important;
 }
 
-/* Login (masaüstü): PWA kurulum çubuÄŸu header alt çerçevesinin 4px altında; sadece buton yatayda ortada (X hesaba katılmaz) */
+/* Login (masaüstü): PWA kurulum çubuğu header alt çerçevesinin 4px altında; sadece buton yatayda ortada (X hesaba katılmaz) */
 @media (min-width: 769px) {
   .login-page #pwa-install-wrapper.pwa-install-center {
     margin-top: 4px !important;
@@ -3239,7 +3239,7 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   }
 }
 
-/* Mobil: PWA sol panelde (plaka/marka-model ile ÅŸube arası slot) */
+/* Mobil: PWA sol panelde (plaka/marka-model ile şube arası slot) */
 @media (max-width: 768px) {
   .dashboard-page #driver-mobile-notification-slot #pwa-install-wrapper {
     display: flex !important;
@@ -3286,7 +3286,7 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   -webkit-overflow-scrolling: touch !important;
 }
 
-/* ???ifre ekrani: header/hero kullanici paneli ile ayni (padding vb. ortak) */
+/* Şifre ekranı: header/hero kullanıcı paneli ile aynı (padding vb. ortak) */
 .login-page .content-wrap {
   padding-left: 0 !important;
 }
@@ -3294,7 +3294,7 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   padding-left: 22px !important;
   padding-right: 30px !important;
 }
-/* �??ifre ekranı: Yönetim Sistemi butonu container içinde, footerdan 6px yukarıda; fixed footer üstünde görünsün (dashboard ile aynı) */
+/* Şifre ekranı: Yönetim Sistemi butonu container içinde, footerdan 6px yukarıda; fixed footer üstünde görünsün (dashboard ile aynı) */
 .login-page .driver-footer-back-wrap {
   position: relative;
   bottom: auto;
@@ -3613,7 +3613,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     margin-left: 0 !important;
     margin-right: 0 !important;
   }
-  /* GiriÅŸ formu yatayda ve dikeyde ortalan (iOS PWA) */
+  /* Giriş formu yatayda ve dikeyde ortalan (iOS PWA) */
   .login-page .content-wrap.driver-content-wrap.driver-scroll-area {
     display: flex !important;
     flex-direction: column !important;
@@ -3683,7 +3683,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   color: var(--form-label-color, #ffffff);
 }
 
-/* �??ifre ekranı: varsayılan gri çerçeve, focus'ta kırmızı */
+/* Şifre ekranı: varsayılan gri çerçeve, focus'ta kırmızı */
 .login-form .form-group input {
   width: 100%;
   max-width: 100%;
@@ -3716,7 +3716,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   transition: background-color 5000s ease-in-out 0s;
 }
 
-/* BoÅŸ / invalid: sadece focus yok ve dolu deÄŸilken gri çerçeve (yoksa focus/has-value kırmızı kazanır) */
+/* Boş / invalid: sadece focus yok ve dolu değilken gri çerçeve (yoksa focus/has-value kırmızı kazanır) */
 .login-form .form-group input:not(:focus):not(.has-value):invalid,
 .login-form .form-group input:not(:focus):not(.has-value):placeholder-shown {
   box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.35) !important;
@@ -3736,7 +3736,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 }
 
 .login-form .form-group input::placeholder {
-  color: rgba(160, 174, 192, 0.6) !important; /* örn: SavaÅŸ – çok az daha silik */
+  color: rgba(160, 174, 192, 0.6) !important; /* örn: Savaş – çok az daha silik */
   opacity: 1;
 }
 
@@ -3848,7 +3848,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   letter-spacing: 2px;
 }
 
-/* GeçmiÅŸ simgesi büyüt */
+/* Geçmiş simgesi büyüt */
 .driver-btn-history .driver-btn-history-icon {
   width: 24px !important;
   height: 24px !important;
@@ -4133,7 +4133,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     overscroll-behavior: none !important;
     overscroll-behavior-x: none !important;
   }
-  /* GeçmiÅŸ Kayıtlar + Düzeltme Talebi: mobilde aynı gri çerçeve */
+  /* Geçmiş Kayıtlar + Düzeltme Talebi: mobilde aynı gri çerçeve */
   #history-modal .driver-modal-content,
   #history-modal .modal-container,
   #edit-request-modal .driver-modal-content,
@@ -4174,13 +4174,13 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     padding-bottom: 3px !important;
   }
 
-  /* GeçmiÅŸ Kayıtlar + Düzeltme Talebi: kayıt modali ile aynı kapatma butonu boyutu */
+  /* Geçmiş Kayıtlar + Düzeltme Talebi: kayıt modalı ile aynı kapatma butonu boyutu */
   #history-modal .modal-close,
   #edit-request-modal .modal-close {
     font-size: 21px !important;
   }
 
-  /* modal-body: dikey scroll, alt içerik footer'a yapıÅŸmasın */
+  /* modal-body: dikey scroll, alt içerik footer'a yapışmasın */
   #history-modal .modal-body,
   #edit-request-modal .modal-body,
   #driver-event-menu-modal .modal-body,
@@ -4197,13 +4197,13 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     -webkit-overflow-scrolling: touch;
     padding-bottom: max(20px, env(safe-area-inset-bottom, 0)) !important;
   }
-  /* GeçmiÅŸ Kayıtlar + Düzeltme Talebi: scroll kendi alanında; mobilde son satir footer üstünde kalsın */
+  /* Geçmiş Kayıtlar + Düzeltme Talebi: scroll kendi alanında; mobilde son satır footer üstünde kalsın */
   #history-modal .modal-body,
   #edit-request-modal .modal-body {
     padding-top: 2px !important;
     padding-bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap, 14px) + env(safe-area-inset-bottom, 0)) !important;
   }
-  /* GeçmiÅŸ Kayıtlar / Düzeltme Talebi mobil: scroll alanı footer yüksekliği kadar alt boşluk, son satır kesilmesin */
+  /* Geçmiş Kayıtlar / Düzeltme Talebi mobil: scroll alanı footer yüksekliği kadar alt boşluk, son satır kesilmesin */
   #history-modal .modal-body,
   #edit-request-modal .modal-body {
     padding-bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap, 14px) + env(safe-area-inset-bottom, 0)) !important;
@@ -4218,7 +4218,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     background: var(--bg) !important;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25) !important;
   }
-  /* Mobil/PWA: tüm çerçeve ::before'da (0.99px), köşe birleÅŸme sorunu yok */
+  /* Mobil/PWA: tüm çerçeve ::before'da (0.99px), köşe birleşme sorunu yok */
   .dashboard-page .driver-header-fixed,
   .login-page .driver-header-fixed {
     border-top: none !important;
@@ -4280,7 +4280,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     flex: 1 1 auto !important;
     min-height: 0 !important;
   }
-  /* Sol panelin 12px'lik asimetrik sa???� boÅŸlu???�unu ezip sat???�r???� tam ortalar */
+  /* Sol panelin 12px'lik asimetrik sağ boşluğunu ezip satırı tam ortalar */
   .dashboard-page .driver-plate-dropdown-row {
     margin-right: 0 !important;
     padding-left: 0 !important;
@@ -4338,7 +4338,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     border-left: none !important;
     border-right: none !important;
   }
-  /* Mobil: header ile içerik tek parça görünsün, Üstü sonradan eklenmiÅŸ hissi kalkması için gölge hafif */
+  /* Mobil: header ile içerik tek parça görünsün, Üstü sonradan eklenmiş hissi kalkması için gölge hafif */
   .dashboard-page .hero {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2), 0 2px 12px rgba(var(--theme-color-rgb), 0.08) !important;
   }
@@ -4346,14 +4346,14 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .login-page .hero {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2), 0 2px 12px rgba(var(--theme-color-rgb), 0.08) !important;
   }
-  /* Mobil: Bildirimler, GeçmiÅŸ, Çıkış – yatayda ortalanmış */
+  /* Mobil: Bildirimler, Geçmiş, Çıkış – yatayda ortalanmış */
   .dashboard-page .driver-below-hero-row {
     justify-content: center !important;
     align-items: center !important;
     gap: 8px !important;
   }
   .dashboard-page .driver-below-hero-notification-slot {
-    flex: 0 0 auto !important; /* Grubu ortada tutar, bildirim alanı geniÅŸlemez */
+    flex: 0 0 auto !important; /* Grubu ortada tutar, bildirim alanı genişlemez */
   }
   /* Mobil login: Kullanıcı adı etiketi ve altındakiler 8px yukarı */
   .login-page .login-form {
@@ -4371,7 +4371,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     bottom: 0 !important;
   }
 
-  /* Çerçevelere yan boşluk; plaka dropdown sa???� panele taÅŸabilsin diye yatay overflow aç???�k */
+  /* Çerçevelere yan boşluk; plaka dropdown sağa panele taşabilsin diye yatay overflow açık */
   .dashboard-page .driver-dashboard-container {
     overflow-x: visible !important;
   }
@@ -4384,7 +4384,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     overflow-x: visible !important;
   }
 
-  /* Elemanlar yatay genişlik artır – çerçeveye yaklaÅŸ */
+  /* Elemanlar yatay genişlik artır – çerçeveye yaklaş */
   .dashboard-page .vehicle-card {
     padding-left: 12px !important;
     padding-right: 12px !important;
@@ -4397,7 +4397,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     max-width: 100% !important;
   }
 
-  /* GeçmiÅŸ simgesi 2px aşağı */
+  /* Geçmiş simgesi 2px aşağı */
   .dashboard-page .driver-btn-history .driver-btn-history-icon {
     transform: translateY(2px) !important;
   }
@@ -4522,7 +4522,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     text-align: left !important;
   }
 
-  /* 1. İsim/ÅŸifre ekranı –  tüm metinler +1pt */
+  /* 1. İsim/şifre ekranı –  tüm metinler +1pt */
   .login-form .form-group label {
     font-size: 17px !important;
   }
@@ -4760,7 +4760,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     height: 22px !important;
   }
 
-  /* 4. Footer stil birleÅŸtirme - yatay çizgi kaldırıldı (login = dashboard) */
+  /* 4. Footer stil birleştirme - yatay çizgi kaldırıldı (login = dashboard) */
   .login-page #app-footer.login-footer {
     border-top: none !important;
     border-left: 0.5px solid rgba(255, 255, 255, 0.10) !important;
@@ -4777,7 +4777,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     padding: 3px 12px !important;
   }
 
-  /* 5. �??ifre ekranı header: kullanıcı paneli ile aynı (yan çizgiler container'da, padding panel ile aynı) */
+  /* 5. Şifre ekranı header: kullanıcı paneli ile aynı (yan çizgiler container'da, padding panel ile aynı) */
   .login-page .driver-header-fixed {
     border-left: none !important;
     border-right: none !important;
@@ -4788,7 +4788,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     padding-top: 12px !important;
   }
 
-  /* 7. History kartı: mobilde metin-çerçeve dikey boşlukları sıkılaÅŸtır */
+  /* 7. History kartı: mobilde metin-çerçeve dikey boşlukları sıkılaştır */
   #history-modal .history-card {
     padding-top: 1px !important;
     padding-bottom: 1px !important;
@@ -4813,7 +4813,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .dashboard-page .driver-multi-vehicle-wrap .driver-plate-row {
     margin-bottom: 6px !important;
   }
-/* Masaüstü: plaka yatayda ortada (k???�rm???�z???� ok hesaba kat???�lmaz), ok çerçeve d???�ş???�nda */
+/* Masaüstü: plaka yatayda ortada (kırmızı ok hesaba katılmaz), ok çerçeve dışında */
 @media (min-width: 641px) {
   .dashboard-page .driver-plate-dropdown-row {
     margin-right: -12px !important;
@@ -4869,7 +4869,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     padding: 9px 16px !important;
   }
 
-  /* Foto 4: Bakım/Kaza – tıklanmamış durumda da geniÅŸlemiÅŸ genişlikte (layout shift yok) */
+  /* Foto 4: Bakım/Kaza – tıklanmamış durumda da genişlemiş genişlikte (layout shift yok) */
   .dashboard-page .driver-report-actions {
     flex-direction: column !important;
   }
@@ -4908,7 +4908,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .login-page .hero.hero-two-rows .hero-title-block {
     transform: none;
   }
-  /* GeçmiÅŸ Kayıtlarım: kalem ikonu */
+  /* Geçmiş Kayıtlarım: kalem ikonu */
   .dashboard-page .history-edit-icon svg {
     width: 20px;
     height: 20px;
@@ -4948,7 +4948,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
   }
   
-  /* Container alt boşluğu: footer y�ksekliÄŸi + safe-area (çift boşluk önlenir) */
+  /* Container alt boşluğu: footer yüksekliği + safe-area (çift boşluk önlenir) */
   .dashboard-page .driver-dashboard-container,
   .login-page .driver-dashboard-container {
     padding-bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
@@ -5080,7 +5080,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     margin-right: auto !important;
     box-sizing: border-box !important;
   }
-  /* SaÄŸ panel içeriÄŸi buton çubuÄŸunun altına kaymasın */
+  /* Sağ panel içeriği buton çubuğunun altına kaymasın */
   .dashboard-page .driver-two-panel {
     padding-bottom: 48px !important;
   }
@@ -5169,7 +5169,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
 }
 
-/* === NOKTA ATI�?I: Kırmızı yan çizgiler footer üstünde jilet gibi biter (taşma yok) === */
+/* === NOKTA ATIŞI: Kırmızı yan çizgiler footer üstünde jilet gibi biter (taşma yok) === */
 @media (max-width: 768px) {
   .dashboard-page .driver-below-hero-row {
     justify-content: center !important;
@@ -5237,7 +5237,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     box-sizing: border-box !important;
   }
 
-  /* GeçmiÅŸ Kayıtlar modalı: alt kesilme kalksın, içerik çerçeveye 6px kalana kadar kullanılsın. */
+  /* Geçmiş Kayıtlar modalı: alt kesilme kalksın, içerik çerçeveye 6px kalana kadar kullanılsın. */
   #history-modal .modal-body {
     padding-bottom: 6px !important;
   }
@@ -5290,12 +5290,12 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     border-top: none !important;
   }
 
-  /* Fixed bar için eklenmiÅŸ yapay boşluk mobilde kesme üretiyordu */
+  /* Fixed bar için eklenmiş yapay boşluk mobilde kesme üretiyordu */
   .dashboard-page .driver-two-panel {
     padding-bottom: 0 !important;
   }
 
-  /* SaÄŸ panel altına küçük güvenli boşluk */
+  /* Sağ panel altına küçük güvenli boşluk */
   .dashboard-page .driver-right-panel {
     padding-bottom: 12px !important;
   }
