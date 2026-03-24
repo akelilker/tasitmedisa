@@ -1233,13 +1233,15 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   width: 100%;
 }
 
-/* Önbellek Temizle Butonu - Kırmızı + Hover Büyüme */
-.settings-dropdown .cache-clear-btn {
+/* Önbellek Temizle + Çıkış — aynı kutu stili: kırmızı çerçeve / kırmızı metin */
+.settings-dropdown .cache-clear-btn,
+.settings-dropdown .settings-logout-btn {
   color: var(--theme-color) !important; /* Kırmızı metin */
   border: 1px solid rgba(var(--theme-color-rgb), 0.5) !important; /* Kırmızı çerçeve */
 }
 
-.settings-dropdown .cache-clear-btn:hover {
+.settings-dropdown .cache-clear-btn:hover,
+.settings-dropdown .settings-logout-btn:hover {
   font-size: calc(17px + 1pt) !important; /* Fare ile üzerine gidince metin büyüsün */
   color: var(--theme-color) !important;
   border-color: rgba(var(--theme-color-rgb), 0.7) !important; /* Hover'da daha parlak kırmızı */
