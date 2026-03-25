@@ -916,6 +916,23 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   display: none !important;
 }
 
+/* Açıkken footer (z-index 10000) ve kullanıcı paneli (9999) üstünde — alt çerçeve “kesik” görünmesin */
+#notifications-dropdown.open {
+  z-index: 10060 !important;
+}
+
+/* Bildirim açık: .app-container / .content-wrap overflow kırpmasın (masaüstü tarayıcı, Android/iOS PWA, mobil) */
+body:not(.modal-open):has(#notifications-dropdown.open) .app-container {
+  overflow: visible !important;
+}
+body:not(.modal-open):has(#notifications-dropdown.open) .content-wrap {
+  overflow-y: visible !important;
+}
+body:not(.modal-open):has(#notifications-dropdown.open) .icons-row {
+  position: relative;
+  z-index: 2;
+}
+
 #notifications-dropdown > .notification-item {
   width: 100% !important;
   box-sizing: border-box !important;
@@ -1275,7 +1292,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
     right: 0 !important;
   }
   #notifications-dropdown.open {
-    padding-bottom: 1px !important;
+    padding-bottom: 12px !important; /* Son kart alt çerçevesi scroll dibiyle çakışmasın (mobil 10px ile uyumlu) */
     box-sizing: border-box !important;
   }
   #notifications-dropdown.open > .notification-item:last-child {
@@ -2436,35 +2453,20 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
     }
 }
 
-/* iOS PWA: bildirim altı kesilmesin — WebKit + standalone (Android Chrome PWA hariç) */
+/* iOS PWA: güvenli alan + max-height; z-index/overflow üstteki global blokta */
 @supports (-webkit-touch-callout: none) {
 @media (max-width: 640px) and (display-mode: standalone) {
     #notifications-dropdown {
         max-height: var(--mobile-notifications-max-height, min(356px, calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 112px))) !important;
     }
     #notifications-dropdown.open {
-        z-index: 10060 !important;
         padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px)) !important;
-    }
-    body:not(.modal-open):has(#notifications-dropdown.open) .app-container {
-        overflow: visible !important;
-    }
-    body:not(.modal-open):has(#notifications-dropdown.open) .content-wrap {
-        overflow-y: visible !important;
-    }
-    body:not(.modal-open):has(#notifications-dropdown.open) .icons-row {
-        position: relative;
-        z-index: 2;
     }
 }
 }
 
-/* Masaüstü PWA: bildirim dropdown katmanı sabit kalsın (sadece standalone desktop) */
+/* Masaüstü PWA: Kasko Excel kartı ölçüleri (z-index/overflow bildirimler için global) */
 @media (min-width: 769px) and (display-mode: standalone) {
-    #notifications-dropdown.open {
-        z-index: 10060 !important;
-    }
-    /* Masaüstü PWA: Kasko Değer Listesi kartı, standart bildirim kartlarıyla aynı boyutta aksın */
     #notifications-dropdown .kasko-excel-notification {
         padding: 1px 12px !important;
         min-height: 0 !important;
@@ -2476,13 +2478,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
     }
     #notifications-dropdown .kasko-excel-notification .mtv-dismiss-wrapper {
         margin-left: 4px !important;
-    }
-    body:not(.modal-open):has(#notifications-dropdown.open) .content-wrap {
-        overflow-y: visible !important;
-    }
-    body:not(.modal-open):has(#notifications-dropdown.open) .icons-row {
-        position: relative;
-        z-index: 2;
     }
 }
 
