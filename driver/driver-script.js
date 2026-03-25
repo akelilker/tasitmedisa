@@ -202,10 +202,14 @@ const API_BASE = (function(){
     return routeByToken(token, fallbackDashboard, routeOptions);
   }
 
-  function syncDashboardHomeLinkVisibility(role) {
+  function syncDashboardHomeLinkVisibility(role, yoneticiOnly) {
     if (!document.body || !document.body.classList.contains('dashboard-page')) return;
     var normalizedRole = String(role || '').trim();
-    var shouldShow = normalizedRole === 'sube_yonetici' || normalizedRole === 'genel_yonetici' || normalizedRole === 'yonetici_kullanici';
+    var shouldShow = yoneticiOnly !== true && (
+      normalizedRole === 'sube_yonetici'
+      || normalizedRole === 'genel_yonetici'
+      || normalizedRole === 'yonetici_kullanici'
+    );
     document.querySelectorAll('.dashboard-page .driver-footer-back-wrap').forEach(function(el) {
       if (shouldShow) {
         el.style.display = '';
@@ -566,7 +570,10 @@ const API_BASE = (function(){
       var currentRole = currentSession
         ? (currentSession.role || (currentSession.user && currentSession.user.role) || '')
         : (tokenPayload ? (tokenPayload.rol || tokenPayload.role || '') : '');
-      syncDashboardHomeLinkVisibility(currentRole);
+      var yoneticiOnly = currentSession
+        ? currentSession.yonetici_only === true
+        : (tokenPayload ? tokenPayload.yonetici_only === true : false);
+      syncDashboardHomeLinkVisibility(currentRole, yoneticiOnly);
       
       currentToken = token;
       
