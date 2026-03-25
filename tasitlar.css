@@ -1174,8 +1174,13 @@
     padding-left: 5px !important;
     padding-right: 5px !important;
   }
+  #vehicles-modal .vehicles-toolbar {
+    z-index: 20 !important;
+  }
   #vehicles-modal .vt-left {
-    margin-top: -51px;
+    margin-top: 0 !important;
+    position: relative;
+    z-index: 21;
   }
   /* Taşıt detay modalı: sol ok + Taşıtlar etiketi 6px yukarı (masaüstü) */
   #vehicle-detail-modal .vehicle-detail-toolbar > div:first-child {
