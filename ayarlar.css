@@ -2148,6 +2148,10 @@ input.settings-form-input:-moz-autofill,
         border: 1px solid rgba(var(--theme-color-rgb), 0.5) !important;
         color: var(--theme-color) !important;
     }
+    #settings-menu > #dis-veri-btn,
+    #dis-veri-panel {
+        display: none !important;
+    }
 
     /* Mobil: Şube/Kullanıcı form input autofill tema rengi */
     #branch-form-modal .form-input:-webkit-autofill,
