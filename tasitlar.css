@@ -3207,11 +3207,12 @@
     transform-origin: center;
   }
 
+  /* Tema kırmızısı (#d40000) ile aynı hue; #ff5252 gibi açık tonlar pembeye kayar */
   #event-menu-list button.event-menu-btn--danger:hover {
-    outline-color: rgba(212, 0, 0, 0.9) !important;
-    border-color: #ff3b3b !important;
-    color: #ff5252 !important;
-    box-shadow: 0 0 14px rgba(212, 0, 0, 0.35);
+    outline-color: rgba(var(--theme-color-rgb), 0.95) !important;
+    border-color: #ff1a1a !important;
+    color: #ff2424 !important;
+    box-shadow: 0 0 12px rgba(var(--theme-color-rgb), 0.28);
   }
 }
 
