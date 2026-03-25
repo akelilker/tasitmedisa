@@ -2459,14 +2459,10 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
 }
 }
 
-/* Masaüstü PWA: bildirim listesinin alt çerçevesi kesilmesin (sadece standalone desktop) */
+/* Masaüstü PWA: bildirim dropdown katmanı sabit kalsın (sadece standalone desktop) */
 @media (min-width: 769px) and (display-mode: standalone) {
     #notifications-dropdown.open {
         z-index: 10060 !important;
-        padding-bottom: 10px !important; /* Son kartın alt çerçevesi kesilmesin */
-    }
-    #notifications-dropdown.open > .notification-item:last-child {
-        margin-bottom: 6px !important;
     }
     /* Masaüstü PWA: Kasko Değer Listesi kartı, standart bildirim kartlarıyla aynı boyutta aksın */
     #notifications-dropdown .kasko-excel-notification {
