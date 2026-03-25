@@ -190,7 +190,6 @@ function canShowMainUserPanelLink(sessionData) {
     var session = sessionData && typeof sessionData === 'object' ? sessionData : getDefaultSession();
     if (!session.authenticated) return false;
     if (session.yonetici_only === true) return false;
-    if (session.driver_dashboard !== true) return false;
 
     var role = String(session.role || '').trim();
     return role === 'sube_yonetici' || role === 'genel_yonetici' || role === 'yonetici_kullanici';
