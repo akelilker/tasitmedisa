@@ -183,7 +183,7 @@
         let html = `
             <div class="stok-branch-card all-card ${stokCurrentBranchId === 'all' ? 'active' : ''}" 
                  onclick="selectStokBranch('all')">
-                <div class="stok-branch-name">Tümü</div>
+                <div class="stok-branch-name">TÜMÜ</div>
                 <div class="stok-branch-count">${totalCount} Taşıt</div>
             </div>
         `;
@@ -197,7 +197,7 @@
             html += `
                 <div class="stok-branch-card ${isActive ? 'active' : ''}" 
                      onclick="selectStokBranch('${escapeHtml(branch.id)}')">
-                    <div class="stok-branch-name">${escapeHtml(branch.name)}</div>
+                    <div class="stok-branch-name">${escapeHtml(String(branch.name || '').toLocaleUpperCase('tr-TR'))}</div>
                     <div class="stok-branch-count">${count} Taşıt</div>
                 </div>
             `;
@@ -1864,7 +1864,7 @@
         let html = `
             <div class="stok-branch-card all-card ${kullaniciCurrentBranchId === 'all' ? 'active' : ''}" 
                  onclick="selectKullaniciBranch('all')">
-                <div class="stok-branch-name">Tümü</div>
+                <div class="stok-branch-name">TÜMÜ</div>
                 <div class="stok-branch-count">${totalCount} Kullanıcı</div>
             </div>
         `;
@@ -1880,7 +1880,7 @@
             html += `
                 <div class="stok-branch-card ${isActive ? 'active' : ''}" 
                      onclick="selectKullaniciBranch('${escapeHtml(branch.id)}')">
-                    <div class="stok-branch-name">${escapeHtml(branch.name)}</div>
+                    <div class="stok-branch-name">${escapeHtml(String(branch.name || '').toLocaleUpperCase('tr-TR'))}</div>
                     <div class="stok-branch-count">${count} Kullanıcı</div>
                 </div>
             `;
