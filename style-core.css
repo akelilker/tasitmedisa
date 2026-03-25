@@ -1294,13 +1294,13 @@ body:not(.modal-open):has(#notifications-dropdown.open) .icons-row {
   }
   /* Masaüstü: Bildirim kutusu stabil genişlikte kalsın, resize'da bozulmasın */
   #notifications-dropdown {
-    max-height: 332px !important;
+    max-height: min(356px, calc(100vh - 180px)) !important;
     width: 360px !important;
     max-width: calc(100vw - 32px) !important;
     right: 0 !important;
   }
   #notifications-dropdown.open {
-    padding-bottom: 16px !important; /* Son kart + scroll kırpması için ekstra nefes */
+    padding-bottom: 20px !important; /* Son kartın alt border'ı kesilmesin */
     box-sizing: border-box !important;
   }
   #notifications-dropdown.open > .notification-item:last-child {
