@@ -861,7 +861,8 @@ const API_BASE = (function(){
           const rowRect = row.getBoundingClientRect();
           const viewportPadding = 16;
           const availableWidth = Math.max(220, Math.floor(window.innerWidth - rowRect.left - viewportPadding));
-          const targetWidth = Math.min(420, availableWidth);
+          const desiredWidth = Math.floor(window.innerWidth * 0.5);
+          const targetWidth = Math.max(300, Math.min(desiredWidth, availableWidth));
 
           dropdown.style.setProperty('position', 'fixed', 'important');
           dropdown.style.setProperty('top', `${Math.round(rowRect.bottom + 4)}px`, 'important');
@@ -869,7 +870,7 @@ const API_BASE = (function(){
           dropdown.style.setProperty('right', 'auto', 'important');
           dropdown.style.setProperty('transform', 'none', 'important');
           dropdown.style.setProperty('width', `${targetWidth}px`, 'important');
-          dropdown.style.setProperty('max-width', `${availableWidth}px`, 'important');
+          dropdown.style.setProperty('max-width', `${targetWidth}px`, 'important');
       }
   }
 

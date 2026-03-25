@@ -5132,9 +5132,9 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     left: 0 !important;
     right: auto !important;
     transform: none !important;
-    width: min(420px, calc(100vw - 120px)) !important;
+    width: min(50vw, calc(100vw - 120px)) !important;
     min-width: 300px !important;
-    max-width: min(420px, calc(100vw - 120px)) !important;
+    max-width: min(50vw, calc(100vw - 120px)) !important;
   }
 }
 
