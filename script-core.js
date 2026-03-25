@@ -503,9 +503,9 @@ document.addEventListener('DOMContentLoaded', () => {
 // Modal açma fonksiyonları: Lazy load – modül yüklenir, sonra ilgili açma fonksiyonu tetiklenir.
 // tasitlar.js / raporlar.js / kayit.js / ayarlar.js yüklendiğinde kendi open* implementasyonlarını yazar.
 (function() {
-  var TASITLAR_JS = 'tasitlar.js?v=20260325.3';
+  var TASITLAR_JS = 'tasitlar.js?v=20260325.4';
   var TASITLAR_CSS = 'tasitlar.css?v=20260323.5';
-  var RAPORLAR_JS = 'raporlar.js?v=20260325.3';
+  var RAPORLAR_JS = 'raporlar.js?v=20260325.4';
   var RAPORLAR_CSS = 'raporlar.css?v=20260323.4';
   var KAYIT_JS = 'kayit.js?v=20260325.2';
   var KAYIT_CSS = 'kayit.css?v=20260325.1';
@@ -647,7 +647,7 @@ window.addEventListener('dataLoaded', () => {
     }
 
     if (typeof window.loadAppModule === 'function') {
-        window.loadAppModule('tasitlar.js?v=20260325.3', 'tasitlar.css?v=20260323.5')
+        window.loadAppModule('tasitlar.js?v=20260325.4', 'tasitlar.css?v=20260323.5')
             .then(runNotifications)
             .catch(function(err) {
                 console.error('[Medisa] Bildirim modülü yüklenemedi:', err);
