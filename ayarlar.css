@@ -425,14 +425,19 @@ body.modal-open #cache-confirm-modal.open {
 }
 #user-modal .user-management-search-wrap {
     margin-left: auto;
-    display: inline-flex;
+    display: flex;
     align-items: center;
     justify-content: flex-end;
     gap: 3px;
     min-width: 0;
+    flex: 0 0 32px;
+    width: 32px;
+    overflow: hidden;
+    transition: flex-basis 0.18s ease, width 0.18s ease;
 }
 #user-modal .user-management-search-input {
-    width: 0;
+    flex: 1 1 0;
+    width: auto;
     min-width: 0;
     height: 30px;
     padding: 0 !important;
@@ -445,11 +450,21 @@ body.modal-open #cache-confirm-modal.open {
     box-sizing: border-box;
     transition: width 0.18s ease, padding 0.18s ease, opacity 0.18s ease, border-color 0.18s ease;
 }
+#user-modal .user-management-search-input::-webkit-search-decoration,
+#user-modal .user-management-search-input::-webkit-search-cancel-button,
+#user-modal .user-management-search-input::-webkit-search-results-button,
+#user-modal .user-management-search-input::-webkit-search-results-decoration {
+    -webkit-appearance: none;
+    appearance: none;
+}
+#user-modal .user-management-search-wrap.open {
+    flex-basis: 195px;
+    width: 195px;
+}
 #user-modal .user-management-search-input::placeholder {
     color: var(--txt-placeholder, #6c757d);
 }
 #user-modal .user-management-search-wrap.open .user-management-search-input {
-    width: 160px;
     padding: 0 8px !important;
     border-color: rgba(var(--theme-color-rgb), 0.7);
     opacity: 1;
