@@ -378,14 +378,15 @@ function medisaUserHasAssignedVehicle($data, $userId) {
 
 function medisaComputeDriverDashboard($user, $data) {
     $role = medisaResolveUserRole($user);
-    $hasVehicle = medisaUserHasAssignedVehicle($data, $user['id'] ?? null);
-    $panelEnabled = medisaResolvePanelFlag($user);
-
     if ($role === 'kullanici') {
         return true;
     }
 
-    return ($role === 'sube_yonetici' || $role === 'genel_yonetici') && $panelEnabled && $hasVehicle;
+    // Yonetici rolleri ana uygulamadan dashboard'a gecis yapabilir.
+    // "Sadece yonetici" istisnasi login tarafinda raw role ile kapatilir.
+    return $role === 'sube_yonetici'
+        || $role === 'genel_yonetici'
+        || $role === 'yonetici_kullanici';
 }
 
 function medisaBuildPermissions($context) {
