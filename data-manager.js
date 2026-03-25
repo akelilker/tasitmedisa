@@ -218,7 +218,11 @@ function redirectToDriverDashboard() {
 }
 
 function resolveMainAppPortalLinkUrl(sessionData) {
-    return DRIVER_INDEX_URL + '?portal=main-app';
+    var session = sessionData && typeof sessionData === 'object' ? sessionData : (window.medisaSession || getDefaultSession());
+    if (session && session.authenticated === true && session.driver_dashboard === true) {
+        return DRIVER_DASHBOARD_URL;
+    }
+    return DRIVER_INDEX_URL + 'index.html?portal=main-app';
 }
 
 function syncMainAppPortalLinks() {
@@ -227,7 +231,7 @@ function syncMainAppPortalLinks() {
 
     var portalLinks = document.querySelectorAll('a.user-panel-link:not(.driver-home-link)');
     if (!portalLinks.length) return;
-    var portalUrl = resolveMainAppPortalLinkUrl();
+    var portalUrl = resolveMainAppPortalLinkUrl(window.medisaSession || getDefaultSession());
 
     portalLinks.forEach(function(link) {
         link.setAttribute('href', portalUrl);
