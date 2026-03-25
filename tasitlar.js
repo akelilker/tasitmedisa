@@ -126,6 +126,7 @@
   let currentFilter = 'az'; // 'az' | 'newest' | 'oldest' | 'type' (liste filtre dropdown)
   let transmissionFilter = ''; // '' | 'otomatik' | 'manuel' (şanzıman filtresi)
   let lastListContext = null; // Son açılan liste bağlamı (geri dönüş hedefi)
+  let isAutoSingleBranchVehiclesView = false;
 
   let lastVehiclesRenderSignature = '';
   let lastDashboardRenderSignature = '';
@@ -570,6 +571,7 @@
   }
 
   window.goBackToVehiclesDashboard = function() {
+    isAutoSingleBranchVehiclesView = false;
     renderBranchDashboard(false, { allowSingleBranchBypass: false });
   };
 
@@ -584,6 +586,7 @@
       requestAnimationFrame(() => modal.classList.add('active'));
       ensureToolbar();
       currentView = 'dashboard';
+      isAutoSingleBranchVehiclesView = false;
       updateToolbar('dashboard');
     }
 
@@ -716,14 +719,17 @@
         `;
     } else {
         // DETAY MODU: Solda Geri+İsim, Sağda Yerel Arama/Filtre/Görünüm
-        toolbar.innerHTML = `
-            <div class="vt-left">
+        const leftContent = isAutoSingleBranchVehiclesView ? '' : `
                 <div class="universal-back-bar">
                     <button type="button" class="universal-back-btn" onclick="goBackToVehiclesDashboard()">
                         <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
                         ${title ? `<span class="universal-back-label">${escapeHtml(title)}</span>` : ''}
                     </button>
                 </div>
+        `;
+        toolbar.innerHTML = `
+            <div class="vt-left">
+                ${leftContent}
             </div>
             <div class="vt-right">
                 <div id="v-search-container" class="v-search-container">
@@ -778,9 +784,10 @@
     const allowSingleBranchBypass = options.allowSingleBranchBypass !== false;
     const singleVisibleBranch = allowSingleBranchBypass ? getSingleVisibleVehicleBranch() : null;
     if (singleVisibleBranch) {
-      openBranchList(singleVisibleBranch.id, singleVisibleBranch.name);
+      openBranchList(singleVisibleBranch.id, singleVisibleBranch.name, { autoSingleBranch: true });
       return;
     }
+    isAutoSingleBranchVehiclesView = false;
 
     const vehicles = readVehicles();
     const activeVehicles = vehicles.filter(v => v.satildiMi !== true);
@@ -865,11 +872,12 @@
   }
 
   // --- 2. LİSTE RENDER (Şube Detayı) ---
-  window.openBranchList = function(branchId, branchName) {
+  window.openBranchList = function(branchId, branchName, options = {}) {
     currentView = 'list';
     viewMode = 'list';
     activeBranchId = branchId; // 'all', '', veya 'id'
     lastListContext = { mode: 'branch', branchId: branchId, branchName: branchName };
+    isAutoSingleBranchVehiclesView = options.autoSingleBranch === true;
     invalidateVehicleListRenderCache();
     closeSearchBox(true);
     const displayTitle = branchId === 'all' ? branchName : (branchName + ' Taşıtlar');
@@ -887,6 +895,7 @@
     viewMode = 'list';
     activeBranchId = '__archive__';
     lastListContext = { mode: 'archive' };
+    isAutoSingleBranchVehiclesView = false;
     invalidateVehicleListRenderCache();
     closeSearchBox(true);
     updateToolbar('detail', 'Arşiv');
