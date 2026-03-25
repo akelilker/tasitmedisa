@@ -29,6 +29,39 @@
   function readBranches() { return (typeof window.getMedisaBranches === 'function' ? window.getMedisaBranches() : null) || []; }
   function readVehicles() { return (typeof window.getMedisaVehicles === 'function' ? window.getMedisaVehicles() : null) || []; }
   function readUsers() { return (typeof window.getMedisaUsers === 'function' ? window.getMedisaUsers() : null) || []; }
+  function getUserBranchIdsForVehicleAssignment(user) {
+    if (!user || typeof user !== 'object') return [];
+
+    let branchIds = [];
+    if (Array.isArray(user.branchIds)) {
+      branchIds = user.branchIds;
+    } else if (Array.isArray(user.sube_ids)) {
+      branchIds = user.sube_ids;
+    } else if (user.branchId !== undefined && user.branchId !== null && user.branchId !== '') {
+      branchIds = [user.branchId];
+    } else if (user.sube_id !== undefined && user.sube_id !== null && user.sube_id !== '') {
+      branchIds = [user.sube_id];
+    }
+
+    const normalized = [];
+    branchIds.forEach(function(branchId) {
+      const value = String(branchId || '').trim();
+      if (value && normalized.indexOf(value) === -1) normalized.push(value);
+    });
+    return normalized;
+  }
+  function getAssignableUsersForVehicle(vehicle) {
+    const users = readUsers();
+    const vehicleBranchId = vehicle && vehicle.branchId !== undefined && vehicle.branchId !== null
+      ? String(vehicle.branchId).trim()
+      : '';
+
+    if (!vehicleBranchId) return users;
+
+    return users.filter(function(user) {
+      return getUserBranchIdsForVehicleAssignment(user).indexOf(vehicleBranchId) !== -1;
+    });
+  }
 
   function getEventPerformerName(vehicle) {
     const users = readUsers();
@@ -2670,12 +2703,13 @@ function renderVehicleDetailLeft(vehicle) {
         // Kullanıcı atama modal'ında kullanıcıları doldur; Henüz Tanımlanmadı + en alta "+ Yeni Kullanıcı Ekle"
         const selectEl = document.getElementById('kullanici-select');
         if (selectEl) {
+          const vehicle = readVehicles().find(v => String(v.id) === String(vehicleId || window.currentDetailVehicleId));
           selectEl.innerHTML = '<option value="">Kullanıcı Seçiniz</option>';
           const noneOpt = document.createElement('option');
           noneOpt.value = '__none__';
           noneOpt.textContent = 'Henüz Tanımlanmadı';
           selectEl.appendChild(noneOpt);
-          const users = readUsers();
+          const users = getAssignableUsersForVehicle(vehicle);
           users.forEach(u => {
             const opt = document.createElement('option');
             opt.value = u.id;
@@ -2686,7 +2720,6 @@ function renderVehicleDetailLeft(vehicle) {
           addOpt.value = '__add_user__';
           addOpt.textContent = '+ Yeni Kullanıcı Ekle';
           selectEl.appendChild(addOpt);
-          const vehicle = readVehicles().find(v => String(v.id) === String(vehicleId || window.currentDetailVehicleId));
           if (vehicle?.assignedUserId) {
             selectEl.value = vehicle.assignedUserId;
           } else {
@@ -2708,7 +2741,8 @@ function renderVehicleDetailLeft(vehicle) {
                   const newId = ev.detail && ev.detail.id;
                   window.removeEventListener('userSaved', onUserSaved);
                   if (!newId || !selectEl.parentNode) return;
-                  const users = readUsers();
+                  const currentVehicle = readVehicles().find(v => String(v.id) === String(currentVehicleId));
+                  const users = getAssignableUsersForVehicle(currentVehicle);
                   selectEl.innerHTML = '<option value="">Kullanıcı Seçiniz</option>';
                   const noneOpt2 = document.createElement('option');
                   noneOpt2.value = '__none__';
