@@ -3186,7 +3186,7 @@
 }
 
 #event-menu-list button {
-  transition: outline 0.2s ease, font-weight 0.2s ease;
+  transition: outline 0.2s ease, font-weight 0.2s ease, transform 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
   outline: 2px solid transparent;
   outline-offset: -2px;
   text-align: center !important; /* Buton metni ortalı - JavaScript'teki text-align: left'i override eder */
@@ -3198,9 +3198,21 @@
   margin: 0 auto !important; /* Yatayda ortala (saş ve soldan eşit boşluk) */
 }
 
-#event-menu-list button:hover {
-  outline-color: rgba(255, 255, 255, 0.4);
-  font-weight: 700 !important; /* 14px – 15px */
+/* Fare ile: çerçeve + metin hafif büyür; kırmızı butonlarda beyaz outline yok (yalnızca tema kırmızısı) */
+@media (hover: hover) {
+  #event-menu-list button:hover {
+    outline-color: rgba(255, 255, 255, 0.4);
+    font-weight: 700 !important;
+    transform: scale(1.02);
+    transform-origin: center;
+  }
+
+  #event-menu-list button.event-menu-btn--danger:hover {
+    outline-color: rgba(212, 0, 0, 0.9) !important;
+    border-color: #ff3b3b !important;
+    color: #ff5252 !important;
+    box-shadow: 0 0 14px rgba(212, 0, 0, 0.35);
+  }
 }
 
 /* Kaza Modalı - Kaporta şeması sola yaslı */

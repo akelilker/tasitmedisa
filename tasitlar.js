@@ -2508,10 +2508,12 @@ function renderVehicleDetailLeft(vehicle) {
         const isKaza = event.id === 'kaza';
         const isSatis = event.id === 'satis';
         const isCeza = event.id === 'ceza';
-        const borderColor = (isKaza || isSatis || isCeza) ? '#d40000' : 'rgba(255, 255, 255, 0.3)';
-        const textColor = (isKaza || isSatis || isCeza) ? '#d40000' : '#ccc';
-        const borderWidth = (isKaza || isSatis || isCeza) ? '0.3px' : '1px';
-        return `<button type="button" data-event-id="${event.id}" data-vehicle-id="${vid}" style="width: 100%; padding: 12px; background: transparent; border: ${borderWidth} solid ${borderColor}; color: ${textColor}; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px; text-align: left;">${event.label}</button>`;
+        const isDanger = isKaza || isSatis || isCeza;
+        const dangerClass = isDanger ? ' class="event-menu-btn--danger"' : '';
+        const borderColor = isDanger ? '#d40000' : 'rgba(255, 255, 255, 0.3)';
+        const textColor = isDanger ? '#d40000' : '#ccc';
+        const borderWidth = isDanger ? '0.3px' : '1px';
+        return `<button type="button"${dangerClass} data-event-id="${event.id}" data-vehicle-id="${vid}" style="width: 100%; padding: 12px; background: transparent; border: ${borderWidth} solid ${borderColor}; color: ${textColor}; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px; text-align: left;">${event.label}</button>`;
       }).join('');
       
       modal.style.display = 'flex';
