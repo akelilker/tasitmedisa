@@ -868,7 +868,7 @@
 
     // 1. "TÜMÜ" Kartı (Manuel) — sadece aktif (satılmamış) taşıtlar
     html += `
-      <div class="branch-card all-card" data-branch-id="all" data-branch-name="Taşıtlar">
+      <div class="branch-card all-card" data-branch-id="all" data-branch-name="TAŞITLAR">
         <div class="branch-name">TÜMÜ</div>
         <div class="branch-count">${activeVehicles.length} Taşıt</div>
       </div>
@@ -896,7 +896,7 @@
   function createBranchCard(id, name, count, isUnassigned = false) {
     const unassignedClass = isUnassigned ? ' unassigned-branch-card' : '';
     const safeId = (id || '').replace(/"/g, '&quot;');
-    const safeName = escapeHtml(name);
+    const safeName = escapeHtml(String(name || '').toLocaleUpperCase('tr-TR'));
     return `
       <div class="branch-card${unassignedClass}" data-branch-id="${safeId}" data-branch-name="${safeName}">
         <div class="branch-name" title="${safeName}">${safeName}</div>
