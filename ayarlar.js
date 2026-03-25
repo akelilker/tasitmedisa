@@ -1208,7 +1208,21 @@
     // ========================================
     // DIŞ VERİ YÖNETİMİ
     // ========================================
+    function isDisVeriPanelUnavailableOnCurrentDevice() {
+      const hasMatchMedia = typeof window.matchMedia === 'function';
+      const isMobileViewport = hasMatchMedia
+        ? window.matchMedia('(max-width: 640px)').matches
+        : window.innerWidth <= 640;
+      const ua = navigator.userAgent || '';
+      const isiOS = /iPhone|iPad|iPod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+      const isStandalone = hasMatchMedia
+        && (window.matchMedia('(display-mode: standalone)').matches || window.matchMedia('(display-mode: fullscreen)').matches);
+
+      return isMobileViewport || (isiOS && (isStandalone || window.navigator.standalone === true));
+    }
+
     window.openDisVeriPanel = function openDisVeriPanel() {
+      if (isDisVeriPanelUnavailableOnCurrentDevice()) return;
       const settingsMenu = document.getElementById('settings-menu');
       if (settingsMenu) settingsMenu.classList.remove('open');
       const dataSubmenu = document.getElementById('data-submenu');
