@@ -38,6 +38,12 @@ const API_BASE = (function(){
     if (p.indexOf('/medisa') === 0) return '/medisa/index.html';
     return '../index.html';
   })();
+  const MAIN_SESSION_URL = (function() {
+    var p = document.location.pathname;
+    if (p.indexOf('/tasitmedisa') === 0) return '/tasitmedisa/load.php';
+    if (p.indexOf('/medisa') === 0) return '/medisa/load.php';
+    return '../load.php';
+  })();
   
   // Uygulama sürümü (footer #version-display - kullanıcı girişi ve paneli 78.1)
   const APP_VERSION = 'v78.1';
@@ -136,6 +142,22 @@ const API_BASE = (function(){
     }
   }
 
+  async function fetchCurrentPortalSession(token) {
+    if (!token) return null;
+    try {
+      const response = await fetch(MAIN_SESSION_URL + '?_=' + Date.now(), {
+        headers: { 'Authorization': 'Bearer ' + token },
+        cache: 'no-store'
+      });
+      if (!response.ok) return null;
+      const text = await response.text();
+      const data = text ? JSON.parse(text) : {};
+      return data && data.session && typeof data.session === 'object' ? data.session : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
   function routeByToken(token, fallbackDashboard, options) {
     var routeOptions = options && typeof options === 'object' ? options : {};
     var payload = decodeDriverTokenPayload(token);
@@ -145,7 +167,11 @@ const API_BASE = (function(){
       return false;
     }
 
-    if (payload.driver_dashboard === false || fallbackDashboard === false) {
+    var hasDashboardAccess = typeof routeOptions.driverDashboard === 'boolean'
+      ? routeOptions.driverDashboard === true
+      : (payload.driver_dashboard !== false && fallbackDashboard !== false);
+
+    if (!hasDashboardAccess) {
       if (routeOptions.stayOnLoginWhenDashboardUnavailable === true) {
         return false;
       }
@@ -155,6 +181,25 @@ const API_BASE = (function(){
 
     window.location.href = DRIVER_PAGE_BASE + 'dashboard.html';
     return true;
+  }
+
+  async function routeByCurrentSession(token, fallbackDashboard, options) {
+    var routeOptions = options && typeof options === 'object' ? options : {};
+    var payload = decodeDriverTokenPayload(token);
+    var nowTs = Math.floor(Date.now() / 1000);
+    if (!payload || !payload.exp || Number(payload.exp) < nowTs) {
+      clearStoredPortalTokens();
+      return false;
+    }
+
+    var currentSession = await fetchCurrentPortalSession(token);
+    if (currentSession && typeof currentSession.driver_dashboard === 'boolean') {
+      return routeByToken(token, fallbackDashboard, Object.assign({}, routeOptions, {
+        driverDashboard: currentSession.driver_dashboard === true
+      }));
+    }
+
+    return routeByToken(token, fallbackDashboard, routeOptions);
   }
 
   function syncDashboardHomeLinkVisibility(role) {
@@ -360,10 +405,10 @@ const API_BASE = (function(){
   if (document.getElementById('login-form')) {
       /* Geçerli bir oturum varsa login ekranını atla ve token'ın işaret ettiği yüzeye git. */
       var savedToken = getStoredPortalToken();
-      if (!shouldForceDriverLoginView() && savedToken && routeByToken(savedToken, true, {
-        stayOnLoginWhenDashboardUnavailable: isMainAppPortalEntry()
-      })) {
-          /* Sayfa yönleniyor; login listener'ları güvenle kurulabilir. */
+      if (!shouldForceDriverLoginView() && savedToken) {
+          routeByCurrentSession(savedToken, true, {
+            stayOnLoginWhenDashboardUnavailable: isMainAppPortalEntry()
+          });
       }
   
       var usernameInput = document.getElementById('username');
@@ -513,11 +558,15 @@ const API_BASE = (function(){
       }
 
       var tokenPayload = decodeDriverTokenPayload(token);
-      if (tokenPayload && tokenPayload.driver_dashboard === false) {
+      var currentSession = await fetchCurrentPortalSession(token);
+      if (currentSession && currentSession.driver_dashboard === false) {
           window.location.href = MAIN_APP_URL;
           return;
       }
-      syncDashboardHomeLinkVisibility(tokenPayload ? tokenPayload.rol : '');
+      var currentRole = currentSession
+        ? (currentSession.role || (currentSession.user && currentSession.user.role) || '')
+        : (tokenPayload ? (tokenPayload.rol || tokenPayload.role || '') : '');
+      syncDashboardHomeLinkVisibility(currentRole);
       
       currentToken = token;
       
