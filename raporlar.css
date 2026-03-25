@@ -2547,6 +2547,15 @@ padding: 0 !important;
 min-height: auto !important;
 }
 body * { visibility: hidden; }
+/* #app-footer visibility:visible !important (style-core) yazdırda sızmasın; sabit krom kapat */
+#app-footer,
+#app-footer::before,
+#app-footer::after,
+#main-user-panel-link,
+.user-panel-link {
+display: none !important;
+visibility: hidden !important;
+}
 #stok-print-area, #stok-print-area * { visibility: visible; }
 #stok-print-area {
 position: absolute;
