@@ -1310,6 +1310,18 @@
   .olay-ekle-modal .modal-body .universal-btn-cancel {
     border-color: rgba(212, 0, 0, 0.65) !important;
   }
+  .olay-ekle-modal .modal-body .universal-btn-save:hover,
+  .olay-ekle-modal .modal-body .universal-btn-save:active {
+    background: rgba(74, 222, 128, 0.08) !important;
+    border-color: rgba(74, 222, 128, 0.72) !important;
+    -webkit-text-stroke: 0 !important;
+  }
+  .olay-ekle-modal .modal-body .universal-btn-cancel:hover,
+  .olay-ekle-modal .modal-body .universal-btn-cancel:active {
+    background: rgba(var(--theme-color-rgb), 0.08) !important;
+    border-color: rgba(var(--theme-color-rgb), 0.72) !important;
+    -webkit-text-stroke: 0 !important;
+  }
   .olay-ekle-modal .modal-body > div > div:has(label) label {
     text-align: left !important;
   }
@@ -2793,8 +2805,10 @@
 }
 #dinamik-olay-modal #ruhsat-btn-group.olay-form-buttons #dinamik-olay-kaydet-btn:hover,
 #dinamik-olay-modal #ruhsat-btn-group.olay-form-buttons #dinamik-olay-kaydet-btn:active {
-  background: rgba(40, 167, 69, 0.28) !important;
+  background: rgba(74, 222, 128, 0.08) !important;
+  border-color: rgba(74, 222, 128, 0.72) !important;
   color: var(--green-success, #28a745) !important;
+  -webkit-text-stroke: 0 !important;
 }
 /* Vazgeç: kırmızı çerçeve + kırmızı metin, arka plan yok; hover/active’te yarı saydam kırmızı */
 #dinamik-olay-modal #ruhsat-btn-group.olay-form-buttons .universal-btn-cancel {
@@ -2806,14 +2820,18 @@
 }
 #dinamik-olay-modal #ruhsat-btn-group.olay-form-buttons .universal-btn-cancel:hover,
 #dinamik-olay-modal #ruhsat-btn-group.olay-form-buttons .universal-btn-cancel:active {
-  background: rgba(212, 0, 0, 0.2) !important;
+  background: rgba(var(--theme-color-rgb), 0.08) !important;
+  border-color: rgba(var(--theme-color-rgb), 0.72) !important;
   color: var(--theme-color, #d40000) !important;
+  -webkit-text-stroke: 0 !important;
 }
 #ruhsat-yukleme-modal #ruhsat-save-btn:hover,
 #dinamik-olay-modal #ruhsat-btn-group #dinamik-olay-kaydet-btn:hover {
-  background: rgba(40, 167, 69, 0.25) !important;
+  background: rgba(74, 222, 128, 0.08) !important;
+  border-color: rgba(74, 222, 128, 0.72) !important;
   color: var(--green-success, #28a745) !important;
-  transform: scale(1.05);
+  transform: none !important;
+  -webkit-text-stroke: 0 !important;
 }
 
 /* Ruhsat modal: üst/alt buton grupları aynı genişlikte, yatayda ortalanmış */

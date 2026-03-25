@@ -258,38 +258,6 @@ gap: 6px !important;
 display: none !important;
 }
 
-/* === TAB (SEKME) YAPISI === */
-.reports-tab-header {
-display: flex;
-background: rgba(0, 0, 0, 0.3);
-padding: 4px;
-border-bottom: none;
-flex-shrink: 0;
-}
-
-.tab-btn {
-flex: 1;
-background: transparent;
-border: none;
-color: #888;
-padding: 10px 0;
-font-size: 14px; /* 13px + 1 punto (1px) */
-font-weight: 600;
-cursor: pointer;
-transition: color 0.3s ease, border-bottom-color 0.3s ease, background 0.3s ease;
-border-bottom: 2px solid transparent;
-}
-
-.tab-btn.active {
-color: #fff;
-border-bottom: 2px solid var(--theme-color);
-background: rgba(255, 255, 255, 0.02);
-}
-
-.tab-btn:hover:not(.active) {
-color: #ccc;
-}
-
 /* === İÇERİK ALANI === */
 .report-view {
 padding: 10px 0;
@@ -2033,18 +2001,6 @@ gap: 10px;
 .report-row-title { font-size: 15px !important; }
 .report-row-subtitle { font-size: 13px !important; }
 .report-row-status { font-size: 13px !important; }
-.tab-btn { font-size: 16px !important; }
-#reports-modal .reports-tab-header:has(> .tab-btn:only-child) {
-display: none !important;
-padding: 0 !important;
-min-height: 0 !important;
-}
-#reports-modal .reports-tab-header:has(> .tab-btn:only-child) + #reports-list-header-actions + .modal-body {
-padding-top: 0 !important;
-}
-#reports-modal .reports-tab-header:has(> .tab-btn:only-child) + #reports-list-header-actions + .modal-body #view-stok {
-padding-top: 0 !important;
-}
 .report-filters select,
 .search-box-wrapper input { font-size: 15px !important; }
 
