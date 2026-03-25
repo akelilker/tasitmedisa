@@ -318,7 +318,7 @@
       const uiRole = getUiRoleFromUser(user || {});
       const roleLabel = getUserRoleLabel(user);
       if (uiRole === 'yonetici_kullanici') {
-        return '<div class="settings-card-gorev settings-card-gorev--stacked"><span class="settings-card-gorev-line">Yönetici+</span><span class="settings-card-gorev-line">Kullanıcı</span></div>';
+        return '<div class="settings-card-gorev settings-card-gorev--stacked"><span class="settings-card-gorev-line settings-card-gorev-line--manager">Yönetici</span><span class="settings-card-gorev-line settings-card-gorev-line--user">Kullanıcı</span></div>';
       }
       return `<div class="settings-card-gorev">${escapeHtml(roleLabel)}</div>`;
     }

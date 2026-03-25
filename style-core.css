@@ -2051,12 +2051,12 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
         padding: 0 2px;  /* Mobilde logo–metin arası 2px */
         letter-spacing: 2.5px;  /* Mobilde harfler arası boşluk 2.5px */
         font-size: clamp(19px, 5.5vw, 23px); /* Uzun başlıkta minimum düzeyde küçülebilir */
-        /* Temiz, sis yok: keskin metin */
-        background: none !important;
-        -webkit-background-clip: border-box !important;
-        background-clip: border-box !important;
-        -webkit-text-fill-color: #f3f7fb !important;
-        color: #f3f7fb !important;
+        /* Mobilde de krom görünüm korunsun; blur yok, metin keskin */
+        background: linear-gradient(to bottom, #c2d4df 0%, #ffffff 40%, #9aadba 52%, #d6e0e8 100%) !important;
+        -webkit-background-clip: text !important;
+        background-clip: text !important;
+        -webkit-text-fill-color: transparent !important;
+        color: transparent !important;
         text-shadow: none !important;
         filter: none !important;
         -webkit-font-smoothing: antialiased !important;
