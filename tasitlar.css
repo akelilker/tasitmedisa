@@ -1030,6 +1030,12 @@
 .modal-overlay:has(.history-tabs) .modal-header h2 {
     margin-top: -24px !important;
 }
+@media (min-width: 641px) {
+  #vehicle-history-modal .modal-header h2,
+  .modal-overlay:has(.history-tabs) .modal-header h2 {
+    margin-top: 0 !important;
+  }
+}
 
 #vehicles-modal .modal-close {
     background: none;
