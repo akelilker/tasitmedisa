@@ -15,6 +15,7 @@
     // --- STOK Görünümü State ---
     let stokCurrentBranchId = null; // null = grid görünümü, 'all' = tümü listesi, 'id' = şube listesi
     let stokSortState = {}; // { columnKey: 'asc' | 'desc' | null }
+    let stokAutoSingleBranchView = false;
     
     // --- Rapor Sekmesi State ---
     
@@ -93,6 +94,7 @@
         if (modal) {
             loadStokColumnState(); // Aktif sütunları yükle
             stokCurrentBranchId = null; // Grid görünümüne dön
+            stokAutoSingleBranchView = false;
             switchReportTab({ allowSingleBranchBypass: true }); // Sekme UI + içerik render
             modal.style.display = 'flex';
             requestAnimationFrame(() => modal.classList.add('active'));
@@ -160,6 +162,7 @@
         const gridContainer = document.getElementById('stok-branch-grid');
         const listContainer = document.getElementById('stok-list-container');
         const headerActions = document.getElementById('reports-list-header-actions');
+        stokAutoSingleBranchView = false;
         if (headerActions) {
             headerActions.innerHTML = '';
             headerActions.setAttribute('aria-hidden', 'true');
@@ -208,6 +211,7 @@
     // Şube Seçimi
     window.selectStokBranch = function(branchId) {
         stokCurrentBranchId = branchId;
+        stokAutoSingleBranchView = false;
         renderStokView();
     };
 
@@ -266,16 +270,19 @@
         const todayStr = `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear()}`;
         const todayInputValue = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
         const hasDetailColumns = Object.values(stokActiveColumns).some(Boolean);
-        
-        listContainer.innerHTML = `
-            <div class="stok-list-top-controls">
-                <div class="stok-controls-row-1">
+        const backNavigationHtml = stokAutoSingleBranchView ? '' : `
                     <div class="universal-back-bar">
                         <button type="button" class="universal-back-btn" onclick="goBackToStokGrid()" title="Raporlar">
                             <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
                             <span class="universal-back-label">Raporlar</span>
                         </button>
                     </div>
+        `;
+
+        listContainer.innerHTML = `
+            <div class="stok-list-top-controls">
+                <div class="stok-controls-row-1">
+                    ${backNavigationHtml}
                     <button class="stok-detail-add-btn ${stokDetailMenuOpen ? 'active' : ''}" onclick="toggleStokDetailMenu()">+ Detay Ekleme</button>
                 </div>
                 <div class="stok-controls-row-2">
@@ -338,12 +345,7 @@
                 const row = document.createElement('div');
                 row.className = 'stok-controls-row-1';
                 row.innerHTML = `
-                    <div class="universal-back-bar">
-                        <button type="button" class="universal-back-btn" onclick="goBackToStokGrid()" title="Raporlar">
-                            <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-                            <span class="universal-back-label">Raporlar</span>
-                        </button>
-                    </div>
+                    ${backNavigationHtml}
                     <button class="stok-detail-add-btn ${stokDetailMenuOpen ? 'active' : ''}" onclick="toggleStokDetailMenu()">+ Detay Ekleme</button>
                 `;
                 wrap.appendChild(row);
@@ -1374,6 +1376,7 @@
     window.goBackToStokGrid = function() {
         stokCurrentBranchId = null;
         stokDetailMenuOpen = false;
+        stokAutoSingleBranchView = false;
         const headerActions = document.getElementById('reports-list-header-actions');
         if (headerActions) {
             headerActions.innerHTML = '';
@@ -1389,6 +1392,7 @@
         if (stokCurrentBranchId === null) {
             const singleVisibleBranch = allowSingleBranchBypass ? getSingleVisibleStokBranch() : null;
             if (singleVisibleBranch) {
+                stokAutoSingleBranchView = true;
                 stokCurrentBranchId = singleVisibleBranch.id;
                 renderStokList();
                 return;
