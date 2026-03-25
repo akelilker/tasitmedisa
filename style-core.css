@@ -919,14 +919,22 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
 /* Açıkken footer (z-index 10000) ve kullanıcı paneli (9999) üstünde — alt çerçeve “kesik” görünmesin */
 #notifications-dropdown.open {
   z-index: 10060 !important;
+  scroll-padding-bottom: 8px; /* overflow-y:auto içinde son satır border’ı için */
 }
 
-/* Bildirim açık: .app-container / .content-wrap overflow kırpmasın (masaüstü tarayıcı, Android/iOS PWA, mobil) */
+/*
+ * Bildirim açık: footer (10000) body’de app-container DIŞINDA; main.content-wrap varsayılan z-index:1
+ * olduğu için dropdown içindeki z-index asla footer’ı geçemez — alt çerçeve footer altında kalır.
+ * content-wrap’ı 10015 yapıyoruz: footer < bildirim < modal (10020).
+ */
 body:not(.modal-open):has(#notifications-dropdown.open) .app-container {
   overflow: visible !important;
+  isolation: auto !important; /* modal-open ile aynı: izole katman footer üstüne çıkmayı engelliyordu */
 }
 body:not(.modal-open):has(#notifications-dropdown.open) .content-wrap {
   overflow-y: visible !important;
+  position: relative;
+  z-index: 10015 !important;
 }
 body:not(.modal-open):has(#notifications-dropdown.open) .icons-row {
   position: relative;
@@ -1292,7 +1300,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .icons-row {
     right: 0 !important;
   }
   #notifications-dropdown.open {
-    padding-bottom: 12px !important; /* Son kart alt çerçevesi scroll dibiyle çakışmasın (mobil 10px ile uyumlu) */
+    padding-bottom: 16px !important; /* Son kart + scroll kırpması için ekstra nefes */
     box-sizing: border-box !important;
   }
   #notifications-dropdown.open > .notification-item:last-child {
