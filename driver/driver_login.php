@@ -74,51 +74,33 @@ if (!$passwordMatch) {
     exit;
 }
 
-$rol = isset($user['rol']) ? trim((string)$user['rol']) : '';
-if ($rol === '' && isset($user['tip'])) {
-    $t = trim((string)$user['tip']);
-    if ($t === 'admin') {
-        $rol = 'genel_yonetici';
-    } elseif ($t === 'yonetici' || $t === 'sube_yonetici') {
-        $rol = 'sube_yonetici';
-    } else {
-        $rol = 'kullanici';
-    }
+$rawRol = '';
+if (isset($user['rol'])) {
+    $rawRol = trim((string)$user['rol']);
+} elseif (isset($user['role'])) {
+    $rawRol = trim((string)$user['role']);
 }
-if ($rol === '') {
-    $rol = 'kullanici';
+if ($rawRol === '' && isset($user['tip'])) {
+    $rawRol = trim((string)$user['tip']);
 }
 
-$subeIds = [];
-if (!empty($user['sube_ids']) && is_array($user['sube_ids'])) {
-    $subeIds = array_values($user['sube_ids']);
-} elseif (isset($user['sube_id']) && $user['sube_id'] !== '' && $user['sube_id'] !== null) {
-    $subeIds = [$user['sube_id']];
+$rol = medisaResolveUserRole($user);
+$subeIds = medisaExtractUserBranchIds($user);
+$kullaniciPaneli = medisaResolvePanelFlag($user);
+$driverDashboard = medisaComputeDriverDashboard($user, $data);
+
+// "Sadece yonetici" kullanicilar ana uygulamada kalir, dashboard gecisine izin verilmez.
+$isYoneticiOnly = ($rawRol === 'yonetici');
+if ($isYoneticiOnly) {
+    $driverDashboard = false;
 }
-
-$hasVehicle = false;
-foreach ($data['tasitlar'] ?? [] as $t) {
-    if (isset($t['assignedUserId']) && (string)$t['assignedUserId'] === (string)$user['id']) {
-        $hasVehicle = true;
-        break;
-    }
-}
-
-$kullaniciPaneli = array_key_exists('kullanici_paneli', $user)
-    ? (bool)$user['kullanici_paneli']
-    : (
-        array_key_exists('surucu_paneli', $user)
-            ? (bool)$user['surucu_paneli']
-            : ($rol === 'kullanici')
-    );
-
-$driverDashboard = ($rol === 'kullanici')
-    || (($rol === 'sube_yonetici' || $rol === 'genel_yonetici') && $kullaniciPaneli && $hasVehicle);
 
 // İmzalı oturum token'ı oluştur.
 $token = medisaCreateSignedToken([
     'user_id' => $user['id'],
     'rol' => $rol,
+    'raw_rol' => $rawRol,
+    'yonetici_only' => $isYoneticiOnly,
     'sube_ids' => array_values(array_map('strval', $subeIds)),
     'kullanici_paneli' => $kullaniciPaneli,
     'driver_dashboard' => $driverDashboard
@@ -142,6 +124,8 @@ echo json_encode([
     'token' => $token,
     'driverDashboard' => $driverDashboard,
     'rol' => $rol,
+    'raw_rol' => $rawRol,
+    'yonetici_only' => $isYoneticiOnly,
     'sube_ids' => $subeIds,
     'kullanici_paneli' => $kullaniciPaneli,
     'surucu_paneli' => $kullaniciPaneli,

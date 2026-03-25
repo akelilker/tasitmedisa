@@ -40,6 +40,8 @@ function getDefaultSession() {
     return {
         authenticated: false,
         role: '',
+        raw_role: '',
+        yonetici_only: false,
         branch_ids: [],
         kullanici_paneli: false,
         driver_dashboard: false,
@@ -162,11 +164,14 @@ function getSessionFromToken() {
     }
 
     var role = payload.rol || payload.role || '';
+    var rawRole = payload.raw_rol || '';
     var branchIds = Array.isArray(payload.sube_ids) ? payload.sube_ids.map(String).filter(Boolean) : [];
     var panelEnabled = payload.kullanici_paneli === true || payload.surucu_paneli === true;
     return {
         authenticated: true,
         role: role || '',
+        raw_role: rawRole || '',
+        yonetici_only: payload.yonetici_only === true,
         branch_ids: branchIds,
         kullanici_paneli: panelEnabled,
         driver_dashboard: payload.driver_dashboard === true,
@@ -179,6 +184,16 @@ function getSessionFromToken() {
             kullanici_paneli: panelEnabled
         }
     };
+}
+
+function canShowMainUserPanelLink(sessionData) {
+    var session = sessionData && typeof sessionData === 'object' ? sessionData : getDefaultSession();
+    if (!session.authenticated) return false;
+    if (session.yonetici_only === true) return false;
+    if (session.driver_dashboard !== true) return false;
+
+    var role = String(session.role || '').trim();
+    return role === 'sube_yonetici' || role === 'genel_yonetici' || role === 'yonetici_kullanici';
 }
 
 function buildAuthHeaders(extraHeaders) {
@@ -267,6 +282,11 @@ function applyMainAppSessionUiState() {
     var logoutBtn = document.getElementById('settings-logout-btn');
     if (logoutBtn) {
         logoutBtn.style.display = getStoredPortalToken() ? '' : 'none';
+    }
+
+    var mainUserPanelLink = document.getElementById('main-user-panel-link');
+    if (mainUserPanelLink) {
+        mainUserPanelLink.style.display = canShowMainUserPanelLink(session) ? '' : 'none';
     }
 
     if (!session.authenticated) return;
