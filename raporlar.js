@@ -104,9 +104,7 @@
 
     window.switchReportTab = function(options) {
         const viewStok = document.getElementById('view-stok');
-        const tabStok = document.getElementById('reports-tab-stok');
         if (viewStok) { viewStok.classList.add('active'); }
-        if (tabStok) { tabStok.classList.add('active'); }
         renderStokView(options);
     };
 

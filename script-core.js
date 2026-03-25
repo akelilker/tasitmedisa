@@ -504,9 +504,9 @@ document.addEventListener('DOMContentLoaded', () => {
 // tasitlar.js / raporlar.js / kayit.js / ayarlar.js yüklendiğinde kendi open* implementasyonlarını yazar.
 (function() {
   var TASITLAR_JS = 'tasitlar.js?v=20260325.4';
-  var TASITLAR_CSS = 'tasitlar.css?v=20260325.7';
-  var RAPORLAR_JS = 'raporlar.js?v=20260325.4';
-  var RAPORLAR_CSS = 'raporlar.css?v=20260323.4';
+  var TASITLAR_CSS = 'tasitlar.css?v=20260325.8';
+  var RAPORLAR_JS = 'raporlar.js?v=20260325.5';
+  var RAPORLAR_CSS = 'raporlar.css?v=20260325.5';
   var KAYIT_JS = 'kayit.js?v=20260325.2';
   var KAYIT_CSS = 'kayit.css?v=20260325.1';
   var AYARLAR_JS = 'ayarlar.js?v=20260325.2';
@@ -647,7 +647,7 @@ window.addEventListener('dataLoaded', () => {
     }
 
     if (typeof window.loadAppModule === 'function') {
-        window.loadAppModule('tasitlar.js?v=20260325.4', 'tasitlar.css?v=20260325.7')
+        window.loadAppModule('tasitlar.js?v=20260325.4', 'tasitlar.css?v=20260325.8')
             .then(runNotifications)
             .catch(function(err) {
                 console.error('[Medisa] Bildirim modülü yüklenemedi:', err);
