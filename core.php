@@ -314,6 +314,36 @@ function medisaResolveUserRole($user) {
     return 'kullanici';
 }
 
+function medisaResolveRawUserRoleValue($user) {
+    if (!is_array($user)) {
+        return '';
+    }
+
+    if (isset($user['rol']) && trim((string)$user['rol']) !== '') {
+        return trim((string)$user['rol']);
+    }
+    if (isset($user['role']) && trim((string)$user['role']) !== '') {
+        return trim((string)$user['role']);
+    }
+    if (isset($user['tip']) && trim((string)$user['tip']) !== '') {
+        return trim((string)$user['tip']);
+    }
+
+    return '';
+}
+
+function medisaIsYoneticiOnlyUser($user) {
+    return medisaResolveRawUserRoleValue($user) === 'yonetici';
+}
+
+function medisaIsBranchManagerRole($role) {
+    return $role === 'sube_yonetici' || $role === 'yonetici_kullanici';
+}
+
+function medisaHasMainAppAccessRole($role) {
+    return $role === 'genel_yonetici' || medisaIsBranchManagerRole($role);
+}
+
 function medisaExtractUserBranchIds($user) {
     if (!is_array($user)) {
         return [];
@@ -378,23 +408,32 @@ function medisaUserHasAssignedVehicle($data, $userId) {
 
 function medisaComputeDriverDashboard($user, $data) {
     $role = medisaResolveUserRole($user);
+    if (medisaIsYoneticiOnlyUser($user)) {
+        return false;
+    }
+
     if ($role === 'kullanici') {
         return true;
     }
 
-    // Yonetici rolleri ana uygulamadan dashboard'a gecis yapabilir.
-    // "Sadece yonetici" istisnasi login tarafinda raw role ile kapatilir.
-    return $role === 'sube_yonetici'
-        || $role === 'genel_yonetici'
-        || $role === 'yonetici_kullanici';
+    if ($role === 'yonetici_kullanici') {
+        return true;
+    }
+
+    if ($role === 'sube_yonetici') {
+        return medisaResolvePanelFlag($user);
+    }
+
+    return $role === 'genel_yonetici';
 }
 
 function medisaBuildPermissions($context) {
     $role = $context['role'] ?? 'kullanici';
+    $hasMainAppAccess = medisaHasMainAppAccessRole($role);
     return [
-        'view_main_app' => $role === 'genel_yonetici' || $role === 'sube_yonetici',
-        'view_reports' => $role === 'genel_yonetici' || $role === 'sube_yonetici',
-        'manage_users' => $role === 'genel_yonetici' || $role === 'sube_yonetici',
+        'view_main_app' => $hasMainAppAccess,
+        'view_reports' => $hasMainAppAccess,
+        'manage_users' => $hasMainAppAccess,
         'manage_branches' => $role === 'genel_yonetici',
         'manage_data' => $role === 'genel_yonetici',
         'manage_settings' => $role === 'genel_yonetici',
@@ -415,6 +454,7 @@ function medisaBuildSessionPayload($context) {
         'role' => $context['role'] ?? 'kullanici',
         'branch_ids' => $context['branch_ids'] ?? [],
         'kullanici_paneli' => $context['kullanici_paneli'] ?? false,
+        'yonetici_only' => $context['yonetici_only'] ?? false,
         'driver_dashboard' => $context['driver_dashboard'] ?? false,
         'permissions' => medisaBuildPermissions($context),
     ];
@@ -436,6 +476,7 @@ function medisaBuildAccessContext($data, $tokenData) {
         'role' => medisaResolveUserRole($user),
         'branch_ids' => medisaExtractUserBranchIds($user),
         'kullanici_paneli' => medisaResolvePanelFlag($user),
+        'yonetici_only' => medisaIsYoneticiOnlyUser($user),
     ];
     $context['driver_dashboard'] = medisaComputeDriverDashboard($user, $data);
     $context['permissions'] = medisaBuildPermissions($context);
@@ -490,7 +531,7 @@ function medisaCanViewVehicleRecord($vehicle, $context) {
         return false;
     }
 
-    if ($role === 'sube_yonetici') {
+    if (medisaIsBranchManagerRole($role)) {
         return medisaArrayHasId($context['branch_ids'] ?? [], $vehicle['branchId'] ?? '');
     }
 
@@ -516,7 +557,7 @@ function medisaCanManageVehicleRecord($vehicle, $context) {
         return true;
     }
 
-    if ($role === 'sube_yonetici') {
+    if (medisaIsBranchManagerRole($role)) {
         return medisaArrayHasId($context['branch_ids'] ?? [], $vehicle['branchId'] ?? '');
     }
 
@@ -529,7 +570,7 @@ function medisaCanManageUserRecord($user, $context) {
         return true;
     }
 
-    if ($role !== 'sube_yonetici') {
+    if (!medisaIsBranchManagerRole($role)) {
         return false;
     }
 
@@ -547,7 +588,7 @@ function medisaCanViewUserRecord($user, $context) {
         return true;
     }
 
-    if ($role === 'sube_yonetici') {
+    if (medisaIsBranchManagerRole($role)) {
         return medisaCanManageUserRecord($user, $context);
     }
 

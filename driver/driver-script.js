@@ -158,6 +158,96 @@ const API_BASE = (function(){
     }
   }
 
+  function getPortalRoleValue(sessionData, payload) {
+    if (sessionData && typeof sessionData === 'object') {
+      var sessionRole = String(sessionData.role || (sessionData.user && sessionData.user.role) || '').trim();
+      if (sessionRole) return sessionRole;
+    }
+    return String((payload && (payload.rol || payload.role)) || '').trim();
+  }
+
+  function isPortalMainAppRole(role) {
+    var normalizedRole = String(role || '').trim();
+    return normalizedRole === 'sube_yonetici'
+      || normalizedRole === 'yonetici_kullanici'
+      || normalizedRole === 'genel_yonetici';
+  }
+
+  function isPortalPanelEnabled(sessionData, payload) {
+    if (sessionData && typeof sessionData === 'object') {
+      if (sessionData.kullanici_paneli === true) return true;
+      if (sessionData.user && sessionData.user.kullanici_paneli === true) return true;
+    }
+    return !!(payload && (payload.kullanici_paneli === true || payload.surucu_paneli === true));
+  }
+
+  function buildPortalAccessContext(payload, fallbackDashboard, sessionData) {
+    return {
+      role: getPortalRoleValue(sessionData, payload),
+      driverDashboard: sessionData && typeof sessionData.driver_dashboard === 'boolean'
+        ? sessionData.driver_dashboard === true
+        : (payload && typeof payload.driver_dashboard === 'boolean'
+          ? payload.driver_dashboard !== false
+          : fallbackDashboard !== false),
+      yoneticiOnly: sessionData && typeof sessionData.yonetici_only === 'boolean'
+        ? sessionData.yonetici_only === true
+        : !!(payload && payload.yonetici_only === true),
+      panelEnabled: isPortalPanelEnabled(sessionData, payload)
+    };
+  }
+
+  function canOpenDriverDashboard(accessContext) {
+    if (!accessContext || accessContext.driverDashboard !== true) return false;
+    if (accessContext.yoneticiOnly === true) return false;
+
+    var role = String(accessContext.role || '').trim();
+    if (role === 'kullanici') return true;
+    if (role === 'yonetici_kullanici') return true;
+    if (role === 'genel_yonetici') return true;
+    if (role === 'sube_yonetici') return accessContext.panelEnabled === true;
+
+    return false;
+  }
+
+  function resolvePortalDefaultSurface(accessContext) {
+    if (!accessContext) return null;
+
+    var role = String(accessContext.role || '').trim();
+    if (role === 'kullanici') {
+      return canOpenDriverDashboard(accessContext) ? 'dashboard' : null;
+    }
+    if (isPortalMainAppRole(role)) {
+      return 'main';
+    }
+    if (canOpenDriverDashboard(accessContext)) {
+      return 'dashboard';
+    }
+
+    return null;
+  }
+
+  function routeByAccessContext(accessContext, options) {
+    var routeOptions = options && typeof options === 'object' ? options : {};
+    var surface = resolvePortalDefaultSurface(accessContext);
+
+    if (surface === 'dashboard') {
+      window.location.href = DRIVER_PAGE_BASE + 'dashboard.html';
+      return true;
+    }
+
+    if (surface === 'main') {
+      window.location.href = MAIN_APP_URL;
+      return true;
+    }
+
+    if (routeOptions.stayOnLoginWhenDashboardUnavailable === true) {
+      return false;
+    }
+
+    window.location.href = MAIN_APP_URL;
+    return true;
+  }
+
   function routeByToken(token, fallbackDashboard, options) {
     var routeOptions = options && typeof options === 'object' ? options : {};
     var payload = decodeDriverTokenPayload(token);
@@ -167,20 +257,8 @@ const API_BASE = (function(){
       return false;
     }
 
-    var hasDashboardAccess = typeof routeOptions.driverDashboard === 'boolean'
-      ? routeOptions.driverDashboard === true
-      : (payload.driver_dashboard !== false && fallbackDashboard !== false);
-
-    if (!hasDashboardAccess) {
-      if (routeOptions.stayOnLoginWhenDashboardUnavailable === true) {
-        return false;
-      }
-      window.location.href = MAIN_APP_URL;
-      return true;
-    }
-
-    window.location.href = DRIVER_PAGE_BASE + 'dashboard.html';
-    return true;
+    var accessContext = buildPortalAccessContext(payload, fallbackDashboard, routeOptions.sessionData);
+    return routeByAccessContext(accessContext, routeOptions);
   }
 
   async function routeByCurrentSession(token, fallbackDashboard, options) {
@@ -193,23 +271,16 @@ const API_BASE = (function(){
     }
 
     var currentSession = await fetchCurrentPortalSession(token);
-    if (currentSession && typeof currentSession.driver_dashboard === 'boolean') {
-      return routeByToken(token, fallbackDashboard, Object.assign({}, routeOptions, {
-        driverDashboard: currentSession.driver_dashboard === true
-      }));
-    }
-
-    return routeByToken(token, fallbackDashboard, routeOptions);
+    return routeByToken(token, fallbackDashboard, Object.assign({}, routeOptions, {
+      sessionData: currentSession || routeOptions.sessionData || null
+    }));
   }
 
-  function syncDashboardHomeLinkVisibility(role, yoneticiOnly) {
+  function syncDashboardHomeLinkVisibility(accessContext) {
     if (!document.body || !document.body.classList.contains('dashboard-page')) return;
-    var normalizedRole = String(role || '').trim();
-    var shouldShow = yoneticiOnly !== true && (
-      normalizedRole === 'sube_yonetici'
-      || normalizedRole === 'genel_yonetici'
-      || normalizedRole === 'yonetici_kullanici'
-    );
+    var shouldShow = !!accessContext
+      && canOpenDriverDashboard(accessContext)
+      && isPortalMainAppRole(accessContext.role);
     document.querySelectorAll('.dashboard-page .driver-footer-back-wrap').forEach(function(el) {
       if (shouldShow) {
         el.style.display = '';
@@ -410,9 +481,7 @@ const API_BASE = (function(){
       /* Geçerli bir oturum varsa login ekranını atla ve token'ın işaret ettiği yüzeye git. */
       var savedToken = getStoredPortalToken();
       if (!shouldForceDriverLoginView() && savedToken) {
-          routeByCurrentSession(savedToken, true, {
-            stayOnLoginWhenDashboardUnavailable: isMainAppPortalEntry()
-          });
+          routeByCurrentSession(savedToken, true);
       }
   
       var usernameInput = document.getElementById('username');
@@ -493,7 +562,18 @@ const API_BASE = (function(){
                   }
                   var tokenToStore = data.token && typeof data.token === 'string' ? data.token : null;
                   if (tokenToStore) persistSessionToken(tokenToStore, remember);
-                  if (!routeByToken(tokenToStore, data.driverDashboard !== false)) {
+                  if (!routeByToken(tokenToStore, data.driverDashboard !== false, {
+                      sessionData: {
+                          role: data.rol || '',
+                          kullanici_paneli: data.kullanici_paneli === true,
+                          driver_dashboard: data.driverDashboard === true,
+                          yonetici_only: data.yonetici_only === true,
+                          user: {
+                              role: data.rol || '',
+                              kullanici_paneli: data.kullanici_paneli === true
+                          }
+                      }
+                  })) {
                       errorDiv.textContent = 'Oturum başlatılamadı.';
                       errorDiv.classList.add('show');
                       loginBtn.disabled = false;
@@ -555,7 +635,7 @@ const API_BASE = (function(){
   
   async function loadDashboard() {
       const token = getStoredPortalToken();
-      
+
       if (!token) {
           window.location.href = DRIVER_PAGE_BASE + 'index.html';
           return;
@@ -563,17 +643,12 @@ const API_BASE = (function(){
 
       var tokenPayload = decodeDriverTokenPayload(token);
       var currentSession = await fetchCurrentPortalSession(token);
-      if (currentSession && currentSession.driver_dashboard === false) {
+      var accessContext = buildPortalAccessContext(tokenPayload, true, currentSession);
+      if (!canOpenDriverDashboard(accessContext)) {
           window.location.href = MAIN_APP_URL;
           return;
       }
-      var currentRole = currentSession
-        ? (currentSession.role || (currentSession.user && currentSession.user.role) || '')
-        : (tokenPayload ? (tokenPayload.rol || tokenPayload.role || '') : '');
-      var yoneticiOnly = currentSession
-        ? currentSession.yonetici_only === true
-        : (tokenPayload ? tokenPayload.yonetici_only === true : false);
-      syncDashboardHomeLinkVisibility(currentRole, yoneticiOnly);
+      syncDashboardHomeLinkVisibility(accessContext);
       
       currentToken = token;
       
