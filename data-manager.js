@@ -186,13 +186,43 @@ function getSessionFromToken() {
     };
 }
 
-function canShowMainUserPanelLink(sessionData) {
+function getSessionRoleValue(sessionData) {
+    var session = sessionData && typeof sessionData === 'object' ? sessionData : getDefaultSession();
+    return String(session.role || (session.user && session.user.role) || '').trim();
+}
+
+function isBranchManagerSessionRole(role) {
+    var normalizedRole = String(role || '').trim();
+    return normalizedRole === 'sube_yonetici' || normalizedRole === 'yonetici_kullanici';
+}
+
+function hasMainAppAccessForSession(sessionData) {
+    var role = getSessionRoleValue(sessionData);
+    return role === 'genel_yonetici' || isBranchManagerSessionRole(role);
+}
+
+function isSessionPanelEnabled(sessionData) {
+    var session = sessionData && typeof sessionData === 'object' ? sessionData : getDefaultSession();
+    return session.kullanici_paneli === true || !!(session.user && session.user.kullanici_paneli === true);
+}
+
+function canUseDriverPanelTransition(sessionData) {
     var session = sessionData && typeof sessionData === 'object' ? sessionData : getDefaultSession();
     if (!session.authenticated) return false;
     if (session.yonetici_only === true) return false;
+    if (session.driver_dashboard !== true) return false;
 
-    var role = String(session.role || '').trim();
-    return role === 'sube_yonetici' || role === 'genel_yonetici' || role === 'yonetici_kullanici';
+    var role = getSessionRoleValue(session);
+    if (role === 'genel_yonetici' || role === 'yonetici_kullanici') return true;
+    if (role === 'sube_yonetici') return isSessionPanelEnabled(session);
+    if (role === 'kullanici') return true;
+
+    return false;
+}
+
+function canShowMainUserPanelLink(sessionData) {
+    var session = sessionData && typeof sessionData === 'object' ? sessionData : getDefaultSession();
+    return hasMainAppAccessForSession(session) && canUseDriverPanelTransition(session);
 }
 
 function buildAuthHeaders(extraHeaders) {
@@ -205,10 +235,11 @@ function buildAuthHeaders(extraHeaders) {
 }
 
 function buildFallbackPermissions(role) {
+    var hasMainAppAccess = hasMainAppAccessForSession({ role: role });
     return {
-        view_main_app: role === 'genel_yonetici' || role === 'sube_yonetici',
-        view_reports: role === 'genel_yonetici' || role === 'sube_yonetici',
-        manage_users: role === 'genel_yonetici' || role === 'sube_yonetici',
+        view_main_app: hasMainAppAccess,
+        view_reports: hasMainAppAccess,
+        manage_users: hasMainAppAccess,
         manage_branches: role === 'genel_yonetici',
         manage_data: role === 'genel_yonetici',
         manage_settings: role === 'genel_yonetici'
@@ -233,7 +264,7 @@ function redirectToDriverDashboard() {
 
 function resolveMainAppPortalLinkUrl(sessionData) {
     var session = sessionData && typeof sessionData === 'object' ? sessionData : (window.medisaSession || getDefaultSession());
-    if (session && session.authenticated === true && session.driver_dashboard === true) {
+    if (canUseDriverPanelTransition(session)) {
         return DRIVER_DASHBOARD_URL;
     }
     return DRIVER_INDEX_URL + 'index.html?portal=main-app';
@@ -630,7 +661,7 @@ function getVisibleVehicles(vehicles) {
         return list;
     }
 
-    if (session.role === 'sube_yonetici') {
+    if (isBranchManagerSessionRole(session.role)) {
         return list.filter(function(vehicle) {
             return arrayHasId(session.branch_ids || [], vehicle && vehicle.branchId);
         });
@@ -650,7 +681,7 @@ function getVisibleUsers(users) {
         return normalized;
     }
 
-    if (session.role === 'sube_yonetici') {
+    if (isBranchManagerSessionRole(session.role)) {
         return normalized.filter(function(user) {
             if (user.role === 'genel_yonetici') return false;
             return isUserWithinManagedBranches(user, session.branch_ids || []);
