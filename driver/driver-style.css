@@ -147,6 +147,8 @@ body.dashboard-page {
   .login-page .hero-logo {
     flex: 0 0 66px !important;
     width: 66px !important;
+    /* style-core .hero-logo translateY(-1px) + 5px aşağı */
+    transform: translateY(4px) !important;
   }
 }
 
