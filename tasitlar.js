@@ -348,6 +348,7 @@
     DOM.vehicleHistoryModal = document.getElementById('vehicle-history-modal');
     DOM.historyContent = document.getElementById('history-content');
     DOM.notificationsDropdown = document.getElementById('notifications-dropdown');
+    DOM.notificationsToggleBtn = document.getElementById('notifications-toggle-btn');
     DOM.dinamikOlayModal = document.getElementById('dinamik-olay-modal');
     DOM.dinamikOlayBaslik = document.getElementById('dinamik-olay-baslik');
     DOM.dinamikOlayFormIcerik = document.getElementById('dinamik-olay-form-icerik');
@@ -5360,7 +5361,7 @@ function renderVehicleDetailLeft(vehicle) {
 
     // Bildirimleri güncelle
     const notifDropdown = DOM.notificationsDropdown;
-    const notifIcon = document.querySelector('.icon-btn[onclick="toggleNotifications(event)"]');
+    const notifIcon = DOM.notificationsToggleBtn || document.getElementById('notifications-toggle-btn');
 
     if (notifications.length === 0 && recentSlice.length === 0 && !mtvHtml && !kaskoExcelHtml) {
       if (notifDropdown) {
