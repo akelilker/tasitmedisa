@@ -702,6 +702,7 @@ function getVisibleUsers(users) {
     if (isBranchManagerSessionRole(session.role)) {
         return normalized.filter(function(user) {
             if (user.role === 'genel_yonetici') return false;
+            if (String(user && user.id) === String(session.user && session.user.id)) return false;
             return isUserWithinManagedBranches(user, session.branch_ids || []);
         });
     }

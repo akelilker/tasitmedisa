@@ -579,6 +579,10 @@ function medisaCanManageUserRecord($user, $context) {
         return false;
     }
 
+    if ((string)($user['id'] ?? '') === (string)($context['user_id'] ?? '')) {
+        return false;
+    }
+
     return medisaUserBranchesWithinScope($user, $context['branch_ids'] ?? []);
 }
 
