@@ -1304,7 +1304,7 @@
 
       // iOS yazıcı izin prompt'unu azaltmak için yazdırma script'ini önceden yükle
       if (!window._printScriptPromise) {
-        window._printScriptPromise = loadScript('tasitlar-yazici.js?v=20260316');
+        window._printScriptPromise = loadScript('tasitlar-yazici.js?v=20260326.1');
       }
 
     const modal = DOM.vehicleDetailModal;
@@ -1513,6 +1513,13 @@
           e.preventDefault();
           e.stopPropagation();
         }
+        if (isAndroidDevice() && typeof window.printVehicleCard !== 'function' && !window.__androidVehiclePrintWindow) {
+          try {
+            window.__androidVehiclePrintWindow = window.open('', '_blank');
+          } catch (popupErr) {
+            window.__androidVehiclePrintWindow = null;
+          }
+        }
         if (typeof window.printVehicleCard === 'function') {
           window.printVehicleCard(vehicle.id);
           return;
@@ -1520,7 +1527,7 @@
         const originalText = printBtn.innerHTML;
         printBtn.innerHTML = '<span class="spin-animation" style="display:inline-block; width:16px; height:16px; border:2px solid currentColor; border-right-color:transparent; border-radius:50%; margin-right:4px;"></span> Yükleniyor...';
         printBtn.disabled = true;
-        (window._printScriptPromise || loadScript('tasitlar-yazici.js?v=20260316')).then(function() {
+        (window._printScriptPromise || loadScript('tasitlar-yazici.js?v=20260326.1')).then(function() {
           printBtn.innerHTML = originalText;
           printBtn.disabled = false;
           if (typeof window.printVehicleCard === 'function') {
@@ -3112,6 +3119,43 @@ function renderVehicleDetailLeft(vehicle) {
     return isStandalone && isiOS;
   }
 
+  function isAndroidDevice() {
+    return /Android/i.test(navigator.userAgent || '');
+  }
+
+  function openUrlInNewTab(url, targetWindow) {
+    const targetUrl = String(url || '').trim();
+    if (!targetUrl) return false;
+
+    const existingWindow = targetWindow && !targetWindow.closed ? targetWindow : null;
+    if (existingWindow) {
+      try {
+        existingWindow.location.href = targetUrl;
+        existingWindow.focus();
+        return true;
+      } catch (e) {}
+    }
+
+    try {
+      const a = document.createElement('a');
+      a.href = targetUrl;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      a.style.display = 'none';
+      document.body.appendChild(a);
+      a.click();
+      if (a.parentNode) a.parentNode.removeChild(a);
+      return true;
+    } catch (e) {
+      try {
+        window.open(targetUrl, '_blank', 'noopener');
+        return true;
+      } catch (ignored) {}
+    }
+
+    return false;
+  }
+
   function buildPdfViewerUrl(baseUrl, fragment) {
     const cleanBase = String(baseUrl || '').split('#')[0];
     const cleanFragment = String(fragment || '').replace(/^#/, '');
@@ -3247,6 +3291,11 @@ function renderVehicleDetailLeft(vehicle) {
     if (!url) return;
     const isImage = /\.(jpeg|jpg|png|gif|webp)(\?.*)?$/i.test(url);
     const printableUrl = isImage ? url : buildPdfViewerUrl(url, 'toolbar=0&navpanes=0&zoom=page-width&view=FitH');
+    if (isAndroidDevice()) {
+      const previewUrl = !isImage ? buildRuhsatPreviewUrl(vehicleId) : '';
+      openUrlInNewTab(previewUrl || printableUrl);
+      return;
+    }
 
     // iOS: print() geç tetiklenirse kullanıcı gesture dışına çıkıp prompt üretebilir.
     // Token geçersizleşince iframe.onload/setTimeout içinden gelen print çağrısını iptal ediyoruz.
@@ -3669,22 +3718,7 @@ function renderVehicleDetailLeft(vehicle) {
       ? url
       : buildPdfViewerUrl(url, 'toolbar=1&navpanes=0&zoom=page-width&view=FitH');
 
-    // "Görüntüle" akışında gizli iframe + otomatik print yerine yeni sekme açıyoruz.
-    // Böylece PDF viewer'ın performans uyarıları ana uygulama konsolunu kirletmez.
-    // Bazı tarayıcılarda window.open null dönebildiği için (sekme yine açılmış olsa bile)
-    // false-positive uyarı üretmemek adına link tıklamasıyla yeni sekme açıyoruz.
-    try {
-      const a = document.createElement('a');
-      a.href = targetUrl;
-      a.target = '_blank';
-      a.rel = 'noopener';
-      a.style.display = 'none';
-      document.body.appendChild(a);
-      a.click();
-      if (a.parentNode) a.parentNode.removeChild(a);
-    } catch (e) {
-      try { window.open(targetUrl, '_blank'); } catch (ignored) {}
-    }
+    openUrlInNewTab(targetUrl);
   };
 
   /**
