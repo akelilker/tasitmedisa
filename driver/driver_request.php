@@ -5,13 +5,11 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
 
-// OPTIONS isteği
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit;
 }
 
-// Token doğrula
 $tokenData = validateToken();
 if (!$tokenData) {
     http_response_code(401);
@@ -19,23 +17,27 @@ if (!$tokenData) {
     exit;
 }
 
-// Input al
 $input = json_decode(file_get_contents('php://input'), true);
-$kayitId = intval($input['kayit_id'] ?? 0);
-$yeniKm = isset($input['yeni_km']) ? intval($input['yeni_km']) : null;
-$yeniBakimDurumu = isset($input['yeni_bakim_durumu']) ? intval($input['yeni_bakim_durumu']) : null;
-$yeniBakimAciklama = isset($input['yeni_bakim_aciklama']) ? trim($input['yeni_bakim_aciklama']) : null;
-$yeniKazaDurumu = isset($input['yeni_kaza_durumu']) ? intval($input['yeni_kaza_durumu']) : null;
-$yeniKazaAciklama = isset($input['yeni_kaza_aciklama']) ? trim($input['yeni_kaza_aciklama']) : null;
-$sebep = strip_tags(trim($input['sebep'] ?? ''));
+if (!is_array($input)) {
+    http_response_code(400);
+    echo json_encode(['success' => false, 'message' => 'Geçersiz istek verisi!'], JSON_UNESCAPED_UNICODE);
+    exit;
+}
 
-// Validasyon
+$kayitId = (int)($input['kayit_id'] ?? 0);
+$yeniKm = array_key_exists('yeni_km', $input) ? (int)$input['yeni_km'] : null;
+$yeniBakimDurumu = array_key_exists('yeni_bakim_durumu', $input) ? (int)$input['yeni_bakim_durumu'] : null;
+$yeniBakimAciklama = array_key_exists('yeni_bakim_aciklama', $input) ? trim((string)$input['yeni_bakim_aciklama']) : null;
+$yeniKazaDurumu = array_key_exists('yeni_kaza_durumu', $input) ? (int)$input['yeni_kaza_durumu'] : null;
+$yeniKazaAciklama = array_key_exists('yeni_kaza_aciklama', $input) ? trim((string)$input['yeni_kaza_aciklama']) : null;
+$sebep = strip_tags(trim((string)($input['sebep'] ?? '')));
+
 if ($kayitId <= 0) {
     echo json_encode(['success' => false, 'message' => 'Geçersiz kayıt ID!'], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
-if (empty($sebep)) {
+if ($sebep === '') {
     echo json_encode(['success' => false, 'message' => 'Düzeltme sebebini yazmalısınız!'], JSON_UNESCAPED_UNICODE);
     exit;
 }
@@ -60,90 +62,73 @@ if ($yeniKazaAciklama !== null && strlen($yeniKazaAciklama) > 500) {
     exit;
 }
 
-// Veriyi yükle
-$data = loadData();
-if (!$data) {
-    http_response_code(500);
-    echo json_encode(['success' => false, 'message' => 'Veri okunamadı!'], JSON_UNESCAPED_UNICODE);
-    exit;
-}
-
-// Kaydı bul
-$kayit = null;
-foreach (($data['arac_aylik_hareketler'] ?? []) as $k) {
-    if ($k['id'] === $kayitId) {
-        $kayit = $k;
-        break;
+$result = medisaMutateData(function (&$data) use (
+    $tokenData,
+    $kayitId,
+    $yeniKm,
+    $yeniBakimDurumu,
+    $yeniBakimAciklama,
+    $yeniKazaDurumu,
+    $yeniKazaAciklama,
+    $sebep
+) {
+    $recordIndex = medisaFindMonthlyRecordIndex($data, $kayitId);
+    if ($recordIndex < 0) {
+        return medisaBuildErrorResult('Kayıt bulunamadı!', 404);
     }
-}
 
-if (!$kayit) {
-    http_response_code(404);
-    echo json_encode(['success' => false, 'message' => 'Kayıt bulunamadı!'], JSON_UNESCAPED_UNICODE);
-    exit;
-}
-
-// Kayıt bu kullanıcıya ait mi kontrol et
-if ($kayit['surucu_id'] !== $tokenData['user_id']) {
-    http_response_code(403);
-    echo json_encode(['success' => false, 'message' => 'Bu kayda erişim yetkiniz yok!'], JSON_UNESCAPED_UNICODE);
-    exit;
-}
-
-// En az bir değişiklik olmalı
-$kmChanged = $yeniKm !== null && $yeniKm !== (int)($kayit['guncel_km'] ?? 0);
-$bakimChanged = $yeniBakimAciklama !== null;
-$kazaChanged = $yeniKazaAciklama !== null;
-if (!$kmChanged && !$bakimChanged && !$kazaChanged) {
-    echo json_encode(['success' => false, 'message' => 'En az bir alanda değişiklik yapmalısınız!'], JSON_UNESCAPED_UNICODE);
-    exit;
-}
-
-// Yeni talep ID oluştur
-$newTalepId = 1;
-if (isset($data['duzeltme_talepleri'])) {
-    foreach ($data['duzeltme_talepleri'] as $talep) {
-        if ($talep['id'] >= $newTalepId) {
-            $newTalepId = $talep['id'] + 1;
-        }
+    $kayit = $data['arac_aylik_hareketler'][$recordIndex];
+    if ((string)($kayit['surucu_id'] ?? '') !== (string)($tokenData['user_id'] ?? '')) {
+        return medisaBuildErrorResult('Bu kayda erişim yetkiniz yok!', 403);
     }
-} else {
-    $data['duzeltme_talepleri'] = [];
+
+    $kmChanged = $yeniKm !== null && $yeniKm !== (int)($kayit['guncel_km'] ?? 0);
+    $bakimChanged = $yeniBakimAciklama !== null;
+    $kazaChanged = $yeniKazaAciklama !== null;
+    if (!$kmChanged && !$bakimChanged && !$kazaChanged) {
+        return medisaBuildErrorResult('En az bir alanda değişiklik yapmalısınız!', 400);
+    }
+
+    if (!isset($data['duzeltme_talepleri']) || !is_array($data['duzeltme_talepleri'])) {
+        $data['duzeltme_talepleri'] = [];
+    }
+
+    $newTalepId = medisaGetNextNumericId($data['duzeltme_talepleri']);
+    $talepData = [
+        'id' => $newTalepId,
+        'kayit_id' => $kayitId,
+        'surucu_id' => $tokenData['user_id'],
+        'talep_tarihi' => date('c'),
+        'sebep' => $sebep,
+        'eski_km' => $kayit['guncel_km'] ?? null,
+        'yeni_km' => $kmChanged ? $yeniKm : null,
+        'eski_bakim_durumu' => $kayit['bakim_durumu'] ?? 0,
+        'eski_bakim_aciklama' => $kayit['bakim_aciklama'] ?? '',
+        'yeni_bakim_durumu' => $bakimChanged ? ($yeniBakimDurumu !== null ? $yeniBakimDurumu : ($yeniBakimAciklama ? 1 : 0)) : null,
+        'yeni_bakim_aciklama' => $bakimChanged ? ($yeniBakimAciklama ?? '') : null,
+        'eski_kaza_durumu' => $kayit['kaza_durumu'] ?? 0,
+        'eski_kaza_aciklama' => $kayit['kaza_aciklama'] ?? '',
+        'yeni_kaza_durumu' => $kazaChanged ? ($yeniKazaDurumu !== null ? $yeniKazaDurumu : ($yeniKazaAciklama ? 1 : 0)) : null,
+        'yeni_kaza_aciklama' => $kazaChanged ? ($yeniKazaAciklama ?? '') : null,
+        'durum' => 'beklemede',
+        'admin_yanit_tarihi' => null,
+        'admin_notu' => null,
+        'admin_id' => null,
+    ];
+
+    $data['duzeltme_talepleri'][] = $talepData;
+
+    return [
+        'success' => true,
+        'message' => 'Düzeltme talebiniz gönderildi! Admin onayı bekleniyor.',
+        'talep_id' => $newTalepId,
+    ];
+});
+
+$status = (int)($result['status'] ?? ($result['conflict'] ?? false ? 409 : 200));
+if ($status !== 200) {
+    http_response_code($status);
 }
+unset($result['status']);
 
-// Talep verisi
-$talepData = [
-    'id' => $newTalepId,
-    'kayit_id' => $kayitId,
-    'surucu_id' => $tokenData['user_id'],
-    'talep_tarihi' => date('c'),
-    'sebep' => $sebep,
-    'eski_km' => $kayit['guncel_km'] ?? null,
-    'yeni_km' => $kmChanged ? $yeniKm : null,
-    'eski_bakim_durumu' => $kayit['bakim_durumu'] ?? 0,
-    'eski_bakim_aciklama' => $kayit['bakim_aciklama'] ?? '',
-    'yeni_bakim_durumu' => $bakimChanged ? ($yeniBakimDurumu !== null ? $yeniBakimDurumu : ($yeniBakimAciklama ? 1 : 0)) : null,
-    'yeni_bakim_aciklama' => $bakimChanged ? ($yeniBakimAciklama ?? '') : null,
-    'eski_kaza_durumu' => $kayit['kaza_durumu'] ?? 0,
-    'eski_kaza_aciklama' => $kayit['kaza_aciklama'] ?? '',
-    'yeni_kaza_durumu' => $kazaChanged ? ($yeniKazaDurumu !== null ? $yeniKazaDurumu : ($yeniKazaAciklama ? 1 : 0)) : null,
-    'yeni_kaza_aciklama' => $kazaChanged ? ($yeniKazaAciklama ?? '') : null,
-    'durum' => 'beklemede',
-    'admin_yanit_tarihi' => null,
-    'admin_notu' => null,
-    'admin_id' => null
-];
-
-// Talebi ekle
-$data['duzeltme_talepleri'][] = $talepData;
-
-// Veriyi kaydet
-saveData($data);
-
-// Başarılı yanıt
-echo json_encode([
-    'success' => true,
-    'message' => 'Düzeltme talebiniz gönderildi! Admin onayı bekleniyor.',
-    'talep_id' => $newTalepId
-], JSON_UNESCAPED_UNICODE);
-?>
+echo json_encode($result, JSON_UNESCAPED_UNICODE);

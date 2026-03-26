@@ -741,6 +741,30 @@ const API_BASE = (function(){
   function getSelectedVehicle() {
       return allHistoryVehicles.find(v => String(v.id) === String(selectedVehicleId));
   }
+
+  function getVehicleVersionForRequest(vehicleId) {
+      var vehicle = allHistoryVehicles && allHistoryVehicles.find(function(v) { return String(v.id) === String(vehicleId); });
+      var version = vehicle && vehicle.version != null ? Number(vehicle.version) : 1;
+      return Number.isFinite(version) && version > 0 ? version : 1;
+  }
+
+  function applyVehicleVersionUpdate(vehicleId, nextVersion) {
+      if (!allHistoryVehicles || nextVersion == null) return;
+      var normalizedVersion = Number(nextVersion);
+      if (!Number.isFinite(normalizedVersion) || normalizedVersion <= 0) return;
+      allHistoryVehicles.forEach(function(vehicle) {
+          if (String(vehicle && vehicle.id) === String(vehicleId)) {
+              vehicle.version = normalizedVersion;
+          }
+      });
+  }
+
+  async function handleDriverConflictResponse(result, fallbackMessage) {
+      if (!result || result.conflict !== true) return false;
+      alert(result.message || fallbackMessage || 'Veri başka biri tarafından güncellendi. Güncel veriler yüklendi.');
+      await loadDashboard();
+      return true;
+  }
   
   function getExistingRecord(vehicleId) {
       const period = (currentPeriod || '').toString().trim();
@@ -1290,6 +1314,7 @@ const API_BASE = (function(){
           boya_parcalar: '{}',
           ekstra_not: (document.getElementById('not-' + vid) || {}).value || ''
       };
+      payload.vehicle_version = getVehicleVersionForRequest(vid);
       if (type === 'kaza') {
           var boyaParcalar = {};
           var kaportaContainer = document.getElementById('kaza-kaporta-' + vid);
@@ -1310,7 +1335,9 @@ const API_BASE = (function(){
               body: JSON.stringify(payload)
           });
           var data = await response.json();
+          if (await handleDriverConflictResponse(data)) return;
           if (data.success) {
+              applyVehicleVersionUpdate(vid, data.vehicleVersion);
               lastCompletedActionInSession = { action: type, vehicleId: vid };
               if (formActions) formActions.style.display = 'none';
               if (successMsg) successMsg.classList.add('show');
@@ -1382,6 +1409,7 @@ const API_BASE = (function(){
               headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + currentToken },
               body: JSON.stringify({
                   arac_id: parseInt(vid, 10),
+                  vehicle_version: getVehicleVersionForRequest(vid),
                   guncel_km: km,
                   km_only: true,
                   bakim_durumu: 0,
@@ -1400,7 +1428,9 @@ const API_BASE = (function(){
               })
           });
           const data = await response.json();
+          if (await handleDriverConflictResponse(data)) return;
           if (data.success) {
+              applyVehicleVersionUpdate(vid, data.vehicleVersion);
               lastCompletedActionInSession = { action: 'km', vehicleId: vid };
               if (formContent) formContent.style.display = 'none';
               if (successMsg) successMsg.classList.add('show');
@@ -1845,10 +1875,12 @@ const API_BASE = (function(){
               const res = await fetch(API_BASE + 'driver_event.php', {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + currentToken },
-                  body: JSON.stringify({ arac_id: parseInt(vid, 10), event_type: 'muayene', data: { tarih: tarih } })
+                  body: JSON.stringify({ arac_id: parseInt(vid, 10), vehicle_version: getVehicleVersionForRequest(vid), event_type: 'muayene', data: { tarih: tarih } })
               });
               const result = await res.json();
+              if (await handleDriverConflictResponse(result)) return;
               if (result.success) {
+                  applyVehicleVersionUpdate(vid, result.vehicleVersion);
                   lastCompletedActionInSession = { action: 'muayene', vehicleId: vid };
                   cancelDriverActionForm('muayene', vid);
                   await loadDashboard();
@@ -1937,10 +1969,12 @@ const API_BASE = (function(){
           const res = await fetch(API_BASE + 'driver_event.php', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + currentToken },
-              body: JSON.stringify({ arac_id: parseInt(vehicleId, 10), event_type: type, data: data })
+              body: JSON.stringify({ arac_id: parseInt(vehicleId, 10), vehicle_version: getVehicleVersionForRequest(vehicleId), event_type: type, data: data })
           });
           const result = await res.json();
+          if (await handleDriverConflictResponse(result)) return;
           if (result.success) {
+              applyVehicleVersionUpdate(vehicleId, result.vehicleVersion);
               lastCompletedActionInSession = { action: type, vehicleId: vehicleId };
               cancelDriverActionForm(type, vehicleId);
               await loadDashboard();
@@ -2015,10 +2049,12 @@ const API_BASE = (function(){
           const res = await fetch(API_BASE + 'driver_event.php', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + currentToken },
-              body: JSON.stringify({ arac_id: vehicleId, event_type: type, data: data })
+              body: JSON.stringify({ arac_id: vehicleId, vehicle_version: getVehicleVersionForRequest(vehicleId), event_type: type, data: data })
           });
           const result = await res.json();
+          if (await handleDriverConflictResponse(result)) return;
           if (result.success) {
+              applyVehicleVersionUpdate(vehicleId, result.vehicleVersion);
               closeDriverEventModal(type);
               await loadDashboard();
           } else {
@@ -2233,6 +2269,7 @@ const API_BASE = (function(){
               },
               body: JSON.stringify({
                   arac_id: vehicleId,
+                  vehicle_version: getVehicleVersionForRequest(vehicleId),
                   guncel_km: parseInt(km),
                   bakim_durumu: bakimVar ? 1 : 0,
                   bakim_aciklama: capitalizeWords(bakimAciklama),
@@ -2251,8 +2288,13 @@ const API_BASE = (function(){
           });
           
           const data = await response.json();
+          if (await handleDriverConflictResponse(data)) {
+              btn.textContent = 'GÜNCELLE';
+              return;
+          }
           
           if (data.success) {
+              applyVehicleVersionUpdate(vehicleId, data.vehicleVersion);
               showStatus(vehicleId, 'success', '✓ Kaydedildi!');
               btn.textContent = 'GÜNCELLE';
   
