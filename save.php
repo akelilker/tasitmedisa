@@ -230,5 +230,20 @@ if (!saveData($merged)) {
     exit;
 }
 
-echo json_encode(['success' => true], JSON_UNESCAPED_UNICODE);
+$vehicleVersions = [];
+foreach ($incomingVehicles as $vehicle) {
+    $id = isset($vehicle['id']) ? (string)$vehicle['id'] : '';
+    if ($id === '') {
+        continue;
+    }
+    $vehicleVersions[] = [
+        'id' => $id,
+        'version' => isset($vehicle['version']) ? (int)$vehicle['version'] : 1,
+    ];
+}
+
+echo json_encode([
+    'success' => true,
+    'vehicleVersions' => $vehicleVersions,
+], JSON_UNESCAPED_UNICODE);
 ?>
