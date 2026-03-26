@@ -33,6 +33,61 @@
     });
   }
 
+  function isAndroidDevice() {
+    return /Android/i.test(navigator.userAgent || '');
+  }
+
+  function openPrintPreviewWindow(printHtml) {
+    var previewWindow = null;
+    try {
+      if (window.__androidVehiclePrintWindow && !window.__androidVehiclePrintWindow.closed) {
+        previewWindow = window.__androidVehiclePrintWindow;
+      }
+    } catch (e) {
+      previewWindow = null;
+    }
+    window.__androidVehiclePrintWindow = null;
+
+    if (!previewWindow) {
+      try {
+        previewWindow = window.open('', '_blank');
+      } catch (e) {
+        previewWindow = null;
+      }
+    }
+
+    if (previewWindow && previewWindow.document) {
+      try {
+        previewWindow.document.open();
+        previewWindow.document.write(printHtml);
+        previewWindow.document.close();
+        previewWindow.focus();
+        return true;
+      } catch (writeErr) {
+        try { previewWindow.close(); } catch (closeErr) {}
+      }
+    }
+
+    try {
+      var blob = new Blob([printHtml], { type: 'text/html;charset=utf-8' });
+      var blobUrl = URL.createObjectURL(blob);
+      var link = document.createElement('a');
+      link.href = blobUrl;
+      link.target = '_blank';
+      link.rel = 'noopener';
+      link.style.display = 'none';
+      document.body.appendChild(link);
+      link.click();
+      if (link.parentNode) link.parentNode.removeChild(link);
+      setTimeout(function() {
+        try { URL.revokeObjectURL(blobUrl); } catch (e) {}
+      }, 60000);
+      return true;
+    } catch (e) {}
+
+    return false;
+  }
+
   function formatDateForDisplay(dateStr) {
     if (!dateStr) return '';
     if (typeof window.formatDateShort === 'function') {
@@ -490,6 +545,10 @@
 '  <\/script>' +
 '</body>' +
 '</html>';
+
+    if (isAndroidDevice() && openPrintPreviewWindow(printHtml)) {
+      return;
+    }
 
     function printWithIframeFallback() {
       var iframe = document.createElement('iframe');
