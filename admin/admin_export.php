@@ -1,15 +1,16 @@
 <?php
-/**
- * Aylık kullanıcı raporu CSV (Excel uyumlu) export.
- * GET period (varsayılan: bu ay). UTF-8 BOM, başlık: Kullanıcı, Taşıt, Plaka, KM, Kayıt Tarihi.
- */
 require_once __DIR__ . '/../core.php';
 header('Content-Type: text/csv; charset=utf-8');
-header('Content-Disposition: attachment; filename="kullanici_raporu_' . date('Y-m-d') . '.csv"');
 header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Headers: Authorization');
+header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+header('Pragma: no-cache');
+header('Expires: 0');
 
 function titleCaseTr($str) {
-    if ($str === null || $str === '') return $str;
+    if ($str === null || $str === '') {
+        return $str;
+    }
     $words = preg_split('/\s+/u', trim($str), -1, PREG_SPLIT_NO_EMPTY);
     $result = [];
     foreach ($words as $w) {
@@ -24,51 +25,62 @@ $period = $_GET['period'] ?? date('Y-m');
 if (!preg_match('/^\d{4}-\d{2}$/', $period)) {
     $period = date('Y-m');
 }
-$data = loadData();
-if (!$data) {
+
+$rawData = loadData();
+if (!is_array($rawData)) {
     http_response_code(500);
-    echo "\xEF\xBB\xBF";
-    echo "Hata;Veri okunamadı\n";
+    header('Content-Type: text/plain; charset=utf-8');
+    echo "Veri okunamadi";
     exit;
 }
 
+$auth = medisaResolveAuthorizedContext($rawData, 'view_reports');
+if (($auth['success'] ?? false) !== true) {
+    http_response_code((int)($auth['status'] ?? 403));
+    header('Content-Type: text/plain; charset=utf-8');
+    echo $auth['message'] ?? 'Bu islem icin yetkiniz yok.';
+    exit;
+}
+
+$data = medisaFilterReportDataForContext($rawData, $auth['context']);
 $users = $data['users'] ?? [];
 $tasitlar = $data['tasitlar'] ?? [];
 $hareketler = $data['arac_aylik_hareketler'] ?? [];
 
 $userById = [];
 foreach ($users as $u) {
-    $userById[$u['id']] = $u;
-}
-$tasitById = [];
-foreach ($tasitlar as $t) {
-    $tasitById[$t['id']] = $t;
+    $userById[(string)($u['id'] ?? '')] = $u;
 }
 
-// BOM (Türkçe karakter için)
+$tasitById = [];
+foreach ($tasitlar as $t) {
+    $tasitById[(string)($t['id'] ?? '')] = $t;
+}
+
+header('Content-Disposition: attachment; filename="kullanici_raporu_' . date('Y-m-d') . '.csv"');
 echo "\xEF\xBB\xBF";
 
 $out = fopen('php://output', 'w');
-fputcsv($out, ['Kullanıcı', 'Taşıt', 'Plaka', 'KM', 'Kayıt Tarihi'], ';');
+fputcsv($out, ['Kullanici', 'Tasit', 'Plaka', 'KM', 'Kayit Tarihi'], ';');
 
 foreach ($hareketler as $k) {
     if (($k['donem'] ?? '') !== $period) {
         continue;
     }
-    $surucu = $userById[$k['surucu_id']] ?? null;
-    $arac = $tasitById[$k['arac_id']] ?? null;
+
+    $surucu = $userById[(string)($k['surucu_id'] ?? '')] ?? null;
+    $arac = $tasitById[(string)($k['arac_id'] ?? '')] ?? null;
     $surucuAdi = $surucu ? ($surucu['isim'] ?? $surucu['name'] ?? 'Bilinmiyor') : 'Bilinmiyor';
-    $aracText = $arac ? trim(($arac['marka'] ?? $arac['brand'] ?? '') . ' ' . ($arac['model'] ?? '')) : 'Bilinmiyor';
+    $aracText = $arac ? trim((string)($arac['marka'] ?? $arac['brand'] ?? '') . ' ' . (string)($arac['model'] ?? '')) : 'Bilinmiyor';
     $plaka = $arac ? ($arac['plaka'] ?? $arac['plate'] ?? 'Bilinmiyor') : 'Bilinmiyor';
     $km = $k['guncel_km'] ?? '';
-    $kayitTarihi = isset($k['kayit_tarihi']) ? date('Y-m-d H:i', strtotime($k['kayit_tarihi'])) : '';
+    $kayitTarihi = isset($k['kayit_tarihi']) ? date('Y-m-d H:i', strtotime((string)$k['kayit_tarihi'])) : '';
 
     $surucuAdi = titleCaseTr($surucuAdi);
     $aracText = titleCaseTr($aracText);
-    $plaka = mb_strtoupper($plaka, 'UTF-8');
+    $plaka = mb_strtoupper((string)$plaka, 'UTF-8');
 
     fputcsv($out, [$surucuAdi, $aracText, $plaka, $km, $kayitTarihi], ';');
 }
 
 fclose($out);
-?>
