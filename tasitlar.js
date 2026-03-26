@@ -356,6 +356,42 @@
   }
   bindDOM();
 
+  function getViewedNotificationKeys() {
+    try {
+      const raw = sessionStorage.getItem('notifViewedKeysV2');
+      const parsed = raw ? JSON.parse(raw) : [];
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (err) {
+      return [];
+    }
+  }
+
+  function markNotificationKeysAsViewed(keys) {
+    const incoming = Array.isArray(keys) ? keys : [];
+    if (!incoming.length) return;
+    const viewed = getViewedNotificationKeys();
+    let changed = false;
+    incoming.forEach(function(key) {
+      const normalizedKey = (key || '').toString().trim();
+      if (!normalizedKey || viewed.indexOf(normalizedKey) !== -1) return;
+      viewed.push(normalizedKey);
+      changed = true;
+    });
+    if (!changed) return;
+    try {
+      sessionStorage.setItem('notifViewedKeysV2', JSON.stringify(viewed));
+    } catch (err) {
+      return;
+    }
+    if (typeof window.updateNotifications === 'function') window.updateNotifications();
+  }
+
+  function getUnreadActivityNotificationKeys() {
+    return (DOM.notificationsDropdown ? Array.from(DOM.notificationsDropdown.querySelectorAll('.notification-item-activity.notification-unread[data-notif-key]')) : [])
+      .map(function(el) { return (el.getAttribute('data-notif-key') || '').toString().trim(); })
+      .filter(Boolean);
+  }
+
   const DINAMIK_OLAY_MODAL_ID = 'dinamik-olay-modal';
 
   function getEventModalId(type) {
@@ -421,6 +457,16 @@
   if (DOM.notificationsDropdown && !DOM.notificationsDropdown._notifDelegationBound) {
     DOM.notificationsDropdown._notifDelegationBound = true;
     DOM.notificationsDropdown.addEventListener('click', function(e) {
+      var actionBtn = e.target.closest('[data-notification-action]');
+      if (actionBtn) {
+        var toolbarAction = (actionBtn.getAttribute('data-notification-action') || '').toString().trim();
+        if (toolbarAction === 'mark-all-read') {
+          e.preventDefault();
+          e.stopPropagation();
+          markNotificationKeysAsViewed(getUnreadActivityNotificationKeys());
+          return;
+        }
+      }
       var btn = e.target.closest('.notification-item');
       if (!btn) return;
       var action = (btn.getAttribute('data-action') || '').toString().trim();
@@ -434,11 +480,7 @@
       var historyTab = btn.getAttribute('data-history-tab') || '';
       var notifKey = (btn.getAttribute('data-notif-key') || '').toString().trim();
       if (notifKey) {
-        try {
-          var viewed = JSON.parse(sessionStorage.getItem('notifViewedKeysV2') || '[]');
-          if (viewed.indexOf(notifKey) === -1) { viewed.push(notifKey); sessionStorage.setItem('notifViewedKeysV2', JSON.stringify(viewed)); }
-          if (typeof window.updateNotifications === 'function') window.updateNotifications();
-        } catch (err) {}
+        markNotificationKeysAsViewed([notifKey]);
       }
       if (!plate && !vehicleId) return;
       var vehicles = readVehicles();
@@ -5373,6 +5415,7 @@ function renderVehicleDetailLeft(vehicle) {
       }
     } else {
       let html = mtvHtml + kaskoExcelHtml;
+      let activityHtml = '';
 
       // Tarih uyarıları (sigorta, kasko, muayene)
       if (notifications.length > 0) {
@@ -5435,14 +5478,21 @@ function renderVehicleDetailLeft(vehicle) {
           const unreadClass = isUnread ? ' notification-unread' : '';
           const unreadStyle = isUnread ? ' border: 1px solid rgba(212, 0, 0, 0.85) !important;' : '';
           const activityMsg = getNotificationActivityMessage(ev, item.plate);
-          html += `<button type="button" data-plate="${safePlate}" data-vehicle-id="${safeVid}" data-open-history="1" data-history-tab="${historyTab}" data-notif-key="${safeKey}" style="width: 100%; padding: 10px 12px; background: transparent; color: #ccc; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 12px; text-align: left; transition: all 0.2s ease; height: auto; white-space: normal;${unreadStyle}" class="notification-item notification-item-activity${unreadClass}">
+          activityHtml += `<button type="button" data-plate="${safePlate}" data-vehicle-id="${safeVid}" data-open-history="1" data-history-tab="${historyTab}" data-notif-key="${safeKey}" style="width: 100%; padding: 10px 12px; background: transparent; color: #ccc; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 12px; text-align: left; transition: all 0.2s ease; height: auto; white-space: normal;${unreadStyle}" class="notification-item notification-item-activity${unreadClass}">
           <div class="notif-line1">${escapeHtml(activityMsg)}</div>
           <div class="notif-line2">${escapeHtml(dateDisplay)}</div>
         </button>`;
         });
       }
 
+      if (activityHtml) {
+        html += activityHtml;
+      }
+
       if (notifDropdown) {
+        if (hasUnreadActivity) {
+          html = `<div class="notifications-toolbar"><button type="button" class="notifications-mark-all-read-btn" data-notification-action="mark-all-read">Tümünü Okundu Say</button></div>` + html;
+        }
         notifDropdown.innerHTML = html;
       }
 
@@ -5453,8 +5503,8 @@ function renderVehicleDetailLeft(vehicle) {
         } else if (hasOrange) {
           notifIcon.classList.add('notification-orange', 'notification-pulse');
         }
-        /* Kırmızı/turuncu sadece gerçek uyarılar için (sigorta/kasko/muayene, MTV, kasko excel).
-           Okunmamış aktivite bildirimleri (km, şube güncelleme vb.) simgeyi kırmızı yapmaz. */
+        /* Kırmızı: kritik tarih uyarısı veya okunmamış aktivite bildirimi.
+           Turuncu: yalnız yaklaşan tarih uyarıları için kullanılır. */
       }
     }
   };
