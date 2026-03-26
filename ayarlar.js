@@ -1337,7 +1337,12 @@
             }
 
             if (typeof window.showCenteredInfoBox === 'function') {
-              window.showCenteredInfoBox('Kasko listesi başarıyla güncellendi!');
+              window.showCenteredInfoBox('Kasko listesi başarıyla güncellendi!', {
+                anchorEl: document.getElementById('kasko-yukle-btn'),
+                offsetAbove: 18,
+                variant: 'bare-text',
+                autoCloseMs: 3000
+              });
             } else if (typeof window.showSuccessModal === 'function') {
               window.showSuccessModal('Kasko listesi başarıyla güncellendi!');
             } else if (typeof window.showInfoModal === 'function') {
@@ -1819,10 +1824,23 @@
       overlay.style.display = 'none';
     };
 
+    let centeredInfoBoxTimer = null;
+
+    function clearCenteredInfoBoxTimer() {
+      if (centeredInfoBoxTimer) {
+        clearTimeout(centeredInfoBoxTimer);
+        centeredInfoBoxTimer = null;
+      }
+    }
+
     function resetCenteredInfoBoxAnchorState() {
       const overlay = document.getElementById('centered-info-box');
       const inner = overlay ? overlay.querySelector('.centered-info-box-inner') : null;
-      if (overlay) overlay.classList.remove('centered-info-box-overlay--anchored');
+      clearCenteredInfoBoxTimer();
+      if (overlay) {
+        overlay.classList.remove('centered-info-box-overlay--anchored');
+        overlay.classList.remove('centered-info-box-overlay--bare-text');
+      }
       if (!inner) return;
       inner.style.removeProperty('top');
       inner.style.removeProperty('left');
@@ -1858,8 +1876,16 @@
       resetCenteredInfoBoxAnchorState();
       originalShowCenteredInfoBox(message);
 
+      const overlay = document.getElementById('centered-info-box');
+
       let anchorEl = options && options.anchorEl ? options.anchorEl : null;
       let offsetAbove = options && Number.isFinite(options.offsetAbove) ? options.offsetAbove : 15;
+      const variant = options && typeof options.variant === 'string' ? options.variant : '';
+      const autoCloseMs = options && Number.isFinite(options.autoCloseMs) ? options.autoCloseMs : 0;
+
+      if (overlay && variant === 'bare-text') {
+        overlay.classList.add('centered-info-box-overlay--bare-text');
+      }
 
       if (!anchorEl && typeof message === 'string' && message.indexOf('Kasko listesi') !== -1) {
         anchorEl = document.getElementById('tsb-indir-btn');
@@ -1870,6 +1896,12 @@
         requestAnimationFrame(function() {
           positionCenteredInfoBoxAboveAnchor(anchorEl, offsetAbove);
         });
+      }
+
+      if (autoCloseMs > 0) {
+        centeredInfoBoxTimer = setTimeout(function() {
+          window.closeCenteredInfoBox();
+        }, autoCloseMs);
       }
     };
 

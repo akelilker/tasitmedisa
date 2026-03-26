@@ -643,6 +643,10 @@ body.modal-open #cache-confirm-modal.open {
     justify-content: flex-start;
     background: rgba(7, 10, 18, 0.08);
 }
+.centered-info-box-overlay.centered-info-box-overlay--bare-text {
+    background: transparent;
+    pointer-events: none;
+}
 .centered-info-box-inner {
     background: linear-gradient(
       180deg,
@@ -663,12 +667,28 @@ body.modal-open #cache-confirm-modal.open {
     position: fixed;
     margin: 0;
 }
+.centered-info-box-overlay.centered-info-box-overlay--bare-text .centered-info-box-inner {
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 0;
+    max-width: none;
+}
 .centered-info-box-inner #centered-info-message,
 .centered-info-box-inner p {
     color: var(--txt-white, #ffffff);
     font-size: 14px;
     line-height: 1.5;
     margin: 0 0 16px 0;
+}
+.centered-info-box-overlay.centered-info-box-overlay--bare-text .centered-info-box-inner #centered-info-message,
+.centered-info-box-overlay.centered-info-box-overlay--bare-text .centered-info-box-inner p {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.38);
 }
 .centered-info-box-inner .centered-info-tamam {
     padding: 10px 28px;
@@ -685,6 +705,9 @@ body.modal-open #cache-confirm-modal.open {
     background: rgba(var(--green-success-rgb), 0.16);
     border-color: var(--green-success, #28a745);
     transform: scale(1.03);
+}
+.centered-info-box-overlay.centered-info-box-overlay--bare-text .centered-info-tamam {
+    display: none;
 }
 
 /* Ayarlar Menüsü ve Listeler */
