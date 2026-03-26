@@ -5226,6 +5226,7 @@ function renderVehicleDetailLeft(vehicle) {
     const vehicles = readVehicles();
     const notifications = [];
     const activeSpecialNotificationKeys = [];
+    let hasUnreadActivity = false;
     const showDesktopSpecialNotifDate = window.innerWidth >= 641;
     let hasRed = false; // Kırmızı bildirim var mı?
     let hasOrange = false; // Turuncu bildirim var mı?
@@ -5430,6 +5431,7 @@ function renderVehicleDetailLeft(vehicle) {
           const notifKey = plateNorm + '|' + typeNorm + '|' + dateDisplay;
           const safeKey = notifKey.replace(/"/g, '&quot;');
           const isUnread = viewedKeys.indexOf(notifKey) === -1;
+          if (isUnread) hasUnreadActivity = true;
           const unreadClass = isUnread ? ' notification-unread' : '';
           const unreadStyle = isUnread ? ' border: 1px solid rgba(212, 0, 0, 0.85) !important;' : '';
           const activityMsg = getNotificationActivityMessage(ev, item.plate);
@@ -5446,7 +5448,7 @@ function renderVehicleDetailLeft(vehicle) {
 
       if (notifIcon) {
         notifIcon.classList.remove('notification-red', 'notification-orange', 'notification-pulse');
-        if (hasRed) {
+        if (hasRed || hasUnreadActivity) {
           notifIcon.classList.add('notification-red', 'notification-pulse');
         } else if (hasOrange) {
           notifIcon.classList.add('notification-orange', 'notification-pulse');
