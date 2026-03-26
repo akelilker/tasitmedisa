@@ -142,16 +142,6 @@ body.dashboard-page {
   padding-bottom: 10px !important;
 }
 
-/* Şifre ekranı — yalnız masaüstü: logo sütunu 69px → 66px (ana sayfa / dashboard / mobil etkilenmez) */
-@media (min-width: 641px) {
-  .login-page .hero-logo {
-    flex: 0 0 66px !important;
-    width: 66px !important;
-    /* style-core .hero-logo translateY(-1px) + 5px aşağı */
-    transform: translateY(4px) !important;
-  }
-}
-
 .driver-dashboard-container {
   height: 100vh;
   height: 100dvh;
