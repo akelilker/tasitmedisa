@@ -517,6 +517,24 @@ async function saveDataToServer() {
             throw conflictErr;
         }
 
+        if (data && Array.isArray(data.vehicleVersions) && window.appData && Array.isArray(window.appData.tasitlar)) {
+            var versionMap = {};
+            data.vehicleVersions.forEach(function(item) {
+                var id = item && item.id != null ? String(item.id) : '';
+                if (!id) return;
+                versionMap[id] = Number(item.version) || 1;
+            });
+
+            window.appData.tasitlar = window.appData.tasitlar.map(function(vehicle) {
+                if (!vehicle || vehicle.id == null) return vehicle;
+                var vehicleId = String(vehicle.id);
+                if (!Object.prototype.hasOwnProperty.call(versionMap, vehicleId)) return vehicle;
+                return Object.assign({}, vehicle, {
+                    version: versionMap[vehicleId]
+                });
+            });
+        }
+
         try {
             var autoBackup = Object.assign({}, window.appData, {
                 upload_date: new Date().toISOString(),
