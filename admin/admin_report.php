@@ -3,15 +3,16 @@ require_once __DIR__ . '/../core.php';
 header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type');
+header('Access-Control-Allow-Headers: Content-Type, Authorization');
+header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+header('Pragma: no-cache');
+header('Expires: 0');
 
-// OPTIONS isteği
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit;
 }
 
-// Parametreleri al ve güvenli hale getir
 $period = $_GET['period'] ?? date('Y-m');
 if (!preg_match('/^\d{4}-\d{2}$/', $period)) {
     $period = date('Y-m');
@@ -27,94 +28,103 @@ if (!in_array($action, ['report', 'branches', 'user_analytics', 'pending_request
     $action = 'report';
 }
 
-// Veriyi yükle
-$data = loadData();
-if (!$data) {
+$rawData = loadData();
+if (!is_array($rawData)) {
     http_response_code(500);
-    echo json_encode(['success' => false, 'message' => 'Veri okunamadı!'], JSON_UNESCAPED_UNICODE);
+    echo json_encode(['success' => false, 'message' => 'Veri okunamadi!'], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
-// Şube listesi (action=branches)
+$auth = medisaResolveAuthorizedContext($rawData, 'view_reports');
+if (($auth['success'] ?? false) !== true) {
+    http_response_code((int)($auth['status'] ?? 403));
+    echo json_encode([
+        'success' => false,
+        'auth_required' => (int)($auth['status'] ?? 403) === 401,
+        'permission_denied' => !empty($auth['permission_denied']),
+        'message' => $auth['message'] ?? 'Bu islem icin yetkiniz yok.',
+    ], JSON_UNESCAPED_UNICODE);
+    exit;
+}
+
+$context = $auth['context'];
+$data = medisaFilterReportDataForContext($rawData, $context);
+
 if ($action === 'branches') {
-    $branches = $data['branches'] ?? [];
-    echo json_encode(['success' => true, 'branches' => $branches], JSON_UNESCAPED_UNICODE);
+    echo json_encode(['success' => true, 'branches' => $data['branches'] ?? []], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
-// Kullanıcı Analitik Verileri (action=user_analytics)
 if ($action === 'user_analytics') {
     echo json_encode([
         'success' => true,
         'users' => $data['users'] ?? [],
-        'tasitlar' => $data['tasitlar'] ?? []
+        'tasitlar' => $data['tasitlar'] ?? [],
     ], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
-// Bekleyen talepler (action=pending_requests)
 if ($action === 'pending_requests') {
     $pendingRequests = [];
-    // İndeksler: tek geçişte O(1) erişim (N+1 benzeri taramaları kaldırır)
     $usersById = [];
-    foreach ($data['users'] ?? [] as $u) {
-        $usersById[(string)$u['id']] = $u;
+    foreach (($data['users'] ?? []) as $u) {
+        $usersById[(string)($u['id'] ?? '')] = $u;
     }
     $kayitById = [];
-    foreach ($data['arac_aylik_hareketler'] ?? [] as $k) {
-        $kayitById[(string)$k['id']] = $k;
+    foreach (($data['arac_aylik_hareketler'] ?? []) as $k) {
+        $kayitById[(string)($k['id'] ?? '')] = $k;
     }
     $tasitById = [];
-    foreach ($data['tasitlar'] ?? [] as $t) {
-        $tasitById[(string)$t['id']] = $t;
+    foreach (($data['tasitlar'] ?? []) as $t) {
+        $tasitById[(string)($t['id'] ?? '')] = $t;
     }
 
-    foreach ($data['duzeltme_talepleri'] ?? [] as $talep) {
-        if ($talep['durum'] === 'beklemede') {
-            $surucu = $usersById[(string)($talep['surucu_id'] ?? '')] ?? null;
-            $kayit = $kayitById[(string)($talep['kayit_id'] ?? '')] ?? null;
-            $arac = $kayit ? ($tasitById[(string)($kayit['arac_id'] ?? '')] ?? null) : null;
-
-            $req = [
-                'id' => $talep['id'],
-                'kayit_id' => $talep['kayit_id'],
-                'surucu_id' => $talep['surucu_id'],
-                'surucu_adi' => $surucu ? ($surucu['isim'] ?? $surucu['name'] ?? 'Bilinmiyor') : 'Bilinmiyor',
-                'plaka' => $arac ? ($arac['plaka'] ?? $arac['plate'] ?? 'Bilinmiyor') : 'Bilinmiyor',
-                'donem' => $kayit ? $kayit['donem'] : '',
-                'eski_km' => $talep['eski_km'] ?? null,
-                'yeni_km' => $talep['yeni_km'] ?? null,
-                'eski_bakim' => $talep['eski_bakim_aciklama'] ?? null,
-                'yeni_bakim' => $talep['yeni_bakim_aciklama'] ?? null,
-                'eski_kaza' => $talep['eski_kaza_aciklama'] ?? null,
-                'yeni_kaza' => $talep['yeni_kaza_aciklama'] ?? null,
-                'sebep' => $talep['sebep'],
-                'talep_tarihi' => $talep['talep_tarihi']
-            ];
-            $pendingRequests[] = $req;
+    foreach (($data['duzeltme_talepleri'] ?? []) as $talep) {
+        if (($talep['durum'] ?? '') !== 'beklemede') {
+            continue;
         }
+
+        $surucu = $usersById[(string)($talep['surucu_id'] ?? '')] ?? null;
+        $kayit = $kayitById[(string)($talep['kayit_id'] ?? '')] ?? null;
+        $arac = $kayit ? ($tasitById[(string)($kayit['arac_id'] ?? '')] ?? null) : null;
+
+        $pendingRequests[] = [
+            'id' => $talep['id'] ?? '',
+            'kayit_id' => $talep['kayit_id'] ?? '',
+            'surucu_id' => $talep['surucu_id'] ?? '',
+            'surucu_adi' => $surucu ? ($surucu['isim'] ?? $surucu['name'] ?? 'Bilinmiyor') : 'Bilinmiyor',
+            'plaka' => $arac ? ($arac['plaka'] ?? $arac['plate'] ?? 'Bilinmiyor') : 'Bilinmiyor',
+            'donem' => $kayit['donem'] ?? '',
+            'eski_km' => $talep['eski_km'] ?? null,
+            'yeni_km' => $talep['yeni_km'] ?? null,
+            'eski_bakim' => $talep['eski_bakim_aciklama'] ?? null,
+            'yeni_bakim' => $talep['yeni_bakim_aciklama'] ?? null,
+            'eski_kaza' => $talep['eski_kaza_aciklama'] ?? null,
+            'yeni_kaza' => $talep['yeni_kaza_aciklama'] ?? null,
+            'sebep' => $talep['sebep'] ?? '',
+            'talep_tarihi' => $talep['talep_tarihi'] ?? '',
+        ];
     }
-    
+
     echo json_encode([
         'success' => true,
-        'requests' => $pendingRequests
+        'requests' => $pendingRequests,
     ], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
-// Ana rapor
 $records = [];
 $stats = [
     'total' => 0,
     'entered' => 0,
     'pending' => 0,
-    'percentage' => 0
+    'percentage' => 0,
 ];
 
 $tasitlar = $data['tasitlar'] ?? [];
 $hareketler = $data['arac_aylik_hareketler'] ?? [];
+$users = $data['users'] ?? [];
 
-// İndeks: (arac_id, surucu_id, donem) -> en güncel kayıt (döngü içinde tam tarama kaldırır)
 $kayitByAracSurucuDonem = [];
 foreach ($hareketler as $k) {
     $aid = (string)($k['arac_id'] ?? '');
@@ -122,12 +132,13 @@ foreach ($hareketler as $k) {
     $don = (string)($k['donem'] ?? '');
     $key = $aid . "\0" . $sid . "\0" . $don;
     $tarih = $k['guncelleme_tarihi'] ?? $k['kayit_tarihi'] ?? '';
-    if (!isset($kayitByAracSurucuDonem[$key]) || strcmp($tarih, $kayitByAracSurucuDonem[$key]['guncelleme_tarihi'] ?? $kayitByAracSurucuDonem[$key]['kayit_tarihi'] ?? '') > 0) {
+    $currentRecord = $kayitByAracSurucuDonem[$key] ?? null;
+    $currentDate = $currentRecord['guncelleme_tarihi'] ?? $currentRecord['kayit_tarihi'] ?? '';
+    if ($currentRecord === null || strcmp((string)$tarih, (string)$currentDate) > 0) {
         $kayitByAracSurucuDonem[$key] = $k;
     }
 }
 
-// İndeks: arac_id -> (donem, km) en büyük donem için (önceki dönem km için)
 $aracIdToLatestKm = [];
 foreach ($hareketler as $k) {
     if (!isset($k['guncel_km'])) {
@@ -135,7 +146,8 @@ foreach ($hareketler as $k) {
     }
     $aid = (string)($k['arac_id'] ?? '');
     $d = (string)($k['donem'] ?? '');
-    if (!isset($aracIdToLatestKm[$aid]) || strcmp($d, $aracIdToLatestKm[$aid]['donem']) > 0) {
+    $current = $aracIdToLatestKm[$aid] ?? null;
+    if ($current === null || strcmp($d, (string)($current['donem'] ?? '')) > 0) {
         $aracIdToLatestKm[$aid] = ['donem' => $d, 'km' => $k['guncel_km']];
     }
 }
@@ -149,15 +161,15 @@ foreach ($tasitlar as $t) {
 }
 
 $surucular = [];
-foreach ($data['users'] as $u) {
+foreach ($users as $u) {
     $aktif = !isset($u['aktif']) || $u['aktif'] === true;
     if (!$aktif) {
         continue;
     }
-    if (!isset($userIdsWithVehicle[(string)$u['id']])) {
+    if (!isset($userIdsWithVehicle[(string)($u['id'] ?? '')])) {
         continue;
     }
-    if (!empty($branch)) {
+    if ($branch !== '') {
         $subeId = $u['sube_id'] ?? $u['branchId'] ?? null;
         if ($subeId !== null && (string)$subeId !== (string)$branch) {
             continue;
@@ -169,26 +181,33 @@ foreach ($data['users'] as $u) {
 $stats['total'] = count($surucular);
 
 foreach ($surucular as $surucu) {
-    $surucuId = $surucu['id'];
+    $surucuId = $surucu['id'] ?? '';
     foreach ($tasitlar as $t) {
         $assignedUserId = $t['assignedUserId'] ?? null;
         if ($assignedUserId === null || (string)$assignedUserId !== (string)$surucuId) {
             continue;
         }
-        $aracId = $t['id'];
-        $arac = $t;
 
+        $aracId = $t['id'] ?? '';
         $key = (string)$aracId . "\0" . (string)$surucuId . "\0" . (string)$period;
         $kayit = $kayitByAracSurucuDonem[$key] ?? null;
 
         $girdi = $kayit !== null;
-        $bakimVar = $kayit ? ($kayit['bakim_durumu'] ?? false) : false;
-        $kazaVar = $kayit ? ($kayit['kaza_durumu'] ?? false) : false;
+        $bakimVar = $kayit ? !empty($kayit['bakim_durumu']) : false;
+        $kazaVar = $kayit ? !empty($kayit['kaza_durumu']) : false;
 
-        if ($status === 'girdi' && !$girdi) continue;
-        if ($status === 'girmedi' && $girdi) continue;
-        if ($status === 'kaza' && !$kazaVar) continue;
-        if ($status === 'bakim' && !$bakimVar) continue;
+        if ($status === 'girdi' && !$girdi) {
+            continue;
+        }
+        if ($status === 'girmedi' && $girdi) {
+            continue;
+        }
+        if ($status === 'kaza' && !$kazaVar) {
+            continue;
+        }
+        if ($status === 'bakim' && !$bakimVar) {
+            continue;
+        }
 
         if ($girdi) {
             $stats['entered']++;
@@ -196,35 +215,34 @@ foreach ($surucular as $surucu) {
             $stats['pending']++;
         }
 
-        $isim = $surucu['isim'] ?? $surucu['name'] ?? '';
-        $plaka = $arac['plaka'] ?? $arac['plate'] ?? '';
-        $aracMarka = $arac['marka'] ?? $arac['brand'] ?? '';
-        $aracModel = $arac['model'] ?? '';
-        if ($aracMarka === '' && $aracModel === '' && !empty($arac['brandModel'])) {
-            $aracMarka = trim($arac['brandModel']);
+        $aracMarka = $t['marka'] ?? $t['brand'] ?? '';
+        $aracModel = $t['model'] ?? '';
+        if ($aracMarka === '' && $aracModel === '' && !empty($t['brandModel'])) {
+            $aracMarka = trim((string)$t['brandModel']);
         }
+
         $km = $girdi ? ($kayit['guncel_km'] ?? null) : null;
         if ($km === null) {
             $km = $aracIdToLatestKm[(string)$aracId]['km'] ?? null;
         }
+
         $records[] = [
             'surucu_id' => $surucuId,
-            'surucu_adi' => $isim,
+            'surucu_adi' => $surucu['isim'] ?? $surucu['name'] ?? '',
             'telefon' => $surucu['telefon'] ?? $surucu['phone'] ?? '',
-            'plaka' => $plaka,
+            'plaka' => $t['plaka'] ?? $t['plate'] ?? '',
             'arac_marka' => $aracMarka,
             'arac_model' => $aracModel,
             'km' => $km,
             'bakim_var' => $bakimVar,
             'kaza_var' => $kazaVar,
             'girdi' => $girdi,
-            'kayit_id' => $kayit ? $kayit['id'] : null,
-            'donem' => $period
+            'kayit_id' => $kayit['id'] ?? null,
+            'donem' => $period,
         ];
     }
 }
 
-// Yüzde hesapla: araç/bildirim sayısına göre (entered + pending = toplam beklenen iş)
 $toplamBeklenenIs = ($stats['entered'] ?? 0) + ($stats['pending'] ?? 0);
 if ($toplamBeklenenIs > 0) {
     $stats['percentage'] = round(($stats['entered'] / $toplamBeklenenIs) * 100);
@@ -233,6 +251,5 @@ if ($toplamBeklenenIs > 0) {
 echo json_encode([
     'success' => true,
     'stats' => $stats,
-    'records' => $records
+    'records' => $records,
 ], JSON_UNESCAPED_UNICODE);
-?>

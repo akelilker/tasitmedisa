@@ -3206,18 +3206,76 @@ function renderVehicleDetailLeft(vehicle) {
     return cleanFragment ? (cleanBase + '#' + cleanFragment) : cleanBase;
   }
 
-  function buildRuhsatPreviewUrl(vehicleId) {
+  function getMedisaPortalToken() {
+    try {
+      if (typeof getStoredPortalToken === 'function') {
+        return getStoredPortalToken() || '';
+      }
+      return localStorage.getItem('medisa_portal_token')
+        || sessionStorage.getItem('medisa_portal_token')
+        || localStorage.getItem('driver_token')
+        || sessionStorage.getItem('driver_token')
+        || '';
+    } catch (e) {
+      return '';
+    }
+  }
+
+  function buildMedisaAuthHeaders(extraHeaders) {
+    if (typeof buildAuthHeaders === 'function') {
+      return buildAuthHeaders(extraHeaders || {});
+    }
+    const headers = Object.assign({}, extraHeaders || {});
+    const token = getMedisaPortalToken();
+    if (token) {
+      headers.Authorization = 'Bearer ' + token;
+    }
+    return headers;
+  }
+
+  function buildRuhsatEndpointUrl(endpoint, vehicleId) {
     const rawId = String(vehicleId || window.currentDetailVehicleId || '').trim();
     if (!rawId) return '';
+    const token = getMedisaPortalToken();
     try {
-      const previewUrl = new URL('ruhsat_preview.php', window.location.href);
-      previewUrl.searchParams.set('id', rawId);
-      previewUrl.searchParams.set('ts', String(Date.now()));
-      return previewUrl.toString();
+      const targetUrl = new URL(endpoint, window.location.href);
+      targetUrl.searchParams.set('id', rawId);
+      if (token) {
+        targetUrl.searchParams.set('token', token);
+      }
+      return targetUrl.toString();
     } catch (e) {
       const encodedId = encodeURIComponent(rawId);
-      return 'ruhsat_preview.php?id=' + encodedId + '&ts=' + Date.now();
+      const encodedToken = token ? '&token=' + encodeURIComponent(token) : '';
+      return endpoint + '?id=' + encodedId + encodedToken;
     }
+  }
+
+  function buildRuhsatPreviewUrl(vehicleId) {
+    return buildRuhsatEndpointUrl('ruhsat_preview.php', vehicleId);
+  }
+
+  function buildRuhsatDocumentUrl(vehicleId) {
+    return buildRuhsatEndpointUrl('ruhsat.php', vehicleId);
+  }
+
+  function isRuhsatImagePath(path) {
+    return /\.(jpeg|jpg|png|gif|webp)(\?.*)?$/i.test(String(path || ''));
+  }
+
+  function getVehicleRuhsatPath(vehicleId) {
+    const rawId = String(vehicleId || window.currentDetailVehicleId || '').trim();
+    if (!rawId) return '';
+    const vehicles = readVehicles();
+    const vehicle = Array.isArray(vehicles)
+      ? vehicles.find(function(item) { return String(item.id) === rawId; })
+      : null;
+    return vehicle ? String(vehicle.ruhsatPath || '') : '';
+  }
+
+  function isRuhsatImageForVehicle(vehicleId, fallbackPath) {
+    const rawPath = String(fallbackPath || getVehicleRuhsatPath(vehicleId) || '');
+    return isRuhsatImagePath(rawPath);
   }
 
   /** Ruhsat URL'ini yazdırma penceresinde kullanmak için mutlak yap. Alt dizinde (örn. /medisa/) çalışır. */
@@ -3287,7 +3345,11 @@ function renderVehicleDetailLeft(vehicle) {
       cooldownUntil: 0
     };
 
-    entry.promise = fetch(previewUrl, { method: 'GET', cache: 'no-store' })
+    entry.promise = fetch(previewUrl, {
+      method: 'GET',
+      cache: 'no-store',
+      headers: buildMedisaAuthHeaders()
+    })
       .then(function(response) {
         var contentType = (response.headers.get('Content-Type') || '').toLowerCase();
         if (!response.ok || contentType.indexOf('image/') !== 0) {
@@ -3332,7 +3394,7 @@ function renderVehicleDetailLeft(vehicle) {
   function openRuhsatPrintDialog(ruhsatUrl, vehicleId) {
     const url = toAbsoluteRuhsatUrl(ruhsatUrl);
     if (!url) return;
-    const isImage = /\.(jpeg|jpg|png|gif|webp)(\?.*)?$/i.test(url);
+    const isImage = isRuhsatImageForVehicle(vehicleId, getVehicleRuhsatPath(vehicleId));
     const printableUrl = isImage ? url : buildPdfViewerUrl(url, 'toolbar=0&navpanes=0&zoom=page-width&view=FitH');
     if (isAndroidDevice()) {
       const previewUrl = !isImage ? buildRuhsatPreviewUrl(vehicleId) : '';
@@ -3444,14 +3506,13 @@ function renderVehicleDetailLeft(vehicle) {
       });
   }
 
-  function resolveRuhsatUrl(path) {
+  function resolveRuhsatUrl(path, vehicleId) {
+    const rawId = String(vehicleId || window.currentDetailVehicleId || '').trim();
+    if (rawId) {
+      return buildRuhsatDocumentUrl(rawId);
+    }
     const raw = String(path || '').trim();
     if (!raw) return '';
-    if (/^(https?:)?\/\//i.test(raw) || raw.startsWith('data/ruhsat/') || raw.startsWith('/data/ruhsat/')) {
-      return raw;
-    }
-    if (raw.startsWith('ruhsat/')) return 'data/' + raw;
-    if (raw.startsWith('/ruhsat/')) return '/data' + raw;
     return raw;
   }
 
@@ -3460,7 +3521,7 @@ function renderVehicleDetailLeft(vehicle) {
     const saveBtn = document.getElementById('ruhsat-save-btn') || DOM.dinamikOlayKaydetBtn;
     if (!content || !saveBtn) return false;
     const viewerOptions = options || {};
-    const isImage = /\.(jpeg|jpg|png|gif|webp)(\?.*)?$/i.test(String(url));
+    const isImage = isRuhsatImageForVehicle(vehicleId, getVehicleRuhsatPath(vehicleId));
 
     setRuhsatInlineViewerMode(true);
     setRuhsatSaveBtnVisibility(saveBtn, false);
@@ -3547,8 +3608,8 @@ function renderVehicleDetailLeft(vehicle) {
     saveBtn.textContent = 'Ruhsat Yükle';
     const hasRuhsat = !!(vehicle && vehicle.ruhsatPath);
     if (hasRuhsat) {
-      const ruhsatUrl = resolveRuhsatUrl(vehicle.ruhsatPath);
-      const ruhsatIsImage = /\.(jpeg|jpg|png|gif|webp)(\?.*)?$/i.test(ruhsatUrl);
+      const ruhsatUrl = resolveRuhsatUrl(vehicle.ruhsatPath, vid);
+      const ruhsatIsImage = isRuhsatImagePath(vehicle.ruhsatPath);
       const isMobileViewport = (typeof window.matchMedia === 'function')
         ? window.matchMedia('(max-width: 640px)').matches
         : (window.innerWidth <= 640);
@@ -3687,7 +3748,11 @@ function renderVehicleDetailLeft(vehicle) {
     formData.append('vehicleId', vehicleId);
     formData.append('vehicleVersion', String(Number(vehicle.version) || 1));
     formData.append('ruhsat', input.files[0]);
-    fetch('upload_ruhsat.php', { method: 'POST', body: formData })
+    fetch('upload_ruhsat.php', {
+      method: 'POST',
+      body: formData,
+      headers: buildMedisaAuthHeaders()
+    })
       .then(function(r) {
         return r.text().then(function(raw) {
           let data = {};
@@ -3758,8 +3823,8 @@ function renderVehicleDetailLeft(vehicle) {
     const vehicle = readVehicles().find(v => String(v.id) === vid);
     if (!vehicle || !vehicle.ruhsatPath) return;
 
-    const url = resolveRuhsatUrl(vehicle.ruhsatPath);
-    const isImage = /\.(jpeg|jpg|png|gif|webp)(\?.*)?$/i.test(url);
+    const url = resolveRuhsatUrl(vehicle.ruhsatPath, vid);
+    const isImage = isRuhsatImagePath(vehicle.ruhsatPath);
     const targetUrl = isImage
       ? url
       : buildPdfViewerUrl(url, 'toolbar=1&navpanes=0&zoom=page-width&view=FitH');

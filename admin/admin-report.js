@@ -17,6 +17,57 @@
   var userAnalyticsBranchId = null;
   var userAnalyticsSelectedUserId = null;
 
+  function getStoredPortalToken() {
+    try {
+      return localStorage.getItem('medisa_portal_token')
+        || sessionStorage.getItem('medisa_portal_token')
+        || localStorage.getItem('driver_token')
+        || sessionStorage.getItem('driver_token')
+        || '';
+    } catch (e) {
+      return '';
+    }
+  }
+
+  function buildAuthHeaders(extraHeaders) {
+    var headers = Object.assign({}, extraHeaders || {});
+    var token = getStoredPortalToken();
+    if (token) {
+      headers.Authorization = 'Bearer ' + token;
+    }
+    return headers;
+  }
+
+  function redirectToPortalLogin() {
+    if (typeof window === 'undefined') return;
+    window.location.href = '../driver/';
+  }
+
+  function fetchJson(url, options) {
+    var requestOptions = Object.assign({ cache: 'no-store' }, options || {});
+    requestOptions.headers = buildAuthHeaders(requestOptions.headers || {});
+    return fetch(url, requestOptions).then(function (response) {
+      return response.text().then(function (raw) {
+        var data = {};
+        try {
+          data = raw ? JSON.parse(raw) : {};
+        } catch (e) {
+          data = {};
+        }
+        if (!data || typeof data !== 'object') {
+          data = {};
+        }
+        data.__httpStatus = response.status;
+        data.__raw = raw;
+        if (response.status === 401 || response.status === 403 || data.auth_required === true || data.permission_denied === true) {
+          redirectToPortalLogin();
+          throw new Error('auth');
+        }
+        return data;
+      });
+    });
+  }
+
   // CSS Spinner Animasyonu için (eğer yoksa ekle)
   if (!document.getElementById('spinner-style')) {
     var style = document.createElement('style');
@@ -42,8 +93,7 @@
   }
 
   function loadBranches() {
-    return fetch(API_BASE + 'admin_report.php?action=branches')
-      .then(function (r) { return r.json(); })
+    return fetchJson(API_BASE + 'admin_report.php?action=branches')
       .then(function (data) {
         if (data.success && data.branches) {
           branches = data.branches;
@@ -71,8 +121,7 @@
 
     var url = API_BASE + 'admin_report.php?period=' + encodeURIComponent(reportPeriod) + '&branch=' + encodeURIComponent(reportBranch) + '&status=' + encodeURIComponent(reportStatus);
 
-    fetch(url)
-      .then(function (r) { return r.json(); })
+    fetchJson(url)
       .then(function (data) {
         if (!data.success) {
           if (document.getElementById('report-error')) {
@@ -87,7 +136,10 @@
         renderStats(data.stats || {});
         renderTable(data.records || []);
       })
-      .catch(function () {
+      .catch(function (err) {
+        if (err && err.message === 'auth') {
+          return;
+        }
         if (document.getElementById('report-error')) {
           document.getElementById('report-error').textContent = 'Rapor yüklenemedi.';
           document.getElementById('report-error').style.display = 'block';
@@ -204,8 +256,7 @@
   }
 
   function loadPendingRequests() {
-    fetch(API_BASE + 'admin_report.php?action=pending_requests')
-      .then(function (r) { return r.json(); })
+    fetchJson(API_BASE + 'admin_report.php?action=pending_requests')
       .then(function (data) {
         if (!data.success) return;
         var container = document.getElementById('pending-requests-list');
@@ -240,7 +291,11 @@
           container.appendChild(card);
         });
       })
-      .catch(function () {});
+      .catch(function (err) {
+        if (err && err.message === 'auth') {
+          return;
+        }
+      });
   }
 
   window.switchAdminTab = function(tabId) {
@@ -730,8 +785,7 @@
 
     container.innerHTML = '<div style="text-align:center; padding:40px;"><div class="loading-spinner" style="display:inline-block; width:30px; height:30px; border:3px solid rgba(255,255,255,0.1); border-top-color:var(--theme-color); border-radius:50%; animation:spin 1s linear infinite;"></div><p style="color:var(--muted); margin-top:15px;">Kullanıcı istatistikleri hesaplanıyor...</p></div>';
 
-    fetch(API_BASE + 'admin_report.php?action=user_analytics')
-      .then(function(res) { return res.json(); })
+    fetchJson(API_BASE + 'admin_report.php?action=user_analytics')
       .then(function(data) {
         if (!data.success) {
           container.innerHTML = '<p style="color:#ef4444; text-align:center; padding:20px;">Veriler çekilemedi.</p>';
@@ -742,7 +796,10 @@
         userAnalyticsTasitlar = data.tasitlar || [];
         window.renderUserAnalytics();
       })
-      .catch(function() {
+      .catch(function(err) {
+        if (err && err.message === 'auth') {
+          return;
+        }
         container.innerHTML = '<p style="color:#ef4444; text-align:center; padding:20px;">Bağlantı hatası.</p>';
       });
   };
@@ -780,18 +837,11 @@
   }
 
   function requestAction(id, action) {
-    fetch(API_BASE + 'admin_approve.php', {
+    fetchJson(API_BASE + 'admin_approve.php', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ request_id: id, action: action, admin_note: '' })
     })
-      .then(function (r) {
-        return r.json().then(function(data) {
-          data = data && typeof data === 'object' ? data : {};
-          data.__httpStatus = r.status;
-          return data;
-        });
-      })
       .then(function (data) {
         if (data.success) {
           loadPendingRequests();
@@ -802,14 +852,52 @@
         }
         alert(data.message || (action === 'approve' ? 'Onaylandı.' : 'Reddedildi.'));
       })
-      .catch(function () {
+      .catch(function (err) {
         alert('İşlem gönderilemedi.');
       });
   }
 
   function exportExcel() {
     var period = document.getElementById('report-period') ? document.getElementById('report-period').value : new Date().toISOString().slice(0, 7);
-    window.location.href = API_BASE + 'admin_export.php?period=' + encodeURIComponent(period);
+    fetch(API_BASE + 'admin_export.php?period=' + encodeURIComponent(period), {
+      method: 'GET',
+      cache: 'no-store',
+      headers: buildAuthHeaders()
+    })
+      .then(function (response) {
+        if (response.status === 401 || response.status === 403) {
+          redirectToPortalLogin();
+          throw new Error('auth');
+        }
+        if (!response.ok) {
+          return response.text().then(function (text) {
+            throw new Error(text || 'Excel indirilemedi.');
+          });
+        }
+        return Promise.all([response.blob(), Promise.resolve(response.headers.get('Content-Disposition') || '')]);
+      })
+      .then(function (result) {
+        var blob = result[0];
+        var disposition = result[1];
+        var match = disposition.match(/filename=\"?([^\";]+)\"?/i);
+        var filename = match && match[1] ? match[1] : ('kullanici_raporu_' + period + '.csv');
+        var objectUrl = URL.createObjectURL(blob);
+        var link = document.createElement('a');
+        link.href = objectUrl;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        setTimeout(function () {
+          URL.revokeObjectURL(objectUrl);
+        }, 1000);
+      })
+      .catch(function (err) {
+        if (err && err.message === 'auth') {
+          return;
+        }
+        alert((err && err.message) ? err.message : 'Excel indirilemedi.');
+      });
   }
 
   function initPeriodSelect() {

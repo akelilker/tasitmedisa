@@ -16,69 +16,6 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-$tokenData = validateToken();
-if (!$tokenData) {
-    http_response_code(401);
-    echo json_encode([
-        'success' => false,
-        'auth_required' => true,
-        'message' => 'Oturum gerekli.',
-    ], JSON_UNESCAPED_UNICODE);
-    exit;
-}
-
-function medisaSaveNormalizeCollection($value) {
-    return is_array($value) ? array_values($value) : [];
-}
-
-function medisaSaveMergeScopedCollection($currentItems, $incomingItems, $canManageCurrent, $canManageIncoming) {
-    $merged = [];
-    foreach ($currentItems as $item) {
-        if (!$canManageCurrent($item)) {
-            $merged[] = $item;
-        }
-    }
-    foreach ($incomingItems as $item) {
-        if ($canManageIncoming($item)) {
-            $merged[] = $item;
-        }
-    }
-    return array_values($merged);
-}
-
-function medisaSaveEnsureScopedVehiclesAreAllowed($incomingVehicles, $context) {
-    foreach ($incomingVehicles as $vehicle) {
-        if (!medisaCanManageVehicleRecord($vehicle, $context)) {
-            return false;
-        }
-    }
-    return true;
-}
-
-function medisaSaveEnsureScopedUsersAreAllowed($incomingUsers, $context) {
-    foreach ($incomingUsers as $user) {
-        if (!medisaCanManageUserRecord($user, $context)) {
-            return false;
-        }
-    }
-    return true;
-}
-
-function medisaSaveApplyVehicleVersions($incomingVehicles, $currentById) {
-    $updated = [];
-    foreach ($incomingVehicles as $vehicle) {
-        $id = isset($vehicle['id']) ? (string)$vehicle['id'] : '';
-        $current = $id !== '' ? ($currentById[$id] ?? null) : null;
-        if ($current && isset($current['version'])) {
-            $vehicle['version'] = (int)$current['version'] + 1;
-        } else {
-            $vehicle['version'] = 1;
-        }
-        $updated[] = $vehicle;
-    }
-    return $updated;
-}
-
 $input = file_get_contents('php://input');
 if (empty($input)) {
     http_response_code(400);
@@ -93,12 +30,20 @@ if (json_last_error() !== JSON_ERROR_NONE || !is_array($incomingData)) {
     exit;
 }
 
-$result = medisaMutateData(function (&$data) use ($incomingData, $tokenData) {
+$result = medisaMutateData(function (&$data) use ($incomingData) {
     if (!is_array($data)) {
         $data = medisaDefaultData();
     }
 
-    $context = medisaBuildAccessContext($data, $tokenData);
+    $auth = medisaResolveAuthorizedContext($data);
+    if (($auth['success'] ?? false) !== true) {
+        $status = (int)($auth['status'] ?? 403);
+        return medisaBuildErrorResult($auth['message'] ?? 'Bu islem icin yetkiniz yok.', $status, [
+            'auth_required' => $status === 401,
+            'permission_denied' => !empty($auth['permission_denied']),
+        ]);
+    }
+    $context = $auth['context'];
     if (!$context) {
         return medisaBuildErrorResult('Kullanıcı bulunamadı veya yetki çözümlenemedi.', 403);
     }
@@ -111,41 +56,11 @@ $result = medisaMutateData(function (&$data) use ($incomingData, $tokenData) {
     $incomingUsers = medisaSaveNormalizeCollection($incomingData['users'] ?? []);
     $currentVehicles = medisaSaveNormalizeCollection($data['tasitlar'] ?? []);
     $currentUsers = medisaSaveNormalizeCollection($data['users'] ?? []);
-
-    $currentVehiclesById = [];
-    foreach ($currentVehicles as $vehicle) {
-        $id = isset($vehicle['id']) ? (string)$vehicle['id'] : '';
-        if ($id !== '') {
-            $currentVehiclesById[$id] = $vehicle;
-        }
+    $currentVehiclesById = medisaSaveIndexVehiclesById($currentVehicles);
+    $versionCheck = medisaSaveValidateIncomingVehicleVersions($incomingVehicles, $currentVehiclesById, $context);
+    if ($versionCheck !== true) {
+        return $versionCheck;
     }
-
-    foreach ($incomingVehicles as $vehicle) {
-        $id = isset($vehicle['id']) ? (string)$vehicle['id'] : '';
-        if ($id === '' || !isset($vehicle['version'])) {
-            continue;
-        }
-
-        $currentVehicle = $currentVehiclesById[$id] ?? null;
-        if ($currentVehicle === null) {
-            continue;
-        }
-
-        if (($context['role'] ?? '') !== 'genel_yonetici' && !medisaCanManageVehicleRecord($currentVehicle, $context)) {
-            continue;
-        }
-
-        $currentVersion = isset($currentVehicle['version']) ? (int)$currentVehicle['version'] : 0;
-        $incomingVersion = (int)$vehicle['version'];
-        if ($incomingVersion < $currentVersion) {
-            return medisaBuildConflictResult(
-                'vehicle',
-                $id,
-                'Bu araç başka biri tarafından güncellendi. Güncel veriler yüklendi.'
-            );
-        }
-    }
-
     $incomingVehicles = medisaSaveApplyVehicleVersions($incomingVehicles, $currentVehiclesById);
 
     if (($context['role'] ?? '') === 'genel_yonetici') {
@@ -183,22 +98,9 @@ $result = medisaMutateData(function (&$data) use ($incomingData, $tokenData) {
         );
     }
 
-    $vehicleVersions = [];
-    foreach ($incomingVehicles as $vehicle) {
-        $id = isset($vehicle['id']) ? (string)$vehicle['id'] : '';
-        if ($id === '') {
-            continue;
-        }
-
-        $vehicleVersions[] = [
-            'id' => $id,
-            'version' => isset($vehicle['version']) ? (int)$vehicle['version'] : 1,
-        ];
-    }
-
     return [
         'success' => true,
-        'vehicleVersions' => $vehicleVersions,
+        'vehicleVersions' => medisaSaveBuildVehicleVersions($incomingVehicles),
     ];
 });
 
