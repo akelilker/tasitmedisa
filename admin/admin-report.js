@@ -785,9 +785,18 @@
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ request_id: id, action: action, admin_note: '' })
     })
-      .then(function (r) { return r.json(); })
+      .then(function (r) {
+        return r.json().then(function(data) {
+          data = data && typeof data === 'object' ? data : {};
+          data.__httpStatus = r.status;
+          return data;
+        });
+      })
       .then(function (data) {
         if (data.success) {
+          loadPendingRequests();
+          loadReport();
+        } else if (data.conflict === true || data.__httpStatus === 409) {
           loadPendingRequests();
           loadReport();
         }

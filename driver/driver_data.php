@@ -45,6 +45,7 @@ function buildVehicleForDriver($tasit, $branches = []) {
     $brandModel = $tasit['brandModel'] ?? trim($marka . ' ' . $model);
     return [
         'id' => $tasit['id'],
+        'version' => medisaGetVehicleVersion($tasit),
         'plaka' => $tasit['plaka'] ?? $tasit['plate'] ?? '',
         'marka' => $marka,
         'model' => $model,

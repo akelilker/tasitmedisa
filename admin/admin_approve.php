@@ -5,20 +5,22 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 
-// OPTIONS isteği
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit;
 }
 
-// Input al
 $input = json_decode(file_get_contents('php://input'), true);
-$requestId = intval($input['request_id'] ?? 0);
-$action = $input['action'] ?? ''; // 'approve' veya 'reject'
-$adminNote = trim($input['admin_note'] ?? '');
-$adminNote = mb_substr(strip_tags($adminNote), 0, 1000);
+if (!is_array($input)) {
+    http_response_code(400);
+    echo json_encode(['success' => false, 'message' => 'Geçersiz istek verisi!'], JSON_UNESCAPED_UNICODE);
+    exit;
+}
 
-// Validasyon
+$requestId = (int)($input['request_id'] ?? 0);
+$action = (string)($input['action'] ?? '');
+$adminNote = mb_substr(strip_tags(trim((string)($input['admin_note'] ?? ''))), 0, 1000);
+
 if ($requestId <= 0) {
     echo json_encode(['success' => false, 'message' => 'Geçersiz talep ID!'], JSON_UNESCAPED_UNICODE);
     exit;
@@ -29,113 +31,78 @@ if ($action !== 'approve' && $action !== 'reject') {
     exit;
 }
 
-// Veriyi yükle
-$data = loadData();
-if (!$data) {
-    http_response_code(500);
-    echo json_encode(['success' => false, 'message' => 'Veri okunamadı!'], JSON_UNESCAPED_UNICODE);
-    exit;
-}
-
-// Talebi bul
-$talepIndex = -1;
-$talep = null;
-foreach (($data['duzeltme_talepleri'] ?? []) as $idx => $t) {
-    if ($t['id'] === $requestId) {
-        $talepIndex = $idx;
-        $talep = $t;
-        break;
+$result = medisaMutateData(function (&$data) use ($requestId, $action, $adminNote) {
+    $talepIndex = medisaFindCorrectionRequestIndex($data, $requestId);
+    if ($talepIndex < 0) {
+        return medisaBuildErrorResult('Talep bulunamadı!', 404);
     }
-}
 
-if (!$talep) {
-    http_response_code(404);
-    echo json_encode(['success' => false, 'message' => 'Talep bulunamadı!'], JSON_UNESCAPED_UNICODE);
-    exit;
-}
-
-// Talep durumu kontrolü
-if ($talep['durum'] !== 'beklemede') {
-    echo json_encode(['success' => false, 'message' => 'Bu talep zaten işlenmiş!'], JSON_UNESCAPED_UNICODE);
-    exit;
-}
-
-// Talebi güncelle
-$data['duzeltme_talepleri'][$talepIndex]['durum'] = $action === 'approve' ? 'onaylandi' : 'reddedildi';
-$data['duzeltme_talepleri'][$talepIndex]['admin_yanit_tarihi'] = date('c');
-$data['duzeltme_talepleri'][$talepIndex]['admin_notu'] = $adminNote;
-$data['duzeltme_talepleri'][$talepIndex]['admin_id'] = 1; // Admin ID (şimdilik sabit)
-
-// Eğer onaylandıysa, ana kaydı güncelle
-if ($action === 'approve') {
-    $kayitIndex = -1;
-    foreach (($data['arac_aylik_hareketler'] ?? []) as $idx => $k) {
-        if ($k['id'] === $talep['kayit_id']) {
-            $kayitIndex = $idx;
-            break;
-        }
+    $talep = $data['duzeltme_talepleri'][$talepIndex];
+    if (($talep['durum'] ?? '') !== 'beklemede') {
+        return medisaBuildConflictResult('request', $requestId, 'Bu talep zaten işlendi. Güncel veriler yüklendi.');
     }
-    
-    if ($kayitIndex >= 0) {
-        $kayit = &$data['arac_aylik_hareketler'][$kayitIndex];
-        if (isset($talep['yeni_km']) && $talep['yeni_km'] !== null) {
-            $kayit['guncel_km'] = $talep['yeni_km'];
-        }
-        if (isset($talep['yeni_bakim_durumu']) && $talep['yeni_bakim_durumu'] !== null) {
-            $kayit['bakim_durumu'] = $talep['yeni_bakim_durumu'];
-            $kayit['bakim_aciklama'] = $talep['yeni_bakim_aciklama'] ?? '';
-        }
-        if (isset($talep['yeni_kaza_durumu']) && $talep['yeni_kaza_durumu'] !== null) {
-            $kayit['kaza_durumu'] = $talep['yeni_kaza_durumu'];
-            $kayit['kaza_aciklama'] = $talep['yeni_kaza_aciklama'] ?? '';
-        }
-        $kayit['guncelleme_tarihi'] = date('c');
-        // Taşıtlar senkronizasyonu: KM güncellemesi
-        if (isset($talep['yeni_km']) && $talep['yeni_km'] !== null) {
-            $aracId = $kayit['arac_id'] ?? null;
-            if ($aracId && is_array($data['tasitlar'] ?? null)) {
-                foreach ($data['tasitlar'] as $idx => $v) {
-                    $vid = isset($v['id']) ? (is_numeric($v['id']) ? intval($v['id']) : $v['id']) : null;
-                    if ($vid !== null && (string)$vid === (string)$aracId) {
-                        $eskiKm = $data['tasitlar'][$idx]['guncelKm'] ?? $data['tasitlar'][$idx]['km'] ?? null;
-                        $data['tasitlar'][$idx]['guncelKm'] = $talep['yeni_km'];
-                        if (!isset($data['tasitlar'][$idx]['events']) || !is_array($data['tasitlar'][$idx]['events'])) {
-                            $data['tasitlar'][$idx]['events'] = [];
-                        }
-                        $talepTarihiRaw = isset($talep['talep_tarihi']) ? (string)$talep['talep_tarihi'] : '';
-                        $talepTarihYmd = $talepTarihiRaw !== '' ? substr($talepTarihiRaw, 0, 10) : date('Y-m-d');
-                        array_unshift($data['tasitlar'][$idx]['events'], [
-                            'id' => (string)(time() . $idx . 'kmreq' . $requestId),
-                            'type' => 'km-revize',
-                            'date' => $talepTarihYmd,
-                            'timestamp' => date('c'),
-                            'data' => [
-                                'eskiKm' => $eskiKm !== null ? (string)$eskiKm : '',
-                                'yeniKm' => (string)$talep['yeni_km'],
-                                'duzeltmeTalebi' => true,
-                                'duzeltmeTalepTarihi' => $talepTarihiRaw
-                            ]
-                        ]);
-                        break;
+
+    $data['duzeltme_talepleri'][$talepIndex]['durum'] = $action === 'approve' ? 'onaylandi' : 'reddedildi';
+    $data['duzeltme_talepleri'][$talepIndex]['admin_yanit_tarihi'] = date('c');
+    $data['duzeltme_talepleri'][$talepIndex]['admin_notu'] = $adminNote;
+    $data['duzeltme_talepleri'][$talepIndex]['admin_id'] = 1;
+
+    if ($action === 'approve') {
+        $kayitIndex = medisaFindMonthlyRecordIndex($data, $talep['kayit_id'] ?? '');
+        if ($kayitIndex >= 0) {
+            $kayit = &$data['arac_aylik_hareketler'][$kayitIndex];
+            if (isset($talep['yeni_km']) && $talep['yeni_km'] !== null) {
+                $kayit['guncel_km'] = $talep['yeni_km'];
+            }
+            if (isset($talep['yeni_bakim_durumu']) && $talep['yeni_bakim_durumu'] !== null) {
+                $kayit['bakim_durumu'] = $talep['yeni_bakim_durumu'];
+                $kayit['bakim_aciklama'] = $talep['yeni_bakim_aciklama'] ?? '';
+            }
+            if (isset($talep['yeni_kaza_durumu']) && $talep['yeni_kaza_durumu'] !== null) {
+                $kayit['kaza_durumu'] = $talep['yeni_kaza_durumu'];
+                $kayit['kaza_aciklama'] = $talep['yeni_kaza_aciklama'] ?? '';
+            }
+            $kayit['guncelleme_tarihi'] = date('c');
+
+            if (isset($talep['yeni_km']) && $talep['yeni_km'] !== null) {
+                $vehicleIndex = medisaFindVehicleIndex($data, $kayit['arac_id'] ?? '');
+                if ($vehicleIndex >= 0) {
+                    $vehicle = &$data['tasitlar'][$vehicleIndex];
+                    $eskiKm = $vehicle['guncelKm'] ?? $vehicle['km'] ?? null;
+                    $vehicle['guncelKm'] = $talep['yeni_km'];
+                    if (!isset($vehicle['events']) || !is_array($vehicle['events'])) {
+                        $vehicle['events'] = [];
                     }
+                    $talepTarihiRaw = isset($talep['talep_tarihi']) ? (string)$talep['talep_tarihi'] : '';
+                    $talepTarihYmd = $talepTarihiRaw !== '' ? substr($talepTarihiRaw, 0, 10) : date('Y-m-d');
+                    array_unshift($vehicle['events'], [
+                        'id' => (string)(time() . $vehicleIndex . 'kmreq' . $requestId),
+                        'type' => 'km-revize',
+                        'date' => $talepTarihYmd,
+                        'timestamp' => date('c'),
+                        'data' => [
+                            'eskiKm' => $eskiKm !== null ? (string)$eskiKm : '',
+                            'yeniKm' => (string)$talep['yeni_km'],
+                            'duzeltmeTalebi' => true,
+                            'duzeltmeTalepTarihi' => $talepTarihiRaw,
+                        ],
+                    ]);
+                    medisaBumpVehicleVersion($vehicle);
                 }
             }
         }
     }
+
+    return [
+        'success' => true,
+        'message' => $action === 'approve' ? 'Talep onaylandı, veri güncellendi!' : 'Talep reddedildi!',
+    ];
+});
+
+$status = (int)($result['status'] ?? ($result['conflict'] ?? false ? 409 : 200));
+if ($status !== 200) {
+    http_response_code($status);
 }
+unset($result['status']);
 
-// Veriyi kaydet
-if (!saveData($data)) {
-    http_response_code(500);
-    echo json_encode(['success' => false, 'message' => 'Kayıt sırasında hata oluştu!'], JSON_UNESCAPED_UNICODE);
-    exit;
-}
-
-// Başarılı yanıt
-$message = $action === 'approve' ? 'Talep onaylandı, veri güncellendi!' : 'Talep reddedildi!';
-
-echo json_encode([
-    'success' => true,
-    'message' => $message
-], JSON_UNESCAPED_UNICODE);
-?>
+echo json_encode($result, JSON_UNESCAPED_UNICODE);

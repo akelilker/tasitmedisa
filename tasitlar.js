@@ -3634,12 +3634,15 @@ function renderVehicleDetailLeft(vehicle) {
   window.saveRuhsatUpload = function() {
     const input = document.getElementById('ruhsat-file-input');
     const vehicleId = (window.currentDetailVehicleId || '').toString();
-    if (!input || !input.files || !input.files[0] || !vehicleId) {
+    const vehicles = window.appData?.tasitlar || [];
+    const vehicle = vehicles.find(function(x) { return String(x.id) === String(vehicleId); });
+    if (!input || !input.files || !input.files[0] || !vehicleId || !vehicle) {
       alert('L\u00fctfen ruhsat dosyas\u0131 se\u00e7in.');
       return;
     }
     const formData = new FormData();
     formData.append('vehicleId', vehicleId);
+    formData.append('vehicleVersion', String(Number(vehicle.version) || 1));
     formData.append('ruhsat', input.files[0]);
     fetch('upload_ruhsat.php', { method: 'POST', body: formData })
       .then(function(r) {
@@ -3658,22 +3661,13 @@ function renderVehicleDetailLeft(vehicle) {
       })
       .then(function(data) {
         invalidateRuhsatPreviewCache(vehicleId);
-        const vehicles = window.appData?.tasitlar || [];
-        const v = vehicles.find(function(x) { return String(x.id) === String(vehicleId); });
+        const currentVehicles = window.appData?.tasitlar || [];
+        const v = currentVehicles.find(function(x) { return String(x.id) === String(vehicleId); });
         if (v) {
           v.ruhsatPath = data.ruhsatPath;
-          if (!v.events) v.events = [];
-          const now = new Date();
-          const tarihRuhsat = String(now.getDate()).padStart(2, '0') + '/' + String(now.getMonth() + 1).padStart(2, '0') + '/' + now.getFullYear();
-          const kim = getRecorderDisplayName();
-          v.events.unshift({
-            id: Date.now().toString(),
-            type: 'ruhsat-yukle',
-            date: tarihRuhsat,
-            timestamp: now.toISOString(),
-            data: { kaydeden: kim, kisi: kim }
-          });
-          writeVehicles(vehicles);
+          if (data.vehicleVersion != null) {
+            v.version = Number(data.vehicleVersion) || v.version;
+          }
         }
 
         const selectBox = document.querySelector('#ruhsat-modal-content .ruhsat-select-box');
@@ -3698,6 +3692,15 @@ function renderVehicleDetailLeft(vehicle) {
       })
       .catch(function(err) {
         console.error(err);
+        const isConflict = !!(err && (err.conflict || (typeof err.message === 'string' && err.message.indexOf('Güncel veriler yüklendi') !== -1)));
+        if (isConflict) {
+          if (typeof window.onMedisaConflict === 'function') {
+            window.onMedisaConflict();
+          } else {
+            alert('Dikkat! Veri siz işlem yaparken başka biri tarafından güncellenmiş. Güncel veriler yüklendi.');
+          }
+          return;
+        }
         alert((err && err.message) ? err.message : 'Y\u00fckleme s\u0131ras\u0131nda hata olu\u015ftu.');
       });
   };
