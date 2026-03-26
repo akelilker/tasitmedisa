@@ -10,7 +10,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
-/** Yıl ekle (tasitlar.js addYears ile aynı iş kuralı; tarih formatı PHP tarafında Y-m-d). */
 function addYears($dateStr, $years) {
     if (!$dateStr) return '';
     $dt = new DateTime($dateStr);
@@ -19,24 +18,21 @@ function addYears($dateStr, $years) {
     return $dt->format('Y-m-d');
 }
 
-/** Muayene sonraki bitiş tarihi (tasitlar.js calculateNextMuayene ile aynı otomobil/ticari + yıl kuralları). */
 function calculateNextMuayene($vehicle, $muayeneDateStr) {
     if (!$muayeneDateStr) return '';
     $events = $vehicle['events'] ?? [];
     $isFirstMuayene = true;
-    foreach ($events as $e) {
-        if (isset($e['type']) && $e['type'] === 'muayene-guncelle') {
+    foreach ($events as $event) {
+        if (($event['type'] ?? '') === 'muayene-guncelle') {
             $isFirstMuayene = false;
             break;
         }
     }
     $vehicleType = $vehicle['vehicleType'] ?? $vehicle['tip'] ?? 'otomobil';
     if ($isFirstMuayene) {
-        if ($vehicleType === 'otomobil') return addYears($muayeneDateStr, 3);
-        return addYears($muayeneDateStr, 2);
+        return $vehicleType === 'otomobil' ? addYears($muayeneDateStr, 3) : addYears($muayeneDateStr, 2);
     }
-    if ($vehicleType === 'otomobil') return addYears($muayeneDateStr, 2);
-    return addYears($muayeneDateStr, 1);
+    return $vehicleType === 'otomobil' ? addYears($muayeneDateStr, 2) : addYears($muayeneDateStr, 1);
 }
 
 $tokenData = validateToken();
@@ -47,9 +43,16 @@ if (!$tokenData) {
 }
 
 $input = json_decode(file_get_contents('php://input'), true);
-$aracId = isset($input['arac_id']) ? (is_numeric($input['arac_id']) ? intval($input['arac_id']) : $input['arac_id']) : 0;
-$eventType = trim($input['event_type'] ?? '');
-$data = $input['data'] ?? [];
+if (!is_array($input)) {
+    http_response_code(400);
+    echo json_encode(['success' => false, 'message' => 'Geçersiz istek verisi!'], JSON_UNESCAPED_UNICODE);
+    exit;
+}
+
+$aracId = isset($input['arac_id']) ? (string)$input['arac_id'] : '';
+$vehicleVersion = isset($input['vehicle_version']) ? (int)$input['vehicle_version'] : null;
+$eventType = trim((string)($input['event_type'] ?? ''));
+$payload = is_array($input['data'] ?? null) ? $input['data'] : [];
 
 $allowedTypes = ['anahtar', 'lastik', 'utts', 'muayene', 'sigorta', 'kasko'];
 if (!in_array($eventType, $allowedTypes, true)) {
@@ -57,164 +60,153 @@ if (!in_array($eventType, $allowedTypes, true)) {
     exit;
 }
 
-$mainData = loadData();
-if (!$mainData) {
-    http_response_code(500);
-    echo json_encode(['success' => false, 'message' => 'Veri okunamadı!'], JSON_UNESCAPED_UNICODE);
+if ($aracId === '') {
+    echo json_encode(['success' => false, 'message' => 'Geçersiz taşıt!'], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
-$user = null;
-foreach ($mainData['users'] ?? [] as $u) {
-    if ((string)($u['id'] ?? '') === (string)$tokenData['user_id']) {
-        $user = $u;
-        break;
+if ($vehicleVersion === null || $vehicleVersion <= 0) {
+    http_response_code(400);
+    echo json_encode(['success' => false, 'message' => 'Araç sürümü eksik!'], JSON_UNESCAPED_UNICODE);
+    exit;
+}
+
+$result = medisaMutateData(function (&$data) use ($tokenData, $aracId, $vehicleVersion, $eventType, $payload) {
+    $user = medisaFindUserById($data, $tokenData['user_id'] ?? '');
+    if (!$user) {
+        return medisaBuildErrorResult('Kullanıcı bulunamadı!', 403);
     }
-}
-if (!$user) {
-    http_response_code(403);
-    echo json_encode(['success' => false, 'message' => 'Kullanıcı bulunamadı!'], JSON_UNESCAPED_UNICODE);
-    exit;
-}
 
-$kullaniciAdi = trim((string)($user['isim'] ?? $user['name'] ?? $user['ad_soyad'] ?? ''));
+    $vehicleIndex = medisaFindVehicleIndex($data, $aracId);
+    if ($vehicleIndex < 0) {
+        return medisaBuildErrorResult('Bu taşıta erişim yetkiniz yok!', 403);
+    }
 
-$hasAccess = false;
-foreach ($mainData['tasitlar'] ?? [] as $t) {
-    $tid = $t['id'] ?? null;
-    if ($tid !== null && (string)$tid === (string)$aracId) {
-        $assigned = $t['assignedUserId'] ?? null;
-        if ($assigned !== null && (string)$assigned === (string)$user['id']) {
-            $hasAccess = true;
+    $vehicle = &$data['tasitlar'][$vehicleIndex];
+    $hasAccess = ((string)($vehicle['assignedUserId'] ?? '') === (string)($user['id'] ?? ''));
+    if (!$hasAccess) {
+        $zimmetliAraclar = $user['zimmetli_araclar'] ?? [];
+        $hasAccess = is_array($zimmetliAraclar) && in_array($aracId, $zimmetliAraclar);
+    }
+    if (!$hasAccess) {
+        return medisaBuildErrorResult('Bu taşıta erişim yetkiniz yok!', 403);
+    }
+
+    $versionCheck = medisaEnsureVehicleVersion($vehicle, $vehicleVersion, 'Bu araç başka biri tarafından güncellendi. Güncel veriler yüklendi.');
+    if ($versionCheck !== true) {
+        return $versionCheck;
+    }
+
+    if (!isset($vehicle['events']) || !is_array($vehicle['events'])) {
+        $vehicle['events'] = [];
+    }
+
+    $kullaniciAdi = trim((string)($user['isim'] ?? $user['name'] ?? $user['ad_soyad'] ?? ''));
+    $eventBase = [
+        'id' => (string)(time() . $vehicleIndex . $eventType),
+        'timestamp' => date('c'),
+    ];
+
+    switch ($eventType) {
+        case 'anahtar':
+            $durum = isset($payload['durum']) ? (string)$payload['durum'] : 'yok';
+            $detay = $durum === 'var' ? mb_substr(strip_tags(trim($payload['detay'] ?? '')), 0, 500) : '';
+            $vehicle['anahtar'] = $durum;
+            $vehicle['anahtarNerede'] = $detay;
+            $eventBase['type'] = 'anahtar-guncelle';
+            $eventBase['date'] = date('d.m.Y');
+            $eventBase['data'] = ['durum' => $durum, 'detay' => $detay, 'surucu' => $kullaniciAdi];
             break;
-        }
+
+        case 'lastik':
+            $durum = isset($payload['durum']) ? (string)$payload['durum'] : 'yok';
+            $adres = $durum === 'var' ? mb_substr(strip_tags(trim($payload['adres'] ?? '')), 0, 500) : '';
+            $vehicle['lastikDurumu'] = $durum;
+            $vehicle['lastikAdres'] = $adres;
+            $eventBase['type'] = 'lastik-guncelle';
+            $eventBase['date'] = date('d.m.Y');
+            $eventBase['data'] = ['durum' => $durum, 'adres' => $adres, 'surucu' => $kullaniciAdi];
+            break;
+
+        case 'utts':
+            $durum = isset($payload['durum']) && $payload['durum'] === true;
+            $vehicle['uttsTanimlandi'] = $durum;
+            $eventBase['type'] = 'utts-guncelle';
+            $eventBase['date'] = date('d.m.Y');
+            $eventBase['data'] = ['durum' => $durum, 'surucu' => $kullaniciAdi];
+            break;
+
+        case 'muayene':
+            $tarih = trim((string)($payload['tarih'] ?? ''));
+            if ($tarih === '' || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $tarih)) {
+                return medisaBuildErrorResult('Muayene tarihi zorunludur! (YYYY-MM-DD)', 400);
+            }
+            $bitisTarihi = calculateNextMuayene($vehicle, $tarih);
+            $vehicle['muayeneDate'] = $bitisTarihi;
+            $eventBase['type'] = 'muayene-guncelle';
+            $eventBase['date'] = $tarih;
+            $eventBase['data'] = ['bitisTarihi' => $bitisTarihi, 'surucu' => $kullaniciAdi];
+            break;
+
+        case 'sigorta':
+            $tarih = trim((string)($payload['tarih'] ?? ''));
+            if ($tarih === '' || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $tarih)) {
+                return medisaBuildErrorResult('Sigorta tarihi zorunludur! (YYYY-MM-DD)', 400);
+            }
+            $bitisTarihi = addYears($tarih, 1);
+            $vehicle['sigortaDate'] = $bitisTarihi;
+            $eventBase['type'] = 'sigorta-guncelle';
+            $eventBase['date'] = $tarih;
+            $eventBase['data'] = [
+                'bitisTarihi' => $bitisTarihi,
+                'firma' => mb_substr(strip_tags(trim($payload['firma'] ?? '')), 0, 300),
+                'acente' => mb_substr(strip_tags(trim($payload['acente'] ?? '')), 0, 300),
+                'iletisim' => mb_substr(strip_tags(trim($payload['iletisim'] ?? '')), 0, 300),
+                'surucu' => $kullaniciAdi,
+            ];
+            break;
+
+        case 'kasko':
+            $tarih = trim((string)($payload['tarih'] ?? ''));
+            if ($tarih === '' || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $tarih)) {
+                return medisaBuildErrorResult('Kasko tarihi zorunludur! (YYYY-MM-DD)', 400);
+            }
+            $bitisTarihi = addYears($tarih, 1);
+            $vehicle['kaskoDate'] = $bitisTarihi;
+            $eventBase['type'] = 'kasko-guncelle';
+            $eventBase['date'] = $tarih;
+            $eventBase['data'] = [
+                'bitisTarihi' => $bitisTarihi,
+                'firma' => mb_substr(strip_tags(trim($payload['firma'] ?? '')), 0, 300),
+                'acente' => mb_substr(strip_tags(trim($payload['acente'] ?? '')), 0, 300),
+                'iletisim' => mb_substr(strip_tags(trim($payload['iletisim'] ?? '')), 0, 300),
+                'surucu' => $kullaniciAdi,
+            ];
+            break;
+
+        default:
+            return medisaBuildErrorResult('Bilinmeyen olay tipi!', 400);
     }
+
+    array_unshift($vehicle['events'], $eventBase);
+    $newVehicleVersion = medisaBumpVehicleVersion($vehicle);
+
+    return [
+        'success' => true,
+        'message' => 'Kaydedildi!',
+        'vehicleId' => (string)$aracId,
+        'vehicleVersion' => $newVehicleVersion,
+        'vehicleVersions' => [[
+            'id' => (string)$aracId,
+            'version' => $newVehicleVersion,
+        ]],
+    ];
+});
+
+$status = (int)($result['status'] ?? ($result['conflict'] ?? false ? 409 : 200));
+if ($status !== 200) {
+    http_response_code($status);
 }
-if (!$hasAccess && !empty($user['zimmetli_araclar'])) {
-    if (in_array($aracId, $user['zimmetli_araclar'])) $hasAccess = true;
-}
-if (!$hasAccess) {
-    http_response_code(403);
-    echo json_encode(['success' => false, 'message' => 'Bu taşıta erişim yetkiniz yok!'], JSON_UNESCAPED_UNICODE);
-    exit;
-}
+unset($result['status']);
 
-$tasitlar = &$mainData['tasitlar'];
-$vehicleIdx = null;
-foreach ($tasitlar as $idx => $v) {
-    $vid = $v['id'] ?? null;
-    if ($vid !== null && (string)$vid === (string)$aracId) {
-        $vehicleIdx = $idx;
-        break;
-    }
-}
-if ($vehicleIdx === null) {
-    echo json_encode(['success' => false, 'message' => 'Taşıt bulunamadı!'], JSON_UNESCAPED_UNICODE);
-    exit;
-}
-
-$vehicle = &$tasitlar[$vehicleIdx];
-if (!isset($vehicle['events']) || !is_array($vehicle['events'])) {
-    $vehicle['events'] = [];
-}
-
-$eventId = (string)(time() . $vehicleIdx . $eventType);
-$eventBase = [
-    'id' => $eventId,
-    'timestamp' => date('c')
-];
-
-switch ($eventType) {
-    case 'anahtar':
-        $durum = isset($data['durum']) ? (string)$data['durum'] : 'yok';
-        $detay = ($durum === 'var') ? mb_substr(strip_tags(trim($data['detay'] ?? '')), 0, 500) : '';
-        $vehicle['anahtar'] = $durum;
-        $vehicle['anahtarNerede'] = $detay;
-        $eventBase['type'] = 'anahtar-guncelle';
-        $eventBase['date'] = date('d.m.Y');
-        $eventBase['data'] = ['durum' => $durum, 'detay' => $detay, 'surucu' => $kullaniciAdi];
-        break;
-
-    case 'lastik':
-        $durum = isset($data['durum']) ? (string)$data['durum'] : 'yok';
-        $adres = ($durum === 'var') ? mb_substr(strip_tags(trim($data['adres'] ?? '')), 0, 500) : '';
-        $vehicle['lastikDurumu'] = $durum;
-        $vehicle['lastikAdres'] = $adres;
-        $eventBase['type'] = 'lastik-guncelle';
-        $eventBase['date'] = date('d.m.Y');
-        $eventBase['data'] = ['durum' => $durum, 'adres' => $adres, 'surucu' => $kullaniciAdi];
-        break;
-
-    case 'utts':
-        $durum = isset($data['durum']) && $data['durum'] === true;
-        $vehicle['uttsTanimlandi'] = $durum;
-        $eventBase['type'] = 'utts-guncelle';
-        $eventBase['date'] = date('d.m.Y');
-        $eventBase['data'] = ['durum' => $durum, 'surucu' => $kullaniciAdi];
-        break;
-
-    case 'muayene':
-        $tarih = trim($data['tarih'] ?? '');
-        if ($tarih === '' || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $tarih)) {
-            echo json_encode(['success' => false, 'message' => 'Muayene tarihi zorunludur! (YYYY-MM-DD)'], JSON_UNESCAPED_UNICODE);
-            exit;
-        }
-        $bitisTarihi = calculateNextMuayene($vehicle, $tarih);
-        $vehicle['muayeneDate'] = $bitisTarihi;
-        $eventBase['type'] = 'muayene-guncelle';
-        $eventBase['date'] = $tarih;
-        $eventBase['data'] = ['bitisTarihi' => $bitisTarihi, 'surucu' => $kullaniciAdi];
-        break;
-
-    case 'sigorta':
-        $tarih = trim($data['tarih'] ?? '');
-        if ($tarih === '' || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $tarih)) {
-            echo json_encode(['success' => false, 'message' => 'Sigorta tarihi zorunludur! (YYYY-MM-DD)'], JSON_UNESCAPED_UNICODE);
-            exit;
-        }
-        $bitisTarihi = addYears($tarih, 1);
-        $vehicle['sigortaDate'] = $bitisTarihi;
-        $eventBase['type'] = 'sigorta-guncelle';
-        $eventBase['date'] = $tarih;
-        $eventBase['data'] = [
-            'bitisTarihi' => $bitisTarihi,
-            'firma' => mb_substr(strip_tags(trim($data['firma'] ?? '')), 0, 300),
-            'acente' => mb_substr(strip_tags(trim($data['acente'] ?? '')), 0, 300),
-            'iletisim' => mb_substr(strip_tags(trim($data['iletisim'] ?? '')), 0, 300),
-            'surucu' => $kullaniciAdi
-        ];
-        break;
-
-    case 'kasko':
-        $tarih = trim($data['tarih'] ?? '');
-        if ($tarih === '' || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $tarih)) {
-            echo json_encode(['success' => false, 'message' => 'Kasko tarihi zorunludur! (YYYY-MM-DD)'], JSON_UNESCAPED_UNICODE);
-            exit;
-        }
-        $bitisTarihi = addYears($tarih, 1);
-        $vehicle['kaskoDate'] = $bitisTarihi;
-        $eventBase['type'] = 'kasko-guncelle';
-        $eventBase['date'] = $tarih;
-        $eventBase['data'] = [
-            'bitisTarihi' => $bitisTarihi,
-            'firma' => mb_substr(strip_tags(trim($data['firma'] ?? '')), 0, 300),
-            'acente' => mb_substr(strip_tags(trim($data['acente'] ?? '')), 0, 300),
-            'iletisim' => mb_substr(strip_tags(trim($data['iletisim'] ?? '')), 0, 300),
-            'surucu' => $kullaniciAdi
-        ];
-        break;
-
-    default:
-        echo json_encode(['success' => false, 'message' => 'Bilinmeyen olay tipi!'], JSON_UNESCAPED_UNICODE);
-        exit;
-}
-
-array_unshift($vehicle['events'], $eventBase);
-
-if (!saveData($mainData)) {
-    http_response_code(500);
-    echo json_encode(['success' => false, 'message' => 'Kayıt yazılamadı!'], JSON_UNESCAPED_UNICODE);
-    exit;
-}
-
-echo json_encode(['success' => true, 'message' => 'Kaydedildi!'], JSON_UNESCAPED_UNICODE);
+echo json_encode($result, JSON_UNESCAPED_UNICODE);

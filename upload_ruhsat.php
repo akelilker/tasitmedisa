@@ -1,8 +1,4 @@
 <?php
-/**
- * Ruhsat (araç tescil belgesi) PDF yükleme
- * POST: vehicleId, file (multipart)
- */
 require_once __DIR__ . '/core.php';
 header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
@@ -13,14 +9,20 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-$vehicleId = trim($_POST['vehicleId'] ?? '');
-if (empty($vehicleId)) {
+$vehicleId = trim((string)($_POST['vehicleId'] ?? ''));
+$vehicleVersion = isset($_POST['vehicleVersion']) ? (int)$_POST['vehicleVersion'] : null;
+if ($vehicleId === '') {
     http_response_code(400);
     echo json_encode(['error' => 'vehicleId gerekli']);
     exit;
 }
 
-// Dosya kontrolü
+if ($vehicleVersion === null || $vehicleVersion <= 0) {
+    http_response_code(400);
+    echo json_encode(['error' => 'vehicleVersion gerekli']);
+    exit;
+}
+
 if (!isset($_FILES['ruhsat']) || $_FILES['ruhsat']['error'] !== UPLOAD_ERR_OK) {
     $err = $_FILES['ruhsat']['error'] ?? -1;
     $msg = $err === UPLOAD_ERR_INI_SIZE || $err === UPLOAD_ERR_FORM_SIZE ? 'Dosya çok büyük (max 5MB)' : 'Dosya yüklenemedi';
@@ -30,7 +32,7 @@ if (!isset($_FILES['ruhsat']) || $_FILES['ruhsat']['error'] !== UPLOAD_ERR_OK) {
 }
 
 $file = $_FILES['ruhsat'];
-$maxSize = 5 * 1024 * 1024; // 5MB
+$maxSize = 5 * 1024 * 1024;
 if ($file['size'] > $maxSize) {
     http_response_code(400);
     echo json_encode(['error' => 'Dosya en fazla 5MB olabilir']);
@@ -43,10 +45,7 @@ finfo_close($finfo);
 
 $originalName = $file['name'] ?? '';
 $extension = strtolower(pathinfo($originalName, PATHINFO_EXTENSION));
-// Uzanti/MIME degeri cihaz ve tarayiciya gore degisebildigi icin
-// (ozellikle iOS/Safari), kesin red kararini sadece imza kontrolu verir.
 
-// PDF imza kontrolü (%PDF)
 $handle = fopen($file['tmp_name'], 'rb');
 $header = $handle ? fread($handle, 1024) : '';
 if ($handle) {
@@ -59,19 +58,18 @@ if (strpos($header, '%PDF') === false) {
     exit;
 }
 
-// Güvenli dosya adı (sadece vehicleId)
 $safeId = preg_replace('/[^a-zA-Z0-9_-]/', '', $vehicleId);
-if (empty($safeId)) {
-    $safeId = 'vehicle_' . preg_replace('/\D/', '', $vehicleId) ?: 'unknown';
+if ($safeId === '') {
+    $safeId = 'vehicle_' . (preg_replace('/\D/', '', $vehicleId) ?: 'unknown');
 }
 
-$plate = strtoupper(preg_replace('/[^A-Z0-9]/', '', $_POST['plaka'] ?? ''));
+$plate = strtoupper(preg_replace('/[^A-Z0-9]/', '', (string)($_POST['plaka'] ?? '')));
 if ($plate === '') {
     $tmpData = loadData();
     if (is_array($tmpData) && isset($tmpData['tasitlar']) && is_array($tmpData['tasitlar'])) {
-        foreach ($tmpData['tasitlar'] as $v) {
-            if (isset($v['id']) && (string)$v['id'] === (string)$vehicleId) {
-                $plate = strtoupper(preg_replace('/[^A-Z0-9]/', '', (string)($v['plate'] ?? '')));
+        foreach ($tmpData['tasitlar'] as $vehicle) {
+            if ((string)($vehicle['id'] ?? '') === (string)$vehicleId) {
+                $plate = strtoupper(preg_replace('/[^A-Z0-9]/', '', (string)($vehicle['plate'] ?? '')));
                 break;
             }
         }
@@ -82,10 +80,9 @@ if ($plate === '') {
 }
 
 $filename = $plate . '_' . time() . '.pdf';
-
 $ruhsatDir = __DIR__ . '/data/ruhsat';
 if (!is_dir($ruhsatDir)) {
-    mkdir($ruhsatDir, 0755, true);
+    @mkdir($ruhsatDir, 0755, true);
 }
 
 $targetPath = $ruhsatDir . '/' . $filename;
@@ -95,7 +92,6 @@ if (!move_uploaded_file($file['tmp_name'], $targetPath)) {
     exit;
 }
 
-// Geriye uyumluluk: id bazlı erişim kullanan endpointler için ikinci kopya
 $legacyTargetPath = $ruhsatDir . '/' . $safeId . '.pdf';
 if ($legacyTargetPath !== $targetPath) {
     @copy($targetPath, $legacyTargetPath);
@@ -107,27 +103,55 @@ if (is_file($previewPath)) {
 }
 
 $ruhsatPath = 'ruhsat/' . $filename;
+$result = medisaMutateData(function (&$data) use ($vehicleId, $vehicleVersion, $ruhsatPath) {
+    $vehicleIndex = medisaFindVehicleIndex($data, $vehicleId);
+    if ($vehicleIndex < 0) {
+        return medisaBuildErrorResult('Taşıt bulunamadı!', 404);
+    }
 
-// data.json güncelle
-$data = loadData();
-if (!$data || !isset($data['tasitlar'])) {
-    echo json_encode(['success' => true, 'ruhsatPath' => $ruhsatPath]);
-    exit;
-}
+    $vehicle = &$data['tasitlar'][$vehicleIndex];
+    $versionCheck = medisaEnsureVehicleVersion($vehicle, $vehicleVersion, 'Bu araç başka biri tarafından güncellendi. Güncel veriler yüklendi.');
+    if ($versionCheck !== true) {
+        return $versionCheck;
+    }
 
-$found = false;
-foreach ($data['tasitlar'] as $i => $v) {
-    if (isset($v['id']) && (string)$v['id'] === (string)$vehicleId) {
-        $data['tasitlar'][$i]['ruhsatPath'] = $ruhsatPath;
-        $found = true;
-        break;
+    $vehicle['ruhsatPath'] = $ruhsatPath;
+    $newVehicleVersion = medisaBumpVehicleVersion($vehicle);
+
+    return [
+        'success' => true,
+        'ruhsatPath' => $ruhsatPath,
+        'vehicleId' => (string)$vehicleId,
+        'vehicleVersion' => $newVehicleVersion,
+        'vehicleVersions' => [[
+            'id' => (string)$vehicleId,
+            'version' => $newVehicleVersion,
+        ]],
+    ];
+});
+
+if (($result['success'] ?? false) !== true) {
+    @unlink($targetPath);
+    if ($legacyTargetPath !== $targetPath && is_file($legacyTargetPath)) {
+        @unlink($legacyTargetPath);
     }
 }
 
-if ($found && !saveData($data)) {
-    http_response_code(500);
-    echo json_encode(['error' => 'Veri kaydedilemedi']);
+$status = (int)($result['status'] ?? ($result['conflict'] ?? false ? 409 : 200));
+if ($status !== 200) {
+    http_response_code($status);
+}
+unset($result['status']);
+
+if (($result['success'] ?? false) !== true) {
+    $message = $result['message'] ?? $result['error'] ?? 'Veri kaydedilemedi';
+    echo json_encode([
+        'success' => false,
+        'conflict' => !empty($result['conflict']),
+        'error' => $message,
+        'message' => $message,
+    ], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
-echo json_encode(['success' => true, 'ruhsatPath' => $ruhsatPath], JSON_UNESCAPED_UNICODE);
+echo json_encode($result, JSON_UNESCAPED_UNICODE);

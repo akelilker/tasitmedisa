@@ -41,6 +41,24 @@ function loadData() {
     return (json_last_error() === JSON_ERROR_NONE) ? $data : null;
 }
 
+function medisaDefaultData() {
+    return [
+        'tasitlar' => [],
+        'kayitlar' => [],
+        'branches' => [],
+        'users' => [],
+        'ayarlar' => [
+            'sirketAdi' => 'Medisa',
+            'yetkiliKisi' => '',
+            'telefon' => '',
+            'eposta' => '',
+        ],
+        'sifreler' => [],
+        'arac_aylik_hareketler' => [],
+        'duzeltme_talepleri' => [],
+    ];
+}
+
 /**
  * Mevcut data.json dosyasını yedekler (data.json.backup + data/backups/snapshot-*.json).
  * Tüm sunucu yazımları saveData() üzerinden geçtiği için tek merkezden çalışır.
@@ -217,6 +235,168 @@ function saveData($data) {
         return false;
     }
     return true;
+}
+
+function medisaGetDataLockFilePath() {
+    return getDataDirPath() . '/.medisa_data.lock';
+}
+
+function medisaAcquireDataLock() {
+    $dir = getDataDirPath();
+    if (!is_dir($dir) && !@mkdir($dir, 0755, true)) {
+        return false;
+    }
+
+    $lockPath = medisaGetDataLockFilePath();
+    $handle = @fopen($lockPath, 'c+');
+    if (!$handle) {
+        return false;
+    }
+
+    if (!@flock($handle, LOCK_EX)) {
+        @fclose($handle);
+        return false;
+    }
+
+    return $handle;
+}
+
+function medisaReleaseDataLock($handle) {
+    if (!is_resource($handle)) {
+        return;
+    }
+    @flock($handle, LOCK_UN);
+    @fclose($handle);
+}
+
+function medisaBuildMutationResult($success, $extra = []) {
+    return array_merge(['success' => (bool)$success], is_array($extra) ? $extra : []);
+}
+
+function medisaBuildConflictResult($entity, $id, $message) {
+    return [
+        'success' => false,
+        'conflict' => true,
+        'entity' => (string)$entity,
+        'id' => $id !== null ? (string)$id : '',
+        'message' => $message ?: 'Veri başka biri tarafından güncellendi.',
+        'status' => 409,
+    ];
+}
+
+function medisaBuildErrorResult($message, $status = 400, $extra = []) {
+    return array_merge([
+        'success' => false,
+        'message' => $message,
+        'status' => (int)$status,
+    ], is_array($extra) ? $extra : []);
+}
+
+function medisaMutateData(callable $mutator) {
+    $lockHandle = medisaAcquireDataLock();
+    if (!$lockHandle) {
+        return medisaBuildErrorResult('Veri kilidi alınamadı.', 500);
+    }
+
+    try {
+        $data = loadData();
+        if (!is_array($data)) {
+            $data = medisaDefaultData();
+        }
+
+        $result = call_user_func_array($mutator, [&$data]);
+        if (!is_array($result)) {
+            $result = medisaBuildMutationResult((bool)$result);
+        }
+
+        if (!empty($result['conflict'])) {
+            if (empty($result['status'])) {
+                $result['status'] = 409;
+            }
+            return $result;
+        }
+
+        if (($result['success'] ?? true) !== true) {
+            return $result;
+        }
+
+        $shouldSave = !array_key_exists('save', $result) || $result['save'] !== false;
+        if ($shouldSave && !saveData($data)) {
+            return medisaBuildErrorResult('Kayıt sırasında hata oluştu!', 500);
+        }
+
+        return $result;
+    } finally {
+        medisaReleaseDataLock($lockHandle);
+    }
+}
+
+function medisaFindVehicleIndex($data, $vehicleId) {
+    foreach (($data['tasitlar'] ?? []) as $idx => $vehicle) {
+        if ((string)($vehicle['id'] ?? '') === (string)$vehicleId) {
+            return $idx;
+        }
+    }
+    return -1;
+}
+
+function medisaFindMonthlyRecordIndex($data, $recordId) {
+    foreach (($data['arac_aylik_hareketler'] ?? []) as $idx => $record) {
+        if ((string)($record['id'] ?? '') === (string)$recordId) {
+            return $idx;
+        }
+    }
+    return -1;
+}
+
+function medisaFindCorrectionRequestIndex($data, $requestId) {
+    foreach (($data['duzeltme_talepleri'] ?? []) as $idx => $request) {
+        if ((string)($request['id'] ?? '') === (string)$requestId) {
+            return $idx;
+        }
+    }
+    return -1;
+}
+
+function medisaGetNextNumericId($items) {
+    $nextId = 1;
+    foreach ((array)$items as $item) {
+        $candidate = isset($item['id']) ? (int)$item['id'] : 0;
+        if ($candidate >= $nextId) {
+            $nextId = $candidate + 1;
+        }
+    }
+    return $nextId;
+}
+
+function medisaGetVehicleVersion($vehicle) {
+    $version = isset($vehicle['version']) ? (int)$vehicle['version'] : 0;
+    return $version > 0 ? $version : 1;
+}
+
+function medisaEnsureVehicleVersion($vehicle, $expectedVersion, $message = '') {
+    if ($expectedVersion === null || $expectedVersion === '') {
+        return medisaBuildErrorResult('Araç sürümü eksik.', 400, [
+            'entity' => 'vehicle',
+            'id' => (string)($vehicle['id'] ?? ''),
+        ]);
+    }
+
+    $currentVersion = medisaGetVehicleVersion($vehicle);
+    if ((int)$expectedVersion !== $currentVersion) {
+        return medisaBuildConflictResult(
+            'vehicle',
+            $vehicle['id'] ?? '',
+            $message ?: 'Bu araç başka biri tarafından güncellendi. Güncel veriler yüklendi.'
+        );
+    }
+
+    return true;
+}
+
+function medisaBumpVehicleVersion(&$vehicle) {
+    $vehicle['version'] = medisaGetVehicleVersion($vehicle) + 1;
+    return (int)$vehicle['version'];
 }
 
 function medisaBase64UrlEncode($input) {
