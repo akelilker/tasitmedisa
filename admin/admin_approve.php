@@ -3,7 +3,7 @@ require_once __DIR__ . '/../core.php';
 header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type');
+header('Access-Control-Allow-Headers: Content-Type, Authorization');
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 $input = json_decode(file_get_contents('php://input'), true);
 if (!is_array($input)) {
     http_response_code(400);
-    echo json_encode(['success' => false, 'message' => 'Geçersiz istek verisi!'], JSON_UNESCAPED_UNICODE);
+    echo json_encode(['success' => false, 'message' => 'Gecersiz istek verisi!'], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
@@ -22,30 +22,43 @@ $action = (string)($input['action'] ?? '');
 $adminNote = mb_substr(strip_tags(trim((string)($input['admin_note'] ?? ''))), 0, 1000);
 
 if ($requestId <= 0) {
-    echo json_encode(['success' => false, 'message' => 'Geçersiz talep ID!'], JSON_UNESCAPED_UNICODE);
+    http_response_code(400);
+    echo json_encode(['success' => false, 'message' => 'Gecersiz talep ID!'], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
 if ($action !== 'approve' && $action !== 'reject') {
-    echo json_encode(['success' => false, 'message' => 'Geçersiz işlem! (approve veya reject)'], JSON_UNESCAPED_UNICODE);
+    http_response_code(400);
+    echo json_encode(['success' => false, 'message' => 'Gecersiz islem!'], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
 $result = medisaMutateData(function (&$data) use ($requestId, $action, $adminNote) {
+    $auth = medisaResolveAuthorizedContext($data, 'view_reports');
+    if (($auth['success'] ?? false) !== true) {
+        return medisaBuildErrorResult($auth['message'] ?? 'Bu islem icin yetkiniz yok.', (int)($auth['status'] ?? 403));
+    }
+    $context = $auth['context'];
+
+    $visibleData = medisaFilterReportDataForContext($data, $context);
+    if (medisaFindCorrectionRequestIndex($visibleData, $requestId) < 0) {
+        return medisaBuildErrorResult('Bu talebi yonetme yetkiniz yok.', 403);
+    }
+
     $talepIndex = medisaFindCorrectionRequestIndex($data, $requestId);
     if ($talepIndex < 0) {
-        return medisaBuildErrorResult('Talep bulunamadı!', 404);
+        return medisaBuildErrorResult('Talep bulunamadi!', 404);
     }
 
     $talep = $data['duzeltme_talepleri'][$talepIndex];
     if (($talep['durum'] ?? '') !== 'beklemede') {
-        return medisaBuildConflictResult('request', $requestId, 'Bu talep zaten işlendi. Güncel veriler yüklendi.');
+        return medisaBuildConflictResult('request', $requestId, 'Bu talep zaten islendi. Guncel veriler yuklendi.');
     }
 
     $data['duzeltme_talepleri'][$talepIndex]['durum'] = $action === 'approve' ? 'onaylandi' : 'reddedildi';
     $data['duzeltme_talepleri'][$talepIndex]['admin_yanit_tarihi'] = date('c');
     $data['duzeltme_talepleri'][$talepIndex]['admin_notu'] = $adminNote;
-    $data['duzeltme_talepleri'][$talepIndex]['admin_id'] = 1;
+    $data['duzeltme_talepleri'][$talepIndex]['admin_id'] = (string)($context['user_id'] ?? '');
 
     if ($action === 'approve') {
         $kayitIndex = medisaFindMonthlyRecordIndex($data, $talep['kayit_id'] ?? '');
@@ -95,7 +108,7 @@ $result = medisaMutateData(function (&$data) use ($requestId, $action, $adminNot
 
     return [
         'success' => true,
-        'message' => $action === 'approve' ? 'Talep onaylandı, veri güncellendi!' : 'Talep reddedildi!',
+        'message' => $action === 'approve' ? 'Talep onaylandi, veri guncellendi!' : 'Talep reddedildi!',
     ];
 });
 

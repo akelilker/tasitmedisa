@@ -512,6 +512,39 @@ function medisaResolveRawUserRoleValue($user) {
     return '';
 }
 
+function medisaExtractBearerTokenValue($authHeader) {
+    $value = trim((string)$authHeader);
+    if ($value === '') {
+        return '';
+    }
+
+    $token = preg_replace('/^Bearer\s+/i', '', $value);
+    $token = trim((string)$token);
+    if ($token === '' || strpos($token, '.') === false) {
+        return '';
+    }
+
+    return $token;
+}
+
+function medisaReadAccessToken($allowQueryToken = false) {
+    $token = medisaExtractBearerTokenValue(medisaReadAuthorizationHeader());
+    if ($token !== '') {
+        return $token;
+    }
+
+    if (!$allowQueryToken) {
+        return '';
+    }
+
+    $queryToken = trim((string)($_GET['token'] ?? $_POST['token'] ?? ''));
+    if ($queryToken === '' || strpos($queryToken, '.') === false) {
+        return '';
+    }
+
+    return $queryToken;
+}
+
 function medisaIsYoneticiOnlyUser($user) {
     return medisaResolveRawUserRoleValue($user) === 'yonetici';
 }
@@ -620,6 +653,24 @@ function medisaBuildPermissions($context) {
     ];
 }
 
+function medisaContextHasPermission($context, $permission) {
+    return is_array($context)
+        && is_array($context['permissions'] ?? null)
+        && !empty($context['permissions'][$permission]);
+}
+
+function medisaContextCanAccessMainApp($context) {
+    return medisaContextHasPermission($context, 'view_main_app');
+}
+
+function medisaContextCanViewReports($context) {
+    return medisaContextHasPermission($context, 'view_reports');
+}
+
+function medisaContextCanManageGlobalData($context) {
+    return medisaContextHasPermission($context, 'manage_data');
+}
+
 function medisaBuildSessionPayload($context) {
     $user = $context['user'] ?? null;
     return [
@@ -662,6 +713,41 @@ function medisaBuildAccessContext($data, $tokenData) {
     $context['permissions'] = medisaBuildPermissions($context);
 
     return $context;
+}
+
+function medisaResolveAuthorizedContext($data, $requiredPermission = '', $allowQueryToken = false) {
+    $tokenData = validateToken($allowQueryToken);
+    if (!$tokenData) {
+        return [
+            'success' => false,
+            'status' => 401,
+            'message' => 'Oturum gerekli.',
+        ];
+    }
+
+    $context = medisaBuildAccessContext($data, $tokenData);
+    if (!$context) {
+        return [
+            'success' => false,
+            'status' => 403,
+            'message' => 'Bu islem icin yetkiniz yok.',
+        ];
+    }
+
+    if ($requiredPermission !== '' && !medisaContextHasPermission($context, $requiredPermission)) {
+        return [
+            'success' => false,
+            'status' => 403,
+            'message' => 'Bu islem icin yetkiniz yok.',
+            'permission_denied' => true,
+        ];
+    }
+
+    return [
+        'success' => true,
+        'context' => $context,
+        'token' => $tokenData,
+    ];
 }
 
 function medisaArrayHasId($ids, $needle) {
@@ -779,13 +865,31 @@ function medisaCanViewUserRecord($user, $context) {
     return (string)($user['id'] ?? '') === (string)($context['user_id'] ?? '');
 }
 
-function medisaFilterDataForContext($data, $context) {
+function medisaCanViewReportUserRecord($user, $context) {
+    $role = $context['role'] ?? 'kullanici';
+    if ($role === 'genel_yonetici') {
+        return true;
+    }
+
+    if (medisaIsBranchManagerRole($role)) {
+        $targetRole = medisaResolveUserRole($user);
+        if ($targetRole === 'genel_yonetici') {
+            return false;
+        }
+
+        return medisaUserBranchesWithinScope($user, $context['branch_ids'] ?? []);
+    }
+
+    return (string)($user['id'] ?? '') === (string)($context['user_id'] ?? '');
+}
+
+function medisaFilterDataForContextWithUserPredicate($data, $context, $userPredicate) {
     $visibleVehicles = array_values(array_filter($data['tasitlar'] ?? [], function ($vehicle) use ($context) {
         return medisaCanViewVehicleRecord($vehicle, $context);
     }));
 
-    $visibleUsers = array_values(array_filter($data['users'] ?? [], function ($user) use ($context) {
-        return medisaCanViewUserRecord($user, $context);
+    $visibleUsers = array_values(array_filter($data['users'] ?? [], function ($user) use ($context, $userPredicate) {
+        return is_callable($userPredicate) ? (bool)call_user_func($userPredicate, $user, $context) : false;
     }));
 
     $visibleBranchIds = [];
@@ -857,6 +961,150 @@ function medisaFilterDataForContext($data, $context) {
     ];
 }
 
+function medisaFilterDataForContext($data, $context) {
+    return medisaFilterDataForContextWithUserPredicate($data, $context, 'medisaCanViewUserRecord');
+}
+
+function medisaFilterReportDataForContext($data, $context) {
+    return medisaFilterDataForContextWithUserPredicate($data, $context, 'medisaCanViewReportUserRecord');
+}
+
+function medisaSaveNormalizeCollection($value) {
+    return is_array($value) ? array_values($value) : [];
+}
+
+function medisaSaveMergeScopedCollection($currentItems, $incomingItems, $canManageCurrent, $canManageIncoming) {
+    $merged = [];
+    foreach ($currentItems as $item) {
+        if (!$canManageCurrent($item)) {
+            $merged[] = $item;
+        }
+    }
+    foreach ($incomingItems as $item) {
+        if ($canManageIncoming($item)) {
+            $merged[] = $item;
+        }
+    }
+    return array_values($merged);
+}
+
+function medisaSaveEnsureScopedRecordsAreAllowed($incomingItems, $context, $canManageRecord) {
+    foreach ((array)$incomingItems as $item) {
+        if (!$canManageRecord($item, $context)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+function medisaSaveEnsureScopedVehiclesAreAllowed($incomingVehicles, $context) {
+    return medisaSaveEnsureScopedRecordsAreAllowed($incomingVehicles, $context, 'medisaCanManageVehicleRecord');
+}
+
+function medisaSaveEnsureScopedUsersAreAllowed($incomingUsers, $context) {
+    return medisaSaveEnsureScopedRecordsAreAllowed($incomingUsers, $context, 'medisaCanManageUserRecord');
+}
+
+function medisaSaveIndexVehiclesById($vehicles) {
+    $indexed = [];
+    foreach ((array)$vehicles as $vehicle) {
+        $id = isset($vehicle['id']) ? (string)$vehicle['id'] : '';
+        if ($id !== '') {
+            $indexed[$id] = $vehicle;
+        }
+    }
+    return $indexed;
+}
+
+function medisaSaveValidateIncomingVehicleVersions($incomingVehicles, $currentVehiclesById, $context) {
+    foreach ((array)$incomingVehicles as $vehicle) {
+        $id = isset($vehicle['id']) ? (string)$vehicle['id'] : '';
+        if ($id === '' || !isset($vehicle['version'])) {
+            continue;
+        }
+
+        $currentVehicle = $currentVehiclesById[$id] ?? null;
+        if ($currentVehicle === null) {
+            continue;
+        }
+
+        if (($context['role'] ?? '') !== 'genel_yonetici' && !medisaCanManageVehicleRecord($currentVehicle, $context)) {
+            continue;
+        }
+
+        $currentVersion = isset($currentVehicle['version']) ? (int)$currentVehicle['version'] : 0;
+        $incomingVersion = (int)$vehicle['version'];
+        if ($incomingVersion < $currentVersion) {
+            return medisaBuildConflictResult(
+                'vehicle',
+                $id,
+                'Bu araç başka biri tarafından güncellendi. Güncel veriler yüklendi.'
+            );
+        }
+    }
+
+    return true;
+}
+
+function medisaSaveApplyVehicleVersions($incomingVehicles, $currentById) {
+    $updated = [];
+    foreach ((array)$incomingVehicles as $vehicle) {
+        $id = isset($vehicle['id']) ? (string)$vehicle['id'] : '';
+        $current = $id !== '' ? ($currentById[$id] ?? null) : null;
+        if ($current && isset($current['version'])) {
+            $vehicle['version'] = (int)$current['version'] + 1;
+        } else {
+            $vehicle['version'] = 1;
+        }
+        $updated[] = $vehicle;
+    }
+    return $updated;
+}
+
+function medisaSaveBuildVehicleVersions($vehicles) {
+    $vehicleVersions = [];
+    foreach ((array)$vehicles as $vehicle) {
+        $id = isset($vehicle['id']) ? (string)$vehicle['id'] : '';
+        if ($id === '') {
+            continue;
+        }
+        $vehicleVersions[] = [
+            'id' => $id,
+            'version' => isset($vehicle['version']) ? (int)$vehicle['version'] : 1,
+        ];
+    }
+    return $vehicleVersions;
+}
+
+function medisaResolveVehicleRuhsatFilePath($vehicle) {
+    if (!is_array($vehicle)) {
+        return null;
+    }
+
+    $candidates = [];
+    $rawPath = trim((string)($vehicle['ruhsatPath'] ?? ''));
+    if ($rawPath !== '') {
+        $normalized = ltrim(str_replace('\\', '/', $rawPath), '/');
+        if (strpos($normalized, 'data/') !== 0) {
+            $normalized = 'data/' . $normalized;
+        }
+        $candidates[] = __DIR__ . '/' . $normalized;
+    }
+
+    $safeId = preg_replace('/[^a-zA-Z0-9_-]/', '', (string)($vehicle['id'] ?? ''));
+    if ($safeId !== '') {
+        $candidates[] = __DIR__ . '/data/ruhsat/' . $safeId . '.pdf';
+    }
+
+    foreach (array_values(array_unique($candidates)) as $candidatePath) {
+        if (is_file($candidatePath)) {
+            return $candidatePath;
+        }
+    }
+
+    return null;
+}
+
 function medisaCreateSignedToken($payload, $ttlSeconds = 2592000) {
     $now = time();
     if (!isset($payload['iat'])) {
@@ -876,14 +1124,9 @@ function medisaCreateSignedToken($payload, $ttlSeconds = 2592000) {
 }
 
 /** Bearer token doğrula. Geçerliyse decode edilmiş token, değilse null döner. */
-function validateToken() {
-    $authHeader = medisaReadAuthorizationHeader();
-    if (empty($authHeader)) {
-        return null;
-    }
-
-    $token = preg_replace('/^Bearer\s+/i', '', $authHeader);
-    if (!$token || strpos($token, '.') === false) {
+function validateToken($allowQueryToken = false) {
+    $token = medisaReadAccessToken($allowQueryToken);
+    if ($token === '') {
         return null;
     }
 

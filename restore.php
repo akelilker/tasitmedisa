@@ -2,12 +2,34 @@
 require_once __DIR__ . '/core.php';
 header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: GET, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type, Authorization');
 header('Cache-Control: no-cache, no-store, must-revalidate');
 header('Pragma: no-cache');
 header('Expires: 0');
 
-$dataFile = getDataFilePath();
-$dataDir = dirname($dataFile);
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit;
+}
+
+$currentData = loadData();
+if (!is_array($currentData)) {
+    $currentData = medisaDefaultData();
+}
+
+$auth = medisaResolveAuthorizedContext($currentData, 'manage_data');
+if (($auth['success'] ?? false) !== true) {
+    http_response_code((int)($auth['status'] ?? 403));
+    echo json_encode([
+        'success' => false,
+        'auth_required' => (int)($auth['status'] ?? 403) === 401,
+        'message' => $auth['message'] ?? 'Bu islem icin yetkiniz yok.',
+        'error' => $auth['message'] ?? 'Bu islem icin yetkiniz yok.',
+    ], JSON_UNESCAPED_UNICODE);
+    exit;
+}
+
 $backupFile = getMainBackupFilePath();
 $sourceTag = 'data.json.backup';
 
@@ -43,4 +65,3 @@ $data['_backup_source'] = $sourceTag;
 $data['_backup_file_mtime'] = date('c', filemtime($backupFile));
 
 echo json_encode($data, JSON_UNESCAPED_UNICODE);
-?>

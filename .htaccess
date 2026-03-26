@@ -4,6 +4,7 @@
 # Favicon: bu dizinde favicon.ico isteği icon/favicon.ico'dan servis edilsin
 <IfModule mod_rewrite.c>
   RewriteEngine On
+  RewriteRule ^data/(ruhsat|ruhsat_preview)(/|$) - [F,L,NC]
   RewriteRule ^favicon\.ico$ icon/favicon.ico [L]
 </IfModule>
 

@@ -1420,7 +1420,11 @@
 
     async function fetchServerLastBackup() {
       try {
-        const res = await fetch("restore.php?source=backup", { cache: "no-store" });
+        const requestOptions = { cache: "no-store" };
+        if (typeof buildAuthHeaders === "function") {
+          requestOptions.headers = buildAuthHeaders();
+        }
+        const res = await fetch("restore.php?source=backup", requestOptions);
         if (!res.ok) return null;
         const payload = await res.json();
         return normalizeBackupPayload(payload, "server");
