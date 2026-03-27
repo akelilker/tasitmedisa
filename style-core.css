@@ -932,10 +932,18 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   font-weight: 600 !important;
   line-height: 1.2 !important;
   display: inline-flex !important;
+  gap: 4px !important;
   align-items: center !important;
   justify-content: flex-start !important;
   text-align: left !important;
   overflow: visible !important;
+}
+
+#notifications-dropdown .notifications-mark-all-read-btn::after {
+  content: "X";
+  display: inline-block;
+  font-size: 11.5px;
+  line-height: 1;
 }
 
 #notifications-dropdown .notifications-mark-all-read-btn:hover {
