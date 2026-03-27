@@ -970,7 +970,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
 /* Açıkken footer (z-index 10000) ve kullanıcı paneli (9999) üstünde — alt çerçeve “kesik” görünmesin */
 #notifications-dropdown.open {
   z-index: 10060 !important;
-  scroll-padding-bottom: 8px; /* overflow-y:auto içinde son satır border’ı için */
+  scroll-padding-bottom: 16px; /* Son kart border'ı kesilmesin */
+  padding-bottom: 16px !important;
+  box-sizing: border-box !important;
 }
 
 /*
@@ -1345,7 +1347,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .icons-row {
   }
   /* Masaüstü: Bildirim kutusu stabil genişlikte kalsın, resize'da bozulmasın */
   #notifications-dropdown {
-    max-height: min(356px, calc(100vh - 180px)) !important;
+    max-height: min(428px, calc(100vh - 180px)) !important;
     width: 360px !important;
     max-width: calc(100vw - 32px) !important;
     right: 0 !important;
@@ -2415,9 +2417,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #r
         font-size: 12px !important;
         line-height: 1.35 !important;
     }
-/* Mobil: 5 bildirim ekranda görünsün, %75 genişlikte ortalanmış; alt kesilmesin */
+/* Mobil: 6 bildirim ekranda görünsün, %75 genişlikte ortalanmış; alt kesilmesin */
     #notifications-dropdown {
-        max-height: var(--mobile-notifications-max-height, min(356px, calc(100dvh - 112px))) !important;
+        max-height: var(--mobile-notifications-max-height, min(428px, calc(100dvh - 112px))) !important;
         overflow-y: auto !important;
         overflow-x: hidden !important;
         -webkit-overflow-scrolling: touch;
@@ -2426,7 +2428,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #r
         left: 61% !important;
         right: auto !important;
         transform: translateX(-50%) !important;
-        padding-bottom: 10px !important; /* Son kutu + iOS home indicator alanı */
+        padding-bottom: 16px !important; /* Son kutu + iOS home indicator alanı */
         box-sizing: border-box !important;
     }
 
@@ -2511,7 +2513,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #r
 @supports (-webkit-touch-callout: none) {
 @media (max-width: 640px) and (display-mode: standalone) {
     #notifications-dropdown {
-        max-height: var(--mobile-notifications-max-height, min(356px, calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 112px))) !important;
+        max-height: var(--mobile-notifications-max-height, min(428px, calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 112px))) !important;
     }
     #notifications-dropdown.open {
         padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px)) !important;
