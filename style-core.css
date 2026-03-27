@@ -2417,9 +2417,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #r
         font-size: 12px !important;
         line-height: 1.35 !important;
     }
-/* Mobil: 6 bildirim ekranda görünsün, %75 genişlikte ortalanmış; alt kesilmesin */
+/* Mobil: tam kart snap tasitlar.js ile; değişken yoksa yedek: 7. kart yarım sızmasın diye 112→120px üst/alt krom payı */
     #notifications-dropdown {
-        max-height: var(--mobile-notifications-max-height, min(428px, calc(100dvh - 112px))) !important;
+        max-height: var(--mobile-notifications-max-height, min(428px, calc(100dvh - 120px))) !important;
         overflow-y: auto !important;
         overflow-x: hidden !important;
         -webkit-overflow-scrolling: touch;
@@ -2428,7 +2428,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #r
         left: 61% !important;
         right: auto !important;
         transform: translateX(-50%) !important;
-        padding-bottom: 16px !important; /* Son kutu + iOS home indicator alanı */
+        padding-bottom: 16px !important; /* JS safetyBottom (16) ile uyum; son kutu border */
         box-sizing: border-box !important;
     }
 
@@ -2513,7 +2513,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #r
 @supports (-webkit-touch-callout: none) {
 @media (max-width: 640px) and (display-mode: standalone) {
     #notifications-dropdown {
-        max-height: var(--mobile-notifications-max-height, min(428px, calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 112px))) !important;
+        max-height: var(--mobile-notifications-max-height, min(428px, calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 120px))) !important;
     }
     #notifications-dropdown.open {
         padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px)) !important;
