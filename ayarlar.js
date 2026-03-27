@@ -1732,10 +1732,11 @@
       modal.classList.remove('active');
       setTimeout(() => {
         modal.style.display = 'none';
-        // Body'den modal-open class'ını kaldır
-        document.body.classList.remove('modal-open');
-        if (!cacheClearConfirmed) {
-          // İptal edildi, bir şey yapma
+        /* Bilgi modalı vb. hâlâ açıksa modal-open kalmalı; script-core.updateFooterDim tüm overlay’lere göre senkronlar */
+        if (typeof window.updateFooterDim === 'function') {
+          window.updateFooterDim();
+        } else {
+          document.body.classList.remove('modal-open');
         }
       }, 300);
     };
@@ -1808,8 +1809,11 @@
       modal.classList.remove('active');
       setTimeout(() => {
         modal.style.display = 'none';
-        // Body'den modal-open class'ını kaldır
-        document.body.classList.remove('modal-open');
+        if (typeof window.updateFooterDim === 'function') {
+          window.updateFooterDim();
+        } else {
+          document.body.classList.remove('modal-open');
+        }
       }, 300);
     };
 
