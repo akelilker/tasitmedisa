@@ -909,9 +909,10 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   top: 0;
   z-index: 3;
   display: flex;
-  justify-content: flex-end;
-  padding: 0 0 6px;
-  margin: 0 0 4px;
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding: 0;
+  margin: 0;
   background: linear-gradient(180deg, rgba(8, 13, 22, 0.98) 0%, rgba(8, 13, 22, 0.92) 75%, rgba(8, 13, 22, 0) 100%);
 }
 
@@ -921,7 +922,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   min-height: 0 !important;
   height: auto !important;
   margin: 0 !important;
-  padding: 0 0 2px !important;
+  padding: 0 !important;
   background: transparent !important;
   border: none !important;
   border-radius: 0 !important;
@@ -932,7 +933,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   line-height: 1.2 !important;
   display: inline-flex !important;
   align-items: center !important;
-  justify-content: flex-end !important;
+  justify-content: flex-start !important;
+  text-align: left !important;
   overflow: visible !important;
 }
 
