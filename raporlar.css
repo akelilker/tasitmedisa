@@ -1678,8 +1678,12 @@ border-color: var(--theme-color);
 color: #666;
 }
 
-@media (min-width: 769px) and (display-mode: standalone), (min-width: 769px) and (display-mode: window-controls-overlay) {
-#reports-modal #stok-list-container .stok-controls-row-2 .stok-search-wrap .stok-search-container {
+@media (min-width: 641px) {
+#reports-modal .reports-list-header-actions .stok-detail-add-wrap {
+overflow: visible !important;
+}
+#reports-modal #stok-list-container .stok-controls-row-2 .stok-search-wrap .stok-search-container,
+#reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-2 .stok-search-wrap .stok-search-container {
 top: calc(100% + 6px) !important;
 bottom: auto !important;
 left: 0 !important;
@@ -1687,11 +1691,14 @@ right: auto !important;
 justify-content: flex-start !important;
 background: var(--bg-content, #0d131f) !important;
 border-radius: 6px !important;
+z-index: 120 !important;
 }
-#reports-modal #stok-list-container .stok-controls-row-2 .stok-search-container.open {
+#reports-modal #stok-list-container .stok-controls-row-2 .stok-search-container.open,
+#reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-2 .stok-search-container.open {
 width: 250px !important;
 }
-#reports-modal #stok-list-container .stok-controls-row-2 .stok-search-input {
+#reports-modal #stok-list-container .stok-controls-row-2 .stok-search-input,
+#reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-2 .stok-search-input {
 margin-top: 0 !important;
 background: var(--bg-content, #0d131f) !important;
 }

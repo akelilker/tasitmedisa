@@ -470,40 +470,41 @@
         // Mobil: liste tek hamlede ya yatay ya dikey kaysın (eksen kilidi)
         attachStokColumnTouchListeners(listContainer);
         setupStokListTouchAxisLock();
-        // Marka hücreleri: sütun daraldıkça font küçülsün (Taşıtlar gibi)
-        adjustStokMarkaFontSizes();
+        // Marka ve şube hücreleri: sütun daraldıkça font kontrollü küçülsün
+        adjustStokResponsiveCellFontSizes();
     }
 
-    // Marka hücreleri: 2 satır taşması durumunda font küçült (öncelik satır kırmada)
-    function adjustStokMarkaFontSizes() {
+    // Marka ve şube hücreleri: önce satır kır, yine taşarsa fontu kontrollü küçült.
+    function adjustStokResponsiveCellFontSizes() {
         const listContainer = document.getElementById('stok-list-container');
         if (!listContainer) return;
-        const brandCells = listContainer.querySelectorAll('.stok-list-cell[data-col="marka"]');
-        const minFontSize = 11;
-        const baseFontSize = 12;
+        const responsiveCells = listContainer.querySelectorAll('.stok-list-cell[data-col="marka"], .stok-list-cell[data-col="sube"]');
         requestAnimationFrame(function() {
-            brandCells.forEach(function(cell) {
+            responsiveCells.forEach(function(cell) {
                 if (cell.offsetHeight === 0) return;
-                cell.style.fontSize = baseFontSize + 'px';
+                cell.style.fontSize = '';
+                var baseFontSize = parseFloat(window.getComputedStyle(cell).fontSize) || 12;
+                var minFontSize = Math.max(baseFontSize - 1.5, cell.dataset.col === 'sube' ? 10.5 : 11);
                 var current = baseFontSize;
-                while (cell.scrollHeight > cell.offsetHeight && current > minFontSize) {
-                    current -= 1;
+                while ((cell.scrollHeight > cell.offsetHeight || cell.scrollWidth > cell.clientWidth) && current > minFontSize) {
+                    current = Math.max(minFontSize, current - 0.5);
                     cell.style.fontSize = current + 'px';
+                    if (current === minFontSize) break;
                 }
             });
         });
         // Resize'da tekrar hesapla (debounce)
-        if (!window._stokMarkaResize) {
-            window._stokMarkaResize = true;
+        if (!window._stokResponsiveCellResize) {
+            window._stokResponsiveCellResize = true;
             var onResize = window.debounce ? window.debounce(function () {
                 const container = document.getElementById('stok-list-container');
-                if (container && container.querySelector('.stok-list-cell[data-col="marka"]')) {
-                    adjustStokMarkaFontSizes();
+                if (container && container.querySelector('.stok-list-cell[data-col="marka"], .stok-list-cell[data-col="sube"]')) {
+                    adjustStokResponsiveCellFontSizes();
                 }
             }, 100) : function () {
                 const container = document.getElementById('stok-list-container');
-                if (container && container.querySelector('.stok-list-cell[data-col="marka"]')) {
-                    adjustStokMarkaFontSizes();
+                if (container && container.querySelector('.stok-list-cell[data-col="marka"], .stok-list-cell[data-col="sube"]')) {
+                    adjustStokResponsiveCellFontSizes();
                 }
             };
             window.addEventListener('resize', onResize);
@@ -518,14 +519,14 @@
         const isMobile = window.innerWidth <= 640;
 
         if (hasDetail) {
-            // 8+ sütun: sabit px. Masaüstünde No/Marka daraltılıp KM genişletilir.
+            // 8+ sütun: sabit px. Masaüstünde Şube 4px genişler; denge için Marka 4px daralır.
             const basePx = isMobile
                 ? {
                     'sira': 26, 'sube': 81, 'yil': 41, 'marka': 134,
                     'plaka': 68, 'sanziman': 64, 'km': 60
                 }
                 : {
-                    'sira': 24, 'sube': 84, 'yil': 41, 'marka': 120,
+                    'sira': 24, 'sube': 88, 'yil': 41, 'marka': 116,
                     'plaka': 68, 'sanziman': 67, 'km': 76
                 };
             const detailPx = {
@@ -548,8 +549,8 @@
                 'km': 'minmax(48px, 1fr)'
             }
             : {
-                'sira': 'minmax(22px, 0.2fr)', 'sube': 'minmax(60px, 0.98fr)',
-                'yil': 'minmax(40px, 0.55fr)', 'marka': 'minmax(72px, 1.85fr)',
+                'sira': 'minmax(22px, 0.2fr)', 'sube': 'minmax(64px, 1.02fr)',
+                'yil': 'minmax(40px, 0.55fr)', 'marka': 'minmax(72px, 1.81fr)',
                 'plaka': 'minmax(60px, 1fr)', 'sanziman': 'minmax(60px, 0.9fr)',
                 'km': 'minmax(64px, 1.22fr)'
             };
