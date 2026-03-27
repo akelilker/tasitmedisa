@@ -4900,6 +4900,12 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .login-page .hero.hero-two-rows .hero-title-block {
     transform: none;
   }
+  .login-page .hero .hero-logo {
+    transform: translateY(-4px) !important;
+  }
+  .login-page .hero h1 {
+    transform: translateY(1px) !important;
+  }
   /* Geçmiş Kayıtlarım: kalem ikonu */
   .dashboard-page .history-edit-icon svg {
     width: 20px;

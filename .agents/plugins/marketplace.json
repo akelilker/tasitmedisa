@@ -1,0 +1,20 @@
+{
+  "name": "tasitmedisa-workspace",
+  "interface": {
+    "displayName": "TasitMedisa Workspace"
+  },
+  "plugins": [
+    {
+      "name": "tasitmedisa-theme",
+      "source": {
+        "source": "local",
+        "path": "./plugins/tasitmedisa-theme"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Design"
+    }
+  ]
+}
