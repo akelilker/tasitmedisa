@@ -5361,7 +5361,18 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 }
 @media (min-width: 769px) {
     .dashboard-page .driver-left-panel {
-        border-right: 1.2px solid var(--border-red-tech) !important;
+        position: relative;
+        border-right: none !important;
+    }
+    .dashboard-page .driver-left-panel::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 12px;
+        width: 1.2px;
+        background: var(--border-red-tech);
+        pointer-events: none;
     }
 }
 
@@ -5369,6 +5380,12 @@ body.dashboard-page:has(#history-modal.driver-modal.show) .driver-left-panel,
 body.dashboard-page:has(#edit-request-modal.driver-modal.show) .driver-left-panel,
 body.dashboard-page.driver-history-or-edit-modal-open .driver-left-panel {
     border-right: none !important;
+}
+
+body.dashboard-page:has(#history-modal.driver-modal.show) .driver-left-panel::after,
+body.dashboard-page:has(#edit-request-modal.driver-modal.show) .driver-left-panel::after,
+body.dashboard-page.driver-history-or-edit-modal-open .driver-left-panel::after {
+    display: none !important;
 }
 
 body.dashboard-page:has(#history-modal.driver-modal.show) .driver-left-panel-content,
