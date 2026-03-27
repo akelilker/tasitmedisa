@@ -506,11 +506,9 @@
   function syncMobileNotificationsDropdownHeight() {
     var dropdown = DOM.notificationsDropdown || document.getElementById('notifications-dropdown');
     if (!dropdown) return;
-    if (window.innerWidth > 640) {
-      dropdown.style.removeProperty('--mobile-notifications-max-height');
-      return;
-    }
     if (!dropdown.classList.contains('open')) {
+      dropdown.style.removeProperty('max-height');
+      dropdown.style.removeProperty('scroll-padding-bottom');
       dropdown.style.removeProperty('--mobile-notifications-max-height');
       return;
     }
@@ -524,31 +522,44 @@
     var dropdownStyles = window.getComputedStyle(dropdown);
     var paddingTop = parseFloat(dropdownStyles.paddingTop) || 0;
     var paddingBottom = parseFloat(dropdownStyles.paddingBottom) || 0;
-    var visibleLimit = 5;
+    var safetyBottom = window.innerWidth <= 640 ? 14 : 18;
+    var visibleLimit = 6;
+    var maxContentHeight = Math.max(0, available - paddingTop - paddingBottom - safetyBottom);
     var measured = 0;
     var counted = 0;
+    var toolbarHeight = 0;
+    var children = dropdown.children;
 
-    Array.prototype.forEach.call(dropdown.children, function(child) {
-      if (!child || child.nodeType !== 1 || counted >= visibleLimit) return;
+    for (var i = 0; i < children.length; i += 1) {
+      var child = children[i];
+      if (!child || child.nodeType !== 1) continue;
       var rect = child.getBoundingClientRect();
-      if (!rect || rect.height <= 0) return;
+      if (!rect || rect.height <= 0) continue;
       var childStyles = window.getComputedStyle(child);
       var outerHeight = Math.ceil(
         rect.height +
         (parseFloat(childStyles.marginTop) || 0) +
         (parseFloat(childStyles.marginBottom) || 0)
       );
-      if (!outerHeight) return;
+      if (!outerHeight) continue;
+      if (child.classList.contains('notifications-toolbar')) {
+        toolbarHeight += outerHeight;
+        continue;
+      }
+      if (counted >= visibleLimit) break;
+      if ((toolbarHeight + measured + outerHeight) > maxContentHeight && counted > 0) break;
       measured += outerHeight;
       counted += 1;
-    });
+    }
 
     var contentCap = Math.ceil(dropdown.scrollHeight);
-    var preferred = measured
-      ? Math.ceil(measured + paddingTop + paddingBottom)
+    var preferred = (toolbarHeight + measured)
+      ? Math.ceil(toolbarHeight + measured + paddingTop + paddingBottom + safetyBottom)
       : contentCap;
     var target = Math.min(available, preferred, contentCap);
 
+    dropdown.style.setProperty('max-height', Math.max(0, target) + 'px', 'important');
+    dropdown.style.setProperty('scroll-padding-bottom', safetyBottom + 'px');
     dropdown.style.setProperty('--mobile-notifications-max-height', Math.max(0, target) + 'px');
   }
 
