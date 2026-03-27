@@ -2257,36 +2257,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #r
         overscroll-behavior-x: none !important;
     }
 
-    @media (display-mode: standalone) {
-        .modal-overlay {
-            padding-top: env(safe-area-inset-top) !important;
-            bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
-        }
-        #vehicle-modal.modal-overlay,
-        #reports-modal.modal-overlay {
-            bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
-        }
-        .tasitlar-modal-overlay {
-            padding-top: env(safe-area-inset-top) !important;
-            padding-bottom: 0 !important;
-            bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
-        }
-        .tasitlar-modal-overlay::before {
-            top: 0 !important;
-            height: 100% !important;
-        }
-        .modal-overlay .modal-container {
-            margin-top: 0 !important;
-            margin-bottom: 0 !important;
-            height: 100% !important;
-            max-height: 100% !important;
-        }
-        /* Modal içeriği footer arkasında kalmasın */
-        .modal-overlay .modal-body {
-            padding-bottom: calc(var(--app-footer-height) + env(safe-area-inset-bottom, 0)) !important;
-        }
-    }
-
     /* Mobil+PWA: modal açıkken footer–modal arası boşluktaki kırmızı çizgi kalıntısı tamamen kapansın */
     /* Header ikonları (sağ üst): SVG 24px, padding artırıldı */
     .icons-row .icon-btn svg {
@@ -2462,6 +2432,42 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #r
     }
 }
 
+/* PWA (≤640px): iç içe @media yerine tek blok — bazı tarayıcılarda üstteki mobil blok sonrası CSS’in tamamının yok sayılmasına yol açabiliyordu */
+@media (max-width: 640px) and (display-mode: standalone) {
+    .modal-overlay {
+        padding-top: env(safe-area-inset-top) !important;
+        bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
+    }
+    #vehicle-modal.modal-overlay,
+    #reports-modal.modal-overlay {
+        bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
+    }
+    .tasitlar-modal-overlay {
+        padding-top: env(safe-area-inset-top) !important;
+        padding-bottom: 0 !important;
+        bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
+    }
+    .tasitlar-modal-overlay::before {
+        top: 0 !important;
+        height: 100% !important;
+    }
+    .modal-overlay .modal-container {
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+        height: 100% !important;
+        max-height: 100% !important;
+    }
+    .modal-overlay .modal-body {
+        padding-bottom: calc(var(--app-footer-height) + env(safe-area-inset-bottom, 0)) !important;
+    }
+    #notifications-dropdown {
+        max-height: var(--mobile-notifications-max-height, min(428px, calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 120px))) !important;
+    }
+    #notifications-dropdown.open {
+        padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px)) !important;
+    }
+}
+
 /* --- iOS PWA: Kırmızı çerçeve ekran üstü + kıvrımlar paralel --- */
 @media (max-width: 768px) and (display-mode: standalone) {
     html {
@@ -2508,18 +2514,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #r
     .content-wrap::before {
         display: none !important;
     }
-}
-
-/* iOS PWA: güvenli alan + max-height; z-index/overflow üstteki global blokta */
-@supports (-webkit-touch-callout: none) {
-@media (max-width: 640px) and (display-mode: standalone) {
-    #notifications-dropdown {
-        max-height: var(--mobile-notifications-max-height, min(428px, calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 120px))) !important;
-    }
-    #notifications-dropdown.open {
-        padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px)) !important;
-    }
-}
 }
 
 /* Masaüstü PWA: Kasko Excel kartı ölçüleri (z-index/overflow bildirimler için global) */
