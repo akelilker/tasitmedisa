@@ -512,6 +512,14 @@
       dropdown.style.removeProperty('--mobile-notifications-max-height');
       return;
     }
+    /* Masaüstü: yüksekliği stylesheet belirlesin; inline max-height kaydırma/yarım kart sapmasına yol açmasın */
+    if (window.innerWidth > 640) {
+      dropdown.style.removeProperty('max-height');
+      dropdown.style.removeProperty('scroll-padding-bottom');
+      dropdown.style.removeProperty('--mobile-notifications-max-height');
+      return;
+    }
+
     var dropdownRect = dropdown.getBoundingClientRect();
     if (!dropdownRect || dropdownRect.top <= 0) return;
     var footer = document.getElementById('app-footer');
@@ -522,14 +530,14 @@
     var dropdownStyles = window.getComputedStyle(dropdown);
     var paddingTop = parseFloat(dropdownStyles.paddingTop) || 0;
     var paddingBottom = parseFloat(dropdownStyles.paddingBottom) || 0;
-    var safetyBottom = window.innerWidth <= 640 ? 14 : 18;
+    /* style-core.css ile uyum: açık panelde padding-bottom 16px + son kart border payı */
+    var safetyBottom = 16;
     var visibleLimit = 6;
-    var maxContentHeight = Math.max(0, available - paddingTop - paddingBottom - safetyBottom);
-    var measured = 0;
-    var counted = 0;
-    var toolbarHeight = 0;
-    var children = dropdown.children;
+    var innerBudget = Math.max(0, available - paddingTop - paddingBottom - safetyBottom);
 
+    var toolbarHeight = 0;
+    var cardHeights = [];
+    var children = dropdown.children;
     for (var i = 0; i < children.length; i += 1) {
       var child = children[i];
       if (!child || child.nodeType !== 1) continue;
@@ -546,17 +554,31 @@
         toolbarHeight += outerHeight;
         continue;
       }
-      if (counted >= visibleLimit) break;
-      if ((toolbarHeight + measured + outerHeight) > maxContentHeight && counted > 0) break;
-      measured += outerHeight;
-      counted += 1;
+      cardHeights.push(outerHeight);
     }
 
-    var contentCap = Math.ceil(dropdown.scrollHeight);
-    var preferred = (toolbarHeight + measured)
-      ? Math.ceil(toolbarHeight + measured + paddingTop + paddingBottom + safetyBottom)
-      : contentCap;
-    var target = Math.min(available, preferred, contentCap);
+    var contentAfterToolbar = Math.max(0, innerBudget - toolbarHeight);
+    var sumCards = 0;
+    var fullCardCount = 0;
+    for (var j = 0; j < cardHeights.length && fullCardCount < visibleLimit; j += 1) {
+      var h = cardHeights[j];
+      if (sumCards + h <= contentAfterToolbar) {
+        sumCards += h;
+        fullCardCount += 1;
+      } else {
+        break;
+      }
+    }
+
+    /* safetyBottom yalnızca innerBudget'ta ayrılır; target'a eklenmez — eklenince viewport kartların altında uzar, 7. kart yarım görünür */
+    var preferredContent = toolbarHeight + sumCards;
+    var target = Math.ceil(paddingTop + paddingBottom + preferredContent);
+    /* Hiçbir kart dikey bütçeye tam sığmıyorsa: kaydırma alanı için footer üstünü kullan (yarım satır yerine tam viewport) */
+    if (cardHeights.length > 0 && fullCardCount === 0 && target < available) {
+      target = available;
+    } else {
+      target = Math.min(available, target);
+    }
 
     dropdown.style.setProperty('max-height', Math.max(0, target) + 'px', 'important');
     dropdown.style.setProperty('scroll-padding-bottom', safetyBottom + 'px');
@@ -5668,6 +5690,12 @@ function renderVehicleDetailLeft(vehicle) {
     if (notifications.length === 0 && recentSlice.length === 0 && !mtvHtml && !kaskoExcelHtml) {
       if (notifDropdown) {
         notifDropdown.innerHTML = '<button disabled>Bildirim Yok</button>';
+        if (notifDropdown.classList.contains('open') && typeof window.syncMobileNotificationsDropdownHeight === 'function') {
+          requestAnimationFrame(function() {
+            window.syncMobileNotificationsDropdownHeight();
+            requestAnimationFrame(window.syncMobileNotificationsDropdownHeight);
+          });
+        }
       }
       if (notifIcon) {
         notifIcon.classList.remove('notification-red', 'notification-orange', 'notification-pulse');
@@ -5753,6 +5781,12 @@ function renderVehicleDetailLeft(vehicle) {
           html = `<div class="notifications-toolbar"><button type="button" class="notifications-mark-all-read-btn" data-notification-action="mark-all-read">Tümünü Okundu Olarak İşaretle</button></div>` + html;
         }
         notifDropdown.innerHTML = html;
+        if (notifDropdown.classList.contains('open') && typeof window.syncMobileNotificationsDropdownHeight === 'function') {
+          requestAnimationFrame(function() {
+            window.syncMobileNotificationsDropdownHeight();
+            requestAnimationFrame(window.syncMobileNotificationsDropdownHeight);
+          });
+        }
       }
 
       if (notifIcon) {
