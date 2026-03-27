@@ -276,6 +276,14 @@ body::-webkit-scrollbar,
   align-items: flex-start !important;
 }
 
+#branch-form-modal .form-section.u-hidden,
+#user-form-modal .form-section.u-hidden,
+.settings-modal .form-section.u-hidden,
+.ayarlar-modal-overlay .modal-body .form-section.u-hidden,
+.modal-body:has(#branch-name) .form-section.u-hidden {
+  display: none !important;
+}
+
 #branch-form-modal .form-label,
 #user-form-modal .form-label,
 .settings-modal .form-label,
