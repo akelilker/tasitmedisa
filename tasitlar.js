@@ -5750,7 +5750,7 @@ function renderVehicleDetailLeft(vehicle) {
 
       if (notifDropdown) {
         if (hasUnreadActivity) {
-          html = `<div class="notifications-toolbar"><button type="button" class="notifications-mark-all-read-btn" data-notification-action="mark-all-read">Tümünü Okundu Say</button></div>` + html;
+          html = `<div class="notifications-toolbar"><button type="button" class="notifications-mark-all-read-btn" data-notification-action="mark-all-read">Tümünü Okundu Olarak İşaretle</button></div>` + html;
         }
         notifDropdown.innerHTML = html;
       }
