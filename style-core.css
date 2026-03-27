@@ -927,7 +927,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   border: none !important;
   border-radius: 0 !important;
   box-shadow: none !important;
-  color: var(--theme-color) !important;
+  color: var(--txt-white) !important;
   font-size: 11.5px !important;
   font-weight: 600 !important;
   line-height: 1.2 !important;
@@ -946,11 +946,12 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   line-height: 1;
 }
 
-#notifications-dropdown .notifications-mark-all-read-btn:hover {
+#notifications-dropdown .notifications-mark-all-read-btn:hover,
+#notifications-dropdown .notifications-mark-all-read-btn:active {
   background: transparent !important;
   border: none !important;
   box-shadow: none !important;
-  color: var(--txt-white) !important;
+  color: var(--theme-color) !important;
   font-size: 11.5px !important;
   text-decoration: underline;
 }
