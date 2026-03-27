@@ -1979,6 +1979,13 @@
     padding-right: 2px !important;
 }
 
+.list-header-row .list-cell.list-transmission {
+    justify-content: center !important;
+    text-align: center !important;
+    padding-left: 2px !important;
+    padding-right: 2px !important;
+}
+
 .list-header-row .list-cell.list-user,
 .view-list .list-cell.list-user {
     justify-content: center !important;
@@ -2011,7 +2018,8 @@
   .list-header-row .list-cell span {
     font-size: clamp(10.67px, 1.55vw, 11.33px) !important;
   }
-  .list-header-row .list-cell.list-type {
+  .list-header-row .list-cell.list-type,
+  .list-header-row .list-cell.list-transmission {
     padding-left: 0 !important;
     padding-right: 0 !important;
     overflow: hidden !important;
@@ -2027,6 +2035,7 @@
   }
 
   .list-header-row .list-cell.list-type span,
+  .list-header-row .list-cell.list-transmission span,
   .list-header-row .list-cell.list-user span {
     overflow: hidden !important;
     text-overflow: clip !important;
@@ -2034,17 +2043,20 @@
     font-size: clamp(9.67px, 1.45vw, 10.33px) !important;
   }
   /* Taşıt Tipi başlışı: masaüstünde metin kesin sışsın */
-  .list-header-row .list-cell.list-type span {
+  .list-header-row .list-cell.list-type span,
+  .list-header-row .list-cell.list-transmission span {
     font-size: clamp(8.4px, 1.25vw, 9.8px) !important;
     letter-spacing: 0 !important;
   }
-  .list-header-row .list-cell.list-type .sortable-header {
+  .list-header-row .list-cell.list-type .sortable-header,
+  .list-header-row .list-cell.list-transmission .sortable-header {
     width: 100%;
     justify-content: center !important;
     padding-right: 10px !important; /* saşdaki sort ikonuna pay */
     box-sizing: border-box;
   }
-  .list-header-row .list-cell.list-type .sort-icon {
+  .list-header-row .list-cell.list-type .sort-icon,
+  .list-header-row .list-cell.list-transmission .sort-icon {
     right: 1px !important;
   }
 }
@@ -2283,6 +2295,16 @@
     padding-right: 2px !important;
     min-width: 0;
     text-transform: capitalize;
+}
+
+.view-list .list-cell.list-transmission {
+    color: var(--txt-gray-dark);
+    font-size: inherit !important;
+    justify-content: center !important;
+    text-align: center !important;
+    padding-left: 2px !important;
+    padding-right: 2px !important;
+    min-width: 0;
 }
 
 .view-list .list-item:last-child {
@@ -4079,10 +4101,12 @@
   }
 
   /* Mobil/tablet (≤768px): Taşıt Tipi sütununu gizle (JS de render etmiyor; bu yedek) */
-  .view-list .list-cell.list-type {
+  .view-list .list-cell.list-type,
+  .view-list .list-cell.list-transmission {
     display: none !important;
   }
-  .list-header-row .list-cell.list-type {
+  .list-header-row .list-cell.list-type,
+  .list-header-row .list-cell.list-transmission {
     display: none !important;
   }
   

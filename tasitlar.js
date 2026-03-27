@@ -241,22 +241,42 @@
   }
   
   // Sütun Sıralaması State
-  let vehicleColumnOrder = ['year', 'plate', 'brand', 'km', 'type', 'user', 'branch']; // Varsayılan sıralama
+  let vehicleColumnOrder = ['year', 'plate', 'brand', 'km', 'type', 'transmission', 'user', 'branch']; // Varsayılan sıralama
   
-  var defaultVehicleColumnOrder = ['year', 'plate', 'brand', 'km', 'type', 'user', 'branch'];
+  var defaultVehicleColumnOrder = ['year', 'plate', 'brand', 'km', 'type', 'transmission', 'user', 'branch'];
+  function normalizeVehicleColumnOrder(order) {
+    var validOrder = Array.isArray(order)
+      ? order.filter(function(col) { return defaultVehicleColumnOrder.indexOf(col) !== -1; })
+      : [];
+    defaultVehicleColumnOrder.forEach(function(col) {
+      if (validOrder.indexOf(col) !== -1) return;
+      var inserted = false;
+      for (var i = defaultVehicleColumnOrder.indexOf(col) + 1; i < defaultVehicleColumnOrder.length; i++) {
+        var nextCol = defaultVehicleColumnOrder[i];
+        var nextIndex = validOrder.indexOf(nextCol);
+        if (nextIndex !== -1) {
+          validOrder.splice(nextIndex, 0, col);
+          inserted = true;
+          break;
+        }
+      }
+      if (!inserted) validOrder.push(col);
+    });
+    return validOrder;
+  }
   function loadVehicleColumnOrder() {
     if (typeof window.loadColumnState === 'function') {
       var saved = window.loadColumnState('vehicle_column_order', defaultVehicleColumnOrder);
       if (Array.isArray(saved)) {
-        var allColumns = defaultVehicleColumnOrder.slice();
-        var validOrder = saved.filter(function(col) { return allColumns.indexOf(col) !== -1; });
-        allColumns.forEach(function(col) { if (validOrder.indexOf(col) === -1) validOrder.push(col); });
-        vehicleColumnOrder = validOrder;
+        vehicleColumnOrder = normalizeVehicleColumnOrder(saved);
       } else { vehicleColumnOrder = defaultVehicleColumnOrder.slice(); }
     } else {
       try {
         var raw = localStorage.getItem('vehicle_column_order');
-        if (raw) { var p = JSON.parse(raw); if (Array.isArray(p)) vehicleColumnOrder = p; }
+        if (raw) {
+          var p = JSON.parse(raw);
+          if (Array.isArray(p)) vehicleColumnOrder = normalizeVehicleColumnOrder(p);
+        }
       } catch (e) { vehicleColumnOrder = defaultVehicleColumnOrder.slice(); }
     }
   }
@@ -272,7 +292,7 @@
 
   // Grid genişlikleri sütun kimliğine göre (sürükle-bırak sonrası genişlik doğru sütunla kalsın)
   function getVehicleColumnWidths(columnOrder) {
-    const defaultCols = '32px 70px 3.15fr 60px 65px 1.85fr 2fr'; /* Marka -3px, Kullanıcı +3px */
+    const defaultCols = '32px 70px 2.95fr 58px 62px 64px 1.65fr 1.9fr'; /* Şanzıman eklendi: marka/user/şube dengelendi */
     try {
       if (!columnOrder || !Array.isArray(columnOrder) || columnOrder.length === 0) return defaultCols;
       const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
@@ -282,17 +302,19 @@
             'plate': '62px',
             'brand': '2.6fr',   /* mobil+iOS PWA: şubeden 2px marka'ya */
             'km': '52px',
+            'transmission': '60px',
             'user': '1.95fr',   /* mobil+iOS PWA: şubeden 3px kullanıcıya */
             'branch': '2.25fr'   /* mobil+iOS PWA: şubeden bir kademe alan alındı */
           }
         : {
             'year': '32px',
             'plate': '70px',
-            'brand': '3.15fr',   /* Marka 3px dar */
-            'km': '60px',
-            'type': '65px',
-            'user': '1.85fr',   /* Kullanıcı 3px geniş */
-            'branch': '2fr'
+            'brand': '2.95fr',   /* Şanzıman için marka bir kademe daraltıldı */
+            'km': '58px',
+            'type': '62px',
+            'transmission': '64px',
+            'user': '1.65fr',
+            'branch': '1.9fr'
           };
       return columnOrder.map(key => widthMap[key] || '1fr').join(' ');
     } catch (e) {
@@ -328,6 +350,12 @@
   function toTitleCase(str) { return (typeof window.toTitleCase === 'function' ? window.toTitleCase(str) : str); }
   function formatPlaka(str) { return (typeof window.formatPlaka === 'function' ? window.formatPlaka(str) : (str == null ? '-' : String(str))); }
   function formatAdSoyad(str) { return (typeof window.formatAdSoyad === 'function' ? window.formatAdSoyad(str) : str); }
+  function getTransmissionLabel(transmission) {
+    var value = String(transmission || '').trim().toLowerCase();
+    if (value === 'otomatik') return 'Otomatik';
+    if (value === 'manuel') return 'Manuel';
+    return '-';
+  }
 
   // Global Detail Vehicle ID (HTML onclick erişimi için)
   window.currentDetailVehicleId = null;
@@ -1103,11 +1131,11 @@
       vehicles = applyFilter(vehicles);
 
       // Şube seçiliyken liste görünümünde şube sütunu gösterilmez
-      const safeColumnOrder = Array.isArray(vehicleColumnOrder) ? vehicleColumnOrder : ['year', 'plate', 'brand', 'km', 'type', 'user', 'branch'];
+      const safeColumnOrder = Array.isArray(vehicleColumnOrder) ? vehicleColumnOrder : ['year', 'plate', 'brand', 'km', 'type', 'transmission', 'user', 'branch'];
       const displayColumnOrder = (activeBranchId === 'all' || activeBranchId === '__archive__') ? safeColumnOrder : safeColumnOrder.filter(function(k) { return k !== 'branch'; });
       const isMobileList = window.innerWidth <= 768;
-      // Mobil/tablet (≤768px): Taşıt Tipi sütununu göstermiyoruz (yer kaplamasın)
-      const listDisplayOrder = isMobileList ? displayColumnOrder.filter(function(k) { return k !== 'type'; }) : displayColumnOrder;
+      // Mobil/tablet (≤768px): Taşıt Tipi + Şanzıman sütunlarını göstermiyoruz (yer kaplamasın)
+      const listDisplayOrder = isMobileList ? displayColumnOrder.filter(function(k) { return k !== 'type' && k !== 'transmission'; }) : displayColumnOrder;
 
       const renderSignature = buildVehicleRenderSignature(vehicles, query, listDisplayOrder);
       if (
@@ -1132,6 +1160,7 @@
               'brand': { label: 'Marka / Model', class: 'list-brand' },
               'km': { label: 'Km', class: 'list-km' },
               'type': { label: 'Ta\u015F\u0131t Tipi', class: 'list-type' },
+              'transmission': { label: '\u015Eanz.', class: 'list-transmission' },
               'user': { label: 'Kull.', class: 'list-user' },
               'branch': { label: '\u015Eube', class: 'list-branch' }
             };
@@ -1181,6 +1210,7 @@
           'brand': { label: 'Marka / Model', class: 'list-brand' },
           'km': { label: 'Km', class: 'list-km' },
           'type': { label: 'Ta\u015F\u0131t Tipi', class: 'list-type' },
+          'transmission': { label: '\u015Eanz.', class: 'list-transmission' },
           'user': { label: 'Kull.', class: 'list-user' },
           'branch': { label: '\u015Eube', class: 'list-branch' }
         };
@@ -1257,6 +1287,7 @@
             const kmValue = v.guncelKm || v.km;
             const kmLabel = kmValue ? formatNumber(kmValue) : '-';
             const vehicleTypeLabel = toTitleCase(v.vehicleType || '-');
+            const transmissionLabel = getTransmissionLabel(v.transmission);
             const branchLabel = toTitleCase(branchMap[String(v.branchId)]?.name || 'Tahsis Edilmemiş');
             
             let cellHtml = '';
@@ -1287,6 +1318,10 @@
                 case 'type':
                   cellContent = escapeHtml(vehicleTypeLabel);
                   cellClass = 'list-type';
+                  break;
+                case 'transmission':
+                  cellContent = escapeHtml(transmissionLabel);
+                  cellClass = 'list-transmission';
                   break;
                 case 'user':
                   const assignedUser = v.assignedUserId ? userMap[String(v.assignedUserId)] : null;
@@ -1973,6 +2008,11 @@
                   aVal = (a.vehicleType || '').toLowerCase();
                   bVal = (b.vehicleType || '').toLowerCase();
                   return aVal.localeCompare(bVal) * dir;
+
+              case 'transmission':
+                  aVal = getTransmissionLabel(a.transmission).toLowerCase();
+                  bVal = getTransmissionLabel(b.transmission).toLowerCase();
+                  return aVal.localeCompare(bVal) * dir;
                   
               case 'branch':
                   aVal = getBranchName(a.branchId);
@@ -2114,8 +2154,7 @@ function renderVehicleDetailLeft(vehicle) {
   }
 
   // Şanzıman
-  const transmission = vehicle.transmission || '';
-  const transmissionLabel = transmission === 'otomatik' ? 'Otomatik' : transmission === 'manuel' ? 'Manuel' : '';
+  const transmissionLabel = getTransmissionLabel(vehicle.transmission);
   html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">\u015Eanz\u0131man</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(transmissionLabel)}</span></div>`;
 
   // Alım Bedeli

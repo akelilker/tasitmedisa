@@ -904,6 +904,13 @@ select.settings-form-select option,
     background: var(--bg-content, #0d131f) !important;
     color: var(--txt-gray-darker, #adb5bd) !important;
 }
+#user-form-modal .user-form-locked-input,
+#user-form-modal #user-role:disabled {
+    color: var(--txt-white, #ffffff) !important;
+    background: rgba(255, 255, 255, 0.06) !important;
+    cursor: default;
+    opacity: 1 !important;
+}
 #branch-form-modal select.form-input option,
 #user-form-modal select.form-input option,
 #branch-form-modal .modal-body select.form-input option,
