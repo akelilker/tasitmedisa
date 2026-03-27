@@ -524,7 +524,23 @@
     if (!dropdownRect || dropdownRect.top <= 0) return;
     var footer = document.getElementById('app-footer');
     var footerTop = footer ? (footer.getBoundingClientRect().top - 3) : (window.innerHeight - 45);
-    var available = Math.floor(footerTop - dropdownRect.top);
+    var bottomLimit = footerTop;
+    /* Mobilde sabit Kullanıcı Paneli linki bildirimin üstüne biniyorsa, paneli onun üstünde kes */
+    var userPanelLink = document.getElementById('main-user-panel-link');
+    if (userPanelLink) {
+      var panelStyles = window.getComputedStyle(userPanelLink);
+      var panelVisible = panelStyles &&
+        panelStyles.display !== 'none' &&
+        panelStyles.visibility !== 'hidden' &&
+        panelStyles.opacity !== '0';
+      if (panelVisible) {
+        var panelRect = userPanelLink.getBoundingClientRect();
+        if (panelRect && panelRect.height > 0 && panelRect.top > dropdownRect.top) {
+          bottomLimit = Math.min(bottomLimit, panelRect.top - 6);
+        }
+      }
+    }
+    var available = Math.floor(bottomLimit - dropdownRect.top);
     if (available <= 0) return;
 
     var dropdownStyles = window.getComputedStyle(dropdown);
