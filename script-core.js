@@ -27,7 +27,12 @@ function toggleNotifications(e) {
     if (typeof window.syncMobileNotificationsDropdownHeight === 'function') {
       requestAnimationFrame(function() {
         window.syncMobileNotificationsDropdownHeight();
-        if (!wasOpen) requestAnimationFrame(window.syncMobileNotificationsDropdownHeight);
+        if (!wasOpen) {
+          requestAnimationFrame(function() {
+            window.syncMobileNotificationsDropdownHeight();
+            requestAnimationFrame(window.syncMobileNotificationsDropdownHeight);
+          });
+        }
       });
     }
   }
