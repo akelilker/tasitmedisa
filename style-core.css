@@ -2388,7 +2388,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #r
         font-size: 12px !important;
         line-height: 1.35 !important;
     }
-/* Mobil: tam kart snap tasitlar.js ile; değişken yoksa yedek: 7. kart yarım sızmasın diye 112→120px üst/alt krom payı */
+/* Mobil: tam kart snap tasitlar.js ile; hedef 5 bildirim, fazlası scroll */
     #notifications-dropdown {
         max-height: var(--mobile-notifications-max-height, min(428px, calc(100dvh - 120px))) !important;
         overflow-y: auto !important;
@@ -2401,6 +2401,11 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #r
         transform: translateX(-50%) !important;
         padding-bottom: 16px !important; /* JS safetyBottom (16) ile uyum; son kutu border */
         box-sizing: border-box !important;
+    }
+
+    /* Bildirim açıkken alttaki sabit kullanıcı linki gizlenir; panel kesilmesi/üst üste binme olmaz */
+    body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
+        display: none !important;
     }
 
     /* === ANA KAYIT MODALI KURTARMA (Dar alana sığması için alt alta dizilmek zorundadır) === */
