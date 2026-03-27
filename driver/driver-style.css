@@ -5359,8 +5359,10 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 .dashboard-page .driver-panels-inner::after {
     display: none !important;
 }
-.dashboard-page .driver-left-panel {
-    border-right: 1.2px solid var(--border-red-tech) !important;
+@media (min-width: 769px) {
+    .dashboard-page .driver-left-panel {
+        border-right: 1.2px solid var(--border-red-tech) !important;
+    }
 }
 
 body.dashboard-page:has(#history-modal.driver-modal.show) .driver-left-panel,
