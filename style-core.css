@@ -2553,14 +2553,9 @@ body.modal-open {
     touch-action: none;
 }
 
-/* --- YENİ EKLENEN KISIM: Modal açıkken çizgileri gizle ve katman hapsini kaldır --- */
+/* Modal açıkken: stacking (footer / overlay) için isolation — kırmızı çerçeve pseudo’ları gizlenmez */
 body.modal-open .app-container {
-    border-color: transparent !important;
-    isolation: auto !important; /* ÇÖZÜM: Katman hapsini kaldırır, modallar özgürce footer'ın üstüne çıkar */
-}
-body.modal-open .app-container::before,
-body.modal-open .content-wrap::before {
-    display: none !important;
+    isolation: auto !important;
 }
 
 /* === KÜÇÜK MODALLAR İÇİN STANDART HEADER (v79) === */
