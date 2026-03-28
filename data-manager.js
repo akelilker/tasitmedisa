@@ -163,8 +163,9 @@ function getSessionFromToken() {
         return getDefaultSession();
     }
 
-    var role = payload.rol || payload.role || '';
-    var rawRole = payload.raw_rol || '';
+    var payloadRole = payload.rol || payload.role || '';
+    var role = normalizeSessionRole(payloadRole);
+    var rawRole = String(payload.raw_rol || payloadRole || '').trim();
     var branchIds = Array.isArray(payload.sube_ids) ? payload.sube_ids.map(String).filter(Boolean) : [];
     var panelEnabled = payload.kullanici_paneli === true || payload.surucu_paneli === true;
     return {
@@ -186,13 +187,21 @@ function getSessionFromToken() {
     };
 }
 
+function normalizeSessionRole(role) {
+    var normalizedRole = String(role || '').trim();
+    if (normalizedRole === 'admin') return 'genel_yonetici';
+    if (normalizedRole === 'yonetici') return 'sube_yonetici';
+    if (normalizedRole === 'driver' || normalizedRole === 'sales' || normalizedRole === 'surucu') return 'kullanici';
+    return normalizedRole;
+}
+
 function getSessionRoleValue(sessionData) {
     var session = sessionData && typeof sessionData === 'object' ? sessionData : getDefaultSession();
-    return String(session.role || (session.user && session.user.role) || '').trim();
+    return normalizeSessionRole(session.role || (session.user && session.user.role) || '');
 }
 
 function isBranchManagerSessionRole(role) {
-    var normalizedRole = String(role || '').trim();
+    var normalizedRole = normalizeSessionRole(role);
     return normalizedRole === 'sube_yonetici' || normalizedRole === 'yonetici_kullanici';
 }
 
@@ -235,14 +244,15 @@ function buildAuthHeaders(extraHeaders) {
 }
 
 function buildFallbackPermissions(role) {
-    var hasMainAppAccess = hasMainAppAccessForSession({ role: role });
+    var normalizedRole = normalizeSessionRole(role);
+    var hasMainAppAccess = hasMainAppAccessForSession({ role: normalizedRole });
     return {
         view_main_app: hasMainAppAccess,
         view_reports: hasMainAppAccess,
         manage_users: hasMainAppAccess,
-        manage_branches: role === 'genel_yonetici',
-        manage_data: role === 'genel_yonetici',
-        manage_settings: role === 'genel_yonetici'
+        manage_branches: normalizedRole === 'genel_yonetici',
+        manage_data: normalizedRole === 'genel_yonetici',
+        manage_settings: normalizedRole === 'genel_yonetici'
     };
 }
 
@@ -286,14 +296,17 @@ function syncMainAppPortalLinks() {
 function setMedisaSession(sessionData) {
     var tokenSession = getSessionFromToken();
     var nextSession = Object.assign({}, getDefaultSession(), tokenSession, sessionData || {});
+    var mergedRoleSource = nextSession.role || (nextSession.user && nextSession.user.role) || '';
     nextSession.branch_ids = Array.isArray(nextSession.branch_ids) ? nextSession.branch_ids.map(String).filter(Boolean) : [];
+    nextSession.raw_role = String(nextSession.raw_role || mergedRoleSource || '').trim();
+    nextSession.role = normalizeSessionRole(mergedRoleSource);
     nextSession.permissions = nextSession.permissions && typeof nextSession.permissions === 'object' ? nextSession.permissions : {};
     if (Object.keys(nextSession.permissions).length === 0) {
         nextSession.permissions = buildFallbackPermissions(nextSession.role || '');
     }
     nextSession.user = Object.assign({}, getDefaultSession().user, nextSession.user || {});
     nextSession.user.id = nextSession.user.id != null ? String(nextSession.user.id) : '';
-    nextSession.user.role = nextSession.user.role || nextSession.role || '';
+    nextSession.user.role = normalizeSessionRole(nextSession.user.role || nextSession.role || '');
     nextSession.user.branch_ids = Array.isArray(nextSession.user.branch_ids) ? nextSession.user.branch_ids.map(String).filter(Boolean) : nextSession.branch_ids.slice();
     if (nextSession.user.kullanici_paneli !== true && nextSession.user.kullanici_paneli !== false) {
         nextSession.user.kullanici_paneli = !!nextSession.kullanici_paneli;
@@ -461,7 +474,7 @@ async function loadDataFromServer(forceRefresh) {
                 duzeltme_talepleri: data.duzeltme_talepleri || []
             };
 
-            if ((window.medisaSession.role || '') === 'kullanici') {
+            if (getSessionRoleValue(window.medisaSession) === 'kullanici') {
                 redirectToDriverDashboard();
             }
 
@@ -675,11 +688,12 @@ function isUserWithinManagedBranches(user, allowedBranchIds) {
 function getVisibleVehicles(vehicles) {
     var list = Array.isArray(vehicles) ? vehicles.slice() : [];
     var session = getSessionScope();
-    if (!session.authenticated || !session.role || session.role === 'genel_yonetici') {
+    var sessionRole = getSessionRoleValue(session);
+    if (!session.authenticated || !sessionRole || sessionRole === 'genel_yonetici') {
         return list;
     }
 
-    if (isBranchManagerSessionRole(session.role)) {
+    if (isBranchManagerSessionRole(sessionRole)) {
         return list.filter(function(vehicle) {
             return arrayHasId(session.branch_ids || [], vehicle && vehicle.branchId);
         });
@@ -695,11 +709,12 @@ function getVisibleVehicles(vehicles) {
 function getVisibleUsers(users) {
     var normalized = normalizeUsers(users);
     var session = getSessionScope();
-    if (!session.authenticated || !session.role || session.role === 'genel_yonetici') {
+    var sessionRole = getSessionRoleValue(session);
+    if (!session.authenticated || !sessionRole || sessionRole === 'genel_yonetici') {
         return normalized;
     }
 
-    if (isBranchManagerSessionRole(session.role)) {
+    if (isBranchManagerSessionRole(sessionRole)) {
         return normalized.filter(function(user) {
             if (user.role === 'genel_yonetici') return false;
             if (String(user && user.id) === String(session.user && session.user.id)) return false;
@@ -715,7 +730,8 @@ function getVisibleUsers(users) {
 function getVisibleBranches(branches) {
     var list = Array.isArray(branches) ? branches.slice() : [];
     var session = getSessionScope();
-    if (!session.authenticated || !session.role || session.role === 'genel_yonetici') {
+    var sessionRole = getSessionRoleValue(session);
+    if (!session.authenticated || !sessionRole || sessionRole === 'genel_yonetici') {
         return list;
     }
 
