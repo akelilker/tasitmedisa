@@ -972,8 +972,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
 /* Açıkken footer (z-index 10000) ve kullanıcı paneli (9999) üstünde — alt çerçeve “kesik” görünmesin */
 #notifications-dropdown.open {
   z-index: 10060 !important;
-  scroll-padding-bottom: 16px; /* Son kart border'ı kesilmesin */
-  padding-bottom: 16px !important;
   box-sizing: border-box !important;
 }
 
@@ -995,6 +993,9 @@ body:not(.modal-open):has(#notifications-dropdown.open) .icons-row {
   position: relative;
   z-index: 2;
 }
+body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
+  display: none !important;
+}
 
 #notifications-dropdown > .notification-item {
   width: 100% !important;
@@ -1003,7 +1004,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .icons-row {
 }
 
 #notifications-dropdown > .notification-item:last-child {
-  margin-bottom: 0 !important;
+  margin-bottom: 4px !important;
 }
 
 /* MTV Bildirimi - Global Çakışma Önleyici */
@@ -1349,17 +1350,16 @@ body:not(.modal-open):has(#notifications-dropdown.open) .icons-row {
   }
   /* Masaüstü: Bildirim kutusu stabil genişlikte kalsın, resize'da bozulmasın */
   #notifications-dropdown {
-    max-height: min(428px, calc(100vh - 180px)) !important;
+    max-height: var(--mobile-notifications-max-height, min(428px, calc(100vh - 180px))) !important;
     width: 360px !important;
     max-width: calc(100vw - 32px) !important;
     right: 0 !important;
   }
   #notifications-dropdown.open {
-    padding-bottom: 20px !important; /* Son kartın alt border'ı kesilmesin */
     box-sizing: border-box !important;
   }
   #notifications-dropdown.open > .notification-item:last-child {
-    margin-bottom: 0 !important;
+    margin-bottom: 4px !important;
   }
   /* Masaüstü: Bildirim kartları mobildeki gibi içerik kadar aksın */
   #notifications-dropdown .notification-item.date-warning-red-border,
@@ -2400,13 +2400,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #r
         left: 61% !important;
         right: auto !important;
         transform: translateX(-50%) !important;
-        padding-bottom: 16px !important; /* JS safetyBottom (16) ile uyum; son kutu border */
+        padding-bottom: 0 !important; /* Açıkken JS inline güvenlik payı verir */
         box-sizing: border-box !important;
-    }
-
-    /* Bildirim açıkken alttaki sabit kullanıcı linki gizlenir; panel kesilmesi/üst üste binme olmaz */
-    body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
-        display: none !important;
     }
 
     /* === ANA KAYIT MODALI KURTARMA (Dar alana sığması için alt alta dizilmek zorundadır) === */
@@ -2470,7 +2465,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #r
         max-height: var(--mobile-notifications-max-height, min(428px, calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 120px))) !important;
     }
     #notifications-dropdown.open {
-        padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px)) !important;
+        box-sizing: border-box !important;
     }
 }
 
