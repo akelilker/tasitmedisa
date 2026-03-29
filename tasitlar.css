@@ -50,7 +50,7 @@
    max-height 90vh kullanma: overlay yüksekliği footer için zaten kısaltılmış; 90vh tam viewport
    referans aldığı için modal alttan taşar, .tasitlar-modal-overlay overflow:hidden alt çerçeveyi keser. */
 #vehicle-detail-modal .modal-container {
-    height: 100% !important;
+    height: auto !important;
     max-height: 100% !important;
     min-height: 0 !important;
     overflow: hidden !important;
@@ -4451,10 +4451,6 @@
 
 /* Masaüstü PWA: Taşıt Detayı'nda eylem metinleri kesin kırmızı */
 @media (min-width: 769px) and (display-mode: standalone) {
-  #vehicle-detail-modal.tasitlar-modal-overlay.active,
-  #vehicle-detail-modal.tasitlar-modal-overlay.open {
-    bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
-  }
   #vehicle-detail-modal .detail-row-value.detail-user-empty,
   #vehicle-detail-modal .detail-user-empty {
     color: #d40000 !important;
@@ -4492,10 +4488,7 @@
 
 /* Taşıt detay açık (masaüstü): footer yukarı kırmızı glow, modalın yuvarlak alt çerçevesiyle çakışıp çift çerçeve gibi görünmesin */
 @media (min-width: 641px) {
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open:has(#vehicle-detail-modal.active) #app-footer,
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open:has(#vehicle-detail-modal.open) #app-footer {
-    border-left-color: transparent !important;
-    border-right-color: transparent !important;
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open:has(#vehicle-detail-modal.active) #app-footer {
     box-shadow: 0 -1px 0 rgba(255, 255, 255, 0.12) !important;
   }
 }
