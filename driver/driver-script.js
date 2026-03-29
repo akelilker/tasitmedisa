@@ -775,6 +775,28 @@ const API_BASE = (function(){
       matches.sort((a, b) => (b.guncelleme_tarihi || b.kayit_tarihi || '').localeCompare(a.guncelleme_tarihi || a.kayit_tarihi || ''));
       return matches[0];
   }
+
+  function getVehicleKmState(vehicle) {
+      if (!vehicle || typeof vehicle !== 'object') return 'OK';
+      const state = String(vehicle.km_state || '').trim();
+      return state || 'OK';
+  }
+
+  function isKmStateWarning(state) {
+      return state === 'FIRST_ENTRY_REQUIRED' || state === 'MONTHLY_UPDATE_DUE_SOFT' || state === 'MONTHLY_UPDATE_DUE_HARD';
+  }
+
+  function getKmInfoClassByState(state) {
+      if (state === 'MONTHLY_UPDATE_DUE_SOFT') return 'driver-warn-orange';
+      if (state === 'FIRST_ENTRY_REQUIRED' || state === 'MONTHLY_UPDATE_DUE_HARD') return 'driver-warn-red';
+      return '';
+  }
+
+  function getKmMessageByState(state) {
+      if (state === 'MONTHLY_UPDATE_DUE_SOFT') return 'Kilometre bilgisi güncellensin';
+      if (state === 'FIRST_ENTRY_REQUIRED' || state === 'MONTHLY_UPDATE_DUE_HARD') return 'Kilometre bilgisi girin';
+      return '';
+  }
   
   function checkDateWarningsDriver(dateStr) {
     if (!dateStr) return { class: '', days: null };
@@ -807,11 +829,8 @@ const API_BASE = (function(){
       const existingRecord = getExistingRecord(vehicle.id);
       const kmVal = vehicle.guncelKm || (existingRecord && existingRecord.guncel_km) || '-';
       const kmFormatted = (kmVal !== '-' && kmVal != null) ? String(kmVal).replace(/\B(?=(\d{3})+(?!\d))/g, '.') : '-';
-      const needsKmWarning = (() => {
-          const hasKmThisMonth = existingRecord && existingRecord.guncel_km != null && String(existingRecord.guncel_km).trim() !== '';
-          return !hasKmThisMonth;
-      })();
-      const kmClass = needsKmWarning ? 'driver-warn-red' : '';
+      const kmState = getVehicleKmState(vehicle);
+      const kmClass = getKmInfoClassByState(kmState);
       
       const sigortaW = checkDateWarningsDriver(vehicle.sigortaDate);
       const kaskoW = checkDateWarningsDriver(vehicle.kaskoDate);
@@ -961,11 +980,8 @@ const API_BASE = (function(){
       const existingRecord = getExistingRecord(vehicle.id);
       const bakimVar = existingRecord && (existingRecord.bakim_durumu || (existingRecord.bakim_aciklama || '').trim());
       const kazaVar = existingRecord && (existingRecord.kaza_durumu || (existingRecord.kaza_aciklama || '').trim());
-      const needsKmWarning = (() => {
-          const hasKmThisMonth = existingRecord && existingRecord.guncel_km != null && String(existingRecord.guncel_km).trim() !== '';
-          return !hasKmThisMonth;
-      })();
-      const hasKmSaved = !needsKmWarning;
+      const kmState = getVehicleKmState(vehicle);
+      const hasKmSaved = !isKmStateWarning(kmState);
       const sigortaW = checkDateWarningsDriver(vehicle.sigortaDate);
       const kaskoW = checkDateWarningsDriver(vehicle.kaskoDate);
       const muayeneW = checkDateWarningsDriver(vehicle.muayeneDate);
@@ -975,7 +991,7 @@ const API_BASE = (function(){
       const anahtarSaved = !!(vehicle.anahtar && String(vehicle.anahtar).trim());
       const lastikSaved = !!(vehicle.lastikDurumu && String(vehicle.lastikDurumu).trim());
       const sessionMatch = (action) => lastCompletedActionInSession && lastCompletedActionInSession.action === action && String(lastCompletedActionInSession.vehicleId) === vid;
-      const kmBtnClass = sessionMatch('km') ? ' saved' : (needsKmWarning ? ' warning' : (hasKmSaved ? ' data-entered' : ''));
+      const kmBtnClass = sessionMatch('km') ? ' saved' : (isKmStateWarning(kmState) ? ' warning' : (hasKmSaved ? ' data-entered' : ''));
       const kazaBtnClass = sessionMatch('kaza') ? ' saved' : (kazaVar ? ' data-entered' : '');
       const bakimBtnClass = sessionMatch('bakim') ? ' saved' : (bakimVar ? ' data-entered' : '');
       const sigortaBtnClass = sessionMatch('sigorta') ? ' saved' : (sigortaW.class ? ' warning' : (sigortaSaved ? ' data-entered' : ''));
@@ -1479,18 +1495,10 @@ const API_BASE = (function(){
       for (const v of vehicles) {
           const vid = String(v.id);
           const plaka = formatDriverPlaka(v.plaka);
-          const recordForPeriod = records.find(r => String(r.arac_id) === vid && String(r.donem || '').trim() === period);
-          const fromRecords = records.some(r => String(r.arac_id) === vid && String(r.donem || '').trim() === period && r.guncel_km != null && String(r.guncel_km).trim() !== '');
-          const optVal = lastSuccessfulKmSubmissions[vid] || lastSuccessfulKmSubmissions[String(v.id)];
-          const fromOptimistic = optVal && String(optVal).trim() === period;
-          const hasKmThisMonth = fromRecords || !!fromOptimistic;
-          /* Yeni alınan araç: bu ay sisteme eklenen araç için km uyarısı gösterme */
-          const createdAt = v.createdAt || '';
-          const createdPeriod = createdAt ? String(createdAt).slice(0, 7).replace(/-/g, '') : '';
-          const periodNum = period.replace(/-/g, '');
-          const isNewThisMonth = createdPeriod && createdPeriod === periodNum;
-          if (!hasKmThisMonth && !isNewThisMonth) {
-              warnings.push({ text: plaka + ' Plakalı Taşıtın Güncel Km Bildirimi Yapılmamıştır', plaka: plaka, type: null });
+          const kmState = getVehicleKmState(v);
+          const kmMessage = getKmMessageByState(kmState);
+          if (kmMessage) {
+              warnings.push({ text: plaka + ' Plakalı Taşıt İçin ' + kmMessage, plaka: plaka, type: null });
           }
           const checkDate = (dateStr, label) => {
               if (!dateStr) return;

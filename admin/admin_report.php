@@ -113,6 +113,68 @@ if ($action === 'pending_requests') {
     exit;
 }
 
+if (!function_exists('medisaComparePeriod')) {
+    function medisaComparePeriod($left, $right) {
+        return strcmp((string)$left, (string)$right);
+    }
+}
+
+if (!function_exists('medisaHasKmValue')) {
+    function medisaHasKmValue($record) {
+        if (!is_array($record)) return false;
+        if (!array_key_exists('guncel_km', $record)) return false;
+        $value = $record['guncel_km'];
+        if ($value === null) return false;
+        return trim((string)$value) !== '';
+    }
+}
+
+if (!function_exists('medisaHasFutureKmPeriod')) {
+    function medisaHasFutureKmPeriod($kmPeriods, $period) {
+        if (!is_array($kmPeriods) || empty($kmPeriods)) return false;
+        foreach ($kmPeriods as $p) {
+            if (strcmp((string)$p, (string)$period) > 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+}
+
+if (!function_exists('medisaComputeKmState')) {
+    function medisaComputeKmState($selectedPeriod, $currentPeriod, $dayOfMonth, $hasKmForPeriod, $hasFutureKmRecord, $hasReliableHistory, $hasBaseKm) {
+        $selectedPeriod = (string)$selectedPeriod;
+        $currentPeriod = (string)$currentPeriod;
+        $isFuturePeriod = medisaComparePeriod($selectedPeriod, $currentPeriod) > 0;
+        $isPastPeriod = medisaComparePeriod($selectedPeriod, $currentPeriod) < 0;
+        $isCurrentPeriod = !$isFuturePeriod && !$isPastPeriod;
+
+        if ($isFuturePeriod) {
+            return ['state' => 'OK', 'reason' => 'future_period_no_warning', 'is_current_period' => false, 'is_past_period' => false, 'is_future_period' => true];
+        }
+        if (!$hasReliableHistory && !$hasBaseKm) {
+            return ['state' => 'FIRST_ENTRY_REQUIRED', 'reason' => 'no_reliable_history_and_no_base_km', 'is_current_period' => $isCurrentPeriod, 'is_past_period' => $isPastPeriod, 'is_future_period' => false];
+        }
+        if ($hasKmForPeriod) {
+            return ['state' => 'OK', 'reason' => 'period_km_exists', 'is_current_period' => $isCurrentPeriod, 'is_past_period' => $isPastPeriod, 'is_future_period' => false];
+        }
+        if ($isPastPeriod) {
+            if ($hasFutureKmRecord) {
+                return ['state' => 'TELAFI_CLOSED', 'reason' => 'past_period_closed_by_future_km', 'is_current_period' => false, 'is_past_period' => true, 'is_future_period' => false];
+            }
+            return ['state' => 'MONTHLY_UPDATE_DUE_HARD', 'reason' => 'past_period_unclosed_missing_km', 'is_current_period' => false, 'is_past_period' => true, 'is_future_period' => false];
+        }
+        if ($isCurrentPeriod) {
+            if ((int)$dayOfMonth <= 2) {
+                return ['state' => 'MONTHLY_UPDATE_DUE_SOFT', 'reason' => 'current_period_day_1_2_missing_km', 'is_current_period' => true, 'is_past_period' => false, 'is_future_period' => false];
+            }
+            return ['state' => 'MONTHLY_UPDATE_DUE_HARD', 'reason' => 'current_period_day_3_plus_missing_km', 'is_current_period' => true, 'is_past_period' => false, 'is_future_period' => false];
+        }
+
+        return ['state' => 'OK', 'reason' => 'default_ok', 'is_current_period' => false, 'is_past_period' => false, 'is_future_period' => false];
+    }
+}
+
 $records = [];
 $stats = [
     'total' => 0,
@@ -130,46 +192,44 @@ foreach ($users as $u) {
     $usersById[(string)($u['id'] ?? '')] = $u;
 }
 
-$kayitByAracDonem = [];
+$recordAnyByVehicleUserPeriod = [];
+$recordKmByVehicleUserPeriod = [];
+$kmPeriodsByVehicleUser = [];
+$latestKmByVehicleUser = [];
 foreach ($hareketler as $k) {
     $aid = (string)($k['arac_id'] ?? '');
+    $uid = (string)($k['surucu_id'] ?? '');
     $don = (string)($k['donem'] ?? '');
-    if ($aid === '' || $don === '') {
+    if ($aid === '' || $uid === '' || $don === '') {
         continue;
     }
 
-    $key = $aid . "\0" . $don;
+    $vehicleUserKey = $aid . "\0" . $uid;
+    $periodKey = $vehicleUserKey . "\0" . $don;
     $tarih = $k['guncelleme_tarihi'] ?? $k['kayit_tarihi'] ?? '';
-    $currentRecord = $kayitByAracDonem[$key] ?? null;
-    $currentDate = $currentRecord['guncelleme_tarihi'] ?? $currentRecord['kayit_tarihi'] ?? '';
-    if ($currentRecord === null || strcmp((string)$tarih, (string)$currentDate) > 0) {
-        $kayitByAracDonem[$key] = $k;
-    }
-}
 
-$aracIdToLatestDonem = [];
-foreach ($hareketler as $k) {
-    $aid = (string)($k['arac_id'] ?? '');
-    $d = (string)($k['donem'] ?? '');
-    if ($aid === '' || $d === '') {
-        continue;
+    $currentAny = $recordAnyByVehicleUserPeriod[$periodKey] ?? null;
+    $currentAnyDate = $currentAny['guncelleme_tarihi'] ?? $currentAny['kayit_tarihi'] ?? '';
+    if ($currentAny === null || strcmp((string)$tarih, (string)$currentAnyDate) > 0) {
+        $recordAnyByVehicleUserPeriod[$periodKey] = $k;
     }
-    $currentLatestDonem = (string)($aracIdToLatestDonem[$aid] ?? '');
-    if ($currentLatestDonem === '' || strcmp($d, $currentLatestDonem) > 0) {
-        $aracIdToLatestDonem[$aid] = $d;
-    }
-}
 
-$aracIdToLatestKm = [];
-foreach ($hareketler as $k) {
-    if (!isset($k['guncel_km'])) {
-        continue;
-    }
-    $aid = (string)($k['arac_id'] ?? '');
-    $d = (string)($k['donem'] ?? '');
-    $current = $aracIdToLatestKm[$aid] ?? null;
-    if ($current === null || strcmp($d, (string)($current['donem'] ?? '')) > 0) {
-        $aracIdToLatestKm[$aid] = ['donem' => $d, 'km' => $k['guncel_km']];
+    if (medisaHasKmValue($k)) {
+        $currentKm = $recordKmByVehicleUserPeriod[$periodKey] ?? null;
+        $currentKmDate = $currentKm['guncelleme_tarihi'] ?? $currentKm['kayit_tarihi'] ?? '';
+        if ($currentKm === null || strcmp((string)$tarih, (string)$currentKmDate) > 0) {
+            $recordKmByVehicleUserPeriod[$periodKey] = $k;
+        }
+
+        if (!isset($kmPeriodsByVehicleUser[$vehicleUserKey])) {
+            $kmPeriodsByVehicleUser[$vehicleUserKey] = [];
+        }
+        $kmPeriodsByVehicleUser[$vehicleUserKey][$don] = true;
+
+        $currentLatestKm = $latestKmByVehicleUser[$vehicleUserKey] ?? null;
+        if ($currentLatestKm === null || strcmp($don, (string)($currentLatestKm['donem'] ?? '')) > 0) {
+            $latestKmByVehicleUser[$vehicleUserKey] = ['donem' => $don, 'km' => $k['guncel_km']];
+        }
     }
 }
 
@@ -210,24 +270,35 @@ foreach ($atanmisTasitlar as $item) {
     $surucu = $item['surucu'];
 
     $aracId = (string)($t['id'] ?? '');
-    $key = $aracId . "\0" . (string)$period;
-    $currentPeriodRecord = $kayitByAracDonem[$key] ?? null;
-    $latestRecordDonem = (string)($aracIdToLatestDonem[$aracId] ?? '');
-    $hasFutureRecord = $latestRecordDonem !== '' && strcmp($latestRecordDonem, (string)$period) > 0;
+    $surucuId = (string)($surucu['id'] ?? '');
+    $vehicleUserKey = $aracId . "\0" . $surucuId;
+    $periodKey = $vehicleUserKey . "\0" . (string)$period;
 
-    if ($currentPeriodRecord !== null) {
-        $girdi = true;
-        $telafi = false;
-    } elseif ($hasFutureRecord) {
-        $girdi = true;
-        $telafi = true;
-    } else {
-        $girdi = false;
-        $telafi = false;
-    }
+    $currentPeriodRecordAny = $recordAnyByVehicleUserPeriod[$periodKey] ?? null;
+    $currentPeriodRecordKm = $recordKmByVehicleUserPeriod[$periodKey] ?? null;
+    $hasKmForPeriod = $currentPeriodRecordKm !== null;
+    $kmPeriods = array_keys($kmPeriodsByVehicleUser[$vehicleUserKey] ?? []);
+    $hasFutureKmRecord = medisaHasFutureKmPeriod($kmPeriods, (string)$period);
 
-    $bakimVar = $currentPeriodRecord ? !empty($currentPeriodRecord['bakim_durumu']) : false;
-    $kazaVar = $currentPeriodRecord ? !empty($currentPeriodRecord['kaza_durumu']) : false;
+    $baseKmValue = $t['guncelKm'] ?? ($t['km'] ?? null);
+    $hasBaseKm = $baseKmValue !== null && trim((string)$baseKmValue) !== '';
+    $hasReliableHistory = count($kmPeriods) > 0;
+
+    $kmStateResult = medisaComputeKmState(
+        (string)$period,
+        date('Y-m'),
+        (int)date('j'),
+        $hasKmForPeriod,
+        $hasFutureKmRecord,
+        $hasReliableHistory,
+        $hasBaseKm
+    );
+    $kmState = (string)($kmStateResult['state'] ?? 'OK');
+    $girdi = in_array($kmState, ['OK', 'TELAFI_CLOSED'], true);
+    $telafi = $kmState === 'TELAFI_CLOSED';
+
+    $bakimVar = $currentPeriodRecordAny ? !empty($currentPeriodRecordAny['bakim_durumu']) : false;
+    $kazaVar = $currentPeriodRecordAny ? !empty($currentPeriodRecordAny['kaza_durumu']) : false;
 
     if ($girdi) {
         $stats['entered']++;
@@ -254,9 +325,9 @@ foreach ($atanmisTasitlar as $item) {
         $aracMarka = trim((string)$t['brandModel']);
     }
 
-    $km = $currentPeriodRecord ? ($currentPeriodRecord['guncel_km'] ?? null) : null;
+    $km = $currentPeriodRecordKm ? ($currentPeriodRecordKm['guncel_km'] ?? null) : null;
     if ($km === null) {
-        $km = $aracIdToLatestKm[$aracId]['km'] ?? null;
+        $km = $latestKmByVehicleUser[$vehicleUserKey]['km'] ?? null;
     }
 
     $records[] = [
@@ -271,8 +342,13 @@ foreach ($atanmisTasitlar as $item) {
         'kaza_var' => $kazaVar,
         'girdi' => $girdi,
         'telafi' => $telafi,
-        'kayit_id' => $currentPeriodRecord['id'] ?? null,
+        'kayit_id' => $currentPeriodRecordAny['id'] ?? null,
         'donem' => $period,
+        'km_state' => $kmState,
+        'km_state_reason' => (string)($kmStateResult['reason'] ?? ''),
+        'is_current_period' => (bool)($kmStateResult['is_current_period'] ?? false),
+        'is_past_period' => (bool)($kmStateResult['is_past_period'] ?? false),
+        'is_future_period' => (bool)($kmStateResult['is_future_period'] ?? false),
     ];
 }
 
