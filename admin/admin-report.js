@@ -263,13 +263,30 @@
     window.open(url, '_blank');
   }
 
+  function resetPendingAlertUi() {
+    var badge = document.getElementById('pending-alert-count');
+    var alertBtn = document.getElementById('pending-alert-btn');
+    if (badge) {
+      badge.textContent = '';
+      badge.setAttribute('hidden', '');
+      badge.setAttribute('aria-hidden', 'true');
+    }
+    if (alertBtn) alertBtn.classList.remove('has-alert');
+  }
+
   function loadPendingRequests() {
     fetchJson(API_BASE + 'admin_report.php?action=pending_requests')
       .then(function (data) {
-        if (!data.success) return;
+        if (!data.success) {
+          resetPendingAlertUi();
+          return;
+        }
         var container = document.getElementById('pending-requests-list');
         var titleEl = document.getElementById('pending-section-title');
-        if (!container) return;
+        if (!container) {
+          resetPendingAlertUi();
+          return;
+        }
         container.innerHTML = '';
         var requests = data.requests || [];
         // Talep varsa başlık kırmızı olsun
@@ -298,8 +315,22 @@
           card.querySelector('.reject-btn').addEventListener('click', function () { rejectRequest(req.id); });
           container.appendChild(card);
         });
+        var n = requests.length;
+        var badge = document.getElementById('pending-alert-count');
+        var alertBtn = document.getElementById('pending-alert-btn');
+        if (n === 0) {
+          resetPendingAlertUi();
+        } else {
+          if (badge) {
+            badge.textContent = n > 99 ? '99+' : String(n);
+            badge.removeAttribute('hidden');
+            badge.removeAttribute('aria-hidden');
+          }
+          if (alertBtn) alertBtn.classList.add('has-alert');
+        }
       })
       .catch(function (err) {
+        resetPendingAlertUi();
         if (err && err.message === 'auth') {
           return;
         }
@@ -1129,6 +1160,17 @@
 
     var btnExport = document.getElementById('report-export');
     if (btnExport) btnExport.addEventListener('click', exportExcel);
+
+    var btnPendingAlert = document.getElementById('pending-alert-btn');
+    if (btnPendingAlert) {
+      btnPendingAlert.addEventListener('click', function () {
+        window.switchAdminTab('aylik');
+        requestAnimationFrame(function () {
+          var el = document.getElementById('pending-section-title') || document.getElementById('pending-requests-list');
+          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      });
+    }
 
     var searchInput = document.getElementById('user-analytics-search');
     if (searchInput) {
