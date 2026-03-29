@@ -46,16 +46,27 @@
     overflow: visible !important;
 }
 
-/* Vehicle Detail Modal: scroll modal-body'de, yan taşmaya izin (ortak kurallar style-core'da); içerik kırpılmasın */
+/* Vehicle Detail Modal: scroll modal-body'de, yan taşmaya izin (ortak kurallar style-core'da).
+   max-height 90vh kullanma: overlay yüksekliği footer için zaten kısaltılmış; 90vh tam viewport
+   referans aldığı için modal alttan taşar, .tasitlar-modal-overlay overflow:hidden alt çerçeveyi keser. */
 #vehicle-detail-modal .modal-container {
     height: auto !important;
-    max-height: 90vh !important;
+    max-height: 100% !important;
+    min-height: 0 !important;
     overflow: hidden !important;
     overflow-x: visible !important;
 }
 #vehicle-detail-modal .modal-content {
     height: auto !important;
-    max-height: 90vh !important;
+    max-height: 100% !important;
+}
+
+/* Masaüstü PWA: taşıt detay dış glow/çerçeve altta kesilmesin (iç scroll modal-body'de) */
+@media (min-width: 641px) {
+    #vehicle-detail-modal.tasitlar-modal-overlay.active,
+    #vehicle-detail-modal.tasitlar-modal-overlay.open {
+        overflow: visible !important;
+    }
 }
 
 /* Muayene tarihi input: Kaydet butonu ile yatayda hizalı (içerik #dinamik-olay-modal'da) */
