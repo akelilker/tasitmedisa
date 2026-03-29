@@ -555,7 +555,7 @@ body.admin-report-page::-webkit-scrollbar {
   align-items: center;
   gap: 0;
   font-size: 0.9rem;
-  color: var(--form-label-color);
+  color: #ffffff;
   min-width: fit-content;
 }
 
