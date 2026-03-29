@@ -261,6 +261,14 @@ body::-webkit-scrollbar,
   -webkit-text-stroke: 0.3px currentColor;
 }
 
+/* Mobil/iOS PWA: Önbellek temizleme onayındaki Evet/Hayır metinleri +1pt */
+@media (max-width: 640px) {
+  #cache-confirm-modal .universal-btn-save,
+  #cache-confirm-modal .universal-btn-cancel {
+    font-size: 12.5px !important;
+  }
+}
+
 /* Ayarlar/Şube modalları: Olay Ekle standardı – tam genişlik, sol hizalama */
 #branch-form-modal .form-section,
 #user-form-modal .form-section,
