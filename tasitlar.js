@@ -540,7 +540,13 @@
       dropdown.style.removeProperty('--mobile-notifications-max-height');
       return;
     }
-    var isMobileViewport = window.innerWidth <= 640;
+    /* Masaüstü: yüksekliği stylesheet belirlesin; inline max-height kaydırma/yarım kart sapmasına yol açmasın */
+    if (window.innerWidth > 640) {
+      dropdown.style.removeProperty('max-height');
+      dropdown.style.removeProperty('scroll-padding-bottom');
+      dropdown.style.removeProperty('--mobile-notifications-max-height');
+      return;
+    }
 
     var dropdownRect = dropdown.getBoundingClientRect();
     if (!dropdownRect || dropdownRect.top <= 0) return;
@@ -552,9 +558,9 @@
     var dropdownStyles = window.getComputedStyle(dropdown);
     var paddingTop = parseFloat(dropdownStyles.paddingTop) || 0;
     var paddingBottom = parseFloat(dropdownStyles.paddingBottom) || 0;
-    /* style-core.css ile uyum: açık panelde son kart border payı */
-    var safetyBottom = isMobileViewport ? 16 : 20;
-    var visibleLimit = isMobileViewport ? 5 : Number.POSITIVE_INFINITY;
+    /* style-core.css ile uyum: açık panelde padding-bottom 16px + son kart border payı */
+    var safetyBottom = 16;
+    var visibleLimit = 5;
     var innerBudget = Math.max(0, available - paddingTop - paddingBottom - safetyBottom);
 
     var toolbarHeight = 0;
@@ -604,11 +610,7 @@
 
     dropdown.style.setProperty('max-height', Math.max(0, target) + 'px', 'important');
     dropdown.style.setProperty('scroll-padding-bottom', safetyBottom + 'px');
-    if (isMobileViewport) {
-      dropdown.style.setProperty('--mobile-notifications-max-height', Math.max(0, target) + 'px');
-    } else {
-      dropdown.style.removeProperty('--mobile-notifications-max-height');
-    }
+    dropdown.style.setProperty('--mobile-notifications-max-height', Math.max(0, target) + 'px');
   }
 
   window.syncMobileNotificationsDropdownHeight = syncMobileNotificationsDropdownHeight;
