@@ -152,22 +152,22 @@
     var enteredEl = document.getElementById('stat-entered');
     var pendingEl = document.getElementById('stat-pending');
     var pctEl = document.getElementById('stat-percentage');
-    if (totalEl) totalEl.textContent = stats.total != null ? stats.total : '0';
-    if (enteredEl) enteredEl.textContent = stats.entered != null ? stats.entered : '0';
-    if (pendingEl) pendingEl.textContent = stats.pending != null ? stats.pending : '0';
-    // Tamamlanan % = (yapılan bildirim / toplam beklenen iş) * 100 (araç/bildirim bazlı, kullanıcı sayısına bölünmez)
+
+    var toplamBeklenen = stats.total != null ? Number(stats.total) : 0;
     var toplamYapilan = stats.entered != null ? Number(stats.entered) : 0;
-    var toplamBekleyen = stats.pending != null ? Number(stats.pending) : 0;
-    var toplamArac = toplamYapilan + toplamBekleyen;
-    var tamamlananYuzde = toplamArac > 0 ? Math.round((toplamYapilan / toplamArac) * 100) : 0;
+    var toplamBekleyen = stats.pending != null ? Number(stats.pending) : Math.max(0, toplamBeklenen - toplamYapilan);
+    var tamamlananYuzde = toplamBeklenen > 0 ? Math.round((toplamYapilan / toplamBeklenen) * 100) : 0;
+
+    if (totalEl) totalEl.textContent = String(toplamBeklenen || 0);
+    if (enteredEl) enteredEl.textContent = String(toplamYapilan || 0);
+    if (pendingEl) pendingEl.textContent = String(toplamBekleyen || 0);
     if (pctEl) pctEl.textContent = tamamlananYuzde + '%';
+
     var pendingBox = pendingEl ? pendingEl.closest('.report-stat-box-pending') : null;
     if (pendingBox) {
-      var hasPending = (stats.pending != null && Number(stats.pending) > 0);
-      pendingBox.classList.toggle('has-data', !!hasPending);
+      pendingBox.classList.toggle('has-data', toplamBekleyen > 0);
     }
   }
-
   function capitalizeWords(str) { return (typeof window.capitalizeWords === 'function' ? window.capitalizeWords(str) : str); }
   function normalizeForSearch(v) {
     return String(v || '')
@@ -223,7 +223,7 @@
       '<td>' + escapeHtml(kmText) + '</td>' +
       '<td class="durum-cell">' + durumCell + '</td>' +
       '<td class="action-cell">' +
-        (record.telefon ? '<button type="button" class="whatsapp-btn" title="WhatsApp" aria-label="WhatsApp" data-phone="' + escapeAttrFn(record.telefon) + '" data-name="' + escapeAttrFn(record.surucu_adi) + '" data-plaka="' + escapeAttrFn(record.plaka) + '"><svg class="whatsapp-icon" width="25" height="25" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></button>' : '') +
+        (record.telefon && !record.girdi ? '<button type="button" class="whatsapp-btn" title="WhatsApp" aria-label="WhatsApp" data-phone="' + escapeAttrFn(record.telefon) + '" data-name="' + escapeAttrFn(record.surucu_adi) + '" data-plaka="' + escapeAttrFn(record.plaka) + '"><svg class="whatsapp-icon" width="25" height="25" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></button>' : '') +
       '</td>';
 
     var btn = tr.querySelector('.whatsapp-btn');
@@ -421,17 +421,71 @@
     return toTitleCase(roleLabels[displayRole] || displayRole || 'Kullanıcı');
   }
 
-  function eventMatchesUser(event, vehicle, user) {
-    var eventData = event && event.data ? event.data : {};
-    var eventSurucu = normalizeForSearch(eventData.surucu || event.surucu || '');
-    var eventTahsis = normalizeForSearch(eventData.tahsisKisi || event.tahsisKisi || '');
-    var userName = normalizeForSearch(getUserDisplayName(user));
-    if (userName && ((eventSurucu && eventSurucu.indexOf(userName) !== -1) || (eventTahsis && eventTahsis.indexOf(userName) !== -1))) {
-      return true;
+  function getEventSortValue(event) {
+    if (!event || typeof event !== 'object') return 0;
+
+    var timestamp = String(event.timestamp || '').trim();
+    if (timestamp) {
+      var parsedTimestamp = Date.parse(timestamp);
+      if (!isNaN(parsedTimestamp)) return parsedTimestamp;
     }
-    return !eventSurucu && !eventTahsis && String(vehicle.assignedUserId || '') === String(user.id);
+
+    var dateStr = String(event.date || '').trim();
+    if (!dateStr) return 0;
+
+    if (/^\d{2}\/\d{2}\/\d{4}$/.test(dateStr)) {
+      var parts = dateStr.split('/');
+      var trParsed = Date.parse(parts[2] + '-' + parts[1] + '-' + parts[0] + 'T00:00:00');
+      return isNaN(trParsed) ? 0 : trParsed;
+    }
+
+    var parsedDate = Date.parse(dateStr);
+    return isNaN(parsedDate) ? 0 : parsedDate;
   }
 
+  function eventMatchesUser(event, vehicle, user) {
+    var eventData = event && event.data ? event.data : {};
+    var userId = String((user && user.id) || '').trim();
+    var userName = normalizeForSearch(getUserDisplayName(user));
+
+    var idCandidates = [
+      eventData.kullaniciId,
+      event.kullaniciId
+    ].map(function(value) {
+      return String(value == null ? '' : value).trim();
+    }).filter(function(value) {
+      return value !== '';
+    });
+
+    if (idCandidates.length) {
+      return idCandidates.some(function(value) {
+        return value === userId;
+      });
+    }
+
+    var nameCandidates = [
+      eventData.surucu,
+      eventData.tahsisKisi,
+      eventData.kullaniciAdi,
+      eventData.eskiKullaniciAdi,
+      eventData.kisi,
+      event.surucu,
+      event.tahsisKisi,
+      event.kisi
+    ].map(function(value) {
+      return normalizeForSearch(value);
+    }).filter(function(value) {
+      return value !== '';
+    });
+
+    if (nameCandidates.length) {
+      return !!userName && nameCandidates.some(function(value) {
+        return value === userName;
+      });
+    }
+
+    return String((vehicle && vehicle.assignedUserId) || '') === userId;
+  }
   function buildUserAnalyticsRecord(user) {
     var tasitlar = userAnalyticsTasitlar || [];
     var cezaCount = 0;
@@ -440,24 +494,75 @@
     var kazaTutar = 0;
     var bakimCount = 0;
     var assignedVehicles = [];
+    var relatedVehicleMap = {};
+
+    function parseLocalizedNumber(value) {
+      return parseFloat(String(value == null ? '' : value).replace(/\./g, '').replace(/,/g, '.')) || 0;
+    }
+
+    function registerRelatedVehicle(tasit, sortValue, isActiveAssigned) {
+      if (!tasit) return;
+      var vehicleId = String(tasit.id != null ? tasit.id : (tasit.plaka || tasit.plate || ''));
+      if (!vehicleId) return;
+
+      var plate = formatPlaka(tasit.plaka || tasit.plate || '-');
+      var brand = toTitleCase(tasit.brandModel || [tasit.arac_marka, tasit.arac_model].filter(Boolean).join(' ') || '-');
+      var existing = relatedVehicleMap[vehicleId];
+
+      if (!existing) {
+        relatedVehicleMap[vehicleId] = {
+          id: vehicleId,
+          plate: plate,
+          brand: brand,
+          sortValue: sortValue || 0,
+          isActive: !!isActiveAssigned
+        };
+        return;
+      }
+
+      if ((sortValue || 0) > (existing.sortValue || 0)) {
+        existing.sortValue = sortValue || 0;
+      }
+      if (isActiveAssigned) {
+        existing.isActive = true;
+      }
+    }
 
     tasitlar.forEach(function(tasit) {
-      if (String(tasit.assignedUserId || '') === String(user.id)) {
+      var isActiveAssigned = String(tasit.assignedUserId || '') === String(user.id);
+
+      if (isActiveAssigned) {
         assignedVehicles.push(tasit);
+        registerRelatedVehicle(tasit, Number.MAX_SAFE_INTEGER, true);
       }
+
       if (!tasit.events || !Array.isArray(tasit.events)) return;
+
       tasit.events.forEach(function(event) {
         if (!eventMatchesUser(event, tasit, user)) return;
-        if (event.type === 'ceza') {
+
+        var type = String(event.type || '').toLowerCase();
+        if (type === 'ceza') {
           cezaCount++;
-          cezaTutar += parseFloat(String(((event.data && event.data.tutar) || event.tutar || '0')).replace(/\./g, '').replace(/,/g, '.')) || 0;
-        } else if (event.type === 'kaza') {
+          cezaTutar += parseLocalizedNumber((event.data && event.data.tutar) || event.tutar || '0');
+        } else if (type === 'kaza') {
           kazaCount++;
-          kazaTutar += parseFloat(String(((event.data && event.data.hasarTutari) || event.tutar || '0')).replace(/\./g, '').replace(/,/g, '.')) || 0;
-        } else if (event.type === 'bakim') {
+          kazaTutar += parseLocalizedNumber((event.data && event.data.hasarTutari) || event.tutar || '0');
+        } else if (type === 'bakim') {
           bakimCount++;
         }
+
+        registerRelatedVehicle(tasit, getEventSortValue(event), isActiveAssigned);
       });
+    });
+
+    var relatedVehicles = Object.keys(relatedVehicleMap).map(function(key) {
+      return relatedVehicleMap[key];
+    });
+
+    relatedVehicles.sort(function(a, b) {
+      if (a.isActive !== b.isActive) return a.isActive ? -1 : 1;
+      return (b.sortValue || 0) - (a.sortValue || 0);
     });
 
     var activeVehicle = assignedVehicles[0] || null;
@@ -467,12 +572,17 @@
     var branchNames = getUserBranchNames(user);
     var phone = getUserPhone(user);
     var email = getUserEmail(user);
+    var relatedVehicleText = relatedVehicles.map(function(item) {
+      return item.plate + ' ' + item.brand;
+    }).join(' ');
+
     var searchHaystack = [
       getUserDisplayName(user),
       phone,
       email,
       vehiclePlate,
       vehicleBrand,
+      relatedVehicleText,
       branchNames.join(' ')
     ].map(normalizeForSearch).join(' ');
 
@@ -490,6 +600,7 @@
       plaka: vehiclePlate,
       marka: vehicleBrand,
       assignedVehicles: assignedVehicles,
+      relatedVehicles: relatedVehicles,
       cezaCount: cezaCount,
       cezaTutar: cezaTutar,
       kazaCount: kazaCount,
@@ -498,7 +609,6 @@
       searchHaystack: searchHaystack
     };
   }
-
   function getFilteredUserAnalyticsRecords(options) {
     var query = normalizeForSearch(userAnalyticsQuery);
     var branchId = options && options.ignoreBranch ? null : userAnalyticsBranchId;
@@ -552,48 +662,99 @@
 
   function collectUserAnalyticsEvents(user) {
     var events = [];
+    var uniqueMap = {};
+
     (userAnalyticsTasitlar || []).forEach(function(tasit) {
       if (!tasit.events || !Array.isArray(tasit.events)) return;
+
       tasit.events.forEach(function(event) {
         if (!eventMatchesUser(event, tasit, user)) return;
+
+        var type = String(event.type || '').toLowerCase();
+        var uniqueKey = event && event.id
+          ? ('id:' + String(event.id))
+          : [
+              type,
+              String(event.timestamp || ''),
+              String(event.date || ''),
+              String(tasit.id || ''),
+              JSON.stringify(event.data || {})
+            ].join('|');
+
+        if (uniqueMap[uniqueKey]) return;
+        uniqueMap[uniqueKey] = true;
+
         events.push({
-          type: String(event.type || '').toLowerCase(),
+          type: type,
           date: event.date || '',
+          sortValue: getEventSortValue(event),
           vehiclePlate: formatPlaka(tasit.plaka || tasit.plate || '-'),
           vehicleBrand: toTitleCase(tasit.brandModel || [tasit.arac_marka, tasit.arac_model].filter(Boolean).join(' ') || '-'),
-          detail: buildUserEventDetail(event)
+          detail: buildUserEventDetail(event, tasit)
         });
       });
     });
+
     events.sort(function(a, b) {
-      var dateA = a.date ? new Date(a.date) : new Date(0);
-      var dateB = b.date ? new Date(b.date) : new Date(0);
-      return dateB - dateA;
+      return (b.sortValue || 0) - (a.sortValue || 0);
     });
+
     return events;
   }
-
-  function buildUserEventDetail(event) {
+  function buildUserEventDetail(event, vehicle) {
     var eventData = event && event.data ? event.data : {};
-    if (event.type === 'ceza') {
-      var cezaTutar = (eventData.tutar || event.tutar) ? formatMoney(parseFloat(String(eventData.tutar || event.tutar || '0').replace(/\./g, '').replace(/,/g, '.')) || 0) + ' TL' : '-';
-      var cezaDetay = toTitleCase(eventData.aciklama || event.aciklama || 'Ceza bildirimi');
-      return 'Ceza: ' + cezaTutar + ' | ' + cezaDetay;
-    }
-    if (event.type === 'kaza') {
-      var hasarTutar = (eventData.hasarTutari || event.tutar) ? formatMoney(parseFloat(String(eventData.hasarTutari || event.tutar || '0').replace(/\./g, '').replace(/,/g, '.')) || 0) + ' TL' : '-';
-      var kazaDetay = toTitleCase(eventData.aciklama || event.aciklama || 'Kaza bildirimi');
-      return 'Hasar: ' + hasarTutar + ' | ' + kazaDetay;
-    }
-    if (event.type === 'bakim') {
-      return toTitleCase(eventData.islemler || event.islemler || event.aciklama || 'Bakım bildirimi');
-    }
-    if (event.type === 'km') {
-      return 'KM: ' + String(eventData.km || event.km || '-');
-    }
-    return toTitleCase(eventData.aciklama || event.aciklama || 'Kayıt mevcut');
-  }
+    var type = String((event && event.type) || '').toLowerCase();
 
+    function parseLocalizedNumber(value) {
+      return parseFloat(String(value == null ? '' : value).replace(/\./g, '').replace(/,/g, '.')) || 0;
+    }
+
+    if (type === 'ceza') {
+      var cezaAmount = parseLocalizedNumber(eventData.tutar || event.tutar || 0);
+      var cezaTutar = cezaAmount > 0 ? (formatMoney(cezaAmount) + ' TL') : '-';
+      var cezaDetay = toTitleCase(eventData.aciklama || event.aciklama || 'Açıklama yok');
+      return 'Tutar: ' + cezaTutar + ' | Açıklama: ' + cezaDetay;
+    }
+
+    if (type === 'kaza') {
+      var hasarAmount = parseLocalizedNumber(eventData.hasarTutari || event.tutar || 0);
+      var hasarTutar = hasarAmount > 0 ? (formatMoney(hasarAmount) + ' TL') : '-';
+      var kazaDetay = toTitleCase(eventData.aciklama || event.aciklama || 'Açıklama yok');
+      return 'Hasar: ' + hasarTutar + ' | Açıklama: ' + kazaDetay;
+    }
+
+    if (type === 'bakim') {
+      var bakimDetay = toTitleCase(eventData.islemler || event.islemler || eventData.aciklama || event.aciklama || '');
+      return bakimDetay || 'Bakım kaydı mevcut';
+    }
+
+    if (type === 'km') {
+      var kmValue = eventData.km || event.km || eventData.yeniKm || event.yeniKm || '-';
+      return 'KM: ' + String(kmValue);
+    }
+
+    if (type === 'km-revize') {
+      var eskiKm = eventData.eskiKm || event.eskiKm || eventData.km || event.km || '-';
+      var yeniKm = eventData.yeniKm || event.yeniKm || eventData.km || event.km || '-';
+      return 'Eski KM: ' + String(eskiKm) + ' | Yeni KM: ' + String(yeniKm);
+    }
+
+    if (type === 'kullanici-atama') {
+      var kullaniciAdi = toTitleCase(eventData.kullaniciAdi || eventData.surucu || event.surucu || 'Kullanıcı');
+      var plaka = formatPlaka((vehicle && (vehicle.plaka || vehicle.plate)) || '-');
+      var marka = toTitleCase((vehicle && (vehicle.brandModel || [vehicle.arac_marka, vehicle.arac_model].filter(Boolean).join(' '))) || '-');
+      return kullaniciAdi + ' kullanıcısına atandı | Araç: ' + plaka + ' - ' + marka;
+    }
+
+    if (type === 'sube-degisiklik') {
+      var eskiSube = toTitleCase(eventData.eskiSubeAdi || eventData.eskiSubeId || 'Belirtilmedi');
+      var yeniSube = toTitleCase(eventData.yeniSubeAdi || eventData.yeniSubeId || 'Belirtilmedi');
+      return 'Şube değişikliği: ' + eskiSube + ' -> ' + yeniSube;
+    }
+
+    var fallback = toTitleCase(eventData.aciklama || event.aciklama || '');
+    return fallback || 'Kayıt mevcut';
+  }
   function getSelectedBranchLabel() {
     if (!userAnalyticsBranchId || userAnalyticsBranchId === 'all') return 'Tümü';
     return toTitleCase(getBranchNameById(userAnalyticsBranchId) || userAnalyticsBranchId);
@@ -744,6 +905,11 @@
     html += '<div class="user-analytics-detail-row"><span class="user-analytics-detail-label">E-posta</span><span class="user-analytics-detail-value">' + escapeHtmlLocal(record.email) + '</span></div>';
     html += '<div class="user-analytics-detail-row"><span class="user-analytics-detail-label">Kullanıcı Tipi</span><span class="user-analytics-detail-value">' + escapeHtmlLocal(record.roleLabel) + '</span></div>';
     html += '<div class="user-analytics-detail-row"><span class="user-analytics-detail-label">Zimmetli Araç</span><span class="user-analytics-detail-value">' + escapeHtmlLocal(record.plaka) + ' - ' + escapeHtmlLocal(record.marka) + '</span></div>';
+    var relatedVehiclesText = (record.relatedVehicles || []).map(function(item) {
+      return (item.plate || '-') + ' - ' + (item.brand || '-');
+    }).join(', ');
+    if (!relatedVehiclesText) relatedVehiclesText = '-';
+    html += '<div class="user-analytics-detail-row"><span class="user-analytics-detail-label">İlişkili Araçlar</span><span class="user-analytics-detail-value">' + escapeHtmlLocal(relatedVehiclesText) + '</span></div>';
     html += buildMetricRows(record);
     html += '</section>';
     html += '<section class="user-analytics-detail-section">';

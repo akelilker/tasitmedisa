@@ -125,17 +125,25 @@ $tasitlar = $data['tasitlar'] ?? [];
 $hareketler = $data['arac_aylik_hareketler'] ?? [];
 $users = $data['users'] ?? [];
 
-$kayitByAracSurucuDonem = [];
+$usersById = [];
+foreach ($users as $u) {
+    $usersById[(string)($u['id'] ?? '')] = $u;
+}
+
+$kayitByAracDonem = [];
 foreach ($hareketler as $k) {
     $aid = (string)($k['arac_id'] ?? '');
-    $sid = (string)($k['surucu_id'] ?? '');
     $don = (string)($k['donem'] ?? '');
-    $key = $aid . "\0" . $sid . "\0" . $don;
+    if ($aid === '' || $don === '') {
+        continue;
+    }
+
+    $key = $aid . "\0" . $don;
     $tarih = $k['guncelleme_tarihi'] ?? $k['kayit_tarihi'] ?? '';
-    $currentRecord = $kayitByAracSurucuDonem[$key] ?? null;
+    $currentRecord = $kayitByAracDonem[$key] ?? null;
     $currentDate = $currentRecord['guncelleme_tarihi'] ?? $currentRecord['kayit_tarihi'] ?? '';
     if ($currentRecord === null || strcmp((string)$tarih, (string)$currentDate) > 0) {
-        $kayitByAracSurucuDonem[$key] = $k;
+        $kayitByAracDonem[$key] = $k;
     }
 }
 
@@ -152,98 +160,97 @@ foreach ($hareketler as $k) {
     }
 }
 
-$userIdsWithVehicle = [];
+$atanmisTasitlar = [];
 foreach ($tasitlar as $t) {
-    $uid = $t['assignedUserId'] ?? null;
-    if ($uid !== null && $uid !== '') {
-        $userIdsWithVehicle[(string)$uid] = true;
+    $assignedUserId = (string)($t['assignedUserId'] ?? '');
+    if ($assignedUserId === '') {
+        continue;
     }
-}
 
-$surucular = [];
-foreach ($users as $u) {
-    $aktif = !isset($u['aktif']) || $u['aktif'] === true;
+    $surucu = $usersById[$assignedUserId] ?? null;
+    if (!is_array($surucu)) {
+        continue;
+    }
+
+    $aktif = !isset($surucu['aktif']) || $surucu['aktif'] === true;
     if (!$aktif) {
         continue;
     }
-    if (!isset($userIdsWithVehicle[(string)($u['id'] ?? '')])) {
-        continue;
-    }
+
     if ($branch !== '') {
-        $subeId = $u['sube_id'] ?? $u['branchId'] ?? null;
+        $subeId = $surucu['sube_id'] ?? $surucu['branchId'] ?? null;
         if ($subeId !== null && (string)$subeId !== (string)$branch) {
             continue;
         }
     }
-    $surucular[] = $u;
+
+    $atanmisTasitlar[] = [
+        'tasit' => $t,
+        'surucu' => $surucu,
+    ];
 }
 
-$stats['total'] = count($surucular);
+$stats['total'] = count($atanmisTasitlar);
 
-foreach ($surucular as $surucu) {
-    $surucuId = $surucu['id'] ?? '';
-    foreach ($tasitlar as $t) {
-        $assignedUserId = $t['assignedUserId'] ?? null;
-        if ($assignedUserId === null || (string)$assignedUserId !== (string)$surucuId) {
-            continue;
-        }
+foreach ($atanmisTasitlar as $item) {
+    $t = $item['tasit'];
+    $surucu = $item['surucu'];
 
-        $aracId = $t['id'] ?? '';
-        $key = (string)$aracId . "\0" . (string)$surucuId . "\0" . (string)$period;
-        $kayit = $kayitByAracSurucuDonem[$key] ?? null;
+    $aracId = (string)($t['id'] ?? '');
+    $key = $aracId . "\0" . (string)$period;
+    $kayit = $kayitByAracDonem[$key] ?? null;
 
-        $girdi = $kayit !== null;
-        $bakimVar = $kayit ? !empty($kayit['bakim_durumu']) : false;
-        $kazaVar = $kayit ? !empty($kayit['kaza_durumu']) : false;
+    $girdi = $kayit !== null;
+    $bakimVar = $kayit ? !empty($kayit['bakim_durumu']) : false;
+    $kazaVar = $kayit ? !empty($kayit['kaza_durumu']) : false;
 
-        if ($status === 'girdi' && !$girdi) {
-            continue;
-        }
-        if ($status === 'girmedi' && $girdi) {
-            continue;
-        }
-        if ($status === 'kaza' && !$kazaVar) {
-            continue;
-        }
-        if ($status === 'bakim' && !$bakimVar) {
-            continue;
-        }
-
-        if ($girdi) {
-            $stats['entered']++;
-        } else {
-            $stats['pending']++;
-        }
-
-        $aracMarka = $t['marka'] ?? $t['brand'] ?? '';
-        $aracModel = $t['model'] ?? '';
-        if ($aracMarka === '' && $aracModel === '' && !empty($t['brandModel'])) {
-            $aracMarka = trim((string)$t['brandModel']);
-        }
-
-        $km = $girdi ? ($kayit['guncel_km'] ?? null) : null;
-        if ($km === null) {
-            $km = $aracIdToLatestKm[(string)$aracId]['km'] ?? null;
-        }
-
-        $records[] = [
-            'surucu_id' => $surucuId,
-            'surucu_adi' => $surucu['isim'] ?? $surucu['name'] ?? '',
-            'telefon' => $surucu['telefon'] ?? $surucu['phone'] ?? '',
-            'plaka' => $t['plaka'] ?? $t['plate'] ?? '',
-            'arac_marka' => $aracMarka,
-            'arac_model' => $aracModel,
-            'km' => $km,
-            'bakim_var' => $bakimVar,
-            'kaza_var' => $kazaVar,
-            'girdi' => $girdi,
-            'kayit_id' => $kayit['id'] ?? null,
-            'donem' => $period,
-        ];
+    if ($girdi) {
+        $stats['entered']++;
+    } else {
+        $stats['pending']++;
     }
+
+    if ($status === 'girdi' && !$girdi) {
+        continue;
+    }
+    if ($status === 'girmedi' && $girdi) {
+        continue;
+    }
+    if ($status === 'kaza' && !$kazaVar) {
+        continue;
+    }
+    if ($status === 'bakim' && !$bakimVar) {
+        continue;
+    }
+
+    $aracMarka = $t['marka'] ?? $t['brand'] ?? '';
+    $aracModel = $t['model'] ?? '';
+    if ($aracMarka === '' && $aracModel === '' && !empty($t['brandModel'])) {
+        $aracMarka = trim((string)$t['brandModel']);
+    }
+
+    $km = $girdi ? ($kayit['guncel_km'] ?? null) : null;
+    if ($km === null) {
+        $km = $aracIdToLatestKm[$aracId]['km'] ?? null;
+    }
+
+    $records[] = [
+        'surucu_id' => $surucu['id'] ?? '',
+        'surucu_adi' => $surucu['isim'] ?? $surucu['name'] ?? '',
+        'telefon' => $surucu['telefon'] ?? $surucu['phone'] ?? '',
+        'plaka' => $t['plaka'] ?? $t['plate'] ?? '',
+        'arac_marka' => $aracMarka,
+        'arac_model' => $aracModel,
+        'km' => $km,
+        'bakim_var' => $bakimVar,
+        'kaza_var' => $kazaVar,
+        'girdi' => $girdi,
+        'kayit_id' => $kayit['id'] ?? null,
+        'donem' => $period,
+    ];
 }
 
-$toplamBeklenenIs = ($stats['entered'] ?? 0) + ($stats['pending'] ?? 0);
+$toplamBeklenenIs = (int)($stats['total'] ?? 0);
 if ($toplamBeklenenIs > 0) {
     $stats['percentage'] = round(($stats['entered'] / $toplamBeklenenIs) * 100);
 }
