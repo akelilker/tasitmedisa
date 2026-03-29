@@ -4485,10 +4485,3 @@
     bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0) - 3px) !important;
   }
 }
-
-/* Taşıt detay açık (masaüstü): footer yukarı kırmızı glow, modalın yuvarlak alt çerçevesiyle çakışıp çift çerçeve gibi görünmesin */
-@media (min-width: 641px) {
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open:has(#vehicle-detail-modal.active) #app-footer {
-    box-shadow: 0 -1px 0 rgba(255, 255, 255, 0.12) !important;
-  }
-}
