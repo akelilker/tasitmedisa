@@ -1111,6 +1111,14 @@
     var btnRefresh = document.getElementById('report-refresh');
     if (btnRefresh) btnRefresh.addEventListener('click', loadReport);
 
+    ['report-period', 'report-branch', 'report-status'].forEach(function(selectId) {
+      var selectEl = document.getElementById(selectId);
+      if (!selectEl) return;
+      if (selectEl.dataset.reportAutoReloadBound === '1') return;
+      selectEl.addEventListener('change', loadReport);
+      selectEl.dataset.reportAutoReloadBound = '1';
+    });
+
     var btnExport = document.getElementById('report-export');
     if (btnExport) btnExport.addEventListener('click', exportExcel);
 
