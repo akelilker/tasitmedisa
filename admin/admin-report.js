@@ -266,12 +266,21 @@
   function resetPendingAlertUi() {
     var badge = document.getElementById('pending-alert-count');
     var alertBtn = document.getElementById('pending-alert-btn');
+    var titleEl = document.getElementById('pending-section-title');
+
     if (badge) {
       badge.textContent = '';
       badge.setAttribute('hidden', '');
       badge.setAttribute('aria-hidden', 'true');
     }
-    if (alertBtn) alertBtn.classList.remove('has-alert');
+
+    if (alertBtn) {
+      alertBtn.classList.remove('has-alert');
+    }
+
+    if (titleEl) {
+      titleEl.classList.remove('has-pending');
+    }
   }
 
   function loadPendingRequests() {
