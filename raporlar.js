@@ -876,7 +876,6 @@
     // Detay menüsünü render et
     function renderStokDetailMenu() {
         const menu = document.getElementById('stok-detail-menu');
-        const btn = document.querySelector('.stok-detail-add-btn');
         if (!menu) return;
         
         const detailOptions = [
@@ -893,28 +892,8 @@
             { key: 'kullanici', label: 'Kullanıcı' },
             { key: 'tescil', label: 'Tescil Tarihi' }
         ];
-        
-        // Aktif sütunları sıraya göre, pasifleri sona ekle
-        const activeOptions = [];
-        const inactiveOptions = [];
-        
-        detailOptions.forEach(opt => {
-            if (stokActiveColumns[opt.key]) {
-                activeOptions.push(opt);
-            } else {
-                inactiveOptions.push(opt);
-            }
-        });
-        
-        // Aktif sütunları sıraya göre sırala
-        const sortedActiveOptions = stokColumnOrder
-            .map(key => activeOptions.find(opt => opt.key === key))
-            .filter(opt => opt !== undefined)
-            .concat(activeOptions.filter(opt => !stokColumnOrder.includes(opt.key)));
-        
-        const allOptions = [...sortedActiveOptions, ...inactiveOptions];
-        
-        menu.innerHTML = allOptions.map((opt) => {
+
+        menu.innerHTML = detailOptions.map((opt) => {
             const isActive = stokActiveColumns[opt.key];
             
         return `
