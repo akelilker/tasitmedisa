@@ -147,6 +147,19 @@ foreach ($hareketler as $k) {
     }
 }
 
+$aracIdToLatestDonem = [];
+foreach ($hareketler as $k) {
+    $aid = (string)($k['arac_id'] ?? '');
+    $d = (string)($k['donem'] ?? '');
+    if ($aid === '' || $d === '') {
+        continue;
+    }
+    $currentLatestDonem = (string)($aracIdToLatestDonem[$aid] ?? '');
+    if ($currentLatestDonem === '' || strcmp($d, $currentLatestDonem) > 0) {
+        $aracIdToLatestDonem[$aid] = $d;
+    }
+}
+
 $aracIdToLatestKm = [];
 foreach ($hareketler as $k) {
     if (!isset($k['guncel_km'])) {
@@ -198,11 +211,23 @@ foreach ($atanmisTasitlar as $item) {
 
     $aracId = (string)($t['id'] ?? '');
     $key = $aracId . "\0" . (string)$period;
-    $kayit = $kayitByAracDonem[$key] ?? null;
+    $currentPeriodRecord = $kayitByAracDonem[$key] ?? null;
+    $latestRecordDonem = (string)($aracIdToLatestDonem[$aracId] ?? '');
+    $hasFutureRecord = $latestRecordDonem !== '' && strcmp($latestRecordDonem, (string)$period) > 0;
 
-    $girdi = $kayit !== null;
-    $bakimVar = $kayit ? !empty($kayit['bakim_durumu']) : false;
-    $kazaVar = $kayit ? !empty($kayit['kaza_durumu']) : false;
+    if ($currentPeriodRecord !== null) {
+        $girdi = true;
+        $telafi = false;
+    } elseif ($hasFutureRecord) {
+        $girdi = true;
+        $telafi = true;
+    } else {
+        $girdi = false;
+        $telafi = false;
+    }
+
+    $bakimVar = $currentPeriodRecord ? !empty($currentPeriodRecord['bakim_durumu']) : false;
+    $kazaVar = $currentPeriodRecord ? !empty($currentPeriodRecord['kaza_durumu']) : false;
 
     if ($girdi) {
         $stats['entered']++;
@@ -229,7 +254,7 @@ foreach ($atanmisTasitlar as $item) {
         $aracMarka = trim((string)$t['brandModel']);
     }
 
-    $km = $girdi ? ($kayit['guncel_km'] ?? null) : null;
+    $km = $currentPeriodRecord ? ($currentPeriodRecord['guncel_km'] ?? null) : null;
     if ($km === null) {
         $km = $aracIdToLatestKm[$aracId]['km'] ?? null;
     }
@@ -245,7 +270,8 @@ foreach ($atanmisTasitlar as $item) {
         'bakim_var' => $bakimVar,
         'kaza_var' => $kazaVar,
         'girdi' => $girdi,
-        'kayit_id' => $kayit['id'] ?? null,
+        'telafi' => $telafi,
+        'kayit_id' => $currentPeriodRecord['id'] ?? null,
         'donem' => $period,
     ];
 }
