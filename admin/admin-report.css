@@ -648,6 +648,38 @@ body.admin-report-page::-webkit-scrollbar {
   color: #a7f3d0;
 }
 
+.report-icon-btn.report-icon-alert {
+  position: relative;
+  overflow: visible;
+}
+
+.report-icon-btn.report-icon-alert.has-alert {
+  color: #f87171;
+}
+
+.report-filters-actions .report-icon-btn.report-icon-alert.has-alert:hover {
+  color: #fca5a5;
+}
+
+.pending-alert-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  box-sizing: border-box;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 16px;
+  text-align: center;
+  color: #fff;
+  background: #c62828;
+  border-radius: 999px;
+  pointer-events: none;
+  z-index: 1;
+}
+
 .report-filters button.secondary:hover {
   background: #555;
 }
