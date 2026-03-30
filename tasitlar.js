@@ -494,16 +494,12 @@
         fetch(ingestPath, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }).catch(function () {});
       })();
       // #endregion
-      if (row && rawVid !== '') {
+      if (row && row.dataset && row.dataset.vehicleId) {
         e.stopPropagation();
         e.preventDefault();
         if (typeof window.showVehicleDetail === 'function') {
-          window.showVehicleDetail(rawVid);
+          window.showVehicleDetail(row.dataset.vehicleId);
         }
-        return;
-      }
-      if (row && (row.classList.contains('list-item') || row.classList.contains('card'))) {
-        alert('Bu satırda taşıt kimliği yok. Sayfayı yenileyin veya veriyi sunucudan tekrar yükleyin.');
       }
     }
     // PERFORMANS VE UX FIX: "touchend" eventi mobil kaydırmalarda (scroll) hayalet tıklamalara sebep olduğu için kaldırıldı.
@@ -1464,23 +1460,13 @@
   window.showVehicleDetail = function(vehicleId) {
     const runDetail = () => {
       const vehicles = readVehicles();
-      function normalizePlateKey(p) {
-        return String(p || '').replace(/\s+/g, '').toUpperCase();
-      }
-      let vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
-      if (!vehicle && vehicleId) {
-        const key = normalizePlateKey(vehicleId);
-        if (key.length >= 5 && /[0-9]/.test(key)) {
-          vehicle = vehicles.find(v => normalizePlateKey(v.plate) === key);
-        }
-      }
+      const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
       if (!vehicle) {
         alert("Taşıt bulunamadı!");
         return;
       }
 
-      const resolvedId = vehicle.id != null ? String(vehicle.id) : String(vehicleId);
-      window.currentDetailVehicleId = resolvedId;
+      window.currentDetailVehicleId = vehicleId;
 
       // iOS yazıcı izin prompt'unu azaltmak için yazdırma script'ini önceden yükle
       if (!window._printScriptPromise) {
@@ -1490,7 +1476,7 @@
     const modal = DOM.vehicleDetailModal;
     // #region agent log
     (function () {
-      var payload = { sessionId: '8624d8', hypothesisId: 'H3', location: 'tasitlar.js:showVehicleDetail', message: 'after vehicle resolve', data: { vehicleIdParam: String(vehicleId), resolvedId: String(resolvedId), vehicleFound: true, modalNull: !modal, contentNull: !DOM.vehicleDetailContent }, timestamp: Date.now(), runId: 'pre-fix' };
+      var payload = { sessionId: '8624d8', hypothesisId: 'H3', location: 'tasitlar.js:showVehicleDetail', message: 'after vehicle resolve', data: { vehicleIdParam: String(vehicleId), vehicleFound: true, modalNull: !modal, contentNull: !DOM.vehicleDetailContent }, timestamp: Date.now(), runId: 'pre-fix' };
       var pathDir = (location.pathname || '/').replace(/\/[^/]*$/, '');
       var ingestPath = (pathDir ? pathDir + '/' : '/') + 'debug_ingest.php';
       fetch(ingestPath, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }).catch(function () {});
@@ -1533,14 +1519,13 @@
     const isArchiveSoldDetail = vehicle.satildiMi === true && lastListContext && lastListContext.mode === 'archive';
 
     if (
-      modal.style.display !== 'none' &&
       modal.classList.contains('active') &&
-      String(window.currentDetailVehicleId) === String(resolvedId) &&
+      String(window.currentDetailVehicleId) === String(vehicleId) &&
       modal.dataset.detailSignature === detailSignature
     ) {
       // #region agent log
       (function () {
-        var payload = { sessionId: '8624d8', hypothesisId: 'H2', location: 'tasitlar.js:showVehicleDetail', message: 'early return skip duplicate', data: { resolvedId: String(resolvedId) }, timestamp: Date.now(), runId: 'pre-fix' };
+        var payload = { sessionId: '8624d8', hypothesisId: 'H2', location: 'tasitlar.js:showVehicleDetail', message: 'early return skip duplicate', data: { vehicleId: String(vehicleId) }, timestamp: Date.now(), runId: 'pre-fix' };
         var pathDir = (location.pathname || '/').replace(/\/[^/]*$/, '');
         var ingestPath = (pathDir ? pathDir + '/' : '/') + 'debug_ingest.php';
         fetch(ingestPath, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }).catch(function () {});
@@ -1701,7 +1686,7 @@
         assignBtn.innerHTML = '<span>\u015Eubeye Tahsis Etmek \u0130\u00E7in +</span>';
         assignBtn.onclick = (e) => {
           e.stopPropagation();
-          openEventModal('sube', resolvedId);
+          openEventModal('sube', vehicleId);
         };
         toolbarCenter.appendChild(assignBtn);
       }
@@ -1715,7 +1700,7 @@
       ruhsatBtn.title = vehicle.ruhsatPath ? 'Ruhsat\u0131 G\u00F6r\u00FCnt\u00FCle' : 'Ruhsat Y\u00FCkle';
       ruhsatBtn.setAttribute('aria-label', 'Ruhsat');
       ruhsatBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg>';
-      ruhsatBtn.onclick = (e) => { e.stopPropagation(); if (typeof window.openRuhsatModal === 'function') window.openRuhsatModal(resolvedId); };
+      ruhsatBtn.onclick = (e) => { e.stopPropagation(); if (typeof window.openRuhsatModal === 'function') window.openRuhsatModal(vehicleId); };
       toolbarRight.appendChild(ruhsatBtn);
       const printBtn = document.createElement('button');
       printBtn.type = 'button';
@@ -1778,6 +1763,34 @@
     modal.style.display = 'flex';
     requestAnimationFrame(() => {
       modal.classList.add('active');
+      // #region agent log
+      (function () {
+        var vehiclesModal = DOM.vehiclesModal;
+        var detailStyle = window.getComputedStyle ? window.getComputedStyle(modal) : null;
+        var vehiclesStyle = (vehiclesModal && window.getComputedStyle) ? window.getComputedStyle(vehiclesModal) : null;
+        var payload = {
+          sessionId: '8624d8',
+          hypothesisId: 'H6',
+          location: 'tasitlar.js:showVehicleDetail',
+          message: 'detail modal activation style snapshot',
+          data: {
+            detailActive: modal.classList.contains('active'),
+            detailDisplay: modal.style.display || '',
+            detailComputedDisplay: detailStyle ? detailStyle.display : '',
+            detailZ: detailStyle ? detailStyle.zIndex : '',
+            vehiclesActive: !!(vehiclesModal && vehiclesModal.classList.contains('active')),
+            vehiclesDisplay: vehiclesModal ? (vehiclesModal.style.display || '') : '',
+            vehiclesComputedDisplay: vehiclesStyle ? vehiclesStyle.display : '',
+            vehiclesZ: vehiclesStyle ? vehiclesStyle.zIndex : ''
+          },
+          timestamp: Date.now(),
+          runId: 'pre-fix'
+        };
+        var pathDir = (location.pathname || '/').replace(/\/[^/]*$/, '');
+        var ingestPath = (pathDir ? pathDir + '/' : '/') + 'debug_ingest.php';
+        fetch(ingestPath, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }).catch(function () {});
+      })();
+      // #endregion
       requestAnimationFrame(() => { applyVehicleDetailSubeShrink(); });
     });
     };
