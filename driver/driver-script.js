@@ -539,7 +539,7 @@ const API_BASE = (function(){
           
           try {
               // #region agent log
-              fetch('http://127.0.0.1:7885/ingest/f748c7df-0c18-4178-a736-c89151ca12d1',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'8624d8'},body:JSON.stringify({sessionId:'8624d8',hypothesisId:'H1',location:'driver-script.js:login',message:'fetch_start',data:{apiBase:API_BASE,loginUrl:loginUrl,pathname:typeof location!=='undefined'?location.pathname:'',origin:typeof location!=='undefined'?location.origin:'',uLen:username.length,pLen:password.length},timestamp:Date.now()})}).catch(function(){});
+              fetch(window.location.origin + API_BASE + 'agent_debug_ingest.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sessionId:'8624d8',hypothesisId:'H1',location:'driver-script.js:login',message:'fetch_start',data:{apiBase:API_BASE,loginUrl:loginUrl,pathname:typeof location!=='undefined'?location.pathname:'',origin:typeof location!=='undefined'?location.origin:'',uLen:username.length,pLen:password.length},timestamp:Date.now()})}).catch(function(){});
               // #endregion
               const response = await fetch(loginUrl, {
                   method: 'POST',
@@ -547,11 +547,11 @@ const API_BASE = (function(){
                   body: JSON.stringify({ username, password })
               });
               // #region agent log
-              fetch('http://127.0.0.1:7885/ingest/f748c7df-0c18-4178-a736-c89151ca12d1',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'8624d8'},body:JSON.stringify({sessionId:'8624d8',hypothesisId:'H1',location:'driver-script.js:login',message:'fetch_response',data:{status:response.status,ok:response.ok},timestamp:Date.now()})}).catch(function(){});
+              fetch(window.location.origin + API_BASE + 'agent_debug_ingest.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sessionId:'8624d8',hypothesisId:'H1',location:'driver-script.js:login',message:'fetch_response',data:{status:response.status,ok:response.ok},timestamp:Date.now()})}).catch(function(){});
               // #endregion
               const data = await response.json();
               // #region agent log
-              fetch('http://127.0.0.1:7885/ingest/f748c7df-0c18-4178-a736-c89151ca12d1',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'8624d8'},body:JSON.stringify({sessionId:'8624d8',hypothesisId:'H1',location:'driver-script.js:login',message:'json_body',data:{success:!!data.success,messagePrefix:String(data.message||'').slice(0,100)},timestamp:Date.now()})}).catch(function(){});
+              fetch(window.location.origin + API_BASE + 'agent_debug_ingest.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sessionId:'8624d8',hypothesisId:'H1',location:'driver-script.js:login',message:'json_body',data:{success:!!data.success,messagePrefix:String(data.message||'').slice(0,100)},timestamp:Date.now()})}).catch(function(){});
               // #endregion
               
               if (data.success) {
@@ -583,7 +583,7 @@ const API_BASE = (function(){
                       }
                   });
                   // #region agent log
-                  fetch('http://127.0.0.1:7885/ingest/f748c7df-0c18-4178-a736-c89151ca12d1',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'8624d8'},body:JSON.stringify({sessionId:'8624d8',hypothesisId:'H5',location:'driver-script.js:login',message:'route_after_success',data:{hasToken:!!tokenToStore,routedOk:!!routedOk},timestamp:Date.now()})}).catch(function(){});
+                  fetch(window.location.origin + API_BASE + 'agent_debug_ingest.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sessionId:'8624d8',hypothesisId:'H5',location:'driver-script.js:login',message:'route_after_success',data:{hasToken:!!tokenToStore,routedOk:!!routedOk},timestamp:Date.now()})}).catch(function(){});
                   // #endregion
                   if (!routedOk) {
                       errorDiv.textContent = 'Oturum başlatılamadı.';
@@ -601,7 +601,7 @@ const API_BASE = (function(){
               }
           } catch (error) {
               // #region agent log
-              fetch('http://127.0.0.1:7885/ingest/f748c7df-0c18-4178-a736-c89151ca12d1',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'8624d8'},body:JSON.stringify({sessionId:'8624d8',hypothesisId:'H1',location:'driver-script.js:login',message:'catch_error',data:{errName:error&&error.name,errMsg:String(error&&error.message||'').slice(0,120)},timestamp:Date.now()})}).catch(function(){});
+              fetch(window.location.origin + API_BASE + 'agent_debug_ingest.php',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sessionId:'8624d8',hypothesisId:'H1',location:'driver-script.js:login',message:'catch_error',data:{errName:error&&error.name,errMsg:String(error&&error.message||'').slice(0,120)},timestamp:Date.now()})}).catch(function(){});
               // #endregion
               console.error('Hata:', error);
               errorDiv.textContent = 'Bağlantı hatası! Lütfen tekrar deneyin.';
