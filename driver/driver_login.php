@@ -41,7 +41,8 @@ $result = medisaMutateData(function (&$data) use ($username, $password) {
         $kullaniciEslesiyor = isset($candidate['kullanici_adi'])
             && trim((string)$candidate['kullanici_adi']) !== ''
             && trim((string)$candidate['kullanici_adi']) === $username;
-        $sifreVar = isset($candidate['sifre']) && trim((string)$candidate['sifre']) !== '';
+        $sifreVar = (isset($candidate['sifre']) && trim((string)$candidate['sifre']) !== '')
+            || (isset($candidate['sifre_hash']) && trim((string)$candidate['sifre_hash']) !== '');
         $aktif = !isset($candidate['aktif']) || $candidate['aktif'] === true;
         if ($kullaniciEslesiyor && $sifreVar && $aktif) {
             $user = $candidate;
