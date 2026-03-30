@@ -13,6 +13,23 @@
 require_once __DIR__ . '/core.php';
 
 $flagPath = getDataDirPath() . DIRECTORY_SEPARATOR . '.medisa_emergency_bootstrap';
+$flagPathAlt = getDataDirPath() . DIRECTORY_SEPARATOR . 'medisa_emergency_bootstrap.txt';
+
+// #region agent log
+function medisaEmergencyDebugLog($hypothesisId, $location, $message, $data = []) {
+    $path = __DIR__ . '/debug-8624d8.log';
+    $row = [
+        'sessionId' => '8624d8',
+        'runId' => 'emergency-entry',
+        'hypothesisId' => $hypothesisId,
+        'location' => $location,
+        'message' => $message,
+        'data' => $data,
+        'timestamp' => (int) round(microtime(true) * 1000),
+    ];
+    @file_put_contents($path, json_encode($row, JSON_UNESCAPED_UNICODE) . "\n", FILE_APPEND | LOCK_EX);
+}
+// #endregion
 
 function medisaEmergencyCountLoginUsers(array $data) {
     $n = 0;
@@ -42,11 +59,19 @@ function medisaEmergencyRespondHtml($code, $title, $bodyHtml) {
     exit;
 }
 
-if (!file_exists($flagPath)) {
+if (!file_exists($flagPath) && !file_exists($flagPathAlt)) {
+    // #region agent log
+    medisaEmergencyDebugLog('H1', 'emergency_admin.php:flag_check', 'forbidden_missing_flag', [
+        'flagDotExists' => file_exists($flagPath),
+        'flagAltExists' => file_exists($flagPathAlt),
+        'dataDirReadable' => is_readable(getDataDirPath()),
+        'method' => (string)($_SERVER['REQUEST_METHOD'] ?? ''),
+    ]);
+    // #endregion
     medisaEmergencyRespondHtml(
         403,
         'Kullanılamıyor',
-        '<h1>Acil kurulum kapalı</h1><p class="err">Sunucuda <code>data/.medisa_emergency_bootstrap</code> dosyası yok. cPanel ile bu dosyayı oluşturduktan sonra sayfayı yenileyin.</p>'
+        '<h1>Acil kurulum kapalı</h1><p class="err">Sunucuda <code>data/.medisa_emergency_bootstrap</code> veya <code>data/medisa_emergency_bootstrap.txt</code> dosyası yok. cPanel ile birini oluşturup sayfayı yenileyin.</p>'
     );
 }
 
@@ -55,7 +80,13 @@ if (!is_array($dataProbe)) {
     $dataProbe = medisaDefaultData();
 }
 if (medisaEmergencyCountLoginUsers($dataProbe) > 0) {
+    // #region agent log
+    medisaEmergencyDebugLog('H2', 'emergency_admin.php:precheck_users', 'forbidden_users_exist', [
+        'loginUsers' => medisaEmergencyCountLoginUsers($dataProbe),
+    ]);
+    // #endregion
     @unlink($flagPath);
+    @unlink($flagPathAlt);
     medisaEmergencyRespondHtml(
         403,
         'Gerek yok',
@@ -64,6 +95,12 @@ if (medisaEmergencyCountLoginUsers($dataProbe) > 0) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    // #region agent log
+    medisaEmergencyDebugLog('H1', 'emergency_admin.php:get_form', 'form_rendered', [
+        'flagDotExists' => file_exists($flagPath),
+        'flagAltExists' => file_exists($flagPathAlt),
+    ]);
+    // #endregion
     medisaEmergencyRespondHtml(
         200,
         'Acil yönetici',
@@ -146,11 +183,22 @@ $result = medisaMutateData(function (&$data) use ($isim, $kad, $sifre) {
 });
 
 if (($result['success'] ?? false) !== true) {
+    // #region agent log
+    medisaEmergencyDebugLog('H3', 'emergency_admin.php:mutate_fail', 'create_user_failed', [
+        'status' => (int) ($result['status'] ?? 500),
+        'message' => (string) ($result['message'] ?? ''),
+    ]);
+    // #endregion
     $msg = htmlspecialchars($result['message'] ?? 'Hata', ENT_QUOTES, 'UTF-8');
     medisaEmergencyRespondHtml((int) ($result['status'] ?? 500), 'Hata', '<p class="err">' . $msg . '</p><p><a href="">Geri</a></p>');
 }
 
 @unlink($flagPath);
+@unlink($flagPathAlt);
+
+// #region agent log
+medisaEmergencyDebugLog('H3', 'emergency_admin.php:mutate_success', 'create_user_ok', []);
+// #endregion
 
 medisaEmergencyRespondHtml(
     200,
