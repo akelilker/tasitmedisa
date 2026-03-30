@@ -70,16 +70,15 @@
 }
 
 /*
-  Footer "ışığı" taşıt detayda neden kayboluyordu:
-  - #app-footer z-index 10000; modal overlay 10020 — footer'ın yukarı box-shadow'u overlay'in opak arka planının altında kalır.
-  - style-core .modal-open taşıt modallarında .modal-container için box-shadow: none (tek tip opak kutu).
-  Aşağıdaki kural yalnız taşıt detayda, footer ile uyumlu hafif kırmızımsı dış glow verir (köşe yarıçapına uyumlu).
+  Footer ışığı taşıt detayda kayboluyordu:
+  - #app-footer z-index 10000
+  - .modal-overlay z-index 10020
+  Bu yüzden footer'ın yukarı glow'u overlay'in opak arka planı altında kalıyordu.
+  Çözüm: sadece taşıt detay overlay'i footer'ın alt katmanına alınır; gerçek footer glow'u görünür.
 */
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicle-detail-modal.active .modal-container,
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicle-detail-modal.open .modal-container {
-    box-shadow:
-        0 8px 28px rgba(0, 0, 0, 0.4),
-        0 14px 38px rgba(var(--theme-color-rgb), 0.28) !important;
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicle-detail-modal.tasitlar-modal-overlay.active,
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicle-detail-modal.tasitlar-modal-overlay.open {
+    z-index: 9998 !important;
 }
 
 /* Muayene tarihi input: Kaydet butonu ile yatayda hizalı (içerik #dinamik-olay-modal'da) */
