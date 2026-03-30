@@ -892,6 +892,19 @@ select.settings-form-select option,
     color: var(--txt-muted) !important;
 }
 
+.input-error {
+    border: 2px solid #e53e3e !important;
+    box-shadow: 0 0 0 2px rgba(229, 62, 62, 0.25) !important;
+    animation: shake-input 0.35s ease;
+}
+@keyframes shake-input {
+    0%, 100% { transform: translateX(0); }
+    20%      { transform: translateX(-6px); }
+    40%      { transform: translateX(6px); }
+    60%      { transform: translateX(-4px); }
+    80%      { transform: translateX(4px); }
+}
+
 /* Şube + Kullanıcı form modalları: açılır liste paneli tema arka planı */
 #branch-form-modal select.form-input,
 #user-form-modal select.form-input,
