@@ -1,116 +1,156 @@
 <?php
 /**
- * Veri onarım aracı: data.json içindeki kullanıcıları kontrol eder,
- * yoksa veya bozuksa varsayılan yönetici ekler.
+ * Veri onarım: silinen şubeleri ve kullanıcıları geri yükler.
  * Kullanımdan sonra bu dosyayı sunucudan silin.
  */
 require_once __DIR__ . '/core.php';
 header('Content-Type: text/html; charset=utf-8');
 
-$html = function($title, $body) {
+function onarHtml($title, $body) {
     echo '<!DOCTYPE html><html lang="tr"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>' . $title . '</title>';
-    echo '<style>body{font-family:system-ui,sans-serif;max-width:40rem;margin:2rem auto;padding:0 1rem;background:#0f1418;color:#e8e8e8}pre{background:#1a2229;padding:1rem;border-radius:8px;overflow-x:auto;font-size:.85rem;color:#8f8}.r{color:#f66}.g{color:#8f8}.y{color:#ff0}a{color:#7ec8ff}</style></head><body>';
+    echo '<style>body{font-family:system-ui,sans-serif;max-width:42rem;margin:2rem auto;padding:0 1rem;background:#0f1418;color:#e8e8e8}pre{background:#1a2229;padding:1rem;border-radius:8px;overflow-x:auto;font-size:.82rem;color:#ccc;white-space:pre-wrap}.r{color:#f66}.g{color:#8f8}.y{color:#ff0}a{color:#7ec8ff}button{padding:.7rem 2rem;background:#1a4d2e;color:#fff;border:none;border-radius:6px;cursor:pointer;font-weight:700;font-size:1rem}button:hover{background:#256b3a}</style></head><body>';
     echo $body;
     echo '</body></html>';
     exit;
-};
+}
+
+$defaultBranches = [
+    ["id" => "1769175216952", "name" => "Karyapı",        "city" => "Konya",    "createdAt" => "2026-01-23T13:33:36.952Z"],
+    ["id" => "1769175230543", "name" => "Karmotors",      "city" => "Silivri",  "createdAt" => "2026-01-23T13:33:50.543Z"],
+    ["id" => "1769175251066", "name" => "Medisa",         "city" => "Karabük",  "createdAt" => "2026-01-23T13:34:11.066Z"],
+    ["id" => "1769175273226", "name" => "Şenay Mobilya",  "city" => "Karabük",  "createdAt" => "2026-01-23T13:34:33.226Z"],
+];
+
+$defaultUsers = [
+    [
+        "id" => "u1769823278672", "isim" => "İlker AKEL",
+        "kullanici_adi" => "ilkerA", "sifre" => "Akel6674",
+        "telefon" => "05335413410", "email" => "ilkerakel@hotmail.com",
+        "sube_id" => "1769175251066", "sube_ids" => ["1769175251066"],
+        "rol" => "genel_yonetici", "tip" => "admin",
+        "surucu_paneli" => true, "kullanici_paneli" => true,
+        "zimmetli_araclar" => [1770080529726, 1737657600019, 1737657600049],
+        "aktif" => true, "kayit_tarihi" => "2026-02-08T04:41:49.439Z", "son_giris" => null,
+    ],
+    [
+        "id" => "u1769900543196", "isim" => "Serhan KÖSE",
+        "kullanici_adi" => "SerhanK", "sifre" => "Serhan123",
+        "telefon" => "05067025500", "email" => "",
+        "sube_id" => "1769175251066", "sube_ids" => ["1769175251066"],
+        "rol" => "genel_yonetici", "tip" => "admin",
+        "surucu_paneli" => true, "kullanici_paneli" => true,
+        "zimmetli_araclar" => [1737657600009],
+        "aktif" => true, "kayit_tarihi" => "2026-02-08T04:41:49.439Z", "son_giris" => null,
+    ],
+    [
+        "id" => "u1770525709433", "isim" => "Savaş ŞENAY",
+        "kullanici_adi" => "", "sifre" => "",
+        "telefon" => "05334422720", "email" => "",
+        "sube_id" => "1769175251066", "sube_ids" => ["1769175251066"],
+        "rol" => "genel_yonetici", "tip" => "admin",
+        "surucu_paneli" => true, "kullanici_paneli" => true,
+        "zimmetli_araclar" => [],
+        "aktif" => true, "kayit_tarihi" => "2026-02-08T04:41:49.433Z", "son_giris" => null,
+    ],
+];
 
 $data = loadData();
 if (!is_array($data)) {
     $data = medisaDefaultData();
 }
-if (!isset($data['users']) || !is_array($data['users'])) {
-    $data['users'] = [];
-}
 
-$userCount = count($data['users']);
-$withLogin = 0;
-foreach ($data['users'] as $u) {
-    if (!is_array($u)) continue;
-    $kad = trim((string)($u['kullanici_adi'] ?? $u['username'] ?? ''));
-    if ($kad !== '') $withLogin++;
-}
+$branchCount   = count($data['branches'] ?? []);
+$userCount     = count($data['users'] ?? []);
+$vehicleCount  = count($data['tasitlar'] ?? []);
+$recordCount   = count($data['arac_aylik_hareketler'] ?? []);
 
-$diag  = "<h1>Veri Onarım</h1>";
-$diag .= "<p>Toplam kullanıcı: <b>{$userCount}</b> | Giriş adı tanımlı: <b>{$withLogin}</b></p>";
+$info  = "<h1>Veri Onarım Aracı</h1>";
+$info .= "<h3>Sunucudaki mevcut durum:</h3><pre>";
+$info .= "Şubeler:       $branchCount\n";
+$info .= "Kullanıcılar:  $userCount\n";
+$info .= "Araçlar:       $vehicleCount\n";
+$info .= "Aylık kayıt:   $recordCount\n";
+$info .= "</pre>";
 
-if ($userCount > 0) {
-    $diag .= "<h3>Mevcut kullanıcılar:</h3><pre>";
-    foreach ($data['users'] as $i => $u) {
-        if (!is_array($u)) continue;
-        $id   = $u['id'] ?? '?';
-        $isim = $u['isim'] ?? $u['name'] ?? '?';
-        $kad  = $u['kullanici_adi'] ?? $u['username'] ?? '';
-        $sif  = isset($u['sifre']) && trim((string)$u['sifre']) !== '' ? 'VAR' : '-';
-        $hash = isset($u['sifre_hash']) && trim((string)$u['sifre_hash']) !== '' ? 'VAR' : '-';
-        $aktif = (!isset($u['aktif']) || $u['aktif'] === true) ? 'Evet' : 'Hayır';
-        $rol   = $u['rol'] ?? $u['role'] ?? $u['tip'] ?? '?';
-        $diag .= "[$i] $isim | kullanici_adi: " . ($kad ?: '(boş)') . " | sifre: $sif | hash: $hash | aktif: $aktif | rol: $rol\n";
+if ($branchCount > 0 && $userCount > 0) {
+    $loginCount = 0;
+    foreach ($data['users'] as $u) {
+        if (is_array($u) && trim((string)($u['kullanici_adi'] ?? '')) !== '') $loginCount++;
     }
-    $diag .= "</pre>";
+    $info .= "<p class='g'>Şube ve kullanıcı verileri mevcut ($loginCount tanesi giriş adına sahip). Geri yüklemeye gerek olmayabilir.</p>";
+    $info .= "<p>Yine de geri yüklemek istersen aşağıdaki butona bas.</p>";
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'repair') {
-    $isim = trim((string)($_POST['isim'] ?? ''));
-    $kad  = trim((string)($_POST['kad'] ?? ''));
-    $sifre = (string)($_POST['sifre'] ?? '');
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'restore') {
+    $changes = [];
 
-    if ($isim === '' || $kad === '' || strlen($sifre) < 4) {
-        $html('Hata', $diag . '<p class="r">Tüm alanları doldurun, parola en az 4 karakter.</p><p><a href="">Geri</a></p>');
-    }
-
-    $found = false;
-    foreach ($data['users'] as $idx => $u) {
-        if (!is_array($u)) continue;
-        $existing = trim((string)($u['kullanici_adi'] ?? $u['username'] ?? ''));
-        if ($existing !== '' && strcasecmp($existing, $kad) === 0) {
-            $data['users'][$idx]['sifre'] = $sifre;
-            $data['users'][$idx]['aktif'] = true;
-            unset($data['users'][$idx]['sifre_hash']);
-            $found = true;
-            break;
+    if (!isset($data['branches']) || !is_array($data['branches']) || count($data['branches']) === 0) {
+        $data['branches'] = $defaultBranches;
+        $changes[] = count($defaultBranches) . " şube geri yüklendi";
+    } else {
+        $existingIds = array_map(function($b) { return (string)($b['id'] ?? ''); }, $data['branches']);
+        $added = 0;
+        foreach ($defaultBranches as $db) {
+            if (!in_array((string)$db['id'], $existingIds, true)) {
+                $data['branches'][] = $db;
+                $added++;
+            }
         }
+        if ($added > 0) $changes[] = "$added eksik şube eklendi";
+        else $changes[] = "Tüm şubeler zaten mevcut";
     }
 
-    if (!$found) {
-        $branchId = null;
-        if (!empty($data['branches'][0]) && is_array($data['branches'][0])) {
-            $branchId = $data['branches'][0]['id'] ?? null;
+    if (!isset($data['users']) || !is_array($data['users']) || count($data['users']) === 0) {
+        $data['users'] = $defaultUsers;
+        $changes[] = count($defaultUsers) . " kullanıcı geri yüklendi";
+    } else {
+        $existingIds = array_map(function($u) { return (string)($u['id'] ?? ''); }, $data['users']);
+        $added = 0;
+        foreach ($defaultUsers as $du) {
+            if (!in_array((string)$du['id'], $existingIds, true)) {
+                $data['users'][] = $du;
+                $added++;
+            } else {
+                foreach ($data['users'] as $idx => $eu) {
+                    if ((string)($eu['id'] ?? '') === (string)$du['id']) {
+                        $data['users'][$idx]['sifre'] = $du['sifre'];
+                        $data['users'][$idx]['kullanici_adi'] = $du['kullanici_adi'];
+                        $data['users'][$idx]['aktif'] = true;
+                        unset($data['users'][$idx]['sifre_hash']);
+                        break;
+                    }
+                }
+            }
         }
-        $data['users'][] = [
-            'id'               => 'u' . (string)(int)round(microtime(true) * 1000),
-            'isim'             => $isim,
-            'kullanici_adi'    => $kad,
-            'sifre'            => $sifre,
-            'telefon'          => '',
-            'email'            => '',
-            'sube_id'          => $branchId,
-            'sube_ids'         => $branchId !== null ? [$branchId] : [],
-            'rol'              => 'genel_yonetici',
-            'tip'              => 'admin',
-            'surucu_paneli'    => true,
-            'kullanici_paneli' => true,
-            'zimmetli_araclar' => [],
-            'aktif'            => true,
-            'kayit_tarihi'     => gmdate('c'),
-            'son_giris'        => null,
+        if ($added > 0) $changes[] = "$added eksik kullanıcı eklendi";
+        $changes[] = "Mevcut kullanıcıların parolaları ve giriş adları sıfırlandı";
+    }
+
+    if (!isset($data['ayarlar']) || !is_array($data['ayarlar']) || empty($data['ayarlar']['sirketAdi'])) {
+        $data['ayarlar'] = [
+            'sirketAdi'   => 'Medisa',
+            'yetkiliKisi' => 'İlker',
+            'telefon'     => '905559876543',
+            'eposta'      => 'info@medisa.com',
         ];
+        $changes[] = "Ayarlar geri yüklendi";
     }
 
     if (saveData($data)) {
-        $verb = $found ? 'güncellendi (parola sıfırlandı)' : 'yeni oluşturuldu';
-        $html('Tamam', "<h1 class='g'>Hesap $verb!</h1><p>Kullanıcı adı: <b>$kad</b></p><p>Şimdi <a href='driver/'>sürücü panelinden giriş yapabilirsiniz</a>.</p><p class='y'>Bu dosyayı (<code>veri_onar.php</code>) sunucudan silin!</p>");
+        $summary = implode("\n", array_map(function($c) { return "• $c"; }, $changes));
+        onarHtml('Tamam', "<h1 class='g'>Geri yükleme tamamlandı!</h1><pre>$summary</pre>"
+            . "<p>Giriş bilgileri:</p><pre>ilkerA  /  Akel6674\nSerhanK /  Serhan123</pre>"
+            . "<p><a href='driver/'>Sürücü paneline git</a></p>"
+            . "<p class='y'>Bu dosyayı (veri_onar.php) sunucudan silin!</p>");
     } else {
-        $html('Hata', "<h1 class='r'>Kayıt başarısız!</h1><p>data/data.json yazılamadı. cPanel'den dosya izinlerini kontrol edin (chmod 664 veya 666).</p>");
+        onarHtml('Hata', "<h1 class='r'>data.json yazılamadı!</h1><p>cPanel'den <code>data/data.json</code> dosya izinlerini kontrol edin (644 veya 666).</p>");
     }
 }
 
-$form  = '<h3>Yönetici hesabı oluştur / parolasını sıfırla:</h3>';
-$form .= '<form method="post"><input type="hidden" name="action" value="repair">';
-$form .= '<p><label>Ad soyad<br><input name="isim" value="İlker AKEL" style="width:100%;padding:.4rem;background:#1a2229;color:#fff;border:1px solid #444;border-radius:4px"></label></p>';
-$form .= '<p><label>Kullanıcı adı<br><input name="kad" value="ilkerA" style="width:100%;padding:.4rem;background:#1a2229;color:#fff;border:1px solid #444;border-radius:4px"></label></p>';
-$form .= '<p><label>Yeni parola<br><input name="sifre" type="text" value="Akel6674" style="width:100%;padding:.4rem;background:#1a2229;color:#fff;border:1px solid #444;border-radius:4px"></label></p>';
-$form .= '<p><button type="submit" style="padding:.6rem 1.5rem;background:#1a4d2e;color:#fff;border:none;border-radius:6px;cursor:pointer;font-weight:600">Kaydet</button></p>';
-$form .= '</form>';
+$info .= '<form method="post">';
+$info .= '<input type="hidden" name="action" value="restore">';
+$info .= '<br><p>Bu buton şubeleri (4 adet) ve kullanıcıları (3 adet) orijinal halleriyle geri yükler. Mevcut araç ve aylık kayıt verileri <b>korunur</b>.</p>';
+$info .= '<button type="submit">Şubeleri ve Kullanıcıları Geri Yükle</button>';
+$info .= '</form>';
 
-$html('Veri Onarım', $diag . $form);
+onarHtml('Veri Onarım', $info);
