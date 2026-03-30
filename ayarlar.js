@@ -1038,8 +1038,15 @@
           return;
         }
         if (role !== 'genel_yonetici' && !branchId) {
-          alert('Şube Seçiniz.');
-          if (branchSelect) branchSelect.focus();
+          alert('Kullanıcı eklemek için şube seçimi zorunludur.');
+          if (branchSelect) {
+            branchSelect.classList.add('input-error');
+            branchSelect.focus();
+            branchSelect.addEventListener('change', function onFix() {
+              branchSelect.classList.remove('input-error');
+              branchSelect.removeEventListener('change', onFix);
+            });
+          }
           return;
         }
         const kullanici_adi = usernameInput ? usernameInput.value.trim() : '';
