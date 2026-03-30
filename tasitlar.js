@@ -421,6 +421,11 @@
   }
 
   const DINAMIK_OLAY_MODAL_ID = 'dinamik-olay-modal';
+  function setVehiclesDetailUnderlay(active) {
+    const vehiclesModal = DOM.vehiclesModal || document.getElementById('vehicles-modal');
+    if (!vehiclesModal) return;
+    vehiclesModal.classList.toggle('detail-underlay', !!active);
+  }
 
   function getEventModalId(type) {
     return DINAMIK_OLAY_MODAL_ID;
@@ -741,6 +746,7 @@
     const modal = DOM.vehiclesModal;
     const content = DOM.vehiclesModalContent;
     if (modal) {
+      setVehiclesDetailUnderlay(false);
       modal.style.display = 'flex';
       requestAnimationFrame(() => modal.classList.add('active'));
       ensureToolbar();
@@ -819,6 +825,7 @@
     
     const modal = DOM.vehiclesModal;
     if (modal) {
+      setVehiclesDetailUnderlay(false);
       resetModalState(modal);
       modal.classList.remove('active');
       setTimeout(() => {
@@ -1759,6 +1766,7 @@
     if (existingAssign) existingAssign.remove();
 
     // Modalı aç
+    setVehiclesDetailUnderlay(true);
     modal.dataset.detailSignature = detailSignature;
     modal.style.display = 'flex';
     requestAnimationFrame(() => {
@@ -1893,6 +1901,7 @@
         modal.style.display = 'none';
       }
     });
+    setVehiclesDetailUnderlay(false);
     window.currentDetailVehicleId = null;
     // iOS: print() çağrısı iframe.onload/setTimeout ile geç tetiklenebiliyor.
     // Kullanıcı başka ekrana giderken bekleyen print'in çalışmaması için token iptal ediyoruz.
@@ -1903,6 +1912,7 @@
   window.closeVehicleDetailModal = function() {
     const modal = DOM.vehicleDetailModal;
     if (modal) {
+      setVehiclesDetailUnderlay(false);
       resetModalState(modal);
       modal.classList.remove('active');
       delete modal.dataset.detailSignature;

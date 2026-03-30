@@ -80,6 +80,20 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicles-modal.tasitlar-modal-overlay.open {
     z-index: 10020 !important;
 }
+/* Detay açıkken alttaki taşıt listesi sadece arka katman olsun; çifte çerçeve görünmesin */
+#vehicles-modal.detail-underlay::before {
+    display: none !important;
+    content: none !important;
+}
+#vehicles-modal.detail-underlay .modal-container {
+    background: transparent !important;
+    border-color: transparent !important;
+    box-shadow: none !important;
+}
+#vehicles-modal.detail-underlay .modal-header,
+#vehicles-modal.detail-underlay .modal-body {
+    visibility: hidden !important;
+}
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicle-detail-modal.tasitlar-modal-overlay.active,
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicle-detail-modal.tasitlar-modal-overlay.open {
     z-index: 10030 !important;
