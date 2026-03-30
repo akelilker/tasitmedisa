@@ -1,21 +1,6 @@
 <?php
 require_once __DIR__ . '/../core.php';
 
-// #region agent log
-function medisaAgentDebugLoginLog($hypothesisId, $location, $message, $data = []) {
-    $path = __DIR__ . '/../debug-8624d8.log';
-    $row = [
-        'sessionId' => '8624d8',
-        'hypothesisId' => $hypothesisId,
-        'location' => $location,
-        'message' => $message,
-        'data' => $data,
-        'timestamp' => (int) round(microtime(true) * 1000),
-    ];
-    @file_put_contents($path, json_encode($row, JSON_UNESCAPED_UNICODE) . "\n", FILE_APPEND | LOCK_EX);
-}
-// #endregion
-
 /** Görünmez Unicode + trim; NFC birleşik form (kopyala-yapıştır uyumu). */
 function medisaLoginNormalizeUsernameInput($s) {
     $s = trim((string) $s);
@@ -88,14 +73,6 @@ if ($username === '' || $password === '') {
 }
 
 $result = medisaMutateData(function (&$data) use ($username, $password) {
-    // #region agent log
-    medisaAgentDebugLoginLog('H2', 'driver_login.php:mutator_enter', 'credentials_shape', [
-        'usernameLen' => strlen($username),
-        'passwordLen' => strlen($password),
-        'usersCount' => is_array($data['users'] ?? null) ? count($data['users']) : -1,
-    ]);
-    // #endregion
-
     if (!is_array($data) || !isset($data['users']) || !is_array($data['users'])) {
         return medisaBuildErrorResult('Veri okunamadı!', 500);
     }
@@ -131,25 +108,7 @@ $result = medisaMutateData(function (&$data) use ($username, $password) {
         }
     }
 
-    // #region agent log
-    medisaAgentDebugLoginLog('H2', 'driver_login.php:after_loop', 'user_scan', [
-        'usernameExists' => $usernameExists,
-        'usernameActive' => $usernameActive,
-        'userFound' => $user !== null && $userIndex >= 0,
-        'totalUsers' => count($data['users']),
-        'usersWithLoginId' => $definedLoginUserCount,
-    ]);
-    // #endregion
-
     if (!$user || $userIndex < 0) {
-        // #region agent log
-        $failReason = !$usernameExists ? 'username_not_found' : (!$usernameActive ? 'inactive' : 'no_password');
-        medisaAgentDebugLoginLog('H4', 'driver_login.php:fail_precheck', 'login_fail', [
-            'reason' => $failReason,
-            'usersWithLoginId' => $definedLoginUserCount,
-            'totalUsers' => count($data['users']),
-        ]);
-        // #endregion
         if (!$usernameExists) {
             return medisaBuildErrorResult('Kullanıcı adı hatalı!', 200);
         }
@@ -171,12 +130,6 @@ $result = medisaMutateData(function (&$data) use ($username, $password) {
     }
 
     if (!$passwordMatch) {
-        // #region agent log
-        medisaAgentDebugLoginLog('H3', 'driver_login.php:fail_password', 'login_fail', [
-            'reason' => 'password_mismatch',
-            'storedUsesHash' => $kayitliHash !== '',
-        ]);
-        // #endregion
         return medisaBuildErrorResult('Şifre hatalı!', 200);
     }
 
@@ -201,10 +154,6 @@ $result = medisaMutateData(function (&$data) use ($username, $password) {
 
     $data['users'][$userIndex]['son_giris'] = date('c');
 
-    // #region agent log
-    medisaAgentDebugLoginLog('H3', 'driver_login.php:mutator_success', 'password_ok', []);
-    // #endregion
-
     return [
         'success' => true,
         'user_id' => $user['id'],
@@ -217,14 +166,6 @@ $result = medisaMutateData(function (&$data) use ($username, $password) {
         'driver_dashboard' => $driverDashboard,
     ];
 });
-
-// #region agent log
-medisaAgentDebugLoginLog('H1', 'driver_login.php:after_mutate', 'login_result', [
-    'success' => ($result['success'] ?? false) === true,
-    'httpStatus' => (int) ($result['status'] ?? 200),
-    'messageKey' => isset($result['message']) ? substr((string) $result['message'], 0, 120) : '',
-]);
-// #endregion
 
 $status = (int)($result['status'] ?? 200);
 if ($status !== 200) {
