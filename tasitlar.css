@@ -81,6 +81,11 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     /* Detay modalı taşıtlar listesinin üstünde görünmeli */
     z-index: 10030 !important;
 }
+/* Ruhsat/olay modalı, detay modalının da üstünde açılmalı */
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #dinamik-olay-modal.modal-overlay.active,
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #dinamik-olay-modal.modal-overlay.open {
+    z-index: 10040 !important;
+}
 
 /* Muayene tarihi input: Kaydet butonu ile yatayda hizalı (içerik #dinamik-olay-modal'da) */
 #muayene-guncelle-modal .muayene-tarih-row,
