@@ -215,7 +215,9 @@
     tr.className = kmMeta.rowClass;
 
     var aracText = (record.arac_marka || '') + (record.arac_model ? ' ' + record.arac_model : '');
-    var kmText = record.km != null ? (typeof window.formatKm === 'function' ? window.formatKm(record.km) : String(record.km)) : '–';
+    var formattedKm = record.km != null ? (typeof window.formatKm === 'function' ? window.formatKm(record.km) : String(record.km)) : '–';
+    // Bildirim girilmemişse ve eski bir KM varsa yanına soluk renkle (Eski) yazıyoruz
+    var kmText = (!record.girdi && record.km != null) ? '<span style="color: var(--muted); font-size: 0.85em;">(Eski)</span> ' + formattedKm : formattedKm;
 
     var durumCell = '<span class="durum-icon ' + (kmMeta.isWarning ? 'durum-bildirilmedi' : 'durum-bildirildi') + '" title="' + escapeHtml(kmMeta.statusText) + '">' + kmMeta.statusIcon + '</span><span class="durum-text">' + escapeHtml(kmMeta.statusText) + '</span>';
 
