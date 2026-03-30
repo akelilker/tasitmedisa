@@ -540,6 +540,7 @@ document.addEventListener('DOMContentLoaded', () => {
       showModuleSpinner();
       window.loadAppModule(AYARLAR_JS, AYARLAR_CSS).then(function() {
         hideModuleSpinner();
+        window._ayarlarLoaded = true;
         if (typeof window[fnName] === 'function') window[fnName].apply(window, args);
       }).catch(function(err) {
         hideModuleSpinner();

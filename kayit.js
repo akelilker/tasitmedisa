@@ -761,6 +761,7 @@
     if (getBranchSelectionState().singleBranch) return;
     for (let i = 0; i < select.options.length; i++) {
       const opt = select.options[i];
+      if (opt.disabled && opt.text === "Önce Şube Ekleyiniz") continue;
       const div = document.createElement("div");
       div.className = "vehicle-branch-option";
       div.textContent = opt.textContent;
@@ -768,6 +769,10 @@
       if (opt.selected) div.classList.add("selected");
       listEl.appendChild(div);
     }
+    var addDiv = document.createElement("div");
+    addDiv.className = "vehicle-branch-option vehicle-branch-add-hint";
+    addDiv.textContent = "+ Yeni Şube Ekle";
+    listEl.appendChild(addDiv);
   }
 
   function resetVehicleForm() {
@@ -1010,6 +1015,50 @@
       // İlk durumu kontrol et
       updatePlaceholder();
     }
+
+  /**
+   * Kayıt modalından şube ekleme formunu açar.
+   * Kayıt modalı geçici gizlenir; şube formu kapandığında geri gelir.
+   */
+  function openBranchFormFromVehicleModal() {
+    var vehicleModal = getModal();
+
+    function ensureAyarlarAndOpen() {
+      if (typeof window.openBranchFormModal === 'function') {
+        if (vehicleModal) {
+          vehicleModal.style.visibility = 'hidden';
+          vehicleModal.style.pointerEvents = 'none';
+        }
+
+        var origClose = window.closeBranchFormModal;
+        window.closeBranchFormModal = function() {
+          window.closeBranchFormModal = origClose;
+          if (typeof origClose === 'function') origClose();
+          populateBranchSelect();
+          if (vehicleModal) {
+            vehicleModal.style.visibility = '';
+            vehicleModal.style.pointerEvents = '';
+          }
+        };
+
+        window.openBranchFormModal(null);
+      }
+    }
+
+    if (typeof window.loadAppModule === 'function' &&
+        (typeof window._ayarlarLoaded === 'undefined' || !window._ayarlarLoaded)) {
+      var AYARLAR_JS = 'ayarlar.js';
+      var AYARLAR_CSS = 'ayarlar.css';
+      window.loadAppModule(AYARLAR_JS, AYARLAR_CSS).then(function() {
+        window._ayarlarLoaded = true;
+        ensureAyarlarAndOpen();
+      }).catch(function() {
+        alert('Ayarlar modülü yüklenemedi.');
+      });
+    } else {
+      ensureAyarlarAndOpen();
+    }
+  }
 
   // --- Modal Functions ---
   window.openVehicleModal = function() {
@@ -2160,7 +2209,13 @@
       });
       branchList.addEventListener("click", function (ev) {
         var option = ev.target.closest(".vehicle-branch-option");
-        if (!option || !option.hasAttribute("data-value")) return;
+        if (!option) return;
+        if (option.classList.contains("vehicle-branch-add-hint")) {
+          closeBranchList();
+          openBranchFormFromVehicleModal();
+          return;
+        }
+        if (!option.hasAttribute("data-value")) return;
         var value = option.getAttribute("data-value");
         branchSelectEl.value = value;
         branchList.querySelectorAll(".vehicle-branch-option").forEach(function (o) { o.classList.remove("selected"); });
