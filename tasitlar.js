@@ -1757,7 +1757,6 @@
       'vehicle-detail-modal',
       'vehicle-history-modal',
       'event-menu-modal',
-      'ruhsat-yukleme-modal',
       DINAMIK_OLAY_MODAL_ID
     ];
 
@@ -4036,7 +4035,7 @@ function renderVehicleDetailLeft(vehicle) {
         }
 
         setTimeout(function() {
-          const modal = document.getElementById('ruhsat-yukleme-modal') || DOM.dinamikOlayModal;
+          const modal = DOM.dinamikOlayModal;
           const isStillOpen = !!(modal && modal.style.display !== 'none');
           if (isStillOpen && String(window.currentDetailVehicleId || '') === String(vehicleId)) {
             window.openRuhsatModal(vehicleId);
