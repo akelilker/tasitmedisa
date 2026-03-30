@@ -451,6 +451,22 @@
   }
 
   const modalContent = DOM.vehiclesModalContent;
+  // #region agent log
+  (function () {
+    var payload = {
+      sessionId: '8624d8',
+      hypothesisId: 'H4',
+      location: 'tasitlar.js:initDelegation',
+      message: 'modal content bind check',
+      data: { modalContentNull: !modalContent },
+      timestamp: Date.now(),
+      runId: 'pre-fix'
+    };
+    var pathDir = (location.pathname || '/').replace(/\/[^/]*$/, '');
+    var ingestPath = (pathDir ? pathDir + '/' : '/') + 'debug_ingest.php';
+    fetch(ingestPath, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }).catch(function () {});
+  })();
+  // #endregion
   
   // Taşıt listesi tıklama delegasyonu (card/list-item tıklanınca detay aç) - tek seferlik
   if (modalContent && !modalContent._vehicleClickBound) {
@@ -1030,6 +1046,22 @@
     const displayTitle = branchId === 'all' ? branchName : (branchName + ' Taşıtlar');
     updateToolbar('detail', displayTitle);
 
+    // #region agent log
+    (function () {
+      var payload = {
+        sessionId: '8624d8',
+        hypothesisId: 'H4',
+        location: 'tasitlar.js:openBranchList',
+        message: 'open branch list requested',
+        data: { branchId: String(branchId || ''), branchName: String(branchName || '') },
+        timestamp: Date.now(),
+        runId: 'pre-fix'
+      };
+      var pathDir = (location.pathname || '/').replace(/\/[^/]*$/, '');
+      var ingestPath = (pathDir ? pathDir + '/' : '/') + 'debug_ingest.php';
+      fetch(ingestPath, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }).catch(function () {});
+    })();
+    // #endregion
     renderVehicles();
   };
 
@@ -1073,6 +1105,24 @@
       // Veri Çek
       let vehicles = readVehicles();
       if (!Array.isArray(vehicles)) vehicles = [];
+      // #region agent log
+      (function () {
+        var firstId = '';
+        if (vehicles.length > 0 && vehicles[0] && vehicles[0].id != null) firstId = String(vehicles[0].id);
+        var payload = {
+          sessionId: '8624d8',
+          hypothesisId: 'H5',
+          location: 'tasitlar.js:renderVehicles',
+          message: 'render vehicles dataset snapshot',
+          data: { count: vehicles.length, firstIdLen: firstId.length, activeBranchId: String(activeBranchId || ''), queryLen: String(query || '').length },
+          timestamp: Date.now(),
+          runId: 'pre-fix'
+        };
+        var pathDir = (location.pathname || '/').replace(/\/[^/]*$/, '');
+        var ingestPath = (pathDir ? pathDir + '/' : '/') + 'debug_ingest.php';
+        fetch(ingestPath, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }).catch(function () {});
+      })();
+      // #endregion
       const branches = window.appData?.branches || [];
       const users = window.appData?.users || [];
 
