@@ -65,12 +65,12 @@ $result = medisaMutateData(function (&$data) use ($username, $password) {
 
     if (!$user || $userIndex < 0) {
         if (!$usernameExists) {
-            return medisaBuildErrorResult('Kullanıcı adı bulunamadı!', 200);
+            return medisaBuildErrorResult('Kullanıcı adı hatalı!', 200);
         }
         if (!$usernameActive) {
-            return medisaBuildErrorResult('Hesap pasif durumda!', 200);
+            return medisaBuildErrorResult('Kullanıcı hesabı pasif!', 200);
         }
-        return medisaBuildErrorResult('Kullanıcı için şifre tanımlı değil!', 200);
+        return medisaBuildErrorResult('Şifre tanımlı değil. Yöneticiye başvurun.', 200);
     }
 
     $girilenSifre = trim((string)$password);
