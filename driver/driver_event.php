@@ -20,19 +20,28 @@ function addYears($dateStr, $years) {
 
 function calculateNextMuayene($vehicle, $muayeneDateStr) {
     if (!$muayeneDateStr) return '';
+
+    $currentYear = (int)date('Y');
+    $productionYear = (int)($vehicle['year'] ?? 0);
+    if ($productionYear <= 0) $productionYear = $currentYear;
+
     $events = $vehicle['events'] ?? [];
-    $isFirstMuayene = true;
+    $hasMuayeneEvent = false;
     foreach ($events as $event) {
         if (($event['type'] ?? '') === 'muayene-guncelle') {
-            $isFirstMuayene = false;
+            $hasMuayeneEvent = true;
             break;
         }
     }
-    $vehicleType = $vehicle['vehicleType'] ?? $vehicle['tip'] ?? 'otomobil';
-    if ($isFirstMuayene) {
-        return $vehicleType === 'otomobil' ? addYears($muayeneDateStr, 3) : addYears($muayeneDateStr, 2);
-    }
-    return $vehicleType === 'otomobil' ? addYears($muayeneDateStr, 2) : addYears($muayeneDateStr, 1);
+    $hasExistingMuayeneDate = trim((string)($vehicle['muayeneDate'] ?? '')) !== '';
+    $isFirstMuayene = !$hasMuayeneEvent && !$hasExistingMuayeneDate;
+
+    $vehicleType = strtolower((string)($vehicle['vehicleType'] ?? $vehicle['tip'] ?? 'otomobil'));
+    $isCommercial = $vehicleType !== 'otomobil';
+    $firstPeriod = $isFirstMuayene && ($productionYear === $currentYear);
+    $yearsToAdd = $isCommercial ? ($firstPeriod ? 2 : 1) : ($firstPeriod ? 3 : 2);
+
+    return addYears($muayeneDateStr, $yearsToAdd);
 }
 
 $tokenData = validateToken();

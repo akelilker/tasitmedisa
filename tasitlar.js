@@ -4529,66 +4529,62 @@ function renderVehicleDetailLeft(vehicle) {
    */
   function addYears(dateStr, years) {
     if (!dateStr) return '';
-    
-    // gg/aa/yyyy formatından parse et
-    const datePattern = /^(\d{2})\/(\d{2})\/(\d{4})$/;
-    const match = dateStr.match(datePattern);
-    
-    if (!match) return dateStr;
-    
-    const day = parseInt(match[1], 10);
-    const month = parseInt(match[2], 10);
-    const year = parseInt(match[3], 10);
-    
-    const date = new Date(year, month - 1, day);
+
+    let date = null;
+    const trPattern = /^(\d{2})\/(\d{2})\/(\d{4})$/;
+    const trMatch = String(dateStr).match(trPattern);
+    if (trMatch) {
+      const day = parseInt(trMatch[1], 10);
+      const month = parseInt(trMatch[2], 10);
+      const year = parseInt(trMatch[3], 10);
+      date = new Date(year, month - 1, day);
+    } else {
+      const isoPattern = /^(\d{4})-(\d{2})-(\d{2})$/;
+      const isoMatch = String(dateStr).match(isoPattern);
+      if (isoMatch) {
+        const year = parseInt(isoMatch[1], 10);
+        const month = parseInt(isoMatch[2], 10);
+        const day = parseInt(isoMatch[3], 10);
+        date = new Date(year, month - 1, day);
+      }
+    }
+
+    if (!date || isNaN(date.getTime())) return String(dateStr);
     date.setFullYear(date.getFullYear() + years);
-    
-    // YYYY-MM-DD formatına çevir
+
     const yyyy = date.getFullYear();
     const mm = String(date.getMonth() + 1).padStart(2, '0');
     const dd = String(date.getDate()).padStart(2, '0');
-    
+
     return `${yyyy}-${mm}-${dd}`;
   }
 
   /**
-   * Muayene bitiş tarihi hesapla (otomobil/ticari + sıfır/sonraki muayene kuralları).
-   * Aynı algoritma driver_event.php calculateNextMuayene ile paylaşılır; senkron tutulmalı.
-   * - Araç sıfır ise (üretim yılı == muayene yılı):
-   *     otomobil → +3 yıl, küçük/büyük ticari → +2 yıl
-   * - Sonraki muayeneler:
-   *     otomobil → +2 yıl, küçük/büyük ticari → +1 yıl
+   * Muayene bitiş tarihi hesapla (üretim yılına göre ilk/sürekli periyot).
+   * Kural:
+   * - İlk muayene sadece araç bu yıl üretilmişse uygulanır:
+   *   otomobil +3 yıl, ticari +2 yıl
+   * - Sonraki tüm muayeneler:
+   *   otomobil +2 yıl, ticari +1 yıl
    */
   function calculateNextMuayene(vehicle, muayeneDate) {
     if (!muayeneDate) return '';
 
-    const vehicleType = vehicle.vehicleType; // 'otomobil' | 'minivan' | 'kamyon'
-    const productionYear = parseInt(vehicle.year) || new Date().getFullYear();
+    const nowYear = new Date().getFullYear();
+    const productionYear = parseInt(vehicle && vehicle.year, 10) || nowYear;
+    const vehicleType = (vehicle && (vehicle.vehicleType || vehicle.tip) ? (vehicle.vehicleType || vehicle.tip) : 'otomobil').toLowerCase();
+    const isCommercial = vehicleType !== 'otomobil';
 
-    // Muayene yılını gg/aa/yyyy formatından çıkar
-    const dateMatch = muayeneDate.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
-    const muayeneYear = dateMatch ? parseInt(dateMatch[3]) : new Date().getFullYear();
+    const events = Array.isArray(vehicle && vehicle.events) ? vehicle.events : [];
+    const hasMuayeneEvent = events.some(function(evt) {
+      return (evt && evt.type) === 'muayene-guncelle';
+    });
+    const hasExistingMuayeneDate = !!(vehicle && vehicle.muayeneDate && String(vehicle.muayeneDate).trim());
+    const isFirstMuayene = !hasMuayeneEvent && !hasExistingMuayeneDate;
 
-    // Üretim yılı ile muayene yılı aynıysa araç sıfır kabul edilir
-    const isSifir = productionYear === muayeneYear;
-
-    if (isSifir) {
-      // Sıfır araç - ilk muayene süreleri
-      if (vehicleType === 'otomobil') {
-        return addYears(muayeneDate, 3);
-      } else {
-        // küçük veya büyük ticari (minivan / kamyon)
-        return addYears(muayeneDate, 2);
-      }
-    } else {
-      // Sonraki muayeneler
-      if (vehicleType === 'otomobil') {
-        return addYears(muayeneDate, 2);
-      } else {
-        // küçük veya büyük ticari
-        return addYears(muayeneDate, 1);
-      }
-    }
+    const firstPeriod = isFirstMuayene && productionYear === nowYear;
+    const yearsToAdd = isCommercial ? (firstPeriod ? 2 : 1) : (firstPeriod ? 3 : 2);
+    return addYears(muayeneDate, yearsToAdd);
   }
 
   /**

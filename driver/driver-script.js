@@ -379,24 +379,28 @@ const API_BASE = (function(){
     return parts[2] + '/' + parts[1] + '/' + parts[0];
   }
 
-  /** Muayene bitiş tarihi hesapla (PHP calculateNextMuayene ile aynı kural: ilk muayene otomobil +3 diğer +2, sonraki otomobil +2 diğer +1). */
+  /** Muayene bitiş tarihi hesapla (ana panel + driver_event.php ile senkron). */
   function calculateNextMuayeneDate(tarihStr, vehicle) {
     if (!tarihStr) return '';
+    var nowYear = new Date().getFullYear();
+    var productionYear = parseInt(vehicle && vehicle.year, 10) || nowYear;
+    var vehicleType = (vehicle && (vehicle.vehicleType || vehicle.tip)) ? (vehicle.vehicleType || vehicle.tip) : 'otomobil';
+    vehicleType = String(vehicleType).toLowerCase();
+    var isCommercial = vehicleType !== 'otomobil';
+
     var events = (vehicle && vehicle.events) ? vehicle.events : [];
-    var isFirstMuayene = true;
+    var hasMuayeneEvent = false;
     for (var i = 0; i < events.length; i++) {
       if (events[i] && events[i].type === 'muayene-guncelle') {
-        isFirstMuayene = false;
+        hasMuayeneEvent = true;
         break;
       }
     }
-    var vehicleType = (vehicle && (vehicle.vehicleType || vehicle.tip)) ? (vehicle.vehicleType || vehicle.tip) : 'otomobil';
-    var years = 0;
-    if (isFirstMuayene) {
-      years = vehicleType === 'otomobil' ? 3 : 2;
-    } else {
-      years = vehicleType === 'otomobil' ? 2 : 1;
-    }
+    var hasExistingMuayeneDate = !!(vehicle && vehicle.muayeneDate && String(vehicle.muayeneDate).trim());
+    var isFirstMuayene = !hasMuayeneEvent && !hasExistingMuayeneDate;
+    var firstPeriod = isFirstMuayene && productionYear === nowYear;
+
+    var years = isCommercial ? (firstPeriod ? 2 : 1) : (firstPeriod ? 3 : 2);
     try {
       var dt = new Date(tarihStr + 'T00:00:00');
       if (isNaN(dt.getTime())) return '';
