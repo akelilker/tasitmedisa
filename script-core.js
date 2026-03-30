@@ -642,7 +642,9 @@ window.addEventListener('dataLoaded', () => {
     }
 
     if (typeof window.loadAppModule === 'function') {
-      window.loadAppModule(TASITLAR_JS, TASITLAR_CSS)
+      var tasitlarJsForNotif = 'tasitlar.js?v=20260331.1';
+      var tasitlarCssForNotif = 'tasitlar.css?v=20260331.1';
+      window.loadAppModule(tasitlarJsForNotif, tasitlarCssForNotif)
             .then(runNotifications)
             .catch(function(err) {
                 console.error('[Medisa] Bildirim modülü yüklenemedi:', err);
