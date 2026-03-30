@@ -37,14 +37,26 @@ $result = medisaMutateData(function (&$data) use ($username, $password) {
 
     $user = null;
     $userIndex = -1;
+    $usernameExists = false;
+    $usernameActive = false;
     foreach ($data['users'] as $idx => $candidate) {
         $kullaniciEslesiyor = isset($candidate['kullanici_adi'])
             && trim((string)$candidate['kullanici_adi']) !== ''
-            && trim((string)$candidate['kullanici_adi']) === $username;
+            && strcasecmp(trim((string)$candidate['kullanici_adi']), $username) === 0;
+        if (!$kullaniciEslesiyor) {
+            continue;
+        }
+
+        $usernameExists = true;
         $sifreVar = (isset($candidate['sifre']) && trim((string)$candidate['sifre']) !== '')
             || (isset($candidate['sifre_hash']) && trim((string)$candidate['sifre_hash']) !== '');
         $aktif = !isset($candidate['aktif']) || $candidate['aktif'] === true;
-        if ($kullaniciEslesiyor && $sifreVar && $aktif) {
+        if (!$aktif) {
+            continue;
+        }
+
+        $usernameActive = true;
+        if ($sifreVar) {
             $user = $candidate;
             $userIndex = $idx;
             break;
@@ -52,7 +64,13 @@ $result = medisaMutateData(function (&$data) use ($username, $password) {
     }
 
     if (!$user || $userIndex < 0) {
-        return medisaBuildErrorResult('Kullanıcı bulunamadı veya aktif değil!', 200);
+        if (!$usernameExists) {
+            return medisaBuildErrorResult('Kullanıcı adı bulunamadı!', 200);
+        }
+        if (!$usernameActive) {
+            return medisaBuildErrorResult('Hesap pasif durumda!', 200);
+        }
+        return medisaBuildErrorResult('Kullanıcı için şifre tanımlı değil!', 200);
     }
 
     $girilenSifre = trim((string)$password);
