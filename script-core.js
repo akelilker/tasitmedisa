@@ -553,6 +553,11 @@ document.addEventListener('DOMContentLoaded', () => {
   window.openDisVeriPanel = wrapAyarlar('openDisVeriPanel');
   window.openDataManagement = wrapAyarlar('openDataManagement');
   window.clearCache = wrapAyarlar('clearCache');
+  window.exportData = wrapAyarlar('exportData');
+  window.restoreFromLastBackup = wrapAyarlar('restoreFromLastBackup');
+  window.importData = wrapAyarlar('importData');
+  window.tsbKaskoListesiIndir = wrapAyarlar('tsbKaskoListesiIndir');
+  window.kaskoExcelYukle = wrapAyarlar('kaskoExcelYukle');
 
   window.closeVehiclesModal = function() {
     const modal = document.getElementById('vehicles-modal');
