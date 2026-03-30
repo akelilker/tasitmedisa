@@ -361,6 +361,17 @@ select option:active {
     background: rgba(var(--theme-color-rgb), 0.12);
     color: var(--form-label-color, #ffffff);
 }
+.vehicle-branch-add-hint {
+    color: var(--theme-color, #e53e3e) !important;
+    font-weight: 600;
+    cursor: pointer;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    margin-top: 2px;
+    padding-top: 10px !important;
+}
+.vehicle-branch-add-hint:hover {
+    background: rgba(var(--theme-color-rgb), 0.18) !important;
+}
 #vehicle-modal #vehicle-branch-select.branch-placeholder {
     color: rgba(255, 255, 255, 0.38) !important;
 }
