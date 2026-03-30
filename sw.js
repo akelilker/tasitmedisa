@@ -1,7 +1,7 @@
 // Service Worker - Medisa Taşıt Yönetim Sistemi
 // Version 2.11 - Activate: claim önce (InvalidStateError düzeltmesi); syntax temiz
 
-const CACHE_VERSION = 'medisa-v2.44';
+const CACHE_VERSION = 'medisa-v2.45';
 
 // Subpath desteği: /medisa/sw.js ise base = '/medisa', kök deploy'da base = ''
 function getBase() {
@@ -20,7 +20,9 @@ const CACHE_FILES = [
   '/data-manager.js',
   '/manifest.json',
   '/icon/logo-header2.svg',
-  '/icon/medlogo.png'
+  '/icon/medlogo.png',
+  '/icon/medlogo-192.png',
+  '/icon/favicon-32.png'
 ];
 
 // Install - Cache tüm dosyaları (hata toleranslı, subpath destekli)
