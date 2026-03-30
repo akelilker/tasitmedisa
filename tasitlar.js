@@ -473,7 +473,6 @@
       // #region agent log
       (function () {
         var payload = { sessionId: '8624d8', hypothesisId: 'H1', location: 'tasitlar.js:handleVehicleRowClick', message: 'vehicle row click', data: { hasRow: !!row, rawVidLen: rawVid.length, hasShowDetail: typeof window.showVehicleDetail === 'function', tag: e.target && e.target.tagName }, timestamp: Date.now(), runId: 'pre-fix' };
-        fetch('http://127.0.0.1:7885/ingest/f748c7df-0c18-4178-a736-c89151ca12d1', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': '8624d8' }, body: JSON.stringify(payload) }).catch(function () {});
         var pathDir = (location.pathname || '/').replace(/\/[^/]*$/, '');
         var ingestPath = (pathDir ? pathDir + '/' : '/') + 'debug_ingest.php';
         fetch(ingestPath, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }).catch(function () {});
@@ -1442,7 +1441,6 @@
     // #region agent log
     (function () {
       var payload = { sessionId: '8624d8', hypothesisId: 'H3', location: 'tasitlar.js:showVehicleDetail', message: 'after vehicle resolve', data: { vehicleIdParam: String(vehicleId), resolvedId: String(resolvedId), vehicleFound: true, modalNull: !modal, contentNull: !DOM.vehicleDetailContent }, timestamp: Date.now(), runId: 'pre-fix' };
-      fetch('http://127.0.0.1:7885/ingest/f748c7df-0c18-4178-a736-c89151ca12d1', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': '8624d8' }, body: JSON.stringify(payload) }).catch(function () {});
       var pathDir = (location.pathname || '/').replace(/\/[^/]*$/, '');
       var ingestPath = (pathDir ? pathDir + '/' : '/') + 'debug_ingest.php';
       fetch(ingestPath, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }).catch(function () {});
@@ -1452,7 +1450,6 @@
       // #region agent log
       (function () {
         var payload = { sessionId: '8624d8', hypothesisId: 'H3', location: 'tasitlar.js:showVehicleDetail', message: 'abort no modal', data: {}, timestamp: Date.now(), runId: 'pre-fix' };
-        fetch('http://127.0.0.1:7885/ingest/f748c7df-0c18-4178-a736-c89151ca12d1', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': '8624d8' }, body: JSON.stringify(payload) }).catch(function () {});
         var pathDir = (location.pathname || '/').replace(/\/[^/]*$/, '');
         fetch((pathDir ? pathDir + '/' : '/') + 'debug_ingest.php', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }).catch(function () {});
       })();
@@ -1465,7 +1462,6 @@
       // #region agent log
       (function () {
         var payload = { sessionId: '8624d8', hypothesisId: 'H3', location: 'tasitlar.js:showVehicleDetail', message: 'abort no content', data: {}, timestamp: Date.now(), runId: 'pre-fix' };
-        fetch('http://127.0.0.1:7885/ingest/f748c7df-0c18-4178-a736-c89151ca12d1', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': '8624d8' }, body: JSON.stringify(payload) }).catch(function () {});
         var pathDir = (location.pathname || '/').replace(/\/[^/]*$/, '');
         fetch((pathDir ? pathDir + '/' : '/') + 'debug_ingest.php', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }).catch(function () {});
       })();
@@ -1495,7 +1491,6 @@
       // #region agent log
       (function () {
         var payload = { sessionId: '8624d8', hypothesisId: 'H2', location: 'tasitlar.js:showVehicleDetail', message: 'early return skip duplicate', data: { resolvedId: String(resolvedId) }, timestamp: Date.now(), runId: 'pre-fix' };
-        fetch('http://127.0.0.1:7885/ingest/f748c7df-0c18-4178-a736-c89151ca12d1', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': '8624d8' }, body: JSON.stringify(payload) }).catch(function () {});
         var pathDir = (location.pathname || '/').replace(/\/[^/]*$/, '');
         var ingestPath = (pathDir ? pathDir + '/' : '/') + 'debug_ingest.php';
         fetch(ingestPath, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }).catch(function () {});
