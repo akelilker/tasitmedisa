@@ -1473,7 +1473,7 @@
         window._printScriptPromise = loadScript('tasitlar-yazici.js?v=20260326.1');
       }
 
-    const modal = DOM.vehicleDetailModal;
+    const modal = DOM.vehicleDetailModal || document.getElementById('vehicle-detail-modal');
     // #region agent log
     (function () {
       var payload = { sessionId: '8624d8', hypothesisId: 'H3', location: 'tasitlar.js:showVehicleDetail', message: 'after vehicle resolve', data: { vehicleIdParam: String(vehicleId), vehicleFound: true, modalNull: !modal, contentNull: !DOM.vehicleDetailContent }, timestamp: Date.now(), runId: 'pre-fix' };
@@ -1493,7 +1493,7 @@
       return;
     }
 
-    const contentEl = DOM.vehicleDetailContent;
+    const contentEl = DOM.vehicleDetailContent || document.getElementById('vehicle-detail-content');
     if (!contentEl) {
       // #region agent log
       (function () {
