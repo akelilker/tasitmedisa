@@ -16,6 +16,47 @@ function medisaAgentDebugLoginLog($hypothesisId, $location, $message, $data = []
 }
 // #endregion
 
+/** Görünmez Unicode + trim; NFC birleşik form (kopyala-yapıştır uyumu). */
+function medisaLoginNormalizeUsernameInput($s) {
+    $s = trim((string) $s);
+    if ($s !== '' && class_exists('Normalizer', false)) {
+        $n = Normalizer::normalize($s, Normalizer::FORM_C);
+        if (is_string($n) && $n !== '') {
+            $s = $n;
+        }
+    }
+    $s = preg_replace('/[\x{200B}-\x{200D}\x{FEFF}\x{00A0}]/u', '', $s);
+    return trim($s);
+}
+
+/** Kayıttaki giriş adı: önce Türkçe anahtar, sonra yaygın İngilizce yedekler. */
+function medisaLoginExtractStoredUsername($candidate) {
+    if (!is_array($candidate)) {
+        return '';
+    }
+    foreach (['kullanici_adi', 'username', 'login', 'userName', 'user_name'] as $key) {
+        if (isset($candidate[$key]) && trim((string) $candidate[$key]) !== '') {
+            return medisaLoginNormalizeUsernameInput($candidate[$key]);
+        }
+    }
+    return '';
+}
+
+function medisaLoginUsernamesEqual($stored, $input) {
+    if ($stored === '' || $input === '') {
+        return false;
+    }
+    if ($stored === $input) {
+        return true;
+    }
+    if (function_exists('mb_strtolower')) {
+        if (mb_strtolower($stored, 'UTF-8') === mb_strtolower($input, 'UTF-8')) {
+            return true;
+        }
+    }
+    return strcasecmp($stored, $input) === 0;
+}
+
 header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST, OPTIONS');
@@ -37,7 +78,7 @@ if (!is_array($input)) {
     $input = [];
 }
 
-$username = trim((string)($input['username'] ?? ''));
+$username = medisaLoginNormalizeUsernameInput($input['username'] ?? '');
 $username = mb_substr($username, 0, 255);
 $password = trim((string)($input['password'] ?? ''));
 
@@ -63,10 +104,13 @@ $result = medisaMutateData(function (&$data) use ($username, $password) {
     $userIndex = -1;
     $usernameExists = false;
     $usernameActive = false;
+    $definedLoginUserCount = 0;
     foreach ($data['users'] as $idx => $candidate) {
-        $kullaniciEslesiyor = isset($candidate['kullanici_adi'])
-            && trim((string)$candidate['kullanici_adi']) !== ''
-            && strcasecmp(trim((string)$candidate['kullanici_adi']), $username) === 0;
+        $storedLogin = medisaLoginExtractStoredUsername($candidate);
+        if ($storedLogin !== '') {
+            $definedLoginUserCount++;
+        }
+        $kullaniciEslesiyor = $storedLogin !== '' && medisaLoginUsernamesEqual($storedLogin, $username);
         if (!$kullaniciEslesiyor) {
             continue;
         }
@@ -92,13 +136,19 @@ $result = medisaMutateData(function (&$data) use ($username, $password) {
         'usernameExists' => $usernameExists,
         'usernameActive' => $usernameActive,
         'userFound' => $user !== null && $userIndex >= 0,
+        'totalUsers' => count($data['users']),
+        'usersWithLoginId' => $definedLoginUserCount,
     ]);
     // #endregion
 
     if (!$user || $userIndex < 0) {
         // #region agent log
         $failReason = !$usernameExists ? 'username_not_found' : (!$usernameActive ? 'inactive' : 'no_password');
-        medisaAgentDebugLoginLog('H4', 'driver_login.php:fail_precheck', 'login_fail', ['reason' => $failReason]);
+        medisaAgentDebugLoginLog('H4', 'driver_login.php:fail_precheck', 'login_fail', [
+            'reason' => $failReason,
+            'usersWithLoginId' => $definedLoginUserCount,
+            'totalUsers' => count($data['users']),
+        ]);
         // #endregion
         if (!$usernameExists) {
             return medisaBuildErrorResult('Kullanıcı adı hatalı!', 200);
