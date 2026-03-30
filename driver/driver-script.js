@@ -4,11 +4,12 @@
 
 // API Base URL: /tasitmedisa/ veya /medisa/ altındaysa mutlak yol (PHP'ler driver klasöründe)
 const API_BASE = (function(){
-    var p = document.location.pathname;
-    if (p.indexOf('/tasitmedisa') === 0) return '/tasitmedisa/driver/';
-    if (p.indexOf('/medisa') === 0) return '/medisa/driver/';
+    var p = document.location.pathname || '';
+    var pl = p.toLowerCase();
+    if (pl.indexOf('/tasitmedisa') === 0) return '/tasitmedisa/driver/';
+    if (pl.indexOf('/medisa') === 0) return '/medisa/driver/';
     var base = '/';
-    var driverIdx = p.indexOf('/driver'); 
+    var driverIdx = pl.indexOf('/driver'); 
     if (driverIdx !== -1) {
       base = p.substring(0, driverIdx) + '/';
     } else if (p && p !== '/') {
@@ -19,29 +20,33 @@ const API_BASE = (function(){
   
   // İkon/kaporta SVG base path (sürücü paneli farklı dizinde)
   const ICON_BASE = (function(){
-    var p = document.location.pathname;
-    if (p.indexOf('/tasitmedisa') === 0) return '/tasitmedisa/icon/';
-    if (p.indexOf('/medisa') === 0) return '/medisa/icon/';
+    var p = document.location.pathname || '';
+    var pl = p.toLowerCase();
+    if (pl.indexOf('/tasitmedisa') === 0) return '/tasitmedisa/icon/';
+    if (pl.indexOf('/medisa') === 0) return '/medisa/icon/';
     return '../icon/';
   })();
   
   // Sayfa yönlendirmeleri: subpath altında değilse relative path (localhost/driver için)
   const DRIVER_PAGE_BASE = (function(){
-    var p = document.location.pathname;
-    if (p.indexOf('/tasitmedisa') === 0) return '/tasitmedisa/driver/';
-    if (p.indexOf('/medisa') === 0) return '/medisa/driver/';
+    var p = document.location.pathname || '';
+    var pl = p.toLowerCase();
+    if (pl.indexOf('/tasitmedisa') === 0) return '/tasitmedisa/driver/';
+    if (pl.indexOf('/medisa') === 0) return '/medisa/driver/';
     return '';
   })();
   const MAIN_APP_URL = (function() {
-    var p = document.location.pathname;
-    if (p.indexOf('/tasitmedisa') === 0) return '/tasitmedisa/index.html';
-    if (p.indexOf('/medisa') === 0) return '/medisa/index.html';
+    var p = document.location.pathname || '';
+    var pl = p.toLowerCase();
+    if (pl.indexOf('/tasitmedisa') === 0) return '/tasitmedisa/index.html';
+    if (pl.indexOf('/medisa') === 0) return '/medisa/index.html';
     return '../index.html';
   })();
   const MAIN_SESSION_URL = (function() {
-    var p = document.location.pathname;
-    if (p.indexOf('/tasitmedisa') === 0) return '/tasitmedisa/load.php';
-    if (p.indexOf('/medisa') === 0) return '/medisa/load.php';
+    var p = document.location.pathname || '';
+    var pl = p.toLowerCase();
+    if (pl.indexOf('/tasitmedisa') === 0) return '/tasitmedisa/load.php';
+    if (pl.indexOf('/medisa') === 0) return '/medisa/load.php';
     return '../load.php';
   })();
   
@@ -477,7 +482,11 @@ const API_BASE = (function(){
     }, 4000);
   })();
   
-  if (document.getElementById('login-form')) {
+  function initDriverLoginPage() {
+      var loginForm = document.getElementById('login-form');
+      if (!loginForm || loginForm.getAttribute('data-medisa-login-init') === '1') return;
+      loginForm.setAttribute('data-medisa-login-init', '1');
+
       /* Geçerli bir oturum varsa login ekranını atla ve token'ın işaret ettiği yüzeye git. */
       var savedToken = getStoredPortalToken();
       if (!shouldForceDriverLoginView() && savedToken) {
@@ -518,7 +527,7 @@ const API_BASE = (function(){
       if (usernameInput) usernameInput.addEventListener('focus', function() { scrollInputIntoView(this); });
       if (passwordInput) passwordInput.addEventListener('focus', function() { scrollInputIntoView(this); });
   
-      document.getElementById('login-form').addEventListener('submit', async (e) => {
+      loginForm.addEventListener('submit', async (e) => {
           e.preventDefault();
           
           const username = document.getElementById('username').value.trim();
@@ -612,6 +621,12 @@ const API_BASE = (function(){
           }
       });
   }
+
+  if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initDriverLoginPage);
+  } else {
+      initDriverLoginPage();
+  }
   
   /* =========================================
      SPLASH (3 sn) + DASHBOARD / LOGIN
@@ -645,7 +660,13 @@ const API_BASE = (function(){
       if (ev.persisted) run();
     });
   } else if (document.getElementById('driver-splash')) {
-    document.addEventListener('DOMContentLoaded', function() { initDriverSplash(); });
+    (function runLoginSplash() {
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() { initDriverSplash(); });
+      } else {
+        initDriverSplash();
+      }
+    })();
   }
   
   async function loadDashboard() {
