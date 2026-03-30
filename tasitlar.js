@@ -469,12 +469,26 @@
       const listItem = e.target.closest('.list-item');
       if (listItem && listItem.classList.contains('list-item-empty')) return;
       const row = card || listItem;
-      if (row && row.dataset && row.dataset.vehicleId) {
+      const rawVid = row ? (row.getAttribute('data-vehicle-id') || '').trim() : '';
+      // #region agent log
+      (function () {
+        var payload = { sessionId: '8624d8', hypothesisId: 'H1', location: 'tasitlar.js:handleVehicleRowClick', message: 'vehicle row click', data: { hasRow: !!row, rawVidLen: rawVid.length, hasShowDetail: typeof window.showVehicleDetail === 'function', tag: e.target && e.target.tagName }, timestamp: Date.now(), runId: 'pre-fix' };
+        fetch('http://127.0.0.1:7885/ingest/f748c7df-0c18-4178-a736-c89151ca12d1', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': '8624d8' }, body: JSON.stringify(payload) }).catch(function () {});
+        var pathDir = (location.pathname || '/').replace(/\/[^/]*$/, '');
+        var ingestPath = (pathDir ? pathDir + '/' : '/') + 'debug_ingest.php';
+        fetch(ingestPath, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }).catch(function () {});
+      })();
+      // #endregion
+      if (row && rawVid !== '') {
         e.stopPropagation();
         e.preventDefault();
         if (typeof window.showVehicleDetail === 'function') {
-          window.showVehicleDetail(row.dataset.vehicleId);
+          window.showVehicleDetail(rawVid);
         }
+        return;
+      }
+      if (row && (row.classList.contains('list-item') || row.classList.contains('card'))) {
+        alert('Bu satırda taşıt kimliği yok. Sayfayı yenileyin veya veriyi sunucudan tekrar yükleyin.');
       }
     }
     // PERFORMANS VE UX FIX: "touchend" eventi mobil kaydırmalarda (scroll) hayalet tıklamalara sebep olduğu için kaldırıldı.
@@ -1401,13 +1415,23 @@
   window.showVehicleDetail = function(vehicleId) {
     const runDetail = () => {
       const vehicles = readVehicles();
-      const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
+      function normalizePlateKey(p) {
+        return String(p || '').replace(/\s+/g, '').toUpperCase();
+      }
+      let vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
+      if (!vehicle && vehicleId) {
+        const key = normalizePlateKey(vehicleId);
+        if (key.length >= 5 && /[0-9]/.test(key)) {
+          vehicle = vehicles.find(v => normalizePlateKey(v.plate) === key);
+        }
+      }
       if (!vehicle) {
         alert("Taşıt bulunamadı!");
         return;
       }
 
-      window.currentDetailVehicleId = vehicleId;
+      const resolvedId = vehicle.id != null ? String(vehicle.id) : String(vehicleId);
+      window.currentDetailVehicleId = resolvedId;
 
       // iOS yazıcı izin prompt'unu azaltmak için yazdırma script'ini önceden yükle
       if (!window._printScriptPromise) {
@@ -1415,10 +1439,39 @@
       }
 
     const modal = DOM.vehicleDetailModal;
-    if (!modal) return;
+    // #region agent log
+    (function () {
+      var payload = { sessionId: '8624d8', hypothesisId: 'H3', location: 'tasitlar.js:showVehicleDetail', message: 'after vehicle resolve', data: { vehicleIdParam: String(vehicleId), resolvedId: String(resolvedId), vehicleFound: true, modalNull: !modal, contentNull: !DOM.vehicleDetailContent }, timestamp: Date.now(), runId: 'pre-fix' };
+      fetch('http://127.0.0.1:7885/ingest/f748c7df-0c18-4178-a736-c89151ca12d1', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': '8624d8' }, body: JSON.stringify(payload) }).catch(function () {});
+      var pathDir = (location.pathname || '/').replace(/\/[^/]*$/, '');
+      var ingestPath = (pathDir ? pathDir + '/' : '/') + 'debug_ingest.php';
+      fetch(ingestPath, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }).catch(function () {});
+    })();
+    // #endregion
+    if (!modal) {
+      // #region agent log
+      (function () {
+        var payload = { sessionId: '8624d8', hypothesisId: 'H3', location: 'tasitlar.js:showVehicleDetail', message: 'abort no modal', data: {}, timestamp: Date.now(), runId: 'pre-fix' };
+        fetch('http://127.0.0.1:7885/ingest/f748c7df-0c18-4178-a736-c89151ca12d1', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': '8624d8' }, body: JSON.stringify(payload) }).catch(function () {});
+        var pathDir = (location.pathname || '/').replace(/\/[^/]*$/, '');
+        fetch((pathDir ? pathDir + '/' : '/') + 'debug_ingest.php', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }).catch(function () {});
+      })();
+      // #endregion
+      return;
+    }
 
     const contentEl = DOM.vehicleDetailContent;
-    if (!contentEl) return;
+    if (!contentEl) {
+      // #region agent log
+      (function () {
+        var payload = { sessionId: '8624d8', hypothesisId: 'H3', location: 'tasitlar.js:showVehicleDetail', message: 'abort no content', data: {}, timestamp: Date.now(), runId: 'pre-fix' };
+        fetch('http://127.0.0.1:7885/ingest/f748c7df-0c18-4178-a736-c89151ca12d1', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': '8624d8' }, body: JSON.stringify(payload) }).catch(function () {});
+        var pathDir = (location.pathname || '/').replace(/\/[^/]*$/, '');
+        fetch((pathDir ? pathDir + '/' : '/') + 'debug_ingest.php', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }).catch(function () {});
+      })();
+      // #endregion
+      return;
+    }
 
     const detailSignature = [
       String(vehicle.id ?? ''),
@@ -1434,10 +1487,20 @@
     const isArchiveSoldDetail = vehicle.satildiMi === true && lastListContext && lastListContext.mode === 'archive';
 
     if (
+      modal.style.display !== 'none' &&
       modal.classList.contains('active') &&
-      String(window.currentDetailVehicleId) === String(vehicleId) &&
+      String(window.currentDetailVehicleId) === String(resolvedId) &&
       modal.dataset.detailSignature === detailSignature
     ) {
+      // #region agent log
+      (function () {
+        var payload = { sessionId: '8624d8', hypothesisId: 'H2', location: 'tasitlar.js:showVehicleDetail', message: 'early return skip duplicate', data: { resolvedId: String(resolvedId) }, timestamp: Date.now(), runId: 'pre-fix' };
+        fetch('http://127.0.0.1:7885/ingest/f748c7df-0c18-4178-a736-c89151ca12d1', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': '8624d8' }, body: JSON.stringify(payload) }).catch(function () {});
+        var pathDir = (location.pathname || '/').replace(/\/[^/]*$/, '');
+        var ingestPath = (pathDir ? pathDir + '/' : '/') + 'debug_ingest.php';
+        fetch(ingestPath, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }).catch(function () {});
+      })();
+      // #endregion
       return;
     }
 
@@ -1593,7 +1656,7 @@
         assignBtn.innerHTML = '<span>\u015Eubeye Tahsis Etmek \u0130\u00E7in +</span>';
         assignBtn.onclick = (e) => {
           e.stopPropagation();
-          openEventModal('sube', vehicleId);
+          openEventModal('sube', resolvedId);
         };
         toolbarCenter.appendChild(assignBtn);
       }
@@ -1607,7 +1670,7 @@
       ruhsatBtn.title = vehicle.ruhsatPath ? 'Ruhsat\u0131 G\u00F6r\u00FCnt\u00FCle' : 'Ruhsat Y\u00FCkle';
       ruhsatBtn.setAttribute('aria-label', 'Ruhsat');
       ruhsatBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg>';
-      ruhsatBtn.onclick = (e) => { e.stopPropagation(); if (typeof window.openRuhsatModal === 'function') window.openRuhsatModal(vehicleId); };
+      ruhsatBtn.onclick = (e) => { e.stopPropagation(); if (typeof window.openRuhsatModal === 'function') window.openRuhsatModal(resolvedId); };
       toolbarRight.appendChild(ruhsatBtn);
       const printBtn = document.createElement('button');
       printBtn.type = 'button';
