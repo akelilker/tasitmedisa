@@ -127,6 +127,9 @@
     }
 
     let selectedUserName = '';
+    let lastTouchToggleAt = 0;
+    let lastTouchOptionAt = 0;
+    const isTouchDevice = window.matchMedia && window.matchMedia('(hover: none)').matches;
 
     const closeDropdown = function() {
       dropdown.classList.remove('open');
@@ -140,8 +143,10 @@
       dropdown.setAttribute('aria-hidden', 'false');
       trigger.classList.add('is-open');
       trigger.setAttribute('aria-expanded', 'true');
-      searchInput.focus();
-      searchInput.select();
+      if (!isTouchDevice) {
+        searchInput.focus();
+        searchInput.select();
+      }
     };
 
     const updateTrigger = function() {
@@ -173,12 +178,20 @@
       renderUserList();
     };
 
-    trigger.addEventListener('click', function(e) {
-      e.preventDefault();
+    const handleTriggerActivate = function(e) {
+      if (e.type === 'touchend') {
+        lastTouchToggleAt = Date.now();
+        if (e.cancelable) e.preventDefault();
+      } else if (e.type === 'click' && Date.now() - lastTouchToggleAt < 500) {
+        return;
+      }
       e.stopPropagation();
       if (dropdown.classList.contains('open')) closeDropdown();
       else openDropdown();
-    });
+    };
+
+    trigger.addEventListener('click', handleTriggerActivate);
+    trigger.addEventListener('touchend', handleTriggerActivate, { passive: false });
 
     trigger.addEventListener('keydown', function(e) {
       if (e.key === 'Enter' || e.key === ' ') {
@@ -202,14 +215,23 @@
       }
     });
 
-    listEl.addEventListener('click', function(e) {
+    const handleOptionSelect = function(e) {
+      if (e.type === 'touchend') {
+        lastTouchOptionAt = Date.now();
+        if (e.cancelable) e.preventDefault();
+      } else if (e.type === 'click' && Date.now() - lastTouchOptionAt < 500) {
+        return;
+      }
       const option = e.target.closest('.ceza-user-option');
       if (!option) return;
       const userName = option.getAttribute('data-user-name') || '';
       setSelectedUser(userName);
       closeDropdown();
       trigger.focus();
-    });
+    };
+
+    listEl.addEventListener('click', handleOptionSelect);
+    listEl.addEventListener('touchend', handleOptionSelect, { passive: false });
 
     modal._cezaUserOutsideHandler = function(e) {
       if (!wrap.contains(e.target)) closeDropdown();
