@@ -205,6 +205,12 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
   top: 50% !important;
   transform: translateY(-50%) !important;
   margin: 0 !important;
+  width: 16px !important;
+  height: 16px !important;
+  padding: 1px !important;
+  opacity: 0.95 !important;
+  filter: invert(0.72) brightness(1.08) !important;
+  pointer-events: auto !important;
   cursor: pointer !important;
 }
 
@@ -215,6 +221,129 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 }
 .olay-ekle-modal .modal-body .form-input::placeholder {
   color: #6c757d !important;
+}
+
+/* Olay Ekle: modal içi kaydet başarı bildirimi */
+#dinamik-olay-modal .modal-body .dynamic-event-save-message {
+  width: 100% !important;
+  margin: 0 0 10px 0 !important;
+  padding: 9px 12px !important;
+  border: 1px solid rgba(40, 167, 69, 0.55) !important;
+  border-radius: 8px !important;
+  background: rgba(40, 167, 69, 0.14) !important;
+  color: #baf7c6 !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  line-height: 1.35 !important;
+  box-shadow: 0 4px 12px rgba(18, 66, 34, 0.35) !important;
+}
+
+/* Trafik Cezasi modal: kullanici secimi acilir kapanir liste + arama */
+.olay-ekle-modal .modal-body .ceza-user-dropdown-wrap {
+  position: relative !important;
+  width: 100% !important;
+}
+.olay-ekle-modal .modal-body .ceza-user-trigger {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  width: 100% !important;
+  min-height: 36px !important;
+  height: 36px !important;
+  padding: 0 10px !important;
+  text-align: left !important;
+  cursor: pointer !important;
+  color: #cfd5df !important;
+}
+.olay-ekle-modal .modal-body .ceza-user-trigger.placeholder {
+  color: #6c757d !important;
+}
+.olay-ekle-modal .modal-body .ceza-user-trigger:focus {
+  outline: none !important;
+}
+.olay-ekle-modal .modal-body .ceza-user-trigger .ceza-user-chevron {
+  width: 16px !important;
+  height: 16px !important;
+  flex-shrink: 0 !important;
+  opacity: 0.78 !important;
+  transition: transform 0.18s ease, opacity 0.18s ease !important;
+}
+.olay-ekle-modal .modal-body .ceza-user-trigger.is-open .ceza-user-chevron {
+  transform: rotate(180deg) !important;
+  opacity: 0.95 !important;
+}
+.olay-ekle-modal .modal-body .ceza-user-dropdown {
+  position: absolute !important;
+  top: calc(100% + 6px) !important;
+  left: 0 !important;
+  right: 0 !important;
+  display: none !important;
+  flex-direction: column !important;
+  background: #0d131f !important;
+  border: 1px solid rgba(255, 255, 255, 0.24) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.46) !important;
+  z-index: 35 !important;
+  overflow: hidden !important;
+}
+.olay-ekle-modal .modal-body .ceza-user-dropdown.open {
+  display: flex !important;
+}
+.olay-ekle-modal .modal-body .ceza-user-search-wrap {
+  position: sticky !important;
+  top: 0 !important;
+  padding: 8px !important;
+  background: #0d131f !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.09) !important;
+  z-index: 1 !important;
+}
+.olay-ekle-modal .modal-body .ceza-user-search-input {
+  min-height: 32px !important;
+  height: 32px !important;
+  padding: 0 10px !important;
+  font-size: 13px !important;
+  text-align: left !important;
+}
+.olay-ekle-modal .modal-body .ceza-user-list {
+  max-height: 180px !important;
+  overflow-y: auto !important;
+}
+.olay-ekle-modal .modal-body .ceza-user-list::-webkit-scrollbar {
+  width: 6px !important;
+}
+.olay-ekle-modal .modal-body .ceza-user-list::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2) !important;
+  border-radius: 4px !important;
+}
+.olay-ekle-modal .modal-body .ceza-user-option {
+  width: 100% !important;
+  border: none !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+  background: transparent !important;
+  color: #d6dbe3 !important;
+  text-align: left !important;
+  padding: 9px 12px !important;
+  cursor: pointer !important;
+  font-size: 13px !important;
+  line-height: 1.35 !important;
+}
+.olay-ekle-modal .modal-body .ceza-user-option:last-child {
+  border-bottom: none !important;
+}
+.olay-ekle-modal .modal-body .ceza-user-option:hover,
+.olay-ekle-modal .modal-body .ceza-user-option:focus {
+  background: rgba(var(--theme-color-rgb), 0.16) !important;
+  color: #f8f9fa !important;
+  outline: none !important;
+}
+.olay-ekle-modal .modal-body .ceza-user-option.selected {
+  background: rgba(var(--theme-color-rgb), 0.24) !important;
+  color: #ffffff !important;
+}
+.olay-ekle-modal .modal-body .ceza-user-empty {
+  padding: 11px 12px !important;
+  color: #6c757d !important;
+  font-size: 12px !important;
 }
 
 /* Olay Ekle (13 modal): input/select/textarea arka planı – kayıt modalı ile aynı (#0d131f) */

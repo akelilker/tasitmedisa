@@ -63,6 +63,163 @@
     });
   }
 
+  function normalizeUserDisplayName(rawName) {
+    const plain = String(rawName || '').trim();
+    if (!plain) return '';
+    return (typeof window.formatAdSoyad === 'function')
+      ? formatAdSoyad(plain)
+      : plain;
+  }
+
+  function getAssignableUserDisplayNamesForVehicle(vehicle) {
+    const users = getAssignableUsersForVehicle(vehicle);
+    const names = [];
+    const seen = Object.create(null);
+    users.forEach(function(user) {
+      const raw = user && (user.name || user.isim || user.fullName || '');
+      const displayName = normalizeUserDisplayName(raw);
+      if (!displayName) return;
+      const key = displayName.toLocaleLowerCase('tr-TR');
+      if (seen[key]) return;
+      seen[key] = true;
+      names.push(displayName);
+    });
+    names.sort(function(a, b) { return a.localeCompare(b, 'tr', { sensitivity: 'base' }); });
+    return names;
+  }
+
+  function bindCezaUserDropdown(modal, vehicle) {
+    if (!modal) return;
+    const hiddenInput = modal.querySelector('#ceza-surucu');
+    const wrap = modal.querySelector('#ceza-user-wrap');
+    const trigger = modal.querySelector('#ceza-user-trigger');
+    const triggerText = modal.querySelector('#ceza-user-trigger-text');
+    const dropdown = modal.querySelector('#ceza-user-dropdown');
+    const searchInput = modal.querySelector('#ceza-user-search');
+    const listEl = modal.querySelector('#ceza-user-list');
+    if (!hiddenInput || !wrap || !trigger || !triggerText || !dropdown || !searchInput || !listEl) return;
+
+    if (modal._cezaUserOutsideHandler) {
+      document.removeEventListener('click', modal._cezaUserOutsideHandler, true);
+      modal._cezaUserOutsideHandler = null;
+    }
+
+    const escapeHtmlLocal = function(text) {
+      return String(text || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    };
+    const normalizeForSearch = function(value) {
+      return String(value || '')
+        .toLocaleLowerCase('tr-TR')
+        .replace(/ı/g, 'i')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '');
+    };
+
+    let userNames = getAssignableUserDisplayNamesForVehicle(vehicle);
+    const defaultUserName = normalizeUserDisplayName(vehicle && vehicle.tahsisKisi ? vehicle.tahsisKisi : '');
+    if (defaultUserName && userNames.indexOf(defaultUserName) === -1) {
+      userNames = [defaultUserName].concat(userNames);
+    }
+
+    let selectedUserName = '';
+
+    const closeDropdown = function() {
+      dropdown.classList.remove('open');
+      dropdown.setAttribute('aria-hidden', 'true');
+      trigger.classList.remove('is-open');
+      trigger.setAttribute('aria-expanded', 'false');
+    };
+
+    const openDropdown = function() {
+      dropdown.classList.add('open');
+      dropdown.setAttribute('aria-hidden', 'false');
+      trigger.classList.add('is-open');
+      trigger.setAttribute('aria-expanded', 'true');
+      searchInput.focus();
+      searchInput.select();
+    };
+
+    const updateTrigger = function() {
+      triggerText.textContent = selectedUserName || 'Kullanıcı seçiniz';
+      trigger.classList.toggle('placeholder', !selectedUserName);
+      hiddenInput.value = selectedUserName;
+    };
+
+    const renderUserList = function() {
+      const query = normalizeForSearch(searchInput.value || '');
+      const filtered = userNames.filter(function(name) {
+        return normalizeForSearch(name).indexOf(query) !== -1;
+      });
+
+      if (!filtered.length) {
+        listEl.innerHTML = '<div class="ceza-user-empty">Kullanıcı bulunamadı</div>';
+        return;
+      }
+
+      listEl.innerHTML = filtered.map(function(name) {
+        const isSelected = selectedUserName === name;
+        return '<button type="button" class="ceza-user-option' + (isSelected ? ' selected' : '') + '" data-user-name="' + escapeHtmlLocal(name) + '" role="option" aria-selected="' + (isSelected ? 'true' : 'false') + '">' + escapeHtmlLocal(name) + '</button>';
+      }).join('');
+    };
+
+    const setSelectedUser = function(name) {
+      selectedUserName = String(name || '').trim();
+      updateTrigger();
+      renderUserList();
+    };
+
+    trigger.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (dropdown.classList.contains('open')) closeDropdown();
+      else openDropdown();
+    });
+
+    trigger.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        if (dropdown.classList.contains('open')) closeDropdown();
+        else openDropdown();
+      } else if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        if (!dropdown.classList.contains('open')) openDropdown();
+      } else if (e.key === 'Escape') {
+        closeDropdown();
+      }
+    });
+
+    searchInput.addEventListener('input', renderUserList);
+    searchInput.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        closeDropdown();
+        trigger.focus();
+      }
+    });
+
+    listEl.addEventListener('click', function(e) {
+      const option = e.target.closest('.ceza-user-option');
+      if (!option) return;
+      const userName = option.getAttribute('data-user-name') || '';
+      setSelectedUser(userName);
+      closeDropdown();
+      trigger.focus();
+    });
+
+    modal._cezaUserOutsideHandler = function(e) {
+      if (!wrap.contains(e.target)) closeDropdown();
+    };
+    document.addEventListener('click', modal._cezaUserOutsideHandler, true);
+
+    renderUserList();
+    setSelectedUser(defaultUserName);
+  }
+
   function getEventPerformerName(vehicle) {
     const users = readUsers();
     const assignedId = vehicle.assignedUserId || '';
@@ -442,10 +599,15 @@
 
   function resetModalState(modal) {
     if (!modal) return;
+    if (modal._cezaUserOutsideHandler) {
+      document.removeEventListener('click', modal._cezaUserOutsideHandler, true);
+      modal._cezaUserOutsideHandler = null;
+    }
     if (typeof window.resetModalInputs === 'function') {
       window.resetModalInputs(modal);
     }
     modal.querySelectorAll('.date-placeholder').forEach(function(el) { el.remove(); });
+    modal.querySelectorAll('.dynamic-event-save-message').forEach(function(el) { el.remove(); });
     modal.querySelectorAll('.universal-btn-save').forEach(function(btn) { btn.disabled = false; });
     ['lastik-adres-wrapper-event', 'anahtar-detay-wrapper', 'kredi-detay-wrapper-event'].forEach(function(id) {
       var wrap = modal.querySelector('#' + id);
@@ -453,6 +615,49 @@
     });
     var kazaKaporta = modal.querySelector('#kaza-kaporta-container');
     if (kazaKaporta) kazaKaporta.innerHTML = '';
+  }
+
+  function showDynamicEventSaveMessage(modal, text) {
+    if (!modal) return null;
+    const modalBody = modal.querySelector('.modal-body');
+    if (!modalBody) return null;
+
+    let messageEl = modalBody.querySelector('.dynamic-event-save-message');
+    if (!messageEl) {
+      messageEl = document.createElement('div');
+      messageEl.className = 'dynamic-event-save-message';
+      modalBody.insertBefore(messageEl, modalBody.firstChild);
+    }
+    messageEl.textContent = String(text || 'İşlem başarıyla kaydedildi.');
+    return messageEl;
+  }
+
+  function completeDynamicEventSave(options) {
+    const opts = options || {};
+    const modalType = String(opts.modalType || '');
+    const vehicleId = String(opts.vehicleId || window.currentDetailVehicleId || '');
+    const message = String(opts.message || 'İşlem başarıyla kaydedildi.');
+    const waitMs = typeof opts.waitMs === 'number' ? opts.waitMs : 800;
+    const afterSuccess = typeof opts.afterSuccess === 'function' ? opts.afterSuccess : null;
+    const modal = document.getElementById(getEventModalId(modalType)) || DOM.dinamikOlayModal;
+
+    showDynamicEventSaveMessage(modal, message);
+
+    return new Promise(function(resolve) {
+      setTimeout(function() {
+        if (modalType) closeEventModal(modalType);
+        try {
+          if (afterSuccess) {
+            afterSuccess(vehicleId);
+          } else if (vehicleId && typeof window.showVehicleDetail === 'function') {
+            window.showVehicleDetail(vehicleId);
+          }
+        } catch (err) {
+          console.error('Dinamik olay başarı kapanışı sırasında hata:', err);
+        }
+        resolve();
+      }, waitMs);
+    });
   }
 
   const modalContent = DOM.vehiclesModalContent;
@@ -2656,8 +2861,23 @@ function renderVehicleDetailLeft(vehicle) {
       case 'ceza':
         return '<div style="display:flex;flex-direction:column;gap:12px;">' +
           section('Tarih', 'ceza-tarih', 'input', [['type', 'date'], ['class', 'olay-tarih-input']]) +
-          section('Kullanıcı', 'ceza-surucu', 'input', [['type', 'text'], ['placeholder', 'Kullanıcı']]) +
-          section('Ceza Tutarı', 'ceza-tutar', 'input', [['type', 'text']]) +
+          '<div>' +
+            '<label class="' + labelCls + '" id="ceza-user-label" for="ceza-user-trigger">Kullanıcı</label>' +
+            '<input type="hidden" id="ceza-surucu">' +
+            '<div id="ceza-user-wrap" class="ceza-user-dropdown-wrap">' +
+              '<button type="button" id="ceza-user-trigger" class="form-input ceza-user-trigger placeholder" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="ceza-user-dropdown" aria-labelledby="ceza-user-label ceza-user-trigger-text">' +
+                '<span id="ceza-user-trigger-text">Kullanıcı seçiniz</span>' +
+                '<svg class="ceza-user-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>' +
+              '</button>' +
+              '<div id="ceza-user-dropdown" class="ceza-user-dropdown" role="listbox" aria-hidden="true">' +
+                '<div class="ceza-user-search-wrap">' +
+                  '<input type="text" id="ceza-user-search" class="form-input ceza-user-search-input" placeholder="Kullanıcı ara..." autocomplete="off" aria-label="Kullanıcı ara">' +
+                '</div>' +
+                '<div id="ceza-user-list" class="ceza-user-list"></div>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+          section('Ceza Tutarı', 'ceza-tutar', 'input', [['type', 'text'], ['placeholder', 'Ör. 2.140TL']]) +
           section('Açıklama', 'ceza-aciklama', 'textarea', [['rows', '2'], ['placeholder', 'Açıklama']]) + '</div>';
       case 'sigorta':
         return '<div style="display:flex;flex-direction:column;gap:12px;">' +
@@ -2916,11 +3136,8 @@ function renderVehicleDetailLeft(vehicle) {
           }
         }
       } else if (type === 'ceza') {
-        const cezaSurucuInput = document.getElementById('ceza-surucu');
         const vehicle = readVehicles().find(v => String(v.id) === String(vehicleId || window.currentDetailVehicleId));
-        if (cezaSurucuInput && vehicle?.tahsisKisi) {
-          cezaSurucuInput.value = vehicle.tahsisKisi;
-        }
+        bindCezaUserDropdown(modal, vehicle);
         const cezaTutarInput = document.getElementById('ceza-tutar');
         if (cezaTutarInput) {
           cezaTutarInput.addEventListener('blur', function() {
@@ -4405,10 +4622,13 @@ function renderVehicleDetailLeft(vehicle) {
     };
     
     vehicle.events.unshift(event);
-    writeVehicles(vehicles);
-    
-    closeEventModal('bakim');
-    showVehicleDetail(vehicleId); // Detay ekranını yenile
+    return writeVehicles(vehicles).then(function() {
+      return completeDynamicEventSave({
+        modalType: 'bakim',
+        vehicleId: vehicleId,
+        message: 'Bakım kaydı kaydedildi.'
+      });
+    });
   };
 
   /** Yapılan İşlemler textarea: 2 satır açık, içerik uzadıkça aşağı açılsın */
@@ -4497,10 +4717,13 @@ function renderVehicleDetailLeft(vehicle) {
     };
     
     vehicle.events.unshift(event);
-    writeVehicles(vehicles);
-    
-    closeEventModal('kaza');
-    showVehicleDetail(vehicleId);
+    return writeVehicles(vehicles).then(function() {
+      return completeDynamicEventSave({
+        modalType: 'kaza',
+        vehicleId: vehicleId,
+        message: 'Kaza kaydı kaydedildi.'
+      });
+    });
   };
 
   window.saveCezaEvent = function() {
@@ -4536,10 +4759,13 @@ function renderVehicleDetailLeft(vehicle) {
     };
 
     vehicle.events.unshift(event);
-    writeVehicles(vehicles);
-
-    closeEventModal('ceza');
-    showVehicleDetail(vehicleId);
+    return writeVehicles(vehicles).then(function() {
+      return completeDynamicEventSave({
+        modalType: 'ceza',
+        vehicleId: vehicleId,
+        message: 'Trafik cezası kaydedildi.'
+      });
+    });
   };
 
   /**
@@ -4660,8 +4886,11 @@ function renderVehicleDetailLeft(vehicle) {
     vehicle.events.unshift(event);
     return writeVehicles(vehicles).then(function() {
       if (window.updateNotifications) window.updateNotifications();
-      closeEventModal('sigorta');
-      showVehicleDetail(vehicleId);
+      return completeDynamicEventSave({
+        modalType: 'sigorta',
+        vehicleId: vehicleId,
+        message: 'Sigorta bilgisi güncellendi.'
+      });
     });
   };
 
@@ -4710,8 +4939,11 @@ function renderVehicleDetailLeft(vehicle) {
     vehicle.events.unshift(event);
     return writeVehicles(vehicles).then(function() {
       if (window.updateNotifications) window.updateNotifications();
-      closeEventModal('kasko');
-      showVehicleDetail(vehicleId);
+      return completeDynamicEventSave({
+        modalType: 'kasko',
+        vehicleId: vehicleId,
+        message: 'Kasko bilgisi güncellendi.'
+      });
     });
   };
 
@@ -4752,13 +4984,15 @@ function renderVehicleDetailLeft(vehicle) {
     };
     
     vehicle.events.unshift(event);
-    writeVehicles(vehicles);
-    
-    // Bildirimleri güncelle
-    if (window.updateNotifications) window.updateNotifications();
-    
-    closeEventModal('muayene');
-    showVehicleDetail(vehicleId);
+    return writeVehicles(vehicles).then(function() {
+      // Bildirimleri güncelle
+      if (window.updateNotifications) window.updateNotifications();
+      return completeDynamicEventSave({
+        modalType: 'muayene',
+        vehicleId: vehicleId,
+        message: 'Muayene bilgisi güncellendi.'
+      });
+    });
   };
 
   /**
@@ -4796,8 +5030,11 @@ function renderVehicleDetailLeft(vehicle) {
     
     vehicle.events.unshift(event);
     return writeVehicles(vehicles).then(function() {
-      closeEventModal('anahtar');
-      showVehicleDetail(vehicleId);
+      return completeDynamicEventSave({
+        modalType: 'anahtar',
+        vehicleId: vehicleId,
+        message: 'Yedek anahtar bilgisi güncellendi.'
+      });
     });
   };
 
@@ -4836,8 +5073,11 @@ function renderVehicleDetailLeft(vehicle) {
     
     vehicle.events.unshift(event);
     return writeVehicles(vehicles).then(function() {
-      closeEventModal('kredi');
-      showVehicleDetail(vehicleId);
+      return completeDynamicEventSave({
+        modalType: 'kredi',
+        vehicleId: vehicleId,
+        message: 'Kredi/Rehin bilgisi güncellendi.'
+      });
     });
   };
 
@@ -4886,13 +5126,11 @@ function renderVehicleDetailLeft(vehicle) {
 
     return writeVehicles(vehicles).then(function() {
       if (inputElement) inputElement.value = '';
-      closeEventModal('kaskokodu');
-      document.querySelectorAll('.modal-overlay.active').forEach(m => {
-        m.classList.remove('active');
-        m.style.display = 'none';
+      return completeDynamicEventSave({
+        modalType: 'kaskokodu',
+        vehicleId: vehicleId,
+        message: 'Kasko kodu güncellendi.'
       });
-      if (typeof showToast === 'function') showToast('Kasko Kodu güncellendi', 'success');
-      setTimeout(() => showVehicleDetail(vehicleId), 250);
     });
   };
 
@@ -4952,8 +5190,11 @@ function renderVehicleDetailLeft(vehicle) {
     vehicle.events.unshift(event);
     return writeVehicles(vehicles).then(function() {
       kmInput.value = '';
-      closeEventModal('km');
-      showVehicleDetail(vehicleId);
+      return completeDynamicEventSave({
+        modalType: 'km',
+        vehicleId: vehicleId,
+        message: 'Km bilgisi güncellendi.'
+      });
     });
   };
 
@@ -4989,8 +5230,11 @@ function renderVehicleDetailLeft(vehicle) {
     
     vehicle.events.unshift(event);
     return writeVehicles(vehicles).then(function() {
-      closeEventModal('utts');
-      showVehicleDetail(vehicleId);
+      return completeDynamicEventSave({
+        modalType: 'utts',
+        vehicleId: vehicleId,
+        message: 'UTTS bilgisi güncellendi.'
+      });
     });
   };
 
@@ -5026,8 +5270,11 @@ function renderVehicleDetailLeft(vehicle) {
     
     vehicle.events.unshift(event);
     return writeVehicles(vehicles).then(function() {
-      closeEventModal('takip');
-      showVehicleDetail(vehicleId);
+      return completeDynamicEventSave({
+        modalType: 'takip',
+        vehicleId: vehicleId,
+        message: 'Taşıt takip cihaz bilgisi güncellendi.'
+      });
     });
   };
 
@@ -5068,8 +5315,11 @@ function renderVehicleDetailLeft(vehicle) {
     vehicle.events.unshift(event);
     return writeVehicles(vehicles).then(function() {
       if (window.updateNotifications) window.updateNotifications();
-      closeEventModal('lastik');
-      showVehicleDetail(vehicleId);
+      return completeDynamicEventSave({
+        modalType: 'lastik',
+        vehicleId: vehicleId,
+        message: 'Lastik durumu güncellendi.'
+      });
     });
   };
 
@@ -5119,8 +5369,11 @@ function renderVehicleDetailLeft(vehicle) {
     
     vehicle.events.unshift(event);
     return writeVehicles(vehicles).then(function() {
-      closeEventModal('sube');
-      showVehicleDetail(vehicleId);
+      return completeDynamicEventSave({
+        modalType: 'sube',
+        vehicleId: vehicleId,
+        message: 'Şube değişikliği kaydedildi.'
+      });
     });
   };
 
@@ -5164,8 +5417,11 @@ function renderVehicleDetailLeft(vehicle) {
       };
       vehicle.events.unshift(event);
       return writeVehicles(vehicles).then(function() {
-        closeEventModal('kullanici');
-        showVehicleDetail(vehicleId);
+        return completeDynamicEventSave({
+          modalType: 'kullanici',
+          vehicleId: vehicleId,
+          message: 'Kullanıcı ataması güncellendi.'
+        });
       });
     }
 
@@ -5197,8 +5453,11 @@ function renderVehicleDetailLeft(vehicle) {
 
     vehicle.events.unshift(event);
     return writeVehicles(vehicles).then(function() {
-      closeEventModal('kullanici');
-      setTimeout(function() { showVehicleDetail(vehicleId); }, 250);
+      return completeDynamicEventSave({
+        modalType: 'kullanici',
+        vehicleId: vehicleId,
+        message: 'Kullanıcı ataması güncellendi.'
+      });
     });
   };
 
@@ -5245,9 +5504,16 @@ function renderVehicleDetailLeft(vehicle) {
     
     vehicle.events.unshift(event);
     return writeVehicles(vehicles).then(function() {
-      closeEventModal('satis');
-      closeVehicleDetailModal();
-      alert('Taşıt satış/pert işlemi kaydedildi. Taşıt arşive taşındı.');
+      return completeDynamicEventSave({
+        modalType: 'satis',
+        vehicleId: vehicleId,
+        message: 'Taşıt satış/pert işlemi kaydedildi. Taşıt arşive taşındı.',
+        afterSuccess: function() {
+          closeVehicleDetailModal();
+          if (typeof window.renderBranchDashboard === 'function') window.renderBranchDashboard();
+          if (typeof window.renderVehicles === 'function') window.renderVehicles();
+        }
+      });
     });
   };
 
