@@ -2803,9 +2803,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 @media (min-width: 769px) {
   #ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-add-btn,
   #dinamik-olay-modal #ruhsat-modal-content .ruhsat-add-btn {
-    font-size: 46px;
-    min-width: 72px;
-    min-height: 72px;
+    font-size: 32px;
+    min-width: 50px;
+    min-height: 50px;
   }
 }
 #ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-keep-info,
