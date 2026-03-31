@@ -222,6 +222,10 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 .olay-ekle-modal .modal-body .form-input::placeholder {
   color: #6c757d !important;
 }
+#dinamik-olay-modal .modal-body #ceza-tutar::placeholder {
+  color: #6c757d !important;
+  opacity: 1 !important;
+}
 
 /* Olay Ekle: modal içi kaydet başarı bildirimi */
 #dinamik-olay-modal .modal-body .dynamic-event-save-message {
@@ -487,6 +491,19 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
   }
   #dinamik-olay-modal .modal-body input[type="date"].form-input,
   #dinamik-olay-modal .modal-body .olay-tarih-input {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    padding-right: 28px !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+    -webkit-appearance: none !important;
+    appearance: none !important;
+  }
+  #dinamik-olay-modal .modal-body div:has(> .olay-tarih-input),
+  #dinamik-olay-modal .modal-body div:has(> input[type="date"].form-input) {
+    width: 100% !important;
     max-width: 100% !important;
     min-width: 0 !important;
     overflow: hidden !important;
