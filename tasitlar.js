@@ -5275,6 +5275,7 @@ function renderVehicleDetailLeft(vehicle) {
     const eventType = String(event.type || '').trim();
     const dateText = escapeHtml(formatDateForDisplay(event.date) || '-');
     const eventData = event.data || {};
+    const legacyAciklama = String(eventData.aciklama || eventData.description || '').trim();
     const performerRaw = eventData.kaydeden || eventData.surucu || eventData.kisi || '';
     const performerUpper = formatHistoryPerformerUpper(performerRaw || getRecorderDisplayName());
     const details = [];
@@ -5314,9 +5315,16 @@ function renderVehicleDetailLeft(vehicle) {
       if (bitis) pushDetail('Biti\u015F Tarihi', bitis);
       if (firma) pushDetail('Firma', toTitleCase(firma));
       if (acente) pushDetail('Acente', toTitleCase(acente));
-    } else if (eventType === 'muayene-guncelle') {
+    } else if (eventType === 'muayene-guncelle' || eventType === 'muayene' || eventType === 'muayene-yenileme') {
       summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Muayene Biti\u015F Tarihini G\u00FCncelledi.</span>';
-      const bitis = formatDateForDisplay(eventData.bitisTarihi || '');
+      let bitis = formatDateForDisplay(eventData.bitisTarihi || '');
+      if (!bitis && legacyAciklama) {
+        const m = legacyAciklama.match(/(\d{2}[./-]\d{2}[./-]\d{4})/);
+        if (m && m[1]) {
+          const raw = m[1].replace(/\./g, '/').replace(/-/g, '/');
+          bitis = raw;
+        }
+      }
       if (bitis) pushDetail('Biti\u015F Tarihi', bitis);
     } else if (eventType === 'kullanici-atama') {
       summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Kullan\u0131c\u0131 Atamas\u0131n\u0131 G\u00FCncelledi.</span>';
@@ -5374,6 +5382,11 @@ function renderVehicleDetailLeft(vehicle) {
       if (yeniKod) pushDetail('Yeni Kod', yeniKod);
     } else if (eventType === 'ruhsat-yukle') {
       summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Ruhsat Belgesi Y\u00fckledi.</span>';
+    } else if (legacyAciklama) {
+      // Eski serbest metin kayıtlarını yeni özet/detay formatında göster
+      const fallback = toTitleCase(eventType || 'Di\u011fer i\u015flem');
+      summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, ' + escapeHtml(fallback) + ' kayd\u0131n\u0131 g\u00FCncelledi.</span>';
+      pushDetail('A\u00e7\u0131klama', toTitleCase(legacyAciklama));
     } else {
       const fallback = toTitleCase(eventType || 'Di\u011fer i\u015flem');
       summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, ' + escapeHtml(fallback) + ' kayd\u0131n\u0131 sisteme iletti.</span>';
