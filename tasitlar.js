@@ -3511,11 +3511,16 @@ function renderVehicleDetailLeft(vehicle) {
     });
   }
 
+  var ruhsatPreviewEndpointMissing = false;
+
   function fetchRuhsatPreviewObjectUrl(vehicleId, ruhsatUrl) {
     const cacheKey = getRuhsatPreviewCacheKey(vehicleId, ruhsatUrl);
     const previewUrl = buildRuhsatPreviewUrl(vehicleId);
     if (!cacheKey || !previewUrl) {
       return Promise.reject(new Error('preview-key-missing'));
+    }
+    if (ruhsatPreviewEndpointMissing) {
+      return Promise.reject(new Error('preview-endpoint-missing'));
     }
 
     const now = Date.now();
@@ -3544,6 +3549,10 @@ function renderVehicleDetailLeft(vehicle) {
       headers: buildMedisaAuthHeaders()
     })
       .then(function(response) {
+        if (response.status === 404) {
+          ruhsatPreviewEndpointMissing = true;
+          throw new Error('preview-endpoint-missing');
+        }
         var contentType = (response.headers.get('Content-Type') || '').toLowerCase();
         if (!response.ok || contentType.indexOf('image/') !== 0) {
           throw new Error('preview-unavailable');
@@ -4136,7 +4145,10 @@ function renderVehicleDetailLeft(vehicle) {
             data = {};
           }
           if (!r.ok || !data.success) {
-            throw new Error((data && data.error) ? data.error : ('Yükleme başarısız (HTTP ' + r.status + ')'));
+            const err = new Error((data && (data.error || data.message)) ? (data.error || data.message) : ('Yükleme başarısız (HTTP ' + r.status + ')'));
+            err.status = r.status;
+            err.conflict = !!(data && data.conflict) || r.status === 409;
+            throw err;
           }
           return data;
         });
@@ -4175,13 +4187,20 @@ function renderVehicleDetailLeft(vehicle) {
       })
       .catch(function(err) {
         console.error(err);
-        const isConflict = !!(err && (err.conflict || (typeof err.message === 'string' && err.message.indexOf('Güncel veriler yüklendi') !== -1)));
+        const msg = String((err && err.message) || '').toLowerCase();
+        const isConflict = !!(err && (err.conflict || msg.indexOf('guncel veriler y') !== -1 || msg.indexOf('güncel veriler y') !== -1));
         if (isConflict) {
-          if (typeof window.onMedisaConflict === 'function') {
-            window.onMedisaConflict();
+          const afterRefresh = function() {
+            if (String(window.currentDetailVehicleId || '') === String(vehicleId)) {
+              window.openRuhsatModal(vehicleId);
+            }
+          };
+          if (typeof window.loadDataFromServer === 'function') {
+            window.loadDataFromServer(false).then(afterRefresh).catch(afterRefresh);
           } else {
-            alert('Dikkat! Veri siz işlem yaparken başka biri tarafından güncellenmiş. Güncel veriler yüklendi.');
+            afterRefresh();
           }
+          alert('Bu araç başka biri tarafından güncellenmiş. Güncel veriler yüklendi, lütfen dosyayı yeniden seçip tekrar kaydedin.');
           return;
         }
         alert((err && err.message) ? err.message : 'Y\u00fckleme s\u0131ras\u0131nda hata olu\u015ftu.');
