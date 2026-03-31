@@ -492,8 +492,8 @@ document.addEventListener('DOMContentLoaded', () => {
 // Modal açma fonksiyonları: Lazy load – modül yüklenir, sonra ilgili açma fonksiyonu tetiklenir.
 // tasitlar.js / raporlar.js / kayit.js / ayarlar.js yüklendiğinde kendi open* implementasyonlarını yazar.
 (function() {
-  var TASITLAR_JS = 'tasitlar.js?v=20260331.2';
-  var TASITLAR_CSS = 'tasitlar.css?v=20260331.2';
+  var TASITLAR_JS = 'tasitlar.js?v=20260331.3';
+  var TASITLAR_CSS = 'tasitlar.css?v=20260331.3';
   var RAPORLAR_JS = 'raporlar.js?v=20260325.5';
   var RAPORLAR_CSS = 'raporlar.css?v=20260325.6';
   var KAYIT_JS = 'kayit.js?v=20260325.2';
