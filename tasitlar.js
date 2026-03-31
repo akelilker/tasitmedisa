@@ -243,10 +243,16 @@
   }
 
   function getEventPerformerName(vehicle) {
+    const safeVehicle = vehicle || {};
     const users = readUsers();
-    const assignedId = vehicle.assignedUserId || '';
+    const assignedId = safeVehicle.assignedUserId || '';
     const user = assignedId ? users.find(function(u) { return String(u.id) === String(assignedId); }) : null;
-    return (user && (user.name || user.isim)) ? formatAdSoyad(String(user.name || user.isim)) : 'Yönetim';
+    if (user && (user.name || user.isim)) return formatAdSoyad(String(user.name || user.isim));
+
+    const tahsisliKisi = String(safeVehicle.tahsisKisi || '').trim();
+    if (tahsisliKisi) return formatAdSoyad(tahsisliKisi);
+
+    return getRecorderDisplayName();
   }
 
   /** Ana panelde kayıt yapan görünen ad (ceza/satış tarihçesi); ayarlanmamışsa Yönetim */
@@ -5800,7 +5806,12 @@ function renderVehicleDetailLeft(vehicle) {
         kmEvents.forEach((event, index) => {
           const eskiKm = event.data?.eskiKm || '-';
           const yeniKm = event.data?.yeniKm || '-';
-          const kullaniciVal = (event.data?.surucu || '').trim();
+          const kayitliKullanici = (event.data?.surucu || '').trim();
+          const tahsisliKisi = String(vehicle?.tahsisKisi || '').trim();
+          const yonetimEtiketiMi = /^y(?:o|\u00F6)netim$/i.test(kayitliKullanici);
+          const kullaniciVal = (!kayitliKullanici || yonetimEtiketiMi) && tahsisliKisi
+            ? tahsisliKisi
+            : kayitliKullanici;
           const kullanici = kullaniciVal
             ? formatAdSoyad(kullaniciVal)
             : 'B\u0130L\u0130NM\u0130YOR';
