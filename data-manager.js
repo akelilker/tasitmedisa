@@ -252,7 +252,7 @@ function buildFallbackPermissions(role) {
     return {
         view_main_app: hasMainAppAccess,
         view_reports: hasMainAppAccess,
-        manage_users: hasMainAppAccess,
+        manage_users: normalizedRole === 'genel_yonetici',
         manage_branches: normalizedRole === 'genel_yonetici',
         manage_data: normalizedRole === 'genel_yonetici',
         manage_settings: normalizedRole === 'genel_yonetici'
@@ -335,6 +335,18 @@ function applyMainAppSessionUiState() {
         mainUserPanelLink.style.display = canShowMainUserPanelLink(session) ? '' : 'none';
     }
 
+    var branchBtn = document.getElementById('settings-branch-btn');
+    var userBtn = document.getElementById('settings-user-btn');
+    var disVeriBtn = document.getElementById('dis-veri-btn');
+    var backupWrap = document.getElementById('settings-data-wrap');
+    var clearCacheBtn = document.getElementById('settings-clear-cache-btn');
+
+    if (branchBtn) branchBtn.style.display = 'none';
+    if (userBtn) userBtn.style.display = 'none';
+    if (disVeriBtn) disVeriBtn.style.display = 'none';
+    if (backupWrap) backupWrap.style.display = 'none';
+    if (clearCacheBtn) clearCacheBtn.style.display = 'none';
+
     if (!session.authenticated) return;
 
     document.body.dataset.medisaRole = session.role || '';
@@ -344,17 +356,13 @@ function applyMainAppSessionUiState() {
         return;
     }
 
-    var branchBtn = document.getElementById('settings-branch-btn');
-    var userBtn = document.getElementById('settings-user-btn');
-    var disVeriBtn = document.getElementById('dis-veri-btn');
-    var backupWrap = document.getElementById('settings-data-wrap');
-    var clearCacheBtn = document.getElementById('settings-clear-cache-btn');
-
     if (branchBtn) branchBtn.style.display = session.permissions.manage_branches ? '' : 'none';
     if (userBtn) userBtn.style.display = session.permissions.manage_users ? '' : 'none';
     if (disVeriBtn) disVeriBtn.style.display = session.permissions.manage_data ? '' : 'none';
     if (backupWrap) backupWrap.style.display = session.permissions.manage_data ? '' : 'none';
-    if (clearCacheBtn) clearCacheBtn.style.display = session.permissions.view_main_app ? '' : 'none';
+    if (clearCacheBtn) {
+        clearCacheBtn.style.display = (session.permissions.manage_data || session.permissions.manage_settings) ? '' : 'none';
+    }
 }
 
 function ensureMainAppSession() {
