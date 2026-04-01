@@ -3,7 +3,7 @@
    ========================================= */
 
 (function() {
-    // Veri okuma: tek kaynak – data-manager getter'ları (DRY)
+    // Taşıt/şube/kullanıcı verisi data-manager getter'larından
     function getVehicles() { return (typeof window.getMedisaVehicles === 'function' ? window.getMedisaVehicles() : null) || []; }
     function getBranches() { return (typeof window.getMedisaBranches === 'function' ? window.getMedisaBranches() : null) || []; }
     function getUsers() { return (typeof window.getMedisaUsers === 'function' ? window.getMedisaUsers() : null) || []; }
@@ -12,15 +12,15 @@
     function formatPlaka(str) { return (typeof window.formatPlaka === 'function' ? window.formatPlaka(str) : (str == null ? '-' : String(str))); }
     function formatAdSoyad(str) { return (typeof window.formatAdSoyad === 'function' ? window.formatAdSoyad(str) : str); }
 
-    // --- STOK Görünümü State ---
-    let stokCurrentBranchId = null; // null = grid görünümü, 'all' = tümü listesi, 'id' = şube listesi
+    // Stok görünümü state (null: şube grid; 'all' / id: liste)
+    let stokCurrentBranchId = null;
     let stokSortState = {}; // { columnKey: 'asc' | 'desc' | null }
     let stokAutoSingleBranchView = false;
     
     // --- Rapor Sekmesi State ---
     
-    // --- KULLANICI Görünümü State ---
-    let kullaniciCurrentBranchId = null; // null = grid görünümü, 'all' = tümü listesi, 'id' = şube listesi
+    // Kullanıcı görünümü state (aynı null / all / id anlamı)
+    let kullaniciCurrentBranchId = null;
     let kullaniciSearchTerm = ''; // Arama terimi
     let kullaniciCurrentUserId = null; // Seçili kullanıcı ID'si (detay görünümü için)
     let stokActiveColumns = {

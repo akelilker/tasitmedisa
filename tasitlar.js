@@ -702,23 +702,7 @@
   }
 
   const modalContent = DOM.vehiclesModalContent;
-  // #region agent log
-  (function () {
-    var payload = {
-      sessionId: '8624d8',
-      hypothesisId: 'H4',
-      location: 'tasitlar.js:initDelegation',
-      message: 'modal content bind check',
-      data: { modalContentNull: !modalContent },
-      timestamp: Date.now(),
-      runId: 'pre-fix'
-    };
-    var pathDir = (location.pathname || '/').replace(/\/[^/]*$/, '');
-    var ingestPath = (pathDir ? pathDir + '/' : '/') + 'debug_ingest.php';
-    fetch(ingestPath, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }).catch(function () {});
-  })();
-  // #endregion
-  
+
   // Taşıt listesi tıklama delegasyonu (card/list-item tıklanınca detay aç) - tek seferlik
   if (modalContent && !modalContent._vehicleClickBound) {
     modalContent._vehicleClickBound = true;
@@ -736,15 +720,6 @@
       const listItem = e.target.closest('.list-item');
       if (listItem && listItem.classList.contains('list-item-empty')) return;
       const row = card || listItem;
-      const rawVid = row ? (row.getAttribute('data-vehicle-id') || '').trim() : '';
-      // #region agent log
-      (function () {
-        var payload = { sessionId: '8624d8', hypothesisId: 'H1', location: 'tasitlar.js:handleVehicleRowClick', message: 'vehicle row click', data: { hasRow: !!row, rawVidLen: rawVid.length, hasShowDetail: typeof window.showVehicleDetail === 'function', tag: e.target && e.target.tagName }, timestamp: Date.now(), runId: 'pre-fix' };
-        var pathDir = (location.pathname || '/').replace(/\/[^/]*$/, '');
-        var ingestPath = (pathDir ? pathDir + '/' : '/') + 'debug_ingest.php';
-        fetch(ingestPath, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }).catch(function () {});
-      })();
-      // #endregion
       if (row && row.dataset && row.dataset.vehicleId) {
         e.stopPropagation();
         e.preventDefault();
@@ -753,7 +728,7 @@
         }
       }
     }
-    // PERFORMANS VE UX FIX: "touchend" eventi mobil kaydırmalarda (scroll) hayalet tıklamalara sebep olduğu için kaldırıldı.
+    // Mobilde yalnızca click: touchend kaydırmada hayalet tıklama üretiyordu.
     modalContent.addEventListener('click', handleVehicleRowClick);
   }
 
@@ -1301,22 +1276,6 @@
     const displayTitle = branchId === 'all' ? branchName : (branchName + ' Taşıtlar');
     updateToolbar('detail', displayTitle);
 
-    // #region agent log
-    (function () {
-      var payload = {
-        sessionId: '8624d8',
-        hypothesisId: 'H4',
-        location: 'tasitlar.js:openBranchList',
-        message: 'open branch list requested',
-        data: { branchId: String(branchId || ''), branchName: String(branchName || '') },
-        timestamp: Date.now(),
-        runId: 'pre-fix'
-      };
-      var pathDir = (location.pathname || '/').replace(/\/[^/]*$/, '');
-      var ingestPath = (pathDir ? pathDir + '/' : '/') + 'debug_ingest.php';
-      fetch(ingestPath, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }).catch(function () {});
-    })();
-    // #endregion
     renderVehicles();
   };
 
@@ -1336,22 +1295,7 @@
     renderVehicles();
   };
 
-  /**
-   * Taşıt listesini filtreleyip render eder
-   * 
-   * @param {string} [query=''] - Metin arama sorgusu (opsiyonel)
-   * 
-   * Render akışı:
-   * 1. Şube filtresi uygula (all | '' | branchId)
-   * 2. Metin araması yap (marka/model, yıl, tahsis edilen kişi)
-   * 3. Sıralama/filtreleme uygula (applyFilter)
-   * 4. Card veya List view'da HTML oluştur
-   * 5. Grid kolon sayısını dinamik ayarla (card view için)
-   * 
-   * Görünüm modları:
-   * - Card: Plaka, Marka/Model, Şube/Kullanıcı (3 satır)
-   * - List: Marka/Model, Yıl/Km, Düzenle/Sil butonları
-   */
+  /** Taşıt listesini şube/arama/filtre/sıralamadan sonra kart veya liste olarak render eder. @param {string} [query] Opsiyonel metin araması */
   function renderVehicles(query = '') {
     try {
       const listContainer = DOM.vehiclesModalContent;
@@ -1359,25 +1303,7 @@
       loadVehicleColumnOrder(); // Sütun sıralamasını yükle
       // Veri Çek
       let vehicles = readVehicles();
-      if (!Array.isArray(vehicles)) vehicles = [];
-      // #region agent log
-      (function () {
-        var firstId = '';
-        if (vehicles.length > 0 && vehicles[0] && vehicles[0].id != null) firstId = String(vehicles[0].id);
-        var payload = {
-          sessionId: '8624d8',
-          hypothesisId: 'H5',
-          location: 'tasitlar.js:renderVehicles',
-          message: 'render vehicles dataset snapshot',
-          data: { count: vehicles.length, firstIdLen: firstId.length, activeBranchId: String(activeBranchId || ''), queryLen: String(query || '').length },
-          timestamp: Date.now(),
-          runId: 'pre-fix'
-        };
-        var pathDir = (location.pathname || '/').replace(/\/[^/]*$/, '');
-        var ingestPath = (pathDir ? pathDir + '/' : '/') + 'debug_ingest.php';
-        fetch(ingestPath, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }).catch(function () {});
-      })();
-      // #endregion
+      if (!Array.isArray(vehicles)) return;
       const branches = window.appData?.branches || [];
       const users = window.appData?.users || [];
 
@@ -1733,34 +1659,12 @@
       }
 
     const modal = DOM.vehicleDetailModal || document.getElementById('vehicle-detail-modal');
-    // #region agent log
-    (function () {
-      var payload = { sessionId: '8624d8', hypothesisId: 'H3', location: 'tasitlar.js:showVehicleDetail', message: 'after vehicle resolve', data: { vehicleIdParam: String(vehicleId), vehicleFound: true, modalNull: !modal, contentNull: !DOM.vehicleDetailContent }, timestamp: Date.now(), runId: 'pre-fix' };
-      var pathDir = (location.pathname || '/').replace(/\/[^/]*$/, '');
-      var ingestPath = (pathDir ? pathDir + '/' : '/') + 'debug_ingest.php';
-      fetch(ingestPath, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }).catch(function () {});
-    })();
-    // #endregion
     if (!modal) {
-      // #region agent log
-      (function () {
-        var payload = { sessionId: '8624d8', hypothesisId: 'H3', location: 'tasitlar.js:showVehicleDetail', message: 'abort no modal', data: {}, timestamp: Date.now(), runId: 'pre-fix' };
-        var pathDir = (location.pathname || '/').replace(/\/[^/]*$/, '');
-        fetch((pathDir ? pathDir + '/' : '/') + 'debug_ingest.php', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }).catch(function () {});
-      })();
-      // #endregion
       return;
     }
 
     const contentEl = DOM.vehicleDetailContent || document.getElementById('vehicle-detail-content');
     if (!contentEl) {
-      // #region agent log
-      (function () {
-        var payload = { sessionId: '8624d8', hypothesisId: 'H3', location: 'tasitlar.js:showVehicleDetail', message: 'abort no content', data: {}, timestamp: Date.now(), runId: 'pre-fix' };
-        var pathDir = (location.pathname || '/').replace(/\/[^/]*$/, '');
-        fetch((pathDir ? pathDir + '/' : '/') + 'debug_ingest.php', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }).catch(function () {});
-      })();
-      // #endregion
       return;
     }
 
@@ -1782,14 +1686,6 @@
       String(window.currentDetailVehicleId) === String(vehicleId) &&
       modal.dataset.detailSignature === detailSignature
     ) {
-      // #region agent log
-      (function () {
-        var payload = { sessionId: '8624d8', hypothesisId: 'H2', location: 'tasitlar.js:showVehicleDetail', message: 'early return skip duplicate', data: { vehicleId: String(vehicleId) }, timestamp: Date.now(), runId: 'pre-fix' };
-        var pathDir = (location.pathname || '/').replace(/\/[^/]*$/, '');
-        var ingestPath = (pathDir ? pathDir + '/' : '/') + 'debug_ingest.php';
-        fetch(ingestPath, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }).catch(function () {});
-      })();
-      // #endregion
       return;
     }
 
@@ -2025,34 +1921,6 @@
     modal.style.display = 'flex';
     requestAnimationFrame(() => {
       modal.classList.add('active');
-      // #region agent log
-      (function () {
-        var vehiclesModal = DOM.vehiclesModal;
-        var detailStyle = window.getComputedStyle ? window.getComputedStyle(modal) : null;
-        var vehiclesStyle = (vehiclesModal && window.getComputedStyle) ? window.getComputedStyle(vehiclesModal) : null;
-        var payload = {
-          sessionId: '8624d8',
-          hypothesisId: 'H6',
-          location: 'tasitlar.js:showVehicleDetail',
-          message: 'detail modal activation style snapshot',
-          data: {
-            detailActive: modal.classList.contains('active'),
-            detailDisplay: modal.style.display || '',
-            detailComputedDisplay: detailStyle ? detailStyle.display : '',
-            detailZ: detailStyle ? detailStyle.zIndex : '',
-            vehiclesActive: !!(vehiclesModal && vehiclesModal.classList.contains('active')),
-            vehiclesDisplay: vehiclesModal ? (vehiclesModal.style.display || '') : '',
-            vehiclesComputedDisplay: vehiclesStyle ? vehiclesStyle.display : '',
-            vehiclesZ: vehiclesStyle ? vehiclesStyle.zIndex : ''
-          },
-          timestamp: Date.now(),
-          runId: 'pre-fix'
-        };
-        var pathDir = (location.pathname || '/').replace(/\/[^/]*$/, '');
-        var ingestPath = (pathDir ? pathDir + '/' : '/') + 'debug_ingest.php';
-        fetch(ingestPath, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }).catch(function () {});
-      })();
-      // #endregion
       requestAnimationFrame(() => { applyVehicleDetailSubeShrink(); });
     });
     };
@@ -2252,7 +2120,7 @@
       if (searchMode === 'local') {
           renderVehicles(val);
       } else {
-          // Global Arama (Dashboard'ı geçici ez)
+          // Genel arama: sonuç listesi gösterilir (dashboard yerine).
           if (!val) {
               renderBranchDashboard();
               return;
@@ -2609,7 +2477,7 @@ function renderVehicleDetailLeft(vehicle) {
       html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Muayene Bitiş Tarihi</span><span class="detail-row-colon">:</span></div><span class="detail-row-value ${muayeneWarning.class}"> ${escapeHtml(muayeneDisplay || '-')}</span></div>`;
     }
     
-    // Yedek Anahtar
+    // Detay: yedek anahtar durumu
     const anahtar = vehicle.anahtar || '';
     const anahtarLabel = anahtar === 'var' ? (vehicle.anahtarNerede || 'Var') : 'Yoktur.';
     html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Yedek Anahtar</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(anahtarLabel)}</span></div>`;
@@ -5214,7 +5082,7 @@ function renderVehicleDetailLeft(vehicle) {
 
     vehicle.kaskoKodu = yeniKaskoKodu;
 
-    // YENİ EKLENEN FIX: Kasko değerini anında Excel'den yeniden hesapla ve eski değeri ez!
+    // Kasko tutarı: Excel listesinden güncel kod+yıla göre yeniden hesaplanır.
     const yearForKasko = vehicle.year || vehicle.modelYili || '';
     if (typeof window.getKaskoDegeri === 'function') {
       vehicle.kaskoDegeri = window.getKaskoDegeri(yeniKaskoKodu, yearForKasko);
@@ -5222,7 +5090,7 @@ function renderVehicleDetailLeft(vehicle) {
     }
 
     if (!vehicle.events) vehicle.events = [];
-    // PERFORMANS FIX: push yerine unshift kullanıyoruz ki tarihçenin en üstüne (en yeniye) düşsün
+    // Tarihçede en yeni kayıt üstte (unshift).
     vehicle.events.unshift({
       id: Date.now().toString(),
       type: 'kasko-kodu-guncelle',
@@ -6129,6 +5997,7 @@ function renderVehicleDetailLeft(vehicle) {
    * Bildirimleri güncelle (muayene, sigorta, kasko + kullanıcı paneli işlemleri)
    */
   window.updateNotifications = function() {
+    if (!window.appData || !Array.isArray(window.appData.tasitlar)) return;
     const vehicles = readVehicles();
     const notifications = [];
     const activeSpecialNotificationKeys = [];
