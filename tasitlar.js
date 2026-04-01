@@ -3822,13 +3822,18 @@ function renderVehicleDetailLeft(vehicle) {
       headers: buildMedisaAuthHeaders()
     })
       .then(function(response) {
-        if (response.status === 404) {
-          ruhsatPreviewEndpointMissing = true;
-          throw new Error('preview-endpoint-missing');
-        }
         var contentType = (response.headers.get('Content-Type') || '').toLowerCase();
+        if (response.status === 404) {
+          if (contentType.indexOf('application/json') === -1) {
+            ruhsatPreviewEndpointMissing = true;
+            throw Object.assign(new Error('preview-endpoint-missing'), { httpStatus: 404 });
+          }
+          throw Object.assign(new Error('preview-unavailable'), { httpStatus: 404 });
+        }
         if (!response.ok || contentType.indexOf('image/') !== 0) {
-          throw new Error('preview-unavailable');
+          var pe = new Error('preview-unavailable');
+          pe.httpStatus = response.status;
+          throw pe;
         }
         return response.blob();
       })
@@ -3916,7 +3921,11 @@ function renderVehicleDetailLeft(vehicle) {
     })
       .then(function(response) {
         if (!response.ok) {
-          throw new Error('document-unavailable');
+          var de = new Error(
+            response.status === 404 ? 'document-not-found' : 'document-unavailable'
+          );
+          de.httpStatus = response.status;
+          throw de;
         }
         return response.blob();
       })
@@ -4238,6 +4247,12 @@ function renderVehicleDetailLeft(vehicle) {
       })
       .catch(function(err) {
         console.error('Ruhsat görüntüleme hazırlanamadı', err);
+        var st = err && err.httpStatus;
+        if (st === 404) {
+          alert('Ruhsat veya araç kaydı sunucuda bulunamadı (dosya eksik veya veri senkron değil). Sayfayı yenileyip tekrar deneyin.');
+        } else if (st === 401 || st === 403) {
+          alert('Bu ruhsat için oturum veya yetki yetersiz. Tekrar giriş yapmayı deneyin.');
+        }
       });
     return true;
   }
@@ -4521,7 +4536,14 @@ function renderVehicleDetailLeft(vehicle) {
       })
       .catch(function(err) {
         console.error('Ruhsat açılamadı', err);
-        alert('Ruhsat görüntülenemedi.');
+        var st = err && err.httpStatus;
+        var msg = 'Ruhsat görüntülenemedi.';
+        if (st === 404) {
+          msg = 'Ruhsat veya araç kaydı sunucuda bulunamadı (dosya eksik veya veri senkron değil). Sayfayı yenileyip tekrar deneyin.';
+        } else if (st === 401 || st === 403) {
+          msg = 'Bu ruhsat için oturum veya yetki yetersiz. Tekrar giriş yapmayı deneyin.';
+        }
+        alert(msg);
       });
   };
 
