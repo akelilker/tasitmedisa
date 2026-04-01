@@ -1339,7 +1339,7 @@ input.settings-form-input:-moz-autofill,
     align-content: start;
 }
 #branch-modal #branch-list {
-    justify-content: flex-start !important;
+    justify-content: center !important;
     padding-top: 6px;
     padding-bottom: 6px;
 }
