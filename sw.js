@@ -1,7 +1,7 @@
 // Service Worker - Medisa Taşıt Yönetim Sistemi
 // Version 2.11 - Activate: claim önce (InvalidStateError düzeltmesi); syntax temiz
 
-const CACHE_VERSION = 'medisa-v2.45';
+const CACHE_VERSION = 'medisa-v2.46';
 
 // Subpath desteği: /medisa/sw.js ise base = '/medisa', kök deploy'da base = ''
 function getBase() {
@@ -19,10 +19,7 @@ const CACHE_FILES = [
   '/script-core.js',
   '/data-manager.js',
   '/manifest.json',
-  '/icon/logo-header2.svg',
-  '/icon/medlogo.png',
-  '/icon/medlogo-192.png',
-  '/icon/favicon-32.png'
+  '/icon/logo-header2.svg'
 ];
 
 // Install - Cache tüm dosyaları (hata toleranslı, subpath destekli)
@@ -81,19 +78,31 @@ self.addEventListener('fetch', (event) => {
     return;
   }
   
-  // API çağrıları ve PHP - network-first
+  // API çağrıları ve PHP - network-first; dinamik uçlar asla cache.put / stale fallback yok
   if (url.pathname.includes('/api/') || url.pathname.includes('.php')) {
+    const p = url.pathname;
+    const isNoCachePhp =
+      p.indexOf('load.php') !== -1 ||
+      p.indexOf('save.php') !== -1 ||
+      p.indexOf('core.php') !== -1 ||
+      /\/driver_[^/]*\.php$/i.test(p) ||
+      /\/admin_[^/]*\.php$/i.test(p) ||
+      p.indexOf('ruhsat.php') !== -1 ||
+      p.indexOf('ruhsat_preview.php') !== -1;
+    if (isNoCachePhp) {
+      event.respondWith(
+        fetch(request).catch(() => new Response('Network error', { status: 503 }))
+      );
+      return;
+    }
     event.respondWith(
       fetch(request)
         .then((response) => {
-          if (url.pathname.includes('load.php')) {
-            return response;
-          }
           if (request.method === 'GET' && response && response.status === 200) {
             const cacheControl = response.headers.get('Cache-Control');
-            if (!cacheControl || 
-                (!cacheControl.includes('no-cache') && 
-                 !cacheControl.includes('no-store') && 
+            if (!cacheControl ||
+                (!cacheControl.includes('no-cache') &&
+                 !cacheControl.includes('no-store') &&
                  !cacheControl.includes('must-revalidate'))) {
               const responseClone = response.clone();
               caches.open(CACHE_VERSION).then((cache) => {
@@ -104,7 +113,7 @@ self.addEventListener('fetch', (event) => {
           return response;
         })
         .catch(() => {
-          if (request.method === 'GET' && !url.pathname.includes('load.php')) {
+          if (request.method === 'GET') {
             return caches.match(request).then((cached) => cached || new Response('Network error', { status: 503 }));
           }
           return new Response('Network error', { status: 503 });
@@ -154,8 +163,8 @@ self.addEventListener('push', (event) => {
   const defaultUrl = base ? base + '/' : '/';
   const options = {
     body: data.body || 'Yeni bildirim',
-    icon: base + '/icon/medlogo.png',
-    badge: base + '/icon/medlogo.png',
+    icon: base + '/icon/logo-header2.svg',
+    badge: base + '/icon/logo-header2.svg',
     data: data.url || defaultUrl
   };
   
