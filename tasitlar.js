@@ -1943,7 +1943,9 @@
       const ruhsatBtn = document.createElement('button');
       ruhsatBtn.type = 'button';
       ruhsatBtn.className = 'vehicle-ruhsat-btn';
-      ruhsatBtn.title = vehicle.ruhsatPath ? 'Ruhsat\u0131 G\u00F6r\u00FCnt\u00FCle' : 'Ruhsat Y\u00FCkle';
+      var appTasitlarToolbar = window.appData && Array.isArray(window.appData.tasitlar) ? window.appData.tasitlar : [];
+      var ruhsatLive = appTasitlarToolbar.find(function(x) { return String(x.id) === String(vehicleId); }) || vehicle;
+      ruhsatBtn.title = ruhsatLive.ruhsatPath ? 'Ruhsat\u0131 G\u00F6r\u00FCnt\u00FCle' : 'Ruhsat Y\u00FCkle';
       ruhsatBtn.setAttribute('aria-label', 'Ruhsat');
       ruhsatBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg>';
       ruhsatBtn.onclick = (e) => { e.stopPropagation(); if (typeof window.openRuhsatModal === 'function') window.openRuhsatModal(vehicleId); };
@@ -3685,13 +3687,26 @@ function renderVehicleDetailLeft(vehicle) {
   function buildRuhsatEndpointUrl(endpoint, vehicleId) {
     const rawId = String(vehicleId || window.currentDetailVehicleId || '').trim();
     if (!rawId) return '';
+    var verParam = '';
+    var appTasitlar = window.appData && Array.isArray(window.appData.tasitlar) ? window.appData.tasitlar : [];
+    var appV = appTasitlar.find(function(x) { return String(x.id) === rawId; });
+    if (appV && appV.version != null) {
+      verParam = String(Number(appV.version) || 1);
+    }
     try {
       const targetUrl = new URL(endpoint, window.location.href);
       targetUrl.searchParams.set('id', rawId);
+      if (verParam !== '') {
+        targetUrl.searchParams.set('v', verParam);
+      }
       return targetUrl.toString();
     } catch (e) {
       const encodedId = encodeURIComponent(rawId);
-      return endpoint + '?id=' + encodedId;
+      var q = endpoint + '?id=' + encodedId;
+      if (verParam !== '') {
+        q += '&v=' + encodeURIComponent(verParam);
+      }
+      return q;
     }
   }
 
@@ -3710,10 +3725,14 @@ function renderVehicleDetailLeft(vehicle) {
   function getVehicleRuhsatPath(vehicleId) {
     const rawId = String(vehicleId || window.currentDetailVehicleId || '').trim();
     if (!rawId) return '';
-    const vehicles = readVehicles();
-    const vehicle = Array.isArray(vehicles)
-      ? vehicles.find(function(item) { return String(item.id) === rawId; })
-      : null;
+    var appTasitlar = window.appData && Array.isArray(window.appData.tasitlar) ? window.appData.tasitlar : [];
+    var vehicle = appTasitlar.find(function(item) { return String(item.id) === rawId; });
+    if (!vehicle) {
+      const vehicles = readVehicles();
+      vehicle = Array.isArray(vehicles)
+        ? vehicles.find(function(item) { return String(item.id) === rawId; })
+        : null;
+    }
     return vehicle ? String(vehicle.ruhsatPath || '') : '';
   }
 
@@ -3740,7 +3759,10 @@ function renderVehicleDetailLeft(vehicle) {
     const rawId = String(vehicleId || window.currentDetailVehicleId || '').trim();
     const absoluteUrl = toAbsoluteRuhsatUrl(ruhsatUrl);
     if (!rawId || !absoluteUrl) return '';
-    return rawId + '::' + absoluteUrl;
+    var appTasitlar = window.appData && Array.isArray(window.appData.tasitlar) ? window.appData.tasitlar : [];
+    var fv = appTasitlar.find(function(x) { return String(x.id) === rawId; });
+    var verSeg = fv && fv.version != null ? String(Number(fv.version) || 1) : '1';
+    return rawId + '::' + verSeg + '::' + absoluteUrl;
   }
 
   function revokeRuhsatPreviewEntry(entry) {
@@ -3835,7 +3857,10 @@ function renderVehicleDetailLeft(vehicle) {
     const rawId = String(vehicleId || window.currentDetailVehicleId || '').trim();
     const absoluteUrl = toAbsoluteRuhsatUrl(ruhsatUrl);
     if (!rawId || !absoluteUrl) return '';
-    return rawId + '::' + absoluteUrl;
+    var appTasitlar = window.appData && Array.isArray(window.appData.tasitlar) ? window.appData.tasitlar : [];
+    var fv = appTasitlar.find(function(x) { return String(x.id) === rawId; });
+    var verSeg = fv && fv.version != null ? String(Number(fv.version) || 1) : '1';
+    return rawId + '::' + verSeg + '::' + absoluteUrl;
   }
 
   function revokeRuhsatDocumentEntry(entry) {
@@ -4124,6 +4149,12 @@ function renderVehicleDetailLeft(vehicle) {
     }
     const raw = String(path || '').trim();
     if (!raw) return '';
+    try {
+      const u = new URL(raw, window.location.href);
+      if (String(u.pathname || '').replace(/\\/g, '/').indexOf('ruhsat.php') !== -1 && u.searchParams.get('id')) {
+        return buildRuhsatDocumentUrl(u.searchParams.get('id'));
+      }
+    } catch (e2) {}
     return raw;
   }
 
@@ -4215,7 +4246,11 @@ function renderVehicleDetailLeft(vehicle) {
     const vid = (vehicleId || window.currentDetailVehicleId || '').toString();
     if (!vid) return;
     window.currentDetailVehicleId = vid;
-    const vehicle = readVehicles().find(v => String(v.id) === vid);
+    var appTasitlar = window.appData && Array.isArray(window.appData.tasitlar) ? window.appData.tasitlar : [];
+    var vehicle = appTasitlar.find(function(v) { return String(v.id) === vid; });
+    if (!vehicle) {
+      vehicle = readVehicles().find(function(v) { return String(v.id) === vid; });
+    }
     const modal = DOM.dinamikOlayModal;
     const content = DOM.dinamikOlayFormIcerik;
     const saveBtn = DOM.dinamikOlayKaydetBtn;
@@ -4428,13 +4463,16 @@ function renderVehicleDetailLeft(vehicle) {
           showToast('Ruhsat Ba\u015far\u0131yla Y\u00fcklendi', 'success');
         }
 
-        setTimeout(function() {
-          const modal = DOM.dinamikOlayModal;
-          const isStillOpen = !!(modal && modal.style.display !== 'none');
-          if (isStillOpen && String(window.currentDetailVehicleId || '') === String(vehicleId)) {
-            window.openRuhsatModal(vehicleId);
-          }
-        }, 2000);
+        const modal = DOM.dinamikOlayModal;
+        const isStillOpen = !!(modal && modal.style.display !== 'none');
+        if (isStillOpen && String(window.currentDetailVehicleId || '') === String(vehicleId)) {
+          window.openRuhsatModal(vehicleId);
+        }
+        if (typeof window.showVehicleDetail === 'function') {
+          try {
+            window.showVehicleDetail(vehicleId);
+          } catch (e) {}
+        }
       })
       .catch(function(err) {
         console.error(err);
@@ -4465,7 +4503,11 @@ function renderVehicleDetailLeft(vehicle) {
     const vid = (vehicleId || window.currentDetailVehicleId || '').toString();
     if (!vid) return;
 
-    const vehicle = readVehicles().find(v => String(v.id) === vid);
+    var appTasitlar = window.appData && Array.isArray(window.appData.tasitlar) ? window.appData.tasitlar : [];
+    var vehicle = appTasitlar.find(function(v) { return String(v.id) === vid; });
+    if (!vehicle) {
+      vehicle = readVehicles().find(function(v) { return String(v.id) === vid; });
+    }
     if (!vehicle || !vehicle.ruhsatPath) return;
 
     const url = buildRuhsatDocumentUrl(vid) || resolveRuhsatUrl(vehicle.ruhsatPath, vid);
