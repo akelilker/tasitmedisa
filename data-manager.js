@@ -63,10 +63,13 @@ let isDataLoaded = false;
 let isDataLoading = false;
 let loadPromise = null;
 let isSaving = false;
+let serverDatasetTrusted = false;
 
 function syncDataLoadState() {
+    isDataLoaded = hasUsableAppData(window.appData);
     window.__medisaDataLoaded = !!isDataLoaded;
     window.__medisaDataLoading = !!isDataLoading;
+    window.__medisaServerDatasetTrusted = !!serverDatasetTrusted;
 }
 syncDataLoadState();
 
@@ -380,7 +383,7 @@ function loadDataFromLocalStorage() {
                 duzeltme_talepleri: data.duzeltme_talepleri || []
             };
             setMedisaSession(getSessionFromToken());
-            isDataLoaded = true;
+            serverDatasetTrusted = false;
             syncDataLoadState();
             return window.appData;
         }
@@ -388,19 +391,21 @@ function loadDataFromLocalStorage() {
 
     window.appData = getDefaultAppData();
     setMedisaSession(getSessionFromToken());
-    isDataLoaded = true;
+    serverDatasetTrusted = false;
     syncDataLoadState();
     return window.appData;
 }
 
 async function loadDataFromServer(forceRefresh) {
-    if (forceRefresh !== true && isDataLoaded && window.appData && typeof window.appData === 'object') {
+    if (forceRefresh !== true && serverDatasetTrusted === true && hasUsableAppData(window.appData)) {
         return Promise.resolve(window.appData);
     }
 
     if (!ensureMainAppSession()) {
         window.appData = getDefaultAppData();
-        return Promise.resolve(window.appData);
+        serverDatasetTrusted = false;
+        syncDataLoadState();
+        return Promise.reject(new Error('Medisa oturum yok'));
     }
 
     if (loadPromise) {
@@ -411,6 +416,17 @@ async function loadDataFromServer(forceRefresh) {
     syncDataLoadState();
 
     loadPromise = (async function() {
+        function finishLoadError(optionalErr) {
+            serverDatasetTrusted = false;
+            window.appData = getSafeAppDataFallback();
+            if (hasUsableAppData(window.appData)) {
+                return window.appData;
+            }
+            var e = optionalErr || new Error('Medisa veri yüklenemedi');
+            e.medisaNoUsableFallback = true;
+            throw e;
+        }
+
         try {
             var cacheBuster = Date.now();
             var url = API_LOAD + '?t=' + cacheBuster;
@@ -429,33 +445,42 @@ async function loadDataFromServer(forceRefresh) {
                 loadPromise = null;
                 syncDataLoadState();
                 await new Promise(function(resolve) { setTimeout(resolve, 2000); });
-                return loadDataFromServer(forceRefresh);
+                return await loadDataFromServer(forceRefresh);
             }
 
             if (response.status === 401 || response.status === 403) {
                 clearStoredPortalTokens();
                 redirectToPortalLogin();
+                serverDatasetTrusted = false;
                 window.appData = getDefaultAppData();
-                isDataLoaded = true;
-                return window.appData;
+                var authErr = new Error('Unauthorized');
+                authErr.medisaHttpStatus = response.status;
+                throw authErr;
             }
 
             if (!response.ok) {
                 var errorText = await response.text().catch(function() { return 'Yanıt okunamadı'; });
                 console.error('[Medisa] loadDataFromServer HTTP hatası', response.status, String(errorText).substring(0, 200));
-                window.appData = getSafeAppDataFallback();
-                isDataLoaded = true;
-                return window.appData;
+                return finishLoadError(new Error('HTTP ' + response.status));
             }
 
             var responseText = await response.text();
             if (!responseText || responseText.trim() === '') {
-                window.appData = getSafeAppDataFallback();
-                isDataLoaded = true;
-                return window.appData;
+                return finishLoadError(new Error('Empty response'));
             }
 
-            var data = JSON.parse(responseText);
+            var data;
+            try {
+                data = JSON.parse(responseText);
+            } catch (parseErr) {
+                console.warn('[Medisa] loadDataFromServer parse hatası', parseErr && parseErr.message);
+                return finishLoadError(parseErr);
+            }
+
+            if (!data || typeof data !== 'object' || Array.isArray(data)) {
+                return finishLoadError(new Error('Invalid load payload'));
+            }
+
             setMedisaSession(data.session || getSessionFromToken());
 
             window.appData = {
@@ -478,13 +503,17 @@ async function loadDataFromServer(forceRefresh) {
                 redirectToDriverDashboard();
             }
 
-            isDataLoaded = true;
+            serverDatasetTrusted = true;
             return window.appData;
         } catch (error) {
+            if (error && error.medisaHttpStatus) {
+                throw error;
+            }
+            if (error && error.medisaNoUsableFallback) {
+                throw error;
+            }
             console.warn('[Medisa] Veri yüklenemedi:', error && error.message);
-            window.appData = getSafeAppDataFallback();
-            isDataLoaded = true;
-            return window.appData;
+            return finishLoadError(error);
         } finally {
             isDataLoading = false;
             loadPromise = null;
@@ -498,6 +527,7 @@ async function loadDataFromServer(forceRefresh) {
 async function saveDataToServer() {
     if (isSaving) return false;
     if (!ensureMainAppSession()) return false;
+    if (!serverDatasetTrusted) return false;
 
     isSaving = true;
     try {
@@ -578,6 +608,7 @@ async function saveDataToServer() {
         return false;
     } finally {
         isSaving = false;
+        syncDataLoadState();
     }
 }
 
@@ -589,6 +620,7 @@ function genericSaveData(collectionName, item) {
     if (!Array.isArray(collection)) {
         window.appData[collectionName] = [];
         window.appData[collectionName].push(item);
+        syncDataLoadState();
         return saveDataToServer();
     }
     var existingIndex = collection.findIndex(function(entry) { return entry.id === item.id; });
@@ -597,6 +629,7 @@ function genericSaveData(collectionName, item) {
     } else {
         collection.push(item);
     }
+    syncDataLoadState();
     return saveDataToServer();
 }
 
@@ -787,11 +820,13 @@ window.saveTasit = async function(tasit) {
 
 window.deleteTasit = async function(tasitId) {
     window.appData.tasitlar = window.appData.tasitlar.filter(function(tasit) { return tasit.id !== tasitId; });
+    syncDataLoadState();
     return await saveDataToServer();
 };
 
 window.saveAyarlar = async function(ayarlar) {
     window.appData.ayarlar = ayarlar;
+    syncDataLoadState();
     return await saveDataToServer();
 };
 
@@ -801,12 +836,14 @@ window.saveSifre = async function(sifre) {
 
 window.deleteSifre = async function(sifreId) {
     window.appData.sifreler = window.appData.sifreler.filter(function(sifre) { return sifre.id !== sifreId; });
+    syncDataLoadState();
     return await saveDataToServer();
 };
 
 window.writeVehicles = function(arr) {
     if (!window.appData) window.appData = getDefaultAppData();
     window.appData.tasitlar = Array.isArray(arr) ? arr : [];
+    syncDataLoadState();
     if (typeof window.saveDataToServer === 'function') {
         window.saveDataToServer().catch(function(err) {
             if (err && err.conflict) {
@@ -822,6 +859,7 @@ window.writeVehicles = function(arr) {
 window.writeBranches = function(arr) {
     if (!window.appData) return;
     window.appData.branches = Array.isArray(arr) ? arr : [];
+    syncDataLoadState();
     if (typeof window.saveDataToServer === 'function') {
         window.saveDataToServer().catch(function(err) {
             console.error('Sunucuya kaydetme hatası:', err);
@@ -832,6 +870,7 @@ window.writeBranches = function(arr) {
 window.writeUsers = function(arr) {
     if (!window.appData) return;
     window.appData.users = Array.isArray(arr) ? arr : [];
+    syncDataLoadState();
     if (typeof window.saveDataToServer === 'function') {
         window.saveDataToServer().catch(function(err) {
             console.error('Sunucuya kaydetme hatası:', err);
@@ -862,6 +901,10 @@ document.addEventListener('DOMContentLoaded', async function() {
         return;
     }
 
-    await loadDataFromServer(true);
+    try {
+        await loadDataFromServer(true);
+    } catch (loadErr) {
+        console.warn('[Medisa] İlk veri yüklemesi tamamlanamadı:', loadErr && loadErr.message);
+    }
     window.dispatchEvent(new CustomEvent('dataLoaded', { detail: window.appData }));
 });

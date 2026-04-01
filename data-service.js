@@ -32,7 +32,13 @@
    * @returns {Promise<Array>} Taşıt listesi (appData.tasitlar)
    */
   async function fetchVehicles() {
-    const data = await window.loadDataFromServer(true);
+    let data;
+    try {
+      data = await window.loadDataFromServer(true);
+    } catch (e) {
+      ensureAppData();
+      return window.appData.tasitlar || [];
+    }
     ensureAppData();
     if (data && Array.isArray(data.tasitlar)) {
       window.appData.tasitlar = data.tasitlar;
@@ -208,7 +214,7 @@
             window.loadDataFromServer(true).then(function() {
               if (typeof window.renderBranchDashboard === 'function') window.renderBranchDashboard();
               if (typeof window.renderVehicles === 'function') window.renderVehicles();
-            });
+            }).catch(function() {});
           }
           return false;
         }

@@ -323,7 +323,7 @@
                 if (typeof window.renderBranchDashboard === 'function') window.renderBranchDashboard();
                 if (typeof window.renderVehicles === 'function') window.renderVehicles();
                 notifyIfAvailable();
-              });
+              }).catch(function() { return Promise.resolve(); });
             }
             return Promise.resolve();
           }
@@ -1015,6 +1015,9 @@
           if (currentView === 'dashboard') renderBranchDashboard(true);
           else renderVehicles(getVSearchInput()?.value || '');
         }
+        if (typeof window.updateNotifications === 'function') {
+          window.updateNotifications();
+        }
       }).catch(function() {
         if (DOM.vehiclesModalContainer) DOM.vehiclesModalContainer.classList.remove('hide-marker');
         if (content) {
@@ -1038,6 +1041,9 @@
           // Yeni taze veri inince ekranı hissettirmeden yenile
           if (currentView === 'dashboard') renderBranchDashboard(true);
           else renderVehicles(getVSearchInput()?.value || '');
+        }
+        if (typeof window.updateNotifications === 'function') {
+          window.updateNotifications();
         }
       }).catch(function() {
         window.__medisaBackgroundSyncing = false;
@@ -5919,14 +5925,22 @@ function renderVehicleDetailLeft(vehicle) {
       const t = new Date(ev.timestamp).getTime();
       if (!isNaN(t)) return t;
     }
-    if (!ev.date) return 0;
+    var idTie = 0;
+    if (ev.id != null && String(ev.id).trim() !== '') {
+      var idNum = parseInt(String(ev.id).replace(/\D/g, ''), 10);
+      if (!isNaN(idNum) && idNum > 0) {
+        idTie = idNum / 1e13;
+      }
+    }
+    if (!ev.date) return idTie;
     const parts = String(ev.date).trim().split('.');
-    if (parts.length !== 3) return 0;
+    if (parts.length !== 3) return idTie;
     const day = parseInt(parts[0], 10);
     const month = parseInt(parts[1], 10) - 1;
     const year = parseInt(parts[2], 10);
     const d = new Date(year, month, day);
-    return isNaN(d.getTime()) ? 0 : d.getTime();
+    if (isNaN(d.getTime())) return idTie;
+    return d.getTime() + idTie;
   }
 
   /** Bildirim listesi için kısa olay tipi etiketi */
