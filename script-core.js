@@ -288,8 +288,8 @@ window.__loadedAppModules = window.__loadedAppModules || Object.create(null);
 /**
  * İstenen JS ve CSS dosyalarını document.createElement ile dinamik yükler.
  * Zaten yüklüyse tekrar yüklemez. Yüklendikten sonra Promise döner.
- * @param {string} jsPath - Örn. 'tasitlar.js?v=20260316'
- * @param {string|null} cssPath - Örn. 'tasitlar.css?v=20260316.6' (opsiyonel)
+ * @param {string} jsPath - Örn. 'tasitlar.js?v=' + TASITLAR_MODULE_VERSION
+ * @param {string|null} cssPath - Örn. 'tasitlar.css?v=' + TASITLAR_MODULE_VERSION (opsiyonel)
  * @returns {Promise<void>}
  */
 window.loadAppModule = function(jsPath, cssPath) {
@@ -471,9 +471,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Modal Observer: Body class yönetimi (Scroll engelleme vb.)
   const modalObserver = new MutationObserver((mutations) => {
+    if (!mutations || mutations.length === 0) return;
     mutations.forEach(function(m) {
       if (m.type === 'attributes' && (m.attributeName === 'class' || m.attributeName === 'style')) {
-        // Sınıf/stil değişince aşağıdaki refreshModalOverlays ve updateFooterDim çalışır
+        // class/style değişimi → altta footer dim ve overlay listesi yenilenir
       }
     });
     refreshModalOverlays();
@@ -489,11 +490,14 @@ document.addEventListener('DOMContentLoaded', () => {
   modalObserver.observe(document.body, { childList: true, subtree: true });
 });
 
+// Taşıtlar modülü (JS + CSS) — tek sürüm; loadAppModule anahtarı ve bildirim ön-yüklemesi aynı yolu kullanır.
+var TASITLAR_MODULE_VERSION = '20260331.4';
+
 // Modal açma fonksiyonları: Lazy load – modül yüklenir, sonra ilgili açma fonksiyonu tetiklenir.
 // tasitlar.js / raporlar.js / kayit.js / ayarlar.js yüklendiğinde kendi open* implementasyonlarını yazar.
 (function() {
-  var TASITLAR_JS = 'tasitlar.js?v=20260331.4';
-  var TASITLAR_CSS = 'tasitlar.css?v=20260331.4';
+  var TASITLAR_JS = 'tasitlar.js?v=' + TASITLAR_MODULE_VERSION;
+  var TASITLAR_CSS = 'tasitlar.css?v=' + TASITLAR_MODULE_VERSION;
   var RAPORLAR_JS = 'raporlar.js?v=20260325.5';
   var RAPORLAR_CSS = 'raporlar.css?v=20260325.6';
   var KAYIT_JS = 'kayit.js?v=20260325.2';
@@ -620,16 +624,13 @@ document.addEventListener('DOMContentLoaded', function() {
     if (window.hideLoading) window.hideLoading();
 });
 
-// PERFORMANS FIX: Yükleme ekranı (Splash) kapanış tetikleri zaten index.html'de (inline) var.
-// Veri yüklendiğinde sadece splash kapatma değil, bildirim motorunu da garanti şekilde ayağa kaldır.
+// Splash kapanışı index.html tarafında; veri gelince ayrıca bildirim motorunu çalıştır.
 window.addEventListener('dataLoaded', () => {
     if (typeof window.hideLoading === 'function') {
         setTimeout(window.hideLoading, 50);
     }
 
-    // Bildirim motoru lazy-loaded tasitlar.js içinde tanımlı.
-    // Uygulama ilk açılışta taşıtlar ekranına girilmemiş olsa bile,
-    // veri geldikten sonra bildirimleri hesaplayabilmek için modülü sessizce yükle.
+    // Bildirimler tasitlar.js içinde; taşıtlar ekranı açılmadan önce veri gelirse modül burada yüklenir.
     const runNotifications = () => {
         if (typeof window.updateNotifications === 'function') {
             window.updateNotifications();
@@ -642,8 +643,8 @@ window.addEventListener('dataLoaded', () => {
     }
 
     if (typeof window.loadAppModule === 'function') {
-      var tasitlarJsForNotif = 'tasitlar.js?v=20260331.1';
-      var tasitlarCssForNotif = 'tasitlar.css?v=20260331.1';
+      var tasitlarJsForNotif = 'tasitlar.js?v=' + TASITLAR_MODULE_VERSION;
+      var tasitlarCssForNotif = 'tasitlar.css?v=' + TASITLAR_MODULE_VERSION;
       window.loadAppModule(tasitlarJsForNotif, tasitlarCssForNotif)
             .then(runNotifications)
             .catch(function(err) {

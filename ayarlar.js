@@ -1563,7 +1563,7 @@
       });
     })();
 
-    // YEDEKLE (Export)
+    // Veri dışa aktar (JSON indir)
     window.exportData = function exportData() {
       try {
         const branches = readBranches();
@@ -1594,8 +1594,7 @@
       }
     };
   
-    // SON YEDEKTEN GERİ YÜKLE (medisa_server_backup - önbellek temizleme sonrası)
-    // SON YEDEKTEN GERİ YÜKLE (önce sunucu yedeği, sonra local fallback)
+    // Son yedekten geri yükle: önce sunucu (restore.php), yoksa yerel medisa_server_backup.
     function normalizeBackupPayload(raw, source) {
       if (!raw || typeof raw !== "object") return null;
       const vehicles = Array.isArray(raw.vehicles) ? raw.vehicles : (Array.isArray(raw.tasitlar) ? raw.tasitlar : []);
@@ -1702,7 +1701,7 @@
       }
     };
 
-    // YEDEKTEN GERİ YÜKLE (Import - dosyadan)
+    // Dosyadan içe aktar (JSON seç)
     window.importData = function importData() {
       try {
         const input = document.createElement('input');
@@ -1788,7 +1787,7 @@
       }
     };
   
-    // YEDEKLEME (önbellek temizlemeden önce kesinlikle yapılır)
+    // Önbellek temizliğinden önce çağrılır: sunucu ve/veya yerel yedek.
     async function uploadToServer() {
       try {
         const branches = readBranches();
@@ -1823,7 +1822,7 @@
           }
         }
 
-        // Sunucu kayit fonksiyonu yoksa yerel yedek ile devam et
+        // saveDataToServer yoksa yalnızca yerel kopya
         if (typeof window.saveDataToServer !== "function") {
           const localBackupOnly = storeLocalBackup(backup);
           return {
@@ -1834,7 +1833,7 @@
           };
         }
 
-        // 3) Sunucuya gonderilecek appData'yi guncel verilerle hizala
+        // appData'yı yedek snapshot ile hizala
         if (window.appData && typeof window.appData === "object") {
           const hasAppUsers = Array.isArray(window.appData.users) && window.appData.users.length > 0;
           window.appData = {
@@ -1845,7 +1844,6 @@
           };
         }
 
-        // 4) Sunucuya kaydet
         const serverSaved = await window.saveDataToServer();
         if (!serverSaved) {
           const localBackupFallback = storeLocalBackup(backup);
@@ -1875,25 +1873,10 @@
       }
     }
   
-    // ÖNBELLEK TEMİZLE
-    /**
-     * Tarayıcı önbelleğini (cache) temizler
-     * 
-     * İşlem akışı:
-     * 1. Kullanıcıya onay modal'ı göster (cache-confirm-modal)
-     * 2. Onaylandığında confirmCacheClear() fonksiyonu çağrılır
-     * 3. confirmCacheClear içinde:
-     *    - Tüm localStorage verileri silinir (vehicles, branches, users)
-     *    - Sayfa yenilenir (temiz başlangıç)
-     * 
-     * Not: Bu işlem geri alınamaz! Tüm veriler silinir.
-     * 
-     * @async
-     * @throws {Error} Modal açma hatası durumunda info modal gösterilir
-     */
+    /** Tarayıcı uygulama verisini temizler: onay modalı → yedek → confirmCacheClear (anahtarlar silinir, sayfa yenilenir). Geri alınamaz. */
     window.clearCache = async function clearCache() {
       try {
-        // Modal ile Kullanıcıya sor (sunucu yedekleme yalnızca onaydan sonra yapılır)
+        // Onay sonrası yedekleme (sunucu yalnızca kullanıcı akışında)
         const confirmMessage = 'Tarayıcı Belleği Temizlenecektir, Devam Etmek istediğinize Emin Misiniz?';
         window.openCacheConfirmModal(confirmMessage);
    
@@ -1944,11 +1927,9 @@
       closeCacheConfirmModal();
   
       try {
-        // 1. Önce YEDEKLEME YAP (yerel + mümkünse sunucu)
         window.showInfoModal('Veriler Yedekleniyor...');
         const result = await uploadToServer();
 
-        // Yerel yedek bile Oluşturulamadıysa işlem iptal
         if (!result.success && !result.localBackup) {
           window.showInfoModal('Yedekleme başarısız! Tarayıcı Belleği Temizlenmedi.');
           return;
@@ -1964,7 +1945,7 @@
           return;
         }
   
-        // 2. YEDEKLEME BAŞARILI - Sadece uygulama verilerini temizle (medisa_server_backup korunur)
+        // Uygulama anahtarları silinir; medisa_server_backup kalır
         [BRANCHES_KEY, USERS_KEY, VEHICLES_KEY].forEach(k => localStorage.removeItem(k));
         // Diğer uygulama state anahtarlarını da temizle
         ['vehicle_column_order', 'stok_active_columns', 'stok_column_order', 'stok_base_column_order'].forEach(k => localStorage.removeItem(k));

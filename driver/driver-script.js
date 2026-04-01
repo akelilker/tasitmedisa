@@ -421,7 +421,7 @@ const API_BASE = (function(){
     var display = wrap.querySelector('.driver-date-display');
     if (!display) return;
     var formatted = formatDateDDMMYYYY(inputEl.value || '');
-    // iOS tarih secicide gecici bos deger aninda yaziyi silme.
+    // iOS tarih seçicide boş ara değerde etiketi anında silme (odak açıkken koru).
     if (!formatted && document.activeElement === inputEl && display.dataset.lastShown) return;
     display.textContent = formatted;
     if (formatted) display.dataset.lastShown = formatted;
