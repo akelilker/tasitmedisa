@@ -22,3 +22,6 @@ Thumbs.db
 # Local docs/exports not used by runtime
 tanitim*.docx
 tasit.zip
+clsm.zip
+tools/merge_senay_fleet.py
+tools/output/SENAY_ARACLAR_MASTER.xlsx
