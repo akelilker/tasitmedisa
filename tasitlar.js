@@ -510,7 +510,13 @@
   function getVehiclesListViewportWidth() {
     var scrollWrap = document.querySelector('#vehicles-modal .vehicles-list-scroll');
     var modalBody = document.querySelector('#vehicles-modal .modal-body');
-    return (scrollWrap && scrollWrap.clientWidth) || (modalBody && modalBody.clientWidth) || 0;
+    var container = document.querySelector('#vehicles-modal .modal-container');
+    var w = scrollWrap && scrollWrap.clientWidth;
+    if (w > 0) return w;
+    w = modalBody && modalBody.clientWidth;
+    if (w > 0) return w;
+    w = container && container.clientWidth;
+    return w > 0 ? w : 0;
   }
   function shouldUseCompactVehicleHeader() {
     var listWidth = getVehiclesListViewportWidth();
@@ -519,7 +525,7 @@
 
   // Grid genişlikleri sütun kimliğine göre (sürükle-bırak sonrası genişlik doğru sütunla kalsın)
   function getVehicleColumnWidths(columnOrder) {
-    const defaultCols = '42px 76px minmax(68px, 2.1fr) 50px minmax(58px, 0.72fr) minmax(48px, 0.58fr) minmax(68px, 1fr) minmax(64px, 0.88fr)';
+    const defaultCols = '40px 72px minmax(64px, 2.2fr) 48px minmax(52px, 0.68fr) minmax(40px, 0.52fr) minmax(60px, 1fr) minmax(56px, 0.85fr)';
     try {
       if (!columnOrder || !Array.isArray(columnOrder) || columnOrder.length === 0) return defaultCols;
       const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
@@ -536,24 +542,24 @@
           }
         : isCompactDesktop
           ? {
-              'year': '40px',
-              'plate': '72px',
-              'brand': 'minmax(64px, 2fr)',
-              'km': '48px',
-              'type': 'minmax(56px, 0.7fr)',
-              'transmission': 'minmax(44px, 0.55fr)',
-              'user': 'minmax(64px, 0.95fr)',
-              'branch': 'minmax(60px, 0.82fr)'
+              'year': '38px',
+              'plate': '68px',
+              'brand': 'minmax(60px, 2.05fr)',
+              'km': '46px',
+              'type': 'minmax(52px, 0.65fr)',
+              'transmission': 'minmax(38px, 0.5fr)',
+              'user': 'minmax(58px, 0.92fr)',
+              'branch': 'minmax(54px, 0.78fr)'
             }
         : {
-            'year': '42px',
-            'plate': '76px',
-            'brand': 'minmax(68px, 2.1fr)',
-            'km': '50px',
-            'type': 'minmax(58px, 0.72fr)',
-            'transmission': 'minmax(48px, 0.58fr)',
-            'user': 'minmax(68px, 1fr)',
-            'branch': 'minmax(64px, 0.88fr)'
+            'year': '40px',
+            'plate': '72px',
+            'brand': 'minmax(64px, 2.2fr)',
+            'km': '48px',
+            'type': 'minmax(52px, 0.68fr)',
+            'transmission': 'minmax(40px, 0.52fr)',
+            'user': 'minmax(60px, 1fr)',
+            'branch': 'minmax(56px, 0.85fr)'
           };
       return columnOrder.map(key => widthMap[key] || '1fr').join(' ');
     } catch (e) {
@@ -1574,7 +1580,8 @@
             const kmValue = v.guncelKm || v.km;
             const kmLabel = kmValue ? formatNumber(kmValue) : '-';
             const vehicleTypeLabel = toTitleCase(v.vehicleType || '-');
-            const transmissionLabel = getTransmissionLabel(v.transmission, isCompactHeader);
+            /* Liste tablosunda yer kazanmak için hep kısa (Otm./Düz.); başlık uzun/kısa ayrımından bağımsız */
+            const transmissionLabel = getTransmissionLabel(v.transmission, true);
             const branchLabel = toTitleCase(branchMap[String(v.branchId)]?.name || 'Tahsis Edilmemiş');
             
             let cellHtml = '';
