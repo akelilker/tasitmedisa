@@ -510,7 +510,7 @@
 
   // Grid genişlikleri sütun kimliğine göre (sürükle-bırak sonrası genişlik doğru sütunla kalsın)
   function getVehicleColumnWidths(columnOrder) {
-    const defaultCols = '42px 82px minmax(124px, 2.42fr) 62px minmax(78px, 0.96fr) minmax(84px, 1.02fr) minmax(76px, 0.90fr) minmax(104px, 1.24fr)';
+    const defaultCols = '48px 92px minmax(118px, 2.28fr) 62px minmax(84px, 0.96fr) minmax(96px, 1.04fr) minmax(92px, 0.98fr) minmax(96px, 0.98fr)';
     try {
       if (!columnOrder || !Array.isArray(columnOrder) || columnOrder.length === 0) return defaultCols;
       const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
@@ -525,14 +525,14 @@
             'branch': '2.25fr'   /* mobil+iOS PWA: şubeden bir kademe alan alındı */
           }
         : {
-            'year': '42px',
-            'plate': '82px',
-            'brand': 'minmax(124px, 2.42fr)',
+            'year': '48px',
+            'plate': '92px',
+            'brand': 'minmax(118px, 2.28fr)',
             'km': '62px',
-            'type': 'minmax(78px, 0.96fr)',
-            'transmission': 'minmax(84px, 1.02fr)',
-            'user': 'minmax(76px, 0.90fr)',
-            'branch': 'minmax(104px, 1.24fr)'
+            'type': 'minmax(84px, 0.96fr)',
+            'transmission': 'minmax(96px, 1.04fr)',
+            'user': 'minmax(92px, 0.98fr)',
+            'branch': 'minmax(96px, 0.98fr)'
           };
       return columnOrder.map(key => widthMap[key] || '1fr').join(' ');
     } catch (e) {
@@ -544,13 +544,13 @@
   function buildVehicleHeaderLabelStackHtml(rawLabel) {
     var t = (rawLabel == null ? '' : String(rawLabel)).trim();
     if (!t) {
-      return '<span class="header-label-stack"><span class="header-r1"></span><span class="header-r2">-</span></span>';
+      return '<span class="header-label-stack header-label-stack-single"><span class="header-r1"></span><span class="header-r2">-</span></span>';
     }
     var sp = t.lastIndexOf(' ');
     if (sp < 0) {
-      return '<span class="header-label-stack"><span class="header-r1"></span><span class="header-r2">' + escapeHtml(t) + '</span></span>';
+      return '<span class="header-label-stack header-label-stack-single"><span class="header-r1"></span><span class="header-r2">' + escapeHtml(t) + '</span></span>';
     }
-    return '<span class="header-label-stack"><span class="header-r1">' + escapeHtml(t.slice(0, sp)) + '</span><span class="header-r2">' + escapeHtml(t.slice(sp + 1).trim()) + '</span></span>';
+    return '<span class="header-label-stack header-label-stack-split"><span class="header-r1">' + escapeHtml(t.slice(0, sp)) + '</span><span class="header-r2">' + escapeHtml(t.slice(sp + 1).trim()) + '</span></span>';
   }
 
   /**
