@@ -25,3 +25,10 @@ tasit.zip
 clsm.zip
 tools/merge_senay_fleet.py
 tools/output/SENAY_ARACLAR_MASTER.xlsx
+welcome-to-docker/
+docker-compose.yml
+Dockerfile
+DEPLOYMENT.md
+.github/workflows/deploy.yml
+.dockerignore
+.dockerignore
