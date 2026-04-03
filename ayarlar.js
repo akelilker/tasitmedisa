@@ -73,9 +73,11 @@
         if (deleteBtn) deleteBtn.style.display = 'none';
       }
   
-      // Modalı aç
+      // Modalı aç — .active ile birlikte (ayarlar.css: .ayarlar-modal-overlay pointer-events
+      // yalnızca .active iken auto). rAF gecikmesi tıklamaların alttaki #branch-modal'a
+      // sızmasına ve beklenmedik kapanmalara yol açıyordu.
+      modal.classList.add('active');
       modal.style.display = 'flex';
-      requestAnimationFrame(() => modal.classList.add('active'));
   
       // Focus
       if (nameInput) {
@@ -866,9 +868,9 @@
   
       syncUserRoleBranchUI({ scope: scope });
 
-      // Modalı aç
+      // Modalı aç — .active anında (bkz. openBranchFormModal; pointer-events sızıntısı)
+      modal.classList.add('active');
       modal.style.display = 'flex';
-      requestAnimationFrame(() => modal.classList.add('active'));
   
       // Focus
       if (nameInput) {
@@ -1361,6 +1363,13 @@
       }
     });
   
+    function isOverlayVisiblyOpen(overlayEl) {
+      if (!overlayEl) return false;
+      if (overlayEl.classList.contains('active') || overlayEl.classList.contains('open')) return true;
+      var d = overlayEl.style && overlayEl.style.display;
+      return d === 'flex' || d === 'block';
+    }
+
     document.addEventListener('click', (e) => {
       const branchModal = document.getElementById('branch-modal');
       const userModal = document.getElementById('user-modal');
@@ -1372,9 +1381,12 @@
       const cacheConfirmModal = document.getElementById('cache-confirm-modal');
       const userFormContainer = userFormModal ? userFormModal.querySelector('.modal-container') : null;
 
+      const userFormOpen = isOverlayVisiblyOpen(userFormModal);
+      const branchFormOpen = isOverlayVisiblyOpen(branchFormModal);
+
       if (
         userFormModal &&
-        userFormModal.classList.contains('active') &&
+        userFormOpen &&
         (e.target === userFormModal || (userFormContainer && !userFormContainer.contains(e.target)))
       ) {
         e.preventDefault();
@@ -1392,10 +1404,10 @@
         closeDisVeriPanel();
       }
       if (branchModal && branchModal.classList.contains('active') && e.target === branchModal) {
-        closeBranchManagement();
+        if (!branchFormOpen) closeBranchManagement();
       }
       if (userModal && userModal.classList.contains('active') && e.target === userModal) {
-        closeUserManagement();
+        if (!userFormOpen) closeUserManagement();
       }
       if (branchFormModal && branchFormModal.classList.contains('active') && e.target === branchFormModal) {
         closeBranchFormModal();

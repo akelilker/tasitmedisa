@@ -518,7 +518,7 @@ var TASITLAR_MODULE_VERSION = '20260404.1';
   var RAPORLAR_CSS = 'raporlar.css?v=20260325.6';
   var KAYIT_JS = 'kayit.js?v=20260325.2';
   var KAYIT_CSS = 'kayit.css?v=20260325.1';
-  var AYARLAR_JS = 'ayarlar.js?v=20260404.2';
+  var AYARLAR_JS = 'ayarlar.js?v=20260404.3';
   var AYARLAR_CSS = 'ayarlar.css?v=20260328.2';
 
   window.openVehiclesView = function() {
