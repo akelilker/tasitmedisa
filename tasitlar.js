@@ -510,7 +510,7 @@
 
   // Grid genişlikleri sütun kimliğine göre (sürükle-bırak sonrası genişlik doğru sütunla kalsın)
   function getVehicleColumnWidths(columnOrder) {
-    const defaultCols = '32px 70px 2.95fr 58px 62px 64px 1.65fr 1.9fr'; /* Şanzıman eklendi: marka/user/şube dengelendi */
+    const defaultCols = '32px 70px 2.88fr 58px 58px 60px 1.52fr 2.18fr'; /* Şube biraz geniş; kelime ortası kırılma azalır */
     try {
       if (!columnOrder || !Array.isArray(columnOrder) || columnOrder.length === 0) return defaultCols;
       const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
@@ -527,12 +527,12 @@
         : {
             'year': '32px',
             'plate': '70px',
-            'brand': '2.95fr',   /* Şanzıman için marka bir kademe daraltıldı */
+            'brand': '2.88fr',
             'km': '58px',
-            'type': '62px',
-            'transmission': '64px',
-            'user': '1.65fr',
-            'branch': '1.9fr'
+            'type': '58px',
+            'transmission': '60px',
+            'user': '1.52fr',
+            'branch': '2.18fr'
           };
       return columnOrder.map(key => widthMap[key] || '1fr').join(' ');
     } catch (e) {
@@ -1378,6 +1378,7 @@
       const safeColumnOrder = Array.isArray(vehicleColumnOrder) ? vehicleColumnOrder : ['year', 'plate', 'brand', 'km', 'type', 'transmission', 'user', 'branch'];
       const displayColumnOrder = (activeBranchId === 'all' || activeBranchId === '__archive__') ? safeColumnOrder : safeColumnOrder.filter(function(k) { return k !== 'branch'; });
       const isMobileList = window.innerWidth <= 768;
+      const isCompactHeader = window.innerWidth <= 640; /* dar ekranda kısa başlık etiketleri */
       // Mobil/tablet (≤768px): Taşıt Tipi + Şanzıman sütunlarını göstermiyoruz (yer kaplamasın)
       const listDisplayOrder = isMobileList ? displayColumnOrder.filter(function(k) { return k !== 'type' && k !== 'transmission'; }) : displayColumnOrder;
 
@@ -1404,8 +1405,8 @@
               'brand': { label: 'Marka / Model', class: 'list-brand' },
               'km': { label: 'Km', class: 'list-km' },
               'type': { label: 'Ta\u015F\u0131t Tipi', class: 'list-type' },
-              'transmission': { label: '\u015Eanz.', class: 'list-transmission' },
-              'user': { label: 'Kull.', class: 'list-user' },
+              'transmission': { label: isCompactHeader ? '\u015Eanz.' : '\u015Eanz\u0131man', class: 'list-transmission' },
+              'user': { label: isCompactHeader ? 'Kull.' : 'Kullan\u0131c\u0131', class: 'list-user' },
               'branch': { label: '\u015Eube', class: 'list-branch' }
             };
             let emptyHtml = '<div class="list-header-row" style="grid-template-columns: ' + gridStr + '">';
@@ -1447,15 +1448,15 @@
             : '<svg class="sort-icon active" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 15l4 4 4-4"/></svg>';
         };
         
-        // Sütun başlık tanımları (mobilde Kullanıcı → Kull.)
+        // Sütun başlık tanımları (≤640px: kısa etiket; masaüstü: tam kelime + CSS satır kırılması)
         const columnDefs = {
           'year': { label: 'Y\u0131l\u0131', class: 'list-year' },
           'plate': { label: 'Plaka', class: 'list-plate' },
           'brand': { label: 'Marka / Model', class: 'list-brand' },
           'km': { label: 'Km', class: 'list-km' },
           'type': { label: 'Ta\u015F\u0131t Tipi', class: 'list-type' },
-          'transmission': { label: '\u015Eanz.', class: 'list-transmission' },
-          'user': { label: 'Kull.', class: 'list-user' },
+          'transmission': { label: isCompactHeader ? '\u015Eanz.' : '\u015Eanz\u0131man', class: 'list-transmission' },
+          'user': { label: isCompactHeader ? 'Kull.' : 'Kullan\u0131c\u0131', class: 'list-user' },
           'branch': { label: '\u015Eube', class: 'list-branch' }
         };
         html += '<div class="list-header-row" style="grid-template-columns: ' + gridStr + '">';

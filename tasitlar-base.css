@@ -2148,7 +2148,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 .list-header-row .list-cell.list-brand {
     text-align: center !important;
     white-space: normal !important;
-    word-break: break-word;
+    word-break: normal;
     overflow-wrap: break-word;
     line-height: 1.3;
     display: flex !important;
@@ -2199,14 +2199,14 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 .view-list .list-cell.list-user {
     font-size: clamp(10px, 1.5vw, 12px) !important;
     white-space: normal !important;
-    word-break: break-word !important;
+    word-break: normal !important;
     overflow-wrap: break-word !important;
     overflow: visible !important;
 }
 /* Kullanıcı sütun başlışı: dar kolonda küçülsün ve gerekirse satır kırılsın */
 .list-header-row .list-cell.list-user {
     white-space: normal !important;
-    word-break: break-word;
+    word-break: normal;
     overflow-wrap: break-word;
 }
 /* Kullanıcı başlışı da dişerleriyle aynı punto */
@@ -2221,35 +2221,63 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
   .list-header-row .list-cell span {
     font-size: clamp(10.67px, 1.55vw, 11.33px) !important;
   }
-  .list-header-row .list-cell.list-type,
+  /* Taşıt Tipi: iki satıra inebilsin; Şanzıman kısa etiket tek satır kalabilir */
+  .list-header-row .list-cell.list-type {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    overflow: hidden !important;
+    text-overflow: clip !important;
+    white-space: normal !important;
+    word-break: normal !important;
+    overflow-wrap: break-word !important;
+  }
+
   .list-header-row .list-cell.list-transmission {
     padding-left: 0 !important;
     padding-right: 0 !important;
     overflow: hidden !important;
     text-overflow: clip !important;
-    white-space: nowrap !important;
+    white-space: normal !important;
+    word-break: normal !important;
+    overflow-wrap: break-word !important;
   }
 
   .list-header-row .list-cell.list-user {
     padding-left: 6px !important;
     overflow: hidden !important;
     text-overflow: clip !important;
-    white-space: nowrap !important;
+    white-space: normal !important;
+    word-break: normal !important;
+    overflow-wrap: break-word !important;
   }
 
-  .list-header-row .list-cell.list-type span,
-  .list-header-row .list-cell.list-transmission span,
+  .list-header-row .list-cell.list-type span {
+    overflow: hidden !important;
+    text-overflow: clip !important;
+    white-space: normal !important;
+    word-break: normal !important;
+    overflow-wrap: break-word !important;
+    font-size: clamp(8.4px, 1.25vw, 9.8px) !important;
+    letter-spacing: 0 !important;
+  }
+
+  .list-header-row .list-cell.list-transmission span {
+    overflow: hidden !important;
+    text-overflow: clip !important;
+    white-space: normal !important;
+    word-break: normal !important;
+    overflow-wrap: break-word !important;
+    font-size: clamp(8.4px, 1.25vw, 9.8px) !important;
+    letter-spacing: 0 !important;
+  }
+
   .list-header-row .list-cell.list-user span {
     overflow: hidden !important;
     text-overflow: clip !important;
-    white-space: nowrap !important;
+    white-space: normal !important;
+    word-break: normal !important;
+    overflow-wrap: break-word !important;
     font-size: clamp(9.67px, 1.45vw, 10.33px) !important;
-  }
-  /* Taşıt Tipi başlışı: masaüstünde metin kesin sışsın */
-  .list-header-row .list-cell.list-type span,
-  .list-header-row .list-cell.list-transmission span {
-    font-size: clamp(8.4px, 1.25vw, 9.8px) !important;
-    letter-spacing: 0 !important;
   }
   .list-header-row .list-cell.list-type .sortable-header,
   .list-header-row .list-cell.list-transmission .sortable-header {
@@ -2268,7 +2296,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     padding-left: 2px !important;
     padding-right: 2px !important;
     white-space: normal !important;
-    word-break: break-word;
+    word-break: normal;
     overflow-wrap: break-word;
     display: -webkit-box !important;
     -webkit-line-clamp: 2 !important;
