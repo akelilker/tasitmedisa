@@ -720,6 +720,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-
   white-space: normal;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
+  transform: translateY(4px);
 }
 
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-user-name.is-empty {
