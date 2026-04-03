@@ -1764,37 +1764,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     -ms-overflow-style: none;
 }
 
-/* Geniş sütun ızgarası: Kullanıcı + Şube kesilmesin; başlık ile gövde aynı yatay kaydırmada */
-#vehicles-modal .vehicles-list-hscroll-wrap {
-    flex: 1;
-    min-height: 0;
-    min-width: 0;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    overflow-x: auto;
-    overflow-y: hidden;
-    scrollbar-width: thin;
-    scrollbar-color: var(--border-subtle) transparent;
-    -webkit-overflow-scrolling: touch;
-}
-#vehicles-modal .vehicles-list-hscroll-wrap::-webkit-scrollbar {
-    height: 6px;
-}
-#vehicles-modal .vehicles-list-hscroll-wrap::-webkit-scrollbar-thumb {
-    background: var(--border-subtle);
-    border-radius: 3px;
-}
-#vehicles-modal .vehicles-list-hscroll-wrap .list-header-row {
-    min-width: min-content;
-    width: 100%;
-    box-sizing: border-box;
-}
-#vehicles-modal .vehicles-list-hscroll-wrap .vehicles-list-scroll {
-    min-width: min-content;
-    overflow-x: visible !important;
-}
-
 /* Liste: çerçeve ile 3px boşluk (modal-body padding 3px); hover taşmasın */
 #vehicles-modal .vehicles-list-scroll,
 #vehicles-modal .tasit-list-container {
@@ -2111,6 +2080,19 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     z-index: 0 !important;
 }
 
+/* Taşıtlar modal liste: sıkı gap, hücre yatay ~1px (tek ekrana sığdırma) */
+#vehicles-modal .list-header-row,
+#vehicles-modal .view-list .list-item {
+    gap: 2px !important;
+}
+#vehicles-modal .view-list .list-cell,
+#vehicles-modal .list-header-row .list-cell {
+    padding-top: 2px !important;
+    padding-bottom: 2px !important;
+    padding-left: 1px !important;
+    padding-right: 1px !important;
+}
+
 /* çerik alanı: başlık ile liste aynı stacking context'te (scroll sarmalayıcı yoksa) */
 #vehicles-modal #vehicles-modal-content {
     position: relative;
@@ -2169,7 +2151,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     flex: 1 1 auto !important;
     min-width: 0 !important;
     max-width: 100% !important;
-    padding-right: 8px !important;
+    padding-right: 3px !important;
     box-sizing: border-box !important;
     min-height: 2.4em !important;
     text-align: center !important;
@@ -2400,6 +2382,10 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     justify-content: center !important;
     padding-right: 10px !important; /* saşdaki sort ikonuna pay */
     box-sizing: border-box;
+  }
+  #vehicles-modal .list-header-row .list-cell.list-type.sortable-header,
+  #vehicles-modal .list-header-row .list-cell.list-transmission.sortable-header {
+    padding-right: 4px !important;
   }
   .list-header-row .list-cell.list-type .sort-icon,
   .list-header-row .list-cell.list-transmission .sort-icon {
