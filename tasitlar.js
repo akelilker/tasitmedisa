@@ -519,7 +519,7 @@
 
   // Grid genişlikleri sütun kimliğine göre (sürükle-bırak sonrası genişlik doğru sütunla kalsın)
   function getVehicleColumnWidths(columnOrder) {
-    const defaultCols = '52px 90px minmax(98px, 1.96fr) 60px minmax(94px, 1.02fr) minmax(104px, 1.06fr) minmax(114px, 1.12fr) minmax(88px, 0.86fr)';
+    const defaultCols = '42px 76px minmax(68px, 2.1fr) 50px minmax(58px, 0.72fr) minmax(48px, 0.58fr) minmax(68px, 1fr) minmax(64px, 0.88fr)';
     try {
       if (!columnOrder || !Array.isArray(columnOrder) || columnOrder.length === 0) return defaultCols;
       const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
@@ -530,30 +530,30 @@
             'plate': '62px',
             'brand': '2.6fr',   /* mobil+iOS PWA: şubeden 2px marka'ya */
             'km': '52px',
-            'transmission': '60px',
+            'transmission': '52px',
             'user': '1.95fr',   /* mobil+iOS PWA: şubeden 3px kullanıcıya */
             'branch': '2.25fr'   /* mobil+iOS PWA: şubeden bir kademe alan alındı */
           }
         : isCompactDesktop
           ? {
-              'year': '46px',
-              'plate': '84px',
-              'brand': 'minmax(96px, 2.02fr)',
-              'km': '56px',
-              'type': 'minmax(88px, 0.96fr)',
-              'transmission': 'minmax(88px, 0.92fr)',
-              'user': 'minmax(88px, 0.92fr)',
-              'branch': 'minmax(86px, 0.84fr)'
+              'year': '40px',
+              'plate': '72px',
+              'brand': 'minmax(64px, 2fr)',
+              'km': '48px',
+              'type': 'minmax(56px, 0.7fr)',
+              'transmission': 'minmax(44px, 0.55fr)',
+              'user': 'minmax(64px, 0.95fr)',
+              'branch': 'minmax(60px, 0.82fr)'
             }
         : {
-            'year': '52px',
-            'plate': '90px',
-            'brand': 'minmax(98px, 1.96fr)',
-            'km': '60px',
-            'type': 'minmax(94px, 1.02fr)',
-            'transmission': 'minmax(104px, 1.06fr)',
-            'user': 'minmax(114px, 1.12fr)',
-            'branch': 'minmax(88px, 0.86fr)'
+            'year': '42px',
+            'plate': '76px',
+            'brand': 'minmax(68px, 2.1fr)',
+            'km': '50px',
+            'type': 'minmax(58px, 0.72fr)',
+            'transmission': 'minmax(48px, 0.58fr)',
+            'user': 'minmax(68px, 1fr)',
+            'branch': 'minmax(64px, 0.88fr)'
           };
       return columnOrder.map(key => widthMap[key] || '1fr').join(' ');
     } catch (e) {
@@ -603,10 +603,10 @@
   function toTitleCase(str) { return (typeof window.toTitleCase === 'function' ? window.toTitleCase(str) : str); }
   function formatPlaka(str) { return (typeof window.formatPlaka === 'function' ? window.formatPlaka(str) : (str == null ? '-' : String(str))); }
   function formatAdSoyad(str) { return (typeof window.formatAdSoyad === 'function' ? window.formatAdSoyad(str) : str); }
-  function getTransmissionLabel(transmission) {
+  function getTransmissionLabel(transmission, short) {
     var value = String(transmission || '').trim().toLowerCase();
-    if (value === 'otomatik') return 'Otomatik';
-    if (value === 'manuel') return 'Manuel';
+    if (value === 'otomatik') return short ? 'Otm.' : 'Otomatik';
+    if (value === 'manuel') return short ? 'D\u00FCz.' : 'Manuel';
     return '-';
   }
 
@@ -1444,7 +1444,7 @@
               'user': { label: isCompactHeader ? 'Kull.' : 'Kullan\u0131c\u0131', class: 'list-user' },
               'branch': { label: '\u015Eube', class: 'list-branch' }
             };
-            let emptyHtml = '<div class="vehicles-list-hscroll-wrap"><div class="list-header-row" style="grid-template-columns: ' + gridStr + '">';
+            let emptyHtml = '<div class="list-header-row" style="grid-template-columns: ' + gridStr + '">';
             listDisplayOrder.forEach(columnKey => {
               const def = columnDefs[columnKey];
               if (def) {
@@ -1459,7 +1459,7 @@
                 emptyHtml += `<div class="list-cell ${def.class} sortable-header" data-col="${columnKey}">${labelHtml}</div>`;
               }
             });
-            emptyHtml += '</div><div class="vehicles-list-scroll"><div class="view-list view-list-empty"><div class="list-item list-item-empty" style="grid-column: 1 / -1; justify-content: center; padding: 24px;"><span style="color:#666;">' + escapeHtml(emptyMsg) + '</span></div></div></div></div>';
+            emptyHtml += '</div><div class="vehicles-list-scroll"><div class="view-list view-list-empty"><div class="list-item list-item-empty" style="grid-column: 1 / -1; justify-content: center; padding: 24px;"><span style="color:#666;">' + escapeHtml(emptyMsg) + '</span></div></div></div>';
             listContainer.innerHTML = emptyHtml;
             listContainer.dataset.renderScope = 'vehicles';
             listContainer.dataset.renderSignature = renderSignature;
@@ -1501,7 +1501,7 @@
           'user': { label: isCompactHeader ? 'Kull.' : 'Kullan\u0131c\u0131', class: 'list-user' },
           'branch': { label: '\u015Eube', class: 'list-branch' }
         };
-        html += '<div class="vehicles-list-hscroll-wrap"><div class="list-header-row" style="grid-template-columns: ' + gridStr + '">';
+        html += '<div class="list-header-row" style="grid-template-columns: ' + gridStr + '">';
         // Sıralamaya göre sütun başlıklarını render et (mobilde Marka/Model iki satır; Taşıt Tipi mobilde yok)
         listDisplayOrder.forEach(columnKey => {
           const def = columnDefs[columnKey];
@@ -1574,7 +1574,7 @@
             const kmValue = v.guncelKm || v.km;
             const kmLabel = kmValue ? formatNumber(kmValue) : '-';
             const vehicleTypeLabel = toTitleCase(v.vehicleType || '-');
-            const transmissionLabel = getTransmissionLabel(v.transmission);
+            const transmissionLabel = getTransmissionLabel(v.transmission, isCompactHeader);
             const branchLabel = toTitleCase(branchMap[String(v.branchId)]?.name || 'Tahsis Edilmemiş');
             
             let cellHtml = '';
@@ -1644,7 +1644,7 @@
               </div>
             `;
         }
-    }).join('') + '</div>' + (viewMode === 'list' ? '</div></div>' : '') + '';
+    }).join('') + '</div>' + (viewMode === 'list' ? '</div>' : '') + '';
 
       // PERFORMANS: Browser'ın yerleşik C++ HTML parser'ını doğrudan kullanıyoruz.
       // Fragment ve tek tek node taşıma işlemi (Layout Thrashing) iptal edildi.
