@@ -1,9 +1,15 @@
 /* tasitlar modülü — liste/detay/olaylar (tasitlar.css bölüm 2) */
 
-.sortable-header span {
+/* Taşıtlar listesi başlıkları: iki kelime satır kırabilsin (nowrap tüm başlıkları tek satıra sıkıştırıyordu) */
+#vehicles-modal .list-header-row .sortable-header > span {
     display: inline-block;
-    white-space: nowrap;
-    flex-shrink: 0;
+    white-space: normal;
+    word-break: normal;
+    overflow-wrap: break-word;
+    flex-shrink: 1;
+    min-width: 0;
+    max-width: 100%;
+    text-align: center;
 }
 
 .sort-icon {
@@ -39,7 +45,7 @@
 }
 .list-header-row .list-cell.list-brand .sortable-header span {
     white-space: normal !important;
-    word-break: break-word !important;
+    word-break: normal !important;
     overflow-wrap: break-word !important;
     flex-shrink: 1 !important;
     text-align: center !important;
@@ -70,7 +76,7 @@
     overflow: hidden !important;
     text-overflow: clip !important;
     white-space: normal !important;
-    word-break: break-word;
+    word-break: normal;
     overflow-wrap: break-word;
     display: -webkit-box !important;
     -webkit-line-clamp: 2 !important;
@@ -98,7 +104,7 @@
     font-weight: inherit !important;
     text-align: center !important;
     white-space: normal !important;
-    word-break: break-word;
+    word-break: normal;
     overflow-wrap: break-word;
     line-height: 1.3;
     display: -webkit-box !important;
@@ -1893,7 +1899,7 @@
     font-weight: inherit !important;
     text-align: center !important;
     white-space: normal !important;
-    word-break: break-word !important;
+    word-break: normal !important;
     overflow-wrap: break-word !important;
     line-height: 1.4 !important;
     display: -webkit-box !important;
@@ -1955,7 +1961,7 @@
     justify-content: center !important;
     text-align: center !important;
     white-space: normal !important;
-    word-break: break-word !important;
+    word-break: normal !important;
     overflow-wrap: break-word !important;
     overflow: hidden !important;
     font-size: 16px !important; /* Sabit; 1pt'den fazla küçülme yok, gerekirse alt satıra iner */
@@ -1995,7 +2001,7 @@
     justify-content: center !important;
     text-align: center !important;
     white-space: normal !important;
-    word-break: break-word !important;
+    word-break: normal !important;
     overflow-wrap: break-word !important;
     overflow: hidden !important;
     padding: 2px 1px 2px 3px !important;
