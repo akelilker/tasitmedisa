@@ -504,7 +504,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Taşıtlar modülü (JS + CSS) — tek sürüm; loadAppModule anahtarı ve bildirim ön-yüklemesi aynı yolu kullanır.
-var TASITLAR_MODULE_VERSION = '20260404.1';
+var TASITLAR_MODULE_VERSION = '20260404.3';
 
 // Modal açma fonksiyonları: Lazy load – modül yüklenir, sonra ilgili açma fonksiyonu tetiklenir.
 // tasitlar.js / raporlar.js / kayit.js / ayarlar.js yüklendiğinde kendi open* implementasyonlarını yazar.
@@ -519,7 +519,7 @@ var TASITLAR_MODULE_VERSION = '20260404.1';
   var KAYIT_JS = 'kayit.js?v=20260325.2';
   var KAYIT_CSS = 'kayit.css?v=20260325.1';
   var AYARLAR_JS = 'ayarlar.js?v=20260404.3';
-  var AYARLAR_CSS = 'ayarlar.css?v=20260328.2';
+  var AYARLAR_CSS = 'ayarlar.css?v=20260404.1';
 
   window.openVehiclesView = function() {
     showModuleSpinner();
