@@ -507,6 +507,15 @@
   function getVSearchInput() { return document.getElementById('v-search-input'); }
   function getVSearchContainer() { return document.getElementById('v-search-container'); }
   function getVTransmissionDropdown() { return document.getElementById('v-transmission-dropdown'); }
+  function getVehiclesListViewportWidth() {
+    var scrollWrap = document.querySelector('#vehicles-modal .vehicles-list-scroll');
+    var modalBody = document.querySelector('#vehicles-modal .modal-body');
+    return (scrollWrap && scrollWrap.clientWidth) || (modalBody && modalBody.clientWidth) || 0;
+  }
+  function shouldUseCompactVehicleHeader() {
+    var listWidth = getVehiclesListViewportWidth();
+    return (typeof window !== 'undefined' && window.innerWidth <= 640) || (listWidth > 0 && listWidth <= 760);
+  }
 
   // Grid genişlikleri sütun kimliğine göre (sürükle-bırak sonrası genişlik doğru sütunla kalsın)
   function getVehicleColumnWidths(columnOrder) {
@@ -514,6 +523,7 @@
     try {
       if (!columnOrder || !Array.isArray(columnOrder) || columnOrder.length === 0) return defaultCols;
       const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
+      const isCompactDesktop = !isMobile && shouldUseCompactVehicleHeader();
       const widthMap = isMobile
         ? {
             'year': '32px',
@@ -524,6 +534,17 @@
             'user': '1.95fr',   /* mobil+iOS PWA: şubeden 3px kullanıcıya */
             'branch': '2.25fr'   /* mobil+iOS PWA: şubeden bir kademe alan alındı */
           }
+        : isCompactDesktop
+          ? {
+              'year': '46px',
+              'plate': '84px',
+              'brand': 'minmax(96px, 2.02fr)',
+              'km': '56px',
+              'type': 'minmax(88px, 0.96fr)',
+              'transmission': 'minmax(88px, 0.92fr)',
+              'user': 'minmax(88px, 0.92fr)',
+              'branch': 'minmax(86px, 0.84fr)'
+            }
         : {
             'year': '52px',
             'plate': '90px',
@@ -562,8 +583,8 @@
     if (!headerRow) return;
     requestAnimationFrame(function() {
       const isMobileViewport = typeof window !== 'undefined' && window.innerWidth <= 768;
-      const baseSize = isMobileViewport ? 15 : 11;
-      const minSize = isMobileViewport ? 13.5 : 9.5;
+      const baseSize = isMobileViewport ? 15 : 10.5;
+      const minSize = isMobileViewport ? 13.5 : 9;
       let size = baseSize;
       headerRow.style.setProperty('--list-header-font-size', size + 'px');
       const cells = headerRow.querySelectorAll('.list-cell');
@@ -1392,7 +1413,7 @@
       const safeColumnOrder = Array.isArray(vehicleColumnOrder) ? vehicleColumnOrder : ['year', 'plate', 'brand', 'km', 'type', 'transmission', 'user', 'branch'];
       const displayColumnOrder = (activeBranchId === 'all' || activeBranchId === '__archive__') ? safeColumnOrder : safeColumnOrder.filter(function(k) { return k !== 'branch'; });
       const isMobileList = window.innerWidth <= 768;
-      const isCompactHeader = window.innerWidth <= 640; /* dar ekranda kısa başlık etiketleri */
+      const isCompactHeader = shouldUseCompactVehicleHeader(); /* dar modal/genişlikte kısa başlık etiketleri */
       // Mobil/tablet (≤768px): Taşıt Tipi + Şanzıman sütunlarını göstermiyoruz (yer kaplamasın)
       const listDisplayOrder = isMobileList ? displayColumnOrder.filter(function(k) { return k !== 'type' && k !== 'transmission'; }) : displayColumnOrder;
 
@@ -1414,7 +1435,7 @@
             loadVehicleColumnOrder();
             const gridStr = getVehicleColumnWidths(listDisplayOrder);
             const columnDefs = {
-              'year': { label: 'Y\u0131l\u0131', class: 'list-year' },
+              'year': { label: isCompactHeader ? 'Y\u0131l' : 'Y\u0131l\u0131', class: 'list-year' },
               'plate': { label: 'Plaka', class: 'list-plate' },
               'brand': { label: 'Marka / Model', class: 'list-brand' },
               'km': { label: 'Km', class: 'list-km' },
@@ -1471,7 +1492,7 @@
         
         // Sütun başlık tanımları (≤640px: kısa etiket; masaüstü: tam kelime + CSS satır kırılması)
         const columnDefs = {
-          'year': { label: 'Y\u0131l\u0131', class: 'list-year' },
+          'year': { label: isCompactHeader ? 'Y\u0131l' : 'Y\u0131l\u0131', class: 'list-year' },
           'plate': { label: 'Plaka', class: 'list-plate' },
           'brand': { label: 'Marka / Model', class: 'list-brand' },
           'km': { label: 'Km', class: 'list-km' },
