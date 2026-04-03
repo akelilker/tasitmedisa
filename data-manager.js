@@ -170,22 +170,22 @@ function getSessionFromToken() {
     var role = normalizeSessionRole(payloadRole);
     var rawRole = String(payload.raw_rol || payloadRole || '').trim();
     var branchIds = Array.isArray(payload.sube_ids) ? payload.sube_ids.map(String).filter(Boolean) : [];
-    var panelEnabled = payload.kullanici_paneli === true || payload.surucu_paneli === true;
+    var driverDash = payload.driver_dashboard === true;
     return {
         authenticated: true,
         role: role || '',
         raw_role: rawRole || '',
         yonetici_only: payload.yonetici_only === true,
         branch_ids: branchIds,
-        kullanici_paneli: panelEnabled,
-        driver_dashboard: payload.driver_dashboard === true,
+        kullanici_paneli: driverDash,
+        driver_dashboard: driverDash,
         permissions: {},
         user: {
             id: payload.user_id != null ? String(payload.user_id) : '',
             isim: '',
             role: role || '',
             branch_ids: branchIds,
-            kullanici_paneli: panelEnabled
+            kullanici_paneli: driverDash
         }
     };
 }
@@ -194,6 +194,7 @@ function normalizeSessionRole(role) {
     var normalizedRole = String(role || '').trim();
     if (normalizedRole === 'admin') return 'genel_yonetici';
     if (normalizedRole === 'yonetici') return 'sube_yonetici';
+    if (normalizedRole === 'yonetici_kullanici') return 'sube_yonetici';
     if (normalizedRole === 'driver' || normalizedRole === 'sales' || normalizedRole === 'surucu') return 'kullanici';
     return normalizedRole;
 }
@@ -204,8 +205,7 @@ function getSessionRoleValue(sessionData) {
 }
 
 function isBranchManagerSessionRole(role) {
-    var normalizedRole = normalizeSessionRole(role);
-    return normalizedRole === 'sube_yonetici' || normalizedRole === 'yonetici_kullanici';
+    return normalizeSessionRole(role) === 'sube_yonetici';
 }
 
 function hasMainAppAccessForSession(sessionData) {
@@ -213,23 +213,12 @@ function hasMainAppAccessForSession(sessionData) {
     return role === 'genel_yonetici' || isBranchManagerSessionRole(role);
 }
 
-function isSessionPanelEnabled(sessionData) {
-    var session = sessionData && typeof sessionData === 'object' ? sessionData : getDefaultSession();
-    return session.kullanici_paneli === true || !!(session.user && session.user.kullanici_paneli === true);
-}
-
 function canUseDriverPanelTransition(sessionData) {
     var session = sessionData && typeof sessionData === 'object' ? sessionData : getDefaultSession();
     if (!session.authenticated) return false;
     if (session.yonetici_only === true) return false;
     if (session.driver_dashboard !== true) return false;
-
-    var role = getSessionRoleValue(session);
-    if (role === 'genel_yonetici' || role === 'yonetici_kullanici') return true;
-    if (role === 'sube_yonetici') return isSessionPanelEnabled(session);
-    if (role === 'kullanici') return true;
-
-    return false;
+    return true;
 }
 
 function canShowMainUserPanelLink(sessionData) {
@@ -252,7 +241,7 @@ function buildFallbackPermissions(role) {
     return {
         view_main_app: hasMainAppAccess,
         view_reports: hasMainAppAccess,
-        manage_users: normalizedRole === 'genel_yonetici',
+        manage_users: hasMainAppAccess,
         manage_branches: normalizedRole === 'genel_yonetici',
         manage_data: normalizedRole === 'genel_yonetici',
         manage_settings: normalizedRole === 'genel_yonetici'
@@ -352,7 +341,11 @@ function applyMainAppSessionUiState() {
     document.body.dataset.medisaRole = session.role || '';
 
     if (session.role === 'kullanici') {
-        redirectToDriverDashboard();
+        if (session.driver_dashboard === true) {
+            redirectToDriverDashboard();
+        } else {
+            medisaMainAppLogout();
+        }
         return;
     }
 
@@ -650,8 +643,8 @@ function normalizeUser(user) {
             branchId: '',
             branchIds: [],
             role: 'kullanici',
-            kullanici_paneli: true,
-            surucu_paneli: true
+            kullanici_paneli: false,
+            surucu_paneli: false
         };
     }
 
@@ -681,6 +674,8 @@ function normalizeUser(user) {
         else role = 'kullanici';
     }
     if (role === 'admin') role = 'genel_yonetici';
+    if (role === 'yonetici') role = 'sube_yonetici';
+    if (role === 'yonetici_kullanici') role = 'sube_yonetici';
     if (role === 'driver' || role === 'sales' || role === 'surucu') role = 'kullanici';
     if (!role) role = 'kullanici';
 
@@ -689,7 +684,7 @@ function normalizeUser(user) {
         kullaniciPaneli = user.surucu_paneli;
     }
     if (kullaniciPaneli === undefined) {
-        kullaniciPaneli = role === 'kullanici';
+        kullaniciPaneli = false;
     }
 
     return Object.assign({}, user, {

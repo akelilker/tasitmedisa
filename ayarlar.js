@@ -314,32 +314,23 @@
 
     function getRoleConfigFromSelection(role) {
       const selectedRole = role || 'kullanici';
-      if (selectedRole === 'yonetici_kullanici') {
-        return { role: 'sube_yonetici', kullanici_paneli: true };
+      if (selectedRole === 'sube_yonetici' || selectedRole === 'yonetici') {
+        return { role: 'sube_yonetici' };
       }
-      if (selectedRole === 'sube_yonetici') {
-        return { role: 'sube_yonetici', kullanici_paneli: false };
+      if (selectedRole === 'genel_yonetici' || selectedRole === 'admin') {
+        return { role: 'genel_yonetici' };
       }
-      if (selectedRole === 'genel_yonetici') {
-        return { role: 'genel_yonetici', kullanici_paneli: false };
-      }
-      return { role: 'kullanici', kullanici_paneli: true };
+      return { role: 'kullanici' };
     }
 
     function getUiRoleFromUser(user) {
-      const role = mapUiRoleToRol(user && (user.role || user.rol || user.tip));
-      const kullaniciPaneli = role === 'kullanici'
-        ? true
-        : ((user && user.kullanici_paneli === true) || (user && user.surucu_paneli === true));
-      if (role === 'sube_yonetici' && kullaniciPaneli) return 'yonetici_kullanici';
-      return role;
+      return mapUiRoleToRol(user && (user.role || user.rol || user.tip));
     }
 
     function getUserRoleLabel(user) {
       const roleLabels = {
         genel_yonetici: 'Genel Yönetici',
         sube_yonetici: 'Yönetici',
-        yonetici_kullanici: 'Yönetici+Kullanıcı',
         kullanici: 'Kullanıcı',
         admin: 'Genel Yönetici',
         sales: 'Kullanıcı',
@@ -350,18 +341,13 @@
     }
 
     function buildUserRoleLabelMarkup(user) {
-      const uiRole = getUiRoleFromUser(user || {});
       const roleLabel = getUserRoleLabel(user);
-      if (uiRole === 'yonetici_kullanici') {
-        return '<div class="settings-card-gorev settings-card-gorev--stacked"><span class="settings-card-gorev-line settings-card-gorev-line--manager">Yönetici</span><span class="settings-card-gorev-line settings-card-gorev-line--user">Kullanıcı</span></div>';
-      }
       return `<div class="settings-card-gorev">${escapeHtml(roleLabel)}</div>`;
     }
 
     const USER_FORM_ROLE_OPTIONS = [
       { value: 'kullanici', label: 'Kullan\u0131c\u0131' },
       { value: 'sube_yonetici', label: 'Y\u00f6netici' },
-      { value: 'yonetici_kullanici', label: 'Y\u00f6netici+Kullan\u0131c\u0131' },
       { value: 'genel_yonetici', label: 'Genel Y\u00f6netici' }
     ];
 
@@ -388,7 +374,9 @@
       const sessionData = typeof window.getMedisaSession === 'function'
         ? (window.getMedisaSession() || {})
         : (window.medisaSession || {});
-      const role = String(sessionData.role || (sessionData.user && sessionData.user.role) || '').trim();
+      let role = String(sessionData.role || (sessionData.user && sessionData.user.role) || '').trim();
+      if (role === 'admin') role = 'genel_yonetici';
+      if (role === 'yonetici' || role === 'yonetici_kullanici') role = 'sube_yonetici';
       const branchIds = Array.isArray(sessionData.branch_ids) && sessionData.branch_ids.length
         ? sessionData.branch_ids.map(function(branchId) { return String(branchId || '').trim(); }).filter(Boolean)
         : (
@@ -396,7 +384,7 @@
               ? sessionData.user.branch_ids.map(function(branchId) { return String(branchId || '').trim(); }).filter(Boolean)
               : []
           );
-      const isBranchManager = role === 'sube_yonetici' || role === 'yonetici_kullanici';
+      const isBranchManager = role === 'sube_yonetici';
       return {
         session: sessionData,
         role: role,
@@ -460,6 +448,8 @@
           .map(v => (typeof v.id === 'number' ? v.id : Number(v.id)) || v.id);
         const roleConfig = getRoleConfigFromSelection(getUiRoleFromUser(u));
         const rol = roleConfig.role;
+        const hasVehicle = zimmetliAraclar.length > 0;
+        const kullaniciPaneli = hasVehicle;
         const primaryBranchId = u.branchId != null && u.branchId !== ''
           ? String(u.branchId)
           : (
@@ -475,7 +465,6 @@
         const sube_id = firstSube !== undefined && firstSube !== ''
           ? (!isNaN(Number(firstSube)) ? Number(firstSube) : firstSube)
           : undefined;
-        const kullaniciPaneli = roleConfig.kullanici_paneli;
         return {
           id: u.id,
           isim: u.name || u.isim || '',
@@ -1027,7 +1016,11 @@
         const branchIds = branchId ? [branchId] : [];
         const roleConfig = getRoleConfigFromSelection(effectiveSelectedRole);
         const role = roleConfig.role;
-        const kullanici_paneli = roleConfig.kullanici_paneli;
+        const selectedVehicleIds = vehiclesContainer
+          ? Array.from(vehiclesContainer.querySelectorAll('input[name=user-vehicle]:checked')).map(cb => cb.value)
+          : [];
+        const hasAssignedVehicles = selectedVehicleIds.length > 0;
+        const kullanici_paneli = hasAssignedVehicles;
         if (scope.isBranchManager && requestedBranchId && requestedBranchId !== branchId) {
           alert('Yalnızca kendi şubenize kullanıcı kaydedebilirsiniz.');
           return;
@@ -1051,9 +1044,6 @@
         }
         const kullanici_adi = usernameInput ? usernameInput.value.trim() : '';
         const sifre = passwordInput ? passwordInput.value.trim() : '';
-        const selectedVehicleIds = vehiclesContainer
-          ? Array.from(vehiclesContainer.querySelectorAll('input[name=user-vehicle]:checked')).map(cb => cb.value)
-          : [];
   
         // Validasyon
         if (!name || !name.trim()) {
@@ -1066,7 +1056,6 @@
         const previousVehicles = cloneStorageState(readAllVehicles());
         const users = cloneStorageState(previousUsers);
         const vehicles = cloneStorageState(previousVehicles);
-        const hasAssignedVehicles = selectedVehicleIds.length > 0;
         const existingUser = id ? users.find(function(user) { return String(user.id) === String(id); }) : null;
 
         if (id && !existingUser) {
@@ -1082,9 +1071,10 @@
           return;
         }
   
-        // Kullanıcı paneli girişi: Taşıt atanmışsa Kullanıcı Adı ve Şifre zorunlu
-        if (kullanici_paneli && hasAssignedVehicles && (!kullanici_adi || !sifre)) {
-          alert('Portal girişi için Taşıt atadığınız Kullanıcıların "Kullanıcı Adı (portal girişi)" ve "Şifre (portal girişi)" alanlarını doldurmanız gerekir. Kullanıcı bu bilgilerle kullanıcı panelinde giriş yapacaktır.');
+        // Portal girişi: Kullanıcı veya şube yöneticisine taşıt atanmışsa kullanıcı adı ve şifre zorunlu
+        const needsPortalCredentials = hasAssignedVehicles && (role === 'kullanici' || role === 'sube_yonetici');
+        if (needsPortalCredentials && (!kullanici_adi || !sifre)) {
+          alert('Taşıt atanan kullanıcı veya yönetici için "Kullanıcı Adı (portal girişi)" ve "Şifre (portal girişi)" zorunludur. Bu bilgilerle kullanıcı paneline girilebilir.');
           if (usernameInput) usernameInput.focus();
           return;
         }

@@ -133,6 +133,11 @@ $result = medisaMutateData(function (&$data) use ($username, $password) {
         return medisaBuildErrorResult('Şifre hatalı!', 200);
     }
 
+    $rolPrecheck = medisaResolveUserRole($user);
+    if ($rolPrecheck === 'kullanici' && !medisaUserHasAssignedVehicle($data, (string)($user['id'] ?? ''))) {
+        return medisaBuildErrorResult('Size atanmış taşıt bulunmuyor. Giriş yapılamıyor.', 200);
+    }
+
     $rawRol = '';
     if (isset($user['rol'])) {
         $rawRol = trim((string)$user['rol']);
@@ -145,12 +150,12 @@ $result = medisaMutateData(function (&$data) use ($username, $password) {
 
     $rol = medisaResolveUserRole($user);
     $subeIds = medisaExtractUserBranchIds($user);
-    $kullaniciPaneli = medisaResolvePanelFlag($user);
     $driverDashboard = medisaComputeDriverDashboard($user, $data);
     $isYoneticiOnly = ($rawRol === 'yonetici');
     if ($isYoneticiOnly) {
         $driverDashboard = false;
     }
+    $kullaniciPaneli = $driverDashboard;
 
     $data['users'][$userIndex]['son_giris'] = date('c');
 

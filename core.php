@@ -474,6 +474,9 @@ function medisaNormalizeRoleValue($value) {
     if ($role === 'yonetici') {
         return 'sube_yonetici';
     }
+    if ($role === 'yonetici_kullanici') {
+        return 'sube_yonetici';
+    }
     return $role;
 }
 
@@ -550,7 +553,7 @@ function medisaIsYoneticiOnlyUser($user) {
 }
 
 function medisaIsBranchManagerRole($role) {
-    return $role === 'sube_yonetici' || $role === 'yonetici_kullanici';
+    return $role === 'sube_yonetici';
 }
 
 function medisaHasMainAppAccessRole($role) {
@@ -584,17 +587,6 @@ function medisaExtractUserBranchIds($user) {
     return array_values($normalized);
 }
 
-function medisaResolvePanelFlag($user) {
-    $role = medisaResolveUserRole($user);
-    if (is_array($user) && array_key_exists('kullanici_paneli', $user)) {
-        return (bool)$user['kullanici_paneli'];
-    }
-    if (is_array($user) && array_key_exists('surucu_paneli', $user)) {
-        return (bool)$user['surucu_paneli'];
-    }
-    return $role === 'kullanici';
-}
-
 function medisaFindUserById($data, $userId) {
     foreach (($data['users'] ?? []) as $user) {
         if ((string)($user['id'] ?? '') === (string)$userId) {
@@ -620,24 +612,21 @@ function medisaUserHasAssignedVehicle($data, $userId) {
 }
 
 function medisaComputeDriverDashboard($user, $data) {
-    $role = medisaResolveUserRole($user);
     if (medisaIsYoneticiOnlyUser($user)) {
         return false;
     }
 
-    if ($role === 'kullanici') {
-        return true;
+    $role = medisaResolveUserRole($user);
+    $userId = (string)($user['id'] ?? '');
+    if ($userId === '' || !is_array($data)) {
+        return false;
     }
 
-    if ($role === 'yonetici_kullanici') {
-        return true;
+    if (!in_array($role, ['kullanici', 'sube_yonetici', 'genel_yonetici'], true)) {
+        return false;
     }
 
-    if ($role === 'sube_yonetici') {
-        return medisaResolvePanelFlag($user);
-    }
-
-    return $role === 'genel_yonetici';
+    return medisaUserHasAssignedVehicle($data, $userId);
 }
 
 function medisaBuildPermissions($context) {
@@ -701,15 +690,16 @@ function medisaBuildAccessContext($data, $tokenData) {
         return null;
     }
 
+    $driverDashboard = medisaComputeDriverDashboard($user, $data);
     $context = [
         'user' => $user,
         'user_id' => (string)($user['id'] ?? ''),
         'role' => medisaResolveUserRole($user),
         'branch_ids' => medisaExtractUserBranchIds($user),
-        'kullanici_paneli' => medisaResolvePanelFlag($user),
+        'kullanici_paneli' => $driverDashboard,
         'yonetici_only' => medisaIsYoneticiOnlyUser($user),
+        'driver_dashboard' => $driverDashboard,
     ];
-    $context['driver_dashboard'] = medisaComputeDriverDashboard($user, $data);
     $context['permissions'] = medisaBuildPermissions($context);
 
     return $context;

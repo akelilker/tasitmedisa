@@ -459,15 +459,13 @@
     var roleLabels = {
       genel_yonetici: 'Genel Yönetici',
       sube_yonetici: 'Yönetici',
-      yonetici_kullanici: 'Yönetici+Kullanıcı',
       kullanici: 'Kullanıcı',
       admin: 'Genel Yönetici',
       sales: 'Satış Temsilcisi',
       driver: 'Kullanıcı'
     };
     var role = user && user.role ? user.role : '';
-    var isManagerWithPanel = role === 'sube_yonetici' && user && (user.kullanici_paneli === true || user.surucu_paneli === true);
-    var displayRole = isManagerWithPanel ? 'yonetici_kullanici' : role;
+    var displayRole = role === 'yonetici_kullanici' ? 'sube_yonetici' : role;
     return toTitleCase(roleLabels[displayRole] || displayRole || 'Kullanıcı');
   }
 
