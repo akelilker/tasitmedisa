@@ -1370,6 +1370,17 @@
       const disVeriPanel = document.getElementById('dis-veri-panel');
       const infoModal = document.getElementById('info-modal');
       const cacheConfirmModal = document.getElementById('cache-confirm-modal');
+      const userFormContainer = userFormModal ? userFormModal.querySelector('.modal-container') : null;
+
+      if (
+        userFormModal &&
+        userFormModal.classList.contains('active') &&
+        (e.target === userFormModal || (userFormContainer && !userFormContainer.contains(e.target)))
+      ) {
+        e.preventDefault();
+        e.stopPropagation();
+        return;
+      }
 
       if (infoModal && infoModal.classList.contains('active') && e.target === infoModal) {
         closeInfoModal();
