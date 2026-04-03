@@ -525,7 +525,7 @@
 
   // Grid genişlikleri sütun kimliğine göre (sürükle-bırak sonrası genişlik doğru sütunla kalsın)
   function getVehicleColumnWidths(columnOrder) {
-    const defaultCols = '40px 72px minmax(64px, 2.2fr) 48px minmax(52px, 0.68fr) minmax(40px, 0.52fr) minmax(60px, 1fr) minmax(56px, 0.85fr)';
+    const defaultCols = '40px 72px minmax(59px, 2.2fr) 48px minmax(52px, 0.68fr) minmax(40px, 0.52fr) minmax(60px, 1fr) minmax(61px, 0.85fr)';
     try {
       if (!columnOrder || !Array.isArray(columnOrder) || columnOrder.length === 0) return defaultCols;
       const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
@@ -534,32 +534,32 @@
         ? {
             'year': '32px',
             'plate': '62px',
-            'brand': '2.6fr',   /* mobil+iOS PWA: şubeden 2px marka'ya */
+            'brand': 'minmax(0, 2.45fr)',   /* marka ~5px dar; kalan fr şube vb. */
             'km': '52px',
             'transmission': '52px',
             'user': '1.95fr',   /* mobil+iOS PWA: şubeden 3px kullanıcıya */
-            'branch': '2.25fr'   /* mobil+iOS PWA: şubeden bir kademe alan alındı */
+            'branch': 'minmax(57px, 2.25fr)'   /* +5px min vs saf fr */
           }
         : isCompactDesktop
           ? {
               'year': '38px',
               'plate': '68px',
-              'brand': 'minmax(60px, 2.05fr)',
+              'brand': 'minmax(55px, 2.05fr)',
               'km': '46px',
               'type': 'minmax(52px, 0.65fr)',
               'transmission': 'minmax(38px, 0.5fr)',
               'user': 'minmax(58px, 0.92fr)',
-              'branch': 'minmax(54px, 0.78fr)'
+              'branch': 'minmax(59px, 0.78fr)'
             }
         : {
             'year': '40px',
             'plate': '72px',
-            'brand': 'minmax(64px, 2.2fr)',
+            'brand': 'minmax(59px, 2.2fr)',
             'km': '48px',
             'type': 'minmax(52px, 0.68fr)',
             'transmission': 'minmax(40px, 0.52fr)',
             'user': 'minmax(60px, 1fr)',
-            'branch': 'minmax(56px, 0.85fr)'
+            'branch': 'minmax(61px, 0.85fr)'
           };
       return columnOrder.map(key => widthMap[key] || '1fr').join(' ');
     } catch (e) {
@@ -589,8 +589,8 @@
     if (!headerRow) return;
     requestAnimationFrame(function() {
       const isMobileViewport = typeof window !== 'undefined' && window.innerWidth <= 768;
-      const baseSize = isMobileViewport ? 15 : 10.5;
-      const minSize = isMobileViewport ? 13.5 : 9;
+      const baseSize = isMobileViewport ? (15 - 4 / 3) : (10.5 - 4 / 3); /* ~1pt küçük */
+      const minSize = isMobileViewport ? (13.5 - 4 / 3) : (9 - 4 / 3);
       let size = baseSize;
       headerRow.style.setProperty('--list-header-font-size', size + 'px');
       const cells = headerRow.querySelectorAll('.list-cell');
