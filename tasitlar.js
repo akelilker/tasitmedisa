@@ -540,6 +540,19 @@
     }
   }
 
+  /** İlk boşlukta ikiye bölünür; tek kelimede metin alt satırda (üst satır boşluklu), alta hizalı grid ile uyumlu */
+  function buildVehicleHeaderLabelStackHtml(rawLabel) {
+    var t = (rawLabel == null ? '' : String(rawLabel)).trim();
+    if (!t) {
+      return '<span class="header-label-stack"><span class="header-r1"></span><span class="header-r2">-</span></span>';
+    }
+    var sp = t.indexOf(' ');
+    if (sp < 0) {
+      return '<span class="header-label-stack"><span class="header-r1"></span><span class="header-r2">' + escapeHtml(t) + '</span></span>';
+    }
+    return '<span class="header-label-stack"><span class="header-r1">' + escapeHtml(t.slice(0, sp)) + '</span><span class="header-r2">' + escapeHtml(t.slice(sp + 1).trim()) + '</span></span>';
+  }
+
   /**
    * Mobil taşıt listesi: başlıklar tek punto, en fazla 1pt küçülebilir (biri sığmazsa hepsi küçülür).
    * listContainer içindeki .list-header-row üzerinde --list-header-font-size ayarlar.
@@ -1413,7 +1426,14 @@
             listDisplayOrder.forEach(columnKey => {
               const def = columnDefs[columnKey];
               if (def) {
-                const labelHtml = (isMobileList && columnKey === 'brand') ? '<span class="header-first-line">Marka /</span><span class="header-second-line">Model</span>' : (isMobileList && columnKey === 'type') ? '<span class="header-first-line">Ta\u015F\u0131t</span><span class="header-second-line">Tipi</span>' : `<span>${escapeHtml(def.label)}</span>`;
+                let labelHtml;
+                if (isMobileList && columnKey === 'brand') {
+                  labelHtml = '<span class="header-label-stack"><span class="header-r1">Marka /</span><span class="header-r2">Model</span></span>';
+                } else if (isMobileList && columnKey === 'type') {
+                  labelHtml = '<span class="header-label-stack"><span class="header-r1">Ta\u015F\u0131t</span><span class="header-r2">Tipi</span></span>';
+                } else {
+                  labelHtml = buildVehicleHeaderLabelStackHtml(def.label);
+                }
                 emptyHtml += `<div class="list-cell ${def.class} sortable-header" data-col="${columnKey}">${labelHtml}</div>`;
               }
             });
@@ -1466,11 +1486,11 @@
           if (def) {
             let labelHtml;
             if (isMobile && columnKey === 'brand') {
-              labelHtml = '<span class="header-first-line">Marka /</span><span class="header-second-line">Model</span>';
+              labelHtml = '<span class="header-label-stack"><span class="header-r1">Marka /</span><span class="header-r2">Model</span></span>';
             } else if (isMobile && columnKey === 'type') {
-              labelHtml = '<span class="header-first-line">Taşıt</span><span class="header-second-line">Tipi</span>';
+              labelHtml = '<span class="header-label-stack"><span class="header-r1">Ta\u015F\u0131t</span><span class="header-r2">Tipi</span></span>';
             } else {
-              labelHtml = `<span>${escapeHtml(def.label)}</span>`;
+              labelHtml = buildVehicleHeaderLabelStackHtml(def.label);
             }
             html += `
               <div class="list-cell ${def.class} sortable-header" 

@@ -1,16 +1,5 @@
 /* tasitlar modülü — liste/detay/olaylar (tasitlar.css bölüm 2) */
-
-/* Taşıtlar listesi başlıkları: iki kelime satır kırabilsin (nowrap tüm başlıkları tek satıra sıkıştırıyordu) */
-#vehicles-modal .list-header-row .sortable-header > span {
-    display: inline-block;
-    white-space: normal;
-    word-break: normal;
-    overflow-wrap: break-word;
-    flex-shrink: 1;
-    min-width: 0;
-    max-width: 100%;
-    text-align: center;
-}
+/* Taşıtlar başlık satırı: alta hizalı iki satırlı etiket → tasitlar-base.css (#vehicles-modal .header-label-stack) */
 
 .sort-icon {
     opacity: 0.4;
@@ -30,40 +19,6 @@
 
 .sortable-header:hover .sort-icon {
     opacity: 0.7;
-}
-
-/* Marka/Model başlışı: dar sütunlarda satır kırma + otomatik font küçülme */
-/* NOT: Bu kural genel .sortable-header kuralından SONRA gelmeli (override için) */
-.list-header-row .list-cell.list-brand .sortable-header {
-    flex-wrap: wrap !important;
-    justify-content: center !important;
-    align-items: center !important;
-    gap: 2px 4px !important;
-    max-width: 100% !important;
-    min-width: 0 !important;
-    width: 100% !important;
-}
-.list-header-row .list-cell.list-brand .sortable-header span {
-    white-space: normal !important;
-    word-break: normal !important;
-    overflow-wrap: break-word !important;
-    flex-shrink: 1 !important;
-    text-align: center !important;
-    max-width: 100% !important; /* Icon absolute olduşu için 100% kullanabiliriz */
-    min-width: 0 !important;
-    display: block !important; /* Block - wrap için daha iyi */
-    font-size: clamp(10px, 1.6vw, 12px) !important; /* Dişer başlıklarla aynı punto */
-    line-height: 1.15 !important;
-    padding: 0 14px 0 0 !important; /* Saşda icon için yer bırak */
-}
-.list-header-row .list-cell.list-brand .sort-icon {
-    flex-shrink: 0 !important;
-    position: absolute !important;
-    right: 2px !important;
-    top: 50% !important;
-    transform: translateY(-50%) !important;
-    width: 12px !important;
-    height: 12px !important;
 }
 
 .view-list .list-cell.list-branch {
@@ -2091,15 +2046,9 @@
     align-items: center !important;
     min-width: 0 !important;
   }
-  /* Mobil: Marka/Model iki satır – "Marka /" üstte, "Model" altta (satıra geçme) */
-  .list-header-row .list-cell.list-brand .header-first-line,
-  .list-header-row .list-cell.list-brand .header-second-line {
-    display: block !important;
-    text-align: center !important;
-    line-height: 1.25 !important;
-  }
-  .list-header-row .list-cell.list-type .header-first-line,
-  .list-header-row .list-cell.list-type .header-second-line {
+  /* Mobil: iki satırlı başlık (header-r1 / header-r2) */
+  #vehicles-modal .list-header-row .header-label-stack .header-r1,
+  #vehicles-modal .list-header-row .header-label-stack .header-r2 {
     display: block !important;
     text-align: center !important;
     line-height: 1.25 !important;

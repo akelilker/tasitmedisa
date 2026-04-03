@@ -1456,9 +1456,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     font-size: clamp(9.5px, 1.6vw, 12.5px) !important; /* 0.5pt küçültme */
     color: var(--form-label-color) !important;
   }
-  #vehicles-modal .list-header-row .list-cell.list-brand .sortable-header span,
-  #vehicles-modal .list-header-row .list-cell.list-user span {
-    font-size: clamp(9.5px, 1.6vw, 12.5px) !important; /* 0.5pt küçültme */
+  #vehicles-modal .list-header-row .header-label-stack .header-r1,
+  #vehicles-modal .list-header-row .header-label-stack .header-r2 {
+    font-size: clamp(9.5px, 1.6vw, 12.5px) !important;
     color: var(--form-label-color) !important;
   }
   /* Taşıt listesi: ilk satır dikey hizalama (masaüstü); arka plan alternating'e bırakıldı */
@@ -2113,6 +2113,65 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     flex-shrink: 0;
 }
 
+/* Taşıtlar listesi: tüm başlık hücreleri alta hizalı; iki kelime üst/alt (buildVehicleHeaderLabelStackHtml) */
+#vehicles-modal .list-header-row {
+    align-items: end !important;
+}
+#vehicles-modal .list-header-row .list-cell.sortable-header {
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: flex-end !important;
+    justify-content: center !important;
+    align-self: end !important;
+    min-height: 2.55em;
+    min-width: 0 !important;
+    width: 100%;
+    box-sizing: border-box !important;
+    white-space: normal !important;
+}
+#vehicles-modal .list-header-row .header-label-stack {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-end !important;
+    align-items: center !important;
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    padding-right: 14px !important;
+    box-sizing: border-box !important;
+    min-height: 2.4em !important;
+    text-align: center !important;
+}
+#vehicles-modal .list-header-row .header-label-stack .header-r1,
+#vehicles-modal .list-header-row .header-label-stack .header-r2 {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    line-height: 1.12 !important;
+    word-break: normal !important;
+    overflow-wrap: break-word !important;
+}
+#vehicles-modal .list-header-row .header-label-stack .header-r1:empty {
+    min-height: 1.12em !important;
+}
+#vehicles-modal .list-header-row .sort-icon {
+    top: auto !important;
+    bottom: 2px !important;
+    transform: none !important;
+}
+#vehicles-modal .list-header-row .list-cell.list-brand.sortable-header {
+    -webkit-line-clamp: unset !important;
+    line-clamp: unset !important;
+    overflow: visible !important;
+}
+#vehicles-modal .list-header-row .list-cell.list-branch.sortable-header {
+    display: flex !important;
+    -webkit-box-orient: unset !important;
+    -webkit-line-clamp: unset !important;
+    line-clamp: unset !important;
+    overflow: visible !important;
+}
+
 .list-header-row .list-cell {
     font-size: 11px;
     font-weight: 600;
@@ -2289,8 +2348,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     overflow-wrap: break-word !important;
     font-size: clamp(9.67px, 1.45vw, 10.33px) !important;
   }
-  .list-header-row .list-cell.list-type .sortable-header,
-  .list-header-row .list-cell.list-transmission .sortable-header {
+  .list-header-row .list-cell.list-type.sortable-header,
+  .list-header-row .list-cell.list-transmission.sortable-header {
     width: 100%;
     justify-content: center !important;
     padding-right: 10px !important; /* saşdaki sort ikonuna pay */
