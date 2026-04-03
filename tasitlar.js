@@ -1444,7 +1444,7 @@
               'user': { label: isCompactHeader ? 'Kull.' : 'Kullan\u0131c\u0131', class: 'list-user' },
               'branch': { label: '\u015Eube', class: 'list-branch' }
             };
-            let emptyHtml = '<div class="list-header-row" style="grid-template-columns: ' + gridStr + '">';
+            let emptyHtml = '<div class="vehicles-list-hscroll-wrap"><div class="list-header-row" style="grid-template-columns: ' + gridStr + '">';
             listDisplayOrder.forEach(columnKey => {
               const def = columnDefs[columnKey];
               if (def) {
@@ -1459,7 +1459,7 @@
                 emptyHtml += `<div class="list-cell ${def.class} sortable-header" data-col="${columnKey}">${labelHtml}</div>`;
               }
             });
-            emptyHtml += '</div><div class="vehicles-list-scroll"><div class="view-list view-list-empty"><div class="list-item list-item-empty" style="grid-column: 1 / -1; justify-content: center; padding: 24px;"><span style="color:#666;">' + escapeHtml(emptyMsg) + '</span></div></div></div>';
+            emptyHtml += '</div><div class="vehicles-list-scroll"><div class="view-list view-list-empty"><div class="list-item list-item-empty" style="grid-column: 1 / -1; justify-content: center; padding: 24px;"><span style="color:#666;">' + escapeHtml(emptyMsg) + '</span></div></div></div></div>';
             listContainer.innerHTML = emptyHtml;
             listContainer.dataset.renderScope = 'vehicles';
             listContainer.dataset.renderSignature = renderSignature;
@@ -1501,7 +1501,7 @@
           'user': { label: isCompactHeader ? 'Kull.' : 'Kullan\u0131c\u0131', class: 'list-user' },
           'branch': { label: '\u015Eube', class: 'list-branch' }
         };
-        html += '<div class="list-header-row" style="grid-template-columns: ' + gridStr + '">';
+        html += '<div class="vehicles-list-hscroll-wrap"><div class="list-header-row" style="grid-template-columns: ' + gridStr + '">';
         // Sıralamaya göre sütun başlıklarını render et (mobilde Marka/Model iki satır; Taşıt Tipi mobilde yok)
         listDisplayOrder.forEach(columnKey => {
           const def = columnDefs[columnKey];
@@ -1644,7 +1644,7 @@
               </div>
             `;
         }
-    }).join('') + '</div>' + (viewMode === 'list' ? '</div>' : '') + '';
+    }).join('') + '</div>' + (viewMode === 'list' ? '</div></div>' : '') + '';
 
       // PERFORMANS: Browser'ın yerleşik C++ HTML parser'ını doğrudan kullanıyoruz.
       // Fragment ve tek tek node taşıma işlemi (Layout Thrashing) iptal edildi.
@@ -6481,6 +6481,7 @@ function renderVehicleDetailLeft(vehicle) {
       'brand': 'list-brand',
       'km': 'list-km',
       'type': 'list-type',
+      'transmission': 'list-transmission',
       'user': 'list-user',
       'branch': 'list-branch'
     };
