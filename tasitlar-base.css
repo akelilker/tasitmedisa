@@ -1638,6 +1638,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     background: var(--bg-2);
     border: 1px solid var(--br);
     color: var(--txt-white);
+    --autofill-bg: var(--bg-2);
+    --autofill-text: var(--txt-white);
+    --autofill-caret: var(--txt-white);
     padding: 6px 12px;
     border-radius: 6px;
     font-size: 14px;

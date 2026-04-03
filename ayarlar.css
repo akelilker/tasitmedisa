@@ -1010,50 +1010,19 @@ select.settings-form-select,
     color-scheme: dark;
 }
 
-/* Autofill (Otomatik Tamamlama) Stilleri - Beyaz Arka Planı Önle */
-input.settings-form-input:-webkit-autofill,
-input.settings-form-input:-webkit-autofill:hover,
-input.settings-form-input:-webkit-autofill:focus,
-input.settings-form-input:-webkit-autofill:active,
-#user-name:-webkit-autofill,
-#user-name:-webkit-autofill:hover,
-#user-name:-webkit-autofill:focus,
-#user-name:-webkit-autofill:active,
-#user-phone:-webkit-autofill,
-#user-phone:-webkit-autofill:hover,
-#user-phone:-webkit-autofill:focus,
-#user-phone:-webkit-autofill:active,
-#user-email:-webkit-autofill,
-#user-email:-webkit-autofill:hover,
-#user-email:-webkit-autofill:focus,
-#user-email:-webkit-autofill:active,
-#branch-name:-webkit-autofill,
-#branch-name:-webkit-autofill:hover,
-#branch-name:-webkit-autofill:focus,
-#branch-name:-webkit-autofill:active,
-#branch-city:-webkit-autofill,
-#branch-city:-webkit-autofill:hover,
-#branch-city:-webkit-autofill:focus,
-#branch-city:-webkit-autofill:active {
-    -webkit-box-shadow: 0 0 0 1000px var(--bg-content) inset !important;
-    -webkit-text-fill-color: var(--txt-white) !important;
-    background-color: var(--bg-content) !important;
-    background-clip: content-box !important;
-    color: #fff !important;
-    caret-color: var(--txt-white) !important;
-    transition: background-color 5000s ease-in-out 0s, color 5000s ease-in-out 0s !important;
+#branch-form-modal,
+#user-form-modal {
+    --autofill-bg: var(--bg-content, #0d131f);
 }
 
-/* Firefox için autofill */
-input.settings-form-input:-moz-autofill,
-#user-name:-moz-autofill,
-#user-phone:-moz-autofill,
-#user-email:-moz-autofill,
-#branch-name:-moz-autofill,
-#branch-city:-moz-autofill {
-    background-color: var(--bg-content) !important;
-    color: #fff !important;
-    box-shadow: 0 0 0 1000px var(--bg-content) inset !important;
+#branch-form-modal {
+    --autofill-text: var(--txt-gray-darker, #888);
+    --autofill-caret: var(--txt-gray-darker, #888);
+}
+
+#user-form-modal {
+    --autofill-text: var(--txt-white, #ffffff);
+    --autofill-caret: var(--txt-white, #ffffff);
 }
 /* Atanacak Taşıt - Görev Tanımı ile aynı form stili, okunaklı liste */
 .user-vehicles-wrap {
@@ -2274,36 +2243,6 @@ input.settings-form-input:-moz-autofill,
         display: none !important;
     }
 
-    /* Mobil: Şube/Kullanıcı form input autofill tema rengi */
-    #branch-form-modal .form-input:-webkit-autofill,
-    #branch-form-modal .form-input:-webkit-autofill:hover,
-    #branch-form-modal .form-input:-webkit-autofill:focus,
-    #user-form-modal .form-input:-webkit-autofill,
-    #user-form-modal .form-input:-webkit-autofill:hover,
-    #user-form-modal .form-input:-webkit-autofill:focus {
-        -webkit-box-shadow: 0 0 0 1000px var(--bg-content, #0d131f) inset !important;
-        background-color: var(--bg-content, #0d131f) !important;
-    }
-    #branch-form-modal .form-input:-webkit-autofill,
-    #branch-form-modal .form-input:-webkit-autofill:hover,
-    #branch-form-modal .form-input:-webkit-autofill:focus {
-        -webkit-text-fill-color: var(--txt-gray-darker, #888) !important;
-    }
-    #user-form-modal .form-input:-webkit-autofill,
-    #user-form-modal .form-input:-webkit-autofill:hover,
-    #user-form-modal .form-input:-webkit-autofill:focus {
-        -webkit-text-fill-color: var(--txt-white, #ffffff) !important;
-    }
-    #branch-form-modal .form-input:-moz-autofill,
-    #user-form-modal .form-input:-moz-autofill {
-        background-color: var(--bg-content, #0d131f) !important;
-    }
-    #branch-form-modal .form-input:-moz-autofill {
-        color: var(--txt-gray-darker, #888) !important;
-    }
-    #user-form-modal .form-input:-moz-autofill {
-        color: var(--txt-white, #ffffff) !important;
-    }
 }
 
 /* Dar ekran + gerçek hover: ayarlar menüsü .menu-btn ile aynı hover (dokunmatikte devre dışı) */
