@@ -1980,18 +1980,18 @@
 
   /* Başlık Hücreleri - font-size tek kaynak; üst hizalı; ikinci satıra geçebilir */
   .list-header-row .list-cell {
-    font-size: var(--list-header-font-size, 14px) !important;
+    font-size: var(--list-header-font-size, 12px) !important;
     font-weight: 600 !important;
-    letter-spacing: 0.3px !important;
+    letter-spacing: 0 !important;
     text-transform: uppercase !important;
     color: var(--form-label-color) !important; /* Kayıt etiketleri ile aynı beyaz */
     opacity: 1 !important;
     display: flex !important;
-    align-items: flex-start !important;
+    align-items: flex-end !important;
     overflow: visible !important;
     text-overflow: clip !important;
     white-space: normal !important;
-    word-break: normal !important; overflow-wrap: normal !important;
+    word-break: keep-all !important; overflow-wrap: normal !important;
     min-width: 0 !important;
     border-right: 1px solid var(--border-ultra) !important;
     justify-content: center !important;
@@ -1999,29 +1999,31 @@
 
   /* Başlık metinleri - tümü aynı punto; ikinci satıra geçebilir */
   .list-header-row .list-cell span {
-    font-size: var(--list-header-font-size, 14px) !important;
+    font-size: var(--list-header-font-size, 12px) !important;
     font-weight: 700 !important;
     text-transform: uppercase !important;
     color: var(--form-label-color) !important; /* Kayıt etiketleri ile aynı beyaz */
-    white-space: normal !important;
-    word-break: normal !important; overflow-wrap: normal !important;
+    white-space: nowrap !important;
+    word-break: keep-all !important; overflow-wrap: normal !important;
+    line-height: 1.04 !important;
+    letter-spacing: 0 !important;
   }
   /* Marka/Model ve Kullanıcı başlıkları da aynı punto (base clamp mobilde ezilsin) */
   .list-header-row .list-cell.list-brand .sortable-header span,
   .list-header-row .list-cell.list-user span {
-    font-size: var(--list-header-font-size, 14px) !important;
+    font-size: var(--list-header-font-size, 12px) !important;
   }
 
   /* Sıralanabilir başlık: üst hizalı, metin ikinci satıra geçebilir (ilk satır hep aynı hizada) */
   .list-header-row .sortable-header {
-    align-items: flex-start !important;
-    flex-wrap: wrap !important;
+    align-items: flex-end !important;
+    flex-wrap: nowrap !important;
     justify-content: center !important;
   }
   .list-header-row .sortable-header span {
-    white-space: normal !important;
-    word-break: normal !important; overflow-wrap: normal !important;
-    flex-shrink: 1 !important;
+    white-space: nowrap !important;
+    word-break: keep-all !important; overflow-wrap: normal !important;
+    flex-shrink: 0 !important;
   }
 
   .list-header-row .list-cell.list-year {

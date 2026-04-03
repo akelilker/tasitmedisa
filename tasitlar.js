@@ -510,7 +510,7 @@
 
   // Grid genişlikleri sütun kimliğine göre (sürükle-bırak sonrası genişlik doğru sütunla kalsın)
   function getVehicleColumnWidths(columnOrder) {
-    const defaultCols = '48px 92px minmax(118px, 2.28fr) 62px minmax(84px, 0.96fr) minmax(96px, 1.04fr) minmax(92px, 0.98fr) minmax(96px, 0.98fr)';
+    const defaultCols = '52px 92px minmax(112px, 2.16fr) 62px minmax(88px, 0.98fr) minmax(100px, 1.02fr) minmax(104px, 1.04fr) minmax(90px, 0.90fr)';
     try {
       if (!columnOrder || !Array.isArray(columnOrder) || columnOrder.length === 0) return defaultCols;
       const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
@@ -525,14 +525,14 @@
             'branch': '2.25fr'   /* mobil+iOS PWA: şubeden bir kademe alan alındı */
           }
         : {
-            'year': '48px',
+            'year': '52px',
             'plate': '92px',
-            'brand': 'minmax(118px, 2.28fr)',
+            'brand': 'minmax(112px, 2.16fr)',
             'km': '62px',
-            'type': 'minmax(84px, 0.96fr)',
-            'transmission': 'minmax(96px, 1.04fr)',
-            'user': 'minmax(92px, 0.98fr)',
-            'branch': 'minmax(96px, 0.98fr)'
+            'type': 'minmax(88px, 0.98fr)',
+            'transmission': 'minmax(100px, 1.02fr)',
+            'user': 'minmax(104px, 1.04fr)',
+            'branch': 'minmax(90px, 0.90fr)'
           };
       return columnOrder.map(key => widthMap[key] || '1fr').join(' ');
     } catch (e) {
