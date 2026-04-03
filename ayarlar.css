@@ -14,7 +14,7 @@
     padding-top: 0;
     padding-bottom: 0;
     overflow: hidden;
-    touch-action: pan-y;
+    touch-action: pan-y; 
 }
 
 /* Masaüstü PWA (standalone): ayarlar modallarında üst kesilme/katman çakışması düzeltmeleri */
