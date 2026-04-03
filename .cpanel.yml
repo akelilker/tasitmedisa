@@ -4,4 +4,4 @@ deployment:
     - export DEPLOYPATH=/home/karmotor/public_html/medisa
     - /bin/cp -R admin driver docker icon scripts data $DEPLOYPATH/
     - /bin/cp index.html load.php save.php asset.php manifest.json sw.js $DEPLOYPATH/
-    - /bin/cp script-core.js data-manager.js tasitlar.js tasitlar.css kayit.js kayit.css raporlar.js raporlar.css ayarlar.js ayarlar.css style-core.css $DEPLOYPATH/
+    - /bin/cp script-core.js data-manager.js tasitlar.js tasitlar-base.css tasitlar-extra.css kayit.js kayit.css raporlar.js raporlar.css ayarlar.js ayarlar.css style-core.css $DEPLOYPATH/

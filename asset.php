@@ -19,8 +19,9 @@ $allowed = [
     'sw.js',
     // CSS
     'style-core.css',
+    'tasitlar-base.css',
+    'tasitlar-extra.css',
     'kayit.css',
-    'tasitlar.css',
     'raporlar.css',
     'ayarlar.css',
 // Kullanıcı paneli
