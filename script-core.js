@@ -324,12 +324,15 @@ window.loadAppModule = function(jsPath, cssPathOrArray) {
       document.head.appendChild(script);
     });
   }
-  var promises = [];
+  /* Çoklu CSS: sırayı koru (base → extra). Paralel yüklemede hangi link son eklenirse belirsiz; liste sütun/başlık kuralları bozuluyordu. */
+  var chain = Promise.resolve();
   cssList.forEach(function(href) {
-    promises.push(loadCss(href));
+    chain = chain.then(function() { return loadCss(href); });
   });
-  if (jsPath) promises.push(loadScript(jsPath));
-  return Promise.all(promises).then(function() {
+  chain = chain.then(function() {
+    if (jsPath) return loadScript(jsPath);
+  });
+  return chain.then(function() {
     window.__loadedAppModules[key] = true;
   });
 };
@@ -501,7 +504,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Taşıtlar modülü (JS + CSS) — tek sürüm; loadAppModule anahtarı ve bildirim ön-yüklemesi aynı yolu kullanır.
-var TASITLAR_MODULE_VERSION = '20260403.1';
+var TASITLAR_MODULE_VERSION = '20260403.2';
 
 // Modal açma fonksiyonları: Lazy load – modül yüklenir, sonra ilgili açma fonksiyonu tetiklenir.
 // tasitlar.js / raporlar.js / kayit.js / ayarlar.js yüklendiğinde kendi open* implementasyonlarını yazar.

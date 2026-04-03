@@ -1,3 +1,14 @@
-# Dokümantasyon — sunucuda gerekmez
+.git
+.github
+.gitignore
+.cursor*
+.editorconfig
+.vscode
 *.md
-.github/
+docker/
+hh.zip
+.cpanel.yml
+*.log
+.DS_Store
+__pycache__
+*.pyc
