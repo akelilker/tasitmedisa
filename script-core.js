@@ -289,11 +289,19 @@ window.__loadedAppModules = window.__loadedAppModules || Object.create(null);
  * İstenen JS ve CSS dosyalarını document.createElement ile dinamik yükler.
  * Zaten yüklüyse tekrar yüklemez. Yüklendikten sonra Promise döner.
  * @param {string} jsPath - Örn. 'tasitlar.js?v=' + TASITLAR_MODULE_VERSION
- * @param {string|null} cssPath - Örn. 'tasitlar.css?v=' + TASITLAR_MODULE_VERSION (opsiyonel)
+ * @param {string|null|string[]} cssPathOrArray - Tek CSS yolu veya sıralı birden fazla (opsiyonel)
  * @returns {Promise<void>}
  */
-window.loadAppModule = function(jsPath, cssPath) {
-  var key = (jsPath || '') + (cssPath || '');
+window.loadAppModule = function(jsPath, cssPathOrArray) {
+  var cssList = [];
+  if (Array.isArray(cssPathOrArray)) {
+    cssPathOrArray.forEach(function(h) {
+      if (h) cssList.push(h);
+    });
+  } else if (cssPathOrArray) {
+    cssList.push(cssPathOrArray);
+  }
+  var key = (jsPath || '') + '|' + cssList.join('|');
   if (window.__loadedAppModules[key]) {
     return Promise.resolve();
   }
@@ -317,7 +325,9 @@ window.loadAppModule = function(jsPath, cssPath) {
     });
   }
   var promises = [];
-  if (cssPath) promises.push(loadCss(cssPath));
+  cssList.forEach(function(href) {
+    promises.push(loadCss(href));
+  });
   if (jsPath) promises.push(loadScript(jsPath));
   return Promise.all(promises).then(function() {
     window.__loadedAppModules[key] = true;
@@ -491,13 +501,16 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Taşıtlar modülü (JS + CSS) — tek sürüm; loadAppModule anahtarı ve bildirim ön-yüklemesi aynı yolu kullanır.
-var TASITLAR_MODULE_VERSION = '20260331.4';
+var TASITLAR_MODULE_VERSION = '20260403.1';
 
 // Modal açma fonksiyonları: Lazy load – modül yüklenir, sonra ilgili açma fonksiyonu tetiklenir.
 // tasitlar.js / raporlar.js / kayit.js / ayarlar.js yüklendiğinde kendi open* implementasyonlarını yazar.
 (function() {
   var TASITLAR_JS = 'tasitlar.js?v=' + TASITLAR_MODULE_VERSION;
-  var TASITLAR_CSS = 'tasitlar.css?v=' + TASITLAR_MODULE_VERSION;
+  var TASITLAR_CSS_LIST = [
+    'tasitlar-base.css?v=' + TASITLAR_MODULE_VERSION,
+    'tasitlar-extra.css?v=' + TASITLAR_MODULE_VERSION
+  ];
   var RAPORLAR_JS = 'raporlar.js?v=20260325.5';
   var RAPORLAR_CSS = 'raporlar.css?v=20260325.6';
   var KAYIT_JS = 'kayit.js?v=20260325.2';
@@ -507,7 +520,7 @@ var TASITLAR_MODULE_VERSION = '20260331.4';
 
   window.openVehiclesView = function() {
     showModuleSpinner();
-    window.loadAppModule(TASITLAR_JS, TASITLAR_CSS).then(function() {
+    window.loadAppModule(TASITLAR_JS, TASITLAR_CSS_LIST).then(function() {
       hideModuleSpinner();
       if (typeof window.openVehiclesView === 'function') window.openVehiclesView();
     }).catch(function(err) {
@@ -644,7 +657,10 @@ window.addEventListener('dataLoaded', () => {
 
     if (typeof window.loadAppModule === 'function') {
       var tasitlarJsForNotif = 'tasitlar.js?v=' + TASITLAR_MODULE_VERSION;
-      var tasitlarCssForNotif = 'tasitlar.css?v=' + TASITLAR_MODULE_VERSION;
+      var tasitlarCssForNotif = [
+        'tasitlar-base.css?v=' + TASITLAR_MODULE_VERSION,
+        'tasitlar-extra.css?v=' + TASITLAR_MODULE_VERSION
+      ];
       window.loadAppModule(tasitlarJsForNotif, tasitlarCssForNotif)
             .then(runNotifications)
             .catch(function(err) {
