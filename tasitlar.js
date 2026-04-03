@@ -242,7 +242,18 @@
     setSelectedUser(defaultUserName);
   }
 
-  function getEventPerformerName(vehicle) {
+  /** Ana uygulamada olay satırında görünen sürücü adı: genel yönetici kendi adıyla; aksi halde atanmış kullanıcı / tahsis. */
+  function isMainAppSessionGenelYonetici() {
+    try {
+      var sess = typeof window.medisaSession === 'object' && window.medisaSession ? window.medisaSession : null;
+      var sr = sess && (sess.role || (sess.user && sess.user.role));
+      return !!(sess && sess.authenticated && String(sr || '').trim() === 'genel_yonetici');
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function getEventSurucuFromVehicleAssignment(vehicle) {
     const safeVehicle = vehicle || {};
     const users = readUsers();
     const assignedId = safeVehicle.assignedUserId || '';
@@ -253,6 +264,15 @@
     if (tahsisliKisi) return formatAdSoyad(tahsisliKisi);
 
     return getRecorderDisplayName();
+  }
+
+  function resolveMainAppEventSurucuName(vehicle) {
+    if (isMainAppSessionGenelYonetici()) return getRecorderDisplayName();
+    return getEventSurucuFromVehicleAssignment(vehicle);
+  }
+
+  function getEventPerformerName(vehicle) {
+    return resolveMainAppEventSurucuName(vehicle);
   }
 
   /** Ana panelde kayıt yapan görünen ad (ceza/satış tarihçesi); önce oturumdaki kullanıcı, sonra ayar, son çare Yönetim */
