@@ -538,6 +538,8 @@ async function loadDataFromServer(forceRefresh) {
                 redirectToDriverDashboard();
             }
 
+            syncMainAppHeaderUserName(window.medisaSession);
+
             serverDatasetTrusted = true;
             return window.appData;
         } catch (error) {
