@@ -1,11 +1,12 @@
-# cPanel'e SSH ile rsync (main push veya elle tetikleme).
-# Gerekli GitHub Secrets (Repo → Settings → Secrets and variables → Actions):
-#   CPANEL_SSH_HOST      örn. sunucu.example.com veya IP
-#   CPANEL_SSH_USER      SSH kullanıcı adı (genelde cPanel kullanıcısı)
-#   CPANEL_SSH_KEY       sunucuya erişen private key (PEM, tam içerik)
-#   CPANEL_DEPLOY_PATH   örn. /home/KULLANICI/public_html/medisa  (sonunda / olmasın)
+# cPanel'e FTP ile yükleme (main push veya elle tetikleme).
 #
-# .cpanel.yml ile aynı hedefe gider; canlı data.json'u ezmemek için data/data.json hariç.
+# Repository secrets (Settings → Secrets and variables → Actions):
+#   FTP_SERVER, FTP_USERNAME, FTP_PASSWORD  — çoğu cPanel hesabında zaten tanımlı
+#   FTP_REMOTE_DIR  — sunucudaki hedef klasör, FTP köküne göre, sonda / olmalı
+#                     örn. public_html/medisa/  (.cpanel.yml DEPLOYPATH ile uyumlu olsun)
+#
+# İsteğe bağlı: FTPS / özel port kullanıyorsanız aşağıdaki satırlardaki protocol ve port'u düzenleyin.
+# Canlı data.json: exclude ile gönderilmiyor; sunucudaki dosya korunur.
 
 name: Deploy cPanel
 
@@ -16,18 +17,25 @@ on:
   workflow_dispatch:
 
 jobs:
-  rsync:
-    name: Rsync to cPanel
+  ftp:
+    name: FTP to cPanel
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Sync files over SSH
-        uses: burnett01/rsync-deployments@7.0.2
+      - name: Sync via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.6
         with:
-          switches: -avzr --exclude=.git/ --exclude=.github/ --exclude=data/data.json --exclude=tys.zip
-          path: ./
-          remote_path: ${{ secrets.CPANEL_DEPLOY_PATH }}/
-          remote_host: ${{ secrets.CPANEL_SSH_HOST }}
-          remote_user: ${{ secrets.CPANEL_SSH_USER }}
-          remote_key: ${{ secrets.CPANEL_SSH_KEY }}
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: ${{ secrets.FTP_REMOTE_DIR }}
+          local-dir: ./
+          protocol: ftp
+          port: 21
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            data/data.json
+            tys.zip
