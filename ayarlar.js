@@ -24,7 +24,7 @@
       if (!modal) return;
   
       // Listeyi render et
-      renderBranchList();
+      renderBranchList(); 
   
       // Modalı aç
       modal.style.display = 'flex';
