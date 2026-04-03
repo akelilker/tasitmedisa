@@ -678,6 +678,7 @@
       const n = checked.length;
       const textEl = trigger.querySelector('.user-vehicles-trigger-text');
       if (textEl) textEl.textContent = n === 0 ? 'Taşıt seçin' : (n === 1 ? '1 Taşıt Seçildi' : n + ' Taşıt Seçildi');
+      trigger.classList.toggle('placeholder', n === 0);
     }
   
     function toggleUserVehiclesDropdown() {
