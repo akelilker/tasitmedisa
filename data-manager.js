@@ -307,6 +307,39 @@ function setMedisaSession(sessionData) {
     applyMainAppSessionUiState();
 }
 
+function resolveMainAppHeaderUserName(sessionData) {
+    var session = sessionData && typeof sessionData === 'object' ? sessionData : getDefaultSession();
+    var directName = String((session.user && (session.user.isim || session.user.name)) || '').trim();
+    if (directName !== '') {
+        return directName;
+    }
+
+    var userId = String((session.user && session.user.id) || '').trim();
+    if (userId === '' || !window.appData || !Array.isArray(window.appData.users)) {
+        return '';
+    }
+
+    for (var i = 0; i < window.appData.users.length; i++) {
+        var user = window.appData.users[i];
+        if (String((user && user.id) || '') !== userId) continue;
+        return String((user && (user.isim || user.name)) || '').trim();
+    }
+
+    return '';
+}
+
+function syncMainAppHeaderUserName(sessionData) {
+    if (typeof document === 'undefined') return;
+    if (getCurrentPathname().indexOf('/driver/') !== -1) return;
+
+    var nameEl = document.getElementById('main-header-user-name');
+    if (!nameEl) return;
+
+    var displayName = resolveMainAppHeaderUserName(sessionData);
+    nameEl.textContent = displayName;
+    nameEl.classList.toggle('is-empty', displayName === '');
+}
+
 function applyMainAppSessionUiState() {
     if (typeof document === 'undefined') return;
     if (getCurrentPathname().indexOf('/driver/') !== -1) return;
@@ -314,6 +347,7 @@ function applyMainAppSessionUiState() {
     syncMainAppPortalLinks();
 
     var session = window.medisaSession || getDefaultSession();
+    syncMainAppHeaderUserName(session);
     var logoutBtn = document.getElementById('settings-logout-btn');
     if (logoutBtn) {
         logoutBtn.style.display = getStoredPortalToken() ? '' : 'none';
