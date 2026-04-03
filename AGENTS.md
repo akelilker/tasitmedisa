@@ -16,7 +16,7 @@ Quick syntax check (no server):
 php -l core.php
 ```
 
-Production deploy: **cPanel** Git / `.cpanel.yml` (see repo root) or copy files to `public_html/medisa`. There is **no** Docker image or GitHub Actions deploy in this repo.
+Production deploy: **cPanel** Git + `.cpanel.yml` (see repo root), **veya** GitHub Actions **Deploy cPanel** (FTP; `.github/workflows/deploy-cpanel.yml`, Actions secrets gerekir). Manuel olarak `public_html/medisa` kopyası da kullanılabilir. Docker yok.
 
 ### Project structure (key paths)
 
