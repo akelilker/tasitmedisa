@@ -31,12 +31,14 @@
     overflow: hidden !important;
     text-overflow: clip !important;
     white-space: normal !important;
-    word-break: normal;
-    overflow-wrap: break-word;
+    word-break: keep-all !important;
+    overflow-wrap: normal !important;
+    hyphens: none !important;
     display: -webkit-box !important;
     -webkit-line-clamp: 2 !important;
     line-clamp: 2 !important;
     -webkit-box-orient: vertical !important;
+    line-height: 1.25 !important;
     justify-content: center;
     align-items: center;
 }

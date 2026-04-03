@@ -2148,8 +2148,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     width: 100% !important;
     max-width: 100% !important;
     line-height: 1.12 !important;
-    word-break: normal !important;
-    overflow-wrap: break-word !important;
+    word-break: keep-all !important;
+    overflow-wrap: normal !important;
+    hyphens: none !important;
 }
 #vehicles-modal .list-header-row .header-label-stack .header-r1:empty {
     min-height: 1.12em !important;
@@ -2268,15 +2269,17 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 .view-list .list-cell.list-user {
     font-size: clamp(10px, 1.5vw, 12px) !important;
     white-space: normal !important;
-    word-break: normal !important;
-    overflow-wrap: break-word !important;
+    word-break: keep-all !important;
+    overflow-wrap: normal !important;
+    hyphens: none !important;
     overflow: visible !important;
 }
 /* Kullanıcı sütun başlışı: dar kolonda küçülsün ve gerekirse satır kırılsın */
 .list-header-row .list-cell.list-user {
     white-space: normal !important;
-    word-break: normal;
-    overflow-wrap: break-word;
+    word-break: keep-all !important;
+    overflow-wrap: normal !important;
+    hyphens: none !important;
 }
 /* Kullanıcı başlışı da dişerleriyle aynı punto */
 .list-header-row .list-cell.list-user span {
@@ -2297,8 +2300,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     overflow: hidden !important;
     text-overflow: clip !important;
     white-space: normal !important;
-    word-break: normal !important;
-    overflow-wrap: break-word !important;
+    word-break: keep-all !important;
+    overflow-wrap: normal !important;
+    hyphens: none !important;
   }
 
   .list-header-row .list-cell.list-transmission {
@@ -2307,8 +2311,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     overflow: hidden !important;
     text-overflow: clip !important;
     white-space: normal !important;
-    word-break: normal !important;
-    overflow-wrap: break-word !important;
+    word-break: keep-all !important;
+    overflow-wrap: normal !important;
+    hyphens: none !important;
   }
 
   .list-header-row .list-cell.list-user {
@@ -2324,8 +2329,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     overflow: hidden !important;
     text-overflow: clip !important;
     white-space: normal !important;
-    word-break: normal !important;
-    overflow-wrap: break-word !important;
+    word-break: keep-all !important;
+    overflow-wrap: normal !important;
+    hyphens: none !important;
     font-size: clamp(8.4px, 1.25vw, 9.8px) !important;
     letter-spacing: 0 !important;
   }
@@ -2334,8 +2340,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     overflow: hidden !important;
     text-overflow: clip !important;
     white-space: normal !important;
-    word-break: normal !important;
-    overflow-wrap: break-word !important;
+    word-break: keep-all !important;
+    overflow-wrap: normal !important;
+    hyphens: none !important;
     font-size: clamp(8.4px, 1.25vw, 9.8px) !important;
     letter-spacing: 0 !important;
   }
@@ -2344,8 +2351,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     overflow: hidden !important;
     text-overflow: clip !important;
     white-space: normal !important;
-    word-break: normal !important;
-    overflow-wrap: break-word !important;
+    word-break: keep-all !important;
+    overflow-wrap: normal !important;
+    hyphens: none !important;
     font-size: clamp(9.67px, 1.45vw, 10.33px) !important;
   }
   .list-header-row .list-cell.list-type.sortable-header,
@@ -2365,16 +2373,14 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     padding-left: 2px !important;
     padding-right: 2px !important;
     white-space: normal !important;
-    word-break: normal;
-    overflow-wrap: break-word;
-    display: -webkit-box !important;
-    -webkit-line-clamp: 2 !important;
-    line-clamp: 2 !important;
-    -webkit-box-orient: vertical !important;
-    overflow: hidden !important;
+    word-break: keep-all !important;
+    overflow-wrap: normal !important;
+    hyphens: none !important;
+    display: flex !important;
+    overflow: visible !important;
     text-overflow: clip !important;
-    justify-content: center;
-    align-items: center;
+    justify-content: center !important;
+    align-items: flex-end !important;
 }
 
 .sortable-header {
