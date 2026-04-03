@@ -223,11 +223,21 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 .olay-ekle-modal .modal-body .olay-tarih-input:not(.has-value):not(:focus)::-webkit-datetime-edit {
   color: transparent !important;
 }
-.olay-ekle-modal .modal-body .form-input::placeholder {
-  color: #6c757d !important;
+/* Placeholder’lar etiketten daha geride dursun (önceki #6c757d fazla öne çıkıyordu) */
+.olay-ekle-modal .modal-body input.form-input::placeholder,
+.olay-ekle-modal .modal-body textarea.form-input::placeholder {
+  color: rgba(255, 255, 255, 0.3) !important;
+  opacity: 1 !important;
+}
+.olay-ekle-modal .modal-body input.form-input::-webkit-input-placeholder,
+.olay-ekle-modal .modal-body textarea.form-input::-webkit-input-placeholder {
+  color: rgba(255, 255, 255, 0.3) !important;
+}
+#dinamik-olay-modal .modal-body .date-placeholder {
+  color: rgba(255, 255, 255, 0.3) !important;
 }
 #dinamik-olay-modal .modal-body #ceza-tutar::placeholder {
-  color: #6c757d !important;
+  color: rgba(255, 255, 255, 0.3) !important;
   opacity: 1 !important;
 }
 
@@ -264,7 +274,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
   color: #cfd5df !important;
 }
 .olay-ekle-modal .modal-body .ceza-user-trigger.placeholder {
-  color: #6c757d !important;
+  color: rgba(255, 255, 255, 0.3) !important;
 }
 .olay-ekle-modal .modal-body .ceza-user-trigger:focus {
   outline: none !important;
