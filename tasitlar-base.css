@@ -2137,10 +2137,15 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     flex: 1 1 auto !important;
     min-width: 0 !important;
     max-width: 100% !important;
-    padding-right: 14px !important;
+    padding-right: 12px !important;
     box-sizing: border-box !important;
     min-height: 2.4em !important;
     text-align: center !important;
+}
+#vehicles-modal .list-header-row .header-label-stack.header-label-stack-single .header-r2,
+#vehicles-modal .list-header-row .header-label-stack.header-label-stack-split .header-r1,
+#vehicles-modal .list-header-row .header-label-stack.header-label-stack-split .header-r2 {
+    white-space: nowrap !important;
 }
 #vehicles-modal .list-header-row .header-label-stack .header-r1,
 #vehicles-modal .list-header-row .header-label-stack .header-r2 {
@@ -2321,8 +2326,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     overflow: hidden !important;
     text-overflow: clip !important;
     white-space: normal !important;
-    word-break: normal !important;
-    overflow-wrap: break-word !important;
+    word-break: keep-all !important;
+    overflow-wrap: normal !important;
+    hyphens: none !important;
   }
 
   .list-header-row .list-cell.list-type span {

@@ -638,7 +638,10 @@
         cb.value = vid;
         cb.name = 'user-vehicle';
         cb.checked = assignedIds.indexOf(vid) !== -1;
-        cb.addEventListener('change', updateUserVehiclesTriggerText);
+        cb.addEventListener('change', function() {
+          updateUserVehiclesTriggerText();
+          closeUserVehiclesDropdown();
+        });
         const plateSpan = document.createElement('span');
         plateSpan.className = 'user-vehicle-plate';
         plateSpan.textContent = plaka;
@@ -696,6 +699,7 @@
       const trigger = document.getElementById('user-vehicles-trigger');
       if (dropdown) dropdown.style.display = 'none';
       if (trigger) trigger.classList.remove('user-vehicles-trigger-open');
+      if (trigger) trigger.setAttribute('aria-expanded', 'false');
     }
   
     window.toggleUserVehiclesDropdown = toggleUserVehiclesDropdown;
@@ -1315,9 +1319,45 @@
         (branchModal && branchModal.classList.contains('active')) ||
         (userModal && userModal.classList.contains('active'));
 
-      if (isSettingsModalActive) {
-        e.preventDefault();
-        e.stopPropagation();
+      if (!isSettingsModalActive) return;
+
+      e.preventDefault();
+      e.stopPropagation();
+
+      if (centeredInfoBox && centeredInfoBox.style.display === 'flex') {
+        closeCenteredInfoBox();
+        return;
+      }
+      if (infoModal && infoModal.classList.contains('active')) {
+        closeInfoModal();
+        return;
+      }
+      if (cacheConfirmModal && cacheConfirmModal.classList.contains('active')) {
+        closeCacheConfirmModal();
+        return;
+      }
+      if (disVeriPanel && disVeriPanel.classList.contains('active')) {
+        closeDisVeriPanel();
+        return;
+      }
+      if (dataModal && dataModal.classList.contains('active')) {
+        closeDataManagement();
+        return;
+      }
+      if (userFormModal && userFormModal.classList.contains('active')) {
+        closeUserFormModal();
+        return;
+      }
+      if (branchFormModal && branchFormModal.classList.contains('active')) {
+        closeBranchFormModal();
+        return;
+      }
+      if (userModal && userModal.classList.contains('active')) {
+        closeUserManagement();
+        return;
+      }
+      if (branchModal && branchModal.classList.contains('active')) {
+        closeBranchManagement();
       }
     });
   
@@ -1348,9 +1388,6 @@
       }
       if (branchFormModal && branchFormModal.classList.contains('active') && e.target === branchFormModal) {
         closeBranchFormModal();
-      }
-      if (userFormModal && userFormModal.classList.contains('active') && e.target === userFormModal) {
-        closeUserFormModal();
       }
       if (dataModal && dataModal.classList.contains('active') && e.target === dataModal) {
         closeDataManagement();
