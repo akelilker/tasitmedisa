@@ -2,7 +2,7 @@
 deployment:
   tasks:
     - export DEPLOYPATH=/home/karmotor/public_html/medisa
-    # Modül klasörleri (docker, scripts, .git repoda kalsa bile buraya kopyalanmaz)
+    # Modül klasörleri
     - /bin/cp -R admin driver icon data $DEPLOYPATH/
     - /bin/cp index.html manifest.json sw.js .htaccess $DEPLOYPATH/
     - /bin/cp core.php load.php save.php asset.php restore.php ruhsat.php ruhsat_preview.php upload_ruhsat.php $DEPLOYPATH/

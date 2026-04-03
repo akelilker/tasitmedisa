@@ -26,4 +26,3 @@ clsm.zip
 tools/merge_senay_fleet.py
 tools/output/SENAY_ARACLAR_MASTER.xlsx
 welcome-to-docker/
-# Dockerfile / docker-compose / deploy workflow repoda olmalı (GitHub Actions derlemesi için)

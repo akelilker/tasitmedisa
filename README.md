@@ -23,15 +23,11 @@ Tüm yazımlar `core.php` içindeki `saveData()` üzerinden yapılır. Mevcut `d
 
 İlk kurulumda `data.json` henüz yoksa yedek adımı atlanır (sadece atomik yazım).
 
-3. **Docker (isteğe bağlı):**
-   ```bash
-   docker-compose up -d
-   ```
-   Uygulama `http://localhost:8080` adresinde çalışır.
+3. **Yerel çalıştırma:** PHP 8.x + Apache ile bu klasörü site kökü yap (`mod_rewrite` açık). Laragon / XAMPP / cPanel alt dizini uygun.
 
 ## Deploy (karmotors.com.tr)
 
-Push `main`/`master` branch’e yapıldığında GitHub Actions ile `public_html/tasitmedisa/` klasörüne SSH deploy yapılır. Detay için [DEPLOY-KARMOTORS.md](DEPLOY-KARMOTORS.md) dosyasına bakın.
+cPanel **Git Version Control** veya repodaki **`.cpanel.yml`** ile `public_html/medisa` hedefine kopyalama. Ayrıntı için [DEPLOY-KARMOTORS.md](DEPLOY-KARMOTORS.md) (varsa) veya hosting panelindeki dağıtım adımlarına bakın.
 
 ## Gereksinimler
 
