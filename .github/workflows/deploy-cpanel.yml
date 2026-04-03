@@ -26,8 +26,11 @@ jobs:
   ftp:
     name: FTP to cPanel
     runs-on: ubuntu-latest
+    # SamKirkland/FTP-Deploy-Action henüz node24 bildirmedi; GitHub Node 20 uyarısını kaldırmak için:
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Deploy öncesi — commit ve kritik dosyalar (logda doğrulayın)
         run: |
