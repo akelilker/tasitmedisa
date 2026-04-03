@@ -8,21 +8,15 @@ MEDISA Taşıt Yönetim Sistemi (Vehicle Management System) — a PHP 8.2 + vani
 
 ### Running the application
 
-The app runs via Docker Compose as a single `php:8.2-apache` container:
+Use **PHP 8.2 + Apache** with `mod_rewrite` enabled. Point the virtual host or document root at this repository (same folder as `index.html` and `core.php`). Example local stacks: Laragon, XAMPP, WAMP, or Linux `apache2` + `libapache2-mod-php`.
+
+Quick syntax check (no server):
 
 ```bash
-docker compose up -d --build
+php -l core.php
 ```
 
-Access at `http://localhost:8080`. See `README.md` for details.
-
-**Important:** Docker must be running before `docker compose up`. In this Cloud VM environment, start the daemon first:
-
-```bash
-sudo dockerd &>/tmp/dockerd.log &
-sleep 5
-sudo chmod 666 /var/run/docker.sock
-```
+Production deploy: **cPanel** Git / `.cpanel.yml` (see repo root) or copy files to `public_html/medisa`. There is **no** Docker image or GitHub Actions deploy in this repo.
 
 ### Project structure (key paths)
 
@@ -31,27 +25,21 @@ sudo chmod 666 /var/run/docker.sock
 - `driver/` — user portal sub-app (login, dashboard, event reporting)
 - `admin/` — admin reporting panel (approve requests, export Excel)
 - `data/data.json` — flat-file JSON data store (must be writable by Apache)
-- `docker/Dockerfile` — `php:8.2-apache` image with mod_rewrite
-- `docker-compose.yml` — single `web` service on port 8080
+- `.cpanel.yml` — optional cPanel Git deployment copy list
 
 ### Entry points
 
 | Module | URL | Description |
 |--------|-----|-------------|
-| Main dashboard | `http://localhost:8080/` | Main vehicle management dashboard |
-| User portal | `http://localhost:8080/driver/` | User portal login & dashboard |
-| Admin reports | `http://localhost:8080/admin/driver-report.html` | Monthly user reports |
+| Main dashboard | `http://localhost:8080/` or your vhost | Main vehicle management dashboard |
+| User portal | `.../driver/` | User portal login & dashboard |
+| Admin reports | `.../admin/driver-report.html` | Monthly user reports |
 
 ### Lint / Test / Build
 
-This project has **no** linting tools, test frameworks, or build systems. Validation is done through manual browser testing. PHP syntax can be checked with `php -l <file>.php` inside the container:
-
-```bash
-docker compose exec web php -l core.php
-```
+This project has **no** linting tools, test frameworks, or build systems. Validation is done through manual browser testing. PHP syntax: `php -l <file>.php`.
 
 ### Caveats
 
-- The `docker-compose.yml` uses `version: '3.8'` which triggers a deprecation warning with modern Docker Compose — this is harmless.
 - The app uses `localStorage` for client-side caching and syncs to the server via `save.php`. After registering a vehicle, data is persisted on the server in `data/data.json`.
 - The `.cursorrules` file contains project-specific coding conventions (Turkish language, "Premium Dark" theme, responsive isolation rules). Follow these when making code changes.
