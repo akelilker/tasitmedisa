@@ -14,6 +14,8 @@ $allowed = [
     'script-core.js',
     'kayit.js',
     'tasitlar.js',
+    'tasitlar-yazici.js',
+    'data-service.js',
     'raporlar.js',
     'ayarlar.js',
     'sw.js',
