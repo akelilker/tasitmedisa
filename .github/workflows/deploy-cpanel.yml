@@ -9,10 +9,14 @@
 # Canlı data.json: exclude ile gönderilmiyor; sunucudaki dosya korunur.
 #
 # Sunucu klasörü güncellenmiyorsa (GitHub’da commit var, FTP’de eski dosya):
-# - Repo → Actions → "Deploy cPanel": son koşu var mı, yeşil mi? Kırmızı log = FTP/şifre/yol.
+# - Repo → Actions → "Deploy cPanel": son koşu var mı, yeşil mi? verbose log’da gerçekten upload var mı?
 # - Sadece git push kullanıyorsanız: cPanel "Git Version Control" ile otomatik çekim yoksa
 #   sunucu değişmez; ya bu workflow’u (secrets + yeşil koşu) kullanın ya da panelden Pull/Deploy.
-# - Doğru hedef: FTP_REMOTE_DIR genelde public_html/medisa/ (FTP giriş köküne göre).
+# - Doğru hedef: FTP_REMOTE_DIR, FileZilla ile bağlandığınızda sitenin dosyalarının olduğu klasör olmalı;
+#   çoğu hesapta public_html/medisa/ veya yalnızca medisa/ (FTP kökü zaten public_html ise).
+# - Bazı hostlar yalnızca FTPS kabul eder: protocol: ftps ve paneldeki port (genelde 21 explicit).
+# - Yeşil ama “0 file uploaded”: önce yanlış server-dir mi bakın; gerekirse sunucudaki .ftp-deploy-sync-state.json
+#   yedekleyip silerek bir kez tam senkron deneyin (risk: exclude dışı silme davranışını bilerek yapın).
 
 name: Deploy cPanel
 
@@ -32,6 +36,30 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
+      - name: Secrets kontrolü (boşsa FTP sunucu köküne yazar; canlıda değişiklik görünmez)
+        shell: bash
+        env:
+          FTP_SERVER: ${{ secrets.FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+          FTP_REMOTE_DIR: ${{ secrets.FTP_REMOTE_DIR }}
+        run: |
+          ok=1
+          for n in FTP_SERVER FTP_USERNAME FTP_PASSWORD FTP_REMOTE_DIR; do
+            v="${!n}"
+            if [ -z "${v:-}" ]; then
+              echo "::error::$n tanımlı değil veya boş. Settings → Secrets and variables → Actions."
+              ok=0
+            fi
+          done
+          # Sonda / yoksa SamKirkland eylem beklenmeyen yol üretebilir
+          if [ "${FTP_REMOTE_DIR%/}" = "$FTP_REMOTE_DIR" ]; then
+            echo "::error::FTP_REMOTE_DIR sonda / ile bitmeli (örn. public_html/medisa/ veya medisa/)."
+            ok=0
+          fi
+          [ "$ok" -eq 1 ] || exit 1
+          echo "FTP_REMOTE_DIR uzunluk: ${#FTP_REMOTE_DIR} (host köküne göre doğru klasör olduğundan emin olun)"
+
       - name: Deploy öncesi — commit ve kritik dosyalar (logda doğrulayın)
         run: |
           git log -1 --oneline
@@ -45,6 +73,7 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           server-dir: ${{ secrets.FTP_REMOTE_DIR }}
           local-dir: ./
+          log-level: verbose
           protocol: ftp
           port: 21
           exclude: |
