@@ -2179,6 +2179,23 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #r
     /* Anasayfa mobil header: logo yuvarlağı büyüse de başlık tek satıra sığsın */
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-logo {
         margin-right: 8px !important;
+        width: 58px !important;
+        flex: 0 0 58px !important;
+        gap: 2px !important;
+    }
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-user-name {
+        display: block !important;
+        max-width: 100% !important;
+        overflow: hidden !important;
+        font-size: clamp(10px, 2.55vw, 11.5px) !important;
+        line-height: 1.05 !important;
+        letter-spacing: 0 !important;
+        white-space: nowrap !important;
+        word-break: keep-all !important;
+        overflow-wrap: normal !important;
+        -webkit-line-clamp: unset !important;
+        text-overflow: ellipsis !important;
+        transform: translateY(2px) !important;
     }
     /* Ana uygulama ana ekran header mobil: ana başlık +0.6pt (≈0.8px) */
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero h1 {
@@ -2784,14 +2801,29 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
     padding-bottom: 4px !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-logo {
-    flex: 0 0 36px !important;
-    width: 36px !important;
+    flex: 0 0 58px !important;
+    width: 58px !important;
     margin-right: 8px !important;
     transform: translate(-1px, 5px) !important;
+    gap: 2px !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-logo img {
     height: 35px !important;
     width: auto !important;
+  }
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-user-name {
+    display: block !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+    font-size: clamp(10px, 2.55vw, 11.5px) !important;
+    line-height: 1.05 !important;
+    letter-spacing: 0 !important;
+    white-space: nowrap !important;
+    word-break: keep-all !important;
+    overflow-wrap: normal !important;
+    -webkit-line-clamp: unset !important;
+    text-overflow: ellipsis !important;
+    transform: translateY(2px) !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero h1 {
     letter-spacing: 1.8px !important;
