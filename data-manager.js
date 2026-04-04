@@ -5,8 +5,17 @@
 const API_BASE = (function() {
     try {
         var p = (typeof document !== 'undefined' && document.location && document.location.pathname) ? document.location.pathname : '';
-        if (p.indexOf('/tasitmedisa') === 0) return '/tasitmedisa/';
-        if (p.indexOf('/medisa') === 0) return '/medisa/';
+        var pairs = [
+            ['/personelmedisa', '/personelmedisa/'],
+            ['/tasitmedisa', '/tasitmedisa/'],
+            ['/medisa', '/medisa/']
+        ];
+        for (var i = 0; i < pairs.length; i++) {
+            var seg = pairs[i][0];
+            if (p === seg || p.indexOf(seg + '/') === 0) {
+                return pairs[i][1];
+            }
+        }
         return '';
     } catch (e) {
         return '';
@@ -23,14 +32,18 @@ const API_SAVE = API_BASE + 'save.php';
     if (p !== '/' && p !== '/index.html') return;
     if (typeof console !== 'undefined' && console.warn) {
         console.warn(
-            '[Medisa] Sayfa sitede kökten açılıyor (/). Bu proje /medisa/ veya /tasitmedisa/ altına konduysa ' +
-            'API yolu boş kalır; load.php kökte yoksa veri yüklenemez. Doğru örnek: ' +
+            '[Medisa] Sayfa kökten açılıyor (/). Uygulama /medisa/, /personelmedisa/ veya /tasitmedisa/ altındaysa ' +
+            'API tabanı boş kalır; load.php yanlış yerde istenir. Örnek: ' +
             (document.location.origin || '') + '/medisa/'
         );
     }
 })();
 const DRIVER_INDEX_URL = API_BASE + 'driver/';
 const DRIVER_DASHBOARD_URL = API_BASE + 'driver/dashboard.html';
+
+try {
+    window.MEDISA_PORTAL_LOGIN_URL = DRIVER_INDEX_URL;
+} catch (ePortalUrl) {}
 
 function getDefaultAppData() {
     return {
@@ -105,6 +118,31 @@ function getSafeAppDataFallback() {
         return window.appData;
     }
     return getDefaultAppData();
+}
+
+function buildPersistableAppDataSnapshot(data) {
+    var source = data && typeof data === 'object' ? data : getDefaultAppData();
+    return {
+        tasitlar: Array.isArray(source.tasitlar) ? source.tasitlar : [],
+        kayitlar: Array.isArray(source.kayitlar) ? source.kayitlar : [],
+        branches: Array.isArray(source.branches) ? source.branches : [],
+        users: Array.isArray(source.users) ? source.users : [],
+        ayarlar: source.ayarlar || {
+            sirketAdi: 'Medisa',
+            yetkiliKisi: '',
+            telefon: '',
+            eposta: ''
+        },
+        sifreler: Array.isArray(source.sifreler) ? source.sifreler : [],
+        arac_aylik_hareketler: Array.isArray(source.arac_aylik_hareketler) ? source.arac_aylik_hareketler : [],
+        duzeltme_talepleri: Array.isArray(source.duzeltme_talepleri) ? source.duzeltme_talepleri : []
+    };
+}
+
+function persistAppDataToLocalShadow(data) {
+    try {
+        localStorage.setItem('medisa_data_v1', JSON.stringify(buildPersistableAppDataSnapshot(data)));
+    } catch (storageErr) {}
 }
 
 function getCurrentPathname() {
@@ -455,7 +493,9 @@ async function loadDataFromServer(forceRefresh) {
         window.appData = getDefaultAppData();
         serverDatasetTrusted = false;
         syncDataLoadState();
-        return Promise.reject(new Error('Medisa oturum yok'));
+        var needAuth = new Error('Medisa oturum yok');
+        needAuth.medisaAuthRequired = true;
+        return Promise.reject(needAuth);
     }
 
     if (loadPromise) {
@@ -533,27 +573,14 @@ async function loadDataFromServer(forceRefresh) {
 
             setMedisaSession(data.session || getSessionFromToken());
 
-            window.appData = {
-                tasitlar: data.tasitlar || [],
-                kayitlar: data.kayitlar || [],
-                branches: data.branches || [],
-                users: data.users || [],
-                ayarlar: data.ayarlar || {
-                    sirketAdi: 'Medisa',
-                    yetkiliKisi: '',
-                    telefon: '',
-                    eposta: ''
-                },
-                sifreler: data.sifreler || [],
-                arac_aylik_hareketler: data.arac_aylik_hareketler || [],
-                duzeltme_talepleri: data.duzeltme_talepleri || []
-            };
+            window.appData = buildPersistableAppDataSnapshot(data);
 
             if (getSessionRoleValue(window.medisaSession) === 'kullanici') {
                 redirectToDriverDashboard();
             }
 
             syncMainAppHeaderUserName(window.medisaSession);
+            persistAppDataToLocalShadow(window.appData);
 
             serverDatasetTrusted = true;
             return window.appData;
@@ -638,6 +665,7 @@ async function saveDataToServer() {
             });
             localStorage.setItem('medisa_server_backup', JSON.stringify(autoBackup));
         } catch (storageErr) {}
+        persistAppDataToLocalShadow(window.appData);
 
         return true;
     } catch (error) {
@@ -947,6 +975,10 @@ window.saveDataToServer = saveDataToServer;
 document.addEventListener('DOMContentLoaded', async function() {
     syncMainAppPortalLinks();
     setMedisaSession(getSessionFromToken());
+
+    if (!hasUsableAppData(window.appData)) {
+        loadDataFromLocalStorage();
+    }
 
     if (sessionStorage.getItem('medisa_just_restored') === '1') {
         sessionStorage.removeItem('medisa_just_restored');
