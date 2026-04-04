@@ -15,6 +15,20 @@ const API_BASE = (function() {
 
 const API_LOAD = API_BASE + 'load.php';
 const API_SAVE = API_BASE + 'save.php';
+
+(function medisaWarnWrongDeployPath() {
+    if (typeof document === 'undefined' || !document.location) return;
+    if (API_BASE) return;
+    var p = document.location.pathname || '';
+    if (p !== '/' && p !== '/index.html') return;
+    if (typeof console !== 'undefined' && console.warn) {
+        console.warn(
+            '[Medisa] Sayfa sitede kökten açılıyor (/). Bu proje /medisa/ veya /tasitmedisa/ altına konduysa ' +
+            'API yolu boş kalır; load.php kökte yoksa veri yüklenemez. Doğru örnek: ' +
+            (document.location.origin || '') + '/medisa/'
+        );
+    }
+})();
 const DRIVER_INDEX_URL = API_BASE + 'driver/';
 const DRIVER_DASHBOARD_URL = API_BASE + 'driver/dashboard.html';
 
