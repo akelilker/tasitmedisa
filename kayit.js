@@ -1868,10 +1868,13 @@
 
   // --- Initialization ---
   function initVehicleModalListeners() {
+    const modal = getModal();
+    if (!modal) return;
+
     // Tarih placeholder'ları modal açıldığında kurulacak (openVehicleModal'da)
 
     // Radio Button Logic
-    $all(".radio-btn", getModal()).forEach(btn => {
+    $all(".radio-btn", modal).forEach(btn => {
       btn.addEventListener("click", () => {
         const group = btn.closest(".radio-group");
         $all(".radio-btn", group).forEach(b => b.classList.remove("active", "green"));
@@ -1960,11 +1963,9 @@
     });
     
     // Vehicle Type Selection
-    const vehicleModal = getModal();
-    if (!vehicleModal) return;
-    $all(".vehicle-type-btn", vehicleModal).forEach(btn => {
+    $all(".vehicle-type-btn", modal).forEach(btn => {
         btn.addEventListener("click", () => {
-             $all(".vehicle-type-btn", vehicleModal).forEach(b => b.classList.remove("active"));
+             $all(".vehicle-type-btn", modal).forEach(b => b.classList.remove("active"));
              btn.classList.add("active");
         });
     });
@@ -2143,9 +2144,6 @@
 
     // Enter ile input'lar arasında dolaşma (kayıt formu)
     (function setupEnterKeyNavigation() {
-      const modal = getModal();
-      if (!modal) return;
-
       function isVisible(el) {
         if (!el || !el.offsetParent) return false;
         const s = window.getComputedStyle(el);
