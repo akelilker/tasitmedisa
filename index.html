@@ -2,16 +2,6 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <script>
-    (function() {
-      try {
-        if (location.protocol === 'file:') return;
-        if (location.hostname === 'karmotors.com.tr') {
-          location.replace('https://www.karmotors.com.tr' + location.pathname + location.search + location.hash);
-        }
-      } catch (e) {}
-    })();
-    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Taşıt Yönetim Sistemi</title>
     <!-- Paylaşım önizlemesi (WhatsApp, vb.): logo ve başlık -->
@@ -74,7 +64,6 @@
         #loading-screen.hidden {
             opacity: 0;
             pointer-events: none;
-            visibility: hidden !important;
         }
         #loading-screen .splash-inner {
             display: flex;
@@ -165,9 +154,9 @@
     </style>
 
     <!-- CSS Preload + Async Load -->
-    <link rel="preload" href="style-core.css?v=20260406.3" as="style">
-    <link rel="stylesheet" href="style-core.css?v=20260406.3">
-    <noscript><link rel="stylesheet" href="style-core.css?v=20260406.3"></noscript>
+    <link rel="preload" href="style-core.css?v=20260403.2" as="style">
+    <link rel="stylesheet" href="style-core.css?v=20260403.2">
+    <noscript><link rel="stylesheet" href="style-core.css?v=20260403.2"></noscript>
 </head>
 <body>
 
@@ -260,9 +249,9 @@
                     });
                 }
 
-                if (!window.openVehiclesView) window.openVehiclesView = function() { window.__medisaPendingOpenVehicles = true; };
-                if (!window.openReportsView) window.openReportsView = function() { window.__medisaPendingOpenReports = true; };
-                if (!window.openVehicleModal) window.openVehicleModal = function() { window.__medisaPendingOpenVehicle = true; };
+                if (!window.openVehiclesView) window.openVehiclesView = function() { openModal('vehicles-modal'); };
+                if (!window.openReportsView) window.openReportsView = function() { openModal('reports-modal'); };
+                if (!window.openVehicleModal) window.openVehicleModal = function() { openModal('vehicle-modal'); };
 
                 if (!window.closeVehicleModal) {
                     window.closeVehicleModal = function() {
@@ -590,8 +579,8 @@
             </div>
         </div>
 
-        <div id="user-form-modal" class="modal-overlay ayarlar-modal-overlay" onclick="if(event.target === this) { event.stopPropagation(); event.preventDefault(); return false; }">
-            <div class="modal-container" onclick="event.stopPropagation();">
+        <div id="user-form-modal" class="modal-overlay ayarlar-modal-overlay">
+            <div class="modal-container">
                 <div class="modal-header">
                     <h2>YENİ KULLANICI EKLE</h2>
                     <button class="modal-close" onclick="closeUserFormModal()">
@@ -651,7 +640,7 @@
                         <div class="form-section form-section-vehicles">
                             <span id="user-vehicles-label" class="form-label">Tahsis Edilecek Taşıt</span>
                             <div class="user-vehicles-wrap">
-                                <div id="user-vehicles-trigger" class="user-vehicles-trigger form-input placeholder" tabindex="0" role="combobox" aria-labelledby="user-vehicles-label" aria-expanded="false" onclick="if(window.toggleUserVehiclesDropdown) window.toggleUserVehiclesDropdown()">
+                                <div id="user-vehicles-trigger" class="user-vehicles-trigger form-input" tabindex="0" role="combobox" aria-labelledby="user-vehicles-label" aria-expanded="false" onclick="if(window.toggleUserVehiclesDropdown) window.toggleUserVehiclesDropdown()">
                                     <span class="user-vehicles-trigger-text">Taşıt seçin</span>
                                     <svg class="user-vehicles-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
                                 </div>
@@ -777,7 +766,7 @@
 
     <footer id="app-footer" style="position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:500px;height:var(--app-footer-real-height,42px);min-height:var(--app-footer-real-height,42px);background:#080d16;z-index:10000;display:flex;align-items:center;justify-content:center;visibility:visible;box-sizing:border-box;">
         <div class="footer-content">
-            <span class="version" id="version-display">v78.1 test</span>
+            <span class="version" id="version-display">v78.1</span>
             <span class="brand"><img src="icon/logo-footer.svg" alt="MEDISA" style="height: 12.5px; width: auto;"></span>
             <span class="status status-ready">● Sistem Hazır</span>
         </div>
@@ -1012,29 +1001,12 @@
           hideLoading(); // Script 404 ise loading'i kapat
         }
       }, true);
-
-      // 4. Android WebView'de kaynak satırı gizlenen, uygulama akışını bozmayan phantom null/value hatasını sustur.
-      window.onerror = function(message, source, lineno, colno, error) {
-        try {
-          var msg = String(message == null ? '' : message).trim().toLowerCase();
-          var src = String(source == null ? '' : source);
-          var stack = error && error.stack ? String(error.stack) : '';
-          var combined = (src + '\n' + stack).toLowerCase();
-          var isHiddenWebkitSource = combined.indexOf('webkit-masked-url://hidden/') !== -1;
-          var isNullValuePhantom = (msg === 'null' || msg.indexOf('cannot read') !== -1 || msg.indexOf('undefined') !== -1)
-            && combined.indexOf('value') !== -1;
-          if (isHiddenWebkitSource && isNullValuePhantom) {
-            return true;
-          }
-        } catch (suppressErr) {}
-        return false;
-      };
     })();
     </script>
 
-    <script defer src="data-manager.js?v=20260406.8"></script>
+    <script defer src="data-manager.js?v=20260403.1"></script>
     <script defer src="data-service.js?v=20260316"></script>
-<script defer src="script-core.js?v=20260406.10"></script>
+<script defer src="script-core.js?v=20260403.5"></script>
 </body>
 </html>
 

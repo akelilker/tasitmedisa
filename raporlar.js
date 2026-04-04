@@ -26,7 +26,7 @@
     let stokActiveColumns = {
         sigorta: false,
         kasko: false,
-        kaskoDegeri: false, 
+        kaskoDegeri: false,
         muayene: false,
         kredi: false,
         lastik: false,
@@ -81,33 +81,6 @@
         return (typeof window.matchMedia === 'function')
             ? window.matchMedia('(max-width: 640px)').matches
             : window.innerWidth <= 640;
-    }
-
-    function getStokListScrollState() {
-        const listRoot = document.getElementById('stok-list-container');
-        const scrollEl = listRoot && listRoot.querySelector(':scope > .stok-list-container');
-        if (!scrollEl) {
-            return null;
-        }
-        return {
-            left: scrollEl.scrollLeft,
-            top: scrollEl.scrollTop
-        };
-    }
-
-    function restoreStokListScrollState(scrollState) {
-        if (!scrollState) {
-            return;
-        }
-        const listRoot = document.getElementById('stok-list-container');
-        const scrollEl = listRoot && listRoot.querySelector(':scope > .stok-list-container');
-        if (!scrollEl) {
-            return;
-        }
-        const maxLeft = Math.max(0, scrollEl.scrollWidth - scrollEl.clientWidth);
-        const maxTop = Math.max(0, scrollEl.scrollHeight - scrollEl.clientHeight);
-        scrollEl.scrollLeft = Math.max(0, Math.min(maxLeft, scrollState.left || 0));
-        scrollEl.scrollTop = Math.max(0, Math.min(maxTop, scrollState.top || 0));
     }
 
     function getSingleVisibleStokBranch() {
@@ -244,9 +217,8 @@
     function renderStokList() {
         const gridContainer = document.getElementById('stok-branch-grid');
         const listContainer = document.getElementById('stok-list-container');
-
+        
         if (!listContainer) return;
-        const scrollState = getStokListScrollState();
         cleanupStokTouchColumnDrag();
         
         // Detay menü açık/kapalı tek kaynak: stokDetailMenuOpen (liste yeniden render'da korunur)
@@ -315,7 +287,7 @@
                     <div class="stok-export-controls">
                         <div class="stok-export-left">
                             <div class="stok-search-wrap">
-                                <button class="stok-search-btn" onclick="toggleStokSearch(event)" title="Ara">
+                                <button class="stok-search-btn" onclick="toggleStokSearch()" title="Ara">
                                     🔍
                                 </button>
                                 <div id="stok-search-container" class="stok-search-container">
@@ -498,9 +470,6 @@
         // Mobil: liste tek hamlede ya yatay ya dikey kaysın (eksen kilidi)
         attachStokColumnTouchListeners(listContainer);
         setupStokListTouchAxisLock();
-        requestAnimationFrame(function() {
-            restoreStokListScrollState(scrollState);
-        });
         // Marka ve şube hücreleri: sütun daraldıkça font kontrollü küçülsün
         adjustStokResponsiveCellFontSizes();
     }
@@ -563,7 +532,7 @@
             const detailPx = {
                 'sigorta': 72, 'kasko': 72, 'kaskoDegeri': 72, 'muayene': 72, 'kredi': 56,
                 'lastik': 56, 'utts': 52, 'takip': 56, 'tramer': 52,
-                'boya': 56, 'kullanici': isMobile ? 98 : 72, 'tescil': 72
+                'boya': 56, 'kullanici': 72, 'tescil': 72
             };
             return allColumns.map(col => {
                 const w = basePx[col.key] ?? detailPx[col.key] ?? 64;
@@ -1724,20 +1693,8 @@
         document.removeEventListener('pointerdown', stokSearchOutsidePointerDown, true);
     }
 
-    function getStokSearchElements(event) {
-        const triggerWrap = event && event.currentTarget && typeof event.currentTarget.closest === 'function'
-            ? event.currentTarget.closest('.stok-search-wrap')
-            : null;
-        const modal = document.getElementById('reports-modal');
-        const fallbackWrap = modal ? modal.querySelector('.stok-search-wrap') : null;
-        const wrap = triggerWrap || fallbackWrap || null;
-        const container = wrap ? wrap.querySelector('.stok-search-container') : null;
-        const input = container ? container.querySelector('.stok-search-input') : null;
-        return { wrap, container, input };
-    }
-
     function stokSearchOutsidePointerDown(e) {
-        const container = document.querySelector('#reports-modal .stok-search-wrap .stok-search-container.open');
+        const container = document.getElementById('stok-search-container');
         if (!container || !container.classList.contains('open')) {
             removeStokSearchOutsideListener();
             return;
@@ -1747,7 +1704,7 @@
             return;
         }
         container.classList.remove('open');
-        const input = container.querySelector('.stok-search-input');
+        const input = document.getElementById('stok-search-input');
         if (input) {
             input.value = '';
             window.handleStokSearch('');
@@ -1763,12 +1720,9 @@
     }
 
     // Arama kutusunu aç/kapat (tek büyüteç, mobil+masaüstü)
-    window.toggleStokSearch = function(event) {
-        if (event) {
-            if (typeof event.preventDefault === 'function') event.preventDefault();
-            if (typeof event.stopPropagation === 'function') event.stopPropagation();
-        }
-        const { container, input } = getStokSearchElements(event);
+    window.toggleStokSearch = function() {
+        const container = document.getElementById('stok-search-container');
+        const input = document.getElementById('stok-search-input');
         
         if (container) {
             if (container.classList.contains('open')) {
