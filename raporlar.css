@@ -1214,28 +1214,6 @@ box-sizing: border-box;
 #stok-list-container .stok-controls-row-2 .stok-date-range-controls { margin-left: auto; margin-top: 0 !important; padding-bottom: 0 !important; margin-bottom: 8px !important; align-items: flex-end !important; }
 #stok-list-container .stok-controls-row-2 .stok-date-input-group { margin-bottom: 0 !important; padding-bottom: 0 !important; }
 #stok-list-container .stok-controls-row-2 .stok-date-input-group label { padding-top: 4px !important; }
-/* Stok arama: row-2 header slotuna taşınsa da aynı konteyner çalışsın */
-#reports-modal #stok-search-container {
-position: absolute !important;
-left: 0 !important;
-top: calc(100% + 6px) !important;
-right: auto !important;
-bottom: auto !important;
-margin: 0 !important;
-height: auto !important;
-min-height: 0 !important;
-justify-content: flex-start !important;
-background: var(--bg-content, #0d131f) !important;
-border-radius: 6px !important;
-z-index: 120 !important;
-}
-#reports-modal #stok-search-container.open {
-width: min(200px, calc(100vw - 120px)) !important;
-margin: 0 !important;
-height: auto !important;
-min-height: 0 !important;
-justify-content: flex-start !important;
-}
 /* Masaüstü: Taşıtlar başlık formatı – 12px, beyaza yakın renk, birlikte küçülme (clamp 13px) */
 .stok-list-header-cell { font-size: 12px !important; color: #ffffff !important; opacity: 1 !important; padding: 4px !important; font-weight: 500 !important; }
 .stok-list-header-cell .stok-header-text { font-size: clamp(7.5px, 1.5vw, 12.5px) !important; color: #ffffff !important; font-weight: 500 !important; }
@@ -1699,12 +1677,38 @@ color: #666;
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-export-left {
 overflow: visible !important;
 }
-#reports-modal #stok-search-container.open {
+#reports-modal .stok-detail-add-wrap.desktop-single-row #stok-search-container {
+position: absolute !important;
+left: 0 !important;
+top: calc(100% + 6px) !important;
+right: auto !important;
+bottom: auto !important;
+margin: 0 !important;
+height: auto !important;
+min-height: 0 !important;
+justify-content: flex-start !important;
+background: var(--bg-content, #0d131f) !important;
+border-radius: 6px !important;
+z-index: 120 !important;
+}
+#reports-modal .stok-detail-add-wrap.desktop-single-row #stok-search-container.open {
 width: min(250px, calc(100vw - 120px)) !important;
 }
-#reports-modal #stok-search-input {
+#reports-modal .stok-detail-add-wrap.desktop-single-row #stok-search-input {
 margin-top: 0 !important;
 background: var(--bg-content, #0d131f) !important;
+}
+#reports-modal .stok-detail-add-wrap.desktop-single-row .stok-search-wrap {
+display: flex !important;
+align-items: center !important;
+justify-content: flex-start !important;
+position: relative !important;
+overflow: visible !important;
+}
+#reports-modal .stok-detail-add-wrap.desktop-single-row .stok-search-wrap .stok-search-btn {
+display: flex !important;
+align-items: center !important;
+justify-content: center !important;
 }
 }
 
@@ -2323,28 +2327,26 @@ align-items: center;
 .stok-print-btn { font-size: 20px !important; }
 .stok-export-btn,
 .stok-print-btn { width: auto; }
-/* Stok arama: buton sabit kalsın, input tek noktadan overlay açılsın */
-#reports-modal #stok-search-container {
+/* Input açıldığında HİÇBİR YER OYNAMASIN: absolute overlay, wrap/row boyutu değişmez */
+#stok-list-container .stok-controls-row-2 .stok-search-container.open {
 position: absolute !important;
-top: calc(100% + 6px) !important;
-bottom: auto !important;
+bottom: 100% !important;
+top: auto !important;
 left: 0 !important;
-width: 0;
-max-width: calc(100vw - 120px);
-margin: 0 !important;
+width: 200px !important;
+margin-bottom: 0 !important;
+margin-top: 0 !important;
 }
-#reports-modal #stok-search-input {
+#stok-list-container .stok-controls-row-2 .stok-search-container.open .stok-search-input {
 margin-top: 0 !important;
 }
 /* Büyüteç aynı satırda: wrap ve buton dikey ortalansın */
-#reports-modal .stok-search-wrap {
+#stok-list-container .stok-controls-row-2 .stok-search-wrap {
 display: flex !important;
 align-items: center !important;
 justify-content: flex-start !important;
-position: relative !important;
-overflow: visible !important;
 }
-#reports-modal .stok-search-wrap .stok-search-btn {
+#stok-list-container .stok-controls-row-2 .stok-search-wrap .stok-search-btn {
 display: flex !important;
 align-items: center !important;
 justify-content: center !important;
