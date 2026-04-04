@@ -1067,23 +1067,10 @@
         if (typeof window.updateNotifications === 'function') {
           window.updateNotifications();
         }
-      }).catch(function(err) {
+      }).catch(function() {
         if (DOM.vehiclesModalContainer) DOM.vehiclesModalContainer.classList.remove('hide-marker');
         if (content) {
-          var portalUrl = (typeof window.MEDISA_PORTAL_LOGIN_URL === 'string' && window.MEDISA_PORTAL_LOGIN_URL)
-            ? window.MEDISA_PORTAL_LOGIN_URL
-            : 'driver/';
-          var hrefEsc = String(portalUrl).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
-          if (err && err.medisaAuthRequired === true) {
-            content.innerHTML =
-              '<div style="text-align:center; padding:24px; color:#e8eaed; max-width:22rem; margin:0 auto;">' +
-              '<p style="color:#ff6b6b; margin:0 0 0.75rem; font-weight:600;">Taşıt verileri için giriş gerekli</p>' +
-              '<p style="margin:0 0 1rem; font-size:0.875rem; color:#9aa3b2; line-height:1.45;">Sunucu verisi yalnızca portal oturumu (token) ile yüklenir. Önce portaldan giriş yapın, sonra bu sayfayı yenileyin.</p>' +
-              '<a href="' + hrefEsc + '" style="display:inline-block; padding:0.6rem 1.1rem; background:#c41e3a; color:#fff; text-decoration:none; border-radius:8px; font-weight:600;">Portala giriş</a>' +
-              '</div>';
-          } else {
-            content.innerHTML = '<div style="text-align:center; padding:24px; color:#d40000">Veri yüklenemedi. Lütfen internet bağlantınızı veya sunucu adresini kontrol edin.</div>';
-          }
+          content.innerHTML = '<div style="text-align:center; padding:24px; color:#d40000">Veri yüklenemedi. Lütfen internet bağlantınızı veya sunucu adresini kontrol edin.</div>';
           content.dataset.renderScope = 'loading-error';
           content.dataset.renderSignature = 'loading-error';
           syncVehiclesListModeClass(false);
