@@ -912,7 +912,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     select.form-input,
     select {
         color: var(--data-value-color, #a0aec0) !important;
-        border-color: rgba(255, 255, 255, 0.6) !important; /* Kalinlik artmadan kontrast artisi */
+        border-color: rgba(255, 255, 255, 0.48) !important; /* Mobil: çerçeve biraz yumuşatıldı */
         background: rgba(255, 255, 255, 0.01) !important; /* Zemin sisi azaltilarak cerceve one cikiyor */
     }
     #vehicle-modal #vehicle-branch-select.branch-placeholder {
@@ -931,7 +931,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     }
     
     .radio-btn {
-        border-color: rgba(255, 255, 255, 0.6) !important; /* Kalinlik artmadan kontrast artisi */
+        border-color: rgba(255, 255, 255, 0.48) !important; /* Mobil: çerçeve biraz yumuşatıldı */
         color: rgba(255, 255, 255, 0.8) !important; /* Radio buton metni daha parlak */
         background: rgba(255, 255, 255, 0.01) !important; /* Beyaz sis daha da azaltildi */
     }
