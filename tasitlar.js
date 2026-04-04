@@ -510,7 +510,7 @@
 
   // Grid genişlikleri sütun kimliğine göre (sürükle-bırak sonrası genişlik doğru sütunla kalsın)
   function getVehicleColumnWidths(columnOrder) {
-    const defaultCols = '32px 70px 2.88fr 58px 58px 60px 1.52fr 2.18fr'; /* Şube biraz geniş; kelime ortası kırılma azalır */
+    const defaultCols = '40px 84px minmax(0, 2.48fr) 60px minmax(0, 1.02fr) 68px minmax(0, 1.48fr) minmax(0, 1.22fr)';
     try {
       if (!columnOrder || !Array.isArray(columnOrder) || columnOrder.length === 0) return defaultCols;
       const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
@@ -525,14 +525,14 @@
             'branch': '2.25fr'   /* mobil+iOS PWA: şubeden bir kademe alan alındı */
           }
         : {
-            'year': '32px',
-            'plate': '70px',
-            'brand': '2.88fr',
-            'km': '58px',
-            'type': '58px',
-            'transmission': '60px',
-            'user': '1.52fr',
-            'branch': '2.18fr'
+            'year': '40px',
+            'plate': '84px',
+            'brand': 'minmax(0, 2.48fr)',
+            'km': '60px',
+            'type': 'minmax(0, 1.02fr)',
+            'transmission': '68px',
+            'user': 'minmax(0, 1.48fr)',
+            'branch': 'minmax(0, 1.22fr)'
           };
       return columnOrder.map(key => widthMap[key] || '1fr').join(' ');
     } catch (e) {
@@ -540,17 +540,45 @@
     }
   }
 
-  /** İlk boşlukta ikiye bölünür; tek kelimede metin alt satırda (üst satır boşluklu), alta hizalı grid ile uyumlu */
+  function getVehicleListColumnDefs(isCompactHeader) {
+    return {
+      'year': { label: 'Yıl', class: 'list-year' },
+      'plate': { label: 'Plaka', class: 'list-plate' },
+      'brand': { label: ['Marka /', 'Model'], class: 'list-brand' },
+      'km': { label: 'Km', class: 'list-km' },
+      'type': { label: ['Taşıt', 'Tipi'], class: 'list-type' },
+      'transmission': { label: 'Şanz.', class: 'list-transmission' },
+      'user': { label: isCompactHeader ? 'Kull.' : 'Kullanıcı', class: 'list-user' },
+      'branch': { label: 'Şube', class: 'list-branch' }
+    };
+  }
+
+  /** En fazla iki satır: iki kelimede ikinci kelime ikinci satıra iner; tek kelime tek satır görünür */
   function buildVehicleHeaderLabelStackHtml(rawLabel) {
-    var t = (rawLabel == null ? '' : String(rawLabel)).trim();
-    if (!t) {
+    var firstLine = '';
+    var secondLine = '';
+
+    if (Array.isArray(rawLabel)) {
+      firstLine = String(rawLabel[0] == null ? '' : rawLabel[0]).trim();
+      secondLine = String(rawLabel[1] == null ? '' : rawLabel[1]).trim();
+    } else {
+      var t = (rawLabel == null ? '' : String(rawLabel)).trim();
+      if (!t) {
+        return '<span class="header-label-stack"><span class="header-r1"></span><span class="header-r2">-</span></span>';
+      }
+      var parts = t.split(/\s+/).filter(Boolean);
+      if (parts.length <= 1) {
+        secondLine = t;
+      } else {
+        firstLine = parts[0];
+        secondLine = parts.slice(1).join(' ');
+      }
+    }
+
+    if (!firstLine && !secondLine) {
       return '<span class="header-label-stack"><span class="header-r1"></span><span class="header-r2">-</span></span>';
     }
-    var sp = t.indexOf(' ');
-    if (sp < 0) {
-      return '<span class="header-label-stack"><span class="header-r1"></span><span class="header-r2">' + escapeHtml(t) + '</span></span>';
-    }
-    return '<span class="header-label-stack"><span class="header-r1">' + escapeHtml(t.slice(0, sp)) + '</span><span class="header-r2">' + escapeHtml(t.slice(sp + 1).trim()) + '</span></span>';
+    return '<span class="header-label-stack"><span class="header-r1">' + escapeHtml(firstLine) + '</span><span class="header-r2">' + escapeHtml(secondLine) + '</span></span>';
   }
 
   /**
@@ -585,6 +613,12 @@
     var value = String(transmission || '').trim().toLowerCase();
     if (value === 'otomatik') return 'Otomatik';
     if (value === 'manuel') return 'Manuel';
+    return '-';
+  }
+  function getTransmissionShortLabel(transmission) {
+    var value = String(transmission || '').trim().toLowerCase();
+    if (value === 'otomatik') return 'Otm.';
+    if (value === 'manuel' || value === 'düz' || value === 'duz') return 'Düz';
     return '-';
   }
 
@@ -1412,28 +1446,12 @@
           if (viewMode === 'list') {
             loadVehicleColumnOrder();
             const gridStr = getVehicleColumnWidths(listDisplayOrder);
-            const columnDefs = {
-              'year': { label: 'Y\u0131l\u0131', class: 'list-year' },
-              'plate': { label: 'Plaka', class: 'list-plate' },
-              'brand': { label: 'Marka / Model', class: 'list-brand' },
-              'km': { label: 'Km', class: 'list-km' },
-              'type': { label: 'Ta\u015F\u0131t Tipi', class: 'list-type' },
-              'transmission': { label: isCompactHeader ? '\u015Eanz.' : '\u015Eanz\u0131man', class: 'list-transmission' },
-              'user': { label: isCompactHeader ? 'Kull.' : 'Kullan\u0131c\u0131', class: 'list-user' },
-              'branch': { label: '\u015Eube', class: 'list-branch' }
-            };
+            const columnDefs = getVehicleListColumnDefs(isCompactHeader);
             let emptyHtml = '<div class="list-header-row" style="grid-template-columns: ' + gridStr + '">';
             listDisplayOrder.forEach(columnKey => {
               const def = columnDefs[columnKey];
               if (def) {
-                let labelHtml;
-                if (isMobileList && columnKey === 'brand') {
-                  labelHtml = '<span class="header-label-stack"><span class="header-r1">Marka /</span><span class="header-r2">Model</span></span>';
-                } else if (isMobileList && columnKey === 'type') {
-                  labelHtml = '<span class="header-label-stack"><span class="header-r1">Ta\u015F\u0131t</span><span class="header-r2">Tipi</span></span>';
-                } else {
-                  labelHtml = buildVehicleHeaderLabelStackHtml(def.label);
-                }
+                let labelHtml = buildVehicleHeaderLabelStackHtml(def.label);
                 emptyHtml += `<div class="list-cell ${def.class} sortable-header" data-col="${columnKey}">${labelHtml}</div>`;
               }
             });
@@ -1469,29 +1487,13 @@
         };
         
         // Sütun başlık tanımları (≤640px: kısa etiket; masaüstü: tam kelime + CSS satır kırılması)
-        const columnDefs = {
-          'year': { label: 'Y\u0131l\u0131', class: 'list-year' },
-          'plate': { label: 'Plaka', class: 'list-plate' },
-          'brand': { label: 'Marka / Model', class: 'list-brand' },
-          'km': { label: 'Km', class: 'list-km' },
-          'type': { label: 'Ta\u015F\u0131t Tipi', class: 'list-type' },
-          'transmission': { label: isCompactHeader ? '\u015Eanz.' : '\u015Eanz\u0131man', class: 'list-transmission' },
-          'user': { label: isCompactHeader ? 'Kull.' : 'Kullan\u0131c\u0131', class: 'list-user' },
-          'branch': { label: '\u015Eube', class: 'list-branch' }
-        };
+        const columnDefs = getVehicleListColumnDefs(isCompactHeader);
         html += '<div class="list-header-row" style="grid-template-columns: ' + gridStr + '">';
-        // Sıralamaya göre sütun başlıklarını render et (mobilde Marka/Model iki satır; Taşıt Tipi mobilde yok)
+        // Sıralamaya göre sütun başlıklarını render et
         listDisplayOrder.forEach(columnKey => {
           const def = columnDefs[columnKey];
           if (def) {
-            let labelHtml;
-            if (isMobile && columnKey === 'brand') {
-              labelHtml = '<span class="header-label-stack"><span class="header-r1">Marka /</span><span class="header-r2">Model</span></span>';
-            } else if (isMobile && columnKey === 'type') {
-              labelHtml = '<span class="header-label-stack"><span class="header-r1">Ta\u015F\u0131t</span><span class="header-r2">Tipi</span></span>';
-            } else {
-              labelHtml = buildVehicleHeaderLabelStackHtml(def.label);
-            }
+            let labelHtml = buildVehicleHeaderLabelStackHtml(def.label);
             html += `
               <div class="list-cell ${def.class} sortable-header" 
                    data-col="${columnKey}"
@@ -1552,7 +1554,7 @@
             const kmValue = v.guncelKm || v.km;
             const kmLabel = kmValue ? formatNumber(kmValue) : '-';
             const vehicleTypeLabel = toTitleCase(v.vehicleType || '-');
-            const transmissionLabel = getTransmissionLabel(v.transmission);
+            const transmissionLabel = getTransmissionShortLabel(v.transmission);
             const branchLabel = toTitleCase(branchMap[String(v.branchId)]?.name || 'Tahsis Edilmemiş');
             
             let cellHtml = '';
