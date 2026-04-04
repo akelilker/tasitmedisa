@@ -6,7 +6,10 @@
 #                     örn. public_html/medisa/  (.cpanel.yml DEPLOYPATH ile uyumlu olsun)
 #                     Aynı isimle "Repository variables" altında da verilebilir (secret boşsa orası kullanılır).
 #
-# İsteğe bağlı: FTPS / özel port kullanıyorsanız aşağıdaki satırlardaki protocol ve port'u düzenleyin.
+# İsteğe bağlı: Farklı bağlantı tipi gerekiyorsa Actions → Variables altında değiştirin:
+#   FTP_PROTOCOL  — varsayılan ftps  (ftp | ftps | ftps-legacy)
+#   FTP_PORT      — varsayılan 21
+#   FTP_SECURITY  — varsayılan loose (strict | loose)
 # Canlı data.json: exclude ile gönderilmiyor; sunucudaki dosya korunur.
 #
 # Sunucu klasörü güncellenmiyorsa (GitHub’da commit var, FTP’de eski dosya):
@@ -34,6 +37,10 @@ jobs:
     # SamKirkland/FTP-Deploy-Action henüz node24 bildirmedi; GitHub Node 20 uyarısını kaldırmak için:
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+      FTP_REMOTE_DIR: ${{ secrets.FTP_REMOTE_DIR || vars.FTP_REMOTE_DIR }}
+      FTP_PROTOCOL: ${{ vars.FTP_PROTOCOL || 'ftps' }}
+      FTP_PORT: ${{ vars.FTP_PORT || '21' }}
+      FTP_SECURITY: ${{ vars.FTP_SECURITY || 'loose' }}
     steps:
       - uses: actions/checkout@v6
 
@@ -43,8 +50,6 @@ jobs:
           FTP_SERVER: ${{ secrets.FTP_SERVER }}
           FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
           FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
-          # Secret veya Repository variable; ikisi de boşsa aşağıda hata verilir.
-          FTP_REMOTE_DIR: ${{ secrets.FTP_REMOTE_DIR || vars.FTP_REMOTE_DIR }}
         run: |
           ok=1
           for n in FTP_SERVER FTP_USERNAME FTP_PASSWORD FTP_REMOTE_DIR; do
@@ -63,8 +68,22 @@ jobs:
             echo "::error::FTP_REMOTE_DIR sonda / ile bitmeli (örn. public_html/medisa/ veya medisa/)."
             ok=0
           fi
+          case "$FTP_PROTOCOL" in
+            ftp|ftps|ftps-legacy) ;;
+            *)
+              echo "::error::FTP_PROTOCOL geçersiz. İzin verilen değerler: ftp, ftps, ftps-legacy."
+              ok=0
+              ;;
+          esac
+          case "$FTP_PORT" in
+            ''|*[!0-9]*)
+              echo "::error::FTP_PORT sayısal olmalı."
+              ok=0
+              ;;
+          esac
           [ "$ok" -eq 1 ] || exit 1
           echo "FTP_REMOTE_DIR uzunluk: ${#FTP_REMOTE_DIR} (host köküne göre doğru klasör olduğundan emin olun)"
+          echo "FTP bağlantı modu: protocol=$FTP_PROTOCOL port=$FTP_PORT security=$FTP_SECURITY"
 
       - name: Deploy öncesi — commit ve kritik dosyalar (logda doğrulayın)
         run: |
@@ -77,11 +96,12 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          server-dir: ${{ secrets.FTP_REMOTE_DIR || vars.FTP_REMOTE_DIR }}
+          server-dir: ${{ env.FTP_REMOTE_DIR }}
           local-dir: ./
           log-level: verbose
-          protocol: ftp
-          port: 21
+          protocol: ${{ env.FTP_PROTOCOL }}
+          port: ${{ env.FTP_PORT }}
+          security: ${{ env.FTP_SECURITY }}
           exclude: |
             **/.git*
             **/.git*/**
