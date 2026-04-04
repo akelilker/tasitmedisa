@@ -563,7 +563,7 @@
             const detailPx = {
                 'sigorta': 72, 'kasko': 72, 'kaskoDegeri': 72, 'muayene': 72, 'kredi': 56,
                 'lastik': 56, 'utts': 52, 'takip': 56, 'tramer': 52,
-                'boya': 56, 'kullanici': 72, 'tescil': 72
+                'boya': 56, 'kullanici': isMobile ? 98 : 72, 'tescil': 72
             };
             return allColumns.map(col => {
                 const w = basePx[col.key] ?? detailPx[col.key] ?? 64;

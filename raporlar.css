@@ -892,6 +892,13 @@ justify-content: center;
 justify-content: center;
 }
 
+.stok-list-cell[data-col="kullanici"] {
+white-space: nowrap !important;
+text-overflow: ellipsis;
+font-size: clamp(10.5px, 1.45vw, 12.5px);
+letter-spacing: 0.1px;
+}
+
 .stok-list-header-cell[data-col="tescil"],
 .stok-list-cell[data-col="tescil"] {
 justify-content: center;
