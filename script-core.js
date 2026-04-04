@@ -703,30 +703,8 @@ window.addEventListener('dataLoaded', () => {
     if (typeof window.hideLoading === 'function') {
         setTimeout(window.hideLoading, 50);
     }
-
-    // Bildirimler tasitlar.js içinde; taşıtlar ekranı açılmadan önce veri gelirse modül burada yüklenir.
-    const runNotifications = () => {
-        if (typeof window.updateNotifications === 'function') {
-            window.updateNotifications();
-        }
-    };
-
     if (typeof window.updateNotifications === 'function') {
-        runNotifications();
-        return;
-    }
-
-    if (typeof window.loadAppModule === 'function') {
-      var tasitlarJsForNotif = 'tasitlar.js?v=' + TASITLAR_MODULE_VERSION;
-      var tasitlarCssForNotif = [
-        'tasitlar-base.css?v=' + TASITLAR_MODULE_VERSION,
-        'tasitlar-extra.css?v=' + TASITLAR_MODULE_VERSION
-      ];
-      window.loadAppModule(tasitlarJsForNotif, tasitlarCssForNotif)
-            .then(runNotifications)
-            .catch(function(err) {
-                console.error('[Medisa] Bildirim modülü yüklenemedi:', err);
-            });
+        window.updateNotifications();
     }
 });
 
