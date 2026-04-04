@@ -42,25 +42,20 @@ content: none !important;
 /* #reports-modal container: ortak kurallar style-core.css’te; sayfa özel header/body burada */
 
 /*
- * Stok arama (büyüteç): tüm genişliklerde görünür kalsın.
- * - Mobil: önceki overflow:visible sadece 641px+ içindeydi → style-core modal-container kesiyordu.
- * - Masaüstü: modal-body (#reports-body) sonradan boyandığı için arama “yok” görünüyordu; header z-index ile üstte.
+ * Stok arama (büyüteç): görünürlük için header bandı z-index (aşağıda).
+ * NOT: #reports-body / #view-stok / dış #stok-list-container’a overflow:visible vermek
+ * flex min-height:0 zincirini kırıp modalı aşağı uzatıyordu (footer boşluğu daralıyordu).
+ * Kesme riski: yalnızca .modal-container — style-core mobil overflow:hidden için.
  */
 #reports-modal.modal-overlay.active:has(#stok-search-container.open) .modal-container,
 #reports-modal.modal-overlay.open:has(#stok-search-container.open) .modal-container {
 overflow: visible !important;
 }
-#reports-modal.modal-overlay.active:has(#stok-search-container.open) #reports-body,
-#reports-modal.modal-overlay.open:has(#stok-search-container.open) #reports-body {
-overflow: visible !important;
+@media (min-width: 641px) {
+#reports-modal.modal-overlay.active:has(#stok-search-container.open) .modal-container,
+#reports-modal.modal-overlay.open:has(#stok-search-container.open) .modal-container {
+overflow: hidden !important;
 }
-#reports-modal.modal-overlay.active:has(#stok-search-container.open) #reports-body #view-stok,
-#reports-modal.modal-overlay.open:has(#stok-search-container.open) #reports-body #view-stok {
-overflow: visible !important;
-}
-#reports-modal.modal-overlay.active:has(#stok-search-container.open) #stok-list-container:has(.stok-list-top-controls),
-#reports-modal.modal-overlay.open:has(#stok-search-container.open) #stok-list-container:has(.stok-list-top-controls) {
-overflow: visible !important;
 }
 #reports-modal.modal-overlay.active .modal-container > #reports-list-header-actions:not(:empty),
 #reports-modal.modal-overlay.open .modal-container > #reports-list-header-actions:not(:empty),
