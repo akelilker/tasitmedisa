@@ -414,27 +414,6 @@ textarea.form-input {
   color: var(--data-value-color, #a0aec0) !important;
 }
 
-input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="submit"]):not([type="button"]):not([type="reset"]):not([type="image"]):not([type="color"]):-webkit-autofill,
-input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="submit"]):not([type="button"]):not([type="reset"]):not([type="image"]):not([type="color"]):-webkit-autofill:hover,
-input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="submit"]):not([type="button"]):not([type="reset"]):not([type="image"]):not([type="color"]):-webkit-autofill:focus,
-textarea:-webkit-autofill,
-textarea:-webkit-autofill:hover,
-textarea:-webkit-autofill:focus {
-  -webkit-box-shadow: 0 0 0 1000px var(--autofill-bg, var(--bg-content, #0d131f)) inset !important;
-  box-shadow: 0 0 0 1000px var(--autofill-bg, var(--bg-content, #0d131f)) inset !important;
-  -webkit-text-fill-color: var(--autofill-text, currentColor) !important;
-  background-color: var(--autofill-bg, var(--bg-content, #0d131f)) !important;
-  caret-color: var(--autofill-caret, var(--autofill-text, currentColor)) !important;
-  transition: background-color 5000s ease-in-out 0s, color 5000s ease-in-out 0s !important;
-}
-
-input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="submit"]):not([type="button"]):not([type="reset"]):not([type="image"]):not([type="color"]):-moz-autofill,
-textarea:-moz-autofill {
-  box-shadow: 0 0 0 1000px var(--autofill-bg, var(--bg-content, #0d131f)) inset !important;
-  color: var(--autofill-text, currentColor) !important;
-  caret-color: var(--autofill-caret, var(--autofill-text, currentColor)) !important;
-}
-
 /* Olay Ekle modalları: girilen değerleri gri göster (şu an beyaz görünüyor) */
 .olay-ekle-modal .modal-body {
   --data-value-color: #888;
@@ -588,7 +567,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
 .content-wrap {
     flex: 1;
     min-width: 0; /* Flex çocukta taşmayı önler */
-    min-height: 0; /* iOS Safari: flex sütununda içerik yüksekliği ve scroll */
     overflow-y: auto;
     overflow-x: hidden;
     padding: 4px;
@@ -1190,40 +1168,6 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
 .mtv-dismiss-btn:active + .mtv-tooltip {
   opacity: 1;
   visibility: visible;
-}
-
-/* Ana sayfa: portal token yok — kullanıcıyı girişe yönlendir (www / apex ayrımı vb.) */
-.medisa-portal-auth-banner {
-  display: none;
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  margin: 0 auto 10px;
-  max-width: 500px;
-  padding: 10px 14px;
-  border-radius: 12px;
-  border: 1px solid rgba(196, 30, 58, 0.45);
-  background: rgba(20, 28, 42, 0.92);
-  color: rgba(232, 239, 245, 0.95);
-  font-size: 13px;
-  line-height: 1.35;
-  text-align: center;
-  box-sizing: border-box;
-}
-.medisa-portal-auth-banner:not([hidden]) {
-  display: flex;
-}
-.medisa-portal-auth-link {
-  color: #ff9aa2;
-  font-weight: 700;
-  text-decoration: underline;
-  text-underline-offset: 2px;
-}
-.medisa-portal-auth-link:focus-visible {
-  outline: 2px solid rgba(255, 154, 162, 0.65);
-  outline-offset: 2px;
 }
 
 /* MENÜ – hover scale taşma olmasın */
@@ -2169,31 +2113,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #r
         background-color: var(--bg);
         color: #ffffff !important; /* Metin rengi zorla beyaz */
     }
-    html {
-        min-height: 100% !important;
-        min-height: 100dvh !important;
-        min-height: 100svh !important;
-    }
-    /*
-     * Ana uygulama mobil: tek akışta viewport doldur, içerik alanı sıfırlanmasın.
-     * (Sabit footer/link/loading DOM dışı; .app-container esnek büyüsün.)
-     */
-    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) {
-        display: flex !important;
-        flex-direction: column !important;
-        min-height: 100vh !important;
-        min-height: 100dvh !important;
-        min-height: 100svh !important;
-    }
-    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-container {
-        flex: 1 1 auto !important;
-        min-height: 0 !important;
-        height: auto !important;
-    }
-    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) main.content-wrap {
-        flex: 1 1 auto !important;
-        min-height: 0 !important;
-    }
     
     /* Tüm metin elementleri için kontrast artırma */
     h1, h2, h3, h4, h5, h6, p, span, div, label, button {
@@ -2218,43 +2137,14 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #r
         display: block !important;
         object-fit: contain !important;
     }
-
-    .hero-logo picture {
-        width: auto !important;
-        flex: 0 0 auto !important;
-    }
-
+    
     .hero-logo {
         display: flex !important;
-        flex-direction: row !important;
         align-items: center !important;
-        justify-content: flex-start !important;
-        gap: 7px !important;
-        min-width: 0 !important;
-        margin-right: 10px !important;
-        width: 104px !important;
-        flex: 0 1 104px !important;
-        transform: translate(-1px, 2px);  /* Mobilde logo + kullanıcı adı tek yatay akışta */
-    }
-
-    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-user-name {
-        display: block !important;
-        flex: 1 1 auto !important;
-        min-width: 0 !important;
-        max-width: none !important;
-        overflow: hidden !important;
-        color: rgba(233, 240, 245, 0.96) !important;
-        font-size: clamp(11px, 2.9vw, 12.5px) !important;
-        font-weight: 700 !important;
-        line-height: 1.05 !important;
-        text-align: left !important;
-        letter-spacing: 0.02em !important;
-        white-space: nowrap !important;
-        word-break: normal !important;
-        text-overflow: ellipsis !important;
-        -webkit-line-clamp: unset !important;
-        -webkit-box-orient: initial !important;
-        transform: translateY(0) !important;
+        margin-right: 12px !important;
+        width: calc(var(--hero-logo-width) - 3px) !important;
+        flex: 0 0 calc(var(--hero-logo-width) - 3px) !important;
+        transform: translate(-1px, 3px);  /* 1px sola, 3px aşağı (mobil header logo planı) */
     }
     
     /* Hero mobilde havada + kırmızı (anasayfa ile eşit), dikey yükseklik +5px */
@@ -2290,24 +2180,10 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #r
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-logo {
         margin-right: 8px !important;
     }
-    /* Ana uygulama ana ekran header mobil: başlık boyutu + WebKit clip yedeği (şeffaf metin kaybı) */
+    /* Ana uygulama ana ekran header mobil: ana başlık +0.6pt (≈0.8px) */
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero h1 {
         font-size: clamp(17.8px, 5.1vw, 21.8px) !important;
         letter-spacing: 2px !important;
-        background: none !important;
-        -webkit-background-clip: border-box !important;
-        background-clip: border-box !important;
-        -webkit-text-fill-color: rgba(230, 236, 242, 0.97) !important;
-        color: rgba(230, 236, 242, 0.97) !important;
-    }
-    @supports ((-webkit-background-clip: text) or (background-clip: text)) {
-        body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero h1 {
-            background: linear-gradient(to bottom, #c2d4df 0%, #ffffff 40%, #9aadba 52%, #d6e0e8 100%) !important;
-            -webkit-background-clip: text !important;
-            background-clip: text !important;
-            -webkit-text-fill-color: transparent !important;
-            color: transparent !important;
-        }
     }
     
     /* Modal başlıkları mobilde 19px, letter-spacing 0.2em */
@@ -2642,10 +2518,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #r
         min-height: 100dvh !important;
         box-sizing: border-box !important;
     }
-    /* Genel mobilde body flex; PWA’de de .app-container büyüsün */
-    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-container {
-        flex: 1 1 auto !important;
-    }
     /* iOS PWA: anabaşlık kulaklık/sensör arkasında kalmasın - content-wrap üst padding */
     .content-wrap {
         padding-top: max(12px, env(safe-area-inset-top)) !important;
@@ -2884,13 +2756,6 @@ body.modal-open .app-container {
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-container::before {
   bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
 }
-@media (min-width: 769px) {
-  /* Desktop modal overlay footer + gap kadar yukarıda bittiği için
-     ana çerçeve de aynı noktada kesilmelidir; aksi halde boşlukta kırmızı şerit görünür. */
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .app-container::before {
-    bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
-  }
-}
 @media (max-width: 640px) {
   .content-wrap::before {
     bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
@@ -2919,31 +2784,14 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
     padding-bottom: 4px !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-logo {
-    flex: 0 1 104px !important;
-    width: 104px !important;
+    flex: 0 0 36px !important;
+    width: 36px !important;
     margin-right: 8px !important;
-    gap: 7px !important;
-    transform: translate(-1px, 4px) !important;
-  }
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-logo picture {
-    width: auto !important;
-    flex: 0 0 auto !important;
+    transform: translate(-1px, 5px) !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-logo img {
     height: 35px !important;
     width: auto !important;
-  }
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-user-name {
-    display: block !important;
-    flex: 1 1 auto !important;
-    min-width: 0 !important;
-    font-size: 11.5px !important;
-    line-height: 1.05 !important;
-    text-align: left !important;
-    white-space: nowrap !important;
-    text-overflow: ellipsis !important;
-    -webkit-line-clamp: unset !important;
-    transform: translateY(0) !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero h1 {
     letter-spacing: 1.8px !important;
@@ -3044,9 +2892,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
   /* İç kırmızı inset footer şeridine inmesin */
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-container::after {
     bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0));
-  }
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .app-container::after {
-    bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0));
   }
   /* Omnidirectional kırmızımsı halo footer köşelerinde birikmez */
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap {

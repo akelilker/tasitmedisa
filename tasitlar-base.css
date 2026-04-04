@@ -1447,18 +1447,18 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     margin-top: -1px !important;
   }
   #vehicles-modal .list-header-row .list-cell {
-    font-size: calc(11.5px - 1pt);
+    font-size: 11.5px; /* 12px - 0.5pt */
     color: var(--form-label-color);
     opacity: 1;
   }
-  /* Tüm sütun başlıkları aynı font boyutu; ek 1pt küçültme */
+  /* Tüm sütun başlıkları aynı font boyutu (Kullanıcı küçülüyorsa hepsi aynı) */
   #vehicles-modal .list-header-row .list-cell span {
-    font-size: clamp(calc(9.5px - 1pt), 1.6vw, calc(12.5px - 1pt)) !important;
+    font-size: clamp(9.5px, 1.6vw, 12.5px) !important; /* 0.5pt küçültme */
     color: var(--form-label-color) !important;
   }
   #vehicles-modal .list-header-row .header-label-stack .header-r1,
   #vehicles-modal .list-header-row .header-label-stack .header-r2 {
-    font-size: clamp(calc(9.5px - 1pt), 1.6vw, calc(12.5px - 1pt)) !important;
+    font-size: clamp(9.5px, 1.6vw, 12.5px) !important;
     color: var(--form-label-color) !important;
   }
   /* Taşıt listesi: ilk satır dikey hizalama (masaüstü); arka plan alternating'e bırakıldı */
@@ -1638,9 +1638,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     background: var(--bg-2);
     border: 1px solid var(--br);
     color: var(--txt-white);
-    --autofill-bg: var(--bg-2);
-    --autofill-text: var(--txt-white);
-    --autofill-caret: var(--txt-white);
     padding: 6px 12px;
     border-radius: 6px;
     font-size: 14px;
@@ -1766,7 +1763,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     scrollbar-width: none;
     -ms-overflow-style: none;
 }
-
 /* Liste: çerçeve ile 3px boşluk (modal-body padding 3px); hover taşmasın */
 #vehicles-modal .vehicles-list-scroll,
 #vehicles-modal .tasit-list-container {
@@ -2083,22 +2079,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     z-index: 0 !important;
 }
 
-/* Taşıtlar modal liste: sıkı gap, hücre yatay ~1px (tek ekrana sığdırma) */
-#vehicles-modal .list-header-row,
-#vehicles-modal .view-list .list-item {
-    gap: 2px !important;
-}
-#vehicles-modal .view-list .list-cell,
-#vehicles-modal .list-header-row .list-cell {
-    padding-top: 2px !important;
-    padding-bottom: 2px !important;
-    padding-left: 1px !important;
-    padding-right: 1px !important;
-}
-#vehicles-modal .view-list .list-cell.list-transmission {
-    font-size: calc(12px - 1pt) !important;
-}
-
 /* çerik alanı: başlık ile liste aynı stacking context'te (scroll sarmalayıcı yoksa) */
 #vehicles-modal #vehicles-modal-content {
     position: relative;
@@ -2157,15 +2137,10 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     flex: 1 1 auto !important;
     min-width: 0 !important;
     max-width: 100% !important;
-    padding-right: 3px !important;
+    padding-right: 14px !important;
     box-sizing: border-box !important;
     min-height: 2.4em !important;
     text-align: center !important;
-}
-#vehicles-modal .list-header-row .header-label-stack.header-label-stack-single .header-r2,
-#vehicles-modal .list-header-row .header-label-stack.header-label-stack-split .header-r1,
-#vehicles-modal .list-header-row .header-label-stack.header-label-stack-split .header-r2 {
-    white-space: nowrap !important;
 }
 #vehicles-modal .list-header-row .header-label-stack .header-r1,
 #vehicles-modal .list-header-row .header-label-stack .header-r2 {
@@ -2173,9 +2148,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     width: 100% !important;
     max-width: 100% !important;
     line-height: 1.12 !important;
-    word-break: keep-all !important;
-    overflow-wrap: normal !important;
-    hyphens: none !important;
+    word-break: normal !important;
+    overflow-wrap: break-word !important;
 }
 #vehicles-modal .list-header-row .header-label-stack .header-r1:empty {
     min-height: 1.12em !important;
@@ -2294,17 +2268,15 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 .view-list .list-cell.list-user {
     font-size: clamp(10px, 1.5vw, 12px) !important;
     white-space: normal !important;
-    word-break: keep-all !important;
-    overflow-wrap: normal !important;
-    hyphens: none !important;
+    word-break: normal !important;
+    overflow-wrap: break-word !important;
     overflow: visible !important;
 }
 /* Kullanıcı sütun başlışı: dar kolonda küçülsün ve gerekirse satır kırılsın */
 .list-header-row .list-cell.list-user {
     white-space: normal !important;
-    word-break: keep-all !important;
-    overflow-wrap: normal !important;
-    hyphens: none !important;
+    word-break: normal;
+    overflow-wrap: break-word;
 }
 /* Kullanıcı başlışı da dişerleriyle aynı punto */
 .list-header-row .list-cell.list-user span {
@@ -2325,9 +2297,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     overflow: hidden !important;
     text-overflow: clip !important;
     white-space: normal !important;
-    word-break: keep-all !important;
-    overflow-wrap: normal !important;
-    hyphens: none !important;
+    word-break: normal !important;
+    overflow-wrap: break-word !important;
   }
 
   .list-header-row .list-cell.list-transmission {
@@ -2336,9 +2307,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     overflow: hidden !important;
     text-overflow: clip !important;
     white-space: normal !important;
-    word-break: keep-all !important;
-    overflow-wrap: normal !important;
-    hyphens: none !important;
+    word-break: normal !important;
+    overflow-wrap: break-word !important;
   }
 
   .list-header-row .list-cell.list-user {
@@ -2346,18 +2316,16 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     overflow: hidden !important;
     text-overflow: clip !important;
     white-space: normal !important;
-    word-break: keep-all !important;
-    overflow-wrap: normal !important;
-    hyphens: none !important;
+    word-break: normal !important;
+    overflow-wrap: break-word !important;
   }
 
   .list-header-row .list-cell.list-type span {
     overflow: hidden !important;
     text-overflow: clip !important;
     white-space: normal !important;
-    word-break: keep-all !important;
-    overflow-wrap: normal !important;
-    hyphens: none !important;
+    word-break: normal !important;
+    overflow-wrap: break-word !important;
     font-size: clamp(8.4px, 1.25vw, 9.8px) !important;
     letter-spacing: 0 !important;
   }
@@ -2366,9 +2334,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     overflow: hidden !important;
     text-overflow: clip !important;
     white-space: normal !important;
-    word-break: keep-all !important;
-    overflow-wrap: normal !important;
-    hyphens: none !important;
+    word-break: normal !important;
+    overflow-wrap: break-word !important;
     font-size: clamp(8.4px, 1.25vw, 9.8px) !important;
     letter-spacing: 0 !important;
   }
@@ -2377,9 +2344,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     overflow: hidden !important;
     text-overflow: clip !important;
     white-space: normal !important;
-    word-break: keep-all !important;
-    overflow-wrap: normal !important;
-    hyphens: none !important;
+    word-break: normal !important;
+    overflow-wrap: break-word !important;
     font-size: clamp(9.67px, 1.45vw, 10.33px) !important;
   }
   .list-header-row .list-cell.list-type.sortable-header,
@@ -2388,10 +2354,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     justify-content: center !important;
     padding-right: 10px !important; /* saşdaki sort ikonuna pay */
     box-sizing: border-box;
-  }
-  #vehicles-modal .list-header-row .list-cell.list-type.sortable-header,
-  #vehicles-modal .list-header-row .list-cell.list-transmission.sortable-header {
-    padding-right: 4px !important;
   }
   .list-header-row .list-cell.list-type .sort-icon,
   .list-header-row .list-cell.list-transmission .sort-icon {
@@ -2403,14 +2365,16 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     padding-left: 2px !important;
     padding-right: 2px !important;
     white-space: normal !important;
-    word-break: keep-all !important;
-    overflow-wrap: normal !important;
-    hyphens: none !important;
-    display: flex !important;
-    overflow: visible !important;
+    word-break: normal;
+    overflow-wrap: break-word;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
     text-overflow: clip !important;
-    justify-content: center !important;
-    align-items: flex-end !important;
+    justify-content: center;
+    align-items: center;
 }
 
 .sortable-header {

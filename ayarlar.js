@@ -73,11 +73,9 @@
         if (deleteBtn) deleteBtn.style.display = 'none';
       }
   
-      // Modalı aç — .active ile birlikte (ayarlar.css: .ayarlar-modal-overlay pointer-events
-      // yalnızca .active iken auto). rAF gecikmesi tıklamaların alttaki #branch-modal'a
-      // sızmasına ve beklenmedik kapanmalara yol açıyordu.
-      modal.classList.add('active');
+      // Modalı aç
       modal.style.display = 'flex';
+      requestAnimationFrame(() => modal.classList.add('active'));
   
       // Focus
       if (nameInput) {
@@ -640,10 +638,7 @@
         cb.value = vid;
         cb.name = 'user-vehicle';
         cb.checked = assignedIds.indexOf(vid) !== -1;
-        cb.addEventListener('change', function() {
-          updateUserVehiclesTriggerText();
-          closeUserVehiclesDropdown();
-        });
+        cb.addEventListener('change', updateUserVehiclesTriggerText);
         const plateSpan = document.createElement('span');
         plateSpan.className = 'user-vehicle-plate';
         plateSpan.textContent = plaka;
@@ -678,7 +673,6 @@
       const n = checked.length;
       const textEl = trigger.querySelector('.user-vehicles-trigger-text');
       if (textEl) textEl.textContent = n === 0 ? 'Taşıt seçin' : (n === 1 ? '1 Taşıt Seçildi' : n + ' Taşıt Seçildi');
-      trigger.classList.toggle('placeholder', n === 0);
     }
   
     function toggleUserVehiclesDropdown() {
@@ -702,7 +696,6 @@
       const trigger = document.getElementById('user-vehicles-trigger');
       if (dropdown) dropdown.style.display = 'none';
       if (trigger) trigger.classList.remove('user-vehicles-trigger-open');
-      if (trigger) trigger.setAttribute('aria-expanded', 'false');
     }
   
     window.toggleUserVehiclesDropdown = toggleUserVehiclesDropdown;
@@ -869,9 +862,9 @@
   
       syncUserRoleBranchUI({ scope: scope });
 
-      // Modalı aç — .active anında (bkz. openBranchFormModal; pointer-events sızıntısı)
-      modal.classList.add('active');
+      // Modalı aç
       modal.style.display = 'flex';
+      requestAnimationFrame(() => modal.classList.add('active'));
   
       // Focus
       if (nameInput) {
@@ -1322,55 +1315,12 @@
         (branchModal && branchModal.classList.contains('active')) ||
         (userModal && userModal.classList.contains('active'));
 
-      if (!isSettingsModalActive) return;
-
-      e.preventDefault();
-      e.stopPropagation();
-
-      if (centeredInfoBox && centeredInfoBox.style.display === 'flex') {
-        closeCenteredInfoBox();
-        return;
-      }
-      if (infoModal && infoModal.classList.contains('active')) {
-        closeInfoModal();
-        return;
-      }
-      if (cacheConfirmModal && cacheConfirmModal.classList.contains('active')) {
-        closeCacheConfirmModal();
-        return;
-      }
-      if (disVeriPanel && disVeriPanel.classList.contains('active')) {
-        closeDisVeriPanel();
-        return;
-      }
-      if (dataModal && dataModal.classList.contains('active')) {
-        closeDataManagement();
-        return;
-      }
-      if (userFormModal && userFormModal.classList.contains('active')) {
-        closeUserFormModal();
-        return;
-      }
-      if (branchFormModal && branchFormModal.classList.contains('active')) {
-        closeBranchFormModal();
-        return;
-      }
-      if (userModal && userModal.classList.contains('active')) {
-        closeUserManagement();
-        return;
-      }
-      if (branchModal && branchModal.classList.contains('active')) {
-        closeBranchManagement();
+      if (isSettingsModalActive) {
+        e.preventDefault();
+        e.stopPropagation();
       }
     });
   
-    function isOverlayVisiblyOpen(overlayEl) {
-      if (!overlayEl) return false;
-      if (overlayEl.classList.contains('active') || overlayEl.classList.contains('open')) return true;
-      var d = overlayEl.style && overlayEl.style.display;
-      return d === 'flex' || d === 'block';
-    }
-
     document.addEventListener('click', (e) => {
       const branchModal = document.getElementById('branch-modal');
       const userModal = document.getElementById('user-modal');
@@ -1380,20 +1330,6 @@
       const disVeriPanel = document.getElementById('dis-veri-panel');
       const infoModal = document.getElementById('info-modal');
       const cacheConfirmModal = document.getElementById('cache-confirm-modal');
-      const userFormContainer = userFormModal ? userFormModal.querySelector('.modal-container') : null;
-
-      const userFormOpen = isOverlayVisiblyOpen(userFormModal);
-      const branchFormOpen = isOverlayVisiblyOpen(branchFormModal);
-
-      if (
-        userFormModal &&
-        userFormOpen &&
-        (e.target === userFormModal || (userFormContainer && !userFormContainer.contains(e.target)))
-      ) {
-        e.preventDefault();
-        e.stopPropagation();
-        return;
-      }
 
       if (infoModal && infoModal.classList.contains('active') && e.target === infoModal) {
         closeInfoModal();
@@ -1405,13 +1341,16 @@
         closeDisVeriPanel();
       }
       if (branchModal && branchModal.classList.contains('active') && e.target === branchModal) {
-        if (!branchFormOpen) closeBranchManagement();
+        closeBranchManagement();
       }
       if (userModal && userModal.classList.contains('active') && e.target === userModal) {
-        if (!userFormOpen) closeUserManagement();
+        closeUserManagement();
       }
       if (branchFormModal && branchFormModal.classList.contains('active') && e.target === branchFormModal) {
         closeBranchFormModal();
+      }
+      if (userFormModal && userFormModal.classList.contains('active') && e.target === userFormModal) {
+        closeUserFormModal();
       }
       if (dataModal && dataModal.classList.contains('active') && e.target === dataModal) {
         closeDataManagement();
