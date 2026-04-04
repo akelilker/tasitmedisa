@@ -2308,4 +2308,8 @@
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicles-modal.modal-overlay {
     bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0) - 3px) !important;
   }
+  /* Liste 8 sütun: grid min toplamı ~650px + gap; varsayılan 500px modal son sütunu kesiyordu */
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicles-modal .modal-container {
+    max-width: min(calc(100vw - 48px), 860px) !important;
+  }
 }
