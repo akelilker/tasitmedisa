@@ -83,6 +83,33 @@
             : window.innerWidth <= 640;
     }
 
+    function getStokListScrollState() {
+        const listRoot = document.getElementById('stok-list-container');
+        const scrollEl = listRoot && listRoot.querySelector(':scope > .stok-list-container');
+        if (!scrollEl) {
+            return null;
+        }
+        return {
+            left: scrollEl.scrollLeft,
+            top: scrollEl.scrollTop
+        };
+    }
+
+    function restoreStokListScrollState(scrollState) {
+        if (!scrollState) {
+            return;
+        }
+        const listRoot = document.getElementById('stok-list-container');
+        const scrollEl = listRoot && listRoot.querySelector(':scope > .stok-list-container');
+        if (!scrollEl) {
+            return;
+        }
+        const maxLeft = Math.max(0, scrollEl.scrollWidth - scrollEl.clientWidth);
+        const maxTop = Math.max(0, scrollEl.scrollHeight - scrollEl.clientHeight);
+        scrollEl.scrollLeft = Math.max(0, Math.min(maxLeft, scrollState.left || 0));
+        scrollEl.scrollTop = Math.max(0, Math.min(maxTop, scrollState.top || 0));
+    }
+
     function getSingleVisibleStokBranch() {
         const branches = getBranches();
         return branches.length === 1 ? branches[0] : null;
@@ -217,8 +244,9 @@
     function renderStokList() {
         const gridContainer = document.getElementById('stok-branch-grid');
         const listContainer = document.getElementById('stok-list-container');
-        
+
         if (!listContainer) return;
+        const scrollState = getStokListScrollState();
         cleanupStokTouchColumnDrag();
         
         // Detay menü açık/kapalı tek kaynak: stokDetailMenuOpen (liste yeniden render'da korunur)
@@ -470,6 +498,9 @@
         // Mobil: liste tek hamlede ya yatay ya dikey kaysın (eksen kilidi)
         attachStokColumnTouchListeners(listContainer);
         setupStokListTouchAxisLock();
+        requestAnimationFrame(function() {
+            restoreStokListScrollState(scrollState);
+        });
         // Marka ve şube hücreleri: sütun daraldıkça font kontrollü küçülsün
         adjustStokResponsiveCellFontSizes();
     }
