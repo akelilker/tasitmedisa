@@ -25,8 +25,8 @@
     text-align: center !important;
     font-size: inherit !important;
     color: var(--txt-gray-dark);
-    padding-left: 2px !important;
-    padding-right: 2px !important;
+    padding-left: 1px !important;
+    padding-right: 1px !important;
     min-width: 0 !important;
     overflow: hidden !important;
     text-overflow: clip !important;
@@ -51,8 +51,8 @@
     justify-content: center !important;
     text-align: center !important;
     align-items: center;
-    padding-left: 2px !important;
-    padding-right: 2px !important;
+    padding-left: 1px !important;
+    padding-right: 1px !important;
     min-width: 0;
 }
 
@@ -71,8 +71,8 @@
     overflow: hidden !important;
     text-overflow: clip !important;
     padding-top: 2px;
-    padding-left: 2px !important;
-    padding-right: 2px !important;
+    padding-left: 1px !important;
+    padding-right: 1px !important;
     min-width: 0 !important;
     justify-content: center;
     align-items: center;
@@ -108,8 +108,8 @@
     text-align: center !important;
     display: flex;
     align-items: center;
-    padding-left: 2px !important;
-    padding-right: 2px !important;
+    padding-left: 1px !important;
+    padding-right: 1px !important;
     min-width: 0;
 }
 
@@ -117,8 +117,8 @@
     color: var(--txt-gray-dark);
     font-size: inherit !important;
     justify-content: center;
-    padding-left: 2px;
-    padding-right: 2px;
+    padding-left: 1px;
+    padding-right: 1px;
     min-width: 0;
 }
 
@@ -127,8 +127,8 @@
     font-size: inherit !important;
     justify-content: center !important;
     text-align: center !important;
-    padding-left: 2px !important;
-    padding-right: 2px !important;
+    padding-left: 1px !important;
+    padding-right: 1px !important;
     min-width: 0;
     text-transform: capitalize;
 }
@@ -138,14 +138,14 @@
     font-size: inherit !important;
     justify-content: center !important;
     text-align: center !important;
-    padding-left: 2px !important;
-    padding-right: 2px !important;
+    padding-left: 1px !important;
+    padding-right: 1px !important;
     min-width: 0;
 }
 
 .view-list .list-cell.list-user {
-    padding-left: 2px !important;
-    padding-right: 2px !important;
+    padding-left: 1px !important;
+    padding-right: 1px !important;
 }
 
 .view-list .list-item:last-child {
