@@ -2,52 +2,45 @@
    MEDISA KULLANICI MODÜLÜ - SCRIPT
    ========================================= */
 
-// API Base URL: /tasitmedisa/ veya /medisa/ altındaysa mutlak yol (PHP'ler driver klasöründe)
-const API_BASE = (function(){
-    var p = document.location.pathname || '';
-    var pl = p.toLowerCase();
-    if (pl.indexOf('/tasitmedisa') === 0) return '/tasitmedisa/driver/';
-    if (pl.indexOf('/medisa') === 0) return '/medisa/driver/';
-    var base = '/';
-    var driverIdx = pl.indexOf('/driver'); 
-    if (driverIdx !== -1) {
-      base = p.substring(0, driverIdx) + '/';
-    } else if (p && p !== '/') {
-      base = p.endsWith('/') ? p : p + '/';
+/* Driver klasörü: pathname’ten çıkarılır (/medisa/driver, …/index.html, PWA) — eski string eşlemesi
+   bazen /driver/ köküne düşürüp 404 üretiyordu. */
+  function medisaDriverDirPathname() {
+    var p = (document.location && document.location.pathname) ? document.location.pathname : '/';
+    if (!p.endsWith('/')) {
+      var seg = p.split('/').pop() || '';
+      if (seg.indexOf('.') !== -1) {
+        p = p.replace(/\/[^/]+$/, '/');
+      } else {
+        p = p + '/';
+      }
     }
-    return (base === '/' ? '/driver/' : base + 'driver/');
-  })();
-  
-  // İkon/kaporta SVG base path (sürücü paneli farklı dizinde)
-  const ICON_BASE = (function(){
-    var p = document.location.pathname || '';
-    var pl = p.toLowerCase();
-    if (pl.indexOf('/tasitmedisa') === 0) return '/tasitmedisa/icon/';
-    if (pl.indexOf('/medisa') === 0) return '/medisa/icon/';
-    return '../icon/';
-  })();
-  
-  // Sayfa yönlendirmeleri: subpath altında değilse relative path (localhost/driver için)
-  const DRIVER_PAGE_BASE = (function(){
-    var p = document.location.pathname || '';
-    var pl = p.toLowerCase();
-    if (pl.indexOf('/tasitmedisa') === 0) return '/tasitmedisa/driver/';
-    if (pl.indexOf('/medisa') === 0) return '/medisa/driver/';
-    return '';
-  })();
-  const MAIN_APP_URL = (function() {
-    var p = document.location.pathname || '';
-    var pl = p.toLowerCase();
-    if (pl.indexOf('/tasitmedisa') === 0) return '/tasitmedisa/index.html';
-    if (pl.indexOf('/medisa') === 0) return '/medisa/index.html';
-    return '../index.html';
-  })();
-  const MAIN_SESSION_URL = (function() {
-    var p = document.location.pathname || '';
-    var pl = p.toLowerCase();
-    if (pl.indexOf('/tasitmedisa') === 0) return '/tasitmedisa/load.php';
-    if (pl.indexOf('/medisa') === 0) return '/medisa/load.php';
-    return '../load.php';
+    if (!p.endsWith('/')) p += '/';
+    return p;
+  }
+
+  const DRIVER_DIR_PATH = medisaDriverDirPathname();
+  const DRIVER_ORIGIN = (typeof location !== 'undefined' && location.origin) ? location.origin : '';
+
+  function driverPhpUrl(filename) {
+    var name = String(filename || '').replace(/^\//, '');
+    return DRIVER_ORIGIN + DRIVER_DIR_PATH + name;
+  }
+
+  function driverResolveSibling(rel) {
+    try {
+      return new URL(rel, DRIVER_ORIGIN + DRIVER_DIR_PATH).href;
+    } catch (e) {
+      return DRIVER_ORIGIN + DRIVER_DIR_PATH + String(rel || '').replace(/^\.\.\//, '');
+    }
+  }
+
+  const API_BASE = DRIVER_DIR_PATH;
+  const DRIVER_PAGE_BASE = DRIVER_DIR_PATH;
+  const MAIN_APP_URL = driverResolveSibling('../index.html');
+  const MAIN_SESSION_URL = driverResolveSibling('../load.php');
+  const ICON_BASE = (function() {
+    var u = driverResolveSibling('../icon/');
+    return u.charAt(u.length - 1) === '/' ? u : u + '/';
   })();
   
   // Uygulama sürümü (footer #version-display - kullanıcı girişi ve paneli 78.1)
@@ -548,7 +541,7 @@ const API_BASE = (function(){
           btnText.style.display = 'none';
           btnLoader.style.display = 'inline';
           
-          const loginUrl = window.location.origin + API_BASE + 'driver_login.php';
+          const loginUrl = driverPhpUrl('driver_login.php');
           
           try {
               const response = await fetch(loginUrl, {
@@ -678,7 +671,7 @@ const API_BASE = (function(){
       currentToken = token;
       
       try {
-          const response = await fetch(API_BASE + 'driver_data.php?_=' + Date.now(), {
+          const response = await fetch(driverPhpUrl('driver_data.php') + '?_=' + Date.now(), {
               headers: { 'Authorization': 'Bearer ' + token },
               cache: 'no-store'
           });
@@ -1370,7 +1363,7 @@ const API_BASE = (function(){
           payload.boya_parcalar = JSON.stringify(boyaParcalar);
       }
       try {
-          var response = await fetch(API_BASE + 'driver_save.php', {
+          var response = await fetch(driverPhpUrl('driver_save.php'), {
               method: 'POST',
               headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + currentToken },
               body: JSON.stringify(payload)
@@ -1445,7 +1438,7 @@ const API_BASE = (function(){
       if (btnBildir) btnBildir.disabled = true;
       if (btnVazgec) btnVazgec.disabled = true;
       try {
-          const response = await fetch(API_BASE + 'driver_save.php', {
+          const response = await fetch(driverPhpUrl('driver_save.php'), {
               method: 'POST',
               headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + currentToken },
               body: JSON.stringify({
@@ -1905,7 +1898,7 @@ const API_BASE = (function(){
           const tarih = document.getElementById('driver-muayene-tarih-' + vid)?.value.trim() || '';
           if (!tarih) { alert('Tarih zorunludur!'); isMuayeneConfirmed = false; return; }
           try {
-              const res = await fetch(API_BASE + 'driver_event.php', {
+              const res = await fetch(driverPhpUrl('driver_event.php'), {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + currentToken },
                   body: JSON.stringify({ arac_id: parseInt(vid, 10), vehicle_version: getVehicleVersionForRequest(vid), event_type: 'muayene', data: { tarih: tarih } })
@@ -1999,7 +1992,7 @@ const API_BASE = (function(){
           };
       } else return;
       try {
-          const res = await fetch(API_BASE + 'driver_event.php', {
+          const res = await fetch(driverPhpUrl('driver_event.php'), {
               method: 'POST',
               headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + currentToken },
               body: JSON.stringify({ arac_id: parseInt(vehicleId, 10), vehicle_version: getVehicleVersionForRequest(vehicleId), event_type: type, data: data })
@@ -2079,7 +2072,7 @@ const API_BASE = (function(){
           };
       }
       try {
-          const res = await fetch(API_BASE + 'driver_event.php', {
+          const res = await fetch(driverPhpUrl('driver_event.php'), {
               method: 'POST',
               headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + currentToken },
               body: JSON.stringify({ arac_id: vehicleId, vehicle_version: getVehicleVersionForRequest(vehicleId), event_type: type, data: data })
@@ -2294,7 +2287,7 @@ const API_BASE = (function(){
       btn.textContent = 'Kaydediliyor...';
       
       try {
-          const response = await fetch(API_BASE + 'driver_save.php', {
+          const response = await fetch(driverPhpUrl('driver_save.php'), {
               method: 'POST',
               headers: {
                   'Content-Type': 'application/json',
@@ -2788,7 +2781,7 @@ const API_BASE = (function(){
           payload.yeni_kaza_aciklama = capitalizeWords(newKaza);
       }
       try {
-          const response = await fetch(API_BASE + 'driver_request.php', {
+          const response = await fetch(driverPhpUrl('driver_request.php'), {
               method: 'POST',
               headers: {
                   'Content-Type': 'application/json',
