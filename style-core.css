@@ -588,6 +588,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
 .content-wrap {
     flex: 1;
     min-width: 0; /* Flex çocukta taşmayı önler */
+    min-height: 0; /* iOS Safari: flex sütununda içerik yüksekliği ve scroll */
     overflow-y: auto;
     overflow-x: hidden;
     padding: 4px;

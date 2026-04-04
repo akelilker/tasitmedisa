@@ -165,6 +165,11 @@ width: 100%;
 min-width: 0;
 overflow: hidden; /* Sol ok, Raporlar, Detay Ekleme yatayda taşmasın */
 }
+/* Büyüteçle açılan arama kutusu row’un altına absolute taşar; hidden kesmesin */
+#reports-modal .reports-list-header-actions .stok-detail-add-wrap:has(#stok-search-container.open),
+#reports-modal .stok-detail-add-wrap.desktop-single-row:has(#stok-search-container.open) {
+overflow: visible !important;
+}
 #reports-modal .stok-detail-add-wrap .stok-detail-menu {
 position: absolute;
 top: 100%;
@@ -1291,6 +1296,10 @@ overflow: hidden !important;
 border-bottom: 1px solid var(--border-medium) !important;
 border-bottom-left-radius: var(--modal-radius, 10px) !important;
 border-bottom-right-radius: var(--modal-radius, 10px) !important;
+}
+/* Stok araması header bandının altına genişler; modal-container overflow kesmesin */
+#reports-modal:has(#stok-search-container.open) .modal-container {
+overflow: visible !important;
 }
 }
 
