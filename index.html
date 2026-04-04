@@ -165,9 +165,9 @@
     </style>
 
     <!-- CSS Preload + Async Load -->
-    <link rel="preload" href="style-core.css?v=20260404.3" as="style">
-    <link rel="stylesheet" href="style-core.css?v=20260404.3">
-    <noscript><link rel="stylesheet" href="style-core.css?v=20260404.3"></noscript>
+    <link rel="preload" href="style-core.css?v=20260406.3" as="style">
+    <link rel="stylesheet" href="style-core.css?v=20260406.3">
+    <noscript><link rel="stylesheet" href="style-core.css?v=20260406.3"></noscript>
 </head>
 <body>
 
@@ -234,6 +234,11 @@
                         <button type="button" id="settings-logout-btn" class="settings-logout-btn" onclick="if(typeof medisaMainAppLogout==='function')medisaMainAppLogout();" style="display:none;">Çıkış</button>
                     </div>
                 </div>
+            </div>
+
+            <div id="medisa-portal-auth-banner" class="medisa-portal-auth-banner" hidden>
+                <span class="medisa-portal-auth-text">Sunucu verileri için portala giriş gerekir.</span>
+                <a id="medisa-portal-auth-link" class="medisa-portal-auth-link" href="#">Portala git</a>
             </div>
 
             <div id="main-menu" class="menu-container">
@@ -1015,7 +1020,7 @@
     })();
     </script>
 
-    <script defer src="data-manager.js?v=20260406.1"></script>
+    <script defer src="data-manager.js?v=20260406.3"></script>
     <script defer src="data-service.js?v=20260316"></script>
 <script defer src="script-core.js?v=20260405.8"></script>
 </body>

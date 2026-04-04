@@ -3,6 +3,16 @@
 <html lang="tr" dir="ltr">
 <head>
     <meta charset="UTF-8">
+    <script>
+    (function() {
+      try {
+        if (location.protocol === 'file:') return;
+        if (location.hostname === 'karmotors.com.tr') {
+          location.replace('https://www.karmotors.com.tr' + location.pathname + location.search + location.hash);
+        }
+      } catch (e) {}
+    })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Kullanıcı Girişi - Medisa</title>
     <!-- Paylaşım önizlemesi (WhatsApp, vb.): logo ve başlık -->

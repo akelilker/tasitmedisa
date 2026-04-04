@@ -397,6 +397,20 @@ function applyMainAppSessionUiState() {
 
     syncMainAppPortalLinks();
 
+    var authBanner = document.getElementById('medisa-portal-auth-banner');
+    var authLink = document.getElementById('medisa-portal-auth-link');
+    if (authBanner && authLink) {
+        if (getStoredPortalToken()) {
+            authBanner.setAttribute('hidden', '');
+        } else {
+            authBanner.removeAttribute('hidden');
+            var portalHref = (typeof window.MEDISA_PORTAL_LOGIN_URL === 'string' && window.MEDISA_PORTAL_LOGIN_URL)
+                ? window.MEDISA_PORTAL_LOGIN_URL
+                : (DRIVER_INDEX_URL || 'driver/');
+            authLink.setAttribute('href', portalHref);
+        }
+    }
+
     var session = window.medisaSession || getDefaultSession();
     syncMainAppHeaderUserName(session);
     var logoutBtn = document.getElementById('settings-logout-btn');
@@ -992,4 +1006,9 @@ document.addEventListener('DOMContentLoaded', async function() {
         console.warn('[Medisa] İlk veri yüklemesi tamamlanamadı:', loadErr && loadErr.message);
     }
     window.dispatchEvent(new CustomEvent('dataLoaded', { detail: window.appData }));
+});
+
+window.addEventListener('pageshow', function() {
+    if (getCurrentPathname().indexOf('/driver/') !== -1) return;
+    applyMainAppSessionUiState();
 });
