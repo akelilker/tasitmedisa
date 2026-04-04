@@ -510,7 +510,7 @@
 
   // Grid genişlikleri sütun kimliğine göre (sürükle-bırak sonrası genişlik doğru sütunla kalsın)
   function getVehicleColumnWidths(columnOrder) {
-    const defaultCols = '40px 84px minmax(0, 2.48fr) 60px minmax(0, 1.02fr) 68px minmax(0, 1.48fr) minmax(0, 1.22fr)';
+    const defaultCols = '44px 96px minmax(0, 2.15fr) 60px 80px 64px minmax(0, 1.5fr) minmax(0, 1.25fr)';
     try {
       if (!columnOrder || !Array.isArray(columnOrder) || columnOrder.length === 0) return defaultCols;
       const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
@@ -525,14 +525,14 @@
             'branch': '2.25fr'   /* mobil+iOS PWA: şubeden bir kademe alan alındı */
           }
         : {
-            'year': '40px',
-            'plate': '84px',
-            'brand': 'minmax(0, 2.48fr)',
+            'year': '44px',
+            'plate': '96px',
+            'brand': 'minmax(0, 2.15fr)',
             'km': '60px',
-            'type': 'minmax(0, 1.02fr)',
-            'transmission': '68px',
-            'user': 'minmax(0, 1.48fr)',
-            'branch': 'minmax(0, 1.22fr)'
+            'type': '80px',
+            'transmission': '64px',
+            'user': 'minmax(0, 1.5fr)',
+            'branch': 'minmax(0, 1.25fr)'
           };
       return columnOrder.map(key => widthMap[key] || '1fr').join(' ');
     } catch (e) {
@@ -557,6 +557,7 @@
   function buildVehicleHeaderLabelStackHtml(rawLabel) {
     var firstLine = '';
     var secondLine = '';
+    var stackClass = 'header-label-stack';
 
     if (Array.isArray(rawLabel)) {
       firstLine = String(rawLabel[0] == null ? '' : rawLabel[0]).trim();
@@ -568,7 +569,8 @@
       }
       var parts = t.split(/\s+/).filter(Boolean);
       if (parts.length <= 1) {
-        secondLine = t;
+        firstLine = t;
+        stackClass += ' header-label-single';
       } else {
         firstLine = parts[0];
         secondLine = parts.slice(1).join(' ');
@@ -578,7 +580,7 @@
     if (!firstLine && !secondLine) {
       return '<span class="header-label-stack"><span class="header-r1"></span><span class="header-r2">-</span></span>';
     }
-    return '<span class="header-label-stack"><span class="header-r1">' + escapeHtml(firstLine) + '</span><span class="header-r2">' + escapeHtml(secondLine) + '</span></span>';
+    return '<span class="' + stackClass + '"><span class="header-r1">' + escapeHtml(firstLine) + '</span><span class="header-r2">' + escapeHtml(secondLine) + '</span></span>';
   }
 
   /**
