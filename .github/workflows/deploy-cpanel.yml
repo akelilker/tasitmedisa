@@ -4,6 +4,7 @@
 #   FTP_SERVER, FTP_USERNAME, FTP_PASSWORD  — çoğu cPanel hesabında zaten tanımlı
 #   FTP_REMOTE_DIR  — sunucudaki hedef klasör, FTP köküne göre, sonda / olmalı
 #                     örn. public_html/medisa/  (.cpanel.yml DEPLOYPATH ile uyumlu olsun)
+#                     Aynı isimle "Repository variables" altında da verilebilir (secret boşsa orası kullanılır).
 #
 # İsteğe bağlı: FTPS / özel port kullanıyorsanız aşağıdaki satırlardaki protocol ve port'u düzenleyin.
 # Canlı data.json: exclude ile gönderilmiyor; sunucudaki dosya korunur.
@@ -42,13 +43,18 @@ jobs:
           FTP_SERVER: ${{ secrets.FTP_SERVER }}
           FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
           FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
-          FTP_REMOTE_DIR: ${{ secrets.FTP_REMOTE_DIR }}
+          # Secret veya Repository variable; ikisi de boşsa aşağıda hata verilir.
+          FTP_REMOTE_DIR: ${{ secrets.FTP_REMOTE_DIR || vars.FTP_REMOTE_DIR }}
         run: |
           ok=1
           for n in FTP_SERVER FTP_USERNAME FTP_PASSWORD FTP_REMOTE_DIR; do
             v="${!n}"
             if [ -z "${v:-}" ]; then
-              echo "::error::$n tanımlı değil veya boş. Settings → Secrets and variables → Actions."
+              if [ "$n" = "FTP_REMOTE_DIR" ]; then
+                echo "::error::$n boş. Actions → Secrets veya Variables'ta FTP_REMOTE_DIR ekleyin (sonda / zorunlu)."
+              else
+                echo "::error::$n tanımlı değil veya boş. Settings → Secrets and variables → Actions → Secrets."
+              fi
               ok=0
             fi
           done
@@ -71,7 +77,7 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          server-dir: ${{ secrets.FTP_REMOTE_DIR }}
+          server-dir: ${{ secrets.FTP_REMOTE_DIR || vars.FTP_REMOTE_DIR }}
           local-dir: ./
           log-level: verbose
           protocol: ftp
