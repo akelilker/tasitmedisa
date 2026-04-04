@@ -2158,14 +2158,43 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #r
         display: block !important;
         object-fit: contain !important;
     }
-    
+
+    .hero-logo picture {
+        width: auto !important;
+        flex: 0 0 auto !important;
+    }
+
     .hero-logo {
         display: flex !important;
+        flex-direction: row !important;
         align-items: center !important;
-        margin-right: 12px !important;
-        width: calc(var(--hero-logo-width) - 3px) !important;
-        flex: 0 0 calc(var(--hero-logo-width) - 3px) !important;
-        transform: translate(-1px, 3px);  /* 1px sola, 3px aşağı (mobil header logo planı) */
+        justify-content: flex-start !important;
+        gap: 7px !important;
+        min-width: 0 !important;
+        margin-right: 10px !important;
+        width: 104px !important;
+        flex: 0 1 104px !important;
+        transform: translate(-1px, 2px);  /* Mobilde logo + kullanıcı adı tek yatay akışta */
+    }
+
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-user-name {
+        display: block !important;
+        flex: 1 1 auto !important;
+        min-width: 0 !important;
+        max-width: none !important;
+        overflow: hidden !important;
+        color: rgba(233, 240, 245, 0.96) !important;
+        font-size: clamp(11px, 2.9vw, 12.5px) !important;
+        font-weight: 700 !important;
+        line-height: 1.05 !important;
+        text-align: left !important;
+        letter-spacing: 0.02em !important;
+        white-space: nowrap !important;
+        word-break: normal !important;
+        text-overflow: ellipsis !important;
+        -webkit-line-clamp: unset !important;
+        -webkit-box-orient: initial !important;
+        transform: translateY(0) !important;
     }
     
     /* Hero mobilde havada + kırmızı (anasayfa ile eşit), dikey yükseklik +5px */
@@ -2812,14 +2841,31 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
     padding-bottom: 4px !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-logo {
-    flex: 0 0 36px !important;
-    width: 36px !important;
+    flex: 0 1 104px !important;
+    width: 104px !important;
     margin-right: 8px !important;
-    transform: translate(-1px, 5px) !important;
+    gap: 7px !important;
+    transform: translate(-1px, 4px) !important;
+  }
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-logo picture {
+    width: auto !important;
+    flex: 0 0 auto !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-logo img {
     height: 35px !important;
     width: auto !important;
+  }
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-user-name {
+    display: block !important;
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    font-size: 11.5px !important;
+    line-height: 1.05 !important;
+    text-align: left !important;
+    white-space: nowrap !important;
+    text-overflow: ellipsis !important;
+    -webkit-line-clamp: unset !important;
+    transform: translateY(0) !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero h1 {
     letter-spacing: 1.8px !important;
