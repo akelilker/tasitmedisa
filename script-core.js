@@ -481,9 +481,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Modal kontrolü için ilk kontrol
   window.updateFooterDim();
-  if (typeof window.medisaRecoverPrematureVehicleModal === 'function') {
-    window.medisaRecoverPrematureVehicleModal();
-  }
 
   // Modal Observer: Body class yönetimi (Scroll engelleme vb.)
   const modalObserver = new MutationObserver((mutations) => {
@@ -507,7 +504,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Taşıtlar modülü (JS + CSS) — tek sürüm; loadAppModule anahtarı ve bildirim ön-yüklemesi aynı yolu kullanır.
-var TASITLAR_MODULE_VERSION = '20260406.6';
+var TASITLAR_MODULE_VERSION = '20260403.5';
 
 // Modal açma fonksiyonları: Lazy load – modül yüklenir, sonra ilgili açma fonksiyonu tetiklenir.
 // tasitlar.js / raporlar.js / kayit.js / ayarlar.js yüklendiğinde kendi open* implementasyonlarını yazar.
@@ -517,54 +514,12 @@ var TASITLAR_MODULE_VERSION = '20260406.6';
     'tasitlar-base.css?v=' + TASITLAR_MODULE_VERSION,
     'tasitlar-extra.css?v=' + TASITLAR_MODULE_VERSION
   ];
-  var RAPORLAR_JS = 'raporlar.js?v=20260406.10';
-  var RAPORLAR_CSS = 'raporlar.css?v=20260406.10';
-var KAYIT_JS = 'kayit.js?v=20260406.7';
+  var RAPORLAR_JS = 'raporlar.js?v=20260325.5';
+  var RAPORLAR_CSS = 'raporlar.css?v=20260325.6';
+  var KAYIT_JS = 'kayit.js?v=20260325.2';
   var KAYIT_CSS = 'kayit.css?v=20260325.1';
-  var AYARLAR_JS = 'ayarlar.js?v=20260404.3';
-  var AYARLAR_CSS = 'ayarlar.css?v=20260404.1';
-
-  function medisaRecoverPrematureVehicleModal() {
-    try {
-      var modal = document.getElementById('vehicles-modal');
-      var content = document.getElementById('vehicles-modal-content');
-      if (!modal || !content) return;
-      var isOpen = modal.classList.contains('active') || modal.style.display === 'flex';
-      if (!isOpen) return;
-      if ((content.innerHTML || '').trim() !== '') return;
-      modal.classList.remove('active');
-      modal.style.display = 'none';
-      document.body.classList.remove('modal-open');
-      refreshModalOverlays();
-      if (typeof window.updateFooterDim === 'function') window.updateFooterDim();
-    } catch (eRecover) {}
-  }
-
-  function medisaFlushPendingModuleOpens() {
-    var pv = !!window.__medisaPendingOpenVehicles;
-    var pr = !!window.__medisaPendingOpenReports;
-    var pk = !!window.__medisaPendingOpenVehicle;
-    window.__medisaPendingOpenVehicles = false;
-    window.__medisaPendingOpenReports = false;
-    window.__medisaPendingOpenVehicle = false;
-    if (pv) {
-      setTimeout(function() {
-        if (typeof window.openVehiclesView === 'function') window.openVehiclesView();
-      }, 0);
-    }
-    if (pr) {
-      setTimeout(function() {
-        if (typeof window.openReportsView === 'function') window.openReportsView();
-      }, 0);
-    }
-    if (pk) {
-      setTimeout(function() {
-        if (typeof window.openVehicleModal === 'function') window.openVehicleModal();
-      }, 0);
-    }
-  }
-
-  window.medisaRecoverPrematureVehicleModal = medisaRecoverPrematureVehicleModal;
+  var AYARLAR_JS = 'ayarlar.js?v=20260328.2';
+  var AYARLAR_CSS = 'ayarlar.css?v=20260328.2';
 
   window.openVehiclesView = function() {
     showModuleSpinner();
@@ -574,16 +529,6 @@ var KAYIT_JS = 'kayit.js?v=20260406.7';
     }).catch(function(err) {
       hideModuleSpinner();
       console.error('[Medisa] Taşıtlar modülü yüklenemedi:', err);
-      medisaRecoverPrematureVehicleModal();
-      try {
-        var toast = document.createElement('div');
-        toast.className = 'update-toast';
-        toast.innerHTML = '<span class="update-toast-text">Taşıt ekranı yüklenemedi. Bağlantıyı kontrol edin veya sayfayı yenileyin.</span><button type="button" class="update-toast-btn">Yenile</button>';
-        document.body.appendChild(toast);
-        requestAnimationFrame(function() { toast.classList.add('visible'); });
-        var btn = toast.querySelector('.update-toast-btn');
-        if (btn) btn.addEventListener('click', function() { window.location.reload(); });
-      } catch (eToast) {}
     });
   };
 
@@ -655,9 +600,6 @@ var KAYIT_JS = 'kayit.js?v=20260406.7';
       }, 300);
     }
   };
-
-  medisaRecoverPrematureVehicleModal();
-  medisaFlushPendingModuleOpens();
 })();
 
 /* =========================================
@@ -703,8 +645,30 @@ window.addEventListener('dataLoaded', () => {
     if (typeof window.hideLoading === 'function') {
         setTimeout(window.hideLoading, 50);
     }
+
+    // Bildirimler tasitlar.js içinde; taşıtlar ekranı açılmadan önce veri gelirse modül burada yüklenir.
+    const runNotifications = () => {
+        if (typeof window.updateNotifications === 'function') {
+            window.updateNotifications();
+        }
+    };
+
     if (typeof window.updateNotifications === 'function') {
-        window.updateNotifications();
+        runNotifications();
+        return;
+    }
+
+    if (typeof window.loadAppModule === 'function') {
+      var tasitlarJsForNotif = 'tasitlar.js?v=' + TASITLAR_MODULE_VERSION;
+      var tasitlarCssForNotif = [
+        'tasitlar-base.css?v=' + TASITLAR_MODULE_VERSION,
+        'tasitlar-extra.css?v=' + TASITLAR_MODULE_VERSION
+      ];
+      window.loadAppModule(tasitlarJsForNotif, tasitlarCssForNotif)
+            .then(runNotifications)
+            .catch(function(err) {
+                console.error('[Medisa] Bildirim modülü yüklenemedi:', err);
+            });
     }
 });
 
@@ -726,9 +690,7 @@ window.addEventListener('dataLoaded', () => {
   }
 
   var p = (typeof document !== 'undefined' && document.location) ? document.location.pathname : '';
-  var base = '';
-  if (p.indexOf('/tasitmedisa') === 0) base = '/tasitmedisa';
-  else if (p.indexOf('/medisa') === 0) base = '/medisa';
+  var base = (p.indexOf('/tasitmedisa') === 0) ? '/tasitmedisa' : (p.indexOf('/medisa') === 0) ? '/medisa' : '';
   var scope = base ? base + '/' : '/';
   var paths = base ? [base + '/sw.js', './sw.js'] : ['./sw.js', '/sw.js', '/tasitmedisa/sw.js', '/medisa/sw.js'];
   window.registerServiceWorker({

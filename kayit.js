@@ -16,10 +16,6 @@
   function $(sel, root = document) { return root.querySelector(sel); }
   function $all(sel, root = document) { return Array.from(root.querySelectorAll(sel)); }
   function getModal() { return document.getElementById("vehicle-modal"); }
-  function getVehicleDateInputs(modal) {
-    if (!modal) return [];
-    return $all('input[type="date"].form-input', modal);
-  }
 
   function readBranches() { return (typeof window.getMedisaBranches === 'function' ? window.getMedisaBranches() : null) || []; }
   function readVehicles() { return (typeof window.getMedisaVehicles === 'function' ? window.getMedisaVehicles() : null) || []; }
@@ -797,7 +793,7 @@
     });
 
     // Sigorta ve Kasko bitiş tarihlerini bugün + 1 yıl olarak ayarla
-    const dateInputs = getVehicleDateInputs(modal);
+    const dateInputs = $all('input[type="date"].form-input', modal);
     if (dateInputs.length >= 2) {
       const today = new Date();
       const nextYear = new Date(today);
@@ -888,7 +884,7 @@
 
   function syncDateInputVisibility(modal) {
     if (!modal) return;
-    getVehicleDateInputs(modal).forEach(syncSingleDateInputVisibility);
+    $all('input[type="date"].form-input', modal).forEach(syncSingleDateInputVisibility);
   }
 
   /**
@@ -897,7 +893,7 @@
    */
   function forceDateInputRepaint(modal) {
     if (!modal) return;
-    getVehicleDateInputs(modal).forEach(function(input) {
+    $all('input[type="date"].form-input', modal).forEach(function(input) {
       var val = input.value;
       if (val) {
         input.value = '';
@@ -1219,15 +1215,14 @@
     }
 
     // Tarihler
-    const dateInputs = getVehicleDateInputs(modal);
-    if (vehicle.sigortaDate && dateInputs[0]) {
-      dateInputs[0].value = vehicle.sigortaDate;
+    if (vehicle.sigortaDate) {
+      $all('input[type="date"].form-input', modal)[0].value = vehicle.sigortaDate;
     }
-    if (vehicle.kaskoDate && dateInputs[1]) {
-      dateInputs[1].value = vehicle.kaskoDate;
+    if (vehicle.kaskoDate) {
+      $all('input[type="date"].form-input', modal)[1].value = vehicle.kaskoDate;
     }
-    if (vehicle.muayeneDate && dateInputs[2]) {
-      dateInputs[2].value = vehicle.muayeneDate;
+    if (vehicle.muayeneDate) {
+      $all('input[type="date"].form-input', modal)[2].value = vehicle.muayeneDate;
     }
     syncDateInputVisibility(modal);
 
@@ -1297,7 +1292,7 @@
     modal.style.display = 'flex';
     requestAnimationFrame(() => {
       modal.classList.add('active');
-      getVehicleDateInputs(modal).forEach(input => {
+      $all('input[type="date"].form-input', modal).forEach(input => {
         setupDatePlaceholder(input);
       });
       syncDateInputVisibility(modal);
@@ -1868,13 +1863,10 @@
 
   // --- Initialization ---
   function initVehicleModalListeners() {
-    const modal = getModal();
-    if (!modal) return;
-
     // Tarih placeholder'ları modal açıldığında kurulacak (openVehicleModal'da)
 
     // Radio Button Logic
-    $all(".radio-btn", modal).forEach(btn => {
+    $all(".radio-btn", getModal()).forEach(btn => {
       btn.addEventListener("click", () => {
         const group = btn.closest(".radio-group");
         $all(".radio-btn", group).forEach(b => b.classList.remove("active", "green"));
@@ -1963,9 +1955,9 @@
     });
     
     // Vehicle Type Selection
-    $all(".vehicle-type-btn", modal).forEach(btn => {
+    $all(".vehicle-type-btn", getModal()).forEach(btn => {
         btn.addEventListener("click", () => {
-             $all(".vehicle-type-btn", modal).forEach(b => b.classList.remove("active"));
+             $all(".vehicle-type-btn", getModal()).forEach(b => b.classList.remove("active"));
              btn.classList.add("active");
         });
     });
@@ -2144,6 +2136,9 @@
 
     // Enter ile input'lar arasında dolaşma (kayıt formu)
     (function setupEnterKeyNavigation() {
+      const modal = getModal();
+      if (!modal) return;
+
       function isVisible(el) {
         if (!el || !el.offsetParent) return false;
         const s = window.getComputedStyle(el);
