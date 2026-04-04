@@ -1191,8 +1191,10 @@ margin-top: 0 !important; /* Sütun başlıkları üzerindeki boşluk 6px azalt�
 #stok-list-container .stok-controls-row-2 .stok-export-left { align-items: flex-end !important; margin-top: 6px !important; }
 #stok-list-container .stok-controls-row-2 .stok-export-btn,
 #stok-list-container .stok-controls-row-2 .stok-print-btn,
-#stok-list-container .stok-controls-row-2 .stok-search-wrap { min-height: 38px !important; box-sizing: border-box !important; }
-#stok-list-container .stok-controls-row-2 .stok-search-wrap { position: relative; display: flex; align-items: flex-end; overflow: visible; }
+#stok-list-container .stok-controls-row-2 .stok-search-wrap,
+#reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-2 .stok-search-wrap { min-height: 38px !important; box-sizing: border-box !important; }
+#stok-list-container .stok-controls-row-2 .stok-search-wrap,
+#reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-2 .stok-search-wrap { position: relative; display: flex; align-items: flex-end; overflow: visible; }
 /* Tek büyüteç (desktop/mobile ortak) */
 #stok-list-container .stok-controls-row-2 .stok-search-wrap .stok-search-btn {
 font-size: 18px !important;
@@ -1212,6 +1214,11 @@ position: absolute !important;
 left: 0;
 top: calc(100% + 6px);
 bottom: auto;
+height: auto;
+min-height: 0;
+justify-content: flex-start;
+overflow: hidden;
+z-index: 100;
 }
 /* Arama inputu: absolute overlay, layout HİÇ OYNAMAZ – butonun ÜSTÜNDE açılır (14px boşluk) */
 #stok-list-container .stok-controls-row-2 .stok-search-container.open,
@@ -1679,14 +1686,21 @@ color: #666;
 }
 
 @media (min-width: 641px) {
+#reports-modal .reports-list-header-actions {
+position: relative !important;
+overflow: visible !important;
+z-index: 30 !important;
+}
 #reports-modal .reports-list-header-actions .stok-detail-add-wrap {
 overflow: visible !important;
+z-index: 30 !important;
 }
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-2,
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-export-controls,
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-export-left,
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-search-wrap {
 overflow: visible !important;
+position: relative !important;
 }
 #reports-modal #stok-list-container .stok-controls-row-2 .stok-search-wrap .stok-search-container,
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-2 .stok-search-wrap .stok-search-container {
@@ -1706,6 +1720,7 @@ z-index: 220 !important;
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-2 .stok-search-container.open {
 width: 250px !important;
 min-width: 250px !important;
+z-index: 220 !important;
 }
 #reports-modal #stok-list-container .stok-controls-row-2 .stok-search-input,
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-2 .stok-search-input {
@@ -2332,12 +2347,13 @@ align-items: center;
 /* Input açıldığında HİÇBİR YER OYNAMASIN: absolute overlay, wrap/row boyutu değişmez */
 #stok-list-container .stok-controls-row-2 .stok-search-container.open {
 position: absolute !important;
-bottom: 100% !important;
-top: auto !important;
+top: calc(100% + 6px) !important;
+bottom: auto !important;
 left: 0 !important;
-width: 200px !important;
+width: 250px !important;
 margin-bottom: 0 !important;
 margin-top: 0 !important;
+z-index: 100 !important;
 }
 #stok-list-container .stok-controls-row-2 .stok-search-container.open .stok-search-input {
 margin-top: 0 !important;
@@ -2345,8 +2361,10 @@ margin-top: 0 !important;
 /* Büyüteç aynı satırda: wrap ve buton dikey ortalansın */
 #stok-list-container .stok-controls-row-2 .stok-search-wrap {
 display: flex !important;
-align-items: center !important;
+align-items: flex-end !important;
 justify-content: flex-start !important;
+position: relative !important;
+overflow: visible !important;
 }
 #stok-list-container .stok-controls-row-2 .stok-search-wrap .stok-search-btn {
 display: flex !important;
