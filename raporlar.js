@@ -26,7 +26,7 @@
     let stokActiveColumns = {
         sigorta: false,
         kasko: false,
-        kaskoDegeri: false,
+        kaskoDegeri: false, 
         muayene: false,
         kredi: false,
         lastik: false,
