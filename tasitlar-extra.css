@@ -2308,8 +2308,10 @@
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicles-modal.modal-overlay {
     bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0) - 3px) !important;
   }
-  /* Liste 8 sütun: grid min toplamı ~650px + gap; varsayılan 500px modal son sütunu kesiyordu */
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicles-modal .modal-container {
-    max-width: min(calc(100vw - 48px), 860px) !important;
+  /* 8 sütunlu liste: --modal-max-width (500px) grid minimumlarından dar; yazı küçültmeden alan açılır. Mobil ≤768 ayrı layout. */
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicles-modal.modal-overlay .modal-container,
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicles-modal.modal-overlay.active .modal-container,
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicles-modal.modal-overlay.open .modal-container {
+    max-width: min(calc(100vw - 48px), 880px) !important;
   }
 }
