@@ -287,7 +287,7 @@
                     <div class="stok-export-controls">
                         <div class="stok-export-left">
                             <div class="stok-search-wrap">
-                                <button class="stok-search-btn" onclick="toggleStokSearch()" title="Ara">
+                                <button class="stok-search-btn" onclick="toggleStokSearch(this, event)" title="Ara">
                                     🔍
                                 </button>
                                 <div id="stok-search-container" class="stok-search-container">
@@ -1693,8 +1693,40 @@
         document.removeEventListener('pointerdown', stokSearchOutsidePointerDown, true);
     }
 
+    function getStokSearchElements(triggerButton) {
+        const modal = document.getElementById('reports-modal');
+        if (!modal) return { wrap: null, container: null, input: null };
+
+        const directWrap = triggerButton && typeof triggerButton.closest === 'function'
+            ? triggerButton.closest('.stok-search-wrap')
+            : null;
+
+        const wrap = directWrap || Array.from(modal.querySelectorAll('.stok-search-wrap')).find(function(candidate) {
+            const candidateContainer = candidate.querySelector('.stok-search-container');
+            return candidateContainer && candidateContainer.classList.contains('open');
+        }) || modal.querySelector('.stok-search-wrap');
+
+        if (!wrap) return { wrap: null, container: null, input: null };
+
+        return {
+            wrap: wrap,
+            container: wrap.querySelector('.stok-search-container'),
+            input: wrap.querySelector('.stok-search-input')
+        };
+    }
+
+    function closeStokSearch(container, input, shouldClear) {
+        if (!container) return;
+        container.classList.remove('open');
+        if (shouldClear && input) {
+            input.value = '';
+            handleStokSearch('');
+        }
+    }
+
     function stokSearchOutsidePointerDown(e) {
-        const container = document.getElementById('stok-search-container');
+        const modal = document.getElementById('reports-modal');
+        const container = modal ? modal.querySelector('.stok-search-wrap .stok-search-container.open') : null;
         if (!container || !container.classList.contains('open')) {
             removeStokSearchOutsideListener();
             return;
@@ -1703,12 +1735,8 @@
         if (wrap && e.target && typeof e.target.closest === 'function' && wrap.contains(e.target)) {
             return;
         }
-        container.classList.remove('open');
-        const input = document.getElementById('stok-search-input');
-        if (input) {
-            input.value = '';
-            window.handleStokSearch('');
-        }
+        const input = wrap ? wrap.querySelector('.stok-search-input') : null;
+        closeStokSearch(container, input, true);
         removeStokSearchOutsideListener();
     }
 
@@ -1720,30 +1748,38 @@
     }
 
     // Arama kutusunu aç/kapat (tek büyüteç, mobil+masaüstü)
-    window.toggleStokSearch = function() {
-        const container = document.getElementById('stok-search-container');
-        const input = document.getElementById('stok-search-input');
-        
-        if (container) {
-            if (container.classList.contains('open')) {
-                removeStokSearchOutsideListener();
-                container.classList.remove('open');
-                if (input) {
-                    input.value = '';
-                    handleStokSearch('');
-                }
-            } else {
-                container.classList.add('open');
-                if (input) {
-                    const syncVal = window.stokSearchTerm || '';
-                    if (input.value !== syncVal) input.value = syncVal;
-                }
-                bindStokSearchOutsideClose();
-                setTimeout(() => {
-                    if (input) input.focus();
-                }, 100);
-            }
+    window.toggleStokSearch = function(triggerButton, event) {
+        if (event) {
+            if (typeof event.preventDefault === 'function') event.preventDefault();
+            if (typeof event.stopPropagation === 'function') event.stopPropagation();
         }
+
+        const { container, input } = getStokSearchElements(triggerButton);
+        if (!container) return;
+
+        const modal = document.getElementById('reports-modal');
+        if (modal) {
+            modal.querySelectorAll('.stok-search-wrap .stok-search-container.open').forEach(function(openContainer) {
+                if (openContainer === container) return;
+                closeStokSearch(openContainer, openContainer.querySelector('.stok-search-input'), false);
+            });
+        }
+
+        if (container.classList.contains('open')) {
+            removeStokSearchOutsideListener();
+            closeStokSearch(container, input, true);
+            return;
+        }
+
+        container.classList.add('open');
+        if (input) {
+            const syncVal = window.stokSearchTerm || '';
+            if (input.value !== syncVal) input.value = syncVal;
+        }
+        bindStokSearchOutsideClose();
+        setTimeout(function() {
+            if (input) input.focus();
+        }, 100);
     };
 
     var handleStokSearchImpl = function(searchTerm) {

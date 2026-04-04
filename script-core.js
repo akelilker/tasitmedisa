@@ -514,8 +514,8 @@ var TASITLAR_MODULE_VERSION = '20260403.5';
     'tasitlar-base.css?v=' + TASITLAR_MODULE_VERSION,
     'tasitlar-extra.css?v=' + TASITLAR_MODULE_VERSION
   ];
-  var RAPORLAR_JS = 'raporlar.js?v=20260325.5';
-  var RAPORLAR_CSS = 'raporlar.css?v=20260325.6';
+var RAPORLAR_JS = 'raporlar.js?v=20260406.11';
+var RAPORLAR_CSS = 'raporlar.css?v=20260406.11';
   var KAYIT_JS = 'kayit.js?v=20260325.2';
   var KAYIT_CSS = 'kayit.css?v=20260325.1';
   var AYARLAR_JS = 'ayarlar.js?v=20260328.2';
