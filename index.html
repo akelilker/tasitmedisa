@@ -1012,12 +1012,29 @@
           hideLoading(); // Script 404 ise loading'i kapat
         }
       }, true);
+
+      // 4. Android WebView'de kaynak satırı gizlenen, uygulama akışını bozmayan phantom null/value hatasını sustur.
+      window.onerror = function(message, source, lineno, colno, error) {
+        try {
+          var msg = String(message == null ? '' : message).trim().toLowerCase();
+          var src = String(source == null ? '' : source);
+          var stack = error && error.stack ? String(error.stack) : '';
+          var combined = (src + '\n' + stack).toLowerCase();
+          var isHiddenWebkitSource = combined.indexOf('webkit-masked-url://hidden/') !== -1;
+          var isNullValuePhantom = (msg === 'null' || msg.indexOf('cannot read') !== -1 || msg.indexOf('undefined') !== -1)
+            && combined.indexOf('value') !== -1;
+          if (isHiddenWebkitSource && isNullValuePhantom) {
+            return true;
+          }
+        } catch (suppressErr) {}
+        return false;
+      };
     })();
     </script>
 
-    <script defer src="data-manager.js?v=20260406.7"></script>
+    <script defer src="data-manager.js?v=20260406.8"></script>
     <script defer src="data-service.js?v=20260316"></script>
-<script defer src="script-core.js?v=20260406.8"></script>
+<script defer src="script-core.js?v=20260406.9"></script>
 </body>
 </html>
 
