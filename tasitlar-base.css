@@ -1453,12 +1453,12 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
   }
   /* Tüm sütun başlıkları aynı font boyutu (Kullanıcı küçülüyorsa hepsi aynı) */
   #vehicles-modal .list-header-row .list-cell span {
-    font-size: clamp(9.5px, 1.6vw, 12.5px) !important; /* 0.5pt küçültme */
+    font-size: clamp(10px, 1.32vw, 11.25px) !important;
     color: var(--form-label-color) !important;
   }
   #vehicles-modal .list-header-row .header-label-stack .header-r1,
   #vehicles-modal .list-header-row .header-label-stack .header-r2 {
-    font-size: clamp(9.5px, 1.6vw, 12.5px) !important;
+    font-size: clamp(10px, 1.32vw, 11.25px) !important;
     color: var(--form-label-color) !important;
   }
   /* Taşıt listesi: ilk satır dikey hizalama (masaüstü); arka plan alternating'e bırakıldı */
@@ -2137,10 +2137,16 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     flex: 1 1 auto !important;
     min-width: 0 !important;
     max-width: 100% !important;
-    padding-right: 11px !important;
+    padding-right: 12px !important;
     box-sizing: border-box !important;
-    min-height: 2.3em !important;
+    min-height: 2.4em !important;
     text-align: center !important;
+}
+#vehicles-modal .list-header-row .header-label-stack.header-label-single {
+    justify-content: center !important;
+}
+#vehicles-modal .list-header-row .header-label-stack.header-label-single .header-r2 {
+    display: none !important;
 }
 #vehicles-modal .list-header-row .header-label-stack .header-r1,
 #vehicles-modal .list-header-row .header-label-stack .header-r2 {
@@ -2151,8 +2157,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     white-space: nowrap !important;
     word-break: keep-all !important;
     overflow-wrap: normal !important;
+    hyphens: none !important;
     overflow: hidden !important;
-    text-overflow: ellipsis !important;
+    text-overflow: clip !important;
 }
 #vehicles-modal .list-header-row .header-label-stack .header-r1:empty {
     min-height: 1.12em !important;
@@ -2271,19 +2278,22 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 .view-list .list-cell.list-user {
     font-size: clamp(10px, 1.5vw, 12px) !important;
     white-space: normal !important;
-    word-break: normal !important;
-    overflow-wrap: break-word !important;
+    word-break: keep-all !important;
+    overflow-wrap: normal !important;
+    hyphens: none !important;
     overflow: visible !important;
+    line-height: 1.25 !important;
 }
 /* Kullanıcı sütun başlışı: dar kolonda küçülsün ve gerekirse satır kırılsın */
 .list-header-row .list-cell.list-user {
     white-space: normal !important;
-    word-break: normal;
-    overflow-wrap: break-word;
+    word-break: keep-all !important;
+    overflow-wrap: normal !important;
+    hyphens: none !important;
 }
 /* Kullanıcı başlışı da dişerleriyle aynı punto */
 .list-header-row .list-cell.list-user span {
-    font-size: clamp(10px, 1.6vw, 12px) !important;
+    font-size: clamp(10px, 1.32vw, 11.25px) !important;
 }
 
 
@@ -2291,7 +2301,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 @media (min-width: 641px) {
   /* Masaüstü liste başlıkları: sışmadışında en fazla 0.5pt küçülebilsin */
   .list-header-row .list-cell span {
-    font-size: clamp(10.33px, 1.48vw, 11px) !important;
+    font-size: clamp(10px, 1.32vw, 11.25px) !important;
   }
   /* Taşıt Tipi: iki satıra inebilsin; Şanzıman kısa etiket tek satır kalabilir */
   .list-header-row .list-cell.list-type {
@@ -2315,48 +2325,52 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
   }
 
   .list-header-row .list-cell.list-user {
-    padding-left: 3px !important;
-    padding-right: 3px !important;
+    padding-left: 2px !important;
+    padding-right: 2px !important;
     overflow: hidden !important;
     text-overflow: clip !important;
     white-space: normal !important;
-    word-break: normal !important;
-    overflow-wrap: break-word !important;
+    word-break: keep-all !important;
+    overflow-wrap: normal !important;
+    hyphens: none !important;
   }
 
   .list-header-row .list-cell.list-type span {
     overflow: hidden !important;
     text-overflow: clip !important;
-    white-space: normal !important;
-    word-break: normal !important;
-    overflow-wrap: break-word !important;
-    font-size: clamp(8.4px, 1.25vw, 9.8px) !important;
+    white-space: nowrap !important;
+    word-break: keep-all !important;
+    overflow-wrap: normal !important;
+    hyphens: none !important;
+    font-size: clamp(10px, 1.32vw, 11.25px) !important;
     letter-spacing: 0 !important;
   }
 
   .list-header-row .list-cell.list-transmission span {
     overflow: hidden !important;
     text-overflow: clip !important;
-    white-space: normal !important;
-    word-break: normal !important;
-    overflow-wrap: break-word !important;
-    font-size: clamp(8.4px, 1.25vw, 9.8px) !important;
+    white-space: nowrap !important;
+    word-break: keep-all !important;
+    overflow-wrap: normal !important;
+    hyphens: none !important;
+    font-size: clamp(10px, 1.32vw, 11.25px) !important;
     letter-spacing: 0 !important;
   }
 
   .list-header-row .list-cell.list-user span {
     overflow: hidden !important;
     text-overflow: clip !important;
-    white-space: normal !important;
-    word-break: normal !important;
-    overflow-wrap: break-word !important;
-    font-size: clamp(9.67px, 1.45vw, 10.33px) !important;
+    white-space: nowrap !important;
+    word-break: keep-all !important;
+    overflow-wrap: normal !important;
+    hyphens: none !important;
+    font-size: clamp(10px, 1.32vw, 11.25px) !important;
   }
   .list-header-row .list-cell.list-type.sortable-header,
   .list-header-row .list-cell.list-transmission.sortable-header {
     width: 100%;
     justify-content: center !important;
-    padding-right: 10px !important; /* saşdaki sort ikonuna pay */
+    padding-right: 6px !important; /* saşdaki sort ikonuna pay */
     box-sizing: border-box;
   }
   .list-header-row .list-cell.list-type .sort-icon,
