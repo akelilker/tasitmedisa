@@ -392,14 +392,15 @@ function applyMainAppSessionUiState() {
     }
 }
 
+/**
+ * Ana uygulama (index): sunucu load/save için Bearer token gerekir.
+ * Token yokken burada YÖNLENDİRME YAPILMAZ — kullanıcı /medisa adresinde kalır;
+ * aksi halde (özellikle özel dolaşma) her açılışta /medisa/driver/ sanılıyordu.
+ * Süresi dolmuş/geçersiz token: load.php 401 → redirectToPortalLogin() ayrıca tetiklenir.
+ */
 function ensureMainAppSession() {
     if (getCurrentPathname().indexOf('/driver/') !== -1) return true;
-    var token = getStoredPortalToken();
-    if (!token) {
-        redirectToPortalLogin();
-        return false;
-    }
-    return true;
+    return !!getStoredPortalToken();
 }
 
 function loadDataFromLocalStorage() {
