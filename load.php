@@ -17,7 +17,7 @@ if (!$tokenData) {
     ], JSON_UNESCAPED_UNICODE);
     exit;
 }
-
+ 
 $data = loadData();
 if (!$data) {
     $data = [
