@@ -481,6 +481,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Modal kontrolü için ilk kontrol
   window.updateFooterDim();
+  if (typeof window.medisaRecoverPrematureVehicleModal === 'function') {
+    window.medisaRecoverPrematureVehicleModal();
+  }
 
   // Modal Observer: Body class yönetimi (Scroll engelleme vb.)
   const modalObserver = new MutationObserver((mutations) => {
@@ -521,6 +524,48 @@ var TASITLAR_MODULE_VERSION = '20260405.3';
   var AYARLAR_JS = 'ayarlar.js?v=20260404.3';
   var AYARLAR_CSS = 'ayarlar.css?v=20260404.1';
 
+  function medisaRecoverPrematureVehicleModal() {
+    try {
+      var modal = document.getElementById('vehicles-modal');
+      var content = document.getElementById('vehicles-modal-content');
+      if (!modal || !content) return;
+      var isOpen = modal.classList.contains('active') || modal.style.display === 'flex';
+      if (!isOpen) return;
+      if ((content.innerHTML || '').trim() !== '') return;
+      modal.classList.remove('active');
+      modal.style.display = 'none';
+      document.body.classList.remove('modal-open');
+      refreshModalOverlays();
+      if (typeof window.updateFooterDim === 'function') window.updateFooterDim();
+    } catch (eRecover) {}
+  }
+
+  function medisaFlushPendingModuleOpens() {
+    var pv = !!window.__medisaPendingOpenVehicles;
+    var pr = !!window.__medisaPendingOpenReports;
+    var pk = !!window.__medisaPendingOpenVehicle;
+    window.__medisaPendingOpenVehicles = false;
+    window.__medisaPendingOpenReports = false;
+    window.__medisaPendingOpenVehicle = false;
+    if (pv) {
+      setTimeout(function() {
+        if (typeof window.openVehiclesView === 'function') window.openVehiclesView();
+      }, 0);
+    }
+    if (pr) {
+      setTimeout(function() {
+        if (typeof window.openReportsView === 'function') window.openReportsView();
+      }, 0);
+    }
+    if (pk) {
+      setTimeout(function() {
+        if (typeof window.openVehicleModal === 'function') window.openVehicleModal();
+      }, 0);
+    }
+  }
+
+  window.medisaRecoverPrematureVehicleModal = medisaRecoverPrematureVehicleModal;
+
   window.openVehiclesView = function() {
     showModuleSpinner();
     window.loadAppModule(TASITLAR_JS, TASITLAR_CSS_LIST).then(function() {
@@ -529,6 +574,16 @@ var TASITLAR_MODULE_VERSION = '20260405.3';
     }).catch(function(err) {
       hideModuleSpinner();
       console.error('[Medisa] Taşıtlar modülü yüklenemedi:', err);
+      medisaRecoverPrematureVehicleModal();
+      try {
+        var toast = document.createElement('div');
+        toast.className = 'update-toast';
+        toast.innerHTML = '<span class="update-toast-text">Taşıt ekranı yüklenemedi. Bağlantıyı kontrol edin veya sayfayı yenileyin.</span><button type="button" class="update-toast-btn">Yenile</button>';
+        document.body.appendChild(toast);
+        requestAnimationFrame(function() { toast.classList.add('visible'); });
+        var btn = toast.querySelector('.update-toast-btn');
+        if (btn) btn.addEventListener('click', function() { window.location.reload(); });
+      } catch (eToast) {}
     });
   };
 
@@ -600,6 +655,9 @@ var TASITLAR_MODULE_VERSION = '20260405.3';
       }, 300);
     }
   };
+
+  medisaRecoverPrematureVehicleModal();
+  medisaFlushPendingModuleOpens();
 })();
 
 /* =========================================
@@ -690,7 +748,9 @@ window.addEventListener('dataLoaded', () => {
   }
 
   var p = (typeof document !== 'undefined' && document.location) ? document.location.pathname : '';
-  var base = (p.indexOf('/tasitmedisa') === 0) ? '/tasitmedisa' : (p.indexOf('/medisa') === 0) ? '/medisa' : '';
+  var base = '';
+  if (p.indexOf('/tasitmedisa') === 0) base = '/tasitmedisa';
+  else if (p.indexOf('/medisa') === 0) base = '/medisa';
   var scope = base ? base + '/' : '/';
   var paths = base ? [base + '/sw.js', './sw.js'] : ['./sw.js', '/sw.js', '/tasitmedisa/sw.js', '/medisa/sw.js'];
   window.registerServiceWorker({

@@ -6,7 +6,6 @@ const API_BASE = (function() {
     try {
         var p = (typeof document !== 'undefined' && document.location && document.location.pathname) ? document.location.pathname : '';
         var pairs = [
-            ['/personelmedisa', '/personelmedisa/'],
             ['/tasitmedisa', '/tasitmedisa/'],
             ['/medisa', '/medisa/']
         ];
@@ -32,7 +31,7 @@ const API_SAVE = API_BASE + 'save.php';
     if (p !== '/' && p !== '/index.html') return;
     if (typeof console !== 'undefined' && console.warn) {
         console.warn(
-            '[Medisa] Sayfa kökten açılıyor (/). Uygulama /medisa/, /personelmedisa/ veya /tasitmedisa/ altındaysa ' +
+            '[Medisa] Sayfa kökten açılıyor (/). Uygulama /medisa/ veya /tasitmedisa/ altındaysa ' +
             'API tabanı boş kalır; load.php yanlış yerde istenir. Örnek: ' +
             (document.location.origin || '') + '/medisa/'
         );
