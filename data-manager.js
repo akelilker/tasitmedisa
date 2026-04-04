@@ -484,11 +484,34 @@ function loadDataFromLocalStorage() {
 }
 
 async function loadDataFromServer(forceRefresh) {
+    // #region agent log
+    (function agentLogLoadEntry() {
+        try {
+            var p = getCurrentPathname();
+            var tok = !!getStoredPortalToken();
+            var lsShadow = false;
+            try {
+                var raw = localStorage.getItem('medisa_data_v1');
+                if (raw) {
+                    var o = JSON.parse(raw);
+                    lsShadow = !!(o && Array.isArray(o.tasitlar) && o.tasitlar.length > 0);
+                }
+            } catch (eSh) {}
+            var host = (typeof location !== 'undefined' && location.hostname) ? location.hostname : '';
+            fetch('http://127.0.0.1:7753/ingest/302b1fd7-6809-479d-8a04-ce5cebe4d3da', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': '8fa95c' }, body: JSON.stringify({ sessionId: '8fa95c', hypothesisId: 'H2', runId: 'pre', location: 'data-manager.js:loadDataFromServer:entry', message: 'loadDataFromServer entry', data: { forceRefresh: forceRefresh === true, ensureOk: ensureMainAppSession(), hasToken: tok, path: p, lsShadowVehicles: lsShadow, hostname: host }, timestamp: Date.now() }) }).catch(function() {});
+        } catch (eLog) {}
+    })();
+    // #endregion
     if (forceRefresh !== true && serverDatasetTrusted === true && hasUsableAppData(window.appData)) {
         return Promise.resolve(window.appData);
     }
 
     if (!ensureMainAppSession()) {
+        // #region agent log
+        try {
+            fetch('http://127.0.0.1:7753/ingest/302b1fd7-6809-479d-8a04-ce5cebe4d3da', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': '8fa95c' }, body: JSON.stringify({ sessionId: '8fa95c', hypothesisId: 'H2', runId: 'pre', location: 'data-manager.js:loadDataFromServer:noSession', message: 'reject no portal token', data: { path: getCurrentPathname() }, timestamp: Date.now() }) }).catch(function() {});
+        } catch (eLog2) {}
+        // #endregion
         window.appData = getDefaultAppData();
         serverDatasetTrusted = false;
         syncDataLoadState();
@@ -991,5 +1014,17 @@ document.addEventListener('DOMContentLoaded', async function() {
     } catch (loadErr) {
         console.warn('[Medisa] İlk veri yüklemesi tamamlanamadı:', loadErr && loadErr.message);
     }
+    // #region agent log
+    (function agentLogDomReady() {
+        try {
+            var tok = !!getStoredPortalToken();
+            var pwa = false;
+            try {
+                pwa = !!(window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone === true;
+            } catch (eP) {}
+            fetch('http://127.0.0.1:7753/ingest/302b1fd7-6809-479d-8a04-ce5cebe4d3da', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': '8fa95c' }, body: JSON.stringify({ sessionId: '8fa95c', hypothesisId: 'H5', runId: 'pre', location: 'data-manager.js:DOMContentLoaded:end', message: 'after initial load', data: { hasToken: tok, medisaDataLoaded: !!window.__medisaDataLoaded, standalonePWA: pwa, path: getCurrentPathname() }, timestamp: Date.now() }) }).catch(function() {});
+        } catch (eLog3) {}
+    })();
+    // #endregion
     window.dispatchEvent(new CustomEvent('dataLoaded', { detail: window.appData }));
 });
