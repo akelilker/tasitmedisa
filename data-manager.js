@@ -503,11 +503,15 @@ async function loadDataFromServer(forceRefresh) {
     }
 
     if (!ensureMainAppSession()) {
-        window.appData = getDefaultAppData();
         serverDatasetTrusted = false;
+        window.appData = getSafeAppDataFallback();
+        syncMainAppHeaderUserName(window.medisaSession);
         syncDataLoadState();
         var needAuth = new Error('Medisa oturum yok');
         needAuth.medisaAuthRequired = true;
+        if (hasUsableAppData(window.appData)) {
+            return Promise.resolve(window.appData);
+        }
         return Promise.reject(needAuth);
     }
 
@@ -553,11 +557,16 @@ async function loadDataFromServer(forceRefresh) {
 
             if (response.status === 401 || response.status === 403) {
                 clearStoredPortalTokens();
-                redirectToPortalLogin();
                 serverDatasetTrusted = false;
-                window.appData = getDefaultAppData();
+                window.appData = getSafeAppDataFallback();
+                syncMainAppHeaderUserName(window.medisaSession);
                 var authErr = new Error('Unauthorized');
                 authErr.medisaHttpStatus = response.status;
+                authErr.medisaAuthRequired = true;
+                if (hasUsableAppData(window.appData)) {
+                    return window.appData;
+                }
+                redirectToPortalLogin();
                 throw authErr;
             }
 
