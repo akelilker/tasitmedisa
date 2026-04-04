@@ -2135,10 +2135,30 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #r
         background-color: var(--bg);
         color: #ffffff !important; /* Metin rengi zorla beyaz */
     }
-    /* iOS Safari: 100dvh bazen flex içeriği sıkıştırır; ana uygulama gövdesi görünür kalsın */
-    body:not(.dashboard-page):not(.login-page):not(.admin-report-page),
+    html {
+        min-height: 100% !important;
+        min-height: 100dvh !important;
+        min-height: 100svh !important;
+    }
+    /*
+     * Ana uygulama mobil: tek akışta viewport doldur, içerik alanı sıfırlanmasın.
+     * (Sabit footer/link/loading DOM dışı; .app-container esnek büyüsün.)
+     */
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) {
+        display: flex !important;
+        flex-direction: column !important;
+        min-height: 100vh !important;
+        min-height: 100dvh !important;
+        min-height: 100svh !important;
+    }
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-container {
-        min-height: -webkit-fill-available !important;
+        flex: 1 1 auto !important;
+        min-height: 0 !important;
+        height: auto !important;
+    }
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) main.content-wrap {
+        flex: 1 1 auto !important;
+        min-height: 0 !important;
     }
     
     /* Tüm metin elementleri için kontrast artırma */
@@ -2236,10 +2256,24 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #r
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-logo {
         margin-right: 8px !important;
     }
-    /* Ana uygulama ana ekran header mobil: ana başlık +0.6pt (≈0.8px) */
+    /* Ana uygulama ana ekran header mobil: başlık boyutu + WebKit clip yedeği (şeffaf metin kaybı) */
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero h1 {
         font-size: clamp(17.8px, 5.1vw, 21.8px) !important;
         letter-spacing: 2px !important;
+        background: none !important;
+        -webkit-background-clip: border-box !important;
+        background-clip: border-box !important;
+        -webkit-text-fill-color: rgba(230, 236, 242, 0.97) !important;
+        color: rgba(230, 236, 242, 0.97) !important;
+    }
+    @supports ((-webkit-background-clip: text) or (background-clip: text)) {
+        body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero h1 {
+            background: linear-gradient(to bottom, #c2d4df 0%, #ffffff 40%, #9aadba 52%, #d6e0e8 100%) !important;
+            -webkit-background-clip: text !important;
+            background-clip: text !important;
+            -webkit-text-fill-color: transparent !important;
+            color: transparent !important;
+        }
     }
     
     /* Modal başlıkları mobilde 19px, letter-spacing 0.2em */
@@ -2573,6 +2607,10 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #r
         min-height: 100vh !important;
         min-height: 100dvh !important;
         box-sizing: border-box !important;
+    }
+    /* Genel mobilde body flex; PWA’de de .app-container büyüsün */
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-container {
+        flex: 1 1 auto !important;
     }
     /* iOS PWA: anabaşlık kulaklık/sensör arkasında kalmasın - content-wrap üst padding */
     .content-wrap {
