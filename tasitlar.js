@@ -507,6 +507,15 @@
   function getVSearchInput() { return document.getElementById('v-search-input'); }
   function getVSearchContainer() { return document.getElementById('v-search-container'); }
   function getVTransmissionDropdown() { return document.getElementById('v-transmission-dropdown'); }
+  function getVehiclesListViewportWidth() {
+    var scrollWrap = document.querySelector('#vehicles-modal .vehicles-list-scroll');
+    var modalBody = document.querySelector('#vehicles-modal .modal-body');
+    return (scrollWrap && scrollWrap.clientWidth) || (modalBody && modalBody.clientWidth) || 0;
+  }
+  function shouldUseCompactVehicleHeader() {
+    var listWidth = getVehiclesListViewportWidth();
+    return listWidth > 0 && listWidth <= 760;
+  }
 
   // Grid genişlikleri sütun kimliğine göre (sürükle-bırak sonrası genişlik doğru sütunla kalsın)
   function getVehicleColumnWidths(columnOrder) {
@@ -514,6 +523,7 @@
     try {
       if (!columnOrder || !Array.isArray(columnOrder) || columnOrder.length === 0) return defaultCols;
       const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
+      const isCompactDesktop = !isMobile && shouldUseCompactVehicleHeader();
       const widthMap = isMobile
         ? {
             'year': '32px',
@@ -524,6 +534,17 @@
             'user': '1.95fr',   /* mobil+iOS PWA: şubeden 3px kullanıcıya */
             'branch': '2.25fr'   /* mobil+iOS PWA: şubeden bir kademe alan alındı */
           }
+        : isCompactDesktop
+          ? {
+              'year': '42px',
+              'plate': '76px',
+              'brand': 'minmax(84px, 2fr)',
+              'km': '52px',
+              'type': 'minmax(64px, 0.82fr)',
+              'transmission': 'minmax(52px, 0.6fr)',
+              'user': 'minmax(82px, 0.98fr)',
+              'branch': 'minmax(72px, 0.82fr)'
+            }
         : {
             'year': '50px',
             'plate': '92px',
