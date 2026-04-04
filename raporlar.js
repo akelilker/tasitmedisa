@@ -213,12 +213,42 @@
         renderStokView();
     };
 
+    function getStokListScrollContainer(listRoot) {
+        if (!listRoot) return null;
+        const directChild = Array.from(listRoot.children || []).find(function(child) {
+            return child && child.classList && child.classList.contains('stok-list-container');
+        });
+        return directChild || listRoot.querySelector('.stok-list-container');
+    }
+
+    function captureStokListScrollState(listRoot) {
+        const scrollEl = getStokListScrollContainer(listRoot);
+        if (!scrollEl) return null;
+        return {
+            left: scrollEl.scrollLeft || 0,
+            top: scrollEl.scrollTop || 0
+        };
+    }
+
+    function restoreStokListScrollState(listRoot, scrollState) {
+        if (!scrollState) return;
+        requestAnimationFrame(function() {
+            const scrollEl = getStokListScrollContainer(listRoot);
+            if (!scrollEl) return;
+            const maxLeft = Math.max(0, scrollEl.scrollWidth - scrollEl.clientWidth);
+            const maxTop = Math.max(0, scrollEl.scrollHeight - scrollEl.clientHeight);
+            scrollEl.scrollLeft = Math.min(scrollState.left || 0, maxLeft);
+            scrollEl.scrollTop = Math.min(scrollState.top || 0, maxTop);
+        });
+    }
+
     // Liste Görünümü Render
     function renderStokList() {
         const gridContainer = document.getElementById('stok-branch-grid');
         const listContainer = document.getElementById('stok-list-container');
         
         if (!listContainer) return;
+        const previousScrollState = captureStokListScrollState(listContainer);
         cleanupStokTouchColumnDrag();
         
         // Detay menü açık/kapalı tek kaynak: stokDetailMenuOpen (liste yeniden render'da korunur)
@@ -472,6 +502,7 @@
         setupStokListTouchAxisLock();
         // Marka ve şube hücreleri: sütun daraldıkça font kontrollü küçülsün
         adjustStokResponsiveCellFontSizes();
+        restoreStokListScrollState(listContainer, previousScrollState);
     }
 
     // Marka ve şube hücreleri: önce satır kır, yine taşarsa fontu kontrollü küçült.
