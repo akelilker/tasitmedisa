@@ -2777,6 +2777,13 @@ body.modal-open .app-container {
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-container::before {
   bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
 }
+@media (min-width: 769px) {
+  /* Desktop modal overlay footer + gap kadar yukarıda bittiği için
+     ana çerçeve de aynı noktada kesilmelidir; aksi halde boşlukta kırmızı şerit görünür. */
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .app-container::before {
+    bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
+  }
+}
 @media (max-width: 640px) {
   .content-wrap::before {
     bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
@@ -2913,6 +2920,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
   /* İç kırmızı inset footer şeridine inmesin */
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-container::after {
     bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0));
+  }
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .app-container::after {
+    bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0));
   }
   /* Omnidirectional kırmızımsı halo footer köşelerinde birikmez */
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap {
