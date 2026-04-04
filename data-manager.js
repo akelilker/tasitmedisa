@@ -299,6 +299,32 @@ function buildFallbackPermissions(role) {
     };
 }
 
+function buildLocalFallbackSession() {
+    var session = getDefaultSession();
+    session.authenticated = true;
+    session.role = 'genel_yonetici';
+    session.raw_role = 'local_fallback';
+    session.permissions = buildFallbackPermissions(session.role);
+    session.user = Object.assign({}, session.user, {
+        id: 'local-fallback',
+        isim: '',
+        role: session.role,
+        branch_ids: []
+    });
+    return session;
+}
+
+function getEffectiveMainAppSession(sessionData) {
+    var session = sessionData && typeof sessionData === 'object' ? sessionData : (window.medisaSession || getDefaultSession());
+    if (session.authenticated) {
+        return session;
+    }
+    if (getCurrentPathname().indexOf('/driver/') === -1 && hasUsableAppData(window.appData)) {
+        return buildLocalFallbackSession();
+    }
+    return session;
+}
+
 function redirectToPortalLogin() {
     if (typeof window === 'undefined') return;
     var path = getCurrentPathname();
@@ -359,7 +385,7 @@ function setMedisaSession(sessionData) {
 }
 
 function resolveMainAppHeaderUserName(sessionData) {
-    var session = sessionData && typeof sessionData === 'object' ? sessionData : getDefaultSession();
+    var session = getEffectiveMainAppSession(sessionData);
     var directName = String((session.user && (session.user.isim || session.user.name)) || '').trim();
     if (directName !== '') {
         return directName;
@@ -397,7 +423,7 @@ function applyMainAppSessionUiState() {
 
     syncMainAppPortalLinks();
 
-    var session = window.medisaSession || getDefaultSession();
+    var session = getEffectiveMainAppSession(window.medisaSession);
     syncMainAppHeaderUserName(session);
     var logoutBtn = document.getElementById('settings-logout-btn');
     if (logoutBtn) {
