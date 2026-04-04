@@ -1048,7 +1048,7 @@
     if (typeof window.loadAppModule === 'function' &&
         (typeof window._ayarlarLoaded === 'undefined' || !window._ayarlarLoaded)) {
       var AYARLAR_JS = 'ayarlar.js';
-      var AYARLAR_CSS = 'ayarlar.css';
+      var AYARLAR_CSS = 'ayarlar.css?v=20260405.1';
       window.loadAppModule(AYARLAR_JS, AYARLAR_CSS).then(function() {
         window._ayarlarLoaded = true;
         ensureAyarlarAndOpen();
