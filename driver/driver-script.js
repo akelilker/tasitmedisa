@@ -145,6 +145,11 @@ const API_BASE = (function(){
         console.error('Token kaydedilemedi.', fallbackErr);
       }
     }
+    // #region agent log
+    try {
+      fetch('http://127.0.0.1:7753/ingest/302b1fd7-6809-479d-8a04-ce5cebe4d3da', { method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': '8fa95c' }, body: JSON.stringify({ sessionId: '8fa95c', hypothesisId: 'H1', runId: 'pre', location: 'driver/driver-script.js:persistSessionToken', message: 'token persist policy', data: { remember: !!remember, storage: remember ? 'localStorage' : 'sessionStorage', tokenChars: typeof token === 'string' ? token.length : 0 }, timestamp: Date.now() }) }).catch(function() {});
+    } catch (eDbg) {}
+    // #endregion
   }
 
   async function fetchCurrentPortalSession(token) {
