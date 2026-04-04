@@ -2135,6 +2135,11 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #r
         background-color: var(--bg);
         color: #ffffff !important; /* Metin rengi zorla beyaz */
     }
+    /* iOS Safari: 100dvh bazen flex içeriği sıkıştırır; ana uygulama gövdesi görünür kalsın */
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page),
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-container {
+        min-height: -webkit-fill-available !important;
+    }
     
     /* Tüm metin elementleri için kontrast artırma */
     h1, h2, h3, h4, h5, h6, p, span, div, label, button {

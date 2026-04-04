@@ -1769,6 +1769,10 @@
 
     // Arama kutusunu aç/kapat (tek büyüteç, mobil+masaüstü)
     window.toggleStokSearch = function(event) {
+        if (event) {
+            if (typeof event.preventDefault === 'function') event.preventDefault();
+            if (typeof event.stopPropagation === 'function') event.stopPropagation();
+        }
         const { container, input } = getStokSearchElements(event);
         
         if (container) {

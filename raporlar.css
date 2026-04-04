@@ -41,6 +41,38 @@ content: none !important;
 
 /* #reports-modal container: ortak kurallar style-core.css’te; sayfa özel header/body burada */
 
+/*
+ * Stok arama (büyüteç): tüm genişliklerde görünür kalsın.
+ * - Mobil: önceki overflow:visible sadece 641px+ içindeydi → style-core modal-container kesiyordu.
+ * - Masaüstü: modal-body (#reports-body) sonradan boyandığı için arama “yok” görünüyordu; header z-index ile üstte.
+ */
+#reports-modal.modal-overlay.active:has(#stok-search-container.open) .modal-container,
+#reports-modal.modal-overlay.open:has(#stok-search-container.open) .modal-container {
+overflow: visible !important;
+}
+#reports-modal.modal-overlay.active:has(#stok-search-container.open) #reports-body,
+#reports-modal.modal-overlay.open:has(#stok-search-container.open) #reports-body {
+overflow: visible !important;
+}
+#reports-modal.modal-overlay.active:has(#stok-search-container.open) #reports-body #view-stok,
+#reports-modal.modal-overlay.open:has(#stok-search-container.open) #reports-body #view-stok {
+overflow: visible !important;
+}
+#reports-modal.modal-overlay.active:has(#stok-search-container.open) #stok-list-container:has(.stok-list-top-controls),
+#reports-modal.modal-overlay.open:has(#stok-search-container.open) #stok-list-container:has(.stok-list-top-controls) {
+overflow: visible !important;
+}
+#reports-modal.modal-overlay.active .modal-container > #reports-list-header-actions:not(:empty),
+#reports-modal.modal-overlay.open .modal-container > #reports-list-header-actions:not(:empty),
+#reports-modal.modal-overlay.active .modal-container > #reports-list-header-actions.has-stok-actions,
+#reports-modal.modal-overlay.open .modal-container > #reports-list-header-actions.has-stok-actions {
+position: relative !important;
+z-index: 160 !important;
+}
+#reports-modal #stok-search-container.open {
+z-index: 200 !important;
+}
+
 /* === HEADER === */
 #reports-modal .modal-header {
 background: linear-gradient(180deg, rgba(255, 0, 0, 0.36) 0%, rgba(255, 0, 0, 0.27) 25%, rgba(255, 0, 0, 0.20) 50%, rgba(255, 0, 0, 0.14) 75%, transparent 100%);
@@ -1297,10 +1329,6 @@ border-bottom: 1px solid var(--border-medium) !important;
 border-bottom-left-radius: var(--modal-radius, 10px) !important;
 border-bottom-right-radius: var(--modal-radius, 10px) !important;
 }
-/* Stok araması header bandının altına genişler; modal-container overflow kesmesin */
-#reports-modal:has(#stok-search-container.open) .modal-container {
-overflow: visible !important;
-}
 }
 
 /* Masaüstü: İki satırlık layout */
@@ -2336,15 +2364,16 @@ align-items: center;
 .stok-print-btn { font-size: 20px !important; }
 .stok-export-btn,
 .stok-print-btn { width: auto; }
-/* Input açıldığında HİÇBİR YER OYNAMASIN: absolute overlay, wrap/row boyutu değişmez */
+/* Mobil liste: arama satırın altına açılır (yukarı + overflow:hidden zinciri kesiliyordu) */
 #stok-list-container .stok-controls-row-2 .stok-search-container.open {
 position: absolute !important;
-bottom: 100% !important;
-top: auto !important;
+top: calc(100% + 4px) !important;
+bottom: auto !important;
 left: 0 !important;
-width: 200px !important;
+width: min(220px, calc(100vw - 48px)) !important;
 margin-bottom: 0 !important;
 margin-top: 0 !important;
+z-index: 220 !important;
 }
 #stok-list-container .stok-controls-row-2 .stok-search-container.open .stok-search-input {
 margin-top: 0 !important;
