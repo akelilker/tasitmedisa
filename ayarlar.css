@@ -1701,8 +1701,8 @@ input.settings-form-input:-moz-autofill,
   }
   #branch-form-modal .modal-body #branch-form,
   #user-form-modal .modal-body #user-form.user-form-inner {
-    width: min(100%, 520px) !important;
-    max-width: 520px !important;
+    width: min(100%, 500px) !important;
+    max-width: 500px !important;
     margin-left: auto !important;
     margin-right: auto !important;
   }
