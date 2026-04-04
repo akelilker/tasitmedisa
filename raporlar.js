@@ -1729,20 +1729,15 @@
             ? event.currentTarget.closest('.stok-search-wrap')
             : null;
         const modal = document.getElementById('reports-modal');
-        const fallbackWrap = modal ? modal.querySelector('.stok-controls-row-2 .stok-search-wrap') : null;
+        const fallbackWrap = modal ? modal.querySelector('.stok-search-wrap') : null;
         const wrap = triggerWrap || fallbackWrap || null;
-        const container = (wrap && wrap.querySelector('.stok-search-container'))
-            || (modal && modal.querySelector('.stok-search-container.open'))
-            || document.getElementById('stok-search-container');
-        const input = (wrap && wrap.querySelector('.stok-search-input'))
-            || (container && container.querySelector('.stok-search-input'))
-            || document.getElementById('stok-search-input');
+        const container = wrap ? wrap.querySelector('.stok-search-container') : null;
+        const input = container ? container.querySelector('.stok-search-input') : null;
         return { wrap, container, input };
     }
 
     function stokSearchOutsidePointerDown(e) {
-        const modal = document.getElementById('reports-modal');
-        const container = (modal && modal.querySelector('.stok-search-container.open')) || document.getElementById('stok-search-container');
+        const container = document.querySelector('#reports-modal .stok-search-wrap .stok-search-container.open');
         if (!container || !container.classList.contains('open')) {
             removeStokSearchOutsideListener();
             return;
@@ -1752,7 +1747,7 @@
             return;
         }
         container.classList.remove('open');
-        const input = document.getElementById('stok-search-input');
+        const input = container.querySelector('.stok-search-input');
         if (input) {
             input.value = '';
             window.handleStokSearch('');
