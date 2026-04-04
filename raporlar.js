@@ -315,7 +315,7 @@
                     <div class="stok-export-controls">
                         <div class="stok-export-left">
                             <div class="stok-search-wrap">
-                                <button class="stok-search-btn" onclick="toggleStokSearch()" title="Ara">
+                                <button class="stok-search-btn" onclick="toggleStokSearch(event)" title="Ara">
                                     🔍
                                 </button>
                                 <div id="stok-search-container" class="stok-search-container">
@@ -1724,8 +1724,25 @@
         document.removeEventListener('pointerdown', stokSearchOutsidePointerDown, true);
     }
 
+    function getStokSearchElements(event) {
+        const triggerWrap = event && event.currentTarget && typeof event.currentTarget.closest === 'function'
+            ? event.currentTarget.closest('.stok-search-wrap')
+            : null;
+        const modal = document.getElementById('reports-modal');
+        const fallbackWrap = modal ? modal.querySelector('.stok-controls-row-2 .stok-search-wrap') : null;
+        const wrap = triggerWrap || fallbackWrap || null;
+        const container = (wrap && wrap.querySelector('.stok-search-container'))
+            || (modal && modal.querySelector('.stok-search-container.open'))
+            || document.getElementById('stok-search-container');
+        const input = (wrap && wrap.querySelector('.stok-search-input'))
+            || (container && container.querySelector('.stok-search-input'))
+            || document.getElementById('stok-search-input');
+        return { wrap, container, input };
+    }
+
     function stokSearchOutsidePointerDown(e) {
-        const container = document.getElementById('stok-search-container');
+        const modal = document.getElementById('reports-modal');
+        const container = (modal && modal.querySelector('.stok-search-container.open')) || document.getElementById('stok-search-container');
         if (!container || !container.classList.contains('open')) {
             removeStokSearchOutsideListener();
             return;
@@ -1751,9 +1768,8 @@
     }
 
     // Arama kutusunu aç/kapat (tek büyüteç, mobil+masaüstü)
-    window.toggleStokSearch = function() {
-        const container = document.getElementById('stok-search-container');
-        const input = document.getElementById('stok-search-input');
+    window.toggleStokSearch = function(event) {
+        const { container, input } = getStokSearchElements(event);
         
         if (container) {
             if (container.classList.contains('open')) {
