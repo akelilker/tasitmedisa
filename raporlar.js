@@ -557,7 +557,7 @@
                     'plaka': 68, 'sanziman': 64, 'km': 60
                 }
                 : {
-                    'sira': 24, 'sube': 88, 'yil': 41, 'marka': 116,
+                    'sira': 24, 'sube': 84, 'yil': 41, 'marka': 116,
                     'plaka': 68, 'sanziman': 67, 'km': 76
                 };
             const detailPx = {

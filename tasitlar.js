@@ -519,7 +519,7 @@
 
   // Grid genişlikleri sütun kimliğine göre (sürükle-bırak sonrası genişlik doğru sütunla kalsın)
   function getVehicleColumnWidths(columnOrder) {
-    const defaultCols = '50px 87px minmax(116px, 2.18fr) 60px minmax(81px, 0.94fr) minmax(68px, 0.72fr) minmax(95px, 1.04fr) minmax(92px, 0.92fr)';
+    const defaultCols = '50px 83px minmax(116px, 2.18fr) 60px minmax(78px, 0.91fr) minmax(68px, 0.72fr) minmax(90px, 0.99fr) minmax(92px, 0.92fr)';
     try {
       if (!columnOrder || !Array.isArray(columnOrder) || columnOrder.length === 0) return defaultCols;
       const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
@@ -537,22 +537,22 @@
         : isCompactDesktop
           ? {
               'year': '42px',
-              'plate': '71px',
+              'plate': '67px',
               'brand': 'minmax(84px, 2fr)',
               'km': '52px',
-              'type': 'minmax(61px, 0.82fr)',
+              'type': 'minmax(58px, 0.79fr)',
               'transmission': 'minmax(48px, 0.6fr)',
-              'user': 'minmax(73px, 0.98fr)',
+              'user': 'minmax(68px, 0.93fr)',
               'branch': 'minmax(72px, 0.82fr)'
             }
         : {
             'year': '50px',
-            'plate': '87px',
+            'plate': '83px',
             'brand': 'minmax(116px, 2.18fr)',
             'km': '60px',
-            'type': 'minmax(81px, 0.94fr)',
+            'type': 'minmax(78px, 0.91fr)',
             'transmission': 'minmax(68px, 0.72fr)',
-            'user': 'minmax(95px, 1.04fr)',
+            'user': 'minmax(90px, 0.99fr)',
             'branch': 'minmax(92px, 0.92fr)'
           };
       return columnOrder.map(key => widthMap[key] || '1fr').join(' ');
@@ -562,6 +562,7 @@
   }
 
   function getVehicleListColumnDefs(isCompactHeader) {
+    const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
     return {
       'year': { label: 'Yıl', class: 'list-year' },
       'plate': { label: 'Plaka', class: 'list-plate' },
@@ -569,7 +570,7 @@
       'km': { label: 'Km', class: 'list-km' },
       'type': { label: ['Taşıt', 'Tipi'], class: 'list-type' },
       'transmission': { label: 'Şanz.', class: 'list-transmission' },
-      'user': { label: isCompactHeader ? 'Kull.' : 'Kullanıcı', class: 'list-user' },
+      'user': { label: (!isMobile || isCompactHeader) ? 'Kull.' : 'Kullanıcı', class: 'list-user' },
       'branch': { label: 'Şube', class: 'list-branch' }
     };
   }

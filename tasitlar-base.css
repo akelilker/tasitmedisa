@@ -2305,8 +2305,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
   }
   /* Taşıt Tipi: iki satıra inebilsin; Şanzıman kısa etiket tek satır kalabilir */
   .list-header-row .list-cell.list-type {
-    padding-left: 0 !important;
-    padding-right: 0 !important;
+    padding-left: 1px !important;
+    padding-right: 1px !important;
     overflow: hidden !important;
     text-overflow: clip !important;
     white-space: normal !important;
@@ -2333,6 +2333,13 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     word-break: keep-all !important;
     overflow-wrap: normal !important;
     hyphens: none !important;
+  }
+
+  .view-list .list-cell.list-plate,
+  .view-list .list-cell.list-type,
+  .view-list .list-cell.list-user {
+    padding-left: 1px !important;
+    padding-right: 1px !important;
   }
 
   .list-header-row .list-cell.list-type span {
