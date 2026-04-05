@@ -2232,6 +2232,27 @@ input.settings-form-input:-moz-autofill,
     }
 }
 
+/* iOS PWA: Yeni Kullanıcı Ekle formunda etiketler 1 punto küçük, giriş metni kontrollü büyük */
+@media (max-width: 768px) and (display-mode: standalone) {
+    @supports (-webkit-touch-callout: none) {
+        #user-form-modal .form-label {
+            font-size: 14px !important;
+        }
+        #user-form-modal .form-input,
+        #user-form-modal select.form-input,
+        #user-form-modal .user-vehicles-trigger,
+        #user-form-modal .user-vehicles-trigger-text {
+            font-size: 14.5px !important;
+            line-height: 1.15 !important;
+        }
+        #user-form-modal .form-input,
+        #user-form-modal select.form-input {
+            padding-top: 2px !important;
+            padding-bottom: 2px !important;
+        }
+    }
+}
+
 /* Dar ekran + gerçek hover: ayarlar menüsü .menu-btn ile aynı hover (dokunmatikte devre dışı) */
 @media (max-width: 640px) and (hover: hover) {
     #settings-menu > button:hover,
