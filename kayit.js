@@ -933,6 +933,11 @@
 
     syncSingleDateInputVisibility(input);
 
+    // Dinamik olay modalı + mobil: özel span iOS yerel tarih gösterimi ile üst üste biniyor
+    if (input.type === 'date' && window.innerWidth <= 640 && input.closest('#dinamik-olay-modal')) {
+      return;
+    }
+
     // Mobil kontrolü
     const isMobile = window.innerWidth <= 640;
     const isDynamicEventModalDate = isMobile && !!input.closest('#dinamik-olay-modal');
