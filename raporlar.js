@@ -1873,9 +1873,11 @@
         el.id = 'stok-print-area';
         el.innerHTML = `<h1 class="stok-print-title">${escapeHtml(titleText)}</h1><p class="stok-print-date">${escapeHtml(dateRangeText)}</p><table class="stok-print-table">${colgroup}<thead><tr>${thead}</tr></thead><tbody>${rows}</tbody></table>`;
         document.body.appendChild(el);
-        /* Detay (sütun) çoksa yatay sayfa: 9+ sütunda landscape */
+        /* Detay çoksa yatay sayfa: masaüstü 9+ sütun; mobilde daha erken (7+) */
+        const useLandscape = activeColumns.length >= 9
+            || (isMobileStokViewport() && activeColumns.length >= 7);
         let landscapeStyle = null;
-        if (activeColumns.length >= 9) {
+        if (useLandscape) {
             landscapeStyle = document.createElement('style');
             landscapeStyle.id = 'stok-print-landscape';
             landscapeStyle.textContent = '@media print { @page { size: landscape; } }';

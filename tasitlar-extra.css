@@ -1337,6 +1337,49 @@
     color: #adb5bd !important;
   }
 
+  /* Dinamik olay: sigorta/kasko/muayene gg/aa/yyyy + takvim simgesi (mobil) */
+  #dinamik-olay-modal .olay-date-mobile-wrap {
+    position: relative !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+  #dinamik-olay-modal .olay-date-mobile-text {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+  }
+  #dinamik-olay-modal .olay-date-mobile-native {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    opacity: 0 !important;
+    left: -9999px !important;
+    top: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+  }
+  #dinamik-olay-modal .olay-date-mobile-btn {
+    flex-shrink: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 44px !important;
+    height: 44px !important;
+    padding: 0 !important;
+    border: 1px solid var(--border-faint-15, rgba(255, 255, 255, 0.15)) !important;
+    border-radius: 8px !important;
+    background: var(--bg-2, #1a1a24) !important;
+    color: var(--txt-gray, #a0aec0) !important;
+    cursor: pointer !important;
+    box-sizing: border-box !important;
+  }
+  #dinamik-olay-modal .olay-date-mobile-btn:active {
+    opacity: 0.9 !important;
+  }
+
   /* Yapılan şlemler: 2 satır varsayılan, içerik uzadıkça aşaşı açılsın */
   #bakim-islemler.olay-textarea-expand,
   .olay-ekle-modal textarea.olay-textarea-expand {

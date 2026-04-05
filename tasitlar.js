@@ -2150,6 +2150,22 @@
       if (e.target.closest('#v-search-container') || e.target.closest('.search-toggle-btn')) return;
       closeSearchBox();
   });
+  // Mobil (iOS): capture fazında pointer — liste/boş alana dokununca click güvenilir olmayabiliyor
+  function isMobileVSearchViewport() {
+      return (typeof window.matchMedia === 'function')
+          ? window.matchMedia('(max-width: 640px)').matches
+          : window.innerWidth <= 640;
+  }
+  function onVSearchOutsidePointer(e) {
+      if (!isMobileVSearchViewport()) return;
+      const box = getVSearchContainer();
+      if (!box || !box.classList.contains('open')) return;
+      const t = e.target;
+      if (!t || typeof t.closest !== 'function') return;
+      if (t.closest('#v-search-container') || t.closest('.search-toggle-btn')) return;
+      closeSearchBox();
+  }
+  document.addEventListener('pointerdown', onVSearchOutsidePointer, true);
   // Esc: arama açıkken kapat
   document.addEventListener('keydown', function(e) {
       if (e.key !== 'Escape') return;
@@ -2781,6 +2797,81 @@ function renderVehicleDetailLeft(vehicle) {
     satis: 'SATIŞ/PERT BİLDİRİMİ'
   };
 
+  function parseGgAaYyyyToIso(tr) {
+    const m = String(tr || '').trim().match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+    return m ? (m[3] + '-' + m[2] + '-' + m[1]) : '';
+  }
+
+  function formatIsoToGgAaYyyy(iso) {
+    const m = String(iso || '').trim().match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    return m ? (m[3] + '/' + m[2] + '/' + m[1]) : '';
+  }
+
+  /** Mobil: sigorta/kasko/muayene gg/aa/yyyy metin alanına yerel tarih seçici + simge */
+  function setupMobileOlayGgAaYyyyPickers(modal) {
+    if (!modal) return;
+    const narrow = (typeof window.matchMedia === 'function')
+      ? window.matchMedia('(max-width: 640px)').matches
+      : window.innerWidth <= 640;
+    if (!narrow) return;
+    const ids = ['sigorta-tarih', 'kasko-tarih', 'muayene-tarih'];
+    const calendarSvg = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>';
+    ids.forEach(function(id) {
+      const textEl = document.getElementById(id);
+      if (!textEl || textEl.closest('.olay-date-mobile-wrap')) return;
+      const par = textEl.parentNode;
+      if (!par) return;
+      const wrap = document.createElement('div');
+      wrap.className = 'olay-date-mobile-wrap';
+      par.insertBefore(wrap, textEl);
+      wrap.appendChild(textEl);
+      textEl.classList.add('olay-date-mobile-text');
+
+      const nativeInp = document.createElement('input');
+      nativeInp.type = 'date';
+      nativeInp.className = 'olay-date-mobile-native';
+      nativeInp.setAttribute('aria-hidden', 'true');
+      nativeInp.tabIndex = -1;
+      const iso0 = parseGgAaYyyyToIso(textEl.value);
+      if (iso0) nativeInp.value = iso0;
+
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'olay-date-mobile-btn';
+      btn.setAttribute('aria-label', 'Tarih se\u00e7');
+      btn.innerHTML = calendarSvg;
+
+      function syncNativeFromText() {
+        const v = parseGgAaYyyyToIso(textEl.value);
+        nativeInp.value = v || '';
+      }
+      function syncTextFromNative() {
+        if (nativeInp.value) textEl.value = formatIsoToGgAaYyyy(nativeInp.value);
+      }
+
+      textEl.addEventListener('blur', syncNativeFromText);
+      textEl.addEventListener('change', syncNativeFromText);
+      nativeInp.addEventListener('change', syncTextFromNative);
+
+      btn.addEventListener('click', function(ev) {
+        ev.preventDefault();
+        syncNativeFromText();
+        if (typeof nativeInp.showPicker === 'function') {
+          try {
+            nativeInp.showPicker();
+          } catch (err) {
+            nativeInp.click();
+          }
+        } else {
+          nativeInp.click();
+        }
+      });
+
+      wrap.appendChild(nativeInp);
+      wrap.appendChild(btn);
+    });
+  }
+
   function getEventFormHtml(type) {
     const labelCls = 'form-label';
     const inputCls = 'form-input';
@@ -3398,10 +3489,10 @@ function renderVehicleDetailLeft(vehicle) {
               const existing = input.parentElement.querySelector('.date-placeholder');
               if (existing) existing.remove();
               
-              if (!input.value && input !== document.activeElement) {
-                const isMobile = window.innerWidth <= 640;
-                const isDynamicEventModalDate = isMobile && !!input.closest('#dinamik-olay-modal');
-                const leftPx = isDynamicEventModalDate ? '50%' : (isMobile ? '12px' : '8px');
+              const isMobileFallback = window.innerWidth <= 640;
+              const skipDinamikDatePh = isMobileFallback && !!input.closest('#dinamik-olay-modal');
+              if (!input.value && input !== document.activeElement && !skipDinamikDatePh) {
+                const leftPx = isMobileFallback ? '12px' : '8px';
                 const st = window.getComputedStyle(input);
                 var pt = parseFloat(st.paddingTop); if (!Number.isFinite(pt)) pt = 0;
                 var pb = parseFloat(st.paddingBottom); if (!Number.isFinite(pb)) pb = 0;
@@ -3416,13 +3507,10 @@ function renderVehicleDetailLeft(vehicle) {
                 const ph = fs * 1.2;
                 const contentCenter = inputOffsetTop + pt + (ih - pt - pb) / 2;
                 const topPx = contentCenter - ph / 2;
-                const centeredPlaceholderStyles = isDynamicEventModalDate
-                  ? ' width: calc(100% - 36px); max-width: calc(100% - 36px); display: flex; align-items: center; justify-content: center; text-align: center; transform: translateX(-50%);'
-                  : '';
                 const placeholder = document.createElement('span');
                 placeholder.className = 'date-placeholder';
                 placeholder.textContent = 'gg.aa.yyyy';
-                placeholder.style.cssText = 'position: absolute; left: ' + leftPx + '; top: ' + topPx + 'px; color: #666 !important; pointer-events: none; font-size: 10px; z-index: 100; line-height: ' + ph + 'px;' + centeredPlaceholderStyles;
+                placeholder.style.cssText = 'position: absolute; left: ' + leftPx + '; top: ' + topPx + 'px; color: #666 !important; pointer-events: none; font-size: 10px; z-index: 100; line-height: ' + ph + 'px;';
                 
                 if (parent) {
                   parent.style.position = 'relative';
@@ -3446,6 +3534,7 @@ function renderVehicleDetailLeft(vehicle) {
               }
             }
           });
+          setupMobileOlayGgAaYyyyPickers(modal);
         }, 100);
       }
     }
@@ -5639,16 +5728,24 @@ function renderVehicleDetailLeft(vehicle) {
       }
       if (bitis) pushDetail('Biti\u015F Tarihi', bitis);
     } else if (eventType === 'kullanici-atama') {
-      summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Kullan\u0131c\u0131 Atamas\u0131n\u0131 G\u00FCncelledi.</span>';
       const yeni = (eventData.kullaniciAdi || '').trim();
       const eski = (eventData.eskiKullaniciAdi || '').trim();
-      if (yeni) pushDetail('Yeni Kullan\u0131c\u0131', formatAdSoyad(yeni));
+      const yeniDisp = yeni ? formatAdSoyad(yeni) : '';
+      if (yeniDisp) {
+        summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Kullan\u0131c\u0131 Atamas\u0131n\u0131 </span><span class="history-detail-inline">"' + escapeHtml(yeniDisp) + '"</span><span class="history-action-text"> Olarak G\u00FCncelledi.</span>';
+      } else {
+        summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Kullan\u0131c\u0131 Atamas\u0131n\u0131 G\u00FCncelledi.</span>';
+      }
       if (eski) pushDetail('\u00d6nceki Kullan\u0131c\u0131', formatAdSoyad(eski));
     } else if (eventType === 'sube-degisiklik') {
-      summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, \u015Eube Tahsisini G\u00FCncelledi.</span>';
       const yeniRaw = eventData.yeniSubeAdi || branches.find(b => String(b.id) === String(eventData.yeniSubeId))?.name || '';
       const eskiRaw = eventData.eskiSubeAdi || branches.find(b => String(b.id) === String(eventData.eskiSubeId))?.name || '';
-      if (yeniRaw) pushDetail('Yeni \u015Eube', toTitleCase(String(yeniRaw)));
+      const yeniName = yeniRaw ? toTitleCase(String(yeniRaw)) : '';
+      if (yeniName) {
+        summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, \u015Eube Tahsisini </span><span class="history-detail-inline">"' + escapeHtml(yeniName) + '"</span><span class="history-action-text"> Olarak G\u00FCncelledi.</span>';
+      } else {
+        summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, \u015Eube Tahsisini G\u00FCncelledi.</span>';
+      }
       if (eskiRaw) pushDetail('\u00d6nceki \u015Eube', toTitleCase(String(eskiRaw)));
     } else if (eventType === 'kredi-guncelle') {
       const durum = String(eventData.durum || 'yok').toLowerCase();
@@ -5833,12 +5930,10 @@ function renderVehicleDetailLeft(vehicle) {
           const kullanici = kullaniciVal
             ? formatAdSoyad(kullaniciVal)
             : 'B\u0130L\u0130NM\u0130YOR';
-          const kmSummary = '<span class="history-user-name">' + escapeHtml(kullanici) + '</span><span class="history-action-text">, G\u00fcncel Km bilgisini </span><span class="history-detail-inline">' + escapeHtml(formatNumber(yeniKm)) + '</span><span class="history-action-text"> olarak g\u00FCncelledi.</span>';
-          const kmPrev = '<div class="history-item-body" style="font-size: 12px; margin-top: 4px;"><span class="history-label">\u00d6nceki km:</span> ' + escapeHtml(formatNumber(eskiKm)) + '</div>';
+          const kmSummary = '<span class="history-user-name">' + escapeHtml(kullanici) + '</span><span class="history-action-text">, G\u00fcncel Km bilgisini </span><span class="history-detail-inline">' + escapeHtml(formatNumber(yeniKm)) + '</span><span class="history-action-text"> olarak g\u00FCncelledi.</span> <span class="history-label">\u00d6nceki km:</span> ' + escapeHtml(formatNumber(eskiKm));
           html += `<div class="history-item">
             <div class="history-item-date" style="font-weight: 600; font-size: 12px; margin-bottom: 4px;">${escapeHtml(formatDateForDisplay(event.date) || '-')}</div>
             <div class="history-item-body history-item-summary" style="font-size: 12px; margin-top: 4px;">${kmSummary}</div>
-            ${kmPrev}
             ${index === 0 ? duzeltmeNotHtml : ''}
           </div>`;
         });
