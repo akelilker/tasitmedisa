@@ -2354,6 +2354,7 @@ width: 250px !important;
 margin-bottom: 0 !important;
 margin-top: 0 !important;
 z-index: 100 !important;
+overflow: visible !important;
 }
 #stok-list-container .stok-controls-row-2 .stok-search-container.open .stok-search-input {
 margin-top: 0 !important;
