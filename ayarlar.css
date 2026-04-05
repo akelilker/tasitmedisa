@@ -2058,6 +2058,8 @@ input.settings-form-input:-moz-autofill,
     #user-form-modal select.form-input {
         height: 32px !important;
         padding: 3px 8px;
+        font-size: 15.5px !important;
+        line-height: 1.2 !important;
         box-sizing: border-box;
         background: var(--bg-content, #0d131f) !important;
         color: var(--txt-gray-darker, #888) !important; /* Ayarlar: input içi metin gri */
@@ -2072,9 +2074,11 @@ input.settings-form-input:-moz-autofill,
         min-height: 32px !important;
         height: 32px !important;
         padding: 3px 12px !important;
+        font-size: 15.5px !important;
         line-height: 1.2 !important;
     }
     #user-form-modal .user-vehicles-trigger-text {
+        font-size: inherit !important;
         line-height: 1.2 !important;
     }
     /* Mobil ayarlar formu: Kaydet / Vazgeç / Sil aynı ölçüde kalsın */
@@ -2242,7 +2246,7 @@ input.settings-form-input:-moz-autofill,
         #user-form-modal select.form-input,
         #user-form-modal .user-vehicles-trigger,
         #user-form-modal .user-vehicles-trigger-text {
-            font-size: 14.5px !important;
+            font-size: 15.5px !important;
             line-height: 1.15 !important;
         }
         #user-form-modal .form-input,
