@@ -2136,6 +2136,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #r
         width: auto !important;
         display: block !important;
         object-fit: contain !important;
+        transform: translateY(-2px) !important;
     }
     
     .hero-logo {
@@ -2195,7 +2196,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #r
         overflow-wrap: normal !important;
         -webkit-line-clamp: unset !important;
         text-overflow: ellipsis !important;
-        transform: translateY(2px) !important;
+        transform: translateY(4px) !important;
     }
     /* Ana uygulama ana ekran header mobil: ana başlık +0.6pt (≈0.8px) */
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero h1 {
@@ -2767,6 +2768,9 @@ body.modal-open .app-container {
     border-bottom-left-radius: 12px !important;
     border-bottom-right-radius: 12px !important;
   }
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .app-container::before {
+    bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
+  }
 }
 
 /* === NOKTA ATIŞI: Kırmızı yan çizgiler footer hizasında çivili (sarkan/kısa kalma yok) === */
@@ -2810,6 +2814,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-logo img {
     height: 35px !important;
     width: auto !important;
+    transform: translateY(-2px) !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-user-name {
     display: block !important;
@@ -2823,7 +2828,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
     overflow-wrap: normal !important;
     -webkit-line-clamp: unset !important;
     text-overflow: ellipsis !important;
-    transform: translateY(2px) !important;
+    transform: translateY(4px) !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero h1 {
     letter-spacing: 1.8px !important;
