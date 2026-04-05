@@ -4981,7 +4981,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   /* 1. satıra dokunulmaz. 2. satır (subtitle) 768px'ten 1pt küçük */
   .dashboard-page .hero-title-wrap .hero-panel-subtitle,
   .dashboard-page .hero-title-block .hero-panel-subtitle {
-    font-size: 20px !important; /* 21px - 1pt */
+    font-size: 19px !important; /* 20px - 1pt */
   }
   .login-page .hero-title-block .hero-panel-subtitle {
     font-size: 19px !important; /* 20px - 1pt */
