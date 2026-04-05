@@ -1505,7 +1505,7 @@
     font-size: 11px !important;
     min-height: 33px !important;
     height: 33px !important;
-    line-height: 33px !important;
+    line-height: 1 !important;
     box-sizing: border-box !important;
   }
   .olay-ekle-modal .modal-body > div > div:has(> .olay-tarih-input),
@@ -2087,7 +2087,7 @@
     #dinamik-olay-modal .modal-body .olay-tarih-input {
       min-height: 33px !important;
       height: 33px !important;
-      line-height: 33px !important;
+      line-height: 1 !important;
     }
     #dinamik-olay-modal .modal-body .date-placeholder {
       font-size: 11px !important;
