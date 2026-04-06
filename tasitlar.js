@@ -2807,6 +2807,45 @@ function renderVehicleDetailLeft(vehicle) {
     return m ? (m[3] + '/' + m[2] + '/' + m[1]) : '';
   }
 
+  /**
+   * Olay Ekle (#dinamik-olay-modal) type=date: mobil WebKit .has-value + iOS ilk çizim.
+   * Taşıtlar modülü kayit.js olmadan yüklenebildiği için burada bağlanır (tek nokta).
+   */
+  function syncDinamikOlayDateInputVisual(input) {
+    if (!input || input.type !== 'date' || !input.closest('#dinamik-olay-modal')) return;
+    const hasValue = !!input.value;
+    input.classList.toggle('has-value', hasValue);
+    input.style.color = (hasValue || input === document.activeElement) ? '#888' : 'transparent';
+  }
+  function repaintDinamikOlayDateInput(input) {
+    if (!input || input.type !== 'date') return;
+    var val = input.value;
+    if (val) {
+      input.value = '';
+      requestAnimationFrame(function() {
+        input.value = val;
+        syncDinamikOlayDateInputVisual(input);
+      });
+    } else {
+      syncDinamikOlayDateInputVisual(input);
+    }
+  }
+  function bindDinamikOlayDateInputsForIos(modal) {
+    if (!modal) return;
+    modal.querySelectorAll('input[type="date"].form-input').forEach(function(input) {
+      if (!input.closest('#dinamik-olay-modal')) return;
+      if (!input.dataset.olayDateIosBound) {
+        input.dataset.olayDateIosBound = '1';
+        function onUpd() { syncDinamikOlayDateInputVisual(input); }
+        input.addEventListener('change', onUpd);
+        input.addEventListener('input', onUpd);
+        input.addEventListener('blur', onUpd);
+        input.addEventListener('focus', onUpd);
+      }
+      repaintDinamikOlayDateInput(input);
+    });
+  }
+
   /** Mobil: sigorta/kasko/muayene gg/aa/yyyy metin alanına yerel tarih seçici + simge */
   function setupMobileOlayGgAaYyyyPickers(modal) {
     if (!modal) return;
@@ -2827,18 +2866,21 @@ function renderVehicleDetailLeft(vehicle) {
       wrap.appendChild(textEl);
       textEl.classList.add('olay-date-mobile-text');
 
+      const pickerSlot = document.createElement('div');
+      pickerSlot.className = 'olay-date-mobile-picker-slot';
+
       const nativeInp = document.createElement('input');
       nativeInp.type = 'date';
       nativeInp.className = 'olay-date-mobile-native';
-      nativeInp.setAttribute('aria-hidden', 'true');
-      nativeInp.tabIndex = -1;
+      nativeInp.setAttribute('aria-label', 'Tarih se\u00e7');
       const iso0 = parseGgAaYyyyToIso(textEl.value);
       if (iso0) nativeInp.value = iso0;
 
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.className = 'olay-date-mobile-btn';
-      btn.setAttribute('aria-label', 'Tarih se\u00e7');
+      btn.setAttribute('aria-hidden', 'true');
+      btn.tabIndex = -1;
       btn.innerHTML = calendarSvg;
 
       function syncNativeFromText() {
@@ -2853,22 +2895,10 @@ function renderVehicleDetailLeft(vehicle) {
       textEl.addEventListener('change', syncNativeFromText);
       nativeInp.addEventListener('change', syncTextFromNative);
 
-      btn.addEventListener('click', function(ev) {
-        ev.preventDefault();
-        syncNativeFromText();
-        if (typeof nativeInp.showPicker === 'function') {
-          try {
-            nativeInp.showPicker();
-          } catch (err) {
-            nativeInp.click();
-          }
-        } else {
-          nativeInp.click();
-        }
-      });
-
-      wrap.appendChild(nativeInp);
-      wrap.appendChild(btn);
+      /* iOS Safari: ekran dışındaki type=date üzerinde showPicker/click genelde çalışmaz; dokunuş doğrudan görünür alandaki inputa gitmeli */
+      pickerSlot.appendChild(btn);
+      pickerSlot.appendChild(nativeInp);
+      wrap.appendChild(pickerSlot);
     });
   }
 
@@ -3535,6 +3565,7 @@ function renderVehicleDetailLeft(vehicle) {
             }
           });
           setupMobileOlayGgAaYyyyPickers(modal);
+          bindDinamikOlayDateInputsForIos(modal);
         }, 100);
       }
     }
