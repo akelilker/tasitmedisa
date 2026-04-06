@@ -73,7 +73,7 @@
   filter: brightness(0.88);
 }
 .driver-splash-title {
-  font-size: clamp(16px, 4.5vw, 24px);
+  font-size: clamp(calc(16px - 0.5pt), 4.5vw, calc(24px - 0.5pt));
   font-weight: 800;
   letter-spacing: clamp(1px, 0.5vw, 4px);
   text-transform: uppercase;
@@ -86,7 +86,7 @@
 }
 /* KULLANICI PANELİ: başlık altında, 1pt küçük, aynı renk */
 .driver-splash-subtitle {
-  font-size: clamp(15px, 4vw, 22px);
+  font-size: clamp(calc(15px - 0.5pt), 4vw, calc(22px - 0.5pt));
   font-weight: 800;
   letter-spacing: clamp(1px, 0.5vw, 3.5px);
   text-transform: uppercase;
@@ -319,14 +319,14 @@ body.dashboard-page {
   max-width: none;
   overflow: visible;
   color: rgba(222, 229, 235, 0.92);
-  font-size: clamp(8px, 1.55vw, 10px);
+  font-size: clamp(calc(8px - 0.5pt), 1.55vw, calc(10px - 0.5pt));
   font-weight: 600;
   line-height: 1.15;
   text-align: center;
   letter-spacing: 0.01em;
   word-break: normal;
   white-space: nowrap;
-  transform: translateY(7px);
+  transform: translateY(4px); /* önceki 7px − 3px yukarı */
 }
 .dashboard-page .main-header-user-name.is-empty {
   display: none;
@@ -371,7 +371,7 @@ body.dashboard-page {
   flex: 0 1 auto;
   min-width: 0;
   margin: 0;
-  font-size: clamp(16px, 4.5vw, 24px);
+  font-size: clamp(calc(16px - 0.5pt), 4.5vw, calc(24px - 0.5pt));
   font-weight: 800;
   letter-spacing: clamp(1px, 0.5vw, 4px);
   text-transform: uppercase;
@@ -402,15 +402,6 @@ body.dashboard-page {
   align-items: center;
   gap: 8px;
   flex-shrink: 0;
-}
-
-.driver-user-name {
-  font-size: 14px; /* +2 punto */
-  color: var(--muted);
-  max-width: 100px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 /* --- İşlem geçmişi (sol) + Bildirimler (orta) + Çıkış (sağ) - 8px çerçeve boşluğu --- */
@@ -486,7 +477,7 @@ body.dashboard-page {
 /* KULLANICI PANELİ: h1 altında, 1pt küçük, aynı renk (metalik gradient) */
 .hero-title-wrap .hero-panel-subtitle,
 .hero-title-block .hero-panel-subtitle {
-  font-size: 17px;
+  font-size: calc(17px - 0.5pt);
   font-weight: 800;
   margin: 0;
   letter-spacing: 4px;
@@ -512,7 +503,7 @@ body.dashboard-page {
 /* Sadece kullanıcı paneli: alt başlık (KULLANICI PANELİ) 0.7 pt küçük; üst satıra dokunulmaz */
 .dashboard-page .hero-title-wrap .hero-panel-subtitle,
 .dashboard-page .hero-title-block .hero-panel-subtitle {
-  font-size: calc(17px - 0.7pt);
+  font-size: calc(17px - 0.7pt - 0.5pt);
 }
 
 /* Ara aralık (641px–768px): logo başlık üzerine binmesin – 56px sütunlar, margin yok */
@@ -547,14 +538,14 @@ body.dashboard-page {
   /* Başlık metinleri 1pt küçük (641–768px) */
   .dashboard-page .hero.hero-two-rows .hero-title-block .hero-title-line,
   .login-page .hero.hero-two-rows .hero-title-block .hero-title-line {
-    font-size: clamp(calc(16px - 1pt), 4.2vw, calc(20px - 1pt)) !important;
+    font-size: clamp(calc(16px - 1pt - 0.5pt), 4.2vw, calc(20px - 1pt - 0.5pt)) !important;
     letter-spacing: clamp(1px, 0.4vw, 3px) !important;
   }
   .dashboard-page .hero-title-block .hero-panel-subtitle {
-    font-size: calc(17px - 1pt - 0.7pt) !important;
+    font-size: calc(17px - 1pt - 0.7pt - 0.5pt) !important;
   }
   .login-page .hero-title-block .hero-panel-subtitle {
-    font-size: calc(17px - 1pt) !important;
+    font-size: calc(17px - 1pt - 0.5pt) !important;
   }
 }
 
@@ -562,17 +553,17 @@ body.dashboard-page {
 @media (min-width: 769px) {
   .hero-title-wrap .hero-panel-subtitle,
   .hero-title-block .hero-panel-subtitle {
-    font-size: 17px;
+    font-size: calc(17px - 0.5pt);
     letter-spacing: 3px;
   }
   .dashboard-page .hero-title-wrap .hero-panel-subtitle,
   .dashboard-page .hero-title-block .hero-panel-subtitle {
-    font-size: calc(17px - 0.7pt);
+    font-size: calc(17px - 0.7pt - 0.5pt);
   }
   /* Kullanıcı Paneli + Login: başlık kutunun içine sığsın */
   .dashboard-page .hero.hero-two-rows .hero-title-line,
   .login-page .hero.hero-two-rows .hero-title-line {
-    font-size: clamp(16px, 4.5vw, 20px) !important;
+    font-size: clamp(calc(16px - 0.5pt), 4.5vw, calc(20px - 0.5pt)) !important;
     letter-spacing: clamp(1px, 0.45vw, 3px) !important;
   }
   .dashboard-page .hero {
@@ -970,21 +961,6 @@ body.dashboard-page {
 }
 .driver-user-plate-row.driver-user-plate-in-panel {
   gap: 1px; /* Panelde plaka–model arası toplam 1px (.driver-user-plate-row 4px'i override eder) */
-}
-.driver-user-plate-row .driver-user-name {
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--txt);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: block;
-  width: 100%;
-}
-/* Panel: isim ve marka/model kendi gridinde ortalanır */
-.driver-user-plate-in-panel .driver-user-name,
-.driver-user-plate-in-panel .driver-plate-subtitle {
-  text-align: center;
-  align-self: center;
 }
 .driver-plate-subtitle {
   font-size: 14px;
@@ -1431,8 +1407,6 @@ body.dashboard-page {
   .driver-action-btn.data-entered:hover {
     border-color: rgba(255, 255, 255, 0.5);
   }
-  .driver-user-name { font-size: 14.5px; }
-  .driver-user-plate-row .driver-user-name { font-size: 12.5px; }
   .driver-current-plaka { font-size: 13.5px; } /* 14.5 - 1pt */
   .driver-plate-subtitle { font-size: 14.5px; }
   .driver-user-plate-in-panel .driver-plate-subtitle { font-size: 15.5px; }
@@ -1566,13 +1540,13 @@ body.dashboard-page {
     display: block !important;
     max-width: none !important;
     overflow: visible !important;
-    font-size: clamp(8px, 2.35vw, 10.5px) !important;
+    font-size: clamp(calc(8px - 0.5pt), 2.35vw, calc(10.5px - 0.5pt)) !important;
     line-height: 1.12 !important;
     letter-spacing: 0 !important;
     white-space: nowrap !important;
     word-break: normal !important;
     text-overflow: clip !important;
-    transform: translate(5px, 10px) !important; /* +5px sağa, +3px aşağı (önceki 7px Y) */
+    transform: translate(5px, 7px) !important; /* mobil: önceki 10px Y − 3px yukarı */
   }
   .login-page .hero.hero-two-rows .hero-logo {
     flex: 0 0 56px !important;
@@ -1588,7 +1562,7 @@ body.dashboard-page {
   .dashboard-page .hero.hero-two-rows .hero-title-block .hero-title-line {
     width: 100%;
     max-width: 100%;
-    font-size: clamp(calc(19px - 1pt), 5.5vw, calc(23px - 1pt)) !important;
+    font-size: clamp(calc(19px - 1pt - 0.5pt), 5.5vw, calc(23px - 1pt - 0.5pt)) !important;
     letter-spacing: 2.5px !important;
     line-height: 1.25 !important;
     white-space: nowrap !important;
@@ -1596,13 +1570,13 @@ body.dashboard-page {
     text-overflow: ellipsis !important;
   }
   .login-page .hero.hero-two-rows .hero-title-block .hero-title-line {
-    font-size: clamp(calc(18px - 1pt), 5vw, calc(22px - 1pt)) !important;
+    font-size: clamp(calc(18px - 1pt - 0.5pt), 5vw, calc(22px - 1pt - 0.5pt)) !important;
   }
   .dashboard-page .hero-title-block .hero-panel-subtitle {
-    font-size: calc(17px - 1pt - 0.7pt) !important;
+    font-size: calc(17px - 1pt - 0.7pt - 0.5pt) !important;
   }
   .login-page .hero-title-block .hero-panel-subtitle {
-    font-size: calc(17px - 1pt) !important;
+    font-size: calc(17px - 1pt - 0.5pt) !important;
     white-space: nowrap !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
@@ -3945,14 +3919,11 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
   .login-page .hero-title-wrap .hero-panel-subtitle,
   .login-page .hero-title-block .hero-panel-subtitle {
-    font-size: 22px; /* h1 (23px) - 1pt küçük */
+    font-size: calc(22px - 0.5pt); /* h1 (23px) - 1pt küçük − 0.5pt */
   }
   .dashboard-page .hero-title-wrap .hero-panel-subtitle,
   .dashboard-page .hero-title-block .hero-panel-subtitle {
-    font-size: calc(22px - 0.7pt);
-  }
-  .driver-user-name {
-    display: none;
+    font-size: calc(22px - 0.7pt - 0.5pt);
   }
   .vehicle-header h3 {
     font-size: 18px;
@@ -4641,19 +4612,19 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     font-size: 23px !important;
   }
   .login-page .hero h1 {
-    font-size: clamp(17.8px, 5.1vw, 21.8px) !important;
+    font-size: clamp(calc(17.8px - 0.5pt), 5.1vw, calc(21.8px - 0.5pt)) !important;
     letter-spacing: 2px !important;
     padding: 0 2px !important;
   }
   .login-page .hero-panel-subtitle {
-    font-size: 20px !important; /* h1'e göre 1pt küçük */
+    font-size: calc(20px - 0.5pt) !important; /* h1'e göre 1pt küçük − 0.5pt */
   }
   .login-page #app-footer.login-footer .footer-content {
     font-size: 14px !important;
   }
 
   /* 2. Kullanıcı paneli – tüm metinler +1pt (paneldeki bütün harfler 1 punto büyük) */
-  /* .label, .value, .driver-current-plaka, .driver-user-name – aşağıdaki Sol panel bloğunda */
+  /* .label, .value, .driver-current-plaka – aşağıdaki Sol panel bloğunda */
   .dashboard-page .driver-action-btn {
     font-size: 14px !important;
     white-space: normal !important;
@@ -4696,10 +4667,10 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
   .dashboard-page .hero-title-wrap .hero-panel-subtitle,
   .dashboard-page .hero-title-block .hero-panel-subtitle {
-    font-size: calc(21px - 0.7pt) !important; /* 22px - 1pt - 0.7pt (kullanıcı paneli alt başlık) */
+    font-size: calc(21px - 0.7pt - 0.5pt) !important; /* 22px - 1pt - 0.7pt − 0.5pt */
   }
   .dashboard-page .hero h1 {
-    font-size: 23px !important; /* 24px - 1pt */
+    font-size: calc(23px - 0.5pt) !important; /* 24px - 1pt − 0.5pt */
   }
   .dashboard-page .driver-report-block .form-group label {
     font-size: 15px !important;
@@ -4739,10 +4710,6 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
   .dashboard-page .driver-left-panel .driver-current-plaka {
     font-size: calc(15px - 1pt) !important; /* Plaka 1pt küçük */
-  }
-  .dashboard-page .driver-left-panel .driver-user-name,
-  .dashboard-page .driver-user-plate-in-panel .driver-user-name {
-    font-size: 15px !important;
   }
   .dashboard-page .driver-left-panel .driver-plate-subtitle {
     font-size: calc(16px - 1pt) !important; /* Marka/model 1pt küçük */
@@ -4999,11 +4966,11 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   /* Mobil: h1 boyut ve harf aralığı (1pt küçük) */
   .hero-title-wrap h1,
   .dashboard-page .hero h1 {
-    font-size: 22px !important; /* 23px - 1pt */
+    font-size: calc(22px - 0.5pt) !important; /* 23px - 1pt − 0.5pt */
     letter-spacing: 2.5px !important;
   }
   .login-page .hero h1 {
-    font-size: clamp(17.8px, 5.1vw, 21.8px) !important;
+    font-size: clamp(calc(17.8px - 0.5pt), 5.1vw, calc(21.8px - 0.5pt)) !important;
     letter-spacing: 2px !important;
     padding: 0 2px !important;
   }
@@ -5097,10 +5064,10 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   /* 1. satıra dokunulmaz. 2. satır (subtitle) 768px'ten 1pt küçük; kullanıcı panelinde ek 0.7pt */
   .dashboard-page .hero-title-wrap .hero-panel-subtitle,
   .dashboard-page .hero-title-block .hero-panel-subtitle {
-    font-size: calc(19px - 0.7pt) !important; /* 20px - 1pt - 0.7pt */
+    font-size: calc(19px - 0.7pt - 0.5pt) !important; /* 20px - 1pt - 0.7pt − 0.5pt */
   }
   .login-page .hero-title-block .hero-panel-subtitle {
-    font-size: 19px !important; /* 20px - 1pt */
+    font-size: calc(19px - 0.5pt) !important; /* 20px - 1pt − 0.5pt */
   }
   /* Sağ grid butonları: dikey yükseklik +2px */
   .dashboard-page .driver-report-btn {
@@ -5212,7 +5179,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 .hero-title-wrap h1,
 .login-page .hero h1,
 .dashboard-page .hero h1 {
-  font-size: 22px;
+  font-size: calc(22px - 0.5pt);
   font-weight: 800;
   letter-spacing: 4px;
   text-transform: uppercase;
@@ -5441,10 +5408,6 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     .dashboard-page .driver-left-panel .driver-info-item .label,
     .dashboard-page .driver-left-panel .driver-info-item .value {
         font-size: calc(13px + 0.93px) !important;
-    }
-    .dashboard-page .driver-left-panel .driver-user-plate-row .driver-user-name,
-    .dashboard-page .driver-left-panel .driver-user-plate-in-panel .driver-user-name {
-        font-size: calc(14px + 0.93px) !important;
     }
     .dashboard-page .driver-left-panel .driver-current-plaka {
         font-size: calc((14px - 1pt) + 0.93px) !important;
