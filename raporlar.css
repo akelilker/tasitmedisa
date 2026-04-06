@@ -2670,7 +2670,7 @@ word-break: normal;
 overflow-wrap: break-word;
 overflow: visible;
 text-overflow: clip;
-vertical-align: top;
+vertical-align: middle;
 }
 /* Başlık: kelime ortasından bölünmesin (Takip → Taki|p gibi); önce boşlukta kır */
 #stok-print-area .stok-print-table thead th {
@@ -2679,21 +2679,47 @@ overflow-wrap: break-word;
 line-height: 1.25;
 padding-top: 5px;
 padding-bottom: 5px;
+vertical-align: middle;
 }
 /* UTTS / Tramer: tek satır başlık (UTT|S kırılmasın); sütun genişliği raporlar.js ağırlıkla desteklenir */
 #stok-print-area .stok-print-table thead th[data-col="utts"],
 #stok-print-area .stok-print-table thead th[data-col="tramer"] {
 white-space: nowrap;
 }
-/* Sıra + şube: yatay padding −3px — metin çerçeveye yaklaşır (yalnız yazdırma) */
-#stok-print-area .stok-print-table th[data-col="sira"],
-#stok-print-area .stok-print-table td[data-col="sira"],
+/* Şube: yatay padding sıkı (yalnız yazdırma) */
 #stok-print-area .stok-print-table th[data-col="sube"],
 #stok-print-area .stok-print-table td[data-col="sube"] {
 padding-left: 2px !important;
 padding-right: 2px !important;
 }
-/* Plaka: tek satır, tam metin; ellipsis yok */
+/* No.: mümkün olan en dar — çerçeveye ~1px; ağırlık raporlar.js sira:3 */
+#stok-print-area .stok-print-table th[data-col="sira"],
+#stok-print-area .stok-print-table td[data-col="sira"] {
+padding-left: 1px !important;
+padding-right: 1px !important;
+}
+/* Tarih sütunları: nowrap kaldırıldı — dar sütunda taşma yerine hücre içi kırılım */
+#stok-print-area .stok-print-table th[data-col="sigorta"],
+#stok-print-area .stok-print-table td[data-col="sigorta"],
+#stok-print-area .stok-print-table th[data-col="kasko"],
+#stok-print-area .stok-print-table td[data-col="kasko"],
+#stok-print-area .stok-print-table th[data-col="muayene"],
+#stok-print-area .stok-print-table td[data-col="muayene"],
+#stok-print-area .stok-print-table th[data-col="tescil"],
+#stok-print-area .stok-print-table td[data-col="tescil"] {
+white-space: normal !important;
+word-break: normal !important;
+overflow-wrap: break-word !important;
+overflow: hidden !important;
+}
+/* Tarih gövde hücreleri: boşluksuz uzun metin taşmasın */
+#stok-print-area .stok-print-table tbody td[data-col="sigorta"],
+#stok-print-area .stok-print-table tbody td[data-col="kasko"],
+#stok-print-area .stok-print-table tbody td[data-col="muayene"],
+#stok-print-area .stok-print-table tbody td[data-col="tescil"] {
+overflow-wrap: anywhere !important;
+}
+/* Plaka, yıl, şanzıman, km, sıra verisi: tek satır (tarih hariç) */
 #stok-print-area .stok-print-table th[data-col="plaka"],
 #stok-print-area .stok-print-table td[data-col="plaka"],
 #stok-print-area .stok-print-table th[data-col="yil"],
@@ -2703,19 +2729,11 @@ padding-right: 2px !important;
 #stok-print-area .stok-print-table th[data-col="km"],
 #stok-print-area .stok-print-table td[data-col="km"],
 #stok-print-area .stok-print-table th[data-col="sira"],
-#stok-print-area .stok-print-table td[data-col="sira"],
-#stok-print-area .stok-print-table th[data-col="sigorta"],
-#stok-print-area .stok-print-table td[data-col="sigorta"],
-#stok-print-area .stok-print-table th[data-col="kasko"],
-#stok-print-area .stok-print-table td[data-col="kasko"],
-#stok-print-area .stok-print-table th[data-col="muayene"],
-#stok-print-area .stok-print-table td[data-col="muayene"],
-#stok-print-area .stok-print-table th[data-col="tescil"],
-#stok-print-area .stok-print-table td[data-col="tescil"] {
+#stok-print-area .stok-print-table td[data-col="sira"] {
 white-space: nowrap !important;
 word-break: normal !important;
 overflow-wrap: normal !important;
-overflow: visible !important;
+overflow: hidden !important;
 }
 #stok-print-area .stok-print-table thead tr {
 background: #404040;
