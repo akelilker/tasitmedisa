@@ -278,7 +278,7 @@ body.dashboard-page {
   max-height: 100%;
   object-fit: contain;
 }
-/* Ana uygulama ile aynı: kullanıcı adı logo altında (masaüstü 2 satır, mobil tek satır ellipsis) */
+/* Kullanıcı paneli: isim logo altında; dar sütunda çok satır, ellipsis yok (ana uygulama mobilde tek satır kısaltır) */
 .dashboard-page .hero.hero-two-rows .hero-logo {
   display: flex;
   flex-direction: column;
@@ -286,25 +286,24 @@ body.dashboard-page {
   justify-content: center;
   gap: 2px;
   min-width: 0;
+  overflow: visible;
 }
 .dashboard-page .hero.hero-two-rows .hero-logo picture {
   display: block;
   width: 100%;
 }
 .dashboard-page .main-header-user-name {
-  display: -webkit-box;
+  display: block;
   max-width: 100%;
-  overflow: hidden;
+  overflow: visible;
   color: rgba(222, 229, 235, 0.92);
   font-size: clamp(8px, 1.55vw, 10px);
   font-weight: 600;
-  line-height: 1.1;
+  line-height: 1.15;
   text-align: center;
   letter-spacing: 0.01em;
   word-break: break-word;
   white-space: normal;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
   transform: translateY(4px);
 }
 .dashboard-page .main-header-user-name.is-empty {
@@ -488,6 +487,12 @@ body.dashboard-page {
   text-rendering: optimizeLegibility;
 }
 
+/* Sadece kullanıcı paneli: alt başlık (KULLANICI PANELİ) 0.7 pt küçük; üst satıra dokunulmaz */
+.dashboard-page .hero-title-wrap .hero-panel-subtitle,
+.dashboard-page .hero-title-block .hero-panel-subtitle {
+  font-size: calc(17px - 0.7pt);
+}
+
 /* Ara aralık (641px–768px): logo başlık üzerine binmesin – 56px sütunlar, margin yok */
 @media (min-width: 641px) and (max-width: 768px) {
   .dashboard-page .hero.hero-two-rows,
@@ -511,7 +516,9 @@ body.dashboard-page {
     font-size: clamp(calc(16px - 1pt), 4.2vw, calc(20px - 1pt)) !important;
     letter-spacing: clamp(1px, 0.4vw, 3px) !important;
   }
-  .dashboard-page .hero-title-block .hero-panel-subtitle,
+  .dashboard-page .hero-title-block .hero-panel-subtitle {
+    font-size: calc(17px - 1pt - 0.7pt) !important;
+  }
   .login-page .hero-title-block .hero-panel-subtitle {
     font-size: calc(17px - 1pt) !important;
   }
@@ -523,6 +530,10 @@ body.dashboard-page {
   .hero-title-block .hero-panel-subtitle {
     font-size: 17px;
     letter-spacing: 3px;
+  }
+  .dashboard-page .hero-title-wrap .hero-panel-subtitle,
+  .dashboard-page .hero-title-block .hero-panel-subtitle {
+    font-size: calc(17px - 0.7pt);
   }
   /* Kullanıcı Paneli + Login: başlık kutunun içine sığsın */
   .dashboard-page .hero.hero-two-rows .hero-title-line,
@@ -1497,19 +1508,19 @@ body.dashboard-page {
     width: 56px !important;
     transform: translate(-18px, 13px) !important;
     margin-top: 0 !important;
+    overflow: visible !important;
   }
   .dashboard-page .main-header-user-name {
     display: block !important;
     max-width: 100% !important;
-    overflow: hidden !important;
-    font-size: clamp(10px, 2.55vw, 11.5px) !important;
-    line-height: 1.05 !important;
+    overflow: visible !important;
+    font-size: clamp(9px, 2.55vw, 11.5px) !important;
+    line-height: 1.12 !important;
     letter-spacing: 0 !important;
-    white-space: nowrap !important;
-    word-break: keep-all !important;
-    overflow-wrap: normal !important;
-    -webkit-line-clamp: unset !important;
-    text-overflow: ellipsis !important;
+    white-space: normal !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+    text-overflow: clip !important;
     transform: translateY(7px) !important;
   }
   .login-page .hero.hero-two-rows .hero-logo {
@@ -1537,11 +1548,11 @@ body.dashboard-page {
   .login-page .hero.hero-two-rows .hero-title-block .hero-title-line {
     font-size: clamp(calc(18px - 1pt), 5vw, calc(22px - 1pt)) !important;
   }
-  .dashboard-page .hero-title-block .hero-panel-subtitle,
-  .login-page .hero-title-block .hero-panel-subtitle {
-    font-size: calc(17px - 1pt) !important;
+  .dashboard-page .hero-title-block .hero-panel-subtitle {
+    font-size: calc(17px - 1pt - 0.7pt) !important;
   }
   .login-page .hero-title-block .hero-panel-subtitle {
+    font-size: calc(17px - 1pt) !important;
     white-space: nowrap !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
@@ -3882,9 +3893,13 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     font-size: 15px;
     letter-spacing: 0.05em;
   }
-  .hero-title-wrap .hero-panel-subtitle,
-  .hero-title-block .hero-panel-subtitle {
+  .login-page .hero-title-wrap .hero-panel-subtitle,
+  .login-page .hero-title-block .hero-panel-subtitle {
     font-size: 22px; /* h1 (23px) - 1pt küçük */
+  }
+  .dashboard-page .hero-title-wrap .hero-panel-subtitle,
+  .dashboard-page .hero-title-block .hero-panel-subtitle {
+    font-size: calc(22px - 0.7pt);
   }
   .driver-user-name {
     display: none;
@@ -4631,7 +4646,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
   .dashboard-page .hero-title-wrap .hero-panel-subtitle,
   .dashboard-page .hero-title-block .hero-panel-subtitle {
-    font-size: 21px !important; /* 22px - 1pt */
+    font-size: calc(21px - 0.7pt) !important; /* 22px - 1pt - 0.7pt (kullanıcı paneli alt başlık) */
   }
   .dashboard-page .hero h1 {
     font-size: 23px !important; /* 24px - 1pt */
@@ -5029,10 +5044,10 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     padding-right: max(12px, env(safe-area-inset-right, 0)) !important;
   }
 
-  /* 1. satıra dokunulmaz. 2. satır (subtitle) 768px'ten 1pt küçük */
+  /* 1. satıra dokunulmaz. 2. satır (subtitle) 768px'ten 1pt küçük; kullanıcı panelinde ek 0.7pt */
   .dashboard-page .hero-title-wrap .hero-panel-subtitle,
   .dashboard-page .hero-title-block .hero-panel-subtitle {
-    font-size: 19px !important; /* 20px - 1pt */
+    font-size: calc(19px - 0.7pt) !important; /* 20px - 1pt - 0.7pt */
   }
   .login-page .hero-title-block .hero-panel-subtitle {
     font-size: 19px !important; /* 20px - 1pt */
