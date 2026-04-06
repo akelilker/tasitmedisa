@@ -1710,11 +1710,6 @@
     font-size: clamp(11px, 2.8vw, 17px) !important;
   }
 
-  /* Mobil kullanıcı atama input yüksekliği +3px */
-  #kullanici-atama-modal .form-input {
-    height: 31px !important;
-  }
-
   /* Dinamik olay: şube/kullanıcı select — büyük font + yeterli yükseklik (iOS kırpma önleme) */
   #dinamik-olay-modal .modal-body select.form-input {
     min-height: 47px !important;
