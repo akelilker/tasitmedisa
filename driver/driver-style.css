@@ -277,7 +277,7 @@ body.dashboard-page {
   grid-column: 1;
   justify-self: start;
   flex-shrink: 0;
-  margin-left: 10px; /* Soldan viraja takılmaması için hafif sağa */
+  margin-left: 10px; /* Login: hafif sağa; kullanıcı paneli aşağıda margin-left:0 */
   transform: translateY(-6px);
 }
 .hero.hero-two-rows .hero-logo img {
@@ -297,10 +297,21 @@ body.dashboard-page {
   min-width: var(--hero-logo-width);
   max-width: min(200px, 46vw);
   overflow: visible;
+  margin-left: 0;
+  /* Yatay -18px / PWA -23px zıplamasın: hizayı grid + justify-self ile veriyoruz */
+  transform: translate(0, -6px);
 }
 .dashboard-page .hero.hero-two-rows .hero-logo picture {
   display: block;
   width: 100%;
+  max-width: 54px;
+  margin: 0 auto;
+}
+.dashboard-page .hero.hero-two-rows .hero-logo img {
+  width: 100% !important;
+  height: auto !important;
+  max-height: none;
+  object-fit: contain;
 }
 .dashboard-page .main-header-user-name {
   display: block;
@@ -514,10 +525,13 @@ body.dashboard-page {
   .dashboard-page .hero.hero-two-rows .hero-logo {
     flex: 0 1 auto !important;
     width: max-content !important;
-    min-width: 56px !important;
+    min-width: 52px !important;
     max-width: min(200px, 46vw) !important;
     margin-left: 0 !important;
-    transform: translate(0, -6px) !important;
+    transform: translate(0, -8px) !important;
+  }
+  .dashboard-page .hero.hero-two-rows .hero-logo picture {
+    max-width: 52px !important;
   }
   .login-page .hero.hero-two-rows .hero-logo {
     flex: 0 0 56px !important;
@@ -617,14 +631,17 @@ body.dashboard-page {
   }
   /* ========== MASAÜSTÜ (769px+) – Header logo: 76×76px, pozisyon (-18px, 6.5px) ========== */
   .dashboard-page .hero.hero-two-rows {
-    grid-template-columns: minmax(76px, max-content) minmax(0, 1fr) 76px !important;
+    grid-template-columns: minmax(68px, max-content) minmax(0, 1fr) 72px !important;
   }
   .dashboard-page .hero.hero-two-rows .hero-logo {
     flex: 0 1 auto !important;
     width: max-content !important;
-    min-width: 76px !important;
-    max-width: min(240px, 32vw) !important;
-    transform: translate(-18px, 3.5px) scale(0.97) !important;
+    min-width: 68px !important;
+    max-width: min(220px, 30vw) !important;
+    transform: translate(0, -4px) !important;
+  }
+  .dashboard-page .hero.hero-two-rows .hero-logo picture {
+    max-width: 66px !important;
   }
   .login-page .hero.hero-two-rows .hero-logo {
     flex: 0 0 76px !important;
@@ -1534,11 +1551,15 @@ body.dashboard-page {
     gap: 2px !important;
     flex: 0 1 auto !important;
     width: max-content !important;
-    min-width: 56px !important;
+    min-width: 52px !important;
     max-width: min(200px, 46vw) !important;
-    transform: translate(-18px, 13px) !important;
+    transform: translate(0, 2px) !important;
     margin-top: 0 !important;
+    margin-left: 0 !important;
     overflow: visible !important;
+  }
+  .dashboard-page .hero.hero-two-rows .hero-logo picture {
+    max-width: 50px !important;
   }
   .dashboard-page .main-header-user-name {
     display: block !important;
@@ -1550,7 +1571,7 @@ body.dashboard-page {
     white-space: nowrap !important;
     word-break: normal !important;
     text-overflow: clip !important;
-    transform: translateY(7px) !important;
+    transform: translateY(4px) !important;
   }
   .login-page .hero.hero-two-rows .hero-logo {
     flex: 0 0 56px !important;
@@ -5093,14 +5114,12 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .login-page .driver-dashboard-container::before {
     border-top-width: 1.2px !important;
   }
-  /* Header logosu: 3px sola, %97 ölçek (100→97) */
-  .dashboard-page .hero.hero-two-rows .hero-logo,
+  /* PWA: login başlık hizası eski kaydırma; kullanıcı paneli tarayıcı ile aynı (yatay zıplama yok) */
   .login-page .hero.hero-two-rows .hero-logo {
     transform: translate(-19px, 13px) scale(0.97) !important;
   }
 }
 @media (min-width: 641px) and (max-width: 768px) and (display-mode: standalone) {
-  .dashboard-page .hero.hero-two-rows .hero-logo,
   .login-page .hero.hero-two-rows .hero-logo {
     transform: translate(-23px, 9.5px) scale(0.97) !important;
   }
