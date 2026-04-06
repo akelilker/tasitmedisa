@@ -2666,11 +2666,19 @@ padding: 3px 5px;
 text-align: center;
 box-sizing: border-box;
 white-space: normal;
-word-break: break-word;
-overflow-wrap: anywhere;
+word-break: normal;
+overflow-wrap: break-word;
 overflow: visible;
 text-overflow: clip;
 vertical-align: top;
+}
+/* Başlık: kelime ortasından bölünmesin (Takip → Taki|p gibi); önce boşlukta kır */
+#stok-print-area .stok-print-table thead th {
+word-break: normal;
+overflow-wrap: break-word;
+line-height: 1.25;
+padding-top: 5px;
+padding-bottom: 5px;
 }
 /* Plaka: tek satır, tam metin; ellipsis yok */
 #stok-print-area .stok-print-table th[data-col="plaka"],
@@ -2709,8 +2717,8 @@ color: #fff;
 #stok-print-area .stok-print-table th[data-col="kaskoDegeri"],
 #stok-print-area .stok-print-table td[data-col="kaskoDegeri"] {
 white-space: normal;
-word-break: break-word;
-overflow-wrap: anywhere;
+word-break: normal;
+overflow-wrap: break-word;
 }
 #stok-print-area .stok-print-table tbody tr.even { background: #fff; }
 #stok-print-area .stok-print-table tbody tr.odd { background: #e5e5e5; }
