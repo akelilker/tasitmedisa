@@ -285,6 +285,20 @@ function syncMainAppPortalLinks() {
     });
 }
 
+/** Dış Veri paneli dosya/Excel odaklı; mobil ve iOS PWA’da desteklenmiyor (ayarlar.openDisVeriPanel ile aynı kural). */
+function medisaIsDisVeriPanelUnavailableOnDevice() {
+    var hasMatchMedia = typeof window.matchMedia === 'function';
+    var isMobileViewport = hasMatchMedia
+        ? window.matchMedia('(max-width: 640px)').matches
+        : window.innerWidth <= 640;
+    var ua = navigator.userAgent || '';
+    var isiOS = /iPhone|iPad|iPod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    var isStandalone = hasMatchMedia &&
+        (window.matchMedia('(display-mode: standalone)').matches || window.matchMedia('(display-mode: fullscreen)').matches);
+    return isMobileViewport || (isiOS && (isStandalone || window.navigator.standalone === true));
+}
+window.medisaIsDisVeriPanelUnavailableOnDevice = medisaIsDisVeriPanelUnavailableOnDevice;
+
 function setMedisaSession(sessionData) {
     var tokenSession = getSessionFromToken();
     var nextSession = Object.assign({}, getDefaultSession(), tokenSession, sessionData || {});
@@ -385,7 +399,9 @@ function applyMainAppSessionUiState() {
 
     if (branchBtn) branchBtn.style.display = session.permissions.manage_branches ? '' : 'none';
     if (userBtn) userBtn.style.display = session.permissions.manage_users ? '' : 'none';
-    if (disVeriBtn) disVeriBtn.style.display = session.permissions.manage_data ? '' : 'none';
+    if (disVeriBtn) {
+        disVeriBtn.style.display = (session.permissions.manage_data && !medisaIsDisVeriPanelUnavailableOnDevice()) ? '' : 'none';
+    }
     if (backupWrap) backupWrap.style.display = session.permissions.manage_data ? '' : 'none';
     if (clearCacheBtn) {
         clearCacheBtn.style.display = (session.permissions.manage_data || session.permissions.manage_settings) ? '' : 'none';
