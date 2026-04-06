@@ -434,30 +434,24 @@
   color: var(--theme-color);
 }
 
-/* Ruhsat modal: Ruhsatı Görüntüle ve Yeni Ruhsat Yükle - çerçevesiz, arka plansız, beyaz metin (dinamik-olay-modal içinde de aynı) */
-#ruhsat-yukleme-modal .universal-back-bar,
+/* Ruhsat (#dinamik-olay-modal + #ruhsat-modal-content): Görüntüle / yükle — çerçevesiz, arka plansız, beyaz metin */
 #dinamik-olay-modal .universal-back-bar {
   transform: translateY(-8px);
   margin-bottom: -8px;
 }
-#ruhsat-yukleme-modal #ruhsat-modal-content .universal-btn-group,
 #dinamik-olay-modal #ruhsat-modal-content .universal-btn-group {
   justify-content: center;
   margin-left: auto;
   margin-right: auto;
 }
-#ruhsat-yukleme-modal #ruhsat-modal-content .universal-btn-group button:not(.ruhsat-preview-link),
 #dinamik-olay-modal #ruhsat-modal-content .universal-btn-group button:not(.ruhsat-preview-link) {
   background: transparent !important;
   border: none !important;
   color: var(--form-label-color, #ffffff) !important;
 }
-#ruhsat-yukleme-modal #ruhsat-modal-content .universal-btn-group,
 #dinamik-olay-modal #ruhsat-modal-content .universal-btn-group {
   align-items: center;
 }
-#ruhsat-yukleme-modal #ruhsat-modal-content .universal-btn-group.ruhsat-preview-row,
-#ruhsat-yukleme-modal #ruhsat-modal-content .universal-btn-group:has(.ruhsat-preview-link),
 #dinamik-olay-modal #ruhsat-modal-content .universal-btn-group.ruhsat-preview-row,
 #dinamik-olay-modal #ruhsat-modal-content .universal-btn-group:has(.ruhsat-preview-link) {
   position: relative;
@@ -470,8 +464,6 @@
   gap: 0 !important;
   padding: 16px 0 !important;
 }
-#ruhsat-yukleme-modal #ruhsat-modal-content .universal-btn-group.ruhsat-preview-row button,
-#ruhsat-yukleme-modal #ruhsat-modal-content .universal-btn-group:has(.ruhsat-preview-link) button,
 #dinamik-olay-modal #ruhsat-modal-content .universal-btn-group.ruhsat-preview-row button,
 #dinamik-olay-modal #ruhsat-modal-content .universal-btn-group:has(.ruhsat-preview-link) button {
   width: auto !important;
@@ -479,7 +471,6 @@
   min-width: 0 !important;
 }
 /* Ruhsat ön izleme çerçevesi ve ekle butonu: beyaz kalmaması için tema rengi zorunlu */
-#ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-preview-link,
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-preview-link {
   width: 120px;
   height: 72px;
@@ -492,7 +483,6 @@
   background: var(--bg, #0d131f) !important;
   background-color: var(--bg, #0d131f) !important;
 }
-#ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-preview-link iframe,
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-preview-link iframe {
   display: block;
   width: calc(100% + 16px);
@@ -503,11 +493,9 @@
   scrollbar-width: none;
   pointer-events: none;
 }
-#ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-preview-link iframe::-webkit-scrollbar,
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-preview-link iframe::-webkit-scrollbar {
   display: none;
 }
-#ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-preview-link .ruhsat-preview-image,
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-preview-link .ruhsat-preview-image {
   display: block;
   width: 100%;
@@ -515,7 +503,6 @@
   object-fit: cover;
   pointer-events: none;
 }
-#ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-preview-link .ruhsat-preview-hint,
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-preview-link .ruhsat-preview-hint {
   position: absolute;
   left: 0;
@@ -529,7 +516,6 @@
   background: linear-gradient(to top, rgba(0, 0, 0, 0.58), rgba(0, 0, 0, 0));
   pointer-events: none;
 }
-#ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-add-btn,
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-add-btn {
   margin-left: 12px;
   font-size: 42px;
@@ -551,8 +537,6 @@
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03);
   transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
-#ruhsat-yukleme-modal #ruhsat-modal-content .universal-btn-group.ruhsat-preview-row .ruhsat-add-btn,
-#ruhsat-yukleme-modal #ruhsat-modal-content .universal-btn-group:has(.ruhsat-preview-link) .ruhsat-add-btn,
 #dinamik-olay-modal #ruhsat-modal-content .universal-btn-group.ruhsat-preview-row .ruhsat-add-btn,
 #dinamik-olay-modal #ruhsat-modal-content .universal-btn-group:has(.ruhsat-preview-link) .ruhsat-add-btn {
   position: absolute;
@@ -561,9 +545,6 @@
   margin-left: 0;
   transform: translateY(-50%);
 }
-#ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-add-btn:hover,
-#ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-add-btn:focus-visible,
-#ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-add-btn:active,
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-add-btn:hover,
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-add-btn:focus-visible,
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-add-btn:active {
@@ -574,12 +555,6 @@
   box-shadow: inset 0 0 0 1px rgba(74, 222, 128, 0.18), 0 10px 24px rgba(0, 0, 0, 0.18);
   transform: scale(1.04);
 }
-#ruhsat-yukleme-modal #ruhsat-modal-content .universal-btn-group.ruhsat-preview-row .ruhsat-add-btn:hover,
-#ruhsat-yukleme-modal #ruhsat-modal-content .universal-btn-group.ruhsat-preview-row .ruhsat-add-btn:focus-visible,
-#ruhsat-yukleme-modal #ruhsat-modal-content .universal-btn-group.ruhsat-preview-row .ruhsat-add-btn:active,
-#ruhsat-yukleme-modal #ruhsat-modal-content .universal-btn-group:has(.ruhsat-preview-link) .ruhsat-add-btn:hover,
-#ruhsat-yukleme-modal #ruhsat-modal-content .universal-btn-group:has(.ruhsat-preview-link) .ruhsat-add-btn:focus-visible,
-#ruhsat-yukleme-modal #ruhsat-modal-content .universal-btn-group:has(.ruhsat-preview-link) .ruhsat-add-btn:active,
 #dinamik-olay-modal #ruhsat-modal-content .universal-btn-group.ruhsat-preview-row .ruhsat-add-btn:hover,
 #dinamik-olay-modal #ruhsat-modal-content .universal-btn-group.ruhsat-preview-row .ruhsat-add-btn:focus-visible,
 #dinamik-olay-modal #ruhsat-modal-content .universal-btn-group.ruhsat-preview-row .ruhsat-add-btn:active,
@@ -589,20 +564,17 @@
   transform: translateY(-50%) scale(1.04);
 }
 @media (min-width: 769px) {
-  #ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-add-btn,
   #dinamik-olay-modal #ruhsat-modal-content .ruhsat-add-btn {
     font-size: 32px;
     min-width: 50px;
     min-height: 50px;
   }
 }
-#ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-keep-info,
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-keep-info {
   color: rgba(255, 255, 255, 0.75);
   font-size: 13px;
   text-align: center;
 }
-#ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-select-box,
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-select-box {
   width: 100%;
   max-width: 280px;
@@ -621,7 +593,6 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-#ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-select-box.has-file,
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-select-box.has-file {
   border-color: rgba(40, 167, 69, 0.65) !important;
   color: var(--green-success, #28a745) !important;
@@ -633,7 +604,6 @@
   box-shadow: 0 0 10px rgba(0,255,150,0.25);
 }
 
-#ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-select-box.upload-success,
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-select-box.upload-success {
   border-color: rgba(40, 167, 69, 0.85) !important;
   background: rgba(40, 167, 69, 0.18) !important;
@@ -641,8 +611,7 @@
   box-shadow: 0 0 12px rgba(40, 167, 69, 0.22);
 }
 
-/* Ruhsat modal: Yükle butonu - yeşil metin, yeşil çerçeve (ruhsat ayrı modal veya dinamik-olay içinde) */
-#ruhsat-yukleme-modal #ruhsat-save-btn,
+/* Ruhsat: Yükle butonu — yeşil metin, yeşil çerçeve (#dinamik-olay-modal #ruhsat-btn-group) */
 #dinamik-olay-modal #ruhsat-btn-group #dinamik-olay-kaydet-btn {
   background: transparent !important;
   color: var(--green-success, #28a745) !important;
@@ -688,7 +657,6 @@
   color: var(--theme-color, #d40000) !important;
   -webkit-text-stroke: 0 !important;
 }
-#ruhsat-yukleme-modal #ruhsat-save-btn:hover,
 #dinamik-olay-modal #ruhsat-btn-group #dinamik-olay-kaydet-btn:hover {
   background: rgba(74, 222, 128, 0.08) !important;
   border-color: rgba(74, 222, 128, 0.72) !important;
@@ -697,15 +665,13 @@
   -webkit-text-stroke: 0 !important;
 }
 
-/* Ruhsat modal: üst/alt buton grupları aynı genişlikte, yatayda ortalanmış */
-#ruhsat-yukleme-modal #ruhsat-modal-content,
+/* Ruhsat: üst/alt buton grupları aynı genişlikte, yatayda ortalanmış */
 #dinamik-olay-modal #ruhsat-modal-content {
   max-width: 390px;
   width: 100%;
   margin-left: auto;
   margin-right: auto;
 }
-#ruhsat-yukleme-modal #ruhsat-btn-group.ruhsat-single-visible,
 #dinamik-olay-modal #ruhsat-btn-group.ruhsat-single-visible {
   display: flex !important;
   justify-content: center !important;
@@ -714,21 +680,17 @@
   gap: 0 !important;
   width: 100% !important;
 }
-#ruhsat-yukleme-modal #ruhsat-btn-group.ruhsat-single-visible .universal-btn-cancel,
 #dinamik-olay-modal #ruhsat-btn-group.ruhsat-single-visible .universal-btn-cancel {
   width: min(168px, 100%) !important;
   max-width: 168px !important;
   min-width: 168px !important;
 }
-#ruhsat-yukleme-modal #ruhsat-btn-group.ruhsat-inline-view-mode,
 #dinamik-olay-modal #ruhsat-btn-group.ruhsat-inline-view-mode {
   display: none !important;
 }
-#ruhsat-yukleme-modal #ruhsat-modal-content.ruhsat-inline-view-mode,
 #dinamik-olay-modal #ruhsat-modal-content.ruhsat-inline-view-mode {
   max-width: 100% !important;
 }
-#ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-inline-back-btn,
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-inline-back-btn {
   width: auto !important;
   margin: 0 auto 10px auto;
@@ -743,7 +705,6 @@
   padding: 8px 12px;
   cursor: pointer;
 }
-#ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-inline-actions,
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-inline-actions {
   width: 100%;
   display: flex;
@@ -753,7 +714,6 @@
   gap: 8px;
   margin: 0 auto 10px auto;
 }
-#ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-inline-print-btn,
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-inline-print-btn {
   width: auto !important;
   margin: 0;
@@ -768,7 +728,6 @@
   padding: 8px 12px;
   cursor: pointer;
 }
-#ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-inline-frame-wrap,
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-inline-frame-wrap {
   width: 100%;
   height: min(62vh, 560px);
@@ -777,7 +736,6 @@
   overflow: hidden;
   background: #0b1220;
 }
-#ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-inline-frame,
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-inline-frame {
   width: 100%;
   height: 100%;
@@ -786,7 +744,6 @@
 }
 @media (max-width: 640px) {
   /* Mobilde ön izleme yok: sadece Yazdır butonu (ruhsat simgesi + metin) */
-  #ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-preview-link.ruhsat-preview-mobile-btn,
   #dinamik-olay-modal #ruhsat-modal-content .ruhsat-preview-link.ruhsat-preview-mobile-btn {
     height: 48px !important;    min-height: 48px !important;
     display: flex !important;
@@ -796,24 +753,17 @@
     border-radius: 8px !important;
     overflow: hidden !important;
   }
-  #ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-preview-link.ruhsat-preview-mobile-btn iframe,
-  #ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-preview-link.ruhsat-preview-mobile-btn .ruhsat-preview-image,
-  #ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-preview-link.ruhsat-preview-mobile-btn .ruhsat-preview-hint,
   #dinamik-olay-modal #ruhsat-modal-content .ruhsat-preview-link.ruhsat-preview-mobile-btn iframe,
   #dinamik-olay-modal #ruhsat-modal-content .ruhsat-preview-link.ruhsat-preview-mobile-btn .ruhsat-preview-image,
   #dinamik-olay-modal #ruhsat-modal-content .ruhsat-preview-link.ruhsat-preview-mobile-btn .ruhsat-preview-hint {
     display: none !important;
     pointer-events: none !important;
   }
-  #ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-preview-link.ruhsat-preview-mobile-btn::after,
-  #ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-preview-link.ruhsat-preview-mobile-btn::before,
   #dinamik-olay-modal #ruhsat-modal-content .ruhsat-preview-link.ruhsat-preview-mobile-btn::after,
   #dinamik-olay-modal #ruhsat-modal-content .ruhsat-preview-link.ruhsat-preview-mobile-btn::before {
     display: none !important;
     content: none !important;
   }
-  #ruhsat-yukleme-modal #ruhsat-modal-content .universal-btn-group.ruhsat-preview-row,
-  #ruhsat-yukleme-modal #ruhsat-modal-content .universal-btn-group:has(.ruhsat-preview-link),
   #dinamik-olay-modal #ruhsat-modal-content .universal-btn-group.ruhsat-preview-row,
   #dinamik-olay-modal #ruhsat-modal-content .universal-btn-group:has(.ruhsat-preview-link) {
     position: static !important;
@@ -825,7 +775,6 @@
     gap: 12px !important;
     padding: 0 !important;
   }
-  #ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-add-btn,
   #dinamik-olay-modal #ruhsat-modal-content .ruhsat-add-btn {
     font-size: 64px;
     min-width: 72px;
@@ -835,8 +784,6 @@
     align-items: center;
     justify-content: center;
   }
-  #ruhsat-yukleme-modal #ruhsat-modal-content .universal-btn-group.ruhsat-preview-row .ruhsat-add-btn,
-  #ruhsat-yukleme-modal #ruhsat-modal-content .universal-btn-group:has(.ruhsat-preview-link) .ruhsat-add-btn,
   #dinamik-olay-modal #ruhsat-modal-content .universal-btn-group.ruhsat-preview-row .ruhsat-add-btn,
   #dinamik-olay-modal #ruhsat-modal-content .universal-btn-group:has(.ruhsat-preview-link) .ruhsat-add-btn {
     position: static !important;
@@ -845,17 +792,13 @@
     transform: none !important;
     margin-left: 0 !important;
   }
-  #ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-inline-frame-wrap,
   #dinamik-olay-modal #ruhsat-modal-content .ruhsat-inline-frame-wrap {
     height: min(66vh, 620px);
   }
-  #ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-inline-actions,
   #dinamik-olay-modal #ruhsat-modal-content .ruhsat-inline-actions {
     margin-bottom: 8px;
     gap: 6px;
   }
-  #ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-inline-back-btn,
-  #ruhsat-yukleme-modal #ruhsat-modal-content .ruhsat-inline-print-btn,
   #dinamik-olay-modal #ruhsat-modal-content .ruhsat-inline-back-btn,
   #dinamik-olay-modal #ruhsat-modal-content .ruhsat-inline-print-btn {
     margin: 0;
@@ -865,14 +808,11 @@
   }
 }
 
-/* Ruhsat modal: Dosya Seç butonu - şeffaf arka plan, beyaz metin (etiket rengi) */
-#ruhsat-yukleme-modal #ruhsat-file-input,
+/* Ruhsat: Dosya Seç — şeffaf arka plan, beyaz metin (etiket rengi) */
 #dinamik-olay-modal #ruhsat-file-input {
   color: var(--form-label-color, #ffffff) !important;
   background: transparent !important;
 }
-#ruhsat-yukleme-modal #ruhsat-file-input::file-selector-button,
-#ruhsat-yukleme-modal #ruhsat-file-input::-webkit-file-upload-button,
 #dinamik-olay-modal #ruhsat-file-input::file-selector-button,
 #dinamik-olay-modal #ruhsat-file-input::-webkit-file-upload-button {
   background: transparent !important;

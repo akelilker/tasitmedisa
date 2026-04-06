@@ -1873,8 +1873,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicle-detail-modal.modal-overlay,
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #dinamik-olay-modal.modal-overlay,
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #event-menu-modal.modal-overlay,
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicle-history-modal.modal-overlay,
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #ruhsat-yukleme-modal.modal-overlay {
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicle-history-modal.modal-overlay {
     background: var(--bg) !important;
     background-color: var(--bg) !important;
 }
@@ -1893,7 +1892,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .t
     content: none !important;
 }
 
-/* Ana modallar + taşıt detay / olay / menü / tarihçe / ruhsat:
+/* Ana modallar + taşıt detay / olay / menü / tarihçe (ruhsat akışı #dinamik-olay-modal içinde):
    Opak görünüm, iç/dış glow yok; sadece gri çerçeve */
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicle-modal .modal-container,
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #reports-modal .modal-container,
@@ -1901,8 +1900,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicle-detail-modal .modal-container,
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #dinamik-olay-modal .modal-container,
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #event-menu-modal .modal-container,
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicle-history-modal .modal-container,
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #ruhsat-yukleme-modal .modal-container {
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicle-history-modal .modal-container {
     background: var(--modal-bg) !important;
     background-color: var(--modal-bg) !important;
     box-shadow: none !important;
@@ -2754,8 +2752,7 @@ body.modal-open .app-container {
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicle-detail-modal.modal-overlay,
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #dinamik-olay-modal.modal-overlay,
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #event-menu-modal.modal-overlay,
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicle-history-modal.modal-overlay,
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #ruhsat-yukleme-modal.modal-overlay {
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicle-history-modal.modal-overlay {
     bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicle-modal.modal-overlay .modal-container,
