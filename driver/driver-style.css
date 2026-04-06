@@ -142,7 +142,7 @@ body.dashboard-page {
   padding-bottom: 10px !important;
 }
 
-<.driver-dashboard-container {
+.driver-dashboard-container {
   height: 100vh;
   height: 100dvh;
   min-height: 100vh;
@@ -277,6 +277,38 @@ body.dashboard-page {
   height: auto !important;
   max-height: 100%;
   object-fit: contain;
+}
+/* Ana uygulama ile aynı: kullanıcı adı logo altında (masaüstü 2 satır, mobil tek satır ellipsis) */
+.dashboard-page .hero.hero-two-rows .hero-logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-width: 0;
+}
+.dashboard-page .hero.hero-two-rows .hero-logo picture {
+  display: block;
+  width: 100%;
+}
+.dashboard-page .main-header-user-name {
+  display: -webkit-box;
+  max-width: 100%;
+  overflow: hidden;
+  color: rgba(222, 229, 235, 0.92);
+  font-size: clamp(8px, 1.55vw, 10px);
+  font-weight: 600;
+  line-height: 1.1;
+  text-align: center;
+  letter-spacing: 0.01em;
+  word-break: break-word;
+  white-space: normal;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  transform: translateY(4px);
+}
+.dashboard-page .main-header-user-name.is-empty {
+  display: none;
 }
 .hero.hero-two-rows .hero-title-block {
   grid-column: 2;
@@ -1456,10 +1488,29 @@ body.dashboard-page {
   }
   /* Mobil (640px altı): MEDISA hero logosu – 2px sola (toplam: -18px, 13px) */
   .dashboard-page .hero.hero-two-rows .hero-logo {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 2px !important;
     flex: 0 0 56px !important;
     width: 56px !important;
     transform: translate(-18px, 13px) !important;
     margin-top: 0 !important;
+  }
+  .dashboard-page .main-header-user-name {
+    display: block !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+    font-size: clamp(10px, 2.55vw, 11.5px) !important;
+    line-height: 1.05 !important;
+    letter-spacing: 0 !important;
+    white-space: nowrap !important;
+    word-break: keep-all !important;
+    overflow-wrap: normal !important;
+    -webkit-line-clamp: unset !important;
+    text-overflow: ellipsis !important;
+    transform: translateY(7px) !important;
   }
   .login-page .hero.hero-two-rows .hero-logo {
     flex: 0 0 56px !important;

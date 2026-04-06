@@ -706,6 +706,7 @@ const API_BASE = (function(){
           }
   
           currentUser = data.user;
+          syncDriverHeaderUserName();
           allHistoryRecords = data.records || [];
           allHistoryVehicles = data.vehicles || [];
           currentPeriod = data.current_period || '';
@@ -840,14 +841,17 @@ const API_BASE = (function(){
     return { class: '', days: diffDays };
   }
   
+  function syncDriverHeaderUserName() {
+      const nameEl = document.getElementById('main-header-user-name');
+      if (!nameEl) return;
+      const displayName = (currentUser && String(currentUser.name || currentUser.isim || currentUser.ad_soyad || '').trim()) || '';
+      nameEl.textContent = displayName;
+      nameEl.classList.toggle('is-empty', displayName === '');
+  }
+
   function renderLeftPanel(vehicles, records) {
       const vehicle = getSelectedVehicle();
       if (!vehicle) return;
-      
-      const userNameEl = document.getElementById('driver-user-name');
-      if (userNameEl && currentUser) {
-          userNameEl.textContent = currentUser.name || currentUser.isim || currentUser.ad_soyad || '-';
-      }
       
       const plakaEl = document.getElementById('driver-current-plaka');
       if (plakaEl) plakaEl.textContent = formatDriverPlaka(vehicle.plaka);
