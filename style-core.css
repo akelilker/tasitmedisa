@@ -2177,12 +2177,15 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #r
         backface-visibility: hidden;
         transform: none !important;  /* Subpixel blur olmasın */
     }
-    /* Anasayfa mobil header: logo yuvarlağı büyüse de başlık tek satıra sığsın */
+    /* Anasayfa mobil header: logo+isim satırın altına (h1 ortada kalır); sol köşe için hafif içe */
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-logo {
         margin-right: 8px !important;
+        margin-left: 6px !important;
         width: 58px !important;
         flex: 0 0 58px !important;
-        gap: 2px !important;
+        gap: 4px !important;
+        align-self: flex-end !important;
+        transform: translate(0, 0) !important;
     }
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-user-name {
         display: block !important;
@@ -2196,7 +2199,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #r
         overflow-wrap: normal !important;
         -webkit-line-clamp: unset !important;
         text-overflow: ellipsis !important;
-        transform: translate(3px, 5px) !important; /* mobil ana sayfa: isim +3px aşağı (önceki 2px Y) */
+        transform: translate(3px, 2px) !important; /* dikey hizayı align-self verir; hafif optik sağ */
     }
     /* Ana uygulama ana ekran header mobil: ana başlık +0.6pt (≈0.8px) */
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero h1 {
@@ -2809,8 +2812,10 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
     flex: 0 0 58px !important;
     width: 58px !important;
     margin-right: 8px !important;
-    transform: translate(-1px, 5px) !important;
-    gap: 2px !important;
+    margin-left: 6px !important;
+    transform: translate(0, 0) !important;
+    gap: 4px !important;
+    align-self: flex-end !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-logo img {
     height: 35px !important;
@@ -2829,7 +2834,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
     overflow-wrap: normal !important;
     -webkit-line-clamp: unset !important;
     text-overflow: ellipsis !important;
-    transform: translate(3px, 5px) !important; /* iOS PWA ana sayfa: isim mobil ile aynı (+3px aşağı) */
+    transform: translate(3px, 2px) !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero h1 {
     font-size: clamp(calc(17.8px - 0.5pt), 5.1vw, calc(21.8px - 0.5pt)) !important;
