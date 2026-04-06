@@ -1554,10 +1554,10 @@ body.dashboard-page {
     width: max-content !important;
     min-width: 52px !important;
     max-width: min(200px, 46vw) !important;
-    transform: translate(0, 5px) !important;
     margin-top: 0 !important;
     margin-left: 0 !important;
     overflow: visible !important;
+    transform: translate(0, 9px) !important; /* mobil: önceki 5px + 4px aşağı */
   }
   .dashboard-page .hero.hero-two-rows .hero-logo picture {
     max-width: 50px !important;
@@ -1572,7 +1572,7 @@ body.dashboard-page {
     white-space: nowrap !important;
     word-break: normal !important;
     text-overflow: clip !important;
-    transform: translateY(7px) !important;
+    transform: translate(5px, 10px) !important; /* +5px sağa, +3px aşağı (önceki 7px Y) */
   }
   .login-page .hero.hero-two-rows .hero-logo {
     flex: 0 0 56px !important;
