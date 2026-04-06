@@ -1397,6 +1397,9 @@
     // DIŞ VERİ YÖNETİMİ
     // ========================================
     function isDisVeriPanelUnavailableOnCurrentDevice() {
+      if (typeof window.medisaIsDisVeriPanelUnavailableOnDevice === 'function') {
+        return window.medisaIsDisVeriPanelUnavailableOnDevice();
+      }
       const hasMatchMedia = typeof window.matchMedia === 'function';
       const isMobileViewport = hasMatchMedia
         ? window.matchMedia('(max-width: 640px)').matches
