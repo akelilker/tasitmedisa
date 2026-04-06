@@ -1868,24 +1868,25 @@
 
     // Yazdır – Excel ile aynı veriyi tablo olarak yazdırır (ekran görüntüsü değil)
     const stokPrintHeaders = { sira:'No.', sube:'Şube', yil:'Yıl', marka:'Marka/Mod.', plaka:'Plaka', sanziman:'Şanz', km:'KM', sigorta:'Sig. bit.', kasko:'Kas. bit.', kaskoDegeri:'Kas. değ.', muayene:'Muayene', kredi:'Kredi', lastik:'Lastik', utts:'UTTS', takip:'Takip', tramer:'Tramer', boya:'Boya', kullanici:'Kull.', tescil:'Tescil' };
+    /* Yazdırma: plaka kısa metin — aşırı ağırlık diğer sütunları sıkıştırıp başlıkta harf kırılmasına yol açmasın */
     const stokPrintColumnWeights = {
         sira: 5,
         yil: 5,
-        plaka: 20,
-        marka: 18,
+        plaka: 11,
+        marka: 19,
         sanziman: 7,
         km: 9,
-        sube: 11,
+        sube: 12,
         sigorta: 8,
         kasko: 8,
         kaskoDegeri: 10,
-        muayene: 8,
-        kredi: 7,
-        lastik: 7,
-        utts: 5,
-        takip: 6,
-        tramer: 6,
-        boya: 6,
+        muayene: 9,
+        kredi: 8,
+        lastik: 8,
+        utts: 6,
+        takip: 7,
+        tramer: 7,
+        boya: 7,
         kullanici: 11,
         tescil: 8
     };
