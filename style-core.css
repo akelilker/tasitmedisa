@@ -675,7 +675,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-logo {
   flex: 1;
   min-width: 0;
   text-align: center;
-  font-size: clamp(16px, 4.5vw, 24px);
+  font-size: clamp(calc(16px - 0.5pt), 4.5vw, calc(24px - 0.5pt));
   font-weight: 800;
   letter-spacing: clamp(1px, 0.5vw, 4px);
   text-transform: uppercase;
@@ -711,7 +711,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-
   max-width: 100%;
   overflow: hidden;
   color: rgba(222, 229, 235, 0.92);
-  font-size: clamp(8px, 1.55vw, 10px);
+  font-size: clamp(calc(8px - 0.5pt), 1.55vw, calc(10px - 0.5pt));
   font-weight: 600;
   line-height: 1.1;
   text-align: center;
@@ -720,7 +720,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-
   white-space: normal;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
-  transform: translateY(4px);
+  transform: translateY(1px); /* önceki 4px − 3px yukarı */
 }
 
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-user-name.is-empty {
@@ -1377,7 +1377,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
     min-width: 0;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero h1 {
-    font-size: clamp(16px, 4.5vw, 20px) !important;
+    font-size: clamp(calc(16px - 0.5pt), 4.5vw, calc(20px - 0.5pt)) !important;
     letter-spacing: clamp(1px, 0.45vw, 3px);
   }
   .settings-dropdown {
@@ -2162,7 +2162,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #r
     .hero h1 {
         padding: 0 2px;  /* Mobilde logo–metin arası 2px */
         letter-spacing: 2.5px;  /* Mobilde harfler arası boşluk 2.5px */
-        font-size: clamp(19px, 5.5vw, 23px); /* Uzun başlıkta minimum düzeyde küçülebilir */
+        font-size: clamp(calc(19px - 0.5pt), 5.5vw, calc(23px - 0.5pt)); /* Uzun başlıkta minimum düzeyde küçülebilir */
         /* Mobilde de krom görünüm korunsun; blur yok, metin keskin */
         background: linear-gradient(to bottom, #c2d4df 0%, #ffffff 40%, #9aadba 52%, #d6e0e8 100%) !important;
         -webkit-background-clip: text !important;
@@ -2188,7 +2188,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #r
         display: block !important;
         max-width: 100% !important;
         overflow: hidden !important;
-        font-size: clamp(10px, 2.55vw, 11.5px) !important;
+        font-size: clamp(calc(10px - 0.5pt), 2.55vw, calc(11.5px - 0.5pt)) !important;
         line-height: 1.05 !important;
         letter-spacing: 0 !important;
         white-space: nowrap !important;
@@ -2196,11 +2196,11 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #r
         overflow-wrap: normal !important;
         -webkit-line-clamp: unset !important;
         text-overflow: ellipsis !important;
-        transform: translateY(7px) !important;
+        transform: translateY(4px) !important; /* önceki 7px − 3px yukarı */
     }
     /* Ana uygulama ana ekran header mobil: ana başlık +0.6pt (≈0.8px) */
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero h1 {
-        font-size: clamp(17.8px, 5.1vw, 21.8px) !important;
+        font-size: clamp(calc(17.8px - 0.5pt), 5.1vw, calc(21.8px - 0.5pt)) !important;
         letter-spacing: 2px !important;
         transform: translateX(-3px) !important; /* 3px sola (.hero h1 mobil none üzerine) */
     }
@@ -2821,7 +2821,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
     display: block !important;
     max-width: 100% !important;
     overflow: hidden !important;
-    font-size: clamp(10px, 2.55vw, 11.5px) !important;
+    font-size: clamp(calc(10px - 0.5pt), 2.55vw, calc(11.5px - 0.5pt)) !important;
     line-height: 1.05 !important;
     letter-spacing: 0 !important;
     white-space: nowrap !important;
@@ -2829,9 +2829,10 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
     overflow-wrap: normal !important;
     -webkit-line-clamp: unset !important;
     text-overflow: ellipsis !important;
-    transform: translateY(7px) !important;
+    transform: translateY(4px) !important; /* önceki 7px − 3px yukarı */
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero h1 {
+    font-size: clamp(calc(17.8px - 0.5pt), 5.1vw, calc(21.8px - 0.5pt)) !important;
     letter-spacing: 1.8px !important;
     transform: translateX(-3px) !important;
   }
