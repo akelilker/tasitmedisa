@@ -141,6 +141,10 @@ body.dashboard-page {
   padding-top: 10px !important;
   padding-bottom: 10px !important;
 }
+/* İsim tek satır + sütun genişleyince style-core .hero overflow:hidden kesmesin */
+.dashboard-page .hero {
+  overflow: visible !important;
+}
 
 .driver-dashboard-container {
   height: 100vh;
@@ -265,6 +269,10 @@ body.dashboard-page {
   gap: 8px;
   flex-direction: unset !important;
 }
+/* Kullanıcı paneli: sol sütun logo+isim genişliğine göre büyüsün (isim tek satır) */
+.dashboard-page .hero.hero-two-rows {
+  grid-template-columns: minmax(var(--hero-logo-width), max-content) 1fr var(--hero-logo-width);
+}
 .hero.hero-two-rows .hero-logo {
   grid-column: 1;
   justify-self: start;
@@ -278,14 +286,16 @@ body.dashboard-page {
   max-height: 100%;
   object-fit: contain;
 }
-/* Kullanıcı paneli: isim logo altında; dar sütunda çok satır, ellipsis yok (ana uygulama mobilde tek satır kısaltır) */
+/* Kullanıcı paneli: isim logo altında; tek satır, sütun genişliği isme göre */
 .dashboard-page .hero.hero-two-rows .hero-logo {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 2px;
-  min-width: 0;
+  width: max-content;
+  min-width: var(--hero-logo-width);
+  max-width: min(200px, 46vw);
   overflow: visible;
 }
 .dashboard-page .hero.hero-two-rows .hero-logo picture {
@@ -294,7 +304,7 @@ body.dashboard-page {
 }
 .dashboard-page .main-header-user-name {
   display: block;
-  max-width: 100%;
+  max-width: none;
   overflow: visible;
   color: rgba(222, 229, 235, 0.92);
   font-size: clamp(8px, 1.55vw, 10px);
@@ -302,8 +312,8 @@ body.dashboard-page {
   line-height: 1.15;
   text-align: center;
   letter-spacing: 0.01em;
-  word-break: break-word;
-  white-space: normal;
+  word-break: normal;
+  white-space: nowrap;
   transform: translateY(4px);
 }
 .dashboard-page .main-header-user-name.is-empty {
@@ -495,11 +505,20 @@ body.dashboard-page {
 
 /* Ara aralık (641px–768px): logo başlık üzerine binmesin – 56px sütunlar, margin yok */
 @media (min-width: 641px) and (max-width: 768px) {
-  .dashboard-page .hero.hero-two-rows,
+  .dashboard-page .hero.hero-two-rows {
+    grid-template-columns: minmax(56px, max-content) minmax(0, 1fr) 56px !important;
+  }
   .login-page .hero.hero-two-rows {
     grid-template-columns: 56px 1fr 56px !important;
   }
-  .dashboard-page .hero.hero-two-rows .hero-logo,
+  .dashboard-page .hero.hero-two-rows .hero-logo {
+    flex: 0 1 auto !important;
+    width: max-content !important;
+    min-width: 56px !important;
+    max-width: min(200px, 46vw) !important;
+    margin-left: 0 !important;
+    transform: translate(0, -6px) !important;
+  }
   .login-page .hero.hero-two-rows .hero-logo {
     flex: 0 0 56px !important;
     width: 56px !important;
@@ -597,14 +616,20 @@ body.dashboard-page {
     box-shadow: 0 -10px 20px rgba(var(--theme-color-rgb), 0.38) !important;
   }
   /* ========== MASAÜSTÜ (769px+) – Header logo: 76×76px, pozisyon (-18px, 6.5px) ========== */
-  .dashboard-page .hero.hero-two-rows .hero-logo,
+  .dashboard-page .hero.hero-two-rows {
+    grid-template-columns: minmax(76px, max-content) minmax(0, 1fr) 76px !important;
+  }
+  .dashboard-page .hero.hero-two-rows .hero-logo {
+    flex: 0 1 auto !important;
+    width: max-content !important;
+    min-width: 76px !important;
+    max-width: min(240px, 32vw) !important;
+    transform: translate(-18px, 3.5px) scale(0.97) !important;
+  }
   .login-page .hero.hero-two-rows .hero-logo {
     flex: 0 0 76px !important;
     width: 76px !important;
     transform: translate(-18px, 6.5px) !important;
-  }
-  .dashboard-page .hero.hero-two-rows .hero-logo {
-    transform: translate(-18px, 3.5px) scale(0.97) !important;
   }
   .dashboard-page .hero.hero-two-rows .hero-logo img,
   .login-page .hero.hero-two-rows .hero-logo img {
@@ -1498,28 +1523,32 @@ body.dashboard-page {
     height: 69px !important;
   }
   /* Mobil (640px altı): MEDISA hero logosu – 2px sola (toplam: -18px, 13px) */
+  .dashboard-page .hero.hero-two-rows {
+    grid-template-columns: minmax(56px, max-content) minmax(0, 1fr) 52px !important;
+  }
   .dashboard-page .hero.hero-two-rows .hero-logo {
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
     justify-content: center !important;
     gap: 2px !important;
-    flex: 0 0 56px !important;
-    width: 56px !important;
+    flex: 0 1 auto !important;
+    width: max-content !important;
+    min-width: 56px !important;
+    max-width: min(200px, 46vw) !important;
     transform: translate(-18px, 13px) !important;
     margin-top: 0 !important;
     overflow: visible !important;
   }
   .dashboard-page .main-header-user-name {
     display: block !important;
-    max-width: 100% !important;
+    max-width: none !important;
     overflow: visible !important;
-    font-size: clamp(9px, 2.55vw, 11.5px) !important;
+    font-size: clamp(8px, 2.35vw, 10.5px) !important;
     line-height: 1.12 !important;
     letter-spacing: 0 !important;
-    white-space: normal !important;
-    word-break: break-word !important;
-    overflow-wrap: break-word !important;
+    white-space: nowrap !important;
+    word-break: normal !important;
     text-overflow: clip !important;
     transform: translateY(7px) !important;
   }
@@ -1529,8 +1558,7 @@ body.dashboard-page {
     transform: translate(-18px, 13px) !important;
     margin-top: 0 !important;
   }
-  /* Mobil: 56px logo sütunları, başlık ortada */
-  .dashboard-page .hero.hero-two-rows,
+  /* Mobil: login 56px sütunlar; kullanıcı paneli sol sütun isim genişliğine göre */
   .login-page .hero.hero-two-rows {
     grid-template-columns: 56px 1fr 56px !important;
   }
