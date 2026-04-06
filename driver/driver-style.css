@@ -141,9 +141,10 @@ body.dashboard-page {
   padding-top: 10px !important;
   padding-bottom: 10px !important;
 }
-/* İsim tek satır + sütun genişleyince style-core .hero overflow:hidden kesmesin */
+/* İsim tek satır + sütun genişleyince style-core .hero overflow:hidden kesmesin; logo sol çerçeveye 2px */
 .dashboard-page .hero {
   overflow: visible !important;
+  padding-left: 2px !important;
 }
 
 .driver-dashboard-container {
@@ -298,8 +299,8 @@ body.dashboard-page {
   max-width: min(200px, 46vw);
   overflow: visible;
   margin-left: 0;
-  /* Yatay -18px / PWA -23px zıplamasın: hizayı grid + justify-self ile veriyoruz */
-  transform: translate(0, -6px);
+  /* Yatay -18px / PWA -23px zıplamasın: hizayı grid + justify-self ile veriyoruz; +3px aşağı */
+  transform: translate(0, -3px);
 }
 .dashboard-page .hero.hero-two-rows .hero-logo picture {
   display: block;
@@ -325,7 +326,7 @@ body.dashboard-page {
   letter-spacing: 0.01em;
   word-break: normal;
   white-space: nowrap;
-  transform: translateY(4px);
+  transform: translateY(7px);
 }
 .dashboard-page .main-header-user-name.is-empty {
   display: none;
@@ -528,7 +529,7 @@ body.dashboard-page {
     min-width: 52px !important;
     max-width: min(200px, 46vw) !important;
     margin-left: 0 !important;
-    transform: translate(0, -8px) !important;
+    transform: translate(0, -5px) !important;
   }
   .dashboard-page .hero.hero-two-rows .hero-logo picture {
     max-width: 52px !important;
@@ -638,7 +639,7 @@ body.dashboard-page {
     width: max-content !important;
     min-width: 68px !important;
     max-width: min(220px, 30vw) !important;
-    transform: translate(0, -4px) !important;
+    transform: translate(0, -1px) !important;
   }
   .dashboard-page .hero.hero-two-rows .hero-logo picture {
     max-width: 66px !important;
@@ -1553,7 +1554,7 @@ body.dashboard-page {
     width: max-content !important;
     min-width: 52px !important;
     max-width: min(200px, 46vw) !important;
-    transform: translate(0, 2px) !important;
+    transform: translate(0, 5px) !important;
     margin-top: 0 !important;
     margin-left: 0 !important;
     overflow: visible !important;
@@ -1571,7 +1572,7 @@ body.dashboard-page {
     white-space: nowrap !important;
     word-break: normal !important;
     text-overflow: clip !important;
-    transform: translateY(4px) !important;
+    transform: translateY(7px) !important;
   }
   .login-page .hero.hero-two-rows .hero-logo {
     flex: 0 0 56px !important;
