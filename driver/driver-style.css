@@ -331,6 +331,12 @@ body.dashboard-page {
 .dashboard-page .main-header-user-name.is-empty {
   display: none;
 }
+/* Masaüstü (641px+): kullanıcı paneli header — isim +4px sağ, +4px aşağı (base 3px,2px üzerine) */
+@media (min-width: 641px) {
+  .dashboard-page .main-header-user-name {
+    transform: translate(7px, 6px);
+  }
+}
 .hero.hero-two-rows .hero-title-block {
   grid-column: 2;
   justify-self: center;
