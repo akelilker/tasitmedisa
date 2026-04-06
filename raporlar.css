@@ -2354,7 +2354,7 @@ width: 250px !important;
 margin-bottom: 0 !important;
 margin-top: 0 !important;
 z-index: 100 !important;
-overflow: visible !important;
+overflow: hidden !important; /* kapalı durumla aynı: kapanırken width animasyonu diagonal görünmesin */
 }
 #stok-list-container .stok-controls-row-2 .stok-search-container.open .stok-search-input {
 margin-top: 0 !important;
@@ -2460,6 +2460,23 @@ position: sticky;
 top: 0;
 z-index: 10;
 background: var(--bg);
+}
+
+/*
+ * Mobil stok listesi — büyüteç araması: kapanırken “üstten sola” kayma hissi.
+ * .open kalkınca input margin-top 4px’e dönüyordu (yalnızca .open’da 0’dı) → dikey sıçrama.
+ * overflow visible↔hidden ani değişimi + width transition birleşince bozuk görünüm.
+ */
+#stok-list-container .stok-controls-row-2 .stok-search-wrap .stok-search-container {
+justify-content: flex-start !important;
+align-items: stretch !important;
+height: auto !important;
+min-height: 0 !important;
+overflow: hidden !important;
+transition: width 0.2s ease-out !important;
+}
+#stok-list-container .stok-controls-row-2 .stok-search-input {
+margin-top: 0 !important;
 }
 
 .stok-search-container { max-width: calc(100vw - 120px); }
