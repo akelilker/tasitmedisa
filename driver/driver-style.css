@@ -331,10 +331,15 @@ body.dashboard-page {
 .dashboard-page .main-header-user-name.is-empty {
   display: none;
 }
-/* Masaüstü (641px+): kullanıcı paneli header — isim +4px sağ, +4px aşağı (base 3px,2px üzerine) */
+/* Masaüstü (641px+): logo+isim satırın altına (grid align-self); sol oval köşe için iç boşluk; isimde hafif optik sağ */
 @media (min-width: 641px) {
+  .dashboard-page .hero.hero-two-rows .hero-logo {
+    align-self: end;
+    padding-left: 11px;
+    box-sizing: content-box;
+  }
   .dashboard-page .main-header-user-name {
-    transform: translate(7px, 6px);
+    transform: translate(5px, 2px);
   }
 }
 .hero.hero-two-rows .hero-title-block {
@@ -526,7 +531,8 @@ body.dashboard-page {
     min-width: 52px !important;
     max-width: min(200px, 46vw) !important;
     margin-left: 0 !important;
-    transform: translate(0, -5px) !important;
+    /* align-self: end (641+) alta sabitler; fazla negatif Y ile tekrar yukarı kaçmasın */
+    transform: translate(0, -2px) !important;
   }
   .dashboard-page .hero.hero-two-rows .hero-logo picture {
     max-width: 52px !important;
@@ -636,7 +642,7 @@ body.dashboard-page {
     width: max-content !important;
     min-width: 68px !important;
     max-width: min(220px, 30vw) !important;
-    transform: translate(0, -1px) !important;
+    transform: translate(0, 0) !important;
   }
   .dashboard-page .hero.hero-two-rows .hero-logo picture {
     max-width: 66px !important;
