@@ -720,7 +720,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-
   white-space: normal;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
-  transform: translateY(1px); /* önceki 4px − 3px yukarı */
+  transform: translate(3px, -1px); /* +3px sağ, +2px yukarı (önceki 1px Y) */
 }
 
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-user-name.is-empty {
@@ -2196,7 +2196,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #r
         overflow-wrap: normal !important;
         -webkit-line-clamp: unset !important;
         text-overflow: ellipsis !important;
-        transform: translateY(4px) !important; /* önceki 7px − 3px yukarı */
+        transform: translate(3px, 2px) !important; /* +3px sağ, +2px yukarı (önceki 4px Y) */
     }
     /* Ana uygulama ana ekran header mobil: ana başlık +0.6pt (≈0.8px) */
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero h1 {
@@ -2829,7 +2829,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
     overflow-wrap: normal !important;
     -webkit-line-clamp: unset !important;
     text-overflow: ellipsis !important;
-    transform: translateY(4px) !important; /* önceki 7px − 3px yukarı */
+    transform: translate(3px, 2px) !important; /* +3px sağ, +2px yukarı (önceki 4px Y) */
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero h1 {
     font-size: clamp(calc(17.8px - 0.5pt), 5.1vw, calc(21.8px - 0.5pt)) !important;
