@@ -326,7 +326,7 @@ body.dashboard-page {
   letter-spacing: 0.01em;
   word-break: normal;
   white-space: nowrap;
-  transform: translateY(4px); /* önceki 7px − 3px yukarı */
+  transform: translate(3px, 2px); /* +3px sağ, +2px yukarı (önceki 4px Y) */
 }
 .dashboard-page .main-header-user-name.is-empty {
   display: none;
@@ -1546,7 +1546,7 @@ body.dashboard-page {
     white-space: nowrap !important;
     word-break: normal !important;
     text-overflow: clip !important;
-    transform: translate(5px, 7px) !important; /* mobil: önceki 10px Y − 3px yukarı */
+    transform: translate(8px, 5px) !important; /* +3px sağ, +2px yukarı (önceki 5px,7px) */
   }
   .login-page .hero.hero-two-rows .hero-logo {
     flex: 0 0 56px !important;
