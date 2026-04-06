@@ -2655,14 +2655,46 @@ border-collapse: collapse;
 font-size: 10pt;
 table-layout: fixed;
 }
+/* Çok sütun: yazdırma punto (yalnız #stok-print-area; ekran listesi etkilenmez) */
+#stok-print-area .stok-print-table.stok-print-dense {
+font-size: 8.5pt;
+}
 #stok-print-area .stok-print-table th,
 #stok-print-area .stok-print-table td {
 border: 1px solid #333;
-padding: 4px 8px;
+padding: 3px 5px;
 text-align: center;
 box-sizing: border-box;
-overflow: hidden;
-text-overflow: ellipsis;
+white-space: normal;
+word-break: break-word;
+overflow-wrap: anywhere;
+overflow: visible;
+text-overflow: clip;
+vertical-align: top;
+}
+/* Plaka: tek satır, tam metin; ellipsis yok */
+#stok-print-area .stok-print-table th[data-col="plaka"],
+#stok-print-area .stok-print-table td[data-col="plaka"],
+#stok-print-area .stok-print-table th[data-col="yil"],
+#stok-print-area .stok-print-table td[data-col="yil"],
+#stok-print-area .stok-print-table th[data-col="sanziman"],
+#stok-print-area .stok-print-table td[data-col="sanziman"],
+#stok-print-area .stok-print-table th[data-col="km"],
+#stok-print-area .stok-print-table td[data-col="km"],
+#stok-print-area .stok-print-table th[data-col="sira"],
+#stok-print-area .stok-print-table td[data-col="sira"],
+#stok-print-area .stok-print-table th[data-col="sigorta"],
+#stok-print-area .stok-print-table td[data-col="sigorta"],
+#stok-print-area .stok-print-table th[data-col="kasko"],
+#stok-print-area .stok-print-table td[data-col="kasko"],
+#stok-print-area .stok-print-table th[data-col="muayene"],
+#stok-print-area .stok-print-table td[data-col="muayene"],
+#stok-print-area .stok-print-table th[data-col="tescil"],
+#stok-print-area .stok-print-table td[data-col="tescil"] {
+white-space: nowrap !important;
+word-break: normal !important;
+overflow-wrap: normal !important;
+overflow: visible !important;
 }
 #stok-print-area .stok-print-table thead tr {
 background: #404040;
@@ -2673,7 +2705,9 @@ color: #fff;
 #stok-print-area .stok-print-table th[data-col="sube"],
 #stok-print-area .stok-print-table td[data-col="sube"],
 #stok-print-area .stok-print-table th[data-col="kullanici"],
-#stok-print-area .stok-print-table td[data-col="kullanici"] {
+#stok-print-area .stok-print-table td[data-col="kullanici"],
+#stok-print-area .stok-print-table th[data-col="kaskoDegeri"],
+#stok-print-area .stok-print-table td[data-col="kaskoDegeri"] {
 white-space: normal;
 word-break: break-word;
 overflow-wrap: anywhere;
