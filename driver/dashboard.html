@@ -37,7 +37,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../style-core.css?v=84">
-    <link rel="stylesheet" href="driver-style.css?v=98">
+    <link rel="stylesheet" href="driver-style.css?v=99">
     <script defer src="../script-core.js"></script>
     <!-- Splash: ana uygulama ile aynı logo+başlık (kritik, mobilde kesin uygulansın) -->
     <style>
@@ -60,7 +60,11 @@
         <div class="driver-header-fixed">
             <div class="hero hero-two-rows">
                 <div class="hero-logo">
-                    <img src="../icon/logo-header2.svg" alt="MEDISA" class="logo-small">
+                    <picture>
+                        <source media="(max-width: 640px)" srcset="../icon/logo-header2-mobile-header.svg">
+                        <img src="../icon/logo-header2.svg" alt="MEDISA" class="logo-small">
+                    </picture>
+                    <span id="main-header-user-name" class="main-header-user-name is-empty" aria-live="polite"></span>
                 </div>
                 <div class="hero-title-block">
                     <h1 class="hero-title-line">TAŞIT YÖNETİM SİSTEMİ</h1>
@@ -118,7 +122,6 @@
                     <aside class="driver-left-panel">
                         <div class="driver-left-panel-content">
                             <div class="driver-user-plate-row driver-user-plate-in-panel">
-                                <span id="driver-user-name" class="driver-user-name"></span>
                                 <div class="driver-plate-dropdown-row">
                                     <span id="driver-current-plaka" class="driver-current-plaka"></span>
                                     <button type="button" id="driver-plate-trigger" class="driver-plate-trigger" aria-label="Taşıt seç" style="display: none;">
@@ -427,6 +430,6 @@
             <button type="button" class="btn-confirm-yes" onclick="confirmMuayeneSubmit()">Evet</button>
         </div>
     </div>
-    <script defer src="driver-script.js?v=20260330.1"></script>
+    <script defer src="driver-script.js?v=20260406.1"></script>
 </body>
 </html>
