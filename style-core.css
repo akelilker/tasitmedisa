@@ -2202,6 +2202,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #r
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero h1 {
         font-size: clamp(17.8px, 5.1vw, 21.8px) !important;
         letter-spacing: 2px !important;
+        transform: translateX(-3px) !important; /* 3px sola (.hero h1 mobil none üzerine) */
     }
     
     /* Modal başlıkları mobilde 19px, letter-spacing 0.2em */
@@ -2832,6 +2833,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero h1 {
     letter-spacing: 1.8px !important;
+    transform: translateX(-3px) !important;
   }
 }
 

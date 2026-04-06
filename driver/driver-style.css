@@ -1557,7 +1557,7 @@ body.dashboard-page {
     margin-top: 0 !important;
     margin-left: 0 !important;
     overflow: visible !important;
-    transform: translate(0, 9px) !important; /* mobil: önceki 5px + 4px aşağı */
+    transform: translate(0, 14px) !important; /* mobil: +5px aşağı (önceki 9px) */
   }
   .dashboard-page .hero.hero-two-rows .hero-logo picture {
     max-width: 50px !important;
