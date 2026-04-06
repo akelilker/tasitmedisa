@@ -86,7 +86,7 @@
             #loading-screen .splash-logo { width: 120px !important; height: 69px !important; }
         }
         #loading-screen .splash-title {
-            font-size: clamp(16px, 4.5vw, 24px);
+            font-size: clamp(calc(16px - 0.5pt), 4.5vw, calc(24px - 0.5pt));
             font-weight: 800;
             letter-spacing: clamp(1px, 0.5vw, 4px);
             text-transform: uppercase;
@@ -154,9 +154,9 @@
     </style>
 
     <!-- CSS Preload + Async Load -->
-    <link rel="preload" href="style-core.css?v=20260406.2" as="style">
-    <link rel="stylesheet" href="style-core.css?v=20260406.2">
-    <noscript><link rel="stylesheet" href="style-core.css?v=20260406.2"></noscript>
+    <link rel="preload" href="style-core.css?v=20260406.4" as="style">
+    <link rel="stylesheet" href="style-core.css?v=20260406.4">
+    <noscript><link rel="stylesheet" href="style-core.css?v=20260406.4"></noscript>
 </head>
 <body>
 
