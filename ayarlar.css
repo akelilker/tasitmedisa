@@ -272,19 +272,9 @@ body.modal-open #info-modal.open {
     background: rgba(var(--theme-color-rgb), 0.08) !important;
 }
 
-/* Olay Ekle + içindeki tüm modallar: style-core default (500px, tam yükseklik) */
-/* event-menu, bakim, kaza, sigorta, kasko, muayene, anahtar, kredi, şube, satış hepsi aynı ölçü */
-/* Sadece z-index override gereken modallar aşağıda */
-#vehicle-history-modal .modal-container,
-#bakim-ekle-modal .modal-container,
-#kaza-ekle-modal .modal-container,
-#sigorta-guncelle-modal .modal-container,
-#kasko-guncelle-modal .modal-container,
-#muayene-guncelle-modal .modal-container,
-#anahtar-guncelle-modal .modal-container,
-#kredi-guncelle-modal .modal-container,
-#sube-degisiklik-modal .modal-container,
-#satis-pert-modal .modal-container {
+/* Taşıt tarihçesi (#vehicle-history-modal): olay formları tek #dinamik-olay-modal altında; eski çoklu olay modal id'leri kaldırıldı */
+/* style-core modal ölçüsü ile uyum için .modal-container z-index / pointer-events */
+#vehicle-history-modal .modal-container {
     z-index: 10002;
     pointer-events: auto;
 }

@@ -1678,7 +1678,6 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
 }
 /* Modal body varyantları (inline stil yerine) */
 #cache-confirm-modal .modal-body { padding: 20px 20px 12px 20px; }
-#kaza-ekle-modal .modal-body { padding-top: 20px; }
 #vehicle-history-modal .modal-body {
   padding: 0 !important;
   display: flex !important;

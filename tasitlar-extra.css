@@ -1734,21 +1734,7 @@
     box-sizing: border-box !important;
   }
 
-  /* şi şube input/select dikey +4px */
-  #sube-degisiklik-modal .modal-body select,
-  #sube-degisiklik-modal .modal-body .form-input {
-    min-height: 40px !important;
-    height: auto !important;
-    border: 1.1px solid var(--border-light) !important;
-    background: var(--bg) !important;
-    color: var(--data-value-color, #a0aec0) !important;
-  }
-  #sube-degisiklik-modal .modal-body select option {
-    background: var(--bg);
-    color: var(--data-value-color, #a0aec0);
-  }
-
-  /* Olay Ekle (14 modal): ortak header/h2 – uzun başlıklar satır kırar */
+  /* Olay Ekle (.olay-ekle-modal — event menü + dinamik olay): ortak header/h2 – uzun başlıklar satır kırar */
   .olay-ekle-modal .modal-header h2 {
     width: 100% !important;
     text-align: center !important;
@@ -1766,13 +1752,6 @@
   .olay-ekle-modal .modal-close svg {
     width: 24px !important;
     height: 24px !important;
-  }
-  /* Yedek Anahtar modal: X saşa yaslı, 4px yukarı (position: absolute korunmalı) */
-  #anahtar-guncelle-modal .modal-close {
-    position: absolute !important;
-    right: 15px !important;
-    top: calc(50% - 4px) !important;
-    transform: translateY(-50%) !important;
   }
 
   /* --- TARİHÇE MODAL --- */
@@ -2316,18 +2295,6 @@
   #vehicle-detail-modal .detail-row-value-sube.detail-row-value-sube-shrink {
     font-size: calc(1em - 1pt);
   }
-}
-
-/* Sube Degisikligi: normal gri, focus/aktifte kirmizi */
-#sube-degisiklik-modal .modal-body select#sube-select:focus,
-#sube-degisiklik-modal .modal-body select.form-input:focus,
-#sube-degisiklik-modal .modal-body select#sube-select:focus-visible,
-#sube-degisiklik-modal .modal-body select.form-input:focus-visible,
-#sube-degisiklik-modal .modal-body select#sube-select:active,
-#sube-degisiklik-modal .modal-body select.form-input:active {
-  border: 1.1px solid var(--theme-color) !important;
-  outline: none !important;
-  box-shadow: none !important;
 }
 
 /* Masaüstü PWA: Taşıt Detayı'nda eylem metinleri kesin kırmızı */

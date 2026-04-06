@@ -115,19 +115,16 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     z-index: 10050 !important;
 }
 
-/* Muayene tarihi input: Kaydet butonu ile yatayda hizalı (içerik #dinamik-olay-modal'da) */
-#muayene-guncelle-modal .muayene-tarih-row,
+/* Muayene tarihi input: Kaydet butonu ile yatayda hizalı (#dinamik-olay-modal muayene formu) */
 #dinamik-olay-modal .muayene-tarih-row {
   display: flex !important;
   justify-content: center !important;
 }
-#muayene-guncelle-modal .muayene-tarih-inner,
 #dinamik-olay-modal .muayene-tarih-inner {
   width: 390px;
   max-width: 100%;
   box-sizing: border-box;
 }
-#muayene-guncelle-modal #muayene-tarih,
 #dinamik-olay-modal #muayene-tarih {
   width: calc((100% - 16px) / 2) !important;
   max-width: calc((100% - 16px) / 2) !important;
@@ -421,9 +418,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     padding-top: 20px !important; /* Üst içerik kesilmesin */
 }
 
-/* Kaza Modalı özel İçerik Düzeni (Ekle + Güncelle) */
-#kaza-guncelle-modal .modal-body,
-#kaza-ekle-modal .modal-body,
+/* Kaza formu (#dinamik-olay-modal): modal gövde içerik düzeni */
 #dinamik-olay-modal .modal-body {
     display: flex !important;
     flex-direction: column !important;
@@ -531,8 +526,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 }
 
 /* Şemayı saran kapsayıcı hizalama */
-#kaza-guncelle-modal #kaza-kaporta-container,
-#kaza-ekle-modal #kaza-kaporta-container,
 #dinamik-olay-modal #kaza-kaporta-container {
     margin-top: 5px !important;
     margin-bottom: 0 !important;
@@ -541,15 +534,11 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     align-items: flex-start !important;
     width: 100% !important;
 }
-#kaza-guncelle-modal #kaza-kaporta-container .boya-legend,
-#kaza-ekle-modal #kaza-kaporta-container .boya-legend,
 #dinamik-olay-modal #kaza-kaporta-container .boya-legend {
     margin-top: 0 !important;
 }
 
 /* Hasar Gören Parça etiketi: Hasar Tutarı sol hizada */
-#kaza-ekle-modal .modal-body .kaza-kaporta-row,
-#kaza-guncelle-modal .modal-body .kaza-kaporta-row,
 #dinamik-olay-modal .modal-body .kaza-kaporta-row {
     width: 100% !important;
     padding-left: 0 !important;
@@ -558,8 +547,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     box-sizing: border-box !important;
 }
 /* "H" (Hasar...) ilk harfi = 5.000 inputunun sol dikey çerçevesi – şema arası 4px */
-#kaza-ekle-modal .kaza-kaporta-label,
-#kaza-guncelle-modal .kaza-kaporta-label,
 #dinamik-olay-modal .kaza-kaporta-label {
     display: block !important;
     text-align: left !important;
@@ -571,17 +558,13 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 }
 
 /* Kaza modalı buton grubu: form içeriğinin hemen altı */
-#kaza-guncelle-modal .universal-btn-group,
-#kaza-ekle-modal .universal-btn-group,
 #dinamik-olay-modal .modal-body .universal-btn-group {
     margin-top: 6px !important;
     flex-shrink: 0 !important;
     background: var(--bg) !important;
 }
 /* Kaza (şema var): şema / ekspertiz alanı ile Kaydet-Vazgeç arası ek sıkı (önceki -4px + 18px) */
-#dinamik-olay-modal .modal-body:has(#kaza-kaporta-container) .universal-btn-group,
-#kaza-ekle-modal .modal-body:has(#kaza-kaporta-container) .universal-btn-group,
-#kaza-guncelle-modal .modal-body:has(#kaza-kaporta-container) .universal-btn-group {
+#dinamik-olay-modal .modal-body:has(#kaza-kaporta-container) .universal-btn-group {
     margin-top: -22px !important;
 }
 /* Tramer satırı ile Kaporta / Hasar arası (sütun gap 12px → 4px azalt) */
@@ -1469,24 +1452,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-  }
-
-  /* Şube değişiklik modalı – masaüstü: etiket-input arası 3px, input yüksekliği 106% (100→106) */
-  #sube-degisiklik-modal .modal-body .sube-degisiklik-label {
-    margin-bottom: 3px !important;
-  }
-  #sube-degisiklik-modal .modal-body select#sube-select,
-  #sube-degisiklik-modal .modal-body select.form-input {
-    min-height: 38px !important;
-    height: 38px !important;
-    box-sizing: border-box;
-    border: 1.1px solid var(--border-light) !important;
-    background: var(--bg) !important;
-    color: var(--data-value-color, #a0aec0) !important;
-  }
-  #sube-degisiklik-modal .modal-body select#sube-select option {
-    background: var(--bg);
-    color: var(--data-value-color, #a0aec0);
   }
 
   /* Olay Ekle modalları – masaüstü: içerik buton satırı genişliği (390px), çerçeve ile 1px boşluk */
