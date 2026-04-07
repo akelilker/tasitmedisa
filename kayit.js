@@ -873,10 +873,16 @@
     const hasValue = !!input.value;
     input.classList.toggle('has-value', hasValue);
     const isVehicleRightDate = !!input.closest('#vehicle-modal .modal-column-right');
+    const isDinamikOlayDate = !!input.closest('#dinamik-olay-modal');
     // Sağ kolondaki tarih alanlarında (Sigorta/Kasko/Muayene) değeri gizleme:
     // iOS Safari ilk render'da metni boş gösterebildiği için renk daima görünür tutulur.
     if (isVehicleRightDate) {
       input.style.color = '#888';
+      return;
+    }
+    // Olay Ekle (Kaza/Bakım/Ceza vb.): boşta şeffaf yerine yerel gg.aa.yyyy okunaklı kalsın
+    if (isDinamikOlayDate) {
+      input.style.color = (hasValue || input === document.activeElement) ? '#888' : 'rgba(255, 255, 255, 0.42)';
       return;
     }
     input.style.color = (hasValue || input === document.activeElement) ? '#888' : 'transparent';
