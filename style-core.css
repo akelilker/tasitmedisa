@@ -2189,6 +2189,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         align-self: flex-end !important;
         transform: translate(2px, 3px) !important;
     }
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-logo img {
+        transform: translateY(0) !important;
+    }
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-user-name {
         display: block !important;
         max-width: 100% !important;
@@ -2840,7 +2843,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-logo img {
     height: 35px !important;
     width: auto !important;
-    transform: translateY(-2px) !important;
+    transform: translateY(0) !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-user-name {
     display: block !important;
