@@ -2187,7 +2187,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         flex: 0 0 58px !important;
         gap: 4px !important;
         align-self: flex-end !important;
-        transform: translate(0, 3px) !important;
+        transform: translate(2px, 3px) !important;
     }
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-user-name {
         display: block !important;
@@ -2833,7 +2833,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
     width: 58px !important;
     margin-right: 4px !important;
     margin-left: 0 !important;
-    transform: translate(0, 3px) !important;
+    transform: translate(2px, 3px) !important;
     gap: 4px !important;
     align-self: flex-end !important;
   }
