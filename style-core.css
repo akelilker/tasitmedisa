@@ -2198,11 +2198,17 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         text-overflow: ellipsis !important;
         transform: translate(3px, 2px) !important; /* dikey hizayı align-self verir; hafif optik sağ */
     }
-    /* Ana uygulama ana ekran header mobil: ana başlık +0.6pt (≈0.8px) */
+    /* Ana uygulama ana ekran header mobil: dar ekranda başlık kırılır, taşma/clip olmaz */
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero h1 {
-        font-size: clamp(calc(17.8px - 0.5pt), 5.1vw, calc(21.8px - 0.5pt)) !important;
-        letter-spacing: 2px !important;
-        transform: translateX(-3px) !important; /* 3px sola (.hero h1 mobil none üzerine) */
+        font-size: clamp(calc(12px - 0.5pt), 4vw, calc(21.8px - 0.5pt)) !important;
+        letter-spacing: clamp(0.25px, 1.05vw, 2px) !important;
+        line-height: 1.16 !important;
+        transform: none !important;
+        white-space: normal !important;
+        overflow: visible !important;
+        text-overflow: clip !important;
+        word-break: break-word !important;
+        padding: 0 4px !important;
     }
     
     /* Modal başlıkları mobilde 19px, letter-spacing 0.2em */
@@ -2833,9 +2839,15 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
     transform: translate(3px, 2px) !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero h1 {
-    font-size: clamp(calc(17.8px - 0.5pt), 5.1vw, calc(21.8px - 0.5pt)) !important;
-    letter-spacing: 1.8px !important;
-    transform: translateX(-3px) !important;
+    font-size: clamp(calc(12px - 0.5pt), 4vw, calc(21.8px - 0.5pt)) !important;
+    letter-spacing: clamp(0.25px, 1.05vw, 2px) !important;
+    line-height: 1.16 !important;
+    transform: none !important;
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    word-break: break-word !important;
+    padding: 0 4px !important;
   }
 }
 
