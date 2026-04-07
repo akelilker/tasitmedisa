@@ -2177,7 +2177,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     /* Anasayfa mobil header: logo+isim satırın altına (h1 ortada kalır); sol köşe için hafif içe */
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-logo {
         margin-right: 8px !important;
-        margin-left: 6px !important;
+        margin-left: 3px !important;
         width: 58px !important;
         flex: 0 0 58px !important;
         gap: 4px !important;
@@ -2196,7 +2196,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         overflow-wrap: normal !important;
         -webkit-line-clamp: unset !important;
         text-overflow: ellipsis !important;
-        transform: translate(3px, 2px) !important; /* dikey hizayı align-self verir; hafif optik sağ */
+        transform: translate(0, 2px) !important;
     }
     /* Ana uygulama ana ekran header mobil: dar ekranda başlık kırılır, taşma/clip olmaz */
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero h1 {
@@ -2814,7 +2814,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
     flex: 0 0 58px !important;
     width: 58px !important;
     margin-right: 8px !important;
-    margin-left: 6px !important;
+    margin-left: 3px !important;
     transform: translate(0, 0) !important;
     gap: 4px !important;
     align-self: flex-end !important;
@@ -2836,7 +2836,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
     overflow-wrap: normal !important;
     -webkit-line-clamp: unset !important;
     text-overflow: ellipsis !important;
-    transform: translate(3px, 2px) !important;
+    transform: translate(0, 2px) !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero h1 {
     font-size: clamp(calc(12px - 0.5pt), 4vw, calc(21.8px - 0.5pt)) !important;
