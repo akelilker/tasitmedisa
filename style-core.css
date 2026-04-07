@@ -2174,10 +2174,15 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         backface-visibility: hidden;
         transform: none !important;  /* Subpixel blur olmasın */
     }
+    /* Anasayfa mobil: sol çerçeve–logo 3px (hero padding-left); logo–başlık 4px (hero-logo margin-right) */
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero {
+        padding: 12px 12px 12px 3px !important;
+        box-sizing: border-box !important;
+    }
     /* Anasayfa mobil header: logo+isim satırın altına (h1 ortada kalır); sol köşe için hafif içe */
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-logo {
         margin-right: 4px !important;
-        margin-left: 3px !important;
+        margin-left: 0 !important;
         width: 58px !important;
         flex: 0 0 58px !important;
         gap: 4px !important;
@@ -2198,20 +2203,26 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         text-overflow: ellipsis !important;
         transform: translate(0, 2px) !important;
     }
-    /* Ana uygulama ana ekran header mobil: giriş ekranı (.login-page .hero-title-line) ile aynı tipografi bandı */
+    /* Ana uygulama ana ekran header mobil: tek satır (wrap kaldırıldı); dar alanda sığması için harf aralığı esnek */
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero h1 {
         font-size: clamp(calc(18px - 0.5pt), 5vw, calc(22px - 0.5pt)) !important;
-        letter-spacing: clamp(1px, 1.5vw, 2.5px) !important;
-        line-height: 1.22 !important;
+        letter-spacing: clamp(0.35px, 1.05vw, 2.2px) !important;
+        line-height: 1.2 !important;
         transform: none !important;
-        white-space: normal !important;
-        overflow: visible !important;
-        text-overflow: clip !important;
-        word-break: break-word !important;
-        padding: 0 4px 0 0 !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        word-break: normal !important;
+        padding: 0 2px 0 0 !important;
         -webkit-font-smoothing: antialiased !important;
         text-rendering: optimizeLegibility !important;
         text-shadow: 0 0 1px rgba(255, 255, 255, 0.22) !important;
+    }
+    /* Ayarlar/bildirim satırı: sağ kenara yapışmayı önle (safe-area + nefes) */
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .icons-row {
+        padding-left: 6px !important;
+        padding-right: max(12px, env(safe-area-inset-right, 0px)) !important;
+        box-sizing: border-box !important;
     }
     
     /* Modal başlıkları mobilde 19px, letter-spacing 0.2em */
@@ -2797,6 +2808,10 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
 
 /* iOS PWA: ana panel footer ve header dengesi (safe-area tek katman) */
 @media (max-width: 768px) and (display-mode: standalone) {
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero {
+    padding: 12px 12px 12px 3px !important;
+    box-sizing: border-box !important;
+  }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer {
     height: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
     min-height: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
@@ -2817,7 +2832,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
     flex: 0 0 58px !important;
     width: 58px !important;
     margin-right: 4px !important;
-    margin-left: 3px !important;
+    margin-left: 0 !important;
     transform: translate(0, 0) !important;
     gap: 4px !important;
     align-self: flex-end !important;
@@ -2843,17 +2858,22 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero h1 {
     font-size: clamp(calc(18px - 0.5pt), 5vw, calc(22px - 0.5pt)) !important;
-    letter-spacing: clamp(1px, 1.5vw, 2.5px) !important;
-    line-height: 1.22 !important;
+    letter-spacing: clamp(0.35px, 1.05vw, 2.2px) !important;
+    line-height: 1.2 !important;
     transform: none !important;
-    white-space: normal !important;
-    overflow: visible !important;
-    text-overflow: clip !important;
-    word-break: break-word !important;
-    padding: 0 4px 0 0 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    word-break: normal !important;
+    padding: 0 2px 0 0 !important;
     -webkit-font-smoothing: antialiased !important;
     text-rendering: optimizeLegibility !important;
     text-shadow: 0 0 1px rgba(255, 255, 255, 0.22) !important;
+  }
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .icons-row {
+    padding-left: 6px !important;
+    padding-right: max(12px, env(safe-area-inset-right, 0px)) !important;
+    box-sizing: border-box !important;
   }
 }
 
