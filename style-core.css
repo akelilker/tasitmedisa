@@ -2176,7 +2176,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     }
     /* Anasayfa mobil header: logo+isim satırın altına (h1 ortada kalır); sol köşe için hafif içe */
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-logo {
-        margin-right: 8px !important;
+        margin-right: 4px !important;
         margin-left: 3px !important;
         width: 58px !important;
         flex: 0 0 58px !important;
@@ -2200,7 +2200,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     }
     /* Ana uygulama ana ekran header mobil: giriş ekranı (.login-page .hero-title-line) ile aynı tipografi bandı */
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero h1 {
-        font-size: clamp(calc(18px - 1pt - 0.5pt), 5vw, calc(22px - 1pt - 0.5pt)) !important;
+        font-size: clamp(calc(18px - 0.5pt), 5vw, calc(22px - 0.5pt)) !important;
         letter-spacing: clamp(1px, 1.5vw, 2.5px) !important;
         line-height: 1.22 !important;
         transform: none !important;
@@ -2208,7 +2208,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         overflow: visible !important;
         text-overflow: clip !important;
         word-break: break-word !important;
-        padding: 0 4px !important;
+        padding: 0 4px 0 0 !important;
         -webkit-font-smoothing: antialiased !important;
         text-rendering: optimizeLegibility !important;
         text-shadow: 0 0 1px rgba(255, 255, 255, 0.22) !important;
@@ -2816,7 +2816,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-logo {
     flex: 0 0 58px !important;
     width: 58px !important;
-    margin-right: 8px !important;
+    margin-right: 4px !important;
     margin-left: 3px !important;
     transform: translate(0, 0) !important;
     gap: 4px !important;
@@ -2842,7 +2842,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
     transform: translate(0, 2px) !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero h1 {
-    font-size: clamp(calc(18px - 1pt - 0.5pt), 5vw, calc(22px - 1pt - 0.5pt)) !important;
+    font-size: clamp(calc(18px - 0.5pt), 5vw, calc(22px - 0.5pt)) !important;
     letter-spacing: clamp(1px, 1.5vw, 2.5px) !important;
     line-height: 1.22 !important;
     transform: none !important;
@@ -2850,7 +2850,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
     overflow: visible !important;
     text-overflow: clip !important;
     word-break: break-word !important;
-    padding: 0 4px !important;
+    padding: 0 4px 0 0 !important;
     -webkit-font-smoothing: antialiased !important;
     text-rendering: optimizeLegibility !important;
     text-shadow: 0 0 1px rgba(255, 255, 255, 0.22) !important;
