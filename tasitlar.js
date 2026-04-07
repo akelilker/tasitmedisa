@@ -2815,7 +2815,12 @@ function renderVehicleDetailLeft(vehicle) {
     if (!input || input.type !== 'date' || !input.closest('#dinamik-olay-modal')) return;
     const hasValue = !!input.value;
     input.classList.toggle('has-value', hasValue);
-    input.style.color = (hasValue || input === document.activeElement) ? '#888' : 'transparent';
+    /* Boşta şeffaf yapma: mobilde yerel tarih metni baştan görünsün */
+    if (hasValue || input === document.activeElement) {
+      input.style.color = '#888';
+    } else {
+      input.style.color = 'rgba(255, 255, 255, 0.42)';
+    }
   }
   function repaintDinamikOlayDateInput(input) {
     if (!input || input.type !== 'date') return;

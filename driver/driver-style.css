@@ -1153,6 +1153,21 @@ body.dashboard-page {
 }
 /* Sigorta/Kasko/Muayene: sadece uyarı çerçevesi */
 
+/* Tarih alanı: takvim simgesi WebKit’te koyu kutu/çerçeve vermesin (modal + sağ panel blokları) */
+#driver-sigorta-modal input[type="date"].form-input::-webkit-calendar-picker-indicator,
+#driver-kasko-modal input[type="date"].form-input::-webkit-calendar-picker-indicator,
+#driver-muayene-modal input[type="date"].form-input::-webkit-calendar-picker-indicator,
+.dashboard-page .driver-modal input[type="date"].form-input::-webkit-calendar-picker-indicator,
+.dashboard-page .driver-action-area input[type="date"]::-webkit-calendar-picker-indicator {
+  background-color: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  outline: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
 .driver-input-area {
   min-height: 0;
 }

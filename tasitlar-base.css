@@ -215,10 +215,11 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
   cursor: pointer !important;
 }
 
-/* Olay Ekle: boş tarih inputunda tek placeholder (native çift görüntü yok) */
+/* Olay Ekle: boşta yerel gg.aa.yyyy görünsün (mobilde çift placeholder yok; span kapalı) */
 .olay-ekle-modal .modal-body input[type="date"].form-input:not(.has-value):not(:focus)::-webkit-datetime-edit,
 .olay-ekle-modal .modal-body .olay-tarih-input:not(.has-value):not(:focus)::-webkit-datetime-edit {
-  color: transparent !important;
+  color: rgba(255, 255, 255, 0.42) !important;
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.42) !important;
 }
 /* Placeholder’lar etiketten daha geride dursun (önceki #6c757d fazla öne çıkıyordu) */
 .olay-ekle-modal .modal-body input.form-input::placeholder,
