@@ -36,9 +36,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../style-core.css?v=85">
-    <link rel="stylesheet" href="driver-style.css?v=113">
-    <script defer src="../script-core.js"></script>
+<link rel="stylesheet" href="../style-core.css?v=20260409.1">
+<link rel="stylesheet" href="driver-style.css?v=20260409.1">
+<script defer src="../script-core.js?v=20260409.1"></script>
     <!-- Splash: ana uygulama ile aynı logo+başlık (kritik, mobilde kesin uygulansın) -->
     <style>
         .driver-splash-inner { min-width: 150px !important; flex-shrink: 0 !important; }
@@ -270,7 +270,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="form-group driver-radio-row" role="group" aria-labelledby="driver-anahtar-durum-label">
-                        <span id="driver-anahtar-durum-label" class="driver-radio-label">Durum:</span>
+                        <span id="driver-anahtar-durum-label" class="driver-radio-label driver-radio-label-multiline">Yedek Anahtar</span>
                         <div class="driver-radio-group">
                             <button type="button" class="driver-radio-btn active" data-value="var" data-group="anahtar">Var</button>
                             <button type="button" class="driver-radio-btn" data-value="yok" data-group="anahtar">Yok</button>
@@ -297,7 +297,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="form-group driver-radio-row" role="group" aria-labelledby="driver-lastik-durum-label">
-                        <span id="driver-lastik-durum-label" class="driver-radio-label">Durum:</span>
+                        <span id="driver-lastik-durum-label" class="driver-radio-label driver-radio-label-multiline">Yazlık/ Kışlık</span>
                         <div class="driver-radio-group">
                             <button type="button" class="driver-radio-btn" data-value="var" data-group="lastik">Var</button>
                             <button type="button" class="driver-radio-btn active" data-value="yok" data-group="lastik">Yok</button>
@@ -430,6 +430,6 @@
             <button type="button" class="btn-confirm-yes" onclick="confirmMuayeneSubmit()">Evet</button>
         </div>
     </div>
-    <script defer src="driver-script.js?v=20260406.1"></script>
+<script defer src="driver-script.js?v=20260409.1"></script>
 </body>
 </html>

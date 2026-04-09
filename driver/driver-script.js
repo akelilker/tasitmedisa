@@ -1159,7 +1159,7 @@ const API_BASE = (function(){
                   <button type="button" class="driver-action-btn${anahtarBtnClass}" data-action="anahtar" onclick="toggleDriverActionBlock('anahtar','${vid}')">Anahtar Durumu Bildir</button>
                   <div id="anahtar-block-${vid}" class="driver-report-block driver-report-block-anahtar driver-action-block">
                       <div class="form-group driver-radio-row" role="group" aria-labelledby="anahtar-durum-label-${vid}">
-                          <span id="anahtar-durum-label-${vid}" class="driver-radio-label">Durum:</span>
+                          <span id="anahtar-durum-label-${vid}" class="driver-radio-label driver-radio-label-multiline">Yedek Anahtar</span>
                           <div class="driver-radio-group" data-group="anahtar" data-vid="${vid}">
                               <button type="button" class="driver-radio-btn" data-value="var" data-group="anahtar">Var</button>
                               <button type="button" class="driver-radio-btn" data-value="yok" data-group="anahtar">Yok</button>
@@ -1179,7 +1179,7 @@ const API_BASE = (function(){
                   <button type="button" class="driver-action-btn${lastikBtnClass}" data-action="lastik" onclick="toggleDriverActionBlock('lastik','${vid}')">Lastik Durumu Bildir</button>
                   <div id="lastik-block-${vid}" class="driver-report-block driver-report-block-lastik driver-action-block">
                       <div class="form-group driver-radio-row" role="group" aria-labelledby="lastik-durum-label-${vid}">
-                          <span id="lastik-durum-label-${vid}" class="driver-radio-label">Durum:</span>
+                          <span id="lastik-durum-label-${vid}" class="driver-radio-label driver-radio-label-multiline">Yazlık/ Kışlık</span>
                           <div class="driver-radio-group" data-group="lastik" data-vid="${vid}">
                               <button type="button" class="driver-radio-btn" data-value="var" data-group="lastik">Var</button>
                               <button type="button" class="driver-radio-btn" data-value="yok" data-group="lastik">Yok</button>

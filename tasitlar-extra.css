@@ -1191,6 +1191,11 @@
     max-width: min(140px, calc(100vw - 24px));
     z-index: 1000;
   }
+  #vehicles-modal .v-transmission-dropdown .v-transmission-option {
+    font-size: calc(13px + 2.67px) !important;
+    line-height: 1.2 !important;
+    padding: 10px 12px !important;
+  }
   /* Taşıt detay toolbar sol 4px */
   #vehicle-detail-modal .vehicle-detail-toolbar {
     padding-left: 1px !important; /* Sol ok 3px sola (4→1) */
@@ -1405,6 +1410,9 @@
   .detail-row-value {
     font-size: 16px !important; /* +1pt (base 14/15) */
     color: var(--txt-gray-darker) !important; /* Gri renk */
+  }
+  #vehicle-detail-modal .detail-row-kaporta .detail-row-value {
+    font-size: calc(16px - 1.33px) !important;
   }
   .detail-row-value.detail-user-empty {
     color: #d40000 !important;
