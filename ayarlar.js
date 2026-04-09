@@ -9,6 +9,15 @@
   
     function $(sel, root = document) { return root.querySelector(sel); }
     function $all(sel, root = document) { return Array.from(root.querySelectorAll(sel)); }
+
+    function shouldAutofocusSettingsForm() {
+      const hasMatchMedia = typeof window.matchMedia === 'function';
+      const isStandalone = hasMatchMedia
+        && (window.matchMedia('(display-mode: standalone)').matches || window.matchMedia('(display-mode: fullscreen)').matches);
+      const ua = navigator.userAgent || '';
+      const isiOS = /iPhone|iPad|iPod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+      return !(isiOS && (isStandalone || window.navigator.standalone === true));
+    }
   
     // ========================================
     // Şube YÖNETİMİ
@@ -78,7 +87,7 @@
       requestAnimationFrame(() => modal.classList.add('active'));
   
       // Focus
-      if (nameInput) {
+      if (nameInput && shouldAutofocusSettingsForm()) {
         setTimeout(() => nameInput.focus(), 350);
       }
     };
@@ -867,7 +876,7 @@
       requestAnimationFrame(() => modal.classList.add('active'));
   
       // Focus
-      if (nameInput) {
+      if (nameInput && shouldAutofocusSettingsForm()) {
         setTimeout(() => nameInput.focus(), 350);
       }
     };

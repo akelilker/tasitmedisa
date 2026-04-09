@@ -570,11 +570,6 @@
     min-height: 50px;
   }
 }
-#dinamik-olay-modal #ruhsat-modal-content .ruhsat-keep-info {
-  color: rgba(255, 255, 255, 0.75);
-  font-size: 13px;
-  text-align: center;
-}
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-select-box {
   width: 100%;
   max-width: 280px;
@@ -846,12 +841,6 @@
   align-items: center;
   justify-content: center;
   margin: 0 auto;
-}
-#dinamik-olay-modal #ruhsat-modal-content .ruhsat-keep-info {
-  color: rgba(255, 255, 255, 0.75);
-  font-size: 13px;
-  text-align: center;
-  margin-bottom: 12px;
 }
 #dinamik-olay-modal #ruhsat-modal-content .ruhsat-select-box {
   width: 100%;
@@ -2060,6 +2049,19 @@
     .tasitlar-modal-overlay {
       padding-top: env(safe-area-inset-top) !important;
       padding-bottom: 0 !important;
+    }
+    #vehicles-modal .vt-right {
+      gap: 4px !important;
+    }
+    #vehicles-modal .vt-right .vt-icon-btn,
+    #vehicles-modal .vt-right .v-transmission-btn {
+      width: 36px !important;
+      height: 36px !important;
+    }
+    #vehicles-modal .vt-right .vt-icon-btn svg,
+    #vehicles-modal .vt-right .v-transmission-btn svg {
+      width: 19px !important;
+      height: 19px !important;
     }
     /* iOS PWA: olay formlarında tarih kutusu + gg.aa.yyyy overlay dikey hiza (Safari date widget) */
     #dinamik-olay-modal .modal-body input[type="date"].form-input,
