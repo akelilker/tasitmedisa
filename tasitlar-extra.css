@@ -2173,12 +2173,12 @@
   /* Taşıt detay: Olay Ekle ve Tarihçe mobilde +1pt (17px, hover 18px); Tarihçe rengi etiket beyazı */
   #vehicle-detail-modal .detail-brand-year-row .history-add-event-btn {
     font-size: 17px !important;
-    align-self: center !important;
+    align-self: flex-start !important;
   }
   #vehicle-detail-modal .detail-brand-year-row .history-btn-minimal {
     font-size: 17px !important;
     color: var(--form-label-color) !important;
-    align-self: center !important; /* Olay Ekle ile aynı satırda, aşağı kaymasın */
+    align-self: flex-start !important; /* Olay Ekle ile aynı üst hizada kalsın */
   }
   #vehicle-detail-modal .detail-brand-year-row .history-btn-minimal:hover {
     font-size: 17px !important;
