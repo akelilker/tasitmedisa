@@ -2229,6 +2229,20 @@ input.settings-form-input:-moz-autofill,
 /* iOS PWA: Yeni Kullanıcı Ekle formunda etiketler 1 punto küçük, giriş metni kontrollü büyük */
 @media (max-width: 768px) and (display-mode: standalone) {
     @supports (-webkit-touch-callout: none) {
+        #branch-form-modal.modal-overlay,
+        #user-form-modal.modal-overlay {
+            padding-top: max(12px, env(safe-area-inset-top)) !important;
+            padding-bottom: max(12px, env(safe-area-inset-bottom, 0)) !important;
+        }
+        #branch-form-modal .modal-container,
+        #user-form-modal .modal-container {
+            margin-top: 0 !important;
+        }
+        #branch-form-modal .modal-body,
+        #user-form-modal .modal-body {
+            overflow-y: visible !important;
+            padding-bottom: max(40px, env(safe-area-inset-bottom, 0)) !important;
+        }
         #user-form-modal .form-label {
             font-size: 14px !important;
         }

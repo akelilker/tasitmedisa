@@ -4444,12 +4444,6 @@ function renderVehicleDetailLeft(vehicle) {
 
   function renderRuhsatUploadForm(content, saveBtn, hasExistingRuhsat) {
     content.innerHTML = '';
-    if (hasExistingRuhsat) {
-      const keepInfo = document.createElement('div');
-      keepInfo.textContent = 'Yeni ruhsat yüklemesi başarılı olmazsa mevcut ruhsat korunur.';
-      keepInfo.className = 'ruhsat-keep-info';
-      content.appendChild(keepInfo);
-    }
     const uploadBox = document.createElement('div');
     uploadBox.className = 'ruhsat-upload-box';
     const input = document.createElement('input');
