@@ -2473,6 +2473,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         overflow-y: auto !important;
         overflow-x: hidden !important;
         -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain !important;
+        touch-action: pan-y !important;
         width: 75vw !important;
         max-width: none !important;
         left: 61% !important;
@@ -2480,6 +2482,10 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         transform: translateX(-50%) !important;
         padding-bottom: 0 !important; /* Açıkken JS inline güvenlik payı verir */
         box-sizing: border-box !important;
+    }
+    body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap {
+        overflow: hidden !important;
+        overscroll-behavior: none !important;
     }
 
     /* === ANA KAYIT MODALI KURTARMA (Dar alana sığması için alt alta dizilmek zorundadır) === */

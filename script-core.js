@@ -6,12 +6,19 @@ var _cachedMenu, _cachedNotif, _cachedSubmenu;
 function getMenu() { return _cachedMenu || (_cachedMenu = document.getElementById('settings-menu')); }
 function getNotif() { return _cachedNotif || (_cachedNotif = document.getElementById('notifications-dropdown')); }
 function getSubmenu() { return _cachedSubmenu || (_cachedSubmenu = document.getElementById('data-submenu')); }
+function setNotificationsOpenState(isOpen) {
+  const notif = getNotif();
+  const shouldOpen = !!(notif && isOpen);
+  if (notif) notif.classList.toggle('open', shouldOpen);
+  document.body.classList.toggle('notifications-open', shouldOpen);
+  return shouldOpen;
+}
+window.setNotificationsOpenState = setNotificationsOpenState;
 
 function toggleSettingsMenu(e) {
   if (e && typeof e.stopPropagation === 'function') e.stopPropagation();
   const menu = getMenu();
-  const notif = getNotif();
-  if (notif) notif.classList.remove('open');
+  setNotificationsOpenState(false);
   if (menu) menu.classList.toggle('open');
 }
 window.toggleSettingsMenu = toggleSettingsMenu;
@@ -22,17 +29,15 @@ function toggleNotifications(e) {
   const menu = getMenu();
   if (menu) menu.classList.remove('open');
   if (notif) {
-    var wasOpen = notif.classList.contains('open');
-    notif.classList.toggle('open');
-    if (typeof window.syncMobileNotificationsDropdownHeight === 'function') {
+    var willOpen = !notif.classList.contains('open');
+    setNotificationsOpenState(willOpen);
+    if (willOpen && typeof window.syncMobileNotificationsDropdownHeight === 'function') {
       requestAnimationFrame(function() {
         window.syncMobileNotificationsDropdownHeight();
-        if (!wasOpen) {
-          requestAnimationFrame(function() {
-            window.syncMobileNotificationsDropdownHeight();
-            requestAnimationFrame(window.syncMobileNotificationsDropdownHeight);
-          });
-        }
+        requestAnimationFrame(function() {
+          window.syncMobileNotificationsDropdownHeight();
+          requestAnimationFrame(window.syncMobileNotificationsDropdownHeight);
+        });
       });
     }
   }
@@ -74,7 +79,7 @@ document.addEventListener('click', (e) => {
     menu.classList.remove('open');
   }
   if (notif && notif.classList.contains('open')) {
-    notif.classList.remove('open');
+    setNotificationsOpenState(false);
   }
   if (submenu && submenu.classList.contains('open')) {
     submenu.classList.remove('open');
@@ -458,9 +463,11 @@ window.closeHistoryToHomeAndOpenNotifications = function() {
   if (typeof window.closeAllModals === 'function') {
     window.closeAllModals();
   }
-  var notif = getNotif();
-  if (notif) {
-    notif.classList.add('open');
+  if (setNotificationsOpenState(true) && typeof window.syncMobileNotificationsDropdownHeight === 'function') {
+    requestAnimationFrame(function() {
+      window.syncMobileNotificationsDropdownHeight();
+      requestAnimationFrame(window.syncMobileNotificationsDropdownHeight);
+    });
   }
 };
 
@@ -504,7 +511,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Taşıtlar modülü (JS + CSS) — tek sürüm; loadAppModule anahtarı ve bildirim ön-yüklemesi aynı yolu kullanır.
-var TASITLAR_MODULE_VERSION = '20260406.24';
+var TASITLAR_MODULE_VERSION = '20260409.1';
 
 // Modal açma fonksiyonları: Lazy load – modül yüklenir, sonra ilgili açma fonksiyonu tetiklenir.
 // tasitlar.js / raporlar.js / kayit.js / ayarlar.js yüklendiğinde kendi open* implementasyonlarını yazar.
