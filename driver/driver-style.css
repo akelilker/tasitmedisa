@@ -1436,8 +1436,15 @@ body.dashboard-page {
   }
   .driver-current-plaka { font-size: 13.5px; } /* 14.5 - 1pt */
   .driver-plate-subtitle { font-size: 14.5px; }
-  .driver-user-plate-in-panel .driver-plate-subtitle { font-size: 15.5px; }
+  .driver-user-plate-in-panel .driver-plate-subtitle { font-size: calc(15.5px + 0.67px); }
   .driver-user-plate-in-panel { gap: 3px; margin-bottom: 3px; }
+  .driver-radio-label.driver-radio-label-multiline {
+    display: inline-flex;
+    align-self: flex-start;
+    max-width: 92px;
+    white-space: normal;
+    line-height: 1.08;
+  }
   .hero-subtitle { font-size: 13.5px; }
   .driver-info-row { font-size: 13.5px; }
   .vehicle-header h3 { font-size: 20.5px; }
@@ -4951,6 +4958,11 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     font-size: 16px !important;
     margin-top: 0 !important;
     margin-bottom: 0 !important;
+  }
+  .dashboard-page .driver-action-area .driver-radio-label.driver-radio-label-multiline {
+    align-items: flex-start;
+    min-height: auto;
+    line-height: 1.08;
   }
   .dashboard-page .driver-action-area .driver-radio-group {
     align-items: center !important;

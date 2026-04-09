@@ -841,6 +841,9 @@
       if (!btn) return;
       var action = (btn.getAttribute('data-action') || '').toString().trim();
       if (action === 'open-dis-veri') {
+        if (typeof window.setNotificationsOpenState === 'function') {
+          window.setNotificationsOpenState(false);
+        }
         if (typeof window.openDisVeriPanel === 'function') window.openDisVeriPanel();
         return;
       }
@@ -853,6 +856,9 @@
         markNotificationKeysAsViewed([notifKey]);
       }
       if (!plate && !vehicleId) return;
+      if (typeof window.setNotificationsOpenState === 'function') {
+        window.setNotificationsOpenState(false);
+      }
       var vehicles = readVehicles();
       if (!Array.isArray(vehicles) || vehicles.length === 0) {
         vehicles = (window.getMedisaVehicles && window.getMedisaVehicles()) || [];
