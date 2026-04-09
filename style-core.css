@@ -2176,6 +2176,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     }
     /* Anasayfa mobil: sol çerçeve–logo 3px (hero padding-left); logo–başlık 4px (hero-logo margin-right) */
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero {
+        min-height: 67px !important;
         padding: 12px 12px 12px 3px !important;
         box-sizing: border-box !important;
     }
@@ -2817,7 +2818,22 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
 
 /* iOS PWA: ana panel footer ve header dengesi (safe-area tek katman) */
 @media (max-width: 768px) and (display-mode: standalone) {
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #branch-form-modal.modal-overlay,
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #user-form-modal.modal-overlay {
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
+    overflow-y: auto !important;
+    touch-action: pan-y !important;
+  }
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #branch-form-modal.modal-overlay .modal-container,
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #user-form-modal.modal-overlay .modal-container {
+    height: auto !important;
+    max-height: none !important;
+    min-height: 0 !important;
+    touch-action: pan-y !important;
+  }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero {
+    min-height: 67px !important;
     padding: 12px 12px 12px 3px !important;
     box-sizing: border-box !important;
   }
