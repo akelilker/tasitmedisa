@@ -1698,20 +1698,23 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 }
 #vehicles-modal .modal-body::-webkit-scrollbar { display: none; }
 
-/* Liste görünümü: scroll sadece liste gövdesinde (başlık scroll dışında – taşma olmaz) */
+/* Liste görünümü: scroll tek yüzeyde (modal-body, raporlar modalı ile aynı model); sütun başlığı sticky */
 #vehicles-modal.has-vehicles-list-scroll .modal-body {
-    overflow: hidden !important;
-    display: flex !important;
-    flex-direction: column !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    display: block !important;
     min-height: 0;
     padding-top: 0 !important; /* Sütun başlıkları üzerindeki dikey boşluk 6px azaltıldı (6px→0) */
+    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y;
+    overscroll-behavior-y: none !important;
+    overscroll-behavior-x: none !important;
 }
-#vehicles-modal-content.has-vehicles-list-scroll {
-    flex: 1;
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
+#vehicles-modal.has-vehicles-list-scroll #vehicles-modal-content.has-vehicles-list-scroll {
+    display: block;
     margin-top: 0;
+    overscroll-behavior: none;
+    touch-action: pan-y;
 }
 .vehicles-loading-state {
     display: flex;
@@ -1721,22 +1724,12 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     color: var(--form-label-color);
     font-size: 14px;
 }
+/* Sarmalayıcı: gerçek scroll modal-body'de; iç içe scroll + iOS rubber-band azaltılır */
 .vehicles-list-scroll {
-    flex: 1;
+    display: block;
+    width: 100%;
     min-height: 0;
-    overflow-y: auto;
-    overflow-x: hidden;
-    -webkit-overflow-scrolling: touch;
-    touch-action: pan-y;
-    overscroll-behavior-y: contain;
-    overscroll-behavior-x: none;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-    -webkit-overflow-scrolling: touch;
-    touch-action: pan-y;
-    overscroll-behavior: none;
-    overscroll-behavior-x: none;
-    overscroll-behavior-y: contain;
+    overflow: visible;
 }
 /* Liste: çerçeve ile 3px boşluk (modal-body padding 3px); hover taşmasın */
 #vehicles-modal .vehicles-list-scroll,
@@ -1745,7 +1738,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     margin-right: 0 !important;
     width: 100% !important;
 }
-.vehicles-list-scroll::-webkit-scrollbar { display: none; }
 
 /* === GRID (ŞUBELER) === */
 .branch-grid { 
@@ -2048,7 +2040,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     z-index: -1; /* Başlışın arkasında kalır (scroll sarmalayıcı yoksa) */
     isolation: isolate;
 }
-/* Scroll sarmalayıcı içindeyse örtüşme yok, margin sıfır; z-index tıklamaların ulaşması için */
+/* Liste gövdesi sarmalayıcıda: örtüşme yok, margin sıfır; z-index tıklanabilirlik için */
 #vehicles-modal .vehicles-list-scroll .view-list {
     margin-top: 0 !important;
     z-index: 0 !important;
@@ -2078,16 +2070,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     transform: translateZ(0);
     box-shadow: 0 2px 0 0 var(--bg);
 }
-/* Liste scroll sarmalayıcı varken başlık scroll dışında – sticky gerekmez */
-#vehicles-modal-content.has-vehicles-list-scroll .list-header-row {
-    position: static !important;
-    top: auto !important;
-    z-index: auto !important;
-    transform: none;
-    box-shadow: none;
-    flex-shrink: 0;
-}
-
 /* Taşıtlar listesi: tüm başlık hücreleri alta hizalı; iki kelime üst/alt (buildVehicleHeaderLabelStackHtml) */
 #vehicles-modal .list-header-row {
     align-items: end !important;
