@@ -2240,6 +2240,16 @@
   #vehicle-detail-modal .detail-row-value-sube.detail-row-value-sube-shrink {
     font-size: calc(1em - 1pt);
   }
+  /* Taşıtlar listesi (≤768, JS ile aynı): gap + min-width → şube sütunu taşmasını azaltır */
+  #vehicles-modal .list-header-row {
+    gap: 3px !important;
+  }
+  #vehicles-modal .view-list .list-item {
+    gap: 3px !important;
+  }
+  #vehicles-modal .view-list {
+    min-width: 0 !important;
+  }
 }
 
 /* Masaüstü PWA: Taşıt Detayı'nda eylem metinleri kesin kırmızı */
