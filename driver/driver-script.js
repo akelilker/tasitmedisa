@@ -447,14 +447,29 @@ const API_BASE = (function(){
     });
   }
   
-  /** iOS PWA: modal içi input/textarea focus'ta klavye açıldıktan sonra alan görünür kalsın */
+  /** iOS PWA: modal içi input/textarea focus'ta sadece gerçekten görünmüyorsa en yakın konuma al */
   document.addEventListener('focusin', function(ev) {
     var el = ev.target;
-    if (el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') && el.closest && el.closest('.driver-modal')) {
-      setTimeout(function() {
-        if (el && typeof el.scrollIntoView === 'function') el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }, 350);
-    }
+    if (!(el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') && el.closest)) return;
+
+    var modal = el.closest('.driver-modal');
+    if (!modal) return;
+
+    setTimeout(function() {
+      if (!(el && typeof el.getBoundingClientRect === 'function' && typeof el.scrollIntoView === 'function')) return;
+
+      var rect = el.getBoundingClientRect();
+      var viewportHeight = (window.visualViewport && window.visualViewport.height) ? window.visualViewport.height : window.innerHeight;
+      var topSafe = 88;
+      var bottomSafe = 24;
+
+      var isAboveVisibleArea = rect.top < topSafe;
+      var isBelowVisibleArea = rect.bottom > (viewportHeight - bottomSafe);
+
+      if (isAboveVisibleArea || isBelowVisibleArea) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+      }
+    }, 350);
   });
   
   /** Modal açıkken body scroll kilitlensin (sadece modal içi kayar). Geçmiş Kayıt / Düzeltme Talebi açıkken footer :has() olmadan da üstte kalsın. */
@@ -525,11 +540,23 @@ const API_BASE = (function(){
           inp.addEventListener('change', function() { toggleLoginInputHasValue(inp); });
       });
   
-      /* iOS PWA: klavye açıldığında alan görünür kalsın - focus sonrası gecikmeli scroll */
+      /* iOS PWA / mobil: login input'u sadece gerçekten keyboard altında kalıyorsa görünür alana getir */
       function scrollInputIntoView(el) {
-        if (el && typeof el.scrollIntoView === 'function') {
-          setTimeout(function() { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 350);
-        }
+        if (!(el && typeof el.getBoundingClientRect === 'function' && typeof el.scrollIntoView === 'function')) return;
+
+        setTimeout(function() {
+          var rect = el.getBoundingClientRect();
+          var viewportHeight = (window.visualViewport && window.visualViewport.height) ? window.visualViewport.height : window.innerHeight;
+          var topSafe = 96;
+          var bottomSafe = 28;
+
+          var isAboveVisibleArea = rect.top < topSafe;
+          var isBelowVisibleArea = rect.bottom > (viewportHeight - bottomSafe);
+
+          if (isAboveVisibleArea || isBelowVisibleArea) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+          }
+        }, 350);
       }
       if (usernameInput) usernameInput.addEventListener('focus', function() { scrollInputIntoView(this); });
       if (passwordInput) passwordInput.addEventListener('focus', function() { scrollInputIntoView(this); });

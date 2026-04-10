@@ -3404,6 +3404,8 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   scrollbar-width: none !important;
   -ms-overflow-style: none !important;
   -webkit-overflow-scrolling: touch !important;
+  touch-action: pan-y !important;
+  overscroll-behavior-y: contain !important;
 }
 
 /* Şifre ekranı: ana uygulamadaki yan boşluk matematiği korunsun */
