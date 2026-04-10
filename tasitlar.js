@@ -519,7 +519,7 @@
 
   // Grid genişlikleri sütun kimliğine göre (sürükle-bırak sonrası genişlik doğru sütunla kalsın)
   function getVehicleColumnWidths(columnOrder) {
-    const defaultCols = '50px 83px minmax(116px, 2.18fr) 60px minmax(78px, 0.91fr) minmax(68px, 0.72fr) minmax(90px, 0.99fr) minmax(92px, 0.92fr)';
+    const defaultCols = '47px 80px minmax(116px, 2.18fr) 60px minmax(78px, 0.91fr) minmax(68px, 0.72fr) minmax(87px, 0.99fr) minmax(92px, 0.92fr)';
     try {
       if (!columnOrder || !Array.isArray(columnOrder) || columnOrder.length === 0) return defaultCols;
       const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
@@ -536,23 +536,23 @@
           }
         : isCompactDesktop
           ? {
-              'year': '42px',
-              'plate': '67px',
+              'year': '39px',     /* yıl −3px */
+              'plate': '64px',    /* plaka −3px */
               'brand': 'minmax(84px, 2fr)',
               'km': '52px',
               'type': 'minmax(58px, 0.79fr)',
               'transmission': 'minmax(48px, 0.6fr)',
-              'user': 'minmax(68px, 0.93fr)',
+              'user': 'minmax(65px, 0.93fr)', /* kullanıcı −3px (min) */
               'branch': 'minmax(72px, 0.82fr)'
             }
         : {
-            'year': '50px',
-            'plate': '83px',
+            'year': '47px',     /* yıl −3px */
+            'plate': '80px',    /* plaka −3px */
             'brand': 'minmax(116px, 2.18fr)',
             'km': '60px',
             'type': 'minmax(78px, 0.91fr)',
             'transmission': 'minmax(68px, 0.72fr)',
-            'user': 'minmax(90px, 0.99fr)',
+            'user': 'minmax(87px, 0.99fr)', /* kullanıcı −3px (min) */
             'branch': 'minmax(92px, 0.92fr)'
           };
       return columnOrder.map(key => widthMap[key] || '1fr').join(' ');
