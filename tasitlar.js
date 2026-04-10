@@ -508,9 +508,9 @@
   function getVSearchContainer() { return document.getElementById('v-search-container'); }
   function getVTransmissionDropdown() { return document.getElementById('v-transmission-dropdown'); }
   function getVehiclesListViewportWidth() {
-    var scrollWrap = document.querySelector('#vehicles-modal .vehicles-list-scroll');
     var modalBody = document.querySelector('#vehicles-modal .modal-body');
-    return (scrollWrap && scrollWrap.clientWidth) || (modalBody && modalBody.clientWidth) || 0;
+    var scrollWrap = document.querySelector('#vehicles-modal .vehicles-list-scroll');
+    return (modalBody && modalBody.clientWidth) || (scrollWrap && scrollWrap.clientWidth) || 0;
   }
   function shouldUseCompactVehicleHeader() {
     var listWidth = getVehiclesListViewportWidth();
