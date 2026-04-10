@@ -526,13 +526,13 @@
       const isCompactDesktop = !isMobile && shouldUseCompactVehicleHeader();
       const widthMap = isMobile
         ? {
-            'year': '29px',     /* dar ekran: yıl −3px (sadece ≤768) */
-            'plate': '59px',    /* plaka −3px */
-            'brand': '2.6fr',   /* mobil+iOS PWA: şubeden 2px marka'ya */
-            'km': '52px',
+            'year': '26px',     /* şube sığsın: yıl dar */
+            'plate': '58px',
+            'brand': 'minmax(0, 2.45fr)', /* minmax(0,…) → grid taşmasını keser */
+            'km': '46px',
             'transmission': '60px',
-            'user': 'minmax(0, calc(1.95fr - 3px))', /* kullanıcı −3px */
-            'branch': '2.25fr'   /* mobil+iOS PWA: şubeden bir kademe alan alındı */
+            'user': 'minmax(0, calc(1.85fr - 3px))',
+            'branch': 'minmax(0, 2.4fr)'
           }
         : isCompactDesktop
           ? {
