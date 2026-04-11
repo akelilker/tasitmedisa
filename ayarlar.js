@@ -443,8 +443,8 @@
         ? selectedValue
         : options[0].value;
       roleSelect.value = safeValue;
-      roleSelect.disabled = effectiveScope.isBranchManager;
-      roleSelect.setAttribute('aria-disabled', effectiveScope.isBranchManager ? 'true' : 'false');
+      roleSelect.removeAttribute('disabled');
+      roleSelect.removeAttribute('aria-disabled');
     }
 
     function syncUsersToAppData(arr, options) {
@@ -783,7 +783,11 @@
       }, 100);
     }
 
-    window.openUserFormModal = function openUserFormModal(editId = null) {
+    window.openUserFormModal = function openUserFormModal(editId = null, options) {
+      const opts = options && typeof options === 'object' ? options : {};
+      if (!opts.fromVehicleAssign && typeof window.medisaDismissVehicleAssignUserSavedListener === 'function') {
+        window.medisaDismissVehicleAssignUserSavedListener();
+      }
       const modal = document.getElementById('user-form-modal');
       if (!modal) return;
 
@@ -882,6 +886,9 @@
     };
   
     window.closeUserFormModal = function closeUserFormModal() {
+      if (typeof window.medisaDismissVehicleAssignUserSavedListener === 'function') {
+        window.medisaDismissVehicleAssignUserSavedListener();
+      }
       const modal = document.getElementById('user-form-modal');
       if (!modal) return;
       if (typeof window.resetModalInputs === 'function') {
@@ -919,6 +926,7 @@
       const scope = options.scope || getUserManagementSessionScope();
       const singleWrap = document.getElementById('user-branch-single-wrap');
       const readonlyWrap = document.getElementById('user-branch-readonly-wrap');
+      const roleWrap = document.getElementById('user-role-wrap');
       const branchSelect = document.getElementById('user-branch');
       const branchReadonly = document.getElementById('user-branch-readonly');
       const roleSelect = document.getElementById('user-role');
@@ -927,9 +935,10 @@
 
       if (scope.isBranchManager) {
         if (singleWrap) singleWrap.classList.add('u-hidden');
-        if (readonlyWrap) readonlyWrap.classList.remove('u-hidden');
+        if (readonlyWrap) readonlyWrap.classList.add('u-hidden');
+        if (roleWrap) roleWrap.classList.add('u-hidden');
         if (branchSelect) {
-          branchSelect.required = true;
+          branchSelect.required = false;
           branchSelect.value = scope.primaryBranchId || '';
         }
         if (branchReadonly) {
@@ -938,6 +947,7 @@
         return;
       }
 
+      if (roleWrap) roleWrap.classList.remove('u-hidden');
       if (singleWrap) singleWrap.classList.remove('u-hidden');
       if (readonlyWrap) readonlyWrap.classList.add('u-hidden');
       if (branchReadonly) branchReadonly.value = '';
@@ -1150,17 +1160,16 @@
           return;
         }
   
-        // Form modalını kapat
-        closeUserFormModal();
-  
-        // Ana modalı güncelle
-        renderUserList();
-  
-        alert(id ? 'Kullanıcı güncellendi.' : 'Kullanıcı Eklendi.');
-  
         if (savedUserId) {
           window.dispatchEvent(new CustomEvent('userSaved', { detail: { id: savedUserId } }));
         }
+
+        // Form modalını kapat (userSaved taşıt-detayı dinleyicilerinden sonra; close içinde bekleyen dinleyici temizlenir)
+        closeUserFormModal();
+
+        renderUserList();
+
+        alert(id ? 'Kullanıcı güncellendi.' : 'Kullanıcı Eklendi.');
       } catch (error) {
         console.error('Kullanıcı kayıt hatası:', error);
         alert('Kullanıcı kaydı sırasında bir hata Oluştu! Lütfen tekrar deneyin.');
@@ -1265,6 +1274,16 @@
         const branch = branches.find(x => String(x.id) === String(primaryBranchId));
         const branchName = branch ? branch.name : '-';
         const roleLabelMarkup = buildUserRoleLabelMarkup(user);
+
+        if (scope.isBranchManager) {
+          return `
+          <div class="settings-card" onclick="editUser('${user.id}')" style="cursor:pointer;">
+            <div class="settings-card-content">
+              <div class="settings-card-title">${escapeHtml(user.name || 'İsimsiz')}</div>
+            </div>
+          </div>
+        `;
+        }
 
         return `
           <div class="settings-card" onclick="editUser('${user.id}')" style="cursor:pointer;">

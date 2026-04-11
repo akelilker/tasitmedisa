@@ -63,6 +63,16 @@
     });
   }
 
+  /** Taşıt detayından "+ Yeni Kullanıcı" ile eklenen bekleyen userSaved dinleyicisini kaldırır (iptal / ayarlar akışı). */
+  function dismissVehicleAssignUserSavedListener() {
+    const fn = window._medisaVehicleAssignOnUserSaved;
+    if (typeof fn === 'function') {
+      window.removeEventListener('userSaved', fn);
+      window._medisaVehicleAssignOnUserSaved = null;
+    }
+  }
+  window.medisaDismissVehicleAssignUserSavedListener = dismissVehicleAssignUserSavedListener;
+
   function normalizeUserDisplayName(rawName) {
     const plain = String(rawName || '').trim();
     if (!plain) return '';
@@ -3314,16 +3324,17 @@ function renderVehicleDetailLeft(vehicle) {
             selectEl.addEventListener('change', function() {
               if (selectEl.value === '__add_user__') {
                 selectEl.value = '';
+                dismissVehicleAssignUserSavedListener();
                 const currentVehicleId = vehicleId || window.currentDetailVehicleId;
                 closeEventModal('kullanici');
                 setTimeout(function() {
                   if (typeof window.openUserFormModal === 'function') {
-                    window.openUserFormModal();
+                    window.openUserFormModal(null, { fromVehicleAssign: true });
                   }
                 }, 350);
                 const onUserSaved = function(ev) {
                   const newId = ev.detail && ev.detail.id;
-                  window.removeEventListener('userSaved', onUserSaved);
+                  dismissVehicleAssignUserSavedListener();
                   if (!newId || !selectEl.parentNode) return;
                   const currentVehicle = readVehicles().find(v => String(v.id) === String(currentVehicleId));
                   const users = getAssignableUsersForVehicle(currentVehicle);
@@ -3347,6 +3358,7 @@ function renderVehicleDetailLeft(vehicle) {
                     openEventModal('kullanici', currentVehicleId);
                   }
                 };
+                window._medisaVehicleAssignOnUserSaved = onUserSaved;
                 window.addEventListener('userSaved', onUserSaved);
               }
             });
