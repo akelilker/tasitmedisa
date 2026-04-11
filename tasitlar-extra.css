@@ -2253,6 +2253,19 @@
   #vehicles-modal .view-list {
     min-width: 0 !important;
   }
+  #vehicles-modal .list-header-row .list-cell.list-brand,
+  #vehicles-modal .list-header-row .list-cell.list-type,
+  #vehicles-modal .list-header-row .list-cell.list-transmission,
+  #vehicles-modal .list-header-row .list-cell.list-user,
+  #vehicles-modal .list-header-row .list-cell.list-branch,
+  #vehicles-modal .view-list .list-cell.list-brand,
+  #vehicles-modal .view-list .list-cell.list-type,
+  #vehicles-modal .view-list .list-cell.list-transmission,
+  #vehicles-modal .view-list .list-cell.list-user,
+  #vehicles-modal .view-list .list-cell.list-branch {
+    padding-left: 1px !important;
+    padding-right: 1px !important;
+  }
   #vehicles-modal .view-list .list-cell.list-type {
     display: -webkit-box !important;
     -webkit-box-orient: vertical !important;
@@ -2266,7 +2279,8 @@
   }
   #vehicles-modal .view-list .list-cell.list-branch {
     word-break: break-word !important;
-    overflow-wrap: anywhere !important;
+    overflow-wrap: break-word !important;
+    hyphens: none !important;
     line-height: 1.22 !important;
   }
 }
