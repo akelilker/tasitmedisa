@@ -519,7 +519,7 @@
 
   // Grid genişlikleri sütun kimliğine göre (sürükle-bırak sonrası genişlik doğru sütunla kalsın)
   function getVehicleColumnWidths(columnOrder) {
-    const defaultCols = '44px 77px minmax(0, 2.18fr) 56px minmax(0, 0.91fr) minmax(0, 0.72fr) minmax(0, 0.99fr) minmax(0, 0.92fr)';
+    const defaultCols = '44px 77px minmax(0, 1.25fr) 56px minmax(0, 0.95fr) minmax(0, 0.7fr) minmax(0, 1.05fr) minmax(0, 1.05fr)';
     try {
       if (!columnOrder || !Array.isArray(columnOrder) || columnOrder.length === 0) return defaultCols;
       const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
@@ -538,22 +538,22 @@
           ? {
               'year': '36px',
               'plate': '61px',
-              'brand': 'minmax(0, 2fr)',
+              'brand': 'minmax(0, 1.15fr)',
               'km': '49px',
-              'type': 'minmax(0, 0.79fr)',
+              'type': 'minmax(0, 0.85fr)',
               'transmission': 'minmax(0, 0.6fr)',
-              'user': 'minmax(0, 0.93fr)',
-              'branch': 'minmax(0, 0.82fr)'
+              'user': 'minmax(0, 1fr)',
+              'branch': 'minmax(0, 1fr)'
             }
         : {
             'year': '44px',
             'plate': '77px',
-            'brand': 'minmax(0, 2.18fr)',
+            'brand': 'minmax(0, 1.25fr)',
             'km': '56px',
-            'type': 'minmax(0, 0.91fr)',
-            'transmission': 'minmax(0, 0.72fr)',
-            'user': 'minmax(0, 0.99fr)',
-            'branch': 'minmax(0, 0.92fr)'
+            'type': 'minmax(0, 0.95fr)',
+            'transmission': 'minmax(0, 0.7fr)',
+            'user': 'minmax(0, 1.05fr)',
+            'branch': 'minmax(0, 1.05fr)'
           };
       return columnOrder.map(key => widthMap[key] || '1fr').join(' ');
     } catch (e) {
