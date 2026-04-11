@@ -324,18 +324,19 @@ select option:active {
 .vehicle-branch-trigger.placeholder {
     color: rgba(255, 255, 255, 0.38) !important;
 }
-.vehicle-branch-trigger:focus {
-    border-color: var(--theme-color) !important;
+/* #vehicle-modal ile .form-input:focus üzerinde kazanır; !important gerekmez */
+#vehicle-modal .vehicle-branch-trigger:focus {
+    border-color: var(--theme-color);
     outline: none;
 }
-/* Pasif şube (tek şube / salt okunur): tıklamada tema rengi “hata” gibi görünmesin */
-.vehicle-branch-trigger.readonly:focus,
-.vehicle-branch-trigger.readonly:focus-visible,
-.vehicle-branch-dropdown-wrap.single-branch .vehicle-branch-trigger:focus,
-.vehicle-branch-dropdown-wrap.single-branch .vehicle-branch-trigger:focus-visible {
-    border-color: rgba(255, 255, 255, 0.4) !important;
-    box-shadow: none !important;
-    outline: none !important;
+/* Pasif şube (tek şube / salt okunur): odakta gri border — üstteki kuraldan daha spesifik */
+#vehicle-modal .vehicle-branch-trigger.readonly:focus,
+#vehicle-modal .vehicle-branch-trigger.readonly:focus-visible,
+#vehicle-modal .vehicle-branch-dropdown-wrap.single-branch .vehicle-branch-trigger:focus,
+#vehicle-modal .vehicle-branch-dropdown-wrap.single-branch .vehicle-branch-trigger:focus-visible {
+    border-color: rgba(255, 255, 255, 0.4);
+    box-shadow: none;
+    outline: none;
 }
 .vehicle-branch-list {
     display: none;
@@ -940,11 +941,16 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         color: rgba(255, 255, 255, 0.38) !important;
     }
     
-    /* Input focus - kırmızı çerçeve */
-    .form-input:focus,
+    /* Input focus - kırmızı çerçeve (pasif şube tetikleyicisi hariç) */
+    .form-input:focus:not(.vehicle-branch-trigger.readonly),
     select:focus,
     textarea.form-input:focus {
         border-color: var(--theme-color) !important; /* Kırmızı çerçeve */
+    }
+    #vehicle-modal .vehicle-branch-dropdown-wrap.single-branch .vehicle-branch-trigger:focus,
+    #vehicle-modal .vehicle-branch-dropdown-wrap.single-branch .vehicle-branch-trigger:focus-visible {
+        border-color: rgba(255, 255, 255, 0.48) !important;
+        box-shadow: none !important;
     }
     
     .form-input::placeholder {
@@ -1455,8 +1461,8 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         height: 26px !important;
         padding: 6px 8px !important;
     }
-    /* Masaüstü: Input/select/textarea focus - kırmızı çerçeve (Kasko ile aynı) */
-    #vehicle-modal .modal-body .form-input:focus,
+    /* Masaüstü: Input/select/textarea focus - kırmızı çerçeve (pasif şube tetikleyicisi hariç) */
+    #vehicle-modal .modal-body .form-input:focus:not(.vehicle-branch-trigger.readonly),
     #vehicle-modal .modal-body select:focus,
     #vehicle-modal .modal-body textarea.form-input:focus {
         border-color: var(--theme-color) !important;
