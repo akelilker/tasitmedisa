@@ -2253,6 +2253,22 @@
   #vehicles-modal .view-list {
     min-width: 0 !important;
   }
+  #vehicles-modal .view-list .list-cell.list-type {
+    display: -webkit-box !important;
+    -webkit-box-orient: vertical !important;
+    -webkit-line-clamp: 2 !important;
+    line-clamp: 2 !important;
+    white-space: normal !important;
+    word-break: normal !important;
+    overflow-wrap: break-word !important;
+    line-height: 1.22 !important;
+    text-overflow: clip !important;
+  }
+  #vehicles-modal .view-list .list-cell.list-branch {
+    word-break: break-word !important;
+    overflow-wrap: anywhere !important;
+    line-height: 1.22 !important;
+  }
 }
 
 /* Masaüstü PWA: Taşıt Detayı'nda eylem metinleri kesin kırmızı */
@@ -2288,6 +2304,6 @@
 /* TAŞITLAR listesi (#vehicles-modal): masaüstünde modal–footer dikey boşluk 3px azaltılır; yalnız bu modal, mobil/tablet aynı */
 @media (min-width: 769px) {
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicles-modal.modal-overlay {
-    bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0) - 3px) !important;
+    bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
   }
 }
