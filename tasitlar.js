@@ -538,12 +538,12 @@
           ? {
               'year': '36px',
               'plate': '61px',
-              'brand': 'minmax(0, 0.96fr)',
+              'brand': 'minmax(0, 1.032fr)',
               'km': '49px',
               'type': 'minmax(0, 1fr)',
               'transmission': 'minmax(0, 0.66fr)',
               'user': 'minmax(0, 1fr)',
-              'branch': 'minmax(0, 1.18fr)'
+              'branch': 'minmax(0, 1.108fr)'
             }
         : {
             'year': '44px',
