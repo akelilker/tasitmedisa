@@ -318,6 +318,8 @@ select option:active {
     cursor: default;
     background-image: none;
     padding-right: 12px;
+    pointer-events: none;
+    user-select: none;
 }
 .vehicle-branch-trigger.placeholder {
     color: rgba(255, 255, 255, 0.38) !important;
@@ -325,6 +327,15 @@ select option:active {
 .vehicle-branch-trigger:focus {
     border-color: var(--theme-color) !important;
     outline: none;
+}
+/* Pasif şube (tek şube / salt okunur): tıklamada tema rengi “hata” gibi görünmesin */
+.vehicle-branch-trigger.readonly:focus,
+.vehicle-branch-trigger.readonly:focus-visible,
+.vehicle-branch-dropdown-wrap.single-branch .vehicle-branch-trigger:focus,
+.vehicle-branch-dropdown-wrap.single-branch .vehicle-branch-trigger:focus-visible {
+    border-color: rgba(255, 255, 255, 0.4) !important;
+    box-shadow: none !important;
+    outline: none !important;
 }
 .vehicle-branch-list {
     display: none;

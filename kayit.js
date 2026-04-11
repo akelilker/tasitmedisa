@@ -17,6 +17,26 @@
   function $all(sel, root = document) { return Array.from(root.querySelectorAll(sel)); }
   function getModal() { return document.getElementById("vehicle-modal"); }
 
+  /** Ana uygulama oturum rolü — data-manager normalizeSessionRole ile aynı sözleşme (export yok, yerel kopya). */
+  function getMedisaMainAppSessionRole() {
+    const sessionData = typeof window.getMedisaSession === "function"
+      ? (window.getMedisaSession() || {})
+      : (window.medisaSession || {});
+    let role = String(sessionData.role || (sessionData.user && sessionData.user.role) || "").trim();
+    if (role === "admin") return "genel_yonetici";
+    if (role === "yonetici" || role === "yonetici_kullanici") return "sube_yonetici";
+    if (role === "driver" || role === "sales" || role === "surucu") return "kullanici";
+    return role;
+  }
+
+  /** Şube yöneticisi: yeni kayıtta Tahsis Edilen Şube bölümü gizlenir; düzenlemede görünür. */
+  function syncVehicleBranchFormSectionVisibility() {
+    const section = document.getElementById("vehicle-branch-form-section");
+    if (!section) return;
+    const hide = !isEditMode && getMedisaMainAppSessionRole() === "sube_yonetici";
+    section.classList.toggle("u-hidden", hide);
+  }
+
   function readBranches() { return (typeof window.getMedisaBranches === 'function' ? window.getMedisaBranches() : null) || []; }
   function readVehicles() { return (typeof window.getMedisaVehicles === 'function' ? window.getMedisaVehicles() : null) || []; }
 
@@ -1079,6 +1099,7 @@
       editingVehicleId = null;
       editingVehicleVersion = 1;
       resetVehicleForm();
+      syncVehicleBranchFormSectionVisibility();
 
       modal.classList.add('active');
       modal.style.display = 'flex';
@@ -1282,6 +1303,7 @@
       syncBranchSelectPlaceholder();
       buildVehicleBranchDropdownList();
     }
+    syncVehicleBranchFormSectionVisibility();
 
     // Fiyat ve Notlar
     const priceInput = document.getElementById("vehicle-price");
@@ -1442,7 +1464,15 @@
     const kredi = $('.radio-group button.active', $(`.form-section-inline[data-section="kredi"]`, modal))?.dataset.value || '';
     const krediDetay = document.getElementById('kredi-detay')?.value.trim() || '';
     
-    const branchId = document.getElementById("vehicle-branch-select")?.value || '';
+    let branchId = document.getElementById("vehicle-branch-select")?.value || '';
+    if (!isEditMode && getMedisaMainAppSessionRole() === "sube_yonetici") {
+      const sessionData = typeof window.getMedisaSession === "function"
+        ? (window.getMedisaSession() || {})
+        : (window.medisaSession || {});
+      const ids = Array.isArray(sessionData.branch_ids) ? sessionData.branch_ids : [];
+      const primary = ids.length ? String(ids[0] || "").trim() : "";
+      if (primary) branchId = primary;
+    }
     const kaskoKodu = document.getElementById("vehicle-kasko-kodu")?.value.trim() || '';
     const price = document.getElementById("vehicle-price")?.value.trim() || '';
     const notes = document.getElementById("vehicle-notes")?.value.trim() || '';
