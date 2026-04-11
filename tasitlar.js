@@ -5969,6 +5969,11 @@ function renderVehicleDetailLeft(vehicle) {
         kmEvents.forEach((event, index) => {
           const eskiKm = event.data?.eskiKm || '-';
           const yeniKm = event.data?.yeniKm || '-';
+          const eskiKmRaw = String(eskiKm == null ? '' : eskiKm).trim();
+          const isInitialKmEntry = event.data?.isInitialKmEntry === true || !eskiKmRaw || eskiKmRaw === '-';
+          const yeniKmFormatli = yeniKm && yeniKm !== '-'
+            ? escapeHtml(formatNumber(yeniKm)) + ' km'
+            : '-';
           const kayitliKullanici = (event.data?.surucu || '').trim();
           const tahsisliKisi = String(vehicle?.tahsisKisi || '').trim();
           const yonetimEtiketiMi = /^y(?:o|\u00F6)netim$/i.test(kayitliKullanici);
@@ -5978,7 +5983,9 @@ function renderVehicleDetailLeft(vehicle) {
           const kullanici = kullaniciVal
             ? formatAdSoyad(kullaniciVal)
             : 'B\u0130L\u0130NM\u0130YOR';
-          const kmSummary = '<span class="history-user-name">' + escapeHtml(kullanici) + '</span><span class="history-action-text">, G\u00fcncel Km bilgisini </span><span class="history-detail-inline">' + escapeHtml(formatNumber(yeniKm)) + '</span><span class="history-action-text"> olarak g\u00FCncelledi.</span> <span class="history-label">\u00d6nceki km:</span> ' + escapeHtml(formatNumber(eskiKm));
+          const kmSummary = isInitialKmEntry
+            ? '<span class="history-user-name">Yeni Taşıt</span><span class="history-action-text"> • </span><span class="history-detail-inline">' + yeniKmFormatli + '</span>'
+            : '<span class="history-user-name">' + escapeHtml(kullanici) + '</span><span class="history-action-text">, G\u00fcncel Km bilgisini </span><span class="history-detail-inline">' + escapeHtml(formatNumber(yeniKm)) + '</span><span class="history-action-text"> olarak g\u00FCncelledi.</span> <span class="history-label">\u00d6nceki km:</span> ' + escapeHtml(formatNumber(eskiKm));
           html += `<div class="history-item">
             <div class="history-item-date" style="font-weight: 600; font-size: 12px; margin-bottom: 4px;">${escapeHtml(formatDateForDisplay(event.date) || '-')}</div>
             <div class="history-item-body history-item-summary" style="font-size: 12px; margin-top: 4px;">${kmSummary}</div>
