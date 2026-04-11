@@ -2252,6 +2252,17 @@
   }
 }
 
+/* Taşıtlar listesi tüm genişliklerde: gap 3px + min-width 0 → sütun taşmasını önler */
+#vehicles-modal .list-header-row {
+  gap: 3px !important;
+}
+#vehicles-modal .view-list .list-item {
+  gap: 3px !important;
+}
+#vehicles-modal .view-list {
+  min-width: 0 !important;
+}
+
 /* Masaüstü PWA: Taşıt Detayı'nda eylem metinleri kesin kırmızı */
 @media (min-width: 769px) and (display-mode: standalone) {
   #vehicle-detail-modal .detail-row-value.detail-user-empty,
