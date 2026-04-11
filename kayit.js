@@ -1814,7 +1814,8 @@
             timestamp: new Date().toISOString(),
             data: {
               eskiKm: '-',
-              yeniKm: record.guncelKm
+              yeniKm: record.guncelKm,
+              isInitialKmEntry: true
             }
           };
           record.events.unshift(event);
