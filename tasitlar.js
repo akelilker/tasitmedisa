@@ -63,6 +63,14 @@
     });
   }
 
+  function removeVehicleUserFlowListeners() {
+    const cleanup = window.__vehicleUserFlowCleanup;
+    if (typeof cleanup === 'function') {
+      cleanup();
+    }
+    window.__vehicleUserFlowCleanup = null;
+  }
+
   function normalizeUserDisplayName(rawName) {
     const plain = String(rawName || '').trim();
     if (!plain) return '';
@@ -3315,15 +3323,23 @@ function renderVehicleDetailLeft(vehicle) {
               if (selectEl.value === '__add_user__') {
                 selectEl.value = '';
                 const currentVehicleId = vehicleId || window.currentDetailVehicleId;
+                removeVehicleUserFlowListeners();
                 closeEventModal('kullanici');
                 setTimeout(function() {
                   if (typeof window.openUserFormModal === 'function') {
-                    window.openUserFormModal();
+                    window.openUserFormModal(null, {
+                      source: 'vehicle-user-assignment',
+                      vehicleId: currentVehicleId
+                    });
                   }
                 }, 350);
                 const onUserSaved = function(ev) {
-                  const newId = ev.detail && ev.detail.id;
-                  window.removeEventListener('userSaved', onUserSaved);
+                  const detail = ev && ev.detail ? ev.detail : {};
+                  const newId = detail.id;
+                  if (!newId) return;
+                  if (String(detail.source || '') !== 'vehicle-user-assignment') return;
+                  if (String(detail.vehicleId || '') !== String(currentVehicleId || '')) return;
+                  removeVehicleUserFlowListeners();
                   if (!newId || !selectEl.parentNode) return;
                   const currentVehicle = readVehicles().find(v => String(v.id) === String(currentVehicleId));
                   const users = getAssignableUsersForVehicle(currentVehicle);
@@ -3347,7 +3363,21 @@ function renderVehicleDetailLeft(vehicle) {
                     openEventModal('kullanici', currentVehicleId);
                   }
                 };
+                const onUserFormClosed = function(ev) {
+                  const detail = ev && ev.detail ? ev.detail : {};
+                  if (String(detail.source || '') !== 'vehicle-user-assignment') return;
+                  if (String(detail.vehicleId || '') !== String(currentVehicleId || '')) return;
+                  removeVehicleUserFlowListeners();
+                  if (currentVehicleId) {
+                    openEventModal('kullanici', currentVehicleId);
+                  }
+                };
+                window.__vehicleUserFlowCleanup = function() {
+                  window.removeEventListener('userSaved', onUserSaved);
+                  window.removeEventListener('userFormClosed', onUserFormClosed);
+                };
                 window.addEventListener('userSaved', onUserSaved);
+                window.addEventListener('userFormClosed', onUserFormClosed);
               }
             });
           }

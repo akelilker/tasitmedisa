@@ -783,9 +783,14 @@
       }, 100);
     }
 
-    window.openUserFormModal = function openUserFormModal(editId = null) {
+    window.openUserFormModal = function openUserFormModal(editId = null, options = {}) {
       const modal = document.getElementById('user-form-modal');
       if (!modal) return;
+      const formOptions = options && typeof options === 'object' ? options : {};
+      const formSource = String(formOptions.source || 'settings-user-management');
+      const formVehicleId = formOptions.vehicleId != null ? String(formOptions.vehicleId) : '';
+      modal.dataset.userFormSource = formSource;
+      modal.dataset.userFormVehicleId = formVehicleId;
 
       const scope = getUserManagementSessionScope();
       const form = $('#user-form', modal);
@@ -881,9 +886,13 @@
       }
     };
   
-    window.closeUserFormModal = function closeUserFormModal() {
+    window.closeUserFormModal = function closeUserFormModal(options = {}) {
       const modal = document.getElementById('user-form-modal');
       if (!modal) return;
+      const closeOptions = options && typeof options === 'object' ? options : {};
+      const closeReason = String(closeOptions.reason || 'cancel');
+      const formSource = String(modal.dataset.userFormSource || 'settings-user-management');
+      const formVehicleId = String(modal.dataset.userFormVehicleId || '');
       if (typeof window.resetModalInputs === 'function') {
         window.resetModalInputs(modal);
       }
@@ -896,6 +905,14 @@
       if (deleteBtn) deleteBtn.style.display = 'none';
       modal.classList.remove('active');
       setTimeout(() => modal.style.display = 'none', 300);
+      if (closeReason !== 'saved') {
+        window.dispatchEvent(new CustomEvent('userFormClosed', {
+          detail: {
+            source: formSource,
+            vehicleId: formVehicleId
+          }
+        }));
+      }
     };
   
     // Şube Dropdown Doldur
@@ -922,16 +939,19 @@
       const branchSelect = document.getElementById('user-branch');
       const branchReadonly = document.getElementById('user-branch-readonly');
       const roleSelect = document.getElementById('user-role');
+      const roleWrap = roleSelect ? roleSelect.closest('.form-section') : null;
       const selectedRole = roleSelect ? roleSelect.value : 'kullanici';
       const managedBranch = getManagedBranchForUserManagement(scope);
 
       if (scope.isBranchManager) {
         if (singleWrap) singleWrap.classList.add('u-hidden');
-        if (readonlyWrap) readonlyWrap.classList.remove('u-hidden');
+        if (readonlyWrap) readonlyWrap.classList.add('u-hidden');
+        if (roleWrap) roleWrap.classList.add('u-hidden');
         if (branchSelect) {
-          branchSelect.required = true;
+          branchSelect.required = false;
           branchSelect.value = scope.primaryBranchId || '';
         }
+        if (roleSelect) roleSelect.value = 'kullanici';
         if (branchReadonly) {
           branchReadonly.value = managedBranch ? (managedBranch.name || '') : '';
         }
@@ -940,6 +960,7 @@
 
       if (singleWrap) singleWrap.classList.remove('u-hidden');
       if (readonlyWrap) readonlyWrap.classList.add('u-hidden');
+      if (roleWrap) roleWrap.classList.remove('u-hidden');
       if (branchReadonly) branchReadonly.value = '';
       if (branchSelect) branchSelect.required = selectedRole !== 'genel_yonetici';
     }
@@ -1150,8 +1171,11 @@
           return;
         }
   
+        const formSource = String(modal.dataset.userFormSource || 'settings-user-management');
+        const formVehicleId = String(modal.dataset.userFormVehicleId || '');
+
         // Form modalını kapat
-        closeUserFormModal();
+        closeUserFormModal({ reason: 'saved' });
   
         // Ana modalı güncelle
         renderUserList();
@@ -1159,7 +1183,13 @@
         alert(id ? 'Kullanıcı güncellendi.' : 'Kullanıcı Eklendi.');
   
         if (savedUserId) {
-          window.dispatchEvent(new CustomEvent('userSaved', { detail: { id: savedUserId } }));
+          window.dispatchEvent(new CustomEvent('userSaved', {
+            detail: {
+              id: savedUserId,
+              source: formSource,
+              vehicleId: formVehicleId
+            }
+          }));
         }
       } catch (error) {
         console.error('Kullanıcı kayıt hatası:', error);

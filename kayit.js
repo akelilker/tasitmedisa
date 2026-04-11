@@ -19,6 +19,18 @@
 
   function readBranches() { return (typeof window.getMedisaBranches === 'function' ? window.getMedisaBranches() : null) || []; }
   function readVehicles() { return (typeof window.getMedisaVehicles === 'function' ? window.getMedisaVehicles() : null) || []; }
+  function getVehicleFormSessionScope() {
+    const sessionData = typeof window.getMedisaSession === 'function'
+      ? (window.getMedisaSession() || {})
+      : (window.medisaSession || {});
+    let role = String(sessionData.role || (sessionData.user && sessionData.user.role) || '').trim();
+    if (role === 'admin') role = 'genel_yonetici';
+    if (role === 'yonetici' || role === 'yonetici_kullanici') role = 'sube_yonetici';
+    return {
+      role: role,
+      isBranchManager: role === 'sube_yonetici'
+    };
+  }
 
   function saveVehiclesViaApi(vehicles) {
     if (typeof window.dataApi !== 'undefined' && typeof window.dataApi.saveVehiclesList === 'function') {
@@ -685,6 +697,18 @@
     }
   }
 
+  function syncVehicleBranchFieldVisibility() {
+    const wrap = document.querySelector('#vehicle-modal .vehicle-branch-dropdown-wrap');
+    const section = wrap ? wrap.closest('.form-section') : null;
+    if (!section) return;
+    const scope = getVehicleFormSessionScope();
+    if (scope.isBranchManager) {
+      section.classList.add('u-hidden');
+      return;
+    }
+    section.classList.remove('u-hidden');
+  }
+
   /**
    * Şube dropdown listesini localStorage'dan okunan şubelerle doldurur
    *
@@ -859,6 +883,7 @@
 
     updateModalTitle("KAYIT İŞLEMLERİ");
     populateBranchSelect();
+    syncVehicleBranchFieldVisibility();
 
     const pickerOverlay = document.getElementById('vehicle-type-picker-overlay');
     if (pickerOverlay) pickerOverlay.style.display = 'none';
@@ -1079,6 +1104,7 @@
       editingVehicleId = null;
       editingVehicleVersion = 1;
       resetVehicleForm();
+      syncVehicleBranchFieldVisibility();
 
       modal.classList.add('active');
       modal.style.display = 'flex';
@@ -1128,6 +1154,7 @@
 
     const modal = getModal();
     if (!modal) return;
+    syncVehicleBranchFieldVisibility();
 
     isEditMode = true;
     editingVehicleId = vehicleId;
