@@ -654,6 +654,25 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-logo {
   justify-content: center;
   gap: 4px;
 }
+
+@media (min-width: 641px) {
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero {
+    align-items: stretch;
+  }
+
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-logo {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    align-items: start;
+    align-self: stretch;
+    justify-items: center;
+    gap: 0;
+    margin-left: 0;
+    margin-right: 4px;
+    transform: none;
+    padding: 2px 0 4px;
+  }
+}
 .hero-logo picture {
   display: block;
   width: 100%;
@@ -720,7 +739,28 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-
   white-space: normal;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
-  transform: translate(3px, -1px); /* +3px sağ, +2px yukarı (önceki 1px Y) */
+  transform: none;
+}
+
+@media (min-width: 641px) {
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-user-name {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-self: stretch;
+    width: 100%;
+    max-width: 100%;
+    min-height: 0;
+    padding: 0 2px 1px;
+    margin: 0;
+    line-height: 1.05;
+    text-align: center;
+    letter-spacing: 0;
+    word-break: break-word;
+    white-space: normal;
+    text-wrap: balance;
+    transform: none;
+  }
 }
 
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-user-name.is-empty {
