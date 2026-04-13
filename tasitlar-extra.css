@@ -2315,9 +2315,9 @@
   }
 }
 
-/* TAŞITLAR listesi (#vehicles-modal): masaüstünde modal–footer dikey boşluk 3px azaltılır; yalnız bu modal, mobil/tablet aynı */
+/* TAŞITLAR listesi (#vehicles-modal): masaüstünde overlay altı, diğer ana modallarla aynı formül (style-core .modal-overlay); gap atlanırsa footer–modal çerçevesi yapışır */
 @media (min-width: 769px) {
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicles-modal.modal-overlay {
-    bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
+    bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
   }
 }
