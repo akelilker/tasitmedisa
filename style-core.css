@@ -1380,6 +1380,15 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
     font-size: clamp(calc(16px - 0.5pt), 4.5vw, calc(20px - 0.5pt)) !important;
     letter-spacing: clamp(1px, 0.45vw, 3px);
   }
+  /* Ana masaüstü: logo + kullanıcı adı bloğu çerçeve içinde dikey ortalı; yatay konum aynı */
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-logo {
+    align-self: center;
+    transform: translateY(0);
+    gap: 3px;
+  }
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-user-name {
+    transform: translate(3px, -4px);
+  }
   .settings-dropdown {
     width: 45%; /* Masaüstünde container'ın %45'i */
     max-width: 225px;
