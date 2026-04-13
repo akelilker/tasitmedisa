@@ -1417,6 +1417,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
     min-width: 0;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero h1 {
+    align-self: center;
     font-size: clamp(calc(16px - 0.5pt), 4.5vw, calc(20px - 0.5pt)) !important;
     letter-spacing: clamp(1px, 0.45vw, 3px);
   }
