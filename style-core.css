@@ -759,7 +759,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-
     word-break: break-word;
     white-space: normal;
     text-wrap: balance;
-    transform: none;
+    transform: translateY(6px);
   }
 }
 
