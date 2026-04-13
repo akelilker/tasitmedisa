@@ -652,7 +652,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-logo {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: 3px;
+  transform: translateY(0);
 }
 .hero-logo picture {
   display: block;
@@ -720,7 +721,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-
   white-space: normal;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
-  transform: translate(3px, -1px); /* +3px sağ, +2px yukarı (önceki 1px Y) */
+  transform: translate(3px, -4px); /* +3px sağ; Y: çerçeve içi dikey denge */
 }
 
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-user-name.is-empty {
@@ -1379,15 +1380,6 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero h1 {
     font-size: clamp(calc(16px - 0.5pt), 4.5vw, calc(20px - 0.5pt)) !important;
     letter-spacing: clamp(1px, 0.45vw, 3px);
-  }
-  /* Ana masaüstü: logo + kullanıcı adı bloğu çerçeve içinde dikey ortalı; yatay konum aynı */
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-logo {
-    align-self: center;
-    transform: translateY(0);
-    gap: 3px;
-  }
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-user-name {
-    transform: translate(3px, -4px);
   }
   .settings-dropdown {
     width: 45%; /* Masaüstünde container'ın %45'i */
