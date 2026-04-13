@@ -653,8 +653,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-logo {
   align-items: center;
   justify-content: center;
   gap: 4px;
-  /* Satır yüksekliği (h1) kadar sütun: logo+isim çerçeve içinde dikey ortalı */
-  align-self: stretch;
 }
 .hero-logo picture {
   display: block;
@@ -1381,7 +1379,6 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero h1 {
     font-size: clamp(calc(16px - 0.5pt), 4.5vw, calc(20px - 0.5pt)) !important;
     letter-spacing: clamp(1px, 0.45vw, 3px);
-    line-height: 1.3;
   }
   .settings-dropdown {
     width: 45%; /* Masaüstünde container'ın %45'i */
