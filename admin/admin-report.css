@@ -2400,7 +2400,7 @@ body.admin-report-page::-webkit-scrollbar {
   display: grid;
   grid-template-columns:
     minmax(0, 0.72fr)
-    minmax(0, 1.35fr)
+    minmax(0, 1.27fr)
     minmax(0, 1.05fr)
     minmax(0, 0.52fr)
     minmax(0, 0.78fr)
@@ -2415,14 +2415,14 @@ body.admin-report-page::-webkit-scrollbar {
   top: 0;
   z-index: 2;
   margin-bottom: 4px;
-  padding: 6px 2px 4px;
+  padding: 2px 2px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.22);
   background: var(--bg);
   box-shadow: 0 2px 0 0 var(--bg);
 }
 
 .monthly-report-list-row {
-  min-height: 50px;
+  min-height: 0;
   padding: 0 2px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   background: var(--bg);
@@ -2438,7 +2438,7 @@ body.admin-report-page::-webkit-scrollbar {
 
 .monthly-report-list-cell {
   min-width: 0;
-  padding: 5px 3px;
+  padding: 2px 3px;
   text-align: center;
   font-size: 11px;
   font-weight: 500;
@@ -2449,7 +2449,7 @@ body.admin-report-page::-webkit-scrollbar {
 }
 
 .monthly-report-list-header .monthly-report-list-cell {
-  padding: 3px 2px;
+  padding: 2px 2px;
   color: #f8fafc;
   font-size: 10px;
   font-weight: 600;
@@ -2491,6 +2491,20 @@ body.admin-report-page::-webkit-scrollbar {
   padding: 3px 5px;
   font-size: 10px;
   font-weight: 600;
+}
+
+.monthly-report-list-cell .monthly-status-badge.monthly-status-icon {
+  padding: 2px;
+  font-size: 0;
+  line-height: 0;
+  min-width: 22px;
+  min-height: 22px;
+  border-radius: 999px;
+}
+
+.monthly-report-list-cell .monthly-status-icon svg {
+  display: block;
+  vertical-align: middle;
 }
 
 .monthly-report-list-cell .monthly-report-actions {
