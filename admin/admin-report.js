@@ -10,8 +10,12 @@
   var reportStatus = '';
   var branches = [];
   var dimTimeout = null;
+  var monthlyReportRecords = [];
+  var monthlyReportBranchCards = [];
+  var monthlyReportView = 'list';
   var userAnalyticsUsers = [];
   var userAnalyticsTasitlar = [];
+  var userAnalyticsMonthlyRecords = [];
   var userAnalyticsView = 'list';
   var userAnalyticsQuery = '';
   var userAnalyticsBranchId = null;
@@ -40,7 +44,13 @@
 
   function redirectToPortalLogin() {
     if (typeof window === 'undefined') return;
-    window.location.href = '../driver/';
+    var nextPath = '';
+    try {
+      nextPath = (window.location.pathname || '') + (window.location.search || '') + (window.location.hash || '');
+    } catch (e) {
+      nextPath = '';
+    }
+    window.location.href = '../driver/' + (nextPath ? ('?next=' + encodeURIComponent(nextPath)) : '');
   }
 
   function fetchJson(url, options) {
@@ -97,15 +107,6 @@
       .then(function (data) {
         if (data.success && data.branches) {
           branches = data.branches;
-          var sel = document.getElementById('report-branch');
-          if (!sel) return;
-          sel.innerHTML = '<option value="">Tüm Şubeler</option>';
-          branches.forEach(function (b) {
-            var opt = document.createElement('option');
-            opt.value = b.id;
-            opt.textContent = b.name || b.code || b.id;
-            sel.appendChild(opt);
-          });
           if (userAnalyticsUsers.length && typeof window.renderUserAnalytics === 'function') {
             window.renderUserAnalytics();
           }
@@ -115,11 +116,12 @@
   }
 
   function loadReport() {
-    reportPeriod = document.getElementById('report-period') ? document.getElementById('report-period').value : new Date().toISOString().slice(0, 7);
-    reportBranch = document.getElementById('report-branch') ? document.getElementById('report-branch').value : '';
-    reportStatus = document.getElementById('report-status') ? document.getElementById('report-status').value : '';
+    var periodSelect = document.getElementById('report-period');
+    reportPeriod = periodSelect ? periodSelect.value : new Date().toISOString().slice(0, 7);
 
-    var url = API_BASE + 'admin_report.php?period=' + encodeURIComponent(reportPeriod) + '&branch=' + encodeURIComponent(reportBranch) + '&status=' + encodeURIComponent(reportStatus);
+    var url = API_BASE + 'admin_report.php?period=' + encodeURIComponent(reportPeriod)
+      + '&branch=' + encodeURIComponent(reportBranch || '')
+      + '&status=' + encodeURIComponent(reportStatus || '');
 
     fetchJson(url)
       .then(function (data) {
@@ -128,13 +130,26 @@
             document.getElementById('report-error').textContent = data.message || 'Rapor yüklenemedi.';
             document.getElementById('report-error').style.display = 'block';
           }
+          monthlyReportRecords = [];
+          monthlyReportBranchCards = [];
+          renderMonthlyBranchGrid();
+          renderMonthlySelectionBar({});
+          renderMonthlyResults([]);
           return;
         }
         if (document.getElementById('report-error')) {
           document.getElementById('report-error').style.display = 'none';
         }
+        monthlyReportRecords = Array.isArray(data.records) ? data.records : [];
+        monthlyReportBranchCards = Array.isArray(data.branch_cards) ? data.branch_cards : [];
+        reportBranch = data.selected_branch && data.selected_branch !== 'all' ? String(data.selected_branch) : '';
+
+        renderMonthlyBranchGrid();
         renderStats(data.stats || {});
-        renderTable(data.records || []);
+        renderMonthlySelectionBar(data.stats || {});
+        syncReportStatusPills();
+        syncMonthlyViewButtons();
+        renderMonthlyResults(monthlyReportRecords);
       })
       .catch(function (err) {
         if (err && err.message === 'auth') {
@@ -144,28 +159,41 @@
           document.getElementById('report-error').textContent = 'Rapor yüklenemedi.';
           document.getElementById('report-error').style.display = 'block';
         }
+        monthlyReportRecords = [];
+        renderMonthlyResults([]);
       });
   }
 
   function renderStats(stats) {
     var totalEl = document.getElementById('stat-total');
+    var trackedEl = document.getElementById('stat-tracked');
     var enteredEl = document.getElementById('stat-entered');
     var pendingEl = document.getElementById('stat-pending');
+    var unassignedEl = document.getElementById('stat-unassigned');
     var pctEl = document.getElementById('stat-percentage');
 
-    var toplamBeklenen = stats.total != null ? Number(stats.total) : 0;
+    var toplamTasit = stats.total != null ? Number(stats.total) : 0;
+    var takiptekiTasit = stats.tracked_total != null ? Number(stats.tracked_total) : 0;
     var toplamYapilan = stats.entered != null ? Number(stats.entered) : 0;
-    var toplamBekleyen = stats.pending != null ? Number(stats.pending) : Math.max(0, toplamBeklenen - toplamYapilan);
-    var tamamlananYuzde = toplamBeklenen > 0 ? Math.round((toplamYapilan / toplamBeklenen) * 100) : 0;
+    var toplamBekleyen = stats.pending != null ? Number(stats.pending) : Math.max(0, takiptekiTasit - toplamYapilan);
+    var atamasiYok = stats.unassigned != null ? Number(stats.unassigned) : Math.max(0, toplamTasit - takiptekiTasit);
+    var tamamlananYuzde = takiptekiTasit > 0 ? Math.round((toplamYapilan / takiptekiTasit) * 100) : 0;
 
-    if (totalEl) totalEl.textContent = String(toplamBeklenen || 0);
+    if (totalEl) totalEl.textContent = String(toplamTasit || 0);
+    if (trackedEl) trackedEl.textContent = String(takiptekiTasit || 0);
     if (enteredEl) enteredEl.textContent = String(toplamYapilan || 0);
     if (pendingEl) pendingEl.textContent = String(toplamBekleyen || 0);
+    if (unassignedEl) unassignedEl.textContent = String(atamasiYok || 0);
     if (pctEl) pctEl.textContent = tamamlananYuzde + '%';
 
     var pendingBox = pendingEl ? pendingEl.closest('.report-stat-box-pending') : null;
     if (pendingBox) {
       pendingBox.classList.toggle('has-data', toplamBekleyen > 0);
+    }
+
+    var mutedBox = unassignedEl ? unassignedEl.closest('.report-stat-box-muted') : null;
+    if (mutedBox) {
+      mutedBox.classList.toggle('has-data', atamasiYok > 0);
     }
   }
   function capitalizeWords(str) { return (typeof window.capitalizeWords === 'function' ? window.capitalizeWords(str) : str); }
@@ -180,6 +208,16 @@
   var svgCheck = '<svg class="durum-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>';
 
   function getKmStateMeta(record) {
+    if (record && record.atama_var === false) {
+      return {
+        kmState: 'UNASSIGNED',
+        isWarning: false,
+        rowClass: 'row-unassigned',
+        statusText: 'Ataması Yok',
+        statusIcon: ''
+      };
+    }
+
     var kmState = String(record && record.km_state ? record.km_state : 'OK');
     var isWarning = kmState === 'FIRST_ENTRY_REQUIRED' || kmState === 'MONTHLY_UPDATE_DUE_SOFT' || kmState === 'MONTHLY_UPDATE_DUE_HARD';
     var rowClass = 'row-success';
@@ -263,6 +301,210 @@
     var text = 'Sn. ' + (name || '') + ', ' + (donem || '') + ' Dönemi İçin; Kullanımınıza Tahsis Edilen (' + (plaka || '') + ') Plakalı Taşıt İle İlgili; Uygulamamız Üzerinden Bilgi Güncellemesi Yapmanızı Rica Ederiz. Bildirmek için tıklayın: ' + driverLink;
     var url = 'https://wa.me/' + phone + '?text=' + encodeURIComponent(text);
     window.open(url, '_blank');
+  }
+
+  function sendReportEmail(email, name, plaka, donem) {
+    var address = String(email || '').trim();
+    if (!address) return;
+    var driverLink = (typeof window !== 'undefined' && window.location && window.location.origin)
+      ? window.location.origin + '/driver/'
+      : 'https://karmotors.com.tr/driver/';
+    var subject = (donem || '') + ' dönem kilometre bildirimi';
+    var body = 'Merhaba ' + (name || '') + ',\n\n'
+      + (donem || '') + ' dönemi için kullanımınıza tahsis edilen '
+      + (plaka || '') + ' plakalı taşıta ait bilgi güncellemesini uygulama üzerinden tamamlamanızı rica ederiz.\n\n'
+      + 'Bağlantı: ' + driverLink;
+    window.location.href = 'mailto:' + encodeURIComponent(address) + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
+  }
+
+  function getSelectedMonthlyBranchLabel() {
+    var selectedId = String(reportBranch || 'all');
+    var match = (monthlyReportBranchCards || []).find(function(item) {
+      return String(item.id) === selectedId;
+    });
+    return match ? toTitleCase(match.name || match.id || 'Tümü') : 'Tümü';
+  }
+
+  function renderMonthlySelectionBar(stats) {
+    var bar = document.getElementById('report-selection-bar');
+    if (!bar) return;
+    var entered = Number((stats && stats.entered) || 0);
+    var tracked = Number((stats && stats.tracked_total) || 0);
+    var pending = Number((stats && stats.pending) || 0);
+    var unassigned = Number((stats && stats.unassigned) || 0);
+
+    bar.innerHTML =
+      '<span class="report-selection-title">' + escapeHtmlLocal(getSelectedMonthlyBranchLabel()) + '</span>' +
+      '<span class="report-selection-meta">' + entered + '/' + tracked + ' bildirildi • ' + pending + ' bekliyor • ' + unassigned + ' ataması yok</span>';
+  }
+
+  function renderMonthlyBranchGrid() {
+    var container = document.getElementById('report-branch-grid');
+    if (!container) return;
+    var cards = monthlyReportBranchCards || [];
+    if (!cards.length) {
+      container.innerHTML = '';
+      return;
+    }
+
+    var selectedId = String(reportBranch || 'all');
+    var html = '';
+    cards.forEach(function(card) {
+      var cardId = String(card.id || '');
+      var activeClass = cardId === selectedId ? ' active' : '';
+      var allClass = cardId === 'all' ? ' all-card' : '';
+      html += '<button type="button" class="branch-card' + allClass + activeClass + '" data-report-branch="' + escapeHtmlLocal(cardId) + '">';
+      html += '<span class="branch-name">' + escapeHtmlLocal(String(card.name || '').toLocaleUpperCase('tr-TR')) + '</span>';
+      html += '<span class="branch-count">' + escapeHtmlLocal(card.count || 0) + ' Taşıt</span>';
+      html += '</button>';
+    });
+    container.innerHTML = html;
+
+    Array.prototype.forEach.call(container.querySelectorAll('[data-report-branch]'), function(button) {
+      button.addEventListener('click', function() {
+        var selectedBranch = button.getAttribute('data-report-branch');
+        reportBranch = selectedBranch === 'all' ? '' : selectedBranch;
+        loadReport();
+      });
+    });
+  }
+
+  function syncReportStatusPills() {
+    Array.prototype.forEach.call(document.querySelectorAll('.report-status-pill'), function(button) {
+      button.classList.toggle('active', String(button.getAttribute('data-status') || '') === String(reportStatus || ''));
+    });
+  }
+
+  function syncMonthlyViewButtons() {
+    var listBtn = document.getElementById('monthly-view-list');
+    var cardBtn = document.getElementById('monthly-view-card');
+    if (listBtn) listBtn.classList.toggle('active', monthlyReportView === 'list');
+    if (cardBtn) cardBtn.classList.toggle('active', monthlyReportView === 'card');
+  }
+
+  function buildMonthlyStatusBadge(record, kmMeta) {
+    if (record && record.atama_var === false) {
+      return '<span class="monthly-status-badge is-unassigned">Ataması Yok</span>';
+    }
+    if (kmMeta.isWarning) {
+      return '<span class="monthly-status-badge is-pending">' + escapeHtmlLocal(kmMeta.statusText) + '</span>';
+    }
+    if (record && record.kaza_var) {
+      return '<span class="monthly-status-badge is-alert">KM Tamam · Kaza</span>';
+    }
+    if (record && record.bakim_var) {
+      return '<span class="monthly-status-badge is-info">KM Tamam · Bakım</span>';
+    }
+    if (record && record.telafi) {
+      return '<span class="monthly-status-badge is-info">Telafi Edildi</span>';
+    }
+    return '<span class="monthly-status-badge is-success">KM Tamam</span>';
+  }
+
+  function buildMonthlyActions(record, kmMeta) {
+    var escapeAttrFn = typeof window.escapeAttr === 'function'
+      ? window.escapeAttr
+      : function(value) {
+          return String(value == null ? '' : value)
+            .replace(/&/g, '&amp;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+        };
+
+    if (!record || record.atama_var === false || !kmMeta.isWarning) return '';
+
+    var html = '<div class="monthly-report-actions">';
+    if (record.telefon) {
+      html += '<button type="button" class="report-action-btn report-action-whatsapp"'
+        + ' data-phone="' + escapeAttrFn(record.telefon) + '"'
+        + ' data-name="' + escapeAttrFn(record.surucu_adi) + '"'
+        + ' data-plaka="' + escapeAttrFn(record.plaka) + '"'
+        + ' title="WhatsApp bildirimi" aria-label="WhatsApp bildirimi">'
+        + '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>'
+        + '</button>';
+    }
+    if (record.email) {
+      html += '<button type="button" class="report-action-btn report-action-email"'
+        + ' data-email="' + escapeAttrFn(record.email) + '"'
+        + ' data-name="' + escapeAttrFn(record.surucu_adi) + '"'
+        + ' data-plaka="' + escapeAttrFn(record.plaka) + '"'
+        + ' title="E-posta bildirimi" aria-label="E-posta bildirimi">'
+        + '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"></path><path d="m4 7 8 6 8-6"></path></svg>'
+        + '</button>';
+    }
+    html += '</div>';
+    return html;
+  }
+
+  function bindMonthlyResultActions(container) {
+    if (!container) return;
+
+    Array.prototype.forEach.call(container.querySelectorAll('.report-action-whatsapp'), function(button) {
+      button.addEventListener('click', function(event) {
+        event.stopPropagation();
+        sendWhatsApp(button.getAttribute('data-phone'), button.getAttribute('data-name'), button.getAttribute('data-plaka'), reportPeriod);
+      });
+    });
+
+    Array.prototype.forEach.call(container.querySelectorAll('.report-action-email'), function(button) {
+      button.addEventListener('click', function(event) {
+        event.stopPropagation();
+        sendReportEmail(button.getAttribute('data-email'), button.getAttribute('data-name'), button.getAttribute('data-plaka'), reportPeriod);
+      });
+    });
+  }
+
+  function renderMonthlyResults(records) {
+    var container = document.getElementById('monthly-report-content');
+    if (!container) return;
+
+    if (!records || !records.length) {
+      container.innerHTML = '<p class="user-analytics-empty">Seçilen filtreye uygun taşıt bulunamadı.</p>';
+      return;
+    }
+
+    var html = '';
+    if (monthlyReportView === 'card') {
+      html += '<div class="view-card monthly-report-cards">';
+      records.forEach(function(record) {
+        var kmMeta = getKmStateMeta(record);
+        var vehicleTitle = capitalizeWords((record.brand_model || ((record.arac_marka || '') + ' ' + (record.arac_model || ''))).trim() || '-');
+        var driverName = record.atama_var === false ? 'Atama bulunmuyor' : capitalizeWords(record.surucu_adi || 'Sürücü tanımsız');
+        html += '<article class="card monthly-report-card ' + kmMeta.rowClass + '">';
+        html += '<div class="card-plate">' + escapeHtmlLocal(formatPlaka(record.plaka || '-')) + '</div>';
+        html += '<div class="card-brand-model">' + escapeHtmlLocal(vehicleTitle) + '</div>';
+        html += '<div class="card-third-line">' + escapeHtmlLocal(driverName) + ' · ' + escapeHtmlLocal(toTitleCase(record.branch_name || 'Şubesiz')) + '</div>';
+        html += '<div class="monthly-report-card-km">' + escapeHtmlLocal(formatKmValue(record.km)) + ' KM</div>';
+        html += buildMonthlyStatusBadge(record, kmMeta);
+        html += buildMonthlyActions(record, kmMeta);
+        html += '</article>';
+      });
+      html += '</div>';
+    } else {
+      html += '<div class="monthly-report-list">';
+      records.forEach(function(record) {
+        var kmMeta = getKmStateMeta(record);
+        var vehicleTitle = capitalizeWords((record.brand_model || ((record.arac_marka || '') + ' ' + (record.arac_model || ''))).trim() || '-');
+        var driverName = record.atama_var === false ? 'Atama bulunmuyor' : capitalizeWords(record.surucu_adi || 'Sürücü tanımsız');
+        html += '<article class="monthly-report-row ' + kmMeta.rowClass + '">';
+        html += '<div class="monthly-report-row-main">';
+        html += '<div class="monthly-report-row-head"><h3>' + escapeHtmlLocal(formatPlaka(record.plaka || '-')) + '</h3>' + buildMonthlyStatusBadge(record, kmMeta) + '</div>';
+        html += '<div class="monthly-report-row-subtitle">' + escapeHtmlLocal(vehicleTitle) + '</div>';
+        html += '<div class="monthly-report-row-meta"><span>' + escapeHtmlLocal(driverName) + '</span><span>' + escapeHtmlLocal(toTitleCase(record.branch_name || 'Şubesiz')) + '</span></div>';
+        html += '</div>';
+        html += '<div class="monthly-report-row-side">';
+        html += '<strong class="monthly-report-row-km">' + escapeHtmlLocal(formatKmValue(record.km)) + ' KM</strong>';
+        html += buildMonthlyActions(record, kmMeta);
+        html += '</div>';
+        html += '</article>';
+      });
+      html += '</div>';
+    }
+
+    container.innerHTML = html;
+    bindMonthlyResultActions(container);
   }
 
   function resetPendingAlertUi() {
@@ -423,6 +665,109 @@
     return amount.toLocaleString('tr-TR');
   }
 
+  function parseLocalizedNumberValue(value) {
+    if (value == null) return 0;
+    if (typeof value === 'number') return isNaN(value) ? 0 : value;
+    var normalized = String(value)
+      .replace(/\s+/g, '')
+      .replace(/\./g, '')
+      .replace(/,/g, '.')
+      .replace(/[^\d.-]/g, '');
+    var parsed = parseFloat(normalized);
+    return isNaN(parsed) ? 0 : parsed;
+  }
+
+  function formatKmValue(value) {
+    if (value == null || String(value).trim() === '') return '-';
+    if (typeof window.formatKm === 'function') return window.formatKm(value);
+    return formatMoney(parseLocalizedNumberValue(value));
+  }
+
+  function formatDistanceKm(value) {
+    var amount = Math.max(0, Math.round(parseLocalizedNumberValue(value)));
+    return formatKmValue(amount) + ' KM';
+  }
+
+  function getPeriodSortValue(period) {
+    var raw = String(period || '').trim();
+    if (!/^\d{4}-\d{2}$/.test(raw)) return 0;
+    return parseInt(raw.replace('-', ''), 10) || 0;
+  }
+
+  function collectUserMonthlyRecords(user) {
+    var latestByKey = {};
+    var userId = String((user && user.id) || '').trim();
+
+    (userAnalyticsMonthlyRecords || []).forEach(function(record) {
+      if (String((record && record.surucu_id) || '').trim() !== userId) return;
+
+      var vehicleId = String((record && record.arac_id) || '').trim();
+      var period = String((record && record.donem) || '').trim();
+      if (!vehicleId || !period) return;
+
+      var key = vehicleId + '|' + period;
+      var candidateDate = String((record && (record.guncelleme_tarihi || record.kayit_tarihi)) || '').trim();
+      var current = latestByKey[key];
+      var currentDate = current ? String((current.guncelleme_tarihi || current.kayit_tarihi) || '').trim() : '';
+      if (!current || candidateDate >= currentDate) {
+        latestByKey[key] = record;
+      }
+    });
+
+    return Object.keys(latestByKey).map(function(key) {
+      return latestByKey[key];
+    });
+  }
+
+  function summarizeUserMonthlyRecords(records) {
+    var grouped = {};
+    var totalDistanceKm = 0;
+    var kmReportCount = 0;
+    var lastReportPeriod = '';
+
+    (records || []).forEach(function(record) {
+      var vehicleId = String((record && record.arac_id) || '').trim();
+      if (!vehicleId) return;
+
+      var period = String((record && record.donem) || '').trim();
+      var kmValue = parseLocalizedNumberValue(record && record.guncel_km);
+      if (!kmValue && String((record && record.guncel_km) || '').trim() === '') return;
+
+      if (!grouped[vehicleId]) grouped[vehicleId] = [];
+      grouped[vehicleId].push({
+        donem: period,
+        sortValue: getPeriodSortValue(period),
+        km: kmValue
+      });
+
+      kmReportCount++;
+      if (!lastReportPeriod || getPeriodSortValue(period) > getPeriodSortValue(lastReportPeriod)) {
+        lastReportPeriod = period;
+      }
+    });
+
+    Object.keys(grouped).forEach(function(vehicleId) {
+      var items = grouped[vehicleId];
+      items.sort(function(a, b) {
+        return a.sortValue - b.sortValue;
+      });
+
+      var previousKm = null;
+      items.forEach(function(item) {
+        if (previousKm !== null && item.km >= previousKm) {
+          totalDistanceKm += (item.km - previousKm);
+        }
+        previousKm = item.km;
+      });
+    });
+
+    return {
+      totalDistanceKm: totalDistanceKm,
+      kmReportCount: kmReportCount,
+      lastReportPeriod: lastReportPeriod
+    };
+  }
+
   function getUserDisplayName(user) {
     return String((user && (user.isim || user.name)) || '').trim();
   }
@@ -536,6 +881,7 @@
   }
   function buildUserAnalyticsRecord(user) {
     var tasitlar = userAnalyticsTasitlar || [];
+    var monthlyRecords = collectUserMonthlyRecords(user);
     var cezaCount = 0;
     var cezaTutar = 0;
     var kazaCount = 0;
@@ -546,6 +892,12 @@
 
     function parseLocalizedNumber(value) {
       return parseFloat(String(value == null ? '' : value).replace(/\./g, '').replace(/,/g, '.')) || 0;
+    }
+
+    function findVehicleById(vehicleId) {
+      return tasitlar.find(function(tasit) {
+        return String((tasit && tasit.id) || '') === String(vehicleId || '');
+      }) || null;
     }
 
     function registerRelatedVehicle(tasit, sortValue, isActiveAssigned) {
@@ -604,6 +956,11 @@
       });
     });
 
+    monthlyRecords.forEach(function(monthlyRecord) {
+      var tasit = findVehicleById(monthlyRecord && monthlyRecord.arac_id);
+      registerRelatedVehicle(tasit, getPeriodSortValue(monthlyRecord && monthlyRecord.donem), false);
+    });
+
     var relatedVehicles = Object.keys(relatedVehicleMap).map(function(key) {
       return relatedVehicleMap[key];
     });
@@ -613,10 +970,18 @@
       return (b.sortValue || 0) - (a.sortValue || 0);
     });
 
+    var monthlySummary = summarizeUserMonthlyRecords(monthlyRecords);
     var activeVehicle = assignedVehicles[0] || null;
-    var vehiclePlate = activeVehicle ? formatPlaka(activeVehicle.plaka || activeVehicle.plate || '-') : 'Zimmetli Araç Yok';
-    var vehicleBrandSource = activeVehicle ? (activeVehicle.brandModel || [activeVehicle.arac_marka, activeVehicle.arac_model].filter(Boolean).join(' ') || '-') : '';
-    var vehicleBrand = activeVehicle ? toTitleCase(vehicleBrandSource) : 'Araç ataması yok';
+    var fallbackVehicle = !activeVehicle && relatedVehicles.length ? relatedVehicles[0] : null;
+    var vehiclePlate = activeVehicle
+      ? formatPlaka(activeVehicle.plaka || activeVehicle.plate || '-')
+      : (fallbackVehicle ? fallbackVehicle.plate : 'Araç Geçmişi Yok');
+    var vehicleBrandSource = activeVehicle
+      ? (activeVehicle.brandModel || [activeVehicle.arac_marka, activeVehicle.arac_model].filter(Boolean).join(' ') || '-')
+      : (fallbackVehicle ? fallbackVehicle.brand : '');
+    var vehicleBrand = activeVehicle
+      ? toTitleCase(vehicleBrandSource)
+      : (fallbackVehicle ? toTitleCase(vehicleBrandSource) : 'Araç ataması yok');
     var branchNames = getUserBranchNames(user);
     var phone = getUserPhone(user);
     var email = getUserEmail(user);
@@ -631,7 +996,8 @@
       vehiclePlate,
       vehicleBrand,
       relatedVehicleText,
-      branchNames.join(' ')
+      branchNames.join(' '),
+      monthlySummary.lastReportPeriod
     ].map(normalizeForSearch).join(' ');
 
     return {
@@ -649,6 +1015,12 @@
       marka: vehicleBrand,
       assignedVehicles: assignedVehicles,
       relatedVehicles: relatedVehicles,
+      relatedVehicleCount: relatedVehicles.length,
+      activeVehicleCount: assignedVehicles.length,
+      monthlyRecords: monthlyRecords,
+      totalDistanceKm: monthlySummary.totalDistanceKm,
+      kmReportCount: monthlySummary.kmReportCount,
+      lastReportPeriod: monthlySummary.lastReportPeriod || '-',
       cezaCount: cezaCount,
       cezaTutar: cezaTutar,
       kazaCount: kazaCount,
@@ -683,9 +1055,7 @@
   }
 
   function collectUserAnalyticsBranchItems() {
-    var users = (userAnalyticsUsers || []).filter(function(user) {
-      return user.aktif !== false && !!getUserDisplayName(user);
-    });
+    var users = getFilteredUserAnalyticsRecords({ ignoreBranch: true, ignoreQuery: true });
     var items = [{
       id: 'all',
       name: 'Tümü',
@@ -694,8 +1064,8 @@
     }];
 
     (branches || []).forEach(function(branch) {
-      var count = users.filter(function(user) {
-        return getUserBranchIds(user).some(function(branchId) { return String(branchId) === String(branch.id); });
+      var count = users.filter(function(record) {
+        return (record.branchIds || []).some(function(branchId) { return String(branchId) === String(branch.id); });
       }).length;
       items.push({
         id: branch.id,
@@ -820,6 +1190,21 @@
     }
   }
 
+  function formatLastReportPeriod(period) {
+    return period && period !== '-' ? period : 'KM kaydı yok';
+  }
+
+  function buildMetricBadges(record) {
+    var html = '<div class="user-analytics-metric-badges">';
+    html += '<span class="metric-pill metric-road">' + escapeHtmlLocal(formatDistanceKm(record.totalDistanceKm)) + '</span>';
+    html += '<span class="metric-pill metric-report">' + escapeHtmlLocal(record.kmReportCount) + ' dönem</span>';
+    html += '<span class="metric-pill metric-ceza">' + escapeHtmlLocal(record.cezaCount) + ' ceza</span>';
+    html += '<span class="metric-pill metric-kaza">' + escapeHtmlLocal(record.kazaCount) + ' kaza</span>';
+    html += '<span class="metric-pill metric-bakim">' + escapeHtmlLocal(record.bakimCount) + ' bakım</span>';
+    html += '</div>';
+    return html;
+  }
+
   function renderUserAnalyticsBranchGrid() {
     var target = document.getElementById('user-analytics-container');
     if (!target) return;
@@ -829,11 +1214,11 @@
       return;
     }
 
-    var html = '<div class="user-analytics-branch-grid">';
+    var html = '<div class="branch-grid user-analytics-branch-grid">';
     items.forEach(function(item) {
-      html += '<button type="button" class="user-analytics-branch-card' + (item.allCard ? ' all-card' : '') + '" data-user-branch-id="' + escapeHtmlLocal(item.id) + '">';
-      html += '<span class="user-analytics-branch-name">' + escapeHtmlLocal(toTitleCase(item.name)) + '</span>';
-      html += '<span class="user-analytics-branch-count">' + escapeHtmlLocal(item.count) + ' Kullanıcı</span>';
+      html += '<button type="button" class="branch-card' + (item.allCard ? ' all-card' : '') + '" data-user-branch-id="' + escapeHtmlLocal(item.id) + '">';
+      html += '<span class="branch-name">' + escapeHtmlLocal(String(item.name || '').toLocaleUpperCase('tr-TR')) + '</span>';
+      html += '<span class="branch-count">' + escapeHtmlLocal(item.count) + ' Kullanıcı</span>';
       html += '</button>';
     });
     html += '</div>';
@@ -850,9 +1235,12 @@
 
   function buildMetricRows(record) {
     var html = '<div class="user-analytics-metrics">';
-    html += '<div class="metric-row metric-ceza"><span>Cezalar (' + record.cezaCount + ')</span><strong>' + formatMoney(record.cezaTutar) + ' TL</strong></div>';
-    html += '<div class="metric-row metric-kaza"><span>Kazalar (' + record.kazaCount + ')</span><strong>' + formatMoney(record.kazaTutar) + ' TL</strong></div>';
-    html += '<div class="metric-row metric-bakim"><span>Bakımlar</span><strong>' + record.bakimCount + ' Adet</strong></div>';
+    html += '<div class="metric-row metric-road"><span>Toplam Yol</span><strong>' + escapeHtmlLocal(formatDistanceKm(record.totalDistanceKm)) + '</strong></div>';
+    html += '<div class="metric-row metric-report"><span>KM Bildirimi</span><strong>' + escapeHtmlLocal(record.kmReportCount) + ' Dönem</strong></div>';
+    html += '<div class="metric-row metric-period"><span>Son Bildirim</span><strong>' + escapeHtmlLocal(formatLastReportPeriod(record.lastReportPeriod)) + '</strong></div>';
+    html += '<div class="metric-row metric-ceza"><span>Cezalar (' + record.cezaCount + ')</span><strong>' + escapeHtmlLocal(formatMoney(record.cezaTutar)) + ' TL</strong></div>';
+    html += '<div class="metric-row metric-kaza"><span>Kazalar (' + record.kazaCount + ')</span><strong>' + escapeHtmlLocal(formatMoney(record.kazaTutar)) + ' TL</strong></div>';
+    html += '<div class="metric-row metric-bakim"><span>Bakımlar</span><strong>' + escapeHtmlLocal(record.bakimCount) + ' Adet</strong></div>';
     html += '</div>';
     return html;
   }
@@ -882,26 +1270,32 @@
     }
 
     if (userAnalyticsView === 'list') {
-      html += '<div class="user-analytics-list">';
+      html += '<div class="user-analytics-list modern-user-list">';
       records.forEach(function(record) {
-        html += '<button type="button" class="user-analytics-item user-analytics-clickable" data-user-id="' + escapeHtmlLocal(record.id) + '">';
-        html += '<div class="user-analytics-head"><h3>' + escapeHtmlLocal(capitalizeWords(record.adSoyad)) + '</h3><span class="user-analytics-plate">' + escapeHtmlLocal(record.plaka) + '</span></div>';
-        html += '<div class="user-analytics-submeta"><span>' + escapeHtmlLocal(record.marka) + '</span><span>' + escapeHtmlLocal(record.branchLabel) + '</span></div>';
-        html += '<div class="user-analytics-contact-row"><span>' + escapeHtmlLocal(record.telefon) + '</span><span>' + escapeHtmlLocal(record.email) + '</span></div>';
-        html += buildMetricRows(record);
+        html += '<button type="button" class="kullanici-list-item user-analytics-list-item user-analytics-clickable" data-user-id="' + escapeHtmlLocal(record.id) + '">';
+        html += '<div class="kullanici-list-item-left">';
+        html += '<div class="kullanici-list-item-name">' + escapeHtmlLocal(capitalizeWords(record.adSoyad)) + '</div>';
+        html += '<div class="user-analytics-list-item-subtitle">' + escapeHtmlLocal(record.marka) + '</div>';
+        html += '<div class="user-analytics-list-item-meta"><span>' + escapeHtmlLocal(record.branchLabel) + '</span><span>' + escapeHtmlLocal(formatLastReportPeriod(record.lastReportPeriod)) + '</span></div>';
+        html += buildMetricBadges(record);
+        html += '</div>';
+        html += '<div class="kullanici-list-item-right">';
+        html += '<div class="kullanici-list-item-plate">' + escapeHtmlLocal(record.plaka) + '</div>';
+        html += '<div class="kullanici-list-item-brand">' + escapeHtmlLocal(formatDistanceKm(record.totalDistanceKm)) + '</div>';
+        html += '<div class="user-analytics-list-item-mini">' + escapeHtmlLocal(record.kmReportCount) + ' dönem</div>';
+        html += '</div>';
         html += '</button>';
       });
       html += '</div>';
     } else {
-      html += '<div class="user-analytics-cards">';
+      html += '<div class="view-card user-analytics-cards">';
       records.forEach(function(record) {
-        html += '<button type="button" class="user-analytics-card user-analytics-clickable" data-user-id="' + escapeHtmlLocal(record.id) + '">';
-        html += '<div class="card-accent"></div>';
-        html += '<h3>' + escapeHtmlLocal(capitalizeWords(record.adSoyad)) + '</h3>';
-        html += '<div class="user-analytics-plate">Plaka: <span>' + escapeHtmlLocal(record.plaka) + '</span></div>';
-        html += '<div class="user-analytics-submeta"><span>' + escapeHtmlLocal(record.marka) + '</span><span>' + escapeHtmlLocal(record.branchLabel) + '</span></div>';
-        html += '<div class="user-analytics-contact-row"><span>' + escapeHtmlLocal(record.telefon) + '</span><span>' + escapeHtmlLocal(record.roleLabel) + '</span></div>';
-        html += buildMetricRows(record);
+        html += '<button type="button" class="card user-analytics-card user-analytics-clickable" data-user-id="' + escapeHtmlLocal(record.id) + '">';
+        html += '<div class="card-plate">' + escapeHtmlLocal(capitalizeWords(record.adSoyad)) + '</div>';
+        html += '<div class="card-brand-model">' + escapeHtmlLocal(record.marka) + '</div>';
+        html += '<div class="card-third-line">' + escapeHtmlLocal(record.plaka + ' · ' + record.branchLabel) + '</div>';
+        html += '<div class="user-analytics-card-summary"><span>' + escapeHtmlLocal(formatDistanceKm(record.totalDistanceKm)) + '</span><span>' + escapeHtmlLocal(record.kmReportCount) + ' dönem</span></div>';
+        html += buildMetricBadges(record);
         html += '</button>';
       });
       html += '</div>';
@@ -942,22 +1336,25 @@
     }
 
     var userEvents = collectUserAnalyticsEvents(record.raw);
+    var relatedVehicles = record.relatedVehicles || [];
+    var relatedVehicleHtml = relatedVehicles.length
+      ? '<div class="user-analytics-related-list">' + relatedVehicles.map(function(item) {
+          return '<span class="user-analytics-related-pill">' + escapeHtmlLocal((item.plate || '-') + ' · ' + (item.brand || '-')) + '</span>';
+        }).join('') + '</div>'
+      : '<span class="user-analytics-detail-value">Araç geçmişi bulunamadı.</span>';
+
     var html = '<div class="user-analytics-detail-shell">';
     html += '<div class="universal-back-bar"><button type="button" class="universal-back-btn" id="user-analytics-back-to-list" title="Geri Dön"><svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg><span class="universal-back-label">Listeye Dön</span></button></div>';
     html += '<div class="user-analytics-detail-grid">';
     html += '<section class="user-analytics-detail-section">';
-    html += '<h3 class="user-analytics-detail-title">Kullanıcı Bilgileri</h3>';
+    html += '<h3 class="user-analytics-detail-title">Kullanıcı Özeti</h3>';
     html += '<div class="user-analytics-detail-row"><span class="user-analytics-detail-label">Ad Soyad</span><span class="user-analytics-detail-value">' + escapeHtmlLocal(record.adSoyad) + '</span></div>';
     html += '<div class="user-analytics-detail-row"><span class="user-analytics-detail-label">Şube</span><span class="user-analytics-detail-value">' + escapeHtmlLocal(record.branchLabel) + '</span></div>';
     html += '<div class="user-analytics-detail-row"><span class="user-analytics-detail-label">Telefon</span><span class="user-analytics-detail-value">' + escapeHtmlLocal(record.telefon) + '</span></div>';
     html += '<div class="user-analytics-detail-row"><span class="user-analytics-detail-label">E-posta</span><span class="user-analytics-detail-value">' + escapeHtmlLocal(record.email) + '</span></div>';
     html += '<div class="user-analytics-detail-row"><span class="user-analytics-detail-label">Kullanıcı Tipi</span><span class="user-analytics-detail-value">' + escapeHtmlLocal(record.roleLabel) + '</span></div>';
-    html += '<div class="user-analytics-detail-row"><span class="user-analytics-detail-label">Zimmetli Araç</span><span class="user-analytics-detail-value">' + escapeHtmlLocal(record.plaka) + ' - ' + escapeHtmlLocal(record.marka) + '</span></div>';
-    var relatedVehiclesText = (record.relatedVehicles || []).map(function(item) {
-      return (item.plate || '-') + ' - ' + (item.brand || '-');
-    }).join(', ');
-    if (!relatedVehiclesText) relatedVehiclesText = '-';
-    html += '<div class="user-analytics-detail-row"><span class="user-analytics-detail-label">İlişkili Araçlar</span><span class="user-analytics-detail-value">' + escapeHtmlLocal(relatedVehiclesText) + '</span></div>';
+    html += '<div class="user-analytics-detail-row"><span class="user-analytics-detail-label">Aktif/Zimmetli Araç</span><span class="user-analytics-detail-value">' + escapeHtmlLocal(record.plaka) + ' · ' + escapeHtmlLocal(record.marka) + '</span></div>';
+    html += '<div class="user-analytics-detail-row"><span class="user-analytics-detail-label">Araç Geçmişi</span>' + relatedVehicleHtml + '</div>';
     html += buildMetricRows(record);
     html += '</section>';
     html += '<section class="user-analytics-detail-section">';
@@ -1008,6 +1405,7 @@
         container.dataset.loaded = 'true';
         userAnalyticsUsers = data.users || [];
         userAnalyticsTasitlar = data.tasitlar || [];
+        userAnalyticsMonthlyRecords = data.monthly_records || [];
         window.renderUserAnalytics();
       })
       .catch(function(err) {
@@ -1147,6 +1545,11 @@
   }
 
   function init() {
+    if (!getStoredPortalToken()) {
+      redirectToPortalLogin();
+      return;
+    }
+
     initPeriodSelect();
     initVersionDisplay();
     initFooterDim();
@@ -1159,13 +1562,39 @@
     var btnRefresh = document.getElementById('report-refresh');
     if (btnRefresh) btnRefresh.addEventListener('click', loadReport);
 
-    ['report-period', 'report-branch', 'report-status'].forEach(function(selectId) {
-      var selectEl = document.getElementById(selectId);
-      if (!selectEl) return;
-      if (selectEl.dataset.reportAutoReloadBound === '1') return;
-      selectEl.addEventListener('change', loadReport);
-      selectEl.dataset.reportAutoReloadBound = '1';
+    var reportPeriodSelect = document.getElementById('report-period');
+    if (reportPeriodSelect && reportPeriodSelect.dataset.reportAutoReloadBound !== '1') {
+      reportPeriodSelect.addEventListener('change', loadReport);
+      reportPeriodSelect.dataset.reportAutoReloadBound = '1';
+    }
+
+    Array.prototype.forEach.call(document.querySelectorAll('.report-status-pill'), function(button) {
+      if (button.dataset.reportStatusBound === '1') return;
+      button.addEventListener('click', function() {
+        reportStatus = button.getAttribute('data-status') || '';
+        syncReportStatusPills();
+        loadReport();
+      });
+      button.dataset.reportStatusBound = '1';
     });
+
+    var monthlyViewListBtn = document.getElementById('monthly-view-list');
+    var monthlyViewCardBtn = document.getElementById('monthly-view-card');
+    if (monthlyViewListBtn) {
+      monthlyViewListBtn.addEventListener('click', function() {
+        monthlyReportView = 'list';
+        syncMonthlyViewButtons();
+        renderMonthlyResults(monthlyReportRecords);
+      });
+    }
+    if (monthlyViewCardBtn) {
+      monthlyViewCardBtn.addEventListener('click', function() {
+        monthlyReportView = 'card';
+        syncMonthlyViewButtons();
+        renderMonthlyResults(monthlyReportRecords);
+      });
+    }
+    syncMonthlyViewButtons();
 
     var btnExport = document.getElementById('report-export');
     if (btnExport) btnExport.addEventListener('click', exportExcel);
