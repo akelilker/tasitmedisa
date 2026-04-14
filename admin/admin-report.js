@@ -211,7 +211,7 @@
         renderMonthlySelectionBar(data.stats || {});
         syncMonthlyDetailStage();
         syncReportStatusPills();
-        syncMonthlyViewButtons();
+        syncMonthlyViewToggle();
         renderMonthlyResults(monthlyReportRecords);
       })
       .catch(function (err) {
@@ -499,11 +499,49 @@
     });
   }
 
-  function syncMonthlyViewButtons() {
-    var listBtn = document.getElementById('monthly-view-list');
-    var cardBtn = document.getElementById('monthly-view-card');
-    if (listBtn) listBtn.classList.toggle('active', monthlyReportView === 'list');
-    if (cardBtn) cardBtn.classList.toggle('active', monthlyReportView === 'card');
+  var SVG_MONTHLY_LIST_ICON =
+    '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">' +
+    '<line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line>' +
+    '<line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>';
+  var SVG_MONTHLY_CARD_ICON =
+    '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">' +
+    '<rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect>' +
+    '<rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>';
+
+  function syncMonthlyViewToggle() {
+    var btn = document.getElementById('monthly-view-toggle');
+    if (!btn) return;
+    if (monthlyReportView === 'card') {
+      btn.innerHTML = SVG_MONTHLY_LIST_ICON;
+      btn.title = 'Liste görünümü';
+      btn.setAttribute('aria-label', 'Liste görünümü');
+    } else {
+      btn.innerHTML = SVG_MONTHLY_CARD_ICON;
+      btn.title = 'Kutu görünümü';
+      btn.setAttribute('aria-label', 'Kutu görünümü');
+    }
+  }
+
+  function syncUserAnalyticsViewToggle() {
+    var btn = document.getElementById('user-analytics-view-toggle');
+    if (!btn) return;
+    if (userAnalyticsView === 'card') {
+      btn.innerHTML = SVG_MONTHLY_LIST_ICON;
+      btn.title = 'Liste görünümü';
+      btn.setAttribute('aria-label', 'Liste görünümü');
+    } else {
+      btn.innerHTML = SVG_MONTHLY_CARD_ICON;
+      btn.title = 'Kutu görünümü';
+      btn.setAttribute('aria-label', 'Kutu görünümü');
+    }
+  }
+
+  function applyUserAnalyticsViewClasses() {
+    var container = document.getElementById('user-analytics-container');
+    if (container) {
+      container.classList.toggle('view-list', userAnalyticsView === 'list');
+      container.classList.toggle('view-card', userAnalyticsView === 'card');
+    }
   }
 
   function buildMonthlyStatusBadge(record, kmMeta) {
@@ -1566,20 +1604,25 @@
 
     if (!(userAnalyticsUsers || []).length) {
       target.innerHTML = '<p class="user-analytics-empty">Gösterilecek kullanıcı bulunamadı.</p>';
+      syncUserAnalyticsViewToggle();
+      applyUserAnalyticsViewClasses();
       return;
     }
 
     if (userAnalyticsSelectedUserId) {
       renderUserAnalyticsDetail();
+      syncUserAnalyticsViewToggle();
+      applyUserAnalyticsViewClasses();
       return;
     }
 
     if (userAnalyticsBranchId === null) {
       renderUserAnalyticsBranchGrid();
-      return;
+    } else {
+      renderUserAnalyticsList();
     }
-
-    renderUserAnalyticsList();
+    syncUserAnalyticsViewToggle();
+    applyUserAnalyticsViewClasses();
   };
 
   function approveRequest(id) {
@@ -1701,9 +1744,6 @@
     loadPendingRequests();
     window.loadUserAnalytics();
 
-    var btnRefresh = document.getElementById('report-refresh');
-    if (btnRefresh) btnRefresh.addEventListener('click', loadReport);
-
     var reportPeriodSelect = document.getElementById('report-period');
     if (reportPeriodSelect && reportPeriodSelect.dataset.reportAutoReloadBound !== '1') {
       reportPeriodSelect.addEventListener('change', loadReport);
@@ -1729,37 +1769,18 @@
       button.dataset.reportStatusBound = '1';
     });
 
-    var monthlyViewListBtn = document.getElementById('monthly-view-list');
-    var monthlyViewCardBtn = document.getElementById('monthly-view-card');
-    if (monthlyViewListBtn) {
-      monthlyViewListBtn.addEventListener('click', function() {
-        monthlyReportView = 'list';
-        syncMonthlyViewButtons();
+    var monthlyViewToggle = document.getElementById('monthly-view-toggle');
+    if (monthlyViewToggle) {
+      monthlyViewToggle.addEventListener('click', function() {
+        monthlyReportView = monthlyReportView === 'card' ? 'list' : 'card';
+        syncMonthlyViewToggle();
         renderMonthlyResults(monthlyReportRecords);
       });
     }
-    if (monthlyViewCardBtn) {
-      monthlyViewCardBtn.addEventListener('click', function() {
-        monthlyReportView = 'card';
-        syncMonthlyViewButtons();
-        renderMonthlyResults(monthlyReportRecords);
-      });
-    }
-    syncMonthlyViewButtons();
+    syncMonthlyViewToggle();
 
     var btnExport = document.getElementById('report-export');
     if (btnExport) btnExport.addEventListener('click', exportExcel);
-
-    var btnPendingAlert = document.getElementById('pending-alert-btn');
-    if (btnPendingAlert) {
-      btnPendingAlert.addEventListener('click', function () {
-        window.switchAdminTab('aylik');
-        requestAnimationFrame(function () {
-          var el = document.getElementById('pending-section-title') || document.getElementById('pending-requests-list');
-          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        });
-      });
-    }
 
     var searchInput = document.getElementById('user-analytics-search');
     if (searchInput) {
@@ -1770,32 +1791,15 @@
     }
     bindExpandableSearch('user-analytics-search-toggle', 'user-analytics-search-container', 'user-analytics-search');
 
-    var viewListBtn = document.getElementById('user-analytics-view-list');
-    var viewCardBtn = document.getElementById('user-analytics-view-card');
-    function syncUserAnalyticsViewButtons() {
-      if (viewListBtn) viewListBtn.classList.toggle('active', userAnalyticsView === 'list');
-      if (viewCardBtn) viewCardBtn.classList.toggle('active', userAnalyticsView === 'card');
-      var container = document.getElementById('user-analytics-container');
-      if (container) {
-        container.classList.toggle('view-list', userAnalyticsView === 'list');
-        container.classList.toggle('view-card', userAnalyticsView === 'card');
-      }
-    }
-    if (viewListBtn) {
-      viewListBtn.addEventListener('click', function() {
-        userAnalyticsView = 'list';
-        syncUserAnalyticsViewButtons();
+    var userAnalyticsViewToggle = document.getElementById('user-analytics-view-toggle');
+    if (userAnalyticsViewToggle) {
+      userAnalyticsViewToggle.addEventListener('click', function() {
+        userAnalyticsView = userAnalyticsView === 'card' ? 'list' : 'card';
         window.renderUserAnalytics();
       });
     }
-    if (viewCardBtn) {
-      viewCardBtn.addEventListener('click', function() {
-        userAnalyticsView = 'card';
-        syncUserAnalyticsViewButtons();
-        window.renderUserAnalytics();
-      });
-    }
-    syncUserAnalyticsViewButtons();
+    syncUserAnalyticsViewToggle();
+    applyUserAnalyticsViewClasses();
   }
 
   if (document.readyState === 'loading') {
