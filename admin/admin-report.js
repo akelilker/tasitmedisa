@@ -430,6 +430,7 @@
         reportStatus = '';
         monthlyReportQuery = '';
         if (searchInput) searchInput.value = '';
+        syncMonthlyDetailStage();
         loadReport();
       });
     });

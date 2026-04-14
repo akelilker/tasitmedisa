@@ -2016,6 +2016,7 @@ body.admin-report-page::-webkit-scrollbar {
 
 .admin-tabs-container {
   display: flex;
+  justify-content: center;
   gap: 8px;
   margin-bottom: 14px;
   padding: 0 2px;
@@ -2071,6 +2072,10 @@ body.admin-report-page::-webkit-scrollbar {
   display: none !important;
 }
 
+#report-branch-grid[hidden] {
+  display: none !important;
+}
+
 .monthly-stage-detail {
   display: flex;
   flex-direction: column;
@@ -2109,6 +2114,36 @@ body.admin-report-page::-webkit-scrollbar {
 }
 
 .monthly-branch-grid .branch-count {
+  font-size: 12px;
+}
+
+.user-analytics-branch-grid {
+  justify-content: center;
+  gap: 3px;
+  padding: 0 3px;
+}
+
+.user-analytics-branch-grid .branch-card {
+  width: calc((100% - (4 * 3px)) / 5);
+  max-width: calc((100% - (4 * 3px)) / 5);
+  flex: 0 0 calc((100% - (4 * 3px)) / 5);
+  border-radius: 8px;
+  padding: 4px;
+  padding-top: 16px !important;
+  padding-bottom: 12px !important;
+  container-type: inline-size;
+}
+
+.user-analytics-branch-grid .branch-name {
+  min-height: 2.5em;
+  margin-bottom: 2px;
+  font-size: clamp(11px, 13cqw, 13px);
+  line-height: 1.06;
+  word-break: keep-all;
+  overflow-wrap: normal;
+}
+
+.user-analytics-branch-grid .branch-count {
   font-size: 12px;
 }
 
@@ -2374,7 +2409,17 @@ body.admin-report-page::-webkit-scrollbar {
     flex-basis: calc((100% - 3px) / 2);
   }
 
+  .user-analytics-branch-grid .branch-card {
+    width: calc((100% - 3px) / 2);
+    max-width: calc((100% - 3px) / 2);
+    flex-basis: calc((100% - 3px) / 2);
+  }
+
   .monthly-branch-grid .branch-name {
+    font-size: clamp(10px, 3.8vw, 12px);
+  }
+
+  .user-analytics-branch-grid .branch-name {
     font-size: clamp(10px, 3.8vw, 12px);
   }
 }
