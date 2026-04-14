@@ -28,11 +28,12 @@ body.admin-report-page::-webkit-scrollbar {
   margin: 0 auto;
   min-height: 100vh;
   background: var(--bg);
-  border-top: 0.5px solid var(--border-red-tech);
-  border-left: 0.5px solid var(--border-red-tech);
-  border-right: 0.5px solid var(--border-red-tech);
+  border-top: 0.8px solid rgba(var(--theme-color-rgb), 0.56);
+  border-left: 1px solid rgba(var(--theme-color-rgb), 0.72);
+  border-right: 1px solid rgba(var(--theme-color-rgb), 0.72);
   box-sizing: border-box;
   overflow: visible;
+  box-shadow: inset 1px 0 0 rgba(var(--theme-color-rgb), 0.12), inset -1px 0 0 rgba(var(--theme-color-rgb), 0.12);
 }
 
 .admin-content-wrap {
@@ -57,7 +58,12 @@ body.admin-report-page::-webkit-scrollbar {
 }
 
 .admin-report-hero .hero-logo {
-  margin-top: 8px;
+  margin-top: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
 }
 
 .admin-hero-title-wrap {
@@ -98,6 +104,50 @@ body.admin-report-page::-webkit-scrollbar {
   filter: none;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+}
+
+.admin-report-page .main-header-user-name {
+  display: none;
+  max-width: none;
+  overflow: visible;
+  color: rgba(222, 229, 235, 0.92);
+  font-size: clamp(calc(8px - 0.5pt), 1.55vw, calc(10px - 0.5pt));
+  font-weight: 600;
+  line-height: 1.15;
+  text-align: center;
+  letter-spacing: 0.01em;
+  word-break: normal;
+  white-space: nowrap;
+  transform: translate(3px, 2px);
+}
+
+.admin-report-page .main-header-user-name.is-empty {
+  display: none;
+}
+
+@media (min-width: 641px) {
+  .admin-report-hero {
+    align-items: stretch;
+  }
+
+  .admin-report-hero .hero-logo {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    align-items: start;
+    align-self: stretch;
+    justify-items: center;
+    gap: 0;
+    padding-left: 11px;
+    box-sizing: content-box;
+  }
+
+  .admin-report-page .main-header-user-name {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-self: stretch;
+    width: 100%;
+  }
 }
 
 /* --- Ana içerik --- */
@@ -996,9 +1046,13 @@ body.admin-report-page::-webkit-scrollbar {
 
 .branch-card:hover,
 .view-card .card:hover,
-.branch-card.active,
 .user-analytics-clickable:hover,
 .monthly-report-row:hover {
+  border-color: rgba(255, 255, 255, 0.34);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.branch-card.active {
   border-color: rgba(var(--theme-color-rgb), 0.56);
   box-shadow: 0 0 0 1px rgba(var(--theme-color-rgb), 0.14);
 }
@@ -1007,6 +1061,22 @@ body.admin-report-page::-webkit-scrollbar {
 .view-card .card:hover,
 .branch-card.active {
   transform: scale(1.03);
+}
+
+.branch-card:hover .branch-name,
+.view-card .card:hover .card-plate,
+.user-analytics-clickable:hover .kullanici-list-item-name {
+  color: #ffffff;
+}
+
+.branch-card:hover .branch-count,
+.view-card .card:hover .card-brand-model,
+.view-card .card:hover .card-third-line,
+.user-analytics-clickable:hover .user-analytics-list-item-subtitle,
+.user-analytics-clickable:hover .kullanici-list-item-brand,
+.user-analytics-clickable:hover .user-analytics-list-item-meta,
+.user-analytics-clickable:hover .user-analytics-list-item-mini {
+  color: #cbd5e1;
 }
 
 .branch-name {
@@ -1687,9 +1757,9 @@ body.admin-report-page::-webkit-scrollbar {
   width: 100%;
   max-width: 1200px;
   background: var(--bg);
-  border-top: 0.8px solid rgba(128, 128, 128, 0.5);
-  border-left: 0.5px solid rgba(255, 255, 255, 0.20);
-  border-right: 0.5px solid rgba(255, 255, 255, 0.20);
+  border-top: 1px solid rgba(200, 200, 200, 0.52);
+  border-left: 0.6px solid rgba(200, 200, 200, 0.32);
+  border-right: 0.6px solid rgba(200, 200, 200, 0.32);
   box-shadow: 0 -10px 20px rgba(var(--theme-color-rgb), 0.16);
   z-index: 1000;
 }
@@ -2015,16 +2085,19 @@ body.admin-report-page::-webkit-scrollbar {
 }
 
 .admin-tabs-container {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 180px));
   justify-content: center;
-  gap: 8px;
+  gap: 12px;
   margin-bottom: 14px;
-  padding: 0 2px;
+  width: 100%;
+  padding: 0;
 }
 
 .admin-tab-btn {
   appearance: none !important;
   -webkit-appearance: none !important;
+  width: 100%;
   padding: 10px 16px !important;
   border: 1px solid rgba(255, 255, 255, 0.16) !important;
   border-radius: 10px !important;
@@ -2058,13 +2131,7 @@ body.admin-report-page::-webkit-scrollbar {
 }
 
 .monthly-stage-empty {
-  padding: 12px 4px 0;
-  border: none;
-  border-radius: 0;
-  background: transparent;
-  color: #7e8a9b;
-  text-align: center;
-  font-size: 12px;
+  display: none !important;
 }
 
 .monthly-stage-detail[hidden],
@@ -2079,7 +2146,7 @@ body.admin-report-page::-webkit-scrollbar {
 .monthly-stage-detail {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
 }
 
 #report-branch-grid.monthly-branch-grid {
@@ -2107,7 +2174,7 @@ body.admin-report-page::-webkit-scrollbar {
 .monthly-branch-grid .branch-name {
   min-height: 2.5em;
   margin-bottom: 2px;
-  font-size: clamp(11px, 13cqw, 13px);
+  font-size: clamp(10.5px, 12cqw, 12px);
   line-height: 1.06;
   word-break: keep-all;
   overflow-wrap: normal;
@@ -2137,7 +2204,7 @@ body.admin-report-page::-webkit-scrollbar {
 .user-analytics-branch-grid .branch-name {
   min-height: 2.5em;
   margin-bottom: 2px;
-  font-size: clamp(11px, 13cqw, 13px);
+  font-size: clamp(10.5px, 12cqw, 12px);
   line-height: 1.06;
   word-break: keep-all;
   overflow-wrap: normal;
@@ -2148,18 +2215,31 @@ body.admin-report-page::-webkit-scrollbar {
 }
 
 .report-selection-bar {
+  margin-top: 12px;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
   align-items: center;
+  justify-content: flex-start;
+  min-height: 0;
 }
 
 .report-selection-left {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 0;
   min-width: 0;
 }
 
 .monthly-reset-selection {
   flex-shrink: 0;
+}
+
+.report-selection-backbar,
+.report-selection-backbar .universal-back-btn {
+  width: auto;
+  justify-content: flex-start;
 }
 
 .report-selection-title {
@@ -2176,16 +2256,24 @@ body.admin-report-page::-webkit-scrollbar {
 }
 
 .report-stat-box {
-  min-height: 70px;
+  min-height: 58px;
+  padding: 7px 8px 5px;
   border-radius: 10px;
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: center;
+  gap: 4px;
 }
 
 .report-stat-box .label {
   white-space: normal;
+  font-size: 11px;
+  line-height: 1.08;
 }
 
 .report-stat-box .value {
-  font-size: 24px;
+  font-size: 21px;
+  line-height: 0.95;
 }
 
 .report-toolbar-shell {
@@ -2363,11 +2451,11 @@ body.admin-report-page::-webkit-scrollbar {
 
 @media (max-width: 640px) {
   .admin-tabs-container {
-    flex-wrap: wrap;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
   }
 
   .admin-tab-btn {
-    flex: 1;
     text-align: center;
   }
 
