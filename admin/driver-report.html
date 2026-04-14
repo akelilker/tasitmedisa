@@ -60,46 +60,83 @@
     <div id="tab-aylik" class="admin-tab-panel active" data-admin-panel="aylik">
       <div class="monthly-report-shell">
         <div id="report-branch-grid" class="branch-grid monthly-branch-grid"></div>
+        <div id="monthly-stage-empty" class="monthly-stage-empty">Önce Tümü ya da bir şube seçerek devam et.</div>
 
-        <div class="report-toolbar-shell">
-          <div class="report-toolbar-row">
-            <label class="report-toolbar-field">
-              <span>Dönem</span>
-              <select id="report-period"></select>
-            </label>
+        <div id="monthly-stage-detail" class="monthly-stage-detail" hidden>
+          <div id="report-selection-bar" class="report-selection-bar"></div>
 
-            <div class="report-view-switch" role="group" aria-label="Aylık görünüm seçimi">
-              <button type="button" id="monthly-view-list" class="report-view-btn active" data-view="list" title="Liste görünümü" aria-label="Liste görünümü">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <line x1="8" y1="6" x2="21" y2="6"></line>
-                  <line x1="8" y1="12" x2="21" y2="12"></line>
-                  <line x1="8" y1="18" x2="21" y2="18"></line>
-                  <line x1="3" y1="6" x2="3.01" y2="6"></line>
-                  <line x1="3" y1="12" x2="3.01" y2="12"></line>
-                  <line x1="3" y1="18" x2="3.01" y2="18"></line>
-                </svg>
-              </button>
-              <button type="button" id="monthly-view-card" class="report-view-btn" data-view="card" title="Kutu görünümü" aria-label="Kutu görünümü">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <rect x="3" y="3" width="7" height="7"></rect>
-                  <rect x="14" y="3" width="7" height="7"></rect>
-                  <rect x="14" y="14" width="7" height="7"></rect>
-                  <rect x="3" y="14" width="7" height="7"></rect>
-                </svg>
-              </button>
+          <div class="report-stats report-stats-enhanced">
+            <div class="report-stat-box">
+              <div class="label">Toplam Taşıt</div>
+              <div class="value" id="stat-total">0</div>
             </div>
+            <div class="report-stat-box">
+              <div class="label">Takipte</div>
+              <div class="value" id="stat-tracked">0</div>
+            </div>
+            <div class="report-stat-box">
+              <div class="label">Bildiren</div>
+              <div class="value" id="stat-entered">0</div>
+            </div>
+            <div class="report-stat-box report-stat-box-pending">
+              <div class="label">Bildirmeyen</div>
+              <div class="value" id="stat-pending">0</div>
+            </div>
+            <div class="report-stat-box report-stat-box-muted">
+              <div class="label">Ataması Yok</div>
+              <div class="value" id="stat-unassigned">0</div>
+            </div>
+            <div class="report-stat-box">
+              <div class="label">Tamamlanma</div>
+              <div class="value" id="stat-percentage">0%</div>
+            </div>
+          </div>
 
-            <div class="report-toolbar-actions">
-              <button type="button" id="report-refresh" class="report-icon-btn" title="Yenile" aria-label="Yenile">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
-              </button>
-              <button type="button" id="pending-alert-btn" class="report-icon-btn report-icon-alert" title="Düzeltme talepleri" aria-label="Düzeltme talepleri">
-                <span id="pending-alert-count" class="pending-alert-badge" hidden aria-hidden="true"></span>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-              </button>
-              <button type="button" id="report-export" class="report-icon-btn report-icon-excel" title="Excel İndir" aria-label="Excel İndir">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M8 13h2"/><path d="M8 17h2"/><path d="M14 13h2"/><path d="M14 17h2"/></svg>
-              </button>
+          <div class="report-toolbar-shell">
+            <div class="report-toolbar-row">
+              <label class="report-toolbar-field">
+                <span>Dönem</span>
+                <select id="report-period"></select>
+              </label>
+
+              <label class="report-toolbar-search">
+                <span>Arama</span>
+                <input type="text" id="report-search" class="report-search-input" placeholder="Plaka, kullanıcı, marka, şube ara" autocomplete="off">
+              </label>
+
+              <div class="report-view-switch" role="group" aria-label="Aylık görünüm seçimi">
+                <button type="button" id="monthly-view-list" class="report-view-btn active" data-view="list" title="Liste görünümü" aria-label="Liste görünümü">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="8" y1="6" x2="21" y2="6"></line>
+                    <line x1="8" y1="12" x2="21" y2="12"></line>
+                    <line x1="8" y1="18" x2="21" y2="18"></line>
+                    <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                    <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                    <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                  </svg>
+                </button>
+                <button type="button" id="monthly-view-card" class="report-view-btn" data-view="card" title="Kutu görünümü" aria-label="Kutu görünümü">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="14" width="7" height="7"></rect>
+                    <rect x="3" y="14" width="7" height="7"></rect>
+                  </svg>
+                </button>
+              </div>
+
+              <div class="report-toolbar-actions">
+                <button type="button" id="report-refresh" class="report-icon-btn" title="Yenile" aria-label="Yenile">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                </button>
+                <button type="button" id="pending-alert-btn" class="report-icon-btn report-icon-alert" title="Düzeltme talepleri" aria-label="Düzeltme talepleri">
+                  <span id="pending-alert-count" class="pending-alert-badge" hidden aria-hidden="true"></span>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                </button>
+                <button type="button" id="report-export" class="report-icon-btn report-icon-excel" title="Excel İndir" aria-label="Excel İndir">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M8 13h2"/><path d="M8 17h2"/><path d="M14 13h2"/><path d="M14 17h2"/></svg>
+                </button>
+              </div>
             </div>
           </div>
 
@@ -111,38 +148,9 @@
             <button type="button" class="report-status-pill" data-status="kaza">Kaza</button>
             <button type="button" class="report-status-pill" data-status="bakim">Bakım</button>
           </div>
+
+          <div id="monthly-report-content" class="monthly-report-content"></div>
         </div>
-
-        <div id="report-selection-bar" class="report-selection-bar"></div>
-
-        <div class="report-stats report-stats-enhanced">
-          <div class="report-stat-box">
-            <div class="label">Toplam Taşıt</div>
-            <div class="value" id="stat-total">0</div>
-          </div>
-          <div class="report-stat-box">
-            <div class="label">Takipte</div>
-            <div class="value" id="stat-tracked">0</div>
-          </div>
-          <div class="report-stat-box">
-            <div class="label">Bildiren</div>
-            <div class="value" id="stat-entered">0</div>
-          </div>
-          <div class="report-stat-box report-stat-box-pending">
-            <div class="label">Bildirmeyen</div>
-            <div class="value" id="stat-pending">0</div>
-          </div>
-          <div class="report-stat-box report-stat-box-muted">
-            <div class="label">Ataması Yok</div>
-            <div class="value" id="stat-unassigned">0</div>
-          </div>
-          <div class="report-stat-box">
-            <div class="label">Tamamlanma</div>
-            <div class="value" id="stat-percentage">0%</div>
-          </div>
-        </div>
-
-        <div id="monthly-report-content" class="monthly-report-content"></div>
       </div>
 
       <section class="pending-section">
