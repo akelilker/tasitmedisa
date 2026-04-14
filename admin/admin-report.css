@@ -1229,23 +1229,30 @@ body.admin-report-page::-webkit-scrollbar {
 
 .report-status-pills {
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 3px;
+  width: 100%;
+  min-width: 0;
 }
 
 .report-status-pill {
-  padding: 8px 12px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 999px;
-  background: rgba(12, 18, 30, 0.78);
+  flex: 0 1 auto;
+  min-width: 0;
+  padding: 3px 6px;
+  border: none;
+  border-radius: 0;
+  background: transparent;
   color: var(--muted);
+  font-size: 11px;
+  font-weight: 600;
   cursor: pointer;
+  white-space: nowrap;
 }
 
 .report-status-pill.active {
-  border-color: rgba(var(--theme-color-rgb), 0.5);
-  background: rgba(var(--theme-color-rgb), 0.14);
-  color: #f8fafc;
+  color: #ffffff;
+  font-weight: 700;
 }
 
 .user-analytics-statebar {
@@ -2146,8 +2153,8 @@ body.admin-report-page::-webkit-scrollbar {
   font-size: 12px;
 }
 
-.report-selection-bar {
-  margin: 0;
+.monthly-stage-detail > .report-selection-bar {
+  margin: -12px 0 0;
   padding: 0;
   border: none;
   border-radius: 0;
@@ -2197,10 +2204,11 @@ body.admin-report-page::-webkit-scrollbar {
   min-height: 49px;
   padding: 6px 7px 4px;
   border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   display: flex;
   flex-direction: column-reverse;
   justify-content: center;
+  align-items: stretch;
   gap: 3px;
   background: rgba(255, 255, 255, 0.02);
 }
@@ -2209,10 +2217,15 @@ body.admin-report-page::-webkit-scrollbar {
   white-space: normal;
   font-size: 12px;
   line-height: 1.08;
+  min-height: 2.4em;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  text-align: center;
 }
 
 .monthly-stage-detail .report-stats.report-stats-enhanced .report-stat-box .value {
-  font-size: calc(12px + 3px);
+  font-size: calc(12px + 2px);
   line-height: 0.95;
 }
 
@@ -2311,11 +2324,6 @@ body.admin-report-page::-webkit-scrollbar {
   border-color: rgba(var(--theme-color-rgb), 0.55);
 }
 
-.report-status-pills {
-  padding: 0 2px;
-  gap: 6px;
-}
-
 .report-view-btn,
 .report-icon-btn,
 .user-analytics-view-btn {
@@ -2350,12 +2358,6 @@ body.admin-report-page::-webkit-scrollbar {
   outline-offset: 1px;
 }
 
-.report-status-pill {
-  padding: 6px 12px;
-  font-size: 12px;
-  font-weight: 600;
-}
-
 .report-toolbar-actions {
   margin-left: 0;
   gap: 2px;
@@ -2376,7 +2378,9 @@ body.admin-report-page::-webkit-scrollbar {
   border: none;
   border-radius: 0;
   background: transparent;
-  overflow-x: auto;
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100%;
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
@@ -2389,11 +2393,21 @@ body.admin-report-page::-webkit-scrollbar {
 
 .monthly-report-list-header,
 .monthly-report-list-row {
-  min-width: 860px;
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
   display: grid;
-  grid-template-columns: 1.1fr 1.8fr 1.5fr .9fr 1.1fr 1.4fr .9fr;
+  grid-template-columns:
+    minmax(0, 0.72fr)
+    minmax(0, 1.35fr)
+    minmax(0, 1.05fr)
+    minmax(0, 0.52fr)
+    minmax(0, 0.78fr)
+    minmax(0, 0.95fr)
+    minmax(0, 0.68fr);
   align-items: center;
-  gap: 4px;
+  gap: 2px;
 }
 
 .monthly-report-list-header {
@@ -2424,22 +2438,22 @@ body.admin-report-page::-webkit-scrollbar {
 
 .monthly-report-list-cell {
   min-width: 0;
-  padding: 8px 6px;
+  padding: 5px 3px;
   text-align: center;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 500;
   color: var(--data-value-color, #a0aec0);
-  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .monthly-report-list-header .monthly-report-list-cell {
-  padding: 4px;
+  padding: 3px 2px;
   color: #f8fafc;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 600;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.2px;
 }
 
 .monthly-report-list-cell:last-child {
@@ -2473,8 +2487,27 @@ body.admin-report-page::-webkit-scrollbar {
   justify-content: center;
 }
 
+.monthly-report-list-cell .monthly-status-badge {
+  padding: 3px 5px;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.monthly-report-list-cell .monthly-report-actions {
+  gap: 3px;
+}
+
+.monthly-report-list-cell .report-action-btn {
+  width: 28px;
+  height: 28px;
+}
+
 .monthly-action-placeholder {
   color: var(--muted);
+}
+
+.monthly-stage-detail #report-status-pills {
+  padding: 0 2px;
 }
 
 @media (max-width: 640px) {
