@@ -44,6 +44,14 @@
     return headers;
   }
 
+  function syncAdminHeaderUserName(user) {
+    var nameEl = document.getElementById('main-header-user-name');
+    if (!nameEl) return;
+    var displayName = String((user && (user.isim || user.name || user.ad_soyad)) || '').trim();
+    nameEl.textContent = displayName;
+    nameEl.classList.toggle('is-empty', displayName === '');
+  }
+
   function redirectToPortalLogin() {
     if (typeof window === 'undefined') return;
     var nextPath = '';
@@ -107,6 +115,7 @@
   function loadBranches() {
     return fetchJson(API_BASE + 'admin_report.php?action=branches')
       .then(function (data) {
+        syncAdminHeaderUserName(data.current_user || null);
         if (data.success && data.branches) {
           branches = data.branches;
           if (userAnalyticsUsers.length && typeof window.renderUserAnalytics === 'function') {
@@ -127,6 +136,7 @@
 
     fetchJson(url)
       .then(function (data) {
+        syncAdminHeaderUserName(data.current_user || null);
         if (!data.success) {
           if (document.getElementById('report-error')) {
             document.getElementById('report-error').textContent = data.message || 'Rapor yüklenemedi.';
@@ -367,20 +377,14 @@
       bar.innerHTML = '';
       return;
     }
-    var entered = Number((stats && stats.entered) || 0);
-    var tracked = Number((stats && stats.tracked_total) || 0);
-    var pending = Number((stats && stats.pending) || 0);
-    var unassigned = Number((stats && stats.unassigned) || 0);
 
     bar.innerHTML =
-      '<div class="report-selection-left">' +
-        '<button type="button" class="universal-back-btn monthly-reset-selection" id="monthly-reset-selection" title="Şube seçimine dön">' +
+      '<div class="universal-back-bar report-selection-backbar">' +
+        '<button type="button" class="universal-back-btn monthly-reset-selection" id="monthly-reset-selection" title="Şubelere dön">' +
           '<svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>' +
-          '<span class="universal-back-label">Şubelere Dön</span>' +
+          '<span class="universal-back-label">Şubeler</span>' +
         '</button>' +
-        '<span class="report-selection-title">' + escapeHtmlLocal(getSelectedMonthlyBranchLabel()) + '</span>' +
-      '</div>' +
-      '<span class="report-selection-meta">' + entered + '/' + tracked + ' bildirildi • ' + pending + ' bekliyor • ' + unassigned + ' ataması yok</span>';
+      '</div>';
 
     var resetBtn = document.getElementById('monthly-reset-selection');
     if (resetBtn) {
@@ -613,6 +617,7 @@
   function loadPendingRequests() {
     fetchJson(API_BASE + 'admin_report.php?action=pending_requests')
       .then(function (data) {
+        syncAdminHeaderUserName(data.current_user || null);
         if (!data.success) {
           resetPendingAlertUi();
           return;
@@ -1481,6 +1486,7 @@
 
     fetchJson(API_BASE + 'admin_report.php?action=user_analytics')
       .then(function(data) {
+        syncAdminHeaderUserName(data.current_user || null);
         if (!data.success) {
           container.innerHTML = '<p style="color:#ef4444; text-align:center; padding:20px;">Veriler çekilemedi.</p>';
           return;
