@@ -49,9 +49,18 @@ if (($auth['success'] ?? false) !== true) {
 
 $context = $auth['context'];
 $data = medisaFilterReportDataForContext($rawData, $context);
+$currentUser = $context['user'] ?? [];
+$currentUserPayload = [
+    'id' => $currentUser['id'] ?? '',
+    'isim' => $currentUser['isim'] ?? $currentUser['name'] ?? '',
+];
 
 if ($action === 'branches') {
-    echo json_encode(['success' => true, 'branches' => $data['branches'] ?? []], JSON_UNESCAPED_UNICODE);
+    echo json_encode([
+        'success' => true,
+        'branches' => $data['branches'] ?? [],
+        'current_user' => $currentUserPayload,
+    ], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
@@ -61,6 +70,7 @@ if ($action === 'user_analytics') {
         'users' => $data['users'] ?? [],
         'tasitlar' => $data['tasitlar'] ?? [],
         'monthly_records' => $data['arac_aylik_hareketler'] ?? [],
+        'current_user' => $currentUserPayload,
     ], JSON_UNESCAPED_UNICODE);
     exit;
 }
@@ -110,6 +120,7 @@ if ($action === 'pending_requests') {
     echo json_encode([
         'success' => true,
         'requests' => $pendingRequests,
+        'current_user' => $currentUserPayload,
     ], JSON_UNESCAPED_UNICODE);
     exit;
 }
@@ -439,4 +450,5 @@ echo json_encode([
         ? 'Tümü'
         : (($branch === '__no_branch__') ? 'Şubesiz' : ($branchNamesById[(string)$branch] ?? (string)$branch)),
     'records' => $records,
+    'current_user' => $currentUserPayload,
 ], JSON_UNESCAPED_UNICODE);
