@@ -115,6 +115,22 @@ const API_BASE = (function(){
     }
   }
 
+  function getRequestedNextUrl() {
+    try {
+      var search = window.location && window.location.search ? window.location.search : '';
+      if (!search) return '';
+      var rawNext = new URLSearchParams(search).get('next');
+      if (!rawNext) return '';
+
+      var resolvedUrl = new URL(rawNext, window.location.origin);
+      if (resolvedUrl.origin !== window.location.origin) return '';
+
+      return (resolvedUrl.pathname || '') + (resolvedUrl.search || '') + (resolvedUrl.hash || '');
+    } catch (e) {
+      return '';
+    }
+  }
+
   function isMainAppPortalEntry() {
     try {
       var search = window.location && window.location.search ? window.location.search : '';
@@ -232,6 +248,12 @@ const API_BASE = (function(){
   function routeByAccessContext(accessContext, options) {
     var routeOptions = options && typeof options === 'object' ? options : {};
     var surface = resolvePortalDefaultSurface(accessContext);
+    var requestedNextUrl = String(routeOptions.nextUrl || '').trim();
+
+    if (requestedNextUrl && (surface === 'dashboard' || surface === 'main')) {
+      window.location.href = requestedNextUrl;
+      return true;
+    }
 
     if (surface === 'dashboard') {
       window.location.href = DRIVER_PAGE_BASE + 'dashboard.html';
@@ -512,7 +534,9 @@ const API_BASE = (function(){
       /* Geçerli bir oturum varsa login ekranını atla ve token'ın işaret ettiği yüzeye git. */
       var savedToken = getStoredPortalToken();
       if (!shouldForceDriverLoginView() && savedToken) {
-          routeByCurrentSession(savedToken, false);
+          routeByCurrentSession(savedToken, false, {
+              nextUrl: getRequestedNextUrl()
+          });
       }
   
       var usernameInput = document.getElementById('username');
@@ -605,6 +629,7 @@ const API_BASE = (function(){
                   var tokenToStore = data.token && typeof data.token === 'string' ? data.token : null;
                   if (tokenToStore) persistSessionToken(tokenToStore, remember);
                   var routedOk = routeByToken(tokenToStore, data.driverDashboard === true, {
+                      nextUrl: getRequestedNextUrl(),
                       sessionData: {
                           role: data.rol || '',
                           kullanici_paneli: data.driverDashboard === true,
