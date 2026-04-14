@@ -13,6 +13,8 @@
   var monthlyReportRecords = [];
   var monthlyReportBranchCards = [];
   var monthlyReportView = 'list';
+  var monthlyReportQuery = '';
+  var monthlyBranchSelectionMade = false;
   var userAnalyticsUsers = [];
   var userAnalyticsTasitlar = [];
   var userAnalyticsMonthlyRecords = [];
@@ -134,6 +136,7 @@
           monthlyReportBranchCards = [];
           renderMonthlyBranchGrid();
           renderMonthlySelectionBar({});
+          syncMonthlyDetailStage();
           renderMonthlyResults([]);
           return;
         }
@@ -147,6 +150,7 @@
         renderMonthlyBranchGrid();
         renderStats(data.stats || {});
         renderMonthlySelectionBar(data.stats || {});
+        syncMonthlyDetailStage();
         syncReportStatusPills();
         syncMonthlyViewButtons();
         renderMonthlyResults(monthlyReportRecords);
@@ -160,6 +164,7 @@
           document.getElementById('report-error').style.display = 'block';
         }
         monthlyReportRecords = [];
+        syncMonthlyDetailStage();
         renderMonthlyResults([]);
       });
   }
@@ -325,17 +330,73 @@
     return match ? toTitleCase(match.name || match.id || 'Tümü') : 'Tümü';
   }
 
+  function syncMonthlyDetailStage() {
+    var branchGrid = document.getElementById('report-branch-grid');
+    var emptyState = document.getElementById('monthly-stage-empty');
+    var detailState = document.getElementById('monthly-stage-detail');
+    var shouldShowDetail = monthlyBranchSelectionMade === true;
+
+    if (branchGrid) branchGrid.hidden = shouldShowDetail;
+    if (emptyState) emptyState.hidden = shouldShowDetail;
+    if (detailState) detailState.hidden = !shouldShowDetail;
+  }
+
+  function getMonthlyFilteredRecords(records) {
+    var query = normalizeForSearch(monthlyReportQuery);
+    if (!query) return (records || []).slice();
+
+    return (records || []).filter(function(record) {
+      var haystack = [
+        record.plaka,
+        record.surucu_adi,
+        record.arac_marka,
+        record.arac_model,
+        record.brand_model,
+        record.branch_name,
+        record.telefon,
+        record.email
+      ].map(normalizeForSearch).join(' ');
+      return haystack.indexOf(query) !== -1;
+    });
+  }
+
   function renderMonthlySelectionBar(stats) {
     var bar = document.getElementById('report-selection-bar');
     if (!bar) return;
+    if (!monthlyBranchSelectionMade) {
+      bar.innerHTML = '';
+      return;
+    }
     var entered = Number((stats && stats.entered) || 0);
     var tracked = Number((stats && stats.tracked_total) || 0);
     var pending = Number((stats && stats.pending) || 0);
     var unassigned = Number((stats && stats.unassigned) || 0);
 
     bar.innerHTML =
-      '<span class="report-selection-title">' + escapeHtmlLocal(getSelectedMonthlyBranchLabel()) + '</span>' +
+      '<div class="report-selection-left">' +
+        '<button type="button" class="universal-back-btn monthly-reset-selection" id="monthly-reset-selection" title="Şube seçimine dön">' +
+          '<svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>' +
+          '<span class="universal-back-label">Şubelere Dön</span>' +
+        '</button>' +
+        '<span class="report-selection-title">' + escapeHtmlLocal(getSelectedMonthlyBranchLabel()) + '</span>' +
+      '</div>' +
       '<span class="report-selection-meta">' + entered + '/' + tracked + ' bildirildi • ' + pending + ' bekliyor • ' + unassigned + ' ataması yok</span>';
+
+    var resetBtn = document.getElementById('monthly-reset-selection');
+    if (resetBtn) {
+      resetBtn.addEventListener('click', function() {
+        monthlyBranchSelectionMade = false;
+        reportBranch = '';
+        reportStatus = '';
+        monthlyReportQuery = '';
+        var searchInput = document.getElementById('report-search');
+        if (searchInput) searchInput.value = '';
+        syncReportStatusPills();
+        renderMonthlyBranchGrid();
+        renderMonthlySelectionBar({});
+        syncMonthlyDetailStage();
+      });
+    }
   }
 
   function renderMonthlyBranchGrid() {
@@ -351,7 +412,7 @@
     var html = '';
     cards.forEach(function(card) {
       var cardId = String(card.id || '');
-      var activeClass = cardId === selectedId ? ' active' : '';
+      var activeClass = monthlyBranchSelectionMade && cardId === selectedId ? ' active' : '';
       var allClass = cardId === 'all' ? ' all-card' : '';
       html += '<button type="button" class="branch-card' + allClass + activeClass + '" data-report-branch="' + escapeHtmlLocal(cardId) + '">';
       html += '<span class="branch-name">' + escapeHtmlLocal(String(card.name || '').toLocaleUpperCase('tr-TR')) + '</span>';
@@ -363,7 +424,12 @@
     Array.prototype.forEach.call(container.querySelectorAll('[data-report-branch]'), function(button) {
       button.addEventListener('click', function() {
         var selectedBranch = button.getAttribute('data-report-branch');
+        var searchInput = document.getElementById('report-search');
+        monthlyBranchSelectionMade = true;
         reportBranch = selectedBranch === 'all' ? '' : selectedBranch;
+        reportStatus = '';
+        monthlyReportQuery = '';
+        if (searchInput) searchInput.value = '';
         loadReport();
       });
     });
@@ -459,8 +525,14 @@
   function renderMonthlyResults(records) {
     var container = document.getElementById('monthly-report-content');
     if (!container) return;
+    if (!monthlyBranchSelectionMade) {
+      container.innerHTML = '';
+      return;
+    }
 
-    if (!records || !records.length) {
+    var filteredRecords = getMonthlyFilteredRecords(records);
+
+    if (!filteredRecords || !filteredRecords.length) {
       container.innerHTML = '<p class="user-analytics-empty">Seçilen filtreye uygun taşıt bulunamadı.</p>';
       return;
     }
@@ -468,7 +540,7 @@
     var html = '';
     if (monthlyReportView === 'card') {
       html += '<div class="view-card monthly-report-cards">';
-      records.forEach(function(record) {
+      filteredRecords.forEach(function(record) {
         var kmMeta = getKmStateMeta(record);
         var vehicleTitle = capitalizeWords((record.brand_model || ((record.arac_marka || '') + ' ' + (record.arac_model || ''))).trim() || '-');
         var driverName = record.atama_var === false ? 'Atama bulunmuyor' : capitalizeWords(record.surucu_adi || 'Sürücü tanımsız');
@@ -483,23 +555,33 @@
       });
       html += '</div>';
     } else {
+      html += '<div class="monthly-report-list-table">';
+      html += '<div class="monthly-report-list-header">';
+      html += '<div class="monthly-report-list-cell cell-plate">PLAKA</div>';
+      html += '<div class="monthly-report-list-cell cell-brand">MARKA / MODEL</div>';
+      html += '<div class="monthly-report-list-cell cell-driver">KULLANICI</div>';
+      html += '<div class="monthly-report-list-cell cell-km">KM</div>';
+      html += '<div class="monthly-report-list-cell cell-branch">ŞUBE</div>';
+      html += '<div class="monthly-report-list-cell cell-status">DURUM</div>';
+      html += '<div class="monthly-report-list-cell cell-action">İŞLEM</div>';
+      html += '</div>';
       html += '<div class="monthly-report-list">';
-      records.forEach(function(record) {
+      filteredRecords.forEach(function(record) {
         var kmMeta = getKmStateMeta(record);
         var vehicleTitle = capitalizeWords((record.brand_model || ((record.arac_marka || '') + ' ' + (record.arac_model || ''))).trim() || '-');
         var driverName = record.atama_var === false ? 'Atama bulunmuyor' : capitalizeWords(record.surucu_adi || 'Sürücü tanımsız');
-        html += '<article class="monthly-report-row ' + kmMeta.rowClass + '">';
-        html += '<div class="monthly-report-row-main">';
-        html += '<div class="monthly-report-row-head"><h3>' + escapeHtmlLocal(formatPlaka(record.plaka || '-')) + '</h3>' + buildMonthlyStatusBadge(record, kmMeta) + '</div>';
-        html += '<div class="monthly-report-row-subtitle">' + escapeHtmlLocal(vehicleTitle) + '</div>';
-        html += '<div class="monthly-report-row-meta"><span>' + escapeHtmlLocal(driverName) + '</span><span>' + escapeHtmlLocal(toTitleCase(record.branch_name || 'Şubesiz')) + '</span></div>';
-        html += '</div>';
-        html += '<div class="monthly-report-row-side">';
-        html += '<strong class="monthly-report-row-km">' + escapeHtmlLocal(formatKmValue(record.km)) + ' KM</strong>';
-        html += buildMonthlyActions(record, kmMeta);
-        html += '</div>';
+        var actionHtml = buildMonthlyActions(record, kmMeta) || '<span class="monthly-action-placeholder">-</span>';
+        html += '<article class="monthly-report-list-row ' + kmMeta.rowClass + '">';
+        html += '<div class="monthly-report-list-cell cell-plate">' + escapeHtmlLocal(formatPlaka(record.plaka || '-')) + '</div>';
+        html += '<div class="monthly-report-list-cell cell-brand"><strong>' + escapeHtmlLocal(vehicleTitle) + '</strong></div>';
+        html += '<div class="monthly-report-list-cell cell-driver">' + escapeHtmlLocal(driverName) + '</div>';
+        html += '<div class="monthly-report-list-cell cell-km">' + escapeHtmlLocal(formatKmValue(record.km)) + '</div>';
+        html += '<div class="monthly-report-list-cell cell-branch">' + escapeHtmlLocal(toTitleCase(record.branch_name || 'Şubesiz')) + '</div>';
+        html += '<div class="monthly-report-list-cell cell-status">' + buildMonthlyStatusBadge(record, kmMeta) + '</div>';
+        html += '<div class="monthly-report-list-cell cell-action">' + actionHtml + '</div>';
         html += '</article>';
       });
+      html += '</div>';
       html += '</div>';
     }
 
@@ -1566,6 +1648,14 @@
     if (reportPeriodSelect && reportPeriodSelect.dataset.reportAutoReloadBound !== '1') {
       reportPeriodSelect.addEventListener('change', loadReport);
       reportPeriodSelect.dataset.reportAutoReloadBound = '1';
+    }
+
+    var reportSearchInput = document.getElementById('report-search');
+    if (reportSearchInput) {
+      reportSearchInput.addEventListener('input', function(e) {
+        monthlyReportQuery = e.target.value || '';
+        renderMonthlyResults(monthlyReportRecords);
+      });
     }
 
     Array.prototype.forEach.call(document.querySelectorAll('.report-status-pill'), function(button) {
