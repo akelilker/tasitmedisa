@@ -1358,6 +1358,11 @@ body.admin-report-page::-webkit-scrollbar {
   color: #fb923c;
 }
 
+.monthly-status-badge.is-not-reported {
+  background: rgba(239, 68, 68, 0.12);
+  color: #f87171;
+}
+
 .monthly-status-badge.is-alert {
   background: rgba(239, 68, 68, 0.12);
   color: #f87171;
@@ -1369,8 +1374,8 @@ body.admin-report-page::-webkit-scrollbar {
 }
 
 .monthly-status-badge.is-unassigned {
-  background: rgba(148, 163, 184, 0.16);
-  color: #cbd5e1;
+  background: rgba(239, 68, 68, 0.12);
+  color: #f87171;
 }
 
 .monthly-report-actions {
@@ -1426,6 +1431,7 @@ body.admin-report-page::-webkit-scrollbar {
   border-radius: 0;
   background: transparent;
   box-shadow: none;
+  cursor: help;
 }
 
 .monthly-report-card .monthly-status-badge.monthly-status-icon.is-success {
@@ -1435,6 +1441,11 @@ body.admin-report-page::-webkit-scrollbar {
 
 .monthly-report-card .monthly-status-badge.monthly-status-icon.is-pending {
   color: #fb923c;
+  background: transparent;
+}
+
+.monthly-report-card .monthly-status-badge.monthly-status-icon.is-not-reported {
+  color: #f87171;
   background: transparent;
 }
 
@@ -1449,7 +1460,7 @@ body.admin-report-page::-webkit-scrollbar {
 }
 
 .monthly-report-card .monthly-status-badge.monthly-status-icon.is-unassigned {
-  color: #94a3b8;
+  color: #f87171;
   background: transparent;
 }
 
@@ -2515,6 +2526,17 @@ body.admin-report-page::-webkit-scrollbar {
   overflow: hidden;
 }
 
+.monthly-report-list-cell.cell-driver,
+.monthly-report-list-cell.cell-branch {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  align-items: center;
+  line-height: 1.25;
+}
+
 .monthly-report-list-cell.cell-status {
   overflow: visible;
 }
@@ -2545,6 +2567,7 @@ body.admin-report-page::-webkit-scrollbar {
   border-radius: 0;
   background: transparent;
   box-shadow: none;
+  cursor: help;
 }
 
 .monthly-report-list-cell .monthly-status-badge.monthly-status-icon.is-success {
@@ -2554,6 +2577,11 @@ body.admin-report-page::-webkit-scrollbar {
 
 .monthly-report-list-cell .monthly-status-badge.monthly-status-icon.is-pending {
   color: #fb923c;
+  background: transparent;
+}
+
+.monthly-report-list-cell .monthly-status-badge.monthly-status-icon.is-not-reported {
+  color: #f87171;
   background: transparent;
 }
 
@@ -2568,7 +2596,7 @@ body.admin-report-page::-webkit-scrollbar {
 }
 
 .monthly-report-list-cell .monthly-status-badge.monthly-status-icon.is-unassigned {
-  color: #94a3b8;
+  color: #f87171;
   background: transparent;
 }
 
