@@ -691,7 +691,7 @@
         html += '<div class="card-brand-model">' + escapeHtmlLocal(vehicleTitle) + '</div>';
         html += '<div class="card-third-line">' + escapeHtmlLocal(driverName) + ' · ' + escapeHtmlLocal(toTitleCase(record.branch_name || 'Şubesiz')) + '</div>';
         html += '<div class="monthly-report-card-km">' + escapeHtmlLocal(formatKmValue(record.km)) + ' KM</div>';
-        html += buildMonthlyStatusBadge(record, kmMeta);
+        html += buildMonthlyStatusBadge(record, kmMeta, true);
         html += buildMonthlyActions(record, kmMeta);
         html += '</article>';
       });

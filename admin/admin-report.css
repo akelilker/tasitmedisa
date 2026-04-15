@@ -1430,6 +1430,23 @@ body.admin-report-page::-webkit-scrollbar {
   justify-content: center;
 }
 
+.monthly-report-card .monthly-status-badge.monthly-status-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  font-size: 0;
+  line-height: 0;
+  min-width: 28px;
+  min-height: 28px;
+  border-radius: 999px;
+  margin-top: 4px;
+}
+
+.monthly-report-card .monthly-status-icon svg {
+  display: block;
+}
+
 .user-analytics-list-item {
   width: 100%;
   padding: 14px 16px;
@@ -2378,17 +2395,11 @@ body.admin-report-page::-webkit-scrollbar {
   border: none;
   border-radius: 0;
   background: transparent;
-  overflow-x: hidden;
+  overflow-x: auto;
   width: 100%;
   max-width: 100%;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
-.monthly-report-list-table::-webkit-scrollbar {
-  display: none;
-  height: 0;
-  width: 0;
+  scrollbar-width: thin;
+  -ms-overflow-style: auto;
 }
 
 .monthly-report-list-header,
@@ -2399,18 +2410,22 @@ body.admin-report-page::-webkit-scrollbar {
   box-sizing: border-box;
   display: grid;
   grid-template-columns:
-    minmax(0, 0.72fr)
-    minmax(0, 1.27fr)
+    minmax(0, calc(0.72fr + 8px))
+    minmax(0, calc(1.27fr - 8px))
     minmax(0, 1.05fr)
     minmax(0, 0.52fr)
     minmax(0, 0.78fr)
     minmax(0, 0.95fr)
     minmax(0, 0.68fr);
-  align-items: center;
   gap: 2px;
 }
 
+.monthly-report-list-row {
+  align-items: start;
+}
+
 .monthly-report-list-header {
+  align-items: center;
   position: sticky;
   top: 0;
   z-index: 2;
@@ -2442,10 +2457,13 @@ body.admin-report-page::-webkit-scrollbar {
   text-align: center;
   font-size: 11px;
   font-weight: 500;
+  line-height: 1.2;
   color: var(--data-value-color, #a0aec0);
   border-right: 1px solid rgba(255, 255, 255, 0.08);
-  overflow: hidden;
-  text-overflow: ellipsis;
+  overflow: visible;
+  white-space: normal;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .monthly-report-list-header .monthly-report-list-cell {
@@ -2454,6 +2472,7 @@ body.admin-report-page::-webkit-scrollbar {
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.2px;
+  line-height: 1.2;
 }
 
 .monthly-report-list-cell:last-child {
@@ -2474,6 +2493,19 @@ body.admin-report-page::-webkit-scrollbar {
   white-space: nowrap;
   color: #d9e3ef;
   font-weight: 700;
+  overflow-wrap: normal;
+  word-break: normal;
+}
+
+.monthly-report-list-cell.cell-plate,
+.monthly-report-list-cell.cell-km,
+.monthly-report-list-cell.cell-status,
+.monthly-report-list-cell.cell-action {
+  align-self: center;
+}
+
+.monthly-report-list-cell.cell-status {
+  overflow: visible;
 }
 
 .monthly-report-list-cell.cell-action {
