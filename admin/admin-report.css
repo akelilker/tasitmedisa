@@ -767,7 +767,7 @@ body.admin-report-page::-webkit-scrollbar {
 
 /* --- Tablo --- */
 .report-table-wrap {
-  overflow-x: auto;
+  overflow-x: hidden;
   margin-bottom: 8px;
   border-radius: 8px;
   border: 1px solid #3d3d3d;
@@ -777,21 +777,22 @@ body.admin-report-page::-webkit-scrollbar {
 .report-table {
   width: 100%;
   min-width: 0;
-  table-layout: auto;
+  table-layout: fixed;
   border-collapse: collapse;
-  font-size: clamp(0.65rem, 2vw, calc(0.9rem - 1.7px));
+  font-size: clamp(0.76rem, 1vw, 0.84rem);
 }
 
 .report-table th,
 .report-table td {
-  padding: 0.2rem 1px 0.2rem 3px;
-  text-align: left;
+  padding: 0.38rem 0.45rem;
   border-bottom: 1px solid #3d3d3d;
   border-left: 0.5px solid rgba(255, 255, 255, 0.18);
-  color: var(--txt);
   overflow: hidden;
   text-overflow: ellipsis;
-  font-size: clamp(0.65rem, 2vw, calc(0.9rem - 1.7px));
+  vertical-align: middle;
+  box-sizing: border-box;
+  line-height: 1.2;
+  font-size: clamp(0.76rem, 1vw, 0.84rem);
 }
 
 .report-table th:first-child,
@@ -800,94 +801,59 @@ body.admin-report-page::-webkit-scrollbar {
 }
 
 .report-table th {
-  white-space: nowrap;
   background: transparent;
   font-weight: 500;
   text-align: center;
+  white-space: nowrap;
   color: #ffffff;
-  font-size: clamp(0.7rem, 2.2vw, calc(0.9rem - 1px));
+  font-size: clamp(0.78rem, 1.05vw, 0.88rem);
 }
 
 .report-table td {
   text-align: center;
-  white-space: normal;
-  overflow-wrap: break-word;
-  word-break: break-word;
-  word-wrap: break-word;
+  white-space: nowrap;
+  word-break: normal;
+  overflow-wrap: normal;
+  word-wrap: normal;
   color: var(--data-value-color, #a0aec0);
+}
+
+.report-table th:nth-child(1),
+.report-table td:nth-child(1) {
+  width: 22%;
+}
+
+.report-table th:nth-child(2),
+.report-table td:nth-child(2) {
+  width: 30%;
 }
 
 .report-table th:nth-child(3),
 .report-table td:nth-child(3) {
-  text-align: center;
+  width: 16%;
 }
 
 .report-table th:nth-child(4),
 .report-table td:nth-child(4) {
-  text-align: center;
+  width: 12%;
 }
-
-/* Sütun genişlikleri: Kullanıcı, Marka/Model, Plaka, KM, Durum, İşlem */
-.report-table th:nth-child(1),
-.report-table td:nth-child(1) { width: 13%; } /* Kullanıcı */
-
-.report-table th:nth-child(2),
-.report-table td:nth-child(2) { width: calc(9% - 4px); } /* Marka/Model 4px daraltıldı */
-
-.report-table th:nth-child(3),
-.report-table td:nth-child(3) { width: 11%; } /* Plaka – 4px genişletildi */
-
-.report-table th:nth-child(4),
-.report-table td:nth-child(4) { width: 10%; } /* KM – 4px genişletildi */
 
 .report-table th:nth-child(5),
-.report-table td:nth-child(5) { width: 5%; min-width: 2rem; } /* Durum */
+.report-table td:nth-child(5) {
+  width: 8%;
+}
 
 .report-table th:nth-child(6),
-.report-table td:nth-child(6) { width: 1%; white-space: nowrap; } /* İşlem */
-
 .report-table td:nth-child(6) {
-  text-align: center;
-  vertical-align: middle;
+  width: 12%;
+  white-space: nowrap;
 }
 
-.report-table th:nth-child(1),
-.report-table td:nth-child(1),
-.report-table th:nth-child(2),
-.report-table td:nth-child(2) {
-  text-overflow: clip;
-}
-
-/* Masaüstü: Sütun genişlikleri – Kullanıcı +2px, Marka/Model -8px, Plaka +6px, KM +4px, Durum -4px */
 @media (min-width: 641px) {
-  .report-table th:nth-child(1),
-  .report-table td:nth-child(1) {
-    width: calc(13% + 2px); /* Kullanıcı +2px yatayda */
-  }
-  .report-table th:nth-child(2),
-  .report-table td:nth-child(2) {
-    width: calc(9% - 12px); /* Marka/Model 4px daha dar (toplam -12px) */
-  }
-  .report-table th:nth-child(3),
-  .report-table td:nth-child(3) {
-    width: calc(11% + 6px); /* Plaka +6px yatayda */
-  }
-  .report-table th:nth-child(4),
-  .report-table td:nth-child(4) {
-    width: calc(10% + 7px); /* KM +3px yatayda genişlet */
-  }
-  .report-table th:nth-child(5),
-  .report-table td:nth-child(5) {
-    width: calc(10% - 13px); /* Durum -3px yatayda daralt */
-    min-width: calc(4rem - 13px);
-  }
-  .report-table th:nth-child(6),
-  .report-table td:nth-child(6) {
-    width: calc(1% + 4px); /* İşlem +4px */
-  }
   .pending-card {
     padding: 0.65rem 0.5rem;
   }
+
   .pending-card .actions {
     flex-direction: row;
     justify-content: space-between;
@@ -901,39 +867,37 @@ body.admin-report-page::-webkit-scrollbar {
   background: rgba(255, 255, 255, 0.03);
 }
 
-.report-table tr.row-success td {
-  color: #4ade80;
+.report-table tr.row-success {
+  background: rgba(74, 222, 128, 0.03);
 }
 
-.report-table tr.row-pending td {
-  color: #fb923c;
+.report-table tr.row-warning {
+  background: rgba(var(--theme-color-rgb), 0.05);
 }
 
-.report-table tr.row-warning td {
-  color: var(--theme-color);
+.report-table tr.row-km-overdue {
+  background: rgba(239, 68, 68, 0.05);
 }
 
-.report-table tr.row-km-overdue td {
-  color: #ef4444;
+.report-table tr.row-km-warning,
+.report-table tr.row-pending {
+  background: rgba(251, 146, 60, 0.05);
 }
 
-.report-table tr.row-km-warning td {
-  color: #fb923c;
+.report-table .action-cell {
+  text-align: center;
+  vertical-align: middle;
 }
 
 .report-table .action-cell button {
-  padding: 0.3rem 0.5rem; /* Guncellendi: Buton bosluklari kuculdu */
-  margin-right: 0.25rem;
+  padding: 0.25rem;
+  margin: 0;
   font-size: 0.8rem;
   border-radius: 4px;
   border: none;
   cursor: pointer;
   background: #25d366;
   color: #fff;
-}
-
-.report-table .action-cell {
-  vertical-align: middle;
 }
 
 .report-table .action-cell .whatsapp-btn {
@@ -958,6 +922,24 @@ body.admin-report-page::-webkit-scrollbar {
 .report-table .durum-cell {
   text-align: center;
   vertical-align: middle;
+  font-weight: 600;
+}
+
+.report-table tr.row-success .durum-cell {
+  color: #4ade80;
+}
+
+.report-table tr.row-warning .durum-cell {
+  color: var(--theme-color);
+}
+
+.report-table tr.row-km-overdue .durum-cell {
+  color: #ef4444;
+}
+
+.report-table tr.row-km-warning .durum-cell,
+.report-table tr.row-pending .durum-cell {
+  color: #fb923c;
 }
 
 .report-table .durum-icon {
@@ -968,7 +950,7 @@ body.admin-report-page::-webkit-scrollbar {
 
 .report-table .durum-icon .durum-svg {
   display: block;
-  width: 15px; /* Guncellendi: İkon boyutu 15px */
+  width: 15px;
   height: 15px;
 }
 
@@ -1944,45 +1926,21 @@ body.admin-report-page::-webkit-scrollbar {
     width: 18px;
     height: 18px;
   }
-  .report-table th:nth-child(1),
-  .report-table td:nth-child(1) {
-    width: calc(13% + 1px); /* Kullanıcı +1px */
+  .report-table {
+    font-size: 13px;
   }
-  .report-table th:nth-child(2),
-  .report-table td:nth-child(2) {
-    width: calc(9% - 16px); /* Marka/Model 4px daha dar (mobil) */
-  }
-  .report-table th:nth-child(3),
-  .report-table td:nth-child(3) {
-    width: calc(13% + 6px); /* Plaka: içeriğin sığması için genişletildi (mobil) */
-    min-width: 5em;
-  }
-  .report-table th:nth-child(4),
-  .report-table td:nth-child(4) {
-    width: calc(12% + 6px); /* KM: içeriğin sığması için genişletildi (mobil) */
-    min-width: 4.2em;
-  }
-  .report-table th:nth-child(5),
-  .report-table td:nth-child(5) {
-    width: calc(5% + 2px); /* Durum +2px genişletildi (mobil) */
-    min-width: calc(2rem + 2px);
-  }
-  .report-table th:nth-child(6),
-  .report-table td:nth-child(6) {
-    width: calc(1% + 3px); /* İşlem +3px */
-    min-width: 0;
-  }
-  /* Mobil: listedeki tüm metinler 1 punto büyük */
-  .report-table,
+
   .report-table th,
   .report-table td {
-    font-size: 14px !important;
+    padding: 0.34rem 0.3rem;
   }
+
   .report-table th {
-    font-size: 15px !important;
+    font-size: 13px;
   }
+
   .report-table .action-cell button {
-    font-size: 14px !important;
+    font-size: 13px;
   }
   .pending-section h2 {
     font-size: 17px !important;
