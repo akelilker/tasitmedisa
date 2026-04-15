@@ -546,35 +546,41 @@
 
   function buildMonthlyStatusBadge(record, kmMeta, iconOnly) {
     iconOnly = !!iconOnly;
-    function iconWrap(cssClass, ariaLabel, svgInner) {
-      return '<span class="monthly-status-badge monthly-status-icon ' + cssClass + '" role="img" aria-label="' + escapeHtmlLocal(ariaLabel) + '">' + svgInner + '</span>';
+    function iconWrap(cssClass, ariaLabel, svgInner, titleText) {
+      var tip = titleText != null && String(titleText).length ? String(titleText) : String(ariaLabel);
+      return '<span class="monthly-status-badge monthly-status-icon ' + cssClass + '" role="img" aria-label="' + escapeHtmlLocal(ariaLabel) + '" title="' + escapeHtmlLocal(tip) + '">' + svgInner + '</span>';
     }
+    var svgXNotReported = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>';
     if (record && record.atama_var === false) {
       if (iconOnly) {
         return iconWrap(
           'is-unassigned',
           'Ataması yok',
-          '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>'
+          '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
+          'Sürücü atanmamış. Bu taşıt için kullanıcı tanımlı değil.'
         );
       }
       return '<span class="monthly-status-badge is-unassigned">Ataması Yok</span>';
     }
     if (kmMeta.isWarning) {
       if (iconOnly) {
+        var warnTip = (kmMeta.statusText ? kmMeta.statusText + ' — ' : '') + 'Bu dönem için kilometre bildirimi yapılmadı veya eksik.';
         return iconWrap(
-          'is-pending',
-          kmMeta.statusText || 'Uyarı',
-          '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>'
+          'is-not-reported',
+          kmMeta.statusText || 'Bildirilmedi',
+          svgXNotReported,
+          warnTip
         );
       }
-      return '<span class="monthly-status-badge is-pending">' + escapeHtmlLocal(kmMeta.statusText) + '</span>';
+      return '<span class="monthly-status-badge is-not-reported">' + escapeHtmlLocal(kmMeta.statusText) + '</span>';
     }
     if (record && record.kaza_var) {
       if (iconOnly) {
         return iconWrap(
           'is-alert',
           'KM tamam, kaza bildirimi var',
-          '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>'
+          '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
+          'Kilometre güncel; bu taşıt için kaza bildirimi kaydı var.'
         );
       }
       return '<span class="monthly-status-badge is-alert">KM Tamam · Kaza</span>';
@@ -584,7 +590,8 @@
         return iconWrap(
           'is-info',
           'KM tamam, bakım bildirimi var',
-          '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>'
+          '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>',
+          'Kilometre güncel; bakım bildirimi kaydı var.'
         );
       }
       return '<span class="monthly-status-badge is-info">KM Tamam · Bakım</span>';
@@ -594,7 +601,8 @@
         return iconWrap(
           'is-info',
           'Telafi edildi',
-          '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>'
+          '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>',
+          'Kilometre telafi ile kapatıldı.'
         );
       }
       return '<span class="monthly-status-badge is-info">Telafi Edildi</span>';
@@ -603,7 +611,8 @@
       return iconWrap(
         'is-success',
         'KM tamam',
-        '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>'
+        '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>',
+        'Bu dönem için kilometre bildirimi tamamlandı.'
       );
     }
     return '<span class="monthly-status-badge is-success">KM Tamam</span>';
