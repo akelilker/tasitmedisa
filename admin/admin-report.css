@@ -2103,6 +2103,7 @@ body.admin-report-page::-webkit-scrollbar {
   flex-direction: column;
   gap: 8px;
   align-items: stretch;
+  min-width: 0;
 }
 
 #report-branch-grid.monthly-branch-grid {
@@ -2390,38 +2391,38 @@ body.admin-report-page::-webkit-scrollbar {
 }
 
 .monthly-report-content {
+  min-width: 0;
   padding: 0 2px 12px;
   overflow: visible;
 }
 
 .monthly-report-list-table {
+  min-width: 0;
   border: none;
   border-radius: 0;
   background: transparent;
-  overflow-x: auto;
+  overflow-x: hidden;
   overflow-y: visible;
   width: 100%;
   max-width: 100%;
-  scrollbar-width: thin;
-  -ms-overflow-style: auto;
-  -webkit-overflow-scrolling: touch;
 }
 
 .monthly-report-list-header,
 .monthly-report-list-row {
-  min-width: max(100%, 52rem);
-  width: max(100%, 52rem);
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
   box-sizing: border-box;
   display: grid;
   grid-template-columns:
-    minmax(7rem, 1.05fr)
-    minmax(0, 0.85fr)
-    minmax(0, 1.02fr)
-    minmax(3.25rem, 0.5fr)
-    minmax(0, 1.08fr)
-    minmax(2rem, 0.88fr)
-    minmax(2rem, 0.65fr);
-  gap: 6px;
+    minmax(0, 0.95fr)
+    minmax(0, 1.28fr)
+    minmax(0, 1.12fr)
+    minmax(0, 0.72fr)
+    minmax(0, 1.05fr)
+    minmax(0, 0.62fr)
+    minmax(0, 0.52fr);
+  gap: clamp(2px, 0.6vw, 6px);
 }
 
 .monthly-report-list-row {
@@ -2488,15 +2489,17 @@ body.admin-report-page::-webkit-scrollbar {
 .monthly-report-list-cell.cell-plate {
   color: #d9e3ef;
   font-weight: 700;
-  white-space: nowrap;
-  overflow-x: hidden;
-  overflow-y: visible;
-  text-overflow: clip;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .monthly-report-list-cell.cell-brand strong {
   color: #f8fafc;
   font-weight: 700;
+  display: inline;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .monthly-report-list-cell.cell-km {
