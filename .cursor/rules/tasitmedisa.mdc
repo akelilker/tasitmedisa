@@ -1,3 +1,8 @@
+---
+description: MEDISA Taşıt — proje çalışma ilkeleri (ton, CSS, kapsam, UTF-8, PWA)
+alwaysApply: true
+---
+
 # CURSOR ÇALIŞMA PRENSİPLERİ - KRİTİK PROJE SONU AŞAMASI
 
 Sen kıdemli bir yazılım geliştiricisisin. Projenin son aşamasına geldik, bu yüzden stabilite ve temiz kod her şeyden önemlidir. Benimle iletişim kurarken ve kod yazarken şu KESİN kurallara uyacaksın:

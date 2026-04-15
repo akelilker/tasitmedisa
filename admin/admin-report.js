@@ -716,9 +716,9 @@
         html += '<article class="monthly-report-list-row ' + kmMeta.rowClass + '">';
         html += '<div class="monthly-report-list-cell cell-plate">' + escapeHtmlLocal(formatPlaka(record.plaka || '-')) + '</div>';
         html += '<div class="monthly-report-list-cell cell-brand"><strong>' + escapeHtmlLocal(vehicleTitle) + '</strong></div>';
-        html += '<div class="monthly-report-list-cell cell-driver">' + escapeHtmlLocal(driverName) + '</div>';
+        html += '<div class="monthly-report-list-cell cell-driver"><span class="monthly-cell-chip">' + escapeHtmlLocal(driverName) + '</span></div>';
         html += '<div class="monthly-report-list-cell cell-km">' + escapeHtmlLocal(formatKmValue(record.km)) + '</div>';
-        html += '<div class="monthly-report-list-cell cell-branch">' + escapeHtmlLocal(toTitleCase(record.branch_name || 'Şubesiz')) + '</div>';
+        html += '<div class="monthly-report-list-cell cell-branch"><span class="monthly-cell-chip">' + escapeHtmlLocal(toTitleCase(record.branch_name || 'Şubesiz')) + '</span></div>';
         html += '<div class="monthly-report-list-cell cell-status">' + buildMonthlyStatusBadge(record, kmMeta, true) + '</div>';
         html += '<div class="monthly-report-list-cell cell-action">' + actionHtml + '</div>';
         html += '</article>';
