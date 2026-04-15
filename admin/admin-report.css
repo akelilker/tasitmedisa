@@ -2413,14 +2413,14 @@ body.admin-report-page::-webkit-scrollbar {
   justify-items: stretch;
   align-items: stretch;
   grid-template-columns:
-    minmax(0, 1.02fr)
-    minmax(0, 1.72fr)
+    minmax(0, 0.95fr)
+    minmax(0, 1.38fr)
+    minmax(0, 1.08fr)
+    minmax(0, 0.78fr)
     minmax(0, 1.12fr)
-    minmax(0, 0.82fr)
-    minmax(0, 1.28fr)
-    minmax(0, 0.46fr)
-    minmax(0, 0.34fr);
-  column-gap: 2px;
+    minmax(3.6rem, 0.72fr)
+    minmax(3.1rem, 0.62fr);
+  column-gap: 4px;
 }
 
 .monthly-report-list-header {
@@ -2705,14 +2705,14 @@ body.admin-report-page::-webkit-scrollbar {
   .monthly-report-list-header,
   .monthly-report-list-row {
     grid-template-columns:
-      minmax(0, 0.98fr)
-      minmax(0, 1.58fr)
+      minmax(0, 0.92fr)
+      minmax(0, 1.28fr)
+      minmax(0, 1.02fr)
+      minmax(0, 0.76fr)
       minmax(0, 1.06fr)
-      minmax(0, 0.80fr)
-      minmax(0, 1.16fr)
-      minmax(0, 0.42fr)
-      minmax(0, 0.30fr);
-    column-gap: 1px;
+      minmax(3.35rem, 0.68fr)
+      minmax(2.85rem, 0.58fr);
+    column-gap: 3px;
   }
 
   .monthly-report-list-cell {
