@@ -2181,6 +2181,11 @@ body.admin-report-page::-webkit-scrollbar {
   min-height: 0;
 }
 
+/* Şubeler geri satırı: ok + etiket ~4px yukarı (style-core 8px üst padding → 4px) */
+.monthly-stage-detail .report-selection-backbar.universal-back-bar {
+  padding-top: 4px !important;
+}
+
 .report-selection-left {
   display: flex;
   align-items: center;
@@ -2216,25 +2221,25 @@ body.admin-report-page::-webkit-scrollbar {
 .monthly-stage-detail .report-stats.report-stats-enhanced .report-stat-box {
   height: auto;
   max-height: none;
-  min-height: 49px;
-  padding: 6px 7px 4px;
+  min-height: 52px;
+  padding: 5px 6px 5px;
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.2);
   display: flex;
   flex-direction: column-reverse;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: stretch;
-  gap: 3px;
+  gap: 2px;
   background: rgba(255, 255, 255, 0.02);
 }
 
 .monthly-stage-detail .report-stats.report-stats-enhanced .report-stat-box .label {
   white-space: normal;
-  font-size: 12px;
-  line-height: 1.08;
-  min-height: 2.4em;
+  font-size: 11.5px;
+  line-height: 1.12;
+  min-height: 2.3em;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: center;
   text-align: center;
   overflow: visible;
@@ -2243,8 +2248,13 @@ body.admin-report-page::-webkit-scrollbar {
 }
 
 .monthly-stage-detail .report-stats.report-stats-enhanced .report-stat-box .value {
+  flex-shrink: 0;
+  min-height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: calc(12px + 2px);
-  line-height: 0.95;
+  line-height: 1;
   color: #e8edf4;
 }
 
@@ -2280,7 +2290,7 @@ body.admin-report-page::-webkit-scrollbar {
   min-width: 124px;
   height: 32px;
   min-height: 32px;
-  padding: 0 28px 0 8px;
+  padding: 5px 20px 5px 8px;
   border: none;
   border-radius: 4px;
   appearance: none;
@@ -2288,9 +2298,10 @@ body.admin-report-page::-webkit-scrollbar {
   background-color: rgba(12, 18, 30, 0.55);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23d40000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right 9px center;
+  background-position: right 5px center;
   background-size: 14px;
   font-size: 13px;
+  line-height: 1.2;
 }
 
 .report-toolbar-period select:focus {
