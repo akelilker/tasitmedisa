@@ -2485,9 +2485,12 @@ body.admin-report-page::-webkit-scrollbar {
   border-right: none;
 }
 
-.monthly-report-list-cell.cell-plate {
-  color: #eef2f7;
-  font-weight: 700;
+.monthly-report-list-cell.cell-plate,
+.monthly-report-list-cell.cell-driver,
+.monthly-report-list-cell.cell-branch,
+.monthly-report-list-cell.cell-km {
+  color: var(--data-value-color, #a0aec0);
+  font-weight: 500;
 }
 
 .monthly-report-list-cell.cell-brand {
@@ -2499,8 +2502,8 @@ body.admin-report-page::-webkit-scrollbar {
   display: -webkit-box;
   display: box;
   max-width: 100%;
-  color: #f8fafc;
-  font-weight: 700;
+  color: var(--data-value-color, #a0aec0);
+  font-weight: 500;
   line-height: 1.14;
   white-space: normal;
   word-break: keep-all;
@@ -2510,43 +2513,6 @@ body.admin-report-page::-webkit-scrollbar {
   line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-}
-
-.monthly-report-list-cell.cell-driver,
-.monthly-report-list-cell.cell-branch {
-  padding-left: 3px;
-  padding-right: 3px;
-}
-
-.monthly-report-list-cell .monthly-cell-chip {
-  display: block;
-  width: 100%;
-  max-width: 100%;
-  padding: 2px 6px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.07);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #9aa7b7;
-  font-weight: 500;
-  line-height: 1.2;
-  box-sizing: border-box;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.monthly-report-list-cell.cell-driver .monthly-cell-chip {
-  font-size: 10.8px;
-  white-space: nowrap;
-}
-
-.monthly-report-list-cell.cell-branch .monthly-cell-chip {
-  font-size: 10px;
-  white-space: nowrap;
-}
-
-.monthly-report-list-cell.cell-km {
-  color: #dce6f5;
-  font-weight: 700;
 }
 
 .monthly-report-list-cell.cell-status {
@@ -2729,16 +2695,6 @@ body.admin-report-page::-webkit-scrollbar {
   .monthly-report-list-cell.cell-brand strong {
     font-size: 10.5px;
     line-height: 1.12;
-  }
-
-  .monthly-report-list-cell.cell-driver .monthly-cell-chip {
-    font-size: 10px;
-    padding: 2px 5px;
-  }
-
-  .monthly-report-list-cell.cell-branch .monthly-cell-chip {
-    font-size: 9.5px;
-    padding: 2px 4px;
   }
 
   .monthly-report-list-cell .monthly-status-icon svg {
