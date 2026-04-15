@@ -2410,8 +2410,8 @@ body.admin-report-page::-webkit-scrollbar {
   box-sizing: border-box;
   display: grid;
   grid-template-columns:
-    minmax(0, calc(0.72fr + 8px))
-    minmax(0, calc(1.27fr - 8px))
+    minmax(0, 0.76fr)
+    minmax(0, 1.23fr)
     minmax(0, 1.05fr)
     minmax(0, 0.52fr)
     minmax(0, 0.78fr)
