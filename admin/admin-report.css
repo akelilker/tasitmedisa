@@ -1442,28 +1442,33 @@ body.admin-report-page::-webkit-scrollbar {
   min-height: 0;
   border: none;
   border-radius: 0;
-  background: none !important;
+  background: transparent;
   box-shadow: none;
 }
 
 .monthly-report-card .monthly-status-badge.monthly-status-icon.is-success {
   color: #4ade80;
+  background: transparent;
 }
 
 .monthly-report-card .monthly-status-badge.monthly-status-icon.is-pending {
   color: #fb923c;
+  background: transparent;
 }
 
 .monthly-report-card .monthly-status-badge.monthly-status-icon.is-alert {
   color: #f87171;
+  background: transparent;
 }
 
 .monthly-report-card .monthly-status-badge.monthly-status-icon.is-info {
   color: #93c5fd;
+  background: transparent;
 }
 
 .monthly-report-card .monthly-status-badge.monthly-status-icon.is-unassigned {
   color: #94a3b8;
+  background: transparent;
 }
 
 .monthly-report-card .monthly-status-icon svg {
@@ -2426,7 +2431,7 @@ body.admin-report-page::-webkit-scrollbar {
 
 .monthly-report-content {
   min-width: 0;
-  padding: 0 2px 12px;
+  padding: 0 0 12px;
   overflow: visible;
 }
 
@@ -2435,33 +2440,30 @@ body.admin-report-page::-webkit-scrollbar {
   border: none;
   border-radius: 0;
   background: transparent;
-  overflow-x: auto;
+  overflow-x: hidden;
   overflow-y: visible;
   width: 100%;
   max-width: 100%;
-  scrollbar-width: thin;
 }
 
 .monthly-report-list-header,
 .monthly-report-list-row {
   width: 100%;
-  min-width: min-content;
-  max-width: none;
+  min-width: 0;
+  max-width: 100%;
   box-sizing: border-box;
   display: grid;
-  grid-template-columns:
-    minmax(min-content, 1.1fr)
-    minmax(min-content, 1.32fr)
-    minmax(min-content, 1.18fr)
-    minmax(min-content, 0.82fr)
-    minmax(min-content, 1.12fr)
-    minmax(min-content, 0.62fr)
-    minmax(min-content, 0.52fr);
-  gap: clamp(2px, 0.5vw, 5px);
-}
-
-.monthly-report-list-row {
+  justify-items: stretch;
   align-items: center;
+  grid-template-columns:
+    minmax(0, 1.05fr)
+    minmax(0, 1.42fr)
+    minmax(0, 1.18fr)
+    minmax(0, 0.78fr)
+    minmax(0, 1.15fr)
+    minmax(0, 0.58fr)
+    minmax(0, 0.48fr);
+  gap: 4px;
 }
 
 .monthly-report-list-header {
@@ -2504,7 +2506,7 @@ body.admin-report-page::-webkit-scrollbar {
   overflow-wrap: normal;
   word-break: normal;
   overflow: hidden;
-  text-overflow: clip;
+  text-overflow: ellipsis;
   box-sizing: border-box;
 }
 
@@ -2561,8 +2563,28 @@ body.admin-report-page::-webkit-scrollbar {
 
 .monthly-report-list-cell.cell-driver,
 .monthly-report-list-cell.cell-branch {
-  color: var(--muted, #8d97a6);
+  min-width: 0;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.monthly-report-list-cell .monthly-cell-chip {
+  display: block;
+  max-width: 100%;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #a0aec0;
   font-weight: 500;
+  font-size: 11px;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-sizing: border-box;
 }
 
 .monthly-report-list-cell.cell-km {
@@ -2600,28 +2622,33 @@ body.admin-report-page::-webkit-scrollbar {
   min-height: 0;
   border: none;
   border-radius: 0;
-  background: none !important;
+  background: transparent;
   box-shadow: none;
 }
 
 .monthly-report-list-cell .monthly-status-badge.monthly-status-icon.is-success {
   color: #4ade80;
+  background: transparent;
 }
 
 .monthly-report-list-cell .monthly-status-badge.monthly-status-icon.is-pending {
   color: #fb923c;
+  background: transparent;
 }
 
 .monthly-report-list-cell .monthly-status-badge.monthly-status-icon.is-alert {
   color: #f87171;
+  background: transparent;
 }
 
 .monthly-report-list-cell .monthly-status-badge.monthly-status-icon.is-info {
   color: #93c5fd;
+  background: transparent;
 }
 
 .monthly-report-list-cell .monthly-status-badge.monthly-status-icon.is-unassigned {
   color: #94a3b8;
+  background: transparent;
 }
 
 .monthly-report-list-cell .monthly-status-icon svg {
