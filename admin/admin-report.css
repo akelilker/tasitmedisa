@@ -1434,13 +1434,36 @@ body.admin-report-page::-webkit-scrollbar {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 4px;
+  padding: 0;
+  margin-top: 4px;
   font-size: 0;
   line-height: 0;
-  min-width: 28px;
-  min-height: 28px;
-  border-radius: 999px;
-  margin-top: 4px;
+  min-width: 0;
+  min-height: 0;
+  border: none;
+  border-radius: 0;
+  background: none !important;
+  box-shadow: none;
+}
+
+.monthly-report-card .monthly-status-badge.monthly-status-icon.is-success {
+  color: #4ade80;
+}
+
+.monthly-report-card .monthly-status-badge.monthly-status-icon.is-pending {
+  color: #fb923c;
+}
+
+.monthly-report-card .monthly-status-badge.monthly-status-icon.is-alert {
+  color: #f87171;
+}
+
+.monthly-report-card .monthly-status-badge.monthly-status-icon.is-info {
+  color: #93c5fd;
+}
+
+.monthly-report-card .monthly-status-badge.monthly-status-icon.is-unassigned {
+  color: #94a3b8;
 }
 
 .monthly-report-card .monthly-status-icon svg {
@@ -2242,11 +2265,18 @@ body.admin-report-page::-webkit-scrollbar {
   text-align: center;
   overflow: visible;
   text-overflow: clip;
+  color: var(--muted, #8d97a6);
 }
 
 .monthly-stage-detail .report-stats.report-stats-enhanced .report-stat-box .value {
   font-size: calc(12px + 2px);
   line-height: 0.95;
+  color: #e8edf4;
+}
+
+.monthly-stage-detail .report-stats.report-stats-enhanced .report-stat-box-pending.has-data .label,
+.monthly-stage-detail .report-stats.report-stats-enhanced .report-stat-box-pending.has-data .value {
+  color: var(--theme-color);
 }
 
 .report-toolbar-shell {
@@ -2297,6 +2327,10 @@ body.admin-report-page::-webkit-scrollbar {
 .report-toolbar-period select option {
   background-color: #0c1220;
   color: #e2e8f0;
+}
+
+.monthly-stage-detail .report-toolbar-period select {
+  color: var(--muted, #8d97a6);
 }
 
 .report-toolbar-right,
@@ -2401,28 +2435,29 @@ body.admin-report-page::-webkit-scrollbar {
   border: none;
   border-radius: 0;
   background: transparent;
-  overflow-x: hidden;
+  overflow-x: auto;
   overflow-y: visible;
   width: 100%;
   max-width: 100%;
+  scrollbar-width: thin;
 }
 
 .monthly-report-list-header,
 .monthly-report-list-row {
   width: 100%;
-  min-width: 0;
-  max-width: 100%;
+  min-width: min-content;
+  max-width: none;
   box-sizing: border-box;
   display: grid;
   grid-template-columns:
-    minmax(0, 0.95fr)
-    minmax(0, 1.28fr)
-    minmax(0, 1.12fr)
-    minmax(0, 0.72fr)
-    minmax(0, 1.05fr)
-    minmax(0, 0.62fr)
-    minmax(0, 0.52fr);
-  gap: clamp(2px, 0.6vw, 6px);
+    minmax(min-content, 1.1fr)
+    minmax(min-content, 1.32fr)
+    minmax(min-content, 1.18fr)
+    minmax(min-content, 0.82fr)
+    minmax(min-content, 1.12fr)
+    minmax(min-content, 0.62fr)
+    minmax(min-content, 0.52fr);
+  gap: clamp(2px, 0.5vw, 5px);
 }
 
 .monthly-report-list-row {
@@ -2458,28 +2493,56 @@ body.admin-report-page::-webkit-scrollbar {
 
 .monthly-report-list-cell {
   min-width: 0;
-  padding: 3px 4px;
+  padding: 2px;
   text-align: center;
   font-size: 11px;
   font-weight: 500;
-  line-height: 1.25;
+  line-height: 1.2;
   color: var(--data-value-color, #a0aec0);
   border-right: 1px solid rgba(255, 255, 255, 0.08);
-  overflow-x: hidden;
-  overflow-y: visible;
-  white-space: normal;
-  overflow-wrap: break-word;
-  word-break: break-word;
+  white-space: nowrap;
+  overflow-wrap: normal;
+  word-break: normal;
+  overflow: hidden;
+  text-overflow: clip;
   box-sizing: border-box;
 }
 
 .monthly-report-list-header .monthly-report-list-cell {
-  padding: 2px 2px;
-  color: #f8fafc;
+  padding: 2px;
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.2px;
   line-height: 1.2;
+  white-space: nowrap;
+}
+
+.monthly-report-list-header .monthly-report-list-cell:nth-child(1) {
+  color: #f8fafc;
+}
+
+.monthly-report-list-header .monthly-report-list-cell:nth-child(2) {
+  color: #e8edf4;
+}
+
+.monthly-report-list-header .monthly-report-list-cell:nth-child(3) {
+  color: #cbd5e1;
+}
+
+.monthly-report-list-header .monthly-report-list-cell:nth-child(4) {
+  color: #b8c6d4;
+}
+
+.monthly-report-list-header .monthly-report-list-cell:nth-child(5) {
+  color: #d4dce6;
+}
+
+.monthly-report-list-header .monthly-report-list-cell:nth-child(6) {
+  color: #a8b8ca;
+}
+
+.monthly-report-list-header .monthly-report-list-cell:nth-child(7) {
+  color: #94a3b8;
 }
 
 .monthly-report-list-cell:last-child {
@@ -2487,32 +2550,24 @@ body.admin-report-page::-webkit-scrollbar {
 }
 
 .monthly-report-list-cell.cell-plate {
-  color: #d9e3ef;
+  color: #eef2f7;
   font-weight: 700;
-  white-space: normal;
-  overflow-wrap: anywhere;
-  word-break: break-word;
 }
 
 .monthly-report-list-cell.cell-brand strong {
   color: #f8fafc;
   font-weight: 700;
-  display: inline;
-  overflow-wrap: anywhere;
-  word-break: break-word;
+}
+
+.monthly-report-list-cell.cell-driver,
+.monthly-report-list-cell.cell-branch {
+  color: var(--muted, #8d97a6);
+  font-weight: 500;
 }
 
 .monthly-report-list-cell.cell-km {
-  white-space: nowrap;
-  color: #d9e3ef;
+  color: #dce6f5;
   font-weight: 700;
-  overflow-wrap: normal;
-  word-break: normal;
-}
-
-.monthly-report-list-cell.cell-branch {
-  word-break: normal;
-  overflow-wrap: anywhere;
 }
 
 .monthly-report-list-cell.cell-status {
@@ -2537,12 +2592,36 @@ body.admin-report-page::-webkit-scrollbar {
 }
 
 .monthly-report-list-cell .monthly-status-badge.monthly-status-icon {
-  padding: 2px;
+  padding: 0;
+  margin: 0;
   font-size: 0;
   line-height: 0;
-  min-width: 22px;
-  min-height: 22px;
-  border-radius: 999px;
+  min-width: 0;
+  min-height: 0;
+  border: none;
+  border-radius: 0;
+  background: none !important;
+  box-shadow: none;
+}
+
+.monthly-report-list-cell .monthly-status-badge.monthly-status-icon.is-success {
+  color: #4ade80;
+}
+
+.monthly-report-list-cell .monthly-status-badge.monthly-status-icon.is-pending {
+  color: #fb923c;
+}
+
+.monthly-report-list-cell .monthly-status-badge.monthly-status-icon.is-alert {
+  color: #f87171;
+}
+
+.monthly-report-list-cell .monthly-status-badge.monthly-status-icon.is-info {
+  color: #93c5fd;
+}
+
+.monthly-report-list-cell .monthly-status-badge.monthly-status-icon.is-unassigned {
+  color: #94a3b8;
 }
 
 .monthly-report-list-cell .monthly-status-icon svg {
