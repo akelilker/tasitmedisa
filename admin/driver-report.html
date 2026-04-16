@@ -39,7 +39,7 @@
   <div class="admin-app-container">
     <div class="admin-content-wrap">
   <div class="hero admin-report-hero">
-    <div class="hero-logo">
+    <div class="hero-logo admin-report-hero-side">
       <img src="../icon/logo-header2.svg" alt="MEDISA Logo">
       <span id="main-header-user-name" class="main-header-user-name is-empty" aria-live="polite"></span>
     </div>
@@ -48,7 +48,7 @@
       <p class="admin-report-subtitle">Kullanıcı Raporları</p>
       <div class="animated-line admin-hero-line"></div>
     </div>
-    <div class="hero-spacer"></div>
+    <div class="hero-spacer admin-report-hero-side" aria-hidden="true"></div>
   </div>
 
   <div class="driver-report-page">
@@ -72,7 +72,7 @@
               <div class="value" id="stat-total">0</div>
             </div>
             <div class="report-stat-box">
-              <div class="label">Takipte</div>
+              <div class="label">Tahsisli</div>
               <div class="value" id="stat-tracked">0</div>
             </div>
             <div class="report-stat-box">
@@ -80,11 +80,11 @@
               <div class="value" id="stat-entered">0</div>
             </div>
             <div class="report-stat-box report-stat-box-pending">
-              <div class="label">Bildirmeyen</div>
+              <div class="label">Beklenen</div>
               <div class="value" id="stat-pending">0</div>
             </div>
             <div class="report-stat-box report-stat-box-muted">
-              <div class="label">Ataması Yok</div>
+              <div class="label">Tahsisi Olmayan</div>
               <div class="value" id="stat-unassigned">0</div>
             </div>
             <div class="report-stat-box">
@@ -132,8 +132,8 @@
           <div id="report-status-pills" class="report-status-pills">
             <button type="button" class="report-status-pill active" data-status="">Tümü</button>
             <button type="button" class="report-status-pill" data-status="girdi">Bildirenler</button>
-            <button type="button" class="report-status-pill" data-status="girmedi">Bildirmeyenler</button>
-            <button type="button" class="report-status-pill" data-status="atamasiz">Ataması Yok</button>
+            <button type="button" class="report-status-pill" data-status="girmedi">Beklenenler</button>
+            <button type="button" class="report-status-pill" data-status="atamasiz">Tahsisi Olmayan</button>
             <button type="button" class="report-status-pill" data-status="kaza">Kaza</button>
             <button type="button" class="report-status-pill" data-status="bakim">Bakım</button>
           </div>
