@@ -2850,9 +2850,6 @@ body.admin-report-page::-webkit-scrollbar {
   .monthly-report-list-cell.cell-driver.is-unassigned-driver {
     font-size: 11px;
     font-weight: 700;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
     color: var(--theme-color);
     opacity: 1;
   }
