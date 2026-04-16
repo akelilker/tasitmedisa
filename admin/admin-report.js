@@ -681,6 +681,23 @@
     return isMonthlyMobileViewport() ? '-' : 'Tahsis edilmemiş';
   }
 
+  function formatMonthlyListDriverCellHtml(driverName) {
+    var s = String(driverName == null ? '' : driverName).trim();
+    if (!s) {
+      return '<span>' + escapeHtmlLocal('-') + '</span>';
+    }
+    var idx = s.indexOf(' ');
+    if (idx === -1) {
+      return '<span>' + escapeHtmlLocal(s) + '</span>';
+    }
+    var first = s.slice(0, idx);
+    var rest = s.slice(idx + 1).trim();
+    if (!rest) {
+      return '<span>' + escapeHtmlLocal(first) + '</span>';
+    }
+    return '<span>' + escapeHtmlLocal(first) + '</span> <span>' + escapeHtmlLocal(rest) + '</span>';
+  }
+
   function getMonthlySortableValue(record, key) {
     if (key === 'plate') return formatPlaka(record.plaka || '-').toLocaleUpperCase('tr-TR');
     if (key === 'brand') return capitalizeWords((record.brand_model || ((record.arac_marka || '') + ' ' + (record.arac_model || ''))).trim() || '-');
@@ -785,7 +802,7 @@
         html += '<article class="monthly-report-list-row ' + kmMeta.rowClass + '">';
         html += '<div class="monthly-report-list-cell cell-plate">' + escapeHtmlLocal(formatPlaka(record.plaka || '-')) + '</div>';
         html += '<div class="monthly-report-list-cell cell-brand"><strong>' + escapeHtmlLocal(vehicleTitle) + '</strong></div>';
-        html += '<div class="monthly-report-list-cell cell-driver' + (record.atama_var === false ? ' is-unassigned-driver' : '') + '">' + escapeHtmlLocal(driverName) + '</div>';
+        html += '<div class="monthly-report-list-cell cell-driver' + (record.atama_var === false ? ' is-unassigned-driver' : '') + '">' + formatMonthlyListDriverCellHtml(driverName) + '</div>';
         html += '<div class="monthly-report-list-cell cell-km">' + escapeHtmlLocal(formatKmValue(record.km)) + '</div>';
         html += '<div class="monthly-report-list-cell cell-branch">' + escapeHtmlLocal(toTitleCase(record.branch_name || 'Şubesiz')) + '</div>';
         html += '<div class="monthly-report-list-cell cell-status">' + buildMonthlyStatusBadge(record, kmMeta, true);
