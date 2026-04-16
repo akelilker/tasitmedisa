@@ -2226,9 +2226,9 @@ body.admin-report-page::-webkit-scrollbar {
 
 .monthly-stage-detail .report-stats.report-stats-enhanced {
   padding: 0 2px;
-  gap: 8px;
+  gap: 10px;
   margin: 0;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
 }
 
 .monthly-stage-detail .report-stats.report-stats-enhanced .report-stat-box {
