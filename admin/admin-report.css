@@ -58,13 +58,27 @@ body.admin-report-page::-webkit-scrollbar {
   padding-bottom: 8px;
 }
 
+.admin-report-hero .admin-report-hero-side {
+  flex: 0 0 calc(var(--hero-logo-width) - 3px);
+  width: calc(var(--hero-logo-width) - 3px);
+  min-width: calc(var(--hero-logo-width) - 3px);
+  box-sizing: border-box;
+}
+
 .admin-report-hero .hero-logo {
   margin-top: 0;
+  margin-left: 0;
+  margin-right: 0;
+  transform: translate(-1px, 3px);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 4px;
+}
+
+.admin-report-hero .hero-spacer.admin-report-hero-side {
+  flex-shrink: 0;
 }
 
 .admin-hero-title-wrap {
@@ -131,6 +145,12 @@ body.admin-report-page::-webkit-scrollbar {
     align-items: stretch;
   }
 
+  .admin-report-hero .admin-report-hero-side {
+    flex: 0 0 var(--hero-logo-width);
+    width: var(--hero-logo-width);
+    min-width: var(--hero-logo-width);
+  }
+
   .admin-report-hero .hero-logo {
     display: grid;
     grid-template-rows: auto minmax(0, 1fr);
@@ -139,7 +159,8 @@ body.admin-report-page::-webkit-scrollbar {
     justify-items: center;
     gap: 0;
     padding-left: 11px;
-    box-sizing: content-box;
+    box-sizing: border-box;
+    transform: none;
   }
 
   .admin-report-page .main-header-user-name {
@@ -1867,10 +1888,10 @@ body.admin-report-page::-webkit-scrollbar {
     gap: 6px;
   }
   .report-stat-box {
-    min-height: 38px;
+    min-height: 40px;
     max-height: none;
     height: auto;
-    padding: 0.25rem 2px;
+    padding: 0.3rem 4px;
     align-items: stretch;
   }
   .report-stat-box .label,
@@ -1881,9 +1902,11 @@ body.admin-report-page::-webkit-scrollbar {
   }
   .report-stat-box .label {
     white-space: normal;
-    word-break: break-word;
-    line-height: 1.2;
-    font-size: 0.7rem;
+    word-break: normal;
+    overflow-wrap: normal;
+    line-height: 1.15;
+    font-size: 0.69rem;
+    text-wrap: balance;
   }
   .report-stat-box .value {
     font-size: 1rem;
@@ -2222,22 +2245,25 @@ body.admin-report-page::-webkit-scrollbar {
   height: auto;
   max-height: none;
   min-height: 52px;
-  padding: 5px 6px 5px;
+  padding: 5px 5px 5px;
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.2);
   display: flex;
   flex-direction: column-reverse;
   justify-content: flex-start;
-  align-items: stretch;
+  align-items: center;
   gap: 2px;
   background: rgba(255, 255, 255, 0.02);
 }
 
 .monthly-stage-detail .report-stats.report-stats-enhanced .report-stat-box .label {
+  width: 100%;
   white-space: normal;
-  font-size: 11.5px;
-  line-height: 1.12;
-  min-height: 2.3em;
+  word-break: normal;
+  overflow-wrap: normal;
+  font-size: 11px;
+  line-height: 1.08;
+  min-height: 2.16em;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2245,6 +2271,7 @@ body.admin-report-page::-webkit-scrollbar {
   overflow: visible;
   text-overflow: clip;
   color: var(--muted, #8d97a6);
+  text-wrap: balance;
 }
 
 .monthly-stage-detail .report-stats.report-stats-enhanced .report-stat-box .value {
@@ -2290,7 +2317,7 @@ body.admin-report-page::-webkit-scrollbar {
   min-width: 124px;
   height: 32px;
   min-height: 32px;
-  padding: 5px 20px 5px 8px;
+  padding: 5px 16px 5px 8px;
   border: none;
   border-radius: 4px;
   appearance: none;
@@ -2298,7 +2325,7 @@ body.admin-report-page::-webkit-scrollbar {
   background-color: rgba(12, 18, 30, 0.55);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23d40000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right 5px center;
+  background-position: right 3px center;
   background-size: 14px;
   font-size: 13px;
   line-height: 1.2;
@@ -2526,10 +2553,10 @@ body.admin-report-page::-webkit-scrollbar {
   max-width: 100%;
   color: var(--data-value-color, #a0aec0);
   font-weight: 500;
-  line-height: 1.14;
+  line-height: 1.12;
   white-space: normal;
-  word-break: keep-all;
-  overflow-wrap: break-word;
+  word-break: normal;
+  overflow-wrap: normal;
   text-align: center;
   -webkit-line-clamp: 2;
   line-clamp: 2;
@@ -2542,10 +2569,10 @@ body.admin-report-page::-webkit-scrollbar {
   white-space: normal;
   overflow: visible;
   text-overflow: clip;
-  word-break: break-word;
-  overflow-wrap: break-word;
+  word-break: normal;
+  overflow-wrap: normal;
   align-items: center;
-  line-height: 1.25;
+  line-height: 1.2;
 }
 
 .monthly-report-list-cell.cell-status {
@@ -2710,30 +2737,71 @@ body.admin-report-page::-webkit-scrollbar {
   .monthly-report-list-header,
   .monthly-report-list-row {
     grid-template-columns:
-      minmax(0, 0.92fr)
-      minmax(0, 1.28fr)
-      minmax(0, 1.02fr)
-      minmax(0, 0.76fr)
-      minmax(0, 1.06fr)
-      minmax(3.35rem, 0.68fr)
-      minmax(2.85rem, 0.58fr);
-    column-gap: 3px;
+      minmax(0, 0.72fr)
+      minmax(0, 1.18fr)
+      minmax(0, 0.96fr)
+      minmax(0, 0.64fr)
+      minmax(0, 0.98fr)
+      minmax(2.35rem, 0.48fr);
+    column-gap: 1px;
   }
 
   .monthly-report-list-cell {
     min-height: 38px;
-    padding: 4px 3px;
-    font-size: 10.5px;
+    padding: 4px 1px;
+    font-size: 9.7px;
+    line-height: 1.12;
+    white-space: normal;
+    word-break: normal;
+    overflow-wrap: normal;
+    text-overflow: clip;
   }
 
   .monthly-report-list-header .monthly-report-list-cell {
-    font-size: 9.5px;
-    padding: 2px 2px;
+    font-size: 8.8px;
+    padding: 2px 1px;
+    line-height: 1.04;
+    white-space: normal;
+    word-break: normal;
+    overflow-wrap: normal;
   }
 
   .monthly-report-list-cell.cell-brand strong {
-    font-size: 10.5px;
-    line-height: 1.12;
+    font-size: 9.6px;
+    line-height: 1.08;
+    word-break: normal;
+    overflow-wrap: normal;
+  }
+
+  .monthly-report-list-cell.cell-plate {
+    font-size: 8.55px;
+    letter-spacing: 0;
+    white-space: nowrap;
+  }
+
+  .monthly-report-list-cell.cell-action {
+    display: none;
+  }
+
+  .monthly-report-list-cell.cell-status,
+  .monthly-report-list-cell.cell-action {
+    justify-content: center;
+    padding-left: 1px;
+    padding-right: 1px;
+  }
+
+  .monthly-report-list-cell.cell-driver,
+  .monthly-report-list-cell.cell-branch {
+    line-height: 1.08;
+    word-break: normal;
+    overflow-wrap: normal;
+  }
+
+  .monthly-report-list-cell.cell-driver.is-unassigned-driver {
+    font-size: 8.9px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .monthly-report-list-cell .monthly-status-icon svg {
