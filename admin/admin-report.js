@@ -235,21 +235,18 @@
     var enteredEl = document.getElementById('stat-entered');
     var pendingEl = document.getElementById('stat-pending');
     var unassignedEl = document.getElementById('stat-unassigned');
-    var pctEl = document.getElementById('stat-percentage');
 
     var toplamTasit = stats.total != null ? Number(stats.total) : 0;
     var takiptekiTasit = stats.tracked_total != null ? Number(stats.tracked_total) : 0;
     var toplamYapilan = stats.entered != null ? Number(stats.entered) : 0;
     var toplamBekleyen = stats.pending != null ? Number(stats.pending) : Math.max(0, takiptekiTasit - toplamYapilan);
     var atamasiYok = stats.unassigned != null ? Number(stats.unassigned) : Math.max(0, toplamTasit - takiptekiTasit);
-    var tamamlananYuzde = takiptekiTasit > 0 ? Math.round((toplamYapilan / takiptekiTasit) * 100) : 0;
 
     if (totalEl) totalEl.textContent = String(toplamTasit || 0);
     if (trackedEl) trackedEl.textContent = String(takiptekiTasit || 0);
     if (enteredEl) enteredEl.textContent = String(toplamYapilan || 0);
     if (pendingEl) pendingEl.textContent = String(toplamBekleyen || 0);
     if (unassignedEl) unassignedEl.textContent = String(atamasiYok || 0);
-    if (pctEl) pctEl.textContent = tamamlananYuzde + '%';
 
     var pendingBox = pendingEl ? pendingEl.closest('.report-stat-box-pending') : null;
     if (pendingBox) {
