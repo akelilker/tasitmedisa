@@ -692,7 +692,7 @@
   }
 
   function applyMonthlyMobileSorting(records) {
-    if (!isMonthlyMobileViewport() || !monthlyMobileSortState.key) return records;
+    if (!monthlyMobileSortState.key) return records;
 
     var sortKey = monthlyMobileSortState.key;
     var sortDirection = monthlyMobileSortState.direction === 'desc' ? -1 : 1;
@@ -715,7 +715,7 @@
   }
 
   function bindMonthlyMobileSorting(container) {
-    if (!container || !isMonthlyMobileViewport()) return;
+    if (!container) return;
 
     Array.prototype.forEach.call(container.querySelectorAll('.monthly-sortable-header'), function(button) {
       button.addEventListener('click', function() {
