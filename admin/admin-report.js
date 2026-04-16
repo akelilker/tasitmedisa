@@ -690,7 +690,7 @@
     if (key === 'driver') return record.atama_var === false ? MONTHLY_UNASSIGNED_DRIVER_SORT : capitalizeWords(record.surucu_adi || 'Sürücü tanımsız');
     if (key === 'km') return Number(record.km || 0);
     if (key === 'branch') return toTitleCase(record.branch_name || 'Şubesiz');
-    if (key === 'status') return (getKmStateMeta(record).statusLabel || '').toLocaleLowerCase('tr-TR');
+    if (key === 'status') return String(getKmStateMeta(record).statusText || '').toLocaleLowerCase('tr-TR');
     return '';
   }
 
