@@ -678,10 +678,16 @@
     return window.matchMedia('(max-width: 640px)').matches;
   }
 
+  var MONTHLY_UNASSIGNED_DRIVER_SORT = 'tahsis edilmemiş';
+
+  function getMonthlyUnassignedDriverDisplayText() {
+    return isMonthlyMobileViewport() ? '-' : 'Tahsis edilmemiş';
+  }
+
   function getMonthlySortableValue(record, key) {
     if (key === 'plate') return formatPlaka(record.plaka || '-').toLocaleUpperCase('tr-TR');
     if (key === 'brand') return capitalizeWords((record.brand_model || ((record.arac_marka || '') + ' ' + (record.arac_model || ''))).trim() || '-');
-    if (key === 'driver') return record.atama_var === false ? 'Atama bulunmuyor' : capitalizeWords(record.surucu_adi || 'Sürücü tanımsız');
+    if (key === 'driver') return record.atama_var === false ? MONTHLY_UNASSIGNED_DRIVER_SORT : capitalizeWords(record.surucu_adi || 'Sürücü tanımsız');
     if (key === 'km') return Number(record.km || 0);
     if (key === 'branch') return toTitleCase(record.branch_name || 'Şubesiz');
     if (key === 'status') return (getKmStateMeta(record).statusLabel || '').toLocaleLowerCase('tr-TR');
@@ -707,8 +713,8 @@
 
   function shouldShowMobileStatusWhatsapp(record, kmMeta) {
     if (!isMonthlyMobileViewport()) return false;
-    if (!record || !record.telefon) return false;
-    return kmMeta.statusClass === 'is-not-reported' || kmMeta.statusClass === 'is-unassigned' || kmMeta.statusClass === 'is-alert';
+    if (!record || record.atama_var === false || !kmMeta.isWarning || !record.telefon) return false;
+    return true;
   }
 
   function bindMonthlyMobileSorting(container) {
@@ -751,7 +757,7 @@
       filteredRecords.forEach(function(record) {
         var kmMeta = getKmStateMeta(record);
         var vehicleTitle = capitalizeWords((record.brand_model || ((record.arac_marka || '') + ' ' + (record.arac_model || ''))).trim() || '-');
-        var driverName = record.atama_var === false ? 'Atama bulunmuyor' : capitalizeWords(record.surucu_adi || 'Sürücü tanımsız');
+        var driverName = record.atama_var === false ? getMonthlyUnassignedDriverDisplayText() : capitalizeWords(record.surucu_adi || 'Sürücü tanımsız');
         html += '<article class="card monthly-report-card ' + kmMeta.rowClass + '">';
         html += '<div class="card-plate">' + escapeHtmlLocal(formatPlaka(record.plaka || '-')) + '</div>';
         html += '<div class="card-brand-model">' + escapeHtmlLocal(vehicleTitle) + '</div>';
@@ -777,7 +783,7 @@
       filteredRecords.forEach(function(record) {
         var kmMeta = getKmStateMeta(record);
         var vehicleTitle = capitalizeWords((record.brand_model || ((record.arac_marka || '') + ' ' + (record.arac_model || ''))).trim() || '-');
-        var driverName = record.atama_var === false ? 'Atama bulunmuyor' : capitalizeWords(record.surucu_adi || 'Sürücü tanımsız');
+        var driverName = record.atama_var === false ? getMonthlyUnassignedDriverDisplayText() : capitalizeWords(record.surucu_adi || 'Sürücü tanımsız');
         var actionHtml = buildMonthlyActions(record, kmMeta) || '<span class="monthly-action-placeholder">-</span>';
         html += '<article class="monthly-report-list-row ' + kmMeta.rowClass + '">';
         html += '<div class="monthly-report-list-cell cell-plate">' + escapeHtmlLocal(formatPlaka(record.plaka || '-')) + '</div>';
