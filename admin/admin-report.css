@@ -58,27 +58,13 @@ body.admin-report-page::-webkit-scrollbar {
   padding-bottom: 8px;
 }
 
-.admin-report-hero .admin-report-hero-side {
-  flex: 0 0 calc(var(--hero-logo-width) - 3px);
-  width: calc(var(--hero-logo-width) - 3px);
-  min-width: calc(var(--hero-logo-width) - 3px);
-  box-sizing: border-box;
-}
-
 .admin-report-hero .hero-logo {
   margin-top: 0;
-  margin-left: 0;
-  margin-right: 0;
-  transform: translate(-1px, 3px);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 4px;
-}
-
-.admin-report-hero .hero-spacer.admin-report-hero-side {
-  flex-shrink: 0;
 }
 
 .admin-hero-title-wrap {
@@ -145,12 +131,6 @@ body.admin-report-page::-webkit-scrollbar {
     align-items: stretch;
   }
 
-  .admin-report-hero .admin-report-hero-side {
-    flex: 0 0 var(--hero-logo-width);
-    width: var(--hero-logo-width);
-    min-width: var(--hero-logo-width);
-  }
-
   .admin-report-hero .hero-logo {
     display: grid;
     grid-template-rows: auto minmax(0, 1fr);
@@ -159,8 +139,7 @@ body.admin-report-page::-webkit-scrollbar {
     justify-items: center;
     gap: 0;
     padding-left: 11px;
-    box-sizing: border-box;
-    transform: none;
+    box-sizing: content-box;
   }
 
   .admin-report-page .main-header-user-name {
@@ -1888,10 +1867,10 @@ body.admin-report-page::-webkit-scrollbar {
     gap: 6px;
   }
   .report-stat-box {
-    min-height: 40px;
+    min-height: 38px;
     max-height: none;
     height: auto;
-    padding: 0.3rem 4px;
+    padding: 0.25rem 2px;
     align-items: stretch;
   }
   .report-stat-box .label,
@@ -1902,11 +1881,9 @@ body.admin-report-page::-webkit-scrollbar {
   }
   .report-stat-box .label {
     white-space: normal;
-    word-break: normal;
-    overflow-wrap: normal;
-    line-height: 1.15;
-    font-size: 0.69rem;
-    text-wrap: balance;
+    word-break: break-word;
+    line-height: 1.2;
+    font-size: 0.7rem;
   }
   .report-stat-box .value {
     font-size: 1rem;
@@ -2093,7 +2070,7 @@ body.admin-report-page::-webkit-scrollbar {
 
 .admin-tab-btn.active {
   color: #f8fafc;
-  border-bottom-color: rgba(var(--theme-color-rgb), 0.85);
+  border-bottom-color: rgba(var(--theme-color-rgb), 0.55);
 }
 
 .admin-tab-btn:hover {
@@ -2245,25 +2222,22 @@ body.admin-report-page::-webkit-scrollbar {
   height: auto;
   max-height: none;
   min-height: 52px;
-  padding: 5px 5px 5px;
+  padding: 5px 6px 5px;
   border-radius: 10px;
   border: 1px solid rgba(255, 255, 255, 0.2);
   display: flex;
   flex-direction: column-reverse;
   justify-content: flex-start;
-  align-items: center;
+  align-items: stretch;
   gap: 2px;
   background: rgba(255, 255, 255, 0.02);
 }
 
 .monthly-stage-detail .report-stats.report-stats-enhanced .report-stat-box .label {
-  width: 100%;
   white-space: normal;
-  word-break: normal;
-  overflow-wrap: normal;
-  font-size: 11px;
-  line-height: 1.08;
-  min-height: 2.16em;
+  font-size: 11.5px;
+  line-height: 1.12;
+  min-height: 2.3em;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2271,7 +2245,6 @@ body.admin-report-page::-webkit-scrollbar {
   overflow: visible;
   text-overflow: clip;
   color: var(--muted, #8d97a6);
-  text-wrap: balance;
 }
 
 .monthly-stage-detail .report-stats.report-stats-enhanced .report-stat-box .value {
@@ -2317,7 +2290,7 @@ body.admin-report-page::-webkit-scrollbar {
   min-width: 124px;
   height: 32px;
   min-height: 32px;
-  padding: 5px 16px 5px 8px;
+  padding: 5px 20px 5px 8px;
   border: none;
   border-radius: 4px;
   appearance: none;
@@ -2325,7 +2298,7 @@ body.admin-report-page::-webkit-scrollbar {
   background-color: rgba(12, 18, 30, 0.55);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23d40000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right 3px center;
+  background-position: right 5px center;
   background-size: 14px;
   font-size: 13px;
   line-height: 1.2;
@@ -2530,6 +2503,26 @@ body.admin-report-page::-webkit-scrollbar {
   color: #d7e0ea;
 }
 
+.monthly-sortable-header {
+  width: 100%;
+  border: none;
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  font-weight: inherit;
+  letter-spacing: inherit;
+  line-height: inherit;
+  text-align: center;
+  cursor: pointer;
+}
+
+.monthly-sortable-header:focus-visible {
+  outline: 1px solid rgba(var(--theme-color-rgb), 0.55);
+  outline-offset: 2px;
+}
+
 .monthly-report-list-cell:last-child {
   border-right: none;
 }
@@ -2553,10 +2546,10 @@ body.admin-report-page::-webkit-scrollbar {
   max-width: 100%;
   color: var(--data-value-color, #a0aec0);
   font-weight: 500;
-  line-height: 1.12;
+  line-height: 1.14;
   white-space: normal;
-  word-break: normal;
-  overflow-wrap: normal;
+  word-break: keep-all;
+  overflow-wrap: break-word;
   text-align: center;
   -webkit-line-clamp: 2;
   line-clamp: 2;
@@ -2569,10 +2562,17 @@ body.admin-report-page::-webkit-scrollbar {
   white-space: normal;
   overflow: visible;
   text-overflow: clip;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  align-items: center;
+  line-height: 1.25;
+}
+
+.monthly-report-list-cell.cell-driver.is-unassigned-driver {
+  color: #f87171;
+  white-space: nowrap;
   word-break: normal;
   overflow-wrap: normal;
-  align-items: center;
-  line-height: 1.2;
 }
 
 .monthly-report-list-cell.cell-status {
@@ -2653,6 +2653,10 @@ body.admin-report-page::-webkit-scrollbar {
   height: 26px;
 }
 
+.monthly-mobile-status-actions {
+  display: none;
+}
+
 .monthly-action-placeholder {
   color: var(--muted);
 }
@@ -2678,11 +2682,19 @@ body.admin-report-page::-webkit-scrollbar {
 
   .report-selection-left,
   .report-selection-bar,
-  .report-toolbar-row,
   .user-analytics-toolbar,
   .user-analytics-toolbar-right {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  .report-toolbar-row,
+  .report-toolbar-row.report-toolbar-compact {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
   }
 
   .report-selection-meta {
@@ -2694,19 +2706,22 @@ body.admin-report-page::-webkit-scrollbar {
   }
 
   .report-toolbar-period {
+    width: auto;
     min-width: 0;
-    max-width: none;
-    width: 100%;
+    max-width: 48%;
+    flex: 0 0 auto;
   }
 
   .report-toolbar-period select {
-    width: 100%;
-    min-width: 0;
+    width: auto;
+    min-width: 102px;
+    max-width: 100%;
   }
 
   .report-toolbar-actions {
-    width: 100%;
+    width: auto;
     justify-content: flex-end;
+    flex: 0 0 auto;
   }
 
   .report-search-container.open,
@@ -2715,68 +2730,74 @@ body.admin-report-page::-webkit-scrollbar {
   }
 
   .monthly-branch-grid .branch-card {
-    width: calc((100% - 3px) / 2);
-    max-width: calc((100% - 3px) / 2);
-    flex-basis: calc((100% - 3px) / 2);
+    width: calc((100% - (2 * 3px)) / 3);
+    max-width: calc((100% - (2 * 3px)) / 3);
+    flex-basis: calc((100% - (2 * 3px)) / 3);
   }
 
   .user-analytics-branch-grid .branch-card {
-    width: calc((100% - 3px) / 2);
-    max-width: calc((100% - 3px) / 2);
-    flex-basis: calc((100% - 3px) / 2);
+    width: calc((100% - (2 * 3px)) / 3);
+    max-width: calc((100% - (2 * 3px)) / 3);
+    flex-basis: calc((100% - (2 * 3px)) / 3);
   }
 
   .monthly-branch-grid .branch-name {
-    font-size: clamp(10px, 3.8vw, 12px);
+    font-size: clamp(9px, 3.2vw, 11px);
+    line-height: 1.15;
+    text-align: center;
   }
 
   .user-analytics-branch-grid .branch-name {
-    font-size: clamp(10px, 3.8vw, 12px);
+    font-size: clamp(9px, 3.2vw, 11px);
+    line-height: 1.15;
+    text-align: center;
+  }
+
+  .monthly-branch-grid .branch-count,
+  .user-analytics-branch-grid .branch-count {
+    font-size: 10.5px;
+    text-align: center;
   }
 
   .monthly-report-list-header,
   .monthly-report-list-row {
     grid-template-columns:
-      minmax(0, 0.72fr)
-      minmax(0, 1.18fr)
-      minmax(0, 0.96fr)
-      minmax(0, 0.64fr)
-      minmax(0, 0.98fr)
-      minmax(2.35rem, 0.48fr);
-    column-gap: 1px;
+      minmax(0, 0.74fr)
+      minmax(0, 1.10fr)
+      minmax(0, 0.94fr)
+      minmax(0, 0.68fr)
+      minmax(0, 0.90fr)
+      minmax(2.5rem, 0.52fr);
+    column-gap: 2px;
   }
 
   .monthly-report-list-cell {
     min-height: 38px;
-    padding: 4px 1px;
-    font-size: 9.7px;
-    line-height: 1.12;
+    padding: 4px 2px;
+    font-size: 10px;
+    line-height: 1.15;
     white-space: normal;
-    word-break: normal;
-    overflow-wrap: normal;
+    word-break: break-word;
+    overflow-wrap: anywhere;
     text-overflow: clip;
   }
 
   .monthly-report-list-header .monthly-report-list-cell {
-    font-size: 8.8px;
-    padding: 2px 1px;
-    line-height: 1.04;
+    font-size: 9px;
+    padding: 2px 2px;
+    line-height: 1.05;
     white-space: normal;
-    word-break: normal;
-    overflow-wrap: normal;
+    word-break: break-word;
   }
 
   .monthly-report-list-cell.cell-brand strong {
-    font-size: 9.6px;
-    line-height: 1.08;
-    word-break: normal;
-    overflow-wrap: normal;
+    font-size: 9.8px;
+    line-height: 1.1;
   }
 
   .monthly-report-list-cell.cell-plate {
-    font-size: 8.55px;
+    font-size: 8.6px;
     letter-spacing: 0;
-    white-space: nowrap;
   }
 
   .monthly-report-list-cell.cell-action {
@@ -2792,16 +2813,51 @@ body.admin-report-page::-webkit-scrollbar {
 
   .monthly-report-list-cell.cell-driver,
   .monthly-report-list-cell.cell-branch {
-    line-height: 1.08;
-    word-break: normal;
-    overflow-wrap: normal;
+    line-height: 1.1;
   }
 
   .monthly-report-list-cell.cell-driver.is-unassigned-driver {
-    font-size: 8.9px;
+    font-size: 9px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  .monthly-report-list-cell.cell-status {
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .monthly-mobile-status-actions {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .monthly-mobile-status-actions .monthly-report-actions {
+    justify-content: center;
+  }
+
+  .monthly-mobile-status-actions .report-action-email {
+    display: none;
+  }
+
+  .view-card.monthly-report-cards .card {
+    padding: 10px 8px;
+  }
+
+  .view-card.monthly-report-cards .card-plate {
+    font-size: 11px;
+    line-height: 1.15;
+    word-break: break-all;
+  }
+
+  .view-card.monthly-report-cards .card-brand-model,
+  .view-card.monthly-report-cards .card-third-line {
+    font-size: 10px;
+    line-height: 1.2;
+    word-break: break-word;
+    overflow-wrap: anywhere;
   }
 
   .monthly-report-list-cell .monthly-status-icon svg {
