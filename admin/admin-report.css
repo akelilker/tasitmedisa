@@ -2503,6 +2503,26 @@ body.admin-report-page::-webkit-scrollbar {
   color: #d7e0ea;
 }
 
+.monthly-sortable-header {
+  width: 100%;
+  border: none;
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  font-weight: inherit;
+  letter-spacing: inherit;
+  line-height: inherit;
+  text-align: center;
+  cursor: pointer;
+}
+
+.monthly-sortable-header:focus-visible {
+  outline: 1px solid rgba(var(--theme-color-rgb), 0.55);
+  outline-offset: 2px;
+}
+
 .monthly-report-list-cell:last-child {
   border-right: none;
 }
@@ -2546,6 +2566,13 @@ body.admin-report-page::-webkit-scrollbar {
   overflow-wrap: break-word;
   align-items: center;
   line-height: 1.25;
+}
+
+.monthly-report-list-cell.cell-driver.is-unassigned-driver {
+  color: #f87171;
+  white-space: nowrap;
+  word-break: normal;
+  overflow-wrap: normal;
 }
 
 .monthly-report-list-cell.cell-status {
@@ -2624,6 +2651,10 @@ body.admin-report-page::-webkit-scrollbar {
 .monthly-report-list-cell .report-action-btn {
   width: 26px;
   height: 26px;
+}
+
+.monthly-mobile-status-actions {
+  display: none;
 }
 
 .monthly-action-placeholder {
@@ -2731,13 +2762,12 @@ body.admin-report-page::-webkit-scrollbar {
   .monthly-report-list-header,
   .monthly-report-list-row {
     grid-template-columns:
-      minmax(0, 0.80fr)
-      minmax(0, 1.14fr)
+      minmax(0, 0.74fr)
+      minmax(0, 1.10fr)
+      minmax(0, 0.94fr)
+      minmax(0, 0.68fr)
       minmax(0, 0.90fr)
-      minmax(0, 0.72fr)
-      minmax(0, 0.95fr)
-      minmax(2.25rem, 0.44fr)
-      minmax(2.25rem, 0.44fr);
+      minmax(2.5rem, 0.52fr);
     column-gap: 2px;
   }
 
@@ -2766,8 +2796,12 @@ body.admin-report-page::-webkit-scrollbar {
   }
 
   .monthly-report-list-cell.cell-plate {
-    font-size: 9.2px;
+    font-size: 8.6px;
     letter-spacing: 0;
+  }
+
+  .monthly-report-list-cell.cell-action {
+    display: none;
   }
 
   .monthly-report-list-cell.cell-status,
@@ -2780,6 +2814,32 @@ body.admin-report-page::-webkit-scrollbar {
   .monthly-report-list-cell.cell-driver,
   .monthly-report-list-cell.cell-branch {
     line-height: 1.1;
+  }
+
+  .monthly-report-list-cell.cell-driver.is-unassigned-driver {
+    font-size: 9px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .monthly-report-list-cell.cell-status {
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .monthly-mobile-status-actions {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+
+  .monthly-mobile-status-actions .monthly-report-actions {
+    justify-content: center;
+  }
+
+  .monthly-mobile-status-actions .report-action-email {
+    display: none;
   }
 
   .view-card.monthly-report-cards .card {
