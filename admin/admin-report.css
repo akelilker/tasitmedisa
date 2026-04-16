@@ -742,9 +742,10 @@ body.admin-report-page::-webkit-scrollbar {
   font-size: 0.8rem;
   font-weight: 500;
   color: #ffffff;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: normal;
+  word-break: normal;
+  overflow-wrap: break-word;
+  line-height: 1.15;
   text-align: center;
   flex-shrink: 0;
 }
@@ -860,6 +861,16 @@ body.admin-report-page::-webkit-scrollbar {
     align-items: center;
     width: 100%;
     max-width: 12rem;
+  }
+
+  .report-filters label select {
+    min-width: auto;
+    margin-left: 0;
+  }
+
+  .report-filters select {
+    padding: 0.35rem 0.45em 0.35rem 0;
+    text-align: left;
   }
 }
 
