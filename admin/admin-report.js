@@ -14,6 +14,7 @@
   var monthlyReportBranchCards = [];
   var monthlyReportView = 'list';
   var monthlyReportQuery = '';
+  var monthlyMobileSortState = { key: '', direction: 'asc' };
   var monthlyBranchSelectionMade = false;
   var userAnalyticsUsers = [];
   var userAnalyticsTasitlar = [];
@@ -673,6 +674,61 @@
     });
   }
 
+  function isMonthlyMobileViewport() {
+    return window.matchMedia('(max-width: 640px)').matches;
+  }
+
+  function getMonthlySortableValue(record, key) {
+    if (key === 'plate') return formatPlaka(record.plaka || '-').toLocaleUpperCase('tr-TR');
+    if (key === 'brand') return capitalizeWords((record.brand_model || ((record.arac_marka || '') + ' ' + (record.arac_model || ''))).trim() || '-');
+    if (key === 'driver') return record.atama_var === false ? 'Atama bulunmuyor' : capitalizeWords(record.surucu_adi || 'Sürücü tanımsız');
+    if (key === 'km') return Number(record.km || 0);
+    if (key === 'branch') return toTitleCase(record.branch_name || 'Şubesiz');
+    if (key === 'status') return (getKmStateMeta(record).statusLabel || '').toLocaleLowerCase('tr-TR');
+    return '';
+  }
+
+  function applyMonthlyMobileSorting(records) {
+    if (!isMonthlyMobileViewport() || !monthlyMobileSortState.key) return records;
+
+    var sortKey = monthlyMobileSortState.key;
+    var sortDirection = monthlyMobileSortState.direction === 'desc' ? -1 : 1;
+
+    return records.slice().sort(function(a, b) {
+      var valueA = getMonthlySortableValue(a, sortKey);
+      var valueB = getMonthlySortableValue(b, sortKey);
+
+      if (sortKey === 'km') {
+        return (valueA - valueB) * sortDirection;
+      }
+      return String(valueA).localeCompare(String(valueB), 'tr', { sensitivity: 'base' }) * sortDirection;
+    });
+  }
+
+  function shouldShowMobileStatusWhatsapp(record, kmMeta) {
+    if (!isMonthlyMobileViewport()) return false;
+    if (!record || !record.telefon) return false;
+    return kmMeta.statusClass === 'is-not-reported' || kmMeta.statusClass === 'is-unassigned' || kmMeta.statusClass === 'is-alert';
+  }
+
+  function bindMonthlyMobileSorting(container) {
+    if (!container || !isMonthlyMobileViewport()) return;
+
+    Array.prototype.forEach.call(container.querySelectorAll('.monthly-sortable-header'), function(button) {
+      button.addEventListener('click', function() {
+        var sortKey = button.getAttribute('data-sort-key');
+        if (!sortKey) return;
+        if (monthlyMobileSortState.key === sortKey) {
+          monthlyMobileSortState.direction = monthlyMobileSortState.direction === 'asc' ? 'desc' : 'asc';
+        } else {
+          monthlyMobileSortState.key = sortKey;
+          monthlyMobileSortState.direction = 'asc';
+        }
+        renderMonthlyResults(monthlyReportRecords || []);
+      });
+    });
+  }
+
   function renderMonthlyResults(records) {
     var container = document.getElementById('monthly-report-content');
     if (!container) return;
@@ -687,6 +743,7 @@
       container.innerHTML = '<p class="user-analytics-empty">Seçilen filtreye uygun taşıt bulunamadı.</p>';
       return;
     }
+    filteredRecords = applyMonthlyMobileSorting(filteredRecords);
 
     var html = '';
     if (monthlyReportView === 'card') {
@@ -708,12 +765,12 @@
     } else {
       html += '<div class="monthly-report-list-table">';
       html += '<div class="monthly-report-list-header">';
-      html += '<div class="monthly-report-list-cell cell-plate">PLAKA</div>';
-      html += '<div class="monthly-report-list-cell cell-brand">MARKA / MODEL</div>';
-      html += '<div class="monthly-report-list-cell cell-driver">KULLANICI</div>';
-      html += '<div class="monthly-report-list-cell cell-km">KM</div>';
-      html += '<div class="monthly-report-list-cell cell-branch">ŞUBE</div>';
-      html += '<div class="monthly-report-list-cell cell-status">DURUM</div>';
+      html += '<div class="monthly-report-list-cell cell-plate"><button type="button" class="monthly-sortable-header" data-sort-key="plate">PLAKA' + (monthlyMobileSortState.key === 'plate' ? ' ' + (monthlyMobileSortState.direction === 'asc' ? '▲' : '▼') : '') + '</button></div>';
+      html += '<div class="monthly-report-list-cell cell-brand"><button type="button" class="monthly-sortable-header" data-sort-key="brand">MARKA / MODEL' + (monthlyMobileSortState.key === 'brand' ? ' ' + (monthlyMobileSortState.direction === 'asc' ? '▲' : '▼') : '') + '</button></div>';
+      html += '<div class="monthly-report-list-cell cell-driver"><button type="button" class="monthly-sortable-header" data-sort-key="driver">KULLANICI' + (monthlyMobileSortState.key === 'driver' ? ' ' + (monthlyMobileSortState.direction === 'asc' ? '▲' : '▼') : '') + '</button></div>';
+      html += '<div class="monthly-report-list-cell cell-km"><button type="button" class="monthly-sortable-header" data-sort-key="km">KM' + (monthlyMobileSortState.key === 'km' ? ' ' + (monthlyMobileSortState.direction === 'asc' ? '▲' : '▼') : '') + '</button></div>';
+      html += '<div class="monthly-report-list-cell cell-branch"><button type="button" class="monthly-sortable-header" data-sort-key="branch">ŞUBE' + (monthlyMobileSortState.key === 'branch' ? ' ' + (monthlyMobileSortState.direction === 'asc' ? '▲' : '▼') : '') + '</button></div>';
+      html += '<div class="monthly-report-list-cell cell-status"><button type="button" class="monthly-sortable-header" data-sort-key="status">DURUM' + (monthlyMobileSortState.key === 'status' ? ' ' + (monthlyMobileSortState.direction === 'asc' ? '▲' : '▼') : '') + '</button></div>';
       html += '<div class="monthly-report-list-cell cell-action">İŞLEM</div>';
       html += '</div>';
       html += '<div class="monthly-report-list">';
@@ -725,10 +782,14 @@
         html += '<article class="monthly-report-list-row ' + kmMeta.rowClass + '">';
         html += '<div class="monthly-report-list-cell cell-plate">' + escapeHtmlLocal(formatPlaka(record.plaka || '-')) + '</div>';
         html += '<div class="monthly-report-list-cell cell-brand"><strong>' + escapeHtmlLocal(vehicleTitle) + '</strong></div>';
-        html += '<div class="monthly-report-list-cell cell-driver">' + escapeHtmlLocal(driverName) + '</div>';
+        html += '<div class="monthly-report-list-cell cell-driver' + (record.atama_var === false ? ' is-unassigned-driver' : '') + '">' + escapeHtmlLocal(driverName) + '</div>';
         html += '<div class="monthly-report-list-cell cell-km">' + escapeHtmlLocal(formatKmValue(record.km)) + '</div>';
         html += '<div class="monthly-report-list-cell cell-branch">' + escapeHtmlLocal(toTitleCase(record.branch_name || 'Şubesiz')) + '</div>';
-        html += '<div class="monthly-report-list-cell cell-status">' + buildMonthlyStatusBadge(record, kmMeta, true) + '</div>';
+        html += '<div class="monthly-report-list-cell cell-status">' + buildMonthlyStatusBadge(record, kmMeta, true);
+        if (shouldShowMobileStatusWhatsapp(record, kmMeta)) {
+          html += '<div class="monthly-mobile-status-actions">' + buildMonthlyActions(record, kmMeta) + '</div>';
+        }
+        html += '</div>';
         html += '<div class="monthly-report-list-cell cell-action">' + actionHtml + '</div>';
         html += '</article>';
       });
@@ -738,6 +799,7 @@
 
     container.innerHTML = html;
     bindMonthlyResultActions(container);
+    bindMonthlyMobileSorting(container);
   }
 
   function resetPendingAlertUi() {
