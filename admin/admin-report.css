@@ -149,6 +149,10 @@ body.admin-report-page::-webkit-scrollbar {
     align-self: stretch;
     width: 100%;
   }
+
+  .admin-hero-title-wrap h1 {
+    font-size: 21px;
+  }
 }
 
 /* --- Ana içerik --- */
@@ -1845,6 +1849,13 @@ body.admin-report-page::-webkit-scrollbar {
     box-sizing: border-box;
   }
 
+  .admin-report-hero .hero-logo.admin-report-hero-side {
+    flex: 0 0 calc(var(--hero-logo-width) - 3px);
+    width: calc(var(--hero-logo-width) - 3px);
+    min-width: calc(var(--hero-logo-width) - 3px);
+    box-sizing: border-box;
+  }
+
   .admin-report-subtitle {
     font-size: calc(17px - 0.5pt);
   }
@@ -1986,10 +1997,6 @@ body.admin-report-page::-webkit-scrollbar {
   .pending-card {
     grid-template-columns: 1fr auto;
     align-items: center;
-  }
-  .admin-hero-title-wrap h1 {
-    font-size: 23px !important;
-    letter-spacing: 2.5px !important;
   }
 }
 
@@ -2765,20 +2772,20 @@ body.admin-report-page::-webkit-scrollbar {
   }
 
   .monthly-branch-grid .branch-name {
-    font-size: clamp(10px, 3.4vw, 12px);
+    font-size: clamp(10.5px, 3.5vw, 12.5px);
     line-height: 1.15;
     text-align: center;
   }
 
   .user-analytics-branch-grid .branch-name {
-    font-size: clamp(10px, 3.4vw, 12px);
+    font-size: clamp(10.5px, 3.5vw, 12.5px);
     line-height: 1.15;
     text-align: center;
   }
 
   .monthly-branch-grid .branch-count,
   .user-analytics-branch-grid .branch-count {
-    font-size: 11.5px;
+    font-size: 12px;
     text-align: center;
   }
 
@@ -2841,7 +2848,7 @@ body.admin-report-page::-webkit-scrollbar {
   }
 
   .monthly-report-list-cell.cell-driver.is-unassigned-driver {
-    font-size: 10.5px;
+    font-size: 11px;
     font-weight: 700;
     white-space: nowrap;
     overflow: hidden;
@@ -2974,10 +2981,4 @@ body.admin-report-page::-webkit-scrollbar {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   line-height: 1.6;
-}
-
-@media (min-width: 641px) {
-  .admin-hero-title-wrap h1 {
-    font-size: 21px;
-  }
 }
