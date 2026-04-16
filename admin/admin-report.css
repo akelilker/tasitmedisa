@@ -2490,7 +2490,7 @@ body.admin-report-page::-webkit-scrollbar {
   min-height: 40px;
   padding: 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  background: var(--bg);
+  background: transparent;
 }
 
 .monthly-report-list-row:last-child {
@@ -2498,7 +2498,7 @@ body.admin-report-page::-webkit-scrollbar {
 }
 
 .monthly-report-list-row:nth-child(even) {
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(255, 255, 255, 0.03);
 }
 
 .monthly-report-list-cell {
