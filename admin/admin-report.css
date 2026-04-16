@@ -2948,7 +2948,7 @@ body.admin-report-page::-webkit-scrollbar {
     line-height: 1.1;
   }
 
-  .monthly-report-list-cell.cell-driver span {
+  .monthly-report-list-cell.cell-driver span:not(:only-of-type) {
     display: block;
   }
 
