@@ -2070,7 +2070,7 @@ body.admin-report-page::-webkit-scrollbar {
 
 .admin-tab-btn.active {
   color: #f8fafc;
-  border-bottom-color: rgba(var(--theme-color-rgb), 0.85);
+  border-bottom-color: rgba(var(--theme-color-rgb), 0.55);
 }
 
 .admin-tab-btn:hover {
@@ -2651,11 +2651,19 @@ body.admin-report-page::-webkit-scrollbar {
 
   .report-selection-left,
   .report-selection-bar,
-  .report-toolbar-row,
   .user-analytics-toolbar,
   .user-analytics-toolbar-right {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  .report-toolbar-row,
+  .report-toolbar-row.report-toolbar-compact {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
   }
 
   .report-selection-meta {
@@ -2667,19 +2675,22 @@ body.admin-report-page::-webkit-scrollbar {
   }
 
   .report-toolbar-period {
+    width: auto;
     min-width: 0;
-    max-width: none;
-    width: 100%;
+    max-width: 48%;
+    flex: 0 0 auto;
   }
 
   .report-toolbar-period select {
-    width: 100%;
-    min-width: 0;
+    width: auto;
+    min-width: 102px;
+    max-width: 100%;
   }
 
   .report-toolbar-actions {
-    width: 100%;
+    width: auto;
     justify-content: flex-end;
+    flex: 0 0 auto;
   }
 
   .report-search-container.open,
@@ -2688,52 +2699,105 @@ body.admin-report-page::-webkit-scrollbar {
   }
 
   .monthly-branch-grid .branch-card {
-    width: calc((100% - 3px) / 2);
-    max-width: calc((100% - 3px) / 2);
-    flex-basis: calc((100% - 3px) / 2);
+    width: calc((100% - (2 * 3px)) / 3);
+    max-width: calc((100% - (2 * 3px)) / 3);
+    flex-basis: calc((100% - (2 * 3px)) / 3);
   }
 
   .user-analytics-branch-grid .branch-card {
-    width: calc((100% - 3px) / 2);
-    max-width: calc((100% - 3px) / 2);
-    flex-basis: calc((100% - 3px) / 2);
+    width: calc((100% - (2 * 3px)) / 3);
+    max-width: calc((100% - (2 * 3px)) / 3);
+    flex-basis: calc((100% - (2 * 3px)) / 3);
   }
 
   .monthly-branch-grid .branch-name {
-    font-size: clamp(10px, 3.8vw, 12px);
+    font-size: clamp(9px, 3.2vw, 11px);
+    line-height: 1.15;
+    text-align: center;
   }
 
   .user-analytics-branch-grid .branch-name {
-    font-size: clamp(10px, 3.8vw, 12px);
+    font-size: clamp(9px, 3.2vw, 11px);
+    line-height: 1.15;
+    text-align: center;
+  }
+
+  .monthly-branch-grid .branch-count,
+  .user-analytics-branch-grid .branch-count {
+    font-size: 10.5px;
+    text-align: center;
   }
 
   .monthly-report-list-header,
   .monthly-report-list-row {
     grid-template-columns:
-      minmax(0, 0.92fr)
-      minmax(0, 1.28fr)
-      minmax(0, 1.02fr)
-      minmax(0, 0.76fr)
-      minmax(0, 1.06fr)
-      minmax(3.35rem, 0.68fr)
-      minmax(2.85rem, 0.58fr);
-    column-gap: 3px;
+      minmax(0, 0.80fr)
+      minmax(0, 1.14fr)
+      minmax(0, 0.90fr)
+      minmax(0, 0.72fr)
+      minmax(0, 0.95fr)
+      minmax(2.25rem, 0.44fr)
+      minmax(2.25rem, 0.44fr);
+    column-gap: 2px;
   }
 
   .monthly-report-list-cell {
     min-height: 38px;
-    padding: 4px 3px;
-    font-size: 10.5px;
+    padding: 4px 2px;
+    font-size: 10px;
+    line-height: 1.15;
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+    text-overflow: clip;
   }
 
   .monthly-report-list-header .monthly-report-list-cell {
-    font-size: 9.5px;
+    font-size: 9px;
     padding: 2px 2px;
+    line-height: 1.05;
+    white-space: normal;
+    word-break: break-word;
   }
 
   .monthly-report-list-cell.cell-brand strong {
-    font-size: 10.5px;
-    line-height: 1.12;
+    font-size: 9.8px;
+    line-height: 1.1;
+  }
+
+  .monthly-report-list-cell.cell-plate {
+    font-size: 9.2px;
+    letter-spacing: 0;
+  }
+
+  .monthly-report-list-cell.cell-status,
+  .monthly-report-list-cell.cell-action {
+    justify-content: center;
+    padding-left: 1px;
+    padding-right: 1px;
+  }
+
+  .monthly-report-list-cell.cell-driver,
+  .monthly-report-list-cell.cell-branch {
+    line-height: 1.1;
+  }
+
+  .view-card.monthly-report-cards .card {
+    padding: 10px 8px;
+  }
+
+  .view-card.monthly-report-cards .card-plate {
+    font-size: 11px;
+    line-height: 1.15;
+    word-break: break-all;
+  }
+
+  .view-card.monthly-report-cards .card-brand-model,
+  .view-card.monthly-report-cards .card-third-line {
+    font-size: 10px;
+    line-height: 1.2;
+    word-break: break-word;
+    overflow-wrap: anywhere;
   }
 
   .monthly-report-list-cell .monthly-status-icon svg {
