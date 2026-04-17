@@ -552,7 +552,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
     top: 0;
     left: 0;
     right: 0;
-    bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0));
+    bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0));
     border-top: 0.5px solid var(--border-red-tech);
     border-left: 0.5px solid var(--border-red-tech);
     border-right: 0.5px solid var(--border-red-tech);
@@ -1597,6 +1597,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   position: relative;
   background: var(--modal-bg) !important;
   background-color: var(--modal-bg) !important; /* Cam etkisini beton: saydamlık yok */
+  background-clip: padding-box;
   width: 100%;
   max-width: var(--modal-max-width);
   margin: max(12px, env(safe-area-inset-top)) auto 0 auto !important;
@@ -1607,8 +1608,9 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   border: 0.5px solid var(--border-medium);
   border-bottom: 1px solid var(--border-medium) !important;
   box-shadow: none !important;
-  overflow-x: hidden;
+  overflow: hidden;
   pointer-events: auto;
+  isolation: isolate;
   overscroll-behavior: none;
   overscroll-behavior-x: none;
 }
@@ -1900,7 +1902,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #a
 }
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay.active,
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay.open {
-    isolation: auto !important; /* .modal-overlay isolate kilidini modal açıkken kaldırır; footer glow ile katman çakışması azalır */
+    isolation: isolate !important; /* Modal dekor/pseudo katmanlarını kendi stack içinde kilitle */
     background: var(--bg) !important;
     background-color: var(--bg) !important;
     backdrop-filter: none !important;
