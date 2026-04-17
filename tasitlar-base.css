@@ -1084,6 +1084,17 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     border-top-right-radius: var(--modal-radius);
 }
 
+/* Masaüstü: header gradient aynı; yalnızca üst 1px taşmayı maskele (container border çizgisi) */
+@media (min-width: 769px) {
+    .tasitlar-modal-overlay .modal-header {
+        -webkit-mask-image: linear-gradient(to bottom, transparent 0, transparent 1px, black 1px, black 100%);
+        mask-image: linear-gradient(to bottom, transparent 0, transparent 1px, black 1px, black 100%);
+        -webkit-mask-size: 100% 100%;
+        mask-size: 100% 100%;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+    }
+}
 
 /* Tarihçe modalı – sekme başlıkları yatüm viewport'lar) */
 #vehicle-history-modal #history-tabs {
