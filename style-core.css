@@ -1909,6 +1909,21 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .m
     -webkit-backdrop-filter: none !important;
 }
 
+/* Modal açık: footer–modal arası gap’te kalan taşmayı kapat (footer box-shadow / shell aynı; sadece bu şerit üstüne opak örtü) */
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open::after {
+    content: '';
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0));
+    width: 100%;
+    max-width: 500px;
+    height: var(--app-footer-gap);
+    background: var(--bg);
+    pointer-events: none;
+    z-index: 10015;
+}
+
 /* Kayıt / rapor / tüm taşıt modalları: şeffaf modül CSS’ini ez — footer ışığı sızmasın */
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicle-modal.modal-overlay,
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #reports-modal.modal-overlay,
@@ -2702,6 +2717,19 @@ body.modal-open .app-container {
     position: relative;
     border-bottom: none !important;
 }
+@media (min-width: 769px) {
+  #cache-confirm-modal .modal-header,
+  #info-modal .modal-header,
+  #tescil-tarih-confirm-modal .modal-header,
+  #tescil-tarih-input-modal .modal-header {
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0, transparent 1px, black 1px, black 100%);
+    mask-image: linear-gradient(to bottom, transparent 0, transparent 1px, black 1px, black 100%);
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100% 100%;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+  }
+}
 
 #cache-confirm-modal .modal-header h2,
 #info-modal .modal-header h2,
@@ -3038,27 +3066,6 @@ body.modal-open .app-container {
     bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0));
   }
 
-  /* Kırmızı header gradient’i modül CSS’inde üst kenarda; container üst border çizgisini yemesin (sadece ≥769). */
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicle-modal .modal-header,
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #reports-modal .modal-header,
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .tasitlar-modal-overlay .modal-header,
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .ayarlar-modal-overlay .modal-header,
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #branch-modal .modal-header,
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #branch-form-modal .modal-header,
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #user-modal .modal-header,
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #user-form-modal .modal-header,
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #data-management-modal .modal-header,
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #dis-veri-panel .modal-header,
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #cache-confirm-modal .modal-header,
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #info-modal .modal-header,
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #tescil-tarih-confirm-modal .modal-header,
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #tescil-tarih-input-modal .modal-header {
-    background-color: var(--modal-bg);
-    background-image: linear-gradient(180deg, rgba(255, 0, 0, 0.36) 0%, rgba(255, 0, 0, 0.27) 25%, rgba(255, 0, 0, 0.20) 50%, rgba(255, 0, 0, 0.14) 75%, transparent 100%);
-    background-size: 100% calc(100% - 1px);
-    background-position: center bottom;
-    background-repeat: no-repeat;
-  }
   /* Omnidirectional kırmızımsı halo footer köşelerinde birikmez */
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap {
     box-shadow: 0 2px 16px rgba(0, 0, 0, 0.32);

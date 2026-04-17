@@ -383,6 +383,20 @@ body.modal-open #info-modal.open {
     }
 }
 
+/* Masaüstü: gradient owner aynı; üst 1px taşma maskesi */
+@media (min-width: 769px) {
+    .ayarlar-modal-overlay .modal-header,
+    #branch-form-modal .modal-header,
+    #user-form-modal .modal-header {
+        -webkit-mask-image: linear-gradient(to bottom, transparent 0, transparent 1px, black 1px, black 100%);
+        mask-image: linear-gradient(to bottom, transparent 0, transparent 1px, black 1px, black 100%);
+        -webkit-mask-size: 100% 100%;
+        mask-size: 100% 100%;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+    }
+}
+
 /* Header action buttons: form altında */
 
 .modal-header h2 {
