@@ -57,17 +57,6 @@ border-top-left-radius: var(--modal-radius, 10px);
 border-top-right-radius: var(--modal-radius, 10px);
 }
 
-@media (min-width: 769px) {
-#reports-modal .modal-header {
--webkit-mask-image: linear-gradient(to bottom, transparent 0, transparent 1px, black 1px, black 100%);
-mask-image: linear-gradient(to bottom, transparent 0, transparent 1px, black 1px, black 100%);
--webkit-mask-size: 100% 100%;
-mask-size: 100% 100%;
--webkit-mask-repeat: no-repeat;
-mask-repeat: no-repeat;
-}
-}
-
 /* BAŞLIK */
 #reports-modal .modal-header h2 {
 color: #f0f0f0 !important;
