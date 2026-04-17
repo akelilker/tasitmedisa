@@ -2844,17 +2844,14 @@ body.modal-open .app-container {
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .app-container::before {
     bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
   }
-}
-
-/* === NOKTA ATIŞI: Kırmızı yan çizgiler footer hizasında çivili (sarkan/kısa kalma yok) === */
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-container::before {
-  bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
-}
-@media (max-width: 640px) {
-  .content-wrap::before {
+  /* Modal kapalıyken (≤768): ::before tabanı gap’siz — eski mobil/tablet görünümü. Masaüstü ≥769’da bu blok yok; taban kural (gap’li) geçer. */
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page):not(.modal-open) .app-container::before {
     bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
   }
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-container::before {
+}
+
+@media (max-width: 640px) {
+  .content-wrap::before {
     bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
   }
 }
@@ -3036,9 +3033,31 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
     opacity: 0;
     background: none;
   }
-  /* İç kırmızı inset footer şeridine inmesin */
+  /* İç kırmızı inset footer + modal–footer gap şeridine inmesin */
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-container::after {
-    bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0));
+    bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0));
+  }
+
+  /* Kırmızı header gradient’i modül CSS’inde üst kenarda; container üst border çizgisini yemesin (sadece ≥769). */
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicle-modal .modal-header,
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #reports-modal .modal-header,
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .tasitlar-modal-overlay .modal-header,
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .ayarlar-modal-overlay .modal-header,
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #branch-modal .modal-header,
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #branch-form-modal .modal-header,
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #user-modal .modal-header,
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #user-form-modal .modal-header,
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #data-management-modal .modal-header,
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #dis-veri-panel .modal-header,
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #cache-confirm-modal .modal-header,
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #info-modal .modal-header,
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #tescil-tarih-confirm-modal .modal-header,
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #tescil-tarih-input-modal .modal-header {
+    background-color: var(--modal-bg);
+    background-image: linear-gradient(180deg, rgba(255, 0, 0, 0.36) 0%, rgba(255, 0, 0, 0.27) 25%, rgba(255, 0, 0, 0.20) 50%, rgba(255, 0, 0, 0.14) 75%, transparent 100%);
+    background-size: 100% calc(100% - 1px);
+    background-position: center bottom;
+    background-repeat: no-repeat;
   }
   /* Omnidirectional kırmızımsı halo footer köşelerinde birikmez */
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap {
