@@ -351,6 +351,10 @@ body.dashboard-page {
   gap: 2px;
   min-width: 0;
 }
+/* Dashboard: başlık + alt satır (metalik alt başlık) logoyla aynı optik bantta; çok hafif aşağı */
+.dashboard-page .hero.hero-two-rows .hero-title-block {
+  transform: translateY(3px);
+}
 .hero.hero-two-rows .hero-spacer {
   grid-column: 3;
   display: flex;
@@ -449,7 +453,8 @@ body.dashboard-page {
   align-items: center;
   justify-content: center;
 }
-.driver-below-hero-notification-slot:empty {
+.driver-below-hero-notification-slot:empty,
+.driver-below-hero-notification-slot:has(#driver-sliding-warning:empty) {
   display: none;
 }
 .driver-below-hero-notification-slot .driver-sliding-warning {
@@ -811,7 +816,8 @@ body.dashboard-page {
 .driver-sliding-warning {
   flex: 1;
   min-width: 0;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: visible;
   font-size: 13px;
   color: var(--theme-color);
   text-align: center;
@@ -876,6 +882,8 @@ body.dashboard-page {
   animation: driver-warning-scale 1.2s ease-in-out infinite;
   margin-right: 0;
   vertical-align: middle;
+  line-height: 1;
+  overflow: visible;
 }
 @keyframes driver-warning-scale {
   0%, 100% { transform: scale(1); }
@@ -5396,9 +5404,11 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     max-width: 70% !important;
     margin-left: auto !important; /* Kapsayıcıyı en sağa ittik */
     padding-right: 4px !important; /* Kenarla arasındaki o meşhur 4px boşluk */
-    overflow: hidden !important;
+    overflow-x: hidden !important;
+    overflow-y: visible !important;
     display: flex !important;
     justify-content: flex-end !important; /* İçeriği sağa yasladık */
+    align-items: center !important;
   }
   .dashboard-page .driver-below-hero-notification-slot .driver-sliding-warning {
     width: 100% !important;
