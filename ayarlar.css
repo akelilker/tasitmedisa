@@ -500,15 +500,21 @@ body.modal-open #info-modal.open {
 }
 
 /* Modal Body */
-/* Şube/Kullanıcı listesi: üstte modal-body (8px) + iç wrapper (4px) = geri çubuktan "+ Yeni …" butonuna 12px */
+/* Şube/Kullanıcı listesi: masaüstü üst 10px + iç wrapper 4px (önceki düzen); mobilde 8px + 4px = 12px */
 #branch-modal .modal-body,
 #user-modal .modal-body {
     flex: 1 1 auto;
     overflow-y: auto;
     overflow-x: hidden;
-    padding: 8px 16px 16px;
+    padding: 10px 16px 16px;
     min-height: 0;
     scrollbar-width: none;
+}
+@media (max-width: 768px) {
+    #branch-modal .modal-body,
+    #user-modal .modal-body {
+        padding-top: 8px;
+    }
 }
 #branch-form-modal .modal-body,
 #user-form-modal .modal-body,
