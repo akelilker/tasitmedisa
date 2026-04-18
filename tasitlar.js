@@ -537,12 +537,12 @@
       const widthMap = isMobile
         ? {
             'year': '32px',
-            'plate': '62px',
+            'plate': '68px',
             'brand': '2.6fr',
             'km': '52px',
             'transmission': '60px',
             'user': '1.95fr',
-            'branch': '2.25fr'
+            'branch': '2.06fr'
           }
         : isCompactDesktop
           ? {

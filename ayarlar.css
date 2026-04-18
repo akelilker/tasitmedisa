@@ -1590,6 +1590,33 @@ input.settings-form-input:-moz-autofill,
 /* === MASAÜSTÜ AYARLAR === */
 @media (min-width: 641px) {
     .settings-dropdown button { text-align: center; }
+    /* #settings-menu: ana sayfa .menu-btn ile aynı kutu dili (bildirim listesi hariç) */
+    #settings-menu.settings-dropdown.open {
+        gap: 5px !important;
+    }
+    #settings-menu > button,
+    #settings-menu .has-submenu-wrapper .has-submenu {
+        height: 54px !important;
+        padding: 18px !important;
+        border-radius: 12px !important;
+        background: linear-gradient(180deg, var(--hero-gradient-start), var(--hero-gradient-end)) !important;
+        border: 1px solid var(--border-subtle) !important;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2), 0 4px 16px rgba(var(--theme-color-rgb), 0.1) !important;
+        font-weight: 700 !important;
+        font-size: clamp(12px, 2.8vw, 14px) !important;
+        letter-spacing: 0.06em !important;
+        margin-bottom: 0 !important;
+    }
+    #settings-menu > button.cache-clear-btn {
+        border: 1px solid rgba(var(--theme-color-rgb), 0.5) !important;
+    }
+    #settings-menu > button.settings-logout-btn {
+        border: 1px solid rgba(var(--theme-color-rgb), 0.5) !important;
+        color: var(--theme-color) !important;
+    }
+    #settings-menu > .has-submenu-wrapper {
+        margin-bottom: 0 !important;
+    }
     #data-management-modal .universal-back-bar,
     #dis-veri-panel .universal-back-bar {
         margin-top: 0 !important;
@@ -2177,24 +2204,28 @@ input.settings-form-input:-moz-autofill,
      * Ayarlar dişlisi menüsü (yalnız #settings-menu): mobilde ana sayfa .menu-btn ile aynı çerçeve.
      * Bildirimler (#notifications-dropdown) dahil diğer .settings-dropdown örneklerine dokunulmaz.
      */
+    #settings-menu.settings-dropdown.open {
+        gap: 8px !important;
+    }
     #settings-menu > button,
     #settings-menu .has-submenu-wrapper .has-submenu {
         background: linear-gradient(180deg, var(--hero-gradient-start), var(--hero-gradient-end)) !important;
-        border: 1px solid var(--border-subtle) !important;
+        border: 1px solid rgba(255, 255, 255, 0.55) !important;
         border-radius: 12px !important;
-        height: 54px !important;
+        height: 64px !important;
+        padding: 18px !important;
         box-shadow:
-            0 4px 10px rgba(0, 0, 0, 0.2),
-            0 4px 16px rgba(var(--theme-color-rgb), 0.1) !important;
+            0 4px 14px rgba(0, 0, 0, 0.25),
+            0 4px 20px rgba(var(--theme-color-rgb), 0.14) !important;
     }
     #settings-menu > button {
-        margin-bottom: 10px !important;
+        margin-bottom: 0 !important;
     }
     #settings-menu > button:last-child {
         margin-bottom: 0 !important;
     }
     #settings-menu > .has-submenu-wrapper {
-        margin-bottom: 10px !important;
+        margin-bottom: 0 !important;
     }
     #settings-menu > .has-submenu-wrapper:last-child {
         margin-bottom: 0 !important;
@@ -2255,8 +2286,8 @@ input.settings-form-input:-moz-autofill,
     }
 }
 
-/* Dar ekran + gerçek hover: ayarlar menüsü .menu-btn ile aynı hover (dokunmatikte devre dışı) */
-@media (max-width: 640px) and (hover: hover) {
+/* Gerçek hover: ayarlar menüsü .menu-btn ile aynı hover (dokunmatikte devre dışı); masaüstü dahil */
+@media (hover: hover) {
     #settings-menu > button:hover,
     #settings-menu .has-submenu-wrapper .has-submenu:hover {
         background: linear-gradient(180deg, var(--hero-gradient-start), var(--hero-gradient-end)) !important;
