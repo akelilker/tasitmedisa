@@ -500,13 +500,13 @@ body.modal-open #info-modal.open {
 }
 
 /* Modal Body */
-/* Şube/Kullanıcı listesi: üstte modal-body + iç wrapper çift padding birikimini kısmak için üst biraz daha dar */
+/* Şube/Kullanıcı listesi: üstte modal-body (8px) + iç wrapper (4px) = geri çubuktan "+ Yeni …" butonuna 12px */
 #branch-modal .modal-body,
 #user-modal .modal-body {
     flex: 1 1 auto;
     overflow-y: auto;
     overflow-x: hidden;
-    padding: 10px 16px 16px;
+    padding: 8px 16px 16px;
     min-height: 0;
     scrollbar-width: none;
 }
@@ -862,10 +862,10 @@ body.modal-open #info-modal.open {
 }
 
 .settings-add-text-btn.user-add-btn { color: var(--txt-gray-darker); }
-/* Şube/Kullanıcı liste: + Yeni… ile kart ızgarası arası tek boşluk kaynağı */
+/* Şube/Kullanıcı liste: + Yeni… ile kart ızgarası arası tek boşluk kaynağı (16px) */
 #branch-modal .modal-body .settings-add-text-btn.user-add-btn,
 #user-modal .modal-body .settings-add-text-btn.user-add-btn {
-    margin-bottom: 14px;
+    margin-bottom: 16px;
 }
 .settings-add-text-btn:hover { 
     font-size: 16px;
