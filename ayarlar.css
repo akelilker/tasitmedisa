@@ -1344,6 +1344,36 @@ input.settings-form-input:-moz-autofill,
     padding-bottom: 6px;
 }
 
+/* Mobil / tablet / iOS PWA: Şube & Kullanıcı listesi — üst boşluğu sıkıştır, + Yeri… ile kartlar arası sabit gap */
+@media (max-width: 768px) {
+    #branch-modal .modal-body,
+    #user-modal .modal-body {
+        padding-top: 8px !important;
+    }
+    #branch-modal .modal-body > div,
+    #user-modal .modal-body > div {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 14px;
+        padding: 4px 16px 16px;
+    }
+    #branch-modal .modal-body .settings-add-text-btn.user-add-btn,
+    #user-modal .modal-body .settings-add-text-btn.user-add-btn {
+        margin-bottom: 0 !important;
+        flex-shrink: 0;
+        align-self: center;
+    }
+    #branch-modal #branch-list,
+    #user-modal #user-list {
+        flex: 1 1 auto;
+        min-height: 0;
+    }
+    #user-modal .user-management-back-bar {
+        padding-bottom: 8px !important;
+    }
+}
+
 /* Şube Yönetimi & Kullanıcı Yönetimi: kutulardaki metinler üstten hizalı */
 #branch-modal #branch-list .settings-card,
 #user-modal #user-list .settings-card {
