@@ -2860,17 +2860,17 @@ body.modal-open .app-container {
 @media (max-width: 768px) and (display-mode: standalone) {
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #branch-form-modal.modal-overlay,
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #user-form-modal.modal-overlay {
-    align-items: flex-start !important;
+    align-items: stretch !important;
     justify-content: flex-start !important;
-    overflow-y: auto !important;
-    touch-action: pan-y !important;
+    overflow: hidden !important;
+    touch-action: none !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #branch-form-modal.modal-overlay .modal-container,
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #user-form-modal.modal-overlay .modal-container {
-    height: auto !important;
-    max-height: none !important;
+    height: 100% !important;
+    max-height: 100% !important;
     min-height: 0 !important;
-    touch-action: pan-y !important;
+    touch-action: none !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero {
     min-height: 67px !important;
