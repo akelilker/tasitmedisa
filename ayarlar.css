@@ -415,6 +415,10 @@ body.modal-open #info-modal.open {
 #user-modal .user-management-back-bar {
     justify-content: space-between !important;
     gap: 0 !important;
+    align-items: center !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    box-sizing: border-box !important;
 }
 #user-modal .user-management-search-wrap {
     margin-left: auto;
@@ -486,8 +490,8 @@ body.modal-open #info-modal.open {
     border-radius: 0;
 }
 #user-modal .user-management-search-toggle svg {
-    width: 19px;
-    height: 19px;
+    width: 20px;
+    height: 20px;
 }
 .user-management-search-toggle:hover {
     color: #ffffff;
@@ -517,19 +521,15 @@ body.modal-open #info-modal.open {
     padding-right: 16px !important;
 }
 
-/* Ayarlar içi bölümler: sola kaymayı önle, sol/sağ eşit */
+/* Ayarlar içi bölümler: sola kaymayı önle, sol/sağ eşit; üstte çift padding birikimini kıs */
 #branch-modal .modal-body > div,
 #user-modal .modal-body > div {
     box-sizing: border-box;
     width: 100%;
     margin-left: 0;
     margin-right: 0;
-    padding: 16px;
-}
-/* Şube / Kullanıcı Yönetimi: Yeni Şube/Kullanıcı + kutular 2 satır yukarı */
-#branch-modal .modal-body > div,
-#user-modal .modal-body > div {
-    margin-top: -24px;
+    margin-top: 0;
+    padding: 10px 16px 16px;
 }
 
 /* Veri Yedekleme Butonları */
@@ -855,6 +855,11 @@ body.modal-open #info-modal.open {
 }
 
 .settings-add-text-btn.user-add-btn { color: var(--txt-gray-darker); }
+/* Şube/Kullanıcı liste: u-mb-16 ile kartlara fazla mesafe bırakılmasın */
+#branch-modal .modal-body .settings-add-text-btn.user-add-btn,
+#user-modal .modal-body .settings-add-text-btn.user-add-btn {
+    margin-bottom: 10px;
+}
 .settings-add-text-btn:hover { 
     font-size: 16px;
 }
@@ -1330,13 +1335,13 @@ input.settings-form-input:-moz-autofill,
 }
 #branch-modal #branch-list {
     justify-content: center !important;
-    padding-top: 6px;
+    padding-top: 2px;
     padding-bottom: 6px;
 }
 #user-modal #user-list,
 #user-modal .modal-body #user-list {
     justify-content: center !important;
-    padding-top: 6px;
+    padding-top: 2px;
     padding-bottom: 6px;
 }
 
