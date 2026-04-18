@@ -2872,6 +2872,15 @@ body.modal-open .app-container {
     min-height: 0 !important;
     touch-action: none !important;
   }
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #branch-form-modal.modal-overlay .modal-body,
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #user-form-modal.modal-overlay .modal-body {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    touch-action: pan-y !important;
+    padding-bottom: calc(var(--app-footer-height) + env(safe-area-inset-bottom, 0)) !important;
+  }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero {
     min-height: 67px !important;
     padding: 12px 12px 12px 3px !important;
