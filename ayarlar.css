@@ -2233,11 +2233,6 @@ input.settings-form-input:-moz-autofill,
         #user-form-modal .modal-container {
             margin-top: 0 !important;
         }
-        #branch-form-modal .modal-body,
-        #user-form-modal .modal-body {
-            overflow-y: auto !important;
-            padding-bottom: calc(var(--app-footer-height) + env(safe-area-inset-bottom, 0)) !important;
-        }
         #user-form-modal .form-label {
             font-size: 14px !important;
         }
