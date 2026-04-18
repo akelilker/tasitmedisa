@@ -416,7 +416,7 @@ body.modal-open #info-modal.open {
     justify-content: space-between !important;
     gap: 0 !important;
     align-items: center !important;
-    padding: 4px 16px 2px !important;
+    padding: 4px 16px 10px !important;
     box-sizing: border-box !important;
 }
 #user-modal .user-management-search-wrap {
@@ -500,8 +500,16 @@ body.modal-open #info-modal.open {
 }
 
 /* Modal Body */
+/* Şube/Kullanıcı listesi: üstte modal-body + iç wrapper çift padding birikimini kısmak için üst biraz daha dar */
 #branch-modal .modal-body,
-#user-modal .modal-body,
+#user-modal .modal-body {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 10px 16px 16px;
+    min-height: 0;
+    scrollbar-width: none;
+}
 #branch-form-modal .modal-body,
 #user-form-modal .modal-body,
 #data-management-modal .modal-body {
@@ -528,7 +536,7 @@ body.modal-open #info-modal.open {
     margin-left: 0;
     margin-right: 0;
     margin-top: 0;
-    padding: 6px 16px 14px;
+    padding: 4px 16px 16px;
 }
 
 /* Veri Yedekleme Butonları */
@@ -854,10 +862,10 @@ body.modal-open #info-modal.open {
 }
 
 .settings-add-text-btn.user-add-btn { color: var(--txt-gray-darker); }
-/* Şube/Kullanıcı liste: u-mb-16 ile kartlara fazla mesafe bırakılmasın */
+/* Şube/Kullanıcı liste: + Yeni… ile kart ızgarası arası tek boşluk kaynağı */
 #branch-modal .modal-body .settings-add-text-btn.user-add-btn,
 #user-modal .modal-body .settings-add-text-btn.user-add-btn {
-    margin-bottom: 8px;
+    margin-bottom: 14px;
 }
 .settings-add-text-btn:hover { 
     font-size: 16px;
@@ -1342,36 +1350,6 @@ input.settings-form-input:-moz-autofill,
     justify-content: center !important;
     padding-top: 0;
     padding-bottom: 6px;
-}
-
-/* Mobil / tablet / iOS PWA: Şube & Kullanıcı listesi — üst boşluğu sıkıştır, + Yeri… ile kartlar arası sabit gap */
-@media (max-width: 768px) {
-    #branch-modal .modal-body,
-    #user-modal .modal-body {
-        padding-top: 8px !important;
-    }
-    #branch-modal .modal-body > div,
-    #user-modal .modal-body > div {
-        display: flex;
-        flex-direction: column;
-        align-items: stretch;
-        gap: 14px;
-        padding: 4px 16px 16px;
-    }
-    #branch-modal .modal-body .settings-add-text-btn.user-add-btn,
-    #user-modal .modal-body .settings-add-text-btn.user-add-btn {
-        margin-bottom: 0 !important;
-        flex-shrink: 0;
-        align-self: center;
-    }
-    #branch-modal #branch-list,
-    #user-modal #user-list {
-        flex: 1 1 auto;
-        min-height: 0;
-    }
-    #user-modal .user-management-back-bar {
-        padding-bottom: 8px !important;
-    }
 }
 
 /* Şube Yönetimi & Kullanıcı Yönetimi: kutulardaki metinler üstten hizalı */
