@@ -453,8 +453,7 @@ body.dashboard-page {
   align-items: center;
   justify-content: center;
 }
-.driver-below-hero-notification-slot:empty,
-.driver-below-hero-notification-slot:has(#driver-sliding-warning:empty) {
+.driver-below-hero-notification-slot:empty {
   display: none;
 }
 .driver-below-hero-notification-slot .driver-sliding-warning {
@@ -1556,10 +1555,9 @@ body.dashboard-page {
     width: 120px !important;
     height: 69px !important;
   }
-  /* Mobil dashboard header: yatay denge — orta kolon nefes, logo sütunu dar, gap artışı (font/min-height dokunulmadı) */
+  /* Mobil dashboard header: sadece grid + logo hizası (yeni pseudo çizgi yok; tipografi aşağıda ayrı blokta) */
   .dashboard-page .hero.hero-two-rows {
-    gap: 10px !important;
-    grid-template-columns: minmax(44px, max-content) minmax(0, 1fr) 40px !important;
+    grid-template-columns: minmax(56px, max-content) minmax(0, 1fr) 52px !important;
   }
   .dashboard-page .hero.hero-two-rows .hero-logo {
     display: flex !important;
@@ -1569,27 +1567,15 @@ body.dashboard-page {
     gap: 2px !important;
     flex: 0 1 auto !important;
     width: max-content !important;
-    min-width: 44px !important;
-    max-width: min(176px, 40vw) !important;
+    min-width: 52px !important;
+    max-width: min(200px, 46vw) !important;
     margin-top: 0 !important;
     margin-left: 0 !important;
     overflow: visible !important;
-    transform: translate(0, 8px) !important;
+    transform: translate(0, -2px) !important;
   }
   .dashboard-page .hero.hero-two-rows .hero-logo picture {
-    max-width: 46px !important;
-  }
-  /* Başlık altı kırmızı çizgi: metin bloğuna göre daha geniş optik (sadece layout pseudo) */
-  .dashboard-page .hero.hero-two-rows .hero-title-line::after {
-    content: '';
-    display: block;
-    width: min(92%, 82vw);
-    height: 2.5px;
-    margin: 5px auto 0;
-    background: linear-gradient(90deg, transparent, var(--theme-color), transparent);
-    border-radius: 1.6px;
-    opacity: 0.72;
-    box-shadow: 0 1px 8px rgba(var(--theme-color-rgb), 0.24);
+    max-width: 52px !important;
   }
   .dashboard-page .main-header-user-name {
     display: block !important;
@@ -5396,54 +5382,21 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     padding-bottom: 12px !important;
   }
 
-  /* Mobil üst satır: uzun uyarı metni ikonları ekran dışına itmesin */
-  .dashboard-page .driver-below-hero-row {
-    width: 100% !important;
-    flex-wrap: nowrap !important;
-    align-items: center !important;
-  }
-  .dashboard-page .driver-below-hero-row .driver-btn-history,
-  .dashboard-page .driver-below-hero-row .driver-btn-logout {
-    flex: 0 0 auto !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-  }
-  .dashboard-page .driver-below-hero-notification-slot:has(#driver-sliding-warning:empty) {
-    flex: 0 0 0 !important;
+  .dashboard-page .driver-below-hero-notification-slot {
+    flex: 0 1 70% !important;
     min-width: 0 !important;
-    max-width: 0 !important;
-    margin: 0 !important;
-    padding: 0 !important;
+    max-width: 70% !important;
+    margin-left: auto !important;
+    padding-right: 4px !important;
     overflow: hidden !important;
-  }
-  .dashboard-page .driver-below-hero-notification-slot:not(:has(#driver-sliding-warning:empty)) {
-    flex: 1 1 auto !important;
-    min-width: 0 !important;
-    max-width: 100% !important;
-    margin-left: 0 !important;
-    padding-right: 2px !important;
-    overflow-x: hidden !important;
-    overflow-y: visible !important;
     display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
+    justify-content: flex-end !important;
   }
   .dashboard-page .driver-below-hero-notification-slot .driver-sliding-warning {
     width: 100% !important;
     max-width: 100% !important;
-    min-height: 28px !important;
-    padding-bottom: 2px !important;
-    box-sizing: border-box !important;
-    justify-content: center !important;
-    align-items: center !important;
-    overflow-x: hidden !important;
-    overflow-y: visible !important;
-  }
-  .dashboard-page .driver-below-hero-notification-slot .driver-warning-icon {
-    line-height: 1 !important;
-    overflow: visible !important;
-    vertical-align: middle !important;
+    justify-content: flex-end !important;
+    padding-right: 0 !important;
   }
 }
 

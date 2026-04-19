@@ -2461,13 +2461,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         border-right: none;
         border-top: 1px solid rgba(var(--footer-glow-rgb), 0.50) !important;
     }
-    /* HEADER KIRMIZI ÇİZGİ - Havada (kırmızı çerçeve ile eşit) */
-    .animated-line {
-        width: 82%;
-        opacity: 0.62;
-        box-shadow: 0 1px 8px rgba(var(--theme-color-rgb), 0.24);
-    }
-    
     .menu-btn .ttl {
         font-size: clamp(16px, 3.35vw, 18px) !important;
         letter-spacing: 1.5px;
@@ -2882,27 +2875,6 @@ body.modal-open .app-container {
     overflow-y: auto !important;
     touch-action: pan-y !important;
     padding-bottom: calc(var(--app-footer-height) + env(safe-area-inset-bottom, 0)) !important;
-  }
-  /* iOS PWA: WebKit — tam viewport + safe-area (üstteki kuralları güçlendirir) */
-  @supports (-webkit-touch-callout: none) {
-    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #branch-form-modal.modal-overlay,
-    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #user-form-modal.modal-overlay {
-      min-height: 100dvh !important;
-      min-height: -webkit-fill-available !important;
-      padding-bottom: env(safe-area-inset-bottom, 0) !important;
-      box-sizing: border-box !important;
-    }
-    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #branch-form-modal.modal-overlay .modal-container,
-    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #user-form-modal.modal-overlay .modal-container {
-      flex: 1 1 auto !important;
-      display: flex !important;
-      flex-direction: column !important;
-    }
-    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #branch-form-modal.modal-overlay .modal-body,
-    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #user-form-modal.modal-overlay .modal-body {
-      -webkit-overflow-scrolling: touch !important;
-      padding-bottom: calc(var(--app-footer-height) + env(safe-area-inset-bottom, 0) + 6px) !important;
-    }
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero {
     min-height: 67px !important;
