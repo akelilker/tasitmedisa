@@ -2396,9 +2396,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         min-height: 44px !important;
     }
     
-    /* Ana sayfa butonları mobilde: yükseklik +2px (64px), gri çerçeve parlak, havada kırmızı gölge */
+    /* Ana sayfa butonları mobilde: iç yükseklik +3px, tipografi bir tık güçlü */
     .menu-btn {
-        height: 64px !important; /* 62px + 2px */
+        height: 67px !important;
         box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25), 0 4px 20px rgba(var(--theme-color-rgb), 0.14);
         border-color: rgba(255, 255, 255, 0.55); /* Çerçeve gri daha parlak (0.45→0.55, kalınlık aynı) */
     }
@@ -2463,12 +2463,13 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     }
     /* HEADER KIRMIZI ÇİZGİ - Havada (kırmızı çerçeve ile eşit) */
     .animated-line {
+        width: 82%;
         opacity: 0.62;
         box-shadow: 0 1px 8px rgba(var(--theme-color-rgb), 0.24);
     }
     
     .menu-btn .ttl {
-        font-size: clamp(15.5px, 3.2vw, 17.5px) !important; /* +1pt daha (14.5→15.5, 16.5→17.5) */
+        font-size: clamp(16px, 3.35vw, 18px) !important;
         letter-spacing: 1.5px;
         text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);  /* Havada, metin berrak */
     }
@@ -2858,6 +2859,7 @@ body.modal-open .app-container {
 
 /* iOS PWA: ana panel footer ve header dengesi (safe-area tek katman) */
 @media (max-width: 768px) and (display-mode: standalone) {
+  /* PWA standalone: Şube/Kullanıcı form modal zinciri (Android + genel) */
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #branch-form-modal.modal-overlay,
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #user-form-modal.modal-overlay {
     align-items: stretch !important;
@@ -2880,6 +2882,27 @@ body.modal-open .app-container {
     overflow-y: auto !important;
     touch-action: pan-y !important;
     padding-bottom: calc(var(--app-footer-height) + env(safe-area-inset-bottom, 0)) !important;
+  }
+  /* iOS PWA: WebKit — tam viewport + safe-area (üstteki kuralları güçlendirir) */
+  @supports (-webkit-touch-callout: none) {
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #branch-form-modal.modal-overlay,
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #user-form-modal.modal-overlay {
+      min-height: 100dvh !important;
+      min-height: -webkit-fill-available !important;
+      padding-bottom: env(safe-area-inset-bottom, 0) !important;
+      box-sizing: border-box !important;
+    }
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #branch-form-modal.modal-overlay .modal-container,
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #user-form-modal.modal-overlay .modal-container {
+      flex: 1 1 auto !important;
+      display: flex !important;
+      flex-direction: column !important;
+    }
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #branch-form-modal.modal-overlay .modal-body,
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #user-form-modal.modal-overlay .modal-body {
+      -webkit-overflow-scrolling: touch !important;
+      padding-bottom: calc(var(--app-footer-height) + env(safe-area-inset-bottom, 0) + 6px) !important;
+    }
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero {
     min-height: 67px !important;
