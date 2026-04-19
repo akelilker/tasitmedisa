@@ -537,7 +537,7 @@
       const widthMap = isMobile
         ? {
             'year': '32px',
-            'plate': '74px',
+            'plate': '70px',
             'brand': '2.6fr',
             'km': '52px',
             'transmission': '60px',
