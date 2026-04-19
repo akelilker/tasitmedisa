@@ -925,6 +925,97 @@ select.settings-form-select option,
     background-color: var(--bg-content, #0d131f) !important;
     color: var(--txt-gray-darker, #adb5bd) !important;
 }
+#user-form-modal .medisa-owner-select {
+    position: relative;
+    width: 100%;
+}
+#user-form-modal select.medisa-owner-select-native {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    border: 0 !important;
+    overflow: hidden !important;
+    clip-path: inset(50%) !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+#user-form-modal .medisa-owner-select-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    user-select: none;
+}
+#user-form-modal .medisa-owner-select-trigger-text {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+#user-form-modal .medisa-owner-select-trigger.placeholder .medisa-owner-select-trigger-text {
+    color: var(--txt-gray-darker, #888);
+    opacity: 0.88;
+}
+#user-form-modal .medisa-owner-select-chevron {
+    width: 16px;
+    height: 16px;
+    flex: 0 0 auto;
+    opacity: 0.82;
+    transition: transform 140ms ease;
+}
+#user-form-modal .medisa-owner-select-trigger.is-open .medisa-owner-select-chevron {
+    transform: rotate(180deg);
+}
+#user-form-modal .medisa-owner-select-menu {
+    display: none;
+    background: var(--bg-content, #0d131f);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 8px;
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.34);
+    overflow-y: auto;
+    overflow-x: hidden;
+    z-index: 10060;
+}
+#user-form-modal .medisa-owner-select-menu.open {
+    display: block;
+}
+#user-form-modal .medisa-owner-select-option {
+    width: 100%;
+    border: 0;
+    background: transparent;
+    color: rgba(240, 244, 248, 0.96);
+    padding: 10px 12px;
+    text-align: left;
+    font: inherit;
+    cursor: pointer;
+    transition: background-color 120ms ease, color 120ms ease;
+}
+#user-form-modal .medisa-owner-select-option.is-placeholder {
+    color: var(--txt-gray-darker, #888);
+}
+#user-form-modal .medisa-owner-select-option:hover,
+#user-form-modal .medisa-owner-select-option:focus {
+    background: rgba(var(--theme-color-rgb), 0.14);
+    color: #ffffff;
+    outline: none;
+}
+#user-form-modal .medisa-owner-select-option.selected {
+    background: rgba(var(--theme-color-rgb), 0.20);
+    color: #ffffff;
+}
+#user-form-modal .medisa-owner-select-option.is-disabled {
+    opacity: 0.52;
+    cursor: default;
+}
+#user-form-modal:has(.medisa-owner-select-menu.open) .universal-btn-group {
+    pointer-events: none !important;
+}
 #user-form-modal .user-form-locked-input,
 #user-form-modal #user-role:disabled {
     color: var(--txt-white, #ffffff) !important;
