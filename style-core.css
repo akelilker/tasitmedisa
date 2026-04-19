@@ -314,7 +314,7 @@ body::-webkit-scrollbar,
   width: 100% !important;
   max-width: 100% !important;
   box-sizing: border-box !important;
-  background: var(--bg-content, #0d131f) !important;
+  background-color: var(--bg-content, #0d131f) !important;
   color: var(--txt-gray-darker, #888) !important; /* Ayarlar: input içi metin gri */
   border: 1px solid rgba(255, 255, 255, 0.25) !important;
 }
@@ -406,10 +406,49 @@ body::-webkit-scrollbar,
   overflow-y: auto !important;
 }
 
-/* Tüm input/select/textarea içerik metni: beyaz-gri hiyerarşisi */
-.form-input,
-select.form-input,
+/* Kapalı native select — ortak görünüm (ok + tema); açık liste OS katmanı */
 select,
+select.form-input {
+  color-scheme: dark;
+  accent-color: var(--theme-color, #d40000);
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  cursor: pointer;
+  line-height: 1.35;
+  box-sizing: border-box;
+  outline: none;
+  border-radius: 6px;
+  padding: 4px 8px;
+  padding-right: 30px;
+  width: 100%;
+  max-width: 100%;
+  font-family: inherit;
+  font-weight: 500;
+  background-color: var(--bg-content, #0d131f);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='%23b8c0cc' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 9px center;
+  background-size: 14px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  color: var(--data-value-color, #a0aec0);
+}
+
+select:hover:not(:disabled),
+select.form-input:hover:not(:disabled) {
+  border-color: rgba(255, 255, 255, 0.38);
+}
+
+select:focus,
+select.form-input:focus {
+  border-color: var(--theme-color);
+  box-shadow: none;
+  outline: none;
+  background-color: var(--bg-content, #0d131f);
+}
+
+/* Input/textarea içerik metni (select yukarıdaki blokta) */
+.form-input:not(select),
 textarea.form-input {
   color: var(--data-value-color, #a0aec0) !important;
 }
