@@ -368,11 +368,15 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
   font-size: 12px !important;
 }
 
-/* Olay Ekle (13 modal): input/select/textarea arka planı – kayıt modalı ile aynı (#0d131f) */
-.olay-ekle-modal .modal-body .form-input,
-.olay-ekle-modal .modal-body select,
+/* Olay Ekle (13 modal): input/textarea arka planı; select’te ok için background-color (shorthand yok) */
+.olay-ekle-modal .modal-body .form-input:not(select),
 .olay-ekle-modal .modal-body textarea {
   background: #0d131f !important;
+  border: 1.1px solid rgba(255, 255, 255, 0.40) !important;
+  color: var(--data-value-color, #f8f9fa) !important;
+}
+.olay-ekle-modal .modal-body select {
+  background-color: #0d131f !important;
   border: 1.1px solid rgba(255, 255, 255, 0.40) !important;
   color: var(--data-value-color, #f8f9fa) !important;
 }
