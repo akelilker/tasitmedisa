@@ -542,7 +542,7 @@ body.modal-open #info-modal.open {
     margin-left: 0;
     margin-right: 0;
     margin-top: 0;
-    padding: 4px 16px 16px;
+    padding: 6px 16px 12px;
 }
 
 /* Veri Yedekleme Butonları */
@@ -871,7 +871,7 @@ body.modal-open #info-modal.open {
 /* Şube/Kullanıcı liste: + Yeni… ile kart ızgarası arası tek boşluk kaynağı (16px) */
 #branch-modal .modal-body .settings-add-text-btn.user-add-btn,
 #user-modal .modal-body .settings-add-text-btn.user-add-btn {
-    margin-bottom: 16px;
+    margin-bottom: 12px;
 }
 .settings-add-text-btn:hover { 
     font-size: 16px;
@@ -2227,8 +2227,10 @@ input.settings-form-input:-moz-autofill,
         background: linear-gradient(180deg, var(--hero-gradient-start), var(--hero-gradient-end)) !important;
         border: 1px solid rgba(255, 255, 255, 0.55) !important;
         border-radius: 12px !important;
-        height: 64px !important;
-        padding: 18px !important;
+        height: 67px !important;
+        padding: 17px 18px !important;
+        font-size: clamp(16px, 3.3vw, 18px) !important;
+        letter-spacing: 1.5px !important;
         box-shadow:
             0 4px 14px rgba(0, 0, 0, 0.25),
             0 4px 20px rgba(var(--theme-color-rgb), 0.14) !important;
