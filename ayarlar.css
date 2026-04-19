@@ -922,7 +922,7 @@ select.settings-form-select option,
 #user-form-modal #user-branch,
 #user-form-modal #user-role {
     color-scheme: dark;
-    background: var(--bg-content, #0d131f) !important;
+    background-color: var(--bg-content, #0d131f) !important;
     color: var(--txt-gray-darker, #adb5bd) !important;
 }
 #user-form-modal .user-form-locked-input,
@@ -1697,10 +1697,8 @@ input.settings-form-input:-moz-autofill,
         font-size: 14px !important; /* 1 punto küçültüldü (15px → 14px) */
         text-align: left;
     }
-    #branch-form-modal .modal-body .form-input,
-    #user-form-modal .modal-body .form-input,
-    #branch-form-modal .modal-body select.form-input,
-    #user-form-modal .modal-body select.form-input {
+    #branch-form-modal .modal-body .form-input:not(select),
+    #user-form-modal .modal-body .form-input:not(select) {
         width: 100%;
         max-width: 100%;
         height: 27px !important;
@@ -1709,6 +1707,22 @@ input.settings-form-input:-moz-autofill,
         padding-left: 8px;
         padding-right: 8px;
         background: var(--bg-content);
+        border: 1.1px solid rgba(255, 255, 255, 0.20);
+        border-radius: 6px;
+        color: var(--txt-gray-darker);
+        font-size: 10px;
+        box-sizing: border-box;
+    }
+    #branch-form-modal .modal-body select.form-input,
+    #user-form-modal .modal-body select.form-input {
+        width: 100%;
+        max-width: 100%;
+        height: 27px !important;
+        padding-top: 5px !important;
+        padding-bottom: 5px !important;
+        padding-left: 8px;
+        padding-right: 30px;
+        background-color: var(--bg-content);
         border: 1.1px solid rgba(255, 255, 255, 0.20);
         border-radius: 6px;
         color: var(--txt-gray-darker);
@@ -1871,14 +1885,20 @@ input.settings-form-input:-moz-autofill,
         border-color: rgba(255, 255, 255, 0.52) !important;
         background: rgba(255, 255, 255, 0.04) !important;
     }
-    .form-input,
-    #branch-form-modal .form-input,
-    #user-form-modal .form-input,
-    #branch-form-modal select.form-input,
-    #user-form-modal select.form-input {
+    .form-input:not(select),
+    #branch-form-modal .form-input:not(select),
+    #user-form-modal .form-input:not(select) {
         color: var(--txt-gray-darker, #888) !important;
         border-color: rgba(255, 255, 255, 0.4) !important;
         background: var(--bg-content, #0d131f) !important;
+    }
+    #branch-form-modal select.form-input,
+    #user-form-modal select.form-input,
+    #branch-form-modal select,
+    #user-form-modal select {
+        color: var(--txt-gray-darker, #888) !important;
+        border-color: rgba(255, 255, 255, 0.4) !important;
+        background-color: var(--bg-content, #0d131f) !important;
     }
     #user-form-modal .user-vehicles-trigger {
         border-color: rgba(255, 255, 255, 0.4) !important;
@@ -2089,16 +2109,24 @@ input.settings-form-input:-moz-autofill,
     #user-form-modal .modal-body .form-section:first-child {
         margin-top: 2px !important;
     }
-    #branch-form-modal .form-input,
-    #user-form-modal .form-input,
-    #branch-form-modal select.form-input,
-    #user-form-modal select.form-input {
+    #branch-form-modal .form-input:not(select),
+    #user-form-modal .form-input:not(select) {
         height: 32px !important;
         padding: 3px 8px;
         font-size: 15.5px !important;
         line-height: 1.2 !important;
         box-sizing: border-box;
         background: var(--bg-content, #0d131f) !important;
+        color: var(--txt-gray-darker, #888) !important; /* Ayarlar: input içi metin gri */
+    }
+    #branch-form-modal select.form-input,
+    #user-form-modal select.form-input {
+        height: 32px !important;
+        padding: 3px 30px 3px 8px;
+        font-size: 15.5px !important;
+        line-height: 1.2 !important;
+        box-sizing: border-box;
+        background-color: var(--bg-content, #0d131f) !important;
         color: var(--txt-gray-darker, #888) !important; /* Ayarlar: input içi metin gri */
     }
     #user-form-modal .form-input,
