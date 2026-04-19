@@ -174,6 +174,53 @@ window.toTitleCase = function(str) {
   }).join(' ');
 };
 
+/** UI/disk rol alanını uygulama içi normalize anahtara çevirir (portal, ayarlar, raporlar ortak) */
+window.medisaMapUiRoleToRol = function(role) {
+  if (role === 'admin') return 'genel_yonetici';
+  if (role === 'genel_yonetici') return 'genel_yonetici';
+  if (role === 'yonetici' || role === 'sube_yonetici') return 'sube_yonetici';
+  if (role === 'driver' || role === 'sales' || role === 'surucu') return 'kullanici';
+  if (role === 'yonetici_kullanici') return 'sube_yonetici';
+  return role || 'kullanici';
+};
+
+window.medisaGetUiRoleFromUser = function(user) {
+  return window.medisaMapUiRoleToRol(user && (user.role || user.rol || user.tip));
+};
+
+/** Ayarlar kullanıcı kartları: Birim Amiri; sales/driver → Kullanıcı */
+window.getUserRoleLabelManagement = function(user) {
+  var labels = {
+    genel_yonetici: 'Genel Yönetici',
+    sube_yonetici: 'Birim Amiri',
+    kullanici: 'Kullanıcı',
+    admin: 'Genel Yönetici',
+    sales: 'Kullanıcı',
+    driver: 'Kullanıcı'
+  };
+  var uiRole = window.medisaGetUiRoleFromUser(user || {});
+  return labels[uiRole] || labels[window.medisaMapUiRoleToRol(uiRole)] || uiRole || 'Kullanıcı';
+};
+
+/** Raporlar / admin: Yönetici; Satış Temsilcisi (ayarlar metinlerinden ayrı ürün dili) */
+window.getUserRoleLabelAnalytics = function(user) {
+  var labels = {
+    genel_yonetici: 'Genel Yönetici',
+    sube_yonetici: 'Yönetici',
+    kullanici: 'Kullanıcı',
+    admin: 'Genel Yönetici',
+    sales: 'Satış Temsilcisi',
+    driver: 'Kullanıcı'
+  };
+  var role = user && user.role ? user.role : '';
+  var displayRole = role === 'yonetici_kullanici' ? 'sube_yonetici' : role;
+  var raw = labels[displayRole] || displayRole || 'Kullanıcı';
+  return typeof window.toTitleCase === 'function' ? window.toTitleCase(raw) : raw;
+};
+
+/** Gizli yazdırma iframe (ekran dışına taşıma) — tasitlar / tasitlar-yazici */
+window.MEDISA_PRINT_IFRAME_CSS_TEXT = 'position:fixed;left:0;top:0;width:100vw;height:100vh;border:0;opacity:0.01;pointer-events:none;visibility:visible;transform:translateX(-200vw);background:#fff;z-index:-1;';
+
 /** Plaka: bitişik + tamamen büyük harf (örn. 34ABC123); boşluklar kaldırılır */
 window.formatPlaka = function(str) {
   if (str == null || str === '') return '-';
@@ -489,14 +536,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // Modal kontrolü için ilk kontrol
   window.updateFooterDim();
 
-  // Modal Observer: Body class yönetimi (Scroll engelleme vb.)
-  const modalObserver = new MutationObserver((mutations) => {
-    if (!mutations || mutations.length === 0) return;
-    mutations.forEach(function(m) {
-      if (m.type === 'attributes' && (m.attributeName === 'class' || m.attributeName === 'style')) {
-        // class/style değişimi → altta footer dim ve overlay listesi yenilenir
-      }
-    });
+  // Modal Observer: class/style veya DOM değişince footer dim + overlay önbelleği
+  const modalObserver = new MutationObserver(() => {
     refreshModalOverlays();
     window.updateFooterDim();
   });
@@ -510,23 +551,33 @@ document.addEventListener('DOMContentLoaded', () => {
   modalObserver.observe(document.body, { childList: true, subtree: true });
 });
 
-// Taşıtlar modülü (JS + CSS) — tek sürüm; loadAppModule anahtarı ve bildirim ön-yüklemesi aynı yolu kullanır.
-var TASITLAR_MODULE_VERSION = '20260409.1';
+// Lazy modül asset sürümleri — tek nesne; index.html içindeki style-core ?v= ile tasitlar sürümü uyumlu kalmalı
+var MEDISA_MODULE_VERSIONS = {
+  tasitlar: '20260409.1',
+  raporlar: '20260406.18',
+  kayitJs: '20260406.1',
+  kayitCss: '20260410.1',
+  ayarlarJs: '20260328.2',
+  ayarlarCss: '20260405.1'
+};
+window.MEDISA_MODULE_VERSIONS = MEDISA_MODULE_VERSIONS;
+var TASITLAR_MODULE_VERSION = MEDISA_MODULE_VERSIONS.tasitlar;
 
 // Modal açma fonksiyonları: Lazy load – modül yüklenir, sonra ilgili açma fonksiyonu tetiklenir.
 // tasitlar.js / raporlar.js / kayit.js / ayarlar.js yüklendiğinde kendi open* implementasyonlarını yazar.
 (function() {
-  var TASITLAR_JS = 'tasitlar.js?v=' + TASITLAR_MODULE_VERSION;
+  var V = MEDISA_MODULE_VERSIONS;
+  var TASITLAR_JS = 'tasitlar.js?v=' + V.tasitlar;
   var TASITLAR_CSS_LIST = [
-    'tasitlar-base.css?v=' + TASITLAR_MODULE_VERSION,
-    'tasitlar-extra.css?v=' + TASITLAR_MODULE_VERSION
+    'tasitlar-base.css?v=' + V.tasitlar,
+    'tasitlar-extra.css?v=' + V.tasitlar
   ];
-var RAPORLAR_JS = 'raporlar.js?v=20260406.18';
-var RAPORLAR_CSS = 'raporlar.css?v=20260406.18';
-  var KAYIT_JS = 'kayit.js?v=20260406.1';
-  var KAYIT_CSS = 'kayit.css?v=20260410.1';
-  var AYARLAR_JS = 'ayarlar.js?v=20260328.2';
-  var AYARLAR_CSS = 'ayarlar.css?v=20260405.1';
+  var RAPORLAR_JS = 'raporlar.js?v=' + V.raporlar;
+  var RAPORLAR_CSS = 'raporlar.css?v=' + V.raporlar;
+  var KAYIT_JS = 'kayit.js?v=' + V.kayitJs;
+  var KAYIT_CSS = 'kayit.css?v=' + V.kayitCss;
+  var AYARLAR_JS = 'ayarlar.js?v=' + V.ayarlarJs;
+  var AYARLAR_CSS = 'ayarlar.css?v=' + V.ayarlarCss;
 
   window.openVehiclesView = function() {
     showModuleSpinner();

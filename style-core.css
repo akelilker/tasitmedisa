@@ -2555,6 +2555,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     }
 }
 
+/* PWA display-mode:standalone — ana kurallar burada; ek/özel: tasitlar-extra.css, ayarlar.css, kayit.css, raporlar.css, driver/driver-style.css, admin/admin-report.css */
 /* PWA (≤640px): iç içe @media yerine tek blok — bazı tarayıcılarda üstteki mobil blok sonrası CSS’in tamamının yok sayılmasına yol açabiliyordu */
 @media (max-width: 640px) and (display-mode: standalone) {
     .modal-overlay {

@@ -52,7 +52,7 @@
     if (isIOSLikeDevice() ||
         (typeof window.matchMedia === 'function' && window.matchMedia('(display-mode: standalone)').matches) ||
         (typeof navigator !== 'undefined' && navigator.standalone === true)) {
-      iframe.style.cssText =
+      iframe.style.cssText = window.MEDISA_PRINT_IFRAME_CSS_TEXT ||
         'position:fixed;left:0;top:0;width:100vw;height:100vh;border:0;opacity:0.01;pointer-events:none;visibility:visible;transform:translateX(-200vw);background:#fff;z-index:-1;';
       return;
     }

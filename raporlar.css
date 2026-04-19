@@ -919,7 +919,7 @@ padding-top: 4px; /* Daha yukarı ama kesilmeden */
 margin-bottom: 2px;
 }
 #stok-list-container .stok-list-top-controls .stok-controls-row-2 {
-margin-top: 0 !important; /* -28px kesiliyordu, sıfırlandı */
+margin-top: 0 !important; /* üst boşluk */
 }
 
 /* Tarih aralığı etiketleri (Başlangıç/Bitiş): uzun metin — masaüstü + mobil ortak */
