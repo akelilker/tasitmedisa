@@ -7,12 +7,47 @@ on:
 
 jobs:
   check:
-    name: Check
+    name: Static checks
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - name: Use Node.js
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
+      - name: PHP syntax (php -l)
+        shell: bash
+        run: |
+          set -euo pipefail
+          while IFS= read -r -d '' f; do
+            php -l "$f"
+          done < <(find . -name '*.php' -print0)
+
+      - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
           node-version: '24'
-      - run: echo "PR check passed"
+
+      - name: JavaScript syntax (node --check)
+        shell: bash
+        run: |
+          set -euo pipefail
+          for f in \
+            script-core.js \
+            data-manager.js \
+            data-service.js \
+            tasitlar.js \
+            tasitlar-yazici.js \
+            kayit.js \
+            raporlar.js \
+            ayarlar.js \
+            sw.js \
+            driver/driver-script.js \
+            admin/admin-report.js \
+            scripts/verify-medisa-role-invariants.js \
+            scripts/hydrate-demo-data-branches.js
+          do
+            node --check "$f"
+          done
