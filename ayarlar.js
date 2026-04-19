@@ -336,10 +336,26 @@
       return mapUiRoleToRol(user && (user.role || user.rol || user.tip));
     }
 
+    function normalizePhoneDigits(value) {
+      return String(value == null ? '' : value).replace(/\D/g, '');
+    }
+
+    /** Türk GSM: yalnız gösterim (0555 000 00 02) */
+    function formatTrGsmDisplay(value) {
+      const d = normalizePhoneDigits(value);
+      if (d.length === 11 && d.charAt(0) === '0') {
+        return d.slice(0, 4) + ' ' + d.slice(4, 7) + ' ' + d.slice(7, 9) + ' ' + d.slice(9, 11);
+      }
+      if (d.length === 10 && d.charAt(0) === '5') {
+        return '0' + d.slice(0, 3) + ' ' + d.slice(3, 6) + ' ' + d.slice(6, 8) + ' ' + d.slice(8, 10);
+      }
+      return String(value == null ? '' : value).trim() || '';
+    }
+
     function getUserRoleLabel(user) {
       const roleLabels = {
         genel_yonetici: 'Genel Yönetici',
-        sube_yonetici: 'Yönetici',
+        sube_yonetici: 'Birim Amiri',
         kullanici: 'Kullanıcı',
         admin: 'Genel Yönetici',
         sales: 'Kullanıcı',
@@ -356,7 +372,7 @@
 
     const USER_FORM_ROLE_OPTIONS = [
       { value: 'kullanici', label: 'Kullan\u0131c\u0131' },
-      { value: 'sube_yonetici', label: 'Y\u00f6netici' },
+      { value: 'sube_yonetici', label: 'Birim Amiri' },
       { value: 'genel_yonetici', label: 'Genel Y\u00f6netici' }
     ];
 
@@ -841,7 +857,7 @@
         const currentBranchSelect = $('#user-branch', modal);
         if (currentBranchSelect) currentBranchSelect.value = getUserPrimaryBranchId(user);
         populateUserRoleOptions(scope, scope.isBranchManager ? 'kullanici' : getUiRoleFromUser(user));
-        if (phoneInput) phoneInput.value = user.phone || '';
+        if (phoneInput) phoneInput.value = formatTrGsmDisplay(user.phone || '');
         if (emailInput) emailInput.value = user.email || '';
         if (roleSelect) roleSelect.value = scope.isBranchManager ? 'kullanici' : getUiRoleFromUser(user);
         if (usernameInput) usernameInput.value = user.kullanici_adi || '';
@@ -1026,7 +1042,7 @@
         const id = idInput ? idInput.value.trim() : '';
         const nameRaw = nameInput.value.trim();
         const name = formatUserFullName(nameRaw);
-        const phone = phoneInput ? phoneInput.value.trim() : '';
+        const phone = phoneInput ? normalizePhoneDigits(phoneInput.value) : '';
         const email = emailInput ? emailInput.value.trim() : '';
         const selectedRole = roleSelect ? roleSelect.value : 'kullanici';
         const effectiveSelectedRole = scope.isBranchManager ? 'kullanici' : selectedRole;
@@ -1285,11 +1301,12 @@
         `;
         }
 
+        const phoneLine = formatTrGsmDisplay(user.phone || '');
         return `
           <div class="settings-card" onclick="editUser('${user.id}')" style="cursor:pointer;">
             <div class="settings-card-content">
               <div class="settings-card-title">${escapeHtml(user.name || 'İsimsiz')}</div>
-              <div class="settings-card-subtitle">${escapeHtml(branchName)}</div>
+              <div class="settings-card-subtitle">${escapeHtml(branchName)}${phoneLine ? '<br>' + escapeHtml(phoneLine) : ''}</div>
               ${roleLabelMarkup}
             </div>
           </div>

@@ -1933,7 +1933,7 @@ input.settings-form-input:-moz-autofill,
         flex: 0 0 100% !important;
         width: 100% !important;
         margin-left: 0 !important;
-        margin-top: -12px !important; /* büyüteci Ayarlar satırına yaklaştır; alt boşluğu kısar */
+        margin-top: -4px !important;
         justify-content: flex-end !important;
     }
     #user-modal .user-management-search-wrap.open .user-management-search-input {
