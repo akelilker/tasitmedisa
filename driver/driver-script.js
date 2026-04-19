@@ -1622,7 +1622,6 @@ const API_BASE = (function(){
           el.innerHTML = '';
           el.className = 'driver-sliding-warning';
           if (belowHeroSlot && el.parentNode !== belowHeroSlot) belowHeroSlot.appendChild(el);
-          placeNotificationSlot();
           return;
       }
       if (belowHeroSlot) {
