@@ -4,7 +4,7 @@
 
 | Workflow | Dosya | Tetikleyici | Ne zaman koşar? |
 |----------|--------|-------------|------------------|
-| **PR Check** | `.github/workflows/pr-check.yml` | `pull_request` → hedef dal **`main`** | `main`’e açılan veya güncellenen PR’larda (push/ready/reopen vb. PR olayları). **`main`’e doğrudan push bu workflow’u tetiklemez.** |
+| **PR Check** | `.github/workflows/pr-check.yml` | `pull_request` → hedef dal **`main`** | `main`’e açılan veya güncellenen PR’larda (push/ready/reopen vb. PR olayları). **`main`’e doğrudan push bu workflow’u tetiklemez.** İki job: **Static checks** (`php -l`, `node --check`), **HTTP smoke** (`php -S` + `curl`, `.github/scripts/ci-http-smoke.sh`). |
 | **Deploy cPanel** | `.github/workflows/deploy-cpanel.yml` | `push` → **`main`** ve `workflow_dispatch` | `main`’e merge/push sonrası FTP; istenirse Actions’tan elle çalıştırma. |
 
 Deploy ekranında gördüğün koşular **FTP deploy** workflow’una aittir; **PR Check** ayrı isimdir ve yalnızca PR akışında görünür.
