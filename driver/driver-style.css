@@ -1556,9 +1556,10 @@ body.dashboard-page {
     width: 120px !important;
     height: 69px !important;
   }
-  /* Mobil (640px altı): MEDISA hero logosu – 2px sola (toplam: -18px, 13px) */
+  /* Mobil dashboard header: yatay denge — orta kolon nefes, logo sütunu dar, gap artışı (font/min-height dokunulmadı) */
   .dashboard-page .hero.hero-two-rows {
-    grid-template-columns: minmax(56px, max-content) minmax(0, 1fr) 52px !important;
+    gap: 10px !important;
+    grid-template-columns: minmax(44px, max-content) minmax(0, 1fr) 40px !important;
   }
   .dashboard-page .hero.hero-two-rows .hero-logo {
     display: flex !important;
@@ -1568,15 +1569,27 @@ body.dashboard-page {
     gap: 2px !important;
     flex: 0 1 auto !important;
     width: max-content !important;
-    min-width: 52px !important;
-    max-width: min(200px, 46vw) !important;
+    min-width: 44px !important;
+    max-width: min(176px, 40vw) !important;
     margin-top: 0 !important;
     margin-left: 0 !important;
     overflow: visible !important;
-    transform: translate(0, 14px) !important; /* mobil: +5px aşağı (önceki 9px) */
+    transform: translate(0, 8px) !important;
   }
   .dashboard-page .hero.hero-two-rows .hero-logo picture {
-    max-width: 50px !important;
+    max-width: 46px !important;
+  }
+  /* Başlık altı kırmızı çizgi: metin bloğuna göre daha geniş optik (sadece layout pseudo) */
+  .dashboard-page .hero.hero-two-rows .hero-title-line::after {
+    content: '';
+    display: block;
+    width: min(92%, 82vw);
+    height: 2.5px;
+    margin: 5px auto 0;
+    background: linear-gradient(90deg, transparent, var(--theme-color), transparent);
+    border-radius: 1.6px;
+    opacity: 0.72;
+    box-shadow: 0 1px 8px rgba(var(--theme-color-rgb), 0.24);
   }
   .dashboard-page .main-header-user-name {
     display: block !important;
@@ -4872,19 +4885,20 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     height: 22px !important;
   }
 
-  /* 4. Footer stil birleştirme - login footer ana uygulamadaki üst çizgiyi korur */
+  /* 4. Footer: üst çizgi + glow; mobilde yan çerçeve yok */
   .login-page #app-footer.login-footer {
     border-top: 1px solid rgba(255, 255, 255, 0.40) !important;
-    border-left: 0.5px solid rgba(255, 255, 255, 0.10) !important;
-    border-right: 0.5px solid rgba(255, 255, 255, 0.10) !important;
+    border-left: none !important;
+    border-right: none !important;
     box-shadow:
       0 -1px 0 rgba(255, 255, 255, 0.12),
       0 -16px 30px rgba(var(--theme-color-rgb), 0.42) !important;
   }
 
-  /* Mobil footer: dashboard da ana uygulama/login ile aynı gri üst çizgiyi kullanır */
   .dashboard-page #app-footer {
     border-top: 1px solid rgba(128, 128, 128, 0.52) !important;
+    border-left: none !important;
+    border-right: none !important;
     box-shadow: 0 -11px 28px rgba(var(--theme-color-rgb), 0.58) !important;
   }
   .login-page #app-footer.login-footer .footer-content {
@@ -5282,10 +5296,6 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     gap: 8px !important;
   }
 
-  .dashboard-page .driver-below-hero-notification-slot {
-    flex: 0 0 auto !important;
-  }
-
   .dashboard-page .driver-below-hero-row .driver-btn-logout {
     margin-left: 0 !important;
   }
@@ -5390,6 +5400,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .dashboard-page .driver-below-hero-row {
     width: 100% !important;
     flex-wrap: nowrap !important;
+    align-items: center !important;
   }
   .dashboard-page .driver-below-hero-row .driver-btn-history,
   .dashboard-page .driver-below-hero-row .driver-btn-logout {
@@ -5398,23 +5409,41 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     align-items: center !important;
     justify-content: center !important;
   }
-  .dashboard-page .driver-below-hero-notification-slot {
-    flex: 0 1 70% !important; /* Ekranın %70'ine kilitledik */
+  .dashboard-page .driver-below-hero-notification-slot:has(#driver-sliding-warning:empty) {
+    flex: 0 0 0 !important;
     min-width: 0 !important;
-    max-width: 70% !important;
-    margin-left: auto !important; /* Kapsayıcıyı en sağa ittik */
-    padding-right: 4px !important; /* Kenarla arasındaki o meşhur 4px boşluk */
+    max-width: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+  }
+  .dashboard-page .driver-below-hero-notification-slot:not(:has(#driver-sliding-warning:empty)) {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    padding-right: 2px !important;
     overflow-x: hidden !important;
     overflow-y: visible !important;
     display: flex !important;
-    justify-content: flex-end !important; /* İçeriği sağa yasladık */
+    justify-content: center !important;
     align-items: center !important;
   }
   .dashboard-page .driver-below-hero-notification-slot .driver-sliding-warning {
     width: 100% !important;
     max-width: 100% !important;
-    justify-content: flex-end !important; /* Metin/ikon grubunu sağa dayadık */
-    padding-right: 0 !important;
+    min-height: 28px !important;
+    padding-bottom: 2px !important;
+    box-sizing: border-box !important;
+    justify-content: center !important;
+    align-items: center !important;
+    overflow-x: hidden !important;
+    overflow-y: visible !important;
+  }
+  .dashboard-page .driver-below-hero-notification-slot .driver-warning-icon {
+    line-height: 1 !important;
+    overflow: visible !important;
+    vertical-align: middle !important;
   }
 }
 
