@@ -5594,7 +5594,8 @@ function renderVehicleDetailLeft(vehicle) {
         timestamp: new Date().toISOString(),
         data: {
           kullaniciId: '',
-          kullaniciAdi: 'Henüz Tanımlanmadı',
+          kullaniciAdi: '',
+          atamaKaldirildi: true,
           kaydeden: getRecorderDisplayName()
         }
       };
@@ -5778,11 +5779,16 @@ function renderVehicleDetailLeft(vehicle) {
     } else if (eventType === 'kullanici-atama') {
       const yeni = (eventData.kullaniciAdi || '').trim();
       const eski = (eventData.eskiKullaniciAdi || '').trim();
-      const yeniDisp = yeni ? formatAdSoyad(yeni) : '';
-      if (yeniDisp) {
-        summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Kullan\u0131c\u0131 Atamas\u0131n\u0131 </span><span class="history-detail-inline">"' + escapeHtml(yeniDisp) + '"</span><span class="history-action-text"> Olarak G\u00FCncelledi.</span>';
+      const kaldirdi = eventData.atamaKaldirildi === true || yeni === 'Hen\u00fcz Tan\u0131mlanmad\u0131';
+      if (kaldirdi) {
+        summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Kullan\u0131c\u0131 Atamas\u0131n\u0131 Kald\u0131rd\u0131.</span>';
       } else {
-        summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Kullan\u0131c\u0131 Atamas\u0131n\u0131 G\u00FCncelledi.</span>';
+        const yeniDisp = yeni ? formatAdSoyad(yeni) : '';
+        if (yeniDisp) {
+          summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Kullan\u0131c\u0131 Atamas\u0131n\u0131 </span><span class="history-detail-inline">"' + escapeHtml(yeniDisp) + '"</span><span class="history-action-text"> Olarak G\u00FCncelledi.</span>';
+        } else {
+          summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Kullan\u0131c\u0131 Atamas\u0131n\u0131 G\u00FCncelledi.</span>';
+        }
       }
       if (eski) pushDetail('\u00d6nceki Kullan\u0131c\u0131', formatAdSoyad(eski));
     } else if (eventType === 'sube-degisiklik') {
@@ -6149,6 +6155,14 @@ function renderVehicleDetailLeft(vehicle) {
       const who = evData.kaydeden || evData.surucu || evData.kisi || evData.kullaniciAdi;
       const whoU = who ? formatHistoryPerformerUpper(who) : 'B\u0130L\u0130NM\u0130YOR';
       return whoU + ', ' + plateStr + ' Plakal\u0131 Ta\u015F\u0131t \u0130\u00E7in Kasko Kodunu G\u00FCncelledi.';
+    }
+    if (type === 'kullanici-atama') {
+      const kaldir = evData.atamaKaldirildi === true || String(evData.kullaniciAdi || '').trim() === 'Hen\u00fcz Tan\u0131mlanmad\u0131';
+      if (kaldir) {
+        const who = evData.kaydeden || evData.surucu || evData.kisi;
+        const whoStr = who ? formatAdSoyad(String(who)) : 'Bilinmiyor';
+        return whoStr + ', ' + plateStr + ' Plakal\u0131 Ta\u015F\u0131t \u0130\u00E7in Kullan\u0131c\u0131 Atamas\u0131n\u0131 Kald\u0131rd\u0131.';
+      }
     }
     const typeMessages = {
       'km-revize': 'Km Bildirimi Yapt\u0131',
