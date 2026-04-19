@@ -18,6 +18,220 @@
       const isiOS = /iPhone|iPad|iPod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
       return !(isiOS && (isStandalone || window.navigator.standalone === true));
     }
+
+    let activeUserFormCustomSelect = null;
+
+    function closeUserFormCustomSelect(options) {
+      const opts = options || {};
+      const shell = activeUserFormCustomSelect;
+      if (!shell) return;
+      const trigger = shell.querySelector('.medisa-owner-select-trigger');
+      const menu = shell.querySelector('.medisa-owner-select-menu');
+      shell.classList.remove('is-open');
+      if (trigger) {
+        trigger.classList.remove('is-open');
+        trigger.setAttribute('aria-expanded', 'false');
+        if (opts.focusTrigger) trigger.focus();
+      }
+      if (menu) {
+        menu.classList.remove('open');
+        menu.setAttribute('aria-hidden', 'true');
+        menu.style.position = '';
+        menu.style.top = '';
+        menu.style.left = '';
+        menu.style.width = '';
+        menu.style.maxHeight = '';
+      }
+      activeUserFormCustomSelect = null;
+    }
+
+    function positionUserFormCustomSelectMenu(shell) {
+      if (!shell) return;
+      const trigger = shell.querySelector('.medisa-owner-select-trigger');
+      const menu = shell.querySelector('.medisa-owner-select-menu');
+      if (!trigger || !menu) return;
+
+      const rect = trigger.getBoundingClientRect();
+      const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 800;
+      const desiredHeight = Math.min(menu.scrollHeight || 240, 260);
+      const spaceBelow = Math.max(120, viewportHeight - rect.bottom - 12);
+      const spaceAbove = Math.max(120, rect.top - 12);
+      const useAbove = spaceBelow < Math.min(180, desiredHeight) && spaceAbove > spaceBelow;
+      const maxHeight = Math.max(120, Math.min(260, useAbove ? spaceAbove : spaceBelow));
+      const top = useAbove
+        ? Math.max(12, rect.top - Math.min(desiredHeight, maxHeight) - 6)
+        : rect.bottom + 6;
+
+      menu.style.position = 'fixed';
+      menu.style.top = top + 'px';
+      menu.style.left = rect.left + 'px';
+      menu.style.width = rect.width + 'px';
+      menu.style.maxHeight = maxHeight + 'px';
+    }
+
+    function refreshUserFormCustomSelect(shell) {
+      if (!shell) return;
+      const select = shell.querySelector('select');
+      const trigger = shell.querySelector('.medisa-owner-select-trigger');
+      const triggerText = shell.querySelector('.medisa-owner-select-trigger-text');
+      const menu = shell.querySelector('.medisa-owner-select-menu');
+      if (!select || !trigger || !triggerText || !menu) return;
+
+      const options = Array.from(select.options || []);
+      const selectedValue = String(select.value || '');
+      let selectedOption = options.find(function(option) {
+        return String(option.value || '') === selectedValue;
+      }) || options[select.selectedIndex] || options[0] || null;
+
+      if (!selectedOption && options.length) {
+        selectedOption = options[0];
+        select.value = selectedOption.value;
+      }
+
+      const placeholderText = shell.dataset.placeholderText || (options[0] ? options[0].textContent : 'Seçiniz');
+      const selectedText = selectedOption ? String(selectedOption.textContent || '').trim() : '';
+      const selectedOptionValue = selectedOption ? String(selectedOption.value || '') : '';
+
+      triggerText.textContent = selectedText || placeholderText;
+      trigger.classList.toggle('placeholder', !selectedOptionValue);
+      trigger.disabled = !!select.disabled;
+      trigger.setAttribute('aria-disabled', select.disabled ? 'true' : 'false');
+
+      menu.innerHTML = '';
+      options.forEach(function(option) {
+        const value = String(option.value || '');
+        const text = String(option.textContent || '').trim();
+        const item = document.createElement('button');
+        item.type = 'button';
+        item.className = 'medisa-owner-select-option';
+        item.textContent = text;
+        item.dataset.value = value;
+        item.setAttribute('role', 'option');
+        item.setAttribute('aria-selected', value === selectedValue ? 'true' : 'false');
+
+        if (!value) item.classList.add('is-placeholder');
+        if (value === selectedValue) item.classList.add('selected');
+        if (option.disabled) {
+          item.classList.add('is-disabled');
+          item.disabled = true;
+        }
+
+        menu.appendChild(item);
+      });
+
+      if (activeUserFormCustomSelect === shell && menu.classList.contains('open')) {
+        positionUserFormCustomSelectMenu(shell);
+      }
+    }
+
+    function openUserFormCustomSelect(shell) {
+      if (!shell) return;
+      if (activeUserFormCustomSelect && activeUserFormCustomSelect !== shell) {
+        closeUserFormCustomSelect();
+      }
+      const trigger = shell.querySelector('.medisa-owner-select-trigger');
+      const menu = shell.querySelector('.medisa-owner-select-menu');
+      if (!trigger || !menu || trigger.disabled) return;
+
+      activeUserFormCustomSelect = shell;
+      shell.classList.add('is-open');
+      trigger.classList.add('is-open');
+      trigger.setAttribute('aria-expanded', 'true');
+      menu.classList.add('open');
+      menu.setAttribute('aria-hidden', 'false');
+      positionUserFormCustomSelectMenu(shell);
+    }
+
+    function ensureUserFormCustomSelect(select, options) {
+      if (!select) return null;
+      let shell = select.closest('.medisa-owner-select');
+      if (!shell) {
+        shell = document.createElement('div');
+        shell.className = 'medisa-owner-select';
+        select.parentNode.insertBefore(shell, select);
+        shell.appendChild(select);
+        select.classList.add('medisa-owner-select-native');
+
+        const trigger = document.createElement('button');
+        trigger.type = 'button';
+        trigger.className = 'form-input medisa-owner-select-trigger';
+        trigger.setAttribute('aria-haspopup', 'listbox');
+        trigger.setAttribute('aria-expanded', 'false');
+        trigger.innerHTML = '<span class="medisa-owner-select-trigger-text"></span><svg class="medisa-owner-select-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
+
+        const menu = document.createElement('div');
+        menu.className = 'medisa-owner-select-menu';
+        menu.setAttribute('role', 'listbox');
+        menu.setAttribute('aria-hidden', 'true');
+
+        shell.appendChild(trigger);
+        shell.appendChild(menu);
+
+        const label = shell.parentNode ? shell.parentNode.querySelector('label[for="' + select.id + '"]') : null;
+        if (label && !label.dataset.medisaOwnerSelectBound) {
+          label.dataset.medisaOwnerSelectBound = '1';
+          label.addEventListener('click', function(e) {
+            if (!select.closest('.medisa-owner-select')) return;
+            e.preventDefault();
+            trigger.focus();
+          });
+        }
+
+        trigger.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          if (activeUserFormCustomSelect === shell) closeUserFormCustomSelect();
+          else openUserFormCustomSelect(shell);
+        });
+
+        trigger.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            if (activeUserFormCustomSelect === shell) closeUserFormCustomSelect();
+            else openUserFormCustomSelect(shell);
+          } else if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            openUserFormCustomSelect(shell);
+          } else if (e.key === 'Escape' && activeUserFormCustomSelect === shell) {
+            e.preventDefault();
+            closeUserFormCustomSelect({ focusTrigger: true });
+          }
+        });
+
+        menu.addEventListener('click', function(e) {
+          const item = e.target.closest('.medisa-owner-select-option');
+          if (!item || item.disabled) return;
+          select.value = item.dataset.value || '';
+          select.dispatchEvent(new Event('change', { bubbles: true }));
+          refreshUserFormCustomSelect(shell);
+          closeUserFormCustomSelect({ focusTrigger: true });
+        });
+
+        select.addEventListener('change', function() {
+          refreshUserFormCustomSelect(shell);
+        });
+      }
+
+      shell.dataset.placeholderText = options && options.placeholderText ? options.placeholderText : '';
+      refreshUserFormCustomSelect(shell);
+      return shell;
+    }
+
+    function syncUserFormCustomSelects(modal) {
+      const root = modal || document.getElementById('user-form-modal');
+      if (!root) return;
+      ensureUserFormCustomSelect($('#user-branch', root), { placeholderText: 'Şube Seçin' });
+      ensureUserFormCustomSelect($('#user-role', root), { placeholderText: 'Kullanıcı Tipi' });
+    }
+
+    document.addEventListener('click', function(e) {
+      if (!activeUserFormCustomSelect) return;
+      if (!activeUserFormCustomSelect.contains(e.target)) closeUserFormCustomSelect();
+    }, true);
+
+    window.addEventListener('resize', function() {
+      if (activeUserFormCustomSelect) closeUserFormCustomSelect();
+    });
   
     // ========================================
     // Şube YÖNETİMİ
@@ -447,6 +661,7 @@
       roleSelect.value = safeValue;
       roleSelect.removeAttribute('disabled');
       roleSelect.removeAttribute('aria-disabled');
+      syncUserFormCustomSelects(document.getElementById('user-form-modal'));
     }
 
     function syncUsersToAppData(arr, options) {
@@ -814,7 +1029,7 @@
       const searchInput = document.getElementById('user-vehicles-search');
       if (searchInput) searchInput.value = '';
       populateUserRoleOptions(scope, 'kullanici');
-      bindUserBranchSelectDropdown(modal);
+      syncUserFormCustomSelects(modal);
   
       // Form temizle
       if (form) form.reset();
@@ -876,6 +1091,7 @@
       }
   
       syncUserRoleBranchUI({ scope: scope });
+      syncUserFormCustomSelects(modal);
 
       // Modalı aç
       modal.style.display = 'flex';
@@ -899,6 +1115,7 @@
       const form = $('#user-form', modal);
       if (form) form.reset();
       closeUserVehiclesDropdown();
+      closeUserFormCustomSelect();
       const searchInput = document.getElementById('user-vehicles-search');
       if (searchInput) searchInput.value = '';
       const deleteBtn = $('#user-delete-btn', modal);
@@ -922,6 +1139,7 @@
         option.textContent = branch.name;
         select.appendChild(option);
       });
+      syncUserFormCustomSelects(document.getElementById('user-form-modal'));
     }
 
     function syncUserRoleBranchUI(options = {}) {
@@ -946,6 +1164,7 @@
         if (branchReadonly) {
           branchReadonly.value = managedBranch ? (managedBranch.name || '') : '';
         }
+        syncUserFormCustomSelects(document.getElementById('user-form-modal'));
         return;
       }
 
@@ -954,6 +1173,7 @@
       if (readonlyWrap) readonlyWrap.classList.add('u-hidden');
       if (branchReadonly) branchReadonly.value = '';
       if (branchSelect) branchSelect.required = selectedRole !== 'genel_yonetici';
+      syncUserFormCustomSelects(document.getElementById('user-form-modal'));
     }
     window.syncUserRoleBranchUI = syncUserRoleBranchUI;
 

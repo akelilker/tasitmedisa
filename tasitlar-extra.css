@@ -1656,6 +1656,14 @@
     line-height: 1.3 !important;
     box-sizing: border-box !important;
   }
+  #dinamik-olay-modal .medisa-owner-select-trigger {
+    min-height: 47px !important;
+    height: auto !important;
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+    line-height: 1.3 !important;
+    box-sizing: border-box !important;
+  }
 
   /* Taşıt detay: şube atama select */
   #vehicle-detail-modal .assign-select {
