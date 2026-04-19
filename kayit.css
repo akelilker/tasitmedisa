@@ -376,7 +376,7 @@ select option:active {
     overflow-x: hidden;
     scrollbar-width: none !important;
     -ms-overflow-style: none !important;
-    z-index: 10;
+    z-index: 40;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 #vehicle-branch-list::-webkit-scrollbar,
@@ -389,6 +389,11 @@ select option:active {
 }
 #vehicle-modal .vehicle-branch-list.open {
     display: block;
+}
+#vehicle-modal:has(#vehicle-branch-list.open) .modal-body .universal-btn-group,
+#vehicle-modal:has(#vehicle-branch-list.open) .modal-body .universal-btn-group .universal-btn-save,
+#vehicle-modal:has(#vehicle-branch-list.open) .modal-body .universal-btn-group .universal-btn-cancel {
+    pointer-events: none !important;
 }
 .vehicle-branch-dropdown-wrap.single-branch .vehicle-branch-list {
     display: none !important;
