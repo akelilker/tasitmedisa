@@ -48,7 +48,7 @@
   padding: 6px 12px 12px 12px !important; /* style-core .modal-overlay .modal-body 20px'i override */
 }
 #vehicle-modal .modal-body .modal-columns {
-  margin-top: 0 !important; /* Negatif margin üst etiketleri kırpıyordu, sıfırlandı */
+  margin-top: 0 !important; /* üst boşluk */
 }
 
 /* Boya/Değişen ile Notlar alt hizası: sol sütun flex, son blok alta yapışır */

@@ -2200,17 +2200,22 @@
             return dateB - dateA;
         });
         
-        // Kullanıcı tipi etiketi
-        const roleLabels = {
+        // Kullanıcı tipi etiketi: önce script-core helper, yoksa eski rapor dili
+        let roleLabel;
+        if (typeof window.getUserRoleLabelAnalytics === 'function') {
+          roleLabel = window.getUserRoleLabelAnalytics(user);
+        } else {
+          const roleLabels = {
             genel_yonetici: 'Genel Yönetici',
             sube_yonetici: 'Yönetici',
             kullanici: 'Kullanıcı',
             admin: 'Genel Yönetici',
             sales: 'Satış Temsilcisi',
             driver: 'Kullanıcı'
-        };
-        const displayRole = user.role === 'yonetici_kullanici' ? 'sube_yonetici' : user.role;
-        const roleLabel = toTitleCase(roleLabels[displayRole] || displayRole || 'Kullanıcı');
+          };
+          const displayRole = user.role === 'yonetici_kullanici' ? 'sube_yonetici' : user.role;
+          roleLabel = toTitleCase(roleLabels[displayRole] || displayRole || 'Kullanıcı');
+        }
         
         const bidList = (user.branchIds && user.branchIds.length) ? user.branchIds : (user.branchId ? [user.branchId] : []);
         const branchNames = bidList.map(function (bid) {

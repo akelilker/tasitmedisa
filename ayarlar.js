@@ -313,12 +313,7 @@
      * zimmetli_araclar: portal kayıt akışı (`driver_save.php`) için atanmış Taşıt ID'leri (assignedUserId eşleşen Taşıtlar)
      */
     function mapUiRoleToRol(role) {
-      if (role === 'admin') return 'genel_yonetici';
-      if (role === 'genel_yonetici') return 'genel_yonetici';
-      if (role === 'yonetici' || role === 'sube_yonetici') return 'sube_yonetici';
-      if (role === 'driver' || role === 'sales' || role === 'surucu') return 'kullanici';
-      if (role === 'yonetici_kullanici') return 'sube_yonetici';
-      return role || 'kullanici';
+      return window.medisaMapUiRoleToRol(role);
     }
 
     function getRoleConfigFromSelection(role) {
@@ -333,7 +328,7 @@
     }
 
     function getUiRoleFromUser(user) {
-      return mapUiRoleToRol(user && (user.role || user.rol || user.tip));
+      return window.medisaGetUiRoleFromUser(user);
     }
 
     function normalizePhoneDigits(value) {
@@ -353,16 +348,7 @@
     }
 
     function getUserRoleLabel(user) {
-      const roleLabels = {
-        genel_yonetici: 'Genel Yönetici',
-        sube_yonetici: 'Birim Amiri',
-        kullanici: 'Kullanıcı',
-        admin: 'Genel Yönetici',
-        sales: 'Kullanıcı',
-        driver: 'Kullanıcı'
-      };
-      const uiRole = getUiRoleFromUser(user || {});
-      return roleLabels[uiRole] || roleLabels[mapUiRoleToRol(uiRole)] || uiRole || 'Kullanıcı';
+      return window.getUserRoleLabelManagement(user);
     }
 
     function buildUserRoleLabelMarkup(user) {

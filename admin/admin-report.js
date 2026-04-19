@@ -1117,6 +1117,9 @@
   }
 
   function getUserRoleLabel(user) {
+    if (typeof window.getUserRoleLabelAnalytics === 'function') {
+      return window.getUserRoleLabelAnalytics(user);
+    }
     var roleLabels = {
       genel_yonetici: 'Genel Yönetici',
       sube_yonetici: 'Yönetici',

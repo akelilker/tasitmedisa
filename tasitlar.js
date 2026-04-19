@@ -4124,7 +4124,7 @@ function renderVehicleDetailLeft(vehicle) {
       iframeJustCreated = true;
     }
     // iOS basıma uygun: tam viewport, ekranda görünmez (opacity:0), tam sayfa baskı için 100vw/100vh
-    iframe.style.cssText = 'position:fixed;left:0;top:0;width:100vw;height:100vh;border:0;opacity:0.01;pointer-events:none;visibility:visible;transform:translateX(-200vw);background:#fff;z-index:-1;';
+    iframe.style.cssText = window.MEDISA_PRINT_IFRAME_CSS_TEXT || 'position:fixed;left:0;top:0;width:100vw;height:100vh;border:0;opacity:0.01;pointer-events:none;visibility:visible;transform:translateX(-200vw);background:#fff;z-index:-1;';
     var lastOnloadAt = 0;
     var printTimer = null;
     function clearPrintTimer() {
