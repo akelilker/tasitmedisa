@@ -252,6 +252,219 @@
     setSelectedUser(defaultUserName);
   }
 
+  let activeDynamicModalCustomSelect = null;
+
+  function closeDynamicModalCustomSelect(options) {
+    const opts = options || {};
+    const shell = activeDynamicModalCustomSelect;
+    if (!shell) return;
+    const trigger = shell.querySelector('.medisa-owner-select-trigger');
+    const menu = shell.querySelector('.medisa-owner-select-menu');
+    shell.classList.remove('is-open');
+    if (trigger) {
+      trigger.classList.remove('is-open');
+      trigger.setAttribute('aria-expanded', 'false');
+      if (opts.focusTrigger) trigger.focus();
+    }
+    if (menu) {
+      menu.classList.remove('open');
+      menu.setAttribute('aria-hidden', 'true');
+      menu.style.position = '';
+      menu.style.top = '';
+      menu.style.left = '';
+      menu.style.width = '';
+      menu.style.maxHeight = '';
+    }
+    activeDynamicModalCustomSelect = null;
+  }
+
+  function positionDynamicModalCustomSelectMenu(shell) {
+    if (!shell) return;
+    const trigger = shell.querySelector('.medisa-owner-select-trigger');
+    const menu = shell.querySelector('.medisa-owner-select-menu');
+    if (!trigger || !menu) return;
+
+    const rect = trigger.getBoundingClientRect();
+    const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 800;
+    const desiredHeight = Math.min(menu.scrollHeight || 240, 260);
+    const spaceBelow = Math.max(120, viewportHeight - rect.bottom - 12);
+    const spaceAbove = Math.max(120, rect.top - 12);
+    const useAbove = spaceBelow < Math.min(180, desiredHeight) && spaceAbove > spaceBelow;
+    const maxHeight = Math.max(120, Math.min(260, useAbove ? spaceAbove : spaceBelow));
+    const top = useAbove
+      ? Math.max(12, rect.top - Math.min(desiredHeight, maxHeight) - 6)
+      : rect.bottom + 6;
+
+    menu.style.position = 'fixed';
+    menu.style.top = top + 'px';
+    menu.style.left = rect.left + 'px';
+    menu.style.width = rect.width + 'px';
+    menu.style.maxHeight = maxHeight + 'px';
+  }
+
+  function refreshDynamicModalCustomSelect(shell) {
+    if (!shell) return;
+    const select = shell.querySelector('select');
+    const trigger = shell.querySelector('.medisa-owner-select-trigger');
+    const triggerText = shell.querySelector('.medisa-owner-select-trigger-text');
+    const menu = shell.querySelector('.medisa-owner-select-menu');
+    if (!select || !trigger || !triggerText || !menu) return;
+
+    const options = Array.from(select.options || []);
+    const selectedValue = String(select.value || '');
+    let selectedOption = options.find(function(option) {
+      return String(option.value || '') === selectedValue;
+    }) || options[select.selectedIndex] || options[0] || null;
+
+    if (!selectedOption && options.length) {
+      selectedOption = options[0];
+      select.value = selectedOption.value;
+    }
+
+    const placeholderText = shell.dataset.placeholderText || (options[0] ? options[0].textContent : 'Seçiniz');
+    const selectedText = selectedOption ? String(selectedOption.textContent || '').trim() : '';
+    const selectedOptionValue = selectedOption ? String(selectedOption.value || '') : '';
+    const secondaryValues = (shell.dataset.secondaryValues || '').split('|').filter(Boolean);
+    const mutedValues = (shell.dataset.mutedValues || '').split('|').filter(Boolean);
+
+    triggerText.textContent = selectedText || placeholderText;
+    trigger.classList.toggle('placeholder', !selectedOptionValue);
+    trigger.disabled = !!select.disabled;
+    trigger.setAttribute('aria-disabled', select.disabled ? 'true' : 'false');
+
+    menu.innerHTML = '';
+    options.forEach(function(option) {
+      const value = String(option.value || '');
+      const text = String(option.textContent || '').trim();
+      const item = document.createElement('button');
+      item.type = 'button';
+      item.className = 'medisa-owner-select-option';
+      item.textContent = text;
+      item.dataset.value = value;
+      item.setAttribute('role', 'option');
+      item.setAttribute('aria-selected', value === selectedValue ? 'true' : 'false');
+
+      if (!value) item.classList.add('is-placeholder');
+      if (value === selectedValue) item.classList.add('selected');
+      if (secondaryValues.indexOf(value) !== -1 || /^\+/.test(text)) item.classList.add('is-secondary-action');
+      if (mutedValues.indexOf(value) !== -1) item.classList.add('is-muted-choice');
+      if (option.disabled) {
+        item.classList.add('is-disabled');
+        item.disabled = true;
+      }
+
+      menu.appendChild(item);
+    });
+
+    if (activeDynamicModalCustomSelect === shell && menu.classList.contains('open')) {
+      positionDynamicModalCustomSelectMenu(shell);
+    }
+  }
+
+  function openDynamicModalCustomSelect(shell) {
+    if (!shell) return;
+    if (activeDynamicModalCustomSelect && activeDynamicModalCustomSelect !== shell) {
+      closeDynamicModalCustomSelect();
+    }
+    const trigger = shell.querySelector('.medisa-owner-select-trigger');
+    const menu = shell.querySelector('.medisa-owner-select-menu');
+    if (!trigger || !menu || trigger.disabled) return;
+
+    activeDynamicModalCustomSelect = shell;
+    shell.classList.add('is-open');
+    trigger.classList.add('is-open');
+    trigger.setAttribute('aria-expanded', 'true');
+    menu.classList.add('open');
+    menu.setAttribute('aria-hidden', 'false');
+    positionDynamicModalCustomSelectMenu(shell);
+  }
+
+  function ensureDynamicModalCustomSelect(select, options) {
+    if (!select) return null;
+    let shell = select.closest('.medisa-owner-select');
+    if (!shell) {
+      shell = document.createElement('div');
+      shell.className = 'medisa-owner-select';
+      select.parentNode.insertBefore(shell, select);
+      shell.appendChild(select);
+      select.classList.add('medisa-owner-select-native');
+
+      const trigger = document.createElement('button');
+      trigger.type = 'button';
+      trigger.className = 'form-input medisa-owner-select-trigger';
+      trigger.setAttribute('aria-haspopup', 'listbox');
+      trigger.setAttribute('aria-expanded', 'false');
+      trigger.innerHTML = '<span class="medisa-owner-select-trigger-text"></span><svg class="medisa-owner-select-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
+
+      const menu = document.createElement('div');
+      menu.className = 'medisa-owner-select-menu';
+      menu.setAttribute('role', 'listbox');
+      menu.setAttribute('aria-hidden', 'true');
+
+      shell.appendChild(trigger);
+      shell.appendChild(menu);
+
+      const label = shell.parentNode ? shell.parentNode.querySelector('label[for="' + select.id + '"]') : null;
+      if (label && !label.dataset.medisaOwnerSelectBound) {
+        label.dataset.medisaOwnerSelectBound = '1';
+        label.addEventListener('click', function(e) {
+          if (!select.closest('.medisa-owner-select')) return;
+          e.preventDefault();
+          trigger.focus();
+        });
+      }
+
+      trigger.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (activeDynamicModalCustomSelect === shell) closeDynamicModalCustomSelect();
+        else openDynamicModalCustomSelect(shell);
+      });
+
+      trigger.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          if (activeDynamicModalCustomSelect === shell) closeDynamicModalCustomSelect();
+          else openDynamicModalCustomSelect(shell);
+        } else if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          openDynamicModalCustomSelect(shell);
+        } else if (e.key === 'Escape' && activeDynamicModalCustomSelect === shell) {
+          e.preventDefault();
+          closeDynamicModalCustomSelect({ focusTrigger: true });
+        }
+      });
+
+      menu.addEventListener('click', function(e) {
+        const item = e.target.closest('.medisa-owner-select-option');
+        if (!item || item.disabled) return;
+        select.value = item.dataset.value || '';
+        select.dispatchEvent(new Event('change', { bubbles: true }));
+        refreshDynamicModalCustomSelect(shell);
+        closeDynamicModalCustomSelect({ focusTrigger: true });
+      });
+
+      select.addEventListener('change', function() {
+        refreshDynamicModalCustomSelect(shell);
+      });
+    }
+
+    shell.dataset.placeholderText = options && options.placeholderText ? options.placeholderText : '';
+    shell.dataset.secondaryValues = options && Array.isArray(options.secondaryValues) ? options.secondaryValues.join('|') : '';
+    shell.dataset.mutedValues = options && Array.isArray(options.mutedValues) ? options.mutedValues.join('|') : '';
+    refreshDynamicModalCustomSelect(shell);
+    return shell;
+  }
+
+  document.addEventListener('click', function(e) {
+    if (!activeDynamicModalCustomSelect) return;
+    if (!activeDynamicModalCustomSelect.contains(e.target)) closeDynamicModalCustomSelect();
+  }, true);
+
+  window.addEventListener('resize', function() {
+    if (activeDynamicModalCustomSelect) closeDynamicModalCustomSelect();
+  });
+
   /** Ana uygulamada olay satırında görünen sürücü adı: genel yönetici kendi adıyla; aksi halde atanmış kullanıcı / tahsis. */
   function isMainAppSessionGenelYonetici() {
     try {
@@ -3064,6 +3277,7 @@ function renderVehicleDetailLeft(vehicle) {
    * Olay modal menüsünü veya tek dinamik olay form modal'ını açar
    */
   window.openEventModal = function(type, vehicleId) {
+    closeDynamicModalCustomSelect();
     if (type === 'menu') {
       if (DOM.dinamikOlayModal && DOM.dinamikOlayModal.classList.contains('active')) {
         DOM.dinamikOlayModal.classList.remove('active');
@@ -3292,6 +3506,9 @@ function renderVehicleDetailLeft(vehicle) {
             opt.textContent = b.name;
             selectEl.appendChild(opt);
           });
+          ensureDynamicModalCustomSelect(selectEl, {
+            placeholderText: 'Şube Seçiniz'
+          });
         }
       } else if (type === 'kullanici') {
         // Kullanıcı atama modal'ında kullanıcıları doldur; Henüz Tanımlanmadı + en alta "+ Yeni Kullanıcı Ekle"
@@ -3319,6 +3536,11 @@ function renderVehicleDetailLeft(vehicle) {
           } else {
             selectEl.value = '__none__';
           }
+          ensureDynamicModalCustomSelect(selectEl, {
+            placeholderText: 'Kullanıcı Seçiniz',
+            secondaryValues: ['__add_user__'],
+            mutedValues: ['__none__']
+          });
           if (!selectEl.dataset.kullaniciAddHandler) {
             selectEl.dataset.kullaniciAddHandler = '1';
             selectEl.addEventListener('change', function() {
