@@ -322,17 +322,19 @@ select option:active {
     opacity: 0 !important;
     pointer-events: none !important;
 }
-.vehicle-branch-trigger {
+#vehicle-modal .vehicle-branch-trigger {
     display: block;
     width: 100%;
     box-sizing: border-box;
     cursor: pointer;
     text-align: center;
+    background-color: #0d131f;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23ffffff' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 8px center;
     padding-right: 28px;
-    color: var(--form-label-color, #ffffff);
+    color: var(--data-value-color, #f8f9fa) !important;
+    transition: border-color 120ms ease, color 120ms ease, background-color 120ms ease;
 }
 .vehicle-branch-dropdown-wrap.single-branch .vehicle-branch-trigger,
 .vehicle-branch-trigger.readonly {
@@ -342,7 +344,7 @@ select option:active {
     pointer-events: none;
     user-select: none;
 }
-.vehicle-branch-trigger.placeholder {
+#vehicle-modal .vehicle-branch-trigger.placeholder {
     color: rgba(255, 255, 255, 0.38) !important;
 }
 /* #vehicle-modal ile .form-input:focus üzerinde kazanır; !important gerekmez */
@@ -359,18 +361,19 @@ select option:active {
     box-shadow: none;
     outline: none;
 }
-.vehicle-branch-list {
+#vehicle-modal .vehicle-branch-list {
     display: none;
     position: absolute;
     left: 0;
     right: 0;
     top: 100%;
     margin-top: 4px;
-    background: #0f1418;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: #0d131f;
+    border: 1px solid rgba(255, 255, 255, 0.18);
     border-radius: 8px;
     max-height: 200px;
     overflow-y: auto;
+    overflow-x: hidden;
     scrollbar-width: none !important;
     -ms-overflow-style: none !important;
     z-index: 10;
@@ -384,37 +387,41 @@ select option:active {
     height: 0 !important;
     background: transparent !important;
 }
-.vehicle-branch-list.open {
+#vehicle-modal .vehicle-branch-list.open {
     display: block;
 }
 .vehicle-branch-dropdown-wrap.single-branch .vehicle-branch-list {
     display: none !important;
 }
-.vehicle-branch-option {
+#vehicle-modal #vehicle-branch-list .vehicle-branch-option {
     padding: 8px 10px;
     font-size: 14px;
-    color: var(--form-label-color, #ffffff);
+    color: rgba(232, 236, 241, 0.94);
+    background: transparent;
     cursor: pointer;
+    transition: background-color 120ms ease, color 120ms ease;
 }
-.vehicle-branch-option:hover {
-    background: rgba(var(--theme-color-rgb), 0.22);
-    color: var(--form-label-color, #ffffff);
-}
-.vehicle-branch-option.selected {
+#vehicle-modal #vehicle-branch-list .vehicle-branch-option:hover {
     background: rgba(var(--theme-color-rgb), 0.12);
-    color: var(--form-label-color, #ffffff);
+    color: rgba(255, 255, 255, 0.98);
 }
-.vehicle-branch-add-hint {
-    color: rgba(148, 163, 184, 0.95);
+#vehicle-modal #vehicle-branch-list .vehicle-branch-option.selected {
+    background: rgba(var(--theme-color-rgb), 0.16);
+    color: rgba(255, 255, 255, 0.98);
+}
+#vehicle-modal #vehicle-branch-list .vehicle-branch-option.vehicle-branch-add-hint {
+    color: rgba(148, 163, 184, 0.76);
     font-weight: 500;
     cursor: pointer;
+    background: rgba(255, 255, 255, 0.02);
     border-top: 1px solid rgba(255,255,255,0.08);
-    margin-top: 2px;
+    margin-top: 0;
     padding-top: 10px !important;
 }
-.vehicle-branch-add-hint:hover {
-    background: rgba(255, 255, 255, 0.06);
-    color: rgba(186, 196, 210, 1);
+#vehicle-modal #vehicle-branch-list .vehicle-branch-option.vehicle-branch-add-hint:hover,
+#vehicle-modal #vehicle-branch-list .vehicle-branch-option.vehicle-branch-add-hint.selected {
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(186, 196, 210, 0.9);
 }
 #vehicle-modal #vehicle-branch-select.branch-placeholder {
     color: rgba(255, 255, 255, 0.38) !important;
