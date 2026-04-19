@@ -61,4 +61,6 @@ Deploy veya büyük değişiklikten önce hızlı regresyon kontrolü. Otomasyon
 
 ## Not
 
-Bu liste **davranış doğrulaması** içindir; `php -l` / `node --check` gibi statik kontroller GitHub Actions PR workflow’unda çalışır.
+Bu liste **tam davranış (UI) doğrulaması** içindir; tarayıcıda elle yapılır.
+
+**CI (PR Check):** Aynı depoda `php -l` / `node --check` ile birlikte, **`http-smoke`** job’u `php` built-in server + `curl` ile `/`, `/index.html`, `/admin/driver-report.html`, `/driver/index.html` için **HTTP 200** ve ana sayfada hafif **içerik işareti** doğrular — bu **gerçek E2E değildir** (JS çalışması, modallar, Apache rewrite test edilmez). Detay: `.github/scripts/ci-http-smoke.sh`.
