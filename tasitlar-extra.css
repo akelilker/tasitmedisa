@@ -1598,7 +1598,8 @@
   }
 
   /* Tarih (type=date) hariç: aksi halde aynı özgüllükte .form-input 17px, .olay-tarih-input 11px’i ezer; gg.aa.yyyy taşar */
-  .olay-ekle-modal .modal-body .form-input:not([type="date"]),
+  .olay-ekle-modal .modal-body input.form-input:not([type="date"]),
+  .olay-ekle-modal .modal-body textarea.form-input,
   .olay-ekle-modal .modal-body select,
   .olay-ekle-modal .modal-body textarea {
     font-size: 17px !important; /* 16px + 1 punto */
@@ -1633,7 +1634,7 @@
     height: 35px !important;
   }
 
-  .olay-ekle-modal .modal-body button {
+  .olay-ekle-modal .modal-body button:not(.ceza-user-trigger):not(.ceza-user-option):not(.medisa-owner-select-trigger):not(.medisa-owner-select-option) {
     font-size: 17px !important; /* 16px + 1 punto */
   }
 
@@ -1661,8 +1662,13 @@
     height: auto !important;
     padding-top: 10px !important;
     padding-bottom: 10px !important;
+    font-size: 13px !important;
     line-height: 1.3 !important;
     box-sizing: border-box !important;
+  }
+  #dinamik-olay-modal .medisa-owner-select-option,
+  .olay-ekle-modal .modal-body .ceza-user-trigger {
+    font-size: 13px !important;
   }
 
   /* Taşıt detay: şube atama select */
