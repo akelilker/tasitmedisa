@@ -38,6 +38,7 @@
         menu.setAttribute('aria-hidden', 'true');
         menu.style.position = '';
         menu.style.top = '';
+        menu.style.bottom = '';
         menu.style.left = '';
         menu.style.width = '';
         menu.style.maxHeight = '';
@@ -58,15 +59,19 @@
       const spaceAbove = Math.max(120, rect.top - 12);
       const useAbove = spaceBelow < Math.min(180, desiredHeight) && spaceAbove > spaceBelow;
       const maxHeight = Math.max(120, Math.min(260, useAbove ? spaceAbove : spaceBelow));
-      const top = useAbove
-        ? Math.max(12, rect.top - Math.min(desiredHeight, maxHeight) - 6)
-        : rect.bottom + 6;
+      const shellHeight = shell.offsetHeight || trigger.offsetHeight || rect.height || 44;
 
-      menu.style.position = 'fixed';
-      menu.style.top = top + 'px';
-      menu.style.left = rect.left + 'px';
-      menu.style.width = rect.width + 'px';
+      menu.style.position = 'absolute';
+      menu.style.left = '0';
+      menu.style.width = '100%';
       menu.style.maxHeight = maxHeight + 'px';
+      if (useAbove) {
+        menu.style.top = 'auto';
+        menu.style.bottom = (shellHeight + 6) + 'px';
+      } else {
+        menu.style.top = (shellHeight + 6) + 'px';
+        menu.style.bottom = 'auto';
+      }
     }
 
     function refreshUserFormCustomSelect(shell) {
