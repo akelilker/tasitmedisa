@@ -329,13 +329,18 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 .olay-ekle-modal .modal-body .ceza-user-list {
   max-height: 180px !important;
   overflow-y: auto !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
 }
 .olay-ekle-modal .modal-body .ceza-user-list::-webkit-scrollbar {
-  width: 6px !important;
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }
 .olay-ekle-modal .modal-body .ceza-user-list::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2) !important;
-  border-radius: 4px !important;
+  display: none !important;
+  background: transparent !important;
+  border-radius: 0 !important;
 }
 .olay-ekle-modal .modal-body .ceza-user-option {
   width: 100% !important;
@@ -404,6 +409,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
   width: 100%;
   min-height: 27px;
   padding-right: 34px !important;
+  font-size: 13px !important;
+  line-height: 1.35 !important;
   text-align: left;
   cursor: pointer;
   user-select: none;
@@ -437,7 +444,17 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
   box-shadow: 0 10px 26px rgba(0, 0, 0, 0.34);
   overflow-y: auto;
   overflow-x: hidden;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
   z-index: 10060;
+}
+#dinamik-olay-modal .medisa-owner-select-menu::-webkit-scrollbar,
+#dinamik-olay-modal .medisa-owner-select-menu::-webkit-scrollbar-track,
+#dinamik-olay-modal .medisa-owner-select-menu::-webkit-scrollbar-thumb {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
 }
 #dinamik-olay-modal .medisa-owner-select-menu.open {
   display: block;
@@ -448,8 +465,11 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
   background: transparent;
   color: rgba(240, 244, 248, 0.96);
   padding: 10px 12px;
+  font-size: 13px !important;
+  line-height: 1.35 !important;
   text-align: left;
-  font: inherit;
+  font-family: inherit;
+  font-weight: 400;
   cursor: pointer;
   transition: background-color 120ms ease, color 120ms ease;
 }
