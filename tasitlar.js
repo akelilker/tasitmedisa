@@ -3303,7 +3303,7 @@ function renderVehicleDetailLeft(vehicle) {
           noneOpt.value = '__none__';
           noneOpt.textContent = 'Henüz Tanımlanmadı';
           selectEl.appendChild(noneOpt);
-          const users = getAssignableUsersForVehicle(vehicle);
+          const users = readUsers();
           users.forEach(u => {
             const opt = document.createElement('option');
             opt.value = u.id;
@@ -3336,8 +3336,7 @@ function renderVehicleDetailLeft(vehicle) {
                   const newId = ev.detail && ev.detail.id;
                   dismissVehicleAssignUserSavedListener();
                   if (!newId || !selectEl.parentNode) return;
-                  const currentVehicle = readVehicles().find(v => String(v.id) === String(currentVehicleId));
-                  const users = getAssignableUsersForVehicle(currentVehicle);
+                  const users = readUsers();
                   selectEl.innerHTML = '<option value="">Kullanıcı Seçiniz</option>';
                   const noneOpt2 = document.createElement('option');
                   noneOpt2.value = '__none__';
