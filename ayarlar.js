@@ -59,7 +59,10 @@
       const spaceAbove = Math.max(120, rect.top - 12);
       const useAbove = spaceBelow < Math.min(180, desiredHeight) && spaceAbove > spaceBelow;
       const maxHeight = Math.max(120, Math.min(260, useAbove ? spaceAbove : spaceBelow));
-      const shellHeight = shell.offsetHeight || trigger.offsetHeight || rect.height || 44;
+      // Not: Menü açıkken shell.offsetHeight menü yüksekliğini de içerdiği için
+      // mobilde liste tetikleyiciden yüzlerce px aşağıda açılabiliyor.
+      // Referans yüksekliği her zaman trigger'dan alınmalı.
+      const shellHeight = trigger.offsetHeight || rect.height || 44;
 
       menu.style.position = 'absolute';
       menu.style.left = '0';
