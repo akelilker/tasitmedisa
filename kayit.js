@@ -2218,11 +2218,28 @@
     if (branchTrigger && branchList) {
       function positionBranchList() {
         var r = branchTrigger.getBoundingClientRect();
-        branchList.style.position = "fixed";
-        branchList.style.top = (r.bottom + 4) + "px";
-        branchList.style.left = r.left + "px";
-        branchList.style.width = r.width + "px";
-        branchList.style.right = "auto";
+        var viewportHeight = window.innerHeight || document.documentElement.clientHeight || 800;
+        var desiredHeight = Math.min(branchList.scrollHeight || 240, 260);
+        var spaceBelow = Math.max(120, viewportHeight - r.bottom - 12);
+        var spaceAbove = Math.max(120, r.top - 12);
+        var useAbove = spaceBelow < Math.min(180, desiredHeight) && spaceAbove > spaceBelow;
+        var maxHeight = Math.max(120, Math.min(260, useAbove ? spaceAbove : spaceBelow));
+        var triggerHeight = branchTrigger.offsetHeight || r.height || 44;
+
+        branchList.style.position = "absolute";
+        branchList.style.left = "0";
+        branchList.style.right = "0";
+        branchList.style.width = "100%";
+        branchList.style.maxHeight = maxHeight + "px";
+        branchList.style.marginTop = "0";
+        branchList.style.marginBottom = "0";
+        if (useAbove) {
+          branchList.style.top = "auto";
+          branchList.style.bottom = (triggerHeight + 4) + "px";
+        } else {
+          branchList.style.top = (triggerHeight + 4) + "px";
+          branchList.style.bottom = "auto";
+        }
       }
       function closeBranchList() {
         branchList.classList.remove("open");
@@ -2230,8 +2247,13 @@
         branchList.setAttribute("aria-hidden", "true");
         branchList.style.position = "";
         branchList.style.top = "";
+        branchList.style.bottom = "";
         branchList.style.left = "";
+        branchList.style.right = "";
         branchList.style.width = "";
+        branchList.style.maxHeight = "";
+        branchList.style.marginTop = "";
+        branchList.style.marginBottom = "";
       }
       branchTrigger.addEventListener("click", function () {
         if (branchTrigger.classList.contains("readonly") || branchTrigger.getAttribute("aria-disabled") === "true") return;
@@ -2268,6 +2290,9 @@
         closeBranchList();
         syncBranchSelectPlaceholder();
         branchSelectEl.dispatchEvent(new Event("change"));
+      });
+      window.addEventListener("resize", function () {
+        if (branchList.classList.contains("open")) closeBranchList();
       });
     }
   }
