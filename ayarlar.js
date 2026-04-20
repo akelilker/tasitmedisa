@@ -907,35 +907,104 @@
       if (textEl) textEl.textContent = n === 0 ? 'Taşıt seçin' : (n === 1 ? '1 Taşıt Seçildi' : n + ' Taşıt Seçildi');
     }
   
-    function toggleUserVehiclesDropdown() {
+    function isUserVehiclesDropdownOpen(dropdown) {
+      return !!dropdown && dropdown.style.display !== 'none';
+    }
+
+    function openUserVehiclesDropdown(options) {
+      const opts = options || {};
       const dropdown = document.getElementById('user-vehicles-dropdown');
       const trigger = document.getElementById('user-vehicles-trigger');
+      const searchInput = document.getElementById('user-vehicles-search');
       if (!dropdown || !trigger) return;
-      const isOpen = dropdown.style.display !== 'none';
-      if (isOpen) {
+      dropdown.style.display = 'block';
+      dropdown.setAttribute('aria-hidden', 'false');
+      trigger.classList.add('user-vehicles-trigger-open');
+      trigger.setAttribute('aria-expanded', 'true');
+      if (opts.focusSearch && searchInput) searchInput.focus();
+    }
+
+    function toggleUserVehiclesDropdown(options) {
+      const dropdown = document.getElementById('user-vehicles-dropdown');
+      if (!dropdown) return;
+      if (isUserVehiclesDropdownOpen(dropdown)) closeUserVehiclesDropdown(options);
+      else openUserVehiclesDropdown(options);
+    }
+  
+    function closeUserVehiclesDropdown(options) {
+      const opts = options || {};
+      const dropdown = document.getElementById('user-vehicles-dropdown');
+      const trigger = document.getElementById('user-vehicles-trigger');
+      if (dropdown) {
         dropdown.style.display = 'none';
+        dropdown.setAttribute('aria-hidden', 'true');
+      }
+      if (trigger) {
         trigger.classList.remove('user-vehicles-trigger-open');
         trigger.setAttribute('aria-expanded', 'false');
-      } else {
-        dropdown.style.display = 'block';
-        trigger.classList.add('user-vehicles-trigger-open');
-        trigger.setAttribute('aria-expanded', 'true');
+        if (opts.focusTrigger) trigger.focus();
+      }
+    }
+
+    function bindUserVehiclesDropdownA11y() {
+      const trigger = document.getElementById('user-vehicles-trigger');
+      const dropdown = document.getElementById('user-vehicles-dropdown');
+      const searchInput = document.getElementById('user-vehicles-search');
+      if (!trigger || !dropdown || trigger.dataset.userVehiclesBound === '1') return;
+
+      trigger.dataset.userVehiclesBound = '1';
+      trigger.addEventListener('keydown', function(ev) {
+        if (ev.key === 'Enter' || ev.key === ' ') {
+          ev.preventDefault();
+          toggleUserVehiclesDropdown({ focusSearch: !isUserVehiclesDropdownOpen(dropdown) });
+          return;
+        }
+        if (ev.key === 'ArrowDown') {
+          ev.preventDefault();
+          if (!isUserVehiclesDropdownOpen(dropdown)) {
+            openUserVehiclesDropdown({ focusSearch: true });
+          } else if (searchInput) {
+            searchInput.focus();
+          }
+          return;
+        }
+        if (ev.key === 'Escape' && isUserVehiclesDropdownOpen(dropdown)) {
+          ev.preventDefault();
+          closeUserVehiclesDropdown({ focusTrigger: true });
+        }
+      });
+
+      if (searchInput && !searchInput.dataset.userVehiclesEscapeBound) {
+        searchInput.dataset.userVehiclesEscapeBound = '1';
+        searchInput.addEventListener('keydown', function(ev) {
+          if (ev.key !== 'Escape') return;
+          ev.preventDefault();
+          closeUserVehiclesDropdown({ focusTrigger: true });
+        });
+      }
+
+      if (!dropdown.dataset.userVehiclesEscapeBound) {
+        dropdown.dataset.userVehiclesEscapeBound = '1';
+        dropdown.addEventListener('keydown', function(ev) {
+          if (ev.key !== 'Escape') return;
+          ev.preventDefault();
+          closeUserVehiclesDropdown({ focusTrigger: true });
+        });
       }
     }
   
-    function closeUserVehiclesDropdown() {
-      const dropdown = document.getElementById('user-vehicles-dropdown');
-      const trigger = document.getElementById('user-vehicles-trigger');
-      if (dropdown) dropdown.style.display = 'none';
-      if (trigger) trigger.classList.remove('user-vehicles-trigger-open');
-    }
-  
     window.toggleUserVehiclesDropdown = toggleUserVehiclesDropdown;
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', bindUserVehiclesDropdownA11y);
+    } else {
+      bindUserVehiclesDropdownA11y();
+    }
   
     document.addEventListener('click', function(ev) {
       const wrap = document.querySelector('.user-vehicles-wrap');
       const dropdown = document.getElementById('user-vehicles-dropdown');
-      if (wrap && dropdown && dropdown.style.display !== 'none' && !wrap.contains(ev.target)) {
+      if (wrap && dropdown && isUserVehiclesDropdownOpen(dropdown) && !wrap.contains(ev.target)) {
         closeUserVehiclesDropdown();
       }
     });
