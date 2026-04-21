@@ -690,7 +690,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-logo {
     justify-items: center;
     gap: 0;
     margin-left: 0;
-    margin-right: 4px;
+    margin-right: 8px;
     transform: none;
     padding: 2px 0 4px;
   }
@@ -1440,8 +1440,8 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero h1 {
     align-self: center;
-    font-size: clamp(calc(16px - 0.5pt), 4.5vw, calc(20px - 0.5pt)) !important;
-    letter-spacing: clamp(1px, 0.45vw, 3px);
+    font-size: clamp(calc(17px - 0.5pt), 4.5vw, calc(22px - 0.5pt)) !important;
+    letter-spacing: clamp(1px, 0.42vw, 3px);
   }
   .settings-dropdown {
     width: 45%; /* Masaüstünde container'ın %45'i */
