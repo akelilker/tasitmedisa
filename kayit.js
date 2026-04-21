@@ -918,7 +918,9 @@
     // Sağ kolondaki tarih alanlarında (Sigorta/Kasko/Muayene) değeri gizleme:
     // iOS Safari ilk render'da metni boş gösterebildiği için renk daima görünür tutulur.
     if (isVehicleRightDate) {
-      input.style.color = '#888';
+      const visibleDateColor = hasValue || input === document.activeElement ? '#a0aec0' : '#6c757d';
+      input.style.color = visibleDateColor;
+      input.style.webkitTextFillColor = visibleDateColor;
       return;
     }
     // Olay Ekle (Kaza/Bakım/Ceza vb.): boşta şeffaf yerine yerel gg.aa.yyyy okunaklı kalsın
@@ -947,6 +949,9 @@
         requestAnimationFrame(function() {
           input.value = val;
           syncSingleDateInputVisibility(input);
+          requestAnimationFrame(function() {
+            syncSingleDateInputVisibility(input);
+          });
         });
       } else {
         syncSingleDateInputVisibility(input);
