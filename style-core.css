@@ -3065,6 +3065,12 @@ body.modal-open .app-container {
     bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0));
   }
 
+  /* Ana ekran masaüstü: modal kapalıyken yan çizgiler ve iç glow footer üstüne kadar insin */
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page):not(.modal-open) .app-container::before,
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page):not(.modal-open) .app-container::after {
+    bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0));
+  }
+
   /* Omnidirectional kırmızımsı halo footer köşelerinde birikmez */
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap {
     box-shadow: 0 2px 16px rgba(0, 0, 0, 0.32);
