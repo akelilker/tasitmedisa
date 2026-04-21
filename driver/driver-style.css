@@ -1447,8 +1447,8 @@ body.dashboard-page {
   .driver-user-plate-in-panel { gap: 3px; margin-bottom: 3px; }
   .driver-radio-label.driver-radio-label-multiline {
     display: inline-flex;
-    align-self: flex-start;
-    max-width: 92px;
+    align-self: center;
+    max-width: none;
     white-space: normal;
     line-height: 1.08;
   }
@@ -4959,27 +4959,38 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     margin-top: 5px !important;
   }
   .dashboard-page .driver-action-area .driver-radio-row {
-    align-items: center !important;
+    align-items: stretch !important;
+    flex-direction: column !important;
+    gap: 7px !important;
   }
   .dashboard-page .driver-action-area .driver-radio-label {
-    display: inline-flex;
+    display: flex;
     align-items: center;
-    min-height: 31px;
+    justify-content: center;
+    min-height: 0;
+    width: 100%;
     font-size: 16px !important;
     margin-top: 0 !important;
     margin-bottom: 0 !important;
+    text-align: center !important;
   }
   .dashboard-page .driver-action-area .driver-radio-label.driver-radio-label-multiline {
-    align-items: flex-start;
+    align-items: center;
     min-height: auto;
-    line-height: 1.08;
+    line-height: 1.12;
   }
   .dashboard-page .driver-action-area .driver-radio-group {
     align-items: center !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 8px !important;
+    width: 100%;
   }
   .dashboard-page .driver-action-area .driver-radio-btn {
     min-height: 31px !important;
     font-size: 16px !important;
+    width: 100% !important;
+    min-width: 0 !important;
   }
 
   /* Foto 4: KM input dikey yükseklik %15 daralsın */
