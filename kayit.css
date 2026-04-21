@@ -310,6 +310,7 @@ select option:active {
 /* Tahsis Edilen Şube: custom dropdown (gizli select + trigger + liste) */
 .vehicle-branch-dropdown-wrap {
     position: relative;
+    overflow: visible;
 }
 #vehicle-modal #vehicle-branch-select {
     position: absolute !important;
@@ -376,6 +377,9 @@ select option:active {
     max-height: 200px;
     overflow-y: auto;
     overflow-x: hidden;
+    touch-action: pan-y;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
     scrollbar-width: none !important;
     -ms-overflow-style: none !important;
     z-index: 40;
@@ -1137,7 +1141,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     
     .modal-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 0; min-width: 0; }
     .modal-column-left { padding-right: 8px; padding-left: 0; border-right: 1px solid rgba(var(--theme-color-rgb), 0.28); min-width: 0; }
-    .modal-column-right { padding-left: 8px; padding-right: 0; overflow: hidden; min-width: 0; }
+    .modal-column-right { padding-left: 8px; padding-right: 0; overflow: visible; min-width: 0; }
     #vehicle-modal .modal-column-right { display: flex; flex-direction: column; min-height: 0; }
     .modal-column-right .form-section { margin-bottom: 8px; }
 
