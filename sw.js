@@ -1,7 +1,7 @@
 // Service Worker - Medisa Taşıt Yönetim Sistemi
-// Version 2.11 - Activate: claim önce (InvalidStateError düzeltmesi); syntax temiz
+// Version 2.12 - Mobil UI asset yenileme; syntax temiz
 
-const CACHE_VERSION = 'medisa-v2.74';
+const CACHE_VERSION = 'medisa-v2.75';
 
 // Subpath desteği: /medisa/sw.js ise base = '/medisa', kök deploy'da base = ''
 function getBase() {

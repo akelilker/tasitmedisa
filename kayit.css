@@ -501,6 +501,34 @@ input[type="date"].form-input {
 #vehicle-modal .modal-column-right input[type="date"]:not(.has-value):not(:focus)::-webkit-datetime-edit {
     color: #6c757d !important; /* Native gg.aa.yyyy görünür ve ortada */
 }
+#vehicle-modal .modal-column-right input[type="date"].has-value,
+#vehicle-modal .modal-column-right input[type="date"]:focus {
+    color: #a0aec0 !important;
+    -webkit-text-fill-color: #a0aec0 !important;
+}
+#vehicle-modal .modal-column-right input[type="date"].has-value::-webkit-datetime-edit,
+#vehicle-modal .modal-column-right input[type="date"].has-value::-webkit-datetime-edit-fields-wrapper,
+#vehicle-modal .modal-column-right input[type="date"].has-value::-webkit-datetime-edit-text,
+#vehicle-modal .modal-column-right input[type="date"].has-value::-webkit-datetime-edit-day-field,
+#vehicle-modal .modal-column-right input[type="date"].has-value::-webkit-datetime-edit-month-field,
+#vehicle-modal .modal-column-right input[type="date"].has-value::-webkit-datetime-edit-year-field,
+#vehicle-modal .modal-column-right input[type="date"]:focus::-webkit-datetime-edit,
+#vehicle-modal .modal-column-right input[type="date"]:focus::-webkit-datetime-edit-fields-wrapper,
+#vehicle-modal .modal-column-right input[type="date"]:focus::-webkit-datetime-edit-text,
+#vehicle-modal .modal-column-right input[type="date"]:focus::-webkit-datetime-edit-day-field,
+#vehicle-modal .modal-column-right input[type="date"]:focus::-webkit-datetime-edit-month-field,
+#vehicle-modal .modal-column-right input[type="date"]:focus::-webkit-datetime-edit-year-field {
+    color: #a0aec0 !important;
+    -webkit-text-fill-color: #a0aec0 !important;
+}
+#vehicle-modal .modal-column-right input[type="date"]:not(.has-value):not(:focus)::-webkit-datetime-edit-fields-wrapper,
+#vehicle-modal .modal-column-right input[type="date"]:not(.has-value):not(:focus)::-webkit-datetime-edit-text,
+#vehicle-modal .modal-column-right input[type="date"]:not(.has-value):not(:focus)::-webkit-datetime-edit-day-field,
+#vehicle-modal .modal-column-right input[type="date"]:not(.has-value):not(:focus)::-webkit-datetime-edit-month-field,
+#vehicle-modal .modal-column-right input[type="date"]:not(.has-value):not(:focus)::-webkit-datetime-edit-year-field {
+    color: #6c757d !important;
+    -webkit-text-fill-color: #6c757d !important;
+}
 #vehicle-modal input[type="date"].form-input::-webkit-calendar-picker-indicator {
     position: absolute !important;
     right: 3px !important;
