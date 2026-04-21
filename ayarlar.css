@@ -2152,20 +2152,20 @@ input.settings-form-input:-moz-autofill,
         max-width: calc((100% - 16px) / 3) !important;
         flex: 0 0 calc((100% - 16px) / 3) !important;
         aspect-ratio: auto !important;
-        min-height: clamp(84px, 24vw, 92px) !important;
+        min-height: clamp(78px, 22vw, 84px) !important;
         height: auto !important;
-        justify-content: flex-start !important;
-        padding: 12px 5px 10px 5px !important;
+        justify-content: center !important;
+        padding: 10px 5px !important;
     }
     #branch-modal #branch-list .settings-card-content {
         justify-content: flex-start !important;
         gap: 4px !important;
     }
     #user-modal #user-list .settings-card-content {
-        justify-content: flex-start !important;
+        justify-content: center !important;
         align-items: center !important;
         height: 100% !important;
-        gap: 5px !important;
+        gap: 3px !important;
     }
     .settings-card-title { font-size: 15px; }
     .settings-card-subtitle { font-size: 13px; }
@@ -2185,11 +2185,13 @@ input.settings-form-input:-moz-autofill,
     }
     #user-modal #user-list .settings-card .settings-card-title {
         font-size: 14px !important;
+        min-height: 0 !important;
         max-height: calc(2 * 1.12em) !important;
         display: -webkit-box !important;
         -webkit-box-orient: vertical !important;
         -webkit-line-clamp: 2 !important;
         line-clamp: 2 !important;
+        text-align: center !important;
         word-break: normal !important;
         overflow-wrap: break-word !important;
     }
@@ -2204,7 +2206,7 @@ input.settings-form-input:-moz-autofill,
         font-size: 12.5px !important;
         line-height: 1.12 !important;
         min-height: 0 !important;
-        margin-top: auto !important;
+        margin-top: 0 !important;
     }
     #branch-modal #branch-list .settings-card .settings-card-count {
         font-size: calc(10px + 1pt) !important;
