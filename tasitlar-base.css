@@ -172,6 +172,14 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
   line-height: 1 !important;
   text-align: center !important; /* gg.aa.yyyy ortada, sağdan taşmasın */
 }
+@media (min-width: 769px) {
+  .olay-ekle-modal .modal-body input[type="date"].form-input,
+  .olay-ekle-modal .modal-body .olay-tarih-input {
+    color-scheme: dark !important;
+    accent-color: var(--theme-color, #d40000);
+    background-color: #0d131f !important;
+  }
+}
 .olay-ekle-modal .modal-body input[type="date"].form-input::-webkit-datetime-edit,
 .olay-ekle-modal .modal-body .olay-tarih-input::-webkit-datetime-edit,
 .olay-ekle-modal .modal-body input[type="date"].form-input::-webkit-date-and-time-value,

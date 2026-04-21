@@ -980,8 +980,8 @@
 
     syncSingleDateInputVisibility(input);
 
-    // Dinamik olay modalı + mobil: özel span iOS yerel tarih gösterimi ile üst üste biniyor
-    if (input.type === 'date' && window.innerWidth <= 640 && input.closest('#dinamik-olay-modal')) {
+    // Dinamik olay modalında yerel tarih placeholder'ı yeterli; ekstra span masaüstünde çift gg.aa.yyyy üretiyor.
+    if (input.type === 'date' && input.closest('#dinamik-olay-modal')) {
       return;
     }
 
