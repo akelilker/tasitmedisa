@@ -1158,7 +1158,7 @@
     padding-right: 6px !important;
   }
   #vehicles-modal .vt-right {
-    gap: 2px !important;
+    gap: 5px !important;
     flex-shrink: 1;
     min-width: 0 !important;
     overflow: visible !important; /* ıman dropdown mobilde kesilmesin, görünsün */
@@ -1166,13 +1166,13 @@
   /* Taşıtlar toolbar: arama + şanzıman + dişer ikonlar sışsın */
   #vehicles-modal .vt-right .vt-icon-btn,
   #vehicles-modal .vt-right .v-transmission-btn {
-    width: 34px !important;
-    height: 34px !important;
+    width: 38px !important;
+    height: 38px !important;
   }
   #vehicles-modal .vt-right .vt-icon-btn svg,
   #vehicles-modal .vt-right .v-transmission-btn svg {
-    width: 18px !important;
-    height: 18px !important;
+    width: 20px !important;
+    height: 20px !important;
   }
   /* ıman dropdown mobil: saşa hizalı (zaten base'de right:0), görünür olsun */
   .v-transmission-dropdown {
@@ -2071,17 +2071,17 @@
       padding-bottom: 0 !important;
     }
     #vehicles-modal .vt-right {
-      gap: 4px !important;
+      gap: 5px !important;
     }
     #vehicles-modal .vt-right .vt-icon-btn,
     #vehicles-modal .vt-right .v-transmission-btn {
-      width: 36px !important;
-      height: 36px !important;
+      width: 38px !important;
+      height: 38px !important;
     }
     #vehicles-modal .vt-right .vt-icon-btn svg,
     #vehicles-modal .vt-right .v-transmission-btn svg {
-      width: 19px !important;
-      height: 19px !important;
+      width: 20px !important;
+      height: 20px !important;
     }
     /* iOS PWA: olay formlarında tarih kutusu + gg.aa.yyyy overlay dikey hiza (Safari date widget) */
     #dinamik-olay-modal .modal-body input[type="date"].form-input,
