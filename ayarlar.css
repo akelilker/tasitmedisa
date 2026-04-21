@@ -65,6 +65,12 @@
     pointer-events: auto;
 }
 
+/* Üst üste liste + form modalları (aynı z-index): form açıkken alttaki liste tıklama/Space ile tetiklenmesin */
+#user-modal[data-medisa-below-form="1"],
+#branch-modal[data-medisa-below-form="1"] {
+    pointer-events: none !important;
+}
+
 .ayarlar-modal-overlay::before {
     display: none;
 }
