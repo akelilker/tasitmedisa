@@ -246,19 +246,6 @@
     function readBranches() { return (typeof window.getMedisaBranches === 'function' ? window.getMedisaBranches() : null) || (function() { try { var r = localStorage.getItem(BRANCHES_KEY); return r ? JSON.parse(r) : []; } catch (e) { return []; } })(); }
     function writeBranches(arr) { if (typeof window.writeBranches === 'function') { window.writeBranches(arr); return; } localStorage.setItem(BRANCHES_KEY, JSON.stringify(arr)); if (window.appData) { window.appData.branches = arr; if (window.saveDataToServer) window.saveDataToServer().catch(function(err) { console.error('Sunucuya kaydetme hatası (sessiz):', err); }); } }
     function readVehicles() { return (typeof window.getMedisaVehicles === 'function' ? window.getMedisaVehicles() : null) || (function() { try { var r = localStorage.getItem(VEHICLES_KEY); return r ? JSON.parse(r) : []; } catch (e) { return []; } })(); }
-
-    /** Liste modalı ile üst üste form modalı aynı z-index; form açıkken alttaki liste etkileşime kapansın (tıklama/Space ile geri sızması). */
-    function setSettingsListModalBelowForm(listModalId, underForm) {
-      const el = document.getElementById(listModalId);
-      if (!el) return;
-      if (underForm) {
-        el.setAttribute('inert', '');
-        el.dataset.medisaBelowForm = '1';
-      } else {
-        el.removeAttribute('inert');
-        delete el.dataset.medisaBelowForm;
-      }
-    }
   
     // Modal Kontrolü (Ana Liste)
     window.openBranchManagement = function openBranchManagement() {
@@ -276,7 +263,6 @@
     window.closeBranchManagement = function closeBranchManagement() {
       const modal = document.getElementById('branch-modal');
       if (!modal) return;
-      setSettingsListModalBelowForm('branch-modal', false);
       modal.classList.remove('active');
       setTimeout(() => modal.style.display = 'none', 300);
     };
@@ -317,7 +303,6 @@
       }
   
       // Modalı aç
-      setSettingsListModalBelowForm('branch-modal', true);
       modal.style.display = 'flex';
       requestAnimationFrame(() => modal.classList.add('active'));
   
@@ -328,7 +313,6 @@
     };
   
     window.closeBranchFormModal = function closeBranchFormModal() {
-      setSettingsListModalBelowForm('branch-modal', false);
       const modal = document.getElementById('branch-form-modal');
       if (!modal) return;
       if (typeof window.resetModalInputs === 'function') {
@@ -792,7 +776,6 @@
     window.closeUserManagement = function closeUserManagement() {
       const modal = document.getElementById('user-modal');
       if (!modal) return;
-      setSettingsListModalBelowForm('user-modal', false);
       userManagementSearchQuery = '';
       userManagementSearchOpen = false;
       syncUserManagementSearchUi();
@@ -1186,7 +1169,6 @@
       syncUserFormCustomSelects(modal);
 
       // Modalı aç
-      setSettingsListModalBelowForm('user-modal', true);
       modal.style.display = 'flex';
       requestAnimationFrame(() => modal.classList.add('active'));
   
@@ -1197,7 +1179,6 @@
     };
   
     window.closeUserFormModal = function closeUserFormModal() {
-      setSettingsListModalBelowForm('user-modal', false);
       if (typeof window.medisaDismissVehicleAssignUserSavedListener === 'function') {
         window.medisaDismissVehicleAssignUserSavedListener();
       }
@@ -1599,7 +1580,6 @@
           <div class="settings-card" onclick="editUser('${user.id}')" style="cursor:pointer;">
             <div class="settings-card-content">
               <div class="settings-card-title">${escapeHtml(user.name || 'İsimsiz')}</div>
-              <div class="settings-card-gorev" aria-hidden="true"></div>
             </div>
           </div>
         `;
