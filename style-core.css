@@ -1787,7 +1787,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   right: 8px;
   width: 36px;
   height: 36px;
-  background-image: url('icon/marker.png');
+  background-image: url('icon/marker.png?v=20260421.1');
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
