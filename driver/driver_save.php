@@ -38,7 +38,8 @@ $bakimServis = strip_tags(trim($input['bakim_servis'] ?? ''));
 $bakimKisi = strip_tags(trim($input['bakim_kisi'] ?? ''));
 $bakimKm = strip_tags(trim($input['bakim_km'] ?? ''));
 $bakimTutar = strip_tags(trim($input['bakim_tutar'] ?? ''));
-$ekstraNot = strip_tags(trim($input['ekstra_not'] ?? ''));
+$hasEkstraNot = array_key_exists('ekstra_not', $input);
+$ekstraNot = $hasEkstraNot ? strip_tags(trim($input['ekstra_not'] ?? '')) : null;
 
 $boyaParcalar = [];
 $boyaParcalarRaw = $input['boya_parcalar'] ?? '';
@@ -105,6 +106,7 @@ $result = medisaMutateData(function (&$data) use (
     $bakimKisi,
     $bakimKm,
     $bakimTutar,
+    $hasEkstraNot,
     $ekstraNot,
     $boyaParcalar
 ) {
@@ -189,7 +191,7 @@ $result = medisaMutateData(function (&$data) use (
         'kaza_tarih' => $kazaTarih,
         'kaza_hasar_tutari' => $kazaHasarTutari,
         'boya_parcalar' => !empty($boyaParcalar) ? json_encode($boyaParcalar) : '',
-        'ekstra_not' => $ekstraNot,
+        'ekstra_not' => $hasEkstraNot ? $ekstraNot : '',
         'kayit_tarihi' => date('c'),
         'guncelleme_tarihi' => date('c'),
         'durum' => 'onaylandi',
@@ -260,20 +262,22 @@ $result = medisaMutateData(function (&$data) use (
         ]);
     }
 
-    $vehicle['sonEkstraNot'] = $ekstraNot;
-    $vehicle['sonEkstraNotDonem'] = $donem;
-    if ($ekstraNot !== '') {
-        array_unshift($vehicle['events'], [
-            'id' => (string)(time() . $vehicleIndex . 'n'),
-            'type' => 'not-guncelle',
-            'date' => date('Y-m-d'),
-            'timestamp' => date('c'),
-            'data' => [
-                'not' => $ekstraNot,
-                'donem' => $donem,
-                'surucu' => $kullaniciAdi,
-            ],
-        ]);
+    if ($hasEkstraNot) {
+        $vehicle['sonEkstraNot'] = $ekstraNot;
+        $vehicle['sonEkstraNotDonem'] = $donem;
+        if ($ekstraNot !== '') {
+            array_unshift($vehicle['events'], [
+                'id' => (string)(time() . $vehicleIndex . 'n'),
+                'type' => 'not-guncelle',
+                'date' => date('Y-m-d'),
+                'timestamp' => date('c'),
+                'data' => [
+                    'not' => $ekstraNot,
+                    'donem' => $donem,
+                    'surucu' => $kullaniciAdi,
+                ],
+            ]);
+        }
     }
 
     $newVehicleVersion = medisaBumpVehicleVersion($vehicle);
