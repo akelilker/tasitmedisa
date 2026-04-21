@@ -997,10 +997,10 @@ select.settings-form-select option,
 }
 #user-form-modal .medisa-owner-select-menu {
     display: none;
-    background: var(--bg-content, #0d131f);
-    border: 1px solid rgba(255, 255, 255, 0.28);
+    background: #101722;
+    border: 1px solid rgba(190, 200, 214, 0.42);
     border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.48), inset 0 0 0 1px rgba(255, 255, 255, 0.06);
     overflow-y: auto;
     overflow-x: hidden;
     z-index: 10060;
@@ -1011,6 +1011,7 @@ select.settings-form-select option,
 #user-form-modal .medisa-owner-select-option {
     width: 100%;
     border: 0;
+    border-bottom: 1px solid rgba(190, 200, 214, 0.10);
     background: transparent;
     color: rgba(240, 244, 248, 0.96);
     padding: 8px 10px;
@@ -1019,6 +1020,9 @@ select.settings-form-select option,
     line-height: 1.35;
     cursor: pointer;
     transition: background-color 120ms ease, color 120ms ease;
+}
+#user-form-modal .medisa-owner-select-option:last-child {
+    border-bottom: 0;
 }
 #user-form-modal .medisa-owner-select-option.is-placeholder {
     color: var(--txt-gray-darker, #888);
@@ -1219,14 +1223,14 @@ input.settings-form-input:-moz-autofill,
   right: 0;
   min-width: 100%;
   margin-top: 6px;
-  background: var(--bg);
-  border: 1px solid rgba(var(--theme-color-rgb), 0.25);
+  background: #101722;
+  border: 1px solid rgba(190, 200, 214, 0.42);
   border-radius: 8px;
   padding: 10px;
   max-height: 320px;
   overflow: hidden;
   z-index: 20;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(var(--theme-color-rgb), 0.08);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.48), inset 0 0 0 1px rgba(255, 255, 255, 0.06);
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -1236,16 +1240,16 @@ input.settings-form-input:-moz-autofill,
 /* Kullanıcı Düzenle: liste yukarı açılsın, Kaydet/Vazgeç butonları hep görünsün */
 /* Taşıt seçimi: ana sayfa ayarlar menüsü kutularıyla aynı çerçeve tonu; liste + arama ayrı kutu */
 #user-form-modal .user-vehicles-trigger {
-  border: 1px solid var(--border-subtle) !important;
+  border: 1px solid rgba(190, 200, 214, 0.42) !important;
   border-radius: 10px !important;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3) !important;
 }
 #user-form-modal .user-vehicles-trigger:hover {
-  border-color: var(--border-mid) !important;
+  border-color: rgba(214, 222, 235, 0.56) !important;
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4) !important;
 }
 #user-form-modal .user-vehicles-trigger.user-vehicles-trigger-open {
-  border-color: var(--border-mid) !important;
+  border-color: rgba(214, 222, 235, 0.56) !important;
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4) !important;
 }
 #user-form-modal .user-vehicles-dropdown {
@@ -1265,18 +1269,18 @@ input.settings-form-input:-moz-autofill,
   overflow-y: auto !important;
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
-  border: 1px solid var(--border-subtle) !important;
+  border: 1px solid rgba(190, 200, 214, 0.42) !important;
   border-radius: 10px !important;
-  background: var(--bg) !important;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3) !important;
+  background: #101722 !important;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.48), inset 0 0 0 1px rgba(255, 255, 255, 0.06) !important;
   padding: 2px 0 !important;
   box-sizing: border-box !important;
 }
 #user-form-modal .user-vehicles-search-wrap {
-  border: 1px solid var(--border-subtle) !important;
+  border: 1px solid rgba(190, 200, 214, 0.42) !important;
   border-radius: 10px !important;
-  background: var(--bg) !important;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3) !important;
+  background: #101722 !important;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.48), inset 0 0 0 1px rgba(255, 255, 255, 0.06) !important;
   padding: 8px !important;
   box-sizing: border-box !important;
 }
@@ -1336,7 +1340,7 @@ input.settings-form-input:-moz-autofill,
   color: var(--txt);
   background: transparent;
   border: none;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgba(190, 200, 214, 0.10);
   border-radius: 0;
   cursor: pointer;
   transition: background 0.15s, color 0.15s;

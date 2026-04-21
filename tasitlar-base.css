@@ -309,10 +309,10 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
   right: 0 !important;
   display: none !important;
   flex-direction: column !important;
-  background: #0d131f !important;
-  border: 1px solid rgba(255, 255, 255, 0.24) !important;
+  background: #101722 !important;
+  border: 1px solid rgba(190, 200, 214, 0.42) !important;
   border-radius: 8px !important;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.46) !important;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.48), inset 0 0 0 1px rgba(255, 255, 255, 0.06) !important;
   z-index: 35 !important;
   overflow: hidden !important;
 }
@@ -323,8 +323,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
   position: sticky !important;
   top: 0 !important;
   padding: 8px !important;
-  background: #0d131f !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.09) !important;
+  background: #101722 !important;
+  border-bottom: 1px solid rgba(190, 200, 214, 0.12) !important;
   z-index: 1 !important;
 }
 .olay-ekle-modal .modal-body .ceza-user-search-input {
@@ -353,7 +353,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 .olay-ekle-modal .modal-body .ceza-user-option {
   width: 100% !important;
   border: none !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+  border-bottom: 1px solid rgba(190, 200, 214, 0.10) !important;
   background: transparent !important;
   color: #d6dbe3 !important;
   text-align: left !important;
@@ -452,10 +452,10 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 }
 #dinamik-olay-modal .medisa-owner-select-menu {
   display: none;
-  background: #0d131f;
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: #101722;
+  border: 1px solid rgba(190, 200, 214, 0.42);
   border-radius: 8px;
-  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.34);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.48), inset 0 0 0 1px rgba(255, 255, 255, 0.06);
   overflow-y: auto;
   overflow-x: hidden;
   scrollbar-width: none;
@@ -476,6 +476,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 #dinamik-olay-modal .medisa-owner-select-option {
   width: 100%;
   border: 0;
+  border-bottom: 1px solid rgba(190, 200, 214, 0.10);
   background: transparent;
   color: rgba(240, 244, 248, 0.96);
   padding: 10px 12px;
@@ -486,6 +487,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
   font-weight: 400;
   cursor: pointer;
   transition: background-color 120ms ease, color 120ms ease;
+}
+#dinamik-olay-modal .medisa-owner-select-option:last-child {
+  border-bottom: 0;
 }
 #dinamik-olay-modal .medisa-owner-select-option.is-placeholder {
   color: var(--txt-gray-darker, #a0aec0);
