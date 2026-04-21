@@ -929,6 +929,10 @@ select.settings-form-select option,
     position: relative;
     width: 100%;
 }
+#user-form-modal .form-section:has(#user-branch) .form-label,
+#user-form-modal .form-section:has(#user-role) .form-label {
+    font-size: 14px !important;
+}
 #user-form-modal select.medisa-owner-select-native {
     position: absolute !important;
     width: 1px !important;
@@ -947,9 +951,20 @@ select.settings-form-select option,
     justify-content: space-between;
     gap: 10px;
     width: 100%;
+    min-height: 32px;
+    height: 32px;
+    padding: 3px 28px 3px 8px;
+    border: 1px solid rgba(255, 255, 255, 0.28) !important;
+    border-radius: 6px;
+    background: #0d131f !important;
+    box-shadow: 0 0 0 0.5px rgba(255, 255, 255, 0.08) !important;
+    box-sizing: border-box;
     text-align: left;
     cursor: pointer;
     user-select: none;
+    font-size: 13px !important;
+    line-height: 1.35 !important;
+    color: var(--txt-gray-darker, #888) !important;
 }
 #user-form-modal .medisa-owner-select-trigger-text {
     flex: 1 1 auto;
@@ -957,17 +972,25 @@ select.settings-form-select option,
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    font-size: inherit;
+    line-height: inherit;
 }
 #user-form-modal .medisa-owner-select-trigger.placeholder .medisa-owner-select-trigger-text {
-    color: var(--txt-gray-darker, #888);
-    opacity: 0.88;
+    color: rgba(255, 255, 255, 0.38);
+    opacity: 1;
 }
 #user-form-modal .medisa-owner-select-chevron {
-    width: 16px;
-    height: 16px;
+    width: 14px;
+    height: 14px;
     flex: 0 0 auto;
     opacity: 0.82;
     transition: transform 140ms ease;
+}
+#user-form-modal .medisa-owner-select-trigger:focus,
+#user-form-modal .medisa-owner-select-trigger.is-open {
+    border-color: var(--theme-color) !important;
+    outline: none;
+    box-shadow: none !important;
 }
 #user-form-modal .medisa-owner-select-trigger.is-open .medisa-owner-select-chevron {
     transform: rotate(180deg);
@@ -975,9 +998,9 @@ select.settings-form-select option,
 #user-form-modal .medisa-owner-select-menu {
     display: none;
     background: var(--bg-content, #0d131f);
-    border: 1px solid rgba(255, 255, 255, 0.18);
+    border: 1px solid rgba(255, 255, 255, 0.28);
     border-radius: 8px;
-    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.34);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
     overflow-y: auto;
     overflow-x: hidden;
     z-index: 10060;
@@ -990,9 +1013,10 @@ select.settings-form-select option,
     border: 0;
     background: transparent;
     color: rgba(240, 244, 248, 0.96);
-    padding: 10px 12px;
+    padding: 8px 10px;
     text-align: left;
-    font: inherit;
+    font-size: 13px;
+    line-height: 1.35;
     cursor: pointer;
     transition: background-color 120ms ease, color 120ms ease;
 }
@@ -1001,12 +1025,12 @@ select.settings-form-select option,
 }
 #user-form-modal .medisa-owner-select-option:hover,
 #user-form-modal .medisa-owner-select-option:focus {
-    background: rgba(var(--theme-color-rgb), 0.14);
+    background: rgba(var(--theme-color-rgb), 0.12);
     color: #ffffff;
     outline: none;
 }
 #user-form-modal .medisa-owner-select-option.selected {
-    background: rgba(var(--theme-color-rgb), 0.20);
+    background: rgba(var(--theme-color-rgb), 0.16);
     color: #ffffff;
 }
 #user-form-modal .medisa-owner-select-option.is-disabled {
@@ -1788,8 +1812,8 @@ input.settings-form-input:-moz-autofill,
         font-size: 14px !important; /* 1 punto küçültüldü (15px → 14px) */
         text-align: left;
     }
-    #branch-form-modal .modal-body .form-input:not(select),
-    #user-form-modal .modal-body .form-input:not(select) {
+    #branch-form-modal .modal-body .form-input:not(select):not(.medisa-owner-select-trigger),
+    #user-form-modal .modal-body .form-input:not(select):not(.medisa-owner-select-trigger) {
         width: 100%;
         max-width: 100%;
         height: 27px !important;
@@ -1976,9 +2000,9 @@ input.settings-form-input:-moz-autofill,
         border-color: rgba(255, 255, 255, 0.52) !important;
         background: rgba(255, 255, 255, 0.04) !important;
     }
-    .form-input:not(select),
-    #branch-form-modal .form-input:not(select),
-    #user-form-modal .form-input:not(select) {
+    .form-input:not(select):not(.medisa-owner-select-trigger),
+    #branch-form-modal .form-input:not(select):not(.medisa-owner-select-trigger),
+    #user-form-modal .form-input:not(select):not(.medisa-owner-select-trigger) {
         color: var(--txt-gray-darker, #888) !important;
         border-color: rgba(255, 255, 255, 0.4) !important;
         background: var(--bg-content, #0d131f) !important;
@@ -2200,8 +2224,8 @@ input.settings-form-input:-moz-autofill,
     #user-form-modal .modal-body .form-section:first-child {
         margin-top: 2px !important;
     }
-    #branch-form-modal .form-input:not(select),
-    #user-form-modal .form-input:not(select) {
+    #branch-form-modal .form-input:not(select):not(.medisa-owner-select-trigger),
+    #user-form-modal .form-input:not(select):not(.medisa-owner-select-trigger) {
         height: 32px !important;
         padding: 3px 8px;
         font-size: 15.5px !important;
@@ -2220,7 +2244,7 @@ input.settings-form-input:-moz-autofill,
         background-color: var(--bg-content, #0d131f) !important;
         color: var(--txt-gray-darker, #888) !important; /* Ayarlar: input içi metin gri */
     }
-    #user-form-modal .form-input,
+    #user-form-modal .form-input:not(.medisa-owner-select-trigger),
     #user-form-modal select.form-input,
     #user-form-modal .user-vehicles-trigger {
         border-color: rgba(255, 255, 255, 0.52) !important;
@@ -2408,14 +2432,14 @@ input.settings-form-input:-moz-autofill,
         #user-form-modal .form-label {
             font-size: 14px !important;
         }
-        #user-form-modal .form-input,
+        #user-form-modal .form-input:not(.medisa-owner-select-trigger),
         #user-form-modal select.form-input,
         #user-form-modal .user-vehicles-trigger,
         #user-form-modal .user-vehicles-trigger-text {
             font-size: 15.5px !important;
             line-height: 1.15 !important;
         }
-        #user-form-modal .form-input,
+        #user-form-modal .form-input:not(.medisa-owner-select-trigger),
         #user-form-modal select.form-input {
             padding-top: 2px !important;
             padding-bottom: 2px !important;
