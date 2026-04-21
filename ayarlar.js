@@ -1599,6 +1599,7 @@
           <div class="settings-card" onclick="editUser('${user.id}')" style="cursor:pointer;">
             <div class="settings-card-content">
               <div class="settings-card-title">${escapeHtml(user.name || 'İsimsiz')}</div>
+              <div class="settings-card-gorev" aria-hidden="true"></div>
             </div>
           </div>
         `;
