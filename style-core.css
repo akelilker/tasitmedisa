@@ -2036,7 +2036,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
 #app-footer .brand img {
     max-width: 100%;
     height: auto;
-    max-height: 12.5px;
+    max-height: 14px;
     width: auto;
     opacity: 0.4; /* Başlangıç çok soluk */
     filter: none;
@@ -2048,7 +2048,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
 #app-footer .brand svg {
     max-width: 100%;
     height: auto;
-    max-height: 12.5px;
+    max-height: 14px;
     flex-shrink: 1;
 }
 
