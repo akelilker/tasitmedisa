@@ -3772,7 +3772,7 @@ function renderVehicleDetailLeft(vehicle) {
               if (existing) existing.remove();
               
               const isMobileFallback = window.innerWidth <= 640;
-              const skipDinamikDatePh = isMobileFallback && !!input.closest('#dinamik-olay-modal');
+              const skipDinamikDatePh = !!input.closest('#dinamik-olay-modal');
               if (!input.value && input !== document.activeElement && !skipDinamikDatePh) {
                 const leftPx = isMobileFallback ? '12px' : '8px';
                 const st = window.getComputedStyle(input);
