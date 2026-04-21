@@ -404,11 +404,12 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 #dinamik-olay-modal .medisa-owner-select-trigger {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 10px;
+  position: relative;
   width: 100%;
   min-height: 27px;
-  padding-right: 34px !important;
+  padding-right: 40px !important;
   font-size: 13px !important;
   line-height: 1.35 !important;
   text-align: left;
@@ -429,12 +430,17 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 #dinamik-olay-modal .medisa-owner-select-chevron {
   width: 16px;
   height: 16px;
+  position: absolute;
+  top: 50%;
+  right: 12px;
   flex: 0 0 auto;
   opacity: 0.82;
+  pointer-events: none;
+  transform: translateY(-50%);
   transition: transform 140ms ease;
 }
 #dinamik-olay-modal .medisa-owner-select-trigger.is-open .medisa-owner-select-chevron {
-  transform: rotate(180deg);
+  transform: translateY(-50%) rotate(180deg);
 }
 #dinamik-olay-modal .medisa-owner-select-menu {
   display: none;

@@ -1647,6 +1647,12 @@
     line-height: 1.25 !important;
     font-size: clamp(11px, 2.8vw, 17px) !important;
   }
+  @media (min-width: 769px) {
+    #event-menu-modal .modal-body #event-menu-list button {
+      width: calc(100% - 24px) !important;
+      max-width: calc(100% - 24px) !important;
+    }
+  }
 
   /* Dinamik olay: şube/kullanıcı select — büyük font + yeterli yükseklik (iOS kırpma önleme) */
   #dinamik-olay-modal .modal-body select.form-input {
