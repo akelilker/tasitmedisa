@@ -2151,8 +2151,11 @@ input.settings-form-input:-moz-autofill,
         width: calc((100% - 16px) / 3) !important;
         max-width: calc((100% - 16px) / 3) !important;
         flex: 0 0 calc((100% - 16px) / 3) !important;
+        aspect-ratio: auto !important;
+        min-height: clamp(84px, 24vw, 92px) !important;
+        height: auto !important;
         justify-content: flex-start !important;
-        padding: 14px 4px 10px 4px !important;
+        padding: 12px 5px 10px 5px !important;
     }
     #branch-modal #branch-list .settings-card-content {
         justify-content: flex-start !important;
@@ -2160,7 +2163,9 @@ input.settings-form-input:-moz-autofill,
     }
     #user-modal #user-list .settings-card-content {
         justify-content: flex-start !important;
-        gap: 4px !important;
+        align-items: center !important;
+        height: 100% !important;
+        gap: 5px !important;
     }
     .settings-card-title { font-size: 15px; }
     .settings-card-subtitle { font-size: 13px; }
@@ -2178,12 +2183,28 @@ input.settings-form-input:-moz-autofill,
         word-break: break-word !important;
         overflow-wrap: break-word !important;
     }
+    #user-modal #user-list .settings-card .settings-card-title {
+        font-size: 14px !important;
+        max-height: calc(2 * 1.12em) !important;
+        display: -webkit-box !important;
+        -webkit-box-orient: vertical !important;
+        -webkit-line-clamp: 2 !important;
+        line-clamp: 2 !important;
+        word-break: normal !important;
+        overflow-wrap: break-word !important;
+    }
     #branch-modal #branch-list .settings-card .settings-card-subtitle,
     #user-modal #user-list .settings-card .settings-card-subtitle,
     #user-modal #user-list .settings-card .settings-card-gorev {
         font-size: 14px !important;
         line-height: 1.18 !important;
         min-height: 1.18em !important;
+    }
+    #user-modal #user-list .settings-card .settings-card-gorev {
+        font-size: 12.5px !important;
+        line-height: 1.12 !important;
+        min-height: 0 !important;
+        margin-top: auto !important;
     }
     #branch-modal #branch-list .settings-card .settings-card-count {
         font-size: calc(10px + 1pt) !important;
@@ -2364,20 +2385,27 @@ input.settings-form-input:-moz-autofill,
      * Bildirimler (#notifications-dropdown) dahil diğer .settings-dropdown örneklerine dokunulmaz.
      */
     #settings-menu.settings-dropdown.open {
-        gap: 8px !important;
+        gap: 6px !important;
     }
     #settings-menu > button,
     #settings-menu .has-submenu-wrapper .has-submenu {
         background: linear-gradient(180deg, var(--hero-gradient-start), var(--hero-gradient-end)) !important;
         border: 1px solid rgba(255, 255, 255, 0.55) !important;
-        border-radius: 12px !important;
-        height: 67px !important;
-        padding: 17px 18px !important;
-        font-size: clamp(16px, 3.3vw, 18px) !important;
-        letter-spacing: 1.5px !important;
+        border-radius: 11px !important;
+        height: 54px !important;
+        padding: 12px 16px !important;
+        font-size: clamp(15px, 3.1vw, 16px) !important;
+        letter-spacing: 1.1px !important;
         box-shadow:
-            0 4px 14px rgba(0, 0, 0, 0.25),
-            0 4px 20px rgba(var(--theme-color-rgb), 0.14) !important;
+            0 4px 12px rgba(0, 0, 0, 0.24),
+            0 4px 16px rgba(var(--theme-color-rgb), 0.12) !important;
+    }
+    #settings-menu .settings-submenu button {
+        height: 54px !important;
+        padding: 12px 16px !important;
+        font-size: clamp(15px, 3.1vw, 16px) !important;
+        letter-spacing: 1.1px !important;
+        border-radius: 11px !important;
     }
     #settings-menu > button {
         margin-bottom: 0 !important;
