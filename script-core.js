@@ -174,6 +174,33 @@ window.toTitleCase = function(str) {
   }).join(' ');
 };
 
+/**
+ * Marka/model: önce toTitleCase; bilinen kısaltmalar tamamen büyük (örn. BMW, VW).
+ * Tire ile ayrılan parçalar kelime içinde ayrı kontrol edilir (örn. Mercedes-Benz aynı kalır).
+ */
+(function() {
+  var ALLCAPS_BRAND_KEYS = { bmw: 1, vw: 1, mg: 1, gmc: 1, ram: 1, byd: 1, jmc: 1, ds: 1 };
+  window.formatBrandModel = function(str) {
+    if (str == null || str === '') return str;
+    if (str === '-') return str;
+    var trimmed = String(str).trim();
+    if (!trimmed) return '';
+    var titled = typeof window.toTitleCase === 'function' ? window.toTitleCase(trimmed) : trimmed;
+    if (!titled) return trimmed;
+    return titled.split(/\s+/).map(function(w) {
+      if (!w) return w;
+      return w.split('-').map(function(part) {
+        if (!part) return part;
+        var key = part.toLocaleLowerCase('tr-TR');
+        if (ALLCAPS_BRAND_KEYS[key]) {
+          return part.toLocaleUpperCase('tr-TR');
+        }
+        return part;
+      }).join('-');
+    }).join(' ');
+  };
+})();
+
 /** UI/disk rol alanını uygulama içi normalize anahtara çevirir (portal, ayarlar, raporlar ortak) */
 window.medisaMapUiRoleToRol = function(role) {
   if (role === 'admin') return 'genel_yonetici';
@@ -229,14 +256,12 @@ window.formatPlaka = function(str) {
   return s === '' ? '-' : s.toLocaleUpperCase('tr-TR');
 };
 
-/** Ad Soyad: soyad büyük, ad(lar) title case */
+/** Ad Soyad: kelime başı büyük, geri kalanı küçük (tr-TR); tire sonrası da (çift soyad vb.) */
 window.formatAdSoyad = function(str) {
   if (!str || str === '-') return str;
-  var parts = String(str).trim().split(/\s+/).filter(Boolean);
-  if (parts.length === 0) return str;
-  if (parts.length === 1) return window.toTitleCase(parts[0]);
-  var last = parts.pop();
-  return parts.map(function(w) { return w.charAt(0).toLocaleUpperCase('tr-TR') + w.slice(1).toLocaleLowerCase('tr-TR'); }).join(' ') + ' ' + last.toLocaleUpperCase('tr-TR');
+  var t = String(str).trim();
+  if (!t) return str;
+  return typeof window.toTitleCase === 'function' ? window.toTitleCase(t) : t;
 };
 
 /** Kolon state: localStorage'dan oku (key → JSON); yoksa default dön */

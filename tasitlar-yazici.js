@@ -25,6 +25,7 @@
   function readVehicles() { return (typeof window.getMedisaVehicles === 'function' ? window.getMedisaVehicles() : null) || []; }
   function readUsers() { return (typeof window.getMedisaUsers === 'function' ? window.getMedisaUsers() : null) || []; }
   function toTitleCase(str) { return (typeof window.toTitleCase === 'function' ? window.toTitleCase(str) : str); }
+  function formatBrandModel(str) { return (typeof window.formatBrandModel === 'function' ? window.formatBrandModel(str) : toTitleCase(str)); }
   function formatNumber(num) { return (typeof window.formatNumber === 'function' ? window.formatNumber(num) : num); }
   function escapeHtml(str) {
     if (typeof window.escapeHtml === 'function') return window.escapeHtml(str);
@@ -203,7 +204,7 @@
 
     return [
       ['Plaka', vehicle.plate || '-'],
-      ['Marka / Model', toTitleCase(vehicle.brandModel || '-')],
+      ['Marka / Model', formatBrandModel(vehicle.brandModel || '-')],
       ['Kullanıcı', assignedUserName || '-'],
       ['Şube', branchName],
       ['Taşıt Tipi', getVehicleTypeLabel(vehicle.vehicleType || '-')],

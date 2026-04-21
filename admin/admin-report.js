@@ -322,7 +322,7 @@
     var durumCell = '<span class="durum-icon ' + (kmMeta.isWarning ? 'durum-bildirilmedi' : 'durum-bildirildi') + '" title="' + escapeHtml(kmMeta.statusText) + '">' + kmMeta.statusIcon + '</span><span class="durum-text">' + escapeHtml(kmMeta.statusText) + '</span>';
 
     var surucuAdi = capitalizeWords(record.surucu_adi || '');
-    var aracDisplay = capitalizeWords(aracText.trim() || '');
+    var aracDisplay = formatBrandModel(aracText.trim() || '');
     var plakaDisplay = (record.plaka || '').toString().trim().toLocaleUpperCase('tr-TR');
 
     var escapeAttrFn = typeof window.escapeAttr === 'function' ? window.escapeAttr : function(s) { return (s == null ? '' : String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;')); };
@@ -757,7 +757,7 @@
 
   function getMonthlySortableValue(record, key) {
     if (key === 'plate') return formatPlaka(record.plaka || '-').toLocaleUpperCase('tr-TR');
-    if (key === 'brand') return capitalizeWords((record.brand_model || ((record.arac_marka || '') + ' ' + (record.arac_model || ''))).trim() || '-');
+    if (key === 'brand') return formatBrandModel((record.brand_model || ((record.arac_marka || '') + ' ' + (record.arac_model || ''))).trim() || '-');
     if (key === 'driver') return record.atama_var === false ? MONTHLY_UNASSIGNED_DRIVER_SORT : capitalizeWords(record.surucu_adi || 'Sürücü tanımsız');
     if (key === 'km') return Number(record.km || 0);
     if (key === 'branch') return toTitleCase(record.branch_name || 'Şubesiz');
@@ -827,7 +827,7 @@
       html += '<div class="view-card monthly-report-cards">';
       filteredRecords.forEach(function(record) {
         var kmMeta = getKmStateMeta(record);
-        var vehicleTitle = capitalizeWords((record.brand_model || ((record.arac_marka || '') + ' ' + (record.arac_model || ''))).trim() || '-');
+        var vehicleTitle = formatBrandModel((record.brand_model || ((record.arac_marka || '') + ' ' + (record.arac_model || ''))).trim() || '-');
         var driverName = record.atama_var === false ? getMonthlyUnassignedDriverDisplayText() : capitalizeWords(record.surucu_adi || 'Sürücü tanımsız');
         html += '<article class="card monthly-report-card ' + kmMeta.rowClass + '">';
         html += '<div class="card-plate">' + escapeHtmlLocal(formatPlaka(record.plaka || '-')) + '</div>';
@@ -853,7 +853,7 @@
       html += '<div class="monthly-report-list">';
       filteredRecords.forEach(function(record) {
         var kmMeta = getKmStateMeta(record);
-        var vehicleTitle = capitalizeWords((record.brand_model || ((record.arac_marka || '') + ' ' + (record.arac_model || ''))).trim() || '-');
+        var vehicleTitle = formatBrandModel((record.brand_model || ((record.arac_marka || '') + ' ' + (record.arac_model || ''))).trim() || '-');
         var driverName = record.atama_var === false ? getMonthlyUnassignedDriverDisplayText() : capitalizeWords(record.surucu_adi || 'Sürücü tanımsız');
         var actionHtml = buildMonthlyActions(record, kmMeta) || '<span class="monthly-action-placeholder">-</span>';
         html += '<article class="monthly-report-list-row ' + kmMeta.rowClass + '">';
@@ -1007,6 +1007,10 @@
 
   function toTitleCase(str) {
     return (typeof window.toTitleCase === 'function' ? window.toTitleCase(str) : String(str || ''));
+  }
+
+  function formatBrandModel(str) {
+    return (typeof window.formatBrandModel === 'function' ? window.formatBrandModel(str) : toTitleCase(str));
   }
 
   function formatAdSoyad(str) {
@@ -1282,7 +1286,7 @@
       if (!vehicleId) return;
 
       var plate = formatPlaka(tasit.plaka || tasit.plate || '-');
-      var brand = toTitleCase(tasit.brandModel || [tasit.arac_marka, tasit.arac_model].filter(Boolean).join(' ') || '-');
+      var brand = formatBrandModel(tasit.brandModel || [tasit.arac_marka, tasit.arac_model].filter(Boolean).join(' ') || '-');
       var existing = relatedVehicleMap[vehicleId];
 
       if (!existing) {
@@ -1356,8 +1360,8 @@
       ? (activeVehicle.brandModel || [activeVehicle.arac_marka, activeVehicle.arac_model].filter(Boolean).join(' ') || '-')
       : (fallbackVehicle ? fallbackVehicle.brand : '');
     var vehicleBrand = activeVehicle
-      ? toTitleCase(vehicleBrandSource)
-      : (fallbackVehicle ? toTitleCase(vehicleBrandSource) : 'Araç ataması yok');
+      ? formatBrandModel(vehicleBrandSource)
+      : (fallbackVehicle ? formatBrandModel(vehicleBrandSource) : 'Araç ataması yok');
     var branchNames = getUserBranchNames(user);
     var phone = getUserPhone(user);
     var email = getUserEmail(user);
@@ -1483,7 +1487,7 @@
           date: event.date || '',
           sortValue: getEventSortValue(event),
           vehiclePlate: formatPlaka(tasit.plaka || tasit.plate || '-'),
-          vehicleBrand: toTitleCase(tasit.brandModel || [tasit.arac_marka, tasit.arac_model].filter(Boolean).join(' ') || '-'),
+          vehicleBrand: formatBrandModel(tasit.brandModel || [tasit.arac_marka, tasit.arac_model].filter(Boolean).join(' ') || '-'),
           detail: buildUserEventDetail(event, tasit)
         });
       });
@@ -1536,7 +1540,7 @@
     if (type === 'kullanici-atama') {
       var kullaniciAdi = toTitleCase(eventData.kullaniciAdi || eventData.surucu || event.surucu || 'Kullanıcı');
       var plaka = formatPlaka((vehicle && (vehicle.plaka || vehicle.plate)) || '-');
-      var marka = toTitleCase((vehicle && (vehicle.brandModel || [vehicle.arac_marka, vehicle.arac_model].filter(Boolean).join(' '))) || '-');
+      var marka = formatBrandModel((vehicle && (vehicle.brandModel || [vehicle.arac_marka, vehicle.arac_model].filter(Boolean).join(' '))) || '-');
       return kullaniciAdi + ' kullanıcısına atandı | Araç: ' + plaka + ' - ' + marka;
     }
 

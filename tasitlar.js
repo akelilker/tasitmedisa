@@ -862,6 +862,7 @@
   }
 
   function toTitleCase(str) { return (typeof window.toTitleCase === 'function' ? window.toTitleCase(str) : str); }
+  function formatBrandModel(str) { return (typeof window.formatBrandModel === 'function' ? window.formatBrandModel(str) : toTitleCase(str)); }
   function formatPlaka(str) { return (typeof window.formatPlaka === 'function' ? window.formatPlaka(str) : (str == null ? '-' : String(str))); }
   function formatAdSoyad(str) { return (typeof window.formatAdSoyad === 'function' ? window.formatAdSoyad(str) : str); }
   function getTransmissionLabel(transmission) {
@@ -1806,7 +1807,7 @@
             return `
               <div class="card${unassignedClass}" data-vehicle-id="${vid}" style="cursor:pointer">
                 <div class="card-plate">${escapeHtml(formatPlaka(plate))}${satildiCardSpan}</div>
-                <div class="card-brand-model" title="${escapeHtml(brandModel)}">${escapeHtml(toTitleCase(brandModel))}</div>
+                <div class="card-brand-model" title="${escapeHtml(brandModel)}">${escapeHtml(formatBrandModel(brandModel))}</div>
                 ${thirdLineHtml}
               </div>
             `;
@@ -1833,9 +1834,9 @@
                   break;
                 case 'brand':
                   if (isArchive) {
-                    cellContent = '<span class="archive-brand-main" title="' + escapeHtml(toTitleCase(brandModel)) + '">' + escapeHtml(toTitleCase(brandModel)) + '</span>' + satildiBrandLine;
+                    cellContent = '<span class="archive-brand-main" title="' + escapeHtml(formatBrandModel(brandModel)) + '">' + escapeHtml(formatBrandModel(brandModel)) + '</span>' + satildiBrandLine;
                   } else {
-                    cellContent = escapeHtml(toTitleCase(brandModel));
+                    cellContent = escapeHtml(formatBrandModel(brandModel));
                   }
                   cellClass = 'list-brand';
                   break;
@@ -2035,7 +2036,7 @@
     const brandYearEl = contentEl.querySelector('.detail-brand-year');
     
     if (brandYearRow && brandYearEl) {
-      const brandModel = toTitleCase(vehicle.brandModel || '-');
+      const brandModel = formatBrandModel(vehicle.brandModel || '-');
       brandYearEl.textContent = brandModel;
       
       // Mevcut butonları kaldır (eğer varsa)
@@ -2464,7 +2465,7 @@
               return `
               <div class="list-item" data-vehicle-id="${vid}" style="cursor:pointer">
                 <div class="list-info">
-                  <h4>${escapeHtml(toTitleCase(v.brandModel || '-'))}</h4>
+                  <h4>${escapeHtml(formatBrandModel(v.brandModel || '-'))}</h4>
                   <span>${v.year} • ${v.tahsisKisi || 'Boşta'}</span>
                 </div>
               </div>
@@ -6470,7 +6471,7 @@ function renderVehicleDetailLeft(vehicle) {
       if (vehicle.satildiMi) return; // Satılmış taşıtları atla
 
       const plate = vehicle.plate || '-';
-      const brandModel = toTitleCase(vehicle.brandModel || '-');
+      const brandModel = formatBrandModel(vehicle.brandModel || '-');
 
       // Sigorta kontrolü
       if (vehicle.sigortaDate) {
@@ -6542,7 +6543,7 @@ function renderVehicleDetailLeft(vehicle) {
       if (vehicle.satildiMi) return;
       const events = vehicle.events || [];
       const plate = vehicle.plate || '-';
-      const brandModel = toTitleCase(vehicle.brandModel || '-');
+      const brandModel = formatBrandModel(vehicle.brandModel || '-');
       events.forEach(ev => {
         recentEvents.push({
           vehicleId: vehicle.id,
