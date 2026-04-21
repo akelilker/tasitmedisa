@@ -2191,8 +2191,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     
     /* Mobil Footer MEDISA yazısı */
     #app-footer .brand img {
-        height: 22px !important;
-        max-height: 22px !important;
+        height: 20px !important;
+        max-height: 20px !important;
         width: auto !important;
     }
     
