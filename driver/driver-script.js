@@ -1111,7 +1111,6 @@ const API_BASE = (function(){
       const kazaTarih = existingRecord && existingRecord.kaza_tarih ? existingRecord.kaza_tarih : today;
       const bakimAciklama = existingRecord ? esc(capitalizeWords(existingRecord.bakim_aciklama || '')) : '';
       const kazaAciklama = existingRecord ? esc(capitalizeWords(existingRecord.kaza_aciklama || '')) : '';
-      const ekstraNot = existingRecord ? esc(capitalizeWords(existingRecord.ekstra_not || '')) : '';
       const kmBtnClass = opts.kmBtnClass || '';
       const kazaBtnClass = opts.kazaBtnClass || '';
       const bakimBtnClass = opts.bakimBtnClass || '';
@@ -1248,10 +1247,6 @@ const API_BASE = (function(){
                   </div>
               </div>
               <div class="driver-action-group driver-action-footer">
-                  <div class="form-group driver-ekstra-not-form">
-                      <label for="not-${vid}">Not</label>
-                      <textarea id="not-${vid}" class="driver-ekstra-not" rows="1" placeholder="Varsa Belirtin.." maxlength="500">${ekstraNot}</textarea>
-                  </div>
                   <button type="button" onclick="saveVehicleData('${vid}')" class="universal-btn-save" id="btn-save-${vid}">Bildir</button>
                   <div id="status-${vid}" class="status-message"></div>
               </div>
@@ -1411,8 +1406,7 @@ const API_BASE = (function(){
           kaza_aciklama: type === 'kaza' ? capitalizeWords(document.getElementById('kaza-detay-' + vid).value.trim()) : '',
           kaza_tarih: type === 'kaza' ? (document.getElementById('kaza-tarih-' + vid).value || '') : '',
           kaza_hasar_tutari: type === 'kaza' ? ((document.getElementById('kaza-tutar-' + vid) || {}).value || '').trim() : '',
-          boya_parcalar: '{}',
-          ekstra_not: (document.getElementById('not-' + vid) || {}).value || ''
+          boya_parcalar: '{}'
       };
       payload.vehicle_version = getVehicleVersionForRequest(vid);
       if (type === 'kaza') {
@@ -1523,8 +1517,7 @@ const API_BASE = (function(){
                   kaza_aciklama: '',
                   kaza_tarih: '',
                   kaza_hasar_tutari: '',
-                  boya_parcalar: '{}',
-                  ekstra_not: ''
+                  boya_parcalar: '{}'
               })
           });
           const data = await response.json();
@@ -2311,8 +2304,6 @@ const API_BASE = (function(){
       const kazaTarih = document.getElementById(`kaza-tarih-${vehicleId}`).value;
       const kazaHasarTutari = document.getElementById(`kaza-tutar-${vehicleId}`)?.value.trim() || '';
   
-      const not = document.getElementById(`not-${vehicleId}`).value;
-  
       // Panel açık veya açıklama doluysa "Var" say
       const bakimVar = bakimBlock.classList.contains('show') || bakimAciklama.length > 0;
       const kazaVar = kazaBlock.classList.contains('show') || kazaAciklama.length > 0;
@@ -2374,8 +2365,7 @@ const API_BASE = (function(){
                   kaza_aciklama: capitalizeWords(kazaAciklama),
                   kaza_tarih: kazaTarih,
                   kaza_hasar_tutari: kazaHasarTutari,
-                  boya_parcalar: JSON.stringify(boyaParcalar),
-                  ekstra_not: capitalizeWords((not || '').trim())
+                  boya_parcalar: JSON.stringify(boyaParcalar)
               })
           });
           
