@@ -16,6 +16,28 @@
   function $(sel, root = document) { return root.querySelector(sel); }
   function $all(sel, root = document) { return Array.from(root.querySelectorAll(sel)); }
   function getModal() { return document.getElementById("vehicle-modal"); }
+  function getVehicleTypePickerOverlay() { return document.getElementById('vehicle-type-picker-overlay'); }
+  function closeVehicleTypePickerOverlay() {
+    const pickerOverlay = getVehicleTypePickerOverlay();
+    if (!pickerOverlay) return;
+    pickerOverlay.classList.add('u-hidden');
+    pickerOverlay.style.display = 'none';
+    pickerOverlay.setAttribute('aria-hidden', 'true');
+    window.vehicleTypePickerFromDetail = null;
+  }
+  function openVehicleTypePickerOverlay(options) {
+    const pickerOverlay = getVehicleTypePickerOverlay();
+    if (!pickerOverlay) return;
+    const opts = options || {};
+    if (opts.vehicleId) {
+      window.vehicleTypePickerFromDetail = String(opts.vehicleId);
+    }
+    pickerOverlay.classList.remove('u-hidden');
+    pickerOverlay.style.display = 'flex';
+    pickerOverlay.setAttribute('aria-hidden', 'false');
+  }
+  window.openVehicleTypePickerOverlay = openVehicleTypePickerOverlay;
+  window.closeVehicleTypePickerOverlay = closeVehicleTypePickerOverlay;
 
   /** Ana uygulama oturum rolü — data-manager normalizeSessionRole ile aynı sözleşme (export yok, yerel kopya). */
   function getMedisaMainAppSessionRole() {
@@ -880,8 +902,7 @@
     updateModalTitle("KAYIT İŞLEMLERİ");
     populateBranchSelect();
 
-    const pickerOverlay = document.getElementById('vehicle-type-picker-overlay');
-    if (pickerOverlay) pickerOverlay.style.display = 'none';
+    closeVehicleTypePickerOverlay();
   }
 
   /**
@@ -2011,9 +2032,7 @@
     const pickerOptions = pickerOverlay && pickerOverlay.querySelectorAll('.vehicle-type-picker-option');
     if (pickerBackdrop) {
       pickerBackdrop.addEventListener('click', function() {
-        pickerOverlay.style.display = 'none';
-        pickerOverlay.setAttribute('aria-hidden', 'true');
-        window.vehicleTypePickerFromDetail = null;
+        closeVehicleTypePickerOverlay();
       });
     }
     if (pickerOverlay && pickerOptions && pickerOptions.length) {
@@ -2023,7 +2042,7 @@
           const fromDetailId = window.vehicleTypePickerFromDetail;
           if (fromDetailId) {
             const vehicles = readVehicles();
-            const vehicle = vehicles.find(v => v.id === fromDetailId);
+            const vehicle = vehicles.find(v => String(v.id) === String(fromDetailId));
             if (vehicle) {
               vehicle.vehicleType = type;
               if (window.dataApi && window.dataApi.saveVehiclesList) {
@@ -2031,9 +2050,7 @@
               }
               if (typeof window.showVehicleDetail === 'function') window.showVehicleDetail(fromDetailId);
             }
-            pickerOverlay.style.display = 'none';
-            pickerOverlay.setAttribute('aria-hidden', 'true');
-            window.vehicleTypePickerFromDetail = null;
+            closeVehicleTypePickerOverlay();
           } else {
             const modal = getModal();
             const formBtn = modal && modal.querySelector('.vehicle-type-btn[data-type="' + type + '"]');
@@ -2041,8 +2058,7 @@
               $all('.vehicle-type-btn', modal).forEach(b => b.classList.remove('active'));
               formBtn.classList.add('active');
             }
-            pickerOverlay.style.display = 'none';
-            pickerOverlay.setAttribute('aria-hidden', 'true');
+            closeVehicleTypePickerOverlay();
           }
         });
       });
