@@ -7085,9 +7085,31 @@ function renderVehicleDetailLeft(vehicle) {
 
   // Taşıt detay: muayene tooltip (hover ile açık kalır, gecikmeli kapatma) + ünlem/link tıklama
   let muayeneTooltipCloseTimeout = null;
+  let vehicleTypePickerModulePromise = null;
+  function ensureVehicleTypePickerModule() {
+    if (typeof window.openVehicleTypePickerOverlay === 'function') {
+      return Promise.resolve();
+    }
+    if (vehicleTypePickerModulePromise) {
+      return vehicleTypePickerModulePromise;
+    }
+    const versions = window.MEDISA_MODULE_VERSIONS || {};
+    const kayitJs = 'kayit.js?v=' + (versions.kayitJs || '20260406.1');
+    const kayitCss = 'kayit.css?v=' + (versions.kayitCss || '20260421.2');
+    if (typeof window.loadAppModule === 'function') {
+      vehicleTypePickerModulePromise = window.loadAppModule(kayitJs, kayitCss).catch(function(err) {
+        vehicleTypePickerModulePromise = null;
+        throw err;
+      });
+      return vehicleTypePickerModulePromise;
+    }
+    return Promise.resolve();
+  }
+
   function openVehicleTypePickerFromDetail() {
     const vehicleId = window.currentDetailVehicleId;
-    if (vehicleId) {
+    if (!vehicleId) return;
+    ensureVehicleTypePickerModule().then(function() {
       if (typeof window.openVehicleTypePickerOverlay === 'function') {
         window.openVehicleTypePickerOverlay({ vehicleId: vehicleId });
         return;
@@ -7099,7 +7121,9 @@ function renderVehicleDetailLeft(vehicle) {
         picker.style.display = 'flex';
         picker.setAttribute('aria-hidden', 'false');
       }
-    }
+    }).catch(function(err) {
+      console.error('Taşıt tipi seçim ekranı yüklenemedi:', err);
+    });
   }
   document.addEventListener('mouseover', function(e) {
     const wrap = e.target.closest('#vehicle-detail-modal .detail-row-muayene-no-type .detail-muayene-value-wrap');
