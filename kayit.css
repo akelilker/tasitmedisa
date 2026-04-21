@@ -730,7 +730,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
 .vehicle-type-picker-overlay {
     position: fixed;
     inset: 0;
-    z-index: 10002;
+    z-index: 10060;
     display: none;
     align-items: center;
     justify-content: center;

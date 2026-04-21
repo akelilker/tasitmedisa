@@ -7088,9 +7088,14 @@ function renderVehicleDetailLeft(vehicle) {
   function openVehicleTypePickerFromDetail() {
     const vehicleId = window.currentDetailVehicleId;
     if (vehicleId) {
+      if (typeof window.openVehicleTypePickerOverlay === 'function') {
+        window.openVehicleTypePickerOverlay({ vehicleId: vehicleId });
+        return;
+      }
       window.vehicleTypePickerFromDetail = vehicleId;
       const picker = document.getElementById('vehicle-type-picker-overlay');
       if (picker) {
+        picker.classList.remove('u-hidden');
         picker.style.display = 'flex';
         picker.setAttribute('aria-hidden', 'false');
       }
