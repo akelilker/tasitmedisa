@@ -1299,69 +1299,94 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
 
 /* Masaüstü: bildirim listesi — daha yumuşak çerçeve; hover’da yarı saydam tema kırmızısı */
 @media (min-width: 769px) {
+  #notifications-dropdown .notification-item.date-warning-red-border,
+  #notifications-dropdown .notification-item.date-warning-orange-border,
+  #notifications-dropdown .notification-item-activity,
+  #notifications-dropdown .mtv-notification,
+  #notifications-dropdown .kasko-excel-notification {
+    min-height: 44px !important;
+    padding: 8px 12px 4px !important;
+    border-radius: 8px !important;
+  }
+
   .notification-item.date-warning-red-border {
-    border-color: rgba(var(--theme-color-rgb), 0.38) !important;
+    border-color: rgba(var(--theme-color-rgb), 0.34) !important;
     box-shadow: none !important;
   }
   .notification-item.date-warning-orange-border {
-    border-color: rgba(var(--orange-warn-rgb), 0.38) !important;
+    border-color: rgba(var(--orange-warn-rgb), 0.34) !important;
     box-shadow: none !important;
   }
   #notifications-dropdown .notification-item-activity {
-    border-color: rgba(255, 255, 255, 0.14) !important;
+    border-color: rgba(255, 255, 255, 0.12) !important;
   }
   #notifications-dropdown .notification-item-activity.notification-unread {
-    border-color: rgba(var(--theme-color-rgb), 0.48) !important;
+    border-color: rgba(var(--theme-color-rgb), 0.44) !important;
   }
   #notifications-dropdown .mtv-notification {
-    border-color: rgba(255, 140, 0, 0.38) !important;
+    border-color: rgba(255, 140, 0, 0.34) !important;
   }
   #notifications-dropdown .kasko-excel-notification {
-    border-color: rgba(var(--theme-color-rgb), 0.38) !important;
+    border-color: rgba(var(--theme-color-rgb), 0.34) !important;
   }
 
   #notifications-dropdown.settings-dropdown button.notification-item {
-    transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
+    transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease, transform 0.2s ease;
+  }
+
+  #notifications-dropdown .notification-item .notif-line1,
+  #notifications-dropdown .notification-item .notif-line2,
+  #notifications-dropdown .mtv-text-container .mtv-main-text {
+    transition: transform 0.2s ease, color 0.2s ease;
   }
 
   #notifications-dropdown.settings-dropdown button.notification-item:hover {
-    background: rgba(var(--theme-color-rgb), 0.12) !important;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.22) !important;
-    font-size: calc(13px + 1pt) !important;
-    color: var(--txt-muted) !important;
+    background: rgba(var(--theme-color-rgb), 0.18) !important;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.28) !important;
+    transform: translateY(-1px);
+    color: var(--txt-white) !important;
+  }
+
+  #notifications-dropdown.settings-dropdown button.notification-item:hover .notif-line1,
+  #notifications-dropdown.settings-dropdown button.notification-item:hover .notif-line2,
+  #notifications-dropdown.settings-dropdown button.notification-item:hover .mtv-main-text {
+    transform: translateY(-1px);
   }
 
   #notifications-dropdown .notification-item-activity:hover {
-    border-color: rgba(var(--theme-color-rgb), 0.42) !important;
+    border-color: rgba(var(--theme-color-rgb), 0.5) !important;
+    background: rgba(var(--theme-color-rgb), 0.18) !important;
   }
   #notifications-dropdown .notification-item-activity.notification-unread:hover {
-    border-color: rgba(var(--theme-color-rgb), 0.58) !important;
-    background: rgba(var(--theme-color-rgb), 0.14) !important;
+    border-color: rgba(var(--theme-color-rgb), 0.62) !important;
+    background: rgba(var(--theme-color-rgb), 0.2) !important;
   }
   #notifications-dropdown .notification-item.date-warning-red-border:hover {
-    border-color: rgba(var(--theme-color-rgb), 0.52) !important;
-    background: rgba(var(--theme-color-rgb), 0.12) !important;
+    border-color: rgba(var(--theme-color-rgb), 0.58) !important;
+    background: rgba(var(--theme-color-rgb), 0.2) !important;
   }
   #notifications-dropdown .notification-item.date-warning-orange-border:hover {
-    border-color: rgba(var(--orange-warn-rgb), 0.52) !important;
-    background: rgba(var(--orange-warn-rgb), 0.1) !important;
+    border-color: rgba(var(--orange-warn-rgb), 0.56) !important;
+    background: rgba(var(--theme-color-rgb), 0.18) !important;
   }
 
   #notifications-dropdown .notification-item.mtv-notification {
-    transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
   }
   #notifications-dropdown .notification-item.mtv-notification:hover {
-    background: rgba(var(--orange-warn-rgb), 0.1) !important;
-    border-color: rgba(255, 140, 0, 0.48) !important;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2) !important;
+    background: rgba(var(--theme-color-rgb), 0.18) !important;
+    border-color: rgba(255, 140, 0, 0.54) !important;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.26) !important;
+    transform: translateY(-1px);
   }
   #notifications-dropdown .notification-item.kasko-excel-notification {
-    transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
   }
   #notifications-dropdown .notification-item.kasko-excel-notification:hover {
-    background: rgba(var(--theme-color-rgb), 0.12) !important;
-    border-color: rgba(var(--theme-color-rgb), 0.5) !important;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.22) !important;
+    background: rgba(var(--theme-color-rgb), 0.2) !important;
+    border-color: rgba(var(--theme-color-rgb), 0.58) !important;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.28) !important;
+    transform: translateY(-1px);
   }
 }
 
