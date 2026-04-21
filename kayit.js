@@ -666,6 +666,19 @@
     ).join(' ');
   }
 
+  /** Marka/model: formatBrandModel (toTitleCase + BMW vb. tam büyük kısaltmalar) */
+  function normalizeBrandModelInput(text) {
+    const raw = String(text || '').trim();
+    if (!raw) return '';
+    if (typeof window.formatBrandModel === 'function') {
+      return window.formatBrandModel(raw);
+    }
+    if (typeof window.toTitleCase === 'function') {
+      return window.toTitleCase(raw);
+    }
+    return capitalizeFirstLetter(raw);
+  }
+
   // --- UI Helpers ---
   function updateModalTitle(title) {
     const modal = getModal();
@@ -1430,7 +1443,7 @@
     // Get form values (validation sonrası)
     const plate = plateEl?.value.trim() || '';
     const year = yearEl?.value || '';
-    const brandModel = brandModelEl?.value.trim() || '';
+    const brandModel = normalizeBrandModelInput(brandModelEl?.value || '');
     const km = kmEl?.value.trim() || '';
     
     const activeTypeBtn = $('.vehicle-type-btn.active', modal);
@@ -2104,7 +2117,7 @@
       brandModelInputEl.addEventListener('blur', function(e) {
         if (this.value) {
           const cursorPos = this.selectionStart;
-          this.value = capitalizeFirstLetter(this.value);
+          this.value = normalizeBrandModelInput(this.value);
           this.setSelectionRange(cursorPos, cursorPos);
         }
       });

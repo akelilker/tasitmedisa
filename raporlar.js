@@ -9,6 +9,7 @@
     function getUsers() { return (typeof window.getMedisaUsers === 'function' ? window.getMedisaUsers() : null) || []; }
 
     function toTitleCase(str) { return (typeof window.toTitleCase === 'function' ? window.toTitleCase(str) : str); }
+    function formatBrandModel(str) { return (typeof window.formatBrandModel === 'function' ? window.formatBrandModel(str) : toTitleCase(str)); }
     function formatPlaka(str) { return (typeof window.formatPlaka === 'function' ? window.formatPlaka(str) : (str == null ? '-' : String(str))); }
     function formatAdSoyad(str) { return (typeof window.formatAdSoyad === 'function' ? window.formatAdSoyad(str) : str); }
 
@@ -704,7 +705,7 @@
             'sira': rowNum,
             'sube': toTitleCase(branchName),
             'yil': vehicle.year || '-',
-            'marka': toTitleCase(vehicle.brandModel || '-'),
+            'marka': formatBrandModel(vehicle.brandModel || '-'),
             'plaka': formatPlaka(vehicle.plate || '-'),
             'sanziman': vehicle.transmission === 'manuel' ? 'Manuel' : vehicle.transmission === 'otomatik' ? 'Otomatik' : '-',
             'km': vehicle.km ? formatNumber(vehicle.km) : '-'
@@ -1510,7 +1511,7 @@
                 case 'sira': value = index + 1; break;
                 case 'sube': value = toTitleCase(vehicle.branchId ? (getBranches().find(b => b.id === vehicle.branchId)?.name || '-') : '-'); break;
                 case 'yil': value = vehicle.year || '-'; break;
-                case 'marka': value = toTitleCase(vehicle.brandModel || '-'); break;
+                case 'marka': value = formatBrandModel(vehicle.brandModel || '-'); break;
                 case 'plaka': value = formatPlaka(vehicle.plate || '-'); break;
                 case 'sanziman': value = vehicle.transmission === 'manuel' ? 'Manuel' : vehicle.transmission === 'otomatik' ? 'Otomatik' : '-'; break;
                 case 'km': value = vehicle.km ? formatNumber(vehicle.km) : '-'; break;
@@ -1671,7 +1672,7 @@
                             value = String(vehicle.year || '-');
                             break;
                         case 'marka':
-                            value = toTitleCase(vehicle.brandModel || '-');
+                            value = formatBrandModel(vehicle.brandModel || '-');
                             break;
                         case 'plaka':
                             value = formatPlaka(vehicle.plate || '-');
@@ -2075,7 +2076,7 @@
         users.forEach(u => {
             const assignedVehicle = vehicles.find(v => String(v.assignedUserId || '') === String(u.id));
             const vehiclePlate = formatPlaka(assignedVehicle ? (assignedVehicle.plate || '-') : '-');
-            const vehicleBrand = toTitleCase(assignedVehicle ? (assignedVehicle.brandModel || '-') : '-');
+            const vehicleBrand = formatBrandModel(assignedVehicle ? (assignedVehicle.brandModel || '-') : '-');
             
             html += `
                 <div class="kullanici-list-item" onclick="showKullaniciDetail('${u.id}')">
@@ -2187,7 +2188,7 @@
                     userEvents.push({
                         ...event,
                         vehiclePlate: formatPlaka(vehicle.plate || '-'),
-                        vehicleBrand: toTitleCase(vehicle.brandModel || '-')
+                        vehicleBrand: formatBrandModel(vehicle.brandModel || '-')
                     });
                 });
             }
