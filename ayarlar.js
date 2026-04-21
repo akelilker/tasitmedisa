@@ -861,7 +861,7 @@
         const vid = String(v.id);
         const plaka = v.plate || v.plaka || '';
         const raw = (v.brandModel || (v.brand || v.marka || '') + ' ' + (v.model || '')).trim();
-        const markaModel = (typeof window.toTitleCase === 'function' ? window.toTitleCase(raw) : raw);
+        const markaModel = (typeof window.formatBrandModel === 'function' ? window.formatBrandModel(raw) : (typeof window.toTitleCase === 'function' ? window.toTitleCase(raw) : raw));
         const labelEl = document.createElement('label');
         labelEl.className = 'user-vehicle-row';
         labelEl.style.userSelect = 'none';
@@ -1278,6 +1278,9 @@
     function formatUserFullName(rawName) {
       const cleaned = (rawName || '').trim().replace(/\s+/g, ' ');
       if (!cleaned) return '';
+      if (typeof window.toTitleCase === 'function') {
+        return window.toTitleCase(cleaned);
+      }
       const parts = cleaned.split(' ');
       if (parts.length === 1) {
         const namePart = parts[0];
