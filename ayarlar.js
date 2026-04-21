@@ -578,7 +578,7 @@
 
     const USER_FORM_ROLE_OPTIONS = [
       { value: 'kullanici', label: 'Kullan\u0131c\u0131' },
-      { value: 'sube_yonetici', label: 'Birim Amiri' },
+      { value: 'sube_yonetici', label: 'Y\u00f6netici' },
       { value: 'genel_yonetici', label: 'Genel Y\u00f6netici' }
     ];
 

@@ -188,11 +188,11 @@ window.medisaGetUiRoleFromUser = function(user) {
   return window.medisaMapUiRoleToRol(user && (user.role || user.rol || user.tip));
 };
 
-/** Ayarlar kullanıcı kartları: Birim Amiri; sales/driver → Kullanıcı */
+/** Ayarlar kullanıcı kartları: Yönetici; sales/driver → Kullanıcı */
 window.getUserRoleLabelManagement = function(user) {
   var labels = {
     genel_yonetici: 'Genel Yönetici',
-    sube_yonetici: 'Birim Amiri',
+    sube_yonetici: 'Yönetici',
     kullanici: 'Kullanıcı',
     admin: 'Genel Yönetici',
     sales: 'Kullanıcı',
