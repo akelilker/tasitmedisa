@@ -371,7 +371,7 @@ select option:active {
     top: 100%;
     margin-top: 4px;
     background: #0d131f;
-    border: 1px solid rgba(255, 255, 255, 0.18);
+    border: 1px solid rgba(255, 255, 255, 0.28);
     border-radius: 8px;
     max-height: 200px;
     overflow-y: auto;
