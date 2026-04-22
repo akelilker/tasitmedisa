@@ -1278,8 +1278,8 @@
     function formatUserFullName(rawName) {
       const cleaned = (rawName || '').trim().replace(/\s+/g, ' ');
       if (!cleaned) return '';
-      if (typeof window.toTitleCase === 'function') {
-        return window.toTitleCase(cleaned);
+      if (typeof window.formatAdSoyad === 'function') {
+        return window.formatAdSoyad(cleaned);
       }
       const parts = cleaned.split(' ');
       if (parts.length === 1) {
@@ -1548,9 +1548,9 @@
     function fitUserManagementCardNames() {
       const container = document.getElementById('user-list');
       if (!container || typeof window.medisaFitTextWithinBox !== 'function') return;
-      window.medisaFitTextWithinBox(container, '.settings-card-title-name .settings-card-name-part', {
-        minFontSize: 10,
-        maxReduction: 4,
+      window.medisaFitTextWithinBox(container, '.settings-card-title-name, .settings-card-title-name .settings-card-name-part', {
+        minFontSize: 8.5,
+        maxReduction: 6,
         step: 0.5
       });
     }

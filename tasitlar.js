@@ -1018,10 +1018,12 @@
       '.view-list .list-cell.list-brand',
       '.view-list .list-cell.list-branch',
       '.view-list .list-cell.list-user',
+      '.view-list .list-cell.list-user .user-name-line1',
+      '.view-list .list-cell.list-user .user-name-line2',
       '#vehicle-detail-modal .detail-row-value'
     ].join(', '), {
-      minFontSize: window.innerWidth <= 640 ? 9.5 : 10,
-      maxReduction: 5,
+      minFontSize: window.innerWidth <= 640 ? 8.5 : 9,
+      maxReduction: 7,
       step: 0.5
     });
   }
@@ -2060,7 +2062,7 @@
                   const assignedUser = v.assignedUserId ? userMap[String(v.assignedUserId)] : null;
                   const userNameRaw = assignedUser?.name || v.tahsisKisi || '-';
                   const userName = formatAdSoyad(userNameRaw);
-                  if (isMobile && userName && userName !== '-') {
+                  if (userName && userName !== '-') {
                     const parts = String(userName).trim().split(/\s+/);
                     const firstLine = parts[0] || '-';
                     const secondLine = parts.slice(1).join(' ') || '';
