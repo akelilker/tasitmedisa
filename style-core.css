@@ -1303,7 +1303,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
     width: min(320px, calc(100vw - 40px)) !important;
     max-width: min(320px, calc(100vw - 40px)) !important;
     padding: 8px !important;
-    border: 1px solid rgba(var(--theme-color-rgb), 0.2) !important;
+    border: 1px solid rgba(var(--theme-color-rgb), 0.32) !important;
     border-radius: 12px !important;
     background: linear-gradient(180deg, rgba(8, 13, 22, 0.98) 0%, rgba(8, 13, 22, 0.95) 100%) !important;
     box-shadow: 0 12px 28px rgba(0, 0, 0, 0.42) !important;
@@ -1328,7 +1328,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   }
 
   .notification-item.date-warning-red-border {
-    border-color: rgba(var(--theme-color-rgb), 0.4) !important;
+    border-color: rgba(var(--theme-color-rgb), 0.52) !important;
     box-shadow: none !important;
   }
   .notification-item.date-warning-orange-border {
@@ -1366,7 +1366,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
 
   #notifications-dropdown .notification-item .date-warning-red,
   #notifications-dropdown .notification-item .date-warning-orange {
-    color: #f4f7fb !important;
+    color: #d7dde6 !important;
   }
 
   #notifications-dropdown .notification-item .notif-line2 {
@@ -1395,7 +1395,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
     background: rgba(var(--theme-color-rgb), 0.15) !important;
   }
   #notifications-dropdown .notification-item.date-warning-red-border:hover {
-    border-color: rgba(var(--theme-color-rgb), 0.46) !important;
+    border-color: rgba(var(--theme-color-rgb), 0.58) !important;
     background: rgba(var(--theme-color-rgb), 0.15) !important;
   }
   #notifications-dropdown .notification-item.date-warning-orange-border:hover {
