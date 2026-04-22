@@ -905,11 +905,20 @@
   }
   bindDOM();
 
+  const NOTIF_READ_STORAGE_KEY = 'medisa_notif_read_keys_v1';
+
   function getViewedNotificationKeys() {
     try {
-      const raw = sessionStorage.getItem('notifViewedKeysV2');
+      const raw = localStorage.getItem(NOTIF_READ_STORAGE_KEY);
       const parsed = raw ? JSON.parse(raw) : [];
-      return Array.isArray(parsed) ? parsed : [];
+      if (Array.isArray(parsed)) return parsed;
+    } catch (err) {
+      // Eski sessionStorage anahtarına geri düş
+    }
+    try {
+      const legacyRaw = sessionStorage.getItem('notifViewedKeysV2');
+      const legacyParsed = legacyRaw ? JSON.parse(legacyRaw) : [];
+      return Array.isArray(legacyParsed) ? legacyParsed : [];
     } catch (err) {
       return [];
     }
@@ -928,15 +937,17 @@
     });
     if (!changed) return;
     try {
-      sessionStorage.setItem('notifViewedKeysV2', JSON.stringify(viewed));
+      localStorage.setItem(NOTIF_READ_STORAGE_KEY, JSON.stringify(viewed));
+      // Eski anahtar kalmışsa temizle (okunma durumu artık kalıcı tutuluyor)
+      sessionStorage.removeItem('notifViewedKeysV2');
     } catch (err) {
       return;
     }
     if (typeof window.updateNotifications === 'function') window.updateNotifications();
   }
 
-  function getUnreadActivityNotificationKeys() {
-    return (DOM.notificationsDropdown ? Array.from(DOM.notificationsDropdown.querySelectorAll('.notification-item-activity.notification-unread[data-notif-key]')) : [])
+  function getUnreadNotificationKeys() {
+    return (DOM.notificationsDropdown ? Array.from(DOM.notificationsDropdown.querySelectorAll('.notification-item.notification-unread[data-notif-key]')) : [])
       .map(function(el) { return (el.getAttribute('data-notif-key') || '').toString().trim(); })
       .filter(Boolean);
   }
@@ -1065,7 +1076,7 @@
         if (toolbarAction === 'mark-all-read') {
           e.preventDefault();
           e.stopPropagation();
-          markNotificationKeysAsViewed(getUnreadActivityNotificationKeys());
+          markNotificationKeysAsViewed(getUnreadNotificationKeys());
           return;
         }
       }
@@ -6520,8 +6531,8 @@ function renderVehicleDetailLeft(vehicle) {
     const activeSpecialNotificationKeys = [];
     let hasUnreadActivity = false;
     const showDesktopSpecialNotifDate = window.innerWidth >= 641;
-    let hasRed = false; // Kırmızı bildirim var mı?
-    let hasOrange = false; // Turuncu bildirim var mı?
+    let hasRed = false; // Okunmamış kırmızı bildirim var mı?
+    let hasOrange = false; // Okunmamış turuncu bildirim var mı?
 
     vehicles.forEach(vehicle => {
       if (vehicle.satildiMi) return; // Satılmış taşıtları atla
@@ -6545,8 +6556,6 @@ function renderVehicleDetailLeft(vehicle) {
             warningClass: warning.class,
             status: status
           });
-          if (warning.class === 'date-warning-red') hasRed = true;
-          else if (warning.class === 'date-warning-orange') hasOrange = true;
         }
       }
 
@@ -6566,8 +6575,6 @@ function renderVehicleDetailLeft(vehicle) {
             warningClass: warning.class,
             status: status
           });
-          if (warning.class === 'date-warning-red') hasRed = true;
-          else if (warning.class === 'date-warning-orange') hasOrange = true;
         }
       }
 
@@ -6587,8 +6594,6 @@ function renderVehicleDetailLeft(vehicle) {
             warningClass: warning.class,
             status: status
           });
-          if (warning.class === 'date-warning-red') hasRed = true;
-          else if (warning.class === 'date-warning-orange') hasOrange = true;
         }
       }
     });
@@ -6675,6 +6680,7 @@ function renderVehicleDetailLeft(vehicle) {
 
       // Tarih uyarıları (sigorta, kasko, muayene)
       if (notifications.length > 0) {
+        const viewedKeys = getViewedNotificationKeys();
         notifications.sort((a, b) => {
           if (a.warningClass === 'date-warning-red' && b.warningClass !== 'date-warning-red') return -1;
           if (a.warningClass !== 'date-warning-red' && b.warningClass === 'date-warning-red') return 1;
@@ -6683,6 +6689,9 @@ function renderVehicleDetailLeft(vehicle) {
         notifications.forEach(notif => {
             const typeLabel = notif.type === 'sigorta' ? 'Sigorta' : notif.type === 'kasko' ? 'Kasko' : 'Muayene';
             const activeDateDisplay = formatDateForDisplay(new Date()) || '-';
+            const notifKey = 'date|' + String(notif.vehicleId || '') + '|' + String(notif.type || '') + '|' + String(notif.date || '');
+            const isRead = viewedKeys.indexOf(notifKey) !== -1;
+            const isUnread = !isRead;
 
             let messageText = '';
             if (notif.days <= 0 && notif.type === 'kasko') {
@@ -6702,13 +6711,18 @@ function renderVehicleDetailLeft(vehicle) {
             const borderColor = notif.warningClass === 'date-warning-red'
               ? 'rgba(212, 0, 0, 0.6)'
               : 'rgba(255, 140, 0, 0.6)';
+            const readBorderColor = 'rgba(130, 130, 130, 0.55)';
 
             const safePlate = (notif.plate || '').replace(/"/g, '&quot;');
             const safeVid = (notif.vehicleId || '').toString().replace(/"/g, '&quot;');
+            const safeKey = notifKey.replace(/"/g, '&quot;');
+            const stateClass = isUnread ? ' notification-unread' : ' notification-read';
+            if (isUnread && notif.warningClass === 'date-warning-red') hasRed = true;
+            if (isUnread && notif.warningClass === 'date-warning-orange') hasOrange = true;
 
-            html += `<button type="button" data-plate="${safePlate}" data-vehicle-id="${safeVid}" style="width: 100%; padding: 10px 12px; background: transparent; border: 1px solid ${borderColor}; color: #ccc; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 12px; text-align: left; transition: all 0.2s ease; height: auto; white-space: normal;" class="notification-item ${notif.warningClass}-border">
+            html += `<button type="button" data-plate="${safePlate}" data-vehicle-id="${safeVid}" data-notif-key="${safeKey}" style="width: 100%; padding: 10px 12px; background: transparent; border: 1px solid ${isUnread ? borderColor : readBorderColor}; color: ${isUnread ? '#ccc' : '#9a9a9a'}; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 12px; text-align: left; transition: all 0.2s ease; height: auto; white-space: normal;" class="notification-item ${isUnread ? (notif.warningClass + '-border') : ''}${stateClass}">
             <div class="notif-line1">
-              <span class="${notif.warningClass}">${escapeHtml(messageText)}</span>
+              <span class="${isUnread ? notif.warningClass : ''}" style="${isUnread ? '' : 'color:#9a9a9a;'}">${escapeHtml(messageText)}</span>
             </div>
             <div class="notif-line2">${escapeHtml(activeDateDisplay)}</div>
           </button>`;
@@ -6717,8 +6731,7 @@ function renderVehicleDetailLeft(vehicle) {
 
       // Kullanıcı paneli işlemleri bölümü
       if (recentSlice.length > 0) {
-        const viewedRaw = sessionStorage.getItem('notifViewedKeysV2');
-        const viewedKeys = viewedRaw ? JSON.parse(viewedRaw) : [];
+        const viewedKeys = getViewedNotificationKeys();
         recentSlice.forEach(item => {
           const ev = item.event;
           const dateDisplay = formatDateForDisplay(ev.date) || '-';
@@ -6732,7 +6745,9 @@ function renderVehicleDetailLeft(vehicle) {
           const isUnread = viewedKeys.indexOf(notifKey) === -1;
           if (isUnread) hasUnreadActivity = true;
           const unreadClass = isUnread ? ' notification-unread' : '';
-          const unreadStyle = isUnread ? ' border: 1px solid rgba(212, 0, 0, 0.85) !important;' : '';
+          const unreadStyle = isUnread
+            ? ' border: 1px solid rgba(212, 0, 0, 0.85) !important; color: #ccc;'
+            : ' border: 1px solid rgba(130, 130, 130, 0.55) !important; color: #9a9a9a;';
           const activityMsg = getNotificationActivityMessage(ev, item.plate);
           activityHtml += `<button type="button" data-plate="${safePlate}" data-vehicle-id="${safeVid}" data-open-history="1" data-history-tab="${historyTab}" data-notif-key="${safeKey}" style="width: 100%; padding: 10px 12px; background: transparent; color: #ccc; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 12px; text-align: left; transition: all 0.2s ease; height: auto; white-space: normal;${unreadStyle}" class="notification-item notification-item-activity${unreadClass}">
           <div class="notif-line1">${escapeHtml(activityMsg)}</div>
@@ -7247,4 +7262,3 @@ function renderVehicleDetailLeft(vehicle) {
   }, true);
 
 })();
-
