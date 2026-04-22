@@ -2,6 +2,19 @@
    TAŞIT YÖNETİM SİSTEMİ - CORE SCRIPT
    ========================================= */
 
+// #region agent log
+(function() {
+  try {
+    var url = new URL(window.location.href);
+    var enabled = url.searchParams.get('debug') === '0d5ba2'
+      || (window.sessionStorage && window.sessionStorage.getItem('medisa_debug_session') === '0d5ba2')
+      || (window.localStorage && window.localStorage.getItem('medisa_debug_session') === '0d5ba2');
+    if (!enabled) return;
+  } catch (e) { return; }
+  fetch('http://127.0.0.1:7753/ingest/302b1fd7-6809-479d-8a04-ce5cebe4d3da',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'0d5ba2'},body:JSON.stringify({sessionId:'0d5ba2',runId:'pre-fix-2',hypothesisId:'H5',location:'script-core.js:1',message:'script-core-loaded',data:{path:(window.location&&window.location.pathname)||''},timestamp:Date.now()})}).catch(()=>{});
+})();
+// #endregion
+
 var _cachedMenu, _cachedNotif, _cachedSubmenu;
 function getMenu() { return _cachedMenu || (_cachedMenu = document.getElementById('settings-menu')); }
 function getNotif() { return _cachedNotif || (_cachedNotif = document.getElementById('notifications-dropdown')); }
@@ -654,7 +667,7 @@ document.addEventListener('DOMContentLoaded', () => {
 var MEDISA_MODULE_VERSIONS = {
   tasitlar: '20260422.8',
   raporlar: '20260422.1',
-  kayitJs: '20260423.1',
+  kayitJs: '20260423.2',
   kayitCss: '20260423.1',
   ayarlarJs: '20260422.2',
   ayarlarCss: '20260422.3'

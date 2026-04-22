@@ -7,6 +7,22 @@
 (function () {
   const STORAGE_KEY = "medisa_vehicles_v1";
   const BRANCHES_KEY = "medisa_branches_v1";
+  const DEBUG_SESSION_ID = '0d5ba2';
+  const DEBUG_QUERY_KEY = 'debug';
+
+  function isVehicleDateDebugEnabled() {
+    try {
+      const url = new URL(window.location.href);
+      if (url.searchParams.get(DEBUG_QUERY_KEY) === DEBUG_SESSION_ID) return true;
+      if (window.sessionStorage && window.sessionStorage.getItem('medisa_debug_session') === DEBUG_SESSION_ID) return true;
+      if (window.localStorage && window.localStorage.getItem('medisa_debug_session') === DEBUG_SESSION_ID) return true;
+    } catch (e) {}
+    return false;
+  }
+
+  // #region agent log
+  if (isVehicleDateDebugEnabled()) fetch('http://127.0.0.1:7753/ingest/302b1fd7-6809-479d-8a04-ce5cebe4d3da',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'0d5ba2'},body:JSON.stringify({sessionId:'0d5ba2',runId:'pre-fix-2',hypothesisId:'H5',location:'kayit.js:8',message:'kayit-module-loaded',data:{readyState:document.readyState},timestamp:Date.now()})}).catch(()=>{});
+  // #endregion
 
   let isEditMode = false;
   let editingVehicleId = null;
@@ -73,6 +89,7 @@
 
   // #region agent log
   function sendVehicleDateDebugLog(location, message, hypothesisId, data) {
+    if (!isVehicleDateDebugEnabled()) return;
     fetch('http://127.0.0.1:7753/ingest/302b1fd7-6809-479d-8a04-ce5cebe4d3da',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'0d5ba2'},body:JSON.stringify({sessionId:'0d5ba2',runId:'pre-fix-1',hypothesisId:hypothesisId,location:location,message:message,data:data||{},timestamp:Date.now()})}).catch(()=>{});
   }
   // #endregion
