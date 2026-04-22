@@ -198,15 +198,23 @@ textarea.form-input:focus {
     outline: none;
 }
 
-#vehicle-modal .form-input::selection,
+/* Kayıt modalı: tarih alanlarında seçim vurgusu göze batmasın (native mavi / koyu kırmızımsı) */
 #vehicle-modal input[type="date"].form-input::selection,
 #vehicle-modal input[type="date"].form-input::-webkit-datetime-edit-text::selection,
 #vehicle-modal input[type="date"].form-input::-webkit-datetime-edit-day-field::selection,
 #vehicle-modal input[type="date"].form-input::-webkit-datetime-edit-month-field::selection,
 #vehicle-modal input[type="date"].form-input::-webkit-datetime-edit-year-field::selection {
-    background: rgba(var(--theme-color-rgb), 0.35) !important;
-    color: var(--txt-white, #f0f0f0) !important;
-    -webkit-text-fill-color: var(--txt-white, #f0f0f0) !important;
+    background: rgba(212, 0, 0, 0.22) !important;
+    color: var(--data-value-color, #a0aec0) !important;
+    -webkit-text-fill-color: var(--data-value-color, #a0aec0) !important;
+}
+
+#vehicle-modal input[type="date"].form-input {
+    caret-color: rgba(212, 0, 0, 0.75);
+}
+
+#vehicle-modal input[type="date"].form-input:focus {
+    caret-color: rgba(212, 0, 0, 0.9);
 }
 
 /* Zorunlu Alan Hata Stili - Kırmızı Çerçeve */
