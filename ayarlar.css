@@ -128,64 +128,6 @@ body.modal-open #info-modal.open {
     border-color: var(--green-success) !important;
 }
 
-/* === EGZOZ SORU / TARİH — kayıt modalı üstü küçük dialog (Tescil küçük modal ailesi) === */
-#vehicle-egzoz-confirm-modal.modal-overlay,
-#vehicle-egzoz-date-modal.modal-overlay {
-    align-items: center !important;
-    justify-content: center !important;
-    padding: 16px !important;
-    box-sizing: border-box !important;
-    background: rgba(10, 13, 28, 0.48) !important;
-    backdrop-filter: blur(8px) !important;
-    -webkit-backdrop-filter: blur(8px) !important;
-    z-index: 10050 !important;
-}
-#vehicle-egzoz-confirm-modal.modal-overlay::before,
-#vehicle-egzoz-date-modal.modal-overlay::before {
-    display: none !important;
-    content: none !important;
-}
-#vehicle-egzoz-confirm-modal .modal-container,
-#vehicle-egzoz-date-modal .modal-container {
-    width: min(420px, calc(100vw - 32px)) !important;
-    max-width: min(420px, calc(100vw - 32px)) !important;
-    height: auto !important;
-    min-height: 0 !important;
-    max-height: none !important;
-    flex: 0 0 auto !important;
-    margin: 0 auto !important;
-    position: relative !important;
-    z-index: 10051 !important;
-    overflow: visible !important;
-    display: flex !important;
-    flex-direction: column !important;
-}
-#vehicle-egzoz-confirm-modal .modal-container::after,
-#vehicle-egzoz-date-modal .modal-container::after {
-    display: none !important;
-    content: none !important;
-}
-#vehicle-egzoz-confirm-modal .modal-body,
-#vehicle-egzoz-date-modal .modal-body {
-    flex: 0 0 auto !important;
-    min-height: 0 !important;
-    max-height: none !important;
-    overflow: visible !important;
-    padding: 12px 18px 16px 18px !important;
-}
-#vehicle-egzoz-confirm-modal #vehicle-egzoz-confirm-message {
-    margin-bottom: 12px !important;
-    margin-top: 0 !important;
-}
-#vehicle-egzoz-confirm-modal .modal-body .universal-btn-group,
-#vehicle-egzoz-date-modal .modal-body .universal-btn-group {
-    margin-top: 0 !important;
-    margin-bottom: 0 !important;
-}
-#vehicle-egzoz-date-modal .modal-body > div[style*="text-align"] {
-    margin-bottom: 10px !important;
-}
-
 /* === TESCİL TARİHİ MODALLARI === */
 #tescil-tarih-confirm-modal .modal-container {
     background: var(--bg); 
