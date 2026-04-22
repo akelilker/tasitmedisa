@@ -198,6 +198,17 @@ textarea.form-input:focus {
     outline: none;
 }
 
+#vehicle-modal .form-input::selection,
+#vehicle-modal input[type="date"].form-input::selection,
+#vehicle-modal input[type="date"].form-input::-webkit-datetime-edit-text::selection,
+#vehicle-modal input[type="date"].form-input::-webkit-datetime-edit-day-field::selection,
+#vehicle-modal input[type="date"].form-input::-webkit-datetime-edit-month-field::selection,
+#vehicle-modal input[type="date"].form-input::-webkit-datetime-edit-year-field::selection {
+    background: rgba(var(--theme-color-rgb), 0.35) !important;
+    color: var(--txt-white, #f0f0f0) !important;
+    -webkit-text-fill-color: var(--txt-white, #f0f0f0) !important;
+}
+
 /* Zorunlu Alan Hata Stili - Kırmızı Çerçeve */
 .form-input.field-error,
 select.field-error,
