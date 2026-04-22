@@ -112,6 +112,17 @@
     }
   }
 
+  function positionVehicleDatePickerNative(nativeInput, anchorEl) {
+    if (!nativeInput) return;
+    var rect = anchorEl && typeof anchorEl.getBoundingClientRect === 'function'
+      ? anchorEl.getBoundingClientRect()
+      : null;
+    var left = rect ? Math.round(rect.left + (rect.width / 2)) : -9999;
+    var top = rect ? Math.round(rect.top + (rect.height / 2)) : 0;
+    nativeInput.style.left = left + 'px';
+    nativeInput.style.top = top + 'px';
+  }
+
   function createVehicleDatePickerBridge(input) {
     if (!input || !input.matches(VEHICLE_DATE_INPUT_SELECTOR)) return;
     if (input.dataset.datePickerBridge === 'true') return;
@@ -145,6 +156,7 @@
     /* Native'i modal satırından ayır — slot içinde kaldığında Chromium odak/showPicker ile beyaz kutu taşması çizer */
     document.body.appendChild(nativeInput);
     input._vehicleDatePickerNative = nativeInput;
+    positionVehicleDatePickerNative(nativeInput, trigger);
 
     input.dataset.datePickerBridge = 'true';
 
@@ -156,6 +168,7 @@
       if (input.disabled || nativeInput.disabled) return;
 
       syncVehicleDatePickerNativeValue(input, nativeInput);
+      positionVehicleDatePickerNative(nativeInput, trigger);
 
       // Native picker aç
       try {
