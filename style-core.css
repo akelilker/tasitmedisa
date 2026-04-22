@@ -1328,24 +1328,24 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   }
 
   .notification-item.date-warning-red-border {
-    border-color: rgba(var(--theme-color-rgb), 0.24) !important;
+    border-color: rgba(var(--theme-color-rgb), 0.4) !important;
     box-shadow: none !important;
   }
   .notification-item.date-warning-orange-border {
-    border-color: rgba(var(--orange-warn-rgb), 0.26) !important;
+    border-color: rgba(var(--orange-warn-rgb), 0.38) !important;
     box-shadow: none !important;
   }
   #notifications-dropdown .notification-item-activity {
-    border-color: rgba(255, 255, 255, 0.1) !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
   }
   #notifications-dropdown .notification-item-activity.notification-unread {
-    border-color: rgba(var(--theme-color-rgb), 0.32) !important;
+    border-color: rgba(var(--theme-color-rgb), 0.48) !important;
   }
   #notifications-dropdown .mtv-notification {
-    border-color: rgba(255, 140, 0, 0.26) !important;
+    border-color: rgba(255, 140, 0, 0.42) !important;
   }
   #notifications-dropdown .kasko-excel-notification {
-    border-color: rgba(var(--theme-color-rgb), 0.24) !important;
+    border-color: rgba(var(--theme-color-rgb), 0.4) !important;
   }
 
   #notifications-dropdown.settings-dropdown button.notification-item {
