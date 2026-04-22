@@ -1027,7 +1027,7 @@
     vehicleEgzozPromptState.pendingMuayeneDate = muayeneDate || '';
     vehicleEgzozPromptState.promptOpen = true;
     if (messageEl) {
-      messageEl.textContent = 'Egzos Muayenesi Aynı Tarihte Mi Yapıldı?';
+      messageEl.textContent = 'Egzos Muayenesi Aynı Tarihte Mi Bitiyor?';
     }
     modal.style.display = 'flex';
     requestAnimationFrame(function() {
@@ -1621,11 +1621,6 @@
       errors.push('Tramer Kaydı');
       if (tramerSection) tramerSection.classList.add('field-error');
     }
-    if (muayeneDate && vehicleEgzozPromptState.handledMuayeneDate !== muayeneDate) {
-      vehicleEgzozPromptState.resumeSave = true;
-      maybePromptVehicleEgzozFlow();
-      return;
-    }
     const egzozDifferent = !!(egzozDifferentEl && egzozDifferentEl.checked);
     const egzozMuayeneDate = egzozDifferent ? (egzozDateEl?.value || '') : '';
     if (egzozDifferent && !egzozMuayeneDate) {
@@ -1643,6 +1638,11 @@
       else if (brandModelEl && !brandModel) brandModelEl.focus();
       else if (kmEl && !km) kmEl.focus();
       
+      return;
+    }
+    if (muayeneDate && vehicleEgzozPromptState.handledMuayeneDate !== muayeneDate) {
+      vehicleEgzozPromptState.resumeSave = true;
+      maybePromptVehicleEgzozFlow();
       return;
     }
     const tramerRecords = getTramerRecords();
