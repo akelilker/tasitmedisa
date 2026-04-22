@@ -865,6 +865,29 @@
   function formatBrandModel(str) { return (typeof window.formatBrandModel === 'function' ? window.formatBrandModel(str) : toTitleCase(str)); }
   function formatPlaka(str) { return (typeof window.formatPlaka === 'function' ? window.formatPlaka(str) : (str == null ? '-' : String(str))); }
   function formatAdSoyad(str) { return (typeof window.formatAdSoyad === 'function' ? window.formatAdSoyad(str) : str); }
+  function normalizeVehicleSearchText(value) {
+    return String(value == null ? '' : value).toLocaleLowerCase('tr-TR').trim();
+  }
+  function normalizePlateSearchText(value) {
+    return normalizeVehicleSearchText(value).replace(/[\s-]+/g, '');
+  }
+  function vehicleMatchesSearchQuery(vehicle, query) {
+    const q = normalizeVehicleSearchText(query);
+    if (!q) return true;
+
+    const source = vehicle || {};
+    const plate = String(source.plate != null ? source.plate : '');
+    const compactQuery = normalizePlateSearchText(q);
+    const rawPlate = normalizeVehicleSearchText(plate);
+    const compactPlate = normalizePlateSearchText(plate);
+    const formattedPlate = normalizePlateSearchText(formatPlaka(plate));
+
+    return (rawPlate && rawPlate.includes(q)) ||
+      (compactQuery && (compactPlate.includes(compactQuery) || formattedPlate.includes(compactQuery))) ||
+      (source.brandModel && normalizeVehicleSearchText(source.brandModel).includes(q)) ||
+      (source.year && String(source.year).includes(q)) ||
+      (source.tahsisKisi && normalizeVehicleSearchText(source.tahsisKisi).includes(q));
+  }
   function getTransmissionLabel(transmission) {
     var value = String(transmission || '').trim().toLowerCase();
     if (value === 'otomatik') return 'Otomatik';
@@ -1677,13 +1700,7 @@
 
     // 2. Metin Araması (plaka, marka/model, yıl, kullanıcı)
     if (query) {
-        const q = ('' + query).toLowerCase();
-        vehicles = vehicles.filter(v => 
-            (v.plate && ('' + v.plate).toLowerCase().includes(q)) ||
-            (v.brandModel && ('' + v.brandModel).toLowerCase().includes(q)) ||
-            (v.year && ('' + v.year).includes(q)) ||
-            (v.tahsisKisi && ('' + v.tahsisKisi).toLowerCase().includes(q))
-        );
+        vehicles = vehicles.filter(v => vehicleMatchesSearchQuery(v, query));
     }
 
     // 2b. Şanzıman filtresi (Otomatik/Manuel)
@@ -2474,13 +2491,8 @@
               return;
           }
           const all = readVehicles();
-          const q = val.toLowerCase();
-          let filtered = all.filter(v => 
-            (v.plate && v.plate.toLowerCase().includes(q)) ||
-            (v.brandModel && v.brandModel.toLowerCase().includes(q)) ||
-            (v.year && String(v.year).includes(q)) ||
-            (v.tahsisKisi && v.tahsisKisi.toLowerCase().includes(q))
-          );
+          const q = normalizeVehicleSearchText(val);
+          let filtered = all.filter(v => vehicleMatchesSearchQuery(v, q));
           if (transmissionFilter) {
             filtered = filtered.filter(v => v.transmission === transmissionFilter);
           }
