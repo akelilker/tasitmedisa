@@ -399,18 +399,26 @@ select option:active {
     touch-action: pan-y;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior-y: contain;
-    scrollbar-width: none !important;
-    -ms-overflow-style: none !important;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(212, 0, 0, 0.42) rgba(13, 19, 31, 0.95);
+    -ms-overflow-style: auto;
     z-index: 40;
     box-shadow: 0 10px 24px rgba(0, 0, 0, 0.48), inset 0 0 0 1px rgba(255, 255, 255, 0.06);
 }
-#vehicle-branch-list::-webkit-scrollbar,
-#vehicle-branch-list::-webkit-scrollbar-track,
-#vehicle-branch-list::-webkit-scrollbar-thumb {
-    display: none !important;
-    width: 0 !important;
-    height: 0 !important;
-    background: transparent !important;
+#vehicle-modal #vehicle-branch-list::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+#vehicle-modal #vehicle-branch-list::-webkit-scrollbar-track {
+    background: rgba(13, 19, 31, 0.95);
+    border-radius: 4px;
+}
+#vehicle-modal #vehicle-branch-list::-webkit-scrollbar-thumb {
+    background: rgba(212, 0, 0, 0.42);
+    border-radius: 4px;
+}
+#vehicle-modal #vehicle-branch-list::-webkit-scrollbar-thumb:hover {
+    background: rgba(212, 0, 0, 0.58);
 }
 #vehicle-modal .vehicle-branch-list.open {
     display: block;

@@ -157,11 +157,32 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
   user-select: none;
 }
 #dinamik-olay-modal .egzoz-olay-toggle input[type="checkbox"] {
+  -webkit-appearance: none;
+  appearance: none;
   width: 15px;
   height: 15px;
   margin: 0;
-  accent-color: var(--theme-color);
   flex: 0 0 auto;
+  box-sizing: border-box;
+  border-radius: 4px;
+  background-color: #0d131f;
+  border: 1px solid rgba(212, 0, 0, 0.5);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+}
+#dinamik-olay-modal .egzoz-olay-toggle input[type="checkbox"]:checked {
+  background-color: var(--theme-color, #d40000);
+  border-color: rgba(255, 255, 255, 0.32);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none'%3E%3Cpath d='M4 8.5L7 11.5L12.5 4' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 11px 11px;
+}
+#dinamik-olay-modal .egzoz-olay-toggle input[type="checkbox"]:focus {
+  outline: none;
+}
+#dinamik-olay-modal .egzoz-olay-toggle input[type="checkbox"]:focus-visible {
+  box-shadow: 0 0 0 2px rgba(212, 0, 0, 0.4);
 }
 #dinamik-olay-modal .egzoz-olay-date-wrapper {
   display: none;

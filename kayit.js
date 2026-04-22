@@ -1057,6 +1057,40 @@
     return true;
   }
 
+  /** type=date .value: yalnızca tam yyyy-mm-dd iken egzoz sorusu açılır */
+  function isCompleteIsoDate(value) {
+    if (!value || typeof value !== 'string') return false;
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+    var parts = value.split('-');
+    var y = parseInt(parts[0], 10);
+    var m = parseInt(parts[1], 10);
+    var d = parseInt(parts[2], 10);
+    if (!Number.isFinite(y) || !Number.isFinite(m) || !Number.isFinite(d)) return false;
+    var dt = new Date(y, m - 1, d);
+    return dt.getFullYear() === y && dt.getMonth() === m - 1 && dt.getDate() === d;
+  }
+
+  var vehicleMuayeneEgzozPromptTimer = null;
+  function scheduleMaybePromptVehicleEgzozFlow(delayMs) {
+    var delay = Number.isFinite(delayMs) && delayMs >= 0 ? delayMs : 48;
+    if (vehicleMuayeneEgzozPromptTimer) clearTimeout(vehicleMuayeneEgzozPromptTimer);
+    vehicleMuayeneEgzozPromptTimer = setTimeout(function() {
+      vehicleMuayeneEgzozPromptTimer = null;
+      requestAnimationFrame(function() {
+        var hadResumeSave = vehicleEgzozPromptState.resumeSave;
+        var opened = maybePromptVehicleEgzozFlow();
+        if (hadResumeSave && !opened && !vehicleEgzozPromptState.promptOpen && !vehicleEgzozPromptState.inputOpen) {
+          vehicleEgzozPromptState.resumeSave = false;
+          requestAnimationFrame(function() {
+            if (typeof window.saveVehicleRecord === 'function') {
+              window.saveVehicleRecord();
+            }
+          });
+        }
+      });
+    }, delay);
+  }
+
   function maybePromptVehicleEgzozFlow() {
     const modal = getModal();
     const muayeneInput = document.getElementById('vehicle-muayene-date');
@@ -1072,6 +1106,9 @@
       if (egzozCheckbox) egzozCheckbox.checked = false;
       if (egzozInput) egzozInput.value = '';
       syncEgzozMuayeneFields(modal);
+      return false;
+    }
+    if (!isCompleteIsoDate(muayeneDate)) {
       return false;
     }
     if (vehicleEgzozPromptState.handledMuayeneDate === muayeneDate) {
@@ -1587,7 +1624,7 @@
     const year = yearEl?.value || '';
     const brandModel = normalizeBrandModelInput(brandModelEl?.value || '');
     const km = kmEl?.value.trim() || '';
-    const muayeneDate = $all('input[type="date"].form-input', modal)[2]?.value || '';
+    const muayeneDate = document.getElementById('vehicle-muayene-date')?.value || '';
     
     const activeTypeBtn = $('.vehicle-type-btn.active', modal);
     const vehicleType = activeTypeBtn?.dataset.type || '';
@@ -1622,7 +1659,12 @@
       if (tramerSection) tramerSection.classList.add('field-error');
     }
     const egzozDifferent = !!(egzozDifferentEl && egzozDifferentEl.checked);
-    const egzozMuayeneDate = egzozDifferent ? (egzozDateEl?.value || '') : '';
+    let egzozMuayeneDate = '';
+    if (egzozDifferent) {
+      egzozMuayeneDate = egzozDateEl?.value || '';
+    } else if (muayeneDate && isCompleteIsoDate(muayeneDate) && vehicleEgzozPromptState.handledMuayeneDate === muayeneDate) {
+      egzozMuayeneDate = muayeneDate;
+    }
     if (egzozDifferent && !egzozMuayeneDate) {
       errors.push('Egzos Muayenesi Bitiş Tarihi');
       if (egzozDateEl) egzozDateEl.classList.add('field-error');
@@ -1640,9 +1682,9 @@
       
       return;
     }
-    if (muayeneDate && vehicleEgzozPromptState.handledMuayeneDate !== muayeneDate) {
+    if (muayeneDate && isCompleteIsoDate(muayeneDate) && vehicleEgzozPromptState.handledMuayeneDate !== muayeneDate) {
       vehicleEgzozPromptState.resumeSave = true;
-      maybePromptVehicleEgzozFlow();
+      scheduleMaybePromptVehicleEgzozFlow(0);
       return;
     }
     const tramerRecords = getTramerRecords();
@@ -2262,18 +2304,18 @@
     const muayeneInput = document.getElementById('vehicle-muayene-date');
     if (muayeneInput) {
       muayeneInput.addEventListener('change', function() {
-        maybePromptVehicleEgzozFlow();
+        scheduleMaybePromptVehicleEgzozFlow(16);
+      });
+      muayeneInput.addEventListener('input', function() {
+        scheduleMaybePromptVehicleEgzozFlow(64);
       });
       muayeneInput.addEventListener('blur', function() {
-        setTimeout(function() {
-          maybePromptVehicleEgzozFlow();
-        }, 0);
+        scheduleMaybePromptVehicleEgzozFlow(120);
       });
       muayeneInput.addEventListener('keydown', function(e) {
-        if (e.key !== 'Enter') return;
-        setTimeout(function() {
-          maybePromptVehicleEgzozFlow();
-        }, 0);
+        if (e.key === 'Enter' || e.key === 'Tab') {
+          scheduleMaybePromptVehicleEgzozFlow(e.key === 'Tab' ? 140 : 100);
+        }
       });
     }
 
@@ -2492,20 +2534,40 @@
     const branchWrap = document.querySelector(".vehicle-branch-dropdown-wrap");
     if (branchTrigger && branchList) {
       function positionBranchList() {
+        var vehicleModal = document.getElementById("vehicle-modal");
+        var modalBody = vehicleModal && vehicleModal.querySelector(".modal-body");
         var r = branchTrigger.getBoundingClientRect();
-        var viewportHeight = window.innerHeight || document.documentElement.clientHeight || 800;
-        var desiredHeight = Math.min(branchList.scrollHeight || 240, 260);
-        var spaceBelow = Math.max(120, viewportHeight - r.bottom - 12);
-        var spaceAbove = Math.max(120, r.top - 12);
-        var useAbove = spaceBelow < Math.min(180, desiredHeight) && spaceAbove > spaceBelow;
-        var maxHeight = Math.max(120, Math.min(260, useAbove ? spaceAbove : spaceBelow));
         var triggerHeight = branchTrigger.offsetHeight || r.height || 44;
+        var gap = 6;
+        var edgePad = 10;
+        var minListPx = 56;
+        var maxListCap = 320;
+
+        var spaceBelow = 240;
+        var spaceAbove = 240;
+        if (modalBody) {
+          var br = modalBody.getBoundingClientRect();
+          spaceBelow = Math.max(0, Math.floor(br.bottom - r.bottom - gap - edgePad));
+          spaceAbove = Math.max(0, Math.floor(r.top - br.top - gap - edgePad));
+        } else {
+          var vh = window.innerHeight || document.documentElement.clientHeight || 800;
+          spaceBelow = Math.max(0, Math.floor(vh - r.bottom - gap - edgePad));
+          spaceAbove = Math.max(0, Math.floor(r.top - gap - edgePad));
+        }
+
+        var contentScroll = branchList.scrollHeight || 0;
+        var desiredOpen = contentScroll > 0 ? contentScroll : 220;
+        var useAbove = spaceBelow < Math.min(120, desiredOpen) && spaceAbove > spaceBelow;
+        var rawMax = useAbove ? spaceAbove : spaceBelow;
+        var maxList = Math.min(maxListCap, Math.max(0, rawMax));
+        var listMaxHeight = Math.min(desiredOpen + 2, maxList > 0 ? maxList : minListPx);
 
         branchList.style.position = "absolute";
         branchList.style.left = "0";
         branchList.style.right = "0";
         branchList.style.width = "100%";
-        branchList.style.maxHeight = maxHeight + "px";
+        branchList.style.maxHeight = listMaxHeight + "px";
+        branchList.style.overflowY = "auto";
         branchList.style.marginTop = "0";
         branchList.style.marginBottom = "0";
         if (useAbove) {
@@ -2527,6 +2589,7 @@
         branchList.style.right = "";
         branchList.style.width = "";
         branchList.style.maxHeight = "";
+        branchList.style.overflowY = "";
         branchList.style.marginTop = "";
         branchList.style.marginBottom = "";
       }
@@ -2540,6 +2603,9 @@
           branchTrigger.setAttribute("aria-expanded", "true");
           branchList.setAttribute("aria-hidden", "false");
           positionBranchList();
+          requestAnimationFrame(function() {
+            positionBranchList();
+          });
         }
       });
       document.addEventListener("click", function (ev) {
