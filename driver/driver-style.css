@@ -461,7 +461,8 @@ body.dashboard-page {
   max-width: 100%;
 }
 
-.driver-below-hero-row .driver-btn-history {
+.driver-below-hero-row .driver-btn-history,
+.driver-below-hero-row .driver-btn-password {
   width: auto;
   flex: none;
   margin: 0;
@@ -477,7 +478,10 @@ body.dashboard-page {
 }
 .driver-below-hero-row .driver-btn-history:hover,
 .driver-below-hero-row .driver-btn-history:focus,
-.driver-below-hero-row .driver-btn-history:active {
+.driver-below-hero-row .driver-btn-history:active,
+.driver-below-hero-row .driver-btn-password:hover,
+.driver-below-hero-row .driver-btn-password:focus,
+.driver-below-hero-row .driver-btn-password:active {
   background: transparent !important;
   background-color: transparent !important;
   border: none !important;
@@ -485,6 +489,7 @@ body.dashboard-page {
   outline: none !important;
 }
 
+.driver-below-hero-row .driver-btn-password,
 .driver-below-hero-row .driver-btn-logout {
   flex: none;
 }
@@ -594,6 +599,7 @@ body.dashboard-page {
     padding-bottom: 0 !important;
   }
   .dashboard-page .driver-below-hero-row .driver-btn-history,
+  .dashboard-page .driver-below-hero-row .driver-btn-password,
   .dashboard-page .driver-below-hero-row .driver-btn-logout {
     margin: 0 !important;
   }
@@ -605,6 +611,10 @@ body.dashboard-page {
   .dashboard-page .driver-below-hero-row .driver-btn-history .driver-btn-history-icon {
     width: 23px !important;
     height: 23px !important;
+  }
+  .dashboard-page .driver-below-hero-row .driver-btn-password .driver-btn-password-icon {
+    width: 19px !important;
+    height: 19px !important;
   }
   .dashboard-page .driver-below-hero-row .driver-btn-logout .driver-btn-logout-icon {
     width: 19px !important;
@@ -1458,6 +1468,7 @@ body.dashboard-page {
   .vehicle-header p { font-size: 14.5px; }
   .driver-plate-chevron { font-size: 19.5px; }
   .driver-footer-back-wrap .universal-back-label { font-size: 14.5px; }
+  .driver-btn-password,
   .driver-btn-logout { font-size: 12.5px; }
   #driver-input-area .form-group label,
   .driver-action-area .form-group label { font-size: 14px; }
@@ -1660,6 +1671,7 @@ body.dashboard-page {
 
 }
 
+.driver-btn-password,
 .driver-btn-logout {
   padding: 6px 8px;
   background: transparent !important;
@@ -1674,11 +1686,13 @@ body.dashboard-page {
   align-items: center;
   justify-content: center;
 }
+.driver-btn-password .driver-btn-password-icon,
 .driver-btn-logout .driver-btn-logout-icon {
   width: 20px;
   height: 20px;
 }
 
+.driver-btn-password:hover,
 .driver-btn-logout:hover {
   color: var(--theme-color) !important;
   background: transparent !important;
@@ -2535,6 +2549,7 @@ body.dashboard-page {
 #history-modal.driver-modal,
 #edit-request-modal.driver-modal,
 #driver-event-menu-modal.driver-modal,
+#driver-password-modal.driver-modal,
 #driver-anahtar-modal.driver-modal,
 #driver-lastik-modal.driver-modal,
 #driver-utts-modal.driver-modal,
@@ -2554,6 +2569,7 @@ body.dashboard-page {
 #history-modal.driver-modal.show,
 #edit-request-modal.driver-modal.show,
 #driver-event-menu-modal.driver-modal.show,
+#driver-password-modal.driver-modal.show,
 #driver-anahtar-modal.driver-modal.show,
 #driver-lastik-modal.driver-modal.show,
 #driver-utts-modal.driver-modal.show,
@@ -2578,6 +2594,7 @@ body.dashboard-page {
   #history-modal.driver-modal,
   #edit-request-modal.driver-modal,
   #driver-event-menu-modal.driver-modal,
+  #driver-password-modal.driver-modal,
   #driver-anahtar-modal.driver-modal,
   #driver-lastik-modal.driver-modal,
   #driver-utts-modal.driver-modal,
@@ -2605,6 +2622,7 @@ body.dashboard-page {
 #history-modal.driver-modal::before,
 #edit-request-modal.driver-modal::before,
 #driver-event-menu-modal.driver-modal::before,
+#driver-password-modal.driver-modal::before,
 #driver-anahtar-modal.driver-modal::before,
 #driver-lastik-modal.driver-modal::before,
 #driver-utts-modal.driver-modal::before,
@@ -2655,6 +2673,8 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 #edit-request-modal .modal-container,
 #driver-event-menu-modal .driver-modal-content,
 #driver-event-menu-modal .modal-container,
+#driver-password-modal .driver-modal-content,
+#driver-password-modal .modal-container,
 #driver-anahtar-modal .driver-modal-content,
 #driver-anahtar-modal .modal-container,
 #driver-lastik-modal .driver-modal-content,
@@ -2689,6 +2709,7 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 #history-modal .modal-header,
 #edit-request-modal .modal-header,
 #driver-event-menu-modal .modal-header,
+#driver-password-modal .modal-header,
 #driver-anahtar-modal .modal-header,
 #driver-lastik-modal .modal-header,
 #driver-utts-modal .modal-header,
@@ -2710,6 +2731,7 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 #history-modal .modal-header h2,
 #edit-request-modal .modal-header h2,
 #driver-event-menu-modal .modal-header h2,
+#driver-password-modal .modal-header h2,
 #driver-anahtar-modal .modal-header h2,
 #driver-lastik-modal .modal-header h2,
 #driver-utts-modal .modal-header h2,
@@ -2730,6 +2752,7 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 #history-modal .modal-close,
 #edit-request-modal .modal-close,
 #driver-event-menu-modal .modal-close,
+#driver-password-modal .modal-close,
 #driver-anahtar-modal .modal-close,
 #driver-lastik-modal .modal-close,
 #driver-utts-modal .modal-close,
@@ -2754,6 +2777,7 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 #history-modal .modal-close:hover,
 #edit-request-modal .modal-close:hover,
 #driver-event-menu-modal .modal-close:hover,
+#driver-password-modal .modal-close:hover,
 #driver-anahtar-modal .modal-close:hover,
 #driver-lastik-modal .modal-close:hover,
 #driver-utts-modal .modal-close:hover,
@@ -2767,6 +2791,7 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 #history-modal .modal-body,
 #edit-request-modal .modal-body,
 #driver-event-menu-modal .modal-body,
+#driver-password-modal .modal-body,
 #driver-anahtar-modal .modal-body,
 #driver-lastik-modal .modal-body,
 #driver-utts-modal .modal-body,
@@ -2826,6 +2851,7 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 #history-modal .modal-body::-webkit-scrollbar,
 #edit-request-modal .modal-body::-webkit-scrollbar,
 #driver-event-menu-modal .modal-body::-webkit-scrollbar,
+#driver-password-modal .modal-body::-webkit-scrollbar,
 #driver-anahtar-modal .modal-body::-webkit-scrollbar,
 #driver-lastik-modal .modal-body::-webkit-scrollbar,
 #driver-utts-modal .modal-body::-webkit-scrollbar,
@@ -2885,6 +2911,29 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 .driver-modal .form-group textarea {
   resize: vertical;
   min-height: 100px;
+}
+
+.driver-password-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 18px;
+}
+
+.driver-password-message {
+  min-height: 18px;
+  margin-top: -4px;
+  color: var(--muted);
+  font-size: 13px;
+  text-align: center;
+}
+
+.driver-password-message.is-error {
+  color: #ff6b6b;
+}
+
+.driver-password-message.is-success {
+  color: #58d68d;
 }
 
 #edit-request-modal .form-group textarea {
@@ -3987,6 +4036,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 }
 
 /* Çıkış butonu büyüt */
+.driver-btn-password,
 .driver-btn-logout {
   font-size: 14px !important;
 }
@@ -4086,6 +4136,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   #history-modal.driver-modal,
   #edit-request-modal.driver-modal,
   #driver-event-menu-modal.driver-modal,
+  #driver-password-modal.driver-modal,
   #driver-anahtar-modal.driver-modal,
   #driver-lastik-modal.driver-modal,
   #driver-utts-modal.driver-modal,
@@ -4187,6 +4238,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   #history-modal.driver-modal::before,
   #edit-request-modal.driver-modal::before,
   #driver-event-menu-modal.driver-modal::before,
+  #driver-password-modal.driver-modal::before,
   #driver-anahtar-modal.driver-modal::before,
   #driver-lastik-modal.driver-modal::before,
   #driver-utts-modal.driver-modal::before,
@@ -4213,6 +4265,8 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   #edit-request-modal .modal-container,
   #driver-event-menu-modal .driver-modal-content,
   #driver-event-menu-modal .modal-container,
+  #driver-password-modal .driver-modal-content,
+  #driver-password-modal .modal-container,
   #driver-anahtar-modal .driver-modal-content,
   #driver-anahtar-modal .modal-container,
   #driver-lastik-modal .driver-modal-content,
@@ -4269,6 +4323,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   #history-modal .modal-header,
   #edit-request-modal .modal-header,
   #driver-event-menu-modal .modal-header,
+  #driver-password-modal .modal-header,
   #driver-anahtar-modal .modal-header,
   #driver-lastik-modal .modal-header,
   #driver-utts-modal .modal-header,
@@ -4297,6 +4352,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   #history-modal .modal-body,
   #edit-request-modal .modal-body,
   #driver-event-menu-modal .modal-body,
+  #driver-password-modal .modal-body,
   #driver-anahtar-modal .modal-body,
   #driver-lastik-modal .modal-body,
   #driver-utts-modal .modal-body,
@@ -4516,6 +4572,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
 
   /* Çıkış butonu: kapı simgesi */
+  .dashboard-page .driver-btn-password .driver-btn-password-icon,
   .dashboard-page .driver-btn-logout .driver-btn-logout-icon {
     width: 24px !important;
     height: 24px !important;
@@ -5293,6 +5350,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     gap: 8px !important;
   }
 
+  .dashboard-page .driver-below-hero-row .driver-btn-password,
   .dashboard-page .driver-below-hero-row .driver-btn-logout {
     margin-left: 0 !important;
   }
@@ -5423,6 +5481,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   #history-modal .modal-header,
   #edit-request-modal .modal-header,
   #driver-event-menu-modal .modal-header,
+  #driver-password-modal .modal-header,
   #driver-anahtar-modal .modal-header,
   #driver-lastik-modal .modal-header,
   #driver-utts-modal .modal-header,

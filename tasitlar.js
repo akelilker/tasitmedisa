@@ -6594,6 +6594,7 @@ function renderVehicleDetailLeft(vehicle) {
     const notifications = [];
     const activeSpecialNotificationKeys = [];
     let hasUnreadActivity = false;
+    let hasUnreadMarkableNotification = false;
     const showDesktopSpecialNotifDate = window.innerWidth >= 641;
     let hasRed = false; // Okunmamış kırmızı bildirim var mı?
     let hasOrange = false; // Okunmamış turuncu bildirim var mı?
@@ -6781,6 +6782,7 @@ function renderVehicleDetailLeft(vehicle) {
             const safeVid = (notif.vehicleId || '').toString().replace(/"/g, '&quot;');
             const safeKey = notifKey.replace(/"/g, '&quot;');
             const stateClass = isUnread ? ' notification-unread' : ' notification-read';
+            if (isUnread) hasUnreadMarkableNotification = true;
             if (isUnread && notif.warningClass === 'date-warning-red') hasRed = true;
             if (isUnread && notif.warningClass === 'date-warning-orange') hasOrange = true;
 
@@ -6807,7 +6809,10 @@ function renderVehicleDetailLeft(vehicle) {
           const notifKey = plateNorm + '|' + typeNorm + '|' + dateDisplay;
           const safeKey = notifKey.replace(/"/g, '&quot;');
           const isUnread = viewedKeys.indexOf(notifKey) === -1;
-          if (isUnread) hasUnreadActivity = true;
+          if (isUnread) {
+            hasUnreadActivity = true;
+            hasUnreadMarkableNotification = true;
+          }
           const unreadClass = isUnread ? ' notification-unread' : '';
           const unreadStyle = isUnread
             ? ' border: 1px solid rgba(212, 0, 0, 0.85) !important; color: #ccc;'
@@ -6825,7 +6830,7 @@ function renderVehicleDetailLeft(vehicle) {
       }
 
       if (notifDropdown) {
-        if (hasUnreadActivity) {
+        if (hasUnreadMarkableNotification) {
           html = `<div class="notifications-toolbar"><button type="button" class="notifications-mark-all-read-btn" data-notification-action="mark-all-read">Tümünü Okundu Olarak İşaretle</button></div>` + html;
         }
         notifDropdown.innerHTML = html;
