@@ -286,12 +286,21 @@ window.formatPlaka = function(str) {
   return s === '' ? '-' : s.toLocaleUpperCase('tr-TR');
 };
 
-/** Ad Soyad: kelime başı büyük, geri kalanı küçük (tr-TR); tire sonrası da (çift soyad vb.) */
+/** Ad Soyad: adlar baş harf büyük, soyad tamamen büyük (tr-TR) */
 window.formatAdSoyad = function(str) {
   if (!str || str === '-') return str;
-  var t = String(str).trim();
+  var t = String(str).trim().replace(/\s+/g, ' ');
   if (!t) return str;
-  return typeof window.toTitleCase === 'function' ? window.toTitleCase(t) : t;
+  var parts = t.split(' ');
+  if (parts.length === 1) {
+    return typeof window.toTitleCase === 'function' ? window.toTitleCase(parts[0]) : parts[0];
+  }
+  var lastName = parts.pop().toLocaleUpperCase('tr-TR');
+  var firstName = parts.join(' ');
+  if (typeof window.toTitleCase === 'function') {
+    firstName = window.toTitleCase(firstName);
+  }
+  return (firstName ? firstName + ' ' : '') + lastName;
 };
 
 window.medisaFitTextWithinBox = function(root, selector, options) {
@@ -643,12 +652,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Lazy modül asset sürümleri — tek nesne; index.html içindeki style-core ?v= ile tasitlar sürümü uyumlu kalmalı
 var MEDISA_MODULE_VERSIONS = {
-  tasitlar: '20260422.5',
+  tasitlar: '20260422.6',
   raporlar: '20260406.18',
   kayitJs: '20260421.4',
   kayitCss: '20260422.1',
-  ayarlarJs: '20260422.1',
-  ayarlarCss: '20260422.2'
+  ayarlarJs: '20260422.2',
+  ayarlarCss: '20260422.3'
 };
 window.MEDISA_MODULE_VERSIONS = MEDISA_MODULE_VERSIONS;
 var TASITLAR_MODULE_VERSION = MEDISA_MODULE_VERSIONS.tasitlar;
