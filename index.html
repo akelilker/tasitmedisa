@@ -349,15 +349,15 @@
                         <div class="modal-column-right">
                             <div class="form-section">
                                 <label class="form-label" for="vehicle-sigorta-date">Sigorta Bitiş Tarihi</label>
-                                <input type="date" id="vehicle-sigorta-date" class="form-input" inputmode="numeric">
+                                <input type="text" id="vehicle-sigorta-date" class="form-input date-text-input" data-date-input="vehicle" inputmode="numeric" maxlength="10" placeholder="gg.aa.yyyy" autocomplete="off">
                             </div>
                             <div class="form-section">
                                 <label class="form-label" for="vehicle-kasko-date">Kasko Bitiş Tarihi</label>
-                                <input type="date" id="vehicle-kasko-date" class="form-input" inputmode="numeric">
+                                <input type="text" id="vehicle-kasko-date" class="form-input date-text-input" data-date-input="vehicle" inputmode="numeric" maxlength="10" placeholder="gg.aa.yyyy" autocomplete="off">
                             </div>
                             <div class="form-section">
                                 <label class="form-label" for="vehicle-muayene-date">Muayene Bitiş Tarihi</label>
-                                <input type="date" id="vehicle-muayene-date" class="form-input" inputmode="numeric">
+                                <input type="text" id="vehicle-muayene-date" class="form-input date-text-input" data-date-input="vehicle" inputmode="numeric" maxlength="10" placeholder="gg.aa.yyyy" autocomplete="off">
                             </div>
                             <div class="form-section egzoz-toggle-section u-hidden" aria-hidden="true">
                                 <label class="egzoz-muayene-check" for="vehicle-egzoz-different">
@@ -367,7 +367,7 @@
                             </div>
                             <div class="form-section egzoz-date-section u-hidden" id="vehicle-egzoz-date-section" aria-hidden="true">
                                 <label class="form-label" for="vehicle-egzoz-date">Egzos Muayenesi Bitiş Tarihi</label>
-                                <input type="date" id="vehicle-egzoz-date" class="form-input" inputmode="numeric" disabled tabindex="-1">
+                                <input type="text" id="vehicle-egzoz-date" class="form-input date-text-input" data-date-input="vehicle" inputmode="numeric" maxlength="10" placeholder="gg.aa.yyyy" autocomplete="off" disabled tabindex="-1">
                             </div>
                             <div class="form-section-inline" data-section="anahtar">
                                 <label class="form-label" for="yedek-anahtar-var">Yedek Anahtar</label>
@@ -918,7 +918,7 @@
                 <div class="egzoz-dialog-body" onclick="event.stopPropagation();">
                     <div class="egzoz-dialog-date-field">
                         <label for="vehicle-egzoz-date-modal-input">Egzos Muayenesi Bitiş Tarihi</label>
-                        <input type="date" id="vehicle-egzoz-date-modal-input" class="form-input" inputmode="numeric">
+                        <input type="text" id="vehicle-egzoz-date-modal-input" class="form-input date-text-input" data-date-input="vehicle" inputmode="numeric" maxlength="10" placeholder="gg.aa.yyyy" autocomplete="off">
                     </div>
                     <div class="universal-btn-group">
                         <button type="button" class="universal-btn-save" onclick="event.stopPropagation(); saveVehicleEgzozDateModal();">Kaydet</button>
