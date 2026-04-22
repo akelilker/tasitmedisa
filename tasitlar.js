@@ -2401,6 +2401,14 @@
       const t = e.target;
       if (!t || typeof t.closest !== 'function') return;
       if (t.closest('#v-search-container') || t.closest('.search-toggle-btn')) return;
+      // Mobilde sonuç satırına dokunurken pointerdown capture aramayı erken kapatıp
+      // click ile araç açmayı bozmasın.
+      if (
+          t.closest('.list-item') ||
+          t.closest('.card') ||
+          t.closest('.branch-card') ||
+          t.closest('[data-vehicle-id]')
+      ) return;
       closeSearchBox();
   }
   document.addEventListener('pointerdown', onVSearchOutsidePointer, true);
@@ -2591,13 +2599,22 @@
   function checkDateWarnings(dateString) { return (typeof window.checkDateWarnings === 'function' ? window.checkDateWarnings(dateString) : { class: '', days: null }); }
   function formatDateForDisplay(dateStr) {
     if (!dateStr) return '';
+    const raw = String(dateStr).trim();
     if (typeof window.formatDateShort === 'function') {
       const formatted = window.formatDateShort(dateStr);
-      if (formatted) return String(formatted);
+      if (formatted) {
+        const formattedStr = String(formatted).trim();
+        if (formattedStr && (formattedStr !== raw || /[./-]/.test(formattedStr))) {
+          return formattedStr;
+        }
+      }
     }
-    const raw = String(dateStr).trim();
     const iso = raw.match(/^(\d{4})-(\d{2})-(\d{2})$/);
     if (iso) return `${iso[3]}/${iso[2]}/${iso[1]}`;
+    const compactIso = raw.match(/^(\d{4})(\d{2})(\d{2})$/);
+    if (compactIso) return `${compactIso[3]}/${compactIso[2]}/${compactIso[1]}`;
+    const compactTr = raw.match(/^(\d{2})(\d{2})(\d{4})$/);
+    if (compactTr) return `${compactTr[1]}/${compactTr[2]}/${compactTr[3]}`;
     const dot = raw.match(/^(\d{2})[./-](\d{2})[./-](\d{4})$/);
     if (dot) return `${dot[1]}/${dot[2]}/${dot[3]}`;
     const parsed = new Date(raw);
@@ -2742,11 +2759,17 @@ function renderVehicleDetailLeft(vehicle) {
   }
 
   // Kaporta Durumu (Legend eklendi; açıklama metni 1.5pt küçük – CSS .detail-row-kaporta)
+  const boyaliParcalar = (vehicle && vehicle.boyaliParcalar && typeof vehicle.boyaliParcalar === 'object')
+    ? vehicle.boyaliParcalar
+    : null;
+  const hasKaportaIsaretleri = !!(boyaliParcalar && Object.keys(boyaliParcalar).some(function(partId) {
+    return !!boyaliParcalar[partId];
+  }));
   html += `<div class="detail-row detail-row-inline detail-row-kaporta"><div class="detail-row-header"><span class="detail-row-label">Kaporta Durumu</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> `;
-  if (vehicle.boya === 'var' && vehicle.boyaliParcalar) {
+  if (hasKaportaIsaretleri) {
       html += 'Aşağıdaki şemada belirtilmiştir.';
   } else {
-      html += 'Yoktur.';
+      html += 'Boya/Değişen yoktur.';
   }
   html += `</span></div>`;
 
@@ -5981,22 +6004,31 @@ function renderVehicleDetailLeft(vehicle) {
       if (adres) pushDetail('Konum', toTitleCase(adres));
     } else if (eventType === 'kasko-guncelle') {
       summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Kasko Biti\u015F Tarihini G\u00FCncelledi.</span>';
+      const islemTarihi = formatDateForDisplay(event.date || '');
       const bitis = formatDateForDisplay(eventData.bitisTarihi || '');
       const firma = (eventData.firma || '').trim();
       const acente = (eventData.acente || '').trim();
+      const iletisim = (eventData.iletisim || '').trim();
+      if (islemTarihi) pushDetail('\u0130\u015flem Tarihi', islemTarihi);
       if (bitis) pushDetail('Biti\u015F Tarihi', bitis);
       if (firma) pushDetail('Firma', toTitleCase(firma));
       if (acente) pushDetail('Acente', toTitleCase(acente));
+      if (iletisim) pushDetail('\u0130leti\u015Fim', iletisim);
     } else if (eventType === 'sigorta-guncelle') {
       summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Trafik Sigortas\u0131 Biti\u015F Tarihini G\u00FCncelledi.</span>';
+      const islemTarihi = formatDateForDisplay(event.date || '');
       const bitis = formatDateForDisplay(eventData.bitisTarihi || '');
       const firma = (eventData.firma || '').trim();
       const acente = (eventData.acente || '').trim();
+      const iletisim = (eventData.iletisim || '').trim();
+      if (islemTarihi) pushDetail('\u0130\u015flem Tarihi', islemTarihi);
       if (bitis) pushDetail('Biti\u015F Tarihi', bitis);
       if (firma) pushDetail('Firma', toTitleCase(firma));
       if (acente) pushDetail('Acente', toTitleCase(acente));
+      if (iletisim) pushDetail('\u0130leti\u015Fim', iletisim);
     } else if (eventType === 'muayene-guncelle' || eventType === 'muayene' || eventType === 'muayene-yenileme') {
       summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Muayene Biti\u015F Tarihini G\u00FCncelledi.</span>';
+      const islemTarihi = formatDateForDisplay(event.date || '');
       let bitis = formatDateForDisplay(eventData.bitisTarihi || '');
       if (!bitis && legacyAciklama) {
         const m = legacyAciklama.match(/(\d{2}[./-]\d{2}[./-]\d{4})/);
@@ -6005,6 +6037,7 @@ function renderVehicleDetailLeft(vehicle) {
           bitis = raw;
         }
       }
+      if (islemTarihi) pushDetail('\u0130\u015flem Tarihi', islemTarihi);
       if (bitis) pushDetail('Biti\u015F Tarihi', bitis);
     } else if (eventType === 'kullanici-atama') {
       const yeni = (eventData.kullaniciAdi || '').trim();
