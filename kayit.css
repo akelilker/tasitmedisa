@@ -571,6 +571,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     transform: translateY(-50%);
     width: 16px;
     height: 16px;
+    pointer-events: auto;
 }
 
 /* TEXTAREA */
@@ -1487,8 +1488,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         max-width: 100%;
         box-sizing: border-box;
         overflow: hidden;
-        -webkit-appearance: none;
-        appearance: none;
+        /* appearance:none mobil WebKit/Chromium'da yerel takvim ikonunu/tıklamasını bozabiliyor */
         text-align: center;
     }
     .modal-body input[type="date"].form-input::-webkit-datetime-edit { font-size: 11px !important; }
