@@ -223,7 +223,7 @@ function canUseDriverPanelTransition(sessionData) {
 
 function canShowMainUserPanelLink(sessionData) {
     var session = sessionData && typeof sessionData === 'object' ? sessionData : getDefaultSession();
-    return hasMainAppAccessForSession(session) && canUseDriverPanelTransition(session);
+    return hasMainAppAccessForSession(session);
 }
 
 function buildAuthHeaders(extraHeaders) {
