@@ -142,7 +142,7 @@
             'sigorta': isVerySmall ? 'Sig.' : isMobile ? 'Sigorta' : 'Sigorta Bitiş',
             'kasko': isVerySmall ? 'Kas.' : isMobile ? 'Kasko' : 'Kasko Bitiş',
             'muayene': isVerySmall ? 'Muay.' : isMobile ? 'Muayene' : 'Muayene T.',
-            'kredi': isTiny ? 'K/R' : isVerySmall ? 'Kredi' : isMobile ? 'Kredi/Rehin' : 'Kredi/Rehin',
+            'kredi': isTiny ? 'Hak' : isVerySmall ? 'Hak M.' : isMobile ? 'Hak M.' : 'Hak Mahr.',
             'lastik': isTiny ? 'Y/K' : isVerySmall ? 'Yaz/Kış' : isMobile ? 'Yazlık/Kışlık' : 'Lastikler',
             'utts': 'UTTS',
             'takip': isVerySmall ? 'Tkp' : isMobile ? 'Takip' : 'Takip Cihazı',
@@ -915,7 +915,7 @@
             { key: 'kasko', label: 'Kasko T.' },
             { key: 'kaskoDegeri', label: 'Kasko Değeri' },
             { key: 'muayene', label: 'Muayene' },
-            { key: 'kredi', label: 'Kredi/Rehin' },
+            { key: 'kredi', label: 'Hak Mahr.' },
             { key: 'lastik', label: 'Lastik D.' },
             { key: 'utts', label: 'UTTS' },
             { key: 'takip', label: 'Taşıt Tkp.' },
@@ -1868,7 +1868,7 @@
     window.handleStokSearch = (typeof window.debounce === 'function') ? window.debounce(handleStokSearchImpl, 200) : handleStokSearchImpl;
 
     // Yazdır – Excel ile aynı veriyi tablo olarak yazdırır (ekran görüntüsü değil)
-    const stokPrintHeaders = { sira:'No.', sube:'Şube', yil:'Yıl', marka:'Marka/Mod.', plaka:'Plaka', sanziman:'Şanz', km:'KM', sigorta:'Sig. bit.', kasko:'Kas. bit.', kaskoDegeri:'Kas. değ.', muayene:'Muayene', kredi:'Kredi', lastik:'Lastik', utts:'UTTS', takip:'Takip', tramer:'Tramer', boya:'Boya', kullanici:'Kull.', tescil:'Tescil' };
+    const stokPrintHeaders = { sira:'No.', sube:'Şube', yil:'Yıl', marka:'Marka/Mod.', plaka:'Plaka', sanziman:'Şanz', km:'KM', sigorta:'Sig. bit.', kasko:'Kas. bit.', kaskoDegeri:'Kas. değ.', muayene:'Muayene', kredi:'Hak M.', lastik:'Lastik', utts:'UTTS', takip:'Takip', tramer:'Tramer', boya:'Boya', kullanici:'Kull.', tescil:'Tescil' };
     /* Yazdırma: plaka kısa metin — aşırı ağırlık diğer sütunları sıkıştırıp başlıkta harf kırılmasına yol açmasın */
     const stokPrintColumnWeights = {
         sira: 3,

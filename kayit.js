@@ -876,8 +876,16 @@
       if (dateInputs[2]) {
         dateInputs[2].value = '';
       }
+      const egzozDateInput = document.getElementById('vehicle-egzoz-date');
+      if (egzozDateInput) {
+        egzozDateInput.value = '';
+      }
       syncDateInputVisibility(modal);
     }
+
+    const egzozCheckbox = document.getElementById('vehicle-egzoz-different');
+    if (egzozCheckbox) egzozCheckbox.checked = false;
+    syncEgzozMuayeneFields(modal);
 
     // Reset Selects & Buttons
     const branchSelect = document.getElementById("vehicle-branch-select");
@@ -947,6 +955,21 @@
   function syncDateInputVisibility(modal) {
     if (!modal) return;
     $all('input[type="date"].form-input', modal).forEach(syncSingleDateInputVisibility);
+  }
+
+  function syncEgzozMuayeneFields(modal) {
+    const scope = modal || getModal();
+    if (!scope) return;
+    const checkbox = document.getElementById('vehicle-egzoz-different');
+    const section = document.getElementById('vehicle-egzoz-date-section');
+    const input = document.getElementById('vehicle-egzoz-date');
+    const visible = !!(checkbox && checkbox.checked);
+    if (section) section.classList.toggle('egzoz-date-visible', visible);
+    if (input) {
+      input.disabled = !visible;
+      if (!visible) input.value = '';
+      syncSingleDateInputVisibility(input);
+    }
   }
 
   /**
@@ -1296,6 +1319,13 @@
     if (vehicle.muayeneDate) {
       $all('input[type="date"].form-input', modal)[2].value = vehicle.muayeneDate;
     }
+    const egzozDate = vehicle.egzozMuayeneDate || '';
+    const egzozDifferent = !!(egzozDate && egzozDate !== (vehicle.muayeneDate || ''));
+    const egzozCheckbox = document.getElementById('vehicle-egzoz-different');
+    const egzozDateInput = document.getElementById('vehicle-egzoz-date');
+    if (egzozCheckbox) egzozCheckbox.checked = egzozDifferent;
+    if (egzozDateInput) egzozDateInput.value = egzozDifferent ? egzozDate : '';
+    syncEgzozMuayeneFields(modal);
     syncDateInputVisibility(modal);
 
     // Yedek Anahtar (Var=yeşil, Yok=kırmızı)
@@ -1317,7 +1347,7 @@
       }
     }
 
-    // Kredi/Rehin (Var=yeşil, Yok=kırmızı)
+    // Hak Mahrumiyeti (Var=yeşil, Yok=kırmızı)
     const krediSection = $(`.form-section-inline[data-section="kredi"]`, modal);
     if (krediSection && vehicle.kredi) {
       $all('.radio-btn', krediSection).forEach(btn => {
@@ -1428,13 +1458,15 @@
     const yearEl = document.getElementById("vehicle-year");
     const brandModelEl = document.getElementById("vehicle-brand-model");
     const kmEl = document.getElementById("vehicle-km");
+    const egzozDifferentEl = document.getElementById('vehicle-egzoz-different');
+    const egzozDateEl = document.getElementById('vehicle-egzoz-date');
     const transmissionSection = $(`.form-section-inline[data-section="transmission"]`, modal);
     const tramerSection = $(`.form-section-inline[data-section="tramer"]`, modal);
     const transmissionBtn = $('.radio-group button.active', transmissionSection);
     const tramerBtn = $('.radio-group button.active', tramerSection);
     
     // Tüm hata sınıflarını temizle
-    [plateEl, yearEl, brandModelEl, kmEl].forEach(el => {
+    [plateEl, yearEl, brandModelEl, kmEl, egzozDateEl].forEach(el => {
       if (el) el.classList.remove('field-error');
     });
     if (transmissionSection) transmissionSection.classList.remove('field-error');
@@ -1477,6 +1509,12 @@
     if (!tramer) {
       errors.push('Tramer Kaydı');
       if (tramerSection) tramerSection.classList.add('field-error');
+    }
+    const egzozDifferent = !!(egzozDifferentEl && egzozDifferentEl.checked);
+    const egzozMuayeneDate = egzozDifferent ? (egzozDateEl?.value || '') : '';
+    if (egzozDifferent && !egzozMuayeneDate) {
+      errors.push('Egzos Muayenesi Bitiş Tarihi');
+      if (egzozDateEl) egzozDateEl.classList.add('field-error');
     }
     
     // Hata varsa uyarı göster ve çık
@@ -1551,6 +1589,7 @@
       sigortaDate: sigortaDate,
       kaskoDate: kaskoDate,
       muayeneDate: muayeneDate,
+      egzozMuayeneDate: egzozMuayeneDate,
       anahtar: anahtar,
       anahtarNerede: anahtarNerede,
       kredi: kredi,
@@ -1889,7 +1928,7 @@
    * - Şanzıman: Tüm butonlar kırmızı hover
    * - Tramer/Boya: Var=kırmızı, Yok=yeşil hover
    * - Yedek Anahtar: Var=yeşil, Yok=kırmızı hover
-   * - Kredi/Rehin: Var=kırmızı, Yok=yeşil hover
+   * - Hak Mahrumiyeti: Var=kırmızı, Yok=yeşil hover
    * 
    * Mantık:
    * 1. Tüm radio gruplarını bul
@@ -1905,7 +1944,7 @@
       const isTramer = sectionLabel.includes("Tramer");
       const isBoya = sectionLabel.includes("Boya") || sectionLabel.includes("Değişen");
       const isYedekAnahtar = sectionLabel.includes("Yedek Anahtar");
-      const isKrediRehin = sectionLabel.includes("Kredi") || sectionLabel.includes("Rehin");
+      const isKrediRehin = sectionLabel.includes("Hak Mahrumiyeti") || sectionLabel.includes("Kredi") || sectionLabel.includes("Rehin");
       
       $all(".radio-btn", group).forEach(btn => {
         // Önce tüm hover class'larını kaldır
@@ -1931,7 +1970,7 @@
               btn.classList.add("hover-red");
             }
           } else if (isKrediRehin) {
-            // Kredi Rehin: Var=kırmızı, Yok=yeşil
+            // Hak Mahrumiyeti: Var=kırmızı, Yok=yeşil
             if (btn.dataset.value === "var") {
               btn.classList.add("hover-red");
             } else if (btn.dataset.value === "yok") {
@@ -1963,13 +2002,13 @@
         // Renk mantığı: Bölüme göre olumlu/olumsuz renk ataması
         const sectionLabel = section?.querySelector(".form-label")?.textContent || "";
         const isTransmission = section?.dataset?.section === "transmission";
-        const isNegativeSection = sectionLabel.includes("Boya") || sectionLabel.includes("Değişen") || sectionLabel.includes("Tramer") || sectionLabel.includes("Kredi");
+        const isNegativeSection = sectionLabel.includes("Boya") || sectionLabel.includes("Değişen") || sectionLabel.includes("Tramer") || sectionLabel.includes("Kredi") || sectionLabel.includes("Rehin") || sectionLabel.includes("Hak Mahrumiyeti");
 
         if (isTransmission) {
             // Şanzıman Tipi: Her zaman yeşil
             btn.classList.add("green");
         } else if (isNegativeSection) {
-            // Boya, Tramer, Kredi: Yok = Yeşil (Olumlu), Var = Kırmızı (Olumsuz)
+            // Boya, Tramer, Hak Mahrumiyeti: Yok = Yeşil (Olumlu), Var = Kırmızı (Olumsuz)
             if (btn.dataset.value === "yok") btn.classList.add("green");
         } else {
             // Yedek Anahtar vb: Var = Yeşil (Olumlu), Yok = Kırmızı (Olumsuz)
@@ -2036,6 +2075,14 @@
       });
     });
     
+    const egzozCheckbox = document.getElementById('vehicle-egzoz-different');
+    if (egzozCheckbox) {
+      egzozCheckbox.addEventListener('change', function() {
+        syncEgzozMuayeneFields(getModal());
+      });
+      syncEgzozMuayeneFields(getModal());
+    }
+
     // Vehicle Type Selection
     $all(".vehicle-type-btn", getModal()).forEach(btn => {
         btn.addEventListener("click", () => {
@@ -2171,7 +2218,7 @@
       });
     }
 
-    // Kredi Rehin Detay - İlk harf büyük
+    // Hak Mahrumiyeti Detay - İlk harf büyük
     const krediDetayInput = document.getElementById("kredi-detay");
     if (krediDetayInput) {
       krediDetayInput.addEventListener('blur', function(e) {

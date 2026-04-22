@@ -202,7 +202,7 @@
     }
     var kaskoDegeriDisplay = (kaskoDegeri != null && String(kaskoDegeri).trim() !== '') ? String(kaskoDegeri).trim() : '-';
 
-    return [
+    var rows = [
       ['Plaka', vehicle.plate || '-'],
       ['Marka / Model', formatBrandModel(vehicle.brandModel || '-')],
       ['Kullanıcı', assignedUserName || '-'],
@@ -217,7 +217,7 @@
       ['Kasko Bitiş Tarihi', vehicle.kasko || '-'],
       ['Muayene Bitiş Tarihi', vehicle.muayene || '-'],
       ['Yedek Anahtar', anahtarLabel],
-      ['Kredi/Rehin', krediLabel],
+      ['Hak Mahrumiyeti', krediLabel],
       ['Yazlık/Kışlık Lastik', lastikLabel],
       ['UTTS', vehicle.uttsTanimlandi ? 'Evet' : 'Hayır'],
       ['Taşıt Takip', vehicle.takipCihaziMontaj ? 'Evet' : 'Hayır'],
@@ -225,6 +225,10 @@
       ['Kasko Değeri', kaskoDegeriDisplay],
       ['Notlar', vehicle.notes || '-']
     ];
+    if (vehicle.egzozMuayeneDate && vehicle.egzozMuayeneDate !== vehicle.muayeneDate) {
+      rows.splice(13, 0, ['Egzos Muayenesi', formatDateForDisplay(vehicle.egzozMuayeneDate) || vehicle.egzozMuayeneDate]);
+    }
+    return rows;
   }
 
   function renderPrintHistorySection(title, items) {
@@ -271,6 +275,7 @@
     } else if (eventType === 'muayene-guncelle') {
       text = 'Muayene Güncelleme';
       if (d.bitisTarihi) extra = 'Bitiş: ' + (formatDateForDisplay(d.bitisTarihi) || '-');
+      if (d.egzozMuayeneDate) extra += (extra ? ' | ' : '') + 'Egzos: ' + (formatDateForDisplay(d.egzozMuayeneDate) || '-');
     } else if (eventType === 'kullanici-atama') {
       text = 'Kullanıcı Ataması';
       var details3 = [];
@@ -287,7 +292,7 @@
       extra = details4.join(' | ');
     } else if (eventType === 'kredi-guncelle') {
       var durum3 = String(d.durum || 'yok').toLowerCase();
-      text = 'Kredi/Rehin: ' + (durum3 === 'var' ? 'Var' : 'Yok');
+      text = 'Hak Mahrumiyeti: ' + (durum3 === 'var' ? 'Var' : 'Yok');
       if (d.detay) extra = 'Detay: ' + toTitleCase(String(d.detay));
     } else if (eventType === 'utts-guncelle') {
       text = 'UTTS: ' + ((d.durum === true || d.durum === 'evet') ? 'Evet' : 'Hayır');

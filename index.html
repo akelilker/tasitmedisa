@@ -359,6 +359,16 @@
                                 <label class="form-label" for="vehicle-muayene-date">Muayene Bitiş Tarihi</label>
                                 <input type="date" id="vehicle-muayene-date" class="form-input" inputmode="numeric">
                             </div>
+                            <div class="form-section egzoz-toggle-section">
+                                <label class="egzoz-muayene-check" for="vehicle-egzoz-different">
+                                    <input type="checkbox" id="vehicle-egzoz-different">
+                                    <span>Egzos Muayenesi Farklı Tarih İse İşaretleyin..</span>
+                                </label>
+                            </div>
+                            <div class="form-section egzoz-date-section" id="vehicle-egzoz-date-section">
+                                <label class="form-label" for="vehicle-egzoz-date">Egzos Muayenesi Bitiş Tarihi</label>
+                                <input type="date" id="vehicle-egzoz-date" class="form-input" inputmode="numeric" disabled>
+                            </div>
                             <div class="form-section-inline" data-section="anahtar">
                                 <label class="form-label" for="yedek-anahtar-var">Yedek Anahtar</label>
                                 <div class="radio-group">
@@ -371,14 +381,14 @@
                                 <input type="text" class="form-input form-input-reveal" placeholder="Nerede?" id="anahtar-nerede">
                             </div>
                             <div class="form-section-inline" data-section="kredi">
-                                <label class="form-label" for="kredi-var">Kredi / Rehin Var mı?</label>
+                                <label class="form-label" for="kredi-var">Hak Mahrumiyeti Var mı?</label>
                                 <div class="radio-group">
                                     <button type="button" id="kredi-var" class="radio-btn" data-value="var" data-group="kredi">Var</button>
                                     <button type="button" class="radio-btn" data-value="yok" data-group="kredi">Yok</button>
                                 </div>
                             </div>
                             <div class="form-section">
-                                <label class="form-label form-label-reveal" for="kredi-detay">Kredi detay</label>
+                                <label class="form-label form-label-reveal" for="kredi-detay">Hak mahrumiyeti detay</label>
                                 <textarea class="form-input form-input-reveal" rows="2" placeholder="Detay Ekleyin" id="kredi-detay"></textarea>
                             </div>
                             <div class="form-section" id="vehicle-branch-form-section">
@@ -1006,7 +1016,7 @@
 
     <script defer src="data-manager.js?v=20260406.1"></script>
     <script defer src="data-service.js?v=20260316"></script>
-    <script defer src="script-core.js?v=20260422.7"></script>
+    <script defer src="script-core.js?v=20260422.8"></script>
 </body>
 </html>
 
