@@ -1302,8 +1302,9 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   #notifications-dropdown.settings-dropdown {
     width: min(320px, calc(100vw - 40px)) !important;
     max-width: min(320px, calc(100vw - 40px)) !important;
+    top: 24px !important;
     padding: 8px !important;
-    border: 1px solid rgba(var(--theme-color-rgb), 0.32) !important;
+    border: none !important;
     border-radius: 12px !important;
     background: linear-gradient(180deg, rgba(8, 13, 22, 0.98) 0%, rgba(8, 13, 22, 0.95) 100%) !important;
     box-shadow: 0 12px 28px rgba(0, 0, 0, 0.42) !important;
