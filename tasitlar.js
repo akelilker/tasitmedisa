@@ -2385,7 +2385,15 @@
   document.addEventListener('click', function(e) {
       const box = getVSearchContainer();
       if (!box || !box.classList.contains('open')) return;
-      if (e.target.closest('#v-search-container') || e.target.closest('.search-toggle-btn')) return;
+      const t = e.target;
+      if (!t || typeof t.closest !== 'function') return;
+      if (t.closest('#v-search-container') || t.closest('.search-toggle-btn')) return;
+      if (
+          t.closest('.list-item') ||
+          t.closest('.card') ||
+          t.closest('.branch-card') ||
+          t.closest('[data-vehicle-id]')
+      ) return;
       closeSearchBox();
   });
   // Mobil (iOS): capture fazında pointer — liste/boş alana dokununca click güvenilir olmayabiliyor
@@ -5976,7 +5984,22 @@ function renderVehicleDetailLeft(vehicle) {
    */
   function renderHistoryDigerEventHtml(event, vehicle, branches) {
     const eventType = String(event.type || '').trim();
-    const dateText = escapeHtml(formatDateForDisplay(event.date) || '-');
+    const isDateRenewalEvent = eventType === 'kasko-guncelle' || eventType === 'sigorta-guncelle' || eventType === 'muayene-guncelle' || eventType === 'muayene' || eventType === 'muayene-yenileme';
+    function formatHistoryActionDate(ev) {
+      const stamp = ev && ev.timestamp ? String(ev.timestamp).trim() : '';
+      if (stamp) {
+        const parsed = new Date(stamp);
+        if (!isNaN(parsed.getTime())) {
+          const d = String(parsed.getDate()).padStart(2, '0');
+          const m = String(parsed.getMonth() + 1).padStart(2, '0');
+          const y = String(parsed.getFullYear());
+          return `${d}/${m}/${y}`;
+        }
+      }
+      return formatDateForDisplay(ev && ev.date ? ev.date : '');
+    }
+    const actionDateText = formatHistoryActionDate(event);
+    const dateText = escapeHtml((isDateRenewalEvent ? actionDateText : formatDateForDisplay(event.date)) || '-');
     const eventData = event.data || {};
     const legacyAciklama = String(eventData.aciklama || eventData.description || '').trim();
     const performerRaw = eventData.kaydeden || eventData.surucu || eventData.kisi || '';
@@ -6004,7 +6027,7 @@ function renderVehicleDetailLeft(vehicle) {
       if (adres) pushDetail('Konum', toTitleCase(adres));
     } else if (eventType === 'kasko-guncelle') {
       summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Kasko Biti\u015F Tarihini G\u00FCncelledi.</span>';
-      const islemTarihi = formatDateForDisplay(event.date || '');
+      const islemTarihi = actionDateText;
       const bitis = formatDateForDisplay(eventData.bitisTarihi || '');
       const firma = (eventData.firma || '').trim();
       const acente = (eventData.acente || '').trim();
@@ -6016,7 +6039,7 @@ function renderVehicleDetailLeft(vehicle) {
       if (iletisim) pushDetail('\u0130leti\u015Fim', iletisim);
     } else if (eventType === 'sigorta-guncelle') {
       summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Trafik Sigortas\u0131 Biti\u015F Tarihini G\u00FCncelledi.</span>';
-      const islemTarihi = formatDateForDisplay(event.date || '');
+      const islemTarihi = actionDateText;
       const bitis = formatDateForDisplay(eventData.bitisTarihi || '');
       const firma = (eventData.firma || '').trim();
       const acente = (eventData.acente || '').trim();
@@ -6028,7 +6051,7 @@ function renderVehicleDetailLeft(vehicle) {
       if (iletisim) pushDetail('\u0130leti\u015Fim', iletisim);
     } else if (eventType === 'muayene-guncelle' || eventType === 'muayene' || eventType === 'muayene-yenileme') {
       summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Muayene Biti\u015F Tarihini G\u00FCncelledi.</span>';
-      const islemTarihi = formatDateForDisplay(event.date || '');
+      const islemTarihi = actionDateText;
       let bitis = formatDateForDisplay(eventData.bitisTarihi || '');
       if (!bitis && legacyAciklama) {
         const m = legacyAciklama.match(/(\d{2}[./-]\d{2}[./-]\d{4})/);
