@@ -71,6 +71,12 @@
   function readVehicles() { return (typeof window.getMedisaVehicles === 'function' ? window.getMedisaVehicles() : null) || []; }
   const VEHICLE_DATE_INPUT_SELECTOR = 'input.form-input[data-date-input="vehicle"]';
 
+  // #region agent log
+  function sendVehicleDateDebugLog(location, message, hypothesisId, data) {
+    fetch('http://127.0.0.1:7753/ingest/302b1fd7-6809-479d-8a04-ce5cebe4d3da',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'0d5ba2'},body:JSON.stringify({sessionId:'0d5ba2',runId:'pre-fix-1',hypothesisId:hypothesisId,location:location,message:message,data:data||{},timestamp:Date.now()})}).catch(()=>{});
+  }
+  // #endregion
+
   function getVehicleDateInputs(root) {
     return $all(VEHICLE_DATE_INPUT_SELECTOR, root || document);
   }
@@ -158,6 +164,15 @@
     input._vehicleDatePickerNative = nativeInput;
     positionVehicleDatePickerNative(nativeInput, trigger);
 
+    // #region agent log
+    sendVehicleDateDebugLog('kayit.js:createVehicleDatePickerBridge','bridge-created','H1',{
+      inputId: input.id || '',
+      inEgzozDialog: !!input.closest('.egzoz-dialog-date-field'),
+      nativeConnected: document.body.contains(nativeInput),
+      fieldWidth: Math.round((field.getBoundingClientRect && field.getBoundingClientRect().width) || 0)
+    });
+    // #endregion
+
     input.dataset.datePickerBridge = 'true';
 
     function openNativePicker(ev) {
@@ -170,18 +185,47 @@
       syncVehicleDatePickerNativeValue(input, nativeInput);
       positionVehicleDatePickerNative(nativeInput, trigger);
 
+      // #region agent log
+      sendVehicleDateDebugLog('kayit.js:openNativePicker','picker-open-attempt','H2',{
+        inputId: input.id || '',
+        nativeConnected: nativeInput.isConnected,
+        hasShowPicker: typeof nativeInput.showPicker === 'function',
+        inputDisabled: !!input.disabled,
+        nativeDisabled: !!nativeInput.disabled,
+        triggerRect: (function(){ var r = trigger.getBoundingClientRect(); return { left: Math.round(r.left), top: Math.round(r.top), width: Math.round(r.width), height: Math.round(r.height) }; })()
+      });
+      // #endregion
+
       // Native picker aç
       try {
         if (typeof nativeInput.showPicker === 'function') {
+          // #region agent log
+          sendVehicleDateDebugLog('kayit.js:openNativePicker','showPicker-invoking','H2',{ inputId: input.id || '' });
+          // #endregion
           nativeInput.showPicker();
           return;
         }
-      } catch (err) {}
+      } catch (err) {
+        // #region agent log
+        sendVehicleDateDebugLog('kayit.js:openNativePicker','showPicker-error','H2',{
+          inputId: input.id || '',
+          errorName: err && err.name ? String(err.name) : '',
+          errorMessage: err && err.message ? String(err.message) : ''
+        });
+        // #endregion
+      }
 
       // Fallback (Safari vs.)
       try { nativeInput.focus({ preventScroll: true }); } catch (err) { nativeInput.focus(); }
 
       setTimeout(function() {
+        // #region agent log
+        sendVehicleDateDebugLog('kayit.js:openNativePicker','fallback-click','H3',{
+          inputId: input.id || '',
+          activeTag: document.activeElement && document.activeElement.tagName ? document.activeElement.tagName : '',
+          activeType: document.activeElement && document.activeElement.type ? document.activeElement.type : ''
+        });
+        // #endregion
         try { nativeInput.click(); } catch (err) {}
       }, 0);
     }
@@ -209,6 +253,12 @@
       ev.stopPropagation();
     }, true);
     nativeInput.addEventListener('change', function() {
+      // #region agent log
+      sendVehicleDateDebugLog('kayit.js:nativeInput:change','native-change','H2',{
+        inputId: input.id || '',
+        value: nativeInput.value || ''
+      });
+      // #endregion
       syncVehicleDatePickerTextValue(input, nativeInput);
     });
     nativeInput.addEventListener('input', function() {
@@ -219,6 +269,12 @@
   }
 
   function initVehicleDatePickerBridges(root) {
+    // #region agent log
+    sendVehicleDateDebugLog('kayit.js:initVehicleDatePickerBridges','bridge-init','H1',{
+      count: getVehicleDateInputs(root).length,
+      rootIsDocument: root === document
+    });
+    // #endregion
     getVehicleDateInputs(root).forEach(function(inp) {
       createVehicleDatePickerBridge(inp);
     });
