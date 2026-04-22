@@ -37,7 +37,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../style-core.css?v=20260421.3">
-<link rel="stylesheet" href="driver-style.css?v=20260422.1">
+<link rel="stylesheet" href="driver-style.css?v=20260422.2">
 <script defer src="../script-core.js?v=20260421.5"></script>
     <!-- Splash: ana uygulama ile aynı logo+başlık (kritik, mobilde kesin uygulansın) -->
     <style>
@@ -392,6 +392,14 @@
                         <label for="driver-muayene-tarih" style="color: var(--form-label-color); font-size: 15px;">Yaptırılan Tarih:</label>
                         <input type="date" id="driver-muayene-tarih" class="form-input" style="width: 100%;">
                     </div>
+                    <label class="driver-egzoz-muayene-check" for="driver-muayene-egzoz-different">
+                        <input type="checkbox" id="driver-muayene-egzoz-different" onchange="syncDriverEgzozMuayeneFields()">
+                        <span>Egzos Muayenesi Farklı Tarih İse İşaretleyin..</span>
+                    </label>
+                    <div id="driver-muayene-egzoz-date-wrap" class="form-group driver-egzoz-date-wrap">
+                        <label for="driver-muayene-egzoz-tarih" style="color: var(--form-label-color); font-size: 15px;">Egzos Muayenesi Bitiş Tarihi:</label>
+                        <input type="date" id="driver-muayene-egzoz-tarih" class="form-input" style="width: 100%;" disabled>
+                    </div>
                     <div class="muayene-submit-wrap" style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
                         <button type="button" class="btn-submit" onclick="saveDriverEvent('muayene')">Bildir</button>
                         <button type="button" class="universal-btn-cancel" onclick="closeDriverEventModal('muayene')">Vazgeç</button>
@@ -472,6 +480,6 @@
             <button type="button" class="btn-confirm-yes" onclick="confirmMuayeneSubmit()">Evet</button>
         </div>
     </div>
-<script defer src="driver-script.js?v=20260422.1"></script>
+<script defer src="driver-script.js?v=20260422.2"></script>
 </body>
 </html>

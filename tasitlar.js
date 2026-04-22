@@ -2167,7 +2167,7 @@
 
       // iOS yazıcı izin prompt'unu azaltmak için yazdırma script'ini önceden yükle
       if (!window._printScriptPromise) {
-        window._printScriptPromise = loadScript('tasitlar-yazici.js?v=20260415.1');
+        window._printScriptPromise = loadScript('tasitlar-yazici.js?v=20260422.1');
       }
 
     const modal = DOM.vehicleDetailModal || document.getElementById('vehicle-detail-modal');
@@ -2396,7 +2396,7 @@
         const originalText = printBtn.innerHTML;
         printBtn.innerHTML = '<span class="spin-animation" style="display:inline-block; width:16px; height:16px; border:2px solid currentColor; border-right-color:transparent; border-radius:50%; margin-right:4px;"></span> Yükleniyor...';
         printBtn.disabled = true;
-        (window._printScriptPromise || loadScript('tasitlar-yazici.js?v=20260415.1')).then(function() {
+        (window._printScriptPromise || loadScript('tasitlar-yazici.js?v=20260422.1')).then(function() {
           printBtn.innerHTML = originalText;
           printBtn.disabled = false;
           if (typeof window.printVehicleCard === 'function') {
@@ -3033,16 +3033,23 @@ function renderVehicleDetailLeft(vehicle) {
     } else {
       html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Muayene Bitiş Tarihi</span><span class="detail-row-colon">:</span></div><span class="detail-row-value ${muayeneWarning.class}"> ${escapeHtml(muayeneDisplay || '-')}</span></div>`;
     }
+
+    const egzozMuayeneDate = vehicle.egzozMuayeneDate || '';
+    if (egzozMuayeneDate && egzozMuayeneDate !== muayeneDate) {
+      const egzozWarning = checkDateWarnings(egzozMuayeneDate);
+      const egzozDisplay = formatDateForDisplay(egzozMuayeneDate);
+      html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Egzos Muayenesi</span><span class="detail-row-colon">:</span></div><span class="detail-row-value ${egzozWarning.class}"> ${escapeHtml(egzozDisplay || '-')}</span></div>`;
+    }
     
     // Detay: yedek anahtar durumu
     const anahtar = vehicle.anahtar || '';
     const anahtarLabel = anahtar === 'var' ? (vehicle.anahtarNerede || 'Var') : 'Yoktur.';
     html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Yedek Anahtar</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(anahtarLabel)}</span></div>`;
     
-    // Kredi/Rehin
+    // Hak Mahrumiyeti
     const kredi = vehicle.kredi || '';
     const krediLabel = kredi === 'var' ? (vehicle.krediDetay || 'Var') : 'Yoktur.';
-    html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Kredi/Rehin</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(krediLabel)}</span></div>`;
+    html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Hak Mahrumiyeti</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(krediLabel)}</span></div>`;
     
     // Yazlık/ Kışlık Lastik (Yoktur "r" hizası için referans)
     const lastikDurumu = vehicle.lastikDurumu || '';
@@ -3260,7 +3267,7 @@ function renderVehicleDetailLeft(vehicle) {
     kasko: 'KASKO BİLGİSİ GÜNCELLE',
     muayene: 'MUAYENE BİLGİSİ GÜNCELLE',
     anahtar: 'YEDEK ANAHTAR BİLGİSİ GÜNCELLE',
-    kredi: 'KREDİ/REHİN BİLGİSİ GÜNCELLE',
+    kredi: 'HAK MAHRUMİYETİ BİLGİSİ GÜNCELLE',
     km: 'KM GÜNCELLE',
     lastik: 'LASTİK DURUMU GÜNCELLE',
     utts: 'UTTS BİLGİSİ GÜNCELLE',
@@ -3373,7 +3380,7 @@ function renderVehicleDetailLeft(vehicle) {
   /** sigorta/kasko/muayene gg/aa/yyyy metin alanlarını kayıttan önce normalize et */
   function bindGgAaYyyyTextInputs(modal) {
     if (!modal) return;
-    ['sigorta-tarih', 'kasko-tarih', 'muayene-tarih'].forEach(function(id) {
+    ['sigorta-tarih', 'kasko-tarih', 'muayene-tarih', 'muayene-egzoz-tarih'].forEach(function(id) {
       const input = modal.querySelector('#' + id);
       if (!input || input.dataset.ggaaNormalizeBound) return;
       input.dataset.ggaaNormalizeBound = '1';
@@ -3390,7 +3397,7 @@ function renderVehicleDetailLeft(vehicle) {
       ? window.matchMedia('(max-width: 640px)').matches
       : window.innerWidth <= 640;
     if (!narrow) return;
-    const ids = ['sigorta-tarih', 'kasko-tarih', 'muayene-tarih'];
+    const ids = ['sigorta-tarih', 'kasko-tarih', 'muayene-tarih', 'muayene-egzoz-tarih'];
     const calendarSvg = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>';
     ids.forEach(function(id) {
       const textEl = document.getElementById(id);
@@ -3440,6 +3447,23 @@ function renderVehicleDetailLeft(vehicle) {
     });
   }
 
+  function syncOlayEgzozMuayeneFields() {
+    const checkbox = document.getElementById('muayene-egzoz-different');
+    const wrapper = document.getElementById('muayene-egzoz-date-wrapper');
+    const input = document.getElementById('muayene-egzoz-tarih');
+    const visible = !!(checkbox && checkbox.checked);
+    if (wrapper) wrapper.classList.toggle('egzoz-date-visible', visible);
+    if (input) {
+      input.disabled = !visible;
+      if (!visible) input.value = '';
+      const nativeInput = input.closest('.olay-date-mobile-wrap')?.querySelector('.olay-date-mobile-native');
+      if (nativeInput) {
+        nativeInput.disabled = !visible;
+        if (!visible) nativeInput.value = '';
+      }
+    }
+  }
+
   function getEventFormHtml(type) {
     const labelCls = 'form-label';
     const inputCls = 'form-input';
@@ -3481,6 +3505,16 @@ function renderVehicleDetailLeft(vehicle) {
     /** Etiket + butonlar yan yana, 4px gap; Var/Evet=yeşil (hover-green), Yok/Hayır=kırmızı (hover-red) */
     const radioRow = (labelText, varVal, yokVal, varLbl, yokLbl) => {
       return '<div class="form-section-inline event-radio-row"><span class="' + labelCls + ' event-radio-label">' + labelText + '</span><div class="event-radio-actions"><button type="button" class="radio-btn hover-green" data-value="' + varVal + '">' + varLbl + '</button><button type="button" class="radio-btn hover-red" data-value="' + yokVal + '">' + yokLbl + '</button></div></div>';
+    };
+    const egzozMuayeneSection = () => {
+      return '<label class="egzoz-olay-toggle" for="muayene-egzoz-different">' +
+        '<input type="checkbox" id="muayene-egzoz-different">' +
+        '<span>Egzos Muayenesi Farklı Tarih İse İşaretleyin..</span>' +
+        '</label>' +
+        '<div id="muayene-egzoz-date-wrapper" class="egzoz-olay-date-wrapper">' +
+        '<label class="' + labelCls + '" for="muayene-egzoz-tarih">Egzos Muayenesi Bitiş Tarihi (gg/aa/yyyy)</label>' +
+        '<input id="muayene-egzoz-tarih" class="' + inputCls + '" type="text" placeholder="gg/aa/yyyy" disabled>' +
+        '</div>';
     };
     switch (type) {
       case 'bakim':
@@ -3536,15 +3570,16 @@ function renderVehicleDetailLeft(vehicle) {
           section('İletişim', 'kasko-iletisim', 'input', [['type', 'text'], ['placeholder', '05** *******']]) + '</div>';
       case 'muayene':
         return '<div style="display:flex;flex-direction:column;gap:12px;">' +
-          section('Muayene Tarihi (gg/aa/yyyy)', 'muayene-tarih', 'input', [['type', 'text'], ['placeholder', 'gg/aa/yyyy']]) + '</div>';
+          section('Muayene Tarihi (gg/aa/yyyy)', 'muayene-tarih', 'input', [['type', 'text'], ['placeholder', 'gg/aa/yyyy']]) +
+          egzozMuayeneSection() + '</div>';
       case 'anahtar':
         return '<div style="display:flex;flex-direction:column;gap:12px;">' +
           radioRow('Yedek Anahtar Var mı?', 'var', 'yok', 'Var', 'Yok') +
           '<div id="anahtar-detay-wrapper" style="display:none;"><label class="' + labelCls + '" for="anahtar-detay-event">Detay (nerede)</label><input id="anahtar-detay-event" class="' + inputCls + '" type="text" placeholder="Nerede?"></div></div>';
       case 'kredi':
         return '<div style="display:flex;flex-direction:column;gap:12px;">' +
-          radioRow('Kredi/ Rehin Var mı?', 'var', 'yok', 'Var', 'Yok') +
-          '<div id="kredi-detay-wrapper-event" style="display:none;"><label class="' + labelCls + '" for="kredi-detay-event">Detay</label><input id="kredi-detay-event" class="' + inputCls + '" type="text"></div></div>';
+          radioRow('Hak Mahrumiyeti Var mı?', 'var', 'yok', 'Var', 'Yok') +
+          '<div id="kredi-detay-wrapper-event" style="display:none;"><label class="' + labelCls + '" for="kredi-detay-event">Hak mahrumiyeti detay</label><input id="kredi-detay-event" class="' + inputCls + '" type="text"></div></div>';
       case 'km':
         return '<div style="display:flex;flex-direction:column;gap:12px;">' +
           section('Güncel Km', 'km-guncelle-input', 'input', [['type', 'text'], ['placeholder', 'Km'], ['inputmode', 'numeric']]) + '</div>';
@@ -3605,7 +3640,7 @@ function renderVehicleDetailLeft(vehicle) {
         { id: 'kasko', label: 'Kasko Bilgisi Güncelle' },
         { id: 'muayene', label: 'Muayene Bilgisi G\u00FCncelle' },
         { id: 'anahtar', label: 'Yedek Anahtar Bilgisi G\u00FCncelle' },
-        { id: 'kredi', label: 'Kredi/Rehin Bilgisi G\u00FCncelle' },
+        { id: 'kredi', label: 'Hak Mahrumiyeti Bilgisi G\u00FCncelle' },
         { id: 'lastik', label: 'Yazl\u0131k/K\u0131\u015Fl\u0131k Lastik Durumu G\u00FCncelle' },
         { id: 'utts', label: 'UTTS Bilgisi G\u00FCncelle' },
         { id: 'takip', label: takipLabel },
@@ -3792,6 +3827,12 @@ function renderVehicleDetailLeft(vehicle) {
       } else if (type === 'muayene') {
         const muayeneTarihInput = document.getElementById('muayene-tarih');
         if (muayeneTarihInput) muayeneTarihInput.value = formatDateForDisplay(new Date());
+        const egzozCheckbox = document.getElementById('muayene-egzoz-different');
+        if (egzozCheckbox) {
+          egzozCheckbox.checked = false;
+          egzozCheckbox.addEventListener('change', syncOlayEgzozMuayeneFields);
+        }
+        syncOlayEgzozMuayeneFields();
       } else if (type === 'kaskokodu') {
         const vehicle = readVehicles().find(v => String(v.id) === String(vehicleId || window.currentDetailVehicleId));
         const input = document.getElementById('kasko-kodu-guncelle-input');
@@ -5671,9 +5712,19 @@ function renderVehicleDetailLeft(vehicle) {
     
     const tarihInput = document.getElementById('muayene-tarih');
     const tarih = normalizeGgAaYyyyInputElement(tarihInput);
+    const egzozCheckbox = document.getElementById('muayene-egzoz-different');
+    const egzozInput = document.getElementById('muayene-egzoz-tarih');
+    const egzozDifferent = !!(egzozCheckbox && egzozCheckbox.checked);
+    const egzozTarih = egzozDifferent ? normalizeGgAaYyyyInputElement(egzozInput) : '';
+    const egzozMuayeneDate = egzozDifferent ? parseGgAaYyyyToIso(egzozTarih) : '';
     
     if (!tarih) {
       alert('Tarih zorunludur!');
+      return;
+    }
+    if (egzozDifferent && !egzozMuayeneDate) {
+      alert('Egzos Muayenesi Bitiş Tarihi zorunludur!');
+      if (egzozInput) egzozInput.focus();
       return;
     }
     
@@ -5687,6 +5738,7 @@ function renderVehicleDetailLeft(vehicle) {
     const bitisTarihi = calculateNextMuayene(vehicle, tarih);
     
     vehicle.muayeneDate = bitisTarihi;
+    vehicle.egzozMuayeneDate = egzozMuayeneDate;
     
     const event = {
       id: Date.now().toString(),
@@ -5695,6 +5747,7 @@ function renderVehicleDetailLeft(vehicle) {
       timestamp: new Date().toISOString(),
       data: {
         bitisTarihi: bitisTarihi,
+        egzozMuayeneDate: egzozMuayeneDate,
         surucu: getEventPerformerName(vehicle)
       }
     };
@@ -5755,7 +5808,7 @@ function renderVehicleDetailLeft(vehicle) {
   };
 
   /**
-   * Kredi/Rehin bilgisi güncelle
+   * Hak Mahrumiyeti bilgisi güncelle
    */
   window.updateKrediInfo = function() {
     const vehicleId = window.currentDetailVehicleId;
@@ -5792,7 +5845,7 @@ function renderVehicleDetailLeft(vehicle) {
       return completeDynamicEventSave({
         modalType: 'kredi',
         vehicleId: vehicleId,
-        message: 'Kredi/Rehin bilgisi güncellendi.'
+        message: 'Hak Mahrumiyeti bilgisi güncellendi.'
       });
     });
   };
@@ -6334,6 +6387,8 @@ function renderVehicleDetailLeft(vehicle) {
       }
       if (islemTarihi) pushDetail('\u0130\u015flem Tarihi', islemTarihi);
       if (bitis) pushDetail('Biti\u015F Tarihi', bitis);
+      const egzozBitis = formatDateForDisplay(eventData.egzozMuayeneDate || '');
+      if (egzozBitis) pushDetail('Egzos Muayenesi', egzozBitis);
     } else if (eventType === 'kullanici-atama') {
       const yeni = (eventData.kullaniciAdi || '').trim();
       const eski = (eventData.eskiKullaniciAdi || '').trim();
@@ -6362,7 +6417,7 @@ function renderVehicleDetailLeft(vehicle) {
     } else if (eventType === 'kredi-guncelle') {
       const durum = String(eventData.durum || 'yok').toLowerCase();
       const durumTxt = durum === 'var' ? 'Var' : 'Yok';
-      summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Kredi/Rehin Durumunu </span><span class="history-detail-inline">' + escapeHtml(durumTxt) + '</span><span class="history-action-text"> Olarak G\u00FCncelledi.</span>';
+      summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Hak Mahrumiyeti Durumunu </span><span class="history-detail-inline">' + escapeHtml(durumTxt) + '</span><span class="history-action-text"> Olarak G\u00FCncelledi.</span>';
       const detay = (eventData.detay || '').trim();
       if (detay) pushDetail('Detay', toTitleCase(detay));
     } else if (eventType === 'utts-guncelle') {
@@ -6684,7 +6739,7 @@ function renderVehicleDetailLeft(vehicle) {
       'kasko-guncelle': 'Kasko g\u00FCncelleme',
       'sube-degisiklik': '\u015Eube de\u011Fi\u015Fikli\u011Fi',
       'kullanici-atama': 'Kullan\u0131c\u0131 atama',
-      'kredi-guncelle': 'Kredi/Rehin',
+      'kredi-guncelle': 'Hak Mahrumiyeti',
       'takip-cihaz-guncelle': 'Takip cihaz\u0131',
       'not-guncelle': 'Kullanıcı notu',
       'satis': 'Sat\u0131\u015F/Pert',
@@ -6732,7 +6787,7 @@ function renderVehicleDetailLeft(vehicle) {
       'muayene-guncelle': 'Muayene Bilgisini G\u00FCncelledi',
       'anahtar-guncelle': 'Yedek Anahtar Bilgisini G\u00FCncelledi',
       'utts-guncelle': 'UTTS Bilgisini G\u00FCncelledi',
-      'kredi-guncelle': 'Kredi/Rehin Bilgisini G\u00FCncelledi',
+      'kredi-guncelle': 'Hak Mahrumiyeti Bilgisini G\u00FCncelledi',
       'takip-cihaz-guncelle': 'Takip Cihaz\u0131 Bilgisini G\u00FCncelledi',
       'not-guncelle': 'Not Bilgisini G\u00FCncelledi',
       'sube-degisiklik': '\u015Eube Bilgisini G\u00FCncelledi',
@@ -6858,6 +6913,24 @@ function renderVehicleDetailLeft(vehicle) {
           });
         }
       }
+
+      if (vehicle.egzozMuayeneDate && vehicle.egzozMuayeneDate !== vehicle.muayeneDate) {
+        const warning = checkDateWarnings(vehicle.egzozMuayeneDate);
+        if (warning.class) {
+          const days = warning.days;
+          const status = days < 0 ? 'geçmiş' : days <= 3 ? 'çok yakın' : 'yaklaşıyor';
+          notifications.push({
+            type: 'egzoz',
+            vehicleId: vehicle.id,
+            plate: plate,
+            brandModel: brandModel,
+            date: vehicle.egzozMuayeneDate,
+            days: days,
+            warningClass: warning.class,
+            status: status
+          });
+        }
+      }
     });
 
     // Kullanıcı paneli işlemleri: tüm taşıtlardan son olayları topla (en yeni 15)
@@ -6940,7 +7013,7 @@ function renderVehicleDetailLeft(vehicle) {
       let html = mtvHtml + kaskoExcelHtml;
       let activityHtml = '';
 
-      // Tarih uyarıları (sigorta, kasko, muayene)
+      // Tarih uyarıları (sigorta, kasko, muayene, egzos)
       if (notifications.length > 0) {
         const viewedKeys = getViewedNotificationKeys();
         notifications.sort((a, b) => {
@@ -6949,7 +7022,7 @@ function renderVehicleDetailLeft(vehicle) {
           return a.days - b.days;
         });
         notifications.forEach(notif => {
-            const typeLabel = notif.type === 'sigorta' ? 'Sigorta' : notif.type === 'kasko' ? 'Kasko' : 'Muayene';
+            const typeLabel = notif.type === 'sigorta' ? 'Sigorta' : notif.type === 'kasko' ? 'Kasko' : notif.type === 'egzoz' ? 'Egzos Muayenesi' : 'Muayene';
             const activeDateDisplay = formatDateForDisplay(new Date()) || '-';
             const notifKey = 'date|' + String(notif.vehicleId || '') + '|' + String(notif.type || '') + '|' + String(notif.date || '');
             const isRead = viewedKeys.indexOf(notifKey) !== -1;
@@ -6958,6 +7031,8 @@ function renderVehicleDetailLeft(vehicle) {
             let messageText = '';
             if (notif.days <= 0 && notif.type === 'kasko') {
                 messageText = `${notif.plate} Plakalı Taşıtın Kasko Süresi Bitmiştir.`;
+            } else if (notif.days <= 0 && notif.type === 'egzoz') {
+                messageText = `${notif.plate} Plakalı Taşıtın Egzos Muayenesi Süresi Bitmiştir.`;
             } else if (notif.days <= 0 && notif.type === 'muayene') {
                 messageText = `${notif.plate} Plakalı Taşıtın Muayene Süresi Bitmiştir.`;
             } else if (notif.days < 0) {
