@@ -294,6 +294,41 @@ window.formatAdSoyad = function(str) {
   return typeof window.toTitleCase === 'function' ? window.toTitleCase(t) : t;
 };
 
+window.medisaFitTextWithinBox = function(root, selector, options) {
+  var scope = root && typeof root.querySelectorAll === 'function' ? root : document;
+  if (!scope || !selector) return;
+  var opts = options || {};
+  var minFontSize = Number(opts.minFontSize);
+  var maxReduction = Number(opts.maxReduction);
+  var step = Number(opts.step) || 0.5;
+  var tolerance = Number(opts.tolerance);
+  if (!Number.isFinite(tolerance)) tolerance = 1;
+
+  requestAnimationFrame(function() {
+    var elements = scope.querySelectorAll(selector);
+    Array.prototype.forEach.call(elements, function(el) {
+      if (!el || !el.getClientRects || el.getClientRects().length === 0) return;
+
+      el.style.removeProperty('font-size');
+      var computed = window.getComputedStyle ? window.getComputedStyle(el) : null;
+      var baseSize = computed ? parseFloat(computed.fontSize) : 0;
+      if (!Number.isFinite(baseSize) || baseSize <= 0) return;
+
+      var reduction = Number.isFinite(maxReduction) && maxReduction > 0 ? maxReduction : 4;
+      var floorSize = Number.isFinite(minFontSize) && minFontSize > 0 ? minFontSize : Math.max(9.5, baseSize - reduction);
+      var currentSize = baseSize;
+
+      while (
+        currentSize > floorSize &&
+        (el.scrollWidth > el.clientWidth + tolerance || el.scrollHeight > el.clientHeight + tolerance)
+      ) {
+        currentSize = Math.max(floorSize, currentSize - step);
+        el.style.setProperty('font-size', currentSize + 'px', 'important');
+      }
+    });
+  });
+};
+
 /** Kolon state: localStorage'dan oku (key → JSON); yoksa default dön */
 window.loadColumnState = function(key, defaultVal) {
   try {
@@ -608,12 +643,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Lazy modül asset sürümleri — tek nesne; index.html içindeki style-core ?v= ile tasitlar sürümü uyumlu kalmalı
 var MEDISA_MODULE_VERSIONS = {
-  tasitlar: '20260422.3',
+  tasitlar: '20260422.5',
   raporlar: '20260406.18',
   kayitJs: '20260421.4',
   kayitCss: '20260422.1',
-  ayarlarJs: '20260421.1',
-  ayarlarCss: '20260422.1'
+  ayarlarJs: '20260422.1',
+  ayarlarCss: '20260422.2'
 };
 window.MEDISA_MODULE_VERSIONS = MEDISA_MODULE_VERSIONS;
 var TASITLAR_MODULE_VERSION = MEDISA_MODULE_VERSIONS.tasitlar;
