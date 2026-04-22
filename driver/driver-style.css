@@ -1236,6 +1236,32 @@ body.dashboard-page {
 }
 
 /* Km (veya tek aksiyon) açıkken sadece o grubu göster */
+.driver-egzoz-muayene-check {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 4px 0 6px;
+  color: var(--form-label-color, #ffffff);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.25;
+  cursor: pointer;
+  user-select: none;
+}
+.driver-egzoz-muayene-check input[type="checkbox"] {
+  width: 15px;
+  height: 15px;
+  margin: 0;
+  accent-color: var(--theme-color);
+  flex: 0 0 auto;
+}
+.driver-egzoz-date-wrap {
+  display: none;
+}
+.driver-egzoz-date-wrap.driver-egzoz-date-visible {
+  display: block;
+}
+
 .driver-action-area-inner.driver-km-open .driver-action-group {
   display: none;
 }

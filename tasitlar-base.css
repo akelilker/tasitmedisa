@@ -141,6 +141,40 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
   min-width: 165px !important;
   box-sizing: border-box !important;
 }
+#dinamik-olay-modal .egzoz-olay-toggle {
+  width: 390px;
+  max-width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--form-label-color);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.25;
+  cursor: pointer;
+  user-select: none;
+}
+#dinamik-olay-modal .egzoz-olay-toggle input[type="checkbox"] {
+  width: 15px;
+  height: 15px;
+  margin: 0;
+  accent-color: var(--theme-color);
+  flex: 0 0 auto;
+}
+#dinamik-olay-modal .egzoz-olay-date-wrapper {
+  display: none;
+}
+#dinamik-olay-modal .egzoz-olay-date-wrapper.egzoz-date-visible {
+  display: block;
+}
+#dinamik-olay-modal #muayene-egzoz-tarih {
+  width: calc((100% - 16px) / 2) !important;
+  max-width: calc((100% - 16px) / 2) !important;
+  min-width: min(140px, calc((100% - 16px) / 2)) !important;
+  box-sizing: border-box !important;
+}
 
 /* Olay Ekle: tarih satırı — input, etiket div'inin doğrudan çocuğu (modal-body > #dinamik-olay-form-icerik > sarmalayıcı > satır > input) */
 .olay-ekle-modal .modal-body div:has(> input.olay-tarih-input),
