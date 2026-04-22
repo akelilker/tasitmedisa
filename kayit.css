@@ -782,7 +782,9 @@ textarea.notes-auto-expand {
 }
 
 .egzoz-dialog-date-field .form-input {
+    display: block;
     width: 180px;
+    margin: 0 auto;
     text-align: center;
 }
 
