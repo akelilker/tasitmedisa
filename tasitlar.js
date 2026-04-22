@@ -1017,13 +1017,21 @@
       '.view-card .card-third-line',
       '.view-list .list-cell.list-brand',
       '.view-list .list-cell.list-branch',
-      '.view-list .list-cell.list-user',
-      '.view-list .list-cell.list-user .user-name-line1',
-      '.view-list .list-cell.list-user .user-name-line2',
       '#vehicle-detail-modal .detail-row-value'
     ].join(', '), {
       minFontSize: window.innerWidth <= 640 ? 8.5 : 9,
       maxReduction: 7,
+      step: 0.5
+    });
+
+    // Kullanıcı adında genel shrink agresif görünüyordu; burada sadece isim satırlarına
+    // daha yumuşak küçültme uygula ki kısa isimler normal boyutta kalsın.
+    window.medisaFitTextWithinBox(scope, [
+      '.view-list .list-cell.list-user .user-name-line1',
+      '.view-list .list-cell.list-user .user-name-line2'
+    ].join(', '), {
+      minFontSize: window.innerWidth <= 640 ? 9.5 : 11,
+      maxReduction: window.innerWidth <= 640 ? 3 : 2,
       step: 0.5
     });
   }
