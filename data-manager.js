@@ -221,9 +221,21 @@ function canUseDriverPanelTransition(sessionData) {
     return true;
 }
 
+function hasAssignedVehicleForSessionUser(sessionData) {
+    var session = sessionData && typeof sessionData === 'object' ? sessionData : getDefaultSession();
+    var userId = String((session.user && session.user.id) || '').trim();
+    if (!userId) return false;
+
+    var vehicles = Array.isArray(window.appData && window.appData.tasitlar) ? window.appData.tasitlar : [];
+    return vehicles.some(function(vehicle) {
+        return String((vehicle && vehicle.assignedUserId) || '').trim() === userId;
+    });
+}
+
 function canShowMainUserPanelLink(sessionData) {
     var session = sessionData && typeof sessionData === 'object' ? sessionData : getDefaultSession();
-    return hasMainAppAccessForSession(session);
+    if (!hasMainAppAccessForSession(session)) return false;
+    return hasAssignedVehicleForSessionUser(session);
 }
 
 function buildAuthHeaders(extraHeaders) {
