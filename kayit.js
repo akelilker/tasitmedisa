@@ -2453,6 +2453,12 @@
         vehicleModalEl.addEventListener('pointerdown', function(ev) {
           if (document.activeElement !== muayeneInput) return;
           if (ev.target === muayeneInput) return;
+          /* Takvim ikonuna (::webkit-calendar-picker-indicator) tıklanınca target bazen input değil;
+             composedPath içinde muayene input varsa yerel date picker açılsın, egzoz akışı tetiklenmesin */
+          var path = typeof ev.composedPath === 'function' ? ev.composedPath() : [];
+          for (var i = 0; i < path.length; i++) {
+            if (path[i] === muayeneInput) return;
+          }
           scheduleMuayeneEgzozPromptRobust(72);
         }, true);
       }
