@@ -399,9 +399,28 @@ const API_BASE = (function(){
   /** Tarih input değerini DD/MM/YYYY olarak göster (örn. 2025-12-01 -> 01/12/2025) */
   function formatDateDDMMYYYY(isoDate) {
     if (!isoDate || typeof isoDate !== 'string') return '';
-    var parts = isoDate.trim().split('-');
-    if (parts.length !== 3) return isoDate;
-    return parts[2] + '/' + parts[1] + '/' + parts[0];
+    var raw = isoDate.trim();
+    var parts = raw.split('-');
+    if (parts.length === 3) {
+      var p0 = (parts[0] || '').trim();
+      var p1 = (parts[1] || '').trim();
+      var p2 = (parts[2] || '').trim();
+      if (/^\d{4}$/.test(p0) && /^\d{1,2}$/.test(p1) && /^\d{1,2}$/.test(p2)) {
+        return String(p2).padStart(2, '0') + '/' + String(p1).padStart(2, '0') + '/' + p0;
+      }
+      if (/^\d{1,2}$/.test(p0) && /^\d{1,2}$/.test(p1) && /^\d{4}$/.test(p2)) {
+        return String(p0).padStart(2, '0') + '/' + String(p1).padStart(2, '0') + '/' + p2;
+      }
+      return raw;
+    }
+    var digits = raw.replace(/[^\d]/g, '');
+    if (/^\d{8}$/.test(digits)) {
+      var dd = digits.slice(0, 2);
+      var mm = digits.slice(2, 4);
+      var yyyy = digits.slice(4, 8);
+      return dd + '/' + mm + '/' + yyyy;
+    }
+    return raw;
   }
 
   /** Muayene bitiş tarihi hesapla (ana panel + driver_event.php ile senkron). */
