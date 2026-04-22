@@ -2510,12 +2510,30 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 /* Kullanıcı veri hücresi: sışmazsa en fazla 1.5pt küçülsün, olmazsa ikinci satıra insın */
 .view-list .list-cell.list-user {
     font-size: clamp(10px, 1.5vw, 12px) !important;
+    flex-wrap: wrap !important;
+    align-content: center !important;
+    column-gap: 3px !important;
+    row-gap: 0 !important;
     white-space: normal !important;
     word-break: keep-all !important;
     overflow-wrap: normal !important;
     hyphens: none !important;
-    overflow: visible !important;
-    line-height: 1.25 !important;
+    overflow: hidden !important;
+    line-height: 1.08 !important;
+}
+.view-list .list-cell.list-user .user-name-line1,
+.view-list .list-cell.list-user .user-name-line2 {
+    display: block !important;
+    flex: 0 1 auto !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    white-space: nowrap !important;
+    word-break: keep-all !important;
+    overflow-wrap: normal !important;
+    hyphens: none !important;
+    overflow: hidden !important;
+    text-overflow: clip !important;
+    line-height: 1.08 !important;
 }
 /* Kullanıcı sütun başlışı: dar kolonda küçülsün ve gerekirse satır kırılsın */
 .list-header-row .list-cell.list-user {

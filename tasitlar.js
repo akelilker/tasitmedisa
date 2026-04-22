@@ -800,7 +800,7 @@
     const userNameMap = {};
     for (let i = 0; i < users.length; i++) {
       const u = users[i];
-      userNameMap[String(u.id)] = String(u.name || u.fullName || '');
+      userNameMap[String(u.id)] = String(u.name || u.isim || u.fullName || '');
     }
 
     const compactVehicleState = vehicles.map(function(v) {
@@ -1035,8 +1035,8 @@
       '.view-list .list-cell.list-user .user-name-line1',
       '.view-list .list-cell.list-user .user-name-line2'
     ].join(', '), {
-      minFontSize: window.innerWidth <= 640 ? 9.5 : 11,
-      maxReduction: window.innerWidth <= 640 ? 3 : 2,
+      minFontSize: window.innerWidth <= 640 ? 8.5 : 9,
+      maxReduction: window.innerWidth <= 640 ? 4 : 4,
       step: 0.5
     });
   }
@@ -1054,6 +1054,21 @@
   function formatBrandModel(str) { return (typeof window.formatBrandModel === 'function' ? window.formatBrandModel(str) : toTitleCase(str)); }
   function formatPlaka(str) { return (typeof window.formatPlaka === 'function' ? window.formatPlaka(str) : (str == null ? '-' : String(str))); }
   function formatAdSoyad(str) { return (typeof window.formatAdSoyad === 'function' ? window.formatAdSoyad(str) : str); }
+  function buildVehicleUserNameHtml(rawName) {
+    const userName = formatAdSoyad(rawName || '-');
+    const cleanName = String(userName || '-').trim();
+    if (!cleanName || cleanName === '-') return escapeHtml(cleanName || '-');
+
+    const parts = cleanName.split(/\s+/);
+    if (parts.length <= 1) {
+      return '<span class="user-name-line1 user-name-single" title="' + escapeHtml(cleanName) + '">' + escapeHtml(cleanName) + '</span>';
+    }
+
+    const surname = parts.pop();
+    const givenNames = parts.join(' ');
+    return '<span class="user-name-line1" title="' + escapeHtml(givenNames) + '">' + escapeHtml(givenNames) + '</span>' +
+      '<span class="user-name-line2" title="' + escapeHtml(surname) + '">' + escapeHtml(surname) + '</span>';
+  }
   function normalizeVehicleSearchText(value) {
     return String(value == null ? '' : value).toLocaleLowerCase('tr-TR').trim();
   }
@@ -2073,18 +2088,8 @@
                   break;
                 case 'user':
                   const assignedUser = v.assignedUserId ? userMap[String(v.assignedUserId)] : null;
-                  const userNameRaw = assignedUser?.name || v.tahsisKisi || '-';
-                  const userName = formatAdSoyad(userNameRaw);
-                  if (userName && userName !== '-') {
-                    const parts = String(userName).trim().split(/\s+/);
-                    const firstLine = parts[0] || '-';
-                    const secondLine = parts.slice(1).join(' ') || '';
-                    cellContent = secondLine
-                      ? '<span class="user-name-line1">' + escapeHtml(firstLine) + '</span><span class="user-name-line2">' + escapeHtml(secondLine) + '</span>'
-                      : escapeHtml(firstLine);
-                  } else {
-                    cellContent = escapeHtml(userName);
-                  }
+                  const userNameRaw = assignedUser?.name || assignedUser?.isim || assignedUser?.fullName || v.tahsisKisi || '-';
+                  cellContent = buildVehicleUserNameHtml(userNameRaw);
                   cellClass = 'list-user';
                   break;
                 case 'branch':
@@ -2776,7 +2781,7 @@
       };
       const getUserNameRawForSort = function(v) {
           const assignedUser = v.assignedUserId ? userMapForSort[String(v.assignedUserId)] : null;
-          return (assignedUser && assignedUser.name) || v.tahsisKisi || '-';
+          return (assignedUser && (assignedUser.name || assignedUser.isim || assignedUser.fullName)) || v.tahsisKisi || '-';
       };
 
       sorted.sort((a, b) => {
