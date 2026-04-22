@@ -12,6 +12,14 @@
   let editingVehicleId = null;
   let editingVehicleVersion = 1; // Çakışma kontrolü (Phase 3) – düzenleme açıldığında kaydedilir
   const NOTES_MIN_HEIGHT_PX = 58; // Mobilde ~2.5 satır başlangıç yüksekliği
+  const vehicleEgzozPromptState = {
+    handledMuayeneDate: '',
+    pendingMuayeneDate: '',
+    promptOpen: false,
+    inputOpen: false,
+    resumeSave: false,
+    suppressPrompt: false
+  };
 
   function $(sel, root = document) { return root.querySelector(sel); }
   function $all(sel, root = document) { return Array.from(root.querySelectorAll(sel)); }
@@ -833,6 +841,7 @@
   function resetVehicleForm() {
     const modal = getModal();
     if (!modal) return;
+    resetVehicleEgzozPromptState();
 
     // Reset Inputs (tarih input'ları hariç - onları ayrı ayarlayacağız)
     $all('input.form-input, textarea.form-input', modal).forEach(input => {
@@ -970,6 +979,105 @@
       if (!visible) input.value = '';
       syncSingleDateInputVisibility(input);
     }
+  }
+
+  function resetVehicleEgzozPromptState() {
+    vehicleEgzozPromptState.handledMuayeneDate = '';
+    vehicleEgzozPromptState.pendingMuayeneDate = '';
+    vehicleEgzozPromptState.promptOpen = false;
+    vehicleEgzozPromptState.inputOpen = false;
+    vehicleEgzozPromptState.resumeSave = false;
+    vehicleEgzozPromptState.suppressPrompt = false;
+  }
+
+  function closeVehicleEgzozConfirmModal() {
+    const modal = document.getElementById('vehicle-egzoz-confirm-modal');
+    if (!modal) return;
+    modal.classList.remove('active');
+    setTimeout(function() {
+      modal.style.display = 'none';
+    }, 300);
+    vehicleEgzozPromptState.promptOpen = false;
+  }
+
+  function closeVehicleEgzozDateInputModal() {
+    const modal = document.getElementById('vehicle-egzoz-date-modal');
+    if (!modal) return;
+    modal.classList.remove('active');
+    setTimeout(function() {
+      modal.style.display = 'none';
+    }, 300);
+    vehicleEgzozPromptState.inputOpen = false;
+  }
+
+  function maybeResumeVehicleSaveAfterEgzozFlow() {
+    if (!vehicleEgzozPromptState.resumeSave) return;
+    vehicleEgzozPromptState.resumeSave = false;
+    setTimeout(function() {
+      if (typeof window.saveVehicleRecord === 'function') {
+        window.saveVehicleRecord();
+      }
+    }, 0);
+  }
+
+  function showVehicleEgzozConfirmModal(muayeneDate) {
+    const modal = document.getElementById('vehicle-egzoz-confirm-modal');
+    const messageEl = document.getElementById('vehicle-egzoz-confirm-message');
+    if (!modal) return false;
+    vehicleEgzozPromptState.pendingMuayeneDate = muayeneDate || '';
+    vehicleEgzozPromptState.promptOpen = true;
+    if (messageEl) {
+      messageEl.textContent = 'Egzos Muayenesi Aynı Tarihte Mi Yapıldı?';
+    }
+    modal.style.display = 'flex';
+    requestAnimationFrame(function() {
+      modal.classList.add('active');
+    });
+    return true;
+  }
+
+  function showVehicleEgzozDateModal(defaultDate) {
+    const modal = document.getElementById('vehicle-egzoz-date-modal');
+    const input = document.getElementById('vehicle-egzoz-date-modal-input');
+    if (!modal || !input) return false;
+    vehicleEgzozPromptState.inputOpen = true;
+    input.value = defaultDate || '';
+    input.classList.remove('field-error');
+    modal.style.display = 'flex';
+    requestAnimationFrame(function() {
+      modal.classList.add('active');
+      if (typeof setupDatePlaceholder === 'function') {
+        setupDatePlaceholder(input);
+      }
+      syncSingleDateInputVisibility(input);
+      setTimeout(function() {
+        input.focus();
+      }, 160);
+    });
+    return true;
+  }
+
+  function maybePromptVehicleEgzozFlow() {
+    const modal = getModal();
+    const muayeneInput = document.getElementById('vehicle-muayene-date');
+    const egzozCheckbox = document.getElementById('vehicle-egzoz-different');
+    const egzozInput = document.getElementById('vehicle-egzoz-date');
+    if (!modal || !muayeneInput || vehicleEgzozPromptState.suppressPrompt || vehicleEgzozPromptState.promptOpen || vehicleEgzozPromptState.inputOpen) {
+      return false;
+    }
+    const muayeneDate = muayeneInput.value || '';
+    if (!muayeneDate) {
+      vehicleEgzozPromptState.handledMuayeneDate = '';
+      vehicleEgzozPromptState.pendingMuayeneDate = '';
+      if (egzozCheckbox) egzozCheckbox.checked = false;
+      if (egzozInput) egzozInput.value = '';
+      syncEgzozMuayeneFields(modal);
+      return false;
+    }
+    if (vehicleEgzozPromptState.handledMuayeneDate === muayeneDate) {
+      return false;
+    }
+    return showVehicleEgzozConfirmModal(muayeneDate);
   }
 
   /**
@@ -1325,6 +1433,8 @@
     const egzozDateInput = document.getElementById('vehicle-egzoz-date');
     if (egzozCheckbox) egzozCheckbox.checked = egzozDifferent;
     if (egzozDateInput) egzozDateInput.value = egzozDifferent ? egzozDate : '';
+    vehicleEgzozPromptState.handledMuayeneDate = vehicle.muayeneDate || '';
+    vehicleEgzozPromptState.pendingMuayeneDate = '';
     syncEgzozMuayeneFields(modal);
     syncDateInputVisibility(modal);
 
@@ -1477,6 +1587,7 @@
     const year = yearEl?.value || '';
     const brandModel = normalizeBrandModelInput(brandModelEl?.value || '');
     const km = kmEl?.value.trim() || '';
+    const muayeneDate = $all('input[type="date"].form-input', modal)[2]?.value || '';
     
     const activeTypeBtn = $('.vehicle-type-btn.active', modal);
     const vehicleType = activeTypeBtn?.dataset.type || '';
@@ -1510,6 +1621,11 @@
       errors.push('Tramer Kaydı');
       if (tramerSection) tramerSection.classList.add('field-error');
     }
+    if (muayeneDate && vehicleEgzozPromptState.handledMuayeneDate !== muayeneDate) {
+      vehicleEgzozPromptState.resumeSave = true;
+      maybePromptVehicleEgzozFlow();
+      return;
+    }
     const egzozDifferent = !!(egzozDifferentEl && egzozDifferentEl.checked);
     const egzozMuayeneDate = egzozDifferent ? (egzozDateEl?.value || '') : '';
     if (egzozDifferent && !egzozMuayeneDate) {
@@ -1535,7 +1651,6 @@
     
     const sigortaDate = $all('input[type="date"].form-input', modal)[0]?.value || '';
     const kaskoDate = $all('input[type="date"].form-input', modal)[1]?.value || '';
-    const muayeneDate = $all('input[type="date"].form-input', modal)[2]?.value || '';
     
     const anahtar = $('.radio-group button.active', $(`.form-section-inline[data-section="anahtar"]`, modal))?.dataset.value || '';
     const anahtarNerede = document.getElementById('anahtar-nerede')?.value.trim() || '';
@@ -1857,6 +1972,67 @@
     pendingRecordData = null;
   };
 
+  window.confirmVehicleEgzozSameDate = function() {
+    const muayeneDate = vehicleEgzozPromptState.pendingMuayeneDate || (document.getElementById('vehicle-muayene-date')?.value || '');
+    const egzozCheckbox = document.getElementById('vehicle-egzoz-different');
+    const egzozInput = document.getElementById('vehicle-egzoz-date');
+    closeVehicleEgzozConfirmModal();
+    vehicleEgzozPromptState.suppressPrompt = true;
+    if (egzozCheckbox) egzozCheckbox.checked = false;
+    if (egzozInput) egzozInput.value = '';
+    syncEgzozMuayeneFields(getModal());
+    vehicleEgzozPromptState.suppressPrompt = false;
+    vehicleEgzozPromptState.handledMuayeneDate = muayeneDate;
+    vehicleEgzozPromptState.pendingMuayeneDate = '';
+    maybeResumeVehicleSaveAfterEgzozFlow();
+  };
+
+  window.confirmVehicleEgzozDifferentDate = function() {
+    const egzozCheckbox = document.getElementById('vehicle-egzoz-different');
+    const existingDate = document.getElementById('vehicle-egzoz-date')?.value || '';
+    closeVehicleEgzozConfirmModal();
+    vehicleEgzozPromptState.suppressPrompt = true;
+    if (egzozCheckbox) egzozCheckbox.checked = true;
+    syncEgzozMuayeneFields(getModal());
+    vehicleEgzozPromptState.suppressPrompt = false;
+    showVehicleEgzozDateModal(existingDate);
+  };
+
+  window.saveVehicleEgzozDateModal = function() {
+    const modalInput = document.getElementById('vehicle-egzoz-date-modal-input');
+    const egzozCheckbox = document.getElementById('vehicle-egzoz-different');
+    const egzozInput = document.getElementById('vehicle-egzoz-date');
+    if (!modalInput || !egzozCheckbox || !egzozInput) return;
+    const dateValue = modalInput.value || '';
+    if (!dateValue) {
+      modalInput.classList.add('field-error');
+      modalInput.focus();
+      return;
+    }
+    vehicleEgzozPromptState.suppressPrompt = true;
+    egzozCheckbox.checked = true;
+    egzozInput.value = dateValue;
+    syncEgzozMuayeneFields(getModal());
+    vehicleEgzozPromptState.suppressPrompt = false;
+    vehicleEgzozPromptState.handledMuayeneDate = vehicleEgzozPromptState.pendingMuayeneDate || (document.getElementById('vehicle-muayene-date')?.value || '');
+    vehicleEgzozPromptState.pendingMuayeneDate = '';
+    closeVehicleEgzozDateInputModal();
+    maybeResumeVehicleSaveAfterEgzozFlow();
+  };
+
+  window.cancelVehicleEgzozDateModal = function() {
+    vehicleEgzozPromptState.resumeSave = false;
+    vehicleEgzozPromptState.pendingMuayeneDate = '';
+    closeVehicleEgzozDateInputModal();
+  };
+
+  window.closeVehicleEgzozQuestionFlow = function() {
+    vehicleEgzozPromptState.resumeSave = false;
+    vehicleEgzozPromptState.pendingMuayeneDate = '';
+    closeVehicleEgzozConfirmModal();
+    closeVehicleEgzozDateInputModal();
+  };
+
   /**
    * Kayıt işlemini yapar (tescilTarihi ile)
    * 
@@ -2081,6 +2257,24 @@
         syncEgzozMuayeneFields(getModal());
       });
       syncEgzozMuayeneFields(getModal());
+    }
+
+    const muayeneInput = document.getElementById('vehicle-muayene-date');
+    if (muayeneInput) {
+      muayeneInput.addEventListener('change', function() {
+        maybePromptVehicleEgzozFlow();
+      });
+      muayeneInput.addEventListener('blur', function() {
+        setTimeout(function() {
+          maybePromptVehicleEgzozFlow();
+        }, 0);
+      });
+      muayeneInput.addEventListener('keydown', function(e) {
+        if (e.key !== 'Enter') return;
+        setTimeout(function() {
+          maybePromptVehicleEgzozFlow();
+        }, 0);
+      });
     }
 
     // Vehicle Type Selection

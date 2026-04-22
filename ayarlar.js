@@ -702,6 +702,8 @@
           isim: u.name || u.isim || '',
           kullanici_adi: u.kullanici_adi || '',
           sifre: u.sifre || '',
+          sifre_hash: u.sifre_hash || '',
+          sifre_guncellendi_at: u.sifre_guncellendi_at || '',
           telefon: u.phone || '',
           email: u.email || '',
           sube_id: sube_id,
