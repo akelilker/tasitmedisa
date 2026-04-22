@@ -399,9 +399,40 @@ const API_BASE = (function(){
   /** Tarih input değerini DD/MM/YYYY olarak göster (örn. 2025-12-01 -> 01/12/2025) */
   function formatDateDDMMYYYY(isoDate) {
     if (!isoDate || typeof isoDate !== 'string') return '';
-    var parts = isoDate.trim().split('-');
-    if (parts.length !== 3) return isoDate;
-    return parts[2] + '/' + parts[1] + '/' + parts[0];
+    function isValidDateParts(day, month, year) {
+      var d = parseInt(day, 10);
+      var m = parseInt(month, 10);
+      var y = parseInt(year, 10);
+      if (!d || !m || !y || m < 1 || m > 12) return false;
+      var dt = new Date(y, m - 1, d);
+      return dt.getFullYear() === y && dt.getMonth() === (m - 1) && dt.getDate() === d;
+    }
+    var raw = isoDate.trim();
+    var parts = raw.split('-');
+    if (parts.length === 3) {
+      var p0 = (parts[0] || '').trim();
+      var p1 = (parts[1] || '').trim();
+      var p2 = (parts[2] || '').trim();
+      if (/^\d{4}$/.test(p0) && /^\d{1,2}$/.test(p1) && /^\d{1,2}$/.test(p2) && isValidDateParts(p2, p1, p0)) {
+        return String(p2).padStart(2, '0') + '/' + String(p1).padStart(2, '0') + '/' + p0;
+      }
+      if (/^\d{1,2}$/.test(p0) && /^\d{1,2}$/.test(p1) && /^\d{4}$/.test(p2) && isValidDateParts(p0, p1, p2)) {
+        return String(p0).padStart(2, '0') + '/' + String(p1).padStart(2, '0') + '/' + p2;
+      }
+      return raw;
+    }
+    var digits = raw.replace(/[^\d]/g, '');
+    if (/^\d{8}$/.test(digits)) {
+      var dd = digits.slice(0, 2);
+      var mm = digits.slice(2, 4);
+      var yyyy = digits.slice(4, 8);
+      if (isValidDateParts(dd, mm, yyyy)) return dd + '/' + mm + '/' + yyyy;
+      var yyyyAlt = digits.slice(0, 4);
+      var mmAlt = digits.slice(4, 6);
+      var ddAlt = digits.slice(6, 8);
+      if (isValidDateParts(ddAlt, mmAlt, yyyyAlt)) return ddAlt + '/' + mmAlt + '/' + yyyyAlt;
+    }
+    return raw;
   }
 
   /** Muayene bitiş tarihi hesapla (ana panel + driver_event.php ile senkron). */
