@@ -135,27 +135,6 @@
     }
   }
 
-  function parkVehicleDatePickerNative(nativeInput) {
-    if (!nativeInput) return;
-    nativeInput.style.left = '-9999px';
-    nativeInput.style.top = '-9999px';
-  }
-
-  function positionVehicleDatePickerNative(nativeInput, anchorEl) {
-    if (!nativeInput) return;
-    var rect = anchorEl && typeof anchorEl.getBoundingClientRect === 'function'
-      ? anchorEl.getBoundingClientRect()
-      : null;
-    if (!rect || rect.width <= 0 || rect.height <= 0) {
-      parkVehicleDatePickerNative(nativeInput);
-      return;
-    }
-    var left = Math.round(rect.left + (rect.width / 2));
-    var top = Math.round(rect.top + (rect.height / 2));
-    nativeInput.style.left = left + 'px';
-    nativeInput.style.top = top + 'px';
-  }
-
   function createVehicleDatePickerBridge(input) {
     if (!input || !input.matches(VEHICLE_DATE_INPUT_SELECTOR)) return;
     if (input.dataset.datePickerBridge === 'true') return;
@@ -185,11 +164,9 @@
     nativeInput.setAttribute('aria-label', 'Tarih seç');
 
     slot.appendChild(trigger);
+    slot.appendChild(nativeInput);
     field.appendChild(slot);
-    /* Native'i modal satırından ayır — slot içinde kaldığında Chromium odak/showPicker ile beyaz kutu taşması çizer */
-    document.body.appendChild(nativeInput);
     input._vehicleDatePickerNative = nativeInput;
-    parkVehicleDatePickerNative(nativeInput);
 
     // #region agent log
     sendVehicleDateDebugLog('kayit.js:createVehicleDatePickerBridge','bridge-created','H1',{
@@ -210,8 +187,6 @@
       if (input.disabled || nativeInput.disabled) return;
 
       syncVehicleDatePickerNativeValue(input, nativeInput);
-      positionVehicleDatePickerNative(nativeInput, trigger);
-      nativeInput.getBoundingClientRect();
 
       // #region agent log
       sendVehicleDateDebugLog('kayit.js:openNativePicker','picker-open-attempt','H2',{
@@ -268,10 +243,6 @@
       syncVehicleDatePickerNativeValue(input, nativeInput);
     });
 
-    trigger.addEventListener('pointerdown', function(ev) {
-      ev.preventDefault();
-      ev.stopPropagation();
-    }, true);
     trigger.addEventListener('click', openNativePicker);
 
     nativeInput.addEventListener('pointerdown', function(ev) {
@@ -288,13 +259,9 @@
       });
       // #endregion
       syncVehicleDatePickerTextValue(input, nativeInput);
-      parkVehicleDatePickerNative(nativeInput);
     });
     nativeInput.addEventListener('input', function() {
       syncVehicleDatePickerTextValue(input, nativeInput);
-    });
-    nativeInput.addEventListener('blur', function() {
-      parkVehicleDatePickerNative(nativeInput);
     });
 
     syncVehicleDatePickerNativeValue(input, nativeInput);
