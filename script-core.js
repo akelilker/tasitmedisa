@@ -148,15 +148,45 @@ window.checkDateWarnings = function(dateString) {
 window.formatDateShort = function(dateStr) {
   if (!dateStr) return '';
   function pad2(n) { var s = String(n); return s.length >= 2 ? s : '0' + s; }
+  function isValidDateParts(day, month, year) {
+    var d = parseInt(day, 10);
+    var m = parseInt(month, 10);
+    var y = parseInt(year, 10);
+    if (!d || !m || !y || m < 1 || m > 12) return false;
+    var dt = new Date(y, m - 1, d);
+    return dt.getFullYear() === y && dt.getMonth() === (m - 1) && dt.getDate() === d;
+  }
   if (dateStr instanceof Date) {
     var d = dateStr;
     if (isNaN(d.getTime())) return '';
     return pad2(d.getDate()) + '/' + pad2(d.getMonth() + 1) + '/' + d.getFullYear();
   }
-  var str = String(dateStr);
+  var str = String(dateStr).trim();
+  var digits = str.replace(/[^\d]/g, '');
+  if (digits.length === 8) {
+    var dd = digits.slice(0, 2);
+    var mm = digits.slice(2, 4);
+    var yyyy = digits.slice(4, 8);
+    if (isValidDateParts(dd, mm, yyyy)) return dd + '/' + mm + '/' + yyyy;
+
+    var yyyyAlt = digits.slice(0, 4);
+    var mmAlt = digits.slice(4, 6);
+    var ddAlt = digits.slice(6, 8);
+    if (isValidDateParts(ddAlt, mmAlt, yyyyAlt)) return ddAlt + '/' + mmAlt + '/' + yyyyAlt;
+  }
   if (str.indexOf('-') !== -1) {
     var parts = str.split('-');
-    if (parts.length === 3) return parts[2] + '/' + parts[1] + '/' + parts[0];
+    if (parts.length === 3) {
+      var p0 = (parts[0] || '').trim();
+      var p1 = (parts[1] || '').trim();
+      var p2 = (parts[2] || '').trim();
+      if (p0.length === 4 && p1.length <= 2 && p2.length <= 2 && isValidDateParts(p2, p1, p0)) {
+        return pad2(p2) + '/' + pad2(p1) + '/' + p0;
+      }
+      if (p2.length === 4 && p0.length <= 2 && p1.length <= 2 && isValidDateParts(p0, p1, p2)) {
+        return pad2(p0) + '/' + pad2(p1) + '/' + p2;
+      }
+    }
   }
   if (str.indexOf('/') !== -1) return str;
   return str;
