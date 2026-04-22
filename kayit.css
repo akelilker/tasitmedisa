@@ -202,6 +202,8 @@ textarea.form-input:focus {
 .egzoz-dialog-date-field .vehicle-date-field {
     position: relative;
     width: 100%;
+    overflow: hidden;
+    isolation: isolate;
 }
 
 #vehicle-modal input.form-input[data-date-input="vehicle"],
@@ -223,6 +225,8 @@ textarea.form-input:focus {
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
+    pointer-events: auto;
 }
 
 .vehicle-date-picker-trigger {
@@ -245,18 +249,40 @@ textarea.form-input:focus {
     pointer-events: none;
 }
 
-.vehicle-date-picker-native {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    opacity: 0;
-    pointer-events: none;
-    border: 0;
-    padding: 0;
-    margin: 0;
-    clip: rect(0 0 0 0);
-    clip-path: inset(50%);
-    overflow: hidden;
+/* Body'ye taşınan gizli native date — satır içinde konumlanmaz, taşma yok */
+input.vehicle-date-picker-native {
+    position: fixed !important;
+    left: -9999px !important;
+    top: 0 !important;
+    width: 1px !important;
+    height: 1px !important;
+    max-width: 1px !important;
+    max-height: 1px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    color: transparent !important;
+    -webkit-text-fill-color: transparent !important;
+    accent-color: transparent !important;
+    clip: rect(0, 0, 0, 0) !important;
+    clip-path: inset(50%) !important;
+    overflow: hidden !important;
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    cursor: default !important;
+    z-index: -1 !important;
+}
+
+input.vehicle-date-picker-native:focus,
+input.vehicle-date-picker-native:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+    border: none !important;
 }
 
 .vehicle-date-field > input:disabled ~ .vehicle-date-picker-slot {
