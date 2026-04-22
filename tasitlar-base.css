@@ -628,6 +628,22 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
   box-shadow: 0 0 0 1000px #0d131f inset !important;
 }
 
+/* Olay Ekle: Kaydet/Vazgeç Tab/klavye odağı — native beyaz outline kaldır, tema çerçevesi */
+.olay-ekle-modal .modal-body .universal-btn-save:focus,
+.olay-ekle-modal .modal-body .universal-btn-save:focus-visible {
+  outline: none !important;
+  border-color: rgba(74, 222, 128, 0.72) !important;
+  box-shadow: 0 0 0 1px rgba(74, 222, 128, 0.35) !important;
+  -webkit-text-stroke: 0 !important;
+}
+.olay-ekle-modal .modal-body .universal-btn-cancel:focus,
+.olay-ekle-modal .modal-body .universal-btn-cancel:focus-visible {
+  outline: none !important;
+  border-color: rgba(var(--theme-color-rgb), 0.82) !important;
+  box-shadow: 0 0 0 1px rgba(var(--theme-color-rgb), 0.38) !important;
+  -webkit-text-stroke: 0 !important;
+}
+
 /* Olay Ekle modalları: footer+gap sadece overlay'de rezerve (style-core .modal-overlay bottom); container overlay'i doldurur, çift rezervasyon yok */
 .olay-ekle-modal .modal-container {
     max-width: 500px !important;

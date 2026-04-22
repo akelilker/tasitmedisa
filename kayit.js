@@ -1071,6 +1071,7 @@
   }
 
   var vehicleMuayeneEgzozPromptTimer = null;
+  var vehicleMuayeneEgzozLateTimer = null;
   function scheduleMaybePromptVehicleEgzozFlow(delayMs) {
     var delay = Number.isFinite(delayMs) && delayMs >= 0 ? delayMs : 48;
     if (vehicleMuayeneEgzozPromptTimer) clearTimeout(vehicleMuayeneEgzozPromptTimer);
@@ -1089,6 +1090,19 @@
         }
       });
     }, delay);
+  }
+
+  /** type=date elle girildiğinde value commit gecikebilir; ana + gecikmeli ikinci kontrol */
+  function scheduleMuayeneEgzozPromptRobust(primaryDelayMs) {
+    var d = Number.isFinite(primaryDelayMs) && primaryDelayMs >= 0 ? primaryDelayMs : 64;
+    scheduleMaybePromptVehicleEgzozFlow(d);
+    if (vehicleMuayeneEgzozLateTimer) clearTimeout(vehicleMuayeneEgzozLateTimer);
+    vehicleMuayeneEgzozLateTimer = setTimeout(function() {
+      vehicleMuayeneEgzozLateTimer = null;
+      requestAnimationFrame(function() {
+        maybePromptVehicleEgzozFlow();
+      });
+    }, 280);
   }
 
   function maybePromptVehicleEgzozFlow() {
@@ -2302,21 +2316,32 @@
     }
 
     const muayeneInput = document.getElementById('vehicle-muayene-date');
+    const vehicleModalEl = getModal();
     if (muayeneInput) {
       muayeneInput.addEventListener('change', function() {
-        scheduleMaybePromptVehicleEgzozFlow(16);
+        scheduleMaybePromptVehicleEgzozFlow(24);
       });
       muayeneInput.addEventListener('input', function() {
-        scheduleMaybePromptVehicleEgzozFlow(64);
+        scheduleMuayeneEgzozPromptRobust(48);
       });
       muayeneInput.addEventListener('blur', function() {
-        scheduleMaybePromptVehicleEgzozFlow(120);
+        scheduleMuayeneEgzozPromptRobust(96);
+      });
+      muayeneInput.addEventListener('focusout', function() {
+        scheduleMuayeneEgzozPromptRobust(112);
       });
       muayeneInput.addEventListener('keydown', function(e) {
         if (e.key === 'Enter' || e.key === 'Tab') {
-          scheduleMaybePromptVehicleEgzozFlow(e.key === 'Tab' ? 140 : 100);
+          scheduleMuayeneEgzozPromptRobust(e.key === 'Tab' ? 130 : 100);
         }
       });
+      if (vehicleModalEl) {
+        vehicleModalEl.addEventListener('pointerdown', function(ev) {
+          if (document.activeElement !== muayeneInput) return;
+          if (ev.target === muayeneInput) return;
+          scheduleMuayeneEgzozPromptRobust(72);
+        }, true);
+      }
     }
 
     // Vehicle Type Selection
