@@ -359,15 +359,15 @@
                                 <label class="form-label" for="vehicle-muayene-date">Muayene Bitiş Tarihi</label>
                                 <input type="date" id="vehicle-muayene-date" class="form-input" inputmode="numeric">
                             </div>
-                            <div class="form-section egzoz-toggle-section">
+                            <div class="form-section egzoz-toggle-section u-hidden" aria-hidden="true">
                                 <label class="egzoz-muayene-check" for="vehicle-egzoz-different">
-                                    <input type="checkbox" id="vehicle-egzoz-different">
+                                    <input type="checkbox" id="vehicle-egzoz-different" tabindex="-1">
                                     <span>Egzos Muayenesi Farklı Tarih İse İşaretleyin..</span>
                                 </label>
                             </div>
-                            <div class="form-section egzoz-date-section" id="vehicle-egzoz-date-section">
+                            <div class="form-section egzoz-date-section u-hidden" id="vehicle-egzoz-date-section" aria-hidden="true">
                                 <label class="form-label" for="vehicle-egzoz-date">Egzos Muayenesi Bitiş Tarihi</label>
-                                <input type="date" id="vehicle-egzoz-date" class="form-input" inputmode="numeric" disabled>
+                                <input type="date" id="vehicle-egzoz-date" class="form-input" inputmode="numeric" disabled tabindex="-1">
                             </div>
                             <div class="form-section-inline" data-section="anahtar">
                                 <label class="form-label" for="yedek-anahtar-var">Yedek Anahtar</label>
@@ -878,6 +878,51 @@
                     <div class="universal-btn-group">
                         <button type="button" class="universal-btn-save" onclick="event.stopPropagation(); saveTescilTarihi();">Kaydet</button>
                         <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); cancelTescilTarihi();">Vazgeç</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="vehicle-egzoz-confirm-modal" class="modal-overlay ayarlar-modal-overlay">
+            <div class="modal-container" style="max-width: 400px; height: 190px;" onclick="event.stopPropagation();">
+                <div class="modal-header">
+                    <h2>EGZOS MUAYENESİ</h2>
+                    <button class="modal-close" onclick="closeVehicleEgzozQuestionFlow()">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="modal-body" onclick="event.stopPropagation();">
+                    <p id="vehicle-egzoz-confirm-message" style="color: var(--form-label-color); font-size: 14px; line-height: 1.6; margin-bottom: 20px; text-align: center;">Egzos Muayenesi Aynı Tarihte Mi Yapıldı?</p>
+                    <div class="universal-btn-group">
+                        <button type="button" class="universal-btn-save" onclick="event.stopPropagation(); confirmVehicleEgzozSameDate();">Evet</button>
+                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); confirmVehicleEgzozDifferentDate();">Hayır</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="vehicle-egzoz-date-modal" class="modal-overlay ayarlar-modal-overlay">
+            <div class="modal-container" style="max-width: 400px; height: 220px;" onclick="event.stopPropagation();">
+                <div class="modal-header">
+                    <h2>EGZOS MUAYENESİ TARİHİ</h2>
+                    <button class="modal-close" onclick="cancelVehicleEgzozDateModal()">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="modal-body" onclick="event.stopPropagation();">
+                    <div style="text-align: center; margin-bottom: 16px;">
+                        <label for="vehicle-egzoz-date-modal-input" style="color: var(--form-label-color); font-size: 14px; display: block; margin-bottom: 8px;">Egzos Muayenesi Bitiş Tarihi</label>
+                        <input type="date" id="vehicle-egzoz-date-modal-input" class="form-input" inputmode="numeric" style="width: 180px; text-align: center;">
+                    </div>
+                    <div class="universal-btn-group">
+                        <button type="button" class="universal-btn-save" onclick="event.stopPropagation(); saveVehicleEgzozDateModal();">Kaydet</button>
+                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); cancelVehicleEgzozDateModal();">Vazgeç</button>
                     </div>
                 </div>
             </div>
