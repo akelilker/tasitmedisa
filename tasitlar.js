@@ -751,7 +751,7 @@
   let currentView = 'dashboard'; // 'dashboard' | 'list'
   let activeBranchId = null; // null = dashboard, 'all' = tümü, 'id' = şube
   let viewMode = 'card'; 
-  let sortColumn = null; // 'year', 'brand', 'km', 'type', 'branch'
+  let sortColumn = null; // 'year', 'brand', 'plate', 'km', 'type', 'transmission', 'user', 'branch', ...
   let sortDirection = 'asc'; // 'asc' | 'desc'
   let currentFilter = 'az'; // 'az' | 'newest' | 'oldest' | 'type' (liste filtre dropdown)
   let transmissionFilter = ''; // '' | 'otomatik' | 'manuel' (şanzıman filtresi)
@@ -1015,12 +1015,17 @@
       '.branch-name',
       '.view-card .card-brand-model',
       '.view-card .card-third-line',
-      '.view-list .list-cell.list-brand',
       '.view-list .list-cell.list-branch',
       '#vehicle-detail-modal .detail-row-value'
     ].join(', '), {
       minFontSize: window.innerWidth <= 640 ? 8.5 : 9,
       maxReduction: 7,
+      step: 0.5
+    });
+
+    window.medisaFitTextWithinBox(scope, '.view-list .list-cell.list-brand', {
+      minFontSize: window.innerWidth <= 640 ? 11.5 : 12,
+      maxReduction: 2.5,
       step: 0.5
     });
 
@@ -2757,9 +2762,21 @@
               branchNameCache[String(branches[i].id)] = (branches[i].name || '').toLowerCase();
           }
       }
+      const userMapForSort = {};
+      if (sortColumn === 'user') {
+          const users = window.appData && Array.isArray(window.appData.users) ? window.appData.users : [];
+          for (let ui = 0; ui < users.length; ui++) {
+              const u = users[ui];
+              userMapForSort[String(u.id)] = u;
+          }
+      }
       const getBranchName = (branchId) => {
           if (!branchId) return 'zzz_tahsis_edilmemis';
           return branchNameCache[String(branchId)] || 'zzz_unknown';
+      };
+      const getUserNameRawForSort = function(v) {
+          const assignedUser = v.assignedUserId ? userMapForSort[String(v.assignedUserId)] : null;
+          return (assignedUser && assignedUser.name) || v.tahsisKisi || '-';
       };
 
       sorted.sort((a, b) => {
@@ -2800,6 +2817,19 @@
                   aVal = getBranchName(a.branchId);
                   bVal = getBranchName(b.branchId);
                   return aVal.localeCompare(bVal) * dir;
+
+              case 'user': {
+                  const rawA = getUserNameRawForSort(a);
+                  const rawB = getUserNameRawForSort(b);
+                  const emptyA = !String(rawA).trim() || String(rawA).trim() === '-';
+                  const emptyB = !String(rawB).trim() || String(rawB).trim() === '-';
+                  if (emptyA && emptyB) return 0;
+                  if (emptyA) return 1;
+                  if (emptyB) return -1;
+                  const sortA = String(formatAdSoyad(rawA)).trim();
+                  const sortB = String(formatAdSoyad(rawB)).trim();
+                  return sortA.localeCompare(sortB, 'tr', { sensitivity: 'base' }) * dir;
+              }
                   
               default:
                   return 0;
