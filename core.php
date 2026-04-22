@@ -666,6 +666,10 @@ function medisaComputeDriverDashboard($user, $data) {
         return false;
     }
 
+    if (in_array($role, ['sube_yonetici', 'genel_yonetici'], true)) {
+        return true;
+    }
+
     return medisaUserHasAssignedVehicle($data, $userId);
 }
 
