@@ -198,14 +198,37 @@ textarea.form-input:focus {
     outline: none;
 }
 
-#vehicle-modal input[type="date"].form-input,
-.egzoz-dialog-date-field input[type="date"].form-input {
-    caret-color: rgba(212, 0, 0, 0.75);
+#vehicle-modal input.form-input[data-date-input="vehicle"],
+.egzoz-dialog-date-field input.form-input[data-date-input="vehicle"] {
+    color: #a0aec0;
+    -webkit-text-fill-color: #a0aec0;
+    text-align: center;
+    caret-color: rgba(212, 0, 0, 0.82);
+    padding: 0 28px 0 12px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%2388919f' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8 2v4'/%3E%3Cpath d='M16 2v4'/%3E%3Crect x='3' y='4' width='18' height='18' rx='2'/%3E%3Cpath d='M3 10h18'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 7px center;
+    background-size: 16px 16px;
 }
 
-#vehicle-modal input[type="date"].form-input:focus,
-.egzoz-dialog-date-field input[type="date"].form-input:focus {
-    caret-color: rgba(212, 0, 0, 0.9);
+#vehicle-modal input.form-input[data-date-input="vehicle"]::placeholder,
+.egzoz-dialog-date-field input.form-input[data-date-input="vehicle"]::placeholder {
+    color: #6c757d;
+    opacity: 1;
+    -webkit-text-fill-color: #6c757d;
+}
+
+#vehicle-modal input.form-input[data-date-input="vehicle"]:not(.has-value):not(:focus),
+.egzoz-dialog-date-field input.form-input[data-date-input="vehicle"]:not(.has-value):not(:focus) {
+    color: #6c757d;
+    -webkit-text-fill-color: #6c757d;
+}
+
+#vehicle-modal input.form-input[data-date-input="vehicle"]::selection,
+.egzoz-dialog-date-field input.form-input[data-date-input="vehicle"]::selection {
+    background: rgba(212, 0, 0, 0.24);
+    color: #f2f5f8;
+    -webkit-text-fill-color: #f2f5f8;
 }
 
 /* Zorunlu Alan Hata Stili - Kırmızı Çerçeve */
@@ -499,50 +522,9 @@ input[type="date"].form-input {
     padding-left: 12px !important;
 }
 
-/* Kayıt modalı tarih inputları: metin yatay+dikey ortada, takvim ikonu sağda */
-#vehicle-modal input[type="date"].form-input::-webkit-datetime-edit,
-#vehicle-modal input[type="date"].form-input::-webkit-datetime-edit-fields-wrapper {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    height: 100% !important;
-    min-height: 100% !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    line-height: inherit !important;
-    text-align: center !important;
-}
 /* Sağ kolon: seçili değilken native placeholder kullan (dikey hiza tek kaynaktan) – overlay kapat */
 #vehicle-modal .modal-column-right .date-placeholder {
     display: none !important;
-}
-#vehicle-modal .modal-column-right input[type="date"]:not(.has-value):not(:focus)::-webkit-datetime-edit {
-    color: #6c757d !important; /* Native gg.aa.yyyy görünür ve ortada */
-}
-#vehicle-modal .modal-column-right input[type="date"].has-value,
-#vehicle-modal .modal-column-right input[type="date"]:focus {
-    color: #a0aec0 !important;
-    -webkit-text-fill-color: #a0aec0 !important;
-}
-#vehicle-modal .modal-column-right input[type="date"].has-value::-webkit-datetime-edit,
-#vehicle-modal .modal-column-right input[type="date"].has-value::-webkit-datetime-edit-fields-wrapper,
-#vehicle-modal .modal-column-right input[type="date"]:focus::-webkit-datetime-edit,
-#vehicle-modal .modal-column-right input[type="date"]:focus::-webkit-datetime-edit-fields-wrapper {
-    color: #a0aec0 !important;
-    -webkit-text-fill-color: #a0aec0 !important;
-}
-#vehicle-modal .modal-column-right input[type="date"]:not(.has-value):not(:focus)::-webkit-datetime-edit-fields-wrapper,
-#vehicle-modal .modal-column-right input[type="date"]:not(.has-value):not(:focus)::-webkit-datetime-edit {
-    color: #6c757d !important;
-    -webkit-text-fill-color: #6c757d !important;
-}
-#vehicle-modal input[type="date"].form-input::-webkit-calendar-picker-indicator {
-    position: absolute !important;
-    right: 3px !important;
-    top: 50% !important;
-    transform: translateY(-50%) !important;
-    margin: 0 !important;
-    cursor: pointer !important;
 }
 
 /* Kayıt modalı: tüm placeholder ve tarih metinleri soluk (tek palet) */
@@ -1513,7 +1495,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     .modal-body input[type="date"].form-input::-webkit-datetime-edit-fields-wrapper { padding: 0; }
     
     /* Sağ kolon tarih inputları: yükseklik hizalı (27px), gg.aa.yyyy kutudan taşmasın */
-    #vehicle-modal .modal-column-right input[type="date"].form-input { 
+    #vehicle-modal .modal-column-right input.form-input[data-date-input="vehicle"] {
         height: 27px !important;
         font-size: 11px !important;
         width: 100% !important;
@@ -1525,8 +1507,6 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         overflow: hidden;
         box-sizing: border-box;
     }
-    #vehicle-modal .modal-column-right input[type="date"].form-input::-webkit-datetime-edit { font-size: 11px !important; max-width: 100%; box-sizing: border-box; line-height: 1.2; }
-    #vehicle-modal .modal-column-right input[type="date"].form-input::-webkit-datetime-edit-fields-wrapper { padding: 0 2px; box-sizing: border-box; }
     .modal-body input[type="date"].form-input::-webkit-calendar-picker-indicator { right: 3px !important; transform: translateY(-50%) !important; }
     .date-placeholder { left: 50%; transform: translateX(-50%); font-size: 11px; text-align: center; }
     
@@ -1646,11 +1626,6 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-body .modal-column-left .form-section input.form-input:not([type="date"]) {
         height: 24px !important;
     }
-    #vehicle-modal .modal-body input[type="date"].form-input {
-        height: 22px !important;
-        padding-top: 4px !important;
-        padding-bottom: 4px !important;
-    }
     #vehicle-modal .modal-body textarea.form-input {
         padding-top: 5px !important;
         padding-bottom: 5px !important;
@@ -1662,13 +1637,10 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         padding-top: 5px !important;
         padding-bottom: 5px !important;
     }
-    #vehicle-modal .modal-body .modal-column-right input[type="date"].form-input {
+    #vehicle-modal .modal-body .modal-column-right input.form-input[data-date-input="vehicle"] {
         height: 25px !important;
         padding-top: 5px !important;
         padding-bottom: 5px !important;
-        font-size: 12px !important;
-    }
-    #vehicle-modal .modal-body .modal-column-right input[type="date"].form-input::-webkit-datetime-edit {
         font-size: 12px !important;
     }
     #vehicle-modal .modal-body .modal-column-right textarea.form-input {
@@ -1748,7 +1720,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         margin-bottom: 1px !important;
     }
     /* Sağ grid: tarih inputları ile etiket arası +1px boşluk (Sigorta, Kasko, Muayene) */
-    #vehicle-modal .modal-body .modal-column-right .form-section:has(input[type="date"]) .form-label {
+    #vehicle-modal .modal-body .modal-column-right .form-section:has(input.form-input[data-date-input="vehicle"]) .form-label {
         margin-bottom: 2px !important;
     }
     /* Sağ grid: Sigorta hariç etiketlerden önce 1px (first-child 0) */
@@ -2241,8 +2213,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         height: 28px !important;
     }
     #vehicle-modal .modal-body .modal-column-right .form-input:not(textarea),
-    #vehicle-modal .modal-body .modal-column-right select,
-    #vehicle-modal .modal-body .modal-column-right input[type="date"].form-input {
+    #vehicle-modal .modal-body .modal-column-right select {
         height: 29px !important;
     }
     #vehicle-modal .modal-body .radio-btn,

@@ -69,6 +69,53 @@
 
   function readBranches() { return (typeof window.getMedisaBranches === 'function' ? window.getMedisaBranches() : null) || []; }
   function readVehicles() { return (typeof window.getMedisaVehicles === 'function' ? window.getMedisaVehicles() : null) || []; }
+  const VEHICLE_DATE_INPUT_SELECTOR = 'input.form-input[data-date-input="vehicle"]';
+
+  function getVehicleDateInputs(root) {
+    return $all(VEHICLE_DATE_INPUT_SELECTOR, root || document);
+  }
+
+  function formatIsoForVehicleDateInput(value) {
+    const iso = parseVehicleDateRawToIso(value);
+    if (!iso) return '';
+    const parts = iso.split('-');
+    return parts.length === 3 ? `${parts[2]}.${parts[1]}.${parts[0]}` : '';
+  }
+
+  function setVehicleDateInputValue(input, value) {
+    if (!input) return;
+    input.value = formatIsoForVehicleDateInput(value);
+    syncSingleDateInputVisibility(input);
+  }
+
+  function formatVehicleDateMaskValue(value) {
+    const digits = String(value == null ? '' : value).replace(/[^\d]/g, '').slice(0, 8);
+    if (digits.length <= 2) return digits;
+    if (digits.length <= 4) return `${digits.slice(0, 2)}.${digits.slice(2)}`;
+    return `${digits.slice(0, 2)}.${digits.slice(2, 4)}.${digits.slice(4)}`;
+  }
+
+  function applyVehicleDateTextMask(input) {
+    if (!input || !input.matches(VEHICLE_DATE_INPUT_SELECTOR)) return;
+    const masked = formatVehicleDateMaskValue(input.value);
+    if (input.value !== masked) {
+      input.value = masked;
+      try { input.setSelectionRange(input.value.length, input.value.length); } catch (e) {}
+    }
+    input.classList.remove('field-error');
+    syncSingleDateInputVisibility(input);
+  }
+
+  function finalizeVehicleDateTextInput(input) {
+    if (!input || !input.matches(VEHICLE_DATE_INPUT_SELECTOR)) return;
+    const iso = readVehicleDateIso(input);
+    if (iso) {
+      setVehicleDateInputValue(input, iso);
+    } else {
+      input.value = formatVehicleDateMaskValue(input.value);
+      syncSingleDateInputVisibility(input);
+    }
+  }
 
   function saveVehiclesViaApi(vehicles) {
     if (typeof window.dataApi !== 'undefined' && typeof window.dataApi.saveVehiclesList === 'function') {
@@ -846,7 +893,7 @@
     // Reset Inputs (tarih input'ları hariç - onları ayrı ayarlayacağız)
     $all('input.form-input, textarea.form-input', modal).forEach(input => {
       // Tarih input'larını şimdilik atla
-      if (input.type === 'date') return;
+      if (input.type === 'date' || input.matches(VEHICLE_DATE_INPUT_SELECTOR)) return;
       
       input.value = '';
       input.classList.remove('has-value');
@@ -857,7 +904,7 @@
     });
 
     // Sigorta ve Kasko bitiş tarihlerini bugün + 1 yıl olarak ayarla
-    const dateInputs = $all('input[type="date"].form-input', modal);
+    const dateInputs = getVehicleDateInputs(modal);
     if (dateInputs.length >= 2) {
       const today = new Date();
       const nextYear = new Date(today);
@@ -873,21 +920,21 @@
       
       // Sigorta Bitiş Tarihi (index 0) - bugün + 1 yıl
       if (dateInputs[0]) {
-        dateInputs[0].value = formatDate(nextYear);
+        setVehicleDateInputValue(dateInputs[0], formatDate(nextYear));
       }
       
       // Kasko Bitiş Tarihi (index 1) boş kalacak
       if (dateInputs[1]) {
-        dateInputs[1].value = '';
+        setVehicleDateInputValue(dateInputs[1], '');
       }
       
       // Muayene Bitiş Tarihi (index 2) boş kalacak
       if (dateInputs[2]) {
-        dateInputs[2].value = '';
+        setVehicleDateInputValue(dateInputs[2], '');
       }
       const egzozDateInput = document.getElementById('vehicle-egzoz-date');
       if (egzozDateInput) {
-        egzozDateInput.value = '';
+        setVehicleDateInputValue(egzozDateInput, '');
       }
       syncDateInputVisibility(modal);
     }
@@ -943,6 +990,12 @@
     if (!input) return;
     const hasValue = !!input.value;
     input.classList.toggle('has-value', hasValue);
+    if (input.matches(VEHICLE_DATE_INPUT_SELECTOR)) {
+      const visibleDateColor = hasValue || input === document.activeElement ? '#a0aec0' : '#6c757d';
+      input.style.color = visibleDateColor;
+      input.style.webkitTextFillColor = visibleDateColor;
+      return;
+    }
     const isVehicleRightDate = !!input.closest('#vehicle-modal .modal-column-right');
     const isDinamikOlayDate = !!input.closest('#dinamik-olay-modal');
     // Sağ kolondaki tarih alanlarında (Sigorta/Kasko/Muayene) değeri gizleme:
@@ -963,7 +1016,12 @@
 
   function syncDateInputVisibility(modal) {
     if (!modal) return;
-    $all('input[type="date"].form-input', modal).forEach(syncSingleDateInputVisibility);
+    const dateInputs = getVehicleDateInputs(modal).concat(
+      $all('input[type="date"].form-input', modal).filter(function(input) {
+        return !input.matches(VEHICLE_DATE_INPUT_SELECTOR);
+      })
+    );
+    dateInputs.forEach(syncSingleDateInputVisibility);
   }
 
   function syncEgzozMuayeneFields(modal) {
@@ -976,7 +1034,7 @@
     if (section) section.classList.toggle('egzoz-date-visible', visible);
     if (input) {
       input.disabled = !visible;
-      if (!visible) input.value = '';
+      if (!visible) setVehicleDateInputValue(input, '');
       syncSingleDateInputVisibility(input);
     }
   }
@@ -1041,12 +1099,12 @@
     const input = document.getElementById('vehicle-egzoz-date-modal-input');
     if (!modal || !input) return false;
     vehicleEgzozPromptState.inputOpen = true;
-    input.value = defaultDate || '';
+    setVehicleDateInputValue(input, defaultDate || '');
     input.classList.remove('field-error');
     modal.style.display = 'flex';
     requestAnimationFrame(function() {
       modal.classList.add('active');
-      if (typeof setupDatePlaceholder === 'function') {
+      if (input.type === 'date' && typeof setupDatePlaceholder === 'function') {
         setupDatePlaceholder(input);
       }
       syncSingleDateInputVisibility(input);
@@ -1377,8 +1435,8 @@
       }
       requestAnimationFrame(() => {
         // Modal açıldığında tarih placeholder'larını kur
-        $all('input[type="date"].form-input', modal).forEach(input => {
-          setupDatePlaceholder(input);
+        getVehicleDateInputs(modal).forEach(input => {
+          if (input.type === 'date') setupDatePlaceholder(input);
         });
         syncDateInputVisibility(modal);
         setTimeout(() => syncDateInputVisibility(modal), 0);
@@ -1516,21 +1574,16 @@
     }
 
     // Tarihler
-    if (vehicle.sigortaDate) {
-      $all('input[type="date"].form-input', modal)[0].value = vehicle.sigortaDate;
-    }
-    if (vehicle.kaskoDate) {
-      $all('input[type="date"].form-input', modal)[1].value = vehicle.kaskoDate;
-    }
-    if (vehicle.muayeneDate) {
-      $all('input[type="date"].form-input', modal)[2].value = vehicle.muayeneDate;
-    }
+    const dateInputs = getVehicleDateInputs(modal);
+    setVehicleDateInputValue(dateInputs[0], vehicle.sigortaDate || '');
+    setVehicleDateInputValue(dateInputs[1], vehicle.kaskoDate || '');
+    setVehicleDateInputValue(dateInputs[2], vehicle.muayeneDate || '');
     const egzozDate = vehicle.egzozMuayeneDate || '';
     const egzozDifferent = !!(egzozDate && egzozDate !== (vehicle.muayeneDate || ''));
     const egzozCheckbox = document.getElementById('vehicle-egzoz-different');
     const egzozDateInput = document.getElementById('vehicle-egzoz-date');
     if (egzozCheckbox) egzozCheckbox.checked = egzozDifferent;
-    if (egzozDateInput) egzozDateInput.value = egzozDifferent ? egzozDate : '';
+    if (egzozDateInput) setVehicleDateInputValue(egzozDateInput, egzozDifferent ? egzozDate : '');
     vehicleEgzozPromptState.handledMuayeneDate = vehicle.muayeneDate || '';
     vehicleEgzozPromptState.pendingMuayeneDate = '';
     syncEgzozMuayeneFields(modal);
@@ -1603,8 +1656,8 @@
     modal.style.display = 'flex';
     requestAnimationFrame(() => {
       modal.classList.add('active');
-      $all('input[type="date"].form-input', modal).forEach(input => {
-        setupDatePlaceholder(input);
+      getVehicleDateInputs(modal).forEach(input => {
+        if (input.type === 'date') setupDatePlaceholder(input);
       });
       syncDateInputVisibility(modal);
       setTimeout(() => syncDateInputVisibility(modal), 0);
@@ -1753,8 +1806,8 @@
     const boya = $('.radio-group button.active', $(`.form-section-inline[data-section="boya"]`, modal))?.dataset.value || '';
     const boyaliParcalar = getBoyaPartsState();
     
-    const sigortaDate = $all('input[type="date"].form-input', modal)[0]?.value || '';
-    const kaskoDate = $all('input[type="date"].form-input', modal)[1]?.value || '';
+    const sigortaDate = readVehicleDateIso(document.getElementById('vehicle-sigorta-date')) || '';
+    const kaskoDate = readVehicleDateIso(document.getElementById('vehicle-kasko-date')) || '';
     
     const anahtar = $('.radio-group button.active', $(`.form-section-inline[data-section="anahtar"]`, modal))?.dataset.value || '';
     const anahtarNerede = document.getElementById('anahtar-nerede')?.value.trim() || '';
@@ -2115,7 +2168,7 @@
     }
     vehicleEgzozPromptState.suppressPrompt = true;
     egzozCheckbox.checked = true;
-    egzozInput.value = dateValue;
+    setVehicleDateInputValue(egzozInput, dateValue);
     syncEgzozMuayeneFields(getModal());
     vehicleEgzozPromptState.suppressPrompt = false;
     vehicleEgzozPromptState.handledMuayeneDate = vehicleEgzozPromptState.pendingMuayeneDate || readVehicleDateIso(document.getElementById('vehicle-muayene-date'));
@@ -2351,6 +2404,22 @@
                     nextElem.classList.remove("input-visible");
                 }
             }
+        }
+      });
+    });
+
+    getVehicleDateInputs(document).forEach(function(input) {
+      if (input.dataset.dateMaskBound === 'true') return;
+      input.dataset.dateMaskBound = 'true';
+      input.addEventListener('input', function() {
+        applyVehicleDateTextMask(this);
+      });
+      input.addEventListener('blur', function() {
+        finalizeVehicleDateTextInput(this);
+      });
+      input.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+          finalizeVehicleDateTextInput(this);
         }
       });
     });
