@@ -135,13 +135,23 @@
     }
   }
 
+  function parkVehicleDatePickerNative(nativeInput) {
+    if (!nativeInput) return;
+    nativeInput.style.left = '-9999px';
+    nativeInput.style.top = '-9999px';
+  }
+
   function positionVehicleDatePickerNative(nativeInput, anchorEl) {
     if (!nativeInput) return;
     var rect = anchorEl && typeof anchorEl.getBoundingClientRect === 'function'
       ? anchorEl.getBoundingClientRect()
       : null;
-    var left = rect ? Math.round(rect.left + (rect.width / 2)) : -9999;
-    var top = rect ? Math.round(rect.top + (rect.height / 2)) : 0;
+    if (!rect || rect.width <= 0 || rect.height <= 0) {
+      parkVehicleDatePickerNative(nativeInput);
+      return;
+    }
+    var left = Math.round(rect.left + (rect.width / 2));
+    var top = Math.round(rect.top + (rect.height / 2));
     nativeInput.style.left = left + 'px';
     nativeInput.style.top = top + 'px';
   }
@@ -179,7 +189,7 @@
     /* Native'i modal satırından ayır — slot içinde kaldığında Chromium odak/showPicker ile beyaz kutu taşması çizer */
     document.body.appendChild(nativeInput);
     input._vehicleDatePickerNative = nativeInput;
-    positionVehicleDatePickerNative(nativeInput, trigger);
+    parkVehicleDatePickerNative(nativeInput);
 
     // #region agent log
     sendVehicleDateDebugLog('kayit.js:createVehicleDatePickerBridge','bridge-created','H1',{
@@ -201,6 +211,7 @@
 
       syncVehicleDatePickerNativeValue(input, nativeInput);
       positionVehicleDatePickerNative(nativeInput, trigger);
+      nativeInput.getBoundingClientRect();
 
       // #region agent log
       sendVehicleDateDebugLog('kayit.js:openNativePicker','picker-open-attempt','H2',{
@@ -277,9 +288,13 @@
       });
       // #endregion
       syncVehicleDatePickerTextValue(input, nativeInput);
+      parkVehicleDatePickerNative(nativeInput);
     });
     nativeInput.addEventListener('input', function() {
       syncVehicleDatePickerTextValue(input, nativeInput);
+    });
+    nativeInput.addEventListener('blur', function() {
+      parkVehicleDatePickerNative(nativeInput);
     });
 
     syncVehicleDatePickerNativeValue(input, nativeInput);
