@@ -884,7 +884,7 @@
         </div>
 
         <div id="vehicle-egzoz-confirm-modal" class="modal-overlay ayarlar-modal-overlay">
-            <div class="modal-container" style="max-width: 400px; height: 190px;" onclick="event.stopPropagation();">
+            <div class="modal-container" onclick="event.stopPropagation();">
                 <div class="modal-header">
                     <h2>EGZOS MUAYENESİ</h2>
                     <button class="modal-close" onclick="closeVehicleEgzozQuestionFlow()">
@@ -895,7 +895,7 @@
                     </button>
                 </div>
                 <div class="modal-body" onclick="event.stopPropagation();">
-                    <p id="vehicle-egzoz-confirm-message" style="color: var(--form-label-color); font-size: 14px; line-height: 1.6; margin-bottom: 20px; text-align: center;">Egzos Muayenesi Aynı Tarihte Mi Bitiyor?</p>
+                    <p id="vehicle-egzoz-confirm-message" style="color: var(--form-label-color); font-size: 14px; line-height: 1.45; text-align: center;">Egzos Muayenesi Aynı Tarihte Mi Bitiyor?</p>
                     <div class="universal-btn-group">
                         <button type="button" class="universal-btn-save" onclick="event.stopPropagation(); confirmVehicleEgzozSameDate();">Evet</button>
                         <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); confirmVehicleEgzozDifferentDate();">Hayır</button>
@@ -905,7 +905,7 @@
         </div>
 
         <div id="vehicle-egzoz-date-modal" class="modal-overlay ayarlar-modal-overlay">
-            <div class="modal-container" style="max-width: 400px; height: 220px;" onclick="event.stopPropagation();">
+            <div class="modal-container" onclick="event.stopPropagation();">
                 <div class="modal-header">
                     <h2>EGZOS MUAYENESİ TARİHİ</h2>
                     <button class="modal-close" onclick="cancelVehicleEgzozDateModal()">
@@ -916,7 +916,7 @@
                     </button>
                 </div>
                 <div class="modal-body" onclick="event.stopPropagation();">
-                    <div style="text-align: center; margin-bottom: 16px;">
+                    <div style="text-align: center;">
                         <label for="vehicle-egzoz-date-modal-input" style="color: var(--form-label-color); font-size: 14px; display: block; margin-bottom: 8px;">Egzos Muayenesi Bitiş Tarihi</label>
                         <input type="date" id="vehicle-egzoz-date-modal-input" class="form-input" inputmode="numeric" style="width: 180px; text-align: center;">
                     </div>

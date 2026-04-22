@@ -2367,16 +2367,13 @@
     const vehicleModalEl = getModal();
     if (muayeneInput) {
       muayeneInput.addEventListener('change', function() {
-        scheduleMaybePromptVehicleEgzozFlow(24);
-      });
-      muayeneInput.addEventListener('input', function() {
-        scheduleMuayeneEgzozPromptRobust(48);
+        setTimeout(function() {
+          if (document.activeElement === muayeneInput) return;
+          scheduleMuayeneEgzozPromptRobust(48);
+        }, 0);
       });
       muayeneInput.addEventListener('blur', function() {
         scheduleMuayeneEgzozPromptRobust(96);
-      });
-      muayeneInput.addEventListener('focusout', function() {
-        scheduleMuayeneEgzozPromptRobust(112);
       });
       muayeneInput.addEventListener('keydown', function(e) {
         if (e.key === 'Enter' || e.key === 'Tab') {
@@ -2389,25 +2386,6 @@
           if (ev.target === muayeneInput) return;
           scheduleMuayeneEgzozPromptRobust(72);
         }, true);
-        function delegateMuayeneEgzozPrompt(ev) {
-          var t = ev.target;
-          if (!t || t.id !== 'vehicle-muayene-date') return;
-          if (ev.type === 'keyup') {
-            scheduleMuayeneEgzozPromptRobust(36);
-            return;
-          }
-          if (ev.type === 'input' || ev.type === 'change') {
-            scheduleMuayeneEgzozPromptRobust(28);
-            return;
-          }
-          if (ev.type === 'focusout') {
-            scheduleMuayeneEgzozPromptRobust(104);
-          }
-        }
-        vehicleModalEl.addEventListener('input', delegateMuayeneEgzozPrompt, false);
-        vehicleModalEl.addEventListener('change', delegateMuayeneEgzozPrompt, false);
-        vehicleModalEl.addEventListener('keyup', delegateMuayeneEgzozPrompt, false);
-        vehicleModalEl.addEventListener('focusout', delegateMuayeneEgzozPrompt, true);
       }
     }
 
