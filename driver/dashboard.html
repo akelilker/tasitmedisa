@@ -37,7 +37,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../style-core.css?v=20260421.3">
-<link rel="stylesheet" href="driver-style.css?v=20260421.1">
+<link rel="stylesheet" href="driver-style.css?v=20260422.1">
 <script defer src="../script-core.js?v=20260421.5"></script>
     <!-- Splash: ana uygulama ile aynı logo+başlık (kritik, mobilde kesin uygulansın) -->
     <style>
@@ -88,6 +88,13 @@
                     <div id="driver-below-hero-notification-slot" class="driver-below-hero-notification-slot">
                         <div id="driver-sliding-warning" class="driver-sliding-warning" aria-live="polite"></div>
                     </div>
+                    <button type="button" onclick="openDriverPasswordModal()" class="driver-btn-password" title="Şifre değiştir" aria-label="Şifre değiştir">
+                        <svg class="driver-btn-password-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="7.5" cy="15.5" r="5.5"></circle>
+                            <path d="M12 12l8-8"></path>
+                            <path d="M16 4h4v4"></path>
+                        </svg>
+                    </button>
                     <button type="button" onclick="logout()" class="driver-btn-logout" title="Çıkış" aria-label="Çıkış">
                         <svg class="driver-btn-logout-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
@@ -155,6 +162,41 @@
                 <span class="status status-ready">● Sistem Hazır</span>
             </div>
         </footer>
+
+        <div id="driver-password-modal" class="driver-modal modal-overlay" onclick="if(event.target === this) closeDriverPasswordModal();">
+        <div class="driver-modal-content modal-container" onclick="event.stopPropagation();">
+            <div class="modal-header">
+                <h2>Şifre Değiştir</h2>
+                <button type="button" onclick="closeDriverPasswordModal()" class="modal-close" aria-label="Kapat">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="driver-password-form" class="driver-password-form" onsubmit="return submitDriverPasswordChange(event);">
+                    <div class="form-group">
+                        <label for="driver-current-password">Mevcut Şifre</label>
+                        <input type="password" id="driver-current-password" autocomplete="current-password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="driver-new-password">Yeni Şifre</label>
+                        <input type="password" id="driver-new-password" autocomplete="new-password" minlength="6" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="driver-new-password-confirm">Yeni Şifre Tekrar</label>
+                        <input type="password" id="driver-new-password-confirm" autocomplete="new-password" minlength="6" required>
+                    </div>
+                    <div id="driver-password-message" class="driver-password-message" aria-live="polite"></div>
+                    <div class="driver-password-actions">
+                        <button type="submit" id="driver-password-submit" class="btn-submit">Kaydet</button>
+                        <button type="button" class="universal-btn-cancel" onclick="closeDriverPasswordModal()">Vazgeç</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        </div>
 
         <div id="history-modal" class="driver-modal modal-overlay">
         <div class="driver-modal-content modal-container">
@@ -430,6 +472,6 @@
             <button type="button" class="btn-confirm-yes" onclick="confirmMuayeneSubmit()">Evet</button>
         </div>
     </div>
-<script defer src="driver-script.js?v=20260421.2"></script>
+<script defer src="driver-script.js?v=20260422.1"></script>
 </body>
 </html>

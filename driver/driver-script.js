@@ -2893,7 +2893,119 @@ const API_BASE = (function(){
           alert('❌ Bağlantı hatası!');
       }
   };
-  
+
+  function setDriverPasswordMessage(message, isError) {
+      const messageEl = document.getElementById('driver-password-message');
+      if (!messageEl) return;
+      messageEl.textContent = message || '';
+      messageEl.classList.toggle('is-error', !!isError);
+      messageEl.classList.toggle('is-success', !!message && !isError);
+  }
+
+  function clearSavedDriverPassword() {
+      try {
+          localStorage.removeItem('driver_saved_password');
+      } catch (e) {}
+  }
+
+  window.openDriverPasswordModal = function() {
+      const modal = document.getElementById('driver-password-modal');
+      const form = document.getElementById('driver-password-form');
+      if (!modal) return;
+      if (form) form.reset();
+      setDriverPasswordMessage('', false);
+      modal.classList.add('show');
+      updateDriverModalBodyClass();
+      setTimeout(function() {
+          const currentInput = document.getElementById('driver-current-password');
+          if (currentInput) currentInput.focus();
+      }, 50);
+  };
+
+  window.closeDriverPasswordModal = function() {
+      const modal = document.getElementById('driver-password-modal');
+      const form = document.getElementById('driver-password-form');
+      if (modal) modal.classList.remove('show');
+      if (form) form.reset();
+      setDriverPasswordMessage('', false);
+      updateDriverModalBodyClass();
+  };
+
+  window.submitDriverPasswordChange = async function(event) {
+      if (event && typeof event.preventDefault === 'function') event.preventDefault();
+      if (!currentToken) {
+          logout();
+          return false;
+      }
+
+      const currentInput = document.getElementById('driver-current-password');
+      const newInput = document.getElementById('driver-new-password');
+      const confirmInput = document.getElementById('driver-new-password-confirm');
+      const submitBtn = document.getElementById('driver-password-submit');
+      const currentPassword = currentInput ? currentInput.value.trim() : '';
+      const newPassword = newInput ? newInput.value.trim() : '';
+      const confirmPassword = confirmInput ? confirmInput.value.trim() : '';
+
+      if (!currentPassword || !newPassword || !confirmPassword) {
+          setDriverPasswordMessage('Tüm şifre alanlarını doldurun.', true);
+          return false;
+      }
+      if (newPassword.length < 6) {
+          setDriverPasswordMessage('Yeni şifre en az 6 karakter olmalı.', true);
+          return false;
+      }
+      if (newPassword !== confirmPassword) {
+          setDriverPasswordMessage('Yeni şifre tekrarı eşleşmiyor.', true);
+          return false;
+      }
+      if (newPassword === currentPassword) {
+          setDriverPasswordMessage('Yeni şifre mevcut şifreyle aynı olamaz.', true);
+          return false;
+      }
+
+      if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.textContent = 'Kaydediliyor...';
+      }
+      setDriverPasswordMessage('', false);
+
+      try {
+          const response = await fetch(API_BASE + 'driver_change_password.php', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': 'Bearer ' + currentToken
+              },
+              body: JSON.stringify({
+                  currentPassword: currentPassword,
+                  newPassword: newPassword
+              })
+          });
+          const data = await response.json();
+
+          if (!response.ok || !data.success) {
+              setDriverPasswordMessage((data && data.message) || 'Şifre değiştirilemedi.', true);
+              return false;
+          }
+
+          setDriverPasswordMessage('Şifre değiştirildi. Yeniden giriş yapmanız gerekiyor.', false);
+          clearSavedDriverPassword();
+          clearStoredPortalTokens();
+          setTimeout(function() {
+              window.location.href = DRIVER_PAGE_BASE + 'index.html';
+          }, 900);
+      } catch (error) {
+          setDriverPasswordMessage('Bağlantı hatası. Lütfen tekrar deneyin.', true);
+      } finally {
+          if (submitBtn) {
+              submitBtn.disabled = false;
+              submitBtn.textContent = 'Kaydet';
+          }
+      }
+
+      return false;
+  };
+
   // Çıkış
   window.logout = function() {
       clearStoredPortalTokens();

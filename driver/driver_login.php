@@ -93,8 +93,7 @@ $result = medisaMutateData(function (&$data) use ($username, $password) {
         }
 
         $usernameExists = true;
-        $sifreVar = (isset($candidate['sifre']) && trim((string)$candidate['sifre']) !== '')
-            || (isset($candidate['sifre_hash']) && trim((string)$candidate['sifre_hash']) !== '');
+        $sifreVar = medisaUserHasPortalPassword($candidate);
         $aktif = !isset($candidate['aktif']) || $candidate['aktif'] === true;
         if (!$aktif) {
             continue;
@@ -118,18 +117,7 @@ $result = medisaMutateData(function (&$data) use ($username, $password) {
         return medisaBuildErrorResult('Şifre tanımlı değil. Yöneticiye başvurun.', 200);
     }
 
-    $girilenSifre = trim((string)$password);
-    $kayitliSifre = isset($user['sifre']) ? trim((string)$user['sifre']) : '';
-    $kayitliHash = isset($user['sifre_hash']) ? trim((string)$user['sifre_hash']) : '';
-    $passwordMatch = false;
-
-    if ($kayitliHash !== '') {
-        $passwordMatch = password_verify($girilenSifre, $kayitliHash);
-    } elseif ($kayitliSifre !== '') {
-        $passwordMatch = ($girilenSifre === $kayitliSifre);
-    }
-
-    if (!$passwordMatch) {
+    if (!medisaVerifyUserPassword($user, $password)) {
         return medisaBuildErrorResult('Şifre hatalı!', 200);
     }
 

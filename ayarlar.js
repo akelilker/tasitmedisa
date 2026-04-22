@@ -1392,7 +1392,11 @@
   
         // Portal girişi: Kullanıcı veya şube yöneticisine taşıt atanmışsa kullanıcı adı ve şifre zorunlu
         const needsPortalCredentials = hasAssignedVehicles && (role === 'kullanici' || role === 'sube_yonetici');
-        if (needsPortalCredentials && (!kullanici_adi || !sifre)) {
+        const hasExistingPortalPassword = !!(existingUser && (
+          (existingUser.sifre && String(existingUser.sifre).trim() !== '') ||
+          (existingUser.sifre_hash && String(existingUser.sifre_hash).trim() !== '')
+        ));
+        if (needsPortalCredentials && (!kullanici_adi || (!sifre && !hasExistingPortalPassword))) {
           alert('Taşıt atanan kullanıcı veya yönetici için "Kullanıcı Adı (portal girişi)" ve "Şifre (portal girişi)" zorunludur. Bu bilgilerle kullanıcı paneline girilebilir.');
           if (usernameInput) usernameInput.focus();
           return;
@@ -1413,7 +1417,11 @@
             users[idx].surucu_paneli = kullanici_paneli;
             users[idx].kullanici_adi = kullanici_adi;
             // Şifre: boş bırakılırsa eskisini koru (yanlışlıkla silinmesin)
-            if (sifre !== '') users[idx].sifre = sifre;
+            if (sifre !== '') {
+              users[idx].sifre = sifre;
+              delete users[idx].sifre_hash;
+              delete users[idx].sifre_guncellendi_at;
+            }
           }
         } else {
           // Yeni EKLEME
