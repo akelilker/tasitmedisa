@@ -1321,31 +1321,31 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   #notifications-dropdown .notification-item-activity,
   #notifications-dropdown .mtv-notification,
   #notifications-dropdown .kasko-excel-notification {
-    min-height: 44px !important;
-    padding: 8px 12px 4px !important;
-    border-radius: 8px !important;
-    background: linear-gradient(180deg, rgba(12, 18, 30, 0.96) 0%, rgba(8, 13, 22, 0.94) 100%) !important;
+    min-height: 40px !important;
+    padding: 6px 11px 3px !important;
+    border-radius: 7px !important;
+    background: linear-gradient(180deg, rgba(12, 18, 30, 0.94) 0%, rgba(8, 13, 22, 0.92) 100%) !important;
   }
 
   .notification-item.date-warning-red-border {
-    border-color: rgba(var(--theme-color-rgb), 0.34) !important;
+    border-color: rgba(var(--theme-color-rgb), 0.24) !important;
     box-shadow: none !important;
   }
   .notification-item.date-warning-orange-border {
-    border-color: rgba(var(--orange-warn-rgb), 0.34) !important;
+    border-color: rgba(var(--orange-warn-rgb), 0.26) !important;
     box-shadow: none !important;
   }
   #notifications-dropdown .notification-item-activity {
-    border-color: rgba(255, 255, 255, 0.12) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
   }
   #notifications-dropdown .notification-item-activity.notification-unread {
-    border-color: rgba(var(--theme-color-rgb), 0.44) !important;
+    border-color: rgba(var(--theme-color-rgb), 0.32) !important;
   }
   #notifications-dropdown .mtv-notification {
-    border-color: rgba(255, 140, 0, 0.34) !important;
+    border-color: rgba(255, 140, 0, 0.26) !important;
   }
   #notifications-dropdown .kasko-excel-notification {
-    border-color: rgba(var(--theme-color-rgb), 0.34) !important;
+    border-color: rgba(var(--theme-color-rgb), 0.24) !important;
   }
 
   #notifications-dropdown.settings-dropdown button.notification-item {
@@ -1374,8 +1374,8 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   }
 
   #notifications-dropdown.settings-dropdown button.notification-item:hover {
-    background: rgba(var(--theme-color-rgb), 0.18) !important;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.28) !important;
+    background: rgba(var(--theme-color-rgb), 0.14) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.24) !important;
     transform: translateY(-1px);
     color: var(--txt-white) !important;
   }
@@ -1387,38 +1387,38 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   }
 
   #notifications-dropdown .notification-item-activity:hover {
-    border-color: rgba(var(--theme-color-rgb), 0.5) !important;
-    background: rgba(var(--theme-color-rgb), 0.18) !important;
+    border-color: rgba(var(--theme-color-rgb), 0.42) !important;
+    background: rgba(var(--theme-color-rgb), 0.14) !important;
   }
   #notifications-dropdown .notification-item-activity.notification-unread:hover {
-    border-color: rgba(var(--theme-color-rgb), 0.62) !important;
-    background: rgba(var(--theme-color-rgb), 0.2) !important;
+    border-color: rgba(var(--theme-color-rgb), 0.5) !important;
+    background: rgba(var(--theme-color-rgb), 0.15) !important;
   }
   #notifications-dropdown .notification-item.date-warning-red-border:hover {
-    border-color: rgba(var(--theme-color-rgb), 0.58) !important;
-    background: rgba(var(--theme-color-rgb), 0.2) !important;
+    border-color: rgba(var(--theme-color-rgb), 0.46) !important;
+    background: rgba(var(--theme-color-rgb), 0.15) !important;
   }
   #notifications-dropdown .notification-item.date-warning-orange-border:hover {
-    border-color: rgba(var(--orange-warn-rgb), 0.56) !important;
-    background: rgba(var(--theme-color-rgb), 0.18) !important;
+    border-color: rgba(var(--orange-warn-rgb), 0.44) !important;
+    background: rgba(var(--theme-color-rgb), 0.14) !important;
   }
 
   #notifications-dropdown .notification-item.mtv-notification {
     transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
   }
   #notifications-dropdown .notification-item.mtv-notification:hover {
-    background: rgba(var(--theme-color-rgb), 0.18) !important;
-    border-color: rgba(255, 140, 0, 0.54) !important;
-    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.26) !important;
+    background: rgba(var(--theme-color-rgb), 0.14) !important;
+    border-color: rgba(255, 140, 0, 0.42) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.22) !important;
     transform: translateY(-1px);
   }
   #notifications-dropdown .notification-item.kasko-excel-notification {
     transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
   }
   #notifications-dropdown .notification-item.kasko-excel-notification:hover {
-    background: rgba(var(--theme-color-rgb), 0.2) !important;
-    border-color: rgba(var(--theme-color-rgb), 0.58) !important;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.28) !important;
+    background: rgba(var(--theme-color-rgb), 0.15) !important;
+    border-color: rgba(var(--theme-color-rgb), 0.46) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.24) !important;
     transform: translateY(-1px);
   }
 }
