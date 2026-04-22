@@ -1503,8 +1503,30 @@ input.settings-form-input:-moz-autofill,
     -webkit-line-clamp: 2 !important;
     line-clamp: 2 !important;
     -webkit-box-orient: vertical !important;
-    word-break: break-word !important;
-    overflow-wrap: break-word !important;
+    word-break: keep-all !important;
+    overflow-wrap: normal !important;
+    hyphens: none !important;
+}
+#user-modal #user-list .settings-card .settings-card-title-name {
+    display: flex !important;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    column-gap: 4px;
+    row-gap: 0;
+    white-space: normal !important;
+    word-break: keep-all !important;
+    overflow-wrap: normal !important;
+    hyphens: none !important;
+}
+#user-modal #user-list .settings-card .settings-card-name-part {
+    display: inline-block;
+    max-width: 100%;
+    white-space: nowrap !important;
+    word-break: keep-all !important;
+    overflow-wrap: normal !important;
+    hyphens: none !important;
+    line-height: inherit;
 }
 
 /* Masaüstü: Kullanıcı Yönetimi kartları — isim ve rol ayrı satır kimliğini korusun */
@@ -1529,8 +1551,9 @@ input.settings-form-input:-moz-autofill,
     margin-bottom: 0 !important;
     flex-shrink: 1;
     line-height: 1.12 !important;
-    word-break: normal !important;
-    overflow-wrap: break-word !important;
+    word-break: keep-all !important;
+    overflow-wrap: normal !important;
+    hyphens: none !important;
   }
   #user-modal #user-list .settings-card-gorev {
     flex-shrink: 0;
@@ -2199,20 +2222,27 @@ input.settings-form-input:-moz-autofill,
         justify-content: center !important;
         white-space: normal !important;
         text-overflow: clip !important;
-        word-break: break-word !important;
-        overflow-wrap: break-word !important;
+        word-break: keep-all !important;
+        overflow-wrap: normal !important;
+        hyphens: none !important;
     }
     #user-modal #user-list .settings-card .settings-card-title {
         font-size: 14px !important;
         min-height: 0 !important;
         max-height: calc(2 * 1.12em) !important;
-        display: -webkit-box !important;
+        display: flex !important;
+        flex-wrap: wrap;
+        align-items: center !important;
+        justify-content: center !important;
+        column-gap: 4px;
+        row-gap: 0;
         -webkit-box-orient: vertical !important;
-        -webkit-line-clamp: 2 !important;
-        line-clamp: 2 !important;
+        -webkit-line-clamp: unset !important;
+        line-clamp: unset !important;
         text-align: center !important;
-        word-break: normal !important;
-        overflow-wrap: break-word !important;
+        word-break: keep-all !important;
+        overflow-wrap: normal !important;
+        hyphens: none !important;
     }
     #branch-modal #branch-list .settings-card .settings-card-subtitle,
     #user-modal #user-list .settings-card .settings-card-subtitle,

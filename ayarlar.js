@@ -1531,6 +1531,39 @@
       alert('Kullanıcı Silindi.');
     };
 
+    function buildUserCardNameMarkup(rawName) {
+      const displayName = formatUserFullName(rawName || 'İsimsiz');
+      const parts = displayName.split(/\s+/).filter(Boolean);
+      const safeTitle = escapeHtml(displayName || 'İsimsiz');
+      if (!parts.length) {
+        return '<div class="settings-card-title settings-card-title-name" title="' + safeTitle + '"><span class="settings-card-name-part">' + safeTitle + '</span></div>';
+      }
+      return '<div class="settings-card-title settings-card-title-name" title="' + safeTitle + '">' +
+        parts.map(function(part) {
+          return '<span class="settings-card-name-part">' + escapeHtml(part) + '</span>';
+        }).join(' ') +
+      '</div>';
+    }
+
+    function fitUserManagementCardNames() {
+      const container = document.getElementById('user-list');
+      if (!container || typeof window.medisaFitTextWithinBox !== 'function') return;
+      window.medisaFitTextWithinBox(container, '.settings-card-title-name .settings-card-name-part', {
+        minFontSize: 10,
+        maxReduction: 4,
+        step: 0.5
+      });
+    }
+
+    if (!window.__medisaUserManagementNameFitResizeBound) {
+      window.__medisaUserManagementNameFitResizeBound = true;
+      let userNameFitResizeTimer = null;
+      window.addEventListener('resize', function() {
+        clearTimeout(userNameFitResizeTimer);
+        userNameFitResizeTimer = setTimeout(fitUserManagementCardNames, 120);
+      });
+    }
+
     // Liste Render
     window.renderUserList = function renderUserList() {
       const container = document.getElementById('user-list');
@@ -1587,7 +1620,7 @@
           return `
           <div class="settings-card" onclick="editUser('${user.id}')" style="cursor:pointer;">
             <div class="settings-card-content">
-              <div class="settings-card-title">${escapeHtml(user.name || 'İsimsiz')}</div>
+              ${buildUserCardNameMarkup(user.name || 'İsimsiz')}
             </div>
           </div>
         `;
@@ -1597,7 +1630,7 @@
         return `
           <div class="settings-card" onclick="editUser('${user.id}')" style="cursor:pointer;">
             <div class="settings-card-content">
-              <div class="settings-card-title">${escapeHtml(user.name || 'İsimsiz')}</div>
+              ${buildUserCardNameMarkup(user.name || 'İsimsiz')}
               <div class="settings-card-subtitle">${escapeHtml(branchName)}${phoneLine ? '<br>' + escapeHtml(phoneLine) : ''}</div>
               ${roleLabelMarkup}
             </div>
@@ -1606,6 +1639,7 @@
       }).join('');
 
       container.innerHTML = rows;
+      fitUserManagementCardNames();
     }
   
     // ========================================

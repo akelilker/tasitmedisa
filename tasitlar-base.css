@@ -473,6 +473,26 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 #dinamik-olay-modal .medisa-owner-select-menu.open {
   display: block;
 }
+#dinamik-olay-modal .medisa-owner-select-search-wrap {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding: 8px;
+  background: #101722;
+  border-bottom: 1px solid rgba(190, 200, 214, 0.12);
+}
+#dinamik-olay-modal .medisa-owner-select-search-input {
+  width: 100%;
+  min-height: 32px;
+  height: 32px;
+  padding: 0 10px !important;
+  font-size: 13px !important;
+  line-height: 1.2 !important;
+  text-align: left;
+}
+#dinamik-olay-modal .medisa-owner-select-options {
+  min-height: 0;
+}
 #dinamik-olay-modal .medisa-owner-select-option {
   width: 100%;
   border: 0;
@@ -520,6 +540,13 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 #dinamik-olay-modal .medisa-owner-select-option.is-disabled {
   opacity: 0.52;
   cursor: default;
+}
+#dinamik-olay-modal .medisa-owner-select-empty {
+  padding: 10px 12px;
+  border-bottom: 1px solid rgba(190, 200, 214, 0.10);
+  color: rgba(148, 163, 184, 0.82);
+  font-size: 12px !important;
+  line-height: 1.35 !important;
 }
 #dinamik-olay-modal:has(.medisa-owner-select-menu.open) .universal-btn-group {
   pointer-events: none !important;
@@ -1028,9 +1055,10 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     font-size: 12px;
     color: var(--txt-gray-darker);
     line-height: 1.4;
-    word-wrap: break-word; /* Uzun kelimeleri kır */
-    overflow-wrap: break-word; /* Modern tarayıcılar için */
-    word-break: break-word; /* Uzun metinler için */
+    word-wrap: normal;
+    overflow-wrap: normal;
+    word-break: keep-all;
+    hyphens: none;
     white-space: normal; /* Alt satıra geçebilir */
 }
 
@@ -1098,8 +1126,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     flex-basis: max-content;    /* Başlangıç genişliği = metnin kırılmadan doğal genişliği */
     min-width: 0;               /* Taşma koruması (çok uzun tek kelime) */
     max-width: 100%;            /* Alt satıra geçince konteyneri aşar */
-    overflow-wrap: break-word;  /* Sadece uzun kelimeler için kırılma */
-    word-break: normal;         /* Kelimeler arası boşlukta kırılma yok */
+    overflow-wrap: normal;
+    word-break: keep-all;
+    hyphens: none;
     line-height: 1.4;
     margin-top: 0;
 }
@@ -2002,8 +2031,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     line-height: 1.05;
     width: 100%;
     white-space: normal;
-    word-break: normal;
-    overflow-wrap: anywhere;
+    word-break: keep-all;
+    overflow-wrap: normal;
+    hyphens: none;
     transition: transform 0.2s ease;
     display: block !important;
     height: 2.5em !important;
@@ -2123,7 +2153,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     line-height: 1.3 !important; /* 2 satır için */
     width: 100%;
     white-space: normal !important;
-    word-break: break-word;
+    word-break: keep-all;
+    overflow-wrap: normal;
+    hyphens: none;
     transition: transform 0.2s ease;
     flex-grow: 1; /* Kart içinde orta alan boşluşu doldurur, alt satır alta itilir */
     display: block !important;
@@ -2148,7 +2180,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    word-break: break-word;
+    word-break: keep-all;
+    overflow-wrap: normal;
+    hyphens: none;
     margin-top: 0 !important;
 }
 
@@ -2354,8 +2388,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 .list-header-row .list-cell.list-brand {
     text-align: center !important;
     white-space: normal !important;
-    word-break: normal;
-    overflow-wrap: break-word;
+    word-break: keep-all;
+    overflow-wrap: normal;
+    hyphens: none;
     line-height: 1.3;
     display: flex !important;
     -webkit-line-clamp: 2;
@@ -2437,8 +2472,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     overflow: hidden !important;
     text-overflow: clip !important;
     white-space: normal !important;
-    word-break: normal !important;
-    overflow-wrap: break-word !important;
+    word-break: keep-all !important;
+    overflow-wrap: normal !important;
+    hyphens: none !important;
   }
 
   .list-header-row .list-cell.list-transmission {
@@ -2447,8 +2483,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     overflow: hidden !important;
     text-overflow: clip !important;
     white-space: normal !important;
-    word-break: normal !important;
-    overflow-wrap: break-word !important;
+    word-break: keep-all !important;
+    overflow-wrap: normal !important;
+    hyphens: none !important;
   }
 
   .list-header-row .list-cell.list-user {
@@ -2517,8 +2554,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     padding-left: 1px !important;
     padding-right: 1px !important;
     white-space: normal !important;
-    word-break: normal;
-    overflow-wrap: break-word;
+    word-break: keep-all;
+    overflow-wrap: normal;
+    hyphens: none;
     display: -webkit-box !important;
     -webkit-line-clamp: 2 !important;
     line-clamp: 2 !important;
