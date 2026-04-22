@@ -99,9 +99,16 @@
     if (!input) return;
     input.value = formatIsoForVehicleDateInput(value);
     syncSingleDateInputVisibility(input);
-    const field = input.closest('.vehicle-date-field');
-    const nativeInput = field && field.querySelector('.vehicle-date-picker-native');
-    if (nativeInput) syncVehicleDatePickerNativeValue(input, nativeInput);
+
+    // KRİTİK: native date ile senkron
+    var field = input.closest('.vehicle-date-field');
+    if (field) {
+      var nativeInput = field.querySelector('.vehicle-date-picker-native');
+      if (nativeInput) {
+        const iso = readVehicleDateIso(input);
+        nativeInput.value = iso || '';
+      }
+    }
   }
 
   function createVehicleDatePickerBridge(input) {
@@ -147,6 +154,7 @@
 
       syncVehicleDatePickerNativeValue(input, nativeInput);
 
+      // Native picker aç
       try {
         if (typeof nativeInput.showPicker === 'function') {
           nativeInput.showPicker();
@@ -154,8 +162,12 @@
         }
       } catch (err) {}
 
-      try { nativeInput.focus({ preventScroll: true }); } catch (err2) { nativeInput.focus(); }
-      try { nativeInput.click(); } catch (err3) {}
+      // Fallback (Safari vs.)
+      try { nativeInput.focus({ preventScroll: true }); } catch (err) { nativeInput.focus(); }
+
+      setTimeout(function() {
+        try { nativeInput.click(); } catch (err) {}
+      }, 0);
     }
 
     input.addEventListener('input', function() {
