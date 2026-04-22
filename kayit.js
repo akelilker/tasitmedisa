@@ -100,14 +100,15 @@
     input.value = formatIsoForVehicleDateInput(value);
     syncSingleDateInputVisibility(input);
 
-    // KRİTİK: native date ile senkron
-    var field = input.closest('.vehicle-date-field');
-    if (field) {
-      var nativeInput = field.querySelector('.vehicle-date-picker-native');
-      if (nativeInput) {
-        const iso = readVehicleDateIso(input);
-        nativeInput.value = iso || '';
-      }
+    // KRİTİK: native date ile senkron (native DOM'da slot'ta olmayabilir → ref öncelikli)
+    var nativeInput = input._vehicleDatePickerNative;
+    if (!nativeInput) {
+      var fieldForNative = input.closest('.vehicle-date-field');
+      if (fieldForNative) nativeInput = fieldForNative.querySelector('.vehicle-date-picker-native');
+    }
+    if (nativeInput) {
+      var isoSync = readVehicleDateIso(input);
+      nativeInput.value = isoSync || '';
     }
   }
 
@@ -140,8 +141,10 @@
     nativeInput.setAttribute('aria-label', 'Tarih seç');
 
     slot.appendChild(trigger);
-    slot.appendChild(nativeInput);
     field.appendChild(slot);
+    /* Native'i modal satırından ayır — slot içinde kaldığında Chromium odak/showPicker ile beyaz kutu taşması çizer */
+    document.body.appendChild(nativeInput);
+    input._vehicleDatePickerNative = nativeInput;
 
     input.dataset.datePickerBridge = 'true';
 
