@@ -1535,24 +1535,28 @@
 
     function buildUserCardNameMarkup(rawName) {
       const displayName = formatUserFullName(rawName || 'İsimsiz');
-      const parts = displayName.split(/\s+/).filter(Boolean);
+      const tokens = displayName.split(/\s+/).filter(Boolean);
       const safeTitle = escapeHtml(displayName || 'İsimsiz');
-      if (!parts.length) {
+      if (!tokens.length) {
         return '<div class="settings-card-title settings-card-title-name" title="' + safeTitle + '"><span class="settings-card-name-part">' + safeTitle + '</span></div>';
       }
+      if (tokens.length === 1) {
+        return '<div class="settings-card-title settings-card-title-name" title="' + safeTitle + '">' +
+          '<span class="settings-card-name-part settings-card-name-single">' + escapeHtml(tokens[0]) + '</span></div>';
+      }
+      const surname = tokens[tokens.length - 1];
+      const given = tokens.slice(0, -1).join(' ');
       return '<div class="settings-card-title settings-card-title-name" title="' + safeTitle + '">' +
-        parts.map(function(part) {
-          return '<span class="settings-card-name-part">' + escapeHtml(part) + '</span>';
-        }).join(' ') +
-      '</div>';
+        '<span class="settings-card-name-part settings-card-name-given">' + escapeHtml(given) + '</span>' +
+        '<span class="settings-card-name-part settings-card-name-surname">' + escapeHtml(surname) + '</span></div>';
     }
 
     function fitUserManagementCardNames() {
       const container = document.getElementById('user-list');
       if (!container || typeof window.medisaFitTextWithinBox !== 'function') return;
-      window.medisaFitTextWithinBox(container, '.settings-card-title-name, .settings-card-title-name .settings-card-name-part', {
-        minFontSize: 8.5,
-        maxReduction: 6,
+      window.medisaFitTextWithinBox(container, '#user-list .settings-card-title-name .settings-card-name-part', {
+        minFontSize: 9.75,
+        maxReduction: 3,
         step: 0.5
       });
     }

@@ -1512,12 +1512,16 @@ input.settings-form-input:-moz-autofill,
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
-    column-gap: 4px;
+    align-content: center;
+    column-gap: 6px;
     row-gap: 0;
     white-space: normal !important;
     word-break: keep-all !important;
     overflow-wrap: normal !important;
     hyphens: none !important;
+    -webkit-line-clamp: unset !important;
+    line-clamp: unset !important;
+    overflow: visible !important;
 }
 #user-modal #user-list .settings-card .settings-card-name-part {
     display: inline-block;
@@ -1525,11 +1529,25 @@ input.settings-form-input:-moz-autofill,
     max-width: 100%;
     overflow: visible;
     text-overflow: clip;
-    white-space: nowrap !important;
     word-break: keep-all !important;
     overflow-wrap: normal !important;
     hyphens: none !important;
     line-height: inherit;
+}
+#user-modal #user-list .settings-card .settings-card-name-given {
+    flex: 0 1 auto;
+    white-space: nowrap !important;
+    overflow-wrap: normal !important;
+}
+#user-modal #user-list .settings-card .settings-card-name-surname {
+    flex: 0 1 auto;
+    min-width: 0;
+    text-align: center;
+    white-space: nowrap !important;
+    overflow-wrap: normal !important;
+}
+#user-modal #user-list .settings-card .settings-card-name-single {
+    white-space: nowrap !important;
 }
 
 /* Masaüstü: Kullanıcı Yönetimi kartları — isim ve rol ayrı satır kimliğini korusun */
@@ -1557,6 +1575,14 @@ input.settings-form-input:-moz-autofill,
     word-break: keep-all !important;
     overflow-wrap: normal !important;
     hyphens: none !important;
+  }
+  /* İsim+soyad satır kırılımı: iki satır + olası satır arası nefes; kırpılma önlenir */
+  #user-modal #user-list .settings-card .settings-card-title.settings-card-title-name {
+    max-height: calc(2 * 1.12em + 0.35em) !important;
+    -webkit-line-clamp: unset !important;
+    line-clamp: unset !important;
+    overflow: visible !important;
+    display: flex !important;
   }
   #user-modal #user-list .settings-card-gorev {
     flex-shrink: 0;
@@ -2246,6 +2272,10 @@ input.settings-form-input:-moz-autofill,
         word-break: keep-all !important;
         overflow-wrap: normal !important;
         hyphens: none !important;
+    }
+    #user-modal #user-list .settings-card .settings-card-title.settings-card-title-name {
+        max-height: calc(2 * 1.12em + 0.35em) !important;
+        overflow: visible !important;
     }
     #branch-modal #branch-list .settings-card .settings-card-subtitle,
     #user-modal #user-list .settings-card .settings-card-subtitle,
