@@ -82,10 +82,118 @@
     return parts.length === 3 ? `${parts[2]}.${parts[1]}.${parts[0]}` : '';
   }
 
+  function syncVehicleDatePickerNativeValue(input, nativeInput) {
+    if (!input || !nativeInput) return;
+    const iso = readVehicleDateIso(input);
+    nativeInput.value = iso || '';
+  }
+
+  function syncVehicleDatePickerTextValue(input, nativeInput) {
+    if (!input || !nativeInput) return;
+    setVehicleDateInputValue(input, nativeInput.value || '');
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+
   function setVehicleDateInputValue(input, value) {
     if (!input) return;
     input.value = formatIsoForVehicleDateInput(value);
     syncSingleDateInputVisibility(input);
+    const field = input.closest('.vehicle-date-field');
+    const nativeInput = field && field.querySelector('.vehicle-date-picker-native');
+    if (nativeInput) syncVehicleDatePickerNativeValue(input, nativeInput);
+  }
+
+  function createVehicleDatePickerBridge(input) {
+    if (!input || !input.matches(VEHICLE_DATE_INPUT_SELECTOR)) return;
+    if (input.dataset.datePickerBridge === 'true') return;
+
+    const parent = input.parentNode;
+    if (!parent) return;
+
+    const field = document.createElement('div');
+    field.className = 'vehicle-date-field';
+    parent.insertBefore(field, input);
+    field.appendChild(input);
+
+    const slot = document.createElement('span');
+    slot.className = 'vehicle-date-picker-slot';
+
+    const trigger = document.createElement('button');
+    trigger.type = 'button';
+    trigger.className = 'vehicle-date-picker-trigger';
+    trigger.tabIndex = -1;
+    trigger.setAttribute('aria-hidden', 'true');
+    trigger.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M8 2v4"/><path d="M16 2v4"/><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18"/></svg>';
+
+    const nativeInput = document.createElement('input');
+    nativeInput.type = 'date';
+    nativeInput.className = 'vehicle-date-picker-native';
+    nativeInput.tabIndex = -1;
+    nativeInput.setAttribute('aria-label', 'Tarih seç');
+
+    slot.appendChild(trigger);
+    slot.appendChild(nativeInput);
+    field.appendChild(slot);
+
+    input.dataset.datePickerBridge = 'true';
+
+    function openNativePicker(ev) {
+      if (ev) {
+        ev.preventDefault();
+        ev.stopPropagation();
+      }
+      if (input.disabled || nativeInput.disabled) return;
+
+      syncVehicleDatePickerNativeValue(input, nativeInput);
+
+      try {
+        if (typeof nativeInput.showPicker === 'function') {
+          nativeInput.showPicker();
+          return;
+        }
+      } catch (err) {}
+
+      try { nativeInput.focus({ preventScroll: true }); } catch (err2) { nativeInput.focus(); }
+      try { nativeInput.click(); } catch (err3) {}
+    }
+
+    input.addEventListener('input', function() {
+      syncVehicleDatePickerNativeValue(input, nativeInput);
+    });
+    input.addEventListener('blur', function() {
+      syncVehicleDatePickerNativeValue(input, nativeInput);
+    });
+    input.addEventListener('change', function() {
+      syncVehicleDatePickerNativeValue(input, nativeInput);
+    });
+
+    trigger.addEventListener('pointerdown', function(ev) {
+      ev.preventDefault();
+      ev.stopPropagation();
+    }, true);
+    trigger.addEventListener('click', openNativePicker);
+
+    nativeInput.addEventListener('pointerdown', function(ev) {
+      ev.stopPropagation();
+    }, true);
+    nativeInput.addEventListener('click', function(ev) {
+      ev.stopPropagation();
+    }, true);
+    nativeInput.addEventListener('change', function() {
+      syncVehicleDatePickerTextValue(input, nativeInput);
+    });
+    nativeInput.addEventListener('input', function() {
+      syncVehicleDatePickerTextValue(input, nativeInput);
+    });
+
+    syncVehicleDatePickerNativeValue(input, nativeInput);
+  }
+
+  function initVehicleDatePickerBridges(root) {
+    getVehicleDateInputs(root).forEach(function(inp) {
+      createVehicleDatePickerBridge(inp);
+    });
   }
 
   function formatVehicleDateMaskValue(value) {
@@ -2408,6 +2516,8 @@
       });
     });
 
+    initVehicleDatePickerBridges(document);
+
     getVehicleDateInputs(document).forEach(function(input) {
       if (input.dataset.dateMaskBound === 'true') return;
       input.dataset.dateMaskBound = 'true';
@@ -2452,13 +2562,14 @@
       if (vehicleModalEl) {
         vehicleModalEl.addEventListener('pointerdown', function(ev) {
           if (document.activeElement !== muayeneInput) return;
-          if (ev.target === muayeneInput) return;
-          /* Takvim ikonuna (::webkit-calendar-picker-indicator) tıklanınca target bazen input değil;
-             composedPath içinde muayene input varsa yerel date picker açılsın, egzoz akışı tetiklenmesin */
-          var path = typeof ev.composedPath === 'function' ? ev.composedPath() : [];
-          for (var i = 0; i < path.length; i++) {
-            if (path[i] === muayeneInput) return;
+
+          var muayeneField = muayeneInput.closest('.vehicle-date-field');
+          if (muayeneField && ev.target instanceof Node && muayeneField.contains(ev.target)) {
+            return;
           }
+
+          if (ev.target === muayeneInput) return;
+
           scheduleMuayeneEgzozPromptRobust(72);
         }, true);
       }
