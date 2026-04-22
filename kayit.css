@@ -678,62 +678,112 @@ textarea.notes-auto-expand {
     display: block;
 }
 
-/* === EGZOZ SORU / TARİH — küçük dialog (#vehicle-modal ile birlikte yüklenir) === */
-#vehicle-egzoz-confirm-modal.modal-overlay,
-#vehicle-egzoz-date-modal.modal-overlay {
-    align-items: center !important;
-    justify-content: center !important;
-    padding: 16px !important;
-    box-sizing: border-box !important;
-    background: rgba(10, 13, 28, 0.48) !important;
-    backdrop-filter: blur(8px) !important;
-    -webkit-backdrop-filter: blur(8px) !important;
-    z-index: 10050 !important;
+/* === EGZOZ SORU / TARİH — kayıt modalı üstünde küçük dialog === */
+.egzoz-dialog-overlay {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0));
+    left: 0;
+    z-index: 10050;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    box-sizing: border-box;
+    background: rgba(10, 13, 28, 0.48);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
 }
-#vehicle-egzoz-confirm-modal.modal-overlay::before,
-#vehicle-egzoz-date-modal.modal-overlay::before {
-    display: none !important;
-    content: none !important;
+
+.egzoz-dialog-overlay.active,
+.egzoz-dialog-overlay.open {
+    display: flex;
 }
-#vehicle-egzoz-confirm-modal .modal-container,
-#vehicle-egzoz-date-modal .modal-container {
-    width: min(420px, calc(100vw - 32px)) !important;
-    max-width: min(420px, calc(100vw - 32px)) !important;
-    height: auto !important;
-    min-height: 0 !important;
-    max-height: none !important;
-    flex: 0 0 auto !important;
-    margin: 0 auto !important;
-    position: relative !important;
-    z-index: 10051 !important;
-    overflow: visible !important;
-    display: flex !important;
-    flex-direction: column !important;
+
+.egzoz-dialog-container {
+    width: min(420px, calc(100vw - 32px));
+    background: var(--modal-bg);
+    border: 0.5px solid var(--border-medium);
+    border-bottom: 1px solid var(--border-medium);
+    border-radius: var(--modal-radius);
+    box-shadow: 0 18px 44px rgba(0, 0, 0, 0.36);
+    overflow: hidden;
 }
-#vehicle-egzoz-confirm-modal .modal-container::after,
-#vehicle-egzoz-date-modal .modal-container::after {
-    display: none !important;
-    content: none !important;
+
+.egzoz-dialog-header {
+    position: relative;
+    height: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 54px;
+    border-bottom: 1px solid var(--border-ultra);
+    background: linear-gradient(180deg, rgba(255, 0, 0, 0.30) 0%, rgba(255, 0, 0, 0.18) 45%, transparent 100%);
 }
-#vehicle-egzoz-confirm-modal .modal-body,
-#vehicle-egzoz-date-modal .modal-body {
-    flex: 0 0 auto !important;
-    min-height: 0 !important;
-    max-height: none !important;
-    overflow: visible !important;
-    padding: 12px 18px 16px 18px !important;
+
+.egzoz-dialog-header h2 {
+    margin: 0;
+    color: var(--txt);
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-align: center;
 }
-#vehicle-egzoz-confirm-modal #vehicle-egzoz-confirm-message {
-    margin-bottom: 12px !important;
-    margin-top: 0 !important;
+
+.egzoz-dialog-close {
+    position: absolute;
+    top: 50%;
+    right: 14px;
+    width: 36px;
+    height: 36px;
+    display: grid;
+    place-items: center;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--txt-muted);
+    cursor: pointer;
+    transform: translateY(-50%);
+    transition: color 0.2s ease;
 }
-#vehicle-egzoz-confirm-modal .modal-body .universal-btn-group,
-#vehicle-egzoz-date-modal .modal-body .universal-btn-group {
-    margin-top: 0 !important;
-    margin-bottom: 0 !important;
+
+.egzoz-dialog-close:hover {
+    color: var(--txt);
 }
-#vehicle-egzoz-date-modal .modal-body > div:first-of-type {
-    margin-bottom: 10px !important;
+
+.egzoz-dialog-body {
+    padding: 14px 18px 16px 18px;
+}
+
+#vehicle-egzoz-confirm-message {
+    margin: 0 0 12px 0;
+    color: var(--form-label-color);
+    font-size: 14px;
+    line-height: 1.45;
+    text-align: center;
+}
+
+.egzoz-dialog-body .universal-btn-group {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.egzoz-dialog-date-field {
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.egzoz-dialog-date-field label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--form-label-color);
+    font-size: 14px;
+}
+
+.egzoz-dialog-date-field .form-input {
+    width: 180px;
+    text-align: center;
 }
 
 textarea.form-input::-webkit-scrollbar { width: 8px; }
