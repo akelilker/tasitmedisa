@@ -254,18 +254,107 @@
 
   let activeDynamicModalCustomSelect = null;
 
+  function normalizeDynamicModalSelectSearch(value) {
+    return String(value || '')
+      .toLocaleLowerCase('tr-TR')
+      .replace(/ı/g, 'i')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '');
+  }
+
+  function isDynamicModalSelectTouchDevice() {
+    return window.matchMedia && window.matchMedia('(hover: none)').matches;
+  }
+
+  function isDynamicModalSelectPrintableKey(e) {
+    return e.key && e.key.length === 1 && !e.altKey && !e.ctrlKey && !e.metaKey;
+  }
+
+  function filterDynamicModalCustomSelect(shell) {
+    if (!shell || shell.dataset.searchable !== '1') return;
+    const menu = shell.querySelector('.medisa-owner-select-menu');
+    const searchInput = shell.querySelector('.medisa-owner-select-search-input');
+    const optionsHost = shell.querySelector('.medisa-owner-select-options') || menu;
+    if (!menu || !searchInput || !optionsHost) return;
+
+    const query = normalizeDynamicModalSelectSearch(searchInput.value || '');
+    const secondaryValues = (shell.dataset.secondaryValues || '').split('|').filter(Boolean);
+    const mutedValues = (shell.dataset.mutedValues || '').split('|').filter(Boolean);
+    const optionItems = Array.from(optionsHost.querySelectorAll('.medisa-owner-select-option'));
+    let visibleRegularCount = 0;
+    let regularCount = 0;
+
+    optionItems.forEach(function(item) {
+      const value = String(item.dataset.value || '');
+      const text = String(item.textContent || '');
+      const isPlaceholder = !value || item.classList.contains('is-placeholder');
+      const isPinned = secondaryValues.indexOf(value) !== -1 || mutedValues.indexOf(value) !== -1;
+      const isRegular = !isPlaceholder && !isPinned && !item.classList.contains('is-secondary-action');
+      let shouldShow = true;
+
+      if (isRegular) {
+        regularCount += 1;
+        shouldShow = !query || normalizeDynamicModalSelectSearch(text).indexOf(query) !== -1;
+        if (shouldShow) visibleRegularCount += 1;
+      } else if (isPlaceholder) {
+        shouldShow = !query;
+      }
+
+      item.hidden = !shouldShow;
+      item.classList.toggle('is-filter-hidden', !shouldShow);
+    });
+
+    let emptyItem = optionsHost.querySelector('.medisa-owner-select-empty');
+    const shouldShowEmpty = !!query && regularCount > 0 && visibleRegularCount === 0;
+    if (shouldShowEmpty) {
+      if (!emptyItem) {
+        emptyItem = document.createElement('div');
+        emptyItem.className = 'medisa-owner-select-empty';
+        emptyItem.setAttribute('aria-live', 'polite');
+        const firstSecondary = optionsHost.querySelector('.medisa-owner-select-option.is-secondary-action');
+        optionsHost.insertBefore(emptyItem, firstSecondary || null);
+      }
+      emptyItem.textContent = shell.dataset.noResultsText || 'Sonuç bulunamadı';
+    } else if (emptyItem) {
+      emptyItem.remove();
+    }
+  }
+
+  function focusDynamicModalCustomSelectSearch(shell, initialValue) {
+    if (!shell || shell.dataset.searchable !== '1') return false;
+    const searchInput = shell.querySelector('.medisa-owner-select-search-input');
+    if (!searchInput) return false;
+    if (typeof initialValue === 'string') {
+      searchInput.value = initialValue;
+      filterDynamicModalCustomSelect(shell);
+      positionDynamicModalCustomSelectMenu(shell);
+    }
+    requestAnimationFrame(function() {
+      searchInput.focus();
+      if (typeof initialValue === 'string') {
+        const cursorPosition = searchInput.value.length;
+        searchInput.setSelectionRange(cursorPosition, cursorPosition);
+      } else {
+        searchInput.select();
+      }
+    });
+    return true;
+  }
+
   function closeDynamicModalCustomSelect(options) {
     const opts = options || {};
     const shell = activeDynamicModalCustomSelect;
     if (!shell) return;
     const trigger = shell.querySelector('.medisa-owner-select-trigger');
     const menu = shell.querySelector('.medisa-owner-select-menu');
+    const searchInput = shell.querySelector('.medisa-owner-select-search-input');
     shell.classList.remove('is-open');
     if (trigger) {
       trigger.classList.remove('is-open');
       trigger.setAttribute('aria-expanded', 'false');
       if (opts.focusTrigger) trigger.focus();
     }
+    if (searchInput) searchInput.value = '';
     if (menu) {
       menu.classList.remove('open');
       menu.setAttribute('aria-hidden', 'true');
@@ -277,6 +366,7 @@
       menu.style.width = '';
       menu.style.maxHeight = '';
     }
+    refreshDynamicModalCustomSelect(shell);
     activeDynamicModalCustomSelect = null;
   }
 
@@ -333,6 +423,9 @@
     const selectedOptionValue = selectedOption ? String(selectedOption.value || '') : '';
     const secondaryValues = (shell.dataset.secondaryValues || '').split('|').filter(Boolean);
     const mutedValues = (shell.dataset.mutedValues || '').split('|').filter(Boolean);
+    const isSearchable = shell.dataset.searchable === '1';
+    const existingSearchInput = shell.querySelector('.medisa-owner-select-search-input');
+    const searchValue = existingSearchInput ? existingSearchInput.value : '';
 
     triggerText.textContent = selectedText || placeholderText;
     trigger.classList.toggle('placeholder', !selectedOptionValue);
@@ -340,6 +433,48 @@
     trigger.setAttribute('aria-disabled', select.disabled ? 'true' : 'false');
 
     menu.innerHTML = '';
+    let optionsHost = menu;
+    if (isSearchable) {
+      const searchWrap = document.createElement('div');
+      searchWrap.className = 'medisa-owner-select-search-wrap';
+
+      const searchInput = document.createElement('input');
+      searchInput.type = 'text';
+      searchInput.className = 'form-input medisa-owner-select-search-input';
+      searchInput.placeholder = shell.dataset.searchPlaceholder || 'Ara';
+      searchInput.value = searchValue;
+      searchInput.setAttribute('autocomplete', 'off');
+      searchInput.setAttribute('aria-label', shell.dataset.searchPlaceholder || 'Ara');
+
+      const list = document.createElement('div');
+      list.className = 'medisa-owner-select-options';
+
+      searchWrap.appendChild(searchInput);
+      menu.appendChild(searchWrap);
+      menu.appendChild(list);
+      optionsHost = list;
+
+      searchInput.addEventListener('click', function(e) {
+        e.stopPropagation();
+      });
+      searchInput.addEventListener('input', function() {
+        filterDynamicModalCustomSelect(shell);
+        positionDynamicModalCustomSelectMenu(shell);
+      });
+      searchInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          e.preventDefault();
+          if (searchInput.value) {
+            searchInput.value = '';
+            filterDynamicModalCustomSelect(shell);
+            positionDynamicModalCustomSelectMenu(shell);
+          } else {
+            closeDynamicModalCustomSelect({ focusTrigger: true });
+          }
+        }
+      });
+    }
+
     options.forEach(function(option) {
       const value = String(option.value || '');
       const text = String(option.textContent || '').trim();
@@ -360,8 +495,10 @@
         item.disabled = true;
       }
 
-      menu.appendChild(item);
+      optionsHost.appendChild(item);
     });
+
+    filterDynamicModalCustomSelect(shell);
 
     if (activeDynamicModalCustomSelect === shell && menu.classList.contains('open')) {
       positionDynamicModalCustomSelectMenu(shell);
@@ -384,6 +521,9 @@
     menu.classList.add('open');
     menu.setAttribute('aria-hidden', 'false');
     positionDynamicModalCustomSelectMenu(shell);
+    if (shell.dataset.searchable === '1' && !isDynamicModalSelectTouchDevice()) {
+      focusDynamicModalCustomSelectSearch(shell);
+    }
   }
 
   function ensureDynamicModalCustomSelect(select, options) {
@@ -439,6 +579,10 @@
         } else if (e.key === 'Escape' && activeDynamicModalCustomSelect === shell) {
           e.preventDefault();
           closeDynamicModalCustomSelect({ focusTrigger: true });
+        } else if (shell.dataset.searchable === '1' && isDynamicModalSelectPrintableKey(e)) {
+          e.preventDefault();
+          openDynamicModalCustomSelect(shell);
+          focusDynamicModalCustomSelectSearch(shell, e.key);
         }
       });
 
@@ -459,6 +603,9 @@
     shell.dataset.placeholderText = options && options.placeholderText ? options.placeholderText : '';
     shell.dataset.secondaryValues = options && Array.isArray(options.secondaryValues) ? options.secondaryValues.join('|') : '';
     shell.dataset.mutedValues = options && Array.isArray(options.mutedValues) ? options.mutedValues.join('|') : '';
+    shell.dataset.searchable = options && options.searchable ? '1' : '';
+    shell.dataset.searchPlaceholder = options && options.searchPlaceholder ? options.searchPlaceholder : '';
+    shell.dataset.noResultsText = options && options.noResultsText ? options.noResultsText : '';
     refreshDynamicModalCustomSelect(shell);
     return shell;
   }
@@ -759,32 +906,32 @@
         ? {
             'year': '32px',
             'plate': '70px',
-            'brand': '2.6fr',
+            'brand': '2.8fr',
             'km': '52px',
             'transmission': '60px',
             'user': '1.95fr',
-            'branch': '1.88fr'
+            'branch': '1.68fr'
           }
         : isCompactDesktop
           ? {
               'year': '36px',
               'plate': '61px',
-              'brand': 'minmax(0, 1.032fr)',
+              'brand': 'minmax(0, 1.18fr)',
               'km': '49px',
               'type': 'minmax(0, 1fr)',
               'transmission': 'minmax(0, 0.66fr)',
               'user': 'minmax(0, 1fr)',
-              'branch': 'minmax(0, 1.108fr)'
+              'branch': 'minmax(0, 0.96fr)'
             }
         : {
             'year': '44px',
             'plate': '77px',
-            'brand': 'minmax(0, 1.25fr)',
+            'brand': 'minmax(0, 1.35fr)',
             'km': '56px',
             'type': 'minmax(0, 0.95fr)',
             'transmission': 'minmax(0, 0.7fr)',
             'user': 'minmax(0, 1.05fr)',
-            'branch': 'minmax(0, 1.05fr)'
+            'branch': 'minmax(0, 0.95fr)'
           };
       return columnOrder.map(key => widthMap[key] || '1fr').join(' ');
     } catch (e) {
@@ -860,6 +1007,33 @@
       }
     });
   }
+
+  function fitVehicleTextBoxes(root) {
+    if (typeof window.medisaFitTextWithinBox !== 'function') return;
+    const scope = root || document;
+    window.medisaFitTextWithinBox(scope, [
+      '.branch-name',
+      '.view-card .card-brand-model',
+      '.view-card .card-third-line',
+      '.view-list .list-cell.list-brand',
+      '.view-list .list-cell.list-branch',
+      '.view-list .list-cell.list-user',
+      '#vehicle-detail-modal .detail-row-value'
+    ].join(', '), {
+      minFontSize: window.innerWidth <= 640 ? 9.5 : 10,
+      maxReduction: 5,
+      step: 0.5
+    });
+  }
+
+  let vehicleFitResizeTimer = null;
+  window.addEventListener('resize', function() {
+    clearTimeout(vehicleFitResizeTimer);
+    vehicleFitResizeTimer = setTimeout(function() {
+      fitVehicleTextBoxes(document.getElementById('vehicles-modal'));
+      fitVehicleTextBoxes(document.getElementById('vehicle-detail-modal'));
+    }, 120);
+  });
 
   function toTitleCase(str) { return (typeof window.toTitleCase === 'function' ? window.toTitleCase(str) : str); }
   function formatBrandModel(str) { return (typeof window.formatBrandModel === 'function' ? window.formatBrandModel(str) : toTitleCase(str)); }
@@ -1582,6 +1756,7 @@
       lastDashboardRenderSignature === renderSignature
     ) {
       syncVehiclesListModeClass(false);
+      fitVehicleTextBoxes(modalContent);
       return;
     }
 
@@ -1612,6 +1787,7 @@
     modalContent.dataset.renderSignature = renderSignature;
     lastDashboardRenderSignature = renderSignature;
     syncVehiclesListModeClass(false);
+    fitVehicleTextBoxes(modalContent);
 
     /* Layout flex ile; kolon sayısı .branch-card width/flex ile belirlenir */
   };
@@ -1946,6 +2122,7 @@
       if (viewMode === 'list' && window.innerWidth <= 640) {
           applyMobileListHeaderFontSize(listContainer);
       }
+      fitVehicleTextBoxes(listContainer);
       
       // Mobil: sütun başlıklarına touch ile sürükle-bırak (yer değiştirme)
       if (viewMode === 'list') {
@@ -2254,7 +2431,10 @@
     modal.style.display = 'flex';
     requestAnimationFrame(() => {
       modal.classList.add('active');
-      requestAnimationFrame(() => { applyVehicleDetailSubeShrink(); });
+      requestAnimationFrame(() => {
+        applyVehicleDetailSubeShrink();
+        fitVehicleTextBoxes(modal);
+      });
     });
     };
     runDetail();
@@ -3661,7 +3841,10 @@ function renderVehicleDetailLeft(vehicle) {
           ensureDynamicModalCustomSelect(selectEl, {
             placeholderText: 'Kullanıcı Seçiniz',
             secondaryValues: ['__add_user__'],
-            mutedValues: ['__none__']
+            mutedValues: ['__none__'],
+            searchable: true,
+            searchPlaceholder: 'Kullanıcı ara',
+            noResultsText: 'Kullanıcı bulunamadı'
           });
           if (!selectEl.dataset.kullaniciAddHandler) {
             selectEl.dataset.kullaniciAddHandler = '1';
