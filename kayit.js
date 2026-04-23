@@ -1249,9 +1249,6 @@
     if (vehicleEgzozPromptState.handledMuayeneDate === muayeneDate || vehicleEgzozPromptState.pendingMuayeneDate === muayeneDate) {
       return false;
     }
-    if (!vehicleEgzozPromptState.userEditedMuayeneDate && !opts.force) {
-      return false;
-    }
     const promptDelay = Number.isFinite(opts.delayMs) ? opts.delayMs : 64;
     scheduleMuayeneEgzozPromptRobust(promptDelay);
     return true;
@@ -2484,7 +2481,6 @@
     const vehicleModalEl = getModal();
     if (muayeneInput) {
       muayeneInput.addEventListener('input', function() {
-        vehicleEgzozPromptState.userEditedMuayeneDate = true;
         maybeScheduleVehicleMuayeneEgzozPrompt(muayeneInput, { delayMs: 56, commitAttempt: false });
       });
       muayeneInput.addEventListener('change', function() {
@@ -2498,7 +2494,6 @@
       });
       muayeneInput.addEventListener('keydown', function(e) {
         if (e.key === 'Enter' || e.key === 'Tab') {
-          vehicleEgzozPromptState.userEditedMuayeneDate = true;
           setTimeout(function() {
             maybeScheduleVehicleMuayeneEgzozPrompt(muayeneInput, { delayMs: e.key === 'Tab' ? 96 : 84, commitAttempt: true });
           }, 0);
@@ -2516,20 +2511,12 @@
             maybeScheduleVehicleMuayeneEgzozPrompt(muayeneInput, { delayMs: 72, commitAttempt: true });
           }, 0);
         };
-        const handleMuayeneFocusOut = function(ev) {
-          if (ev.target !== muayeneInput) return;
-          if (!vehicleEgzozPromptState.userEditedMuayeneDate) return;
-          setTimeout(function() {
-            maybeScheduleVehicleMuayeneEgzozPrompt(muayeneInput, { delayMs: 72, commitAttempt: true, force: true });
-          }, 0);
-        };
         if (window.PointerEvent) {
           vehicleModalEl.addEventListener('pointerdown', handleMuayeneCommitOutsideInput, true);
         } else {
           vehicleModalEl.addEventListener('touchend', handleMuayeneCommitOutsideInput, true);
           vehicleModalEl.addEventListener('mousedown', handleMuayeneCommitOutsideInput, true);
         }
-        vehicleModalEl.addEventListener('focusout', handleMuayeneFocusOut, true);
       }
     }
 
