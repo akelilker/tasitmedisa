@@ -650,6 +650,7 @@ document.addEventListener('DOMContentLoaded', () => {
   modalObserver.observe(document.body, { childList: true, subtree: true });
 });
 
+
 // Lazy modül asset sürümleri — tek nesne; index.html içindeki style-core ?v= ile tasitlar sürümü uyumlu kalmalı
 var MEDISA_MODULE_VERSIONS = {
   tasitlar: '20260422.8',
