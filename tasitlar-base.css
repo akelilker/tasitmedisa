@@ -1257,6 +1257,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     color: var(--txt-muted);
     box-shadow: 0 4px 12px var(--shadow-dark);
     white-space: normal;
+    cursor: pointer;
 }
 #vehicle-detail-modal .muayene-detail-tooltip.visible {
     display: block !important;
