@@ -7562,21 +7562,43 @@ function renderVehicleDetailLeft(vehicle) {
     return Promise.resolve();
   }
 
+  function openVehicleTypePickerOverlayFallback(vehicleId) {
+    window.vehicleTypePickerFromDetail = vehicleId;
+    const picker = document.getElementById('vehicle-type-picker-overlay');
+    if (!picker) return;
+    picker.classList.remove('u-hidden');
+    picker.style.display = 'flex';
+    picker.setAttribute('aria-hidden', 'false');
+  }
+
+  function ensureVehicleDetailContext(vehicleId) {
+    const detailModal = document.getElementById('vehicle-detail-modal');
+    const isDetailVisible = !!(
+      detailModal &&
+      detailModal.style.display !== 'none' &&
+      (detailModal.classList.contains('active') || detailModal.classList.contains('open'))
+    );
+    if (!isDetailVisible && typeof window.showVehicleDetail === 'function') {
+      window.showVehicleDetail(vehicleId);
+    }
+  }
+
   function openVehicleTypePickerFromDetail() {
-    const vehicleId = window.currentDetailVehicleId;
+    const vehicleId = String(window.currentDetailVehicleId || '').trim();
     if (!vehicleId) return;
+    ensureVehicleDetailContext(vehicleId);
+    if (typeof window.openVehicleTypePickerOverlay === 'function') {
+      window.openVehicleTypePickerOverlay({ vehicleId: vehicleId });
+      return;
+    }
+    // Kayıt modülü ilk kez yüklenirken gecikme olsa bile picker anında görünsün.
+    openVehicleTypePickerOverlayFallback(vehicleId);
     ensureVehicleTypePickerModule().then(function() {
       if (typeof window.openVehicleTypePickerOverlay === 'function') {
         window.openVehicleTypePickerOverlay({ vehicleId: vehicleId });
         return;
       }
-      window.vehicleTypePickerFromDetail = vehicleId;
-      const picker = document.getElementById('vehicle-type-picker-overlay');
-      if (picker) {
-        picker.classList.remove('u-hidden');
-        picker.style.display = 'flex';
-        picker.setAttribute('aria-hidden', 'false');
-      }
+      openVehicleTypePickerOverlayFallback(vehicleId);
     }).catch(function(err) {
       console.error('Taşıt tipi seçim ekranı yüklenemedi:', err);
     });
