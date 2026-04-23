@@ -7,22 +7,6 @@
 (function () {
   const STORAGE_KEY = "medisa_vehicles_v1";
   const BRANCHES_KEY = "medisa_branches_v1";
-  const DEBUG_SESSION_ID = '0d5ba2';
-  const DEBUG_QUERY_KEY = 'debug';
-
-  function isVehicleDateDebugEnabled() {
-    try {
-      const url = new URL(window.location.href);
-      if (url.searchParams.get(DEBUG_QUERY_KEY) === DEBUG_SESSION_ID) return true;
-      if (window.sessionStorage && window.sessionStorage.getItem('medisa_debug_session') === DEBUG_SESSION_ID) return true;
-      if (window.localStorage && window.localStorage.getItem('medisa_debug_session') === DEBUG_SESSION_ID) return true;
-    } catch (e) {}
-    return false;
-  }
-
-  // #region agent log
-  if (isVehicleDateDebugEnabled()) fetch('http://127.0.0.1:7753/ingest/302b1fd7-6809-479d-8a04-ce5cebe4d3da',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'0d5ba2'},body:JSON.stringify({sessionId:'0d5ba2',runId:'pre-fix-2',hypothesisId:'H5',location:'kayit.js:8',message:'kayit-module-loaded',data:{readyState:document.readyState},timestamp:Date.now()})}).catch(()=>{});
-  // #endregion
 
   let isEditMode = false;
   let editingVehicleId = null;
@@ -87,13 +71,6 @@
   function readVehicles() { return (typeof window.getMedisaVehicles === 'function' ? window.getMedisaVehicles() : null) || []; }
   const VEHICLE_DATE_INPUT_SELECTOR = 'input.form-input[data-date-input="vehicle"]';
 
-  // #region agent log
-  function sendVehicleDateDebugLog(location, message, hypothesisId, data) {
-    if (!isVehicleDateDebugEnabled()) return;
-    fetch('http://127.0.0.1:7753/ingest/302b1fd7-6809-479d-8a04-ce5cebe4d3da',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'0d5ba2'},body:JSON.stringify({sessionId:'0d5ba2',runId:'pre-fix-1',hypothesisId:hypothesisId,location:location,message:message,data:data||{},timestamp:Date.now()})}).catch(()=>{});
-  }
-  // #endregion
-
   function getVehicleDateInputs(root) {
     return $all(VEHICLE_DATE_INPUT_SELECTOR, root || document);
   }
@@ -105,178 +82,10 @@
     return parts.length === 3 ? `${parts[2]}.${parts[1]}.${parts[0]}` : '';
   }
 
-  function syncVehicleDatePickerNativeValue(input, nativeInput) {
-    if (!input || !nativeInput) return;
-    const iso = readVehicleDateIso(input);
-    nativeInput.value = iso || '';
-  }
-
-  function syncVehicleDatePickerTextValue(input, nativeInput) {
-    if (!input || !nativeInput) return;
-    setVehicleDateInputValue(input, nativeInput.value || '');
-    input.dispatchEvent(new Event('input', { bubbles: true }));
-    input.dispatchEvent(new Event('change', { bubbles: true }));
-  }
-
   function setVehicleDateInputValue(input, value) {
     if (!input) return;
     input.value = formatIsoForVehicleDateInput(value);
     syncSingleDateInputVisibility(input);
-
-    // KRİTİK: native date ile senkron (native DOM'da slot'ta olmayabilir → ref öncelikli)
-    var nativeInput = input._vehicleDatePickerNative;
-    if (!nativeInput) {
-      var fieldForNative = input.closest('.vehicle-date-field');
-      if (fieldForNative) nativeInput = fieldForNative.querySelector('.vehicle-date-picker-native');
-    }
-    if (nativeInput) {
-      var isoSync = readVehicleDateIso(input);
-      nativeInput.value = isoSync || '';
-    }
-  }
-
-  function createVehicleDatePickerBridge(input) {
-    if (!input || !input.matches(VEHICLE_DATE_INPUT_SELECTOR)) return;
-    if (input.dataset.datePickerBridge === 'true') return;
-
-    const parent = input.parentNode;
-    if (!parent) return;
-
-    const field = document.createElement('div');
-    field.className = 'vehicle-date-field';
-    parent.insertBefore(field, input);
-    field.appendChild(input);
-
-    const slot = document.createElement('span');
-    slot.className = 'vehicle-date-picker-slot';
-
-    const trigger = document.createElement('button');
-    trigger.type = 'button';
-    trigger.className = 'vehicle-date-picker-trigger';
-    trigger.tabIndex = -1;
-    trigger.setAttribute('aria-hidden', 'true');
-    trigger.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M8 2v4"/><path d="M16 2v4"/><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18"/></svg>';
-
-    const nativeInput = document.createElement('input');
-    nativeInput.type = 'date';
-    nativeInput.className = 'vehicle-date-picker-native';
-    nativeInput.tabIndex = -1;
-    nativeInput.setAttribute('aria-label', 'Tarih seç');
-
-    slot.appendChild(trigger);
-    slot.appendChild(nativeInput);
-    field.appendChild(slot);
-    input._vehicleDatePickerNative = nativeInput;
-
-    // #region agent log
-    sendVehicleDateDebugLog('kayit.js:createVehicleDatePickerBridge','bridge-created','H1',{
-      inputId: input.id || '',
-      inEgzozDialog: !!input.closest('.egzoz-dialog-date-field'),
-      nativeConnected: document.body.contains(nativeInput),
-      fieldWidth: Math.round((field.getBoundingClientRect && field.getBoundingClientRect().width) || 0)
-    });
-    // #endregion
-
-    input.dataset.datePickerBridge = 'true';
-
-    function openNativePicker(ev) {
-      if (ev) {
-        ev.preventDefault();
-        ev.stopPropagation();
-      }
-      if (input.disabled || nativeInput.disabled) return;
-
-      syncVehicleDatePickerNativeValue(input, nativeInput);
-
-      // #region agent log
-      sendVehicleDateDebugLog('kayit.js:openNativePicker','picker-open-attempt','H2',{
-        inputId: input.id || '',
-        nativeConnected: nativeInput.isConnected,
-        hasShowPicker: typeof nativeInput.showPicker === 'function',
-        inputDisabled: !!input.disabled,
-        nativeDisabled: !!nativeInput.disabled,
-        triggerRect: (function(){ var r = trigger.getBoundingClientRect(); return { left: Math.round(r.left), top: Math.round(r.top), width: Math.round(r.width), height: Math.round(r.height) }; })()
-      });
-      // #endregion
-
-      // Native picker aç
-      try {
-        if (typeof nativeInput.showPicker === 'function') {
-          // #region agent log
-          sendVehicleDateDebugLog('kayit.js:openNativePicker','showPicker-invoking','H2',{ inputId: input.id || '' });
-          // #endregion
-          nativeInput.showPicker();
-          return;
-        }
-      } catch (err) {
-        // #region agent log
-        sendVehicleDateDebugLog('kayit.js:openNativePicker','showPicker-error','H2',{
-          inputId: input.id || '',
-          errorName: err && err.name ? String(err.name) : '',
-          errorMessage: err && err.message ? String(err.message) : ''
-        });
-        // #endregion
-      }
-
-      // Fallback (Safari vs.)
-      try { nativeInput.focus({ preventScroll: true }); } catch (err) { nativeInput.focus(); }
-
-      setTimeout(function() {
-        // #region agent log
-        sendVehicleDateDebugLog('kayit.js:openNativePicker','fallback-click','H3',{
-          inputId: input.id || '',
-          activeTag: document.activeElement && document.activeElement.tagName ? document.activeElement.tagName : '',
-          activeType: document.activeElement && document.activeElement.type ? document.activeElement.type : ''
-        });
-        // #endregion
-        try { nativeInput.click(); } catch (err) {}
-      }, 0);
-    }
-
-    input.addEventListener('input', function() {
-      syncVehicleDatePickerNativeValue(input, nativeInput);
-    });
-    input.addEventListener('blur', function() {
-      syncVehicleDatePickerNativeValue(input, nativeInput);
-    });
-    input.addEventListener('change', function() {
-      syncVehicleDatePickerNativeValue(input, nativeInput);
-    });
-
-    trigger.addEventListener('click', openNativePicker);
-
-    nativeInput.addEventListener('pointerdown', function(ev) {
-      ev.stopPropagation();
-    }, true);
-    nativeInput.addEventListener('click', function(ev) {
-      ev.stopPropagation();
-    }, true);
-    nativeInput.addEventListener('change', function() {
-      // #region agent log
-      sendVehicleDateDebugLog('kayit.js:nativeInput:change','native-change','H2',{
-        inputId: input.id || '',
-        value: nativeInput.value || ''
-      });
-      // #endregion
-      syncVehicleDatePickerTextValue(input, nativeInput);
-    });
-    nativeInput.addEventListener('input', function() {
-      syncVehicleDatePickerTextValue(input, nativeInput);
-    });
-
-    syncVehicleDatePickerNativeValue(input, nativeInput);
-  }
-
-  function initVehicleDatePickerBridges(root) {
-    // #region agent log
-    sendVehicleDateDebugLog('kayit.js:initVehicleDatePickerBridges','bridge-init','H1',{
-      count: getVehicleDateInputs(root).length,
-      rootIsDocument: root === document
-    });
-    // #endregion
-    getVehicleDateInputs(root).forEach(function(inp) {
-      createVehicleDatePickerBridge(inp);
-    });
   }
 
   function formatVehicleDateMaskValue(value) {
@@ -2599,8 +2408,6 @@
       });
     });
 
-    initVehicleDatePickerBridges(document);
-
     getVehicleDateInputs(document).forEach(function(input) {
       if (input.dataset.dateMaskBound === 'true') return;
       input.dataset.dateMaskBound = 'true';
@@ -2645,12 +2452,6 @@
       if (vehicleModalEl) {
         vehicleModalEl.addEventListener('pointerdown', function(ev) {
           if (document.activeElement !== muayeneInput) return;
-
-          var muayeneField = muayeneInput.closest('.vehicle-date-field');
-          if (muayeneField && ev.target instanceof Node && muayeneField.contains(ev.target)) {
-            return;
-          }
-
           if (ev.target === muayeneInput) return;
 
           scheduleMuayeneEgzozPromptRobust(72);
