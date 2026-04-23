@@ -903,6 +903,16 @@ white-space: nowrap;
 text-overflow: ellipsis;
 }
 
+.stok-list-cell.date-warning-red {
+color: var(--theme-color);
+font-weight: 600;
+}
+
+.stok-list-cell.date-warning-orange {
+color: var(--orange-warn);
+font-weight: 600;
+}
+
 /* === DETAY EKLEME BUTONU === */
 .stok-list-top-controls {
 display: flex;
