@@ -695,6 +695,13 @@
         }).join('')}</tr>`;
     }
 
+    function getStokDateWarningClass(dateValue) {
+        if (!dateValue || typeof window.checkDateWarnings !== 'function') return '';
+        const warning = window.checkDateWarnings(dateValue);
+        if (!warning || typeof warning.class !== 'string') return '';
+        return warning.class;
+    }
+
     // Veri satırı oluştur
     function createStokDataRow(vehicle, rowNum, branches) {
         const branch = vehicle.branchId ? branches.find(b => b.id === vehicle.branchId) : null;
@@ -717,8 +724,16 @@
         }));
 
         const detailCells = [
-            { key: 'sigorta', value: vehicle.sigortaDate ? formatDate(vehicle.sigortaDate) : '-' },
-            { key: 'kasko', value: vehicle.kaskoDate ? formatDate(vehicle.kaskoDate) : '-' },
+            {
+                key: 'sigorta',
+                value: vehicle.sigortaDate ? formatDate(vehicle.sigortaDate) : '-',
+                warningClass: getStokDateWarningClass(vehicle.sigortaDate)
+            },
+            {
+                key: 'kasko',
+                value: vehicle.kaskoDate ? formatDate(vehicle.kaskoDate) : '-',
+                warningClass: getStokDateWarningClass(vehicle.kaskoDate)
+            },
             { key: 'kaskoDegeri', value: (function() {
                 var yearForKasko = vehicle.year || vehicle.modelYili || '';
                 var kaskoDegeri = vehicle.kaskoDegeri;
@@ -733,7 +748,11 @@
                 }
                 return String(kaskoDegeri).trim() || '-';
             })() },
-            { key: 'muayene', value: vehicle.muayeneDate ? formatDate(vehicle.muayeneDate) : '-' },
+            {
+                key: 'muayene',
+                value: vehicle.muayeneDate ? formatDate(vehicle.muayeneDate) : '-',
+                warningClass: getStokDateWarningClass(vehicle.muayeneDate)
+            },
             { key: 'kredi', value: vehicle.kredi === 'var' ? 'Var' : vehicle.kredi === 'yok' ? 'Yok' : '-' },
             { key: 'lastik', value: vehicle.lastikDurumu === 'var' ? 'Var' : vehicle.lastikDurumu === 'yok' ? 'Yok' : '-' },
             { key: 'utts', value: vehicle.uttsTanimlandi ? 'Evet' : 'Hayır' },
@@ -774,9 +793,10 @@
         const columnKeys = cells.map(c => ({ key: c.key }));
         const gridTemplateColumns = getColumnWidths(columnKeys);
 
-        return `<tr class="stok-list-row" style="grid-template-columns: ${gridTemplateColumns}">${cells.map(cell =>
-            `<td class="stok-list-cell" data-col="${cell.key}">${escapeHtml(cell.value)}</td>`
-        ).join('')}</tr>`;
+        return `<tr class="stok-list-row" style="grid-template-columns: ${gridTemplateColumns}">${cells.map(cell => {
+            const cellClass = ['stok-list-cell', cell.warningClass || ''].filter(Boolean).join(' ');
+            return `<td class="${cellClass}" data-col="${cell.key}">${escapeHtml(cell.value)}</td>`;
+        }).join('')}</tr>`;
     }
 
     // Sıralama uygula
