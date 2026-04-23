@@ -1435,6 +1435,12 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 #vehicle-detail-modal .detail-row-value {
     color: #a0aec0 !important;
 }
+#vehicle-detail-modal .detail-row-value.date-warning-red {
+    color: var(--theme-color) !important;
+}
+#vehicle-detail-modal .detail-row-value.date-warning-orange {
+    color: var(--orange-warn) !important;
+}
 #vehicle-detail-modal .detail-item {
     color: #a0aec0 !important;
 }
