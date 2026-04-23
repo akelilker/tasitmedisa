@@ -576,6 +576,44 @@
       return `<div class="settings-card-gorev">${escapeHtml(roleLabel)}</div>`;
     }
 
+    const USER_MANAGEMENT_ROLE_SORT_ORDER = {
+      genel_yonetici: 0,
+      sube_yonetici: 1,
+      kullanici: 2
+    };
+
+    function getUserManagementRoleSortRank(user) {
+      const role = getUiRoleFromUser(user);
+      if (Object.prototype.hasOwnProperty.call(USER_MANAGEMENT_ROLE_SORT_ORDER, role)) {
+        return USER_MANAGEMENT_ROLE_SORT_ORDER[role];
+      }
+      return 99;
+    }
+
+    function getUserManagementSortableName(user) {
+      const rawName = String((user && (user.name || user.isim)) || '').trim();
+      const formatted = formatUserFullName(rawName);
+      return formatted || rawName || 'İsimsiz';
+    }
+
+    function compareUserManagementListOrder(a, b) {
+      const roleDiff = getUserManagementRoleSortRank(a) - getUserManagementRoleSortRank(b);
+      if (roleDiff !== 0) return roleDiff;
+
+      const nameCompare = getUserManagementSortableName(a).localeCompare(
+        getUserManagementSortableName(b),
+        'tr',
+        { sensitivity: 'base', numeric: true }
+      );
+      if (nameCompare !== 0) return nameCompare;
+
+      return String((a && a.id) || '').localeCompare(
+        String((b && b.id) || ''),
+        'tr',
+        { sensitivity: 'base', numeric: true }
+      );
+    }
+
     const USER_FORM_ROLE_OPTIONS = [
       { value: 'kullanici', label: 'Kullan\u0131c\u0131' },
       { value: 'sube_yonetici', label: 'Y\u00f6netici' },
@@ -1616,7 +1654,9 @@
         return;
       }
 
-      const rows = filteredUsers.map(user => {
+      const sortedUsers = filteredUsers.slice().sort(compareUserManagementListOrder);
+
+      const rows = sortedUsers.map(user => {
         const primaryBranchId = user.branchId || ((user.branchIds && user.branchIds.length) ? user.branchIds[0] : '');
         const branch = branches.find(x => String(x.id) === String(primaryBranchId));
         const branchName = branch ? branch.name : '-';
