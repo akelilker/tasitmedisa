@@ -18,7 +18,8 @@
     promptOpen: false,
     inputOpen: false,
     resumeSave: false,
-    suppressPrompt: false
+    suppressPrompt: false,
+    userEditedMuayeneDate: false
   };
 
   function $(sel, root = document) { return root.querySelector(sel); }
@@ -1050,6 +1051,7 @@
     vehicleEgzozPromptState.inputOpen = false;
     vehicleEgzozPromptState.resumeSave = false;
     vehicleEgzozPromptState.suppressPrompt = false;
+    vehicleEgzozPromptState.userEditedMuayeneDate = false;
   }
 
   function closeVehicleEgzozConfirmModal() {
@@ -1245,6 +1247,9 @@
       return false;
     }
     if (vehicleEgzozPromptState.handledMuayeneDate === muayeneDate || vehicleEgzozPromptState.pendingMuayeneDate === muayeneDate) {
+      return false;
+    }
+    if (!vehicleEgzozPromptState.userEditedMuayeneDate && !opts.force) {
       return false;
     }
     const promptDelay = Number.isFinite(opts.delayMs) ? opts.delayMs : 64;
@@ -1626,6 +1631,7 @@
     if (egzozDateInput) setVehicleDateInputValue(egzozDateInput, egzozDifferent ? egzozDate : '');
     vehicleEgzozPromptState.handledMuayeneDate = readVehicleDateIso(dateInputs[2]) || '';
     vehicleEgzozPromptState.pendingMuayeneDate = '';
+    vehicleEgzozPromptState.userEditedMuayeneDate = false;
     syncEgzozMuayeneFields(modal);
     syncDateInputVisibility(modal);
 
@@ -2478,9 +2484,11 @@
     const vehicleModalEl = getModal();
     if (muayeneInput) {
       muayeneInput.addEventListener('input', function() {
+        vehicleEgzozPromptState.userEditedMuayeneDate = true;
         maybeScheduleVehicleMuayeneEgzozPrompt(muayeneInput, { delayMs: 56, commitAttempt: false });
       });
       muayeneInput.addEventListener('change', function() {
+        vehicleEgzozPromptState.userEditedMuayeneDate = true;
         setTimeout(function() {
           maybeScheduleVehicleMuayeneEgzozPrompt(muayeneInput, { delayMs: 48, commitAttempt: true });
         }, 0);
@@ -2490,10 +2498,15 @@
       });
       muayeneInput.addEventListener('keydown', function(e) {
         if (e.key === 'Enter' || e.key === 'Tab') {
+          vehicleEgzozPromptState.userEditedMuayeneDate = true;
           setTimeout(function() {
             maybeScheduleVehicleMuayeneEgzozPrompt(muayeneInput, { delayMs: e.key === 'Tab' ? 96 : 84, commitAttempt: true });
           }, 0);
         }
+      });
+      muayeneInput.addEventListener('keyup', function(e) {
+        if (!e.key || e.key.length !== 1) return;
+        vehicleEgzozPromptState.userEditedMuayeneDate = true;
       });
       if (vehicleModalEl) {
         const handleMuayeneCommitOutsideInput = function(ev) {
@@ -2503,12 +2516,20 @@
             maybeScheduleVehicleMuayeneEgzozPrompt(muayeneInput, { delayMs: 72, commitAttempt: true });
           }, 0);
         };
+        const handleMuayeneFocusOut = function(ev) {
+          if (ev.target !== muayeneInput) return;
+          if (!vehicleEgzozPromptState.userEditedMuayeneDate) return;
+          setTimeout(function() {
+            maybeScheduleVehicleMuayeneEgzozPrompt(muayeneInput, { delayMs: 72, commitAttempt: true, force: true });
+          }, 0);
+        };
         if (window.PointerEvent) {
           vehicleModalEl.addEventListener('pointerdown', handleMuayeneCommitOutsideInput, true);
         } else {
           vehicleModalEl.addEventListener('touchend', handleMuayeneCommitOutsideInput, true);
           vehicleModalEl.addEventListener('mousedown', handleMuayeneCommitOutsideInput, true);
         }
+        vehicleModalEl.addEventListener('focusout', handleMuayeneFocusOut, true);
       }
     }
 
