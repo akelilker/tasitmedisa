@@ -1155,6 +1155,10 @@
   #vehicle-detail-modal .detail-row-value {
     color: #a0aec0 !important;
   }
+  #vehicle-detail-modal .detail-row-value.detail-user-empty,
+  #vehicle-detail-modal .detail-user-empty {
+    color: #d40000 !important;
+  }
   #vehicle-detail-modal .detail-item {
     color: #a0aec0 !important;
   }
@@ -1420,7 +1424,7 @@
   #vehicle-detail-modal .detail-row-kaporta .detail-row-value {
     font-size: calc(16px - 1.33px) !important;
   }
-  .detail-row-value.detail-user-empty {
+  #vehicle-detail-modal .detail-row-value.detail-user-empty {
     color: #d40000 !important;
     font-size: 17px !important; /* +1pt (value 16px) */
     white-space: nowrap !important; /* Mobilde tek satırda kal */
