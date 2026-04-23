@@ -18,7 +18,8 @@
     promptOpen: false,
     inputOpen: false,
     resumeSave: false,
-    suppressPrompt: false
+    suppressPrompt: false,
+    userEditedMuayeneDate: false
   };
 
   function $(sel, root = document) { return root.querySelector(sel); }
@@ -1050,6 +1051,7 @@
     vehicleEgzozPromptState.inputOpen = false;
     vehicleEgzozPromptState.resumeSave = false;
     vehicleEgzozPromptState.suppressPrompt = false;
+    vehicleEgzozPromptState.userEditedMuayeneDate = false;
   }
 
   function closeVehicleEgzozConfirmModal() {
@@ -1626,6 +1628,7 @@
     if (egzozDateInput) setVehicleDateInputValue(egzozDateInput, egzozDifferent ? egzozDate : '');
     vehicleEgzozPromptState.handledMuayeneDate = readVehicleDateIso(dateInputs[2]) || '';
     vehicleEgzozPromptState.pendingMuayeneDate = '';
+    vehicleEgzozPromptState.userEditedMuayeneDate = false;
     syncEgzozMuayeneFields(modal);
     syncDateInputVisibility(modal);
 
@@ -2481,6 +2484,7 @@
         maybeScheduleVehicleMuayeneEgzozPrompt(muayeneInput, { delayMs: 56, commitAttempt: false });
       });
       muayeneInput.addEventListener('change', function() {
+        vehicleEgzozPromptState.userEditedMuayeneDate = true;
         setTimeout(function() {
           maybeScheduleVehicleMuayeneEgzozPrompt(muayeneInput, { delayMs: 48, commitAttempt: true });
         }, 0);
@@ -2494,6 +2498,10 @@
             maybeScheduleVehicleMuayeneEgzozPrompt(muayeneInput, { delayMs: e.key === 'Tab' ? 96 : 84, commitAttempt: true });
           }, 0);
         }
+      });
+      muayeneInput.addEventListener('keyup', function(e) {
+        if (!e.key || e.key.length !== 1) return;
+        vehicleEgzozPromptState.userEditedMuayeneDate = true;
       });
       if (vehicleModalEl) {
         const handleMuayeneCommitOutsideInput = function(ev) {
