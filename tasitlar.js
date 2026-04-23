@@ -7543,6 +7543,25 @@ function renderVehicleDetailLeft(vehicle) {
   let muayeneTooltipCloseTimeout = null;
   let muayenePickerPointerHandledAt = 0;
   let vehicleTypePickerModulePromise = null;
+  function resolveMuayeneEventTargetElement(e) {
+    const target = e && e.target ? e.target : null;
+    if (target && target.nodeType === 1 && typeof target.closest === 'function') {
+      return target;
+    }
+    if (target && target.nodeType === 3 && target.parentElement && typeof target.parentElement.closest === 'function') {
+      return target.parentElement;
+    }
+    if (e && typeof e.composedPath === 'function') {
+      const path = e.composedPath();
+      for (let i = 0; i < path.length; i += 1) {
+        const node = path[i];
+        if (node && node.nodeType === 1 && typeof node.closest === 'function') {
+          return node;
+        }
+      }
+    }
+    return null;
+  }
   function ensureVehicleTypePickerModule() {
     if (typeof window.openVehicleTypePickerOverlay === 'function') {
       return Promise.resolve();
@@ -7604,6 +7623,15 @@ function renderVehicleDetailLeft(vehicle) {
       console.error('Taşıt tipi seçim ekranı yüklenemedi:', err);
     });
   }
+  window.openVehicleTypePickerFromDetailWarning = function(ev) {
+    const eventObj = ev || window.event || null;
+    const targetEl = resolveMuayeneEventTargetElement(eventObj);
+    const triggerEl = targetEl
+      ? (targetEl.closest('.muayene-detail-tooltip-link') || targetEl.closest('.muayene-detail-tooltip') || targetEl.closest('.muayene-detail-tooltip-wrap'))
+      : null;
+    handleMuayenePickerTrigger(eventObj, triggerEl || (document.getElementById('vehicle-detail-modal') && document.getElementById('vehicle-detail-modal').querySelector('.muayene-detail-tooltip-link')));
+    return false;
+  };
 
   function hideMuayeneTooltipByTrigger(triggerEl) {
     const wrap = triggerEl && triggerEl.closest('.detail-muayene-value-wrap');
@@ -7625,7 +7653,9 @@ function renderVehicleDetailLeft(vehicle) {
   }
 
   document.addEventListener('mouseover', function(e) {
-    const wrap = e.target.closest('#vehicle-detail-modal .detail-row-muayene-no-type .detail-muayene-value-wrap');
+    const targetEl = resolveMuayeneEventTargetElement(e);
+    if (!targetEl) return;
+    const wrap = targetEl.closest('#vehicle-detail-modal .detail-row-muayene-no-type .detail-muayene-value-wrap');
     if (!wrap) return;
     if (muayeneTooltipCloseTimeout) {
       clearTimeout(muayeneTooltipCloseTimeout);
@@ -7638,7 +7668,9 @@ function renderVehicleDetailLeft(vehicle) {
     }
   });
   document.addEventListener('mouseout', function(e) {
-    const wrap = e.target.closest('#vehicle-detail-modal .detail-row-muayene-no-type .detail-muayene-value-wrap');
+    const targetEl = resolveMuayeneEventTargetElement(e);
+    if (!targetEl) return;
+    const wrap = targetEl.closest('#vehicle-detail-modal .detail-row-muayene-no-type .detail-muayene-value-wrap');
     if (!wrap) return;
     if (e.relatedTarget && wrap.contains(e.relatedTarget)) return;
     muayeneTooltipCloseTimeout = setTimeout(function() {
@@ -7653,10 +7685,12 @@ function renderVehicleDetailLeft(vehicle) {
   // Mobilde link/ünlem dokunuşunda ghost click oluşup detaydan düşme riskine karşı
   // picker tetiklemeyi pointer/touch başlangıcında tekilleştiriyoruz.
   function onMuayenePickerPointerLikeDown(e) {
+    const targetEl = resolveMuayeneEventTargetElement(e);
     if (e.type === 'touchstart' && typeof window.PointerEvent === 'function') return;
-    const modal = e.target.closest('#vehicle-detail-modal');
+    if (!targetEl) return;
+    const modal = targetEl.closest('#vehicle-detail-modal');
     if (!modal) return;
-    const trigger = e.target.closest('.muayene-detail-exclamation, .muayene-detail-tooltip-link, .muayene-detail-tooltip, .muayene-detail-tooltip-wrap');
+    const trigger = targetEl.closest('.muayene-detail-exclamation, .muayene-detail-tooltip-link, .muayene-detail-tooltip, .muayene-detail-tooltip-wrap');
     if (!trigger) return;
     muayenePickerPointerHandledAt = Date.now();
     handleMuayenePickerTrigger(e, trigger);
@@ -7664,12 +7698,14 @@ function renderVehicleDetailLeft(vehicle) {
   document.addEventListener('pointerdown', onMuayenePickerPointerLikeDown, true);
   document.addEventListener('touchstart', onMuayenePickerPointerLikeDown, { capture: true, passive: false });
   document.addEventListener('click', function(e) {
-    const modal = e.target.closest('#vehicle-detail-modal');
+    const targetEl = resolveMuayeneEventTargetElement(e);
+    if (!targetEl) return;
+    const modal = targetEl.closest('#vehicle-detail-modal');
     if (!modal) return;
-    const exclamation = e.target.closest('.muayene-detail-exclamation');
-    const link = e.target.closest('.muayene-detail-tooltip-link');
-    const tooltipBox = e.target.closest('.muayene-detail-tooltip');
-    const tooltipWrap = e.target.closest('.muayene-detail-tooltip-wrap');
+    const exclamation = targetEl.closest('.muayene-detail-exclamation');
+    const link = targetEl.closest('.muayene-detail-tooltip-link');
+    const tooltipBox = targetEl.closest('.muayene-detail-tooltip');
+    const tooltipWrap = targetEl.closest('.muayene-detail-tooltip-wrap');
     const trigger = exclamation || link || tooltipBox || tooltipWrap;
     if (trigger) {
       if (Date.now() - muayenePickerPointerHandledAt < 700) {
@@ -7682,7 +7718,7 @@ function renderVehicleDetailLeft(vehicle) {
       return;
     }
     // Dışarı tıklanınca tooltip kapat
-    if (!e.target.closest('.muayene-detail-tooltip-wrap') && !e.target.closest('.muayene-detail-exclamation')) {
+    if (!targetEl.closest('.muayene-detail-tooltip-wrap') && !targetEl.closest('.muayene-detail-exclamation')) {
       modal.querySelectorAll('.muayene-detail-tooltip.visible').forEach(function(t) {
         t.classList.remove('visible');
         t.hidden = true;
