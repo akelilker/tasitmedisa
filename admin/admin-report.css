@@ -75,11 +75,15 @@ body.admin-report-page::-webkit-scrollbar {
   justify-content: center;
   gap: 2px;
   position: relative;
+  min-width: 0;
 }
 
 .admin-hero-title-wrap h1 {
   margin: 0;
+  max-width: 100%;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .admin-hero-line {
@@ -92,6 +96,10 @@ body.admin-report-page::-webkit-scrollbar {
   margin: 0;
   letter-spacing: 4px;
   text-transform: uppercase;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   background: linear-gradient(to bottom,
     #c2d4df 0%,
     #ffffff 40%,
@@ -1501,18 +1509,18 @@ body.admin-report-page::-webkit-scrollbar {
   justify-content: center;
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(12, 18, 30, 0.9);
+  background: transparent;
   cursor: pointer;
 }
 
 .report-action-whatsapp {
   color: #25d366;
-  border-color: rgba(37, 211, 102, 0.3);
+  border: none;
 }
 
 .report-action-email {
   color: #93c5fd;
-  border-color: rgba(147, 197, 253, 0.28);
+  border: none;
 }
 
 .user-analytics-card-summary {
@@ -1934,6 +1942,12 @@ body.admin-report-page::-webkit-scrollbar {
 
 /* --- Mobil --- */
 @media (max-width: 640px) {
+  .admin-report-hero {
+    display: grid;
+    grid-template-columns: minmax(40px, max-content) minmax(0, 1fr) 40px;
+    gap: 4px;
+  }
+
   /* Footer anasayfa mobil ile aynı: gri üst, yan yok, kırmızı glow */
   .admin-footer {
     border-top: 1px solid rgba(128, 128, 128, 0.5) !important;
@@ -1942,22 +1956,35 @@ body.admin-report-page::-webkit-scrollbar {
     box-shadow: 0 -15px 22px rgba(var(--theme-color-rgb), 0.35) !important;
   }
   .admin-report-hero .hero-spacer.admin-report-hero-side {
-    flex: 0 0 calc(var(--hero-logo-width) - 3px);
-    width: calc(var(--hero-logo-width) - 3px);
-    min-width: calc(var(--hero-logo-width) - 3px);
-    margin-left: 12px;
-    box-sizing: border-box;
+    margin-left: 0;
+    width: 40px;
+    min-width: 40px;
   }
 
   .admin-report-hero .hero-logo.admin-report-hero-side {
-    flex: 0 0 calc(var(--hero-logo-width) - 3px);
-    width: calc(var(--hero-logo-width) - 3px);
-    min-width: calc(var(--hero-logo-width) - 3px);
-    box-sizing: border-box;
+    margin-left: 0;
+    width: 40px;
+    min-width: 40px;
+    transform: none;
+  }
+
+  .admin-report-hero .hero-logo.admin-report-hero-side img {
+    max-width: 40px;
+  }
+
+  .admin-hero-title-wrap {
+    align-items: flex-start;
+    padding-right: 4px;
+  }
+
+  .admin-hero-title-wrap h1,
+  .admin-report-subtitle {
+    text-align: left;
   }
 
   .admin-report-subtitle {
     font-size: calc(17px - 0.5pt);
+    letter-spacing: 3px;
   }
   .user-analytics-toolbar {
     flex-direction: column;
@@ -2966,16 +2993,12 @@ body.admin-report-page::-webkit-scrollbar {
 
   .monthly-mobile-status-actions {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     width: 100%;
   }
 
   .monthly-mobile-status-actions .monthly-report-actions {
-    justify-content: center;
-  }
-
-  .monthly-mobile-status-actions .report-action-email {
-    display: none;
+    justify-content: flex-start;
   }
 
   .view-card.monthly-report-cards .monthly-report-card {
@@ -3016,6 +3039,8 @@ body.admin-report-page::-webkit-scrollbar {
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    border: none;
+    background: transparent;
   }
 }
 
