@@ -1382,6 +1382,7 @@ margin-left: auto;
 margin-top: 0;
 min-width: 0;
 max-width: 100%;
+padding-right: 6px; /* Takvim popup'ı sağa taşmasın diye güvenli iç boşluk */
 }
 
 .stok-date-input-group {
@@ -1423,6 +1424,7 @@ text-align: center;
 /* Çift görünüm önleme */
 -webkit-appearance: none;
 appearance: none;
+color-scheme: dark; /* Yerel takvim panelini koyu temaya yaklaştır */
 }
 
 /* Date input’lar için webkit düzeltmeleri - çift görünüm önleme */
