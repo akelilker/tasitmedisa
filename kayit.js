@@ -123,8 +123,12 @@
     if (typeof nativeInput.showPicker === 'function') {
       try {
         nativeInput.showPicker();
+        return;
       } catch (e) {}
     }
+    try {
+      nativeInput.click();
+    } catch (e) {}
   }
 
   function setupVehicleDatePickers(root) {
@@ -2624,6 +2628,8 @@
         const handleMuayeneCommitOutsideInput = function(ev) {
           if (document.activeElement !== muayeneInput) return;
           if (ev.target === muayeneInput) return;
+          const pickerWrap = muayeneInput.closest('.vehicle-date-picker-wrap');
+          if (pickerWrap && pickerWrap.contains(ev.target)) return;
           setTimeout(function() {
             maybeScheduleVehicleMuayeneEgzozPrompt(muayeneInput, { delayMs: 72, commitAttempt: true });
           }, 0);
