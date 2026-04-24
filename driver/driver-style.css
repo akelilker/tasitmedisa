@@ -1598,7 +1598,11 @@ body.dashboard-page {
     column-gap: 4px !important;
   }
   .dashboard-page .hero.hero-two-rows .hero-title-block {
-    transform: translate(4px, 3px) !important;
+    justify-self: stretch !important;
+    width: 100% !important;
+    padding-left: 8px !important;
+    box-sizing: border-box !important;
+    transform: translateY(3px) !important;
   }
   .dashboard-page .hero.hero-two-rows .hero-logo {
     display: flex !important;
