@@ -221,9 +221,21 @@ function canUseDriverPanelTransition(sessionData) {
     return true;
 }
 
+function hasAssignedVehicleForSessionUser(sessionData) {
+    var session = sessionData && typeof sessionData === 'object' ? sessionData : getDefaultSession();
+    var userId = String((session.user && session.user.id) || '').trim();
+    if (!userId) return false;
+
+    var vehicles = Array.isArray(window.appData && window.appData.tasitlar) ? window.appData.tasitlar : [];
+    return vehicles.some(function(vehicle) {
+        return String((vehicle && vehicle.assignedUserId) || '').trim() === userId;
+    });
+}
+
 function canShowMainUserPanelLink(sessionData) {
     var session = sessionData && typeof sessionData === 'object' ? sessionData : getDefaultSession();
-    return hasMainAppAccessForSession(session) && canUseDriverPanelTransition(session);
+    if (!hasMainAppAccessForSession(session)) return false;
+    return hasAssignedVehicleForSessionUser(session);
 }
 
 function buildAuthHeaders(extraHeaders) {
@@ -532,8 +544,6 @@ async function loadDataFromServer(forceRefresh) {
                 return finishLoadError(new Error('Invalid load payload'));
             }
 
-            setMedisaSession(data.session || getSessionFromToken());
-
             window.appData = {
                 tasitlar: data.tasitlar || [],
                 kayitlar: data.kayitlar || [],
@@ -550,11 +560,7 @@ async function loadDataFromServer(forceRefresh) {
                 duzeltme_talepleri: data.duzeltme_talepleri || []
             };
 
-            if (getSessionRoleValue(window.medisaSession) === 'kullanici') {
-                redirectToDriverDashboard();
-            }
-
-            syncMainAppHeaderUserName(window.medisaSession);
+            setMedisaSession(data.session || getSessionFromToken());
 
             serverDatasetTrusted = true;
             return window.appData;
@@ -899,6 +905,7 @@ window.writeVehicles = function(arr) {
     if (!window.appData) window.appData = getDefaultAppData();
     window.appData.tasitlar = Array.isArray(arr) ? arr : [];
     syncDataLoadState();
+    applyMainAppSessionUiState();
     if (typeof window.saveDataToServer === 'function') {
         window.saveDataToServer().catch(function(err) {
             if (err && err.conflict) {
@@ -926,6 +933,7 @@ window.writeUsers = function(arr) {
     if (!window.appData) return;
     window.appData.users = Array.isArray(arr) ? arr : [];
     syncDataLoadState();
+    applyMainAppSessionUiState();
     if (typeof window.saveDataToServer === 'function') {
         window.saveDataToServer().catch(function(err) {
             console.error('Sunucuya kaydetme hatası:', err);

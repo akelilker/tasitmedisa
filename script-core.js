@@ -148,15 +148,45 @@ window.checkDateWarnings = function(dateString) {
 window.formatDateShort = function(dateStr) {
   if (!dateStr) return '';
   function pad2(n) { var s = String(n); return s.length >= 2 ? s : '0' + s; }
+  function isValidDateParts(day, month, year) {
+    var d = parseInt(day, 10);
+    var m = parseInt(month, 10);
+    var y = parseInt(year, 10);
+    if (!d || !m || !y || m < 1 || m > 12) return false;
+    var dt = new Date(y, m - 1, d);
+    return dt.getFullYear() === y && dt.getMonth() === (m - 1) && dt.getDate() === d;
+  }
   if (dateStr instanceof Date) {
     var d = dateStr;
     if (isNaN(d.getTime())) return '';
     return pad2(d.getDate()) + '/' + pad2(d.getMonth() + 1) + '/' + d.getFullYear();
   }
-  var str = String(dateStr);
+  var str = String(dateStr).trim();
+  var digits = str.replace(/[^\d]/g, '');
+  if (digits.length === 8) {
+    var dd = digits.slice(0, 2);
+    var mm = digits.slice(2, 4);
+    var yyyy = digits.slice(4, 8);
+    if (isValidDateParts(dd, mm, yyyy)) return dd + '/' + mm + '/' + yyyy;
+
+    var yyyyAlt = digits.slice(0, 4);
+    var mmAlt = digits.slice(4, 6);
+    var ddAlt = digits.slice(6, 8);
+    if (isValidDateParts(ddAlt, mmAlt, yyyyAlt)) return ddAlt + '/' + mmAlt + '/' + yyyyAlt;
+  }
   if (str.indexOf('-') !== -1) {
     var parts = str.split('-');
-    if (parts.length === 3) return parts[2] + '/' + parts[1] + '/' + parts[0];
+    if (parts.length === 3) {
+      var p0 = (parts[0] || '').trim();
+      var p1 = (parts[1] || '').trim();
+      var p2 = (parts[2] || '').trim();
+      if (p0.length === 4 && p1.length <= 2 && p2.length <= 2 && isValidDateParts(p2, p1, p0)) {
+        return pad2(p2) + '/' + pad2(p1) + '/' + p0;
+      }
+      if (p2.length === 4 && p0.length <= 2 && p1.length <= 2 && isValidDateParts(p0, p1, p2)) {
+        return pad2(p0) + '/' + pad2(p1) + '/' + p2;
+      }
+    }
   }
   if (str.indexOf('/') !== -1) return str;
   return str;
@@ -174,6 +204,80 @@ window.toTitleCase = function(str) {
   }).join(' ');
 };
 
+/**
+ * Marka/model: önce toTitleCase; bilinen kısaltmalar tamamen büyük (örn. BMW, VW).
+ * Tire ile ayrılan parçalar kelime içinde ayrı kontrol edilir (örn. Mercedes-Benz aynı kalır).
+ */
+(function() {
+  var ALLCAPS_BRAND_KEYS = { bmw: 1, vw: 1, mg: 1, gmc: 1, ram: 1, byd: 1, jmc: 1, ds: 1 };
+  window.formatBrandModel = function(str) {
+    if (str == null || str === '') return str;
+    if (str === '-') return str;
+    var trimmed = String(str).trim();
+    if (!trimmed) return '';
+    var titled = typeof window.toTitleCase === 'function' ? window.toTitleCase(trimmed) : trimmed;
+    if (!titled) return trimmed;
+    return titled.split(/\s+/).map(function(w) {
+      if (!w) return w;
+      return w.split('-').map(function(part) {
+        if (!part) return part;
+        var key = part.toLocaleLowerCase('tr-TR');
+        if (ALLCAPS_BRAND_KEYS[key]) {
+          return part.toLocaleUpperCase('tr-TR');
+        }
+        return part;
+      }).join('-');
+    }).join(' ');
+  };
+})();
+
+/** UI/disk rol alanını uygulama içi normalize anahtara çevirir (portal, ayarlar, raporlar ortak) */
+window.medisaMapUiRoleToRol = function(role) {
+  if (role === 'admin') return 'genel_yonetici';
+  if (role === 'genel_yonetici') return 'genel_yonetici';
+  if (role === 'yonetici' || role === 'sube_yonetici') return 'sube_yonetici';
+  if (role === 'driver' || role === 'sales' || role === 'surucu') return 'kullanici';
+  if (role === 'yonetici_kullanici') return 'sube_yonetici';
+  return role || 'kullanici';
+};
+
+window.medisaGetUiRoleFromUser = function(user) {
+  return window.medisaMapUiRoleToRol(user && (user.role || user.rol || user.tip));
+};
+
+/** Ayarlar kullanıcı kartları: Yönetici; sales/driver → Kullanıcı */
+window.getUserRoleLabelManagement = function(user) {
+  var labels = {
+    genel_yonetici: 'Genel Yönetici',
+    sube_yonetici: 'Yönetici',
+    kullanici: 'Kullanıcı',
+    admin: 'Genel Yönetici',
+    sales: 'Kullanıcı',
+    driver: 'Kullanıcı'
+  };
+  var uiRole = window.medisaGetUiRoleFromUser(user || {});
+  return labels[uiRole] || labels[window.medisaMapUiRoleToRol(uiRole)] || uiRole || 'Kullanıcı';
+};
+
+/** Raporlar / admin: Yönetici; Satış Temsilcisi (ayarlar metinlerinden ayrı ürün dili) */
+window.getUserRoleLabelAnalytics = function(user) {
+  var labels = {
+    genel_yonetici: 'Genel Yönetici',
+    sube_yonetici: 'Yönetici',
+    kullanici: 'Kullanıcı',
+    admin: 'Genel Yönetici',
+    sales: 'Satış Temsilcisi',
+    driver: 'Kullanıcı'
+  };
+  var role = user && user.role ? user.role : '';
+  var displayRole = role === 'yonetici_kullanici' ? 'sube_yonetici' : role;
+  var raw = labels[displayRole] || displayRole || 'Kullanıcı';
+  return typeof window.toTitleCase === 'function' ? window.toTitleCase(raw) : raw;
+};
+
+/** Gizli yazdırma iframe (ekran dışına taşıma) — tasitlar / tasitlar-yazici */
+window.MEDISA_PRINT_IFRAME_CSS_TEXT = 'position:fixed;left:0;top:0;width:100vw;height:100vh;border:0;opacity:0.01;pointer-events:none;visibility:visible;transform:translateX(-200vw);background:#fff;z-index:-1;';
+
 /** Plaka: bitişik + tamamen büyük harf (örn. 34ABC123); boşluklar kaldırılır */
 window.formatPlaka = function(str) {
   if (str == null || str === '') return '-';
@@ -182,14 +286,56 @@ window.formatPlaka = function(str) {
   return s === '' ? '-' : s.toLocaleUpperCase('tr-TR');
 };
 
-/** Ad Soyad: soyad büyük, ad(lar) title case */
+/** Ad Soyad: adlar baş harf büyük, soyad tamamen büyük (tr-TR) */
 window.formatAdSoyad = function(str) {
   if (!str || str === '-') return str;
-  var parts = String(str).trim().split(/\s+/).filter(Boolean);
-  if (parts.length === 0) return str;
-  if (parts.length === 1) return window.toTitleCase(parts[0]);
-  var last = parts.pop();
-  return parts.map(function(w) { return w.charAt(0).toLocaleUpperCase('tr-TR') + w.slice(1).toLocaleLowerCase('tr-TR'); }).join(' ') + ' ' + last.toLocaleUpperCase('tr-TR');
+  var t = String(str).trim().replace(/\s+/g, ' ');
+  if (!t) return str;
+  var parts = t.split(' ');
+  if (parts.length === 1) {
+    return typeof window.toTitleCase === 'function' ? window.toTitleCase(parts[0]) : parts[0];
+  }
+  var lastName = parts.pop().toLocaleUpperCase('tr-TR');
+  var firstName = parts.join(' ');
+  if (typeof window.toTitleCase === 'function') {
+    firstName = window.toTitleCase(firstName);
+  }
+  return (firstName ? firstName + ' ' : '') + lastName;
+};
+
+window.medisaFitTextWithinBox = function(root, selector, options) {
+  var scope = root && typeof root.querySelectorAll === 'function' ? root : document;
+  if (!scope || !selector) return;
+  var opts = options || {};
+  var minFontSize = Number(opts.minFontSize);
+  var maxReduction = Number(opts.maxReduction);
+  var step = Number(opts.step) || 0.5;
+  var tolerance = Number(opts.tolerance);
+  if (!Number.isFinite(tolerance)) tolerance = 1;
+
+  requestAnimationFrame(function() {
+    var elements = scope.querySelectorAll(selector);
+    Array.prototype.forEach.call(elements, function(el) {
+      if (!el || !el.getClientRects || el.getClientRects().length === 0) return;
+
+      el.style.removeProperty('font-size');
+      var computed = window.getComputedStyle ? window.getComputedStyle(el) : null;
+      var baseSize = computed ? parseFloat(computed.fontSize) : 0;
+      if (!Number.isFinite(baseSize) || baseSize <= 0) return;
+
+      var reduction = Number.isFinite(maxReduction) && maxReduction > 0 ? maxReduction : 4;
+      var floorSize = Number.isFinite(minFontSize) && minFontSize > 0 ? minFontSize : Math.max(9.5, baseSize - reduction);
+      var currentSize = baseSize;
+
+      while (
+        currentSize > floorSize &&
+        (el.scrollWidth > el.clientWidth + tolerance || el.scrollHeight > el.clientHeight + tolerance)
+      ) {
+        currentSize = Math.max(floorSize, currentSize - step);
+        el.style.setProperty('font-size', currentSize + 'px', 'important');
+      }
+    });
+  });
 };
 
 /** Kolon state: localStorage'dan oku (key → JSON); yoksa default dön */
@@ -489,14 +635,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // Modal kontrolü için ilk kontrol
   window.updateFooterDim();
 
-  // Modal Observer: Body class yönetimi (Scroll engelleme vb.)
-  const modalObserver = new MutationObserver((mutations) => {
-    if (!mutations || mutations.length === 0) return;
-    mutations.forEach(function(m) {
-      if (m.type === 'attributes' && (m.attributeName === 'class' || m.attributeName === 'style')) {
-        // class/style değişimi → altta footer dim ve overlay listesi yenilenir
-      }
-    });
+  // Modal Observer: class/style veya DOM değişince footer dim + overlay önbelleği
+  const modalObserver = new MutationObserver(() => {
     refreshModalOverlays();
     window.updateFooterDim();
   });
@@ -510,23 +650,34 @@ document.addEventListener('DOMContentLoaded', () => {
   modalObserver.observe(document.body, { childList: true, subtree: true });
 });
 
-// Taşıtlar modülü (JS + CSS) — tek sürüm; loadAppModule anahtarı ve bildirim ön-yüklemesi aynı yolu kullanır.
-var TASITLAR_MODULE_VERSION = '20260409.1';
+
+// Lazy modül asset sürümleri — tek nesne; index.html içindeki style-core ?v= ile tasitlar sürümü uyumlu kalmalı
+var MEDISA_MODULE_VERSIONS = {
+  tasitlar: '20260423.2',
+  raporlar: '20260422.1',
+  kayitJs: '20260423.5',
+  kayitCss: '20260423.3',
+  ayarlarJs: '20260423.1',
+  ayarlarCss: '20260422.3'
+};
+window.MEDISA_MODULE_VERSIONS = MEDISA_MODULE_VERSIONS;
+var TASITLAR_MODULE_VERSION = MEDISA_MODULE_VERSIONS.tasitlar;
 
 // Modal açma fonksiyonları: Lazy load – modül yüklenir, sonra ilgili açma fonksiyonu tetiklenir.
 // tasitlar.js / raporlar.js / kayit.js / ayarlar.js yüklendiğinde kendi open* implementasyonlarını yazar.
 (function() {
-  var TASITLAR_JS = 'tasitlar.js?v=' + TASITLAR_MODULE_VERSION;
+  var V = MEDISA_MODULE_VERSIONS;
+  var TASITLAR_JS = 'tasitlar.js?v=' + V.tasitlar;
   var TASITLAR_CSS_LIST = [
-    'tasitlar-base.css?v=' + TASITLAR_MODULE_VERSION,
-    'tasitlar-extra.css?v=' + TASITLAR_MODULE_VERSION
+    'tasitlar-base.css?v=' + V.tasitlar,
+    'tasitlar-extra.css?v=' + V.tasitlar
   ];
-var RAPORLAR_JS = 'raporlar.js?v=20260406.18';
-var RAPORLAR_CSS = 'raporlar.css?v=20260406.18';
-  var KAYIT_JS = 'kayit.js?v=20260406.1';
-  var KAYIT_CSS = 'kayit.css?v=20260410.1';
-  var AYARLAR_JS = 'ayarlar.js?v=20260328.2';
-  var AYARLAR_CSS = 'ayarlar.css?v=20260405.1';
+  var RAPORLAR_JS = 'raporlar.js?v=' + V.raporlar;
+  var RAPORLAR_CSS = 'raporlar.css?v=' + V.raporlar;
+  var KAYIT_JS = 'kayit.js?v=' + V.kayitJs;
+  var KAYIT_CSS = 'kayit.css?v=' + V.kayitCss;
+  var AYARLAR_JS = 'ayarlar.js?v=' + V.ayarlarJs;
+  var AYARLAR_CSS = 'ayarlar.css?v=' + V.ayarlarCss;
 
   window.openVehiclesView = function() {
     showModuleSpinner();

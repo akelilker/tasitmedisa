@@ -63,13 +63,15 @@
     });
   }
 
-  function removeVehicleUserFlowListeners() {
-    const cleanup = window.__vehicleUserFlowCleanup;
-    if (typeof cleanup === 'function') {
-      cleanup();
+  /** Taşıt detayından "+ Yeni Kullanıcı" ile eklenen bekleyen userSaved dinleyicisini kaldırır (iptal / ayarlar akışı). */
+  function dismissVehicleAssignUserSavedListener() {
+    const fn = window._medisaVehicleAssignOnUserSaved;
+    if (typeof fn === 'function') {
+      window.removeEventListener('userSaved', fn);
+      window._medisaVehicleAssignOnUserSaved = null;
     }
-    window.__vehicleUserFlowCleanup = null;
   }
+  window.medisaDismissVehicleAssignUserSavedListener = dismissVehicleAssignUserSavedListener;
 
   function normalizeUserDisplayName(rawName) {
     const plain = String(rawName || '').trim();
@@ -250,6 +252,374 @@
     setSelectedUser(defaultUserName);
   }
 
+  let activeDynamicModalCustomSelect = null;
+
+  function normalizeDynamicModalSelectSearch(value) {
+    return String(value || '')
+      .toLocaleLowerCase('tr-TR')
+      .replace(/ı/g, 'i')
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '');
+  }
+
+  function isDynamicModalSelectTouchDevice() {
+    return window.matchMedia && window.matchMedia('(hover: none)').matches;
+  }
+
+  function isDynamicModalSelectPrintableKey(e) {
+    return e.key && e.key.length === 1 && !e.altKey && !e.ctrlKey && !e.metaKey;
+  }
+
+  function filterDynamicModalCustomSelect(shell) {
+    if (!shell || shell.dataset.searchable !== '1') return;
+    const menu = shell.querySelector('.medisa-owner-select-menu');
+    const searchInput = shell.querySelector('.medisa-owner-select-search-input');
+    const optionsHost = shell.querySelector('.medisa-owner-select-options') || menu;
+    if (!menu || !searchInput || !optionsHost) return;
+
+    const query = normalizeDynamicModalSelectSearch(searchInput.value || '');
+    const secondaryValues = (shell.dataset.secondaryValues || '').split('|').filter(Boolean);
+    const mutedValues = (shell.dataset.mutedValues || '').split('|').filter(Boolean);
+    const optionItems = Array.from(optionsHost.querySelectorAll('.medisa-owner-select-option'));
+    let visibleRegularCount = 0;
+    let regularCount = 0;
+
+    optionItems.forEach(function(item) {
+      const value = String(item.dataset.value || '');
+      const text = String(item.textContent || '');
+      const isPlaceholder = !value || item.classList.contains('is-placeholder');
+      const isPinned = secondaryValues.indexOf(value) !== -1 || mutedValues.indexOf(value) !== -1;
+      const isRegular = !isPlaceholder && !isPinned && !item.classList.contains('is-secondary-action');
+      let shouldShow = true;
+
+      if (isRegular) {
+        regularCount += 1;
+        shouldShow = !query || normalizeDynamicModalSelectSearch(text).indexOf(query) !== -1;
+        if (shouldShow) visibleRegularCount += 1;
+      } else if (isPlaceholder) {
+        shouldShow = !query;
+      }
+
+      item.hidden = !shouldShow;
+      item.classList.toggle('is-filter-hidden', !shouldShow);
+    });
+
+    let emptyItem = optionsHost.querySelector('.medisa-owner-select-empty');
+    const shouldShowEmpty = !!query && regularCount > 0 && visibleRegularCount === 0;
+    if (shouldShowEmpty) {
+      if (!emptyItem) {
+        emptyItem = document.createElement('div');
+        emptyItem.className = 'medisa-owner-select-empty';
+        emptyItem.setAttribute('aria-live', 'polite');
+        const firstSecondary = optionsHost.querySelector('.medisa-owner-select-option.is-secondary-action');
+        optionsHost.insertBefore(emptyItem, firstSecondary || null);
+      }
+      emptyItem.textContent = shell.dataset.noResultsText || 'Sonuç bulunamadı';
+    } else if (emptyItem) {
+      emptyItem.remove();
+    }
+  }
+
+  function focusDynamicModalCustomSelectSearch(shell, initialValue) {
+    if (!shell || shell.dataset.searchable !== '1') return false;
+    const searchInput = shell.querySelector('.medisa-owner-select-search-input');
+    if (!searchInput) return false;
+    if (typeof initialValue === 'string') {
+      searchInput.value = initialValue;
+      filterDynamicModalCustomSelect(shell);
+      positionDynamicModalCustomSelectMenu(shell);
+    }
+    requestAnimationFrame(function() {
+      searchInput.focus();
+      if (typeof initialValue === 'string') {
+        const cursorPosition = searchInput.value.length;
+        searchInput.setSelectionRange(cursorPosition, cursorPosition);
+      } else {
+        searchInput.select();
+      }
+    });
+    return true;
+  }
+
+  function closeDynamicModalCustomSelect(options) {
+    const opts = options || {};
+    const shell = activeDynamicModalCustomSelect;
+    if (!shell) return;
+    const trigger = shell.querySelector('.medisa-owner-select-trigger');
+    const menu = shell.querySelector('.medisa-owner-select-menu');
+    const searchInput = shell.querySelector('.medisa-owner-select-search-input');
+    shell.classList.remove('is-open');
+    if (trigger) {
+      trigger.classList.remove('is-open');
+      trigger.setAttribute('aria-expanded', 'false');
+      if (opts.focusTrigger) trigger.focus();
+    }
+    if (searchInput) searchInput.value = '';
+    if (menu) {
+      menu.classList.remove('open');
+      menu.setAttribute('aria-hidden', 'true');
+      menu.style.position = '';
+      menu.style.top = '';
+      menu.style.bottom = '';
+      menu.style.left = '';
+      menu.style.right = '';
+      menu.style.width = '';
+      menu.style.maxHeight = '';
+    }
+    refreshDynamicModalCustomSelect(shell);
+    activeDynamicModalCustomSelect = null;
+  }
+
+  function positionDynamicModalCustomSelectMenu(shell) {
+    if (!shell) return;
+    const trigger = shell.querySelector('.medisa-owner-select-trigger');
+    const menu = shell.querySelector('.medisa-owner-select-menu');
+    if (!trigger || !menu) return;
+
+    const rect = trigger.getBoundingClientRect();
+    const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 800;
+    const desiredHeight = Math.min(menu.scrollHeight || 240, 260);
+    const spaceBelow = Math.max(120, viewportHeight - rect.bottom - 12);
+    const spaceAbove = Math.max(120, rect.top - 12);
+    const useAbove = spaceBelow < Math.min(180, desiredHeight) && spaceAbove > spaceBelow;
+    const maxHeight = Math.max(120, Math.min(260, useAbove ? spaceAbove : spaceBelow));
+    const triggerHeight = trigger.offsetHeight || rect.height || 44;
+
+    menu.style.position = 'absolute';
+    menu.style.left = '0';
+    menu.style.right = '0';
+    menu.style.width = '100%';
+    menu.style.maxHeight = maxHeight + 'px';
+    if (useAbove) {
+      menu.style.top = 'auto';
+      menu.style.bottom = (triggerHeight + 6) + 'px';
+    } else {
+      menu.style.top = (triggerHeight + 6) + 'px';
+      menu.style.bottom = 'auto';
+    }
+  }
+
+  function refreshDynamicModalCustomSelect(shell) {
+    if (!shell) return;
+    const select = shell.querySelector('select');
+    const trigger = shell.querySelector('.medisa-owner-select-trigger');
+    const triggerText = shell.querySelector('.medisa-owner-select-trigger-text');
+    const menu = shell.querySelector('.medisa-owner-select-menu');
+    if (!select || !trigger || !triggerText || !menu) return;
+
+    const options = Array.from(select.options || []);
+    const selectedValue = String(select.value || '');
+    let selectedOption = options.find(function(option) {
+      return String(option.value || '') === selectedValue;
+    }) || options[select.selectedIndex] || options[0] || null;
+
+    if (!selectedOption && options.length) {
+      selectedOption = options[0];
+      select.value = selectedOption.value;
+    }
+
+    const placeholderText = shell.dataset.placeholderText || (options[0] ? options[0].textContent : 'Seçiniz');
+    const selectedText = selectedOption ? String(selectedOption.textContent || '').trim() : '';
+    const selectedOptionValue = selectedOption ? String(selectedOption.value || '') : '';
+    const secondaryValues = (shell.dataset.secondaryValues || '').split('|').filter(Boolean);
+    const mutedValues = (shell.dataset.mutedValues || '').split('|').filter(Boolean);
+    const isSearchable = shell.dataset.searchable === '1';
+    const existingSearchInput = shell.querySelector('.medisa-owner-select-search-input');
+    const searchValue = existingSearchInput ? existingSearchInput.value : '';
+
+    triggerText.textContent = selectedText || placeholderText;
+    trigger.classList.toggle('placeholder', !selectedOptionValue);
+    trigger.disabled = !!select.disabled;
+    trigger.setAttribute('aria-disabled', select.disabled ? 'true' : 'false');
+
+    menu.innerHTML = '';
+    let optionsHost = menu;
+    if (isSearchable) {
+      const searchWrap = document.createElement('div');
+      searchWrap.className = 'medisa-owner-select-search-wrap';
+
+      const searchInput = document.createElement('input');
+      searchInput.type = 'text';
+      searchInput.className = 'form-input medisa-owner-select-search-input';
+      searchInput.placeholder = shell.dataset.searchPlaceholder || 'Ara';
+      searchInput.value = searchValue;
+      searchInput.setAttribute('autocomplete', 'off');
+      searchInput.setAttribute('aria-label', shell.dataset.searchPlaceholder || 'Ara');
+
+      const list = document.createElement('div');
+      list.className = 'medisa-owner-select-options';
+
+      searchWrap.appendChild(searchInput);
+      menu.appendChild(searchWrap);
+      menu.appendChild(list);
+      optionsHost = list;
+
+      searchInput.addEventListener('click', function(e) {
+        e.stopPropagation();
+      });
+      searchInput.addEventListener('input', function() {
+        filterDynamicModalCustomSelect(shell);
+        positionDynamicModalCustomSelectMenu(shell);
+      });
+      searchInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          e.preventDefault();
+          if (searchInput.value) {
+            searchInput.value = '';
+            filterDynamicModalCustomSelect(shell);
+            positionDynamicModalCustomSelectMenu(shell);
+          } else {
+            closeDynamicModalCustomSelect({ focusTrigger: true });
+          }
+        }
+      });
+    }
+
+    options.forEach(function(option) {
+      const value = String(option.value || '');
+      const text = String(option.textContent || '').trim();
+      const item = document.createElement('button');
+      item.type = 'button';
+      item.className = 'medisa-owner-select-option';
+      item.textContent = text;
+      item.dataset.value = value;
+      item.setAttribute('role', 'option');
+      item.setAttribute('aria-selected', value === selectedValue ? 'true' : 'false');
+
+      if (!value) item.classList.add('is-placeholder');
+      if (value === selectedValue) item.classList.add('selected');
+      if (secondaryValues.indexOf(value) !== -1 || /^\+/.test(text)) item.classList.add('is-secondary-action');
+      if (mutedValues.indexOf(value) !== -1) item.classList.add('is-muted-choice');
+      if (option.disabled) {
+        item.classList.add('is-disabled');
+        item.disabled = true;
+      }
+
+      optionsHost.appendChild(item);
+    });
+
+    filterDynamicModalCustomSelect(shell);
+
+    if (activeDynamicModalCustomSelect === shell && menu.classList.contains('open')) {
+      positionDynamicModalCustomSelectMenu(shell);
+    }
+  }
+
+  function openDynamicModalCustomSelect(shell) {
+    if (!shell) return;
+    if (activeDynamicModalCustomSelect && activeDynamicModalCustomSelect !== shell) {
+      closeDynamicModalCustomSelect();
+    }
+    const trigger = shell.querySelector('.medisa-owner-select-trigger');
+    const menu = shell.querySelector('.medisa-owner-select-menu');
+    if (!trigger || !menu || trigger.disabled) return;
+
+    activeDynamicModalCustomSelect = shell;
+    shell.classList.add('is-open');
+    trigger.classList.add('is-open');
+    trigger.setAttribute('aria-expanded', 'true');
+    menu.classList.add('open');
+    menu.setAttribute('aria-hidden', 'false');
+    positionDynamicModalCustomSelectMenu(shell);
+    if (shell.dataset.searchable === '1' && !isDynamicModalSelectTouchDevice()) {
+      focusDynamicModalCustomSelectSearch(shell);
+    }
+  }
+
+  function ensureDynamicModalCustomSelect(select, options) {
+    if (!select) return null;
+    let shell = select.closest('.medisa-owner-select');
+    if (!shell) {
+      shell = document.createElement('div');
+      shell.className = 'medisa-owner-select';
+      select.parentNode.insertBefore(shell, select);
+      shell.appendChild(select);
+      select.classList.add('medisa-owner-select-native');
+
+      const trigger = document.createElement('button');
+      trigger.type = 'button';
+      trigger.className = 'form-input medisa-owner-select-trigger';
+      trigger.setAttribute('aria-haspopup', 'listbox');
+      trigger.setAttribute('aria-expanded', 'false');
+      trigger.innerHTML = '<span class="medisa-owner-select-trigger-text"></span><svg class="medisa-owner-select-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
+
+      const menu = document.createElement('div');
+      menu.className = 'medisa-owner-select-menu';
+      menu.setAttribute('role', 'listbox');
+      menu.setAttribute('aria-hidden', 'true');
+
+      shell.appendChild(trigger);
+      shell.appendChild(menu);
+
+      const label = shell.parentNode ? shell.parentNode.querySelector('label[for="' + select.id + '"]') : null;
+      if (label && !label.dataset.medisaOwnerSelectBound) {
+        label.dataset.medisaOwnerSelectBound = '1';
+        label.addEventListener('click', function(e) {
+          if (!select.closest('.medisa-owner-select')) return;
+          e.preventDefault();
+          trigger.focus();
+        });
+      }
+
+      trigger.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (activeDynamicModalCustomSelect === shell) closeDynamicModalCustomSelect();
+        else openDynamicModalCustomSelect(shell);
+      });
+
+      trigger.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          if (activeDynamicModalCustomSelect === shell) closeDynamicModalCustomSelect();
+          else openDynamicModalCustomSelect(shell);
+        } else if (e.key === 'ArrowDown') {
+          e.preventDefault();
+          openDynamicModalCustomSelect(shell);
+        } else if (e.key === 'Escape' && activeDynamicModalCustomSelect === shell) {
+          e.preventDefault();
+          closeDynamicModalCustomSelect({ focusTrigger: true });
+        } else if (shell.dataset.searchable === '1' && isDynamicModalSelectPrintableKey(e)) {
+          e.preventDefault();
+          openDynamicModalCustomSelect(shell);
+          focusDynamicModalCustomSelectSearch(shell, e.key);
+        }
+      });
+
+      menu.addEventListener('click', function(e) {
+        const item = e.target.closest('.medisa-owner-select-option');
+        if (!item || item.disabled) return;
+        select.value = item.dataset.value || '';
+        select.dispatchEvent(new Event('change', { bubbles: true }));
+        refreshDynamicModalCustomSelect(shell);
+        closeDynamicModalCustomSelect({ focusTrigger: true });
+      });
+
+      select.addEventListener('change', function() {
+        refreshDynamicModalCustomSelect(shell);
+      });
+    }
+
+    shell.dataset.placeholderText = options && options.placeholderText ? options.placeholderText : '';
+    shell.dataset.secondaryValues = options && Array.isArray(options.secondaryValues) ? options.secondaryValues.join('|') : '';
+    shell.dataset.mutedValues = options && Array.isArray(options.mutedValues) ? options.mutedValues.join('|') : '';
+    shell.dataset.searchable = options && options.searchable ? '1' : '';
+    shell.dataset.searchPlaceholder = options && options.searchPlaceholder ? options.searchPlaceholder : '';
+    shell.dataset.noResultsText = options && options.noResultsText ? options.noResultsText : '';
+    refreshDynamicModalCustomSelect(shell);
+    return shell;
+  }
+
+  document.addEventListener('click', function(e) {
+    if (!activeDynamicModalCustomSelect) return;
+    if (!activeDynamicModalCustomSelect.contains(e.target)) closeDynamicModalCustomSelect();
+  }, true);
+
+  window.addEventListener('resize', function() {
+    if (activeDynamicModalCustomSelect) closeDynamicModalCustomSelect();
+  });
+
+
   /** Ana uygulamada olay satırında görünen sürücü adı: genel yönetici kendi adıyla; aksi halde atanmış kullanıcı / tahsis. */
   function isMainAppSessionGenelYonetici() {
     try {
@@ -381,7 +751,7 @@
   let currentView = 'dashboard'; // 'dashboard' | 'list'
   let activeBranchId = null; // null = dashboard, 'all' = tümü, 'id' = şube
   let viewMode = 'card'; 
-  let sortColumn = null; // 'year', 'brand', 'km', 'type', 'branch'
+  let sortColumn = null; // 'year', 'brand', 'plate', 'km', 'type', 'transmission', 'user', 'branch', ...
   let sortDirection = 'asc'; // 'asc' | 'desc'
   let currentFilter = 'az'; // 'az' | 'newest' | 'oldest' | 'type' (liste filtre dropdown)
   let transmissionFilter = ''; // '' | 'otomatik' | 'manuel' (şanzıman filtresi)
@@ -430,7 +800,7 @@
     const userNameMap = {};
     for (let i = 0; i < users.length; i++) {
       const u = users[i];
-      userNameMap[String(u.id)] = String(u.name || u.fullName || '');
+      userNameMap[String(u.id)] = String(u.name || u.isim || u.fullName || '');
     }
 
     const compactVehicleState = vehicles.map(function(v) {
@@ -535,33 +905,33 @@
       const widthMap = isMobile
         ? {
             'year': '32px',
-            'plate': '62px',
-            'brand': '2.6fr',
+            'plate': '70px',
+            'brand': '2.8fr',
             'km': '52px',
             'transmission': '60px',
             'user': '1.95fr',
-            'branch': '2.25fr'
+            'branch': '1.68fr'
           }
         : isCompactDesktop
           ? {
               'year': '36px',
               'plate': '61px',
-              'brand': 'minmax(0, 1.032fr)',
+              'brand': 'minmax(0, 1.18fr)',
               'km': '49px',
               'type': 'minmax(0, 1fr)',
               'transmission': 'minmax(0, 0.66fr)',
               'user': 'minmax(0, 1fr)',
-              'branch': 'minmax(0, 1.108fr)'
+              'branch': 'minmax(0, 0.96fr)'
             }
         : {
             'year': '44px',
             'plate': '77px',
-            'brand': 'minmax(0, 1.25fr)',
+            'brand': 'minmax(0, 1.35fr)',
             'km': '56px',
             'type': 'minmax(0, 0.95fr)',
             'transmission': 'minmax(0, 0.7fr)',
             'user': 'minmax(0, 1.05fr)',
-            'branch': 'minmax(0, 1.05fr)'
+            'branch': 'minmax(0, 0.95fr)'
           };
       return columnOrder.map(key => widthMap[key] || '1fr').join(' ');
     } catch (e) {
@@ -638,9 +1008,90 @@
     });
   }
 
+  function fitVehicleTextBoxes(root) {
+    if (typeof window.medisaFitTextWithinBox !== 'function') return;
+    const scope = root || document;
+    window.medisaFitTextWithinBox(scope, [
+      '.branch-name',
+      '.view-card .card-brand-model',
+      '.view-card .card-third-line',
+      '.view-list .list-cell.list-branch',
+      '#vehicle-detail-modal .detail-row-value'
+    ].join(', '), {
+      minFontSize: window.innerWidth <= 640 ? 8.5 : 9,
+      maxReduction: 7,
+      step: 0.5
+    });
+
+    window.medisaFitTextWithinBox(scope, '.view-list .list-cell.list-brand', {
+      minFontSize: window.innerWidth <= 640 ? 11.5 : 12,
+      maxReduction: 2.5,
+      step: 0.5
+    });
+
+    // Kullanıcı adında genel shrink agresif görünüyordu; burada sadece isim satırlarına
+    // daha yumuşak küçültme uygula ki kısa isimler normal boyutta kalsın.
+    window.medisaFitTextWithinBox(scope, [
+      '.view-list .list-cell.list-user .user-name-line1',
+      '.view-list .list-cell.list-user .user-name-line2'
+    ].join(', '), {
+      minFontSize: window.innerWidth <= 640 ? 8.5 : 9,
+      maxReduction: window.innerWidth <= 640 ? 4 : 4,
+      step: 0.5
+    });
+  }
+
+  let vehicleFitResizeTimer = null;
+  window.addEventListener('resize', function() {
+    clearTimeout(vehicleFitResizeTimer);
+    vehicleFitResizeTimer = setTimeout(function() {
+      fitVehicleTextBoxes(document.getElementById('vehicles-modal'));
+      fitVehicleTextBoxes(document.getElementById('vehicle-detail-modal'));
+    }, 120);
+  });
+
   function toTitleCase(str) { return (typeof window.toTitleCase === 'function' ? window.toTitleCase(str) : str); }
+  function formatBrandModel(str) { return (typeof window.formatBrandModel === 'function' ? window.formatBrandModel(str) : toTitleCase(str)); }
   function formatPlaka(str) { return (typeof window.formatPlaka === 'function' ? window.formatPlaka(str) : (str == null ? '-' : String(str))); }
   function formatAdSoyad(str) { return (typeof window.formatAdSoyad === 'function' ? window.formatAdSoyad(str) : str); }
+  function buildVehicleUserNameHtml(rawName) {
+    const userName = formatAdSoyad(rawName || '-');
+    const cleanName = String(userName || '-').trim();
+    if (!cleanName || cleanName === '-') return escapeHtml(cleanName || '-');
+
+    const parts = cleanName.split(/\s+/);
+    if (parts.length <= 1) {
+      return '<span class="user-name-line1 user-name-single" title="' + escapeHtml(cleanName) + '">' + escapeHtml(cleanName) + '</span>';
+    }
+
+    const surname = parts.pop();
+    const givenNames = parts.join(' ');
+    return '<span class="user-name-line1" title="' + escapeHtml(givenNames) + '">' + escapeHtml(givenNames) + '</span>' +
+      '<span class="user-name-line2" title="' + escapeHtml(surname) + '">' + escapeHtml(surname) + '</span>';
+  }
+  function normalizeVehicleSearchText(value) {
+    return String(value == null ? '' : value).toLocaleLowerCase('tr-TR').trim();
+  }
+  function normalizePlateSearchText(value) {
+    return normalizeVehicleSearchText(value).replace(/[\s-]+/g, '');
+  }
+  function vehicleMatchesSearchQuery(vehicle, query) {
+    const q = normalizeVehicleSearchText(query);
+    if (!q) return true;
+
+    const source = vehicle || {};
+    const plate = String(source.plate != null ? source.plate : '');
+    const compactQuery = normalizePlateSearchText(q);
+    const rawPlate = normalizeVehicleSearchText(plate);
+    const compactPlate = normalizePlateSearchText(plate);
+    const formattedPlate = normalizePlateSearchText(formatPlaka(plate));
+
+    return (rawPlate && rawPlate.includes(q)) ||
+      (compactQuery && (compactPlate.includes(compactQuery) || formattedPlate.includes(compactQuery))) ||
+      (source.brandModel && normalizeVehicleSearchText(source.brandModel).includes(q)) ||
+      (source.year && String(source.year).includes(q)) ||
+      (source.tahsisKisi && normalizeVehicleSearchText(source.tahsisKisi).includes(q));
+  }
   function getTransmissionLabel(transmission) {
     var value = String(transmission || '').trim().toLowerCase();
     if (value === 'otomatik') return 'Otomatik';
@@ -681,11 +1132,20 @@
   }
   bindDOM();
 
+  const NOTIF_READ_STORAGE_KEY = 'medisa_notif_read_keys_v1';
+
   function getViewedNotificationKeys() {
     try {
-      const raw = sessionStorage.getItem('notifViewedKeysV2');
+      const raw = localStorage.getItem(NOTIF_READ_STORAGE_KEY);
       const parsed = raw ? JSON.parse(raw) : [];
-      return Array.isArray(parsed) ? parsed : [];
+      if (Array.isArray(parsed)) return parsed;
+    } catch (err) {
+      // Eski sessionStorage anahtarına geri düş
+    }
+    try {
+      const legacyRaw = sessionStorage.getItem('notifViewedKeysV2');
+      const legacyParsed = legacyRaw ? JSON.parse(legacyRaw) : [];
+      return Array.isArray(legacyParsed) ? legacyParsed : [];
     } catch (err) {
       return [];
     }
@@ -704,15 +1164,17 @@
     });
     if (!changed) return;
     try {
-      sessionStorage.setItem('notifViewedKeysV2', JSON.stringify(viewed));
+      localStorage.setItem(NOTIF_READ_STORAGE_KEY, JSON.stringify(viewed));
+      // Eski anahtar kalmışsa temizle (okunma durumu artık kalıcı tutuluyor)
+      sessionStorage.removeItem('notifViewedKeysV2');
     } catch (err) {
       return;
     }
     if (typeof window.updateNotifications === 'function') window.updateNotifications();
   }
 
-  function getUnreadActivityNotificationKeys() {
-    return (DOM.notificationsDropdown ? Array.from(DOM.notificationsDropdown.querySelectorAll('.notification-item-activity.notification-unread[data-notif-key]')) : [])
+  function getUnreadNotificationKeys() {
+    return (DOM.notificationsDropdown ? Array.from(DOM.notificationsDropdown.querySelectorAll('.notification-item.notification-unread[data-notif-key]')) : [])
       .map(function(el) { return (el.getAttribute('data-notif-key') || '').toString().trim(); })
       .filter(Boolean);
   }
@@ -841,7 +1303,7 @@
         if (toolbarAction === 'mark-all-read') {
           e.preventDefault();
           e.stopPropagation();
-          markNotificationKeysAsViewed(getUnreadActivityNotificationKeys());
+          markNotificationKeysAsViewed(getUnreadNotificationKeys());
           return;
         }
       }
@@ -1324,6 +1786,7 @@
       lastDashboardRenderSignature === renderSignature
     ) {
       syncVehiclesListModeClass(false);
+      fitVehicleTextBoxes(modalContent);
       return;
     }
 
@@ -1354,6 +1817,7 @@
     modalContent.dataset.renderSignature = renderSignature;
     lastDashboardRenderSignature = renderSignature;
     syncVehiclesListModeClass(false);
+    fitVehicleTextBoxes(modalContent);
 
     /* Layout flex ile; kolon sayısı .branch-card width/flex ile belirlenir */
   };
@@ -1442,13 +1906,7 @@
 
     // 2. Metin Araması (plaka, marka/model, yıl, kullanıcı)
     if (query) {
-        const q = ('' + query).toLowerCase();
-        vehicles = vehicles.filter(v => 
-            (v.plate && ('' + v.plate).toLowerCase().includes(q)) ||
-            (v.brandModel && ('' + v.brandModel).toLowerCase().includes(q)) ||
-            (v.year && ('' + v.year).includes(q)) ||
-            (v.tahsisKisi && ('' + v.tahsisKisi).toLowerCase().includes(q))
-        );
+        vehicles = vehicles.filter(v => vehicleMatchesSearchQuery(v, query));
     }
 
     // 2b. Şanzıman filtresi (Otomatik/Manuel)
@@ -1583,7 +2041,7 @@
             return `
               <div class="card${unassignedClass}" data-vehicle-id="${vid}" style="cursor:pointer">
                 <div class="card-plate">${escapeHtml(formatPlaka(plate))}${satildiCardSpan}</div>
-                <div class="card-brand-model" title="${escapeHtml(brandModel)}">${escapeHtml(toTitleCase(brandModel))}</div>
+                <div class="card-brand-model" title="${escapeHtml(brandModel)}">${escapeHtml(formatBrandModel(brandModel))}</div>
                 ${thirdLineHtml}
               </div>
             `;
@@ -1610,9 +2068,9 @@
                   break;
                 case 'brand':
                   if (isArchive) {
-                    cellContent = '<span class="archive-brand-main" title="' + escapeHtml(toTitleCase(brandModel)) + '">' + escapeHtml(toTitleCase(brandModel)) + '</span>' + satildiBrandLine;
+                    cellContent = '<span class="archive-brand-main" title="' + escapeHtml(formatBrandModel(brandModel)) + '">' + escapeHtml(formatBrandModel(brandModel)) + '</span>' + satildiBrandLine;
                   } else {
-                    cellContent = escapeHtml(toTitleCase(brandModel));
+                    cellContent = escapeHtml(formatBrandModel(brandModel));
                   }
                   cellClass = 'list-brand';
                   break;
@@ -1630,18 +2088,8 @@
                   break;
                 case 'user':
                   const assignedUser = v.assignedUserId ? userMap[String(v.assignedUserId)] : null;
-                  const userNameRaw = assignedUser?.name || v.tahsisKisi || '-';
-                  const userName = formatAdSoyad(userNameRaw);
-                  if (isMobile && userName && userName !== '-') {
-                    const parts = String(userName).trim().split(/\s+/);
-                    const firstLine = parts[0] || '-';
-                    const secondLine = parts.slice(1).join(' ') || '';
-                    cellContent = secondLine
-                      ? '<span class="user-name-line1">' + escapeHtml(firstLine) + '</span><span class="user-name-line2">' + escapeHtml(secondLine) + '</span>'
-                      : escapeHtml(firstLine);
-                  } else {
-                    cellContent = escapeHtml(userName);
-                  }
+                  const userNameRaw = assignedUser?.name || assignedUser?.isim || assignedUser?.fullName || v.tahsisKisi || '-';
+                  cellContent = buildVehicleUserNameHtml(userNameRaw);
                   cellClass = 'list-user';
                   break;
                 case 'branch':
@@ -1694,6 +2142,7 @@
       if (viewMode === 'list' && window.innerWidth <= 640) {
           applyMobileListHeaderFontSize(listContainer);
       }
+      fitVehicleTextBoxes(listContainer);
       
       // Mobil: sütun başlıklarına touch ile sürükle-bırak (yer değiştirme)
       if (viewMode === 'list') {
@@ -1736,7 +2185,7 @@
 
       // iOS yazıcı izin prompt'unu azaltmak için yazdırma script'ini önceden yükle
       if (!window._printScriptPromise) {
-        window._printScriptPromise = loadScript('tasitlar-yazici.js?v=20260326.1');
+        window._printScriptPromise = loadScript('tasitlar-yazici.js?v=20260422.1');
       }
 
     const modal = DOM.vehicleDetailModal || document.getElementById('vehicle-detail-modal');
@@ -1812,7 +2261,7 @@
     const brandYearEl = contentEl.querySelector('.detail-brand-year');
     
     if (brandYearRow && brandYearEl) {
-      const brandModel = toTitleCase(vehicle.brandModel || '-');
+      const brandModel = formatBrandModel(vehicle.brandModel || '-');
       brandYearEl.textContent = brandModel;
       
       // Mevcut butonları kaldır (eğer varsa)
@@ -1965,7 +2414,7 @@
         const originalText = printBtn.innerHTML;
         printBtn.innerHTML = '<span class="spin-animation" style="display:inline-block; width:16px; height:16px; border:2px solid currentColor; border-right-color:transparent; border-radius:50%; margin-right:4px;"></span> Yükleniyor...';
         printBtn.disabled = true;
-        (window._printScriptPromise || loadScript('tasitlar-yazici.js?v=20260326.1')).then(function() {
+        (window._printScriptPromise || loadScript('tasitlar-yazici.js?v=20260422.1')).then(function() {
           printBtn.innerHTML = originalText;
           printBtn.disabled = false;
           if (typeof window.printVehicleCard === 'function') {
@@ -2002,7 +2451,10 @@
     modal.style.display = 'flex';
     requestAnimationFrame(() => {
       modal.classList.add('active');
-      requestAnimationFrame(() => { applyVehicleDetailSubeShrink(); });
+      requestAnimationFrame(() => {
+        applyVehicleDetailSubeShrink();
+        fitVehicleTextBoxes(modal);
+      });
     });
     };
     runDetail();
@@ -2161,7 +2613,15 @@
   document.addEventListener('click', function(e) {
       const box = getVSearchContainer();
       if (!box || !box.classList.contains('open')) return;
-      if (e.target.closest('#v-search-container') || e.target.closest('.search-toggle-btn')) return;
+      const t = e.target;
+      if (!t || typeof t.closest !== 'function') return;
+      if (t.closest('#v-search-container') || t.closest('.search-toggle-btn')) return;
+      if (
+          t.closest('.list-item') ||
+          t.closest('.card') ||
+          t.closest('.branch-card') ||
+          t.closest('[data-vehicle-id]')
+      ) return;
       closeSearchBox();
   });
   // Mobil (iOS): capture fazında pointer — liste/boş alana dokununca click güvenilir olmayabiliyor
@@ -2177,6 +2637,14 @@
       const t = e.target;
       if (!t || typeof t.closest !== 'function') return;
       if (t.closest('#v-search-container') || t.closest('.search-toggle-btn')) return;
+      // Mobilde sonuç satırına dokunurken pointerdown capture aramayı erken kapatıp
+      // click ile araç açmayı bozmasın.
+      if (
+          t.closest('.list-item') ||
+          t.closest('.card') ||
+          t.closest('.branch-card') ||
+          t.closest('[data-vehicle-id]')
+      ) return;
       closeSearchBox();
   }
   document.addEventListener('pointerdown', onVSearchOutsidePointer, true);
@@ -2223,13 +2691,8 @@
               return;
           }
           const all = readVehicles();
-          const q = val.toLowerCase();
-          let filtered = all.filter(v => 
-            (v.plate && v.plate.toLowerCase().includes(q)) ||
-            (v.brandModel && v.brandModel.toLowerCase().includes(q)) ||
-            (v.year && String(v.year).includes(q)) ||
-            (v.tahsisKisi && v.tahsisKisi.toLowerCase().includes(q))
-          );
+          const q = normalizeVehicleSearchText(val);
+          let filtered = all.filter(v => vehicleMatchesSearchQuery(v, q));
           if (transmissionFilter) {
             filtered = filtered.filter(v => v.transmission === transmissionFilter);
           }
@@ -2241,7 +2704,7 @@
               return `
               <div class="list-item" data-vehicle-id="${vid}" style="cursor:pointer">
                 <div class="list-info">
-                  <h4>${escapeHtml(toTitleCase(v.brandModel || '-'))}</h4>
+                  <h4>${escapeHtml(formatBrandModel(v.brandModel || '-'))}</h4>
                   <span>${v.year} • ${v.tahsisKisi || 'Boşta'}</span>
                 </div>
               </div>
@@ -2304,9 +2767,21 @@
               branchNameCache[String(branches[i].id)] = (branches[i].name || '').toLowerCase();
           }
       }
+      const userMapForSort = {};
+      if (sortColumn === 'user') {
+          const users = window.appData && Array.isArray(window.appData.users) ? window.appData.users : [];
+          for (let ui = 0; ui < users.length; ui++) {
+              const u = users[ui];
+              userMapForSort[String(u.id)] = u;
+          }
+      }
       const getBranchName = (branchId) => {
           if (!branchId) return 'zzz_tahsis_edilmemis';
           return branchNameCache[String(branchId)] || 'zzz_unknown';
+      };
+      const getUserNameRawForSort = function(v) {
+          const assignedUser = v.assignedUserId ? userMapForSort[String(v.assignedUserId)] : null;
+          return (assignedUser && (assignedUser.name || assignedUser.isim || assignedUser.fullName)) || v.tahsisKisi || '-';
       };
 
       sorted.sort((a, b) => {
@@ -2347,6 +2822,19 @@
                   aVal = getBranchName(a.branchId);
                   bVal = getBranchName(b.branchId);
                   return aVal.localeCompare(bVal) * dir;
+
+              case 'user': {
+                  const rawA = getUserNameRawForSort(a);
+                  const rawB = getUserNameRawForSort(b);
+                  const emptyA = !String(rawA).trim() || String(rawA).trim() === '-';
+                  const emptyB = !String(rawB).trim() || String(rawB).trim() === '-';
+                  if (emptyA && emptyB) return 0;
+                  if (emptyA) return 1;
+                  if (emptyB) return -1;
+                  const sortA = String(formatAdSoyad(rawA)).trim();
+                  const sortB = String(formatAdSoyad(rawB)).trim();
+                  return sortA.localeCompare(sortB, 'tr', { sensitivity: 'base' }) * dir;
+              }
                   
               default:
                   return 0;
@@ -2367,13 +2855,22 @@
   function checkDateWarnings(dateString) { return (typeof window.checkDateWarnings === 'function' ? window.checkDateWarnings(dateString) : { class: '', days: null }); }
   function formatDateForDisplay(dateStr) {
     if (!dateStr) return '';
+    const raw = String(dateStr).trim();
     if (typeof window.formatDateShort === 'function') {
       const formatted = window.formatDateShort(dateStr);
-      if (formatted) return String(formatted);
+      if (formatted) {
+        const formattedStr = String(formatted).trim();
+        if (formattedStr && (formattedStr !== raw || /[./-]/.test(formattedStr))) {
+          return formattedStr;
+        }
+      }
     }
-    const raw = String(dateStr).trim();
     const iso = raw.match(/^(\d{4})-(\d{2})-(\d{2})$/);
     if (iso) return `${iso[3]}/${iso[2]}/${iso[1]}`;
+    const compactIso = raw.match(/^(\d{4})(\d{2})(\d{2})$/);
+    if (compactIso) return `${compactIso[3]}/${compactIso[2]}/${compactIso[1]}`;
+    const compactTr = raw.match(/^(\d{2})(\d{2})(\d{4})$/);
+    if (compactTr) return `${compactTr[1]}/${compactTr[2]}/${compactTr[3]}`;
     const dot = raw.match(/^(\d{2})[./-](\d{2})[./-](\d{4})$/);
     if (dot) return `${dot[1]}/${dot[2]}/${dot[3]}`;
     const parsed = new Date(raw);
@@ -2518,11 +3015,17 @@ function renderVehicleDetailLeft(vehicle) {
   }
 
   // Kaporta Durumu (Legend eklendi; açıklama metni 1.5pt küçük – CSS .detail-row-kaporta)
+  const boyaliParcalar = (vehicle && vehicle.boyaliParcalar && typeof vehicle.boyaliParcalar === 'object')
+    ? vehicle.boyaliParcalar
+    : null;
+  const hasKaportaIsaretleri = !!(boyaliParcalar && Object.keys(boyaliParcalar).some(function(partId) {
+    return !!boyaliParcalar[partId];
+  }));
   html += `<div class="detail-row detail-row-inline detail-row-kaporta"><div class="detail-row-header"><span class="detail-row-label">Kaporta Durumu</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> `;
-  if (vehicle.boya === 'var' && vehicle.boyaliParcalar) {
+  if (hasKaportaIsaretleri) {
       html += 'Aşağıdaki şemada belirtilmiştir.';
   } else {
-      html += 'Yoktur.';
+      html += 'Boya/Değişen yoktur.';
   }
   html += `</span></div>`;
 
@@ -2573,16 +3076,23 @@ function renderVehicleDetailLeft(vehicle) {
     } else {
       html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Muayene Bitiş Tarihi</span><span class="detail-row-colon">:</span></div><span class="detail-row-value ${muayeneWarning.class}"> ${escapeHtml(muayeneDisplay || '-')}</span></div>`;
     }
+
+    const egzozMuayeneDate = vehicle.egzozMuayeneDate || '';
+    if (egzozMuayeneDate && egzozMuayeneDate !== muayeneDate) {
+      const egzozWarning = checkDateWarnings(egzozMuayeneDate);
+      const egzozDisplay = formatDateForDisplay(egzozMuayeneDate);
+      html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Egzos Muayenesi</span><span class="detail-row-colon">:</span></div><span class="detail-row-value ${egzozWarning.class}"> ${escapeHtml(egzozDisplay || '-')}</span></div>`;
+    }
     
     // Detay: yedek anahtar durumu
     const anahtar = vehicle.anahtar || '';
     const anahtarLabel = anahtar === 'var' ? (vehicle.anahtarNerede || 'Var') : 'Yoktur.';
     html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Yedek Anahtar</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(anahtarLabel)}</span></div>`;
     
-    // Kredi/Rehin
+    // Hak Mahrumiyeti
     const kredi = vehicle.kredi || '';
     const krediLabel = kredi === 'var' ? (vehicle.krediDetay || 'Var') : 'Yoktur.';
-    html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Kredi/Rehin</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(krediLabel)}</span></div>`;
+    html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Hak Mahrumiyeti</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(krediLabel)}</span></div>`;
     
     // Yazlık/ Kışlık Lastik (Yoktur "r" hizası için referans)
     const lastikDurumu = vehicle.lastikDurumu || '';
@@ -2800,7 +3310,7 @@ function renderVehicleDetailLeft(vehicle) {
     kasko: 'KASKO BİLGİSİ GÜNCELLE',
     muayene: 'MUAYENE BİLGİSİ GÜNCELLE',
     anahtar: 'YEDEK ANAHTAR BİLGİSİ GÜNCELLE',
-    kredi: 'KREDİ/REHİN BİLGİSİ GÜNCELLE',
+    kredi: 'HAK MAHRUMİYETİ BİLGİSİ GÜNCELLE',
     km: 'KM GÜNCELLE',
     lastik: 'LASTİK DURUMU GÜNCELLE',
     utts: 'UTTS BİLGİSİ GÜNCELLE',
@@ -2811,8 +3321,53 @@ function renderVehicleDetailLeft(vehicle) {
     satis: 'SATIŞ/PERT BİLDİRİMİ'
   };
 
+  function padDatePart(value) {
+    return String(value || '').padStart(2, '0');
+  }
+
+  function isValidGgAaYyyyParts(day, month, year) {
+    const d = parseInt(day, 10);
+    const m = parseInt(month, 10);
+    const y = parseInt(year, 10);
+    if (!d || !m || !y || m < 1 || m > 12) return false;
+    const dt = new Date(y, m - 1, d);
+    return dt.getFullYear() === y && dt.getMonth() === (m - 1) && dt.getDate() === d;
+  }
+
+  function normalizeGgAaYyyyInput(value) {
+    const raw = String(value || '').trim();
+    if (!raw) return '';
+    const separated = raw.match(/^(\d{1,2})[./-](\d{1,2})[./-](\d{4})$/);
+    if (separated && isValidGgAaYyyyParts(separated[1], separated[2], separated[3])) {
+      return padDatePart(separated[1]) + '/' + padDatePart(separated[2]) + '/' + separated[3];
+    }
+
+    const digits = raw.replace(/[^\d]/g, '');
+    if (digits.length === 8) {
+      const dd = digits.slice(0, 2);
+      const mm = digits.slice(2, 4);
+      const yyyy = digits.slice(4, 8);
+      if (isValidGgAaYyyyParts(dd, mm, yyyy)) return dd + '/' + mm + '/' + yyyy;
+
+      const yyyyAlt = digits.slice(0, 4);
+      const mmAlt = digits.slice(4, 6);
+      const ddAlt = digits.slice(6, 8);
+      if (isValidGgAaYyyyParts(ddAlt, mmAlt, yyyyAlt)) return ddAlt + '/' + mmAlt + '/' + yyyyAlt;
+    }
+
+    return raw;
+  }
+
+  function normalizeGgAaYyyyInputElement(input) {
+    if (!input) return '';
+    const normalized = normalizeGgAaYyyyInput(input.value);
+    if (normalized) input.value = normalized;
+    return normalized;
+  }
+
   function parseGgAaYyyyToIso(tr) {
-    const m = String(tr || '').trim().match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+    const normalized = normalizeGgAaYyyyInput(tr);
+    const m = normalized.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
     return m ? (m[3] + '-' + m[2] + '-' + m[1]) : '';
   }
 
@@ -2865,6 +3420,19 @@ function renderVehicleDetailLeft(vehicle) {
     });
   }
 
+  /** sigorta/kasko/muayene gg/aa/yyyy metin alanlarını kayıttan önce normalize et */
+  function bindGgAaYyyyTextInputs(modal) {
+    if (!modal) return;
+    ['sigorta-tarih', 'kasko-tarih', 'muayene-tarih', 'muayene-egzoz-tarih'].forEach(function(id) {
+      const input = modal.querySelector('#' + id);
+      if (!input || input.dataset.ggaaNormalizeBound) return;
+      input.dataset.ggaaNormalizeBound = '1';
+      const normalize = function() { normalizeGgAaYyyyInputElement(input); };
+      input.addEventListener('blur', normalize);
+      input.addEventListener('change', normalize);
+    });
+  }
+
   /** Mobil: sigorta/kasko/muayene gg/aa/yyyy metin alanına yerel tarih seçici + simge */
   function setupMobileOlayGgAaYyyyPickers(modal) {
     if (!modal) return;
@@ -2872,7 +3440,7 @@ function renderVehicleDetailLeft(vehicle) {
       ? window.matchMedia('(max-width: 640px)').matches
       : window.innerWidth <= 640;
     if (!narrow) return;
-    const ids = ['sigorta-tarih', 'kasko-tarih', 'muayene-tarih'];
+    const ids = ['sigorta-tarih', 'kasko-tarih', 'muayene-tarih', 'muayene-egzoz-tarih'];
     const calendarSvg = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>';
     ids.forEach(function(id) {
       const textEl = document.getElementById(id);
@@ -2903,7 +3471,8 @@ function renderVehicleDetailLeft(vehicle) {
       btn.innerHTML = calendarSvg;
 
       function syncNativeFromText() {
-        const v = parseGgAaYyyyToIso(textEl.value);
+        const normalized = normalizeGgAaYyyyInputElement(textEl);
+        const v = parseGgAaYyyyToIso(normalized);
         nativeInp.value = v || '';
       }
       function syncTextFromNative() {
@@ -2919,6 +3488,23 @@ function renderVehicleDetailLeft(vehicle) {
       pickerSlot.appendChild(nativeInp);
       wrap.appendChild(pickerSlot);
     });
+  }
+
+  function syncOlayEgzozMuayeneFields() {
+    const checkbox = document.getElementById('muayene-egzoz-different');
+    const wrapper = document.getElementById('muayene-egzoz-date-wrapper');
+    const input = document.getElementById('muayene-egzoz-tarih');
+    const visible = !!(checkbox && checkbox.checked);
+    if (wrapper) wrapper.classList.toggle('egzoz-date-visible', visible);
+    if (input) {
+      input.disabled = !visible;
+      if (!visible) input.value = '';
+      const nativeInput = input.closest('.olay-date-mobile-wrap')?.querySelector('.olay-date-mobile-native');
+      if (nativeInput) {
+        nativeInput.disabled = !visible;
+        if (!visible) nativeInput.value = '';
+      }
+    }
   }
 
   function getEventFormHtml(type) {
@@ -2962,6 +3548,16 @@ function renderVehicleDetailLeft(vehicle) {
     /** Etiket + butonlar yan yana, 4px gap; Var/Evet=yeşil (hover-green), Yok/Hayır=kırmızı (hover-red) */
     const radioRow = (labelText, varVal, yokVal, varLbl, yokLbl) => {
       return '<div class="form-section-inline event-radio-row"><span class="' + labelCls + ' event-radio-label">' + labelText + '</span><div class="event-radio-actions"><button type="button" class="radio-btn hover-green" data-value="' + varVal + '">' + varLbl + '</button><button type="button" class="radio-btn hover-red" data-value="' + yokVal + '">' + yokLbl + '</button></div></div>';
+    };
+    const egzozMuayeneSection = () => {
+      return '<label class="egzoz-olay-toggle" for="muayene-egzoz-different">' +
+        '<input type="checkbox" id="muayene-egzoz-different">' +
+        '<span>Egzos Muayenesi Farklı Tarih İse İşaretleyin..</span>' +
+        '</label>' +
+        '<div id="muayene-egzoz-date-wrapper" class="egzoz-olay-date-wrapper">' +
+        '<label class="' + labelCls + '" for="muayene-egzoz-tarih">Egzos Muayenesi Bitiş Tarihi (gg/aa/yyyy)</label>' +
+        '<input id="muayene-egzoz-tarih" class="' + inputCls + '" type="text" placeholder="gg/aa/yyyy" disabled>' +
+        '</div>';
     };
     switch (type) {
       case 'bakim':
@@ -3017,15 +3613,16 @@ function renderVehicleDetailLeft(vehicle) {
           section('İletişim', 'kasko-iletisim', 'input', [['type', 'text'], ['placeholder', '05** *******']]) + '</div>';
       case 'muayene':
         return '<div style="display:flex;flex-direction:column;gap:12px;">' +
-          section('Muayene Tarihi (gg/aa/yyyy)', 'muayene-tarih', 'input', [['type', 'text'], ['placeholder', 'gg/aa/yyyy']]) + '</div>';
+          section('Muayene Tarihi (gg/aa/yyyy)', 'muayene-tarih', 'input', [['type', 'text'], ['placeholder', 'gg/aa/yyyy']]) +
+          egzozMuayeneSection() + '</div>';
       case 'anahtar':
         return '<div style="display:flex;flex-direction:column;gap:12px;">' +
           radioRow('Yedek Anahtar Var mı?', 'var', 'yok', 'Var', 'Yok') +
           '<div id="anahtar-detay-wrapper" style="display:none;"><label class="' + labelCls + '" for="anahtar-detay-event">Detay (nerede)</label><input id="anahtar-detay-event" class="' + inputCls + '" type="text" placeholder="Nerede?"></div></div>';
       case 'kredi':
         return '<div style="display:flex;flex-direction:column;gap:12px;">' +
-          radioRow('Kredi/ Rehin Var mı?', 'var', 'yok', 'Var', 'Yok') +
-          '<div id="kredi-detay-wrapper-event" style="display:none;"><label class="' + labelCls + '" for="kredi-detay-event">Detay</label><input id="kredi-detay-event" class="' + inputCls + '" type="text"></div></div>';
+          radioRow('Hak Mahrumiyeti Var mı?', 'var', 'yok', 'Var', 'Yok') +
+          '<div id="kredi-detay-wrapper-event" style="display:none;"><label class="' + labelCls + '" for="kredi-detay-event">Hak mahrumiyeti detay</label><input id="kredi-detay-event" class="' + inputCls + '" type="text"></div></div>';
       case 'km':
         return '<div style="display:flex;flex-direction:column;gap:12px;">' +
           section('Güncel Km', 'km-guncelle-input', 'input', [['type', 'text'], ['placeholder', 'Km'], ['inputmode', 'numeric']]) + '</div>';
@@ -3062,6 +3659,7 @@ function renderVehicleDetailLeft(vehicle) {
    * Olay modal menüsünü veya tek dinamik olay form modal'ını açar
    */
   window.openEventModal = function(type, vehicleId) {
+    closeDynamicModalCustomSelect();
     if (type === 'menu') {
       if (DOM.dinamikOlayModal && DOM.dinamikOlayModal.classList.contains('active')) {
         DOM.dinamikOlayModal.classList.remove('active');
@@ -3085,7 +3683,7 @@ function renderVehicleDetailLeft(vehicle) {
         { id: 'kasko', label: 'Kasko Bilgisi Güncelle' },
         { id: 'muayene', label: 'Muayene Bilgisi G\u00FCncelle' },
         { id: 'anahtar', label: 'Yedek Anahtar Bilgisi G\u00FCncelle' },
-        { id: 'kredi', label: 'Kredi/Rehin Bilgisi G\u00FCncelle' },
+        { id: 'kredi', label: 'Hak Mahrumiyeti Bilgisi G\u00FCncelle' },
         { id: 'lastik', label: 'Yazl\u0131k/K\u0131\u015Fl\u0131k Lastik Durumu G\u00FCncelle' },
         { id: 'utts', label: 'UTTS Bilgisi G\u00FCncelle' },
         { id: 'takip', label: takipLabel },
@@ -3272,6 +3870,12 @@ function renderVehicleDetailLeft(vehicle) {
       } else if (type === 'muayene') {
         const muayeneTarihInput = document.getElementById('muayene-tarih');
         if (muayeneTarihInput) muayeneTarihInput.value = formatDateForDisplay(new Date());
+        const egzozCheckbox = document.getElementById('muayene-egzoz-different');
+        if (egzozCheckbox) {
+          egzozCheckbox.checked = false;
+          egzozCheckbox.addEventListener('change', syncOlayEgzozMuayeneFields);
+        }
+        syncOlayEgzozMuayeneFields();
       } else if (type === 'kaskokodu') {
         const vehicle = readVehicles().find(v => String(v.id) === String(vehicleId || window.currentDetailVehicleId));
         const input = document.getElementById('kasko-kodu-guncelle-input');
@@ -3290,6 +3894,9 @@ function renderVehicleDetailLeft(vehicle) {
             opt.textContent = b.name;
             selectEl.appendChild(opt);
           });
+          ensureDynamicModalCustomSelect(selectEl, {
+            placeholderText: 'Şube Seçiniz'
+          });
         }
       } else if (type === 'kullanici') {
         // Kullanıcı atama modal'ında kullanıcıları doldur; Henüz Tanımlanmadı + en alta "+ Yeni Kullanıcı Ekle"
@@ -3301,7 +3908,7 @@ function renderVehicleDetailLeft(vehicle) {
           noneOpt.value = '__none__';
           noneOpt.textContent = 'Henüz Tanımlanmadı';
           selectEl.appendChild(noneOpt);
-          const users = getAssignableUsersForVehicle(vehicle);
+          const users = readUsers();
           users.forEach(u => {
             const opt = document.createElement('option');
             opt.value = u.id;
@@ -3317,32 +3924,33 @@ function renderVehicleDetailLeft(vehicle) {
           } else {
             selectEl.value = '__none__';
           }
+          ensureDynamicModalCustomSelect(selectEl, {
+            placeholderText: 'Kullanıcı Seçiniz',
+            secondaryValues: ['__add_user__'],
+            mutedValues: ['__none__'],
+            searchable: true,
+            searchPlaceholder: 'Kullanıcı ara',
+            noResultsText: 'Kullanıcı bulunamadı'
+          });
           if (!selectEl.dataset.kullaniciAddHandler) {
             selectEl.dataset.kullaniciAddHandler = '1';
             selectEl.addEventListener('change', function() {
               if (selectEl.value === '__add_user__') {
                 selectEl.value = '';
+                dismissVehicleAssignUserSavedListener();
                 const currentVehicleId = vehicleId || window.currentDetailVehicleId;
                 removeVehicleUserFlowListeners();
                 closeEventModal('kullanici');
                 setTimeout(function() {
                   if (typeof window.openUserFormModal === 'function') {
-                    window.openUserFormModal(null, {
-                      source: 'vehicle-user-assignment',
-                      vehicleId: currentVehicleId
-                    });
+                    window.openUserFormModal(null, { fromVehicleAssign: true });
                   }
                 }, 350);
                 const onUserSaved = function(ev) {
-                  const detail = ev && ev.detail ? ev.detail : {};
-                  const newId = detail.id;
-                  if (!newId) return;
-                  if (String(detail.source || '') !== 'vehicle-user-assignment') return;
-                  if (String(detail.vehicleId || '') !== String(currentVehicleId || '')) return;
-                  removeVehicleUserFlowListeners();
+                  const newId = ev.detail && ev.detail.id;
+                  dismissVehicleAssignUserSavedListener();
                   if (!newId || !selectEl.parentNode) return;
-                  const currentVehicle = readVehicles().find(v => String(v.id) === String(currentVehicleId));
-                  const users = getAssignableUsersForVehicle(currentVehicle);
+                  const users = readUsers();
                   selectEl.innerHTML = '<option value="">Kullanıcı Seçiniz</option>';
                   const noneOpt2 = document.createElement('option');
                   noneOpt2.value = '__none__';
@@ -3363,19 +3971,7 @@ function renderVehicleDetailLeft(vehicle) {
                     openEventModal('kullanici', currentVehicleId);
                   }
                 };
-                const onUserFormClosed = function(ev) {
-                  const detail = ev && ev.detail ? ev.detail : {};
-                  if (String(detail.source || '') !== 'vehicle-user-assignment') return;
-                  if (String(detail.vehicleId || '') !== String(currentVehicleId || '')) return;
-                  removeVehicleUserFlowListeners();
-                  if (currentVehicleId) {
-                    openEventModal('kullanici', currentVehicleId);
-                  }
-                };
-                window.__vehicleUserFlowCleanup = function() {
-                  window.removeEventListener('userSaved', onUserSaved);
-                  window.removeEventListener('userFormClosed', onUserFormClosed);
-                };
+                window._medisaVehicleAssignOnUserSaved = onUserSaved;
                 window.addEventListener('userSaved', onUserSaved);
                 window.addEventListener('userFormClosed', onUserFormClosed);
               }
@@ -3561,7 +4157,7 @@ function renderVehicleDetailLeft(vehicle) {
               if (existing) existing.remove();
               
               const isMobileFallback = window.innerWidth <= 640;
-              const skipDinamikDatePh = isMobileFallback && !!input.closest('#dinamik-olay-modal');
+              const skipDinamikDatePh = !!input.closest('#dinamik-olay-modal');
               if (!input.value && input !== document.activeElement && !skipDinamikDatePh) {
                 const leftPx = isMobileFallback ? '12px' : '8px';
                 const st = window.getComputedStyle(input);
@@ -3605,6 +4201,7 @@ function renderVehicleDetailLeft(vehicle) {
               }
             }
           });
+          bindGgAaYyyyTextInputs(modal);
           setupMobileOlayGgAaYyyyPickers(modal);
           bindDinamikOlayDateInputsForIos(modal);
         }, 100);
@@ -4142,7 +4739,7 @@ function renderVehicleDetailLeft(vehicle) {
       iframeJustCreated = true;
     }
     // iOS basıma uygun: tam viewport, ekranda görünmez (opacity:0), tam sayfa baskı için 100vw/100vh
-    iframe.style.cssText = 'position:fixed;left:0;top:0;width:100vw;height:100vh;border:0;opacity:0.01;pointer-events:none;visibility:visible;transform:translateX(-200vw);background:#fff;z-index:-1;';
+    iframe.style.cssText = window.MEDISA_PRINT_IFRAME_CSS_TEXT || 'position:fixed;left:0;top:0;width:100vw;height:100vh;border:0;opacity:0.01;pointer-events:none;visibility:visible;transform:translateX(-200vw);background:#fff;z-index:-1;';
     var lastOnloadAt = 0;
     var printTimer = null;
     function clearPrintTimer() {
@@ -4977,8 +5574,9 @@ function renderVehicleDetailLeft(vehicle) {
     if (!dateStr) return '';
 
     let date = null;
+    const normalizedDateStr = normalizeGgAaYyyyInput(dateStr);
     const trPattern = /^(\d{2})\/(\d{2})\/(\d{4})$/;
-    const trMatch = String(dateStr).match(trPattern);
+    const trMatch = String(normalizedDateStr).match(trPattern);
     if (trMatch) {
       const day = parseInt(trMatch[1], 10);
       const month = parseInt(trMatch[2], 10);
@@ -4986,7 +5584,7 @@ function renderVehicleDetailLeft(vehicle) {
       date = new Date(year, month - 1, day);
     } else {
       const isoPattern = /^(\d{4})-(\d{2})-(\d{2})$/;
-      const isoMatch = String(dateStr).match(isoPattern);
+      const isoMatch = String(dateStr).trim().match(isoPattern);
       if (isoMatch) {
         const year = parseInt(isoMatch[1], 10);
         const month = parseInt(isoMatch[2], 10);
@@ -5040,7 +5638,8 @@ function renderVehicleDetailLeft(vehicle) {
     const vehicleId = window.currentDetailVehicleId;
     if (!vehicleId) return;
     
-    const tarih = document.getElementById('sigorta-tarih')?.value.trim() || '';
+    const tarihInput = document.getElementById('sigorta-tarih');
+    const tarih = normalizeGgAaYyyyInputElement(tarihInput);
     const firma = document.getElementById('sigorta-firma')?.value.trim() || '';
     const acente = document.getElementById('sigorta-acente')?.value.trim() || '';
     const iletisim = document.getElementById('sigorta-iletisim')?.value.trim() || '';
@@ -5102,7 +5701,8 @@ function renderVehicleDetailLeft(vehicle) {
     const vehicleId = window.currentDetailVehicleId;
     if (!vehicleId) return;
     
-    const tarih = document.getElementById('kasko-tarih')?.value.trim() || '';
+    const tarihInput = document.getElementById('kasko-tarih');
+    const tarih = normalizeGgAaYyyyInputElement(tarihInput);
     const firma = document.getElementById('kasko-firma')?.value.trim() || '';
     const acente = document.getElementById('kasko-acente')?.value.trim() || '';
     const iletisim = document.getElementById('kasko-iletisim')?.value.trim() || '';
@@ -5155,10 +5755,21 @@ function renderVehicleDetailLeft(vehicle) {
     const vehicleId = window.currentDetailVehicleId;
     if (!vehicleId) return;
     
-    const tarih = document.getElementById('muayene-tarih')?.value.trim() || '';
+    const tarihInput = document.getElementById('muayene-tarih');
+    const tarih = normalizeGgAaYyyyInputElement(tarihInput);
+    const egzozCheckbox = document.getElementById('muayene-egzoz-different');
+    const egzozInput = document.getElementById('muayene-egzoz-tarih');
+    const egzozDifferent = !!(egzozCheckbox && egzozCheckbox.checked);
+    const egzozTarih = egzozDifferent ? normalizeGgAaYyyyInputElement(egzozInput) : '';
+    const egzozMuayeneDate = egzozDifferent ? parseGgAaYyyyToIso(egzozTarih) : '';
     
     if (!tarih) {
       alert('Tarih zorunludur!');
+      return;
+    }
+    if (egzozDifferent && !egzozMuayeneDate) {
+      alert('Egzos Muayenesi Bitiş Tarihi zorunludur!');
+      if (egzozInput) egzozInput.focus();
       return;
     }
     
@@ -5172,6 +5783,7 @@ function renderVehicleDetailLeft(vehicle) {
     const bitisTarihi = calculateNextMuayene(vehicle, tarih);
     
     vehicle.muayeneDate = bitisTarihi;
+    vehicle.egzozMuayeneDate = egzozMuayeneDate;
     
     const event = {
       id: Date.now().toString(),
@@ -5180,6 +5792,7 @@ function renderVehicleDetailLeft(vehicle) {
       timestamp: new Date().toISOString(),
       data: {
         bitisTarihi: bitisTarihi,
+        egzozMuayeneDate: egzozMuayeneDate,
         surucu: getEventPerformerName(vehicle)
       }
     };
@@ -5240,7 +5853,7 @@ function renderVehicleDetailLeft(vehicle) {
   };
 
   /**
-   * Kredi/Rehin bilgisi güncelle
+   * Hak Mahrumiyeti bilgisi güncelle
    */
   window.updateKrediInfo = function() {
     const vehicleId = window.currentDetailVehicleId;
@@ -5277,7 +5890,7 @@ function renderVehicleDetailLeft(vehicle) {
       return completeDynamicEventSave({
         modalType: 'kredi',
         vehicleId: vehicleId,
-        message: 'Kredi/Rehin bilgisi güncellendi.'
+        message: 'Hak Mahrumiyeti bilgisi güncellendi.'
       });
     });
   };
@@ -5612,7 +6225,8 @@ function renderVehicleDetailLeft(vehicle) {
         timestamp: new Date().toISOString(),
         data: {
           kullaniciId: '',
-          kullaniciAdi: 'Henüz Tanımlanmadı',
+          kullaniciAdi: '',
+          atamaKaldirildi: true,
           kaydeden: getRecorderDisplayName()
         }
       };
@@ -5740,7 +6354,22 @@ function renderVehicleDetailLeft(vehicle) {
    */
   function renderHistoryDigerEventHtml(event, vehicle, branches) {
     const eventType = String(event.type || '').trim();
-    const dateText = escapeHtml(formatDateForDisplay(event.date) || '-');
+    const isDateRenewalEvent = eventType === 'kasko-guncelle' || eventType === 'sigorta-guncelle' || eventType === 'muayene-guncelle' || eventType === 'muayene' || eventType === 'muayene-yenileme';
+    function formatHistoryActionDate(ev) {
+      const stamp = ev && ev.timestamp ? String(ev.timestamp).trim() : '';
+      if (stamp) {
+        const parsed = new Date(stamp);
+        if (!isNaN(parsed.getTime())) {
+          const d = String(parsed.getDate()).padStart(2, '0');
+          const m = String(parsed.getMonth() + 1).padStart(2, '0');
+          const y = String(parsed.getFullYear());
+          return `${d}/${m}/${y}`;
+        }
+      }
+      return formatDateForDisplay(ev && ev.date ? ev.date : '');
+    }
+    const actionDateText = formatHistoryActionDate(event);
+    const dateText = escapeHtml((isDateRenewalEvent ? actionDateText : formatDateForDisplay(event.date)) || '-');
     const eventData = event.data || {};
     const legacyAciklama = String(eventData.aciklama || eventData.description || '').trim();
     const performerRaw = eventData.kaydeden || eventData.surucu || eventData.kisi || '';
@@ -5768,22 +6397,31 @@ function renderVehicleDetailLeft(vehicle) {
       if (adres) pushDetail('Konum', toTitleCase(adres));
     } else if (eventType === 'kasko-guncelle') {
       summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Kasko Biti\u015F Tarihini G\u00FCncelledi.</span>';
+      const islemTarihi = actionDateText;
       const bitis = formatDateForDisplay(eventData.bitisTarihi || '');
       const firma = (eventData.firma || '').trim();
       const acente = (eventData.acente || '').trim();
+      const iletisim = (eventData.iletisim || '').trim();
+      if (islemTarihi) pushDetail('\u0130\u015flem Tarihi', islemTarihi);
       if (bitis) pushDetail('Biti\u015F Tarihi', bitis);
       if (firma) pushDetail('Firma', toTitleCase(firma));
       if (acente) pushDetail('Acente', toTitleCase(acente));
+      if (iletisim) pushDetail('\u0130leti\u015Fim', iletisim);
     } else if (eventType === 'sigorta-guncelle') {
       summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Trafik Sigortas\u0131 Biti\u015F Tarihini G\u00FCncelledi.</span>';
+      const islemTarihi = actionDateText;
       const bitis = formatDateForDisplay(eventData.bitisTarihi || '');
       const firma = (eventData.firma || '').trim();
       const acente = (eventData.acente || '').trim();
+      const iletisim = (eventData.iletisim || '').trim();
+      if (islemTarihi) pushDetail('\u0130\u015flem Tarihi', islemTarihi);
       if (bitis) pushDetail('Biti\u015F Tarihi', bitis);
       if (firma) pushDetail('Firma', toTitleCase(firma));
       if (acente) pushDetail('Acente', toTitleCase(acente));
+      if (iletisim) pushDetail('\u0130leti\u015Fim', iletisim);
     } else if (eventType === 'muayene-guncelle' || eventType === 'muayene' || eventType === 'muayene-yenileme') {
       summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Muayene Biti\u015F Tarihini G\u00FCncelledi.</span>';
+      const islemTarihi = actionDateText;
       let bitis = formatDateForDisplay(eventData.bitisTarihi || '');
       if (!bitis && legacyAciklama) {
         const m = legacyAciklama.match(/(\d{2}[./-]\d{2}[./-]\d{4})/);
@@ -5792,15 +6430,23 @@ function renderVehicleDetailLeft(vehicle) {
           bitis = raw;
         }
       }
+      if (islemTarihi) pushDetail('\u0130\u015flem Tarihi', islemTarihi);
       if (bitis) pushDetail('Biti\u015F Tarihi', bitis);
+      const egzozBitis = formatDateForDisplay(eventData.egzozMuayeneDate || '');
+      if (egzozBitis) pushDetail('Egzos Muayenesi', egzozBitis);
     } else if (eventType === 'kullanici-atama') {
       const yeni = (eventData.kullaniciAdi || '').trim();
       const eski = (eventData.eskiKullaniciAdi || '').trim();
-      const yeniDisp = yeni ? formatAdSoyad(yeni) : '';
-      if (yeniDisp) {
-        summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Kullan\u0131c\u0131 Atamas\u0131n\u0131 </span><span class="history-detail-inline">"' + escapeHtml(yeniDisp) + '"</span><span class="history-action-text"> Olarak G\u00FCncelledi.</span>';
+      const kaldirdi = eventData.atamaKaldirildi === true || yeni === 'Hen\u00fcz Tan\u0131mlanmad\u0131';
+      if (kaldirdi) {
+        summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Kullan\u0131c\u0131 Atamas\u0131n\u0131 Kald\u0131rd\u0131.</span>';
       } else {
-        summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Kullan\u0131c\u0131 Atamas\u0131n\u0131 G\u00FCncelledi.</span>';
+        const yeniDisp = yeni ? formatAdSoyad(yeni) : '';
+        if (yeniDisp) {
+          summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Kullan\u0131c\u0131 Atamas\u0131n\u0131 </span><span class="history-detail-inline">"' + escapeHtml(yeniDisp) + '"</span><span class="history-action-text"> Olarak G\u00FCncelledi.</span>';
+        } else {
+          summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Kullan\u0131c\u0131 Atamas\u0131n\u0131 G\u00FCncelledi.</span>';
+        }
       }
       if (eski) pushDetail('\u00d6nceki Kullan\u0131c\u0131', formatAdSoyad(eski));
     } else if (eventType === 'sube-degisiklik') {
@@ -5816,7 +6462,7 @@ function renderVehicleDetailLeft(vehicle) {
     } else if (eventType === 'kredi-guncelle') {
       const durum = String(eventData.durum || 'yok').toLowerCase();
       const durumTxt = durum === 'var' ? 'Var' : 'Yok';
-      summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Kredi/Rehin Durumunu </span><span class="history-detail-inline">' + escapeHtml(durumTxt) + '</span><span class="history-action-text"> Olarak G\u00FCncelledi.</span>';
+      summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Hak Mahrumiyeti Durumunu </span><span class="history-detail-inline">' + escapeHtml(durumTxt) + '</span><span class="history-action-text"> Olarak G\u00FCncelledi.</span>';
       const detay = (eventData.detay || '').trim();
       if (detay) pushDetail('Detay', toTitleCase(detay));
     } else if (eventType === 'utts-guncelle') {
@@ -5987,6 +6633,11 @@ function renderVehicleDetailLeft(vehicle) {
         kmEvents.forEach((event, index) => {
           const eskiKm = event.data?.eskiKm || '-';
           const yeniKm = event.data?.yeniKm || '-';
+          const eskiKmRaw = String(eskiKm == null ? '' : eskiKm).trim();
+          const isInitialKmEntry = event.data?.isInitialKmEntry === true || !eskiKmRaw || eskiKmRaw === '-';
+          const yeniKmFormatli = yeniKm && yeniKm !== '-'
+            ? escapeHtml(formatNumber(yeniKm)) + ' km'
+            : '-';
           const kayitliKullanici = (event.data?.surucu || '').trim();
           const tahsisliKisi = String(vehicle?.tahsisKisi || '').trim();
           const yonetimEtiketiMi = /^y(?:o|\u00F6)netim$/i.test(kayitliKullanici);
@@ -5996,7 +6647,9 @@ function renderVehicleDetailLeft(vehicle) {
           const kullanici = kullaniciVal
             ? formatAdSoyad(kullaniciVal)
             : 'B\u0130L\u0130NM\u0130YOR';
-          const kmSummary = '<span class="history-user-name">' + escapeHtml(kullanici) + '</span><span class="history-action-text">, G\u00fcncel Km bilgisini </span><span class="history-detail-inline">' + escapeHtml(formatNumber(yeniKm)) + '</span><span class="history-action-text"> olarak g\u00FCncelledi.</span> <span class="history-label">\u00d6nceki km:</span> ' + escapeHtml(formatNumber(eskiKm));
+          const kmSummary = isInitialKmEntry
+            ? '<span class="history-user-name">Yeni Taşıt</span><span class="history-action-text"> • </span><span class="history-detail-inline">' + yeniKmFormatli + '</span>'
+            : '<span class="history-user-name">' + escapeHtml(kullanici) + '</span><span class="history-action-text">, G\u00fcncel Km bilgisini </span><span class="history-detail-inline">' + escapeHtml(formatNumber(yeniKm)) + '</span><span class="history-action-text"> olarak g\u00FCncelledi.</span> <span class="history-label">\u00d6nceki Km:</span> ' + escapeHtml(formatNumber(eskiKm));
           html += `<div class="history-item">
             <div class="history-item-date" style="font-weight: 600; font-size: 12px; margin-bottom: 4px;">${escapeHtml(formatDateForDisplay(event.date) || '-')}</div>
             <div class="history-item-body history-item-summary" style="font-size: 12px; margin-top: 4px;">${kmSummary}</div>
@@ -6131,7 +6784,7 @@ function renderVehicleDetailLeft(vehicle) {
       'kasko-guncelle': 'Kasko g\u00FCncelleme',
       'sube-degisiklik': '\u015Eube de\u011Fi\u015Fikli\u011Fi',
       'kullanici-atama': 'Kullan\u0131c\u0131 atama',
-      'kredi-guncelle': 'Kredi/Rehin',
+      'kredi-guncelle': 'Hak Mahrumiyeti',
       'takip-cihaz-guncelle': 'Takip cihaz\u0131',
       'not-guncelle': 'Kullanıcı notu',
       'satis': 'Sat\u0131\u015F/Pert',
@@ -6161,6 +6814,14 @@ function renderVehicleDetailLeft(vehicle) {
       const whoU = who ? formatHistoryPerformerUpper(who) : 'B\u0130L\u0130NM\u0130YOR';
       return whoU + ', ' + plateStr + ' Plakal\u0131 Ta\u015F\u0131t \u0130\u00E7in Kasko Kodunu G\u00FCncelledi.';
     }
+    if (type === 'kullanici-atama') {
+      const kaldir = evData.atamaKaldirildi === true || String(evData.kullaniciAdi || '').trim() === 'Hen\u00fcz Tan\u0131mlanmad\u0131';
+      if (kaldir) {
+        const who = evData.kaydeden || evData.surucu || evData.kisi;
+        const whoStr = who ? formatAdSoyad(String(who)) : 'Bilinmiyor';
+        return whoStr + ', ' + plateStr + ' Plakal\u0131 Ta\u015F\u0131t \u0130\u00E7in Kullan\u0131c\u0131 Atamas\u0131n\u0131 Kald\u0131rd\u0131.';
+      }
+    }
     const typeMessages = {
       'km-revize': 'Km Bildirimi Yapt\u0131',
       'bakim': 'Bak\u0131m Bildirimi Yapt\u0131',
@@ -6171,7 +6832,7 @@ function renderVehicleDetailLeft(vehicle) {
       'muayene-guncelle': 'Muayene Bilgisini G\u00FCncelledi',
       'anahtar-guncelle': 'Yedek Anahtar Bilgisini G\u00FCncelledi',
       'utts-guncelle': 'UTTS Bilgisini G\u00FCncelledi',
-      'kredi-guncelle': 'Kredi/Rehin Bilgisini G\u00FCncelledi',
+      'kredi-guncelle': 'Hak Mahrumiyeti Bilgisini G\u00FCncelledi',
       'takip-cihaz-guncelle': 'Takip Cihaz\u0131 Bilgisini G\u00FCncelledi',
       'not-guncelle': 'Not Bilgisini G\u00FCncelledi',
       'sube-degisiklik': '\u015Eube Bilgisini G\u00FCncelledi',
@@ -6230,15 +6891,16 @@ function renderVehicleDetailLeft(vehicle) {
     const notifications = [];
     const activeSpecialNotificationKeys = [];
     let hasUnreadActivity = false;
+    let hasUnreadMarkableNotification = false;
     const showDesktopSpecialNotifDate = window.innerWidth >= 641;
-    let hasRed = false; // Kırmızı bildirim var mı?
-    let hasOrange = false; // Turuncu bildirim var mı?
+    let hasRed = false; // Okunmamış kırmızı bildirim var mı?
+    let hasOrange = false; // Okunmamış turuncu bildirim var mı?
 
     vehicles.forEach(vehicle => {
       if (vehicle.satildiMi) return; // Satılmış taşıtları atla
 
       const plate = vehicle.plate || '-';
-      const brandModel = toTitleCase(vehicle.brandModel || '-');
+      const brandModel = formatBrandModel(vehicle.brandModel || '-');
 
       // Sigorta kontrolü
       if (vehicle.sigortaDate) {
@@ -6256,8 +6918,6 @@ function renderVehicleDetailLeft(vehicle) {
             warningClass: warning.class,
             status: status
           });
-          if (warning.class === 'date-warning-red') hasRed = true;
-          else if (warning.class === 'date-warning-orange') hasOrange = true;
         }
       }
 
@@ -6277,8 +6937,6 @@ function renderVehicleDetailLeft(vehicle) {
             warningClass: warning.class,
             status: status
           });
-          if (warning.class === 'date-warning-red') hasRed = true;
-          else if (warning.class === 'date-warning-orange') hasOrange = true;
         }
       }
 
@@ -6298,8 +6956,24 @@ function renderVehicleDetailLeft(vehicle) {
             warningClass: warning.class,
             status: status
           });
-          if (warning.class === 'date-warning-red') hasRed = true;
-          else if (warning.class === 'date-warning-orange') hasOrange = true;
+        }
+      }
+
+      if (vehicle.egzozMuayeneDate && vehicle.egzozMuayeneDate !== vehicle.muayeneDate) {
+        const warning = checkDateWarnings(vehicle.egzozMuayeneDate);
+        if (warning.class) {
+          const days = warning.days;
+          const status = days < 0 ? 'geçmiş' : days <= 3 ? 'çok yakın' : 'yaklaşıyor';
+          notifications.push({
+            type: 'egzoz',
+            vehicleId: vehicle.id,
+            plate: plate,
+            brandModel: brandModel,
+            date: vehicle.egzozMuayeneDate,
+            days: days,
+            warningClass: warning.class,
+            status: status
+          });
         }
       }
     });
@@ -6310,7 +6984,7 @@ function renderVehicleDetailLeft(vehicle) {
       if (vehicle.satildiMi) return;
       const events = vehicle.events || [];
       const plate = vehicle.plate || '-';
-      const brandModel = toTitleCase(vehicle.brandModel || '-');
+      const brandModel = formatBrandModel(vehicle.brandModel || '-');
       events.forEach(ev => {
         recentEvents.push({
           vehicleId: vehicle.id,
@@ -6384,20 +7058,26 @@ function renderVehicleDetailLeft(vehicle) {
       let html = mtvHtml + kaskoExcelHtml;
       let activityHtml = '';
 
-      // Tarih uyarıları (sigorta, kasko, muayene)
+      // Tarih uyarıları (sigorta, kasko, muayene, egzos)
       if (notifications.length > 0) {
+        const viewedKeys = getViewedNotificationKeys();
         notifications.sort((a, b) => {
           if (a.warningClass === 'date-warning-red' && b.warningClass !== 'date-warning-red') return -1;
           if (a.warningClass !== 'date-warning-red' && b.warningClass === 'date-warning-red') return 1;
           return a.days - b.days;
         });
         notifications.forEach(notif => {
-            const typeLabel = notif.type === 'sigorta' ? 'Sigorta' : notif.type === 'kasko' ? 'Kasko' : 'Muayene';
+            const typeLabel = notif.type === 'sigorta' ? 'Sigorta' : notif.type === 'kasko' ? 'Kasko' : notif.type === 'egzoz' ? 'Egzos Muayenesi' : 'Muayene';
             const activeDateDisplay = formatDateForDisplay(new Date()) || '-';
+            const notifKey = 'date|' + String(notif.vehicleId || '') + '|' + String(notif.type || '') + '|' + String(notif.date || '');
+            const isRead = viewedKeys.indexOf(notifKey) !== -1;
+            const isUnread = !isRead;
 
             let messageText = '';
             if (notif.days <= 0 && notif.type === 'kasko') {
                 messageText = `${notif.plate} Plakalı Taşıtın Kasko Süresi Bitmiştir.`;
+            } else if (notif.days <= 0 && notif.type === 'egzoz') {
+                messageText = `${notif.plate} Plakalı Taşıtın Egzos Muayenesi Süresi Bitmiştir.`;
             } else if (notif.days <= 0 && notif.type === 'muayene') {
                 messageText = `${notif.plate} Plakalı Taşıtın Muayene Süresi Bitmiştir.`;
             } else if (notif.days < 0) {
@@ -6413,13 +7093,19 @@ function renderVehicleDetailLeft(vehicle) {
             const borderColor = notif.warningClass === 'date-warning-red'
               ? 'rgba(212, 0, 0, 0.6)'
               : 'rgba(255, 140, 0, 0.6)';
+            const readBorderColor = 'rgba(130, 130, 130, 0.55)';
 
             const safePlate = (notif.plate || '').replace(/"/g, '&quot;');
             const safeVid = (notif.vehicleId || '').toString().replace(/"/g, '&quot;');
+            const safeKey = notifKey.replace(/"/g, '&quot;');
+            const stateClass = isUnread ? ' notification-unread' : ' notification-read';
+            if (isUnread) hasUnreadMarkableNotification = true;
+            if (isUnread && notif.warningClass === 'date-warning-red') hasRed = true;
+            if (isUnread && notif.warningClass === 'date-warning-orange') hasOrange = true;
 
-            html += `<button type="button" data-plate="${safePlate}" data-vehicle-id="${safeVid}" style="width: 100%; padding: 10px 12px; background: transparent; border: 1px solid ${borderColor}; color: #ccc; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 12px; text-align: left; transition: all 0.2s ease; height: auto; white-space: normal;" class="notification-item ${notif.warningClass}-border">
+            html += `<button type="button" data-plate="${safePlate}" data-vehicle-id="${safeVid}" data-notif-key="${safeKey}" style="width: 100%; padding: 10px 12px; background: transparent; border: 1px solid ${isUnread ? borderColor : readBorderColor}; color: ${isUnread ? '#ccc' : '#9a9a9a'}; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 12px; text-align: left; transition: all 0.2s ease; height: auto; white-space: normal;" class="notification-item ${isUnread ? (notif.warningClass + '-border') : ''}${stateClass}">
             <div class="notif-line1">
-              <span class="${notif.warningClass}">${escapeHtml(messageText)}</span>
+              <span class="${isUnread ? notif.warningClass : ''}" style="${isUnread ? '' : 'color:#9a9a9a;'}">${escapeHtml(messageText)}</span>
             </div>
             <div class="notif-line2">${escapeHtml(activeDateDisplay)}</div>
           </button>`;
@@ -6428,8 +7114,7 @@ function renderVehicleDetailLeft(vehicle) {
 
       // Kullanıcı paneli işlemleri bölümü
       if (recentSlice.length > 0) {
-        const viewedRaw = sessionStorage.getItem('notifViewedKeysV2');
-        const viewedKeys = viewedRaw ? JSON.parse(viewedRaw) : [];
+        const viewedKeys = getViewedNotificationKeys();
         recentSlice.forEach(item => {
           const ev = item.event;
           const dateDisplay = formatDateForDisplay(ev.date) || '-';
@@ -6441,9 +7126,14 @@ function renderVehicleDetailLeft(vehicle) {
           const notifKey = plateNorm + '|' + typeNorm + '|' + dateDisplay;
           const safeKey = notifKey.replace(/"/g, '&quot;');
           const isUnread = viewedKeys.indexOf(notifKey) === -1;
-          if (isUnread) hasUnreadActivity = true;
+          if (isUnread) {
+            hasUnreadActivity = true;
+            hasUnreadMarkableNotification = true;
+          }
           const unreadClass = isUnread ? ' notification-unread' : '';
-          const unreadStyle = isUnread ? ' border: 1px solid rgba(212, 0, 0, 0.85) !important;' : '';
+          const unreadStyle = isUnread
+            ? ' border: 1px solid rgba(212, 0, 0, 0.85) !important; color: #ccc;'
+            : ' border: 1px solid rgba(130, 130, 130, 0.55) !important; color: #9a9a9a;';
           const activityMsg = getNotificationActivityMessage(ev, item.plate);
           activityHtml += `<button type="button" data-plate="${safePlate}" data-vehicle-id="${safeVid}" data-open-history="1" data-history-tab="${historyTab}" data-notif-key="${safeKey}" style="width: 100%; padding: 10px 12px; background: transparent; color: #ccc; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 12px; text-align: left; transition: all 0.2s ease; height: auto; white-space: normal;${unreadStyle}" class="notification-item notification-item-activity${unreadClass}">
           <div class="notif-line1">${escapeHtml(activityMsg)}</div>
@@ -6457,7 +7147,7 @@ function renderVehicleDetailLeft(vehicle) {
       }
 
       if (notifDropdown) {
-        if (hasUnreadActivity) {
+        if (hasUnreadMarkableNotification) {
           html = `<div class="notifications-toolbar"><button type="button" class="notifications-mark-all-read-btn" data-notification-action="mark-all-read">Tümünü Okundu Olarak İşaretle</button></div>` + html;
         }
         notifDropdown.innerHTML = html;
@@ -6853,17 +7543,89 @@ function renderVehicleDetailLeft(vehicle) {
 
   // Taşıt detay: muayene tooltip (hover ile açık kalır, gecikmeli kapatma) + ünlem/link tıklama
   let muayeneTooltipCloseTimeout = null;
-  function openVehicleTypePickerFromDetail() {
-    const vehicleId = window.currentDetailVehicleId;
-    if (vehicleId) {
-      window.vehicleTypePickerFromDetail = vehicleId;
-      const picker = document.getElementById('vehicle-type-picker-overlay');
-      if (picker) {
-        picker.style.display = 'flex';
-        picker.setAttribute('aria-hidden', 'false');
-      }
+  let muayenePickerPointerHandledAt = 0;
+  let vehicleTypePickerModulePromise = null;
+  function ensureVehicleTypePickerModule() {
+    if (typeof window.openVehicleTypePickerOverlay === 'function') {
+      return Promise.resolve();
+    }
+    if (vehicleTypePickerModulePromise) {
+      return vehicleTypePickerModulePromise;
+    }
+    const versions = window.MEDISA_MODULE_VERSIONS || {};
+    const kayitJs = 'kayit.js?v=' + (versions.kayitJs || '20260406.1');
+    const kayitCss = 'kayit.css?v=' + (versions.kayitCss || '20260421.2');
+    if (typeof window.loadAppModule === 'function') {
+      vehicleTypePickerModulePromise = window.loadAppModule(kayitJs, kayitCss).catch(function(err) {
+        vehicleTypePickerModulePromise = null;
+        throw err;
+      });
+      return vehicleTypePickerModulePromise;
+    }
+    return Promise.resolve();
+  }
+
+  function openVehicleTypePickerOverlayFallback(vehicleId) {
+    window.vehicleTypePickerFromDetail = vehicleId;
+    const picker = document.getElementById('vehicle-type-picker-overlay');
+    if (!picker) return;
+    picker.classList.remove('u-hidden');
+    picker.style.display = 'flex';
+    picker.setAttribute('aria-hidden', 'false');
+  }
+
+  function ensureVehicleDetailContext(vehicleId) {
+    const detailModal = document.getElementById('vehicle-detail-modal');
+    const isDetailVisible = !!(
+      detailModal &&
+      detailModal.style.display !== 'none' &&
+      (detailModal.classList.contains('active') || detailModal.classList.contains('open'))
+    );
+    if (!isDetailVisible && typeof window.showVehicleDetail === 'function') {
+      window.showVehicleDetail(vehicleId);
     }
   }
+
+  function openVehicleTypePickerFromDetail() {
+    const vehicleId = String(window.currentDetailVehicleId || '').trim();
+    if (!vehicleId) return;
+    ensureVehicleDetailContext(vehicleId);
+    if (typeof window.openVehicleTypePickerOverlay === 'function') {
+      window.openVehicleTypePickerOverlay({ vehicleId: vehicleId });
+      return;
+    }
+    // Kayıt modülü ilk kez yüklenirken gecikme olsa bile picker anında görünsün.
+    openVehicleTypePickerOverlayFallback(vehicleId);
+    ensureVehicleTypePickerModule().then(function() {
+      if (typeof window.openVehicleTypePickerOverlay === 'function') {
+        window.openVehicleTypePickerOverlay({ vehicleId: vehicleId });
+        return;
+      }
+      openVehicleTypePickerOverlayFallback(vehicleId);
+    }).catch(function(err) {
+      console.error('Taşıt tipi seçim ekranı yüklenemedi:', err);
+    });
+  }
+
+  function hideMuayeneTooltipByTrigger(triggerEl) {
+    const wrap = triggerEl && triggerEl.closest('.detail-muayene-value-wrap');
+    const tooltip = wrap && wrap.querySelector('.muayene-detail-tooltip');
+    if (tooltip) {
+      tooltip.classList.remove('visible');
+      tooltip.hidden = true;
+    }
+  }
+
+  function handleMuayenePickerTrigger(e, triggerEl) {
+    if (!triggerEl) return false;
+    if (e && e.cancelable) e.preventDefault();
+    if (e && typeof e.stopPropagation === 'function') e.stopPropagation();
+    if (e && typeof e.stopImmediatePropagation === 'function') e.stopImmediatePropagation();
+    hideMuayeneTooltipByTrigger(triggerEl);
+    openVehicleTypePickerFromDetail();
+    return true;
+  }
+
   document.addEventListener('mouseover', function(e) {
     const wrap = e.target.closest('#vehicle-detail-modal .detail-row-muayene-no-type .detail-muayene-value-wrap');
     if (!wrap) return;
@@ -6890,33 +7652,35 @@ function renderVehicleDetailLeft(vehicle) {
       }
     }, 220);
   });
+  // Mobilde link/ünlem dokunuşunda ghost click oluşup detaydan düşme riskine karşı
+  // picker tetiklemeyi pointer/touch başlangıcında tekilleştiriyoruz.
+  function onMuayenePickerPointerLikeDown(e) {
+    if (e.type === 'touchstart' && typeof window.PointerEvent === 'function') return;
+    const modal = e.target.closest('#vehicle-detail-modal');
+    if (!modal) return;
+    const trigger = e.target.closest('.muayene-detail-exclamation, .muayene-detail-tooltip-link, .muayene-detail-tooltip, .muayene-detail-tooltip-wrap');
+    if (!trigger) return;
+    muayenePickerPointerHandledAt = Date.now();
+    handleMuayenePickerTrigger(e, trigger);
+  }
+  document.addEventListener('pointerdown', onMuayenePickerPointerLikeDown, true);
+  document.addEventListener('touchstart', onMuayenePickerPointerLikeDown, { capture: true, passive: false });
   document.addEventListener('click', function(e) {
     const modal = e.target.closest('#vehicle-detail-modal');
     if (!modal) return;
     const exclamation = e.target.closest('.muayene-detail-exclamation');
     const link = e.target.closest('.muayene-detail-tooltip-link');
-    if (exclamation) {
-      e.preventDefault();
-      e.stopPropagation();
-      const wrap = exclamation.closest('.detail-muayene-value-wrap');
-      const tooltip = wrap && wrap.querySelector('.muayene-detail-tooltip');
-      if (tooltip) {
-        tooltip.classList.remove('visible');
-        tooltip.hidden = true;
+    const tooltipBox = e.target.closest('.muayene-detail-tooltip');
+    const tooltipWrap = e.target.closest('.muayene-detail-tooltip-wrap');
+    const trigger = exclamation || link || tooltipBox || tooltipWrap;
+    if (trigger) {
+      if (Date.now() - muayenePickerPointerHandledAt < 700) {
+        if (e.cancelable) e.preventDefault();
+        e.stopPropagation();
+        if (typeof e.stopImmediatePropagation === 'function') e.stopImmediatePropagation();
+        return;
       }
-      openVehicleTypePickerFromDetail();
-      return;
-    }
-    if (link) {
-      e.preventDefault();
-      e.stopPropagation();
-      const wrap = link.closest('.detail-muayene-value-wrap');
-      const tooltip = wrap && wrap.querySelector('.muayene-detail-tooltip');
-      if (tooltip) {
-        tooltip.classList.remove('visible');
-        tooltip.hidden = true;
-      }
-      openVehicleTypePickerFromDetail();
+      handleMuayenePickerTrigger(e, trigger);
       return;
     }
     // Dışarı tıklanınca tooltip kapat
@@ -6929,4 +7693,3 @@ function renderVehicleDetailLeft(vehicle) {
   }, true);
 
 })();
-

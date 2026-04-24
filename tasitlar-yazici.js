@@ -25,6 +25,7 @@
   function readVehicles() { return (typeof window.getMedisaVehicles === 'function' ? window.getMedisaVehicles() : null) || []; }
   function readUsers() { return (typeof window.getMedisaUsers === 'function' ? window.getMedisaUsers() : null) || []; }
   function toTitleCase(str) { return (typeof window.toTitleCase === 'function' ? window.toTitleCase(str) : str); }
+  function formatBrandModel(str) { return (typeof window.formatBrandModel === 'function' ? window.formatBrandModel(str) : toTitleCase(str)); }
   function formatNumber(num) { return (typeof window.formatNumber === 'function' ? window.formatNumber(num) : num); }
   function escapeHtml(str) {
     if (typeof window.escapeHtml === 'function') return window.escapeHtml(str);
@@ -35,6 +36,35 @@
 
   function isAndroidDevice() {
     return /Android/i.test(navigator.userAgent || '');
+  }
+
+  /** iOS / iPadOS (Safari, PWA dahil); masaüstü Safari değil. */
+  function isIOSLikeDevice() {
+    var ua = navigator.userAgent || '';
+    if (/iPhone|iPad|iPod/i.test(ua)) return true;
+    return navigator.platform === 'MacIntel' && (navigator.maxTouchPoints || 0) > 1;
+  }
+
+  /**
+   * WebKit mobil / PWA: 0x0 gizli iframe içeriği baskı önizlemesinde boyanmayabiliyor.
+   * Ruhsat yazdırma ile aynı strateji (tasitlar.js openRuhsatPrintDialog).
+   */
+  function applyPrintIframeLayout(iframe) {
+    if (isIOSLikeDevice() ||
+        (typeof window.matchMedia === 'function' && window.matchMedia('(display-mode: standalone)').matches) ||
+        (typeof navigator !== 'undefined' && navigator.standalone === true)) {
+      iframe.style.cssText = window.MEDISA_PRINT_IFRAME_CSS_TEXT ||
+        'position:fixed;left:0;top:0;width:100vw;height:100vh;border:0;opacity:0.01;pointer-events:none;visibility:visible;transform:translateX(-200vw);background:#fff;z-index:-1;';
+      return;
+    }
+    iframe.style.position = 'fixed';
+    iframe.style.right = '0';
+    iframe.style.bottom = '0';
+    iframe.style.width = '0';
+    iframe.style.height = '0';
+    iframe.style.border = '0';
+    iframe.style.opacity = '0';
+    iframe.style.pointerEvents = 'none';
   }
 
   function openPrintPreviewWindow(printHtml) {
@@ -172,9 +202,9 @@
     }
     var kaskoDegeriDisplay = (kaskoDegeri != null && String(kaskoDegeri).trim() !== '') ? String(kaskoDegeri).trim() : '-';
 
-    return [
+    var rows = [
       ['Plaka', vehicle.plate || '-'],
-      ['Marka / Model', toTitleCase(vehicle.brandModel || '-')],
+      ['Marka / Model', formatBrandModel(vehicle.brandModel || '-')],
       ['Kullanıcı', assignedUserName || '-'],
       ['Şube', branchName],
       ['Taşıt Tipi', getVehicleTypeLabel(vehicle.vehicleType || '-')],
@@ -187,7 +217,7 @@
       ['Kasko Bitiş Tarihi', vehicle.kasko || '-'],
       ['Muayene Bitiş Tarihi', vehicle.muayene || '-'],
       ['Yedek Anahtar', anahtarLabel],
-      ['Kredi/Rehin', krediLabel],
+      ['Hak Mahrumiyeti', krediLabel],
       ['Yazlık/Kışlık Lastik', lastikLabel],
       ['UTTS', vehicle.uttsTanimlandi ? 'Evet' : 'Hayır'],
       ['Taşıt Takip', vehicle.takipCihaziMontaj ? 'Evet' : 'Hayır'],
@@ -195,6 +225,10 @@
       ['Kasko Değeri', kaskoDegeriDisplay],
       ['Notlar', vehicle.notes || '-']
     ];
+    if (vehicle.egzozMuayeneDate && vehicle.egzozMuayeneDate !== vehicle.muayeneDate) {
+      rows.splice(13, 0, ['Egzos Muayenesi', formatDateForDisplay(vehicle.egzozMuayeneDate) || vehicle.egzozMuayeneDate]);
+    }
+    return rows;
   }
 
   function renderPrintHistorySection(title, items) {
@@ -241,6 +275,7 @@
     } else if (eventType === 'muayene-guncelle') {
       text = 'Muayene Güncelleme';
       if (d.bitisTarihi) extra = 'Bitiş: ' + (formatDateForDisplay(d.bitisTarihi) || '-');
+      if (d.egzozMuayeneDate) extra += (extra ? ' | ' : '') + 'Egzos: ' + (formatDateForDisplay(d.egzozMuayeneDate) || '-');
     } else if (eventType === 'kullanici-atama') {
       text = 'Kullanıcı Ataması';
       var details3 = [];
@@ -257,7 +292,7 @@
       extra = details4.join(' | ');
     } else if (eventType === 'kredi-guncelle') {
       var durum3 = String(d.durum || 'yok').toLowerCase();
-      text = 'Kredi/Rehin: ' + (durum3 === 'var' ? 'Var' : 'Yok');
+      text = 'Hak Mahrumiyeti: ' + (durum3 === 'var' ? 'Var' : 'Yok');
       if (d.detay) extra = 'Detay: ' + toTitleCase(String(d.detay));
     } else if (eventType === 'utts-guncelle') {
       text = 'UTTS: ' + ((d.durum === true || d.durum === 'evet') ? 'Evet' : 'Hayır');
@@ -553,14 +588,7 @@
     function printWithIframeFallback() {
       var iframe = document.createElement('iframe');
       iframe.setAttribute('aria-hidden', 'true');
-      iframe.style.position = 'fixed';
-      iframe.style.right = '0';
-      iframe.style.bottom = '0';
-      iframe.style.width = '0';
-      iframe.style.height = '0';
-      iframe.style.border = '0';
-      iframe.style.opacity = '0';
-      iframe.style.pointerEvents = 'none';
+      applyPrintIframeLayout(iframe);
 
       var done = false;
       function cleanup() {
@@ -587,11 +615,12 @@
         function runPrint() {
           if (done) return;
           try {
+            var cleanupMs = isIOSLikeDevice() ? 12000 : 2000;
             var cleanupTimer = setTimeout(function() {
               if (done) return;
               done = true;
               cleanup();
-            }, 2000);
+            }, cleanupMs);
             var onAfterPrint = function() {
               clearTimeout(cleanupTimer);
               if (done) return;
@@ -629,10 +658,19 @@
       alert('Taşıt bulunamadı!');
       return;
     }
+    function runPrint() {
+      doPrintVehicleCard(vehicle);
+    }
+    // Önbellek doluysa baskıyı ağ beklemesinden ayır (iOS: print() jest zinciri + boş önizleme riski).
+    if (parsedKaportaSvgCache) {
+      runPrint();
+      getParsedKaportaSvg().catch(function() {});
+      return;
+    }
     getParsedKaportaSvg().then(function() {
-      doPrintVehicleCard(vehicle);
+      runPrint();
     }).catch(function() {
-      doPrintVehicleCard(vehicle);
+      runPrint();
     });
   };
 })();

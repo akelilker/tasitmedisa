@@ -314,7 +314,7 @@ body::-webkit-scrollbar,
   width: 100% !important;
   max-width: 100% !important;
   box-sizing: border-box !important;
-  background: var(--bg-content, #0d131f) !important;
+  background-color: var(--bg-content, #0d131f) !important;
   color: var(--txt-gray-darker, #888) !important; /* Ayarlar: input içi metin gri */
   border: 1px solid rgba(255, 255, 255, 0.25) !important;
 }
@@ -406,10 +406,32 @@ body::-webkit-scrollbar,
   overflow-y: auto !important;
 }
 
-/* Tüm input/select/textarea içerik metni: beyaz-gri hiyerarşisi */
-.form-input,
-select.form-input,
+/* Kapalı native select — ortak ok + appearance + zemin; ölçü/çerçeve modül katmanında */
 select,
+select.form-input {
+  color-scheme: dark;
+  accent-color: var(--theme-color, #d40000);
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  cursor: pointer;
+  padding-right: 30px;
+  background-color: var(--bg-content, #0d131f);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='%23b8c0cc' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 9px center;
+  background-size: 14px 14px;
+}
+
+select:focus,
+select.form-input:focus {
+  border-color: var(--theme-color);
+  background-color: var(--bg-content, #0d131f);
+  outline: none;
+}
+
+/* Input/textarea içerik metni (select yukarıdaki blokta) */
+.form-input:not(select),
 textarea.form-input {
   color: var(--data-value-color, #a0aec0) !important;
 }
@@ -552,7 +574,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
     top: 0;
     left: 0;
     right: 0;
-    bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0));
+    bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0));
     border-top: 0.5px solid var(--border-red-tech);
     border-left: 0.5px solid var(--border-red-tech);
     border-right: 0.5px solid var(--border-red-tech);
@@ -654,6 +676,25 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-logo {
   justify-content: center;
   gap: 4px;
 }
+
+@media (min-width: 641px) {
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero {
+    align-items: stretch;
+  }
+
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-logo {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    align-items: start;
+    align-self: stretch;
+    justify-items: center;
+    gap: 0;
+    margin-left: 0;
+    margin-right: 8px;
+    transform: none;
+    padding: 2px 0 4px;
+  }
+}
 .hero-logo picture {
   display: block;
   width: 100%;
@@ -720,7 +761,28 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-
   white-space: normal;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
-  transform: translate(3px, -1px); /* +3px sağ, +2px yukarı (önceki 1px Y) */
+  transform: none;
+}
+
+@media (min-width: 641px) {
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-user-name {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-self: stretch;
+    width: 100%;
+    max-width: 100%;
+    min-height: 0;
+    padding: 0 2px 1px;
+    margin: 0;
+    line-height: 1.05;
+    text-align: center;
+    letter-spacing: 0;
+    word-break: break-word;
+    white-space: normal;
+    text-wrap: balance;
+    transform: translateY(6px);
+  }
 }
 
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-user-name.is-empty {
@@ -1235,6 +1297,133 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   padding: 0 6px;
 }
 
+/* Masaüstü: bildirim listesi — daha yumuşak çerçeve; hover’da yarı saydam tema kırmızısı */
+@media (min-width: 769px) {
+  #notifications-dropdown.settings-dropdown {
+    width: min(320px, calc(100vw - 40px)) !important;
+    max-width: min(320px, calc(100vw - 40px)) !important;
+    top: 24px !important;
+    padding: 8px !important;
+    border: none !important;
+    border-radius: 12px !important;
+    background: linear-gradient(180deg, rgba(8, 13, 22, 0.98) 0%, rgba(8, 13, 22, 0.95) 100%) !important;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.42) !important;
+    backdrop-filter: blur(8px);
+  }
+
+  #notifications-dropdown .notifications-toolbar {
+    padding: 0 2px 6px !important;
+    margin-bottom: 4px !important;
+    background: transparent !important;
+  }
+
+  #notifications-dropdown .notification-item.date-warning-red-border,
+  #notifications-dropdown .notification-item.date-warning-orange-border,
+  #notifications-dropdown .notification-item-activity,
+  #notifications-dropdown .mtv-notification,
+  #notifications-dropdown .kasko-excel-notification {
+    min-height: 40px !important;
+    padding: 6px 11px 3px !important;
+    border-radius: 7px !important;
+    background: linear-gradient(180deg, rgba(12, 18, 30, 0.94) 0%, rgba(8, 13, 22, 0.92) 100%) !important;
+  }
+
+  .notification-item.date-warning-red-border {
+    border-color: rgba(var(--theme-color-rgb), 0.52) !important;
+    box-shadow: none !important;
+  }
+  .notification-item.date-warning-orange-border {
+    border-color: rgba(var(--orange-warn-rgb), 0.38) !important;
+    box-shadow: none !important;
+  }
+  #notifications-dropdown .notification-item-activity {
+    border-color: rgba(255, 255, 255, 0.2) !important;
+  }
+  #notifications-dropdown .notification-item-activity.notification-unread {
+    border-color: rgba(var(--theme-color-rgb), 0.48) !important;
+  }
+  #notifications-dropdown .mtv-notification {
+    border-color: rgba(255, 140, 0, 0.42) !important;
+  }
+  #notifications-dropdown .kasko-excel-notification {
+    border-color: rgba(var(--theme-color-rgb), 0.4) !important;
+  }
+
+  #notifications-dropdown.settings-dropdown button.notification-item {
+    display: flex !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    justify-content: flex-start !important;
+    align-items: flex-start !important;
+    text-align: left !important;
+    transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease, transform 0.2s ease;
+  }
+
+  #notifications-dropdown .notification-item .notif-line1,
+  #notifications-dropdown .notification-item .notif-line2,
+  #notifications-dropdown .mtv-text-container .mtv-main-text {
+    transition: transform 0.2s ease, color 0.2s ease;
+  }
+
+  #notifications-dropdown .notification-item .date-warning-red,
+  #notifications-dropdown .notification-item .date-warning-orange {
+    color: #d7dde6 !important;
+  }
+
+  #notifications-dropdown .notification-item .notif-line2 {
+    color: #a0aec0 !important;
+  }
+
+  #notifications-dropdown.settings-dropdown button.notification-item:hover {
+    background: rgba(var(--theme-color-rgb), 0.14) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.24) !important;
+    transform: translateY(-1px);
+    color: var(--txt-white) !important;
+  }
+
+  #notifications-dropdown.settings-dropdown button.notification-item:hover .notif-line1,
+  #notifications-dropdown.settings-dropdown button.notification-item:hover .notif-line2,
+  #notifications-dropdown.settings-dropdown button.notification-item:hover .mtv-main-text {
+    transform: translateY(-1px);
+  }
+
+  #notifications-dropdown .notification-item-activity:hover {
+    border-color: rgba(var(--theme-color-rgb), 0.42) !important;
+    background: rgba(var(--theme-color-rgb), 0.14) !important;
+  }
+  #notifications-dropdown .notification-item-activity.notification-unread:hover {
+    border-color: rgba(var(--theme-color-rgb), 0.5) !important;
+    background: rgba(var(--theme-color-rgb), 0.15) !important;
+  }
+  #notifications-dropdown .notification-item.date-warning-red-border:hover {
+    border-color: rgba(var(--theme-color-rgb), 0.58) !important;
+    background: rgba(var(--theme-color-rgb), 0.15) !important;
+  }
+  #notifications-dropdown .notification-item.date-warning-orange-border:hover {
+    border-color: rgba(var(--orange-warn-rgb), 0.44) !important;
+    background: rgba(var(--theme-color-rgb), 0.14) !important;
+  }
+
+  #notifications-dropdown .notification-item.mtv-notification {
+    transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+  }
+  #notifications-dropdown .notification-item.mtv-notification:hover {
+    background: rgba(var(--theme-color-rgb), 0.14) !important;
+    border-color: rgba(255, 140, 0, 0.42) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.22) !important;
+    transform: translateY(-1px);
+  }
+  #notifications-dropdown .notification-item.kasko-excel-notification {
+    transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+  }
+  #notifications-dropdown .notification-item.kasko-excel-notification:hover {
+    background: rgba(var(--theme-color-rgb), 0.15) !important;
+    border-color: rgba(var(--theme-color-rgb), 0.46) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.24) !important;
+    transform: translateY(-1px);
+  }
+}
+
 /* DROPDOWN - Her buton ayrı çerçeve */
 .settings-dropdown {
   display: none;
@@ -1278,7 +1467,8 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
 .settings-dropdown button:last-child {
   margin-bottom: 0;
 }
-.settings-dropdown button:hover {
+/* Bildirim satırları .notification-item — kendi hover kuralları (#notifications-dropdown); çakışmayı önle */
+.settings-dropdown button:not(.notification-item):hover {
   background: var(--bg-input);
   border-color: var(--border-mid);
   color: var(--txt-white);
@@ -1377,8 +1567,9 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
     min-width: 0;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero h1 {
-    font-size: clamp(calc(16px - 0.5pt), 4.5vw, calc(20px - 0.5pt)) !important;
-    letter-spacing: clamp(1px, 0.45vw, 3px);
+    align-self: center;
+    font-size: clamp(calc(17px - 0.5pt), 4.5vw, calc(22px - 0.5pt)) !important;
+    letter-spacing: clamp(1px, 0.42vw, 3px);
   }
   .settings-dropdown {
     width: 45%; /* Masaüstünde container'ın %45'i */
@@ -1556,6 +1747,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   position: relative;
   background: var(--modal-bg) !important;
   background-color: var(--modal-bg) !important; /* Cam etkisini beton: saydamlık yok */
+  background-clip: padding-box;
   width: 100%;
   max-width: var(--modal-max-width);
   margin: max(12px, env(safe-area-inset-top)) auto 0 auto !important;
@@ -1566,8 +1758,9 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   border: 0.5px solid var(--border-medium);
   border-bottom: 1px solid var(--border-medium) !important;
   box-shadow: none !important;
-  overflow-x: hidden;
+  overflow: hidden;
   pointer-events: auto;
+  isolation: isolate;
   overscroll-behavior: none;
   overscroll-behavior-x: none;
 }
@@ -1722,7 +1915,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   right: 8px;
   width: 36px;
   height: 36px;
-  background-image: url('icon/marker.png');
+  background-image: url('icon/marker.png?v=20260421.1');
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
@@ -1859,7 +2052,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #a
 }
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay.active,
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay.open {
-    isolation: auto !important; /* .modal-overlay isolate kilidini modal açıkken kaldırır; footer glow ile katman çakışması azalır */
+    isolation: isolate !important; /* Modal dekor/pseudo katmanlarını kendi stack içinde kilitle */
     background: var(--bg) !important;
     background-color: var(--bg) !important;
     backdrop-filter: none !important;
@@ -1971,7 +2164,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
 #app-footer .brand img {
     max-width: 100%;
     height: auto;
-    max-height: 12.5px;
+    max-height: 14px;
     width: auto;
     opacity: 0.4; /* Başlangıç çok soluk */
     filter: none;
@@ -1983,7 +2176,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
 #app-footer .brand svg {
     max-width: 100%;
     height: auto;
-    max-height: 12.5px;
+    max-height: 14px;
     flex-shrink: 1;
 }
 
@@ -2051,25 +2244,33 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     #notifications-dropdown .mtv-notification,
     #notifications-dropdown .kasko-excel-notification {
         flex-wrap: nowrap !important;
-        align-items: center !important;
+        align-items: flex-start !important;
         justify-content: space-between !important;
-        padding: 8px 12px 2px !important;
-        min-height: 64px !important;
+        gap: 8px !important;
+        padding: 8px 12px 8px !important;
+        min-height: 54px !important;
+        overflow: hidden !important;
     }
     #notifications-dropdown .mtv-notification .mtv-text-container,
     #notifications-dropdown .kasko-excel-notification .mtv-text-container {
         order: 1 !important;
         flex: 1 1 auto !important;
         min-width: 0 !important;
+        min-height: 0 !important;
         display: flex !important;
-        align-items: center !important;
-        padding-right: 4px !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        justify-content: flex-start !important;
+        gap: 3px !important;
+        padding-right: 0 !important;
     }
     #notifications-dropdown .mtv-notification .mtv-dismiss-wrapper,
     #notifications-dropdown .kasko-excel-notification .mtv-dismiss-wrapper {
         order: 2 !important;
         flex: 0 0 auto !important;
-        margin-left: 4px !important;
+        align-self: flex-start !important;
+        margin-left: 0 !important;
+        padding-top: 2px !important;
     }
     #notifications-dropdown .mtv-notification .mtv-dismiss-btn,
     #notifications-dropdown .kasko-excel-notification .mtv-dismiss-btn {
@@ -2118,7 +2319,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     
     /* Mobil Footer MEDISA yazısı */
     #app-footer .brand img {
-        height: 19px !important; /* Mobilde 3px büyütüldü */
+        height: 20px !important;
+        max-height: 20px !important;
+        width: auto !important;
     }
     
     .hero-logo svg, 
@@ -2176,7 +2379,11 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     }
     /* Anasayfa mobil: sol çerçeve–logo 3px (hero padding-left); logo–başlık 4px (hero-logo margin-right) */
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero {
-        min-height: 67px !important;
+        min-height: 71px !important;
+        width: calc(100% + 4px) !important;
+        max-width: calc(100% + 4px) !important;
+        margin-left: -2px !important;
+        margin-right: -2px !important;
         padding: 12px 12px 12px 3px !important;
         box-sizing: border-box !important;
     }
@@ -2209,7 +2416,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     }
     /* Ana uygulama ana ekran header mobil: tek satır (wrap kaldırıldı); dar alanda sığması için harf aralığı esnek */
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero h1 {
-        font-size: clamp(calc(18px - 0.5pt), 5vw, calc(22px - 0.5pt)) !important;
+        font-size: clamp(calc(18.5px - 0.5pt), 5.15vw, calc(23px - 0.5pt)) !important;
         letter-spacing: clamp(0.35px, 1.05vw, 2.2px) !important;
         line-height: 1.2 !important;
         transform: none !important;
@@ -2221,6 +2428,13 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         -webkit-font-smoothing: antialiased !important;
         text-rendering: optimizeLegibility !important;
         text-shadow: 0 0 1px rgba(255, 255, 255, 0.22) !important;
+    }
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero .animated-line {
+        width: 88% !important;
+        height: 2.7px !important;
+        opacity: 0.76 !important;
+        background: linear-gradient(90deg, rgba(var(--theme-color-rgb), 0.06), rgba(var(--theme-color-rgb), 0.9) 50%, rgba(var(--theme-color-rgb), 0.06)) !important;
+        box-shadow: 0 2px 12px rgba(var(--theme-color-rgb), 0.36) !important;
     }
     /* Ayarlar/bildirim satırı: sağ kenara yapışmayı önle (safe-area + nefes) */
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .icons-row {
@@ -2353,9 +2567,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         min-height: 44px !important;
     }
     
-    /* Ana sayfa butonları mobilde: yükseklik +2px (64px), gri çerçeve parlak, havada kırmızı gölge */
+    /* Ana sayfa butonları mobilde: iç yükseklik +3px, tipografi bir tık güçlü */
     .menu-btn {
-        height: 64px !important; /* 62px + 2px */
+        height: 67px !important;
         box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25), 0 4px 20px rgba(var(--theme-color-rgb), 0.14);
         border-color: rgba(255, 255, 255, 0.55); /* Çerçeve gri daha parlak (0.45→0.55, kalınlık aynı) */
     }
@@ -2418,14 +2632,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         border-right: none;
         border-top: 1px solid rgba(var(--footer-glow-rgb), 0.50) !important;
     }
-    /* HEADER KIRMIZI ÇİZGİ - Havada (kırmızı çerçeve ile eşit) */
-    .animated-line {
-        opacity: 0.62;
-        box-shadow: 0 1px 8px rgba(var(--theme-color-rgb), 0.24);
-    }
-    
     .menu-btn .ttl {
-        font-size: clamp(15.5px, 3.2vw, 17.5px) !important; /* +1pt daha (14.5→15.5, 16.5→17.5) */
+        font-size: clamp(16px, 3.35vw, 18px) !important;
         letter-spacing: 1.5px;
         text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);  /* Havada, metin berrak */
     }
@@ -2452,21 +2660,30 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     #notifications-dropdown .notification-item.date-warning-red-border,
     #notifications-dropdown .notification-item.date-warning-orange-border,
     #notifications-dropdown .notification-item-activity {
-        padding: 10px 12px 2px !important;
-        min-height: 52px !important;
-        overflow: visible !important;
+        padding: 8px 12px 8px !important;
+        min-height: 48px !important;
+        overflow: hidden !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        justify-content: flex-start !important;
+        gap: 3px !important;
     }
     
     /* Mobil bildirimlerde metin boyutları yaklaşık 0.75 punto (1px) büyütüldü */
     #notifications-dropdown .notification-item .notif-line1 {
-        font-size: 12px !important; /* Plaka/Başlık 11px -> 12px */
+        font-size: 11.5px !important;
+        line-height: 1.28 !important;
+        margin-bottom: 0 !important;
     }
     #notifications-dropdown .notification-item .notif-line2 {
-        font-size: 11.5px !important; /* Alt bilgi/Tarih büyütüldü */
+        font-size: 10.5px !important;
+        line-height: 1.15 !important;
+        margin-top: 0 !important;
     }
     #notifications-dropdown .mtv-text-container .mtv-main-text {
-        font-size: 12px !important;
-        line-height: 1.35 !important;
+        font-size: 11.5px !important;
+        line-height: 1.28 !important;
     }
 /* Mobil: tam kart snap tasitlar.js ile; hedef 5 bildirim, fazlası scroll */
     #notifications-dropdown {
@@ -2518,6 +2735,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     }
 }
 
+/* PWA display-mode:standalone — ana kurallar burada; ek/özel: tasitlar-extra.css, ayarlar.css, kayit.css, raporlar.css, driver/driver-style.css, admin/admin-report.css */
 /* PWA (≤640px): iç içe @media yerine tek blok — bazı tarayıcılarda üstteki mobil blok sonrası CSS’in tamamının yok sayılmasına yol açabiliyordu */
 @media (max-width: 640px) and (display-mode: standalone) {
     .modal-overlay {
@@ -2801,39 +3019,46 @@ body.modal-open .app-container {
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .app-container::before {
     bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
   }
-}
-
-/* === NOKTA ATIŞI: Kırmızı yan çizgiler footer hizasında çivili (sarkan/kısa kalma yok) === */
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-container::before {
-  bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
-}
-@media (max-width: 640px) {
-  .content-wrap::before {
+  /* Modal kapalıyken (≤768): ::before tabanı gap’siz — eski mobil/tablet görünümü. Masaüstü ≥769’da bu blok yok; taban kural (gap’li) geçer. */
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page):not(.modal-open) .app-container::before {
     bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
   }
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-container::before {
+}
+
+@media (max-width: 640px) {
+  .content-wrap::before {
     bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
   }
 }
 
 /* iOS PWA: ana panel footer ve header dengesi (safe-area tek katman) */
 @media (max-width: 768px) and (display-mode: standalone) {
+  /* PWA standalone: Şube/Kullanıcı form modal zinciri (Android + genel) */
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #branch-form-modal.modal-overlay,
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #user-form-modal.modal-overlay {
-    align-items: flex-start !important;
+    align-items: stretch !important;
     justify-content: flex-start !important;
-    overflow-y: auto !important;
-    touch-action: pan-y !important;
+    overflow: hidden !important;
+    touch-action: none !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #branch-form-modal.modal-overlay .modal-container,
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #user-form-modal.modal-overlay .modal-container {
-    height: auto !important;
-    max-height: none !important;
+    height: 100% !important;
+    max-height: 100% !important;
     min-height: 0 !important;
+    touch-action: none !important;
+  }
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #branch-form-modal.modal-overlay .modal-body,
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #user-form-modal.modal-overlay .modal-body {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
     touch-action: pan-y !important;
+    padding-bottom: calc(var(--app-footer-height) + env(safe-area-inset-bottom, 0)) !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero {
-    min-height: 67px !important;
+    min-height: 71px !important;
     padding: 12px 12px 12px 3px !important;
     box-sizing: border-box !important;
   }
@@ -2882,7 +3107,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
     transform: translate(4px, 2px) !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero h1 {
-    font-size: clamp(calc(18px - 0.5pt), 5vw, calc(22px - 0.5pt)) !important;
+    font-size: clamp(calc(18.5px - 0.5pt), 5.15vw, calc(23px - 0.5pt)) !important;
     letter-spacing: clamp(0.35px, 1.05vw, 2.2px) !important;
     line-height: 1.2 !important;
     transform: none !important;
@@ -2993,10 +3218,17 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-containe
     opacity: 0;
     background: none;
   }
-  /* İç kırmızı inset footer şeridine inmesin */
+  /* İç kırmızı inset footer + modal–footer gap şeridine inmesin */
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-container::after {
+    bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0));
+  }
+
+  /* Ana ekran masaüstü: modal kapalıyken yan çizgiler ve iç glow footer üstüne kadar insin */
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page):not(.modal-open) .app-container::before,
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page):not(.modal-open) .app-container::after {
     bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0));
   }
+
   /* Omnidirectional kırmızımsı halo footer köşelerinde birikmez */
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap {
     box-shadow: 0 2px 16px rgba(0, 0, 0, 0.32);

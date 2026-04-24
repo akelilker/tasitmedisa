@@ -415,6 +415,9 @@ body.modal-open #info-modal.open {
 #user-modal .user-management-back-bar {
     justify-content: space-between !important;
     gap: 0 !important;
+    align-items: center !important;
+    padding: 4px 16px 10px !important;
+    box-sizing: border-box !important;
 }
 #user-modal .user-management-search-wrap {
     margin-left: auto;
@@ -486,8 +489,8 @@ body.modal-open #info-modal.open {
     border-radius: 0;
 }
 #user-modal .user-management-search-toggle svg {
-    width: 19px;
-    height: 19px;
+    width: 20px;
+    height: 20px;
 }
 .user-management-search-toggle:hover {
     color: #ffffff;
@@ -497,8 +500,22 @@ body.modal-open #info-modal.open {
 }
 
 /* Modal Body */
+/* Şube/Kullanıcı listesi: masaüstü üst 10px + iç wrapper 4px (önceki düzen); mobilde 8px + 4px = 12px */
 #branch-modal .modal-body,
-#user-modal .modal-body,
+#user-modal .modal-body {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 10px 16px 16px;
+    min-height: 0;
+    scrollbar-width: none;
+}
+@media (max-width: 768px) {
+    #branch-modal .modal-body,
+    #user-modal .modal-body {
+        padding-top: 8px;
+    }
+}
 #branch-form-modal .modal-body,
 #user-form-modal .modal-body,
 #data-management-modal .modal-body {
@@ -517,19 +534,15 @@ body.modal-open #info-modal.open {
     padding-right: 16px !important;
 }
 
-/* Ayarlar içi bölümler: sola kaymayı önle, sol/sağ eşit */
+/* Ayarlar içi bölümler: sola kaymayı önle, sol/sağ eşit; üstte çift padding birikimini kıs */
 #branch-modal .modal-body > div,
 #user-modal .modal-body > div {
     box-sizing: border-box;
     width: 100%;
     margin-left: 0;
     margin-right: 0;
-    padding: 16px;
-}
-/* Şube / Kullanıcı Yönetimi: Yeni Şube/Kullanıcı + kutular 2 satır yukarı */
-#branch-modal .modal-body > div,
-#user-modal .modal-body > div {
-    margin-top: -24px;
+    margin-top: 0;
+    padding: 6px 16px 12px;
 }
 
 /* Veri Yedekleme Butonları */
@@ -855,6 +868,11 @@ body.modal-open #info-modal.open {
 }
 
 .settings-add-text-btn.user-add-btn { color: var(--txt-gray-darker); }
+/* Şube/Kullanıcı liste: + Yeni… ile kart ızgarası arası tek boşluk kaynağı (16px) */
+#branch-modal .modal-body .settings-add-text-btn.user-add-btn,
+#user-modal .modal-body .settings-add-text-btn.user-add-btn {
+    margin-bottom: 12px;
+}
 .settings-add-text-btn:hover { 
     font-size: 16px;
 }
@@ -904,8 +922,127 @@ select.settings-form-select option,
 #user-form-modal #user-branch,
 #user-form-modal #user-role {
     color-scheme: dark;
-    background: var(--bg-content, #0d131f) !important;
+    background-color: var(--bg-content, #0d131f) !important;
     color: var(--txt-gray-darker, #adb5bd) !important;
+}
+#user-form-modal .medisa-owner-select {
+    position: relative;
+    width: 100%;
+}
+#user-form-modal .form-section:has(#user-branch) .form-label,
+#user-form-modal .form-section:has(#user-role) .form-label {
+    font-size: 14px !important;
+}
+#user-form-modal select.medisa-owner-select-native {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    border: 0 !important;
+    overflow: hidden !important;
+    clip-path: inset(50%) !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+#user-form-modal .medisa-owner-select-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    width: 100%;
+    min-height: 32px;
+    height: 32px;
+    padding: 3px 28px 3px 8px;
+    border: 1px solid rgba(255, 255, 255, 0.28) !important;
+    border-radius: 6px;
+    background: #0d131f !important;
+    box-shadow: 0 0 0 0.5px rgba(255, 255, 255, 0.08) !important;
+    box-sizing: border-box;
+    text-align: left;
+    cursor: pointer;
+    user-select: none;
+    font-size: 13px !important;
+    line-height: 1.35 !important;
+    color: var(--txt-gray-darker, #888) !important;
+}
+#user-form-modal .medisa-owner-select-trigger-text {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: inherit;
+    line-height: inherit;
+}
+#user-form-modal .medisa-owner-select-trigger.placeholder .medisa-owner-select-trigger-text {
+    color: rgba(255, 255, 255, 0.38);
+    opacity: 1;
+}
+#user-form-modal .medisa-owner-select-chevron {
+    width: 14px;
+    height: 14px;
+    flex: 0 0 auto;
+    opacity: 0.82;
+    transition: transform 140ms ease;
+}
+#user-form-modal .medisa-owner-select-trigger:focus,
+#user-form-modal .medisa-owner-select-trigger.is-open {
+    border-color: var(--theme-color) !important;
+    outline: none;
+    box-shadow: none !important;
+}
+#user-form-modal .medisa-owner-select-trigger.is-open .medisa-owner-select-chevron {
+    transform: rotate(180deg);
+}
+#user-form-modal .medisa-owner-select-menu {
+    display: none;
+    background: #101722;
+    border: 1px solid rgba(190, 200, 214, 0.42);
+    border-radius: 8px;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.48), inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+    overflow-y: auto;
+    overflow-x: hidden;
+    z-index: 10060;
+}
+#user-form-modal .medisa-owner-select-menu.open {
+    display: block;
+}
+#user-form-modal .medisa-owner-select-option {
+    width: 100%;
+    border: 0;
+    border-bottom: 1px solid rgba(190, 200, 214, 0.10);
+    background: transparent;
+    color: rgba(240, 244, 248, 0.96);
+    padding: 8px 10px;
+    text-align: left;
+    font-size: 13px;
+    line-height: 1.35;
+    cursor: pointer;
+    transition: background-color 120ms ease, color 120ms ease;
+}
+#user-form-modal .medisa-owner-select-option:last-child {
+    border-bottom: 0;
+}
+#user-form-modal .medisa-owner-select-option.is-placeholder {
+    color: var(--txt-gray-darker, #888);
+}
+#user-form-modal .medisa-owner-select-option:hover,
+#user-form-modal .medisa-owner-select-option:focus {
+    background: rgba(var(--theme-color-rgb), 0.12);
+    color: #ffffff;
+    outline: none;
+}
+#user-form-modal .medisa-owner-select-option.selected {
+    background: rgba(var(--theme-color-rgb), 0.16);
+    color: #ffffff;
+}
+#user-form-modal .medisa-owner-select-option.is-disabled {
+    opacity: 0.52;
+    cursor: default;
+}
+#user-form-modal:has(.medisa-owner-select-menu.open) .universal-btn-group {
+    pointer-events: none !important;
 }
 #user-form-modal .user-form-locked-input,
 #user-form-modal #user-role:disabled {
@@ -1086,14 +1223,14 @@ input.settings-form-input:-moz-autofill,
   right: 0;
   min-width: 100%;
   margin-top: 6px;
-  background: var(--bg);
-  border: 1px solid rgba(var(--theme-color-rgb), 0.25);
+  background: #101722;
+  border: 1px solid rgba(190, 200, 214, 0.42);
   border-radius: 8px;
   padding: 10px;
   max-height: 320px;
   overflow: hidden;
   z-index: 20;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(var(--theme-color-rgb), 0.08);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.48), inset 0 0 0 1px rgba(255, 255, 255, 0.06);
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -1103,16 +1240,16 @@ input.settings-form-input:-moz-autofill,
 /* Kullanıcı Düzenle: liste yukarı açılsın, Kaydet/Vazgeç butonları hep görünsün */
 /* Taşıt seçimi: ana sayfa ayarlar menüsü kutularıyla aynı çerçeve tonu; liste + arama ayrı kutu */
 #user-form-modal .user-vehicles-trigger {
-  border: 1px solid var(--border-subtle) !important;
+  border: 1px solid rgba(190, 200, 214, 0.42) !important;
   border-radius: 10px !important;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3) !important;
 }
 #user-form-modal .user-vehicles-trigger:hover {
-  border-color: var(--border-mid) !important;
+  border-color: rgba(214, 222, 235, 0.56) !important;
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4) !important;
 }
 #user-form-modal .user-vehicles-trigger.user-vehicles-trigger-open {
-  border-color: var(--border-mid) !important;
+  border-color: rgba(214, 222, 235, 0.56) !important;
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4) !important;
 }
 #user-form-modal .user-vehicles-dropdown {
@@ -1132,18 +1269,18 @@ input.settings-form-input:-moz-autofill,
   overflow-y: auto !important;
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
-  border: 1px solid var(--border-subtle) !important;
+  border: 1px solid rgba(190, 200, 214, 0.42) !important;
   border-radius: 10px !important;
-  background: var(--bg) !important;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3) !important;
+  background: #101722 !important;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.48), inset 0 0 0 1px rgba(255, 255, 255, 0.06) !important;
   padding: 2px 0 !important;
   box-sizing: border-box !important;
 }
 #user-form-modal .user-vehicles-search-wrap {
-  border: 1px solid var(--border-subtle) !important;
+  border: 1px solid rgba(190, 200, 214, 0.42) !important;
   border-radius: 10px !important;
-  background: var(--bg) !important;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3) !important;
+  background: #101722 !important;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.48), inset 0 0 0 1px rgba(255, 255, 255, 0.06) !important;
   padding: 8px !important;
   box-sizing: border-box !important;
 }
@@ -1203,7 +1340,7 @@ input.settings-form-input:-moz-autofill,
   color: var(--txt);
   background: transparent;
   border: none;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgba(190, 200, 214, 0.10);
   border-radius: 0;
   cursor: pointer;
   transition: background 0.15s, color 0.15s;
@@ -1330,13 +1467,13 @@ input.settings-form-input:-moz-autofill,
 }
 #branch-modal #branch-list {
     justify-content: center !important;
-    padding-top: 6px;
+    padding-top: 0;
     padding-bottom: 6px;
 }
 #user-modal #user-list,
 #user-modal .modal-body #user-list {
     justify-content: center !important;
-    padding-top: 6px;
+    padding-top: 0;
     padding-bottom: 6px;
 }
 
@@ -1366,18 +1503,64 @@ input.settings-form-input:-moz-autofill,
     -webkit-line-clamp: 2 !important;
     line-clamp: 2 !important;
     -webkit-box-orient: vertical !important;
-    word-break: break-word !important;
-    overflow-wrap: break-word !important;
+    word-break: keep-all !important;
+    overflow-wrap: normal !important;
+    hyphens: none !important;
+}
+#user-modal #user-list .settings-card .settings-card-title-name {
+    display: flex !important;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    align-content: center;
+    column-gap: 6px;
+    row-gap: 0;
+    white-space: normal !important;
+    word-break: keep-all !important;
+    overflow-wrap: normal !important;
+    hyphens: none !important;
+    -webkit-line-clamp: unset !important;
+    line-clamp: unset !important;
+    overflow: visible !important;
+}
+#user-modal #user-list .settings-card .settings-card-name-part {
+    display: inline-block;
+    min-width: 0;
+    max-width: 100%;
+    overflow: visible;
+    text-overflow: clip;
+    word-break: keep-all !important;
+    overflow-wrap: normal !important;
+    hyphens: none !important;
+    line-height: inherit;
+}
+#user-modal #user-list .settings-card .settings-card-name-given {
+    flex: 0 1 auto;
+    white-space: nowrap !important;
+    overflow-wrap: normal !important;
+}
+#user-modal #user-list .settings-card .settings-card-name-surname {
+    flex: 0 1 auto;
+    min-width: 0;
+    text-align: center;
+    white-space: nowrap !important;
+    overflow-wrap: normal !important;
+}
+#user-modal #user-list .settings-card .settings-card-name-single {
+    white-space: nowrap !important;
 }
 
-/* Masaüstü: Kullanıcı Yönetimi kartları — dikey ortalama + sabit 2.5em isim kutusu rol satırını kesiyor; üstten doldur, rolü alta sabitle (kutu boyutu aynı) */
+/* Masaüstü: Kullanıcı Yönetimi kartları — isim ve rol ayrı satır kimliğini korusun */
 @media (min-width: 641px) {
   #user-modal #user-list .settings-card {
-    justify-content: flex-start !important;
+    justify-content: center !important;
+    padding-top: 12px !important;
+    padding-bottom: 12px !important;
   }
   #user-modal #user-list .settings-card-content {
-    justify-content: flex-start !important;
+    justify-content: center !important;
     align-items: center !important;
+    gap: 7px !important;
     flex: 1 1 auto;
     min-height: 0;
     width: 100%;
@@ -1385,24 +1568,45 @@ input.settings-form-input:-moz-autofill,
   #user-modal #user-list .settings-card .settings-card-title {
     height: auto !important;
     min-height: 0 !important;
-    max-height: none !important;
+    max-height: calc(2 * 1.12em) !important;
     margin-bottom: 0 !important;
     flex-shrink: 1;
+    line-height: 1.12 !important;
+    word-break: keep-all !important;
+    overflow-wrap: normal !important;
+    hyphens: none !important;
+  }
+  /* İsim+soyad satır kırılımı: iki satır + olası satır arası nefes; kırpılma önlenir */
+  #user-modal #user-list .settings-card .settings-card-title.settings-card-title-name {
+    max-height: calc(2 * 1.12em + 0.35em) !important;
+    -webkit-line-clamp: unset !important;
+    line-clamp: unset !important;
+    overflow: visible !important;
+    display: flex !important;
   }
   #user-modal #user-list .settings-card-gorev {
     flex-shrink: 0;
-    margin-top: auto;
-    line-height: 1.15 !important;
-    -webkit-line-clamp: 2 !important;
-    line-clamp: 2 !important;
+    margin-top: 0 !important;
+    padding-top: 5px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.78) !important;
+    font-size: 10.5px !important;
+    font-weight: 500;
+    line-height: 1.1 !important;
+    white-space: nowrap !important;
+    display: block !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: unset !important;
+    line-clamp: unset !important;
   }
   #user-modal #user-list .settings-card-gorev.settings-card-gorev--stacked {
     display: flex !important;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 1px;
-    min-height: calc((2 * 1.08em) + 1px) !important;
+    gap: 0;
+    min-height: 1.1em !important;
     line-height: 1 !important;
     -webkit-line-clamp: unset !important;
     line-clamp: unset !important;
@@ -1586,6 +1790,33 @@ input.settings-form-input:-moz-autofill,
 /* === MASAÜSTÜ AYARLAR === */
 @media (min-width: 641px) {
     .settings-dropdown button { text-align: center; }
+    /* #settings-menu: ana sayfa .menu-btn ile aynı kutu dili (bildirim listesi hariç) */
+    #settings-menu.settings-dropdown.open {
+        gap: 5px !important;
+    }
+    #settings-menu > button,
+    #settings-menu .has-submenu-wrapper .has-submenu {
+        height: 54px !important;
+        padding: 18px !important;
+        border-radius: 12px !important;
+        background: linear-gradient(180deg, var(--hero-gradient-start), var(--hero-gradient-end)) !important;
+        border: 1px solid var(--border-subtle) !important;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2), 0 4px 16px rgba(var(--theme-color-rgb), 0.1) !important;
+        font-weight: 700 !important;
+        font-size: clamp(12px, 2.8vw, 14px) !important;
+        letter-spacing: 0.06em !important;
+        margin-bottom: 0 !important;
+    }
+    #settings-menu > button.cache-clear-btn {
+        border: 1px solid rgba(var(--theme-color-rgb), 0.5) !important;
+    }
+    #settings-menu > button.settings-logout-btn {
+        border: 1px solid rgba(var(--theme-color-rgb), 0.5) !important;
+        color: var(--theme-color) !important;
+    }
+    #settings-menu > .has-submenu-wrapper {
+        margin-bottom: 0 !important;
+    }
     #data-management-modal .universal-back-bar,
     #dis-veri-panel .universal-back-bar {
         margin-top: 0 !important;
@@ -1652,10 +1883,8 @@ input.settings-form-input:-moz-autofill,
         font-size: 14px !important; /* 1 punto küçültüldü (15px → 14px) */
         text-align: left;
     }
-    #branch-form-modal .modal-body .form-input,
-    #user-form-modal .modal-body .form-input,
-    #branch-form-modal .modal-body select.form-input,
-    #user-form-modal .modal-body select.form-input {
+    #branch-form-modal .modal-body .form-input:not(select):not(.medisa-owner-select-trigger),
+    #user-form-modal .modal-body .form-input:not(select):not(.medisa-owner-select-trigger) {
         width: 100%;
         max-width: 100%;
         height: 27px !important;
@@ -1664,6 +1893,22 @@ input.settings-form-input:-moz-autofill,
         padding-left: 8px;
         padding-right: 8px;
         background: var(--bg-content);
+        border: 1.1px solid rgba(255, 255, 255, 0.20);
+        border-radius: 6px;
+        color: var(--txt-gray-darker);
+        font-size: 10px;
+        box-sizing: border-box;
+    }
+    #branch-form-modal .modal-body select.form-input,
+    #user-form-modal .modal-body select.form-input {
+        width: 100%;
+        max-width: 100%;
+        height: 27px !important;
+        padding-top: 5px !important;
+        padding-bottom: 5px !important;
+        padding-left: 8px;
+        padding-right: 30px;
+        background-color: var(--bg-content);
         border: 1.1px solid rgba(255, 255, 255, 0.20);
         border-radius: 6px;
         color: var(--txt-gray-darker);
@@ -1691,10 +1936,11 @@ input.settings-form-input:-moz-autofill,
   }
   #branch-form-modal .modal-body #branch-form,
   #user-form-modal .modal-body #user-form.user-form-inner {
-    width: min(100%, 500px) !important;
-    max-width: 500px !important;
-    margin-left: auto !important;
-    margin-right: auto !important;
+    width: 100%;
+    max-width: 420px;
+    margin-left: auto;
+    margin-right: auto;
+    box-sizing: border-box;
   }
   #branch-form-modal .universal-btn-group,
   #user-form-modal .universal-btn-group {
@@ -1825,14 +2071,20 @@ input.settings-form-input:-moz-autofill,
         border-color: rgba(255, 255, 255, 0.52) !important;
         background: rgba(255, 255, 255, 0.04) !important;
     }
-    .form-input,
-    #branch-form-modal .form-input,
-    #user-form-modal .form-input,
-    #branch-form-modal select.form-input,
-    #user-form-modal select.form-input {
+    .form-input:not(select):not(.medisa-owner-select-trigger),
+    #branch-form-modal .form-input:not(select):not(.medisa-owner-select-trigger),
+    #user-form-modal .form-input:not(select):not(.medisa-owner-select-trigger) {
         color: var(--txt-gray-darker, #888) !important;
         border-color: rgba(255, 255, 255, 0.4) !important;
         background: var(--bg-content, #0d131f) !important;
+    }
+    #branch-form-modal select.form-input,
+    #user-form-modal select.form-input,
+    #branch-form-modal select,
+    #user-form-modal select {
+        color: var(--txt-gray-darker, #888) !important;
+        border-color: rgba(255, 255, 255, 0.4) !important;
+        background-color: var(--bg-content, #0d131f) !important;
     }
     #user-form-modal .user-vehicles-trigger {
         border-color: rgba(255, 255, 255, 0.4) !important;
@@ -1888,6 +2140,7 @@ input.settings-form-input:-moz-autofill,
         flex: 0 0 100% !important;
         width: 100% !important;
         margin-left: 0 !important;
+        margin-top: -4px !important;
         justify-content: flex-end !important;
     }
     #user-modal .user-management-search-wrap.open .user-management-search-input {
@@ -1969,16 +2222,21 @@ input.settings-form-input:-moz-autofill,
         width: calc((100% - 16px) / 3) !important;
         max-width: calc((100% - 16px) / 3) !important;
         flex: 0 0 calc((100% - 16px) / 3) !important;
-        justify-content: flex-start !important;
-        padding: 14px 4px 10px 4px !important;
+        aspect-ratio: auto !important;
+        min-height: clamp(78px, 22vw, 84px) !important;
+        height: auto !important;
+        justify-content: center !important;
+        padding: 10px 5px !important;
     }
     #branch-modal #branch-list .settings-card-content {
         justify-content: flex-start !important;
         gap: 4px !important;
     }
     #user-modal #user-list .settings-card-content {
-        justify-content: flex-start !important;
-        gap: 4px !important;
+        justify-content: center !important;
+        align-items: center !important;
+        height: 100% !important;
+        gap: 3px !important;
     }
     .settings-card-title { font-size: 15px; }
     .settings-card-subtitle { font-size: 13px; }
@@ -1993,8 +2251,31 @@ input.settings-form-input:-moz-autofill,
         justify-content: center !important;
         white-space: normal !important;
         text-overflow: clip !important;
-        word-break: break-word !important;
-        overflow-wrap: break-word !important;
+        word-break: keep-all !important;
+        overflow-wrap: normal !important;
+        hyphens: none !important;
+    }
+    #user-modal #user-list .settings-card .settings-card-title {
+        font-size: 14px !important;
+        min-height: 0 !important;
+        max-height: calc(2 * 1.12em) !important;
+        display: flex !important;
+        flex-wrap: wrap;
+        align-items: center !important;
+        justify-content: center !important;
+        column-gap: 4px;
+        row-gap: 0;
+        -webkit-box-orient: vertical !important;
+        -webkit-line-clamp: unset !important;
+        line-clamp: unset !important;
+        text-align: center !important;
+        word-break: keep-all !important;
+        overflow-wrap: normal !important;
+        hyphens: none !important;
+    }
+    #user-modal #user-list .settings-card .settings-card-title.settings-card-title-name {
+        max-height: calc(2 * 1.12em + 0.35em) !important;
+        overflow: visible !important;
     }
     #branch-modal #branch-list .settings-card .settings-card-subtitle,
     #user-modal #user-list .settings-card .settings-card-subtitle,
@@ -2002,6 +2283,12 @@ input.settings-form-input:-moz-autofill,
         font-size: 14px !important;
         line-height: 1.18 !important;
         min-height: 1.18em !important;
+    }
+    #user-modal #user-list .settings-card .settings-card-gorev {
+        font-size: 12.5px !important;
+        line-height: 1.12 !important;
+        min-height: 0 !important;
+        margin-top: 0 !important;
     }
     #branch-modal #branch-list .settings-card .settings-card-count {
         font-size: calc(10px + 1pt) !important;
@@ -2042,10 +2329,8 @@ input.settings-form-input:-moz-autofill,
     #user-form-modal .modal-body .form-section:first-child {
         margin-top: 2px !important;
     }
-    #branch-form-modal .form-input,
-    #user-form-modal .form-input,
-    #branch-form-modal select.form-input,
-    #user-form-modal select.form-input {
+    #branch-form-modal .form-input:not(select):not(.medisa-owner-select-trigger),
+    #user-form-modal .form-input:not(select):not(.medisa-owner-select-trigger) {
         height: 32px !important;
         padding: 3px 8px;
         font-size: 15.5px !important;
@@ -2054,7 +2339,17 @@ input.settings-form-input:-moz-autofill,
         background: var(--bg-content, #0d131f) !important;
         color: var(--txt-gray-darker, #888) !important; /* Ayarlar: input içi metin gri */
     }
-    #user-form-modal .form-input,
+    #branch-form-modal select.form-input,
+    #user-form-modal select.form-input {
+        height: 32px !important;
+        padding: 3px 30px 3px 8px;
+        font-size: 15.5px !important;
+        line-height: 1.2 !important;
+        box-sizing: border-box;
+        background-color: var(--bg-content, #0d131f) !important;
+        color: var(--txt-gray-darker, #888) !important; /* Ayarlar: input içi metin gri */
+    }
+    #user-form-modal .form-input:not(.medisa-owner-select-trigger),
     #user-form-modal select.form-input,
     #user-form-modal .user-vehicles-trigger {
         border-color: rgba(255, 255, 255, 0.52) !important;
@@ -2173,24 +2468,37 @@ input.settings-form-input:-moz-autofill,
      * Ayarlar dişlisi menüsü (yalnız #settings-menu): mobilde ana sayfa .menu-btn ile aynı çerçeve.
      * Bildirimler (#notifications-dropdown) dahil diğer .settings-dropdown örneklerine dokunulmaz.
      */
+    #settings-menu.settings-dropdown.open {
+        gap: 6px !important;
+    }
     #settings-menu > button,
     #settings-menu .has-submenu-wrapper .has-submenu {
         background: linear-gradient(180deg, var(--hero-gradient-start), var(--hero-gradient-end)) !important;
-        border: 1px solid var(--border-subtle) !important;
-        border-radius: 12px !important;
+        border: 1px solid rgba(255, 255, 255, 0.55) !important;
+        border-radius: 11px !important;
         height: 54px !important;
+        padding: 12px 16px !important;
+        font-size: clamp(15px, 3.1vw, 16px) !important;
+        letter-spacing: 1.1px !important;
         box-shadow:
-            0 4px 10px rgba(0, 0, 0, 0.2),
-            0 4px 16px rgba(var(--theme-color-rgb), 0.1) !important;
+            0 4px 12px rgba(0, 0, 0, 0.24),
+            0 4px 16px rgba(var(--theme-color-rgb), 0.12) !important;
+    }
+    #settings-menu .settings-submenu button {
+        height: 54px !important;
+        padding: 12px 16px !important;
+        font-size: clamp(15px, 3.1vw, 16px) !important;
+        letter-spacing: 1.1px !important;
+        border-radius: 11px !important;
     }
     #settings-menu > button {
-        margin-bottom: 10px !important;
+        margin-bottom: 0 !important;
     }
     #settings-menu > button:last-child {
         margin-bottom: 0 !important;
     }
     #settings-menu > .has-submenu-wrapper {
-        margin-bottom: 10px !important;
+        margin-bottom: 0 !important;
     }
     #settings-menu > .has-submenu-wrapper:last-child {
         margin-bottom: 0 !important;
@@ -2229,31 +2537,21 @@ input.settings-form-input:-moz-autofill,
 /* iOS PWA: Yeni Kullanıcı Ekle formunda etiketler 1 punto küçük, giriş metni kontrollü büyük */
 @media (max-width: 768px) and (display-mode: standalone) {
     @supports (-webkit-touch-callout: none) {
-        #branch-form-modal.modal-overlay,
-        #user-form-modal.modal-overlay {
-            padding-top: max(12px, env(safe-area-inset-top)) !important;
-            padding-bottom: max(12px, env(safe-area-inset-bottom, 0)) !important;
-        }
         #branch-form-modal .modal-container,
         #user-form-modal .modal-container {
             margin-top: 0 !important;
         }
-        #branch-form-modal .modal-body,
-        #user-form-modal .modal-body {
-            overflow-y: visible !important;
-            padding-bottom: max(40px, env(safe-area-inset-bottom, 0)) !important;
-        }
         #user-form-modal .form-label {
             font-size: 14px !important;
         }
-        #user-form-modal .form-input,
+        #user-form-modal .form-input:not(.medisa-owner-select-trigger),
         #user-form-modal select.form-input,
         #user-form-modal .user-vehicles-trigger,
         #user-form-modal .user-vehicles-trigger-text {
             font-size: 15.5px !important;
             line-height: 1.15 !important;
         }
-        #user-form-modal .form-input,
+        #user-form-modal .form-input:not(.medisa-owner-select-trigger),
         #user-form-modal select.form-input {
             padding-top: 2px !important;
             padding-bottom: 2px !important;
@@ -2261,8 +2559,8 @@ input.settings-form-input:-moz-autofill,
     }
 }
 
-/* Dar ekran + gerçek hover: ayarlar menüsü .menu-btn ile aynı hover (dokunmatikte devre dışı) */
-@media (max-width: 640px) and (hover: hover) {
+/* Gerçek hover: ayarlar menüsü .menu-btn ile aynı hover (dokunmatikte devre dışı); masaüstü dahil */
+@media (hover: hover) {
     #settings-menu > button:hover,
     #settings-menu .has-submenu-wrapper .has-submenu:hover {
         background: linear-gradient(180deg, var(--hero-gradient-start), var(--hero-gradient-end)) !important;

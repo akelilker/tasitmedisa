@@ -4,15 +4,95 @@ on:
   pull_request:
     branches:
       - main
+  push:
+    branches:
+      - test/ci-verify-pr-check-workflow
 
 jobs:
   check:
-    name: Check
+    name: Static checks
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - name: Use Node.js
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
+      - name: PHP syntax (php -l)
+        shell: bash
+        run: |
+          set -euo pipefail
+          while IFS= read -r -d '' f; do
+            php -l "$f"
+          done < <(find . -name '*.php' -print0)
+
+      - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
           node-version: '24'
-      - run: echo "PR check passed"
+
+      - name: JavaScript syntax (node --check)
+        shell: bash
+        run: |
+          set -euo pipefail
+          for f in \
+            script-core.js \
+            data-manager.js \
+            data-service.js \
+            tasitlar.js \
+            tasitlar-yazici.js \
+            kayit.js \
+            raporlar.js \
+            ayarlar.js \
+            sw.js \
+            driver/driver-script.js \
+            admin/admin-report.js \
+            scripts/verify-medisa-role-invariants.js \
+            scripts/hydrate-demo-data-branches.js
+          do
+            node --check "$f"
+          done
+
+  http-smoke:
+    name: HTTP smoke (php -S + curl)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
+      - name: Start PHP built-in server
+        shell: bash
+        run: |
+          set -euo pipefail
+          php -S 127.0.0.1:8888 -t . > /tmp/php-server.log 2>&1 &
+          echo $! > /tmp/php-server.pid
+          for i in $(seq 1 30); do
+            if curl -sS -o /dev/null -f --connect-timeout 1 http://127.0.0.1:8888/ 2>/dev/null; then
+              echo "PHP server ready"
+              exit 0
+            fi
+            sleep 0.2
+          done
+          echo "::error::PHP built-in server did not become ready"
+          cat /tmp/php-server.log || true
+          exit 1
+
+      - name: HTTP smoke (paths + light content check)
+        shell: bash
+        env:
+          BASE_URL: http://127.0.0.1:8888
+        run: bash .github/scripts/ci-http-smoke.sh
+
+      - name: Stop PHP server
+        if: always()
+        shell: bash
+        run: |
+          if [ -f /tmp/php-server.pid ]; then
+            kill "$(cat /tmp/php-server.pid)" 2>/dev/null || true
+          fi

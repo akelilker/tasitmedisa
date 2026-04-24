@@ -61,8 +61,9 @@
     font-weight: inherit !important;
     text-align: center !important;
     white-space: normal !important;
-    word-break: normal;
-    overflow-wrap: break-word;
+    word-break: keep-all;
+    overflow-wrap: normal;
+    hyphens: none;
     line-height: 1.3;
     display: -webkit-box !important;
     -webkit-line-clamp: 2 !important;
@@ -144,8 +145,22 @@
 }
 
 .view-list .list-cell.list-user {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center !important;
+    text-align: center;
     padding-left: 1px !important;
     padding-right: 1px !important;
+}
+
+.view-list .list-cell.list-user .user-name-line1,
+.view-list .list-cell.list-user .user-name-line2 {
+    display: block;
+    max-width: 100%;
+    white-space: nowrap;
+    word-break: keep-all;
+    overflow-wrap: normal;
+    hyphens: none;
 }
 
 .view-list .list-item:last-child {
@@ -1140,6 +1155,10 @@
   #vehicle-detail-modal .detail-row-value {
     color: #a0aec0 !important;
   }
+  #vehicle-detail-modal .detail-row-value.detail-user-empty,
+  #vehicle-detail-modal .detail-user-empty {
+    color: #d40000 !important;
+  }
   #vehicle-detail-modal .detail-item {
     color: #a0aec0 !important;
   }
@@ -1158,7 +1177,7 @@
     padding-right: 6px !important;
   }
   #vehicles-modal .vt-right {
-    gap: 2px !important;
+    gap: 5px !important;
     flex-shrink: 1;
     min-width: 0 !important;
     overflow: visible !important; /* ıman dropdown mobilde kesilmesin, görünsün */
@@ -1166,13 +1185,13 @@
   /* Taşıtlar toolbar: arama + şanzıman + dişer ikonlar sışsın */
   #vehicles-modal .vt-right .vt-icon-btn,
   #vehicles-modal .vt-right .v-transmission-btn {
-    width: 34px !important;
-    height: 34px !important;
+    width: 38px !important;
+    height: 38px !important;
   }
   #vehicles-modal .vt-right .vt-icon-btn svg,
   #vehicles-modal .vt-right .v-transmission-btn svg {
-    width: 18px !important;
-    height: 18px !important;
+    width: 20px !important;
+    height: 20px !important;
   }
   /* ıman dropdown mobil: saşa hizalı (zaten base'de right:0), görünür olsun */
   .v-transmission-dropdown {
@@ -1392,7 +1411,9 @@
     overflow: hidden !important;
     flex-shrink: 0 !important; /* Gereksiz wrap önlenir */
     white-space: normal !important;
-    word-break: break-word !important;
+    word-break: keep-all !important;
+    overflow-wrap: normal !important;
+    hyphens: none !important;
   }
   
   /* Mobil taşıt detay: tüm metinler +1pt tek blokta */
@@ -1403,7 +1424,7 @@
   #vehicle-detail-modal .detail-row-kaporta .detail-row-value {
     font-size: calc(16px - 1.33px) !important;
   }
-  .detail-row-value.detail-user-empty {
+  #vehicle-detail-modal .detail-row-value.detail-user-empty {
     color: #d40000 !important;
     font-size: 17px !important; /* +1pt (value 16px) */
     white-space: nowrap !important; /* Mobilde tek satırda kal */
@@ -1459,7 +1480,7 @@
     aspect-ratio: 1 / 1;
     border: 1px solid rgba(255, 255, 255, 0.4) !important;
   }
-  .branch-name { font-size: clamp(11.5px, 4.1vw, 15px); line-height: 1.12; overflow-wrap: anywhere; word-break: break-word; } /* Sışmazsa en fazla 1.5pt küçülme (15→11.5px), Karmotors vb. kutuya sışsın */
+  .branch-name { font-size: clamp(11.5px, 4.1vw, 15px); line-height: 1.12; overflow-wrap: normal; word-break: keep-all; hyphens: none; } /* Sığmazsa JS kontrollü küçültür; kelime harften kırılmaz */
   .branch-count { font-size: 15px; } /* +1 punto daha (sadece mobil) */
   
   /* Mobil: 2'li grid, kartlar eşit yükseklik, alt satır (fiyat/buton) hep aynı hizada */
@@ -1598,7 +1619,8 @@
   }
 
   /* Tarih (type=date) hariç: aksi halde aynı özgüllükte .form-input 17px, .olay-tarih-input 11px’i ezer; gg.aa.yyyy taşar */
-  .olay-ekle-modal .modal-body .form-input:not([type="date"]),
+  .olay-ekle-modal .modal-body input.form-input:not([type="date"]),
+  .olay-ekle-modal .modal-body textarea.form-input,
   .olay-ekle-modal .modal-body select,
   .olay-ekle-modal .modal-body textarea {
     font-size: 17px !important; /* 16px + 1 punto */
@@ -1633,7 +1655,7 @@
     height: 35px !important;
   }
 
-  .olay-ekle-modal .modal-body button {
+  .olay-ekle-modal .modal-body button:not(.ceza-user-trigger):not(.ceza-user-option):not(.medisa-owner-select-trigger):not(.medisa-owner-select-option) {
     font-size: 17px !important; /* 16px + 1 punto */
   }
 
@@ -1646,15 +1668,35 @@
     line-height: 1.25 !important;
     font-size: clamp(11px, 2.8vw, 17px) !important;
   }
+  @media (min-width: 769px) {
+    #event-menu-modal .modal-body #event-menu-list button {
+      width: calc(100% - 24px) !important;
+      max-width: calc(100% - 24px) !important;
+    }
+  }
 
   /* Dinamik olay: şube/kullanıcı select — büyük font + yeterli yükseklik (iOS kırpma önleme) */
   #dinamik-olay-modal .modal-body select.form-input {
-    min-height: 47px !important;
-    height: auto !important;
-    padding-top: 10px !important;
-    padding-bottom: 10px !important;
-    line-height: 1.3 !important;
+    min-height: 36px !important;
+    height: 36px !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    line-height: 1.2 !important;
     box-sizing: border-box !important;
+  }
+  #dinamik-olay-modal .medisa-owner-select-trigger {
+    min-height: 36px !important;
+    height: 36px !important;
+    padding: 0 38px 0 10px !important;
+    border-radius: 8px !important;
+    font-size: 12px !important;
+    line-height: 1.2 !important;
+    box-sizing: border-box !important;
+  }
+  #dinamik-olay-modal .medisa-owner-select-option,
+  #dinamik-olay-modal .medisa-owner-select-search-input,
+  .olay-ekle-modal .modal-body .ceza-user-trigger {
+    font-size: 12px !important;
   }
 
   /* Taşıt detay: şube atama select */
@@ -1829,8 +1871,9 @@
     font-weight: inherit !important;
     text-align: center !important;
     white-space: normal !important;
-    word-break: normal !important;
-    overflow-wrap: break-word !important;
+    word-break: keep-all !important;
+    overflow-wrap: normal !important;
+    hyphens: none !important;
     line-height: 1.4 !important;
     display: -webkit-box !important;
     -webkit-box-orient: vertical !important;
@@ -1878,7 +1921,7 @@
     min-width: 0 !important;
   }
 
-  /* Kullanıcı sütunu - en fazla 2 satır, çerçeveye 1px; 1pt'den fazla küçülme yok */
+  /* Kullanıcı sütunu - en fazla 2 satır, çerçeveye 1px; uzun isimler JS ile kelime kırmadan küçülür */
   .list-header-row .list-cell.list-user {
     display: flex !important;
     justify-content: center !important;
@@ -1891,15 +1934,21 @@
     justify-content: center !important;
     text-align: center !important;
     white-space: normal !important;
-    word-break: normal !important;
-    overflow-wrap: break-word !important;
+    word-break: keep-all !important;
+    overflow-wrap: normal !important;
+    hyphens: none !important;
     overflow: hidden !important;
-    font-size: 16px !important; /* Sabit; 1pt'den fazla küçülme yok, gerekirse alt satıra iner */
+    font-size: 16px !important;
   }
   .view-list .list-cell.list-user .user-name-line1,
   .view-list .list-cell.list-user .user-name-line2 {
     display: block !important;
     line-height: 1.3 !important;
+    max-width: 100%;
+    white-space: nowrap !important;
+    word-break: keep-all !important;
+    overflow-wrap: normal !important;
+    hyphens: none !important;
   }
 
   /* Tek satır hücreler - list-brand, list-branch, list-user wrap edebilir */
@@ -1931,8 +1980,9 @@
     justify-content: center !important;
     text-align: center !important;
     white-space: normal !important;
-    word-break: normal !important;
-    overflow-wrap: break-word !important;
+    word-break: keep-all !important;
+    overflow-wrap: normal !important;
+    hyphens: none !important;
     overflow: hidden !important;
     padding: 2px 1px 2px 3px !important;
   }
@@ -2008,8 +2058,9 @@
   .list-header-row .list-cell.list-brand {
     text-align: center !important; /* Masaüstü ile aynı */
     white-space: normal !important;
-    word-break: normal !important;
+    word-break: keep-all !important;
     overflow-wrap: normal !important;
+    hyphens: none !important;
     line-height: 1.3 !important; /* Masaüstü ile aynı */
     display: flex !important;
     -webkit-line-clamp: 2 !important;
@@ -2051,17 +2102,17 @@
       padding-bottom: 0 !important;
     }
     #vehicles-modal .vt-right {
-      gap: 4px !important;
+      gap: 5px !important;
     }
     #vehicles-modal .vt-right .vt-icon-btn,
     #vehicles-modal .vt-right .v-transmission-btn {
-      width: 36px !important;
-      height: 36px !important;
+      width: 38px !important;
+      height: 38px !important;
     }
     #vehicles-modal .vt-right .vt-icon-btn svg,
     #vehicles-modal .vt-right .v-transmission-btn svg {
-      width: 19px !important;
-      height: 19px !important;
+      width: 20px !important;
+      height: 20px !important;
     }
     /* iOS PWA: olay formlarında tarih kutusu + gg.aa.yyyy overlay dikey hiza (Safari date widget) */
     #dinamik-olay-modal .modal-body input[type="date"].form-input,
@@ -2272,14 +2323,15 @@
     -webkit-line-clamp: 2 !important;
     line-clamp: 2 !important;
     white-space: normal !important;
-    word-break: normal !important;
-    overflow-wrap: break-word !important;
+    word-break: keep-all !important;
+    overflow-wrap: normal !important;
+    hyphens: none !important;
     line-height: 1.22 !important;
     text-overflow: clip !important;
   }
   #vehicles-modal .view-list .list-cell.list-branch {
-    word-break: break-word !important;
-    overflow-wrap: break-word !important;
+    word-break: keep-all !important;
+    overflow-wrap: normal !important;
     hyphens: none !important;
     line-height: 1.22 !important;
   }
@@ -2315,9 +2367,9 @@
   }
 }
 
-/* TAŞITLAR listesi (#vehicles-modal): masaüstünde modal–footer dikey boşluk 3px azaltılır; yalnız bu modal, mobil/tablet aynı */
+/* TAŞITLAR listesi (#vehicles-modal): masaüstünde overlay altı, diğer ana modallarla aynı formül (style-core .modal-overlay); gap atlanırsa footer–modal çerçevesi yapışır */
 @media (min-width: 769px) {
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicles-modal.modal-overlay {
-    bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
+    bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
   }
 }

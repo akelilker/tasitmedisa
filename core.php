@@ -611,6 +611,46 @@ function medisaUserHasAssignedVehicle($data, $userId) {
     return false;
 }
 
+function medisaUserHasPortalPassword($user) {
+    if (!is_array($user)) {
+        return false;
+    }
+
+    $plainPassword = isset($user['sifre']) ? trim((string)$user['sifre']) : '';
+    $passwordHash = isset($user['sifre_hash']) ? trim((string)$user['sifre_hash']) : '';
+
+    return $plainPassword !== '' || $passwordHash !== '';
+}
+
+function medisaVerifyUserPassword($user, $password) {
+    if (!is_array($user)) {
+        return false;
+    }
+
+    $inputPassword = trim((string)$password);
+    if ($inputPassword === '') {
+        return false;
+    }
+
+    $passwordHash = isset($user['sifre_hash']) ? trim((string)$user['sifre_hash']) : '';
+    if ($passwordHash !== '') {
+        return password_verify($inputPassword, $passwordHash);
+    }
+
+    $plainPassword = isset($user['sifre']) ? trim((string)$user['sifre']) : '';
+    return $plainPassword !== '' && hash_equals($plainPassword, $inputPassword);
+}
+
+function medisaSetUserPasswordHash(&$user, $password) {
+    if (!is_array($user)) {
+        $user = [];
+    }
+
+    $user['sifre_hash'] = password_hash(trim((string)$password), PASSWORD_DEFAULT);
+    $user['sifre_guncellendi_at'] = date('c');
+    unset($user['sifre']);
+}
+
 function medisaComputeDriverDashboard($user, $data) {
     if (medisaIsYoneticiOnlyUser($user)) {
         return false;
@@ -624,6 +664,10 @@ function medisaComputeDriverDashboard($user, $data) {
 
     if (!in_array($role, ['kullanici', 'sube_yonetici', 'genel_yonetici'], true)) {
         return false;
+    }
+
+    if (in_array($role, ['sube_yonetici', 'genel_yonetici'], true)) {
+        return true;
     }
 
     return medisaUserHasAssignedVehicle($data, $userId);

@@ -115,6 +115,22 @@ const API_BASE = (function(){
     }
   }
 
+  function getRequestedNextUrl() {
+    try {
+      var search = window.location && window.location.search ? window.location.search : '';
+      if (!search) return '';
+      var rawNext = new URLSearchParams(search).get('next');
+      if (!rawNext) return '';
+
+      var resolvedUrl = new URL(rawNext, window.location.origin);
+      if (resolvedUrl.origin !== window.location.origin) return '';
+
+      return (resolvedUrl.pathname || '') + (resolvedUrl.search || '') + (resolvedUrl.hash || '');
+    } catch (e) {
+      return '';
+    }
+  }
+
   function isMainAppPortalEntry() {
     try {
       var search = window.location && window.location.search ? window.location.search : '';
@@ -232,6 +248,12 @@ const API_BASE = (function(){
   function routeByAccessContext(accessContext, options) {
     var routeOptions = options && typeof options === 'object' ? options : {};
     var surface = resolvePortalDefaultSurface(accessContext);
+    var requestedNextUrl = String(routeOptions.nextUrl || '').trim();
+
+    if (requestedNextUrl && (surface === 'dashboard' || surface === 'main')) {
+      window.location.href = requestedNextUrl;
+      return true;
+    }
 
     if (surface === 'dashboard') {
       window.location.href = DRIVER_PAGE_BASE + 'dashboard.html';
@@ -377,9 +399,40 @@ const API_BASE = (function(){
   /** Tarih input değerini DD/MM/YYYY olarak göster (örn. 2025-12-01 -> 01/12/2025) */
   function formatDateDDMMYYYY(isoDate) {
     if (!isoDate || typeof isoDate !== 'string') return '';
-    var parts = isoDate.trim().split('-');
-    if (parts.length !== 3) return isoDate;
-    return parts[2] + '/' + parts[1] + '/' + parts[0];
+    function isValidDateParts(day, month, year) {
+      var d = parseInt(day, 10);
+      var m = parseInt(month, 10);
+      var y = parseInt(year, 10);
+      if (!d || !m || !y || m < 1 || m > 12) return false;
+      var dt = new Date(y, m - 1, d);
+      return dt.getFullYear() === y && dt.getMonth() === (m - 1) && dt.getDate() === d;
+    }
+    var raw = isoDate.trim();
+    var parts = raw.split('-');
+    if (parts.length === 3) {
+      var p0 = (parts[0] || '').trim();
+      var p1 = (parts[1] || '').trim();
+      var p2 = (parts[2] || '').trim();
+      if (/^\d{4}$/.test(p0) && /^\d{1,2}$/.test(p1) && /^\d{1,2}$/.test(p2) && isValidDateParts(p2, p1, p0)) {
+        return String(p2).padStart(2, '0') + '/' + String(p1).padStart(2, '0') + '/' + p0;
+      }
+      if (/^\d{1,2}$/.test(p0) && /^\d{1,2}$/.test(p1) && /^\d{4}$/.test(p2) && isValidDateParts(p0, p1, p2)) {
+        return String(p0).padStart(2, '0') + '/' + String(p1).padStart(2, '0') + '/' + p2;
+      }
+      return raw;
+    }
+    var digits = raw.replace(/[^\d]/g, '');
+    if (/^\d{8}$/.test(digits)) {
+      var dd = digits.slice(0, 2);
+      var mm = digits.slice(2, 4);
+      var yyyy = digits.slice(4, 8);
+      if (isValidDateParts(dd, mm, yyyy)) return dd + '/' + mm + '/' + yyyy;
+      var yyyyAlt = digits.slice(0, 4);
+      var mmAlt = digits.slice(4, 6);
+      var ddAlt = digits.slice(6, 8);
+      if (isValidDateParts(ddAlt, mmAlt, yyyyAlt)) return ddAlt + '/' + mmAlt + '/' + yyyyAlt;
+    }
+    return raw;
   }
 
   /** Muayene bitiş tarihi hesapla (ana panel + driver_event.php ile senkron). */
@@ -512,7 +565,9 @@ const API_BASE = (function(){
       /* Geçerli bir oturum varsa login ekranını atla ve token'ın işaret ettiği yüzeye git. */
       var savedToken = getStoredPortalToken();
       if (!shouldForceDriverLoginView() && savedToken) {
-          routeByCurrentSession(savedToken, false);
+          routeByCurrentSession(savedToken, false, {
+              nextUrl: getRequestedNextUrl()
+          });
       }
   
       var usernameInput = document.getElementById('username');
@@ -605,6 +660,7 @@ const API_BASE = (function(){
                   var tokenToStore = data.token && typeof data.token === 'string' ? data.token : null;
                   if (tokenToStore) persistSessionToken(tokenToStore, remember);
                   var routedOk = routeByToken(tokenToStore, data.driverDashboard === true, {
+                      nextUrl: getRequestedNextUrl(),
                       sessionData: {
                           role: data.rol || '',
                           kullanici_paneli: data.driverDashboard === true,
@@ -883,7 +939,7 @@ const API_BASE = (function(){
       const plakaEl = document.getElementById('driver-current-plaka');
       if (plakaEl) plakaEl.textContent = formatDriverPlaka(vehicle.plaka);
       const subtitleEl = document.getElementById('driver-plate-subtitle');
-      if (subtitleEl) subtitleEl.textContent = (typeof window.toTitleCase === 'function' ? window.toTitleCase : function(x){ return x; })(vehicle.brandModel || [vehicle.marka, vehicle.model].filter(Boolean).join(' ') || '') || '';
+      if (subtitleEl) subtitleEl.textContent = (typeof window.formatBrandModel === 'function' ? window.formatBrandModel : (typeof window.toTitleCase === 'function' ? window.toTitleCase : function(x){ return x; }))(vehicle.brandModel || [vehicle.marka, vehicle.model].filter(Boolean).join(' ') || '') || '';
       
       const existingRecord = getExistingRecord(vehicle.id);
       const kmVal = vehicle.guncelKm || (existingRecord && existingRecord.guncel_km) || '-';
@@ -894,6 +950,9 @@ const API_BASE = (function(){
       const sigortaW = checkDateWarningsDriver(vehicle.sigortaDate);
       const kaskoW = checkDateWarningsDriver(vehicle.kaskoDate);
       const muayeneW = checkDateWarningsDriver(vehicle.muayeneDate);
+      const egzozMuayeneDate = vehicle.egzozMuayeneDate || '';
+      const hasSeparateEgzozMuayene = !!(egzozMuayeneDate && egzozMuayeneDate !== vehicle.muayeneDate);
+      const egzozW = checkDateWarningsDriver(hasSeparateEgzozMuayene ? egzozMuayeneDate : '');
       
       const anahtarLabel = (vehicle.anahtar === 'var') ? (vehicle.anahtarNerede || 'Var') : 'Yoktur.';
       const lastikLabel = (vehicle.lastikDurumu === 'var') ? (vehicle.lastikAdres || 'Var') : 'Yoktur.';
@@ -918,6 +977,7 @@ const API_BASE = (function(){
               <div class="driver-info-item ${sigortaW.class}"><span class="label">Sigorta Bitiş</span><span class="value">${formatDriverDate(vehicle.sigortaDate) || '-'}</span></div>
               <div class="driver-info-item ${kaskoW.class}"><span class="label">Kasko Bitiş</span><span class="value">${formatDriverDate(vehicle.kaskoDate) || '-'}</span></div>
               <div class="driver-info-item ${muayeneW.class}"><span class="label">Muayene Bitiş</span><span class="value">${formatDriverDate(vehicle.muayeneDate) || '-'}</span></div>
+              ${hasSeparateEgzozMuayene ? `<div class="driver-info-item ${egzozW.class}"><span class="label">Egzos Muayenesi</span><span class="value">${formatDriverDate(egzozMuayeneDate) || '-'}</span></div>` : ''}
               <div class="driver-info-item ${anahtarSavedClass}"><span class="label">Yedek Anahtar</span><span class="value">${escapeHtmlDriver(anahtarLabel)}</span></div>
               <div class="driver-info-item ${lastikSavedClass}"><span class="label">Lastik Durumu</span><span class="value">${escapeHtmlDriver(lastikLabel)}</span></div>
               <div class="driver-info-item"><span class="label">UTTS</span><span class="value">${escapeHtmlDriver(uttsLabel)}</span></div>
@@ -994,7 +1054,7 @@ const API_BASE = (function(){
       
       dropdown.innerHTML = vehicles.map(v => {
           const raw = v.brandModel || [v.marka, v.model].filter(Boolean).join(' ');
-          const brandModel = (typeof window.toTitleCase === 'function' ? window.toTitleCase : function(x){ return x; })(raw || '') || '';
+          const brandModel = (typeof window.formatBrandModel === 'function' ? window.formatBrandModel : (typeof window.toTitleCase === 'function' ? window.toTitleCase : function(x){ return x; }))(raw || '') || '';
           const plate = escapeHtmlDriver(formatDriverPlaka(v.plaka));
           const brandModelHtml = escapeHtmlDriver(brandModel);
           const hasBrandModel = !!brandModel;
@@ -1086,7 +1146,6 @@ const API_BASE = (function(){
       const kazaTarih = existingRecord && existingRecord.kaza_tarih ? existingRecord.kaza_tarih : today;
       const bakimAciklama = existingRecord ? esc(capitalizeWords(existingRecord.bakim_aciklama || '')) : '';
       const kazaAciklama = existingRecord ? esc(capitalizeWords(existingRecord.kaza_aciklama || '')) : '';
-      const ekstraNot = existingRecord ? esc(capitalizeWords(existingRecord.ekstra_not || '')) : '';
       const kmBtnClass = opts.kmBtnClass || '';
       const kazaBtnClass = opts.kazaBtnClass || '';
       const bakimBtnClass = opts.bakimBtnClass || '';
@@ -1176,6 +1235,14 @@ const API_BASE = (function(){
                   <button type="button" class="driver-action-btn${muayeneBtnClass}" data-action="muayene" onclick="toggleDriverActionBlock('muayene','${vid}')">Muayene Yenileme</button>
                   <div id="muayene-block-${vid}" class="driver-report-block driver-report-block-muayene driver-action-block">
                       <div class="form-group"><label for="driver-muayene-tarih-${vid}">Muayene Tarihi</label><div class="driver-date-wrap"><input type="date" id="driver-muayene-tarih-${vid}" class="form-input" style="width:100%"></div></div>
+                      <label class="driver-egzoz-muayene-check" for="driver-muayene-egzoz-different-${vid}">
+                          <input type="checkbox" id="driver-muayene-egzoz-different-${vid}" onchange="syncDriverEgzozMuayeneFields('${vid}')">
+                          <span>Egzos Muayenesi Farklı Tarih İse İşaretleyin..</span>
+                      </label>
+                      <div id="driver-muayene-egzoz-date-wrap-${vid}" class="form-group driver-egzoz-date-wrap">
+                          <label for="driver-muayene-egzoz-tarih-${vid}">Egzos Muayenesi Bitiş Tarihi</label>
+                          <div class="driver-date-wrap"><input type="date" id="driver-muayene-egzoz-tarih-${vid}" class="form-input" style="width:100%" disabled></div>
+                      </div>
                       <div class="universal-btn-group">
                           <button type="button" class="universal-btn-save" onclick="saveDriverEventFromBlock('muayene','${vid}')">Bildir</button>
                           <button type="button" class="universal-btn-cancel" onclick="cancelDriverActionForm('muayene','${vid}')">Vazgeç</button>
@@ -1223,10 +1290,6 @@ const API_BASE = (function(){
                   </div>
               </div>
               <div class="driver-action-group driver-action-footer">
-                  <div class="form-group driver-ekstra-not-form">
-                      <label for="not-${vid}">Not</label>
-                      <textarea id="not-${vid}" class="driver-ekstra-not" rows="1" placeholder="Varsa Belirtin.." maxlength="500">${ekstraNot}</textarea>
-                  </div>
                   <button type="button" onclick="saveVehicleData('${vid}')" class="universal-btn-save" id="btn-save-${vid}">Bildir</button>
                   <div id="status-${vid}" class="status-message"></div>
               </div>
@@ -1293,6 +1356,7 @@ const API_BASE = (function(){
               var dateId = type === 'muayene' ? 'driver-muayene-tarih' : (type === 'sigorta' ? 'driver-sigorta-tarih' : 'driver-kasko-tarih');
               var dateEl = document.getElementById(dateId + '-' + vid);
               if (dateEl && !dateEl.value) { dateEl.value = new Date().toISOString().split('T')[0]; syncDriverDateDisplay(dateEl); }
+              if (type === 'muayene') window.syncDriverEgzozMuayeneFields(vid);
           }
           if (type === 'anahtar' || type === 'lastik') {
               setupDriverEventRadioHandlersForBlock(type, vid);
@@ -1386,8 +1450,7 @@ const API_BASE = (function(){
           kaza_aciklama: type === 'kaza' ? capitalizeWords(document.getElementById('kaza-detay-' + vid).value.trim()) : '',
           kaza_tarih: type === 'kaza' ? (document.getElementById('kaza-tarih-' + vid).value || '') : '',
           kaza_hasar_tutari: type === 'kaza' ? ((document.getElementById('kaza-tutar-' + vid) || {}).value || '').trim() : '',
-          boya_parcalar: '{}',
-          ekstra_not: (document.getElementById('not-' + vid) || {}).value || ''
+          boya_parcalar: '{}'
       };
       payload.vehicle_version = getVehicleVersionForRequest(vid);
       if (type === 'kaza') {
@@ -1498,8 +1561,7 @@ const API_BASE = (function(){
                   kaza_aciklama: '',
                   kaza_tarih: '',
                   kaza_hasar_tutari: '',
-                  boya_parcalar: '{}',
-                  ekstra_not: ''
+                  boya_parcalar: '{}'
               })
           });
           const data = await response.json();
@@ -1574,6 +1636,9 @@ const API_BASE = (function(){
               }
           };
           checkDate(v.muayeneDate, 'Muayene');
+          if (v.egzozMuayeneDate && v.egzozMuayeneDate !== v.muayeneDate) {
+              checkDate(v.egzozMuayeneDate, 'Egzos Muayenesi');
+          }
           checkDate(v.sigortaDate, 'Sigorta');
           checkDate(v.kaskoDate, 'Kasko');
       }
@@ -1833,6 +1898,9 @@ const API_BASE = (function(){
       } else if (type === 'muayene') {
           const input = document.getElementById('driver-muayene-tarih');
           if (input) input.value = new Date().toISOString().split('T')[0];
+          const egzozCheckbox = document.getElementById('driver-muayene-egzoz-different');
+          if (egzozCheckbox) egzozCheckbox.checked = false;
+          window.syncDriverEgzozMuayeneFields();
       } else if (type === 'sigorta') {
           const input = document.getElementById('driver-sigorta-tarih');
           if (input) input.value = new Date().toISOString().split('T')[0];
@@ -1885,7 +1953,41 @@ const API_BASE = (function(){
           };
       });
   }
-  
+
+  window.syncDriverEgzozMuayeneFields = function(vehicleId) {
+      const suffix = vehicleId ? '-' + String(vehicleId) : '';
+      const checkbox = document.getElementById('driver-muayene-egzoz-different' + suffix);
+      const wrap = document.getElementById('driver-muayene-egzoz-date-wrap' + suffix);
+      const input = document.getElementById('driver-muayene-egzoz-tarih' + suffix);
+      const visible = !!(checkbox && checkbox.checked);
+      if (wrap) wrap.classList.toggle('driver-egzoz-date-visible', visible);
+      if (input) {
+          input.disabled = !visible;
+          if (!visible) input.value = '';
+      }
+  };
+
+  function getDriverMuayenePayload(vehicleId) {
+      const suffix = vehicleId ? '-' + String(vehicleId) : '';
+      const tarih = document.getElementById('driver-muayene-tarih' + suffix)?.value.trim() || '';
+      if (!tarih) {
+          alert('Tarih zorunludur!');
+          return null;
+      }
+      const egzozCheckbox = document.getElementById('driver-muayene-egzoz-different' + suffix);
+      const egzozDifferent = !!(egzozCheckbox && egzozCheckbox.checked);
+      const egzozMuayeneDate = egzozDifferent
+          ? (document.getElementById('driver-muayene-egzoz-tarih' + suffix)?.value.trim() || '')
+          : '';
+      if (egzozDifferent && !egzozMuayeneDate) {
+          alert('Egzos Muayenesi Bitiş Tarihi zorunludur!');
+          const egzozInput = document.getElementById('driver-muayene-egzoz-tarih' + suffix);
+          if (egzozInput) egzozInput.focus();
+          return null;
+      }
+      return { tarih: tarih, egzozMuayeneDate: egzozMuayeneDate };
+  }
+
   function positionAndShowMuayenePopover(dateInputEl, source) {
       var popover = document.getElementById('muayene-confirm-popover');
       if (!popover || !dateInputEl) return;
@@ -1936,13 +2038,13 @@ const API_BASE = (function(){
       if (pendingMuayeneVehicleId) {
           const vid = pendingMuayeneVehicleId;
           pendingMuayeneVehicleId = null;
-          const tarih = document.getElementById('driver-muayene-tarih-' + vid)?.value.trim() || '';
-          if (!tarih) { alert('Tarih zorunludur!'); isMuayeneConfirmed = false; return; }
+          const payload = getDriverMuayenePayload(vid);
+          if (!payload) { isMuayeneConfirmed = false; return; }
           try {
               const res = await fetch(API_BASE + 'driver_event.php', {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + currentToken },
-                  body: JSON.stringify({ arac_id: parseInt(vid, 10), vehicle_version: getVehicleVersionForRequest(vid), event_type: 'muayene', data: { tarih: tarih } })
+                  body: JSON.stringify({ arac_id: parseInt(vid, 10), vehicle_version: getVehicleVersionForRequest(vid), event_type: 'muayene', data: payload })
               });
               const result = await res.json();
               if (await handleDriverConflictResponse(result)) return;
@@ -2000,11 +2102,11 @@ const API_BASE = (function(){
           const durum = active.dataset.value;
           data = { durum: durum, adres: durum === 'var' ? (document.getElementById('driver-lastik-adres-' + vehicleId)?.value.trim() || '') : '' };
       } else if (type === 'muayene') {
-          const tarih = document.getElementById('driver-muayene-tarih-' + vehicleId)?.value.trim() || '';
-          if (!tarih) { alert('Tarih zorunludur!'); return; }
+          const payload = getDriverMuayenePayload(vehicleId);
+          if (!payload) return;
           if (!isMuayeneConfirmed) {
               const vehicle = allHistoryVehicles && allHistoryVehicles.find(function(v) { return String(v.id) === String(vehicleId); });
-              const bitisStr = calculateNextMuayeneDate(tarih, vehicle);
+              const bitisStr = calculateNextMuayeneDate(payload.tarih, vehicle);
               const dateEl = document.getElementById('muayene-calc-date');
               if (dateEl) dateEl.textContent = bitisStr ? formatDateDDMMYYYY(bitisStr) : '--/--/----';
               pendingMuayeneVehicleId = vehicleId;
@@ -2012,7 +2114,7 @@ const API_BASE = (function(){
               positionAndShowMuayenePopover(dateInput, 'block');
               return;
           }
-          data = { tarih: tarih };
+          data = payload;
       } else if (type === 'sigorta') {
           const tarih = document.getElementById('driver-sigorta-tarih-' + vehicleId)?.value.trim() || '';
           if (!tarih) { alert('Tarih zorunludur!'); return; }
@@ -2072,21 +2174,18 @@ const API_BASE = (function(){
           const active = document.querySelector('#driver-utts-modal .driver-radio-btn.active');
           data = { durum: active && active.dataset.value === 'evet' };
       } else if (type === 'muayene') {
-          const tarih = document.getElementById('driver-muayene-tarih')?.value.trim() || '';
-          if (!tarih) {
-              alert('Tarih zorunludur!');
-              return;
-          }
+          const payload = getDriverMuayenePayload();
+          if (!payload) return;
           if (!isMuayeneConfirmed) {
               const vehicle = allHistoryVehicles && allHistoryVehicles.find(function(v) { return String(v.id) === String(vehicleId); });
-              const bitisStr = calculateNextMuayeneDate(tarih, vehicle);
+              const bitisStr = calculateNextMuayeneDate(payload.tarih, vehicle);
               const dateEl = document.getElementById('muayene-calc-date');
               if (dateEl) dateEl.textContent = bitisStr ? formatDateDDMMYYYY(bitisStr) : '--/--/----';
               var dateInput = document.getElementById('driver-muayene-tarih');
               positionAndShowMuayenePopover(dateInput, 'modal');
               return;
           }
-          data = { tarih: tarih };
+          data = payload;
       } else if (type === 'sigorta') {
           const tarih = document.getElementById('driver-sigorta-tarih')?.value.trim() || '';
           if (!tarih) {
@@ -2286,8 +2385,6 @@ const API_BASE = (function(){
       const kazaTarih = document.getElementById(`kaza-tarih-${vehicleId}`).value;
       const kazaHasarTutari = document.getElementById(`kaza-tutar-${vehicleId}`)?.value.trim() || '';
   
-      const not = document.getElementById(`not-${vehicleId}`).value;
-  
       // Panel açık veya açıklama doluysa "Var" say
       const bakimVar = bakimBlock.classList.contains('show') || bakimAciklama.length > 0;
       const kazaVar = kazaBlock.classList.contains('show') || kazaAciklama.length > 0;
@@ -2349,8 +2446,7 @@ const API_BASE = (function(){
                   kaza_aciklama: capitalizeWords(kazaAciklama),
                   kaza_tarih: kazaTarih,
                   kaza_hasar_tutari: kazaHasarTutari,
-                  boya_parcalar: JSON.stringify(boyaParcalar),
-                  ekstra_not: capitalizeWords((not || '').trim())
+                  boya_parcalar: JSON.stringify(boyaParcalar)
               })
           });
           
@@ -2454,7 +2550,7 @@ const API_BASE = (function(){
           opt.className = 'history-vehicle-option';
           opt.dataset.value = String(v.id);
           var raw = v.brandModel || [v.marka, v.model].filter(Boolean).join(' ');
-          var brandModel = (typeof window.toTitleCase === 'function' ? window.toTitleCase : function(x){ return x; })(raw || '') || '';
+          var brandModel = (typeof window.formatBrandModel === 'function' ? window.formatBrandModel : (typeof window.toTitleCase === 'function' ? window.toTitleCase : function(x){ return x; }))(raw || '') || '';
           opt.textContent = [formatDriverPlaka(v.plaka), brandModel].filter(Boolean).join(' - ');
           opt.onclick = function() { selectHistoryVehicle(String(v.id), opt.textContent); };
           dropdown.appendChild(opt);
@@ -2464,7 +2560,7 @@ const API_BASE = (function(){
       if (allHistoryVehicles && allHistoryVehicles.length === 1) {
           defaultVal = String(allHistoryVehicles[0].id);
           var rawBm = allHistoryVehicles[0].brandModel || [allHistoryVehicles[0].marka, allHistoryVehicles[0].model].filter(Boolean).join(' ');
-          var bm = (typeof window.toTitleCase === 'function' ? window.toTitleCase : function(x){ return x; })(rawBm || '') || '';
+          var bm = (typeof window.formatBrandModel === 'function' ? window.formatBrandModel : (typeof window.toTitleCase === 'function' ? window.toTitleCase : function(x){ return x; }))(rawBm || '') || '';
           defaultText = [formatDriverPlaka(allHistoryVehicles[0].plaka), bm].filter(Boolean).join(' - ');
       }
       hiddenInput.value = defaultVal;
@@ -2667,6 +2763,7 @@ const API_BASE = (function(){
               } else if (item.eventType === 'muayene-guncelle') {
                   detailsHtml = '<p>Muayene bilgisi g\u00fcncellendi olarak bildirildi.</p>';
                   if (d.bitisTarihi) detailsHtml += `<p>Biti\u015f tarihi: ${escapeHtmlDriver(d.bitisTarihi)}.</p>`;
+                  if (d.egzozMuayeneDate) detailsHtml += `<p>Egzos muayenesi: ${escapeHtmlDriver(d.egzozMuayeneDate)}.</p>`;
               } else if (item.eventType === 'kasko-guncelle') {
                   detailsHtml = '<p>Kasko yenilemesi bildirildi.</p>';
                   if (d.bitisTarihi) detailsHtml += `<p>Biti\u015f tarihi: ${escapeHtmlDriver(d.bitisTarihi)}.</p>`;
@@ -2685,7 +2782,7 @@ const API_BASE = (function(){
                   if (d.tutar) detailsHtml += `<p>Tutar: ${escapeHtmlDriver(d.tutar)} TL.</p>`;
                   if (d.aciklama) detailsHtml += `<p>A\u00e7\u0131klama: ${escapeHtmlDriver(d.aciklama)}.</p>`;
               } else if (item.eventType === 'kredi-guncelle') {
-                  detailsHtml = '<p>Kredi/rehin bilgisi g\u00fcncellendi olarak bildirildi.</p>';
+                  detailsHtml = '<p>Hak mahrumiyeti bilgisi g\u00fcncellendi olarak bildirildi.</p>';
               } else if (item.eventType === 'takip-cihaz-guncelle') {
                   detailsHtml = '<p>Takip cihaz\u0131 bilgisi g\u00fcncellendi olarak bildirildi.</p>';
               } else if (item.eventType === 'not-guncelle') {
@@ -2847,7 +2944,119 @@ const API_BASE = (function(){
           alert('❌ Bağlantı hatası!');
       }
   };
-  
+
+  function setDriverPasswordMessage(message, isError) {
+      const messageEl = document.getElementById('driver-password-message');
+      if (!messageEl) return;
+      messageEl.textContent = message || '';
+      messageEl.classList.toggle('is-error', !!isError);
+      messageEl.classList.toggle('is-success', !!message && !isError);
+  }
+
+  function clearSavedDriverPassword() {
+      try {
+          localStorage.removeItem('driver_saved_password');
+      } catch (e) {}
+  }
+
+  window.openDriverPasswordModal = function() {
+      const modal = document.getElementById('driver-password-modal');
+      const form = document.getElementById('driver-password-form');
+      if (!modal) return;
+      if (form) form.reset();
+      setDriverPasswordMessage('', false);
+      modal.classList.add('show');
+      updateDriverModalBodyClass();
+      setTimeout(function() {
+          const currentInput = document.getElementById('driver-current-password');
+          if (currentInput) currentInput.focus();
+      }, 50);
+  };
+
+  window.closeDriverPasswordModal = function() {
+      const modal = document.getElementById('driver-password-modal');
+      const form = document.getElementById('driver-password-form');
+      if (modal) modal.classList.remove('show');
+      if (form) form.reset();
+      setDriverPasswordMessage('', false);
+      updateDriverModalBodyClass();
+  };
+
+  window.submitDriverPasswordChange = async function(event) {
+      if (event && typeof event.preventDefault === 'function') event.preventDefault();
+      if (!currentToken) {
+          logout();
+          return false;
+      }
+
+      const currentInput = document.getElementById('driver-current-password');
+      const newInput = document.getElementById('driver-new-password');
+      const confirmInput = document.getElementById('driver-new-password-confirm');
+      const submitBtn = document.getElementById('driver-password-submit');
+      const currentPassword = currentInput ? currentInput.value.trim() : '';
+      const newPassword = newInput ? newInput.value.trim() : '';
+      const confirmPassword = confirmInput ? confirmInput.value.trim() : '';
+
+      if (!currentPassword || !newPassword || !confirmPassword) {
+          setDriverPasswordMessage('Tüm şifre alanlarını doldurun.', true);
+          return false;
+      }
+      if (newPassword.length < 6) {
+          setDriverPasswordMessage('Yeni şifre en az 6 karakter olmalı.', true);
+          return false;
+      }
+      if (newPassword !== confirmPassword) {
+          setDriverPasswordMessage('Yeni şifre tekrarı eşleşmiyor.', true);
+          return false;
+      }
+      if (newPassword === currentPassword) {
+          setDriverPasswordMessage('Yeni şifre mevcut şifreyle aynı olamaz.', true);
+          return false;
+      }
+
+      if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.textContent = 'Kaydediliyor...';
+      }
+      setDriverPasswordMessage('', false);
+
+      try {
+          const response = await fetch(API_BASE + 'driver_change_password.php', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': 'Bearer ' + currentToken
+              },
+              body: JSON.stringify({
+                  currentPassword: currentPassword,
+                  newPassword: newPassword
+              })
+          });
+          const data = await response.json();
+
+          if (!response.ok || !data.success) {
+              setDriverPasswordMessage((data && data.message) || 'Şifre değiştirilemedi.', true);
+              return false;
+          }
+
+          setDriverPasswordMessage('Şifre değiştirildi. Yeniden giriş yapmanız gerekiyor.', false);
+          clearSavedDriverPassword();
+          clearStoredPortalTokens();
+          setTimeout(function() {
+              window.location.href = DRIVER_PAGE_BASE + 'index.html';
+          }, 900);
+      } catch (error) {
+          setDriverPasswordMessage('Bağlantı hatası. Lütfen tekrar deneyin.', true);
+      } finally {
+          if (submitBtn) {
+              submitBtn.disabled = false;
+              submitBtn.textContent = 'Kaydet';
+          }
+      }
+
+      return false;
+  };
+
   // Çıkış
   window.logout = function() {
       clearStoredPortalTokens();

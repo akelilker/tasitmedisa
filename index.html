@@ -19,7 +19,6 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" as="style">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 
     <!-- İkonlar: sekme / PWA / iOS ana ekran / masaüstü kısayol (medlogo) -->
@@ -44,6 +43,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Medisa Taşıt">
 
+    <!-- Critical CSS: FOUC/CLS için minimal kurallar; tam footer/modal token ve kurallar style-core.css (sürüm script-core MEDISA_MODULE_VERSIONS.tasitlar ile uyumlu) -->
     <!-- Critical CSS - Splash (logo + başlık 3 sn, JS gelmese bile otomatik kapanır) -->
     <style>
         #loading-screen {
@@ -154,9 +154,9 @@
     </style>
 
     <!-- CSS Preload + Async Load -->
-    <link rel="preload" href="style-core.css?v=20260409.1" as="style">
-    <link rel="stylesheet" href="style-core.css?v=20260409.1">
-    <noscript><link rel="stylesheet" href="style-core.css?v=20260409.1"></noscript>
+    <link rel="preload" href="style-core.css?v=20260422.3" as="style">
+    <link rel="stylesheet" href="style-core.css?v=20260422.3">
+    <noscript><link rel="stylesheet" href="style-core.css?v=20260422.3"></noscript>
 </head>
 <body>
 
@@ -349,15 +349,25 @@
                         <div class="modal-column-right">
                             <div class="form-section">
                                 <label class="form-label" for="vehicle-sigorta-date">Sigorta Bitiş Tarihi</label>
-                                <input type="date" id="vehicle-sigorta-date" class="form-input" inputmode="numeric">
+                                <input type="text" id="vehicle-sigorta-date" class="form-input date-text-input" data-date-input="vehicle" inputmode="numeric" maxlength="10" placeholder="gg.aa.yyyy" autocomplete="off">
                             </div>
                             <div class="form-section">
                                 <label class="form-label" for="vehicle-kasko-date">Kasko Bitiş Tarihi</label>
-                                <input type="date" id="vehicle-kasko-date" class="form-input" inputmode="numeric">
+                                <input type="text" id="vehicle-kasko-date" class="form-input date-text-input" data-date-input="vehicle" inputmode="numeric" maxlength="10" placeholder="gg.aa.yyyy" autocomplete="off">
                             </div>
                             <div class="form-section">
                                 <label class="form-label" for="vehicle-muayene-date">Muayene Bitiş Tarihi</label>
-                                <input type="date" id="vehicle-muayene-date" class="form-input" inputmode="numeric">
+                                <input type="text" id="vehicle-muayene-date" class="form-input date-text-input" data-date-input="vehicle" inputmode="numeric" maxlength="10" placeholder="gg.aa.yyyy" autocomplete="off">
+                            </div>
+                            <div class="form-section egzoz-toggle-section u-hidden" aria-hidden="true">
+                                <label class="egzoz-muayene-check" for="vehicle-egzoz-different">
+                                    <input type="checkbox" id="vehicle-egzoz-different" tabindex="-1">
+                                    <span>Egzos Muayenesi Farklı Tarih İse İşaretleyin..</span>
+                                </label>
+                            </div>
+                            <div class="form-section egzoz-date-section u-hidden" id="vehicle-egzoz-date-section" aria-hidden="true">
+                                <label class="form-label" for="vehicle-egzoz-date">Egzos Muayenesi Bitiş Tarihi</label>
+                                <input type="text" id="vehicle-egzoz-date" class="form-input date-text-input" data-date-input="vehicle" inputmode="numeric" maxlength="10" placeholder="gg.aa.yyyy" autocomplete="off" disabled tabindex="-1">
                             </div>
                             <div class="form-section-inline" data-section="anahtar">
                                 <label class="form-label" for="yedek-anahtar-var">Yedek Anahtar</label>
@@ -371,17 +381,17 @@
                                 <input type="text" class="form-input form-input-reveal" placeholder="Nerede?" id="anahtar-nerede">
                             </div>
                             <div class="form-section-inline" data-section="kredi">
-                                <label class="form-label" for="kredi-var">Kredi / Rehin Var mı?</label>
+                                <label class="form-label" for="kredi-var">Hak Mahrumiyeti?</label>
                                 <div class="radio-group">
                                     <button type="button" id="kredi-var" class="radio-btn" data-value="var" data-group="kredi">Var</button>
                                     <button type="button" class="radio-btn" data-value="yok" data-group="kredi">Yok</button>
                                 </div>
                             </div>
                             <div class="form-section">
-                                <label class="form-label form-label-reveal" for="kredi-detay">Kredi detay</label>
+                                <label class="form-label form-label-reveal" for="kredi-detay">Hak mahrumiyeti detay</label>
                                 <textarea class="form-input form-input-reveal" rows="2" placeholder="Detay Ekleyin" id="kredi-detay"></textarea>
                             </div>
-                            <div class="form-section">
+                            <div class="form-section" id="vehicle-branch-form-section">
                                 <span class="form-label" id="vehicle-branch-label">Tahsis Edilen Şube</span>
                                 <div class="vehicle-branch-dropdown-wrap">
                                     <select id="vehicle-branch-select" class="form-input" aria-hidden="true" tabindex="-1">
@@ -485,7 +495,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="u-p-16">
-                        <button onclick="openBranchFormModal()" class="settings-add-text-btn user-add-btn u-mb-16">+ Yeni Şube</button>
+                        <button onclick="openBranchFormModal()" class="settings-add-text-btn user-add-btn">+ Yeni Şube</button>
                         <div id="branch-list"></div>
                     </div>
                 </div>
@@ -572,7 +582,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="u-p-16">
-                        <button onclick="openUserFormModal()" class="settings-add-text-btn user-add-btn u-mb-16">+ Yeni Kullanıcı</button>
+                        <button onclick="openUserFormModal()" class="settings-add-text-btn user-add-btn">+ Yeni Kullanıcı</button>
                         <div id="user-list"></div>
                     </div>
                 </div>
@@ -613,7 +623,7 @@
                             <label class="form-label" for="user-branch-readonly">Şube</label>
                             <input type="text" id="user-branch-readonly" class="form-input user-form-locked-input" readonly tabindex="-1" aria-readonly="true">
                         </div>
-                        <div class="form-section">
+                        <div class="form-section" id="user-role-wrap">
                             <label class="form-label" for="user-role">Kullanıcı Tipi</label>
                             <select id="user-role" class="form-input">
                                 <option value="kullanici" selected>Kullanıcı</option>
@@ -640,11 +650,11 @@
                         <div class="form-section form-section-vehicles">
                             <span id="user-vehicles-label" class="form-label">Tahsis Edilecek Taşıt</span>
                             <div class="user-vehicles-wrap">
-                                <div id="user-vehicles-trigger" class="user-vehicles-trigger form-input" tabindex="0" role="combobox" aria-labelledby="user-vehicles-label" aria-expanded="false" onclick="if(window.toggleUserVehiclesDropdown) window.toggleUserVehiclesDropdown()">
+                                <div id="user-vehicles-trigger" class="user-vehicles-trigger form-input" tabindex="0" role="combobox" aria-labelledby="user-vehicles-label" aria-controls="user-vehicles-dropdown" aria-haspopup="listbox" aria-expanded="false" onclick="if(window.toggleUserVehiclesDropdown) window.toggleUserVehiclesDropdown()">
                                     <span class="user-vehicles-trigger-text">Taşıt seçin</span>
                                     <svg class="user-vehicles-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
                                 </div>
-                                <div id="user-vehicles-dropdown" class="user-vehicles-dropdown" style="display:none;" role="listbox">
+                                <div id="user-vehicles-dropdown" class="user-vehicles-dropdown" style="display:none;" role="listbox" aria-hidden="true">
                                     <div id="user-vehicles-container" class="user-vehicles-checkbox-list" role="group"></div>
                                     <div class="user-vehicles-search-wrap">
                                         <input type="text" id="user-vehicles-search" class="form-input user-vehicles-search-input" placeholder="Plaka ile ara..." aria-label="Plaka ile ara" oninput="if(window.handleUserVehiclesSearch) window.handleUserVehiclesSearch(this.value)">
@@ -767,7 +777,7 @@
     <footer id="app-footer" style="position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:500px;height:var(--app-footer-real-height,42px);min-height:var(--app-footer-real-height,42px);background:#080d16;z-index:10000;display:flex;align-items:center;justify-content:center;visibility:visible;box-sizing:border-box;">
         <div class="footer-content">
             <span class="version" id="version-display">v78.1</span>
-            <span class="brand"><img src="icon/logo-footer.svg" alt="MEDISA" style="height: 12.5px; width: auto;"></span>
+            <span class="brand"><img src="icon/logo-footer.svg" alt="MEDISA" style="height: 14px; width: auto;"></span>
             <span class="status status-ready">● Sistem Hazır</span>
         </div>
     </footer>
@@ -868,6 +878,51 @@
                     <div class="universal-btn-group">
                         <button type="button" class="universal-btn-save" onclick="event.stopPropagation(); saveTescilTarihi();">Kaydet</button>
                         <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); cancelTescilTarihi();">Vazgeç</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="vehicle-egzoz-confirm-modal" class="egzoz-dialog-overlay">
+            <div class="egzoz-dialog-container" onclick="event.stopPropagation();">
+                <div class="egzoz-dialog-header">
+                    <h2>EGZOS MUAYENESİ</h2>
+                    <button class="egzoz-dialog-close" onclick="closeVehicleEgzozQuestionFlow()">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="egzoz-dialog-body" onclick="event.stopPropagation();">
+                    <p id="vehicle-egzoz-confirm-message">Egzos Muayenesi Aynı Tarihte Mi Bitiyor?</p>
+                    <div class="universal-btn-group">
+                        <button type="button" class="universal-btn-save" onclick="event.stopPropagation(); confirmVehicleEgzozSameDate();">Evet</button>
+                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); confirmVehicleEgzozDifferentDate();">Hayır</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="vehicle-egzoz-date-modal" class="egzoz-dialog-overlay">
+            <div class="egzoz-dialog-container" onclick="event.stopPropagation();">
+                <div class="egzoz-dialog-header">
+                    <h2>EGZOS MUAYENESİ TARİHİ</h2>
+                    <button class="egzoz-dialog-close" onclick="cancelVehicleEgzozDateModal()">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                <div class="egzoz-dialog-body" onclick="event.stopPropagation();">
+                    <div class="egzoz-dialog-date-field">
+                        <label for="vehicle-egzoz-date-modal-input">Egzos Muayenesi Bitiş Tarihi</label>
+                        <input type="text" id="vehicle-egzoz-date-modal-input" class="form-input date-text-input" data-date-input="vehicle" inputmode="numeric" maxlength="10" placeholder="gg.aa.yyyy" autocomplete="off">
+                    </div>
+                    <div class="universal-btn-group">
+                        <button type="button" class="universal-btn-save" onclick="event.stopPropagation(); saveVehicleEgzozDateModal();">Kaydet</button>
+                        <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); cancelVehicleEgzozDateModal();">Vazgeç</button>
                     </div>
                 </div>
             </div>
@@ -1006,7 +1061,7 @@
 
     <script defer src="data-manager.js?v=20260406.1"></script>
     <script defer src="data-service.js?v=20260316"></script>
-    <script defer src="script-core.js?v=20260409.1"></script>
+    <script defer src="script-core.js?v=20260423.2"></script>
 </body>
 </html>
 

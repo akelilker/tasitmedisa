@@ -9,6 +9,7 @@
     function getUsers() { return (typeof window.getMedisaUsers === 'function' ? window.getMedisaUsers() : null) || []; }
 
     function toTitleCase(str) { return (typeof window.toTitleCase === 'function' ? window.toTitleCase(str) : str); }
+    function formatBrandModel(str) { return (typeof window.formatBrandModel === 'function' ? window.formatBrandModel(str) : toTitleCase(str)); }
     function formatPlaka(str) { return (typeof window.formatPlaka === 'function' ? window.formatPlaka(str) : (str == null ? '-' : String(str))); }
     function formatAdSoyad(str) { return (typeof window.formatAdSoyad === 'function' ? window.formatAdSoyad(str) : str); }
 
@@ -141,7 +142,7 @@
             'sigorta': isVerySmall ? 'Sig.' : isMobile ? 'Sigorta' : 'Sigorta Bitiş',
             'kasko': isVerySmall ? 'Kas.' : isMobile ? 'Kasko' : 'Kasko Bitiş',
             'muayene': isVerySmall ? 'Muay.' : isMobile ? 'Muayene' : 'Muayene T.',
-            'kredi': isTiny ? 'K/R' : isVerySmall ? 'Kredi' : isMobile ? 'Kredi/Rehin' : 'Kredi/Rehin',
+            'kredi': isTiny ? 'Hak' : isVerySmall ? 'Hak M.' : isMobile ? 'Hak M.' : 'Hak Mahr.',
             'lastik': isTiny ? 'Y/K' : isVerySmall ? 'Yaz/Kış' : isMobile ? 'Yazlık/Kışlık' : 'Lastikler',
             'utts': 'UTTS',
             'takip': isVerySmall ? 'Tkp' : isMobile ? 'Takip' : 'Takip Cihazı',
@@ -694,6 +695,13 @@
         }).join('')}</tr>`;
     }
 
+    function getStokDateWarningClass(dateValue) {
+        if (!dateValue || typeof window.checkDateWarnings !== 'function') return '';
+        const warning = window.checkDateWarnings(dateValue);
+        if (!warning || typeof warning.class !== 'string') return '';
+        return warning.class;
+    }
+
     // Veri satırı oluştur
     function createStokDataRow(vehicle, rowNum, branches) {
         const branch = vehicle.branchId ? branches.find(b => b.id === vehicle.branchId) : null;
@@ -704,7 +712,7 @@
             'sira': rowNum,
             'sube': toTitleCase(branchName),
             'yil': vehicle.year || '-',
-            'marka': toTitleCase(vehicle.brandModel || '-'),
+            'marka': formatBrandModel(vehicle.brandModel || '-'),
             'plaka': formatPlaka(vehicle.plate || '-'),
             'sanziman': vehicle.transmission === 'manuel' ? 'Manuel' : vehicle.transmission === 'otomatik' ? 'Otomatik' : '-',
             'km': vehicle.km ? formatNumber(vehicle.km) : '-'
@@ -716,8 +724,16 @@
         }));
 
         const detailCells = [
-            { key: 'sigorta', value: vehicle.sigortaDate ? formatDate(vehicle.sigortaDate) : '-' },
-            { key: 'kasko', value: vehicle.kaskoDate ? formatDate(vehicle.kaskoDate) : '-' },
+            {
+                key: 'sigorta',
+                value: vehicle.sigortaDate ? formatDate(vehicle.sigortaDate) : '-',
+                warningClass: getStokDateWarningClass(vehicle.sigortaDate)
+            },
+            {
+                key: 'kasko',
+                value: vehicle.kaskoDate ? formatDate(vehicle.kaskoDate) : '-',
+                warningClass: getStokDateWarningClass(vehicle.kaskoDate)
+            },
             { key: 'kaskoDegeri', value: (function() {
                 var yearForKasko = vehicle.year || vehicle.modelYili || '';
                 var kaskoDegeri = vehicle.kaskoDegeri;
@@ -732,7 +748,11 @@
                 }
                 return String(kaskoDegeri).trim() || '-';
             })() },
-            { key: 'muayene', value: vehicle.muayeneDate ? formatDate(vehicle.muayeneDate) : '-' },
+            {
+                key: 'muayene',
+                value: vehicle.muayeneDate ? formatDate(vehicle.muayeneDate) : '-',
+                warningClass: getStokDateWarningClass(vehicle.muayeneDate)
+            },
             { key: 'kredi', value: vehicle.kredi === 'var' ? 'Var' : vehicle.kredi === 'yok' ? 'Yok' : '-' },
             { key: 'lastik', value: vehicle.lastikDurumu === 'var' ? 'Var' : vehicle.lastikDurumu === 'yok' ? 'Yok' : '-' },
             { key: 'utts', value: vehicle.uttsTanimlandi ? 'Evet' : 'Hayır' },
@@ -773,9 +793,10 @@
         const columnKeys = cells.map(c => ({ key: c.key }));
         const gridTemplateColumns = getColumnWidths(columnKeys);
 
-        return `<tr class="stok-list-row" style="grid-template-columns: ${gridTemplateColumns}">${cells.map(cell =>
-            `<td class="stok-list-cell" data-col="${cell.key}">${escapeHtml(cell.value)}</td>`
-        ).join('')}</tr>`;
+        return `<tr class="stok-list-row" style="grid-template-columns: ${gridTemplateColumns}">${cells.map(cell => {
+            const cellClass = ['stok-list-cell', cell.warningClass || ''].filter(Boolean).join(' ');
+            return `<td class="${cellClass}" data-col="${cell.key}">${escapeHtml(cell.value)}</td>`;
+        }).join('')}</tr>`;
     }
 
     // Sıralama uygula
@@ -914,7 +935,7 @@
             { key: 'kasko', label: 'Kasko T.' },
             { key: 'kaskoDegeri', label: 'Kasko Değeri' },
             { key: 'muayene', label: 'Muayene' },
-            { key: 'kredi', label: 'Kredi/Rehin' },
+            { key: 'kredi', label: 'Hak Mahr.' },
             { key: 'lastik', label: 'Lastik D.' },
             { key: 'utts', label: 'UTTS' },
             { key: 'takip', label: 'Taşıt Tkp.' },
@@ -1510,7 +1531,7 @@
                 case 'sira': value = index + 1; break;
                 case 'sube': value = toTitleCase(vehicle.branchId ? (getBranches().find(b => b.id === vehicle.branchId)?.name || '-') : '-'); break;
                 case 'yil': value = vehicle.year || '-'; break;
-                case 'marka': value = toTitleCase(vehicle.brandModel || '-'); break;
+                case 'marka': value = formatBrandModel(vehicle.brandModel || '-'); break;
                 case 'plaka': value = formatPlaka(vehicle.plate || '-'); break;
                 case 'sanziman': value = vehicle.transmission === 'manuel' ? 'Manuel' : vehicle.transmission === 'otomatik' ? 'Otomatik' : '-'; break;
                 case 'km': value = vehicle.km ? formatNumber(vehicle.km) : '-'; break;
@@ -1671,7 +1692,7 @@
                             value = String(vehicle.year || '-');
                             break;
                         case 'marka':
-                            value = toTitleCase(vehicle.brandModel || '-');
+                            value = formatBrandModel(vehicle.brandModel || '-');
                             break;
                         case 'plaka':
                             value = formatPlaka(vehicle.plate || '-');
@@ -1867,7 +1888,7 @@
     window.handleStokSearch = (typeof window.debounce === 'function') ? window.debounce(handleStokSearchImpl, 200) : handleStokSearchImpl;
 
     // Yazdır – Excel ile aynı veriyi tablo olarak yazdırır (ekran görüntüsü değil)
-    const stokPrintHeaders = { sira:'No.', sube:'Şube', yil:'Yıl', marka:'Marka/Mod.', plaka:'Plaka', sanziman:'Şanz', km:'KM', sigorta:'Sig. bit.', kasko:'Kas. bit.', kaskoDegeri:'Kas. değ.', muayene:'Muayene', kredi:'Kredi', lastik:'Lastik', utts:'UTTS', takip:'Takip', tramer:'Tramer', boya:'Boya', kullanici:'Kull.', tescil:'Tescil' };
+    const stokPrintHeaders = { sira:'No.', sube:'Şube', yil:'Yıl', marka:'Marka/Mod.', plaka:'Plaka', sanziman:'Şanz', km:'KM', sigorta:'Sig. bit.', kasko:'Kas. bit.', kaskoDegeri:'Kas. değ.', muayene:'Muayene', kredi:'Hak M.', lastik:'Lastik', utts:'UTTS', takip:'Takip', tramer:'Tramer', boya:'Boya', kullanici:'Kull.', tescil:'Tescil' };
     /* Yazdırma: plaka kısa metin — aşırı ağırlık diğer sütunları sıkıştırıp başlıkta harf kırılmasına yol açmasın */
     const stokPrintColumnWeights = {
         sira: 3,
@@ -2075,7 +2096,7 @@
         users.forEach(u => {
             const assignedVehicle = vehicles.find(v => String(v.assignedUserId || '') === String(u.id));
             const vehiclePlate = formatPlaka(assignedVehicle ? (assignedVehicle.plate || '-') : '-');
-            const vehicleBrand = toTitleCase(assignedVehicle ? (assignedVehicle.brandModel || '-') : '-');
+            const vehicleBrand = formatBrandModel(assignedVehicle ? (assignedVehicle.brandModel || '-') : '-');
             
             html += `
                 <div class="kullanici-list-item" onclick="showKullaniciDetail('${u.id}')">
@@ -2187,7 +2208,7 @@
                     userEvents.push({
                         ...event,
                         vehiclePlate: formatPlaka(vehicle.plate || '-'),
-                        vehicleBrand: toTitleCase(vehicle.brandModel || '-')
+                        vehicleBrand: formatBrandModel(vehicle.brandModel || '-')
                     });
                 });
             }
@@ -2200,17 +2221,22 @@
             return dateB - dateA;
         });
         
-        // Kullanıcı tipi etiketi
-        const roleLabels = {
+        // Kullanıcı tipi etiketi: önce script-core helper, yoksa eski rapor dili
+        let roleLabel;
+        if (typeof window.getUserRoleLabelAnalytics === 'function') {
+          roleLabel = window.getUserRoleLabelAnalytics(user);
+        } else {
+          const roleLabels = {
             genel_yonetici: 'Genel Yönetici',
             sube_yonetici: 'Yönetici',
             kullanici: 'Kullanıcı',
             admin: 'Genel Yönetici',
             sales: 'Satış Temsilcisi',
             driver: 'Kullanıcı'
-        };
-        const displayRole = user.role === 'yonetici_kullanici' ? 'sube_yonetici' : user.role;
-        const roleLabel = toTitleCase(roleLabels[displayRole] || displayRole || 'Kullanıcı');
+          };
+          const displayRole = user.role === 'yonetici_kullanici' ? 'sube_yonetici' : user.role;
+          roleLabel = toTitleCase(roleLabels[displayRole] || displayRole || 'Kullanıcı');
+        }
         
         const bidList = (user.branchIds && user.branchIds.length) ? user.branchIds : (user.branchId ? [user.branchId] : []);
         const branchNames = bidList.map(function (bid) {

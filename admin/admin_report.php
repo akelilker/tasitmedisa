@@ -19,7 +19,7 @@ if (!preg_match('/^\d{4}-\d{2}$/', $period)) {
 }
 $branch = isset($_GET['branch']) ? trim((string)$_GET['branch']) : '';
 $status = isset($_GET['status']) ? trim((string)$_GET['status']) : '';
-$allowedStatus = ['', 'girdi', 'girmedi', 'kaza', 'bakim'];
+$allowedStatus = ['', 'girdi', 'girmedi', 'kaza', 'bakim', 'atamasiz'];
 if (!in_array($status, $allowedStatus, true)) {
     $status = '';
 }
@@ -49,9 +49,18 @@ if (($auth['success'] ?? false) !== true) {
 
 $context = $auth['context'];
 $data = medisaFilterReportDataForContext($rawData, $context);
+$currentUser = $context['user'] ?? [];
+$currentUserPayload = [
+    'id' => $currentUser['id'] ?? '',
+    'isim' => $currentUser['isim'] ?? $currentUser['name'] ?? '',
+];
 
 if ($action === 'branches') {
-    echo json_encode(['success' => true, 'branches' => $data['branches'] ?? []], JSON_UNESCAPED_UNICODE);
+    echo json_encode([
+        'success' => true,
+        'branches' => $data['branches'] ?? [],
+        'current_user' => $currentUserPayload,
+    ], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
@@ -60,6 +69,8 @@ if ($action === 'user_analytics') {
         'success' => true,
         'users' => $data['users'] ?? [],
         'tasitlar' => $data['tasitlar'] ?? [],
+        'monthly_records' => $data['arac_aylik_hareketler'] ?? [],
+        'current_user' => $currentUserPayload,
     ], JSON_UNESCAPED_UNICODE);
     exit;
 }
@@ -109,6 +120,7 @@ if ($action === 'pending_requests') {
     echo json_encode([
         'success' => true,
         'requests' => $pendingRequests,
+        'current_user' => $currentUserPayload,
     ], JSON_UNESCAPED_UNICODE);
     exit;
 }
@@ -178,8 +190,10 @@ if (!function_exists('medisaComputeKmState')) {
 $records = [];
 $stats = [
     'total' => 0,
+    'tracked_total' => 0,
     'entered' => 0,
     'pending' => 0,
+    'unassigned' => 0,
     'percentage' => 0,
 ];
 
@@ -233,115 +247,185 @@ foreach ($hareketler as $k) {
     }
 }
 
-$atanmisTasitlar = [];
+$branchNamesById = [];
+foreach (($data['branches'] ?? []) as $branchItem) {
+    $branchId = trim((string)($branchItem['id'] ?? ''));
+    if ($branchId === '') {
+        continue;
+    }
+    $branchNamesById[$branchId] = $branchItem['name'] ?? $branchItem['code'] ?? $branchId;
+}
+
+$visibleVehicles = [];
+$branchCardCounts = [];
+$noBranchVehicleCount = 0;
 foreach ($tasitlar as $t) {
-    $assignedUserId = (string)($t['assignedUserId'] ?? '');
-    if ($assignedUserId === '') {
+    if (!empty($t['satildiMi'])) {
         continue;
     }
 
-    $surucu = $usersById[$assignedUserId] ?? null;
-    if (!is_array($surucu)) {
+    $visibleVehicles[] = $t;
+    $vehicleBranchId = trim((string)($t['branchId'] ?? ''));
+    if ($vehicleBranchId === '') {
+        $noBranchVehicleCount++;
         continue;
     }
 
-    $aktif = !isset($surucu['aktif']) || $surucu['aktif'] === true;
-    if (!$aktif) {
+    if (!isset($branchCardCounts[$vehicleBranchId])) {
+        $branchCardCounts[$vehicleBranchId] = 0;
+    }
+    $branchCardCounts[$vehicleBranchId]++;
+}
+
+$branchCards = [[
+    'id' => 'all',
+    'name' => 'Tümü',
+    'count' => count($visibleVehicles),
+]];
+
+foreach (($data['branches'] ?? []) as $branchItem) {
+    $branchId = trim((string)($branchItem['id'] ?? ''));
+    if ($branchId === '') {
         continue;
     }
+    $branchCards[] = [
+        'id' => $branchId,
+        'name' => $branchItem['name'] ?? $branchItem['code'] ?? $branchId,
+        'count' => (int)($branchCardCounts[$branchId] ?? 0),
+    ];
+}
 
+if ($noBranchVehicleCount > 0) {
+    $branchCards[] = [
+        'id' => '__no_branch__',
+        'name' => 'Şubesiz',
+        'count' => $noBranchVehicleCount,
+    ];
+}
+
+foreach ($visibleVehicles as $t) {
+    $vehicleBranchId = trim((string)($t['branchId'] ?? ''));
     if ($branch !== '') {
-        $subeId = $surucu['sube_id'] ?? $surucu['branchId'] ?? null;
-        if ($subeId !== null && (string)$subeId !== (string)$branch) {
+        if ($branch === '__no_branch__') {
+            if ($vehicleBranchId !== '') {
+                continue;
+            }
+        } elseif ($vehicleBranchId !== (string)$branch) {
             continue;
         }
     }
 
-    $atanmisTasitlar[] = [
-        'tasit' => $t,
-        'surucu' => $surucu,
-    ];
-}
+    $stats['total']++;
 
-$stats['total'] = count($atanmisTasitlar);
-
-foreach ($atanmisTasitlar as $item) {
-    $t = $item['tasit'];
-    $surucu = $item['surucu'];
-
-    $aracId = (string)($t['id'] ?? '');
-    $surucuId = (string)($surucu['id'] ?? '');
-    $vehicleUserKey = $aracId . "\0" . $surucuId;
-    $periodKey = $vehicleUserKey . "\0" . (string)$period;
-
-    $currentPeriodRecordAny = $recordAnyByVehicleUserPeriod[$periodKey] ?? null;
-    $currentPeriodRecordKm = $recordKmByVehicleUserPeriod[$periodKey] ?? null;
-    $hasKmForPeriod = $currentPeriodRecordKm !== null;
-    $kmPeriods = array_keys($kmPeriodsByVehicleUser[$vehicleUserKey] ?? []);
-    $hasFutureKmRecord = medisaHasFutureKmPeriod($kmPeriods, (string)$period);
+    $assignedUserId = trim((string)($t['assignedUserId'] ?? ''));
+    $surucu = $assignedUserId !== '' ? ($usersById[$assignedUserId] ?? null) : null;
+    $surucuAktif = is_array($surucu) && (!isset($surucu['aktif']) || $surucu['aktif'] === true);
+    $isAssigned = $assignedUserId !== '' && $surucuAktif;
 
     $baseKmValue = $t['guncelKm'] ?? ($t['km'] ?? null);
-    $hasBaseKm = $baseKmValue !== null && trim((string)$baseKmValue) !== '';
-    $hasReliableHistory = count($kmPeriods) > 0;
+    $km = $baseKmValue;
+    $girdi = false;
+    $telafi = false;
+    $bakimVar = false;
+    $kazaVar = false;
+    $currentPeriodRecordAny = null;
+    $kmState = 'UNASSIGNED';
+    $kmStateResult = [
+        'reason' => 'vehicle_has_no_active_assignee',
+        'is_current_period' => false,
+        'is_past_period' => false,
+        'is_future_period' => false,
+    ];
 
-    $kmStateResult = medisaComputeKmState(
-        (string)$period,
-        date('Y-m'),
-        (int)date('j'),
-        $hasKmForPeriod,
-        $hasFutureKmRecord,
-        $hasReliableHistory,
-        $hasBaseKm
-    );
-    $kmState = (string)($kmStateResult['state'] ?? 'OK');
-    $girdi = in_array($kmState, ['OK', 'TELAFI_CLOSED'], true);
-    $telafi = $kmState === 'TELAFI_CLOSED';
+    if ($isAssigned) {
+        $stats['tracked_total']++;
 
-    $bakimVar = $currentPeriodRecordAny ? !empty($currentPeriodRecordAny['bakim_durumu']) : false;
-    $kazaVar = $currentPeriodRecordAny ? !empty($currentPeriodRecordAny['kaza_durumu']) : false;
+        $aracId = (string)($t['id'] ?? '');
+        $surucuId = (string)($surucu['id'] ?? '');
+        $vehicleUserKey = $aracId . "\0" . $surucuId;
+        $periodKey = $vehicleUserKey . "\0" . (string)$period;
 
-    if ($girdi) {
-        $stats['entered']++;
+        $currentPeriodRecordAny = $recordAnyByVehicleUserPeriod[$periodKey] ?? null;
+        $currentPeriodRecordKm = $recordKmByVehicleUserPeriod[$periodKey] ?? null;
+        $hasKmForPeriod = $currentPeriodRecordKm !== null;
+        $kmPeriods = array_keys($kmPeriodsByVehicleUser[$vehicleUserKey] ?? []);
+        $hasFutureKmRecord = medisaHasFutureKmPeriod($kmPeriods, (string)$period);
+        $hasBaseKm = $baseKmValue !== null && trim((string)$baseKmValue) !== '';
+        $hasReliableHistory = count($kmPeriods) > 0;
+
+        $kmStateResult = medisaComputeKmState(
+            (string)$period,
+            date('Y-m'),
+            (int)date('j'),
+            $hasKmForPeriod,
+            $hasFutureKmRecord,
+            $hasReliableHistory,
+            $hasBaseKm
+        );
+        $kmState = (string)($kmStateResult['state'] ?? 'OK');
+        $girdi = in_array($kmState, ['OK', 'TELAFI_CLOSED'], true);
+        $telafi = $kmState === 'TELAFI_CLOSED';
+        $bakimVar = $currentPeriodRecordAny ? !empty($currentPeriodRecordAny['bakim_durumu']) : false;
+        $kazaVar = $currentPeriodRecordAny ? !empty($currentPeriodRecordAny['kaza_durumu']) : false;
+
+        if ($girdi) {
+            $stats['entered']++;
+        } else {
+            $stats['pending']++;
+        }
+
+        $km = $currentPeriodRecordKm ? ($currentPeriodRecordKm['guncel_km'] ?? null) : null;
+        if ($km === null) {
+            $km = $latestKmByVehicleUser[$vehicleUserKey]['km'] ?? null;
+        }
+        if ($km === null) {
+            $km = $baseKmValue;
+        }
     } else {
-        $stats['pending']++;
+        $stats['unassigned']++;
     }
 
-    if ($status === 'girdi' && !$girdi) {
+    if ($status === 'girdi' && (!$isAssigned || !$girdi)) {
         continue;
     }
-    if ($status === 'girmedi' && $girdi) {
+    if ($status === 'girmedi' && (!$isAssigned || $girdi)) {
         continue;
     }
-    if ($status === 'kaza' && !$kazaVar) {
+    if ($status === 'kaza' && (!$isAssigned || !$kazaVar)) {
         continue;
     }
-    if ($status === 'bakim' && !$bakimVar) {
+    if ($status === 'bakim' && (!$isAssigned || !$bakimVar)) {
+        continue;
+    }
+    if ($status === 'atamasiz' && $isAssigned) {
         continue;
     }
 
+    $brandModel = trim((string)($t['brandModel'] ?? ''));
     $aracMarka = $t['marka'] ?? $t['brand'] ?? '';
     $aracModel = $t['model'] ?? '';
-    if ($aracMarka === '' && $aracModel === '' && !empty($t['brandModel'])) {
-        $aracMarka = trim((string)$t['brandModel']);
-    }
-
-    $km = $currentPeriodRecordKm ? ($currentPeriodRecordKm['guncel_km'] ?? null) : null;
-    if ($km === null) {
-        $km = $latestKmByVehicleUser[$vehicleUserKey]['km'] ?? null;
+    if (($aracMarka === '' && $aracModel === '') && $brandModel !== '') {
+        $aracMarka = $brandModel;
     }
 
     $records[] = [
+        'vehicle_id' => $t['id'] ?? '',
+        'branch_id' => $vehicleBranchId,
+        'branch_name' => $vehicleBranchId !== '' ? ($branchNamesById[$vehicleBranchId] ?? $vehicleBranchId) : 'Şubesiz',
         'surucu_id' => $surucu['id'] ?? '',
         'surucu_adi' => $surucu['isim'] ?? $surucu['name'] ?? '',
         'telefon' => $surucu['telefon'] ?? $surucu['phone'] ?? '',
+        'email' => $surucu['eposta'] ?? $surucu['email'] ?? '',
         'plaka' => $t['plaka'] ?? $t['plate'] ?? '',
         'arac_marka' => $aracMarka,
         'arac_model' => $aracModel,
+        'brand_model' => $brandModel,
         'km' => $km,
         'bakim_var' => $bakimVar,
         'kaza_var' => $kazaVar,
         'girdi' => $girdi,
         'telafi' => $telafi,
+        'atama_var' => $isAssigned,
         'kayit_id' => $currentPeriodRecordAny['id'] ?? null,
         'donem' => $period,
         'km_state' => $kmState,
@@ -352,13 +436,19 @@ foreach ($atanmisTasitlar as $item) {
     ];
 }
 
-$toplamBeklenenIs = (int)($stats['total'] ?? 0);
-if ($toplamBeklenenIs > 0) {
-    $stats['percentage'] = round(($stats['entered'] / $toplamBeklenenIs) * 100);
+$trackedTotal = (int)($stats['tracked_total'] ?? 0);
+if ($trackedTotal > 0) {
+    $stats['percentage'] = round(($stats['entered'] / $trackedTotal) * 100);
 }
 
 echo json_encode([
     'success' => true,
     'stats' => $stats,
+    'branch_cards' => $branchCards,
+    'selected_branch' => $branch !== '' ? $branch : 'all',
+    'selected_branch_label' => $branch === ''
+        ? 'Tümü'
+        : (($branch === '__no_branch__') ? 'Şubesiz' : ($branchNamesById[(string)$branch] ?? (string)$branch)),
     'records' => $records,
+    'current_user' => $currentUserPayload,
 ], JSON_UNESCAPED_UNICODE);

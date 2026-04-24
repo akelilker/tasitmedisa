@@ -351,6 +351,10 @@ body.dashboard-page {
   gap: 2px;
   min-width: 0;
 }
+/* Dashboard: başlık + alt satır (metalik alt başlık) logoyla aynı optik bantta; çok hafif aşağı */
+.dashboard-page .hero.hero-two-rows .hero-title-block {
+  transform: translateY(3px);
+}
 .hero.hero-two-rows .hero-spacer {
   grid-column: 3;
   display: flex;
@@ -457,7 +461,8 @@ body.dashboard-page {
   max-width: 100%;
 }
 
-.driver-below-hero-row .driver-btn-history {
+.driver-below-hero-row .driver-btn-history,
+.driver-below-hero-row .driver-btn-password {
   width: auto;
   flex: none;
   margin: 0;
@@ -473,7 +478,10 @@ body.dashboard-page {
 }
 .driver-below-hero-row .driver-btn-history:hover,
 .driver-below-hero-row .driver-btn-history:focus,
-.driver-below-hero-row .driver-btn-history:active {
+.driver-below-hero-row .driver-btn-history:active,
+.driver-below-hero-row .driver-btn-password:hover,
+.driver-below-hero-row .driver-btn-password:focus,
+.driver-below-hero-row .driver-btn-password:active {
   background: transparent !important;
   background-color: transparent !important;
   border: none !important;
@@ -481,6 +489,7 @@ body.dashboard-page {
   outline: none !important;
 }
 
+.driver-below-hero-row .driver-btn-password,
 .driver-below-hero-row .driver-btn-logout {
   flex: none;
 }
@@ -590,6 +599,7 @@ body.dashboard-page {
     padding-bottom: 0 !important;
   }
   .dashboard-page .driver-below-hero-row .driver-btn-history,
+  .dashboard-page .driver-below-hero-row .driver-btn-password,
   .dashboard-page .driver-below-hero-row .driver-btn-logout {
     margin: 0 !important;
   }
@@ -601,6 +611,10 @@ body.dashboard-page {
   .dashboard-page .driver-below-hero-row .driver-btn-history .driver-btn-history-icon {
     width: 23px !important;
     height: 23px !important;
+  }
+  .dashboard-page .driver-below-hero-row .driver-btn-password .driver-btn-password-icon {
+    width: 19px !important;
+    height: 19px !important;
   }
   .dashboard-page .driver-below-hero-row .driver-btn-logout .driver-btn-logout-icon {
     width: 19px !important;
@@ -811,7 +825,8 @@ body.dashboard-page {
 .driver-sliding-warning {
   flex: 1;
   min-width: 0;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: visible;
   font-size: 13px;
   color: var(--theme-color);
   text-align: center;
@@ -876,6 +891,8 @@ body.dashboard-page {
   animation: driver-warning-scale 1.2s ease-in-out infinite;
   margin-right: 0;
   vertical-align: middle;
+  line-height: 1;
+  overflow: visible;
 }
 @keyframes driver-warning-scale {
   0%, 100% { transform: scale(1); }
@@ -1219,6 +1236,32 @@ body.dashboard-page {
 }
 
 /* Km (veya tek aksiyon) açıkken sadece o grubu göster */
+.driver-egzoz-muayene-check {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 4px 0 6px;
+  color: var(--form-label-color, #ffffff);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.25;
+  cursor: pointer;
+  user-select: none;
+}
+.driver-egzoz-muayene-check input[type="checkbox"] {
+  width: 15px;
+  height: 15px;
+  margin: 0;
+  accent-color: var(--theme-color);
+  flex: 0 0 auto;
+}
+.driver-egzoz-date-wrap {
+  display: none;
+}
+.driver-egzoz-date-wrap.driver-egzoz-date-visible {
+  display: block;
+}
+
 .driver-action-area-inner.driver-km-open .driver-action-group {
   display: none;
 }
@@ -1440,8 +1483,8 @@ body.dashboard-page {
   .driver-user-plate-in-panel { gap: 3px; margin-bottom: 3px; }
   .driver-radio-label.driver-radio-label-multiline {
     display: inline-flex;
-    align-self: flex-start;
-    max-width: 92px;
+    align-self: center;
+    max-width: none;
     white-space: normal;
     line-height: 1.08;
   }
@@ -1451,6 +1494,7 @@ body.dashboard-page {
   .vehicle-header p { font-size: 14.5px; }
   .driver-plate-chevron { font-size: 19.5px; }
   .driver-footer-back-wrap .universal-back-label { font-size: 14.5px; }
+  .driver-btn-password,
   .driver-btn-logout { font-size: 12.5px; }
   #driver-input-area .form-group label,
   .driver-action-area .form-group label { font-size: 14px; }
@@ -1548,9 +1592,13 @@ body.dashboard-page {
     width: 120px !important;
     height: 69px !important;
   }
-  /* Mobil (640px altı): MEDISA hero logosu – 2px sola (toplam: -18px, 13px) */
+  /* Mobil dashboard header: sadece grid + logo hizası (yeni pseudo çizgi yok; tipografi aşağıda ayrı blokta) */
   .dashboard-page .hero.hero-two-rows {
     grid-template-columns: minmax(56px, max-content) minmax(0, 1fr) 52px !important;
+    column-gap: 4px !important;
+  }
+  .dashboard-page .hero.hero-two-rows .hero-title-block {
+    transform: translate(4px, 3px) !important;
   }
   .dashboard-page .hero.hero-two-rows .hero-logo {
     display: flex !important;
@@ -1565,10 +1613,10 @@ body.dashboard-page {
     margin-top: 0 !important;
     margin-left: 0 !important;
     overflow: visible !important;
-    transform: translate(0, 14px) !important; /* mobil: +5px aşağı (önceki 9px) */
+    transform: translate(0, -2px) !important;
   }
   .dashboard-page .hero.hero-two-rows .hero-logo picture {
-    max-width: 50px !important;
+    max-width: 52px !important;
   }
   .dashboard-page .main-header-user-name {
     display: block !important;
@@ -1653,6 +1701,7 @@ body.dashboard-page {
 
 }
 
+.driver-btn-password,
 .driver-btn-logout {
   padding: 6px 8px;
   background: transparent !important;
@@ -1667,11 +1716,13 @@ body.dashboard-page {
   align-items: center;
   justify-content: center;
 }
+.driver-btn-password .driver-btn-password-icon,
 .driver-btn-logout .driver-btn-logout-icon {
   width: 20px;
   height: 20px;
 }
 
+.driver-btn-password:hover,
 .driver-btn-logout:hover {
   color: var(--theme-color) !important;
   background: transparent !important;
@@ -2528,6 +2579,7 @@ body.dashboard-page {
 #history-modal.driver-modal,
 #edit-request-modal.driver-modal,
 #driver-event-menu-modal.driver-modal,
+#driver-password-modal.driver-modal,
 #driver-anahtar-modal.driver-modal,
 #driver-lastik-modal.driver-modal,
 #driver-utts-modal.driver-modal,
@@ -2547,6 +2599,7 @@ body.dashboard-page {
 #history-modal.driver-modal.show,
 #edit-request-modal.driver-modal.show,
 #driver-event-menu-modal.driver-modal.show,
+#driver-password-modal.driver-modal.show,
 #driver-anahtar-modal.driver-modal.show,
 #driver-lastik-modal.driver-modal.show,
 #driver-utts-modal.driver-modal.show,
@@ -2571,6 +2624,7 @@ body.dashboard-page {
   #history-modal.driver-modal,
   #edit-request-modal.driver-modal,
   #driver-event-menu-modal.driver-modal,
+  #driver-password-modal.driver-modal,
   #driver-anahtar-modal.driver-modal,
   #driver-lastik-modal.driver-modal,
   #driver-utts-modal.driver-modal,
@@ -2598,6 +2652,7 @@ body.dashboard-page {
 #history-modal.driver-modal::before,
 #edit-request-modal.driver-modal::before,
 #driver-event-menu-modal.driver-modal::before,
+#driver-password-modal.driver-modal::before,
 #driver-anahtar-modal.driver-modal::before,
 #driver-lastik-modal.driver-modal::before,
 #driver-utts-modal.driver-modal::before,
@@ -2648,6 +2703,8 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 #edit-request-modal .modal-container,
 #driver-event-menu-modal .driver-modal-content,
 #driver-event-menu-modal .modal-container,
+#driver-password-modal .driver-modal-content,
+#driver-password-modal .modal-container,
 #driver-anahtar-modal .driver-modal-content,
 #driver-anahtar-modal .modal-container,
 #driver-lastik-modal .driver-modal-content,
@@ -2682,6 +2739,7 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 #history-modal .modal-header,
 #edit-request-modal .modal-header,
 #driver-event-menu-modal .modal-header,
+#driver-password-modal .modal-header,
 #driver-anahtar-modal .modal-header,
 #driver-lastik-modal .modal-header,
 #driver-utts-modal .modal-header,
@@ -2703,6 +2761,7 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 #history-modal .modal-header h2,
 #edit-request-modal .modal-header h2,
 #driver-event-menu-modal .modal-header h2,
+#driver-password-modal .modal-header h2,
 #driver-anahtar-modal .modal-header h2,
 #driver-lastik-modal .modal-header h2,
 #driver-utts-modal .modal-header h2,
@@ -2723,6 +2782,7 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 #history-modal .modal-close,
 #edit-request-modal .modal-close,
 #driver-event-menu-modal .modal-close,
+#driver-password-modal .modal-close,
 #driver-anahtar-modal .modal-close,
 #driver-lastik-modal .modal-close,
 #driver-utts-modal .modal-close,
@@ -2747,6 +2807,7 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 #history-modal .modal-close:hover,
 #edit-request-modal .modal-close:hover,
 #driver-event-menu-modal .modal-close:hover,
+#driver-password-modal .modal-close:hover,
 #driver-anahtar-modal .modal-close:hover,
 #driver-lastik-modal .modal-close:hover,
 #driver-utts-modal .modal-close:hover,
@@ -2760,6 +2821,7 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 #history-modal .modal-body,
 #edit-request-modal .modal-body,
 #driver-event-menu-modal .modal-body,
+#driver-password-modal .modal-body,
 #driver-anahtar-modal .modal-body,
 #driver-lastik-modal .modal-body,
 #driver-utts-modal .modal-body,
@@ -2819,6 +2881,7 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 #history-modal .modal-body::-webkit-scrollbar,
 #edit-request-modal .modal-body::-webkit-scrollbar,
 #driver-event-menu-modal .modal-body::-webkit-scrollbar,
+#driver-password-modal .modal-body::-webkit-scrollbar,
 #driver-anahtar-modal .modal-body::-webkit-scrollbar,
 #driver-lastik-modal .modal-body::-webkit-scrollbar,
 #driver-utts-modal .modal-body::-webkit-scrollbar,
@@ -2878,6 +2941,29 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 .driver-modal .form-group textarea {
   resize: vertical;
   min-height: 100px;
+}
+
+.driver-password-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 18px;
+}
+
+.driver-password-message {
+  min-height: 18px;
+  margin-top: -4px;
+  color: var(--muted);
+  font-size: 13px;
+  text-align: center;
+}
+
+.driver-password-message.is-error {
+  color: #ff6b6b;
+}
+
+.driver-password-message.is-success {
+  color: #58d68d;
 }
 
 #edit-request-modal .form-group textarea {
@@ -3980,6 +4066,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 }
 
 /* Çıkış butonu büyüt */
+.driver-btn-password,
 .driver-btn-logout {
   font-size: 14px !important;
 }
@@ -4079,6 +4166,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   #history-modal.driver-modal,
   #edit-request-modal.driver-modal,
   #driver-event-menu-modal.driver-modal,
+  #driver-password-modal.driver-modal,
   #driver-anahtar-modal.driver-modal,
   #driver-lastik-modal.driver-modal,
   #driver-utts-modal.driver-modal,
@@ -4180,6 +4268,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   #history-modal.driver-modal::before,
   #edit-request-modal.driver-modal::before,
   #driver-event-menu-modal.driver-modal::before,
+  #driver-password-modal.driver-modal::before,
   #driver-anahtar-modal.driver-modal::before,
   #driver-lastik-modal.driver-modal::before,
   #driver-utts-modal.driver-modal::before,
@@ -4206,6 +4295,8 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   #edit-request-modal .modal-container,
   #driver-event-menu-modal .driver-modal-content,
   #driver-event-menu-modal .modal-container,
+  #driver-password-modal .driver-modal-content,
+  #driver-password-modal .modal-container,
   #driver-anahtar-modal .driver-modal-content,
   #driver-anahtar-modal .modal-container,
   #driver-lastik-modal .driver-modal-content,
@@ -4228,9 +4319,9 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
     border-radius: 10px !important;
-    border-top: 0.99px solid rgba(var(--theme-color-rgb), 0.82) !important;
-    border-left: 0.99px solid rgba(var(--theme-color-rgb), 0.82) !important;
-    border-right: 0.99px solid rgba(var(--theme-color-rgb), 0.82) !important;
+    border-top: 0.8px solid rgba(200, 200, 200, 0.62) !important;
+    border-left: 0.8px solid rgba(255, 255, 255, 0.28) !important;
+    border-right: 0.8px solid rgba(255, 255, 255, 0.28) !important;
     padding-top: 0 !important;
     overflow: hidden !important;
     overflow-x: hidden !important;
@@ -4262,6 +4353,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   #history-modal .modal-header,
   #edit-request-modal .modal-header,
   #driver-event-menu-modal .modal-header,
+  #driver-password-modal .modal-header,
   #driver-anahtar-modal .modal-header,
   #driver-lastik-modal .modal-header,
   #driver-utts-modal .modal-header,
@@ -4290,6 +4382,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   #history-modal .modal-body,
   #edit-request-modal .modal-body,
   #driver-event-menu-modal .modal-body,
+  #driver-password-modal .modal-body,
   #driver-anahtar-modal .modal-body,
   #driver-lastik-modal .modal-body,
   #driver-utts-modal .modal-body,
@@ -4509,10 +4602,16 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
 
   /* Çıkış butonu: kapı simgesi */
+  .dashboard-page .driver-btn-password .driver-btn-password-icon,
   .dashboard-page .driver-btn-logout .driver-btn-logout-icon {
     width: 24px !important;
     height: 24px !important;
     stroke-width: 1.5 !important;
+  }
+  .dashboard-page .driver-btn-password .driver-btn-password-icon {
+    width: 22px !important;
+    height: 22px !important;
+    stroke-width: 2 !important;
   }
 
   /* Vehicle card içi: elementler arası +3px (12→15) */
@@ -4864,19 +4963,20 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     height: 22px !important;
   }
 
-  /* 4. Footer stil birleştirme - login footer ana uygulamadaki üst çizgiyi korur */
+  /* 4. Footer: üst çizgi + glow; mobilde yan çerçeve yok */
   .login-page #app-footer.login-footer {
     border-top: 1px solid rgba(255, 255, 255, 0.40) !important;
-    border-left: 0.5px solid rgba(255, 255, 255, 0.10) !important;
-    border-right: 0.5px solid rgba(255, 255, 255, 0.10) !important;
+    border-left: none !important;
+    border-right: none !important;
     box-shadow:
       0 -1px 0 rgba(255, 255, 255, 0.12),
       0 -16px 30px rgba(var(--theme-color-rgb), 0.42) !important;
   }
 
-  /* Mobil footer: dashboard da ana uygulama/login ile aynı gri üst çizgiyi kullanır */
   .dashboard-page #app-footer {
     border-top: 1px solid rgba(128, 128, 128, 0.52) !important;
+    border-left: none !important;
+    border-right: none !important;
     box-shadow: 0 -11px 28px rgba(var(--theme-color-rgb), 0.58) !important;
   }
   .login-page #app-footer.login-footer .footer-content {
@@ -4951,27 +5051,38 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     margin-top: 5px !important;
   }
   .dashboard-page .driver-action-area .driver-radio-row {
-    align-items: center !important;
+    align-items: stretch !important;
+    flex-direction: column !important;
+    gap: 7px !important;
   }
   .dashboard-page .driver-action-area .driver-radio-label {
-    display: inline-flex;
+    display: flex;
     align-items: center;
-    min-height: 31px;
+    justify-content: center;
+    min-height: 0;
+    width: 100%;
     font-size: 16px !important;
     margin-top: 0 !important;
     margin-bottom: 0 !important;
+    text-align: center !important;
   }
   .dashboard-page .driver-action-area .driver-radio-label.driver-radio-label-multiline {
-    align-items: flex-start;
+    align-items: center;
     min-height: auto;
-    line-height: 1.08;
+    line-height: 1.12;
   }
   .dashboard-page .driver-action-area .driver-radio-group {
     align-items: center !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 8px !important;
+    width: 100%;
   }
   .dashboard-page .driver-action-area .driver-radio-btn {
     min-height: 31px !important;
     font-size: 16px !important;
+    width: 100% !important;
+    min-width: 0 !important;
   }
 
   /* Foto 4: KM input dikey yükseklik %15 daralsın */
@@ -5274,10 +5385,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     gap: 8px !important;
   }
 
-  .dashboard-page .driver-below-hero-notification-slot {
-    flex: 0 0 auto !important;
-  }
-
+  .dashboard-page .driver-below-hero-row .driver-btn-password,
   .dashboard-page .driver-below-hero-row .driver-btn-logout {
     margin-left: 0 !important;
   }
@@ -5378,32 +5486,20 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     padding-bottom: 12px !important;
   }
 
-  /* Mobil üst satır: uzun uyarı metni ikonları ekran dışına itmesin */
-  .dashboard-page .driver-below-hero-row {
-    width: 100% !important;
-    flex-wrap: nowrap !important;
-  }
-  .dashboard-page .driver-below-hero-row .driver-btn-history,
-  .dashboard-page .driver-below-hero-row .driver-btn-logout {
-    flex: 0 0 auto !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-  }
   .dashboard-page .driver-below-hero-notification-slot {
-    flex: 0 1 70% !important; /* Ekranın %70'ine kilitledik */
+    flex: 0 1 70% !important;
     min-width: 0 !important;
     max-width: 70% !important;
-    margin-left: auto !important; /* Kapsayıcıyı en sağa ittik */
-    padding-right: 4px !important; /* Kenarla arasındaki o meşhur 4px boşluk */
+    margin-left: auto !important;
+    padding-right: 4px !important;
     overflow: hidden !important;
     display: flex !important;
-    justify-content: flex-end !important; /* İçeriği sağa yasladık */
+    justify-content: flex-end !important;
   }
   .dashboard-page .driver-below-hero-notification-slot .driver-sliding-warning {
     width: 100% !important;
     max-width: 100% !important;
-    justify-content: flex-end !important; /* Metin/ikon grubunu sağa dayadık */
+    justify-content: flex-end !important;
     padding-right: 0 !important;
   }
 }
@@ -5417,9 +5513,17 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 }
 
 @media (max-width: 640px) {
+  /* Şifre modalı mobilde Geçmiş/Düzeltme ile aynı nötr çerçeveyi kullansın */
+  #driver-password-modal .driver-modal-content,
+  #driver-password-modal .modal-container {
+    border-top: 0.8px solid rgba(200, 200, 200, 0.62) !important;
+    border-left: 0.8px solid rgba(255, 255, 255, 0.28) !important;
+    border-right: 0.8px solid rgba(255, 255, 255, 0.28) !important;
+  }
   #history-modal .modal-header,
   #edit-request-modal .modal-header,
   #driver-event-menu-modal .modal-header,
+  #driver-password-modal .modal-header,
   #driver-anahtar-modal .modal-header,
   #driver-lastik-modal .modal-header,
   #driver-utts-modal .modal-header,

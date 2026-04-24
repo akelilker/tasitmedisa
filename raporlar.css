@@ -903,6 +903,16 @@ white-space: nowrap;
 text-overflow: ellipsis;
 }
 
+.stok-list-cell.date-warning-red {
+color: var(--theme-color);
+font-weight: 600;
+}
+
+.stok-list-cell.date-warning-orange {
+color: var(--orange-warn);
+font-weight: 600;
+}
+
 /* === DETAY EKLEME BUTONU === */
 .stok-list-top-controls {
 display: flex;
@@ -919,7 +929,7 @@ padding-top: 4px; /* Daha yukarı ama kesilmeden */
 margin-bottom: 2px;
 }
 #stok-list-container .stok-list-top-controls .stok-controls-row-2 {
-margin-top: 0 !important; /* -28px kesiliyordu, sıfırlandı */
+margin-top: 0 !important; /* üst boşluk */
 }
 
 /* Tarih aralığı etiketleri (Başlangıç/Bitiş): uzun metin — masaüstü + mobil ortak */

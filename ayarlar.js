@@ -18,6 +18,226 @@
       const isiOS = /iPhone|iPad|iPod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
       return !(isiOS && (isStandalone || window.navigator.standalone === true));
     }
+
+    let activeUserFormCustomSelect = null;
+
+    function closeUserFormCustomSelect(options) {
+      const opts = options || {};
+      const shell = activeUserFormCustomSelect;
+      if (!shell) return;
+      const trigger = shell.querySelector('.medisa-owner-select-trigger');
+      const menu = shell.querySelector('.medisa-owner-select-menu');
+      shell.classList.remove('is-open');
+      if (trigger) {
+        trigger.classList.remove('is-open');
+        trigger.setAttribute('aria-expanded', 'false');
+        if (opts.focusTrigger) trigger.focus();
+      }
+      if (menu) {
+        menu.classList.remove('open');
+        menu.setAttribute('aria-hidden', 'true');
+        menu.style.position = '';
+        menu.style.top = '';
+        menu.style.bottom = '';
+        menu.style.left = '';
+        menu.style.width = '';
+        menu.style.maxHeight = '';
+      }
+      activeUserFormCustomSelect = null;
+    }
+
+    function positionUserFormCustomSelectMenu(shell) {
+      if (!shell) return;
+      const trigger = shell.querySelector('.medisa-owner-select-trigger');
+      const menu = shell.querySelector('.medisa-owner-select-menu');
+      if (!trigger || !menu) return;
+
+      const rect = trigger.getBoundingClientRect();
+      const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 800;
+      const desiredHeight = Math.min(menu.scrollHeight || 240, 260);
+      const spaceBelow = Math.max(120, viewportHeight - rect.bottom - 12);
+      const spaceAbove = Math.max(120, rect.top - 12);
+      const useAbove = spaceBelow < Math.min(180, desiredHeight) && spaceAbove > spaceBelow;
+      const maxHeight = Math.max(120, Math.min(260, useAbove ? spaceAbove : spaceBelow));
+      const shellHeight = trigger.offsetHeight || rect.height || 44;
+
+      menu.style.position = 'absolute';
+      menu.style.left = '0';
+      menu.style.width = '100%';
+      menu.style.maxHeight = maxHeight + 'px';
+      if (useAbove) {
+        menu.style.top = 'auto';
+        menu.style.bottom = (shellHeight + 6) + 'px';
+      } else {
+        menu.style.top = (shellHeight + 6) + 'px';
+        menu.style.bottom = 'auto';
+      }
+    }
+
+    function refreshUserFormCustomSelect(shell) {
+      if (!shell) return;
+      const select = shell.querySelector('select');
+      const trigger = shell.querySelector('.medisa-owner-select-trigger');
+      const triggerText = shell.querySelector('.medisa-owner-select-trigger-text');
+      const menu = shell.querySelector('.medisa-owner-select-menu');
+      if (!select || !trigger || !triggerText || !menu) return;
+
+      const options = Array.from(select.options || []);
+      const selectedValue = String(select.value || '');
+      let selectedOption = options.find(function(option) {
+        return String(option.value || '') === String(selectedValue);
+      }) || options[select.selectedIndex] || options[0] || null;
+
+      if (!selectedOption && options.length) {
+        selectedOption = options[0];
+        select.value = selectedOption.value;
+      }
+
+      const placeholderText = shell.dataset.placeholderText || (options[0] ? options[0].textContent : 'Seçiniz');
+      const selectedText = selectedOption ? String(selectedOption.textContent || '').trim() : '';
+      const selectedOptionValue = selectedOption ? String(selectedOption.value || '') : '';
+
+      triggerText.textContent = selectedText || placeholderText;
+      trigger.classList.toggle('placeholder', !selectedOptionValue);
+      trigger.disabled = !!select.disabled;
+      trigger.setAttribute('aria-disabled', select.disabled ? 'true' : 'false');
+
+      menu.innerHTML = '';
+      options.forEach(function(option) {
+        const value = String(option.value || '');
+        const text = String(option.textContent || '').trim();
+        const item = document.createElement('button');
+        item.type = 'button';
+        item.className = 'medisa-owner-select-option';
+        item.textContent = text;
+        item.dataset.value = value;
+        item.setAttribute('role', 'option');
+        item.setAttribute('aria-selected', value === selectedValue ? 'true' : 'false');
+
+        if (!value) item.classList.add('is-placeholder');
+        if (value === selectedValue) item.classList.add('selected');
+        if (option.disabled) {
+          item.classList.add('is-disabled');
+          item.disabled = true;
+        }
+
+        menu.appendChild(item);
+      });
+
+      if (activeUserFormCustomSelect === shell && menu.classList.contains('open')) {
+        positionUserFormCustomSelectMenu(shell);
+      }
+    }
+
+    function openUserFormCustomSelect(shell) {
+      if (!shell) return;
+      if (activeUserFormCustomSelect && activeUserFormCustomSelect !== shell) {
+        closeUserFormCustomSelect();
+      }
+      const trigger = shell.querySelector('.medisa-owner-select-trigger');
+      const menu = shell.querySelector('.medisa-owner-select-menu');
+      if (!trigger || !menu || trigger.disabled) return;
+
+      activeUserFormCustomSelect = shell;
+      shell.classList.add('is-open');
+      trigger.classList.add('is-open');
+      trigger.setAttribute('aria-expanded', 'true');
+      menu.classList.add('open');
+      menu.setAttribute('aria-hidden', 'false');
+      positionUserFormCustomSelectMenu(shell);
+    }
+
+    function ensureUserFormCustomSelect(select, options) {
+      if (!select) return null;
+      let shell = select.closest('.medisa-owner-select');
+      if (!shell) {
+        shell = document.createElement('div');
+        shell.className = 'medisa-owner-select';
+        select.parentNode.insertBefore(shell, select);
+        shell.appendChild(select);
+        select.classList.add('medisa-owner-select-native');
+
+        const trigger = document.createElement('button');
+        trigger.type = 'button';
+        trigger.className = 'form-input medisa-owner-select-trigger';
+        trigger.setAttribute('aria-haspopup', 'listbox');
+        trigger.setAttribute('aria-expanded', 'false');
+        trigger.innerHTML = '<span class="medisa-owner-select-trigger-text"></span><svg class="medisa-owner-select-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
+
+        const menu = document.createElement('div');
+        menu.className = 'medisa-owner-select-menu';
+        menu.setAttribute('role', 'listbox');
+        menu.setAttribute('aria-hidden', 'true');
+
+        shell.appendChild(trigger);
+        shell.appendChild(menu);
+
+        const label = shell.parentNode ? shell.parentNode.querySelector('label[for="' + select.id + '"]') : null;
+        if (label && !label.dataset.medisaOwnerSelectBound) {
+          label.dataset.medisaOwnerSelectBound = '1';
+          label.addEventListener('click', function(e) {
+            if (!select.closest('.medisa-owner-select')) return;
+            e.preventDefault();
+            trigger.focus();
+          });
+        }
+
+        trigger.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          if (activeUserFormCustomSelect === shell) closeUserFormCustomSelect();
+          else openUserFormCustomSelect(shell);
+        });
+
+        trigger.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            if (activeUserFormCustomSelect === shell) closeUserFormCustomSelect();
+            else openUserFormCustomSelect(shell);
+          } else if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            openUserFormCustomSelect(shell);
+          } else if (e.key === 'Escape' && activeUserFormCustomSelect === shell) {
+            e.preventDefault();
+            closeUserFormCustomSelect({ focusTrigger: true });
+          }
+        });
+
+        menu.addEventListener('click', function(e) {
+          const item = e.target.closest('.medisa-owner-select-option');
+          if (!item || item.disabled) return;
+          select.value = item.dataset.value || '';
+          select.dispatchEvent(new Event('change', { bubbles: true }));
+          refreshUserFormCustomSelect(shell);
+          closeUserFormCustomSelect({ focusTrigger: true });
+        });
+
+        select.addEventListener('change', function() {
+          refreshUserFormCustomSelect(shell);
+        });
+      }
+
+      shell.dataset.placeholderText = options && options.placeholderText ? options.placeholderText : '';
+      refreshUserFormCustomSelect(shell);
+      return shell;
+    }
+
+    function syncUserFormCustomSelects(modal) {
+      const root = modal || document.getElementById('user-form-modal');
+      if (!root) return;
+      ensureUserFormCustomSelect($('#user-branch', root), { placeholderText: 'Şube Seçin' });
+      ensureUserFormCustomSelect($('#user-role', root), { placeholderText: 'Kullanıcı Tipi' });
+    }
+
+    document.addEventListener('click', function(e) {
+      if (!activeUserFormCustomSelect) return;
+      if (!activeUserFormCustomSelect.contains(e.target)) closeUserFormCustomSelect();
+    }, true);
+
+    window.addEventListener('resize', function() {
+      if (activeUserFormCustomSelect) closeUserFormCustomSelect();
+    });
+
   
     // ========================================
     // Şube YÖNETİMİ
@@ -313,12 +533,7 @@
      * zimmetli_araclar: portal kayıt akışı (`driver_save.php`) için atanmış Taşıt ID'leri (assignedUserId eşleşen Taşıtlar)
      */
     function mapUiRoleToRol(role) {
-      if (role === 'admin') return 'genel_yonetici';
-      if (role === 'genel_yonetici') return 'genel_yonetici';
-      if (role === 'yonetici' || role === 'sube_yonetici') return 'sube_yonetici';
-      if (role === 'driver' || role === 'sales' || role === 'surucu') return 'kullanici';
-      if (role === 'yonetici_kullanici') return 'sube_yonetici';
-      return role || 'kullanici';
+      return window.medisaMapUiRoleToRol(role);
     }
 
     function getRoleConfigFromSelection(role) {
@@ -333,25 +548,70 @@
     }
 
     function getUiRoleFromUser(user) {
-      return mapUiRoleToRol(user && (user.role || user.rol || user.tip));
+      return window.medisaGetUiRoleFromUser(user);
+    }
+
+    function normalizePhoneDigits(value) {
+      return String(value == null ? '' : value).replace(/\D/g, '');
+    }
+
+    /** Türk GSM: yalnız gösterim (0555 000 00 02) */
+    function formatTrGsmDisplay(value) {
+      const d = normalizePhoneDigits(value);
+      if (d.length === 11 && d.charAt(0) === '0') {
+        return d.slice(0, 4) + ' ' + d.slice(4, 7) + ' ' + d.slice(7, 9) + ' ' + d.slice(9, 11);
+      }
+      if (d.length === 10 && d.charAt(0) === '5') {
+        return '0' + d.slice(0, 3) + ' ' + d.slice(3, 6) + ' ' + d.slice(6, 8) + ' ' + d.slice(8, 10);
+      }
+      return String(value == null ? '' : value).trim() || '';
     }
 
     function getUserRoleLabel(user) {
-      const roleLabels = {
-        genel_yonetici: 'Genel Yönetici',
-        sube_yonetici: 'Yönetici',
-        kullanici: 'Kullanıcı',
-        admin: 'Genel Yönetici',
-        sales: 'Kullanıcı',
-        driver: 'Kullanıcı'
-      };
-      const uiRole = getUiRoleFromUser(user || {});
-      return roleLabels[uiRole] || roleLabels[mapUiRoleToRol(uiRole)] || uiRole || 'Kullanıcı';
+      return window.getUserRoleLabelManagement(user);
     }
 
     function buildUserRoleLabelMarkup(user) {
       const roleLabel = getUserRoleLabel(user);
       return `<div class="settings-card-gorev">${escapeHtml(roleLabel)}</div>`;
+    }
+
+    const USER_MANAGEMENT_ROLE_SORT_ORDER = {
+      genel_yonetici: 0,
+      sube_yonetici: 1,
+      kullanici: 2
+    };
+
+    function getUserManagementRoleSortRank(user) {
+      const role = getUiRoleFromUser(user);
+      if (Object.prototype.hasOwnProperty.call(USER_MANAGEMENT_ROLE_SORT_ORDER, role)) {
+        return USER_MANAGEMENT_ROLE_SORT_ORDER[role];
+      }
+      return 99;
+    }
+
+    function getUserManagementSortableName(user) {
+      const rawName = String((user && (user.name || user.isim)) || '').trim();
+      const formatted = formatUserFullName(rawName);
+      return formatted || rawName || 'İsimsiz';
+    }
+
+    function compareUserManagementListOrder(a, b) {
+      const roleDiff = getUserManagementRoleSortRank(a) - getUserManagementRoleSortRank(b);
+      if (roleDiff !== 0) return roleDiff;
+
+      const nameCompare = getUserManagementSortableName(a).localeCompare(
+        getUserManagementSortableName(b),
+        'tr',
+        { sensitivity: 'base', numeric: true }
+      );
+      if (nameCompare !== 0) return nameCompare;
+
+      return String((a && a.id) || '').localeCompare(
+        String((b && b.id) || ''),
+        'tr',
+        { sensitivity: 'base', numeric: true }
+      );
     }
 
     const USER_FORM_ROLE_OPTIONS = [
@@ -443,8 +703,9 @@
         ? selectedValue
         : options[0].value;
       roleSelect.value = safeValue;
-      roleSelect.disabled = effectiveScope.isBranchManager;
-      roleSelect.setAttribute('aria-disabled', effectiveScope.isBranchManager ? 'true' : 'false');
+      roleSelect.removeAttribute('disabled');
+      roleSelect.removeAttribute('aria-disabled');
+      syncUserFormCustomSelects(document.getElementById('user-form-modal'));
     }
 
     function syncUsersToAppData(arr, options) {
@@ -479,6 +740,8 @@
           isim: u.name || u.isim || '',
           kullanici_adi: u.kullanici_adi || '',
           sifre: u.sifre || '',
+          sifre_hash: u.sifre_hash || '',
+          sifre_guncellendi_at: u.sifre_guncellendi_at || '',
           telefon: u.phone || '',
           email: u.email || '',
           sube_id: sube_id,
@@ -638,7 +901,7 @@
         const vid = String(v.id);
         const plaka = v.plate || v.plaka || '';
         const raw = (v.brandModel || (v.brand || v.marka || '') + ' ' + (v.model || '')).trim();
-        const markaModel = (typeof window.toTitleCase === 'function' ? window.toTitleCase(raw) : raw);
+        const markaModel = (typeof window.formatBrandModel === 'function' ? window.formatBrandModel(raw) : (typeof window.toTitleCase === 'function' ? window.toTitleCase(raw) : raw));
         const labelEl = document.createElement('label');
         labelEl.className = 'user-vehicle-row';
         labelEl.style.userSelect = 'none';
@@ -684,35 +947,104 @@
       if (textEl) textEl.textContent = n === 0 ? 'Taşıt seçin' : (n === 1 ? '1 Taşıt Seçildi' : n + ' Taşıt Seçildi');
     }
   
-    function toggleUserVehiclesDropdown() {
+    function isUserVehiclesDropdownOpen(dropdown) {
+      return !!dropdown && dropdown.style.display !== 'none';
+    }
+
+    function openUserVehiclesDropdown(options) {
+      const opts = options || {};
       const dropdown = document.getElementById('user-vehicles-dropdown');
       const trigger = document.getElementById('user-vehicles-trigger');
+      const searchInput = document.getElementById('user-vehicles-search');
       if (!dropdown || !trigger) return;
-      const isOpen = dropdown.style.display !== 'none';
-      if (isOpen) {
+      dropdown.style.display = 'block';
+      dropdown.setAttribute('aria-hidden', 'false');
+      trigger.classList.add('user-vehicles-trigger-open');
+      trigger.setAttribute('aria-expanded', 'true');
+      if (opts.focusSearch && searchInput) searchInput.focus();
+    }
+
+    function toggleUserVehiclesDropdown(options) {
+      const dropdown = document.getElementById('user-vehicles-dropdown');
+      if (!dropdown) return;
+      if (isUserVehiclesDropdownOpen(dropdown)) closeUserVehiclesDropdown(options);
+      else openUserVehiclesDropdown(options);
+    }
+  
+    function closeUserVehiclesDropdown(options) {
+      const opts = options || {};
+      const dropdown = document.getElementById('user-vehicles-dropdown');
+      const trigger = document.getElementById('user-vehicles-trigger');
+      if (dropdown) {
         dropdown.style.display = 'none';
+        dropdown.setAttribute('aria-hidden', 'true');
+      }
+      if (trigger) {
         trigger.classList.remove('user-vehicles-trigger-open');
         trigger.setAttribute('aria-expanded', 'false');
-      } else {
-        dropdown.style.display = 'block';
-        trigger.classList.add('user-vehicles-trigger-open');
-        trigger.setAttribute('aria-expanded', 'true');
+        if (opts.focusTrigger) trigger.focus();
+      }
+    }
+
+    function bindUserVehiclesDropdownA11y() {
+      const trigger = document.getElementById('user-vehicles-trigger');
+      const dropdown = document.getElementById('user-vehicles-dropdown');
+      const searchInput = document.getElementById('user-vehicles-search');
+      if (!trigger || !dropdown || trigger.dataset.userVehiclesBound === '1') return;
+
+      trigger.dataset.userVehiclesBound = '1';
+      trigger.addEventListener('keydown', function(ev) {
+        if (ev.key === 'Enter' || ev.key === ' ') {
+          ev.preventDefault();
+          toggleUserVehiclesDropdown({ focusSearch: !isUserVehiclesDropdownOpen(dropdown) });
+          return;
+        }
+        if (ev.key === 'ArrowDown') {
+          ev.preventDefault();
+          if (!isUserVehiclesDropdownOpen(dropdown)) {
+            openUserVehiclesDropdown({ focusSearch: true });
+          } else if (searchInput) {
+            searchInput.focus();
+          }
+          return;
+        }
+        if (ev.key === 'Escape' && isUserVehiclesDropdownOpen(dropdown)) {
+          ev.preventDefault();
+          closeUserVehiclesDropdown({ focusTrigger: true });
+        }
+      });
+
+      if (searchInput && !searchInput.dataset.userVehiclesEscapeBound) {
+        searchInput.dataset.userVehiclesEscapeBound = '1';
+        searchInput.addEventListener('keydown', function(ev) {
+          if (ev.key !== 'Escape') return;
+          ev.preventDefault();
+          closeUserVehiclesDropdown({ focusTrigger: true });
+        });
+      }
+
+      if (!dropdown.dataset.userVehiclesEscapeBound) {
+        dropdown.dataset.userVehiclesEscapeBound = '1';
+        dropdown.addEventListener('keydown', function(ev) {
+          if (ev.key !== 'Escape') return;
+          ev.preventDefault();
+          closeUserVehiclesDropdown({ focusTrigger: true });
+        });
       }
     }
   
-    function closeUserVehiclesDropdown() {
-      const dropdown = document.getElementById('user-vehicles-dropdown');
-      const trigger = document.getElementById('user-vehicles-trigger');
-      if (dropdown) dropdown.style.display = 'none';
-      if (trigger) trigger.classList.remove('user-vehicles-trigger-open');
-    }
-  
     window.toggleUserVehiclesDropdown = toggleUserVehiclesDropdown;
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', bindUserVehiclesDropdownA11y);
+    } else {
+      bindUserVehiclesDropdownA11y();
+    }
   
     document.addEventListener('click', function(ev) {
       const wrap = document.querySelector('.user-vehicles-wrap');
       const dropdown = document.getElementById('user-vehicles-dropdown');
-      if (wrap && dropdown && dropdown.style.display !== 'none' && !wrap.contains(ev.target)) {
+      if (wrap && dropdown && isUserVehiclesDropdownOpen(dropdown) && !wrap.contains(ev.target)) {
         closeUserVehiclesDropdown();
       }
     });
@@ -783,7 +1115,11 @@
       }, 100);
     }
 
-    window.openUserFormModal = function openUserFormModal(editId = null, options = {}) {
+    window.openUserFormModal = function openUserFormModal(editId = null, options) {
+      const opts = options && typeof options === 'object' ? options : {};
+      if (!opts.fromVehicleAssign && typeof window.medisaDismissVehicleAssignUserSavedListener === 'function') {
+        window.medisaDismissVehicleAssignUserSavedListener();
+      }
       const modal = document.getElementById('user-form-modal');
       if (!modal) return;
       const formOptions = options && typeof options === 'object' ? options : {};
@@ -813,7 +1149,7 @@
       const searchInput = document.getElementById('user-vehicles-search');
       if (searchInput) searchInput.value = '';
       populateUserRoleOptions(scope, 'kullanici');
-      bindUserBranchSelectDropdown(modal);
+      syncUserFormCustomSelects(modal);
   
       // Form temizle
       if (form) form.reset();
@@ -842,7 +1178,7 @@
         const currentBranchSelect = $('#user-branch', modal);
         if (currentBranchSelect) currentBranchSelect.value = getUserPrimaryBranchId(user);
         populateUserRoleOptions(scope, scope.isBranchManager ? 'kullanici' : getUiRoleFromUser(user));
-        if (phoneInput) phoneInput.value = user.phone || '';
+        if (phoneInput) phoneInput.value = formatTrGsmDisplay(user.phone || '');
         if (emailInput) emailInput.value = user.email || '';
         if (roleSelect) roleSelect.value = scope.isBranchManager ? 'kullanici' : getUiRoleFromUser(user);
         if (usernameInput) usernameInput.value = user.kullanici_adi || '';
@@ -875,6 +1211,7 @@
       }
   
       syncUserRoleBranchUI({ scope: scope });
+      syncUserFormCustomSelects(modal);
 
       // Modalı aç
       modal.style.display = 'flex';
@@ -886,7 +1223,10 @@
       }
     };
   
-    window.closeUserFormModal = function closeUserFormModal(options = {}) {
+    window.closeUserFormModal = function closeUserFormModal() {
+      if (typeof window.medisaDismissVehicleAssignUserSavedListener === 'function') {
+        window.medisaDismissVehicleAssignUserSavedListener();
+      }
       const modal = document.getElementById('user-form-modal');
       if (!modal) return;
       const closeOptions = options && typeof options === 'object' ? options : {};
@@ -899,6 +1239,7 @@
       const form = $('#user-form', modal);
       if (form) form.reset();
       closeUserVehiclesDropdown();
+      closeUserFormCustomSelect();
       const searchInput = document.getElementById('user-vehicles-search');
       if (searchInput) searchInput.value = '';
       const deleteBtn = $('#user-delete-btn', modal);
@@ -930,12 +1271,14 @@
         option.textContent = branch.name;
         select.appendChild(option);
       });
+      syncUserFormCustomSelects(document.getElementById('user-form-modal'));
     }
 
     function syncUserRoleBranchUI(options = {}) {
       const scope = options.scope || getUserManagementSessionScope();
       const singleWrap = document.getElementById('user-branch-single-wrap');
       const readonlyWrap = document.getElementById('user-branch-readonly-wrap');
+      const roleWrap = document.getElementById('user-role-wrap');
       const branchSelect = document.getElementById('user-branch');
       const branchReadonly = document.getElementById('user-branch-readonly');
       const roleSelect = document.getElementById('user-role');
@@ -955,14 +1298,17 @@
         if (branchReadonly) {
           branchReadonly.value = managedBranch ? (managedBranch.name || '') : '';
         }
+        syncUserFormCustomSelects(document.getElementById('user-form-modal'));
         return;
       }
 
+      if (roleWrap) roleWrap.classList.remove('u-hidden');
       if (singleWrap) singleWrap.classList.remove('u-hidden');
       if (readonlyWrap) readonlyWrap.classList.add('u-hidden');
       if (roleWrap) roleWrap.classList.remove('u-hidden');
       if (branchReadonly) branchReadonly.value = '';
       if (branchSelect) branchSelect.required = selectedRole !== 'genel_yonetici';
+      syncUserFormCustomSelects(document.getElementById('user-form-modal'));
     }
     window.syncUserRoleBranchUI = syncUserRoleBranchUI;
 
@@ -992,6 +1338,9 @@
     function formatUserFullName(rawName) {
       const cleaned = (rawName || '').trim().replace(/\s+/g, ' ');
       if (!cleaned) return '';
+      if (typeof window.formatAdSoyad === 'function') {
+        return window.formatAdSoyad(cleaned);
+      }
       const parts = cleaned.split(' ');
       if (parts.length === 1) {
         const namePart = parts[0];
@@ -1037,7 +1386,7 @@
         const id = idInput ? idInput.value.trim() : '';
         const nameRaw = nameInput.value.trim();
         const name = formatUserFullName(nameRaw);
-        const phone = phoneInput ? phoneInput.value.trim() : '';
+        const phone = phoneInput ? normalizePhoneDigits(phoneInput.value) : '';
         const email = emailInput ? emailInput.value.trim() : '';
         const selectedRole = roleSelect ? roleSelect.value : 'kullanici';
         const effectiveSelectedRole = scope.isBranchManager ? 'kullanici' : selectedRole;
@@ -1103,7 +1452,11 @@
   
         // Portal girişi: Kullanıcı veya şube yöneticisine taşıt atanmışsa kullanıcı adı ve şifre zorunlu
         const needsPortalCredentials = hasAssignedVehicles && (role === 'kullanici' || role === 'sube_yonetici');
-        if (needsPortalCredentials && (!kullanici_adi || !sifre)) {
+        const hasExistingPortalPassword = !!(existingUser && (
+          (existingUser.sifre && String(existingUser.sifre).trim() !== '') ||
+          (existingUser.sifre_hash && String(existingUser.sifre_hash).trim() !== '')
+        ));
+        if (needsPortalCredentials && (!kullanici_adi || (!sifre && !hasExistingPortalPassword))) {
           alert('Taşıt atanan kullanıcı veya yönetici için "Kullanıcı Adı (portal girişi)" ve "Şifre (portal girişi)" zorunludur. Bu bilgilerle kullanıcı paneline girilebilir.');
           if (usernameInput) usernameInput.focus();
           return;
@@ -1124,7 +1477,11 @@
             users[idx].surucu_paneli = kullanici_paneli;
             users[idx].kullanici_adi = kullanici_adi;
             // Şifre: boş bırakılırsa eskisini koru (yanlışlıkla silinmesin)
-            if (sifre !== '') users[idx].sifre = sifre;
+            if (sifre !== '') {
+              users[idx].sifre = sifre;
+              delete users[idx].sifre_hash;
+              delete users[idx].sifre_guncellendi_at;
+            }
           }
         } else {
           // Yeni EKLEME
@@ -1171,17 +1528,6 @@
           return;
         }
   
-        const formSource = String(modal.dataset.userFormSource || 'settings-user-management');
-        const formVehicleId = String(modal.dataset.userFormVehicleId || '');
-
-        // Form modalını kapat
-        closeUserFormModal({ reason: 'saved' });
-  
-        // Ana modalı güncelle
-        renderUserList();
-  
-        alert(id ? 'Kullanıcı güncellendi.' : 'Kullanıcı Eklendi.');
-  
         if (savedUserId) {
           window.dispatchEvent(new CustomEvent('userSaved', {
             detail: {
@@ -1191,6 +1537,13 @@
             }
           }));
         }
+
+        // Form modalını kapat (userSaved taşıt-detayı dinleyicilerinden sonra; close içinde bekleyen dinleyici temizlenir)
+        closeUserFormModal();
+
+        renderUserList();
+
+        alert(id ? 'Kullanıcı güncellendi.' : 'Kullanıcı Eklendi.');
       } catch (error) {
         console.error('Kullanıcı kayıt hatası:', error);
         alert('Kullanıcı kaydı sırasında bir hata Oluştu! Lütfen tekrar deneyin.');
@@ -1244,6 +1597,43 @@
       alert('Kullanıcı Silindi.');
     };
 
+    function buildUserCardNameMarkup(rawName) {
+      const displayName = formatUserFullName(rawName || 'İsimsiz');
+      const tokens = displayName.split(/\s+/).filter(Boolean);
+      const safeTitle = escapeHtml(displayName || 'İsimsiz');
+      if (!tokens.length) {
+        return '<div class="settings-card-title settings-card-title-name" title="' + safeTitle + '"><span class="settings-card-name-part">' + safeTitle + '</span></div>';
+      }
+      if (tokens.length === 1) {
+        return '<div class="settings-card-title settings-card-title-name" title="' + safeTitle + '">' +
+          '<span class="settings-card-name-part settings-card-name-single">' + escapeHtml(tokens[0]) + '</span></div>';
+      }
+      const surname = tokens[tokens.length - 1];
+      const given = tokens.slice(0, -1).join(' ');
+      return '<div class="settings-card-title settings-card-title-name" title="' + safeTitle + '">' +
+        '<span class="settings-card-name-part settings-card-name-given">' + escapeHtml(given) + '</span>' +
+        '<span class="settings-card-name-part settings-card-name-surname">' + escapeHtml(surname) + '</span></div>';
+    }
+
+    function fitUserManagementCardNames() {
+      const container = document.getElementById('user-list');
+      if (!container || typeof window.medisaFitTextWithinBox !== 'function') return;
+      window.medisaFitTextWithinBox(container, '#user-list .settings-card-title-name .settings-card-name-part', {
+        minFontSize: 9.75,
+        maxReduction: 3,
+        step: 0.5
+      });
+    }
+
+    if (!window.__medisaUserManagementNameFitResizeBound) {
+      window.__medisaUserManagementNameFitResizeBound = true;
+      let userNameFitResizeTimer = null;
+      window.addEventListener('resize', function() {
+        clearTimeout(userNameFitResizeTimer);
+        userNameFitResizeTimer = setTimeout(fitUserManagementCardNames, 120);
+      });
+    }
+
     // Liste Render
     window.renderUserList = function renderUserList() {
       const container = document.getElementById('user-list');
@@ -1290,17 +1680,30 @@
         return;
       }
 
-      const rows = filteredUsers.map(user => {
+      const sortedUsers = filteredUsers.slice().sort(compareUserManagementListOrder);
+
+      const rows = sortedUsers.map(user => {
         const primaryBranchId = user.branchId || ((user.branchIds && user.branchIds.length) ? user.branchIds[0] : '');
         const branch = branches.find(x => String(x.id) === String(primaryBranchId));
         const branchName = branch ? branch.name : '-';
         const roleLabelMarkup = buildUserRoleLabelMarkup(user);
 
+        if (scope.isBranchManager) {
+          return `
+          <div class="settings-card" onclick="editUser('${user.id}')" style="cursor:pointer;">
+            <div class="settings-card-content">
+              ${buildUserCardNameMarkup(user.name || 'İsimsiz')}
+            </div>
+          </div>
+        `;
+        }
+
+        const phoneLine = formatTrGsmDisplay(user.phone || '');
         return `
           <div class="settings-card" onclick="editUser('${user.id}')" style="cursor:pointer;">
             <div class="settings-card-content">
-              <div class="settings-card-title">${escapeHtml(user.name || 'İsimsiz')}</div>
-              <div class="settings-card-subtitle">${escapeHtml(branchName)}</div>
+              ${buildUserCardNameMarkup(user.name || 'İsimsiz')}
+              <div class="settings-card-subtitle">${escapeHtml(branchName)}${phoneLine ? '<br>' + escapeHtml(phoneLine) : ''}</div>
               ${roleLabelMarkup}
             </div>
           </div>
@@ -1308,6 +1711,7 @@
       }).join('');
 
       container.innerHTML = rows;
+      fitUserManagementCardNames();
     }
   
     // ========================================
