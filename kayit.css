@@ -705,6 +705,12 @@ textarea.notes-auto-expand {
 .egzoz-date-section.egzoz-date-visible {
     display: block;
 }
+#vehicle-modal .form-section.u-hidden,
+#vehicle-modal .form-section-inline.u-hidden,
+#vehicle-modal .egzoz-toggle-section.u-hidden,
+#vehicle-modal .egzoz-date-section.u-hidden {
+    display: none !important;
+}
 
 /* === EGZOZ SORU / TARİH — kayıt modalı üstünde küçük dialog === */
 .egzoz-dialog-overlay {

@@ -1309,6 +1309,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     color: var(--txt-muted);
     box-shadow: 0 4px 12px var(--shadow-dark);
     white-space: normal;
+    cursor: pointer;
 }
 #vehicle-detail-modal .muayene-detail-tooltip.visible {
     display: block !important;
@@ -1486,6 +1487,15 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 }
 #vehicle-detail-modal .detail-row-value {
     color: #a0aec0 !important;
+}
+#vehicle-detail-modal .detail-row-value.detail-user-empty {
+    color: #d40000 !important;
+}
+#vehicle-detail-modal .detail-row-value.date-warning-red {
+    color: var(--theme-color) !important;
+}
+#vehicle-detail-modal .detail-row-value.date-warning-orange {
+    color: var(--orange-warn) !important;
 }
 #vehicle-detail-modal .detail-item {
     color: #a0aec0 !important;

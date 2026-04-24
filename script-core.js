@@ -650,13 +650,14 @@ document.addEventListener('DOMContentLoaded', () => {
   modalObserver.observe(document.body, { childList: true, subtree: true });
 });
 
+
 // Lazy modül asset sürümleri — tek nesne; index.html içindeki style-core ?v= ile tasitlar sürümü uyumlu kalmalı
 var MEDISA_MODULE_VERSIONS = {
-  tasitlar: '20260422.8',
+  tasitlar: '20260423.2',
   raporlar: '20260422.1',
-  kayitJs: '20260423.3',
-  kayitCss: '20260423.2',
-  ayarlarJs: '20260422.2',
+  kayitJs: '20260423.5',
+  kayitCss: '20260423.3',
+  ayarlarJs: '20260423.1',
   ayarlarCss: '20260422.3'
 };
 window.MEDISA_MODULE_VERSIONS = MEDISA_MODULE_VERSIONS;

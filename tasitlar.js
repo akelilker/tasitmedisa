@@ -7537,6 +7537,7 @@ function renderVehicleDetailLeft(vehicle) {
 
   // Taşıt detay: muayene tooltip (hover ile açık kalır, gecikmeli kapatma) + ünlem/link tıklama
   let muayeneTooltipCloseTimeout = null;
+  let muayenePickerPointerHandledAt = 0;
   let vehicleTypePickerModulePromise = null;
   function ensureVehicleTypePickerModule() {
     if (typeof window.openVehicleTypePickerOverlay === 'function') {
@@ -7558,25 +7559,67 @@ function renderVehicleDetailLeft(vehicle) {
     return Promise.resolve();
   }
 
+  function openVehicleTypePickerOverlayFallback(vehicleId) {
+    window.vehicleTypePickerFromDetail = vehicleId;
+    const picker = document.getElementById('vehicle-type-picker-overlay');
+    if (!picker) return;
+    picker.classList.remove('u-hidden');
+    picker.style.display = 'flex';
+    picker.setAttribute('aria-hidden', 'false');
+  }
+
+  function ensureVehicleDetailContext(vehicleId) {
+    const detailModal = document.getElementById('vehicle-detail-modal');
+    const isDetailVisible = !!(
+      detailModal &&
+      detailModal.style.display !== 'none' &&
+      (detailModal.classList.contains('active') || detailModal.classList.contains('open'))
+    );
+    if (!isDetailVisible && typeof window.showVehicleDetail === 'function') {
+      window.showVehicleDetail(vehicleId);
+    }
+  }
+
   function openVehicleTypePickerFromDetail() {
-    const vehicleId = window.currentDetailVehicleId;
+    const vehicleId = String(window.currentDetailVehicleId || '').trim();
     if (!vehicleId) return;
+    ensureVehicleDetailContext(vehicleId);
+    if (typeof window.openVehicleTypePickerOverlay === 'function') {
+      window.openVehicleTypePickerOverlay({ vehicleId: vehicleId });
+      return;
+    }
+    // Kayıt modülü ilk kez yüklenirken gecikme olsa bile picker anında görünsün.
+    openVehicleTypePickerOverlayFallback(vehicleId);
     ensureVehicleTypePickerModule().then(function() {
       if (typeof window.openVehicleTypePickerOverlay === 'function') {
         window.openVehicleTypePickerOverlay({ vehicleId: vehicleId });
         return;
       }
-      window.vehicleTypePickerFromDetail = vehicleId;
-      const picker = document.getElementById('vehicle-type-picker-overlay');
-      if (picker) {
-        picker.classList.remove('u-hidden');
-        picker.style.display = 'flex';
-        picker.setAttribute('aria-hidden', 'false');
-      }
+      openVehicleTypePickerOverlayFallback(vehicleId);
     }).catch(function(err) {
       console.error('Taşıt tipi seçim ekranı yüklenemedi:', err);
     });
   }
+
+  function hideMuayeneTooltipByTrigger(triggerEl) {
+    const wrap = triggerEl && triggerEl.closest('.detail-muayene-value-wrap');
+    const tooltip = wrap && wrap.querySelector('.muayene-detail-tooltip');
+    if (tooltip) {
+      tooltip.classList.remove('visible');
+      tooltip.hidden = true;
+    }
+  }
+
+  function handleMuayenePickerTrigger(e, triggerEl) {
+    if (!triggerEl) return false;
+    if (e && e.cancelable) e.preventDefault();
+    if (e && typeof e.stopPropagation === 'function') e.stopPropagation();
+    if (e && typeof e.stopImmediatePropagation === 'function') e.stopImmediatePropagation();
+    hideMuayeneTooltipByTrigger(triggerEl);
+    openVehicleTypePickerFromDetail();
+    return true;
+  }
+
   document.addEventListener('mouseover', function(e) {
     const wrap = e.target.closest('#vehicle-detail-modal .detail-row-muayene-no-type .detail-muayene-value-wrap');
     if (!wrap) return;
@@ -7603,33 +7646,35 @@ function renderVehicleDetailLeft(vehicle) {
       }
     }, 220);
   });
+  // Mobilde link/ünlem dokunuşunda ghost click oluşup detaydan düşme riskine karşı
+  // picker tetiklemeyi pointer/touch başlangıcında tekilleştiriyoruz.
+  function onMuayenePickerPointerLikeDown(e) {
+    if (e.type === 'touchstart' && typeof window.PointerEvent === 'function') return;
+    const modal = e.target.closest('#vehicle-detail-modal');
+    if (!modal) return;
+    const trigger = e.target.closest('.muayene-detail-exclamation, .muayene-detail-tooltip-link, .muayene-detail-tooltip, .muayene-detail-tooltip-wrap');
+    if (!trigger) return;
+    muayenePickerPointerHandledAt = Date.now();
+    handleMuayenePickerTrigger(e, trigger);
+  }
+  document.addEventListener('pointerdown', onMuayenePickerPointerLikeDown, true);
+  document.addEventListener('touchstart', onMuayenePickerPointerLikeDown, { capture: true, passive: false });
   document.addEventListener('click', function(e) {
     const modal = e.target.closest('#vehicle-detail-modal');
     if (!modal) return;
     const exclamation = e.target.closest('.muayene-detail-exclamation');
     const link = e.target.closest('.muayene-detail-tooltip-link');
-    if (exclamation) {
-      e.preventDefault();
-      e.stopPropagation();
-      const wrap = exclamation.closest('.detail-muayene-value-wrap');
-      const tooltip = wrap && wrap.querySelector('.muayene-detail-tooltip');
-      if (tooltip) {
-        tooltip.classList.remove('visible');
-        tooltip.hidden = true;
+    const tooltipBox = e.target.closest('.muayene-detail-tooltip');
+    const tooltipWrap = e.target.closest('.muayene-detail-tooltip-wrap');
+    const trigger = exclamation || link || tooltipBox || tooltipWrap;
+    if (trigger) {
+      if (Date.now() - muayenePickerPointerHandledAt < 700) {
+        if (e.cancelable) e.preventDefault();
+        e.stopPropagation();
+        if (typeof e.stopImmediatePropagation === 'function') e.stopImmediatePropagation();
+        return;
       }
-      openVehicleTypePickerFromDetail();
-      return;
-    }
-    if (link) {
-      e.preventDefault();
-      e.stopPropagation();
-      const wrap = link.closest('.detail-muayene-value-wrap');
-      const tooltip = wrap && wrap.querySelector('.muayene-detail-tooltip');
-      if (tooltip) {
-        tooltip.classList.remove('visible');
-        tooltip.hidden = true;
-      }
-      openVehicleTypePickerFromDetail();
+      handleMuayenePickerTrigger(e, trigger);
       return;
     }
     // Dışarı tıklanınca tooltip kapat
