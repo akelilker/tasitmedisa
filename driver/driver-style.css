@@ -1595,6 +1595,10 @@ body.dashboard-page {
   /* Mobil dashboard header: sadece grid + logo hizası (yeni pseudo çizgi yok; tipografi aşağıda ayrı blokta) */
   .dashboard-page .hero.hero-two-rows {
     grid-template-columns: minmax(56px, max-content) minmax(0, 1fr) 52px !important;
+    column-gap: 4px !important;
+  }
+  .dashboard-page .hero.hero-two-rows .hero-title-block {
+    transform: translate(4px, 3px) !important;
   }
   .dashboard-page .hero.hero-two-rows .hero-logo {
     display: flex !important;
@@ -4315,9 +4319,9 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
     border-radius: 10px !important;
-    border-top: 0.99px solid rgba(var(--theme-color-rgb), 0.82) !important;
-    border-left: 0.99px solid rgba(var(--theme-color-rgb), 0.82) !important;
-    border-right: 0.99px solid rgba(var(--theme-color-rgb), 0.82) !important;
+    border-top: 0.8px solid rgba(200, 200, 200, 0.62) !important;
+    border-left: 0.8px solid rgba(255, 255, 255, 0.28) !important;
+    border-right: 0.8px solid rgba(255, 255, 255, 0.28) !important;
     padding-top: 0 !important;
     overflow: hidden !important;
     overflow-x: hidden !important;
@@ -4603,6 +4607,11 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     width: 24px !important;
     height: 24px !important;
     stroke-width: 1.5 !important;
+  }
+  .dashboard-page .driver-btn-password .driver-btn-password-icon {
+    width: 22px !important;
+    height: 22px !important;
+    stroke-width: 2 !important;
   }
 
   /* Vehicle card içi: elementler arası +3px (12→15) */
@@ -5504,6 +5513,13 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 }
 
 @media (max-width: 640px) {
+  /* Şifre modalı mobilde Geçmiş/Düzeltme ile aynı nötr çerçeveyi kullansın */
+  #driver-password-modal .driver-modal-content,
+  #driver-password-modal .modal-container {
+    border-top: 0.8px solid rgba(200, 200, 200, 0.62) !important;
+    border-left: 0.8px solid rgba(255, 255, 255, 0.28) !important;
+    border-right: 0.8px solid rgba(255, 255, 255, 0.28) !important;
+  }
   #history-modal .modal-header,
   #edit-request-modal .modal-header,
   #driver-event-menu-modal .modal-header,
