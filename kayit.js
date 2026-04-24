@@ -113,26 +113,226 @@
     input.dispatchEvent(new Event('change', { bubbles: true }));
   }
 
-  function openVehicleDatePickerNativeInput(nativeInput) {
-    if (!nativeInput || nativeInput.disabled) return;
-    try {
-      nativeInput.focus({ preventScroll: true });
-    } catch (e) {
-      nativeInput.focus();
+  const VEHICLE_CALENDAR_MONTHS = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
+  const VEHICLE_CALENDAR_DAYS = ['Pt', 'Sa', 'Ça', 'Pe', 'Cu', 'Ct', 'Pa'];
+  const vehicleDateCalendarState = {
+    panel: null,
+    input: null,
+    anchor: null,
+    year: 0,
+    month: 0,
+    bound: false
+  };
+
+  function getVehicleCalendarIsoFromDate(date) {
+    if (!(date instanceof Date) || Number.isNaN(date.getTime())) return '';
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  }
+
+  function getVehicleCalendarDateFromIso(iso) {
+    const normalized = parseVehicleDateRawToIso(iso);
+    if (!normalized) return null;
+    const parts = normalized.split('-').map(Number);
+    const date = new Date(parts[0], parts[1] - 1, parts[2]);
+    return Number.isNaN(date.getTime()) ? null : date;
+  }
+
+  function getVehicleDateCalendarPanel() {
+    const modal = getModal();
+    const container = modal ? modal.querySelector('.modal-container') : null;
+    if (!container) return null;
+    if (vehicleDateCalendarState.panel && vehicleDateCalendarState.panel.parentNode === container) {
+      return vehicleDateCalendarState.panel;
     }
-    if (typeof nativeInput.showPicker === 'function') {
-      try {
-        nativeInput.showPicker();
-        return;
-      } catch (e) {}
+
+    const panel = document.createElement('div');
+    panel.className = 'vehicle-date-calendar-panel';
+    panel.setAttribute('role', 'dialog');
+    panel.setAttribute('aria-label', 'Tarih seç');
+    panel.addEventListener('click', handleVehicleDateCalendarClick);
+    container.appendChild(panel);
+    vehicleDateCalendarState.panel = panel;
+    return panel;
+  }
+
+  function isVehicleDateCalendarTarget(target) {
+    const panel = vehicleDateCalendarState.panel;
+    return !!(panel && target && panel.contains(target));
+  }
+
+  function closeVehicleDateCalendar() {
+    const panel = vehicleDateCalendarState.panel;
+    if (panel) {
+      panel.classList.remove('open');
+      panel.setAttribute('aria-hidden', 'true');
     }
-    try {
-      nativeInput.click();
-    } catch (e) {}
+    if (vehicleDateCalendarState.anchor) {
+      vehicleDateCalendarState.anchor.setAttribute('aria-expanded', 'false');
+    }
+    vehicleDateCalendarState.input = null;
+    vehicleDateCalendarState.anchor = null;
+  }
+
+  function positionVehicleDateCalendarPanel() {
+    const panel = vehicleDateCalendarState.panel;
+    const anchor = vehicleDateCalendarState.anchor;
+    const modal = getModal();
+    const container = modal ? modal.querySelector('.modal-container') : null;
+    if (!panel || !anchor || !container) return;
+
+    panel.style.visibility = 'hidden';
+    panel.classList.add('open');
+
+    const containerRect = container.getBoundingClientRect();
+    const anchorRect = anchor.getBoundingClientRect();
+    const panelWidth = Math.min(252, Math.max(216, containerRect.width - 16));
+    panel.style.width = `${panelWidth}px`;
+
+    const panelHeight = panel.offsetHeight || 268;
+    const gap = 6;
+    const pad = 8;
+    let left = anchorRect.right - containerRect.left - panelWidth;
+    left = Math.max(pad, Math.min(left, containerRect.width - panelWidth - pad));
+
+    let top = anchorRect.bottom - containerRect.top + gap;
+    if (top + panelHeight + pad > containerRect.height) {
+      top = anchorRect.top - containerRect.top - panelHeight - gap;
+    }
+    top = Math.max(pad, Math.min(top, containerRect.height - panelHeight - pad));
+
+    panel.style.left = `${left}px`;
+    panel.style.top = `${top}px`;
+    panel.style.visibility = '';
+  }
+
+  function renderVehicleDateCalendarPanel() {
+    const panel = getVehicleDateCalendarPanel();
+    const input = vehicleDateCalendarState.input;
+    if (!panel || !input) return;
+
+    const year = vehicleDateCalendarState.year;
+    const month = vehicleDateCalendarState.month;
+    const selectedIso = readVehicleDateIso(input);
+    const todayIso = getVehicleCalendarIsoFromDate(new Date());
+    const firstDay = new Date(year, month, 1);
+    const startOffset = (firstDay.getDay() + 6) % 7;
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    let html = '<div class="vehicle-date-calendar-head">' +
+      '<button type="button" class="vehicle-date-calendar-nav" data-action="prev" aria-label="Önceki ay">‹</button>' +
+      '<div class="vehicle-date-calendar-title">' + VEHICLE_CALENDAR_MONTHS[month] + ' ' + year + '</div>' +
+      '<button type="button" class="vehicle-date-calendar-nav" data-action="next" aria-label="Sonraki ay">›</button>' +
+      '</div><div class="vehicle-date-calendar-weekdays">';
+
+    VEHICLE_CALENDAR_DAYS.forEach(function(day) {
+      html += '<span>' + day + '</span>';
+    });
+    html += '</div><div class="vehicle-date-calendar-grid">';
+
+    for (let cell = 0; cell < 42; cell++) {
+      const dayNumber = cell - startOffset + 1;
+      if (dayNumber < 1 || dayNumber > daysInMonth) {
+        html += '<span class="vehicle-date-calendar-empty"></span>';
+        continue;
+      }
+      const iso = `${year}-${String(month + 1).padStart(2, '0')}-${String(dayNumber).padStart(2, '0')}`;
+      const classes = ['vehicle-date-calendar-day'];
+      if (iso === selectedIso) classes.push('selected');
+      if (iso === todayIso) classes.push('today');
+      html += '<button type="button" class="' + classes.join(' ') + '" data-date="' + iso + '">' + dayNumber + '</button>';
+    }
+
+    html += '</div><div class="vehicle-date-calendar-actions">' +
+      '<button type="button" data-action="clear">Temizle</button>' +
+      '<button type="button" data-action="today">Bugün</button>' +
+      '</div>';
+    panel.innerHTML = html;
+    panel.setAttribute('aria-hidden', 'false');
+  }
+
+  function openVehicleDateCalendar(input, anchor) {
+    if (!input || input.disabled || !anchor) return;
+    if (vehicleDateCalendarState.input === input && vehicleDateCalendarState.panel && vehicleDateCalendarState.panel.classList.contains('open')) {
+      closeVehicleDateCalendar();
+      return;
+    }
+    const selectedDate = getVehicleCalendarDateFromIso(readVehicleDateIso(input)) || new Date();
+    vehicleDateCalendarState.input = input;
+    vehicleDateCalendarState.anchor = anchor;
+    vehicleDateCalendarState.year = selectedDate.getFullYear();
+    vehicleDateCalendarState.month = selectedDate.getMonth();
+    anchor.setAttribute('aria-expanded', 'true');
+    renderVehicleDateCalendarPanel();
+    positionVehicleDateCalendarPanel();
+  }
+
+  function setVehicleDateCalendarValue(iso) {
+    const input = vehicleDateCalendarState.input;
+    if (!input) return;
+    const previousValue = input.value;
+    setVehicleDateInputValue(input, iso || '');
+    if (input.value !== previousValue) {
+      dispatchVehicleDateInputEvents(input);
+    }
+    closeVehicleDateCalendar();
+  }
+
+  function handleVehicleDateCalendarClick(event) {
+    event.stopPropagation();
+    const actionBtn = event.target.closest('[data-action]');
+    const dayBtn = event.target.closest('[data-date]');
+    if (dayBtn) {
+      setVehicleDateCalendarValue(dayBtn.getAttribute('data-date'));
+      return;
+    }
+    if (!actionBtn) return;
+    const action = actionBtn.getAttribute('data-action');
+    if (action === 'prev') {
+      vehicleDateCalendarState.month -= 1;
+      if (vehicleDateCalendarState.month < 0) {
+        vehicleDateCalendarState.month = 11;
+        vehicleDateCalendarState.year -= 1;
+      }
+      renderVehicleDateCalendarPanel();
+      positionVehicleDateCalendarPanel();
+    } else if (action === 'next') {
+      vehicleDateCalendarState.month += 1;
+      if (vehicleDateCalendarState.month > 11) {
+        vehicleDateCalendarState.month = 0;
+        vehicleDateCalendarState.year += 1;
+      }
+      renderVehicleDateCalendarPanel();
+      positionVehicleDateCalendarPanel();
+    } else if (action === 'today') {
+      setVehicleDateCalendarValue(getVehicleCalendarIsoFromDate(new Date()));
+    } else if (action === 'clear') {
+      setVehicleDateCalendarValue('');
+    }
+  }
+
+  function bindVehicleDateCalendarGlobalEvents() {
+    if (vehicleDateCalendarState.bound) return;
+    vehicleDateCalendarState.bound = true;
+    document.addEventListener('pointerdown', function(event) {
+      const panel = vehicleDateCalendarState.panel;
+      const anchor = vehicleDateCalendarState.anchor;
+      if (!panel || !panel.classList.contains('open')) return;
+      if (panel.contains(event.target)) return;
+      if (anchor && anchor.closest('.vehicle-date-picker-wrap') && anchor.closest('.vehicle-date-picker-wrap').contains(event.target)) return;
+      closeVehicleDateCalendar();
+    });
+    document.addEventListener('keydown', function(event) {
+      if (event.key === 'Escape') closeVehicleDateCalendar();
+    });
+    window.addEventListener('resize', closeVehicleDateCalendar);
   }
 
   function setupVehicleDatePickers(root) {
     var calendarSvg = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M8 2v4"/><path d="M16 2v4"/><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18"/></svg>';
+    bindVehicleDateCalendarGlobalEvents();
     getVehicleDateInputs(root || document).forEach(function(input) {
       if (!input) return;
       if (input.dataset.vehicleDatePickerBound === 'true') {
@@ -163,7 +363,8 @@
       btn.type = 'button';
       btn.className = 'vehicle-date-picker-btn';
       btn.tabIndex = -1;
-      btn.setAttribute('aria-hidden', 'true');
+      btn.setAttribute('aria-haspopup', 'dialog');
+      btn.setAttribute('aria-expanded', 'false');
       btn.innerHTML = calendarSvg;
 
       var nativeInput = document.createElement('input');
@@ -191,7 +392,7 @@
       btn.addEventListener('click', function(e) {
         e.preventDefault();
         e.stopPropagation();
-        openVehicleDatePickerNativeInput(nativeInput);
+        openVehicleDateCalendar(input, btn);
       });
       nativeInput.addEventListener('input', syncTextFromNative);
       nativeInput.addEventListener('change', syncTextFromNative);
@@ -2630,6 +2831,7 @@
           if (ev.target === muayeneInput) return;
           const pickerWrap = muayeneInput.closest('.vehicle-date-picker-wrap');
           if (pickerWrap && pickerWrap.contains(ev.target)) return;
+          if (isVehicleDateCalendarTarget(ev.target)) return;
           setTimeout(function() {
             maybeScheduleVehicleMuayeneEgzozPrompt(muayeneInput, { delayMs: 72, commitAttempt: true });
           }, 0);
