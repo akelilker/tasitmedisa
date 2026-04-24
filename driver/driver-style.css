@@ -618,7 +618,9 @@ body.dashboard-page {
   .dashboard-page .driver-below-hero-row .driver-btn-password .driver-btn-password-icon {
     width: 26px !important;
     height: 26px !important;
-    transform: translateY(3px) !important;
+    position: relative !important;
+    top: 3px !important;
+    transform: rotate(180deg) !important;
   }
   .dashboard-page .driver-below-hero-row .driver-btn-logout .driver-btn-logout-icon {
     width: 19px !important;
@@ -4621,7 +4623,9 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     width: 26px !important;
     height: 26px !important;
     stroke-width: 2 !important;
-    transform: translateY(3px) !important;
+    position: relative !important;
+    top: 3px !important;
+    transform: rotate(180deg) !important;
   }
 
   /* Vehicle card içi: elementler arası +3px (12→15) */
