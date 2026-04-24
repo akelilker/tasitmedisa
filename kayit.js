@@ -799,18 +799,6 @@
     }
   }
 
-  function syncVehicleBranchFieldVisibility() {
-    const wrap = document.querySelector('#vehicle-modal .vehicle-branch-dropdown-wrap');
-    const section = wrap ? wrap.closest('.form-section') : null;
-    if (!section) return;
-    const scope = getVehicleFormSessionScope();
-    if (scope.isBranchManager) {
-      section.classList.add('u-hidden');
-      return;
-    }
-    section.classList.remove('u-hidden');
-  }
-
   /**
    * Şube dropdown listesini localStorage'dan okunan şubelerle doldurur
    *
@@ -994,7 +982,6 @@
 
     updateModalTitle("KAYIT İŞLEMLERİ");
     populateBranchSelect();
-    syncVehicleBranchFieldVisibility();
 
     closeVehicleTypePickerOverlay();
   }
