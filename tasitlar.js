@@ -3939,7 +3939,6 @@ function renderVehicleDetailLeft(vehicle) {
                 selectEl.value = '';
                 dismissVehicleAssignUserSavedListener();
                 const currentVehicleId = vehicleId || window.currentDetailVehicleId;
-                removeVehicleUserFlowListeners();
                 closeEventModal('kullanici');
                 setTimeout(function() {
                   if (typeof window.openUserFormModal === 'function') {
@@ -3973,7 +3972,6 @@ function renderVehicleDetailLeft(vehicle) {
                 };
                 window._medisaVehicleAssignOnUserSaved = onUserSaved;
                 window.addEventListener('userSaved', onUserSaved);
-                window.addEventListener('userFormClosed', onUserFormClosed);
               }
             });
           }
