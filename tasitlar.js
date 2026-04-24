@@ -1293,6 +1293,37 @@
     modalContent.addEventListener('click', handleVehicleRowClick);
   }
 
+  function isDisVeriPanelUnavailableForCurrentDevice() {
+    if (typeof window.medisaIsDisVeriPanelUnavailableOnDevice === 'function') {
+      return window.medisaIsDisVeriPanelUnavailableOnDevice();
+    }
+    var hasMatchMedia = typeof window.matchMedia === 'function';
+    var isMobileViewport = hasMatchMedia
+      ? window.matchMedia('(max-width: 640px)').matches
+      : window.innerWidth <= 640;
+    var ua = navigator.userAgent || '';
+    var isiOS = /iPhone|iPad|iPod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    var isStandalone = hasMatchMedia
+      && (window.matchMedia('(display-mode: standalone)').matches || window.matchMedia('(display-mode: fullscreen)').matches);
+    return isMobileViewport || (isiOS && (isStandalone || window.navigator.standalone === true));
+  }
+
+  function showDisVeriPanelUnavailableNotice() {
+    var message = 'Excel Yükleme İşlemi Yalnızca Masaüstü Sürümde Gerçekleştirilebilir.';
+    if (typeof window.showCenteredInfoBox === 'function') {
+      window.showCenteredInfoBox(message, {
+        variant: 'bare-text',
+        autoCloseMs: 3200
+      });
+      return;
+    }
+    if (typeof window.showInfoModal === 'function') {
+      window.showInfoModal(message);
+      return;
+    }
+    alert(message);
+  }
+
   // Bildirim listesi: delegation (her bildirime ayrı onclick yerine tek listener)
   if (DOM.notificationsDropdown && !DOM.notificationsDropdown._notifDelegationBound) {
     DOM.notificationsDropdown._notifDelegationBound = true;
@@ -1311,6 +1342,12 @@
       if (!btn) return;
       var action = (btn.getAttribute('data-action') || '').toString().trim();
       if (action === 'open-dis-veri') {
+        e.preventDefault();
+        e.stopPropagation();
+        if (isDisVeriPanelUnavailableForCurrentDevice()) {
+          showDisVeriPanelUnavailableNotice();
+          return;
+        }
         if (typeof window.setNotificationsOpenState === 'function') {
           window.setNotificationsOpenState(false);
         }
