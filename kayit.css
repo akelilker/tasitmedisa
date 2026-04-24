@@ -42,6 +42,20 @@
 
 /* #vehicle-modal container: ortak kurallar style-core.css'te; sadece sayfa özel override'lar burada */
 
+#vehicle-modal .modal-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: rgba(200, 208, 216, 0.48);
+    border-top-left-radius: var(--modal-radius, 10px);
+    border-top-right-radius: var(--modal-radius, 10px);
+    pointer-events: none;
+    z-index: 3;
+}
+
 /* Kayıt modalı: container ölçüleri style-core.css'te; burada sadece içerik düzeni */
 #vehicle-modal .modal-body {
   min-height: 0;
@@ -237,22 +251,24 @@ textarea.form-input:focus {
     border-radius: 6px;
     background: #0d131f;
     color: #88919f;
-    pointer-events: none;
+    pointer-events: auto;
     box-sizing: border-box;
+    cursor: pointer;
+    z-index: 2;
 }
 
 #vehicle-modal .vehicle-date-picker-native,
 .egzoz-dialog-date-field .vehicle-date-picker-native {
     position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
+    right: 0;
+    bottom: 0;
+    width: 1px;
+    height: 1px;
     margin: 0;
     padding: 0;
     border: 0;
     opacity: 0;
-    z-index: 2;
-    cursor: pointer;
+    pointer-events: none;
     box-sizing: border-box;
 }
 
@@ -478,26 +494,13 @@ select option:active {
     touch-action: pan-y;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior-y: contain;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(212, 0, 0, 0.42) rgba(13, 19, 31, 0.95);
-    -ms-overflow-style: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
     z-index: 40;
     box-shadow: 0 10px 24px rgba(0, 0, 0, 0.48), inset 0 0 0 1px rgba(255, 255, 255, 0.06);
 }
 #vehicle-modal #vehicle-branch-list::-webkit-scrollbar {
-    width: 5px;
-    height: 5px;
-}
-#vehicle-modal #vehicle-branch-list::-webkit-scrollbar-track {
-    background: rgba(13, 19, 31, 0.95);
-    border-radius: 4px;
-}
-#vehicle-modal #vehicle-branch-list::-webkit-scrollbar-thumb {
-    background: rgba(212, 0, 0, 0.42);
-    border-radius: 4px;
-}
-#vehicle-modal #vehicle-branch-list::-webkit-scrollbar-thumb:hover {
-    background: rgba(212, 0, 0, 0.58);
+    display: none;
 }
 #vehicle-modal .vehicle-branch-list.open {
     display: block;
