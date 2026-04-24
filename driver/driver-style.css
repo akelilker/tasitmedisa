@@ -619,7 +619,7 @@ body.dashboard-page {
     width: 26px !important;
     height: 26px !important;
     position: relative !important;
-    top: 3px !important;
+    top: 0 !important;
     transform: none !important;
   }
   .dashboard-page .driver-below-hero-row .driver-btn-logout .driver-btn-logout-icon {
