@@ -303,7 +303,7 @@ textarea.form-input:focus {
     background-image: none;
 }
 
-#vehicle-modal .vehicle-date-calendar-panel {
+:where(#vehicle-modal, .egzoz-dialog-overlay) .vehicle-date-calendar-panel {
     position: absolute;
     display: none;
     z-index: 80;
@@ -317,11 +317,11 @@ textarea.form-input:focus {
     box-sizing: border-box;
 }
 
-#vehicle-modal .vehicle-date-calendar-panel.open {
+:where(#vehicle-modal, .egzoz-dialog-overlay) .vehicle-date-calendar-panel.open {
     display: block;
 }
 
-#vehicle-modal .vehicle-date-calendar-head {
+:where(#vehicle-modal, .egzoz-dialog-overlay) .vehicle-date-calendar-head {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -329,7 +329,7 @@ textarea.form-input:focus {
     margin-bottom: 8px;
 }
 
-#vehicle-modal .vehicle-date-calendar-title {
+:where(#vehicle-modal, .egzoz-dialog-overlay) .vehicle-date-calendar-title {
     flex: 1;
     color: #ffffff;
     font-size: 12px;
@@ -337,9 +337,9 @@ textarea.form-input:focus {
     text-align: center;
 }
 
-#vehicle-modal .vehicle-date-calendar-nav,
-#vehicle-modal .vehicle-date-calendar-actions button,
-#vehicle-modal .vehicle-date-calendar-day {
+:where(#vehicle-modal, .egzoz-dialog-overlay) .vehicle-date-calendar-nav,
+:where(#vehicle-modal, .egzoz-dialog-overlay) .vehicle-date-calendar-actions button,
+:where(#vehicle-modal, .egzoz-dialog-overlay) .vehicle-date-calendar-day {
     border: 0;
     background: transparent;
     color: #a0aec0;
@@ -347,7 +347,7 @@ textarea.form-input:focus {
     cursor: pointer;
 }
 
-#vehicle-modal .vehicle-date-calendar-nav {
+:where(#vehicle-modal, .egzoz-dialog-overlay) .vehicle-date-calendar-nav {
     width: 26px;
     height: 24px;
     border-radius: 6px;
@@ -356,30 +356,30 @@ textarea.form-input:focus {
     line-height: 1;
 }
 
-#vehicle-modal .vehicle-date-calendar-nav:hover {
+:where(#vehicle-modal, .egzoz-dialog-overlay) .vehicle-date-calendar-nav:hover {
     background: rgba(255, 255, 255, 0.08);
 }
 
-#vehicle-modal .vehicle-date-calendar-weekdays,
-#vehicle-modal .vehicle-date-calendar-grid {
+:where(#vehicle-modal, .egzoz-dialog-overlay) .vehicle-date-calendar-weekdays,
+:where(#vehicle-modal, .egzoz-dialog-overlay) .vehicle-date-calendar-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     gap: 3px;
 }
 
-#vehicle-modal .vehicle-date-calendar-weekdays {
+:where(#vehicle-modal, .egzoz-dialog-overlay) .vehicle-date-calendar-weekdays {
     margin-bottom: 4px;
 }
 
-#vehicle-modal .vehicle-date-calendar-weekdays span {
+:where(#vehicle-modal, .egzoz-dialog-overlay) .vehicle-date-calendar-weekdays span {
     color: #ffffff;
     opacity: 0.78;
     font-size: 10px;
     text-align: center;
 }
 
-#vehicle-modal .vehicle-date-calendar-day,
-#vehicle-modal .vehicle-date-calendar-empty {
+:where(#vehicle-modal, .egzoz-dialog-overlay) .vehicle-date-calendar-day,
+:where(#vehicle-modal, .egzoz-dialog-overlay) .vehicle-date-calendar-empty {
     height: 26px;
     border-radius: 6px;
     font-size: 11px;
@@ -387,23 +387,23 @@ textarea.form-input:focus {
     text-align: center;
 }
 
-#vehicle-modal .vehicle-date-calendar-day:hover {
+:where(#vehicle-modal, .egzoz-dialog-overlay) .vehicle-date-calendar-day:hover {
     background: rgba(255, 255, 255, 0.08);
     color: #ffffff;
 }
 
-#vehicle-modal .vehicle-date-calendar-day.today {
+:where(#vehicle-modal, .egzoz-dialog-overlay) .vehicle-date-calendar-day.today {
     color: #ffffff;
     box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.32);
 }
 
-#vehicle-modal .vehicle-date-calendar-day.selected {
+:where(#vehicle-modal, .egzoz-dialog-overlay) .vehicle-date-calendar-day.selected {
     background: rgba(var(--theme-color-rgb), 0.82);
     color: #ffffff;
     box-shadow: none;
 }
 
-#vehicle-modal .vehicle-date-calendar-actions {
+:where(#vehicle-modal, .egzoz-dialog-overlay) .vehicle-date-calendar-actions {
     display: flex;
     justify-content: space-between;
     gap: 8px;
@@ -412,12 +412,12 @@ textarea.form-input:focus {
     border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-#vehicle-modal .vehicle-date-calendar-actions button {
+:where(#vehicle-modal, .egzoz-dialog-overlay) .vehicle-date-calendar-actions button {
     color: #a0aec0;
     font-size: 11px;
 }
 
-#vehicle-modal .vehicle-date-calendar-actions button:hover {
+:where(#vehicle-modal, .egzoz-dialog-overlay) .vehicle-date-calendar-actions button:hover {
     color: #ffffff;
 }
 
