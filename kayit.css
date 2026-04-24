@@ -233,7 +233,7 @@ textarea.form-input:focus {
 .egzoz-dialog-date-field .vehicle-date-picker-slot {
     position: absolute;
     top: 0;
-    left: calc(50% + 5ch + 4px);
+    left: calc(50% + 4.1ch + 4px);
     bottom: 0;
     width: 28px;
     min-width: 28px;
@@ -258,6 +258,12 @@ textarea.form-input:focus {
     pointer-events: auto;
     box-sizing: border-box;
     cursor: pointer;
+}
+
+#vehicle-modal .vehicle-date-picker-btn svg,
+.egzoz-dialog-date-field .vehicle-date-picker-btn svg {
+    width: 16.2px;
+    height: 16.2px;
 }
 
 #vehicle-modal .vehicle-date-picker-btn:hover,
