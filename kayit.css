@@ -214,9 +214,10 @@ textarea.form-input:focus {
 
 #vehicle-modal .vehicle-date-picker-wrap,
 .egzoz-dialog-date-field .vehicle-date-picker-wrap {
+    position: relative;
     display: flex;
     align-items: stretch;
-    gap: 4px;
+    gap: 0;
     width: 100%;
     min-width: 0;
 }
@@ -230,11 +231,13 @@ textarea.form-input:focus {
 
 #vehicle-modal .vehicle-date-picker-slot,
 .egzoz-dialog-date-field .vehicle-date-picker-slot {
-    position: relative;
-    flex: 0 0 28px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
     width: 28px;
     min-width: 28px;
-    align-self: stretch;
+    z-index: 2;
 }
 
 #vehicle-modal .vehicle-date-picker-btn,
@@ -247,14 +250,21 @@ textarea.form-input:focus {
     width: 100%;
     height: 100%;
     padding: 0;
-    border: 1.1px solid rgba(255, 255, 255, 0.40);
-    border-radius: 6px;
-    background: #0d131f;
+    border: 0;
+    border-radius: 0 6px 6px 0;
+    background: transparent;
     color: #88919f;
     pointer-events: auto;
     box-sizing: border-box;
     cursor: pointer;
-    z-index: 2;
+}
+
+#vehicle-modal .vehicle-date-picker-btn:hover,
+#vehicle-modal .vehicle-date-picker-btn:focus-visible,
+.egzoz-dialog-date-field .vehicle-date-picker-btn:hover,
+.egzoz-dialog-date-field .vehicle-date-picker-btn:focus-visible {
+    color: #c6d0dc;
+    outline: none;
 }
 
 #vehicle-modal .vehicle-date-picker-native,
@@ -288,8 +298,126 @@ textarea.form-input:focus {
     -webkit-text-fill-color: #a0aec0;
     text-align: center;
     caret-color: rgba(212, 0, 0, 0.82);
-    padding: 0 12px;
+    padding: 0 34px 0 12px;
     background-image: none;
+}
+
+#vehicle-modal .vehicle-date-calendar-panel {
+    position: absolute;
+    display: none;
+    z-index: 80;
+    width: 252px;
+    max-width: calc(100% - 16px);
+    padding: 10px;
+    border: 1px solid rgba(184, 192, 201, 0.42);
+    border-radius: 10px;
+    background: #0b111b;
+    box-shadow: 0 16px 34px rgba(0, 0, 0, 0.58), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    box-sizing: border-box;
+}
+
+#vehicle-modal .vehicle-date-calendar-panel.open {
+    display: block;
+}
+
+#vehicle-modal .vehicle-date-calendar-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+#vehicle-modal .vehicle-date-calendar-title {
+    flex: 1;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+}
+
+#vehicle-modal .vehicle-date-calendar-nav,
+#vehicle-modal .vehicle-date-calendar-actions button,
+#vehicle-modal .vehicle-date-calendar-day {
+    border: 0;
+    background: transparent;
+    color: #a0aec0;
+    font: inherit;
+    cursor: pointer;
+}
+
+#vehicle-modal .vehicle-date-calendar-nav {
+    width: 26px;
+    height: 24px;
+    border-radius: 6px;
+    color: #ffffff;
+    font-size: 18px;
+    line-height: 1;
+}
+
+#vehicle-modal .vehicle-date-calendar-nav:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+#vehicle-modal .vehicle-date-calendar-weekdays,
+#vehicle-modal .vehicle-date-calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 3px;
+}
+
+#vehicle-modal .vehicle-date-calendar-weekdays {
+    margin-bottom: 4px;
+}
+
+#vehicle-modal .vehicle-date-calendar-weekdays span {
+    color: #ffffff;
+    opacity: 0.78;
+    font-size: 10px;
+    text-align: center;
+}
+
+#vehicle-modal .vehicle-date-calendar-day,
+#vehicle-modal .vehicle-date-calendar-empty {
+    height: 26px;
+    border-radius: 6px;
+    font-size: 11px;
+    line-height: 26px;
+    text-align: center;
+}
+
+#vehicle-modal .vehicle-date-calendar-day:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+}
+
+#vehicle-modal .vehicle-date-calendar-day.today {
+    color: #ffffff;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.32);
+}
+
+#vehicle-modal .vehicle-date-calendar-day.selected {
+    background: rgba(var(--theme-color-rgb), 0.82);
+    color: #ffffff;
+    box-shadow: none;
+}
+
+#vehicle-modal .vehicle-date-calendar-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+#vehicle-modal .vehicle-date-calendar-actions button {
+    color: #a0aec0;
+    font-size: 11px;
+}
+
+#vehicle-modal .vehicle-date-calendar-actions button:hover {
+    color: #ffffff;
 }
 
 #vehicle-modal input.form-input[data-date-input="vehicle"]::placeholder,
@@ -1574,7 +1702,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         width: 100% !important;
         max-width: 100% !important;
         margin-right: 0; 
-        padding-right: 10px !important;
+        padding-right: 34px !important;
         padding-left: 10px !important;
         text-align: center;
         overflow: hidden;
@@ -1721,7 +1849,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         padding-bottom: 5px !important;
         font-size: 12px !important;
         padding-left: 10px !important;
-        padding-right: 10px !important;
+        padding-right: 32px !important;
     }
     #vehicle-modal .modal-body .modal-column-right .vehicle-date-picker-slot {
         flex-basis: 25px;
