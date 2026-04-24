@@ -2743,6 +2743,21 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   overscroll-behavior: none;
   overscroll-behavior-x: none;
 }
+
+#history-modal .modal-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: rgba(200, 208, 216, 0.48);
+  border-top-left-radius: var(--modal-radius, 10px);
+  border-top-right-radius: var(--modal-radius, 10px);
+  pointer-events: none;
+  z-index: 4;
+}
+
 #history-modal .modal-header,
 #edit-request-modal .modal-header,
 #driver-event-menu-modal .modal-header,
