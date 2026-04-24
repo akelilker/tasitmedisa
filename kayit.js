@@ -140,21 +140,34 @@
     return Number.isNaN(date.getTime()) ? null : date;
   }
 
-  function getVehicleDateCalendarPanel() {
+  function getVehicleDateCalendarContainer(input) {
+    if (input) {
+      const egzozOverlay = input.closest('.egzoz-dialog-overlay');
+      if (egzozOverlay) return egzozOverlay;
+      const ownModalContainer = input.closest('.modal-container');
+      if (ownModalContainer) return ownModalContainer;
+    }
     const modal = getModal();
-    const container = modal ? modal.querySelector('.modal-container') : null;
+    return modal ? modal.querySelector('.modal-container') : null;
+  }
+
+  function getVehicleDateCalendarPanel() {
+    const container = getVehicleDateCalendarContainer(vehicleDateCalendarState.input);
     if (!container) return null;
-    if (vehicleDateCalendarState.panel && vehicleDateCalendarState.panel.parentNode === container) {
-      return vehicleDateCalendarState.panel;
+
+    let panel = vehicleDateCalendarState.panel;
+    if (!panel) {
+      panel = document.createElement('div');
+      panel.className = 'vehicle-date-calendar-panel';
+      panel.setAttribute('role', 'dialog');
+      panel.setAttribute('aria-label', 'Tarih seç');
+      panel.addEventListener('click', handleVehicleDateCalendarClick);
+      vehicleDateCalendarState.panel = panel;
     }
 
-    const panel = document.createElement('div');
-    panel.className = 'vehicle-date-calendar-panel';
-    panel.setAttribute('role', 'dialog');
-    panel.setAttribute('aria-label', 'Tarih seç');
-    panel.addEventListener('click', handleVehicleDateCalendarClick);
-    container.appendChild(panel);
-    vehicleDateCalendarState.panel = panel;
+    if (panel.parentNode !== container) {
+      container.appendChild(panel);
+    }
     return panel;
   }
 
@@ -179,8 +192,7 @@
   function positionVehicleDateCalendarPanel() {
     const panel = vehicleDateCalendarState.panel;
     const anchor = vehicleDateCalendarState.anchor;
-    const modal = getModal();
-    const container = modal ? modal.querySelector('.modal-container') : null;
+    const container = panel ? panel.parentElement : null;
     if (!panel || !anchor || !container) return;
 
     panel.style.visibility = 'hidden';
