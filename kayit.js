@@ -113,6 +113,20 @@
     input.dispatchEvent(new Event('change', { bubbles: true }));
   }
 
+  function openVehicleDatePickerNativeInput(nativeInput) {
+    if (!nativeInput || nativeInput.disabled) return;
+    try {
+      nativeInput.focus({ preventScroll: true });
+    } catch (e) {
+      nativeInput.focus();
+    }
+    if (typeof nativeInput.showPicker === 'function') {
+      try {
+        nativeInput.showPicker();
+      } catch (e) {}
+    }
+  }
+
   function setupVehicleDatePickers(root) {
     var calendarSvg = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M8 2v4"/><path d="M16 2v4"/><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18"/></svg>';
     getVehicleDateInputs(root || document).forEach(function(input) {
@@ -169,6 +183,12 @@
       });
       input.addEventListener('change', function() {
         syncVehicleDatePickerState(input);
+      });
+      slot.addEventListener('pointerdown', function() {
+        openVehicleDatePickerNativeInput(nativeInput);
+      });
+      nativeInput.addEventListener('click', function() {
+        openVehicleDatePickerNativeInput(nativeInput);
       });
       nativeInput.addEventListener('input', syncTextFromNative);
       nativeInput.addEventListener('change', syncTextFromNative);
