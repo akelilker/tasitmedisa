@@ -620,7 +620,7 @@ body.dashboard-page {
     height: 26px !important;
     position: relative !important;
     top: 3px !important;
-    transform: rotate(180deg) !important;
+    transform: none !important;
   }
   .dashboard-page .driver-below-hero-row .driver-btn-logout .driver-btn-logout-icon {
     width: 19px !important;
@@ -4625,7 +4625,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     stroke-width: 2 !important;
     position: relative !important;
     top: 3px !important;
-    transform: rotate(180deg) !important;
+    transform: none !important;
   }
 
   /* Vehicle card içi: elementler arası +3px (12→15) */
@@ -5578,9 +5578,13 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     }
 
     /* Sag grid: butonlar dikeyde toplam 2px daraltildi */
-    .dashboard-page .driver-action-btn {
+    .dashboard-page .driver-action-buttons .driver-action-btn {
         padding-top: 7px !important;
         padding-bottom: 7px !important;
+        transition: border-color 0.2s, color 0.2s, background 0.2s, transform 0.2s !important;
+    }
+    .dashboard-page .driver-action-buttons .driver-action-btn:hover {
+        transform: scale(1.015);
     }
     .dashboard-page .vehicle-card .btn-save {
         padding-top: 7px !important;
