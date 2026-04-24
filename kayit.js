@@ -184,10 +184,9 @@
       input.addEventListener('change', function() {
         syncVehicleDatePickerState(input);
       });
-      slot.addEventListener('pointerdown', function() {
-        openVehicleDatePickerNativeInput(nativeInput);
-      });
-      nativeInput.addEventListener('click', function() {
+      btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
         openVehicleDatePickerNativeInput(nativeInput);
       });
       nativeInput.addEventListener('input', syncTextFromNative);
