@@ -233,10 +233,11 @@ textarea.form-input:focus {
 .egzoz-dialog-date-field .vehicle-date-picker-slot {
     position: absolute;
     top: 0;
-    right: 0;
+    left: calc(50% + 5ch + 4px);
     bottom: 0;
     width: 28px;
     min-width: 28px;
+    transform: translateX(0);
     z-index: 2;
 }
 
@@ -298,7 +299,7 @@ textarea.form-input:focus {
     -webkit-text-fill-color: #a0aec0;
     text-align: center;
     caret-color: rgba(212, 0, 0, 0.82);
-    padding: 0 34px 0 12px;
+    padding: 0 12px;
     background-image: none;
 }
 
@@ -1702,7 +1703,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         width: 100% !important;
         max-width: 100% !important;
         margin-right: 0; 
-        padding-right: 34px !important;
+        padding-right: 10px !important;
         padding-left: 10px !important;
         text-align: center;
         overflow: hidden;
@@ -1849,7 +1850,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         padding-bottom: 5px !important;
         font-size: 12px !important;
         padding-left: 10px !important;
-        padding-right: 32px !important;
+        padding-right: 10px !important;
     }
     #vehicle-modal .modal-body .modal-column-right .vehicle-date-picker-slot {
         flex-basis: 25px;
