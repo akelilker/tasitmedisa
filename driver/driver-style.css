@@ -1598,7 +1598,7 @@ body.dashboard-page {
     column-gap: 4px !important;
   }
   .dashboard-page .hero.hero-two-rows .hero-title-block {
-    transform: translate(4px, 3px) !important;
+    transform: translate(12px, 3px) !important;
   }
   .dashboard-page .hero.hero-two-rows .hero-logo {
     display: flex !important;
