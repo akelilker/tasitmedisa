@@ -86,6 +86,98 @@
     if (!input) return;
     input.value = formatIsoForVehicleDateInput(value);
     syncSingleDateInputVisibility(input);
+    syncVehicleDatePickerState(input);
+  }
+
+  function getVehicleDatePickerNativeInput(input) {
+    if (!input) return null;
+    var wrap = input.closest('.vehicle-date-picker-wrap');
+    return wrap ? wrap.querySelector('.vehicle-date-picker-native') : null;
+  }
+
+  function syncVehicleDatePickerState(input) {
+    if (!input || !input.matches(VEHICLE_DATE_INPUT_SELECTOR)) return;
+    var wrap = input.closest('.vehicle-date-picker-wrap');
+    var nativeInput = getVehicleDatePickerNativeInput(input);
+    if (!wrap || !nativeInput) return;
+    var isoValue = readVehicleDateIso(input) || '';
+    if (nativeInput.value !== isoValue) nativeInput.value = isoValue;
+    nativeInput.disabled = !!input.disabled;
+    wrap.classList.toggle('is-disabled', !!input.disabled);
+  }
+
+  function dispatchVehicleDateInputEvents(input) {
+    if (!input) return;
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+
+  function setupVehicleDatePickers(root) {
+    var calendarSvg = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M8 2v4"/><path d="M16 2v4"/><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18"/></svg>';
+    getVehicleDateInputs(root || document).forEach(function(input) {
+      if (!input) return;
+      if (input.dataset.vehicleDatePickerBound === 'true') {
+        syncVehicleDatePickerState(input);
+        return;
+      }
+
+      var parent = input.parentNode;
+      if (!parent) return;
+
+      input.dataset.vehicleDatePickerBound = 'true';
+
+      var wrap = document.createElement('div');
+      wrap.className = 'vehicle-date-picker-wrap';
+
+      var field = document.createElement('div');
+      field.className = 'vehicle-date-picker-field';
+
+      parent.insertBefore(wrap, input);
+      wrap.appendChild(field);
+      field.appendChild(input);
+      input.classList.add('vehicle-date-picker-text');
+
+      var slot = document.createElement('div');
+      slot.className = 'vehicle-date-picker-slot';
+
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'vehicle-date-picker-btn';
+      btn.tabIndex = -1;
+      btn.setAttribute('aria-hidden', 'true');
+      btn.innerHTML = calendarSvg;
+
+      var nativeInput = document.createElement('input');
+      nativeInput.type = 'date';
+      nativeInput.className = 'vehicle-date-picker-native';
+
+      var label = input.id ? document.querySelector('label[for="' + input.id + '"]') : null;
+      var labelText = label ? String(label.textContent || '').trim() : '';
+      nativeInput.setAttribute('aria-label', labelText ? (labelText + ' seç') : 'Tarih seç');
+
+      function syncTextFromNative() {
+        var previousValue = input.value;
+        setVehicleDateInputValue(input, nativeInput.value || '');
+        if (input.value !== previousValue) {
+          dispatchVehicleDateInputEvents(input);
+        }
+      }
+
+      input.addEventListener('blur', function() {
+        syncVehicleDatePickerState(input);
+      });
+      input.addEventListener('change', function() {
+        syncVehicleDatePickerState(input);
+      });
+      nativeInput.addEventListener('input', syncTextFromNative);
+      nativeInput.addEventListener('change', syncTextFromNative);
+
+      slot.appendChild(btn);
+      slot.appendChild(nativeInput);
+      wrap.appendChild(slot);
+
+      syncVehicleDatePickerState(input);
+    });
   }
 
   function formatVehicleDateMaskValue(value) {
@@ -104,6 +196,7 @@
     }
     input.classList.remove('field-error');
     syncSingleDateInputVisibility(input);
+    syncVehicleDatePickerState(input);
   }
 
   function finalizeVehicleDateTextInput(input) {
@@ -114,6 +207,7 @@
     } else {
       input.value = formatVehicleDateMaskValue(input.value);
       syncSingleDateInputVisibility(input);
+      syncVehicleDatePickerState(input);
     }
   }
 
@@ -1022,6 +1116,7 @@
       })
     );
     dateInputs.forEach(syncSingleDateInputVisibility);
+    getVehicleDateInputs(modal).forEach(syncVehicleDatePickerState);
   }
 
   function syncEgzozMuayeneFields(modal) {
@@ -1036,6 +1131,7 @@
       input.disabled = !visible;
       if (!visible) setVehicleDateInputValue(input, '');
       syncSingleDateInputVisibility(input);
+      syncVehicleDatePickerState(input);
     }
   }
 
@@ -2423,6 +2519,8 @@
         }
       });
     });
+
+    setupVehicleDatePickers(document);
     
     const egzozCheckbox = document.getElementById('vehicle-egzoz-different');
     if (egzozCheckbox) {

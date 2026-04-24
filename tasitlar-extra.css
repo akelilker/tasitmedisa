@@ -1291,7 +1291,7 @@
     position: relative !important;
     display: flex !important;
     align-items: center !important;
-    gap: 8px !important;
+    gap: 4px !important; /* İstenen yatay boşluk */
     width: 100% !important;
     min-width: 0 !important;
   }

@@ -3433,13 +3433,9 @@ function renderVehicleDetailLeft(vehicle) {
     });
   }
 
-  /** Mobil: sigorta/kasko/muayene gg/aa/yyyy metin alanına yerel tarih seçici + simge */
-  function setupMobileOlayGgAaYyyyPickers(modal) {
+  /** Sigorta/kasko/muayene gg/aa/yyyy metin alanına yerel tarih seçici + simge */
+  function setupOlayGgAaYyyyPickers(modal) {
     if (!modal) return;
-    const narrow = (typeof window.matchMedia === 'function')
-      ? window.matchMedia('(max-width: 640px)').matches
-      : window.innerWidth <= 640;
-    if (!narrow) return;
     const ids = ['sigorta-tarih', 'kasko-tarih', 'muayene-tarih', 'muayene-egzoz-tarih'];
     const calendarSvg = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>';
     ids.forEach(function(id) {
@@ -4200,7 +4196,7 @@ function renderVehicleDetailLeft(vehicle) {
             }
           });
           bindGgAaYyyyTextInputs(modal);
-          setupMobileOlayGgAaYyyyPickers(modal);
+          setupOlayGgAaYyyyPickers(modal);
           bindDinamikOlayDateInputsForIos(modal);
         }, 100);
       }
