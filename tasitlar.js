@@ -1361,6 +1361,15 @@
         if (typeof window.openDisVeriPanel === 'function') window.openDisVeriPanel();
         return;
       }
+      if (action === 'open-driver-report') {
+        e.preventDefault();
+        e.stopPropagation();
+        if (typeof window.setNotificationsOpenState === 'function') {
+          window.setNotificationsOpenState(false);
+        }
+        window.location.href = 'admin/driver-report.html?from=notifications';
+        return;
+      }
       var plate = btn.getAttribute('data-plate') || '';
       var vehicleId = btn.getAttribute('data-vehicle-id') || '';
       var openHistory = btn.getAttribute('data-open-history') === '1';
@@ -6910,6 +6919,32 @@ function renderVehicleDetailLeft(vehicle) {
     keysToRemove.forEach(key => localStorage.removeItem(key));
   }
 
+  function shouldOpenNotificationsFromUrl() {
+    try {
+      const params = new URLSearchParams(window.location.search || '');
+      return params.get('openNotifications') === '1';
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function openNotificationsFromReturnParam() {
+    if (window._medisaOpenNotificationsHandled || !shouldOpenNotificationsFromUrl()) return;
+    window._medisaOpenNotificationsHandled = true;
+    if (typeof window.setNotificationsOpenState === 'function' && window.setNotificationsOpenState(true)) {
+      if (typeof window.syncMobileNotificationsDropdownHeight === 'function') {
+        requestAnimationFrame(function() {
+          window.syncMobileNotificationsDropdownHeight();
+          requestAnimationFrame(window.syncMobileNotificationsDropdownHeight);
+        });
+      }
+    }
+    try {
+      const cleanUrl = window.location.pathname + (window.location.hash || '');
+      window.history.replaceState({}, document.title, cleanUrl);
+    } catch (e) {}
+  }
+
   /**
    * Bildirimleri güncelle (muayene, sigorta, kasko + kullanıcı paneli işlemleri)
    */
@@ -6917,6 +6952,7 @@ function renderVehicleDetailLeft(vehicle) {
     if (!window.appData || !Array.isArray(window.appData.tasitlar)) return;
     const vehicles = readVehicles();
     const notifications = [];
+    const pendingGeneralRequests = [];
     const activeSpecialNotificationKeys = [];
     let hasUnreadActivity = false;
     let hasUnreadMarkableNotification = false;
@@ -7006,6 +7042,32 @@ function renderVehicleDetailLeft(vehicle) {
       }
     });
 
+    const usersById = {};
+    readUsers().forEach(function(user) {
+      if (user && user.id != null) usersById[String(user.id)] = user;
+    });
+    const vehiclesById = {};
+    vehicles.forEach(function(vehicle) {
+      if (vehicle && vehicle.id != null) vehiclesById[String(vehicle.id)] = vehicle;
+    });
+    const requests = Array.isArray(window.appData.duzeltme_talepleri) ? window.appData.duzeltme_talepleri : [];
+    requests.forEach(function(request) {
+      if (!request || request.talep_tipi !== 'genel' || request.durum !== 'beklemede') return;
+      const vehicle = vehiclesById[String(request.arac_id || '')];
+      const user = usersById[String(request.surucu_id || '')];
+      pendingGeneralRequests.push({
+        id: request.id,
+        type: String(request.konu_turu || 'talep'),
+        message: String(request.mesaj || request.sebep || '').trim(),
+        date: request.talep_tarihi || '',
+        plate: vehicle ? (vehicle.plate || vehicle.plaka || '-') : '-',
+        userName: user ? (user.isim || user.name || user.ad_soyad || 'Bilinmiyor') : 'Bilinmiyor'
+      });
+    });
+    pendingGeneralRequests.sort(function(a, b) {
+      return new Date(b.date || 0).getTime() - new Date(a.date || 0).getTime();
+    });
+
     // Kullanıcı paneli işlemleri: tüm taşıtlardan son olayları topla (en yeni 15)
     const recentEvents = [];
     vehicles.forEach(vehicle => {
@@ -7069,7 +7131,7 @@ function renderVehicleDetailLeft(vehicle) {
     const notifDropdown = DOM.notificationsDropdown;
     const notifIcon = DOM.notificationsToggleBtn || document.getElementById('notifications-toggle-btn');
 
-    if (notifications.length === 0 && recentSlice.length === 0 && !mtvHtml && !kaskoExcelHtml) {
+    if (notifications.length === 0 && recentSlice.length === 0 && pendingGeneralRequests.length === 0 && !mtvHtml && !kaskoExcelHtml) {
       if (notifDropdown) {
         notifDropdown.innerHTML = '<button disabled>Bildirim Yok</button>';
         if (notifDropdown.classList.contains('open') && typeof window.syncMobileNotificationsDropdownHeight === 'function') {
@@ -7084,7 +7146,24 @@ function renderVehicleDetailLeft(vehicle) {
       }
     } else {
       let html = mtvHtml + kaskoExcelHtml;
+      let pendingGeneralHtml = '';
       let activityHtml = '';
+
+      if (pendingGeneralRequests.length > 0) {
+        const topicMap = { talep: 'Talep', sikayet: 'Şikayet', oneri: 'Öneri', diger: 'Diğer' };
+        pendingGeneralRequests.forEach(function(request) {
+          const topic = topicMap[request.type] || 'Talep';
+          const dateDisplay = formatDateForDisplay(request.date) || '-';
+          const messageText = `${request.userName}, ${request.plate} Plakalı Taşıt İçin ${topic} Gönderdi.`;
+          const detailText = request.message ? '<div class="notif-line2">' + escapeHtml(request.message) + '</div>' : '';
+          pendingGeneralHtml += `<button type="button" data-action="open-driver-report" style="width: 100%; padding: 10px 12px; background: transparent; border: 1px solid rgba(212, 0, 0, 0.85) !important; color: #ccc; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 12px; text-align: left; transition: all 0.2s ease; height: auto; white-space: normal;" class="notification-item notification-item-feedback notification-unread date-warning-red-border">
+          <div class="notif-line1"><span class="date-warning-red">${escapeHtml(messageText)}</span></div>
+          ${detailText}
+          <div class="notif-line2">${escapeHtml(dateDisplay)}</div>
+        </button>`;
+        });
+        hasRed = true;
+      }
 
       // Tarih uyarıları (sigorta, kasko, muayene, egzos)
       if (notifications.length > 0) {
@@ -7170,6 +7249,10 @@ function renderVehicleDetailLeft(vehicle) {
         });
       }
 
+      if (pendingGeneralHtml) {
+        html += pendingGeneralHtml;
+      }
+
       if (activityHtml) {
         html += activityHtml;
       }
@@ -7198,6 +7281,7 @@ function renderVehicleDetailLeft(vehicle) {
            Turuncu: yalnız yaklaşan tarih uyarıları için kullanılır. */
       }
     }
+    openNotificationsFromReturnParam();
   };
 
   window.dismissMTVNotif = function(event, key) {
