@@ -3098,44 +3098,130 @@ function renderVehicleDetailLeft(vehicle) {
 }
 
   /**
-   * Taşıt detayındaki Notlar satırındaki kalem: düzenleme formunu açar, not alanına odaklanır.
+   * Sadece Notlar: tam taşıt formu açılmaz; yalnızca notes alanı sunucuya yazılır.
    */
+  var vehicleNotesOnlyModalInstance = null;
+  function getNotesOnlyModalEls() {
+    if (vehicleNotesOnlyModalInstance) return vehicleNotesOnlyModalInstance;
+    var wrap = document.createElement('div');
+    wrap.id = 'vehicle-notes-only-modal';
+    wrap.className = 'modal-overlay tasitlar-modal-overlay';
+    wrap.style.display = 'none';
+    wrap.setAttribute('aria-hidden', 'true');
+    var inner = document.createElement('div');
+    inner.className = 'modal-container';
+    inner.style.maxWidth = '520px';
+    inner.setAttribute('role', 'dialog');
+    inner.setAttribute('aria-labelledby', 'vehicle-notes-only-title');
+    inner.addEventListener('click', function(e) { e.stopPropagation(); });
+    inner.innerHTML = '<div class="modal-header"><h2 id="vehicle-notes-only-title">Notlar</h2><button type="button" class="modal-close" aria-label="Kapat" data-notes-only-close="1"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button></div><div class="modal-body"><div class="form-section" style="margin:0"><label class="form-label" for="vehicle-notes-only-textarea">Not metni</label><textarea id="vehicle-notes-only-textarea" class="form-input notes-auto-expand" rows="5" placeholder=""></textarea></div></div><div class="universal-btn-group"><button type="button" class="universal-btn-save" data-notes-only-save="1">Kaydet</button><button type="button" class="universal-btn-cancel" data-notes-only-cancel="1">Vazgeç</button></div>';
+    wrap.appendChild(inner);
+    document.body.appendChild(wrap);
+    var ta = document.getElementById('vehicle-notes-only-textarea');
+    var saveBtn = inner.querySelector('[data-notes-only-save]');
+    var cancelBtn = inner.querySelector('[data-notes-only-cancel]');
+    var xBtn = inner.querySelector('[data-notes-only-close]');
+    function hideNotesOnlyModal() {
+      wrap.classList.remove('active');
+      setTimeout(function() {
+        wrap.style.display = 'none';
+        wrap.setAttribute('aria-hidden', 'true');
+      }, 200);
+    }
+    function onSave() {
+      var id = String(wrap.dataset.vehicleId || '').trim();
+      if (!id) return;
+      var txt = ta ? (ta.value != null ? String(ta.value) : '') : '';
+      if (saveBtn) saveBtn.disabled = true;
+      var vehicles = readVehicles();
+      var v = vehicles.find(function(x) { return String(x.id) === String(id); });
+      if (!v) {
+        if (saveBtn) saveBtn.disabled = false;
+        alert('Ta\u015F\u0131t bulunamad\u0131.');
+        return;
+      }
+      var curVer = (v.version != null && v.version !== undefined) ? Number(v.version) : 0;
+      var next = Object.assign({}, v, {
+        notes: txt.trim(),
+        version: curVer + 1,
+        updatedAt: new Date().toISOString()
+      });
+      var p;
+      if (window.dataApi && typeof window.dataApi.saveVehicle === 'function') {
+        p = window.dataApi.saveVehicle(next, 'update');
+      } else if (typeof window.saveTasit === 'function') {
+        p = window.saveTasit(next);
+      } else {
+        p = Promise.reject(new Error('noapi'));
+      }
+      Promise.resolve(p).then(function() {
+        hideNotesOnlyModal();
+        if (typeof window.updateNotifications === 'function') window.updateNotifications();
+        if (typeof window.showVehicleDetail === 'function') window.showVehicleDetail(id);
+        if (typeof window.renderVehicles === 'function') window.renderVehicles();
+      }).catch(function(err) {
+        if (err && err.conflict === true) {
+          alert('Dikkat! Veri ba\u015Fka biri taraf\u0131ndan g\u00fcncellendi. Sayfay\u0131 yenileyin.');
+          if (typeof window.loadDataFromServer === 'function') {
+            window.loadDataFromServer(true).then(function() {
+              if (typeof window.showVehicleDetail === 'function') window.showVehicleDetail(id);
+            }).catch(function() {});
+          }
+        } else {
+          alert('Notlar kaydedilemedi. Tekrar deneyin.');
+        }
+      }).finally(function() {
+        if (saveBtn) saveBtn.disabled = false;
+      });
+    }
+    function onBackdrop(e) {
+      if (e.target === wrap) hideNotesOnlyModal();
+    }
+    wrap.addEventListener('click', onBackdrop);
+    if (xBtn) xBtn.addEventListener('click', function() { hideNotesOnlyModal(); });
+    if (cancelBtn) cancelBtn.addEventListener('click', function() { hideNotesOnlyModal(); });
+    if (saveBtn) saveBtn.addEventListener('click', onSave);
+    if (ta) {
+      ta.addEventListener('input', function() {
+        this.style.height = 'auto';
+        this.style.height = Math.min(300, this.scrollHeight) + 'px';
+      });
+    }
+    vehicleNotesOnlyModalInstance = { wrap: wrap, ta: ta, show: function showNotesOnlyModal() {
+      wrap.style.display = 'flex';
+      wrap.setAttribute('aria-hidden', 'false');
+      requestAnimationFrame(function() { wrap.classList.add('active'); });
+    } };
+    return vehicleNotesOnlyModalInstance;
+  }
+
   function openNotesEditFromDetail(vehicleId) {
     var vid = String(vehicleId != null ? vehicleId : '').trim();
     if (!vid) return;
+    var vehicles = readVehicles();
+    var vehicle = vehicles.find(function(v) { return String(v.id) === String(vid); });
+    if (!vehicle) {
+      alert('Ta\u015F\u0131t bulunamad\u0131!');
+      return;
+    }
     if (typeof window.closeVehicleDetailModal === 'function') {
       window.closeVehicleDetailModal();
     }
-    function runEdit() {
-      if (typeof window.editVehicle !== 'function') {
-        alert('Ta\u015F\u0131t kay\u0131t formu y\u00fcklenemedi. Men\u00fcden bir kez \u201cKay\u0131t \u0130\u015Flemleri\u201dne t\u0131klay\u0131p tekrar deneyin.');
-        return;
-      }
-      window.editVehicle(vid);
-      setTimeout(function() {
-        var n = document.getElementById('vehicle-notes');
-        if (n) {
-          n.focus();
-          try {
-            n.scrollIntoView({ block: 'center', behavior: 'smooth' });
-          } catch (e1) {
-            try { n.scrollIntoView(true); } catch (e2) { /* ignore */ }
-          }
-        }
-      }, 450);
-    }
     setTimeout(function() {
-      if (typeof window.editVehicle === 'function') {
-        runEdit();
-        return;
+      var els = getNotesOnlyModalEls();
+      els.wrap.dataset.vehicleId = vid;
+      if (els.ta) {
+        els.ta.value = vehicle.notes != null ? String(vehicle.notes) : '';
+        els.ta.style.height = 'auto';
       }
-      ensureVehicleTypePickerModule().then(function() {
-        setTimeout(runEdit, 0);
-      }).catch(function(err) {
-        console.error(err);
-        alert('Kay\u0131t mod\u00fcl\u00fc y\u00fcklenemedi.');
-      });
-    }, 320);
+      els.show();
+      if (els.ta) {
+        setTimeout(function() {
+          els.ta.focus();
+          try { els.ta.setSelectionRange(0, 0); } catch (e) { /* ignore */ }
+        }, 50);
+      }
+    }, 200);
   }
 
   /**
