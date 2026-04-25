@@ -77,3 +77,5 @@ outputs/vehicle-import/csv_takip_to_excel.py
 outputs/vehicle-import/ocr_vehicle_pdfs.py
 outputs/vehicle-import/ocr_vehicle_pdfs_err.txt
 outputs/vehicle-import/ocr_vehicle_pdfs_out.tsv
+data/data.json.bak_oncesi_sunucu_20260426
+data/data.json.backup
