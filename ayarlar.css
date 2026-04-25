@@ -1963,6 +1963,18 @@ input.settings-form-input:-moz-autofill,
   #user-modal .settings-card-title {
     color: var(--form-label-color, #ffffff) !important;
   }
+  /* Kullanıcı kartları: rol satırı isim uzunluğuna göre aşağı/yukarı oynamasın */
+  #user-modal #user-list .settings-card .settings-card-title {
+    height: calc(2 * 1.12em) !important;
+    min-height: calc(2 * 1.12em) !important;
+    max-height: calc(2 * 1.12em) !important;
+    align-content: center !important;
+  }
+  #user-modal #user-list .settings-card .settings-card-title.settings-card-title-name {
+    height: calc(2 * 1.12em) !important;
+    min-height: calc(2 * 1.12em) !important;
+    max-height: calc(2 * 1.12em) !important;
+  }
 }
 
 /* Masaüstü: Kullanıcı ekle modalında Ad Soyad header'a yakın */
