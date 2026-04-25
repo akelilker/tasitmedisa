@@ -1934,6 +1934,9 @@ input.settings-form-input:-moz-autofill,
   #user-modal .modal-body > div {
     margin-top: 0 !important;
   }
+  #user-modal .modal-body .settings-add-text-btn.user-add-btn {
+    transform: translateY(-8px);
+  }
   #branch-form-modal .modal-body #branch-form,
   #user-form-modal .modal-body #user-form.user-form-inner {
     width: 100%;
