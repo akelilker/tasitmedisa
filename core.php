@@ -970,9 +970,13 @@ function medisaFilterDataForContextWithUserPredicate($data, $context, $userPredi
         }
     }
 
-    $visibleTalepler = array_values(array_filter($data['duzeltme_talepleri'] ?? [], function ($request) use ($context, $visibleAylikKayitIds) {
+    $visibleTalepler = array_values(array_filter($data['duzeltme_talepleri'] ?? [], function ($request) use ($context, $visibleAylikKayitIds, $visibleVehicleIds) {
         if (($context['role'] ?? 'kullanici') === 'kullanici') {
             return (string)($request['surucu_id'] ?? '') === (string)($context['user_id'] ?? '');
+        }
+        $requestVehicleId = (string)($request['arac_id'] ?? '');
+        if ($requestVehicleId !== '' && isset($visibleVehicleIds[$requestVehicleId])) {
+            return true;
         }
         return isset($visibleAylikKayitIds[(string)($request['kayit_id'] ?? '')]);
     }));

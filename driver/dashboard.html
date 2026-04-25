@@ -37,7 +37,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../style-core.css?v=20260421.3">
-<link rel="stylesheet" href="driver-style.css?v=20260424.2">
+<link rel="stylesheet" href="driver-style.css?v=20260425.1">
 <script defer src="../script-core.js?v=20260421.5"></script>
     <!-- Splash: ana uygulama ile aynı logo+başlık (kritik, mobilde kesin uygulansın) -->
     <style>
@@ -139,6 +139,14 @@
                                 </div>
                                 <span id="driver-plate-subtitle" class="driver-plate-subtitle" aria-hidden="true"></span>
                             </div>
+                            <button type="button" class="driver-feedback-chip" onclick="openDriverFeedbackModal()" aria-label="Talep, şikayet veya öneri gönder">
+                                <svg class="driver-feedback-chip-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"></path>
+                                    <line x1="8" y1="9" x2="16" y2="9"></line>
+                                    <line x1="8" y1="13" x2="14" y2="13"></line>
+                                </svg>
+                                <span>Talep / Öneri</span>
+                            </button>
                             <div id="driver-mobile-notification-slot" class="driver-mobile-notification-slot" aria-hidden="true"></div>
                             <div id="driver-vehicle-info" class="driver-vehicle-info"></div>
                         </div>
@@ -193,6 +201,42 @@
                     <div class="driver-password-actions">
                         <button type="submit" id="driver-password-submit" class="btn-submit">Kaydet</button>
                         <button type="button" class="universal-btn-cancel" onclick="closeDriverPasswordModal()">Vazgeç</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        </div>
+
+        <div id="driver-feedback-modal" class="driver-modal modal-overlay" onclick="if(event.target === this) closeDriverFeedbackModal();">
+        <div class="driver-modal-content modal-container" onclick="event.stopPropagation();">
+            <div class="modal-header">
+                <h2>Talep / Şikayet / Öneri</h2>
+                <button type="button" onclick="closeDriverFeedbackModal()" class="modal-close" aria-label="Kapat">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="driver-feedback-form" class="driver-feedback-form" onsubmit="return submitDriverFeedback(event);">
+                    <div class="form-group">
+                        <label for="driver-feedback-type">Konu Türü</label>
+                        <select id="driver-feedback-type" class="form-input" required>
+                            <option value="talep">Talep</option>
+                            <option value="sikayet">Şikayet</option>
+                            <option value="oneri">Öneri</option>
+                            <option value="diger">Diğer</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="driver-feedback-message">Mesaj</label>
+                        <textarea id="driver-feedback-message" class="form-input driver-feedback-message" rows="4" maxlength="500" placeholder="Yöneticiye iletmek istediğiniz notu yazın..." required></textarea>
+                    </div>
+                    <div id="driver-feedback-message-status" class="driver-feedback-message-status" aria-live="polite"></div>
+                    <div class="driver-feedback-actions">
+                        <button type="submit" id="driver-feedback-submit" class="btn-submit">Gönder</button>
+                        <button type="button" class="universal-btn-cancel" onclick="closeDriverFeedbackModal()">Vazgeç</button>
                     </div>
                 </form>
             </div>
@@ -481,6 +525,6 @@
             <button type="button" class="btn-confirm-yes" onclick="confirmMuayeneSubmit()">Evet</button>
         </div>
     </div>
-<script defer src="driver-script.js?v=20260422.2"></script>
+<script defer src="driver-script.js?v=20260425.1"></script>
 </body>
 </html>
