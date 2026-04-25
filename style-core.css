@@ -624,6 +624,14 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-container::before {
         border-left-width: 0.7px;
         border-right-width: 0.7px;
+        box-shadow:
+            0 0 18px rgba(var(--theme-color-rgb), 0.18),
+            inset 0 0 22px rgba(var(--theme-color-rgb), 0.08);
+    }
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap {
+        box-shadow:
+            0 0 28px rgba(var(--theme-color-rgb), 0.16),
+            inset 0 0 18px rgba(var(--theme-color-rgb), 0.05);
     }
     .hero {
         border-width: 1.2px;
@@ -1335,8 +1343,8 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   }
 
   .notification-item.date-warning-red-border {
-    border-color: rgba(var(--theme-color-rgb), 0.52) !important;
-    box-shadow: none !important;
+    border-color: rgba(var(--theme-color-rgb), 0.66) !important;
+    box-shadow: 0 0 10px rgba(var(--theme-color-rgb), 0.16) !important;
   }
   .notification-item.date-warning-orange-border {
     border-color: rgba(var(--orange-warn-rgb), 0.38) !important;
@@ -1346,13 +1354,15 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
     border-color: rgba(255, 255, 255, 0.2) !important;
   }
   #notifications-dropdown .notification-item-activity.notification-unread {
-    border-color: rgba(var(--theme-color-rgb), 0.48) !important;
+    border-color: rgba(var(--theme-color-rgb), 0.62) !important;
+    box-shadow: 0 0 9px rgba(var(--theme-color-rgb), 0.14) !important;
   }
   #notifications-dropdown .mtv-notification {
     border-color: rgba(255, 140, 0, 0.42) !important;
   }
   #notifications-dropdown .kasko-excel-notification {
-    border-color: rgba(var(--theme-color-rgb), 0.4) !important;
+    border-color: rgba(var(--theme-color-rgb), 0.56) !important;
+    box-shadow: 0 0 9px rgba(var(--theme-color-rgb), 0.14) !important;
   }
 
   #notifications-dropdown.settings-dropdown button.notification-item {
