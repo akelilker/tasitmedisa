@@ -1848,7 +1848,7 @@
   // --- Edit Vehicle Function ---
   window.editVehicle = function(vehicleId) {
     const vehicles = readVehicles();
-    const vehicle = vehicles.find(v => v.id === vehicleId);
+    const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
     if (!vehicle) {
       alert("Taşıt bulunamadı!");
       return;
