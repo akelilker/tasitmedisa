@@ -7681,9 +7681,11 @@ function renderVehicleDetailLeft(vehicle) {
     window.vehicleTypePickerFromDetail = vehicleId;
     const picker = document.getElementById('vehicle-type-picker-overlay');
     if (!picker) return;
+    picker.classList.add('from-detail');
     picker.classList.remove('u-hidden');
     picker.style.display = 'flex';
     picker.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('vehicle-type-picker-from-detail-open');
   }
 
   function ensureVehicleDetailContext(vehicleId) {

@@ -30,8 +30,10 @@
     const pickerOverlay = getVehicleTypePickerOverlay();
     if (!pickerOverlay) return;
     pickerOverlay.classList.add('u-hidden');
+    pickerOverlay.classList.remove('from-detail');
     pickerOverlay.style.display = 'none';
     pickerOverlay.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('vehicle-type-picker-from-detail-open');
     window.vehicleTypePickerFromDetail = null;
   }
   function openVehicleTypePickerOverlay(options) {
@@ -40,6 +42,11 @@
     const opts = options || {};
     if (opts.vehicleId) {
       window.vehicleTypePickerFromDetail = String(opts.vehicleId);
+      pickerOverlay.classList.add('from-detail');
+      document.body.classList.add('vehicle-type-picker-from-detail-open');
+    } else {
+      pickerOverlay.classList.remove('from-detail');
+      document.body.classList.remove('vehicle-type-picker-from-detail-open');
     }
     pickerOverlay.classList.remove('u-hidden');
     pickerOverlay.style.display = 'flex';
