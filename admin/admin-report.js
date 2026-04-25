@@ -113,6 +113,28 @@
     window.location.href = '../driver/' + (nextPath ? ('?next=' + encodeURIComponent(nextPath)) : '');
   }
 
+  function isOpenedFromNotifications() {
+    try {
+      var params = new URLSearchParams(window.location.search || '');
+      return params.get('from') === 'notifications';
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function initNotificationsBackButton() {
+    var backBtn = document.getElementById('admin-notifications-back-btn');
+    var fromNotifications = isOpenedFromNotifications();
+    document.body.classList.toggle('report-from-notifications', fromNotifications);
+    if (!backBtn) return;
+    backBtn.hidden = !fromNotifications;
+    if (backBtn.dataset.bound === '1') return;
+    backBtn.addEventListener('click', function() {
+      window.location.href = '../index.html?openNotifications=1';
+    });
+    backBtn.dataset.bound = '1';
+  }
+
   function fetchJson(url, options) {
     var requestOptions = Object.assign({ cache: 'no-store' }, options || {});
     requestOptions.headers = buildAuthHeaders(requestOptions.headers || {});
@@ -1961,6 +1983,7 @@
     initPeriodSelect();
     initVersionDisplay();
     initFooterDim();
+    initNotificationsBackButton();
     loadBranches().then(function () {
       loadReport();
     });

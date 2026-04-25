@@ -134,6 +134,38 @@ body.admin-report-page::-webkit-scrollbar {
   display: none;
 }
 
+.admin-notifications-back-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--muted, #a0aec0);
+  cursor: pointer;
+}
+
+.admin-report-page.report-from-notifications .admin-notifications-back-btn {
+  display: inline-flex;
+}
+
+.admin-report-page.report-from-notifications .admin-report-hero .hero-logo img {
+  display: none;
+}
+
+.admin-notifications-back-btn:hover,
+.admin-notifications-back-btn:focus {
+  color: var(--txt-white, #fff);
+  outline: none;
+}
+
+.admin-notifications-back-btn .back-icon-svg {
+  width: 24px;
+  height: 24px;
+}
+
 @media (min-width: 641px) {
   .admin-report-hero {
     align-items: stretch;
