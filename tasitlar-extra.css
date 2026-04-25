@@ -1122,6 +1122,39 @@
     color: #ffffff !important;
 }
 
+/* Taşıt detay — Notlar satırı kalem (masaüstü; mobilde touch hedefi aşağıda genişletilir) */
+#vehicle-detail-modal .detail-row-header-notes {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+#vehicle-detail-modal .detail-notes-edit-btn {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--form-label-color);
+  cursor: pointer;
+  border-radius: 4px;
+}
+#vehicle-detail-modal .detail-notes-edit-btn:hover,
+#vehicle-detail-modal .detail-notes-edit-btn:focus-visible {
+  color: var(--theme-color);
+  outline: none;
+}
+#vehicle-detail-modal .detail-notes-edit-btn svg {
+  display: block;
+  width: 15px;
+  height: 15px;
+}
+
 /* =========================================
    MOBİL GÖRÜNÜM - TÜM MEDIA QUERY'LER BİRLEŞTİRİLDİ
    ========================================= */
@@ -1229,6 +1262,14 @@
   .olay-ekle-modal .back-icon-svg {
     width: 28px !important;
     height: 28px !important;
+  }
+  .vehicle-ruhsat-btn {
+    width: 44px !important;
+    height: 44px !important;
+  }
+  .vehicle-ruhsat-btn svg {
+    width: 22px !important;
+    height: 22px !important;
   }
   .vehicle-print-btn {
     width: 44px !important;
@@ -1432,6 +1473,16 @@
   #vehicle-detail-modal .detail-row-value.detail-sube-unassigned {
     color: #d40000 !important;
     font-weight: 600 !important;
+  }
+  
+  /* Notlar kalemi: mobilde dokunma alanı */
+  #vehicle-detail-modal .detail-notes-edit-btn {
+    width: 44px !important;
+    height: 44px !important;
+  }
+  #vehicle-detail-modal .detail-notes-edit-btn svg {
+    width: 18px !important;
+    height: 18px !important;
   }
   .detail-plate {
     font-size: 22px !important; /* +1pt tutarlı (tek kaynak) */

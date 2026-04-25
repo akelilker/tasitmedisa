@@ -3098,6 +3098,47 @@ function renderVehicleDetailLeft(vehicle) {
 }
 
   /**
+   * Taşıt detayındaki Notlar satırındaki kalem: düzenleme formunu açar, not alanına odaklanır.
+   */
+  function openNotesEditFromDetail(vehicleId) {
+    var vid = String(vehicleId != null ? vehicleId : '').trim();
+    if (!vid) return;
+    if (typeof window.closeVehicleDetailModal === 'function') {
+      window.closeVehicleDetailModal();
+    }
+    function runEdit() {
+      if (typeof window.editVehicle !== 'function') {
+        alert('Ta\u015F\u0131t kay\u0131t formu y\u00fcklenemedi. Men\u00fcden bir kez \u201cKay\u0131t \u0130\u015Flemleri\u201dne t\u0131klay\u0131p tekrar deneyin.');
+        return;
+      }
+      window.editVehicle(vid);
+      setTimeout(function() {
+        var n = document.getElementById('vehicle-notes');
+        if (n) {
+          n.focus();
+          try {
+            n.scrollIntoView({ block: 'center', behavior: 'smooth' });
+          } catch (e1) {
+            try { n.scrollIntoView(true); } catch (e2) { /* ignore */ }
+          }
+        }
+      }, 450);
+    }
+    setTimeout(function() {
+      if (typeof window.editVehicle === 'function') {
+        runEdit();
+        return;
+      }
+      ensureVehicleTypePickerModule().then(function() {
+        setTimeout(runEdit, 0);
+      }).catch(function(err) {
+        console.error(err);
+        alert('Kay\u0131t mod\u00fcl\u00fc y\u00fcklenemedi.');
+      });
+    }, 320);
+  }
+
+  /**
    * Sağ kolon render (Tarihler, Anahtar, Kredi, UTTS, Takip Cihazı)
    */
   function renderVehicleDetailRight(vehicle) {
@@ -3203,9 +3244,21 @@ function renderVehicleDetailLeft(vehicle) {
       notesValue = notesValue ? notesValue + '<br><br>' + kullaniciNotu : kullaniciNotu;
     }
     notesValue = notesValue || '-';
-    html += `<div class="detail-row detail-row-block"><div class="detail-row-header"><span class="detail-row-label">Notlar</span><span class="detail-row-colon">:</span></div><span class="detail-row-value">${notesValue}</span></div>`;
+    const notesPencil = (!vehicle.satildiMi)
+      ? '<button type="button" class="detail-notes-edit-btn" title="Notlar\u0131 d\u00fczenle" aria-label="Notlar\u0131 d\u00fczenle"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button>'
+      : '';
+    html += `<div class="detail-row detail-row-block detail-row-notes"><div class="detail-row-header detail-row-header-notes"><span class="detail-row-label">Notlar</span>${notesPencil}<span class="detail-row-colon">:</span></div><span class="detail-row-value">${notesValue}</span></div>`;
     
     rightEl.innerHTML = html;
+
+    const notesBtn = rightEl.querySelector('.detail-notes-edit-btn');
+    if (notesBtn) {
+      notesBtn.addEventListener('click', function(ev) {
+        ev.stopPropagation();
+        ev.preventDefault();
+        openNotesEditFromDetail(vehicle.id);
+      });
+    }
   }
 
   /**

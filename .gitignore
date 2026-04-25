@@ -68,3 +68,12 @@ outputs/vehicle-import/~$medisa_arac_birlesik_aktarim.xlsx
 outputs/vehicle-import/~$medisa_arac_birlesik_aktarim_v2.xlsx
 outputs/vehicle-import/data_import_preview_20260422-002439.json
 jjj.zip
+outputs/vehicle-import/arac_takip_tarihleri_TUM_BIR_KEZ.csv
+outputs/vehicle-import/arac_takip_tarihleri_TUM_BIR_KEZ.xlsx
+outputs/vehicle-import/compare_ozet_takip.py
+outputs/vehicle-import/arac_takip_tarihleri_TUM_BIR_KEZ_utf8bom.csv
+outputs/vehicle-import/merge_takip_csv_into_data_json.py
+outputs/vehicle-import/csv_takip_to_excel.py
+outputs/vehicle-import/ocr_vehicle_pdfs.py
+outputs/vehicle-import/ocr_vehicle_pdfs_err.txt
+outputs/vehicle-import/ocr_vehicle_pdfs_out.tsv
