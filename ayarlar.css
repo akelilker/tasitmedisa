@@ -1934,6 +1934,23 @@ input.settings-form-input:-moz-autofill,
   #user-modal .modal-body > div {
     margin-top: 0 !important;
   }
+  #user-modal .user-management-search-wrap {
+    position: relative;
+    z-index: 5;
+    flex-basis: 40px;
+    width: 40px;
+    overflow: visible;
+    transform: translateY(8px);
+  }
+  #user-modal .user-management-search-wrap.open {
+    flex-basis: 203px;
+    width: 203px;
+  }
+  #user-modal .user-management-search-toggle {
+    width: 40px;
+    height: 40px;
+    pointer-events: auto;
+  }
   #user-modal .modal-body .settings-add-text-btn.user-add-btn {
     transform: translateY(-8px);
   }
