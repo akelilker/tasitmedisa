@@ -2945,6 +2945,97 @@ const API_BASE = (function(){
       }
   };
 
+  function setDriverFeedbackMessage(message, isError) {
+      const messageEl = document.getElementById('driver-feedback-message-status');
+      if (!messageEl) return;
+      messageEl.textContent = message || '';
+      messageEl.classList.toggle('is-error', !!isError);
+      messageEl.classList.toggle('is-success', !!message && !isError);
+  }
+
+  window.openDriverFeedbackModal = function() {
+      const modal = document.getElementById('driver-feedback-modal');
+      const form = document.getElementById('driver-feedback-form');
+      if (!modal) return;
+      if (form) form.reset();
+      setDriverFeedbackMessage('', false);
+      modal.classList.add('show');
+      updateDriverModalBodyClass();
+      setTimeout(function() {
+          const messageInput = document.getElementById('driver-feedback-message');
+          if (messageInput) messageInput.focus();
+      }, 50);
+  };
+
+  window.closeDriverFeedbackModal = function() {
+      const modal = document.getElementById('driver-feedback-modal');
+      const form = document.getElementById('driver-feedback-form');
+      if (modal) modal.classList.remove('show');
+      if (form) form.reset();
+      setDriverFeedbackMessage('', false);
+      updateDriverModalBodyClass();
+  };
+
+  window.submitDriverFeedback = async function(event) {
+      if (event && event.preventDefault) event.preventDefault();
+      const vehicle = getSelectedVehicle();
+      const typeEl = document.getElementById('driver-feedback-type');
+      const messageEl = document.getElementById('driver-feedback-message');
+      const submitBtn = document.getElementById('driver-feedback-submit');
+      const type = typeEl ? String(typeEl.value || '').trim() : '';
+      const message = messageEl ? String(messageEl.value || '').trim() : '';
+
+      if (!vehicle || vehicle.id == null) {
+          setDriverFeedbackMessage('Taşıt bilgisi bulunamadı.', true);
+          return false;
+      }
+      if (!type) {
+          setDriverFeedbackMessage('Konu türünü seçmelisiniz.', true);
+          return false;
+      }
+      if (!message) {
+          setDriverFeedbackMessage('Mesaj alanını doldurmalısınız.', true);
+          return false;
+      }
+      if (message.length > 500) {
+          setDriverFeedbackMessage('Mesaj çok uzun. En fazla 500 karakter yazabilirsiniz.', true);
+          return false;
+      }
+
+      if (submitBtn) submitBtn.disabled = true;
+      setDriverFeedbackMessage('Gönderiliyor...', false);
+
+      try {
+          const response = await fetch(API_BASE + 'driver_feedback.php', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': 'Bearer ' + currentToken
+              },
+              body: JSON.stringify({
+                  arac_id: vehicle.id,
+                  konu_turu: type,
+                  mesaj: message
+              })
+          });
+          const data = await response.json();
+          if (data && data.success) {
+              setDriverFeedbackMessage('Talebiniz yöneticiye gönderildi.', false);
+              setTimeout(function() {
+                  closeDriverFeedbackModal();
+              }, 700);
+          } else {
+              setDriverFeedbackMessage((data && data.message) || 'Talep gönderilemedi.', true);
+          }
+      } catch (error) {
+          setDriverFeedbackMessage('Bağlantı hatası oluştu.', true);
+      } finally {
+          if (submitBtn) submitBtn.disabled = false;
+      }
+
+      return false;
+  };
+
   function setDriverPasswordMessage(message, isError) {
       const messageEl = document.getElementById('driver-password-message');
       if (!messageEl) return;

@@ -938,15 +938,25 @@
         requests.forEach(function (req) {
           var card = document.createElement('div');
           card.className = 'pending-card';
-          var parts = ['<strong><span class="pending-name">' + escapeHtml(req.surucu_adi) + '</span><span class="pending-muted"> – ' + escapeHtml((req.plaka || '').toString().trim().toLocaleUpperCase('tr-TR')) + ' (' + escapeHtml(req.donem) + ')</span></strong>'];
-          if (req.yeni_km != null) parts.push('<span class="pending-km-label">KM: </span><span class="pending-muted">' + escapeHtml(formatKm(req.eski_km)) + ' → ' + escapeHtml(formatKm(req.yeni_km)) + '</span>');
-          if (req.yeni_bakim != null) parts.push('<span class="pending-muted">Bakım: ' + escapeHtml(String(req.eski_bakim || 'Yok')) + ' → ' + escapeHtml(req.yeni_bakim || 'Yok') + '</span>');
-          if (req.yeni_kaza != null) parts.push('<span class="pending-kaza-label">Kaza: </span><span class="pending-muted">' + escapeHtml(String(req.eski_kaza || 'Yok')) + ' → ' + escapeHtml(req.yeni_kaza || 'Yok') + '</span>');
-          if (req.sebep) parts.push('<span class="pending-sebep-label">Sebep: </span><span class="pending-muted">' + escapeHtml(req.sebep) + '</span>');
+          var isGeneralRequest = req.talep_tipi === 'genel';
+          var plateText = (req.plaka || '').toString().trim().toLocaleUpperCase('tr-TR');
+          var vehicleText = plateText + (req.donem ? ' (' + req.donem + ')' : '');
+          var parts = ['<strong><span class="pending-name">' + escapeHtml(req.surucu_adi) + '</span><span class="pending-muted"> – ' + escapeHtml(vehicleText) + '</span></strong>'];
+          if (isGeneralRequest) {
+            var topicMap = { talep: 'Talep', sikayet: 'Şikayet', oneri: 'Öneri', diger: 'Diğer' };
+            var topic = topicMap[req.konu_turu] || 'Talep';
+            parts.push('<span class="pending-sebep-label">Konu: </span><span class="pending-muted">' + escapeHtml(topic) + '</span>');
+            if (req.mesaj) parts.push('<span class="pending-sebep-label">Mesaj: </span><span class="pending-muted">' + escapeHtml(req.mesaj) + '</span>');
+          } else {
+            if (req.yeni_km != null) parts.push('<span class="pending-km-label">KM: </span><span class="pending-muted">' + escapeHtml(formatKm(req.eski_km)) + ' → ' + escapeHtml(formatKm(req.yeni_km)) + '</span>');
+            if (req.yeni_bakim != null) parts.push('<span class="pending-muted">Bakım: ' + escapeHtml(String(req.eski_bakim || 'Yok')) + ' → ' + escapeHtml(req.yeni_bakim || 'Yok') + '</span>');
+            if (req.yeni_kaza != null) parts.push('<span class="pending-kaza-label">Kaza: </span><span class="pending-muted">' + escapeHtml(String(req.eski_kaza || 'Yok')) + ' → ' + escapeHtml(req.yeni_kaza || 'Yok') + '</span>');
+            if (req.sebep) parts.push('<span class="pending-sebep-label">Sebep: </span><span class="pending-muted">' + escapeHtml(req.sebep) + '</span>');
+          }
           card.innerHTML =
             '<div class="info">' + parts.join(' ') + '</div>' +
             '<div class="actions">' +
-              '<button type="button" class="approve-btn" data-id="' + escapeAttr(String(req.id)) + '">Onayla</button>' +
+              '<button type="button" class="approve-btn" data-id="' + escapeAttr(String(req.id)) + '">' + (isGeneralRequest ? 'Kapat' : 'Onayla') + '</button>' +
               '<button type="button" class="reject-btn" data-id="' + escapeAttr(String(req.id)) + '">Reddet</button>' +
             '</div>';
           card.querySelector('.approve-btn').addEventListener('click', function () { approveRequest(req.id); });

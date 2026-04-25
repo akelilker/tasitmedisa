@@ -60,7 +60,9 @@ $result = medisaMutateData(function (&$data) use ($requestId, $action, $adminNot
     $data['duzeltme_talepleri'][$talepIndex]['admin_notu'] = $adminNote;
     $data['duzeltme_talepleri'][$talepIndex]['admin_id'] = (string)($context['user_id'] ?? '');
 
-    if ($action === 'approve') {
+    $isGeneralRequest = ($talep['talep_tipi'] ?? '') === 'genel';
+
+    if ($action === 'approve' && !$isGeneralRequest) {
         $kayitIndex = medisaFindMonthlyRecordIndex($data, $talep['kayit_id'] ?? '');
         if ($kayitIndex >= 0) {
             $kayit = &$data['arac_aylik_hareketler'][$kayitIndex];
@@ -108,7 +110,9 @@ $result = medisaMutateData(function (&$data) use ($requestId, $action, $adminNot
 
     return [
         'success' => true,
-        'message' => $action === 'approve' ? 'Talep onaylandi, veri guncellendi!' : 'Talep reddedildi!',
+        'message' => $action === 'approve'
+            ? ($isGeneralRequest ? 'Talep kapatildi!' : 'Talep onaylandi, veri guncellendi!')
+            : 'Talep reddedildi!',
     ];
 });
 
