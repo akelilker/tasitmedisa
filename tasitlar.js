@@ -1293,6 +1293,44 @@
     modalContent.addEventListener('click', handleVehicleRowClick);
   }
 
+  function isDisVeriPanelUnavailableOnCurrentDeviceForNotif() {
+    const hasMatchMedia = typeof window.matchMedia === 'function';
+    const isMobileViewport = hasMatchMedia
+      ? window.matchMedia('(max-width: 640px)').matches
+      : window.innerWidth <= 640;
+    const ua = navigator.userAgent || '';
+    const isiOS = /iPhone|iPad|iPod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    const isStandalone = hasMatchMedia
+      && (window.matchMedia('(display-mode: standalone)').matches || window.matchMedia('(display-mode: fullscreen)').matches);
+
+    return isMobileViewport || (isiOS && (isStandalone || window.navigator.standalone === true));
+  }
+
+  function showKaskoExcelMobileWarning() {
+    const msg = 'Kasko değer listesi Excel yükleme işlemi mobilde desteklenmez. Dosya boyutu nedeniyle bu işlem sadece masaüstü sürümden yapılabilir.';
+    if (typeof window.showCenteredInfoBox === 'function') {
+      window.showCenteredInfoBox(msg);
+      return;
+    }
+
+    const overlay = document.getElementById('centered-info-box');
+    const msgEl = document.getElementById('centered-info-message');
+    if (!overlay || !msgEl) {
+      alert(msg);
+      return;
+    }
+
+    window.closeCenteredInfoBox = window.closeCenteredInfoBox || function closeCenteredInfoBox() {
+      overlay.classList.remove('active');
+      setTimeout(function() {
+        overlay.style.display = 'none';
+      }, 300);
+    };
+    msgEl.textContent = msg;
+    overlay.style.display = 'flex';
+    requestAnimationFrame(function() { overlay.classList.add('active'); });
+  }
+
   // Bildirim listesi: delegation (her bildirime ayrı onclick yerine tek listener)
   if (DOM.notificationsDropdown && !DOM.notificationsDropdown._notifDelegationBound) {
     DOM.notificationsDropdown._notifDelegationBound = true;
@@ -1311,8 +1349,14 @@
       if (!btn) return;
       var action = (btn.getAttribute('data-action') || '').toString().trim();
       if (action === 'open-dis-veri') {
+        e.preventDefault();
+        e.stopPropagation();
         if (typeof window.setNotificationsOpenState === 'function') {
           window.setNotificationsOpenState(false);
+        }
+        if (isDisVeriPanelUnavailableOnCurrentDeviceForNotif()) {
+          showKaskoExcelMobileWarning();
+          return;
         }
         if (typeof window.openDisVeriPanel === 'function') window.openDisVeriPanel();
         return;

@@ -660,6 +660,12 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
   align-items: center;
 }
 
+@media (max-width: 640px) {
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero {
+    min-height: 65px;
+  }
+}
+
 .hero-logo {
   flex: 0 0 var(--hero-logo-width);
   width: var(--hero-logo-width);
