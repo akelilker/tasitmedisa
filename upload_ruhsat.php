@@ -65,20 +65,14 @@ if (!medisaCanManageVehicleRecord($preVehicle, $context)) {
 if (!isset($_FILES['ruhsat']) || $_FILES['ruhsat']['error'] !== UPLOAD_ERR_OK) {
     $err = $_FILES['ruhsat']['error'] ?? -1;
     $msg = ($err === UPLOAD_ERR_INI_SIZE || $err === UPLOAD_ERR_FORM_SIZE)
-        ? 'Dosya cok buyuk (max 5MB)'
-        : 'Dosya yuklenemedi';
+        ? 'Dosya boyutu tarayıcı veya sunucu limitini aşıyor. Mobilde limit genelde daha düşüktür; daha küçük bir PDF deneyin veya masaüstünden yükleyin.'
+        : 'Dosya yüklenemedi';
     http_response_code(400);
     echo json_encode(['error' => $msg], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
 $file = $_FILES['ruhsat'];
-$maxSize = 5 * 1024 * 1024;
-if (($file['size'] ?? 0) > $maxSize) {
-    http_response_code(400);
-    echo json_encode(['error' => 'Dosya en fazla 5MB olabilir'], JSON_UNESCAPED_UNICODE);
-    exit;
-}
 
 $handle = fopen($file['tmp_name'], 'rb');
 $header = $handle ? fread($handle, 1024) : '';
