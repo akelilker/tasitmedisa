@@ -97,15 +97,20 @@ if ($action === 'pending_requests') {
 
         $surucu = $usersById[(string)($talep['surucu_id'] ?? '')] ?? null;
         $kayit = $kayitById[(string)($talep['kayit_id'] ?? '')] ?? null;
-        $arac = $kayit ? ($tasitById[(string)($kayit['arac_id'] ?? '')] ?? null) : null;
+        $aracId = $kayit ? (string)($kayit['arac_id'] ?? '') : (string)($talep['arac_id'] ?? '');
+        $arac = $aracId !== '' ? ($tasitById[$aracId] ?? null) : null;
 
         $pendingRequests[] = [
             'id' => $talep['id'] ?? '',
+            'talep_tipi' => $talep['talep_tipi'] ?? 'duzeltme',
             'kayit_id' => $talep['kayit_id'] ?? '',
+            'arac_id' => $aracId,
             'surucu_id' => $talep['surucu_id'] ?? '',
             'surucu_adi' => $surucu ? ($surucu['isim'] ?? $surucu['name'] ?? 'Bilinmiyor') : 'Bilinmiyor',
             'plaka' => $arac ? ($arac['plaka'] ?? $arac['plate'] ?? 'Bilinmiyor') : 'Bilinmiyor',
             'donem' => $kayit['donem'] ?? '',
+            'konu_turu' => $talep['konu_turu'] ?? '',
+            'mesaj' => $talep['mesaj'] ?? '',
             'eski_km' => $talep['eski_km'] ?? null,
             'yeni_km' => $talep['yeni_km'] ?? null,
             'eski_bakim' => $talep['eski_bakim_aciklama'] ?? null,
