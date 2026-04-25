@@ -1155,6 +1155,37 @@
   height: 15px;
 }
 
+/* Taşıt detay — sadece Notlar modalı: .notes-auto-expand 26px yükseklik; burada çok satırlı alan gerekir */
+#vehicle-notes-only-modal .form-section {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+  margin-bottom: 0;
+}
+#vehicle-notes-only-modal .form-label {
+  display: block;
+  width: 100%;
+  margin-bottom: 0;
+}
+#vehicle-notes-only-modal textarea.form-input {
+  min-height: 120px;
+  max-height: min(50vh, 400px);
+  width: 100%;
+  min-width: 0;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--data-value-color, #a0aec0);
+  resize: vertical;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+#vehicle-notes-only-modal .modal-body {
+  padding: 12px 14px 16px;
+}
+
 /* =========================================
    MOBİL GÖRÜNÜM - TÜM MEDIA QUERY'LER BİRLEŞTİRİLDİ
    ========================================= */
