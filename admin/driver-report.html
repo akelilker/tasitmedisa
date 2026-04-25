@@ -32,7 +32,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../style-core.css">
-  <link rel="stylesheet" href="admin-report.css?v=20260425.1">
+  <link rel="stylesheet" href="admin-report.css?v=20260425.2">
 </head>
 <body class="admin-report-page">
   <div id="pwa-install-wrapper" class="pwa-install-center"></div>
@@ -40,6 +40,11 @@
     <div class="admin-content-wrap">
   <div class="hero admin-report-hero">
     <div class="hero-logo admin-report-hero-side">
+      <button type="button" id="admin-notifications-back-btn" class="admin-notifications-back-btn" aria-label="Ana sayfa bildirimlerine dön" hidden>
+        <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 12H5M12 19l-7-7 7-7"></path>
+        </svg>
+      </button>
       <img src="../icon/logo-header2.svg" alt="MEDISA Logo">
       <span id="main-header-user-name" class="main-header-user-name is-empty" aria-live="polite"></span>
     </div>
@@ -191,6 +196,6 @@
   </div>
 
   <script defer src="../script-core.js"></script>
-  <script defer src="admin-report.js?v=20260425.1"></script>
+  <script defer src="admin-report.js?v=20260425.2"></script>
 </body>
 </html>
