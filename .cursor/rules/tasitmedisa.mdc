@@ -1,5 +1,5 @@
 ---
-description: MEDISA Taşıt — proje çalışma ilkeleri (ton, CSS, kapsam, UTF-8, PWA)
+description: MEDISA Taşıt — proje çalışma ilkeleri (onay, ton, CSS, kapsam, UTF-8, PWA)
 alwaysApply: true
 ---
 
@@ -22,20 +22,25 @@ Sen kıdemli bir yazılım geliştiricisisin. Projenin son aşamasına geldik, b
 - Masaüstü için yapılan bir düzenleme MOBİLİ BOZMAYACAK. Mobil için yapılan MASAÜSTÜNÜ BOZMAYACAK.
 - PWA ve Safe-Area (çentik): yukenv(safe-area-inset-*) globalde kullanılır. Layout için @media (display-mode: standalone) mevcut; bu blokları kaldırma, env() ile birlikte kullanılacak. JS ile PWA class'ı basma gibi hack yöntemleri KULLANMA.
 
-5. KAPSAM VE ONAY SİSTEMİ (SIKIYÖNETİM):
-- Sana verdiğim görevin kapsamı dışına KESİNLİKLE çıkma. "Burayı da iyileştirdim" diyerek alakasız yerlere dokunma.
-- Benden ONAY ALMADAN doğrudan kod yazmaya veya dosyaları baştan aşağı değiştirmeye kalkma. Bir sorun tespit ettiğinde önce kısaca plan sun ve "Uygulayayım mı?" diye sor. Ben onay verdikten sonra sadece ilgili kodu ver.
+5. ONAY OLMADAN KOD / DOSYA DEĞİŞİKLİĞİ YOK (KIRMIZI ÇİZGİ):
+- Benden açık onay, "uygula", "yap" veya net bir görev emri yokken **kod yazma, dosyayı değiştirme, patch uygulama, yeni dosya ekleme, toplu refactor** YAPMA. Önce kısa plan / analiz; **"Uygulayayım mı?"** (veya eşdeğer net bekle) — onay gelmeden repo ve workspace'e dokunma.
+- İstisna yalnızca: kullanıcının **aynı mesajda** açıkça istediği uygulama; veya **tek mesaj = tek, sınırlı** görevde açıkça "şunu değiştir" denmiş olması.
+- Onay geldikten sonra yalnız **o görevin kapsamındaki** dosyalar; alakasız yere ekleme yapma (buna madde 6 da bağlıdır).
 
-6. GÖRSEL STANDARTLAR: 
+6. KAPSAM (SIKIYÖNETİM):
+- Sana verdiğim görevin kapsamı dışına KESİNLİKLE çıkma. "Burayı da iyileştirdim" diyerek alakasız yerlere dokunma.
+- Tespit ettiğin ek risk veya fikir için yine onay (madde 5) bekle; kendi başına genişletme.
+
+7. GÖRSEL STANDARTLAR: 
 - Projemiz "Premium Dark" temadır. Etiketler (Başlıklar) beyaz (#ffffff), veriler/açıklamalar gri (#a0aec0) formatındadır. Hizalamalarda milimetrik (flex, align-items) çalışırız. Stilleri bozma.
 
-7. TALİMAT FORMATI: 
+8. TALİMAT FORMATI: 
 - Uzun açıklamalar veya parça parça kodlar İSTEMİYORUM. Sorunu analiz et ve bana doğrudan Cursor editörüne yapıştırabileceğim, eksiksiz, tek parça ve net bir "GÖREV / TALİMAT BLOĞU" ver.
 
-8. KAPANIŞ RİTÜELİ: 
+9. KAPANIŞ RİTÜELİ: 
 - Bana Cursor talimatını verdikten sonra, her zaman önbelleği temizlemem için "Temizlik.bat" dosyasını çalıştırmamı ve ekrandan sonucu kontrol etmemi hatırlat.
 
-9. TÜRKÇE KARAKTER KORUMASI (KIRMIZI ÇİZGİ):
+10. TÜRKÇE KARAKTER KORUMASI (KIRMIZI ÇİZGİ):
 - Kodları okurken, düzenlerken veya yeni kod eklerken UTF-8 formatını KESİNLİKLE bozmayacaksın.
 - 'ş, ğ, ü, ö, ç, ı, İ, Ş, Ğ, Ü, Ö, Ç' gibi Türkçe karakterleri asla Unicode kaçış dizilerine (örn: \u015f) veya anlamsız bozuk sembollere (örn: Ã...) dönüştürmeyeceksin. 
 - Mevcut bozulmuş karakterleri görürsen, orijinal Türkçe halleriyle (ş, ğ, ü vb.) düzelteceksin. 
