@@ -1504,7 +1504,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 /* Tarihçe (5 sekme): her işlem sonrası 3px boşluk, hafif kırmızı yatay çizgi (taşıt detay ortadaki dikey çizgi ile aynı ton), altında 3px boşluk */
 #vehicle-history-modal .history-item:not(:last-child),
 .modal-overlay:has(.history-tabs) .history-item:not(:last-child) {
-    border-bottom: 1px solid rgba(var(--theme-color-rgb), 0.28) !important;
+    border-bottom: 1px solid rgba(var(--theme-color-rgb), 0.30);
 }
 /* Tarihçe: sekme ile içerik arası 5px azaltma (history-content padding-top style-core'da 15px yapıldı) */
 #vehicle-history-modal #history-tabs {
