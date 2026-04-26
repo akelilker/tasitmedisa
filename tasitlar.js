@@ -3248,12 +3248,8 @@ function renderVehicleDetailLeft(vehicle) {
         revertVehicleDetailNotesInlineEdit(ta);
       }
     });
-    ta.addEventListener('blur', function() {
-      if (ta.dataset.skipCommitOnBlur === '1') {
-        delete ta.dataset.skipCommitOnBlur;
-        return;
-      }
-      commitVehicleDetailNotesInlineFromTextarea(ta);
+    ta.addEventListener('blur', () => {
+      flushVehicleDetailNotesInlineSave();
     });
     cell.innerHTML = '';
     cell.appendChild(ta);
