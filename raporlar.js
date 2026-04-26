@@ -743,7 +743,7 @@
                 if (kaskoDegeri == null || String(kaskoDegeri).trim() === '') kaskoDegeri = '-';
                 if (kaskoDegeri === '-' && (!vehicle.kaskoKodu || String(vehicle.kaskoKodu).trim() === '')) {
                     kaskoDegeri = 'Kasko kodu girilmedi';
-                } else if (kaskoDegeri === '-' && !localStorage.getItem('medisa_kasko_liste')) {
+                } else if (kaskoDegeri === '-' && !(typeof window.hasAnyKaskoListData === 'function' ? window.hasAnyKaskoListData() : !!localStorage.getItem('medisa_kasko_liste'))) {
                     kaskoDegeri = 'Excel yüklenmedi';
                 }
                 return String(kaskoDegeri).trim() || '-';
@@ -1549,7 +1549,7 @@
                     if (kaskoDegeri == null || String(kaskoDegeri).trim() === '') kaskoDegeri = '-';
                     if (kaskoDegeri === '-' && (!vehicle.kaskoKodu || String(vehicle.kaskoKodu).trim() === '')) {
                         kaskoDegeri = 'Kasko kodu girilmedi';
-                    } else if (kaskoDegeri === '-' && !localStorage.getItem('medisa_kasko_liste')) {
+                    } else if (kaskoDegeri === '-' && !(typeof window.hasAnyKaskoListData === 'function' ? window.hasAnyKaskoListData() : !!localStorage.getItem('medisa_kasko_liste'))) {
                         kaskoDegeri = 'Excel yüklenmedi';
                     }
                     return String(kaskoDegeri).trim() || '-';
@@ -1721,7 +1721,7 @@
                             if (kaskoDegeri == null || String(kaskoDegeri).trim() === '') kaskoDegeri = '-';
                             if (kaskoDegeri === '-' && (!vehicle.kaskoKodu || String(vehicle.kaskoKodu).trim() === '')) {
                                 kaskoDegeri = 'Kasko kodu girilmedi';
-                            } else if (kaskoDegeri === '-' && !localStorage.getItem('medisa_kasko_liste')) {
+                            } else if (kaskoDegeri === '-' && !(typeof window.hasAnyKaskoListData === 'function' ? window.hasAnyKaskoListData() : !!localStorage.getItem('medisa_kasko_liste'))) {
                                 kaskoDegeri = 'Excel yüklenmedi';
                             }
                             value = String(kaskoDegeri).trim() || '-';
