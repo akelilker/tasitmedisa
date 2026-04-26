@@ -571,7 +571,19 @@ async function loadDataFromServer(forceRefresh) {
                 },
                 sifreler: data.sifreler || [],
                 arac_aylik_hareketler: data.arac_aylik_hareketler || [],
-                duzeltme_talepleri: data.duzeltme_talepleri || []
+                duzeltme_talepleri: data.duzeltme_talepleri || [],
+                kaskoDegerListesi: (data.kaskoDegerListesi && typeof data.kaskoDegerListesi === 'object' && !Array.isArray(data.kaskoDegerListesi)) ? {
+                    updatedAt: String(data.kaskoDegerListesi.updatedAt || ''),
+                    period: String(data.kaskoDegerListesi.period || ''),
+                    rows: Array.isArray(data.kaskoDegerListesi.rows) ? data.kaskoDegerListesi.rows : []
+                } : {
+                    updatedAt: '',
+                    period: '',
+                    rows: []
+                },
+                notificationReadState: (data.notificationReadState && typeof data.notificationReadState === 'object' && !Array.isArray(data.notificationReadState))
+                    ? data.notificationReadState
+                    : {}
             };
 
             setMedisaSession(data.session || getSessionFromToken());
