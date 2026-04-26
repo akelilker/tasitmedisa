@@ -34,6 +34,12 @@ if (!$data) {
         'sifreler' => [],
         'arac_aylik_hareketler' => [],
         'duzeltme_talepleri' => [],
+        'kaskoDegerListesi' => [
+            'updatedAt' => '',
+            'period' => '',
+            'rows' => [],
+        ],
+        'notificationReadState' => [],
     ];
 }
 

@@ -1933,15 +1933,48 @@
               }
               throw storageErr;
             }
-            localStorage.setItem('medisa_kasko_liste_date', new Date().toISOString());
+            var nowIso = new Date().toISOString();
+            var periodDate = new Date();
+            var period = String(periodDate.getFullYear()) + '-' + String(periodDate.getMonth() + 1).padStart(2, '0');
+            localStorage.setItem('medisa_kasko_liste_date', nowIso);
+
+            if (!window.appData || typeof window.appData !== 'object') window.appData = {};
+            window.appData.kaskoDegerListesi = {
+              updatedAt: nowIso,
+              period: period,
+              rows: Array.isArray(jsonData) ? jsonData : []
+            };
 
             if (typeof window.clearKaskoCache === 'function') window.clearKaskoCache();
 
-            if (typeof window.guncelleTumKaskoDegerleri === 'function') {
-              window.guncelleTumKaskoDegerleri();
-            }
-            if (typeof window.updateNotifications === 'function') {
-              window.updateNotifications();
+            var afterSave = function() {
+              if (typeof window.guncelleTumKaskoDegerleri === 'function') {
+                window.guncelleTumKaskoDegerleri();
+              }
+              if (typeof window.updateNotifications === 'function') {
+                window.updateNotifications();
+              }
+            };
+
+            if (typeof window.saveDataToServer === 'function') {
+              window.saveDataToServer().then(function(ok) {
+                if (ok !== true) {
+                  if (typeof window.showCenteredInfoBox === 'function') {
+                    window.showCenteredInfoBox('Kasko listesi yerelde güncellendi; sunucuya yazılamadı. Lütfen tekrar deneyin.');
+                  }
+                  return;
+                }
+                afterSave();
+              }).catch(function(err) {
+                if (err && err.conflict === true && typeof window.loadDataFromServer === 'function') {
+                  window.loadDataFromServer(true).catch(function() {});
+                }
+                if (typeof window.showCenteredInfoBox === 'function') {
+                  window.showCenteredInfoBox('Kasko listesi kaydedilirken çakışma oluştu. Sayfayı yenileyip tekrar deneyin.');
+                }
+              });
+            } else {
+              afterSave();
             }
 
             if (typeof window.showCenteredInfoBox === 'function') {
