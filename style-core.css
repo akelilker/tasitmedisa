@@ -2584,9 +2584,11 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         min-height: 44px !important;
     }
     
-    /* Ana sayfa butonları mobilde: iç yükseklik +4px (67→71), tipografi bir tık güçlü */
+    /* Ana sayfa butonları mobilde: en az 71px; ileride metin 2+ satıra bölünürse yükseklik esneyebilsin */
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .menu-btn {
-        height: 71px;
+        height: auto; /* 54px sabitini bırak */
+        min-height: 71px;
+        overflow: visible; /* 2+ satırda kırpma (şu an .ttl tek satır nowrap) */
         box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25), 0 4px 20px rgba(var(--theme-color-rgb), 0.14);
         border-color: rgba(255, 255, 255, 0.55); /* Çerçeve gri daha parlak (0.45→0.55, kalınlık aynı) */
     }
