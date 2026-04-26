@@ -493,6 +493,16 @@ body.dashboard-page {
 .driver-below-hero-row .driver-btn-logout {
   flex: none;
 }
+.driver-below-hero-row .driver-btn-password {
+  color: #3b82f6;
+}
+.driver-below-hero-row .driver-btn-password:hover,
+.driver-below-hero-row .driver-btn-password:focus {
+  color: #60a5fa;
+}
+.driver-below-hero-row .driver-btn-logout {
+  color: var(--theme-color);
+}
 
 /* KULLANICI PANELİ: h1 altında, 1pt küçük, aynı renk (metalik gradient) */
 .hero-title-wrap .hero-panel-subtitle,
@@ -604,7 +614,11 @@ body.dashboard-page {
     margin: 0 !important;
   }
   .dashboard-page .driver-below-hero-row .driver-btn-password {
-    color: var(--link-blue, #5b9bd5) !important;
+    color: #3b82f6 !important;
+  }
+  .dashboard-page .driver-below-hero-row .driver-btn-password:hover,
+  .dashboard-page .driver-below-hero-row .driver-btn-password:focus {
+    color: #60a5fa !important;
   }
   /* İşlem geçmişi / Bildirimler / Çıkış arası 8px (masaüstü) */
   .dashboard-page .driver-below-hero-row {
@@ -1003,38 +1017,22 @@ body.dashboard-page {
   text-align: center;
   align-self: center;
 }
-.driver-feedback-chip {
-  align-self: center;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 3px;
-  max-width: none;
-  min-height: 0;
-  margin: 0 0 1px;
-  padding: 0;
-  border: none;
-  border-radius: 0;
-  background: transparent;
-  color: #a0aec0;
-  font-family: inherit;
-  font-size: 10.5px;
-  line-height: 1.1;
-  white-space: nowrap;
-  cursor: pointer;
-  transition: color 0.2s;
+/* Sağ kolon: yönetici mesajı (Talep Gönder) — araç bildirim butonlarından ince çizgi ile ayrılır */
+.driver-action-feedback-slot {
+  margin-top: 8px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  margin-bottom: 10px;
 }
-.driver-feedback-chip:hover,
-.driver-feedback-chip:focus {
-  color: var(--txt-white, #fff);
-  background: transparent;
-  outline: none;
+.driver-action-btn-feedback {
+  gap: 8px;
 }
-.driver-feedback-chip-icon {
+.driver-action-btn-feedback .driver-action-btn-feedback-icon {
   flex-shrink: 0;
   color: currentColor;
-  width: 11px;
-  height: 11px;
+}
+.driver-action-area-inner.driver-km-open .driver-action-group.driver-action-feedback-slot {
+  display: flex;
 }
 .driver-plate-dropdown-row {
   display: flex;
@@ -1749,7 +1747,6 @@ body.dashboard-page {
   background: transparent !important;
   border: none !important;
   box-shadow: none !important;
-  color: var(--theme-color) !important;
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
@@ -1758,13 +1755,24 @@ body.dashboard-page {
   align-items: center;
   justify-content: center;
 }
+.driver-btn-password {
+  color: #3b82f6;
+}
+.driver-btn-logout {
+  color: var(--theme-color) !important;
+}
 .driver-btn-password .driver-btn-password-icon,
 .driver-btn-logout .driver-btn-logout-icon {
   width: 20px;
   height: 20px;
 }
 
-.driver-btn-password:hover,
+.driver-btn-password:hover {
+  color: #60a5fa;
+  background: transparent !important;
+  border: none !important;
+  transform: scale(1.08);
+}
 .driver-btn-logout:hover {
   color: var(--theme-color) !important;
   background: transparent !important;
@@ -4714,11 +4722,11 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     stroke-width: 1.5 !important;
   }
   .dashboard-page .driver-btn-password .driver-btn-password-icon {
-    width: 26px !important;
-    height: 26px !important;
-    stroke-width: 2 !important;
+    width: 21px !important;
+    height: 21px !important;
+    stroke-width: 1.85 !important;
     position: relative !important;
-    top: 3px !important;
+    top: 0 !important;
     transform: none !important;
   }
 
