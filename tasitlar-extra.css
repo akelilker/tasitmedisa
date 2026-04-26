@@ -1155,35 +1155,39 @@
   height: 15px;
 }
 
-/* Taşıt detay — sadece Notlar modalı: .notes-auto-expand 26px yükseklik; burada çok satırlı alan gerekir */
-#vehicle-notes-only-modal .form-section {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: 8px;
-  width: 100%;
-  min-width: 0;
-  margin-bottom: 0;
-}
-#vehicle-notes-only-modal .form-label {
+#vehicle-detail-modal .detail-row-value-notes {
   display: block;
   width: 100%;
-  margin-bottom: 0;
+  min-width: 0;
+  box-sizing: border-box;
 }
-#vehicle-notes-only-modal textarea.form-input {
-  min-height: 120px;
-  max-height: min(50vh, 400px);
+#vehicle-detail-modal .detail-notes-admin-cell {
+  display: block;
   width: 100%;
   min-width: 0;
-  font-size: 12px;
+  box-sizing: border-box;
+}
+#vehicle-detail-modal .detail-notes-user-suffix {
+  display: block;
+  width: 100%;
+}
+#vehicle-detail-modal textarea.detail-notes-inline-textarea {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  margin: 0;
+  min-height: 4.5em;
+  max-height: min(55vh, 420px);
+  padding: 8px 10px;
+  font-size: 15px;
   line-height: 1.45;
   color: var(--data-value-color, #a0aec0);
-  resize: vertical;
-  box-sizing: border-box;
+  background: rgba(15, 23, 42, 0.55);
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  border-radius: 6px;
+  resize: none;
   overflow-y: auto;
-}
-#vehicle-notes-only-modal .modal-body {
-  padding: 12px 14px 16px;
 }
 
 /* =========================================
@@ -1514,6 +1518,10 @@
   #vehicle-detail-modal .detail-notes-edit-btn svg {
     width: 18px !important;
     height: 18px !important;
+  }
+  #vehicle-detail-modal textarea.detail-notes-inline-textarea {
+    font-size: 16px;
+    min-height: 4.75em;
   }
   .detail-plate {
     font-size: 22px !important; /* +1pt tutarlı (tek kaynak) */
