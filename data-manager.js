@@ -32,7 +32,13 @@ function getDefaultAppData() {
         },
         sifreler: [],
         arac_aylik_hareketler: [],
-        duzeltme_talepleri: []
+        duzeltme_talepleri: [],
+        kaskoDegerListesi: {
+            updatedAt: '',
+            period: '',
+            rows: []
+        },
+        notificationReadState: {}
     };
 }
 
@@ -443,7 +449,15 @@ function loadDataFromLocalStorage() {
                 ayarlar: data.ayarlar || { sirketAdi: 'Medisa', yetkiliKisi: '', telefon: '', eposta: '' },
                 sifreler: data.sifreler || [],
                 arac_aylik_hareketler: data.arac_aylik_hareketler || [],
-                duzeltme_talepleri: data.duzeltme_talepleri || []
+                duzeltme_talepleri: data.duzeltme_talepleri || [],
+                kaskoDegerListesi: (data.kaskoDegerListesi && typeof data.kaskoDegerListesi === 'object') ? data.kaskoDegerListesi : {
+                    updatedAt: '',
+                    period: '',
+                    rows: []
+                },
+                notificationReadState: (data.notificationReadState && typeof data.notificationReadState === 'object' && !Array.isArray(data.notificationReadState))
+                    ? data.notificationReadState
+                    : {}
             };
             setMedisaSession(getSessionFromToken());
             serverDatasetTrusted = false;
