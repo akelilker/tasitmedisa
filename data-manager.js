@@ -70,6 +70,8 @@ let isDataLoading = false;
 let loadPromise = null;
 let isSaving = false;
 let serverDatasetTrusted = false;
+/** Ardışık save isteklerini sıraya alır; eşzamanlı çağrılarda biri false dönüp veri kaybı yaşanmasın. */
+let saveMutex = Promise.resolve();
 
 function syncDataLoadState() {
     isDataLoaded = hasUsableAppData(window.appData);
@@ -609,19 +611,39 @@ async function loadDataFromServer(forceRefresh) {
     return loadPromise;
 }
 
-async function saveDataToServer() {
-    if (isSaving) return false;
+/**
+ * @param {{ includeKaskoDegerListesi?: boolean }} [options] - includeKaskoDegerListesi: true yalnızca kasko Excel / merkezi liste yazımı için.
+ */
+async function saveDataToServer(options) {
     if (!ensureMainAppSession()) return false;
     if (!serverDatasetTrusted) return false;
 
+    var opts = (options && typeof options === 'object') ? options : {};
+    var includeKasko = opts.includeKaskoDegerListesi === true;
+
+    var prevMutex = saveMutex;
+    var releaseNext;
+    saveMutex = new Promise(function(resolve) {
+        releaseNext = resolve;
+    });
+    await prevMutex.catch(function() {});
+
     isSaving = true;
+    syncDataLoadState();
     try {
+        var payloadObj = Object.assign({}, window.appData);
+        if (!includeKasko) {
+            delete payloadObj.kaskoDegerListesi;
+        } else {
+            payloadObj.includeKaskoDegerListesiSave = true;
+        }
+
         var response = await fetch(API_SAVE, {
             method: 'POST',
             headers: buildAuthHeaders({
                 'Content-Type': 'application/json'
             }),
-            body: JSON.stringify(window.appData)
+            body: JSON.stringify(payloadObj)
         });
 
         if (!response.ok) {
@@ -694,6 +716,7 @@ async function saveDataToServer() {
     } finally {
         isSaving = false;
         syncDataLoadState();
+        if (typeof releaseNext === 'function') releaseNext();
     }
 }
 
