@@ -2446,6 +2446,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         text-shadow: 0 0 1px rgba(255, 255, 255, 0.22) !important;
     }
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero .animated-line {
+        bottom: 19px; /* 22px − 3px: çizgi başlıktan biraz aşağı, h1 oynatılmadan */
         width: 88% !important;
         height: 2.7px !important;
         opacity: 0.76 !important;
@@ -2583,9 +2584,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         min-height: 44px !important;
     }
     
-    /* Ana sayfa butonları mobilde: iç yükseklik +3px, tipografi bir tık güçlü */
-    .menu-btn {
-        height: 67px !important;
+    /* Ana sayfa butonları mobilde: iç yükseklik +4px (67→71), tipografi bir tık güçlü */
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .menu-btn {
+        height: 71px;
         box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25), 0 4px 20px rgba(var(--theme-color-rgb), 0.14);
         border-color: rgba(255, 255, 255, 0.55); /* Çerçeve gri daha parlak (0.45→0.55, kalınlık aynı) */
     }
