@@ -98,8 +98,11 @@ $result = medisaMutateData(function (&$data) use ($incomingData) {
         );
     }
 
+    // Merkezi kasko listesi yalnızca istemcinin açıkça "kasko kaydı" gönderdiği isteklerde güncellenir.
+    // Normal araç/ayar kayıtlarında boş veya eski istemci kopyası tüm listeyi ezmesin diye bayrak zorunlu.
     $incomingKasko = $incomingData['kaskoDegerListesi'] ?? null;
-    if (is_array($incomingKasko)) {
+    $allowKaskoWrite = (($incomingData['includeKaskoDegerListesiSave'] ?? null) === true);
+    if ($allowKaskoWrite && is_array($incomingKasko)) {
         $rows = is_array($incomingKasko['rows'] ?? null) ? array_values($incomingKasko['rows']) : [];
         $updatedAt = (string)($incomingKasko['updatedAt'] ?? '');
         $period = (string)($incomingKasko['period'] ?? '');

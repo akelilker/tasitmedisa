@@ -1957,7 +1957,7 @@
             };
 
             if (typeof window.saveDataToServer === 'function') {
-              window.saveDataToServer().then(function(ok) {
+              window.saveDataToServer({ includeKaskoDegerListesi: true }).then(function(ok) {
                 if (ok !== true) {
                   if (typeof window.showCenteredInfoBox === 'function') {
                     window.showCenteredInfoBox('Kasko listesi yerelde güncellendi; sunucuya yazılamadı. Lütfen tekrar deneyin.');

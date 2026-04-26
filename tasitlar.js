@@ -1219,7 +1219,7 @@
     if (typeof window.clearKaskoCache === 'function') window.clearKaskoCache();
     if (typeof window.saveDataToServer !== 'function' || kaskoListSaveInFlight) return;
     kaskoListSaveInFlight = true;
-    window.saveDataToServer()
+    window.saveDataToServer({ includeKaskoDegerListesi: true })
       .catch(function() {})
       .finally(function() { kaskoListSaveInFlight = false; });
   }
