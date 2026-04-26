@@ -56,6 +56,12 @@ function medisaDefaultData() {
         'sifreler' => [],
         'arac_aylik_hareketler' => [],
         'duzeltme_talepleri' => [],
+        'kaskoDegerListesi' => [
+            'updatedAt' => '',
+            'period' => '',
+            'rows' => [],
+        ],
+        'notificationReadState' => [],
     ];
 }
 
@@ -995,6 +1001,12 @@ function medisaFilterDataForContextWithUserPredicate($data, $context, $userPredi
         'sifreler' => ($context['role'] ?? 'kullanici') === 'genel_yonetici' ? ($data['sifreler'] ?? []) : [],
         'arac_aylik_hareketler' => $visibleAylikKayitlar,
         'duzeltme_talepleri' => $visibleTalepler,
+        'kaskoDegerListesi' => is_array($data['kaskoDegerListesi'] ?? null) ? $data['kaskoDegerListesi'] : [
+            'updatedAt' => '',
+            'period' => '',
+            'rows' => [],
+        ],
+        'notificationReadState' => is_array($data['notificationReadState'] ?? null) ? $data['notificationReadState'] : [],
         'session' => medisaBuildSessionPayload($context),
     ];
 }

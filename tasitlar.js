@@ -1133,17 +1133,120 @@
   bindDOM();
 
   const NOTIF_READ_STORAGE_KEY = 'medisa_notif_read_keys_v1';
+  const LEGACY_NOTIF_READ_SESSION_KEY = 'notifViewedKeysV2';
+  let notifReadStateMigrationAttempted = false;
+  let notifReadStateSaveInFlight = false;
+  let kaskoListMigrationAttempted = false;
+  let kaskoListSaveInFlight = false;
+
+  function getCurrentNotifScopeKey() {
+    const session = (window.medisaSession && typeof window.medisaSession === 'object') ? window.medisaSession : {};
+    const user = (session.user && typeof session.user === 'object') ? session.user : {};
+    const userId = String(user.id != null ? user.id : '').trim();
+    if (userId) return 'user:' + userId;
+    const role = String(session.role || user.role || session.raw_role || '').trim().toLowerCase();
+    const branchIds = Array.isArray(session.branch_ids)
+      ? session.branch_ids.map(function(id) { return String(id).trim(); }).filter(Boolean).sort()
+      : [];
+    if (role && branchIds.length) return 'scope:' + role + ':' + branchIds.join(',');
+    if (role) return 'scope:' + role;
+    return '';
+  }
+
+  function ensureNotificationReadStateObject() {
+    if (!window.appData || typeof window.appData !== 'object') window.appData = {};
+    if (!window.appData.notificationReadState || typeof window.appData.notificationReadState !== 'object' || Array.isArray(window.appData.notificationReadState)) {
+      window.appData.notificationReadState = {};
+    }
+    return window.appData.notificationReadState;
+  }
+
+  function migrateLegacyNotificationReadStateForScope(scopeKey) {
+    if (notifReadStateMigrationAttempted || !scopeKey) return;
+    notifReadStateMigrationAttempted = true;
+    const state = ensureNotificationReadStateObject();
+    const hasCentralForScope = Array.isArray(state[scopeKey]) && state[scopeKey].length > 0;
+    if (hasCentralForScope) return;
+    let legacy = [];
+    try {
+      const localRaw = localStorage.getItem(NOTIF_READ_STORAGE_KEY);
+      const localParsed = localRaw ? JSON.parse(localRaw) : [];
+      if (Array.isArray(localParsed)) legacy = legacy.concat(localParsed);
+    } catch (err) {}
+    try {
+      const sessionRaw = sessionStorage.getItem(LEGACY_NOTIF_READ_SESSION_KEY);
+      const sessionParsed = sessionRaw ? JSON.parse(sessionRaw) : [];
+      if (Array.isArray(sessionParsed)) legacy = legacy.concat(sessionParsed);
+    } catch (err) {}
+    const unique = Array.from(new Set(legacy.map(function(key) { return String(key || '').trim(); }).filter(Boolean)));
+    if (!unique.length) return;
+    state[scopeKey] = unique;
+    if (typeof window.saveDataToServer !== 'function' || notifReadStateSaveInFlight) return;
+    notifReadStateSaveInFlight = true;
+    window.saveDataToServer()
+      .catch(function() {})
+      .finally(function() { notifReadStateSaveInFlight = false; });
+  }
+
+  function getKaskoState() {
+    if (!window.appData || typeof window.appData !== 'object') window.appData = {};
+    if (!window.appData.kaskoDegerListesi || typeof window.appData.kaskoDegerListesi !== 'object') {
+      window.appData.kaskoDegerListesi = { updatedAt: '', period: '', rows: [] };
+    }
+    if (!Array.isArray(window.appData.kaskoDegerListesi.rows)) window.appData.kaskoDegerListesi.rows = [];
+    return window.appData.kaskoDegerListesi;
+  }
+
+  function migrateLegacyKaskoListIfNeeded() {
+    if (kaskoListMigrationAttempted) return;
+    kaskoListMigrationAttempted = true;
+    const kaskoState = getKaskoState();
+    if (Array.isArray(kaskoState.rows) && kaskoState.rows.length > 0) return;
+    let legacyRows = [];
+    try {
+      const raw = localStorage.getItem('medisa_kasko_liste');
+      const parsed = raw ? JSON.parse(raw) : [];
+      legacyRows = Array.isArray(parsed) ? parsed : [];
+    } catch (err) {
+      legacyRows = [];
+    }
+    if (!legacyRows.length) return;
+    const legacyDate = localStorage.getItem('medisa_kasko_liste_date') || '';
+    const updatedAt = legacyDate || new Date().toISOString();
+    const dateForPeriod = legacyDate ? new Date(legacyDate) : new Date();
+    const period = String(dateForPeriod.getFullYear()) + '-' + String(dateForPeriod.getMonth() + 1).padStart(2, '0');
+    window.appData.kaskoDegerListesi = { updatedAt: updatedAt, period: period, rows: legacyRows };
+    if (typeof window.clearKaskoCache === 'function') window.clearKaskoCache();
+    if (typeof window.saveDataToServer !== 'function' || kaskoListSaveInFlight) return;
+    kaskoListSaveInFlight = true;
+    window.saveDataToServer()
+      .catch(function() {})
+      .finally(function() { kaskoListSaveInFlight = false; });
+  }
+
+  function hasAnyKaskoListData() {
+    migrateLegacyKaskoListIfNeeded();
+    const state = getKaskoState();
+    if (Array.isArray(state.rows) && state.rows.length > 0) return true;
+    return !!localStorage.getItem('medisa_kasko_liste');
+  }
+  window.hasAnyKaskoListData = hasAnyKaskoListData;
 
   function getViewedNotificationKeys() {
+    const scopeKey = getCurrentNotifScopeKey();
+    if (scopeKey) {
+      const state = ensureNotificationReadStateObject();
+      migrateLegacyNotificationReadStateForScope(scopeKey);
+      const scoped = state[scopeKey];
+      if (Array.isArray(scoped)) return scoped;
+    }
     try {
       const raw = localStorage.getItem(NOTIF_READ_STORAGE_KEY);
       const parsed = raw ? JSON.parse(raw) : [];
       if (Array.isArray(parsed)) return parsed;
-    } catch (err) {
-      // Eski sessionStorage anahtarına geri düş
-    }
+    } catch (err) {}
     try {
-      const legacyRaw = sessionStorage.getItem('notifViewedKeysV2');
+      const legacyRaw = sessionStorage.getItem(LEGACY_NOTIF_READ_SESSION_KEY);
       const legacyParsed = legacyRaw ? JSON.parse(legacyRaw) : [];
       return Array.isArray(legacyParsed) ? legacyParsed : [];
     } catch (err) {
@@ -1163,13 +1266,25 @@
       changed = true;
     });
     if (!changed) return;
-    try {
-      localStorage.setItem(NOTIF_READ_STORAGE_KEY, JSON.stringify(viewed));
-      // Eski anahtar kalmışsa temizle (okunma durumu artık kalıcı tutuluyor)
-      sessionStorage.removeItem('notifViewedKeysV2');
-    } catch (err) {
+    const scopeKey = getCurrentNotifScopeKey();
+    if (scopeKey) {
+      const state = ensureNotificationReadStateObject();
+      state[scopeKey] = viewed;
+      if (typeof window.saveDataToServer === 'function') {
+        window.saveDataToServer()
+          .catch(function() {})
+          .finally(function() {
+            if (typeof window.updateNotifications === 'function') window.updateNotifications();
+          });
+      } else if (typeof window.updateNotifications === 'function') {
+        window.updateNotifications();
+      }
       return;
     }
+    try {
+      localStorage.setItem(NOTIF_READ_STORAGE_KEY, JSON.stringify(viewed));
+      sessionStorage.removeItem(LEGACY_NOTIF_READ_SESSION_KEY);
+    } catch (err) { return; }
     if (typeof window.updateNotifications === 'function') window.updateNotifications();
   }
 
@@ -3335,11 +3450,12 @@ function renderVehicleDetailLeft(vehicle) {
     }
     if (kaskoDegeri === '-' && (!vehicle.kaskoKodu || String(vehicle.kaskoKodu).trim() === '')) {
       kaskoDegeri = 'Kasko kodu girilmedi';
-    } else if (kaskoDegeri === '-' && !localStorage.getItem('medisa_kasko_liste')) {
+    } else if (kaskoDegeri === '-' && !hasAnyKaskoListData()) {
       kaskoDegeri = 'Excel yüklenmedi';
     }
     let isKaskoOutdated = true;
-    const kaskoTarihKaynak = vehicle.kaskoDegeriYuklemeTarihi || localStorage.getItem('medisa_kasko_liste_date');
+    const kaskoState = getKaskoState();
+    const kaskoTarihKaynak = vehicle.kaskoDegeriYuklemeTarihi || kaskoState.updatedAt || localStorage.getItem('medisa_kasko_liste_date');
     if (kaskoTarihKaynak) {
       const uploadDate = new Date(kaskoTarihKaynak);
       const now = new Date();
@@ -7302,12 +7418,9 @@ function renderVehicleDetailLeft(vehicle) {
 
     // Kasko Excel hatırlatması: Liste bu aya ait değilse (Excel yüklenince veya X ile silinene kadar kırmızı kalır)
     let kaskoExcelHtml = '';
-    const kaskoUploadDate = localStorage.getItem('medisa_kasko_liste_date');
-    let kaskoListeGuncel = false;
-    if (kaskoUploadDate) {
-      const uploadDate = new Date(kaskoUploadDate);
-      if (uploadDate.getMonth() === m && uploadDate.getFullYear() === y) kaskoListeGuncel = true;
-    }
+    migrateLegacyKaskoListIfNeeded();
+    const kaskoState = getKaskoState();
+    const kaskoListeGuncel = String(kaskoState.period || '') === (String(y) + '-' + String(m + 1).padStart(2, '0'));
     if (!kaskoListeGuncel) {
       const kaskoKey = 'kasko_excel_dismiss_' + y + '_' + m;
       if (!localStorage.getItem(kaskoKey)) {

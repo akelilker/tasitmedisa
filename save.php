@@ -98,6 +98,53 @@ $result = medisaMutateData(function (&$data) use ($incomingData) {
         );
     }
 
+    $incomingKasko = $incomingData['kaskoDegerListesi'] ?? null;
+    if (is_array($incomingKasko)) {
+        $rows = is_array($incomingKasko['rows'] ?? null) ? array_values($incomingKasko['rows']) : [];
+        $updatedAt = (string)($incomingKasko['updatedAt'] ?? '');
+        $period = (string)($incomingKasko['period'] ?? '');
+        $data['kaskoDegerListesi'] = [
+            'updatedAt' => $updatedAt,
+            'period' => $period,
+            'rows' => $rows,
+        ];
+    }
+
+    if (!is_array($data['notificationReadState'] ?? null)) {
+        $data['notificationReadState'] = [];
+    }
+    $incomingReadState = $incomingData['notificationReadState'] ?? null;
+    if (is_array($incomingReadState)) {
+        $userId = (string)($context['user_id'] ?? '');
+        $allowedScopeKeys = [];
+        if ($userId !== '') {
+            $allowedScopeKeys[] = 'user:' . $userId;
+        } else {
+            $role = strtolower(trim((string)($context['role'] ?? '')));
+            $branchIds = array_values(array_filter(array_map(function ($id) {
+                return trim((string)$id);
+            }, is_array($context['branch_ids'] ?? null) ? $context['branch_ids'] : []), function ($id) {
+                return $id !== '';
+            }));
+            sort($branchIds);
+            if ($role !== '' && !empty($branchIds)) {
+                $allowedScopeKeys[] = 'scope:' . $role . ':' . implode(',', $branchIds);
+            } elseif ($role !== '') {
+                $allowedScopeKeys[] = 'scope:' . $role;
+            }
+        }
+        foreach ($allowedScopeKeys as $scopeKey) {
+            if (!array_key_exists($scopeKey, $incomingReadState) || !is_array($incomingReadState[$scopeKey])) continue;
+            $clean = [];
+            foreach ($incomingReadState[$scopeKey] as $key) {
+                $normalized = trim((string)$key);
+                if ($normalized === '') continue;
+                if (!in_array($normalized, $clean, true)) $clean[] = $normalized;
+            }
+            $data['notificationReadState'][$scopeKey] = $clean;
+        }
+    }
+
     return [
         'success' => true,
         'vehicleVersions' => medisaSaveBuildVehicleVersions($incomingVehicles),
