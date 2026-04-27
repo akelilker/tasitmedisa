@@ -935,8 +935,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-
   }
 }
 
-/* Bildirim öğeleri çerçeve renkleri */
-.notification-item {
+/* Bildirim öğeleri çerçeve renkleri (severity border class okunmamış tarih kartları hariç — kendi tonları uygulanır) */
+.notification-item:not(.date-warning-orange-border):not(.date-warning-red-border) {
   background: var(--bg) !important;
 }
 
@@ -960,6 +960,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-
 #notifications-dropdown .notification-item-activity.notification-unread:hover {
   border-color: rgba(var(--theme-color-rgb), 1) !important;
 }
+#notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border:hover,
 #notifications-dropdown .notification-item.date-warning-red-border:hover {
   border-color: rgba(var(--theme-color-rgb), 0.85);
   background: rgba(var(--theme-color-rgb), 0.14) !important;
@@ -967,6 +968,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-
   transform: translateY(-1px);
   color: var(--txt-white);
 }
+#notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border:hover,
 #notifications-dropdown .notification-item.date-warning-orange-border:hover {
   border-color: rgba(var(--orange-warn-rgb), 0.85);
   background: rgba(var(--orange-warn-rgb), 0.14) !important;
@@ -1147,8 +1149,6 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   max-height: none !important;
   padding: 5px 10px 2px !important;
   border-radius: 7px !important;
-  border: 1px solid var(--notif-border, rgba(130, 130, 130, 0.55));
-  background: linear-gradient(180deg, rgba(12, 18, 30, 0.94) 0%, rgba(8, 13, 22, 0.92) 100%) !important;
   color: var(--notif-fg, #ccc) !important;
   font-weight: 500 !important;
   font-size: 12px !important;
@@ -1162,13 +1162,23 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   margin-bottom: 2px !important;
 }
 
-/* Severity: çerçeve rengi metin token’ları ile aynı (base border shorthand burada ezilir) */
+/* Gri kartlar + okunmuşlar (severity border class yok): nötr gradient */
+#notifications-dropdown.settings-dropdown > button.notification-item:not(.date-warning-orange-border):not(.date-warning-red-border) {
+  border: 1px solid var(--notif-border, rgba(130, 130, 130, 0.55));
+  background: linear-gradient(180deg, rgba(12, 18, 30, 0.94) 0%, rgba(8, 13, 22, 0.92) 100%) !important;
+}
+
+/* Okunmamış tarih uyarısı: normal durumda severity tonu (hover kuralları aşağıda korunur) */
 #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border {
-  border-color: var(--orange-warn);
+  border: 1px solid rgba(var(--orange-warn-rgb), 0.72);
+  background: rgba(var(--orange-warn-rgb), 0.10);
+  box-shadow: 0 0 8px rgba(var(--orange-warn-rgb), 0.16);
 }
 
 #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border {
-  border-color: var(--theme-color);
+  border: 1px solid rgba(var(--theme-color-rgb), 0.72);
+  background: rgba(var(--theme-color-rgb), 0.10);
+  box-shadow: 0 0 8px rgba(var(--theme-color-rgb), 0.16);
 }
 
 #notifications-dropdown.settings-dropdown > button.notification-item .notif-line1,
@@ -1468,8 +1478,6 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
     background: transparent !important;
   }
 
-  #notifications-dropdown .notification-item.date-warning-red-border,
-  #notifications-dropdown .notification-item.date-warning-orange-border,
   #notifications-dropdown .notification-item-activity,
   #notifications-dropdown .mtv-notification,
   #notifications-dropdown .kasko-excel-notification {
@@ -1479,13 +1487,14 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
     background: linear-gradient(180deg, rgba(12, 18, 30, 0.94) 0%, rgba(8, 13, 22, 0.92) 100%) !important;
   }
 
-  .notification-item.date-warning-red-border {
+  /* Tarih uyarısı kartları: masaüstü dropdown — severity tonu ana blokta (> button); burada sadece ek parlama */
+  #notifications-dropdown .notification-item.date-warning-red-border {
     border-color: rgba(var(--theme-color-rgb), 0.66);
     box-shadow: 0 0 10px rgba(var(--theme-color-rgb), 0.16) !important;
   }
-  .notification-item.date-warning-orange-border {
+  #notifications-dropdown .notification-item.date-warning-orange-border {
     border-color: rgba(var(--orange-warn-rgb), 0.38);
-    box-shadow: none !important;
+    box-shadow: 0 0 8px rgba(var(--orange-warn-rgb), 0.16);
   }
   #notifications-dropdown .notification-item-activity {
     border-color: rgba(255, 255, 255, 0.2) !important;
@@ -2794,8 +2803,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
     }
     
-    /* Mobil bildirim çerçeveleri - arka plan opak */
-    .notification-item {
+    /* Mobil bildirim çerçeveleri - arka plan opak (severity tarih kartları hariç) */
+    .notification-item:not(.date-warning-orange-border):not(.date-warning-red-border) {
         background: var(--bg) !important;
     }
 
