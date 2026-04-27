@@ -1409,24 +1409,22 @@
   }
 
   /**
-   * Kasko değer listesi bildirimi → Dış Veri / Excel yolu; tıklamada mobilde uyarı, masaüstünde panel.
-   * data-manager.js ile aynı cihaz kuralı (medisaIsDisVeriPanelUnavailableOnDevice) + dar görünüm (768px)
-   * birleşimi: 641–768 tablet/küçük pencerede openDisVeriPanel sessiz no-op olmasın.
+   * Kasko değer listesi bildirimi → Dış Veri / Excel yolu.
+   * Bildirim kısayolu, Ayarlar > Dış Veri paneliyle aynı availability kuralını kullanır.
    */
   function isKaskoDegerListesiUploadUnavailableForNotifClick() {
     if (typeof window.medisaIsDisVeriPanelUnavailableOnDevice === 'function') {
-      if (window.medisaIsDisVeriPanelUnavailableOnDevice()) return true;
+      return window.medisaIsDisVeriPanelUnavailableOnDevice();
     }
     const hasMatchMedia = typeof window.matchMedia === 'function';
-    const isNarrowAppViewport = hasMatchMedia
-      ? window.matchMedia('(max-width: 768px)').matches
-      : window.innerWidth <= 768;
-    if (isNarrowAppViewport) return true;
+    const isMobileViewport = hasMatchMedia
+      ? window.matchMedia('(max-width: 640px)').matches
+      : window.innerWidth <= 640;
     const ua = navigator.userAgent || '';
     const isiOS = /iPhone|iPad|iPod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
     const isStandalone = hasMatchMedia
       && (window.matchMedia('(display-mode: standalone)').matches || window.matchMedia('(display-mode: fullscreen)').matches);
-    return !!(isiOS && (isStandalone || window.navigator.standalone === true));
+    return isMobileViewport || (isiOS && (isStandalone || window.navigator.standalone === true));
   }
 
   function showKaskoExcelMobileWarning() {
