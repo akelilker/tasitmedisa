@@ -1435,14 +1435,12 @@
       window.showCenteredInfoBox(msg);
       return;
     }
-
     const overlay = document.getElementById('centered-info-box');
     const msgEl = document.getElementById('centered-info-message');
     if (!overlay || !msgEl) {
       alert(msg);
       return;
     }
-
     window.closeCenteredInfoBox = window.closeCenteredInfoBox || function closeCenteredInfoBox() {
       overlay.classList.remove('active');
       setTimeout(function() {
@@ -1452,6 +1450,34 @@
     msgEl.textContent = msg;
     overlay.style.display = 'flex';
     requestAnimationFrame(function() { overlay.classList.add('active'); });
+  }
+
+  /**
+   * Mobil/PWA: document-level capture, script-core dışarı-tıklama (bubble) kapanışından ÖNCE çalışır;
+   * stopImmediatePropagation ile panel kapanmadan uyarı gösterilir, sonra panel kapatılır.
+   */
+  if (!document._medisaKaskoNotifMobileCaptureBound) {
+    document._medisaKaskoNotifMobileCaptureBound = true;
+    document.addEventListener('click', function(e) {
+      var notif = DOM.notificationsDropdown || document.getElementById('notifications-dropdown');
+      if (!notif || !notif.classList.contains('open')) return;
+      if (!notif.contains(e.target)) return;
+      var item = e.target.closest && e.target.closest('.notification-item.kasko-excel-notification');
+      if (!item) return;
+      if (e.target.closest && e.target.closest('.mtv-dismiss-btn')) return;
+      var action = (item.getAttribute('data-action') || '').toString().trim();
+      if (action !== 'open-dis-veri') return;
+      if (!isKaskoDegerListesiUploadUnavailableForNotifClick()) return;
+      e.preventDefault();
+      e.stopPropagation();
+      if (typeof e.stopImmediatePropagation === 'function') e.stopImmediatePropagation();
+      showKaskoExcelMobileWarning();
+      setTimeout(function() {
+        if (typeof window.setNotificationsOpenState === 'function') {
+          window.setNotificationsOpenState(false);
+        }
+      }, 0);
+    }, true);
   }
 
   // Bildirim listesi: delegation (her bildirime ayrı onclick yerine tek listener)
@@ -1479,7 +1505,13 @@
         }
         if (isKaskoDegerListesiUploadUnavailableForNotifClick()) {
           showKaskoExcelMobileWarning();
+          if (typeof window.setNotificationsOpenState === 'function') {
+            window.setNotificationsOpenState(false);
+          }
           return;
+        }
+        if (typeof window.setNotificationsOpenState === 'function') {
+          window.setNotificationsOpenState(false);
         }
         if (typeof window.openDisVeriPanel === 'function') window.openDisVeriPanel();
         return;
