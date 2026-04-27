@@ -1540,7 +1540,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   }
 
   #notifications-dropdown.settings-dropdown button.notification-item:hover {
-    background: rgba(var(--theme-color-rgb), 0.14) !important;
+    background: rgba(255, 255, 255, 0.08) !important;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.24) !important;
     transform: translateY(-1px);
     color: var(--txt-white) !important;
@@ -1554,26 +1554,26 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
 
   #notifications-dropdown .notification-item-activity:hover {
     border-color: rgba(var(--theme-color-rgb), 0.42) !important;
-    background: rgba(var(--theme-color-rgb), 0.14) !important;
+    background: rgba(255, 255, 255, 0.08) !important;
   }
   #notifications-dropdown .notification-item-activity.notification-unread:hover {
     border-color: rgba(var(--theme-color-rgb), 0.5) !important;
-    background: rgba(var(--theme-color-rgb), 0.15) !important;
+    background: rgba(255, 255, 255, 0.08) !important;
   }
   #notifications-dropdown .notification-item.date-warning-red-border:hover {
     border-color: rgba(var(--theme-color-rgb), 0.58) !important;
-    background: rgba(var(--theme-color-rgb), 0.15) !important;
+    background: rgba(255, 255, 255, 0.08) !important;
   }
   #notifications-dropdown .notification-item.date-warning-orange-border:hover {
     border-color: rgba(var(--orange-warn-rgb), 0.44) !important;
-    background: rgba(var(--theme-color-rgb), 0.14) !important;
+    background: rgba(255, 255, 255, 0.08) !important;
   }
 
   #notifications-dropdown .notification-item.mtv-notification {
     transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
   }
   #notifications-dropdown .notification-item.mtv-notification:hover {
-    background: rgba(var(--theme-color-rgb), 0.14) !important;
+    background: rgba(255, 255, 255, 0.08) !important;
     border-color: rgba(255, 140, 0, 0.42) !important;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.22) !important;
     transform: translateY(-1px);
@@ -1582,7 +1582,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
     transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
   }
   #notifications-dropdown .notification-item.kasko-excel-notification:hover {
-    background: rgba(var(--theme-color-rgb), 0.15) !important;
+    background: rgba(255, 255, 255, 0.08) !important;
     border-color: rgba(var(--theme-color-rgb), 0.46) !important;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.24) !important;
     transform: translateY(-1px);
