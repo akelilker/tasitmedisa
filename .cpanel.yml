@@ -4,5 +4,5 @@ deployment:
     - export DEPLOYPATH=/home/karmotor/public_html/medisa
     - /bin/cp -R admin driver icon data $DEPLOYPATH/
     - /bin/cp index.html manifest.json sw.js .htaccess $DEPLOYPATH/
-    - /bin/cp core.php load.php save.php asset.php restore.php ruhsat.php ruhsat_preview.php upload_ruhsat.php $DEPLOYPATH/
+    - /bin/cp core.php load.php load_kasko.php save.php save_kasko.php asset.php restore.php ruhsat.php ruhsat_preview.php upload_ruhsat.php $DEPLOYPATH/
     - /bin/cp script-core.js data-manager.js data-service.js tasitlar.js tasitlar-yazici.js tasitlar-base.css tasitlar-extra.css kayit.js kayit.css raporlar.js raporlar.css ayarlar.js ayarlar.css style-core.css $DEPLOYPATH/
