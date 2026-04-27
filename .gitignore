@@ -80,3 +80,8 @@ outputs/vehicle-import/ocr_vehicle_pdfs_out.tsv
 data/data.json.bak_oncesi_sunucu_20260426
 data/data.json.backup
 dosya.zip
+outputs/docx-edevlet/data.before_docx_edevlet_update.json
+outputs/docx-edevlet/docx_edevlet_preview.json
+outputs/docx-edevlet/docx_edevlet_summary.json
+outputs/docx-edevlet/test_page0.png
+scripts/process_edevlet_docx_updates.mjs

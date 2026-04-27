@@ -3098,7 +3098,7 @@
   function formatDateForDisplay(dateStr) {
     if (!dateStr) return '';
     const raw = String(dateStr).trim();
-    if (/\d{4}-\d{2}-\d{2}T/.test(raw)) {
+    if (/\d{4}-\d{2}-\d{2}[T ]\d{2}/.test(raw)) {
       const parsedIso = new Date(raw);
       if (!isNaN(parsedIso.getTime())) {
         const d = String(parsedIso.getDate()).padStart(2, '0');
@@ -3135,6 +3135,28 @@
     }
     return raw;
   }
+
+  /**
+   * Bildirim: talep_tarihi (PHP date('c') / ISO) — formatDateShort kaçırılamaz; tek format.
+   */
+  function medisaNotificationTalepDisplay(str) {
+    if (str == null || str === '') return '-';
+    const t = Date.parse(String(str).trim());
+    if (isNaN(t)) {
+      return String(str).trim() || '-';
+    }
+    const d = new Date(t);
+    const p = function(n) { return String(n).padStart(2, '0'); };
+    return p(d.getDate()) + '/' + p(d.getMonth() + 1) + '/' + d.getFullYear() + ' ' + p(d.getHours()) + ':' + p(d.getMinutes());
+  }
+  function medisaNotificationTalepSortMs(str) {
+    const t = Date.parse(String(str || '').trim());
+    if (!isNaN(t)) return t;
+    const d = new Date(str);
+    if (!isNaN(d.getTime())) return d.getTime();
+    return 0;
+  }
+
   function getLatestApprovedKmCorrection(vehicleId, kmEvents) {
     const appData = (window.appData && typeof window.appData === 'object') ? window.appData : {};
     const duzeltmeTalepleri = Array.isArray(appData.duzeltme_talepleri) ? appData.duzeltme_talepleri : [];
@@ -7570,7 +7592,7 @@ function renderVehicleDetailLeft(vehicle) {
         const topicMap = { talep: 'Talep', sikayet: 'Şikayet', oneri: 'Öneri', diger: 'Diğer' };
         pendingGeneralRequests.forEach(function(request, reqIdx) {
           const topic = topicMap[request.type] || 'Talep';
-          const dateDisplay = formatDateForDisplay(request.date) || '-';
+          const dateDisplay = medisaNotificationTalepDisplay(request.date);
           const messageText = `${request.userName}, ${request.plate} Plakalı Taşıt İçin ${topic} Gönderdi.`;
           const detailText = request.message ? '<div class="notif-line2 notif-detail">' + escapeHtml(request.message) + '</div>' : '';
           const h = `<button type="button" data-action="open-driver-report" style="--notif-border: rgba(212, 0, 0, 0.85); --notif-fg: #ccc;" class="notification-item notification-item-feedback notification-unread date-warning-red-border">
@@ -7578,8 +7600,11 @@ function renderVehicleDetailLeft(vehicle) {
           ${detailText}
           <div class="notif-line2 notif-meta-date">${escapeHtml(dateDisplay)}</div>
         </button>`;
-          const base = new Date(request.date || 0).getTime();
-          const t = (isNaN(base) ? 0 : base) + reqIdx * 1e-6;
+          var baseMs = medisaNotificationTalepSortMs(request.date);
+          if (baseMs <= 0) {
+            baseMs = tStart + 12 * 3600 * 1000;
+          }
+          const t = baseMs + reqIdx * 1e-6;
           notifFeed.push({ t: t, h: h });
         });
         hasRed = true;
@@ -7587,7 +7612,7 @@ function renderVehicleDetailLeft(vehicle) {
 
       if (pendingDuzeltmeRequests.length > 0) {
         pendingDuzeltmeRequests.forEach(function(request, dreqIdx) {
-          const dateDisplay = formatDateForDisplay(request.date) || '-';
+          const dateDisplay = medisaNotificationTalepDisplay(request.date);
           const messageText = `${request.userName}, ${request.plate} plakalı taşıt için ${request.topic} (onay bekliyor).`;
           const detailText = request.message ? '<div class="notif-line2 notif-detail">' + escapeHtml(request.message) + '</div>' : '';
           const h = `<button type="button" data-action="open-driver-report" style="--notif-border: rgba(212, 0, 0, 0.85); --notif-fg: #ccc;" class="notification-item notification-item-feedback notification-unread date-warning-red-border">
@@ -7595,8 +7620,11 @@ function renderVehicleDetailLeft(vehicle) {
           ${detailText}
           <div class="notif-line2 notif-meta-date">${escapeHtml(dateDisplay)}</div>
         </button>`;
-          const base = new Date(request.date || 0).getTime();
-          const t = (isNaN(base) ? 0 : base) + dreqIdx * 1e-6;
+          var dbaseMs = medisaNotificationTalepSortMs(request.date);
+          if (dbaseMs <= 0) {
+            dbaseMs = tStart + 12 * 3600 * 1000;
+          }
+          const t = dbaseMs + dreqIdx * 1e-6;
           notifFeed.push({ t: t, h: h });
         });
         hasRed = true;
