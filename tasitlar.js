@@ -1635,6 +1635,17 @@
 
   window.syncMobileNotificationsDropdownHeight = syncMobileNotificationsDropdownHeight;
 
+  function resetNotificationsDropdownLayoutState() {
+    var dropdown = DOM.notificationsDropdown || document.getElementById('notifications-dropdown');
+    if (!dropdown) return;
+    dropdown.style.removeProperty('max-height');
+    dropdown.style.removeProperty('padding-bottom');
+    dropdown.style.removeProperty('scroll-padding-bottom');
+    dropdown.style.removeProperty('--mobile-notifications-max-height');
+  }
+
+  window.resetNotificationsDropdownLayoutState = resetNotificationsDropdownLayoutState;
+
   if (!window.__medisaNotifDropdownResizeBound) {
     window.__medisaNotifDropdownResizeBound = true;
     window.addEventListener('resize', function() {
@@ -7447,7 +7458,7 @@ function renderVehicleDetailLeft(vehicle) {
       if (!localStorage.getItem(mtvKey)) {
         const mtvKeyEsc = (mtvKey || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
         const mtvFirstSeenDisplay = getOrCreateSpecialNotifFirstSeen(mtvKey);
-        const mtvDateHtml = showDesktopSpecialNotifDate ? '<div class="notif-line2">' + escapeHtml(mtvFirstSeenDisplay) + '</div>' : '';
+        const mtvDateHtml = showDesktopSpecialNotifDate ? '<div class="notif-line2 notif-meta-date">' + escapeHtml(mtvFirstSeenDisplay) + '</div>' : '';
         activeSpecialNotificationKeys.push(mtvKey);
         mtvHtml = '<div class="notification-item mtv-notification"><div class="mtv-text-container"><div class="mtv-main-text notif-line1">Ayın Son Gününe Kadar MTV Ödemelerinin Yapılması Gerekmektedir.</div>' + mtvDateHtml + '</div><div class="mtv-dismiss-wrapper"><button type="button" class="mtv-dismiss-btn" onclick="dismissMTVNotif(event, \'' + mtvKeyEsc + '\')" aria-label="Bildirimi Kapat"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></button><div class="mtv-tooltip">Ödeme Yapıldıysa Bildirimi Silebilirsiniz.</div></div></div>';
         hasOrange = true;
@@ -7464,7 +7475,7 @@ function renderVehicleDetailLeft(vehicle) {
       if (!localStorage.getItem(kaskoKey)) {
         const kaskoKeyEsc = (kaskoKey || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
         const kaskoFirstSeenDisplay = getOrCreateSpecialNotifFirstSeen(kaskoKey);
-        const kaskoDateHtml = showDesktopSpecialNotifDate ? '<div class="notif-line2">' + escapeHtml(kaskoFirstSeenDisplay) + '</div>' : '';
+        const kaskoDateHtml = showDesktopSpecialNotifDate ? '<div class="notif-line2 notif-meta-date">' + escapeHtml(kaskoFirstSeenDisplay) + '</div>' : '';
         activeSpecialNotificationKeys.push(kaskoKey);
         kaskoExcelHtml = '<div class="notification-item kasko-excel-notification" data-action="open-dis-veri"><div class="mtv-text-container"><div class="mtv-main-text notif-line1">Güncel Kasko Değer Listesinin Yüklenmesi Gerekmektedir.</div>' + kaskoDateHtml + '</div><div class="mtv-dismiss-wrapper"><button type="button" class="mtv-dismiss-btn" onclick="dismissKaskoExcelNotif(event, \'' + kaskoKeyEsc + '\')" aria-label="Bildirimi Kapat"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button><div class="mtv-tooltip">Kapat</div></div></div>';
         hasRed = true;
@@ -7501,11 +7512,11 @@ function renderVehicleDetailLeft(vehicle) {
           const topic = topicMap[request.type] || 'Talep';
           const dateDisplay = formatDateForDisplay(request.date) || '-';
           const messageText = `${request.userName}, ${request.plate} Plakalı Taşıt İçin ${topic} Gönderdi.`;
-          const detailText = request.message ? '<div class="notif-line2">' + escapeHtml(request.message) + '</div>' : '';
+          const detailText = request.message ? '<div class="notif-line2 notif-detail">' + escapeHtml(request.message) + '</div>' : '';
           pendingGeneralHtml += `<button type="button" data-action="open-driver-report" style="width: 100%; padding: 10px 12px; background: transparent; border: 1px solid rgba(212, 0, 0, 0.85) !important; color: #ccc; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 12px; text-align: left; transition: all 0.2s ease; height: auto; white-space: normal;" class="notification-item notification-item-feedback notification-unread date-warning-red-border">
           <div class="notif-line1"><span class="date-warning-red">${escapeHtml(messageText)}</span></div>
           ${detailText}
-          <div class="notif-line2">${escapeHtml(dateDisplay)}</div>
+          <div class="notif-line2 notif-meta-date">${escapeHtml(dateDisplay)}</div>
         </button>`;
         });
         hasRed = true;
@@ -7560,7 +7571,7 @@ function renderVehicleDetailLeft(vehicle) {
             <div class="notif-line1">
               <span class="${isUnread ? notif.warningClass : ''}" style="${isUnread ? '' : 'color:#9a9a9a;'}">${escapeHtml(messageText)}</span>
             </div>
-            <div class="notif-line2">${escapeHtml(activeDateDisplay)}</div>
+            <div class="notif-line2 notif-meta-date">${escapeHtml(activeDateDisplay)}</div>
           </button>`;
         });
       }
@@ -7590,7 +7601,7 @@ function renderVehicleDetailLeft(vehicle) {
           const activityMsg = getNotificationActivityMessage(ev, item.plate);
           activityHtml += `<button type="button" data-plate="${safePlate}" data-vehicle-id="${safeVid}" data-open-history="1" data-history-tab="${historyTab}" data-notif-key="${safeKey}" style="width: 100%; padding: 10px 12px; background: transparent; color: #ccc; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 12px; text-align: left; transition: all 0.2s ease; height: auto; white-space: normal;${unreadStyle}" class="notification-item notification-item-activity${unreadClass}">
           <div class="notif-line1">${escapeHtml(activityMsg)}</div>
-          <div class="notif-line2">${escapeHtml(dateDisplay)}</div>
+          <div class="notif-line2 notif-meta-date">${escapeHtml(dateDisplay)}</div>
         </button>`;
         });
       }
