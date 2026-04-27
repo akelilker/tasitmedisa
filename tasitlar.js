@@ -7589,35 +7589,52 @@ function renderVehicleDetailLeft(vehicle) {
       }
 
       if (pendingGeneralRequests.length > 0) {
-        const topicMap = { talep: 'Talep', sikayet: 'Şikayet', oneri: 'Öneri', diger: 'Diğer' };
+        function notificationFeedbackTopicLabel(typeRaw) {
+          var s = String(typeRaw || 'talep').toLocaleLowerCase('tr-TR');
+          if (s === 'sikayet' || s === 'şikayet') return '\u015Eikayet';
+          if (s === 'oneri' || s === '\u00f6neri') return '\u00d6neri';
+          if (s === 'diger' || s === 'di\u011fer') return 'Di\u011fer';
+          if (s === 'gorus' || s === 'g\u00f6r\u00fc\u015f') return 'G\u00f6r\u00fc\u015f';
+          return 'Talep';
+        }
+        function notificationFeedbackIsRedSeverity(typeRaw) {
+          var s = String(typeRaw || '').toLocaleLowerCase('tr-TR');
+          return s === 'sikayet' || s === 'şikayet';
+        }
         pendingGeneralRequests.forEach(function(request, reqIdx) {
-          const topic = topicMap[request.type] || 'Talep';
-          const dateDisplay = medisaNotificationTalepDisplay(request.date);
-          const messageText = `${request.userName}, ${request.plate} Plakalı Taşıt İçin ${topic} Gönderdi.`;
-          const detailText = request.message ? '<div class="notif-line2 notif-detail">' + escapeHtml(request.message) + '</div>' : '';
-          const h = `<button type="button" data-action="open-driver-report" style="--notif-border: rgba(212, 0, 0, 0.85); --notif-fg: #ccc;" class="notification-item notification-item-feedback notification-unread date-warning-red-border">
-          <div class="notif-line1 notif-title"><span class="date-warning-red">${escapeHtml(messageText)}</span></div>
-          ${detailText}
-          <div class="notif-line2 notif-meta-date">${escapeHtml(dateDisplay)}</div>
-        </button>`;
+          var topic = notificationFeedbackTopicLabel(request.type);
+          var dateDisplay = medisaNotificationTalepDisplay(request.date);
+          var messageText = request.userName + ', ' + request.plate + ' Plakal\u0131 Ta\u015f\u0131t \u0130\u00e7in ' + topic + ' G\u00f6nderdi.';
+          var borderClass = notificationFeedbackIsRedSeverity(request.type)
+            ? 'date-warning-red-border'
+            : 'date-warning-orange-border';
+          var titleClass = notificationFeedbackIsRedSeverity(request.type)
+            ? 'date-warning-red'
+            : 'date-warning-orange';
+          var h = '<button type="button" data-action="open-driver-report" class="notification-item notification-item-feedback notification-unread ' + borderClass + '">' +
+          '<div class="notif-line1 notif-title"><span class="' + titleClass + '">' + escapeHtml(messageText) + '</span></div>' +
+          '<div class="notif-line2 notif-meta-date">' + escapeHtml(dateDisplay) + '</div>' +
+        '</button>';
           var baseMs = medisaNotificationTalepSortMs(request.date);
           if (baseMs <= 0) {
             baseMs = tStart + 12 * 3600 * 1000;
           }
-          const t = baseMs + reqIdx * 1e-6;
+          var t = baseMs + reqIdx * 1e-6;
           notifFeed.push({ t: t, h: h });
+          if (notificationFeedbackIsRedSeverity(request.type)) {
+            hasRed = true;
+          } else {
+            hasOrange = true;
+          }
         });
-        hasRed = true;
       }
 
       if (pendingDuzeltmeRequests.length > 0) {
         pendingDuzeltmeRequests.forEach(function(request, dreqIdx) {
           const dateDisplay = medisaNotificationTalepDisplay(request.date);
           const messageText = `${request.userName}, ${request.plate} plakalı taşıt için ${request.topic} (onay bekliyor).`;
-          const detailText = request.message ? '<div class="notif-line2 notif-detail">' + escapeHtml(request.message) + '</div>' : '';
-          const h = `<button type="button" data-action="open-driver-report" style="--notif-border: rgba(212, 0, 0, 0.85); --notif-fg: #ccc;" class="notification-item notification-item-feedback notification-unread date-warning-red-border">
+          const h = `<button type="button" data-action="open-driver-report" class="notification-item notification-item-feedback notification-unread date-warning-red-border">
           <div class="notif-line1 notif-title"><span class="date-warning-red">${escapeHtml(messageText)}</span></div>
-          ${detailText}
           <div class="notif-line2 notif-meta-date">${escapeHtml(dateDisplay)}</div>
         </button>`;
           var dbaseMs = medisaNotificationTalepSortMs(request.date);
