@@ -600,7 +600,7 @@ body.modal-open #info-modal.open {
 }
 
 /* Dış Veri Yönetimi: Ayarlar menüsü butonu (ikon + metin) */
-.settings-dropdown #dis-veri-btn {
+#settings-menu #dis-veri-btn {
     gap: 8px;
 }
 
@@ -716,24 +716,31 @@ body.modal-open #info-modal.open {
     display: none;
 }
 
-/* Ayarlar Menüsü ve Listeler */
+/* Ayarlar Menüsü ve Listeler — .settings-dropdown: ortak kabuk (#notifications-dropdown + #settings-menu) */
 .settings-dropdown {
     position: absolute;
-    top: 25px; right: 4px; 
-    background: transparent; 
-    border: none;
-    border-radius: 0;
-    box-shadow: none;
+    top: 25px;
+    right: 4px;
     z-index: 2000;
     display: none;
     flex-direction: column;
+}
+.settings-dropdown.open {
+    display: flex;
+}
+
+/* Ayar dişlisi menüsü: kutu/arka plan (bildirim paneli style-core ile ayrı tanımlanır) */
+#settings-menu.settings-dropdown {
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
     min-width: 180px;
     overflow: visible;
     padding: 0;
 }
-.settings-dropdown.open { display: flex; }
 
-.settings-dropdown button {
+#settings-menu.settings-dropdown button {
     background: var(--bg);
     border: 1px solid var(--border-subtle); 
     color: var(--txt);
@@ -750,19 +757,19 @@ body.modal-open #info-modal.open {
     align-items: center;
     justify-content: center;
 }
-.settings-dropdown button:last-child { margin-bottom: 0; }
+#settings-menu.settings-dropdown button:last-child { margin-bottom: 0; }
 
 /* Veri Yedekleme wrapper ve buton eşitleme */
-.settings-dropdown .has-submenu-wrapper {
+#settings-menu.settings-dropdown .has-submenu-wrapper {
     width: 100%;
     margin-bottom: 8px;
 }
 
-.settings-dropdown .has-submenu-wrapper:last-child {
+#settings-menu.settings-dropdown .has-submenu-wrapper:last-child {
     margin-bottom: 0;
 }
 
-.settings-dropdown .has-submenu {
+#settings-menu.settings-dropdown .has-submenu {
     width: 100% !important;
     height: 40px !important;
     margin-bottom: 0 !important;
@@ -770,12 +777,12 @@ body.modal-open #info-modal.open {
     box-sizing: border-box !important;
 }
 
-.settings-dropdown .has-submenu:hover {
+#settings-menu.settings-dropdown .has-submenu:hover {
     border-color: var(--border-light) !important;
 }
 
 /* HR elementi boşluğu eşitleme - sadece alt boşluk */
-.settings-dropdown hr {
+#settings-menu.settings-dropdown hr {
     margin: 0 0 8px 0 !important;
     border: none !important;
     border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
@@ -783,20 +790,20 @@ body.modal-open #info-modal.open {
     height: 0 !important;
     width: 100% !important;
 }
-.settings-dropdown button:hover { 
+#settings-menu.settings-dropdown button:hover { 
     background: var(--bg-input); 
     color: var(--txt-white); 
     border-color: var(--border-light); 
     font-size: calc(16px + 1pt); 
 } 
 
-.settings-dropdown .cache-clear-btn,
-.settings-dropdown .settings-logout-btn {
+#settings-menu.settings-dropdown .cache-clear-btn,
+#settings-menu.settings-dropdown .settings-logout-btn {
   border: 1px solid rgba(var(--theme-color-rgb), 0.5) !important;
   overflow: visible !important; /* Hover'da metin büyüsün, kesilmesin */
 }
-.settings-dropdown .cache-clear-btn:hover,
-.settings-dropdown .settings-logout-btn:hover {
+#settings-menu.settings-dropdown .cache-clear-btn:hover,
+#settings-menu.settings-dropdown .settings-logout-btn:hover {
   border-color: rgba(var(--theme-color-rgb), 0.7) !important;
   font-size: calc(17px + 1pt) !important;
 }
@@ -1442,8 +1449,8 @@ input.settings-form-input:-moz-autofill,
     background: rgba(var(--theme-color-rgb), 0.1);
 }
 
-/* Alt Menü */
-.settings-submenu {
+/* Alt Menü (yalnız ayar dişlisi #settings-menu) */
+#settings-menu .settings-submenu {
     position: absolute;
     left: 100%; top: 0;
     margin-left: 2px;
@@ -1789,7 +1796,7 @@ input.settings-form-input:-moz-autofill,
 
 /* === MASAÜSTÜ AYARLAR === */
 @media (min-width: 641px) {
-    .settings-dropdown button { text-align: center; }
+    #settings-menu.settings-dropdown button { text-align: center; }
     /* #settings-menu: ana sayfa .menu-btn ile aynı kutu dili (bildirim listesi hariç) */
     #settings-menu.settings-dropdown.open {
         gap: 5px !important;
@@ -2457,7 +2464,7 @@ input.settings-form-input:-moz-autofill,
         white-space: normal !important;
         word-break: break-all !important;
     }
-    .settings-dropdown button {
+    #settings-menu.settings-dropdown button {
         text-align: right !important;
         font-size: calc(16px + 1pt) !important;
         height: 52px !important;
@@ -2469,10 +2476,10 @@ input.settings-form-input:-moz-autofill,
         width: 100% !important;
         box-sizing: border-box !important;
     }
-    .settings-dropdown button:last-child {
+    #settings-menu.settings-dropdown button:last-child {
         margin-bottom: 0 !important;
     }
-    .settings-dropdown hr {
+    #settings-menu.settings-dropdown hr {
         margin: 0 0 8px 0 !important;
         border: none !important;
         border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
@@ -2480,16 +2487,16 @@ input.settings-form-input:-moz-autofill,
         height: 0 !important;
         width: 100% !important;
     }
-    .settings-dropdown .has-submenu-wrapper {
+    #settings-menu.settings-dropdown .has-submenu-wrapper {
         width: 100% !important;
         display: flex !important;
         justify-content: flex-end !important;
         margin-bottom: 8px !important;
     }
-    .settings-dropdown .has-submenu-wrapper:last-child {
+    #settings-menu.settings-dropdown .has-submenu-wrapper:last-child {
         margin-bottom: 0 !important;
     }
-    .settings-dropdown .has-submenu {
+    #settings-menu.settings-dropdown .has-submenu {
         width: 100% !important;
         height: 52px !important;
         justify-content: flex-end !important;
@@ -2500,15 +2507,15 @@ input.settings-form-input:-moz-autofill,
         margin-bottom: 0 !important;
         box-sizing: border-box !important;
     }
-    .settings-dropdown .has-submenu::after,
-    .settings-dropdown .has-submenu::before {
+    #settings-menu.settings-dropdown .has-submenu::after,
+    #settings-menu.settings-dropdown .has-submenu::before {
         display: none !important;
         content: none !important;
     }
 
     /*
      * Ayarlar dişlisi menüsü (yalnız #settings-menu): mobilde ana sayfa .menu-btn ile aynı çerçeve.
-     * Bildirimler (#notifications-dropdown) dahil diğer .settings-dropdown örneklerine dokunulmaz.
+     * Genel .settings-dropdown buton/alt menü stilleri #settings-menu ile sınırlandı; bildirim listesi ezilmez.
      */
     #settings-menu.settings-dropdown.open {
         gap: 6px !important;
