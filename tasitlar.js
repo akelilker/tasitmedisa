@@ -1408,21 +1408,29 @@
     modalContent.addEventListener('click', handleVehicleRowClick);
   }
 
-  function isDisVeriPanelUnavailableOnCurrentDeviceForNotif() {
+  /**
+   * Kasko değer listesi bildirimi → Dış Veri / Excel yolu; tıklamada mobilde uyarı, masaüstünde panel.
+   * data-manager.js ile aynı cihaz kuralı (medisaIsDisVeriPanelUnavailableOnDevice) + dar görünüm (768px)
+   * birleşimi: 641–768 tablet/küçük pencerede openDisVeriPanel sessiz no-op olmasın.
+   */
+  function isKaskoDegerListesiUploadUnavailableForNotifClick() {
+    if (typeof window.medisaIsDisVeriPanelUnavailableOnDevice === 'function') {
+      if (window.medisaIsDisVeriPanelUnavailableOnDevice()) return true;
+    }
     const hasMatchMedia = typeof window.matchMedia === 'function';
-    const isMobileViewport = hasMatchMedia
-      ? window.matchMedia('(max-width: 640px)').matches
-      : window.innerWidth <= 640;
+    const isNarrowAppViewport = hasMatchMedia
+      ? window.matchMedia('(max-width: 768px)').matches
+      : window.innerWidth <= 768;
+    if (isNarrowAppViewport) return true;
     const ua = navigator.userAgent || '';
     const isiOS = /iPhone|iPad|iPod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
     const isStandalone = hasMatchMedia
       && (window.matchMedia('(display-mode: standalone)').matches || window.matchMedia('(display-mode: fullscreen)').matches);
-
-    return isMobileViewport || (isiOS && (isStandalone || window.navigator.standalone === true));
+    return !!(isiOS && (isStandalone || window.navigator.standalone === true));
   }
 
   function showKaskoExcelMobileWarning() {
-    const msg = 'Kasko değer listesi Excel yükleme işlemi mobilde desteklenmez. Dosya boyutu nedeniyle bu işlem sadece masaüstü sürümden yapılabilir.';
+    const msg = 'Kasko değer listesi yükleme işlemi yalnızca masaüstü görünümde yapılabilir.';
     if (typeof window.showCenteredInfoBox === 'function') {
       window.showCenteredInfoBox(msg);
       return;
@@ -1469,7 +1477,7 @@
         if (typeof window.setNotificationsOpenState === 'function') {
           window.setNotificationsOpenState(false);
         }
-        if (isDisVeriPanelUnavailableOnCurrentDeviceForNotif()) {
+        if (isKaskoDegerListesiUploadUnavailableForNotifClick()) {
           showKaskoExcelMobileWarning();
           return;
         }
