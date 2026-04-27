@@ -978,6 +978,14 @@ function medisaFilterDataForContextWithUserPredicate($data, $context, $userPredi
 
     $visibleTalepler = array_values(array_filter($data['duzeltme_talepleri'] ?? [], function ($request) use ($context, $visibleAylikKayitIds, $visibleVehicleIds) {
         if (($context['role'] ?? 'kullanici') === 'kullanici') {
+            // Sürücü panelinden gelen genel talep/şikayet: surucu_id sürücü olur; rol "kullanici" (ofis)
+            // ile eşleşmez. Görünür taşıta bağlı bekleyen kayıtları da listele (bildirimlerle uyumlu).
+            if (($request['talep_tipi'] ?? '') === 'genel') {
+                $requestVehicleId = (string)($request['arac_id'] ?? '');
+                if ($requestVehicleId !== '' && isset($visibleVehicleIds[$requestVehicleId])) {
+                    return true;
+                }
+            }
             return (string)($request['surucu_id'] ?? '') === (string)($context['user_id'] ?? '');
         }
         $requestVehicleId = (string)($request['arac_id'] ?? '');
