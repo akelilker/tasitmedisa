@@ -1101,7 +1101,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-
   text-decoration: underline;
 }
 
-/* Bildirim dropdown: kaydırılabilir, scrollbar gizli; kartlar arası dikey 2px (çifte margin yok) */
+/* Bildirim dropdown: kaydırılabilir, scrollbar gizli; kartlar arası dikey 6px (çifte margin yok) */
 #notifications-dropdown {
   overflow-y: auto !important;
   overflow-x: hidden !important;
@@ -1112,7 +1112,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-
 #notifications-dropdown.settings-dropdown {
   display: flex !important;
   flex-direction: column !important;
-  gap: 2px !important;
+  gap: 6px !important;
 }
 #notifications-dropdown::-webkit-scrollbar {
   display: none !important;
@@ -1175,7 +1175,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   font-size: 12px !important;
   line-height: 1.2 !important;
   cursor: pointer;
-  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease, transform 0.2s ease;
+  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
   white-space: normal !important;
   text-align: left !important;
   overflow: hidden !important;
@@ -1537,13 +1537,13 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
     justify-content: flex-start;
     align-items: flex-start;
     text-align: left;
-    transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease, transform 0.2s ease;
+    transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
   }
 
   #notifications-dropdown .notification-item .notif-line1,
   #notifications-dropdown .notification-item .notif-line2,
   #notifications-dropdown .mtv-text-container .mtv-main-text {
-    transition: transform 0.2s ease, color 0.2s ease;
+    transition: color 0.2s ease;
   }
 
   #notifications-dropdown .notification-item .date-warning-red {
@@ -1563,7 +1563,6 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   #notifications-dropdown.settings-dropdown > button.notification-item:hover {
     background: rgba(255, 255, 255, 0.08) !important;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.24) !important;
-    transform: translateY(-1px);
   }
   #notifications-dropdown.settings-dropdown > button.notification-item:not(.date-warning-red-border):not(.date-warning-orange-border):not(.notification-item-activity.notification-unread):hover {
     color: var(--txt-white) !important;
@@ -1579,12 +1578,6 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   #notifications-dropdown.settings-dropdown > button.notification-item.notification-item-activity.notification-unread:hover .notif-line1,
   #notifications-dropdown.settings-dropdown > button.notification-item.notification-item-activity.notification-unread:hover .notif-title {
     color: var(--theme-color) !important;
-  }
-
-  #notifications-dropdown.settings-dropdown button.notification-item:hover .notif-line1,
-  #notifications-dropdown.settings-dropdown button.notification-item:hover .notif-line2,
-  #notifications-dropdown.settings-dropdown button.notification-item:hover .mtv-main-text {
-    transform: translateY(-1px);
   }
 
   /* Okunmuş faaliyet: hover’da nötr beyaz çerçeve + yarı saydam zemin (tema rengi çerçeve yok) */
@@ -1606,22 +1599,20 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   }
 
   #notifications-dropdown .notification-item.mtv-notification {
-    transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+    transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
   }
   #notifications-dropdown .notification-item.mtv-notification:hover {
     background: rgba(255, 255, 255, 0.08) !important;
     border-color: rgba(255, 140, 0, 0.42) !important;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.22) !important;
-    transform: translateY(-1px);
   }
   #notifications-dropdown .notification-item.kasko-excel-notification {
-    transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+    transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
   }
   #notifications-dropdown .notification-item.kasko-excel-notification:hover {
     background: rgba(255, 255, 255, 0.08) !important;
     border-color: rgba(var(--theme-color-rgb), 0.46) !important;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.24) !important;
-    transform: translateY(-1px);
   }
 }
 
