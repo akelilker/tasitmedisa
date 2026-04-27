@@ -17,6 +17,11 @@ function getDataDirPath() {
     return dirname(getDataFilePath());
 }
 
+/** Kasko ham Excel tablosu — ana data.json dışında tutulur */
+function getKaskoListesiFilePath() {
+    return getDataDirPath() . DIRECTORY_SEPARATOR . 'kasko-deger-listesi.json';
+}
+
 /** Bir önceki sürümün kopyası (restore.php ile uyumlu) */
 function getMainBackupFilePath() {
     return getDataDirPath() . '/data.json.backup';
@@ -56,11 +61,6 @@ function medisaDefaultData() {
         'sifreler' => [],
         'arac_aylik_hareketler' => [],
         'duzeltme_talepleri' => [],
-        'kaskoDegerListesi' => [
-            'updatedAt' => '',
-            'period' => '',
-            'rows' => [],
-        ],
         'notificationReadState' => [],
     ];
 }
@@ -218,6 +218,9 @@ function saveData($data) {
         error_log('[Medisa] saveData: data dizini oluşturulamadı');
         return false;
     }
+
+    /** Ham kasko listesi ayrı dosyada; eski anahtar varsa ana dosyaya yazılmasın */
+    unset($data['kaskoDegerListesi']);
 
     $json = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
     if ($json === false) {
@@ -996,9 +999,11 @@ function medisaFilterDataForContextWithUserPredicate($data, $context, $userPredi
         'sifreler' => ($context['role'] ?? 'kullanici') === 'genel_yonetici' ? ($data['sifreler'] ?? []) : [],
         'arac_aylik_hareketler' => $visibleAylikKayitlar,
         'duzeltme_talepleri' => $visibleTalepler,
-        'kaskoDegerListesi' => is_array($data['kaskoDegerListesi'] ?? null) ? $data['kaskoDegerListesi'] : [
+        /** Tam rows load_kasko.php ile; ana yanıt şişmesin */
+        'kaskoDegerListesi' => [
             'updatedAt' => '',
             'period' => '',
+            'sourceFileName' => '',
             'rows' => [],
         ],
         'notificationReadState' => is_array($data['notificationReadState'] ?? null) ? $data['notificationReadState'] : [],
