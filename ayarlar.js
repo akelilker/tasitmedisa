@@ -1957,27 +1957,7 @@
             };
 
             if (typeof window.saveDataToServer === 'function') {
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
               window.saveDataToServer({ includeKaskoDegerListesi: true }).then(function(ok) {
-=======
-              window.saveDataToServer().then(function(ok) {
->>>>>>> theirs
-=======
-              window.saveDataToServer().then(function(ok) {
->>>>>>> theirs
-=======
-              window.saveDataToServer().then(function(ok) {
->>>>>>> theirs
-=======
-              window.saveDataToServer().then(function(ok) {
->>>>>>> theirs
-=======
-              window.saveDataToServer().then(function(ok) {
->>>>>>> theirs
                 if (ok !== true) {
                   if (typeof window.showCenteredInfoBox === 'function') {
                     window.showCenteredInfoBox('Kasko listesi yerelde güncellendi; sunucuya yazılamadı. Lütfen tekrar deneyin.');
