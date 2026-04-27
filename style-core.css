@@ -1115,6 +1115,47 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   margin-bottom: 4px !important;
 }
 
+/* Ayarlar CSS'i yüklense bile bildirim satırları sabit layout'ta kalsın */
+#notifications-dropdown.settings-dropdown > button.notification-item {
+  width: 100% !important;
+  box-sizing: border-box !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: start !important;
+  column-gap: 10px !important;
+  row-gap: 4px !important;
+  height: auto !important;
+  min-height: 48px !important;
+  white-space: normal !important;
+  text-align: left !important;
+}
+
+#notifications-dropdown.settings-dropdown > button.notification-item .notif-line1 {
+  grid-column: 1 !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+#notifications-dropdown.settings-dropdown > button.notification-item .notif-line2 {
+  grid-column: 1 !important;
+  min-width: 0 !important;
+}
+
+#notifications-dropdown.settings-dropdown > button.notification-item .notif-line2.notif-meta-date {
+  grid-column: 2 !important;
+  justify-self: end !important;
+  align-self: end !important;
+  white-space: nowrap !important;
+  margin-left: 8px !important;
+  flex-shrink: 0 !important;
+  text-align: right !important;
+}
+
+#notifications-dropdown.settings-dropdown > button.notification-item .notif-line2.notif-detail {
+  grid-column: 1 / -1 !important;
+}
+
 #notifications-dropdown > .notification-item:last-child {
   margin-bottom: 4px !important;
 }
