@@ -1113,7 +1113,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
 #notifications-dropdown > .notification-item {
   width: 100% !important;
   box-sizing: border-box !important;
-  margin-bottom: 4px !important;
+  margin-bottom: 2px !important;
 }
 
 /* Ayarlar CSS'i yüklense bile bildirim satırları sabit layout'ta kalsın */
@@ -1123,9 +1123,9 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   align-items: start;
-  row-gap: 4px;
+  row-gap: 2px;
   height: auto;
-  min-height: 48px;
+  min-height: 40px;
   white-space: normal;
   text-align: left;
   overflow: hidden;
@@ -1141,7 +1141,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
-  line-height: 1.3;
+  line-height: 1.2;
 }
 
 #notifications-dropdown.settings-dropdown > button.notification-item .notif-line2 {
@@ -1153,7 +1153,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
-  line-height: 1.28;
+  line-height: 1.16;
 }
 
 #notifications-dropdown.settings-dropdown > button.notification-item .notif-line2.notif-meta-date {
@@ -1161,7 +1161,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   justify-self: start;
   align-self: start;
   white-space: nowrap;
-  margin-top: 4px;
+  margin-top: 2px;
   margin-left: 0;
   flex-shrink: 0;
   text-align: left;
@@ -1178,7 +1178,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   justify-self: start;
   text-align: left;
   white-space: nowrap;
-  margin-top: 4px;
+  margin-top: 2px;
   margin-left: 0;
   max-width: none;
   overflow: visible;
@@ -1192,7 +1192,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
 }
 
 #notifications-dropdown > .notification-item:last-child {
-  margin-bottom: 4px !important;
+  margin-bottom: 2px !important;
 }
 
 /* MTV Bildirimi - Global Çakışma Önleyici */
@@ -1412,8 +1412,8 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   #notifications-dropdown .notification-item-activity,
   #notifications-dropdown .mtv-notification,
   #notifications-dropdown .kasko-excel-notification {
-    min-height: 40px !important;
-    padding: 6px 11px 3px !important;
+    min-height: 36px !important;
+    padding: 5px 10px 2px !important;
     border-radius: 7px !important;
     background: linear-gradient(180deg, rgba(12, 18, 30, 0.94) 0%, rgba(8, 13, 22, 0.92) 100%) !important;
   }
