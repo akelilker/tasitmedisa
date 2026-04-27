@@ -1230,6 +1230,11 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   grid-column: 1 / -1;
 }
 
+/* Kullanıcı geri bildirimi kartı: özet dışında serbest metin gösterilmez */
+#notifications-dropdown.settings-dropdown > button.notification-item.notification-item-feedback .notif-line2.notif-detail {
+  display: none;
+}
+
 #notifications-dropdown > .notification-item:last-child {
   margin-bottom: 2px !important;
 }
