@@ -3098,6 +3098,17 @@
   function formatDateForDisplay(dateStr) {
     if (!dateStr) return '';
     const raw = String(dateStr).trim();
+    if (/\d{4}-\d{2}-\d{2}T/.test(raw)) {
+      const parsedIso = new Date(raw);
+      if (!isNaN(parsedIso.getTime())) {
+        const d = String(parsedIso.getDate()).padStart(2, '0');
+        const m = String(parsedIso.getMonth() + 1).padStart(2, '0');
+        const y = String(parsedIso.getFullYear());
+        const hh = String(parsedIso.getHours()).padStart(2, '0');
+        const min = String(parsedIso.getMinutes()).padStart(2, '0');
+        return d + '/' + m + '/' + y + ' ' + hh + ':' + min;
+      }
+    }
     if (typeof window.formatDateShort === 'function') {
       const formatted = window.formatDateShort(dateStr);
       if (formatted) {
@@ -7542,42 +7553,55 @@ function renderVehicleDetailLeft(vehicle) {
         notifIcon.classList.remove('notification-red', 'notification-orange', 'notification-pulse');
       }
     } else {
-      let html = mtvHtml + kaskoExcelHtml;
-      let pendingGeneralHtml = '';
-      let pendingDuzeltmeHtml = '';
-      let activityHtml = '';
+      const tStart = (function() {
+        const d = new Date();
+        d.setHours(0, 0, 0, 0);
+        return d.getTime();
+      })();
+      const notifFeed = [];
+      if (mtvHtml) {
+        notifFeed.push({ t: tStart - 2, h: mtvHtml });
+      }
+      if (kaskoExcelHtml) {
+        notifFeed.push({ t: tStart - 1, h: kaskoExcelHtml });
+      }
 
       if (pendingGeneralRequests.length > 0) {
         const topicMap = { talep: 'Talep', sikayet: 'Şikayet', oneri: 'Öneri', diger: 'Diğer' };
-        pendingGeneralRequests.forEach(function(request) {
+        pendingGeneralRequests.forEach(function(request, reqIdx) {
           const topic = topicMap[request.type] || 'Talep';
           const dateDisplay = formatDateForDisplay(request.date) || '-';
           const messageText = `${request.userName}, ${request.plate} Plakalı Taşıt İçin ${topic} Gönderdi.`;
           const detailText = request.message ? '<div class="notif-line2 notif-detail">' + escapeHtml(request.message) + '</div>' : '';
-          pendingGeneralHtml += `<button type="button" data-action="open-driver-report" style="--notif-border: rgba(212, 0, 0, 0.85); --notif-fg: #ccc;" class="notification-item notification-item-feedback notification-unread date-warning-red-border">
+          const h = `<button type="button" data-action="open-driver-report" style="--notif-border: rgba(212, 0, 0, 0.85); --notif-fg: #ccc;" class="notification-item notification-item-feedback notification-unread date-warning-red-border">
           <div class="notif-line1 notif-title"><span class="date-warning-red">${escapeHtml(messageText)}</span></div>
           ${detailText}
           <div class="notif-line2 notif-meta-date">${escapeHtml(dateDisplay)}</div>
         </button>`;
+          const base = new Date(request.date || 0).getTime();
+          const t = (isNaN(base) ? 0 : base) + reqIdx * 1e-6;
+          notifFeed.push({ t: t, h: h });
         });
         hasRed = true;
       }
 
       if (pendingDuzeltmeRequests.length > 0) {
-        pendingDuzeltmeRequests.forEach(function(request) {
+        pendingDuzeltmeRequests.forEach(function(request, dreqIdx) {
           const dateDisplay = formatDateForDisplay(request.date) || '-';
           const messageText = `${request.userName}, ${request.plate} plakalı taşıt için ${request.topic} (onay bekliyor).`;
           const detailText = request.message ? '<div class="notif-line2 notif-detail">' + escapeHtml(request.message) + '</div>' : '';
-          pendingDuzeltmeHtml += `<button type="button" data-action="open-driver-report" style="--notif-border: rgba(212, 0, 0, 0.85); --notif-fg: #ccc;" class="notification-item notification-item-feedback notification-unread date-warning-red-border">
+          const h = `<button type="button" data-action="open-driver-report" style="--notif-border: rgba(212, 0, 0, 0.85); --notif-fg: #ccc;" class="notification-item notification-item-feedback notification-unread date-warning-red-border">
           <div class="notif-line1 notif-title"><span class="date-warning-red">${escapeHtml(messageText)}</span></div>
           ${detailText}
           <div class="notif-line2 notif-meta-date">${escapeHtml(dateDisplay)}</div>
         </button>`;
+          const base = new Date(request.date || 0).getTime();
+          const t = (isNaN(base) ? 0 : base) + dreqIdx * 1e-6;
+          notifFeed.push({ t: t, h: h });
         });
         hasRed = true;
       }
 
-      // Tarih uyarıları (sigorta, kasko, muayene, egzos)
       if (notifications.length > 0) {
         const viewedKeys = getViewedNotificationKeys();
         notifications.sort((a, b) => {
@@ -7585,7 +7609,7 @@ function renderVehicleDetailLeft(vehicle) {
           if (a.warningClass !== 'date-warning-red' && b.warningClass === 'date-warning-red') return 1;
           return a.days - b.days;
         });
-        notifications.forEach(notif => {
+        notifications.forEach((notif, dIdx) => {
             const typeLabel = notif.type === 'sigorta' ? 'Sigorta' : notif.type === 'kasko' ? 'Kasko' : notif.type === 'egzoz' ? 'Egzos Muayenesi' : 'Muayene';
             const activeDateDisplay = formatDateForDisplay(new Date()) || '-';
             const notifKey = 'date|' + String(notif.vehicleId || '') + '|' + String(notif.type || '') + '|' + String(notif.date || '');
@@ -7622,19 +7646,19 @@ function renderVehicleDetailLeft(vehicle) {
             if (isUnread && notif.warningClass === 'date-warning-red') hasRed = true;
             if (isUnread && notif.warningClass === 'date-warning-orange') hasOrange = true;
 
-            html += `<button type="button" data-plate="${safePlate}" data-vehicle-id="${safeVid}" data-notif-key="${safeKey}" style="--notif-border: ${isUnread ? borderColor : readBorderColor}; --notif-fg: ${isUnread ? '#ccc' : '#9a9a9a'};" class="notification-item ${isUnread ? (notif.warningClass + '-border') : ''}${stateClass}">
+            const h = `<button type="button" data-plate="${safePlate}" data-vehicle-id="${safeVid}" data-notif-key="${safeKey}" style="--notif-border: ${isUnread ? borderColor : readBorderColor}; --notif-fg: ${isUnread ? '#ccc' : '#9a9a9a'};" class="notification-item ${isUnread ? (notif.warningClass + '-border') : ''}${stateClass}">
             <div class="notif-line1 notif-title">
               <span class="${isUnread ? notif.warningClass : 'notif-read-text'}">${escapeHtml(messageText)}</span>
             </div>
             <div class="notif-line2 notif-meta-date">${escapeHtml(activeDateDisplay)}</div>
           </button>`;
+            notifFeed.push({ t: tStart + 1000 + dIdx, h: h });
         });
       }
 
-      // Kullanıcı paneli işlemleri bölümü
       if (recentSlice.length > 0) {
         const viewedKeys = getViewedNotificationKeys();
-        recentSlice.forEach(item => {
+        recentSlice.forEach((item, aIdx) => {
           const ev = item.event;
           const dateDisplay = formatDateForDisplay(ev.date) || '-';
           const historyTab = getHistoryTabForEventType(ev.type);
@@ -7654,23 +7678,17 @@ function renderVehicleDetailLeft(vehicle) {
             ? '--notif-border: rgba(212, 0, 0, 0.85); --notif-fg: #ccc;'
             : '--notif-border: rgba(130, 130, 130, 0.55); --notif-fg: #9a9a9a;';
           const activityMsg = getNotificationActivityMessage(ev, item.plate);
-          activityHtml += `<button type="button" data-plate="${safePlate}" data-vehicle-id="${safeVid}" data-open-history="1" data-history-tab="${historyTab}" data-notif-key="${safeKey}" style="${unreadStyle}" class="notification-item notification-item-activity${unreadClass}">
+          const h = `<button type="button" data-plate="${safePlate}" data-vehicle-id="${safeVid}" data-open-history="1" data-history-tab="${historyTab}" data-notif-key="${safeKey}" style="${unreadStyle}" class="notification-item notification-item-activity${unreadClass}">
           <div class="notif-line1 notif-title">${escapeHtml(activityMsg)}</div>
           <div class="notif-line2 notif-meta-date">${escapeHtml(dateDisplay)}</div>
         </button>`;
+          const t = getEventSortTime(ev) + aIdx * 1e-6;
+          notifFeed.push({ t: t, h: h });
         });
       }
 
-      if (pendingGeneralHtml) {
-        html += pendingGeneralHtml;
-      }
-      if (pendingDuzeltmeHtml) {
-        html += pendingDuzeltmeHtml;
-      }
-
-      if (activityHtml) {
-        html += activityHtml;
-      }
+      notifFeed.sort(function(a, b) { return b.t - a.t; });
+      let html = notifFeed.map(function(x) { return x.h; }).join('');
 
       if (notifDropdown) {
         if (hasUnreadMarkableNotification) {
