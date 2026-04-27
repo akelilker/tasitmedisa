@@ -1101,13 +1101,18 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-
   text-decoration: underline;
 }
 
-/* Bildirim dropdown: kaydırılabilir, scrollbar gizli */
+/* Bildirim dropdown: kaydırılabilir, scrollbar gizli; kartlar arası dikey 2px (çifte margin yok) */
 #notifications-dropdown {
   overflow-y: auto !important;
   overflow-x: hidden !important;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none !important;
   -ms-overflow-style: none !important;
+}
+#notifications-dropdown.settings-dropdown {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 2px !important;
 }
 #notifications-dropdown::-webkit-scrollbar {
   display: none !important;
@@ -1144,7 +1149,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
 #notifications-dropdown > .notification-item {
   width: 100% !important;
   box-sizing: border-box !important;
-  margin-bottom: 2px !important;
+  margin-bottom: 0 !important;
 }
 
 /* Ayarlar CSS'i yüklense bile bildirim satırları sabit layout'ta kalsın */
@@ -1175,7 +1180,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   text-align: left !important;
   overflow: hidden !important;
   justify-content: flex-start !important;
-  margin-bottom: 2px !important;
+  margin-bottom: 0 !important;
 }
 
 #notifications-dropdown.settings-dropdown > button.notification-item .notif-line1,
@@ -1275,7 +1280,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
 }
 
 #notifications-dropdown > .notification-item:last-child {
-  margin-bottom: 2px !important;
+  margin-bottom: 0 !important;
 }
 
 /* MTV Bildirimi - Global Çakışma Önleyici */
