@@ -1409,22 +1409,24 @@
   }
 
   /**
-   * Kasko değer listesi bildirimi → Dış Veri paneli; tıklama guard’ı yalnızca
-   * data-manager.js `medisaIsDisVeriPanelUnavailableOnDevice` (ayarlar.openDisVeriPanel ile aynı) ile hizalıdır.
+   * Kasko değer listesi bildirimi → Dış Veri / Excel yolu; tıklamada mobilde uyarı, masaüstünde panel.
+   * data-manager.js ile aynı cihaz kuralı (medisaIsDisVeriPanelUnavailableOnDevice) + dar görünüm (768px)
+   * birleşimi: 641–768 tablet/küçük pencerede openDisVeriPanel sessiz no-op olmasın.
    */
   function isKaskoDegerListesiUploadUnavailableForNotifClick() {
     if (typeof window.medisaIsDisVeriPanelUnavailableOnDevice === 'function') {
-      return window.medisaIsDisVeriPanelUnavailableOnDevice();
+      if (window.medisaIsDisVeriPanelUnavailableOnDevice()) return true;
     }
-    var hasMatchMedia = typeof window.matchMedia === 'function';
-    var isMobileViewport = hasMatchMedia
-      ? window.matchMedia('(max-width: 640px)').matches
-      : window.innerWidth <= 640;
-    var ua = navigator.userAgent || '';
-    var isiOS = /iPhone|iPad|iPod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-    var isStandalone = hasMatchMedia &&
-      (window.matchMedia('(display-mode: standalone)').matches || window.matchMedia('(display-mode: fullscreen)').matches);
-    return isMobileViewport || (isiOS && (isStandalone || window.navigator.standalone === true));
+    const hasMatchMedia = typeof window.matchMedia === 'function';
+    const isNarrowAppViewport = hasMatchMedia
+      ? window.matchMedia('(max-width: 768px)').matches
+      : window.innerWidth <= 768;
+    if (isNarrowAppViewport) return true;
+    const ua = navigator.userAgent || '';
+    const isiOS = /iPhone|iPad|iPod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    const isStandalone = hasMatchMedia
+      && (window.matchMedia('(display-mode: standalone)').matches || window.matchMedia('(display-mode: fullscreen)').matches);
+    return !!(isiOS && (isStandalone || window.navigator.standalone === true));
   }
 
   function showKaskoExcelMobileWarning() {
@@ -1498,6 +1500,9 @@
       if (action === 'open-dis-veri') {
         e.preventDefault();
         e.stopPropagation();
+        if (typeof window.setNotificationsOpenState === 'function') {
+          window.setNotificationsOpenState(false);
+        }
         if (isKaskoDegerListesiUploadUnavailableForNotifClick()) {
           showKaskoExcelMobileWarning();
           if (typeof window.setNotificationsOpenState === 'function') {
