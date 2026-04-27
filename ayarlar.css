@@ -742,7 +742,7 @@ body.modal-open #info-modal.open {
 
 #settings-menu.settings-dropdown button {
     background: var(--bg);
-    border: 1px solid rgba(255, 255, 255, 0.30);
+    border: 1px solid var(--border-subtle); 
     color: var(--txt);
     padding: 8px 20px;
     height: 40px;
@@ -775,8 +775,6 @@ body.modal-open #info-modal.open {
     margin-bottom: 0 !important;
     padding: 8px 20px !important;
     box-sizing: border-box !important;
-    border: 1px solid rgba(255, 255, 255, 0.30);
-    background: var(--bg);
 }
 
 #settings-menu.settings-dropdown .has-submenu:hover {
@@ -792,21 +790,22 @@ body.modal-open #info-modal.open {
     height: 0 !important;
     width: 100% !important;
 }
-#settings-menu.settings-dropdown button:hover {
-    background: var(--bg-input);
-    color: var(--txt-white);
-    border-color: var(--border-light);
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-}
+#settings-menu.settings-dropdown button:hover { 
+    background: var(--bg-input); 
+    color: var(--txt-white); 
+    border-color: var(--border-light); 
+    font-size: calc(16px + 1pt); 
+} 
 
 #settings-menu.settings-dropdown .cache-clear-btn,
 #settings-menu.settings-dropdown .settings-logout-btn {
   border: 1px solid rgba(var(--theme-color-rgb), 0.5) !important;
-  overflow: visible !important;
+  overflow: visible !important; /* Hover'da metin büyüsün, kesilmesin */
 }
 #settings-menu.settings-dropdown .cache-clear-btn:hover,
 #settings-menu.settings-dropdown .settings-logout-btn:hover {
   border-color: rgba(var(--theme-color-rgb), 0.7) !important;
+  font-size: calc(17px + 1pt) !important;
 }
 
 .list-item {
@@ -1450,17 +1449,15 @@ input.settings-form-input:-moz-autofill,
     background: rgba(var(--theme-color-rgb), 0.1);
 }
 
-/* Alt Menü (yalnız ayar dişlisi #settings-menu) — sağa açılır; right sıfırlanır (style-core çakışması yok) */
+/* Alt Menü (yalnız ayar dişlisi #settings-menu) */
 #settings-menu .settings-submenu {
     position: absolute;
-    left: 100%;
-    right: auto;
-    top: 0;
+    left: 100%; top: 0;
     margin-left: 2px;
     background: #1a1a1a;
     border: 1px solid #333;
     border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
     display: none;
     flex-direction: column;
     min-width: 150px;
@@ -1810,7 +1807,7 @@ input.settings-form-input:-moz-autofill,
         padding: 18px !important;
         border-radius: 12px !important;
         background: linear-gradient(180deg, var(--hero-gradient-start), var(--hero-gradient-end)) !important;
-        border: 1px solid rgba(255, 255, 255, 0.30) !important;
+        border: 1px solid var(--border-subtle) !important;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2), 0 4px 16px rgba(var(--theme-color-rgb), 0.1) !important;
         font-weight: 700 !important;
         font-size: clamp(12px, 2.8vw, 14px) !important;
@@ -2619,8 +2616,8 @@ input.settings-form-input:-moz-autofill,
         border-color: var(--border-light) !important;
         color: var(--txt-white) !important;
         box-shadow:
-            0 6px 16px rgba(0, 0, 0, 0.28),
-            0 6px 22px rgba(var(--theme-color-rgb), 0.14) !important;
+            0 6px 14px rgba(0, 0, 0, 0.25),
+            0 6px 20px rgba(var(--theme-color-rgb), 0.12) !important;
     }
     #settings-menu > button.cache-clear-btn:hover,
     #settings-menu > button.settings-logout-btn:hover {

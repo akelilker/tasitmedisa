@@ -966,16 +966,16 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-
 #notifications-dropdown .notification-item.date-warning-orange-border:hover {
   border-color: rgba(var(--orange-warn-rgb), 0.85) !important;
 }
-/* Tarih uyarı kartları: settings-dropdown button mirasını ez; dikey padding dengeli */
+/* Tarih uyarı kartları: settings-dropdown button mirasını ez; altta sadece 2px padding */
 #notifications-dropdown .notification-item.date-warning-red-border,
 #notifications-dropdown .notification-item.date-warning-orange-border {
   display: flex !important;
   flex-direction: column !important;
   align-items: flex-start !important;
-  justify-content: flex-start !important;
+  justify-content: center !important;
   height: auto !important;
   min-height: 48px !important;
-  padding: 10px 12px 8px !important;
+  padding: 10px 12px 2px !important;
   white-space: normal !important;
   overflow: hidden !important;
   text-align: left !important;
@@ -991,10 +991,10 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-
   border: 1px solid rgba(255,255,255,0.25) !important;
   flex-direction: column !important;
   align-items: flex-start !important;
-  justify-content: flex-start !important;
+  justify-content: center !important;
   height: auto !important;
   min-height: 48px !important;
-  padding: 10px 12px 8px !important;
+  padding: 10px 12px 2px !important;
   overflow: hidden !important;
   text-align: left !important;
 }
@@ -1010,7 +1010,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-
   font-weight: 600 !important;
   color: #fff !important;
   line-height: 1.35 !important;
-  margin-bottom: 4px !important;
+  margin-bottom: 2px !important;
   text-align: left !important;
   word-wrap: break-word !important;
   overflow-wrap: break-word !important;
@@ -1020,7 +1020,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-
   color: #999 !important;
   line-height: 1.2 !important;
   text-align: left !important;
-  margin-top: 4px !important;
+  margin-top: 0 !important;
   margin-bottom: 0 !important;
 }
 /* Tarih satırı: okunmuş/okunmamış --notif-fg (genel notif-line2 rengi tarihi örtmesin) */
@@ -1120,7 +1120,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
 #notifications-dropdown > .notification-item {
   width: 100% !important;
   box-sizing: border-box !important;
-  margin-bottom: 8px !important;
+  margin-bottom: 2px !important;
 }
 
 /* Ayarlar CSS'i yüklense bile bildirim satırları sabit layout'ta kalsın */
@@ -1133,11 +1133,11 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   align-items: start !important;
   align-content: start !important;
   justify-items: stretch !important;
-  row-gap: 6px !important;
+  row-gap: 2px !important;
   height: auto !important;
   min-height: 36px !important;
   max-height: none !important;
-  padding: 6px 10px 8px !important;
+  padding: 5px 10px 2px !important;
   border-radius: 7px !important;
   border: 1px solid var(--notif-border, rgba(130, 130, 130, 0.55)) !important;
   background: linear-gradient(180deg, rgba(12, 18, 30, 0.94) 0%, rgba(8, 13, 22, 0.92) 100%) !important;
@@ -1146,12 +1146,12 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   font-size: 12px !important;
   line-height: 1.2 !important;
   cursor: pointer;
-  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
+  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease, transform 0.2s ease;
   white-space: normal !important;
   text-align: left !important;
   overflow: hidden !important;
   justify-content: flex-start !important;
-  margin-bottom: 8px !important;
+  margin-bottom: 2px !important;
 }
 
 #notifications-dropdown.settings-dropdown > button.notification-item .notif-line1,
@@ -1200,7 +1200,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   justify-self: start;
   align-self: start;
   white-space: nowrap;
-  margin-top: 5px;
+  margin-top: 2px;
   margin-left: 0;
   flex-shrink: 0;
   text-align: left;
@@ -1217,7 +1217,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   justify-self: start;
   text-align: left;
   white-space: nowrap;
-  margin-top: 5px;
+  margin-top: 2px;
   margin-left: 0;
   max-width: none;
   overflow: visible;
@@ -1231,7 +1231,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
 }
 
 #notifications-dropdown > .notification-item:last-child {
-  margin-bottom: 0 !important;
+  margin-bottom: 2px !important;
 }
 
 /* MTV Bildirimi - Global Çakışma Önleyici */
@@ -1452,7 +1452,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   #notifications-dropdown .mtv-notification,
   #notifications-dropdown .kasko-excel-notification {
     min-height: 36px !important;
-    padding: 6px 10px 8px !important;
+    padding: 5px 10px 2px !important;
     border-radius: 7px !important;
     background: linear-gradient(180deg, rgba(12, 18, 30, 0.94) 0%, rgba(8, 13, 22, 0.92) 100%) !important;
   }
@@ -1488,13 +1488,13 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
     justify-content: flex-start;
     align-items: flex-start;
     text-align: left;
-    transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
+    transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease, transform 0.2s ease;
   }
 
   #notifications-dropdown .notification-item .notif-line1,
   #notifications-dropdown .notification-item .notif-line2,
   #notifications-dropdown .mtv-text-container .mtv-main-text {
-    transition: color 0.2s ease;
+    transition: transform 0.2s ease, color 0.2s ease;
   }
 
   #notifications-dropdown .notification-item .date-warning-red {
@@ -1511,14 +1511,14 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   #notifications-dropdown.settings-dropdown button.notification-item:hover {
     background: rgba(var(--theme-color-rgb), 0.14) !important;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.24) !important;
-    transform: none;
+    transform: translateY(-1px);
     color: var(--txt-white) !important;
   }
 
   #notifications-dropdown.settings-dropdown button.notification-item:hover .notif-line1,
   #notifications-dropdown.settings-dropdown button.notification-item:hover .notif-line2,
   #notifications-dropdown.settings-dropdown button.notification-item:hover .mtv-main-text {
-    transform: none;
+    transform: translateY(-1px);
   }
 
   #notifications-dropdown .notification-item-activity:hover {
@@ -1539,22 +1539,22 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   }
 
   #notifications-dropdown .notification-item.mtv-notification {
-    transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
   }
   #notifications-dropdown .notification-item.mtv-notification:hover {
     background: rgba(var(--theme-color-rgb), 0.14) !important;
     border-color: rgba(255, 140, 0, 0.42) !important;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.22) !important;
-    transform: none;
+    transform: translateY(-1px);
   }
   #notifications-dropdown .notification-item.kasko-excel-notification {
-    transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
   }
   #notifications-dropdown .notification-item.kasko-excel-notification:hover {
     background: rgba(var(--theme-color-rgb), 0.15) !important;
     border-color: rgba(var(--theme-color-rgb), 0.46) !important;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.24) !important;
-    transform: none;
+    transform: translateY(-1px);
   }
 }
 
@@ -1720,7 +1720,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
     box-sizing: border-box !important;
   }
   #notifications-dropdown.open > .notification-item:last-child {
-    margin-bottom: 0 !important;
+    margin-bottom: 4px !important;
   }
   /* Masaüstü: Bildirim kartları mobildeki gibi içerik kadar aksın */
   #notifications-dropdown .notification-item.date-warning-red-border,
@@ -1733,7 +1733,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
     min-height: 36px !important;
     max-height: none !important;
     overflow: visible !important;
-    padding: 6px 10px 8px !important;
+    padding: 5px 10px 2px !important;
   }
   #notifications-dropdown .notification-item.date-warning-red-border,
   #notifications-dropdown .notification-item.date-warning-orange-border,
@@ -1742,7 +1742,6 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
     flex-direction: column !important;
     align-items: flex-start !important;
     justify-content: flex-start !important;
-    gap: 5px;
   }
   #notifications-dropdown .notification-item.date-warning-red-border .notif-line1,
   #notifications-dropdown .notification-item.date-warning-orange-border .notif-line1,
@@ -1773,7 +1772,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
     transform: none !important;
     flex-shrink: 0 !important;
     min-height: 0 !important;
-    line-height: 1.2 !important;
+    line-height: 1.05 !important;
     padding: 0 !important;
     font-size: 10.5px !important;
   }
@@ -1795,7 +1794,6 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
     min-height: 0 !important;
     height: auto !important;
     padding-right: 8px !important;
-    gap: 5px;
   }
   #notifications-dropdown .mtv-dismiss-wrapper {
     align-self: stretch !important;
@@ -2806,7 +2804,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         flex-direction: column !important;
         align-items: flex-start !important;
         justify-content: flex-start !important;
-        gap: 6px !important;
+        gap: 3px !important;
     }
     
     /* Mobil bildirimlerde metin boyutları yaklaşık 0.75 punto (1px) büyütüldü */
@@ -2817,7 +2815,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     }
     #notifications-dropdown .notification-item .notif-line2 {
         font-size: 10.5px !important;
-        line-height: 1.2 !important;
+        line-height: 1.15 !important;
         margin-top: 0 !important;
     }
     #notifications-dropdown .mtv-text-container .mtv-main-text {
