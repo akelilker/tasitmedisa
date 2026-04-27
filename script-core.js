@@ -9,6 +9,9 @@ function getSubmenu() { return _cachedSubmenu || (_cachedSubmenu = document.getE
 function setNotificationsOpenState(isOpen) {
   const notif = getNotif();
   const shouldOpen = !!(notif && isOpen);
+  if (typeof window.resetNotificationsDropdownLayoutState === 'function') {
+    window.resetNotificationsDropdownLayoutState();
+  }
   if (notif) notif.classList.toggle('open', shouldOpen);
   document.body.classList.toggle('notifications-open', shouldOpen);
   return shouldOpen;
