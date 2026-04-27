@@ -4,50 +4,6 @@ html, body, .modal-body, .modal-container, .content-wrap {
   -ms-overflow-style: none !important;
 }
 
-/* Bildirim kartı final stabilizasyonu: tarih her zaman sol altta, tek kolon akış */
-#notifications-dropdown.settings-dropdown > button.notification-item {
-  display: grid !important;
-  grid-template-columns: minmax(0, 1fr) !important;
-  align-items: start !important;
-  justify-items: stretch !important;
-}
-
-#notifications-dropdown.settings-dropdown > button.notification-item .notif-title,
-#notifications-dropdown.settings-dropdown > button.notification-item .notif-line1 {
-  grid-column: 1 / -1 !important;
-  min-width: 0 !important;
-  max-width: 100% !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  display: -webkit-box !important;
-  -webkit-line-clamp: 2 !important;
-  -webkit-box-orient: vertical !important;
-}
-
-#notifications-dropdown.settings-dropdown > button.notification-item .notif-detail,
-#notifications-dropdown.settings-dropdown > button.notification-item .notif-line2:not(.notif-meta-date) {
-  grid-column: 1 / -1 !important;
-  min-width: 0 !important;
-  max-width: 100% !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  display: -webkit-box !important;
-  -webkit-line-clamp: 2 !important;
-  -webkit-box-orient: vertical !important;
-}
-
-#notifications-dropdown.settings-dropdown > button.notification-item .notif-meta-date {
-  grid-column: 1 / -1 !important;
-  justify-self: start !important;
-  align-self: start !important;
-  text-align: left !important;
-  white-space: nowrap !important;
-  max-width: none !important;
-  overflow: visible !important;
-  text-overflow: clip !important;
-  display: block !important;
-  transform: none !important;
-}
 html::-webkit-scrollbar,
 body::-webkit-scrollbar,
 .modal-body::-webkit-scrollbar,
@@ -1205,6 +1161,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   justify-self: start;
   align-self: start;
   white-space: nowrap;
+  margin-top: 4px;
   margin-left: 0;
   flex-shrink: 0;
   text-align: left;
@@ -1214,6 +1171,20 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   display: block;
   -webkit-line-clamp: unset;
   -webkit-box-orient: initial;
+}
+
+#notifications-dropdown .notif-meta-date {
+  grid-column: 1 / -1;
+  justify-self: start;
+  text-align: left;
+  white-space: nowrap;
+  margin-top: 4px;
+  margin-left: 0;
+  max-width: none;
+  overflow: visible;
+  text-overflow: clip;
+  position: static;
+  right: auto;
 }
 
 #notifications-dropdown.settings-dropdown > button.notification-item .notif-line2.notif-detail {
@@ -1471,12 +1442,13 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   }
 
   #notifications-dropdown.settings-dropdown button.notification-item {
-    display: flex !important;
-    width: 100% !important;
-    box-sizing: border-box !important;
-    justify-content: flex-start !important;
-    align-items: flex-start !important;
-    text-align: left !important;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    width: 100%;
+    box-sizing: border-box;
+    justify-content: flex-start;
+    align-items: flex-start;
+    text-align: left;
     transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease, transform 0.2s ease;
   }
 
@@ -3358,3 +3330,4 @@ body.modal-open .app-container {
     box-shadow: 0 2px 16px rgba(0, 0, 0, 0.32);
   }
 }
+
