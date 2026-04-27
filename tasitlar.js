@@ -1219,7 +1219,27 @@
     if (typeof window.clearKaskoCache === 'function') window.clearKaskoCache();
     if (typeof window.saveDataToServer !== 'function' || kaskoListSaveInFlight) return;
     kaskoListSaveInFlight = true;
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
+<<<<<<< ours
     window.saveDataToServer({ includeKaskoDegerListesi: true })
+=======
+    window.saveDataToServer()
+>>>>>>> theirs
+=======
+    window.saveDataToServer()
+>>>>>>> theirs
+=======
+    window.saveDataToServer()
+>>>>>>> theirs
+=======
+    window.saveDataToServer()
+>>>>>>> theirs
+=======
+    window.saveDataToServer()
+>>>>>>> theirs
       .catch(function() {})
       .finally(function() { kaskoListSaveInFlight = false; });
   }
