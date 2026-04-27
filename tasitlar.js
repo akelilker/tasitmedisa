@@ -2272,13 +2272,14 @@
         // Tahsis edilmemiş taşıtlar için kırmızı class (liste ve kartta her zaman)
         const isUnassigned = !v.branchId;
         const unassignedClass = isUnassigned ? ' unassigned-vehicle-card' : '';
-        
+        const vehicleDateSeverityClass = getVehicleDateSeverityClass(v);
+
         if (viewMode === 'card') {
             // Üçüncü satır boşsa div'i render etme
             const thirdLineHtml = thirdLineDisplay ? `<div class="card-third-line" title="${escapeHtml(thirdLineDisplay)}">${escapeHtml(thirdLineDisplay)}</div>` : '';
             const vid = v.id != null ? String(v.id).replace(/"/g, '&quot;') : '';
             return `
-              <div class="card${unassignedClass}" data-vehicle-id="${vid}" style="cursor:pointer">
+              <div class="card${unassignedClass}${vehicleDateSeverityClass}" data-vehicle-id="${vid}" style="cursor:pointer">
                 <div class="card-plate">${escapeHtml(formatPlaka(plate))}${satildiCardSpan}</div>
                 <div class="card-brand-model" title="${escapeHtml(brandModel)}">${escapeHtml(formatBrandModel(brandModel))}</div>
                 ${thirdLineHtml}
@@ -2344,7 +2345,7 @@
             const vid = v.id != null ? String(v.id).replace(/"/g, '&quot;') : '';
             const archiveRowClass = isArchive ? ' archive-vehicle-row' : '';
             return `
-              <div class="list-item${unassignedClass}${archiveRowClass}" data-vehicle-id="${vid}" style="grid-template-columns: ${gridStr}; cursor:pointer">
+              <div class="list-item${unassignedClass}${archiveRowClass}${vehicleDateSeverityClass}" data-vehicle-id="${vid}" style="grid-template-columns: ${gridStr}; cursor:pointer">
                 ${cellHtml}
               </div>
             `;
@@ -3113,6 +3114,37 @@
   // --- VEHICLE DETAIL - NEW FUNCTIONS ---
 
   function checkDateWarnings(dateString) { return (typeof window.checkDateWarnings === 'function' ? window.checkDateWarnings(dateString) : { class: '', days: null }); }
+
+  /**
+   * Taşıtlar modalı liste/kart — kalıcı tarih uyarısı (bildirim okundu ile ilgisiz).
+   * Yalnızca araçtaki tarih alanları + window.checkDateWarnings (script-core ile aynı eşikler).
+   * Okundu/okunmadı, notification-read, medisa_notif_read_keys_v1 vb. kullanılmaz.
+   * Öncelik: kırmızı > turuncu > normal. Bir tarih düzeltilince diğerleri hâlâ riskteyse en yüksek severity kalır.
+   * @returns {string} '' | ' vehicle-date-warning-red' | ' vehicle-date-warning-orange'
+   */
+  function getVehicleDateSeverityClass(vehicle) {
+    if (!vehicle || typeof vehicle !== 'object') return '';
+    const muayene = vehicle.muayeneDate;
+    const egzoz = vehicle.egzozMuayeneDate;
+    const useEgzoz = egzoz && String(egzoz).trim() !== '' && String(egzoz) !== String(muayene || '');
+    const dates = [
+      vehicle.sigortaDate,
+      vehicle.kaskoDate,
+      vehicle.muayeneDate,
+      useEgzoz ? egzoz : null
+    ].filter(function(d) { return d != null && String(d).trim() !== ''; });
+    let hasRed = false;
+    let hasOrange = false;
+    for (let i = 0; i < dates.length; i++) {
+      const w = checkDateWarnings(dates[i]);
+      if (w.class === 'date-warning-red') hasRed = true;
+      else if (w.class === 'date-warning-orange') hasOrange = true;
+    }
+    if (hasRed) return ' vehicle-date-warning-red';
+    if (hasOrange) return ' vehicle-date-warning-orange';
+    return '';
+  }
+
   function formatDateForDisplay(dateStr) {
     if (!dateStr) return '';
     const raw = String(dateStr).trim();
