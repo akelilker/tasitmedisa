@@ -1004,7 +1004,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-
   border: 1px solid rgba(var(--theme-color-rgb), 0.8) !important;
 }
 
-#notifications-dropdown .notification-item .notif-line1 {
+/* Sadece MTV/Kasko özel kartları: beyaz vurgu; tarih/aktivite butonları --notif-fg ile yönetilir */
+#notifications-dropdown .mtv-notification .notif-line1,
+#notifications-dropdown .kasko-excel-notification .notif-line1 {
   font-weight: 600 !important;
   color: #fff !important;
   line-height: 1.35 !important;
@@ -1020,6 +1022,11 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-
   text-align: left !important;
   margin-top: 0 !important;
   margin-bottom: 0 !important;
+}
+/* Tarih satırı: okunmuş/okunmamış --notif-fg (genel notif-line2 rengi tarihi örtmesin) */
+#notifications-dropdown.settings-dropdown > button.notification-item .notif-line2.notif-meta-date {
+  color: var(--notif-fg, #a0aec0) !important;
+  opacity: 0.9;
 }
 #notifications-dropdown .notification-item .notif-line2:empty {
   display: none !important;
@@ -1117,27 +1124,34 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
 }
 
 /* Ayarlar CSS'i yüklense bile bildirim satırları sabit layout'ta kalsın */
+/* ayarlar.css yüklendikten sonra .settings-dropdown button !important kuralları bildirimleri de ezmesin */
 #notifications-dropdown.settings-dropdown > button.notification-item {
-  width: 100%;
-  box-sizing: border-box;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  align-items: start;
-  row-gap: 2px;
-  height: auto;
-  min-height: 36px;
-  padding: 5px 10px 2px;
-  border-radius: 7px;
-  border: 1px solid var(--notif-border, rgba(130, 130, 130, 0.55));
-  background: linear-gradient(180deg, rgba(12, 18, 30, 0.94) 0%, rgba(8, 13, 22, 0.92) 100%);
-  color: var(--notif-fg, #ccc);
-  font-weight: 500;
-  font-size: 12px;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  align-items: start !important;
+  align-content: start !important;
+  justify-items: stretch !important;
+  row-gap: 2px !important;
+  height: auto !important;
+  min-height: 36px !important;
+  max-height: none !important;
+  padding: 5px 10px 2px !important;
+  border-radius: 7px !important;
+  border: 1px solid var(--notif-border, rgba(130, 130, 130, 0.55)) !important;
+  background: linear-gradient(180deg, rgba(12, 18, 30, 0.94) 0%, rgba(8, 13, 22, 0.92) 100%) !important;
+  color: var(--notif-fg, #ccc) !important;
+  font-weight: 500 !important;
+  font-size: 12px !important;
+  line-height: 1.2 !important;
   cursor: pointer;
   transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease, transform 0.2s ease;
-  white-space: normal;
-  text-align: left;
-  overflow: hidden;
+  white-space: normal !important;
+  text-align: left !important;
+  overflow: hidden !important;
+  justify-content: flex-start !important;
+  margin-bottom: 2px !important;
 }
 
 #notifications-dropdown.settings-dropdown > button.notification-item .notif-line1,
@@ -1151,6 +1165,19 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   line-height: 1.2;
+  color: var(--notif-fg, #ccc) !important;
+  font-weight: 500 !important;
+  text-align: left !important;
+  margin-bottom: 0 !important;
+}
+
+#notifications-dropdown.settings-dropdown > button.notification-item .notif-line1 .date-warning-red,
+#notifications-dropdown.settings-dropdown > button.notification-item .notif-line1 .date-warning-orange {
+  color: #d7dde6 !important;
+}
+
+#notifications-dropdown.settings-dropdown > button.notification-item .notif-line1 .notif-read-text {
+  color: var(--notif-fg, #9a9a9a) !important;
 }
 
 #notifications-dropdown.settings-dropdown > button.notification-item .notif-line2 {
@@ -1194,13 +1221,6 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   text-overflow: clip;
   position: static;
   right: auto;
-}
-
-#notifications-dropdown .notification-item.notification-read .notif-line1,
-#notifications-dropdown .notification-item.notification-read .notif-line2,
-#notifications-dropdown .notification-item.notification-unread .notif-line1,
-#notifications-dropdown .notification-item.notification-unread .notif-line2 {
-  color: var(--notif-fg, #ccc);
 }
 
 #notifications-dropdown.settings-dropdown > button.notification-item .notif-line2.notif-detail {
