@@ -1191,7 +1191,7 @@
   function getKaskoState() {
     if (!window.appData || typeof window.appData !== 'object') window.appData = {};
     if (!window.appData.kaskoDegerListesi || typeof window.appData.kaskoDegerListesi !== 'object') {
-      window.appData.kaskoDegerListesi = { updatedAt: '', period: '', rows: [] };
+      window.appData.kaskoDegerListesi = { updatedAt: '', period: '', sourceFileName: '', rows: [] };
     }
     if (!Array.isArray(window.appData.kaskoDegerListesi.rows)) window.appData.kaskoDegerListesi.rows = [];
     return window.appData.kaskoDegerListesi;
@@ -1215,11 +1215,29 @@
     const updatedAt = legacyDate || new Date().toISOString();
     const dateForPeriod = legacyDate ? new Date(legacyDate) : new Date();
     const period = String(dateForPeriod.getFullYear()) + '-' + String(dateForPeriod.getMonth() + 1).padStart(2, '0');
-    window.appData.kaskoDegerListesi = { updatedAt: updatedAt, period: period, rows: legacyRows };
+    window.appData.kaskoDegerListesi = {
+      updatedAt: updatedAt,
+      period: period,
+      sourceFileName: '',
+      rows: legacyRows
+    };
     if (typeof window.clearKaskoCache === 'function') window.clearKaskoCache();
-    if (typeof window.saveDataToServer !== 'function' || kaskoListSaveInFlight) return;
+    var permissions = window.medisaSession && window.medisaSession.permissions ? window.medisaSession.permissions : {};
+    if (!permissions.manage_data || kaskoListSaveInFlight) return;
+    var saveUrl = window.API_SAVE_KASKO || ((window.MEDISA_API_BASE || '') + 'save_kasko.php');
+    var headersFn = typeof window.buildAuthHeaders === 'function' ? window.buildAuthHeaders : null;
+    if (!headersFn) return;
     kaskoListSaveInFlight = true;
-    window.saveDataToServer({ includeKaskoDegerListesi: true })
+    fetch(saveUrl, {
+      method: 'POST',
+      headers: headersFn({ 'Content-Type': 'application/json' }),
+      body: JSON.stringify({
+        updatedAt: updatedAt,
+        period: period,
+        sourceFileName: 'legacy-localStorage',
+        rows: legacyRows
+      })
+    })
       .catch(function() {})
       .finally(function() { kaskoListSaveInFlight = false; });
   }

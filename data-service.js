@@ -22,13 +22,13 @@
         sifreler: [],
         arac_aylik_hareketler: [],
         duzeltme_talepleri: [],
-        kaskoDegerListesi: { updatedAt: '', period: '', rows: [] },
+        kaskoDegerListesi: { updatedAt: '', period: '', sourceFileName: '', rows: [] },
         notificationReadState: {}
       };
     }
     if (!Array.isArray(window.appData.tasitlar)) window.appData.tasitlar = [];
     if (!window.appData.kaskoDegerListesi || typeof window.appData.kaskoDegerListesi !== 'object') {
-      window.appData.kaskoDegerListesi = { updatedAt: '', period: '', rows: [] };
+      window.appData.kaskoDegerListesi = { updatedAt: '', period: '', sourceFileName: '', rows: [] };
     }
     if (!Array.isArray(window.appData.kaskoDegerListesi.rows)) window.appData.kaskoDegerListesi.rows = [];
     if (!window.appData.notificationReadState || typeof window.appData.notificationReadState !== 'object' || Array.isArray(window.appData.notificationReadState)) {
