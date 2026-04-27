@@ -1171,9 +1171,12 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   margin-bottom: 0 !important;
 }
 
-#notifications-dropdown.settings-dropdown > button.notification-item .notif-line1 .date-warning-red,
+/* Tarih uyarı metni: tasitlar-base ile aynı (kırmızı/turuncu); gri #d7dde6 override'ı kaldırıldı */
+#notifications-dropdown.settings-dropdown > button.notification-item .notif-line1 .date-warning-red {
+  color: var(--theme-color) !important;
+}
 #notifications-dropdown.settings-dropdown > button.notification-item .notif-line1 .date-warning-orange {
-  color: #d7dde6 !important;
+  color: var(--orange-warn) !important;
 }
 
 #notifications-dropdown.settings-dropdown > button.notification-item .notif-line1 .notif-read-text {
@@ -1494,9 +1497,11 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
     transition: transform 0.2s ease, color 0.2s ease;
   }
 
-  #notifications-dropdown .notification-item .date-warning-red,
+  #notifications-dropdown .notification-item .date-warning-red {
+    color: var(--theme-color) !important;
+  }
   #notifications-dropdown .notification-item .date-warning-orange {
-    color: #d7dde6 !important;
+    color: var(--orange-warn) !important;
   }
 
   #notifications-dropdown .notification-item .notif-line2 {
