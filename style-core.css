@@ -1125,7 +1125,16 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   align-items: start;
   row-gap: 2px;
   height: auto;
-  min-height: 40px;
+  min-height: 36px;
+  padding: 5px 10px 2px;
+  border-radius: 7px;
+  border: 1px solid var(--notif-border, rgba(130, 130, 130, 0.55));
+  background: linear-gradient(180deg, rgba(12, 18, 30, 0.94) 0%, rgba(8, 13, 22, 0.92) 100%);
+  color: var(--notif-fg, #ccc);
+  font-weight: 500;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease, transform 0.2s ease;
   white-space: normal;
   text-align: left;
   overflow: hidden;
@@ -1185,6 +1194,13 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   text-overflow: clip;
   position: static;
   right: auto;
+}
+
+#notifications-dropdown .notification-item.notification-read .notif-line1,
+#notifications-dropdown .notification-item.notification-read .notif-line2,
+#notifications-dropdown .notification-item.notification-unread .notif-line1,
+#notifications-dropdown .notification-item.notification-unread .notif-line2 {
+  color: var(--notif-fg, #ccc);
 }
 
 #notifications-dropdown.settings-dropdown > button.notification-item .notif-line2.notif-detail {
@@ -1689,10 +1705,10 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   #notifications-dropdown .kasko-excel-notification {
     box-sizing: border-box !important;
     height: auto !important;
-    min-height: 52px !important;
+    min-height: 36px !important;
     max-height: none !important;
     overflow: visible !important;
-    padding: 10px 12px 4px !important;
+    padding: 5px 10px 2px !important;
   }
   #notifications-dropdown .notification-item.date-warning-red-border,
   #notifications-dropdown .notification-item.date-warning-orange-border,
