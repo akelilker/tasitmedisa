@@ -1017,16 +1017,33 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-
 }
 #notifications-dropdown .notification-item .notif-line2 {
   font-size: 11px !important;
-  color: #999 !important;
   line-height: 1.2 !important;
   text-align: left !important;
   margin-top: 0 !important;
   margin-bottom: 0 !important;
 }
+#notifications-dropdown .notification-item:not(.date-warning-red-border):not(.date-warning-orange-border) .notif-line2 {
+  color: #999 !important;
+}
+/* Severity tarih uyarısı: ikinci satır tema ile uyumlu (font ölçüleri üst blokta) */
+#notifications-dropdown .notification-item.date-warning-orange-border .notif-line2 {
+  color: rgba(var(--orange-warn-rgb), 0.76);
+}
+#notifications-dropdown .notification-item.date-warning-red-border .notif-line2 {
+  color: rgba(var(--theme-color-rgb), 0.78);
+}
 /* Tarih satırı: okunmuş/okunmamış --notif-fg (genel notif-line2 rengi tarihi örtmesin) */
-#notifications-dropdown.settings-dropdown > button.notification-item .notif-line2.notif-meta-date {
+#notifications-dropdown.settings-dropdown > button.notification-item:not(.date-warning-red-border):not(.date-warning-orange-border) .notif-line2.notif-meta-date {
   color: var(--notif-fg, #a0aec0) !important;
   opacity: 0.9;
+}
+#notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border .notif-line2.notif-meta-date {
+  color: rgba(var(--orange-warn-rgb), 0.8);
+  opacity: 0.95;
+}
+#notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border .notif-line2.notif-meta-date {
+  color: rgba(var(--theme-color-rgb), 0.82);
+  opacity: 0.95;
 }
 #notifications-dropdown .notification-item .notif-line2:empty {
   display: none !important;
@@ -1165,10 +1182,24 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   line-height: 1.2;
-  color: var(--notif-fg, #ccc) !important;
   font-weight: 500 !important;
   text-align: left !important;
   margin-bottom: 0 !important;
+}
+
+#notifications-dropdown.settings-dropdown > button.notification-item:not(.date-warning-red-border):not(.date-warning-orange-border) .notif-line1,
+#notifications-dropdown.settings-dropdown > button.notification-item:not(.date-warning-red-border):not(.date-warning-orange-border) .notif-title {
+  color: var(--notif-fg, #ccc) !important;
+}
+
+#notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border .notif-line1,
+#notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border .notif-title {
+  color: var(--orange-warn);
+}
+
+#notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border .notif-line1,
+#notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border .notif-title {
+  color: var(--theme-color);
 }
 
 /* Tarih uyarı metni: tasitlar-base ile aynı (kırmızı/turuncu); gri #d7dde6 override'ı kaldırıldı */
@@ -1504,7 +1535,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
     color: var(--orange-warn) !important;
   }
 
-  #notifications-dropdown .notification-item .notif-line2 {
+  #notifications-dropdown .notification-item:not(.date-warning-red-border):not(.date-warning-orange-border) .notif-line2 {
     color: #a0aec0 !important;
   }
 
