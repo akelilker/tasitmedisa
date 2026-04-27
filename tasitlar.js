@@ -1639,8 +1639,12 @@
     var dropdown = DOM.notificationsDropdown || document.getElementById('notifications-dropdown');
     if (!dropdown) return;
     dropdown.style.removeProperty('max-height');
+    dropdown.style.removeProperty('height');
+    dropdown.style.removeProperty('min-height');
     dropdown.style.removeProperty('padding-bottom');
     dropdown.style.removeProperty('scroll-padding-bottom');
+    dropdown.style.removeProperty('overflow');
+    dropdown.style.removeProperty('transform');
     dropdown.style.removeProperty('--mobile-notifications-max-height');
   }
 
@@ -7514,7 +7518,7 @@ function renderVehicleDetailLeft(vehicle) {
           const messageText = `${request.userName}, ${request.plate} Plakalı Taşıt İçin ${topic} Gönderdi.`;
           const detailText = request.message ? '<div class="notif-line2 notif-detail">' + escapeHtml(request.message) + '</div>' : '';
           pendingGeneralHtml += `<button type="button" data-action="open-driver-report" style="width: 100%; padding: 10px 12px; background: transparent; border: 1px solid rgba(212, 0, 0, 0.85) !important; color: #ccc; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 12px; text-align: left; transition: all 0.2s ease; height: auto; white-space: normal;" class="notification-item notification-item-feedback notification-unread date-warning-red-border">
-          <div class="notif-line1"><span class="date-warning-red">${escapeHtml(messageText)}</span></div>
+          <div class="notif-line1 notif-title"><span class="date-warning-red">${escapeHtml(messageText)}</span></div>
           ${detailText}
           <div class="notif-line2 notif-meta-date">${escapeHtml(dateDisplay)}</div>
         </button>`;
@@ -7568,7 +7572,7 @@ function renderVehicleDetailLeft(vehicle) {
             if (isUnread && notif.warningClass === 'date-warning-orange') hasOrange = true;
 
             html += `<button type="button" data-plate="${safePlate}" data-vehicle-id="${safeVid}" data-notif-key="${safeKey}" style="width: 100%; padding: 10px 12px; background: transparent; border: 1px solid ${isUnread ? borderColor : readBorderColor}; color: ${isUnread ? '#ccc' : '#9a9a9a'}; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 12px; text-align: left; transition: all 0.2s ease; height: auto; white-space: normal;" class="notification-item ${isUnread ? (notif.warningClass + '-border') : ''}${stateClass}">
-            <div class="notif-line1">
+            <div class="notif-line1 notif-title">
               <span class="${isUnread ? notif.warningClass : ''}" style="${isUnread ? '' : 'color:#9a9a9a;'}">${escapeHtml(messageText)}</span>
             </div>
             <div class="notif-line2 notif-meta-date">${escapeHtml(activeDateDisplay)}</div>
@@ -7600,7 +7604,7 @@ function renderVehicleDetailLeft(vehicle) {
             : ' border: 1px solid rgba(130, 130, 130, 0.55) !important; color: #9a9a9a;';
           const activityMsg = getNotificationActivityMessage(ev, item.plate);
           activityHtml += `<button type="button" data-plate="${safePlate}" data-vehicle-id="${safeVid}" data-open-history="1" data-history-tab="${historyTab}" data-notif-key="${safeKey}" style="width: 100%; padding: 10px 12px; background: transparent; color: #ccc; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 12px; text-align: left; transition: all 0.2s ease; height: auto; white-space: normal;${unreadStyle}" class="notification-item notification-item-activity${unreadClass}">
-          <div class="notif-line1">${escapeHtml(activityMsg)}</div>
+          <div class="notif-line1 notif-title">${escapeHtml(activityMsg)}</div>
           <div class="notif-line2 notif-meta-date">${escapeHtml(dateDisplay)}</div>
         </button>`;
         });
