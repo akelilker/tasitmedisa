@@ -1120,9 +1120,8 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   width: 100%;
   box-sizing: border-box;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr);
   align-items: start;
-  column-gap: 10px;
   row-gap: 4px;
   height: auto;
   min-height: 48px;
@@ -1135,6 +1134,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
 #notifications-dropdown.settings-dropdown > button.notification-item .notif-title {
   grid-column: 1;
   min-width: 0;
+  max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
@@ -1146,6 +1146,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
 #notifications-dropdown.settings-dropdown > button.notification-item .notif-line2 {
   grid-column: 1;
   min-width: 0;
+  max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
@@ -1155,17 +1156,19 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
 }
 
 #notifications-dropdown.settings-dropdown > button.notification-item .notif-line2.notif-meta-date {
-  grid-column: 2;
-  justify-self: end;
+  grid-column: 1 / -1;
+  justify-self: start;
   align-self: start;
   white-space: nowrap;
-  margin-left: 8px;
+  margin-left: 0;
   flex-shrink: 0;
-  text-align: right;
-  max-width: 96px;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  text-align: left;
+  max-width: none;
+  overflow: visible;
+  text-overflow: clip;
   display: block;
+  -webkit-line-clamp: unset;
+  -webkit-box-orient: initial;
 }
 
 #notifications-dropdown.settings-dropdown > button.notification-item .notif-line2.notif-detail {
