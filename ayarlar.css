@@ -758,10 +758,13 @@ body.modal-open #info-modal.open {
     justify-content: center;
 }
 
-/* Veri Yedekleme wrapper (dikey aralık #settings-menu.settings-dropdown.open { gap } ile) */
+/* Veri Yedekleme wrapper: sütun; alt menü aynı akışta */
 #settings-menu.settings-dropdown .has-submenu-wrapper {
     width: 100%;
     margin-bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
 }
 
 #settings-menu.settings-dropdown .has-submenu {
@@ -1445,19 +1448,27 @@ input.settings-form-input:-moz-autofill,
     background: rgba(var(--theme-color-rgb), 0.1);
 }
 
-/* Alt Menü (yalnız ayar dişlisi #settings-menu) */
+/* Alt Menü: #settings-menu içinde aşağı açılır; style-core sağ/sol dışa taşma #settings-menu ile iptal */
 #settings-menu .settings-submenu {
-    position: absolute;
-    left: 100%; top: 0;
-    margin-left: 2px;
+    position: static;
+    left: auto;
+    right: auto;
+    top: auto;
+    margin: 8px 0 0 0;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
     background: #1a1a1a;
-    border: 1px solid #333;
+    border: 1px solid rgba(255, 255, 255, 0.22);
     border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
     display: none;
     flex-direction: column;
-    min-width: 150px;
+    gap: 6px;
+    padding: 8px;
+    box-sizing: border-box;
     overflow: hidden;
+    z-index: auto;
 }
 
 /* === KART YAPISI (GRID) === */
@@ -1797,7 +1808,7 @@ input.settings-form-input:-moz-autofill,
     #settings-menu.settings-dropdown.open {
         gap: 10px !important;
     }
-    #settings-menu > button,
+    #settings-menu > button:not(.cache-clear-btn):not(.settings-logout-btn),
     #settings-menu .has-submenu-wrapper .has-submenu {
         height: 54px !important;
         padding: 18px !important;
@@ -1810,12 +1821,29 @@ input.settings-form-input:-moz-autofill,
         letter-spacing: 0.06em !important;
         margin-bottom: 0 !important;
     }
-    #settings-menu > button.cache-clear-btn {
-        border: 1px solid rgba(var(--theme-color-rgb), 0.5) !important;
-    }
+    #settings-menu > button.cache-clear-btn,
     #settings-menu > button.settings-logout-btn {
+        height: 42px;
+        min-height: 0;
+        padding: 10px 14px;
+        font-size: clamp(12px, 2.5vw, 13px);
+        font-weight: 600;
+        letter-spacing: 0.04em;
+        border-radius: 10px;
+        background: linear-gradient(180deg, var(--hero-gradient-start), var(--hero-gradient-end));
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2), 0 2px 10px rgba(var(--theme-color-rgb), 0.08);
         border: 1px solid rgba(var(--theme-color-rgb), 0.5) !important;
         color: var(--theme-color) !important;
+    }
+    #settings-menu .settings-submenu button {
+        height: 40px;
+        min-height: 0;
+        padding: 8px 12px;
+        font-size: clamp(12px, 2.5vw, 14px);
+        font-weight: 600;
+        border-radius: 8px;
+        width: 100%;
+        box-sizing: border-box;
     }
     #settings-menu > .has-submenu-wrapper {
         margin-bottom: 0 !important;
@@ -2460,7 +2488,7 @@ input.settings-form-input:-moz-autofill,
         white-space: normal !important;
         word-break: break-all !important;
     }
-    #settings-menu.settings-dropdown button {
+    #settings-menu.settings-dropdown button:not(.cache-clear-btn):not(.settings-logout-btn) {
         text-align: right !important;
         font-size: calc(16px + 1pt) !important;
         height: 52px !important;
@@ -2483,7 +2511,9 @@ input.settings-form-input:-moz-autofill,
     #settings-menu.settings-dropdown .has-submenu-wrapper {
         width: 100% !important;
         display: flex !important;
-        justify-content: flex-end !important;
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: flex-start;
         margin-bottom: 0 !important;
     }
     #settings-menu.settings-dropdown .has-submenu {
@@ -2510,7 +2540,7 @@ input.settings-form-input:-moz-autofill,
     #settings-menu.settings-dropdown.open {
         gap: 10px !important;
     }
-    #settings-menu > button,
+    #settings-menu > button:not(.cache-clear-btn):not(.settings-logout-btn),
     #settings-menu .has-submenu-wrapper .has-submenu {
         background: linear-gradient(180deg, var(--hero-gradient-start), var(--hero-gradient-end)) !important;
         border: 1px solid rgba(255, 255, 255, 0.36) !important;
@@ -2524,16 +2554,25 @@ input.settings-form-input:-moz-autofill,
             0 4px 16px rgba(var(--theme-color-rgb), 0.12) !important;
     }
     #settings-menu .settings-submenu button {
-        height: 54px !important;
-        padding: 12px 16px !important;
-        font-size: clamp(15px, 3.1vw, 16px) !important;
-        letter-spacing: 1.1px !important;
-        border-radius: 11px !important;
+        height: 40px !important;
+        padding: 8px 12px !important;
+        font-size: clamp(12px, 2.8vw, 14px) !important;
+        letter-spacing: 0.5px !important;
+        border-radius: 8px !important;
+    }
+    #settings-menu > button.cache-clear-btn,
+    #settings-menu > button.settings-logout-btn {
+        height: 44px;
+        min-height: 0;
+        padding: 8px 12px;
+        font-size: clamp(12px, 2.6vw, 14px);
+        background: linear-gradient(180deg, var(--hero-gradient-start), var(--hero-gradient-end));
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.22), 0 2px 10px rgba(var(--theme-color-rgb), 0.1);
     }
     #settings-menu > button.cache-clear-btn {
         border-color: rgba(255, 255, 255, 0.4) !important;
+        color: var(--theme-color);
     }
-    /* Çıkış: diğer satırlarla aynı kutu, kırmızı çerçeve + kırmızı metin (üstteki genel buton stilini ezer) */
     #settings-menu > button.settings-logout-btn {
         border: 1px solid rgba(var(--theme-color-rgb), 0.5) !important;
         color: var(--theme-color) !important;
@@ -2588,7 +2627,7 @@ input.settings-form-input:-moz-autofill,
 
 /* Gerçek hover: ayarlar menüsü .menu-btn ile aynı hover (dokunmatikte devre dışı); masaüstü dahil */
 @media (hover: hover) {
-    #settings-menu > button:hover,
+    #settings-menu > button:not(.cache-clear-btn):not(.settings-logout-btn):hover,
     #settings-menu .has-submenu-wrapper .has-submenu:hover {
         background: linear-gradient(180deg, var(--hero-gradient-start), var(--hero-gradient-end)) !important;
         border-color: var(--border-light) !important;
