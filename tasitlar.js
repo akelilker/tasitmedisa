@@ -3187,7 +3187,7 @@
   }
 
   /**
-   * Bildirim: talep_tarihi (PHP date('c') / ISO) — formatDateShort kaçırılamaz; tek format.
+   * Bildirim: talep_tarihi (PHP date('c') / ISO) — sadece gg/aa/yyyy (saat yok; tarih uyarılarıyla aynı satır tarzı).
    */
   function medisaNotificationTalepDisplay(str) {
     if (str == null || str === '') return '-';
@@ -3197,7 +3197,7 @@
     }
     const d = new Date(t);
     const p = function(n) { return String(n).padStart(2, '0'); };
-    return p(d.getDate()) + '/' + p(d.getMonth() + 1) + '/' + d.getFullYear() + ' ' + p(d.getHours()) + ':' + p(d.getMinutes());
+    return p(d.getDate()) + '/' + p(d.getMonth() + 1) + '/' + d.getFullYear();
   }
   function medisaNotificationTalepSortMs(str) {
     const t = Date.parse(String(str || '').trim());
