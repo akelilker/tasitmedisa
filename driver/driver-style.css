@@ -3021,16 +3021,50 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 
 .driver-password-actions {
   display: flex;
+  flex-wrap: nowrap;
   gap: 10px;
-  justify-content: center;
+  justify-content: stretch;
+  align-items: stretch;
   margin-top: 18px;
+  width: 100%;
 }
 
 .driver-feedback-actions {
   display: flex;
+  flex-wrap: nowrap;
   gap: 10px;
-  justify-content: center;
+  justify-content: stretch;
+  align-items: stretch;
   margin-top: 18px;
+  width: 100%;
+}
+
+/* Talep / Şifre modalları: Gönder-Kaydet ile Vazgeç — style-core universal (32px) ile btn-submit boyutunu eşitle */
+#driver-feedback-modal .driver-feedback-actions .btn-submit,
+#driver-feedback-modal .driver-feedback-actions .universal-btn-cancel,
+#driver-password-modal .driver-password-actions .btn-submit,
+#driver-password-modal .driver-password-actions .universal-btn-cancel {
+  flex: 1 1 0;
+  min-width: 0;
+  width: auto !important;
+  max-width: none !important;
+  margin-top: 0 !important;
+  height: auto !important;
+  min-height: 44px;
+  padding: 12px 14px !important;
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  line-height: 1.2 !important;
+  border-radius: 8px !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+#driver-feedback-modal .driver-feedback-actions .btn-submit,
+#driver-password-modal .driver-password-actions .btn-submit {
+  border-width: 1px;
 }
 
 .driver-password-message {
