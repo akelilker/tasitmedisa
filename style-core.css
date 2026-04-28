@@ -1110,9 +1110,12 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-
   -ms-overflow-style: none !important;
 }
 #notifications-dropdown.settings-dropdown {
-  display: flex !important;
+  display: none !important;
   flex-direction: column !important;
   gap: 6px !important;
+}
+#notifications-dropdown.settings-dropdown.open {
+  display: flex !important;
 }
 #notifications-dropdown::-webkit-scrollbar {
   display: none !important;
