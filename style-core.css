@@ -962,18 +962,27 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-
   background: rgba(var(--theme-color-rgb), 0.12) !important;
   box-shadow: 0 0 10px rgba(var(--theme-color-rgb), 0.22) !important;
   color: var(--theme-color) !important;
+  transform: scale(1.012) !important;
+  transform-origin: center center !important;
+  z-index: 4 !important;
 }
 #notifications-dropdown .notification-item.date-warning-red-border:hover {
   border-color: rgba(var(--theme-color-rgb), 0.95) !important;
   background: rgba(var(--theme-color-rgb), 0.12) !important;
   box-shadow: 0 0 10px rgba(var(--theme-color-rgb), 0.22) !important;
   color: var(--theme-color) !important;
+  transform: scale(1.012) !important;
+  transform-origin: center center !important;
+  z-index: 4 !important;
 }
 #notifications-dropdown .notification-item.date-warning-orange-border:hover {
   border-color: rgba(var(--orange-warn-rgb), 0.88) !important;
   background: rgba(var(--orange-warn-rgb), 0.12) !important;
   box-shadow: 0 0 10px rgba(var(--orange-warn-rgb), 0.18) !important;
   color: var(--orange-warn) !important;
+  transform: scale(1.012) !important;
+  transform-origin: center center !important;
+  z-index: 4 !important;
 }
 
 #notifications-dropdown .notification-item.date-warning-red-border:hover .notif-line1,
@@ -983,12 +992,14 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-
 #notifications-dropdown .notification-item.notification-item-activity.notification-unread:hover .notif-title,
 #notifications-dropdown .notification-item.notification-item-activity.notification-unread:hover .notif-line2 {
   color: var(--theme-color) !important;
+  font-size: calc(100% + 0.5px) !important;
 }
 
 #notifications-dropdown .notification-item.date-warning-orange-border:hover .notif-line1,
 #notifications-dropdown .notification-item.date-warning-orange-border:hover .notif-title,
 #notifications-dropdown .notification-item.date-warning-orange-border:hover .notif-line2 {
   color: var(--orange-warn) !important;
+  font-size: calc(100% + 0.5px) !important;
 }
 /* Tarih uyarı kartları: settings-dropdown button mirasını ez; altta sadece 2px padding */
 #notifications-dropdown .notification-item.date-warning-red-border,
@@ -1216,7 +1227,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   font-size: 12px !important;
   line-height: 1.2 !important;
   cursor: pointer;
-  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
+  transition: transform 0.16s ease, box-shadow 0.16s ease, color 0.16s ease, border-color 0.16s ease, background 0.16s ease, font-size 0.16s ease;
   white-space: normal !important;
   text-align: left !important;
   overflow: hidden !important;
@@ -1597,7 +1608,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
     justify-content: flex-start;
     align-items: flex-start;
     text-align: left;
-    transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, color 0.2s ease;
+    transition: transform 0.16s ease, box-shadow 0.16s ease, color 0.16s ease, border-color 0.16s ease, background 0.16s ease, font-size 0.16s ease;
   }
 
   #notifications-dropdown .notification-item .notif-line1,
@@ -1650,18 +1661,27 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
     background: rgba(var(--theme-color-rgb), 0.12) !important;
     box-shadow: 0 0 10px rgba(var(--theme-color-rgb), 0.22) !important;
     color: var(--theme-color) !important;
+  transform: scale(1.012) !important;
+  transform-origin: center center !important;
+  z-index: 4 !important;
   }
   #notifications-dropdown .notification-item.date-warning-red-border:hover {
     border-color: rgba(var(--theme-color-rgb), 0.95) !important;
     background: rgba(var(--theme-color-rgb), 0.12) !important;
     box-shadow: 0 0 10px rgba(var(--theme-color-rgb), 0.22) !important;
     color: var(--theme-color) !important;
+  transform: scale(1.012) !important;
+  transform-origin: center center !important;
+  z-index: 4 !important;
   }
   #notifications-dropdown .notification-item.date-warning-orange-border:hover {
     border-color: rgba(var(--orange-warn-rgb), 0.88) !important;
     background: rgba(var(--orange-warn-rgb), 0.12) !important;
     box-shadow: 0 0 10px rgba(var(--orange-warn-rgb), 0.18) !important;
     color: var(--orange-warn) !important;
+  transform: scale(1.012) !important;
+  transform-origin: center center !important;
+  z-index: 4 !important;
   }
 
   #notifications-dropdown .notification-item.date-warning-red-border:hover .notif-line1,
@@ -1671,12 +1691,14 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   #notifications-dropdown .notification-item.notification-item-activity.notification-unread:hover .notif-title,
   #notifications-dropdown .notification-item.notification-item-activity.notification-unread:hover .notif-line2 {
     color: var(--theme-color) !important;
+  font-size: calc(100% + 0.5px) !important;
   }
 
   #notifications-dropdown .notification-item.date-warning-orange-border:hover .notif-line1,
   #notifications-dropdown .notification-item.date-warning-orange-border:hover .notif-title,
   #notifications-dropdown .notification-item.date-warning-orange-border:hover .notif-line2 {
     color: var(--orange-warn) !important;
+  font-size: calc(100% + 0.5px) !important;
   }
 
   #notifications-dropdown .notification-item.mtv-notification {
