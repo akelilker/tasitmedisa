@@ -116,11 +116,23 @@ $result = medisaMutateData(function (&$data) use ($incomingData) {
             return array_slice($clean, -500);
         };
         $normalizeScopeState = function ($scopeState) use ($normalizeKeys) {
+            $normalizeFirstSeenDates = function ($map) {
+                $clean = [];
+                if (!is_array($map)) return $clean;
+                foreach ($map as $key => $date) {
+                    $normalizedKey = trim((string)$key);
+                    $normalizedDate = trim((string)$date);
+                    if ($normalizedKey === '' || $normalizedDate === '') continue;
+                    $clean[$normalizedKey] = $normalizedDate;
+                }
+                return $clean;
+            };
             if (is_array($scopeState) && array_is_list($scopeState)) {
                 $readKeys = $normalizeKeys($scopeState);
                 return [
                     'readKeys' => $readKeys,
                     'dismissedKeys' => [],
+                    'firstSeenDates' => [],
                     'migratedFromLocalStorage' => false,
                     'updatedAt' => '',
                 ];
@@ -131,6 +143,7 @@ $result = medisaMutateData(function (&$data) use ($incomingData) {
             return [
                 'readKeys' => $readKeys,
                 'dismissedKeys' => $dismissedKeys,
+                'firstSeenDates' => $normalizeFirstSeenDates($scopeState['firstSeenDates'] ?? []),
                 'migratedFromLocalStorage' => ($scopeState['migratedFromLocalStorage'] ?? false) === true,
                 'updatedAt' => trim((string)($scopeState['updatedAt'] ?? '')),
             ];
@@ -160,9 +173,16 @@ $result = medisaMutateData(function (&$data) use ($incomingData) {
             $clientScope = $normalizeScopeState($incomingReadState[$allowedScopeKey]);
             $dismissedKeys = $mergeUnique($serverScope['dismissedKeys'], $clientScope['dismissedKeys']);
             $readKeys = $mergeUnique(array_merge($serverScope['readKeys'], $clientScope['readKeys']), $dismissedKeys);
+            $firstSeenDates = $serverScope['firstSeenDates'];
+            foreach ($clientScope['firstSeenDates'] as $notifKey => $firstSeenDate) {
+                if (!array_key_exists($notifKey, $firstSeenDates)) {
+                    $firstSeenDates[$notifKey] = $firstSeenDate;
+                }
+            }
             $data['notificationReadState'][$allowedScopeKey] = [
                 'readKeys' => $readKeys,
                 'dismissedKeys' => $dismissedKeys,
+                'firstSeenDates' => $firstSeenDates,
                 'migratedFromLocalStorage' => $serverScope['migratedFromLocalStorage'] || $clientScope['migratedFromLocalStorage'],
                 'updatedAt' => date('c'),
             ];
