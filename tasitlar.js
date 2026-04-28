@@ -8070,7 +8070,7 @@ function renderVehicleDetailLeft(vehicle) {
 
       if (notifDropdown) {
         if (hasUnreadMarkableNotification || hasUnreadInRenderedList) {
-          html = `<div class="notifications-toolbar"><button type="button" class="notifications-mark-all-read-btn" data-notification-action="mark-all-read">Tümünü Okundu Olarak İşaretle</button></div>` + html;
+          html = html + `<div class="notifications-toolbar"><button type="button" class="notifications-mark-all-read-btn" data-notification-action="mark-all-read">Tümünü Okundu Olarak İşaretle</button></div>`;
         }
         notifDropdown.innerHTML = html;
         if (notifDropdown.classList.contains('open') && typeof window.syncMobileNotificationsDropdownHeight === 'function') {
