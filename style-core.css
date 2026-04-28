@@ -875,7 +875,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-
   justify-content: flex-end;
   align-items: center;
   gap: 16px;
-  position: relative;
   overflow: visible;
 }
 .icons-row .icon-btn {
@@ -1787,11 +1786,12 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   background: transparent;
   border: none;
   border-radius: 0;
-  width: 55%;
-  max-width: 275px;
+  width: min(320px, calc(100vw - 32px));
+  max-width: calc(100vw - 32px);
   z-index: 100;
   padding: 0;
   box-shadow: none;
+  box-sizing: border-box;
   overflow: visible; /* Submenu'nun dışarı çıkabilmesi için */
 }
 .settings-dropdown:not(#notifications-dropdown).open { display: block; }
@@ -1814,6 +1814,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   height: 48px;
   overflow: hidden;
   box-sizing: border-box;
+  white-space: nowrap;
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -1936,8 +1937,8 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
     letter-spacing: clamp(1px, 0.42vw, 3px);
   }
   .settings-dropdown:not(#notifications-dropdown) {
-    width: 45%; /* Masaüstünde container'ın %45'i */
-    max-width: 225px;
+    width: min(320px, calc(100vw - 32px));
+    max-width: calc(100vw - 32px);
   }
   /* Masaüstü: Bildirim kutusu stabil genişlikte kalsın, resize'da bozulmasın */
   #notifications-dropdown {
