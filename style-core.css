@@ -1020,16 +1020,24 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-
 }
 #notifications-dropdown .notification-item .notif-line2 {
   font-size: 11px !important;
-  line-height: 1.2 !important;
+  line-height: 1.1 !important;
   text-align: left !important;
   margin-top: 0 !important;
   margin-bottom: 0 !important;
+  padding: 0 !important;
+  position: static !important;
+  flex: 0 0 auto !important;
 }
 #notifications-dropdown .notification-item:not(.date-warning-red-border):not(.date-warning-orange-border):not(.notification-item-activity.notification-unread) .notif-line2 {
   color: #999 !important;
 }
 #notifications-dropdown .notification-item.notification-item-activity.notification-unread .notif-line2 {
   color: rgba(var(--theme-color-rgb), 0.78) !important;
+  line-height: 1.1 !important;
+  margin-top: 0 !important;
+  padding: 0 !important;
+  position: static !important;
+  flex: 0 0 auto !important;
 }
 /* Severity tarih uyarısı: ikinci satır tema ile uyumlu (font ölçüleri üst blokta) */
 #notifications-dropdown .notification-item.date-warning-orange-border .notif-line2 {
@@ -1173,7 +1181,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   justify-content: flex-start !important;
   gap: 1px !important;
   height: auto !important;
-  min-height: 58px !important;
+  min-height: 52px !important;
   max-height: none !important;
   padding: 4px 10px 1px !important;
   border-radius: 7px !important;
@@ -1207,6 +1215,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   font-weight: 500 !important;
   text-align: left !important;
   margin-bottom: 0 !important;
+  padding: 0 !important;
   flex: 0 0 auto;
   position: static !important;
 }
@@ -1527,7 +1536,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   #notifications-dropdown .notification-item-activity,
   #notifications-dropdown .mtv-notification,
   #notifications-dropdown .kasko-excel-notification {
-    min-height: 58px !important;
+    min-height: 52px !important;
     padding: 4px 10px 1px !important;
     border-radius: 7px !important;
     background: linear-gradient(180deg, rgba(12, 18, 30, 0.94) 0%, rgba(8, 13, 22, 0.92) 100%) !important;
@@ -1815,7 +1824,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   #notifications-dropdown .kasko-excel-notification {
     box-sizing: border-box !important;
     height: auto !important;
-    min-height: 58px !important;
+    min-height: 52px !important;
     max-height: none !important;
     overflow: hidden !important;
     padding: 4px 10px 1px !important;
@@ -2468,7 +2477,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         justify-content: space-between !important;
         gap: 8px !important;
         padding: 4px 12px 1px !important;
-        min-height: 58px !important;
+        min-height: 52px !important;
         overflow: hidden !important;
     }
     #notifications-dropdown .mtv-notification .mtv-text-container,
@@ -2874,7 +2883,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     /* Bildirim satırları <button>: .settings-dropdown button sabit 48px + overflow:hidden metni keser — çok satır için genişlet */
     #notifications-dropdown > button.notification-item {
         height: auto !important;
-        min-height: 58px !important;
+        min-height: 52px !important;
         max-height: none !important;
         overflow: hidden !important;
         align-items: flex-start !important;
@@ -2885,7 +2894,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     #notifications-dropdown .notification-item.date-warning-orange-border,
     #notifications-dropdown .notification-item-activity {
         padding: 4px 12px 1px !important;
-        min-height: 58px !important;
+        min-height: 52px !important;
         overflow: hidden !important;
         display: flex !important;
         flex-direction: column !important;
@@ -2899,6 +2908,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         font-size: 11.5px !important;
         line-height: 1.18 !important;
         margin-bottom: 0 !important;
+        padding: 0 !important;
         position: static !important;
         flex: 0 0 auto !important;
         overflow-wrap: anywhere !important;
