@@ -1836,9 +1836,9 @@
       var tr = toggleBtn.getBoundingClientRect();
       dropdown.style.setProperty('position', 'fixed', 'important');
       dropdown.style.setProperty('top', Math.round(tr.bottom + 8) + 'px', 'important');
-      dropdown.style.setProperty('left', '50vw', 'important');
-      dropdown.style.setProperty('right', 'auto', 'important');
-      dropdown.style.setProperty('transform', 'translateX(-50%)', 'important');
+      dropdown.style.setProperty('left', 'auto', 'important');
+      dropdown.style.setProperty('right', 'max(8px, env(safe-area-inset-right, 0px))', 'important');
+      dropdown.style.setProperty('transform', 'none', 'important');
       dropdown.style.setProperty('width', 'min(82vw, 420px)', 'important');
       dropdown.style.setProperty('max-width', 'calc(100vw - 28px)', 'important');
     } else {

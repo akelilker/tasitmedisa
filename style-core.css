@@ -2620,10 +2620,13 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
 
 /* MOBİL AYARLARI: 768px ve altında modal alt çerçeve footer ışığında ezilmesin; sınır sadece top/bottom */
 @media (max-width: 768px) {
-    /* Bildirim paneli: genişlik — konum open iken JS (≤640); burada yalnız güvenli ölçü */
+    /* Bildirim paneli: genişlik + sağ hizalı fallback (≤768; open’ta ≤640 JS ile uyumlu) */
     #notifications-dropdown.settings-dropdown {
         width: min(82vw, 420px) !important;
         max-width: calc(100vw - 28px) !important;
+        left: auto !important;
+        right: max(8px, env(safe-area-inset-right, 0px)) !important;
+        transform: none !important;
     }
 
     /* Kasko Değer Listesi bildirimi: X sağda, metin solda, dikey kompakt */
@@ -3103,9 +3106,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         touch-action: pan-y !important;
         width: min(82vw, 420px) !important;
         max-width: calc(100vw - 28px) !important;
-        left: 50% !important;
-        right: auto !important;
-        transform: translateX(-50%) !important;
+        left: auto !important;
+        right: max(8px, env(safe-area-inset-right, 0px)) !important;
+        transform: none !important;
         padding-bottom: 0 !important; /* Açıkken JS inline güvenlik payı verir */
         box-sizing: border-box !important;
     }
