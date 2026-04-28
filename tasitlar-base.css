@@ -2356,6 +2356,14 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     box-shadow: inset 1px 0 0 rgba(var(--theme-color-rgb), 0.28);
 }
 
+#vehicles-modal .view-list .list-item.vehicle-date-warning-red .list-cell {
+    color: var(--theme-color) !important;
+}
+
+#vehicles-modal .view-list .list-item.vehicle-date-warning-orange .list-cell {
+    color: var(--orange-warn) !important;
+}
+
 #vehicles-modal .view-list .list-item.vehicle-date-warning-orange:hover {
     background: linear-gradient(90deg, rgba(var(--orange-warn-rgb), 0.16), rgba(var(--orange-warn-rgb), 0.06));
 }
