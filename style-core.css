@@ -1115,7 +1115,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-
 #notifications-dropdown.settings-dropdown {
   display: none !important;
   flex-direction: column !important;
-  gap: 6px !important;
+  gap: 3px !important;
 }
 #notifications-dropdown.settings-dropdown.open {
   display: flex !important;
@@ -1496,8 +1496,8 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   #notifications-dropdown.settings-dropdown {
     width: min(320px, calc(100vw - 40px)) !important;
     max-width: min(320px, calc(100vw - 40px)) !important;
-    top: 24px !important;
-    padding: 8px !important;
+    top: 18px !important;
+    padding: 3px 8px 8px !important;
     border: none !important;
     border-radius: 12px !important;
     background: linear-gradient(180deg, rgba(8, 13, 22, 0.98) 0%, rgba(8, 13, 22, 0.95) 100%) !important;
@@ -1506,8 +1506,8 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   }
 
   #notifications-dropdown .notifications-toolbar {
-    padding: 0 2px 6px !important;
-    margin-bottom: 4px !important;
+    padding: 0 2px !important;
+    margin-bottom: 0 !important;
     background: transparent !important;
   }
 
@@ -1516,7 +1516,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   #notifications-dropdown .notification-item-activity,
   #notifications-dropdown .mtv-notification,
   #notifications-dropdown .kasko-excel-notification {
-    min-height: 52px !important;
+    min-height: 64px !important;
     padding: 8px 10px !important;
     border-radius: 7px !important;
     background: linear-gradient(180deg, rgba(12, 18, 30, 0.94) 0%, rgba(8, 13, 22, 0.92) 100%) !important;
@@ -1804,7 +1804,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   #notifications-dropdown .kasko-excel-notification {
     box-sizing: border-box !important;
     height: auto !important;
-    min-height: 52px !important;
+    min-height: 64px !important;
     max-height: none !important;
     overflow: hidden !important;
     padding: 8px 10px !important;
@@ -2863,7 +2863,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     /* Bildirim satırları <button>: .settings-dropdown button sabit 48px + overflow:hidden metni keser — çok satır için genişlet */
     #notifications-dropdown > button.notification-item {
         height: auto !important;
-        min-height: 52px !important;
+        min-height: 64px !important;
         max-height: none !important;
         overflow: hidden !important;
         align-items: flex-start !important;
@@ -2873,7 +2873,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     #notifications-dropdown .notification-item.date-warning-orange-border,
     #notifications-dropdown .notification-item-activity {
         padding: 8px 12px 8px !important;
-        min-height: 56px !important;
+        min-height: 64px !important;
         overflow: hidden !important;
         display: flex !important;
         flex-direction: column !important;
@@ -2924,7 +2924,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         border-radius: 12px !important;
         padding-left: 8px !important;
         padding-right: 8px !important;
-        padding-top: 8px !important;
+        padding-top: 3px !important;
         padding-bottom: 0 !important;
         box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5) !important;
         isolation: isolate;
