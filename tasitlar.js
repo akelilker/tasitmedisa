@@ -1825,7 +1825,7 @@
     var paddingBottom = parseFloat(dropdownStyles.paddingBottom) || 0;
     /* Mobil ve masaüstünde 6 tam kart; son border klibini önlemek için alt güvenlik payı */
     var isMobile = window.innerWidth <= 640;
-    var safetyBottom = isMobile ? 16 : 20;
+    var safetyBottom = isMobile ? 10 : 14;
     var visibleLimit = 6;
     var innerBudget = Math.max(0, available - paddingTop - paddingBottom - safetyBottom);
 

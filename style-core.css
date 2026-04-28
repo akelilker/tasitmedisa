@@ -1133,25 +1133,24 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-
   justify-content: flex-start;
   align-items: flex-start;
   flex-shrink: 0;
-  min-height: 44px;
-  padding: 8px 8px 10px;
-  padding-bottom: 8px;
+  min-height: 0;
+  padding: 2px 6px 3px;
   margin: 0;
   margin-bottom: 0;
   line-height: normal;
   background: linear-gradient(180deg, rgba(8, 13, 22, 1) 0%, rgba(8, 13, 22, 0.98) 100%) !important;
   overflow: visible !important;
   isolation: isolate;
-  box-shadow: 0 4px 10px rgba(8, 13, 22, 0.88) !important;
+  box-shadow: 0 3px 8px rgba(8, 13, 22, 0.75) !important;
 }
 
 #notifications-dropdown .notifications-mark-all-read-btn {
   width: auto !important;
   max-width: none !important;
-  min-height: 36px !important;
+  min-height: 0 !important;
   height: auto !important;
   margin: 0 !important;
-  padding: 6px 4px !important;
+  padding: 2px 2px !important;
   background: transparent !important;
   border: none !important;
   border-radius: 0 !important;
@@ -1196,7 +1195,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-
   width: min(360px, calc(100vw - 32px)) !important;
   max-width: calc(100vw - 32px) !important;
   flex-direction: column !important;
-  gap: 3px !important;
+  gap: 2px !important;
 }
 #notifications-dropdown.settings-dropdown.open {
   display: flex !important;
@@ -1587,7 +1586,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
     width: min(320px, calc(100vw - 40px)) !important;
     max-width: min(320px, calc(100vw - 40px)) !important;
     top: 22px !important;
-    padding: 3px 8px 8px !important;
+    padding: 1px 8px 5px !important;
     border: none !important;
     border-radius: 12px !important;
     background: linear-gradient(180deg, rgba(8, 13, 22, 0.98) 0%, rgba(8, 13, 22, 0.95) 100%) !important;
@@ -1599,8 +1598,8 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
     position: sticky !important;
     top: 0 !important;
     bottom: auto !important;
-    min-height: 44px !important;
-    padding: 8px 8px 10px !important;
+    min-height: 0 !important;
+    padding: 2px 6px 3px !important;
     margin-top: 0 !important;
     margin-bottom: 0 !important;
     line-height: normal !important;
@@ -1608,7 +1607,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
     background: linear-gradient(180deg, rgba(8, 13, 22, 1) 0%, rgba(8, 13, 22, 0.98) 100%) !important;
     overflow: visible !important;
     isolation: isolate;
-    box-shadow: 0 4px 10px rgba(8, 13, 22, 0.88) !important;
+    box-shadow: 0 3px 8px rgba(8, 13, 22, 0.75) !important;
   }
 
   #notifications-dropdown .notification-item.date-warning-red-border,
@@ -1966,7 +1965,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
     box-sizing: border-box !important;
   }
   #notifications-dropdown.open > .notification-item:last-child {
-    margin-bottom: 4px !important;
+    margin-bottom: 2px !important;
   }
   /* Masaüstü: Bildirim kartları mobildeki gibi içerik kadar aksın */
   #notifications-dropdown .notification-item.date-warning-red-border,
@@ -3126,7 +3125,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         border-radius: 12px !important;
         padding-left: 8px !important;
         padding-right: 8px !important;
-        padding-top: 2px !important;
+        padding-top: 0 !important;
         padding-bottom: 0 !important;
         box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5) !important;
         isolation: isolate;
