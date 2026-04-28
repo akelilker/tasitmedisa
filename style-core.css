@@ -1770,7 +1770,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
 }
 
 /* DROPDOWN - Her buton ayrı çerçeve */
-.settings-dropdown {
+.settings-dropdown:not(#notifications-dropdown) {
   display: none;
   position: absolute;
   top: 32px; /* Azaltıldı: 35px → 32px (daha yakın) */
@@ -1785,8 +1785,8 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   box-shadow: none;
   overflow: visible; /* Submenu'nun dışarı çıkabilmesi için */
 }
-.settings-dropdown.open { display: block; }
-.settings-dropdown button {
+.settings-dropdown:not(#notifications-dropdown).open { display: block; }
+.settings-dropdown:not(#notifications-dropdown) button {
   max-width: 500px;
   width: 100%;
   margin: 0;
@@ -1808,34 +1808,40 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  position: relative;
+  transform-origin: center center;
 }
-.settings-dropdown button:last-child {
+.settings-dropdown:not(#notifications-dropdown) button:last-child {
   margin-bottom: 0;
 }
 /* Bildirim satırları .notification-item — kendi hover kuralları (#notifications-dropdown); çakışmayı önle */
-.settings-dropdown button:not(.notification-item):hover {
+.settings-dropdown:not(#notifications-dropdown) button:not(.notification-item):hover {
   background: var(--bg-input);
   border-color: var(--border-mid);
   color: var(--txt-white);
-  font-size: calc(14px + 1pt);
+  transform: scale(1.01);
+  z-index: 3;
   box-shadow: 0 6px 15px rgba(0,0,0,0.4);
 }
 
-/* SUB-MENU (Veri Yedekleme için sola açılan menü) */
+/* SUB-MENU (Ana ayarlar paneline hizalı açılır alt bölüm) */
 .settings-submenu {
   display: none;
   position: absolute;
-  right: 100%;
-  top: 0;
+  left: 0;
+  right: 0;
+  top: calc(100% + 4px);
   background: var(--bg);
   border: 1px solid var(--border-subtle);
   border-radius: 8px;
-  width: 180px;
+  width: 100%;
   z-index: 101;
-  padding: 8px;
+  padding: 6px 0 0 0;
   box-shadow: 0 4px 12px var(--shadow-dark);
   flex-direction: column;
   gap: 4px; /* Butonlar arası boşluk */
+  margin-left: 0;
+  transform: none;
 }
 
 .settings-submenu.open {
@@ -1862,19 +1868,23 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  position: relative;
+  transform-origin: center center;
 }
 
 .settings-submenu button:hover {
   background: var(--bg-input);
   border-color: var(--border-medium);
   color: var(--txt-white);
-  font-size: calc(14px + 1pt);
+  transform: scale(1.01);
+  z-index: 3;
   box-shadow: 0 6px 15px rgba(0,0,0,0.4);
 }
 
 .has-submenu-wrapper {
   position: relative;
-  padding-right: 8px; /* Submenu ile buton arasında görsel boşluk */
+  padding-right: 0;
+  overflow: visible;
 }
 
 .has-submenu {
@@ -1916,7 +1926,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
     font-size: clamp(calc(17px - 0.5pt), 4.5vw, calc(22px - 0.5pt)) !important;
     letter-spacing: clamp(1px, 0.42vw, 3px);
   }
-  .settings-dropdown {
+  .settings-dropdown:not(#notifications-dropdown) {
     width: 45%; /* Masaüstünde container'ın %45'i */
     max-width: 225px;
   }
@@ -3045,7 +3055,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     }
 /* Mobil: 6 kartı güvenli gösterecek yükseklik; fazlası scroll */
     #notifications-dropdown {
-        max-height: var(--mobile-notifications-max-height, min(62vh, calc(100dvh - 260px))) !important;
+        max-height: var(--mobile-notifications-max-height, min(72vh, calc(100dvh - 210px))) !important;
         overflow-y: auto !important;
         overflow-x: hidden !important;
         -webkit-overflow-scrolling: touch;
@@ -3153,7 +3163,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         padding-bottom: calc(var(--app-footer-height) + env(safe-area-inset-bottom, 0)) !important;
     }
     #notifications-dropdown {
-        max-height: var(--mobile-notifications-max-height, min(62vh, calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 260px))) !important;
+        max-height: var(--mobile-notifications-max-height, min(72vh, calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 210px))) !important;
     }
     #notifications-dropdown.open {
         box-sizing: border-box !important;
