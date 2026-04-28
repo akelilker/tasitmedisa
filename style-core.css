@@ -976,7 +976,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-
   gap: 1px !important;
   height: auto !important;
   min-height: 52px !important;
-  padding: 4px 10px 4px !important;
+  padding: 4px 10px 1px !important;
   white-space: normal !important;
   overflow: hidden !important;
   text-align: left !important;
@@ -997,7 +997,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-
   gap: 1px !important;
   height: auto !important;
   min-height: 52px !important;
-  padding: 4px 10px 4px !important;
+  padding: 4px 10px 1px !important;
   overflow: hidden !important;
   text-align: left !important;
 }
@@ -1175,7 +1175,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   height: auto !important;
   min-height: 58px !important;
   max-height: none !important;
-  padding: 4px 10px 4px !important;
+  padding: 4px 10px 1px !important;
   border-radius: 7px !important;
   border: 1px solid var(--notif-border, rgba(130, 130, 130, 0.55)) !important;
   background: linear-gradient(180deg, rgba(12, 18, 30, 0.94) 0%, rgba(8, 13, 22, 0.92) 100%) !important;
@@ -1505,8 +1505,8 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   #notifications-dropdown.settings-dropdown {
     width: min(320px, calc(100vw - 40px)) !important;
     max-width: min(320px, calc(100vw - 40px)) !important;
-    top: 28px !important;
-    padding: 6px 8px 8px !important;
+    top: 24px !important;
+    padding: 5px 8px 8px !important;
     border: none !important;
     border-radius: 12px !important;
     background: linear-gradient(180deg, rgba(8, 13, 22, 0.98) 0%, rgba(8, 13, 22, 0.95) 100%) !important;
@@ -1528,7 +1528,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   #notifications-dropdown .mtv-notification,
   #notifications-dropdown .kasko-excel-notification {
     min-height: 58px !important;
-    padding: 4px 10px 4px !important;
+    padding: 4px 10px 1px !important;
     border-radius: 7px !important;
     background: linear-gradient(180deg, rgba(12, 18, 30, 0.94) 0%, rgba(8, 13, 22, 0.92) 100%) !important;
   }
@@ -1818,7 +1818,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
     min-height: 58px !important;
     max-height: none !important;
     overflow: hidden !important;
-    padding: 4px 10px 4px !important;
+    padding: 4px 10px 1px !important;
   }
   #notifications-dropdown .notification-item.date-warning-red-border,
   #notifications-dropdown .notification-item.date-warning-orange-border,
@@ -2467,7 +2467,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         align-items: flex-start !important;
         justify-content: space-between !important;
         gap: 8px !important;
-        padding: 4px 12px 4px !important;
+        padding: 4px 12px 1px !important;
         min-height: 58px !important;
         overflow: hidden !important;
     }
@@ -2879,12 +2879,12 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         overflow: hidden !important;
         align-items: flex-start !important;
         justify-content: flex-start !important;
-        padding: 4px 12px 4px !important;
+        padding: 4px 12px 1px !important;
     }
     #notifications-dropdown .notification-item.date-warning-red-border,
     #notifications-dropdown .notification-item.date-warning-orange-border,
     #notifications-dropdown .notification-item-activity {
-        padding: 4px 12px 4px !important;
+        padding: 4px 12px 1px !important;
         min-height: 58px !important;
         overflow: hidden !important;
         display: flex !important;
@@ -2937,7 +2937,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         border-radius: 12px !important;
         padding-left: 8px !important;
         padding-right: 8px !important;
-        padding-top: 3px !important;
+        padding-top: 2px !important;
         padding-bottom: 0 !important;
         box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5) !important;
         isolation: isolate;
