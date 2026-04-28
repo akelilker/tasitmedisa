@@ -950,21 +950,45 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-
   box-shadow: 0 0 8px rgba(var(--orange-warn-rgb), 0.2);
 }
 
-/* Bildirim kutuları hover: sadece çerçeve belirginleşir, arka plan ve yazı değişmez */
-.notification-item:hover {
+/* Bildirim kutuları hover: nötr kartlarda çerçeve belirginleşir */
+.notification-item:hover:not(.date-warning-red-border):not(.date-warning-orange-border):not(.notification-item-activity.notification-unread) {
   border-color: rgba(255, 255, 255, 0.5) !important;
 }
 #notifications-dropdown .notification-item-activity:not(.notification-unread):hover {
   border-color: rgba(255, 255, 255, 0.32) !important;
 }
 #notifications-dropdown .notification-item-activity.notification-unread:hover {
-  border-color: rgba(var(--theme-color-rgb), 0.65) !important;
+  border-color: rgba(var(--theme-color-rgb), 0.95) !important;
+  background: rgba(var(--theme-color-rgb), 0.12) !important;
+  box-shadow: 0 0 10px rgba(var(--theme-color-rgb), 0.22) !important;
+  color: var(--theme-color) !important;
 }
 #notifications-dropdown .notification-item.date-warning-red-border:hover {
-  border-color: rgba(var(--theme-color-rgb), 0.85) !important;
+  border-color: rgba(var(--theme-color-rgb), 0.95) !important;
+  background: rgba(var(--theme-color-rgb), 0.12) !important;
+  box-shadow: 0 0 10px rgba(var(--theme-color-rgb), 0.22) !important;
+  color: var(--theme-color) !important;
 }
 #notifications-dropdown .notification-item.date-warning-orange-border:hover {
-  border-color: rgba(var(--orange-warn-rgb), 0.85) !important;
+  border-color: rgba(var(--orange-warn-rgb), 0.88) !important;
+  background: rgba(var(--orange-warn-rgb), 0.12) !important;
+  box-shadow: 0 0 10px rgba(var(--orange-warn-rgb), 0.18) !important;
+  color: var(--orange-warn) !important;
+}
+
+#notifications-dropdown .notification-item.date-warning-red-border:hover .notif-line1,
+#notifications-dropdown .notification-item.date-warning-red-border:hover .notif-title,
+#notifications-dropdown .notification-item.date-warning-red-border:hover .notif-line2,
+#notifications-dropdown .notification-item.notification-item-activity.notification-unread:hover .notif-line1,
+#notifications-dropdown .notification-item.notification-item-activity.notification-unread:hover .notif-title,
+#notifications-dropdown .notification-item.notification-item-activity.notification-unread:hover .notif-line2 {
+  color: var(--theme-color) !important;
+}
+
+#notifications-dropdown .notification-item.date-warning-orange-border:hover .notif-line1,
+#notifications-dropdown .notification-item.date-warning-orange-border:hover .notif-title,
+#notifications-dropdown .notification-item.date-warning-orange-border:hover .notif-line2 {
+  color: var(--orange-warn) !important;
 }
 /* Tarih uyarı kartları: settings-dropdown button mirasını ez; altta sadece 2px padding */
 #notifications-dropdown .notification-item.date-warning-red-border,
@@ -1622,16 +1646,37 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
     background: rgba(255, 255, 255, 0.08) !important;
   }
   #notifications-dropdown .notification-item-activity.notification-unread:hover {
-    border-color: rgba(var(--theme-color-rgb), 0.55) !important;
-    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: rgba(var(--theme-color-rgb), 0.95) !important;
+    background: rgba(var(--theme-color-rgb), 0.12) !important;
+    box-shadow: 0 0 10px rgba(var(--theme-color-rgb), 0.22) !important;
+    color: var(--theme-color) !important;
   }
   #notifications-dropdown .notification-item.date-warning-red-border:hover {
-    border-color: rgba(var(--theme-color-rgb), 0.58) !important;
-    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: rgba(var(--theme-color-rgb), 0.95) !important;
+    background: rgba(var(--theme-color-rgb), 0.12) !important;
+    box-shadow: 0 0 10px rgba(var(--theme-color-rgb), 0.22) !important;
+    color: var(--theme-color) !important;
   }
   #notifications-dropdown .notification-item.date-warning-orange-border:hover {
-    border-color: rgba(var(--orange-warn-rgb), 0.44) !important;
-    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: rgba(var(--orange-warn-rgb), 0.88) !important;
+    background: rgba(var(--orange-warn-rgb), 0.12) !important;
+    box-shadow: 0 0 10px rgba(var(--orange-warn-rgb), 0.18) !important;
+    color: var(--orange-warn) !important;
+  }
+
+  #notifications-dropdown .notification-item.date-warning-red-border:hover .notif-line1,
+  #notifications-dropdown .notification-item.date-warning-red-border:hover .notif-title,
+  #notifications-dropdown .notification-item.date-warning-red-border:hover .notif-line2,
+  #notifications-dropdown .notification-item.notification-item-activity.notification-unread:hover .notif-line1,
+  #notifications-dropdown .notification-item.notification-item-activity.notification-unread:hover .notif-title,
+  #notifications-dropdown .notification-item.notification-item-activity.notification-unread:hover .notif-line2 {
+    color: var(--theme-color) !important;
+  }
+
+  #notifications-dropdown .notification-item.date-warning-orange-border:hover .notif-line1,
+  #notifications-dropdown .notification-item.date-warning-orange-border:hover .notif-title,
+  #notifications-dropdown .notification-item.date-warning-orange-border:hover .notif-line2 {
+    color: var(--orange-warn) !important;
   }
 
   #notifications-dropdown .notification-item.mtv-notification {

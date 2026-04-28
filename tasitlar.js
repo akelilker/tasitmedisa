@@ -7943,6 +7943,8 @@ function renderVehicleDetailLeft(vehicle) {
             const activeDateDisplay = getOrCreateNotificationFirstSeen(notifKey);
             const isRead = viewedKeys.indexOf(notifKey) !== -1;
             const isUnread = !isRead;
+            const isExpiredCriticalDate = notif.warningClass === 'date-warning-red' && Number(notif.days) < 0;
+            const shouldKeepSeverity = isExpiredCriticalDate;
 
             let messageText = '';
             if (notif.days <= 0 && notif.type === 'kasko') {
@@ -7970,13 +7972,19 @@ function renderVehicleDetailLeft(vehicle) {
             const safeVid = (notif.vehicleId || '').toString().replace(/"/g, '&quot;');
             const safeKey = notifKey.replace(/"/g, '&quot;');
             const stateClass = isUnread ? ' notification-unread' : ' notification-read';
+            const borderClass = (shouldKeepSeverity || isUnread) ? (notif.warningClass + '-border') : '';
+            const titleClass = (shouldKeepSeverity || isUnread) ? notif.warningClass : 'notif-read-text';
+            const notifBorder = (shouldKeepSeverity || isUnread) ? borderColor : readBorderColor;
+            const notifFg = shouldKeepSeverity ? 'var(--theme-color)' : (isUnread ? '#ccc' : '#9a9a9a');
             if (isUnread) hasUnreadMarkableNotification = true;
-            if (isUnread && notif.warningClass === 'date-warning-red') hasRed = true;
+            if (notif.warningClass === 'date-warning-red') {
+              if (Number(notif.days) < 0 || isUnread) hasRed = true;
+            }
             if (isUnread && notif.warningClass === 'date-warning-orange') hasOrange = true;
 
-            const h = `<button type="button" data-plate="${safePlate}" data-vehicle-id="${safeVid}" data-notif-key="${safeKey}" style="--notif-border: ${isUnread ? borderColor : readBorderColor}; --notif-fg: ${isUnread ? '#ccc' : '#9a9a9a'};" class="notification-item ${isUnread ? (notif.warningClass + '-border') : ''}${stateClass}">
+            const h = `<button type="button" data-plate="${safePlate}" data-vehicle-id="${safeVid}" data-notif-key="${safeKey}" style="--notif-border: ${notifBorder}; --notif-fg: ${notifFg};" class="notification-item ${borderClass}${stateClass}">
             <div class="notif-line1 notif-title">
-              <span class="${isUnread ? notif.warningClass : 'notif-read-text'}">${escapeHtml(messageText)}</span>
+              <span class="${titleClass}">${escapeHtml(messageText)}</span>
             </div>
             <div class="notif-line2 notif-meta-date">${escapeHtml(activeDateDisplay)}</div>
           </button>`;
