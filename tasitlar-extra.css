@@ -190,6 +190,18 @@
     color: var(--theme-color) !important;
 }
 
+#vehicles-modal .view-card .card.vehicle-date-warning-orange .card-plate,
+#vehicles-modal .view-card .card.vehicle-date-warning-orange .card-brand-model,
+#vehicles-modal .view-card .card.vehicle-date-warning-orange .card-third-line {
+    color: var(--orange-warn);
+}
+
+#vehicles-modal .view-card .card.vehicle-date-warning-red .card-plate,
+#vehicles-modal .view-card .card.vehicle-date-warning-red .card-brand-model,
+#vehicles-modal .view-card .card.vehicle-date-warning-red .card-third-line {
+    color: var(--theme-color);
+}
+
 .view-list .list-item.unassigned-vehicle-card {
     border-bottom-color: var(--border-faint-08) !important;
     /* Arka plan alternating'e bırakıldı; vurgu için ütununda kırmızı metin yeterli */
