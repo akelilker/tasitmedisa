@@ -1945,7 +1945,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
     letter-spacing: clamp(1px, 0.42vw, 3px);
   }
   .settings-dropdown:not(#notifications-dropdown) {
-    width: min(320px, calc(100vw - 32px));
+    width: min(250px, calc(100vw - 32px));
     max-width: calc(100vw - 32px);
   }
   /* Masaüstü: Bildirim kutusu stabil genişlikte kalsın, resize'da bozulmasın */
