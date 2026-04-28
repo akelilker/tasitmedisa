@@ -1835,7 +1835,7 @@
     } else if (toggleBtn) {
       var tr = toggleBtn.getBoundingClientRect();
       dropdown.style.setProperty('position', 'fixed', 'important');
-      dropdown.style.setProperty('top', Math.round(tr.bottom + 8) + 'px', 'important');
+      dropdown.style.setProperty('top', Math.round(tr.bottom + 4) + 'px', 'important');
       dropdown.style.setProperty('left', 'auto', 'important');
       dropdown.style.setProperty('right', 'max(8px, env(safe-area-inset-right, 0px))', 'important');
       dropdown.style.setProperty('transform', 'none', 'important');
