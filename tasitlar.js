@@ -1839,8 +1839,8 @@
       dropdown.style.setProperty('left', '50vw', 'important');
       dropdown.style.setProperty('right', 'auto', 'important');
       dropdown.style.setProperty('transform', 'translateX(-50%)', 'important');
-      dropdown.style.setProperty('width', 'calc(100vw - 28px)', 'important');
-      dropdown.style.setProperty('max-width', '520px', 'important');
+      dropdown.style.setProperty('width', 'min(82vw, 420px)', 'important');
+      dropdown.style.setProperty('max-width', 'calc(100vw - 28px)', 'important');
     } else {
       clearNotifDropdownMobileLayout();
     }
