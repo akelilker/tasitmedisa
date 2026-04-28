@@ -1794,7 +1794,12 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   box-sizing: border-box;
   overflow: visible; /* Submenu'nun dışarı çıkabilmesi için */
 }
-.settings-dropdown:not(#notifications-dropdown).open { display: block; }
+.settings-dropdown:not(#notifications-dropdown).open {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  overflow: visible;
+}
 .settings-dropdown:not(#notifications-dropdown) button {
   max-width: 500px;
   width: 100%;
@@ -1808,16 +1813,17 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   font-weight: 600;
   font-size: calc(13px + 1pt);
   cursor: pointer;
-  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, font-size 0.2s ease, box-shadow 0.2s ease;
-  margin-bottom: 2px;
+  transition: transform 0.16s ease, background 0.2s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+  margin-bottom: 0;
   box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-  height: 48px;
-  overflow: hidden;
+  min-height: 48px;
+  height: auto;
+  overflow: visible;
   box-sizing: border-box;
   white-space: nowrap;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: center;
   position: relative;
   transform-origin: center center;
 }
@@ -1829,9 +1835,9 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   background: var(--bg-input);
   border-color: var(--border-mid);
   color: var(--txt-white);
-  transform: scale(1.01);
+  transform: scale(1.025);
   z-index: 3;
-  box-shadow: 0 6px 15px rgba(0,0,0,0.4);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.42);
 }
 
 /* SUB-MENU (Ana ayarlar paneline hizalı açılır alt bölüm) */
@@ -1914,9 +1920,11 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
 
 .settings-dropdown .cache-clear-btn:hover,
 .settings-dropdown .settings-logout-btn:hover {
-  font-size: calc(17px + 1pt) !important; /* Fare ile üzerine gidince metin büyüsün */
   color: var(--theme-color) !important;
   border-color: rgba(var(--theme-color-rgb), 0.7) !important; /* Hover'da daha parlak kırmızı */
+  transform: scale(1.025);
+  z-index: 3;
+  box-shadow: 0 8px 18px rgba(var(--theme-color-rgb), 0.18) !important;
 }
 
 /* Masaüstünde container'ın %45'i + metin ortalı */
@@ -2038,11 +2046,11 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
     width: 20px !important;
     height: 20px !important;
   }
-  .settings-dropdown button:not(.notification-item) {
+  .settings-dropdown:not(#notifications-dropdown) button:not(.notification-item) {
     text-align: center; /* Masaüstünde ortalı */
     justify-content: center; /* Flexbox için ortalama */
   }
-  .has-submenu {
+  #settings-menu .has-submenu {
     justify-content: center !important; /* Masaüstünde ok ve metin ortada */
   }
   .settings-submenu button {
