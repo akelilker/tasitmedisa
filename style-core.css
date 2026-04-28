@@ -150,7 +150,7 @@ body::-webkit-scrollbar,
 .universal-back-bar a.universal-back-btn {
   display: inline-flex !important;
   align-items: center !important; /* Ok ve etiket aynı satırda dikey ortalı */
-  gap: 3px !important;
+  gap: 4px !important;
   text-decoration: none !important;
   cursor: pointer;
   background: none;
