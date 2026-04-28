@@ -105,6 +105,16 @@ $result = medisaMutateData(function (&$data) use ($incomingData) {
     }
     $incomingReadState = $incomingData['notificationReadState'] ?? null;
     if (is_array($incomingReadState)) {
+        $isListArray = function ($value) {
+            if (!is_array($value)) return false;
+            if (function_exists('array_is_list')) return array_is_list($value);
+            $expectedIndex = 0;
+            foreach ($value as $key => $_) {
+                if ($key !== $expectedIndex) return false;
+                $expectedIndex++;
+            }
+            return true;
+        };
         $normalizeKeys = function ($keys) {
             $clean = [];
             if (!is_array($keys)) return $clean;
@@ -115,19 +125,20 @@ $result = medisaMutateData(function (&$data) use ($incomingData) {
             }
             return array_slice($clean, -500);
         };
-        $normalizeScopeState = function ($scopeState) use ($normalizeKeys) {
+        $normalizeScopeState = function ($scopeState) use ($normalizeKeys, $isListArray) {
             $normalizeFirstSeenDates = function ($map) {
                 $clean = [];
                 if (!is_array($map)) return $clean;
                 foreach ($map as $key => $date) {
                     $normalizedKey = trim((string)$key);
+                    if (!is_scalar($date)) continue;
                     $normalizedDate = trim((string)$date);
                     if ($normalizedKey === '' || $normalizedDate === '') continue;
                     $clean[$normalizedKey] = $normalizedDate;
                 }
                 return $clean;
             };
-            if (is_array($scopeState) && array_is_list($scopeState)) {
+            if ($isListArray($scopeState)) {
                 $readKeys = $normalizeKeys($scopeState);
                 return [
                     'readKeys' => $readKeys,
@@ -139,7 +150,8 @@ $result = medisaMutateData(function (&$data) use ($incomingData) {
             }
             $scopeState = is_array($scopeState) ? $scopeState : [];
             $dismissedKeys = $normalizeKeys($scopeState['dismissedKeys'] ?? []);
-            $readKeys = $normalizeKeys(array_merge($scopeState['readKeys'] ?? [], $dismissedKeys));
+            $readKeysRaw = is_array($scopeState['readKeys'] ?? null) ? $scopeState['readKeys'] : [];
+            $readKeys = $normalizeKeys(array_merge($readKeysRaw, $dismissedKeys));
             return [
                 'readKeys' => $readKeys,
                 'dismissedKeys' => $dismissedKeys,
@@ -173,8 +185,9 @@ $result = medisaMutateData(function (&$data) use ($incomingData) {
             $clientScope = $normalizeScopeState($incomingReadState[$allowedScopeKey]);
             $dismissedKeys = $mergeUnique($serverScope['dismissedKeys'], $clientScope['dismissedKeys']);
             $readKeys = $mergeUnique(array_merge($serverScope['readKeys'], $clientScope['readKeys']), $dismissedKeys);
-            $firstSeenDates = $serverScope['firstSeenDates'];
-            foreach ($clientScope['firstSeenDates'] as $notifKey => $firstSeenDate) {
+            $firstSeenDates = is_array($serverScope['firstSeenDates'] ?? null) ? $serverScope['firstSeenDates'] : [];
+            $clientFirstSeenDates = is_array($clientScope['firstSeenDates'] ?? null) ? $clientScope['firstSeenDates'] : [];
+            foreach ($clientFirstSeenDates as $notifKey => $firstSeenDate) {
                 if (!array_key_exists($notifKey, $firstSeenDates)) {
                     $firstSeenDates[$notifKey] = $firstSeenDate;
                 }
