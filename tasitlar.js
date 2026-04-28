@@ -7974,15 +7974,18 @@ function renderVehicleDetailLeft(vehicle) {
             const stateClass = isUnread ? ' notification-unread' : ' notification-read';
             const borderClass = (shouldKeepSeverity || isUnread) ? (notif.warningClass + '-border') : '';
             const titleClass = (shouldKeepSeverity || isUnread) ? notif.warningClass : 'notif-read-text';
-            const notifBorder = (shouldKeepSeverity || isUnread) ? borderColor : readBorderColor;
-            const notifFg = shouldKeepSeverity ? 'var(--theme-color)' : (isUnread ? '#ccc' : '#9a9a9a');
+            const notifStyle = shouldKeepSeverity
+              ? `--notif-border: ${borderColor}; --notif-fg: var(--theme-color);`
+              : (isUnread
+                ? `--notif-border: ${borderColor}; --notif-fg: #ccc;`
+                : `--notif-border: ${readBorderColor}; --notif-fg: #9a9a9a;`);
             if (isUnread) hasUnreadMarkableNotification = true;
             if (notif.warningClass === 'date-warning-red') {
               if (Number(notif.days) < 0 || isUnread) hasRed = true;
             }
             if (isUnread && notif.warningClass === 'date-warning-orange') hasOrange = true;
 
-            const h = `<button type="button" data-plate="${safePlate}" data-vehicle-id="${safeVid}" data-notif-key="${safeKey}" style="--notif-border: ${notifBorder}; --notif-fg: ${notifFg};" class="notification-item ${borderClass}${stateClass}">
+            const h = `<button type="button" data-plate="${safePlate}" data-vehicle-id="${safeVid}" data-notif-key="${safeKey}" style="${notifStyle}" class="notification-item ${borderClass}${stateClass}">
             <div class="notif-line1 notif-title">
               <span class="${titleClass}">${escapeHtml(messageText)}</span>
             </div>
