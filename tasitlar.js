@@ -7500,6 +7500,7 @@ function renderVehicleDetailLeft(vehicle) {
       'kredi-guncelle': 'Hak Mahrumiyeti',
       'takip-cihaz-guncelle': 'Takip cihaz\u0131',
       'not-guncelle': 'Kullanıcı notu',
+      'vehicle-created': 'Yeni Taşıt',
       'satis': 'Sat\u0131\u015F/Pert',
       'ruhsat-yukle': 'Ruhsat'
     };
@@ -7515,6 +7516,14 @@ function renderVehicleDetailLeft(vehicle) {
     const isimStr = isim ? formatAdSoyad(String(isim)) : 'Bilinmiyor';
     const plateStr = (plate || '-').toString().trim();
     const type = (ev.type || '').toString().trim();
+    if (type === 'vehicle-created') {
+      const createdPlate = (ev.data && ev.data.plakaSnapshot) || plate || '-';
+      return 'Yeni Taşıt Bilgisi Kaydedildi. (' + String(createdPlate).trim() + ')';
+    }
+    if (type === 'satis') {
+      const soldPlate = (ev.data && ev.data.plakaSnapshot) || plate || '-';
+      return String(soldPlate).trim() + ' Plakalı Taşıt, Satış/Pert Nedeniyle Arşive Kaldırıldı.';
+    }
     if (type === 'lastik-guncelle') {
       const durum = String(evData.durum || 'yok').toLowerCase();
       const durumTxt = durum === 'var' ? 'Var' : 'Yok';
@@ -7757,11 +7766,12 @@ function renderVehicleDetailLeft(vehicle) {
     // Kullanıcı paneli işlemleri: tüm taşıtlardan son olayları topla (en yeni 15)
     const recentEvents = [];
     vehicles.forEach(vehicle => {
-      if (vehicle.satildiMi) return;
-      const events = vehicle.events || [];
+      const events = Array.isArray(vehicle.events) ? vehicle.events : [];
       const plate = vehicle.plate || '-';
       const brandModel = formatBrandModel(vehicle.brandModel || '-');
+      const isArchivedVehicle = vehicle.satildiMi === true;
       events.forEach(ev => {
+        if (isArchivedVehicle && (!ev || ev.type !== 'satis')) return;
         recentEvents.push({
           vehicleId: vehicle.id,
           plate: plate,

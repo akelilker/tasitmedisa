@@ -2616,6 +2616,21 @@
           };
           record.events.unshift(event);
         }
+        if (!record.events) record.events = [];
+        const createdTs = record.createdAt || new Date().toISOString();
+        const createdEvent = {
+          id: String(record.id || '') + '|vehicle-created',
+          type: 'vehicle-created',
+          date: formatDateForDisplay(new Date()),
+          timestamp: createdTs,
+          data: {
+            plakaSnapshot: String(record.plate || '').trim(),
+            kaydeden: (typeof window.getRecorderDisplayName === 'function')
+              ? String(window.getRecorderDisplayName() || '').trim()
+              : ''
+          }
+        };
+        record.events.unshift(createdEvent);
         
         vehicles.unshift(record);
       }
