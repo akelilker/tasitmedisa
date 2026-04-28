@@ -875,6 +875,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-
   justify-content: flex-end;
   align-items: center;
   gap: 16px;
+  position: relative;
+  overflow: visible;
 }
 .icons-row .icon-btn {
   flex-shrink: 0;
@@ -1184,6 +1186,13 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-
 }
 #notifications-dropdown.settings-dropdown {
   display: none !important;
+  position: absolute !important;
+  top: 32px !important;
+  right: 0 !important;
+  left: auto !important;
+  transform: none;
+  width: min(360px, calc(100vw - 32px)) !important;
+  max-width: calc(100vw - 32px) !important;
   flex-direction: column !important;
   gap: 3px !important;
 }

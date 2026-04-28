@@ -209,11 +209,11 @@
                         <button id="settings-branch-btn" onclick="openBranchManagement()">Şube Yönetimi</button>
                         <button id="settings-user-btn" onclick="openUserManagement()">Kullanıcı Yönetimi</button>
                         <button id="dis-veri-btn" onclick="openDisVeriPanel()" style="display:none;"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg> Dış Veri Yönetimi</button>
-                        <div id="settings-data-wrap" class="has-submenu-wrapper" onmouseenter="showDataSubmenu()" onmouseleave="hideDataSubmenu(event)">
+                        <div id="settings-data-wrap" class="has-submenu-wrapper">
                             <button class="has-submenu" onclick="openDataManagement(event)" onpointerdown="openDataManagement(event)">
                                 Veri Yedekleme
                             </button>
-                            <div id="data-submenu" class="settings-submenu" onmouseenter="showDataSubmenu()" onmouseleave="hideDataSubmenu(event)">
+                            <div id="data-submenu" class="settings-submenu" hidden>
                                 <button onclick="exportData()">Yedek Al</button>
                                 <button onclick="restoreFromLastBackup()">Son Yedekten Geri Yükle</button>
                                 <button onclick="importData()">Dosyadan Geri Yükle</button>
