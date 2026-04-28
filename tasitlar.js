@@ -7807,6 +7807,7 @@ function renderVehicleDetailLeft(vehicle) {
         mtvSortMs = parseNotificationDisplayDateMs(mtvFirstSeenDisplay);
         const mtvDateHtml = showDesktopSpecialNotifDate ? '<div class="notif-line2 notif-meta-date">' + escapeHtml(mtvFirstSeenDisplay) + '</div>' : '';
         mtvHtml = '<div class="notification-item mtv-notification' + mtvStateClass + '" data-notif-key="' + escapeHtml(mtvKey) + '" data-dismiss-key="' + escapeHtml(mtvKey) + '" style="' + mtvStyle + '"><div class="mtv-text-container"><div class="mtv-main-text notif-line1">Ay\u0131n Son G\u00fcn\u00fcne Kadar MTV \u00d6demelerinin Yap\u0131lmas\u0131 Gerekmektedir.</div>' + mtvDateHtml + '</div><div class="mtv-dismiss-wrapper"><button type="button" class="mtv-dismiss-btn" onclick="dismissMTVNotif(event, \'' + mtvKeyEsc + '\')" aria-label="Bildirimi Kapat"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></button><div class="mtv-tooltip">\u00d6deme Yap\u0131ld\u0131ysa Bildirimi Silebilirsiniz.</div></div></div>';
+        if (!mtvRead) hasUnreadMarkableNotification = true;
         if (!mtvRead) hasOrange = true;
       }
     }
@@ -7834,6 +7835,7 @@ function renderVehicleDetailLeft(vehicle) {
         kaskoExcelSortMs = parseNotificationDisplayDateMs(kaskoFirstSeenDisplay);
         const kaskoDateHtml = showDesktopSpecialNotifDate ? '<div class="notif-line2 notif-meta-date">' + escapeHtml(kaskoFirstSeenDisplay) + '</div>' : '';
         kaskoExcelHtml = '<div class="notification-item kasko-excel-notification' + kaskoStateClass + '" data-action="open-dis-veri" data-notif-key="' + escapeHtml(kaskoKey) + '" data-dismiss-key="' + escapeHtml(kaskoKey) + '" style="' + kaskoStyle + '"><div class="mtv-text-container"><div class="mtv-main-text notif-line1">G\u00fcncel Kasko De\u011fer Listesinin Y\u00fcklenmesi Gerekmektedir.</div>' + kaskoDateHtml + '</div><div class="mtv-dismiss-wrapper"><button type="button" class="mtv-dismiss-btn" onclick="dismissKaskoExcelNotif(event, \'' + kaskoKeyEsc + '\')" aria-label="Bildirimi Kapat"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button><div class="mtv-tooltip">Kapat</div></div></div>';
+        if (!kaskoRead) hasUnreadMarkableNotification = true;
         if (!kaskoRead) hasRed = true;
       }
     }
@@ -7931,6 +7933,7 @@ function renderVehicleDetailLeft(vehicle) {
           }
           var t = baseMs - reqIdx * 1e-6;
           pushNotifFeedOnce(notifKey, t, h);
+          if (!isRead) hasUnreadMarkableNotification = true;
           if (!isRead && notificationFeedbackIsRedSeverity(request.type)) {
             hasRed = true;
           } else if (!isRead) {
@@ -7962,6 +7965,7 @@ function renderVehicleDetailLeft(vehicle) {
           }
           const t = dbaseMs - dreqIdx * 1e-6;
           pushNotifFeedOnce(notifKey, t, h);
+          if (!isRead) hasUnreadMarkableNotification = true;
           if (!isRead) hasRed = true;
         });
       }
