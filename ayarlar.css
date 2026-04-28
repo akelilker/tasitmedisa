@@ -2489,8 +2489,7 @@ input.settings-form-input:-moz-autofill,
     }
     #settings-menu.settings-dropdown .has-submenu-wrapper {
         width: 100% !important;
-        display: flex !important;
-        justify-content: flex-end !important;
+        display: block !important;
         margin-bottom: 8px !important;
     }
     #settings-menu.settings-dropdown .has-submenu-wrapper:last-child {
@@ -2512,6 +2511,15 @@ input.settings-form-input:-moz-autofill,
         display: none !important;
         content: none !important;
     }
+    #settings-menu .settings-submenu {
+        position: static !important;
+        left: auto !important;
+        top: auto !important;
+        margin-left: 0 !important;
+        min-width: 0 !important;
+        width: 100% !important;
+        overflow: visible !important;
+    }
 
     /*
      * Ayarlar dişlisi menüsü (yalnız #settings-menu): mobilde ana sayfa .menu-btn ile aynı çerçeve.
@@ -2532,6 +2540,12 @@ input.settings-form-input:-moz-autofill,
         box-shadow:
             0 4px 12px rgba(0, 0, 0, 0.24),
             0 4px 16px rgba(var(--theme-color-rgb), 0.12) !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: flex-end !important;
+        text-align: right !important;
     }
     #settings-menu .settings-submenu button {
         height: 54px !important;
@@ -2539,6 +2553,12 @@ input.settings-form-input:-moz-autofill,
         font-size: clamp(15px, 3.1vw, 16px) !important;
         letter-spacing: 1.1px !important;
         border-radius: 11px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: flex-end !important;
+        text-align: right !important;
     }
     #settings-menu > button {
         margin-bottom: 0 !important;
@@ -2623,6 +2643,13 @@ input.settings-form-input:-moz-autofill,
     #settings-menu > button.settings-logout-btn:hover {
         color: var(--theme-color) !important;
         border-color: rgba(var(--theme-color-rgb), 0.7) !important;
+        font-size: inherit !important;
+        transform: none !important;
+    }
+    #settings-menu > button:hover,
+    #settings-menu .has-submenu-wrapper .has-submenu:hover {
+        font-size: inherit !important;
+        transform: none !important;
     }
 }
 
