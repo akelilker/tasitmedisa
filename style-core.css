@@ -950,24 +950,24 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-
   box-shadow: 0 0 8px rgba(var(--orange-warn-rgb), 0.2);
 }
 
-/* Bildirim hover: tüm kartlarda hafif büyüme, renkli kartlarda özel palet */
-#notifications-dropdown.settings-dropdown > .notification-item:hover,
-#notifications-dropdown.settings-dropdown > button.notification-item:hover {
+/* Bildirim etkileşimi: tüm kartlarda hafif büyüme, renkli kartlarda özel palet */
+#notifications-dropdown.settings-dropdown > .notification-item:is(:hover, :focus, :active, :focus-visible),
+#notifications-dropdown.settings-dropdown > button.notification-item:is(:hover, :focus, :active, :focus-visible) {
   transform: scale(1.012) !important;
   transform-origin: center center !important;
   z-index: 4 !important;
 }
 
-#notifications-dropdown.settings-dropdown > .notification-item:not(.date-warning-red-border):not(.date-warning-orange-border):not(.notification-item-activity.notification-unread):hover,
-#notifications-dropdown.settings-dropdown > button.notification-item:not(.date-warning-red-border):not(.date-warning-orange-border):not(.notification-item-activity.notification-unread):hover {
+#notifications-dropdown.settings-dropdown > .notification-item:not(.date-warning-red-border):not(.date-warning-orange-border):not(.notification-item-activity.notification-unread):is(:hover, :focus, :active, :focus-visible),
+#notifications-dropdown.settings-dropdown > button.notification-item:not(.date-warning-red-border):not(.date-warning-orange-border):not(.notification-item-activity.notification-unread):is(:hover, :focus, :active, :focus-visible) {
   border-color: rgba(255,255,255,0.55) !important;
   background: rgba(255,255,255,0.08) !important;
   color: var(--txt-white) !important;
   box-shadow: 0 0 10px rgba(255,255,255,0.12) !important;
 }
 
-#notifications-dropdown.settings-dropdown > .notification-item.notification-item-activity.notification-unread:hover,
-#notifications-dropdown.settings-dropdown > button.notification-item.notification-item-activity.notification-unread:hover {
+#notifications-dropdown.settings-dropdown > .notification-item.notification-item-activity.notification-unread:is(:hover, :focus, :active, :focus-visible),
+#notifications-dropdown.settings-dropdown > button.notification-item.notification-item-activity.notification-unread:is(:hover, :focus, :active, :focus-visible) {
   border-color: rgba(var(--theme-color-rgb), 0.95) !important;
   background: rgba(var(--theme-color-rgb), 0.14) !important;
   box-shadow: 0 0 10px rgba(var(--theme-color-rgb), 0.24) !important;
@@ -976,8 +976,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-
   transform-origin: center center !important;
   z-index: 4 !important;
 }
-#notifications-dropdown.settings-dropdown > .notification-item.date-warning-red-border:hover,
-#notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border:hover {
+#notifications-dropdown.settings-dropdown > .notification-item.date-warning-red-border:is(:hover, :focus, :active, :focus-visible),
+#notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border:is(:hover, :focus, :active, :focus-visible) {
   border-color: rgba(var(--theme-color-rgb), 0.95) !important;
   background: rgba(var(--theme-color-rgb), 0.14) !important;
   box-shadow: 0 0 10px rgba(var(--theme-color-rgb), 0.24) !important;
@@ -986,9 +986,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-
   transform-origin: center center !important;
   z-index: 4 !important;
 }
-#notifications-dropdown.settings-dropdown > .notification-item.date-warning-orange-border:hover,
-#notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border:hover {
-  border-color: rgba(var(--orange-warn-rgb), 0.88) !important;
+#notifications-dropdown.settings-dropdown > .notification-item.date-warning-orange-border:is(:hover, :focus, :active, :focus-visible),
+#notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border:is(:hover, :focus, :active, :focus-visible) {
+  border-color: rgba(var(--orange-warn-rgb), 0.9) !important;
   background: rgba(var(--orange-warn-rgb), 0.14) !important;
   box-shadow: 0 0 10px rgba(var(--orange-warn-rgb), 0.2) !important;
   color: var(--orange-warn) !important;
@@ -997,28 +997,28 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-
   z-index: 4 !important;
 }
 
-#notifications-dropdown.settings-dropdown > .notification-item.date-warning-red-border:hover .notif-line1,
-#notifications-dropdown.settings-dropdown > .notification-item.date-warning-red-border:hover .notif-title,
-#notifications-dropdown.settings-dropdown > .notification-item.date-warning-red-border:hover .notif-line2,
-#notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border:hover .notif-line1,
-#notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border:hover .notif-title,
-#notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border:hover .notif-line2,
-#notifications-dropdown.settings-dropdown > .notification-item.notification-item-activity.notification-unread:hover .notif-line1,
-#notifications-dropdown.settings-dropdown > .notification-item.notification-item-activity.notification-unread:hover .notif-title,
-#notifications-dropdown.settings-dropdown > .notification-item.notification-item-activity.notification-unread:hover .notif-line2,
-#notifications-dropdown.settings-dropdown > button.notification-item.notification-item-activity.notification-unread:hover .notif-line1,
-#notifications-dropdown.settings-dropdown > button.notification-item.notification-item-activity.notification-unread:hover .notif-title,
-#notifications-dropdown.settings-dropdown > button.notification-item.notification-item-activity.notification-unread:hover .notif-line2 {
+#notifications-dropdown.settings-dropdown > .notification-item.date-warning-red-border:is(:hover, :focus, :active, :focus-visible) .notif-line1,
+#notifications-dropdown.settings-dropdown > .notification-item.date-warning-red-border:is(:hover, :focus, :active, :focus-visible) .notif-title,
+#notifications-dropdown.settings-dropdown > .notification-item.date-warning-red-border:is(:hover, :focus, :active, :focus-visible) .notif-line2,
+#notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border:is(:hover, :focus, :active, :focus-visible) .notif-line1,
+#notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border:is(:hover, :focus, :active, :focus-visible) .notif-title,
+#notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border:is(:hover, :focus, :active, :focus-visible) .notif-line2,
+#notifications-dropdown.settings-dropdown > .notification-item.notification-item-activity.notification-unread:is(:hover, :focus, :active, :focus-visible) .notif-line1,
+#notifications-dropdown.settings-dropdown > .notification-item.notification-item-activity.notification-unread:is(:hover, :focus, :active, :focus-visible) .notif-title,
+#notifications-dropdown.settings-dropdown > .notification-item.notification-item-activity.notification-unread:is(:hover, :focus, :active, :focus-visible) .notif-line2,
+#notifications-dropdown.settings-dropdown > button.notification-item.notification-item-activity.notification-unread:is(:hover, :focus, :active, :focus-visible) .notif-line1,
+#notifications-dropdown.settings-dropdown > button.notification-item.notification-item-activity.notification-unread:is(:hover, :focus, :active, :focus-visible) .notif-title,
+#notifications-dropdown.settings-dropdown > button.notification-item.notification-item-activity.notification-unread:is(:hover, :focus, :active, :focus-visible) .notif-line2 {
   color: var(--theme-color) !important;
   font-size: calc(100% + 0.5px) !important;
 }
 
-#notifications-dropdown.settings-dropdown > .notification-item.date-warning-orange-border:hover .notif-line1,
-#notifications-dropdown.settings-dropdown > .notification-item.date-warning-orange-border:hover .notif-title,
-#notifications-dropdown.settings-dropdown > .notification-item.date-warning-orange-border:hover .notif-line2,
-#notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border:hover .notif-line1,
-#notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border:hover .notif-title,
-#notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border:hover .notif-line2 {
+#notifications-dropdown.settings-dropdown > .notification-item.date-warning-orange-border:is(:hover, :focus, :active, :focus-visible) .notif-line1,
+#notifications-dropdown.settings-dropdown > .notification-item.date-warning-orange-border:is(:hover, :focus, :active, :focus-visible) .notif-title,
+#notifications-dropdown.settings-dropdown > .notification-item.date-warning-orange-border:is(:hover, :focus, :active, :focus-visible) .notif-line2,
+#notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border:is(:hover, :focus, :active, :focus-visible) .notif-line1,
+#notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border:is(:hover, :focus, :active, :focus-visible) .notif-title,
+#notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border:is(:hover, :focus, :active, :focus-visible) .notif-line2 {
   color: var(--orange-warn) !important;
   font-size: calc(100% + 0.5px) !important;
 }
@@ -1663,29 +1663,29 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
     color: rgba(var(--theme-color-rgb), 0.8) !important;
   }
 
-  #notifications-dropdown.settings-dropdown > .notification-item:hover,
-  #notifications-dropdown.settings-dropdown > button.notification-item:hover {
+  #notifications-dropdown.settings-dropdown > .notification-item:is(:hover, :focus, :active, :focus-visible),
+  #notifications-dropdown.settings-dropdown > button.notification-item:is(:hover, :focus, :active, :focus-visible) {
     transform: scale(1.012) !important;
     transform-origin: center center !important;
     z-index: 4 !important;
   }
-  #notifications-dropdown.settings-dropdown > .notification-item:not(.date-warning-red-border):not(.date-warning-orange-border):not(.notification-item-activity.notification-unread):hover,
-  #notifications-dropdown.settings-dropdown > button.notification-item:not(.date-warning-red-border):not(.date-warning-orange-border):not(.notification-item-activity.notification-unread):hover {
+  #notifications-dropdown.settings-dropdown > .notification-item:not(.date-warning-red-border):not(.date-warning-orange-border):not(.notification-item-activity.notification-unread):is(:hover, :focus, :active, :focus-visible),
+  #notifications-dropdown.settings-dropdown > button.notification-item:not(.date-warning-red-border):not(.date-warning-orange-border):not(.notification-item-activity.notification-unread):is(:hover, :focus, :active, :focus-visible) {
     border-color: rgba(255,255,255,0.55) !important;
     background: rgba(255,255,255,0.08) !important;
     color: var(--txt-white) !important;
     box-shadow: 0 0 10px rgba(255,255,255,0.12) !important;
   }
-  #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border:hover .notif-line1,
-  #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border:hover .notif-title {
+  #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border:is(:hover, :focus, :active, :focus-visible) .notif-line1,
+  #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border:is(:hover, :focus, :active, :focus-visible) .notif-title {
     color: var(--orange-warn) !important;
   }
-  #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border:hover .notif-line1,
-  #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border:hover .notif-title {
+  #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border:is(:hover, :focus, :active, :focus-visible) .notif-line1,
+  #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border:is(:hover, :focus, :active, :focus-visible) .notif-title {
     color: var(--theme-color) !important;
   }
-  #notifications-dropdown.settings-dropdown > button.notification-item.notification-item-activity.notification-unread:hover .notif-line1,
-  #notifications-dropdown.settings-dropdown > button.notification-item.notification-item-activity.notification-unread:hover .notif-title {
+  #notifications-dropdown.settings-dropdown > button.notification-item.notification-item-activity.notification-unread:is(:hover, :focus, :active, :focus-visible) .notif-line1,
+  #notifications-dropdown.settings-dropdown > button.notification-item.notification-item-activity.notification-unread:is(:hover, :focus, :active, :focus-visible) .notif-title {
     color: var(--theme-color) !important;
   }
 
@@ -1694,8 +1694,8 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
     border-color: rgba(255, 255, 255, 0.32) !important;
     background: rgba(255, 255, 255, 0.08) !important;
   }
-  #notifications-dropdown.settings-dropdown > .notification-item.notification-item-activity.notification-unread:hover,
-  #notifications-dropdown.settings-dropdown > button.notification-item.notification-item-activity.notification-unread:hover {
+  #notifications-dropdown.settings-dropdown > .notification-item.notification-item-activity.notification-unread:is(:hover, :focus, :active, :focus-visible),
+  #notifications-dropdown.settings-dropdown > button.notification-item.notification-item-activity.notification-unread:is(:hover, :focus, :active, :focus-visible) {
     border-color: rgba(var(--theme-color-rgb), 0.95) !important;
     background: rgba(var(--theme-color-rgb), 0.14) !important;
     box-shadow: 0 0 10px rgba(var(--theme-color-rgb), 0.24) !important;
@@ -1704,8 +1704,8 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
     transform-origin: center center !important;
     z-index: 4 !important;
   }
-  #notifications-dropdown.settings-dropdown > .notification-item.date-warning-red-border:hover,
-  #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border:hover {
+  #notifications-dropdown.settings-dropdown > .notification-item.date-warning-red-border:is(:hover, :focus, :active, :focus-visible),
+  #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border:is(:hover, :focus, :active, :focus-visible) {
     border-color: rgba(var(--theme-color-rgb), 0.95) !important;
     background: rgba(var(--theme-color-rgb), 0.14) !important;
     box-shadow: 0 0 10px rgba(var(--theme-color-rgb), 0.24) !important;
@@ -1714,9 +1714,9 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
     transform-origin: center center !important;
     z-index: 4 !important;
   }
-  #notifications-dropdown.settings-dropdown > .notification-item.date-warning-orange-border:hover,
-  #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border:hover {
-    border-color: rgba(var(--orange-warn-rgb), 0.88) !important;
+  #notifications-dropdown.settings-dropdown > .notification-item.date-warning-orange-border:is(:hover, :focus, :active, :focus-visible),
+  #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border:is(:hover, :focus, :active, :focus-visible) {
+    border-color: rgba(var(--orange-warn-rgb), 0.9) !important;
     background: rgba(var(--orange-warn-rgb), 0.14) !important;
     box-shadow: 0 0 10px rgba(var(--orange-warn-rgb), 0.2) !important;
     color: var(--orange-warn) !important;
@@ -1725,28 +1725,28 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
     z-index: 4 !important;
   }
 
-  #notifications-dropdown.settings-dropdown > .notification-item.date-warning-red-border:hover .notif-line1,
-  #notifications-dropdown.settings-dropdown > .notification-item.date-warning-red-border:hover .notif-title,
-  #notifications-dropdown.settings-dropdown > .notification-item.date-warning-red-border:hover .notif-line2,
-  #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border:hover .notif-line1,
-  #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border:hover .notif-title,
-  #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border:hover .notif-line2,
-  #notifications-dropdown.settings-dropdown > .notification-item.notification-item-activity.notification-unread:hover .notif-line1,
-  #notifications-dropdown.settings-dropdown > .notification-item.notification-item-activity.notification-unread:hover .notif-title,
-  #notifications-dropdown.settings-dropdown > .notification-item.notification-item-activity.notification-unread:hover .notif-line2,
-  #notifications-dropdown.settings-dropdown > button.notification-item.notification-item-activity.notification-unread:hover .notif-line1,
-  #notifications-dropdown.settings-dropdown > button.notification-item.notification-item-activity.notification-unread:hover .notif-title,
-  #notifications-dropdown.settings-dropdown > button.notification-item.notification-item-activity.notification-unread:hover .notif-line2 {
+  #notifications-dropdown.settings-dropdown > .notification-item.date-warning-red-border:is(:hover, :focus, :active, :focus-visible) .notif-line1,
+  #notifications-dropdown.settings-dropdown > .notification-item.date-warning-red-border:is(:hover, :focus, :active, :focus-visible) .notif-title,
+  #notifications-dropdown.settings-dropdown > .notification-item.date-warning-red-border:is(:hover, :focus, :active, :focus-visible) .notif-line2,
+  #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border:is(:hover, :focus, :active, :focus-visible) .notif-line1,
+  #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border:is(:hover, :focus, :active, :focus-visible) .notif-title,
+  #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border:is(:hover, :focus, :active, :focus-visible) .notif-line2,
+  #notifications-dropdown.settings-dropdown > .notification-item.notification-item-activity.notification-unread:is(:hover, :focus, :active, :focus-visible) .notif-line1,
+  #notifications-dropdown.settings-dropdown > .notification-item.notification-item-activity.notification-unread:is(:hover, :focus, :active, :focus-visible) .notif-title,
+  #notifications-dropdown.settings-dropdown > .notification-item.notification-item-activity.notification-unread:is(:hover, :focus, :active, :focus-visible) .notif-line2,
+  #notifications-dropdown.settings-dropdown > button.notification-item.notification-item-activity.notification-unread:is(:hover, :focus, :active, :focus-visible) .notif-line1,
+  #notifications-dropdown.settings-dropdown > button.notification-item.notification-item-activity.notification-unread:is(:hover, :focus, :active, :focus-visible) .notif-title,
+  #notifications-dropdown.settings-dropdown > button.notification-item.notification-item-activity.notification-unread:is(:hover, :focus, :active, :focus-visible) .notif-line2 {
     color: var(--theme-color) !important;
     font-size: calc(100% + 0.5px) !important;
   }
 
-  #notifications-dropdown.settings-dropdown > .notification-item.date-warning-orange-border:hover .notif-line1,
-  #notifications-dropdown.settings-dropdown > .notification-item.date-warning-orange-border:hover .notif-title,
-  #notifications-dropdown.settings-dropdown > .notification-item.date-warning-orange-border:hover .notif-line2,
-  #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border:hover .notif-line1,
-  #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border:hover .notif-title,
-  #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border:hover .notif-line2 {
+  #notifications-dropdown.settings-dropdown > .notification-item.date-warning-orange-border:is(:hover, :focus, :active, :focus-visible) .notif-line1,
+  #notifications-dropdown.settings-dropdown > .notification-item.date-warning-orange-border:is(:hover, :focus, :active, :focus-visible) .notif-title,
+  #notifications-dropdown.settings-dropdown > .notification-item.date-warning-orange-border:is(:hover, :focus, :active, :focus-visible) .notif-line2,
+  #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border:is(:hover, :focus, :active, :focus-visible) .notif-line1,
+  #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border:is(:hover, :focus, :active, :focus-visible) .notif-title,
+  #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border:is(:hover, :focus, :active, :focus-visible) .notif-line2 {
     color: var(--orange-warn) !important;
     font-size: calc(100% + 0.5px) !important;
   }
