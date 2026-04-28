@@ -8068,7 +8068,8 @@ function renderVehicleDetailLeft(vehicle) {
       let html = notifFeed.map(function(x) { return x.h; }).join('');
 
       if (notifDropdown) {
-        if (hasUnreadMarkableNotification) {
+        const hasUnreadByState = getUnreadNotificationKeys().length > 0;
+        if (hasUnreadMarkableNotification || hasUnreadByState) {
           html = `<div class="notifications-toolbar"><button type="button" class="notifications-mark-all-read-btn" data-notification-action="mark-all-read">Tümünü Okundu Olarak İşaretle</button></div>` + html;
         }
         notifDropdown.innerHTML = html;
