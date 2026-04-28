@@ -1137,8 +1137,10 @@
   const NOTIF_LOCAL_MIGRATION_FLAG_PREFIX = 'medisa_notif_read_migrated_';
   const NOTIF_STATE_MAX_KEYS = 500;
   const NOTIF_STATE_MAX_AGE_MS = 90 * 24 * 60 * 60 * 1000;
+  const NOTIF_FIRST_SEEN_STORAGE_KEY = 'medisa_notif_first_seen_dates_v1';
   let notifReadStateMigrationAttempted = false;
   let notifReadStateSaveInFlight = false;
+  let notifFirstSeenBatchContext = null;
   let kaskoListMigrationAttempted = false;
   let kaskoListSaveInFlight = false;
 
@@ -1207,6 +1209,18 @@
     return list.slice(0, NOTIF_STATE_MAX_KEYS).map(function(item) { return item.key; });
   }
 
+  function normalizeFirstSeenDatesMap(rawMap) {
+    const out = {};
+    if (!rawMap || typeof rawMap !== 'object' || Array.isArray(rawMap)) return out;
+    Object.keys(rawMap).forEach(function(key) {
+      const normalizedKey = String(key || '').trim();
+      const normalizedDate = String(rawMap[key] || '').trim();
+      if (!normalizedKey || !normalizedDate) return;
+      out[normalizedKey] = normalizedDate;
+    });
+    return out;
+  }
+
   function normalizeNotificationScopeState(scopeState) {
     const legacyArray = Array.isArray(scopeState) ? scopeState : null;
     const raw = (!legacyArray && scopeState && typeof scopeState === 'object') ? scopeState : {};
@@ -1215,6 +1229,7 @@
     return {
       readKeys: readKeys,
       dismissedKeys: dismissedKeys,
+      firstSeenDates: normalizeFirstSeenDatesMap(raw.firstSeenDates),
       migratedFromLocalStorage: raw.migratedFromLocalStorage === true,
       updatedAt: String(raw.updatedAt || '')
     };
@@ -1232,6 +1247,7 @@
     return {
       readKeys: normalized.readKeys.slice(),
       dismissedKeys: normalized.dismissedKeys.slice(),
+      firstSeenDates: Object.assign({}, normalized.firstSeenDates),
       migratedFromLocalStorage: normalized.migratedFromLocalStorage,
       updatedAt: normalized.updatedAt
     };
@@ -1242,7 +1258,7 @@
     notifReadStateMigrationAttempted = true;
     const state = ensureNotificationReadStateObject();
     const scoped = getNotificationScopeState(scopeKey);
-    const hasCentralForScope = scoped.readKeys.length > 0 || scoped.dismissedKeys.length > 0 || scoped.migratedFromLocalStorage === true;
+    const hasCentralForScope = scoped.readKeys.length > 0 || scoped.dismissedKeys.length > 0 || Object.keys(scoped.firstSeenDates || {}).length > 0 || scoped.migratedFromLocalStorage === true;
     if (hasCentralForScope) return;
     try {
       if (localStorage.getItem(NOTIF_LOCAL_MIGRATION_FLAG_PREFIX + scopeKey) === 'true') return;
@@ -1380,6 +1396,65 @@
         state[scopeKey] = cloneNotificationScopeState(previousScoped);
         if (typeof window.updateNotifications === 'function') window.updateNotifications();
       });
+  }
+
+  function getTodayNotificationDisplayDate() {
+    return formatDateForDisplay(new Date()) || '-';
+  }
+
+  function beginNotificationFirstSeenBatch(scopeKey) {
+    notifFirstSeenBatchContext = scopeKey ? { scopeKey: scopeKey, previousScoped: null, changed: false } : null;
+  }
+
+  function flushNotificationFirstSeenBatch() {
+    const batch = notifFirstSeenBatchContext;
+    notifFirstSeenBatchContext = null;
+    if (!batch || !batch.changed || !batch.previousScoped) return;
+    saveNotificationScopeStateWithRollback(batch.scopeKey, batch.previousScoped);
+  }
+
+  function getOrCreateNotificationFirstSeen(notifKey) {
+    const normalizedKey = String(notifKey || '').trim();
+    if (!normalizedKey) return '-';
+    const scopeKey = getCurrentNotifScopeKey();
+    if (scopeKey) {
+      const state = ensureNotificationReadStateObject();
+      const scoped = getNotificationScopeState(scopeKey);
+      const existing = scoped.firstSeenDates && scoped.firstSeenDates[normalizedKey];
+      if (existing) return existing;
+      const firstSeenDisplay = getTodayNotificationDisplayDate();
+      if (!scoped.firstSeenDates || typeof scoped.firstSeenDates !== 'object' || Array.isArray(scoped.firstSeenDates)) {
+        scoped.firstSeenDates = {};
+      }
+      if (notifFirstSeenBatchContext && notifFirstSeenBatchContext.scopeKey === scopeKey) {
+        if (!notifFirstSeenBatchContext.previousScoped) notifFirstSeenBatchContext.previousScoped = cloneNotificationScopeState(scoped);
+        notifFirstSeenBatchContext.changed = true;
+      } else {
+        const previousScoped = cloneNotificationScopeState(scoped);
+        scoped.firstSeenDates[normalizedKey] = firstSeenDisplay;
+        scoped.updatedAt = new Date().toISOString();
+        state[scopeKey] = scoped;
+        saveNotificationScopeStateWithRollback(scopeKey, previousScoped);
+        return firstSeenDisplay;
+      }
+      scoped.firstSeenDates[normalizedKey] = firstSeenDisplay;
+      scoped.updatedAt = new Date().toISOString();
+      state[scopeKey] = scoped;
+      return firstSeenDisplay;
+    }
+    let localMap = {};
+    try {
+      const raw = localStorage.getItem(NOTIF_FIRST_SEEN_STORAGE_KEY);
+      const parsed = raw ? JSON.parse(raw) : {};
+      localMap = normalizeFirstSeenDatesMap(parsed);
+    } catch (err) {}
+    if (localMap[normalizedKey]) return localMap[normalizedKey];
+    const firstSeenDisplay = getTodayNotificationDisplayDate();
+    localMap[normalizedKey] = firstSeenDisplay;
+    try {
+      localStorage.setItem(NOTIF_FIRST_SEEN_STORAGE_KEY, JSON.stringify(localMap));
+    } catch (err) {}
+    return firstSeenDisplay;
   }
 
   function updateNotificationKeys(keys, mode) {
@@ -7490,36 +7565,6 @@ function renderVehicleDetailLeft(vehicle) {
     return 'diger';
   }
 
-  const SPECIAL_NOTIF_FIRST_SEEN_PREFIX = 'medisa_special_notif_first_seen_';
-
-  function getSpecialNotifFirstSeenStorageKey(notificationKey) {
-    return SPECIAL_NOTIF_FIRST_SEEN_PREFIX + String(notificationKey || '');
-  }
-
-  function getOrCreateSpecialNotifFirstSeen(notificationKey) {
-    const storageKey = getSpecialNotifFirstSeenStorageKey(notificationKey);
-    let firstSeenDisplay = localStorage.getItem(storageKey);
-    if (!firstSeenDisplay) {
-      firstSeenDisplay = formatDateForDisplay(new Date()) || '-';
-      localStorage.setItem(storageKey, firstSeenDisplay);
-    }
-    return firstSeenDisplay;
-  }
-
-  function cleanupSpecialNotifFirstSeen(activeNotificationKeys) {
-    const activeStorageKeys = (activeNotificationKeys || []).map(getSpecialNotifFirstSeenStorageKey);
-    const keysToRemove = [];
-
-    for (let i = 0; i < localStorage.length; i++) {
-      const storageKey = localStorage.key(i);
-      if (storageKey && storageKey.indexOf(SPECIAL_NOTIF_FIRST_SEEN_PREFIX) === 0 && activeStorageKeys.indexOf(storageKey) === -1) {
-        keysToRemove.push(storageKey);
-      }
-    }
-
-    keysToRemove.forEach(key => localStorage.removeItem(key));
-  }
-
   function shouldOpenNotificationsFromUrl() {
     try {
       const params = new URLSearchParams(window.location.search || '');
@@ -7554,9 +7599,10 @@ function renderVehicleDetailLeft(vehicle) {
     const vehicles = readVehicles();
     const notifications = [];
     const pendingGeneralRequests = [];
-    const activeSpecialNotificationKeys = [];
     const viewedKeys = getViewedNotificationKeys();
     const dismissedKeys = getDismissedNotificationKeys();
+    const notifScopeKey = getCurrentNotifScopeKey();
+    beginNotificationFirstSeenBatch(notifScopeKey);
     const feedKeys = {};
     let hasUnreadActivity = false;
     let hasUnreadMarkableNotification = false;
@@ -7746,9 +7792,8 @@ function renderVehicleDetailLeft(vehicle) {
         const mtvStyle = mtvRead
           ? '--notif-border: rgba(130, 130, 130, 0.55); --notif-fg: #9a9a9a;'
           : '--notif-border: rgba(255, 140, 0, 0.6); --notif-fg: #fff;';
-        const mtvFirstSeenDisplay = getOrCreateSpecialNotifFirstSeen(mtvKey);
+        const mtvFirstSeenDisplay = getOrCreateNotificationFirstSeen(mtvKey);
         const mtvDateHtml = showDesktopSpecialNotifDate ? '<div class="notif-line2 notif-meta-date">' + escapeHtml(mtvFirstSeenDisplay) + '</div>' : '';
-        activeSpecialNotificationKeys.push(mtvKey);
         mtvHtml = '<div class="notification-item mtv-notification' + mtvStateClass + '" data-notif-key="' + escapeHtml(mtvKey) + '" data-dismiss-key="' + escapeHtml(mtvKey) + '" style="' + mtvStyle + '"><div class="mtv-text-container"><div class="mtv-main-text notif-line1">Ay\u0131n Son G\u00fcn\u00fcne Kadar MTV \u00d6demelerinin Yap\u0131lmas\u0131 Gerekmektedir.</div>' + mtvDateHtml + '</div><div class="mtv-dismiss-wrapper"><button type="button" class="mtv-dismiss-btn" onclick="dismissMTVNotif(event, \'' + mtvKeyEsc + '\')" aria-label="Bildirimi Kapat"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></button><div class="mtv-tooltip">\u00d6deme Yap\u0131ld\u0131ysa Bildirimi Silebilirsiniz.</div></div></div>';
         if (!mtvRead) hasOrange = true;
       }
@@ -7772,15 +7817,12 @@ function renderVehicleDetailLeft(vehicle) {
         const kaskoStyle = kaskoRead
           ? '--notif-border: rgba(130, 130, 130, 0.55); --notif-fg: #9a9a9a;'
           : '--notif-border: rgba(212, 0, 0, 0.6); --notif-fg: #fff;';
-        const kaskoFirstSeenDisplay = getOrCreateSpecialNotifFirstSeen(kaskoKey);
+        const kaskoFirstSeenDisplay = getOrCreateNotificationFirstSeen(kaskoKey);
         const kaskoDateHtml = showDesktopSpecialNotifDate ? '<div class="notif-line2 notif-meta-date">' + escapeHtml(kaskoFirstSeenDisplay) + '</div>' : '';
-        activeSpecialNotificationKeys.push(kaskoKey);
         kaskoExcelHtml = '<div class="notification-item kasko-excel-notification' + kaskoStateClass + '" data-action="open-dis-veri" data-notif-key="' + escapeHtml(kaskoKey) + '" data-dismiss-key="' + escapeHtml(kaskoKey) + '" style="' + kaskoStyle + '"><div class="mtv-text-container"><div class="mtv-main-text notif-line1">G\u00fcncel Kasko De\u011fer Listesinin Y\u00fcklenmesi Gerekmektedir.</div>' + kaskoDateHtml + '</div><div class="mtv-dismiss-wrapper"><button type="button" class="mtv-dismiss-btn" onclick="dismissKaskoExcelNotif(event, \'' + kaskoKeyEsc + '\')" aria-label="Bildirimi Kapat"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button><div class="mtv-tooltip">Kapat</div></div></div>';
         if (!kaskoRead) hasRed = true;
       }
     }
-
-    cleanupSpecialNotifFirstSeen(activeSpecialNotificationKeys);
 
     // Bildirimleri güncelle
     const notifDropdown = DOM.notificationsDropdown;
@@ -7828,9 +7870,9 @@ function renderVehicleDetailLeft(vehicle) {
         }
         pendingGeneralRequests.forEach(function(request, reqIdx) {
           var topic = notificationFeedbackTopicLabel(request.type);
-          var dateDisplay = medisaNotificationTalepDisplay(request.date);
           var messageText = request.userName + ', ' + request.plate + ' Plakal\u0131 Ta\u015f\u0131t \u0130\u00e7in ' + topic + ' G\u00f6nderdi.';
           var notifKey = 'request|general|' + String(request.id || reqIdx);
+          var dateDisplay = getOrCreateNotificationFirstSeen(notifKey);
           var isRead = viewedKeys.indexOf(notifKey) !== -1;
           var borderClass = !isRead && notificationFeedbackIsRedSeverity(request.type)
             ? 'date-warning-red-border'
@@ -7860,9 +7902,9 @@ function renderVehicleDetailLeft(vehicle) {
 
       if (pendingDuzeltmeRequests.length > 0) {
         pendingDuzeltmeRequests.forEach(function(request, dreqIdx) {
-          const dateDisplay = medisaNotificationTalepDisplay(request.date);
           const messageText = `${request.userName}, ${request.plate} plakalı taşıt için ${request.topic} (onay bekliyor).`;
           const notifKey = 'request|correction|' + String(request.id || dreqIdx);
+          const dateDisplay = getOrCreateNotificationFirstSeen(notifKey);
           const isRead = viewedKeys.indexOf(notifKey) !== -1;
           const stateClass = isRead ? ' notification-read' : ' notification-unread';
           const borderClass = isRead ? '' : ' date-warning-red-border';
@@ -7890,8 +7932,8 @@ function renderVehicleDetailLeft(vehicle) {
         });
         notifications.forEach((notif, dIdx) => {
             const typeLabel = notif.type === 'sigorta' ? 'Sigorta' : notif.type === 'kasko' ? 'Kasko' : notif.type === 'egzoz' ? 'Egzos Muayenesi' : 'Muayene';
-            const activeDateDisplay = formatDateForDisplay(new Date()) || '-';
             const notifKey = buildDateNotificationKey(notif);
+            const activeDateDisplay = getOrCreateNotificationFirstSeen(notifKey);
             const isRead = viewedKeys.indexOf(notifKey) !== -1;
             const isUnread = !isRead;
 
@@ -7938,11 +7980,11 @@ function renderVehicleDetailLeft(vehicle) {
       if (recentSlice.length > 0) {
         recentSlice.forEach((item, aIdx) => {
           const ev = item.event;
-          const dateDisplay = formatDateForDisplay(ev.date) || '-';
           const historyTab = getHistoryTabForEventType(ev.type);
           const safePlate = (item.plate || '').replace(/"/g, '&quot;');
           const safeVid = String(item.vehicleId || '').replace(/"/g, '&quot;');
           const notifKey = buildEventNotificationKey(item);
+          const dateDisplay = getOrCreateNotificationFirstSeen(notifKey);
           if (feedKeys[notifKey]) return;
           feedKeys[notifKey] = true;
           const safeKey = notifKey.replace(/"/g, '&quot;');
@@ -7992,6 +8034,7 @@ function renderVehicleDetailLeft(vehicle) {
            Turuncu: yalnız yaklaşan tarih uyarıları için kullanılır. */
       }
     }
+    flushNotificationFirstSeenBatch();
     openNotificationsFromReturnParam();
   };
 
