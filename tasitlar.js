@@ -1134,6 +1134,9 @@
 
   const NOTIF_READ_STORAGE_KEY = 'medisa_notif_read_keys_v1';
   const LEGACY_NOTIF_READ_SESSION_KEY = 'notifViewedKeysV2';
+  const NOTIF_LOCAL_MIGRATION_FLAG_PREFIX = 'medisa_notif_read_migrated_';
+  const NOTIF_STATE_MAX_KEYS = 500;
+  const NOTIF_STATE_MAX_AGE_MS = 90 * 24 * 60 * 60 * 1000;
   let notifReadStateMigrationAttempted = false;
   let notifReadStateSaveInFlight = false;
   let kaskoListMigrationAttempted = false;
@@ -1143,14 +1146,13 @@
     const session = (window.medisaSession && typeof window.medisaSession === 'object') ? window.medisaSession : {};
     const user = (session.user && typeof session.user === 'object') ? session.user : {};
     const userId = String(user.id != null ? user.id : '').trim();
-    if (userId) return 'user:' + userId;
     const role = String(session.role || user.role || session.raw_role || '').trim().toLowerCase();
-    const branchIds = Array.isArray(session.branch_ids)
-      ? session.branch_ids.map(function(id) { return String(id).trim(); }).filter(Boolean).sort()
+    let branchIds = Array.isArray(session.branch_ids)
+      ? session.branch_ids.map(function(id) { return String(id).trim(); }).filter(Boolean)
       : [];
-    if (role && branchIds.length) return 'scope:' + role + ':' + branchIds.join(',');
-    if (role) return 'scope:' + role;
-    return '';
+    branchIds = Array.from(new Set(branchIds)).sort();
+    const branchScope = branchIds.length ? branchIds.join(',') : (role === 'genel_yonetici' || String(session.branch_scope || '').toLowerCase() === 'all' ? 'all' : 'none');
+    return 'user:' + (userId || 'anonymous') + '|role:' + (role || 'unknown') + '|branches:' + branchScope;
   }
 
   function ensureNotificationReadStateObject() {
@@ -1161,12 +1163,90 @@
     return window.appData.notificationReadState;
   }
 
+  function uniqNotificationKeys(keys) {
+    const seen = {};
+    const out = [];
+    (Array.isArray(keys) ? keys : []).forEach(function(key) {
+      const normalized = String(key || '').trim();
+      if (!normalized || seen[normalized]) return;
+      seen[normalized] = true;
+      out.push(normalized);
+    });
+    return out;
+  }
+
+  function parseNotificationKeyMs(key) {
+    const parts = String(key || '').split('|');
+    const dateText = parts[0] === 'date' ? parts[3]
+      : parts[0] === 'event' && /[T:.-]/.test(String(parts[3] || '')) ? parts[3]
+      : parts[0] === 'special' && parts.length >= 4 ? (parts[2] + '-' + parts[3] + '-01')
+      : '';
+    if (!dateText) return 0;
+    if (/^\d{2}\.\d{2}\.\d{4}$/.test(dateText)) {
+      const bits = dateText.split('.');
+      return new Date(Number(bits[2]), Number(bits[1]) - 1, Number(bits[0])).getTime() || 0;
+    }
+    const ms = new Date(dateText).getTime();
+    return isNaN(ms) ? 0 : ms;
+  }
+
+  function pruneNotificationKeys(keys) {
+    const now = Date.now();
+    const list = uniqNotificationKeys(keys).map(function(key, index) {
+      return { key: key, index: index, ms: parseNotificationKeyMs(key) };
+    }).filter(function(item) {
+      return !item.ms || (now - item.ms) <= NOTIF_STATE_MAX_AGE_MS;
+    });
+    if (list.length <= NOTIF_STATE_MAX_KEYS) return list.map(function(item) { return item.key; });
+    list.sort(function(a, b) {
+      const am = a.ms || Number.MAX_SAFE_INTEGER;
+      const bm = b.ms || Number.MAX_SAFE_INTEGER;
+      if (am !== bm) return bm - am;
+      return b.index - a.index;
+    });
+    return list.slice(0, NOTIF_STATE_MAX_KEYS).map(function(item) { return item.key; });
+  }
+
+  function normalizeNotificationScopeState(scopeState) {
+    const legacyArray = Array.isArray(scopeState) ? scopeState : null;
+    const raw = (!legacyArray && scopeState && typeof scopeState === 'object') ? scopeState : {};
+    const dismissedKeys = pruneNotificationKeys(raw.dismissedKeys || []);
+    const readKeys = pruneNotificationKeys((legacyArray || raw.readKeys || []).concat(dismissedKeys));
+    return {
+      readKeys: readKeys,
+      dismissedKeys: dismissedKeys,
+      migratedFromLocalStorage: raw.migratedFromLocalStorage === true,
+      updatedAt: String(raw.updatedAt || '')
+    };
+  }
+
+  function getNotificationScopeState(scopeKey) {
+    const state = ensureNotificationReadStateObject();
+    const normalized = normalizeNotificationScopeState(state[scopeKey]);
+    state[scopeKey] = normalized;
+    return normalized;
+  }
+
+  function cloneNotificationScopeState(scopeState) {
+    const normalized = normalizeNotificationScopeState(scopeState);
+    return {
+      readKeys: normalized.readKeys.slice(),
+      dismissedKeys: normalized.dismissedKeys.slice(),
+      migratedFromLocalStorage: normalized.migratedFromLocalStorage,
+      updatedAt: normalized.updatedAt
+    };
+  }
+
   function migrateLegacyNotificationReadStateForScope(scopeKey) {
     if (notifReadStateMigrationAttempted || !scopeKey) return;
     notifReadStateMigrationAttempted = true;
     const state = ensureNotificationReadStateObject();
-    const hasCentralForScope = Array.isArray(state[scopeKey]) && state[scopeKey].length > 0;
+    const scoped = getNotificationScopeState(scopeKey);
+    const hasCentralForScope = scoped.readKeys.length > 0 || scoped.dismissedKeys.length > 0 || scoped.migratedFromLocalStorage === true;
     if (hasCentralForScope) return;
+    try {
+      if (localStorage.getItem(NOTIF_LOCAL_MIGRATION_FLAG_PREFIX + scopeKey) === 'true') return;
+    } catch (err) {}
     let legacy = [];
     try {
       const localRaw = localStorage.getItem(NOTIF_READ_STORAGE_KEY);
@@ -1178,12 +1258,21 @@
       const sessionParsed = sessionRaw ? JSON.parse(sessionRaw) : [];
       if (Array.isArray(sessionParsed)) legacy = legacy.concat(sessionParsed);
     } catch (err) {}
-    const unique = Array.from(new Set(legacy.map(function(key) { return String(key || '').trim(); }).filter(Boolean)));
-    if (!unique.length) return;
-    state[scopeKey] = unique;
+    const unique = pruneNotificationKeys(legacy);
+    scoped.migratedFromLocalStorage = true;
+    scoped.updatedAt = new Date().toISOString();
+    if (unique.length) scoped.readKeys = unique;
+    state[scopeKey] = scoped;
     if (typeof window.saveDataToServer !== 'function' || notifReadStateSaveInFlight) return;
     notifReadStateSaveInFlight = true;
     window.saveDataToServer()
+      .then(function(ok) {
+        if (ok !== false) {
+          try {
+            localStorage.setItem(NOTIF_LOCAL_MIGRATION_FLAG_PREFIX + scopeKey, 'true');
+          } catch (err) {}
+        }
+      })
       .catch(function() {})
       .finally(function() { notifReadStateSaveInFlight = false; });
   }
@@ -1253,10 +1342,8 @@
   function getViewedNotificationKeys() {
     const scopeKey = getCurrentNotifScopeKey();
     if (scopeKey) {
-      const state = ensureNotificationReadStateObject();
       migrateLegacyNotificationReadStateForScope(scopeKey);
-      const scoped = state[scopeKey];
-      if (Array.isArray(scoped)) return scoped;
+      return getNotificationScopeState(scopeKey).readKeys;
     }
     try {
       const raw = localStorage.getItem(NOTIF_READ_STORAGE_KEY);
@@ -1272,44 +1359,111 @@
     }
   }
 
-  function markNotificationKeysAsViewed(keys) {
+  function getDismissedNotificationKeys() {
+    const scopeKey = getCurrentNotifScopeKey();
+    if (scopeKey) {
+      migrateLegacyNotificationReadStateForScope(scopeKey);
+      return getNotificationScopeState(scopeKey).dismissedKeys;
+    }
+    return [];
+  }
+
+  function saveNotificationScopeStateWithRollback(scopeKey, previousScoped) {
+    if (typeof window.updateNotifications === 'function') window.updateNotifications();
+    if (typeof window.saveDataToServer !== 'function') return;
+    window.saveDataToServer()
+      .then(function(ok) {
+        if (ok === false) throw new Error('Bildirim state kaydedilemedi');
+      })
+      .catch(function() {
+        const state = ensureNotificationReadStateObject();
+        state[scopeKey] = cloneNotificationScopeState(previousScoped);
+        if (typeof window.updateNotifications === 'function') window.updateNotifications();
+      });
+  }
+
+  function updateNotificationKeys(keys, mode) {
     const incoming = Array.isArray(keys) ? keys : [];
     if (!incoming.length) return;
-    const viewed = getViewedNotificationKeys();
-    let changed = false;
-    incoming.forEach(function(key) {
-      const normalizedKey = (key || '').toString().trim();
-      if (!normalizedKey || viewed.indexOf(normalizedKey) !== -1) return;
-      viewed.push(normalizedKey);
-      changed = true;
-    });
-    if (!changed) return;
     const scopeKey = getCurrentNotifScopeKey();
     if (scopeKey) {
       const state = ensureNotificationReadStateObject();
-      state[scopeKey] = viewed;
-      if (typeof window.saveDataToServer === 'function') {
-        window.saveDataToServer()
-          .catch(function() {})
-          .finally(function() {
-            if (typeof window.updateNotifications === 'function') window.updateNotifications();
-          });
-      } else if (typeof window.updateNotifications === 'function') {
-        window.updateNotifications();
-      }
+      const scoped = getNotificationScopeState(scopeKey);
+      const previousScoped = cloneNotificationScopeState(scoped);
+      const readSet = {};
+      const dismissedSet = {};
+      scoped.readKeys.forEach(function(key) { readSet[key] = true; });
+      scoped.dismissedKeys.forEach(function(key) { dismissedSet[key] = true; readSet[key] = true; });
+      let changed = false;
+      incoming.forEach(function(key) {
+        const normalizedKey = String(key || '').trim();
+        if (!normalizedKey) return;
+        if (!readSet[normalizedKey]) {
+          readSet[normalizedKey] = true;
+          changed = true;
+        }
+        if (mode === 'dismiss' && !dismissedSet[normalizedKey]) {
+          dismissedSet[normalizedKey] = true;
+          changed = true;
+        }
+      });
+      if (!changed) return;
+      scoped.readKeys = pruneNotificationKeys(Object.keys(readSet));
+      scoped.dismissedKeys = pruneNotificationKeys(Object.keys(dismissedSet));
+      scoped.dismissedKeys.forEach(function(key) {
+        if (scoped.readKeys.indexOf(key) === -1) scoped.readKeys.push(key);
+      });
+      scoped.readKeys = pruneNotificationKeys(scoped.readKeys);
+      scoped.updatedAt = new Date().toISOString();
+      state[scopeKey] = scoped;
+      saveNotificationScopeStateWithRollback(scopeKey, previousScoped);
       return;
     }
     try {
+      const viewed = getViewedNotificationKeys();
+      incoming.forEach(function(key) {
+        const normalizedKey = String(key || '').trim();
+        if (normalizedKey && viewed.indexOf(normalizedKey) === -1) viewed.push(normalizedKey);
+      });
       localStorage.setItem(NOTIF_READ_STORAGE_KEY, JSON.stringify(viewed));
       sessionStorage.removeItem(LEGACY_NOTIF_READ_SESSION_KEY);
     } catch (err) { return; }
     if (typeof window.updateNotifications === 'function') window.updateNotifications();
   }
 
+  function markNotificationKeysAsViewed(keys) {
+    updateNotificationKeys(keys, 'read');
+  }
+
+  function dismissNotificationKeys(keys) {
+    updateNotificationKeys(keys, 'dismiss');
+  }
+
   function getUnreadNotificationKeys() {
     return (DOM.notificationsDropdown ? Array.from(DOM.notificationsDropdown.querySelectorAll('.notification-item.notification-unread[data-notif-key]')) : [])
       .map(function(el) { return (el.getAttribute('data-notif-key') || '').toString().trim(); })
       .filter(Boolean);
+  }
+
+  function getDismissibleNotificationKeys() {
+    return (DOM.notificationsDropdown ? Array.from(DOM.notificationsDropdown.querySelectorAll('.notification-item[data-dismiss-key]')) : [])
+      .map(function(el) { return (el.getAttribute('data-dismiss-key') || '').toString().trim(); })
+      .filter(Boolean);
+  }
+
+  function buildDateNotificationKey(notif) {
+    return ['date', String(notif.vehicleId || ''), String(notif.type || ''), String(notif.date || ''), String(notif.type || '')].join('|');
+  }
+
+  function buildEventNotificationKey(item) {
+    const ev = item && item.event ? item.event : {};
+    const vehicleId = String((item && item.vehicleId) || '');
+    const eventType = String(ev.type || '');
+    const eventId = String(ev.id || '').trim();
+    if (eventId) return ['event', vehicleId, eventType, eventId].join('|');
+    const timestamp = String(ev.timestamp || '').trim();
+    if (timestamp) return ['event', vehicleId, eventType, timestamp].join('|');
+    return ['event', vehicleId, eventType, String(ev.date || '')].join('|');
   }
 
   const DINAMIK_OLAY_MODAL_ID = 'dinamik-olay-modal';
@@ -1506,13 +1660,17 @@
         if (toolbarAction === 'mark-all-read') {
           e.preventDefault();
           e.stopPropagation();
-          markNotificationKeysAsViewed(getUnreadNotificationKeys());
+          markNotificationKeysAsViewed(getUnreadNotificationKeys().concat(getDismissibleNotificationKeys()));
           return;
         }
       }
       var btn = e.target.closest('.notification-item');
       if (!btn) return;
       var action = (btn.getAttribute('data-action') || '').toString().trim();
+      var notifKey = (btn.getAttribute('data-notif-key') || '').toString().trim();
+      if (notifKey && !(e.target.closest && e.target.closest('.mtv-dismiss-btn'))) {
+        markNotificationKeysAsViewed([notifKey]);
+      }
       if (action === 'open-dis-veri') {
         e.preventDefault();
         e.stopPropagation();
@@ -1545,10 +1703,6 @@
       var vehicleId = btn.getAttribute('data-vehicle-id') || '';
       var openHistory = btn.getAttribute('data-open-history') === '1';
       var historyTab = btn.getAttribute('data-history-tab') || '';
-      var notifKey = (btn.getAttribute('data-notif-key') || '').toString().trim();
-      if (notifKey) {
-        markNotificationKeysAsViewed([notifKey]);
-      }
       if (!plate && !vehicleId) return;
       if (typeof window.setNotificationsOpenState === 'function') {
         window.setNotificationsOpenState(false);
@@ -7401,6 +7555,9 @@ function renderVehicleDetailLeft(vehicle) {
     const notifications = [];
     const pendingGeneralRequests = [];
     const activeSpecialNotificationKeys = [];
+    const viewedKeys = getViewedNotificationKeys();
+    const dismissedKeys = getDismissedNotificationKeys();
+    const feedKeys = {};
     let hasUnreadActivity = false;
     let hasUnreadMarkableNotification = false;
     const showDesktopSpecialNotifDate = window.innerWidth >= 641;
@@ -7577,14 +7734,23 @@ function renderVehicleDetailLeft(vehicle) {
     const d = today.getDate();
     const y = today.getFullYear();
     if ((m === 0 || m === 6) && d >= 21) {
-      const mtvKey = 'mtv_paid_' + y + '_' + m;
-      if (!localStorage.getItem(mtvKey)) {
+      const mtvLegacyKey = 'mtv_paid_' + y + '_' + m;
+      const mtvKey = 'special|mtv|' + y + '|' + String(m + 1).padStart(2, '0');
+      if (localStorage.getItem(mtvLegacyKey) && dismissedKeys.indexOf(mtvKey) === -1) {
+        dismissNotificationKeys([mtvKey]);
+      }
+      if (dismissedKeys.indexOf(mtvKey) === -1) {
         const mtvKeyEsc = (mtvKey || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+        const mtvRead = viewedKeys.indexOf(mtvKey) !== -1;
+        const mtvStateClass = mtvRead ? ' notification-read' : ' notification-unread date-warning-orange-border';
+        const mtvStyle = mtvRead
+          ? '--notif-border: rgba(130, 130, 130, 0.55); --notif-fg: #9a9a9a;'
+          : '--notif-border: rgba(255, 140, 0, 0.6); --notif-fg: #fff;';
         const mtvFirstSeenDisplay = getOrCreateSpecialNotifFirstSeen(mtvKey);
         const mtvDateHtml = showDesktopSpecialNotifDate ? '<div class="notif-line2 notif-meta-date">' + escapeHtml(mtvFirstSeenDisplay) + '</div>' : '';
         activeSpecialNotificationKeys.push(mtvKey);
-        mtvHtml = '<div class="notification-item mtv-notification"><div class="mtv-text-container"><div class="mtv-main-text notif-line1">Ayın Son Gününe Kadar MTV Ödemelerinin Yapılması Gerekmektedir.</div>' + mtvDateHtml + '</div><div class="mtv-dismiss-wrapper"><button type="button" class="mtv-dismiss-btn" onclick="dismissMTVNotif(event, \'' + mtvKeyEsc + '\')" aria-label="Bildirimi Kapat"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></button><div class="mtv-tooltip">Ödeme Yapıldıysa Bildirimi Silebilirsiniz.</div></div></div>';
-        hasOrange = true;
+        mtvHtml = '<div class="notification-item mtv-notification' + mtvStateClass + '" data-notif-key="' + escapeHtml(mtvKey) + '" data-dismiss-key="' + escapeHtml(mtvKey) + '" style="' + mtvStyle + '"><div class="mtv-text-container"><div class="mtv-main-text notif-line1">Ay\u0131n Son G\u00fcn\u00fcne Kadar MTV \u00d6demelerinin Yap\u0131lmas\u0131 Gerekmektedir.</div>' + mtvDateHtml + '</div><div class="mtv-dismiss-wrapper"><button type="button" class="mtv-dismiss-btn" onclick="dismissMTVNotif(event, \'' + mtvKeyEsc + '\')" aria-label="Bildirimi Kapat"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></button><div class="mtv-tooltip">\u00d6deme Yap\u0131ld\u0131ysa Bildirimi Silebilirsiniz.</div></div></div>';
+        if (!mtvRead) hasOrange = true;
       }
     }
 
@@ -7594,14 +7760,23 @@ function renderVehicleDetailLeft(vehicle) {
     const kaskoState = getKaskoState();
     const kaskoListeGuncel = String(kaskoState.period || '') === (String(y) + '-' + String(m + 1).padStart(2, '0'));
     if (!kaskoListeGuncel) {
-      const kaskoKey = 'kasko_excel_dismiss_' + y + '_' + m;
-      if (!localStorage.getItem(kaskoKey)) {
+      const kaskoLegacyKey = 'kasko_excel_dismiss_' + y + '_' + m;
+      const kaskoKey = 'special|kaskoExcel|' + y + '|' + String(m + 1).padStart(2, '0');
+      if (localStorage.getItem(kaskoLegacyKey) && dismissedKeys.indexOf(kaskoKey) === -1) {
+        dismissNotificationKeys([kaskoKey]);
+      }
+      if (dismissedKeys.indexOf(kaskoKey) === -1) {
         const kaskoKeyEsc = (kaskoKey || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+        const kaskoRead = viewedKeys.indexOf(kaskoKey) !== -1;
+        const kaskoStateClass = kaskoRead ? ' notification-read' : ' notification-unread date-warning-red-border';
+        const kaskoStyle = kaskoRead
+          ? '--notif-border: rgba(130, 130, 130, 0.55); --notif-fg: #9a9a9a;'
+          : '--notif-border: rgba(212, 0, 0, 0.6); --notif-fg: #fff;';
         const kaskoFirstSeenDisplay = getOrCreateSpecialNotifFirstSeen(kaskoKey);
         const kaskoDateHtml = showDesktopSpecialNotifDate ? '<div class="notif-line2 notif-meta-date">' + escapeHtml(kaskoFirstSeenDisplay) + '</div>' : '';
         activeSpecialNotificationKeys.push(kaskoKey);
-        kaskoExcelHtml = '<div class="notification-item kasko-excel-notification" data-action="open-dis-veri"><div class="mtv-text-container"><div class="mtv-main-text notif-line1">Güncel Kasko Değer Listesinin Yüklenmesi Gerekmektedir.</div>' + kaskoDateHtml + '</div><div class="mtv-dismiss-wrapper"><button type="button" class="mtv-dismiss-btn" onclick="dismissKaskoExcelNotif(event, \'' + kaskoKeyEsc + '\')" aria-label="Bildirimi Kapat"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button><div class="mtv-tooltip">Kapat</div></div></div>';
-        hasRed = true;
+        kaskoExcelHtml = '<div class="notification-item kasko-excel-notification' + kaskoStateClass + '" data-action="open-dis-veri" data-notif-key="' + escapeHtml(kaskoKey) + '" data-dismiss-key="' + escapeHtml(kaskoKey) + '" style="' + kaskoStyle + '"><div class="mtv-text-container"><div class="mtv-main-text notif-line1">G\u00fcncel Kasko De\u011fer Listesinin Y\u00fcklenmesi Gerekmektedir.</div>' + kaskoDateHtml + '</div><div class="mtv-dismiss-wrapper"><button type="button" class="mtv-dismiss-btn" onclick="dismissKaskoExcelNotif(event, \'' + kaskoKeyEsc + '\')" aria-label="Bildirimi Kapat"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button><div class="mtv-tooltip">Kapat</div></div></div>';
+        if (!kaskoRead) hasRed = true;
       }
     }
 
@@ -7655,13 +7830,17 @@ function renderVehicleDetailLeft(vehicle) {
           var topic = notificationFeedbackTopicLabel(request.type);
           var dateDisplay = medisaNotificationTalepDisplay(request.date);
           var messageText = request.userName + ', ' + request.plate + ' Plakal\u0131 Ta\u015f\u0131t \u0130\u00e7in ' + topic + ' G\u00f6nderdi.';
-          var borderClass = notificationFeedbackIsRedSeverity(request.type)
+          var notifKey = 'request|general|' + String(request.id || reqIdx);
+          var isRead = viewedKeys.indexOf(notifKey) !== -1;
+          var borderClass = !isRead && notificationFeedbackIsRedSeverity(request.type)
             ? 'date-warning-red-border'
-            : 'date-warning-orange-border';
-          var titleClass = notificationFeedbackIsRedSeverity(request.type)
+            : (!isRead ? 'date-warning-orange-border' : '');
+          var titleClass = !isRead && notificationFeedbackIsRedSeverity(request.type)
             ? 'date-warning-red'
-            : 'date-warning-orange';
-          var h = '<button type="button" data-action="open-driver-report" class="notification-item notification-item-feedback notification-unread ' + borderClass + '">' +
+            : (!isRead ? 'date-warning-orange' : 'notif-read-text');
+          var stateClass = isRead ? ' notification-read' : ' notification-unread';
+          var notifStyle = isRead ? '--notif-border: rgba(130, 130, 130, 0.55); --notif-fg: #9a9a9a;' : '';
+          var h = '<button type="button" data-action="open-driver-report" data-notif-key="' + escapeHtml(notifKey) + '" style="' + notifStyle + '" class="notification-item notification-item-feedback' + stateClass + (borderClass ? ' ' + borderClass : '') + '">' +
           '<div class="notif-line1 notif-title"><span class="' + titleClass + '">' + escapeHtml(messageText) + '</span></div>' +
           '<div class="notif-line2 notif-meta-date">' + escapeHtml(dateDisplay) + '</div>' +
         '</button>';
@@ -7671,9 +7850,9 @@ function renderVehicleDetailLeft(vehicle) {
           }
           var t = baseMs + reqIdx * 1e-6;
           notifFeed.push({ t: t, h: h });
-          if (notificationFeedbackIsRedSeverity(request.type)) {
+          if (!isRead && notificationFeedbackIsRedSeverity(request.type)) {
             hasRed = true;
-          } else {
+          } else if (!isRead) {
             hasOrange = true;
           }
         });
@@ -7683,8 +7862,14 @@ function renderVehicleDetailLeft(vehicle) {
         pendingDuzeltmeRequests.forEach(function(request, dreqIdx) {
           const dateDisplay = medisaNotificationTalepDisplay(request.date);
           const messageText = `${request.userName}, ${request.plate} plakalı taşıt için ${request.topic} (onay bekliyor).`;
-          const h = `<button type="button" data-action="open-driver-report" class="notification-item notification-item-feedback notification-unread date-warning-red-border">
-          <div class="notif-line1 notif-title"><span class="date-warning-red">${escapeHtml(messageText)}</span></div>
+          const notifKey = 'request|correction|' + String(request.id || dreqIdx);
+          const isRead = viewedKeys.indexOf(notifKey) !== -1;
+          const stateClass = isRead ? ' notification-read' : ' notification-unread';
+          const borderClass = isRead ? '' : ' date-warning-red-border';
+          const notifStyle = isRead ? '--notif-border: rgba(130, 130, 130, 0.55); --notif-fg: #9a9a9a;' : '';
+          const titleClass = isRead ? 'notif-read-text' : 'date-warning-red';
+          const h = `<button type="button" data-action="open-driver-report" data-notif-key="${escapeHtml(notifKey)}" style="${notifStyle}" class="notification-item notification-item-feedback${stateClass}${borderClass}">
+          <div class="notif-line1 notif-title"><span class="${titleClass}">${escapeHtml(messageText)}</span></div>
           <div class="notif-line2 notif-meta-date">${escapeHtml(dateDisplay)}</div>
         </button>`;
           var dbaseMs = medisaNotificationTalepSortMs(request.date);
@@ -7693,12 +7878,11 @@ function renderVehicleDetailLeft(vehicle) {
           }
           const t = dbaseMs + dreqIdx * 1e-6;
           notifFeed.push({ t: t, h: h });
+          if (!isRead) hasRed = true;
         });
-        hasRed = true;
       }
 
       if (notifications.length > 0) {
-        const viewedKeys = getViewedNotificationKeys();
         notifications.sort((a, b) => {
           if (a.warningClass === 'date-warning-red' && b.warningClass !== 'date-warning-red') return -1;
           if (a.warningClass !== 'date-warning-red' && b.warningClass === 'date-warning-red') return 1;
@@ -7707,7 +7891,7 @@ function renderVehicleDetailLeft(vehicle) {
         notifications.forEach((notif, dIdx) => {
             const typeLabel = notif.type === 'sigorta' ? 'Sigorta' : notif.type === 'kasko' ? 'Kasko' : notif.type === 'egzoz' ? 'Egzos Muayenesi' : 'Muayene';
             const activeDateDisplay = formatDateForDisplay(new Date()) || '-';
-            const notifKey = 'date|' + String(notif.vehicleId || '') + '|' + String(notif.type || '') + '|' + String(notif.date || '');
+            const notifKey = buildDateNotificationKey(notif);
             const isRead = viewedKeys.indexOf(notifKey) !== -1;
             const isUnread = !isRead;
 
@@ -7752,23 +7936,22 @@ function renderVehicleDetailLeft(vehicle) {
       }
 
       if (recentSlice.length > 0) {
-        const viewedKeys = getViewedNotificationKeys();
         recentSlice.forEach((item, aIdx) => {
           const ev = item.event;
           const dateDisplay = formatDateForDisplay(ev.date) || '-';
           const historyTab = getHistoryTabForEventType(ev.type);
           const safePlate = (item.plate || '').replace(/"/g, '&quot;');
           const safeVid = String(item.vehicleId || '').replace(/"/g, '&quot;');
-          const plateNorm = (item.plate || '').toString().trim();
-          const typeNorm = (ev.type || '').toString().trim();
-          const notifKey = plateNorm + '|' + typeNorm + '|' + dateDisplay;
+          const notifKey = buildEventNotificationKey(item);
+          if (feedKeys[notifKey]) return;
+          feedKeys[notifKey] = true;
           const safeKey = notifKey.replace(/"/g, '&quot;');
           const isUnread = viewedKeys.indexOf(notifKey) === -1;
           if (isUnread) {
             hasUnreadActivity = true;
             hasUnreadMarkableNotification = true;
           }
-          const unreadClass = isUnread ? ' notification-unread' : '';
+          const unreadClass = isUnread ? ' notification-unread' : ' notification-read';
           const unreadStyle = isUnread
             ? '--notif-border: rgba(212, 0, 0, 0.85); --notif-fg: #ccc;'
             : '--notif-border: rgba(130, 130, 130, 0.55); --notif-fg: #9a9a9a;';
@@ -7834,10 +8017,7 @@ function renderVehicleDetailLeft(vehicle) {
       textSpan.style.color = 'var(--txt-muted)';
     }
 
-    localStorage.setItem(key, 'true');
-    if (typeof window.updateNotifications === 'function') {
-      window.updateNotifications();
-    }
+    dismissNotificationKeys([key]);
   };
 
   window.dismissKaskoExcelNotif = function(event, key) {
@@ -7861,10 +8041,7 @@ function renderVehicleDetailLeft(vehicle) {
       textSpan.style.color = 'var(--txt-muted)';
     }
 
-    localStorage.setItem(key, 'true');
-    if (typeof window.updateNotifications === 'function') {
-      window.updateNotifications();
-    }
+    dismissNotificationKeys([key]);
   };
 
   // Sayfa yüklendiğinde ve veri değiştiğinde bildirimleri güncelle

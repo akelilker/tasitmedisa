@@ -105,33 +105,67 @@ $result = medisaMutateData(function (&$data) use ($incomingData) {
     }
     $incomingReadState = $incomingData['notificationReadState'] ?? null;
     if (is_array($incomingReadState)) {
-        $userId = (string)($context['user_id'] ?? '');
-        $allowedScopeKeys = [];
-        if ($userId !== '') {
-            $allowedScopeKeys[] = 'user:' . $userId;
-        } else {
-            $role = strtolower(trim((string)($context['role'] ?? '')));
-            $branchIds = array_values(array_filter(array_map(function ($id) {
-                return trim((string)$id);
-            }, is_array($context['branch_ids'] ?? null) ? $context['branch_ids'] : []), function ($id) {
-                return $id !== '';
-            }));
-            sort($branchIds);
-            if ($role !== '' && !empty($branchIds)) {
-                $allowedScopeKeys[] = 'scope:' . $role . ':' . implode(',', $branchIds);
-            } elseif ($role !== '') {
-                $allowedScopeKeys[] = 'scope:' . $role;
-            }
-        }
-        foreach ($allowedScopeKeys as $scopeKey) {
-            if (!array_key_exists($scopeKey, $incomingReadState) || !is_array($incomingReadState[$scopeKey])) continue;
+        $normalizeKeys = function ($keys) {
             $clean = [];
-            foreach ($incomingReadState[$scopeKey] as $key) {
+            if (!is_array($keys)) return $clean;
+            foreach ($keys as $key) {
                 $normalized = trim((string)$key);
                 if ($normalized === '') continue;
                 if (!in_array($normalized, $clean, true)) $clean[] = $normalized;
             }
-            $data['notificationReadState'][$scopeKey] = $clean;
+            return array_slice($clean, -500);
+        };
+        $normalizeScopeState = function ($scopeState) use ($normalizeKeys) {
+            if (is_array($scopeState) && array_is_list($scopeState)) {
+                $readKeys = $normalizeKeys($scopeState);
+                return [
+                    'readKeys' => $readKeys,
+                    'dismissedKeys' => [],
+                    'migratedFromLocalStorage' => false,
+                    'updatedAt' => '',
+                ];
+            }
+            $scopeState = is_array($scopeState) ? $scopeState : [];
+            $dismissedKeys = $normalizeKeys($scopeState['dismissedKeys'] ?? []);
+            $readKeys = $normalizeKeys(array_merge($scopeState['readKeys'] ?? [], $dismissedKeys));
+            return [
+                'readKeys' => $readKeys,
+                'dismissedKeys' => $dismissedKeys,
+                'migratedFromLocalStorage' => ($scopeState['migratedFromLocalStorage'] ?? false) === true,
+                'updatedAt' => trim((string)($scopeState['updatedAt'] ?? '')),
+            ];
+        };
+        $mergeUnique = function ($a, $b) use ($normalizeKeys) {
+            return $normalizeKeys(array_merge(is_array($a) ? $a : [], is_array($b) ? $b : []));
+        };
+        $role = strtolower(trim((string)($context['role'] ?? '')));
+        $userId = trim((string)($context['user_id'] ?? ''));
+        $branchIds = array_values(array_filter(array_map(function ($id) {
+            return trim((string)$id);
+        }, is_array($context['branch_ids'] ?? null) ? $context['branch_ids'] : []), function ($id) {
+            return $id !== '';
+        }));
+        sort($branchIds, SORT_STRING);
+        $branchScope = empty($branchIds) ? ($role === 'genel_yonetici' ? 'all' : 'none') : implode(',', array_values(array_unique($branchIds)));
+        $scopeKey = 'user:' . ($userId !== '' ? $userId : 'anonymous') . '|role:' . ($role !== '' ? $role : 'unknown') . '|branches:' . $branchScope;
+        $legacyScopeKeys = [];
+        if ($userId !== '') $legacyScopeKeys[] = 'user:' . $userId;
+        if ($role !== '' && !empty($branchIds)) $legacyScopeKeys[] = 'scope:' . $role . ':' . implode(',', $branchIds);
+        if ($role !== '') $legacyScopeKeys[] = 'scope:' . $role;
+        $allowedScopeKeys = array_values(array_unique(array_merge([$scopeKey], $legacyScopeKeys)));
+
+        foreach ($allowedScopeKeys as $allowedScopeKey) {
+            if (!array_key_exists($allowedScopeKey, $incomingReadState) || !is_array($incomingReadState[$allowedScopeKey])) continue;
+            $serverScope = $normalizeScopeState($data['notificationReadState'][$allowedScopeKey] ?? []);
+            $clientScope = $normalizeScopeState($incomingReadState[$allowedScopeKey]);
+            $dismissedKeys = $mergeUnique($serverScope['dismissedKeys'], $clientScope['dismissedKeys']);
+            $readKeys = $mergeUnique(array_merge($serverScope['readKeys'], $clientScope['readKeys']), $dismissedKeys);
+            $data['notificationReadState'][$allowedScopeKey] = [
+                'readKeys' => $readKeys,
+                'dismissedKeys' => $dismissedKeys,
+                'migratedFromLocalStorage' => $serverScope['migratedFromLocalStorage'] || $clientScope['migratedFromLocalStorage'],
+                'updatedAt' => date('c'),
+            ];
         }
     }
 
