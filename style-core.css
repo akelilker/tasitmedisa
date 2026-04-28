@@ -2673,6 +2673,10 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     #settings-menu > button,
     #settings-menu .settings-submenu button {
         font-size: calc(14px + 1pt) !important;
+        width: 50% !important;
+        max-width: 50% !important;
+        text-align: right !important;
+        justify-content: flex-end !important;
     }
     /* Ayarlar menüsü: Veri Yedekleme satırı mobilde sağa yaslı (diğer butonlarla aynı) */
     .settings-dropdown .has-submenu {
@@ -3087,9 +3091,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         touch-action: pan-y !important;
         width: calc(100vw - 28px) !important;
         max-width: 520px !important;
-        left: 50% !important;
-        right: auto !important;
-        transform: translateX(-50%) !important;
+        right: 8px !important;
+        left: auto !important;
+        transform: none !important;
         padding-bottom: 0 !important; /* Açıkken JS inline güvenlik payı verir */
         box-sizing: border-box !important;
     }
