@@ -3095,11 +3095,11 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         -webkit-overflow-scrolling: touch;
         overscroll-behavior: contain !important;
         touch-action: pan-y !important;
-        width: clamp(240px, 60vw, 380px) !important;
-        max-width: calc(100vw - env(safe-area-inset-left, 0) - env(safe-area-inset-right, 0) - 16px) !important;
-        right: max(8px, env(safe-area-inset-right, 0)) !important;
-        left: auto !important;
-        transform: none !important;
+        width: calc(100vw - 28px) !important;
+        max-width: 520px !important;
+        left: 50% !important;
+        right: auto !important;
+        transform: translateX(-50%) !important;
         padding-bottom: 0 !important; /* Açıkken JS inline güvenlik payı verir */
         box-sizing: border-box !important;
     }
