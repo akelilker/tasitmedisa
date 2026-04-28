@@ -7856,10 +7856,10 @@ function renderVehicleDetailLeft(vehicle) {
         return true;
       }
       if (mtvHtml) {
-        pushNotifFeedOnce('special|mtv|' + y + '|' + String(m + 1).padStart(2, '0'), tStart - 2, mtvHtml);
+        pushNotifFeedOnce('special|mtv|' + y + '|' + String(m + 1).padStart(2, '0'), tStart, mtvHtml);
       }
       if (kaskoExcelHtml) {
-        pushNotifFeedOnce('special|kaskoExcel|' + y + '|' + String(m + 1).padStart(2, '0'), tStart - 1, kaskoExcelHtml);
+        pushNotifFeedOnce('special|kaskoExcel|' + y + '|' + String(m + 1).padStart(2, '0'), tStart, kaskoExcelHtml);
       }
 
       if (pendingGeneralRequests.length > 0) {
@@ -7991,7 +7991,7 @@ function renderVehicleDetailLeft(vehicle) {
             </div>
             <div class="notif-line2 notif-meta-date">${escapeHtml(activeDateDisplay)}</div>
           </button>`;
-            pushNotifFeedOnce(notifKey, tStart + 1000 + dIdx, h);
+            pushNotifFeedOnce(notifKey, tStart - dIdx, h);
         });
       }
 
