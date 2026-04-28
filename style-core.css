@@ -1067,7 +1067,10 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-
   justify-content: flex-start;
   align-items: flex-start;
   padding: 0;
+  padding-bottom: 0;
   margin: 0;
+  margin-bottom: 0;
+  line-height: normal;
   background: linear-gradient(180deg, rgba(8, 13, 22, 0.98) 0%, rgba(8, 13, 22, 0.92) 75%, rgba(8, 13, 22, 0) 100%);
 }
 
@@ -1170,9 +1173,9 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   justify-content: flex-start !important;
   gap: 4px !important;
   height: auto !important;
-  min-height: 52px !important;
+  min-height: 72px !important;
   max-height: none !important;
-  padding: 8px 10px !important;
+  padding: 10px 10px 9px !important;
   border-radius: 7px !important;
   border: 1px solid var(--notif-border, rgba(130, 130, 130, 0.55)) !important;
   background: linear-gradient(180deg, rgba(12, 18, 30, 0.94) 0%, rgba(8, 13, 22, 0.92) 100%) !important;
@@ -1200,7 +1203,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   display: block;
   white-space: normal;
   overflow-wrap: anywhere;
-  line-height: 1.28;
+  line-height: 1.25;
   font-weight: 500 !important;
   text-align: left !important;
   margin-bottom: 0 !important;
@@ -1251,6 +1254,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   display: block;
   white-space: normal;
   line-height: 1.2;
+  margin-top: 2px;
   flex: 0 0 auto;
   position: static !important;
 }
@@ -1267,14 +1271,15 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
 #notifications-dropdown.settings-dropdown > button.notification-item .notif-line2.notif-meta-date {
   align-self: start;
   white-space: nowrap;
-  margin-top: 1px;
+  margin-top: 2px;
   margin-left: 0;
-  flex-shrink: 0;
+  flex: 0 0 auto;
   text-align: left;
   max-width: 100%;
   overflow: hidden;
   text-overflow: clip;
   display: block;
+  position: static !important;
 }
 
 #notifications-dropdown .notif-meta-date {
@@ -1496,8 +1501,8 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   #notifications-dropdown.settings-dropdown {
     width: min(320px, calc(100vw - 40px)) !important;
     max-width: min(320px, calc(100vw - 40px)) !important;
-    top: 18px !important;
-    padding: 3px 8px 8px !important;
+    top: 28px !important;
+    padding: 6px 8px 8px !important;
     border: none !important;
     border-radius: 12px !important;
     background: linear-gradient(180deg, rgba(8, 13, 22, 0.98) 0%, rgba(8, 13, 22, 0.95) 100%) !important;
@@ -1507,7 +1512,9 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
 
   #notifications-dropdown .notifications-toolbar {
     padding: 0 2px !important;
+    padding-bottom: 0 !important;
     margin-bottom: 0 !important;
+    line-height: normal !important;
     background: transparent !important;
   }
 
@@ -1516,8 +1523,8 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   #notifications-dropdown .notification-item-activity,
   #notifications-dropdown .mtv-notification,
   #notifications-dropdown .kasko-excel-notification {
-    min-height: 64px !important;
-    padding: 8px 10px !important;
+    min-height: 72px !important;
+    padding: 10px 10px 9px !important;
     border-radius: 7px !important;
     background: linear-gradient(180deg, rgba(12, 18, 30, 0.94) 0%, rgba(8, 13, 22, 0.92) 100%) !important;
   }
@@ -1827,7 +1834,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
     margin: 0 !important;
     padding: 0 !important;
     font-size: 11.5px !important;
-    line-height: 1.28 !important;
+    line-height: 1.25 !important;
     display: block !important;
     overflow: hidden !important;
     text-overflow: clip !important;
@@ -1838,7 +1845,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   #notifications-dropdown .notification-item.date-warning-orange-border .notif-line2,
   #notifications-dropdown .notification-item-activity .notif-line2,
   #notifications-dropdown .mtv-text-container .notif-line2 {
-    margin-top: 0 !important;
+    margin-top: 2px !important;
     display: block !important;
     width: 100% !important;
     position: static !important;
@@ -1849,7 +1856,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
     line-height: 1.2 !important;
     padding: 0 !important;
     font-size: 10.5px !important;
-    margin-top: 1px !important;
+    margin-top: 2px !important;
   }
   #notifications-dropdown .mtv-notification,
   #notifications-dropdown .kasko-excel-notification {
@@ -2456,8 +2463,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         align-items: flex-start !important;
         justify-content: space-between !important;
         gap: 8px !important;
-        padding: 8px 12px 8px !important;
-        min-height: 54px !important;
+        padding: 10px 12px 9px !important;
+        min-height: 72px !important;
         overflow: hidden !important;
     }
     #notifications-dropdown .mtv-notification .mtv-text-container,
@@ -2863,17 +2870,18 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     /* Bildirim satırları <button>: .settings-dropdown button sabit 48px + overflow:hidden metni keser — çok satır için genişlet */
     #notifications-dropdown > button.notification-item {
         height: auto !important;
-        min-height: 64px !important;
+        min-height: 72px !important;
         max-height: none !important;
         overflow: hidden !important;
         align-items: flex-start !important;
         justify-content: flex-start !important;
+        padding: 10px 12px 9px !important;
     }
     #notifications-dropdown .notification-item.date-warning-red-border,
     #notifications-dropdown .notification-item.date-warning-orange-border,
     #notifications-dropdown .notification-item-activity {
-        padding: 8px 12px 8px !important;
-        min-height: 64px !important;
+        padding: 10px 12px 9px !important;
+        min-height: 72px !important;
         overflow: hidden !important;
         display: flex !important;
         flex-direction: column !important;
@@ -2885,7 +2893,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     /* Mobil bildirimlerde metin boyutları yaklaşık 0.75 punto (1px) büyütüldü */
     #notifications-dropdown .notification-item .notif-line1 {
         font-size: 11.5px !important;
-        line-height: 1.28 !important;
+        line-height: 1.25 !important;
         margin-bottom: 0 !important;
         position: static !important;
         flex: 0 0 auto !important;
@@ -2894,7 +2902,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     #notifications-dropdown .notification-item .notif-line2 {
         font-size: 10.5px !important;
         line-height: 1.2 !important;
-        margin-top: 1px !important;
+        margin-top: 2px !important;
         position: static !important;
         flex: 0 0 auto !important;
     }
