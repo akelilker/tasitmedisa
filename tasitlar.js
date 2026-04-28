@@ -8066,9 +8066,10 @@ function renderVehicleDetailLeft(vehicle) {
 
       notifFeed.sort(function(a, b) { return b.t - a.t; });
       let html = notifFeed.map(function(x) { return x.h; }).join('');
+      const hasUnreadInRenderedList = html.indexOf('notification-unread') !== -1;
 
       if (notifDropdown) {
-        if (hasUnreadMarkableNotification) {
+        if (hasUnreadMarkableNotification || hasUnreadInRenderedList) {
           html = `<div class="notifications-toolbar"><button type="button" class="notifications-mark-all-read-btn" data-notification-action="mark-all-read">Tümünü Okundu Olarak İşaretle</button></div>` + html;
         }
         notifDropdown.innerHTML = html;
