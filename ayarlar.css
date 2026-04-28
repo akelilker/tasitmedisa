@@ -2601,6 +2601,15 @@ input.settings-form-input:-moz-autofill,
         background-color: var(--bg-content, #0d131f) !important;
         color: var(--txt-gray-darker, #888) !important;
     }
+
+    /* Ana sayfa ayar menüsü: mobilde hover ile punto şişmesin (genel button:hover ile çakışmayı kes) */
+    @media (hover: hover) {
+        #settings-menu.settings-dropdown button:hover,
+        #settings-menu.settings-dropdown .has-submenu-wrapper .has-submenu:hover {
+            font-size: clamp(15px, 3.1vw, 16px) !important;
+            transform: none !important;
+        }
+    }
 }
 
 /* iOS PWA: Yeni Kullanıcı Ekle formunda etiketler 1 punto küçük, giriş metni kontrollü büyük */
