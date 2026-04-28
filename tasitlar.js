@@ -7848,11 +7848,18 @@ function renderVehicleDetailLeft(vehicle) {
         return d.getTime();
       })();
       const notifFeed = [];
+      function pushNotifFeedOnce(notifKey, t, h) {
+        const normalizedKey = String(notifKey || '').trim();
+        if (!normalizedKey || feedKeys[normalizedKey]) return false;
+        feedKeys[normalizedKey] = true;
+        notifFeed.push({ t: t, h: h });
+        return true;
+      }
       if (mtvHtml) {
-        notifFeed.push({ t: tStart - 2, h: mtvHtml });
+        pushNotifFeedOnce('special|mtv|' + y + '|' + String(m + 1).padStart(2, '0'), tStart - 2, mtvHtml);
       }
       if (kaskoExcelHtml) {
-        notifFeed.push({ t: tStart - 1, h: kaskoExcelHtml });
+        pushNotifFeedOnce('special|kaskoExcel|' + y + '|' + String(m + 1).padStart(2, '0'), tStart - 1, kaskoExcelHtml);
       }
 
       if (pendingGeneralRequests.length > 0) {
@@ -7891,7 +7898,7 @@ function renderVehicleDetailLeft(vehicle) {
             baseMs = tStart + 12 * 3600 * 1000;
           }
           var t = baseMs + reqIdx * 1e-6;
-          notifFeed.push({ t: t, h: h });
+          pushNotifFeedOnce(notifKey, t, h);
           if (!isRead && notificationFeedbackIsRedSeverity(request.type)) {
             hasRed = true;
           } else if (!isRead) {
@@ -7919,7 +7926,7 @@ function renderVehicleDetailLeft(vehicle) {
             dbaseMs = tStart + 12 * 3600 * 1000;
           }
           const t = dbaseMs + dreqIdx * 1e-6;
-          notifFeed.push({ t: t, h: h });
+          pushNotifFeedOnce(notifKey, t, h);
           if (!isRead) hasRed = true;
         });
       }
@@ -7973,7 +7980,7 @@ function renderVehicleDetailLeft(vehicle) {
             </div>
             <div class="notif-line2 notif-meta-date">${escapeHtml(activeDateDisplay)}</div>
           </button>`;
-            notifFeed.push({ t: tStart + 1000 + dIdx, h: h });
+            pushNotifFeedOnce(notifKey, tStart + 1000 + dIdx, h);
         });
       }
 
@@ -7985,8 +7992,6 @@ function renderVehicleDetailLeft(vehicle) {
           const safeVid = String(item.vehicleId || '').replace(/"/g, '&quot;');
           const notifKey = buildEventNotificationKey(item);
           const dateDisplay = getOrCreateNotificationFirstSeen(notifKey);
-          if (feedKeys[notifKey]) return;
-          feedKeys[notifKey] = true;
           const safeKey = notifKey.replace(/"/g, '&quot;');
           const isUnread = viewedKeys.indexOf(notifKey) === -1;
           if (isUnread) {
@@ -8003,7 +8008,7 @@ function renderVehicleDetailLeft(vehicle) {
           <div class="notif-line2 notif-meta-date">${escapeHtml(dateDisplay)}</div>
         </button>`;
           const t = getEventSortTime(ev) + aIdx * 1e-6;
-          notifFeed.push({ t: t, h: h });
+          pushNotifFeedOnce(notifKey, t, h);
         });
       }
 
