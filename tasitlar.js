@@ -1810,7 +1810,39 @@
       dropdown.style.removeProperty('padding-bottom');
       dropdown.style.removeProperty('scroll-padding-bottom');
       dropdown.style.removeProperty('--mobile-notifications-max-height');
+      dropdown.style.removeProperty('position');
+      dropdown.style.removeProperty('top');
+      dropdown.style.removeProperty('left');
+      dropdown.style.removeProperty('right');
+      dropdown.style.removeProperty('transform');
+      dropdown.style.removeProperty('width');
+      dropdown.style.removeProperty('max-width');
       return;
+    }
+
+    var toggleBtn = DOM.notificationsToggleBtn || document.getElementById('notifications-toggle-btn');
+    function clearNotifDropdownMobileLayout() {
+      dropdown.style.removeProperty('position');
+      dropdown.style.removeProperty('top');
+      dropdown.style.removeProperty('left');
+      dropdown.style.removeProperty('right');
+      dropdown.style.removeProperty('transform');
+      dropdown.style.removeProperty('width');
+      dropdown.style.removeProperty('max-width');
+    }
+    if (window.innerWidth > 640) {
+      clearNotifDropdownMobileLayout();
+    } else if (toggleBtn) {
+      var tr = toggleBtn.getBoundingClientRect();
+      dropdown.style.setProperty('position', 'fixed', 'important');
+      dropdown.style.setProperty('top', Math.round(tr.bottom + 8) + 'px', 'important');
+      dropdown.style.setProperty('left', '50vw', 'important');
+      dropdown.style.setProperty('right', 'auto', 'important');
+      dropdown.style.setProperty('transform', 'translateX(-50%)', 'important');
+      dropdown.style.setProperty('width', 'calc(100vw - 28px)', 'important');
+      dropdown.style.setProperty('max-width', '520px', 'important');
+    } else {
+      clearNotifDropdownMobileLayout();
     }
 
     var dropdownRect = dropdown.getBoundingClientRect();
@@ -1893,6 +1925,12 @@
     dropdown.style.removeProperty('overflow');
     dropdown.style.removeProperty('transform');
     dropdown.style.removeProperty('--mobile-notifications-max-height');
+    dropdown.style.removeProperty('position');
+    dropdown.style.removeProperty('top');
+    dropdown.style.removeProperty('left');
+    dropdown.style.removeProperty('right');
+    dropdown.style.removeProperty('width');
+    dropdown.style.removeProperty('max-width');
   }
 
   window.resetNotificationsDropdownLayoutState = resetNotificationsDropdownLayoutState;
@@ -7982,8 +8020,8 @@ function renderVehicleDetailLeft(vehicle) {
             const activeDateDisplay = getOrCreateNotificationFirstSeen(notifKey);
             const isRead = viewedKeys.indexOf(notifKey) !== -1;
             const isUnread = !isRead;
-            const isExpiredCriticalDate = notif.warningClass === 'date-warning-red' && Number(notif.days) < 0;
-            const shouldKeepSeverity = isExpiredCriticalDate;
+            const isDateSeverity = notif.warningClass === 'date-warning-red' || notif.warningClass === 'date-warning-orange';
+            const shouldKeepSeverity = isDateSeverity;
 
             let messageText = '';
             if (notif.days <= 0 && notif.type === 'kasko') {
@@ -8020,9 +8058,10 @@ function renderVehicleDetailLeft(vehicle) {
                 : `--notif-border: ${readBorderColor}; --notif-fg: #9a9a9a;`);
             if (isUnread) hasUnreadMarkableNotification = true;
             if (notif.warningClass === 'date-warning-red') {
-              if (Number(notif.days) < 0 || isUnread) hasRed = true;
+              hasRed = true;
+            } else if (notif.warningClass === 'date-warning-orange') {
+              hasOrange = true;
             }
-            if (isUnread && notif.warningClass === 'date-warning-orange') hasOrange = true;
 
             const h = `<button type="button" data-plate="${safePlate}" data-vehicle-id="${safeVid}" data-notif-key="${safeKey}" style="${notifStyle}" class="notification-item ${borderClass}${stateClass}">
             <div class="notif-line1 notif-title">
