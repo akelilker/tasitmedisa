@@ -1105,7 +1105,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-
 #notifications-dropdown .notifications-toolbar {
   position: sticky;
   top: 0;
-  z-index: 3;
+  z-index: 20 !important;
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;
@@ -1114,7 +1114,10 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-
   margin: 0;
   margin-bottom: 0;
   line-height: normal;
-  background: linear-gradient(180deg, rgba(8, 13, 22, 0.98) 0%, rgba(8, 13, 22, 0.92) 75%, rgba(8, 13, 22, 0) 100%);
+  background: linear-gradient(180deg, rgba(8, 13, 22, 1) 0%, rgba(8, 13, 22, 0.98) 100%) !important;
+  overflow: hidden !important;
+  isolation: isolate;
+  box-shadow: 0 4px 8px rgba(8, 13, 22, 0.85) !important;
 }
 
 #notifications-dropdown .notifications-mark-all-read-btn {
@@ -1231,6 +1234,8 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   white-space: normal !important;
   text-align: left !important;
   overflow: hidden !important;
+  position: relative;
+  z-index: 1;
   justify-content: flex-start !important;
   margin-bottom: 0 !important;
 }
@@ -1563,7 +1568,11 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
     padding-bottom: 0 !important;
     margin-bottom: 0 !important;
     line-height: normal !important;
-    background: transparent !important;
+    z-index: 20 !important;
+    background: linear-gradient(180deg, rgba(8, 13, 22, 1) 0%, rgba(8, 13, 22, 0.98) 100%) !important;
+    overflow: hidden !important;
+    isolation: isolate;
+    box-shadow: 0 4px 8px rgba(8, 13, 22, 0.85) !important;
   }
 
   #notifications-dropdown .notification-item.date-warning-red-border,
@@ -1608,6 +1617,8 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
     justify-content: flex-start;
     align-items: flex-start;
     text-align: left;
+    position: relative;
+    z-index: 1;
     transition: transform 0.16s ease, box-shadow 0.16s ease, color 0.16s ease, border-color 0.16s ease, background 0.16s ease, font-size 0.16s ease;
   }
 
