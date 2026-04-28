@@ -7775,6 +7775,7 @@ function renderVehicleDetailLeft(vehicle) {
 
     // MTV hatırlatması: Ocak (0) veya Temmuz (6), ayın 21'i ve sonrası, ödeme yapılmadıysa
     let mtvHtml = '';
+    let mtvSortMs = 0;
     const today = new Date();
     const m = today.getMonth();
     const d = today.getDate();
@@ -7793,6 +7794,7 @@ function renderVehicleDetailLeft(vehicle) {
           ? '--notif-border: rgba(130, 130, 130, 0.55); --notif-fg: #9a9a9a;'
           : '--notif-border: rgba(255, 140, 0, 0.6); --notif-fg: #fff;';
         const mtvFirstSeenDisplay = getOrCreateNotificationFirstSeen(mtvKey);
+        mtvSortMs = parseNotificationDisplayDateMs(mtvFirstSeenDisplay);
         const mtvDateHtml = showDesktopSpecialNotifDate ? '<div class="notif-line2 notif-meta-date">' + escapeHtml(mtvFirstSeenDisplay) + '</div>' : '';
         mtvHtml = '<div class="notification-item mtv-notification' + mtvStateClass + '" data-notif-key="' + escapeHtml(mtvKey) + '" data-dismiss-key="' + escapeHtml(mtvKey) + '" style="' + mtvStyle + '"><div class="mtv-text-container"><div class="mtv-main-text notif-line1">Ay\u0131n Son G\u00fcn\u00fcne Kadar MTV \u00d6demelerinin Yap\u0131lmas\u0131 Gerekmektedir.</div>' + mtvDateHtml + '</div><div class="mtv-dismiss-wrapper"><button type="button" class="mtv-dismiss-btn" onclick="dismissMTVNotif(event, \'' + mtvKeyEsc + '\')" aria-label="Bildirimi Kapat"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></button><div class="mtv-tooltip">\u00d6deme Yap\u0131ld\u0131ysa Bildirimi Silebilirsiniz.</div></div></div>';
         if (!mtvRead) hasOrange = true;
@@ -7801,6 +7803,7 @@ function renderVehicleDetailLeft(vehicle) {
 
     // Kasko Excel hatırlatması: Liste bu aya ait değilse (Excel yüklenince veya X ile silinene kadar kırmızı kalır)
     let kaskoExcelHtml = '';
+    let kaskoExcelSortMs = 0;
     migrateLegacyKaskoListIfNeeded();
     const kaskoState = getKaskoState();
     const kaskoListeGuncel = String(kaskoState.period || '') === (String(y) + '-' + String(m + 1).padStart(2, '0'));
@@ -7818,6 +7821,7 @@ function renderVehicleDetailLeft(vehicle) {
           ? '--notif-border: rgba(130, 130, 130, 0.55); --notif-fg: #9a9a9a;'
           : '--notif-border: rgba(212, 0, 0, 0.6); --notif-fg: #fff;';
         const kaskoFirstSeenDisplay = getOrCreateNotificationFirstSeen(kaskoKey);
+        kaskoExcelSortMs = parseNotificationDisplayDateMs(kaskoFirstSeenDisplay);
         const kaskoDateHtml = showDesktopSpecialNotifDate ? '<div class="notif-line2 notif-meta-date">' + escapeHtml(kaskoFirstSeenDisplay) + '</div>' : '';
         kaskoExcelHtml = '<div class="notification-item kasko-excel-notification' + kaskoStateClass + '" data-action="open-dis-veri" data-notif-key="' + escapeHtml(kaskoKey) + '" data-dismiss-key="' + escapeHtml(kaskoKey) + '" style="' + kaskoStyle + '"><div class="mtv-text-container"><div class="mtv-main-text notif-line1">G\u00fcncel Kasko De\u011fer Listesinin Y\u00fcklenmesi Gerekmektedir.</div>' + kaskoDateHtml + '</div><div class="mtv-dismiss-wrapper"><button type="button" class="mtv-dismiss-btn" onclick="dismissKaskoExcelNotif(event, \'' + kaskoKeyEsc + '\')" aria-label="Bildirimi Kapat"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button><div class="mtv-tooltip">Kapat</div></div></div>';
         if (!kaskoRead) hasRed = true;
@@ -7848,6 +7852,21 @@ function renderVehicleDetailLeft(vehicle) {
         return d.getTime();
       })();
       const notifFeed = [];
+      function parseNotificationDisplayDateMs(displayDate) {
+        const raw = String(displayDate || '').trim();
+        if (!raw) return 0;
+        const trMatch = raw.match(/^(\d{2})[./-](\d{2})[./-](\d{4})$/);
+        if (trMatch) {
+          const day = Number(trMatch[1]);
+          const month = Number(trMatch[2]);
+          const year = Number(trMatch[3]);
+          const d = new Date(year, month - 1, day, 0, 0, 0, 0);
+          if (!isNaN(d.getTime())) return d.getTime();
+        }
+        const parsed = Date.parse(raw);
+        if (!isNaN(parsed)) return parsed;
+        return 0;
+      }
       function pushNotifFeedOnce(notifKey, t, h) {
         const normalizedKey = String(notifKey || '').trim();
         if (!normalizedKey || feedKeys[normalizedKey]) return false;
@@ -7856,10 +7875,10 @@ function renderVehicleDetailLeft(vehicle) {
         return true;
       }
       if (mtvHtml) {
-        pushNotifFeedOnce('special|mtv|' + y + '|' + String(m + 1).padStart(2, '0'), tStart, mtvHtml);
+        pushNotifFeedOnce('special|mtv|' + y + '|' + String(m + 1).padStart(2, '0'), mtvSortMs || tStart, mtvHtml);
       }
       if (kaskoExcelHtml) {
-        pushNotifFeedOnce('special|kaskoExcel|' + y + '|' + String(m + 1).padStart(2, '0'), tStart, kaskoExcelHtml);
+        pushNotifFeedOnce('special|kaskoExcel|' + y + '|' + String(m + 1).padStart(2, '0'), kaskoExcelSortMs || tStart, kaskoExcelHtml);
       }
 
       if (pendingGeneralRequests.length > 0) {
@@ -7895,9 +7914,12 @@ function renderVehicleDetailLeft(vehicle) {
         '</button>';
           var baseMs = medisaNotificationTalepSortMs(request.date);
           if (baseMs <= 0) {
-            baseMs = tStart + 12 * 3600 * 1000;
+            baseMs = parseNotificationDisplayDateMs(dateDisplay);
           }
-          var t = baseMs + reqIdx * 1e-6;
+          if (baseMs <= 0) {
+            baseMs = tStart;
+          }
+          var t = baseMs - reqIdx * 1e-6;
           pushNotifFeedOnce(notifKey, t, h);
           if (!isRead && notificationFeedbackIsRedSeverity(request.type)) {
             hasRed = true;
@@ -7923,9 +7945,12 @@ function renderVehicleDetailLeft(vehicle) {
         </button>`;
           var dbaseMs = medisaNotificationTalepSortMs(request.date);
           if (dbaseMs <= 0) {
-            dbaseMs = tStart + 12 * 3600 * 1000;
+            dbaseMs = parseNotificationDisplayDateMs(dateDisplay);
           }
-          const t = dbaseMs + dreqIdx * 1e-6;
+          if (dbaseMs <= 0) {
+            dbaseMs = tStart;
+          }
+          const t = dbaseMs - dreqIdx * 1e-6;
           pushNotifFeedOnce(notifKey, t, h);
           if (!isRead) hasRed = true;
         });
@@ -7991,7 +8016,9 @@ function renderVehicleDetailLeft(vehicle) {
             </div>
             <div class="notif-line2 notif-meta-date">${escapeHtml(activeDateDisplay)}</div>
           </button>`;
-            pushNotifFeedOnce(notifKey, tStart - dIdx, h);
+            const firstSeenMs = parseNotificationDisplayDateMs(activeDateDisplay);
+            const t = (firstSeenMs || tStart) - dIdx * 1e-6;
+            pushNotifFeedOnce(notifKey, t, h);
         });
       }
 
@@ -8018,7 +8045,7 @@ function renderVehicleDetailLeft(vehicle) {
           <div class="notif-line1 notif-title">${escapeHtml(activityMsg)}</div>
           <div class="notif-line2 notif-meta-date">${escapeHtml(dateDisplay)}</div>
         </button>`;
-          const t = getEventSortTime(ev) + aIdx * 1e-6;
+          const t = getEventSortTime(ev) - aIdx * 1e-6;
           pushNotifFeedOnce(notifKey, t, h);
         });
       }
