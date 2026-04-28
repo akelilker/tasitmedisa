@@ -1140,7 +1140,8 @@ body:not(.modal-open):has(#notifications-dropdown.open) .content-wrap {
 }
 body:not(.modal-open):has(#notifications-dropdown.open) .icons-row {
   position: relative;
-  z-index: 2;
+  /* Ana menü (.menu-container) DOM’da sonra geldiği için düşük z-index ile üst üste biniyordu; bildirim paneli üstte kalsın */
+  z-index: 10070;
 }
 body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   display: none !important;
@@ -2895,6 +2896,20 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         transform: translateX(-50%) !important;
         padding-bottom: 0 !important; /* Açıkken JS inline güvenlik payı verir */
         box-sizing: border-box !important;
+    }
+    /* Açıkken: menü butonlarına metin sızmasın; panel opak kutu (masaüstü @769 ile aynı his) */
+    #notifications-dropdown.settings-dropdown.open {
+        background: linear-gradient(180deg, rgba(8, 13, 22, 0.98) 0%, rgba(8, 13, 22, 0.95) 100%) !important;
+        border-radius: 12px !important;
+        padding-left: 8px !important;
+        padding-right: 8px !important;
+        padding-top: 8px !important;
+        padding-bottom: 0 !important;
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5) !important;
+        isolation: isolate;
+    }
+    body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) #main-menu.menu-container {
+        pointer-events: none;
     }
     body.notifications-open:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap {
         overflow: hidden !important;
