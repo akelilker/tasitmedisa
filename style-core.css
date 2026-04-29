@@ -3408,7 +3408,7 @@ body.modal-open .app-container {
         }
         & .form-input,
         & select {
-            height: 27px !important;
+            height: 30px !important;
             padding-top: 5px !important;
             padding-bottom: 5px !important;
         }
