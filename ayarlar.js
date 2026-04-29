@@ -294,12 +294,18 @@
           if (title) title.textContent = 'Şube Düzenle';
         }
         // Sil butonunu göster
-        if (deleteBtn) deleteBtn.style.display = 'flex';
+        if (deleteBtn) {
+          deleteBtn.classList.remove('u-hidden');
+          deleteBtn.style.display = 'flex';
+        }
       } else {
         // Yeni EKLEME MODU
         if (title) title.textContent = 'Yeni Şube Ekle';
         // Sil butonunu gizle
-        if (deleteBtn) deleteBtn.style.display = 'none';
+        if (deleteBtn) {
+          deleteBtn.classList.add('u-hidden');
+          deleteBtn.style.display = 'none';
+        }
       }
   
       // Modalı aç
@@ -321,7 +327,10 @@
       const form = $('#branch-form', modal);
       if (form) form.reset();
       const deleteBtn = $('#branch-delete-btn', modal);
-      if (deleteBtn) deleteBtn.style.display = 'none';
+      if (deleteBtn) {
+        deleteBtn.classList.add('u-hidden');
+        deleteBtn.style.display = 'none';
+      }
       modal.classList.remove('active');
       setTimeout(() => modal.style.display = 'none', 300);
     };
@@ -1150,7 +1159,10 @@
       if (form) form.reset();
       if (idInput) idInput.value = '';
       if (branchReadonly) branchReadonly.value = '';
-      if (deleteBtn) deleteBtn.style.display = 'none';
+      if (deleteBtn) {
+        deleteBtn.classList.add('u-hidden');
+        deleteBtn.style.display = 'none';
+      }
       populateUserVehiclesMulti();
       const managedBranch = getManagedBranchForUserManagement(scope);
       if (scope.isBranchManager && branchSelect) {
@@ -1197,12 +1209,18 @@
         }
         if (title) title.textContent = 'Kullanıcı Düzenle';
         // Sil butonunu göster
-        if (deleteBtn) deleteBtn.style.display = 'flex';
+        if (deleteBtn) {
+          deleteBtn.classList.remove('u-hidden');
+          deleteBtn.style.display = 'flex';
+        }
       } else {
         // Yeni EKLEME MODU
         if (title) title.textContent = 'Yeni Kullanıcı Ekle';
         // Sil butonunu gizle
-        if (deleteBtn) deleteBtn.style.display = 'none';
+        if (deleteBtn) {
+          deleteBtn.classList.add('u-hidden');
+          deleteBtn.style.display = 'none';
+        }
       }
   
       syncUserRoleBranchUI({ scope: scope });
@@ -1234,7 +1252,10 @@
       const searchInput = document.getElementById('user-vehicles-search');
       if (searchInput) searchInput.value = '';
       const deleteBtn = $('#user-delete-btn', modal);
-      if (deleteBtn) deleteBtn.style.display = 'none';
+      if (deleteBtn) {
+        deleteBtn.classList.add('u-hidden');
+        deleteBtn.style.display = 'none';
+      }
       modal.classList.remove('active');
       setTimeout(() => modal.style.display = 'none', 300);
     };
