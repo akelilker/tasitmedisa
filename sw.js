@@ -1,7 +1,7 @@
 // Service Worker - Medisa Taşıt Yönetim Sistemi
-// Version 2.13 - Footer logo ölçü yenileme; syntax temiz
+// Version 2.14 - Ayarlar form görünüm ve cache yenileme
 
-const CACHE_VERSION = 'medisa-v2.79';
+const CACHE_VERSION = 'medisa-v2.80';
 
 // Subpath desteği: /medisa/sw.js ise base = '/medisa', kök deploy'da base = ''
 function getBase() {
