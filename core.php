@@ -1126,13 +1126,44 @@ function medisaSaveBuildVehicleVersions($vehicles) {
     return $vehicleVersions;
 }
 
-function medisaResolveVehicleRuhsatFilePath($vehicle) {
+function medisaGetVehicleDocumentConfig(string $documentType): ?array {
+    $type = strtolower(trim($documentType));
+    $configs = [
+        'ruhsat' => [
+            'pathField' => 'ruhsatPath',
+            'dir' => 'ruhsat',
+            'fallbackName' => 'ruhsat',
+            'notFound' => 'Ruhsat bulunamadi',
+        ],
+        'sigorta' => [
+            'pathField' => 'sigortaPolicePath',
+            'dir' => 'sigorta_police',
+            'fallbackName' => 'sigorta-policesi',
+            'notFound' => 'Sigorta policesi bulunamadi',
+        ],
+        'kasko' => [
+            'pathField' => 'kaskoPolicePath',
+            'dir' => 'kasko_police',
+            'fallbackName' => 'kasko-policesi',
+            'notFound' => 'Kasko policesi bulunamadi',
+        ],
+    ];
+
+    return $configs[$type] ?? null;
+}
+
+function medisaResolveVehicleDocumentFilePath($vehicle, string $documentType) {
     if (!is_array($vehicle)) {
         return null;
     }
 
+    $config = medisaGetVehicleDocumentConfig($documentType);
+    if (!$config) {
+        return null;
+    }
+
     $candidates = [];
-    $rawPath = trim((string)($vehicle['ruhsatPath'] ?? ''));
+    $rawPath = trim((string)($vehicle[$config['pathField']] ?? ''));
     if ($rawPath !== '') {
         $normalized = ltrim(str_replace('\\', '/', $rawPath), '/');
         if (strpos($normalized, 'data/') !== 0) {
@@ -1143,7 +1174,7 @@ function medisaResolveVehicleRuhsatFilePath($vehicle) {
 
     $safeId = preg_replace('/[^a-zA-Z0-9_-]/', '', (string)($vehicle['id'] ?? ''));
     if ($safeId !== '') {
-        $candidates[] = __DIR__ . '/data/ruhsat/' . $safeId . '.pdf';
+        $candidates[] = __DIR__ . '/data/' . $config['dir'] . '/' . $safeId . '.pdf';
     }
 
     foreach (array_values(array_unique($candidates)) as $candidatePath) {
@@ -1153,6 +1184,10 @@ function medisaResolveVehicleRuhsatFilePath($vehicle) {
     }
 
     return null;
+}
+
+function medisaResolveVehicleRuhsatFilePath($vehicle) {
+    return medisaResolveVehicleDocumentFilePath($vehicle, 'ruhsat');
 }
 
 function medisaCreateSignedToken($payload, $ttlSeconds = 2592000) {
