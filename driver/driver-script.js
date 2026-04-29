@@ -1289,20 +1289,8 @@ const API_BASE = (function(){
                       </div>
                   </div>
               </div>
-              <div class="driver-action-group driver-action-feedback-slot">
-                  <button type="button" class="driver-action-btn driver-action-btn-feedback" onclick="openDriverFeedbackModal()" aria-label="Talep, şikayet veya öneri gönder">
-                      <svg class="driver-action-btn-feedback-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                          <path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"></path>
-                          <line x1="8" y1="9" x2="16" y2="9"></line>
-                          <line x1="8" y1="13" x2="14" y2="13"></line>
-                      </svg>
-                      <span>Talep Gönder</span>
-                  </button>
-              </div>
-              <div class="driver-action-group driver-action-footer">
-                  <button type="button" onclick="saveVehicleData('${vid}')" class="universal-btn-save" id="btn-save-${vid}">Bildir</button>
-                  <div id="status-${vid}" class="status-message"></div>
-              </div>
+              <div class="driver-action-group driver-action-footer"><button type="button" onclick="saveVehicleData('${vid}')" class="universal-btn-save" id="btn-save-${vid}">Bildir</button><div id="status-${vid}" class="status-message"></div></div>
+              <div class="driver-action-group driver-action-feedback-slot driver-request-fab-row"><button type="button" class="driver-action-btn-feedback driver-request-fab" onclick="openDriverFeedbackModal()" aria-label="Talep, şikayet veya öneri gönder"><svg class="driver-action-btn-feedback-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"></path><line x1="8" y1="9" x2="16" y2="9"></line><line x1="8" y1="13" x2="14" y2="13"></line></svg><span class="driver-request-fab-label">Talep Gönder</span></button></div>
           </div>
       `;
   }

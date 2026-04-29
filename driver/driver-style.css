@@ -1017,22 +1017,69 @@ body.dashboard-page {
   text-align: center;
   align-self: center;
 }
-/* Sağ kolon: yönetici mesajı (Talep Gönder) — araç bildirim butonlarından ince çizgi ile ayrılır */
-.driver-action-feedback-slot {
-  margin-top: 8px;
-  padding-top: 10px;
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
-  margin-bottom: 10px;
+/* Sağ kolon: Talep Gönder mini FAB (Bildir altında sağda) */
+.driver-request-fab-row {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 6px;
+  min-height: 28px;
 }
-.driver-action-btn-feedback {
-  gap: 8px;
+.driver-action-btn-feedback.driver-request-fab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 30px;
+  min-width: 30px;
+  height: 30px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  color: rgba(238, 246, 255, 0.9);
+  cursor: pointer;
+  overflow: hidden;
+  white-space: nowrap;
+  transition: width .18s ease, color .18s ease, background .18s ease, transform .18s ease;
 }
-.driver-action-btn-feedback .driver-action-btn-feedback-icon {
-  flex-shrink: 0;
+.driver-action-btn-feedback.driver-request-fab .driver-action-btn-feedback-icon {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
   color: currentColor;
 }
-.driver-action-area-inner.driver-km-open .driver-action-group.driver-action-feedback-slot {
-  display: flex;
+.driver-request-fab-label {
+  opacity: 0;
+  max-width: 0;
+  overflow: hidden;
+  transition: opacity .18s ease, max-width .18s ease;
+}
+.driver-action-btn-feedback.driver-request-fab:hover,
+.driver-action-btn-feedback.driver-request-fab:focus-visible {
+  width: 132px;
+  padding: 0 10px;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+}
+.driver-action-btn-feedback.driver-request-fab:hover .driver-request-fab-label,
+.driver-action-btn-feedback.driver-request-fab:focus-visible .driver-request-fab-label {
+  opacity: 1;
+  max-width: 96px;
+}
+
+@media (max-width: 768px) {
+  .driver-action-btn-feedback.driver-request-fab:focus,
+  .driver-action-btn-feedback.driver-request-fab:active {
+    width: 132px;
+    padding: 0 10px;
+  }
+  .driver-action-btn-feedback.driver-request-fab:focus .driver-request-fab-label,
+  .driver-action-btn-feedback.driver-request-fab:active .driver-request-fab-label {
+    opacity: 1;
+    max-width: 96px;
+  }
 }
 .driver-plate-dropdown-row {
   display: flex;
