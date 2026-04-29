@@ -2790,11 +2790,13 @@
       const historyBtn = document.createElement('button');
       historyBtn.className = 'history-btn-minimal';
       historyBtn.innerHTML = `
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M5 22h14"/>
-          <path d="M5 2h14"/>
-          <path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22"/>
-          <path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2"/>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.15" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M6 2h12"></path>
+          <path d="M6 22h12"></path>
+          <path d="M8 2v5.2c0 1.25.58 2.42 1.57 3.18L12 12.25l2.43-1.87A4 4 0 0 0 16 7.2V2"></path>
+          <path d="M16 22v-5.2c0-1.25-.58-2.42-1.57-3.18L12 11.75l-2.43 1.87A4 4 0 0 0 8 16.8V22"></path>
+          <path d="M9.5 7h5"></path>
+          <path d="M9.5 17h5"></path>
         </svg>
         <span>Tarihçe</span>
       `;
