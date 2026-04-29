@@ -993,6 +993,82 @@
   font-weight: 500;
 }
 
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-upload-hint {
+  width: 100%;
+  max-width: 280px;
+  margin: 0 auto 10px auto;
+  padding: 0 4px;
+  box-sizing: border-box;
+  font-size: 13px;
+  line-height: 1.35;
+  font-weight: 500;
+  color: #a0aec0;
+  text-align: center;
+}
+
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-upload-progress {
+  width: 100%;
+  max-width: 280px;
+  margin: 0 auto 10px auto;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+  box-sizing: border-box;
+}
+
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-upload-progress-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #ffffff;
+  letter-spacing: 0.02em;
+  text-align: center;
+}
+
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-upload-progress-track {
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-sizing: border-box;
+}
+
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-upload-progress-bar {
+  height: 100%;
+  width: 0%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, rgba(60, 179, 113, 0.85), rgba(125, 255, 174, 0.95));
+  transition: width 0.12s ease-out;
+}
+
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-upload-progress-bar.ruhsat-upload-progress-bar--indeterminate {
+  width: 40% !important;
+  animation: ruhsat-upload-indeterminate 1s ease-in-out infinite;
+}
+
+@keyframes ruhsat-upload-indeterminate {
+  0% { transform: translateX(-120%); }
+  100% { transform: translateX(320%); }
+}
+
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-upload-progress-pct {
+  font-size: 13px;
+  font-weight: 700;
+  color: #a0aec0;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-upload-progress-pct.ruhsat-upload-progress-pct--indeterminate {
+  letter-spacing: 0.15em;
+}
+
+#dinamik-olay-modal #ruhsat-modal-content .ruhsat-select-box.ruhsat-select-box--uploading {
+  pointer-events: none;
+  opacity: 0.65;
+}
+
 /* Olay Ekle butonu - Marka/model satırında solda */
 .detail-brand-year-row .history-add-event-btn {
     width: auto;
