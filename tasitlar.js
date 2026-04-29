@@ -2895,12 +2895,10 @@
       const ruhsatBtn = document.createElement('button');
       ruhsatBtn.type = 'button';
       ruhsatBtn.className = 'vehicle-ruhsat-btn';
-      var appTasitlarToolbar = window.appData && Array.isArray(window.appData.tasitlar) ? window.appData.tasitlar : [];
-      var ruhsatLive = appTasitlarToolbar.find(function(x) { return String(x.id) === String(vehicleId); }) || vehicle;
-      ruhsatBtn.title = ruhsatLive.ruhsatPath ? 'Ruhsat\u0131 G\u00F6r\u00FCnt\u00FCle' : 'Ruhsat Y\u00FCkle';
-      ruhsatBtn.setAttribute('aria-label', 'Ruhsat');
+      ruhsatBtn.title = 'Belgeler';
+      ruhsatBtn.setAttribute('aria-label', 'Belgeler');
       ruhsatBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg>';
-      ruhsatBtn.onclick = (e) => { e.stopPropagation(); if (typeof window.openRuhsatModal === 'function') window.openRuhsatModal(vehicleId); };
+      ruhsatBtn.onclick = (e) => { e.stopPropagation(); if (typeof window.openVehicleDocumentsModal === 'function') window.openVehicleDocumentsModal(vehicleId); };
       toolbarRight.appendChild(ruhsatBtn);
       const printBtn = document.createElement('button');
       printBtn.type = 'button';
@@ -5092,6 +5090,51 @@ function renderVehicleDetailLeft(vehicle) {
     }
   };
 
+  const VEHICLE_DOCUMENT_TYPES = {
+    ruhsat: {
+      key: 'ruhsat',
+      label: 'Ruhsat',
+      title: 'RUHSAT',
+      pathField: 'ruhsatPath',
+      uploadButton: 'Ruhsat Yükle',
+      changeLabel: 'Ruhsatı Değiştir',
+      missingAlert: 'Lütfen ruhsat dosyası seçin.',
+      successMessage: 'Ruhsat Başarıyla Yüklendi',
+      icon: 'document'
+    },
+    sigorta: {
+      key: 'sigorta',
+      label: 'Sigorta Poliçesi',
+      title: 'SİGORTA POLİÇESİ',
+      pathField: 'sigortaPolicePath',
+      uploadButton: 'Poliçe Yükle',
+      changeLabel: 'Sigorta Poliçesini Değiştir',
+      missingAlert: 'Lütfen sigorta poliçesi dosyası seçin.',
+      successMessage: 'Sigorta Poliçesi Başarıyla Yüklendi',
+      icon: 'shield'
+    },
+    kasko: {
+      key: 'kasko',
+      label: 'Kasko Poliçesi',
+      title: 'KASKO POLİÇESİ',
+      pathField: 'kaskoPolicePath',
+      uploadButton: 'Poliçe Yükle',
+      changeLabel: 'Kasko Poliçesini Değiştir',
+      missingAlert: 'Lütfen kasko poliçesi dosyası seçin.',
+      successMessage: 'Kasko Poliçesi Başarıyla Yüklendi',
+      icon: 'shield'
+    }
+  };
+
+  function getVehicleDocumentConfig(documentType) {
+    return VEHICLE_DOCUMENT_TYPES[String(documentType || 'ruhsat').trim()] || VEHICLE_DOCUMENT_TYPES.ruhsat;
+  }
+
+  function getVehicleDocumentPath(vehicle, documentType) {
+    const config = getVehicleDocumentConfig(documentType);
+    return vehicle ? String(vehicle[config.pathField] || '') : '';
+  }
+
   /**
    * Ruhsat Yükleme modalını açar; vehicle.ruhsatPath varsa görüntüleme/yenileme, yoksa yükleme UI gösterir
    */
@@ -5197,9 +5240,10 @@ function renderVehicleDetailLeft(vehicle) {
     return headers;
   }
 
-  function buildRuhsatEndpointUrl(endpoint, vehicleId) {
+  function buildVehicleDocumentEndpointUrl(endpoint, vehicleId, documentType) {
     const rawId = String(vehicleId || window.currentDetailVehicleId || '').trim();
     if (!rawId) return '';
+    const dt = String(documentType || 'ruhsat').trim() || 'ruhsat';
     var verParam = '';
     var appTasitlar = window.appData && Array.isArray(window.appData.tasitlar) ? window.appData.tasitlar : [];
     var appV = appTasitlar.find(function(x) { return String(x.id) === rawId; });
@@ -5212,6 +5256,9 @@ function renderVehicleDetailLeft(vehicle) {
       if (verParam !== '') {
         targetUrl.searchParams.set('v', verParam);
       }
+      if (dt !== 'ruhsat') {
+        targetUrl.searchParams.set('documentType', dt);
+      }
       return targetUrl.toString();
     } catch (e) {
       const encodedId = encodeURIComponent(rawId);
@@ -5219,16 +5266,23 @@ function renderVehicleDetailLeft(vehicle) {
       if (verParam !== '') {
         q += '&v=' + encodeURIComponent(verParam);
       }
+      if (dt !== 'ruhsat') {
+        q += '&documentType=' + encodeURIComponent(dt);
+      }
       return q;
     }
   }
 
-  function buildRuhsatPreviewUrl(vehicleId) {
-    return buildRuhsatEndpointUrl('ruhsat_preview.php', vehicleId);
+  function buildRuhsatEndpointUrl(endpoint, vehicleId) {
+    return buildVehicleDocumentEndpointUrl(endpoint, vehicleId, 'ruhsat');
   }
 
-  function buildRuhsatDocumentUrl(vehicleId) {
-    return buildRuhsatEndpointUrl('ruhsat.php', vehicleId);
+  function buildRuhsatPreviewUrl(vehicleId, documentType) {
+    return buildVehicleDocumentEndpointUrl('ruhsat_preview.php', vehicleId, documentType || 'ruhsat');
+  }
+
+  function buildRuhsatDocumentUrl(vehicleId, documentType) {
+    return buildVehicleDocumentEndpointUrl('ruhsat.php', vehicleId, documentType || 'ruhsat');
   }
 
   function isRuhsatImagePath(path) {
@@ -5268,14 +5322,15 @@ function renderVehicleDetailLeft(vehicle) {
 
   var ruhsatPreviewCache = new Map();
 
-  function getRuhsatPreviewCacheKey(vehicleId, ruhsatUrl) {
+  function getRuhsatPreviewCacheKey(vehicleId, ruhsatUrl, documentType) {
     const rawId = String(vehicleId || window.currentDetailVehicleId || '').trim();
     const absoluteUrl = toAbsoluteRuhsatUrl(ruhsatUrl);
+    const dt = String(documentType || 'ruhsat').trim() || 'ruhsat';
     if (!rawId || !absoluteUrl) return '';
     var appTasitlar = window.appData && Array.isArray(window.appData.tasitlar) ? window.appData.tasitlar : [];
     var fv = appTasitlar.find(function(x) { return String(x.id) === rawId; });
     var verSeg = fv && fv.version != null ? String(Number(fv.version) || 1) : '1';
-    return rawId + '::' + verSeg + '::' + absoluteUrl;
+    return rawId + '::' + dt + '::' + verSeg + '::' + absoluteUrl;
   }
 
   function revokeRuhsatPreviewEntry(entry) {
@@ -5286,12 +5341,24 @@ function renderVehicleDetailLeft(vehicle) {
     entry.objectUrl = '';
   }
 
-  function invalidateRuhsatPreviewCache(vehicleId) {
+  function invalidateRuhsatPreviewCache(vehicleId, documentType) {
     const rawId = String(vehicleId || '').trim();
     if (!rawId || !ruhsatPreviewCache.size) return;
-    const cachePrefix = rawId + '::';
+    const wantAll = documentType === undefined || documentType === null || documentType === '';
+    const wantedType = String(documentType || 'ruhsat').trim();
     ruhsatPreviewCache.forEach(function(entry, cacheKey) {
-      if (cacheKey.indexOf(cachePrefix) !== 0) return;
+      if (cacheKey.indexOf(rawId + '::') !== 0) return;
+      const rest = cacheKey.slice((rawId + '::').length);
+      const firstSeg = rest.split('::')[0];
+      var keyDocType = null;
+      if (firstSeg === 'ruhsat' || firstSeg === 'sigorta' || firstSeg === 'kasko') {
+        keyDocType = firstSeg;
+      } else if (/^\d+$/.test(firstSeg)) {
+        keyDocType = 'ruhsat';
+      } else {
+        return;
+      }
+      if (!wantAll && keyDocType !== wantedType) return;
       revokeRuhsatPreviewEntry(entry);
       ruhsatPreviewCache.delete(cacheKey);
     });
@@ -5299,9 +5366,10 @@ function renderVehicleDetailLeft(vehicle) {
 
   var ruhsatPreviewEndpointMissing = false;
 
-  function fetchRuhsatPreviewObjectUrl(vehicleId, ruhsatUrl) {
-    const cacheKey = getRuhsatPreviewCacheKey(vehicleId, ruhsatUrl);
-    const previewUrl = buildRuhsatPreviewUrl(vehicleId);
+  function fetchRuhsatPreviewObjectUrl(vehicleId, ruhsatUrl, documentType) {
+    const dt = documentType || 'ruhsat';
+    const cacheKey = getRuhsatPreviewCacheKey(vehicleId, ruhsatUrl, dt);
+    const previewUrl = buildRuhsatPreviewUrl(vehicleId, dt);
     if (!cacheKey || !previewUrl) {
       return Promise.reject(new Error('preview-key-missing'));
     }
@@ -5371,14 +5439,15 @@ function renderVehicleDetailLeft(vehicle) {
 
   var ruhsatDocumentCache = new Map();
 
-  function getRuhsatDocumentCacheKey(vehicleId, ruhsatUrl) {
+  function getRuhsatDocumentCacheKey(vehicleId, ruhsatUrl, documentType) {
     const rawId = String(vehicleId || window.currentDetailVehicleId || '').trim();
     const absoluteUrl = toAbsoluteRuhsatUrl(ruhsatUrl);
+    const dt = String(documentType || 'ruhsat').trim() || 'ruhsat';
     if (!rawId || !absoluteUrl) return '';
     var appTasitlar = window.appData && Array.isArray(window.appData.tasitlar) ? window.appData.tasitlar : [];
     var fv = appTasitlar.find(function(x) { return String(x.id) === rawId; });
     var verSeg = fv && fv.version != null ? String(Number(fv.version) || 1) : '1';
-    return rawId + '::' + verSeg + '::' + absoluteUrl;
+    return rawId + '::' + dt + '::' + verSeg + '::' + absoluteUrl;
   }
 
   function revokeRuhsatDocumentEntry(entry) {
@@ -5389,20 +5458,33 @@ function renderVehicleDetailLeft(vehicle) {
     entry.objectUrl = '';
   }
 
-  function invalidateRuhsatDocumentCache(vehicleId) {
+  function invalidateRuhsatDocumentCache(vehicleId, documentType) {
     const rawId = String(vehicleId || '').trim();
     if (!rawId || !ruhsatDocumentCache.size) return;
-    const cachePrefix = rawId + '::';
+    const wantAll = documentType === undefined || documentType === null || documentType === '';
+    const wantedType = String(documentType || 'ruhsat').trim();
     ruhsatDocumentCache.forEach(function(entry, cacheKey) {
-      if (cacheKey.indexOf(cachePrefix) !== 0) return;
+      if (cacheKey.indexOf(rawId + '::') !== 0) return;
+      const rest = cacheKey.slice((rawId + '::').length);
+      const firstSeg = rest.split('::')[0];
+      var keyDocType = null;
+      if (firstSeg === 'ruhsat' || firstSeg === 'sigorta' || firstSeg === 'kasko') {
+        keyDocType = firstSeg;
+      } else if (/^\d+$/.test(firstSeg)) {
+        keyDocType = 'ruhsat';
+      } else {
+        return;
+      }
+      if (!wantAll && keyDocType !== wantedType) return;
       revokeRuhsatDocumentEntry(entry);
       ruhsatDocumentCache.delete(cacheKey);
     });
   }
 
-  function fetchRuhsatDocumentObjectUrl(vehicleId, ruhsatUrl) {
-    const cacheKey = getRuhsatDocumentCacheKey(vehicleId, ruhsatUrl);
-    const documentUrl = buildRuhsatDocumentUrl(vehicleId);
+  function fetchRuhsatDocumentObjectUrl(vehicleId, ruhsatUrl, documentType) {
+    const dt = documentType || 'ruhsat';
+    const cacheKey = getRuhsatDocumentCacheKey(vehicleId, ruhsatUrl, dt);
+    const documentUrl = buildRuhsatDocumentUrl(vehicleId, dt);
     if (!cacheKey || !documentUrl) {
       return Promise.reject(new Error('document-key-missing'));
     }
@@ -5461,28 +5543,38 @@ function renderVehicleDetailLeft(vehicle) {
     return entry.promise;
   }
 
-  function warmRuhsatPreview(vehicleId, ruhsatUrl) {
+  function warmRuhsatPreview(vehicleId, ruhsatUrl, documentType) {
+    const dt = documentType || 'ruhsat';
     const url = toAbsoluteRuhsatUrl(ruhsatUrl);
-    if (!url || isRuhsatImageForVehicle(vehicleId, getVehicleRuhsatPath(vehicleId))) {
+    var appTasitlar = window.appData && Array.isArray(window.appData.tasitlar) ? window.appData.tasitlar : [];
+    var v = appTasitlar.find(function(x) { return String(x.id) === String(vehicleId); });
+    if (!v) {
+      v = readVehicles().find(function(x) { return String(x.id) === String(vehicleId); });
+    }
+    const pathForType = v ? getVehicleDocumentPath(v, dt) : '';
+    if (!url || isRuhsatImageForVehicle(vehicleId, pathForType)) {
       return Promise.resolve('');
     }
-    return fetchRuhsatPreviewObjectUrl(vehicleId, url).catch(function() {
+    return fetchRuhsatPreviewObjectUrl(vehicleId, url, dt).catch(function() {
       return '';
     });
   }
 
-  function hydrateRuhsatPreviewButton(previewBtn, vehicleId, ruhsatUrl, isImage) {
+  function hydrateRuhsatPreviewButton(previewBtn, vehicleId, ruhsatUrl, isImage, documentType) {
     if (!previewBtn) return;
+    const cfg = getVehicleDocumentConfig(documentType);
+    const altPreview = cfg.label + ' ön izleme';
     previewBtn.innerHTML = '<span class="ruhsat-preview-hint">Ön İzleme</span>';
 
+    const dt = documentType || 'ruhsat';
     const loadPreview = isImage
-      ? fetchRuhsatDocumentObjectUrl(vehicleId, ruhsatUrl)
-      : fetchRuhsatPreviewObjectUrl(vehicleId, ruhsatUrl);
+      ? fetchRuhsatDocumentObjectUrl(vehicleId, ruhsatUrl, dt)
+      : fetchRuhsatPreviewObjectUrl(vehicleId, ruhsatUrl, dt);
 
     loadPreview
       .then(function(objectUrl) {
         if (!previewBtn.isConnected) return;
-        previewBtn.innerHTML = `<img src="${escapeHtml(objectUrl)}" alt="Ruhsat Ön İzleme" class="ruhsat-preview-image" loading="lazy"><span class="ruhsat-preview-hint">Ön İzleme</span>`;
+        previewBtn.innerHTML = `<img src="${escapeHtml(objectUrl)}" alt="${escapeHtml(altPreview)}" class="ruhsat-preview-image" loading="lazy"><span class="ruhsat-preview-hint">Ön İzleme</span>`;
       })
       .catch(function() {
         if (!previewBtn.isConnected) return;
@@ -5495,35 +5587,41 @@ function renderVehicleDetailLeft(vehicle) {
    * Aynı sayfada gizli iframe kullanır; iOS PWA'da yeni sekme açılmadığı için geri dönüş mümkün olur.
    * Masaüstü bu fonksiyonu kullanmaz (ön izleme + inline viewer kalır).
    */
-  function openRuhsatPrintDialog(ruhsatUrl, vehicleId) {
+  function openRuhsatPrintDialog(ruhsatUrl, vehicleId, documentType) {
+    const dt = documentType || 'ruhsat';
     const url = toAbsoluteRuhsatUrl(ruhsatUrl);
     if (!url) return;
-    const documentPath = getVehicleRuhsatPath(vehicleId);
+    var appTasitlar = window.appData && Array.isArray(window.appData.tasitlar) ? window.appData.tasitlar : [];
+    var vehicle = appTasitlar.find(function(v) { return String(v.id) === String(vehicleId || window.currentDetailVehicleId); });
+    if (!vehicle) {
+      vehicle = readVehicles().find(function(v) { return String(v.id) === String(vehicleId || window.currentDetailVehicleId); });
+    }
+    const documentPath = vehicle ? getVehicleDocumentPath(vehicle, dt) : '';
     const isImage = isRuhsatImageForVehicle(vehicleId, documentPath);
-    const documentUrl = buildRuhsatDocumentUrl(vehicleId) || url;
+    const documentUrl = buildRuhsatDocumentUrl(vehicleId, dt) || url;
     if (isAndroidDevice()) {
       if (isImage) {
-        fetchRuhsatDocumentObjectUrl(vehicleId, documentUrl)
+        fetchRuhsatDocumentObjectUrl(vehicleId, documentUrl, dt)
           .then(function(objectUrl) {
             openUrlInNewTab(objectUrl);
           })
           .catch(function() {
-            if (typeof window.viewRuhsatPdf === 'function') window.viewRuhsatPdf(vehicleId);
+            if (typeof window.viewRuhsatPdf === 'function') window.viewRuhsatPdf(vehicleId, dt);
           });
         return;
       }
 
-      fetchRuhsatPreviewObjectUrl(vehicleId, url)
+      fetchRuhsatPreviewObjectUrl(vehicleId, url, dt)
         .then(function(previewObjectUrl) {
           openUrlInNewTab(previewObjectUrl);
         })
         .catch(function() {
-          fetchRuhsatDocumentObjectUrl(vehicleId, documentUrl)
+          fetchRuhsatDocumentObjectUrl(vehicleId, documentUrl, dt)
             .then(function(documentObjectUrl) {
               openUrlInNewTab(buildPdfViewerUrl(documentObjectUrl, 'toolbar=0&navpanes=0&zoom=page-width&view=FitH'));
             })
             .catch(function() {
-              if (typeof window.viewRuhsatPdf === 'function') window.viewRuhsatPdf(vehicleId);
+              if (typeof window.viewRuhsatPdf === 'function') window.viewRuhsatPdf(vehicleId, dt);
             });
         });
       return;
@@ -5615,13 +5713,13 @@ function renderVehicleDetailLeft(vehicle) {
         if (fallbackOpenUrl) {
           openUrlInNewTab(fallbackOpenUrl);
         } else if (typeof window.viewRuhsatPdf === 'function') {
-          window.viewRuhsatPdf(vehicleId);
+          window.viewRuhsatPdf(vehicleId, dt);
         }
       }
     }
 
     if (isImage) {
-      fetchRuhsatDocumentObjectUrl(vehicleId, documentUrl)
+      fetchRuhsatDocumentObjectUrl(vehicleId, documentUrl, dt)
         .then(function(documentObjectUrl) {
           if (window.__ruhsatPrintToken !== printToken) {
             return;
@@ -5632,12 +5730,12 @@ function renderVehicleDetailLeft(vehicle) {
           if (window.__ruhsatPrintToken !== printToken) {
             return;
           }
-          if (typeof window.viewRuhsatPdf === 'function') window.viewRuhsatPdf(vehicleId);
+          if (typeof window.viewRuhsatPdf === 'function') window.viewRuhsatPdf(vehicleId, dt);
         });
       return;
     }
 
-    fetchRuhsatPreviewObjectUrl(vehicleId, url)
+    fetchRuhsatPreviewObjectUrl(vehicleId, url, dt)
       .then(function(previewObjectUrl) {
         if (window.__ruhsatPrintToken !== printToken) {
           return;
@@ -5648,7 +5746,7 @@ function renderVehicleDetailLeft(vehicle) {
         if (window.__ruhsatPrintToken !== printToken) {
           return;
         }
-        fetchRuhsatDocumentObjectUrl(vehicleId, documentUrl)
+        fetchRuhsatDocumentObjectUrl(vehicleId, documentUrl, dt)
           .then(function(documentObjectUrl) {
             if (window.__ruhsatPrintToken !== printToken) {
               return;
@@ -5659,35 +5757,45 @@ function renderVehicleDetailLeft(vehicle) {
             if (window.__ruhsatPrintToken !== printToken) {
               return;
             }
-            if (typeof window.viewRuhsatPdf === 'function') window.viewRuhsatPdf(vehicleId);
+            if (typeof window.viewRuhsatPdf === 'function') window.viewRuhsatPdf(vehicleId, dt);
           });
       });
   }
 
-  function resolveRuhsatUrl(path, vehicleId) {
+  function resolveRuhsatUrl(path, vehicleId, documentType) {
+    const dt = String(documentType || 'ruhsat').trim() || 'ruhsat';
     const rawId = String(vehicleId || window.currentDetailVehicleId || '').trim();
     if (rawId) {
-      return buildRuhsatDocumentUrl(rawId);
+      return buildRuhsatDocumentUrl(rawId, dt);
     }
     const raw = String(path || '').trim();
     if (!raw) return '';
     try {
       const u = new URL(raw, window.location.href);
       if (String(u.pathname || '').replace(/\\/g, '/').indexOf('ruhsat.php') !== -1 && u.searchParams.get('id')) {
-        return buildRuhsatDocumentUrl(u.searchParams.get('id'));
+        const idQ = u.searchParams.get('id');
+        const dtc = u.searchParams.get('documentType') || dt;
+        return buildRuhsatDocumentUrl(idQ, dtc);
       }
     } catch (e2) {}
     return raw;
   }
 
-  function renderInlineRuhsatViewer(vehicleId, url, options) {
+  function renderInlineRuhsatViewer(vehicleId, url, options, documentType) {
+    const dt = documentType || 'ruhsat';
+    const cfg = getVehicleDocumentConfig(dt);
     const content = document.getElementById('ruhsat-modal-content') || DOM.dinamikOlayFormIcerik;
     const saveBtn = document.getElementById('ruhsat-save-btn') || DOM.dinamikOlayKaydetBtn;
     if (!content || !saveBtn) return false;
     const viewerOptions = options || {};
-    const documentPath = getVehicleRuhsatPath(vehicleId);
+    var appTasitlar = window.appData && Array.isArray(window.appData.tasitlar) ? window.appData.tasitlar : [];
+    var vehicle = appTasitlar.find(function(v) { return String(v.id) === String(vehicleId || window.currentDetailVehicleId); });
+    if (!vehicle) {
+      vehicle = readVehicles().find(function(v) { return String(v.id) === String(vehicleId || window.currentDetailVehicleId); });
+    }
+    const documentPath = vehicle ? getVehicleDocumentPath(vehicle, dt) : '';
     const isImage = isRuhsatImageForVehicle(vehicleId, documentPath);
-    const documentUrl = buildRuhsatDocumentUrl(vehicleId) || toAbsoluteRuhsatUrl(url);
+    const documentUrl = buildRuhsatDocumentUrl(vehicleId, dt) || toAbsoluteRuhsatUrl(url);
     let loadedPrintUrl = '';
 
     setRuhsatInlineViewerMode(true);
@@ -5699,7 +5807,7 @@ function renderVehicleDetailLeft(vehicle) {
     const frame = document.createElement('iframe');
     frame.className = 'ruhsat-inline-frame';
     frame.src = 'about:blank';
-    frame.setAttribute('title', isImage ? 'Ruhsat Görsel' : 'Ruhsat PDF');
+    frame.setAttribute('title', isImage ? (cfg.label + ' Görsel') : (cfg.label + ' PDF'));
     frameWrap.appendChild(frame);
 
     const actionsWrap = document.createElement('div');
@@ -5711,7 +5819,9 @@ function renderVehicleDetailLeft(vehicle) {
     backBtn.textContent = '\u2190 Geri D\u00F6n';
     backBtn.onclick = function() {
       setRuhsatInlineViewerMode(false);
-      window.openRuhsatModal(vehicleId);
+      if (typeof window.openVehicleDocumentModal === 'function') {
+        window.openVehicleDocumentModal(vehicleId, dt);
+      }
     };
     actionsWrap.appendChild(backBtn);
 
@@ -5726,7 +5836,7 @@ function renderVehicleDetailLeft(vehicle) {
           if (fallbackUrl) {
             openUrlInNewTab(fallbackUrl);
           } else if (typeof window.viewRuhsatPdf === 'function') {
-            window.viewRuhsatPdf(vehicleId);
+            window.viewRuhsatPdf(vehicleId, dt);
           }
           return;
         }
@@ -5742,7 +5852,7 @@ function renderVehicleDetailLeft(vehicle) {
         if (fallbackUrl) {
           openUrlInNewTab(fallbackUrl);
         } else if (typeof window.viewRuhsatPdf === 'function') {
-          window.viewRuhsatPdf(vehicleId);
+          window.viewRuhsatPdf(vehicleId, dt);
         }
       };
       actionsWrap.appendChild(printBtn);
@@ -5750,7 +5860,7 @@ function renderVehicleDetailLeft(vehicle) {
 
     content.appendChild(actionsWrap);
     content.appendChild(frameWrap);
-    fetchRuhsatDocumentObjectUrl(vehicleId, documentUrl)
+    fetchRuhsatDocumentObjectUrl(vehicleId, documentUrl, dt)
       .then(function(objectUrl) {
         if (!frame.isConnected) return;
         loadedPrintUrl = isImage
@@ -5759,18 +5869,18 @@ function renderVehicleDetailLeft(vehicle) {
         frame.src = loadedPrintUrl;
       })
       .catch(function(err) {
-        console.error('Ruhsat görüntüleme hazırlanamadı', err);
+        console.error(cfg.label + ' görüntüleme hazırlanamadı', err);
         var st = err && err.httpStatus;
         if (st === 404) {
-          alert('Ruhsat veya araç kaydı sunucuda bulunamadı (dosya eksik veya veri senkron değil). Sayfayı yenileyip tekrar deneyin.');
+          alert(cfg.label + ' veya araç kaydı sunucuda bulunamadı (dosya eksik veya veri senkron değil). Sayfayı yenileyip tekrar deneyin.');
         } else if (st === 401 || st === 403) {
-          alert('Bu ruhsat için oturum veya yetki yetersiz. Tekrar giriş yapmayı deneyin.');
+          alert('Bu belge için oturum veya yetki yetersiz. Tekrar giriş yapmayı deneyin.');
         }
       });
     return true;
   }
 
-  window.openRuhsatModal = function(vehicleId) {
+  window.openVehicleDocumentsModal = function(vehicleId) {
     const vid = (vehicleId || window.currentDetailVehicleId || '').toString();
     if (!vid) return;
     window.currentDetailVehicleId = vid;
@@ -5783,8 +5893,9 @@ function renderVehicleDetailLeft(vehicle) {
     const content = DOM.dinamikOlayFormIcerik;
     const saveBtn = DOM.dinamikOlayKaydetBtn;
     if (!modal || !content || !saveBtn) return;
-    if (DOM.dinamikOlayBaslik) DOM.dinamikOlayBaslik.textContent = 'RUHSAT YÜKLEME';
+    if (DOM.dinamikOlayBaslik) DOM.dinamikOlayBaslik.textContent = 'BELGELER';
     content.id = 'ruhsat-modal-content';
+    content.classList.add('vehicle-documents-picker-mode');
     var backBarBtn = modal ? modal.querySelector('.universal-back-btn') : null;
     if (backBarBtn) {
       var labelSpan = backBarBtn.querySelector('.universal-back-label');
@@ -5795,32 +5906,102 @@ function renderVehicleDetailLeft(vehicle) {
     if (modalCloseBtn) modalCloseBtn.onclick = function(e) { e.stopPropagation(); if (typeof window.closeRuhsatAndBackToDetail === 'function') window.closeRuhsatAndBackToDetail(); };
     var cancelBtn = document.getElementById('ruhsat-btn-group') ? document.getElementById('ruhsat-btn-group').querySelector('.universal-btn-cancel') : null;
     if (cancelBtn) cancelBtn.onclick = function(e) { e.stopPropagation(); if (typeof window.closeRuhsatAndBackToDetail === 'function') window.closeRuhsatAndBackToDetail(); };
-    saveBtn.onclick = function() { if (typeof window.saveRuhsatUpload === 'function') window.saveRuhsatUpload(); };
+    saveBtn.onclick = null;
     setRuhsatInlineViewerMode(false);
     content.innerHTML = '';
     var ruhsatGrp = document.getElementById('ruhsat-btn-group');
     if (ruhsatGrp) ruhsatGrp.classList.remove('olay-form-buttons');
     setRuhsatSaveBtnVisibility(saveBtn, false);
-    saveBtn.textContent = 'Ruhsat Yükle';
-    const hasRuhsat = !!(vehicle && vehicle.ruhsatPath);
-    if (hasRuhsat) {
-      const ruhsatUrl = resolveRuhsatUrl(vehicle.ruhsatPath, vid);
-      const ruhsatIsImage = isRuhsatImagePath(vehicle.ruhsatPath);
+
+    const picker = document.createElement('div');
+    picker.className = 'vehicle-document-picker';
+    ['ruhsat', 'sigorta', 'kasko'].forEach(function(docKey) {
+      const cfg = VEHICLE_DOCUMENT_TYPES[docKey];
+      const hasDoc = !!getVehicleDocumentPath(vehicle, docKey);
+      const card = document.createElement('button');
+      card.type = 'button';
+      card.className = 'vehicle-document-card';
+      card.setAttribute('aria-label', cfg.label);
+      const iconWrap = document.createElement('div');
+      iconWrap.className = 'vehicle-document-icon-wrap';
+      iconWrap.innerHTML = cfg.icon === 'shield'
+        ? '<svg class="vehicle-document-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>'
+        : '<svg class="vehicle-document-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg>';
+      const labelEl = document.createElement('div');
+      labelEl.className = 'vehicle-document-label';
+      labelEl.textContent = cfg.label;
+      const statusEl = document.createElement('div');
+      statusEl.className = 'vehicle-document-status';
+      statusEl.textContent = hasDoc ? 'Görüntüle / Değiştir' : 'Yükle';
+      card.appendChild(iconWrap);
+      card.appendChild(labelEl);
+      card.appendChild(statusEl);
+      card.onclick = function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        window.openVehicleDocumentModal(vid, docKey);
+      };
+      picker.appendChild(card);
+    });
+    content.appendChild(picker);
+
+    modal.style.display = 'flex';
+    requestAnimationFrame(function() { modal.classList.add('active'); });
+  };
+
+  window.openVehicleDocumentModal = function(vehicleId, documentType) {
+    const dt = String(documentType || 'ruhsat').trim() || 'ruhsat';
+    const cfg = getVehicleDocumentConfig(dt);
+    const vid = (vehicleId || window.currentDetailVehicleId || '').toString();
+    if (!vid) return;
+    window.currentDetailVehicleId = vid;
+    var appTasitlar = window.appData && Array.isArray(window.appData.tasitlar) ? window.appData.tasitlar : [];
+    var vehicle = appTasitlar.find(function(v) { return String(v.id) === vid; });
+    if (!vehicle) {
+      vehicle = readVehicles().find(function(v) { return String(v.id) === vid; });
+    }
+    const modal = DOM.dinamikOlayModal;
+    const content = DOM.dinamikOlayFormIcerik;
+    const saveBtn = DOM.dinamikOlayKaydetBtn;
+    if (!modal || !content || !saveBtn) return;
+    if (DOM.dinamikOlayBaslik) DOM.dinamikOlayBaslik.textContent = cfg.title + ' YÜKLEME';
+    content.id = 'ruhsat-modal-content';
+    content.classList.remove('vehicle-documents-picker-mode');
+    var backBarBtn = modal ? modal.querySelector('.universal-back-btn') : null;
+    if (backBarBtn) {
+      var labelSpan = backBarBtn.querySelector('.universal-back-label');
+      if (labelSpan) labelSpan.textContent = 'Belgeler';
+      backBarBtn.onclick = function(e) { e.stopPropagation(); window.openVehicleDocumentsModal(vid); };
+    }
+    var modalCloseBtn = modal ? modal.querySelector('.modal-close') : null;
+    if (modalCloseBtn) modalCloseBtn.onclick = function(e) { e.stopPropagation(); if (typeof window.closeRuhsatAndBackToDetail === 'function') window.closeRuhsatAndBackToDetail(); };
+    var cancelBtn = document.getElementById('ruhsat-btn-group') ? document.getElementById('ruhsat-btn-group').querySelector('.universal-btn-cancel') : null;
+    if (cancelBtn) cancelBtn.onclick = function(e) { e.stopPropagation(); window.openVehicleDocumentsModal(vid); };
+    saveBtn.onclick = function() { if (typeof window.saveRuhsatUpload === 'function') window.saveRuhsatUpload(dt); };
+    setRuhsatInlineViewerMode(false);
+    content.innerHTML = '';
+    var ruhsatGrp = document.getElementById('ruhsat-btn-group');
+    if (ruhsatGrp) ruhsatGrp.classList.remove('olay-form-buttons');
+    setRuhsatSaveBtnVisibility(saveBtn, false);
+    saveBtn.textContent = cfg.uploadButton;
+    const pathVal = getVehicleDocumentPath(vehicle, dt);
+    const hasDoc = !!pathVal;
+    if (hasDoc) {
+      const ruhsatUrl = resolveRuhsatUrl(pathVal, vid, dt);
+      const ruhsatIsImage = isRuhsatImagePath(pathVal);
       const isMobileViewport = (typeof window.matchMedia === 'function')
         ? window.matchMedia('(max-width: 640px)').matches
         : (window.innerWidth <= 640);
       if (isMobileViewport && !ruhsatIsImage) {
-        warmRuhsatPreview(vid, ruhsatUrl);
+        warmRuhsatPreview(vid, ruhsatUrl, dt);
       }
       const btnGroup = document.createElement('div');
       btnGroup.className = 'universal-btn-group ruhsat-preview-row';
 
-      // Mobilde: ön izleme yok, sadece "Yazdır" butonu; tıklanınca doğrudan yazdırma (Seçenekler) ekranı açılır.
-      // Masaüstü: ön izleme alanı + tıklanınca inline görüntüleyici.
       const previewBtn = document.createElement('button');
       previewBtn.type = 'button';
       previewBtn.className = 'ruhsat-preview-link';
-      previewBtn.setAttribute('aria-label', 'Ruhsatı Yazdır / Görüntüle');
+      previewBtn.setAttribute('aria-label', cfg.label + ' Yazdır / Görüntüle');
       if (isMobileViewport) {
         previewBtn.classList.add('ruhsat-preview-mobile-btn');
         previewBtn.style.cssText = 'background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.2); cursor: pointer; display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 8px; width: auto; min-width: 140px; height: 48px; border-radius: 8px; padding: 0 16px;';
@@ -5837,59 +6018,65 @@ function renderVehicleDetailLeft(vehicle) {
         previewBtn.onclick = function(e) {
           e.preventDefault();
           e.stopPropagation();
-          openRuhsatPrintDialog(ruhsatUrl, vid);
+          openRuhsatPrintDialog(ruhsatUrl, vid, dt);
         };
       } else {
         const previewSrc = 'about:blank';
+        const prevAlt = cfg.label + ' Ön İzleme';
         previewBtn.innerHTML = ruhsatIsImage
-          ? `<img src="${escapeHtml(previewSrc)}" alt="Ruhsat Ön İzleme" class="ruhsat-preview-image" loading="lazy"><span class="ruhsat-preview-hint">Ön İzleme</span>`
-          : `<iframe src="${escapeHtml(previewSrc)}" title="Ruhsat Ön İzleme" loading="lazy" tabindex="-1" aria-hidden="true"></iframe><span class="ruhsat-preview-hint">Ön İzleme</span>`;
+          ? `<img src="${escapeHtml(previewSrc)}" alt="${escapeHtml(prevAlt)}" class="ruhsat-preview-image" loading="lazy"><span class="ruhsat-preview-hint">Ön İzleme</span>`
+          : `<iframe src="${escapeHtml(previewSrc)}" title="${escapeHtml(prevAlt)}" loading="lazy" tabindex="-1" aria-hidden="true"></iframe><span class="ruhsat-preview-hint">Ön İzleme</span>`;
         previewBtn.onclick = function(e) {
           e.preventDefault();
           e.stopPropagation();
           if (shouldUseInlineRuhsatViewer()) {
-            renderInlineRuhsatViewer(vid, ruhsatUrl, { showPrintButton: true, forceExternalPrint: true });
+            renderInlineRuhsatViewer(vid, ruhsatUrl, { showPrintButton: true, forceExternalPrint: true }, dt);
           } else {
-            window.viewRuhsatPdf(vid);
+            window.viewRuhsatPdf(vid, dt);
           }
         };
       }
       if (!isMobileViewport) {
-        hydrateRuhsatPreviewButton(previewBtn, vid, ruhsatUrl, ruhsatIsImage);
+        hydrateRuhsatPreviewButton(previewBtn, vid, ruhsatUrl, ruhsatIsImage, dt);
       }
       btnGroup.appendChild(previewBtn);
 
       const replaceBtn = document.createElement('button');
       replaceBtn.type = 'button';
       replaceBtn.className = 'ruhsat-add-btn';
-      replaceBtn.setAttribute('aria-label', 'Ruhsatı Değiştir');
+      replaceBtn.setAttribute('aria-label', cfg.changeLabel);
       replaceBtn.innerHTML = '+';
       replaceBtn.onclick = function() {
-        renderRuhsatUploadForm(content, saveBtn, true);
+        renderRuhsatUploadForm(content, saveBtn, true, dt);
       };
       btnGroup.appendChild(replaceBtn);
       content.appendChild(btnGroup);
     } else {
-      renderRuhsatUploadForm(content, saveBtn);
+      renderRuhsatUploadForm(content, saveBtn, false, dt);
     }
     modal.style.display = 'flex';
     requestAnimationFrame(function() { modal.classList.add('active'); });
   };
 
-  function renderRuhsatUploadForm(content, saveBtn, hasExistingRuhsat) {
+  window.openRuhsatModal = function(vehicleId) {
+    return window.openVehicleDocumentsModal(vehicleId);
+  };
+
+  function renderRuhsatUploadForm(content, saveBtn, hasExistingRuhsat, documentType) {
+    const cfg = getVehicleDocumentConfig(documentType);
     content.innerHTML = '';
     const uploadBox = document.createElement('div');
     uploadBox.className = 'ruhsat-upload-box';
     const input = document.createElement('input');
     input.type = 'file';
-    input.accept = '.pdf, image/jpeg, image/png, image/jpg, image/webp';
+    input.accept = 'application/pdf,.pdf';
     input.id = 'ruhsat-file-input';
-    input.setAttribute('aria-label', 'Ruhsat PDF dosyası seç');
+    input.setAttribute('aria-label', cfg.label + ' dosyası seç');
     input.style.display = 'none';
     const selectBox = document.createElement('button');
     selectBox.type = 'button';
     selectBox.className = 'ruhsat-select-box';
-    selectBox.setAttribute('aria-label', 'Ruhsat dosyası seç');
+    selectBox.setAttribute('aria-label', cfg.label + ' dosyası seç');
     selectBox.innerHTML = '<span class="ruhsat-select-box-icon" aria-hidden="true">+</span><span class="ruhsat-select-box-label">Dosya Seç</span>';
     selectBox.onclick = function() { input.click(); };
     uploadBox.appendChild(selectBox);
@@ -5916,19 +6103,21 @@ function renderVehicleDetailLeft(vehicle) {
   /**
    * Ruhsat dosyasını upload_ruhsat.php'ye POST eder
    */
-  window.saveRuhsatUpload = function() {
+  window.saveRuhsatUpload = function(documentType) {
+    const cfg = getVehicleDocumentConfig(documentType);
     const input = document.getElementById('ruhsat-file-input');
     const vehicleId = (window.currentDetailVehicleId || '').toString();
     const vehicles = window.appData?.tasitlar || [];
     const vehicle = vehicles.find(function(x) { return String(x.id) === String(vehicleId); });
     if (!input || !input.files || !input.files[0] || !vehicleId || !vehicle) {
-      alert('L\u00fctfen ruhsat dosyas\u0131 se\u00e7in.');
+      alert(cfg.missingAlert);
       return;
     }
     const formData = new FormData();
     formData.append('vehicleId', vehicleId);
     formData.append('vehicleVersion', String(Number(vehicle.version) || 1));
-    formData.append('ruhsat', input.files[0]);
+    formData.append('documentType', cfg.key);
+    formData.append('document', input.files[0]);
     fetch('upload_ruhsat.php', {
       method: 'POST',
       body: formData,
@@ -5952,12 +6141,15 @@ function renderVehicleDetailLeft(vehicle) {
         });
       })
       .then(function(data) {
-        invalidateRuhsatPreviewCache(vehicleId);
-        invalidateRuhsatDocumentCache(vehicleId);
+        invalidateRuhsatPreviewCache(vehicleId, cfg.key);
+        invalidateRuhsatDocumentCache(vehicleId, cfg.key);
         const currentVehicles = window.appData?.tasitlar || [];
         const v = currentVehicles.find(function(x) { return String(x.id) === String(vehicleId); });
         if (v) {
-          v.ruhsatPath = data.ruhsatPath;
+          var newPath = data.documentPath || data.ruhsatPath;
+          if (newPath) {
+            v[cfg.pathField] = newPath;
+          }
           if (data.vehicleVersion != null) {
             v.version = Number(data.vehicleVersion) || v.version;
           }
@@ -5967,18 +6159,18 @@ function renderVehicleDetailLeft(vehicle) {
         if (selectBox && input.files && input.files[0]) {
           selectBox.classList.remove('has-file');
           selectBox.classList.add('upload-success');
-          selectBox.textContent = '\u2713 Ruhsat Ba\u015far\u0131yla Y\u00fcklendi';
+          selectBox.textContent = '\u2713 ' + cfg.successMessage;
         }
 
         setRuhsatSaveBtnVisibility(document.getElementById('ruhsat-save-btn') || DOM.dinamikOlayKaydetBtn, false);
         if (typeof showToast === 'function') {
-          showToast('Ruhsat Ba\u015far\u0131yla Y\u00fcklendi', 'success');
+          showToast(cfg.successMessage, 'success');
         }
 
         const modal = DOM.dinamikOlayModal;
         const isStillOpen = !!(modal && modal.style.display !== 'none');
         if (isStillOpen && String(window.currentDetailVehicleId || '') === String(vehicleId)) {
-          window.openRuhsatModal(vehicleId);
+          window.openVehicleDocumentModal(vehicleId, cfg.key);
         }
         if (typeof window.showVehicleDetail === 'function') {
           try {
@@ -5993,7 +6185,7 @@ function renderVehicleDetailLeft(vehicle) {
         if (isConflict) {
           const afterRefresh = function() {
             if (String(window.currentDetailVehicleId || '') === String(vehicleId)) {
-              window.openRuhsatModal(vehicleId);
+              window.openVehicleDocumentModal(vehicleId, cfg.key);
             }
           };
           if (typeof window.loadDataFromServer === 'function') {
@@ -6011,7 +6203,9 @@ function renderVehicleDetailLeft(vehicle) {
   /**
    * Ruhsat PDF'ini görüntüler / yazdırır
    */
-  window.viewRuhsatPdf = function(vehicleId) {
+  window.viewRuhsatPdf = function(vehicleId, documentType) {
+    const dt = documentType || 'ruhsat';
+    const cfg = getVehicleDocumentConfig(dt);
     const vid = (vehicleId || window.currentDetailVehicleId || '').toString();
     if (!vid) return;
 
@@ -6020,11 +6214,12 @@ function renderVehicleDetailLeft(vehicle) {
     if (!vehicle) {
       vehicle = readVehicles().find(function(v) { return String(v.id) === vid; });
     }
-    if (!vehicle || !vehicle.ruhsatPath) return;
+    const docPath = vehicle ? getVehicleDocumentPath(vehicle, dt) : '';
+    if (!vehicle || !docPath) return;
 
-    const url = buildRuhsatDocumentUrl(vid) || resolveRuhsatUrl(vehicle.ruhsatPath, vid);
-    const isImage = isRuhsatImagePath(vehicle.ruhsatPath);
-    fetchRuhsatDocumentObjectUrl(vid, url)
+    const url = buildRuhsatDocumentUrl(vid, dt) || resolveRuhsatUrl(docPath, vid, dt);
+    const isImage = isRuhsatImagePath(docPath);
+    fetchRuhsatDocumentObjectUrl(vid, url, dt)
       .then(function(objectUrl) {
         const targetUrl = isImage
           ? objectUrl
@@ -6032,13 +6227,13 @@ function renderVehicleDetailLeft(vehicle) {
         openUrlInNewTab(targetUrl);
       })
       .catch(function(err) {
-        console.error('Ruhsat açılamadı', err);
+        console.error(cfg.label + ' açılamadı', err);
         var st = err && err.httpStatus;
-        var msg = 'Ruhsat görüntülenemedi.';
+        var msg = cfg.label + ' görüntülenemedi.';
         if (st === 404) {
-          msg = 'Ruhsat veya araç kaydı sunucuda bulunamadı (dosya eksik veya veri senkron değil). Sayfayı yenileyip tekrar deneyin.';
+          msg = cfg.label + ' veya araç kaydı sunucuda bulunamadı (dosya eksik veya veri senkron değil). Sayfayı yenileyip tekrar deneyin.';
         } else if (st === 401 || st === 403) {
-          msg = 'Bu ruhsat için oturum veya yetki yetersiz. Tekrar giriş yapmayı deneyin.';
+          msg = 'Bu belge için oturum veya yetki yetersiz. Tekrar giriş yapmayı deneyin.';
         }
         alert(msg);
       });

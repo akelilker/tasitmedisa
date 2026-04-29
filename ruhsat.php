@@ -42,6 +42,12 @@ if ($vehicleId === '') {
     ruhsatRespondTextError(400, 'id parametresi gerekli');
 }
 
+$documentType = strtolower(trim((string)($_GET['documentType'] ?? 'ruhsat')));
+$config = medisaGetVehicleDocumentConfig($documentType);
+if (!$config) {
+    ruhsatRespondTextError(400, 'Gecersiz belge tipi');
+}
+
 $data = loadData();
 if (!is_array($data)) {
     ruhsatRespondTextError(500, 'Veri okunamadi');
@@ -54,7 +60,7 @@ if (($auth['success'] ?? false) !== true) {
 
 $vehicleIndex = medisaFindVehicleIndex($data, $vehicleId);
 if ($vehicleIndex < 0) {
-    ruhsatRespondTextError(404, 'Ruhsat bulunamadi');
+    ruhsatRespondTextError(404, 'Tasit bulunamadi');
 }
 
 $vehicle = $data['tasitlar'][$vehicleIndex];
@@ -62,18 +68,19 @@ if (!medisaCanViewVehicleRecord($vehicle, $auth['context'])) {
     ruhsatRespondTextError(403, 'Bu ruhsati goruntuleme yetkiniz yok.');
 }
 
-$filePath = medisaResolveVehicleRuhsatFilePath($vehicle);
+$filePath = medisaResolveVehicleDocumentFilePath($vehicle, $documentType);
 if (!$filePath || !is_file($filePath)) {
-    ruhsatRespondTextError(404, 'Ruhsat bulunamadi');
+    ruhsatRespondTextError(404, $config['notFound']);
 }
 
 $mimeType = ruhsatDetectMimeType($filePath);
-$plaka = strtoupper((string)($vehicle['plaka'] ?? $vehicle['plate'] ?? $vehicle['id'] ?? 'ruhsat'));
+$plaka = strtoupper((string)($vehicle['plaka'] ?? $vehicle['plate'] ?? $vehicle['id'] ?? $config['fallbackName']));
 $extension = strtolower((string)pathinfo($filePath, PATHINFO_EXTENSION));
-$downloadName = preg_replace('/[^A-Z0-9_-]/', '', $plaka);
-if ($downloadName === '') {
-    $downloadName = 'ruhsat';
+$downloadBase = preg_replace('/[^A-Z0-9_-]/', '', $plaka);
+if ($downloadBase === '') {
+    $downloadBase = $config['fallbackName'];
 }
+$downloadName = $downloadBase . '-' . $config['fallbackName'];
 if ($extension !== '') {
     $downloadName .= '.' . $extension;
 }
