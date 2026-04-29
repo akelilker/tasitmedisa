@@ -882,6 +882,9 @@ body.dashboard-page {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
   }
+  .driver-action-btn-feedback.driver-request-fab .driver-action-btn-feedback-icon {
+    animation: none;
+  }
 }
 .driver-warning-marquee-inner span {
   flex-shrink: 0;
@@ -1054,10 +1057,26 @@ body.dashboard-page {
   transform: translateX(4px);
 }
 .driver-action-btn-feedback.driver-request-fab .driver-action-btn-feedback-icon {
-  width: 24px;
-  height: 24px;
+  width: 26px;
+  height: 26px;
   flex: 0 0 auto;
   color: currentColor;
+  transform-origin: center center;
+  animation: driver-feedback-fab-pulse 8s ease-in-out infinite;
+}
+@keyframes driver-feedback-fab-pulse {
+  0%, 82%, 100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 0 rgba(238, 246, 255, 0));
+  }
+  87% {
+    transform: scale(1.08);
+    filter: drop-shadow(0 0 7px rgba(238, 246, 255, 0.34));
+  }
+  92% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 0 rgba(238, 246, 255, 0));
+  }
 }
 .driver-request-fab-label {
   opacity: 0;
@@ -1073,6 +1092,13 @@ body.dashboard-page {
   background: transparent;
   box-shadow: none;
   border-radius: 8px;
+}
+
+.driver-action-btn-feedback.driver-request-fab:hover .driver-action-btn-feedback-icon,
+.driver-action-btn-feedback.driver-request-fab:focus-visible .driver-action-btn-feedback-icon {
+  animation: none;
+  transform: scale(1.04);
+  filter: drop-shadow(0 0 6px rgba(238, 246, 255, 0.28));
 }
 .driver-action-btn-feedback.driver-request-fab:hover .driver-request-fab-label,
 .driver-action-btn-feedback.driver-request-fab:focus-visible .driver-request-fab-label {
