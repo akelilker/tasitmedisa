@@ -1217,22 +1217,26 @@ body.dashboard-page {
 }
 .driver-action-btn {
   background: transparent !important;
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  border: 1px solid rgba(238, 246, 255, 0.34);
   color: var(--data-value-color, #a0aec0);
   padding: 8px 12px;
-  font-size: 14px;
-  font-family: inherit;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  cursor: pointer;
   border-radius: 6px;
-  transition: border-color 0.2s, color 0.2s, background 0.2s;
+  font-size: 13px;
+  cursor: pointer;
+  text-align: center;
+  width: 100%;
+  box-sizing: border-box;
+  font-weight: 600;
+  text-shadow: none;
+  transition: border-color 0.18s ease, color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease, text-shadow 0.18s ease;
 }
 .driver-action-btn:hover {
-  border-color: rgba(255, 255, 255, 0.5);
+  border-color: rgba(238, 246, 255, 0.68);
   color: var(--txt-white, #fff);
+  background: rgba(238, 246, 255, 0.035) !important;
+  box-shadow: 0 0 8px rgba(238, 246, 255, 0.14);
+  text-shadow: 0 0 5px rgba(238, 246, 255, 0.32);
+  transform: scale(1.012);
 }
 .driver-action-btn:active,
 .driver-action-btn:focus {
@@ -1265,8 +1269,11 @@ body.dashboard-page {
   color: rgba(255, 255, 255, 0.9);
 }
 .driver-action-btn.data-entered:hover {
-  border-color: rgba(255, 255, 255, 0.5);
+  border-color: rgba(238, 246, 255, 0.68);
   color: var(--txt-white, #fff);
+  background: rgba(238, 246, 255, 0.035) !important;
+  box-shadow: 0 0 8px rgba(238, 246, 255, 0.14);
+  text-shadow: 0 0 5px rgba(238, 246, 255, 0.32);
 }
 .driver-info-item.saved .label,
 .driver-info-item.saved .value {
@@ -1846,17 +1853,23 @@ body.dashboard-page {
   height: 20px;
 }
 
-.driver-btn-password:hover {
+.driver-btn-password:hover,
+.driver-btn-password:focus,
+.driver-btn-password:active {
   color: #60a5fa;
   background: transparent !important;
   border: none !important;
-  transform: scale(1.08);
+  transform: scale(1.12);
+  filter: drop-shadow(0 0 6px rgba(96, 165, 250, 0.45));
 }
-.driver-btn-logout:hover {
+.driver-btn-logout:hover,
+.driver-btn-logout:focus,
+.driver-btn-logout:active {
   color: var(--theme-color) !important;
   background: transparent !important;
   border: none !important;
-  transform: scale(1.08);
+  transform: scale(1.12);
+  filter: drop-shadow(0 0 6px rgba(var(--theme-color-rgb), 0.45));
 }
 
 /* --- YÜKLEME --- */
@@ -2628,7 +2641,8 @@ body.dashboard-page {
   border: none !important;
   box-shadow: none !important;
   outline: none !important;
-  opacity: 0.85;
+  opacity: 1;
+  transform: scale(1.08);
 }
 .driver-btn-history .driver-btn-history-icon {
   width: 22px;
@@ -2636,8 +2650,12 @@ body.dashboard-page {
   color: var(--muted);
   opacity: 0.9;
 }
-.driver-btn-history:hover .driver-btn-history-icon {
+.driver-btn-history:hover .driver-btn-history-icon,
+.driver-btn-history:focus .driver-btn-history-icon,
+.driver-btn-history:active .driver-btn-history-icon {
   opacity: 1;
+  color: rgba(238, 246, 255, 0.98);
+  filter: drop-shadow(0 0 5px rgba(238, 246, 255, 0.34));
 }
 
 /* =========================================
@@ -5880,7 +5898,11 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
         transition: border-color 0.2s, color 0.2s, background 0.2s, transform 0.2s !important;
     }
     .dashboard-page .driver-action-buttons .driver-action-btn:hover {
-        transform: scale(1.015);
+        transform: scale(1.018);
+        border-color: rgba(238, 246, 255, 0.72) !important;
+        color: var(--txt-white, #fff) !important;
+        box-shadow: 0 0 9px rgba(238, 246, 255, 0.16) !important;
+        text-shadow: 0 0 5px rgba(238, 246, 255, 0.34) !important;
     }
     .dashboard-page .vehicle-card .btn-save {
         padding-top: 9px !important;
