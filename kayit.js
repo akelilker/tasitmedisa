@@ -483,7 +483,7 @@
     return window.formatNumber(value);
   }
 
-  function resizeVehicleNotesArea(textarea) {
+  function resizeVehicleTextareaArea(textarea) {
     if (!textarea) return;
     textarea.style.setProperty('height', 'auto', 'important');
     const minPx = parseFloat(getComputedStyle(textarea).minHeight) || NOTES_MIN_HEIGHT_PX;
@@ -491,6 +491,14 @@
     const targetHeight = Math.min(Math.max(textarea.scrollHeight, minPx), maxPx);
     textarea.style.setProperty('height', `${targetHeight}px`, 'important');
     textarea.style.setProperty('overflow-y', targetHeight >= maxPx ? 'auto' : 'hidden', 'important');
+  }
+
+  function resizeVehicleNotesArea(textarea) {
+    resizeVehicleTextareaArea(textarea);
+  }
+
+  function resizeVehicleConditionalTextArea(textarea) {
+    resizeVehicleTextareaArea(textarea);
   }
 
   // --- Tramer Kayıt Fonksiyonları ---
@@ -1312,6 +1320,8 @@
     ["anahtar-nerede", "kredi-detay"].forEach(id => {
       const el = document.getElementById(id);
       if (el) {
+        el.value = '';
+        resizeVehicleConditionalTextArea(el);
         const section = el.closest(".form-section");
         if (section) section.classList.remove("input-visible");
       }
@@ -1985,7 +1995,8 @@
         const detay = document.getElementById('anahtar-nerede');
         if (detay) {
           detay.value = vehicle.anahtarNerede;
-          detay.style.display = 'block';
+          resizeVehicleConditionalTextArea(detay);
+          detay.closest('.form-section')?.classList.add('input-visible');
         }
       }
     }
@@ -2004,7 +2015,8 @@
         const detay = document.getElementById('kredi-detay');
         if (detay) {
           detay.value = vehicle.krediDetay;
-          detay.style.display = 'block';
+          resizeVehicleConditionalTextArea(detay);
+          detay.closest('.form-section')?.classList.add('input-visible');
         }
       }
     }
@@ -2616,6 +2628,21 @@
           };
           record.events.unshift(event);
         }
+        if (!record.events) record.events = [];
+        const createdTs = record.createdAt || new Date().toISOString();
+        const createdEvent = {
+          id: String(record.id || '') + '|vehicle-created',
+          type: 'vehicle-created',
+          date: formatDateForDisplay(new Date()),
+          timestamp: createdTs,
+          data: {
+            plakaSnapshot: String(record.plate || '').trim(),
+            kaydeden: (typeof window.getRecorderDisplayName === 'function')
+              ? String(window.getRecorderDisplayName() || '').trim()
+              : ''
+          }
+        };
+        record.events.unshift(createdEvent);
         
         vehicles.unshift(record);
       }
@@ -2990,13 +3017,18 @@
     // Yedek Anahtar - İlk harf büyük
     const anahtarInput = document.getElementById("anahtar-nerede");
     if (anahtarInput) {
+      anahtarInput.addEventListener('input', function() {
+        resizeVehicleConditionalTextArea(this);
+      });
       anahtarInput.addEventListener('blur', function(e) {
         if (this.value) {
           const cursorPos = this.selectionStart;
           this.value = capitalizeFirstLetter(this.value);
+          resizeVehicleConditionalTextArea(this);
           this.setSelectionRange(cursorPos, cursorPos);
         }
       });
+      resizeVehicleConditionalTextArea(anahtarInput);
     }
 
     // Hak Mahrumiyeti Detay - İlk harf büyük
@@ -3006,6 +3038,7 @@
         if (this.value) {
           const cursorPos = this.selectionStart;
           this.value = capitalizeFirstLetter(this.value);
+          resizeVehicleConditionalTextArea(this);
           this.setSelectionRange(cursorPos, cursorPos);
         }
       });
@@ -3027,17 +3060,13 @@
         });
     }
 
-    // Kredi detay Auto-Expand (max 4 satır)
-    const krediDetayArea = document.getElementById("kredi-detay");
-    if (krediDetayArea) {
-        krediDetayArea.addEventListener('input', function() {
-            this.style.height = 'auto';
-            const maxHeight = 72; // 4 satır
-            const newHeight = Math.min(this.scrollHeight, maxHeight);
-            this.style.height = newHeight + 'px';
-            this.style.overflow = this.scrollHeight > maxHeight ? 'auto' : 'hidden';
-        });
-    }
+    // Koşullu kayıt alanları: içerik uzadıkça aşağı genişler
+    document.querySelectorAll('#anahtar-nerede, #kredi-detay').forEach(function(area) {
+      area.addEventListener('input', function() {
+        resizeVehicleConditionalTextArea(this);
+      });
+      resizeVehicleConditionalTextArea(area);
+    });
 
     // Enter ile input'lar arasında dolaşma (kayıt formu)
     (function setupEnterKeyNavigation() {

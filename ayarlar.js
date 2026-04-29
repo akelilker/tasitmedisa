@@ -294,12 +294,18 @@
           if (title) title.textContent = 'Şube Düzenle';
         }
         // Sil butonunu göster
-        if (deleteBtn) deleteBtn.style.display = 'flex';
+        if (deleteBtn) {
+          deleteBtn.classList.remove('u-hidden');
+          deleteBtn.style.display = 'flex';
+        }
       } else {
         // Yeni EKLEME MODU
         if (title) title.textContent = 'Yeni Şube Ekle';
         // Sil butonunu gizle
-        if (deleteBtn) deleteBtn.style.display = 'none';
+        if (deleteBtn) {
+          deleteBtn.classList.add('u-hidden');
+          deleteBtn.style.display = 'none';
+        }
       }
   
       // Modalı aç
@@ -321,7 +327,10 @@
       const form = $('#branch-form', modal);
       if (form) form.reset();
       const deleteBtn = $('#branch-delete-btn', modal);
-      if (deleteBtn) deleteBtn.style.display = 'none';
+      if (deleteBtn) {
+        deleteBtn.classList.add('u-hidden');
+        deleteBtn.style.display = 'none';
+      }
       modal.classList.remove('active');
       setTimeout(() => modal.style.display = 'none', 300);
     };
@@ -1150,7 +1159,10 @@
       if (form) form.reset();
       if (idInput) idInput.value = '';
       if (branchReadonly) branchReadonly.value = '';
-      if (deleteBtn) deleteBtn.style.display = 'none';
+      if (deleteBtn) {
+        deleteBtn.classList.add('u-hidden');
+        deleteBtn.style.display = 'none';
+      }
       populateUserVehiclesMulti();
       const managedBranch = getManagedBranchForUserManagement(scope);
       if (scope.isBranchManager && branchSelect) {
@@ -1197,12 +1209,18 @@
         }
         if (title) title.textContent = 'Kullanıcı Düzenle';
         // Sil butonunu göster
-        if (deleteBtn) deleteBtn.style.display = 'flex';
+        if (deleteBtn) {
+          deleteBtn.classList.remove('u-hidden');
+          deleteBtn.style.display = 'flex';
+        }
       } else {
         // Yeni EKLEME MODU
         if (title) title.textContent = 'Yeni Kullanıcı Ekle';
         // Sil butonunu gizle
-        if (deleteBtn) deleteBtn.style.display = 'none';
+        if (deleteBtn) {
+          deleteBtn.classList.add('u-hidden');
+          deleteBtn.style.display = 'none';
+        }
       }
   
       syncUserRoleBranchUI({ scope: scope });
@@ -1234,7 +1252,10 @@
       const searchInput = document.getElementById('user-vehicles-search');
       if (searchInput) searchInput.value = '';
       const deleteBtn = $('#user-delete-btn', modal);
-      if (deleteBtn) deleteBtn.style.display = 'none';
+      if (deleteBtn) {
+        deleteBtn.classList.add('u-hidden');
+        deleteBtn.style.display = 'none';
+      }
       modal.classList.remove('active');
       setTimeout(() => modal.style.display = 'none', 300);
     };
@@ -1922,26 +1943,27 @@
             var worksheet = workbook.Sheets[firstSheetName];
             var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
-            var jsonStr = JSON.stringify(jsonData);
             try {
-              localStorage.setItem('medisa_kasko_liste', jsonStr);
+              localStorage.setItem('medisa_kasko_liste', JSON.stringify(jsonData));
             } catch (storageErr) {
               if (storageErr.name === 'QuotaExceededError' || storageErr.code === 22) {
-                showKaskoError('Kasko Listesi Mobil Cihazda Depolama Sınırını Aşıyor. Lütfen Masaüstü Bilgisayardan Excel Yükleyin.');
-                input.value = '';
-                return;
+                /* Sunucuya yazım devam eder; tarayıcı kotası kritik değil */
               }
-              throw storageErr;
             }
             var nowIso = new Date().toISOString();
             var periodDate = new Date();
             var period = String(periodDate.getFullYear()) + '-' + String(periodDate.getMonth() + 1).padStart(2, '0');
-            localStorage.setItem('medisa_kasko_liste_date', nowIso);
+            try {
+              localStorage.setItem('medisa_kasko_liste_date', nowIso);
+            } catch (eD) {}
+
+            var sourceName = (file && file.name) ? String(file.name) : '';
 
             if (!window.appData || typeof window.appData !== 'object') window.appData = {};
             window.appData.kaskoDegerListesi = {
               updatedAt: nowIso,
               period: period,
+              sourceFileName: sourceName,
               rows: Array.isArray(jsonData) ? jsonData : []
             };
 
@@ -1956,41 +1978,55 @@
               }
             };
 
-            if (typeof window.saveDataToServer === 'function') {
-              window.saveDataToServer({ includeKaskoDegerListesi: true }).then(function(ok) {
-                if (ok !== true) {
-                  if (typeof window.showCenteredInfoBox === 'function') {
-                    window.showCenteredInfoBox('Kasko listesi yerelde güncellendi; sunucuya yazılamadı. Lütfen tekrar deneyin.');
-                  }
-                  return;
-                }
-                afterSave();
-              }).catch(function(err) {
-                if (err && err.conflict === true && typeof window.loadDataFromServer === 'function') {
-                  window.loadDataFromServer(true).catch(function() {});
-                }
-                if (typeof window.showCenteredInfoBox === 'function') {
-                  window.showCenteredInfoBox('Kasko listesi kaydedilirken çakışma oluştu. Sayfayı yenileyip tekrar deneyin.');
-                }
-              });
-            } else {
-              afterSave();
+            var saveUrl = window.API_SAVE_KASKO || ((window.MEDISA_API_BASE || '') + 'save_kasko.php');
+            var headersFn = typeof window.buildAuthHeaders === 'function' ? window.buildAuthHeaders : null;
+            if (!headersFn) {
+              showKaskoError('Oturum veya sunucu bağlantısı hazır değil. Sayfayı yenileyip tekrar deneyin.');
+              input.value = '';
+              return;
             }
 
-            if (typeof window.showCenteredInfoBox === 'function') {
-              window.showCenteredInfoBox('Kasko listesi başarıyla güncellendi!', {
-                anchorEl: document.getElementById('kasko-yukle-btn'),
-                offsetAbove: 18,
-                variant: 'bare-text',
-                autoCloseMs: 3000
+            fetch(saveUrl, {
+              method: 'POST',
+              headers: headersFn({ 'Content-Type': 'application/json' }),
+              body: JSON.stringify({
+                updatedAt: nowIso,
+                period: period,
+                sourceFileName: sourceName,
+                rows: Array.isArray(jsonData) ? jsonData : []
+              })
+            }).then(function(res) {
+              if (!res.ok) {
+                if (typeof window.closeCenteredInfoBox === 'function') window.closeCenteredInfoBox();
+                if (typeof window.showCenteredInfoBox === 'function') {
+                  window.showCenteredInfoBox('Kasko listesi sunucuya yazılamadı (yetki veya ağ). Yerel önizleme güncellendi.');
+                }
+                return;
+              }
+              return res.json().then(function() {
+                if (typeof window.closeCenteredInfoBox === 'function') window.closeCenteredInfoBox();
+                afterSave();
+                if (typeof window.showCenteredInfoBox === 'function') {
+                  window.showCenteredInfoBox('Kasko listesi başarıyla güncellendi!', {
+                    anchorEl: document.getElementById('kasko-yukle-btn'),
+                    offsetAbove: 18,
+                    variant: 'bare-text',
+                    autoCloseMs: 3000
+                  });
+                } else if (typeof window.showSuccessModal === 'function') {
+                  window.showSuccessModal('Kasko listesi başarıyla güncellendi!');
+                } else if (typeof window.showInfoModal === 'function') {
+                  window.showInfoModal('Kasko listesi başarıyla güncellendi!');
+                } else {
+                  alert('Kasko listesi başarıyla güncellendi!');
+                }
               });
-            } else if (typeof window.showSuccessModal === 'function') {
-              window.showSuccessModal('Kasko listesi başarıyla güncellendi!');
-            } else if (typeof window.showInfoModal === 'function') {
-              window.showInfoModal('Kasko listesi başarıyla güncellendi!');
-            } else {
-              alert('Kasko listesi başarıyla güncellendi!');
-            }
+            }).catch(function() {
+              if (typeof window.closeCenteredInfoBox === 'function') window.closeCenteredInfoBox();
+              if (typeof window.showCenteredInfoBox === 'function') {
+                window.showCenteredInfoBox('Kasko listesi sunucuya ulaşılamadı. Bağlantıyı kontrol edin.');
+              }
+            });
           } catch (error) {
             console.error('Excel okuma hatası:', error);
             if (error.name === 'QuotaExceededError' || error.code === 22) {

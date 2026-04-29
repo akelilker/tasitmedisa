@@ -1134,8 +1134,13 @@
 
   const NOTIF_READ_STORAGE_KEY = 'medisa_notif_read_keys_v1';
   const LEGACY_NOTIF_READ_SESSION_KEY = 'notifViewedKeysV2';
+  const NOTIF_LOCAL_MIGRATION_FLAG_PREFIX = 'medisa_notif_read_migrated_';
+  const NOTIF_STATE_MAX_KEYS = 500;
+  const NOTIF_STATE_MAX_AGE_MS = 90 * 24 * 60 * 60 * 1000;
+  const NOTIF_FIRST_SEEN_STORAGE_KEY = 'medisa_notif_first_seen_dates_v1';
   let notifReadStateMigrationAttempted = false;
   let notifReadStateSaveInFlight = false;
+  let notifFirstSeenBatchContext = null;
   let kaskoListMigrationAttempted = false;
   let kaskoListSaveInFlight = false;
 
@@ -1143,14 +1148,13 @@
     const session = (window.medisaSession && typeof window.medisaSession === 'object') ? window.medisaSession : {};
     const user = (session.user && typeof session.user === 'object') ? session.user : {};
     const userId = String(user.id != null ? user.id : '').trim();
-    if (userId) return 'user:' + userId;
     const role = String(session.role || user.role || session.raw_role || '').trim().toLowerCase();
-    const branchIds = Array.isArray(session.branch_ids)
-      ? session.branch_ids.map(function(id) { return String(id).trim(); }).filter(Boolean).sort()
+    let branchIds = Array.isArray(session.branch_ids)
+      ? session.branch_ids.map(function(id) { return String(id).trim(); }).filter(Boolean)
       : [];
-    if (role && branchIds.length) return 'scope:' + role + ':' + branchIds.join(',');
-    if (role) return 'scope:' + role;
-    return '';
+    branchIds = Array.from(new Set(branchIds)).sort();
+    const branchScope = branchIds.length ? branchIds.join(',') : (role === 'genel_yonetici' || String(session.branch_scope || '').toLowerCase() === 'all' ? 'all' : 'none');
+    return 'user:' + (userId || 'anonymous') + '|role:' + (role || 'unknown') + '|branches:' + branchScope;
   }
 
   function ensureNotificationReadStateObject() {
@@ -1161,12 +1165,104 @@
     return window.appData.notificationReadState;
   }
 
+  function uniqNotificationKeys(keys) {
+    const seen = {};
+    const out = [];
+    (Array.isArray(keys) ? keys : []).forEach(function(key) {
+      const normalized = String(key || '').trim();
+      if (!normalized || seen[normalized]) return;
+      seen[normalized] = true;
+      out.push(normalized);
+    });
+    return out;
+  }
+
+  function parseNotificationKeyMs(key) {
+    const parts = String(key || '').split('|');
+    const dateText = parts[0] === 'date' ? parts[3]
+      : parts[0] === 'event' && /[T:.-]/.test(String(parts[3] || '')) ? parts[3]
+      : parts[0] === 'special' && parts.length >= 4 ? (parts[2] + '-' + parts[3] + '-01')
+      : '';
+    if (!dateText) return 0;
+    if (/^\d{2}\.\d{2}\.\d{4}$/.test(dateText)) {
+      const bits = dateText.split('.');
+      return new Date(Number(bits[2]), Number(bits[1]) - 1, Number(bits[0])).getTime() || 0;
+    }
+    const ms = new Date(dateText).getTime();
+    return isNaN(ms) ? 0 : ms;
+  }
+
+  function pruneNotificationKeys(keys) {
+    const now = Date.now();
+    const list = uniqNotificationKeys(keys).map(function(key, index) {
+      return { key: key, index: index, ms: parseNotificationKeyMs(key) };
+    }).filter(function(item) {
+      return !item.ms || (now - item.ms) <= NOTIF_STATE_MAX_AGE_MS;
+    });
+    if (list.length <= NOTIF_STATE_MAX_KEYS) return list.map(function(item) { return item.key; });
+    list.sort(function(a, b) {
+      const am = a.ms || Number.MAX_SAFE_INTEGER;
+      const bm = b.ms || Number.MAX_SAFE_INTEGER;
+      if (am !== bm) return bm - am;
+      return b.index - a.index;
+    });
+    return list.slice(0, NOTIF_STATE_MAX_KEYS).map(function(item) { return item.key; });
+  }
+
+  function normalizeFirstSeenDatesMap(rawMap) {
+    const out = {};
+    if (!rawMap || typeof rawMap !== 'object' || Array.isArray(rawMap)) return out;
+    Object.keys(rawMap).forEach(function(key) {
+      const normalizedKey = String(key || '').trim();
+      const normalizedDate = String(rawMap[key] || '').trim();
+      if (!normalizedKey || !normalizedDate) return;
+      out[normalizedKey] = normalizedDate;
+    });
+    return out;
+  }
+
+  function normalizeNotificationScopeState(scopeState) {
+    const legacyArray = Array.isArray(scopeState) ? scopeState : null;
+    const raw = (!legacyArray && scopeState && typeof scopeState === 'object') ? scopeState : {};
+    const dismissedKeys = pruneNotificationKeys(raw.dismissedKeys || []);
+    const readKeys = pruneNotificationKeys((legacyArray || raw.readKeys || []).concat(dismissedKeys));
+    return {
+      readKeys: readKeys,
+      dismissedKeys: dismissedKeys,
+      firstSeenDates: normalizeFirstSeenDatesMap(raw.firstSeenDates),
+      migratedFromLocalStorage: raw.migratedFromLocalStorage === true,
+      updatedAt: String(raw.updatedAt || '')
+    };
+  }
+
+  function getNotificationScopeState(scopeKey) {
+    const state = ensureNotificationReadStateObject();
+    const normalized = normalizeNotificationScopeState(state[scopeKey]);
+    state[scopeKey] = normalized;
+    return normalized;
+  }
+
+  function cloneNotificationScopeState(scopeState) {
+    const normalized = normalizeNotificationScopeState(scopeState);
+    return {
+      readKeys: normalized.readKeys.slice(),
+      dismissedKeys: normalized.dismissedKeys.slice(),
+      firstSeenDates: Object.assign({}, normalized.firstSeenDates),
+      migratedFromLocalStorage: normalized.migratedFromLocalStorage,
+      updatedAt: normalized.updatedAt
+    };
+  }
+
   function migrateLegacyNotificationReadStateForScope(scopeKey) {
     if (notifReadStateMigrationAttempted || !scopeKey) return;
     notifReadStateMigrationAttempted = true;
     const state = ensureNotificationReadStateObject();
-    const hasCentralForScope = Array.isArray(state[scopeKey]) && state[scopeKey].length > 0;
+    const scoped = getNotificationScopeState(scopeKey);
+    const hasCentralForScope = scoped.readKeys.length > 0 || scoped.dismissedKeys.length > 0 || Object.keys(scoped.firstSeenDates || {}).length > 0 || scoped.migratedFromLocalStorage === true;
     if (hasCentralForScope) return;
+    try {
+      if (localStorage.getItem(NOTIF_LOCAL_MIGRATION_FLAG_PREFIX + scopeKey) === 'true') return;
+    } catch (err) {}
     let legacy = [];
     try {
       const localRaw = localStorage.getItem(NOTIF_READ_STORAGE_KEY);
@@ -1178,12 +1274,21 @@
       const sessionParsed = sessionRaw ? JSON.parse(sessionRaw) : [];
       if (Array.isArray(sessionParsed)) legacy = legacy.concat(sessionParsed);
     } catch (err) {}
-    const unique = Array.from(new Set(legacy.map(function(key) { return String(key || '').trim(); }).filter(Boolean)));
-    if (!unique.length) return;
-    state[scopeKey] = unique;
+    const unique = pruneNotificationKeys(legacy);
+    scoped.migratedFromLocalStorage = true;
+    scoped.updatedAt = new Date().toISOString();
+    if (unique.length) scoped.readKeys = unique;
+    state[scopeKey] = scoped;
     if (typeof window.saveDataToServer !== 'function' || notifReadStateSaveInFlight) return;
     notifReadStateSaveInFlight = true;
     window.saveDataToServer()
+      .then(function(ok) {
+        if (ok !== false) {
+          try {
+            localStorage.setItem(NOTIF_LOCAL_MIGRATION_FLAG_PREFIX + scopeKey, 'true');
+          } catch (err) {}
+        }
+      })
       .catch(function() {})
       .finally(function() { notifReadStateSaveInFlight = false; });
   }
@@ -1191,7 +1296,7 @@
   function getKaskoState() {
     if (!window.appData || typeof window.appData !== 'object') window.appData = {};
     if (!window.appData.kaskoDegerListesi || typeof window.appData.kaskoDegerListesi !== 'object') {
-      window.appData.kaskoDegerListesi = { updatedAt: '', period: '', rows: [] };
+      window.appData.kaskoDegerListesi = { updatedAt: '', period: '', sourceFileName: '', rows: [] };
     }
     if (!Array.isArray(window.appData.kaskoDegerListesi.rows)) window.appData.kaskoDegerListesi.rows = [];
     return window.appData.kaskoDegerListesi;
@@ -1215,11 +1320,29 @@
     const updatedAt = legacyDate || new Date().toISOString();
     const dateForPeriod = legacyDate ? new Date(legacyDate) : new Date();
     const period = String(dateForPeriod.getFullYear()) + '-' + String(dateForPeriod.getMonth() + 1).padStart(2, '0');
-    window.appData.kaskoDegerListesi = { updatedAt: updatedAt, period: period, rows: legacyRows };
+    window.appData.kaskoDegerListesi = {
+      updatedAt: updatedAt,
+      period: period,
+      sourceFileName: '',
+      rows: legacyRows
+    };
     if (typeof window.clearKaskoCache === 'function') window.clearKaskoCache();
-    if (typeof window.saveDataToServer !== 'function' || kaskoListSaveInFlight) return;
+    var permissions = window.medisaSession && window.medisaSession.permissions ? window.medisaSession.permissions : {};
+    if (!permissions.manage_data || kaskoListSaveInFlight) return;
+    var saveUrl = window.API_SAVE_KASKO || ((window.MEDISA_API_BASE || '') + 'save_kasko.php');
+    var headersFn = typeof window.buildAuthHeaders === 'function' ? window.buildAuthHeaders : null;
+    if (!headersFn) return;
     kaskoListSaveInFlight = true;
-    window.saveDataToServer({ includeKaskoDegerListesi: true })
+    fetch(saveUrl, {
+      method: 'POST',
+      headers: headersFn({ 'Content-Type': 'application/json' }),
+      body: JSON.stringify({
+        updatedAt: updatedAt,
+        period: period,
+        sourceFileName: 'legacy-localStorage',
+        rows: legacyRows
+      })
+    })
       .catch(function() {})
       .finally(function() { kaskoListSaveInFlight = false; });
   }
@@ -1235,10 +1358,8 @@
   function getViewedNotificationKeys() {
     const scopeKey = getCurrentNotifScopeKey();
     if (scopeKey) {
-      const state = ensureNotificationReadStateObject();
       migrateLegacyNotificationReadStateForScope(scopeKey);
-      const scoped = state[scopeKey];
-      if (Array.isArray(scoped)) return scoped;
+      return getNotificationScopeState(scopeKey).readKeys;
     }
     try {
       const raw = localStorage.getItem(NOTIF_READ_STORAGE_KEY);
@@ -1254,44 +1375,170 @@
     }
   }
 
-  function markNotificationKeysAsViewed(keys) {
-    const incoming = Array.isArray(keys) ? keys : [];
-    if (!incoming.length) return;
-    const viewed = getViewedNotificationKeys();
-    let changed = false;
-    incoming.forEach(function(key) {
-      const normalizedKey = (key || '').toString().trim();
-      if (!normalizedKey || viewed.indexOf(normalizedKey) !== -1) return;
-      viewed.push(normalizedKey);
-      changed = true;
-    });
-    if (!changed) return;
+  function getDismissedNotificationKeys() {
+    const scopeKey = getCurrentNotifScopeKey();
+    if (scopeKey) {
+      migrateLegacyNotificationReadStateForScope(scopeKey);
+      return getNotificationScopeState(scopeKey).dismissedKeys;
+    }
+    return [];
+  }
+
+  function saveNotificationScopeStateWithRollback(scopeKey, previousScoped) {
+    if (typeof window.updateNotifications === 'function') window.updateNotifications();
+    if (typeof window.saveDataToServer !== 'function') return;
+    window.saveDataToServer()
+      .then(function(ok) {
+        if (ok === false) throw new Error('Bildirim state kaydedilemedi');
+      })
+      .catch(function() {
+        const state = ensureNotificationReadStateObject();
+        state[scopeKey] = cloneNotificationScopeState(previousScoped);
+        if (typeof window.updateNotifications === 'function') window.updateNotifications();
+      });
+  }
+
+  function getTodayNotificationDisplayDate() {
+    return formatDateForDisplay(new Date()) || '-';
+  }
+
+  function beginNotificationFirstSeenBatch(scopeKey) {
+    notifFirstSeenBatchContext = scopeKey ? { scopeKey: scopeKey, previousScoped: null, changed: false } : null;
+  }
+
+  function flushNotificationFirstSeenBatch() {
+    const batch = notifFirstSeenBatchContext;
+    notifFirstSeenBatchContext = null;
+    if (!batch || !batch.changed || !batch.previousScoped) return;
+    saveNotificationScopeStateWithRollback(batch.scopeKey, batch.previousScoped);
+  }
+
+  function getOrCreateNotificationFirstSeen(notifKey) {
+    const normalizedKey = String(notifKey || '').trim();
+    if (!normalizedKey) return '-';
     const scopeKey = getCurrentNotifScopeKey();
     if (scopeKey) {
       const state = ensureNotificationReadStateObject();
-      state[scopeKey] = viewed;
-      if (typeof window.saveDataToServer === 'function') {
-        window.saveDataToServer()
-          .catch(function() {})
-          .finally(function() {
-            if (typeof window.updateNotifications === 'function') window.updateNotifications();
-          });
-      } else if (typeof window.updateNotifications === 'function') {
-        window.updateNotifications();
+      const scoped = getNotificationScopeState(scopeKey);
+      const existing = scoped.firstSeenDates && scoped.firstSeenDates[normalizedKey];
+      if (existing) return existing;
+      const firstSeenDisplay = getTodayNotificationDisplayDate();
+      if (!scoped.firstSeenDates || typeof scoped.firstSeenDates !== 'object' || Array.isArray(scoped.firstSeenDates)) {
+        scoped.firstSeenDates = {};
       }
+      if (notifFirstSeenBatchContext && notifFirstSeenBatchContext.scopeKey === scopeKey) {
+        if (!notifFirstSeenBatchContext.previousScoped) notifFirstSeenBatchContext.previousScoped = cloneNotificationScopeState(scoped);
+        notifFirstSeenBatchContext.changed = true;
+      } else {
+        const previousScoped = cloneNotificationScopeState(scoped);
+        scoped.firstSeenDates[normalizedKey] = firstSeenDisplay;
+        scoped.updatedAt = new Date().toISOString();
+        state[scopeKey] = scoped;
+        saveNotificationScopeStateWithRollback(scopeKey, previousScoped);
+        return firstSeenDisplay;
+      }
+      scoped.firstSeenDates[normalizedKey] = firstSeenDisplay;
+      scoped.updatedAt = new Date().toISOString();
+      state[scopeKey] = scoped;
+      return firstSeenDisplay;
+    }
+    let localMap = {};
+    try {
+      const raw = localStorage.getItem(NOTIF_FIRST_SEEN_STORAGE_KEY);
+      const parsed = raw ? JSON.parse(raw) : {};
+      localMap = normalizeFirstSeenDatesMap(parsed);
+    } catch (err) {}
+    if (localMap[normalizedKey]) return localMap[normalizedKey];
+    const firstSeenDisplay = getTodayNotificationDisplayDate();
+    localMap[normalizedKey] = firstSeenDisplay;
+    try {
+      localStorage.setItem(NOTIF_FIRST_SEEN_STORAGE_KEY, JSON.stringify(localMap));
+    } catch (err) {}
+    return firstSeenDisplay;
+  }
+
+  function updateNotificationKeys(keys, mode) {
+    const incoming = Array.isArray(keys) ? keys : [];
+    if (!incoming.length) return;
+    const scopeKey = getCurrentNotifScopeKey();
+    if (scopeKey) {
+      const state = ensureNotificationReadStateObject();
+      const scoped = getNotificationScopeState(scopeKey);
+      const previousScoped = cloneNotificationScopeState(scoped);
+      const readSet = {};
+      const dismissedSet = {};
+      scoped.readKeys.forEach(function(key) { readSet[key] = true; });
+      scoped.dismissedKeys.forEach(function(key) { dismissedSet[key] = true; readSet[key] = true; });
+      let changed = false;
+      incoming.forEach(function(key) {
+        const normalizedKey = String(key || '').trim();
+        if (!normalizedKey) return;
+        if (!readSet[normalizedKey]) {
+          readSet[normalizedKey] = true;
+          changed = true;
+        }
+        if (mode === 'dismiss' && !dismissedSet[normalizedKey]) {
+          dismissedSet[normalizedKey] = true;
+          changed = true;
+        }
+      });
+      if (!changed) return;
+      scoped.readKeys = pruneNotificationKeys(Object.keys(readSet));
+      scoped.dismissedKeys = pruneNotificationKeys(Object.keys(dismissedSet));
+      scoped.dismissedKeys.forEach(function(key) {
+        if (scoped.readKeys.indexOf(key) === -1) scoped.readKeys.push(key);
+      });
+      scoped.readKeys = pruneNotificationKeys(scoped.readKeys);
+      scoped.updatedAt = new Date().toISOString();
+      state[scopeKey] = scoped;
+      saveNotificationScopeStateWithRollback(scopeKey, previousScoped);
       return;
     }
     try {
+      const viewed = getViewedNotificationKeys();
+      incoming.forEach(function(key) {
+        const normalizedKey = String(key || '').trim();
+        if (normalizedKey && viewed.indexOf(normalizedKey) === -1) viewed.push(normalizedKey);
+      });
       localStorage.setItem(NOTIF_READ_STORAGE_KEY, JSON.stringify(viewed));
       sessionStorage.removeItem(LEGACY_NOTIF_READ_SESSION_KEY);
     } catch (err) { return; }
     if (typeof window.updateNotifications === 'function') window.updateNotifications();
   }
 
+  function markNotificationKeysAsViewed(keys) {
+    updateNotificationKeys(keys, 'read');
+  }
+
+  function dismissNotificationKeys(keys) {
+    updateNotificationKeys(keys, 'dismiss');
+  }
+
   function getUnreadNotificationKeys() {
     return (DOM.notificationsDropdown ? Array.from(DOM.notificationsDropdown.querySelectorAll('.notification-item.notification-unread[data-notif-key]')) : [])
       .map(function(el) { return (el.getAttribute('data-notif-key') || '').toString().trim(); })
       .filter(Boolean);
+  }
+
+  function getDismissibleNotificationKeys() {
+    return (DOM.notificationsDropdown ? Array.from(DOM.notificationsDropdown.querySelectorAll('.notification-item[data-dismiss-key]')) : [])
+      .map(function(el) { return (el.getAttribute('data-dismiss-key') || '').toString().trim(); })
+      .filter(Boolean);
+  }
+
+  function buildDateNotificationKey(notif) {
+    return ['date', String(notif.vehicleId || ''), String(notif.type || ''), String(notif.date || ''), String(notif.type || '')].join('|');
+  }
+
+  function buildEventNotificationKey(item) {
+    const ev = item && item.event ? item.event : {};
+    const vehicleId = String((item && item.vehicleId) || '');
+    const eventType = String(ev.type || '');
+    const eventId = String(ev.id || '').trim();
+    if (eventId) return ['event', vehicleId, eventType, eventId].join('|');
+    const timestamp = String(ev.timestamp || '').trim();
+    if (timestamp) return ['event', vehicleId, eventType, timestamp].join('|');
+    return ['event', vehicleId, eventType, String(ev.date || '')].join('|');
   }
 
   const DINAMIK_OLAY_MODAL_ID = 'dinamik-olay-modal';
@@ -1482,19 +1729,29 @@
   if (DOM.notificationsDropdown && !DOM.notificationsDropdown._notifDelegationBound) {
     DOM.notificationsDropdown._notifDelegationBound = true;
     DOM.notificationsDropdown.addEventListener('click', function(e) {
-      var actionBtn = e.target.closest('[data-notification-action]');
+      var rawTarget = e.target;
+      var targetEl = rawTarget && rawTarget.nodeType === 1
+        ? rawTarget
+        : (rawTarget && rawTarget.parentElement ? rawTarget.parentElement : null);
+      if (!targetEl || typeof targetEl.closest !== 'function') return;
+
+      var actionBtn = targetEl.closest('[data-notification-action]');
       if (actionBtn) {
         var toolbarAction = (actionBtn.getAttribute('data-notification-action') || '').toString().trim();
         if (toolbarAction === 'mark-all-read') {
           e.preventDefault();
           e.stopPropagation();
-          markNotificationKeysAsViewed(getUnreadNotificationKeys());
+          markNotificationKeysAsViewed(getUnreadNotificationKeys().concat(getDismissibleNotificationKeys()));
           return;
         }
       }
-      var btn = e.target.closest('.notification-item');
+      var btn = targetEl.closest('.notification-item');
       if (!btn) return;
       var action = (btn.getAttribute('data-action') || '').toString().trim();
+      var notifKey = (btn.getAttribute('data-notif-key') || '').toString().trim();
+      if (notifKey && !targetEl.closest('.mtv-dismiss-btn')) {
+        markNotificationKeysAsViewed([notifKey]);
+      }
       if (action === 'open-dis-veri') {
         e.preventDefault();
         e.stopPropagation();
@@ -1527,10 +1784,6 @@
       var vehicleId = btn.getAttribute('data-vehicle-id') || '';
       var openHistory = btn.getAttribute('data-open-history') === '1';
       var historyTab = btn.getAttribute('data-history-tab') || '';
-      var notifKey = (btn.getAttribute('data-notif-key') || '').toString().trim();
-      if (notifKey) {
-        markNotificationKeysAsViewed([notifKey]);
-      }
       if (!plate && !vehicleId) return;
       if (typeof window.setNotificationsOpenState === 'function') {
         window.setNotificationsOpenState(false);
@@ -1563,7 +1816,39 @@
       dropdown.style.removeProperty('padding-bottom');
       dropdown.style.removeProperty('scroll-padding-bottom');
       dropdown.style.removeProperty('--mobile-notifications-max-height');
+      dropdown.style.removeProperty('position');
+      dropdown.style.removeProperty('top');
+      dropdown.style.removeProperty('left');
+      dropdown.style.removeProperty('right');
+      dropdown.style.removeProperty('transform');
+      dropdown.style.removeProperty('width');
+      dropdown.style.removeProperty('max-width');
       return;
+    }
+
+    var toggleBtn = DOM.notificationsToggleBtn || document.getElementById('notifications-toggle-btn');
+    function clearNotifDropdownMobileLayout() {
+      dropdown.style.removeProperty('position');
+      dropdown.style.removeProperty('top');
+      dropdown.style.removeProperty('left');
+      dropdown.style.removeProperty('right');
+      dropdown.style.removeProperty('transform');
+      dropdown.style.removeProperty('width');
+      dropdown.style.removeProperty('max-width');
+    }
+    if (window.innerWidth > 640) {
+      clearNotifDropdownMobileLayout();
+    } else if (toggleBtn) {
+      var tr = toggleBtn.getBoundingClientRect();
+      dropdown.style.setProperty('position', 'fixed', 'important');
+      dropdown.style.setProperty('top', Math.round(tr.bottom + 4) + 'px', 'important');
+      dropdown.style.setProperty('left', 'auto', 'important');
+      dropdown.style.setProperty('right', 'max(8px, env(safe-area-inset-right, 0px))', 'important');
+      dropdown.style.setProperty('transform', 'none', 'important');
+      dropdown.style.setProperty('width', 'min(82vw, 420px)', 'important');
+      dropdown.style.setProperty('max-width', 'calc(100vw - 28px)', 'important');
+    } else {
+      clearNotifDropdownMobileLayout();
     }
 
     var dropdownRect = dropdown.getBoundingClientRect();
@@ -1576,10 +1861,10 @@
     var dropdownStyles = window.getComputedStyle(dropdown);
     var paddingTop = parseFloat(dropdownStyles.paddingTop) || 0;
     var paddingBottom = parseFloat(dropdownStyles.paddingBottom) || 0;
-    /* Mobilde 5, masaüstünde 6 tam kart; son border klibini önlemek için alt güvenlik payı */
+    /* Mobil ve masaüstünde 6 tam kart; son border klibini önlemek için alt güvenlik payı */
     var isMobile = window.innerWidth <= 640;
-    var safetyBottom = isMobile ? 16 : 20;
-    var visibleLimit = isMobile ? 5 : 6;
+    var safetyBottom = isMobile ? 10 : 14;
+    var visibleLimit = 6;
     var innerBudget = Math.max(0, available - paddingTop - paddingBottom - safetyBottom);
 
     var toolbarHeight = 0;
@@ -1646,6 +1931,12 @@
     dropdown.style.removeProperty('overflow');
     dropdown.style.removeProperty('transform');
     dropdown.style.removeProperty('--mobile-notifications-max-height');
+    dropdown.style.removeProperty('position');
+    dropdown.style.removeProperty('top');
+    dropdown.style.removeProperty('left');
+    dropdown.style.removeProperty('right');
+    dropdown.style.removeProperty('width');
+    dropdown.style.removeProperty('max-width');
   }
 
   window.resetNotificationsDropdownLayoutState = resetNotificationsDropdownLayoutState;
@@ -2254,13 +2545,14 @@
         // Tahsis edilmemiş taşıtlar için kırmızı class (liste ve kartta her zaman)
         const isUnassigned = !v.branchId;
         const unassignedClass = isUnassigned ? ' unassigned-vehicle-card' : '';
-        
+        const vehicleDateSeverityClass = getVehicleDateSeverityClass(v);
+
         if (viewMode === 'card') {
             // Üçüncü satır boşsa div'i render etme
             const thirdLineHtml = thirdLineDisplay ? `<div class="card-third-line" title="${escapeHtml(thirdLineDisplay)}">${escapeHtml(thirdLineDisplay)}</div>` : '';
             const vid = v.id != null ? String(v.id).replace(/"/g, '&quot;') : '';
             return `
-              <div class="card${unassignedClass}" data-vehicle-id="${vid}" style="cursor:pointer">
+              <div class="card${unassignedClass}${vehicleDateSeverityClass}" data-vehicle-id="${vid}" style="cursor:pointer">
                 <div class="card-plate">${escapeHtml(formatPlaka(plate))}${satildiCardSpan}</div>
                 <div class="card-brand-model" title="${escapeHtml(brandModel)}">${escapeHtml(formatBrandModel(brandModel))}</div>
                 ${thirdLineHtml}
@@ -2326,7 +2618,7 @@
             const vid = v.id != null ? String(v.id).replace(/"/g, '&quot;') : '';
             const archiveRowClass = isArchive ? ' archive-vehicle-row' : '';
             return `
-              <div class="list-item${unassignedClass}${archiveRowClass}" data-vehicle-id="${vid}" style="grid-template-columns: ${gridStr}; cursor:pointer">
+              <div class="list-item${unassignedClass}${archiveRowClass}${vehicleDateSeverityClass}" data-vehicle-id="${vid}" style="grid-template-columns: ${gridStr}; cursor:pointer">
                 ${cellHtml}
               </div>
             `;
@@ -2603,12 +2895,10 @@
       const ruhsatBtn = document.createElement('button');
       ruhsatBtn.type = 'button';
       ruhsatBtn.className = 'vehicle-ruhsat-btn';
-      var appTasitlarToolbar = window.appData && Array.isArray(window.appData.tasitlar) ? window.appData.tasitlar : [];
-      var ruhsatLive = appTasitlarToolbar.find(function(x) { return String(x.id) === String(vehicleId); }) || vehicle;
-      ruhsatBtn.title = ruhsatLive.ruhsatPath ? 'Ruhsat\u0131 G\u00F6r\u00FCnt\u00FCle' : 'Ruhsat Y\u00FCkle';
-      ruhsatBtn.setAttribute('aria-label', 'Ruhsat');
+      ruhsatBtn.title = 'Belgeler';
+      ruhsatBtn.setAttribute('aria-label', 'Belgeler');
       ruhsatBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg>';
-      ruhsatBtn.onclick = (e) => { e.stopPropagation(); if (typeof window.openRuhsatModal === 'function') window.openRuhsatModal(vehicleId); };
+      ruhsatBtn.onclick = (e) => { e.stopPropagation(); if (typeof window.openVehicleDocumentsModal === 'function') window.openVehicleDocumentsModal(vehicleId); };
       toolbarRight.appendChild(ruhsatBtn);
       const printBtn = document.createElement('button');
       printBtn.type = 'button';
@@ -3095,6 +3385,83 @@
   // --- VEHICLE DETAIL - NEW FUNCTIONS ---
 
   function checkDateWarnings(dateString) { return (typeof window.checkDateWarnings === 'function' ? window.checkDateWarnings(dateString) : { class: '', days: null }); }
+
+  function getEgzozMuayeneState(vehicle) {
+    const rawDate = vehicle && vehicle.egzozMuayeneDate != null ? String(vehicle.egzozMuayeneDate).trim() : '';
+    if (!rawDate) {
+      return {
+        state: 'missing',
+        date: '',
+        days: null,
+        warningClass: 'date-warning-red'
+      };
+    }
+
+    const warning = checkDateWarnings(rawDate);
+    if (warning.class === 'date-warning-red') {
+      return {
+        state: 'expired',
+        date: rawDate,
+        days: warning.days,
+        warningClass: 'date-warning-red'
+      };
+    }
+
+    if (warning.class === 'date-warning-orange') {
+      return {
+        state: 'approaching',
+        date: rawDate,
+        days: warning.days,
+        warningClass: 'date-warning-orange'
+      };
+    }
+
+    return {
+      state: 'valid',
+      date: rawDate,
+      days: warning.days,
+      warningClass: ''
+    };
+  }
+
+  function isEgzozMuayeneCritical(vehicle) {
+    const egzozState = getEgzozMuayeneState(vehicle);
+    return egzozState.warningClass === 'date-warning-red';
+  }
+
+  /**
+   * Taşıtlar modalı liste/kart — kalıcı tarih uyarısı (bildirim okundu ile ilgisiz).
+   * Yalnızca araçtaki tarih alanları + window.checkDateWarnings (script-core ile aynı eşikler).
+   * Okundu/okunmadı, notification-read, medisa_notif_read_keys_v1 vb. kullanılmaz.
+   * Öncelik: kırmızı > turuncu > normal. Bir tarih düzeltilince diğerleri hâlâ riskteyse en yüksek severity kalır.
+   * @returns {string} '' | ' vehicle-date-warning-red' | ' vehicle-date-warning-orange'
+   */
+  function getVehicleDateSeverityClass(vehicle) {
+    if (!vehicle || typeof vehicle !== 'object') return '';
+    const dates = [
+      vehicle.sigortaDate,
+      vehicle.kaskoDate,
+      vehicle.muayeneDate
+    ].filter(function(d) { return d != null && String(d).trim() !== ''; });
+
+    let hasRed = false;
+    let hasOrange = false;
+
+    for (let i = 0; i < dates.length; i++) {
+      const w = checkDateWarnings(dates[i]);
+      if (w.class === 'date-warning-red') hasRed = true;
+      else if (w.class === 'date-warning-orange') hasOrange = true;
+    }
+
+    const egzozState = getEgzozMuayeneState(vehicle);
+    if (egzozState.warningClass === 'date-warning-red') hasRed = true;
+    else if (egzozState.warningClass === 'date-warning-orange') hasOrange = true;
+
+    if (hasRed) return ' vehicle-date-warning-red';
+    if (hasOrange) return ' vehicle-date-warning-orange';
+    return '';
+  }
+
   function formatDateForDisplay(dateStr) {
     if (!dateStr) return '';
     const raw = String(dateStr).trim();
@@ -3137,7 +3504,7 @@
   }
 
   /**
-   * Bildirim: talep_tarihi (PHP date('c') / ISO) — formatDateShort kaçırılamaz; tek format.
+   * Bildirim: talep_tarihi (PHP date('c') / ISO) — sadece gg/aa/yyyy (saat yok; tarih uyarılarıyla aynı satır tarzı).
    */
   function medisaNotificationTalepDisplay(str) {
     if (str == null || str === '') return '-';
@@ -3147,7 +3514,7 @@
     }
     const d = new Date(t);
     const p = function(n) { return String(n).padStart(2, '0'); };
-    return p(d.getDate()) + '/' + p(d.getMonth() + 1) + '/' + d.getFullYear() + ' ' + p(d.getHours()) + ':' + p(d.getMinutes());
+    return p(d.getDate()) + '/' + p(d.getMonth() + 1) + '/' + d.getFullYear();
   }
   function medisaNotificationTalepSortMs(str) {
     const t = Date.parse(String(str || '').trim());
@@ -3482,6 +3849,9 @@ function renderVehicleDetailLeft(vehicle) {
     // Muayene bitiş tarihi (taşıt tipi yoksa uyarı + tooltip + Tıklayınız)
     const muayeneDate = vehicle.muayeneDate || '';
     const muayeneWarning = checkDateWarnings(muayeneDate);
+    if (isEgzozMuayeneCritical(vehicle)) {
+      muayeneWarning.class = 'date-warning-red';
+    }
     const muayeneDisplay = formatDateForDisplay(muayeneDate);
     const vt = vehicle.vehicleType ?? vehicle.tip ?? '';
     const noVehicleType = vt == null || (typeof vt === 'string' && !String(vt).trim());
@@ -3491,11 +3861,10 @@ function renderVehicleDetailLeft(vehicle) {
       html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Muayene Bitiş Tarihi</span><span class="detail-row-colon">:</span></div><span class="detail-row-value ${muayeneWarning.class}"> ${escapeHtml(muayeneDisplay || '-')}</span></div>`;
     }
 
-    const egzozMuayeneDate = vehicle.egzozMuayeneDate || '';
-    if (egzozMuayeneDate && egzozMuayeneDate !== muayeneDate) {
-      const egzozWarning = checkDateWarnings(egzozMuayeneDate);
-      const egzozDisplay = formatDateForDisplay(egzozMuayeneDate);
-      html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Egzos Muayenesi</span><span class="detail-row-colon">:</span></div><span class="detail-row-value ${egzozWarning.class}"> ${escapeHtml(egzozDisplay || '-')}</span></div>`;
+    const egzozState = getEgzozMuayeneState(vehicle);
+    if (egzozState.state !== 'valid') {
+      const egzozDisplay = egzozState.state === 'missing' ? 'Eksik' : formatDateForDisplay(egzozState.date);
+      html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Egzos Muayenesi</span><span class="detail-row-colon">:</span></div><span class="detail-row-value ${egzozState.warningClass}"> ${escapeHtml(egzozDisplay || '-')}</span></div>`;
     }
     
     // Detay: yedek anahtar durumu
@@ -4721,6 +5090,51 @@ function renderVehicleDetailLeft(vehicle) {
     }
   };
 
+  const VEHICLE_DOCUMENT_TYPES = {
+    ruhsat: {
+      key: 'ruhsat',
+      label: 'Ruhsat',
+      title: 'RUHSAT',
+      pathField: 'ruhsatPath',
+      uploadButton: 'Ruhsat Yükle',
+      changeLabel: 'Ruhsatı Değiştir',
+      missingAlert: 'Lütfen ruhsat dosyası seçin.',
+      successMessage: 'Ruhsat Başarıyla Yüklendi',
+      icon: 'document'
+    },
+    sigorta: {
+      key: 'sigorta',
+      label: 'Sigorta Poliçesi',
+      title: 'SİGORTA POLİÇESİ',
+      pathField: 'sigortaPolicePath',
+      uploadButton: 'Poliçe Yükle',
+      changeLabel: 'Sigorta Poliçesini Değiştir',
+      missingAlert: 'Lütfen sigorta poliçesi dosyası seçin.',
+      successMessage: 'Sigorta Poliçesi Başarıyla Yüklendi',
+      icon: 'shield'
+    },
+    kasko: {
+      key: 'kasko',
+      label: 'Kasko Poliçesi',
+      title: 'KASKO POLİÇESİ',
+      pathField: 'kaskoPolicePath',
+      uploadButton: 'Poliçe Yükle',
+      changeLabel: 'Kasko Poliçesini Değiştir',
+      missingAlert: 'Lütfen kasko poliçesi dosyası seçin.',
+      successMessage: 'Kasko Poliçesi Başarıyla Yüklendi',
+      icon: 'shield'
+    }
+  };
+
+  function getVehicleDocumentConfig(documentType) {
+    return VEHICLE_DOCUMENT_TYPES[String(documentType || 'ruhsat').trim()] || VEHICLE_DOCUMENT_TYPES.ruhsat;
+  }
+
+  function getVehicleDocumentPath(vehicle, documentType) {
+    const config = getVehicleDocumentConfig(documentType);
+    return vehicle ? String(vehicle[config.pathField] || '') : '';
+  }
+
   /**
    * Ruhsat Yükleme modalını açar; vehicle.ruhsatPath varsa görüntüleme/yenileme, yoksa yükleme UI gösterir
    */
@@ -4826,9 +5240,10 @@ function renderVehicleDetailLeft(vehicle) {
     return headers;
   }
 
-  function buildRuhsatEndpointUrl(endpoint, vehicleId) {
+  function buildVehicleDocumentEndpointUrl(endpoint, vehicleId, documentType) {
     const rawId = String(vehicleId || window.currentDetailVehicleId || '').trim();
     if (!rawId) return '';
+    const dt = String(documentType || 'ruhsat').trim() || 'ruhsat';
     var verParam = '';
     var appTasitlar = window.appData && Array.isArray(window.appData.tasitlar) ? window.appData.tasitlar : [];
     var appV = appTasitlar.find(function(x) { return String(x.id) === rawId; });
@@ -4841,6 +5256,9 @@ function renderVehicleDetailLeft(vehicle) {
       if (verParam !== '') {
         targetUrl.searchParams.set('v', verParam);
       }
+      if (dt !== 'ruhsat') {
+        targetUrl.searchParams.set('documentType', dt);
+      }
       return targetUrl.toString();
     } catch (e) {
       const encodedId = encodeURIComponent(rawId);
@@ -4848,16 +5266,23 @@ function renderVehicleDetailLeft(vehicle) {
       if (verParam !== '') {
         q += '&v=' + encodeURIComponent(verParam);
       }
+      if (dt !== 'ruhsat') {
+        q += '&documentType=' + encodeURIComponent(dt);
+      }
       return q;
     }
   }
 
-  function buildRuhsatPreviewUrl(vehicleId) {
-    return buildRuhsatEndpointUrl('ruhsat_preview.php', vehicleId);
+  function buildRuhsatEndpointUrl(endpoint, vehicleId) {
+    return buildVehicleDocumentEndpointUrl(endpoint, vehicleId, 'ruhsat');
   }
 
-  function buildRuhsatDocumentUrl(vehicleId) {
-    return buildRuhsatEndpointUrl('ruhsat.php', vehicleId);
+  function buildRuhsatPreviewUrl(vehicleId, documentType) {
+    return buildVehicleDocumentEndpointUrl('ruhsat_preview.php', vehicleId, documentType || 'ruhsat');
+  }
+
+  function buildRuhsatDocumentUrl(vehicleId, documentType) {
+    return buildVehicleDocumentEndpointUrl('ruhsat.php', vehicleId, documentType || 'ruhsat');
   }
 
   function isRuhsatImagePath(path) {
@@ -4897,14 +5322,15 @@ function renderVehicleDetailLeft(vehicle) {
 
   var ruhsatPreviewCache = new Map();
 
-  function getRuhsatPreviewCacheKey(vehicleId, ruhsatUrl) {
+  function getRuhsatPreviewCacheKey(vehicleId, ruhsatUrl, documentType) {
     const rawId = String(vehicleId || window.currentDetailVehicleId || '').trim();
     const absoluteUrl = toAbsoluteRuhsatUrl(ruhsatUrl);
+    const dt = String(documentType || 'ruhsat').trim() || 'ruhsat';
     if (!rawId || !absoluteUrl) return '';
     var appTasitlar = window.appData && Array.isArray(window.appData.tasitlar) ? window.appData.tasitlar : [];
     var fv = appTasitlar.find(function(x) { return String(x.id) === rawId; });
     var verSeg = fv && fv.version != null ? String(Number(fv.version) || 1) : '1';
-    return rawId + '::' + verSeg + '::' + absoluteUrl;
+    return rawId + '::' + dt + '::' + verSeg + '::' + absoluteUrl;
   }
 
   function revokeRuhsatPreviewEntry(entry) {
@@ -4915,12 +5341,24 @@ function renderVehicleDetailLeft(vehicle) {
     entry.objectUrl = '';
   }
 
-  function invalidateRuhsatPreviewCache(vehicleId) {
+  function invalidateRuhsatPreviewCache(vehicleId, documentType) {
     const rawId = String(vehicleId || '').trim();
     if (!rawId || !ruhsatPreviewCache.size) return;
-    const cachePrefix = rawId + '::';
+    const wantAll = documentType === undefined || documentType === null || documentType === '';
+    const wantedType = String(documentType || 'ruhsat').trim();
     ruhsatPreviewCache.forEach(function(entry, cacheKey) {
-      if (cacheKey.indexOf(cachePrefix) !== 0) return;
+      if (cacheKey.indexOf(rawId + '::') !== 0) return;
+      const rest = cacheKey.slice((rawId + '::').length);
+      const firstSeg = rest.split('::')[0];
+      var keyDocType = null;
+      if (firstSeg === 'ruhsat' || firstSeg === 'sigorta' || firstSeg === 'kasko') {
+        keyDocType = firstSeg;
+      } else if (/^\d+$/.test(firstSeg)) {
+        keyDocType = 'ruhsat';
+      } else {
+        return;
+      }
+      if (!wantAll && keyDocType !== wantedType) return;
       revokeRuhsatPreviewEntry(entry);
       ruhsatPreviewCache.delete(cacheKey);
     });
@@ -4928,9 +5366,10 @@ function renderVehicleDetailLeft(vehicle) {
 
   var ruhsatPreviewEndpointMissing = false;
 
-  function fetchRuhsatPreviewObjectUrl(vehicleId, ruhsatUrl) {
-    const cacheKey = getRuhsatPreviewCacheKey(vehicleId, ruhsatUrl);
-    const previewUrl = buildRuhsatPreviewUrl(vehicleId);
+  function fetchRuhsatPreviewObjectUrl(vehicleId, ruhsatUrl, documentType) {
+    const dt = documentType || 'ruhsat';
+    const cacheKey = getRuhsatPreviewCacheKey(vehicleId, ruhsatUrl, dt);
+    const previewUrl = buildRuhsatPreviewUrl(vehicleId, dt);
     if (!cacheKey || !previewUrl) {
       return Promise.reject(new Error('preview-key-missing'));
     }
@@ -5000,14 +5439,15 @@ function renderVehicleDetailLeft(vehicle) {
 
   var ruhsatDocumentCache = new Map();
 
-  function getRuhsatDocumentCacheKey(vehicleId, ruhsatUrl) {
+  function getRuhsatDocumentCacheKey(vehicleId, ruhsatUrl, documentType) {
     const rawId = String(vehicleId || window.currentDetailVehicleId || '').trim();
     const absoluteUrl = toAbsoluteRuhsatUrl(ruhsatUrl);
+    const dt = String(documentType || 'ruhsat').trim() || 'ruhsat';
     if (!rawId || !absoluteUrl) return '';
     var appTasitlar = window.appData && Array.isArray(window.appData.tasitlar) ? window.appData.tasitlar : [];
     var fv = appTasitlar.find(function(x) { return String(x.id) === rawId; });
     var verSeg = fv && fv.version != null ? String(Number(fv.version) || 1) : '1';
-    return rawId + '::' + verSeg + '::' + absoluteUrl;
+    return rawId + '::' + dt + '::' + verSeg + '::' + absoluteUrl;
   }
 
   function revokeRuhsatDocumentEntry(entry) {
@@ -5018,20 +5458,33 @@ function renderVehicleDetailLeft(vehicle) {
     entry.objectUrl = '';
   }
 
-  function invalidateRuhsatDocumentCache(vehicleId) {
+  function invalidateRuhsatDocumentCache(vehicleId, documentType) {
     const rawId = String(vehicleId || '').trim();
     if (!rawId || !ruhsatDocumentCache.size) return;
-    const cachePrefix = rawId + '::';
+    const wantAll = documentType === undefined || documentType === null || documentType === '';
+    const wantedType = String(documentType || 'ruhsat').trim();
     ruhsatDocumentCache.forEach(function(entry, cacheKey) {
-      if (cacheKey.indexOf(cachePrefix) !== 0) return;
+      if (cacheKey.indexOf(rawId + '::') !== 0) return;
+      const rest = cacheKey.slice((rawId + '::').length);
+      const firstSeg = rest.split('::')[0];
+      var keyDocType = null;
+      if (firstSeg === 'ruhsat' || firstSeg === 'sigorta' || firstSeg === 'kasko') {
+        keyDocType = firstSeg;
+      } else if (/^\d+$/.test(firstSeg)) {
+        keyDocType = 'ruhsat';
+      } else {
+        return;
+      }
+      if (!wantAll && keyDocType !== wantedType) return;
       revokeRuhsatDocumentEntry(entry);
       ruhsatDocumentCache.delete(cacheKey);
     });
   }
 
-  function fetchRuhsatDocumentObjectUrl(vehicleId, ruhsatUrl) {
-    const cacheKey = getRuhsatDocumentCacheKey(vehicleId, ruhsatUrl);
-    const documentUrl = buildRuhsatDocumentUrl(vehicleId);
+  function fetchRuhsatDocumentObjectUrl(vehicleId, ruhsatUrl, documentType) {
+    const dt = documentType || 'ruhsat';
+    const cacheKey = getRuhsatDocumentCacheKey(vehicleId, ruhsatUrl, dt);
+    const documentUrl = buildRuhsatDocumentUrl(vehicleId, dt);
     if (!cacheKey || !documentUrl) {
       return Promise.reject(new Error('document-key-missing'));
     }
@@ -5090,28 +5543,38 @@ function renderVehicleDetailLeft(vehicle) {
     return entry.promise;
   }
 
-  function warmRuhsatPreview(vehicleId, ruhsatUrl) {
+  function warmRuhsatPreview(vehicleId, ruhsatUrl, documentType) {
+    const dt = documentType || 'ruhsat';
     const url = toAbsoluteRuhsatUrl(ruhsatUrl);
-    if (!url || isRuhsatImageForVehicle(vehicleId, getVehicleRuhsatPath(vehicleId))) {
+    var appTasitlar = window.appData && Array.isArray(window.appData.tasitlar) ? window.appData.tasitlar : [];
+    var v = appTasitlar.find(function(x) { return String(x.id) === String(vehicleId); });
+    if (!v) {
+      v = readVehicles().find(function(x) { return String(x.id) === String(vehicleId); });
+    }
+    const pathForType = v ? getVehicleDocumentPath(v, dt) : '';
+    if (!url || isRuhsatImageForVehicle(vehicleId, pathForType)) {
       return Promise.resolve('');
     }
-    return fetchRuhsatPreviewObjectUrl(vehicleId, url).catch(function() {
+    return fetchRuhsatPreviewObjectUrl(vehicleId, url, dt).catch(function() {
       return '';
     });
   }
 
-  function hydrateRuhsatPreviewButton(previewBtn, vehicleId, ruhsatUrl, isImage) {
+  function hydrateRuhsatPreviewButton(previewBtn, vehicleId, ruhsatUrl, isImage, documentType) {
     if (!previewBtn) return;
+    const cfg = getVehicleDocumentConfig(documentType);
+    const altPreview = cfg.label + ' ön izleme';
     previewBtn.innerHTML = '<span class="ruhsat-preview-hint">Ön İzleme</span>';
 
+    const dt = documentType || 'ruhsat';
     const loadPreview = isImage
-      ? fetchRuhsatDocumentObjectUrl(vehicleId, ruhsatUrl)
-      : fetchRuhsatPreviewObjectUrl(vehicleId, ruhsatUrl);
+      ? fetchRuhsatDocumentObjectUrl(vehicleId, ruhsatUrl, dt)
+      : fetchRuhsatPreviewObjectUrl(vehicleId, ruhsatUrl, dt);
 
     loadPreview
       .then(function(objectUrl) {
         if (!previewBtn.isConnected) return;
-        previewBtn.innerHTML = `<img src="${escapeHtml(objectUrl)}" alt="Ruhsat Ön İzleme" class="ruhsat-preview-image" loading="lazy"><span class="ruhsat-preview-hint">Ön İzleme</span>`;
+        previewBtn.innerHTML = `<img src="${escapeHtml(objectUrl)}" alt="${escapeHtml(altPreview)}" class="ruhsat-preview-image" loading="lazy"><span class="ruhsat-preview-hint">Ön İzleme</span>`;
       })
       .catch(function() {
         if (!previewBtn.isConnected) return;
@@ -5124,35 +5587,41 @@ function renderVehicleDetailLeft(vehicle) {
    * Aynı sayfada gizli iframe kullanır; iOS PWA'da yeni sekme açılmadığı için geri dönüş mümkün olur.
    * Masaüstü bu fonksiyonu kullanmaz (ön izleme + inline viewer kalır).
    */
-  function openRuhsatPrintDialog(ruhsatUrl, vehicleId) {
+  function openRuhsatPrintDialog(ruhsatUrl, vehicleId, documentType) {
+    const dt = documentType || 'ruhsat';
     const url = toAbsoluteRuhsatUrl(ruhsatUrl);
     if (!url) return;
-    const documentPath = getVehicleRuhsatPath(vehicleId);
+    var appTasitlar = window.appData && Array.isArray(window.appData.tasitlar) ? window.appData.tasitlar : [];
+    var vehicle = appTasitlar.find(function(v) { return String(v.id) === String(vehicleId || window.currentDetailVehicleId); });
+    if (!vehicle) {
+      vehicle = readVehicles().find(function(v) { return String(v.id) === String(vehicleId || window.currentDetailVehicleId); });
+    }
+    const documentPath = vehicle ? getVehicleDocumentPath(vehicle, dt) : '';
     const isImage = isRuhsatImageForVehicle(vehicleId, documentPath);
-    const documentUrl = buildRuhsatDocumentUrl(vehicleId) || url;
+    const documentUrl = buildRuhsatDocumentUrl(vehicleId, dt) || url;
     if (isAndroidDevice()) {
       if (isImage) {
-        fetchRuhsatDocumentObjectUrl(vehicleId, documentUrl)
+        fetchRuhsatDocumentObjectUrl(vehicleId, documentUrl, dt)
           .then(function(objectUrl) {
             openUrlInNewTab(objectUrl);
           })
           .catch(function() {
-            if (typeof window.viewRuhsatPdf === 'function') window.viewRuhsatPdf(vehicleId);
+            if (typeof window.viewRuhsatPdf === 'function') window.viewRuhsatPdf(vehicleId, dt);
           });
         return;
       }
 
-      fetchRuhsatPreviewObjectUrl(vehicleId, url)
+      fetchRuhsatPreviewObjectUrl(vehicleId, url, dt)
         .then(function(previewObjectUrl) {
           openUrlInNewTab(previewObjectUrl);
         })
         .catch(function() {
-          fetchRuhsatDocumentObjectUrl(vehicleId, documentUrl)
+          fetchRuhsatDocumentObjectUrl(vehicleId, documentUrl, dt)
             .then(function(documentObjectUrl) {
               openUrlInNewTab(buildPdfViewerUrl(documentObjectUrl, 'toolbar=0&navpanes=0&zoom=page-width&view=FitH'));
             })
             .catch(function() {
-              if (typeof window.viewRuhsatPdf === 'function') window.viewRuhsatPdf(vehicleId);
+              if (typeof window.viewRuhsatPdf === 'function') window.viewRuhsatPdf(vehicleId, dt);
             });
         });
       return;
@@ -5244,13 +5713,13 @@ function renderVehicleDetailLeft(vehicle) {
         if (fallbackOpenUrl) {
           openUrlInNewTab(fallbackOpenUrl);
         } else if (typeof window.viewRuhsatPdf === 'function') {
-          window.viewRuhsatPdf(vehicleId);
+          window.viewRuhsatPdf(vehicleId, dt);
         }
       }
     }
 
     if (isImage) {
-      fetchRuhsatDocumentObjectUrl(vehicleId, documentUrl)
+      fetchRuhsatDocumentObjectUrl(vehicleId, documentUrl, dt)
         .then(function(documentObjectUrl) {
           if (window.__ruhsatPrintToken !== printToken) {
             return;
@@ -5261,12 +5730,12 @@ function renderVehicleDetailLeft(vehicle) {
           if (window.__ruhsatPrintToken !== printToken) {
             return;
           }
-          if (typeof window.viewRuhsatPdf === 'function') window.viewRuhsatPdf(vehicleId);
+          if (typeof window.viewRuhsatPdf === 'function') window.viewRuhsatPdf(vehicleId, dt);
         });
       return;
     }
 
-    fetchRuhsatPreviewObjectUrl(vehicleId, url)
+    fetchRuhsatPreviewObjectUrl(vehicleId, url, dt)
       .then(function(previewObjectUrl) {
         if (window.__ruhsatPrintToken !== printToken) {
           return;
@@ -5277,7 +5746,7 @@ function renderVehicleDetailLeft(vehicle) {
         if (window.__ruhsatPrintToken !== printToken) {
           return;
         }
-        fetchRuhsatDocumentObjectUrl(vehicleId, documentUrl)
+        fetchRuhsatDocumentObjectUrl(vehicleId, documentUrl, dt)
           .then(function(documentObjectUrl) {
             if (window.__ruhsatPrintToken !== printToken) {
               return;
@@ -5288,35 +5757,45 @@ function renderVehicleDetailLeft(vehicle) {
             if (window.__ruhsatPrintToken !== printToken) {
               return;
             }
-            if (typeof window.viewRuhsatPdf === 'function') window.viewRuhsatPdf(vehicleId);
+            if (typeof window.viewRuhsatPdf === 'function') window.viewRuhsatPdf(vehicleId, dt);
           });
       });
   }
 
-  function resolveRuhsatUrl(path, vehicleId) {
+  function resolveRuhsatUrl(path, vehicleId, documentType) {
+    const dt = String(documentType || 'ruhsat').trim() || 'ruhsat';
     const rawId = String(vehicleId || window.currentDetailVehicleId || '').trim();
     if (rawId) {
-      return buildRuhsatDocumentUrl(rawId);
+      return buildRuhsatDocumentUrl(rawId, dt);
     }
     const raw = String(path || '').trim();
     if (!raw) return '';
     try {
       const u = new URL(raw, window.location.href);
       if (String(u.pathname || '').replace(/\\/g, '/').indexOf('ruhsat.php') !== -1 && u.searchParams.get('id')) {
-        return buildRuhsatDocumentUrl(u.searchParams.get('id'));
+        const idQ = u.searchParams.get('id');
+        const dtc = u.searchParams.get('documentType') || dt;
+        return buildRuhsatDocumentUrl(idQ, dtc);
       }
     } catch (e2) {}
     return raw;
   }
 
-  function renderInlineRuhsatViewer(vehicleId, url, options) {
+  function renderInlineRuhsatViewer(vehicleId, url, options, documentType) {
+    const dt = documentType || 'ruhsat';
+    const cfg = getVehicleDocumentConfig(dt);
     const content = document.getElementById('ruhsat-modal-content') || DOM.dinamikOlayFormIcerik;
     const saveBtn = document.getElementById('ruhsat-save-btn') || DOM.dinamikOlayKaydetBtn;
     if (!content || !saveBtn) return false;
     const viewerOptions = options || {};
-    const documentPath = getVehicleRuhsatPath(vehicleId);
+    var appTasitlar = window.appData && Array.isArray(window.appData.tasitlar) ? window.appData.tasitlar : [];
+    var vehicle = appTasitlar.find(function(v) { return String(v.id) === String(vehicleId || window.currentDetailVehicleId); });
+    if (!vehicle) {
+      vehicle = readVehicles().find(function(v) { return String(v.id) === String(vehicleId || window.currentDetailVehicleId); });
+    }
+    const documentPath = vehicle ? getVehicleDocumentPath(vehicle, dt) : '';
     const isImage = isRuhsatImageForVehicle(vehicleId, documentPath);
-    const documentUrl = buildRuhsatDocumentUrl(vehicleId) || toAbsoluteRuhsatUrl(url);
+    const documentUrl = buildRuhsatDocumentUrl(vehicleId, dt) || toAbsoluteRuhsatUrl(url);
     let loadedPrintUrl = '';
 
     setRuhsatInlineViewerMode(true);
@@ -5328,7 +5807,7 @@ function renderVehicleDetailLeft(vehicle) {
     const frame = document.createElement('iframe');
     frame.className = 'ruhsat-inline-frame';
     frame.src = 'about:blank';
-    frame.setAttribute('title', isImage ? 'Ruhsat Görsel' : 'Ruhsat PDF');
+    frame.setAttribute('title', isImage ? (cfg.label + ' Görsel') : (cfg.label + ' PDF'));
     frameWrap.appendChild(frame);
 
     const actionsWrap = document.createElement('div');
@@ -5340,7 +5819,9 @@ function renderVehicleDetailLeft(vehicle) {
     backBtn.textContent = '\u2190 Geri D\u00F6n';
     backBtn.onclick = function() {
       setRuhsatInlineViewerMode(false);
-      window.openRuhsatModal(vehicleId);
+      if (typeof window.openVehicleDocumentModal === 'function') {
+        window.openVehicleDocumentModal(vehicleId, dt);
+      }
     };
     actionsWrap.appendChild(backBtn);
 
@@ -5355,7 +5836,7 @@ function renderVehicleDetailLeft(vehicle) {
           if (fallbackUrl) {
             openUrlInNewTab(fallbackUrl);
           } else if (typeof window.viewRuhsatPdf === 'function') {
-            window.viewRuhsatPdf(vehicleId);
+            window.viewRuhsatPdf(vehicleId, dt);
           }
           return;
         }
@@ -5371,7 +5852,7 @@ function renderVehicleDetailLeft(vehicle) {
         if (fallbackUrl) {
           openUrlInNewTab(fallbackUrl);
         } else if (typeof window.viewRuhsatPdf === 'function') {
-          window.viewRuhsatPdf(vehicleId);
+          window.viewRuhsatPdf(vehicleId, dt);
         }
       };
       actionsWrap.appendChild(printBtn);
@@ -5379,7 +5860,7 @@ function renderVehicleDetailLeft(vehicle) {
 
     content.appendChild(actionsWrap);
     content.appendChild(frameWrap);
-    fetchRuhsatDocumentObjectUrl(vehicleId, documentUrl)
+    fetchRuhsatDocumentObjectUrl(vehicleId, documentUrl, dt)
       .then(function(objectUrl) {
         if (!frame.isConnected) return;
         loadedPrintUrl = isImage
@@ -5388,18 +5869,18 @@ function renderVehicleDetailLeft(vehicle) {
         frame.src = loadedPrintUrl;
       })
       .catch(function(err) {
-        console.error('Ruhsat görüntüleme hazırlanamadı', err);
+        console.error(cfg.label + ' görüntüleme hazırlanamadı', err);
         var st = err && err.httpStatus;
         if (st === 404) {
-          alert('Ruhsat veya araç kaydı sunucuda bulunamadı (dosya eksik veya veri senkron değil). Sayfayı yenileyip tekrar deneyin.');
+          alert(cfg.label + ' veya araç kaydı sunucuda bulunamadı (dosya eksik veya veri senkron değil). Sayfayı yenileyip tekrar deneyin.');
         } else if (st === 401 || st === 403) {
-          alert('Bu ruhsat için oturum veya yetki yetersiz. Tekrar giriş yapmayı deneyin.');
+          alert('Bu belge için oturum veya yetki yetersiz. Tekrar giriş yapmayı deneyin.');
         }
       });
     return true;
   }
 
-  window.openRuhsatModal = function(vehicleId) {
+  window.openVehicleDocumentsModal = function(vehicleId) {
     const vid = (vehicleId || window.currentDetailVehicleId || '').toString();
     if (!vid) return;
     window.currentDetailVehicleId = vid;
@@ -5412,8 +5893,9 @@ function renderVehicleDetailLeft(vehicle) {
     const content = DOM.dinamikOlayFormIcerik;
     const saveBtn = DOM.dinamikOlayKaydetBtn;
     if (!modal || !content || !saveBtn) return;
-    if (DOM.dinamikOlayBaslik) DOM.dinamikOlayBaslik.textContent = 'RUHSAT YÜKLEME';
+    if (DOM.dinamikOlayBaslik) DOM.dinamikOlayBaslik.textContent = 'BELGELER';
     content.id = 'ruhsat-modal-content';
+    content.classList.add('vehicle-documents-picker-mode');
     var backBarBtn = modal ? modal.querySelector('.universal-back-btn') : null;
     if (backBarBtn) {
       var labelSpan = backBarBtn.querySelector('.universal-back-label');
@@ -5424,32 +5906,102 @@ function renderVehicleDetailLeft(vehicle) {
     if (modalCloseBtn) modalCloseBtn.onclick = function(e) { e.stopPropagation(); if (typeof window.closeRuhsatAndBackToDetail === 'function') window.closeRuhsatAndBackToDetail(); };
     var cancelBtn = document.getElementById('ruhsat-btn-group') ? document.getElementById('ruhsat-btn-group').querySelector('.universal-btn-cancel') : null;
     if (cancelBtn) cancelBtn.onclick = function(e) { e.stopPropagation(); if (typeof window.closeRuhsatAndBackToDetail === 'function') window.closeRuhsatAndBackToDetail(); };
-    saveBtn.onclick = function() { if (typeof window.saveRuhsatUpload === 'function') window.saveRuhsatUpload(); };
+    saveBtn.onclick = null;
     setRuhsatInlineViewerMode(false);
     content.innerHTML = '';
     var ruhsatGrp = document.getElementById('ruhsat-btn-group');
     if (ruhsatGrp) ruhsatGrp.classList.remove('olay-form-buttons');
     setRuhsatSaveBtnVisibility(saveBtn, false);
-    saveBtn.textContent = 'Ruhsat Yükle';
-    const hasRuhsat = !!(vehicle && vehicle.ruhsatPath);
-    if (hasRuhsat) {
-      const ruhsatUrl = resolveRuhsatUrl(vehicle.ruhsatPath, vid);
-      const ruhsatIsImage = isRuhsatImagePath(vehicle.ruhsatPath);
+
+    const picker = document.createElement('div');
+    picker.className = 'vehicle-document-picker';
+    ['ruhsat', 'sigorta', 'kasko'].forEach(function(docKey) {
+      const cfg = VEHICLE_DOCUMENT_TYPES[docKey];
+      const hasDoc = !!getVehicleDocumentPath(vehicle, docKey);
+      const card = document.createElement('button');
+      card.type = 'button';
+      card.className = 'vehicle-document-card';
+      card.setAttribute('aria-label', cfg.label);
+      const iconWrap = document.createElement('div');
+      iconWrap.className = 'vehicle-document-icon-wrap';
+      iconWrap.innerHTML = cfg.icon === 'shield'
+        ? '<svg class="vehicle-document-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>'
+        : '<svg class="vehicle-document-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg>';
+      const labelEl = document.createElement('div');
+      labelEl.className = 'vehicle-document-label';
+      labelEl.textContent = cfg.label;
+      const statusEl = document.createElement('div');
+      statusEl.className = 'vehicle-document-status';
+      statusEl.textContent = hasDoc ? 'Görüntüle / Değiştir' : 'Yükle';
+      card.appendChild(iconWrap);
+      card.appendChild(labelEl);
+      card.appendChild(statusEl);
+      card.onclick = function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        window.openVehicleDocumentModal(vid, docKey);
+      };
+      picker.appendChild(card);
+    });
+    content.appendChild(picker);
+
+    modal.style.display = 'flex';
+    requestAnimationFrame(function() { modal.classList.add('active'); });
+  };
+
+  window.openVehicleDocumentModal = function(vehicleId, documentType) {
+    const dt = String(documentType || 'ruhsat').trim() || 'ruhsat';
+    const cfg = getVehicleDocumentConfig(dt);
+    const vid = (vehicleId || window.currentDetailVehicleId || '').toString();
+    if (!vid) return;
+    window.currentDetailVehicleId = vid;
+    var appTasitlar = window.appData && Array.isArray(window.appData.tasitlar) ? window.appData.tasitlar : [];
+    var vehicle = appTasitlar.find(function(v) { return String(v.id) === vid; });
+    if (!vehicle) {
+      vehicle = readVehicles().find(function(v) { return String(v.id) === vid; });
+    }
+    const modal = DOM.dinamikOlayModal;
+    const content = DOM.dinamikOlayFormIcerik;
+    const saveBtn = DOM.dinamikOlayKaydetBtn;
+    if (!modal || !content || !saveBtn) return;
+    if (DOM.dinamikOlayBaslik) DOM.dinamikOlayBaslik.textContent = cfg.title + ' YÜKLEME';
+    content.id = 'ruhsat-modal-content';
+    content.classList.remove('vehicle-documents-picker-mode');
+    var backBarBtn = modal ? modal.querySelector('.universal-back-btn') : null;
+    if (backBarBtn) {
+      var labelSpan = backBarBtn.querySelector('.universal-back-label');
+      if (labelSpan) labelSpan.textContent = 'Belgeler';
+      backBarBtn.onclick = function(e) { e.stopPropagation(); window.openVehicleDocumentsModal(vid); };
+    }
+    var modalCloseBtn = modal ? modal.querySelector('.modal-close') : null;
+    if (modalCloseBtn) modalCloseBtn.onclick = function(e) { e.stopPropagation(); if (typeof window.closeRuhsatAndBackToDetail === 'function') window.closeRuhsatAndBackToDetail(); };
+    var cancelBtn = document.getElementById('ruhsat-btn-group') ? document.getElementById('ruhsat-btn-group').querySelector('.universal-btn-cancel') : null;
+    if (cancelBtn) cancelBtn.onclick = function(e) { e.stopPropagation(); window.openVehicleDocumentsModal(vid); };
+    saveBtn.onclick = function() { if (typeof window.saveRuhsatUpload === 'function') window.saveRuhsatUpload(dt); };
+    setRuhsatInlineViewerMode(false);
+    content.innerHTML = '';
+    var ruhsatGrp = document.getElementById('ruhsat-btn-group');
+    if (ruhsatGrp) ruhsatGrp.classList.remove('olay-form-buttons');
+    setRuhsatSaveBtnVisibility(saveBtn, false);
+    saveBtn.textContent = cfg.uploadButton;
+    const pathVal = getVehicleDocumentPath(vehicle, dt);
+    const hasDoc = !!pathVal;
+    if (hasDoc) {
+      const ruhsatUrl = resolveRuhsatUrl(pathVal, vid, dt);
+      const ruhsatIsImage = isRuhsatImagePath(pathVal);
       const isMobileViewport = (typeof window.matchMedia === 'function')
         ? window.matchMedia('(max-width: 640px)').matches
         : (window.innerWidth <= 640);
       if (isMobileViewport && !ruhsatIsImage) {
-        warmRuhsatPreview(vid, ruhsatUrl);
+        warmRuhsatPreview(vid, ruhsatUrl, dt);
       }
       const btnGroup = document.createElement('div');
       btnGroup.className = 'universal-btn-group ruhsat-preview-row';
 
-      // Mobilde: ön izleme yok, sadece "Yazdır" butonu; tıklanınca doğrudan yazdırma (Seçenekler) ekranı açılır.
-      // Masaüstü: ön izleme alanı + tıklanınca inline görüntüleyici.
       const previewBtn = document.createElement('button');
       previewBtn.type = 'button';
       previewBtn.className = 'ruhsat-preview-link';
-      previewBtn.setAttribute('aria-label', 'Ruhsatı Yazdır / Görüntüle');
+      previewBtn.setAttribute('aria-label', cfg.label + ' Yazdır / Görüntüle');
       if (isMobileViewport) {
         previewBtn.classList.add('ruhsat-preview-mobile-btn');
         previewBtn.style.cssText = 'background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.2); cursor: pointer; display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 8px; width: auto; min-width: 140px; height: 48px; border-radius: 8px; padding: 0 16px;';
@@ -5466,64 +6018,87 @@ function renderVehicleDetailLeft(vehicle) {
         previewBtn.onclick = function(e) {
           e.preventDefault();
           e.stopPropagation();
-          openRuhsatPrintDialog(ruhsatUrl, vid);
+          openRuhsatPrintDialog(ruhsatUrl, vid, dt);
         };
       } else {
         const previewSrc = 'about:blank';
+        const prevAlt = cfg.label + ' Ön İzleme';
         previewBtn.innerHTML = ruhsatIsImage
-          ? `<img src="${escapeHtml(previewSrc)}" alt="Ruhsat Ön İzleme" class="ruhsat-preview-image" loading="lazy"><span class="ruhsat-preview-hint">Ön İzleme</span>`
-          : `<iframe src="${escapeHtml(previewSrc)}" title="Ruhsat Ön İzleme" loading="lazy" tabindex="-1" aria-hidden="true"></iframe><span class="ruhsat-preview-hint">Ön İzleme</span>`;
+          ? `<img src="${escapeHtml(previewSrc)}" alt="${escapeHtml(prevAlt)}" class="ruhsat-preview-image" loading="lazy"><span class="ruhsat-preview-hint">Ön İzleme</span>`
+          : `<iframe src="${escapeHtml(previewSrc)}" title="${escapeHtml(prevAlt)}" loading="lazy" tabindex="-1" aria-hidden="true"></iframe><span class="ruhsat-preview-hint">Ön İzleme</span>`;
         previewBtn.onclick = function(e) {
           e.preventDefault();
           e.stopPropagation();
           if (shouldUseInlineRuhsatViewer()) {
-            renderInlineRuhsatViewer(vid, ruhsatUrl, { showPrintButton: true, forceExternalPrint: true });
+            renderInlineRuhsatViewer(vid, ruhsatUrl, { showPrintButton: true, forceExternalPrint: true }, dt);
           } else {
-            window.viewRuhsatPdf(vid);
+            window.viewRuhsatPdf(vid, dt);
           }
         };
       }
       if (!isMobileViewport) {
-        hydrateRuhsatPreviewButton(previewBtn, vid, ruhsatUrl, ruhsatIsImage);
+        hydrateRuhsatPreviewButton(previewBtn, vid, ruhsatUrl, ruhsatIsImage, dt);
       }
       btnGroup.appendChild(previewBtn);
 
       const replaceBtn = document.createElement('button');
       replaceBtn.type = 'button';
       replaceBtn.className = 'ruhsat-add-btn';
-      replaceBtn.setAttribute('aria-label', 'Ruhsatı Değiştir');
+      replaceBtn.setAttribute('aria-label', cfg.changeLabel);
       replaceBtn.innerHTML = '+';
       replaceBtn.onclick = function() {
-        renderRuhsatUploadForm(content, saveBtn, true);
+        renderRuhsatUploadForm(content, saveBtn, true, dt);
       };
       btnGroup.appendChild(replaceBtn);
       content.appendChild(btnGroup);
     } else {
-      renderRuhsatUploadForm(content, saveBtn);
+      renderRuhsatUploadForm(content, saveBtn, false, dt);
     }
     modal.style.display = 'flex';
     requestAnimationFrame(function() { modal.classList.add('active'); });
   };
 
-  function renderRuhsatUploadForm(content, saveBtn, hasExistingRuhsat) {
+  window.openRuhsatModal = function(vehicleId) {
+    return window.openVehicleDocumentsModal(vehicleId);
+  };
+
+  function renderRuhsatUploadForm(content, saveBtn, hasExistingRuhsat, documentType) {
+    const cfg = getVehicleDocumentConfig(documentType);
     content.innerHTML = '';
     const uploadBox = document.createElement('div');
     uploadBox.className = 'ruhsat-upload-box';
     const input = document.createElement('input');
     input.type = 'file';
-    input.accept = '.pdf, image/jpeg, image/png, image/jpg, image/webp';
+    input.accept = 'application/pdf,.pdf';
     input.id = 'ruhsat-file-input';
-    input.setAttribute('aria-label', 'Ruhsat PDF dosyası seç');
+    input.setAttribute('aria-label', cfg.label + ' dosyası seç');
     input.style.display = 'none';
     const selectBox = document.createElement('button');
     selectBox.type = 'button';
     selectBox.className = 'ruhsat-select-box';
-    selectBox.setAttribute('aria-label', 'Ruhsat dosyası seç');
+    selectBox.setAttribute('aria-label', cfg.label + ' dosyası seç');
     selectBox.innerHTML = '<span class="ruhsat-select-box-icon" aria-hidden="true">+</span><span class="ruhsat-select-box-label">Dosya Seç</span>';
     selectBox.onclick = function() { input.click(); };
     uploadBox.appendChild(selectBox);
     uploadBox.appendChild(input);
     content.appendChild(uploadBox);
+    var hintEl = document.createElement('p');
+    hintEl.className = 'ruhsat-upload-hint';
+    hintEl.id = 'ruhsat-upload-hint';
+    hintEl.textContent = 'Dosyayı seçtikten sonra alttaki «' + cfg.uploadButton + '» ile sunucuya gönderilir.';
+    content.appendChild(hintEl);
+    var progressWrap = document.createElement('div');
+    progressWrap.className = 'ruhsat-upload-progress';
+    progressWrap.id = 'ruhsat-upload-progress';
+    progressWrap.setAttribute('hidden', '');
+    progressWrap.setAttribute('aria-hidden', 'true');
+    progressWrap.innerHTML =
+      '<div class="ruhsat-upload-progress-label" id="ruhsat-upload-progress-label">Gönderiliyor</div>' +
+      '<div class="ruhsat-upload-progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="ruhsat-upload-progress-track">' +
+      '<div class="ruhsat-upload-progress-bar" id="ruhsat-upload-progress-bar" style="width:0%"></div>' +
+      '</div>' +
+      '<div class="ruhsat-upload-progress-pct" id="ruhsat-upload-progress-pct">0%</div>';
+    content.appendChild(progressWrap);
     input.onchange = function() {
       const hasFile = input.files.length > 0;
       setRuhsatSaveBtnVisibility(saveBtn, hasFile);
@@ -5542,51 +6117,136 @@ function renderVehicleDetailLeft(vehicle) {
     setRuhsatSaveBtnVisibility(saveBtn, input.files.length > 0);
   }
 
+  function setRuhsatUploadProgressVisible(visible, percent, indeterminate) {
+    var wrap = document.getElementById('ruhsat-upload-progress');
+    var bar = document.getElementById('ruhsat-upload-progress-bar');
+    var pctEl = document.getElementById('ruhsat-upload-progress-pct');
+    var labelEl = document.getElementById('ruhsat-upload-progress-label');
+    var track = document.getElementById('ruhsat-upload-progress-track');
+    if (!wrap) return;
+    if (visible) {
+      wrap.removeAttribute('hidden');
+      wrap.setAttribute('aria-hidden', 'false');
+    } else {
+      wrap.setAttribute('hidden', '');
+      wrap.setAttribute('aria-hidden', 'true');
+    }
+    var p = typeof percent === 'number' ? Math.max(0, Math.min(100, Math.round(percent))) : 0;
+    if (bar) {
+      bar.classList.toggle('ruhsat-upload-progress-bar--indeterminate', !!indeterminate);
+      if (indeterminate) {
+        bar.style.width = '';
+      } else {
+        bar.style.width = p + '%';
+      }
+    }
+    if (pctEl) {
+      pctEl.textContent = indeterminate ? '…' : (p + '%');
+      pctEl.classList.toggle('ruhsat-upload-progress-pct--indeterminate', !!indeterminate);
+    }
+    if (labelEl) {
+      labelEl.textContent = indeterminate ? 'Bağlanıyor…' : 'Sunucuya gönderiliyor';
+    }
+    if (track) {
+      track.setAttribute('aria-valuenow', indeterminate ? '0' : String(p));
+    }
+  }
+
+  function uploadVehicleDocumentXHR(formData, onProgress) {
+    return new Promise(function(resolve, reject) {
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', 'upload_ruhsat.php');
+      var headers = buildMedisaAuthHeaders();
+      Object.keys(headers).forEach(function(k) {
+        var v = headers[k];
+        if (v == null || String(k).toLowerCase() === 'content-type') return;
+        xhr.setRequestHeader(k, v);
+      });
+      xhr.upload.onprogress = function(ev) {
+        if (typeof onProgress !== 'function') return;
+        if (ev.lengthComputable) {
+          onProgress({ loaded: ev.loaded, total: ev.total, lengthComputable: true });
+        } else {
+          onProgress({ lengthComputable: false });
+        }
+      };
+      xhr.onload = function() {
+        var raw = xhr.responseText || '';
+        var data = {};
+        try {
+          data = raw ? JSON.parse(raw) : {};
+        } catch (e) {
+          data = {};
+        }
+        var st = xhr.status;
+        if (st < 200 || st >= 300 || !data.success) {
+          var err = new Error((data && (data.error || data.message)) ? (data.error || data.message) : ('Yükleme başarısız (HTTP ' + st + ')'));
+          err.status = st;
+          err.conflict = !!(data && data.conflict) || st === 409;
+          reject(err);
+          return;
+        }
+        resolve(data);
+      };
+      xhr.onerror = function() {
+        reject(new Error('Ağ hatası'));
+      };
+      xhr.send(formData);
+    });
+  }
+
+  function setRuhsatUploadUiLocked(locked) {
+    var saveBtn = document.getElementById('dinamik-olay-kaydet-btn') || DOM.dinamikOlayKaydetBtn;
+    var grp = document.getElementById('ruhsat-btn-group');
+    var cancelBtn = grp ? grp.querySelector('.universal-btn-cancel') : null;
+    var selectBox = document.querySelector('#ruhsat-modal-content .ruhsat-select-box');
+    if (saveBtn) saveBtn.disabled = !!locked;
+    if (cancelBtn) cancelBtn.disabled = !!locked;
+    if (selectBox) selectBox.classList.toggle('ruhsat-select-box--uploading', !!locked);
+    var inputEl = document.getElementById('ruhsat-file-input');
+    if (inputEl) inputEl.disabled = !!locked;
+  }
+
   /**
    * Ruhsat dosyasını upload_ruhsat.php'ye POST eder
    */
-  window.saveRuhsatUpload = function() {
+  window.saveRuhsatUpload = function(documentType) {
+    const cfg = getVehicleDocumentConfig(documentType);
     const input = document.getElementById('ruhsat-file-input');
     const vehicleId = (window.currentDetailVehicleId || '').toString();
     const vehicles = window.appData?.tasitlar || [];
     const vehicle = vehicles.find(function(x) { return String(x.id) === String(vehicleId); });
     if (!input || !input.files || !input.files[0] || !vehicleId || !vehicle) {
-      alert('L\u00fctfen ruhsat dosyas\u0131 se\u00e7in.');
+      alert(cfg.missingAlert);
       return;
     }
     const formData = new FormData();
     formData.append('vehicleId', vehicleId);
     formData.append('vehicleVersion', String(Number(vehicle.version) || 1));
-    formData.append('ruhsat', input.files[0]);
-    fetch('upload_ruhsat.php', {
-      method: 'POST',
-      body: formData,
-      headers: buildMedisaAuthHeaders()
+    formData.append('documentType', cfg.key);
+    formData.append('document', input.files[0]);
+    setRuhsatUploadProgressVisible(true, 0, true);
+    setRuhsatUploadUiLocked(true);
+    uploadVehicleDocumentXHR(formData, function(info) {
+      if (!info || info.lengthComputable === false) {
+        setRuhsatUploadProgressVisible(true, 0, true);
+      } else {
+        var pct = info.total ? Math.round(100 * info.loaded / info.total) : 0;
+        setRuhsatUploadProgressVisible(true, pct, false);
+      }
     })
-      .then(function(r) {
-        return r.text().then(function(raw) {
-          let data = {};
-          try {
-            data = raw ? JSON.parse(raw) : {};
-          } catch (parseErr) {
-            data = {};
-          }
-          if (!r.ok || !data.success) {
-            const err = new Error((data && (data.error || data.message)) ? (data.error || data.message) : ('Yükleme başarısız (HTTP ' + r.status + ')'));
-            err.status = r.status;
-            err.conflict = !!(data && data.conflict) || r.status === 409;
-            throw err;
-          }
-          return data;
-        });
-      })
       .then(function(data) {
-        invalidateRuhsatPreviewCache(vehicleId);
-        invalidateRuhsatDocumentCache(vehicleId);
+        setRuhsatUploadProgressVisible(false, 0, false);
+        setRuhsatUploadUiLocked(false);
+        invalidateRuhsatPreviewCache(vehicleId, cfg.key);
+        invalidateRuhsatDocumentCache(vehicleId, cfg.key);
         const currentVehicles = window.appData?.tasitlar || [];
         const v = currentVehicles.find(function(x) { return String(x.id) === String(vehicleId); });
         if (v) {
-          v.ruhsatPath = data.ruhsatPath;
+          var newPath = data.documentPath || data.ruhsatPath;
+          if (newPath) {
+            v[cfg.pathField] = newPath;
+          }
           if (data.vehicleVersion != null) {
             v.version = Number(data.vehicleVersion) || v.version;
           }
@@ -5596,18 +6256,18 @@ function renderVehicleDetailLeft(vehicle) {
         if (selectBox && input.files && input.files[0]) {
           selectBox.classList.remove('has-file');
           selectBox.classList.add('upload-success');
-          selectBox.textContent = '\u2713 Ruhsat Ba\u015far\u0131yla Y\u00fcklendi';
+          selectBox.textContent = '\u2713 ' + cfg.successMessage;
         }
 
         setRuhsatSaveBtnVisibility(document.getElementById('ruhsat-save-btn') || DOM.dinamikOlayKaydetBtn, false);
         if (typeof showToast === 'function') {
-          showToast('Ruhsat Ba\u015far\u0131yla Y\u00fcklendi', 'success');
+          showToast(cfg.successMessage, 'success');
         }
 
         const modal = DOM.dinamikOlayModal;
         const isStillOpen = !!(modal && modal.style.display !== 'none');
         if (isStillOpen && String(window.currentDetailVehicleId || '') === String(vehicleId)) {
-          window.openRuhsatModal(vehicleId);
+          window.openVehicleDocumentModal(vehicleId, cfg.key);
         }
         if (typeof window.showVehicleDetail === 'function') {
           try {
@@ -5616,13 +6276,15 @@ function renderVehicleDetailLeft(vehicle) {
         }
       })
       .catch(function(err) {
+        setRuhsatUploadProgressVisible(false, 0, false);
+        setRuhsatUploadUiLocked(false);
         console.error(err);
         const msg = String((err && err.message) || '').toLowerCase();
         const isConflict = !!(err && (err.conflict || msg.indexOf('guncel veriler y') !== -1 || msg.indexOf('güncel veriler y') !== -1));
         if (isConflict) {
           const afterRefresh = function() {
             if (String(window.currentDetailVehicleId || '') === String(vehicleId)) {
-              window.openRuhsatModal(vehicleId);
+              window.openVehicleDocumentModal(vehicleId, cfg.key);
             }
           };
           if (typeof window.loadDataFromServer === 'function') {
@@ -5640,7 +6302,9 @@ function renderVehicleDetailLeft(vehicle) {
   /**
    * Ruhsat PDF'ini görüntüler / yazdırır
    */
-  window.viewRuhsatPdf = function(vehicleId) {
+  window.viewRuhsatPdf = function(vehicleId, documentType) {
+    const dt = documentType || 'ruhsat';
+    const cfg = getVehicleDocumentConfig(dt);
     const vid = (vehicleId || window.currentDetailVehicleId || '').toString();
     if (!vid) return;
 
@@ -5649,11 +6313,12 @@ function renderVehicleDetailLeft(vehicle) {
     if (!vehicle) {
       vehicle = readVehicles().find(function(v) { return String(v.id) === vid; });
     }
-    if (!vehicle || !vehicle.ruhsatPath) return;
+    const docPath = vehicle ? getVehicleDocumentPath(vehicle, dt) : '';
+    if (!vehicle || !docPath) return;
 
-    const url = buildRuhsatDocumentUrl(vid) || resolveRuhsatUrl(vehicle.ruhsatPath, vid);
-    const isImage = isRuhsatImagePath(vehicle.ruhsatPath);
-    fetchRuhsatDocumentObjectUrl(vid, url)
+    const url = buildRuhsatDocumentUrl(vid, dt) || resolveRuhsatUrl(docPath, vid, dt);
+    const isImage = isRuhsatImagePath(docPath);
+    fetchRuhsatDocumentObjectUrl(vid, url, dt)
       .then(function(objectUrl) {
         const targetUrl = isImage
           ? objectUrl
@@ -5661,13 +6326,13 @@ function renderVehicleDetailLeft(vehicle) {
         openUrlInNewTab(targetUrl);
       })
       .catch(function(err) {
-        console.error('Ruhsat açılamadı', err);
+        console.error(cfg.label + ' açılamadı', err);
         var st = err && err.httpStatus;
-        var msg = 'Ruhsat görüntülenemedi.';
+        var msg = cfg.label + ' görüntülenemedi.';
         if (st === 404) {
-          msg = 'Ruhsat veya araç kaydı sunucuda bulunamadı (dosya eksik veya veri senkron değil). Sayfayı yenileyip tekrar deneyin.';
+          msg = cfg.label + ' veya araç kaydı sunucuda bulunamadı (dosya eksik veya veri senkron değil). Sayfayı yenileyip tekrar deneyin.';
         } else if (st === 401 || st === 403) {
-          msg = 'Bu ruhsat için oturum veya yetki yetersiz. Tekrar giriş yapmayı deneyin.';
+          msg = 'Bu belge için oturum veya yetki yetersiz. Tekrar giriş yapmayı deneyin.';
         }
         alert(msg);
       });
@@ -7221,6 +7886,7 @@ function renderVehicleDetailLeft(vehicle) {
       'kredi-guncelle': 'Hak Mahrumiyeti',
       'takip-cihaz-guncelle': 'Takip cihaz\u0131',
       'not-guncelle': 'Kullanıcı notu',
+      'vehicle-created': 'Yeni Taşıt',
       'satis': 'Sat\u0131\u015F/Pert',
       'ruhsat-yukle': 'Ruhsat'
     };
@@ -7236,6 +7902,14 @@ function renderVehicleDetailLeft(vehicle) {
     const isimStr = isim ? formatAdSoyad(String(isim)) : 'Bilinmiyor';
     const plateStr = (plate || '-').toString().trim();
     const type = (ev.type || '').toString().trim();
+    if (type === 'vehicle-created') {
+      const createdPlate = (ev.data && ev.data.plakaSnapshot) || plate || '-';
+      return 'Yeni Taşıt Bilgisi Kaydedildi. (' + String(createdPlate).trim() + ')';
+    }
+    if (type === 'satis') {
+      const soldPlate = (ev.data && ev.data.plakaSnapshot) || plate || '-';
+      return String(soldPlate).trim() + ' Plakalı Taşıt, Satış/Pert Nedeniyle Arşive Kaldırıldı.';
+    }
     if (type === 'lastik-guncelle') {
       const durum = String(evData.durum || 'yok').toLowerCase();
       const durumTxt = durum === 'var' ? 'Var' : 'Yok';
@@ -7286,36 +7960,6 @@ function renderVehicleDetailLeft(vehicle) {
     return 'diger';
   }
 
-  const SPECIAL_NOTIF_FIRST_SEEN_PREFIX = 'medisa_special_notif_first_seen_';
-
-  function getSpecialNotifFirstSeenStorageKey(notificationKey) {
-    return SPECIAL_NOTIF_FIRST_SEEN_PREFIX + String(notificationKey || '');
-  }
-
-  function getOrCreateSpecialNotifFirstSeen(notificationKey) {
-    const storageKey = getSpecialNotifFirstSeenStorageKey(notificationKey);
-    let firstSeenDisplay = localStorage.getItem(storageKey);
-    if (!firstSeenDisplay) {
-      firstSeenDisplay = formatDateForDisplay(new Date()) || '-';
-      localStorage.setItem(storageKey, firstSeenDisplay);
-    }
-    return firstSeenDisplay;
-  }
-
-  function cleanupSpecialNotifFirstSeen(activeNotificationKeys) {
-    const activeStorageKeys = (activeNotificationKeys || []).map(getSpecialNotifFirstSeenStorageKey);
-    const keysToRemove = [];
-
-    for (let i = 0; i < localStorage.length; i++) {
-      const storageKey = localStorage.key(i);
-      if (storageKey && storageKey.indexOf(SPECIAL_NOTIF_FIRST_SEEN_PREFIX) === 0 && activeStorageKeys.indexOf(storageKey) === -1) {
-        keysToRemove.push(storageKey);
-      }
-    }
-
-    keysToRemove.forEach(key => localStorage.removeItem(key));
-  }
-
   function shouldOpenNotificationsFromUrl() {
     try {
       const params = new URLSearchParams(window.location.search || '');
@@ -7350,7 +7994,11 @@ function renderVehicleDetailLeft(vehicle) {
     const vehicles = readVehicles();
     const notifications = [];
     const pendingGeneralRequests = [];
-    const activeSpecialNotificationKeys = [];
+    const viewedKeys = getViewedNotificationKeys();
+    const dismissedKeys = getDismissedNotificationKeys();
+    const notifScopeKey = getCurrentNotifScopeKey();
+    beginNotificationFirstSeenBatch(notifScopeKey);
+    const feedKeys = {};
     let hasUnreadActivity = false;
     let hasUnreadMarkableNotification = false;
     const showDesktopSpecialNotifDate = window.innerWidth >= 641;
@@ -7404,6 +8052,10 @@ function renderVehicleDetailLeft(vehicle) {
       // Muayene kontrolü
       if (vehicle.muayeneDate) {
         const warning = checkDateWarnings(vehicle.muayeneDate);
+        if (isEgzozMuayeneCritical(vehicle)) {
+          warning.class = 'date-warning-red';
+          if (typeof warning.days !== 'number') warning.days = -1;
+        }
         if (warning.class) {
           const days = warning.days;
           const status = days < 0 ? 'geçmiş' : days <= 3 ? 'çok yakın' : 'yaklaşıyor';
@@ -7420,22 +8072,24 @@ function renderVehicleDetailLeft(vehicle) {
         }
       }
 
-      if (vehicle.egzozMuayeneDate && vehicle.egzozMuayeneDate !== vehicle.muayeneDate) {
-        const warning = checkDateWarnings(vehicle.egzozMuayeneDate);
-        if (warning.class) {
-          const days = warning.days;
-          const status = days < 0 ? 'geçmiş' : days <= 3 ? 'çok yakın' : 'yaklaşıyor';
-          notifications.push({
-            type: 'egzoz',
-            vehicleId: vehicle.id,
-            plate: plate,
-            brandModel: brandModel,
-            date: vehicle.egzozMuayeneDate,
-            days: days,
-            warningClass: warning.class,
-            status: status
-          });
-        }
+      const egzozState = getEgzozMuayeneState(vehicle);
+      if (egzozState.warningClass) {
+        const days = typeof egzozState.days === 'number' ? egzozState.days : -1;
+        const status = egzozState.state === 'missing'
+          ? 'eksik'
+          : (days < 0 ? 'geçmiş' : days <= 3 ? 'çok yakın' : 'yaklaşıyor');
+
+        notifications.push({
+          type: 'egzoz',
+          vehicleId: vehicle.id,
+          plate: plate,
+          brandModel: brandModel,
+          date: egzozState.date || 'missing',
+          days: days,
+          warningClass: egzozState.warningClass,
+          status: status,
+          missing: egzozState.state === 'missing'
+        });
       }
     });
 
@@ -7504,11 +8158,12 @@ function renderVehicleDetailLeft(vehicle) {
     // Kullanıcı paneli işlemleri: tüm taşıtlardan son olayları topla (en yeni 15)
     const recentEvents = [];
     vehicles.forEach(vehicle => {
-      if (vehicle.satildiMi) return;
-      const events = vehicle.events || [];
+      const events = Array.isArray(vehicle.events) ? vehicle.events : [];
       const plate = vehicle.plate || '-';
       const brandModel = formatBrandModel(vehicle.brandModel || '-');
+      const isArchivedVehicle = vehicle.satildiMi === true;
       events.forEach(ev => {
+        if (isArchivedVehicle && (!ev || ev.type !== 'satis')) return;
         recentEvents.push({
           vehicleId: vehicle.id,
           plate: plate,
@@ -7522,40 +8177,60 @@ function renderVehicleDetailLeft(vehicle) {
 
     // MTV hatırlatması: Ocak (0) veya Temmuz (6), ayın 21'i ve sonrası, ödeme yapılmadıysa
     let mtvHtml = '';
+    let mtvSortMs = 0;
     const today = new Date();
     const m = today.getMonth();
     const d = today.getDate();
     const y = today.getFullYear();
     if ((m === 0 || m === 6) && d >= 21) {
-      const mtvKey = 'mtv_paid_' + y + '_' + m;
-      if (!localStorage.getItem(mtvKey)) {
+      const mtvLegacyKey = 'mtv_paid_' + y + '_' + m;
+      const mtvKey = 'special|mtv|' + y + '|' + String(m + 1).padStart(2, '0');
+      if (localStorage.getItem(mtvLegacyKey) && dismissedKeys.indexOf(mtvKey) === -1) {
+        dismissNotificationKeys([mtvKey]);
+      }
+      if (dismissedKeys.indexOf(mtvKey) === -1) {
         const mtvKeyEsc = (mtvKey || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
-        const mtvFirstSeenDisplay = getOrCreateSpecialNotifFirstSeen(mtvKey);
+        const mtvRead = viewedKeys.indexOf(mtvKey) !== -1;
+        const mtvStateClass = mtvRead ? ' notification-read' : ' notification-unread date-warning-orange-border';
+        const mtvStyle = mtvRead
+          ? '--notif-border: rgba(130, 130, 130, 0.55); --notif-fg: #9a9a9a;'
+          : '--notif-border: rgba(255, 140, 0, 0.6); --notif-fg: #fff;';
+        const mtvFirstSeenDisplay = getOrCreateNotificationFirstSeen(mtvKey);
+        mtvSortMs = parseNotificationDisplayDateMs(mtvFirstSeenDisplay);
         const mtvDateHtml = showDesktopSpecialNotifDate ? '<div class="notif-line2 notif-meta-date">' + escapeHtml(mtvFirstSeenDisplay) + '</div>' : '';
-        activeSpecialNotificationKeys.push(mtvKey);
-        mtvHtml = '<div class="notification-item mtv-notification"><div class="mtv-text-container"><div class="mtv-main-text notif-line1">Ayın Son Gününe Kadar MTV Ödemelerinin Yapılması Gerekmektedir.</div>' + mtvDateHtml + '</div><div class="mtv-dismiss-wrapper"><button type="button" class="mtv-dismiss-btn" onclick="dismissMTVNotif(event, \'' + mtvKeyEsc + '\')" aria-label="Bildirimi Kapat"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></button><div class="mtv-tooltip">Ödeme Yapıldıysa Bildirimi Silebilirsiniz.</div></div></div>';
-        hasOrange = true;
+        mtvHtml = '<div class="notification-item mtv-notification' + mtvStateClass + '" data-notif-key="' + escapeHtml(mtvKey) + '" data-dismiss-key="' + escapeHtml(mtvKey) + '" style="' + mtvStyle + '"><div class="mtv-text-container"><div class="mtv-main-text notif-line1">Ay\u0131n Son G\u00fcn\u00fcne Kadar MTV \u00d6demelerinin Yap\u0131lmas\u0131 Gerekmektedir.</div>' + mtvDateHtml + '</div><div class="mtv-dismiss-wrapper"><button type="button" class="mtv-dismiss-btn" onclick="dismissMTVNotif(event, \'' + mtvKeyEsc + '\')" aria-label="Bildirimi Kapat"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></button><div class="mtv-tooltip">\u00d6deme Yap\u0131ld\u0131ysa Bildirimi Silebilirsiniz.</div></div></div>';
+        if (!mtvRead) hasUnreadMarkableNotification = true;
+        if (!mtvRead) hasOrange = true;
       }
     }
 
     // Kasko Excel hatırlatması: Liste bu aya ait değilse (Excel yüklenince veya X ile silinene kadar kırmızı kalır)
     let kaskoExcelHtml = '';
+    let kaskoExcelSortMs = 0;
     migrateLegacyKaskoListIfNeeded();
     const kaskoState = getKaskoState();
     const kaskoListeGuncel = String(kaskoState.period || '') === (String(y) + '-' + String(m + 1).padStart(2, '0'));
     if (!kaskoListeGuncel) {
-      const kaskoKey = 'kasko_excel_dismiss_' + y + '_' + m;
-      if (!localStorage.getItem(kaskoKey)) {
+      const kaskoLegacyKey = 'kasko_excel_dismiss_' + y + '_' + m;
+      const kaskoKey = 'special|kaskoExcel|' + y + '|' + String(m + 1).padStart(2, '0');
+      if (localStorage.getItem(kaskoLegacyKey) && dismissedKeys.indexOf(kaskoKey) === -1) {
+        dismissNotificationKeys([kaskoKey]);
+      }
+      if (dismissedKeys.indexOf(kaskoKey) === -1) {
         const kaskoKeyEsc = (kaskoKey || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'");
-        const kaskoFirstSeenDisplay = getOrCreateSpecialNotifFirstSeen(kaskoKey);
+        const kaskoRead = viewedKeys.indexOf(kaskoKey) !== -1;
+        const kaskoStateClass = kaskoRead ? ' notification-read' : ' notification-unread date-warning-red-border';
+        const kaskoStyle = kaskoRead
+          ? '--notif-border: rgba(130, 130, 130, 0.55); --notif-fg: #9a9a9a;'
+          : '--notif-border: rgba(212, 0, 0, 0.6); --notif-fg: #fff;';
+        const kaskoFirstSeenDisplay = getOrCreateNotificationFirstSeen(kaskoKey);
+        kaskoExcelSortMs = parseNotificationDisplayDateMs(kaskoFirstSeenDisplay);
         const kaskoDateHtml = showDesktopSpecialNotifDate ? '<div class="notif-line2 notif-meta-date">' + escapeHtml(kaskoFirstSeenDisplay) + '</div>' : '';
-        activeSpecialNotificationKeys.push(kaskoKey);
-        kaskoExcelHtml = '<div class="notification-item kasko-excel-notification" data-action="open-dis-veri"><div class="mtv-text-container"><div class="mtv-main-text notif-line1">Güncel Kasko Değer Listesinin Yüklenmesi Gerekmektedir.</div>' + kaskoDateHtml + '</div><div class="mtv-dismiss-wrapper"><button type="button" class="mtv-dismiss-btn" onclick="dismissKaskoExcelNotif(event, \'' + kaskoKeyEsc + '\')" aria-label="Bildirimi Kapat"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button><div class="mtv-tooltip">Kapat</div></div></div>';
-        hasRed = true;
+        kaskoExcelHtml = '<div class="notification-item kasko-excel-notification' + kaskoStateClass + '" data-action="open-dis-veri" data-notif-key="' + escapeHtml(kaskoKey) + '" data-dismiss-key="' + escapeHtml(kaskoKey) + '" style="' + kaskoStyle + '"><div class="mtv-text-container"><div class="mtv-main-text notif-line1">G\u00fcncel Kasko De\u011fer Listesinin Y\u00fcklenmesi Gerekmektedir.</div>' + kaskoDateHtml + '</div><div class="mtv-dismiss-wrapper"><button type="button" class="mtv-dismiss-btn" onclick="dismissKaskoExcelNotif(event, \'' + kaskoKeyEsc + '\')" aria-label="Bildirimi Kapat"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button><div class="mtv-tooltip">Kapat</div></div></div>';
+        if (!kaskoRead) hasUnreadMarkableNotification = true;
+        if (!kaskoRead) hasRed = true;
       }
     }
-
-    cleanupSpecialNotifFirstSeen(activeSpecialNotificationKeys);
 
     // Bildirimleri güncelle
     const notifDropdown = DOM.notificationsDropdown;
@@ -7581,57 +8256,113 @@ function renderVehicleDetailLeft(vehicle) {
         return d.getTime();
       })();
       const notifFeed = [];
+      function parseNotificationDisplayDateMs(displayDate) {
+        const raw = String(displayDate || '').trim();
+        if (!raw) return 0;
+        const trMatch = raw.match(/^(\d{2})[./-](\d{2})[./-](\d{4})$/);
+        if (trMatch) {
+          const day = Number(trMatch[1]);
+          const month = Number(trMatch[2]);
+          const year = Number(trMatch[3]);
+          const d = new Date(year, month - 1, day, 0, 0, 0, 0);
+          if (!isNaN(d.getTime())) return d.getTime();
+        }
+        const parsed = Date.parse(raw);
+        if (!isNaN(parsed)) return parsed;
+        return 0;
+      }
+      function pushNotifFeedOnce(notifKey, t, h) {
+        const normalizedKey = String(notifKey || '').trim();
+        if (!normalizedKey || feedKeys[normalizedKey]) return false;
+        feedKeys[normalizedKey] = true;
+        notifFeed.push({ t: t, h: h });
+        return true;
+      }
       if (mtvHtml) {
-        notifFeed.push({ t: tStart - 2, h: mtvHtml });
+        pushNotifFeedOnce('special|mtv|' + y + '|' + String(m + 1).padStart(2, '0'), mtvSortMs || tStart, mtvHtml);
       }
       if (kaskoExcelHtml) {
-        notifFeed.push({ t: tStart - 1, h: kaskoExcelHtml });
+        pushNotifFeedOnce('special|kaskoExcel|' + y + '|' + String(m + 1).padStart(2, '0'), kaskoExcelSortMs || tStart, kaskoExcelHtml);
       }
 
       if (pendingGeneralRequests.length > 0) {
-        const topicMap = { talep: 'Talep', sikayet: 'Şikayet', oneri: 'Öneri', diger: 'Diğer' };
+        function notificationFeedbackTopicLabel(typeRaw) {
+          var s = String(typeRaw || 'talep').toLocaleLowerCase('tr-TR');
+          if (s === 'sikayet' || s === 'şikayet') return '\u015Eikayet';
+          if (s === 'oneri' || s === '\u00f6neri') return '\u00d6neri';
+          if (s === 'diger' || s === 'di\u011fer') return 'Di\u011fer';
+          if (s === 'gorus' || s === 'g\u00f6r\u00fc\u015f') return 'G\u00f6r\u00fc\u015f';
+          return 'Talep';
+        }
+        function notificationFeedbackIsRedSeverity(typeRaw) {
+          var s = String(typeRaw || '').toLocaleLowerCase('tr-TR');
+          return s === 'sikayet' || s === 'şikayet';
+        }
         pendingGeneralRequests.forEach(function(request, reqIdx) {
-          const topic = topicMap[request.type] || 'Talep';
-          const dateDisplay = medisaNotificationTalepDisplay(request.date);
-          const messageText = `${request.userName}, ${request.plate} Plakalı Taşıt İçin ${topic} Gönderdi.`;
-          const detailText = request.message ? '<div class="notif-line2 notif-detail">' + escapeHtml(request.message) + '</div>' : '';
-          const h = `<button type="button" data-action="open-driver-report" style="--notif-border: rgba(212, 0, 0, 0.85); --notif-fg: #ccc;" class="notification-item notification-item-feedback notification-unread date-warning-red-border">
-          <div class="notif-line1 notif-title"><span class="date-warning-red">${escapeHtml(messageText)}</span></div>
-          ${detailText}
-          <div class="notif-line2 notif-meta-date">${escapeHtml(dateDisplay)}</div>
-        </button>`;
+          var topic = notificationFeedbackTopicLabel(request.type);
+          var messageText = request.userName + ', ' + request.plate + ' Plakal\u0131 Ta\u015f\u0131t \u0130\u00e7in ' + topic + ' G\u00f6nderdi.';
+          var notifKey = 'request|general|' + String(request.id || reqIdx);
+          var dateDisplay = getOrCreateNotificationFirstSeen(notifKey);
+          var isRead = viewedKeys.indexOf(notifKey) !== -1;
+          var borderClass = !isRead && notificationFeedbackIsRedSeverity(request.type)
+            ? 'date-warning-red-border'
+            : (!isRead ? 'date-warning-orange-border' : '');
+          var titleClass = !isRead && notificationFeedbackIsRedSeverity(request.type)
+            ? 'date-warning-red'
+            : (!isRead ? 'date-warning-orange' : 'notif-read-text');
+          var stateClass = isRead ? ' notification-read' : ' notification-unread';
+          var notifStyle = isRead ? '--notif-border: rgba(130, 130, 130, 0.55); --notif-fg: #9a9a9a;' : '';
+          var h = '<button type="button" data-action="open-driver-report" data-notif-key="' + escapeHtml(notifKey) + '" style="' + notifStyle + '" class="notification-item notification-item-feedback' + stateClass + (borderClass ? ' ' + borderClass : '') + '">' +
+          '<div class="notif-line1 notif-title"><span class="' + titleClass + '">' + escapeHtml(messageText) + '</span></div>' +
+          '<div class="notif-line2 notif-meta-date">' + escapeHtml(dateDisplay) + '</div>' +
+        '</button>';
           var baseMs = medisaNotificationTalepSortMs(request.date);
           if (baseMs <= 0) {
-            baseMs = tStart + 12 * 3600 * 1000;
+            baseMs = parseNotificationDisplayDateMs(dateDisplay);
           }
-          const t = baseMs + reqIdx * 1e-6;
-          notifFeed.push({ t: t, h: h });
+          if (baseMs <= 0) {
+            baseMs = tStart;
+          }
+          var t = baseMs - reqIdx * 1e-6;
+          pushNotifFeedOnce(notifKey, t, h);
+          if (!isRead) hasUnreadMarkableNotification = true;
+          if (!isRead && notificationFeedbackIsRedSeverity(request.type)) {
+            hasRed = true;
+          } else if (!isRead) {
+            hasOrange = true;
+          }
         });
-        hasRed = true;
       }
 
       if (pendingDuzeltmeRequests.length > 0) {
         pendingDuzeltmeRequests.forEach(function(request, dreqIdx) {
-          const dateDisplay = medisaNotificationTalepDisplay(request.date);
           const messageText = `${request.userName}, ${request.plate} plakalı taşıt için ${request.topic} (onay bekliyor).`;
-          const detailText = request.message ? '<div class="notif-line2 notif-detail">' + escapeHtml(request.message) + '</div>' : '';
-          const h = `<button type="button" data-action="open-driver-report" style="--notif-border: rgba(212, 0, 0, 0.85); --notif-fg: #ccc;" class="notification-item notification-item-feedback notification-unread date-warning-red-border">
-          <div class="notif-line1 notif-title"><span class="date-warning-red">${escapeHtml(messageText)}</span></div>
-          ${detailText}
+          const notifKey = 'request|correction|' + String(request.id || dreqIdx);
+          const dateDisplay = getOrCreateNotificationFirstSeen(notifKey);
+          const isRead = viewedKeys.indexOf(notifKey) !== -1;
+          const stateClass = isRead ? ' notification-read' : ' notification-unread';
+          const borderClass = isRead ? '' : ' date-warning-red-border';
+          const notifStyle = isRead ? '--notif-border: rgba(130, 130, 130, 0.55); --notif-fg: #9a9a9a;' : '';
+          const titleClass = isRead ? 'notif-read-text' : 'date-warning-red';
+          const h = `<button type="button" data-action="open-driver-report" data-notif-key="${escapeHtml(notifKey)}" style="${notifStyle}" class="notification-item notification-item-feedback${stateClass}${borderClass}">
+          <div class="notif-line1 notif-title"><span class="${titleClass}">${escapeHtml(messageText)}</span></div>
           <div class="notif-line2 notif-meta-date">${escapeHtml(dateDisplay)}</div>
         </button>`;
           var dbaseMs = medisaNotificationTalepSortMs(request.date);
           if (dbaseMs <= 0) {
-            dbaseMs = tStart + 12 * 3600 * 1000;
+            dbaseMs = parseNotificationDisplayDateMs(dateDisplay);
           }
-          const t = dbaseMs + dreqIdx * 1e-6;
-          notifFeed.push({ t: t, h: h });
+          if (dbaseMs <= 0) {
+            dbaseMs = tStart;
+          }
+          const t = dbaseMs - dreqIdx * 1e-6;
+          pushNotifFeedOnce(notifKey, t, h);
+          if (!isRead) hasUnreadMarkableNotification = true;
+          if (!isRead) hasRed = true;
         });
-        hasRed = true;
       }
 
       if (notifications.length > 0) {
-        const viewedKeys = getViewedNotificationKeys();
         notifications.sort((a, b) => {
           if (a.warningClass === 'date-warning-red' && b.warningClass !== 'date-warning-red') return -1;
           if (a.warningClass !== 'date-warning-red' && b.warningClass === 'date-warning-red') return 1;
@@ -7639,14 +8370,18 @@ function renderVehicleDetailLeft(vehicle) {
         });
         notifications.forEach((notif, dIdx) => {
             const typeLabel = notif.type === 'sigorta' ? 'Sigorta' : notif.type === 'kasko' ? 'Kasko' : notif.type === 'egzoz' ? 'Egzos Muayenesi' : 'Muayene';
-            const activeDateDisplay = formatDateForDisplay(new Date()) || '-';
-            const notifKey = 'date|' + String(notif.vehicleId || '') + '|' + String(notif.type || '') + '|' + String(notif.date || '');
+            const notifKey = buildDateNotificationKey(notif);
+            const activeDateDisplay = getOrCreateNotificationFirstSeen(notifKey);
             const isRead = viewedKeys.indexOf(notifKey) !== -1;
             const isUnread = !isRead;
+            const isDateSeverity = notif.warningClass === 'date-warning-red' || notif.warningClass === 'date-warning-orange';
+            const shouldKeepSeverity = isDateSeverity;
 
             let messageText = '';
             if (notif.days <= 0 && notif.type === 'kasko') {
                 messageText = `${notif.plate} Plakalı Taşıtın Kasko Süresi Bitmiştir.`;
+            } else if (notif.type === 'egzoz' && notif.missing) {
+                messageText = `${notif.plate} Plakalı Taşıtın Egzos Muayenesi Tarihi Eksiktir.`;
             } else if (notif.days <= 0 && notif.type === 'egzoz') {
                 messageText = `${notif.plate} Plakalı Taşıtın Egzos Muayenesi Süresi Bitmiştir.`;
             } else if (notif.days <= 0 && notif.type === 'muayene') {
@@ -7670,38 +8405,47 @@ function renderVehicleDetailLeft(vehicle) {
             const safeVid = (notif.vehicleId || '').toString().replace(/"/g, '&quot;');
             const safeKey = notifKey.replace(/"/g, '&quot;');
             const stateClass = isUnread ? ' notification-unread' : ' notification-read';
+            const borderClass = (shouldKeepSeverity || isUnread) ? (notif.warningClass + '-border') : '';
+            const titleClass = (shouldKeepSeverity || isUnread) ? notif.warningClass : 'notif-read-text';
+            const notifStyle = shouldKeepSeverity
+              ? `--notif-border: ${borderColor}; --notif-fg: var(--theme-color);`
+              : (isUnread
+                ? `--notif-border: ${borderColor}; --notif-fg: #ccc;`
+                : `--notif-border: ${readBorderColor}; --notif-fg: #9a9a9a;`);
             if (isUnread) hasUnreadMarkableNotification = true;
-            if (isUnread && notif.warningClass === 'date-warning-red') hasRed = true;
-            if (isUnread && notif.warningClass === 'date-warning-orange') hasOrange = true;
+            if (notif.warningClass === 'date-warning-red') {
+              hasRed = true;
+            } else if (notif.warningClass === 'date-warning-orange') {
+              hasOrange = true;
+            }
 
-            const h = `<button type="button" data-plate="${safePlate}" data-vehicle-id="${safeVid}" data-notif-key="${safeKey}" style="--notif-border: ${isUnread ? borderColor : readBorderColor}; --notif-fg: ${isUnread ? '#ccc' : '#9a9a9a'};" class="notification-item ${isUnread ? (notif.warningClass + '-border') : ''}${stateClass}">
+            const h = `<button type="button" data-plate="${safePlate}" data-vehicle-id="${safeVid}" data-notif-key="${safeKey}" style="${notifStyle}" class="notification-item ${borderClass}${stateClass}">
             <div class="notif-line1 notif-title">
-              <span class="${isUnread ? notif.warningClass : 'notif-read-text'}">${escapeHtml(messageText)}</span>
+              <span class="${titleClass}">${escapeHtml(messageText)}</span>
             </div>
             <div class="notif-line2 notif-meta-date">${escapeHtml(activeDateDisplay)}</div>
           </button>`;
-            notifFeed.push({ t: tStart + 1000 + dIdx, h: h });
+            const firstSeenMs = parseNotificationDisplayDateMs(activeDateDisplay);
+            const t = (firstSeenMs || tStart) - dIdx * 1e-6;
+            pushNotifFeedOnce(notifKey, t, h);
         });
       }
 
       if (recentSlice.length > 0) {
-        const viewedKeys = getViewedNotificationKeys();
         recentSlice.forEach((item, aIdx) => {
           const ev = item.event;
-          const dateDisplay = formatDateForDisplay(ev.date) || '-';
           const historyTab = getHistoryTabForEventType(ev.type);
           const safePlate = (item.plate || '').replace(/"/g, '&quot;');
           const safeVid = String(item.vehicleId || '').replace(/"/g, '&quot;');
-          const plateNorm = (item.plate || '').toString().trim();
-          const typeNorm = (ev.type || '').toString().trim();
-          const notifKey = plateNorm + '|' + typeNorm + '|' + dateDisplay;
+          const notifKey = buildEventNotificationKey(item);
+          const dateDisplay = getOrCreateNotificationFirstSeen(notifKey);
           const safeKey = notifKey.replace(/"/g, '&quot;');
           const isUnread = viewedKeys.indexOf(notifKey) === -1;
           if (isUnread) {
             hasUnreadActivity = true;
             hasUnreadMarkableNotification = true;
           }
-          const unreadClass = isUnread ? ' notification-unread' : '';
+          const unreadClass = isUnread ? ' notification-unread' : ' notification-read';
           const unreadStyle = isUnread
             ? '--notif-border: rgba(212, 0, 0, 0.85); --notif-fg: #ccc;'
             : '--notif-border: rgba(130, 130, 130, 0.55); --notif-fg: #9a9a9a;';
@@ -7710,16 +8454,17 @@ function renderVehicleDetailLeft(vehicle) {
           <div class="notif-line1 notif-title">${escapeHtml(activityMsg)}</div>
           <div class="notif-line2 notif-meta-date">${escapeHtml(dateDisplay)}</div>
         </button>`;
-          const t = getEventSortTime(ev) + aIdx * 1e-6;
-          notifFeed.push({ t: t, h: h });
+          const t = getEventSortTime(ev) - aIdx * 1e-6;
+          pushNotifFeedOnce(notifKey, t, h);
         });
       }
 
       notifFeed.sort(function(a, b) { return b.t - a.t; });
       let html = notifFeed.map(function(x) { return x.h; }).join('');
+      const hasUnreadInRenderedList = html.indexOf('notification-unread') !== -1;
 
       if (notifDropdown) {
-        if (hasUnreadMarkableNotification) {
+        if (hasUnreadMarkableNotification || hasUnreadInRenderedList) {
           html = `<div class="notifications-toolbar"><button type="button" class="notifications-mark-all-read-btn" data-notification-action="mark-all-read">Tümünü Okundu Olarak İşaretle</button></div>` + html;
         }
         notifDropdown.innerHTML = html;
@@ -7742,6 +8487,7 @@ function renderVehicleDetailLeft(vehicle) {
            Turuncu: yalnız yaklaşan tarih uyarıları için kullanılır. */
       }
     }
+    flushNotificationFirstSeenBatch();
     openNotificationsFromReturnParam();
   };
 
@@ -7767,10 +8513,7 @@ function renderVehicleDetailLeft(vehicle) {
       textSpan.style.color = 'var(--txt-muted)';
     }
 
-    localStorage.setItem(key, 'true');
-    if (typeof window.updateNotifications === 'function') {
-      window.updateNotifications();
-    }
+    dismissNotificationKeys([key]);
   };
 
   window.dismissKaskoExcelNotif = function(event, key) {
@@ -7794,10 +8537,7 @@ function renderVehicleDetailLeft(vehicle) {
       textSpan.style.color = 'var(--txt-muted)';
     }
 
-    localStorage.setItem(key, 'true');
-    if (typeof window.updateNotifications === 'function') {
-      window.updateNotifications();
-    }
+    dismissNotificationKeys([key]);
   };
 
   // Sayfa yüklendiğinde ve veri değiştiğinde bildirimleri güncelle
