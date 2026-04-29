@@ -1729,7 +1729,13 @@
   if (DOM.notificationsDropdown && !DOM.notificationsDropdown._notifDelegationBound) {
     DOM.notificationsDropdown._notifDelegationBound = true;
     DOM.notificationsDropdown.addEventListener('click', function(e) {
-      var actionBtn = e.target.closest('[data-notification-action]');
+      var rawTarget = e.target;
+      var targetEl = rawTarget && rawTarget.nodeType === 1
+        ? rawTarget
+        : (rawTarget && rawTarget.parentElement ? rawTarget.parentElement : null);
+      if (!targetEl || typeof targetEl.closest !== 'function') return;
+
+      var actionBtn = targetEl.closest('[data-notification-action]');
       if (actionBtn) {
         var toolbarAction = (actionBtn.getAttribute('data-notification-action') || '').toString().trim();
         if (toolbarAction === 'mark-all-read') {
@@ -1739,11 +1745,11 @@
           return;
         }
       }
-      var btn = e.target.closest('.notification-item');
+      var btn = targetEl.closest('.notification-item');
       if (!btn) return;
       var action = (btn.getAttribute('data-action') || '').toString().trim();
       var notifKey = (btn.getAttribute('data-notif-key') || '').toString().trim();
-      if (notifKey && !(e.target.closest && e.target.closest('.mtv-dismiss-btn'))) {
+      if (notifKey && !targetEl.closest('.mtv-dismiss-btn')) {
         markNotificationKeysAsViewed([notifKey]);
       }
       if (action === 'open-dis-veri') {

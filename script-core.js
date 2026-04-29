@@ -76,6 +76,10 @@ document.addEventListener('click', (e) => {
   if (submenu && submenu.contains(e.target)) {
     return;
   }
+  // Bildirim paneli içindeki click'leri de ignore et (toolbar ve kart tıklamaları çalışsın)
+  if (notif && notif.contains(e.target)) {
+    return;
+  }
   
   // Dışarı tıklandığında menüleri kapat
   if (menu && menu.classList.contains('open')) {
@@ -656,7 +660,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Lazy modül asset sürümleri — tek nesne; index.html içindeki style-core ?v= ile tasitlar sürümü uyumlu kalmalı
 var MEDISA_MODULE_VERSIONS = {
-  tasitlar: '20260429.2',
+  tasitlar: '20260429.3',
   raporlar: '20260422.1',
   kayitJs: '20260425.1',
   kayitCss: '20260425.1',
