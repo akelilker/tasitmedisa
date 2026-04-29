@@ -808,14 +808,37 @@ textarea.notes-auto-expand {
     max-height: 300px !important;
 }
 
-/* Kredi detay: resize ve scrollbar görünmesin (içerik 4 satıra kadar auto-expand, taşarsa wheel ile kayar) */
-#kredi-detay {
+/* Koşullu kayıt textarea alanları: içerik uzadıkça aşağı genişler */
+#vehicle-modal #anahtar-nerede,
+#vehicle-modal #kredi-detay {
     resize: none;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
+    min-height: 30px;
+    max-height: 180px;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    scrollbar-width: thin;
+    -ms-overflow-style: auto;
+    line-height: 1.35;
+    padding: 6px 8px;
+    box-sizing: border-box;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
 }
-#kredi-detay::-webkit-scrollbar {
-    display: none;
+
+#vehicle-modal #anahtar-nerede::-webkit-scrollbar,
+#vehicle-modal #kredi-detay::-webkit-scrollbar {
+    width: 6px;
+}
+
+#vehicle-modal #anahtar-nerede::-webkit-scrollbar-track,
+#vehicle-modal #kredi-detay::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#vehicle-modal #anahtar-nerede::-webkit-scrollbar-thumb,
+#vehicle-modal #kredi-detay::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.22);
+    border-radius: 4px;
 }
 
 .egzoz-toggle-section {
@@ -1666,7 +1689,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         padding-bottom: 0 !important;
     }
     
-    .form-input { height: 26px; font-size: 13px; padding: 4px 8px; }
+    .form-input:not(#anahtar-nerede):not(#kredi-detay) { height: 26px; font-size: 13px; padding: 4px 8px; }
     
     /* Sağ kolon çerçeveleri: mobilde 4px daralt (sağa taşmayı engelle) */
     #vehicle-modal .modal-column-right .form-input,
@@ -1684,7 +1707,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     }
     
     /* Sağ kolon textarea: min-height +1px */
-    #vehicle-modal .modal-column-right textarea.form-input:not(#vehicle-notes) {
+    #vehicle-modal .modal-column-right textarea.form-input:not(#vehicle-notes):not(#anahtar-nerede):not(#kredi-detay) {
         min-height: 73px !important;
     }
     #vehicle-modal #vehicle-notes {
@@ -1850,7 +1873,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         padding-bottom: 5px !important;
     }
     /* Sağ kolon inputları: +2px dikey yükseklik (22→24px, textarea 24→26px) */
-    #vehicle-modal .modal-body .modal-column-right .form-input,
+    #vehicle-modal .modal-body .modal-column-right .form-input:not(#anahtar-nerede):not(#kredi-detay),
     #vehicle-modal .modal-body .modal-column-right select {
         height: 24px !important;
         padding-top: 5px !important;
@@ -1869,7 +1892,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         width: 25px;
         min-width: 25px;
     }
-    #vehicle-modal .modal-body .modal-column-right textarea.form-input {
+    #vehicle-modal .modal-body .modal-column-right textarea.form-input:not(#anahtar-nerede):not(#kredi-detay) {
         padding-top: 6px !important;
         padding-bottom: 6px !important;
     }
