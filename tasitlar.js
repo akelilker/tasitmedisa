@@ -6082,6 +6082,23 @@ function renderVehicleDetailLeft(vehicle) {
     uploadBox.appendChild(selectBox);
     uploadBox.appendChild(input);
     content.appendChild(uploadBox);
+    var hintEl = document.createElement('p');
+    hintEl.className = 'ruhsat-upload-hint';
+    hintEl.id = 'ruhsat-upload-hint';
+    hintEl.textContent = 'Dosyayı seçtikten sonra alttaki «' + cfg.uploadButton + '» ile sunucuya gönderilir.';
+    content.appendChild(hintEl);
+    var progressWrap = document.createElement('div');
+    progressWrap.className = 'ruhsat-upload-progress';
+    progressWrap.id = 'ruhsat-upload-progress';
+    progressWrap.setAttribute('hidden', '');
+    progressWrap.setAttribute('aria-hidden', 'true');
+    progressWrap.innerHTML =
+      '<div class="ruhsat-upload-progress-label" id="ruhsat-upload-progress-label">Gönderiliyor</div>' +
+      '<div class="ruhsat-upload-progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="ruhsat-upload-progress-track">' +
+      '<div class="ruhsat-upload-progress-bar" id="ruhsat-upload-progress-bar" style="width:0%"></div>' +
+      '</div>' +
+      '<div class="ruhsat-upload-progress-pct" id="ruhsat-upload-progress-pct">0%</div>';
+    content.appendChild(progressWrap);
     input.onchange = function() {
       const hasFile = input.files.length > 0;
       setRuhsatSaveBtnVisibility(saveBtn, hasFile);
@@ -6098,6 +6115,96 @@ function renderVehicleDetailLeft(vehicle) {
       }
     };
     setRuhsatSaveBtnVisibility(saveBtn, input.files.length > 0);
+  }
+
+  function setRuhsatUploadProgressVisible(visible, percent, indeterminate) {
+    var wrap = document.getElementById('ruhsat-upload-progress');
+    var bar = document.getElementById('ruhsat-upload-progress-bar');
+    var pctEl = document.getElementById('ruhsat-upload-progress-pct');
+    var labelEl = document.getElementById('ruhsat-upload-progress-label');
+    var track = document.getElementById('ruhsat-upload-progress-track');
+    if (!wrap) return;
+    if (visible) {
+      wrap.removeAttribute('hidden');
+      wrap.setAttribute('aria-hidden', 'false');
+    } else {
+      wrap.setAttribute('hidden', '');
+      wrap.setAttribute('aria-hidden', 'true');
+    }
+    var p = typeof percent === 'number' ? Math.max(0, Math.min(100, Math.round(percent))) : 0;
+    if (bar) {
+      bar.classList.toggle('ruhsat-upload-progress-bar--indeterminate', !!indeterminate);
+      if (indeterminate) {
+        bar.style.width = '';
+      } else {
+        bar.style.width = p + '%';
+      }
+    }
+    if (pctEl) {
+      pctEl.textContent = indeterminate ? '…' : (p + '%');
+      pctEl.classList.toggle('ruhsat-upload-progress-pct--indeterminate', !!indeterminate);
+    }
+    if (labelEl) {
+      labelEl.textContent = indeterminate ? 'Bağlanıyor…' : 'Sunucuya gönderiliyor';
+    }
+    if (track) {
+      track.setAttribute('aria-valuenow', indeterminate ? '0' : String(p));
+    }
+  }
+
+  function uploadVehicleDocumentXHR(formData, onProgress) {
+    return new Promise(function(resolve, reject) {
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', 'upload_ruhsat.php');
+      var headers = buildMedisaAuthHeaders();
+      Object.keys(headers).forEach(function(k) {
+        var v = headers[k];
+        if (v == null || String(k).toLowerCase() === 'content-type') return;
+        xhr.setRequestHeader(k, v);
+      });
+      xhr.upload.onprogress = function(ev) {
+        if (typeof onProgress !== 'function') return;
+        if (ev.lengthComputable) {
+          onProgress({ loaded: ev.loaded, total: ev.total, lengthComputable: true });
+        } else {
+          onProgress({ lengthComputable: false });
+        }
+      };
+      xhr.onload = function() {
+        var raw = xhr.responseText || '';
+        var data = {};
+        try {
+          data = raw ? JSON.parse(raw) : {};
+        } catch (e) {
+          data = {};
+        }
+        var st = xhr.status;
+        if (st < 200 || st >= 300 || !data.success) {
+          var err = new Error((data && (data.error || data.message)) ? (data.error || data.message) : ('Yükleme başarısız (HTTP ' + st + ')'));
+          err.status = st;
+          err.conflict = !!(data && data.conflict) || st === 409;
+          reject(err);
+          return;
+        }
+        resolve(data);
+      };
+      xhr.onerror = function() {
+        reject(new Error('Ağ hatası'));
+      };
+      xhr.send(formData);
+    });
+  }
+
+  function setRuhsatUploadUiLocked(locked) {
+    var saveBtn = document.getElementById('dinamik-olay-kaydet-btn') || DOM.dinamikOlayKaydetBtn;
+    var grp = document.getElementById('ruhsat-btn-group');
+    var cancelBtn = grp ? grp.querySelector('.universal-btn-cancel') : null;
+    var selectBox = document.querySelector('#ruhsat-modal-content .ruhsat-select-box');
+    if (saveBtn) saveBtn.disabled = !!locked;
+    if (cancelBtn) cancelBtn.disabled = !!locked;
+    if (selectBox) selectBox.classList.toggle('ruhsat-select-box--uploading', !!locked);
+    var inputEl = document.getElementById('ruhsat-file-input');
+    if (inputEl) inputEl.disabled = !!locked;
   }
 
   /**
@@ -6118,29 +6225,19 @@ function renderVehicleDetailLeft(vehicle) {
     formData.append('vehicleVersion', String(Number(vehicle.version) || 1));
     formData.append('documentType', cfg.key);
     formData.append('document', input.files[0]);
-    fetch('upload_ruhsat.php', {
-      method: 'POST',
-      body: formData,
-      headers: buildMedisaAuthHeaders()
+    setRuhsatUploadProgressVisible(true, 0, true);
+    setRuhsatUploadUiLocked(true);
+    uploadVehicleDocumentXHR(formData, function(info) {
+      if (!info || info.lengthComputable === false) {
+        setRuhsatUploadProgressVisible(true, 0, true);
+      } else {
+        var pct = info.total ? Math.round(100 * info.loaded / info.total) : 0;
+        setRuhsatUploadProgressVisible(true, pct, false);
+      }
     })
-      .then(function(r) {
-        return r.text().then(function(raw) {
-          let data = {};
-          try {
-            data = raw ? JSON.parse(raw) : {};
-          } catch (parseErr) {
-            data = {};
-          }
-          if (!r.ok || !data.success) {
-            const err = new Error((data && (data.error || data.message)) ? (data.error || data.message) : ('Yükleme başarısız (HTTP ' + r.status + ')'));
-            err.status = r.status;
-            err.conflict = !!(data && data.conflict) || r.status === 409;
-            throw err;
-          }
-          return data;
-        });
-      })
       .then(function(data) {
+        setRuhsatUploadProgressVisible(false, 0, false);
+        setRuhsatUploadUiLocked(false);
         invalidateRuhsatPreviewCache(vehicleId, cfg.key);
         invalidateRuhsatDocumentCache(vehicleId, cfg.key);
         const currentVehicles = window.appData?.tasitlar || [];
@@ -6179,6 +6276,8 @@ function renderVehicleDetailLeft(vehicle) {
         }
       })
       .catch(function(err) {
+        setRuhsatUploadProgressVisible(false, 0, false);
+        setRuhsatUploadUiLocked(false);
         console.error(err);
         const msg = String((err && err.message) || '').toLowerCase();
         const isConflict = !!(err && (err.conflict || msg.indexOf('guncel veriler y') !== -1 || msg.indexOf('güncel veriler y') !== -1));
