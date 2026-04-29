@@ -958,9 +958,9 @@ select.settings-form-select option,
     justify-content: space-between;
     gap: 10px;
     width: 100%;
-    min-height: 32px;
-    height: 32px;
-    padding: 3px 28px 3px 8px;
+    min-height: 35px;
+    height: 35px;
+    padding: 3px 24px 3px 8px;
     border: 1px solid rgba(255, 255, 255, 0.28) !important;
     border-radius: 6px;
     background: #0d131f !important;
@@ -1265,35 +1265,39 @@ input.settings-form-input:-moz-autofill,
   margin-top: 0 !important;
   margin-bottom: 6px !important;
   max-height: min(320px, 50vh);
-  border: none !important;
-  background: transparent !important;
-  box-shadow: none !important;
+  border: 1px solid rgba(190, 200, 214, 0.42) !important;
+  border-radius: 10px !important;
+  background: #101722 !important;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.48), inset 0 0 0 1px rgba(255, 255, 255, 0.06) !important;
   padding: 0 !important;
-  gap: 8px !important;
+  gap: 0 !important;
+  overflow: hidden !important;
 }
 #user-form-modal .user-vehicles-checkbox-list {
   max-height: 200px !important; /* 5 satır (~40px/satır), gerisi kaydırılır */
   overflow-y: auto !important;
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
-  border: 1px solid rgba(190, 200, 214, 0.42) !important;
-  border-radius: 10px !important;
-  background: #101722 !important;
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.48), inset 0 0 0 1px rgba(255, 255, 255, 0.06) !important;
+  border: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
   padding: 2px 0 !important;
   box-sizing: border-box !important;
 }
 #user-form-modal .user-vehicles-search-wrap {
-  border: 1px solid rgba(190, 200, 214, 0.42) !important;
-  border-radius: 10px !important;
-  background: #101722 !important;
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.48), inset 0 0 0 1px rgba(255, 255, 255, 0.06) !important;
+  border: none !important;
+  border-top: 1px solid rgba(190, 200, 214, 0.18) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
   padding: 8px !important;
   box-sizing: border-box !important;
 }
 #user-form-modal .user-vehicles-search-input {
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
-  border-radius: 8px !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  border-radius: 7px !important;
+  box-shadow: none !important;
 }
 #user-form-modal .user-vehicles-search-input:focus {
   border-color: var(--border-mid) !important;
@@ -1341,8 +1345,8 @@ input.settings-form-input:-moz-autofill,
 .user-vehicle-row {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px 14px;
+  gap: 8px;
+  padding: 10px 10px;
   font-size: 12px;
   color: var(--txt);
   background: transparent;
@@ -1369,7 +1373,7 @@ input.settings-form-input:-moz-autofill,
   flex-shrink: 0;
   width: 18px;
   height: 18px;
-  margin: 0;
+  margin: 0 0 0 1px;
   cursor: pointer;
   background-color: var(--bg-content) !important;
   border: 1px solid rgba(var(--theme-color-rgb), 0.65);
@@ -1894,7 +1898,7 @@ input.settings-form-input:-moz-autofill,
     #user-form-modal .modal-body .form-input:not(select):not(.medisa-owner-select-trigger) {
         width: 100%;
         max-width: 100%;
-        height: 27px !important;
+        height: 30px !important;
         padding-top: 5px !important;
         padding-bottom: 5px !important;
         padding-left: 8px;
@@ -1910,7 +1914,7 @@ input.settings-form-input:-moz-autofill,
     #user-form-modal .modal-body select.form-input {
         width: 100%;
         max-width: 100%;
-        height: 27px !important;
+        height: 30px !important;
         padding-top: 5px !important;
         padding-bottom: 5px !important;
         padding-left: 8px;
@@ -1978,6 +1982,7 @@ input.settings-form-input:-moz-autofill,
     width: 100% !important;
   }
   /* Yeni kullanıcı: Sil görünür değilken (inline display:flex yok) Kaydet+Vazgeç ikilisini ortala */
+  #branch-form-modal .universal-btn-group:has(#branch-delete-btn.u-hidden),
   #user-form-modal .universal-btn-group:not(:has(#user-delete-btn[style*="flex"])) {
     grid-template-columns: 1fr 1fr !important;
     width: min(100%, 320px) !important;
@@ -2024,10 +2029,10 @@ input.settings-form-input:-moz-autofill,
   #user-form-modal #user-role {
     -webkit-appearance: none !important;
     appearance: none !important;
-    padding-right: 22px !important;
+    padding-right: 20px !important;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23a0aec0' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") !important;
     background-repeat: no-repeat !important;
-    background-position: right 8px center !important;
+    background-position: right 5px center !important;
     background-size: 12px 12px !important;
   }
   #data-management-modal .data-management-actions,
