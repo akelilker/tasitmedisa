@@ -1047,6 +1047,7 @@ body.dashboard-page {
   white-space: nowrap;
   transition: width .18s ease, color .18s ease, background .18s ease, transform .18s ease;
   margin-left: auto;
+  transform: translateX(4px);
 }
 .driver-action-btn-feedback.driver-request-fab .driver-action-btn-feedback-icon {
   width: 24px;
@@ -1065,7 +1066,8 @@ body.dashboard-page {
   width: 132px;
   padding: 0 10px;
   color: #fff;
-  background: rgba(255, 255, 255, 0.06);
+  background: transparent;
+  box-shadow: none;
   border-radius: 8px;
 }
 .driver-action-btn-feedback.driver-request-fab:hover .driver-request-fab-label,
@@ -1079,6 +1081,8 @@ body.dashboard-page {
   .driver-action-btn-feedback.driver-request-fab:active {
     width: 132px;
     padding: 0 10px;
+    background: transparent;
+    box-shadow: none;
   }
   .driver-action-btn-feedback.driver-request-fab:focus .driver-request-fab-label,
   .driver-action-btn-feedback.driver-request-fab:active .driver-request-fab-label {
