@@ -1028,7 +1028,8 @@ const API_BASE = (function(){
         const containerMaxWidth = dashboardRect
             ? Math.max(220, Math.floor(dashboardRect.width - (containerPadding * 2)))
             : viewportMaxWidth;
-        const targetWidth = Math.min(620, viewportMaxWidth, containerMaxWidth);
+        const halfContainerWidth = Math.max(220, Math.floor(containerMaxWidth * 0.5));
+        const targetWidth = Math.min(420, viewportMaxWidth, containerMaxWidth, halfContainerWidth);
         const minLeft = dashboardRect ? Math.round(dashboardRect.left + containerPadding) : viewportPadding;
         const maxLeft = dashboardRect
             ? Math.round(dashboardRect.right - targetWidth - containerPadding)
