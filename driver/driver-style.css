@@ -1028,11 +1028,12 @@ body.dashboard-page {
 .driver-action-btn-feedback.driver-request-fab {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-end;
+  flex-direction: row-reverse;
   gap: 6px;
-  width: 30px;
-  min-width: 30px;
-  height: 30px;
+  width: 36px;
+  min-width: 36px;
+  height: 36px;
   padding: 0;
   border: none;
   background: transparent;
@@ -1044,8 +1045,8 @@ body.dashboard-page {
   transition: width .18s ease, color .18s ease, background .18s ease, transform .18s ease;
 }
 .driver-action-btn-feedback.driver-request-fab .driver-action-btn-feedback-icon {
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
   flex: 0 0 auto;
   color: currentColor;
 }
