@@ -1707,15 +1707,20 @@ body.dashboard-page {
   }
   /* Mobil dashboard header: sadece grid + logo hizası (yeni pseudo çizgi yok; tipografi aşağıda ayrı blokta) */
   .dashboard-page .hero.hero-two-rows {
-    grid-template-columns: minmax(56px, max-content) minmax(0, 1fr) 52px !important;
+    grid-template-columns: minmax(56px, max-content) minmax(0, 1fr) !important;
     column-gap: 4px !important;
   }
+  .dashboard-page .hero.hero-two-rows .hero-spacer {
+    display: none !important;
+  }
   .dashboard-page .hero.hero-two-rows .hero-title-block {
+    grid-column: 2 !important;
     justify-self: stretch !important;
     width: 100% !important;
+    max-width: 100% !important;
     min-width: 0 !important;
-    padding-left: 4px !important;
-    padding-right: 4px !important;
+    padding-left: 2px !important;
+    padding-right: 8px !important;
     box-sizing: border-box !important;
     transform: translateY(2px) !important;
   }
@@ -1761,11 +1766,12 @@ body.dashboard-page {
   }
   /* Mobil başlık metinleri 1pt küçük */
   .dashboard-page .hero.hero-two-rows .hero-title-block .hero-title-line {
-    width: 100%;
-    max-width: 100%;
-    font-size: clamp(14px, 4.2vw, 18px) !important;
-    letter-spacing: clamp(1px, 0.55vw, 2.2px) !important;
-    line-height: 1.15 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    font-size: clamp(12.5px, 3.9vw, 16px) !important;
+    letter-spacing: clamp(0.6px, 0.42vw, 1.6px) !important;
+    line-height: 1.12 !important;
     white-space: nowrap !important;
     overflow: visible !important;
     text-overflow: clip !important;
@@ -5434,10 +5440,13 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
 
   /* Mobil: h1 boyut ve harf aralığı (1pt küçük) */
-  .hero-title-wrap h1,
-  .dashboard-page .hero h1 {
+  .hero-title-wrap h1 {
     font-size: calc(22px - 0.5pt) !important; /* 23px - 1pt − 0.5pt */
     letter-spacing: 2.5px !important;
+  }
+  .dashboard-page .hero.hero-two-rows .hero-title-block .hero-title-line {
+    font-size: clamp(12.5px, 3.9vw, 16px) !important;
+    letter-spacing: clamp(0.6px, 0.42vw, 1.6px) !important;
   }
   .login-page .hero h1 {
     font-size: clamp(calc(17.8px - 0.5pt), 5.1vw, calc(21.8px - 0.5pt)) !important;
