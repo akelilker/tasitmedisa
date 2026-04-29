@@ -15,14 +15,8 @@ const API_BASE = (function() {
 
 const API_LOAD = API_BASE + 'load.php';
 const API_SAVE = API_BASE + 'save.php';
-const API_LOAD_KASKO = API_BASE + 'load_kasko.php';
-const API_SAVE_KASKO = API_BASE + 'save_kasko.php';
 const DRIVER_INDEX_URL = API_BASE + 'driver/';
 const DRIVER_DASHBOARD_URL = API_BASE + 'driver/dashboard.html';
-
-window.MEDISA_API_BASE = API_BASE;
-window.API_LOAD_KASKO = API_LOAD_KASKO;
-window.API_SAVE_KASKO = API_SAVE_KASKO;
 
 function getDefaultAppData() {
     return {
@@ -42,7 +36,6 @@ function getDefaultAppData() {
         kaskoDegerListesi: {
             updatedAt: '',
             period: '',
-            sourceFileName: '',
             rows: []
         },
         notificationReadState: {}
@@ -459,11 +452,9 @@ function loadDataFromLocalStorage() {
                 sifreler: data.sifreler || [],
                 arac_aylik_hareketler: data.arac_aylik_hareketler || [],
                 duzeltme_talepleri: data.duzeltme_talepleri || [],
-                /** Offline önbellekte ham kasko tablosu tutulmaz */
-                kaskoDegerListesi: {
-                    updatedAt: String((data.kaskoDegerListesi && data.kaskoDegerListesi.updatedAt) || ''),
-                    period: String((data.kaskoDegerListesi && data.kaskoDegerListesi.period) || ''),
-                    sourceFileName: String((data.kaskoDegerListesi && data.kaskoDegerListesi.sourceFileName) || ''),
+                kaskoDegerListesi: (data.kaskoDegerListesi && typeof data.kaskoDegerListesi === 'object') ? data.kaskoDegerListesi : {
+                    updatedAt: '',
+                    period: '',
                     rows: []
                 },
                 notificationReadState: (data.notificationReadState && typeof data.notificationReadState === 'object' && !Array.isArray(data.notificationReadState))
@@ -483,42 +474,6 @@ function loadDataFromLocalStorage() {
     syncDataLoadState();
     return window.appData;
 }
-
-/**
- * Ham kasko listesini ayrı endpoint’ten doldurur (data/kasko-deger-listesi.json).
- * @returns {Promise<boolean>}
- */
-async function loadKaskoListIntoAppData() {
-    try {
-        if (!ensureMainAppSession()) return false;
-        var url = API_LOAD_KASKO + '?t=' + Date.now();
-        var response = await fetch(url, {
-            method: 'GET',
-            headers: buildAuthHeaders({
-                'Content-Type': 'application/json',
-                'Cache-Control': 'no-cache'
-            }),
-            cache: 'no-store'
-        });
-        if (!response.ok) return false;
-        var txt = await response.text();
-        var kd = JSON.parse(txt);
-        if (!kd || typeof kd !== 'object') return false;
-        if (!window.appData || typeof window.appData !== 'object') window.appData = getDefaultAppData();
-        window.appData.kaskoDegerListesi = {
-            updatedAt: String(kd.updatedAt || ''),
-            period: String(kd.period || ''),
-            sourceFileName: String(kd.sourceFileName || ''),
-            rows: Array.isArray(kd.rows) ? kd.rows : []
-        };
-        if (typeof window.clearKaskoCache === 'function') window.clearKaskoCache();
-        return true;
-    } catch (e) {
-        return false;
-    }
-}
-
-window.loadKaskoListFromServer = loadKaskoListIntoAppData;
 
 async function loadDataFromServer(forceRefresh) {
     if (forceRefresh !== true && serverDatasetTrusted === true && hasUsableAppData(window.appData)) {
@@ -619,18 +574,19 @@ async function loadDataFromServer(forceRefresh) {
                 sifreler: data.sifreler || [],
                 arac_aylik_hareketler: data.arac_aylik_hareketler || [],
                 duzeltme_talepleri: data.duzeltme_talepleri || [],
-                kaskoDegerListesi: {
+                kaskoDegerListesi: (data.kaskoDegerListesi && typeof data.kaskoDegerListesi === 'object' && !Array.isArray(data.kaskoDegerListesi)) ? {
+                    updatedAt: String(data.kaskoDegerListesi.updatedAt || ''),
+                    period: String(data.kaskoDegerListesi.period || ''),
+                    rows: Array.isArray(data.kaskoDegerListesi.rows) ? data.kaskoDegerListesi.rows : []
+                } : {
                     updatedAt: '',
                     period: '',
-                    sourceFileName: '',
                     rows: []
                 },
                 notificationReadState: (data.notificationReadState && typeof data.notificationReadState === 'object' && !Array.isArray(data.notificationReadState))
                     ? data.notificationReadState
                     : {}
             };
-
-            await loadKaskoListIntoAppData();
 
             setMedisaSession(data.session || getSessionFromToken());
 
@@ -656,11 +612,14 @@ async function loadDataFromServer(forceRefresh) {
 }
 
 /**
- * @param {{ includeKaskoDegerListesi?: boolean }} [options] - includeKaskoDegerListesi eski API uyumu için yoksayılır.
+ * @param {{ includeKaskoDegerListesi?: boolean }} [options] - includeKaskoDegerListesi: true yalnızca kasko Excel / merkezi liste yazımı için.
  */
 async function saveDataToServer(options) {
     if (!ensureMainAppSession()) return false;
     if (!serverDatasetTrusted) return false;
+
+    var opts = (options && typeof options === 'object') ? options : {};
+    var includeKasko = opts.includeKaskoDegerListesi === true;
 
     var prevMutex = saveMutex;
     var releaseNext;
@@ -673,7 +632,11 @@ async function saveDataToServer(options) {
     syncDataLoadState();
     try {
         var payloadObj = Object.assign({}, window.appData);
-        delete payloadObj.kaskoDegerListesi;
+        if (!includeKasko) {
+            delete payloadObj.kaskoDegerListesi;
+        } else {
+            payloadObj.includeKaskoDegerListesiSave = true;
+        }
 
         var response = await fetch(API_SAVE, {
             method: 'POST',
@@ -728,7 +691,6 @@ async function saveDataToServer(options) {
                 version: '1.1',
                 source: 'auto_shadow_backup'
             });
-            delete autoBackup.kaskoDegerListesi;
             localStorage.setItem('medisa_server_backup', JSON.stringify(autoBackup));
         } catch (storageErr) {}
 
@@ -1039,7 +1001,6 @@ window.normalizeUsers = normalizeUsers;
 window.getMedisaSession = function() { return window.medisaSession || getDefaultSession(); };
 window.loadDataFromServer = loadDataFromServer;
 window.saveDataToServer = saveDataToServer;
-window.buildAuthHeaders = buildAuthHeaders;
 
 document.addEventListener('DOMContentLoaded', async function() {
     syncMainAppPortalLinks();
