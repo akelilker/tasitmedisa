@@ -991,6 +991,7 @@ select.settings-form-select option,
     height: 14px;
     flex: 0 0 auto;
     opacity: 0.82;
+    margin-right: -7px;
     transition: transform 140ms ease;
 }
 #user-form-modal .medisa-owner-select-trigger:focus,
