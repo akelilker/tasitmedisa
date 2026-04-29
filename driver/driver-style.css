@@ -5959,7 +5959,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
         transition: border-color 0.2s, color 0.2s, background 0.2s, transform 0.2s !important;
     }
     .dashboard-page .driver-action-buttons .driver-action-btn:hover {
-        transform: scale(1.018);
+        transform: none;
         border-color: rgba(238, 246, 255, 0.72) !important;
         color: var(--txt-white, #fff) !important;
         box-shadow: 0 0 9px rgba(238, 246, 255, 0.16) !important;
