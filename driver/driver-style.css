@@ -1077,6 +1077,16 @@ body.dashboard-page {
 }
 
 @media (max-width: 768px) {
+  .dashboard-page .driver-request-fab-row {
+    justify-content: flex-end !important;
+    padding-right: 4px !important;
+    box-sizing: border-box !important;
+  }
+  .dashboard-page .driver-action-btn-feedback.driver-request-fab {
+    margin-left: auto !important;
+    margin-right: 0 !important;
+    transform: none !important;
+  }
   .driver-action-btn-feedback.driver-request-fab:focus,
   .driver-action-btn-feedback.driver-request-fab:active {
     width: 132px;
@@ -1692,9 +1702,11 @@ body.dashboard-page {
   .dashboard-page .hero.hero-two-rows .hero-title-block {
     justify-self: stretch !important;
     width: 100% !important;
-    padding-left: 8px !important;
+    min-width: 0 !important;
+    padding-left: 4px !important;
+    padding-right: 4px !important;
     box-sizing: border-box !important;
-    transform: translateY(3px) !important;
+    transform: translateY(2px) !important;
   }
   .dashboard-page .hero.hero-two-rows .hero-logo {
     display: flex !important;
@@ -1740,18 +1752,25 @@ body.dashboard-page {
   .dashboard-page .hero.hero-two-rows .hero-title-block .hero-title-line {
     width: 100%;
     max-width: 100%;
-    font-size: clamp(calc(19px - 1pt - 0.5pt), 5.5vw, calc(23px - 1pt - 0.5pt)) !important;
-    letter-spacing: 2.5px !important;
-    line-height: 1.25 !important;
-    white-space: nowrap !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
+    font-size: clamp(17px, 4.8vw, 21px) !important;
+    letter-spacing: 2.2px !important;
+    line-height: 1.16 !important;
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    text-align: center !important;
   }
   .login-page .hero.hero-two-rows .hero-title-block .hero-title-line {
     font-size: clamp(calc(18px - 1pt - 0.5pt), 5vw, calc(22px - 1pt - 0.5pt)) !important;
   }
   .dashboard-page .hero-title-block .hero-panel-subtitle {
-    font-size: calc(17px - 1pt - 0.7pt - 0.5pt) !important;
+    font-size: clamp(15px, 4.2vw, 18px) !important;
+    letter-spacing: 3px !important;
+    line-height: 1.12 !important;
+    white-space: nowrap !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    text-align: center !important;
   }
   .login-page .hero-title-block .hero-panel-subtitle {
     font-size: calc(17px - 1pt - 0.5pt) !important;
