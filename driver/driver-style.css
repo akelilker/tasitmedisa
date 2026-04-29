@@ -2771,6 +2771,7 @@ body.dashboard-page {
 #edit-request-modal.driver-modal,
 #driver-event-menu-modal.driver-modal,
 #driver-password-modal.driver-modal,
+#driver-feedback-modal.driver-modal,
 #driver-anahtar-modal.driver-modal,
 #driver-lastik-modal.driver-modal,
 #driver-utts-modal.driver-modal,
@@ -2791,6 +2792,7 @@ body.dashboard-page {
 #edit-request-modal.driver-modal.show,
 #driver-event-menu-modal.driver-modal.show,
 #driver-password-modal.driver-modal.show,
+#driver-feedback-modal.driver-modal.show,
 #driver-anahtar-modal.driver-modal.show,
 #driver-lastik-modal.driver-modal.show,
 #driver-utts-modal.driver-modal.show,
@@ -2816,6 +2818,7 @@ body.dashboard-page {
   #edit-request-modal.driver-modal,
   #driver-event-menu-modal.driver-modal,
   #driver-password-modal.driver-modal,
+  #driver-feedback-modal.driver-modal,
   #driver-anahtar-modal.driver-modal,
   #driver-lastik-modal.driver-modal,
   #driver-utts-modal.driver-modal,
@@ -2880,8 +2883,10 @@ body.dashboard-page {
 /* Geçmiş Kayıtlar / Düzeltme Talebi açıkken footer modalın üstünde, ışıklar sabit ton */
 body.dashboard-page:has(#history-modal.driver-modal.show) #app-footer,
 body.dashboard-page:has(#edit-request-modal.driver-modal.show) #app-footer,
+body.dashboard-page:has(#driver-feedback-modal.driver-modal.show) #app-footer,
 body.login-page:has(#history-modal.driver-modal.show) #app-footer.login-footer,
-body.login-page:has(#edit-request-modal.driver-modal.show) #app-footer.login-footer {
+body.login-page:has(#edit-request-modal.driver-modal.show) #app-footer.login-footer,
+body.login-page:has(#driver-feedback-modal.driver-modal.show) #app-footer.login-footer {
   z-index: 100020 !important;
 }
 
