@@ -1018,23 +1018,32 @@ const API_BASE = (function(){
           dropdown.style.setProperty('transform', 'none', 'important');
           dropdown.style.setProperty('width', `${targetWidth}px`, 'important');
           dropdown.style.setProperty('max-width', `${targetWidth}px`, 'important');
-      } else {
-          // Desktop: anchor dropdown to the left edge and expand right.
-          const rowRect = row.getBoundingClientRect();
-          const viewportPadding = 16;
-          const availableWidth = Math.max(220, Math.floor(window.innerWidth - rowRect.left - viewportPadding));
-          const desiredWidth = Math.floor(window.innerWidth * 0.5);
-          const targetWidth = Math.max(300, Math.min(desiredWidth, availableWidth));
+    } else {
+        const rowRect = row.getBoundingClientRect();
+        const dashboard = document.querySelector('.driver-dashboard-container');
+        const dashboardRect = dashboard ? dashboard.getBoundingClientRect() : null;
+        const viewportPadding = 16;
+        const containerPadding = 12;
+        const viewportMaxWidth = Math.max(220, Math.floor(window.innerWidth - (viewportPadding * 2)));
+        const containerMaxWidth = dashboardRect
+            ? Math.max(220, Math.floor(dashboardRect.width - (containerPadding * 2)))
+            : viewportMaxWidth;
+        const targetWidth = Math.min(620, viewportMaxWidth, containerMaxWidth);
+        const minLeft = dashboardRect ? Math.round(dashboardRect.left + containerPadding) : viewportPadding;
+        const maxLeft = dashboardRect
+            ? Math.round(dashboardRect.right - targetWidth - containerPadding)
+            : Math.round(window.innerWidth - targetWidth - viewportPadding);
+        const targetLeft = Math.max(minLeft, Math.min(Math.round(rowRect.left), maxLeft));
 
-          dropdown.style.setProperty('position', 'fixed', 'important');
-          dropdown.style.setProperty('top', `${Math.round(rowRect.bottom + 4)}px`, 'important');
-          dropdown.style.setProperty('left', `${Math.round(rowRect.left)}px`, 'important');
-          dropdown.style.setProperty('right', 'auto', 'important');
-          dropdown.style.setProperty('transform', 'none', 'important');
-          dropdown.style.setProperty('width', `${targetWidth}px`, 'important');
-          dropdown.style.setProperty('max-width', `${targetWidth}px`, 'important');
-      }
-  }
+        dropdown.style.setProperty('position', 'fixed', 'important');
+        dropdown.style.setProperty('top', `${Math.round(rowRect.bottom + 4)}px`, 'important');
+        dropdown.style.setProperty('left', `${targetLeft}px`, 'important');
+        dropdown.style.setProperty('right', 'auto', 'important');
+        dropdown.style.setProperty('transform', 'none', 'important');
+        dropdown.style.setProperty('width', `${targetWidth}px`, 'important');
+        dropdown.style.setProperty('max-width', `${targetWidth}px`, 'important');
+    }
+}
 
   function setupPlateDropdown(vehicles) {
       const dropdown = document.getElementById('driver-plate-dropdown');

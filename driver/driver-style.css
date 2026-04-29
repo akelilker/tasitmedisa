@@ -3970,14 +3970,14 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .dashboard-page .driver-dashboard-container::before,
   .login-page .driver-dashboard-container::before {
     top: 0 !important;
-    bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
+    bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0) + 1px) !important;
     height: auto !important;
-    border-top: 0.99px solid rgba(var(--theme-color-rgb), 0.9) !important;
-    border-left: 0.99px solid rgba(var(--theme-color-rgb), 0.9) !important;
-    border-right: 0.99px solid rgba(var(--theme-color-rgb), 0.9) !important;
+    border-top: 0.85px solid rgba(var(--theme-color-rgb), 0.74) !important;
+    border-left: 0.85px solid rgba(var(--theme-color-rgb), 0.74) !important;
+    border-right: 0.85px solid rgba(var(--theme-color-rgb), 0.74) !important;
     box-shadow:
-      0 0 10px rgba(var(--theme-color-rgb), 0.18),
-      inset 0 0 10px rgba(var(--theme-color-rgb), 0.08) !important;
+      0 0 7px rgba(var(--theme-color-rgb), 0.12),
+      inset 0 0 7px rgba(var(--theme-color-rgb), 0.05) !important;
   }
 }
 
@@ -4012,7 +4012,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
   .dashboard-page .driver-dashboard-container::before,
   .login-page .driver-dashboard-container::before {
-    bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
+    bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0) + 1px) !important;
   }
   .dashboard-page .driver-right-panel {
     padding-bottom: 5px !important;
@@ -4637,14 +4637,14 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
   .dashboard-page .driver-dashboard-container::before,
   .login-page .driver-dashboard-container::before {
-    border-top: 0.99px solid rgba(var(--theme-color-rgb), 0.9) !important;
-    border-left: 0.99px solid rgba(var(--theme-color-rgb), 0.9) !important;
-    border-right: 0.99px solid rgba(var(--theme-color-rgb), 0.9) !important;
+    border-top: 0.85px solid rgba(var(--theme-color-rgb), 0.74) !important;
+    border-left: 0.85px solid rgba(var(--theme-color-rgb), 0.74) !important;
+    border-right: 0.85px solid rgba(var(--theme-color-rgb), 0.74) !important;
     box-shadow:
-      0 0 10px rgba(var(--theme-color-rgb), 0.18),
-      inset 0 0 10px rgba(var(--theme-color-rgb), 0.08) !important;
+      0 0 7px rgba(var(--theme-color-rgb), 0.12),
+      inset 0 0 7px rgba(var(--theme-color-rgb), 0.05) !important;
     top: 0 !important;
-    bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important; /* Footer'da biter, aşağı inmez */
+    bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0) + 1px) !important; /* Footer'da biter, aşağı inmez */
   }
     /* Footer: mobilde de gri üst çizgi geri gelir; dashboard glow korunur */
   .dashboard-page #app-footer {
@@ -5572,7 +5572,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   margin: 0;
 }
 
-/* Desktop plate dropdown: expand right from left panel anchor */
+/* Desktop plate dropdown: stays inside the dashboard frame */
 @media (min-width: 769px) {
   .dashboard-page .driver-plate-dropdown-row {
     overflow: visible !important;
@@ -5584,10 +5584,10 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 
   .dashboard-page .driver-left-panel .driver-plate-dropdown,
   body.dashboard-page #driver-plate-dropdown.driver-plate-dropdown {
-    position: absolute !important;
-    left: 0 !important;
+    position: fixed !important;
+    left: 50% !important;
     right: auto !important;
-    transform: none !important;
+    transform: translateX(-50%) !important;
     width: min(60vw, 620px) !important;
     min-width: min(360px, calc(100vw - 48px)) !important;
     max-width: min(620px, calc(100vw - 48px)) !important;
@@ -5611,7 +5611,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 
   .dashboard-page .driver-dashboard-container::before,
   .login-page .driver-dashboard-container::before {
-    bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
+    bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0) + 1px) !important;
   }
 
   /* History/Edit modal acikken footer-gap korunur (genel kurali ezer). */
@@ -5674,7 +5674,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 @media (min-width: 769px) {
   .dashboard-page .driver-dashboard-container::before,
   .login-page .driver-dashboard-container::before {
-    bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
+    bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0) + 1px) !important;
   }
 }
 
