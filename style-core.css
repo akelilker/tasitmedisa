@@ -743,8 +743,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-logo {
   text-overflow: ellipsis;
   padding: 0 4px;
 
-  /* METALİK GRADYAN - Parlak krom */
-  background: linear-gradient(to bottom, #c2d4df 0%, #ffffff 40%, #9aadba 52%, #d6e0e8 100%) !important;
+  /* METALİK GRADYAN - Temiz krom */
+  background: linear-gradient(to bottom, #eef5fb 0%, #ffffff 42%, #cfdbe5 58%, #f4f8fb 100%) !important;
   -webkit-background-clip: text !important;
   background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
