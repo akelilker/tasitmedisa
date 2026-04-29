@@ -782,6 +782,10 @@ body.dashboard-page {
   }
   .dashboard-page .driver-right-panel {
     gap: 4px !important;
+    overflow-x: visible !important;
+    padding-left: 10px !important;
+    padding-right: 14px !important;
+    box-sizing: border-box !important;
   }
   .dashboard-page .driver-action-group {
     margin-bottom: 5px !important;
@@ -5721,14 +5725,36 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .dashboard-page .driver-left-panel .driver-plate-dropdown,
   body.dashboard-page #driver-plate-dropdown.driver-plate-dropdown {
     position: fixed !important;
-    left: 50% !important;
+    left: calc(50% - 95px) !important;
     right: auto !important;
     transform: translateX(-50%) !important;
-    width: min(60vw, 620px) !important;
-    min-width: min(360px, calc(100vw - 48px)) !important;
-    max-width: min(620px, calc(100vw - 48px)) !important;
+    width: min(50vw, 420px) !important;
+    max-width: min(50vw, 420px) !important;
+    min-width: 320px !important;
     box-sizing: border-box !important;
     overflow-x: hidden !important;
+  }
+
+  .dashboard-page .driver-plate-dropdown-item {
+    display: grid !important;
+    grid-template-columns: minmax(92px, auto) 18px minmax(0, 1fr) !important;
+    align-items: center !important;
+    text-align: left !important;
+    justify-items: start !important;
+  }
+
+  .dashboard-page .driver-plate-dropdown-item-plate,
+  .dashboard-page .driver-plate-dropdown-item-separator,
+  .dashboard-page .driver-plate-dropdown-item-brand {
+    text-align: left !important;
+    justify-self: start !important;
+  }
+
+  .dashboard-page .driver-plate-dropdown-item-brand {
+    min-width: 0 !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
   }
 }
 
@@ -5928,8 +5954,8 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 
     /* Sag grid: butonlar dikeyde toplam 2px daraltildi */
     .dashboard-page .driver-action-buttons .driver-action-btn {
-        padding-top: 7px !important;
-        padding-bottom: 7px !important;
+        padding-top: 8px !important;
+        padding-bottom: 8px !important;
         transition: border-color 0.2s, color 0.2s, background 0.2s, transform 0.2s !important;
     }
     .dashboard-page .driver-action-buttons .driver-action-btn:hover {
