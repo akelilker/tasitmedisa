@@ -5095,8 +5095,17 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .dashboard-page .hero-title-block .hero-panel-subtitle {
     font-size: calc(21px - 0.7pt - 0.5pt) !important; /* 22px - 1pt - 0.7pt − 0.5pt */
   }
-  .dashboard-page .hero h1 {
-    font-size: calc(23px - 0.5pt) !important; /* 24px - 1pt − 0.5pt */
+  .dashboard-page .hero.hero-two-rows .hero-title-block .hero-title-line {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    font-size: clamp(12px, 3.75vw, 16px) !important;
+    letter-spacing: clamp(0.6px, 0.42vw, 1.6px) !important;
+    line-height: 1.12 !important;
+    white-space: nowrap !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    text-align: center !important;
   }
   .dashboard-page .driver-report-block .form-group label {
     font-size: 15px !important;
