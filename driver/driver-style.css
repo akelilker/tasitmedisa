@@ -1079,13 +1079,13 @@ body.dashboard-page {
 @media (max-width: 768px) {
   .dashboard-page .driver-request-fab-row {
     justify-content: flex-end !important;
-    padding-right: 4px !important;
+    padding-right: 3px !important;
     box-sizing: border-box !important;
   }
   .dashboard-page .driver-action-btn-feedback.driver-request-fab {
     margin-left: auto !important;
     margin-right: 0 !important;
-    transform: none !important;
+    transform: translateX(0) !important;
   }
   .driver-action-btn-feedback.driver-request-fab:focus,
   .driver-action-btn-feedback.driver-request-fab:active {
@@ -1752,10 +1752,10 @@ body.dashboard-page {
   .dashboard-page .hero.hero-two-rows .hero-title-block .hero-title-line {
     width: 100%;
     max-width: 100%;
-    font-size: clamp(17px, 4.8vw, 21px) !important;
-    letter-spacing: 2.2px !important;
-    line-height: 1.16 !important;
-    white-space: normal !important;
+    font-size: clamp(14px, 4.2vw, 18px) !important;
+    letter-spacing: clamp(1px, 0.55vw, 2.2px) !important;
+    line-height: 1.15 !important;
+    white-space: nowrap !important;
     overflow: visible !important;
     text-overflow: clip !important;
     text-align: center !important;
@@ -1764,8 +1764,8 @@ body.dashboard-page {
     font-size: clamp(calc(18px - 1pt - 0.5pt), 5vw, calc(22px - 1pt - 0.5pt)) !important;
   }
   .dashboard-page .hero-title-block .hero-panel-subtitle {
-    font-size: clamp(15px, 4.2vw, 18px) !important;
-    letter-spacing: 3px !important;
+    font-size: clamp(15px, 4.5vw, 19px) !important;
+    letter-spacing: clamp(2px, 0.8vw, 3.5px) !important;
     line-height: 1.12 !important;
     white-space: nowrap !important;
     overflow: visible !important;
