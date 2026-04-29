@@ -630,15 +630,17 @@ body.dashboard-page {
     height: 23px !important;
   }
   .dashboard-page .driver-below-hero-row .driver-btn-password .driver-btn-password-icon {
-    width: 26px !important;
-    height: 26px !important;
+    width: 24px !important;
+    height: 24px !important;
+    stroke-width: 1.7 !important;
     position: relative !important;
     top: 0 !important;
-    transform: none !important;
+    transform: translateY(-3px) !important;
   }
   .dashboard-page .driver-below-hero-row .driver-btn-logout .driver-btn-logout-icon {
-    width: 19px !important;
-    height: 19px !important;
+    width: 24px !important;
+    height: 24px !important;
+    stroke-width: 1.7 !important;
   }
   /* Footer: masaüstünde ana uygulama/login ile aynı gri üst çizgi + dashboard glow */
   .dashboard-page #app-footer {
@@ -3968,6 +3970,12 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     top: 0 !important;
     bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
     height: auto !important;
+    border-top: 0.99px solid rgba(var(--theme-color-rgb), 0.9) !important;
+    border-left: 0.99px solid rgba(var(--theme-color-rgb), 0.9) !important;
+    border-right: 0.99px solid rgba(var(--theme-color-rgb), 0.9) !important;
+    box-shadow:
+      0 0 10px rgba(var(--theme-color-rgb), 0.18),
+      inset 0 0 10px rgba(var(--theme-color-rgb), 0.08) !important;
   }
 }
 
@@ -5578,9 +5586,9 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     left: 0 !important;
     right: auto !important;
     transform: none !important;
-    width: min(60vw, 720px) !important;
+    width: min(60vw, 620px) !important;
     min-width: min(360px, calc(100vw - 48px)) !important;
-    max-width: min(720px, calc(100vw - 48px)) !important;
+    max-width: min(620px, calc(100vw - 48px)) !important;
     box-sizing: border-box !important;
     overflow-x: hidden !important;
   }
