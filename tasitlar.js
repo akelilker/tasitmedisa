@@ -3388,6 +3388,49 @@
 
   function checkDateWarnings(dateString) { return (typeof window.checkDateWarnings === 'function' ? window.checkDateWarnings(dateString) : { class: '', days: null }); }
 
+  function getEgzozMuayeneState(vehicle) {
+    const rawDate = vehicle && vehicle.egzozMuayeneDate != null ? String(vehicle.egzozMuayeneDate).trim() : '';
+    if (!rawDate) {
+      return {
+        state: 'missing',
+        date: '',
+        days: null,
+        warningClass: 'date-warning-red'
+      };
+    }
+
+    const warning = checkDateWarnings(rawDate);
+    if (warning.class === 'date-warning-red') {
+      return {
+        state: 'expired',
+        date: rawDate,
+        days: warning.days,
+        warningClass: 'date-warning-red'
+      };
+    }
+
+    if (warning.class === 'date-warning-orange') {
+      return {
+        state: 'approaching',
+        date: rawDate,
+        days: warning.days,
+        warningClass: 'date-warning-orange'
+      };
+    }
+
+    return {
+      state: 'valid',
+      date: rawDate,
+      days: warning.days,
+      warningClass: ''
+    };
+  }
+
+  function isEgzozMuayeneCritical(vehicle) {
+    const egzozState = getEgzozMuayeneState(vehicle);
+    return egzozState.warningClass === 'date-warning-red';
+  }
+
   /**
    * Taşıtlar modalı liste/kart — kalıcı tarih uyarısı (bildirim okundu ile ilgisiz).
    * Yalnızca araçtaki tarih alanları + window.checkDateWarnings (script-core ile aynı eşikler).
@@ -3397,22 +3440,25 @@
    */
   function getVehicleDateSeverityClass(vehicle) {
     if (!vehicle || typeof vehicle !== 'object') return '';
-    const muayene = vehicle.muayeneDate;
-    const egzoz = vehicle.egzozMuayeneDate;
-    const useEgzoz = egzoz && String(egzoz).trim() !== '' && String(egzoz) !== String(muayene || '');
     const dates = [
       vehicle.sigortaDate,
       vehicle.kaskoDate,
-      vehicle.muayeneDate,
-      useEgzoz ? egzoz : null
+      vehicle.muayeneDate
     ].filter(function(d) { return d != null && String(d).trim() !== ''; });
+
     let hasRed = false;
     let hasOrange = false;
+
     for (let i = 0; i < dates.length; i++) {
       const w = checkDateWarnings(dates[i]);
       if (w.class === 'date-warning-red') hasRed = true;
       else if (w.class === 'date-warning-orange') hasOrange = true;
     }
+
+    const egzozState = getEgzozMuayeneState(vehicle);
+    if (egzozState.warningClass === 'date-warning-red') hasRed = true;
+    else if (egzozState.warningClass === 'date-warning-orange') hasOrange = true;
+
     if (hasRed) return ' vehicle-date-warning-red';
     if (hasOrange) return ' vehicle-date-warning-orange';
     return '';
@@ -3805,6 +3851,9 @@ function renderVehicleDetailLeft(vehicle) {
     // Muayene bitiş tarihi (taşıt tipi yoksa uyarı + tooltip + Tıklayınız)
     const muayeneDate = vehicle.muayeneDate || '';
     const muayeneWarning = checkDateWarnings(muayeneDate);
+    if (isEgzozMuayeneCritical(vehicle)) {
+      muayeneWarning.class = 'date-warning-red';
+    }
     const muayeneDisplay = formatDateForDisplay(muayeneDate);
     const vt = vehicle.vehicleType ?? vehicle.tip ?? '';
     const noVehicleType = vt == null || (typeof vt === 'string' && !String(vt).trim());
@@ -3814,11 +3863,10 @@ function renderVehicleDetailLeft(vehicle) {
       html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Muayene Bitiş Tarihi</span><span class="detail-row-colon">:</span></div><span class="detail-row-value ${muayeneWarning.class}"> ${escapeHtml(muayeneDisplay || '-')}</span></div>`;
     }
 
-    const egzozMuayeneDate = vehicle.egzozMuayeneDate || '';
-    if (egzozMuayeneDate && egzozMuayeneDate !== muayeneDate) {
-      const egzozWarning = checkDateWarnings(egzozMuayeneDate);
-      const egzozDisplay = formatDateForDisplay(egzozMuayeneDate);
-      html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Egzos Muayenesi</span><span class="detail-row-colon">:</span></div><span class="detail-row-value ${egzozWarning.class}"> ${escapeHtml(egzozDisplay || '-')}</span></div>`;
+    const egzozState = getEgzozMuayeneState(vehicle);
+    if (egzozState.state !== 'valid') {
+      const egzozDisplay = egzozState.state === 'missing' ? 'Eksik' : formatDateForDisplay(egzozState.date);
+      html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Egzos Muayenesi</span><span class="detail-row-colon">:</span></div><span class="detail-row-value ${egzozState.warningClass}"> ${escapeHtml(egzozDisplay || '-')}</span></div>`;
     }
     
     // Detay: yedek anahtar durumu
@@ -7710,6 +7758,10 @@ function renderVehicleDetailLeft(vehicle) {
       // Muayene kontrolü
       if (vehicle.muayeneDate) {
         const warning = checkDateWarnings(vehicle.muayeneDate);
+        if (isEgzozMuayeneCritical(vehicle)) {
+          warning.class = 'date-warning-red';
+          if (typeof warning.days !== 'number') warning.days = -1;
+        }
         if (warning.class) {
           const days = warning.days;
           const status = days < 0 ? 'geçmiş' : days <= 3 ? 'çok yakın' : 'yaklaşıyor';
@@ -7726,22 +7778,24 @@ function renderVehicleDetailLeft(vehicle) {
         }
       }
 
-      if (vehicle.egzozMuayeneDate && vehicle.egzozMuayeneDate !== vehicle.muayeneDate) {
-        const warning = checkDateWarnings(vehicle.egzozMuayeneDate);
-        if (warning.class) {
-          const days = warning.days;
-          const status = days < 0 ? 'geçmiş' : days <= 3 ? 'çok yakın' : 'yaklaşıyor';
-          notifications.push({
-            type: 'egzoz',
-            vehicleId: vehicle.id,
-            plate: plate,
-            brandModel: brandModel,
-            date: vehicle.egzozMuayeneDate,
-            days: days,
-            warningClass: warning.class,
-            status: status
-          });
-        }
+      const egzozState = getEgzozMuayeneState(vehicle);
+      if (egzozState.warningClass) {
+        const days = typeof egzozState.days === 'number' ? egzozState.days : -1;
+        const status = egzozState.state === 'missing'
+          ? 'eksik'
+          : (days < 0 ? 'geçmiş' : days <= 3 ? 'çok yakın' : 'yaklaşıyor');
+
+        notifications.push({
+          type: 'egzoz',
+          vehicleId: vehicle.id,
+          plate: plate,
+          brandModel: brandModel,
+          date: egzozState.date || 'missing',
+          days: days,
+          warningClass: egzozState.warningClass,
+          status: status,
+          missing: egzozState.state === 'missing'
+        });
       }
     });
 
@@ -8032,6 +8086,8 @@ function renderVehicleDetailLeft(vehicle) {
             let messageText = '';
             if (notif.days <= 0 && notif.type === 'kasko') {
                 messageText = `${notif.plate} Plakalı Taşıtın Kasko Süresi Bitmiştir.`;
+            } else if (notif.type === 'egzoz' && notif.missing) {
+                messageText = `${notif.plate} Plakalı Taşıtın Egzos Muayenesi Tarihi Eksiktir.`;
             } else if (notif.days <= 0 && notif.type === 'egzoz') {
                 messageText = `${notif.plate} Plakalı Taşıtın Egzos Muayenesi Süresi Bitmiştir.`;
             } else if (notif.days <= 0 && notif.type === 'muayene') {
