@@ -625,9 +625,12 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .app-container::before {
         border-left-width: 0.7px;
         border-right-width: 0.7px;
+        border-top-color: rgba(var(--theme-color-rgb), 0.5);
+        border-left-color: rgba(var(--theme-color-rgb), 0.5);
+        border-right-color: rgba(var(--theme-color-rgb), 0.5);
         box-shadow:
-            0 0 18px rgba(var(--theme-color-rgb), 0.18),
-            inset 0 0 22px rgba(var(--theme-color-rgb), 0.08);
+            0 0 14px rgba(var(--theme-color-rgb), 0.14),
+            inset 0 0 16px rgba(var(--theme-color-rgb), 0.06);
     }
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap {
         box-shadow:
