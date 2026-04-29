@@ -1024,6 +1024,7 @@ body.dashboard-page {
   display: flex;
   justify-content: flex-end;
   align-items: center;
+  width: 100%;
   margin-top: 6px;
   min-height: 28px;
 }
@@ -1045,6 +1046,7 @@ body.dashboard-page {
   overflow: hidden;
   white-space: nowrap;
   transition: width .18s ease, color .18s ease, background .18s ease, transform .18s ease;
+  margin-left: auto;
 }
 .driver-action-btn-feedback.driver-request-fab .driver-action-btn-feedback-icon {
   width: 24px;
