@@ -1018,23 +1018,33 @@ const API_BASE = (function(){
           dropdown.style.setProperty('transform', 'none', 'important');
           dropdown.style.setProperty('width', `${targetWidth}px`, 'important');
           dropdown.style.setProperty('max-width', `${targetWidth}px`, 'important');
-      } else {
-          // Desktop: anchor dropdown to the left edge and expand right.
-          const rowRect = row.getBoundingClientRect();
-          const viewportPadding = 16;
-          const availableWidth = Math.max(220, Math.floor(window.innerWidth - rowRect.left - viewportPadding));
-          const desiredWidth = Math.floor(window.innerWidth * 0.5);
-          const targetWidth = Math.max(300, Math.min(desiredWidth, availableWidth));
+    } else {
+        const rowRect = row.getBoundingClientRect();
+        const dashboard = document.querySelector('.driver-dashboard-container');
+        const dashboardRect = dashboard ? dashboard.getBoundingClientRect() : null;
+        const viewportPadding = 16;
+        const containerPadding = 12;
+        const viewportMaxWidth = Math.max(220, Math.floor(window.innerWidth - (viewportPadding * 2)));
+        const containerMaxWidth = dashboardRect
+            ? Math.max(220, Math.floor(dashboardRect.width - (containerPadding * 2)))
+            : viewportMaxWidth;
+        const halfContainerWidth = Math.max(220, Math.floor(containerMaxWidth * 0.5));
+        const targetWidth = Math.min(420, viewportMaxWidth, containerMaxWidth, halfContainerWidth);
+        const minLeft = dashboardRect ? Math.round(dashboardRect.left + containerPadding) : viewportPadding;
+        const maxLeft = dashboardRect
+            ? Math.round(dashboardRect.right - targetWidth - containerPadding)
+            : Math.round(window.innerWidth - targetWidth - viewportPadding);
+        const targetLeft = Math.max(minLeft, Math.min(Math.round(rowRect.left), maxLeft));
 
-          dropdown.style.setProperty('position', 'fixed', 'important');
-          dropdown.style.setProperty('top', `${Math.round(rowRect.bottom + 4)}px`, 'important');
-          dropdown.style.setProperty('left', `${Math.round(rowRect.left)}px`, 'important');
-          dropdown.style.setProperty('right', 'auto', 'important');
-          dropdown.style.setProperty('transform', 'none', 'important');
-          dropdown.style.setProperty('width', `${targetWidth}px`, 'important');
-          dropdown.style.setProperty('max-width', `${targetWidth}px`, 'important');
-      }
-  }
+        dropdown.style.setProperty('position', 'fixed', 'important');
+        dropdown.style.setProperty('top', `${Math.round(rowRect.bottom + 4)}px`, 'important');
+        dropdown.style.setProperty('left', `${targetLeft}px`, 'important');
+        dropdown.style.setProperty('right', 'auto', 'important');
+        dropdown.style.setProperty('transform', 'none', 'important');
+        dropdown.style.setProperty('width', `${targetWidth}px`, 'important');
+        dropdown.style.setProperty('max-width', `${targetWidth}px`, 'important');
+    }
+}
 
   function setupPlateDropdown(vehicles) {
       const dropdown = document.getElementById('driver-plate-dropdown');
@@ -1289,20 +1299,8 @@ const API_BASE = (function(){
                       </div>
                   </div>
               </div>
-              <div class="driver-action-group driver-action-feedback-slot">
-                  <button type="button" class="driver-action-btn driver-action-btn-feedback" onclick="openDriverFeedbackModal()" aria-label="Talep, şikayet veya öneri gönder">
-                      <svg class="driver-action-btn-feedback-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                          <path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"></path>
-                          <line x1="8" y1="9" x2="16" y2="9"></line>
-                          <line x1="8" y1="13" x2="14" y2="13"></line>
-                      </svg>
-                      <span>Talep Gönder</span>
-                  </button>
-              </div>
-              <div class="driver-action-group driver-action-footer">
-                  <button type="button" onclick="saveVehicleData('${vid}')" class="universal-btn-save" id="btn-save-${vid}">Bildir</button>
-                  <div id="status-${vid}" class="status-message"></div>
-              </div>
+              <div class="driver-action-group driver-action-footer"><button type="button" onclick="saveVehicleData('${vid}')" class="universal-btn-save" id="btn-save-${vid}">Bildir</button><div id="status-${vid}" class="status-message"></div></div>
+              <div class="driver-action-group driver-action-feedback-slot driver-request-fab-row"><button type="button" class="driver-action-btn-feedback driver-request-fab" onclick="openDriverFeedbackModal()" aria-label="Talep, şikayet veya öneri gönder"><svg class="driver-action-btn-feedback-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.05" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h14a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3h-2.8L18 21l-5-3H5a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3z"></path><line x1="7" y1="9" x2="17" y2="9"></line><line x1="7" y1="13" x2="14" y2="13"></line></svg><span class="driver-request-fab-label">Talep Gönder</span></button></div>
           </div>
       `;
   }
