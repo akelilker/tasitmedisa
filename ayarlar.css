@@ -2548,8 +2548,13 @@ input.settings-form-input:-moz-autofill,
     /*
      * Ayarlar dişlisi menüsü (yalnız #settings-menu): mobilde ana sayfa .menu-btn ile aynı çerçeve.
      * Genel .settings-dropdown buton/alt menü stilleri #settings-menu ile sınırlandı; bildirim listesi ezilmez.
+     * Mobil genişlik: ekranın yaklaşık %45'i; sağdaki ayarlar ikonuna hizalı kalır.
      */
     #settings-menu.settings-dropdown.open {
+        width: clamp(148px, 45vw, 176px) !important;
+        max-width: clamp(148px, 45vw, 176px) !important;
+        min-width: clamp(148px, 45vw, 176px) !important;
+        right: 0 !important;
         gap: 6px !important;
     }
     #settings-menu > button,
@@ -2558,8 +2563,8 @@ input.settings-form-input:-moz-autofill,
         border: 1px solid rgba(255, 255, 255, 0.55) !important;
         border-radius: 11px !important;
         height: 54px !important;
-        padding: 12px 16px !important;
-        font-size: clamp(15px, 3.1vw, 16px) !important;
+        padding: 12px 10px !important;
+        font-size: clamp(11px, 2.8vw, 13px) !important;
         letter-spacing: 1.1px !important;
         box-shadow:
             0 4px 12px rgba(0, 0, 0, 0.24),
@@ -2573,8 +2578,8 @@ input.settings-form-input:-moz-autofill,
     }
     #settings-menu .settings-submenu button {
         height: 54px !important;
-        padding: 12px 16px !important;
-        font-size: clamp(15px, 3.1vw, 16px) !important;
+        padding: 12px 10px !important;
+        font-size: clamp(11px, 2.8vw, 13px) !important;
         letter-spacing: 1.1px !important;
         border-radius: 11px !important;
         width: 100% !important;
