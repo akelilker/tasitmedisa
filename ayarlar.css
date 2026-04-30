@@ -2481,13 +2481,13 @@ input.settings-form-input:-moz-autofill,
         word-break: break-all !important;
     }
     /*
-     * Ayarlar dişlisi (#settings-menu): mobilde tek genişlik kontratı (açık/kapalı dalgalanması yok).
-     * Doğrudan buton, .has-submenu, .settings-submenu button aynı flex ölçüsü; çakışan eski bloklar kaldırıldı.
+     * Ayarlar dişlisi (#settings-menu): mobilde sabit genişlik (vw/clamp viewport ile büyüyüp küçülmesin).
+     * Doğrudan buton, .has-submenu, .settings-submenu button aynı flex ölçüsü.
      */
     #settings-menu.settings-dropdown {
-        width: clamp(148px, 45vw, 176px) !important;
-        max-width: clamp(148px, 45vw, 176px) !important;
-        min-width: clamp(148px, 45vw, 176px) !important;
+        width: 168px !important;
+        max-width: 168px !important;
+        min-width: 168px !important;
         box-sizing: border-box !important;
     }
     #settings-menu.settings-dropdown.open {
@@ -2539,7 +2539,7 @@ input.settings-form-input:-moz-autofill,
     #settings-menu.settings-dropdown .has-submenu-wrapper .has-submenu,
     #settings-menu.settings-dropdown .settings-submenu button {
         text-align: right !important;
-        font-size: clamp(11px, 2.8vw, 13px) !important;
+        font-size: 12.5px !important;
         letter-spacing: 1.1px !important;
         min-height: 54px !important;
         height: auto !important;
@@ -2577,7 +2577,7 @@ input.settings-form-input:-moz-autofill,
     }
     #settings-menu.settings-dropdown .cache-clear-btn:hover,
     #settings-menu.settings-dropdown .settings-logout-btn:hover {
-        font-size: clamp(11px, 2.8vw, 13px) !important;
+        font-size: 12.5px !important;
     }
     #settings-menu > #dis-veri-btn,
     #dis-veri-panel {
@@ -2606,7 +2606,7 @@ input.settings-form-input:-moz-autofill,
         #settings-menu.settings-dropdown > button:hover,
         #settings-menu.settings-dropdown .has-submenu-wrapper .has-submenu:hover,
         #settings-menu.settings-dropdown .settings-submenu button:hover {
-            font-size: clamp(11px, 2.8vw, 13px) !important;
+            font-size: 12.5px !important;
             transform: none !important;
         }
     }
