@@ -4320,9 +4320,6 @@ function renderVehicleDetailLeft(vehicle) {
       }
       return '<div><label class="' + labelCls + '" for="' + id + '">' + labelText + '</label>' + open + '</div>';
     };
-    const radioGroup = (name, options) => {
-      return '<div class="form-section-inline" style="display:flex;flex-wrap:wrap;gap:8px;"><span class="' + labelCls + '" style="width:100%;">Seçiniz</span>' + options.map(o => '<button type="button" class="radio-btn" data-value="' + o.v + '">' + o.l + '</button>').join('') + '</div>';
-    };
     /** Etiket + butonlar yan yana, 4px gap; Var/Evet=yeşil (hover-green), Yok/Hayır=kırmızı (hover-red) */
     const radioRow = (labelText, varVal, yokVal, varLbl, yokLbl) => {
       return '<div class="form-section-inline event-radio-row"><span class="' + labelCls + ' event-radio-label">' + labelText + '</span><div class="event-radio-actions"><button type="button" class="radio-btn hover-green" data-value="' + varVal + '">' + varLbl + '</button><button type="button" class="radio-btn hover-red" data-value="' + yokVal + '">' + yokLbl + '</button></div></div>';
