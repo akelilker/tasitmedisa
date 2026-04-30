@@ -2480,126 +2480,104 @@ input.settings-form-input:-moz-autofill,
         white-space: normal !important;
         word-break: break-all !important;
     }
-    #settings-menu.settings-dropdown button {
-        text-align: right !important;
-        font-size: calc(16px + 1pt) !important;
-        height: 52px !important;
-        margin-bottom: 8px !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: flex-end !important;
-        padding: 8px 16px !important;
-        width: 100% !important;
+    /*
+     * Ayarlar dişlisi (#settings-menu): mobilde tek genişlik kontratı (açık/kapalı dalgalanması yok).
+     * Doğrudan buton, .has-submenu, .settings-submenu button aynı flex ölçüsü; çakışan eski bloklar kaldırıldı.
+     */
+    #settings-menu.settings-dropdown {
+        width: clamp(148px, 45vw, 176px) !important;
+        max-width: clamp(148px, 45vw, 176px) !important;
+        min-width: clamp(148px, 45vw, 176px) !important;
         box-sizing: border-box !important;
     }
-    #settings-menu.settings-dropdown button:last-child {
-        margin-bottom: 0 !important;
+    #settings-menu.settings-dropdown.open {
+        right: 0 !important;
+        gap: 6px !important;
     }
     #settings-menu.settings-dropdown hr {
-        margin: 0 0 8px 0 !important;
+        margin: 0 !important;
+        flex-shrink: 0 !important;
         border: none !important;
         border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
         padding: 0 !important;
         height: 0 !important;
         width: 100% !important;
-    }
-    #settings-menu.settings-dropdown .has-submenu-wrapper {
-        width: 100% !important;
-        display: block !important;
-        margin-bottom: 8px !important;
-    }
-    #settings-menu.settings-dropdown .has-submenu-wrapper:last-child {
-        margin-bottom: 0 !important;
-    }
-    #settings-menu.settings-dropdown .has-submenu {
-        width: 100% !important;
-        height: 52px !important;
-        justify-content: flex-end !important;
-        text-align: right !important;
-        padding: 8px 16px !important;
-        display: flex !important;
-        align-items: center !important;
-        margin-bottom: 0 !important;
         box-sizing: border-box !important;
+    }
+    #settings-menu.settings-dropdown > .has-submenu-wrapper {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        box-sizing: border-box !important;
+        margin: 0 !important;
     }
     #settings-menu.settings-dropdown .has-submenu::after,
     #settings-menu.settings-dropdown .has-submenu::before {
         display: none !important;
         content: none !important;
     }
-    #settings-menu .settings-submenu {
+    #settings-menu.settings-dropdown .settings-submenu:not([hidden]) {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 6px !important;
+    }
+    #settings-menu.settings-dropdown .settings-submenu {
         position: static !important;
         left: auto !important;
         top: auto !important;
         margin-left: 0 !important;
         min-width: 0 !important;
         width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
         overflow: visible !important;
     }
-
-    /*
-     * Ayarlar dişlisi menüsü (yalnız #settings-menu): mobilde ana sayfa .menu-btn ile aynı çerçeve.
-     * Genel .settings-dropdown buton/alt menü stilleri #settings-menu ile sınırlandı; bildirim listesi ezilmez.
-     * Mobil genişlik: ekranın yaklaşık %45'i; sağdaki ayarlar ikonuna hizalı kalır.
-     */
-    #settings-menu.settings-dropdown.open {
-        width: clamp(148px, 45vw, 176px) !important;
-        max-width: clamp(148px, 45vw, 176px) !important;
-        min-width: clamp(148px, 45vw, 176px) !important;
-        right: 0 !important;
-        gap: 6px !important;
-    }
-    #settings-menu > button,
-    #settings-menu .has-submenu-wrapper .has-submenu {
+    #settings-menu.settings-dropdown > button,
+    #settings-menu.settings-dropdown .has-submenu-wrapper .has-submenu,
+    #settings-menu.settings-dropdown .settings-submenu button {
+        text-align: right !important;
+        font-size: clamp(11px, 2.8vw, 13px) !important;
+        letter-spacing: 1.1px !important;
+        min-height: 54px !important;
+        height: auto !important;
+        margin: 0 !important;
+        padding: 12px 10px !important;
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        align-items: center !important;
+        align-content: center !important;
+        justify-content: flex-end !important;
+        gap: 8px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        box-sizing: border-box !important;
+        line-height: 1.25 !important;
+        white-space: normal !important;
+        word-break: normal !important;
+        overflow-wrap: break-word !important;
         background: linear-gradient(180deg, var(--hero-gradient-start), var(--hero-gradient-end)) !important;
         border: 1px solid rgba(255, 255, 255, 0.55) !important;
         border-radius: 11px !important;
-        height: 54px !important;
-        padding: 12px 10px !important;
-        font-size: clamp(11px, 2.8vw, 13px) !important;
-        letter-spacing: 1.1px !important;
         box-shadow:
             0 4px 12px rgba(0, 0, 0, 0.24),
             0 4px 16px rgba(var(--theme-color-rgb), 0.12) !important;
-        width: 100% !important;
-        box-sizing: border-box !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: flex-end !important;
-        text-align: right !important;
     }
-    #settings-menu .settings-submenu button {
-        height: 54px !important;
-        padding: 12px 10px !important;
-        font-size: clamp(11px, 2.8vw, 13px) !important;
-        letter-spacing: 1.1px !important;
-        border-radius: 11px !important;
-        width: 100% !important;
-        box-sizing: border-box !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: flex-end !important;
-        text-align: right !important;
-    }
-    #settings-menu > button {
-        margin-bottom: 0 !important;
-    }
-    #settings-menu > button:last-child {
-        margin-bottom: 0 !important;
-    }
-    #settings-menu > .has-submenu-wrapper {
-        margin-bottom: 0 !important;
-    }
-    #settings-menu > .has-submenu-wrapper:last-child {
-        margin-bottom: 0 !important;
-    }
-    #settings-menu > button.cache-clear-btn {
+    #settings-menu.settings-dropdown > button.cache-clear-btn {
         border-color: var(--border-subtle) !important;
     }
-    /* Çıkış: diğer satırlarla aynı kutu, kırmızı çerçeve + kırmızı metin (üstteki genel buton stilini ezer) */
-    #settings-menu > button.settings-logout-btn {
+    /* Çıkış: diğer satırlarla aynı kutu, kırmızı çerçeve + kırmızı metin */
+    #settings-menu.settings-dropdown > button.settings-logout-btn {
         border: 1px solid rgba(var(--theme-color-rgb), 0.5) !important;
         color: var(--theme-color) !important;
+    }
+    #settings-menu.settings-dropdown .cache-clear-btn:hover,
+    #settings-menu.settings-dropdown .settings-logout-btn:hover {
+        font-size: clamp(11px, 2.8vw, 13px) !important;
     }
     #settings-menu > #dis-veri-btn,
     #dis-veri-panel {
@@ -2625,9 +2603,10 @@ input.settings-form-input:-moz-autofill,
 
     /* Ana sayfa ayar menüsü: mobilde hover ile punto şişmesin (genel button:hover ile çakışmayı kes) */
     @media (hover: hover) {
-        #settings-menu.settings-dropdown button:hover,
-        #settings-menu.settings-dropdown .has-submenu-wrapper .has-submenu:hover {
-            font-size: clamp(15px, 3.1vw, 16px) !important;
+        #settings-menu.settings-dropdown > button:hover,
+        #settings-menu.settings-dropdown .has-submenu-wrapper .has-submenu:hover,
+        #settings-menu.settings-dropdown .settings-submenu button:hover {
+            font-size: clamp(11px, 2.8vw, 13px) !important;
             transform: none !important;
         }
     }
