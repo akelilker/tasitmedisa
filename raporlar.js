@@ -1487,24 +1487,36 @@
         });
         return out;
     }
-    /** Sadece printStokReport: Excel / ekran listesi ayrı paramlarla aynı kalır */
+    /** Yazdır: compact kısaltmaları; fullPrintDates=true iken tarih/yıl tam metin */
     function applyStokPrintCompact(vehicle, col, value, opts) {
         opts = opts || {};
         var k = col.key;
-        if (k === 'yil') return formatStokYearPrintCompact(vehicle.year);
+        var fd = opts.fullPrintDates === true;
+        function printDateDisp(isoRaw) {
+            if (!isoRaw) return '-';
+            var d = formatDate(isoRaw);
+            return fd ? d : compactStokPrintDateDisplay(d);
+        }
+        if (k === 'yil') {
+            if (fd) {
+                var yy = vehicle.year != null ? String(vehicle.year).trim() : '';
+                return yy || '-';
+            }
+            return formatStokYearPrintCompact(vehicle.year);
+        }
         if (k === 'sanziman') return formatStokTransmissionPrintCompact(vehicle.transmission);
-        if (k === 'sigorta') return vehicle.sigortaDate ? compactStokPrintDateDisplay(formatDate(vehicle.sigortaDate)) : '-';
-        if (k === 'kasko') return vehicle.kaskoDate ? compactStokPrintDateDisplay(formatDate(vehicle.kaskoDate)) : '-';
+        if (k === 'sigorta') return vehicle.sigortaDate ? printDateDisp(vehicle.sigortaDate) : '-';
+        if (k === 'kasko') return vehicle.kaskoDate ? printDateDisp(vehicle.kaskoDate) : '-';
         if (k === 'muayene') {
             if (opts.printSeparateMuayeneColumns) {
-                return value === '-' ? '-' : compactStokPrintDateDisplay(value);
+                return value === '-' ? '-' : (fd ? value : compactStokPrintDateDisplay(value));
             }
-            return formatStokMuayeneCell(vehicle, { compact: true });
+            return formatStokMuayeneCell(vehicle, { compact: !fd });
         }
         if (k === 'egzozMuayene') {
-            return value === '-' ? '-' : compactStokPrintDateDisplay(value);
+            return value === '-' ? '-' : (fd ? value : compactStokPrintDateDisplay(value));
         }
-        if (k === 'tescil') return vehicle.tescilTarihi ? compactStokPrintDateDisplay(formatDate(vehicle.tescilTarihi)) : '-';
+        if (k === 'tescil') return vehicle.tescilTarihi ? printDateDisp(vehicle.tescilTarihi) : '-';
         if (k === 'kaskoDegeri') {
             var v = String(value);
             if (v === 'Kasko kodu girilmedi') return 'Kod yok';
@@ -1890,20 +1902,20 @@
 
     // Yazdır – Excel ile aynı veriyi tablo olarak yazdırır (ekran görüntüsü değil)
     const stokPrintHeaders = { sira:'No.', sube:'Şube', yil:'Yıl', marka:'Marka/Mod.', plaka:'Plaka', sanziman:'Şanz', km:'KM', sigorta:'Sig. bit.', kasko:'Kas. bit.', kaskoDegeri:'Kas. değ.', muayene:'Muay.', egzozMuayene:'Egzoz', kredi:'Hak M.', lastik:'Lastik', utts:'UTTS', takip:'Takip', tramer:'Tramer', boya:'Boya', kullanici:'Kull.', tescil:'Tescil' };
-    /* Yazdır sütun ağırlıkları: plaka dar (≤~10 chr); muay./egz. tek satır + pay */
+    /* Yazdır: marka daha geniş (tek satıra yakın); plaka/egz. kısa içerik */
     const stokPrintColumnWeights = {
         sira: 3,
         yil: 5,
-        plaka: 6,
-        marka: 11,
+        plaka: 5,
+        marka: 19,
         sanziman: 4,
         km: 5,
         sube: 6,
         sigorta: 9,
         kasko: 9,
         kaskoDegeri: 10,
-        muayene: 9,
-        egzozMuayene: 8,
+        muayene: 8,
+        egzozMuayene: 5,
         kredi: 8,
         lastik: 8,
         utts: 6,
@@ -1950,7 +1962,7 @@
         }
         const { vehicles, titleText, dateRangeText } = data;
         const activeColumns = expandStokMuayeneEgzozColumns(data.activeColumns);
-        const printOpts = { compact: true, printSeparateMuayeneColumns: true };
+        const printOpts = { compact: true, printSeparateMuayeneColumns: true, fullPrintDates: true };
         const colgroup = buildStokPrintColgroup(activeColumns);
         const thead = activeColumns.map(col => `<th data-col="${col.key}">${escapeHtml(stokPrintHeaders[col.key] || col.key)}</th>`).join('');
         const rows = vehicles.map((vehicle, index) => {
