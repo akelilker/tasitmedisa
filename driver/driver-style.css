@@ -915,15 +915,10 @@ body.dashboard-page {
   color: var(--theme-color);
   display: inline-block;
   flex-shrink: 0;
-  animation: driver-warning-scale 1.2s ease-in-out infinite;
   margin-right: 0;
   vertical-align: middle;
   line-height: 1;
   overflow: visible;
-}
-@keyframes driver-warning-scale {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.15); }
 }
 
 /* --- İKİ PANELLİ LAYOUT --- */
