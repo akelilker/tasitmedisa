@@ -2715,14 +2715,21 @@ padding-right: 1px !important;
 #stok-print-area .stok-print-table td[data-col="sigorta"],
 #stok-print-area .stok-print-table th[data-col="kasko"],
 #stok-print-area .stok-print-table td[data-col="kasko"],
-#stok-print-area .stok-print-table th[data-col="muayene"],
-#stok-print-area .stok-print-table td[data-col="muayene"],
 #stok-print-area .stok-print-table th[data-col="tescil"],
 #stok-print-area .stok-print-table td[data-col="tescil"] {
 white-space: normal !important;
 word-break: normal !important;
 overflow-wrap: break-word !important;
 overflow: hidden !important;
+}
+/* Muayene hücresi: araç muayenesi + egzos aynı sütunda; taşanı kesme — tam metin görünsün */
+#stok-print-area .stok-print-table th[data-col="muayene"],
+#stok-print-area .stok-print-table td[data-col="muayene"] {
+white-space: normal !important;
+word-break: normal !important;
+overflow-wrap: anywhere !important;
+overflow: visible !important;
+text-overflow: clip !important;
 }
 /* Tarih gövde hücreleri: boşluksuz uzun metin taşmasın */
 #stok-print-area .stok-print-table tbody td[data-col="sigorta"],
