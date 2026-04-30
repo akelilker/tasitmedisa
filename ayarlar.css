@@ -500,7 +500,7 @@ body.modal-open #info-modal.open {
 }
 
 /* Modal Body */
-/* Şube/Kullanıcı listesi: masaüstü üst 10px + iç wrapper 4px (önceki düzen); mobilde 8px + 4px = 12px */
+/* Şube listesi: masaüstü üst 10px + iç wrapper 6px; mobilde şube body üst 8px. Kullanıcı Yönetimi mobilde body üst 0 + iç 0 (geri çubuğu iki satır — birikme önlenir). */
 #branch-modal .modal-body,
 #user-modal .modal-body {
     flex: 1 1 auto;
@@ -511,9 +511,15 @@ body.modal-open #info-modal.open {
     scrollbar-width: none;
 }
 @media (max-width: 768px) {
-    #branch-modal .modal-body,
-    #user-modal .modal-body {
+    /* Şube listesi: üst nefes; Kullanıcı Yönetimi ayrı — çift üst padding birikmesi olmasın */
+    #branch-modal .modal-body {
         padding-top: 8px;
+    }
+    #user-modal .modal-body {
+        padding-top: 0 !important;
+    }
+    #user-modal .modal-body > .user-management-list-inner {
+        padding-top: 0;
     }
 }
 #branch-form-modal .modal-body,
@@ -535,8 +541,16 @@ body.modal-open #info-modal.open {
 }
 
 /* Ayarlar içi bölümler: sola kaymayı önle, sol/sağ eşit; üstte çift padding birikimini kıs */
-#branch-modal .modal-body > div,
-#user-modal .modal-body > div {
+#branch-modal .modal-body > div {
+    box-sizing: border-box;
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
+    padding: 6px 16px 12px;
+}
+/* Kullanıcı Yönetimi: mobilde üst birikimi kır; masaüstünde şube listesi ile aynı üst nefes (6px) */
+#user-modal .modal-body > .user-management-list-inner {
     box-sizing: border-box;
     width: 100%;
     margin-left: 0;
@@ -1953,7 +1967,7 @@ input.settings-form-input:-moz-autofill,
     margin-top: -22px !important;
   }
   #branch-modal .modal-body > div,
-  #user-modal .modal-body > div {
+  #user-modal .modal-body > .user-management-list-inner {
     margin-top: 0 !important;
   }
   #user-modal .user-management-search-wrap {
@@ -2195,7 +2209,8 @@ input.settings-form-input:-moz-autofill,
         flex-wrap: wrap !important;
         justify-content: flex-start !important;
         align-items: center !important;
-        row-gap: 2px !important;
+        row-gap: 0 !important;
+        padding: 2px 16px 4px !important;
     }
     #user-modal .user-management-back-bar .universal-back-btn {
         flex: 0 0 100% !important;
@@ -2205,7 +2220,7 @@ input.settings-form-input:-moz-autofill,
         flex: 0 0 100% !important;
         width: 100% !important;
         margin-left: 0 !important;
-        margin-top: -4px !important;
+        margin-top: -10px !important;
         justify-content: flex-end !important;
     }
     #user-modal .user-management-search-wrap.open .user-management-search-input {
