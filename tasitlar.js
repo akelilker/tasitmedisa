@@ -4643,8 +4643,30 @@ function renderVehicleDetailLeft(vehicle) {
           });
         }
       } else if (type === 'muayene') {
+        const vid = vehicleId || window.currentDetailVehicleId;
+        const vehicleMuayenePref = vid ? readVehicles().find(v => String(v.id) === String(vid)) : null;
+        var muayeneDefaultGgAa = '';
+        if (vehicleMuayenePref && Array.isArray(vehicleMuayenePref.events)) {
+          for (var _mi = 0; _mi < vehicleMuayenePref.events.length; _mi++) {
+            var _ev = vehicleMuayenePref.events[_mi];
+            var _tp = String(_ev && _ev.type ? _ev.type : '').trim();
+            if (_tp === 'muayene-guncelle' || _tp === 'muayene' || _tp === 'muayene-yenileme') {
+              if (_ev.date != null && String(_ev.date).trim() !== '') {
+                muayeneDefaultGgAa = formatDateForDisplay(_ev.date);
+                if (/\s\d{2}:\d{2}$/.test(muayeneDefaultGgAa)) muayeneDefaultGgAa = muayeneDefaultGgAa.replace(/\s+\d{2}:\d{2}$/, '');
+                break;
+              }
+            }
+          }
+        }
+        if (!muayeneDefaultGgAa && vehicleMuayenePref && vehicleMuayenePref.muayeneDate) {
+          var _vtMu = ((vehicleMuayenePref.vehicleType || vehicleMuayenePref.tip) || 'otomobil').toLowerCase();
+          var _subYears = (_vtMu !== 'otomobil') ? -1 : -2;
+          var _isoBack = addYears(String(vehicleMuayenePref.muayeneDate).trim(), _subYears);
+          if (_isoBack) muayeneDefaultGgAa = formatDateForDisplay(_isoBack);
+        }
         const muayeneTarihInput = document.getElementById('muayene-tarih');
-        if (muayeneTarihInput) muayeneTarihInput.value = formatDateForDisplay(new Date());
+        if (muayeneTarihInput) muayeneTarihInput.value = muayeneDefaultGgAa || formatDateForDisplay(new Date());
         const egzozCheckbox = document.getElementById('muayene-egzoz-different');
         if (egzozCheckbox) {
           egzozCheckbox.checked = false;
