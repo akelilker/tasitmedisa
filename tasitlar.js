@@ -3844,9 +3844,10 @@ function renderVehicleDetailLeft(vehicle) {
       html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Muayene Bitiş Tarihi</span><span class="detail-row-colon">:</span></div><span class="detail-row-value ${muayeneWarning.class}"> ${escapeHtml(muayeneDisplay || '-')}</span></div>`;
     }
 
-    const egzozState = getEgzozMuayeneState(vehicle);
-    if (egzozState.state !== 'valid') {
-      const egzozDisplay = egzozState.state === 'missing' ? 'Eksik' : formatDateForDisplay(egzozState.date);
+    const egzozRaw = vehicle && vehicle.egzozMuayeneDate != null ? String(vehicle.egzozMuayeneDate).trim() : '';
+    if (egzozRaw) {
+      const egzozState = getEgzozMuayeneState(vehicle);
+      const egzozDisplay = formatDateForDisplay(egzozState.date);
       html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Egzos Muayenesi Bitiş</span><span class="detail-row-colon">:</span></div><span class="detail-row-value ${egzozState.warningClass}"> ${escapeHtml(egzozDisplay || '-')}</span></div>`;
     }
     
