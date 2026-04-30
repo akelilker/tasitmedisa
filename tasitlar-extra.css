@@ -1353,6 +1353,13 @@
   border-radius: 6px;
   resize: none;
   overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+#vehicle-detail-modal textarea.detail-notes-inline-textarea::-webkit-scrollbar {
+  width: 0;
+  height: 0;
 }
 
 /* =========================================
