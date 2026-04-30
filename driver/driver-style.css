@@ -6070,6 +6070,18 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     }
 }
 
+/* Masaüstü (769px+): sağ kolon bildir butonları — iç dikey +2px (641 bloğunun üzerine) */
+@media (min-width: 769px) {
+  .dashboard-page .driver-action-buttons .driver-action-btn {
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+  }
+  .dashboard-page .driver-action-area .universal-btn-save,
+  .dashboard-page .driver-action-area .universal-btn-cancel {
+    height: 32px !important;
+  }
+}
+
 /* Dashboard: paneller arası kırmızı ayırıcı tek çizgi olsun (çift görünüm önleme) */
 .dashboard-page .driver-panels-inner::after {
     display: none !important;
