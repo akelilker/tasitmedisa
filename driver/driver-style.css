@@ -2600,6 +2600,14 @@ body.dashboard-page {
   text-align: center;
 }
 
+/* Footer altındaki durum kutusu boşken yer kaplamasın (padding + margin ile FAB ile Bildir arasında şişkinlik yapıyordu) */
+.driver-action-footer .status-message:empty {
+  margin: 0 !important;
+  padding: 0 !important;
+  min-height: 0 !important;
+  border: none !important;
+}
+
 .status-message.success {
   background: rgba(74, 222, 128, 0.12);
   border-left: 3px solid var(--green);
@@ -6079,6 +6087,13 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .dashboard-page .driver-action-area .universal-btn-save,
   .dashboard-page .driver-action-area .universal-btn-cancel {
     height: 32px !important;
+  }
+  /* Talep Gönder FAB: Bildir ile aradaki boşluk (margin-top + footer gap) */
+  .dashboard-page .driver-request-fab-row {
+    margin-top: 2px !important;
+  }
+  .dashboard-page .driver-action-footer.driver-action-group {
+    margin-bottom: 2px !important;
   }
 }
 
