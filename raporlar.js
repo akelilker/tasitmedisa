@@ -1459,14 +1459,50 @@
             ? (muayeneText + ' | Egz: ' + egzozText)
             : ('Muayene: ' + muayeneText + ' | Egzoz: ' + egzozText);
     }
-    /** Sadece printStokReport: Excel / ekran listesi aynı kalır */
-    function applyStokPrintCompact(vehicle, col, value) {
+    /** Yazdırma tablosu: muayene tarihi tek hücre (Excel / birleşik hücre kullanmaya devam) */
+    function formatStokMuayeneDateOnlyForPrint(vehicle) {
+        var muRaw = vehicle && vehicle.muayeneDate ? String(vehicle.muayeneDate).trim() : '';
+        if (!muRaw) return '-';
+        var t = formatDate(muRaw);
+        return t || '-';
+    }
+    /** Yazdırma: araç muayenesi ile aynı gün ise '-' (birleşik hücre davranışıyla uyumlu) */
+    function formatStokEgzozDateOnlyForPrint(vehicle) {
+        var muRaw = vehicle && vehicle.muayeneDate ? String(vehicle.muayeneDate).trim() : '';
+        var egRaw = vehicle && vehicle.egzozMuayeneDate ? String(vehicle.egzozMuayeneDate).trim() : '';
+        if (!egRaw) return '-';
+        if (stokNormalizeIsoDateKey(egRaw) === stokNormalizeIsoDateKey(muRaw)) return '-';
+        var t = formatDate(egRaw);
+        return t || '-';
+    }
+    /** Yalnız yazdır: muayene tek sütun → hemen yanına egzoz muayenesi sütunu ekler */
+    function expandStokPrintColumns(activeColumns) {
+        var out = [];
+        activeColumns.forEach(function(col) {
+            out.push(col);
+            if (!col.isBase && col.key === 'muayene') {
+                out.push({ key: 'egzozMuayene', isBase: false });
+            }
+        });
+        return out;
+    }
+    /** Sadece printStokReport: Excel / ekran listesi ayrı paramlarla aynı kalır */
+    function applyStokPrintCompact(vehicle, col, value, opts) {
+        opts = opts || {};
         var k = col.key;
         if (k === 'yil') return formatStokYearPrintCompact(vehicle.year);
         if (k === 'sanziman') return formatStokTransmissionPrintCompact(vehicle.transmission);
         if (k === 'sigorta') return vehicle.sigortaDate ? compactStokPrintDateDisplay(formatDate(vehicle.sigortaDate)) : '-';
         if (k === 'kasko') return vehicle.kaskoDate ? compactStokPrintDateDisplay(formatDate(vehicle.kaskoDate)) : '-';
-        if (k === 'muayene') return formatStokMuayeneCell(vehicle, { compact: true });
+        if (k === 'muayene') {
+            if (opts.printSeparateMuayeneColumns) {
+                return value === '-' ? '-' : compactStokPrintDateDisplay(value);
+            }
+            return formatStokMuayeneCell(vehicle, { compact: true });
+        }
+        if (k === 'egzozMuayene') {
+            return value === '-' ? '-' : compactStokPrintDateDisplay(value);
+        }
         if (k === 'tescil') return vehicle.tescilTarihi ? compactStokPrintDateDisplay(formatDate(vehicle.tescilTarihi)) : '-';
         if (k === 'kaskoDegeri') {
             var v = String(value);
@@ -1594,7 +1630,12 @@
                     }
                     return String(kaskoDegeri).trim() || '-';
                 })(); break;
-                case 'muayene': value = formatStokMuayeneCell(vehicle); break;
+                case 'muayene':
+                    value = opts.printSeparateMuayeneColumns
+                        ? formatStokMuayeneDateOnlyForPrint(vehicle)
+                        : formatStokMuayeneCell(vehicle);
+                    break;
+                case 'egzozMuayene': value = formatStokEgzozDateOnlyForPrint(vehicle); break;
                 case 'kredi': value = vehicle.kredi === 'var' ? 'Var' : vehicle.kredi === 'yok' ? 'Yok' : '-'; break;
                 case 'lastik': value = vehicle.lastikDurumu === 'var' ? 'Var' : vehicle.lastikDurumu === 'yok' ? 'Yok' : '-'; break;
                 case 'utts': value = vehicle.uttsTanimlandi ? 'Evet' : 'Hayır'; break;
@@ -1605,7 +1646,7 @@
                 case 'tescil': value = vehicle.tescilTarihi ? formatDate(vehicle.tescilTarihi) : '-'; break;
             }
         }
-        if (opts.compact) return applyStokPrintCompact(vehicle, col, value);
+        if (opts.compact) return applyStokPrintCompact(vehicle, col, value, opts);
         return value;
     }
 
@@ -1928,20 +1969,21 @@
     window.handleStokSearch = (typeof window.debounce === 'function') ? window.debounce(handleStokSearchImpl, 200) : handleStokSearchImpl;
 
     // Yazdır – Excel ile aynı veriyi tablo olarak yazdırır (ekran görüntüsü değil)
-    const stokPrintHeaders = { sira:'No.', sube:'Şube', yil:'Yıl', marka:'Marka/Mod.', plaka:'Plaka', sanziman:'Şanz', km:'KM', sigorta:'Sig. bit.', kasko:'Kas. bit.', kaskoDegeri:'Kas. değ.', muayene:'Muayene', kredi:'Hak M.', lastik:'Lastik', utts:'UTTS', takip:'Takip', tramer:'Tramer', boya:'Boya', kullanici:'Kull.', tescil:'Tescil' };
+    const stokPrintHeaders = { sira:'No.', sube:'Şube', yil:'Yıl', marka:'Marka/Mod.', plaka:'Plaka', sanziman:'Şanz', km:'KM', sigorta:'Sig. bit.', kasko:'Kas. bit.', kaskoDegeri:'Kas. değ.', muayene:'Muay.', egzozMuayene:'Egz.', kredi:'Hak M.', lastik:'Lastik', utts:'UTTS', takip:'Takip', tramer:'Tramer', boya:'Boya', kullanici:'Kull.', tescil:'Tescil' };
     /* Yazdırma: plaka kısa metin — aşırı ağırlık diğer sütunları sıkıştırıp başlıkta harf kırılmasına yol açmasın */
     const stokPrintColumnWeights = {
         sira: 3,
         yil: 5,
         plaka: 11,
-        marka: 14,
+        marka: 10,
         sanziman: 7,
         km: 9,
         sube: 12,
         sigorta: 9,
         kasko: 9,
         kaskoDegeri: 10,
-        muayene: 9,
+        muayene: 6,
+        egzozMuayene: 6,
         kredi: 8,
         lastik: 8,
         utts: 6,
@@ -1970,11 +2012,13 @@
             alert('Yazdırılacak Taşıt Bulunamadı.');
             return;
         }
-        const { vehicles, activeColumns, titleText, dateRangeText } = data;
+        const { vehicles, titleText, dateRangeText } = data;
+        const activeColumns = expandStokPrintColumns(data.activeColumns);
+        const printOpts = { compact: true, printSeparateMuayeneColumns: true };
         const colgroup = buildStokPrintColgroup(activeColumns);
         const thead = activeColumns.map(col => `<th data-col="${col.key}">${escapeHtml(stokPrintHeaders[col.key] || col.key)}</th>`).join('');
         const rows = vehicles.map((vehicle, index) => {
-            const cells = activeColumns.map(col => `<td data-col="${col.key}">${escapeHtml(String(getStokCellValue(vehicle, col, index, { compact: true })))}</td>`).join('');
+            const cells = activeColumns.map(col => `<td data-col="${col.key}">${escapeHtml(String(getStokCellValue(vehicle, col, index, printOpts)))}</td>`).join('');
             return `<tr class="${index % 2 === 0 ? 'even' : 'odd'}">${cells}</tr>`;
         }).join('');
         const el = document.createElement('div');
