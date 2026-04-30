@@ -7966,6 +7966,22 @@ function renderVehicleDetailLeft(vehicle) {
     let hasRed = false; // Okunmamış kırmızı bildirim var mı?
     let hasOrange = false; // Okunmamış turuncu bildirim var mı?
 
+    function parseNotificationDisplayDateMs(displayDate) {
+      const raw = String(displayDate || '').trim();
+      if (!raw) return 0;
+      const trMatch = raw.match(/^(\d{2})[./-](\d{2})[./-](\d{4})$/);
+      if (trMatch) {
+        const day = Number(trMatch[1]);
+        const month = Number(trMatch[2]);
+        const year = Number(trMatch[3]);
+        const dt = new Date(year, month - 1, day, 0, 0, 0, 0);
+        if (!isNaN(dt.getTime())) return dt.getTime();
+      }
+      const parsed = Date.parse(raw);
+      if (!isNaN(parsed)) return parsed;
+      return 0;
+    }
+
     vehicles.forEach(vehicle => {
       if (vehicle.satildiMi) return; // Satılmış taşıtları atla
 
@@ -8217,21 +8233,6 @@ function renderVehicleDetailLeft(vehicle) {
         return d.getTime();
       })();
       const notifFeed = [];
-      function parseNotificationDisplayDateMs(displayDate) {
-        const raw = String(displayDate || '').trim();
-        if (!raw) return 0;
-        const trMatch = raw.match(/^(\d{2})[./-](\d{2})[./-](\d{4})$/);
-        if (trMatch) {
-          const day = Number(trMatch[1]);
-          const month = Number(trMatch[2]);
-          const year = Number(trMatch[3]);
-          const d = new Date(year, month - 1, day, 0, 0, 0, 0);
-          if (!isNaN(d.getTime())) return d.getTime();
-        }
-        const parsed = Date.parse(raw);
-        if (!isNaN(parsed)) return parsed;
-        return 0;
-      }
       function pushNotifFeedOnce(notifKey, t, h) {
         const normalizedKey = String(notifKey || '').trim();
         if (!normalizedKey || feedKeys[normalizedKey]) return false;
