@@ -913,6 +913,19 @@
           return false;
         });
       }
+      const assignedSet = new Set(assignedIds.map(String));
+      function userVehiclePlateSortKey(v) {
+        const plakaStr = v.plate || v.plaka || '';
+        return String(plakaStr).replace(/\s+/g, '').toLocaleLowerCase('tr-TR');
+      }
+      activeVehicles.sort(function(a, b) {
+        const aid = String(a.id);
+        const bid = String(b.id);
+        const aSel = assignedSet.has(aid);
+        const bSel = assignedSet.has(bid);
+        if (aSel !== bSel) return aSel ? -1 : 1;
+        return userVehiclePlateSortKey(a).localeCompare(userVehiclePlateSortKey(b), 'tr-TR');
+      });
       container.innerHTML = '';
       activeVehicles.forEach(v => {
         const vid = String(v.id);
@@ -1147,7 +1160,7 @@
           vehiclesContainer.querySelectorAll('input[name=user-vehicle]').forEach(cb => {
             cb.checked = assignedIds.indexOf(cb.value) !== -1;
           });
-          updateUserVehiclesTriggerText();
+          populateUserVehiclesMulti('');
         }
         if (title) title.textContent = 'Kullanıcı Düzenle';
         // Sil butonunu göster
