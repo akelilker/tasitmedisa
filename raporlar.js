@@ -3,8 +3,13 @@
    ========================================= */
 
 (function() {
-    // Taşıt/şube/kullanıcı verisi data-manager getter'larından
-    function getVehicles() { return (typeof window.getMedisaVehicles === 'function' ? window.getMedisaVehicles() : null) || []; }
+    // Taşıt listesi: getMedisaVehicles (oturum kapsamı); arşiv satildiMi === true hariç — taşıtlar şube kartları ile aynı kural.
+    function getVehicles() {
+        var raw = (typeof window.getMedisaVehicles === 'function' ? window.getMedisaVehicles() : null) || [];
+        return raw.filter(function(v) {
+            return v && v.satildiMi !== true;
+        });
+    }
     function getBranches() { return (typeof window.getMedisaBranches === 'function' ? window.getMedisaBranches() : null) || []; }
     function getUsers() { return (typeof window.getMedisaUsers === 'function' ? window.getMedisaUsers() : null) || []; }
 
