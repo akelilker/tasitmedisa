@@ -1916,7 +1916,10 @@
 
   function exportExcel() {
     var period = document.getElementById('report-period') ? document.getElementById('report-period').value : new Date().toISOString().slice(0, 7);
-    fetch(API_BASE + 'admin_export.php?period=' + encodeURIComponent(period), {
+    var url = API_BASE + 'admin_export.php?period=' + encodeURIComponent(period)
+      + '&branch=' + encodeURIComponent(reportBranch || '')
+      + '&status=' + encodeURIComponent(reportStatus || '');
+    fetch(url, {
       method: 'GET',
       cache: 'no-store',
       headers: buildAuthHeaders()
