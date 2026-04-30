@@ -22,25 +22,9 @@ function calculateNextMuayene($vehicle, $muayeneDateStr) {
     // Muayene ve egzos yaptırılan tarihlerinden bitiş hesaplamasında aynı periyot kuralları kullanılır (driver_event.php ↔ tasitlar.js senkron).
     if (!$muayeneDateStr) return '';
 
-    $currentYear = (int)date('Y');
-    $productionYear = (int)($vehicle['year'] ?? 0);
-    if ($productionYear <= 0) $productionYear = $currentYear;
-
-    $events = $vehicle['events'] ?? [];
-    $hasMuayeneEvent = false;
-    foreach ($events as $event) {
-        if (($event['type'] ?? '') === 'muayene-guncelle') {
-            $hasMuayeneEvent = true;
-            break;
-        }
-    }
-    $hasExistingMuayeneDate = trim((string)($vehicle['muayeneDate'] ?? '')) !== '';
-    $isFirstMuayene = !$hasMuayeneEvent && !$hasExistingMuayeneDate;
-
     $vehicleType = strtolower((string)($vehicle['vehicleType'] ?? $vehicle['tip'] ?? 'otomobil'));
     $isCommercial = $vehicleType !== 'otomobil';
-    $firstPeriod = $isFirstMuayene && ($productionYear === $currentYear);
-    $yearsToAdd = $isCommercial ? ($firstPeriod ? 2 : 1) : ($firstPeriod ? 3 : 2);
+    $yearsToAdd = $isCommercial ? 1 : 2;
 
     return addYears($muayeneDateStr, $yearsToAdd);
 }
