@@ -7961,7 +7961,6 @@ function renderVehicleDetailLeft(vehicle) {
     const viewedKeys = getViewedNotificationKeys();
     const dismissedKeys = getDismissedNotificationKeys();
     const feedKeys = {};
-    let hasUnreadActivity = false;
     let hasUnreadMarkableNotification = false;
     const showDesktopSpecialNotifDate = window.innerWidth >= 641;
     let hasRed = false; // Okunmamış kırmızı bildirim var mı?
@@ -8405,12 +8404,11 @@ function renderVehicleDetailLeft(vehicle) {
           const safeKey = notifKey.replace(/"/g, '&quot;');
           const isUnread = viewedKeys.indexOf(notifKey) === -1;
           if (isUnread) {
-            hasUnreadActivity = true;
             hasUnreadMarkableNotification = true;
           }
           const unreadClass = isUnread ? ' notification-unread' : ' notification-read';
           const unreadStyle = isUnread
-            ? '--notif-border: rgba(212, 0, 0, 0.85); --notif-fg: #ccc;'
+            ? '--notif-border: rgba(255, 255, 255, 0.55); --notif-fg: #a0aec0;'
             : '--notif-border: rgba(130, 130, 130, 0.55); --notif-fg: #9a9a9a;';
           const activityMsg = getNotificationActivityMessage(ev, item.plate);
           const h = `<button type="button" data-plate="${safePlate}" data-vehicle-id="${safeVid}" data-open-history="1" data-history-tab="${historyTab}" data-notif-key="${safeKey}" style="${unreadStyle}" class="notification-item notification-item-activity${unreadClass}">
@@ -8441,13 +8439,15 @@ function renderVehicleDetailLeft(vehicle) {
 
       if (notifIcon) {
         notifIcon.classList.remove('notification-red', 'notification-orange', 'notification-pulse');
-        if (hasRed || hasUnreadActivity) {
+        if (hasRed) {
           notifIcon.classList.add('notification-red', 'notification-pulse');
         } else if (hasOrange) {
           notifIcon.classList.add('notification-orange', 'notification-pulse');
+        } else if (hasUnreadMarkableNotification) {
+          /* Sadece nütr (faaliyet vb.) okunmamış: renk tema varsayılanı, dikkat için pulse */
+          notifIcon.classList.add('notification-pulse');
         }
-        /* Kırmızı: kritik tarih uyarısı veya okunmamış aktivite bildirimi.
-           Turuncu: yalnız yaklaşan tarih uyarıları için kullanılır. */
+        /* Zil rengi: kırmızı = kritik/süresi bitmiş uyarılar; turuncu = yaklaşan tarih ve benzeri; pulse = başka okunmamış. */
       }
     }
     } catch (err) {
