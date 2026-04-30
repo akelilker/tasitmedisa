@@ -7463,31 +7463,26 @@ function renderVehicleDetailLeft(vehicle) {
       if (adres) pushDetail('Konum', toTitleCase(adres));
     } else if (eventType === 'kasko-guncelle') {
       summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Kasko Biti\u015F Tarihini G\u00FCncelledi.</span>';
-      const islemTarihi = actionDateText;
       const bitis = formatDateForDisplay(eventData.bitisTarihi || '');
       const firma = (eventData.firma || '').trim();
       const acente = (eventData.acente || '').trim();
       const iletisim = (eventData.iletisim || '').trim();
-      if (islemTarihi) pushDetail('\u0130\u015flem Tarihi', islemTarihi);
       if (bitis) pushDetail('Biti\u015F Tarihi', bitis);
       if (firma) pushDetail('Firma', toTitleCase(firma));
       if (acente) pushDetail('Acente', toTitleCase(acente));
       if (iletisim) pushDetail('\u0130leti\u015Fim', iletisim);
     } else if (eventType === 'sigorta-guncelle') {
       summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Trafik Sigortas\u0131 Biti\u015F Tarihini G\u00FCncelledi.</span>';
-      const islemTarihi = actionDateText;
       const bitis = formatDateForDisplay(eventData.bitisTarihi || '');
       const firma = (eventData.firma || '').trim();
       const acente = (eventData.acente || '').trim();
       const iletisim = (eventData.iletisim || '').trim();
-      if (islemTarihi) pushDetail('\u0130\u015flem Tarihi', islemTarihi);
       if (bitis) pushDetail('Biti\u015F Tarihi', bitis);
       if (firma) pushDetail('Firma', toTitleCase(firma));
       if (acente) pushDetail('Acente', toTitleCase(acente));
       if (iletisim) pushDetail('\u0130leti\u015Fim', iletisim);
     } else if (eventType === 'muayene-guncelle' || eventType === 'muayene' || eventType === 'muayene-yenileme') {
       summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Muayene Biti\u015F Tarihini G\u00FCncelledi.</span>';
-      const islemTarihi = actionDateText;
       let bitis = formatDateForDisplay(eventData.bitisTarihi || '');
       if (!bitis && legacyAciklama) {
         const m = legacyAciklama.match(/(\d{2}[./-]\d{2}[./-]\d{4})/);
@@ -7496,7 +7491,6 @@ function renderVehicleDetailLeft(vehicle) {
           bitis = raw;
         }
       }
-      if (islemTarihi) pushDetail('\u0130\u015flem Tarihi', islemTarihi);
       if (bitis) pushDetail('Biti\u015F Tarihi', bitis);
       const egzozYapForm = formatDateForDisplay(eventData.egzozMuayeneYapilmaDate || '');
       if (egzozYapForm) pushDetail('Egzos Muayenesi Yapt\u0131r\u0131lan', egzozYapForm);
