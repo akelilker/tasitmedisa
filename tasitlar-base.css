@@ -149,12 +149,14 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
   display: flex;
   align-items: center;
   gap: 7px;
-  color: var(--form-label-color);
   font-size: 12px;
-  font-weight: 600;
   line-height: 1.25;
   cursor: pointer;
   user-select: none;
+}
+#dinamik-olay-modal .egzoz-olay-toggle > span {
+  color: #a0aec0;
+  font-weight: 500;
 }
 #dinamik-olay-modal .egzoz-olay-toggle input[type="checkbox"] {
   -webkit-appearance: none;

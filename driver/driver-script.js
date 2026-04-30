@@ -945,7 +945,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
               <div class="driver-info-item ${sigortaW.class}"><span class="label">Sigorta Bitiş</span><span class="value">${formatDriverDate(vehicle.sigortaDate) || '-'}</span></div>
               <div class="driver-info-item ${kaskoW.class}"><span class="label">Kasko Bitiş</span><span class="value">${formatDriverDate(vehicle.kaskoDate) || '-'}</span></div>
               <div class="driver-info-item ${muayeneW.class}"><span class="label">Muayene Bitiş</span><span class="value">${formatDriverDate(vehicle.muayeneDate) || '-'}</span></div>
-              ${hasEgzozMuayeneSaved ? `<div class="driver-info-item ${egzozW.class}"><span class="label">Egzos Muayenesi Bitiş</span><span class="value">${formatDriverDate(egzozMuayeneDate) || '-'}</span></div>` : ''}
+              ${hasEgzozMuayeneSaved ? `<div class="driver-info-item ${egzozW.class}"><span class="label">Egzos Muayene Bitiş</span><span class="value">${formatDriverDate(egzozMuayeneDate) || '-'}</span></div>` : ''}
               <div class="driver-info-item ${anahtarSavedClass}"><span class="label">Yedek Anahtar</span><span class="value">${escapeHtmlDriver(anahtarLabel)}</span></div>
               <div class="driver-info-item ${lastikSavedClass}"><span class="label">Lastik Durumu</span><span class="value">${escapeHtmlDriver(lastikLabel)}</span></div>
               <div class="driver-info-item"><span class="label">UTTS</span><span class="value">${escapeHtmlDriver(uttsLabel)}</span></div>
@@ -1212,13 +1212,13 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
               <div class="driver-action-group">
                   <button type="button" class="driver-action-btn${muayeneBtnClass}" data-action="muayene" onclick="toggleDriverActionBlock('muayene','${vid}')">Muayene Yenileme</button>
                   <div id="muayene-block-${vid}" class="driver-report-block driver-report-block-muayene driver-action-block">
-                      <div class="form-group"><label for="driver-muayene-tarih-${vid}">Muayene Yapt\u0131r\u0131lan Tarihi</label><div class="driver-date-wrap"><input type="date" id="driver-muayene-tarih-${vid}" class="form-input" style="width:100%"></div></div>
+                      <div class="form-group"><label for="driver-muayene-tarih-${vid}">Muayene Tarihi</label><div class="driver-date-wrap"><input type="date" id="driver-muayene-tarih-${vid}" class="form-input" style="width:100%"></div></div>
                       <label class="driver-egzoz-muayene-check" for="driver-muayene-egzoz-different-${vid}">
                           <input type="checkbox" id="driver-muayene-egzoz-different-${vid}" onchange="syncDriverEgzozMuayeneFields('${vid}')">
                           <span>Egzos Muayenesi Farklı Tarih İse İşaretleyin..</span>
                       </label>
                       <div id="driver-muayene-egzoz-date-wrap-${vid}" class="form-group driver-egzoz-date-wrap">
-                          <label for="driver-muayene-egzoz-tarih-${vid}">Egzos Muayenesi Yapt\u0131r\u0131lan Tarihi</label>
+                          <label for="driver-muayene-egzoz-tarih-${vid}">Egzos Muayene Tarihi</label>
                           <div class="driver-date-wrap"><input type="date" id="driver-muayene-egzoz-tarih-${vid}" class="form-input" style="width:100%" disabled></div>
                       </div>
                       <div class="universal-btn-group">
@@ -1958,7 +1958,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           ? (document.getElementById('driver-muayene-egzoz-tarih' + suffix)?.value.trim() || '')
           : '';
       if (egzozDifferent && !egzozMuayeneYapilmaDate) {
-          alert('Egzos Muayenesi Yapt\u0131r\u0131lan Tarihi zorunludur!');
+          alert('Egzos Muayene Tarihi zorunludur!');
           const egzozInput = document.getElementById('driver-muayene-egzoz-tarih' + suffix);
           if (egzozInput) egzozInput.focus();
           return null;
@@ -2744,8 +2744,8 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
               } else if (item.eventType === 'muayene-guncelle') {
                   detailsHtml = '<p>Muayene bilgisi g\u00fcncellendi olarak bildirildi.</p>';
                   if (d.bitisTarihi) detailsHtml += `<p>Biti\u015f tarihi: ${escapeHtmlDriver(d.bitisTarihi)}.</p>`;
-                  if (d.egzozMuayeneYapilmaDate) detailsHtml += `<p>Egzos muayenesi yapt\u0131r\u0131lan: ${escapeHtmlDriver(d.egzozMuayeneYapilmaDate)}.</p>`;
-                  if (d.egzozMuayeneDate) detailsHtml += `<p>Egzos muayenesi biti\u015f: ${escapeHtmlDriver(d.egzozMuayeneDate)}.</p>`;
+                  if (d.egzozMuayeneYapilmaDate) detailsHtml += `<p>Egzos muayene — yapt\u0131r\u0131lan: ${escapeHtmlDriver(d.egzozMuayeneYapilmaDate)}.</p>`;
+                  if (d.egzozMuayeneDate) detailsHtml += `<p>Egzos muayene — biti\u015f: ${escapeHtmlDriver(d.egzozMuayeneDate)}.</p>`;
               } else if (item.eventType === 'kasko-guncelle') {
                   detailsHtml = '<p>Kasko yenilemesi bildirildi.</p>';
                   if (d.bitisTarihi) detailsHtml += `<p>Biti\u015f tarihi: ${escapeHtmlDriver(d.bitisTarihi)}.</p>`;
