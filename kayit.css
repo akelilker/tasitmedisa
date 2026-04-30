@@ -2109,6 +2109,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         flex-direction: column !important;
         overflow-y: auto !important; /* Kaydırmayı ana gövdeye geri verdik */
         overflow-x: hidden !important;
+        padding-bottom: 16px !important; /* Buton satırı ile alt çerçeve arasında sabit boşluk */
     }
     #vehicle-modal .modal-body .modal-columns {
         flex: none !important; /* İç scroll'u kapattık, tam uzunluğuna çıksın */
@@ -2127,7 +2128,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         margin-top: 4px;
         padding-top: 8px !important;
         padding-bottom: 0 !important;
-        margin-bottom: 16px !important;
+        margin-bottom: 0 !important;
         align-items: center !important;
     }
     /* Var açılınca taşmayı azalt: açılan bölüm sıkı (tek Var’da scrollbar çıkmasın) */
