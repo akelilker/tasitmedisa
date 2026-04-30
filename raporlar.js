@@ -1419,6 +1419,26 @@
         if (transmission === 'otomatik') return 'Otm.';
         return '-';
     }
+    function formatStokMuayeneCell(vehicle, options) {
+        options = options || {};
+        var compact = options.compact === true;
+        var muayeneRaw = vehicle && vehicle.muayeneDate ? String(vehicle.muayeneDate).trim() : '';
+        var egzozRaw = vehicle && vehicle.egzozMuayeneDate ? String(vehicle.egzozMuayeneDate).trim() : '';
+        var muayeneText = muayeneRaw ? formatDate(muayeneRaw) : '';
+        var egzozText = egzozRaw ? formatDate(egzozRaw) : '';
+
+        if (compact) {
+            if (muayeneText) muayeneText = compactStokPrintDateDisplay(muayeneText);
+            if (egzozText) egzozText = compactStokPrintDateDisplay(egzozText);
+        }
+
+        if (!muayeneText && !egzozText) return '-';
+        if (!egzozText || egzozRaw === muayeneRaw) return muayeneText || '-';
+        if (!muayeneText) return 'Egz: ' + egzozText;
+        return compact
+            ? (muayeneText + ' | Egz: ' + egzozText)
+            : ('Muayene: ' + muayeneText + ' | Egzoz: ' + egzozText);
+    }
     /** Sadece printStokReport: Excel / ekran listesi aynı kalır */
     function applyStokPrintCompact(vehicle, col, value) {
         var k = col.key;
@@ -1426,7 +1446,7 @@
         if (k === 'sanziman') return formatStokTransmissionPrintCompact(vehicle.transmission);
         if (k === 'sigorta') return vehicle.sigortaDate ? compactStokPrintDateDisplay(formatDate(vehicle.sigortaDate)) : '-';
         if (k === 'kasko') return vehicle.kaskoDate ? compactStokPrintDateDisplay(formatDate(vehicle.kaskoDate)) : '-';
-        if (k === 'muayene') return vehicle.muayeneDate ? compactStokPrintDateDisplay(formatDate(vehicle.muayeneDate)) : '-';
+        if (k === 'muayene') return formatStokMuayeneCell(vehicle, { compact: true });
         if (k === 'tescil') return vehicle.tescilTarihi ? compactStokPrintDateDisplay(formatDate(vehicle.tescilTarihi)) : '-';
         if (k === 'kaskoDegeri') {
             var v = String(value);
@@ -1554,7 +1574,7 @@
                     }
                     return String(kaskoDegeri).trim() || '-';
                 })(); break;
-                case 'muayene': value = vehicle.muayeneDate ? formatDate(vehicle.muayeneDate) : '-'; break;
+                case 'muayene': value = formatStokMuayeneCell(vehicle); break;
                 case 'kredi': value = vehicle.kredi === 'var' ? 'Var' : vehicle.kredi === 'yok' ? 'Yok' : '-'; break;
                 case 'lastik': value = vehicle.lastikDurumu === 'var' ? 'Var' : vehicle.lastikDurumu === 'yok' ? 'Yok' : '-'; break;
                 case 'utts': value = vehicle.uttsTanimlandi ? 'Evet' : 'Hayır'; break;
@@ -1727,7 +1747,7 @@
                             value = String(kaskoDegeri).trim() || '-';
                             break;
                         case 'muayene':
-                            value = vehicle.muayeneDate ? formatDate(vehicle.muayeneDate) : '-';
+                            value = formatStokMuayeneCell(vehicle);
                             break;
                         case 'kredi':
                             value = vehicle.kredi === 'var' ? 'Var' : vehicle.kredi === 'yok' ? 'Yok' : '-';
