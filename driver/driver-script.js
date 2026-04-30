@@ -3077,11 +3077,18 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           select.dispatchEvent(new Event('change', { bubbles: true }));
       });
 
+      /* Capture: modal içindeki modal-container stopPropagation yüzünden bubble document'e çıkmıyor */
       document.addEventListener('click', function(ev) {
           if (!list.classList.contains('open')) return;
           if (wrap.contains(ev.target)) return;
           closeDriverFeedbackTypeList();
-      });
+      }, true);
+      document.addEventListener('keydown', function(ev) {
+          if (ev.key !== 'Escape') return;
+          if (!list.classList.contains('open')) return;
+          ev.preventDefault();
+          closeDriverFeedbackTypeList();
+      }, true);
       window.addEventListener('resize', function() {
           if (list.classList.contains('open')) closeDriverFeedbackTypeList();
       });
