@@ -541,10 +541,6 @@
      * Portal girişi (`driver_login.php`) ve raporlar tek kaynaktan (appData) okur.
      * zimmetli_araclar: portal kayıt akışı (`driver_save.php`) için atanmış Taşıt ID'leri (assignedUserId eşleşen Taşıtlar)
      */
-    function mapUiRoleToRol(role) {
-      return window.medisaMapUiRoleToRol(role);
-    }
-
     function getRoleConfigFromSelection(role) {
       const selectedRole = role || 'kullanici';
       if (selectedRole === 'sube_yonetici' || selectedRole === 'yonetici') {
@@ -1058,72 +1054,6 @@
       }
     });
   
-    // Modal Kontrolü (Form)
-    function bindUserBranchSelectDropdown(modal) {
-      setTimeout(() => {
-        const updatedBranchSelect = $('#user-branch', modal);
-        if (updatedBranchSelect && !updatedBranchSelect.dataset.dropdownHandler) {
-          updatedBranchSelect.dataset.dropdownHandler = 'true';
-
-          let isMouseClick = false;
-          updatedBranchSelect.addEventListener('mousedown', function() {
-            isMouseClick = true;
-            setTimeout(() => { isMouseClick = false; }, 200);
-          });
-
-          updatedBranchSelect.addEventListener('focus', function() {
-            if (isMouseClick) return;
-
-            setTimeout(() => {
-              const rect = this.getBoundingClientRect();
-              const clickX = rect.right - 20;
-              const clickY = rect.top + rect.height / 2;
-
-              const mouseDownEvent = new MouseEvent('mousedown', {
-                bubbles: true,
-                cancelable: true,
-                view: window,
-                button: 0,
-                clientX: clickX,
-                clientY: clickY
-              });
-              this.dispatchEvent(mouseDownEvent);
-
-              setTimeout(() => {
-                const mouseUpEvent = new MouseEvent('mouseup', {
-                  bubbles: true,
-                  cancelable: true,
-                  view: window,
-                  button: 0,
-                  clientX: clickX,
-                  clientY: clickY
-                });
-                this.dispatchEvent(mouseUpEvent);
-
-                setTimeout(() => {
-                  const clickEvent = new MouseEvent('click', {
-                    bubbles: true,
-                    cancelable: true,
-                    view: window,
-                    button: 0,
-                    clientX: clickX,
-                    clientY: clickY
-                  });
-                  this.dispatchEvent(clickEvent);
-                }, 10);
-              }, 10);
-            }, 200);
-          });
-
-          updatedBranchSelect.addEventListener('click', function() {
-            if (document.activeElement !== this) {
-              this.focus();
-            }
-          });
-        }
-      }, 100);
-    }
-
     window.openUserFormModal = function openUserFormModal(editId = null, options) {
       const opts = options && typeof options === 'object' ? options : {};
       if (!opts.fromVehicleAssign && typeof window.medisaDismissVehicleAssignUserSavedListener === 'function') {
