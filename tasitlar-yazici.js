@@ -202,6 +202,10 @@
     }
     var kaskoDegeriDisplay = (kaskoDegeri != null && String(kaskoDegeri).trim() !== '') ? String(kaskoDegeri).trim() : '-';
 
+    var sigortaPrint = formatDateForDisplay(vehicle.sigortaDate || vehicle.sigorta || '') || '-';
+    var kaskoPrint = formatDateForDisplay(vehicle.kaskoDate || vehicle.kasko || '') || '-';
+    var muayenePrint = formatDateForDisplay(vehicle.muayeneDate || vehicle.muayene || '') || '-';
+
     var rows = [
       ['Plaka', vehicle.plate || '-'],
       ['Marka / Model', formatBrandModel(vehicle.brandModel || '-')],
@@ -213,9 +217,9 @@
       ['Km', kmValue],
       ['Şanzıman', vehicle.transmission || '-'],
       ['Tramer Kaydı', tramerLabel],
-      ['Sigorta Bitiş Tarihi', vehicle.sigorta || '-'],
-      ['Kasko Bitiş Tarihi', vehicle.kasko || '-'],
-      ['Muayene Bitiş Tarihi', vehicle.muayene || '-'],
+      ['Sigorta Bitiş Tarihi', sigortaPrint],
+      ['Kasko Bitiş Tarihi', kaskoPrint],
+      ['Muayene Bitiş Tarihi', muayenePrint],
       ['Yedek Anahtar', anahtarLabel],
       ['Hak Mahrumiyeti', krediLabel],
       ['Yazlık/Kışlık Lastik', lastikLabel],
