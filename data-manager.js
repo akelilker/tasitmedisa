@@ -79,6 +79,7 @@ let isSaving = false;
 let serverDatasetTrusted = false;
 /** Ardışık save isteklerini sıraya alır; eşzamanlı çağrılarda biri false dönüp veri kaybı yaşanmasın. */
 let saveMutex = Promise.resolve();
+let offlineReadonlyWarnAt = 0;
 
 function syncDataLoadState() {
     isDataLoaded = hasUsableAppData(window.appData);
@@ -99,6 +100,24 @@ function hasUsableAppData(data) {
             (Array.isArray(data.kayitlar) && data.kayitlar.length > 0)
         )
     );
+}
+
+function showOfflineReadonlyWarning() {
+    var now = Date.now();
+    if (now - offlineReadonlyWarnAt < 5000) return;
+    offlineReadonlyWarnAt = now;
+    var message = 'İnternet bağlantısı yok. Son kayıtlı veri görüntüleniyor; değişiklikler kaydedilemez.';
+    if (typeof window.showCenteredInfoBox === 'function') {
+        window.showCenteredInfoBox(message);
+        return;
+    }
+    if (typeof window.showInfoModal === 'function') {
+        window.showInfoModal(message);
+        return;
+    }
+    if (typeof alert === 'function') {
+        alert(message);
+    }
 }
 
 function getSafeAppDataFallback() {
@@ -544,6 +563,7 @@ async function loadDataFromServer(forceRefresh) {
             serverDatasetTrusted = false;
             window.appData = getSafeAppDataFallback();
             if (hasUsableAppData(window.appData)) {
+                showOfflineReadonlyWarning();
                 return window.appData;
             }
             var e = optionalErr || new Error('Medisa veri yüklenemedi');
@@ -661,6 +681,10 @@ async function loadDataFromServer(forceRefresh) {
 async function saveDataToServer(options) {
     if (!ensureMainAppSession()) return false;
     if (!serverDatasetTrusted) return false;
+    if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+        showOfflineReadonlyWarning();
+        return false;
+    }
 
     var prevMutex = saveMutex;
     var releaseNext;
@@ -747,6 +771,7 @@ async function saveDataToServer(options) {
         }
         if (error.message && (error.message.indexOf('404') !== -1 || error.message.indexOf('Failed to fetch') !== -1 || error.message.indexOf('NetworkError') !== -1)) {
             console.warn('[Medisa] Kayıt sunucuya ulaşılamadı. Lütfen bağlantıyı kontrol edip tekrar deneyin.');
+            showOfflineReadonlyWarning();
             return false;
         }
         console.warn('[Medisa] Veri kaydedilemedi:', error.message);
