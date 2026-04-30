@@ -771,11 +771,7 @@ body.dashboard-page {
   .dashboard-page .driver-action-buttons {
     gap: 0 !important;
   }
-  /* Sağ grid: butonların iç dikey yüksekliği masaüstünde 1px daha dar (6px) */
-  .dashboard-page .driver-action-buttons .driver-action-btn {
-    padding-top: 6px !important;
-    padding-bottom: 6px !important;
-  }
+  /* İç dikey padding: aşağıdaki 641 + 769 bloklarında birleştirilir */
   /* Sağ grid: alt boşluk sıfır – çerçeveye tam yanaşsın */
   .dashboard-page .driver-two-panel {
     padding-bottom: 0 !important;
@@ -6078,22 +6074,11 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     }
 }
 
-/* Masaüstü (769px+): sağ kolon bildir butonları — iç dikey +2px (641 bloğunun üzerine) */
+/* Masaüstü (769px+): sadece üst aksiyon satırları (Km Bildir…) iç dikey +2px — yerleşimi kaydırmadan */
 @media (min-width: 769px) {
   .dashboard-page .driver-action-buttons .driver-action-btn {
     padding-top: 10px !important;
     padding-bottom: 10px !important;
-  }
-  .dashboard-page .driver-action-area .universal-btn-save,
-  .dashboard-page .driver-action-area .universal-btn-cancel {
-    height: 32px !important;
-  }
-  /* Talep Gönder FAB: Bildir ile aradaki boşluk (margin-top + footer gap) */
-  .dashboard-page .driver-request-fab-row {
-    margin-top: 2px !important;
-  }
-  .dashboard-page .driver-action-footer.driver-action-group {
-    margin-bottom: 2px !important;
   }
 }
 
