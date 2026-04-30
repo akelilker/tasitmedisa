@@ -469,10 +469,13 @@
   
       const rows = branches.map(branch => {
         const vehicleCount = vehicles.filter(v => v.branchId === branch.id).length;
+        const branchName = String(branch.name || '');
+        const longestWordLength = branchName.split(/\s+/).reduce((maxLen, part) => Math.max(maxLen, part.length), 0);
+        const titleClass = longestWordLength >= 10 ? 'settings-card-title settings-card-title--compact' : 'settings-card-title';
         return `
           <div class="settings-card" onclick="editBranch('${branch.id}')" style="cursor:pointer;">
             <div class="settings-card-content">
-              <div class="settings-card-title">${escapeHtml(branch.name)}</div>
+              <div class="${titleClass}">${escapeHtml(branch.name)}</div>
               <div class="settings-card-count">${vehicleCount} Taşıt</div>
             </div>
           </div>
