@@ -37,7 +37,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../style-core.css?v=20260421.3">
-<link rel="stylesheet" href="driver-style.css?v=20260430.1">
+<link rel="stylesheet" href="driver-style.css?v=20260430.2">
 <script defer src="../script-core.js?v=20260421.5"></script>
     <!-- Splash: ana uygulama ile aynı logo+başlık (kritik, mobilde kesin uygulansın) -->
     <style>
@@ -212,13 +212,17 @@
             <div class="modal-body">
                 <form id="driver-feedback-form" class="driver-feedback-form" onsubmit="return submitDriverFeedback(event);">
                     <div class="form-group">
-                        <label for="driver-feedback-type">Konu Türü</label>
-                        <select id="driver-feedback-type" class="form-input" required>
-                            <option value="talep">Talep</option>
-                            <option value="sikayet">Şikayet</option>
-                            <option value="oneri">Öneri</option>
-                            <option value="diger">Diğer</option>
-                        </select>
+                        <label id="driver-feedback-type-label" for="driver-feedback-type">Konu Türü</label>
+                        <div class="vehicle-branch-dropdown-wrap driver-feedback-type-dropdown-wrap">
+                            <select id="driver-feedback-type" required aria-hidden="true" tabindex="-1">
+                                <option value="talep">Talep</option>
+                                <option value="sikayet">Şikayet</option>
+                                <option value="oneri">Öneri</option>
+                                <option value="diger">Diğer</option>
+                            </select>
+                            <div id="driver-feedback-type-trigger" class="vehicle-branch-trigger form-input" tabindex="0" role="combobox" aria-expanded="false" aria-controls="driver-feedback-type-list" aria-labelledby="driver-feedback-type-label"></div>
+                            <div id="driver-feedback-type-list" class="vehicle-branch-list" role="listbox" aria-hidden="true"></div>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="driver-feedback-message">Mesaj</label>
@@ -516,6 +520,6 @@
             <button type="button" class="btn-confirm-yes" onclick="confirmMuayeneSubmit()">Evet</button>
         </div>
     </div>
-<script defer src="driver-script.js?v=20260430.1"></script>
+<script defer src="driver-script.js?v=20260430.2"></script>
 </body>
 </html>
