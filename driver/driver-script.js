@@ -919,8 +919,8 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       const kaskoW = checkDateWarningsDriver(vehicle.kaskoDate);
       const muayeneW = checkDateWarningsDriver(vehicle.muayeneDate);
       const egzozMuayeneDate = vehicle.egzozMuayeneDate || '';
-      const hasSeparateEgzozMuayene = !!(egzozMuayeneDate && egzozMuayeneDate !== vehicle.muayeneDate);
-      const egzozW = checkDateWarningsDriver(hasSeparateEgzozMuayene ? egzozMuayeneDate : '');
+      const hasEgzozMuayeneSaved = !!(egzozMuayeneDate && String(egzozMuayeneDate).trim());
+      const egzozW = checkDateWarningsDriver(hasEgzozMuayeneSaved ? egzozMuayeneDate : '');
       
       const anahtarLabel = (vehicle.anahtar === 'var') ? (vehicle.anahtarNerede || 'Var') : 'Yoktur.';
       const lastikLabel = (vehicle.lastikDurumu === 'var') ? (vehicle.lastikAdres || 'Var') : 'Yoktur.';
@@ -945,7 +945,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
               <div class="driver-info-item ${sigortaW.class}"><span class="label">Sigorta Bitiş</span><span class="value">${formatDriverDate(vehicle.sigortaDate) || '-'}</span></div>
               <div class="driver-info-item ${kaskoW.class}"><span class="label">Kasko Bitiş</span><span class="value">${formatDriverDate(vehicle.kaskoDate) || '-'}</span></div>
               <div class="driver-info-item ${muayeneW.class}"><span class="label">Muayene Bitiş</span><span class="value">${formatDriverDate(vehicle.muayeneDate) || '-'}</span></div>
-              ${hasSeparateEgzozMuayene ? `<div class="driver-info-item ${egzozW.class}"><span class="label">Egzos Muayenesi Bitiş</span><span class="value">${formatDriverDate(egzozMuayeneDate) || '-'}</span></div>` : ''}
+              ${hasEgzozMuayeneSaved ? `<div class="driver-info-item ${egzozW.class}"><span class="label">Egzos Muayenesi Bitiş</span><span class="value">${formatDriverDate(egzozMuayeneDate) || '-'}</span></div>` : ''}
               <div class="driver-info-item ${anahtarSavedClass}"><span class="label">Yedek Anahtar</span><span class="value">${escapeHtmlDriver(anahtarLabel)}</span></div>
               <div class="driver-info-item ${lastikSavedClass}"><span class="label">Lastik Durumu</span><span class="value">${escapeHtmlDriver(lastikLabel)}</span></div>
               <div class="driver-info-item"><span class="label">UTTS</span><span class="value">${escapeHtmlDriver(uttsLabel)}</span></div>
