@@ -2596,14 +2596,6 @@ body.dashboard-page {
   text-align: center;
 }
 
-/* Footer altındaki durum kutusu boşken yer kaplamasın (padding + margin ile FAB ile Bildir arasında şişkinlik yapıyordu) */
-.driver-action-footer .status-message:empty {
-  margin: 0 !important;
-  padding: 0 !important;
-  min-height: 0 !important;
-  border: none !important;
-}
-
 .status-message.success {
   background: rgba(74, 222, 128, 0.12);
   border-left: 3px solid var(--green);
