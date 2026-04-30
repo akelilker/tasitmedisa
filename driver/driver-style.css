@@ -1382,12 +1382,14 @@ body.dashboard-page {
   align-items: center;
   gap: 7px;
   margin: 4px 0 6px;
-  color: var(--form-label-color, #ffffff);
   font-size: 13px;
-  font-weight: 500;
   line-height: 1.25;
   cursor: pointer;
   user-select: none;
+}
+.driver-egzoz-muayene-check > span {
+  color: #a0aec0;
+  font-weight: 500;
 }
 .driver-egzoz-muayene-check input[type="checkbox"] {
   width: 15px;
