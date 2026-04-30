@@ -897,11 +897,20 @@
       if (scope.isBranchManager) {
         activeVehicles = activeVehicles.filter(v => isWithinUserManagementBranch(v && v.branchId, scope));
       }
-      const q = (searchFilter || '').trim().toLowerCase();
-      if (q) {
+      const qRaw = (searchFilter || '').trim();
+      if (qRaw) {
+        const qLower = qRaw.toLocaleLowerCase('tr-TR');
+        const qCompact = qRaw.replace(/\s+/g, '').toLocaleLowerCase('tr-TR');
         activeVehicles = activeVehicles.filter(v => {
-          const plaka = (v.plate || v.plaka || '').toLowerCase();
-          return plaka.includes(q);
+          const plakaStr = v.plate || v.plaka || '';
+          const pCompact = String(plakaStr).replace(/\s+/g, '').toLocaleLowerCase('tr-TR');
+          const rawMm = (v.brandModel || (v.brand || v.marka || '') + ' ' + (v.model || '')).trim();
+          const markaModel = (typeof window.formatBrandModel === 'function' ? window.formatBrandModel(rawMm) : (typeof window.toTitleCase === 'function' ? window.toTitleCase(rawMm) : rawMm));
+          const brandHay = String(markaModel || '').toLocaleLowerCase('tr-TR');
+          if (pCompact.startsWith(qCompact)) return true;
+          if (qCompact.length >= 3 && pCompact.indexOf(qCompact) !== -1) return true;
+          if (brandHay.indexOf(qLower) !== -1) return true;
+          return false;
         });
       }
       container.innerHTML = '';

@@ -3844,10 +3844,11 @@ function renderVehicleDetailLeft(vehicle) {
       html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Muayene Bitiş Tarihi</span><span class="detail-row-colon">:</span></div><span class="detail-row-value ${muayeneWarning.class}"> ${escapeHtml(muayeneDisplay || '-')}</span></div>`;
     }
 
-    const egzozState = getEgzozMuayeneState(vehicle);
-    if (egzozState.state !== 'valid') {
-      const egzozDisplay = egzozState.state === 'missing' ? 'Eksik' : formatDateForDisplay(egzozState.date);
-      html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Egzos Muayenesi Bitiş</span><span class="detail-row-colon">:</span></div><span class="detail-row-value ${egzozState.warningClass}"> ${escapeHtml(egzozDisplay || '-')}</span></div>`;
+    const egzozRaw = vehicle && vehicle.egzozMuayeneDate != null ? String(vehicle.egzozMuayeneDate).trim() : '';
+    if (egzozRaw) {
+      const egzozState = getEgzozMuayeneState(vehicle);
+      const egzozDisplay = formatDateForDisplay(egzozState.date);
+      html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Egzos Muayene Bitiş</span><span class="detail-row-colon">:</span></div><span class="detail-row-value ${egzozState.warningClass}"> ${escapeHtml(egzozDisplay || '-')}</span></div>`;
     }
     
     // Detay: yedek anahtar durumu
@@ -4330,7 +4331,7 @@ function renderVehicleDetailLeft(vehicle) {
         '<span>Egzos Muayenesi Farklı Tarih İse İşaretleyin..</span>' +
         '</label>' +
         '<div id="muayene-egzoz-date-wrapper" class="egzoz-olay-date-wrapper">' +
-        '<label class="' + labelCls + '" for="muayene-egzoz-yapilma-tarih">Egzos Muayenesi Yapt\u0131r\u0131lan Tarihi (gg/aa/yyyy)</label>' +
+        '<label class="' + labelCls + '" for="muayene-egzoz-yapilma-tarih">Egzos Muayene Tarihi</label>' +
         '<input id="muayene-egzoz-yapilma-tarih" class="' + inputCls + '" type="text" placeholder="gg/aa/yyyy" disabled>' +
         '</div>';
     };
@@ -4388,7 +4389,7 @@ function renderVehicleDetailLeft(vehicle) {
           section('İletişim', 'kasko-iletisim', 'input', [['type', 'text'], ['placeholder', '05** *******']]) + '</div>';
       case 'muayene':
         return '<div style="display:flex;flex-direction:column;gap:12px;">' +
-          section('Muayene Yapt\u0131r\u0131lan Tarihi (gg/aa/yyyy)', 'muayene-tarih', 'input', [['type', 'text'], ['placeholder', 'gg/aa/yyyy']]) +
+          section('Muayene Tarihi', 'muayene-tarih', 'input', [['type', 'text'], ['placeholder', 'gg/aa/yyyy']]) +
           egzozMuayeneSection() + '</div>';
       case 'anahtar':
         return '<div style="display:flex;flex-direction:column;gap:12px;">' +
@@ -6839,7 +6840,7 @@ function renderVehicleDetailLeft(vehicle) {
       return;
     }
     if (egzozDifferent && !egzozYapilmaIso) {
-      alert('Egzos Muayenesi Yapt\u0131r\u0131lan Tarihi zorunludur!');
+      alert('Egzos Muayene Tarihi zorunludur!');
       if (egzozInput) egzozInput.focus();
       return;
     }
@@ -7515,9 +7516,9 @@ function renderVehicleDetailLeft(vehicle) {
       }
       if (bitis) pushDetail('Biti\u015F Tarihi', bitis);
       const egzozYapForm = formatDateForDisplay(eventData.egzozMuayeneYapilmaDate || '');
-      if (egzozYapForm) pushDetail('Egzos Muayenesi Yapt\u0131r\u0131lan', egzozYapForm);
+      if (egzozYapForm) pushDetail('Egzos Muayene — Yapt\u0131r\u0131lan', egzozYapForm);
       const egzozBitis = formatDateForDisplay(eventData.egzozMuayeneDate || '');
-      if (egzozBitis) pushDetail('Egzos Muayenesi Biti\u015F', egzozBitis);
+      if (egzozBitis) pushDetail('Egzos Muayene — Biti\u015F', egzozBitis);
     } else if (eventType === 'kullanici-atama') {
       const yeni = (eventData.kullaniciAdi || '').trim();
       const eski = (eventData.eskiKullaniciAdi || '').trim();
