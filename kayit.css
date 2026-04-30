@@ -2126,7 +2126,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         flex-shrink: 0;
         margin-top: 4px;
         padding-top: 8px !important;
-        padding-bottom: 10px !important;
+        padding-bottom: 16px !important;
         align-items: center !important;
     }
     /* Var açılınca taşmayı azalt: açılan bölüm sıkı (tek Var’da scrollbar çıkmasın) */
