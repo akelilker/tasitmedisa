@@ -2489,6 +2489,20 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     border-bottom-color: rgba(168, 176, 186, 0.40) !important;
 }
 
+/* Ayarlar listesi / formlar (şube, kullanıcı, veri): masaüstünde üstte açık gri border + inset ile kırmızı header çakışmasın */
+@media (min-width: 641px) {
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #branch-modal.modal-overlay .modal-container,
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #branch-form-modal.modal-overlay .modal-container,
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #user-modal.modal-overlay .modal-container,
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #user-form-modal.modal-overlay .modal-container,
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #data-management-modal.modal-overlay .modal-container,
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #dis-veri-panel.modal-overlay .modal-container {
+        border: 0.5px solid var(--border-medium) !important;
+        border-bottom: 1px solid var(--border-medium) !important;
+        box-shadow: none !important;
+    }
+}
+
 #app-footer .footer-content {
     position: relative;
     z-index: 1;
