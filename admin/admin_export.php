@@ -54,6 +54,9 @@ foreach ($users as $u) {
 
 $tasitById = [];
 foreach ($tasitlar as $t) {
+    if (!empty($t['satildiMi'])) {
+        continue;
+    }
     $tasitById[(string)($t['id'] ?? '')] = $t;
 }
 
@@ -70,6 +73,9 @@ foreach ($hareketler as $k) {
 
     $surucu = $userById[(string)($k['surucu_id'] ?? '')] ?? null;
     $arac = $tasitById[(string)($k['arac_id'] ?? '')] ?? null;
+    if (!$arac) {
+        continue;
+    }
     $surucuAdi = $surucu ? ($surucu['isim'] ?? $surucu['name'] ?? 'Bilinmiyor') : 'Bilinmiyor';
     $aracText = $arac ? trim((string)($arac['marka'] ?? $arac['brand'] ?? '') . ' ' . (string)($arac['model'] ?? '')) : 'Bilinmiyor';
     $plaka = $arac ? ($arac['plaka'] ?? $arac['plate'] ?? 'Bilinmiyor') : 'Bilinmiyor';
