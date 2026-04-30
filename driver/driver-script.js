@@ -421,25 +421,10 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
   /** Muayene bitiş tarihi hesapla (ana panel + driver_event.php ile senkron). */
   function calculateNextMuayeneDate(tarihStr, vehicle) {
     if (!tarihStr) return '';
-    var nowYear = new Date().getFullYear();
-    var productionYear = parseInt(vehicle && vehicle.year, 10) || nowYear;
     var vehicleType = (vehicle && (vehicle.vehicleType || vehicle.tip)) ? (vehicle.vehicleType || vehicle.tip) : 'otomobil';
     vehicleType = String(vehicleType).toLowerCase();
     var isCommercial = vehicleType !== 'otomobil';
-
-    var events = (vehicle && vehicle.events) ? vehicle.events : [];
-    var hasMuayeneEvent = false;
-    for (var i = 0; i < events.length; i++) {
-      if (events[i] && events[i].type === 'muayene-guncelle') {
-        hasMuayeneEvent = true;
-        break;
-      }
-    }
-    var hasExistingMuayeneDate = !!(vehicle && vehicle.muayeneDate && String(vehicle.muayeneDate).trim());
-    var isFirstMuayene = !hasMuayeneEvent && !hasExistingMuayeneDate;
-    var firstPeriod = isFirstMuayene && productionYear === nowYear;
-
-    var years = isCommercial ? (firstPeriod ? 2 : 1) : (firstPeriod ? 3 : 2);
+    var years = isCommercial ? 1 : 2;
     try {
       var dt = new Date(tarihStr + 'T00:00:00');
       if (isNaN(dt.getTime())) return '';

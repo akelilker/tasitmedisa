@@ -6674,20 +6674,9 @@ function renderVehicleDetailLeft(vehicle) {
   function calculateNextMuayene(vehicle, muayeneDate) {
     if (!muayeneDate) return '';
 
-    const nowYear = new Date().getFullYear();
-    const productionYear = parseInt(vehicle && vehicle.year, 10) || nowYear;
     const vehicleType = (vehicle && (vehicle.vehicleType || vehicle.tip) ? (vehicle.vehicleType || vehicle.tip) : 'otomobil').toLowerCase();
     const isCommercial = vehicleType !== 'otomobil';
-
-    const events = Array.isArray(vehicle && vehicle.events) ? vehicle.events : [];
-    const hasMuayeneEvent = events.some(function(evt) {
-      return (evt && evt.type) === 'muayene-guncelle';
-    });
-    const hasExistingMuayeneDate = !!(vehicle && vehicle.muayeneDate && String(vehicle.muayeneDate).trim());
-    const isFirstMuayene = !hasMuayeneEvent && !hasExistingMuayeneDate;
-
-    const firstPeriod = isFirstMuayene && productionYear === nowYear;
-    const yearsToAdd = isCommercial ? (firstPeriod ? 2 : 1) : (firstPeriod ? 3 : 2);
+    const yearsToAdd = isCommercial ? 1 : 2;
     return addYears(muayeneDate, yearsToAdd);
   }
 
