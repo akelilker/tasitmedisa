@@ -2936,11 +2936,170 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       messageEl.classList.toggle('is-success', !!message && !isError);
   }
 
+  /** Talep modalı Konu Türü: kayıt şube dropdown ile aynı koyu liste (native select yerine). */
+  function closeDriverFeedbackTypeList() {
+      var list = document.getElementById('driver-feedback-type-list');
+      var trigger = document.getElementById('driver-feedback-type-trigger');
+      if (!list || !trigger) return;
+      list.classList.remove('open');
+      trigger.setAttribute('aria-expanded', 'false');
+      list.setAttribute('aria-hidden', 'true');
+      list.style.position = '';
+      list.style.top = '';
+      list.style.bottom = '';
+      list.style.left = '';
+      list.style.right = '';
+      list.style.width = '';
+      list.style.maxHeight = '';
+      list.style.overflowY = '';
+      list.style.marginTop = '';
+      list.style.marginBottom = '';
+  }
+
+  function syncDriverFeedbackTypeTriggerFromSelect() {
+      var select = document.getElementById('driver-feedback-type');
+      var trigger = document.getElementById('driver-feedback-type-trigger');
+      var list = document.getElementById('driver-feedback-type-list');
+      if (!select || !trigger || !list) return;
+      var idx = select.selectedIndex >= 0 ? select.selectedIndex : 0;
+      var opt = select.options[idx];
+      trigger.textContent = opt ? opt.textContent : '';
+      var val = select.value;
+      list.querySelectorAll('.vehicle-branch-option').forEach(function(o) {
+          o.classList.toggle('selected', o.getAttribute('data-value') === val);
+      });
+  }
+
+  function positionDriverFeedbackTypeList() {
+      var modal = document.getElementById('driver-feedback-modal');
+      var modalBody = modal && modal.querySelector('.modal-body');
+      var trigger = document.getElementById('driver-feedback-type-trigger');
+      var list = document.getElementById('driver-feedback-type-list');
+      if (!trigger || !list) return;
+      var r = trigger.getBoundingClientRect();
+      var triggerHeight = trigger.offsetHeight || r.height || 44;
+      var gap = 6;
+      var edgePad = 10;
+      var minListPx = 56;
+      var maxListCap = 320;
+      var spaceBelow = 240;
+      var spaceAbove = 240;
+      if (modalBody) {
+          var br = modalBody.getBoundingClientRect();
+          spaceBelow = Math.max(0, Math.floor(br.bottom - r.bottom - gap - edgePad));
+          spaceAbove = Math.max(0, Math.floor(r.top - br.top - gap - edgePad));
+      } else {
+          var vh = window.innerHeight || document.documentElement.clientHeight || 800;
+          spaceBelow = Math.max(0, Math.floor(vh - r.bottom - gap - edgePad));
+          spaceAbove = Math.max(0, Math.floor(r.top - gap - edgePad));
+      }
+      var contentScroll = list.scrollHeight || 0;
+      var desiredOpen = contentScroll > 0 ? contentScroll : 220;
+      var useAbove = spaceBelow < Math.min(120, desiredOpen) && spaceAbove > spaceBelow;
+      var rawMax = useAbove ? spaceAbove : spaceBelow;
+      var maxList = Math.min(maxListCap, Math.max(0, rawMax));
+      var listMaxHeight = Math.min(desiredOpen + 2, maxList > 0 ? maxList : minListPx);
+      list.style.position = 'absolute';
+      list.style.left = '0';
+      list.style.right = '0';
+      list.style.width = '100%';
+      list.style.maxHeight = listMaxHeight + 'px';
+      list.style.overflowY = 'auto';
+      list.style.marginTop = '0';
+      list.style.marginBottom = '0';
+      if (useAbove) {
+          list.style.top = 'auto';
+          list.style.bottom = (triggerHeight + 4) + 'px';
+      } else {
+          list.style.top = (triggerHeight + 4) + 'px';
+          list.style.bottom = 'auto';
+      }
+  }
+
+  function initDriverFeedbackTypeCustomSelect() {
+      var select = document.getElementById('driver-feedback-type');
+      var trigger = document.getElementById('driver-feedback-type-trigger');
+      var list = document.getElementById('driver-feedback-type-list');
+      var wrap = document.querySelector('#driver-feedback-modal .driver-feedback-type-dropdown-wrap');
+      if (!select || !trigger || !list || !wrap) return;
+      if (trigger.dataset.feedbackTypeBound === '1') return;
+      trigger.dataset.feedbackTypeBound = '1';
+
+      function rebuildOptionRows() {
+          list.innerHTML = '';
+          for (var i = 0; i < select.options.length; i++) {
+              var opt = select.options[i];
+              var div = document.createElement('div');
+              div.className = 'vehicle-branch-option';
+              div.setAttribute('role', 'option');
+              div.setAttribute('data-value', opt.value);
+              div.textContent = opt.textContent;
+              list.appendChild(div);
+          }
+          syncDriverFeedbackTypeTriggerFromSelect();
+      }
+      rebuildOptionRows();
+
+      trigger.addEventListener('click', function(ev) {
+          ev.preventDefault();
+          ev.stopPropagation();
+          var isOpen = list.classList.contains('open');
+          if (isOpen) {
+              closeDriverFeedbackTypeList();
+          } else {
+              list.classList.add('open');
+              trigger.setAttribute('aria-expanded', 'true');
+              list.setAttribute('aria-hidden', 'false');
+              positionDriverFeedbackTypeList();
+              requestAnimationFrame(function() { positionDriverFeedbackTypeList(); });
+          }
+      });
+      trigger.addEventListener('keydown', function(ev) {
+          if (ev.key === 'Enter' || ev.key === ' ') {
+              ev.preventDefault();
+              trigger.click();
+          }
+          if (ev.key === 'Escape' && list.classList.contains('open')) {
+              ev.preventDefault();
+              closeDriverFeedbackTypeList();
+          }
+      });
+
+      list.addEventListener('click', function(ev) {
+          var option = ev.target.closest('.vehicle-branch-option');
+          if (!option || !option.hasAttribute('data-value')) return;
+          var value = option.getAttribute('data-value');
+          select.value = value;
+          list.querySelectorAll('.vehicle-branch-option').forEach(function(o) { o.classList.remove('selected'); });
+          option.classList.add('selected');
+          trigger.textContent = option.textContent;
+          closeDriverFeedbackTypeList();
+          select.dispatchEvent(new Event('change', { bubbles: true }));
+      });
+
+      document.addEventListener('click', function(ev) {
+          if (!list.classList.contains('open')) return;
+          if (wrap.contains(ev.target)) return;
+          closeDriverFeedbackTypeList();
+      });
+      window.addEventListener('resize', function() {
+          if (list.classList.contains('open')) closeDriverFeedbackTypeList();
+      });
+  }
+
+  if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initDriverFeedbackTypeCustomSelect);
+  } else {
+      initDriverFeedbackTypeCustomSelect();
+  }
+
   window.openDriverFeedbackModal = function() {
       const modal = document.getElementById('driver-feedback-modal');
       const form = document.getElementById('driver-feedback-form');
       if (!modal) return;
+      closeDriverFeedbackTypeList();
       if (form) form.reset();
+      syncDriverFeedbackTypeTriggerFromSelect();
       setDriverFeedbackMessage('', false);
       const vehicle = typeof getSelectedVehicle === 'function' ? getSelectedVehicle() : null;
       const vid = vehicle && vehicle.id != null ? String(vehicle.id) : '';
@@ -2959,6 +3118,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
   window.closeDriverFeedbackModal = function() {
       const modal = document.getElementById('driver-feedback-modal');
       const form = document.getElementById('driver-feedback-form');
+      closeDriverFeedbackTypeList();
       if (modal) modal.classList.remove('show');
       if (form) form.reset();
       setDriverFeedbackMessage('', false);
