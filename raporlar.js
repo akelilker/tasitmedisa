@@ -707,6 +707,15 @@
         return warning.class;
     }
 
+    function getStokMuayeneCombinedWarningClass(vehicle) {
+        if (!vehicle) return '';
+        var wM = getStokDateWarningClass(vehicle.muayeneDate);
+        var wE = getStokDateWarningClass(vehicle.egzozMuayeneDate);
+        if (wM === 'date-warning-red' || wE === 'date-warning-red') return 'date-warning-red';
+        if (wM === 'date-warning-orange' || wE === 'date-warning-orange') return 'date-warning-orange';
+        return '';
+    }
+
     // Veri satırı oluştur
     function createStokDataRow(vehicle, rowNum, branches) {
         const branch = vehicle.branchId ? branches.find(b => b.id === vehicle.branchId) : null;
@@ -755,8 +764,8 @@
             })() },
             {
                 key: 'muayene',
-                value: vehicle.muayeneDate ? formatDate(vehicle.muayeneDate) : '-',
-                warningClass: getStokDateWarningClass(vehicle.muayeneDate)
+                value: formatStokMuayeneCell(vehicle),
+                warningClass: getStokMuayeneCombinedWarningClass(vehicle)
             },
             { key: 'kredi', value: vehicle.kredi === 'var' ? 'Var' : vehicle.kredi === 'yok' ? 'Yok' : '-' },
             { key: 'lastik', value: vehicle.lastikDurumu === 'var' ? 'Var' : vehicle.lastikDurumu === 'yok' ? 'Yok' : '-' },
@@ -1424,6 +1433,12 @@
         if (transmission === 'otomatik') return 'Otm.';
         return '-';
     }
+    function stokNormalizeIsoDateKey(raw) {
+        if (!raw) return '';
+        var s = String(raw).trim();
+        var m = s.match(/^(\d{4}-\d{2}-\d{2})/);
+        return m ? m[1] : s;
+    }
     function formatStokMuayeneCell(vehicle, options) {
         options = options || {};
         var compact = options.compact === true;
@@ -1438,7 +1453,7 @@
         }
 
         if (!muayeneText && !egzozText) return '-';
-        if (!egzozText || egzozRaw === muayeneRaw) return muayeneText || '-';
+        if (!egzozText || stokNormalizeIsoDateKey(egzozRaw) === stokNormalizeIsoDateKey(muayeneRaw)) return muayeneText || '-';
         if (!muayeneText) return 'Egz: ' + egzozText;
         return compact
             ? (muayeneText + ' | Egz: ' + egzozText)
