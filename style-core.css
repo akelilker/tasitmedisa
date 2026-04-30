@@ -984,7 +984,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-
   transform-origin: center center !important;
   z-index: 4 !important;
 }
-#notifications-dropdown.settings-dropdown > .notification-item.date-warning-red-border:is(:hover, :focus, :active, :focus-visible),
+#notifications-dropdown.settings-dropdown > .notification-item.date-warning-red-border:not(.kasko-excel-notification):is(:hover, :focus, :active, :focus-visible),
 #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border:is(:hover, :focus, :active, :focus-visible) {
   border-color: rgba(var(--theme-color-rgb), 0.95) !important;
   background: rgba(var(--theme-color-rgb), 0.14) !important;
@@ -994,7 +994,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-
   transform-origin: center center !important;
   z-index: 4 !important;
 }
-#notifications-dropdown.settings-dropdown > .notification-item.date-warning-orange-border:is(:hover, :focus, :active, :focus-visible),
+#notifications-dropdown.settings-dropdown > .notification-item.date-warning-orange-border:not(.mtv-notification):is(:hover, :focus, :active, :focus-visible),
 #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border:is(:hover, :focus, :active, :focus-visible) {
   border-color: rgba(var(--orange-warn-rgb), 0.9) !important;
   background: rgba(var(--orange-warn-rgb), 0.14) !important;
@@ -1005,9 +1005,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-
   z-index: 4 !important;
 }
 
-#notifications-dropdown.settings-dropdown > .notification-item.date-warning-red-border:is(:hover, :focus, :active, :focus-visible) .notif-line1,
-#notifications-dropdown.settings-dropdown > .notification-item.date-warning-red-border:is(:hover, :focus, :active, :focus-visible) .notif-title,
-#notifications-dropdown.settings-dropdown > .notification-item.date-warning-red-border:is(:hover, :focus, :active, :focus-visible) .notif-line2,
 #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border:is(:hover, :focus, :active, :focus-visible) .notif-line1,
 #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border:is(:hover, :focus, :active, :focus-visible) .notif-title,
 #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border:is(:hover, :focus, :active, :focus-visible) .notif-line2,
@@ -1021,9 +1018,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-
   font-size: calc(100% + 0.5px) !important;
 }
 
-#notifications-dropdown.settings-dropdown > .notification-item.date-warning-orange-border:is(:hover, :focus, :active, :focus-visible) .notif-line1,
-#notifications-dropdown.settings-dropdown > .notification-item.date-warning-orange-border:is(:hover, :focus, :active, :focus-visible) .notif-title,
-#notifications-dropdown.settings-dropdown > .notification-item.date-warning-orange-border:is(:hover, :focus, :active, :focus-visible) .notif-line2,
 #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border:is(:hover, :focus, :active, :focus-visible) .notif-line1,
 #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border:is(:hover, :focus, :active, :focus-visible) .notif-title,
 #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border:is(:hover, :focus, :active, :focus-visible) .notif-line2 {
@@ -1031,8 +1025,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-
   font-size: calc(100% + 0.5px) !important;
 }
 /* Tarih uyarı kartları: settings-dropdown button mirasını ez; altta sadece 2px padding */
-#notifications-dropdown .notification-item.date-warning-red-border,
-#notifications-dropdown .notification-item.date-warning-orange-border {
+#notifications-dropdown .notification-item.date-warning-red-border:not(.kasko-excel-notification),
+#notifications-dropdown .notification-item.date-warning-orange-border:not(.mtv-notification) {
   display: flex !important;
   flex-direction: column !important;
   align-items: flex-start !important;
@@ -1045,8 +1039,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-
   overflow: hidden !important;
   text-align: left !important;
 }
-#notifications-dropdown .notification-item.date-warning-red-border > div,
-#notifications-dropdown .notification-item.date-warning-orange-border > div {
+#notifications-dropdown .notification-item.date-warning-red-border:not(.kasko-excel-notification) > div,
+#notifications-dropdown .notification-item.date-warning-orange-border:not(.mtv-notification) > div {
   width: 100% !important;
   margin-bottom: 0 !important;
 }
@@ -1725,7 +1719,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
     transform-origin: center center !important;
     z-index: 4 !important;
   }
-  #notifications-dropdown.settings-dropdown > .notification-item.date-warning-red-border:is(:hover, :focus, :active, :focus-visible),
+  #notifications-dropdown.settings-dropdown > .notification-item.date-warning-red-border:not(.kasko-excel-notification):is(:hover, :focus, :active, :focus-visible),
   #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border:is(:hover, :focus, :active, :focus-visible) {
     border-color: rgba(var(--theme-color-rgb), 0.95) !important;
     background: rgba(var(--theme-color-rgb), 0.14) !important;
@@ -1735,7 +1729,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
     transform-origin: center center !important;
     z-index: 4 !important;
   }
-  #notifications-dropdown.settings-dropdown > .notification-item.date-warning-orange-border:is(:hover, :focus, :active, :focus-visible),
+  #notifications-dropdown.settings-dropdown > .notification-item.date-warning-orange-border:not(.mtv-notification):is(:hover, :focus, :active, :focus-visible),
   #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border:is(:hover, :focus, :active, :focus-visible) {
     border-color: rgba(var(--orange-warn-rgb), 0.9) !important;
     background: rgba(var(--orange-warn-rgb), 0.14) !important;
@@ -1746,9 +1740,6 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
     z-index: 4 !important;
   }
 
-  #notifications-dropdown.settings-dropdown > .notification-item.date-warning-red-border:is(:hover, :focus, :active, :focus-visible) .notif-line1,
-  #notifications-dropdown.settings-dropdown > .notification-item.date-warning-red-border:is(:hover, :focus, :active, :focus-visible) .notif-title,
-  #notifications-dropdown.settings-dropdown > .notification-item.date-warning-red-border:is(:hover, :focus, :active, :focus-visible) .notif-line2,
   #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border:is(:hover, :focus, :active, :focus-visible) .notif-line1,
   #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border:is(:hover, :focus, :active, :focus-visible) .notif-title,
   #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border:is(:hover, :focus, :active, :focus-visible) .notif-line2,
@@ -1762,9 +1753,6 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
     font-size: calc(100% + 0.5px) !important;
   }
 
-  #notifications-dropdown.settings-dropdown > .notification-item.date-warning-orange-border:is(:hover, :focus, :active, :focus-visible) .notif-line1,
-  #notifications-dropdown.settings-dropdown > .notification-item.date-warning-orange-border:is(:hover, :focus, :active, :focus-visible) .notif-title,
-  #notifications-dropdown.settings-dropdown > .notification-item.date-warning-orange-border:is(:hover, :focus, :active, :focus-visible) .notif-line2,
   #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border:is(:hover, :focus, :active, :focus-visible) .notif-line1,
   #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border:is(:hover, :focus, :active, :focus-visible) .notif-title,
   #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border:is(:hover, :focus, :active, :focus-visible) .notif-line2 {
@@ -1987,8 +1975,8 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
     overflow: hidden !important;
     padding: 4px 10px 1px !important;
   }
-  #notifications-dropdown .notification-item.date-warning-red-border,
-  #notifications-dropdown .notification-item.date-warning-orange-border,
+  #notifications-dropdown .notification-item.date-warning-red-border:not(.kasko-excel-notification),
+  #notifications-dropdown .notification-item.date-warning-orange-border:not(.mtv-notification),
   #notifications-dropdown .notification-item-activity {
     display: flex !important;
     flex-direction: column !important;
@@ -1996,8 +1984,8 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
     justify-content: flex-start !important;
     gap: 1px !important;
   }
-  #notifications-dropdown .notification-item.date-warning-red-border .notif-line1,
-  #notifications-dropdown .notification-item.date-warning-orange-border .notif-line1,
+  #notifications-dropdown .notification-item.date-warning-red-border:not(.kasko-excel-notification) .notif-line1,
+  #notifications-dropdown .notification-item.date-warning-orange-border:not(.mtv-notification) .notif-line1,
   #notifications-dropdown .notification-item-activity .notif-line1,
   #notifications-dropdown .mtv-text-container .mtv-main-text {
     width: 100% !important;
