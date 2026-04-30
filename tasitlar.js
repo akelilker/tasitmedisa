@@ -7,10 +7,6 @@
   const VEHICLES_KEY = "medisa_vehicles_v1";
   const USERS_KEY = "medisa_users_v1";
 
-  function parseLocalStorageArray(key) {
-    try { return JSON.parse(localStorage.getItem(key) || '[]'); } catch { return []; }
-  }
-
   // --- DİNAMİK DOSYA YÜKLEYİCİ (LAZY LOAD) ---
   function loadScript(src) {
     return new Promise(function(resolve, reject) {
@@ -3503,19 +3499,6 @@
     return raw;
   }
 
-  /**
-   * Bildirim: talep_tarihi (PHP date('c') / ISO) — sadece gg/aa/yyyy (saat yok; tarih uyarılarıyla aynı satır tarzı).
-   */
-  function medisaNotificationTalepDisplay(str) {
-    if (str == null || str === '') return '-';
-    const t = Date.parse(String(str).trim());
-    if (isNaN(t)) {
-      return String(str).trim() || '-';
-    }
-    const d = new Date(t);
-    const p = function(n) { return String(n).padStart(2, '0'); };
-    return p(d.getDate()) + '/' + p(d.getMonth() + 1) + '/' + d.getFullYear();
-  }
   function medisaNotificationTalepSortMs(str) {
     const t = Date.parse(String(str || '').trim());
     if (!isNaN(t)) return t;
@@ -5161,14 +5144,6 @@ function renderVehicleDetailLeft(vehicle) {
     return isMobileViewport || isStandalone || isiOS;
   }
 
-  function isIosStandalonePwa() {
-    const hasMatchMedia = typeof window.matchMedia === 'function';
-    const isStandalone = hasMatchMedia && (window.matchMedia('(display-mode: standalone)').matches || window.matchMedia('(display-mode: fullscreen)').matches);
-    const ua = navigator.userAgent || '';
-    const isiOS = /iPhone|iPad|iPod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-    return isStandalone && isiOS;
-  }
-
   function isAndroidDevice() {
     return /Android/i.test(navigator.userAgent || '');
   }
@@ -5271,10 +5246,6 @@ function renderVehicleDetailLeft(vehicle) {
       }
       return q;
     }
-  }
-
-  function buildRuhsatEndpointUrl(endpoint, vehicleId) {
-    return buildVehicleDocumentEndpointUrl(endpoint, vehicleId, 'ruhsat');
   }
 
   function buildRuhsatPreviewUrl(vehicleId, documentType) {
@@ -7866,31 +7837,6 @@ function renderVehicleDetailLeft(vehicle) {
     const d = new Date(year, month, day);
     if (isNaN(d.getTime())) return idTie;
     return d.getTime() + idTie;
-  }
-
-  /** Bildirim listesi için kısa olay tipi etiketi */
-  function getNotificationEventTypeLabel(type) {
-    const labels = {
-      'bakim': 'Bakım',
-      'kaza': 'Kaza',
-      'ceza': 'Trafik Cezası',
-      'km-revize': 'Km güncelleme',
-      'anahtar-guncelle': 'Yedek anahtar',
-      'lastik-guncelle': 'Lastik',
-      'utts-guncelle': 'UTTS',
-      'muayene-guncelle': 'Muayene g\u00FCncelleme',
-      'sigorta-guncelle': 'Sigorta g\u00FCncelleme',
-      'kasko-guncelle': 'Kasko g\u00FCncelleme',
-      'sube-degisiklik': '\u015Eube de\u011Fi\u015Fikli\u011Fi',
-      'kullanici-atama': 'Kullan\u0131c\u0131 atama',
-      'kredi-guncelle': 'Hak Mahrumiyeti',
-      'takip-cihaz-guncelle': 'Takip cihaz\u0131',
-      'not-guncelle': 'Kullanıcı notu',
-      'vehicle-created': 'Yeni Taşıt',
-      'satis': 'Sat\u0131\u015F/Pert',
-      'ruhsat-yukle': 'Ruhsat'
-    };
-    return labels[type] || (type ? toTitleCase(String(type)) : 'Olay');
   }
 
   /**
