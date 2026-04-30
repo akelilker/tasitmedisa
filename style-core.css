@@ -2000,8 +2000,8 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
     white-space: normal !important;
     overflow-wrap: anywhere !important;
   }
-  #notifications-dropdown .notification-item.date-warning-red-border .notif-line2,
-  #notifications-dropdown .notification-item.date-warning-orange-border .notif-line2,
+  #notifications-dropdown .notification-item.date-warning-red-border:not(.kasko-excel-notification) .notif-line2,
+  #notifications-dropdown .notification-item.date-warning-orange-border:not(.mtv-notification) .notif-line2,
   #notifications-dropdown .notification-item-activity .notif-line2,
   #notifications-dropdown .mtv-text-container .notif-line2 {
     margin-top: 0 !important;
@@ -3066,8 +3066,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         justify-content: flex-start !important;
         padding: 4px 10px 1px !important;
     }
-    #notifications-dropdown .notification-item.date-warning-red-border,
-    #notifications-dropdown .notification-item.date-warning-orange-border,
+    #notifications-dropdown .notification-item.date-warning-red-border:not(.kasko-excel-notification),
+    #notifications-dropdown .notification-item.date-warning-orange-border:not(.mtv-notification),
     #notifications-dropdown .notification-item-activity {
         padding: 4px 10px 1px !important;
         min-height: 54px !important;
