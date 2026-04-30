@@ -275,7 +275,8 @@
     } else if (eventType === 'muayene-guncelle') {
       text = 'Muayene Güncelleme';
       if (d.bitisTarihi) extra = 'Bitiş: ' + (formatDateForDisplay(d.bitisTarihi) || '-');
-      if (d.egzozMuayeneDate) extra += (extra ? ' | ' : '') + 'Egzos: ' + (formatDateForDisplay(d.egzozMuayeneDate) || '-');
+      if (d.egzozMuayeneYapilmaDate) extra += (extra ? ' | ' : '') + 'Egzos yap.: ' + (formatDateForDisplay(d.egzozMuayeneYapilmaDate) || '-');
+      if (d.egzozMuayeneDate) extra += (extra ? ' | ' : '') + 'Egzos bit.: ' + (formatDateForDisplay(d.egzozMuayeneDate) || '-');
     } else if (eventType === 'kullanici-atama') {
       text = 'Kullanıcı Ataması';
       var details3 = [];

@@ -190,7 +190,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 #dinamik-olay-modal .egzoz-olay-date-wrapper.egzoz-date-visible {
   display: block;
 }
-#dinamik-olay-modal #muayene-egzoz-tarih {
+#dinamik-olay-modal #muayene-egzoz-yapilma-tarih {
   width: calc((100% - 16px) / 2) !important;
   max-width: calc((100% - 16px) / 2) !important;
   min-width: min(140px, calc((100% - 16px) / 2)) !important;

@@ -3847,7 +3847,7 @@ function renderVehicleDetailLeft(vehicle) {
     const egzozState = getEgzozMuayeneState(vehicle);
     if (egzozState.state !== 'valid') {
       const egzozDisplay = egzozState.state === 'missing' ? 'Eksik' : formatDateForDisplay(egzozState.date);
-      html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Egzos Muayenesi</span><span class="detail-row-colon">:</span></div><span class="detail-row-value ${egzozState.warningClass}"> ${escapeHtml(egzozDisplay || '-')}</span></div>`;
+      html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Egzos Muayenesi Bitiş</span><span class="detail-row-colon">:</span></div><span class="detail-row-value ${egzozState.warningClass}"> ${escapeHtml(egzozDisplay || '-')}</span></div>`;
     }
     
     // Detay: yedek anahtar durumu
@@ -4205,7 +4205,7 @@ function renderVehicleDetailLeft(vehicle) {
   /** sigorta/kasko/muayene gg/aa/yyyy metin alanlarını kayıttan önce normalize et */
   function bindGgAaYyyyTextInputs(modal) {
     if (!modal) return;
-    ['sigorta-tarih', 'kasko-tarih', 'muayene-tarih', 'muayene-egzoz-tarih'].forEach(function(id) {
+    ['sigorta-tarih', 'kasko-tarih', 'muayene-tarih', 'muayene-egzoz-yapilma-tarih'].forEach(function(id) {
       const input = modal.querySelector('#' + id);
       if (!input || input.dataset.ggaaNormalizeBound) return;
       input.dataset.ggaaNormalizeBound = '1';
@@ -4218,7 +4218,7 @@ function renderVehicleDetailLeft(vehicle) {
   /** Sigorta/kasko/muayene gg/aa/yyyy metin alanına yerel tarih seçici + simge */
   function setupOlayGgAaYyyyPickers(modal) {
     if (!modal) return;
-    const ids = ['sigorta-tarih', 'kasko-tarih', 'muayene-tarih', 'muayene-egzoz-tarih'];
+    const ids = ['sigorta-tarih', 'kasko-tarih', 'muayene-tarih', 'muayene-egzoz-yapilma-tarih'];
     const calendarSvg = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>';
     ids.forEach(function(id) {
       const textEl = document.getElementById(id);
@@ -4271,7 +4271,7 @@ function renderVehicleDetailLeft(vehicle) {
   function syncOlayEgzozMuayeneFields() {
     const checkbox = document.getElementById('muayene-egzoz-different');
     const wrapper = document.getElementById('muayene-egzoz-date-wrapper');
-    const input = document.getElementById('muayene-egzoz-tarih');
+    const input = document.getElementById('muayene-egzoz-yapilma-tarih');
     const visible = !!(checkbox && checkbox.checked);
     if (wrapper) wrapper.classList.toggle('egzoz-date-visible', visible);
     if (input) {
@@ -4330,8 +4330,8 @@ function renderVehicleDetailLeft(vehicle) {
         '<span>Egzos Muayenesi Farklı Tarih İse İşaretleyin..</span>' +
         '</label>' +
         '<div id="muayene-egzoz-date-wrapper" class="egzoz-olay-date-wrapper">' +
-        '<label class="' + labelCls + '" for="muayene-egzoz-tarih">Egzos Muayenesi Bitiş Tarihi (gg/aa/yyyy)</label>' +
-        '<input id="muayene-egzoz-tarih" class="' + inputCls + '" type="text" placeholder="gg/aa/yyyy" disabled>' +
+        '<label class="' + labelCls + '" for="muayene-egzoz-yapilma-tarih">Egzos Muayenesi Yapt\u0131r\u0131lan Tarihi (gg/aa/yyyy)</label>' +
+        '<input id="muayene-egzoz-yapilma-tarih" class="' + inputCls + '" type="text" placeholder="gg/aa/yyyy" disabled>' +
         '</div>';
     };
     switch (type) {
@@ -4388,7 +4388,7 @@ function renderVehicleDetailLeft(vehicle) {
           section('İletişim', 'kasko-iletisim', 'input', [['type', 'text'], ['placeholder', '05** *******']]) + '</div>';
       case 'muayene':
         return '<div style="display:flex;flex-direction:column;gap:12px;">' +
-          section('Muayene Tarihi (gg/aa/yyyy)', 'muayene-tarih', 'input', [['type', 'text'], ['placeholder', 'gg/aa/yyyy']]) +
+          section('Muayene Yapt\u0131r\u0131lan Tarihi (gg/aa/yyyy)', 'muayene-tarih', 'input', [['type', 'text'], ['placeholder', 'gg/aa/yyyy']]) +
           egzozMuayeneSection() + '</div>';
       case 'anahtar':
         return '<div style="display:flex;flex-direction:column;gap:12px;">' +
@@ -6669,6 +6669,7 @@ function renderVehicleDetailLeft(vehicle) {
    *   otomobil +3 yıl, ticari +2 yıl
    * - Sonraki tüm muayeneler:
    *   otomobil +2 yıl, ticari +1 yıl
+   * Egzos muayenesi yaptırılan tarihi ayrı girildiğinde bitiş hesabı için de bu fonksiyon kullanılır (aynı periyot varsayımı).
    */
   function calculateNextMuayene(vehicle, muayeneDate) {
     if (!muayeneDate) return '';
@@ -6817,17 +6818,17 @@ function renderVehicleDetailLeft(vehicle) {
     const tarihInput = document.getElementById('muayene-tarih');
     const tarih = normalizeGgAaYyyyInputElement(tarihInput);
     const egzozCheckbox = document.getElementById('muayene-egzoz-different');
-    const egzozInput = document.getElementById('muayene-egzoz-tarih');
+    const egzozInput = document.getElementById('muayene-egzoz-yapilma-tarih');
     const egzozDifferent = !!(egzozCheckbox && egzozCheckbox.checked);
-    const egzozTarih = egzozDifferent ? normalizeGgAaYyyyInputElement(egzozInput) : '';
-    const egzozMuayeneDate = egzozDifferent ? parseGgAaYyyyToIso(egzozTarih) : '';
+    const egzozYapilmaGgAa = egzozDifferent ? normalizeGgAaYyyyInputElement(egzozInput) : '';
+    const egzozYapilmaIso = egzozDifferent ? parseGgAaYyyyToIso(egzozYapilmaGgAa) : '';
     
     if (!tarih) {
       alert('Tarih zorunludur!');
       return;
     }
-    if (egzozDifferent && !egzozMuayeneDate) {
-      alert('Egzos Muayenesi Bitiş Tarihi zorunludur!');
+    if (egzozDifferent && !egzozYapilmaIso) {
+      alert('Egzos Muayenesi Yapt\u0131r\u0131lan Tarihi zorunludur!');
       if (egzozInput) egzozInput.focus();
       return;
     }
@@ -6840,6 +6841,14 @@ function renderVehicleDetailLeft(vehicle) {
     
     // Muayene bitiş tarihi hesapla
     const bitisTarihi = calculateNextMuayene(vehicle, tarih);
+    let egzozMuayeneDate = '';
+    let egzozMuayeneYapilmaIso = '';
+    if (egzozDifferent) {
+      egzozMuayeneDate = calculateNextMuayene(vehicle, egzozYapilmaGgAa);
+      egzozMuayeneYapilmaIso = egzozYapilmaIso;
+    } else {
+      egzozMuayeneDate = bitisTarihi;
+    }
     
     vehicle.muayeneDate = bitisTarihi;
     vehicle.egzozMuayeneDate = egzozMuayeneDate;
@@ -6851,7 +6860,8 @@ function renderVehicleDetailLeft(vehicle) {
       timestamp: new Date().toISOString(),
       data: {
         bitisTarihi: bitisTarihi,
-        egzozMuayeneDate: egzozMuayeneDate,
+        egzozMuayeneDate: egzozDifferent ? egzozMuayeneDate : '',
+        egzozMuayeneYapilmaDate: egzozMuayeneYapilmaIso,
         surucu: getEventPerformerName(vehicle)
       }
     };
@@ -7499,8 +7509,10 @@ function renderVehicleDetailLeft(vehicle) {
       }
       if (islemTarihi) pushDetail('\u0130\u015flem Tarihi', islemTarihi);
       if (bitis) pushDetail('Biti\u015F Tarihi', bitis);
+      const egzozYapForm = formatDateForDisplay(eventData.egzozMuayeneYapilmaDate || '');
+      if (egzozYapForm) pushDetail('Egzos Muayenesi Yapt\u0131r\u0131lan', egzozYapForm);
       const egzozBitis = formatDateForDisplay(eventData.egzozMuayeneDate || '');
-      if (egzozBitis) pushDetail('Egzos Muayenesi', egzozBitis);
+      if (egzozBitis) pushDetail('Egzos Muayenesi Biti\u015F', egzozBitis);
     } else if (eventType === 'kullanici-atama') {
       const yeni = (eventData.kullaniciAdi || '').trim();
       const eski = (eventData.eskiKullaniciAdi || '').trim();
