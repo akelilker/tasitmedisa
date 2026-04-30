@@ -19,6 +19,7 @@ function addYears($dateStr, $years) {
 }
 
 function calculateNextMuayene($vehicle, $muayeneDateStr) {
+    // Muayene ve egzos yaptırılan tarihlerinden bitiş hesaplamasında aynı periyot kuralları kullanılır (driver_event.php ↔ tasitlar.js senkron).
     if (!$muayeneDateStr) return '';
 
     $currentYear = (int)date('Y');
@@ -150,18 +151,30 @@ $result = medisaMutateData(function (&$data) use ($tokenData, $aracId, $vehicleV
             if ($tarih === '' || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $tarih)) {
                 return medisaBuildErrorResult('Muayene tarihi zorunludur! (YYYY-MM-DD)', 400);
             }
-            $egzozMuayeneDate = trim((string)($payload['egzozMuayeneDate'] ?? ''));
-            if ($egzozMuayeneDate !== '' && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $egzozMuayeneDate)) {
+            $egzozYapilma = trim((string)($payload['egzozMuayeneYapilmaDate'] ?? ''));
+            $egzozMuayeneDateLegacy = trim((string)($payload['egzozMuayeneDate'] ?? ''));
+            if ($egzozYapilma !== '' && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $egzozYapilma)) {
+                return medisaBuildErrorResult('Egzos muayenesi yaptırılan tarih geçersiz! (YYYY-MM-DD)', 400);
+            }
+            if ($egzozMuayeneDateLegacy !== '' && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $egzozMuayeneDateLegacy)) {
                 return medisaBuildErrorResult('Egzos muayenesi bitiş tarihi geçersiz! (YYYY-MM-DD)', 400);
             }
             $bitisTarihi = calculateNextMuayene($vehicle, $tarih);
+            if ($egzozYapilma !== '') {
+                $egzozMuayeneDate = calculateNextMuayene($vehicle, $egzozYapilma);
+            } elseif ($egzozMuayeneDateLegacy !== '') {
+                $egzozMuayeneDate = $egzozMuayeneDateLegacy;
+            } else {
+                $egzozMuayeneDate = $bitisTarihi;
+            }
             $vehicle['muayeneDate'] = $bitisTarihi;
             $vehicle['egzozMuayeneDate'] = $egzozMuayeneDate;
             $eventBase['type'] = 'muayene-guncelle';
             $eventBase['date'] = $tarih;
             $eventBase['data'] = [
                 'bitisTarihi' => $bitisTarihi,
-                'egzozMuayeneDate' => $egzozMuayeneDate,
+                'egzozMuayeneDate' => ($egzozYapilma !== '' || $egzozMuayeneDateLegacy !== '') ? $egzozMuayeneDate : '',
+                'egzozMuayeneYapilmaDate' => $egzozYapilma,
                 'surucu' => $kullaniciAdi,
             ];
             break;
