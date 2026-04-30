@@ -5,9 +5,14 @@
 const API_BASE = (function() {
     try {
         var p = (typeof document !== 'undefined' && document.location && document.location.pathname) ? document.location.pathname : '';
-        if (p.indexOf('/tasitmedisa') === 0) return '/tasitmedisa/';
-        if (p.indexOf('/medisa') === 0) return '/medisa/';
-        return '';
+        var parts = String(p || '/').split('/').filter(Boolean);
+        if (!parts.length) return '';
+        var lastPart = parts[parts.length - 1] || '';
+        if (lastPart.indexOf('.') !== -1) parts.pop();
+        var lastDir = parts[parts.length - 1] || '';
+        if (lastDir === 'admin' || lastDir === 'driver') parts.pop();
+        if (!parts.length) return '';
+        return '/' + parts.join('/') + '/';
     } catch (e) {
         return '';
     }

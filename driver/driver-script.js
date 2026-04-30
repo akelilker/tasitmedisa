@@ -2,53 +2,26 @@
    MEDISA KULLANICI MODÜLÜ - SCRIPT
    ========================================= */
 
-// API Base URL: /tasitmedisa/ veya /medisa/ altındaysa mutlak yol (PHP'ler driver klasöründe)
-const API_BASE = (function(){
-    var p = document.location.pathname || '';
-    var pl = p.toLowerCase();
-    if (pl.indexOf('/tasitmedisa') === 0) return '/tasitmedisa/driver/';
-    if (pl.indexOf('/medisa') === 0) return '/medisa/driver/';
-    var base = '/';
-    var driverIdx = pl.indexOf('/driver'); 
-    if (driverIdx !== -1) {
-      base = p.substring(0, driverIdx) + '/';
-    } else if (p && p !== '/') {
-      base = p.endsWith('/') ? p : p + '/';
-    }
-    return (base === '/' ? '/driver/' : base + 'driver/');
+// API ve yönlendirme yolları: bulunduğu app root'a göre dinamik çözülür.
+const APP_ROOT = (function() {
+    var p = document.location.pathname || '/';
+    var parts = String(p || '/').split('/').filter(Boolean);
+    if (!parts.length) return '/';
+    var lastPart = parts[parts.length - 1] || '';
+    if (lastPart.indexOf('.') !== -1) parts.pop();
+    var lastDir = (parts[parts.length - 1] || '').toLowerCase();
+    if (lastDir === 'driver' || lastDir === 'admin') parts.pop();
+    return parts.length ? ('/' + parts.join('/') + '/') : '/';
   })();
-  
-  // İkon/kaporta SVG base path (sürücü paneli farklı dizinde)
-  const ICON_BASE = (function(){
-    var p = document.location.pathname || '';
-    var pl = p.toLowerCase();
-    if (pl.indexOf('/tasitmedisa') === 0) return '/tasitmedisa/icon/';
-    if (pl.indexOf('/medisa') === 0) return '/medisa/icon/';
-    return '../icon/';
-  })();
-  
-  // Sayfa yönlendirmeleri: subpath altında değilse relative path (localhost/driver için)
-  const DRIVER_PAGE_BASE = (function(){
-    var p = document.location.pathname || '';
-    var pl = p.toLowerCase();
-    if (pl.indexOf('/tasitmedisa') === 0) return '/tasitmedisa/driver/';
-    if (pl.indexOf('/medisa') === 0) return '/medisa/driver/';
-    return '';
-  })();
-  const MAIN_APP_URL = (function() {
-    var p = document.location.pathname || '';
-    var pl = p.toLowerCase();
-    if (pl.indexOf('/tasitmedisa') === 0) return '/tasitmedisa/index.html';
-    if (pl.indexOf('/medisa') === 0) return '/medisa/index.html';
-    return '../index.html';
-  })();
-  const MAIN_SESSION_URL = (function() {
-    var p = document.location.pathname || '';
-    var pl = p.toLowerCase();
-    if (pl.indexOf('/tasitmedisa') === 0) return '/tasitmedisa/load.php';
-    if (pl.indexOf('/medisa') === 0) return '/medisa/load.php';
-    return '../load.php';
-  })();
+const API_BASE = (APP_ROOT === '/' ? '/driver/' : APP_ROOT + 'driver/');
+
+// İkon/kaporta SVG base path (sürücü paneli farklı dizinde)
+const ICON_BASE = (APP_ROOT === '/' ? '/icon/' : APP_ROOT + 'icon/');
+
+// Sayfa yönlendirmeleri
+const DRIVER_PAGE_BASE = API_BASE;
+const MAIN_APP_URL = (APP_ROOT === '/' ? '/index.html' : APP_ROOT + 'index.html');
+const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php');
   
   // Uygulama sürümü (footer #version-display - kullanıcı girişi ve paneli 78.1)
   const APP_VERSION = 'v78.1';
