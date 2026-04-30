@@ -436,7 +436,8 @@
             "assignedUserId": "u202604220001",
             "egzozMuayeneDate": "2028-04-07",
             "kaskoDegeri": "-",
-            "kaskoDegeriYuklemeTarihi": "2026-04-30T22:28:27.990Z"
+            "kaskoDegeriYuklemeTarihi": "2026-04-30T22:28:27.990Z",
+            "kaskoKodu": "532222"
         },
         {
             "id": 202604220002,
@@ -509,7 +510,7 @@
             "kaskoDegeri": "-",
             "kaskoDegeriYuklemeTarihi": "2026-04-30T22:28:27.990Z",
             "egzozMuayeneDate": "2026-05-22",
-            "kaskoKodu": "1001139"
+            "kaskoKodu": "91334"
         },
         {
             "id": 202604220004,
@@ -582,7 +583,7 @@
             "kaskoDegeri": "-",
             "kaskoDegeriYuklemeTarihi": "2026-04-30T22:28:27.990Z",
             "egzozMuayeneDate": "2027-06-25",
-            "kaskoKodu": "91334"
+            "kaskoKodu": "532222"
         },
         {
             "id": 202604220006,
@@ -693,7 +694,7 @@
             "kaskoDegeri": "-",
             "kaskoDegeriYuklemeTarihi": "2026-04-30T22:28:27.990Z",
             "egzozMuayeneDate": "2027-10-08",
-            "kaskoKodu": "1142172"
+            "kaskoKodu": "1001294"
         },
         {
             "id": 202604220009,
@@ -729,7 +730,7 @@
             "kaskoDegeri": "-",
             "kaskoDegeriYuklemeTarihi": "2026-04-30T22:28:27.990Z",
             "egzozMuayeneDate": "2027-10-30",
-            "kaskoKodu": "91334"
+            "kaskoKodu": "532222"
         },
         {
             "id": 202604220010,
@@ -980,7 +981,7 @@
             "kaskoDegeri": "-",
             "kaskoDegeriYuklemeTarihi": "2026-04-30T22:28:27.990Z",
             "egzozMuayeneDate": "2027-12-13",
-            "kaskoKodu": "1142172"
+            "kaskoKodu": "1001294"
         },
         {
             "id": 202604220016,
@@ -1018,7 +1019,7 @@
             "kaskoDegeri": "-",
             "kaskoDegeriYuklemeTarihi": "2026-04-30T22:28:27.990Z",
             "egzozMuayeneDate": "2028-01-17",
-            "kaskoKodu": "1142172"
+            "kaskoKodu": "1001294"
         },
         {
             "id": 202604220017,
@@ -1071,7 +1072,7 @@
             "kaskoDegeriYuklemeTarihi": "2026-04-30T22:28:27.990Z",
             "satisTarihi": "2025-12-30",
             "satisTutari": "",
-            "kaskoKodu": "1142172"
+            "kaskoKodu": "1001294"
         },
         {
             "id": 202604220018,
@@ -1171,7 +1172,7 @@
             "kaskoDegeri": "-",
             "kaskoDegeriYuklemeTarihi": "2026-04-30T22:28:27.990Z",
             "egzozMuayeneDate": "2026-06-22",
-            "kaskoKodu": "1142172"
+            "kaskoKodu": "1001294"
         },
         {
             "id": 202604220020,
@@ -2327,7 +2328,7 @@
             "kaskoDegeri": "-",
             "kaskoDegeriYuklemeTarihi": "2026-04-30T22:28:27.990Z",
             "egzozMuayeneDate": "2028-02-02",
-            "kaskoKodu": "1142172"
+            "kaskoKodu": "1001294"
         },
         {
             "id": 202604220045,
@@ -2452,7 +2453,8 @@
             "kaskoDegeri": "-",
             "kaskoDegeriYuklemeTarihi": "2026-04-30T22:28:27.990Z",
             "egzozMuayeneDate": "2026-06-01",
-            "ruhsatPath": "ruhsat/78ABN372_ruhsat_1777566772.pdf"
+            "ruhsatPath": "ruhsat/78ABN372_ruhsat_1777566772.pdf",
+            "kaskoKodu": "532222"
         },
         {
             "id": 202604220047,
@@ -2565,7 +2567,7 @@
             "assignedUserId": "u202604220028",
             "kaskoDegeri": "-",
             "kaskoDegeriYuklemeTarihi": "2026-04-30T22:28:27.990Z",
-            "kaskoKodu": "1142172"
+            "kaskoKodu": "1001294"
         },
         {
             "id": 202604220049,
@@ -2640,7 +2642,7 @@
             "kaskoDegeri": "-",
             "kaskoDegeriYuklemeTarihi": "2026-04-30T22:28:27.990Z",
             "egzozMuayeneDate": "2028-02-02",
-            "kaskoKodu": "1142172"
+            "kaskoKodu": "1001294"
         },
         {
             "id": 202604220050,
@@ -2678,7 +2680,7 @@
             "kaskoDegeri": "-",
             "kaskoDegeriYuklemeTarihi": "2026-04-30T22:28:27.990Z",
             "egzozMuayeneDate": "2027-09-08",
-            "kaskoKodu": "1142172"
+            "kaskoKodu": "1001294"
         },
         {
             "id": 202604220051,
