@@ -2722,22 +2722,19 @@ word-break: normal !important;
 overflow-wrap: break-word !important;
 overflow: hidden !important;
 }
-/* Muayene / Egzoz yazdırma sütunları (ayrı col; kompakt tarih) */
+/* Muayene / Egzoz: tek satır (gg/aa/yy — anywhere ile tarih iki satıra bölünmesin) */
 #stok-print-area .stok-print-table th[data-col="muayene"],
 #stok-print-area .stok-print-table td[data-col="muayene"],
 #stok-print-area .stok-print-table th[data-col="egzozMuayene"],
 #stok-print-area .stok-print-table td[data-col="egzozMuayene"] {
-white-space: normal !important;
+white-space: nowrap !important;
 word-break: normal !important;
-overflow-wrap: anywhere !important;
-overflow: visible !important;
-text-overflow: clip !important;
+overflow-wrap: normal !important;
+overflow: hidden !important;
 }
-/* Tarih gövde hücreleri: boşluksuz uzun metin taşmasın */
+/* Tarih gövde (sigorta/kasko/tescil): uzun metinde kırılım */
 #stok-print-area .stok-print-table tbody td[data-col="sigorta"],
 #stok-print-area .stok-print-table tbody td[data-col="kasko"],
-#stok-print-area .stok-print-table tbody td[data-col="muayene"],
-#stok-print-area .stok-print-table tbody td[data-col="egzozMuayene"],
 #stok-print-area .stok-print-table tbody td[data-col="tescil"] {
 overflow-wrap: anywhere !important;
 }
