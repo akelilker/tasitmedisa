@@ -2722,9 +2722,11 @@ word-break: normal !important;
 overflow-wrap: break-word !important;
 overflow: hidden !important;
 }
-/* Muayene hücresi: araç muayenesi + egzos aynı sütunda; taşanı kesme — tam metin görünsün */
+/* Muayene / Egzoz yazdırma sütunları (ayrı col; kompakt tarih) */
 #stok-print-area .stok-print-table th[data-col="muayene"],
-#stok-print-area .stok-print-table td[data-col="muayene"] {
+#stok-print-area .stok-print-table td[data-col="muayene"],
+#stok-print-area .stok-print-table th[data-col="egzozMuayene"],
+#stok-print-area .stok-print-table td[data-col="egzozMuayene"] {
 white-space: normal !important;
 word-break: normal !important;
 overflow-wrap: anywhere !important;
@@ -2735,6 +2737,7 @@ text-overflow: clip !important;
 #stok-print-area .stok-print-table tbody td[data-col="sigorta"],
 #stok-print-area .stok-print-table tbody td[data-col="kasko"],
 #stok-print-area .stok-print-table tbody td[data-col="muayene"],
+#stok-print-area .stok-print-table tbody td[data-col="egzozMuayene"],
 #stok-print-area .stok-print-table tbody td[data-col="tescil"] {
 overflow-wrap: anywhere !important;
 }
