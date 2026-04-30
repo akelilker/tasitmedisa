@@ -52,6 +52,16 @@ const API_BASE = (function(){
   
   // Uygulama sürümü (footer #version-display - kullanıcı girişi ve paneli 78.1)
   const APP_VERSION = 'v78.1';
+  function showDriverOfflineReadonlyMessage() {
+    alert('İnternet bağlantısı yok. Son kayıtlı veri görüntüleniyor; değişiklikler kaydedilemez.');
+  }
+  function ensureDriverOnlineForWrite() {
+    if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+      showDriverOfflineReadonlyMessage();
+      return false;
+    }
+    return true;
+  }
   
   (function setDriverVersion() {
     function apply() {
@@ -573,14 +583,14 @@ const API_BASE = (function(){
       var usernameInput = document.getElementById('username');
       var passwordInput = document.getElementById('password');
   
-      /* Beni Hatırla: checkbox + kayıtlı kullanıcı adı/şifre doldur */
+      clearSavedDriverPassword();
+
+      /* Beni Hatırla: checkbox + kayıtlı kullanıcı adını doldur */
       var rememberCheckbox = document.getElementById('remember');
       if (rememberCheckbox && localStorage.getItem('driver_remember_me') === '1') {
           rememberCheckbox.checked = true;
           var savedUser = localStorage.getItem('driver_saved_username');
-          var savedPass = localStorage.getItem('driver_saved_password');
           if (usernameInput && savedUser) usernameInput.value = savedUser;
-          if (passwordInput && savedPass) passwordInput.value = savedPass;
       }
   
       function toggleLoginInputHasValue(el) {
@@ -648,7 +658,7 @@ const API_BASE = (function(){
                       try {
                           localStorage.setItem('driver_remember_me', '1');
                           localStorage.setItem('driver_saved_username', username);
-                          localStorage.setItem('driver_saved_password', password);
+                          localStorage.removeItem('driver_saved_password');
                       } catch (e) {}
                   } else {
                       try {
@@ -1405,6 +1415,7 @@ const API_BASE = (function(){
   };
   
   window.submitDriverAction = async function(type, vid) {
+      if (!ensureDriverOnlineForWrite()) return;
       if (type === 'km') {
           submitKmOnly(vid);
           return;
@@ -1525,6 +1536,7 @@ const API_BASE = (function(){
   };
   
   window.submitKmOnly = async function(vid) {
+      if (!ensureDriverOnlineForWrite()) return;
       const kmEl = document.getElementById('km-' + vid);
       const km = kmEl ? parseInt(String(kmEl.value).replace(/\D/g, ''), 10) : 0;
       if (!km || km <= 0) {
@@ -2041,6 +2053,7 @@ const API_BASE = (function(){
   };
 
   window.confirmMuayeneSubmit = async function() {
+      if (!ensureDriverOnlineForWrite()) return;
       isMuayeneConfirmed = true;
       hideMuayenePopoverAndRestore();
       if (pendingMuayeneVehicleId) {
@@ -2094,6 +2107,7 @@ const API_BASE = (function(){
   };
   
   window.saveDriverEventFromBlock = async function(type, vehicleId) {
+      if (!ensureDriverOnlineForWrite()) return;
       vehicleId = String(vehicleId);
       if (!vehicleId || !currentToken) return;
       let data = {};
@@ -2165,6 +2179,7 @@ const API_BASE = (function(){
   };
   
   window.saveDriverEvent = async function(type) {
+      if (!ensureDriverOnlineForWrite()) return;
       const vehicleId = currentDriverEventVehicleId;
       if (!vehicleId || !currentToken) return;
       let data = {};
@@ -2882,6 +2897,7 @@ const API_BASE = (function(){
   };
   
   window.submitEditRequest = async function() {
+      if (!ensureDriverOnlineForWrite()) return;
       const record = window._historyRecordMap && window._historyRecordMap[currentRecordId];
       if (!record) return;
       const visibleSection = window._editRequestVisibleSection || 'km';
@@ -2995,6 +3011,7 @@ const API_BASE = (function(){
 
   window.submitDriverFeedback = async function(event) {
       if (event && event.preventDefault) event.preventDefault();
+      if (!ensureDriverOnlineForWrite()) return false;
       const vehicle = getSelectedVehicle();
       const typeEl = document.getElementById('driver-feedback-type');
       const messageEl = document.getElementById('driver-feedback-message');
@@ -3092,6 +3109,7 @@ const API_BASE = (function(){
 
   window.submitDriverPasswordChange = async function(event) {
       if (event && typeof event.preventDefault === 'function') event.preventDefault();
+      if (!ensureDriverOnlineForWrite()) return false;
       if (!currentToken) {
           logout();
           return false;
@@ -3167,6 +3185,7 @@ const API_BASE = (function(){
 
   // Çıkış
   window.logout = function() {
+      clearSavedDriverPassword();
       clearStoredPortalTokens();
       window.location.href = DRIVER_PAGE_BASE + 'index.html';
   };
