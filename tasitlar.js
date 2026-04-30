@@ -7952,13 +7952,14 @@ function renderVehicleDetailLeft(vehicle) {
    */
   window.updateNotifications = function() {
     if (!window.appData || !Array.isArray(window.appData.tasitlar)) return;
+    const notifScopeKey = getCurrentNotifScopeKey();
+    beginNotificationFirstSeenBatch(notifScopeKey);
+    try {
     const vehicles = readVehicles();
     const notifications = [];
     const pendingGeneralRequests = [];
     const viewedKeys = getViewedNotificationKeys();
     const dismissedKeys = getDismissedNotificationKeys();
-    const notifScopeKey = getCurrentNotifScopeKey();
-    beginNotificationFirstSeenBatch(notifScopeKey);
     const feedKeys = {};
     let hasUnreadActivity = false;
     let hasUnreadMarkableNotification = false;
@@ -8449,7 +8450,12 @@ function renderVehicleDetailLeft(vehicle) {
            Turuncu: yalnız yaklaşan tarih uyarıları için kullanılır. */
       }
     }
-    flushNotificationFirstSeenBatch();
+    } catch (err) {
+      if (typeof window.__medisaLogError === 'function') window.__medisaLogError('updateNotifications', err);
+      else console.error('[Medisa] Bildirimler güncellenemedi:', err);
+    } finally {
+      flushNotificationFirstSeenBatch();
+    }
     openNotificationsFromReturnParam();
   };
 
