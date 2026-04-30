@@ -838,7 +838,7 @@ window.addEventListener('dataLoaded', () => {
 });
 
 /* =========================================
-   SERVICE WORKER REGISTRATION (scope pathname'e göre: /medisa/, /tasitmedisa/ veya /)
+   SERVICE WORKER REGISTRATION (scope bulunduğu uygulama köküne göre)
    ========================================= */
 (function() {
   var host = (typeof window !== 'undefined' && window.location && window.location.hostname) ? window.location.hostname : '';
@@ -854,10 +854,19 @@ window.addEventListener('dataLoaded', () => {
     return;
   }
 
-  var p = (typeof document !== 'undefined' && document.location) ? document.location.pathname : '';
-  var base = (p.indexOf('/tasitmedisa') === 0) ? '/tasitmedisa' : (p.indexOf('/medisa') === 0) ? '/medisa' : '';
-  var scope = base ? base + '/' : '/';
-  var paths = base ? [base + '/sw.js', './sw.js'] : ['./sw.js', '/sw.js', '/tasitmedisa/sw.js', '/medisa/sw.js'];
+  var resolveAppRootPath = function(pathname) {
+    var parts = String(pathname || '/').split('/').filter(Boolean);
+    if (!parts.length) return '/';
+    var lastPart = parts[parts.length - 1] || '';
+    if (lastPart.indexOf('.') !== -1) parts.pop();
+    var lastDir = parts[parts.length - 1] || '';
+    if (lastDir === 'admin' || lastDir === 'driver') parts.pop();
+    return parts.length ? ('/' + parts.join('/') + '/') : '/';
+  };
+  var p = (typeof document !== 'undefined' && document.location) ? document.location.pathname : '/';
+  var scope = resolveAppRootPath(p);
+  var base = scope === '/' ? '' : scope.slice(0, -1);
+  var paths = base ? [base + '/sw.js', './sw.js'] : ['./sw.js', '/sw.js'];
   window.registerServiceWorker({
     paths: paths,
     scope: scope,
