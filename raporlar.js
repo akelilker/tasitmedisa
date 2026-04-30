@@ -147,7 +147,7 @@
             'sigorta': isVerySmall ? 'Sig.' : isMobile ? 'Sigorta' : 'Sigorta Bitiş',
             'kasko': isVerySmall ? 'Kas.' : isMobile ? 'Kasko' : 'Kasko Bitiş',
             'muayene': isVerySmall ? 'Muay.' : isMobile ? 'Muayene' : 'Muayene T.',
-            'egzozMuayene': isVerySmall ? 'Egz.' : isMobile ? 'Egzoz' : 'Egzoz M.',
+            'egzozMuayene': isTiny ? 'Egz.' : 'Egzoz',
             'kredi': isTiny ? 'Hak' : isVerySmall ? 'Hak M.' : isMobile ? 'Hak M.' : 'Hak Mahr.',
             'lastik': isTiny ? 'Y/K' : isVerySmall ? 'Yaz/Kış' : isMobile ? 'Yazlık/Kışlık' : 'Lastikler',
             'utts': 'UTTS',
@@ -1889,7 +1889,7 @@
     window.handleStokSearch = (typeof window.debounce === 'function') ? window.debounce(handleStokSearchImpl, 200) : handleStokSearchImpl;
 
     // Yazdır – Excel ile aynı veriyi tablo olarak yazdırır (ekran görüntüsü değil)
-    const stokPrintHeaders = { sira:'No.', sube:'Şube', yil:'Yıl', marka:'Marka/Mod.', plaka:'Plaka', sanziman:'Şanz', km:'KM', sigorta:'Sig. bit.', kasko:'Kas. bit.', kaskoDegeri:'Kas. değ.', muayene:'Muay.', egzozMuayene:'Egz.', kredi:'Hak M.', lastik:'Lastik', utts:'UTTS', takip:'Takip', tramer:'Tramer', boya:'Boya', kullanici:'Kull.', tescil:'Tescil' };
+    const stokPrintHeaders = { sira:'No.', sube:'Şube', yil:'Yıl', marka:'Marka/Mod.', plaka:'Plaka', sanziman:'Şanz', km:'KM', sigorta:'Sig. bit.', kasko:'Kas. bit.', kaskoDegeri:'Kas. değ.', muayene:'Muay.', egzozMuayene:'Egzoz', kredi:'Hak M.', lastik:'Lastik', utts:'UTTS', takip:'Takip', tramer:'Tramer', boya:'Boya', kullanici:'Kull.', tescil:'Tescil' };
     /* Yazdırma: plaka kısa metin — aşırı ağırlık diğer sütunları sıkıştırıp başlıkta harf kırılmasına yol açmasın */
     /* Şube / şanz / km yazdırmada kısa içerik; ağırlık düşük — marka ve tarihler daha çok yer alsın */
     const stokPrintColumnWeights = {
@@ -1904,7 +1904,7 @@
         kasko: 9,
         kaskoDegeri: 10,
         muayene: 6,
-        egzozMuayene: 6,
+        egzozMuayene: 3,
         kredi: 8,
         lastik: 8,
         utts: 6,
@@ -1920,11 +1920,12 @@
         sira: 7,
         sube: 22,
         yil: 9,
+        marka: 40,
         plaka: 12,
         sanziman: 12,
         km: 14,
         muayene: 12,
-        egzozMuayene: 12,
+        egzozMuayene: 11,
         sigorta: 12,
         kasko: 12,
         tescil: 12
