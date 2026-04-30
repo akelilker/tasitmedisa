@@ -388,27 +388,29 @@
     });
   }
 
+  function resolveAdminDriverLink() {
+    try {
+      var pathname = (typeof window !== 'undefined' && window.location && window.location.pathname) ? window.location.pathname : '/';
+      var parts = String(pathname || '/').split('/').filter(Boolean);
+      if (!parts.length) return '/driver/';
+      var lastPart = parts[parts.length - 1] || '';
+      if (lastPart.indexOf('.') !== -1) parts.pop();
+      var lastDir = (parts[parts.length - 1] || '').toLowerCase();
+      if (lastDir === 'admin' || lastDir === 'driver') parts.pop();
+      var appRoot = parts.length ? ('/' + parts.join('/') + '/') : '/';
+      if (typeof window !== 'undefined' && window.location && window.location.origin) {
+        return window.location.origin + appRoot + 'driver/';
+      }
+      return appRoot + 'driver/';
+    } catch (e) {
+      return '/driver/';
+    }
+  }
+
   function sendWhatsApp(phone, name, plaka, donem) {
     phone = (phone || '').replace(/\D/g, '');
     if (phone.indexOf('90') !== 0) phone = '90' + phone;
-    var resolveAppRootPath = function() {
-      try {
-        var pathname = (typeof window !== 'undefined' && window.location && window.location.pathname) ? window.location.pathname : '/';
-        var parts = String(pathname || '/').split('/').filter(Boolean);
-        if (!parts.length) return '/';
-        var lastPart = parts[parts.length - 1] || '';
-        if (lastPart.indexOf('.') !== -1) parts.pop();
-        var lastDir = parts[parts.length - 1] || '';
-        if (lastDir === 'admin' || lastDir === 'driver') parts.pop();
-        return parts.length ? ('/' + parts.join('/') + '/') : '/';
-      } catch (e) {
-        return '/';
-      }
-    };
-    var appRoot = resolveAppRootPath();
-    var driverLink = (typeof window !== 'undefined' && window.location && window.location.origin)
-      ? window.location.origin + appRoot + 'driver/'
-      : 'https://karmotors.com.tr/driver/';
+    var driverLink = resolveAdminDriverLink();
     var text = 'Sn. ' + (name || '') + ', ' + (donem || '') + ' Dönemi İçin; Kullanımınıza Tahsis Edilen (' + (plaka || '') + ') Plakalı Taşıt İle İlgili; Uygulamamız Üzerinden Bilgi Güncellemesi Yapmanızı Rica Ederiz. Bildirmek için tıklayın: ' + driverLink;
     var url = 'https://wa.me/' + phone + '?text=' + encodeURIComponent(text);
     window.open(url, '_blank');
@@ -417,24 +419,7 @@
   function sendReportEmail(email, name, plaka, donem) {
     var address = String(email || '').trim();
     if (!address) return;
-    var resolveAppRootPath = function() {
-      try {
-        var pathname = (typeof window !== 'undefined' && window.location && window.location.pathname) ? window.location.pathname : '/';
-        var parts = String(pathname || '/').split('/').filter(Boolean);
-        if (!parts.length) return '/';
-        var lastPart = parts[parts.length - 1] || '';
-        if (lastPart.indexOf('.') !== -1) parts.pop();
-        var lastDir = parts[parts.length - 1] || '';
-        if (lastDir === 'admin' || lastDir === 'driver') parts.pop();
-        return parts.length ? ('/' + parts.join('/') + '/') : '/';
-      } catch (e) {
-        return '/';
-      }
-    };
-    var appRoot = resolveAppRootPath();
-    var driverLink = (typeof window !== 'undefined' && window.location && window.location.origin)
-      ? window.location.origin + appRoot + 'driver/'
-      : 'https://karmotors.com.tr/driver/';
+    var driverLink = resolveAdminDriverLink();
     var subject = (donem || '') + ' dönem kilometre bildirimi';
     var body = 'Merhaba ' + (name || '') + ',\n\n'
       + (donem || '') + ' dönemi için kullanımınıza tahsis edilen '
