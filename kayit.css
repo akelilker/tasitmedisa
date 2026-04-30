@@ -2111,6 +2111,11 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         overflow-x: hidden !important;
         padding-bottom: 16px !important; /* Buton satırı ile alt çerçeve arasında sabit boşluk */
     }
+    #vehicle-modal .modal-body::after {
+        content: "";
+        display: block;
+        flex: 0 0 16px;
+    }
     #vehicle-modal .modal-body .modal-columns {
         flex: none !important; /* İç scroll'u kapattık, tam uzunluğuna çıksın */
         min-height: 0;
