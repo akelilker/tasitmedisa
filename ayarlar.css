@@ -1711,6 +1711,12 @@ input.settings-form-input:-moz-autofill,
     overflow: hidden !important;
 }
 
+@media (min-width: 769px) {
+    #branch-modal #branch-list .settings-card-title.settings-card-title--compact {
+        font-size: 11px;
+    }
+}
+
 .settings-card-subtitle {
     font-size: 12px;
     font-family: inherit;
