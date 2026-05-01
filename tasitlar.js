@@ -4299,6 +4299,29 @@ function renderVehicleDetailLeft(vehicle) {
     }
   }
 
+  /** Olay Ekle: Var/Yok detay textarea’ları içerik kadar dikey büyür (tek satır input yok). */
+  function bindOlayDetayTextareaAutogrow(el) {
+    if (!el) return function() {};
+    function sync() {
+      el.style.height = 'auto';
+      var lh = parseFloat(window.getComputedStyle(el).lineHeight) || 22;
+      var minH = Math.round(lh * 2);
+      var maxH = Math.round(lh * 22);
+      var sh = el.scrollHeight;
+      var h = Math.min(Math.max(sh, minH), maxH);
+      el.style.height = h + 'px';
+      el.style.overflowY = sh > maxH ? 'auto' : 'hidden';
+    }
+    if (el.dataset.olayDetayAutogrowBound !== '1') {
+      el.dataset.olayDetayAutogrowBound = '1';
+      el.style.resize = 'none';
+      el.style.boxSizing = 'border-box';
+      el.addEventListener('input', sync);
+      el.addEventListener('focus', sync);
+    }
+    return sync;
+  }
+
   function getEventFormHtml(type) {
     const labelCls = 'form-label';
     const inputCls = 'form-input';
@@ -4407,18 +4430,18 @@ function renderVehicleDetailLeft(vehicle) {
       case 'anahtar':
         return '<div style="display:flex;flex-direction:column;gap:12px;">' +
           radioRow('Yedek Anahtar Var mı?', 'var', 'yok', 'Var', 'Yok') +
-          '<div id="anahtar-detay-wrapper" style="display:none;"><label class="' + labelCls + '" for="anahtar-detay-event">Detay (nerede)</label><input id="anahtar-detay-event" class="' + inputCls + '" type="text" placeholder="Nerede?"></div></div>';
+          '<div id="anahtar-detay-wrapper" style="display:none;"><label class="' + labelCls + '" for="anahtar-detay-event">Detay (nerede)</label><textarea id="anahtar-detay-event" class="' + inputCls + '" rows="2" placeholder="Nerede?"></textarea></div></div>';
       case 'kredi':
         return '<div style="display:flex;flex-direction:column;gap:12px;">' +
           radioRow('Hak Mahrumiyeti Var mı?', 'var', 'yok', 'Var', 'Yok') +
-          '<div id="kredi-detay-wrapper-event" style="display:none;"><label class="' + labelCls + '" for="kredi-detay-event">Hak mahrumiyeti detay</label><input id="kredi-detay-event" class="' + inputCls + '" type="text"></div></div>';
+          '<div id="kredi-detay-wrapper-event" style="display:none;"><label class="' + labelCls + '" for="kredi-detay-event">Hak mahrumiyeti detay</label><textarea id="kredi-detay-event" class="' + inputCls + '" rows="2"></textarea></div></div>';
       case 'km':
         return '<div style="display:flex;flex-direction:column;gap:12px;">' +
           section('Güncel Km', 'km-guncelle-input', 'input', [['type', 'text'], ['placeholder', 'Km'], ['inputmode', 'numeric']]) + '</div>';
       case 'lastik':
         return '<div style="display:flex;flex-direction:column;gap:12px;">' +
           radioRow('Yazlık/ Kışlık Lastik Var mı?', 'var', 'yok', 'Var', 'Yok') +
-          '<div id="lastik-adres-wrapper-event" style="display:none;"><label class="' + labelCls + '" for="lastik-adres-event">Adres</label><input id="lastik-adres-event" class="' + inputCls + '" type="text"></div></div>';
+          '<div id="lastik-adres-wrapper-event" style="display:none;"><label class="' + labelCls + '" for="lastik-adres-event">Adres</label><textarea id="lastik-adres-event" class="' + inputCls + '" rows="2"></textarea></div></div>';
       case 'utts':
         return '<div style="display:flex;flex-direction:column;gap:12px;">' +
           radioRow('UTTS Cihazı Var mı?', 'evet', 'hayir', 'Evet', 'Hayır') + '</div>';
@@ -4792,6 +4815,7 @@ function renderVehicleDetailLeft(vehicle) {
         const radioBtns = refreshModalRadioButtons(modal);
         const detayWrapper = document.getElementById('anahtar-detay-wrapper');
         const detayInput = document.getElementById('anahtar-detay-event');
+        const syncDetayGrow = bindOlayDetayTextareaAutogrow(detayInput);
         radioBtns.forEach(b => b.classList.remove('active', 'green'));
         if (detayWrapper) detayWrapper.style.display = 'none';
         if (detayInput) detayInput.value = '';
@@ -4806,10 +4830,11 @@ function renderVehicleDetailLeft(vehicle) {
             
             if (this.dataset.value === 'var') {
               if (detayWrapper) detayWrapper.style.display = 'block';
-              if (detayInput) setTimeout(() => detayInput.focus(), 100);
+              if (detayInput) setTimeout(function() { detayInput.focus(); requestAnimationFrame(syncDetayGrow); }, 100);
             } else {
               if (detayWrapper) detayWrapper.style.display = 'none';
               if (detayInput) detayInput.value = '';
+              requestAnimationFrame(syncDetayGrow);
             }
           });
         });
@@ -4825,11 +4850,13 @@ function renderVehicleDetailLeft(vehicle) {
             if (yBtn) yBtn.click();
           }
         })();
+        requestAnimationFrame(syncDetayGrow);
       } else if (type === 'kredi') {
         // Kredi modal'ında radio button handler'larını ekle
         const radioBtns = refreshModalRadioButtons(modal);
         const detayWrapper = document.getElementById('kredi-detay-wrapper-event');
         const detayInput = document.getElementById('kredi-detay-event');
+        const syncDetayGrow = bindOlayDetayTextareaAutogrow(detayInput);
         radioBtns.forEach(b => b.classList.remove('active', 'green'));
         if (detayWrapper) detayWrapper.style.display = 'none';
         if (detayInput) detayInput.value = '';
@@ -4844,10 +4871,11 @@ function renderVehicleDetailLeft(vehicle) {
             
             if (this.dataset.value === 'var') {
               if (detayWrapper) detayWrapper.style.display = 'block';
-              if (detayInput) setTimeout(() => detayInput.focus(), 100);
+              if (detayInput) setTimeout(function() { detayInput.focus(); requestAnimationFrame(syncDetayGrow); }, 100);
             } else {
               if (detayWrapper) detayWrapper.style.display = 'none';
               if (detayInput) detayInput.value = '';
+              requestAnimationFrame(syncDetayGrow);
             }
           });
         });
@@ -4863,11 +4891,13 @@ function renderVehicleDetailLeft(vehicle) {
             if (yBtn) yBtn.click();
           }
         })();
+        requestAnimationFrame(syncDetayGrow);
       } else if (type === 'lastik') {
         // Lastik modal'ında radio button handler'larını ekle
         const radioBtns = refreshModalRadioButtons(modal);
         const adresWrapper = document.getElementById('lastik-adres-wrapper-event');
         const adresInput = document.getElementById('lastik-adres-event');
+        const syncAdresGrow = bindOlayDetayTextareaAutogrow(adresInput);
         
         radioBtns.forEach(b => b.classList.remove('active', 'green'));
         if (adresWrapper) adresWrapper.style.display = 'none';
@@ -4884,10 +4914,11 @@ function renderVehicleDetailLeft(vehicle) {
             
             if (this.dataset.value === 'var') {
               if (adresWrapper) adresWrapper.style.display = 'block';
-              if (adresInput) setTimeout(() => adresInput.focus(), 100);
+              if (adresInput) setTimeout(function() { adresInput.focus(); requestAnimationFrame(syncAdresGrow); }, 100);
             } else {
               if (adresWrapper) adresWrapper.style.display = 'none';
               if (adresInput) adresInput.value = '';
+              requestAnimationFrame(syncAdresGrow);
             }
           });
         });
@@ -4903,6 +4934,7 @@ function renderVehicleDetailLeft(vehicle) {
             if (yBtn) yBtn.click();
           }
         })();
+        requestAnimationFrame(syncAdresGrow);
       } else if (type === 'bakim') {
         const bakimKisiInput = document.getElementById('bakim-kisi');
         if (bakimKisiInput) {
