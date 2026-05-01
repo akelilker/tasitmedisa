@@ -803,6 +803,10 @@ body.dashboard-page {
     padding-top: 2px !important;
     padding-bottom: 2px !important;
   }
+  /* Masaüstü: Talep/şikayet FAB satırı footer/glow çizgisine yapışmasın */
+  .dashboard-page .driver-request-fab-row {
+    margin-bottom: 24px;
+  }
 }
 
 /* Masaüstü: Sol panel dikeyde sığmazsa – metin 1.5pt küçük, gider arası 1px az */
