@@ -4800,6 +4800,18 @@ function renderVehicleDetailLeft(vehicle) {
             }
           });
         });
+        (function prefillAnahtarOlayFromVehicle() {
+          const vPref = readVehicles().find(v => String(v.id) === String(vehicleId || window.currentDetailVehicleId));
+          if (!vPref) return;
+          if (vPref.anahtar === 'var') {
+            const vBtn = Array.from(radioBtns).find(b => b.dataset.value === 'var');
+            if (vBtn) vBtn.click();
+            if (detayInput) detayInput.value = vPref.anahtarNerede != null ? String(vPref.anahtarNerede) : '';
+          } else if (vPref.anahtar === 'yok') {
+            const yBtn = Array.from(radioBtns).find(b => b.dataset.value === 'yok');
+            if (yBtn) yBtn.click();
+          }
+        })();
       } else if (type === 'kredi') {
         // Kredi modal'ında radio button handler'larını ekle
         const radioBtns = refreshModalRadioButtons(modal);
@@ -4826,6 +4838,18 @@ function renderVehicleDetailLeft(vehicle) {
             }
           });
         });
+        (function prefillKrediOlayFromVehicle() {
+          const vPref = readVehicles().find(v => String(v.id) === String(vehicleId || window.currentDetailVehicleId));
+          if (!vPref) return;
+          if (vPref.kredi === 'var') {
+            const vBtn = Array.from(radioBtns).find(b => b.dataset.value === 'var');
+            if (vBtn) vBtn.click();
+            if (detayInput) detayInput.value = vPref.krediDetay != null ? String(vPref.krediDetay) : '';
+          } else if (vPref.kredi === 'yok') {
+            const yBtn = Array.from(radioBtns).find(b => b.dataset.value === 'yok');
+            if (yBtn) yBtn.click();
+          }
+        })();
       } else if (type === 'lastik') {
         // Lastik modal'ında radio button handler'larını ekle
         const radioBtns = refreshModalRadioButtons(modal);
@@ -4854,14 +4878,18 @@ function renderVehicleDetailLeft(vehicle) {
             }
           });
         });
-      } else if (type === 'utts') {
-        const radioBtns = modal.querySelectorAll('.radio-btn');
-        radioBtns.forEach(b => b.classList.remove('active', 'green'));
-        /* Varsayılan seçim yok: form nötr açılır */
-      } else if (type === 'takip') {
-        const radioBtns = modal.querySelectorAll('.radio-btn');
-        radioBtns.forEach(b => b.classList.remove('active', 'green'));
-        /* Varsayılan seçim yok: form nötr açılır */
+        (function prefillLastikOlayFromVehicle() {
+          const vPref = readVehicles().find(v => String(v.id) === String(vehicleId || window.currentDetailVehicleId));
+          if (!vPref) return;
+          if (vPref.lastikDurumu === 'var') {
+            const vBtn = Array.from(radioBtns).find(b => b.dataset.value === 'var');
+            if (vBtn) vBtn.click();
+            if (adresInput) adresInput.value = vPref.lastikAdres != null ? String(vPref.lastikAdres) : '';
+          } else if (vPref.lastikDurumu === 'yok') {
+            const yBtn = Array.from(radioBtns).find(b => b.dataset.value === 'yok');
+            if (yBtn) yBtn.click();
+          }
+        })();
       } else if (type === 'bakim') {
         const bakimKisiInput = document.getElementById('bakim-kisi');
         if (bakimKisiInput) {
@@ -4919,9 +4947,7 @@ function renderVehicleDetailLeft(vehicle) {
             const radioBtns = refreshModalRadioButtons(modal);
             if (radioBtns.length > 0) {
               radioBtns.forEach(b => b.classList.remove('active', 'green'));
-              /* Varsayılan seçim yok: nötr başlar */
               
-              // Event listener'ları ekle
               radioBtns.forEach(btn => {
                 btn.addEventListener('click', function(e) {
                   e.preventDefault();
@@ -4931,6 +4957,27 @@ function renderVehicleDetailLeft(vehicle) {
                   if (this.dataset.value === 'evet') this.classList.add('green');
                 });
               });
+
+              const vPref = readVehicles().find(v => String(v.id) === String(vehicleId || window.currentDetailVehicleId));
+              if (vPref) {
+                if (type === 'utts') {
+                  if (vPref.uttsTanimlandi === true) {
+                    const eBtn = Array.from(radioBtns).find(b => b.dataset.value === 'evet');
+                    if (eBtn) eBtn.click();
+                  } else if (vPref.uttsTanimlandi === false) {
+                    const hBtn = Array.from(radioBtns).find(b => b.dataset.value === 'hayir');
+                    if (hBtn) hBtn.click();
+                  }
+                } else if (type === 'takip') {
+                  if (vPref.takipCihaziMontaj === true) {
+                    const eBtn = Array.from(radioBtns).find(b => b.dataset.value === 'evet');
+                    if (eBtn) eBtn.click();
+                  } else if (vPref.takipCihaziMontaj === false) {
+                    const hBtn = Array.from(radioBtns).find(b => b.dataset.value === 'hayir');
+                    if (hBtn) hBtn.click();
+                  }
+                }
+              }
             }
           });
         }
