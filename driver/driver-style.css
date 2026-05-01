@@ -804,7 +804,7 @@ body.dashboard-page {
     padding-bottom: 2px !important;
   }
   /* Masaüstü: Talep/şikayet FAB satırı footer/glow çizgisine yapışmasın */
-  .dashboard-page .driver-request-fab-row {
+  .dashboard-page .driver-action-area-inner > .driver-action-group.driver-request-fab-row:last-child {
     margin-bottom: 24px;
   }
 }
