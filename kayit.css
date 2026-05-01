@@ -1849,14 +1849,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
 
 /* === MASAÜSTÜ OPTİMİZASYONLARI === */
 @media (min-width: 641px) {
-    /*
-     * Alt 18px: modal-body padding scroll ile “kayıp” hissi vermesin diye .modal-container’da.
-     * (box-sizing zaten border-box; iç flex alanı otomatik kısalır.)
-     */
-    #vehicle-modal .modal-container {
-        padding-bottom: 18px !important;
-        box-sizing: border-box !important;
-    }
+    /* Alt 18px (kaydet/vazgeç ↔ çerçeve): style-core.css — burada tekrar etme */
     #vehicle-modal .modal-body {
         padding: 14px 12px 0 12px !important;
     }
@@ -2135,7 +2128,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         flex-shrink: 0;
         margin-top: 4px;
         padding-top: 8px !important;
-        padding-bottom: 0 !important; /* Alt 18px tamamı .modal-body padding-bottom ile (style-core 16px altı iptal) */
+        padding-bottom: 0 !important;
         align-items: center !important;
     }
     /* Var açılınca taşmayı azalt: açılan bölüm sıkı (tek Var’da scrollbar çıkmasın) */
