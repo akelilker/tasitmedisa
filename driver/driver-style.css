@@ -767,7 +767,10 @@ body.dashboard-page {
   .dashboard-page .driver-left-panel .driver-plate-dropdown-item:last-child {
     border-bottom: none !important;
   }
-  /* Sağ grid: aksiyon kolonu satır aralığı 0 (DOM: .driver-action-area-inner) */
+  /* Sağ grid: aksiyon alanı üstten hafif boşlukla görsel dengeye alınır, satır aralığı sıfırlanır */
+  .dashboard-page .driver-action-area {
+    padding-top: 8px !important;
+  }
   .dashboard-page .driver-action-area-inner {
     gap: 0 !important;
   }
