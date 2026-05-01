@@ -1632,7 +1632,7 @@
 
       const sortedUsers = filteredUsers.slice().sort(compareUserManagementListOrder);
 
-      const rows = sortedUsers.map(user => {
+      function buildUserManagementCardHtml(user) {
         const primaryBranchId = user.branchId || ((user.branchIds && user.branchIds.length) ? user.branchIds[0] : '');
         const branch = branches.find(x => String(x.id) === String(primaryBranchId));
         const branchName = branch ? branch.name : '-';
@@ -1658,6 +1658,21 @@
             </div>
           </div>
         `;
+      }
+
+      const roleGroups = [];
+      sortedUsers.forEach(function(user) {
+        const rank = getUserManagementRoleSortRank(user);
+        const prev = roleGroups[roleGroups.length - 1];
+        if (!prev || prev.rank !== rank) {
+          roleGroups.push({ rank: rank, users: [] });
+        }
+        roleGroups[roleGroups.length - 1].users.push(user);
+      });
+
+      const rows = roleGroups.map(function(g) {
+        const cards = g.users.map(buildUserManagementCardHtml).join('');
+        return '<div class="user-management-role-group">' + cards + '</div>';
       }).join('');
 
       container.innerHTML = rows;
