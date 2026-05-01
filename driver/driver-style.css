@@ -813,7 +813,7 @@ body.dashboard-page {
   }
   /* Masaüstü: Talep/şikayet FAB, Bildir butonundan sonra kontrollü aksın */
   .dashboard-page .driver-action-feedback-slot.driver-request-fab-row {
-    margin-top: 20px;
+    margin-top: 12px;
   }
 }
 
