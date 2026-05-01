@@ -2658,6 +2658,20 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
 }
 
 @media (max-width: 640px) {
+    /* Ayarlar dişlisi: ayarlar.css lazy-load öncesi ilk açılış genişliği (PR #315 ile aynı kontrat) */
+    #settings-menu.settings-dropdown {
+        width: min(56vw, 240px) !important;
+        min-width: 168px !important;
+        max-width: min(56vw, 240px) !important;
+        box-sizing: border-box !important;
+        overflow-x: hidden !important;
+    }
+    #settings-menu.settings-dropdown > button,
+    #settings-menu.settings-dropdown > .has-submenu-wrapper {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
     #settings-menu > button,
     #settings-menu .settings-submenu button {
         font-size: calc(14px + 1pt) !important;
