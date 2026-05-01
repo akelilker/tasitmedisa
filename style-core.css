@@ -2453,6 +2453,11 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         border-bottom: 1px solid var(--border-medium) !important;
         box-shadow: none !important;
     }
+    /* Taşıt kayıt: Kaydet/Vazgeç ile alt çerçeve arası 18px — lazy kayit.css sırasına/önbelleğe bağlı kalmasın */
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #vehicle-modal.modal-overlay .modal-container {
+        padding-bottom: 18px !important;
+        box-sizing: border-box !important;
+    }
 }
 
 #app-footer .footer-content {
