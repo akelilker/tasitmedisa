@@ -2101,7 +2101,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-body .modal-column-right .form-section:has(#vehicle-notes) #vehicle-notes {
         margin-top: -4px !important;
     }
-    /* Masaüstü gövde: kolon + buton kolonu; alt padding 12px; boş dikey alan buton üstünde toplansın (.universal-btn-group margin-top: auto). */
+    /* Masaüstü gövde: kolon + buton kolonu; alt padding 12px. */
     #vehicle-modal .modal-body {
         padding: 14px 12px 12px 12px !important;
         display: flex !important;
@@ -2123,8 +2123,8 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-body .universal-btn-group {
         position: static !important;
         flex-shrink: 0;
-        margin-top: auto;
-        padding-top: 8px !important;
+        margin-top: 2px;
+        padding-top: 6px !important;
         padding-bottom: 0 !important;
         align-items: center !important;
     }
