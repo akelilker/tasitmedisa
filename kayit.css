@@ -1849,9 +1849,16 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
 
 /* === MASAÜSTÜ OPTİMİZASYONLARI === */
 @media (min-width: 641px) {
-    /* Üst 14px; alt 18px — Kaydet/Vazgeç satırının altı ile modal iç tabanı (çerçeve üstü) arası */
+    /*
+     * Alt 18px: modal-body padding scroll ile “kayıp” hissi vermesin diye .modal-container’da.
+     * (box-sizing zaten border-box; iç flex alanı otomatik kısalır.)
+     */
+    #vehicle-modal .modal-container {
+        padding-bottom: 18px !important;
+        box-sizing: border-box !important;
+    }
     #vehicle-modal .modal-body {
-        padding: 14px 12px 18px 12px !important;
+        padding: 14px 12px 0 12px !important;
     }
     .form-input, select {
         border-width: 1.1px !important;
