@@ -803,10 +803,7 @@ body.dashboard-page {
     padding-top: 2px !important;
     padding-bottom: 2px !important;
   }
-  /* Masaüstü: Talep/şikayet FAB satırı footer/glow çizgisine yapışmasın */
-  .dashboard-page .driver-action-area-inner > .driver-action-group.driver-request-fab-row:last-child {
-    margin-bottom: 24px;
-  }
+  /* Masaüstü: Talep/şikayet FAB satırı doğal akışta kalır; ekstra alt tampon yok. */
 }
 
 /* Masaüstü: Sol panel dikeyde sığmazsa – metin 1.5pt küçük, gider arası 1px az */
@@ -6043,8 +6040,8 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 
     /* Sag grid: işlem satırı butonları — gerçek DOM: .driver-action-group > .driver-action-btn */
     .dashboard-page .driver-action-area .driver-action-group > .driver-action-btn {
-        padding-top: 10px !important;
-        padding-bottom: 10px !important;
+        padding-top: 8px !important;
+        padding-bottom: 8px !important;
         transition: border-color 0.2s, color 0.2s, background 0.2s, transform 0.2s !important;
     }
     .dashboard-page .driver-action-area .driver-action-group > .driver-action-btn:hover {
@@ -6070,11 +6067,11 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     }
 }
 
-/* Masaüstü (769px+): işlem satırı butonları iç dikey padding (+641px tabanına ek) */
+/* Masaüstü (769px+): işlem satırı butonları kompakt dikey padding */
 @media (min-width: 769px) {
   .dashboard-page .driver-action-area .driver-action-group > .driver-action-btn {
-    padding-top: 12px !important;
-    padding-bottom: 12px !important;
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
   }
 }
 
