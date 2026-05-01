@@ -745,8 +745,7 @@
 
   // Global State
   let currentView = 'dashboard'; // 'dashboard' | 'list'
-  let activeBranchId = null; // null = dashboard, 'all' = tümü, 'id' = şube, '__company__' = şirket grubu
-  let companyBranchFilterKey = null; // tireli şube adlarında şirket anahtarı (normalize)
+  let activeBranchId = null; // null = dashboard, 'all' = tümü, 'id' = şube
   let viewMode = 'card'; 
   let sortColumn = null; // 'year', 'brand', 'plate', 'km', 'type', 'transmission', 'user', 'branch', ...
   let sortDirection = 'asc'; // 'asc' | 'desc'
@@ -822,7 +821,6 @@
       String(currentView),
       String(viewMode),
       String(activeBranchId),
-      String(companyBranchFilterKey || ''),
       String(query || ''),
       String(transmissionFilter || ''),
       String(sortColumn || ''),
@@ -1628,15 +1626,6 @@
   if (modalContent && !modalContent._vehicleClickBound) {
     modalContent._vehicleClickBound = true;
     function handleVehicleRowClick(e) {
-      const companyCard = e.target.closest('.branch-company-card');
-      if (companyCard && companyCard.dataset.branchCompanyKey) {
-        e.stopPropagation();
-        e.preventDefault();
-        if (typeof window.openCompanyVehicleList === 'function') {
-          window.openCompanyVehicleList(companyCard.dataset.branchCompanyKey);
-        }
-        return;
-      }
       const branchCard = e.target.closest('.branch-card');
       if (branchCard && branchCard.dataset.branchId !== undefined) {
         e.stopPropagation();
@@ -2256,7 +2245,6 @@
   window.renderBranchDashboard = function(forceRender = false, options = {}) {
     currentView = 'dashboard';
     activeBranchId = null;
-    companyBranchFilterKey = null;
     closeSearchBox(true);
     updateToolbar('dashboard');
 
@@ -2291,29 +2279,12 @@
       const count = String(countByBranch.get(id) || 0);
       return id + ':' + name + ':' + count;
     }).join('|');
-
-    const companyRollup = new Map();
-    branches.forEach(branch => {
-      const parts = typeof window.medisaParseBranchCompanyParts === 'function'
-        ? window.medisaParseBranchCompanyParts(branch.name)
-        : null;
-      if (!parts || !parts.hasHyphenPattern || !parts.companyKey) return;
-      const ck = parts.companyKey;
-      const n = countByBranch.get(String(branch.id)) || 0;
-      companyRollup.set(ck, (companyRollup.get(ck) || 0) + n);
-    });
-    const companyRollupSig = Array.from(companyRollup.entries())
-      .sort(function(a, b) { return String(a[0]).localeCompare(String(b[0]), 'tr'); })
-      .map(function(e) { return e[0] + '=' + e[1]; })
-      .join(',');
-
     const renderSignature = [
       'dashboard',
       isMobile ? 'mobile' : 'desktop',
       String(activeVehicles.length),
       String(unassignedCount),
-      branchSig,
-      companyRollupSig
+      branchSig
     ].join('__');
 
     if (
@@ -2338,15 +2309,6 @@
       </div>
     `;
 
-    Array.from(companyRollup.entries())
-      .sort(function(a, b) { return String(a[0]).localeCompare(String(b[0]), 'tr'); })
-      .forEach(function(entry) {
-        const ck = entry[0];
-        const cnt = entry[1];
-        if (cnt < 1) return;
-        html += createCompanyBranchCard(ck, cnt);
-      });
-
     // 2. Şube kartları
     branches.forEach(branch => {
       html += createBranchCard(branch.id, branch.name, countByBranch.get(String(branch.id)) || 0);
@@ -2367,17 +2329,6 @@
 
     /* Layout flex ile; kolon sayısı .branch-card width/flex ile belirlenir */
   };
-  function createCompanyBranchCard(companyKey, count) {
-    const safeKeyAttr = String(companyKey || '').replace(/"/g, '&quot;');
-    const labelRaw = 'TÜM ' + String(companyKey || '');
-    const safeLabel = escapeHtml(labelRaw);
-    return `
-      <div class="branch-card branch-company-card" data-branch-company-key="${safeKeyAttr}">
-        <div class="branch-name" title="${safeLabel}">${safeLabel}</div>
-        <div class="branch-count">${count} Taşıt</div>
-      </div>
-    `;
-  }
   function createBranchCard(id, name, count, isUnassigned = false) {
     const unassignedClass = isUnassigned ? ' unassigned-branch-card' : '';
     const safeId = (id || '').replace(/"/g, '&quot;');
@@ -2392,7 +2343,6 @@
 
   // --- 2. LİSTE RENDER (Şube Detayı) ---
   window.openBranchList = function(branchId, branchName, options = {}) {
-    companyBranchFilterKey = null;
     currentView = 'list';
     viewMode = 'list';
     activeBranchId = branchId; // 'all', '', veya 'id'
@@ -2406,24 +2356,6 @@
     renderVehicles();
   };
 
-  window.openCompanyVehicleList = function(companyKeyRaw) {
-    const ck = typeof window.medisaNormalizeBranchCompanyKey === 'function'
-      ? window.medisaNormalizeBranchCompanyKey(companyKeyRaw)
-      : String(companyKeyRaw || '').trim().toLocaleUpperCase('tr-TR');
-    if (!ck) return;
-    currentView = 'list';
-    viewMode = 'list';
-    companyBranchFilterKey = ck;
-    activeBranchId = '__company__';
-    const label = 'TÜM ' + ck;
-    lastListContext = { mode: 'company', companyKey: ck, branchName: label };
-    isAutoSingleBranchVehiclesView = false;
-    invalidateVehicleListRenderCache();
-    closeSearchBox(true);
-    updateToolbar('detail', label + ' Taşıtlar');
-    renderVehicles();
-  };
-
   /**
    * Arşiv görünümünü açar (satildiMi === true olan taşıtları listeler).
    * Toolbar'da "Geri" ile dashboard'a dönülür.
@@ -2431,7 +2363,6 @@
   window.openArchiveView = function() {
     currentView = 'list';
     viewMode = 'list';
-    companyBranchFilterKey = null;
     activeBranchId = '__archive__';
     lastListContext = { mode: 'archive' };
     isAutoSingleBranchVehiclesView = false;
@@ -2470,15 +2401,7 @@
         vehicles = vehicles.filter(v => v.satildiMi === true);
     } else {
         // Şube filtresi
-        if (companyBranchFilterKey) {
-            vehicles = vehicles.filter(function(v) {
-              if (!v.branchId) return false;
-              const bn = branchMap[String(v.branchId)]?.name || '';
-              return typeof window.medisaBranchNameMatchesCompanyKey === 'function'
-                ? window.medisaBranchNameMatchesCompanyKey(bn, companyBranchFilterKey)
-                : false;
-            });
-        } else if (activeBranchId === 'all') {
+        if (activeBranchId === 'all') {
             // Filtre yok
         } else if (activeBranchId === '') {
             vehicles = vehicles.filter(v => !v.branchId);
@@ -2504,8 +2427,7 @@
 
       // Şube seçiliyken liste görünümünde şube sütunu gösterilmez
       const safeColumnOrder = Array.isArray(vehicleColumnOrder) ? vehicleColumnOrder : ['year', 'plate', 'brand', 'km', 'type', 'transmission', 'user', 'branch'];
-      const treatAsMultiBranchList = (activeBranchId === 'all' || activeBranchId === '__archive__' || !!companyBranchFilterKey);
-      const displayColumnOrder = treatAsMultiBranchList ? safeColumnOrder : safeColumnOrder.filter(function(k) { return k !== 'branch'; });
+      const displayColumnOrder = (activeBranchId === 'all' || activeBranchId === '__archive__') ? safeColumnOrder : safeColumnOrder.filter(function(k) { return k !== 'branch'; });
       const isMobileList = window.innerWidth <= 768;
       const isCompactHeader = window.innerWidth <= 640; /* dar ekranda kısa başlık etiketleri */
       // Mobil/tablet (≤768px): Taşıt Tipi + Şanzıman sütunlarını göstermiyoruz (yer kaplamasın)
@@ -2553,7 +2475,7 @@
           return;
       }
 
-    const isAllView = (activeBranchId === 'all' || !!companyBranchFilterKey);
+    const isAllView = (activeBranchId === 'all');
     const extraClass = (viewMode === 'list' && isAllView) ? ' is-all-view' : '';
     const isMobile = window.innerWidth <= 640;
       let html = '';
@@ -2607,12 +2529,12 @@
         let thirdLine = '';
         if (isArchive) {
           thirdLine = v.satisTarihi ? `Satış: ${v.satisTarihi}` : '';
-        } else if (activeBranchId === 'all' || companyBranchFilterKey) {
+        } else if (activeBranchId === 'all') {
           thirdLine = branchMap[String(v.branchId)]?.name || '';
         } else {
           thirdLine = v.tahsisKisi || '';
         }
-        const thirdLineDisplay = thirdLine ? (isArchive ? toTitleCase(thirdLine) : ((activeBranchId === 'all' || companyBranchFilterKey) ? toTitleCase(thirdLine) : formatAdSoyad(thirdLine))) : '';
+        const thirdLineDisplay = thirdLine ? (isArchive ? toTitleCase(thirdLine) : (activeBranchId === 'all' ? toTitleCase(thirdLine) : formatAdSoyad(thirdLine))) : '';
         const satildiCardSpan = isArchive ? ' <span style="color:#d40000;font-size:12px;">(SATILDI)</span>' : '';
         const satildiBrandLine = isArchive ? '<span class="archive-satildi-line">(SATILDI)</span>' : '';
 
@@ -2914,8 +2836,6 @@
       if (lastListContext) {
         if (lastListContext.mode === 'archive') {
           backLabel = 'Arşiv';
-        } else if (lastListContext.mode === 'company') {
-          backLabel = lastListContext.branchName + ' Taşıtlar';
         } else if (lastListContext.branchId === 'all') {
           backLabel = 'Taşıtlar';
         } else {
@@ -2934,8 +2854,6 @@
         closeVehicleDetailModal();
         if (lastListContext && lastListContext.mode === 'archive') {
           openArchiveView();
-        } else if (lastListContext && lastListContext.mode === 'company') {
-          openCompanyVehicleList(lastListContext.companyKey);
         } else if (lastListContext && lastListContext.mode === 'branch') {
           openBranchList(lastListContext.branchId, lastListContext.branchName);
         } else {
