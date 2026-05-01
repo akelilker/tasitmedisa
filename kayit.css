@@ -1849,10 +1849,6 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
 
 /* === MASAÜSTÜ OPTİMİZASYONLARI === */
 @media (min-width: 641px) {
-    /* Alt 18px: kısaltma 0 yapmayın — aşağı scroll/hiza burada kilitli (style-core container tek başına yetmez; body aynı renkle dolar) */
-    #vehicle-modal .modal-body {
-        padding: 14px 12px 18px 12px !important;
-    }
     .form-input, select {
         border-width: 1.1px !important;
         border-color: rgba(255, 255, 255, 0.28) !important; /* Biraz daha parlak gri (0.20 -> 0.28) */
@@ -2105,8 +2101,9 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-body .modal-column-right .form-section:has(#vehicle-notes) #vehicle-notes {
         margin-top: -4px !important;
     }
-    /* Grid altları eşit: body flex yapıp grid’i büyütüyoruz; kolonlar stretch ile eşit yükseklikte */
+    /* Masaüstü gövde: kolon + buton kolonu; alt padding 12px; boş dikey alan buton üstünde toplansın (.universal-btn-group margin-top: auto). */
     #vehicle-modal .modal-body {
+        padding: 14px 12px 12px 12px !important;
         display: flex !important;
         flex-direction: column !important;
         overflow-y: auto !important; /* Kaydırmayı ana gövdeye geri verdik */
@@ -2126,7 +2123,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     #vehicle-modal .modal-body .universal-btn-group {
         position: static !important;
         flex-shrink: 0;
-        margin-top: 4px;
+        margin-top: auto;
         padding-top: 8px !important;
         padding-bottom: 0 !important;
         align-items: center !important;
