@@ -3851,27 +3851,40 @@ function renderVehicleDetailLeft(vehicle) {
       html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Egzos Muayene Bitiş</span><span class="detail-row-colon">:</span></div><span class="detail-row-value ${egzozState.warningClass}"> ${escapeHtml(egzozDisplay || '-')}</span></div>`;
     }
     
+    // var/yok alanları: boş = Belirtilmedi (kesin Yoktur./Hayır gösterilmez)
+    const detailVarYokLabel = function(raw, detailVal) {
+      if (raw == null || String(raw).trim() === '') return 'Belirtilmedi';
+      if (raw === 'var') {
+        const d = detailVal != null ? String(detailVal).trim() : '';
+        return d !== '' ? d : 'Var';
+      }
+      if (raw === 'yok') return 'Yoktur.';
+      return 'Belirtilmedi';
+    };
+    const detailBoolEvetHayir = function(val) {
+      if (val === true) return 'Evet';
+      if (val === false) return 'Hayır';
+      return 'Belirtilmedi';
+    };
+
     // Detay: yedek anahtar durumu
-    const anahtar = vehicle.anahtar || '';
-    const anahtarLabel = anahtar === 'var' ? (vehicle.anahtarNerede || 'Var') : 'Yoktur.';
+    const anahtarLabel = detailVarYokLabel(vehicle.anahtar, vehicle.anahtarNerede);
     html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Yedek Anahtar</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(anahtarLabel)}</span></div>`;
     
     // Hak Mahrumiyeti
-    const kredi = vehicle.kredi || '';
-    const krediLabel = kredi === 'var' ? (vehicle.krediDetay || 'Var') : 'Yoktur.';
+    const krediLabel = detailVarYokLabel(vehicle.kredi, vehicle.krediDetay);
     html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Hak Mahrumiyeti</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(krediLabel)}</span></div>`;
     
     // Yazlık/ Kışlık Lastik (Yoktur "r" hizası için referans)
-    const lastikDurumu = vehicle.lastikDurumu || '';
-    const lastikLabel = lastikDurumu === 'var' ? (vehicle.lastikAdres || 'Var') : 'Yoktur.';
+    const lastikLabel = detailVarYokLabel(vehicle.lastikDurumu, vehicle.lastikAdres);
     html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Yazlık/ Kışlık Lastik</span><span class="detail-row-colon">:</span></div><span class="detail-row-value detail-yoktur-r-ref"> ${escapeHtml(lastikLabel)}</span></div>`;
     
     // UTTS
-    const utts = vehicle.uttsTanimlandi ? 'Evet' : 'Hayır';
+    const utts = detailBoolEvetHayir(vehicle.uttsTanimlandi);
     html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">UTTS</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(utts)}</span></div>`;
     
     // Taşıt Takip
-    const takipCihazi = vehicle.takipCihaziMontaj ? 'Evet' : 'Hayır';
+    const takipCihazi = detailBoolEvetHayir(vehicle.takipCihaziMontaj);
     html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Taşıt Takip</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(takipCihazi)}</span></div>`;
 
     // Kasko Kodu (sadece taşıt detayda bilgi olarak)
