@@ -767,8 +767,8 @@ body.dashboard-page {
   .dashboard-page .driver-left-panel .driver-plate-dropdown-item:last-child {
     border-bottom: none !important;
   }
-  /* Sağ grid: butonlar arası dikey boşluk 0 (1px daha daraltıldı) */
-  .dashboard-page .driver-action-buttons {
+  /* Sağ grid: aksiyon kolonu satır aralığı 0 (DOM: .driver-action-area-inner) */
+  .dashboard-page .driver-action-area-inner {
     gap: 0 !important;
   }
   /* İç dikey padding: aşağıdaki 641 + 769 bloklarında birleştirilir */
@@ -1027,7 +1027,7 @@ body.dashboard-page {
   justify-content: flex-end;
   align-items: center;
   width: 100%;
-  margin-top: 6px;
+  margin-top: 3px;
   min-height: 28px;
 }
 .driver-action-btn-feedback.driver-request-fab {
@@ -6037,13 +6037,13 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
         font-size: calc((15px - 1pt) + 0.93px) !important;
     }
 
-    /* Sag grid: butonlar dikeyde toplam 2px daraltildi */
-    .dashboard-page .driver-action-buttons .driver-action-btn {
-        padding-top: 8px !important;
-        padding-bottom: 8px !important;
+    /* Sag grid: işlem satırı butonları — gerçek DOM: .driver-action-group > .driver-action-btn */
+    .dashboard-page .driver-action-area .driver-action-group > .driver-action-btn {
+        padding-top: 10px !important;
+        padding-bottom: 10px !important;
         transition: border-color 0.2s, color 0.2s, background 0.2s, transform 0.2s !important;
     }
-    .dashboard-page .driver-action-buttons .driver-action-btn:hover {
+    .dashboard-page .driver-action-area .driver-action-group > .driver-action-btn:hover {
         transform: none;
         border-color: rgba(238, 246, 255, 0.72) !important;
         color: var(--txt-white, #fff) !important;
@@ -6066,11 +6066,11 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     }
 }
 
-/* Masaüstü (769px+): sadece üst aksiyon satırları (Km Bildir…) iç dikey +2px — yerleşimi kaydırmadan */
+/* Masaüstü (769px+): işlem satırı butonları iç dikey padding (+641px tabanına ek) */
 @media (min-width: 769px) {
-  .dashboard-page .driver-action-buttons .driver-action-btn {
-    padding-top: 10px !important;
-    padding-bottom: 10px !important;
+  .dashboard-page .driver-action-area .driver-action-group > .driver-action-btn {
+    padding-top: 12px !important;
+    padding-bottom: 12px !important;
   }
 }
 
