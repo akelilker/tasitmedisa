@@ -798,6 +798,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           
           setupEkstraNotAutoResize();
           setupKmInputs();
+          bindDriverDashboardTitleCase(document.getElementById('driver-action-area'));
 
           placePwaWrapper();
 
@@ -922,8 +923,12 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       const hasEgzozMuayeneSaved = !!(egzozMuayeneDate && String(egzozMuayeneDate).trim());
       const egzozW = checkDateWarningsDriver(hasEgzozMuayeneSaved ? egzozMuayeneDate : '');
       
-      const anahtarLabel = (vehicle.anahtar === 'var') ? (vehicle.anahtarNerede || 'Var') : 'Yoktur.';
-      const lastikLabel = (vehicle.lastikDurumu === 'var') ? (vehicle.lastikAdres || 'Var') : 'Yoktur.';
+      const anahtarLabel = (vehicle.anahtar === 'var')
+          ? ((vehicle.anahtarNerede && String(vehicle.anahtarNerede).trim()) ? capitalizeWords(String(vehicle.anahtarNerede).trim()) : 'Var')
+          : 'Yoktur.';
+      const lastikLabel = (vehicle.lastikDurumu === 'var')
+          ? ((vehicle.lastikAdres && String(vehicle.lastikAdres).trim()) ? capitalizeWords(String(vehicle.lastikAdres).trim()) : 'Var')
+          : 'Yoktur.';
       const uttsLabel = vehicle.uttsTanimlandi ? 'Evet' : 'Hayır';
       const sigortaSaved = !!(vehicle.sigortaDate && vehicle.sigortaDate.trim());
       const kaskoSaved = !!(vehicle.kaskoDate && vehicle.kaskoDate.trim());
@@ -939,7 +944,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       const infoEl = document.getElementById('driver-vehicle-info');
       if (infoEl) {
           infoEl.innerHTML = `
-              <div class="driver-info-item"><span class="label">Şube</span><span class="value">${escapeHtmlDriver(vehicle.branchName || '-')}</span></div>
+              <div class="driver-info-item"><span class="label">Şube</span><span class="value">${escapeHtmlDriver((vehicle.branchName != null && String(vehicle.branchName).trim()) ? capitalizeWords(String(vehicle.branchName).trim()) : '-')}</span></div>
               <div class="driver-info-item"><span class="label">Üretim Yılı</span><span class="value">${escapeHtmlDriver(vehicle.year || '-')}</span></div>
               <div class="driver-info-item ${kmSavedClass} ${kmClass}"><span class="label">KM</span><span class="value">${escapeHtmlDriver(kmFormatted)}</span></div>
               <div class="driver-info-item ${sigortaW.class}"><span class="label">Sigorta Bitiş</span><span class="value">${formatDriverDate(vehicle.sigortaDate) || '-'}</span></div>
@@ -1419,8 +1424,8 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           bakim_durumu: type === 'bakim' ? 1 : 0,
           bakim_aciklama: type === 'bakim' ? capitalizeWords((document.getElementById('bakim-detay-' + vid) || {}).value.trim()) : '',
           bakim_tarih: type === 'bakim' ? (document.getElementById('bakim-tarih-' + vid) || {}).value : '',
-          bakim_servis: type === 'bakim' ? ((document.getElementById('bakim-servis-' + vid) || {}).value || '').trim() : '',
-          bakim_kisi: type === 'bakim' ? ((document.getElementById('bakim-kisi-' + vid) || {}).value || '').trim() : '',
+          bakim_servis: type === 'bakim' ? capitalizeWords(((document.getElementById('bakim-servis-' + vid) || {}).value || '').trim()) : '',
+          bakim_kisi: type === 'bakim' ? capitalizeWords(((document.getElementById('bakim-kisi-' + vid) || {}).value || '').trim()) : '',
           bakim_km: type === 'bakim' ? ((document.getElementById('bakim-km-' + vid) || {}).value || '').trim() : '',
           bakim_tutar: type === 'bakim' ? ((document.getElementById('bakim-tutar-' + vid) || {}).value || '').trim() : '',
           kaza_durumu: type === 'kaza' ? 1 : 0,
@@ -2074,13 +2079,13 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           const active = block ? block.querySelector('.driver-radio-btn.active') : null;
           if (!active) { alert('Lütfen Durum seçiniz!'); return; }
           const durum = active.dataset.value;
-          data = { durum: durum, detay: durum === 'var' ? (document.getElementById('driver-anahtar-detay-' + vehicleId)?.value.trim() || '') : '' };
+          data = { durum: durum, detay: durum === 'var' ? capitalizeWords(document.getElementById('driver-anahtar-detay-' + vehicleId)?.value.trim() || '') : '' };
       } else if (type === 'lastik') {
           const block = document.getElementById('lastik-block-' + vehicleId);
           const active = block ? block.querySelector('.driver-radio-btn.active') : null;
           if (!active) { alert('Lütfen Durum seçiniz!'); return; }
           const durum = active.dataset.value;
-          data = { durum: durum, adres: durum === 'var' ? (document.getElementById('driver-lastik-adres-' + vehicleId)?.value.trim() || '') : '' };
+          data = { durum: durum, adres: durum === 'var' ? capitalizeWords(document.getElementById('driver-lastik-adres-' + vehicleId)?.value.trim() || '') : '' };
       } else if (type === 'muayene') {
           const payload = getDriverMuayenePayload(vehicleId);
           if (!payload) return;
@@ -2100,8 +2105,8 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           if (!tarih) { alert('Tarih zorunludur!'); return; }
           data = {
               tarih: tarih,
-              firma: document.getElementById('driver-sigorta-firma-' + vehicleId)?.value.trim() || '',
-              acente: document.getElementById('driver-sigorta-acente-' + vehicleId)?.value.trim() || '',
+              firma: capitalizeWords(document.getElementById('driver-sigorta-firma-' + vehicleId)?.value.trim() || ''),
+              acente: capitalizeWords(document.getElementById('driver-sigorta-acente-' + vehicleId)?.value.trim() || ''),
               iletisim: document.getElementById('driver-sigorta-iletisim-' + vehicleId)?.value.trim() || ''
           };
       } else if (type === 'kasko') {
@@ -2109,8 +2114,8 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           if (!tarih) { alert('Tarih zorunludur!'); return; }
           data = {
               tarih: tarih,
-              firma: document.getElementById('driver-kasko-firma-' + vehicleId)?.value.trim() || '',
-              acente: document.getElementById('driver-kasko-acente-' + vehicleId)?.value.trim() || '',
+              firma: capitalizeWords(document.getElementById('driver-kasko-firma-' + vehicleId)?.value.trim() || ''),
+              acente: capitalizeWords(document.getElementById('driver-kasko-acente-' + vehicleId)?.value.trim() || ''),
               iletisim: document.getElementById('driver-kasko-iletisim-' + vehicleId)?.value.trim() || ''
           };
       } else return;
@@ -2145,12 +2150,12 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           const active = document.querySelector('#driver-anahtar-modal .driver-radio-btn.active');
           if (!active) { alert('Lütfen Durum seçiniz!'); return; }
           const durum = active.dataset.value;
-          data = { durum: durum, detay: durum === 'var' ? (document.getElementById('driver-anahtar-detay')?.value.trim() || '') : '' };
+          data = { durum: durum, detay: durum === 'var' ? capitalizeWords(document.getElementById('driver-anahtar-detay')?.value.trim() || '') : '' };
       } else if (type === 'lastik') {
           const active = document.querySelector('#driver-lastik-modal .driver-radio-btn.active');
           if (!active) { alert('Lütfen Durum seçiniz!'); return; }
           const durum = active.dataset.value;
-          data = { durum: durum, adres: durum === 'var' ? (document.getElementById('driver-lastik-adres')?.value.trim() || '') : '' };
+          data = { durum: durum, adres: durum === 'var' ? capitalizeWords(document.getElementById('driver-lastik-adres')?.value.trim() || '') : '' };
       } else if (type === 'utts') {
           const active = document.querySelector('#driver-utts-modal .driver-radio-btn.active');
           data = { durum: active && active.dataset.value === 'evet' };
@@ -2175,8 +2180,8 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           }
           data = {
               tarih: tarih,
-              firma: document.getElementById('driver-sigorta-firma')?.value.trim() || '',
-              acente: document.getElementById('driver-sigorta-acente')?.value.trim() || '',
+              firma: capitalizeWords(document.getElementById('driver-sigorta-firma')?.value.trim() || ''),
+              acente: capitalizeWords(document.getElementById('driver-sigorta-acente')?.value.trim() || ''),
               iletisim: document.getElementById('driver-sigorta-iletisim')?.value.trim() || ''
           };
       } else if (type === 'kasko') {
@@ -2187,8 +2192,8 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           }
           data = {
               tarih: tarih,
-              firma: document.getElementById('driver-kasko-firma')?.value.trim() || '',
-              acente: document.getElementById('driver-kasko-acente')?.value.trim() || '',
+              firma: capitalizeWords(document.getElementById('driver-kasko-firma')?.value.trim() || ''),
+              acente: capitalizeWords(document.getElementById('driver-kasko-acente')?.value.trim() || ''),
               iletisim: document.getElementById('driver-kasko-iletisim')?.value.trim() || ''
           };
       }
@@ -2419,8 +2424,8 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
                   bakim_durumu: bakimVar ? 1 : 0,
                   bakim_aciklama: capitalizeWords(bakimAciklama),
                   bakim_tarih: bakimTarih,
-                  bakim_servis: bakimServis,
-                  bakim_kisi: bakimKisi,
+                  bakim_servis: capitalizeWords(bakimServis),
+                  bakim_kisi: capitalizeWords(bakimKisi),
                   bakim_km: bakimKm,
                   bakim_tutar: bakimTutar,
                   kaza_durumu: kazaVar ? 1 : 0,
@@ -2688,6 +2693,30 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
     return str.split(/\s+/).map(function(w) {
       return w.charAt(0).toLocaleUpperCase('tr-TR') + w.slice(1).toLocaleLowerCase('tr-TR');
     }).join(' ');
+  }
+
+  /** Dashboard aksiyon alanı: odaktan çıkınca metni kelime başı büyük yap (tr-TR). KM/tutar/sayı ve iletişim satırı hariç. */
+  function bindDriverDashboardTitleCase(areaEl) {
+      if (!areaEl || areaEl.nodeType !== 1) return;
+      areaEl.querySelectorAll('textarea, input[type="text"]').forEach(function(el) {
+          var id = el.id || '';
+          if (/km-|kaza-tutar-|bakim-km-|bakim-tutar-|iletisim-/i.test(id)) return;
+          if (el.classList.contains('driver-km-input')) return;
+          if (el.getAttribute('inputmode') === 'numeric') return;
+          el.addEventListener('blur', function () {
+              var raw = el.value;
+              var v = raw.trim();
+              if (!v) return;
+              if (/[^\s@]+@[^\s@]+\.[^\s@]+/.test(v)) return;
+              var out = capitalizeWords(v);
+              if (out !== raw) {
+                  el.value = out;
+                  try {
+                      el.dispatchEvent(new Event('input', { bubbles: true }));
+                  } catch (e) {}
+              }
+          });
+      });
   }
   
   function renderHistoryList() {
@@ -3157,10 +3186,12 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           setDriverFeedbackMessage('Mesaj alanını doldurmalısınız.', true);
           return false;
       }
-      if (message.length > 500) {
+      const messageFormatted = capitalizeWords(message);
+      if (messageFormatted.length > 500) {
           setDriverFeedbackMessage('Mesaj çok uzun. En fazla 500 karakter yazabilirsiniz.', true);
           return false;
       }
+      if (messageEl) messageEl.value = messageFormatted;
 
       if (submitBtn) submitBtn.disabled = true;
       setDriverFeedbackMessage('Gönderiliyor...', false);
@@ -3175,7 +3206,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
               body: JSON.stringify({
                   arac_id: vehicle.id,
                   konu_turu: type,
-                  mesaj: message
+                  mesaj: messageFormatted
               })
           });
           const data = await response.json();
