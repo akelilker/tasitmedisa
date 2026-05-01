@@ -1501,6 +1501,20 @@ input.settings-form-input:-moz-autofill,
     justify-content: center !important;
     padding-top: 0;
     padding-bottom: 6px;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    gap: 14px;
+}
+
+/* Rol grupları: Genel Yönetici satırı biter, Yönetici yeni satırdan, sonra Kullanıcı */
+#user-modal #user-list .user-management-role-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    align-content: flex-start;
+    width: 100%;
 }
 
 /* Şube Yönetimi & Kullanıcı Yönetimi: kutulardaki metinler üstten hizalı */
@@ -2297,6 +2311,9 @@ input.settings-form-input:-moz-autofill,
     #user-modal #user-list,
     #user-modal .modal-body #user-list {
         justify-content: flex-start !important;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
     }
     #user-modal #user-list .settings-card {
         width: calc((100% - 16px) / 3) !important;
