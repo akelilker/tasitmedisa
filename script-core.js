@@ -660,8 +660,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Lazy modül asset sürümleri — tek nesne; index.html içindeki style-core ?v= ile tasitlar sürümü uyumlu kalmalı
 var MEDISA_MODULE_VERSIONS = {
-  tasitlar: '20260430.2',
-  raporlar: '20260422.1',
+  tasitlar: '20260501.2',
+  raporlar: '20260501.2',
   kayitJs: '20260429.1',
   kayitCss: '20260501.1',
   ayarlarJs: '20260429.2',
@@ -1008,41 +1008,4 @@ window.loadExcelJS = function() {
     
     window.excelJSLoading.then(resolve).catch(reject);
   });
-};
-
-/* =========================================
-   ŞUBE ADI → ŞİRKET GRUBU (CLIENT-SIDE, VERİ DEĞİŞMEZ)
-   İlk tire: ŞİRKET-LOKASYON; tire yoksa tek parça (şirket grubu kartı üretilmez).
-   ========================================= */
-window.medisaNormalizeBranchCompanyKey = function(raw) {
-  return String(raw || '').trim().toLocaleUpperCase('tr-TR');
-};
-
-window.medisaParseBranchCompanyParts = function(branchName) {
-  var name = String(branchName || '').trim();
-  if (!name) {
-    return { companyKey: '', locationRest: '', hasHyphenPattern: false };
-  }
-  var idx = name.indexOf('-');
-  if (idx === -1) {
-    return {
-      companyKey: window.medisaNormalizeBranchCompanyKey(name),
-      locationRest: '',
-      hasHyphenPattern: false
-    };
-  }
-  var company = name.slice(0, idx).trim();
-  var loc = name.slice(idx + 1).trim();
-  return {
-    companyKey: window.medisaNormalizeBranchCompanyKey(company),
-    locationRest: loc,
-    hasHyphenPattern: true
-  };
-};
-
-window.medisaBranchNameMatchesCompanyKey = function(branchCatalogName, targetCompanyKeyNorm) {
-  var t = window.medisaNormalizeBranchCompanyKey(targetCompanyKeyNorm);
-  if (!t) return false;
-  var parts = window.medisaParseBranchCompanyParts(branchCatalogName);
-  return parts.companyKey === t;
 };

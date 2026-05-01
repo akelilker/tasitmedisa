@@ -18,35 +18,8 @@
     function formatPlaka(str) { return (typeof window.formatPlaka === 'function' ? window.formatPlaka(str) : (str == null ? '-' : String(str))); }
     function formatAdSoyad(str) { return (typeof window.formatAdSoyad === 'function' ? window.formatAdSoyad(str) : str); }
 
-    const RAPOR_BRANCH_SENTINEL_COMPANY = '__company__';
-
-    function raporUserBranchIds(u) {
-        if (!u || typeof u !== 'object') return [];
-        if (Array.isArray(u.branchIds) && u.branchIds.length) return u.branchIds.map(String);
-        if (u.branchId != null && u.branchId !== '') return [String(u.branchId)];
-        if (Array.isArray(u.sube_ids) && u.sube_ids.length) return u.sube_ids.map(String);
-        if (u.sube_id != null && u.sube_id !== '') return [String(u.sube_id)];
-        return [];
-    }
-
-    function buildHyphenCompanyRollup(branches, perBranchCountFn) {
-        const map = new Map();
-        branches.forEach(function(branch) {
-            var parts = typeof window.medisaParseBranchCompanyParts === 'function'
-                ? window.medisaParseBranchCompanyParts(branch.name)
-                : null;
-            if (!parts || !parts.hasHyphenPattern || !parts.companyKey) return;
-            var n = perBranchCountFn(branch.id);
-            map.set(parts.companyKey, (map.get(parts.companyKey) || 0) + n);
-        });
-        return Array.from(map.entries()).sort(function(a, b) {
-            return String(a[0]).localeCompare(String(b[0]), 'tr');
-        });
-    }
-
     // Stok görünümü state (null: şube grid; 'all' / id: liste)
     let stokCurrentBranchId = null;
-    let stokCompanyFilterKey = null;
     let stokSortState = {}; // { columnKey: 'asc' | 'desc' | null }
     let stokAutoSingleBranchView = false;
     
@@ -54,7 +27,6 @@
     
     // Kullanıcı görünümü state (aynı null / all / id anlamı)
     let kullaniciCurrentBranchId = null;
-    let kullaniciCompanyFilterKey = null;
     let kullaniciSearchTerm = ''; // Arama terimi
     let kullaniciCurrentUserId = null; // Seçili kullanıcı ID'si (detay görünümü için)
     let stokActiveColumns = {
@@ -223,22 +195,6 @@
             </div>
         `;
 
-        buildHyphenCompanyRollup(branches, function(bid) {
-            return vehicles.filter(v => String(v.branchId) === String(bid)).length;
-        }).forEach(function(entry) {
-            var ck = entry[0];
-            var cnt = entry[1];
-            if (cnt < 1) return;
-            var isActive = stokCurrentBranchId === RAPOR_BRANCH_SENTINEL_COMPANY && stokCompanyFilterKey === ck;
-            html += `
-                <div class="stok-branch-card ${isActive ? 'active' : ''}"
-                     onclick="selectStokCompanyBranch('${escapeHtml(ck)}')">
-                    <div class="stok-branch-name">${escapeHtml('TÜM ' + ck)}</div>
-                    <div class="stok-branch-count">${cnt} Taşıt</div>
-                </div>
-            `;
-        });
-
         // Şube kartları
         branches.forEach(branch => {
             const branchVehicles = vehicles.filter(v => v.branchId === branch.id);
@@ -259,21 +215,9 @@
 
     // Şube Seçimi
     window.selectStokBranch = function(branchId) {
-        stokCompanyFilterKey = null;
         stokCurrentBranchId = branchId;
         stokAutoSingleBranchView = false;
         renderStokView();
-    };
-
-    window.selectStokCompanyBranch = function(companyKeyRaw) {
-        var ck = typeof window.medisaNormalizeBranchCompanyKey === 'function'
-            ? window.medisaNormalizeBranchCompanyKey(companyKeyRaw)
-            : String(companyKeyRaw || '').trim().toLocaleUpperCase('tr-TR');
-        if (!ck) return;
-        stokCompanyFilterKey = ck;
-        stokCurrentBranchId = RAPOR_BRANCH_SENTINEL_COMPANY;
-        stokAutoSingleBranchView = false;
-        renderStokView({ allowSingleBranchBypass: false });
     };
 
     function getStokListScrollContainer(listRoot) {
@@ -326,14 +270,6 @@
         // Filtreleme
         if (stokCurrentBranchId === 'all') {
             // Tüm taşıtlar
-        } else if (stokCurrentBranchId === RAPOR_BRANCH_SENTINEL_COMPANY && stokCompanyFilterKey) {
-            vehicles = vehicles.filter(function(v) {
-                var br = branches.find(function(b) { return String(b.id) === String(v.branchId); });
-                var bn = br ? (br.name || '') : '';
-                return typeof window.medisaBranchNameMatchesCompanyKey === 'function'
-                    ? window.medisaBranchNameMatchesCompanyKey(bn, stokCompanyFilterKey)
-                    : false;
-            });
         } else if (stokCurrentBranchId) {
             vehicles = vehicles.filter(v => v.branchId === stokCurrentBranchId);
             } else {
@@ -1602,7 +1538,6 @@
     // Grid görünümüne geri dön
     window.goBackToStokGrid = function() {
         stokCurrentBranchId = null;
-        stokCompanyFilterKey = null;
         stokDetailMenuOpen = false;
         stokAutoSingleBranchView = false;
         const headerActions = document.getElementById('reports-list-header-actions');
@@ -1621,7 +1556,6 @@
             const singleVisibleBranch = allowSingleBranchBypass ? getSingleVisibleStokBranch() : null;
             if (singleVisibleBranch) {
                 stokAutoSingleBranchView = true;
-                stokCompanyFilterKey = null;
                 stokCurrentBranchId = singleVisibleBranch.id;
                 renderStokList();
                 return;
@@ -1640,15 +1574,7 @@
         let vehicles = getVehicles();
         const branches = getBranches();
 
-        if (stokCurrentBranchId === 'all') { /* tüm taşıtlar */ } else if (stokCurrentBranchId === RAPOR_BRANCH_SENTINEL_COMPANY && stokCompanyFilterKey) {
-            vehicles = vehicles.filter(function(v) {
-                var br = branches.find(function(b) { return String(b.id) === String(v.branchId); });
-                var bn = br ? (br.name || '') : '';
-                return typeof window.medisaBranchNameMatchesCompanyKey === 'function'
-                    ? window.medisaBranchNameMatchesCompanyKey(bn, stokCompanyFilterKey)
-                    : false;
-            });
-        } else if (stokCurrentBranchId) {
+        if (stokCurrentBranchId === 'all') { /* tüm taşıtlar */ } else if (stokCurrentBranchId) {
             vehicles = vehicles.filter(v => v.branchId === stokCurrentBranchId);
         }
         const searchTerm = window.stokSearchTerm || '';
@@ -1679,9 +1605,7 @@
             dateRangeText = `${String(t.getDate()).padStart(2,'0')}/${String(t.getMonth()+1).padStart(2,'0')}/${t.getFullYear()}`;
         }
         let titleText = 'MEDİSA - TAŞIT STOK DURUM RAPORU';
-        if (stokCurrentBranchId === RAPOR_BRANCH_SENTINEL_COMPANY && stokCompanyFilterKey) {
-            titleText = 'TÜM ' + stokCompanyFilterKey + ' - TAŞIT STOK DURUM RAPORU';
-        } else if (stokCurrentBranchId !== 'all' && stokCurrentBranchId) {
+        if (stokCurrentBranchId !== 'all' && stokCurrentBranchId) {
             const b = branches.find(b => b.id === stokCurrentBranchId);
             if (b) titleText = `${b.name} - TAŞIT STOK DURUM RAPORU`;
         }
@@ -1858,9 +1782,7 @@
         
         // Dosya adı
         let branchName = 'Tumu';
-        if (stokCurrentBranchId === RAPOR_BRANCH_SENTINEL_COMPANY && stokCompanyFilterKey) {
-            branchName = 'TUM_' + String(stokCompanyFilterKey).replace(/\s+/g, '_');
-        } else if (stokCurrentBranchId !== 'all' && stokCurrentBranchId) {
+        if (stokCurrentBranchId !== 'all' && stokCurrentBranchId) {
             branchName = branches.find(b => b.id === stokCurrentBranchId)?.name || 'Stok';
         }
         const fileName = `MEDISA_Stok_Raporu_${branchName}_${new Date().toISOString().split('T')[0]}.xlsx`;
@@ -2100,28 +2022,10 @@
             </div>
         `;
 
-        buildHyphenCompanyRollup(branches, function(bid) {
-            return users.filter(function(u) {
-                return raporUserBranchIds(u).some(function(x) { return String(x) === String(bid); });
-            }).length;
-        }).forEach(function(entry) {
-            var ck = entry[0];
-            var cnt = entry[1];
-            if (cnt < 1) return;
-            var isActive = kullaniciCurrentBranchId === RAPOR_BRANCH_SENTINEL_COMPANY && kullaniciCompanyFilterKey === ck;
-            html += `
-                <div class="stok-branch-card ${isActive ? 'active' : ''}"
-                     onclick="selectKullaniciCompanyBranch('${escapeHtml(ck)}')">
-                    <div class="stok-branch-name">${escapeHtml('TÜM ' + ck)}</div>
-                    <div class="stok-branch-count">${cnt} Kullanıcı</div>
-                </div>
-            `;
-        });
-
         // Şube kartları
         branches.forEach(branch => {
             const branchUsers = users.filter(function(u) {
-                return raporUserBranchIds(u).some(function(bid) { return String(bid) === String(branch.id); });
+                return getUserBranchIds(u).some(function(bid) { return String(bid) === String(branch.id); });
             });
             const count = branchUsers.length;
             const isActive = kullaniciCurrentBranchId === branch.id;
@@ -2140,18 +2044,7 @@
     
     // Şube Seçimi
     window.selectKullaniciBranch = function(branchId) {
-        kullaniciCompanyFilterKey = null;
         kullaniciCurrentBranchId = branchId;
-        renderKullaniciView();
-    };
-
-    window.selectKullaniciCompanyBranch = function(companyKeyRaw) {
-        var ck = typeof window.medisaNormalizeBranchCompanyKey === 'function'
-            ? window.medisaNormalizeBranchCompanyKey(companyKeyRaw)
-            : String(companyKeyRaw || '').trim().toLocaleUpperCase('tr-TR');
-        if (!ck) return;
-        kullaniciCompanyFilterKey = ck;
-        kullaniciCurrentBranchId = RAPOR_BRANCH_SENTINEL_COMPANY;
         renderKullaniciView();
     };
     
@@ -2173,15 +2066,6 @@
         // Filtreleme
         if (kullaniciCurrentBranchId === 'all') {
             // Tüm kullanıcılar
-        } else if (kullaniciCurrentBranchId === RAPOR_BRANCH_SENTINEL_COMPANY && kullaniciCompanyFilterKey) {
-            users = users.filter(function(u) {
-                return raporUserBranchIds(u).some(function(bid) {
-                    var br = branches.find(function(b) { return String(b.id) === String(bid); });
-                    return br && typeof window.medisaBranchNameMatchesCompanyKey === 'function'
-                        ? window.medisaBranchNameMatchesCompanyKey(br.name, kullaniciCompanyFilterKey)
-                        : false;
-                });
-            });
         } else if (kullaniciCurrentBranchId) {
             users = users.filter(function (u) {
                 const ids = (u.branchIds && u.branchIds.length) ? u.branchIds : (u.branchId ? [u.branchId] : []);
@@ -2269,7 +2153,6 @@
     // Grid'e Dönüş
     window.goBackToKullaniciGrid = function() {
         kullaniciCurrentBranchId = null;
-        kullaniciCompanyFilterKey = null;
         kullaniciSearchTerm = '';
         renderKullaniciView();
     };
