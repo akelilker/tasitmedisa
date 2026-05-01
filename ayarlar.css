@@ -2517,9 +2517,16 @@ input.settings-form-input:-moz-autofill,
      * Doğrudan buton, .has-submenu, .settings-submenu button aynı flex ölçüsü; çakışan eski bloklar kaldırıldı.
      */
     #settings-menu.settings-dropdown {
-        width: clamp(148px, 45vw, 176px) !important;
-        max-width: clamp(148px, 45vw, 176px) !important;
-        min-width: clamp(148px, 45vw, 176px) !important;
+        width: min(56vw, 240px) !important;
+        min-width: 168px !important;
+        max-width: min(56vw, 240px) !important;
+        box-sizing: border-box !important;
+        overflow-x: hidden !important;
+    }
+    #settings-menu.settings-dropdown > button,
+    #settings-menu.settings-dropdown > .has-submenu-wrapper {
+        width: 100% !important;
+        max-width: 100% !important;
         box-sizing: border-box !important;
     }
     #settings-menu.settings-dropdown.open {
