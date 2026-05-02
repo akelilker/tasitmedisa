@@ -7,36 +7,12 @@
   const VEHICLES_KEY = "medisa_vehicles_v1";
   const USERS_KEY = "medisa_users_v1";
 
-  // --- DİNAMİK DOSYA YÜKLEYİCİ (LAZY LOAD) ---
-  /** Aynı betik için farklı ?v= ile çift yükleme yapılmasını önler (pathname eşlemesi). */
-  function canonicalScriptPath(srcAttr) {
-    try {
-      return new URL(String(srcAttr || ''), document.baseURI || window.location.href).pathname.replace(/\\/g, '/');
-    } catch (e) {
-      var s = String(srcAttr || '').split('?')[0].split('#')[0];
-      var tail = s.replace(/\\/g, '/').split('/').pop() || '';
-      return tail ? '/' + tail : '';
-    }
-  }
-
-  function isScriptAlreadyInDocument(src) {
-    var wanted = canonicalScriptPath(src);
-    var list = document.getElementsByTagName('script');
-    for (var i = 0; i < list.length; i++) {
-      var raw = list[i].getAttribute('src');
-      if (!raw) continue;
-      if (raw === src) return true;
-      if (wanted && canonicalScriptPath(raw) === wanted) return true;
-    }
-    return false;
-  }
-
+  // --- DİNAMİK DOSYA YÜKLEYİCİ: ortak kural script-core (__medisaLoadScriptOnce) ---
   function loadScript(src) {
+    if (typeof window.__medisaLoadScriptOnce === 'function') {
+      return window.__medisaLoadScriptOnce(src);
+    }
     return new Promise(function(resolve, reject) {
-      if (isScriptAlreadyInDocument(src)) {
-        resolve();
-        return;
-      }
       var script = document.createElement('script');
       script.src = src;
       script.onload = resolve;
