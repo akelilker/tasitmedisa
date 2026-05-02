@@ -2240,7 +2240,7 @@ body.dashboard-page {
   color: var(--txt);
   display: flex;
   align-items: flex-start;
-  gap: 5px;
+  gap: 0;
   cursor: pointer;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   transition: background 0.15s, color 0.15s;
@@ -2250,9 +2250,9 @@ body.dashboard-page {
   box-sizing: border-box;
 }
 .driver-plate-dropdown-item-plate {
-  width: 85px;
-  min-width: 85px;
-  flex-shrink: 0;
+  flex: 0 0 auto;
+  width: max-content;
+  max-width: 100%;
   white-space: nowrap;
 }
 .driver-plate-dropdown-item-separator {
@@ -2260,7 +2260,7 @@ body.dashboard-page {
   opacity: 0.9;
 }
 .driver-plate-dropdown-item-separator.is-hidden {
-  visibility: hidden;
+  display: none;
 }
 .driver-plate-dropdown-item-brand {
   min-width: 0;
@@ -5916,7 +5916,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 
   .dashboard-page .driver-plate-dropdown-item {
     display: grid !important;
-    grid-template-columns: minmax(92px, auto) 18px minmax(0, 1fr) !important;
+    grid-template-columns: max-content max-content minmax(0, 1fr) !important;
     align-items: center !important;
     text-align: left !important;
     justify-items: start !important;
