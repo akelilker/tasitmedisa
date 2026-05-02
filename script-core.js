@@ -767,6 +767,38 @@ var TASITLAR_MODULE_VERSION = MEDISA_MODULE_VERSIONS.tasitlar;
   };
 })();
 
+/* Ana modallar: boş CPU anında KAYIT / TAŞITLAR / RAPOR modüllerini prefetch (ilk tıklama gecikmesi azalır; tekilleştirme loadAppModule içinde). */
+(function scheduleMainModalModulePrefetch() {
+  function isMainSpaPath() {
+    var p = (typeof document !== 'undefined' && document.location && document.location.pathname) ? document.location.pathname : '';
+    return p.indexOf('/driver') === -1 && p.indexOf('/admin') === -1;
+  }
+  function prefetchQuiet() {
+    if (!isMainSpaPath() || typeof window.loadAppModule !== 'function') return;
+    var V = window.MEDISA_MODULE_VERSIONS;
+    if (!V) return;
+    var tJs = 'tasitlar.js?v=' + V.tasitlar;
+    var tCss = ['tasitlar-base.css?v=' + V.tasitlar, 'tasitlar-extra.css?v=' + V.tasitlar];
+    var rJs = 'raporlar.js?v=' + V.raporlar;
+    var rCss = 'raporlar.css?v=' + V.raporlar;
+    var kJs = 'kayit.js?v=' + V.kayitJs;
+    var kCss = 'kayit.css?v=' + V.kayitCss;
+    window.loadAppModule(tJs, tCss).catch(function() {});
+    window.loadAppModule(rJs, rCss).catch(function() {});
+    window.loadAppModule(kJs, kCss).catch(function() {});
+  }
+  document.addEventListener('DOMContentLoaded', function() {
+    if (!isMainSpaPath()) return;
+    setTimeout(function() {
+      if (typeof requestIdleCallback === 'function') {
+        requestIdleCallback(prefetchQuiet, { timeout: 5000 });
+      } else {
+        prefetchQuiet();
+      }
+    }, 700);
+  });
+})();
+
 /* =========================================
    VERSION DISPLAY (Anasayfa - v78.1)
    ========================================= */
