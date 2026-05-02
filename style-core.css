@@ -743,12 +743,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-logo {
   text-overflow: ellipsis;
   padding: 0 4px;
 
-  /* METALİK GRADYAN — admin Kullanıcı Raporları .admin-hero-title-wrap h1 ile aynı uçlar */
-  background: linear-gradient(to bottom,
-    #c2d4df 0%,
-    #ffffff 40%,
-    #9aadba 52%,
-    #d6e0e8 100%) !important;
+  /* METALİK GRADYAN - Temiz krom */
+  background: linear-gradient(to bottom, #bcc8d2 0%, #f1f5f8 38%, #8f9ca8 56%, #d4dce3 100%) !important;
   -webkit-background-clip: text !important;
   background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
@@ -1910,8 +1906,8 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero h1 {
     align-self: center;
-    font-size: clamp(calc(17px - 0.5pt), 4.5vw, calc(21px - 0.5pt)) !important;
-    letter-spacing: 4px;
+    font-size: clamp(calc(17px - 0.5pt), 4.5vw, calc(22px - 0.5pt)) !important;
+    letter-spacing: clamp(1px, 0.42vw, 3px);
   }
   .settings-dropdown:not(#notifications-dropdown) {
     width: min(250px, calc(100vw - 32px));
@@ -2823,6 +2819,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         padding: 0 2px 0 0 !important;
         -webkit-font-smoothing: antialiased !important;
         text-rendering: optimizeLegibility !important;
+        text-shadow: 0 0 1px rgba(255, 255, 255, 0.22) !important;
     }
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero .animated-line {
         bottom: 19px; /* 22px − 3px: çizgi başlıktan biraz aşağı, h1 oynatılmadan */
@@ -3562,6 +3559,7 @@ body.modal-open .app-container {
     padding: 0 2px 0 0 !important;
     -webkit-font-smoothing: antialiased !important;
     text-rendering: optimizeLegibility !important;
+    text-shadow: 0 0 1px rgba(255, 255, 255, 0.22) !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .icons-row {
     padding-left: 6px !important;

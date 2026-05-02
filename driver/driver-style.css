@@ -400,7 +400,6 @@ body.dashboard-page {
   background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
   color: transparent !important;
-  line-height: 1.6;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -509,10 +508,10 @@ body.dashboard-page {
   color: var(--theme-color);
 }
 
-/* KULLANICI PANELİ: alt başlık metni — admin .admin-report-subtitle ile aynı tipografi */
+/* KULLANICI PANELİ: h1 altında, 1pt küçük, aynı renk (metalik gradient) */
 .hero-title-wrap .hero-panel-subtitle,
 .hero-title-block .hero-panel-subtitle {
-  font-size: 18px;
+  font-size: calc(17px - 0.5pt);
   font-weight: 800;
   margin: 0;
   letter-spacing: 4px;
@@ -533,17 +532,15 @@ body.dashboard-page {
   filter: none;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  line-height: 1.25;
 }
 
-@media (max-width: 768px) {
-  .hero-title-wrap .hero-panel-subtitle,
-  .hero-title-block .hero-panel-subtitle {
-    font-size: clamp(12px, 3.8vw, 15px);
-    letter-spacing: 2.4px;
-  }
+/* Sadece kullanıcı paneli: alt başlık (KULLANICI PANELİ) 0.7 pt küçük; üst satıra dokunulmaz */
+.dashboard-page .hero-title-wrap .hero-panel-subtitle,
+.dashboard-page .hero-title-block .hero-panel-subtitle {
+  font-size: calc(17px - 0.7pt - 0.5pt);
 }
 
+/* Ara aralık (641px–768px): logo başlık üzerine binmesin – 56px sütunlar, margin yok */
 @media (min-width: 641px) and (max-width: 768px) {
   .dashboard-page .hero.hero-two-rows {
     grid-template-columns: minmax(56px, max-content) minmax(0, 1fr) 56px !important;
@@ -573,11 +570,17 @@ body.dashboard-page {
   .login-page .hero.hero-two-rows .hero-logo img {
     width: 100% !important;
   }
-  /* Üst başlık metni — admin masaüstü tipografiye yakın (641–768) */
+  /* Başlık metinleri 1pt küçük (641–768px) */
   .dashboard-page .hero.hero-two-rows .hero-title-block .hero-title-line,
   .login-page .hero.hero-two-rows .hero-title-block .hero-title-line {
-    font-size: clamp(calc(16px - 0.5pt), 4.2vw, calc(21px - 0.5pt)) !important;
-    letter-spacing: clamp(1px, 0.4vw, 4px) !important;
+    font-size: clamp(calc(16px - 1pt - 0.5pt), 4.2vw, calc(20px - 1pt - 0.5pt)) !important;
+    letter-spacing: clamp(1px, 0.4vw, 3px) !important;
+  }
+  .dashboard-page .hero-title-block .hero-panel-subtitle {
+    font-size: calc(17px - 1pt - 0.7pt - 0.5pt) !important;
+  }
+  .login-page .hero-title-block .hero-panel-subtitle {
+    font-size: calc(17px - 1pt - 0.5pt) !important;
   }
 }
 
@@ -585,14 +588,18 @@ body.dashboard-page {
 @media (min-width: 769px) {
   .hero-title-wrap .hero-panel-subtitle,
   .hero-title-block .hero-panel-subtitle {
-    font-size: 18px;
-    letter-spacing: 4px;
+    font-size: calc(17px - 0.5pt);
+    letter-spacing: 3px;
+  }
+  .dashboard-page .hero-title-wrap .hero-panel-subtitle,
+  .dashboard-page .hero-title-block .hero-panel-subtitle {
+    font-size: calc(17px - 0.7pt - 0.5pt);
   }
   /* Kullanıcı Paneli + Login: başlık kutunun içine sığsın */
   .dashboard-page .hero.hero-two-rows .hero-title-line,
   .login-page .hero.hero-two-rows .hero-title-line {
-    font-size: clamp(calc(16px - 0.5pt), 4.5vw, calc(21px - 0.5pt)) !important;
-    letter-spacing: clamp(1px, 0.45vw, 4px) !important;
+    font-size: clamp(calc(16px - 0.5pt), 4.5vw, calc(20px - 0.5pt)) !important;
+    letter-spacing: clamp(1px, 0.45vw, 3px) !important;
   }
   .dashboard-page .hero {
     margin-bottom: 0 !important;
@@ -666,17 +673,15 @@ body.dashboard-page {
     border-right: 0.5px solid rgba(255, 255, 255, 0.20) !important;
     box-shadow: 0 -10px 20px rgba(var(--theme-color-rgb), 0.38) !important;
   }
-  /* ========== MASAÜSTÜ (769px+) – Header logo (kullanıcı paneli kolon genişlikleri + logo iç boşluk 8px) ========== */
+  /* ========== MASAÜSTÜ (769px+) – Header logo: 76×76px, pozisyon (-18px, 6.5px) ========== */
   .dashboard-page .hero.hero-two-rows {
     grid-template-columns: minmax(68px, max-content) minmax(0, 1fr) 72px !important;
   }
-  /* MASAÜSTÜ (769px+): logo 641’deki 11px iç boşluktan 3px sola (padding-left: 8px) */
   .dashboard-page .hero.hero-two-rows .hero-logo {
     flex: 0 1 auto !important;
     width: max-content !important;
     min-width: 68px !important;
     max-width: min(220px, 30vw) !important;
-    padding-left: 8px !important;
     transform: translate(0, 0) !important;
   }
   .dashboard-page .hero.hero-two-rows .hero-logo picture {
@@ -1797,47 +1802,49 @@ body.dashboard-page {
   .login-page .hero.hero-two-rows {
     grid-template-columns: 56px 1fr 56px !important;
   }
-  /* Mobil başlık — admin Kullanıcı Raporları (max-width 640) ile aynı metin ölçüleri */
+  /* Mobil başlık metinleri 1pt küçük */
   .dashboard-page .hero.hero-two-rows .hero-title-block .hero-title-line {
     width: 100% !important;
     max-width: 100% !important;
     min-width: 0 !important;
-    font-size: clamp(14px, 4.2vw, 17px) !important;
-    letter-spacing: 2.2px !important;
-    line-height: 1.35 !important;
+    font-size: clamp(12.5px, 3.9vw, 16px) !important;
+    letter-spacing: clamp(0.6px, 0.42vw, 1.6px) !important;
+    line-height: 1.12 !important;
     white-space: nowrap !important;
     overflow: visible !important;
     text-overflow: clip !important;
     text-align: center !important;
   }
   .login-page .hero.hero-two-rows .hero-title-block .hero-title-line {
-    font-size: clamp(14px, 4.2vw, 17px) !important;
-    letter-spacing: 2.2px !important;
-    line-height: 1.35 !important;
+    font-size: clamp(calc(18px - 1pt - 0.5pt), 5vw, calc(22px - 1pt - 0.5pt)) !important;
   }
   .dashboard-page .hero-title-block .hero-panel-subtitle {
-    font-size: clamp(12px, 3.8vw, 15px) !important;
-    letter-spacing: 2.4px !important;
-    line-height: 1.25 !important;
+    font-size: clamp(15px, 4.5vw, 19px) !important;
+    letter-spacing: clamp(2px, 0.8vw, 3.5px) !important;
+    line-height: 1.12 !important;
     white-space: nowrap !important;
     overflow: visible !important;
     text-overflow: clip !important;
     text-align: center !important;
   }
   .login-page .hero-title-block .hero-panel-subtitle {
-    font-size: clamp(12px, 3.8vw, 15px) !important;
-    letter-spacing: 2.4px !important;
-    line-height: 1.25 !important;
+    font-size: calc(17px - 1pt - 0.5pt) !important;
     white-space: nowrap !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
   }
-  /* iOS: gradient metin keskinliği — admin ile aynı (text-shadow yok) */
+  /* iOS: başlık metinleri ince/bozuk görünmesin – font smoothing + hafif gölge */
   .login-page .hero.hero-two-rows .hero-title-block .hero-title-line,
   .login-page .hero-title-block .hero-panel-subtitle {
     -webkit-font-smoothing: antialiased !important;
     -moz-osx-font-smoothing: grayscale !important;
     text-rendering: optimizeLegibility !important;
+  }
+  .login-page .hero.hero-two-rows .hero-title-block .hero-title-line {
+    text-shadow: 0 0 1px rgba(255, 255, 255, 0.25) !important;
+  }
+  .login-page .hero-title-block .hero-panel-subtitle {
+    text-shadow: 0 0 1px rgba(255, 255, 255, 0.25) !important;
   }
   .dashboard-page .hero-logo img {
     width: 100% !important;
@@ -3237,20 +3244,32 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   min-height: 100px;
 }
 
-.driver-password-actions.universal-btn-group,
-.driver-feedback-actions.universal-btn-group {
-  margin-top: 18px !important;
+.driver-password-actions {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 10px;
+  justify-content: stretch;
+  align-items: stretch;
+  margin-top: 18px;
   width: 100%;
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
-  gap: 10px !important;
 }
 
-/* Talep / Şifre modalları: Kaydet=Vazgeç — iki sütun, mobilde daha yüksek dokunma alanı */
-#driver-feedback-modal .driver-feedback-actions .universal-btn-save,
+.driver-feedback-actions {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 10px;
+  justify-content: stretch;
+  align-items: stretch;
+  margin-top: 18px;
+  width: 100%;
+}
+
+/* Talep / Şifre modalları: Gönder-Kaydet ile Vazgeç — style-core universal (32px) ile btn-submit boyutunu eşitle */
+#driver-feedback-modal .driver-feedback-actions .btn-submit,
 #driver-feedback-modal .driver-feedback-actions .universal-btn-cancel,
-#driver-password-modal .driver-password-actions .universal-btn-save,
+#driver-password-modal .driver-password-actions .btn-submit,
 #driver-password-modal .driver-password-actions .universal-btn-cancel {
+  flex: 1 1 0;
   min-width: 0;
   width: auto !important;
   max-width: none !important;
@@ -3276,13 +3295,13 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
     background-color 0.18s ease !important;
 }
 
-#driver-feedback-modal .driver-feedback-actions .universal-btn-save,
+#driver-feedback-modal .driver-feedback-actions .btn-submit,
 #driver-feedback-modal .driver-feedback-actions .universal-btn-cancel {
   font-weight: 400 !important;
 }
 
-#driver-feedback-modal .driver-feedback-actions .universal-btn-save:hover,
-#driver-feedback-modal .driver-feedback-actions .universal-btn-save:focus-visible,
+#driver-feedback-modal .driver-feedback-actions .btn-submit:hover,
+#driver-feedback-modal .driver-feedback-actions .btn-submit:focus-visible,
 #driver-feedback-modal .driver-feedback-actions .universal-btn-cancel:hover,
 #driver-feedback-modal .driver-feedback-actions .universal-btn-cancel:focus-visible {
   transform: scale(1.018);
@@ -3290,8 +3309,8 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 }
 
 @media (min-width: 769px) {
-  #driver-feedback-modal .driver-feedback-actions .universal-btn-save:hover,
-  #driver-feedback-modal .driver-feedback-actions .universal-btn-save:focus-visible {
+  #driver-feedback-modal .driver-feedback-actions .btn-submit:hover,
+  #driver-feedback-modal .driver-feedback-actions .btn-submit:focus-visible {
     transform: scale(1.038);
     background-color: rgba(74, 222, 128, 0.14) !important;
     border-color: rgba(74, 222, 128, 0.78) !important;
@@ -3320,8 +3339,8 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   }
 }
 
-#driver-feedback-modal .driver-feedback-actions .universal-btn-save,
-#driver-password-modal .driver-password-actions .universal-btn-save {
+#driver-feedback-modal .driver-feedback-actions .btn-submit,
+#driver-password-modal .driver-password-actions .btn-submit {
   border-width: 1px;
 }
 
@@ -3503,19 +3522,14 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 #edit-request-modal .form-group textarea:not(:focus) {
   box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.35) !important;
 }
-#edit-request-modal .universal-btn-save {
-  width: 100% !important;
-  max-width: 100% !important;
-  margin-top: 8px !important;
-  height: auto !important;
-  min-height: 44px !important;
+#edit-request-modal .btn-submit {
   font-weight: 500 !important;
   border-width: 1px !important;
   border-color: rgba(74, 222, 128, 0.45) !important;
   color: rgba(74, 222, 128, 0.8) !important;
   padding: 7px 14px 8px !important;
 }
-#edit-request-modal .universal-btn-save:hover {
+#edit-request-modal .btn-submit:hover {
   border-color: rgba(74, 222, 128, 0.75) !important;
   color: rgba(74, 222, 128, 0.95) !important;
 }
@@ -3536,11 +3550,24 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   margin: 0;
 }
 
-/* Olay/Muayene modalları: Bildir + Vazgeç — ana uygulama universal-btn-group */
-.driver-modal .driver-event-modal-actions.universal-btn-group {
-  margin-top: 20px !important;
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
+.btn-submit {
+  width: 100%;
+  padding: 14px;
+  background: transparent;
+  color: var(--green);
+  border: 0.5px solid rgba(74, 222, 128, 0.5);
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+  margin-top: 8px;
+}
+
+.btn-submit:hover {
+  background: rgba(74, 222, 128, 0.12);
+  border-color: rgba(74, 222, 128, 0.7);
+  color: rgba(74, 222, 128, 0.95);
 }
 
 /* Muayene teyit popover - tarih inputu altında 5px, sağ grid içinde yatay ortalı (top/left JS ile) */
@@ -4538,6 +4565,14 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     font-size: 15px;
     letter-spacing: 0.05em;
   }
+  .login-page .hero-title-wrap .hero-panel-subtitle,
+  .login-page .hero-title-block .hero-panel-subtitle {
+    font-size: calc(22px - 0.5pt); /* h1 (23px) - 1pt küçük − 0.5pt */
+  }
+  .dashboard-page .hero-title-wrap .hero-panel-subtitle,
+  .dashboard-page .hero-title-block .hero-panel-subtitle {
+    font-size: calc(22px - 0.7pt - 0.5pt);
+  }
   .vehicle-header h3 {
     font-size: 18px;
   }
@@ -5241,24 +5276,9 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .login-page .login-card-title {
     font-size: 23px !important;
   }
-  @media (max-width: 640px) {
-    /* Hero alt satırı + başlık: admin Kullanıcı Raporları ≤640 ile aynı tipografi */
-    .login-page .hero-panel-subtitle {
-      font-size: clamp(12px, 3.8vw, 15px) !important;
-      letter-spacing: 2.4px !important;
-      line-height: 1.25 !important;
-    }
-    .dashboard-page .hero-title-wrap .hero-panel-subtitle,
-    .dashboard-page .hero-title-block .hero-panel-subtitle {
-      font-size: clamp(12px, 3.8vw, 15px) !important;
-      letter-spacing: 2.4px !important;
-      line-height: 1.25 !important;
-    }
-    .dashboard-page .hero.hero-two-rows .hero-title-block .hero-title-line {
-      font-size: clamp(14px, 4.2vw, 17px) !important;
-      letter-spacing: 2.2px !important;
-      line-height: 1.35 !important;
-    }
+  /* .login-page .hero h1: ≤640px ana uygulama ile üst blokta (.login-page .hero h1); burada tekrarlama ezmesin diye kaldırıldı */
+  .login-page .hero-panel-subtitle {
+    font-size: calc(20px - 0.5pt) !important; /* h1'e göre 1pt küçük − 0.5pt */
   }
   .login-page #app-footer.login-footer .footer-content {
     font-size: 14px !important;
@@ -5266,15 +5286,6 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 
   /* 2. Kullanıcı paneli – tüm metinler +1pt (paneldeki bütün harfler 1 punto büyük) */
   /* .label, .value, .driver-current-plaka – aşağıdaki Sol panel bloğunda */
-  .dashboard-page .hero.hero-two-rows .hero-title-block .hero-title-line {
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: 0 !important;
-    white-space: nowrap !important;
-    overflow: visible !important;
-    text-overflow: clip !important;
-    text-align: center !important;
-  }
   .dashboard-page .driver-action-btn {
     font-size: 14px !important;
     white-space: normal !important;
@@ -5314,6 +5325,22 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .dashboard-page .driver-action-area .universal-btn-cancel {
     color: var(--theme-color) !important;
     border-color: rgba(var(--theme-color-rgb), 0.62) !important;
+  }
+  .dashboard-page .hero-title-wrap .hero-panel-subtitle,
+  .dashboard-page .hero-title-block .hero-panel-subtitle {
+    font-size: calc(21px - 0.7pt - 0.5pt) !important; /* 22px - 1pt - 0.7pt − 0.5pt */
+  }
+  .dashboard-page .hero.hero-two-rows .hero-title-block .hero-title-line {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    font-size: clamp(12px, 3.75vw, 16px) !important;
+    letter-spacing: clamp(0.6px, 0.42vw, 1.6px) !important;
+    line-height: 1.12 !important;
+    white-space: nowrap !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    text-align: center !important;
   }
   .dashboard-page .driver-report-block .form-group label {
     font-size: 15px !important;
@@ -5410,7 +5437,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     color: rgba(160, 174, 192, 0.55) !important;
     -webkit-text-fill-color: rgba(160, 174, 192, 0.55) !important;
   }
-  #edit-request-modal .universal-btn-save {
+  #edit-request-modal .btn-submit {
     font-size: 17px !important;
     display: inline-flex !important;
     align-items: center !important;
@@ -5461,7 +5488,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   #edit-request-modal .form-group textarea {
     padding: 5px 16px !important;
   }
-  #edit-request-modal .universal-btn-save {
+  #edit-request-modal .btn-submit {
     padding: 10px 3px 11px !important;
   }
 
@@ -5623,22 +5650,19 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     height: 2em !important;
   }
 
-  @media (max-width: 640px) {
-    /* Mobil hero h1 satırları — admin rapor başlığı (≤640) ile uyumlu */
-    .hero-title-wrap h1 {
-      font-size: calc(21px - 0.5pt) !important;
-      letter-spacing: 2.5px !important;
-    }
-    .dashboard-page .hero.hero-two-rows .hero-title-block .hero-title-line {
-      font-size: clamp(14px, 4.2vw, 17px) !important;
-      letter-spacing: 2.2px !important;
-      line-height: 1.35 !important;
-    }
-    .login-page .hero h1 {
-      font-size: clamp(calc(17.8px - 0.5pt), 5.1vw, calc(21.8px - 0.5pt)) !important;
-      letter-spacing: 2px !important;
-      padding: 0 2px !important;
-    }
+  /* Mobil: h1 boyut ve harf aralığı (1pt küçük) */
+  .hero-title-wrap h1 {
+    font-size: calc(22px - 0.5pt) !important; /* 23px - 1pt − 0.5pt */
+    letter-spacing: 2.5px !important;
+  }
+  .dashboard-page .hero.hero-two-rows .hero-title-block .hero-title-line {
+    font-size: clamp(12.5px, 3.9vw, 16px) !important;
+    letter-spacing: clamp(0.6px, 0.42vw, 1.6px) !important;
+  }
+  .login-page .hero h1 {
+    font-size: clamp(calc(17.8px - 0.5pt), 5.1vw, calc(21.8px - 0.5pt)) !important;
+    letter-spacing: 2px !important;
+    padding: 0 2px !important;
   }
 
 }
@@ -5727,6 +5751,14 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     padding-right: max(12px, env(safe-area-inset-right, 0)) !important;
   }
 
+  /* 1. satıra dokunulmaz. 2. satır (subtitle) 768px'ten 1pt küçük; kullanıcı panelinde ek 0.7pt */
+  .dashboard-page .hero-title-wrap .hero-panel-subtitle,
+  .dashboard-page .hero-title-block .hero-panel-subtitle {
+    font-size: calc(19px - 0.7pt - 0.5pt) !important; /* 20px - 1pt - 0.7pt − 0.5pt */
+  }
+  .login-page .hero-title-block .hero-panel-subtitle {
+    font-size: calc(19px - 0.5pt) !important; /* 20px - 1pt − 0.5pt */
+  }
   /* Sağ grid butonları: dikey yükseklik +2px */
   .dashboard-page .driver-report-btn {
     min-height: 74px !important; /* 72 + 2 */
@@ -5837,7 +5869,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 .hero-title-wrap h1,
 .login-page .hero h1,
 .dashboard-page .hero h1 {
-  font-size: calc(21px - 0.5pt);
+  font-size: calc(22px - 0.5pt);
   font-weight: 800;
   letter-spacing: 4px;
   text-transform: uppercase;
