@@ -476,6 +476,47 @@ window.resetModalInputs = function(modalElement) {
 window.__loadedAppModules = window.__loadedAppModules || Object.create(null);
 window.__medisaModuleInflight = window.__medisaModuleInflight || Object.create(null);
 
+/** pathname eşlemesi; farklı ?v= aynı betik olarak sayılır (çift yükleme / yarış önler). */
+window.__medisaScriptCanonicalPath = function(srcAttr) {
+  try {
+    return new URL(String(srcAttr || ''), document.baseURI || window.location.href).pathname.replace(/\\/g, '/');
+  } catch (e) {
+    var s = String(srcAttr || '').split('?')[0].split('#')[0];
+    var tail = s.replace(/\\/g, '/').split('/').pop() || '';
+    return tail ? '/' + tail : '';
+  }
+};
+
+/**
+ * Tekil dinamik betik: tam src veya pathname eşleşmesinde tekrar <script> eklemez.
+ * loadAppModule / tasitlar-yazici lazy load ile paylaşılır.
+ */
+window.__medisaLoadScriptOnce = function(src) {
+  return new Promise(function(resolve, reject) {
+    if (!src) {
+      resolve();
+      return;
+    }
+    var wanted = window.__medisaScriptCanonicalPath(src);
+    var list = document.getElementsByTagName('script');
+    for (var i = 0; i < list.length; i++) {
+      var raw = list[i].getAttribute('src');
+      if (!raw) continue;
+      if (raw === src || (wanted && window.__medisaScriptCanonicalPath(raw) === wanted)) {
+        resolve();
+        return;
+      }
+    }
+    var script = document.createElement('script');
+    script.src = src;
+    script.onload = function() { resolve(); };
+    script.onerror = function() {
+      reject(new Error('Script yüklenemedi: ' + src));
+    };
+    document.head.appendChild(script);
+  });
+};
+
 /**
  * İstenen JS ve CSS dosyalarını document.createElement ile dinamik yükler.
  * Zaten yüklüyse tekrar yüklemez. Yüklendikten sonra Promise döner.
@@ -511,13 +552,7 @@ window.loadAppModule = function(jsPath, cssPathOrArray) {
     });
   }
   function loadScript(src) {
-    return new Promise(function(resolve, reject) {
-      var script = document.createElement('script');
-      script.src = src;
-      script.onload = function() { resolve(); };
-      script.onerror = function() { reject(new Error('Script yüklenemedi: ' + src)); };
-      document.head.appendChild(script);
-    });
+    return window.__medisaLoadScriptOnce(src);
   }
   /* Çoklu CSS: sırayı koru (base → extra). Paralel yüklemede hangi link son eklenirse belirsiz; liste sütun/başlık kuralları bozuluyordu. */
   var chain = Promise.resolve();
@@ -708,7 +743,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Lazy modül asset sürümleri — tek nesne; index.html içindeki style-core ?v= ile tasitlar sürümü uyumlu kalmalı
 var MEDISA_MODULE_VERSIONS = {
-  tasitlar: '20260502.18',
+  tasitlar: '20260502.19',
   raporlar: '20260503.4',
   kayitJs: '20260503.1',
   kayitCss: '20260501.3',
