@@ -212,8 +212,8 @@ window.toTitleCase = function(str) {
 };
 
 /**
- * Marka/model: önce toTitleCase; bilinen kısaltmalar tamamen büyük (örn. BMW, VW).
- * Tire ile ayrılan parçalar kelime içinde ayrı kontrol edilir (örn. Mercedes-Benz aynı kalır).
+ * Marka/model: önce toTitleCase; bilinen marka kısaltmaları tam büyük (BMW, VW…); motor kodları TFSI/TSI/TDI/TDCi;
+ * hacım sonu küçük l → L (ör. 350l → 350L). Tire ile ayrılan parçalar kelime bazında işlenir.
  */
 (function() {
   var ALLCAPS_BRAND_KEYS = { bmw: 1, vw: 1, mg: 1, gmc: 1, ram: 1, byd: 1, jmc: 1, ds: 1 };
