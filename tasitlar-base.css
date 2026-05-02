@@ -830,6 +830,15 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     min-width: 0 !important;
     box-sizing: border-box !important;
   }
+  /* Muayene: egzoz farklı tarih checkbox metni tek satır, 1 punto küçük */
+  #dinamik-olay-modal .egzoz-olay-toggle > span {
+    font-size: calc(12px - 1pt);
+    line-height: 1.25;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+  }
 }
 
 /* Şemayı saran kapsayıcı hizalama */
