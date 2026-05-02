@@ -2674,7 +2674,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     }
     #settings-menu > button,
     #settings-menu .settings-submenu button {
-        font-size: calc(14px + 1pt) !important;
         width: 100% !important;
         max-width: 100% !important;
         text-align: right !important;

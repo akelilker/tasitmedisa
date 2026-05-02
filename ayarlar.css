@@ -2338,19 +2338,20 @@ input.settings-form-input:-moz-autofill,
     .settings-card-title { font-size: 15px; }
     .settings-card-subtitle { font-size: 13px; }
     .settings-card-gorev { font-size: 12px; }
-    #branch-modal #branch-list .settings-card .settings-card-title,
-    #user-modal #user-list .settings-card .settings-card-title {
-        font-size: 15.5px !important;
-        line-height: 1.12 !important;
-        min-height: calc(2 * 1.12em) !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
+    #branch-modal #branch-list .settings-card .settings-card-title {
+        display: -webkit-box !important;
+        -webkit-box-orient: vertical !important;
+        -webkit-line-clamp: 2 !important;
         white-space: normal !important;
-        text-overflow: clip !important;
-        word-break: keep-all !important;
-        overflow-wrap: normal !important;
-        hyphens: none !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        overflow-wrap: anywhere !important;
+        word-break: normal !important;
+        line-height: 1.12 !important;
+        height: auto !important;
+        min-height: 2.24em !important;
+        max-height: 2.24em !important;
+        text-align: center !important;
     }
     #user-modal #user-list .settings-card .settings-card-title {
         font-size: 14px !important;
@@ -2578,8 +2579,9 @@ input.settings-form-input:-moz-autofill,
     #settings-menu.settings-dropdown .has-submenu-wrapper .has-submenu,
     #settings-menu.settings-dropdown .settings-submenu button {
         text-align: right !important;
-        font-size: clamp(11px, 2.8vw, 13px) !important;
-        letter-spacing: 1.1px !important;
+        font-size: clamp(16px, 3.8vw, 18px) !important;
+        letter-spacing: 0.6px !important;
+        line-height: 1.18 !important;
         min-height: 54px !important;
         height: auto !important;
         margin: 0 !important;
@@ -2595,7 +2597,6 @@ input.settings-form-input:-moz-autofill,
         max-width: 100% !important;
         min-width: 0 !important;
         box-sizing: border-box !important;
-        line-height: 1.25 !important;
         white-space: normal !important;
         word-break: normal !important;
         overflow-wrap: break-word !important;
@@ -2616,7 +2617,7 @@ input.settings-form-input:-moz-autofill,
     }
     #settings-menu.settings-dropdown .cache-clear-btn:hover,
     #settings-menu.settings-dropdown .settings-logout-btn:hover {
-        font-size: clamp(11px, 2.8vw, 13px) !important;
+        font-size: clamp(16px, 3.8vw, 18px) !important;
     }
     #settings-menu > #dis-veri-btn,
     #dis-veri-panel {
@@ -2645,7 +2646,7 @@ input.settings-form-input:-moz-autofill,
         #settings-menu.settings-dropdown > button:hover,
         #settings-menu.settings-dropdown .has-submenu-wrapper .has-submenu:hover,
         #settings-menu.settings-dropdown .settings-submenu button:hover {
-            font-size: clamp(11px, 2.8vw, 13px) !important;
+            font-size: clamp(16px, 3.8vw, 18px) !important;
             transform: none !important;
         }
     }
