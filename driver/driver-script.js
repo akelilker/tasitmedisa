@@ -2508,6 +2508,13 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
     if (!numStr) return '';
     return numStr.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
   }
+
+  function formatHistoryVehicleTriggerLabel(v) {
+      if (!v) return 'Tüm Taşıtlar';
+      var raw = v.brandModel || [v.marka, v.model].filter(Boolean).join(' ');
+      var brandModel = (typeof window.formatBrandModel === 'function' ? window.formatBrandModel : (typeof window.toTitleCase === 'function' ? window.toTitleCase : function(x){ return x; }))(raw || '') || '';
+      return [formatDriverPlaka(v.plaka), brandModel].filter(Boolean).join(' - ');
+  }
   
   function updateHistoryTriggerTone(selectedValue) {
       const trigger = document.querySelector('.history-vehicle-trigger');
@@ -2545,9 +2552,13 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       var defaultText = 'Tüm Taşıtlar';
       if (allHistoryVehicles && allHistoryVehicles.length === 1) {
           defaultVal = String(allHistoryVehicles[0].id);
-          var rawBm = allHistoryVehicles[0].brandModel || [allHistoryVehicles[0].marka, allHistoryVehicles[0].model].filter(Boolean).join(' ');
-          var bm = (typeof window.formatBrandModel === 'function' ? window.formatBrandModel : (typeof window.toTitleCase === 'function' ? window.toTitleCase : function(x){ return x; }))(rawBm || '') || '';
-          defaultText = [formatDriverPlaka(allHistoryVehicles[0].plaka), bm].filter(Boolean).join(' - ');
+          defaultText = formatHistoryVehicleTriggerLabel(allHistoryVehicles[0]);
+      } else if (allHistoryVehicles && allHistoryVehicles.length > 1 && selectedVehicleId != null && String(selectedVehicleId) !== '') {
+          var selForHistory = allHistoryVehicles.find(function(v) { return String(v.id) === String(selectedVehicleId); });
+          if (selForHistory) {
+              defaultVal = String(selForHistory.id);
+              defaultText = formatHistoryVehicleTriggerLabel(selForHistory);
+          }
       }
       hiddenInput.value = defaultVal;
       if (triggerText) triggerText.textContent = defaultText;
