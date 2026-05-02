@@ -675,7 +675,7 @@ body.dashboard-page {
     width: max-content !important;
     min-width: 68px !important;
     max-width: min(220px, 30vw) !important;
-    transform: translate(0, 0) !important;
+    transform: translate(-3px, 0) !important;
   }
   .dashboard-page .hero.hero-two-rows .hero-logo picture {
     max-width: 66px !important;
