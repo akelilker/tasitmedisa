@@ -357,7 +357,7 @@ body.dashboard-page {
 }
 /* Dashboard: başlık + alt satır (metalik alt başlık) logoyla aynı optik bantta; çok hafif aşağı */
 .dashboard-page .hero.hero-two-rows .hero-title-block {
-  transform: translateY(3px);
+  transform: translate(8px, 3px);
 }
 .hero.hero-two-rows .hero-spacer {
   grid-column: 3;
