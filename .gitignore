@@ -74,3 +74,6 @@ outputs/vehicle-import/ocr_vehicle_pdfs_out.tsv
 outputs/vehicle-import/merge_takip_csv_into_data_json.py
 outputs/vehicle-user-compare/plaka_kullanici_karsilastirma.csv
 /outputs
+/data/kasko_police
+/data
+/scripts
