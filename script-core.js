@@ -442,10 +442,12 @@ window.resetModalInputs = function(modalElement) {
    LAZY LOAD – Modül JS/CSS dinamik yükleme (Faz 1 & 2)
    ========================================= */
 window.__loadedAppModules = window.__loadedAppModules || Object.create(null);
+window.__medisaModuleInflight = window.__medisaModuleInflight || Object.create(null);
 
 /**
  * İstenen JS ve CSS dosyalarını document.createElement ile dinamik yükler.
  * Zaten yüklüyse tekrar yüklemez. Yüklendikten sonra Promise döner.
+ * Aynı anahtara eşzamanlı ikinci çağrılar tek bir yükleme paylaşır (çift zincir / yarış düzeltmesi).
  * @param {string} jsPath - Örn. 'tasitlar.js?v=' + TASITLAR_MODULE_VERSION
  * @param {string|null|string[]} cssPathOrArray - Tek CSS yolu veya sıralı birden fazla (opsiyonel)
  * @returns {Promise<void>}
@@ -462,6 +464,9 @@ window.loadAppModule = function(jsPath, cssPathOrArray) {
   var key = (jsPath || '') + '|' + cssList.join('|');
   if (window.__loadedAppModules[key]) {
     return Promise.resolve();
+  }
+  if (window.__medisaModuleInflight[key]) {
+    return window.__medisaModuleInflight[key];
   }
   function loadCss(href) {
     return new Promise(function(resolve, reject) {
@@ -490,15 +495,23 @@ window.loadAppModule = function(jsPath, cssPathOrArray) {
   chain = chain.then(function() {
     if (jsPath) return loadScript(jsPath);
   });
-  return chain.then(function() {
+  chain = chain.then(function() {
     window.__loadedAppModules[key] = true;
+  }).finally(function() {
+    delete window.__medisaModuleInflight[key];
   });
+  window.__medisaModuleInflight[key] = chain;
+  return chain;
 };
 
 var _moduleSpinnerEl = null;
+/** Eş zamanlı modal yüklemelerinde birisi erken tamamlansa bile bekleyeni yutmaması için */
+var _moduleSpinnerDepth = 0;
 function showModuleSpinner() {
+  _moduleSpinnerDepth++;
   if (_moduleSpinnerEl) {
     _moduleSpinnerEl.classList.add('active');
+    _moduleSpinnerEl.style.pointerEvents = '';
     return;
   }
   var wrap = document.createElement('div');
@@ -512,8 +525,11 @@ function showModuleSpinner() {
   requestAnimationFrame(function() { wrap.classList.add('active'); });
 }
 function hideModuleSpinner() {
+  _moduleSpinnerDepth = Math.max(0, _moduleSpinnerDepth - 1);
+  if (_moduleSpinnerDepth > 0) return;
   if (!_moduleSpinnerEl) return;
   _moduleSpinnerEl.classList.remove('active');
+  _moduleSpinnerEl.style.pointerEvents = 'none';
   setTimeout(function() {
     if (_moduleSpinnerEl && !_moduleSpinnerEl.classList.contains('active')) {
       _moduleSpinnerEl.style.visibility = 'hidden';
@@ -689,33 +705,33 @@ var TASITLAR_MODULE_VERSION = MEDISA_MODULE_VERSIONS.tasitlar;
   window.openVehiclesView = function() {
     showModuleSpinner();
     window.loadAppModule(TASITLAR_JS, TASITLAR_CSS_LIST).then(function() {
-      hideModuleSpinner();
       if (typeof window.openVehiclesView === 'function') window.openVehiclesView();
     }).catch(function(err) {
-      hideModuleSpinner();
       console.error('[Medisa] Taşıtlar modülü yüklenemedi:', err);
+    }).finally(function() {
+      hideModuleSpinner();
     });
   };
 
   window.openReportsView = function() {
     showModuleSpinner();
     window.loadAppModule(RAPORLAR_JS, RAPORLAR_CSS).then(function() {
-      hideModuleSpinner();
       if (typeof window.openReportsView === 'function') window.openReportsView();
     }).catch(function(err) {
-      hideModuleSpinner();
       console.error('[Medisa] Raporlar modülü yüklenemedi:', err);
+    }).finally(function() {
+      hideModuleSpinner();
     });
   };
 
   window.openVehicleModal = function() {
     showModuleSpinner();
     window.loadAppModule(KAYIT_JS, KAYIT_CSS).then(function() {
-      hideModuleSpinner();
       if (typeof window.openVehicleModal === 'function') window.openVehicleModal();
     }).catch(function(err) {
-      hideModuleSpinner();
       console.error('[Medisa] Kayıt modülü yüklenemedi:', err);
+    }).finally(function() {
+      hideModuleSpinner();
     });
   };
 
@@ -724,12 +740,16 @@ var TASITLAR_MODULE_VERSION = MEDISA_MODULE_VERSIONS.tasitlar;
       var args = arguments;
       showModuleSpinner();
       window.loadAppModule(AYARLAR_JS, AYARLAR_CSS).then(function() {
-        hideModuleSpinner();
         window._ayarlarLoaded = true;
-        if (typeof window[fnName] === 'function') window[fnName].apply(window, args);
+        try {
+          if (typeof window[fnName] === 'function') window[fnName].apply(window, args);
+        } catch (e) {
+          window.__medisaLogError('Ayarlar ekranı açılırken', e || new Error(String(e)));
+        }
       }).catch(function(err) {
-        hideModuleSpinner();
         console.error('[Medisa] Ayarlar modülü yüklenemedi:', err);
+      }).finally(function() {
+        hideModuleSpinner();
       });
     };
   }

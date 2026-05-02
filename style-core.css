@@ -3590,6 +3590,11 @@ body.modal-open .app-container {
   opacity: 1;
   visibility: visible;
 }
+
+/* Fade-out sırasında veya inactive iken overlay tıklamayı yutan/bloke eden zemin kalmasın */
+.module-load-spinner:not(.active) {
+  pointer-events: none !important;
+}
 .module-load-spinner-dot {
   width: 8px;
   height: 8px;
