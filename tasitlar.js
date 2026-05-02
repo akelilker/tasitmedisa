@@ -1,5 +1,5 @@
 /* =========================================
-   TAޞITLAR MODÜLÜ - SABİT HEADER / DİNAMİK TOOLBAR
+   TAŞITLAR MODÜLÜ - SABİT HEADER / DİNAMİK TOOLBAR
    ========================================= */
 
 (function() {
@@ -8,10 +8,33 @@
   const USERS_KEY = "medisa_users_v1";
 
   // --- DİNAMİK DOSYA YÜKLEYİCİ (LAZY LOAD) ---
+  /** Aynı betik için farklı ?v= ile çift yükleme yapılmasını önler (pathname eşlemesi). */
+  function canonicalScriptPath(srcAttr) {
+    try {
+      return new URL(String(srcAttr || ''), document.baseURI || window.location.href).pathname.replace(/\\/g, '/');
+    } catch (e) {
+      var s = String(srcAttr || '').split('?')[0].split('#')[0];
+      var tail = s.replace(/\\/g, '/').split('/').pop() || '';
+      return tail ? '/' + tail : '';
+    }
+  }
+
+  function isScriptAlreadyInDocument(src) {
+    var wanted = canonicalScriptPath(src);
+    var list = document.getElementsByTagName('script');
+    for (var i = 0; i < list.length; i++) {
+      var raw = list[i].getAttribute('src');
+      if (!raw) continue;
+      if (raw === src) return true;
+      if (wanted && canonicalScriptPath(raw) === wanted) return true;
+    }
+    return false;
+  }
+
   function loadScript(src) {
     return new Promise(function(resolve, reject) {
-      if (document.querySelector('script[src="' + src + '"]')) {
-        resolve(); // Zaten yüklü
+      if (isScriptAlreadyInDocument(src)) {
+        resolve();
         return;
       }
       var script = document.createElement('script');
@@ -3549,13 +3572,13 @@
     return labels[type] || type;
   }
 
-    // NOT: Kasko Excel işlemleri "data-service.js" dosyasına taşınmıştır.
+  // NOT: Kasko Excel işlemleri "data-service.js" dosyasına taşınmıştır.
   // NOT: Yazdırma (Taşıt Kartı Print) işlemleri "tasitlar-yazici.js" dosyasına taşınmıştır.
+
   /**
-   * /**
- * Sol kolon render (Taşıt özellikleri + Kaporta Şeması)
- */
-function renderVehicleDetailLeft(vehicle) {
+   * Sol kolon render (Taşıt özellikleri + Kaporta Şeması)
+   */
+  function renderVehicleDetailLeft(vehicle) {
   const leftEl = DOM.vehicleDetailLeft;
   if (!leftEl) return;
 
@@ -3657,7 +3680,7 @@ function renderVehicleDetailLeft(vehicle) {
   // HTML'i sol kolona bas
   leftEl.innerHTML = html;
 
-  // --- ޞEMA EKLEME: Sol grid (sol kolon) içinde; büyüklük sol kolona göre uyarlanır ---
+  // --- ŞEMA EKLEME: Sol grid (sol kolon) içinde; büyüklük sol kolona göre uyarlanır ---
   const existingBoyaContainer = document.getElementById('detail-boya-container');
   if (existingBoyaContainer) existingBoyaContainer.remove();
 
@@ -3667,7 +3690,7 @@ function renderVehicleDetailLeft(vehicle) {
 
   // Boya şemasını render et (içinde SVG + tam açıklama Orijinal/Boyalı/Değişen; O/B/D kısaltması yok)
   renderBoyaSchemaDetail(vehicle);
-}
+  }
 
   /** Taşıt detay — Notlar satırı inline düzenleme (ayrı modal yok) */
   var detailNotesEditBuffer = null;
