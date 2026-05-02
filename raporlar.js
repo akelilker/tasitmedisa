@@ -457,13 +457,25 @@
             const endInput = document.getElementById('stok-date-end');
             const mutedDateColor = '#a0aec0';
             
-            // Başlangıç tarihi için bitiş tarihi gibi normal yap (overlay placeholder kullanma)
+            // Başlangıç tarihi: boş <input type="date"> WebKit bazen tema CSS’ini beyaza basar — bitiş ile aynı satır içi gri
             if (startInput) {
-                // Mevcut overlay placeholder'ı temizle
                 const existingPlaceholder = startInput.parentElement.querySelector('.date-placeholder');
                 if (existingPlaceholder) {
                     existingPlaceholder.remove();
                 }
+                const keepStartMuted = function() {
+                    startInput.style.setProperty('color', mutedDateColor, 'important');
+                    startInput.style.setProperty('-webkit-text-fill-color', mutedDateColor, 'important');
+                };
+                keepStartMuted();
+                startInput.addEventListener('change', keepStartMuted);
+                startInput.addEventListener('input', keepStartMuted);
+                startInput.addEventListener('focus', keepStartMuted);
+                startInput.addEventListener('blur', keepStartMuted);
+                requestAnimationFrame(function() {
+                    keepStartMuted();
+                    requestAnimationFrame(keepStartMuted);
+                });
             }
             
             // Bitiş tarihi için value zaten var, placeholder ekleme
