@@ -32,26 +32,28 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../style-core.css">
-  <link rel="stylesheet" href="admin-report.css?v=20260503.1">
+  <link rel="stylesheet" href="admin-report.css?v=20260503.6">
 </head>
 <body class="admin-report-page">
   <div id="pwa-install-wrapper" class="pwa-install-center"></div>
   <div class="admin-app-container">
     <div class="admin-content-wrap">
-  <div class="hero admin-report-hero">
+  <div class="hero hero-two-rows admin-report-hero">
     <div class="hero-logo admin-report-hero-side">
       <button type="button" id="admin-notifications-back-btn" class="admin-notifications-back-btn" aria-label="Ana sayfa bildirimlerine dön" hidden>
         <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M19 12H5M12 19l-7-7 7-7"></path>
         </svg>
       </button>
-      <img src="../icon/logo-header2.svg" alt="MEDISA Logo">
+      <picture>
+        <source media="(max-width: 640px)" srcset="../icon/logo-header2-mobile-header.svg">
+        <img src="../icon/logo-header2.svg" alt="MEDISA" class="logo-small">
+      </picture>
       <span id="main-header-user-name" class="main-header-user-name is-empty" aria-live="polite"></span>
     </div>
-    <div class="hero-title-wrap admin-hero-title-wrap">
-      <h1>TAŞIT YÖNETİM SİSTEMİ</h1>
-      <p class="admin-report-subtitle">Kullanıcı Raporları</p>
-      <div class="animated-line admin-hero-line"></div>
+    <div class="hero-title-block">
+      <h1 class="hero-title-line">TAŞIT YÖNETİM SİSTEMİ</h1>
+      <p class="hero-panel-subtitle">KULLANICI RAPORLARI</p>
     </div>
     <div class="hero-spacer admin-report-hero-side" aria-hidden="true"></div>
   </div>
