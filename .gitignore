@@ -68,3 +68,9 @@ outputs/vehicle-import/~$medisa_arac_birlesik_aktarim.xlsx
 outputs/vehicle-import/~$medisa_arac_birlesik_aktarim_v2.xlsx
 outputs/vehicle-import/data_import_preview_20260422-002439.json
 jjj.zip
+outputs/vehicle-import/csv_takip_to_excel.py
+outputs/vehicle-import/ocr_vehicle_pdfs.py
+outputs/vehicle-import/ocr_vehicle_pdfs_out.tsv
+outputs/vehicle-import/merge_takip_csv_into_data_json.py
+outputs/vehicle-user-compare/plaka_kullanici_karsilastirma.csv
+/outputs
