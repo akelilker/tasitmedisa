@@ -1527,7 +1527,7 @@ input.settings-form-input:-moz-autofill,
 #user-modal #user-list .settings-card-gorev.settings-card-gorev--stacked .settings-card-gorev-line--branch {
     font-size: calc(10px - 0.5pt);
     font-weight: 500;
-    color: var(--data-value-color, #a0aec0) !important;
+    color: inherit !important;
     line-height: 1.12 !important;
     white-space: nowrap;
     overflow: hidden;
