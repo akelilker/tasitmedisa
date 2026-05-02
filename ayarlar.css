@@ -2258,6 +2258,10 @@ input.settings-form-input:-moz-autofill,
         width: clamp(116px, 38vw, 170px);
         max-width: calc(100% - 40px);
     }
+    /* Kullanıcı Yönetimi: + Yeni Kullanıcı 8px yukarı (Ayarlar çubuğu ile ızgara arası) */
+    #user-modal .modal-body .settings-add-text-btn.user-add-btn {
+        transform: translateY(-8px);
+    }
     #branch-modal.modal-overlay,
     #user-modal.modal-overlay,
     #data-management-modal.modal-overlay,

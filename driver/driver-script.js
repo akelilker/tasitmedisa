@@ -2598,6 +2598,49 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           if (trigger) trigger.classList.remove('history-vehicle-trigger-open');
       }
   });
+
+  function normalizeDriverHistoryKm(val) {
+      if (val == null || val === '') return null;
+      var n = parseInt(String(val).replace(/\D/g, ''), 10);
+      return isNaN(n) ? null : n;
+  }
+
+  function driverHistoryDateKey(tsOrIso) {
+      if (!tsOrIso || typeof tsOrIso !== 'string') return '';
+      var s = tsOrIso.trim();
+      var head10 = s.length >= 10 ? s.slice(0, 10) : '';
+      if (/^\d{4}-\d{2}-\d{2}$/.test(head10)) return head10;
+      var d = new Date(s);
+      if (isNaN(d.getTime())) return '';
+      var y = d.getFullYear();
+      var m = String(d.getMonth() + 1).padStart(2, '0');
+      var day = String(d.getDate()).padStart(2, '0');
+      return y + '-' + m + '-' + day;
+  }
+
+  /** driver_save KM kaydıyla aynı gün/taşıt/KM ise olay zaman çizgisinde tekrarı göstermeyiz */
+  function isRedundantKmRevizeEvent(evItem, hareketPool) {
+      if (!evItem || evItem._type !== 'event' || evItem.eventType !== 'km-revize') return false;
+      var yeni = normalizeDriverHistoryKm(evItem.data && evItem.data.yeniKm);
+      if (yeni === null) return false;
+      var vid = String(evItem.arac_id != null ? evItem.arac_id : '');
+      var dayEvt = '';
+      var evDateRaw = evItem.date ? String(evItem.date).trim() : '';
+      if (/^\d{4}-\d{2}-\d{2}$/.test(evDateRaw)) {
+          dayEvt = evDateRaw;
+      } else {
+          dayEvt = driverHistoryDateKey(evItem.timestamp || '');
+      }
+      if (!dayEvt) return false;
+      var pool = hareketPool || [];
+      return pool.some(function (h) {
+          if (!h || h._type !== 'hareket') return false;
+          if (String(h.arac_id) !== vid) return false;
+          if (normalizeDriverHistoryKm(h.guncel_km) !== yeni) return false;
+          var dayH = driverHistoryDateKey(h.guncelleme_tarihi || h.kayit_tarihi || '');
+          return dayH !== '' && dayH === dayEvt;
+      });
+  }
   
   function buildCombinedHistoryList() {
       var filterEl = document.getElementById('history-vehicle-filter');
@@ -2623,7 +2666,10 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       const hareketFiltered = vehicleFilter
           ? hareketler.filter(r => String(r.arac_id) === String(vehicleFilter))
           : hareketler;
-      const combined = [...hareketFiltered, ...eventItems];
+      const eventItemsDedup = eventItems.filter(function (ei) {
+          return !isRedundantKmRevizeEvent(ei, hareketFiltered);
+      });
+      const combined = [...hareketFiltered, ...eventItemsDedup];
       // En yeni kayıt listenin en başında: tarih+saat ile sırala (aynı gün içinde de yeni eklenen üstte).
       const sortKey = (item) => {
           if (item._type === 'hareket') {
