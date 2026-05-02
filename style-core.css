@@ -2664,7 +2664,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         min-width: 168px !important;
         max-width: min(56vw, 240px) !important;
         box-sizing: border-box !important;
-        overflow-x: hidden !important;
+        /* ayarlar.css yüklenmeden önce: border/scale kesilmesin */
+        overflow: visible !important;
     }
     #settings-menu.settings-dropdown > button,
     #settings-menu.settings-dropdown > .has-submenu-wrapper {
@@ -2683,6 +2684,17 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     #settings-menu.settings-dropdown .has-submenu {
         justify-content: flex-end !important;
         text-align: right !important;
+    }
+    /* Genel .settings-dropdown button:hover scale(1.025) çerçeveyi keser; yalnız #settings-menu mobilde iptal */
+    #settings-menu.settings-dropdown > button:hover,
+    #settings-menu.settings-dropdown .has-submenu-wrapper .has-submenu:hover,
+    #settings-menu.settings-dropdown .settings-submenu button:hover,
+    #settings-menu.settings-dropdown > button.cache-clear-btn:hover,
+    #settings-menu.settings-dropdown > button.settings-logout-btn:hover,
+    #settings-menu.settings-dropdown > button:active,
+    #settings-menu.settings-dropdown .has-submenu-wrapper .has-submenu:active,
+    #settings-menu.settings-dropdown .settings-submenu button:active {
+        transform: none !important;
     }
     /* :root override'ları dosya başında birleştirildi */
     /* ✨ iOS FOOTER ALTI RENK SORUNU ✨ - Body/container aynı renk */
