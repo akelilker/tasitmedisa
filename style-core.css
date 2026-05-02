@@ -2674,6 +2674,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         box-sizing: border-box !important;
     }
     #settings-menu > button,
+    #settings-menu .has-submenu-wrapper .has-submenu,
     #settings-menu .settings-submenu button {
         width: 100% !important;
         max-width: 100% !important;
