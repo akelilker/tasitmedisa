@@ -3336,7 +3336,7 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   color: #58d68d;
 }
 
-/* Konu Türü: kayıt modalı şube listesi ile aynı premium-dark custom liste (native select OS temasından kaçınır) */
+/* Talep türü (custom trigger): kayıt modalı şube listesi ile aynı premium-dark liste (native select OS temasından kaçınır) */
 #driver-feedback-modal #driver-feedback-type {
   position: absolute !important;
   width: 1px !important;
@@ -3371,6 +3371,15 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 8px;
   transition: border-color 120ms ease, color 120ms ease, background-color 120ms ease;
+}
+/* Masaüstü (769px+): Talep Gönder modalı — tür seçici iç dikey alan −3px, Kaydet/Vazgeç blok 12px yukarı */
+@media (min-width: 769px) {
+  #driver-feedback-modal .driver-feedback-type-dropdown-wrap .vehicle-branch-trigger {
+    padding: calc(11px - 1.5px) 28px calc(11px - 1.5px) 12px;
+  }
+  #driver-feedback-modal .driver-feedback-actions {
+    margin-top: 6px; /* taban 18px − 12px */
+  }
 }
 #driver-feedback-modal .driver-feedback-type-dropdown-wrap .vehicle-branch-trigger:focus {
   border-color: var(--theme-color);
