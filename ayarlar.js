@@ -1673,7 +1673,6 @@
         `;
         }
 
-        const phoneLine = formatTrGsmDisplay(user.phone || '');
         return `
           <div class="settings-card" onclick="editUser('${user.id}')" style="cursor:pointer;">
             <div class="settings-card-content">
