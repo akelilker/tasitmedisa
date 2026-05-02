@@ -666,16 +666,18 @@ body.dashboard-page {
     border-right: 0.5px solid rgba(255, 255, 255, 0.20) !important;
     box-shadow: 0 -10px 20px rgba(var(--theme-color-rgb), 0.38) !important;
   }
-  /* ========== MASAÜSTÜ (769px+) – Header logo: 76×76px, pozisyon (-18px, 6.5px) ========== */
+  /* ========== MASAÜSTÜ (769px+) – Header logo (kullanıcı paneli kolon genişlikleri + logo iç boşluk 8px) ========== */
   .dashboard-page .hero.hero-two-rows {
     grid-template-columns: minmax(68px, max-content) minmax(0, 1fr) 72px !important;
   }
+  /* MASAÜSTÜ (769px+): logo 641’deki 11px iç boşluktan 3px sola (padding-left: 8px) */
   .dashboard-page .hero.hero-two-rows .hero-logo {
     flex: 0 1 auto !important;
     width: max-content !important;
     min-width: 68px !important;
     max-width: min(220px, 30vw) !important;
-    transform: translate(-3px, 0) !important;
+    padding-left: 8px !important;
+    transform: translate(0, 0) !important;
   }
   .dashboard-page .hero.hero-two-rows .hero-logo picture {
     max-width: 66px !important;
