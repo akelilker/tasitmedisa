@@ -579,9 +579,15 @@
       return window.getUserRoleLabelManagement(user);
     }
 
-    function buildUserRoleLabelMarkup(user) {
+    function buildUserRoleLabelMarkup(user, branchName) {
       const roleLabel = getUserRoleLabel(user);
-      return `<div class="settings-card-gorev">${escapeHtml(roleLabel)}</div>`;
+      const branchDisplay = branchName != null && String(branchName).trim() !== '' ? String(branchName).trim() : '-';
+      return (
+        '<div class="settings-card-gorev settings-card-gorev--stacked">' +
+        '<span class="settings-card-gorev-line">' + escapeHtml(roleLabel) + '</span>' +
+        '<span class="settings-card-gorev-line settings-card-gorev-line--branch">' + escapeHtml(branchDisplay) + '</span>' +
+        '</div>'
+      );
     }
 
     const USER_MANAGEMENT_ROLE_SORT_ORDER = {
@@ -884,6 +890,24 @@
       syncUserManagementSearchUi();
       renderUserList();
     };
+
+    function onUserManagementSearchOutsidePointerDown(e) {
+      if (typeof window.innerWidth === 'number' && window.innerWidth > 640) return;
+      const modal = document.getElementById('user-modal');
+      if (!modal || !modal.classList.contains('active')) return;
+      if (!userManagementSearchOpen) return;
+      const wrap = document.getElementById('user-management-search-wrap');
+      if (!wrap || wrap.contains(e.target)) return;
+      userManagementSearchOpen = false;
+      userManagementSearchQuery = '';
+      syncUserManagementSearchUi();
+      renderUserList();
+    }
+
+    if (!window.__medisaUserManagementSearchOutsideCloseBound) {
+      window.__medisaUserManagementSearchOutsideCloseBound = true;
+      document.addEventListener('pointerdown', onUserManagementSearchOutsidePointerDown, true);
+    }
   
     // Kullanıcı formu: atanmış Taşıtlar checkbox listesi doldur (arama + filtreleme)
     function populateUserVehiclesMulti(searchFilter = '') {
@@ -1636,13 +1660,14 @@
         const primaryBranchId = user.branchId || ((user.branchIds && user.branchIds.length) ? user.branchIds[0] : '');
         const branch = branches.find(x => String(x.id) === String(primaryBranchId));
         const branchName = branch ? branch.name : '-';
-        const roleLabelMarkup = buildUserRoleLabelMarkup(user);
+        const roleLabelMarkup = buildUserRoleLabelMarkup(user, branchName);
 
         if (scope.isBranchManager) {
           return `
           <div class="settings-card" onclick="editUser('${user.id}')" style="cursor:pointer;">
             <div class="settings-card-content">
               ${buildUserCardNameMarkup(user.name || 'İsimsiz')}
+              ${roleLabelMarkup}
             </div>
           </div>
         `;
@@ -1653,8 +1678,8 @@
           <div class="settings-card" onclick="editUser('${user.id}')" style="cursor:pointer;">
             <div class="settings-card-content">
               ${buildUserCardNameMarkup(user.name || 'İsimsiz')}
-              <div class="settings-card-subtitle">${escapeHtml(branchName)}${phoneLine ? '<br>' + escapeHtml(phoneLine) : ''}</div>
               ${roleLabelMarkup}
+              ${phoneLine ? '<div class="settings-card-phone">' + escapeHtml(phoneLine) + '</div>' : ''}
             </div>
           </div>
         `;
