@@ -1678,6 +1678,7 @@
             <div class="settings-card-content">
               ${buildUserCardNameMarkup(user.name || 'İsimsiz')}
               ${roleLabelMarkup}
+              ${phoneLine ? '<div class="settings-card-phone">' + escapeHtml(phoneLine) + '</div>' : ''}
             </div>
           </div>
         `;
