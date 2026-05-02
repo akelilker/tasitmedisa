@@ -2071,7 +2071,8 @@ body.admin-report-page .main-header-user-name.is-empty {
     width: 100% !important;
     max-width: 100% !important;
     min-width: 0 !important;
-    font-size: clamp(12.5px, 3.9vw, 16px) !important;
+    /* Mobil: punto alt satır ile aynı; letter-spacing sıkı (dar ekranda ellipsis daha az). */
+    font-size: clamp(15px, 4.5vw, 19px) !important;
     letter-spacing: clamp(0.6px, 0.42vw, 1.6px) !important;
     line-height: 1.12 !important;
     text-align: center !important;
