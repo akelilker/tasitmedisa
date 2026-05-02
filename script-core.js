@@ -9,6 +9,9 @@ function getSubmenu() { return _cachedSubmenu || (_cachedSubmenu = document.getE
 function setNotificationsOpenState(isOpen) {
   const notif = getNotif();
   const shouldOpen = !!(notif && isOpen);
+  if (typeof window.resetNotificationsDropdownLayoutState === 'function') {
+    window.resetNotificationsDropdownLayoutState();
+  }
   if (notif) notif.classList.toggle('open', shouldOpen);
   document.body.classList.toggle('notifications-open', shouldOpen);
   return shouldOpen;
@@ -71,6 +74,10 @@ document.addEventListener('click', (e) => {
   
   // Submenu içindeki click'leri de ignore et
   if (submenu && submenu.contains(e.target)) {
+    return;
+  }
+  // Bildirim paneli içindeki click'leri de ignore et (toolbar ve kart tıklamaları çalışsın)
+  if (notif && notif.contains(e.target)) {
     return;
   }
   
@@ -653,12 +660,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Lazy modül asset sürümleri — tek nesne; index.html içindeki style-core ?v= ile tasitlar sürümü uyumlu kalmalı
 var MEDISA_MODULE_VERSIONS = {
-  tasitlar: '20260422.8',
-  raporlar: '20260422.1',
-  kayitJs: '20260423.5',
-  kayitCss: '20260423.3',
-  ayarlarJs: '20260423.1',
-  ayarlarCss: '20260422.3'
+  tasitlar: '20260501.4',
+  raporlar: '20260501.2',
+  kayitJs: '20260429.1',
+  kayitCss: '20260501.3',
+  ayarlarJs: '20260429.2',
+  ayarlarCss: '20260429.2'
 };
 window.MEDISA_MODULE_VERSIONS = MEDISA_MODULE_VERSIONS;
 var TASITLAR_MODULE_VERSION = MEDISA_MODULE_VERSIONS.tasitlar;
@@ -831,7 +838,7 @@ window.addEventListener('dataLoaded', () => {
 });
 
 /* =========================================
-   SERVICE WORKER REGISTRATION (scope pathname'e göre: /medisa/, /tasitmedisa/ veya /)
+   SERVICE WORKER REGISTRATION (scope bulunduğu uygulama köküne göre)
    ========================================= */
 (function() {
   var host = (typeof window !== 'undefined' && window.location && window.location.hostname) ? window.location.hostname : '';
@@ -847,10 +854,19 @@ window.addEventListener('dataLoaded', () => {
     return;
   }
 
-  var p = (typeof document !== 'undefined' && document.location) ? document.location.pathname : '';
-  var base = (p.indexOf('/tasitmedisa') === 0) ? '/tasitmedisa' : (p.indexOf('/medisa') === 0) ? '/medisa' : '';
-  var scope = base ? base + '/' : '/';
-  var paths = base ? [base + '/sw.js', './sw.js'] : ['./sw.js', '/sw.js', '/tasitmedisa/sw.js', '/medisa/sw.js'];
+  var resolveAppRootPath = function(pathname) {
+    var parts = String(pathname || '/').split('/').filter(Boolean);
+    if (!parts.length) return '/';
+    var lastPart = parts[parts.length - 1] || '';
+    if (lastPart.indexOf('.') !== -1) parts.pop();
+    var lastDir = parts[parts.length - 1] || '';
+    if (lastDir === 'admin' || lastDir === 'driver') parts.pop();
+    return parts.length ? ('/' + parts.join('/') + '/') : '/';
+  };
+  var p = (typeof document !== 'undefined' && document.location) ? document.location.pathname : '/';
+  var scope = resolveAppRootPath(p);
+  var base = scope === '/' ? '' : scope.slice(0, -1);
+  var paths = base ? [base + '/sw.js', './sw.js'] : ['./sw.js', '/sw.js'];
   window.registerServiceWorker({
     paths: paths,
     scope: scope,

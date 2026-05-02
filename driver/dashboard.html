@@ -37,7 +37,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../style-core.css?v=20260421.3">
-<link rel="stylesheet" href="driver-style.css?v=20260422.2">
+<link rel="stylesheet" href="driver-style.css?v=20260430.7">
 <script defer src="../script-core.js?v=20260421.5"></script>
     <!-- Splash: ana uygulama ile aynı logo+başlık (kritik, mobilde kesin uygulansın) -->
     <style>
@@ -77,12 +77,11 @@
                 <div class="driver-below-hero-row">
                     <div id="driver-below-hero-pwa-slot" class="driver-below-hero-pwa-slot"></div>
                     <button type="button" onclick="showHistory()" class="driver-btn-history" title="İşlem geçmişi" aria-label="İşlem geçmişi">
-                        <svg class="driver-btn-history-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                            <polyline points="14 2 14 8 20 8"></polyline>
-                            <line x1="16" y1="13" x2="8" y2="13"></line>
-                            <line x1="16" y1="17" x2="8" y2="17"></line>
-                            <polyline points="10 9 9 9 8 9"></polyline>
+                        <svg class="driver-btn-history-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M5 22h14"></path>
+                            <path d="M5 2h14"></path>
+                            <path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22"></path>
+                            <path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2"></path>
                         </svg>
                     </button>
                     <div id="driver-below-hero-notification-slot" class="driver-below-hero-notification-slot">
@@ -90,9 +89,10 @@
                     </div>
                     <button type="button" onclick="openDriverPasswordModal()" class="driver-btn-password" title="Şifre değiştir" aria-label="Şifre değiştir">
                         <svg class="driver-btn-password-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="7.5" cy="15.5" r="5.5"></circle>
-                            <path d="M12 12l8-8"></path>
-                            <path d="M16 4h4v4"></path>
+                            <circle cx="7" cy="15" r="4"></circle>
+                            <path d="M11 15h9"></path>
+                            <path d="M16 15v3"></path>
+                            <path d="M19 15v2"></path>
                         </svg>
                     </button>
                     <button type="button" onclick="logout()" class="driver-btn-logout" title="Çıkış" aria-label="Çıkış">
@@ -192,6 +192,46 @@
                     <div class="driver-password-actions">
                         <button type="submit" id="driver-password-submit" class="btn-submit">Kaydet</button>
                         <button type="button" class="universal-btn-cancel" onclick="closeDriverPasswordModal()">Vazgeç</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        </div>
+
+        <div id="driver-feedback-modal" class="driver-modal modal-overlay" onclick="if(event.target === this) closeDriverFeedbackModal();">
+        <div class="driver-modal-content modal-container" onclick="event.stopPropagation();">
+            <div class="modal-header">
+                <h2>Talep / Şikayet / Öneri</h2>
+                <button type="button" onclick="closeDriverFeedbackModal()" class="modal-close" aria-label="Kapat">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="driver-feedback-form" class="driver-feedback-form" onsubmit="return submitDriverFeedback(event);">
+                    <div class="form-group">
+                        <label id="driver-feedback-type-label" for="driver-feedback-type">Konu Türü</label>
+                        <div class="vehicle-branch-dropdown-wrap driver-feedback-type-dropdown-wrap">
+                            <select id="driver-feedback-type" required aria-hidden="true" tabindex="-1">
+                                <option value="talep">Talep</option>
+                                <option value="sikayet">Şikayet</option>
+                                <option value="oneri">Öneri</option>
+                                <option value="diger">Diğer</option>
+                            </select>
+                            <div id="driver-feedback-type-trigger" class="vehicle-branch-trigger form-input" tabindex="0" role="combobox" aria-expanded="false" aria-controls="driver-feedback-type-list" aria-labelledby="driver-feedback-type-label"></div>
+                            <div id="driver-feedback-type-list" class="vehicle-branch-list" role="listbox" aria-hidden="true"></div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="driver-feedback-message">Mesaj</label>
+                        <textarea id="driver-feedback-message" class="form-input driver-feedback-message" rows="4" maxlength="500" placeholder="Yöneticiye iletmek istediğiniz notu yazın..." required></textarea>
+                    </div>
+                    <div id="driver-feedback-message-status" class="driver-feedback-message-status" aria-live="polite"></div>
+                    <div class="driver-feedback-actions">
+                        <button type="submit" id="driver-feedback-submit" class="btn-submit">Kaydet</button>
+                        <button type="button" class="universal-btn-cancel" onclick="closeDriverFeedbackModal()">Vazgeç</button>
                     </div>
                 </form>
             </div>
@@ -389,7 +429,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="driver-muayene-tarih" style="color: var(--form-label-color); font-size: 15px;">Yaptırılan Tarih:</label>
+                        <label for="driver-muayene-tarih" style="color: var(--form-label-color); font-size: 15px;">Muayene Tarihi</label>
                         <input type="date" id="driver-muayene-tarih" class="form-input" style="width: 100%;">
                     </div>
                     <label class="driver-egzoz-muayene-check" for="driver-muayene-egzoz-different">
@@ -397,7 +437,7 @@
                         <span>Egzos Muayenesi Farklı Tarih İse İşaretleyin..</span>
                     </label>
                     <div id="driver-muayene-egzoz-date-wrap" class="form-group driver-egzoz-date-wrap">
-                        <label for="driver-muayene-egzoz-tarih" style="color: var(--form-label-color); font-size: 15px;">Egzos Muayenesi Bitiş Tarihi:</label>
+                        <label for="driver-muayene-egzoz-tarih" style="color: var(--form-label-color); font-size: 15px;">Egzos Muayene Tarihi</label>
                         <input type="date" id="driver-muayene-egzoz-tarih" class="form-input" style="width: 100%;" disabled>
                     </div>
                     <div class="muayene-submit-wrap" style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
@@ -480,6 +520,6 @@
             <button type="button" class="btn-confirm-yes" onclick="confirmMuayeneSubmit()">Evet</button>
         </div>
     </div>
-<script defer src="driver-script.js?v=20260422.2"></script>
+<script defer src="driver-script.js?v=20260430.3"></script>
 </body>
 </html>

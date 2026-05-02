@@ -21,10 +21,19 @@
         ayarlar: { sirketAdi: 'Medisa', yetkiliKisi: '', telefon: '', eposta: '' },
         sifreler: [],
         arac_aylik_hareketler: [],
-        duzeltme_talepleri: []
+        duzeltme_talepleri: [],
+        kaskoDegerListesi: { updatedAt: '', period: '', sourceFileName: '', rows: [] },
+        notificationReadState: {}
       };
     }
     if (!Array.isArray(window.appData.tasitlar)) window.appData.tasitlar = [];
+    if (!window.appData.kaskoDegerListesi || typeof window.appData.kaskoDegerListesi !== 'object') {
+      window.appData.kaskoDegerListesi = { updatedAt: '', period: '', sourceFileName: '', rows: [] };
+    }
+    if (!Array.isArray(window.appData.kaskoDegerListesi.rows)) window.appData.kaskoDegerListesi.rows = [];
+    if (!window.appData.notificationReadState || typeof window.appData.notificationReadState !== 'object' || Array.isArray(window.appData.notificationReadState)) {
+      window.appData.notificationReadState = {};
+    }
   }
 
   /**
@@ -118,13 +127,43 @@
     window._kaskoCache = null;
   }
 
+  function getKaskoDegerListesiState() {
+    ensureAppData();
+    if (!Array.isArray(window.appData.kaskoDegerListesi.rows)) {
+      window.appData.kaskoDegerListesi.rows = [];
+    }
+    return window.appData.kaskoDegerListesi;
+  }
+
+  function getKaskoRowsFromSource() {
+    var state = getKaskoDegerListesiState();
+    if (Array.isArray(state.rows) && state.rows.length > 0) return state.rows;
+
+    try {
+      var legacyRaw = localStorage.getItem('medisa_kasko_liste');
+      if (!legacyRaw) return [];
+      var legacyRows = JSON.parse(legacyRaw);
+      return Array.isArray(legacyRows) ? legacyRows : [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function hasAnyKaskoListData() {
+    var state = getKaskoDegerListesiState();
+    if (Array.isArray(state.rows) && state.rows.length > 0) return true;
+    try {
+      return !!localStorage.getItem('medisa_kasko_liste');
+    } catch (e) {
+      return false;
+    }
+  }
+
   function getKaskoDegeri(kaskoKodu, modelYili) {
     if (!kaskoKodu) return '-';
     try {
       if (!window._kaskoCache) {
-        var raw = localStorage.getItem('medisa_kasko_liste');
-        if (!raw) return '-';
-        window._kaskoCache = JSON.parse(raw);
+        window._kaskoCache = getKaskoRowsFromSource();
       }
       var data = window._kaskoCache;
       if (!Array.isArray(data) || data.length < 2) return '-';
@@ -234,4 +273,6 @@
   window.clearKaskoCache = clearKaskoCache;
   window.getKaskoDegeri = getKaskoDegeri;
   window.guncelleTumKaskoDegerleri = guncelleTumKaskoDegerleri;
+  window.getKaskoDegerListesiState = getKaskoDegerListesiState;
+  window.hasAnyKaskoListData = hasAnyKaskoListData;
 })();

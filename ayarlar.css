@@ -500,7 +500,7 @@ body.modal-open #info-modal.open {
 }
 
 /* Modal Body */
-/* Şube/Kullanıcı listesi: masaüstü üst 10px + iç wrapper 4px (önceki düzen); mobilde 8px + 4px = 12px */
+/* Şube listesi: masaüstü üst 10px + iç wrapper 6px; mobilde şube body üst 8px. Kullanıcı Yönetimi mobilde body üst 0 + iç 0 (geri çubuğu iki satır — birikme önlenir). */
 #branch-modal .modal-body,
 #user-modal .modal-body {
     flex: 1 1 auto;
@@ -511,9 +511,15 @@ body.modal-open #info-modal.open {
     scrollbar-width: none;
 }
 @media (max-width: 768px) {
-    #branch-modal .modal-body,
-    #user-modal .modal-body {
+    /* Şube listesi: üst nefes; Kullanıcı Yönetimi ayrı — çift üst padding birikmesi olmasın */
+    #branch-modal .modal-body {
         padding-top: 8px;
+    }
+    #user-modal .modal-body {
+        padding-top: 0 !important;
+    }
+    #user-modal .modal-body > .user-management-list-inner {
+        padding-top: 0;
     }
 }
 #branch-form-modal .modal-body,
@@ -535,8 +541,16 @@ body.modal-open #info-modal.open {
 }
 
 /* Ayarlar içi bölümler: sola kaymayı önle, sol/sağ eşit; üstte çift padding birikimini kıs */
-#branch-modal .modal-body > div,
-#user-modal .modal-body > div {
+#branch-modal .modal-body > div {
+    box-sizing: border-box;
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
+    padding: 6px 16px 12px;
+}
+/* Kullanıcı Yönetimi: mobilde üst birikimi kır; masaüstünde şube listesi ile aynı üst nefes (6px) */
+#user-modal .modal-body > .user-management-list-inner {
     box-sizing: border-box;
     width: 100%;
     margin-left: 0;
@@ -600,7 +614,7 @@ body.modal-open #info-modal.open {
 }
 
 /* Dış Veri Yönetimi: Ayarlar menüsü butonu (ikon + metin) */
-.settings-dropdown #dis-veri-btn {
+#settings-menu #dis-veri-btn {
     gap: 8px;
 }
 
@@ -716,24 +730,31 @@ body.modal-open #info-modal.open {
     display: none;
 }
 
-/* Ayarlar Menüsü ve Listeler */
+/* Ayarlar Menüsü ve Listeler — .settings-dropdown: ortak kabuk (#notifications-dropdown + #settings-menu) */
 .settings-dropdown {
     position: absolute;
-    top: 25px; right: 4px; 
-    background: transparent; 
-    border: none;
-    border-radius: 0;
-    box-shadow: none;
+    top: 25px;
+    right: 4px;
     z-index: 2000;
     display: none;
     flex-direction: column;
+}
+.settings-dropdown.open {
+    display: flex;
+}
+
+/* Ayar dişlisi menüsü: kutu/arka plan (bildirim paneli style-core ile ayrı tanımlanır) */
+#settings-menu.settings-dropdown {
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
     min-width: 180px;
     overflow: visible;
     padding: 0;
 }
-.settings-dropdown.open { display: flex; }
 
-.settings-dropdown button {
+#settings-menu.settings-dropdown button {
     background: var(--bg);
     border: 1px solid var(--border-subtle); 
     color: var(--txt);
@@ -750,19 +771,19 @@ body.modal-open #info-modal.open {
     align-items: center;
     justify-content: center;
 }
-.settings-dropdown button:last-child { margin-bottom: 0; }
+#settings-menu.settings-dropdown button:last-child { margin-bottom: 0; }
 
 /* Veri Yedekleme wrapper ve buton eşitleme */
-.settings-dropdown .has-submenu-wrapper {
+#settings-menu.settings-dropdown .has-submenu-wrapper {
     width: 100%;
     margin-bottom: 8px;
 }
 
-.settings-dropdown .has-submenu-wrapper:last-child {
+#settings-menu.settings-dropdown .has-submenu-wrapper:last-child {
     margin-bottom: 0;
 }
 
-.settings-dropdown .has-submenu {
+#settings-menu.settings-dropdown .has-submenu {
     width: 100% !important;
     height: 40px !important;
     margin-bottom: 0 !important;
@@ -770,12 +791,12 @@ body.modal-open #info-modal.open {
     box-sizing: border-box !important;
 }
 
-.settings-dropdown .has-submenu:hover {
+#settings-menu.settings-dropdown .has-submenu:hover {
     border-color: var(--border-light) !important;
 }
 
 /* HR elementi boşluğu eşitleme - sadece alt boşluk */
-.settings-dropdown hr {
+#settings-menu.settings-dropdown hr {
     margin: 0 0 8px 0 !important;
     border: none !important;
     border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
@@ -783,20 +804,20 @@ body.modal-open #info-modal.open {
     height: 0 !important;
     width: 100% !important;
 }
-.settings-dropdown button:hover { 
+#settings-menu.settings-dropdown button:hover { 
     background: var(--bg-input); 
     color: var(--txt-white); 
     border-color: var(--border-light); 
     font-size: calc(16px + 1pt); 
 } 
 
-.settings-dropdown .cache-clear-btn,
-.settings-dropdown .settings-logout-btn {
+#settings-menu.settings-dropdown .cache-clear-btn,
+#settings-menu.settings-dropdown .settings-logout-btn {
   border: 1px solid rgba(var(--theme-color-rgb), 0.5) !important;
   overflow: visible !important; /* Hover'da metin büyüsün, kesilmesin */
 }
-.settings-dropdown .cache-clear-btn:hover,
-.settings-dropdown .settings-logout-btn:hover {
+#settings-menu.settings-dropdown .cache-clear-btn:hover,
+#settings-menu.settings-dropdown .settings-logout-btn:hover {
   border-color: rgba(var(--theme-color-rgb), 0.7) !important;
   font-size: calc(17px + 1pt) !important;
 }
@@ -951,9 +972,9 @@ select.settings-form-select option,
     justify-content: space-between;
     gap: 10px;
     width: 100%;
-    min-height: 32px;
-    height: 32px;
-    padding: 3px 28px 3px 8px;
+    min-height: 35px;
+    height: 35px;
+    padding: 3px 24px 3px 8px;
     border: 1px solid rgba(255, 255, 255, 0.28) !important;
     border-radius: 6px;
     background: #0d131f !important;
@@ -984,6 +1005,7 @@ select.settings-form-select option,
     height: 14px;
     flex: 0 0 auto;
     opacity: 0.82;
+    margin-right: -7px;
     transition: transform 140ms ease;
 }
 #user-form-modal .medisa-owner-select-trigger:focus,
@@ -1258,35 +1280,39 @@ input.settings-form-input:-moz-autofill,
   margin-top: 0 !important;
   margin-bottom: 6px !important;
   max-height: min(320px, 50vh);
-  border: none !important;
-  background: transparent !important;
-  box-shadow: none !important;
+  border: 1px solid rgba(190, 200, 214, 0.42) !important;
+  border-radius: 10px !important;
+  background: #101722 !important;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.48), inset 0 0 0 1px rgba(255, 255, 255, 0.06) !important;
   padding: 0 !important;
-  gap: 8px !important;
+  gap: 0 !important;
+  overflow: hidden !important;
 }
 #user-form-modal .user-vehicles-checkbox-list {
   max-height: 200px !important; /* 5 satır (~40px/satır), gerisi kaydırılır */
   overflow-y: auto !important;
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
-  border: 1px solid rgba(190, 200, 214, 0.42) !important;
-  border-radius: 10px !important;
-  background: #101722 !important;
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.48), inset 0 0 0 1px rgba(255, 255, 255, 0.06) !important;
+  border: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
   padding: 2px 0 !important;
   box-sizing: border-box !important;
 }
 #user-form-modal .user-vehicles-search-wrap {
-  border: 1px solid rgba(190, 200, 214, 0.42) !important;
-  border-radius: 10px !important;
-  background: #101722 !important;
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.48), inset 0 0 0 1px rgba(255, 255, 255, 0.06) !important;
+  border: none !important;
+  border-top: 1px solid rgba(190, 200, 214, 0.18) !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
   padding: 8px !important;
   box-sizing: border-box !important;
 }
 #user-form-modal .user-vehicles-search-input {
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
-  border-radius: 8px !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  border-radius: 7px !important;
+  box-shadow: none !important;
 }
 #user-form-modal .user-vehicles-search-input:focus {
   border-color: var(--border-mid) !important;
@@ -1334,8 +1360,8 @@ input.settings-form-input:-moz-autofill,
 .user-vehicle-row {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 10px 14px;
+  gap: 8px;
+  padding: 10px 10px;
   font-size: 12px;
   color: var(--txt);
   background: transparent;
@@ -1362,7 +1388,7 @@ input.settings-form-input:-moz-autofill,
   flex-shrink: 0;
   width: 18px;
   height: 18px;
-  margin: 0;
+  margin: 0 0 0 1px;
   cursor: pointer;
   background-color: var(--bg-content) !important;
   border: 1px solid rgba(var(--theme-color-rgb), 0.65);
@@ -1442,8 +1468,8 @@ input.settings-form-input:-moz-autofill,
     background: rgba(var(--theme-color-rgb), 0.1);
 }
 
-/* Alt Menü */
-.settings-submenu {
+/* Alt Menü (yalnız ayar dişlisi #settings-menu) */
+#settings-menu .settings-submenu {
     position: absolute;
     left: 100%; top: 0;
     margin-left: 2px;
@@ -1475,6 +1501,20 @@ input.settings-form-input:-moz-autofill,
     justify-content: center !important;
     padding-top: 0;
     padding-bottom: 6px;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    gap: 14px;
+}
+
+/* Rol grupları: Genel Yönetici satırı biter, Yönetici yeni satırdan, sonra Kullanıcı */
+#user-modal #user-list .user-management-role-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    align-content: flex-start;
+    width: 100%;
 }
 
 /* Şube Yönetimi & Kullanıcı Yönetimi: kutulardaki metinler üstten hizalı */
@@ -1483,9 +1523,26 @@ input.settings-form-input:-moz-autofill,
     align-items: center !important;
     justify-content: center !important;
 }
-/* Kullanıcı Yönetimi: şube ismi gizle, dikey yükseklik 6px azalt */
-#user-modal #user-list .settings-card-subtitle {
-    display: none !important;
+/* Kullanıcı Yönetimi: rol altında şube (.settings-card-gorev--stacked); telefon ayrı satır */
+#user-modal #user-list .settings-card-gorev.settings-card-gorev--stacked .settings-card-gorev-line--branch {
+    font-size: calc(10px - 0.5pt);
+    font-weight: 500;
+    color: var(--data-value-color, #a0aec0) !important;
+    line-height: 1.12 !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+#user-modal #user-list .settings-card-phone {
+    font-size: 10px;
+    line-height: 1.1;
+    color: rgba(255, 255, 255, 0.72);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    margin-top: 1px;
 }
 #branch-modal #branch-list .settings-card-content,
 #user-modal #user-list .settings-card-content {
@@ -1605,8 +1662,8 @@ input.settings-form-input:-moz-autofill,
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 0;
-    min-height: 1.1em !important;
+    gap: 1px;
+    min-height: calc((2 * 1.08em) + 2px) !important;
     line-height: 1 !important;
     -webkit-line-clamp: unset !important;
     line-clamp: unset !important;
@@ -1679,6 +1736,16 @@ input.settings-form-input:-moz-autofill,
     max-height: 2.5em !important;
     margin-bottom: 2px !important;
     overflow: hidden !important;
+}
+
+@media (min-width: 769px) {
+    #branch-modal #branch-list .settings-card-title.settings-card-title--compact {
+        font-size: 11px;
+        white-space: normal !important;
+        overflow-wrap: anywhere !important;
+        word-break: break-word !important;
+        line-height: 1.05;
+    }
 }
 
 .settings-card-subtitle {
@@ -1789,7 +1856,7 @@ input.settings-form-input:-moz-autofill,
 
 /* === MASAÜSTÜ AYARLAR === */
 @media (min-width: 641px) {
-    .settings-dropdown button { text-align: center; }
+    #settings-menu.settings-dropdown button { text-align: center; }
     /* #settings-menu: ana sayfa .menu-btn ile aynı kutu dili (bildirim listesi hariç) */
     #settings-menu.settings-dropdown.open {
         gap: 5px !important;
@@ -1887,7 +1954,7 @@ input.settings-form-input:-moz-autofill,
     #user-form-modal .modal-body .form-input:not(select):not(.medisa-owner-select-trigger) {
         width: 100%;
         max-width: 100%;
-        height: 27px !important;
+        height: 30px !important;
         padding-top: 5px !important;
         padding-bottom: 5px !important;
         padding-left: 8px;
@@ -1903,7 +1970,7 @@ input.settings-form-input:-moz-autofill,
     #user-form-modal .modal-body select.form-input {
         width: 100%;
         max-width: 100%;
-        height: 27px !important;
+        height: 30px !important;
         padding-top: 5px !important;
         padding-bottom: 5px !important;
         padding-left: 8px;
@@ -1931,8 +1998,28 @@ input.settings-form-input:-moz-autofill,
     margin-top: -22px !important;
   }
   #branch-modal .modal-body > div,
-  #user-modal .modal-body > div {
+  #user-modal .modal-body > .user-management-list-inner {
     margin-top: 0 !important;
+  }
+  #user-modal .user-management-search-wrap {
+    position: relative;
+    z-index: 5;
+    flex-basis: 40px;
+    width: 40px;
+    overflow: visible;
+    transform: translateY(8px);
+  }
+  #user-modal .user-management-search-wrap.open {
+    flex-basis: 203px;
+    width: 203px;
+  }
+  #user-modal .user-management-search-toggle {
+    width: 40px;
+    height: 40px;
+    pointer-events: auto;
+  }
+  #user-modal .modal-body .settings-add-text-btn.user-add-btn {
+    transform: translateY(-12px);
   }
   #branch-form-modal .modal-body #branch-form,
   #user-form-modal .modal-body #user-form.user-form-inner {
@@ -1951,6 +2038,7 @@ input.settings-form-input:-moz-autofill,
     width: 100% !important;
   }
   /* Yeni kullanıcı: Sil görünür değilken (inline display:flex yok) Kaydet+Vazgeç ikilisini ortala */
+  #branch-form-modal .universal-btn-group:has(#branch-delete-btn.u-hidden),
   #user-form-modal .universal-btn-group:not(:has(#user-delete-btn[style*="flex"])) {
     grid-template-columns: 1fr 1fr !important;
     width: min(100%, 320px) !important;
@@ -1959,6 +2047,18 @@ input.settings-form-input:-moz-autofill,
   /* Kullanıcı Yönetimi: kişi kutuları isimleri etiket beyazı (kayıt modu etiketleri ile aynı) */
   #user-modal .settings-card-title {
     color: var(--form-label-color, #ffffff) !important;
+  }
+  /* Kullanıcı kartları: rol satırı isim uzunluğuna göre aşağı/yukarı oynamasın */
+  #user-modal #user-list .settings-card .settings-card-title {
+    height: calc(2 * 1.12em) !important;
+    min-height: calc(2 * 1.12em) !important;
+    max-height: calc(2 * 1.12em) !important;
+    align-content: center !important;
+  }
+  #user-modal #user-list .settings-card .settings-card-title.settings-card-title-name {
+    height: calc(2 * 1.12em) !important;
+    min-height: calc(2 * 1.12em) !important;
+    max-height: calc(2 * 1.12em) !important;
   }
 }
 
@@ -1980,6 +2080,16 @@ input.settings-form-input:-moz-autofill,
     padding-left: 16px;
     padding-right: 16px;
     padding-bottom: 16px;
+  }
+  #user-form-modal #user-branch,
+  #user-form-modal #user-role {
+    -webkit-appearance: none !important;
+    appearance: none !important;
+    padding-right: 20px !important;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23a0aec0' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 5px center !important;
+    background-size: 12px 12px !important;
   }
   #data-management-modal .data-management-actions,
   #dis-veri-panel .data-management-actions {
@@ -2130,7 +2240,8 @@ input.settings-form-input:-moz-autofill,
         flex-wrap: wrap !important;
         justify-content: flex-start !important;
         align-items: center !important;
-        row-gap: 2px !important;
+        row-gap: 0 !important;
+        padding: 2px 16px 4px !important;
     }
     #user-modal .user-management-back-bar .universal-back-btn {
         flex: 0 0 100% !important;
@@ -2140,7 +2251,7 @@ input.settings-form-input:-moz-autofill,
         flex: 0 0 100% !important;
         width: 100% !important;
         margin-left: 0 !important;
-        margin-top: -4px !important;
+        margin-top: -10px !important;
         justify-content: flex-end !important;
     }
     #user-modal .user-management-search-wrap.open .user-management-search-input {
@@ -2217,6 +2328,9 @@ input.settings-form-input:-moz-autofill,
     #user-modal #user-list,
     #user-modal .modal-body #user-list {
         justify-content: flex-start !important;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
     }
     #user-modal #user-list .settings-card {
         width: calc((100% - 16px) / 3) !important;
@@ -2245,7 +2359,6 @@ input.settings-form-input:-moz-autofill,
         display: -webkit-box !important;
         -webkit-box-orient: vertical !important;
         -webkit-line-clamp: 2 !important;
-        line-clamp: 2 !important;
         white-space: normal !important;
         overflow: hidden !important;
         text-overflow: ellipsis !important;
@@ -2256,19 +2369,6 @@ input.settings-form-input:-moz-autofill,
         min-height: 2.24em !important;
         max-height: 2.24em !important;
         text-align: center !important;
-    }
-    #user-modal #user-list .settings-card .settings-card-title {
-        font-size: 15.5px !important;
-        line-height: 1.12 !important;
-        min-height: calc(2 * 1.12em) !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        white-space: normal !important;
-        text-overflow: clip !important;
-        word-break: keep-all !important;
-        overflow-wrap: normal !important;
-        hyphens: none !important;
     }
     #user-modal #user-list .settings-card .settings-card-title {
         font-size: 14px !important;
@@ -2430,104 +2530,114 @@ input.settings-form-input:-moz-autofill,
         white-space: normal !important;
         word-break: break-all !important;
     }
-    .settings-dropdown button {
-        text-align: right !important;
-        font-size: calc(16px + 1pt) !important;
-        height: 52px !important;
-        margin-bottom: 8px !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: flex-end !important;
-        padding: 8px 16px !important;
+    /*
+     * Ayarlar dişlisi (#settings-menu): mobilde tek genişlik kontratı (açık/kapalı dalgalanması yok).
+     * Doğrudan buton, .has-submenu, .settings-submenu button aynı flex ölçüsü; çakışan eski bloklar kaldırıldı.
+     */
+    #settings-menu.settings-dropdown {
+        width: min(56vw, 240px) !important;
+        min-width: 168px !important;
+        max-width: min(56vw, 240px) !important;
+        box-sizing: border-box !important;
+        /* overflow-x:hidden üst-alt border/scale kesiyordu; yatay taşma yok (width 100%) */
+        overflow: visible !important;
+    }
+    #settings-menu.settings-dropdown > button,
+    #settings-menu.settings-dropdown > .has-submenu-wrapper {
         width: 100% !important;
+        max-width: 100% !important;
         box-sizing: border-box !important;
     }
-    .settings-dropdown button:last-child {
-        margin-bottom: 0 !important;
+    #settings-menu.settings-dropdown.open {
+        right: 0 !important;
+        gap: 6px !important;
     }
-    .settings-dropdown hr {
-        margin: 0 0 8px 0 !important;
+    #settings-menu.settings-dropdown hr {
+        margin: 0 !important;
+        flex-shrink: 0 !important;
         border: none !important;
         border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
         padding: 0 !important;
         height: 0 !important;
         width: 100% !important;
-    }
-    .settings-dropdown .has-submenu-wrapper {
-        width: 100% !important;
-        display: flex !important;
-        justify-content: flex-end !important;
-        margin-bottom: 8px !important;
-    }
-    .settings-dropdown .has-submenu-wrapper:last-child {
-        margin-bottom: 0 !important;
-    }
-    .settings-dropdown .has-submenu {
-        width: 100% !important;
-        height: 52px !important;
-        justify-content: flex-end !important;
-        text-align: right !important;
-        padding: 8px 16px !important;
-        display: flex !important;
-        align-items: center !important;
-        margin-bottom: 0 !important;
         box-sizing: border-box !important;
     }
-    .settings-dropdown .has-submenu::after,
-    .settings-dropdown .has-submenu::before {
+    #settings-menu.settings-dropdown > .has-submenu-wrapper {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        box-sizing: border-box !important;
+        margin: 0 !important;
+    }
+    #settings-menu.settings-dropdown .has-submenu::after,
+    #settings-menu.settings-dropdown .has-submenu::before {
         display: none !important;
         content: none !important;
     }
-
-    /*
-     * Ayarlar dişlisi menüsü (yalnız #settings-menu): mobilde ana sayfa .menu-btn ile aynı çerçeve.
-     * Bildirimler (#notifications-dropdown) dahil diğer .settings-dropdown örneklerine dokunulmaz.
-     */
-    #settings-menu.settings-dropdown.open {
+    #settings-menu.settings-dropdown .settings-submenu:not([hidden]) {
+        display: flex !important;
+        flex-direction: column !important;
         gap: 6px !important;
     }
-    #settings-menu > button,
-    #settings-menu .has-submenu-wrapper .has-submenu,
-    #settings-menu .settings-submenu button {
+    #settings-menu.settings-dropdown .settings-submenu {
+        position: static !important;
+        left: auto !important;
+        top: auto !important;
+        margin-left: 0 !important;
+        min-width: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        overflow: visible !important;
+    }
+    #settings-menu.settings-dropdown > button,
+    #settings-menu.settings-dropdown .has-submenu-wrapper .has-submenu,
+    #settings-menu.settings-dropdown .settings-submenu button {
+        text-align: right !important;
         font-size: clamp(16px, 3.8vw, 18px) !important;
         letter-spacing: 0.6px !important;
         line-height: 1.18 !important;
-    }
-    #settings-menu > button,
-    #settings-menu .has-submenu-wrapper .has-submenu {
+        min-height: 54px !important;
+        height: auto !important;
+        margin: 0 !important;
+        padding: 12px 10px !important;
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        align-items: center !important;
+        align-content: center !important;
+        justify-content: flex-end !important;
+        gap: 8px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        box-sizing: border-box !important;
+        white-space: normal !important;
+        word-break: normal !important;
+        overflow-wrap: break-word !important;
         background: linear-gradient(180deg, var(--hero-gradient-start), var(--hero-gradient-end)) !important;
         border: 1px solid rgba(255, 255, 255, 0.55) !important;
         border-radius: 11px !important;
-        height: 54px !important;
-        padding: 12px 16px !important;
         box-shadow:
             0 4px 12px rgba(0, 0, 0, 0.24),
             0 4px 16px rgba(var(--theme-color-rgb), 0.12) !important;
+        /* Dokunmatikte :hover kalıcı + scale(1.025) çerçeveyi keser; mobilde scale yok */
+        transform: none !important;
     }
-    #settings-menu .settings-submenu button {
-        height: 54px !important;
-        padding: 12px 16px !important;
-        border-radius: 11px !important;
-    }
-    #settings-menu > button {
-        margin-bottom: 0 !important;
-    }
-    #settings-menu > button:last-child {
-        margin-bottom: 0 !important;
-    }
-    #settings-menu > .has-submenu-wrapper {
-        margin-bottom: 0 !important;
-    }
-    #settings-menu > .has-submenu-wrapper:last-child {
-        margin-bottom: 0 !important;
-    }
-    #settings-menu > button.cache-clear-btn {
+    #settings-menu.settings-dropdown > button.cache-clear-btn {
         border-color: var(--border-subtle) !important;
     }
-    /* Çıkış: diğer satırlarla aynı kutu, kırmızı çerçeve + kırmızı metin (üstteki genel buton stilini ezer) */
-    #settings-menu > button.settings-logout-btn {
+    /* Çıkış: diğer satırlarla aynı kutu, kırmızı çerçeve + kırmızı metin */
+    #settings-menu.settings-dropdown > button.settings-logout-btn {
         border: 1px solid rgba(var(--theme-color-rgb), 0.5) !important;
         color: var(--theme-color) !important;
+    }
+    #settings-menu.settings-dropdown .cache-clear-btn:hover,
+    #settings-menu.settings-dropdown .settings-logout-btn:hover {
+        font-size: clamp(16px, 3.8vw, 18px) !important;
     }
     #settings-menu > #dis-veri-btn,
     #dis-veri-panel {
@@ -2549,6 +2659,16 @@ input.settings-form-input:-moz-autofill,
     #user-form-modal .form-input:-moz-autofill {
         background-color: var(--bg-content, #0d131f) !important;
         color: var(--txt-gray-darker, #888) !important;
+    }
+
+    /* Ana sayfa ayar menüsü: mobilde hover ile punto şişmesin (genel button:hover ile çakışmayı kes) */
+    @media (hover: hover) {
+        #settings-menu.settings-dropdown > button:hover,
+        #settings-menu.settings-dropdown .has-submenu-wrapper .has-submenu:hover,
+        #settings-menu.settings-dropdown .settings-submenu button:hover {
+            font-size: clamp(16px, 3.8vw, 18px) !important;
+            transform: none !important;
+        }
     }
 }
 
@@ -2592,6 +2712,13 @@ input.settings-form-input:-moz-autofill,
     #settings-menu > button.settings-logout-btn:hover {
         color: var(--theme-color) !important;
         border-color: rgba(var(--theme-color-rgb), 0.7) !important;
+        font-size: inherit !important;
+        transform: none !important;
+    }
+    #settings-menu > button:hover,
+    #settings-menu .has-submenu-wrapper .has-submenu:hover {
+        font-size: inherit !important;
+        transform: none !important;
     }
 }
 

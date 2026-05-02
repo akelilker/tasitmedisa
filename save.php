@@ -98,6 +98,110 @@ $result = medisaMutateData(function (&$data) use ($incomingData) {
         );
     }
 
+    // Ham kasko listesi save_kasko.php üzerinden; eski istemci payload yoksayıldı (ana data.json şişmez).
+
+    if (!is_array($data['notificationReadState'] ?? null)) {
+        $data['notificationReadState'] = [];
+    }
+    $incomingReadState = $incomingData['notificationReadState'] ?? null;
+    if (is_array($incomingReadState)) {
+        $isListArray = function ($value) {
+            if (!is_array($value)) return false;
+            if (function_exists('array_is_list')) return array_is_list($value);
+            $expectedIndex = 0;
+            foreach ($value as $key => $_) {
+                if ($key !== $expectedIndex) return false;
+                $expectedIndex++;
+            }
+            return true;
+        };
+        $normalizeKeys = function ($keys) {
+            $clean = [];
+            if (!is_array($keys)) return $clean;
+            foreach ($keys as $key) {
+                $normalized = trim((string)$key);
+                if ($normalized === '') continue;
+                if (!in_array($normalized, $clean, true)) $clean[] = $normalized;
+            }
+            return array_slice($clean, -500);
+        };
+        $normalizeScopeState = function ($scopeState) use ($normalizeKeys, $isListArray) {
+            $normalizeFirstSeenDates = function ($map) {
+                $clean = [];
+                if (!is_array($map)) return $clean;
+                foreach ($map as $key => $date) {
+                    $normalizedKey = trim((string)$key);
+                    if (!is_scalar($date)) continue;
+                    $normalizedDate = trim((string)$date);
+                    if ($normalizedKey === '' || $normalizedDate === '') continue;
+                    $clean[$normalizedKey] = $normalizedDate;
+                }
+                return $clean;
+            };
+            if ($isListArray($scopeState)) {
+                $readKeys = $normalizeKeys($scopeState);
+                return [
+                    'readKeys' => $readKeys,
+                    'dismissedKeys' => [],
+                    'firstSeenDates' => [],
+                    'migratedFromLocalStorage' => false,
+                    'updatedAt' => '',
+                ];
+            }
+            $scopeState = is_array($scopeState) ? $scopeState : [];
+            $dismissedKeys = $normalizeKeys($scopeState['dismissedKeys'] ?? []);
+            $readKeysRaw = is_array($scopeState['readKeys'] ?? null) ? $scopeState['readKeys'] : [];
+            $readKeys = $normalizeKeys(array_merge($readKeysRaw, $dismissedKeys));
+            return [
+                'readKeys' => $readKeys,
+                'dismissedKeys' => $dismissedKeys,
+                'firstSeenDates' => $normalizeFirstSeenDates($scopeState['firstSeenDates'] ?? []),
+                'migratedFromLocalStorage' => ($scopeState['migratedFromLocalStorage'] ?? false) === true,
+                'updatedAt' => trim((string)($scopeState['updatedAt'] ?? '')),
+            ];
+        };
+        $mergeUnique = function ($a, $b) use ($normalizeKeys) {
+            return $normalizeKeys(array_merge(is_array($a) ? $a : [], is_array($b) ? $b : []));
+        };
+        $role = strtolower(trim((string)($context['role'] ?? '')));
+        $userId = trim((string)($context['user_id'] ?? ''));
+        $branchIds = array_values(array_filter(array_map(function ($id) {
+            return trim((string)$id);
+        }, is_array($context['branch_ids'] ?? null) ? $context['branch_ids'] : []), function ($id) {
+            return $id !== '';
+        }));
+        sort($branchIds, SORT_STRING);
+        $branchScope = empty($branchIds) ? ($role === 'genel_yonetici' ? 'all' : 'none') : implode(',', array_values(array_unique($branchIds)));
+        $scopeKey = 'user:' . ($userId !== '' ? $userId : 'anonymous') . '|role:' . ($role !== '' ? $role : 'unknown') . '|branches:' . $branchScope;
+        $legacyScopeKeys = [];
+        if ($userId !== '') $legacyScopeKeys[] = 'user:' . $userId;
+        if ($role !== '' && !empty($branchIds)) $legacyScopeKeys[] = 'scope:' . $role . ':' . implode(',', $branchIds);
+        if ($role !== '') $legacyScopeKeys[] = 'scope:' . $role;
+        $allowedScopeKeys = array_values(array_unique(array_merge([$scopeKey], $legacyScopeKeys)));
+
+        foreach ($allowedScopeKeys as $allowedScopeKey) {
+            if (!array_key_exists($allowedScopeKey, $incomingReadState) || !is_array($incomingReadState[$allowedScopeKey])) continue;
+            $serverScope = $normalizeScopeState($data['notificationReadState'][$allowedScopeKey] ?? []);
+            $clientScope = $normalizeScopeState($incomingReadState[$allowedScopeKey]);
+            $dismissedKeys = $mergeUnique($serverScope['dismissedKeys'], $clientScope['dismissedKeys']);
+            $readKeys = $mergeUnique(array_merge($serverScope['readKeys'], $clientScope['readKeys']), $dismissedKeys);
+            $firstSeenDates = is_array($serverScope['firstSeenDates'] ?? null) ? $serverScope['firstSeenDates'] : [];
+            $clientFirstSeenDates = is_array($clientScope['firstSeenDates'] ?? null) ? $clientScope['firstSeenDates'] : [];
+            foreach ($clientFirstSeenDates as $notifKey => $firstSeenDate) {
+                if (!array_key_exists($notifKey, $firstSeenDates)) {
+                    $firstSeenDates[$notifKey] = $firstSeenDate;
+                }
+            }
+            $data['notificationReadState'][$allowedScopeKey] = [
+                'readKeys' => $readKeys,
+                'dismissedKeys' => $dismissedKeys,
+                'firstSeenDates' => $firstSeenDates,
+                'migratedFromLocalStorage' => $serverScope['migratedFromLocalStorage'] || $clientScope['migratedFromLocalStorage'],
+                'updatedAt' => date('c'),
+            ];
+        }
+    }
+
     return [
         'success' => true,
         'vehicleVersions' => medisaSaveBuildVehicleVersions($incomingVehicles),

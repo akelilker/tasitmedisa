@@ -1,7 +1,7 @@
 // Service Worker - Medisa Taşıt Yönetim Sistemi
-// Version 2.13 - Footer logo ölçü yenileme; syntax temiz
+// Version 2.15 - Güvenli offline okuma kabuğu
 
-const CACHE_VERSION = 'medisa-v2.78';
+const CACHE_VERSION = 'medisa-v2.82';
 
 // Subpath desteği: /medisa/sw.js ise base = '/medisa', kök deploy'da base = ''
 function getBase() {
@@ -19,7 +19,13 @@ const CACHE_FILES = [
   '/script-core.js',
   '/data-manager.js',
   '/manifest.json',
-  '/icon/logo-header2.svg'
+  '/icon/logo-header2.svg',
+  '/driver/',
+  '/driver/index.html',
+  '/driver/dashboard.html',
+  '/driver/driver-style.css',
+  '/driver/driver-script.js',
+  '/driver/manifest.json'
 ];
 
 // Install - Cache tüm dosyaları (hata toleranslı, subpath destekli)
@@ -87,6 +93,7 @@ self.addEventListener('fetch', (event) => {
       p.indexOf('core.php') !== -1 ||
       /\/driver_[^/]*\.php$/i.test(p) ||
       /\/admin_[^/]*\.php$/i.test(p) ||
+      p.indexOf('upload_ruhsat.php') !== -1 ||
       p.indexOf('ruhsat.php') !== -1 ||
       p.indexOf('ruhsat_preview.php') !== -1;
     if (isNoCachePhp) {

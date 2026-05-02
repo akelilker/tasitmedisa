@@ -154,9 +154,9 @@
     </style>
 
     <!-- CSS Preload + Async Load -->
-    <link rel="preload" href="style-core.css?v=20260422.3" as="style">
-    <link rel="stylesheet" href="style-core.css?v=20260422.3">
-    <noscript><link rel="stylesheet" href="style-core.css?v=20260422.3"></noscript>
+    <link rel="preload" href="style-core.css?v=20260501.3" as="style">
+    <link rel="stylesheet" href="style-core.css?v=20260501.3">
+    <noscript><link rel="stylesheet" href="style-core.css?v=20260501.3"></noscript>
 </head>
 <body>
 
@@ -209,11 +209,11 @@
                         <button id="settings-branch-btn" onclick="openBranchManagement()">Şube Yönetimi</button>
                         <button id="settings-user-btn" onclick="openUserManagement()">Kullanıcı Yönetimi</button>
                         <button id="dis-veri-btn" onclick="openDisVeriPanel()" style="display:none;"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg> Dış Veri Yönetimi</button>
-                        <div id="settings-data-wrap" class="has-submenu-wrapper" onmouseenter="showDataSubmenu()" onmouseleave="hideDataSubmenu(event)">
+                        <div id="settings-data-wrap" class="has-submenu-wrapper">
                             <button class="has-submenu" onclick="openDataManagement(event)" onpointerdown="openDataManagement(event)">
                                 Veri Yedekleme
                             </button>
-                            <div id="data-submenu" class="settings-submenu" onmouseenter="showDataSubmenu()" onmouseleave="hideDataSubmenu(event)">
+                            <div id="data-submenu" class="settings-submenu" hidden>
                                 <button onclick="exportData()">Yedek Al</button>
                                 <button onclick="restoreFromLastBackup()">Son Yedekten Geri Yükle</button>
                                 <button onclick="importData()">Dosyadan Geri Yükle</button>
@@ -227,7 +227,7 @@
 
             <div id="main-menu" class="menu-container">
                 <button class="menu-btn" onclick="openVehicleModal()">
-                    <div class="ttl">KAYIT İŞLEMLERİ</div>
+                    <div class="ttl">KAYIT</div>
                 </button>
                 <button class="menu-btn" onclick="openVehiclesView()">
                     <div class="ttl">TAŞITLAR</div>
@@ -378,7 +378,7 @@
                             </div>
                             <div class="form-section">
                                 <label class="form-label form-label-reveal" for="anahtar-nerede">Anahtar nerede</label>
-                                <input type="text" class="form-input form-input-reveal" placeholder="Nerede?" id="anahtar-nerede">
+                                <textarea class="form-input form-input-reveal vehicle-conditional-auto-expand" rows="1" placeholder="Nerede?" id="anahtar-nerede"></textarea>
                             </div>
                             <div class="form-section-inline" data-section="kredi">
                                 <label class="form-label" for="kredi-var">Hak Mahrumiyeti?</label>
@@ -389,7 +389,7 @@
                             </div>
                             <div class="form-section">
                                 <label class="form-label form-label-reveal" for="kredi-detay">Hak mahrumiyeti detay</label>
-                                <textarea class="form-input form-input-reveal" rows="2" placeholder="Detay Ekleyin" id="kredi-detay"></textarea>
+                                <textarea class="form-input form-input-reveal vehicle-conditional-auto-expand" rows="1" placeholder="Detay Ekleyin" id="kredi-detay"></textarea>
                             </div>
                             <div class="form-section" id="vehicle-branch-form-section">
                                 <span class="form-label" id="vehicle-branch-label">Tahsis Edilen Şube</span>
@@ -581,7 +581,7 @@
                     </div>
                 </div>
                 <div class="modal-body">
-                    <div class="u-p-16">
+                    <div class="user-management-list-inner">
                         <button onclick="openUserFormModal()" class="settings-add-text-btn user-add-btn">+ Yeni Kullanıcı</button>
                         <div id="user-list"></div>
                     </div>
@@ -1059,9 +1059,9 @@
     })();
     </script>
 
-    <script defer src="data-manager.js?v=20260406.1"></script>
-    <script defer src="data-service.js?v=20260316"></script>
-    <script defer src="script-core.js?v=20260423.1"></script>
+    <script defer src="data-manager.js?v=20260430.1"></script>
+    <script defer src="data-service.js?v=20260427.1"></script>
+    <script defer src="script-core.js?v=20260501.3"></script>
 </body>
 </html>
 

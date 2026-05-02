@@ -5,9 +5,14 @@
 const API_BASE = (function() {
     try {
         var p = (typeof document !== 'undefined' && document.location && document.location.pathname) ? document.location.pathname : '';
-        if (p.indexOf('/tasitmedisa') === 0) return '/tasitmedisa/';
-        if (p.indexOf('/medisa') === 0) return '/medisa/';
-        return '';
+        var parts = String(p || '/').split('/').filter(Boolean);
+        if (!parts.length) return '';
+        var lastPart = parts[parts.length - 1] || '';
+        if (lastPart.indexOf('.') !== -1) parts.pop();
+        var lastDir = parts[parts.length - 1] || '';
+        if (lastDir === 'admin' || lastDir === 'driver') parts.pop();
+        if (!parts.length) return '';
+        return '/' + parts.join('/') + '/';
     } catch (e) {
         return '';
     }
@@ -15,8 +20,14 @@ const API_BASE = (function() {
 
 const API_LOAD = API_BASE + 'load.php';
 const API_SAVE = API_BASE + 'save.php';
+const API_LOAD_KASKO = API_BASE + 'load_kasko.php';
+const API_SAVE_KASKO = API_BASE + 'save_kasko.php';
 const DRIVER_INDEX_URL = API_BASE + 'driver/';
 const DRIVER_DASHBOARD_URL = API_BASE + 'driver/dashboard.html';
+
+window.MEDISA_API_BASE = API_BASE;
+window.API_LOAD_KASKO = API_LOAD_KASKO;
+window.API_SAVE_KASKO = API_SAVE_KASKO;
 
 function getDefaultAppData() {
     return {
@@ -32,7 +43,14 @@ function getDefaultAppData() {
         },
         sifreler: [],
         arac_aylik_hareketler: [],
-        duzeltme_talepleri: []
+        duzeltme_talepleri: [],
+        kaskoDegerListesi: {
+            updatedAt: '',
+            period: '',
+            sourceFileName: '',
+            rows: []
+        },
+        notificationReadState: {}
     };
 }
 
@@ -64,6 +82,9 @@ let isDataLoading = false;
 let loadPromise = null;
 let isSaving = false;
 let serverDatasetTrusted = false;
+/** Ardışık save isteklerini sıraya alır; eşzamanlı çağrılarda biri false dönüp veri kaybı yaşanmasın. */
+let saveMutex = Promise.resolve();
+let offlineReadonlyWarnAt = 0;
 
 function syncDataLoadState() {
     isDataLoaded = hasUsableAppData(window.appData);
@@ -84,6 +105,24 @@ function hasUsableAppData(data) {
             (Array.isArray(data.kayitlar) && data.kayitlar.length > 0)
         )
     );
+}
+
+function showOfflineReadonlyWarning() {
+    var now = Date.now();
+    if (now - offlineReadonlyWarnAt < 5000) return;
+    offlineReadonlyWarnAt = now;
+    var message = 'İnternet bağlantısı yok. Son kayıtlı veri görüntüleniyor; değişiklikler kaydedilemez.';
+    if (typeof window.showCenteredInfoBox === 'function') {
+        window.showCenteredInfoBox(message);
+        return;
+    }
+    if (typeof window.showInfoModal === 'function') {
+        window.showInfoModal(message);
+        return;
+    }
+    if (typeof alert === 'function') {
+        alert(message);
+    }
 }
 
 function getSafeAppDataFallback() {
@@ -443,7 +482,17 @@ function loadDataFromLocalStorage() {
                 ayarlar: data.ayarlar || { sirketAdi: 'Medisa', yetkiliKisi: '', telefon: '', eposta: '' },
                 sifreler: data.sifreler || [],
                 arac_aylik_hareketler: data.arac_aylik_hareketler || [],
-                duzeltme_talepleri: data.duzeltme_talepleri || []
+                duzeltme_talepleri: data.duzeltme_talepleri || [],
+                /** Offline önbellekte ham kasko tablosu tutulmaz */
+                kaskoDegerListesi: {
+                    updatedAt: String((data.kaskoDegerListesi && data.kaskoDegerListesi.updatedAt) || ''),
+                    period: String((data.kaskoDegerListesi && data.kaskoDegerListesi.period) || ''),
+                    sourceFileName: String((data.kaskoDegerListesi && data.kaskoDegerListesi.sourceFileName) || ''),
+                    rows: []
+                },
+                notificationReadState: (data.notificationReadState && typeof data.notificationReadState === 'object' && !Array.isArray(data.notificationReadState))
+                    ? data.notificationReadState
+                    : {}
             };
             setMedisaSession(getSessionFromToken());
             serverDatasetTrusted = false;
@@ -458,6 +507,42 @@ function loadDataFromLocalStorage() {
     syncDataLoadState();
     return window.appData;
 }
+
+/**
+ * Ham kasko listesini ayrı endpoint’ten doldurur (data/kasko-deger-listesi.json).
+ * @returns {Promise<boolean>}
+ */
+async function loadKaskoListIntoAppData() {
+    try {
+        if (!ensureMainAppSession()) return false;
+        var url = API_LOAD_KASKO + '?t=' + Date.now();
+        var response = await fetch(url, {
+            method: 'GET',
+            headers: buildAuthHeaders({
+                'Content-Type': 'application/json',
+                'Cache-Control': 'no-cache'
+            }),
+            cache: 'no-store'
+        });
+        if (!response.ok) return false;
+        var txt = await response.text();
+        var kd = JSON.parse(txt);
+        if (!kd || typeof kd !== 'object') return false;
+        if (!window.appData || typeof window.appData !== 'object') window.appData = getDefaultAppData();
+        window.appData.kaskoDegerListesi = {
+            updatedAt: String(kd.updatedAt || ''),
+            period: String(kd.period || ''),
+            sourceFileName: String(kd.sourceFileName || ''),
+            rows: Array.isArray(kd.rows) ? kd.rows : []
+        };
+        if (typeof window.clearKaskoCache === 'function') window.clearKaskoCache();
+        return true;
+    } catch (e) {
+        return false;
+    }
+}
+
+window.loadKaskoListFromServer = loadKaskoListIntoAppData;
 
 async function loadDataFromServer(forceRefresh) {
     if (forceRefresh !== true && serverDatasetTrusted === true && hasUsableAppData(window.appData)) {
@@ -483,6 +568,7 @@ async function loadDataFromServer(forceRefresh) {
             serverDatasetTrusted = false;
             window.appData = getSafeAppDataFallback();
             if (hasUsableAppData(window.appData)) {
+                showOfflineReadonlyWarning();
                 return window.appData;
             }
             var e = optionalErr || new Error('Medisa veri yüklenemedi');
@@ -557,8 +643,19 @@ async function loadDataFromServer(forceRefresh) {
                 },
                 sifreler: data.sifreler || [],
                 arac_aylik_hareketler: data.arac_aylik_hareketler || [],
-                duzeltme_talepleri: data.duzeltme_talepleri || []
+                duzeltme_talepleri: data.duzeltme_talepleri || [],
+                kaskoDegerListesi: {
+                    updatedAt: '',
+                    period: '',
+                    sourceFileName: '',
+                    rows: []
+                },
+                notificationReadState: (data.notificationReadState && typeof data.notificationReadState === 'object' && !Array.isArray(data.notificationReadState))
+                    ? data.notificationReadState
+                    : {}
             };
+
+            await loadKaskoListIntoAppData();
 
             setMedisaSession(data.session || getSessionFromToken());
 
@@ -583,19 +680,36 @@ async function loadDataFromServer(forceRefresh) {
     return loadPromise;
 }
 
-async function saveDataToServer() {
-    if (isSaving) return false;
+/**
+ * @param {{ includeKaskoDegerListesi?: boolean }} [options] - includeKaskoDegerListesi eski API uyumu için yoksayılır.
+ */
+async function saveDataToServer(options) {
     if (!ensureMainAppSession()) return false;
     if (!serverDatasetTrusted) return false;
+    if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+        showOfflineReadonlyWarning();
+        return false;
+    }
+
+    var prevMutex = saveMutex;
+    var releaseNext;
+    saveMutex = new Promise(function(resolve) {
+        releaseNext = resolve;
+    });
+    await prevMutex.catch(function() {});
 
     isSaving = true;
+    syncDataLoadState();
     try {
+        var payloadObj = Object.assign({}, window.appData);
+        delete payloadObj.kaskoDegerListesi;
+
         var response = await fetch(API_SAVE, {
             method: 'POST',
             headers: buildAuthHeaders({
                 'Content-Type': 'application/json'
             }),
-            body: JSON.stringify(window.appData)
+            body: JSON.stringify(payloadObj)
         });
 
         if (!response.ok) {
@@ -643,6 +757,7 @@ async function saveDataToServer() {
                 version: '1.1',
                 source: 'auto_shadow_backup'
             });
+            delete autoBackup.kaskoDegerListesi;
             localStorage.setItem('medisa_server_backup', JSON.stringify(autoBackup));
         } catch (storageErr) {}
 
@@ -661,6 +776,7 @@ async function saveDataToServer() {
         }
         if (error.message && (error.message.indexOf('404') !== -1 || error.message.indexOf('Failed to fetch') !== -1 || error.message.indexOf('NetworkError') !== -1)) {
             console.warn('[Medisa] Kayıt sunucuya ulaşılamadı. Lütfen bağlantıyı kontrol edip tekrar deneyin.');
+            showOfflineReadonlyWarning();
             return false;
         }
         console.warn('[Medisa] Veri kaydedilemedi:', error.message);
@@ -668,6 +784,7 @@ async function saveDataToServer() {
     } finally {
         isSaving = false;
         syncDataLoadState();
+        if (typeof releaseNext === 'function') releaseNext();
     }
 }
 
@@ -952,6 +1069,7 @@ window.normalizeUsers = normalizeUsers;
 window.getMedisaSession = function() { return window.medisaSession || getDefaultSession(); };
 window.loadDataFromServer = loadDataFromServer;
 window.saveDataToServer = saveDataToServer;
+window.buildAuthHeaders = buildAuthHeaders;
 
 document.addEventListener('DOMContentLoaded', async function() {
     syncMainAppPortalLinks();

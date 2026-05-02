@@ -149,12 +149,14 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
   display: flex;
   align-items: center;
   gap: 7px;
-  color: var(--form-label-color);
   font-size: 12px;
-  font-weight: 600;
   line-height: 1.25;
   cursor: pointer;
   user-select: none;
+}
+#dinamik-olay-modal .egzoz-olay-toggle > span {
+  color: #a0aec0;
+  font-weight: 500;
 }
 #dinamik-olay-modal .egzoz-olay-toggle input[type="checkbox"] {
   -webkit-appearance: none;
@@ -190,10 +192,62 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 #dinamik-olay-modal .egzoz-olay-date-wrapper.egzoz-date-visible {
   display: block;
 }
-#dinamik-olay-modal #muayene-egzoz-tarih {
+#dinamik-olay-modal #muayene-egzoz-yapilma-tarih {
   width: calc((100% - 16px) / 2) !important;
   max-width: calc((100% - 16px) / 2) !important;
   min-width: min(140px, calc((100% - 16px) / 2)) !important;
+  box-sizing: border-box !important;
+}
+
+/* Dinamik olay: gg/aa/yyyy metin + takvim simgesi (masaüstü + mobil) */
+#dinamik-olay-modal .olay-date-mobile-wrap {
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important; /* İstenen: tarih metni ile takvim arasında 4px */
+  width: 100% !important;
+  min-width: 0 !important;
+}
+#dinamik-olay-modal .olay-date-mobile-text {
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+}
+#dinamik-olay-modal .olay-date-mobile-picker-slot {
+  position: relative !important;
+  flex: 0 0 34px !important;
+  width: 34px !important;
+  height: 30px !important;
+  box-sizing: border-box !important;
+}
+#dinamik-olay-modal .olay-date-mobile-btn {
+  position: absolute !important;
+  left: 0 !important;
+  top: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  height: 100% !important;
+  padding: 0 !important;
+  border: 1px solid var(--border-faint-15, rgba(255, 255, 255, 0.15)) !important;
+  border-radius: 8px !important;
+  background: var(--bg-2, #1a1a24) !important;
+  color: var(--txt-gray, #a0aec0) !important;
+  pointer-events: none !important;
+  box-sizing: border-box !important;
+}
+#dinamik-olay-modal .olay-date-mobile-native {
+  position: absolute !important;
+  left: 0 !important;
+  top: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  opacity: 0 !important;
+  z-index: 2 !important;
+  cursor: pointer !important;
   box-sizing: border-box !important;
 }
 
@@ -776,6 +830,15 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     min-width: 0 !important;
     box-sizing: border-box !important;
   }
+  /* Muayene: egzoz farklı tarih checkbox metni tek satır, 1 punto küçük */
+  #dinamik-olay-modal .egzoz-olay-toggle > span {
+    font-size: calc(12px - 1pt);
+    line-height: 1.25;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+  }
 }
 
 /* Şemayı saran kapsayıcı hizalama */
@@ -1257,6 +1320,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     color: var(--txt-muted);
     box-shadow: 0 4px 12px var(--shadow-dark);
     white-space: normal;
+    cursor: pointer;
 }
 #vehicle-detail-modal .muayene-detail-tooltip.visible {
     display: block !important;
@@ -1435,6 +1499,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 #vehicle-detail-modal .detail-row-value {
     color: #a0aec0 !important;
 }
+#vehicle-detail-modal .detail-row-value.detail-user-empty {
+    color: #d40000 !important;
+}
 #vehicle-detail-modal .detail-row-value.date-warning-red {
     color: var(--theme-color) !important;
 }
@@ -1448,7 +1515,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 /* Tarihçe (5 sekme): her işlem sonrası 3px boşluk, hafif kırmızı yatay çizgi (taşıt detay ortadaki dikey çizgi ile aynı ton), altında 3px boşluk */
 #vehicle-history-modal .history-item:not(:last-child),
 .modal-overlay:has(.history-tabs) .history-item:not(:last-child) {
-    border-bottom: 1px solid rgba(var(--theme-color-rgb), 0.28) !important;
+    border-bottom: 1px solid rgba(var(--theme-color-rgb), 0.30);
 }
 /* Tarihçe: sekme ile içerik arası 5px azaltma (history-content padding-top style-core'da 15px yapıldı) */
 #vehicle-history-modal #history-tabs {
@@ -2285,6 +2352,68 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 /* Standart: bir satır koyu bir satır açık – okunabilirlik */
 .view-list .list-item:nth-child(even) {
     background: var(--border-faint-02);
+}
+
+/* Taşıtlar modalı: tarih yaklaştı / kritik — liste satırı (checkDateWarnings ile uyumlu) */
+#vehicles-modal .view-list .list-item.vehicle-date-warning-orange {
+    border-left: 3px solid var(--orange-warn);
+    background: linear-gradient(90deg, rgba(var(--orange-warn-rgb), 0.11), rgba(var(--orange-warn-rgb), 0.03));
+    box-shadow: inset 1px 0 0 rgba(var(--orange-warn-rgb), 0.22);
+}
+
+#vehicles-modal .view-list .list-item.vehicle-date-warning-red {
+    border-left: 3px solid var(--theme-color);
+    background: linear-gradient(90deg, rgba(var(--theme-color-rgb), 0.14), rgba(var(--theme-color-rgb), 0.04));
+    box-shadow: inset 1px 0 0 rgba(var(--theme-color-rgb), 0.28);
+}
+
+#vehicles-modal .view-list .list-item.vehicle-date-warning-red .list-cell {
+    color: var(--theme-color) !important;
+}
+
+#vehicles-modal .view-list .list-item.vehicle-date-warning-orange .list-cell {
+    color: var(--orange-warn) !important;
+}
+
+#vehicles-modal .view-list .list-item.vehicle-date-warning-orange:hover {
+    background: linear-gradient(90deg, rgba(var(--orange-warn-rgb), 0.16), rgba(var(--orange-warn-rgb), 0.06));
+}
+
+#vehicles-modal .view-list .list-item.vehicle-date-warning-red:hover {
+    background: linear-gradient(90deg, rgba(var(--theme-color-rgb), 0.18), rgba(var(--theme-color-rgb), 0.07));
+}
+
+/* Kart görünümü: aynı severity token’ları */
+#vehicles-modal .view-card .card.vehicle-date-warning-orange {
+    border-color: var(--orange-warn);
+    background: linear-gradient(145deg, rgba(var(--orange-warn-rgb), 0.12), rgba(var(--orange-warn-rgb), 0.04));
+    box-shadow: inset 0 0 0 1px rgba(var(--orange-warn-rgb), 0.28);
+}
+
+#vehicles-modal .view-card .card.vehicle-date-warning-red {
+    border-color: var(--theme-color);
+    background: linear-gradient(145deg, rgba(var(--theme-color-rgb), 0.14), rgba(var(--theme-color-rgb), 0.05));
+    box-shadow: inset 0 0 0 1px rgba(var(--theme-color-rgb), 0.35);
+}
+
+@media (hover: hover) and (pointer: fine) {
+    #vehicles-modal .view-card .card.vehicle-date-warning-orange:hover {
+        border-color: var(--orange-warn);
+        box-shadow: inset 0 0 0 1px rgba(var(--orange-warn-rgb), 0.4);
+    }
+    #vehicles-modal .view-card .card.vehicle-date-warning-red:hover {
+        border-color: var(--theme-color);
+        box-shadow: inset 0 0 0 1px rgba(var(--theme-color-rgb), 0.45);
+    }
+}
+
+@media (hover: none) {
+    #vehicles-modal .view-card .card.vehicle-date-warning-orange:active {
+        border-color: var(--orange-warn);
+    }
+    #vehicles-modal .view-card .card.vehicle-date-warning-red:active {
+        border-color: var(--theme-color);
+    }
 }
 
 #vehicles-modal .view-list .list-cell,

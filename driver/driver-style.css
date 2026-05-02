@@ -318,9 +318,13 @@ body.dashboard-page {
   display: block;
   max-width: none;
   overflow: visible;
-  color: rgba(222, 229, 235, 0.92);
-  font-size: clamp(calc(8px - 0.5pt), 1.55vw, calc(10px - 0.5pt));
-  font-weight: 600;
+  color: rgba(238, 246, 255, 0.98);
+  font-size: clamp(9px, 1.65vw, 10.5px);
+  font-weight: 700;
+  text-shadow: none !important;
+  filter: none !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   line-height: 1.15;
   text-align: center;
   letter-spacing: 0.01em;
@@ -339,7 +343,7 @@ body.dashboard-page {
     box-sizing: content-box;
   }
   .dashboard-page .main-header-user-name {
-    transform: translate(5px, 2px);
+    transform: translate(0, 2px);
   }
 }
 .hero.hero-two-rows .hero-title-block {
@@ -493,6 +497,16 @@ body.dashboard-page {
 .driver-below-hero-row .driver-btn-logout {
   flex: none;
 }
+.driver-below-hero-row .driver-btn-password {
+  color: #3b82f6;
+}
+.driver-below-hero-row .driver-btn-password:hover,
+.driver-below-hero-row .driver-btn-password:focus {
+  color: #60a5fa;
+}
+.driver-below-hero-row .driver-btn-logout {
+  color: var(--theme-color);
+}
 
 /* KULLANICI PANELİ: h1 altında, 1pt küçük, aynı renk (metalik gradient) */
 .hero-title-wrap .hero-panel-subtitle,
@@ -603,6 +617,13 @@ body.dashboard-page {
   .dashboard-page .driver-below-hero-row .driver-btn-logout {
     margin: 0 !important;
   }
+  .dashboard-page .driver-below-hero-row .driver-btn-password {
+    color: #3b82f6 !important;
+  }
+  .dashboard-page .driver-below-hero-row .driver-btn-password:hover,
+  .dashboard-page .driver-below-hero-row .driver-btn-password:focus {
+    color: #60a5fa !important;
+  }
   /* İşlem geçmişi / Bildirimler / Çıkış arası 8px (masaüstü) */
   .dashboard-page .driver-below-hero-row {
     gap: 8px !important;
@@ -613,12 +634,17 @@ body.dashboard-page {
     height: 23px !important;
   }
   .dashboard-page .driver-below-hero-row .driver-btn-password .driver-btn-password-icon {
-    width: 19px !important;
-    height: 19px !important;
+    width: 26px !important;
+    height: 26px !important;
+    stroke-width: 2 !important;
+    position: relative !important;
+    top: 0 !important;
+    transform: translateY(-3px) !important;
   }
   .dashboard-page .driver-below-hero-row .driver-btn-logout .driver-btn-logout-icon {
-    width: 19px !important;
-    height: 19px !important;
+    width: 24px !important;
+    height: 24px !important;
+    stroke-width: 1.7 !important;
   }
   /* Footer: masaüstünde ana uygulama/login ile aynı gri üst çizgi + dashboard glow */
   .dashboard-page #app-footer {
@@ -741,21 +767,24 @@ body.dashboard-page {
   .dashboard-page .driver-left-panel .driver-plate-dropdown-item:last-child {
     border-bottom: none !important;
   }
-  /* Sağ grid: butonlar arası dikey boşluk 0 (1px daha daraltıldı) */
-  .dashboard-page .driver-action-buttons {
+  /* Sağ grid: aksiyon alanı üstten hafif boşlukla görsel dengeye alınır, satır aralığı sıfırlanır */
+  .dashboard-page .driver-action-area {
+    padding-top: 8px !important;
+  }
+  .dashboard-page .driver-action-area-inner {
     gap: 0 !important;
   }
-  /* Sağ grid: butonların iç dikey yüksekliği masaüstünde 1px daha dar (6px) */
-  .dashboard-page .driver-action-buttons .driver-action-btn {
-    padding-top: 6px !important;
-    padding-bottom: 6px !important;
-  }
+  /* İç dikey padding: aşağıdaki 641 + 769 bloklarında birleştirilir */
   /* Sağ grid: alt boşluk sıfır – çerçeveye tam yanaşsın */
   .dashboard-page .driver-two-panel {
     padding-bottom: 0 !important;
   }
   .dashboard-page .driver-right-panel {
     gap: 4px !important;
+    overflow-x: visible !important;
+    padding-left: 10px !important;
+    padding-right: 14px !important;
+    box-sizing: border-box !important;
   }
   .dashboard-page .driver-action-group {
     margin-bottom: 5px !important;
@@ -777,18 +806,24 @@ body.dashboard-page {
     padding-top: 2px !important;
     padding-bottom: 2px !important;
   }
+  /* Masaüstü: Talep/şikayet FAB satırı doğal akışta kalır; ekstra alt tampon yok. */
+  /* Bildir ile FAB: boşken status kutusu yer kaplamasın (yardımcı aksiyon Bildir'e yakın kalsın) */
+  .dashboard-page .driver-action-footer .status-message:empty {
+    margin-top: 0;
+    padding: 0;
+    min-height: 0;
+    border: none;
+  }
+  /* Masaüstü: Talep/şikayet FAB, Bildir butonundan sonra kontrollü aksın */
+  .dashboard-page .driver-action-feedback-slot.driver-request-fab-row {
+    margin-top: 8px;
+  }
 }
 
 /* Masaüstü: Sol panel dikeyde sığmazsa – metin 1.5pt küçük, gider arası 1px az */
 @media (min-width: 769px) and (max-height: 700px) {
   .dashboard-page .driver-left-panel .driver-vehicle-info {
     gap: 5px !important;
-  }
-  .dashboard-page .driver-left-panel .driver-info-item .label {
-    font-size: 11.5px !important;
-  }
-  .dashboard-page .driver-left-panel .driver-info-item .value {
-    font-size: 11.5px !important;
   }
 }
 
@@ -862,6 +897,9 @@ body.dashboard-page {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
   }
+  .driver-action-btn-feedback.driver-request-fab .driver-action-btn-feedback-icon {
+    animation: none;
+  }
 }
 .driver-warning-marquee-inner span {
   flex-shrink: 0;
@@ -888,15 +926,10 @@ body.dashboard-page {
   color: var(--theme-color);
   display: inline-block;
   flex-shrink: 0;
-  animation: driver-warning-scale 1.2s ease-in-out infinite;
   margin-right: 0;
   vertical-align: middle;
   line-height: 1;
   overflow: visible;
-}
-@keyframes driver-warning-scale {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.15); }
 }
 
 /* --- İKİ PANELLİ LAYOUT --- */
@@ -1003,6 +1036,110 @@ body.dashboard-page {
   text-align: center;
   align-self: center;
 }
+/* Sağ kolon: Talep Gönder mini FAB (Bildir altında sağda) */
+.driver-request-fab-row {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  width: 100%;
+  margin-top: 3px;
+  min-height: 28px;
+}
+.driver-action-btn-feedback.driver-request-fab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-direction: row-reverse;
+  gap: 6px;
+  width: 36px;
+  min-width: 36px;
+  height: 36px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  color: rgba(238, 246, 255, 0.9);
+  cursor: pointer;
+  overflow: hidden;
+  white-space: nowrap;
+  transition: width .18s ease, color .18s ease, background .18s ease, transform .18s ease;
+  margin-left: auto;
+  transform: translateX(4px);
+}
+.driver-action-btn-feedback.driver-request-fab .driver-action-btn-feedback-icon {
+  width: 26px;
+  height: 26px;
+  flex: 0 0 auto;
+  color: currentColor;
+  transform-origin: center center;
+  animation: driver-feedback-fab-pulse 8s ease-in-out infinite;
+}
+@keyframes driver-feedback-fab-pulse {
+  0%, 82%, 100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 0 rgba(238, 246, 255, 0));
+  }
+  87% {
+    transform: scale(1.08);
+    filter: drop-shadow(0 0 7px rgba(238, 246, 255, 0.34));
+  }
+  92% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 0 rgba(238, 246, 255, 0));
+  }
+}
+.driver-request-fab-label {
+  opacity: 0;
+  max-width: 0;
+  overflow: hidden;
+  transition: opacity .18s ease, max-width .18s ease;
+}
+.driver-action-btn-feedback.driver-request-fab:hover,
+.driver-action-btn-feedback.driver-request-fab:focus-visible {
+  width: 132px;
+  padding: 0 10px;
+  color: #fff;
+  background: transparent;
+  box-shadow: none;
+  border-radius: 8px;
+}
+
+.driver-action-btn-feedback.driver-request-fab:hover .driver-action-btn-feedback-icon,
+.driver-action-btn-feedback.driver-request-fab:focus-visible .driver-action-btn-feedback-icon {
+  animation: none;
+  transform: scale(1.04);
+  filter: drop-shadow(0 0 6px rgba(238, 246, 255, 0.28));
+}
+.driver-action-btn-feedback.driver-request-fab:hover .driver-request-fab-label,
+.driver-action-btn-feedback.driver-request-fab:focus-visible .driver-request-fab-label {
+  opacity: 1;
+  max-width: 96px;
+}
+
+@media (max-width: 768px) {
+  .dashboard-page .driver-request-fab-row {
+    justify-content: flex-end !important;
+    padding-right: 3px !important;
+    box-sizing: border-box !important;
+  }
+  .dashboard-page .driver-action-btn-feedback.driver-request-fab {
+    margin-left: auto !important;
+    margin-right: 0 !important;
+    transform: translateX(0) !important;
+  }
+  .driver-action-btn-feedback.driver-request-fab:focus,
+  .driver-action-btn-feedback.driver-request-fab:active {
+    width: 132px;
+    padding: 0 10px;
+    background: transparent;
+    box-shadow: none;
+  }
+  .driver-action-btn-feedback.driver-request-fab:focus .driver-request-fab-label,
+  .driver-action-btn-feedback.driver-request-fab:active .driver-request-fab-label {
+    opacity: 1;
+    max-width: 96px;
+  }
+}
 .driver-plate-dropdown-row {
   display: flex;
   align-items: center;
@@ -1074,6 +1211,7 @@ body.dashboard-page {
   color: var(--form-label-color, #ffffff) !important;
   font-weight: 500;
   font-size: 11px;
+  font-family: inherit;
   flex-shrink: 0;
   text-transform: none; /* Etiketler JS'teki Title Case ile görünsün */
 }
@@ -1087,6 +1225,7 @@ body.dashboard-page {
   color: #a0aec0 !important;
   word-break: break-word;
   font-size: 13px;
+  font-family: inherit;
   min-width: min-content; /* Sığmazsa açıklama daralmadan tamamı alt satıra geçer, ortadan bölünmez */
 }
 /* İzole Edilmiş Tarih / KM Uyarı Renkleri ve Sızıntı Engeli */
@@ -1114,21 +1253,26 @@ body.dashboard-page {
 }
 .driver-action-btn {
   background: transparent !important;
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  border: 1px solid rgba(238, 246, 255, 0.34);
   color: var(--data-value-color, #a0aec0);
   padding: 8px 12px;
-  font-size: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  cursor: pointer;
   border-radius: 6px;
-  transition: border-color 0.2s, color 0.2s, background 0.2s;
+  font-size: 13px;
+  cursor: pointer;
+  text-align: center;
+  width: 100%;
+  box-sizing: border-box;
+  font-weight: 600;
+  text-shadow: none;
+  transition: border-color 0.18s ease, color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease, text-shadow 0.18s ease;
 }
 .driver-action-btn:hover {
-  border-color: rgba(255, 255, 255, 0.5);
+  border-color: rgba(238, 246, 255, 0.68);
   color: var(--txt-white, #fff);
+  background: rgba(238, 246, 255, 0.035) !important;
+  box-shadow: 0 0 8px rgba(238, 246, 255, 0.14);
+  text-shadow: 0 0 5px rgba(238, 246, 255, 0.32);
+  transform: scale(1.012);
 }
 .driver-action-btn:active,
 .driver-action-btn:focus {
@@ -1161,8 +1305,11 @@ body.dashboard-page {
   color: rgba(255, 255, 255, 0.9);
 }
 .driver-action-btn.data-entered:hover {
-  border-color: rgba(255, 255, 255, 0.5);
+  border-color: rgba(238, 246, 255, 0.68);
   color: var(--txt-white, #fff);
+  background: rgba(238, 246, 255, 0.035) !important;
+  box-shadow: 0 0 8px rgba(238, 246, 255, 0.14);
+  text-shadow: 0 0 5px rgba(238, 246, 255, 0.32);
 }
 .driver-info-item.saved .label,
 .driver-info-item.saved .value {
@@ -1241,12 +1388,14 @@ body.dashboard-page {
   align-items: center;
   gap: 7px;
   margin: 4px 0 6px;
-  color: var(--form-label-color, #ffffff);
   font-size: 13px;
-  font-weight: 500;
   line-height: 1.25;
   cursor: pointer;
   user-select: none;
+}
+.driver-egzoz-muayene-check > span {
+  color: #a0aec0;
+  font-weight: 500;
 }
 .driver-egzoz-muayene-check input[type="checkbox"] {
   width: 15px;
@@ -1533,7 +1682,8 @@ body.dashboard-page {
     appearance: none !important;
   }
   .driver-modal .driver-modal-content .form-group input,
-  .driver-modal .driver-modal-content .form-group textarea {
+  .driver-modal .driver-modal-content .form-group textarea,
+  .driver-modal .driver-modal-content .form-group select {
     width: 100% !important; max-width: 100% !important; min-width: 0 !important; box-sizing: border-box !important;
   }
   .driver-modal .driver-modal-content .form-group input {
@@ -1575,7 +1725,8 @@ body.dashboard-page {
       overflow: hidden !important;
     }
     .driver-modal .driver-modal-content .form-group input,
-    .driver-modal .driver-modal-content .form-group textarea {
+    .driver-modal .driver-modal-content .form-group textarea,
+    .driver-modal .driver-modal-content .form-group select {
       min-width: 0 !important;
       max-width: 100% !important;
     }
@@ -1594,7 +1745,22 @@ body.dashboard-page {
   }
   /* Mobil dashboard header: sadece grid + logo hizası (yeni pseudo çizgi yok; tipografi aşağıda ayrı blokta) */
   .dashboard-page .hero.hero-two-rows {
-    grid-template-columns: minmax(56px, max-content) minmax(0, 1fr) 52px !important;
+    grid-template-columns: minmax(56px, max-content) minmax(0, 1fr) !important;
+    column-gap: 4px !important;
+  }
+  .dashboard-page .hero.hero-two-rows .hero-spacer {
+    display: none !important;
+  }
+  .dashboard-page .hero.hero-two-rows .hero-title-block {
+    grid-column: 2 !important;
+    justify-self: stretch !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    padding-left: 2px !important;
+    padding-right: 8px !important;
+    box-sizing: border-box !important;
+    transform: translateY(2px) !important;
   }
   .dashboard-page .hero.hero-two-rows .hero-logo {
     display: flex !important;
@@ -1638,20 +1804,28 @@ body.dashboard-page {
   }
   /* Mobil başlık metinleri 1pt küçük */
   .dashboard-page .hero.hero-two-rows .hero-title-block .hero-title-line {
-    width: 100%;
-    max-width: 100%;
-    font-size: clamp(calc(19px - 1pt - 0.5pt), 5.5vw, calc(23px - 1pt - 0.5pt)) !important;
-    letter-spacing: 2.5px !important;
-    line-height: 1.25 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    font-size: clamp(12.5px, 3.9vw, 16px) !important;
+    letter-spacing: clamp(0.6px, 0.42vw, 1.6px) !important;
+    line-height: 1.12 !important;
     white-space: nowrap !important;
-    overflow: hidden !important;
-    text-overflow: ellipsis !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    text-align: center !important;
   }
   .login-page .hero.hero-two-rows .hero-title-block .hero-title-line {
     font-size: clamp(calc(18px - 1pt - 0.5pt), 5vw, calc(22px - 1pt - 0.5pt)) !important;
   }
   .dashboard-page .hero-title-block .hero-panel-subtitle {
-    font-size: calc(17px - 1pt - 0.7pt - 0.5pt) !important;
+    font-size: clamp(15px, 4.5vw, 19px) !important;
+    letter-spacing: clamp(2px, 0.8vw, 3.5px) !important;
+    line-height: 1.12 !important;
+    white-space: nowrap !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    text-align: center !important;
   }
   .login-page .hero-title-block .hero-panel-subtitle {
     font-size: calc(17px - 1pt - 0.5pt) !important;
@@ -1739,7 +1913,6 @@ body.dashboard-page {
   background: transparent !important;
   border: none !important;
   box-shadow: none !important;
-  color: var(--theme-color) !important;
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
@@ -1748,6 +1921,12 @@ body.dashboard-page {
   align-items: center;
   justify-content: center;
 }
+.driver-btn-password {
+  color: #3b82f6;
+}
+.driver-btn-logout {
+  color: var(--theme-color) !important;
+}
 .driver-btn-password .driver-btn-password-icon,
 .driver-btn-logout .driver-btn-logout-icon {
   width: 20px;
@@ -1755,11 +1934,22 @@ body.dashboard-page {
 }
 
 .driver-btn-password:hover,
-.driver-btn-logout:hover {
+.driver-btn-password:focus,
+.driver-btn-password:active {
+  color: #60a5fa;
+  background: transparent !important;
+  border: none !important;
+  transform: scale(1.12);
+  filter: drop-shadow(0 0 6px rgba(96, 165, 250, 0.45));
+}
+.driver-btn-logout:hover,
+.driver-btn-logout:focus,
+.driver-btn-logout:active {
   color: var(--theme-color) !important;
   background: transparent !important;
   border: none !important;
-  transform: scale(1.08);
+  transform: scale(1.12);
+  filter: drop-shadow(0 0 6px rgba(var(--theme-color-rgb), 0.45));
 }
 
 /* --- YÜKLEME --- */
@@ -2049,13 +2239,15 @@ body.dashboard-page {
   font-size: 12px;
   color: var(--txt);
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 5px;
   cursor: pointer;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   transition: background 0.15s, color 0.15s;
+  width: 100%;
   overflow: hidden;
   max-width: 100%;
+  box-sizing: border-box;
 }
 .driver-plate-dropdown-item-plate {
   width: 85px;
@@ -2072,9 +2264,15 @@ body.dashboard-page {
 }
 .driver-plate-dropdown-item-brand {
   min-width: 0;
+  flex: 1 1 auto;
+  white-space: normal;
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
+  line-height: 1.22;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  text-overflow: clip;
 }
 .driver-plate-dropdown-item:last-child {
   border-bottom: none;
@@ -2523,7 +2721,8 @@ body.dashboard-page {
   border: none !important;
   box-shadow: none !important;
   outline: none !important;
-  opacity: 0.85;
+  opacity: 1;
+  transform: scale(1.08);
 }
 .driver-btn-history .driver-btn-history-icon {
   width: 22px;
@@ -2531,8 +2730,12 @@ body.dashboard-page {
   color: var(--muted);
   opacity: 0.9;
 }
-.driver-btn-history:hover .driver-btn-history-icon {
+.driver-btn-history:hover .driver-btn-history-icon,
+.driver-btn-history:focus .driver-btn-history-icon,
+.driver-btn-history:active .driver-btn-history-icon {
   opacity: 1;
+  color: rgba(238, 246, 255, 0.98);
+  filter: drop-shadow(0 0 5px rgba(238, 246, 255, 0.34));
 }
 
 /* =========================================
@@ -2612,6 +2815,7 @@ body.dashboard-page {
 #edit-request-modal.driver-modal,
 #driver-event-menu-modal.driver-modal,
 #driver-password-modal.driver-modal,
+#driver-feedback-modal.driver-modal,
 #driver-anahtar-modal.driver-modal,
 #driver-lastik-modal.driver-modal,
 #driver-utts-modal.driver-modal,
@@ -2632,6 +2836,7 @@ body.dashboard-page {
 #edit-request-modal.driver-modal.show,
 #driver-event-menu-modal.driver-modal.show,
 #driver-password-modal.driver-modal.show,
+#driver-feedback-modal.driver-modal.show,
 #driver-anahtar-modal.driver-modal.show,
 #driver-lastik-modal.driver-modal.show,
 #driver-utts-modal.driver-modal.show,
@@ -2657,6 +2862,7 @@ body.dashboard-page {
   #edit-request-modal.driver-modal,
   #driver-event-menu-modal.driver-modal,
   #driver-password-modal.driver-modal,
+  #driver-feedback-modal.driver-modal,
   #driver-anahtar-modal.driver-modal,
   #driver-lastik-modal.driver-modal,
   #driver-utts-modal.driver-modal,
@@ -2666,7 +2872,8 @@ body.dashboard-page {
     padding: 0 !important;
   }
   #history-modal.driver-modal,
-  #edit-request-modal.driver-modal {
+  #edit-request-modal.driver-modal,
+  #driver-feedback-modal.driver-modal {
     bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
   }
 }
@@ -2675,8 +2882,10 @@ body.dashboard-page {
 @media (min-width: 769px) {
   body.dashboard-page #history-modal.driver-modal,
   body.dashboard-page #edit-request-modal.driver-modal,
+  body.dashboard-page #driver-feedback-modal.driver-modal,
   body.login-page #history-modal.driver-modal,
-  body.login-page #edit-request-modal.driver-modal {
+  body.login-page #edit-request-modal.driver-modal,
+  body.login-page #driver-feedback-modal.driver-modal {
     bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
   }
 }
@@ -2690,7 +2899,8 @@ body.dashboard-page {
 #driver-utts-modal.driver-modal::before,
 #driver-muayene-modal.driver-modal::before,
 #driver-sigorta-modal.driver-modal::before,
-#driver-kasko-modal.driver-modal::before {
+#driver-kasko-modal.driver-modal::before,
+#driver-feedback-modal.driver-modal::before {
   content: '';
   position: absolute;
   top: 0;
@@ -2708,15 +2918,19 @@ body.dashboard-page {
 
 /* Geçmiş Kayıtlar + Düzeltme Talep: footer kararmasın, footer ışıkları kesilmesin (+4px tampon) */
 #history-modal.driver-modal.show::before,
-#edit-request-modal.driver-modal.show::before {
+#edit-request-modal.driver-modal.show::before,
+#driver-password-modal.driver-modal.show::before,
+#driver-feedback-modal.driver-modal.show::before {
   clip-path: inset(0 0 calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0) + 4px) 0) !important;
   -webkit-clip-path: inset(0 0 calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0) + 4px) 0) !important;
 }
 /* Geçmiş Kayıtlar / Düzeltme Talebi açıkken footer modalın üstünde, ışıklar sabit ton */
 body.dashboard-page:has(#history-modal.driver-modal.show) #app-footer,
 body.dashboard-page:has(#edit-request-modal.driver-modal.show) #app-footer,
+body.dashboard-page:has(#driver-feedback-modal.driver-modal.show) #app-footer,
 body.login-page:has(#history-modal.driver-modal.show) #app-footer.login-footer,
-body.login-page:has(#edit-request-modal.driver-modal.show) #app-footer.login-footer {
+body.login-page:has(#edit-request-modal.driver-modal.show) #app-footer.login-footer,
+body.login-page:has(#driver-feedback-modal.driver-modal.show) #app-footer.login-footer {
   z-index: 100020 !important;
 }
 
@@ -2737,6 +2951,8 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 #driver-event-menu-modal .modal-container,
 #driver-password-modal .driver-modal-content,
 #driver-password-modal .modal-container,
+#driver-feedback-modal .driver-modal-content,
+#driver-feedback-modal .modal-container,
 #driver-anahtar-modal .driver-modal-content,
 #driver-anahtar-modal .modal-container,
 #driver-lastik-modal .driver-modal-content,
@@ -2768,10 +2984,25 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   overscroll-behavior: none;
   overscroll-behavior-x: none;
 }
+
+#history-modal .modal-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: rgba(200, 208, 216, 0.48);
+  border-top-left-radius: var(--modal-radius, 10px);
+  border-top-right-radius: var(--modal-radius, 10px);
+  pointer-events: none;
+  z-index: 4;
+}
+
 #history-modal .modal-header,
 #edit-request-modal .modal-header,
 #driver-event-menu-modal .modal-header,
-#driver-password-modal .modal-header,
+#driver-feedback-modal .modal-header,
 #driver-anahtar-modal .modal-header,
 #driver-lastik-modal .modal-header,
 #driver-utts-modal .modal-header,
@@ -2789,11 +3020,27 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   flex-shrink: 0;
   position: relative;
 }
+#driver-password-modal .modal-header {
+  background: linear-gradient(180deg, rgba(255, 0, 0, 0.26) 0%, rgba(255, 0, 0, 0.18) 28%, rgba(255, 0, 0, 0.11) 56%, rgba(255, 0, 0, 0.06) 78%, transparent 100%) !important;
+  background-size: 100% 100% !important;
+  padding: 2px 20px !important;
+  height: 60px !important;
+  border-bottom: none !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+  position: relative;
+  border-top-left-radius: 10px !important;
+  border-top-right-radius: 10px !important;
+  box-shadow: inset 0 1px 0 rgba(200, 208, 216, 0.46) !important;
+}
 
 #history-modal .modal-header h2,
 #edit-request-modal .modal-header h2,
 #driver-event-menu-modal .modal-header h2,
 #driver-password-modal .modal-header h2,
+#driver-feedback-modal .modal-header h2,
 #driver-anahtar-modal .modal-header h2,
 #driver-lastik-modal .modal-header h2,
 #driver-utts-modal .modal-header h2,
@@ -2815,6 +3062,7 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 #edit-request-modal .modal-close,
 #driver-event-menu-modal .modal-close,
 #driver-password-modal .modal-close,
+#driver-feedback-modal .modal-close,
 #driver-anahtar-modal .modal-close,
 #driver-lastik-modal .modal-close,
 #driver-utts-modal .modal-close,
@@ -2840,6 +3088,7 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 #edit-request-modal .modal-close:hover,
 #driver-event-menu-modal .modal-close:hover,
 #driver-password-modal .modal-close:hover,
+#driver-feedback-modal .modal-close:hover,
 #driver-anahtar-modal .modal-close:hover,
 #driver-lastik-modal .modal-close:hover,
 #driver-utts-modal .modal-close:hover,
@@ -2854,6 +3103,7 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 #edit-request-modal .modal-body,
 #driver-event-menu-modal .modal-body,
 #driver-password-modal .modal-body,
+#driver-feedback-modal .modal-body,
 #driver-anahtar-modal .modal-body,
 #driver-lastik-modal .modal-body,
 #driver-utts-modal .modal-body,
@@ -2866,6 +3116,20 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   padding: 12px !important;
   scrollbar-width: none;
   -ms-overflow-style: none;
+}
+#driver-feedback-modal .modal-body {
+  padding-left: 20px !important;
+  padding-right: 20px !important;
+  box-sizing: border-box !important;
+}
+
+#driver-feedback-modal .driver-feedback-form,
+#driver-feedback-modal .form-group,
+#driver-feedback-modal .form-input,
+#driver-feedback-modal .driver-feedback-actions {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 /* Geçmiş Kayıtlar modalı: tarihçe/kayıt modalı ile aynı yapı – body flex column, scroll sadece liste alanında */
 #history-modal .modal-body {
@@ -2914,6 +3178,7 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 #edit-request-modal .modal-body::-webkit-scrollbar,
 #driver-event-menu-modal .modal-body::-webkit-scrollbar,
 #driver-password-modal .modal-body::-webkit-scrollbar,
+#driver-feedback-modal .modal-body::-webkit-scrollbar,
 #driver-anahtar-modal .modal-body::-webkit-scrollbar,
 #driver-lastik-modal .modal-body::-webkit-scrollbar,
 #driver-utts-modal .modal-body::-webkit-scrollbar,
@@ -2949,7 +3214,8 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 }
 
 .driver-modal .form-group input,
-.driver-modal .form-group textarea {
+.driver-modal .form-group textarea,
+.driver-modal .form-group select {
   width: 100%;
   padding: 8px 16px;
   background: #0f1418 !important;
@@ -2965,7 +3231,8 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 }
 
 .driver-modal .form-group input:focus,
-.driver-modal .form-group textarea:focus {
+.driver-modal .form-group textarea:focus,
+.driver-modal .form-group select:focus {
   outline: none;
   box-shadow: inset 0 0 0 0.5px var(--theme-color) !important;
 }
@@ -2977,9 +3244,64 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 
 .driver-password-actions {
   display: flex;
+  flex-wrap: nowrap;
   gap: 10px;
-  justify-content: center;
+  justify-content: stretch;
+  align-items: stretch;
   margin-top: 18px;
+  width: 100%;
+}
+
+.driver-feedback-actions {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 10px;
+  justify-content: stretch;
+  align-items: stretch;
+  margin-top: 18px;
+  width: 100%;
+}
+
+/* Talep / Şifre modalları: Gönder-Kaydet ile Vazgeç — style-core universal (32px) ile btn-submit boyutunu eşitle */
+#driver-feedback-modal .driver-feedback-actions .btn-submit,
+#driver-feedback-modal .driver-feedback-actions .universal-btn-cancel,
+#driver-password-modal .driver-password-actions .btn-submit,
+#driver-password-modal .driver-password-actions .universal-btn-cancel {
+  flex: 1 1 0;
+  min-width: 0;
+  width: auto !important;
+  max-width: none !important;
+  margin-top: 0 !important;
+  height: auto !important;
+  min-height: 44px;
+  padding: 12px 14px !important;
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  line-height: 1.2 !important;
+  border-radius: 8px !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: transform .16s ease, border-color .16s ease, color .16s ease, box-shadow .16s ease !important;
+}
+
+#driver-feedback-modal .driver-feedback-actions .btn-submit,
+#driver-feedback-modal .driver-feedback-actions .universal-btn-cancel {
+  font-weight: 400 !important;
+}
+
+#driver-feedback-modal .driver-feedback-actions .btn-submit:hover,
+#driver-feedback-modal .driver-feedback-actions .btn-submit:focus-visible,
+#driver-feedback-modal .driver-feedback-actions .universal-btn-cancel:hover,
+#driver-feedback-modal .driver-feedback-actions .universal-btn-cancel:focus-visible {
+  transform: scale(1.015);
+  box-shadow: 0 0 8px rgba(238, 246, 255, 0.16) !important;
+}
+
+#driver-feedback-modal .driver-feedback-actions .btn-submit,
+#driver-password-modal .driver-password-actions .btn-submit {
+  border-width: 1px;
 }
 
 .driver-password-message {
@@ -2996,6 +3318,119 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 
 .driver-password-message.is-success {
   color: #58d68d;
+}
+
+.driver-feedback-message-status {
+  min-height: 18px;
+  margin-top: -4px;
+  color: var(--muted);
+  font-size: 13px;
+  text-align: center;
+}
+
+.driver-feedback-message-status.is-error {
+  color: #ff6b6b;
+}
+
+.driver-feedback-message-status.is-success {
+  color: #58d68d;
+}
+
+/* Konu Türü: kayıt modalı şube listesi ile aynı premium-dark custom liste (native select OS temasından kaçınır) */
+#driver-feedback-modal #driver-feedback-type {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip-path: inset(50%) !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  border: 0 !important;
+}
+#driver-feedback-modal .driver-feedback-type-dropdown-wrap {
+  position: relative;
+  overflow: visible;
+}
+#driver-feedback-modal .driver-feedback-type-dropdown-wrap .vehicle-branch-trigger {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  cursor: pointer;
+  text-align: center;
+  font-size: 12px;
+  line-height: 1.35;
+  background-color: #0d131f;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23ffffff' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  /* Diğer driver-modal form satırları 8px dikey padding; talep modalında +3px */
+  padding: 11px 28px 11px 12px;
+  color: rgba(248, 249, 250, 0.96) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  transition: border-color 120ms ease, color 120ms ease, background-color 120ms ease;
+}
+#driver-feedback-modal .driver-feedback-type-dropdown-wrap .vehicle-branch-trigger:focus {
+  border-color: var(--theme-color);
+  outline: none;
+}
+#driver-feedback-modal #driver-feedback-type-list {
+  display: none;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  margin-top: 4px;
+  background: #101722;
+  border: 1px solid rgba(190, 200, 214, 0.42);
+  border-radius: 8px;
+  max-height: 200px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  z-index: 40;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.48), inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+#driver-feedback-modal #driver-feedback-type-list::-webkit-scrollbar {
+  display: none;
+}
+#driver-feedback-modal #driver-feedback-type-list.open {
+  display: block;
+}
+#driver-feedback-modal #driver-feedback-type-list .vehicle-branch-option {
+  padding: 8px 10px;
+  font-size: 12px !important;
+  line-height: 1.35;
+  color: rgba(232, 236, 241, 0.94);
+  background: transparent;
+  border-bottom: 1px solid rgba(190, 200, 214, 0.1);
+  cursor: pointer;
+  transition: background-color 120ms ease, color 120ms ease;
+}
+#driver-feedback-modal #driver-feedback-type-list .vehicle-branch-option:last-child {
+  border-bottom: 0;
+}
+#driver-feedback-modal #driver-feedback-type-list .vehicle-branch-option:hover {
+  background: rgba(var(--theme-color-rgb), 0.12);
+  color: rgba(255, 255, 255, 0.98);
+}
+#driver-feedback-modal #driver-feedback-type-list .vehicle-branch-option.selected {
+  background: rgba(var(--theme-color-rgb), 0.16);
+  color: rgba(255, 255, 255, 0.98);
+}
+#driver-feedback-modal:has(#driver-feedback-type-list.open) .driver-feedback-actions {
+  pointer-events: none !important;
+}
+
+#driver-feedback-modal .form-group textarea.driver-feedback-message {
+  min-height: 112px;
+  resize: none;
 }
 
 #edit-request-modal .form-group textarea {
@@ -3179,10 +3614,14 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   }
   #history-modal .history-card {
     padding: 7px 14px !important;
+    gap: 2px !important;
   }
-  /* Tarih satırı ile etiket+açıklama satırı arası dikey boşluk 2px daralt */
+  /* Tarih satırı ile içerik satırları arasındaki dikey boşluk masaüstünde 2px */
   #history-modal .history-header {
-    margin-bottom: -4px !important;
+    margin-bottom: 2px !important;
+  }
+  #history-modal .history-details p + p {
+    margin-top: 2px !important;
   }
   /* Masaüstü: punto 0.5 küçült */
   #history-modal .history-period {
@@ -3795,8 +4234,14 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .dashboard-page .driver-dashboard-container::before,
   .login-page .driver-dashboard-container::before {
     top: 0 !important;
-    bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
+    bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0) + 1px) !important;
     height: auto !important;
+    border-top: 0.85px solid rgba(var(--theme-color-rgb), 0.74) !important;
+    border-left: 0.85px solid rgba(var(--theme-color-rgb), 0.74) !important;
+    border-right: 0.85px solid rgba(var(--theme-color-rgb), 0.74) !important;
+    box-shadow:
+      0 0 7px rgba(var(--theme-color-rgb), 0.12),
+      inset 0 0 7px rgba(var(--theme-color-rgb), 0.05) !important;
   }
 }
 
@@ -3831,7 +4276,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
   .dashboard-page .driver-dashboard-container::before,
   .login-page .driver-dashboard-container::before {
-    bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
+    bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0) + 1px) !important;
   }
   .dashboard-page .driver-right-panel {
     padding-bottom: 5px !important;
@@ -4351,9 +4796,9 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
     border-radius: 10px !important;
-    border-top: 0.99px solid rgba(var(--theme-color-rgb), 0.82) !important;
-    border-left: 0.99px solid rgba(var(--theme-color-rgb), 0.82) !important;
-    border-right: 0.99px solid rgba(var(--theme-color-rgb), 0.82) !important;
+    border-top: 0.8px solid rgba(200, 200, 200, 0.62) !important;
+    border-left: 0.8px solid rgba(255, 255, 255, 0.28) !important;
+    border-right: 0.8px solid rgba(255, 255, 255, 0.28) !important;
     padding-top: 0 !important;
     overflow: hidden !important;
     overflow-x: hidden !important;
@@ -4456,11 +4901,14 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
   .dashboard-page .driver-dashboard-container::before,
   .login-page .driver-dashboard-container::before {
-    border-top: 0.99px solid rgba(var(--theme-color-rgb), 0.82) !important;
-    border-left: 0.99px solid rgba(var(--theme-color-rgb), 0.82) !important;
-    border-right: 0.99px solid rgba(var(--theme-color-rgb), 0.82) !important;
+    border-top: 0.85px solid rgba(var(--theme-color-rgb), 0.74) !important;
+    border-left: 0.85px solid rgba(var(--theme-color-rgb), 0.74) !important;
+    border-right: 0.85px solid rgba(var(--theme-color-rgb), 0.74) !important;
+    box-shadow:
+      0 0 7px rgba(var(--theme-color-rgb), 0.12),
+      inset 0 0 7px rgba(var(--theme-color-rgb), 0.05) !important;
     top: 0 !important;
-    bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important; /* Footer'da biter, aşağı inmez */
+    bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0) + 1px) !important; /* Footer'da biter, aşağı inmez */
   }
     /* Footer: mobilde de gri üst çizgi geri gelir; dashboard glow korunur */
   .dashboard-page #app-footer {
@@ -4638,7 +5086,13 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .dashboard-page .driver-btn-logout .driver-btn-logout-icon {
     width: 24px !important;
     height: 24px !important;
-    stroke-width: 1.5 !important;
+    stroke-width: 1.7 !important;
+  }
+  .dashboard-page .driver-btn-password .driver-btn-password-icon {
+    width: 26px !important;
+    height: 26px !important;
+    stroke-width: 2 !important;
+    transform: translateY(-3px) !important;
   }
 
   /* Vehicle card içi: elementler arası +3px (12→15) */
@@ -4827,8 +5281,17 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .dashboard-page .hero-title-block .hero-panel-subtitle {
     font-size: calc(21px - 0.7pt - 0.5pt) !important; /* 22px - 1pt - 0.7pt − 0.5pt */
   }
-  .dashboard-page .hero h1 {
-    font-size: calc(23px - 0.5pt) !important; /* 24px - 1pt − 0.5pt */
+  .dashboard-page .hero.hero-two-rows .hero-title-block .hero-title-line {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    font-size: clamp(12px, 3.75vw, 16px) !important;
+    letter-spacing: clamp(0.6px, 0.42vw, 1.6px) !important;
+    line-height: 1.12 !important;
+    white-space: nowrap !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    text-align: center !important;
   }
   .dashboard-page .driver-report-block .form-group label {
     font-size: 15px !important;
@@ -5138,11 +5601,19 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     height: 2em !important;
   }
 
-  /* Mobil: h1 boyut ve harf aralığı (1pt küçük); login ≤640 için üst blok (ana sayfa ile aynı başlık) */
-  .hero-title-wrap h1,
-  .dashboard-page .hero h1 {
+  /* Mobil: h1 boyut ve harf aralığı (1pt küçük) */
+  .hero-title-wrap h1 {
     font-size: calc(22px - 0.5pt) !important; /* 23px - 1pt − 0.5pt */
     letter-spacing: 2.5px !important;
+  }
+  .dashboard-page .hero.hero-two-rows .hero-title-block .hero-title-line {
+    font-size: clamp(12.5px, 3.9vw, 16px) !important;
+    letter-spacing: clamp(0.6px, 0.42vw, 1.6px) !important;
+  }
+  .login-page .hero h1 {
+    font-size: clamp(calc(17.8px - 0.5pt), 5.1vw, calc(21.8px - 0.5pt)) !important;
+    letter-spacing: 2px !important;
+    padding: 0 2px !important;
   }
 
 }
@@ -5373,7 +5844,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   margin: 0;
 }
 
-/* Desktop plate dropdown: expand right from left panel anchor */
+/* Desktop plate dropdown: stays inside the dashboard frame */
 @media (min-width: 769px) {
   .dashboard-page .driver-plate-dropdown-row {
     overflow: visible !important;
@@ -5385,13 +5856,37 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 
   .dashboard-page .driver-left-panel .driver-plate-dropdown,
   body.dashboard-page #driver-plate-dropdown.driver-plate-dropdown {
-    position: absolute !important;
-    left: 0 !important;
+    position: fixed !important;
+    left: calc(50% - 95px) !important;
     right: auto !important;
-    transform: none !important;
-    width: min(50vw, calc(100vw - 120px)) !important;
-    min-width: 300px !important;
-    max-width: min(50vw, calc(100vw - 120px)) !important;
+    transform: translateX(-50%) !important;
+    width: min(50vw, 420px) !important;
+    max-width: min(50vw, 420px) !important;
+    min-width: 320px !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
+  }
+
+  .dashboard-page .driver-plate-dropdown-item {
+    display: grid !important;
+    grid-template-columns: minmax(92px, auto) 18px minmax(0, 1fr) !important;
+    align-items: center !important;
+    text-align: left !important;
+    justify-items: start !important;
+  }
+
+  .dashboard-page .driver-plate-dropdown-item-plate,
+  .dashboard-page .driver-plate-dropdown-item-separator,
+  .dashboard-page .driver-plate-dropdown-item-brand {
+    text-align: left !important;
+    justify-self: start !important;
+  }
+
+  .dashboard-page .driver-plate-dropdown-item-brand {
+    min-width: 0 !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
   }
 }
 
@@ -5410,14 +5905,16 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 
   .dashboard-page .driver-dashboard-container::before,
   .login-page .driver-dashboard-container::before {
-    bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
+    bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0) + 1px) !important;
   }
 
   /* History/Edit modal acikken footer-gap korunur (genel kurali ezer). */
   body.dashboard-page:has(#history-modal.driver-modal.show) .driver-dashboard-container::before,
   body.dashboard-page:has(#edit-request-modal.driver-modal.show) .driver-dashboard-container::before,
+  body.dashboard-page:has(#driver-password-modal.driver-modal.show) .driver-dashboard-container::before,
   body.login-page:has(#history-modal.driver-modal.show) .driver-dashboard-container::before,
-  body.login-page:has(#edit-request-modal.driver-modal.show) .driver-dashboard-container::before {
+  body.login-page:has(#edit-request-modal.driver-modal.show) .driver-dashboard-container::before,
+  body.login-page:has(#driver-password-modal.driver-modal.show) .driver-dashboard-container::before {
     bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
   }
 
@@ -5473,7 +5970,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 @media (min-width: 769px) {
   .dashboard-page .driver-dashboard-container::before,
   .login-page .driver-dashboard-container::before {
-    bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
+    bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0) + 1px) !important;
   }
 }
 
@@ -5531,10 +6028,16 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 }
 
 @media (max-width: 640px) {
+  /* Şifre modalı mobilde Geçmiş/Düzeltme ile aynı nötr çerçeveyi kullansın */
+  #driver-password-modal .driver-modal-content,
+  #driver-password-modal .modal-container {
+    border-top: 0.8px solid rgba(200, 200, 200, 0.62) !important;
+    border-left: 0.8px solid rgba(255, 255, 255, 0.28) !important;
+    border-right: 0.8px solid rgba(255, 255, 255, 0.28) !important;
+  }
   #history-modal .modal-header,
   #edit-request-modal .modal-header,
   #driver-event-menu-modal .modal-header,
-  #driver-password-modal .modal-header,
   #driver-anahtar-modal .modal-header,
   #driver-lastik-modal .modal-header,
   #driver-utts-modal .modal-header,
@@ -5543,6 +6046,13 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   #driver-kasko-modal .modal-header {
     background: linear-gradient(180deg, rgba(255, 0, 0, 0.42) 0%, rgba(255, 0, 0, 0.32) 25%, rgba(255, 0, 0, 0.25) 50%, rgba(255, 0, 0, 0.18) 75%, transparent 100%) !important;
     background-size: 100% calc(100% + 3px) !important;
+  }
+  #driver-password-modal .modal-header {
+    background: linear-gradient(180deg, rgba(255, 0, 0, 0.24) 0%, rgba(255, 0, 0, 0.16) 28%, rgba(255, 0, 0, 0.10) 56%, rgba(255, 0, 0, 0.05) 78%, transparent 100%) !important;
+    background-size: 100% 100% !important;
+    border-top-left-radius: 10px !important;
+    border-top-right-radius: 10px !important;
+    box-shadow: inset 0 1px 0 rgba(200, 208, 216, 0.42) !important;
   }
 }
 
@@ -5560,10 +6070,11 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
    MASAUSTU PANEL INCE AYARLARI
    ========================================= */
 @media (min-width: 641px) {
-    /* Sol grid: okunabilirlik +0.7pt (~0.93px) */
+    /* Sol grid: detaylar sağ grid buton metni ile aynı tipografide */
     .dashboard-page .driver-left-panel .driver-info-item .label,
     .dashboard-page .driver-left-panel .driver-info-item .value {
-        font-size: calc(13px + 0.93px) !important;
+        font-size: 14px !important;
+        font-family: inherit !important;
     }
     .dashboard-page .driver-left-panel .driver-current-plaka {
         font-size: calc((14px - 1pt) + 0.93px) !important;
@@ -5573,15 +6084,23 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
         font-size: calc((15px - 1pt) + 0.93px) !important;
     }
 
-    /* Sag grid: butonlar dikeyde toplam 2px daraltildi */
-    .dashboard-page .driver-action-btn {
-        padding-top: 7px !important;
-        padding-bottom: 7px !important;
+    /* Sag grid: işlem satırı butonları — gerçek DOM: .driver-action-group > .driver-action-btn */
+    .dashboard-page .driver-action-area .driver-action-group > .driver-action-btn {
+        padding-top: 8px !important;
+        padding-bottom: 8px !important;
+        transition: border-color 0.2s, color 0.2s, background 0.2s, transform 0.2s !important;
+    }
+    .dashboard-page .driver-action-area .driver-action-group > .driver-action-btn:hover {
+        transform: none;
+        border-color: rgba(238, 246, 255, 0.72) !important;
+        color: var(--txt-white, #fff) !important;
+        box-shadow: 0 0 9px rgba(238, 246, 255, 0.16) !important;
+        text-shadow: 0 0 5px rgba(238, 246, 255, 0.34) !important;
     }
     .dashboard-page .vehicle-card .btn-save {
-        padding-top: 7px !important;
-        padding-bottom: 7px !important;
-        margin-top: calc(14px + 1em) !important;
+        padding-top: 9px !important;
+        padding-bottom: 9px !important;
+        margin-top: 6px !important;
     }
     .dashboard-page .driver-action-area .universal-btn-save,
     .dashboard-page .driver-action-area .universal-btn-cancel {
@@ -5592,6 +6111,14 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     .dashboard-page .driver-right-panel {
         padding-bottom: 12px !important;
     }
+}
+
+/* Masaüstü (769px+): işlem satırı butonları kompakt dikey padding */
+@media (min-width: 769px) {
+  .dashboard-page .driver-action-area .driver-action-group > .driver-action-btn {
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+  }
 }
 
 /* Dashboard: paneller arası kırmızı ayırıcı tek çizgi olsun (çift görünüm önleme) */
@@ -5632,4 +6159,11 @@ body.dashboard-page:has(#edit-request-modal.driver-modal.show) .driver-left-pane
 body.dashboard-page.driver-history-or-edit-modal-open .driver-left-panel-content {
     border-right: 1.2px solid var(--border-red-tech) !important;
     margin-bottom: 12px !important;
+}
+
+body.dashboard-page:has(#history-modal.driver-modal.show) .driver-dashboard-container::before,
+body.dashboard-page:has(#edit-request-modal.driver-modal.show) .driver-dashboard-container::before,
+body.dashboard-page:has(#driver-password-modal.driver-modal.show) .driver-dashboard-container::before,
+body.dashboard-page.driver-history-or-edit-modal-open .driver-dashboard-container::before {
+    bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
 }

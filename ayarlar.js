@@ -294,12 +294,18 @@
           if (title) title.textContent = 'Şube Düzenle';
         }
         // Sil butonunu göster
-        if (deleteBtn) deleteBtn.style.display = 'flex';
+        if (deleteBtn) {
+          deleteBtn.classList.remove('u-hidden');
+          deleteBtn.style.display = 'flex';
+        }
       } else {
         // Yeni EKLEME MODU
         if (title) title.textContent = 'Yeni Şube Ekle';
         // Sil butonunu gizle
-        if (deleteBtn) deleteBtn.style.display = 'none';
+        if (deleteBtn) {
+          deleteBtn.classList.add('u-hidden');
+          deleteBtn.style.display = 'none';
+        }
       }
   
       // Modalı aç
@@ -321,7 +327,10 @@
       const form = $('#branch-form', modal);
       if (form) form.reset();
       const deleteBtn = $('#branch-delete-btn', modal);
-      if (deleteBtn) deleteBtn.style.display = 'none';
+      if (deleteBtn) {
+        deleteBtn.classList.add('u-hidden');
+        deleteBtn.style.display = 'none';
+      }
       modal.classList.remove('active');
       setTimeout(() => modal.style.display = 'none', 300);
     };
@@ -460,10 +469,13 @@
   
       const rows = branches.map(branch => {
         const vehicleCount = vehicles.filter(v => v.branchId === branch.id).length;
+        const branchName = String(branch.name || '');
+        const longestWordLength = branchName.split(/\s+/).reduce((maxLen, part) => Math.max(maxLen, part.length), 0);
+        const titleClass = longestWordLength >= 9 ? 'settings-card-title settings-card-title--compact' : 'settings-card-title';
         return `
           <div class="settings-card" onclick="editBranch('${branch.id}')" style="cursor:pointer;">
             <div class="settings-card-content">
-              <div class="settings-card-title">${escapeHtml(branch.name)}</div>
+              <div class="${titleClass}">${escapeHtml(branch.name)}</div>
               <div class="settings-card-count">${vehicleCount} Taşıt</div>
             </div>
           </div>
@@ -532,10 +544,6 @@
      * Portal girişi (`driver_login.php`) ve raporlar tek kaynaktan (appData) okur.
      * zimmetli_araclar: portal kayıt akışı (`driver_save.php`) için atanmış Taşıt ID'leri (assignedUserId eşleşen Taşıtlar)
      */
-    function mapUiRoleToRol(role) {
-      return window.medisaMapUiRoleToRol(role);
-    }
-
     function getRoleConfigFromSelection(role) {
       const selectedRole = role || 'kullanici';
       if (selectedRole === 'sube_yonetici' || selectedRole === 'yonetici') {
@@ -571,9 +579,15 @@
       return window.getUserRoleLabelManagement(user);
     }
 
-    function buildUserRoleLabelMarkup(user) {
+    function buildUserRoleLabelMarkup(user, branchName) {
       const roleLabel = getUserRoleLabel(user);
-      return `<div class="settings-card-gorev">${escapeHtml(roleLabel)}</div>`;
+      const branchDisplay = branchName != null && String(branchName).trim() !== '' ? String(branchName).trim() : '-';
+      return (
+        '<div class="settings-card-gorev settings-card-gorev--stacked">' +
+        '<span class="settings-card-gorev-line">' + escapeHtml(roleLabel) + '</span>' +
+        '<span class="settings-card-gorev-line settings-card-gorev-line--branch">' + escapeHtml(branchDisplay) + '</span>' +
+        '</div>'
+      );
     }
 
     const USER_MANAGEMENT_ROLE_SORT_ORDER = {
@@ -876,6 +890,24 @@
       syncUserManagementSearchUi();
       renderUserList();
     };
+
+    function onUserManagementSearchOutsidePointerDown(e) {
+      if (typeof window.innerWidth === 'number' && window.innerWidth > 640) return;
+      const modal = document.getElementById('user-modal');
+      if (!modal || !modal.classList.contains('active')) return;
+      if (!userManagementSearchOpen) return;
+      const wrap = document.getElementById('user-management-search-wrap');
+      if (!wrap || wrap.contains(e.target)) return;
+      userManagementSearchOpen = false;
+      userManagementSearchQuery = '';
+      syncUserManagementSearchUi();
+      renderUserList();
+    }
+
+    if (!window.__medisaUserManagementSearchOutsideCloseBound) {
+      window.__medisaUserManagementSearchOutsideCloseBound = true;
+      document.addEventListener('pointerdown', onUserManagementSearchOutsidePointerDown, true);
+    }
   
     // Kullanıcı formu: atanmış Taşıtlar checkbox listesi doldur (arama + filtreleme)
     function populateUserVehiclesMulti(searchFilter = '') {
@@ -889,13 +921,35 @@
       if (scope.isBranchManager) {
         activeVehicles = activeVehicles.filter(v => isWithinUserManagementBranch(v && v.branchId, scope));
       }
-      const q = (searchFilter || '').trim().toLowerCase();
-      if (q) {
+      const qRaw = (searchFilter || '').trim();
+      if (qRaw) {
+        const qLower = qRaw.toLocaleLowerCase('tr-TR');
+        const qCompact = qRaw.replace(/\s+/g, '').toLocaleLowerCase('tr-TR');
         activeVehicles = activeVehicles.filter(v => {
-          const plaka = (v.plate || v.plaka || '').toLowerCase();
-          return plaka.includes(q);
+          const plakaStr = v.plate || v.plaka || '';
+          const pCompact = String(plakaStr).replace(/\s+/g, '').toLocaleLowerCase('tr-TR');
+          const rawMm = (v.brandModel || (v.brand || v.marka || '') + ' ' + (v.model || '')).trim();
+          const markaModel = (typeof window.formatBrandModel === 'function' ? window.formatBrandModel(rawMm) : (typeof window.toTitleCase === 'function' ? window.toTitleCase(rawMm) : rawMm));
+          const brandHay = String(markaModel || '').toLocaleLowerCase('tr-TR');
+          if (pCompact.startsWith(qCompact)) return true;
+          if (qCompact.length >= 3 && pCompact.indexOf(qCompact) !== -1) return true;
+          if (brandHay.indexOf(qLower) !== -1) return true;
+          return false;
         });
       }
+      const assignedSet = new Set(assignedIds.map(String));
+      function userVehiclePlateSortKey(v) {
+        const plakaStr = v.plate || v.plaka || '';
+        return String(plakaStr).replace(/\s+/g, '').toLocaleLowerCase('tr-TR');
+      }
+      activeVehicles.sort(function(a, b) {
+        const aid = String(a.id);
+        const bid = String(b.id);
+        const aSel = assignedSet.has(aid);
+        const bSel = assignedSet.has(bid);
+        if (aSel !== bSel) return aSel ? -1 : 1;
+        return userVehiclePlateSortKey(a).localeCompare(userVehiclePlateSortKey(b), 'tr-TR');
+      });
       container.innerHTML = '';
       activeVehicles.forEach(v => {
         const vid = String(v.id);
@@ -1049,72 +1103,6 @@
       }
     });
   
-    // Modal Kontrolü (Form)
-    function bindUserBranchSelectDropdown(modal) {
-      setTimeout(() => {
-        const updatedBranchSelect = $('#user-branch', modal);
-        if (updatedBranchSelect && !updatedBranchSelect.dataset.dropdownHandler) {
-          updatedBranchSelect.dataset.dropdownHandler = 'true';
-
-          let isMouseClick = false;
-          updatedBranchSelect.addEventListener('mousedown', function() {
-            isMouseClick = true;
-            setTimeout(() => { isMouseClick = false; }, 200);
-          });
-
-          updatedBranchSelect.addEventListener('focus', function() {
-            if (isMouseClick) return;
-
-            setTimeout(() => {
-              const rect = this.getBoundingClientRect();
-              const clickX = rect.right - 20;
-              const clickY = rect.top + rect.height / 2;
-
-              const mouseDownEvent = new MouseEvent('mousedown', {
-                bubbles: true,
-                cancelable: true,
-                view: window,
-                button: 0,
-                clientX: clickX,
-                clientY: clickY
-              });
-              this.dispatchEvent(mouseDownEvent);
-
-              setTimeout(() => {
-                const mouseUpEvent = new MouseEvent('mouseup', {
-                  bubbles: true,
-                  cancelable: true,
-                  view: window,
-                  button: 0,
-                  clientX: clickX,
-                  clientY: clickY
-                });
-                this.dispatchEvent(mouseUpEvent);
-
-                setTimeout(() => {
-                  const clickEvent = new MouseEvent('click', {
-                    bubbles: true,
-                    cancelable: true,
-                    view: window,
-                    button: 0,
-                    clientX: clickX,
-                    clientY: clickY
-                  });
-                  this.dispatchEvent(clickEvent);
-                }, 10);
-              }, 10);
-            }, 200);
-          });
-
-          updatedBranchSelect.addEventListener('click', function() {
-            if (document.activeElement !== this) {
-              this.focus();
-            }
-          });
-        }
-      }, 100);
-    }
-
     window.openUserFormModal = function openUserFormModal(editId = null, options) {
       const opts = options && typeof options === 'object' ? options : {};
       if (!opts.fromVehicleAssign && typeof window.medisaDismissVehicleAssignUserSavedListener === 'function') {
@@ -1150,7 +1138,10 @@
       if (form) form.reset();
       if (idInput) idInput.value = '';
       if (branchReadonly) branchReadonly.value = '';
-      if (deleteBtn) deleteBtn.style.display = 'none';
+      if (deleteBtn) {
+        deleteBtn.classList.add('u-hidden');
+        deleteBtn.style.display = 'none';
+      }
       populateUserVehiclesMulti();
       const managedBranch = getManagedBranchForUserManagement(scope);
       if (scope.isBranchManager && branchSelect) {
@@ -1193,16 +1184,22 @@
           vehiclesContainer.querySelectorAll('input[name=user-vehicle]').forEach(cb => {
             cb.checked = assignedIds.indexOf(cb.value) !== -1;
           });
-          updateUserVehiclesTriggerText();
+          populateUserVehiclesMulti('');
         }
         if (title) title.textContent = 'Kullanıcı Düzenle';
         // Sil butonunu göster
-        if (deleteBtn) deleteBtn.style.display = 'flex';
+        if (deleteBtn) {
+          deleteBtn.classList.remove('u-hidden');
+          deleteBtn.style.display = 'flex';
+        }
       } else {
         // Yeni EKLEME MODU
         if (title) title.textContent = 'Yeni Kullanıcı Ekle';
         // Sil butonunu gizle
-        if (deleteBtn) deleteBtn.style.display = 'none';
+        if (deleteBtn) {
+          deleteBtn.classList.add('u-hidden');
+          deleteBtn.style.display = 'none';
+        }
       }
   
       syncUserRoleBranchUI({ scope: scope });
@@ -1234,7 +1231,10 @@
       const searchInput = document.getElementById('user-vehicles-search');
       if (searchInput) searchInput.value = '';
       const deleteBtn = $('#user-delete-btn', modal);
-      if (deleteBtn) deleteBtn.style.display = 'none';
+      if (deleteBtn) {
+        deleteBtn.classList.add('u-hidden');
+        deleteBtn.style.display = 'none';
+      }
       modal.classList.remove('active');
       setTimeout(() => modal.style.display = 'none', 300);
     };
@@ -1656,32 +1656,47 @@
 
       const sortedUsers = filteredUsers.slice().sort(compareUserManagementListOrder);
 
-      const rows = sortedUsers.map(user => {
+      function buildUserManagementCardHtml(user) {
         const primaryBranchId = user.branchId || ((user.branchIds && user.branchIds.length) ? user.branchIds[0] : '');
         const branch = branches.find(x => String(x.id) === String(primaryBranchId));
         const branchName = branch ? branch.name : '-';
-        const roleLabelMarkup = buildUserRoleLabelMarkup(user);
+        const roleLabelMarkup = buildUserRoleLabelMarkup(user, branchName);
 
         if (scope.isBranchManager) {
           return `
           <div class="settings-card" onclick="editUser('${user.id}')" style="cursor:pointer;">
             <div class="settings-card-content">
               ${buildUserCardNameMarkup(user.name || 'İsimsiz')}
+              ${roleLabelMarkup}
             </div>
           </div>
         `;
         }
 
-        const phoneLine = formatTrGsmDisplay(user.phone || '');
         return `
           <div class="settings-card" onclick="editUser('${user.id}')" style="cursor:pointer;">
             <div class="settings-card-content">
               ${buildUserCardNameMarkup(user.name || 'İsimsiz')}
-              <div class="settings-card-subtitle">${escapeHtml(branchName)}${phoneLine ? '<br>' + escapeHtml(phoneLine) : ''}</div>
               ${roleLabelMarkup}
+              ${phoneLine ? '<div class="settings-card-phone">' + escapeHtml(phoneLine) + '</div>' : ''}
             </div>
           </div>
         `;
+      }
+
+      const roleGroups = [];
+      sortedUsers.forEach(function(user) {
+        const rank = getUserManagementRoleSortRank(user);
+        const prev = roleGroups[roleGroups.length - 1];
+        if (!prev || prev.rank !== rank) {
+          roleGroups.push({ rank: rank, users: [] });
+        }
+        roleGroups[roleGroups.length - 1].users.push(user);
+      });
+
+      const rows = roleGroups.map(function(g) {
+        const cards = g.users.map(buildUserManagementCardHtml).join('');
+        return '<div class="user-management-role-group">' + cards + '</div>';
       }).join('');
 
       container.innerHTML = rows;
@@ -1922,42 +1937,90 @@
             var worksheet = workbook.Sheets[firstSheetName];
             var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
-            var jsonStr = JSON.stringify(jsonData);
             try {
-              localStorage.setItem('medisa_kasko_liste', jsonStr);
+              localStorage.setItem('medisa_kasko_liste', JSON.stringify(jsonData));
             } catch (storageErr) {
               if (storageErr.name === 'QuotaExceededError' || storageErr.code === 22) {
-                showKaskoError('Kasko Listesi Mobil Cihazda Depolama Sınırını Aşıyor. Lütfen Masaüstü Bilgisayardan Excel Yükleyin.');
-                input.value = '';
-                return;
+                /* Sunucuya yazım devam eder; tarayıcı kotası kritik değil */
               }
-              throw storageErr;
             }
-            localStorage.setItem('medisa_kasko_liste_date', new Date().toISOString());
+            var nowIso = new Date().toISOString();
+            var periodDate = new Date();
+            var period = String(periodDate.getFullYear()) + '-' + String(periodDate.getMonth() + 1).padStart(2, '0');
+            try {
+              localStorage.setItem('medisa_kasko_liste_date', nowIso);
+            } catch (eD) {}
+
+            var sourceName = (file && file.name) ? String(file.name) : '';
+
+            if (!window.appData || typeof window.appData !== 'object') window.appData = {};
+            window.appData.kaskoDegerListesi = {
+              updatedAt: nowIso,
+              period: period,
+              sourceFileName: sourceName,
+              rows: Array.isArray(jsonData) ? jsonData : []
+            };
 
             if (typeof window.clearKaskoCache === 'function') window.clearKaskoCache();
 
-            if (typeof window.guncelleTumKaskoDegerleri === 'function') {
-              window.guncelleTumKaskoDegerleri();
-            }
-            if (typeof window.updateNotifications === 'function') {
-              window.updateNotifications();
+            var afterSave = function() {
+              if (typeof window.guncelleTumKaskoDegerleri === 'function') {
+                window.guncelleTumKaskoDegerleri();
+              }
+              if (typeof window.updateNotifications === 'function') {
+                window.updateNotifications();
+              }
+            };
+
+            var saveUrl = window.API_SAVE_KASKO || ((window.MEDISA_API_BASE || '') + 'save_kasko.php');
+            var headersFn = typeof window.buildAuthHeaders === 'function' ? window.buildAuthHeaders : null;
+            if (!headersFn) {
+              showKaskoError('Oturum veya sunucu bağlantısı hazır değil. Sayfayı yenileyip tekrar deneyin.');
+              input.value = '';
+              return;
             }
 
-            if (typeof window.showCenteredInfoBox === 'function') {
-              window.showCenteredInfoBox('Kasko listesi başarıyla güncellendi!', {
-                anchorEl: document.getElementById('kasko-yukle-btn'),
-                offsetAbove: 18,
-                variant: 'bare-text',
-                autoCloseMs: 3000
+            fetch(saveUrl, {
+              method: 'POST',
+              headers: headersFn({ 'Content-Type': 'application/json' }),
+              body: JSON.stringify({
+                updatedAt: nowIso,
+                period: period,
+                sourceFileName: sourceName,
+                rows: Array.isArray(jsonData) ? jsonData : []
+              })
+            }).then(function(res) {
+              if (!res.ok) {
+                if (typeof window.closeCenteredInfoBox === 'function') window.closeCenteredInfoBox();
+                if (typeof window.showCenteredInfoBox === 'function') {
+                  window.showCenteredInfoBox('Kasko listesi sunucuya yazılamadı (yetki veya ağ). Yerel önizleme güncellendi.');
+                }
+                return;
+              }
+              return res.json().then(function() {
+                if (typeof window.closeCenteredInfoBox === 'function') window.closeCenteredInfoBox();
+                afterSave();
+                if (typeof window.showCenteredInfoBox === 'function') {
+                  window.showCenteredInfoBox('Kasko listesi başarıyla güncellendi!', {
+                    anchorEl: document.getElementById('kasko-yukle-btn'),
+                    offsetAbove: 18,
+                    variant: 'bare-text',
+                    autoCloseMs: 3000
+                  });
+                } else if (typeof window.showSuccessModal === 'function') {
+                  window.showSuccessModal('Kasko listesi başarıyla güncellendi!');
+                } else if (typeof window.showInfoModal === 'function') {
+                  window.showInfoModal('Kasko listesi başarıyla güncellendi!');
+                } else {
+                  alert('Kasko listesi başarıyla güncellendi!');
+                }
               });
-            } else if (typeof window.showSuccessModal === 'function') {
-              window.showSuccessModal('Kasko listesi başarıyla güncellendi!');
-            } else if (typeof window.showInfoModal === 'function') {
-              window.showInfoModal('Kasko listesi başarıyla güncellendi!');
-            } else {
-              alert('Kasko listesi başarıyla güncellendi!');
-            }
+            }).catch(function() {
+              if (typeof window.closeCenteredInfoBox === 'function') window.closeCenteredInfoBox();
+              if (typeof window.showCenteredInfoBox === 'function') {
+                window.showCenteredInfoBox('Kasko listesi sunucuya ulaşılamadı. Bağlantıyı kontrol edin.');
+              }
+            });
           } catch (error) {
             console.error('Excel okuma hatası:', error);
             if (error.name === 'QuotaExceededError' || error.code === 22) {

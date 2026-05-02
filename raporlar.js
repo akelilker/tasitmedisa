@@ -3,8 +3,13 @@
    ========================================= */
 
 (function() {
-    // Taşıt/şube/kullanıcı verisi data-manager getter'larından
-    function getVehicles() { return (typeof window.getMedisaVehicles === 'function' ? window.getMedisaVehicles() : null) || []; }
+    // Taşıt listesi: getMedisaVehicles (oturum kapsamı); arşiv satildiMi === true hariç — taşıtlar şube kartları ile aynı kural.
+    function getVehicles() {
+        var raw = (typeof window.getMedisaVehicles === 'function' ? window.getMedisaVehicles() : null) || [];
+        return raw.filter(function(v) {
+            return v && v.satildiMi !== true;
+        });
+    }
     function getBranches() { return (typeof window.getMedisaBranches === 'function' ? window.getMedisaBranches() : null) || []; }
     function getUsers() { return (typeof window.getMedisaUsers === 'function' ? window.getMedisaUsers() : null) || []; }
 
@@ -142,6 +147,7 @@
             'sigorta': isVerySmall ? 'Sig.' : isMobile ? 'Sigorta' : 'Sigorta Bitiş',
             'kasko': isVerySmall ? 'Kas.' : isMobile ? 'Kasko' : 'Kasko Bitiş',
             'muayene': isVerySmall ? 'Muay.' : isMobile ? 'Muayene' : 'Muayene T.',
+            'egzozMuayene': isTiny ? 'Egz.' : 'Egzoz',
             'kredi': isTiny ? 'Hak' : isVerySmall ? 'Hak M.' : isMobile ? 'Hak M.' : 'Hak Mahr.',
             'lastik': isTiny ? 'Y/K' : isVerySmall ? 'Yaz/Kış' : isMobile ? 'Yazlık/Kışlık' : 'Lastikler',
             'utts': 'UTTS',
@@ -188,7 +194,7 @@
                 <div class="stok-branch-count">${totalCount} Taşıt</div>
             </div>
         `;
-        
+
         // Şube kartları
         branches.forEach(branch => {
             const branchVehicles = vehicles.filter(v => v.branchId === branch.id);
@@ -702,6 +708,15 @@
         return warning.class;
     }
 
+    function getStokMuayeneCombinedWarningClass(vehicle) {
+        if (!vehicle) return '';
+        var wM = getStokDateWarningClass(vehicle.muayeneDate);
+        var wE = getStokDateWarningClass(vehicle.egzozMuayeneDate);
+        if (wM === 'date-warning-red' || wE === 'date-warning-red') return 'date-warning-red';
+        if (wM === 'date-warning-orange' || wE === 'date-warning-orange') return 'date-warning-orange';
+        return '';
+    }
+
     // Veri satırı oluştur
     function createStokDataRow(vehicle, rowNum, branches) {
         const branch = vehicle.branchId ? branches.find(b => b.id === vehicle.branchId) : null;
@@ -743,15 +758,15 @@
                 if (kaskoDegeri == null || String(kaskoDegeri).trim() === '') kaskoDegeri = '-';
                 if (kaskoDegeri === '-' && (!vehicle.kaskoKodu || String(vehicle.kaskoKodu).trim() === '')) {
                     kaskoDegeri = 'Kasko kodu girilmedi';
-                } else if (kaskoDegeri === '-' && !localStorage.getItem('medisa_kasko_liste')) {
+                } else if (kaskoDegeri === '-' && !(typeof window.hasAnyKaskoListData === 'function' ? window.hasAnyKaskoListData() : !!localStorage.getItem('medisa_kasko_liste'))) {
                     kaskoDegeri = 'Excel yüklenmedi';
                 }
                 return String(kaskoDegeri).trim() || '-';
             })() },
             {
                 key: 'muayene',
-                value: vehicle.muayeneDate ? formatDate(vehicle.muayeneDate) : '-',
-                warningClass: getStokDateWarningClass(vehicle.muayeneDate)
+                value: formatStokMuayeneCell(vehicle),
+                warningClass: getStokMuayeneCombinedWarningClass(vehicle)
             },
             { key: 'kredi', value: vehicle.kredi === 'var' ? 'Var' : vehicle.kredi === 'yok' ? 'Yok' : '-' },
             { key: 'lastik', value: vehicle.lastikDurumu === 'var' ? 'Var' : vehicle.lastikDurumu === 'yok' ? 'Yok' : '-' },
@@ -1419,15 +1434,89 @@
         if (transmission === 'otomatik') return 'Otm.';
         return '-';
     }
-    /** Sadece printStokReport: Excel / ekran listesi aynı kalır */
-    function applyStokPrintCompact(vehicle, col, value) {
+    function stokNormalizeIsoDateKey(raw) {
+        if (!raw) return '';
+        var s = String(raw).trim();
+        var m = s.match(/^(\d{4}-\d{2}-\d{2})/);
+        return m ? m[1] : s;
+    }
+    function formatStokMuayeneCell(vehicle, options) {
+        options = options || {};
+        var compact = options.compact === true;
+        var muayeneRaw = vehicle && vehicle.muayeneDate ? String(vehicle.muayeneDate).trim() : '';
+        var egzozRaw = vehicle && vehicle.egzozMuayeneDate ? String(vehicle.egzozMuayeneDate).trim() : '';
+        var muayeneText = muayeneRaw ? formatDate(muayeneRaw) : '';
+        var egzozText = egzozRaw ? formatDate(egzozRaw) : '';
+
+        if (compact) {
+            if (muayeneText) muayeneText = compactStokPrintDateDisplay(muayeneText);
+            if (egzozText) egzozText = compactStokPrintDateDisplay(egzozText);
+        }
+
+        if (!muayeneText && !egzozText) return '-';
+        if (!egzozText || stokNormalizeIsoDateKey(egzozRaw) === stokNormalizeIsoDateKey(muayeneRaw)) return muayeneText || '-';
+        if (!muayeneText) return 'Egz: ' + egzozText;
+        return compact
+            ? (muayeneText + ' | Egz: ' + egzozText)
+            : ('Muayene: ' + muayeneText + ' | Egzoz: ' + egzozText);
+    }
+    /** Yazdırma tablosu: muayene tarihi tek hücre (Excel / birleşik hücre kullanmaya devam) */
+    function formatStokMuayeneDateOnlyForPrint(vehicle) {
+        var muRaw = vehicle && vehicle.muayeneDate ? String(vehicle.muayeneDate).trim() : '';
+        if (!muRaw) return '-';
+        var t = formatDate(muRaw);
+        return t || '-';
+    }
+    /** Yazdırma: araç muayenesi ile aynı gün ise '-' (birleşik hücre davranışıyla uyumlu) */
+    function formatStokEgzozDateOnlyForPrint(vehicle) {
+        var muRaw = vehicle && vehicle.muayeneDate ? String(vehicle.muayeneDate).trim() : '';
+        var egRaw = vehicle && vehicle.egzozMuayeneDate ? String(vehicle.egzozMuayeneDate).trim() : '';
+        if (!egRaw) return '-';
+        if (stokNormalizeIsoDateKey(egRaw) === stokNormalizeIsoDateKey(muRaw)) return '-';
+        var t = formatDate(egRaw);
+        return t || '-';
+    }
+    /** Yazdır + Excel: muayene sütununun sağına egzoz muayenesi sütunu ekler */
+    function expandStokMuayeneEgzozColumns(activeColumns) {
+        var out = [];
+        activeColumns.forEach(function(col) {
+            out.push(col);
+            if (!col.isBase && col.key === 'muayene') {
+                out.push({ key: 'egzozMuayene', isBase: false });
+            }
+        });
+        return out;
+    }
+    /** Yazdır: compact kısaltmaları; fullPrintDates=true iken tarih/yıl tam metin */
+    function applyStokPrintCompact(vehicle, col, value, opts) {
+        opts = opts || {};
         var k = col.key;
-        if (k === 'yil') return formatStokYearPrintCompact(vehicle.year);
+        var fd = opts.fullPrintDates === true;
+        function printDateDisp(isoRaw) {
+            if (!isoRaw) return '-';
+            var d = formatDate(isoRaw);
+            return fd ? d : compactStokPrintDateDisplay(d);
+        }
+        if (k === 'yil') {
+            if (fd) {
+                var yy = vehicle.year != null ? String(vehicle.year).trim() : '';
+                return yy || '-';
+            }
+            return formatStokYearPrintCompact(vehicle.year);
+        }
         if (k === 'sanziman') return formatStokTransmissionPrintCompact(vehicle.transmission);
-        if (k === 'sigorta') return vehicle.sigortaDate ? compactStokPrintDateDisplay(formatDate(vehicle.sigortaDate)) : '-';
-        if (k === 'kasko') return vehicle.kaskoDate ? compactStokPrintDateDisplay(formatDate(vehicle.kaskoDate)) : '-';
-        if (k === 'muayene') return vehicle.muayeneDate ? compactStokPrintDateDisplay(formatDate(vehicle.muayeneDate)) : '-';
-        if (k === 'tescil') return vehicle.tescilTarihi ? compactStokPrintDateDisplay(formatDate(vehicle.tescilTarihi)) : '-';
+        if (k === 'sigorta') return vehicle.sigortaDate ? printDateDisp(vehicle.sigortaDate) : '-';
+        if (k === 'kasko') return vehicle.kaskoDate ? printDateDisp(vehicle.kaskoDate) : '-';
+        if (k === 'muayene') {
+            if (opts.printSeparateMuayeneColumns) {
+                return value === '-' ? '-' : (fd ? value : compactStokPrintDateDisplay(value));
+            }
+            return formatStokMuayeneCell(vehicle, { compact: !fd });
+        }
+        if (k === 'egzozMuayene') {
+            return value === '-' ? '-' : (fd ? value : compactStokPrintDateDisplay(value));
+        }
+        if (k === 'tescil') return vehicle.tescilTarihi ? printDateDisp(vehicle.tescilTarihi) : '-';
         if (k === 'kaskoDegeri') {
             var v = String(value);
             if (v === 'Kasko kodu girilmedi') return 'Kod yok';
@@ -1549,12 +1638,17 @@
                     if (kaskoDegeri == null || String(kaskoDegeri).trim() === '') kaskoDegeri = '-';
                     if (kaskoDegeri === '-' && (!vehicle.kaskoKodu || String(vehicle.kaskoKodu).trim() === '')) {
                         kaskoDegeri = 'Kasko kodu girilmedi';
-                    } else if (kaskoDegeri === '-' && !localStorage.getItem('medisa_kasko_liste')) {
+                    } else if (kaskoDegeri === '-' && !(typeof window.hasAnyKaskoListData === 'function' ? window.hasAnyKaskoListData() : !!localStorage.getItem('medisa_kasko_liste'))) {
                         kaskoDegeri = 'Excel yüklenmedi';
                     }
                     return String(kaskoDegeri).trim() || '-';
                 })(); break;
-                case 'muayene': value = vehicle.muayeneDate ? formatDate(vehicle.muayeneDate) : '-'; break;
+                case 'muayene':
+                    value = opts.printSeparateMuayeneColumns
+                        ? formatStokMuayeneDateOnlyForPrint(vehicle)
+                        : formatStokMuayeneCell(vehicle);
+                    break;
+                case 'egzozMuayene': value = formatStokEgzozDateOnlyForPrint(vehicle); break;
                 case 'kredi': value = vehicle.kredi === 'var' ? 'Var' : vehicle.kredi === 'yok' ? 'Yok' : '-'; break;
                 case 'lastik': value = vehicle.lastikDurumu === 'var' ? 'Var' : vehicle.lastikDurumu === 'yok' ? 'Yok' : '-'; break;
                 case 'utts': value = vehicle.uttsTanimlandi ? 'Evet' : 'Hayır'; break;
@@ -1565,7 +1659,7 @@
                 case 'tescil': value = vehicle.tescilTarihi ? formatDate(vehicle.tescilTarihi) : '-'; break;
             }
         }
-        if (opts.compact) return applyStokPrintCompact(vehicle, col, value);
+        if (opts.compact) return applyStokPrintCompact(vehicle, col, value, opts);
         return value;
     }
 
@@ -1579,7 +1673,9 @@
             alert('Lütfen önce bir şube seçin veya "Tümü" seçeneğini kullanın.');
             return;
         }
-        const { vehicles, activeColumns, titleText, dateRangeText, branches } = data;
+        const { vehicles, titleText, dateRangeText, branches } = data;
+        const excelColumns = expandStokMuayeneEgzozColumns(data.activeColumns);
+        const excelSplitMuayeneOpts = { printSeparateMuayeneColumns: true };
         if (vehicles.length === 0) {
             alert('Export Edilecek Taşıt Bulunamadı.');
             return;
@@ -1591,7 +1687,7 @@
         
         // Başlık satırı
         const titleRow = worksheet.addRow([titleText]);
-        worksheet.mergeCells(1, 1, 1, activeColumns.length);
+        worksheet.mergeCells(1, 1, 1, excelColumns.length);
         const titleCell = titleRow.getCell(1);
         titleCell.alignment = { horizontal: 'center', vertical: 'middle' };
         titleCell.fill = {
@@ -1610,7 +1706,7 @@
         
         // Tarih satırı
         const dateRow = worksheet.addRow([dateRangeText]);
-        worksheet.mergeCells(2, 1, 2, activeColumns.length);
+        worksheet.mergeCells(2, 1, 2, excelColumns.length);
         const dateCell = dateRow.getCell(1);
         dateCell.alignment = { horizontal: 'center', vertical: 'middle' };
         dateCell.fill = {
@@ -1631,7 +1727,7 @@
         worksheet.addRow([]);
         
         // Sütun başlıkları
-        const headerRow = worksheet.addRow(activeColumns.map(col => getColumnHeaderText(col.key)));
+        const headerRow = worksheet.addRow(excelColumns.map(col => getColumnHeaderText(col.key)));
         headerRow.eachCell((cell, colNumber) => {
             cell.fill = {
                 type: 'pattern',
@@ -1651,7 +1747,7 @@
         
         // Veri satırları
         vehicles.forEach((vehicle, index) => {
-            const row = activeColumns.map(col => getStokCellValue(vehicle, col, index));
+            const row = excelColumns.map(col => getStokCellValue(vehicle, col, index, excelSplitMuayeneOpts));
             const isEven = index % 2 === 0;
             const dataRow = worksheet.addRow(row);
             dataRow.eachCell((cell) => {
@@ -1672,103 +1768,23 @@
         });
         
         // Sütun genişliklerini içeriğe göre otomatik ayarla
-        activeColumns.forEach((col, colIndex) => {
+        excelColumns.forEach((col, colIndex) => {
             let maxLength = getColumnHeaderText(col.key).length;
-            
-            // Veri satırlarındaki en uzun metni bul
-            vehicles.forEach((vehicle) => {
-                let value = '-';
-                
-                if (col.isBase) {
-                    switch(col.key) {
-                        case 'sira':
-                            value = String(vehicles.indexOf(vehicle) + 1);
-                            break;
-                        case 'sube':
-                            const branch = vehicle.branchId ? branches.find(b => b.id === vehicle.branchId) : null;
-                            value = branch ? branch.name : '-';
-                            break;
-                        case 'yil':
-                            value = String(vehicle.year || '-');
-                            break;
-                        case 'marka':
-                            value = formatBrandModel(vehicle.brandModel || '-');
-                            break;
-                        case 'plaka':
-                            value = formatPlaka(vehicle.plate || '-');
-                            break;
-                        case 'sanziman':
-                            value = vehicle.transmission === 'manuel' ? 'Manuel' : vehicle.transmission === 'otomatik' ? 'Otomatik' : '-';
-                            break;
-                        case 'km':
-                            value = vehicle.km ? formatNumber(vehicle.km) : '-';
-                            break;
-                    }
-                } else {
-                    switch(col.key) {
-                        case 'sigorta':
-                            value = vehicle.sigortaDate ? formatDate(vehicle.sigortaDate) : '-';
-                            break;
-                        case 'kasko':
-                            value = vehicle.kaskoDate ? formatDate(vehicle.kaskoDate) : '-';
-                            break;
-                        case 'kaskoDegeri':
-                            var yearForKasko = vehicle.year || vehicle.modelYili || '';
-                            var kaskoDegeri = vehicle.kaskoDegeri;
-                            if (kaskoDegeri == null || kaskoDegeri === '') {
-                                kaskoDegeri = (typeof window.getKaskoDegeri === 'function') ? window.getKaskoDegeri(vehicle.kaskoKodu, yearForKasko) : '-';
-                            }
-                            if (kaskoDegeri == null || String(kaskoDegeri).trim() === '') kaskoDegeri = '-';
-                            if (kaskoDegeri === '-' && (!vehicle.kaskoKodu || String(vehicle.kaskoKodu).trim() === '')) {
-                                kaskoDegeri = 'Kasko kodu girilmedi';
-                            } else if (kaskoDegeri === '-' && !localStorage.getItem('medisa_kasko_liste')) {
-                                kaskoDegeri = 'Excel yüklenmedi';
-                            }
-                            value = String(kaskoDegeri).trim() || '-';
-                            break;
-                        case 'muayene':
-                            value = vehicle.muayeneDate ? formatDate(vehicle.muayeneDate) : '-';
-                            break;
-                        case 'kredi':
-                            value = vehicle.kredi === 'var' ? 'Var' : vehicle.kredi === 'yok' ? 'Yok' : '-';
-                            break;
-                        case 'lastik':
-                            value = vehicle.lastikDurumu === 'var' ? 'Var' : vehicle.lastikDurumu === 'yok' ? 'Yok' : '-';
-                            break;
-                        case 'utts':
-                            value = vehicle.uttsTanimlandi ? 'Evet' : 'Hayır';
-                            break;
-                        case 'takip':
-                            value = vehicle.takipCihaziMontaj ? 'Evet' : 'Hayır';
-                            break;
-                        case 'tramer':
-                            value = vehicle.tramer === 'var' ? 'Var' : vehicle.tramer === 'yok' ? 'Yok' : '-';
-                            break;
-                        case 'boya':
-                            value = vehicle.boya === 'var' ? 'Var' : vehicle.boya === 'yok' ? 'Yok' : '-';
-                            break;
-                        case 'kullanici':
-                            value = getVehicleUser(vehicle);
-                            break;
-                        case 'tescil':
-                            value = vehicle.tescilTarihi ? formatDate(vehicle.tescilTarihi) : '-';
-                            break;
-                    }
-                }
-                
-                const valueLength = String(value).length;
-                if (valueLength > maxLength) {
-                    maxLength = valueLength;
-                }
+            vehicles.forEach(function(vehicle, vIdx) {
+                const sv = String(getStokCellValue(vehicle, col, vIdx, excelSplitMuayeneOpts));
+                if (sv.length > maxLength) maxLength = sv.length;
             });
-            
-            // Minimum genişlik: metin uzunluğu + 2 (padding için)
-            const column = worksheet.getColumn(colIndex + 1);
-            column.width = Math.max(maxLength + 2, 8); // Minimum 8 karakter genişlik
+            let widthChars = Math.max(maxLength + 2, 8);
+            const cap = stokExcelColumnWidthCeilChars[col.key];
+            if (typeof cap === 'number') widthChars = Math.min(widthChars, cap);
+            worksheet.getColumn(colIndex + 1).width = widthChars;
         });
         
         // Dosya adı
-        const branchName = stokCurrentBranchId === 'all' ? 'Tumu' : (branches.find(b => b.id === stokCurrentBranchId)?.name || 'Stok');
+        let branchName = 'Tumu';
+        if (stokCurrentBranchId !== 'all' && stokCurrentBranchId) {
+            branchName = branches.find(b => b.id === stokCurrentBranchId)?.name || 'Stok';
+        }
         const fileName = `MEDISA_Stok_Raporu_${branchName}_${new Date().toISOString().split('T')[0]}.xlsx`;
 
         // İndir
@@ -1888,20 +1904,21 @@
     window.handleStokSearch = (typeof window.debounce === 'function') ? window.debounce(handleStokSearchImpl, 200) : handleStokSearchImpl;
 
     // Yazdır – Excel ile aynı veriyi tablo olarak yazdırır (ekran görüntüsü değil)
-    const stokPrintHeaders = { sira:'No.', sube:'Şube', yil:'Yıl', marka:'Marka/Mod.', plaka:'Plaka', sanziman:'Şanz', km:'KM', sigorta:'Sig. bit.', kasko:'Kas. bit.', kaskoDegeri:'Kas. değ.', muayene:'Muayene', kredi:'Hak M.', lastik:'Lastik', utts:'UTTS', takip:'Takip', tramer:'Tramer', boya:'Boya', kullanici:'Kull.', tescil:'Tescil' };
-    /* Yazdırma: plaka kısa metin — aşırı ağırlık diğer sütunları sıkıştırıp başlıkta harf kırılmasına yol açmasın */
+    const stokPrintHeaders = { sira:'No.', sube:'Şube', yil:'Yıl', marka:'Marka/Mod.', plaka:'Plaka', sanziman:'Şanz', km:'KM', sigorta:'Sig. bit.', kasko:'Kas. bit.', kaskoDegeri:'Kas. değ.', muayene:'Muay.', egzozMuayene:'Egzoz', kredi:'Hak M.', lastik:'Lastik', utts:'UTTS', takip:'Takip', tramer:'Tramer', boya:'Boya', kullanici:'Kull.', tescil:'Tescil' };
+    /* Yazdır: marka daha geniş (tek satıra yakın); plaka/egz. kısa içerik */
     const stokPrintColumnWeights = {
         sira: 3,
         yil: 5,
-        plaka: 11,
-        marka: 14,
-        sanziman: 7,
-        km: 9,
-        sube: 12,
+        plaka: 5,
+        marka: 19,
+        sanziman: 4,
+        km: 5,
+        sube: 6,
         sigorta: 9,
         kasko: 9,
         kaskoDegeri: 10,
-        muayene: 9,
+        muayene: 8,
+        egzozMuayene: 5,
         kredi: 8,
         lastik: 8,
         utts: 6,
@@ -1910,6 +1927,22 @@
         boya: 7,
         kullanici: 11,
         tescil: 9
+    };
+
+    /* Excel: bazı kolonların otomatik genişlik tavanı (şube/Otm./KM taşması) */
+    const stokExcelColumnWidthCeilChars = {
+        sira: 7,
+        sube: 22,
+        yil: 9,
+        marka: 40,
+        plaka: 12,
+        sanziman: 12,
+        km: 14,
+        muayene: 12,
+        egzozMuayene: 11,
+        sigorta: 12,
+        kasko: 12,
+        tescil: 12
     };
 
     function buildStokPrintColgroup(activeColumns) {
@@ -1930,11 +1963,13 @@
             alert('Yazdırılacak Taşıt Bulunamadı.');
             return;
         }
-        const { vehicles, activeColumns, titleText, dateRangeText } = data;
+        const { vehicles, titleText, dateRangeText } = data;
+        const activeColumns = expandStokMuayeneEgzozColumns(data.activeColumns);
+        const printOpts = { compact: true, printSeparateMuayeneColumns: true, fullPrintDates: true };
         const colgroup = buildStokPrintColgroup(activeColumns);
         const thead = activeColumns.map(col => `<th data-col="${col.key}">${escapeHtml(stokPrintHeaders[col.key] || col.key)}</th>`).join('');
         const rows = vehicles.map((vehicle, index) => {
-            const cells = activeColumns.map(col => `<td data-col="${col.key}">${escapeHtml(String(getStokCellValue(vehicle, col, index, { compact: true })))}</td>`).join('');
+            const cells = activeColumns.map(col => `<td data-col="${col.key}">${escapeHtml(String(getStokCellValue(vehicle, col, index, printOpts)))}</td>`).join('');
             return `<tr class="${index % 2 === 0 ? 'even' : 'odd'}">${cells}</tr>`;
         }).join('');
         const el = document.createElement('div');
@@ -1986,7 +2021,7 @@
                 <div class="stok-branch-count">${totalCount} Kullanıcı</div>
             </div>
         `;
-        
+
         // Şube kartları
         branches.forEach(branch => {
             const branchUsers = users.filter(function(u) {

@@ -34,6 +34,7 @@ if (!$data) {
         'sifreler' => [],
         'arac_aylik_hareketler' => [],
         'duzeltme_talepleri' => [],
+        'notificationReadState' => [],
     ];
 }
 

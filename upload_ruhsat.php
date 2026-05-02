@@ -16,6 +16,14 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
+$documentType = strtolower(trim((string)($_POST['documentType'] ?? 'ruhsat')));
+$config = medisaGetVehicleDocumentConfig($documentType);
+if (!$config) {
+    http_response_code(400);
+    echo json_encode(['error' => 'Gecersiz belge tipi'], JSON_UNESCAPED_UNICODE);
+    exit;
+}
+
 $vehicleId = trim((string)($_POST['vehicleId'] ?? ''));
 $vehicleVersion = isset($_POST['vehicleVersion']) ? (int)$_POST['vehicleVersion'] : null;
 if ($vehicleId === '') {
@@ -62,23 +70,19 @@ if (!medisaCanManageVehicleRecord($preVehicle, $context)) {
     exit;
 }
 
-if (!isset($_FILES['ruhsat']) || $_FILES['ruhsat']['error'] !== UPLOAD_ERR_OK) {
-    $err = $_FILES['ruhsat']['error'] ?? -1;
+$fileKey = isset($_FILES['document']) ? 'document' : 'ruhsat';
+
+if (!isset($_FILES[$fileKey]) || $_FILES[$fileKey]['error'] !== UPLOAD_ERR_OK) {
+    $err = $_FILES[$fileKey]['error'] ?? -1;
     $msg = ($err === UPLOAD_ERR_INI_SIZE || $err === UPLOAD_ERR_FORM_SIZE)
-        ? 'Dosya cok buyuk (max 5MB)'
-        : 'Dosya yuklenemedi';
+        ? 'Dosya boyutu tarayıcı veya sunucu limitini aşıyor. Mobilde limit genelde daha düşüktür; daha küçük bir PDF deneyin veya masaüstünden yükleyin.'
+        : 'Dosya yüklenemedi';
     http_response_code(400);
     echo json_encode(['error' => $msg], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
-$file = $_FILES['ruhsat'];
-$maxSize = 5 * 1024 * 1024;
-if (($file['size'] ?? 0) > $maxSize) {
-    http_response_code(400);
-    echo json_encode(['error' => 'Dosya en fazla 5MB olabilir'], JSON_UNESCAPED_UNICODE);
-    exit;
-}
+$file = $_FILES[$fileKey];
 
 $handle = fopen($file['tmp_name'], 'rb');
 $header = $handle ? fread($handle, 1024) : '';
@@ -105,31 +109,32 @@ if ($plate === '') {
     $plate = strtoupper($safeId);
 }
 
-$filename = $plate . '_' . time() . '.pdf';
-$ruhsatDir = __DIR__ . '/data/ruhsat';
-if (!is_dir($ruhsatDir)) {
-    @mkdir($ruhsatDir, 0755, true);
+$filename = $plate . '_' . $documentType . '_' . time() . '.pdf';
+$dataDir = __DIR__ . '/data/' . $config['dir'];
+if (!is_dir($dataDir)) {
+    @mkdir($dataDir, 0755, true);
 }
 
-$targetPath = $ruhsatDir . '/' . $filename;
+$targetPath = $dataDir . '/' . $filename;
 if (!move_uploaded_file($file['tmp_name'], $targetPath)) {
     http_response_code(500);
     echo json_encode(['error' => 'Dosya kaydedilemedi'], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
-$legacyTargetPath = $ruhsatDir . '/' . $safeId . '.pdf';
+$legacyTargetPath = $dataDir . '/' . $safeId . '.pdf';
 if ($legacyTargetPath !== $targetPath) {
     @copy($targetPath, $legacyTargetPath);
 }
 
-$previewPath = __DIR__ . '/data/ruhsat_preview/' . $safeId . '.jpg';
+$previewDir = __DIR__ . '/data/' . $config['dir'] . '_preview';
+$previewPath = $previewDir . '/' . $safeId . '.jpg';
 if (is_file($previewPath)) {
     @unlink($previewPath);
 }
 
-$ruhsatPath = 'ruhsat/' . $filename;
-$result = medisaMutateData(function (&$data) use ($vehicleId, $vehicleVersion, $ruhsatPath) {
+$documentPath = $config['dir'] . '/' . $filename;
+$result = medisaMutateData(function (&$data) use ($vehicleId, $vehicleVersion, $documentPath, $config) {
     $auth = medisaResolveAuthorizedContext($data, 'view_main_app');
     if (($auth['success'] ?? false) !== true) {
         return medisaBuildErrorResult($auth['message'] ?? 'Bu islem icin yetkiniz yok.', (int)($auth['status'] ?? 403));
@@ -151,12 +156,11 @@ $result = medisaMutateData(function (&$data) use ($vehicleId, $vehicleVersion, $
         return $versionCheck;
     }
 
-    $vehicle['ruhsatPath'] = $ruhsatPath;
+    $vehicle[$config['pathField']] = $documentPath;
     $newVehicleVersion = medisaBumpVehicleVersion($vehicle);
 
-    return [
+    $payload = [
         'success' => true,
-        'ruhsatPath' => $ruhsatPath,
         'vehicleId' => (string)$vehicleId,
         'vehicleVersion' => $newVehicleVersion,
         'vehicleVersions' => [[
@@ -164,7 +168,17 @@ $result = medisaMutateData(function (&$data) use ($vehicleId, $vehicleVersion, $
             'version' => $newVehicleVersion,
         ]],
     ];
+    if ($config['pathField'] === 'ruhsatPath') {
+        $payload['ruhsatPath'] = $documentPath;
+    }
+    return $payload;
 });
+
+if (($result['success'] ?? false) === true) {
+    $result['documentType'] = $documentType;
+    $result['documentPath'] = $documentPath;
+    $result['ruhsatPath'] = $documentType === 'ruhsat' ? $documentPath : null;
+}
 
 if (($result['success'] ?? false) !== true) {
     @unlink($targetPath);

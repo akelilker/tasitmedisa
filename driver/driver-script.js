@@ -2,56 +2,39 @@
    MEDISA KULLANICI MODÜLÜ - SCRIPT
    ========================================= */
 
-// API Base URL: /tasitmedisa/ veya /medisa/ altındaysa mutlak yol (PHP'ler driver klasöründe)
-const API_BASE = (function(){
-    var p = document.location.pathname || '';
-    var pl = p.toLowerCase();
-    if (pl.indexOf('/tasitmedisa') === 0) return '/tasitmedisa/driver/';
-    if (pl.indexOf('/medisa') === 0) return '/medisa/driver/';
-    var base = '/';
-    var driverIdx = pl.indexOf('/driver'); 
-    if (driverIdx !== -1) {
-      base = p.substring(0, driverIdx) + '/';
-    } else if (p && p !== '/') {
-      base = p.endsWith('/') ? p : p + '/';
-    }
-    return (base === '/' ? '/driver/' : base + 'driver/');
+// API ve yönlendirme yolları: bulunduğu app root'a göre dinamik çözülür.
+const APP_ROOT = (function() {
+    var p = document.location.pathname || '/';
+    var parts = String(p || '/').split('/').filter(Boolean);
+    if (!parts.length) return '/';
+    var lastPart = parts[parts.length - 1] || '';
+    if (lastPart.indexOf('.') !== -1) parts.pop();
+    var lastDir = (parts[parts.length - 1] || '').toLowerCase();
+    if (lastDir === 'driver' || lastDir === 'admin') parts.pop();
+    return parts.length ? ('/' + parts.join('/') + '/') : '/';
   })();
-  
-  // İkon/kaporta SVG base path (sürücü paneli farklı dizinde)
-  const ICON_BASE = (function(){
-    var p = document.location.pathname || '';
-    var pl = p.toLowerCase();
-    if (pl.indexOf('/tasitmedisa') === 0) return '/tasitmedisa/icon/';
-    if (pl.indexOf('/medisa') === 0) return '/medisa/icon/';
-    return '../icon/';
-  })();
-  
-  // Sayfa yönlendirmeleri: subpath altında değilse relative path (localhost/driver için)
-  const DRIVER_PAGE_BASE = (function(){
-    var p = document.location.pathname || '';
-    var pl = p.toLowerCase();
-    if (pl.indexOf('/tasitmedisa') === 0) return '/tasitmedisa/driver/';
-    if (pl.indexOf('/medisa') === 0) return '/medisa/driver/';
-    return '';
-  })();
-  const MAIN_APP_URL = (function() {
-    var p = document.location.pathname || '';
-    var pl = p.toLowerCase();
-    if (pl.indexOf('/tasitmedisa') === 0) return '/tasitmedisa/index.html';
-    if (pl.indexOf('/medisa') === 0) return '/medisa/index.html';
-    return '../index.html';
-  })();
-  const MAIN_SESSION_URL = (function() {
-    var p = document.location.pathname || '';
-    var pl = p.toLowerCase();
-    if (pl.indexOf('/tasitmedisa') === 0) return '/tasitmedisa/load.php';
-    if (pl.indexOf('/medisa') === 0) return '/medisa/load.php';
-    return '../load.php';
-  })();
+const API_BASE = (APP_ROOT === '/' ? '/driver/' : APP_ROOT + 'driver/');
+
+// İkon/kaporta SVG base path (sürücü paneli farklı dizinde)
+const ICON_BASE = (APP_ROOT === '/' ? '/icon/' : APP_ROOT + 'icon/');
+
+// Sayfa yönlendirmeleri
+const DRIVER_PAGE_BASE = API_BASE;
+const MAIN_APP_URL = (APP_ROOT === '/' ? '/index.html' : APP_ROOT + 'index.html');
+const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php');
   
   // Uygulama sürümü (footer #version-display - kullanıcı girişi ve paneli 78.1)
   const APP_VERSION = 'v78.1';
+  function showDriverOfflineReadonlyMessage() {
+    alert('İnternet bağlantısı yok. Son kayıtlı veri görüntüleniyor; değişiklikler kaydedilemez.');
+  }
+  function ensureDriverOnlineForWrite() {
+    if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+      showDriverOfflineReadonlyMessage();
+      return false;
+    }
+    return true;
+  }
   
   (function setDriverVersion() {
     function apply() {
@@ -438,25 +421,10 @@ const API_BASE = (function(){
   /** Muayene bitiş tarihi hesapla (ana panel + driver_event.php ile senkron). */
   function calculateNextMuayeneDate(tarihStr, vehicle) {
     if (!tarihStr) return '';
-    var nowYear = new Date().getFullYear();
-    var productionYear = parseInt(vehicle && vehicle.year, 10) || nowYear;
     var vehicleType = (vehicle && (vehicle.vehicleType || vehicle.tip)) ? (vehicle.vehicleType || vehicle.tip) : 'otomobil';
     vehicleType = String(vehicleType).toLowerCase();
     var isCommercial = vehicleType !== 'otomobil';
-
-    var events = (vehicle && vehicle.events) ? vehicle.events : [];
-    var hasMuayeneEvent = false;
-    for (var i = 0; i < events.length; i++) {
-      if (events[i] && events[i].type === 'muayene-guncelle') {
-        hasMuayeneEvent = true;
-        break;
-      }
-    }
-    var hasExistingMuayeneDate = !!(vehicle && vehicle.muayeneDate && String(vehicle.muayeneDate).trim());
-    var isFirstMuayene = !hasMuayeneEvent && !hasExistingMuayeneDate;
-    var firstPeriod = isFirstMuayene && productionYear === nowYear;
-
-    var years = isCommercial ? (firstPeriod ? 2 : 1) : (firstPeriod ? 3 : 2);
+    var years = isCommercial ? 1 : 2;
     try {
       var dt = new Date(tarihStr + 'T00:00:00');
       if (isNaN(dt.getTime())) return '';
@@ -573,14 +541,14 @@ const API_BASE = (function(){
       var usernameInput = document.getElementById('username');
       var passwordInput = document.getElementById('password');
   
-      /* Beni Hatırla: checkbox + kayıtlı kullanıcı adı/şifre doldur */
+      clearSavedDriverPassword();
+
+      /* Beni Hatırla: checkbox + kayıtlı kullanıcı adını doldur */
       var rememberCheckbox = document.getElementById('remember');
       if (rememberCheckbox && localStorage.getItem('driver_remember_me') === '1') {
           rememberCheckbox.checked = true;
           var savedUser = localStorage.getItem('driver_saved_username');
-          var savedPass = localStorage.getItem('driver_saved_password');
           if (usernameInput && savedUser) usernameInput.value = savedUser;
-          if (passwordInput && savedPass) passwordInput.value = savedPass;
       }
   
       function toggleLoginInputHasValue(el) {
@@ -648,7 +616,7 @@ const API_BASE = (function(){
                       try {
                           localStorage.setItem('driver_remember_me', '1');
                           localStorage.setItem('driver_saved_username', username);
-                          localStorage.setItem('driver_saved_password', password);
+                          localStorage.removeItem('driver_saved_password');
                       } catch (e) {}
                   } else {
                       try {
@@ -830,6 +798,7 @@ const API_BASE = (function(){
           
           setupEkstraNotAutoResize();
           setupKmInputs();
+          bindDriverDashboardTitleCase(document.getElementById('driver-action-area'));
 
           placePwaWrapper();
 
@@ -951,11 +920,15 @@ const API_BASE = (function(){
       const kaskoW = checkDateWarningsDriver(vehicle.kaskoDate);
       const muayeneW = checkDateWarningsDriver(vehicle.muayeneDate);
       const egzozMuayeneDate = vehicle.egzozMuayeneDate || '';
-      const hasSeparateEgzozMuayene = !!(egzozMuayeneDate && egzozMuayeneDate !== vehicle.muayeneDate);
-      const egzozW = checkDateWarningsDriver(hasSeparateEgzozMuayene ? egzozMuayeneDate : '');
+      const hasEgzozMuayeneSaved = !!(egzozMuayeneDate && String(egzozMuayeneDate).trim());
+      const egzozW = checkDateWarningsDriver(hasEgzozMuayeneSaved ? egzozMuayeneDate : '');
       
-      const anahtarLabel = (vehicle.anahtar === 'var') ? (vehicle.anahtarNerede || 'Var') : 'Yoktur.';
-      const lastikLabel = (vehicle.lastikDurumu === 'var') ? (vehicle.lastikAdres || 'Var') : 'Yoktur.';
+      const anahtarLabel = (vehicle.anahtar === 'var')
+          ? ((vehicle.anahtarNerede && String(vehicle.anahtarNerede).trim()) ? capitalizeWords(String(vehicle.anahtarNerede).trim()) : 'Var')
+          : 'Yoktur.';
+      const lastikLabel = (vehicle.lastikDurumu === 'var')
+          ? ((vehicle.lastikAdres && String(vehicle.lastikAdres).trim()) ? capitalizeWords(String(vehicle.lastikAdres).trim()) : 'Var')
+          : 'Yoktur.';
       const uttsLabel = vehicle.uttsTanimlandi ? 'Evet' : 'Hayır';
       const sigortaSaved = !!(vehicle.sigortaDate && vehicle.sigortaDate.trim());
       const kaskoSaved = !!(vehicle.kaskoDate && vehicle.kaskoDate.trim());
@@ -971,13 +944,13 @@ const API_BASE = (function(){
       const infoEl = document.getElementById('driver-vehicle-info');
       if (infoEl) {
           infoEl.innerHTML = `
-              <div class="driver-info-item"><span class="label">Şube</span><span class="value">${escapeHtmlDriver(vehicle.branchName || '-')}</span></div>
+              <div class="driver-info-item"><span class="label">Şube</span><span class="value">${escapeHtmlDriver((vehicle.branchName != null && String(vehicle.branchName).trim()) ? capitalizeWords(String(vehicle.branchName).trim()) : '-')}</span></div>
               <div class="driver-info-item"><span class="label">Üretim Yılı</span><span class="value">${escapeHtmlDriver(vehicle.year || '-')}</span></div>
               <div class="driver-info-item ${kmSavedClass} ${kmClass}"><span class="label">KM</span><span class="value">${escapeHtmlDriver(kmFormatted)}</span></div>
               <div class="driver-info-item ${sigortaW.class}"><span class="label">Sigorta Bitiş</span><span class="value">${formatDriverDate(vehicle.sigortaDate) || '-'}</span></div>
               <div class="driver-info-item ${kaskoW.class}"><span class="label">Kasko Bitiş</span><span class="value">${formatDriverDate(vehicle.kaskoDate) || '-'}</span></div>
               <div class="driver-info-item ${muayeneW.class}"><span class="label">Muayene Bitiş</span><span class="value">${formatDriverDate(vehicle.muayeneDate) || '-'}</span></div>
-              ${hasSeparateEgzozMuayene ? `<div class="driver-info-item ${egzozW.class}"><span class="label">Egzos Muayenesi</span><span class="value">${formatDriverDate(egzozMuayeneDate) || '-'}</span></div>` : ''}
+              ${hasEgzozMuayeneSaved ? `<div class="driver-info-item ${egzozW.class}"><span class="label">Egzos Muayene Bitiş</span><span class="value">${formatDriverDate(egzozMuayeneDate) || '-'}</span></div>` : ''}
               <div class="driver-info-item ${anahtarSavedClass}"><span class="label">Yedek Anahtar</span><span class="value">${escapeHtmlDriver(anahtarLabel)}</span></div>
               <div class="driver-info-item ${lastikSavedClass}"><span class="label">Lastik Durumu</span><span class="value">${escapeHtmlDriver(lastikLabel)}</span></div>
               <div class="driver-info-item"><span class="label">UTTS</span><span class="value">${escapeHtmlDriver(uttsLabel)}</span></div>
@@ -1018,23 +991,33 @@ const API_BASE = (function(){
           dropdown.style.setProperty('transform', 'none', 'important');
           dropdown.style.setProperty('width', `${targetWidth}px`, 'important');
           dropdown.style.setProperty('max-width', `${targetWidth}px`, 'important');
-      } else {
-          // Desktop: anchor dropdown to the left edge and expand right.
-          const rowRect = row.getBoundingClientRect();
-          const viewportPadding = 16;
-          const availableWidth = Math.max(220, Math.floor(window.innerWidth - rowRect.left - viewportPadding));
-          const desiredWidth = Math.floor(window.innerWidth * 0.5);
-          const targetWidth = Math.max(300, Math.min(desiredWidth, availableWidth));
+    } else {
+        const rowRect = row.getBoundingClientRect();
+        const dashboard = document.querySelector('.driver-dashboard-container');
+        const dashboardRect = dashboard ? dashboard.getBoundingClientRect() : null;
+        const viewportPadding = 16;
+        const containerPadding = 12;
+        const viewportMaxWidth = Math.max(220, Math.floor(window.innerWidth - (viewportPadding * 2)));
+        const containerMaxWidth = dashboardRect
+            ? Math.max(220, Math.floor(dashboardRect.width - (containerPadding * 2)))
+            : viewportMaxWidth;
+        const halfContainerWidth = Math.max(220, Math.floor(containerMaxWidth * 0.5));
+        const targetWidth = Math.min(420, viewportMaxWidth, containerMaxWidth, halfContainerWidth);
+        const minLeft = dashboardRect ? Math.round(dashboardRect.left + containerPadding) : viewportPadding;
+        const maxLeft = dashboardRect
+            ? Math.round(dashboardRect.right - targetWidth - containerPadding)
+            : Math.round(window.innerWidth - targetWidth - viewportPadding);
+        const targetLeft = Math.max(minLeft, Math.min(Math.round(rowRect.left), maxLeft));
 
-          dropdown.style.setProperty('position', 'fixed', 'important');
-          dropdown.style.setProperty('top', `${Math.round(rowRect.bottom + 4)}px`, 'important');
-          dropdown.style.setProperty('left', `${Math.round(rowRect.left)}px`, 'important');
-          dropdown.style.setProperty('right', 'auto', 'important');
-          dropdown.style.setProperty('transform', 'none', 'important');
-          dropdown.style.setProperty('width', `${targetWidth}px`, 'important');
-          dropdown.style.setProperty('max-width', `${targetWidth}px`, 'important');
-      }
-  }
+        dropdown.style.setProperty('position', 'fixed', 'important');
+        dropdown.style.setProperty('top', `${Math.round(rowRect.bottom + 4)}px`, 'important');
+        dropdown.style.setProperty('left', `${targetLeft}px`, 'important');
+        dropdown.style.setProperty('right', 'auto', 'important');
+        dropdown.style.setProperty('transform', 'none', 'important');
+        dropdown.style.setProperty('width', `${targetWidth}px`, 'important');
+        dropdown.style.setProperty('max-width', `${targetWidth}px`, 'important');
+    }
+}
 
   function setupPlateDropdown(vehicles) {
       const dropdown = document.getElementById('driver-plate-dropdown');
@@ -1240,7 +1223,7 @@ const API_BASE = (function(){
                           <span>Egzos Muayenesi Farklı Tarih İse İşaretleyin..</span>
                       </label>
                       <div id="driver-muayene-egzoz-date-wrap-${vid}" class="form-group driver-egzoz-date-wrap">
-                          <label for="driver-muayene-egzoz-tarih-${vid}">Egzos Muayenesi Bitiş Tarihi</label>
+                          <label for="driver-muayene-egzoz-tarih-${vid}">Egzos Muayene Tarihi</label>
                           <div class="driver-date-wrap"><input type="date" id="driver-muayene-egzoz-tarih-${vid}" class="form-input" style="width:100%" disabled></div>
                       </div>
                       <div class="universal-btn-group">
@@ -1289,10 +1272,8 @@ const API_BASE = (function(){
                       </div>
                   </div>
               </div>
-              <div class="driver-action-group driver-action-footer">
-                  <button type="button" onclick="saveVehicleData('${vid}')" class="universal-btn-save" id="btn-save-${vid}">Bildir</button>
-                  <div id="status-${vid}" class="status-message"></div>
-              </div>
+              <div class="driver-action-group driver-action-footer"><button type="button" onclick="saveVehicleData('${vid}')" class="universal-btn-save" id="btn-save-${vid}">Bildir</button><div id="status-${vid}" class="status-message"></div></div>
+              <div class="driver-action-group driver-action-feedback-slot driver-request-fab-row"><button type="button" class="driver-action-btn-feedback driver-request-fab" onclick="openDriverFeedbackModal()" aria-label="Talep, şikayet veya öneri gönder"><svg class="driver-action-btn-feedback-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.05" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h14a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3h-2.8L18 21l-5-3H5a3 3 0 0 1-3-3V7a3 3 0 0 1 3-3z"></path><line x1="7" y1="9" x2="17" y2="9"></line><line x1="7" y1="13" x2="14" y2="13"></line></svg><span class="driver-request-fab-label">Talep Gönder</span></button></div>
           </div>
       `;
   }
@@ -1397,6 +1378,7 @@ const API_BASE = (function(){
   };
   
   window.submitDriverAction = async function(type, vid) {
+      if (!ensureDriverOnlineForWrite()) return;
       if (type === 'km') {
           submitKmOnly(vid);
           return;
@@ -1442,8 +1424,8 @@ const API_BASE = (function(){
           bakim_durumu: type === 'bakim' ? 1 : 0,
           bakim_aciklama: type === 'bakim' ? capitalizeWords((document.getElementById('bakim-detay-' + vid) || {}).value.trim()) : '',
           bakim_tarih: type === 'bakim' ? (document.getElementById('bakim-tarih-' + vid) || {}).value : '',
-          bakim_servis: type === 'bakim' ? ((document.getElementById('bakim-servis-' + vid) || {}).value || '').trim() : '',
-          bakim_kisi: type === 'bakim' ? ((document.getElementById('bakim-kisi-' + vid) || {}).value || '').trim() : '',
+          bakim_servis: type === 'bakim' ? capitalizeWords(((document.getElementById('bakim-servis-' + vid) || {}).value || '').trim()) : '',
+          bakim_kisi: type === 'bakim' ? capitalizeWords(((document.getElementById('bakim-kisi-' + vid) || {}).value || '').trim()) : '',
           bakim_km: type === 'bakim' ? ((document.getElementById('bakim-km-' + vid) || {}).value || '').trim() : '',
           bakim_tutar: type === 'bakim' ? ((document.getElementById('bakim-tutar-' + vid) || {}).value || '').trim() : '',
           kaza_durumu: type === 'kaza' ? 1 : 0,
@@ -1517,6 +1499,7 @@ const API_BASE = (function(){
   };
   
   window.submitKmOnly = async function(vid) {
+      if (!ensureDriverOnlineForWrite()) return;
       const kmEl = document.getElementById('km-' + vid);
       const km = kmEl ? parseInt(String(kmEl.value).replace(/\D/g, ''), 10) : 0;
       if (!km || km <= 0) {
@@ -1976,16 +1959,16 @@ const API_BASE = (function(){
       }
       const egzozCheckbox = document.getElementById('driver-muayene-egzoz-different' + suffix);
       const egzozDifferent = !!(egzozCheckbox && egzozCheckbox.checked);
-      const egzozMuayeneDate = egzozDifferent
+      const egzozMuayeneYapilmaDate = egzozDifferent
           ? (document.getElementById('driver-muayene-egzoz-tarih' + suffix)?.value.trim() || '')
           : '';
-      if (egzozDifferent && !egzozMuayeneDate) {
-          alert('Egzos Muayenesi Bitiş Tarihi zorunludur!');
+      if (egzozDifferent && !egzozMuayeneYapilmaDate) {
+          alert('Egzos Muayene Tarihi zorunludur!');
           const egzozInput = document.getElementById('driver-muayene-egzoz-tarih' + suffix);
           if (egzozInput) egzozInput.focus();
           return null;
       }
-      return { tarih: tarih, egzozMuayeneDate: egzozMuayeneDate };
+      return { tarih: tarih, egzozMuayeneYapilmaDate: egzozMuayeneYapilmaDate };
   }
 
   function positionAndShowMuayenePopover(dateInputEl, source) {
@@ -2033,6 +2016,7 @@ const API_BASE = (function(){
   };
 
   window.confirmMuayeneSubmit = async function() {
+      if (!ensureDriverOnlineForWrite()) return;
       isMuayeneConfirmed = true;
       hideMuayenePopoverAndRestore();
       if (pendingMuayeneVehicleId) {
@@ -2086,6 +2070,7 @@ const API_BASE = (function(){
   };
   
   window.saveDriverEventFromBlock = async function(type, vehicleId) {
+      if (!ensureDriverOnlineForWrite()) return;
       vehicleId = String(vehicleId);
       if (!vehicleId || !currentToken) return;
       let data = {};
@@ -2094,13 +2079,13 @@ const API_BASE = (function(){
           const active = block ? block.querySelector('.driver-radio-btn.active') : null;
           if (!active) { alert('Lütfen Durum seçiniz!'); return; }
           const durum = active.dataset.value;
-          data = { durum: durum, detay: durum === 'var' ? (document.getElementById('driver-anahtar-detay-' + vehicleId)?.value.trim() || '') : '' };
+          data = { durum: durum, detay: durum === 'var' ? capitalizeWords(document.getElementById('driver-anahtar-detay-' + vehicleId)?.value.trim() || '') : '' };
       } else if (type === 'lastik') {
           const block = document.getElementById('lastik-block-' + vehicleId);
           const active = block ? block.querySelector('.driver-radio-btn.active') : null;
           if (!active) { alert('Lütfen Durum seçiniz!'); return; }
           const durum = active.dataset.value;
-          data = { durum: durum, adres: durum === 'var' ? (document.getElementById('driver-lastik-adres-' + vehicleId)?.value.trim() || '') : '' };
+          data = { durum: durum, adres: durum === 'var' ? capitalizeWords(document.getElementById('driver-lastik-adres-' + vehicleId)?.value.trim() || '') : '' };
       } else if (type === 'muayene') {
           const payload = getDriverMuayenePayload(vehicleId);
           if (!payload) return;
@@ -2120,8 +2105,8 @@ const API_BASE = (function(){
           if (!tarih) { alert('Tarih zorunludur!'); return; }
           data = {
               tarih: tarih,
-              firma: document.getElementById('driver-sigorta-firma-' + vehicleId)?.value.trim() || '',
-              acente: document.getElementById('driver-sigorta-acente-' + vehicleId)?.value.trim() || '',
+              firma: capitalizeWords(document.getElementById('driver-sigorta-firma-' + vehicleId)?.value.trim() || ''),
+              acente: capitalizeWords(document.getElementById('driver-sigorta-acente-' + vehicleId)?.value.trim() || ''),
               iletisim: document.getElementById('driver-sigorta-iletisim-' + vehicleId)?.value.trim() || ''
           };
       } else if (type === 'kasko') {
@@ -2129,8 +2114,8 @@ const API_BASE = (function(){
           if (!tarih) { alert('Tarih zorunludur!'); return; }
           data = {
               tarih: tarih,
-              firma: document.getElementById('driver-kasko-firma-' + vehicleId)?.value.trim() || '',
-              acente: document.getElementById('driver-kasko-acente-' + vehicleId)?.value.trim() || '',
+              firma: capitalizeWords(document.getElementById('driver-kasko-firma-' + vehicleId)?.value.trim() || ''),
+              acente: capitalizeWords(document.getElementById('driver-kasko-acente-' + vehicleId)?.value.trim() || ''),
               iletisim: document.getElementById('driver-kasko-iletisim-' + vehicleId)?.value.trim() || ''
           };
       } else return;
@@ -2157,6 +2142,7 @@ const API_BASE = (function(){
   };
   
   window.saveDriverEvent = async function(type) {
+      if (!ensureDriverOnlineForWrite()) return;
       const vehicleId = currentDriverEventVehicleId;
       if (!vehicleId || !currentToken) return;
       let data = {};
@@ -2164,12 +2150,12 @@ const API_BASE = (function(){
           const active = document.querySelector('#driver-anahtar-modal .driver-radio-btn.active');
           if (!active) { alert('Lütfen Durum seçiniz!'); return; }
           const durum = active.dataset.value;
-          data = { durum: durum, detay: durum === 'var' ? (document.getElementById('driver-anahtar-detay')?.value.trim() || '') : '' };
+          data = { durum: durum, detay: durum === 'var' ? capitalizeWords(document.getElementById('driver-anahtar-detay')?.value.trim() || '') : '' };
       } else if (type === 'lastik') {
           const active = document.querySelector('#driver-lastik-modal .driver-radio-btn.active');
           if (!active) { alert('Lütfen Durum seçiniz!'); return; }
           const durum = active.dataset.value;
-          data = { durum: durum, adres: durum === 'var' ? (document.getElementById('driver-lastik-adres')?.value.trim() || '') : '' };
+          data = { durum: durum, adres: durum === 'var' ? capitalizeWords(document.getElementById('driver-lastik-adres')?.value.trim() || '') : '' };
       } else if (type === 'utts') {
           const active = document.querySelector('#driver-utts-modal .driver-radio-btn.active');
           data = { durum: active && active.dataset.value === 'evet' };
@@ -2194,8 +2180,8 @@ const API_BASE = (function(){
           }
           data = {
               tarih: tarih,
-              firma: document.getElementById('driver-sigorta-firma')?.value.trim() || '',
-              acente: document.getElementById('driver-sigorta-acente')?.value.trim() || '',
+              firma: capitalizeWords(document.getElementById('driver-sigorta-firma')?.value.trim() || ''),
+              acente: capitalizeWords(document.getElementById('driver-sigorta-acente')?.value.trim() || ''),
               iletisim: document.getElementById('driver-sigorta-iletisim')?.value.trim() || ''
           };
       } else if (type === 'kasko') {
@@ -2206,8 +2192,8 @@ const API_BASE = (function(){
           }
           data = {
               tarih: tarih,
-              firma: document.getElementById('driver-kasko-firma')?.value.trim() || '',
-              acente: document.getElementById('driver-kasko-acente')?.value.trim() || '',
+              firma: capitalizeWords(document.getElementById('driver-kasko-firma')?.value.trim() || ''),
+              acente: capitalizeWords(document.getElementById('driver-kasko-acente')?.value.trim() || ''),
               iletisim: document.getElementById('driver-kasko-iletisim')?.value.trim() || ''
           };
       }
@@ -2438,8 +2424,8 @@ const API_BASE = (function(){
                   bakim_durumu: bakimVar ? 1 : 0,
                   bakim_aciklama: capitalizeWords(bakimAciklama),
                   bakim_tarih: bakimTarih,
-                  bakim_servis: bakimServis,
-                  bakim_kisi: bakimKisi,
+                  bakim_servis: capitalizeWords(bakimServis),
+                  bakim_kisi: capitalizeWords(bakimKisi),
                   bakim_km: bakimKm,
                   bakim_tutar: bakimTutar,
                   kaza_durumu: kazaVar ? 1 : 0,
@@ -2708,6 +2694,30 @@ const API_BASE = (function(){
       return w.charAt(0).toLocaleUpperCase('tr-TR') + w.slice(1).toLocaleLowerCase('tr-TR');
     }).join(' ');
   }
+
+  /** Dashboard aksiyon alanı: odaktan çıkınca metni kelime başı büyük yap (tr-TR). KM/tutar/sayı ve iletişim satırı hariç. */
+  function bindDriverDashboardTitleCase(areaEl) {
+      if (!areaEl || areaEl.nodeType !== 1) return;
+      areaEl.querySelectorAll('textarea, input[type="text"]').forEach(function(el) {
+          var id = el.id || '';
+          if (/km-|kaza-tutar-|bakim-km-|bakim-tutar-|iletisim-/i.test(id)) return;
+          if (el.classList.contains('driver-km-input')) return;
+          if (el.getAttribute('inputmode') === 'numeric') return;
+          el.addEventListener('blur', function () {
+              var raw = el.value;
+              var v = raw.trim();
+              if (!v) return;
+              if (/[^\s@]+@[^\s@]+\.[^\s@]+/.test(v)) return;
+              var out = capitalizeWords(v);
+              if (out !== raw) {
+                  el.value = out;
+                  try {
+                      el.dispatchEvent(new Event('input', { bubbles: true }));
+                  } catch (e) {}
+              }
+          });
+      });
+  }
   
   function renderHistoryList() {
       var listEl = document.getElementById('history-list');
@@ -2763,7 +2773,8 @@ const API_BASE = (function(){
               } else if (item.eventType === 'muayene-guncelle') {
                   detailsHtml = '<p>Muayene bilgisi g\u00fcncellendi olarak bildirildi.</p>';
                   if (d.bitisTarihi) detailsHtml += `<p>Biti\u015f tarihi: ${escapeHtmlDriver(d.bitisTarihi)}.</p>`;
-                  if (d.egzozMuayeneDate) detailsHtml += `<p>Egzos muayenesi: ${escapeHtmlDriver(d.egzozMuayeneDate)}.</p>`;
+                  if (d.egzozMuayeneYapilmaDate) detailsHtml += `<p>Egzos muayene — yapt\u0131r\u0131lan: ${escapeHtmlDriver(d.egzozMuayeneYapilmaDate)}.</p>`;
+                  if (d.egzozMuayeneDate) detailsHtml += `<p>Egzos muayene — biti\u015f: ${escapeHtmlDriver(d.egzozMuayeneDate)}.</p>`;
               } else if (item.eventType === 'kasko-guncelle') {
                   detailsHtml = '<p>Kasko yenilemesi bildirildi.</p>';
                   if (d.bitisTarihi) detailsHtml += `<p>Biti\u015f tarihi: ${escapeHtmlDriver(d.bitisTarihi)}.</p>`;
@@ -2874,6 +2885,7 @@ const API_BASE = (function(){
   };
   
   window.submitEditRequest = async function() {
+      if (!ensureDriverOnlineForWrite()) return;
       const record = window._historyRecordMap && window._historyRecordMap[currentRecordId];
       if (!record) return;
       const visibleSection = window._editRequestVisibleSection || 'km';
@@ -2945,6 +2957,276 @@ const API_BASE = (function(){
       }
   };
 
+  function setDriverFeedbackMessage(message, isError) {
+      const messageEl = document.getElementById('driver-feedback-message-status');
+      if (!messageEl) return;
+      messageEl.textContent = message || '';
+      messageEl.classList.toggle('is-error', !!isError);
+      messageEl.classList.toggle('is-success', !!message && !isError);
+  }
+
+  /** Talep modalı Konu Türü: kayıt şube dropdown ile aynı koyu liste (native select yerine). */
+  function closeDriverFeedbackTypeList() {
+      var list = document.getElementById('driver-feedback-type-list');
+      var trigger = document.getElementById('driver-feedback-type-trigger');
+      if (!list || !trigger) return;
+      list.classList.remove('open');
+      trigger.setAttribute('aria-expanded', 'false');
+      list.setAttribute('aria-hidden', 'true');
+      list.style.position = '';
+      list.style.top = '';
+      list.style.bottom = '';
+      list.style.left = '';
+      list.style.right = '';
+      list.style.width = '';
+      list.style.maxHeight = '';
+      list.style.overflowY = '';
+      list.style.marginTop = '';
+      list.style.marginBottom = '';
+  }
+
+  function syncDriverFeedbackTypeTriggerFromSelect() {
+      var select = document.getElementById('driver-feedback-type');
+      var trigger = document.getElementById('driver-feedback-type-trigger');
+      var list = document.getElementById('driver-feedback-type-list');
+      if (!select || !trigger || !list) return;
+      var idx = select.selectedIndex >= 0 ? select.selectedIndex : 0;
+      var opt = select.options[idx];
+      trigger.textContent = opt ? opt.textContent : '';
+      var val = select.value;
+      list.querySelectorAll('.vehicle-branch-option').forEach(function(o) {
+          o.classList.toggle('selected', o.getAttribute('data-value') === val);
+      });
+  }
+
+  function positionDriverFeedbackTypeList() {
+      var modal = document.getElementById('driver-feedback-modal');
+      var modalBody = modal && modal.querySelector('.modal-body');
+      var trigger = document.getElementById('driver-feedback-type-trigger');
+      var list = document.getElementById('driver-feedback-type-list');
+      if (!trigger || !list) return;
+      var r = trigger.getBoundingClientRect();
+      var triggerHeight = trigger.offsetHeight || r.height || 44;
+      var gap = 6;
+      var edgePad = 10;
+      var minListPx = 56;
+      var maxListCap = 320;
+      var spaceBelow = 240;
+      var spaceAbove = 240;
+      if (modalBody) {
+          var br = modalBody.getBoundingClientRect();
+          spaceBelow = Math.max(0, Math.floor(br.bottom - r.bottom - gap - edgePad));
+          spaceAbove = Math.max(0, Math.floor(r.top - br.top - gap - edgePad));
+      } else {
+          var vh = window.innerHeight || document.documentElement.clientHeight || 800;
+          spaceBelow = Math.max(0, Math.floor(vh - r.bottom - gap - edgePad));
+          spaceAbove = Math.max(0, Math.floor(r.top - gap - edgePad));
+      }
+      var contentScroll = list.scrollHeight || 0;
+      var desiredOpen = contentScroll > 0 ? contentScroll : 220;
+      var useAbove = spaceBelow < Math.min(120, desiredOpen) && spaceAbove > spaceBelow;
+      var rawMax = useAbove ? spaceAbove : spaceBelow;
+      var maxList = Math.min(maxListCap, Math.max(0, rawMax));
+      var listMaxHeight = Math.min(desiredOpen + 2, maxList > 0 ? maxList : minListPx);
+      list.style.position = 'absolute';
+      list.style.left = '0';
+      list.style.right = '0';
+      list.style.width = '100%';
+      list.style.maxHeight = listMaxHeight + 'px';
+      list.style.overflowY = 'auto';
+      list.style.marginTop = '0';
+      list.style.marginBottom = '0';
+      if (useAbove) {
+          list.style.top = 'auto';
+          list.style.bottom = (triggerHeight + 4) + 'px';
+      } else {
+          list.style.top = (triggerHeight + 4) + 'px';
+          list.style.bottom = 'auto';
+      }
+  }
+
+  function initDriverFeedbackTypeCustomSelect() {
+      var select = document.getElementById('driver-feedback-type');
+      var trigger = document.getElementById('driver-feedback-type-trigger');
+      var list = document.getElementById('driver-feedback-type-list');
+      var wrap = document.querySelector('#driver-feedback-modal .driver-feedback-type-dropdown-wrap');
+      if (!select || !trigger || !list || !wrap) return;
+      if (trigger.dataset.feedbackTypeBound === '1') return;
+      trigger.dataset.feedbackTypeBound = '1';
+
+      function rebuildOptionRows() {
+          list.innerHTML = '';
+          for (var i = 0; i < select.options.length; i++) {
+              var opt = select.options[i];
+              var div = document.createElement('div');
+              div.className = 'vehicle-branch-option';
+              div.setAttribute('role', 'option');
+              div.setAttribute('data-value', opt.value);
+              div.textContent = opt.textContent;
+              list.appendChild(div);
+          }
+          syncDriverFeedbackTypeTriggerFromSelect();
+      }
+      rebuildOptionRows();
+
+      trigger.addEventListener('click', function(ev) {
+          ev.preventDefault();
+          ev.stopPropagation();
+          var isOpen = list.classList.contains('open');
+          if (isOpen) {
+              closeDriverFeedbackTypeList();
+          } else {
+              list.classList.add('open');
+              trigger.setAttribute('aria-expanded', 'true');
+              list.setAttribute('aria-hidden', 'false');
+              positionDriverFeedbackTypeList();
+              requestAnimationFrame(function() { positionDriverFeedbackTypeList(); });
+          }
+      });
+      trigger.addEventListener('keydown', function(ev) {
+          if (ev.key === 'Enter' || ev.key === ' ') {
+              ev.preventDefault();
+              trigger.click();
+          }
+          if (ev.key === 'Escape' && list.classList.contains('open')) {
+              ev.preventDefault();
+              closeDriverFeedbackTypeList();
+          }
+      });
+
+      list.addEventListener('click', function(ev) {
+          var option = ev.target.closest('.vehicle-branch-option');
+          if (!option || !option.hasAttribute('data-value')) return;
+          var value = option.getAttribute('data-value');
+          select.value = value;
+          list.querySelectorAll('.vehicle-branch-option').forEach(function(o) { o.classList.remove('selected'); });
+          option.classList.add('selected');
+          trigger.textContent = option.textContent;
+          closeDriverFeedbackTypeList();
+          select.dispatchEvent(new Event('change', { bubbles: true }));
+      });
+
+      /* Capture: modal içindeki modal-container stopPropagation yüzünden bubble document'e çıkmıyor */
+      document.addEventListener('click', function(ev) {
+          if (!list.classList.contains('open')) return;
+          if (wrap.contains(ev.target)) return;
+          closeDriverFeedbackTypeList();
+      }, true);
+      document.addEventListener('keydown', function(ev) {
+          if (ev.key !== 'Escape') return;
+          if (!list.classList.contains('open')) return;
+          ev.preventDefault();
+          closeDriverFeedbackTypeList();
+      }, true);
+      window.addEventListener('resize', function() {
+          if (list.classList.contains('open')) closeDriverFeedbackTypeList();
+      });
+  }
+
+  if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initDriverFeedbackTypeCustomSelect);
+  } else {
+      initDriverFeedbackTypeCustomSelect();
+  }
+
+  window.openDriverFeedbackModal = function() {
+      const modal = document.getElementById('driver-feedback-modal');
+      const form = document.getElementById('driver-feedback-form');
+      if (!modal) return;
+      closeDriverFeedbackTypeList();
+      if (form) form.reset();
+      syncDriverFeedbackTypeTriggerFromSelect();
+      setDriverFeedbackMessage('', false);
+      const vehicle = typeof getSelectedVehicle === 'function' ? getSelectedVehicle() : null;
+      const vid = vehicle && vehicle.id != null ? String(vehicle.id) : '';
+      if (vid) {
+          const inner = document.querySelector('.driver-action-area-inner[data-vehicle-id="' + vid + '"]');
+          if (inner) inner.classList.add('driver-feedback-panel-open');
+      }
+      modal.classList.add('show');
+      updateDriverModalBodyClass();
+      setTimeout(function() {
+          const messageInput = document.getElementById('driver-feedback-message');
+          if (messageInput) messageInput.focus();
+      }, 50);
+  };
+
+  window.closeDriverFeedbackModal = function() {
+      const modal = document.getElementById('driver-feedback-modal');
+      const form = document.getElementById('driver-feedback-form');
+      closeDriverFeedbackTypeList();
+      if (modal) modal.classList.remove('show');
+      if (form) form.reset();
+      setDriverFeedbackMessage('', false);
+      document.querySelectorAll('.driver-action-area-inner.driver-feedback-panel-open').forEach(function(el) {
+          el.classList.remove('driver-feedback-panel-open');
+      });
+      updateDriverModalBodyClass();
+  };
+
+  window.submitDriverFeedback = async function(event) {
+      if (event && event.preventDefault) event.preventDefault();
+      if (!ensureDriverOnlineForWrite()) return false;
+      const vehicle = getSelectedVehicle();
+      const typeEl = document.getElementById('driver-feedback-type');
+      const messageEl = document.getElementById('driver-feedback-message');
+      const submitBtn = document.getElementById('driver-feedback-submit');
+      const type = typeEl ? String(typeEl.value || '').trim() : '';
+      const message = messageEl ? String(messageEl.value || '').trim() : '';
+
+      if (!vehicle || vehicle.id == null) {
+          setDriverFeedbackMessage('Taşıt bilgisi bulunamadı.', true);
+          return false;
+      }
+      if (!type) {
+          setDriverFeedbackMessage('Konu türünü seçmelisiniz.', true);
+          return false;
+      }
+      if (!message) {
+          setDriverFeedbackMessage('Mesaj alanını doldurmalısınız.', true);
+          return false;
+      }
+      const messageFormatted = capitalizeWords(message);
+      if (messageFormatted.length > 500) {
+          setDriverFeedbackMessage('Mesaj çok uzun. En fazla 500 karakter yazabilirsiniz.', true);
+          return false;
+      }
+      if (messageEl) messageEl.value = messageFormatted;
+
+      if (submitBtn) submitBtn.disabled = true;
+      setDriverFeedbackMessage('Gönderiliyor...', false);
+
+      try {
+          const response = await fetch(API_BASE + 'driver_feedback.php', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': 'Bearer ' + currentToken
+              },
+              body: JSON.stringify({
+                  arac_id: vehicle.id,
+                  konu_turu: type,
+                  mesaj: messageFormatted
+              })
+          });
+          const data = await response.json();
+          if (data && data.success) {
+              setDriverFeedbackMessage('Talebiniz yöneticiye gönderildi.', false);
+              setTimeout(function() {
+                  closeDriverFeedbackModal();
+              }, 700);
+          } else {
+              setDriverFeedbackMessage((data && data.message) || 'Talep gönderilemedi.', true);
+          }
+      } catch (error) {
+          setDriverFeedbackMessage('Bağlantı hatası oluştu.', true);
+      } finally {
+          if (submitBtn) submitBtn.disabled = false;
+      }
+
+      return false;
+  };
+
   function setDriverPasswordMessage(message, isError) {
       const messageEl = document.getElementById('driver-password-message');
       if (!messageEl) return;
@@ -2984,6 +3266,7 @@ const API_BASE = (function(){
 
   window.submitDriverPasswordChange = async function(event) {
       if (event && typeof event.preventDefault === 'function') event.preventDefault();
+      if (!ensureDriverOnlineForWrite()) return false;
       if (!currentToken) {
           logout();
           return false;
@@ -3059,6 +3342,7 @@ const API_BASE = (function(){
 
   // Çıkış
   window.logout = function() {
+      clearSavedDriverPassword();
       clearStoredPortalTokens();
       window.location.href = DRIVER_PAGE_BASE + 'index.html';
   };

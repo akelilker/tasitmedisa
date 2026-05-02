@@ -18,6 +18,12 @@ if ($vehicleId === '') {
     respondJsonError(400, 'id parametresi gerekli');
 }
 
+$documentType = strtolower(trim((string)($_GET['documentType'] ?? 'ruhsat')));
+$config = medisaGetVehicleDocumentConfig($documentType);
+if (!$config) {
+    respondJsonError(400, 'Gecersiz belge tipi');
+}
+
 $data = loadData();
 if (!is_array($data)) {
     respondJsonError(500, 'Veri okunamadi');
@@ -30,7 +36,7 @@ if (($auth['success'] ?? false) !== true) {
 
 $vehicleIndex = medisaFindVehicleIndex($data, $vehicleId);
 if ($vehicleIndex < 0) {
-    respondJsonError(404, 'Ruhsat bulunamadi');
+    respondJsonError(404, 'Tasit bulunamadi');
 }
 
 $vehicle = $data['tasitlar'][$vehicleIndex];
@@ -38,9 +44,9 @@ if (!medisaCanViewVehicleRecord($vehicle, $auth['context'])) {
     respondJsonError(403, 'Bu ruhsati goruntuleme yetkiniz yok.');
 }
 
-$sourcePath = medisaResolveVehicleRuhsatFilePath($vehicle);
+$sourcePath = medisaResolveVehicleDocumentFilePath($vehicle, $documentType);
 if (!$sourcePath || !is_file($sourcePath)) {
-    respondJsonError(404, 'Ruhsat bulunamadi');
+    respondJsonError(404, $config['notFound']);
 }
 
 $sourceExtension = strtolower((string)pathinfo($sourcePath, PATHINFO_EXTENSION));
@@ -64,7 +70,7 @@ if ($safeId === '') {
     $safeId = $digitsOnly !== '' ? 'vehicle_' . $digitsOnly : 'unknown';
 }
 
-$previewDir = __DIR__ . '/data/ruhsat_preview';
+$previewDir = __DIR__ . '/data/' . $config['dir'] . '_preview';
 if (!is_dir($previewDir) && !mkdir($previewDir, 0755, true) && !is_dir($previewDir)) {
     respondJsonError(500, 'Preview klasoru olusturulamadi');
 }

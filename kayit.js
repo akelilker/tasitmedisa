@@ -30,8 +30,10 @@
     const pickerOverlay = getVehicleTypePickerOverlay();
     if (!pickerOverlay) return;
     pickerOverlay.classList.add('u-hidden');
+    pickerOverlay.classList.remove('from-detail');
     pickerOverlay.style.display = 'none';
     pickerOverlay.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('vehicle-type-picker-from-detail-open');
     window.vehicleTypePickerFromDetail = null;
   }
   function openVehicleTypePickerOverlay(options) {
@@ -40,6 +42,11 @@
     const opts = options || {};
     if (opts.vehicleId) {
       window.vehicleTypePickerFromDetail = String(opts.vehicleId);
+      pickerOverlay.classList.add('from-detail');
+      document.body.classList.add('vehicle-type-picker-from-detail-open');
+    } else {
+      pickerOverlay.classList.remove('from-detail');
+      document.body.classList.remove('vehicle-type-picker-from-detail-open');
     }
     pickerOverlay.classList.remove('u-hidden');
     pickerOverlay.style.display = 'flex';
@@ -87,6 +94,334 @@
     if (!input) return;
     input.value = formatIsoForVehicleDateInput(value);
     syncSingleDateInputVisibility(input);
+    syncVehicleDatePickerState(input);
+  }
+
+  function getVehicleDatePickerNativeInput(input) {
+    if (!input) return null;
+    var wrap = input.closest('.vehicle-date-picker-wrap');
+    return wrap ? wrap.querySelector('.vehicle-date-picker-native') : null;
+  }
+
+  function syncVehicleDatePickerState(input) {
+    if (!input || !input.matches(VEHICLE_DATE_INPUT_SELECTOR)) return;
+    var wrap = input.closest('.vehicle-date-picker-wrap');
+    var nativeInput = getVehicleDatePickerNativeInput(input);
+    if (!wrap || !nativeInput) return;
+    var isoValue = readVehicleDateIso(input) || '';
+    if (nativeInput.value !== isoValue) nativeInput.value = isoValue;
+    nativeInput.disabled = !!input.disabled;
+    wrap.classList.toggle('is-disabled', !!input.disabled);
+  }
+
+  function dispatchVehicleDateInputEvents(input) {
+    if (!input) return;
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    input.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+
+  const VEHICLE_CALENDAR_MONTHS = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
+  const VEHICLE_CALENDAR_DAYS = ['Pt', 'Sa', 'Ça', 'Pe', 'Cu', 'Ct', 'Pa'];
+  const vehicleDateCalendarState = {
+    panel: null,
+    input: null,
+    anchor: null,
+    year: 0,
+    month: 0,
+    bound: false
+  };
+
+  function getVehicleCalendarIsoFromDate(date) {
+    if (!(date instanceof Date) || Number.isNaN(date.getTime())) return '';
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  }
+
+  function getVehicleCalendarDateFromIso(iso) {
+    const normalized = parseVehicleDateRawToIso(iso);
+    if (!normalized) return null;
+    const parts = normalized.split('-').map(Number);
+    const date = new Date(parts[0], parts[1] - 1, parts[2]);
+    return Number.isNaN(date.getTime()) ? null : date;
+  }
+
+  function getVehicleDateCalendarContainer(input) {
+    if (input) {
+      const egzozOverlay = input.closest('.egzoz-dialog-overlay');
+      if (egzozOverlay) return egzozOverlay;
+      const ownModalContainer = input.closest('.modal-container');
+      if (ownModalContainer) return ownModalContainer;
+    }
+    const modal = getModal();
+    return modal ? modal.querySelector('.modal-container') : null;
+  }
+
+  function getVehicleDateCalendarPanel() {
+    const container = getVehicleDateCalendarContainer(vehicleDateCalendarState.input);
+    if (!container) return null;
+
+    let panel = vehicleDateCalendarState.panel;
+    if (!panel) {
+      panel = document.createElement('div');
+      panel.className = 'vehicle-date-calendar-panel';
+      panel.setAttribute('role', 'dialog');
+      panel.setAttribute('aria-label', 'Tarih seç');
+      panel.addEventListener('click', handleVehicleDateCalendarClick);
+      vehicleDateCalendarState.panel = panel;
+    }
+
+    if (panel.parentNode !== container) {
+      container.appendChild(panel);
+    }
+    return panel;
+  }
+
+  function isVehicleDateCalendarTarget(target) {
+    const panel = vehicleDateCalendarState.panel;
+    return !!(panel && target && panel.contains(target));
+  }
+
+  function closeVehicleDateCalendar() {
+    const panel = vehicleDateCalendarState.panel;
+    if (panel) {
+      panel.classList.remove('open');
+      panel.setAttribute('aria-hidden', 'true');
+    }
+    if (vehicleDateCalendarState.anchor) {
+      vehicleDateCalendarState.anchor.setAttribute('aria-expanded', 'false');
+    }
+    vehicleDateCalendarState.input = null;
+    vehicleDateCalendarState.anchor = null;
+  }
+
+  function positionVehicleDateCalendarPanel() {
+    const panel = vehicleDateCalendarState.panel;
+    const anchor = vehicleDateCalendarState.anchor;
+    const container = panel ? panel.parentElement : null;
+    if (!panel || !anchor || !container) return;
+
+    panel.style.visibility = 'hidden';
+    panel.classList.add('open');
+
+    const containerRect = container.getBoundingClientRect();
+    const anchorRect = anchor.getBoundingClientRect();
+    const panelWidth = Math.min(252, Math.max(216, containerRect.width - 16));
+    panel.style.width = `${panelWidth}px`;
+
+    const panelHeight = panel.offsetHeight || 268;
+    const gap = 6;
+    const pad = 8;
+    let left = anchorRect.right - containerRect.left - panelWidth;
+    left = Math.max(pad, Math.min(left, containerRect.width - panelWidth - pad));
+
+    let top = anchorRect.bottom - containerRect.top + gap;
+    if (top + panelHeight + pad > containerRect.height) {
+      top = anchorRect.top - containerRect.top - panelHeight - gap;
+    }
+    top = Math.max(pad, Math.min(top, containerRect.height - panelHeight - pad));
+
+    panel.style.left = `${left}px`;
+    panel.style.top = `${top}px`;
+    panel.style.visibility = '';
+  }
+
+  function renderVehicleDateCalendarPanel() {
+    const panel = getVehicleDateCalendarPanel();
+    const input = vehicleDateCalendarState.input;
+    if (!panel || !input) return;
+
+    const year = vehicleDateCalendarState.year;
+    const month = vehicleDateCalendarState.month;
+    const selectedIso = readVehicleDateIso(input);
+    const todayIso = getVehicleCalendarIsoFromDate(new Date());
+    const firstDay = new Date(year, month, 1);
+    const startOffset = (firstDay.getDay() + 6) % 7;
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    let html = '<div class="vehicle-date-calendar-head">' +
+      '<button type="button" class="vehicle-date-calendar-nav" data-action="prev" aria-label="Önceki ay">‹</button>' +
+      '<div class="vehicle-date-calendar-title">' + VEHICLE_CALENDAR_MONTHS[month] + ' ' + year + '</div>' +
+      '<button type="button" class="vehicle-date-calendar-nav" data-action="next" aria-label="Sonraki ay">›</button>' +
+      '</div><div class="vehicle-date-calendar-weekdays">';
+
+    VEHICLE_CALENDAR_DAYS.forEach(function(day) {
+      html += '<span>' + day + '</span>';
+    });
+    html += '</div><div class="vehicle-date-calendar-grid">';
+
+    for (let cell = 0; cell < 42; cell++) {
+      const dayNumber = cell - startOffset + 1;
+      if (dayNumber < 1 || dayNumber > daysInMonth) {
+        html += '<span class="vehicle-date-calendar-empty"></span>';
+        continue;
+      }
+      const iso = `${year}-${String(month + 1).padStart(2, '0')}-${String(dayNumber).padStart(2, '0')}`;
+      const classes = ['vehicle-date-calendar-day'];
+      if (iso === selectedIso) classes.push('selected');
+      if (iso === todayIso) classes.push('today');
+      html += '<button type="button" class="' + classes.join(' ') + '" data-date="' + iso + '">' + dayNumber + '</button>';
+    }
+
+    html += '</div><div class="vehicle-date-calendar-actions">' +
+      '<button type="button" data-action="clear">Temizle</button>' +
+      '<button type="button" data-action="today">Bugün</button>' +
+      '</div>';
+    panel.innerHTML = html;
+    panel.setAttribute('aria-hidden', 'false');
+  }
+
+  function openVehicleDateCalendar(input, anchor) {
+    if (!input || input.disabled || !anchor) return;
+    if (vehicleDateCalendarState.input === input && vehicleDateCalendarState.panel && vehicleDateCalendarState.panel.classList.contains('open')) {
+      closeVehicleDateCalendar();
+      return;
+    }
+    const selectedDate = getVehicleCalendarDateFromIso(readVehicleDateIso(input)) || new Date();
+    vehicleDateCalendarState.input = input;
+    vehicleDateCalendarState.anchor = anchor;
+    vehicleDateCalendarState.year = selectedDate.getFullYear();
+    vehicleDateCalendarState.month = selectedDate.getMonth();
+    anchor.setAttribute('aria-expanded', 'true');
+    renderVehicleDateCalendarPanel();
+    positionVehicleDateCalendarPanel();
+  }
+
+  function setVehicleDateCalendarValue(iso) {
+    const input = vehicleDateCalendarState.input;
+    if (!input) return;
+    const previousValue = input.value;
+    setVehicleDateInputValue(input, iso || '');
+    if (input.value !== previousValue) {
+      dispatchVehicleDateInputEvents(input);
+    }
+    closeVehicleDateCalendar();
+  }
+
+  function handleVehicleDateCalendarClick(event) {
+    event.stopPropagation();
+    const actionBtn = event.target.closest('[data-action]');
+    const dayBtn = event.target.closest('[data-date]');
+    if (dayBtn) {
+      setVehicleDateCalendarValue(dayBtn.getAttribute('data-date'));
+      return;
+    }
+    if (!actionBtn) return;
+    const action = actionBtn.getAttribute('data-action');
+    if (action === 'prev') {
+      vehicleDateCalendarState.month -= 1;
+      if (vehicleDateCalendarState.month < 0) {
+        vehicleDateCalendarState.month = 11;
+        vehicleDateCalendarState.year -= 1;
+      }
+      renderVehicleDateCalendarPanel();
+      positionVehicleDateCalendarPanel();
+    } else if (action === 'next') {
+      vehicleDateCalendarState.month += 1;
+      if (vehicleDateCalendarState.month > 11) {
+        vehicleDateCalendarState.month = 0;
+        vehicleDateCalendarState.year += 1;
+      }
+      renderVehicleDateCalendarPanel();
+      positionVehicleDateCalendarPanel();
+    } else if (action === 'today') {
+      setVehicleDateCalendarValue(getVehicleCalendarIsoFromDate(new Date()));
+    } else if (action === 'clear') {
+      setVehicleDateCalendarValue('');
+    }
+  }
+
+  function bindVehicleDateCalendarGlobalEvents() {
+    if (vehicleDateCalendarState.bound) return;
+    vehicleDateCalendarState.bound = true;
+    document.addEventListener('pointerdown', function(event) {
+      const panel = vehicleDateCalendarState.panel;
+      const anchor = vehicleDateCalendarState.anchor;
+      if (!panel || !panel.classList.contains('open')) return;
+      if (panel.contains(event.target)) return;
+      if (anchor && anchor.closest('.vehicle-date-picker-wrap') && anchor.closest('.vehicle-date-picker-wrap').contains(event.target)) return;
+      closeVehicleDateCalendar();
+    });
+    document.addEventListener('keydown', function(event) {
+      if (event.key === 'Escape') closeVehicleDateCalendar();
+    });
+    window.addEventListener('resize', closeVehicleDateCalendar);
+  }
+
+  function setupVehicleDatePickers(root) {
+    var calendarSvg = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M8 2v4"/><path d="M16 2v4"/><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18"/></svg>';
+    bindVehicleDateCalendarGlobalEvents();
+    getVehicleDateInputs(root || document).forEach(function(input) {
+      if (!input) return;
+      if (input.dataset.vehicleDatePickerBound === 'true') {
+        syncVehicleDatePickerState(input);
+        return;
+      }
+
+      var parent = input.parentNode;
+      if (!parent) return;
+
+      input.dataset.vehicleDatePickerBound = 'true';
+
+      var wrap = document.createElement('div');
+      wrap.className = 'vehicle-date-picker-wrap';
+
+      var field = document.createElement('div');
+      field.className = 'vehicle-date-picker-field';
+
+      parent.insertBefore(wrap, input);
+      wrap.appendChild(field);
+      field.appendChild(input);
+      input.classList.add('vehicle-date-picker-text');
+
+      var slot = document.createElement('div');
+      slot.className = 'vehicle-date-picker-slot';
+
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'vehicle-date-picker-btn';
+      btn.tabIndex = -1;
+      btn.setAttribute('aria-haspopup', 'dialog');
+      btn.setAttribute('aria-expanded', 'false');
+      btn.innerHTML = calendarSvg;
+
+      var nativeInput = document.createElement('input');
+      nativeInput.type = 'date';
+      nativeInput.className = 'vehicle-date-picker-native';
+
+      var label = input.id ? document.querySelector('label[for="' + input.id + '"]') : null;
+      var labelText = label ? String(label.textContent || '').trim() : '';
+      nativeInput.setAttribute('aria-label', labelText ? (labelText + ' seç') : 'Tarih seç');
+
+      function syncTextFromNative() {
+        var previousValue = input.value;
+        setVehicleDateInputValue(input, nativeInput.value || '');
+        if (input.value !== previousValue) {
+          dispatchVehicleDateInputEvents(input);
+        }
+      }
+
+      input.addEventListener('blur', function() {
+        syncVehicleDatePickerState(input);
+      });
+      input.addEventListener('change', function() {
+        syncVehicleDatePickerState(input);
+      });
+      btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        openVehicleDateCalendar(input, btn);
+      });
+      nativeInput.addEventListener('input', syncTextFromNative);
+      nativeInput.addEventListener('change', syncTextFromNative);
+
+      slot.appendChild(btn);
+      slot.appendChild(nativeInput);
+      wrap.appendChild(slot);
+
+      syncVehicleDatePickerState(input);
+    });
   }
 
   function formatVehicleDateMaskValue(value) {
@@ -105,6 +440,7 @@
     }
     input.classList.remove('field-error');
     syncSingleDateInputVisibility(input);
+    syncVehicleDatePickerState(input);
   }
 
   function finalizeVehicleDateTextInput(input) {
@@ -115,6 +451,7 @@
     } else {
       input.value = formatVehicleDateMaskValue(input.value);
       syncSingleDateInputVisibility(input);
+      syncVehicleDatePickerState(input);
     }
     if (input.id === 'vehicle-muayene-date') {
       maybeScheduleVehicleMuayeneEgzozPrompt(input, { delayMs: 42, commitAttempt: true });
@@ -146,7 +483,7 @@
     return window.formatNumber(value);
   }
 
-  function resizeVehicleNotesArea(textarea) {
+  function resizeVehicleTextareaArea(textarea) {
     if (!textarea) return;
     textarea.style.setProperty('height', 'auto', 'important');
     const minPx = parseFloat(getComputedStyle(textarea).minHeight) || NOTES_MIN_HEIGHT_PX;
@@ -154,6 +491,14 @@
     const targetHeight = Math.min(Math.max(textarea.scrollHeight, minPx), maxPx);
     textarea.style.setProperty('height', `${targetHeight}px`, 'important');
     textarea.style.setProperty('overflow-y', targetHeight >= maxPx ? 'auto' : 'hidden', 'important');
+  }
+
+  function resizeVehicleNotesArea(textarea) {
+    resizeVehicleTextareaArea(textarea);
+  }
+
+  function resizeVehicleConditionalTextArea(textarea) {
+    resizeVehicleTextareaArea(textarea);
   }
 
   // --- Tramer Kayıt Fonksiyonları ---
@@ -975,6 +1320,8 @@
     ["anahtar-nerede", "kredi-detay"].forEach(id => {
       const el = document.getElementById(id);
       if (el) {
+        el.value = '';
+        resizeVehicleConditionalTextArea(el);
         const section = el.closest(".form-section");
         if (section) section.classList.remove("input-visible");
       }
@@ -1026,6 +1373,7 @@
       })
     );
     dateInputs.forEach(syncSingleDateInputVisibility);
+    getVehicleDateInputs(modal).forEach(syncVehicleDatePickerState);
   }
 
   function syncEgzozMuayeneFields(modal) {
@@ -1040,6 +1388,7 @@
       input.disabled = !visible;
       if (!visible) setVehicleDateInputValue(input, '');
       syncSingleDateInputVisibility(input);
+      syncVehicleDatePickerState(input);
     }
   }
 
@@ -1509,7 +1858,7 @@
   // --- Edit Vehicle Function ---
   window.editVehicle = function(vehicleId) {
     const vehicles = readVehicles();
-    const vehicle = vehicles.find(v => v.id === vehicleId);
+    const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
     if (!vehicle) {
       alert("Taşıt bulunamadı!");
       return;
@@ -1646,7 +1995,8 @@
         const detay = document.getElementById('anahtar-nerede');
         if (detay) {
           detay.value = vehicle.anahtarNerede;
-          detay.style.display = 'block';
+          resizeVehicleConditionalTextArea(detay);
+          detay.closest('.form-section')?.classList.add('input-visible');
         }
       }
     }
@@ -1665,7 +2015,8 @@
         const detay = document.getElementById('kredi-detay');
         if (detay) {
           detay.value = vehicle.krediDetay;
-          detay.style.display = 'block';
+          resizeVehicleConditionalTextArea(detay);
+          detay.closest('.form-section')?.classList.add('input-visible');
         }
       }
     }
@@ -2277,6 +2628,21 @@
           };
           record.events.unshift(event);
         }
+        if (!record.events) record.events = [];
+        const createdTs = record.createdAt || new Date().toISOString();
+        const createdEvent = {
+          id: String(record.id || '') + '|vehicle-created',
+          type: 'vehicle-created',
+          date: formatDateForDisplay(new Date()),
+          timestamp: createdTs,
+          data: {
+            plakaSnapshot: String(record.plate || '').trim(),
+            kaydeden: (typeof window.getRecorderDisplayName === 'function')
+              ? String(window.getRecorderDisplayName() || '').trim()
+              : ''
+          }
+        };
+        record.events.unshift(createdEvent);
         
         vehicles.unshift(record);
       }
@@ -2468,6 +2834,8 @@
         }
       });
     });
+
+    setupVehicleDatePickers(document);
     
     const egzozCheckbox = document.getElementById('vehicle-egzoz-different');
     if (egzozCheckbox) {
@@ -2507,6 +2875,9 @@
         const handleMuayeneCommitOutsideInput = function(ev) {
           if (document.activeElement !== muayeneInput) return;
           if (ev.target === muayeneInput) return;
+          const pickerWrap = muayeneInput.closest('.vehicle-date-picker-wrap');
+          if (pickerWrap && pickerWrap.contains(ev.target)) return;
+          if (isVehicleDateCalendarTarget(ev.target)) return;
           setTimeout(function() {
             maybeScheduleVehicleMuayeneEgzozPrompt(muayeneInput, { delayMs: 72, commitAttempt: true });
           }, 0);
@@ -2646,13 +3017,18 @@
     // Yedek Anahtar - İlk harf büyük
     const anahtarInput = document.getElementById("anahtar-nerede");
     if (anahtarInput) {
+      anahtarInput.addEventListener('input', function() {
+        resizeVehicleConditionalTextArea(this);
+      });
       anahtarInput.addEventListener('blur', function(e) {
         if (this.value) {
           const cursorPos = this.selectionStart;
           this.value = capitalizeFirstLetter(this.value);
+          resizeVehicleConditionalTextArea(this);
           this.setSelectionRange(cursorPos, cursorPos);
         }
       });
+      resizeVehicleConditionalTextArea(anahtarInput);
     }
 
     // Hak Mahrumiyeti Detay - İlk harf büyük
@@ -2662,6 +3038,7 @@
         if (this.value) {
           const cursorPos = this.selectionStart;
           this.value = capitalizeFirstLetter(this.value);
+          resizeVehicleConditionalTextArea(this);
           this.setSelectionRange(cursorPos, cursorPos);
         }
       });
@@ -2683,17 +3060,13 @@
         });
     }
 
-    // Kredi detay Auto-Expand (max 4 satır)
-    const krediDetayArea = document.getElementById("kredi-detay");
-    if (krediDetayArea) {
-        krediDetayArea.addEventListener('input', function() {
-            this.style.height = 'auto';
-            const maxHeight = 72; // 4 satır
-            const newHeight = Math.min(this.scrollHeight, maxHeight);
-            this.style.height = newHeight + 'px';
-            this.style.overflow = this.scrollHeight > maxHeight ? 'auto' : 'hidden';
-        });
-    }
+    // Koşullu kayıt alanları: içerik uzadıkça aşağı genişler
+    document.querySelectorAll('#anahtar-nerede, #kredi-detay').forEach(function(area) {
+      area.addEventListener('input', function() {
+        resizeVehicleConditionalTextArea(this);
+      });
+      resizeVehicleConditionalTextArea(area);
+    });
 
     // Enter ile input'lar arasında dolaşma (kayıt formu)
     (function setupEnterKeyNavigation() {

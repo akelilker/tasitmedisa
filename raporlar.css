@@ -1392,6 +1392,7 @@ margin-left: auto;
 margin-top: 0;
 min-width: 0;
 max-width: 100%;
+padding-right: 6px; /* Takvim popup'ı sağa taşmasın diye güvenli iç boşluk */
 }
 
 .stok-date-input-group {
@@ -1433,6 +1434,7 @@ text-align: center;
 /* Çift görünüm önleme */
 -webkit-appearance: none;
 appearance: none;
+color-scheme: dark; /* Yerel takvim panelini koyu temaya yaklaştır */
 }
 
 /* Date input’lar için webkit düzeltmeleri - çift görünüm önleme */
@@ -2708,26 +2710,21 @@ padding-right: 2px !important;
 padding-left: 1px !important;
 padding-right: 1px !important;
 }
-/* Tarih sütunları: nowrap kaldırıldı — dar sütunda taşma yerine hücre içi kırılım */
+/* Tarih sütunları (tam yıl): tek satır, taşarsa kırpılır — marka sütununa pay kalsın */
 #stok-print-area .stok-print-table th[data-col="sigorta"],
 #stok-print-area .stok-print-table td[data-col="sigorta"],
 #stok-print-area .stok-print-table th[data-col="kasko"],
 #stok-print-area .stok-print-table td[data-col="kasko"],
+#stok-print-area .stok-print-table th[data-col="tescil"],
+#stok-print-area .stok-print-table td[data-col="tescil"],
 #stok-print-area .stok-print-table th[data-col="muayene"],
 #stok-print-area .stok-print-table td[data-col="muayene"],
-#stok-print-area .stok-print-table th[data-col="tescil"],
-#stok-print-area .stok-print-table td[data-col="tescil"] {
-white-space: normal !important;
+#stok-print-area .stok-print-table th[data-col="egzozMuayene"],
+#stok-print-area .stok-print-table td[data-col="egzozMuayene"] {
+white-space: nowrap !important;
 word-break: normal !important;
-overflow-wrap: break-word !important;
+overflow-wrap: normal !important;
 overflow: hidden !important;
-}
-/* Tarih gövde hücreleri: boşluksuz uzun metin taşmasın */
-#stok-print-area .stok-print-table tbody td[data-col="sigorta"],
-#stok-print-area .stok-print-table tbody td[data-col="kasko"],
-#stok-print-area .stok-print-table tbody td[data-col="muayene"],
-#stok-print-area .stok-print-table tbody td[data-col="tescil"] {
-overflow-wrap: anywhere !important;
 }
 /* Plaka, yıl, şanzıman, km, sıra verisi: tek satır (tarih hariç) */
 #stok-print-area .stok-print-table th[data-col="plaka"],

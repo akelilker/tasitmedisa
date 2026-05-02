@@ -17,6 +17,11 @@ function getDataDirPath() {
     return dirname(getDataFilePath());
 }
 
+/** Kasko ham Excel tablosu — ana data.json dışında tutulur */
+function getKaskoListesiFilePath() {
+    return getDataDirPath() . DIRECTORY_SEPARATOR . 'kasko-deger-listesi.json';
+}
+
 /** Bir önceki sürümün kopyası (restore.php ile uyumlu) */
 function getMainBackupFilePath() {
     return getDataDirPath() . '/data.json.backup';
@@ -56,6 +61,7 @@ function medisaDefaultData() {
         'sifreler' => [],
         'arac_aylik_hareketler' => [],
         'duzeltme_talepleri' => [],
+        'notificationReadState' => [],
     ];
 }
 
@@ -212,6 +218,9 @@ function saveData($data) {
         error_log('[Medisa] saveData: data dizini oluşturulamadı');
         return false;
     }
+
+    /** Ham kasko listesi ayrı dosyada; eski anahtar varsa ana dosyaya yazılmasın */
+    unset($data['kaskoDegerListesi']);
 
     $json = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
     if ($json === false) {
@@ -954,11 +963,9 @@ function medisaFilterDataForContextWithUserPredicate($data, $context, $userPredi
         $visibleVehicleIds[(string)($vehicle['id'] ?? '')] = true;
     }
 
-    $visibleAylikKayitlar = array_values(array_filter($data['arac_aylik_hareketler'] ?? [], function ($record) use ($context, $visibleVehicleIds) {
+    /* Aylık hareket: görünür taşıta ait tüm kayıtlar (sürücü KM/talep eşlemesi için surucu_id ile daraltma yok). */
+    $visibleAylikKayitlar = array_values(array_filter($data['arac_aylik_hareketler'] ?? [], function ($record) use ($visibleVehicleIds) {
         $vehicleId = (string)($record['arac_id'] ?? '');
-        if (($context['role'] ?? 'kullanici') === 'kullanici') {
-            return (string)($record['surucu_id'] ?? '') === (string)($context['user_id'] ?? '') && isset($visibleVehicleIds[$vehicleId]);
-        }
         return isset($visibleVehicleIds[$vehicleId]);
     }));
 
@@ -970,9 +977,10 @@ function medisaFilterDataForContextWithUserPredicate($data, $context, $userPredi
         }
     }
 
-    $visibleTalepler = array_values(array_filter($data['duzeltme_talepleri'] ?? [], function ($request) use ($context, $visibleAylikKayitIds) {
-        if (($context['role'] ?? 'kullanici') === 'kullanici') {
-            return (string)($request['surucu_id'] ?? '') === (string)($context['user_id'] ?? '');
+    $visibleTalepler = array_values(array_filter($data['duzeltme_talepleri'] ?? [], function ($request) use ($visibleAylikKayitIds, $visibleVehicleIds) {
+        $requestVehicleId = (string)($request['arac_id'] ?? '');
+        if ($requestVehicleId !== '' && isset($visibleVehicleIds[$requestVehicleId])) {
+            return true;
         }
         return isset($visibleAylikKayitIds[(string)($request['kayit_id'] ?? '')]);
     }));
@@ -991,6 +999,14 @@ function medisaFilterDataForContextWithUserPredicate($data, $context, $userPredi
         'sifreler' => ($context['role'] ?? 'kullanici') === 'genel_yonetici' ? ($data['sifreler'] ?? []) : [],
         'arac_aylik_hareketler' => $visibleAylikKayitlar,
         'duzeltme_talepleri' => $visibleTalepler,
+        /** Tam rows load_kasko.php ile; ana yanıt şişmesin */
+        'kaskoDegerListesi' => [
+            'updatedAt' => '',
+            'period' => '',
+            'sourceFileName' => '',
+            'rows' => [],
+        ],
+        'notificationReadState' => is_array($data['notificationReadState'] ?? null) ? $data['notificationReadState'] : [],
         'session' => medisaBuildSessionPayload($context),
     ];
 }
@@ -1110,13 +1126,44 @@ function medisaSaveBuildVehicleVersions($vehicles) {
     return $vehicleVersions;
 }
 
-function medisaResolveVehicleRuhsatFilePath($vehicle) {
+function medisaGetVehicleDocumentConfig(string $documentType): ?array {
+    $type = strtolower(trim($documentType));
+    $configs = [
+        'ruhsat' => [
+            'pathField' => 'ruhsatPath',
+            'dir' => 'ruhsat',
+            'fallbackName' => 'ruhsat',
+            'notFound' => 'Ruhsat bulunamadi',
+        ],
+        'sigorta' => [
+            'pathField' => 'sigortaPolicePath',
+            'dir' => 'sigorta_police',
+            'fallbackName' => 'sigorta-policesi',
+            'notFound' => 'Sigorta policesi bulunamadi',
+        ],
+        'kasko' => [
+            'pathField' => 'kaskoPolicePath',
+            'dir' => 'kasko_police',
+            'fallbackName' => 'kasko-policesi',
+            'notFound' => 'Kasko policesi bulunamadi',
+        ],
+    ];
+
+    return $configs[$type] ?? null;
+}
+
+function medisaResolveVehicleDocumentFilePath($vehicle, string $documentType) {
     if (!is_array($vehicle)) {
         return null;
     }
 
+    $config = medisaGetVehicleDocumentConfig($documentType);
+    if (!$config) {
+        return null;
+    }
+
     $candidates = [];
-    $rawPath = trim((string)($vehicle['ruhsatPath'] ?? ''));
+    $rawPath = trim((string)($vehicle[$config['pathField']] ?? ''));
     if ($rawPath !== '') {
         $normalized = ltrim(str_replace('\\', '/', $rawPath), '/');
         if (strpos($normalized, 'data/') !== 0) {
@@ -1127,7 +1174,7 @@ function medisaResolveVehicleRuhsatFilePath($vehicle) {
 
     $safeId = preg_replace('/[^a-zA-Z0-9_-]/', '', (string)($vehicle['id'] ?? ''));
     if ($safeId !== '') {
-        $candidates[] = __DIR__ . '/data/ruhsat/' . $safeId . '.pdf';
+        $candidates[] = __DIR__ . '/data/' . $config['dir'] . '/' . $safeId . '.pdf';
     }
 
     foreach (array_values(array_unique($candidates)) as $candidatePath) {
@@ -1137,6 +1184,10 @@ function medisaResolveVehicleRuhsatFilePath($vehicle) {
     }
 
     return null;
+}
+
+function medisaResolveVehicleRuhsatFilePath($vehicle) {
+    return medisaResolveVehicleDocumentFilePath($vehicle, 'ruhsat');
 }
 
 function medisaCreateSignedToken($payload, $ttlSeconds = 2592000) {
