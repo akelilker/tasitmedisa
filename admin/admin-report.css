@@ -66,6 +66,13 @@ body.admin-report-page .hero.admin-report-hero.hero-two-rows {
   padding-top: 10px !important;
   padding-bottom: 10px !important;
   padding-left: 2px !important;
+  /* Kullanıcı paneli (dashboard) çerçevesi: kırmızı tema çizgisi — style-core .hero gümüş border yerine */
+  border: 1px solid var(--border-red-tech) !important;
+  box-shadow:
+    0 4px 15px rgba(0, 0, 0, 0.5),
+    0 4px 22px rgba(var(--theme-color-rgb), 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    inset 0 -1px 0 rgba(var(--theme-color-rgb), 0.08) !important;
 }
 
 body.admin-report-page .hero.admin-report-hero.hero-two-rows .hero-logo.admin-report-hero-side {
