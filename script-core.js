@@ -475,6 +475,7 @@ window.resetModalInputs = function(modalElement) {
    ========================================= */
 window.__loadedAppModules = window.__loadedAppModules || Object.create(null);
 window.__medisaModuleInflight = window.__medisaModuleInflight || Object.create(null);
+window.__medisaScriptInflightByPath = window.__medisaScriptInflightByPath || Object.create(null);
 
 /** pathname eşlemesi; farklı ?v= aynı betik olarak sayılır (çift yükleme / yarış önler). */
 window.__medisaScriptCanonicalPath = function(srcAttr) {
@@ -488,16 +489,21 @@ window.__medisaScriptCanonicalPath = function(srcAttr) {
 };
 
 /**
- * Tekil dinamik betik: tam src veya pathname eşleşmesinde tekrar <script> eklemez.
- * loadAppModule / tasitlar-yazici lazy load ile paylaşılır.
+ * Tekil dinamik betik: tam src veya pathname eşleşmesinde tekrar <script> eklemez;
+ * eşanlamlı src için paralel çağrılar tek Promise paylaşır.
+ * loadAppModule / tasitlar-yazici / CDN lazy load ile paylaşılır.
  */
 window.__medisaLoadScriptOnce = function(src) {
-  return new Promise(function(resolve, reject) {
-    if (!src) {
-      resolve();
-      return;
-    }
-    var wanted = window.__medisaScriptCanonicalPath(src);
+  if (!src) return Promise.resolve();
+
+  var pathKey = window.__medisaScriptCanonicalPath(src);
+  var inflightKey = pathKey || String(src).split(/[?#]/)[0] || src;
+  var inflight = window.__medisaScriptInflightByPath;
+  var existingFlight = inflight[inflightKey];
+  if (existingFlight) return existingFlight;
+
+  var promise = new Promise(function(resolve, reject) {
+    var wanted = pathKey || window.__medisaScriptCanonicalPath(src);
     var list = document.getElementsByTagName('script');
     for (var i = 0; i < list.length; i++) {
       var raw = list[i].getAttribute('src');
@@ -509,12 +515,22 @@ window.__medisaLoadScriptOnce = function(src) {
     }
     var script = document.createElement('script');
     script.src = src;
-    script.onload = function() { resolve(); };
+    script.onload = function() {
+      resolve();
+    };
     script.onerror = function() {
       reject(new Error('Script yüklenemedi: ' + src));
     };
     document.head.appendChild(script);
   });
+
+  inflight[inflightKey] = promise;
+  promise.finally(function() {
+    try {
+      if (inflight[inflightKey] === promise) delete inflight[inflightKey];
+    } catch (eDel) { /* noop */ }
+  });
+  return promise;
 };
 
 /**
@@ -747,7 +763,7 @@ var MEDISA_MODULE_VERSIONS = {
   raporlar: '20260503.4',
   kayitJs: '20260503.1',
   kayitCss: '20260501.3',
-  ayarlarJs: '20260502.1',
+  ayarlarJs: '20260502.2',
   ayarlarCss: '20260502.13'
 };
 window.MEDISA_MODULE_VERSIONS = MEDISA_MODULE_VERSIONS;
@@ -1097,34 +1113,36 @@ window.addEventListener('dataLoaded', () => {
    ========================================= */
 window.loadExcelJS = function() {
   return new Promise((resolve, reject) => {
-    // Zaten yüklüyse direkt dön
     if (typeof ExcelJS !== 'undefined' || typeof window.ExcelJS !== 'undefined') {
       resolve(ExcelJS || window.ExcelJS);
       return;
     }
-    
-    // Script yükleniyorsa bekle
+
     if (window.excelJSLoading) {
       window.excelJSLoading.then(resolve).catch(reject);
       return;
     }
-    
-    // Script'i yükle
-    window.excelJSLoading = new Promise((res, rej) => {
-      const script = document.createElement('script');
-      script.src = 'https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js';
-      script.onload = () => {
-        resolve(ExcelJS || window.ExcelJS);
-        res(ExcelJS || window.ExcelJS);
-      };
-      script.onerror = () => {
-        const err = new Error('ExcelJS yüklenemedi');
-        reject(err);
-        rej(err);
-      };
-      document.head.appendChild(script);
-    });
-    
+
+    var excelSrc = 'https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js';
+    window.excelJSLoading = (typeof window.__medisaLoadScriptOnce === 'function')
+      ? window.__medisaLoadScriptOnce(excelSrc).then(function() {
+          return ExcelJS || window.ExcelJS;
+        })
+      : new Promise((res, rej) => {
+          const script = document.createElement('script');
+          script.src = excelSrc;
+          script.onload = () => {
+            resolve(ExcelJS || window.ExcelJS);
+            res(ExcelJS || window.ExcelJS);
+          };
+          script.onerror = () => {
+            const err = new Error('ExcelJS yüklenemedi');
+            reject(err);
+            rej(err);
+          };
+          document.head.appendChild(script);
+        });
+
     window.excelJSLoading.then(resolve).catch(reject);
   });
 };
