@@ -1661,6 +1661,7 @@
         const branch = branches.find(x => String(x.id) === String(primaryBranchId));
         const branchName = branch ? branch.name : '-';
         const roleLabelMarkup = buildUserRoleLabelMarkup(user, branchName);
+        const phoneLine = formatTrGsmDisplay(user.phone || '') || '';
 
         if (scope.isBranchManager) {
           return `
