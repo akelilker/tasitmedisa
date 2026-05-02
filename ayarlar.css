@@ -1523,9 +1523,26 @@ input.settings-form-input:-moz-autofill,
     align-items: center !important;
     justify-content: center !important;
 }
-/* Kullanıcı Yönetimi: şube ismi gizle, dikey yükseklik 6px azalt */
-#user-modal #user-list .settings-card-subtitle {
-    display: none !important;
+/* Kullanıcı Yönetimi: rol altında şube (.settings-card-gorev--stacked); telefon ayrı satır */
+#user-modal #user-list .settings-card-gorev.settings-card-gorev--stacked .settings-card-gorev-line--branch {
+    font-size: calc(10px - 0.5pt);
+    font-weight: 500;
+    color: var(--data-value-color, #a0aec0) !important;
+    line-height: 1.12 !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+}
+#user-modal #user-list .settings-card-phone {
+    font-size: 10px;
+    line-height: 1.1;
+    color: rgba(255, 255, 255, 0.72);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    margin-top: 1px;
 }
 #branch-modal #branch-list .settings-card-content,
 #user-modal #user-list .settings-card-content {
@@ -1645,8 +1662,8 @@ input.settings-form-input:-moz-autofill,
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 0;
-    min-height: 1.1em !important;
+    gap: 1px;
+    min-height: calc((2 * 1.08em) + 2px) !important;
     line-height: 1 !important;
     -webkit-line-clamp: unset !important;
     line-clamp: unset !important;
