@@ -66,13 +66,13 @@ body.admin-report-page .hero.admin-report-hero.hero-two-rows {
   padding-top: 10px !important;
   padding-bottom: 10px !important;
   padding-left: 2px !important;
-  /* Kullanıcı paneli ile aynı: style-core .hero gümüş/krom çerçeve ve gölge */
-  border: 1px solid rgba(184, 192, 201, 0.72) !important;
+  /* Kullanıcı paneli (dashboard) çerçevesi: kırmızı tema çizgisi — style-core .hero gümüş border yerine */
+  border: 1px solid var(--border-red-tech) !important;
   box-shadow:
     0 4px 15px rgba(0, 0, 0, 0.5),
-    0 4px 22px rgba(var(--theme-color-rgb), 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.18),
-    inset 0 -1px 0 rgba(92, 102, 114, 0.28) !important;
+    0 4px 22px rgba(var(--theme-color-rgb), 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    inset 0 -1px 0 rgba(var(--theme-color-rgb), 0.08) !important;
 }
 
 body.admin-report-page .hero.admin-report-hero.hero-two-rows .hero-logo.admin-report-hero-side {
@@ -117,8 +117,7 @@ body.admin-report-page .hero.hero-two-rows .hero-title-block {
   align-items: center;
   gap: 2px;
   min-width: 0;
-  /* Kullanıcı paneli (dashboard) ile aynı optik orta: logo ağırlığına +8px sağ */
-  transform: translate(8px, 3px);
+  transform: translateY(3px);
 }
 
 body.admin-report-page .hero.hero-two-rows .hero-spacer.admin-report-hero-side {
@@ -156,7 +155,7 @@ body.admin-report-page .hero.hero-two-rows .hero-title-block .hero-panel-subtitl
   margin: 0;
   font-size: calc(17px - 0.7pt - 0.5pt);
   font-weight: 800;
-  letter-spacing: 4px; /* 769px+ aşağıda kullanıcı paneli ile 3px */
+  letter-spacing: 4px;
   text-transform: uppercase;
   text-align: center;
   background: linear-gradient(to bottom, #c2d4df 0%, #ffffff 40%, #9aadba 52%, #d6e0e8 100%);
@@ -251,27 +250,6 @@ body.admin-report-page .main-header-user-name.is-empty {
 
   body.admin-report-page .hero.hero-two-rows .hero-logo picture {
     max-width: 52px !important;
-  }
-
-  /* driver-style ile aynı (641–768): başlık ve alt başlık */
-  body.admin-report-page .hero.hero-two-rows .hero-title-block .hero-title-line {
-    font-size: clamp(calc(16px - 1pt - 0.5pt), 4.2vw, calc(20px - 1pt - 0.5pt)) !important;
-    letter-spacing: clamp(1px, 0.4vw, 3px) !important;
-  }
-  body.admin-report-page .hero.hero-two-rows .hero-title-block .hero-panel-subtitle {
-    font-size: calc(17px - 1pt - 0.7pt - 0.5pt) !important;
-  }
-}
-
-/* Masaüstü: kullanıcı paneli (driver-style ≥769px) ile aynı başlık boyutu / harf aralığı */
-@media (min-width: 769px) {
-  body.admin-report-page .hero.hero-two-rows .hero-title-block .hero-title-line {
-    font-size: clamp(calc(16px - 0.5pt), 4.5vw, calc(20px - 0.5pt)) !important;
-    letter-spacing: clamp(1px, 0.45vw, 3px) !important;
-  }
-  body.admin-report-page .hero.hero-two-rows .hero-title-block .hero-panel-subtitle {
-    font-size: calc(17px - 0.7pt - 0.5pt) !important;
-    letter-spacing: 3px !important;
   }
 }
 
@@ -2054,11 +2032,7 @@ body.admin-report-page .main-header-user-name.is-empty {
 
 /* --- Mobil --- */
 @media (max-width: 640px) {
-  /* Kullanıcı paneli mobil hero ile aynı hafif gölge (çift border hissi olmasın) */
   body.admin-report-page .hero.admin-report-hero.hero-two-rows {
-    box-shadow:
-      0 2px 8px rgba(0, 0, 0, 0.2),
-      0 2px 12px rgba(var(--theme-color-rgb), 0.08) !important;
     grid-template-columns: minmax(52px, max-content) minmax(0, 1fr) !important;
     column-gap: 4px !important;
   }
