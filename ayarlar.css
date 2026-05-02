@@ -2002,7 +2002,7 @@ input.settings-form-input:-moz-autofill,
     pointer-events: auto;
   }
   #user-modal .modal-body .settings-add-text-btn.user-add-btn {
-    transform: translateY(-8px);
+    transform: translateY(-12px);
   }
   #branch-form-modal .modal-body #branch-form,
   #user-form-modal .modal-body #user-form.user-form-inner {
