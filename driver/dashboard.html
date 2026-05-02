@@ -37,7 +37,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../style-core.css?v=20260421.3">
-<link rel="stylesheet" href="driver-style.css?v=20260502.19">
+<link rel="stylesheet" href="driver-style.css?v=20260502.14">
 <script defer src="../script-core.js?v=20260421.5"></script>
     <!-- Splash: ana uygulama ile aynı logo+başlık (kritik, mobilde kesin uygulansın) -->
     <style>
@@ -189,8 +189,8 @@
                         <input type="password" id="driver-new-password-confirm" autocomplete="new-password" minlength="6" required>
                     </div>
                     <div id="driver-password-message" class="driver-password-message" aria-live="polite"></div>
-                    <div class="driver-password-actions universal-btn-group">
-                        <button type="submit" id="driver-password-submit" class="universal-btn-save">Kaydet</button>
+                    <div class="driver-password-actions">
+                        <button type="submit" id="driver-password-submit" class="btn-submit">Kaydet</button>
                         <button type="button" class="universal-btn-cancel" onclick="closeDriverPasswordModal()">Vazgeç</button>
                     </div>
                 </form>
@@ -229,8 +229,8 @@
                         <textarea id="driver-feedback-message" class="form-input driver-feedback-message" rows="4" maxlength="500" placeholder="Yöneticiye iletmek istediğiniz notu yazın..." required></textarea>
                     </div>
                     <div id="driver-feedback-message-status" class="driver-feedback-message-status" aria-live="polite"></div>
-                    <div class="driver-feedback-actions universal-btn-group">
-                        <button type="submit" id="driver-feedback-submit" class="universal-btn-save">Kaydet</button>
+                    <div class="driver-feedback-actions">
+                        <button type="submit" id="driver-feedback-submit" class="btn-submit">Kaydet</button>
                         <button type="button" class="universal-btn-cancel" onclick="closeDriverFeedbackModal()">Vazgeç</button>
                     </div>
                 </form>
@@ -322,7 +322,7 @@
                     <label for="edit-reason">Düzeltme Sebebi</label>
                     <textarea id="edit-reason" placeholder="Neden düzeltmek istiyorsunuz?" rows="1" required></textarea>
                 </div>
-                <button type="button" onclick="submitEditRequest()" class="universal-btn-save">Talep Gönder</button>
+                <button type="button" onclick="submitEditRequest()" class="btn-submit">Talep Gönder</button>
                 </div>
             </div>
         </div>
@@ -362,8 +362,8 @@
                         <label for="driver-anahtar-detay" style="color: var(--form-label-color); font-size: 15px;">Açıklama:</label>
                         <input type="text" id="driver-anahtar-detay" class="form-input" placeholder="Anahtar nerede?" style="width: 100%;">
                     </div>
-                    <div class="universal-btn-group driver-event-modal-actions">
-                        <button type="button" class="universal-btn-save" onclick="saveDriverEvent('anahtar')">Bildir</button>
+                    <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
+                        <button type="button" class="btn-submit" onclick="saveDriverEvent('anahtar')">Bildir</button>
                         <button type="button" class="universal-btn-cancel" onclick="closeDriverEventModal('anahtar')">Vazgeç</button>
                     </div>
                 </div>
@@ -389,8 +389,8 @@
                         <label for="driver-lastik-adres" style="color: var(--form-label-color); font-size: 15px;">Adres:</label>
                         <input type="text" id="driver-lastik-adres" class="form-input" placeholder="Lastik adresi" style="width: 100%;">
                     </div>
-                    <div class="universal-btn-group driver-event-modal-actions">
-                        <button type="button" class="universal-btn-save" onclick="saveDriverEvent('lastik')">Bildir</button>
+                    <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
+                        <button type="button" class="btn-submit" onclick="saveDriverEvent('lastik')">Bildir</button>
                         <button type="button" class="universal-btn-cancel" onclick="closeDriverEventModal('lastik')">Vazgeç</button>
                     </div>
                 </div>
@@ -412,8 +412,8 @@
                             <button type="button" class="driver-radio-btn active" data-value="hayir" data-group="utts">Hayır</button>
                         </div>
                     </div>
-                    <div class="universal-btn-group driver-event-modal-actions">
-                        <button type="button" class="universal-btn-save" onclick="saveDriverEvent('utts')">Bildir</button>
+                    <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
+                        <button type="button" class="btn-submit" onclick="saveDriverEvent('utts')">Bildir</button>
                         <button type="button" class="universal-btn-cancel" onclick="closeDriverEventModal('utts')">Vazgeç</button>
                     </div>
                 </div>
@@ -440,8 +440,8 @@
                         <label for="driver-muayene-egzoz-tarih" style="color: var(--form-label-color); font-size: 15px;">Egzos Muayene Tarihi</label>
                         <input type="date" id="driver-muayene-egzoz-tarih" class="form-input" style="width: 100%;" disabled>
                     </div>
-                    <div class="muayene-submit-wrap universal-btn-group driver-event-modal-actions">
-                        <button type="button" class="universal-btn-save" onclick="saveDriverEvent('muayene')">Bildir</button>
+                    <div class="muayene-submit-wrap" style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
+                        <button type="button" class="btn-submit" onclick="saveDriverEvent('muayene')">Bildir</button>
                         <button type="button" class="universal-btn-cancel" onclick="closeDriverEventModal('muayene')">Vazgeç</button>
                     </div>
                 </div>
@@ -472,8 +472,8 @@
                         <label for="driver-sigorta-iletisim" style="color: var(--form-label-color); font-size: 15px;">İletişim (isteğe bağlı):</label>
                         <input type="text" id="driver-sigorta-iletisim" class="form-input" placeholder="Telefon / e-posta" inputmode="tel" style="width: 100%;">
                     </div>
-                    <div class="universal-btn-group driver-event-modal-actions">
-                        <button type="button" class="universal-btn-save" onclick="saveDriverEvent('sigorta')">Bildir</button>
+                    <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
+                        <button type="button" class="btn-submit" onclick="saveDriverEvent('sigorta')">Bildir</button>
                         <button type="button" class="universal-btn-cancel" onclick="closeDriverEventModal('sigorta')">Vazgeç</button>
                     </div>
                 </div>
@@ -504,8 +504,8 @@
                         <label for="driver-kasko-iletisim" style="color: var(--form-label-color); font-size: 15px;">İletişim (isteğe bağlı):</label>
                         <input type="text" id="driver-kasko-iletisim" class="form-input" placeholder="Telefon / e-posta" inputmode="tel" style="width: 100%;">
                     </div>
-                    <div class="universal-btn-group driver-event-modal-actions">
-                        <button type="button" class="universal-btn-save" onclick="saveDriverEvent('kasko')">Bildir</button>
+                    <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px;">
+                        <button type="button" class="btn-submit" onclick="saveDriverEvent('kasko')">Bildir</button>
                         <button type="button" class="universal-btn-cancel" onclick="closeDriverEventModal('kasko')">Vazgeç</button>
                     </div>
                 </div>
