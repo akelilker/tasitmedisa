@@ -1673,13 +1673,11 @@
         `;
         }
 
-        const phoneLine = formatTrGsmDisplay(user.phone || '');
         return `
           <div class="settings-card" onclick="editUser('${user.id}')" style="cursor:pointer;">
             <div class="settings-card-content">
               ${buildUserCardNameMarkup(user.name || 'İsimsiz')}
               ${roleLabelMarkup}
-              ${phoneLine ? '<div class="settings-card-phone">' + escapeHtml(phoneLine) + '</div>' : ''}
             </div>
           </div>
         `;
