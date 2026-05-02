@@ -2297,8 +2297,11 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
 
 @media (max-width: 640px) {
     #settings-menu > button,
+    #settings-menu .has-submenu-wrapper .has-submenu,
     #settings-menu .settings-submenu button {
-        font-size: calc(14px + 1pt) !important;
+        font-size: clamp(16px, 3.8vw, 18px) !important;
+        letter-spacing: 0.6px !important;
+        line-height: 1.18 !important;
     }
     /* Ayarlar menüsü: Veri Yedekleme satırı mobilde sağa yaslı (diğer butonlarla aynı) */
     .settings-dropdown .has-submenu {
