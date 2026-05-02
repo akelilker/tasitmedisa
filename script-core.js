@@ -217,6 +217,35 @@ window.toTitleCase = function(str) {
  */
 (function() {
   var ALLCAPS_BRAND_KEYS = { bmw: 1, vw: 1, mg: 1, gmc: 1, ram: 1, byd: 1, jmc: 1, ds: 1 };
+
+  /** tdci/tdı/tfsı… → ford TDCi, tam büyük TFSI/TDI/TSI (tr-TR büyük harf eşlemesi güvenilir olsun) */
+  function normalizeEngineAbbrevToken(suffixRaw) {
+    var s = String(suffixRaw || '').toLocaleUpperCase('tr-TR').replace(/\u0130/g, 'I');
+    if (s === 'TFSI') return 'TFSI';
+    if (s === 'TDCI') return 'TDCi';
+    if (s === 'TDI') return 'TDI';
+    if (s === 'TSI') return 'TSI';
+    return suffixRaw || '';
+  }
+
+  /** 1.0TSI vb. rakam sonrası + ayrı kelime kısaltmaları; sıra: daha uzun/özgül token önce */
+  function applyMotorKisaltmalari(out) {
+    if (!out) return out;
+    out = out.replace(/(\d+(?:[\.,]\d+)?)(tfsi|tdci|tdi|tsi)\b/gi, function(_, num, suf) {
+      return num + normalizeEngineAbbrevToken(suf);
+    });
+    out = out.replace(/\b(tfsi|tdci|tdi|tsi)\b/gi, function(m) {
+      return normalizeEngineAbbrevToken(m);
+    });
+    return out;
+  }
+
+  /** Silindir/litre gösterimi: 350l → 350L (yalnız küçük l, kelime sınırı) */
+  function applyLtBuyukHarfi(out) {
+    if (!out) return out;
+    return out.replace(/(\d+(?:[\.,]\d+)?)l\b/g, '$1L');
+  }
+
   window.formatBrandModel = function(str) {
     if (str == null || str === '') return str;
     if (str === '-') return str;
@@ -224,7 +253,7 @@ window.toTitleCase = function(str) {
     if (!trimmed) return '';
     var titled = typeof window.toTitleCase === 'function' ? window.toTitleCase(trimmed) : trimmed;
     if (!titled) return trimmed;
-    return titled.split(/\s+/).map(function(w) {
+    var out = titled.split(/\s+/).map(function(w) {
       if (!w) return w;
       return w.split('-').map(function(part) {
         if (!part) return part;
@@ -235,6 +264,9 @@ window.toTitleCase = function(str) {
         return part;
       }).join('-');
     }).join(' ');
+    out = applyMotorKisaltmalari(out);
+    out = applyLtBuyukHarfi(out);
+    return out;
   };
 })();
 
@@ -677,7 +709,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // Lazy modül asset sürümleri — tek nesne; index.html içindeki style-core ?v= ile tasitlar sürümü uyumlu kalmalı
 var MEDISA_MODULE_VERSIONS = {
   tasitlar: '20260501.4',
-  raporlar: '20260501.2',
+  raporlar: '20260503.2',
   kayitJs: '20260503.1',
   kayitCss: '20260501.3',
   ayarlarJs: '20260502.1',

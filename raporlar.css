@@ -1275,16 +1275,16 @@ z-index: 100;
   align-items: center !important;
   width: 100% !important;
 }
-/* Başlangıç tarihi boşken gg.aa.yyyy daha saydam, dikkat çekmesin */
+/* Başlangıç tarihi boşken (gg.aa.yyyy): beyaz yerine tema veri grisi (#stok-list-container içinde) */
 #stok-list-container .stok-controls-row-2 #stok-date-start:invalid::-webkit-datetime-edit,
 #stok-list-container .stok-controls-row-2 #stok-date-start:invalid::-webkit-datetime-edit-fields-wrapper,
 #stok-list-container .stok-controls-row-2 #stok-date-start:invalid::-webkit-datetime-edit-text,
 #stok-list-container .stok-controls-row-2 #stok-date-start:invalid::-webkit-datetime-edit-month-field,
 #stok-list-container .stok-controls-row-2 #stok-date-start:invalid::-webkit-datetime-edit-day-field,
 #stok-list-container .stok-controls-row-2 #stok-date-start:invalid::-webkit-datetime-edit-year-field {
-  opacity: 0.4 !important;
-  -webkit-text-fill-color: rgba(255, 255, 255, 0.35) !important;
-  color: rgba(255, 255, 255, 0.35) !important;
+  opacity: 1 !important;
+  color: var(--data-value-color, #a0aec0) !important;
+  -webkit-text-fill-color: var(--data-value-color, #a0aec0) !important;
 }
 /* Desktop düzeltme katmanı: Detay menü üst hiza + modal alt çerçeve sabit */
 /* Not: > ile sadece row-1'in direkt çocuğu (stok-left-controls yokken). stok-left-controls içindeki back-bar bu kuralı almaz, kendi -46px kuralı geçerli kalır. */
@@ -1521,6 +1521,22 @@ width: 100% !important;
 #stok-date-start::-webkit-datetime-edit-year-field {
 color: var(--data-value-color, #a0aec0) !important;
 -webkit-text-fill-color: var(--data-value-color, #a0aec0) !important;
+}
+
+/* Boş başlangıç (masaüstü header’daki row-2 dahil): WebKit bazen beyaza basıyor; :invalid daha spesifik */
+#stok-date-start:invalid {
+color: var(--data-value-color, #a0aec0) !important;
+-webkit-text-fill-color: var(--data-value-color, #a0aec0) !important;
+}
+#stok-date-start:invalid::-webkit-datetime-edit,
+#stok-date-start:invalid::-webkit-datetime-edit-fields-wrapper,
+#stok-date-start:invalid::-webkit-datetime-edit-text,
+#stok-date-start:invalid::-webkit-datetime-edit-month-field,
+#stok-date-start:invalid::-webkit-datetime-edit-day-field,
+#stok-date-start:invalid::-webkit-datetime-edit-year-field {
+color: var(--data-value-color, #a0aec0) !important;
+-webkit-text-fill-color: var(--data-value-color, #a0aec0) !important;
+opacity: 1 !important;
 }
 
 /* Bitiş tarihi input - değer varken görünsün */
