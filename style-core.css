@@ -2778,6 +2778,13 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         margin-right: -2px !important;
         padding: 12px 12px 12px 3px !important;
         box-sizing: border-box !important;
+        /* Mobil ana sayfa: çerçeve beyaza yakın değil, metalik parlak gri */
+        border: 1px solid rgba(120, 138, 160, 0.72) !important;
+        box-shadow:
+            0 4px 16px rgba(0, 0, 0, 0.45),
+            0 4px 18px rgba(var(--theme-color-rgb), 0.06),
+            inset 0 1px 0 rgba(170, 186, 204, 0.22),
+            inset 0 -1px 0 rgba(24, 32, 44, 0.55) !important;
     }
     /* Anasayfa mobil header: logo+isim satırın altına (h1 ortada kalır); sol köşe için hafif içe */
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-logo {
@@ -2967,7 +2974,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         padding: 14px 18px;
         overflow: visible;
         box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
-        border-color: rgba(255, 255, 255, 0.55);
+        border: 1px solid rgba(120, 138, 160, 0.72) !important;
     }
     
     /* Menü butonları arası dikey boşluk mobilde kompakt */
