@@ -2240,7 +2240,9 @@ body.dashboard-page {
   color: var(--txt);
   display: flex;
   align-items: flex-start;
-  gap: 0;
+  /* Plaka, tire, model arasında boşluk (metindeki whitespace’e güvenilmez); ~1 klavye aralığı */
+  gap: 0.35em;
+  column-gap: 0.35em;
   cursor: pointer;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   transition: background 0.15s, color 0.15s;
@@ -5917,6 +5919,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .dashboard-page .driver-plate-dropdown-item {
     display: grid !important;
     grid-template-columns: max-content max-content minmax(0, 1fr) !important;
+    column-gap: 0.35em !important;
     align-items: center !important;
     text-align: left !important;
     justify-items: start !important;
