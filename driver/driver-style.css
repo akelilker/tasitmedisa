@@ -3235,32 +3235,20 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   min-height: 100px;
 }
 
-.driver-password-actions {
-  display: flex;
-  flex-wrap: nowrap;
-  gap: 10px;
-  justify-content: stretch;
-  align-items: stretch;
-  margin-top: 18px;
+.driver-password-actions.universal-btn-group,
+.driver-feedback-actions.universal-btn-group {
+  margin-top: 18px !important;
   width: 100%;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  gap: 10px !important;
 }
 
-.driver-feedback-actions {
-  display: flex;
-  flex-wrap: nowrap;
-  gap: 10px;
-  justify-content: stretch;
-  align-items: stretch;
-  margin-top: 18px;
-  width: 100%;
-}
-
-/* Talep / Şifre modalları: Gönder-Kaydet ile Vazgeç — style-core universal (32px) ile btn-submit boyutunu eşitle */
-#driver-feedback-modal .driver-feedback-actions .btn-submit,
+/* Talep / Şifre modalları: Kaydet=Vazgeç — iki sütun, mobilde daha yüksek dokunma alanı */
+#driver-feedback-modal .driver-feedback-actions .universal-btn-save,
 #driver-feedback-modal .driver-feedback-actions .universal-btn-cancel,
-#driver-password-modal .driver-password-actions .btn-submit,
+#driver-password-modal .driver-password-actions .universal-btn-save,
 #driver-password-modal .driver-password-actions .universal-btn-cancel {
-  flex: 1 1 0;
   min-width: 0;
   width: auto !important;
   max-width: none !important;
@@ -3286,13 +3274,13 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
     background-color 0.18s ease !important;
 }
 
-#driver-feedback-modal .driver-feedback-actions .btn-submit,
+#driver-feedback-modal .driver-feedback-actions .universal-btn-save,
 #driver-feedback-modal .driver-feedback-actions .universal-btn-cancel {
   font-weight: 400 !important;
 }
 
-#driver-feedback-modal .driver-feedback-actions .btn-submit:hover,
-#driver-feedback-modal .driver-feedback-actions .btn-submit:focus-visible,
+#driver-feedback-modal .driver-feedback-actions .universal-btn-save:hover,
+#driver-feedback-modal .driver-feedback-actions .universal-btn-save:focus-visible,
 #driver-feedback-modal .driver-feedback-actions .universal-btn-cancel:hover,
 #driver-feedback-modal .driver-feedback-actions .universal-btn-cancel:focus-visible {
   transform: scale(1.018);
@@ -3300,8 +3288,8 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 }
 
 @media (min-width: 769px) {
-  #driver-feedback-modal .driver-feedback-actions .btn-submit:hover,
-  #driver-feedback-modal .driver-feedback-actions .btn-submit:focus-visible {
+  #driver-feedback-modal .driver-feedback-actions .universal-btn-save:hover,
+  #driver-feedback-modal .driver-feedback-actions .universal-btn-save:focus-visible {
     transform: scale(1.038);
     background-color: rgba(74, 222, 128, 0.14) !important;
     border-color: rgba(74, 222, 128, 0.78) !important;
@@ -3330,8 +3318,8 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   }
 }
 
-#driver-feedback-modal .driver-feedback-actions .btn-submit,
-#driver-password-modal .driver-password-actions .btn-submit {
+#driver-feedback-modal .driver-feedback-actions .universal-btn-save,
+#driver-password-modal .driver-password-actions .universal-btn-save {
   border-width: 1px;
 }
 
@@ -3513,14 +3501,19 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 #edit-request-modal .form-group textarea:not(:focus) {
   box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.35) !important;
 }
-#edit-request-modal .btn-submit {
+#edit-request-modal .universal-btn-save {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin-top: 8px !important;
+  height: auto !important;
+  min-height: 44px !important;
   font-weight: 500 !important;
   border-width: 1px !important;
   border-color: rgba(74, 222, 128, 0.45) !important;
   color: rgba(74, 222, 128, 0.8) !important;
   padding: 7px 14px 8px !important;
 }
-#edit-request-modal .btn-submit:hover {
+#edit-request-modal .universal-btn-save:hover {
   border-color: rgba(74, 222, 128, 0.75) !important;
   color: rgba(74, 222, 128, 0.95) !important;
 }
@@ -3541,24 +3534,11 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   margin: 0;
 }
 
-.btn-submit {
-  width: 100%;
-  padding: 14px;
-  background: transparent;
-  color: var(--green);
-  border: 0.5px solid rgba(74, 222, 128, 0.5);
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.2s, border-color 0.2s, color 0.2s;
-  margin-top: 8px;
-}
-
-.btn-submit:hover {
-  background: rgba(74, 222, 128, 0.12);
-  border-color: rgba(74, 222, 128, 0.7);
-  color: rgba(74, 222, 128, 0.95);
+/* Olay/Muayene modalları: Bildir + Vazgeç — ana uygulama universal-btn-group */
+.driver-modal .driver-event-modal-actions.universal-btn-group {
+  margin-top: 20px !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
 }
 
 /* Muayene teyit popover - tarih inputu altında 5px, sağ grid içinde yatay ortalı (top/left JS ile) */
@@ -5428,7 +5408,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     color: rgba(160, 174, 192, 0.55) !important;
     -webkit-text-fill-color: rgba(160, 174, 192, 0.55) !important;
   }
-  #edit-request-modal .btn-submit {
+  #edit-request-modal .universal-btn-save {
     font-size: 17px !important;
     display: inline-flex !important;
     align-items: center !important;
@@ -5479,7 +5459,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   #edit-request-modal .form-group textarea {
     padding: 5px 16px !important;
   }
-  #edit-request-modal .btn-submit {
+  #edit-request-modal .universal-btn-save {
     padding: 10px 3px 11px !important;
   }
 
