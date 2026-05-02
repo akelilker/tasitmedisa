@@ -2539,7 +2539,8 @@ input.settings-form-input:-moz-autofill,
         min-width: 168px !important;
         max-width: min(56vw, 240px) !important;
         box-sizing: border-box !important;
-        overflow-x: hidden !important;
+        /* overflow-x:hidden üst-alt border/scale kesiyordu; yatay taşma yok (width 100%) */
+        overflow: visible !important;
     }
     #settings-menu.settings-dropdown > button,
     #settings-menu.settings-dropdown > .has-submenu-wrapper {
@@ -2623,6 +2624,8 @@ input.settings-form-input:-moz-autofill,
         box-shadow:
             0 4px 12px rgba(0, 0, 0, 0.24),
             0 4px 16px rgba(var(--theme-color-rgb), 0.12) !important;
+        /* Dokunmatikte :hover kalıcı + scale(1.025) çerçeveyi keser; mobilde scale yok */
+        transform: none !important;
     }
     #settings-menu.settings-dropdown > button.cache-clear-btn {
         border-color: var(--border-subtle) !important;
