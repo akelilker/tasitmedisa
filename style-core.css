@@ -2826,7 +2826,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         padding: 0 2px 0 0 !important;
         -webkit-font-smoothing: antialiased !important;
         text-rendering: optimizeLegibility !important;
-        text-shadow: 0 0 1px rgba(255, 255, 255, 0.22) !important;
+        text-shadow: none !important;
     }
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero .animated-line {
         bottom: 19px; /* 22px − 3px: çizgi başlıktan biraz aşağı, h1 oynatılmadan */

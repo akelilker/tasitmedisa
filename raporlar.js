@@ -13,6 +13,15 @@
     function getBranches() { return (typeof window.getMedisaBranches === 'function' ? window.getMedisaBranches() : null) || []; }
     function getUsers() { return (typeof window.getMedisaUsers === 'function' ? window.getMedisaUsers() : null) || []; }
 
+    /** Stok/Excel/yazdır: KM sütunu — taşıtlar listesiyle aynı kaynak (güncel km öncelikli). */
+    function getVehicleReportKmRaw(vehicle) {
+        if (!vehicle) return '';
+        var g = vehicle.guncelKm;
+        if (g != null && String(g).trim() !== '') return g;
+        var k = vehicle.km;
+        return k != null && String(k).trim() !== '' ? k : '';
+    }
+
     function toTitleCase(str) { return (typeof window.toTitleCase === 'function' ? window.toTitleCase(str) : str); }
     function formatBrandModel(str) { return (typeof window.formatBrandModel === 'function' ? window.formatBrandModel(str) : toTitleCase(str)); }
     function formatPlaka(str) { return (typeof window.formatPlaka === 'function' ? window.formatPlaka(str) : (str == null ? '-' : String(str))); }
@@ -742,7 +751,10 @@
             'marka': formatBrandModel(vehicle.brandModel || '-'),
             'plaka': formatPlaka(vehicle.plate || '-'),
             'sanziman': vehicle.transmission === 'manuel' ? 'Manuel' : vehicle.transmission === 'otomatik' ? 'Otomatik' : '-',
-            'km': vehicle.km ? formatNumber(vehicle.km) : '-'
+            'km': (function() {
+                var kmRaw = getVehicleReportKmRaw(vehicle);
+                return kmRaw !== '' ? formatNumber(kmRaw) : '-';
+            })()
         };
 
         const baseCells = stokBaseColumnOrder.map(key => ({
@@ -845,8 +857,8 @@
                 return direction === 'asc' ? aVal - bVal : bVal - aVal;
             } else if (columnKey === 'km') {
                 // Düşük → Yüksek (asc), Yüksek → Düşük (desc)
-                const aVal = parseFloat((a.km || '0').replace(/[^\d]/g, '')) || 0;
-                const bVal = parseFloat((b.km || '0').replace(/[^\d]/g, '')) || 0;
+                const aVal = parseInt(String(getVehicleReportKmRaw(a) || '0').replace(/\./g, ''), 10) || 0;
+                const bVal = parseInt(String(getVehicleReportKmRaw(b) || '0').replace(/\./g, ''), 10) || 0;
                 return direction === 'asc' ? aVal - bVal : bVal - aVal;
             } else if (columnKey === 'yil') {
                 // Eski → Yeni (asc), Yeni → Eski (desc)
@@ -1635,7 +1647,11 @@
                 case 'marka': value = formatBrandModel(vehicle.brandModel || '-'); break;
                 case 'plaka': value = formatPlaka(vehicle.plate || '-'); break;
                 case 'sanziman': value = vehicle.transmission === 'manuel' ? 'Manuel' : vehicle.transmission === 'otomatik' ? 'Otomatik' : '-'; break;
-                case 'km': value = vehicle.km ? formatNumber(vehicle.km) : '-'; break;
+                case 'km': {
+                    var kmRaw = getVehicleReportKmRaw(vehicle);
+                    value = kmRaw !== '' ? formatNumber(kmRaw) : '-';
+                    break;
+                }
             }
         } else {
             switch (col.key) {
@@ -2353,6 +2369,13 @@
                     const islemler = toTitleCase(d.islemler || event.islemler || '-');
                     const tutar = (d.tutar || event.tutar) ? formatNumber(String(d.tutar || event.tutar || '')) + ' TL' : '-';
                     eventText = `${escapeHtml(islemler)} | Tutar: ${escapeHtml(tutar)}`;
+                } else if (event.type === 'km-revize') {
+                    eventTypeLabel = 'KM GÜNCELLEME';
+                    const d = event.data || {};
+                    const eski = d.eskiKm != null && String(d.eskiKm).trim() !== '' ? formatNumber(String(d.eskiKm)) : '-';
+                    const yeni = d.yeniKm != null && String(d.yeniKm).trim() !== '' ? formatNumber(String(d.yeniKm)) : '-';
+                    const surucu = formatAdSoyad(d.surucu || '-');
+                    eventText = `Önceki: ${escapeHtml(eski)} | Yeni: ${escapeHtml(yeni)} | Kaydeden: ${escapeHtml(surucu)}`;
                 } else {
                     eventTypeLabel = event.type ? event.type.toUpperCase() : 'OLAY';
                     eventText = JSON.stringify(event);
