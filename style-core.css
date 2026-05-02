@@ -1509,7 +1509,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   max-width: 100%;
 }
 
-/* Menü butonları - Havada durma + kırmızı uyum */
+/* Menü butonları - Havada durma (nötr gölge; kırmızı ton aralıkta birikmesin) */
 .menu-btn {
   max-width: 500px;
   width: 100%;
@@ -1521,7 +1521,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   cursor: pointer;
   text-align: center;
   transition: border-color 0.2s, background 0.2s, transform 0.2s, box-shadow 0.2s;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2), 0 4px 16px rgba(var(--theme-color-rgb), 0.1);  /* Havada + kırmızı */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   margin-bottom: 5px;
   height: 54px; /* Sabit yükseklik - taşma engellendi */
   overflow: hidden; /* Metin büyürse taşma gizlensin */
@@ -1540,7 +1540,7 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
     background: linear-gradient(180deg, var(--hero-gradient-start), var(--hero-gradient-end)); /* Arka plan aynı kalır */
     /* Clip-safe hover: yukarı taşıma yok (üstten kırpılmasın) */
     transform: none;
-    box-shadow: 0 6px 14px rgba(0,0,0,0.25), 0 6px 20px rgba(var(--theme-color-rgb), 0.12);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
   }
   .menu-btn:hover .ttl {
     color: var(--txt-white);
@@ -2966,7 +2966,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         min-height: 62px;
         padding: 14px 18px;
         overflow: visible;
-        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25), 0 4px 20px rgba(var(--theme-color-rgb), 0.14);
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
         border-color: rgba(255, 255, 255, 0.55);
     }
     
