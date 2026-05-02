@@ -1,5 +1,11 @@
 /* =========================================
    TAŞITLAR MODÜLÜ - SABİT HEADER / DİNAMİK TOOLBAR
+   =========================================
+   Ana bloklar (tek dosya; loadAppModule tek giriş):
+   • Lazy script — veri okuma (şube/taşıt/kullanıcı) — DOM/bind
+   • Liste / ara / şube kartları — detay modal doldurma
+   • Bildirim state — araç tarihçesi
+   • Olay menüsü + dinamik formlar (kaydet / güncelle)
    ========================================= */
 
 (function() {
@@ -3569,7 +3575,7 @@
       const displayName = escapeHtml(formatAdSoyad(assignedUserName)).replace(/ /g, '&nbsp;');
       html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Kullanıcı</span><span class="detail-row-colon">:</span></div><span class="detail-row-value detail-user-value"> ${displayName}</span></div>`;
   } else {
-      html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Kullanıcı</span><span class="detail-row-colon">:</span></div><span class="detail-row-value detail-user-empty" onclick="event.stopPropagation(); if (window.currentDetailVehicleId) openEventModal('kullanici', window.currentDetailVehicleId);"> Kullanıcı Eklemek İçin +</span></div>`;
+      html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Kullanıcı</span><span class="detail-row-colon">:</span></div><span class="detail-row-value detail-user-empty" onclick="event.stopPropagation(); window.medisaOpenEventModalFromVehicleDetailUi('kullanici');"> Kullanıcı Eklemek İçin +</span></div>`;
   }
 
   // Şube
@@ -4471,6 +4477,24 @@
    */
   function openEventModalBody(type, vehicleId) {
     closeDynamicModalCustomSelect();
+
+    var effectiveVid = '';
+    try {
+      if (vehicleId != null && vehicleId !== '') effectiveVid = String(vehicleId).trim();
+      if (!effectiveVid && window.currentDetailVehicleId != null) {
+        effectiveVid = String(window.currentDetailVehicleId).trim();
+      }
+    } catch (eVid) {
+      effectiveVid = '';
+    }
+
+    if (!effectiveVid && type !== 'ruhsat') {
+      if (typeof window.__medisaLogError === 'function') {
+        window.__medisaLogError('openEventModal', new Error('taşıt kimliği yok'), { type: type });
+      }
+      return;
+    }
+
     if (type === 'menu') {
       if (DOM.dinamikOlayModal && DOM.dinamikOlayModal.classList.contains('active')) {
         DOM.dinamikOlayModal.classList.remove('active');
@@ -6553,11 +6577,26 @@
   }
 
   /**
+   * Dinamik olay "Kaydet" handler'ları için: currentDetailVehicleId + veri setinde araç.
+   */
+  function resolveVehicleContextForDynamicSave() {
+    var vid = window.currentDetailVehicleId;
+    if (vid == null || String(vid).trim() === '') return null;
+    var vehicles = readVehicles();
+    var vehicle = vehicles.find(function(v) { return String(v.id) === String(vid); });
+    if (!vehicle) return null;
+    return { vehicleId: vid, vehicle: vehicle, vehicles: vehicles };
+  }
+
+  /**
    * Bakım olayı kaydet
    */
   window.saveBakimEvent = function() {
-    const vehicleId = window.currentDetailVehicleId;
-    if (!vehicleId) return;
+    const svc = resolveVehicleContextForDynamicSave();
+    if (!svc) return;
+    const vehicleId = svc.vehicleId;
+    const vehicle = svc.vehicle;
+    const vehicles = svc.vehicles;
     
     const tarih = document.getElementById('bakim-tarih')?.value.trim() || '';
     const islemler = document.getElementById('bakim-islemler')?.value.trim() || '';
@@ -6570,10 +6609,6 @@
       alert('Tarih ve Yapılan İşlemler zorunludur!');
       return;
     }
-    
-    const vehicles = readVehicles();
-    const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
-    if (!vehicle) return;
     
     if (!vehicle.events) vehicle.events = [];
     
@@ -6622,8 +6657,11 @@
    * Kaza olayı kaydet
    */
   window.saveKazaEvent = function() {
-    const vehicleId = window.currentDetailVehicleId;
-    if (!vehicleId) return;
+    const svc = resolveVehicleContextForDynamicSave();
+    if (!svc) return;
+    const vehicleId = svc.vehicleId;
+    const vehicle = svc.vehicle;
+    const vehicles = svc.vehicles;
     
     const tarih = document.getElementById('kaza-tarih')?.value.trim() || '';
     const surucu = document.getElementById('kaza-surucu')?.value.trim() || '';
@@ -6650,10 +6688,6 @@
         });
       }
     }
-    
-    const vehicles = readVehicles();
-    const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
-    if (!vehicle) return;
     
     if (!vehicle.events) vehicle.events = [];
     if (!vehicle.boyaliParcalar) vehicle.boyaliParcalar = {};
@@ -6698,8 +6732,11 @@
   };
 
   window.saveCezaEvent = function() {
-    const vehicleId = window.currentDetailVehicleId;
-    if (!vehicleId) return;
+    const svc = resolveVehicleContextForDynamicSave();
+    if (!svc) return;
+    const vehicleId = svc.vehicleId;
+    const vehicle = svc.vehicle;
+    const vehicles = svc.vehicles;
 
     const tarih = document.getElementById('ceza-tarih')?.value.trim() || '';
     const surucu = document.getElementById('ceza-surucu')?.value.trim() || '';
@@ -6711,9 +6748,6 @@
       return;
     }
 
-    const vehicles = readVehicles();
-    const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
-    if (!vehicle) return;
     if (!vehicle.events) vehicle.events = [];
 
     const event = {
@@ -6798,9 +6832,6 @@
    * Sigorta bilgisi güncelle (bitiş tarihi 1 yıl sonrasına ayarlanır)
    */
   window.updateSigortaInfo = function() {
-    const vehicleId = window.currentDetailVehicleId;
-    if (!vehicleId) return;
-    
     const tarihInput = document.getElementById('sigorta-tarih');
     const tarih = normalizeGgAaYyyyInputElement(tarihInput);
     const firma = document.getElementById('sigorta-firma')?.value.trim() || '';
@@ -6811,10 +6842,12 @@
       alert('Tarih zorunludur!');
       return;
     }
-    
-    const vehicles = readVehicles();
-    const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
-    if (!vehicle) return;
+
+    const svc = resolveVehicleContextForDynamicSave();
+    if (!svc) return;
+    const vehicleId = svc.vehicleId;
+    const vehicle = svc.vehicle;
+    const vehicles = svc.vehicles;
     
     if (!vehicle.events) vehicle.events = [];
     
@@ -6861,9 +6894,6 @@
    * Kasko bilgisi güncelle (bitiş tarihi 1 yıl sonrasına ayarlanır)
    */
   window.updateKaskoInfo = function() {
-    const vehicleId = window.currentDetailVehicleId;
-    if (!vehicleId) return;
-    
     const tarihInput = document.getElementById('kasko-tarih');
     const tarih = normalizeGgAaYyyyInputElement(tarihInput);
     const firma = document.getElementById('kasko-firma')?.value.trim() || '';
@@ -6874,10 +6904,12 @@
       alert('Tarih zorunludur!');
       return;
     }
-    
-    const vehicles = readVehicles();
-    const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
-    if (!vehicle) return;
+
+    const svc = resolveVehicleContextForDynamicSave();
+    if (!svc) return;
+    const vehicleId = svc.vehicleId;
+    const vehicle = svc.vehicle;
+    const vehicles = svc.vehicles;
     
     if (!vehicle.events) vehicle.events = [];
     
@@ -6915,9 +6947,6 @@
    * Muayene bilgisi güncelle (bitiş tarihi otomatik hesaplanır)
    */
   window.updateMuayeneInfo = function() {
-    const vehicleId = window.currentDetailVehicleId;
-    if (!vehicleId) return;
-    
     const tarihInput = document.getElementById('muayene-tarih');
     const tarih = normalizeGgAaYyyyInputElement(tarihInput);
     const egzozCheckbox = document.getElementById('muayene-egzoz-different');
@@ -6935,10 +6964,12 @@
       if (egzozInput) egzozInput.focus();
       return;
     }
-    
-    const vehicles = readVehicles();
-    const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
-    if (!vehicle) return;
+
+    const svc = resolveVehicleContextForDynamicSave();
+    if (!svc) return;
+    const vehicleId = svc.vehicleId;
+    const vehicle = svc.vehicle;
+    const vehicles = svc.vehicles;
     
     if (!vehicle.events) vehicle.events = [];
     
@@ -6985,17 +7016,16 @@
    * Anahtar bilgisi güncelle
    */
   window.updateAnahtarInfo = function() {
-    const vehicleId = window.currentDetailVehicleId;
-    if (!vehicleId) return;
+    const svc = resolveVehicleContextForDynamicSave();
+    if (!svc) return;
+    const vehicleId = svc.vehicleId;
+    const vehicle = svc.vehicle;
+    const vehicles = svc.vehicles;
     
     const radioBtns = document.querySelectorAll('#dinamik-olay-modal .radio-btn');
     const activeBtn = Array.from(radioBtns).find(btn => btn.classList.contains('active'));
     const durum = activeBtn?.dataset.value || 'yok';
     const detay = durum === 'var' ? (document.getElementById('anahtar-detay-event')?.value.trim() || '') : '';
-    
-    const vehicles = readVehicles();
-    const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
-    if (!vehicle) return;
     
     if (!vehicle.events) vehicle.events = [];
     
@@ -7028,17 +7058,16 @@
    * Hak Mahrumiyeti bilgisi güncelle
    */
   window.updateKrediInfo = function() {
-    const vehicleId = window.currentDetailVehicleId;
-    if (!vehicleId) return;
+    const svc = resolveVehicleContextForDynamicSave();
+    if (!svc) return;
+    const vehicleId = svc.vehicleId;
+    const vehicle = svc.vehicle;
+    const vehicles = svc.vehicles;
     
     const radioBtns = document.querySelectorAll('#dinamik-olay-modal .radio-btn');
     const activeBtn = Array.from(radioBtns).find(btn => btn.classList.contains('active'));
     const durum = activeBtn?.dataset.value || 'yok';
     const detay = durum === 'var' ? (document.getElementById('kredi-detay-event')?.value.trim() || '') : '';
-    
-    const vehicles = readVehicles();
-    const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
-    if (!vehicle) return;
     
     if (!vehicle.events) vehicle.events = [];
     
@@ -7071,9 +7100,6 @@
    * Kasko Kodu güncelle
    */
   window.updateKaskoKoduInfo = function() {
-    const vehicleId = window.currentDetailVehicleId;
-    if (!vehicleId) return;
-
     const inputElement = document.getElementById('kasko-kodu-guncelle-input');
     const yeniKaskoKodu = inputElement ? inputElement.value.trim() : '';
 
@@ -7083,9 +7109,11 @@
       return;
     }
 
-    const vehicles = readVehicles();
-    const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
-    if (!vehicle) return;
+    const svc = resolveVehicleContextForDynamicSave();
+    if (!svc) return;
+    const vehicleId = svc.vehicleId;
+    const vehicle = svc.vehicle;
+    const vehicles = svc.vehicles;
 
     vehicle.kaskoKodu = yeniKaskoKodu;
 
@@ -7124,9 +7152,6 @@
    * Km bilgisi güncelle
    */
   window.updateKmInfo = function() {
-    const vehicleId = window.currentDetailVehicleId;
-    if (!vehicleId) return;
-    
     const kmInput = document.getElementById('km-guncelle-input');
     if (!kmInput) return;
     
@@ -7141,10 +7166,12 @@
       alert('Lütfen geçerli bir kilometre değeri giriniz!');
       return;
     }
-    
-    const vehicles = readVehicles();
-    const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
-    if (!vehicle) return;
+
+    const svc = resolveVehicleContextForDynamicSave();
+    if (!svc) return;
+    const vehicleId = svc.vehicleId;
+    const vehicle = svc.vehicle;
+    const vehicles = svc.vehicles;
     
     if (!vehicle.events) vehicle.events = [];
     
@@ -7188,16 +7215,15 @@
    * UTTS Bilgisi güncelle
    */
   window.updateUTTSInfo = function() {
-    const vehicleId = window.currentDetailVehicleId;
-    if (!vehicleId) return;
+    const svc = resolveVehicleContextForDynamicSave();
+    if (!svc) return;
+    const vehicleId = svc.vehicleId;
+    const vehicle = svc.vehicle;
+    const vehicles = svc.vehicles;
     
     const radioBtns = document.querySelectorAll('#dinamik-olay-modal .radio-btn');
     const activeBtn = Array.from(radioBtns).find(btn => btn.classList.contains('active'));
     const durum = activeBtn?.dataset.value === 'evet' ? true : false;
-    
-    const vehicles = readVehicles();
-    const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
-    if (!vehicle) return;
     
     if (!vehicle.events) vehicle.events = [];
     
@@ -7228,16 +7254,15 @@
    * Taşıt Takip Cihaz Bilgisi güncelle
    */
   window.updateTakipCihazInfo = function() {
-    const vehicleId = window.currentDetailVehicleId;
-    if (!vehicleId) return;
+    const svc = resolveVehicleContextForDynamicSave();
+    if (!svc) return;
+    const vehicleId = svc.vehicleId;
+    const vehicle = svc.vehicle;
+    const vehicles = svc.vehicles;
     
     const radioBtns = document.querySelectorAll('#dinamik-olay-modal .radio-btn');
     const activeBtn = Array.from(radioBtns).find(btn => btn.classList.contains('active'));
     const durum = activeBtn?.dataset.value === 'evet' ? true : false;
-    
-    const vehicles = readVehicles();
-    const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
-    if (!vehicle) return;
     
     if (!vehicle.events) vehicle.events = [];
     
@@ -7268,17 +7293,16 @@
    * Yazlık/Kışlık Lastik Durumu güncelle
    */
   window.updateLastikInfo = function() {
-    const vehicleId = window.currentDetailVehicleId;
-    if (!vehicleId) return;
+    const svc = resolveVehicleContextForDynamicSave();
+    if (!svc) return;
+    const vehicleId = svc.vehicleId;
+    const vehicle = svc.vehicle;
+    const vehicles = svc.vehicles;
     
     const radioBtns = document.querySelectorAll('#dinamik-olay-modal .radio-btn');
     const activeBtn = Array.from(radioBtns).find(btn => btn.classList.contains('active'));
     const durum = activeBtn?.dataset.value || 'yok';
     const adres = durum === 'var' ? (document.getElementById('lastik-adres-event')?.value.trim() || '') : '';
-    
-    const vehicles = readVehicles();
-    const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
-    if (!vehicle) return;
     
     if (!vehicle.events) vehicle.events = [];
     
@@ -7313,9 +7337,6 @@
    * Şube değişikliği kaydet
    */
   window.updateSubeDegisiklik = function() {
-    const vehicleId = window.currentDetailVehicleId;
-    if (!vehicleId) return;
-    
     const selectEl = document.getElementById('sube-select');
     if (!selectEl) return;
     
@@ -7324,10 +7345,12 @@
       alert('Lütfen bir şube seçiniz!');
       return;
     }
-    
-    const vehicles = readVehicles();
-    const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
-    if (!vehicle) return;
+
+    const svc = resolveVehicleContextForDynamicSave();
+    if (!svc) return;
+    const vehicleId = svc.vehicleId;
+    const vehicle = svc.vehicle;
+    const vehicles = svc.vehicles;
     
     if (!vehicle.events) vehicle.events = [];
     
@@ -7367,9 +7390,6 @@
    * Kullanıcı atama/değişiklik kaydet
    */
   window.updateKullaniciAtama = function() {
-    const vehicleId = window.currentDetailVehicleId;
-    if (!vehicleId) return;
-
     const selectEl = document.getElementById('kullanici-select');
     if (!selectEl) return;
 
@@ -7379,9 +7399,11 @@
       return;
     }
 
-    const vehicles = readVehicles();
-    const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
-    if (!vehicle) return;
+    const svc = resolveVehicleContextForDynamicSave();
+    if (!svc) return;
+    const vehicleId = svc.vehicleId;
+    const vehicle = svc.vehicle;
+    const vehicles = svc.vehicles;
 
     if (!vehicle.events) vehicle.events = [];
 
@@ -7452,9 +7474,6 @@
    * Satış/Pert kaydet ve arşive taşı
    */
   window.saveSatisPert = function() {
-    const vehicleId = window.currentDetailVehicleId;
-    if (!vehicleId) return;
-    
     const tarih = document.getElementById('satis-tarih')?.value.trim() || '';
     const tutar = document.getElementById('satis-tutar')?.value.trim() || '';
     const aciklama = document.getElementById('satis-aciklama')?.value.trim() || '';
@@ -7463,10 +7482,12 @@
       alert('Satış/Pert tarihi zorunludur!');
       return;
     }
-    
-    const vehicles = readVehicles();
-    const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
-    if (!vehicle) return;
+
+    const svc = resolveVehicleContextForDynamicSave();
+    if (!svc) return;
+    const vehicleId = svc.vehicleId;
+    const vehicle = svc.vehicle;
+    const vehicles = svc.vehicles;
     
     if (!vehicle.events) vehicle.events = [];
     

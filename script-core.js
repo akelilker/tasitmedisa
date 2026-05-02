@@ -440,6 +440,29 @@ window.debounce = function(fn, ms) {
   };
 };
 
+/**
+ * Taşıt detayı modal görünür mü — global onclick / bildirim gibi dallarda guard için.
+ */
+window.medisaIsVehicleDetailModalOpen = function() {
+  var modal = document.getElementById('vehicle-detail-modal');
+  if (!modal) return false;
+  if (modal.classList.contains('active') || modal.classList.contains('open')) return true;
+  var d = (modal.style && modal.style.display != null) ? String(modal.style.display) : '';
+  return d === 'flex' || d === 'block';
+};
+
+/**
+ * Sadece detay gerçekten açıksa olay modalı açılır — hayalet tıklamaları için.
+ */
+window.medisaOpenEventModalFromVehicleDetailUi = function(type) {
+  if (!window.medisaIsVehicleDetailModalOpen()) return;
+  var vid = window.currentDetailVehicleId;
+  if (vid == null || String(vid).trim() === '') return;
+  if (typeof window.openEventModal === 'function') {
+    window.openEventModal(type, vid);
+  }
+};
+
 /** Hata loglama – kullanıcıya göstermeden teknik bilgiyi konsola yazar */
 window.__medisaLogError = function(context, error, extra) {
   var msg = error && (error.message || String(error));
@@ -759,7 +782,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Lazy modül asset sürümleri — tek nesne; index.html içindeki style-core ?v= ile tasitlar sürümü uyumlu kalmalı
 var MEDISA_MODULE_VERSIONS = {
-  tasitlar: '20260502.19',
+  tasitlar: '20260502.20',
   raporlar: '20260503.4',
   kayitJs: '20260503.1',
   kayitCss: '20260501.3',
