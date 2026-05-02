@@ -1850,14 +1850,50 @@ body.dashboard-page {
     width: 100% !important;
     height: auto !important;
   }
-  /* Login logosu mobilde – 56px (logo ufak büyütme) */
+  /* Login mobil header: ana uygulama (index) ile aynı kutu, logo kolonu ve başlık (style-core ana ekran 640px bloğu ile eşleşir) */
+  .login-page .hero {
+    min-height: 71px !important;
+    width: calc(100% + 4px) !important;
+    max-width: calc(100% + 4px) !important;
+    margin-left: -2px !important;
+    margin-right: -2px !important;
+    padding: 12px 12px 12px 3px !important;
+    box-sizing: border-box !important;
+  }
   .login-page .hero-logo {
-    flex: 0 0 48px !important;
-    width: 48px !important;
+    display: flex !important;
+    align-items: center !important;
+    margin-right: 4px !important;
+    margin-left: 0 !important;
+    width: 58px !important;
+    flex: 0 0 58px !important;
+    gap: 4px !important;
+    align-self: flex-end !important;
+    transform: translate(2px, 3px) !important;
   }
   .login-page .hero-logo img {
-    width: 100% !important;
-    height: auto !important;
+    transform: translateY(0) !important;
+  }
+  .login-page .hero h1 {
+    font-size: clamp(calc(18.5px - 0.5pt), 5.15vw, calc(23px - 0.5pt)) !important;
+    letter-spacing: clamp(0.35px, 1.05vw, 2.2px) !important;
+    line-height: 1.2 !important;
+    transform: none !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    word-break: normal !important;
+    padding: 0 2px 0 0 !important;
+    -webkit-font-smoothing: antialiased !important;
+    text-rendering: optimizeLegibility !important;
+    text-shadow: 0 0 1px rgba(255, 255, 255, 0.22) !important;
+  }
+  .login-page .hero .animated-line {
+    width: 88% !important;
+    height: 2.7px !important;
+    opacity: 0.76 !important;
+    background: linear-gradient(90deg, rgba(var(--theme-color-rgb), 0.06), rgba(var(--theme-color-rgb), 0.9) 50%, rgba(var(--theme-color-rgb), 0.06)) !important;
+    box-shadow: 0 2px 12px rgba(var(--theme-color-rgb), 0.36) !important;
   }
   /* Şifre ekranı başlık: kullanıcı paneli ile aynı (ekstra kaydırma yok) */
   /* Ortadaki dikey kırmızı çizgi – yan çizgilerle aynı */
@@ -5191,11 +5227,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   .login-page .login-card-title {
     font-size: 23px !important;
   }
-  .login-page .hero h1 {
-    font-size: clamp(calc(17.8px - 0.5pt), 5.1vw, calc(21.8px - 0.5pt)) !important;
-    letter-spacing: 2px !important;
-    padding: 0 2px !important;
-  }
+  /* .login-page .hero h1: ≤640px ana uygulama ile üst blokta (.login-page .hero h1); burada tekrarlama ezmesin diye kaldırıldı */
   .login-page .hero-panel-subtitle {
     font-size: calc(20px - 0.5pt) !important; /* h1'e göre 1pt küçük − 0.5pt */
   }
