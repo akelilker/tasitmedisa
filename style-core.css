@@ -2673,13 +2673,6 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         box-sizing: border-box !important;
     }
     #settings-menu > button,
-    #settings-menu .has-submenu-wrapper .has-submenu,
-    #settings-menu .settings-submenu button {
-        font-size: clamp(16px, 3.8vw, 18px) !important;
-        letter-spacing: 0.6px !important;
-        line-height: 1.18 !important;
-    }
-    #settings-menu > button,
     #settings-menu .settings-submenu button {
         width: 100% !important;
         max-width: 100% !important;
