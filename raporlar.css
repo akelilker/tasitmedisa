@@ -1539,6 +1539,19 @@ color: var(--data-value-color, #a0aec0) !important;
 opacity: 1 !important;
 }
 
+/* Rapor modal + header row-2: WebKit boş tarih (gg.aa.yyyy) için ek özgüllük */
+#reports-modal #stok-date-start:invalid,
+#reports-modal #stok-date-start:invalid::-webkit-datetime-edit,
+#reports-modal #stok-date-start:invalid::-webkit-datetime-edit-fields-wrapper,
+#reports-modal #stok-date-start:invalid::-webkit-datetime-edit-text,
+#reports-modal #stok-date-start:invalid::-webkit-datetime-edit-month-field,
+#reports-modal #stok-date-start:invalid::-webkit-datetime-edit-day-field,
+#reports-modal #stok-date-start:invalid::-webkit-datetime-edit-year-field {
+color: var(--data-value-color, #a0aec0) !important;
+-webkit-text-fill-color: var(--data-value-color, #a0aec0) !important;
+opacity: 1 !important;
+}
+
 /* Bitiş tarihi input - değer varken görünsün */
 #stok-date-end {
 color: var(--data-value-color, #a0aec0) !important;
