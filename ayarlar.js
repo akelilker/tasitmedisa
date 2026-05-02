@@ -1880,17 +1880,26 @@
         window.showCenteredInfoBox('Excel modülü yükleniyor, lütfen bekleyin...');
       }
 
-      var script = document.createElement('script');
-      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
-      script.onload = function() {
+      var xlsxSrc = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+      function onXlsxReady() {
         if (typeof window.closeCenteredInfoBox === 'function') window.closeCenteredInfoBox();
         var input = document.getElementById('kasko-excel-input');
         if (input) input.click();
-      };
-      script.onerror = function() {
+      }
+      function onXlsxFail() {
         if (typeof window.closeCenteredInfoBox === 'function') window.closeCenteredInfoBox();
         alert('Excel kütüphanesi yüklenemedi. Lütfen internet bağlantınızı kontrol edin.');
-      };
+      }
+
+      if (typeof window.__medisaLoadScriptOnce === 'function') {
+        window.__medisaLoadScriptOnce(xlsxSrc).then(onXlsxReady).catch(onXlsxFail);
+        return;
+      }
+
+      var script = document.createElement('script');
+      script.src = xlsxSrc;
+      script.onload = onXlsxReady;
+      script.onerror = onXlsxFail;
       document.head.appendChild(script);
     };
 
