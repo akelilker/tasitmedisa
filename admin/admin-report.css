@@ -49,79 +49,129 @@ body.admin-report-page::-webkit-scrollbar {
   display: none;
 }
 
-/* --- Admin Hero (ana sayfa ile aynı) --- */
+/* --- Admin hero: kullanıcı paneli (dashboard) ile aynı iki satırlı grid (.hero.hero-two-rows) --- */
 .admin-report-hero {
   margin-bottom: 1rem;
   margin-left: calc(-1rem + 3px);
   margin-right: calc(-1rem + 3px);
-  padding-top: 8px;
-  padding-bottom: 8px;
 }
 
-.admin-report-hero .hero-logo {
-  margin-top: 0;
+body.admin-report-page .hero.admin-report-hero.hero-two-rows {
+  display: grid !important;
+  grid-template-columns: minmax(var(--hero-logo-width), max-content) 1fr var(--hero-logo-width);
+  align-items: center;
+  gap: 8px;
+  flex-direction: unset !important;
+  overflow: visible !important;
+  padding-top: 10px !important;
+  padding-bottom: 10px !important;
+  padding-left: 2px !important;
+}
+
+body.admin-report-page .hero.admin-report-hero.hero-two-rows .hero-logo.admin-report-hero-side {
+  grid-column: 1;
+  justify-self: start;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 2px !important;
+  width: max-content !important;
+  min-width: var(--hero-logo-width) !important;
+  max-width: min(200px, 46vw) !important;
+  overflow: visible !important;
+  margin-left: 0 !important;
+  margin-top: 0 !important;
+  transform: translate(0, -3px);
+  flex-shrink: 0;
+}
+
+body.admin-report-page .hero.hero-two-rows .hero-logo picture {
+  display: block !important;
+  width: 100%;
+  max-width: 54px;
+  margin: 0 auto;
+}
+
+body.admin-report-page .hero.hero-two-rows .hero-logo img.logo-small {
+  width: 100% !important;
+  height: auto !important;
+  max-height: none;
+  object-fit: contain;
+  filter: brightness(0.88) !important;
+  opacity: 1 !important;
+}
+
+body.admin-report-page .hero.hero-two-rows .hero-title-block {
+  grid-column: 2;
+  justify-self: center;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 4px;
-}
-
-.admin-hero-title-wrap {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
   gap: 2px;
-  position: relative;
+  min-width: 0;
+  transform: translateY(3px);
+}
+
+body.admin-report-page .hero.hero-two-rows .hero-spacer.admin-report-hero-side {
+  grid-column: 3;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
   min-width: 0;
 }
 
-.admin-hero-title-wrap h1 {
+body.admin-report-page .hero.hero-two-rows .hero-title-block .hero-title-line {
+  flex: 0 1 auto;
   margin: 0;
-  max-width: 100%;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.admin-hero-line {
-  display: none;
-}
-
-.admin-report-subtitle {
-  font-size: 18px;
+  font-size: clamp(calc(16px - 0.5pt), 4.5vw, calc(24px - 0.5pt));
   font-weight: 800;
-  margin: 0;
-  letter-spacing: 4px;
+  letter-spacing: clamp(1px, 0.5vw, 4px);
   text-transform: uppercase;
-  max-width: 100%;
+  text-align: center;
+  background: linear-gradient(to bottom, #c2d4df 0%, #ffffff 40%, #9aadba 52%, #d6e0e8 100%) !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  color: transparent !important;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  background: linear-gradient(to bottom,
-    #c2d4df 0%,
-    #ffffff 40%,
-    #9aadba 52%,
-    #d6e0e8 100%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
-  text-shadow: none;
-  filter: none;
+  min-width: 0;
+  max-width: 100%;
+  line-height: 1.2;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
-.admin-report-page .main-header-user-name {
-  display: none;
+body.admin-report-page .hero.hero-two-rows .hero-title-block .hero-panel-subtitle {
+  margin: 0;
+  font-size: calc(17px - 0.7pt - 0.5pt);
+  font-weight: 800;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  text-align: center;
+  background: linear-gradient(to bottom, #c2d4df 0%, #ffffff 40%, #9aadba 52%, #d6e0e8 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  line-height: 1.12;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body.admin-report-page .main-header-user-name {
+  display: block;
   max-width: none;
   overflow: visible;
-  color: rgba(222, 229, 235, 0.92);
-  font-size: clamp(calc(8px - 0.5pt), 1.55vw, calc(10px - 0.5pt));
-  font-weight: 600;
+  color: rgba(238, 246, 255, 0.98);
+  font-size: clamp(9px, 1.65vw, 10.5px);
+  font-weight: 700;
   line-height: 1.15;
   text-align: center;
   letter-spacing: 0.01em;
@@ -130,7 +180,7 @@ body.admin-report-page::-webkit-scrollbar {
   transform: translate(3px, 2px);
 }
 
-.admin-report-page .main-header-user-name.is-empty {
+body.admin-report-page .main-header-user-name.is-empty {
   display: none;
 }
 
@@ -151,8 +201,8 @@ body.admin-report-page::-webkit-scrollbar {
   display: inline-flex;
 }
 
-.admin-report-page.report-from-notifications .admin-report-hero .hero-logo img {
-  display: none;
+.admin-report-page.report-from-notifications .admin-report-hero .hero-logo picture {
+  display: none !important;
 }
 
 .admin-notifications-back-btn:hover,
@@ -167,31 +217,32 @@ body.admin-report-page::-webkit-scrollbar {
 }
 
 @media (min-width: 641px) {
-  .admin-report-hero {
+  body.admin-report-page .hero.admin-report-hero.hero-two-rows {
     align-items: stretch;
   }
 
-  .admin-report-hero .hero-logo {
-    display: grid;
-    grid-template-rows: auto minmax(0, 1fr);
-    align-items: start;
-    align-self: stretch;
-    justify-items: center;
-    gap: 0;
+  body.admin-report-page .hero.hero-two-rows .hero-logo.admin-report-hero-side {
+    align-self: end;
     padding-left: 11px;
     box-sizing: content-box;
   }
 
-  .admin-report-page .main-header-user-name {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    align-self: stretch;
-    width: 100%;
+  body.admin-report-page .main-header-user-name {
+    transform: translate(0, 2px);
+  }
+}
+
+@media (min-width: 641px) and (max-width: 768px) {
+  body.admin-report-page .hero.admin-report-hero.hero-two-rows {
+    grid-template-columns: minmax(56px, max-content) minmax(0, 1fr) 56px !important;
   }
 
-  .admin-hero-title-wrap h1 {
-    font-size: 21px;
+  body.admin-report-page .hero.hero-two-rows .hero-logo.admin-report-hero-side {
+    transform: translate(0, -2px) !important;
+  }
+
+  body.admin-report-page .hero.hero-two-rows .hero-logo picture {
+    max-width: 52px !important;
   }
 }
 
@@ -1974,10 +2025,81 @@ body.admin-report-page::-webkit-scrollbar {
 
 /* --- Mobil --- */
 @media (max-width: 640px) {
-  .admin-report-hero {
-    display: grid;
-    grid-template-columns: minmax(36px, max-content) minmax(0, 1fr) 36px;
-    gap: 4px;
+  body.admin-report-page .hero.admin-report-hero.hero-two-rows {
+    grid-template-columns: minmax(52px, max-content) minmax(0, 1fr) !important;
+    column-gap: 4px !important;
+  }
+
+  body.admin-report-page .hero.hero-two-rows .hero-spacer.admin-report-hero-side {
+    display: none !important;
+  }
+
+  body.admin-report-page .hero.hero-two-rows .hero-title-block {
+    grid-column: 2 !important;
+    justify-self: stretch !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    padding-left: 2px !important;
+    padding-right: 8px !important;
+    box-sizing: border-box !important;
+    transform: translateY(2px) !important;
+  }
+
+  body.admin-report-page .hero.hero-two-rows .hero-logo.admin-report-hero-side {
+    flex: 0 1 auto !important;
+    width: max-content !important;
+    min-width: 52px !important;
+    max-width: min(200px, 46vw) !important;
+    margin-left: 0 !important;
+    overflow: visible !important;
+    transform: translate(0, -2px) !important;
+  }
+
+  body.admin-report-page .hero.hero-two-rows .hero-logo picture {
+    max-width: 52px !important;
+  }
+
+  body.admin-report-page .hero.hero-two-rows .hero-title-block .hero-title-line {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    font-size: clamp(12.5px, 3.9vw, 16px) !important;
+    letter-spacing: clamp(0.6px, 0.42vw, 1.6px) !important;
+    line-height: 1.12 !important;
+    text-align: center !important;
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
+    text-rendering: optimizeLegibility !important;
+  }
+
+  body.admin-report-page .hero.hero-two-rows .hero-title-block .hero-panel-subtitle {
+    font-size: clamp(15px, 4.5vw, 19px) !important;
+    letter-spacing: clamp(2px, 0.8vw, 3.5px) !important;
+    line-height: 1.12 !important;
+    text-align: center !important;
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
+    text-rendering: optimizeLegibility !important;
+  }
+
+  body.admin-report-page .main-header-user-name {
+    font-size: clamp(calc(8px - 0.5pt), 2.35vw, calc(10.5px - 0.5pt)) !important;
+    line-height: 1.12 !important;
+    letter-spacing: 0 !important;
+    transform: translate(8px, 5px) !important;
+  }
+
+  /* style-core mobil .hero-logo / img evrensel kurallarından izole et */
+  body.admin-report-page .hero.hero-two-rows .hero-logo.admin-report-hero-side {
+    margin-right: 0 !important;
+    width: max-content !important;
+    flex: 0 1 auto !important;
+  }
+
+  body.admin-report-page .hero.hero-two-rows .hero-logo img.logo-small {
+    height: auto !important;
+    transform: none !important;
   }
 
   /* Footer anasayfa mobil ile aynı: gri üst, yan yok, kırmızı glow */
@@ -1986,53 +2108,6 @@ body.admin-report-page::-webkit-scrollbar {
     border-left: none !important;
     border-right: none !important;
     box-shadow: 0 -15px 22px rgba(var(--theme-color-rgb), 0.35) !important;
-  }
-  .admin-report-hero .hero-spacer.admin-report-hero-side {
-    margin-left: 0;
-    width: 36px;
-    min-width: 36px;
-  }
-
-  .admin-report-hero .hero-logo.admin-report-hero-side {
-    margin-left: 0;
-    width: 36px;
-    min-width: 36px;
-    transform: none;
-  }
-
-  .admin-report-hero .hero-logo.admin-report-hero-side img {
-    max-width: 36px;
-  }
-
-  /* Ana başlık (TAŞIT YÖNETİM SİSTEMİ / KULLANICI RAPORLARI): mobil — kullanıcı paneli ile aynı tipografi; başka dosyaya sızmaz */
-  body.admin-report-page .admin-hero-title-wrap {
-    align-items: center;
-    justify-content: center;
-    padding-left: 2px;
-    padding-right: 8px;
-  }
-
-  body.admin-report-page .admin-hero-title-wrap h1,
-  body.admin-report-page .admin-report-subtitle {
-    text-align: center;
-  }
-
-  body.admin-report-page .admin-hero-title-wrap h1 {
-    font-size: clamp(12.5px, 3.9vw, 16px) !important;
-    letter-spacing: clamp(0.6px, 0.42vw, 1.6px) !important;
-    line-height: 1.12 !important;
-    -webkit-font-smoothing: antialiased !important;
-    -moz-osx-font-smoothing: grayscale !important;
-    text-rendering: optimizeLegibility !important;
-  }
-
-  body.admin-report-page .admin-report-subtitle {
-    font-size: clamp(15px, 4.5vw, 19px) !important;
-    letter-spacing: clamp(2px, 0.8vw, 3.5px) !important;
-    line-height: 1.12 !important;
-    -webkit-font-smoothing: antialiased !important;
-    -moz-osx-font-smoothing: grayscale !important;
-    text-rendering: optimizeLegibility !important;
   }
   .user-analytics-toolbar {
     flex-direction: column;
@@ -3138,28 +3213,4 @@ body.admin-report-page::-webkit-scrollbar {
     max-width: 100% !important;
     padding-bottom: max(12px, env(safe-area-inset-bottom)) !important;
   }
-}
-
-/* --- h1 Metalik Gradient (anasayfa ile aynı) --- */
-.admin-hero-title-wrap h1 {
-  font-size: calc(21px - 0.5pt);
-  font-weight: 800;
-  letter-spacing: 4px;
-  text-transform: uppercase;
-  white-space: nowrap;
-  background: linear-gradient(to bottom,
-    #c2d4df 0%,
-    #ffffff 40%,
-    #9aadba 52%,
-    #d6e0e8 100%
-  );
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
-  text-shadow: none;
-  filter: none;
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-  line-height: 1.6;
 }
