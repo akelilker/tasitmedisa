@@ -357,7 +357,7 @@ body.dashboard-page {
 }
 /* Dashboard: başlık + alt satır (metalik alt başlık) logoyla aynı optik bantta; çok hafif aşağı */
 .dashboard-page .hero.hero-two-rows .hero-title-block {
-  transform: translate(8px, 3px);
+  transform: translateY(3px);
 }
 .hero.hero-two-rows .hero-spacer {
   grid-column: 3;
@@ -1863,14 +1863,13 @@ body.dashboard-page {
   .login-page .hero-logo {
     display: flex !important;
     align-items: center !important;
-    justify-content: center !important;
     margin-right: 4px !important;
     margin-left: 0 !important;
     width: 58px !important;
     flex: 0 0 58px !important;
     gap: 4px !important;
-    align-self: center !important;
-    transform: translate(2px, 0) !important;
+    align-self: flex-end !important;
+    transform: translate(2px, 3px) !important;
   }
   .login-page .hero-logo img {
     transform: translateY(0) !important;
@@ -1893,8 +1892,6 @@ body.dashboard-page {
     width: 88% !important;
     height: 2.7px !important;
     opacity: 0.76 !important;
-    /* Varsayılan 22px; ana ekran mobil 19px. Login başlıkta çakışmayı gidermek için +3 px aşağı: 16px. */
-    bottom: 16px !important;
     background: linear-gradient(90deg, rgba(var(--theme-color-rgb), 0.06), rgba(var(--theme-color-rgb), 0.9) 50%, rgba(var(--theme-color-rgb), 0.06)) !important;
     box-shadow: 0 2px 12px rgba(var(--theme-color-rgb), 0.36) !important;
   }
