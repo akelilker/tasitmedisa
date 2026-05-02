@@ -1044,7 +1044,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           return `
               <div class="driver-plate-dropdown-item" role="option" data-vehicle-id="${v.id}" tabindex="0">
                   <span class="driver-plate-dropdown-item-plate">${plate}</span>
-                  <span class="driver-plate-dropdown-item-separator${hasBrandModel ? '' : ' is-hidden'}" aria-hidden="true">-</span>
+                  <span class="driver-plate-dropdown-item-separator${hasBrandModel ? '' : ' is-hidden'}" aria-hidden="true"> - </span>
                   <span class="driver-plate-dropdown-item-brand">${brandModelHtml}</span>
               </div>`;
       }).join('');
