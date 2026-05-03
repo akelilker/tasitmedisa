@@ -1484,9 +1484,12 @@ text-overflow: ellipsis !important;
 
 .stok-date-input::-webkit-calendar-picker-indicator {
 filter: invert(1);
-opacity: 0.6;
+opacity: 0.92;
 cursor: pointer;
 margin: 0;
+padding: 2px 4px;
+min-width: 22px;
+min-height: 22px;
 transform: translateY(-1px);
 }
 

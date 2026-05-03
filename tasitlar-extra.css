@@ -728,8 +728,8 @@
 }
 #dinamik-olay-modal #ruhsat-modal-content .vehicle-document-card:hover,
 #dinamik-olay-modal #ruhsat-modal-content .vehicle-document-card:focus-visible {
-  border-color: rgba(212, 0, 0, 0.55);
-  background: rgba(212, 0, 0, 0.06);
+  border-color: rgba(34, 197, 94, 0.45);
+  background: rgba(34, 197, 94, 0.06);
   outline: none;
 }
 #dinamik-olay-modal #ruhsat-modal-content .vehicle-document-icon-wrap {
@@ -738,7 +738,7 @@
   justify-content: center;
   width: 44px;
   height: 44px;
-  color: var(--theme-color, #d40000);
+  color: #22c55e;
   flex-shrink: 0;
 }
 #dinamik-olay-modal #ruhsat-modal-content .vehicle-document-icon {
