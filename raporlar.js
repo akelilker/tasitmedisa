@@ -73,8 +73,21 @@
 
     function loadStokColumnState() {
         var load = typeof window.loadColumnState === 'function' ? window.loadColumnState : function(k, def) { try { var r = localStorage.getItem(k); return r ? JSON.parse(r) : def; } catch (e) { return def; } };
-        var savedCols = load('stok_active_columns', {});
-        if (savedCols && typeof savedCols === 'object') stokActiveColumns = { ...stokActiveColumns, ...savedCols };
+        /* Her oturumda detay sütunları kapalı başlasın (mobil + masaüstü); sıra tercihleri yüklenir */
+        stokActiveColumns = {
+            sigorta: false,
+            kasko: false,
+            kaskoDegeri: false,
+            muayene: false,
+            kredi: false,
+            lastik: false,
+            utts: false,
+            takip: false,
+            tramer: false,
+            boya: false,
+            kullanici: false,
+            tescil: false
+        };
         var savedOrder = load('stok_column_order', []);
         if (Array.isArray(savedOrder)) stokColumnOrder = savedOrder;
         var savedBaseOrder = load('stok_base_column_order', ['sira', 'sube', 'yil', 'marka', 'plaka', 'sanziman', 'km']);

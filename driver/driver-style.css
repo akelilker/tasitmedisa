@@ -2929,11 +2929,18 @@ body.dashboard-page {
 /* Geçmiş Kayıtlar / Düzeltme Talebi açıkken footer modalın üstünde, ışıklar sabit ton */
 body.dashboard-page:has(#history-modal.driver-modal.show) #app-footer,
 body.dashboard-page:has(#edit-request-modal.driver-modal.show) #app-footer,
-body.dashboard-page:has(#driver-feedback-modal.driver-modal.show) #app-footer,
 body.login-page:has(#history-modal.driver-modal.show) #app-footer.login-footer,
-body.login-page:has(#edit-request-modal.driver-modal.show) #app-footer.login-footer,
-body.login-page:has(#driver-feedback-modal.driver-modal.show) #app-footer.login-footer {
+body.login-page:has(#edit-request-modal.driver-modal.show) #app-footer.login-footer {
   z-index: 100020 !important;
+}
+/* Talep/şikayet modalı: footer üstte kalmamalı (iOS’ta form alanları tıklanmıyor) */
+body.dashboard-page:has(#driver-feedback-modal.driver-modal.show) #app-footer,
+body.login-page:has(#driver-feedback-modal.driver-modal.show) #app-footer.login-footer {
+  z-index: 10015 !important;
+}
+body.dashboard-page.driver-feedback-modal-open #app-footer,
+body.login-page.driver-feedback-modal-open #app-footer.login-footer {
+  z-index: 10015 !important;
 }
 
 /* Geçmiş Kayıtlarım + Düzeltme Talebi modal açıkken footer ışıkları sönmesin — dimmed override */
