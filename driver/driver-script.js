@@ -504,9 +504,15 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       } else {
         document.body.classList.remove('driver-history-or-edit-modal-open');
       }
+      if (id === 'driver-feedback-modal') {
+        document.body.classList.add('driver-feedback-modal-open');
+      } else {
+        document.body.classList.remove('driver-feedback-modal-open');
+      }
     } else {
       document.body.classList.remove('driver-modal-open');
       document.body.classList.remove('driver-history-or-edit-modal-open');
+      document.body.classList.remove('driver-feedback-modal-open');
     }
   }
   
