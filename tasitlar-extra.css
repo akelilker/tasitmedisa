@@ -2709,9 +2709,14 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-#monthly-todo-modal .monthly-todo-col-h {
+#monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h {
   margin: 0;
   padding: 0;
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: center;
+  justify-self: center;
   font-size: 9px;
   font-weight: 700;
   line-height: 1.25;
@@ -2724,7 +2729,7 @@
   min-width: 0;
 }
 @media (min-width: 641px) {
-  #monthly-todo-modal .monthly-todo-col-h {
+  #monthly-todo-modal .monthly-todo-col-header .monthly-todo-col-h {
     font-size: 11px;
     letter-spacing: 0.06em;
   }
