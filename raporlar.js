@@ -714,13 +714,13 @@
                 }
                 : {
                     'sira': 22,
-                    'sube': 78,
+                    'sube': 76,
                     'yil': 38,
-                    'marka': 135,
-                    'tasitTipi': 58,
+                    'marka': 132,
+                    'tasitTipi': 64,
                     'plaka': 74,
-                    'sanziman': 62,
-                    'km': 70
+                    'sanziman': 60,
+                    'km': 69
                 };
             const detailPx = {
                 'sigorta': 72, 'kasko': 72, 'kaskoDegeri': 72, 'muayene': 72, 'kredi': 56,
@@ -744,13 +744,13 @@
             }
             : {
                 'sira': 'minmax(20px, 0.16fr)',
-                'sube': 'minmax(58px, 0.82fr)',
+                'sube': 'minmax(56px, 0.78fr)',
                 'yil': 'minmax(37px, 0.46fr)',
-                'marka': 'minmax(62px, 1.9fr)',
-                'tasitTipi': 'minmax(56px, 0.62fr)',
+                'marka': 'minmax(62px, 1.82fr)',
+                'tasitTipi': 'minmax(62px, 0.72fr)',
                 'plaka': 'minmax(68px, 1fr)',
-                'sanziman': 'minmax(58px, 0.82fr)',
-                'km': 'minmax(62px, 1.08fr)'
+                'sanziman': 'minmax(56px, 0.78fr)',
+                'km': 'minmax(61px, 1.02fr)'
             };
         return allColumns.map(col => columnWidths[col.key] || '80px').join(' ');
     }
