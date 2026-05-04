@@ -863,10 +863,50 @@ padding: 1px 2px;
   justify-content: center;
   line-height: 0;
 }
+/* --- Stok masaüstü (≥641px): dar sütunlar, ek alan Marka’da; satır kırılımı + ≤1 punto küçülme --- */
 @media (min-width: 641px) {
-  .stok-list-cell[data-col="tasitTipi"] {
+  #stok-list-container .stok-list-header-cell {
     white-space: normal;
-    word-break: break-word;
+  }
+
+  #stok-list-container .stok-list-cell {
+    font-size: clamp(calc(12px - 1pt), 1.18vw, 12px);
+  }
+
+  #stok-list-container .stok-list-header-cell[data-col="sira"] .stok-header-text {
+    font-size: clamp(7px, 1.4vw, calc(11.5px - 1pt)) !important;
+  }
+
+  #stok-list-container .stok-list-header-cell[data-col="marka"],
+  #stok-list-container .stok-list-header-cell[data-col="tasitTipi"] {
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+  }
+
+  #stok-list-container .stok-list-header-cell[data-col="marka"] .stok-header-text,
+  #stok-list-container .stok-list-header-cell[data-col="tasitTipi"] .stok-header-text {
+    overflow-wrap: break-word;
+    word-break: normal;
+    hyphens: manual;
+  }
+
+  #stok-list-container .stok-list-cell[data-col="marka"] {
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+  }
+
+  #stok-list-container .stok-list-cell[data-col="tasitTipi"] {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    overflow: hidden;
+    text-overflow: clip;
+    white-space: normal;
+    overflow-wrap: break-word;
+    word-break: normal;
+    justify-content: center;
+    align-items: stretch;
   }
 }
 
