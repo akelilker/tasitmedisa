@@ -8641,6 +8641,7 @@
     }
 
     runVehicleDateOperationalScan(notifications, 'full');
+    updateMonthlyTodoHeaderBadge();
 
     const usersById = {};
     readUsers().forEach(function(user) {
