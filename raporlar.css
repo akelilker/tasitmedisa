@@ -956,9 +956,10 @@ line-clamp: 2;
     text-overflow: clip;
     justify-content: center;
     align-items: center;
-    padding: 1px 2px !important;
+    padding: 1px 1px !important;
     min-width: 0;
     line-height: 1.08;
+    font-size: clamp(11px, 0.78vw, 12px);
   }
   #stok-list-container .stok-list-cell[data-col="tasitTipi"]:not(:has(.stok-tasit-tipi-wrap)) .stok-tasit-tipi-txt,
   #stok-list-container .stok-list-cell[data-col="tasitTipi"]:not(:has(.stok-tasit-tipi-wrap)) .stok-tasit-tipi-stack {
