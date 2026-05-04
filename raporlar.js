@@ -27,6 +27,13 @@
     function formatPlaka(str) { return (typeof window.formatPlaka === 'function' ? window.formatPlaka(str) : (str == null ? '-' : String(str))); }
     function formatAdSoyad(str) { return (typeof window.formatAdSoyad === 'function' ? window.formatAdSoyad(str) : str); }
 
+    /** Stok listesi / Excel: şanzıman sütunu — dar alan için Otm. */
+    function formatStokTransmissionLabel(transmission) {
+        if (transmission === 'manuel') return 'Manuel';
+        if (transmission === 'otomatik') return 'Otm.';
+        return '-';
+    }
+
     // Stok görünümü state (null: şube grid; 'all' / id: liste)
     let stokCurrentBranchId = null;
     let stokSortState = {}; // { columnKey: 'asc' | 'desc' | null }
@@ -207,7 +214,7 @@
         var keyT = rawT.toLowerCase();
         if (!keyT) return '-';
         if (typeof window.getVehicleTypeLabel === 'function') return window.getVehicleTypeLabel(keyT);
-        var labs = { otomobil: 'Otomobil / SUV', minivan: 'Küçük Ticari', kamyon: 'Büyük Ticari' };
+        var labs = { otomobil: 'Otomobil', minivan: 'Küçük Ticari', kamyon: 'Büyük Ticari' };
         return labs[keyT] || rawT;
     }
 
@@ -668,15 +675,15 @@
             // 8+ sütun: sabit px. Masaüstünde Şube 4px genişler; denge için Marka 4px daralır.
             const basePx = isMobile
                 ? {
-                    'sira': 26, 'sube': 81, 'yil': 41, 'marka': 128, 'tasitTipi': 46,
+                    'sira': 26, 'sube': 81, 'yil': 41, 'marka': 136, 'tasitTipi': 38,
                     'plaka': 68, 'sanziman': 60, 'km': 56
                 }
                 : {
                     'sira': 22,
                     'sube': 82,
                     'yil': 38,
-                    'marka': 111,
-                    'tasitTipi': 78,
+                    'marka': 137,
+                    'tasitTipi': 52,
                     'plaka': 68,
                     'sanziman': 64,
                     'km': 72
@@ -696,8 +703,8 @@
         const columnWidths = isMobile
             ? {
                 'sira': 'minmax(26px, 0.3fr)', 'sube': 'minmax(47px, 1.2fr)',
-                'yil': 'minmax(40px, 0.6fr)', 'marka': 'minmax(52px, 1.55fr)',
-                'tasitTipi': 'minmax(40px, 0.62fr)',
+                'yil': 'minmax(40px, 0.6fr)',                 'marka': 'minmax(52px, 1.68fr)',
+                'tasitTipi': 'minmax(38px, 0.52fr)',
                 'plaka': 'minmax(56px, 1fr)', 'sanziman': 'minmax(59px, 0.95fr)',
                 'km': 'minmax(48px, 1fr)'
             }
@@ -705,8 +712,8 @@
                 'sira': 'minmax(20px, 0.17fr)',
                 'sube': 'minmax(62px, 0.95fr)',
                 'yil': 'minmax(37px, 0.49fr)',
-                'marka': 'minmax(62px, 1.74fr)',
-                'tasitTipi': 'minmax(72px, 0.88fr)',
+                'marka': 'minmax(62px, 1.93fr)',
+                'tasitTipi': 'minmax(54px, 0.58fr)',
                 'plaka': 'minmax(60px, 1fr)',
                 'sanziman': 'minmax(60px, 0.9fr)',
                 'km': 'minmax(64px, 1.22fr)'
@@ -853,7 +860,7 @@
             'marka': formatBrandModel(vehicle.brandModel || '-'),
             'tasitTipi': getStokTasitTipiDisplayLabel(vehicle),
             'plaka': formatPlaka(vehicle.plate || '-'),
-            'sanziman': vehicle.transmission === 'manuel' ? 'Manuel' : vehicle.transmission === 'otomatik' ? 'Otomatik' : '-',
+            'sanziman': formatStokTransmissionLabel(vehicle.transmission),
             'km': (function() {
                 var kmRaw = getVehicleReportKmRaw(vehicle);
                 return kmRaw !== '' ? formatNumber(kmRaw) : '-';
@@ -960,7 +967,7 @@
         
         sortedVehicles.sort((a, b) => {
             if (columnKey === 'sanziman') {
-                // Manuel → Otomatik (asc), Otomatik → Manuel (desc)
+                // Manuel → Otm. (asc), Otm. → Manuel (desc)
                 const aVal = a.transmission === 'manuel' ? 0 : a.transmission === 'otomatik' ? 1 : 2;
                 const bVal = b.transmission === 'manuel' ? 0 : b.transmission === 'otomatik' ? 1 : 2;
                 return direction === 'asc' ? aVal - bVal : bVal - aVal;
@@ -1764,13 +1771,13 @@
                     if (!keyT) value = '-';
                     else if (typeof window.getVehicleTypeLabel === 'function') value = window.getVehicleTypeLabel(keyT);
                     else {
-                        var labs = { otomobil: 'Otomobil / SUV', minivan: 'Küçük Ticari', kamyon: 'Büyük Ticari' };
+                        var labs = { otomobil: 'Otomobil', minivan: 'Küçük Ticari', kamyon: 'Büyük Ticari' };
                         value = labs[keyT] || rawT;
                     }
                     break;
                 }
                 case 'plaka': value = formatPlaka(vehicle.plate || '-'); break;
-                case 'sanziman': value = vehicle.transmission === 'manuel' ? 'Manuel' : vehicle.transmission === 'otomatik' ? 'Otomatik' : '-'; break;
+                case 'sanziman': value = formatStokTransmissionLabel(vehicle.transmission); break;
                 case 'km': {
                     var kmRaw = getVehicleReportKmRaw(vehicle);
                     value = kmRaw !== '' ? formatNumber(kmRaw) : '-';
@@ -2063,7 +2070,7 @@
         yil: 5,
         plaka: 5,
         marka: 17,
-        tasitTipi: 10,
+        tasitTipi: 7,
         sanziman: 4,
         km: 5,
         sube: 6,
@@ -2088,7 +2095,7 @@
         sube: 22,
         yil: 9,
         marka: 40,
-        tasitTipi: 22,
+        tasitTipi: 12,
         plaka: 12,
         sanziman: 12,
         km: 14,
