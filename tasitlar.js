@@ -3528,6 +3528,11 @@
   }
 
   var _vehicleDateTasksCache = null;
+  /** Aylık modal: ana iş parçacığında tam tarama yapmadan önbelleği okumak için (null = henüz doldurulmadı). */
+  function peekVehicleDateTasksCache() {
+    return _vehicleDateTasksCache;
+  }
+  var _monthlyTodoModalBodyFillScheduled = false;
 
   function invalidateVehicleDateTasksCache() {
     _vehicleDateTasksCache = null;
@@ -3802,17 +3807,13 @@
     return out;
   }
 
-  function renderMonthlyTodoModalContent() {
-    var root = document.getElementById('monthly-todo-modal');
-    var bodyEl = root ? root.querySelector('.monthly-todo-modal-body') : null;
-    if (!bodyEl) return;
-    var tasks = window.getVehicleDateTasks();
-    var displayTasks = buildMonthlyTodoMergedDisplayTasks(tasks);
+  function fillMonthlyTodoModalBody(bodyEl, tasksArray) {
     var users = readUsers();
     var userMap = {};
     users.forEach(function(u) {
       if (u && u.id != null) userMap[String(u.id)] = u;
     });
+    var displayTasks = buildMonthlyTodoMergedDisplayTasks(tasksArray);
     if (!displayTasks.length) {
       bodyEl.innerHTML = '<div class="monthly-todo-empty">Bu dönem için listelenecek tarih işlemi yok.</div>';
       return;
@@ -3857,18 +3858,42 @@
     bodyEl.innerHTML = html;
   }
 
+  function renderMonthlyTodoModalContent() {
+    var root = document.getElementById('monthly-todo-modal');
+    var bodyEl = root ? root.querySelector('.monthly-todo-modal-body') : null;
+    if (!bodyEl) return;
+    var cached = peekVehicleDateTasksCache();
+    if (cached !== null) {
+      fillMonthlyTodoModalBody(bodyEl, cached);
+      return;
+    }
+    bodyEl.innerHTML = '<div class="monthly-todo-empty">Yükleniyor…</div>';
+    if (_monthlyTodoModalBodyFillScheduled) return;
+    _monthlyTodoModalBodyFillScheduled = true;
+    requestAnimationFrame(function() {
+      _monthlyTodoModalBodyFillScheduled = false;
+      var modal = document.getElementById('monthly-todo-modal');
+      if (!modal || modal.style.display === 'none') return;
+      var be = modal.querySelector('.monthly-todo-modal-body');
+      if (!be) return;
+      var tasks = window.getVehicleDateTasks();
+      fillMonthlyTodoModalBody(be, tasks);
+    });
+  }
+
   function bindMonthlyTodoModalDelegatedInteraction(modalEl) {
     if (!modalEl || modalEl._medisaMonthlyTodoModalDelegatedBound) return;
     modalEl._medisaMonthlyTodoModalDelegatedBound = true;
     modalEl.addEventListener('click', function(ev) {
       var target = ev.target;
-      if (!target) return;
-      if (target === modalEl) {
+      if (!target || typeof target.closest !== 'function') return;
+      var insidePanel = target.closest('.monthly-todo-modal-container');
+      if (!insidePanel || !modalEl.contains(insidePanel)) {
         closeMonthlyTodoModal();
         return;
       }
-      if (typeof target.closest !== 'function') return;
-      if (target.closest('.monthly-todo-modal-close')) {
+      var closeBtn = target.closest('.modal-close');
+      if (closeBtn && modalEl.contains(closeBtn)) {
         ev.preventDefault();
         closeMonthlyTodoModal();
         return;
@@ -3910,7 +3935,7 @@
       el.className = 'modal-overlay tasitlar-modal-overlay';
       el.setAttribute('data-monthly-todo-overlay', '1');
       el.innerHTML =
-        '<div class="modal-container monthly-todo-modal-container" onclick="event.stopPropagation();">' +
+        '<div class="modal-container monthly-todo-modal-container">' +
           '<div class="modal-header">' +
             '<h2>BU AY YAPILACAKLAR</h2>' +
             '<button type="button" class="modal-close monthly-todo-modal-close" aria-label="Kapat">' +
@@ -3929,12 +3954,12 @@
 
   function openMonthlyTodoModal() {
     var modal = ensureMonthlyTodoModalMounted();
-    renderMonthlyTodoModalContent();
     modal.style.display = 'flex';
     requestAnimationFrame(function() {
       modal.classList.add('active');
       modal.classList.add('open');
       if (typeof window.updateFooterDim === 'function') window.updateFooterDim();
+      renderMonthlyTodoModalContent();
     });
   }
 
