@@ -715,9 +715,9 @@ async function loadDataFromServer(forceRefresh) {
                     : {}
             };
 
-            await loadKaskoListIntoAppData();
-
             setMedisaSession(data.session || getSessionFromToken());
+
+            await loadKaskoListIntoAppData();
 
             serverDatasetTrusted = true;
             return window.appData;
