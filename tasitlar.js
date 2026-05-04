@@ -2720,7 +2720,7 @@
 
       // iOS yazıcı izin prompt'unu azaltmak için yazdırma script'ini önceden yükle
       if (!window._printScriptPromise) {
-        window._printScriptPromise = loadScript('tasitlar-yazici.js?v=20260430.1');
+        window._printScriptPromise = loadScript('tasitlar-yazici.js?v=20260505.1');
       }
 
     const modal = DOM.vehicleDetailModal || document.getElementById('vehicle-detail-modal');
@@ -2941,7 +2941,7 @@
         const originalText = printBtn.innerHTML;
         printBtn.innerHTML = '<span class="spin-animation" style="display:inline-block; width:16px; height:16px; border:2px solid currentColor; border-right-color:transparent; border-radius:50%; margin-right:4px;"></span> Yükleniyor...';
         printBtn.disabled = true;
-        (window._printScriptPromise || loadScript('tasitlar-yazici.js?v=20260430.1')).then(function() {
+        (window._printScriptPromise || loadScript('tasitlar-yazici.js?v=20260505.1')).then(function() {
           printBtn.innerHTML = originalText;
           printBtn.disabled = false;
           if (typeof window.printVehicleCard === 'function') {
@@ -3583,7 +3583,7 @@
    */
   function getVehicleTypeLabel(type) {
     const labels = {
-      'otomobil': 'Otomobil / SUV',
+      'otomobil': 'Otomobil',
       'minivan': 'Küçük Ticari',
       'kamyon': 'Büyük Ticari'
     };

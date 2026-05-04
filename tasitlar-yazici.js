@@ -141,7 +141,7 @@
 
   function getVehicleTypeLabel(type) {
     var labels = {
-      'otomobil': 'Otomobil / SUV',
+      'otomobil': 'Otomobil',
       'minivan': 'Küçük Ticari',
       'kamyon': 'Büyük Ticari'
     };
