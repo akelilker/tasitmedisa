@@ -965,6 +965,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Splash kapanışı index.html tarafında; veri gelince ayrıca bildirim motorunu çalıştır.
 window.addEventListener('dataLoaded', () => {
+    console.log('[MEDISA PERF] dataLoaded listener', performance.now().toFixed(1));
     if (typeof window.hideLoading === 'function') {
         setTimeout(window.hideLoading, 50);
     }
@@ -987,6 +988,7 @@ window.addEventListener('dataLoaded', () => {
         'tasitlar-base.css?v=' + TASITLAR_MODULE_VERSION,
         'tasitlar-extra.css?v=' + TASITLAR_MODULE_VERSION
       ];
+      console.log('[MEDISA PERF] tasitlar loadAppModule start', performance.now().toFixed(1));
       window.loadAppModule(tasitlarJsForNotif, tasitlarCssForNotif)
             .then(runNotifications)
             .catch(function(err) {
