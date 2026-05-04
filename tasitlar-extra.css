@@ -2785,7 +2785,6 @@
   border: none;
   border-radius: 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  background: transparent;
   color: #a0aec0;
   cursor: pointer;
   text-align: left;
@@ -2797,20 +2796,36 @@
   box-sizing: border-box;
 }
 
+#monthly-todo-modal .monthly-todo-list-scroll .monthly-todo-task-row:nth-child(odd) {
+  background: rgba(255, 255, 255, 0.018);
+}
+
+#monthly-todo-modal .monthly-todo-list-scroll .monthly-todo-task-row:nth-child(even) {
+  background: rgba(255, 255, 255, 0.04);
+}
+
 #monthly-todo-modal .monthly-todo-task-row:last-child {
   border-bottom-color: transparent;
 }
 
-#monthly-todo-modal .monthly-todo-task-row:hover {
-  background: rgba(255, 255, 255, 0.035);
+#monthly-todo-modal .monthly-todo-list-scroll .monthly-todo-task-row:hover {
+  background: rgba(255, 255, 255, 0.07);
 }
 
 #monthly-todo-modal .monthly-todo-task-row--past {
-  border-left-color: rgba(var(--theme-color-rgb), 0.9);
+  border-left-color: var(--theme-color);
+}
+
+#monthly-todo-modal .monthly-todo-task-row--past .monthly-todo-type {
+  color: var(--theme-color);
 }
 
 #monthly-todo-modal .monthly-todo-task-row--upcoming {
-  border-left-color: rgba(var(--orange-warn-rgb), 0.9);
+  border-left-color: var(--orange-warn);
+}
+
+#monthly-todo-modal .monthly-todo-task-row--upcoming .monthly-todo-type {
+  color: var(--orange-warn);
 }
 
 #monthly-todo-modal .monthly-todo-task-row > * {
