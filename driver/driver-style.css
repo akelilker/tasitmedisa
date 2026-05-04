@@ -3060,7 +3060,7 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 #driver-muayene-modal .modal-header h2,
 #driver-sigorta-modal .modal-header h2,
 #driver-kasko-modal .modal-header h2 {
-  color: #f0f0f0 !important;
+  color: #ffffff !important;
   text-shadow: none !important;
   opacity: 1 !important;
   margin: 0;
@@ -3231,23 +3231,33 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 .driver-modal .form-group select {
   width: 100%;
   padding: 8px 16px;
-  background: #0f1418 !important;
-  background-color: #0f1418 !important;
-  border: none !important;
-  box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.25) !important;
-  border-radius: 8px;
+  background: #0d131f !important;
+  background-color: #0d131f !important;
+  border: 1.1px solid rgba(255, 255, 255, 0.4) !important;
+  box-shadow: none !important;
+  border-radius: 6px;
   color: var(--data-value-color, #a0aec0);
   font-size: 16px;
   font-family: inherit;
-  transition: box-shadow 0.2s;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s,
+    color 0.2s;
   box-sizing: border-box;
 }
 
 .driver-modal .form-group input:focus,
 .driver-modal .form-group textarea:focus,
 .driver-modal .form-group select:focus {
-  outline: none;
-  box-shadow: inset 0 0 0 0.5px var(--theme-color) !important;
+  outline: none !important;
+  border-color: var(--theme-color) !important;
+  box-shadow: none !important;
+}
+
+.driver-modal .form-group input::placeholder,
+.driver-modal .form-group textarea::placeholder {
+  color: #6c757d !important;
+  opacity: 1;
 }
 
 .driver-modal .form-group textarea {
@@ -3418,9 +3428,10 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   background-position: right 8px center;
   /* Diğer driver-modal form satırları 8px dikey padding; talep modalında +3px */
   padding: 11px 28px 11px 12px;
-  color: rgba(248, 249, 250, 0.96) !important;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 8px;
+  color: var(--data-value-color, #f8f9fa) !important;
+  border: 1.1px solid rgba(255, 255, 255, 0.4) !important;
+  border-radius: 6px;
+  box-shadow: none !important;
   transition: border-color 120ms ease, color 120ms ease, background-color 120ms ease;
 }
 /* Masaüstü (769px+): Talep Gönder modalı — tür seçici iç dikey alan −3px, Kaydet/Vazgeç blok 12px yukarı */
@@ -3534,7 +3545,8 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 }
 #edit-request-modal .form-group input:not(:focus),
 #edit-request-modal .form-group textarea:not(:focus) {
-  box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.35) !important;
+  border-color: rgba(255, 255, 255, 0.4) !important;
+  box-shadow: none !important;
 }
 #edit-request-modal .btn-submit {
   font-weight: 500 !important;
@@ -4657,14 +4669,21 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 .vehicle-card .form-group textarea.driver-kaza-textarea:-webkit-autofill:focus,
 .driver-modal .form-group input:-webkit-autofill,
 .driver-modal .form-group input:-webkit-autofill:hover,
-.driver-modal .form-group input:-webkit-autofill:focus,
 .driver-modal .form-group textarea:-webkit-autofill,
-.driver-modal .form-group textarea:-webkit-autofill:hover,
-.driver-modal .form-group textarea:-webkit-autofill:focus {
-  -webkit-box-shadow: 0 0 0 30px #0f1418 inset !important;
-  box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.25) !important;
-  -webkit-text-fill-color: rgba(255, 255, 255, 0.85) !important;
+.driver-modal .form-group textarea:-webkit-autofill:hover {
+  -webkit-box-shadow: 0 0 0 30px #0d131f inset, inset 0 0 0 1px rgba(255, 255, 255, 0.4) !important;
+  border: 1.1px solid rgba(255, 255, 255, 0.4) !important;
+  -webkit-text-fill-color: var(--data-value-color, #a0aec0) !important;
+  caret-color: var(--data-value-color, #a0aec0);
   transition: background-color 5000s ease-in-out 0s;
+}
+
+.driver-modal .form-group input:-webkit-autofill:focus,
+.driver-modal .form-group textarea:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 30px #0d131f inset, inset 0 0 0 1px var(--theme-color) !important;
+  border-color: var(--theme-color) !important;
+  -webkit-text-fill-color: var(--data-value-color, #a0aec0) !important;
+  caret-color: var(--data-value-color, #a0aec0);
 }
 
 /* Bakım/Kaza butonları yükseklik (4px daraltıldı) */
