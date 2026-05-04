@@ -87,7 +87,9 @@
   Çözüm: sadece taşıt detay overlay'i footer'ın alt katmanına alınır; gerçek footer glow'u görünür.
 */
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicles-modal.tasitlar-modal-overlay.active,
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicles-modal.tasitlar-modal-overlay.open {
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #vehicles-modal.tasitlar-modal-overlay.open,
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #monthly-todo-modal.tasitlar-modal-overlay.active,
+body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #monthly-todo-modal.tasitlar-modal-overlay.open {
     z-index: 10020 !important;
 }
 /* Detay açıkken alttaki taşıt listesi sadece arka katman olsun; çifte çerçeve görünmesin */
@@ -119,6 +121,39 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #dinamik-olay-modal.tasitlar-modal-overlay.active,
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #dinamik-olay-modal.tasitlar-modal-overlay.open {
     z-index: 10050 !important;
+}
+
+/* Üst araç takvim / rozet */
+#monthly-todo-header-btn {
+    position: relative;
+}
+#monthly-todo-header-btn .monthly-todo-header-badge {
+    pointer-events: none;
+    box-sizing: border-box;
+    position: absolute;
+    top: -2px;
+    right: -4px;
+    min-width: 16px;
+    height: 16px;
+    padding: 0 4px;
+    border-radius: 999px;
+    background: rgba(var(--theme-color-rgb), 0.95);
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 16px;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+}
+
+#monthly-todo-modal .monthly-todo-modal-container .modal-body.monthly-todo-modal-body {
+    box-sizing: border-box;
+}
+#monthly-todo-modal .monthly-todo-empty {
+    padding: 20px 16px;
+    text-align: center;
+    color: #a0aec0;
+    font-size: 14px;
 }
 
 /* Muayene tarihi input: Kaydet butonu ile yatayda hizalı (#dinamik-olay-modal muayene formu) */
