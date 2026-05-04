@@ -974,7 +974,7 @@ line-clamp: 2;
     white-space: nowrap;
     overflow: visible;
     text-overflow: clip;
-    font-size: 11px;
+    font-size: 12px;
     line-height: 1.08;
   }
   #stok-list-container .stok-list-cell[data-col="tasitTipi"]:not(:has(.stok-tasit-tipi-wrap)) .stok-tasit-tipi-stack {
