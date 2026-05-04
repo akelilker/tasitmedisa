@@ -29,6 +29,66 @@ window.MEDISA_API_BASE = API_BASE;
 window.API_LOAD_KASKO = API_LOAD_KASKO;
 window.API_SAVE_KASKO = API_SAVE_KASKO;
 
+/**
+ * Taşıt tarih alanları (kayit.js ile aynı kural): ham metin → yyyy-mm-dd.
+ * Ana uygulama data-manager ile yüklenir; tasitlar/kayıt bu globali kullanır.
+ */
+(function registerMedisaVehicleDateRawParser() {
+    function isCompleteIsoDate(value) {
+        if (!value || typeof value !== 'string') return false;
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+        var parts = value.split('-');
+        var y = parseInt(parts[0], 10);
+        var m = parseInt(parts[1], 10);
+        var d = parseInt(parts[2], 10);
+        if (!Number.isFinite(y) || !Number.isFinite(m) || !Number.isFinite(d)) return false;
+        var dt = new Date(y, m - 1, d);
+        return dt.getFullYear() === y && dt.getMonth() === m - 1 && dt.getDate() === d;
+    }
+    function normalizeYmdToIso(y, mo, d) {
+        if (!Number.isFinite(y) || !Number.isFinite(mo) || !Number.isFinite(d)) return null;
+        if (mo < 1 || mo > 12 || d < 1 || d > 31 || y < 1000 || y > 9999) return null;
+        var dt = new Date(y, mo - 1, d);
+        if (dt.getFullYear() !== y || dt.getMonth() !== mo - 1 || dt.getDate() !== d) return null;
+        var mm = mo < 10 ? '0' + mo : String(mo);
+        var dd = d < 10 ? '0' + d : String(d);
+        return y + '-' + mm + '-' + dd;
+    }
+    function parseVehicleDateRawToIso(raw) {
+        if (raw === undefined) return null;
+        if (raw === null) return null;
+        if (typeof raw !== 'string') return null;
+        var s = raw.trim();
+        if (!s) return null;
+        if (/^\d{4}-\d{2}-\d{2}$/.test(s)) {
+            return isCompleteIsoDate(s) ? s : null;
+        }
+        var dm = /^(\d{1,2})[./-](\d{1,2})[./-](\d{4})$/.exec(s);
+        if (dm) {
+            var d = parseInt(dm[1], 10);
+            var mo = parseInt(dm[2], 10);
+            var y = parseInt(dm[3], 10);
+            var isoDm = normalizeYmdToIso(y, mo, d);
+            return isoDm === null ? null : isoDm;
+        }
+        if (/^\d{8}$/.test(s)) {
+            var d8 = parseInt(s.slice(0, 2), 10);
+            var m8 = parseInt(s.slice(2, 4), 10);
+            var y8 = parseInt(s.slice(4, 8), 10);
+            var isoD8 = normalizeYmdToIso(y8, m8, d8);
+            return isoD8 === null ? null : isoD8;
+        }
+        return null;
+    }
+    window.parseVehicleDateRawToIso = parseVehicleDateRawToIso;
+})();
+
+function medisaInvalidateVehicleDateTasksCacheIfAvailable() {
+    if (typeof window.invalidateVehicleDateTasksCache === 'function') {
+        window.invalidateVehicleDateTasksCache();
+    }
+}
+
 function getDefaultAppData() {
     return {
         tasitlar: [],
@@ -761,6 +821,7 @@ async function saveDataToServer(options) {
             localStorage.setItem('medisa_server_backup', JSON.stringify(autoBackup));
         } catch (storageErr) {}
 
+        medisaInvalidateVehicleDateTasksCacheIfAvailable();
         return true;
     } catch (error) {
         if (error && error.conflict === true) {
@@ -1032,6 +1093,8 @@ window.writeVehicles = function(arr) {
             }
             console.error('Sunucuya kaydetme hatası:', err);
         });
+    } else {
+        medisaInvalidateVehicleDateTasksCacheIfAvailable();
     }
 };
 
