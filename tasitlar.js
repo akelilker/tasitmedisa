@@ -9,7 +9,6 @@
    ========================================= */
 
 (function() {
-  console.log('[MEDISA PERF] tasitlar.js executed', performance.now().toFixed(1));
   const BRANCHES_KEY = "medisa_branches_v1";
   const VEHICLES_KEY = "medisa_vehicles_v1";
   const USERS_KEY = "medisa_users_v1";
@@ -3557,7 +3556,6 @@
    */
   function runVehicleDateOperationalScan(notificationsArray, scanMode) {
     var mode = scanMode === 'monthly-cache-only' ? 'monthly-cache-only' : 'full';
-    console.log('[MEDISA PERF] scan start', mode, performance.now().toFixed(1));
     var attachNotif = mode === 'full' && Array.isArray(notificationsArray);
 
     var monthly = [];
@@ -3708,7 +3706,6 @@
       return da - db;
     });
 
-    console.log('[MEDISA PERF] scan end', mode, performance.now().toFixed(1));
     _vehicleDateTasksCache = monthly;
   }
 
@@ -3730,14 +3727,12 @@
       badge.setAttribute('hidden', 'hidden');
       badge.setAttribute('aria-hidden', 'true');
       btn.setAttribute('aria-label', 'Bu ay yapılacaklar');
-      console.log('[MEDISA PERF] badge updated', badge.textContent || 'hidden', performance.now().toFixed(1));
       return;
     }
     badge.textContent = String(n);
     badge.removeAttribute('hidden');
     badge.setAttribute('aria-hidden', 'false');
     btn.setAttribute('aria-label', 'Bu ay yapılacaklar, ' + String(n) + ' işlem');
-    console.log('[MEDISA PERF] badge updated', badge.textContent || 'hidden', performance.now().toFixed(1));
   }
 
   function getMonthlyTodoKullaniciLabel(vehicle, userMapById) {
@@ -8610,7 +8605,6 @@
    * Bildirimleri güncelle (muayene, sigorta, kasko + kullanıcı paneli işlemleri)
    */
   window.updateNotifications = function() {
-    console.log('[MEDISA PERF] updateNotifications start', performance.now().toFixed(1));
     if (!window.appData || !Array.isArray(window.appData.tasitlar)) {
       invalidateVehicleDateTasksCache();
       updateMonthlyTodoHeaderBadge();
