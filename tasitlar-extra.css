@@ -2641,11 +2641,12 @@
 }
 @media (min-width: 641px) {
   #monthly-todo-modal {
-    --monthly-todo-grid-cols: 110px minmax(190px, 1.7fr) minmax(145px, 1.25fr) 92px 82px 68px;
-    --monthly-todo-col-gap: 10px;
+    /* ~500px modal + padding ile uyum: fr alanları kalan yerde genişler; min değerler taşmayı tetiklemesin */
+    --monthly-todo-grid-cols: 104px minmax(min(170px, 28vw), 1.45fr) minmax(min(120px, 22vw), 1.05fr) 82px 78px 58px;
+    --monthly-todo-col-gap: 6px;
   }
 
-  /* İŞLEM: uzun etiket 2 satıra (masaüstü); üçüncü şahıs kolonları fr ile genişler */
+  /* İŞLEM: uzun etiket 2 satıra (masaüstü) */
   #monthly-todo-modal .monthly-todo-type {
     display: -webkit-box;
     -webkit-box-orient: vertical;
@@ -2654,6 +2655,34 @@
     white-space: normal;
     word-break: normal;
     overflow-wrap: break-word;
+  }
+
+  /* Yataya kaydırmayı zorlamadan tüm kolonlar modal içinde (geniş masaüstünde vw sınırları gevşer) */
+  #monthly-todo-modal .monthly-todo-table-outer {
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  #monthly-todo-modal .monthly-todo-table-inner {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0 !important;
+  }
+
+  #monthly-todo-modal .monthly-todo-sheet {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  /* İleride kullanılırsa DOM ile eşlek */
+  #monthly-todo-modal .monthly-todo-table {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
   }
 }
 
@@ -2687,6 +2716,9 @@
 #monthly-todo-modal .monthly-todo-table-outer {
   flex: 1 1 auto;
   min-height: 0;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   overflow-x: auto;
@@ -2695,10 +2727,20 @@
 }
 
 #monthly-todo-modal .monthly-todo-table-inner {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   flex: 1 1 auto;
   min-height: 0;
+  box-sizing: border-box;
+}
+
+#monthly-todo-modal .monthly-todo-table {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
   box-sizing: border-box;
 }
 
@@ -2837,7 +2879,8 @@
   display: block;
   color: #a0aec0;
   overflow: hidden;
-  word-break: break-word;
+  word-break: normal;
+  overflow-wrap: break-word;
 }
 
 #monthly-todo-modal .monthly-todo-brand {
