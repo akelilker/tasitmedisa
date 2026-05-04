@@ -3840,6 +3840,7 @@
         if (typeof window.formatDateShort === 'function') dateShown = escapeHtml(window.formatDateShort(dateRaw));
         else dateShown = escapeHtml(dateRaw);
       }
+      var warningClass = String(t.warningClass || '');
       var past = String(t.status) === 'past' || (typeof t.days === 'number' && t.days < 0);
       var daysVal = typeof t.days === 'number' ? t.days : null;
       var daysHtml = '';
@@ -3852,7 +3853,12 @@
       } else {
         daysHtml = '<span class="monthly-todo-days-label">' + escapeHtml(String(daysVal) + ' gün') + '</span>';
       }
-      var rowTone = past ? ' monthly-todo-task-row--past' : ' monthly-todo-task-row--upcoming';
+      var rowTone = '';
+      if (past || warningClass === 'date-warning-red') {
+        rowTone = ' monthly-todo-task-row--past';
+      } else if (warningClass === 'date-warning-orange') {
+        rowTone = ' monthly-todo-task-row--upcoming';
+      }
       html += '<button type="button" class="monthly-todo-task-row' + rowTone + '" data-vehicle-id="' + escapeAttr(vid) + '" role="listitem">';
       html += '<span class="monthly-todo-cell monthly-todo-plate">' + plate + '</span>';
       html += '<span class="monthly-todo-middle">';
