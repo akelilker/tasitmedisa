@@ -2937,7 +2937,7 @@ body.login-page:has(#history-modal.driver-modal.show) #app-footer.login-footer,
 body.login-page:has(#edit-request-modal.driver-modal.show) #app-footer.login-footer {
   z-index: 100020 !important;
 }
-/* Talep modalı: footer modalın ALTINDA kalmalı — yoksa iOS PWA’da form/liste tıklanmıyor */
+/* Talep/şikayet modalı: footer üstte kalmamalı (iOS’ta form alanları tıklanmıyor) */
 body.dashboard-page:has(#driver-feedback-modal.driver-modal.show) #app-footer,
 body.login-page:has(#driver-feedback-modal.driver-modal.show) #app-footer.login-footer {
   z-index: 10015 !important;

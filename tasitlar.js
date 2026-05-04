@@ -2430,6 +2430,27 @@
       // 3. Sıralama
       vehicles = applyFilter(vehicles);
 
+      // Kırmızı tarih uyarısı olan satırlar (sigorta/kasko/muayene/egzoz) listenin üstünde sabit
+      (function pinCriticalDateWarningsFirst(list) {
+        if (!Array.isArray(list) || list.length < 2) return;
+        function warnRank(v) {
+          var c = getVehicleDateSeverityClass(v);
+          if (c.indexOf('vehicle-date-warning-red') !== -1) return 0;
+          if (c.indexOf('vehicle-date-warning-orange') !== -1) return 1;
+          return 2;
+        }
+        var tagged = list.map(function(v, i) { return { v: v, i: i }; });
+        tagged.sort(function(A, B) {
+          var ra = warnRank(A.v);
+          var rb = warnRank(B.v);
+          if (ra !== rb) return ra - rb;
+          return A.i - B.i;
+        });
+        for (var ti = 0; ti < tagged.length; ti++) {
+          list[ti] = tagged[ti].v;
+        }
+      })(vehicles);
+
       // Şube seçiliyken liste görünümünde şube sütunu gösterilmez
       const safeColumnOrder = Array.isArray(vehicleColumnOrder) ? vehicleColumnOrder : ['year', 'plate', 'brand', 'km', 'type', 'transmission', 'user', 'branch'];
       const displayColumnOrder = (activeBranchId === 'all' || activeBranchId === '__archive__') ? safeColumnOrder : safeColumnOrder.filter(function(k) { return k !== 'branch'; });
@@ -3122,7 +3143,11 @@
       } else {
           box.classList.add('open');
           input.value = '';
-          setTimeout(() => input.focus(), 100);
+          /* iOS: odak aynı kullanıcı hareketinde (büyüteç tıkı) verilmeli; gecikme klavyeyi kaçırabiliyor */
+          try { input.focus({ preventScroll: true }); } catch (e) { try { input.focus(); } catch (e2) {} }
+          setTimeout(function() {
+            try { input.focus({ preventScroll: true }); } catch (e) { try { input.focus(); } catch (e2) {} }
+          }, 100);
       }
   };
 
