@@ -1090,7 +1090,6 @@
     text-align: left !important;
     margin: 0 !important; /* Hizayı bozan dış boşlukları kaldır */
     margin-left: 0 !important;
-    align-self: center !important;
     line-height: 1 !important; /* Font yüksekliğinden kaynaklı kaymaları önler */
     white-space: nowrap !important;
     min-height: 26px;
@@ -1112,7 +1111,6 @@
     position: relative;
     display: flex !important;
     align-items: center !important; /* İkon ve metin kendi içinde hizalı */
-    align-self: center !important; /* Olay Ekle ile aynı satırda, aşağı kaymasın */
     gap: 4px;
     color: var(--txt-gray);
     font-size: 15px;
@@ -1128,8 +1126,9 @@
 
 .detail-brand-year-row .history-add-event-btn span,
 .detail-brand-year-row .history-btn-minimal span {
-    display: block;
-    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    line-height: 1.15;
 }
 
 .detail-brand-year-row .history-btn-minimal:hover {
@@ -1139,7 +1138,7 @@
 
 .detail-brand-year-row .history-btn-minimal svg {
     width: 16px;
-    height: 14px; /* Dikeyde küçültüldü (16px – 14px) */
+    height: 16px; /* Olay Ekle satırı ile aynı cap hizası (kare ikon kutusu) */
     flex-shrink: 0;
     display: block !important; /* Inline SVG boşluk kaymasını önler */
 }
@@ -2481,19 +2480,17 @@
     margin-top: 0 !important;
     position: relative;
     z-index: 1;
-    align-items: flex-start !important; /* Marka plakanın hemen altında */
+    align-items: center !important;
     min-height: 36px !important; /* Butonlar aynı satırda, kayma önlenir */
   }
 
   /* Taşıt detay: Olay Ekle ve Tarihçe mobilde +1pt (17px, hover 18px); Tarihçe rengi etiket beyazı */
   #vehicle-detail-modal .detail-brand-year-row .history-add-event-btn {
     font-size: 17px !important;
-    align-self: flex-start !important;
   }
   #vehicle-detail-modal .detail-brand-year-row .history-btn-minimal {
     font-size: 17px !important;
     color: var(--form-label-color) !important;
-    align-self: flex-start !important; /* Olay Ekle ile aynı üst hizada kalsın */
   }
   #vehicle-detail-modal .detail-brand-year-row .history-btn-minimal:hover {
     font-size: 17px !important;
