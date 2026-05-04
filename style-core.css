@@ -839,6 +839,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-
 .icons-row-left {
   flex: 1;
   min-width: 0;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
 }
 .pwa-install-center {
   flex: 0 0 auto;
