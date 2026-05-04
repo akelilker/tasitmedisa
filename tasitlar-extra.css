@@ -2645,10 +2645,11 @@
   padding: 0 2px;
 }
 #monthly-todo-modal .monthly-todo-task-row {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  gap: 6px 12px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  row-gap: 8px;
+  column-gap: 0;
+  align-items: start;
   width: 100%;
   margin: 0;
   padding: 10px 12px;
@@ -2663,6 +2664,7 @@
   border-left-color: transparent;
   font-family: inherit;
   transition: border-color 0.15s ease, background 0.15s ease;
+  box-sizing: border-box;
 }
 #monthly-todo-modal .monthly-todo-task-row:hover {
   border-color: rgba(255, 255, 255, 0.14);
@@ -2675,20 +2677,20 @@
 }
 #monthly-todo-modal .monthly-todo-cell {
   font-size: 13px;
-  line-height: 1.35;
+  line-height: 1.4;
   min-width: 0;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 #monthly-todo-modal .monthly-todo-plate {
-  flex: 0 0 auto;
   font-weight: 700;
   color: #ffffff;
   letter-spacing: 0.02em;
 }
 #monthly-todo-modal .monthly-todo-brand {
-  flex: 1 1 100%;
+  color: #a0aec0;
 }
 #monthly-todo-modal .monthly-todo-type {
-  flex: 0 0 auto;
   font-weight: 600;
   color: #e2e8f0;
 }
@@ -2700,12 +2702,6 @@
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
-#monthly-todo-modal .monthly-todo-enddate {
-  flex: 1 1 100%;
-}
-#monthly-todo-modal .monthly-todo-days {
-  flex: 1 1 100%;
-}
 #monthly-todo-modal .monthly-todo-days-label {
   color: #e2e8f0;
   font-weight: 600;
@@ -2715,26 +2711,12 @@
 }
 @media (min-width: 641px) {
   #monthly-todo-modal .monthly-todo-task-row {
-    flex-wrap: nowrap;
+    grid-template-columns: minmax(72px, auto) minmax(0, 1.1fr) minmax(0, 1.1fr) minmax(106px, auto) minmax(104px, auto) minmax(96px, auto);
+    column-gap: 10px;
+    row-gap: 0;
     align-items: center;
-    gap: 10px;
   }
   #monthly-todo-modal .monthly-todo-plate {
-    flex: 0 0 100px;
-  }
-  #monthly-todo-modal .monthly-todo-brand {
-    flex: 1 1 120px;
-  }
-  #monthly-todo-modal .monthly-todo-user {
-    flex: 1 1 140px;
-  }
-  #monthly-todo-modal .monthly-todo-type {
-    flex: 0 0 118px;
-  }
-  #monthly-todo-modal .monthly-todo-enddate {
-    flex: 0 0 112px;
-  }
-  #monthly-todo-modal .monthly-todo-days {
-    flex: 0 0 120px;
+    white-space: nowrap;
   }
 }
