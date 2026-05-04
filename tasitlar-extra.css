@@ -2681,7 +2681,6 @@
   overflow-x: auto;
   overflow-y: hidden;
   overscroll-behavior-x: contain;
-  scrollbar-width: thin;
 }
 
 #monthly-todo-modal .monthly-todo-table-inner {
@@ -2742,8 +2741,23 @@
   overflow-x: hidden;
   overscroll-behavior-y: contain;
   -webkit-overflow-scrolling: touch;
-  scrollbar-width: thin;
   touch-action: pan-y !important;
+}
+
+#monthly-todo-modal .monthly-todo-scroll-shell,
+#monthly-todo-modal .monthly-todo-table-outer,
+#monthly-todo-modal .monthly-todo-list-scroll {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+#monthly-todo-modal .monthly-todo-scroll-shell::-webkit-scrollbar,
+#monthly-todo-modal .monthly-todo-table-outer::-webkit-scrollbar,
+#monthly-todo-modal .monthly-todo-list-scroll::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
 }
 
 #monthly-todo-modal .monthly-todo-task-row {
