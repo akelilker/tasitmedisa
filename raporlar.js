@@ -146,6 +146,13 @@
             : window.innerWidth <= 640;
     }
 
+    /** Mobil stok DOM grid’inde taşıt tipi gizlenir; masaüstü ve Excel/yazdır etkilenmez. */
+    function getStokVisibleGridColumns(columns) {
+        if (!columns || !columns.length) return columns || [];
+        if (!isMobileStokViewport()) return columns;
+        return columns.filter(function (c) { return c.key !== 'tasitTipi'; });
+    }
+
     function getSingleVisibleStokBranch() {
         const branches = getBranches();
         return branches.length === 1 ? branches[0] : null;
@@ -709,8 +716,7 @@
             // 8+ sütun: sabit px. Masaüstünde Şube 4px genişler; denge için Marka 4px daralır.
             const basePx = isMobile
                 ? {
-                    'sira': 26, 'sube': 81, 'yil': 41, 'marka': 144, 'tasitTipi': 30,
-                    'plaka': 62, 'sanziman': 60, 'km': 56
+                    'sira': 26, 'sube': 82, 'yil': 42, 'marka': 150, 'plaka': 64, 'sanziman': 60, 'km': 58
                 }
                 : {
                     'sira': 22,
@@ -736,11 +742,13 @@
         // Sadece temel: mobil/masaüstü için ayrı orantı seti (8 temel + detay ise üst blokta sabit px)
         const columnWidths = isMobile
             ? {
-                'sira': 'minmax(26px, 0.3fr)', 'sube': 'minmax(47px, 1.2fr)',
-                'yil': 'minmax(40px, 0.6fr)',                 'marka': 'minmax(52px, 1.92fr)',
-                'tasitTipi': 'minmax(30px, 0.34fr)',
-                'plaka': 'minmax(58px, 1.02fr)', 'sanziman': 'minmax(59px, 0.95fr)',
-                'km': 'minmax(48px, 1fr)'
+                'sira': 'minmax(26px, 0.32fr)',
+                'sube': 'minmax(48px, 1.25fr)',
+                'yil': 'minmax(42px, 0.62fr)',
+                'marka': 'minmax(60px, 2.2fr)',
+                'plaka': 'minmax(62px, 1.1fr)',
+                'sanziman': 'minmax(60px, 0.9fr)',
+                'km': 'minmax(52px, 1.1fr)'
             }
             : {
                 'sira': 'minmax(20px, 0.16fr)',
@@ -816,11 +824,12 @@
         }
 
         let columns = allColumns;
+        var gridColumns = getStokVisibleGridColumns(columns);
 
-        // Grid sütun genişliklerini hesapla
-        const gridTemplateColumns = getColumnWidths(columns);
+        // Grid sütun genişliklerini hesapla (header ile row aynı liste)
+        const gridTemplateColumns = getColumnWidths(gridColumns);
 
-        return `<tr class="stok-list-header-row" style="grid-template-columns: ${gridTemplateColumns}">${columns.map(col => {
+        return `<tr class="stok-list-header-row" style="grid-template-columns: ${gridTemplateColumns}">${gridColumns.map(col => {
             const sortState = stokSortState[col.key] || null;
             const sortIcon = sortState === 'asc' ? '↑' : sortState === 'desc' ? '↓' : '↕';
             const sortClass = sortState ? 'active' : '';
@@ -972,11 +981,14 @@
             });
         }
 
+        var gridCells = cells;
+        if (isMobileStokViewport()) gridCells = cells.filter(function (c) { return c.key !== 'tasitTipi'; });
+
         // Grid sütun genişliklerini hesapla (header ile aynı sütun yapısı)
-        const columnKeys = cells.map(c => ({ key: c.key }));
+        const columnKeys = gridCells.map(c => ({ key: c.key }));
         const gridTemplateColumns = getColumnWidths(columnKeys);
 
-        return `<tr class="stok-list-row" style="grid-template-columns: ${gridTemplateColumns}">${cells.map(cell => {
+        return `<tr class="stok-list-row" style="grid-template-columns: ${gridTemplateColumns}">${gridCells.map(cell => {
             const cellClass = ['stok-list-cell', cell.warningClass || ''].filter(Boolean).join(' ');
             var inner;
             if (cell.key === 'tasitTipi' && isMobileStokViewport()) {
