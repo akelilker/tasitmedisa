@@ -921,12 +921,16 @@ line-clamp: 2;
     white-space: normal;
   }
 
+  #stok-list-container .stok-list-header-cell .stok-header-text {
+    font-size: 11px !important;
+  }
+
   #stok-list-container .stok-list-cell {
-    font-size: clamp(calc(12px - 1pt), 1.18vw, 12px);
+    font-size: 12px;
   }
 
   #stok-list-container .stok-list-header-cell[data-col="sira"] .stok-header-text {
-    font-size: clamp(7px, 1.4vw, calc(11.5px - 1pt)) !important;
+    font-size: 10px !important;
   }
 
   #stok-list-container .stok-list-header-cell[data-col="marka"] {
@@ -964,7 +968,7 @@ line-clamp: 2;
     padding: 1px 1px !important;
     min-width: 0;
     line-height: 1.08;
-    font-size: clamp(11px, 0.78vw, 12px);
+    font-size: 12px;
   }
   #stok-list-container .stok-list-cell[data-col="tasitTipi"]:not(:has(.stok-tasit-tipi-wrap)) .stok-tasit-tipi-txt,
   #stok-list-container .stok-list-cell[data-col="tasitTipi"]:not(:has(.stok-tasit-tipi-wrap)) .stok-tasit-tipi-stack {
@@ -997,6 +1001,9 @@ line-clamp: 2;
     overflow: hidden;
     text-overflow: clip;
   }
+  #stok-list-container .stok-list-row {
+    min-height: 38px;
+  }
 }
 
 .stok-list-header-cell[data-col="plaka"],
@@ -1011,10 +1018,10 @@ text-overflow: ellipsis;
 .stok-list-cell[data-col="sanziman"] {
 justify-content: center;
 }
-/* Masaüstü: Şanzıman başlığı 1.5 punto küçük – sütuna sığsın */
+/* Masaüstü: Şanzıman başlığı — stok listesinde sabit punto (vw yok) */
 @media (min-width: 641px) {
-.stok-list-header-cell[data-col="sanziman"] .stok-header-text {
-font-size: clamp(8px, 1.5vw, 11px) !important;
+#stok-list-container .stok-list-header-cell[data-col="sanziman"] .stok-header-text {
+font-size: 11px !important;
 }
 }
 
