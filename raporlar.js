@@ -626,7 +626,7 @@
         if (!listContainer) return;
         const isDesk = window.innerWidth > 640;
         const sel = isDesk
-            ? '.stok-list-cell[data-col="marka"], .stok-list-cell[data-col="sube"], .stok-list-cell[data-col="tasitTipi"]'
+            ? '.stok-list-cell[data-col="marka"], .stok-list-cell[data-col="sube"], .stok-list-cell[data-col="tasitTipi"], .stok-list-cell[data-col="plaka"]'
             : '.stok-list-cell[data-col="marka"], .stok-list-cell[data-col="sube"]';
         const responsiveCells = listContainer.querySelectorAll(sel);
         requestAnimationFrame(function() {
@@ -634,11 +634,17 @@
                 if (cell.offsetHeight === 0) return;
                 cell.style.fontSize = '';
                 var baseFontSize = parseFloat(window.getComputedStyle(cell).fontSize) || 12;
-                /* 1 CSS pt ≒ 96/72 px (~1.333px) — en fazla bu kadar punto küçült */
+                /* 1 CSS pt ≒ 96/72 px — en fazla bu kadar küçültülebilir (taban yazıdan) */
                 var onePtPx = 96 / 72;
+                var colKey = cell.getAttribute('data-col') || '';
+                /* Mobilde tasitTipi SVG simgesi küçültme yapma */
+                if (!isDesk && colKey === 'tasitTipi' && cell.querySelector('.stok-tasit-tipi-wrap')) return;
+                var minFloorAbs = isDesk ? 10 : (colKey === 'sube' ? 10.5 : 11);
+                /* Masaüstü: tasit tek satır sığdırmak için 1 punto sonrası bile ~10 px’e düşebilsin */
+                if (isDesk && colKey === 'tasitTipi') minFloorAbs = 9.5;
                 var minFontSize = isDesk
-                    ? Math.max(baseFontSize - onePtPx, cell.dataset.col === 'sube' ? 10 : 11)
-                    : Math.max(baseFontSize - 1.5, cell.dataset.col === 'sube' ? 10.5 : 11);
+                    ? Math.max(baseFontSize - onePtPx, minFloorAbs)
+                    : Math.max(baseFontSize - 1.5, minFloorAbs);
                 var current = baseFontSize;
                 while ((cell.scrollHeight > cell.offsetHeight || cell.scrollWidth > cell.clientWidth) && current > minFontSize) {
                     current = Math.max(minFontSize, current - 0.5);
@@ -652,12 +658,12 @@
             window._stokResponsiveCellResize = true;
             var onResize = window.debounce ? window.debounce(function () {
                 const container = document.getElementById('stok-list-container');
-                if (container && container.querySelector('.stok-list-cell[data-col="marka"], .stok-list-cell[data-col="sube"], .stok-list-cell[data-col="tasitTipi"]')) {
+                if (container && container.querySelector('.stok-list-cell[data-col="marka"], .stok-list-cell[data-col="sube"], .stok-list-cell[data-col="tasitTipi"], .stok-list-cell[data-col="plaka"]')) {
                     adjustStokResponsiveCellFontSizes();
                 }
             }, 100) : function () {
                 const container = document.getElementById('stok-list-container');
-                if (container && container.querySelector('.stok-list-cell[data-col="marka"], .stok-list-cell[data-col="sube"], .stok-list-cell[data-col="tasitTipi"]')) {
+                if (container && container.querySelector('.stok-list-cell[data-col="marka"], .stok-list-cell[data-col="sube"], .stok-list-cell[data-col="tasitTipi"], .stok-list-cell[data-col="plaka"]')) {
                     adjustStokResponsiveCellFontSizes();
                 }
             };
@@ -675,16 +681,16 @@
             // 8+ sütun: sabit px. Masaüstünde Şube 4px genişler; denge için Marka 4px daralır.
             const basePx = isMobile
                 ? {
-                    'sira': 26, 'sube': 81, 'yil': 41, 'marka': 136, 'tasitTipi': 38,
-                    'plaka': 68, 'sanziman': 60, 'km': 56
+                    'sira': 26, 'sube': 81, 'yil': 41, 'marka': 132, 'tasitTipi': 42,
+                    'plaka': 62, 'sanziman': 60, 'km': 56
                 }
                 : {
                     'sira': 22,
                     'sube': 82,
                     'yil': 38,
-                    'marka': 137,
-                    'tasitTipi': 52,
-                    'plaka': 68,
+                    'marka': 127,
+                    'tasitTipi': 60,
+                    'plaka': 74,
                     'sanziman': 64,
                     'km': 72
                 };
@@ -703,18 +709,18 @@
         const columnWidths = isMobile
             ? {
                 'sira': 'minmax(26px, 0.3fr)', 'sube': 'minmax(47px, 1.2fr)',
-                'yil': 'minmax(40px, 0.6fr)',                 'marka': 'minmax(52px, 1.68fr)',
-                'tasitTipi': 'minmax(38px, 0.52fr)',
-                'plaka': 'minmax(56px, 1fr)', 'sanziman': 'minmax(59px, 0.95fr)',
+                'yil': 'minmax(40px, 0.6fr)',                 'marka': 'minmax(52px, 1.62fr)',
+                'tasitTipi': 'minmax(40px, 0.56fr)',
+                'plaka': 'minmax(58px, 1.02fr)', 'sanziman': 'minmax(59px, 0.95fr)',
                 'km': 'minmax(48px, 1fr)'
             }
             : {
                 'sira': 'minmax(20px, 0.17fr)',
                 'sube': 'minmax(62px, 0.95fr)',
                 'yil': 'minmax(37px, 0.49fr)',
-                'marka': 'minmax(62px, 1.93fr)',
-                'tasitTipi': 'minmax(54px, 0.58fr)',
-                'plaka': 'minmax(60px, 1fr)',
+                'marka': 'minmax(62px, 1.82fr)',
+                'tasitTipi': 'minmax(62px, 0.62fr)',
+                'plaka': 'minmax(68px, 1.04fr)',
                 'sanziman': 'minmax(60px, 0.9fr)',
                 'km': 'minmax(64px, 1.22fr)'
             };
