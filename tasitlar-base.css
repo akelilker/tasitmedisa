@@ -2349,9 +2349,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 .view-list .list-item:hover {
     background: var(--border-ultra);
 }
-/* Standart: bir satır koyu bir satır açık – okunabilirlik */
+/* Standart: bir satır koyu bir satır açık – okunabilirlik (raporlar stok ile aynı 0.05) */
 .view-list .list-item:nth-child(even) {
-    background: var(--border-faint-02);
+    background: rgba(255, 255, 255, 0.05);
 }
 
 /* Taşıtlar modalı: tarih yaklaştı / kritik — liste satırı (checkDateWarnings ile uyumlu) */
