@@ -2896,6 +2896,26 @@ body.dashboard-page {
   }
 }
 
+/*
+  Talep modalı masaüstü: karartma (::before) 500px sütunda kaldığında alt köşelerde yan ışık/footer glow sızmaması için tam genişlik.
+  Üst başlık gradient'i köşeye otursun (#driver-password ile aynı üst radius).
+*/
+@media (min-width: 641px) {
+  #driver-feedback-modal.driver-modal::before {
+    max-width: none !important;
+    width: 100% !important;
+    left: 0 !important;
+    right: 0 !important;
+    transform: none !important;
+  }
+
+  #driver-feedback-modal .modal-header {
+    border-top-left-radius: var(--modal-radius, 10px) !important;
+    border-top-right-radius: var(--modal-radius, 10px) !important;
+    box-shadow: inset 0 1px 0 rgba(200, 208, 216, 0.46) !important;
+  }
+}
+
 #history-modal.driver-modal::before,
 #edit-request-modal.driver-modal::before,
 #driver-event-menu-modal.driver-modal::before,
