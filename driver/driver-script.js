@@ -504,9 +504,15 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       } else {
         document.body.classList.remove('driver-history-or-edit-modal-open');
       }
+      if (id === 'driver-feedback-modal') {
+        document.body.classList.add('driver-feedback-modal-open');
+      } else {
+        document.body.classList.remove('driver-feedback-modal-open');
+      }
     } else {
       document.body.classList.remove('driver-modal-open');
       document.body.classList.remove('driver-history-or-edit-modal-open');
+      document.body.classList.remove('driver-feedback-modal-open');
     }
   }
   
@@ -3027,6 +3033,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       var list = document.getElementById('driver-feedback-type-list');
       var trigger = document.getElementById('driver-feedback-type-trigger');
       if (!list || !trigger) return;
+      unbindFeedbackTypeOutsideClose();
       list.classList.remove('open');
       trigger.setAttribute('aria-expanded', 'false');
       list.setAttribute('aria-hidden', 'true');
@@ -3040,6 +3047,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       list.style.overflowY = '';
       list.style.marginTop = '';
       list.style.marginBottom = '';
+      list.style.zIndex = '';
   }
 
   function syncDriverFeedbackTypeTriggerFromSelect() {
@@ -3057,49 +3065,58 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
   }
 
   function positionDriverFeedbackTypeList() {
-      var modal = document.getElementById('driver-feedback-modal');
-      var modalBody = modal && modal.querySelector('.modal-body');
       var trigger = document.getElementById('driver-feedback-type-trigger');
       var list = document.getElementById('driver-feedback-type-list');
       if (!trigger || !list) return;
       var r = trigger.getBoundingClientRect();
-      var triggerHeight = trigger.offsetHeight || r.height || 44;
       var gap = 6;
       var edgePad = 10;
-      var minListPx = 56;
-      var maxListCap = 320;
-      var spaceBelow = 240;
-      var spaceAbove = 240;
-      if (modalBody) {
-          var br = modalBody.getBoundingClientRect();
-          spaceBelow = Math.max(0, Math.floor(br.bottom - r.bottom - gap - edgePad));
-          spaceAbove = Math.max(0, Math.floor(r.top - br.top - gap - edgePad));
-      } else {
-          var vh = window.innerHeight || document.documentElement.clientHeight || 800;
-          spaceBelow = Math.max(0, Math.floor(vh - r.bottom - gap - edgePad));
-          spaceAbove = Math.max(0, Math.floor(r.top - gap - edgePad));
-      }
-      var contentScroll = list.scrollHeight || 0;
-      var desiredOpen = contentScroll > 0 ? contentScroll : 220;
-      var useAbove = spaceBelow < Math.min(120, desiredOpen) && spaceAbove > spaceBelow;
+      var footerReserve = 56;
+      var vh = window.innerHeight || document.documentElement.clientHeight || 640;
+      var vw = window.innerWidth || document.documentElement.clientWidth || 400;
+      var spaceBelow = Math.max(0, Math.floor(vh - r.bottom - gap - edgePad - footerReserve));
+      var spaceAbove = Math.max(0, Math.floor(r.top - gap - edgePad));
+      var desired = Math.max(list.scrollHeight || 0, 160);
+      var useAbove = spaceBelow < Math.min(96, desired) && spaceAbove > spaceBelow;
       var rawMax = useAbove ? spaceAbove : spaceBelow;
-      var maxList = Math.min(maxListCap, Math.max(0, rawMax));
-      var listMaxHeight = Math.min(desiredOpen + 2, maxList > 0 ? maxList : minListPx);
-      list.style.position = 'absolute';
-      list.style.left = '0';
-      list.style.right = '0';
-      list.style.width = '100%';
-      list.style.maxHeight = listMaxHeight + 'px';
-      list.style.overflowY = 'auto';
+      var listMaxHeight = Math.min(260, Math.max(52, rawMax));
+      var w = Math.min(Math.max(120, r.width), vw - 2 * edgePad);
+      var left = Math.min(Math.max(edgePad, r.left), vw - w - edgePad);
+      list.style.position = 'fixed';
+      list.style.left = left + 'px';
+      list.style.width = w + 'px';
+      list.style.right = 'auto';
       list.style.marginTop = '0';
       list.style.marginBottom = '0';
+      list.style.maxHeight = listMaxHeight + 'px';
+      list.style.overflowY = 'auto';
+      list.style.zIndex = '10060';
       if (useAbove) {
           list.style.top = 'auto';
-          list.style.bottom = (triggerHeight + 4) + 'px';
+          list.style.bottom = Math.max(edgePad, vh - r.top + gap) + 'px';
       } else {
-          list.style.top = (triggerHeight + 4) + 'px';
+          list.style.top = (r.bottom + gap) + 'px';
           list.style.bottom = 'auto';
       }
+  }
+
+  var feedbackTypeOutsideBound = false;
+  function outsideCloseFeedbackType(ev) {
+      var list = document.getElementById('driver-feedback-type-list');
+      var wrap = document.querySelector('#driver-feedback-modal .driver-feedback-type-dropdown-wrap');
+      if (!list || !list.classList.contains('open')) return;
+      if (wrap && ev.target && typeof wrap.contains === 'function' && wrap.contains(ev.target)) return;
+      closeDriverFeedbackTypeList();
+  }
+  function bindFeedbackTypeOutsideClose() {
+      if (feedbackTypeOutsideBound) return;
+      feedbackTypeOutsideBound = true;
+      document.addEventListener('click', outsideCloseFeedbackType, true);
+  }
+  function unbindFeedbackTypeOutsideClose() {
+      if (!feedbackTypeOutsideBound) return;
+      feedbackTypeOutsideBound = false;
+      document.removeEventListener('click', outsideCloseFeedbackType, true);
   }
 
   function initDriverFeedbackTypeCustomSelect() {
@@ -3137,7 +3154,10 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
               trigger.setAttribute('aria-expanded', 'true');
               list.setAttribute('aria-hidden', 'false');
               positionDriverFeedbackTypeList();
-              requestAnimationFrame(function() { positionDriverFeedbackTypeList(); });
+              requestAnimationFrame(function() {
+                  positionDriverFeedbackTypeList();
+                  setTimeout(function() { bindFeedbackTypeOutsideClose(); }, 0);
+              });
           }
       });
       trigger.addEventListener('keydown', function(ev) {
@@ -3163,12 +3183,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           select.dispatchEvent(new Event('change', { bubbles: true }));
       });
 
-      /* Capture: modal içindeki modal-container stopPropagation yüzünden bubble document'e çıkmıyor */
-      document.addEventListener('click', function(ev) {
-          if (!list.classList.contains('open')) return;
-          if (wrap.contains(ev.target)) return;
-          closeDriverFeedbackTypeList();
-      }, true);
+      /* Dışarı tık: aynı tıklama döngüsünde kapanmayı önlemek için listener event’ten sonra eklenir */
       document.addEventListener('keydown', function(ev) {
           if (ev.key !== 'Escape') return;
           if (!list.classList.contains('open')) return;
@@ -3202,10 +3217,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       }
       modal.classList.add('show');
       updateDriverModalBodyClass();
-      setTimeout(function() {
-          const messageInput = document.getElementById('driver-feedback-message');
-          if (messageInput) messageInput.focus();
-      }, 50);
+      /* iOS: textarea’ya otomatik odak tür seçicide ilk dokunuşu / klavyeyi bozabiliyor */
   };
 
   window.closeDriverFeedbackModal = function() {

@@ -2852,6 +2852,10 @@ body.dashboard-page {
 #edit-request-modal.driver-modal.show {
   z-index: 10021 !important;
 }
+/* Talep modalı tüm panel katmanlarının üstünde (scroll-area 10004, footer 10005) */
+#driver-feedback-modal.driver-modal.show {
+  z-index: 10050 !important;
+}
 
 /* Düzeltme Talebi: style-core :root --data-value-color (#f8f9fa) neredeyse beyaz; bu modalda açıklama/değer metni gri kalsın */
 #edit-request-modal.driver-modal {
@@ -2929,11 +2933,18 @@ body.dashboard-page {
 /* Geçmiş Kayıtlar / Düzeltme Talebi açıkken footer modalın üstünde, ışıklar sabit ton */
 body.dashboard-page:has(#history-modal.driver-modal.show) #app-footer,
 body.dashboard-page:has(#edit-request-modal.driver-modal.show) #app-footer,
-body.dashboard-page:has(#driver-feedback-modal.driver-modal.show) #app-footer,
 body.login-page:has(#history-modal.driver-modal.show) #app-footer.login-footer,
-body.login-page:has(#edit-request-modal.driver-modal.show) #app-footer.login-footer,
-body.login-page:has(#driver-feedback-modal.driver-modal.show) #app-footer.login-footer {
+body.login-page:has(#edit-request-modal.driver-modal.show) #app-footer.login-footer {
   z-index: 100020 !important;
+}
+/* Talep modalı: footer modalın ALTINDA kalmalı — yoksa iOS PWA’da form/liste tıklanmıyor */
+body.dashboard-page:has(#driver-feedback-modal.driver-modal.show) #app-footer,
+body.login-page:has(#driver-feedback-modal.driver-modal.show) #app-footer.login-footer {
+  z-index: 10015 !important;
+}
+body.dashboard-page.driver-feedback-modal-open #app-footer,
+body.login-page.driver-feedback-modal-open #app-footer.login-footer {
+  z-index: 10015 !important;
 }
 
 /* Geçmiş Kayıtlarım + Düzeltme Talebi modal açıkken footer ışıkları sönmesin — dimmed override */
@@ -2985,6 +2996,14 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   touch-action: pan-y;
   overscroll-behavior: none;
   overscroll-behavior-x: none;
+}
+
+/* Talep modalı: çift safe-area + tam yükseklik üst başlığı kesiyordu; içerik kadar panel */
+#driver-feedback-modal .driver-modal-content,
+#driver-feedback-modal .modal-container {
+  margin-top: 12px !important;
+  height: auto !important;
+  max-height: min(92dvh, calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - var(--app-footer-real-height, 42px) - 28px)) !important;
 }
 
 #history-modal .modal-container::before {
@@ -3451,6 +3470,9 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 }
 #driver-feedback-modal #driver-feedback-type-list.open {
   display: block;
+  position: fixed;
+  z-index: 10060;
+  margin-top: 0;
 }
 #driver-feedback-modal #driver-feedback-type-list .vehicle-branch-option {
   padding: 8px 10px;
