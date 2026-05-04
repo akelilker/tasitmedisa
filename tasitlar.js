@@ -3884,17 +3884,11 @@
   function bindMonthlyTodoModalDelegatedInteraction(modalEl) {
     if (!modalEl || modalEl._medisaMonthlyTodoModalDelegatedBound) return;
     modalEl._medisaMonthlyTodoModalDelegatedBound = true;
-    modalEl.addEventListener('click', function(ev) {
+    function onModalPointerDown(ev) {
       var target = ev.target;
       if (!target || typeof target.closest !== 'function') return;
       var insidePanel = target.closest('.monthly-todo-modal-container');
       if (!insidePanel || !modalEl.contains(insidePanel)) {
-        closeMonthlyTodoModal();
-        return;
-      }
-      var closeBtn = target.closest('.modal-close');
-      if (closeBtn && modalEl.contains(closeBtn)) {
-        ev.preventDefault();
         closeMonthlyTodoModal();
         return;
       }
@@ -3903,7 +3897,6 @@
       var vid = row.getAttribute('data-vehicle-id');
       if (!vid) return;
       ev.preventDefault();
-      ev.stopPropagation();
       closeMonthlyTodoModal();
       if (typeof window.showVehicleDetail === 'function') {
         if (!lastListContext) {
@@ -3911,6 +3904,18 @@
         }
         window.showVehicleDetail(vid);
       }
+    }
+    modalEl.addEventListener('click', onModalPointerDown);
+  }
+
+  function wireMonthlyTodoModalCloseUiOnce(modalEl) {
+    if (!modalEl || modalEl._medisaMonthlyTodoCloseUiBound) return;
+    var closeBtn = modalEl.querySelector('button.modal-close.monthly-todo-modal-close');
+    if (!closeBtn) return;
+    modalEl._medisaMonthlyTodoCloseUiBound = true;
+    closeBtn.addEventListener('click', function(ev) {
+      ev.preventDefault();
+      closeMonthlyTodoModal();
     });
   }
 
@@ -3949,17 +3954,19 @@
       document.body.appendChild(el);
     }
     bindMonthlyTodoModalDelegatedInteraction(el);
+    wireMonthlyTodoModalCloseUiOnce(el);
     return el;
   }
 
   function openMonthlyTodoModal() {
     var modal = ensureMonthlyTodoModalMounted();
     modal.style.display = 'flex';
+    modal.classList.add('active');
+    modal.classList.add('open');
+    if (typeof window.updateFooterDim === 'function') window.updateFooterDim();
+    renderMonthlyTodoModalContent();
     requestAnimationFrame(function() {
-      modal.classList.add('active');
-      modal.classList.add('open');
       if (typeof window.updateFooterDim === 'function') window.updateFooterDim();
-      renderMonthlyTodoModalContent();
     });
   }
 
