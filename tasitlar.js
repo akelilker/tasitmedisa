@@ -2878,13 +2878,7 @@
       backBtn.innerHTML = `<svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg><span class="universal-back-label">${escapeHtml(backLabel)}</span>`;
       backBtn.onclick = () => {
         closeVehicleDetailModal();
-        if (lastListContext && lastListContext.mode === 'archive') {
-          openArchiveView();
-        } else if (lastListContext && lastListContext.mode === 'branch') {
-          openBranchList(lastListContext.branchId, lastListContext.branchName);
-        } else {
-          renderBranchDashboard();
-        }
+        backFromVehicleDetailToListContext();
       };
       backBar.appendChild(backBtn);
       toolbarLeft.appendChild(backBar);
@@ -3127,6 +3121,23 @@
     } else {
       doCloseVehicleDetailModal();
     }
+  };
+
+  /** Taşıt detaydan çıkınca son liste bağlamına dön (araçtaki geri ok ile aynı). */
+  function backFromVehicleDetailToListContext() {
+    if (lastListContext && lastListContext.mode === 'archive') {
+      openArchiveView();
+    } else if (lastListContext && lastListContext.mode === 'branch') {
+      openBranchList(lastListContext.branchId, lastListContext.branchName);
+    } else {
+      renderBranchDashboard();
+    }
+  }
+
+  /** Üst X: tüm Taşıtlar modalını değil, sadece detayı kapatıp listeye döner. */
+  window.backFromVehicleDetailModal = function() {
+    closeVehicleDetailModal();
+    backFromVehicleDetailToListContext();
   };
 
   // --- ARAMA İŞLEMLERİ ---
