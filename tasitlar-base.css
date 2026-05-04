@@ -1021,7 +1021,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 /* Taşıt Detay Alt Başlık Satırı: Olay Ekle | Marka/Model | Tarihçe – marka/model plakanın 2px altında */
 .detail-brand-year-row {
     display: flex !important;
-    align-items: flex-start !important; /* Marka/model plakanın hemen altında, ekran ortasında değil */
+    align-items: center !important; /* Olay Ekle · marka · Tarihçe aynı görsel satırda dikey ortalı */
     justify-content: space-between !important;
     flex-wrap: nowrap;
     width: 100% !important;
