@@ -2638,6 +2638,11 @@
 #monthly-todo-modal .monthly-todo-modal-body {
   min-height: 0;
 }
+/* X: tıklanabilirlik + üst katman (başlık h2 pointer-events:none ile uyumlu) */
+#monthly-todo-modal .modal-header .monthly-todo-modal-close {
+  z-index: 40;
+  pointer-events: auto;
+}
 #monthly-todo-modal .monthly-todo-list {
   display: flex;
   flex-direction: column;
@@ -2711,12 +2716,16 @@
 }
 @media (min-width: 641px) {
   #monthly-todo-modal .monthly-todo-task-row {
-    grid-template-columns: minmax(72px, auto) minmax(0, 1.1fr) minmax(0, 1.1fr) minmax(106px, auto) minmax(104px, auto) minmax(96px, auto);
-    column-gap: 10px;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    column-gap: 12px;
     row-gap: 0;
     align-items: center;
   }
   #monthly-todo-modal .monthly-todo-plate {
     white-space: nowrap;
+  }
+  #monthly-todo-modal .monthly-todo-type,
+  #monthly-todo-modal .monthly-todo-enddate {
+    overflow: hidden;
   }
 }
