@@ -787,7 +787,11 @@ var MEDISA_MODULE_VERSIONS = {
   kayitJs: '20260503.1',
   kayitCss: '20260501.3',
   ayarlarJs: '20260502.2',
-  ayarlarCss: '20260502.13'
+  ayarlarCss: '20260502.13',
+  customSelect: '20260505.1',
+  userDropdown: '20260505.1',
+  vehicleUtils: '20260505.1',
+  notifications: '20260505.1'
 };
 window.MEDISA_MODULE_VERSIONS = MEDISA_MODULE_VERSIONS;
 var TASITLAR_MODULE_VERSION = MEDISA_MODULE_VERSIONS.tasitlar;
@@ -796,6 +800,10 @@ var TASITLAR_MODULE_VERSION = MEDISA_MODULE_VERSIONS.tasitlar;
 // tasitlar.js / raporlar.js / kayit.js / ayarlar.js yüklendiğinde kendi open* implementasyonlarını yazar.
 (function() {
   var V = MEDISA_MODULE_VERSIONS;
+  var CUSTOM_SELECT_JS = 'components/custom-select.js?v=' + V.customSelect;
+  var USER_DROPDOWN_JS = 'components/user-dropdown.js?v=' + V.userDropdown;
+  var VEHICLE_UTILS_JS = 'utils/vehicle-utils.js?v=' + V.vehicleUtils;
+  var NOTIFICATIONS_JS = 'components/notifications.js?v=' + V.notifications;
   var TASITLAR_JS = 'tasitlar.js?v=' + V.tasitlar;
   var TASITLAR_CSS_LIST = [
     'tasitlar-base.css?v=' + V.tasitlar,
@@ -810,13 +818,20 @@ var TASITLAR_MODULE_VERSION = MEDISA_MODULE_VERSIONS.tasitlar;
 
   window.openVehiclesView = function() {
     showModuleSpinner();
-    window.loadAppModule(TASITLAR_JS, TASITLAR_CSS_LIST).then(function() {
-      if (typeof window.openVehiclesView === 'function') window.openVehiclesView();
-    }).catch(function(err) {
-      console.error('[Medisa] Taşıtlar modülü yüklenemedi:', err);
-    }).finally(function() {
-      hideModuleSpinner();
-    });
+    window.loadAppModule(CUSTOM_SELECT_JS)
+      .then(function() { return window.loadAppModule(USER_DROPDOWN_JS); })
+      .then(function() { return window.loadAppModule(VEHICLE_UTILS_JS); })
+      .then(function() { return window.loadAppModule(NOTIFICATIONS_JS); })
+      .then(function() { return window.loadAppModule(TASITLAR_JS, TASITLAR_CSS_LIST); })
+      .then(function() {
+        if (typeof window.openVehiclesView === 'function') window.openVehiclesView();
+      })
+      .catch(function(err) {
+        console.error('[Medisa] Taşıtlar modülü yüklenemedi:', err);
+      })
+      .finally(function() {
+        hideModuleSpinner();
+      });
   };
 
   window.openReportsView = function() {
@@ -903,12 +918,20 @@ var TASITLAR_MODULE_VERSION = MEDISA_MODULE_VERSIONS.tasitlar;
     if (!isMainSpaPath() || typeof window.loadAppModule !== 'function') return;
     var V = window.MEDISA_MODULE_VERSIONS;
     if (!V) return;
+    var csJs = 'components/custom-select.js?v=' + V.customSelect;
+    var udJs = 'components/user-dropdown.js?v=' + V.userDropdown;
+    var vuJs = 'utils/vehicle-utils.js?v=' + V.vehicleUtils;
+    var nJs = 'components/notifications.js?v=' + V.notifications;
     var tJs = 'tasitlar.js?v=' + V.tasitlar;
     var tCss = ['tasitlar-base.css?v=' + V.tasitlar, 'tasitlar-extra.css?v=' + V.tasitlar];
     var rJs = 'raporlar.js?v=' + V.raporlar;
     var rCss = 'raporlar.css?v=' + V.raporlar;
     var kJs = 'kayit.js?v=' + V.kayitJs;
     var kCss = 'kayit.css?v=' + V.kayitCss;
+    window.loadAppModule(csJs).catch(function() {});
+    window.loadAppModule(udJs).catch(function() {});
+    window.loadAppModule(vuJs).catch(function() {});
+    window.loadAppModule(nJs).catch(function() {});
     window.loadAppModule(tJs, tCss).catch(function() {});
     window.loadAppModule(rJs, rCss).catch(function() {});
     window.loadAppModule(kJs, kCss).catch(function() {});
