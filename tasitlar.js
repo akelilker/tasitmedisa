@@ -3590,6 +3590,8 @@
     return labels[type] || type;
   }
 
+  window.getVehicleTypeLabel = getVehicleTypeLabel;
+
   // NOT: Kasko Excel işlemleri "data-service.js" dosyasına taşınmıştır.
   // NOT: Yazdırma (Taşıt Kartı Print) işlemleri "tasitlar-yazici.js" dosyasına taşınmıştır.
 

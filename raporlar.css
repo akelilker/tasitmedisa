@@ -837,6 +837,39 @@ text-overflow: clip;
 padding: 1px 2px;
 }
 
+/* Taşıt tipi: mobilde SVG simge (+ title tam metin), masaüstünde metin */
+.stok-list-header-cell[data-col="tasitTipi"],
+.stok-list-cell[data-col="tasitTipi"] {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 1px 2px;
+}
+.stok-list-cell[data-col="tasitTipi"] .stok-tasit-tipi-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+}
+.stok-tasit-tipi-svg,
+.stok-tasit-tipi-col-head-svg {
+  display: block;
+  color: var(--form-label-color, #ffffff);
+  opacity: 0.95;
+}
+.stok-header-text.stok-header-text--tasit-tip-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+}
+@media (min-width: 641px) {
+  .stok-list-cell[data-col="tasitTipi"] {
+    white-space: normal;
+    word-break: break-word;
+  }
+}
+
 .stok-list-header-cell[data-col="plaka"],
 .stok-list-cell[data-col="plaka"] {
 justify-content: center;
