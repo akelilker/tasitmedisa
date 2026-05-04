@@ -720,6 +720,7 @@
     if (window.dataApi && typeof window.dataApi.saveVehiclesList === 'function') {
       return window.dataApi.saveVehiclesList(arr)
         .then(function(result) {
+          invalidateVehicleDateTasksCache();
           notifyIfAvailable();
           return result;
         })
@@ -744,6 +745,7 @@
         });
     }
     if (window.appData) window.appData.tasitlar = Array.isArray(arr) ? arr : [];
+    invalidateVehicleDateTasksCache();
     notifyIfAvailable();
     return Promise.resolve();
   }
@@ -3074,7 +3076,8 @@
       'vehicle-detail-modal',
       'vehicle-history-modal',
       'event-menu-modal',
-      DINAMIK_OLAY_MODAL_ID
+      DINAMIK_OLAY_MODAL_ID,
+      'monthly-todo-modal'
     ];
 
     modalIds.forEach(id => {
@@ -3082,7 +3085,8 @@
                     id === 'vehicle-detail-modal' ? DOM.vehicleDetailModal :
                     id === 'vehicle-history-modal' ? DOM.vehicleHistoryModal :
                     id === 'event-menu-modal' ? DOM.eventMenuModal :
-                    id === DINAMIK_OLAY_MODAL_ID ? DOM.dinamikOlayModal : null) || document.getElementById(id);
+                    id === DINAMIK_OLAY_MODAL_ID ? DOM.dinamikOlayModal :
+                    id === 'monthly-todo-modal' ? document.getElementById('monthly-todo-modal') : null) || document.getElementById(id);
       if (modal) {
         resetModalState(modal);
         modal.classList.remove('active', 'open');
@@ -3498,6 +3502,454 @@
     if (hasOrange) return ' vehicle-date-warning-orange';
     return '';
   }
+
+  /**
+   * Vade tarihinin düştüğü ay: ham alan → window.parseVehicleDateRawToIso (data-manager/kayıt ile aynı kurallar).
+   */
+  function rawVehicleDateExpiryInCurrentCalendarMonth(rawDate) {
+    if (rawDate == null || String(rawDate).trim() === '') return false;
+    if (typeof window.parseVehicleDateRawToIso !== 'function') return false;
+    var iso = window.parseVehicleDateRawToIso(rawDate);
+    if (!iso || !/^\d{4}-\d{2}-\d{2}$/.test(iso)) return false;
+    var p = iso.split('-');
+    var y = parseInt(p[0], 10);
+    var moZero = parseInt(p[1], 10) - 1;
+    var now = new Date();
+    return moZero === now.getMonth() && y === now.getFullYear();
+  }
+
+  /** Geçmiş (checkDateWarnings.days < 0) veya vade tarihi bu takvim ayı içinde. */
+  function monthlyOperationalDateTaskFilterPasses(rawDate, warning) {
+    if (rawDate == null || String(rawDate).trim() === '') return false;
+    if (!warning || typeof warning !== 'object') return false;
+    if (typeof warning.days === 'number' && warning.days < 0) return true;
+    if (typeof warning.days === 'number' && warning.days >= 0 && rawVehicleDateExpiryInCurrentCalendarMonth(rawDate)) return true;
+    return false;
+  }
+
+  var _vehicleDateTasksCache = null;
+
+  function invalidateVehicleDateTasksCache() {
+    _vehicleDateTasksCache = null;
+  }
+  window.invalidateVehicleDateTasksCache = invalidateVehicleDateTasksCache;
+
+  function computeMuayeneWarningForOperationalScan(vehicle) {
+    if (!vehicle || !vehicle.muayeneDate) return null;
+    var warning = checkDateWarnings(vehicle.muayeneDate);
+    if (isEgzozMuayeneCritical(vehicle)) {
+      warning.class = 'date-warning-red';
+      if (typeof warning.days !== 'number') warning.days = -1;
+    }
+    return warning;
+  }
+
+  /**
+   * Tek tarama ile tarih bildirimleri ve/veya aylık önbellek.
+   * @param {Array|null} notificationsArray — bildirim kuyruğu (full bildirimi senaryosu).
+   * @param {'full'|'monthly-cache-only'} scanMode — `full`: bildirim + önbellek (updateNotifications ile birebir); `monthly-cache-only`: yalnız önbellek, bildirime dokunma.
+   */
+  function runVehicleDateOperationalScan(notificationsArray, scanMode) {
+    var mode = scanMode === 'monthly-cache-only' ? 'monthly-cache-only' : 'full';
+    var attachNotif = mode === 'full' && Array.isArray(notificationsArray);
+
+    var monthly = [];
+    var vehicles = readVehicles();
+
+    vehicles.forEach(function(vehicle) {
+      if (!vehicle || vehicle.satildiMi) return;
+      if (vehicle.arsiv === true) return;
+
+      var plate = vehicle.plate || '-';
+      var brandModel = formatBrandModel(vehicle.brandModel || '-');
+
+      if (vehicle.sigortaDate) {
+        var wSig = checkDateWarnings(vehicle.sigortaDate);
+        if (monthlyOperationalDateTaskFilterPasses(vehicle.sigortaDate, wSig)) {
+          monthly.push({
+            vehicle: vehicle,
+            type: 'Sigorta',
+            field: 'sigortaDate',
+            date: vehicle.sigortaDate,
+            days: wSig.days,
+            status: (typeof wSig.days === 'number' && wSig.days < 0) ? 'past' : 'upcoming',
+            warningClass: wSig.class
+          });
+        }
+        if (attachNotif && wSig.class) {
+          var ds = wSig.days;
+          notificationsArray.push({
+            type: 'sigorta',
+            vehicleId: vehicle.id,
+            plate: plate,
+            brandModel: brandModel,
+            date: vehicle.sigortaDate,
+            days: ds,
+            warningClass: wSig.class,
+            status: ds < 0 ? 'geçmiş' : ds <= 3 ? 'çok yakın' : 'yaklaşıyor'
+          });
+        }
+      }
+
+      if (vehicle.kaskoDate) {
+        var wKas = checkDateWarnings(vehicle.kaskoDate);
+        if (monthlyOperationalDateTaskFilterPasses(vehicle.kaskoDate, wKas)) {
+          monthly.push({
+            vehicle: vehicle,
+            type: 'Kasko',
+            field: 'kaskoDate',
+            date: vehicle.kaskoDate,
+            days: wKas.days,
+            status: (typeof wKas.days === 'number' && wKas.days < 0) ? 'past' : 'upcoming',
+            warningClass: wKas.class
+          });
+        }
+        if (attachNotif && wKas.class) {
+          var dk = wKas.days;
+          notificationsArray.push({
+            type: 'kasko',
+            vehicleId: vehicle.id,
+            plate: plate,
+            brandModel: brandModel,
+            date: vehicle.kaskoDate,
+            days: dk,
+            warningClass: wKas.class,
+            status: dk < 0 ? 'geçmiş' : dk <= 3 ? 'çok yakın' : 'yaklaşıyor'
+          });
+        }
+      }
+
+      if (vehicle.muayeneDate) {
+        var wM = computeMuayeneWarningForOperationalScan(vehicle);
+        if (wM && monthlyOperationalDateTaskFilterPasses(vehicle.muayeneDate, wM)) {
+          monthly.push({
+            vehicle: vehicle,
+            type: 'Muayene',
+            field: 'muayeneDate',
+            date: vehicle.muayeneDate,
+            days: wM.days,
+            status: (typeof wM.days === 'number' && wM.days < 0) ? 'past' : 'upcoming',
+            warningClass: wM.class
+          });
+        }
+        if (attachNotif && wM && wM.class) {
+          var dm = wM.days;
+          notificationsArray.push({
+            type: 'muayene',
+            vehicleId: vehicle.id,
+            plate: plate,
+            brandModel: brandModel,
+            date: vehicle.muayeneDate,
+            days: dm,
+            warningClass: wM.class,
+            status: dm < 0 ? 'geçmiş' : dm <= 3 ? 'çok yakın' : 'yaklaşıyor'
+          });
+        }
+      }
+
+      var egzozState = getEgzozMuayeneState(vehicle);
+      if (egzozState.state === 'missing') {
+        monthly.push({
+          vehicle: vehicle,
+          type: 'Egzoz Muayene',
+          field: 'egzozMuayeneDate',
+          date: '',
+          days: -1,
+          status: 'past',
+          warningClass: 'date-warning-red'
+        });
+      } else if (egzozState.date) {
+        var wEgz = checkDateWarnings(egzozState.date);
+        if (monthlyOperationalDateTaskFilterPasses(egzozState.date, wEgz)) {
+          monthly.push({
+            vehicle: vehicle,
+            type: 'Egzoz Muayene',
+            field: 'egzozMuayeneDate',
+            date: egzozState.date,
+            days: wEgz.days,
+            status: (typeof wEgz.days === 'number' && wEgz.days < 0) ? 'past' : 'upcoming',
+            warningClass: wEgz.class
+          });
+        }
+      }
+
+      if (attachNotif && egzozState.warningClass) {
+        var egDays = typeof egzozState.days === 'number' ? egzozState.days : -1;
+        var egStatus = egzozState.state === 'missing'
+          ? 'eksik'
+          : (egDays < 0 ? 'geçmiş' : egDays <= 3 ? 'çok yakın' : 'yaklaşıyor');
+        notificationsArray.push({
+          type: 'egzoz',
+          vehicleId: vehicle.id,
+          plate: plate,
+          brandModel: brandModel,
+          date: egzozState.date || 'missing',
+          days: egDays,
+          warningClass: egzozState.warningClass,
+          status: egStatus,
+          missing: egzozState.state === 'missing'
+        });
+      }
+    });
+
+    monthly.sort(function(a, b) {
+      var da = typeof a.days === 'number' ? a.days : 9999;
+      var db = typeof b.days === 'number' ? b.days : 9999;
+      var aPast = da < 0;
+      var bPast = db < 0;
+      if (aPast !== bPast) return aPast ? -1 : 1;
+      return da - db;
+    });
+
+    _vehicleDateTasksCache = monthly;
+  }
+
+  window.getVehicleDateTasks = function() {
+    if (_vehicleDateTasksCache === null) {
+      runVehicleDateOperationalScan(null, 'monthly-cache-only');
+    }
+    return _vehicleDateTasksCache || [];
+  };
+
+  function updateMonthlyTodoHeaderBadge() {
+    var btn = document.getElementById('monthly-todo-header-btn');
+    var badge = btn ? btn.querySelector('.monthly-todo-header-badge') : null;
+    if (!btn || !badge) return;
+    var list = (typeof window.getVehicleDateTasks === 'function') ? window.getVehicleDateTasks() : [];
+    var n = list.length;
+    if (n <= 0) {
+      badge.textContent = '';
+      badge.setAttribute('hidden', 'hidden');
+      badge.setAttribute('aria-hidden', 'true');
+      btn.setAttribute('aria-label', 'Bu ay yapılacaklar');
+      return;
+    }
+    badge.textContent = String(n);
+    badge.removeAttribute('hidden');
+    badge.setAttribute('aria-hidden', 'false');
+    btn.setAttribute('aria-label', 'Bu ay yapılacaklar, ' + String(n) + ' işlem');
+  }
+
+  function getMonthlyTodoKullaniciLabel(vehicle, userMapById) {
+    if (!vehicle) return '-';
+    var assignedUser = vehicle.assignedUserId ? userMapById[String(vehicle.assignedUserId)] : null;
+    var raw = (assignedUser && (assignedUser.name || assignedUser.isim || assignedUser.fullName))
+      || vehicle.tahsisKisi
+      || '';
+    if (!String(raw).trim()) return '-';
+    return formatAdSoyad(String(raw));
+  }
+
+  function monthlyTodoTaskIsoNormalized(task) {
+    if (!task || task.date == null || String(task.date).trim() === '') return null;
+    if (typeof window.parseVehicleDateRawToIso !== 'function') return null;
+    return window.parseVehicleDateRawToIso(task.date);
+  }
+
+  function monthlyTodoMuayeneEgzozSameDatePair(a, b) {
+    var idA = a.vehicle && a.vehicle.id != null ? String(a.vehicle.id) : '';
+    var idB = b.vehicle && b.vehicle.id != null ? String(b.vehicle.id) : '';
+    if (!idA || idA !== idB) return false;
+    var isoA = monthlyTodoTaskIsoNormalized(a);
+    var isoB = monthlyTodoTaskIsoNormalized(b);
+    if (!isoA || !isoB || isoA !== isoB) return false;
+    var ta = String(a.type || '').trim();
+    var tb = String(b.type || '').trim();
+    return (ta === 'Muayene' && tb === 'Egzoz Muayene') || (ta === 'Egzoz Muayene' && tb === 'Muayene');
+  }
+
+  function monthlyTodoMergeMuayeneEgzoz(a, b) {
+    var da = typeof a.days === 'number' ? a.days : null;
+    var db = typeof b.days === 'number' ? b.days : null;
+    var days = da != null && db != null ? Math.min(da, db) : (da != null ? da : db);
+    var past = String(a.status) === 'past' || String(b.status) === 'past' || (typeof days === 'number' && days < 0);
+    var warningClass = '';
+    if (a.warningClass === 'date-warning-red' || b.warningClass === 'date-warning-red') warningClass = 'date-warning-red';
+    else if (a.warningClass === 'date-warning-orange' || b.warningClass === 'date-warning-orange') warningClass = 'date-warning-orange';
+    else warningClass = a.warningClass || b.warningClass || '';
+    var dateRaw = a.date != null && String(a.date).trim() ? a.date : b.date;
+    return {
+      vehicle: a.vehicle,
+      type: 'Muayene + Egzoz',
+      field: 'muayeneDate+egzozMuayeneDate',
+      date: dateRaw,
+      days: days,
+      status: past ? 'past' : 'upcoming',
+      warningClass: warningClass
+    };
+  }
+
+  function buildMonthlyTodoMergedDisplayTasks(tasks) {
+    var used = tasks.map(function() { return false; });
+    var out = [];
+    for (var i = 0; i < tasks.length; i++) {
+      if (used[i]) continue;
+      var pairIdx = -1;
+      for (var j = i + 1; j < tasks.length; j++) {
+        if (used[j]) continue;
+        if (monthlyTodoMuayeneEgzozSameDatePair(tasks[i], tasks[j])) {
+          pairIdx = j;
+          break;
+        }
+      }
+      if (pairIdx >= 0) {
+        used[pairIdx] = true;
+        out.push(monthlyTodoMergeMuayeneEgzoz(tasks[i], tasks[pairIdx]));
+      } else {
+        out.push(tasks[i]);
+      }
+    }
+    return out;
+  }
+
+  function renderMonthlyTodoModalContent() {
+    var root = document.getElementById('monthly-todo-modal');
+    var bodyEl = root ? root.querySelector('.monthly-todo-modal-body') : null;
+    if (!bodyEl) return;
+    var tasks = window.getVehicleDateTasks();
+    var displayTasks = buildMonthlyTodoMergedDisplayTasks(tasks);
+    var users = readUsers();
+    var userMap = {};
+    users.forEach(function(u) {
+      if (u && u.id != null) userMap[String(u.id)] = u;
+    });
+    if (!displayTasks.length) {
+      bodyEl.innerHTML = '<div class="monthly-todo-empty">Bu dönem için listelenecek tarih işlemi yok.</div>';
+      return;
+    }
+    var html = '<div class="monthly-todo-list" role="list">';
+    displayTasks.forEach(function(t) {
+      var v = t.vehicle || {};
+      var vid = v.id != null ? String(v.id) : '';
+      var plate = escapeHtml(v.plate || '-');
+      var bm = escapeHtml(formatBrandModel(v.brandModel || '-'));
+      var kul = escapeHtml(getMonthlyTodoKullaniciLabel(v, userMap));
+      var typeLabel = escapeHtml(String(t.type || ''));
+      var dateRaw = t.date != null ? String(t.date).trim() : '';
+      var dateShown = '—';
+      if (dateRaw) {
+        if (typeof window.formatDateShort === 'function') dateShown = escapeHtml(window.formatDateShort(dateRaw));
+        else dateShown = escapeHtml(dateRaw);
+      }
+      var past = String(t.status) === 'past' || (typeof t.days === 'number' && t.days < 0);
+      var daysVal = typeof t.days === 'number' ? t.days : null;
+      var daysHtml = '';
+      if (!dateRaw || daysVal === null) {
+        daysHtml = escapeHtml(dateRaw ? '—' : 'Eksik');
+      } else if (daysVal < 0) {
+        daysHtml = '<span class="monthly-todo-days-label monthly-todo-days-label--past">' + escapeHtml(String(Math.abs(daysVal)) + ' gün geçti') + '</span>';
+      } else if (daysVal === 0) {
+        daysHtml = '<span class="monthly-todo-days-label">' + escapeHtml('Bugün') + '</span>';
+      } else {
+        daysHtml = '<span class="monthly-todo-days-label">' + escapeHtml(String(daysVal) + ' gün') + '</span>';
+      }
+      var rowTone = past ? ' monthly-todo-task-row--past' : ' monthly-todo-task-row--upcoming';
+      html += '<button type="button" class="monthly-todo-task-row' + rowTone + '" data-vehicle-id="' + escapeAttr(vid) + '" role="listitem">';
+      html += '<span class="monthly-todo-cell monthly-todo-plate">' + plate + '</span>';
+      html += '<span class="monthly-todo-cell monthly-todo-brand">' + bm + '</span>';
+      html += '<span class="monthly-todo-cell monthly-todo-user"><span class="monthly-todo-inline-label">Kullanıcı</span> ' + kul + '</span>';
+      html += '<span class="monthly-todo-cell monthly-todo-type">' + typeLabel + '</span>';
+      html += '<span class="monthly-todo-cell monthly-todo-enddate"><span class="monthly-todo-inline-label">Son tarih</span> ' + dateShown + '</span>';
+      html += '<span class="monthly-todo-cell monthly-todo-days"><span class="monthly-todo-inline-label">Kalan gün</span> ' + daysHtml + '</span>';
+      html += '</button>';
+    });
+    html += '</div>';
+    bodyEl.innerHTML = html;
+  }
+
+  function bindMonthlyTodoModalDelegatedInteraction(modalEl) {
+    if (!modalEl || modalEl._medisaMonthlyTodoModalDelegatedBound) return;
+    modalEl._medisaMonthlyTodoModalDelegatedBound = true;
+    modalEl.addEventListener('click', function(ev) {
+      var target = ev.target;
+      if (!target) return;
+      if (target === modalEl) {
+        closeMonthlyTodoModal();
+        return;
+      }
+      if (typeof target.closest !== 'function') return;
+      if (target.closest('.monthly-todo-modal-close')) {
+        ev.preventDefault();
+        closeMonthlyTodoModal();
+        return;
+      }
+      var row = target.closest('.monthly-todo-task-row');
+      if (!row || !modalEl.contains(row)) return;
+      var vid = row.getAttribute('data-vehicle-id');
+      if (!vid) return;
+      ev.preventDefault();
+      ev.stopPropagation();
+      closeMonthlyTodoModal();
+      if (typeof window.showVehicleDetail === 'function') {
+        if (!lastListContext) {
+          lastListContext = { mode: 'branch', branchId: 'all', branchName: 'Taşıtlar' };
+        }
+        window.showVehicleDetail(vid);
+      }
+    });
+  }
+
+  function initMonthlyTodoHeaderButtonOnce() {
+    var btn = document.getElementById('monthly-todo-header-btn');
+    if (!btn || btn._medisaMonthlyTodoHeaderBound) return;
+    btn._medisaMonthlyTodoHeaderBound = true;
+    btn.addEventListener('click', function(ev) {
+      ev.preventDefault();
+      ev.stopPropagation();
+      openMonthlyTodoModal();
+    });
+  }
+
+  initMonthlyTodoHeaderButtonOnce();
+
+  function ensureMonthlyTodoModalMounted() {
+    var el = document.getElementById('monthly-todo-modal');
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'monthly-todo-modal';
+      el.className = 'modal-overlay tasitlar-modal-overlay';
+      el.setAttribute('data-monthly-todo-overlay', '1');
+      el.innerHTML =
+        '<div class="modal-container monthly-todo-modal-container" onclick="event.stopPropagation();">' +
+          '<div class="modal-header">' +
+            '<h2>BU AY YAPILACAKLAR</h2>' +
+            '<button type="button" class="modal-close monthly-todo-modal-close" aria-label="Kapat">' +
+              '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>' +
+            '</button>' +
+          '</div>' +
+          '<div class="modal-body monthly-todo-modal-body">' +
+            '<div class="monthly-todo-empty">Yükleniyor…</div>' +
+          '</div>' +
+        '</div>';
+      document.body.appendChild(el);
+    }
+    bindMonthlyTodoModalDelegatedInteraction(el);
+    return el;
+  }
+
+  function openMonthlyTodoModal() {
+    var modal = ensureMonthlyTodoModalMounted();
+    renderMonthlyTodoModalContent();
+    modal.style.display = 'flex';
+    requestAnimationFrame(function() {
+      modal.classList.add('active');
+      modal.classList.add('open');
+      if (typeof window.updateFooterDim === 'function') window.updateFooterDim();
+    });
+  }
+
+  function closeMonthlyTodoModal() {
+    var modal = document.getElementById('monthly-todo-modal');
+    if (!modal) return;
+    modal.classList.remove('active', 'open');
+    setTimeout(function() {
+      modal.style.display = 'none';
+      if (typeof window.updateFooterDim === 'function') window.updateFooterDim();
+    }, 300);
+  }
+  window.addEventListener('dataLoaded', function() {
+    invalidateVehicleDateTasksCache();
+  });
 
   function formatDateForDisplay(dateStr) {
     if (!dateStr) return '';
@@ -8101,7 +8553,11 @@
    * Bildirimleri güncelle (muayene, sigorta, kasko + kullanıcı paneli işlemleri)
    */
   window.updateNotifications = function() {
-    if (!window.appData || !Array.isArray(window.appData.tasitlar)) return;
+    if (!window.appData || !Array.isArray(window.appData.tasitlar)) {
+      invalidateVehicleDateTasksCache();
+      updateMonthlyTodoHeaderBadge();
+      return;
+    }
     const notifScopeKey = getCurrentNotifScopeKey();
     beginNotificationFirstSeenBatch(notifScopeKey);
     try {
@@ -8132,93 +8588,7 @@
       return 0;
     }
 
-    vehicles.forEach(vehicle => {
-      if (vehicle.satildiMi) return; // Satılmış taşıtları atla
-
-      const plate = vehicle.plate || '-';
-      const brandModel = formatBrandModel(vehicle.brandModel || '-');
-
-      // Sigorta kontrolü
-      if (vehicle.sigortaDate) {
-        const warning = checkDateWarnings(vehicle.sigortaDate);
-        if (warning.class) {
-          const days = warning.days;
-          const status = days < 0 ? 'geçmiş' : days <= 3 ? 'çok yakın' : 'yaklaşıyor';
-          notifications.push({
-            type: 'sigorta',
-            vehicleId: vehicle.id,
-            plate: plate,
-            brandModel: brandModel,
-            date: vehicle.sigortaDate,
-            days: days,
-            warningClass: warning.class,
-            status: status
-          });
-        }
-      }
-
-      // Kasko kontrolü
-      if (vehicle.kaskoDate) {
-        const warning = checkDateWarnings(vehicle.kaskoDate);
-        if (warning.class) {
-          const days = warning.days;
-          const status = days < 0 ? 'geçmiş' : days <= 3 ? 'çok yakın' : 'yaklaşıyor';
-          notifications.push({
-            type: 'kasko',
-            vehicleId: vehicle.id,
-            plate: plate,
-            brandModel: brandModel,
-            date: vehicle.kaskoDate,
-            days: days,
-            warningClass: warning.class,
-            status: status
-          });
-        }
-      }
-
-      // Muayene kontrolü
-      if (vehicle.muayeneDate) {
-        const warning = checkDateWarnings(vehicle.muayeneDate);
-        if (isEgzozMuayeneCritical(vehicle)) {
-          warning.class = 'date-warning-red';
-          if (typeof warning.days !== 'number') warning.days = -1;
-        }
-        if (warning.class) {
-          const days = warning.days;
-          const status = days < 0 ? 'geçmiş' : days <= 3 ? 'çok yakın' : 'yaklaşıyor';
-          notifications.push({
-            type: 'muayene',
-            vehicleId: vehicle.id,
-            plate: plate,
-            brandModel: brandModel,
-            date: vehicle.muayeneDate,
-            days: days,
-            warningClass: warning.class,
-            status: status
-          });
-        }
-      }
-
-      const egzozState = getEgzozMuayeneState(vehicle);
-      if (egzozState.warningClass) {
-        const days = typeof egzozState.days === 'number' ? egzozState.days : -1;
-        const status = egzozState.state === 'missing'
-          ? 'eksik'
-          : (days < 0 ? 'geçmiş' : days <= 3 ? 'çok yakın' : 'yaklaşıyor');
-
-        notifications.push({
-          type: 'egzoz',
-          vehicleId: vehicle.id,
-          plate: plate,
-          brandModel: brandModel,
-          date: egzozState.date || 'missing',
-          days: days,
-          warningClass: egzozState.warningClass,
-          status: status,
-          missing: egzozState.state === 'missing'
-        });
-      }
-    });
+    runVehicleDateOperationalScan(notifications, 'full');
 
     const usersById = {};
     readUsers().forEach(function(user) {
@@ -8604,6 +8974,7 @@
       if (typeof window.__medisaLogError === 'function') window.__medisaLogError('updateNotifications', err);
       else console.error('[Medisa] Bildirimler güncellenemedi:', err);
     } finally {
+      updateMonthlyTodoHeaderBadge();
       flushNotificationFirstSeenBatch();
     }
     openNotificationsFromReturnParam();
