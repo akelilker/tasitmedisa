@@ -2684,20 +2684,42 @@
   font-size: 13px;
   line-height: 1.4;
   min-width: 0;
-  overflow-wrap: break-word;
-  word-break: break-word;
 }
 #monthly-todo-modal .monthly-todo-plate {
   font-weight: 700;
   color: #ffffff;
   letter-spacing: 0.02em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
-#monthly-todo-modal .monthly-todo-brand {
+#monthly-todo-modal .monthly-todo-brand,
+#monthly-todo-modal .monthly-todo-user {
   color: #a0aec0;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 #monthly-todo-modal .monthly-todo-type {
   font-weight: 600;
   color: #e2e8f0;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+#monthly-todo-modal .monthly-todo-enddate,
+#monthly-todo-modal .monthly-todo-days {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 #monthly-todo-modal .monthly-todo-inline-label {
   font-size: 11px;
@@ -2716,16 +2738,9 @@
 }
 @media (min-width: 641px) {
   #monthly-todo-modal .monthly-todo-task-row {
-    grid-template-columns: repeat(6, minmax(0, 1fr));
-    column-gap: 12px;
+    grid-template-columns: 90px minmax(150px, 1.6fr) minmax(120px, 1.2fr) minmax(115px, 1fr) 95px 90px;
+    column-gap: 10px;
     row-gap: 0;
     align-items: center;
-  }
-  #monthly-todo-modal .monthly-todo-plate {
-    white-space: nowrap;
-  }
-  #monthly-todo-modal .monthly-todo-type,
-  #monthly-todo-modal .monthly-todo-enddate {
-    overflow: hidden;
   }
 }
