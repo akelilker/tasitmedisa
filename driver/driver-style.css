@@ -4712,7 +4712,8 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   #driver-utts-modal.driver-modal,
   #driver-muayene-modal.driver-modal,
   #driver-sigorta-modal.driver-modal,
-  #driver-kasko-modal.driver-modal {
+  #driver-kasko-modal.driver-modal,
+  #driver-feedback-modal.driver-modal {
     padding: max(12px, env(safe-area-inset-top)) 0 0 0 !important;
     align-items: stretch !important;
     justify-content: center !important;
@@ -4814,7 +4815,8 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   #driver-utts-modal.driver-modal::before,
   #driver-muayene-modal.driver-modal::before,
   #driver-sigorta-modal.driver-modal::before,
-  #driver-kasko-modal.driver-modal::before {
+  #driver-kasko-modal.driver-modal::before,
+  #driver-feedback-modal.driver-modal::before {
     max-width: 100% !important;
     width: 100%;
     height: 100%;
@@ -4824,7 +4826,8 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
   /* Geçmiş Kayıtlar + Düzeltme Talebi: kayıt modalı ile aynı başlık gölgesi */
   #history-modal .modal-header h2,
-  #edit-request-modal .modal-header h2 {
+  #edit-request-modal .modal-header h2,
+  #driver-feedback-modal .modal-header h2 {
     text-shadow: 0 2px 6px rgba(0, 0, 0, 0.5), 0 4px 12px rgba(0, 0, 0, 0.3), 0 0 15px rgba(255, 255, 255, 0.08) !important;
   }
 
@@ -4848,7 +4851,9 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   #driver-sigorta-modal .driver-modal-content,
   #driver-sigorta-modal .modal-container,
   #driver-kasko-modal .driver-modal-content,
-  #driver-kasko-modal .modal-container {
+  #driver-kasko-modal .modal-container,
+  #driver-feedback-modal .driver-modal-content,
+  #driver-feedback-modal .modal-container {
     max-width: 100% !important;
     width: 100% !important;
     margin: 0 !important;
@@ -4899,7 +4904,8 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   #driver-utts-modal .modal-header,
   #driver-muayene-modal .modal-header,
   #driver-sigorta-modal .modal-header,
-  #driver-kasko-modal .modal-header {
+  #driver-kasko-modal .modal-header,
+  #driver-feedback-modal .modal-header {
     padding-top: 12px !important;
     border-top-left-radius: 10px !important;
     border-top-right-radius: 10px !important;
@@ -6107,7 +6113,8 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   #driver-utts-modal .modal-header,
   #driver-muayene-modal .modal-header,
   #driver-sigorta-modal .modal-header,
-  #driver-kasko-modal .modal-header {
+  #driver-kasko-modal .modal-header,
+  #driver-feedback-modal .modal-header {
     background: linear-gradient(180deg, rgba(255, 0, 0, 0.42) 0%, rgba(255, 0, 0, 0.32) 25%, rgba(255, 0, 0, 0.25) 50%, rgba(255, 0, 0, 0.18) 75%, transparent 100%) !important;
     background-size: 100% calc(100% + 3px) !important;
   }
