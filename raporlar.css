@@ -836,7 +836,6 @@ justify-content: center;
 padding: 1px 2px;
 }
 
-/* Marka: ikinci satıra inebilir (Taşıtlar list-brand gibi) */
 .stok-list-header-cell[data-col="marka"] {
 justify-content: center;
 white-space: normal;
@@ -846,19 +845,43 @@ overflow-wrap: break-word;
 line-clamp: 2;
 }
 
+/* Marka/model: ilk kelime üst satır, kalan blok hemen altında (JS: .stok-marka-stack) */
 .stok-list-cell[data-col="marka"] {
-justify-content: center;
-text-align: center;
-white-space: normal;
-word-break: break-word;
-overflow-wrap: break-word;
-display: -webkit-box;
--webkit-line-clamp: 2;
-line-clamp: 2;
--webkit-box-orient: vertical;
-overflow: hidden;
-text-overflow: clip;
-padding: 1px 2px;
+  justify-content: center;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden;
+  text-overflow: clip;
+  padding: 1px 2px;
+  min-width: 0;
+  white-space: normal;
+  line-height: 1.25;
+}
+.stok-marka-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-width: 0;
+}
+.stok-marka-brand {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  word-break: keep-all;
+  overflow-wrap: normal;
+  white-space: nowrap;
+}
+.stok-marka-model {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
 }
 
 /* Taşıt tipi: mobilde SVG simge (+ title tam metin), masaüstünde metin */
@@ -918,12 +941,9 @@ padding: 1px 2px;
     hyphens: manual;
   }
 
-  #stok-list-container .stok-list-cell[data-col="marka"] {
-    -webkit-line-clamp: 3;
-    line-clamp: 3;
-  }
+  /* Veri hücresi: marka stack (JS) kendi satırlarını yönetir; eski line-clamp kaldırıldı */
 
-  /* Metin hücresi: kelime ortası kırılmasın; sığmazsa JS en fazla ~1 punto küçültür */
+  /* Metin hücresi: dar sütunda ilk harf kesilmesin; sola yaslı + iç span min-width:0 */
   #stok-list-container .stok-list-cell[data-col="tasitTipi"]:not(:has(.stok-tasit-tipi-wrap)) {
     display: flex !important;
     -webkit-box-orient: unset;
@@ -934,9 +954,17 @@ padding: 1px 2px;
     word-break: keep-all;
     overflow-wrap: normal;
     text-overflow: clip;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
+    padding: 1px 4px !important;
     min-width: 0;
+  }
+  #stok-list-container .stok-list-cell[data-col="tasitTipi"]:not(:has(.stok-tasit-tipi-wrap)) .stok-tasit-tipi-txt {
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: clip;
   }
 }
 
