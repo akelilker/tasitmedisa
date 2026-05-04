@@ -52,11 +52,12 @@
         kullanici: false,
         tescil: false
     };
+    const STOK_BASE_COLUMN_DEFAULTS = ['sira', 'sube', 'yil', 'marka', 'tasitTipi', 'plaka', 'sanziman', 'km'];
     let stokColumnOrder = []; // Aktif detay sütunların sırası
-    let stokBaseColumnOrder = ['sira', 'sube', 'yil', 'marka', 'plaka', 'sanziman', 'km']; // Temel sütunların sırası
+    let stokBaseColumnOrder = STOK_BASE_COLUMN_DEFAULTS.slice(); // Temel sütunların sırası
     let stokDetailMenuOpen = false; // Detay Ekleme menüsü açık mı (toggle için tek kaynak)
 
-    const STOK_BASE_COLUMNS = ['sira', 'sube', 'yil', 'marka', 'plaka', 'sanziman', 'km'];
+    const STOK_BASE_COLUMNS = ['sira', 'sube', 'yil', 'marka', 'tasitTipi', 'plaka', 'sanziman', 'km'];
     const STOK_DETAIL_COLUMNS = ['sigorta', 'kasko', 'kaskoDegeri', 'muayene', 'kredi', 'lastik', 'utts', 'takip', 'tramer', 'boya', 'kullanici', 'tescil'];
     let stokTouchColumnDrag = {
         active: false,
@@ -97,12 +98,20 @@
         }
         var savedOrder = load('stok_column_order', []);
         if (Array.isArray(savedOrder)) stokColumnOrder = savedOrder;
-        var savedBaseOrder = load('stok_base_column_order', ['sira', 'sube', 'yil', 'marka', 'plaka', 'sanziman', 'km']);
+        var savedBaseOrder = load('stok_base_column_order', STOK_BASE_COLUMN_DEFAULTS);
         if (Array.isArray(savedBaseOrder)) {
             if (savedBaseOrder.indexOf('plaka') === -1) {
-                stokBaseColumnOrder = ['sira', 'sube', 'yil', 'marka', 'plaka', 'sanziman', 'km'];
+                stokBaseColumnOrder = STOK_BASE_COLUMN_DEFAULTS.slice();
                 saveStokColumnState();
-            } else stokBaseColumnOrder = savedBaseOrder;
+            } else {
+                stokBaseColumnOrder = savedBaseOrder;
+                if (stokBaseColumnOrder.indexOf('tasitTipi') === -1) {
+                    var markaIdx = stokBaseColumnOrder.indexOf('marka');
+                    if (markaIdx !== -1) stokBaseColumnOrder.splice(markaIdx + 1, 0, 'tasitTipi');
+                    else stokBaseColumnOrder.splice(4, 0, 'tasitTipi');
+                    saveStokColumnState();
+                }
+            }
         }
     }
     function saveStokColumnState() {
@@ -170,6 +179,7 @@
             'sube': 'Şube',
             'yil': 'Yıl',
             'marka': isTiny ? 'Mrk' : isVerySmall ? 'Marka' : isDesktop ? 'Marka / Model' : 'Marka/Model',
+            'tasitTipi': isTiny ? 'Tip' : isVerySmall ? 'Taş. Tip.' : isDesktop ? 'Taşıt Tipi' : 'Taşıt Tipi',
             'plaka': 'Plaka',
             'sanziman': isTiny ? 'Ş.' : isVerySmall ? 'Şanz.' : isDesktop ? 'Şanz.' : 'Şanzıman',
             'km': 'KM',
@@ -189,6 +199,56 @@
         };
         
         return headers[colKey] || colKey;
+    }
+
+    /** Stok listesi: taşıt tipi tam metin (Excel/yazdırma da aynı kaynaktan üretilir) */
+    function getStokTasitTipiDisplayLabel(vehicle) {
+        var rawT = (vehicle && (vehicle.vehicleType || vehicle.tip) || '').trim();
+        var keyT = rawT.toLowerCase();
+        if (!keyT) return '-';
+        if (typeof window.getVehicleTypeLabel === 'function') return window.getVehicleTypeLabel(keyT);
+        var labs = { otomobil: 'Otomobil / SUV', minivan: 'Küçük Ticari', kamyon: 'Büyük Ticari' };
+        return labs[keyT] || rawT;
+    }
+
+    function getStokTasitTipiKind(vehicle) {
+        var t = String(vehicle && (vehicle.vehicleType || vehicle.tip) || '').trim().toLowerCase();
+        if (t === 'otomobil') return 'otomobil';
+        if (t === 'minivan') return 'minivan';
+        if (t === 'kamyon') return 'kamyon';
+        return 'diger';
+    }
+
+    function getStokTasitTipiIconSvg(kind) {
+        var a = 'width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="stok-tasit-tipi-svg" aria-hidden="true" focusable="false"';
+        if (kind === 'otomobil') {
+            return '<svg ' + a + '><path d="M4 15h16l-1.5-4.5h-13L4 15z"/><path d="M4 15v2h2.5v-2H4zm13.5 0v2H20v-2h-2.5z"/><circle cx="8" cy="15" r="1.3" fill="currentColor" stroke="none"/><circle cx="16" cy="15" r="1.3" fill="currentColor" stroke="none"/><path d="M7 10.5h10"/></svg>';
+        }
+        if (kind === 'minivan') {
+            return '<svg ' + a + '><path d="M4 14h16V9l-2.5-3h-9L4 9v5z"/><path d="M4 14v3h2v-3H4zm14 0v3h2v-3h-2z"/><circle cx="8" cy="14" r="1.3" fill="currentColor" stroke="none"/><circle cx="16" cy="14" r="1.3" fill="currentColor" stroke="none"/><path d="M6 9h6"/></svg>';
+        }
+        if (kind === 'kamyon') {
+            return '<svg ' + a + '><path d="M2 14h12V8H2v6z"/><path d="M14 11h5l3 3v3h-8v-6z"/><circle cx="6" cy="14" r="1.3" fill="currentColor" stroke="none"/><circle cx="18" cy="14" r="1.3" fill="currentColor" stroke="none"/><path d="M4 8V6h8v2"/></svg>';
+        }
+        return '<svg ' + a + '><circle cx="12" cy="12" r="7"/><path d="M12 8v4l2.5 2.5"/></svg>';
+    }
+
+    function stokEscapeAttr(s) {
+        return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+    }
+
+    /** Mobil stok satırı hücresi: simge + title tam metin */
+    function getStokTasitTipiMobileCellHtml(vehicle, label) {
+        if (!label || label === '-') return escapeHtml('-');
+        var kind = getStokTasitTipiKind(vehicle);
+        var t = stokEscapeAttr(label);
+        return '<span class="stok-tasit-tipi-wrap" title="' + t + '">' + getStokTasitTipiIconSvg(kind) + '</span>';
+    }
+
+    /** Mobil sütun başlığı: tek genel simge (tam açıklama title) */
+    function getStokTasitTipiHeaderIconHtml() {
+        var a = 'width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"';
+        return '<span class="stok-header-text stok-header-text--tasit-tip-icon" title="Taşıt Tipi"><svg ' + a + ' class="stok-tasit-tipi-col-head-svg"><path d="M6 16h15l-1.2-3.5H7.2L6 16z"/><path d="M6 16v1.5h2V16H6zm11 0v1.5h2V16h-2z"/><circle cx="9" cy="16" r="1" fill="currentColor" stroke="none"/><circle cx="18" cy="16" r="1" fill="currentColor" stroke="none"/></svg></span>';
     }
 
     // Şube Grid Render
@@ -591,22 +651,21 @@
     }
 
     // Sütun genişliklerini hesapla (key bazlı: sürükle-bırak sonrası genişlik doğru sütunla kalır)
-    // Masaüstü dengeleme: No dar, Marka/Model kontrollü, KM daha geniş
-    // 7 sütun: fr ile sığar; 8+ sütun: sabit px
+    // Temel kolonlar: fr ile sığar; bir veya daha fazla DETAY kolon seçiliyse: sabit px
     function getColumnWidths(allColumns) {
-        const hasDetail = allColumns.length > 7;
+        const hasDetail = allColumns.some(col => STOK_DETAIL_COLUMNS.indexOf(col.key) !== -1);
         const isMobile = window.innerWidth <= 640;
 
         if (hasDetail) {
             // 8+ sütun: sabit px. Masaüstünde Şube 4px genişler; denge için Marka 4px daralır.
             const basePx = isMobile
                 ? {
-                    'sira': 26, 'sube': 81, 'yil': 41, 'marka': 134,
-                    'plaka': 68, 'sanziman': 64, 'km': 60
+                    'sira': 26, 'sube': 81, 'yil': 41, 'marka': 128, 'tasitTipi': 46,
+                    'plaka': 68, 'sanziman': 60, 'km': 56
                 }
                 : {
-                    'sira': 24, 'sube': 84, 'yil': 41, 'marka': 116,
-                    'plaka': 68, 'sanziman': 67, 'km': 76
+                    'sira': 24, 'sube': 84, 'yil': 41, 'marka': 104, 'tasitTipi': 78,
+                    'plaka': 68, 'sanziman': 64, 'km': 72
                 };
             const detailPx = {
                 'sigorta': 72, 'kasko': 72, 'kaskoDegeri': 72, 'muayene': 72, 'kredi': 56,
@@ -619,17 +678,19 @@
             }).join(' ');
         }
 
-        // Sadece temel: mobil/masaüstü için ayrı orantı seti
+        // Sadece temel: mobil/masaüstü için ayrı orantı seti (8 temel + detay ise üst blokta sabit px)
         const columnWidths = isMobile
             ? {
                 'sira': 'minmax(26px, 0.3fr)', 'sube': 'minmax(47px, 1.2fr)',
-                'yil': 'minmax(40px, 0.6fr)', 'marka': 'minmax(58px, 1.8fr)',
+                'yil': 'minmax(40px, 0.6fr)', 'marka': 'minmax(52px, 1.55fr)',
+                'tasitTipi': 'minmax(40px, 0.62fr)',
                 'plaka': 'minmax(56px, 1fr)', 'sanziman': 'minmax(59px, 0.95fr)',
                 'km': 'minmax(48px, 1fr)'
             }
             : {
                 'sira': 'minmax(22px, 0.2fr)', 'sube': 'minmax(64px, 1.02fr)',
-                'yil': 'minmax(40px, 0.55fr)', 'marka': 'minmax(72px, 1.81fr)',
+                'yil': 'minmax(40px, 0.55fr)', 'marka': 'minmax(62px, 1.52fr)',
+                'tasitTipi': 'minmax(72px, 0.92fr)',
                 'plaka': 'minmax(60px, 1fr)', 'sanziman': 'minmax(60px, 0.9fr)',
                 'km': 'minmax(64px, 1.22fr)'
             };
@@ -643,6 +704,7 @@
             { key: 'sube', sortable: true },
             { key: 'yil', sortable: true },
             { key: 'marka', sortable: true },
+            { key: 'tasitTipi', sortable: true },
             { key: 'plaka', sortable: true },
             { key: 'sanziman', sortable: true },
             { key: 'km', sortable: true }
@@ -708,6 +770,9 @@
             const draggableAttr = isMobileStokViewport() ? '' : 'draggable="true"';
             
             if (col.sortable) {
+                const headerLabel = (col.key === 'tasitTipi' && isMobileStokViewport())
+                    ? getStokTasitTipiHeaderIconHtml()
+                    : `<span class="stok-header-text">${getColumnHeaderText(col.key)}</span>`;
                 return `
                     <th class="stok-list-header-cell stok-sortable-header" 
                         data-col="${col.key}"
@@ -719,7 +784,7 @@
                         ondragleave="handleColumnHeaderDragLeave(event)"
                         ondragend="handleColumnHeaderDragEnd(event)"
                         onclick="sortStokList('${col.key}')">
-                        <span class="stok-header-text">${getColumnHeaderText(col.key)}</span>
+                        ${headerLabel}
                         <span class="stok-sort-icon ${sortClass}">${sortIcon}</span>
                     </th>
                 `;
@@ -769,6 +834,7 @@
             'sube': toTitleCase(branchName),
             'yil': vehicle.year || '-',
             'marka': formatBrandModel(vehicle.brandModel || '-'),
+            'tasitTipi': getStokTasitTipiDisplayLabel(vehicle),
             'plaka': formatPlaka(vehicle.plate || '-'),
             'sanziman': vehicle.transmission === 'manuel' ? 'Manuel' : vehicle.transmission === 'otomatik' ? 'Otomatik' : '-',
             'km': (function() {
@@ -854,7 +920,13 @@
 
         return `<tr class="stok-list-row" style="grid-template-columns: ${gridTemplateColumns}">${cells.map(cell => {
             const cellClass = ['stok-list-cell', cell.warningClass || ''].filter(Boolean).join(' ');
-            return `<td class="${cellClass}" data-col="${cell.key}">${escapeHtml(cell.value)}</td>`;
+            var inner;
+            if (cell.key === 'tasitTipi' && isMobileStokViewport()) {
+                inner = getStokTasitTipiMobileCellHtml(vehicle, String(cell.value));
+            } else {
+                inner = escapeHtml(String(cell.value));
+            }
+            return `<td class="${cellClass}" data-col="${cell.key}">${inner}</td>`;
         }).join('')}</tr>`;
     }
 
@@ -896,6 +968,10 @@
                 // A-Z (asc), Z-A (desc)
                 const aVal = (a.brandModel || '').toLowerCase();
                 const bVal = (b.brandModel || '').toLowerCase();
+                return direction === 'asc' ? aVal.localeCompare(bVal, 'tr') : bVal.localeCompare(aVal, 'tr');
+            } else if (columnKey === 'tasitTipi') {
+                const aVal = String((a.vehicleType || a.tip || '')).toLowerCase();
+                const bVal = String((b.vehicleType || b.tip || '')).toLowerCase();
                 return direction === 'asc' ? aVal.localeCompare(bVal, 'tr') : bVal.localeCompare(aVal, 'tr');
             } else if (columnKey === 'plaka') {
                 // A-Z (asc), Z-A (desc)
@@ -1062,7 +1138,7 @@
     // Sütun başlığından sürükle başlatıldığında
     window.handleColumnHeaderDragStart = function(event, columnKey) {
         const detailColumns = ['sigorta', 'kasko', 'kaskoDegeri', 'muayene', 'kredi', 'lastik', 'utts', 'takip', 'tramer', 'boya', 'kullanici', 'tescil'];
-        const baseColumns = ['sira', 'sube', 'yil', 'marka', 'plaka', 'sanziman', 'km'];
+        const baseColumns = STOK_BASE_COLUMNS.slice();
         
         // Detay sütunları için aktif kontrolü
         if (detailColumns.includes(columnKey) && !stokActiveColumns[columnKey]) {
@@ -1098,7 +1174,7 @@
         if (draggedColumnKey) {
             const targetKey = event.currentTarget.dataset.col;
             const detailColumns = ['sigorta', 'kasko', 'kaskoDegeri', 'muayene', 'kredi', 'lastik', 'utts', 'takip', 'tramer', 'boya', 'kullanici', 'tescil'];
-            const baseColumns = ['sira', 'sube', 'yil', 'marka', 'plaka', 'sanziman', 'km'];
+            const baseColumns = STOK_BASE_COLUMNS.slice();
             
             if (targetKey && targetKey !== draggedColumnKey) {
                 // Temel sütunlar her zaman kabul edilir
@@ -1132,7 +1208,7 @@
         }
 
         const detailColumns = ['sigorta', 'kasko', 'kaskoDegeri', 'muayene', 'kredi', 'lastik', 'utts', 'takip', 'tramer', 'boya', 'kullanici', 'tescil'];
-        const baseColumns = ['sira', 'sube', 'yil', 'marka', 'plaka', 'sanziman', 'km'];
+        const baseColumns = STOK_BASE_COLUMNS.slice();
         
         const isDraggedBase = baseColumns.includes(draggedColumnKey);
         const isTargetBase = baseColumns.includes(targetColumnKey);
@@ -1665,6 +1741,17 @@
                 case 'sube': value = toTitleCase(vehicle.branchId ? (getBranches().find(b => b.id === vehicle.branchId)?.name || '-') : '-'); break;
                 case 'yil': value = vehicle.year || '-'; break;
                 case 'marka': value = formatBrandModel(vehicle.brandModel || '-'); break;
+                case 'tasitTipi': {
+                    var rawT = (vehicle.vehicleType || vehicle.tip || '').trim();
+                    var keyT = rawT.toLowerCase();
+                    if (!keyT) value = '-';
+                    else if (typeof window.getVehicleTypeLabel === 'function') value = window.getVehicleTypeLabel(keyT);
+                    else {
+                        var labs = { otomobil: 'Otomobil / SUV', minivan: 'Küçük Ticari', kamyon: 'Büyük Ticari' };
+                        value = labs[keyT] || rawT;
+                    }
+                    break;
+                }
                 case 'plaka': value = formatPlaka(vehicle.plate || '-'); break;
                 case 'sanziman': value = vehicle.transmission === 'manuel' ? 'Manuel' : vehicle.transmission === 'otomatik' ? 'Otomatik' : '-'; break;
                 case 'km': {
@@ -1952,13 +2039,14 @@
     window.handleStokSearch = (typeof window.debounce === 'function') ? window.debounce(handleStokSearchImpl, 200) : handleStokSearchImpl;
 
     // Yazdır – Excel ile aynı veriyi tablo olarak yazdırır (ekran görüntüsü değil)
-    const stokPrintHeaders = { sira:'No.', sube:'Şube', yil:'Yıl', marka:'Marka/Mod.', plaka:'Plaka', sanziman:'Şanz', km:'KM', sigorta:'Sig. bit.', kasko:'Kas. bit.', kaskoDegeri:'Kas. değ.', muayene:'Muay.', egzozMuayene:'Egzoz', kredi:'Hak M.', lastik:'Lastik', utts:'UTTS', takip:'Takip', tramer:'Tramer', boya:'Boya', kullanici:'Kull.', tescil:'Tescil' };
+    const stokPrintHeaders = { sira:'No.', sube:'Şube', yil:'Yıl', marka:'Marka/Mod.', tasitTipi:'Taş. tip.', plaka:'Plaka', sanziman:'Şanz', km:'KM', sigorta:'Sig. bit.', kasko:'Kas. bit.', kaskoDegeri:'Kas. değ.', muayene:'Muay.', egzozMuayene:'Egzoz', kredi:'Hak M.', lastik:'Lastik', utts:'UTTS', takip:'Takip', tramer:'Tramer', boya:'Boya', kullanici:'Kull.', tescil:'Tescil' };
     /* Yazdır: marka daha geniş (tek satıra yakın); plaka/egz. kısa içerik */
     const stokPrintColumnWeights = {
         sira: 3,
         yil: 5,
         plaka: 5,
-        marka: 19,
+        marka: 17,
+        tasitTipi: 10,
         sanziman: 4,
         km: 5,
         sube: 6,
@@ -1983,6 +2071,7 @@
         sube: 22,
         yil: 9,
         marka: 40,
+        tasitTipi: 22,
         plaka: 12,
         sanziman: 12,
         km: 14,
