@@ -738,6 +738,22 @@ color: #999;
 color: var(--theme-color);
 }
 
+/* Stok liste: çerçeveye yatay/dikey ~1px; sütun aralığı sıkı */
+#stok-list-container .stok-list-header-row,
+#stok-list-container .stok-list-row {
+  gap: 2px;
+}
+#stok-list-container .stok-list-header-row {
+  padding: 5px 1px 4px 1px;
+}
+#stok-list-container .stok-list-row {
+  padding: 1px !important;
+}
+#stok-list-container .stok-list-header-cell,
+#stok-list-container .stok-list-cell {
+  padding: 1px !important;
+}
+
 /* Taşıtlar listesi formatı: grid, gap */
 .stok-list-row {
 display: grid;
