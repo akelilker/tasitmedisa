@@ -2634,59 +2634,170 @@
   }
 }
 
-/* ---------- Bu Ay Yapılacaklar: işlem kart satırları ---------- */
-#monthly-todo-modal .monthly-todo-modal-body {
-  min-height: 0;
+/* ---------- Bu Ay Yapılacaklar: kompakt tablo + sabit başlık + iç liste scroll ---------- */
+#monthly-todo-modal {
+  --monthly-todo-grid-cols: 72px minmax(95px, 1.4fr) minmax(85px, 1fr) 70px 72px 56px;
+  --monthly-todo-col-gap: 6px;
 }
+@media (min-width: 641px) {
+  #monthly-todo-modal {
+    --monthly-todo-grid-cols: 96px minmax(150px, 1.6fr) minmax(120px, 1.2fr) 110px 90px 80px;
+    --monthly-todo-col-gap: 10px;
+  }
+}
+
+#monthly-todo-modal .monthly-todo-modal-body {
+  box-sizing: border-box;
+  min-height: 0;
+  flex: 1 1 auto !important;
+}
+
+#monthly-todo-modal .monthly-todo-modal-body:has(.monthly-todo-sheet) {
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  overscroll-behavior-x: contain;
+  padding: 12px 12px 16px !important;
+}
+
 /* X: tıklanabilirlik + üst katman (başlık h2 pointer-events:none ile uyumlu) */
 #monthly-todo-modal .modal-header .monthly-todo-modal-close {
   z-index: 40;
   pointer-events: auto;
 }
-#monthly-todo-modal .monthly-todo-list {
+
+#monthly-todo-modal .monthly-todo-sheet {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding: 0 2px;
+  flex: 1 1 auto;
+  min-height: 0;
 }
+
+#monthly-todo-modal .monthly-todo-table-outer {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+}
+
+#monthly-todo-modal .monthly-todo-table-inner {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  box-sizing: border-box;
+}
+
+@media (max-width: 640px) {
+  #monthly-todo-modal .monthly-todo-table-inner {
+    min-width: 452px;
+  }
+}
+
+#monthly-todo-modal .monthly-todo-col-header,
 #monthly-todo-modal .monthly-todo-task-row {
   display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  row-gap: 8px;
-  column-gap: 0;
-  align-items: start;
+  grid-template-columns: var(--monthly-todo-grid-cols);
+  column-gap: var(--monthly-todo-col-gap);
+  align-items: center;
+}
+
+#monthly-todo-modal .monthly-todo-col-header {
+  flex-shrink: 0;
+  box-sizing: border-box;
+  padding: 4px 0 8px;
+  margin-bottom: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+#monthly-todo-modal .monthly-todo-col-h {
+  margin: 0;
+  padding: 0;
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1.25;
+  color: #ffffff;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+@media (min-width: 641px) {
+  #monthly-todo-modal .monthly-todo-col-h {
+    font-size: 11px;
+    letter-spacing: 0.06em;
+  }
+}
+
+#monthly-todo-modal .monthly-todo-list-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  touch-action: pan-y !important;
+}
+
+#monthly-todo-modal .monthly-todo-task-row {
+  row-gap: 0;
   width: 100%;
   margin: 0;
-  padding: 10px 12px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 10px;
-  background: rgba(8, 13, 22, 0.65);
+  padding: 6px 8px;
+  border: none;
+  border-radius: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  background: transparent;
   color: #a0aec0;
   cursor: pointer;
   text-align: left;
-  border-left-width: 4px;
+  border-left-width: 2px;
   border-left-style: solid;
   border-left-color: transparent;
   font-family: inherit;
-  transition: border-color 0.15s ease, background 0.15s ease;
+  transition: background 0.12s ease, border-bottom-color 0.12s ease;
   box-sizing: border-box;
 }
+
+#monthly-todo-modal .monthly-todo-task-row:last-child {
+  border-bottom-color: transparent;
+}
+
 #monthly-todo-modal .monthly-todo-task-row:hover {
-  border-color: rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.035);
 }
+
 #monthly-todo-modal .monthly-todo-task-row--past {
-  border-left-color: rgba(var(--theme-color-rgb), 0.85);
+  border-left-color: rgba(var(--theme-color-rgb), 0.9);
 }
+
 #monthly-todo-modal .monthly-todo-task-row--upcoming {
-  border-left-color: rgba(var(--orange-warn-rgb), 0.85);
+  border-left-color: rgba(var(--orange-warn-rgb), 0.9);
 }
+
 #monthly-todo-modal .monthly-todo-cell {
-  font-size: 13px;
-  line-height: 1.4;
+  font-size: 12px;
+  line-height: 1.3;
 }
+
+@media (min-width: 641px) {
+  #monthly-todo-modal .monthly-todo-cell {
+    font-size: 13px;
+    line-height: 1.35;
+  }
+}
+
 #monthly-todo-modal .monthly-todo-task-row > .monthly-todo-cell {
   min-width: 0;
 }
+
 #monthly-todo-modal .monthly-todo-plate {
   font-weight: 700;
   color: #ffffff;
@@ -2695,71 +2806,58 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
 #monthly-todo-modal .monthly-todo-brand,
 #monthly-todo-modal .monthly-todo-user {
+  display: block;
   color: #a0aec0;
-  white-space: normal;
-  overflow-wrap: normal;
-  word-break: normal;
   overflow: hidden;
+  word-break: break-word;
 }
+
 #monthly-todo-modal .monthly-todo-brand {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  align-items: flex-start;
-  box-sizing: border-box;
-  max-height: calc(1.4em * 2);
-}
-#monthly-todo-modal .monthly-todo-user {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  align-items: flex-start;
-  box-sizing: border-box;
-  max-height: calc(1.4em * 3);
-}
-#monthly-todo-modal .monthly-todo-user .monthly-todo-inline-label {
-  margin-right: 0;
-}
-#monthly-todo-modal .monthly-todo-type {
-  font-weight: 600;
-  color: #e2e8f0;
-  overflow: hidden;
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   line-clamp: 2;
   white-space: normal;
-  overflow-wrap: normal;
-  word-break: normal;
 }
-#monthly-todo-modal .monthly-todo-enddate,
-#monthly-todo-modal .monthly-todo-days {
+
+#monthly-todo-modal .monthly-todo-user {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  white-space: normal;
+}
+
+#monthly-todo-modal .monthly-todo-type {
+  font-weight: 600;
+  color: #e2e8f0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-#monthly-todo-modal .monthly-todo-inline-label {
-  font-size: 11px;
-  font-weight: 600;
-  color: #718096;
-  margin-right: 4px;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+
+#monthly-todo-modal .monthly-todo-enddate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #a0aec0;
 }
+
+#monthly-todo-modal .monthly-todo-days {
+  overflow: hidden;
+  white-space: nowrap;
+  color: #a0aec0;
+}
+
 #monthly-todo-modal .monthly-todo-days-label {
   color: #e2e8f0;
   font-weight: 600;
 }
+
 #monthly-todo-modal .monthly-todo-days-label--past {
   color: rgba(var(--theme-color-rgb), 1);
 }
-@media (min-width: 641px) {
-  #monthly-todo-modal .monthly-todo-task-row {
-    grid-template-columns: 90px minmax(150px, 1.6fr) minmax(120px, 1.2fr) minmax(115px, 1fr) 95px 90px;
-    column-gap: 10px;
-    row-gap: 0;
-    align-items: center;
-  }
-}
+
