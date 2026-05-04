@@ -613,17 +613,25 @@
         restoreStokListScrollState(listContainer, previousScrollState);
     }
 
-    // Marka ve şube hücreleri: önce satır kır, yine taşarsa fontu kontrollü küçült.
+    // Marka, şube, taşıt tipi: satır kır; yine taşarsa en fazla ~1 punto küçült (masaüstü)
     function adjustStokResponsiveCellFontSizes() {
         const listContainer = document.getElementById('stok-list-container');
         if (!listContainer) return;
-        const responsiveCells = listContainer.querySelectorAll('.stok-list-cell[data-col="marka"], .stok-list-cell[data-col="sube"]');
+        const isDesk = window.innerWidth > 640;
+        const sel = isDesk
+            ? '.stok-list-cell[data-col="marka"], .stok-list-cell[data-col="sube"], .stok-list-cell[data-col="tasitTipi"]'
+            : '.stok-list-cell[data-col="marka"], .stok-list-cell[data-col="sube"]';
+        const responsiveCells = listContainer.querySelectorAll(sel);
         requestAnimationFrame(function() {
             responsiveCells.forEach(function(cell) {
                 if (cell.offsetHeight === 0) return;
                 cell.style.fontSize = '';
                 var baseFontSize = parseFloat(window.getComputedStyle(cell).fontSize) || 12;
-                var minFontSize = Math.max(baseFontSize - 1.5, cell.dataset.col === 'sube' ? 10.5 : 11);
+                /* 1 CSS pt ≒ 96/72 px (~1.333px) — en fazla bu kadar punto küçült */
+                var onePtPx = 96 / 72;
+                var minFontSize = isDesk
+                    ? Math.max(baseFontSize - onePtPx, cell.dataset.col === 'sube' ? 10 : 11)
+                    : Math.max(baseFontSize - 1.5, cell.dataset.col === 'sube' ? 10.5 : 11);
                 var current = baseFontSize;
                 while ((cell.scrollHeight > cell.offsetHeight || cell.scrollWidth > cell.clientWidth) && current > minFontSize) {
                     current = Math.max(minFontSize, current - 0.5);
@@ -637,12 +645,12 @@
             window._stokResponsiveCellResize = true;
             var onResize = window.debounce ? window.debounce(function () {
                 const container = document.getElementById('stok-list-container');
-                if (container && container.querySelector('.stok-list-cell[data-col="marka"], .stok-list-cell[data-col="sube"]')) {
+                if (container && container.querySelector('.stok-list-cell[data-col="marka"], .stok-list-cell[data-col="sube"], .stok-list-cell[data-col="tasitTipi"]')) {
                     adjustStokResponsiveCellFontSizes();
                 }
             }, 100) : function () {
                 const container = document.getElementById('stok-list-container');
-                if (container && container.querySelector('.stok-list-cell[data-col="marka"], .stok-list-cell[data-col="sube"]')) {
+                if (container && container.querySelector('.stok-list-cell[data-col="marka"], .stok-list-cell[data-col="sube"], .stok-list-cell[data-col="tasitTipi"]')) {
                     adjustStokResponsiveCellFontSizes();
                 }
             };
@@ -664,8 +672,14 @@
                     'plaka': 68, 'sanziman': 60, 'km': 56
                 }
                 : {
-                    'sira': 24, 'sube': 84, 'yil': 41, 'marka': 104, 'tasitTipi': 78,
-                    'plaka': 68, 'sanziman': 64, 'km': 72
+                    'sira': 22,
+                    'sube': 82,
+                    'yil': 38,
+                    'marka': 111,
+                    'tasitTipi': 78,
+                    'plaka': 68,
+                    'sanziman': 64,
+                    'km': 72
                 };
             const detailPx = {
                 'sigorta': 72, 'kasko': 72, 'kaskoDegeri': 72, 'muayene': 72, 'kredi': 56,
@@ -688,10 +702,13 @@
                 'km': 'minmax(48px, 1fr)'
             }
             : {
-                'sira': 'minmax(22px, 0.2fr)', 'sube': 'minmax(64px, 1.02fr)',
-                'yil': 'minmax(40px, 0.55fr)', 'marka': 'minmax(62px, 1.52fr)',
-                'tasitTipi': 'minmax(72px, 0.92fr)',
-                'plaka': 'minmax(60px, 1fr)', 'sanziman': 'minmax(60px, 0.9fr)',
+                'sira': 'minmax(20px, 0.17fr)',
+                'sube': 'minmax(62px, 0.95fr)',
+                'yil': 'minmax(37px, 0.49fr)',
+                'marka': 'minmax(62px, 1.74fr)',
+                'tasitTipi': 'minmax(72px, 0.88fr)',
+                'plaka': 'minmax(60px, 1fr)',
+                'sanziman': 'minmax(60px, 0.9fr)',
                 'km': 'minmax(64px, 1.22fr)'
             };
         return allColumns.map(col => columnWidths[col.key] || '80px').join(' ');
