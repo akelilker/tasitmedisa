@@ -137,7 +137,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     height: 16px;
     padding: 0 4px;
     border-radius: 999px;
-    background: rgba(var(--theme-color-rgb), 0.95);
+    background: rgba(170, 18, 28, 0.92);
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.45);
     color: #ffffff;
     font-size: 10px;
     font-weight: 700;
