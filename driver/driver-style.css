@@ -2998,7 +2998,9 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   overscroll-behavior-x: none;
 }
 
-#history-modal .modal-container::before {
+/* Üst mikro-highlight: Geçmiş + Talep modalı (kayıt modalıyla aynı üst kenar birleşimi, köşede “erken kesilme” hissini düzeltir) */
+#history-modal .modal-container::before,
+#driver-feedback-modal .modal-container::before {
   content: '';
   position: absolute;
   top: 0;
@@ -4739,9 +4741,10 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     overflow: hidden !important;
     overscroll-behavior: none !important;
   }
-  /* Geçmiş Kayıtlar + Düzeltme Talebi: modal–footer arası 10px; koyu dolgu (box-shadow) köşeler dahil kapatsın */
+  /* Geçmiş Kayıtlar + Düzeltme Talebi + Talep/Şikayet: modal–footer arası 10px; koyu dolgu (box-shadow) köşeler dahil kapatsın */
   #history-modal.driver-modal,
-  #edit-request-modal.driver-modal {
+  #edit-request-modal.driver-modal,
+  #driver-feedback-modal.driver-modal {
     bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
     box-shadow: none !important;
   }
@@ -4948,6 +4951,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   #edit-request-modal .modal-body,
   #driver-event-menu-modal .modal-body,
   #driver-password-modal .modal-body,
+  #driver-feedback-modal .modal-body,
   #driver-anahtar-modal .modal-body,
   #driver-lastik-modal .modal-body,
   #driver-utts-modal .modal-body,
@@ -5997,41 +6001,50 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     bottom: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0) + 1px) !important;
   }
 
-  /* History/Edit modal acikken footer-gap korunur (genel kurali ezer). */
+  /* History/Edit/Şifre/Talep modal açıkken footer-gap korunur (genel kuralı ezer). */
   body.dashboard-page:has(#history-modal.driver-modal.show) .driver-dashboard-container::before,
   body.dashboard-page:has(#edit-request-modal.driver-modal.show) .driver-dashboard-container::before,
   body.dashboard-page:has(#driver-password-modal.driver-modal.show) .driver-dashboard-container::before,
+  body.dashboard-page:has(#driver-feedback-modal.driver-modal.show) .driver-dashboard-container::before,
   body.login-page:has(#history-modal.driver-modal.show) .driver-dashboard-container::before,
   body.login-page:has(#edit-request-modal.driver-modal.show) .driver-dashboard-container::before,
-  body.login-page:has(#driver-password-modal.driver-modal.show) .driver-dashboard-container::before {
+  body.login-page:has(#driver-password-modal.driver-modal.show) .driver-dashboard-container::before,
+  body.login-page:has(#driver-feedback-modal.driver-modal.show) .driver-dashboard-container::before {
     bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
   }
 
   @supports not selector(body:has(*)) {
     body.dashboard-page.driver-history-or-edit-modal-open .driver-dashboard-container::before,
-    body.login-page.driver-history-or-edit-modal-open .driver-dashboard-container::before {
+    body.login-page.driver-history-or-edit-modal-open .driver-dashboard-container::before,
+    body.dashboard-page.driver-feedback-modal-open .driver-dashboard-container::before,
+    body.login-page.driver-feedback-modal-open .driver-dashboard-container::before {
       bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
     }
   }
 
-  /* Geçmiş/Düzeltme modal açıkken footer-gap üstündeki yapay koyu şerit kapanır:
+  /* Geçmiş/Düzeltme/Talep modal açıkken footer-gap üstündeki yapay koyu şerit kapanır:
      footer glow görünür, modal–footer arası boşluk net kalır. */
   body.dashboard-page:has(#history-modal.driver-modal.show)::after,
   body.dashboard-page:has(#edit-request-modal.driver-modal.show)::after,
+  body.dashboard-page:has(#driver-feedback-modal.driver-modal.show)::after,
   body.login-page:has(#history-modal.driver-modal.show)::after,
-  body.login-page:has(#edit-request-modal.driver-modal.show)::after {
+  body.login-page:has(#edit-request-modal.driver-modal.show)::after,
+  body.login-page:has(#driver-feedback-modal.driver-modal.show)::after {
     display: none !important;
   }
   @supports not selector(body:has(*)) {
     body.dashboard-page.driver-history-or-edit-modal-open::after,
-    body.login-page.driver-history-or-edit-modal-open::after {
+    body.login-page.driver-history-or-edit-modal-open::after,
+    body.dashboard-page.driver-feedback-modal-open::after,
+    body.login-page.driver-feedback-modal-open::after {
       display: none !important;
     }
   }
 
-  /* Geçmiş/Düzeltme modalı için gap değeri show durumunda da kilitli kalsın. */
+  /* Geçmiş/Düzeltme/Talep modalı için gap değeri show durumunda da kilitli kalsın. */
   #history-modal.driver-modal.show,
-  #edit-request-modal.driver-modal.show {
+  #edit-request-modal.driver-modal.show,
+  #driver-feedback-modal.driver-modal.show {
     bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
   }
 
@@ -6254,6 +6267,8 @@ body.dashboard-page.driver-history-or-edit-modal-open .driver-left-panel-content
 body.dashboard-page:has(#history-modal.driver-modal.show) .driver-dashboard-container::before,
 body.dashboard-page:has(#edit-request-modal.driver-modal.show) .driver-dashboard-container::before,
 body.dashboard-page:has(#driver-password-modal.driver-modal.show) .driver-dashboard-container::before,
-body.dashboard-page.driver-history-or-edit-modal-open .driver-dashboard-container::before {
+body.dashboard-page:has(#driver-feedback-modal.driver-modal.show) .driver-dashboard-container::before,
+body.dashboard-page.driver-history-or-edit-modal-open .driver-dashboard-container::before,
+body.dashboard-page.driver-feedback-modal-open .driver-dashboard-container::before {
     bottom: calc(var(--app-footer-real-height) + var(--app-footer-gap) + env(safe-area-inset-bottom, 0)) !important;
 }
