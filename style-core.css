@@ -825,7 +825,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-
   box-shadow: 0 2px 10px rgba(var(--theme-color-rgb), 0.3);  /* Havada: kırmızı glow */
 }
 
-/* İKON SATIRI – sol/orta/sağ: logo alanıyla hizalı; takvim+bildirim+ayarlar solda sıralı (ana sayfa) */
+/* İKON SATIRI – sol/orta/sağ: PWA ortada; bildirim+ayarlar+takvim sağda gruplanır */
 .icons-row {
   display: flex;
   align-items: center;
@@ -875,11 +875,11 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-
   display: block;
 }
 
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .icons-row-right {
+.icons-row-right {
   flex: 1;
   min-width: 0;
   display: flex;
-  justify-content: flex-start;
+  justify-content: flex-end;
   align-items: center;
   gap: 16px;
   overflow: visible;
