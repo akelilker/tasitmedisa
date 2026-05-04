@@ -3823,7 +3823,7 @@
     html += '<div class="monthly-todo-table-inner">';
     html += '<div class="monthly-todo-col-header" aria-hidden="true">';
     html += '<span class="monthly-todo-col-h">PLAKA</span>';
-    html += '<span class="monthly-todo-col-h">ARAÇ / KULLANICI</span>';
+    html += '<span class="monthly-todo-col-h">TAŞIT / KULLANICI</span>';
     html += '<span class="monthly-todo-col-h">İŞLEM</span>';
     html += '</div>';
     html += '<div class="monthly-todo-list-scroll" role="list">';

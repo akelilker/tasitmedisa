@@ -2646,7 +2646,7 @@
   flex-direction: column !important;
   overflow: hidden !important;
   overscroll-behavior-x: contain;
-  padding: 12px 12px 16px !important;
+  padding: 12px 12px 18px !important;
 }
 
 /* X: tıklanabilirlik + üst katman (başlık h2 pointer-events:none ile uyumlu) */
@@ -2759,6 +2759,8 @@
   overscroll-behavior-y: contain;
   -webkit-overflow-scrolling: touch;
   touch-action: pan-y !important;
+  padding-bottom: 16px;
+  box-sizing: border-box;
 }
 
 #monthly-todo-modal .monthly-todo-scroll-shell,
@@ -2797,11 +2799,11 @@
 }
 
 #monthly-todo-modal .monthly-todo-list-scroll .monthly-todo-task-row:nth-child(odd) {
-  background: rgba(255, 255, 255, 0.018);
+  background: rgba(255, 255, 255, 0.03);
 }
 
 #monthly-todo-modal .monthly-todo-list-scroll .monthly-todo-task-row:nth-child(even) {
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(255, 255, 255, 0.062);
 }
 
 #monthly-todo-modal .monthly-todo-task-row:last-child {
@@ -2809,7 +2811,7 @@
 }
 
 #monthly-todo-modal .monthly-todo-list-scroll .monthly-todo-task-row:hover {
-  background: rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.095);
 }
 
 #monthly-todo-modal .monthly-todo-task-row--past {
@@ -2861,9 +2863,14 @@
 }
 
 #monthly-todo-modal .monthly-todo-plate {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
   font-weight: 700;
   color: #ffffff;
   letter-spacing: 0.02em;
+  text-align: center;
+  justify-self: center;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -2872,7 +2879,6 @@
 #monthly-todo-modal .monthly-todo-middle .monthly-todo-brand,
 #monthly-todo-modal .monthly-todo-middle .monthly-todo-user {
   display: block;
-  color: #a0aec0;
   overflow: hidden;
   word-break: normal;
   overflow-wrap: break-word;
@@ -2884,6 +2890,7 @@
   -webkit-line-clamp: 2;
   line-clamp: 2;
   white-space: normal;
+  color: #ffffff;
 }
 
 #monthly-todo-modal .monthly-todo-middle .monthly-todo-user {
@@ -2892,6 +2899,7 @@
   -webkit-line-clamp: 2;
   line-clamp: 2;
   white-space: normal;
+  color: #a0aec0;
 }
 
 #monthly-todo-modal .monthly-todo-type {
