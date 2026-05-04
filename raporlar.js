@@ -34,6 +34,18 @@
         return '-';
     }
 
+    /** Stok tablosu: ilk kelime ilk satırda, kalanı hemen alt satırda (marka/model okunabilirliği). */
+    function getStokMarkaCellInnerHtml(displayText) {
+        var t = String(displayText == null ? '' : displayText).trim();
+        if (t === '' || t === '-') return escapeHtml(t || '-');
+        var m = t.match(/^(\S+)\s+([\s\S]+)$/);
+        if (!m) return escapeHtml(t);
+        return '<span class="stok-marka-stack">' +
+            '<span class="stok-marka-brand">' + escapeHtml(m[1]) + '</span>' +
+            '<span class="stok-marka-model">' + escapeHtml(String(m[2]).trim()) + '</span>' +
+            '</span>';
+    }
+
     // Stok görünümü state (null: şube grid; 'all' / id: liste)
     let stokCurrentBranchId = null;
     let stokSortState = {}; // { columnKey: 'asc' | 'desc' | null }
@@ -681,15 +693,15 @@
             // 8+ sütun: sabit px. Masaüstünde Şube 4px genişler; denge için Marka 4px daralır.
             const basePx = isMobile
                 ? {
-                    'sira': 26, 'sube': 81, 'yil': 41, 'marka': 132, 'tasitTipi': 42,
+                    'sira': 26, 'sube': 81, 'yil': 41, 'marka': 144, 'tasitTipi': 30,
                     'plaka': 62, 'sanziman': 60, 'km': 56
                 }
                 : {
                     'sira': 22,
                     'sube': 82,
                     'yil': 38,
-                    'marka': 127,
-                    'tasitTipi': 60,
+                    'marka': 145,
+                    'tasitTipi': 42,
                     'plaka': 74,
                     'sanziman': 64,
                     'km': 72
@@ -709,8 +721,8 @@
         const columnWidths = isMobile
             ? {
                 'sira': 'minmax(26px, 0.3fr)', 'sube': 'minmax(47px, 1.2fr)',
-                'yil': 'minmax(40px, 0.6fr)',                 'marka': 'minmax(52px, 1.62fr)',
-                'tasitTipi': 'minmax(40px, 0.56fr)',
+                'yil': 'minmax(40px, 0.6fr)',                 'marka': 'minmax(52px, 1.92fr)',
+                'tasitTipi': 'minmax(30px, 0.34fr)',
                 'plaka': 'minmax(58px, 1.02fr)', 'sanziman': 'minmax(59px, 0.95fr)',
                 'km': 'minmax(48px, 1fr)'
             }
@@ -718,8 +730,8 @@
                 'sira': 'minmax(20px, 0.17fr)',
                 'sube': 'minmax(62px, 0.95fr)',
                 'yil': 'minmax(37px, 0.49fr)',
-                'marka': 'minmax(62px, 1.82fr)',
-                'tasitTipi': 'minmax(62px, 0.62fr)',
+                'marka': 'minmax(62px, 2.12fr)',
+                'tasitTipi': 'minmax(38px, 0.32fr)',
                 'plaka': 'minmax(68px, 1.04fr)',
                 'sanziman': 'minmax(60px, 0.9fr)',
                 'km': 'minmax(64px, 1.22fr)'
@@ -953,6 +965,10 @@
             var inner;
             if (cell.key === 'tasitTipi' && isMobileStokViewport()) {
                 inner = getStokTasitTipiMobileCellHtml(vehicle, String(cell.value));
+            } else if (cell.key === 'tasitTipi') {
+                inner = '<span class="stok-tasit-tipi-txt">' + escapeHtml(String(cell.value)) + '</span>';
+            } else if (cell.key === 'marka') {
+                inner = getStokMarkaCellInnerHtml(String(cell.value));
             } else {
                 inner = escapeHtml(String(cell.value));
             }
