@@ -225,9 +225,25 @@
         var rawT = (vehicle && (vehicle.vehicleType || vehicle.tip) || '').trim();
         var keyT = rawT.toLowerCase();
         if (!keyT) return '-';
-        if (typeof window.getVehicleTypeLabel === 'function') return window.getVehicleTypeLabel(keyT);
-        var labs = { otomobil: 'Otomobil', minivan: 'Küçük Ticari', kamyon: 'Büyük Ticari' };
-        return labs[keyT] || rawT;
+        var labs = {
+            otomobil: 'Otomobil',
+            minivan: 'Küçük Ticari',
+            kamyon: 'Büyük Ticari'
+        };
+        return labs[keyT] || (typeof window.getVehicleTypeLabel === 'function' ? window.getVehicleTypeLabel(keyT) : rawT);
+    }
+
+    function getStokTasitTipiDesktopCellHtml(label) {
+        var text = String(label || '-').trim();
+        if (!text || text === '-') return escapeHtml('-');
+        var parts = text.split(/\s+/).filter(Boolean);
+        if (parts.length < 2) {
+            return '<span class="stok-tasit-tipi-txt">' + escapeHtml(text) + '</span>';
+        }
+        return '<span class="stok-tasit-tipi-stack" title="' + stokEscapeAttr(text) + '">' +
+            '<span>' + escapeHtml(parts[0]) + '</span>' +
+            '<span>' + escapeHtml(parts.slice(1).join(' ')) + '</span>' +
+        '</span>';
     }
 
     function getStokTasitTipiKind(vehicle) {
@@ -698,13 +714,13 @@
                 }
                 : {
                     'sira': 22,
-                    'sube': 82,
+                    'sube': 78,
                     'yil': 38,
-                    'marka': 145,
-                    'tasitTipi': 42,
+                    'marka': 135,
+                    'tasitTipi': 58,
                     'plaka': 74,
-                    'sanziman': 64,
-                    'km': 72
+                    'sanziman': 62,
+                    'km': 70
                 };
             const detailPx = {
                 'sigorta': 72, 'kasko': 72, 'kaskoDegeri': 72, 'muayene': 72, 'kredi': 56,
@@ -727,14 +743,14 @@
                 'km': 'minmax(48px, 1fr)'
             }
             : {
-                'sira': 'minmax(20px, 0.17fr)',
-                'sube': 'minmax(62px, 0.95fr)',
-                'yil': 'minmax(37px, 0.49fr)',
-                'marka': 'minmax(62px, 2.12fr)',
-                'tasitTipi': 'minmax(38px, 0.32fr)',
-                'plaka': 'minmax(68px, 1.04fr)',
-                'sanziman': 'minmax(60px, 0.9fr)',
-                'km': 'minmax(64px, 1.22fr)'
+                'sira': 'minmax(20px, 0.16fr)',
+                'sube': 'minmax(58px, 0.82fr)',
+                'yil': 'minmax(37px, 0.46fr)',
+                'marka': 'minmax(62px, 1.9fr)',
+                'tasitTipi': 'minmax(56px, 0.62fr)',
+                'plaka': 'minmax(68px, 1fr)',
+                'sanziman': 'minmax(58px, 0.82fr)',
+                'km': 'minmax(62px, 1.08fr)'
             };
         return allColumns.map(col => columnWidths[col.key] || '80px').join(' ');
     }
@@ -966,7 +982,7 @@
             if (cell.key === 'tasitTipi' && isMobileStokViewport()) {
                 inner = getStokTasitTipiMobileCellHtml(vehicle, String(cell.value));
             } else if (cell.key === 'tasitTipi') {
-                inner = '<span class="stok-tasit-tipi-txt">' + escapeHtml(String(cell.value)) + '</span>';
+                inner = getStokTasitTipiDesktopCellHtml(String(cell.value));
             } else if (cell.key === 'marka') {
                 inner = getStokMarkaCellInnerHtml(String(cell.value));
             } else {
