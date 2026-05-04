@@ -972,10 +972,10 @@ line-clamp: 2;
   #stok-list-container .stok-list-cell[data-col="tasitTipi"]:not(:has(.stok-tasit-tipi-wrap)) .stok-tasit-tipi-txt {
     display: block;
     white-space: nowrap;
+    overflow: visible;
     text-overflow: clip;
-    letter-spacing: -0.2px;
-    transform: scaleX(0.97);
-    transform-origin: center;
+    font-size: 10px;
+    line-height: 1.08;
   }
   #stok-list-container .stok-list-cell[data-col="tasitTipi"]:not(:has(.stok-tasit-tipi-wrap)) .stok-tasit-tipi-stack {
     display: flex;
