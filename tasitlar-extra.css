@@ -2651,28 +2651,32 @@
 }
 #monthly-todo-modal .monthly-todo-task-row {
   display: grid;
-  grid-template-columns: minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 0.9fr) minmax(0, 0.9fr);
   row-gap: 8px;
-  column-gap: 0;
-  align-items: start;
+  column-gap: 12px;
+  align-items: center;
   width: 100%;
   margin: 0;
-  padding: 10px 12px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 10px;
-  background: rgba(8, 13, 22, 0.65);
-  color: #a0aec0;
+  padding: 14px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  background: rgba(15, 23, 42, 0.85);
+  color: #cbd5e1;
   cursor: pointer;
   text-align: left;
   border-left-width: 4px;
   border-left-style: solid;
   border-left-color: transparent;
   font-family: inherit;
-  transition: border-color 0.15s ease, background 0.15s ease;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   box-sizing: border-box;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
 }
 #monthly-todo-modal .monthly-todo-task-row:hover {
-  border-color: rgba(255, 255, 255, 0.14);
+  border-color: rgba(148, 163, 184, 0.3);
+  background: rgba(30, 41, 59, 0.95);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
 }
 #monthly-todo-modal .monthly-todo-task-row--past {
   border-left-color: rgba(var(--theme-color-rgb), 0.85);
@@ -2703,50 +2707,33 @@
   word-break: normal;
   overflow: hidden;
 }
-#monthly-todo-modal .monthly-todo-brand {
+#monthly-todo-modal .monthly-todo-brand,
+#monthly-todo-modal .monthly-todo-user,
+#monthly-todo-modal .monthly-todo-type,
+#monthly-todo-modal .monthly-todo-enddate,
+#monthly-todo-modal .monthly-todo-days {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4px;
   align-items: flex-start;
   box-sizing: border-box;
-  max-height: calc(1.4em * 2);
 }
-#monthly-todo-modal .monthly-todo-user {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  align-items: flex-start;
-  box-sizing: border-box;
-  max-height: calc(1.4em * 3);
-}
-#monthly-todo-modal .monthly-todo-user .monthly-todo-inline-label {
-  margin-right: 0;
+#monthly-todo-modal .monthly-todo-inline-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  opacity: 0.9;
 }
 #monthly-todo-modal .monthly-todo-type {
   font-weight: 600;
   color: #e2e8f0;
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  white-space: normal;
-  overflow-wrap: normal;
-  word-break: normal;
 }
 #monthly-todo-modal .monthly-todo-enddate,
 #monthly-todo-modal .monthly-todo-days {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-#monthly-todo-modal .monthly-todo-inline-label {
-  font-size: 11px;
-  font-weight: 600;
-  color: #718096;
-  margin-right: 4px;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+  text-align: right;
+  align-items: flex-end;
 }
 #monthly-todo-modal .monthly-todo-days-label {
   color: #e2e8f0;
@@ -2755,11 +2742,15 @@
 #monthly-todo-modal .monthly-todo-days-label--past {
   color: rgba(var(--theme-color-rgb), 1);
 }
-@media (min-width: 641px) {
+@media (max-width: 768px) {
   #monthly-todo-modal .monthly-todo-task-row {
-    grid-template-columns: 90px minmax(150px, 1.6fr) minmax(120px, 1.2fr) minmax(115px, 1fr) 95px 90px;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
     column-gap: 10px;
-    row-gap: 0;
-    align-items: center;
+    row-gap: 10px;
+  }
+  #monthly-todo-modal .monthly-todo-enddate,
+  #monthly-todo-modal .monthly-todo-days {
+    text-align: left;
+    align-items: flex-start;
   }
 }
