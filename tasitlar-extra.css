@@ -2641,48 +2641,30 @@
 }
 @media (min-width: 641px) {
   #monthly-todo-modal {
-    /* ~500px modal + padding ile uyum: fr alanları kalan yerde genişler; min değerler taşmayı tetiklemesin */
-    --monthly-todo-grid-cols: 104px minmax(min(170px, 28vw), 1.45fr) minmax(min(120px, 22vw), 1.05fr) 82px 78px 58px;
-    --monthly-todo-col-gap: 6px;
+    /* Kolon mins + gap + body/row iç boşluğu için 500px yetersiz; yalnız bu modal subtree’sinde genişlik */
+    --modal-max-width: min(596px, calc(100vw - 48px));
+
+    /* fr + minmax: sabit px toplamı modal içine sığar; başlık + satır aynı değişkeni paylaşır */
+    --monthly-todo-grid-cols:
+      minmax(86px, 0.8fr)
+      minmax(150px, 1.75fr)
+      minmax(105px, 1.15fr)
+      minmax(72px, 0.75fr)
+      minmax(62px, 0.62fr)
+      minmax(48px, 0.5fr);
+    --monthly-todo-col-gap: 5px;
   }
 
-  /* İŞLEM: uzun etiket 2 satıra (masaüstü) */
-  #monthly-todo-modal .monthly-todo-type {
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
-    white-space: normal;
+  /* Tarih / kalan kompakt; harf harf kırılma yok */
+  #monthly-todo-modal .monthly-todo-enddate,
+  #monthly-todo-modal .monthly-todo-days,
+  #monthly-todo-modal .monthly-todo-days-label {
+    font-size: 11px;
+    line-height: 1.25;
     word-break: normal;
-    overflow-wrap: break-word;
-  }
-
-  /* Yataya kaydırmayı zorlamadan tüm kolonlar modal içinde (geniş masaüstünde vw sınırları gevşer) */
-  #monthly-todo-modal .monthly-todo-table-outer {
-    overflow-x: hidden;
-    width: 100%;
-    max-width: 100%;
-    min-width: 0;
-  }
-
-  #monthly-todo-modal .monthly-todo-table-inner {
-    width: 100%;
-    max-width: 100%;
-    min-width: 0 !important;
-  }
-
-  #monthly-todo-modal .monthly-todo-sheet {
-    width: 100%;
-    max-width: 100%;
-    min-width: 0;
-  }
-
-  /* İleride kullanılırsa DOM ile eşlek */
-  #monthly-todo-modal .monthly-todo-table {
-    width: 100%;
-    max-width: 100%;
-    min-width: 0;
-    box-sizing: border-box;
+    overflow-wrap: normal;
+    hyphens: none;
+    -webkit-hyphens: none;
   }
 }
 
@@ -2724,6 +2706,12 @@
   overflow-x: auto;
   overflow-y: hidden;
   overscroll-behavior-x: contain;
+}
+
+@media (min-width: 641px) {
+  #monthly-todo-modal .monthly-todo-table-outer {
+    overflow-x: hidden;
+  }
 }
 
 #monthly-todo-modal .monthly-todo-table-inner {
@@ -2905,6 +2893,20 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+@media (min-width: 641px) {
+  /* İŞLEM: en fazla 2 satır (genel nowrap bu blokta override) */
+  #monthly-todo-modal .monthly-todo-type {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    white-space: normal;
+    word-break: normal;
+    overflow-wrap: break-word;
+    text-overflow: clip;
+  }
 }
 
 #monthly-todo-modal .monthly-todo-enddate {
