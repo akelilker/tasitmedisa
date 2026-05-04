@@ -34,18 +34,6 @@
         return '-';
     }
 
-    /** Stok tablosu: ilk kelime ilk satırda, kalanı hemen alt satırda (marka/model okunabilirliği). */
-    function getStokMarkaCellInnerHtml(displayText) {
-        var t = String(displayText == null ? '' : displayText).trim();
-        if (t === '' || t === '-') return escapeHtml(t || '-');
-        var m = t.match(/^(\S+)\s+([\s\S]+)$/);
-        if (!m) return escapeHtml(t);
-        return '<span class="stok-marka-stack">' +
-            '<span class="stok-marka-brand">' + escapeHtml(m[1]) + '</span>' +
-            '<span class="stok-marka-model">' + escapeHtml(String(m[2]).trim()) + '</span>' +
-            '</span>';
-    }
-
     // Stok görünümü state (null: şube grid; 'all' / id: liste)
     let stokCurrentBranchId = null;
     let stokSortState = {}; // { columnKey: 'asc' | 'desc' | null }
@@ -995,8 +983,6 @@
                 inner = getStokTasitTipiMobileCellHtml(vehicle, String(cell.value));
             } else if (cell.key === 'tasitTipi') {
                 inner = getStokTasitTipiDesktopCellHtml(String(cell.value));
-            } else if (cell.key === 'marka') {
-                inner = getStokMarkaCellInnerHtml(String(cell.value));
             } else {
                 inner = escapeHtml(String(cell.value));
             }

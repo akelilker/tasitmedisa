@@ -850,43 +850,19 @@ overflow-wrap: break-word;
 line-clamp: 2;
 }
 
-/* Marka/model: ilk kelime üst satır, kalan blok hemen altında (JS: .stok-marka-stack) */
 .stok-list-cell[data-col="marka"] {
-  justify-content: center;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  overflow: hidden;
-  text-overflow: clip;
-  padding: 1px 2px;
-  min-width: 0;
-  white-space: normal;
-  line-height: 1.25;
-}
-.stok-marka-stack {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  min-width: 0;
-}
-.stok-marka-brand {
-  display: block;
-  width: 100%;
-  max-width: 100%;
-  word-break: keep-all;
-  overflow-wrap: normal;
-  white-space: nowrap;
-}
-.stok-marka-model {
-  display: block;
-  width: 100%;
-  max-width: 100%;
-  word-break: break-word;
-  overflow-wrap: break-word;
-  white-space: normal;
+justify-content: center;
+text-align: center;
+white-space: normal;
+word-break: break-word;
+overflow-wrap: break-word;
+display: -webkit-box;
+-webkit-line-clamp: 3;
+line-clamp: 3;
+-webkit-box-orient: vertical;
+overflow: hidden;
+text-overflow: clip;
+padding: 1px 2px;
 }
 
 /* Taşıt tipi: mobilde SVG simge (+ title tam metin), masaüstünde metin */
@@ -949,8 +925,6 @@ line-clamp: 2;
     word-break: normal;
     hyphens: manual;
   }
-
-  /* Veri hücresi: marka stack (JS) kendi satırlarını yönetir; eski line-clamp kaldırıldı */
 
   /* Masaüstü taşıt tipi: Otomobil tek satır; iki kelimede ikinci kelime ikinci satır */
   #stok-list-container .stok-list-cell[data-col="tasitTipi"]:not(:has(.stok-tasit-tipi-wrap)) {
