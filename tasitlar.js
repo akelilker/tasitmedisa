@@ -917,22 +917,22 @@
           ? {
               'year': '36px',
               'plate': '61px',
-              'brand': 'minmax(0, 1.18fr)',
+              'brand': 'minmax(0, 1.38fr)',
               'km': '49px',
-              'type': 'minmax(0, 1fr)',
-              'transmission': 'minmax(0, 0.66fr)',
-              'user': 'minmax(0, 1fr)',
-              'branch': 'minmax(0, 0.96fr)'
+              'type': 'minmax(0, 0.94fr)',
+              'transmission': 'minmax(0, 0.62fr)',
+              'user': 'minmax(0, 0.96fr)',
+              'branch': 'minmax(0, 0.92fr)'
             }
         : {
             'year': '44px',
             'plate': '77px',
-            'brand': 'minmax(0, 1.35fr)',
+            'brand': 'minmax(0, 1.55fr)',
             'km': '56px',
-            'type': 'minmax(0, 0.95fr)',
-            'transmission': 'minmax(0, 0.7fr)',
-            'user': 'minmax(0, 1.05fr)',
-            'branch': 'minmax(0, 0.95fr)'
+            'type': 'minmax(0, 0.88fr)',
+            'transmission': 'minmax(0, 0.65fr)',
+            'user': 'minmax(0, 1fr)',
+            'branch': 'minmax(0, 0.88fr)'
           };
       return columnOrder.map(key => widthMap[key] || '1fr').join(' ');
     } catch (e) {
