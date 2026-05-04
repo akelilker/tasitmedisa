@@ -2998,14 +2998,6 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   overscroll-behavior-x: none;
 }
 
-/* Talep modalı: çift safe-area + tam yükseklik üst başlığı kesiyordu; içerik kadar panel */
-#driver-feedback-modal .driver-modal-content,
-#driver-feedback-modal .modal-container {
-  margin-top: 12px !important;
-  height: auto !important;
-  max-height: min(92dvh, calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - var(--app-footer-real-height, 42px) - 28px)) !important;
-}
-
 #history-modal .modal-container::before {
   content: '';
   position: absolute;
