@@ -3823,11 +3823,8 @@
     html += '<div class="monthly-todo-table-inner">';
     html += '<div class="monthly-todo-col-header" aria-hidden="true">';
     html += '<span class="monthly-todo-col-h">PLAKA</span>';
-    html += '<span class="monthly-todo-col-h">MARKA/MODEL</span>';
-    html += '<span class="monthly-todo-col-h">KULLANICI</span>';
+    html += '<span class="monthly-todo-col-h">ARAÇ / KULLANICI</span>';
     html += '<span class="monthly-todo-col-h">İŞLEM</span>';
-    html += '<span class="monthly-todo-col-h">TARİH</span>';
-    html += '<span class="monthly-todo-col-h">KALAN</span>';
     html += '</div>';
     html += '<div class="monthly-todo-list-scroll" role="list">';
     displayTasks.forEach(function(t) {
@@ -3858,11 +3855,16 @@
       var rowTone = past ? ' monthly-todo-task-row--past' : ' monthly-todo-task-row--upcoming';
       html += '<button type="button" class="monthly-todo-task-row' + rowTone + '" data-vehicle-id="' + escapeAttr(vid) + '" role="listitem">';
       html += '<span class="monthly-todo-cell monthly-todo-plate">' + plate + '</span>';
-      html += '<span class="monthly-todo-cell monthly-todo-brand">' + bm + '</span>';
-      html += '<span class="monthly-todo-cell monthly-todo-user">' + kul + '</span>';
-      html += '<span class="monthly-todo-cell monthly-todo-type">' + typeLabel + '</span>';
-      html += '<span class="monthly-todo-cell monthly-todo-enddate">' + dateShown + '</span>';
-      html += '<span class="monthly-todo-cell monthly-todo-days">' + daysHtml + '</span>';
+      html += '<span class="monthly-todo-middle">';
+      html += '<span class="monthly-todo-brand">' + bm + '</span>';
+      html += '<span class="monthly-todo-user">' + kul + '</span>';
+      html += '</span>';
+      html += '<span class="monthly-todo-right">';
+      html += '<span class="monthly-todo-type">' + typeLabel + '</span>';
+      html += '<span class="monthly-todo-meta">';
+      html += '<span class="monthly-todo-enddate">' + dateShown + '</span>';
+      html += '<span class="monthly-todo-days">' + daysHtml + '</span>';
+      html += '</span></span>';
       html += '</button>';
     });
     html += '</div>';
