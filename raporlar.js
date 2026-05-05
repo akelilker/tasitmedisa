@@ -717,7 +717,7 @@
                     'km': 69
                 };
             const detailPx = {
-                'sigorta': 72, 'kasko': 72, 'kaskoDegeri': 72, 'muayene': 72, 'kredi': 56,
+                'sigorta': 72, 'kasko': 72, 'kaskoDegeri': 72, 'muayene': 72, 'egzozMuayene': 64, 'kredi': 56,
                 'lastik': 56, 'utts': 52, 'takip': 56, 'tramer': 52,
                 'boya': 56, 'kullanici': 72, 'tescil': 72
             };
@@ -811,7 +811,7 @@
             });
         }
 
-        let columns = allColumns;
+        let columns = expandStokGridColumns(allColumns);
         var gridColumns = getStokVisibleGridColumns(columns);
 
         // Grid sütun genişliklerini hesapla (header ile row aynı liste)
@@ -822,7 +822,7 @@
             const sortIcon = sortState === 'asc' ? '↑' : sortState === 'desc' ? '↓' : '↕';
             const sortClass = sortState ? 'active' : '';
             
-            const draggableAttr = isMobileStokViewport() ? '' : 'draggable="true"';
+            const draggableAttr = (isMobileStokViewport() || col.key === 'egzozMuayene') ? '' : 'draggable="true"';
             
             if (col.sortable) {
                 const headerLabel = (col.key === 'tasitTipi' && isMobileStokViewport())
@@ -969,6 +969,8 @@
             });
         }
 
+        cells = expandStokGridRowCells(cells, vehicle);
+
         var gridCells = cells;
         if (isMobileStokViewport()) gridCells = cells.filter(function (c) { return c.key !== 'tasitTipi'; });
 
@@ -988,6 +990,40 @@
             }
             return `<td class="${cellClass}" data-col="${cell.key}">${inner}</td>`;
         }).join('')}</tr>`;
+    }
+
+    /** Modal stok tablosu: muayene sütunundan hemen sonra egzoz (Excel / yazdır ile aynı düzen) */
+    function expandStokGridColumns(columns) {
+        var out = [];
+        columns.forEach(function(col) {
+            out.push(col);
+            if (col.key === 'muayene') {
+                out.push({ key: 'egzozMuayene', sortable: true });
+            }
+        });
+        return out;
+    }
+
+    function expandStokGridRowCells(cells, vehicle) {
+        var out = [];
+        for (var i = 0; i < cells.length; i++) {
+            var c = cells[i];
+            if (c.key === 'muayene') {
+                out.push({
+                    key: 'muayene',
+                    value: formatStokMuayeneDateOnlyForPrint(vehicle),
+                    warningClass: getStokDateWarningClass(vehicle.muayeneDate)
+                });
+                out.push({
+                    key: 'egzozMuayene',
+                    value: formatStokEgzozDateOnlyForPrint(vehicle),
+                    warningClass: getStokDateWarningClass(vehicle.egzozMuayeneDate)
+                });
+            } else {
+                out.push(c);
+            }
+        }
+        return out;
     }
 
     // Sıralama uygula
@@ -1038,6 +1074,11 @@
                 const aVal = (a.plate || '').toLowerCase();
                 const bVal = (b.plate || '').toLowerCase();
                 return direction === 'asc' ? aVal.localeCompare(bVal, 'tr') : bVal.localeCompare(aVal, 'tr');
+            } else if (columnKey === 'muayene' || columnKey === 'egzozMuayene') {
+                const field = columnKey === 'muayene' ? 'muayeneDate' : 'egzozMuayeneDate';
+                const aVal = stokNormalizeIsoDateKey(a[field] || '');
+                const bVal = stokNormalizeIsoDateKey(b[field] || '');
+                return direction === 'asc' ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
             } else {
                 // Diğer sütunlar için alfabetik/sayısal sıralama
                 const aVal = String(a[columnKey] || '').toLowerCase();
@@ -1209,12 +1250,16 @@
         event.dataTransfer.effectAllowed = 'move';
         event.dataTransfer.setData('text/plain', columnKey);
         
-        // Tüm satırı vurgula
+        // Tüm satırı vurgula (muayene + egzoz birlikte)
         const allRows = document.querySelectorAll('.stok-list-row');
         allRows.forEach(row => {
             const cell = row.querySelector(`[data-col="${columnKey}"]`);
             if (cell) {
                 cell.style.opacity = '0.5';
+            }
+            if (columnKey === 'muayene' && stokActiveColumns.muayene) {
+                const egzCell = row.querySelector('[data-col="egzozMuayene"]');
+                if (egzCell) egzCell.style.opacity = '0.5';
             }
         });
         event.currentTarget.style.opacity = '0.5';
@@ -1401,6 +1446,7 @@
 
     function canReorderStokColumn(sourceKey, targetKey) {
         if (!sourceKey || !targetKey || sourceKey === targetKey) return false;
+        if (sourceKey === 'egzozMuayene' || targetKey === 'egzozMuayene') return false;
         const isDraggedBase = STOK_BASE_COLUMNS.includes(sourceKey);
         const isTargetBase = STOK_BASE_COLUMNS.includes(targetKey);
         const isDraggedDetail = STOK_DETAIL_COLUMNS.includes(sourceKey);
@@ -1508,6 +1554,9 @@
         sourceCell.classList.add('touch-drag-source');
         sourceCell.style.opacity = '0.35';
         setStokColumnCellsOpacity(columnKey, '0.35');
+        if (columnKey === 'muayene' && stokActiveColumns.muayene) {
+            setStokColumnCellsOpacity('egzozMuayene', '0.35');
+        }
         createStokTouchGhost(sourceCell);
         updateStokTouchGhostPosition(touchPoint.clientX, touchPoint.clientY);
     }
@@ -1519,7 +1568,7 @@
 
         headerCells.forEach(function(cell) {
             const columnKey = cell.getAttribute('data-col');
-            if (!columnKey) return;
+            if (!columnKey || columnKey === 'egzozMuayene') return;
 
             cell.addEventListener('touchstart', function(e) {
                 if (e.touches.length !== 1) return;
