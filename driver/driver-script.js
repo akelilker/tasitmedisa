@@ -886,17 +886,17 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
   }
   
   function checkDateWarningsDriver(dateStr) {
-    if (!dateStr) return { class: '', days: null };
+    if (!dateStr) return { class: '', days: null, level: '' };
     var date = new Date(dateStr + 'T00:00:00');
-    if (isNaN(date.getTime())) return { class: '', days: null };
+    if (isNaN(date.getTime())) return { class: '', days: null, level: '' };
     var today = new Date();
     today.setHours(0, 0, 0, 0);
     date.setHours(0, 0, 0, 0);
     var diffDays = Math.ceil((date - today) / (1000 * 60 * 60 * 24));
-    if (diffDays < 0) return { class: 'driver-warn-red', days: diffDays };
-    if (diffDays <= 3) return { class: 'driver-warn-red', days: diffDays };
-    if (diffDays <= 21) return { class: 'driver-warn-orange', days: diffDays };
-    return { class: '', days: diffDays };
+    if (diffDays < 0) return { class: 'driver-warn-red', days: diffDays, level: 'red' };
+    if (diffDays <= 3) return { class: 'driver-warn-red', days: diffDays, level: 'red' };
+    if (diffDays <= 21) return { class: 'driver-warn-orange', days: diffDays, level: 'orange' };
+    return { class: '', days: diffDays, level: '' };
   }
   
   function syncDriverHeaderUserName() {
@@ -1102,9 +1102,9 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       const kmBtnClass = sessionMatch('km') ? ' saved' : (isKmStateWarning(kmState) ? ' warning' : (hasKmSaved ? ' data-entered' : ''));
       const kazaBtnClass = sessionMatch('kaza') ? ' saved' : (kazaVar ? ' data-entered' : '');
       const bakimBtnClass = sessionMatch('bakim') ? ' saved' : (bakimVar ? ' data-entered' : '');
-      const sigortaBtnClass = sessionMatch('sigorta') ? ' saved' : (sigortaW.class ? ' warning' : (sigortaSaved ? ' data-entered' : ''));
-      const kaskoBtnClass = sessionMatch('kasko') ? ' saved' : (kaskoW.class ? ' warning' : (kaskoSaved ? ' data-entered' : ''));
-      const muayeneBtnClass = sessionMatch('muayene') ? ' saved' : (muayeneW.class ? ' warning' : (muayeneSaved ? ' data-entered' : ''));
+      const sigortaBtnClass = sessionMatch('sigorta') ? ' saved' : (sigortaW.class ? (' warning' + (sigortaW.level === 'orange' ? ' warning-orange' : '')) : (sigortaSaved ? ' data-entered' : ''));
+      const kaskoBtnClass = sessionMatch('kasko') ? ' saved' : (kaskoW.class ? (' warning' + (kaskoW.level === 'orange' ? ' warning-orange' : '')) : (kaskoSaved ? ' data-entered' : ''));
+      const muayeneBtnClass = sessionMatch('muayene') ? ' saved' : (muayeneW.class ? (' warning' + (muayeneW.level === 'orange' ? ' warning-orange' : '')) : (muayeneSaved ? ' data-entered' : ''));
       const anahtarBtnClass = sessionMatch('anahtar') ? ' saved' : (anahtarSaved ? ' data-entered' : '');
       const lastikBtnClass = sessionMatch('lastik') ? ' saved' : (lastikSaved ? ' data-entered' : '');
   
@@ -1621,7 +1621,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
                   } else {
                       msg = plaka + ' Plakalı Taşıtın ' + label + ' Tarihine ' + w.days + ' Gün Kalmıştır';
                   }
-                  warnings.push({ text: msg, plaka: plaka, type: null });
+                  warnings.push({ text: msg, plaka: plaka, type: null, warnLevel: w.level });
               }
           };
           checkDate(v.muayeneDate, 'Muayene');
@@ -1688,8 +1688,9 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           const w = warnings[idx];
           const text = w ? w.text : '';
           const isKaza = w && w.type === 'kaza';
+          const orangeBar = w && w.warnLevel === 'orange';
           el.innerHTML = '<span class="driver-warning-icon" aria-hidden="true">⚠️</span> <span class="driver-warning-text">' + escapeHtmlDriver(text) + '</span>';
-          el.className = 'driver-sliding-warning' + (isKaza ? ' driver-warning-kaza-pulse' : (cycleCount >= 3 ? ' driver-warning-pulse' : ''));
+          el.className = 'driver-sliding-warning' + (orangeBar ? ' driver-sliding-warning-orange' : '') + (isKaza ? ' driver-warning-kaza-pulse' : (cycleCount >= 3 ? ' driver-warning-pulse' : ''));
           /* Taşma varsa sola kayan marquee uygula (requestAnimationFrame ile ölçüm doğru yapılsın) */
           requestAnimationFrame(function() { applyMarqueeIfOverflow(el); });
           idx = (idx + 1) % warnings.length;
