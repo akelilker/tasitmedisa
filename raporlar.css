@@ -1369,7 +1369,7 @@ content: "";
 position: absolute;
 left: 0;
 right: 0;
-bottom: -6px;
+bottom: -5px;
 height: 1px;
 background: rgba(var(--theme-color-rgb), 0.42);
 z-index: 3;
