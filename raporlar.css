@@ -1203,8 +1203,8 @@ flex-shrink: 0 !important;
 }
 /* Masaüstü: Detay Ekleme bloğu 24px aşağı (önceki -36px'tan; başka hiçbir yer etkilenmez) */
 #reports-modal .reports-list-header-actions:has(.stok-detail-add-wrap.desktop-single-row) {
-padding-top: 26px !important;
-padding-bottom: 10px !important;
+padding-top: 12px !important;
+padding-bottom: 0 !important;
 margin-top: 0 !important;
 }
 #reports-modal .stok-detail-add-wrap.desktop-single-row {
@@ -1364,7 +1364,7 @@ margin-top: 0 !important; /* Sütun başlıkları üzerindeki boşluk 6px azalt�
 }
 /* Row-2: export + tarih (detay menü header’da, buton altında) */
 #stok-list-container .stok-list-top-controls > .stok-controls-row-1 { order: 0; }
-#stok-list-container .stok-list-top-controls > .stok-controls-row-2 { order: 2 !important; margin-top: 8px !important; padding-top: 14px !important; display: flex !important; flex-wrap: wrap !important; justify-content: space-between !important; align-items: flex-end !important; gap: 6px; }
+#stok-list-container .stok-list-top-controls > .stok-controls-row-2 { order: 2 !important; margin-top: 4px !important; padding-top: 0 !important; display: flex !important; flex-wrap: nowrap !important; justify-content: space-between !important; align-items: flex-end !important; gap: 6px; }
 #stok-list-container .stok-controls-row-2 > .stok-export-controls { order: 0; }
 #stok-list-container .stok-controls-row-2 > .stok-date-range-controls { order: 0; }
 #stok-list-container .stok-controls-row-2 .stok-export-controls { padding-bottom: 0 !important; margin-bottom: 0 !important; align-items: flex-end !important; }
@@ -1466,7 +1466,7 @@ width: auto !important;
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-2,
 #reports-modal:not(:has(.stok-detail-menu-open)) .stok-detail-add-wrap.desktop-single-row .stok-controls-row-2,
 #reports-modal:has(.stok-detail-menu-open) .stok-detail-add-wrap.desktop-single-row .stok-controls-row-2 {
-margin-top: 12px !important;
+margin-top: 6px !important;
 }
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-1 .stok-detail-add-btn {
 align-self: flex-start !important;
