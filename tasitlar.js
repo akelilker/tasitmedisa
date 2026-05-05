@@ -3861,16 +3861,6 @@
       } else {
         descriptionText = descriptionPrefix + ' Geçerlilik Süresi ' + daysVal + ' Gün Sonra Bitecektir. Bitiş Tarihi: ' + dateShown;
       }
-      var daysHtml = '';
-      if (!dateRaw || daysVal === null) {
-        daysHtml = escapeHtml(dateRaw ? '—' : 'Eksik');
-      } else if (daysVal < 0) {
-        daysHtml = '<span class="monthly-todo-days-label monthly-todo-days-label--past">' + escapeHtml(String(Math.abs(daysVal)) + ' gün geçti') + '</span>';
-      } else if (daysVal === 0) {
-        daysHtml = '<span class="monthly-todo-days-label">' + escapeHtml('Bugün') + '</span>';
-      } else {
-        daysHtml = '<span class="monthly-todo-days-label">' + escapeHtml(String(daysVal) + ' gün') + '</span>';
-      }
       var rowTone = '';
       if (past || warningClass === 'date-warning-red') {
         rowTone = ' monthly-todo-task-row--past';
@@ -3885,10 +3875,7 @@
       html += '</span>';
       html += '<span class="monthly-todo-right">';
       html += '<span class="monthly-todo-type">' + escapeHtml(descriptionText) + '</span>';
-      html += '<span class="monthly-todo-meta">';
-      html += '<span class="monthly-todo-enddate">' + dateShown + '</span>';
-      html += '<span class="monthly-todo-days">' + daysHtml + '</span>';
-      html += '</span></span>';
+      html += '</span>';
       html += '</button>';
     });
     html += '</div>';
