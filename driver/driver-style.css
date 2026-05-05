@@ -1124,6 +1124,13 @@ body.dashboard-page {
 }
 
 @media (max-width: 768px) {
+  /* Yeşil Bildir (footer) ile Talep Gönder arası tam 6px (margin çöküşü tek kaynak) */
+  .dashboard-page .driver-action-footer.driver-action-group {
+    margin-bottom: 0 !important;
+  }
+  .dashboard-page .driver-action-feedback-slot.driver-request-fab-row {
+    margin-top: 6px !important;
+  }
   .dashboard-page .driver-request-fab-row {
     justify-content: flex-end !important;
     padding-right: 3px !important;
