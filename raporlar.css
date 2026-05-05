@@ -2951,21 +2951,28 @@ padding-right: 2px !important;
 padding-left: 1px !important;
 padding-right: 1px !important;
 }
-/* Tarih sütunları (tam yıl): tek satır, taşarsa kırpılır — marka sütununa pay kalsın */
+/* Sigorta / Kasko / Tescil (tam yıl): tek satır, taşarsa kırpılır — marka sütununa pay kalsın; muayene/egzoz ayrı blokta */
 #stok-print-area .stok-print-table th[data-col="sigorta"],
 #stok-print-area .stok-print-table td[data-col="sigorta"],
 #stok-print-area .stok-print-table th[data-col="kasko"],
 #stok-print-area .stok-print-table td[data-col="kasko"],
 #stok-print-area .stok-print-table th[data-col="tescil"],
-#stok-print-area .stok-print-table td[data-col="tescil"],
-#stok-print-area .stok-print-table th[data-col="muayene"],
-#stok-print-area .stok-print-table td[data-col="muayene"],
-#stok-print-area .stok-print-table th[data-col="egzozMuayene"],
-#stok-print-area .stok-print-table td[data-col="egzozMuayene"] {
+#stok-print-area .stok-print-table td[data-col="tescil"] {
 white-space: nowrap !important;
 word-break: normal !important;
 overflow-wrap: normal !important;
 overflow: hidden !important;
+}
+/* Muayene / Egzoz: mobil yazdırmada kırpma yok; dar sütunda metin satır kırılsın */
+#stok-print-area .stok-print-table th[data-col="muayene"],
+#stok-print-area .stok-print-table td[data-col="muayene"],
+#stok-print-area .stok-print-table th[data-col="egzozMuayene"],
+#stok-print-area .stok-print-table td[data-col="egzozMuayene"] {
+white-space: normal !important;
+word-break: normal !important;
+overflow-wrap: break-word !important;
+overflow: visible !important;
+text-overflow: clip !important;
 }
 /* Plaka, yıl, şanzıman, km, sıra verisi: tek satır (tarih hariç) */
 #stok-print-area .stok-print-table th[data-col="plaka"],
