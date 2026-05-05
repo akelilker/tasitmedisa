@@ -1093,7 +1093,7 @@ padding: 1px 0;
 #reports-modal .modal-container > #reports-list-header-actions:not(:empty),
 #reports-modal .modal-container > #reports-list-header-actions.has-stok-actions {
 flex-shrink: 0 !important;
-min-height: 78px !important;
+min-height: 96px !important;
 }
 #reports-modal .reports-list-header-actions:not(:empty) {
 padding-top: 4px !important;
@@ -1181,8 +1181,8 @@ flex-shrink: 0 !important;
 }
 /* Masaüstü: Detay Ekleme bloğu 24px aşağı (önceki -36px'tan; başka hiçbir yer etkilenmez) */
 #reports-modal .reports-list-header-actions:has(.stok-detail-add-wrap.desktop-single-row) {
-padding-top: 8px !important;
-padding-bottom: 8px !important;
+padding-top: 10px !important;
+padding-bottom: 10px !important;
 margin-top: 0 !important;
 }
 #reports-modal .stok-detail-add-wrap.desktop-single-row {
@@ -1190,7 +1190,7 @@ padding-top: 0 !important;
 margin-top: 0 !important;
 }
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-left-controls .universal-back-bar {
-margin-top: -10px !important;
+margin-top: 0 !important;
 }
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-1 .universal-back-bar,
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-1 .stok-detail-add-btn {
@@ -1233,7 +1233,7 @@ flex-wrap: nowrap !important;
 align-items: center !important;
 margin-top: 0 !important;
 /* KESİN ÇÖZÜM: Flexbox yüksekliğine takılmadan kutuyu görsel olarak tam 12px aşağı kaydırır */
-transform: translateY(9px) !important;
+transform: none !important;
 }
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-2 .stok-search-wrap {
 display: flex !important;
@@ -1253,7 +1253,7 @@ display: flex !important;
 flex-direction: row !important;
 margin-left: auto !important;
 flex-shrink: 0 !important;
-align-items: center !important;
+align-items: flex-end !important;
 gap: 6px !important;
 }
 /* Masaüstü: menü açıkken overflow visible – header alt çizgisine takılmasın */
@@ -2977,7 +2977,7 @@ overflow-wrap: break-word;
         grid-template-columns: 1fr auto 1fr !important;
         align-items: center !important;
         gap: 10px !important;
-        margin-top: -10px !important;
+        margin-top: 0 !important;
         margin-bottom: 0 !important;
         padding-top: 0 !important;
         padding-bottom: 0 !important;
