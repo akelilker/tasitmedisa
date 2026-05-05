@@ -3981,6 +3981,21 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 
 /* Login (masaüstü): PWA kurulum çubuğu header alt çerçevesinin 4px altında; sadece buton yatayda ortada (X hesaba katılmaz) */
 @media (min-width: 769px) {
+  .login-page .content-wrap.driver-content-wrap.driver-scroll-area {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+  }
+  .login-page .login-container {
+    width: 100% !important;
+    max-width: 400px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    box-sizing: border-box !important;
+  }
   .login-page #pwa-install-wrapper.pwa-install-center {
     margin-top: 4px !important;
     margin-bottom: 0 !important;
