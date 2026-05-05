@@ -2696,7 +2696,7 @@
 #monthly-todo-modal .monthly-todo-col-header,
 #monthly-todo-modal .monthly-todo-task-row {
   display: grid;
-  grid-template-columns: minmax(52px, 24%) minmax(0, 1fr) minmax(108px, 34%);
+  grid-template-columns: minmax(40px, calc(24% - 12px)) minmax(0, 1fr) minmax(120px, calc(34% + 12px));
   column-gap: 10px;
   align-items: center;
 }
