@@ -1362,6 +1362,17 @@ border-color: rgba(74, 222, 128, 0.5) !important;
 padding-top: 0 !important;
 margin-bottom: 0 !important;
 overflow: visible;
+position: relative;
+}
+#stok-list-container .stok-list-top-controls::after {
+content: "";
+position: absolute;
+left: 0;
+right: 0;
+bottom: 0;
+height: 1px;
+background: rgba(var(--theme-color-rgb), 0.32);
+pointer-events: none;
 }
 #stok-list-container:has(.stok-list-top-controls) > .stok-list-container {
 margin-top: 0 !important; /* Sütun başlıkları üzerindeki boşluk 6px azaltıldı */
@@ -1369,7 +1380,6 @@ margin-top: 0 !important; /* Sütun başlıkları üzerindeki boşluk 6px azalt�
 /* Row-2: export + tarih (detay menü header’da, buton altında) */
 #stok-list-container:has(.stok-list-top-controls) > .stok-list-container {
 margin-top: 6px !important;
-border-top: 1px solid rgba(var(--theme-color-rgb), 0.28);
 padding-top: 6px !important;
 }
 #stok-list-container .stok-list-top-controls > .stok-controls-row-1 { order: 0; }
