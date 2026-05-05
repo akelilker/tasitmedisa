@@ -4051,26 +4051,28 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   }
 
   .login-page #login-form #login-btn.btn-login {
-    width: 100%;
+    width: min(160px, 100%);
     box-sizing: border-box;
+    align-self: center;
     margin-top: 4px;
+    padding: 9px 24px;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
-    min-height: 40px;
+    min-height: 34px;
     border-radius: 8px;
     font-size: 15px;
-    font-weight: 700;
+    font-weight: 600;
     cursor: pointer;
     border: 1px solid rgba(var(--theme-color-rgb), 0.9);
-    background: rgba(var(--theme-color-rgb), 0.2);
+    background: transparent;
     color: var(--txt, #ffffff);
     transition: background 0.2s, border-color 0.2s, transform 0.15s;
   }
 
   .login-page #login-form #login-btn.btn-login:hover:not(:disabled) {
-    background: rgba(var(--theme-color-rgb), 0.32);
+    background: rgba(var(--theme-color-rgb), 0.16);
     border-color: var(--theme-color, #d40000);
     transform: translateY(-1px);
   }
