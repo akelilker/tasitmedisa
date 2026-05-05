@@ -362,15 +362,14 @@ function buildFallbackPermissions(role) {
 function normalizeSessionPermissions(role, permissions) {
     var normalizedRole = normalizeSessionRole(role);
     var fallback = buildFallbackPermissions(normalizedRole);
-    var source = permissions && typeof permissions === 'object' ? permissions : {};
 
     return {
         view_main_app: !!fallback.view_main_app,
         view_reports: !!fallback.view_reports,
         manage_users: !!fallback.manage_users,
-        manage_branches: normalizedRole === 'genel_yonetici' && source.manage_branches === true,
-        manage_data: normalizedRole === 'genel_yonetici' && source.manage_data === true,
-        manage_settings: normalizedRole === 'genel_yonetici' && source.manage_settings === true
+        manage_branches: normalizedRole === 'genel_yonetici',
+        manage_data: normalizedRole === 'genel_yonetici',
+        manage_settings: normalizedRole === 'genel_yonetici'
     };
 }
 
