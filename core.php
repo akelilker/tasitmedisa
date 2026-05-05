@@ -685,13 +685,14 @@ function medisaComputeDriverDashboard($user, $data) {
 function medisaBuildPermissions($context) {
     $role = $context['role'] ?? 'kullanici';
     $hasMainAppAccess = medisaHasMainAppAccessRole($role);
+    $canManageGlobalData = in_array($role, ['genel_yonetici', 'sube_yonetici'], true);
     return [
         'view_main_app' => $hasMainAppAccess,
         'view_reports' => $hasMainAppAccess,
         'manage_users' => $hasMainAppAccess,
         'manage_branches' => $role === 'genel_yonetici',
-        'manage_data' => $role === 'genel_yonetici',
-        'manage_settings' => $role === 'genel_yonetici',
+        'manage_data' => $canManageGlobalData,
+        'manage_settings' => $canManageGlobalData,
     ];
 }
 
