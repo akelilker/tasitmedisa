@@ -872,6 +872,13 @@ body.dashboard-page {
   justify-content: center;
   gap: 4px;
 }
+/* Tarih yaklaşıyor (turuncu): sol panel driver-warn-orange ile aynı ton */
+.driver-sliding-warning.driver-sliding-warning-orange {
+  color: #f97316;
+}
+.driver-sliding-warning.driver-sliding-warning-orange .driver-warning-icon {
+  color: #f97316;
+}
 .driver-sliding-warning .driver-warning-text {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1300,6 +1307,14 @@ body.dashboard-page {
   border-color: rgba(var(--theme-color-rgb), 0.9);
   color: rgba(var(--theme-color-rgb), 0.95);
 }
+.driver-action-btn.warning.warning-orange {
+  border-color: #f97316;
+  color: #f97316;
+}
+.driver-action-btn.warning.warning-orange:hover {
+  border-color: #fb923c;
+  color: #fb923c;
+}
 .driver-action-btn.data-entered {
   border: 1px solid rgba(255, 255, 255, 0.25); /* Aynı ince parlak gri çerçeve */
   color: rgba(255, 255, 255, 0.9);
@@ -1617,13 +1632,13 @@ body.dashboard-page {
     border: 1px solid rgba(255, 255, 255, 0.25);
   }
   .driver-action-btn.saved,
-  .driver-action-btn.warning,
-  .driver-action-btn.data-entered {
+  .driver-action-btn.data-entered,
+  .driver-action-btn.warning:not(.warning-orange) {
     border: 1px solid rgba(255, 255, 255, 0.25);
   }
   .driver-action-btn.saved:hover,
-  .driver-action-btn.warning:hover,
-  .driver-action-btn.data-entered:hover {
+  .driver-action-btn.data-entered:hover,
+  .driver-action-btn.warning:not(.warning-orange):hover {
     border-color: rgba(255, 255, 255, 0.5);
   }
   .driver-current-plaka { font-size: 13.5px; } /* 14.5 - 1pt */
