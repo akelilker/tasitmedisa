@@ -359,6 +359,21 @@ function buildFallbackPermissions(role) {
     };
 }
 
+function normalizeSessionPermissions(role, permissions) {
+    var normalizedRole = normalizeSessionRole(role);
+    var fallback = buildFallbackPermissions(normalizedRole);
+    var source = permissions && typeof permissions === 'object' ? permissions : {};
+
+    return {
+        view_main_app: !!fallback.view_main_app,
+        view_reports: !!fallback.view_reports,
+        manage_users: !!fallback.manage_users,
+        manage_branches: normalizedRole === 'genel_yonetici' && source.manage_branches === true,
+        manage_data: normalizedRole === 'genel_yonetici' && source.manage_data === true,
+        manage_settings: normalizedRole === 'genel_yonetici' && source.manage_settings === true
+    };
+}
+
 function redirectToPortalLogin() {
     if (typeof window === 'undefined') return;
     var path = getCurrentPathname();
@@ -417,10 +432,7 @@ function setMedisaSession(sessionData) {
     nextSession.branch_ids = Array.isArray(nextSession.branch_ids) ? nextSession.branch_ids.map(String).filter(Boolean) : [];
     nextSession.raw_role = String(nextSession.raw_role || mergedRoleSource || '').trim();
     nextSession.role = normalizeSessionRole(mergedRoleSource);
-    nextSession.permissions = nextSession.permissions && typeof nextSession.permissions === 'object' ? nextSession.permissions : {};
-    if (Object.keys(nextSession.permissions).length === 0) {
-        nextSession.permissions = buildFallbackPermissions(nextSession.role || '');
-    }
+    nextSession.permissions = normalizeSessionPermissions(nextSession.role || '', nextSession.permissions);
     nextSession.user = Object.assign({}, getDefaultSession().user, nextSession.user || {});
     nextSession.user.id = nextSession.user.id != null ? String(nextSession.user.id) : '';
     nextSession.user.role = normalizeSessionRole(nextSession.user.role || nextSession.role || '');
