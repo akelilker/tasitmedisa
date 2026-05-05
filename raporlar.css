@@ -1014,7 +1014,9 @@ padding: 1px 2px;
 .stok-list-header-cell[data-col="kasko"],
 .stok-list-cell[data-col="kasko"],
 .stok-list-header-cell[data-col="muayene"],
-.stok-list-cell[data-col="muayene"] {
+.stok-list-cell[data-col="muayene"],
+.stok-list-header-cell[data-col="egzozMuayene"],
+.stok-list-cell[data-col="egzozMuayene"] {
 justify-content: center;
 }
 
