@@ -1816,7 +1816,7 @@ background: transparent;
 border: none;
 color: #888;
 padding: 8px;
-font-size: 13px;
+font-size: 18px;
 cursor: pointer;
 transition: color 0.2s, background 0.2s;
 display: flex;
@@ -2560,7 +2560,7 @@ align-items: center;
 }
 .stok-export-btn { font-size: 15px !important; }
 .stok-search-btn { font-size: 19px !important; } /* Büyüteç Excel/yazıcıya yakın boyut */
-.stok-print-btn { font-size: 20px !important; }
+.stok-print-btn { font-size: 18px !important; }
 .stok-export-btn,
 .stok-print-btn { width: auto; }
 /* Input açıldığında HİÇBİR YER OYNAMASIN: absolute overlay, wrap/row boyutu değişmez */
