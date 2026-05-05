@@ -1038,13 +1038,35 @@ justify-content: center;
 justify-content: center;
 }
 
+/* Kullanıcı: uzun isimler satır kırılsın (tek satır kesme yok) */
+.stok-list-header-cell[data-col="kullanici"] {
+white-space: normal;
+word-break: break-word;
+overflow-wrap: break-word;
+-webkit-line-clamp: 2;
+line-clamp: 2;
+}
+
+.stok-list-cell[data-col="kullanici"] {
+white-space: normal;
+word-break: break-word;
+overflow-wrap: break-word;
+display: -webkit-box;
+-webkit-line-clamp: 3;
+line-clamp: 3;
+-webkit-box-orient: vertical;
+overflow: hidden;
+text-overflow: clip;
+text-align: center;
+}
+
 .stok-list-header-cell[data-col="tescil"],
 .stok-list-cell[data-col="tescil"] {
 justify-content: center;
 }
 
-/* Tek satır hücreler: metin taşmasın (marka ve sube 2 satıra inebilir) */
-.stok-list-cell:not([data-col="marka"]):not([data-col="sube"]) {
+/* Tek satır hücreler: metin taşmasın (marka, sube, kullanıcı çok satır) */
+.stok-list-cell:not([data-col="marka"]):not([data-col="sube"]):not([data-col="kullanici"]) {
 white-space: nowrap;
 text-overflow: ellipsis;
 }
