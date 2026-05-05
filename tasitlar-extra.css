@@ -2903,15 +2903,13 @@
 }
 
 #monthly-todo-modal .monthly-todo-type {
+  display: block;
   font-weight: 600;
   color: #e2e8f0;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
+  line-height: 1.25;
   white-space: normal;
   word-break: normal;
-  overflow-wrap: break-word;
+  overflow-wrap: anywhere;
 }
 
 #monthly-todo-modal .monthly-todo-enddate {
