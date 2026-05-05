@@ -1369,9 +1369,10 @@ content: "";
 position: absolute;
 left: 0;
 right: 0;
-bottom: 0;
+bottom: -3px;
 height: 1px;
-background: rgba(var(--theme-color-rgb), 0.32);
+background: rgba(var(--theme-color-rgb), 0.42);
+z-index: 3;
 pointer-events: none;
 }
 #stok-list-container:has(.stok-list-top-controls) > .stok-list-container {
