@@ -1115,7 +1115,7 @@ padding: 1px 0;
 #reports-modal .modal-container > #reports-list-header-actions:not(:empty),
 #reports-modal .modal-container > #reports-list-header-actions.has-stok-actions {
 flex-shrink: 0 !important;
-min-height: 96px !important;
+min-height: 72px !important;
 }
 #reports-modal .reports-list-header-actions:not(:empty) {
 padding-top: 4px !important;
