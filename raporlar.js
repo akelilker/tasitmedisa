@@ -704,7 +704,7 @@
             // 8+ sütun: sabit px. Masaüstünde Şube 4px genişler; denge için Marka 4px daralır.
             const basePx = isMobile
                 ? {
-                    'sira': 26, 'sube': 82, 'yil': 42, 'marka': 150, 'plaka': 64, 'sanziman': 60, 'km': 58
+                    'sira': 26, 'sube': 82, 'yil': 37, 'marka': 160, 'plaka': 64, 'sanziman': 55, 'km': 58
                 }
                 : {
                     'sira': 22,
@@ -732,10 +732,10 @@
             ? {
                 'sira': 'minmax(26px, 0.32fr)',
                 'sube': 'minmax(48px, 1.25fr)',
-                'yil': 'minmax(42px, 0.62fr)',
-                'marka': 'minmax(60px, 2.2fr)',
+                'yil': 'minmax(37px, 0.55fr)',
+                'marka': 'minmax(70px, 2.45fr)',
                 'plaka': 'minmax(62px, 1.1fr)',
-                'sanziman': 'minmax(60px, 0.9fr)',
+                'sanziman': 'minmax(55px, 0.85fr)',
                 'km': 'minmax(52px, 1.1fr)'
             }
             : {
@@ -1068,7 +1068,8 @@
         renderStokList();
     };
 
-    /** Mobil: Liste scroll container'da tek hamlede sadece yatay veya sadece dikey kayma (eksen kilidi) */
+    /** Mobil: Detay sütunlarında yatay taşma varken tek jestte yatay/dikey karışmasını azaltır.
+     * Dikey kaydırma tarayıcıya bırakılır (scrollTop + preventDefault momentum’u öldürüyordu). */
     function setupStokListTouchAxisLock() {
         if (!window.matchMedia || !window.matchMedia('(max-width: 640px)').matches) return;
         const listContainer = document.getElementById('stok-list-container');
@@ -1094,6 +1095,8 @@
             const y = e.touches[0].clientY;
             const dx = x - startX;
             const dy = y - startY;
+            const canScrollX = scrollEl.scrollWidth > scrollEl.clientWidth + 2;
+            if (!canScrollX) return;
             if (lockedAxis === null && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) {
                 lockedAxis = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
             }
@@ -1102,12 +1105,8 @@
                 scrollEl.scrollLeft = next;
                 scrollEl.scrollTop = startScrollTop;
                 e.preventDefault();
-            } else if (lockedAxis === 'y') {
-                const next = Math.max(0, Math.min(scrollEl.scrollHeight - scrollEl.clientHeight, startScrollTop - dy));
-                scrollEl.scrollTop = next;
-                scrollEl.scrollLeft = startScrollLeft;
-                e.preventDefault();
             }
+            /* lockedAxis === 'y': native dikey scroll + momentum (müdahale yok) */
         };
         const onEnd = () => {
             if (stokTouchColumnDrag.active || stokTouchColumnDrag.dragging) return;
