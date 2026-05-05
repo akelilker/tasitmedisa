@@ -1093,7 +1093,7 @@ padding: 1px 0;
 #reports-modal .modal-container > #reports-list-header-actions:not(:empty),
 #reports-modal .modal-container > #reports-list-header-actions.has-stok-actions {
 flex-shrink: 0 !important;
-min-height: 48px !important;
+min-height: 78px !important;
 }
 #reports-modal .reports-list-header-actions:not(:empty) {
 padding-top: 4px !important;
@@ -1181,9 +1181,9 @@ flex-shrink: 0 !important;
 }
 /* Masaüstü: Detay Ekleme bloğu 24px aşağı (önceki -36px'tan; başka hiçbir yer etkilenmez) */
 #reports-modal .reports-list-header-actions:has(.stok-detail-add-wrap.desktop-single-row) {
-padding-top: 4px !important;
-padding-bottom: 4px !important;
-margin-top: -12px !important; /* -36 + 24 = 24px aşağı */
+padding-top: 8px !important;
+padding-bottom: 8px !important;
+margin-top: 0 !important;
 }
 #reports-modal .stok-detail-add-wrap.desktop-single-row {
 padding-top: 0 !important;
@@ -1442,7 +1442,7 @@ width: auto !important;
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-2,
 #reports-modal:not(:has(.stok-detail-menu-open)) .stok-detail-add-wrap.desktop-single-row .stok-controls-row-2,
 #reports-modal:has(.stok-detail-menu-open) .stok-detail-add-wrap.desktop-single-row .stok-controls-row-2 {
-margin-top: 1px !important;
+margin-top: 8px !important;
 }
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-1 .stok-detail-add-btn {
 align-self: flex-start !important;
@@ -2960,9 +2960,9 @@ overflow-wrap: break-word;
         padding-bottom: 0 !important;
     }
     
-    /* Alt bloğu (Tarihler ve Simgeler) menü kapalıyken 8px yukarı çekerek boşluğu vakumlar */
+    /* Tarih satırı: üst blokla bindirme yapmadan 8px ara (desktop-single-row) */
     #reports-modal:not(:has(.stok-detail-menu-open)) .stok-detail-add-wrap.desktop-single-row .stok-controls-row-2 {
-        margin-top: -8px !important; 
+        margin-top: 8px !important;
         padding-top: 0 !important;
     }
 }

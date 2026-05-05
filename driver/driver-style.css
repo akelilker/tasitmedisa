@@ -4097,8 +4097,70 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   padding-right: 4px !important;
 }
 .login-page .login-container {
+  width: 100% !important;
+  max-width: 360px !important;
+  margin: 0 auto !important;
   padding-left: 16px !important;
   padding-right: 16px !important;
+  box-sizing: border-box !important;
+}
+
+.login-page .login-form {
+  width: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 10px !important;
+}
+
+.login-page .login-form .form-group {
+  width: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+  margin: 0 !important;
+}
+
+.login-page .login-form .form-group label,
+.login-page .login-form .form-group-checkbox label {
+  color: rgba(238, 246, 255, 0.95) !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  line-height: 1.2 !important;
+}
+
+.login-page .login-form .form-group input {
+  width: 100% !important;
+  height: 34px !important;
+  padding: 6px 10px !important;
+  box-sizing: border-box !important;
+  border-radius: 8px !important;
+  color: #f0f0f0 !important;
+  font-size: 13px !important;
+  line-height: 1.2 !important;
+}
+
+.login-page .login-form .form-group-checkbox {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  margin: 0 !important;
+}
+
+.login-page .login-form .form-group-checkbox input {
+  width: 16px !important;
+  height: 16px !important;
+  margin: 0 !important;
+  flex: 0 0 auto !important;
+}
+
+.login-page .login-form .btn-login {
+  width: 100% !important;
+  height: 36px !important;
+  margin: 2px 0 0 0 !important;
+  border-radius: 8px !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
 }
 /* Şifre ekranı: ana uygulamadaki footer üstü link iskeleti kullanılır */
 .login-page .user-panel-link.driver-home-link {
