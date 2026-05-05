@@ -551,6 +551,9 @@ flex: 1 !important;
 min-height: 0 !important;
 overflow-y: auto !important;
 -webkit-overflow-scrolling: touch;
+touch-action: pan-y;
+overscroll-behavior-y: auto;
+overscroll-behavior-x: none;
 }
 /* Yatay kaydırma: sadece içerik taşınca (overflow-x: auto); çubuk belirginliği minimum */
 .stok-list-container {
@@ -2627,8 +2630,10 @@ flex: 1;
 min-height: 0;
 overflow-y: auto;
 -webkit-overflow-scrolling: touch;
+touch-action: pan-y;
+overscroll-behavior-y: auto;
+overscroll-behavior-x: none;
 margin-top: 2px; /* 6px azaltıldı (8px→2px) */
-contain: layout;
 padding-bottom: 16px;
 box-sizing: border-box;
 }
@@ -2641,6 +2646,7 @@ overflow-x: hidden;
 overflow-x: auto;
 scrollbar-width: thin;
 scrollbar-color: rgba(128, 128, 128, 0.35) transparent;
+touch-action: pan-x pan-y;
 }
 #stok-list-container:has(.stok-list-top-controls) > .stok-list-container .stok-list-header {
 position: sticky;
