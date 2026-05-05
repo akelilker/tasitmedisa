@@ -597,6 +597,10 @@ border-spacing: 0;
 .stok-list-container[data-has-detail-columns="true"] .stok-list-table {
 min-width: 800px;
 }
+/* Muayene + Egzoz iki sütun: ekstra genişlik (son sütun viewport dışında kalmasın) */
+.stok-list-container[data-stok-muayene-egzoz-split="true"] .stok-list-table {
+min-width: 980px;
+}
 
 .stok-list-header {
 position: sticky;
