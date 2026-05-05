@@ -2696,7 +2696,7 @@
 #monthly-todo-modal .monthly-todo-col-header,
 #monthly-todo-modal .monthly-todo-task-row {
   display: grid;
-  grid-template-columns: minmax(40px, calc(24% - 12px)) minmax(0, 1fr) minmax(120px, calc(34% + 12px));
+  grid-template-columns: minmax(40px, calc(24% - 12px)) minmax(0, 1fr) minmax(126px, calc(34% + 18px));
   column-gap: 10px;
   align-items: center;
 }
@@ -2910,6 +2910,19 @@
   white-space: normal;
   word-break: normal;
   overflow-wrap: anywhere;
+}
+
+#monthly-todo-modal .monthly-todo-type .monthly-todo-description-date {
+  display: block;
+  font-size: 11px;
+  line-height: 1.25;
+  font-weight: 400;
+}
+
+@media (min-width: 641px) {
+  #monthly-todo-modal .monthly-todo-type .monthly-todo-description-date {
+    font-size: 12px;
+  }
 }
 
 #monthly-todo-modal .monthly-todo-enddate {
