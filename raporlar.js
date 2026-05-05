@@ -424,6 +424,7 @@
         const todayStr = `${String(today.getDate()).padStart(2, '0')}/${String(today.getMonth() + 1).padStart(2, '0')}/${today.getFullYear()}`;
         const todayInputValue = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
         const hasDetailColumns = Object.values(stokActiveColumns).some(Boolean);
+        const hasMuayeneEgzozSplit = !!stokActiveColumns.muayene;
         const backNavigationHtml = stokAutoSingleBranchView ? '' : `
                     <div class="universal-back-bar">
                         <button type="button" class="universal-back-btn" onclick="goBackToStokGrid()" title="Raporlar">
@@ -471,7 +472,7 @@
                     </div>
                 </div>
             </div>
-            <div class="stok-list-container" ${hasDetailColumns ? 'data-has-detail-columns="true"' : ''}>
+            <div class="stok-list-container"${hasDetailColumns ? ' data-has-detail-columns="true"' : ''}${hasMuayeneEgzozSplit ? ' data-stok-muayene-egzoz-split="true"' : ''}>
                 <table class="stok-list-table">
                     <thead class="stok-list-header">
                         ${headerRow}
@@ -751,6 +752,41 @@
         return allColumns.map(col => columnWidths[col.key] || '80px').join(' ');
     }
 
+    /** Modal stok tablosu: muayene sütunundan hemen sonra egzoz (Excel / yazdır ile aynı düzen) */
+    function expandStokGridColumns(columns) {
+        var out = [];
+        columns.forEach(function(col) {
+            if (!col || !col.key) return;
+            out.push(col);
+            if (col.key === 'muayene') {
+                out.push({ key: 'egzozMuayene', sortable: true });
+            }
+        });
+        return out;
+    }
+
+    function expandStokGridRowCells(cells, vehicle) {
+        var out = [];
+        for (var i = 0; i < cells.length; i++) {
+            var c = cells[i];
+            if (!c || c.key !== 'muayene') {
+                out.push(c);
+                continue;
+            }
+            out.push({
+                key: 'muayene',
+                value: formatStokMuayeneDateOnlyForPrint(vehicle),
+                warningClass: getStokDateWarningClass(vehicle.muayeneDate)
+            });
+            out.push({
+                key: 'egzozMuayene',
+                value: formatStokEgzozDateOnlyForPrint(vehicle),
+                warningClass: getStokDateWarningClass(vehicle.egzozMuayeneDate)
+            });
+        }
+        return out;
+    }
+
     // Sütun başlık satırı oluştur
     function createStokHeaderRow() {
         const baseColumns = [
@@ -990,40 +1026,6 @@
             }
             return `<td class="${cellClass}" data-col="${cell.key}">${inner}</td>`;
         }).join('')}</tr>`;
-    }
-
-    /** Modal stok tablosu: muayene sütunundan hemen sonra egzoz (Excel / yazdır ile aynı düzen) */
-    function expandStokGridColumns(columns) {
-        var out = [];
-        columns.forEach(function(col) {
-            out.push(col);
-            if (col.key === 'muayene') {
-                out.push({ key: 'egzozMuayene', sortable: true });
-            }
-        });
-        return out;
-    }
-
-    function expandStokGridRowCells(cells, vehicle) {
-        var out = [];
-        for (var i = 0; i < cells.length; i++) {
-            var c = cells[i];
-            if (c.key === 'muayene') {
-                out.push({
-                    key: 'muayene',
-                    value: formatStokMuayeneDateOnlyForPrint(vehicle),
-                    warningClass: getStokDateWarningClass(vehicle.muayeneDate)
-                });
-                out.push({
-                    key: 'egzozMuayene',
-                    value: formatStokEgzozDateOnlyForPrint(vehicle),
-                    warningClass: getStokDateWarningClass(vehicle.egzozMuayeneDate)
-                });
-            } else {
-                out.push(c);
-            }
-        }
-        return out;
     }
 
     // Sıralama uygula
