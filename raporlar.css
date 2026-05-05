@@ -1117,6 +1117,10 @@ padding: 1px 0;
 flex-shrink: 0 !important;
 min-height: 72px !important;
 }
+#reports-modal:not(:has(.stok-detail-menu-open)) .modal-container > #reports-list-header-actions:not(:empty),
+#reports-modal:not(:has(.stok-detail-menu-open)) .modal-container > #reports-list-header-actions.has-stok-actions {
+min-height: 48px !important;
+}
 #reports-modal .reports-list-header-actions:not(:empty) {
 padding-top: 4px !important;
 padding-bottom: 4px !important;
