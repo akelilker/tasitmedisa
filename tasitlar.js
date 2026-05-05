@@ -3833,7 +3833,14 @@
       var plate = escapeHtml(v.plate || '-');
       var bm = escapeHtml(formatBrandModel(v.brandModel || '-'));
       var kul = escapeHtml(getMonthlyTodoKullaniciLabel(v, userMap));
-      var typeLabel = escapeHtml(String(t.type || ''));
+      var typeText = String(t.type || '').trim();
+      var typeDescriptionMap = {
+        'Sigorta': 'Trafik Sigortasının',
+        'Kasko': 'Kasko Poliçesinin',
+        'Muayene': 'Araç Muayenesinin',
+        'Egzoz Muayene': 'Egzoz Muayenesinin',
+        'Muayene + Egzoz': 'Araç Muayenesi ve Egzoz Muayenesinin'
+      };
       var dateRaw = t.date != null ? String(t.date).trim() : '';
       var dateShown = '—';
       if (dateRaw) {
@@ -3843,6 +3850,17 @@
       var warningClass = String(t.warningClass || '');
       var past = String(t.status) === 'past' || (typeof t.days === 'number' && t.days < 0);
       var daysVal = typeof t.days === 'number' ? t.days : null;
+      var descriptionPrefix = typeDescriptionMap[typeText] || typeText || 'İlgili İşlemin';
+      var descriptionText = '';
+      if (!dateRaw || daysVal === null) {
+        descriptionText = descriptionPrefix + ' Geçerlilik Süresi Eksiktir.';
+      } else if (daysVal < 0) {
+        descriptionText = descriptionPrefix + ' Geçerlilik Süresi ' + Math.abs(daysVal) + ' Gün Önce Bitmiştir. Bitiş Tarihi: ' + dateShown;
+      } else if (daysVal === 0) {
+        descriptionText = descriptionPrefix + ' Geçerlilik Süresi Bugün Bitecektir. Bitiş Tarihi: ' + dateShown;
+      } else {
+        descriptionText = descriptionPrefix + ' Geçerlilik Süresi ' + daysVal + ' Gün Sonra Bitecektir. Bitiş Tarihi: ' + dateShown;
+      }
       var daysHtml = '';
       if (!dateRaw || daysVal === null) {
         daysHtml = escapeHtml(dateRaw ? '—' : 'Eksik');
@@ -3866,7 +3884,7 @@
       html += '<span class="monthly-todo-user">' + kul + '</span>';
       html += '</span>';
       html += '<span class="monthly-todo-right">';
-      html += '<span class="monthly-todo-type">' + typeLabel + '</span>';
+      html += '<span class="monthly-todo-type">' + escapeHtml(descriptionText) + '</span>';
       html += '<span class="monthly-todo-meta">';
       html += '<span class="monthly-todo-enddate">' + dateShown + '</span>';
       html += '<span class="monthly-todo-days">' + daysHtml + '</span>';
@@ -3952,6 +3970,12 @@
 
   initMonthlyTodoHeaderButtonOnce();
 
+  function getMonthlyTodoTitleText() {
+    var monthName = new Date().toLocaleDateString('tr-TR', { month: 'long' });
+    monthName = monthName ? monthName.charAt(0).toUpperCase() + monthName.slice(1) : '';
+    return (monthName || 'Bu Ay') + ' Ayı Hatırlatmaları';
+  }
+
   function ensureMonthlyTodoModalMounted() {
     var el = document.getElementById('monthly-todo-modal');
     if (!el) {
@@ -3962,7 +3986,7 @@
       el.innerHTML =
         '<div class="modal-container monthly-todo-modal-container">' +
           '<div class="modal-header">' +
-            '<h2>BU AY YAPILACAKLAR</h2>' +
+            '<h2>' + escapeHtml(getMonthlyTodoTitleText()) + '</h2>' +
             '<button type="button" class="modal-close monthly-todo-modal-close" aria-label="Kapat">' +
               '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>' +
             '</button>' +
