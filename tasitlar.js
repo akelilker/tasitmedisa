@@ -3852,14 +3852,19 @@
       var daysVal = typeof t.days === 'number' ? t.days : null;
       var descriptionPrefix = typeDescriptionMap[typeText] || typeText || 'İlgili İşlemin';
       var descriptionText = '';
+      var lineMain = '';
+      var hasDateLine = false;
       if (!dateRaw || daysVal === null) {
         descriptionText = descriptionPrefix + ' Geçerlilik Süresi Eksiktir.';
       } else if (daysVal < 0) {
-        descriptionText = descriptionPrefix + ' Geçerlilik Süresi ' + Math.abs(daysVal) + ' Gün Önce Bitmiştir.<br>Bitiş Tarihi: ' + dateShown;
+        lineMain = descriptionPrefix + ' Geçerlilik Süresi ' + Math.abs(daysVal) + ' Gün Önce Bitmiştir.';
+        hasDateLine = true;
       } else if (daysVal === 0) {
-        descriptionText = descriptionPrefix + ' Geçerlilik Süresi Bugün Bitecektir.<br>Bitiş Tarihi: ' + dateShown;
+        lineMain = descriptionPrefix + ' Geçerlilik Süresi Bugün Bitecektir.';
+        hasDateLine = true;
       } else {
-        descriptionText = descriptionPrefix + ' Geçerlilik Süresi ' + daysVal + ' Gün Sonra Bitecektir.<br>Bitiş Tarihi: ' + dateShown;
+        lineMain = descriptionPrefix + ' Geçerlilik Süresi ' + daysVal + ' Gün Sonra Bitecektir.';
+        hasDateLine = true;
       }
       var rowTone = '';
       if (past || warningClass === 'date-warning-red') {
@@ -3874,7 +3879,11 @@
       html += '<span class="monthly-todo-user">' + kul + '</span>';
       html += '</span>';
       html += '<span class="monthly-todo-right">';
-      html += '<span class="monthly-todo-type">' + escapeHtml(descriptionText).replace(/&lt;br&gt;/g, '<br>') + '</span>';
+      if (hasDateLine) {
+        html += '<span class="monthly-todo-type">' + escapeHtml(lineMain) + '<br><span class="monthly-todo-description-date">Bitiş Tarihi: ' + dateShown + '</span></span>';
+      } else {
+        html += '<span class="monthly-todo-type">' + escapeHtml(descriptionText) + '</span>';
+      }
       html += '</span>';
       html += '</button>';
     });
