@@ -349,27 +349,29 @@ function buildAuthHeaders(extraHeaders) {
 function buildFallbackPermissions(role) {
     var normalizedRole = normalizeSessionRole(role);
     var hasMainAppAccess = hasMainAppAccessForSession({ role: normalizedRole });
+    var canManageGlobalData = normalizedRole === 'genel_yonetici' || normalizedRole === 'sube_yonetici';
     return {
         view_main_app: hasMainAppAccess,
         view_reports: hasMainAppAccess,
         manage_users: hasMainAppAccess,
         manage_branches: normalizedRole === 'genel_yonetici',
-        manage_data: normalizedRole === 'genel_yonetici',
-        manage_settings: normalizedRole === 'genel_yonetici'
+        manage_data: canManageGlobalData,
+        manage_settings: canManageGlobalData
     };
 }
 
 function normalizeSessionPermissions(role, permissions) {
     var normalizedRole = normalizeSessionRole(role);
     var fallback = buildFallbackPermissions(normalizedRole);
+    var canManageGlobalData = normalizedRole === 'genel_yonetici' || normalizedRole === 'sube_yonetici';
 
     return {
         view_main_app: !!fallback.view_main_app,
         view_reports: !!fallback.view_reports,
         manage_users: !!fallback.manage_users,
         manage_branches: normalizedRole === 'genel_yonetici',
-        manage_data: normalizedRole === 'genel_yonetici',
-        manage_settings: normalizedRole === 'genel_yonetici'
+        manage_data: canManageGlobalData,
+        manage_settings: canManageGlobalData
     };
 }
 
