@@ -3808,6 +3808,13 @@
   }
 
   function fillMonthlyTodoModalBody(bodyEl, tasksArray) {
+    var typeDescriptionMap = {
+      'Sigorta': 'Trafik Sigortasının',
+      'Kasko': 'Kasko Poliçesinin',
+      'Muayene': 'Araç Muayenesinin',
+      'Egzoz Muayene': 'Egzoz Muayenesinin',
+      'Muayene + Egzoz': 'Araç Muayenesi ve Egzoz Muayenesinin'
+    };
     var users = readUsers();
     var userMap = {};
     users.forEach(function(u) {
@@ -3834,13 +3841,6 @@
       var bm = escapeHtml(formatBrandModel(v.brandModel || '-'));
       var kul = escapeHtml(getMonthlyTodoKullaniciLabel(v, userMap));
       var typeText = String(t.type || '').trim();
-      var typeDescriptionMap = {
-        'Sigorta': 'Trafik Sigortasının',
-        'Kasko': 'Kasko Poliçesinin',
-        'Muayene': 'Araç Muayenesinin',
-        'Egzoz Muayene': 'Egzoz Muayenesinin',
-        'Muayene + Egzoz': 'Araç Muayenesi ve Egzoz Muayenesinin'
-      };
       var dateRaw = t.date != null ? String(t.date).trim() : '';
       var dateShown = '—';
       if (dateRaw) {
