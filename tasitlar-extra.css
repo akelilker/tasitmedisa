@@ -2913,7 +2913,7 @@
 }
 
 #monthly-todo-modal .monthly-todo-type .monthly-todo-description-date {
-  display: block;
+  display: inline;
   font-size: 11px;
   line-height: 1.25;
   font-weight: 400;

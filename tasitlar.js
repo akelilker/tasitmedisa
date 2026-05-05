@@ -3880,7 +3880,7 @@
       html += '</span>';
       html += '<span class="monthly-todo-right">';
       if (hasDateLine) {
-        html += '<span class="monthly-todo-type">' + escapeHtml(lineMain) + '<br><span class="monthly-todo-description-date">Bitiş Tarihi: ' + dateShown + '</span></span>';
+        html += '<span class="monthly-todo-type">' + escapeHtml(lineMain) + '<br>Bitiş Tarihi: <span class="monthly-todo-description-date">' + dateShown + '</span></span>';
       } else {
         html += '<span class="monthly-todo-type">' + escapeHtml(descriptionText) + '</span>';
       }
