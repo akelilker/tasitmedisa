@@ -2555,6 +2555,23 @@ width: 100% !important;
 #stok-date-end {
 height: 32px !important;
 min-height: 32px !important;
+color: var(--data-value-color, #a0aec0) !important;
+-webkit-text-fill-color: var(--data-value-color, #a0aec0) !important;
+}
+#stok-date-start::-webkit-datetime-edit,
+#stok-date-start::-webkit-datetime-edit-fields-wrapper,
+#stok-date-start::-webkit-datetime-edit-text,
+#stok-date-start::-webkit-datetime-edit-month-field,
+#stok-date-start::-webkit-datetime-edit-day-field,
+#stok-date-start::-webkit-datetime-edit-year-field,
+#stok-date-end::-webkit-datetime-edit,
+#stok-date-end::-webkit-datetime-edit-fields-wrapper,
+#stok-date-end::-webkit-datetime-edit-text,
+#stok-date-end::-webkit-datetime-edit-month-field,
+#stok-date-end::-webkit-datetime-edit-day-field,
+#stok-date-end::-webkit-datetime-edit-year-field {
+color: var(--data-value-color, #a0aec0) !important;
+-webkit-text-fill-color: var(--data-value-color, #a0aec0) !important;
 }
 .stok-export-controls {
 display: flex;
