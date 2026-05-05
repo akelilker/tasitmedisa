@@ -1125,17 +1125,10 @@ body.dashboard-page {
 
 @media (max-width: 768px) {
   /* Yeşil Bildir (footer) ile Talep Gönder arası tam 6px (margin çöküşü tek kaynak) */
-<<<<<<< personelmedisa-mobile-footer-talep-gap-6px-cfe2
   .dashboard-page .driver-action-area-inner .driver-action-footer.driver-action-group {
     margin-bottom: 0 !important;
   }
   .dashboard-page .driver-action-area-inner .driver-action-feedback-slot.driver-request-fab-row {
-=======
-  .dashboard-page .driver-action-footer.driver-action-group {
-    margin-bottom: 0 !important;
-  }
-  .dashboard-page .driver-action-feedback-slot.driver-request-fab-row {
->>>>>>> main
     margin-top: 6px !important;
   }
   .dashboard-page .driver-request-fab-row {
