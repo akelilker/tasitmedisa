@@ -1203,7 +1203,7 @@ flex-shrink: 0 !important;
 }
 /* Masaüstü: Detay Ekleme bloğu 24px aşağı (önceki -36px'tan; başka hiçbir yer etkilenmez) */
 #reports-modal .reports-list-header-actions:has(.stok-detail-add-wrap.desktop-single-row) {
-padding-top: 10px !important;
+padding-top: 26px !important;
 padding-bottom: 10px !important;
 margin-top: 0 !important;
 }
@@ -1466,7 +1466,7 @@ width: auto !important;
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-2,
 #reports-modal:not(:has(.stok-detail-menu-open)) .stok-detail-add-wrap.desktop-single-row .stok-controls-row-2,
 #reports-modal:has(.stok-detail-menu-open) .stok-detail-add-wrap.desktop-single-row .stok-controls-row-2 {
-margin-top: 8px !important;
+margin-top: 12px !important;
 }
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-1 .stok-detail-add-btn {
 align-self: flex-start !important;
