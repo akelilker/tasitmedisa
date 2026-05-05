@@ -2165,6 +2165,10 @@ line-height: 1.4;
 
 /* — MOBİL TEK BLOK (max-width: 640px) - .cursorrules uyumlu — */
 @media (max-width: 640px) {
+/* Raporlar stok tablosu: içerik ~0.5pt büyütme (96/144 px ≈ 0.667px) — dar sütunlar kısa metin */
+#reports-modal {
+  --stok-mob-half-pt: calc(96px / 144);
+}
 /* Kontrast + Modal */
 .report-card {
 border-color: rgba(255, 255, 255, 0.4) !important;
@@ -2286,21 +2290,21 @@ background: rgba(255, 255, 255, 0.06) !important;
 }
 
 .stok-list-header-cell {
-font-size: clamp(11.9px, 2.6vw, 14.9px) !important;
+font-size: clamp(calc(11.9px + var(--stok-mob-half-pt)), 2.6vw, 14.9px) !important;
 padding: 2px 3px !important;
 color: #ffffff !important;
 }
 .stok-list-header-cell .stok-header-text {
-font-size: clamp(8.4px, 2.6vw, 12.9px) !important;
+font-size: clamp(calc(8.4px + var(--stok-mob-half-pt)), 2.6vw, 12.9px) !important;
 color: #ffffff !important;
 }
 .stok-list-cell {
-font-size: clamp(11px, 2.5vw, 14px) !important;
+font-size: clamp(calc(11px + var(--stok-mob-half-pt)), 2.5vw, 14px) !important;
 padding: 2px 3px !important;
 }
 /* Şube sütunu: tek karakter alta inmesin – max 0.5pt küçük, gerekirse 1.5pt'a kadar küçülebilir */
 .stok-list-cell[data-col="sube"] {
-font-size: clamp(9.5px, 2.5vw, 13.5px) !important;
+font-size: clamp(calc(9.5px + var(--stok-mob-half-pt)), 2.5vw, 13.5px) !important;
 }
 
 /* Grid sütunları - taşma önleme */
@@ -2775,6 +2779,9 @@ padding: 16px;
 
 /* iOS PWA modal margin: style-core.css (.modal-overlay .modal-container) */
 @media (max-width: 640px) and (display-mode: standalone) {
+  #reports-modal {
+    --stok-mob-half-pt: calc(96px / 144);
+  }
   #reports-modal,
   #reports-modal .stok-list-container,
   #reports-modal .stok-list-table,
@@ -2785,16 +2792,16 @@ padding: 16px;
   }
 
   #reports-modal .stok-list-header-cell {
-    font-size: clamp(11.57px, 2.45vw, 14.57px) !important;
+    font-size: clamp(calc(11.57px + var(--stok-mob-half-pt)), 2.45vw, 14.57px) !important;
   }
   #reports-modal .stok-list-header-cell .stok-header-text {
-    font-size: clamp(10.07px, 2.35vw, 12.57px) !important;
+    font-size: clamp(calc(10.07px + var(--stok-mob-half-pt)), 2.35vw, 12.57px) !important;
   }
   #reports-modal .stok-list-cell {
-    font-size: clamp(10.67px, 2.25vw, 13.67px) !important;
+    font-size: clamp(calc(10.67px + var(--stok-mob-half-pt)), 2.25vw, 13.67px) !important;
   }
   #reports-modal .stok-list-cell[data-col="sube"] {
-    font-size: clamp(9.67px, 2.25vw, 13.17px) !important;
+    font-size: clamp(calc(9.67px + var(--stok-mob-half-pt)), 2.25vw, 13.17px) !important;
   }
 }
 
