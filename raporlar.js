@@ -78,31 +78,15 @@
         ghostEl: null,
         suppressClickUntil: 0
     };
+    /** Sütun sırası/taşıt tipi localStorage ile bir kez yüklenir; detay seçimleri kalıcı değil (F5 / yeni oturumda hep kapalı). */
+    let stokGridPersistenceInited = false;
 
     function loadStokColumnState() {
+        if (stokGridPersistenceInited) return;
+        stokGridPersistenceInited = true;
         var load = typeof window.loadColumnState === 'function' ? window.loadColumnState : function(k, def) { try { var r = localStorage.getItem(k); return r ? JSON.parse(r) : def; } catch (e) { return def; } };
-        /* Oturum başı (sayfa/PWA açılışı): hiçbir detay seçili gelmesin; aynı sekmede sonraki açılışlarda son tercihler localStorage'dan */
-        var sessKey = 'medisa_stok_detail_session_init_v1';
-        if (!sessionStorage.getItem(sessKey)) {
-            stokActiveColumns = {
-                sigorta: false,
-                kasko: false,
-                kaskoDegeri: false,
-                muayene: false,
-                kredi: false,
-                lastik: false,
-                utts: false,
-                takip: false,
-                tramer: false,
-                boya: false,
-                kullanici: false,
-                tescil: false
-            };
-            try { sessionStorage.setItem(sessKey, '1'); } catch (e) {}
-        } else {
-            var savedCols = load('stok_active_columns', {});
-            if (savedCols && typeof savedCols === 'object') stokActiveColumns = { ...stokActiveColumns, ...savedCols };
-        }
+        try { localStorage.removeItem('stok_active_columns'); } catch (e) {}
+        /* Detay seçimleri: sadece bellekte (F5 / sayfa kapanınca sıfır). Kalıcı: detay sırası + temel sütun sırası. */
         var savedOrder = load('stok_column_order', []);
         if (Array.isArray(savedOrder)) stokColumnOrder = savedOrder;
         var savedBaseOrder = load('stok_base_column_order', STOK_BASE_COLUMN_DEFAULTS);
@@ -123,7 +107,6 @@
     }
     function saveStokColumnState() {
         var save = typeof window.saveColumnState === 'function' ? window.saveColumnState : function(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
-        save('stok_active_columns', stokActiveColumns);
         save('stok_column_order', stokColumnOrder);
         save('stok_base_column_order', stokBaseColumnOrder);
     }
@@ -150,7 +133,7 @@
     window.openReportsView = function() {
         const modal = document.getElementById('reports-modal');
         if (modal) {
-            loadStokColumnState(); // Aktif sütunları yükle
+            loadStokColumnState(); // Sütun sırası (persist); detay seçimleri bellekte — F5’te sıfırlanır
             stokCurrentBranchId = null; // Grid görünümüne dön
             stokAutoSingleBranchView = false;
             switchReportTab({ allowSingleBranchBypass: true }); // Sekme UI + içerik render
@@ -199,8 +182,8 @@
             'km': 'KM',
             'sigorta': isVerySmall ? 'Sig.' : isMobile ? 'Sigorta' : 'Sigorta Bitiş',
             'kasko': isVerySmall ? 'Kas.' : isMobile ? 'Kasko' : 'Kasko Bitiş',
-            'muayene': isVerySmall ? 'Muay.' : isMobile ? 'Muayene' : 'Muayene T.',
-            'egzozMuayene': isTiny ? 'Egz.' : 'Egzoz',
+            'muayene': isVerySmall ? 'Muay.' : isMobile ? 'Muayene' : 'Muayene Tarihi',
+            'egzozMuayene': isTiny ? 'Egz.' : isMobile ? 'Egzoz' : 'Egzoz M.Tarihi',
             'kredi': isTiny ? 'Hak' : isVerySmall ? 'Hak M.' : isMobile ? 'Hak M.' : 'Hak Mahr.',
             'lastik': isTiny ? 'Y/K' : isVerySmall ? 'Yaz/Kış' : isMobile ? 'Yazlık/Kışlık' : 'Lastikler',
             'utts': 'UTTS',
