@@ -3855,11 +3855,11 @@
       if (!dateRaw || daysVal === null) {
         descriptionText = descriptionPrefix + ' Geçerlilik Süresi Eksiktir.';
       } else if (daysVal < 0) {
-        descriptionText = descriptionPrefix + ' Geçerlilik Süresi ' + Math.abs(daysVal) + ' Gün Önce Bitmiştir. Bitiş Tarihi: ' + dateShown;
+        descriptionText = descriptionPrefix + ' Geçerlilik Süresi ' + Math.abs(daysVal) + ' Gün Önce Bitmiştir.<br>Bitiş Tarihi: ' + dateShown;
       } else if (daysVal === 0) {
-        descriptionText = descriptionPrefix + ' Geçerlilik Süresi Bugün Bitecektir. Bitiş Tarihi: ' + dateShown;
+        descriptionText = descriptionPrefix + ' Geçerlilik Süresi Bugün Bitecektir.<br>Bitiş Tarihi: ' + dateShown;
       } else {
-        descriptionText = descriptionPrefix + ' Geçerlilik Süresi ' + daysVal + ' Gün Sonra Bitecektir. Bitiş Tarihi: ' + dateShown;
+        descriptionText = descriptionPrefix + ' Geçerlilik Süresi ' + daysVal + ' Gün Sonra Bitecektir.<br>Bitiş Tarihi: ' + dateShown;
       }
       var rowTone = '';
       if (past || warningClass === 'date-warning-red') {
@@ -3874,7 +3874,7 @@
       html += '<span class="monthly-todo-user">' + kul + '</span>';
       html += '</span>';
       html += '<span class="monthly-todo-right">';
-      html += '<span class="monthly-todo-type">' + escapeHtml(descriptionText) + '</span>';
+      html += '<span class="monthly-todo-type">' + escapeHtml(descriptionText).replace(/&lt;br&gt;/g, '<br>') + '</span>';
       html += '</span>';
       html += '</button>';
     });
