@@ -704,7 +704,7 @@
             // 8+ sütun: sabit px. Masaüstünde Şube 4px genişler; denge için Marka 4px daralır.
             const basePx = isMobile
                 ? {
-                    'sira': 26, 'sube': 82, 'yil': 42, 'marka': 150, 'plaka': 64, 'sanziman': 60, 'km': 58
+                    'sira': 26, 'sube': 82, 'yil': 37, 'marka': 160, 'plaka': 64, 'sanziman': 55, 'km': 58
                 }
                 : {
                     'sira': 22,
@@ -732,10 +732,10 @@
             ? {
                 'sira': 'minmax(26px, 0.32fr)',
                 'sube': 'minmax(48px, 1.25fr)',
-                'yil': 'minmax(42px, 0.62fr)',
-                'marka': 'minmax(60px, 2.2fr)',
+                'yil': 'minmax(37px, 0.55fr)',
+                'marka': 'minmax(70px, 2.45fr)',
                 'plaka': 'minmax(62px, 1.1fr)',
-                'sanziman': 'minmax(60px, 0.9fr)',
+                'sanziman': 'minmax(55px, 0.85fr)',
                 'km': 'minmax(52px, 1.1fr)'
             }
             : {
