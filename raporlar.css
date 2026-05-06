@@ -1211,9 +1211,9 @@ flex-shrink: 0 !important;
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-1 .stok-left-controls .stok-detail-add-btn {
 flex-shrink: 0 !important;
 }
-/* Masaüstü: Detay Ekleme bloğu 24px aşağı (önceki -36px'tan; başka hiçbir yer etkilenmez) */
+/* Masaüstü: üst iç boşluk (geri + Detay tek satır; translateY ile yukarı kaysın diye sıkı) */
 #reports-modal .reports-list-header-actions:has(.stok-detail-add-wrap.desktop-single-row) {
-padding-top: 12px !important;
+padding-top: 4px !important;
 padding-bottom: 0 !important;
 margin-top: 0 !important;
 }
@@ -1497,7 +1497,7 @@ width: auto !important;
 margin-top: 6px !important;
 }
 #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-1 .stok-detail-add-btn {
-align-self: flex-start !important;
+align-self: center !important;
 margin-left: 0 !important;
 }
 /* Masaüstü düzenleme: Sol ok + Raporlar üstte, Detay Ekleme altta ve sola yaslı */
@@ -3037,6 +3037,10 @@ overflow-wrap: break-word;
    MASAUSTU: RAPORLAR UST BASLIK HIZALAMA
    ========================================= */
 @media (min-width: 641px) {
+    /* Masaüstü: header row-1 içindeki genel -20px geri çubuğu ofseti bu düzende hizayı bozar — sıfırla */
+    #reports-modal .reports-list-header-actions .stok-detail-add-wrap.desktop-single-row .stok-controls-row-1 .universal-back-bar {
+        margin-top: 0 !important;
+    }
     /* KOK COZUM: Sol ok+etiket sola yasli, +Detay Ekleme ayni satirda gercek merkezde */
     #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-1 {
         display: grid !important;
@@ -3049,6 +3053,7 @@ overflow-wrap: break-word;
         padding-bottom: 0 !important;
         width: 100% !important;
         min-width: 0 !important;
+        transform: translateY(-10px) !important;
     }
 
     #reports-modal .stok-detail-add-wrap.desktop-single-row .stok-controls-row-1 .universal-back-bar {
