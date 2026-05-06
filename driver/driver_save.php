@@ -61,7 +61,7 @@ if ($aracId === '' || !is_numeric($aracId)) {
 
 if ($vehicleVersion === null || $vehicleVersion <= 0) {
     http_response_code(400);
-    echo json_encode(['success' => false, 'message' => 'Araç sürümü eksik!'], JSON_UNESCAPED_UNICODE);
+    echo json_encode(['success' => false, 'message' => 'Taşıt sürümü eksik!'], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
@@ -130,7 +130,7 @@ $result = medisaMutateData(function (&$data) use (
         return medisaBuildErrorResult('Bu Taşıta Erişim Yetkiniz Yok!', 403);
     }
 
-    $versionCheck = medisaEnsureVehicleVersion($vehicle, $vehicleVersion, 'Bu araç başka biri tarafından güncellendi. Güncel veriler yüklendi.');
+    $versionCheck = medisaEnsureVehicleVersion($vehicle, $vehicleVersion, 'Bu taşıt başka biri tarafından güncellendi. Güncel veriler yüklendi.');
     if ($versionCheck !== true) {
         return $versionCheck;
     }

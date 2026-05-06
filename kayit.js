@@ -2667,7 +2667,7 @@
         pendingRecordData = null;
       }).catch(function(err) {
         if (err && err.conflict) {
-          alert('Dikkat! Bu araç siz ekranı açtıktan sonra başka biri tarafından güncellenmiş. Veri ezilmesini önlemek için lütfen sayfayı yenileyip güncel durumu kontrol edin.');
+          alert('Dikkat! Bu taşıt siz ekranı açtıktan sonra başka biri tarafından güncellenmiş. Veri ezilmesini önlemek için lütfen sayfayı yenileyip güncel durumu kontrol edin.');
           return;
         }
         alert('Sunucuya kayıt yapılamadı. Lütfen tekrar deneyin.');
