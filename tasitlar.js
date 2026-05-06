@@ -7701,7 +7701,7 @@
   /**
    * Kasko Kodu güncelle
    */
-  window.updateKaskoKoduInfo = function() {
+  window.updateKaskoKoduInfo = async function() {
     const inputElement = document.getElementById('kasko-kodu-guncelle-input');
     const yeniKaskoKodu = inputElement ? inputElement.value.trim() : '';
 
@@ -7721,7 +7721,10 @@
 
     // Kasko tutarı: Excel listesinden güncel kod+yıla göre yeniden hesaplanır.
     const yearForKasko = vehicle.year || vehicle.modelYili || '';
-    if (typeof window.getKaskoDegeri === 'function') {
+    if (typeof window.getKaskoDegeriAsync === 'function') {
+      vehicle.kaskoDegeri = await window.getKaskoDegeriAsync(yeniKaskoKodu, yearForKasko);
+      vehicle.kaskoDegeriYuklemeTarihi = new Date().toISOString();
+    } else if (typeof window.getKaskoDegeri === 'function') {
       vehicle.kaskoDegeri = window.getKaskoDegeri(yeniKaskoKodu, yearForKasko);
       vehicle.kaskoDegeriYuklemeTarihi = new Date().toISOString();
     }

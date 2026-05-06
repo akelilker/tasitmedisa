@@ -1974,12 +1974,14 @@
             if (typeof window.clearKaskoCache === 'function') window.clearKaskoCache();
 
             var afterSave = function() {
-              if (typeof window.guncelleTumKaskoDegerleri === 'function') {
-                window.guncelleTumKaskoDegerleri();
-              }
-              if (typeof window.updateNotifications === 'function') {
-                window.updateNotifications();
-              }
+              var updatePromise = (typeof window.guncelleTumKaskoDegerleri === 'function')
+                ? window.guncelleTumKaskoDegerleri()
+                : Promise.resolve(false);
+              return Promise.resolve(updatePromise).then(function() {
+                if (typeof window.updateNotifications === 'function') {
+                  window.updateNotifications();
+                }
+              });
             };
 
             var saveUrl = window.API_SAVE_KASKO || ((window.MEDISA_API_BASE || '') + 'save_kasko.php');
@@ -2009,7 +2011,7 @@
               }
               return res.json().then(function() {
                 if (typeof window.closeCenteredInfoBox === 'function') window.closeCenteredInfoBox();
-                afterSave();
+                return afterSave().then(function() {
                 if (typeof window.showCenteredInfoBox === 'function') {
                   window.showCenteredInfoBox('Kasko listesi başarıyla güncellendi!', {
                     anchorEl: document.getElementById('kasko-yukle-btn'),
@@ -2024,6 +2026,7 @@
                 } else {
                   alert('Kasko listesi başarıyla güncellendi!');
                 }
+                });
               });
             }).catch(function() {
               if (typeof window.closeCenteredInfoBox === 'function') window.closeCenteredInfoBox();
