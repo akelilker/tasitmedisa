@@ -4066,16 +4066,23 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
     font-size: 15px;
     font-weight: 600;
     cursor: pointer;
-    border: 1px solid rgba(var(--theme-color-rgb), 0.9);
+    border: 1px solid rgba(74, 222, 128, 0.65);
     background: transparent;
-    color: var(--txt, #ffffff);
-    transition: background 0.2s, border-color 0.2s, transform 0.15s;
+    color: var(--green, #4ade80);
+    transition: background 0.2s, border-color 0.2s, color 0.2s, transform 0.15s;
   }
 
   .login-page #login-form #login-btn.btn-login:hover:not(:disabled) {
-    background: rgba(var(--theme-color-rgb), 0.16);
-    border-color: var(--theme-color, #d40000);
+    background: rgba(74, 222, 128, 0.14);
+    border-color: rgba(74, 222, 128, 0.9);
     transform: translateY(-1px);
+  }
+
+  .login-page #login-form #login-btn.btn-login:active:not(:disabled),
+  .login-page #login-form #login-btn.btn-login:focus-visible:not(:disabled) {
+    background: rgba(74, 222, 128, 0.18);
+    border-color: var(--green, #4ade80);
+    color: rgba(74, 222, 128, 0.98);
   }
 
   .login-page #login-form #login-btn.btn-login:disabled {
