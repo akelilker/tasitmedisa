@@ -21,27 +21,27 @@ if ($vehicleId === '') {
 $documentType = strtolower(trim((string)($_GET['documentType'] ?? 'ruhsat')));
 $config = medisaGetVehicleDocumentConfig($documentType);
 if (!$config) {
-    respondJsonError(400, 'Gecersiz belge tipi');
+    respondJsonError(400, 'Geçersiz belge tipi');
 }
 
 $data = loadData();
 if (!is_array($data)) {
-    respondJsonError(500, 'Veri okunamadi');
+    respondJsonError(500, 'Veri okunamadı');
 }
 
 $auth = medisaResolveAuthorizedContext($data, '', true);
 if (($auth['success'] ?? false) !== true) {
-    respondJsonError((int)($auth['status'] ?? 403), $auth['message'] ?? 'Bu islem icin yetkiniz yok.');
+    respondJsonError((int)($auth['status'] ?? 403), $auth['message'] ?? 'Bu işlem için yetkiniz yok.');
 }
 
 $vehicleIndex = medisaFindVehicleIndex($data, $vehicleId);
 if ($vehicleIndex < 0) {
-    respondJsonError(404, 'Tasit bulunamadi');
+    respondJsonError(404, 'Taşıt bulunamadı');
 }
 
 $vehicle = $data['tasitlar'][$vehicleIndex];
 if (!medisaCanViewVehicleRecord($vehicle, $auth['context'])) {
-    respondJsonError(403, 'Bu ruhsati goruntuleme yetkiniz yok.');
+    respondJsonError(403, 'Bu ruhsatı görüntüleme yetkiniz yok.');
 }
 
 $sourcePath = medisaResolveVehicleDocumentFilePath($vehicle, $documentType);
@@ -72,7 +72,7 @@ if ($safeId === '') {
 
 $previewDir = __DIR__ . '/data/' . $config['dir'] . '_preview';
 if (!is_dir($previewDir) && !mkdir($previewDir, 0755, true) && !is_dir($previewDir)) {
-    respondJsonError(500, 'Preview klasoru olusturulamadi');
+    respondJsonError(500, 'Preview klasörü oluşturulamadı');
 }
 
 $previewPath = $previewDir . '/' . $safeId . '.jpg';
@@ -80,7 +80,7 @@ $mustGenerate = !is_file($previewPath) || filesize($previewPath) <= 0 || filemti
 
 if ($mustGenerate) {
     if (!class_exists('Imagick')) {
-        respondJsonError(501, 'Sunucuda Imagick destegi yok');
+        respondJsonError(501, 'Sunucuda Imagick desteği yok');
     }
 
     try {
@@ -112,7 +112,7 @@ if ($mustGenerate) {
         if (!$imagick->writeImage($previewPath)) {
             $imagick->clear();
             $imagick->destroy();
-            respondJsonError(500, 'Preview dosyasi kaydedilemedi');
+            respondJsonError(500, 'Preview dosyası kaydedilemedi');
         }
 
         $imagick->clear();
@@ -125,13 +125,13 @@ if ($mustGenerate) {
             strpos($message, 'no decode delegate') !== false ||
             strpos($message, 'not allowed by the security policy') !== false;
 
-        respondJsonError($isPreviewCapabilityError ? 501 : 500, 'PDF preview uretilemedi');
+        respondJsonError($isPreviewCapabilityError ? 501 : 500, 'PDF preview üretilemedi');
     }
 }
 
 clearstatcache(true, $previewPath);
 if (!is_file($previewPath) || filesize($previewPath) <= 0) {
-    respondJsonError(500, 'Preview dosyasi hazir degil');
+    respondJsonError(500, 'Preview dosyası hazır değil');
 }
 
 header('Content-Type: image/jpeg');
