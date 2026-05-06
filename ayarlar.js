@@ -998,7 +998,7 @@
       const checked = container.querySelectorAll('input[name=user-vehicle]:checked');
       const n = checked.length;
       const textEl = trigger.querySelector('.user-vehicles-trigger-text');
-      if (textEl) textEl.textContent = n === 0 ? 'Taşıt seçin' : (n === 1 ? '1 Taşıt Seçildi' : n + ' Taşıt Seçildi');
+      if (textEl) textEl.textContent = n === 0 ? 'Taşıt Seçin' : (n === 1 ? '1 Taşıt Seçildi' : n + ' Taşıt Seçildi');
     }
   
     function isUserVehiclesDropdownOpen(dropdown) {

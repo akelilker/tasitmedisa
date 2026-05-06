@@ -187,7 +187,7 @@
 
             <div class="icons-row">
                 <div class="icons-row-left">
-                    <button type="button" id="monthly-todo-header-btn" class="icon-btn monthly-todo-header-btn" aria-label="Bu ay yapılacaklar">
+                    <button type="button" id="monthly-todo-header-btn" class="icon-btn monthly-todo-header-btn" aria-label="Bu Ay Yapılacaklar">
                         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01"/></svg>
                         <span class="monthly-todo-header-badge" hidden aria-hidden="true"></span>
                     </button>
@@ -382,7 +382,7 @@
                                 </div>
                             </div>
                             <div class="form-section">
-                                <label class="form-label form-label-reveal" for="anahtar-nerede">Anahtar nerede</label>
+                                <label class="form-label form-label-reveal" for="anahtar-nerede">Anahtar Nerede</label>
                                 <textarea class="form-input form-input-reveal vehicle-conditional-auto-expand" rows="1" placeholder="Nerede?" id="anahtar-nerede"></textarea>
                             </div>
                             <div class="form-section-inline" data-section="kredi">
@@ -393,7 +393,7 @@
                                 </div>
                             </div>
                             <div class="form-section">
-                                <label class="form-label form-label-reveal" for="kredi-detay">Hak mahrumiyeti detay</label>
+                                <label class="form-label form-label-reveal" for="kredi-detay">Hak Mahrumiyeti Detay</label>
                                 <textarea class="form-input form-input-reveal vehicle-conditional-auto-expand" rows="1" placeholder="Detay Ekleyin" id="kredi-detay"></textarea>
                             </div>
                             <div class="form-section" id="vehicle-branch-form-section">
@@ -412,7 +412,7 @@
                             </div>
                             <div class="form-section">
                                 <label class="form-label" for="vehicle-notes">Notlar</label>
-                                <textarea id="vehicle-notes" class="form-input notes-auto-expand" rows="1" placeholder="Ek bilgiler..."></textarea>
+                                <textarea id="vehicle-notes" class="form-input notes-auto-expand" rows="1" placeholder="Ek Bilgiler..."></textarea>
                             </div>
                         </div>
                     </div>
@@ -529,7 +529,7 @@
                         <input type="hidden" id="branch-id">
                         <div class="form-section">
                             <label class="form-label" for="branch-name">Şube Adı</label>
-                            <input type="text" id="branch-name" class="form-input" placeholder="Şube adı" required>
+                            <input type="text" id="branch-name" class="form-input" placeholder="Şube Adı" required>
                         </div>
                         <div class="form-section">
                             <label class="form-label" for="branch-city">Şehir</label>
@@ -566,7 +566,7 @@
                             type="search"
                             id="user-management-search-input"
                             class="user-management-search-input"
-                            placeholder="Kullanıcı ara"
+                            placeholder="Kullanıcı Ara"
                             autocomplete="off"
                             inputmode="search"
                             onclick="event.stopPropagation()"
@@ -575,7 +575,7 @@
                             type="button"
                             class="user-management-search-toggle"
                             id="user-management-search-toggle"
-                            aria-label="Kullanıcı ara"
+                            aria-label="Kullanıcı Ara"
                             aria-expanded="false"
                             onclick="event.stopPropagation(); if(window.toggleUserManagementSearch) window.toggleUserManagementSearch();">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -646,7 +646,7 @@
                         </div>
                         <div class="form-section">
                             <label class="form-label" for="user-username">Kullanıcı Adı (portal girişi)</label>
-                            <input type="text" id="user-username" class="form-input" placeholder="Plaka veya kullanıcı adı" autocomplete="username">
+                            <input type="text" id="user-username" class="form-input" placeholder="Plaka veya Kullanıcı Adı" autocomplete="username">
                         </div>
                         <div class="form-section">
                             <label class="form-label" for="user-password">Şifre (portal girişi)</label>
@@ -656,13 +656,13 @@
                             <span id="user-vehicles-label" class="form-label">Tahsis Edilecek Taşıt</span>
                             <div class="user-vehicles-wrap">
                                 <div id="user-vehicles-trigger" class="user-vehicles-trigger form-input" tabindex="0" role="combobox" aria-labelledby="user-vehicles-label" aria-controls="user-vehicles-dropdown" aria-haspopup="listbox" aria-expanded="false" onclick="if(window.toggleUserVehiclesDropdown) window.toggleUserVehiclesDropdown()">
-                                    <span class="user-vehicles-trigger-text">Taşıt seçin</span>
+                                    <span class="user-vehicles-trigger-text">Taşıt Seçin</span>
                                     <svg class="user-vehicles-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
                                 </div>
                                 <div id="user-vehicles-dropdown" class="user-vehicles-dropdown" style="display:none;" role="listbox" aria-hidden="true">
                                     <div id="user-vehicles-container" class="user-vehicles-checkbox-list" role="group"></div>
                                     <div class="user-vehicles-search-wrap">
-                                        <input type="text" id="user-vehicles-search" class="form-input user-vehicles-search-input" placeholder="Plaka ile ara..." aria-label="Plaka ile ara" oninput="if(window.handleUserVehiclesSearch) window.handleUserVehiclesSearch(this.value)">
+                                        <input type="text" id="user-vehicles-search" class="form-input user-vehicles-search-input" placeholder="Plaka İle Ara..." aria-label="Plaka İle Ara" oninput="if(window.handleUserVehiclesSearch) window.handleUserVehiclesSearch(this.value)">
                                     </div>
                                 </div>
                             </div>

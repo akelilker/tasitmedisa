@@ -167,7 +167,7 @@
       panel = document.createElement('div');
       panel.className = 'vehicle-date-calendar-panel';
       panel.setAttribute('role', 'dialog');
-      panel.setAttribute('aria-label', 'Tarih seç');
+      panel.setAttribute('aria-label', 'Tarih Seç');
       panel.addEventListener('click', handleVehicleDateCalendarClick);
       vehicleDateCalendarState.panel = panel;
     }

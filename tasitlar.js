@@ -161,7 +161,7 @@
     };
 
     const updateTrigger = function() {
-      triggerText.textContent = selectedUserName || 'Kullanıcı seçiniz';
+      triggerText.textContent = selectedUserName || 'Kullanıcı Seçiniz';
       trigger.classList.toggle('placeholder', !selectedUserName);
       hiddenInput.value = selectedUserName;
     };
@@ -4990,12 +4990,12 @@
             '<input type="hidden" id="ceza-surucu">' +
             '<div id="ceza-user-wrap" class="ceza-user-dropdown-wrap">' +
               '<button type="button" id="ceza-user-trigger" class="form-input ceza-user-trigger placeholder" role="combobox" aria-haspopup="listbox" aria-expanded="false" aria-controls="ceza-user-dropdown" aria-labelledby="ceza-user-label ceza-user-trigger-text">' +
-                '<span id="ceza-user-trigger-text">Kullanıcı seçiniz</span>' +
+                '<span id="ceza-user-trigger-text">Kullanıcı Seçiniz</span>' +
                 '<svg class="ceza-user-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>' +
               '</button>' +
               '<div id="ceza-user-dropdown" class="ceza-user-dropdown" role="listbox" aria-hidden="true">' +
                 '<div class="ceza-user-search-wrap">' +
-                  '<input type="text" id="ceza-user-search" class="form-input ceza-user-search-input" placeholder="Kullanıcı ara..." autocomplete="off" aria-label="Kullanıcı ara">' +
+                  '<input type="text" id="ceza-user-search" class="form-input ceza-user-search-input" placeholder="Kullanıcı Ara..." autocomplete="off" aria-label="Kullanıcı Ara">' +
                 '</div>' +
                 '<div id="ceza-user-list" class="ceza-user-list"></div>' +
               '</div>' +
@@ -5388,7 +5388,7 @@
             secondaryValues: ['__add_user__'],
             mutedValues: ['__none__'],
             searchable: true,
-            searchPlaceholder: 'Kullanıcı ara',
+            searchPlaceholder: 'Kullanıcı Ara',
             noResultsText: 'Kullanıcı bulunamadı'
           });
           if (!selectEl.dataset.kullaniciAddHandler) {
