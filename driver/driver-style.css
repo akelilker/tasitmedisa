@@ -781,18 +781,26 @@ body.dashboard-page {
     padding-bottom: 0 !important;
   }
   .dashboard-page .driver-right-panel {
-    gap: 4px !important;
+    gap: 0 !important;
     overflow-x: visible !important;
     padding-left: 10px !important;
     padding-right: 14px !important;
+    padding-bottom: 4px !important;
     box-sizing: border-box !important;
   }
+  .dashboard-page .driver-action-area {
+    display: flex !important;
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    padding-top: 6px !important;
+  }
   .dashboard-page .driver-action-group {
-    margin-bottom: 5px !important;
+    margin-bottom: 4px !important;
     gap: 4px !important;
   }
   .dashboard-page .driver-action-footer {
-    margin-top: 0 !important;
+    margin-top: auto !important;
+    margin-bottom: 0 !important;
   }
   .dashboard-page .driver-action-area .form-group label {
     margin-bottom: 4px !important;
@@ -817,7 +825,8 @@ body.dashboard-page {
   }
   /* Masaüstü: Talep/şikayet FAB, Bildir butonundan sonra kontrollü aksın */
   .dashboard-page .driver-action-feedback-slot.driver-request-fab-row {
-    margin-top: 8px;
+    margin-top: 4px !important;
+    margin-bottom: 0 !important;
   }
 }
 
@@ -1007,7 +1016,7 @@ body.dashboard-page {
   min-height: 0;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 0;
   overflow-y: auto !important;
   overflow-x: hidden !important; /* Sadece asagi-yukari kayma; saga-sola hareket yok */
   overscroll-behavior-y: contain; /* Masaüstü: bounce icerikte kalsin. Mobilde none ile override edilir (parmak ile asagi cekince gelmesin). */
@@ -1366,7 +1375,8 @@ body.dashboard-page {
   gap: 0;
   max-width: 100%;
   min-width: 0;
-  flex-shrink: 0;
+  flex: 1 1 auto;
+  min-height: 0;
 }
 .driver-action-area .form-group {
   min-width: 0;
@@ -1374,6 +1384,8 @@ body.dashboard-page {
 .driver-action-area-inner {
   display: flex;
   flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
   gap: 0;
 }
 .driver-action-group {
@@ -3986,7 +3998,7 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
-    justify-content: flex-start !important;
+    justify-content: center !important;
   }
 
   /* Login (masaüstü): form dikey kolon; style-core .login-container için touch-action */
@@ -3995,9 +4007,12 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
     max-width: min(380px, 100%);
     margin-left: auto;
     margin-right: auto;
-    padding: 20px 16px 28px;
+    padding: 12px 16px;
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
     align-items: stretch;
+    justify-content: center;
     touch-action: auto !important;
   }
 
@@ -4566,7 +4581,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   background: transparent;
   border: none;
   box-shadow: none;
-  padding: 40px 30px;
+  padding: 24px 30px;
   box-sizing: border-box;
   overflow-x: hidden;
 }
@@ -5931,9 +5946,6 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     height: calc(0.9cm - 3px) !important;
   }
   /* Bildir butonu: masaüstü bir satır kadar aşağı */
-  .dashboard-page .vehicle-card .btn-save {
-    margin-top: calc(16px + 1em) !important;
-  }
 }
 
 /* --- Sadece iOS/Android PWA: ana uygulama ile aynı yapı – ilk boyamada çerçeve yerinde --- */
@@ -6397,7 +6409,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     .dashboard-page .vehicle-card .btn-save {
         padding-top: 9px !important;
         padding-bottom: 9px !important;
-        margin-top: 6px !important;
+        margin-top: 0 !important;
     }
     .dashboard-page .driver-action-area .universal-btn-save,
     .dashboard-page .driver-action-area .universal-btn-cancel {
@@ -6406,7 +6418,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
 
     /* Bildir butonu footer isiklarina gomulmesin */
     .dashboard-page .driver-right-panel {
-        padding-bottom: 12px !important;
+        padding-bottom: 4px !important;
     }
 }
 
