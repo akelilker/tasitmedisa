@@ -2083,7 +2083,7 @@ body.admin-report-page .main-header-user-name.is-empty {
 /* --- Mobil --- */
 @media (max-width: 640px) {
   body.admin-report-page .hero.admin-report-hero.hero-two-rows {
-    grid-template-columns: minmax(52px, max-content) minmax(0, 1fr) !important;
+    grid-template-columns: 74px minmax(0, 1fr) !important;
     column-gap: 4px !important;
   }
 
@@ -2098,16 +2098,16 @@ body.admin-report-page .main-header-user-name.is-empty {
     max-width: 100% !important;
     min-width: 0 !important;
     padding-left: 2px !important;
-    padding-right: 8px !important;
+    padding-right: 2px !important;
     box-sizing: border-box !important;
     transform: translateY(2px) !important;
   }
 
   body.admin-report-page .hero.hero-two-rows .hero-logo.admin-report-hero-side {
     flex: 0 1 auto !important;
-    width: max-content !important;
-    min-width: 56px !important;
-    max-width: min(200px, 46vw) !important;
+    width: 124px !important;
+    min-width: 124px !important;
+    max-width: 124px !important;
     margin-left: 0 !important;
     overflow: visible !important;
     transform: translate(0, 0) !important;
@@ -2147,7 +2147,7 @@ body.admin-report-page .main-header-user-name.is-empty {
   body.admin-report-page .main-header-user-name {
     display: block !important;
     width: 100% !important;
-    max-width: 110px !important;
+    max-width: 122px !important;
     overflow: hidden !important;
     font-size: clamp(calc(8px - 0.5pt), 2.35vw, calc(10.5px - 0.5pt)) !important;
     line-height: 1.12 !important;
@@ -2166,7 +2166,7 @@ body.admin-report-page .main-header-user-name.is-empty {
   }
 
   .admin-report-page.report-from-notifications .hero.hero-two-rows .hero-logo.admin-report-hero-side {
-    padding-left: 28px !important;
+    padding-left: 20px !important;
   }
 
   .admin-report-page.report-from-notifications .admin-notifications-back-btn {
