@@ -1780,9 +1780,12 @@ body.dashboard-page {
   }
   /* Mobil dashboard header: sadece grid + logo hizası (yeni pseudo çizgi yok; tipografi aşağıda ayrı blokta) */
   .dashboard-page .hero.hero-two-rows {
-    position: relative !important;
     grid-template-columns: 72px minmax(0, 1fr) !important;
+    grid-template-rows: minmax(0, 1fr) 12px !important;
     column-gap: 6px !important;
+    row-gap: 2px !important;
+    min-height: 86px !important;
+    align-items: center !important;
   }
   .dashboard-page .hero.hero-two-rows .hero-spacer {
     display: none !important;
@@ -1796,36 +1799,32 @@ body.dashboard-page {
     padding-left: 0 !important;
     padding-right: 8px !important;
     box-sizing: border-box !important;
-    transform: translateY(-3px) !important;
+    grid-row: 1 !important;
+    transform: translateY(1px) !important;
   }
   .dashboard-page .hero.hero-two-rows .hero-logo {
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: center !important;
-    gap: 2px !important;
-    flex: 0 1 auto !important;
-    position: static !important;
-    width: 72px !important;
-    min-width: 72px !important;
-    max-width: 72px !important;
-    margin-top: 0 !important;
-    margin-left: 0 !important;
-    overflow: visible !important;
-    transform: translate(0, 0) !important;
+    display: contents !important;
   }
   .dashboard-page .hero.hero-two-rows .hero-logo picture {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    justify-self: center !important;
+    align-self: center !important;
+    width: 58px !important;
     max-width: 58px !important;
+    margin: 0 !important;
   }
   .dashboard-page .main-header-user-name {
     display: block !important;
-    position: absolute !important;
-    left: 14px !important;
-    right: 14px !important;
-    bottom: 8px !important;
-    top: auto !important;
-    width: auto !important;
+    position: static !important;
+    grid-column: 1 / -1 !important;
+    grid-row: 2 !important;
+    justify-self: stretch !important;
+    align-self: end !important;
+    width: 100% !important;
     max-width: none !important;
+    padding: 0 14px !important;
+    box-sizing: border-box !important;
     overflow: hidden !important;
     font-size: clamp(8px, 2.2vw, 9.4px) !important;
     line-height: 1.12 !important;
