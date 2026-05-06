@@ -140,6 +140,7 @@ window.medisaSession = getDefaultSession();
 let isDataLoaded = false;
 let isDataLoading = false;
 let loadPromise = null;
+let kaskoListLoadPromise = null;
 let isSaving = false;
 let serverDatasetTrusted = false;
 /** Ardışık save isteklerini sıraya alır; eşzamanlı çağrılarda biri false dönüp veri kaybı yaşanmasın. */
@@ -617,6 +618,39 @@ async function loadKaskoListIntoAppData() {
 
 window.loadKaskoListFromServer = loadKaskoListIntoAppData;
 
+function scheduleKaskoListBackgroundLoad(delayMs) {
+    if (!ensureMainAppSession()) return Promise.resolve(false);
+    if (kaskoListLoadPromise) return kaskoListLoadPromise;
+
+    var delay = Number.isFinite(delayMs) && delayMs > 0 ? delayMs : 0;
+    kaskoListLoadPromise = new Promise(function(resolve) {
+        setTimeout(resolve, delay);
+    })
+        .then(function() {
+            return new Promise(function(resolve) {
+                if (typeof requestIdleCallback === 'function') {
+                    requestIdleCallback(resolve, { timeout: 15000 });
+                } else {
+                    resolve();
+                }
+            });
+        })
+        .then(loadKaskoListIntoAppData)
+        .then(function(ok) {
+            if (ok && typeof window.dispatchEvent === 'function') {
+                window.dispatchEvent(new CustomEvent('kaskoListLoaded', { detail: window.appData && window.appData.kaskoDegerListesi }));
+            }
+            return ok;
+        })
+        .finally(function() {
+            kaskoListLoadPromise = null;
+        });
+
+    return kaskoListLoadPromise;
+}
+
+window.scheduleKaskoListBackgroundLoad = scheduleKaskoListBackgroundLoad;
+
 async function loadDataFromServer(forceRefresh) {
     if (forceRefresh !== true && serverDatasetTrusted === true && hasUsableAppData(window.appData)) {
         return Promise.resolve(window.appData);
@@ -730,9 +764,8 @@ async function loadDataFromServer(forceRefresh) {
 
             setMedisaSession(data.session || getSessionFromToken());
 
-            await loadKaskoListIntoAppData();
-
             serverDatasetTrusted = true;
+            scheduleKaskoListBackgroundLoad(8000);
             return window.appData;
         } catch (error) {
             if (error && error.medisaHttpStatus) {

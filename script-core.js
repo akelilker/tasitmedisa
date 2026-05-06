@@ -893,19 +893,20 @@ var TASITLAR_MODULE_VERSION = MEDISA_MODULE_VERSIONS.tasitlar;
   };
 })();
 
-/* Ana modallar prefetch: tasitlar rozet/bildirim için DOMContentLoaded+50 ms; rapor/kayıt 700 ms + requestIdleCallback (loadAppModule tekilleştirmesi içinde). */
+/* Ana modallar prefetch: ilk açılışı kilitlememek için kullanıcı ekranı oturduktan sonra idle zamanda çalışır. */
 (function scheduleMainModalModulePrefetch() {
   function isMainSpaPath() {
     var p = (typeof document !== 'undefined' && document.location && document.location.pathname) ? document.location.pathname : '';
     return p.indexOf('/driver') === -1 && p.indexOf('/admin') === -1;
   }
-  function prefetchTasitlarEarly() {
-    if (!isMainSpaPath() || typeof window.loadAppModule !== 'function') return;
-    var V = window.MEDISA_MODULE_VERSIONS;
-    if (!V) return;
-    var tJs = 'tasitlar.js?v=' + V.tasitlar;
-    var tCss = ['tasitlar-base.css?v=' + V.tasitlar, 'tasitlar-extra.css?v=' + V.tasitlar];
-    window.loadAppModule(tJs, tCss).catch(function() {});
+  function runAfterFirstPaint(fn, delayMs, idleTimeoutMs) {
+    setTimeout(function() {
+      if (typeof requestIdleCallback === 'function') {
+        requestIdleCallback(fn, { timeout: idleTimeoutMs || 8000 });
+      } else {
+        setTimeout(fn, 0);
+      }
+    }, delayMs || 0);
   }
   function prefetchQuiet() {
     if (!isMainSpaPath() || typeof window.loadAppModule !== 'function') return;
@@ -920,14 +921,7 @@ var TASITLAR_MODULE_VERSION = MEDISA_MODULE_VERSIONS.tasitlar;
   }
   document.addEventListener('DOMContentLoaded', function() {
     if (!isMainSpaPath()) return;
-    setTimeout(function() { prefetchTasitlarEarly(); }, 50);
-    setTimeout(function() {
-      if (typeof requestIdleCallback === 'function') {
-        requestIdleCallback(prefetchQuiet, { timeout: 5000 });
-      } else {
-        prefetchQuiet();
-      }
-    }, 700);
+    runAfterFirstPaint(prefetchQuiet, 25000, 15000);
   });
 })();
 
@@ -993,11 +987,20 @@ window.addEventListener('dataLoaded', () => {
         'tasitlar-base.css?v=' + TASITLAR_MODULE_VERSION,
         'tasitlar-extra.css?v=' + TASITLAR_MODULE_VERSION
       ];
-      window.loadAppModule(tasitlarJsForNotif, tasitlarCssForNotif)
+      var loadNotificationModule = function() {
+        window.loadAppModule(tasitlarJsForNotif, tasitlarCssForNotif)
             .then(runNotifications)
             .catch(function(err) {
                 console.error('[Medisa] Bildirim modülü yüklenemedi:', err);
             });
+      };
+      setTimeout(function() {
+        if (typeof requestIdleCallback === 'function') {
+          requestIdleCallback(loadNotificationModule, { timeout: 7000 });
+        } else {
+          loadNotificationModule();
+        }
+      }, 5000);
     }
 });
 
