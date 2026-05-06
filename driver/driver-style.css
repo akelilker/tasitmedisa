@@ -1780,7 +1780,7 @@ body.dashboard-page {
   }
   /* Mobil dashboard header: sadece grid + logo hizası (yeni pseudo çizgi yok; tipografi aşağıda ayrı blokta) */
   .dashboard-page .hero.hero-two-rows {
-    grid-template-columns: 112px minmax(0, 1fr) !important;
+    grid-template-columns: 96px minmax(0, 1fr) !important;
     column-gap: 6px !important;
   }
   .dashboard-page .hero.hero-two-rows .hero-spacer {
@@ -1797,9 +1797,6 @@ body.dashboard-page {
     box-sizing: border-box !important;
     transform: translateY(1px) !important;
   }
-  .dashboard-page .hero.hero-two-rows {
-    grid-template-columns: 74px 1fr 56px !important;
-  }
   .dashboard-page .hero.hero-two-rows .hero-logo {
     display: flex !important;
     flex-direction: column !important;
@@ -1807,9 +1804,9 @@ body.dashboard-page {
     justify-content: center !important;
     gap: 2px !important;
     flex: 0 1 auto !important;
-    width: 124px !important;
-    min-width: 124px !important;
-    max-width: 124px !important;
+    width: 96px !important;
+    min-width: 96px !important;
+    max-width: 96px !important;
     margin-top: 0 !important;
     margin-left: 0 !important;
     overflow: visible !important;
@@ -1821,9 +1818,9 @@ body.dashboard-page {
   .dashboard-page .main-header-user-name {
     display: block !important;
     width: 100% !important;
-    max-width: 122px !important;
+    max-width: 94px !important;
     overflow: hidden !important;
-    font-size: clamp(calc(8px - 0.5pt), 2.35vw, calc(10.5px - 0.5pt)) !important;
+    font-size: clamp(7px, 2vw, 8.2px) !important;
     line-height: 1.12 !important;
     letter-spacing: 0 !important;
     white-space: nowrap !important;
