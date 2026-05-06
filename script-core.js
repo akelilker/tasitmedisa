@@ -994,13 +994,7 @@ window.addEventListener('dataLoaded', () => {
                 console.error('[Medisa] Bildirim modülü yüklenemedi:', err);
             });
       };
-      setTimeout(function() {
-        if (typeof requestIdleCallback === 'function') {
-          requestIdleCallback(loadNotificationModule, { timeout: 7000 });
-        } else {
-          loadNotificationModule();
-        }
-      }, 5000);
+      setTimeout(loadNotificationModule, 100);
     }
 });
 
