@@ -43,7 +43,7 @@ content: none !important;
 
 /* === HEADER === */
 #reports-modal .modal-header {
-background: linear-gradient(180deg, rgba(255, 0, 18, 0.58) 0%, rgba(232, 0, 12, 0.50) 30%, rgba(198, 0, 8, 0.36) 58%, rgba(130, 0, 6, 0.22) 86%, rgba(92, 0, 6, 0.10) 100%);
+background: var(--modal-header-red-gradient);
 padding: 2px 20px;
 height: 48px;
 display: flex;
