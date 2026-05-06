@@ -41,7 +41,7 @@ body::-webkit-scrollbar,
   --modal-bg: #080d16;
   --modal-max-width: 500px;
   --modal-radius: 10px;
-  --modal-header-red-gradient: linear-gradient(180deg, rgba(190, 0, 28, 0.66) 0%, rgba(150, 0, 24, 0.54) 30%, rgba(105, 0, 18, 0.36) 62%, rgba(64, 0, 12, 0.18) 88%, rgba(28, 0, 8, 0.08) 100%);
+  --modal-header-red-gradient: linear-gradient(180deg, rgba(150, 0, 18, 0.86) 0%, rgba(126, 0, 18, 0.72) 38%, rgba(94, 0, 16, 0.48) 70%, rgba(58, 0, 12, 0.25) 95%, rgba(24, 0, 8, 0.12) 100%);
   --modal-margin-bottom-desktop: calc(var(--app-footer-height) + var(--modal-gap-above-footer));
   --modal-margin-bottom-mobile: calc(var(--modal-gap-above-footer) + var(--app-footer-height));
 
