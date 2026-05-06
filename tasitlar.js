@@ -3825,9 +3825,9 @@
     var typeDescriptionMap = {
       'Sigorta': 'Trafik Sigortasının',
       'Kasko': 'Kasko Poliçesinin',
-      'Muayene': 'Araç Muayenesinin',
+      'Muayene': 'Taşıt Muayenesinin',
       'Egzoz Muayene': 'Egzoz Muayenesinin',
-      'Muayene + Egzoz': 'Araç Muayenesi ve Egzoz Muayenesinin'
+      'Muayene + Egzoz': 'Taşıt Muayenesi ve Egzoz Muayenesinin'
     };
     var users = readUsers();
     var userMap = {};
@@ -6580,7 +6580,7 @@
         console.error(cfg.label + ' görüntüleme hazırlanamadı', err);
         var st = err && err.httpStatus;
         if (st === 404) {
-          alert(cfg.label + ' veya araç kaydı sunucuda bulunamadı (dosya eksik veya veri senkron değil). Sayfayı yenileyip tekrar deneyin.');
+          alert(cfg.label + ' veya taşıt kaydı sunucuda bulunamadı (dosya eksik veya veri senkron değil). Sayfayı yenileyip tekrar deneyin.');
         } else if (st === 401 || st === 403) {
           alert('Bu belge için oturum veya yetki yetersiz. Tekrar giriş yapmayı deneyin.');
         }
@@ -7000,7 +7000,7 @@
           } else {
             afterRefresh();
           }
-          alert('Bu araç başka biri tarafından güncellenmiş. Güncel veriler yüklendi, lütfen dosyayı yeniden seçip tekrar kaydedin.');
+          alert('Bu taşıt başka biri tarafından güncellenmiş. Güncel veriler yüklendi, lütfen dosyayı yeniden seçip tekrar kaydedin.');
           return;
         }
         alert((err && err.message) ? err.message : 'Y\u00fckleme s\u0131ras\u0131nda hata olu\u015ftu.');
@@ -7038,7 +7038,7 @@
         var st = err && err.httpStatus;
         var msg = cfg.label + ' görüntülenemedi.';
         if (st === 404) {
-          msg = cfg.label + ' veya araç kaydı sunucuda bulunamadı (dosya eksik veya veri senkron değil). Sayfayı yenileyip tekrar deneyin.';
+          msg = cfg.label + ' veya taşıt kaydı sunucuda bulunamadı (dosya eksik veya veri senkron değil). Sayfayı yenileyip tekrar deneyin.';
         } else if (st === 401 || st === 403) {
           msg = 'Bu belge için oturum veya yetki yetersiz. Tekrar giriş yapmayı deneyin.';
         }
