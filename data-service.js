@@ -122,6 +122,7 @@
 
   // Kasko Excel cache + hesaplama API'si (tasitlar.js'den taşındı)
   window._kaskoCache = null;
+  let kaskoListRequestPromise = null;
 
   function clearKaskoCache() {
     window._kaskoCache = null;
@@ -138,25 +139,37 @@
   function getKaskoRowsFromSource() {
     var state = getKaskoDegerListesiState();
     if (Array.isArray(state.rows) && state.rows.length > 0) return state.rows;
-
-    try {
-      var legacyRaw = localStorage.getItem('medisa_kasko_liste');
-      if (!legacyRaw) return [];
-      var legacyRows = JSON.parse(legacyRaw);
-      return Array.isArray(legacyRows) ? legacyRows : [];
-    } catch (e) {
-      return [];
-    }
+    return [];
   }
 
   function hasAnyKaskoListData() {
     var state = getKaskoDegerListesiState();
     if (Array.isArray(state.rows) && state.rows.length > 0) return true;
-    try {
-      return !!localStorage.getItem('medisa_kasko_liste');
-    } catch (e) {
-      return false;
+    return false;
+  }
+
+  function ensureKaskoListLoaded() {
+    var state = getKaskoDegerListesiState();
+    if (Array.isArray(state.rows) && state.rows.length > 0) return Promise.resolve(true);
+    if (kaskoListRequestPromise) return kaskoListRequestPromise;
+
+    if (typeof window.loadKaskoListFromServer !== 'function') {
+      return Promise.resolve(false);
     }
+
+    kaskoListRequestPromise = window.loadKaskoListFromServer()
+      .then(function(ok) {
+        if (ok) clearKaskoCache();
+        return !!ok;
+      })
+      .catch(function() {
+        return false;
+      })
+      .finally(function() {
+        kaskoListRequestPromise = null;
+      });
+
+    return kaskoListRequestPromise;
   }
 
   function getKaskoDegeri(kaskoKodu, modelYili) {
@@ -229,12 +242,15 @@
     }
   }
 
-  function guncelleTumKaskoDegerleri() {
-    var refreshPromise = (typeof window.loadDataFromServer === 'function')
-      ? window.loadDataFromServer(true).catch(function() { return null; })
-      : Promise.resolve(null);
+  function getKaskoDegeriAsync(kaskoKodu, modelYili) {
+    if (!kaskoKodu) return Promise.resolve('-');
+    return ensureKaskoListLoaded().then(function() {
+      return getKaskoDegeri(kaskoKodu, modelYili);
+    });
+  }
 
-    return refreshPromise.then(function() {
+  function guncelleTumKaskoDegerleri() {
+    return ensureKaskoListLoaded().then(function() {
       ensureAppData();
       var vehicles = (typeof window.getMedisaVehicles === 'function' ? window.getMedisaVehicles() : null) || [];
       if (!Array.isArray(vehicles) || vehicles.length === 0) return false;
@@ -272,6 +288,8 @@
 
   window.clearKaskoCache = clearKaskoCache;
   window.getKaskoDegeri = getKaskoDegeri;
+  window.getKaskoDegeriAsync = getKaskoDegeriAsync;
+  window.ensureKaskoListLoaded = ensureKaskoListLoaded;
   window.guncelleTumKaskoDegerleri = guncelleTumKaskoDegerleri;
   window.getKaskoDegerListesiState = getKaskoDegerListesiState;
   window.hasAnyKaskoListData = hasAnyKaskoListData;

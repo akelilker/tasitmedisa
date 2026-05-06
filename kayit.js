@@ -2111,7 +2111,7 @@
    * @throws {Error} localStorage yazma hatası durumunda uygulama crash olabilir
    * (Hata yakalama henüz eklenmedi - rapor önerisi #6)
    */
-  window.saveVehicleRecord = function() {
+  window.saveVehicleRecord = async function() {
     const modal = getModal();
     if (!modal) return;
     const saveBtn = modal.querySelector('.universal-btn-save[onclick*="saveVehicleRecord"]') || modal.querySelector('.universal-btn-save');
@@ -2234,7 +2234,10 @@
     // PERFORMANS VE FIX: Kasko kodu değiştiğinde anında fiyatı da yeniden hesapla
     let kaskoDegeri = '';
     let kaskoDegeriYuklemeTarihi = '';
-    if (kaskoKodu && typeof window.getKaskoDegeri === 'function') {
+    if (kaskoKodu && typeof window.getKaskoDegeriAsync === 'function') {
+        kaskoDegeri = await window.getKaskoDegeriAsync(kaskoKodu, year);
+        kaskoDegeriYuklemeTarihi = new Date().toISOString();
+    } else if (kaskoKodu && typeof window.getKaskoDegeri === 'function') {
         kaskoDegeri = window.getKaskoDegeri(kaskoKodu, year);
         kaskoDegeriYuklemeTarihi = new Date().toISOString();
     }
