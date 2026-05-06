@@ -98,7 +98,7 @@ $rawData = loadData();
 if (!is_array($rawData)) {
     http_response_code(500);
     header('Content-Type: text/plain; charset=utf-8');
-    echo "Veri okunamadi";
+    echo "Veri okunamadı";
     exit;
 }
 
@@ -106,7 +106,7 @@ $auth = medisaResolveAuthorizedContext($rawData, 'view_reports');
 if (($auth['success'] ?? false) !== true) {
     http_response_code((int)($auth['status'] ?? 403));
     header('Content-Type: text/plain; charset=utf-8');
-    echo $auth['message'] ?? 'Bu islem icin yetkiniz yok.';
+    echo $auth['message'] ?? 'Bu işlem için yetkiniz yok.';
     exit;
 }
 
@@ -165,7 +165,7 @@ header('Content-Disposition: attachment; filename="kullanici_raporu_' . date('Y-
 echo "\xEF\xBB\xBF";
 
 $out = fopen('php://output', 'w');
-fputcsv($out, ['Kullanici', 'Tasit', 'Plaka', 'KM', 'Kayit Tarihi'], ';');
+fputcsv($out, ['Kullanıcı', 'Taşıt', 'Plaka', 'KM', 'Kayıt Tarihi'], ';');
 
 foreach ($tasitlar as $t) {
     if (!empty($t['satildiMi'])) {

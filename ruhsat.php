@@ -45,27 +45,27 @@ if ($vehicleId === '') {
 $documentType = strtolower(trim((string)($_GET['documentType'] ?? 'ruhsat')));
 $config = medisaGetVehicleDocumentConfig($documentType);
 if (!$config) {
-    ruhsatRespondTextError(400, 'Gecersiz belge tipi');
+    ruhsatRespondTextError(400, 'Geçersiz belge tipi');
 }
 
 $data = loadData();
 if (!is_array($data)) {
-    ruhsatRespondTextError(500, 'Veri okunamadi');
+    ruhsatRespondTextError(500, 'Veri okunamadı');
 }
 
 $auth = medisaResolveAuthorizedContext($data, '', true);
 if (($auth['success'] ?? false) !== true) {
-    ruhsatRespondTextError((int)($auth['status'] ?? 403), $auth['message'] ?? 'Bu islem icin yetkiniz yok.');
+    ruhsatRespondTextError((int)($auth['status'] ?? 403), $auth['message'] ?? 'Bu işlem için yetkiniz yok.');
 }
 
 $vehicleIndex = medisaFindVehicleIndex($data, $vehicleId);
 if ($vehicleIndex < 0) {
-    ruhsatRespondTextError(404, 'Tasit bulunamadi');
+    ruhsatRespondTextError(404, 'Taşıt bulunamadı');
 }
 
 $vehicle = $data['tasitlar'][$vehicleIndex];
 if (!medisaCanViewVehicleRecord($vehicle, $auth['context'])) {
-    ruhsatRespondTextError(403, 'Bu ruhsati goruntuleme yetkiniz yok.');
+    ruhsatRespondTextError(403, 'Bu ruhsatı görüntüleme yetkiniz yok.');
 }
 
 $filePath = medisaResolveVehicleDocumentFilePath($vehicle, $documentType);

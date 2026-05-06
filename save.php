@@ -38,7 +38,7 @@ $result = medisaMutateData(function (&$data) use ($incomingData) {
     $auth = medisaResolveAuthorizedContext($data);
     if (($auth['success'] ?? false) !== true) {
         $status = (int)($auth['status'] ?? 403);
-        return medisaBuildErrorResult($auth['message'] ?? 'Bu islem icin yetkiniz yok.', $status, [
+        return medisaBuildErrorResult($auth['message'] ?? 'Bu işlem için yetkiniz yok.', $status, [
             'auth_required' => $status === 401,
             'permission_denied' => !empty($auth['permission_denied']),
         ]);

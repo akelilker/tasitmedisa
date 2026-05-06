@@ -24,8 +24,8 @@ if (($auth['success'] ?? false) !== true) {
     echo json_encode([
         'success' => false,
         'auth_required' => (int)($auth['status'] ?? 403) === 401,
-        'message' => $auth['message'] ?? 'Bu islem icin yetkiniz yok.',
-        'error' => $auth['message'] ?? 'Bu islem icin yetkiniz yok.',
+        'message' => $auth['message'] ?? 'Bu işlem için yetkiniz yok.',
+        'error' => $auth['message'] ?? 'Bu işlem için yetkiniz yok.',
     ], JSON_UNESCAPED_UNICODE);
     exit;
 }
@@ -43,21 +43,21 @@ if (!file_exists($backupFile)) {
 
 if (!file_exists($backupFile)) {
     http_response_code(404);
-    echo json_encode(['error' => 'Son yedek bulunamadi.'], JSON_UNESCAPED_UNICODE);
+    echo json_encode(['error' => 'Son yedek bulunamadı.'], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
 $content = file_get_contents($backupFile);
 if ($content === false) {
     http_response_code(500);
-    echo json_encode(['error' => 'Yedek dosyasi okunamadi.'], JSON_UNESCAPED_UNICODE);
+    echo json_encode(['error' => 'Yedek dosyası okunamadı.'], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
 $data = json_decode($content, true);
 if (!is_array($data)) {
     http_response_code(500);
-    echo json_encode(['error' => 'Yedek dosya formati gecersiz.'], JSON_UNESCAPED_UNICODE);
+    echo json_encode(['error' => 'Yedek dosya formatı geçersiz.'], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
