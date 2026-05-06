@@ -20,7 +20,7 @@ $documentType = strtolower(trim((string)($_POST['documentType'] ?? 'ruhsat')));
 $config = medisaGetVehicleDocumentConfig($documentType);
 if (!$config) {
     http_response_code(400);
-    echo json_encode(['error' => 'Gecersiz belge tipi'], JSON_UNESCAPED_UNICODE);
+    echo json_encode(['error' => 'Geçersiz belge tipi'], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
@@ -49,8 +49,8 @@ if (($auth['success'] ?? false) !== true) {
     echo json_encode([
         'success' => false,
         'auth_required' => (int)($auth['status'] ?? 403) === 401,
-        'message' => $auth['message'] ?? 'Bu islem icin yetkiniz yok.',
-        'error' => $auth['message'] ?? 'Bu islem icin yetkiniz yok.',
+        'message' => $auth['message'] ?? 'Bu işlem için yetkiniz yok.',
+        'error' => $auth['message'] ?? 'Bu işlem için yetkiniz yok.',
     ], JSON_UNESCAPED_UNICODE);
     exit;
 }
@@ -59,14 +59,14 @@ $context = $auth['context'];
 $preVehicleIndex = medisaFindVehicleIndex($preloadData, $vehicleId);
 if ($preVehicleIndex < 0) {
     http_response_code(404);
-    echo json_encode(['error' => 'Tasit bulunamadi'], JSON_UNESCAPED_UNICODE);
+    echo json_encode(['error' => 'Taşıt bulunamadı'], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
 $preVehicle = $preloadData['tasitlar'][$preVehicleIndex];
 if (!medisaCanManageVehicleRecord($preVehicle, $context)) {
     http_response_code(403);
-    echo json_encode(['error' => 'Bu tasiti guncelleme yetkiniz yok.'], JSON_UNESCAPED_UNICODE);
+    echo json_encode(['error' => 'Bu taşıtı güncelleme yetkiniz yok.'], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
@@ -92,7 +92,7 @@ if ($handle) {
 
 if (strpos((string)$header, '%PDF') === false) {
     http_response_code(400);
-    echo json_encode(['error' => 'Gecersiz PDF dosyasi'], JSON_UNESCAPED_UNICODE);
+    echo json_encode(['error' => 'Geçersiz PDF dosyası'], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
@@ -137,18 +137,18 @@ $documentPath = $config['dir'] . '/' . $filename;
 $result = medisaMutateData(function (&$data) use ($vehicleId, $vehicleVersion, $documentPath, $config) {
     $auth = medisaResolveAuthorizedContext($data, 'view_main_app');
     if (($auth['success'] ?? false) !== true) {
-        return medisaBuildErrorResult($auth['message'] ?? 'Bu islem icin yetkiniz yok.', (int)($auth['status'] ?? 403));
+        return medisaBuildErrorResult($auth['message'] ?? 'Bu işlem için yetkiniz yok.', (int)($auth['status'] ?? 403));
     }
     $context = $auth['context'];
 
     $vehicleIndex = medisaFindVehicleIndex($data, $vehicleId);
     if ($vehicleIndex < 0) {
-        return medisaBuildErrorResult('Tasit bulunamadi!', 404);
+        return medisaBuildErrorResult('Taşıt bulunamadı!', 404);
     }
 
     $vehicle = &$data['tasitlar'][$vehicleIndex];
     if (!medisaCanManageVehicleRecord($vehicle, $context)) {
-        return medisaBuildErrorResult('Bu tasiti guncelleme yetkiniz yok.', 403);
+        return medisaBuildErrorResult('Bu taşıtı güncelleme yetkiniz yok.', 403);
     }
 
     $versionCheck = medisaEnsureVehicleVersion($vehicle, $vehicleVersion, 'Bu taşıt başka biri tarafından güncellendi. Güncel veriler yüklendi.');

@@ -774,7 +774,7 @@ function medisaResolveAuthorizedContext($data, $requiredPermission = '', $allowQ
         return [
             'success' => false,
             'status' => 403,
-            'message' => 'Bu islem icin yetkiniz yok.',
+            'message' => 'Bu işlem için yetkiniz yok.',
         ];
     }
 
@@ -782,7 +782,7 @@ function medisaResolveAuthorizedContext($data, $requiredPermission = '', $allowQ
         return [
             'success' => false,
             'status' => 403,
-            'message' => 'Bu islem icin yetkiniz yok.',
+            'message' => 'Bu işlem için yetkiniz yok.',
             'permission_denied' => true,
         ];
     }
@@ -1134,19 +1134,19 @@ function medisaGetVehicleDocumentConfig(string $documentType): ?array {
             'pathField' => 'ruhsatPath',
             'dir' => 'ruhsat',
             'fallbackName' => 'ruhsat',
-            'notFound' => 'Ruhsat bulunamadi',
+            'notFound' => 'Ruhsat bulunamadı',
         ],
         'sigorta' => [
             'pathField' => 'sigortaPolicePath',
             'dir' => 'sigorta_police',
             'fallbackName' => 'sigorta-policesi',
-            'notFound' => 'Sigorta policesi bulunamadi',
+            'notFound' => 'Sigorta poliçesi bulunamadı',
         ],
         'kasko' => [
             'pathField' => 'kaskoPolicePath',
             'dir' => 'kasko_police',
             'fallbackName' => 'kasko-policesi',
-            'notFound' => 'Kasko policesi bulunamadi',
+            'notFound' => 'Kasko poliçesi bulunamadı',
         ],
     ];
 
