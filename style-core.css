@@ -2443,6 +2443,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     background: var(--modal-bg) !important;
     background-color: var(--modal-bg) !important;
     box-shadow: none !important;
+    outline: 1px solid rgba(214, 222, 232, 0.34) !important;
+    outline-offset: -1px !important;
     border-color: rgba(184, 192, 201, 0.42) !important;
     border-top-color: rgba(200, 208, 216, 0.48) !important;
     border-bottom-color: rgba(168, 176, 186, 0.40) !important;
@@ -2459,6 +2461,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         border: 0.5px solid var(--border-medium) !important;
         border-bottom: 1px solid var(--border-medium) !important;
         box-shadow: none !important;
+        outline: 1px solid rgba(214, 222, 232, 0.34) !important;
+        outline-offset: -1px !important;
     }
 }
 
