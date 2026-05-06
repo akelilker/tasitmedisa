@@ -2199,7 +2199,11 @@
         }
         const { vehicles, titleText, dateRangeText } = data;
         const activeColumns = expandStokMuayeneEgzozColumns(data.activeColumns);
-        const printOpts = { compact: true, printSeparateMuayeneColumns: true, fullPrintDates: true };
+        const printOpts = {
+            compact: true,
+            printSeparateMuayeneColumns: true,
+            fullPrintDates: !isMobileStokViewport()
+        };
         const colgroup = buildStokPrintColgroup(activeColumns);
         const thead = activeColumns.map(col => `<th data-col="${col.key}">${escapeHtml(stokPrintHeaders[col.key] || col.key)}</th>`).join('');
         const rows = vehicles.map((vehicle, index) => {
