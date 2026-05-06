@@ -898,6 +898,11 @@
       if (!userManagementSearchOpen) return;
       const wrap = document.getElementById('user-management-search-wrap');
       if (!wrap || wrap.contains(e.target)) return;
+      if (e.target && e.target.closest && e.target.closest('#user-list .settings-card')) {
+        const input = document.getElementById('user-management-search-input');
+        if (input && document.activeElement === input) input.blur();
+        return;
+      }
       userManagementSearchOpen = false;
       userManagementSearchQuery = '';
       syncUserManagementSearchUi();
