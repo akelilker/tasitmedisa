@@ -4440,7 +4440,7 @@
     if (egzozRaw) {
       const egzozState = getEgzozMuayeneState(vehicle);
       const egzozDisplay = formatDateForDetailModal(egzozState.date);
-      html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Egzos Muayene Bitiş</span><span class="detail-row-colon">:</span></div><span class="detail-row-value ${egzozState.warningClass}"> ${escapeHtml(egzozDisplay || '-')}</span></div>`;
+      html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Egzoz Muayene Bitiş</span><span class="detail-row-colon">:</span></div><span class="detail-row-value ${egzozState.warningClass}"> ${escapeHtml(egzozDisplay || '-')}</span></div>`;
     }
     
     // var/yok alanları: boş = Belirtilmedi (kesin Yoktur./Hayır gösterilmez)
@@ -4956,10 +4956,10 @@
     const egzozMuayeneSection = () => {
       return '<label class="egzoz-olay-toggle" for="muayene-egzoz-different">' +
         '<input type="checkbox" id="muayene-egzoz-different">' +
-        '<span>Egzos Muayenesi Farklı Tarih İse İşaretleyin..</span>' +
+        '<span>Egzoz Muayenesi Farklı Tarih İse İşaretleyin..</span>' +
         '</label>' +
         '<div id="muayene-egzoz-date-wrapper" class="egzoz-olay-date-wrapper">' +
-        '<label class="' + labelCls + '" for="muayene-egzoz-yapilma-tarih">Egzos Muayene Tarihi</label>' +
+        '<label class="' + labelCls + '" for="muayene-egzoz-yapilma-tarih">Egzoz Muayene Tarihi</label>' +
         '<input id="muayene-egzoz-yapilma-tarih" class="' + inputCls + '" type="text" placeholder="gg/aa/yyyy" disabled>' +
         '</div>';
     };
@@ -5029,7 +5029,7 @@
           '<div id="kredi-detay-wrapper-event" style="display:none;"><label class="' + labelCls + '" for="kredi-detay-event">Hak mahrumiyeti detay</label><textarea id="kredi-detay-event" class="' + inputCls + '" rows="2"></textarea></div></div>';
       case 'km':
         return '<div style="display:flex;flex-direction:column;gap:12px;">' +
-          section('Güncel Km', 'km-guncelle-input', 'input', [['type', 'text'], ['placeholder', 'Km'], ['inputmode', 'numeric']]) + '</div>';
+          section('Güncel KM', 'km-guncelle-input', 'input', [['type', 'text'], ['placeholder', 'Km'], ['inputmode', 'numeric']]) + '</div>';
       case 'lastik':
         return '<div style="display:flex;flex-direction:column;gap:12px;">' +
           radioRow('Yazlık/ Kışlık Lastik Var mı?', 'var', 'yok', 'Var', 'Yok') +
@@ -7562,7 +7562,7 @@
       return;
     }
     if (egzozDifferent && !egzozYapilmaIso) {
-      alert('Egzos Muayene Tarihi zorunludur!');
+      alert('Egzoz Muayene Tarihi zorunludur!');
       if (egzozInput) egzozInput.focus();
       return;
     }
@@ -8243,9 +8243,9 @@
       }
       if (bitis) pushDetail('Biti\u015F Tarihi', bitis);
       const egzozYapForm = formatDateForDisplay(eventData.egzozMuayeneYapilmaDate || '');
-      if (egzozYapForm) pushDetail('Egzos Muayene — Yapt\u0131r\u0131lan', egzozYapForm);
+      if (egzozYapForm) pushDetail('Egzoz Muayene — Yapt\u0131r\u0131lan', egzozYapForm);
       const egzozBitis = formatDateForDisplay(eventData.egzozMuayeneDate || '');
-      if (egzozBitis) pushDetail('Egzos Muayene — Biti\u015F', egzozBitis);
+      if (egzozBitis) pushDetail('Egzoz Muayene — Biti\u015F', egzozBitis);
     } else if (eventType === 'kullanici-atama') {
       const yeni = (eventData.kullaniciAdi || '').trim();
       const eski = (eventData.eskiKullaniciAdi || '').trim();
@@ -8995,7 +8995,7 @@
           return a.days - b.days;
         });
         notifications.forEach((notif, dIdx) => {
-            const typeLabel = notif.type === 'sigorta' ? 'Sigorta' : notif.type === 'kasko' ? 'Kasko' : notif.type === 'egzoz' ? 'Egzos Muayenesi' : 'Muayene';
+            const typeLabel = notif.type === 'sigorta' ? 'Sigorta' : notif.type === 'kasko' ? 'Kasko' : notif.type === 'egzoz' ? 'Egzoz Muayenesi' : 'Muayene';
             const notifKey = buildDateNotificationKey(notif);
             const activeDateDisplay = getOrCreateNotificationFirstSeen(notifKey);
             const isRead = viewedKeys.indexOf(notifKey) !== -1;
@@ -9007,9 +9007,9 @@
             if (notif.days <= 0 && notif.type === 'kasko') {
                 messageText = `${notif.plate} Plakalı Taşıtın Kasko Süresi Bitmiştir.`;
             } else if (notif.type === 'egzoz' && notif.missing) {
-                messageText = `${notif.plate} Plakalı Taşıtın Egzos Muayenesi Tarihi Eksiktir.`;
+                messageText = `${notif.plate} Plakalı Taşıtın Egzoz Muayenesi Tarihi Eksiktir.`;
             } else if (notif.days <= 0 && notif.type === 'egzoz') {
-                messageText = `${notif.plate} Plakalı Taşıtın Egzos Muayenesi Süresi Bitmiştir.`;
+                messageText = `${notif.plate} Plakalı Taşıtın Egzoz Muayenesi Süresi Bitmiştir.`;
             } else if (notif.days <= 0 && notif.type === 'muayene') {
                 messageText = `${notif.plate} Plakalı Taşıtın Muayene Süresi Bitmiştir.`;
             } else if (notif.days < 0) {

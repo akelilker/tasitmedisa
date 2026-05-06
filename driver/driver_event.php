@@ -138,10 +138,10 @@ $result = medisaMutateData(function (&$data) use ($tokenData, $aracId, $vehicleV
             $egzozYapilma = trim((string)($payload['egzozMuayeneYapilmaDate'] ?? ''));
             $egzozMuayeneDateLegacy = trim((string)($payload['egzozMuayeneDate'] ?? ''));
             if ($egzozYapilma !== '' && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $egzozYapilma)) {
-                return medisaBuildErrorResult('Egzos muayenesi yaptırılan tarih geçersiz! (YYYY-MM-DD)', 400);
+                return medisaBuildErrorResult('Egzoz muayenesi yaptırılan tarih geçersiz! (YYYY-MM-DD)', 400);
             }
             if ($egzozMuayeneDateLegacy !== '' && !preg_match('/^\d{4}-\d{2}-\d{2}$/', $egzozMuayeneDateLegacy)) {
-                return medisaBuildErrorResult('Egzos muayenesi bitiş tarihi geçersiz! (YYYY-MM-DD)', 400);
+                return medisaBuildErrorResult('Egzoz muayenesi bitiş tarihi geçersiz! (YYYY-MM-DD)', 400);
             }
             $bitisTarihi = calculateNextMuayene($vehicle, $tarih);
             if ($egzozYapilma !== '') {

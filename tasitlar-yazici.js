@@ -230,7 +230,7 @@
       ['Notlar', vehicle.notes || '-']
     ];
     if (vehicle.egzozMuayeneDate && vehicle.egzozMuayeneDate !== vehicle.muayeneDate) {
-      rows.splice(13, 0, ['Egzos Muayenesi', formatDateForDisplay(vehicle.egzozMuayeneDate) || vehicle.egzozMuayeneDate]);
+      rows.splice(13, 0, ['Egzoz Muayenesi', formatDateForDisplay(vehicle.egzozMuayeneDate) || vehicle.egzozMuayeneDate]);
     }
     return rows;
   }
@@ -279,8 +279,8 @@
     } else if (eventType === 'muayene-guncelle') {
       text = 'Muayene Güncelleme';
       if (d.bitisTarihi) extra = 'Bitiş: ' + (formatDateForDisplay(d.bitisTarihi) || '-');
-      if (d.egzozMuayeneYapilmaDate) extra += (extra ? ' | ' : '') + 'Egzos yap.: ' + (formatDateForDisplay(d.egzozMuayeneYapilmaDate) || '-');
-      if (d.egzozMuayeneDate) extra += (extra ? ' | ' : '') + 'Egzos bit.: ' + (formatDateForDisplay(d.egzozMuayeneDate) || '-');
+      if (d.egzozMuayeneYapilmaDate) extra += (extra ? ' | ' : '') + 'Egzoz yap.: ' + (formatDateForDisplay(d.egzozMuayeneYapilmaDate) || '-');
+      if (d.egzozMuayeneDate) extra += (extra ? ' | ' : '') + 'Egzoz bit.: ' + (formatDateForDisplay(d.egzozMuayeneDate) || '-');
     } else if (eventType === 'kullanici-atama') {
       text = 'Kullanıcı Ataması';
       var details3 = [];

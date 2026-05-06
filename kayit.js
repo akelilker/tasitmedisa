@@ -1440,7 +1440,7 @@
     vehicleEgzozPromptState.pendingMuayeneDate = muayeneDate || '';
     vehicleEgzozPromptState.promptOpen = true;
     if (messageEl) {
-      messageEl.textContent = 'Egzos Muayenesi Aynı Tarihte Mi Bitiyor?';
+      messageEl.textContent = 'Egzoz Muayenesi Aynı Tarihte Mi Bitiyor?';
     }
     modal.style.display = 'flex';
     requestAnimationFrame(function() {
@@ -2185,7 +2185,7 @@
       egzozMuayeneDate = muayeneDate;
     }
     if (egzozDifferent && !egzozMuayeneDate) {
-      errors.push('Egzos Muayenesi Bitiş Tarihi');
+      errors.push('Egzoz Muayenesi Bitiş Tarihi');
       if (egzozDateEl) egzozDateEl.classList.add('field-error');
     }
     

@@ -117,7 +117,7 @@ $result = medisaMutateData(function (&$data) use (
 
     $vehicleIndex = medisaFindVehicleIndex($data, $aracId);
     if ($vehicleIndex < 0) {
-        return medisaBuildErrorResult('Bu Taşıta Erişim Yetkiniz Yok!', 403);
+        return medisaBuildErrorResult('Bu taşıta erişim yetkiniz yok!', 403);
     }
 
     $vehicle = &$data['tasitlar'][$vehicleIndex];
@@ -127,7 +127,7 @@ $result = medisaMutateData(function (&$data) use (
         $hasAccess = is_array($zimmetliAraclar) && in_array($aracId, $zimmetliAraclar);
     }
     if (!$hasAccess) {
-        return medisaBuildErrorResult('Bu Taşıta Erişim Yetkiniz Yok!', 403);
+        return medisaBuildErrorResult('Bu taşıta erişim yetkiniz yok!', 403);
     }
 
     $versionCheck = medisaEnsureVehicleVersion($vehicle, $vehicleVersion, 'Bu taşıt başka biri tarafından güncellendi. Güncel veriler yüklendi.');
