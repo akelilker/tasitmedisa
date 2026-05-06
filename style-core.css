@@ -41,6 +41,7 @@ body::-webkit-scrollbar,
   --modal-bg: #080d16;
   --modal-max-width: 500px;
   --modal-radius: 10px;
+  --modal-header-red-gradient: linear-gradient(180deg, rgba(255, 0, 18, 0.58) 0%, rgba(232, 0, 12, 0.50) 30%, rgba(198, 0, 8, 0.36) 58%, rgba(130, 0, 6, 0.22) 86%, rgba(92, 0, 6, 0.10) 100%);
   --modal-margin-bottom-desktop: calc(var(--app-footer-height) + var(--modal-gap-above-footer));
   --modal-margin-bottom-mobile: calc(var(--modal-gap-above-footer) + var(--app-footer-height));
 
@@ -2938,14 +2939,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     #info-modal .modal-header,
     #tescil-tarih-confirm-modal .modal-header,
     #tescil-tarih-input-modal .modal-header {
-        background: linear-gradient(
-            180deg,
-            rgba(255, 0, 18, 0.58) 0%,
-            rgba(232, 0, 12, 0.50) 30%,
-            rgba(198, 0, 8, 0.36) 58%,
-            rgba(130, 0, 6, 0.22) 86%,
-            rgba(92, 0, 6, 0.10) 100%
-        ) !important;
+        background: var(--modal-header-red-gradient) !important;
         background-size: 100% 100% !important;
     }
 
@@ -3322,7 +3316,7 @@ body.modal-open .app-container {
 #info-modal .modal-header,
 #tescil-tarih-confirm-modal .modal-header,
 #tescil-tarih-input-modal .modal-header {
-    background: linear-gradient(180deg, rgba(255, 0, 18, 0.58) 0%, rgba(232, 0, 12, 0.50) 30%, rgba(198, 0, 8, 0.36) 58%, rgba(130, 0, 6, 0.22) 86%, rgba(92, 0, 6, 0.10) 100%);
+    background: var(--modal-header-red-gradient);
     padding: 8px 20px;
     height: 60px;
     display: flex;
