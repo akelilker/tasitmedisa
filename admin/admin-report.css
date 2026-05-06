@@ -2084,10 +2084,7 @@ body.admin-report-page .main-header-user-name.is-empty {
 @media (max-width: 640px) {
   body.admin-report-page .hero.admin-report-hero.hero-two-rows {
     grid-template-columns: 72px minmax(0, 1fr) !important;
-    grid-template-rows: minmax(0, 1fr) 12px !important;
     column-gap: 4px !important;
-    row-gap: 2px !important;
-    min-height: 86px !important;
     align-items: center !important;
   }
 
@@ -2104,22 +2101,30 @@ body.admin-report-page .main-header-user-name.is-empty {
     padding-left: 2px !important;
     padding-right: 2px !important;
     box-sizing: border-box !important;
-    grid-row: 1 !important;
     transform: translateY(1px) !important;
   }
 
   body.admin-report-page .hero.hero-two-rows .hero-logo.admin-report-hero-side {
-    display: contents !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0 !important;
+    flex: 0 1 auto !important;
+    width: 72px !important;
+    min-width: 72px !important;
+    max-width: 72px !important;
+    box-sizing: border-box !important;
+    margin-left: 0 !important;
+    overflow: visible !important;
+    transform: translate(0, 0) !important;
   }
 
   body.admin-report-page .hero.hero-two-rows .hero-logo picture {
-    grid-column: 1 !important;
-    grid-row: 1 !important;
-    justify-self: center !important;
-    align-self: center !important;
+    display: block !important;
     width: 58px !important;
     max-width: 58px !important;
-    margin: 0 !important;
+    margin: 0 auto !important;
   }
 
   body.admin-report-page .hero.hero-two-rows .hero-title-block .hero-title-line {
@@ -2151,15 +2156,10 @@ body.admin-report-page .main-header-user-name.is-empty {
 
   body.admin-report-page .main-header-user-name {
     display: block !important;
-    position: static !important;
-    grid-column: 1 / -1 !important;
-    grid-row: 2 !important;
-    justify-self: stretch !important;
-    align-self: end !important;
-    width: 100% !important;
-    max-width: none !important;
-    padding: 0 14px !important;
-    box-sizing: border-box !important;
+    position: relative !important;
+    width: 92px !important;
+    max-width: 92px !important;
+    padding: 0 !important;
     overflow: hidden !important;
     font-size: clamp(8px, 2.2vw, 9.4px) !important;
     line-height: 1.12 !important;
@@ -2167,7 +2167,7 @@ body.admin-report-page .main-header-user-name.is-empty {
     white-space: nowrap !important;
     word-break: normal !important;
     text-overflow: ellipsis !important;
-    text-align: left !important;
+    text-align: center !important;
     transform: none !important;
   }
 
