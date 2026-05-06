@@ -18,7 +18,11 @@ body::-webkit-scrollbar,
   --theme-color-rgb: 224, 0, 0;
   /* Footer'dan yukarı süzen ışık: MEDISA tonu ile aynı */
   --footer-glow-rgb: 224, 0, 0;
-  --footer-glow-opacity: 0.46;  /* Masaüstü footer üstü parlaklık */
+  --footer-glow-opacity: 0.50;  /* Masaüstü footer üstü parlaklık */
+  --footer-top-border: rgba(190, 198, 208, 0.58);
+  --footer-side-border: rgba(255, 255, 255, 0.26);
+  --footer-top-highlight: rgba(255, 255, 255, 0.16);
+  --footer-red-glow: 0 -18px 34px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity));
   /* MEDISA marka kırmızısı (theme ile aynı; alias) */
   --brand-red: #e00000;
   --brand-red-rgb: 224, 0, 0;
@@ -643,9 +647,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .content-wrap
     }
     /* Ana uygulama ana ekran (desktop): footer çerçevesi görünür */
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer {
-        border-top: 1px solid rgba(200, 200, 200, 0.52);
-        border-left: 0.6px solid rgba(255, 255, 255, 0.24);
-        border-right: 0.6px solid rgba(255, 255, 255, 0.24);
+        border-top: 1px solid var(--footer-top-border);
+        border-left: 0.6px solid var(--footer-side-border);
+        border-right: 0.6px solid var(--footer-side-border);
     }
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer .footer-content {
         padding: 8px 12px;
@@ -2342,10 +2346,10 @@ body.modal-open .user-panel-link {
     box-sizing: border-box !important;
     padding-top: 2px !important;
     padding-bottom: calc(2px + env(safe-area-inset-bottom, 0)) !important;
-    border-top: 0.8px solid rgba(var(--footer-glow-rgb), 0.45);
-    border-left: 0.5px solid rgba(255, 255, 255, 0.20);
-    border-right: 0.5px solid rgba(255, 255, 255, 0.20);
-    box-shadow: 0 -10px 20px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity));
+    border-top: 0.8px solid var(--footer-top-border);
+    border-left: 0.5px solid var(--footer-side-border);
+    border-right: 0.5px solid var(--footer-side-border);
+    box-shadow: var(--footer-red-glow);
     overflow: visible;
     display: flex !important;
     align-items: center;
@@ -2367,33 +2371,12 @@ body.modal-open .user-panel-link {
 
 /* Ana uygulama: footer üstü her zaman belirgin gri çizgi + glow (sadece modal açıkken değil) */
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer {
-    border-top: 1px solid rgba(128, 128, 128, 0.52) !important;
+    border-top: 1px solid var(--footer-top-border) !important;
     box-shadow:
-        0 -1px 0 rgba(255, 255, 255, 0.12),
-        0 -16px 30px rgba(var(--theme-color-rgb), 0.42) !important;
+        0 -1px 0 var(--footer-top-highlight),
+        var(--footer-red-glow) !important;
 }
 
-/* Modal açıkken: footer glow açık kalır (yalnız footer-gap bölgesinde görünür) */
-body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #app-footer {
-    border-top: 1px solid rgba(128, 128, 128, 0.52) !important;
-    box-shadow:
-        0 -1px 0 rgba(255, 255, 255, 0.12),
-        0 -16px 30px rgba(var(--theme-color-rgb), 0.42) !important;
-}
-@media (max-width: 640px) {
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer {
-    border-top: 1px solid rgba(255, 255, 255, 0.40) !important;
-    box-shadow:
-        0 -1px 0 rgba(255, 255, 255, 0.12),
-        0 -16px 30px rgba(var(--theme-color-rgb), 0.42) !important;
-  }
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #app-footer {
-    border-top: 1px solid rgba(255, 255, 255, 0.40) !important;
-    box-shadow:
-        0 -1px 0 rgba(255, 255, 255, 0.12),
-        0 -16px 30px rgba(var(--theme-color-rgb), 0.42) !important;
-  }
-}
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay.active,
 body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open .modal-overlay.open {
     isolation: isolate !important; /* Modal dekor/pseudo katmanlarını kendi stack içinde kilitle */
@@ -3036,10 +3019,10 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     #app-footer {
         position: fixed;
         bottom: 0;
-        box-shadow: 0 -12px 22px rgba(var(--footer-glow-rgb), var(--footer-glow-opacity));
+        box-shadow: var(--footer-red-glow);
         border-left: none; /* Mobilde yan yok */
         border-right: none;
-        border-top: 1px solid rgba(var(--footer-glow-rgb), 0.50) !important;
+        border-top: 1px solid var(--footer-top-border) !important;
     }
     .menu-btn .ttl {
         font-size: clamp(16px, 3.35vw, 18px) !important;
@@ -3522,10 +3505,10 @@ body.modal-open .app-container {
     min-height: calc(var(--app-footer-real-height) + env(safe-area-inset-bottom, 0)) !important;
     padding-top: 2px !important;
     padding-bottom: calc(2px + env(safe-area-inset-bottom, 0)) !important;
-    border-top: 1px solid rgba(255, 255, 255, 0.40) !important;
+    border-top: 1px solid var(--footer-top-border) !important;
     box-shadow:
-      0 -1px 0 rgba(255, 255, 255, 0.12),
-      0 -16px 30px rgba(var(--theme-color-rgb), 0.42) !important;
+      0 -1px 0 var(--footer-top-highlight),
+      var(--footer-red-glow) !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer .footer-content {
     height: 100% !important;
@@ -3657,21 +3640,13 @@ body.modal-open .app-container {
 /* Masaüstü: glow footer genişliği içinde üretilir; sağ-sol taşma olmaz */
 @media (min-width: 769px) {
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer {
-    border-left: 0.5px solid rgba(255, 255, 255, 0.20) !important;
-    border-right: 0.5px solid rgba(255, 255, 255, 0.20) !important;
-    border-top: 1px solid rgba(128, 128, 128, 0.52) !important;
+    border-left: 0.5px solid var(--footer-side-border) !important;
+    border-right: 0.5px solid var(--footer-side-border) !important;
+    border-top: 1px solid var(--footer-top-border) !important;
     overflow: visible !important;
     box-shadow:
-      0 -1px 0 rgba(255, 255, 255, 0.12),
-      0 -12px 35px rgba(var(--theme-color-rgb), 0.35) !important;
-  }
-  body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #app-footer {
-    border-left: 0.5px solid rgba(255, 255, 255, 0.20) !important;
-    border-right: 0.5px solid rgba(255, 255, 255, 0.20) !important;
-    border-top: 1px solid rgba(128, 128, 128, 0.52) !important;
-    box-shadow:
-      0 -1px 0 rgba(255, 255, 255, 0.12),
-      0 -12px 35px rgba(var(--theme-color-rgb), 0.35) !important;
+      0 -1px 0 var(--footer-top-highlight),
+      var(--footer-red-glow) !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) #app-footer::before {
     bottom: 100%;
