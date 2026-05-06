@@ -1144,8 +1144,6 @@
   let notifReadStateMigrationAttempted = false;
   let notifReadStateSaveInFlight = false;
   let notifFirstSeenBatchContext = null;
-  let kaskoListMigrationAttempted = false;
-  let kaskoListSaveInFlight = false;
 
   function getCurrentNotifScopeKey() {
     const session = (window.medisaSession && typeof window.medisaSession === 'object') ? window.medisaSession : {};
@@ -1305,56 +1303,10 @@
     return window.appData.kaskoDegerListesi;
   }
 
-  function migrateLegacyKaskoListIfNeeded() {
-    if (kaskoListMigrationAttempted) return;
-    kaskoListMigrationAttempted = true;
-    const kaskoState = getKaskoState();
-    if (Array.isArray(kaskoState.rows) && kaskoState.rows.length > 0) return;
-    let legacyRows = [];
-    try {
-      const raw = localStorage.getItem('medisa_kasko_liste');
-      const parsed = raw ? JSON.parse(raw) : [];
-      legacyRows = Array.isArray(parsed) ? parsed : [];
-    } catch (err) {
-      legacyRows = [];
-    }
-    if (!legacyRows.length) return;
-    const legacyDate = localStorage.getItem('medisa_kasko_liste_date') || '';
-    const updatedAt = legacyDate || new Date().toISOString();
-    const dateForPeriod = legacyDate ? new Date(legacyDate) : new Date();
-    const period = String(dateForPeriod.getFullYear()) + '-' + String(dateForPeriod.getMonth() + 1).padStart(2, '0');
-    window.appData.kaskoDegerListesi = {
-      updatedAt: updatedAt,
-      period: period,
-      sourceFileName: '',
-      rows: legacyRows
-    };
-    if (typeof window.clearKaskoCache === 'function') window.clearKaskoCache();
-    var permissions = window.medisaSession && window.medisaSession.permissions ? window.medisaSession.permissions : {};
-    if (!permissions.manage_data || kaskoListSaveInFlight) return;
-    var saveUrl = window.API_SAVE_KASKO || ((window.MEDISA_API_BASE || '') + 'save_kasko.php');
-    var headersFn = typeof window.buildAuthHeaders === 'function' ? window.buildAuthHeaders : null;
-    if (!headersFn) return;
-    kaskoListSaveInFlight = true;
-    fetch(saveUrl, {
-      method: 'POST',
-      headers: headersFn({ 'Content-Type': 'application/json' }),
-      body: JSON.stringify({
-        updatedAt: updatedAt,
-        period: period,
-        sourceFileName: 'legacy-localStorage',
-        rows: legacyRows
-      })
-    })
-      .catch(function() {})
-      .finally(function() { kaskoListSaveInFlight = false; });
-  }
-
   function hasAnyKaskoListData() {
-    migrateLegacyKaskoListIfNeeded();
     const state = getKaskoState();
     if (Array.isArray(state.rows) && state.rows.length > 0) return true;
-    return !!localStorage.getItem('medisa_kasko_liste');
+    return false;
   }
   window.hasAnyKaskoListData = hasAnyKaskoListData;
 
@@ -4499,7 +4451,7 @@
     }
     let isKaskoOutdated = true;
     const kaskoState = getKaskoState();
-    const kaskoTarihKaynak = vehicle.kaskoDegeriYuklemeTarihi || kaskoState.updatedAt || localStorage.getItem('medisa_kasko_liste_date');
+    const kaskoTarihKaynak = vehicle.kaskoDegeriYuklemeTarihi || kaskoState.updatedAt || '';
     if (kaskoTarihKaynak) {
       const uploadDate = new Date(kaskoTarihKaynak);
       const now = new Date();
@@ -8848,7 +8800,6 @@
     // Kasko Excel hatırlatması: Liste bu aya ait değilse (Excel yüklenince veya X ile silinene kadar kırmızı kalır)
     let kaskoExcelHtml = '';
     let kaskoExcelSortMs = 0;
-    migrateLegacyKaskoListIfNeeded();
     const kaskoState = getKaskoState();
     const kaskoListeGuncel = String(kaskoState.period || '') === (String(y) + '-' + String(m + 1).padStart(2, '0'));
     if (!kaskoListeGuncel) {

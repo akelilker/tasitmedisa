@@ -1947,20 +1947,10 @@
             var worksheet = workbook.Sheets[firstSheetName];
             var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
-            try {
-              localStorage.setItem('medisa_kasko_liste', JSON.stringify(jsonData));
-            } catch (storageErr) {
-              if (storageErr.name === 'QuotaExceededError' || storageErr.code === 22) {
                 /* Sunucuya yazım devam eder; tarayıcı kotası kritik değil */
-              }
-            }
             var nowIso = new Date().toISOString();
             var periodDate = new Date();
             var period = String(periodDate.getFullYear()) + '-' + String(periodDate.getMonth() + 1).padStart(2, '0');
-            try {
-              localStorage.setItem('medisa_kasko_liste_date', nowIso);
-            } catch (eD) {}
-
             var sourceName = (file && file.name) ? String(file.name) : '';
 
             if (!window.appData || typeof window.appData !== 'object') window.appData = {};
