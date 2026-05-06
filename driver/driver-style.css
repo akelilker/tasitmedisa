@@ -1780,7 +1780,7 @@ body.dashboard-page {
   }
   /* Mobil dashboard header: sadece grid + logo hizası (yeni pseudo çizgi yok; tipografi aşağıda ayrı blokta) */
   .dashboard-page .hero.hero-two-rows {
-    grid-template-columns: 96px minmax(0, 1fr) !important;
+    grid-template-columns: 72px minmax(0, 1fr) !important;
     column-gap: 6px !important;
   }
   .dashboard-page .hero.hero-two-rows .hero-spacer {
@@ -1804,9 +1804,10 @@ body.dashboard-page {
     justify-content: center !important;
     gap: 2px !important;
     flex: 0 1 auto !important;
-    width: 96px !important;
-    min-width: 96px !important;
-    max-width: 96px !important;
+    position: relative !important;
+    width: 72px !important;
+    min-width: 72px !important;
+    max-width: 72px !important;
     margin-top: 0 !important;
     margin-left: 0 !important;
     overflow: visible !important;
@@ -1817,16 +1818,19 @@ body.dashboard-page {
   }
   .dashboard-page .main-header-user-name {
     display: block !important;
-    width: 100% !important;
-    max-width: 94px !important;
+    position: absolute !important;
+    top: calc(100% - 1px) !important;
+    left: 50% !important;
+    width: max-content !important;
+    max-width: min(132px, 38vw) !important;
     overflow: hidden !important;
-    font-size: clamp(7px, 2vw, 8.2px) !important;
+    font-size: clamp(8px, 2.2vw, 9.2px) !important;
     line-height: 1.12 !important;
     letter-spacing: 0 !important;
     white-space: nowrap !important;
     word-break: normal !important;
     text-overflow: ellipsis !important;
-    transform: translate(0, 2px) !important;
+    transform: translateX(-50%) !important;
   }
   .login-page .hero.hero-two-rows .hero-logo {
     flex: 0 0 56px !important;
@@ -1843,8 +1847,8 @@ body.dashboard-page {
     width: 100% !important;
     max-width: 100% !important;
     min-width: 0 !important;
-    font-size: clamp(16.5px, 4.65vw, 18.5px) !important;
-    letter-spacing: clamp(0.8px, 0.55vw, 2px) !important;
+    font-size: clamp(18px, 4.75vw, 20px) !important;
+    letter-spacing: clamp(0.6px, 0.45vw, 1.8px) !important;
     line-height: 1.08 !important;
     white-space: nowrap !important;
     overflow: hidden !important;
@@ -1855,8 +1859,8 @@ body.dashboard-page {
     font-size: clamp(calc(18px - 1pt - 0.5pt), 5vw, calc(22px - 1pt - 0.5pt)) !important;
   }
   .dashboard-page .hero-title-block .hero-panel-subtitle {
-    font-size: clamp(18px, 5vw, 21px) !important;
-    letter-spacing: clamp(2px, 0.75vw, 3.2px) !important;
+    font-size: clamp(17px, 4.4vw, 18.5px) !important;
+    letter-spacing: clamp(1.6px, 0.58vw, 2.6px) !important;
     line-height: 1.08 !important;
     white-space: nowrap !important;
     overflow: hidden !important;
@@ -5533,16 +5537,16 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   }
   .dashboard-page .hero-title-wrap .hero-panel-subtitle,
   .dashboard-page .hero-title-block .hero-panel-subtitle {
-    font-size: clamp(18px, 5vw, 21px) !important;
-    letter-spacing: clamp(2px, 0.75vw, 3.2px) !important;
+    font-size: clamp(17px, 4.4vw, 18.5px) !important;
+    letter-spacing: clamp(1.6px, 0.58vw, 2.6px) !important;
     line-height: 1.08 !important;
   }
   .dashboard-page .hero.hero-two-rows .hero-title-block .hero-title-line {
     width: 100% !important;
     max-width: 100% !important;
     min-width: 0 !important;
-    font-size: clamp(16.5px, 4.65vw, 18.5px) !important;
-    letter-spacing: clamp(0.8px, 0.55vw, 2px) !important;
+    font-size: clamp(18px, 4.75vw, 20px) !important;
+    letter-spacing: clamp(0.6px, 0.45vw, 1.8px) !important;
     line-height: 1.08 !important;
     white-space: nowrap !important;
     overflow: hidden !important;
@@ -5908,8 +5912,8 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
     letter-spacing: 2.5px !important;
   }
   .dashboard-page .hero.hero-two-rows .hero-title-block .hero-title-line {
-    font-size: clamp(16.5px, 4.65vw, 18.5px) !important;
-    letter-spacing: clamp(0.8px, 0.55vw, 2px) !important;
+    font-size: clamp(18px, 4.75vw, 20px) !important;
+    letter-spacing: clamp(0.6px, 0.45vw, 1.8px) !important;
   }
   .login-page .hero h1 {
     font-size: clamp(calc(17.8px - 0.5pt), 5.1vw, calc(21.8px - 0.5pt)) !important;

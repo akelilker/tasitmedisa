@@ -2083,7 +2083,7 @@ body.admin-report-page .main-header-user-name.is-empty {
 /* --- Mobil --- */
 @media (max-width: 640px) {
   body.admin-report-page .hero.admin-report-hero.hero-two-rows {
-    grid-template-columns: 96px minmax(0, 1fr) !important;
+    grid-template-columns: 72px minmax(0, 1fr) !important;
     column-gap: 4px !important;
   }
 
@@ -2105,9 +2105,10 @@ body.admin-report-page .main-header-user-name.is-empty {
 
   body.admin-report-page .hero.hero-two-rows .hero-logo.admin-report-hero-side {
     flex: 0 1 auto !important;
-    width: 96px !important;
-    min-width: 96px !important;
-    max-width: 96px !important;
+    position: relative !important;
+    width: 72px !important;
+    min-width: 72px !important;
+    max-width: 72px !important;
     box-sizing: border-box !important;
     margin-left: 0 !important;
     overflow: visible !important;
@@ -2123,8 +2124,8 @@ body.admin-report-page .main-header-user-name.is-empty {
     max-width: 100% !important;
     min-width: 0 !important;
     /* Mobil: punto alt satır ile aynı; letter-spacing sıkı (dar ekranda ellipsis daha az). */
-    font-size: clamp(16.5px, 4.65vw, 18.5px) !important;
-    letter-spacing: clamp(0.8px, 0.55vw, 2px) !important;
+    font-size: clamp(18px, 4.75vw, 20px) !important;
+    letter-spacing: clamp(0.6px, 0.45vw, 1.8px) !important;
     line-height: 1.08 !important;
     text-align: center !important;
     -webkit-font-smoothing: antialiased !important;
@@ -2136,8 +2137,8 @@ body.admin-report-page .main-header-user-name.is-empty {
   }
 
   body.admin-report-page .hero.hero-two-rows .hero-title-block .hero-panel-subtitle {
-    font-size: clamp(18px, 5vw, 21px) !important;
-    letter-spacing: clamp(2px, 0.75vw, 3.2px) !important;
+    font-size: clamp(17px, 4.4vw, 18.5px) !important;
+    letter-spacing: clamp(1.6px, 0.58vw, 2.6px) !important;
     line-height: 1.08 !important;
     text-align: center !important;
     -webkit-font-smoothing: antialiased !important;
@@ -2147,16 +2148,19 @@ body.admin-report-page .main-header-user-name.is-empty {
 
   body.admin-report-page .main-header-user-name {
     display: block !important;
-    width: 100% !important;
-    max-width: 94px !important;
+    position: absolute !important;
+    top: calc(100% - 1px) !important;
+    left: 50% !important;
+    width: max-content !important;
+    max-width: min(132px, 38vw) !important;
     overflow: hidden !important;
-    font-size: clamp(7px, 2vw, 8.2px) !important;
+    font-size: clamp(8px, 2.2vw, 9.2px) !important;
     line-height: 1.12 !important;
     letter-spacing: 0 !important;
     white-space: nowrap !important;
     word-break: normal !important;
     text-overflow: ellipsis !important;
-    transform: translate(0, 2px) !important;
+    transform: translateX(-50%) !important;
   }
 
   /* style-core mobil .hero-logo / img evrensel kurallarından izole et */
