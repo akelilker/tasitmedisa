@@ -1,7 +1,7 @@
 {
   "id": "./",
-  "name": "Medisa Taşıt Yönetim Sistemi",
-  "short_name": "Medisa Taşıt",
+  "name": "Taşıt Yönetim Sistemi",
+  "short_name": "Taşıt Yönetim Sistemi",
   "description": "Taşıt ve kayıt yönetimi",
   "start_url": "./index.html",
   "scope": "./",
