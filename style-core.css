@@ -2943,8 +2943,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
             rgba(255, 0, 18, 0.58) 0%,
             rgba(232, 0, 12, 0.50) 30%,
             rgba(198, 0, 8, 0.36) 58%,
-            rgba(130, 0, 6, 0.20) 86%,
-            transparent 100%
+            rgba(130, 0, 6, 0.22) 86%,
+            rgba(92, 0, 6, 0.10) 100%
         ) !important;
         background-size: 100% 100% !important;
     }
@@ -3322,7 +3322,7 @@ body.modal-open .app-container {
 #info-modal .modal-header,
 #tescil-tarih-confirm-modal .modal-header,
 #tescil-tarih-input-modal .modal-header {
-    background: linear-gradient(180deg, rgba(255, 0, 18, 0.58) 0%, rgba(232, 0, 12, 0.50) 30%, rgba(198, 0, 8, 0.36) 58%, rgba(130, 0, 6, 0.20) 86%, transparent 100%);
+    background: linear-gradient(180deg, rgba(255, 0, 18, 0.58) 0%, rgba(232, 0, 12, 0.50) 30%, rgba(198, 0, 8, 0.36) 58%, rgba(130, 0, 6, 0.22) 86%, rgba(92, 0, 6, 0.10) 100%);
     padding: 8px 20px;
     height: 60px;
     display: flex;
