@@ -2161,6 +2161,29 @@
         kullanici: 11,
         tescil: 9
     };
+    const stokMobilePrintColumnWeights = {
+        sira: 3,
+        yil: 5,
+        plaka: 8,
+        marka: 16,
+        tasitTipi: 6,
+        sanziman: 8,
+        km: 8,
+        sube: 12,
+        sigorta: 9,
+        kasko: 9,
+        kaskoDegeri: 10,
+        muayene: 9,
+        egzozMuayene: 8,
+        kredi: 8,
+        lastik: 8,
+        utts: 6,
+        takip: 7,
+        tramer: 9,
+        boya: 7,
+        kullanici: 11,
+        tescil: 9
+    };
 
     /* Excel: bazı kolonların otomatik genişlik tavanı (şube/Otm./KM taşması) */
     const stokExcelColumnWidthCeilChars = {
@@ -2180,9 +2203,10 @@
     };
 
     function buildStokPrintColgroup(activeColumns) {
-        const totalWeight = activeColumns.reduce((sum, col) => sum + (stokPrintColumnWeights[col.key] || 10), 0) || 1;
+        const printWeights = isMobileStokViewport() ? stokMobilePrintColumnWeights : stokPrintColumnWeights;
+        const totalWeight = activeColumns.reduce((sum, col) => sum + (printWeights[col.key] || 10), 0) || 1;
         return `<colgroup>${activeColumns.map(col => {
-            const widthPercent = ((stokPrintColumnWeights[col.key] || 10) / totalWeight) * 100;
+            const widthPercent = ((printWeights[col.key] || 10) / totalWeight) * 100;
             return `<col data-col="${col.key}" style="width:${widthPercent.toFixed(2)}%">`;
         }).join('')}</colgroup>`;
     }
