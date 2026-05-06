@@ -509,13 +509,14 @@ background: rgba(var(--theme-color-rgb), 0.1);
 
 /* Taşıtlar .branch-name ile birebir aynı */
 .stok-branch-name {
-font-size: clamp(11.5px, 4.1vw, 15px);
+font-size: clamp(10.5px, 3.8vw, 15px);
 font-weight: 700;
 color: #f8fafc;
 line-height: 1.12;
 text-align: center;
-overflow-wrap: anywhere;
-word-break: break-word;
+overflow-wrap: normal;
+word-break: normal;
+hyphens: none;
 }
 
 /* Taşıtlar .branch-count ile birebir aynı */
