@@ -2884,7 +2884,7 @@ padding: 16px;
 /* Yazdır: sadece Excel ile aynı rapor tablosu görünsün (ekran görüntüsü değil) */
 @media print {
 /* Varsayılan: dikey sayfa (detay azken) */
-@page { size: portrait; }
+@page { size: portrait; margin: 0; }
 /* Sağ-sol siyah alanları kaldır: sayfa tam genişlik, beyaz arka plan */
 html, body {
 background: #fff !important;
