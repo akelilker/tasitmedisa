@@ -14,14 +14,14 @@ body::-webkit-scrollbar,
  
 /* ========== TÜM :root DEĞİŞKENLERİ (tek kaynak) ========== */
 :root {
-  --theme-color: #d40000;
-  --theme-color-rgb: 212, 0, 0;
+  --theme-color: #e00000;
+  --theme-color-rgb: 224, 0, 0;
   /* Footer'dan yukarı süzen ışık: MEDISA tonu ile aynı */
-  --footer-glow-rgb: 212, 0, 0;
+  --footer-glow-rgb: 224, 0, 0;
   --footer-glow-opacity: 0.46;  /* Masaüstü footer üstü parlaklık */
   /* MEDISA marka kırmızısı (theme ile aynı; alias) */
-  --brand-red: #d40000;
-  --brand-red-rgb: 212, 0, 0;
+  --brand-red: #e00000;
+  --brand-red-rgb: 224, 0, 0;
   --bg: #080d16;
   --bg-2: #151515;
   --card-bg: #1a1a1a;
@@ -2940,10 +2940,10 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     #tescil-tarih-input-modal .modal-header {
         background: linear-gradient(
             180deg,
-            rgba(255, 0, 0, 0.42) 0%,
-            rgba(255, 0, 0, 0.32) 25%,
-            rgba(255, 0, 0, 0.25) 50%,
-            rgba(255, 0, 0, 0.18) 75%,
+            rgba(255, 0, 0, 0.48) 0%,
+            rgba(255, 0, 0, 0.38) 25%,
+            rgba(255, 0, 0, 0.30) 50%,
+            rgba(255, 0, 0, 0.22) 75%,
             transparent 100%
         ) !important;
         background-size: 100% 100% !important;
