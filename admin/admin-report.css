@@ -67,17 +67,18 @@ body.admin-report-page .hero.admin-report-hero.hero-two-rows {
   padding-bottom: 10px !important;
   padding-left: 2px !important;
   /* Kullanıcı paneli (dashboard) çerçevesi: kırmızı tema çizgisi — style-core .hero gümüş border yerine */
-  border: 1px solid var(--border-red-tech) !important;
+  border: 1px solid rgba(184, 192, 201, 0.72) !important;
   box-shadow:
     0 4px 15px rgba(0, 0, 0, 0.5),
-    0 4px 22px rgba(var(--theme-color-rgb), 0.16),
-    inset 0 1px 0 rgba(255, 255, 255, 0.16),
-    inset 0 -1px 0 rgba(var(--theme-color-rgb), 0.08) !important;
+    0 4px 22px rgba(var(--theme-color-rgb), 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    inset 0 -1px 0 rgba(92, 102, 114, 0.28) !important;
 }
 
 body.admin-report-page .hero.admin-report-hero.hero-two-rows .hero-logo.admin-report-hero-side {
   grid-column: 1;
   justify-self: start;
+  position: relative;
   display: flex !important;
   flex-direction: column !important;
   align-items: center !important;
@@ -179,6 +180,10 @@ body.admin-report-page .main-header-user-name {
   color: rgba(238, 246, 255, 0.98);
   font-size: clamp(9px, 1.65vw, 10.5px);
   font-weight: 700;
+  text-shadow: none !important;
+  filter: none !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   line-height: 1.15;
   text-align: center;
   letter-spacing: 0.01em;
@@ -208,8 +213,15 @@ body.admin-report-page .main-header-user-name.is-empty {
   display: inline-flex;
 }
 
-.admin-report-page.report-from-notifications .admin-report-hero .hero-logo picture {
-  display: none !important;
+.admin-report-page.report-from-notifications .hero.hero-two-rows .hero-logo.admin-report-hero-side {
+  padding-left: 34px !important;
+}
+
+.admin-report-page.report-from-notifications .admin-notifications-back-btn {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .admin-notifications-back-btn:hover,
@@ -2056,15 +2068,15 @@ body.admin-report-page .main-header-user-name.is-empty {
   body.admin-report-page .hero.hero-two-rows .hero-logo.admin-report-hero-side {
     flex: 0 1 auto !important;
     width: max-content !important;
-    min-width: 52px !important;
+    min-width: 56px !important;
     max-width: min(200px, 46vw) !important;
     margin-left: 0 !important;
     overflow: visible !important;
-    transform: translate(0, -2px) !important;
+    transform: translate(0, 0) !important;
   }
 
   body.admin-report-page .hero.hero-two-rows .hero-logo picture {
-    max-width: 52px !important;
+    max-width: 58px !important;
   }
 
   body.admin-report-page .hero.hero-two-rows .hero-title-block .hero-title-line {
@@ -2072,19 +2084,22 @@ body.admin-report-page .main-header-user-name.is-empty {
     max-width: 100% !important;
     min-width: 0 !important;
     /* Mobil: punto alt satır ile aynı; letter-spacing sıkı (dar ekranda ellipsis daha az). */
-    font-size: clamp(15px, 4.5vw, 19px) !important;
-    letter-spacing: clamp(0.6px, 0.42vw, 1.6px) !important;
-    line-height: 1.12 !important;
+    font-size: clamp(16.5px, 4.65vw, 18.5px) !important;
+    letter-spacing: clamp(0.8px, 0.55vw, 2px) !important;
+    line-height: 1.08 !important;
     text-align: center !important;
     -webkit-font-smoothing: antialiased !important;
     -moz-osx-font-smoothing: grayscale !important;
     text-rendering: optimizeLegibility !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: clip !important;
   }
 
   body.admin-report-page .hero.hero-two-rows .hero-title-block .hero-panel-subtitle {
-    font-size: clamp(15px, 4.5vw, 19px) !important;
-    letter-spacing: clamp(2px, 0.8vw, 3.5px) !important;
-    line-height: 1.12 !important;
+    font-size: clamp(18px, 5vw, 21px) !important;
+    letter-spacing: clamp(2px, 0.75vw, 3.2px) !important;
+    line-height: 1.08 !important;
     text-align: center !important;
     -webkit-font-smoothing: antialiased !important;
     -moz-osx-font-smoothing: grayscale !important;
@@ -2092,10 +2107,17 @@ body.admin-report-page .main-header-user-name.is-empty {
   }
 
   body.admin-report-page .main-header-user-name {
+    display: block !important;
+    width: 100% !important;
+    max-width: 110px !important;
+    overflow: hidden !important;
     font-size: clamp(calc(8px - 0.5pt), 2.35vw, calc(10.5px - 0.5pt)) !important;
     line-height: 1.12 !important;
     letter-spacing: 0 !important;
-    transform: translate(8px, 5px) !important;
+    white-space: nowrap !important;
+    word-break: normal !important;
+    text-overflow: ellipsis !important;
+    transform: translate(0, 2px) !important;
   }
 
   /* style-core mobil .hero-logo / img evrensel kurallarından izole et */
@@ -2103,6 +2125,15 @@ body.admin-report-page .main-header-user-name.is-empty {
     margin-right: 0 !important;
     width: max-content !important;
     flex: 0 1 auto !important;
+  }
+
+  .admin-report-page.report-from-notifications .hero.hero-two-rows .hero-logo.admin-report-hero-side {
+    padding-left: 28px !important;
+  }
+
+  .admin-report-page.report-from-notifications .admin-notifications-back-btn {
+    width: 28px;
+    height: 28px;
   }
 
   body.admin-report-page .hero.hero-two-rows .hero-logo img.logo-small {
