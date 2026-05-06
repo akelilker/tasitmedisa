@@ -7953,6 +7953,11 @@
     const vehicleId = svc.vehicleId;
     const vehicle = svc.vehicle;
     const vehicles = svc.vehicles;
+    if (isArchivedVehicleAssignmentLocked(vehicle)) {
+      if (typeof showToast === 'function') showToast('Arşivdeki taşıtlarda kullanıcı/şube ataması yapılamaz.', 'error');
+      else alert('Arşivdeki taşıtlarda kullanıcı/şube ataması yapılamaz.');
+      return;
+    }
     
     if (!vehicle.events) vehicle.events = [];
     
@@ -8006,6 +8011,11 @@
     const vehicleId = svc.vehicleId;
     const vehicle = svc.vehicle;
     const vehicles = svc.vehicles;
+    if (isArchivedVehicleAssignmentLocked(vehicle)) {
+      if (typeof showToast === 'function') showToast('Arşivdeki taşıtlarda kullanıcı/şube ataması yapılamaz.', 'error');
+      else alert('Arşivdeki taşıtlarda kullanıcı/şube ataması yapılamaz.');
+      return;
+    }
 
     if (!vehicle.events) vehicle.events = [];
 
