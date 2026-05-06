@@ -2083,7 +2083,7 @@ body.admin-report-page .main-header-user-name.is-empty {
 /* --- Mobil --- */
 @media (max-width: 640px) {
   body.admin-report-page .hero.admin-report-hero.hero-two-rows {
-    grid-template-columns: 74px minmax(0, 1fr) !important;
+    grid-template-columns: 96px minmax(0, 1fr) !important;
     column-gap: 4px !important;
   }
 
@@ -2105,9 +2105,10 @@ body.admin-report-page .main-header-user-name.is-empty {
 
   body.admin-report-page .hero.hero-two-rows .hero-logo.admin-report-hero-side {
     flex: 0 1 auto !important;
-    width: 124px !important;
-    min-width: 124px !important;
-    max-width: 124px !important;
+    width: 96px !important;
+    min-width: 96px !important;
+    max-width: 96px !important;
+    box-sizing: border-box !important;
     margin-left: 0 !important;
     overflow: visible !important;
     transform: translate(0, 0) !important;
@@ -2147,9 +2148,9 @@ body.admin-report-page .main-header-user-name.is-empty {
   body.admin-report-page .main-header-user-name {
     display: block !important;
     width: 100% !important;
-    max-width: 122px !important;
+    max-width: 94px !important;
     overflow: hidden !important;
-    font-size: clamp(calc(8px - 0.5pt), 2.35vw, calc(10.5px - 0.5pt)) !important;
+    font-size: clamp(7px, 2vw, 8.2px) !important;
     line-height: 1.12 !important;
     letter-spacing: 0 !important;
     white-space: nowrap !important;
@@ -2161,8 +2162,6 @@ body.admin-report-page .main-header-user-name.is-empty {
   /* style-core mobil .hero-logo / img evrensel kurallarından izole et */
   body.admin-report-page .hero.hero-two-rows .hero-logo.admin-report-hero-side {
     margin-right: 0 !important;
-    width: max-content !important;
-    flex: 0 1 auto !important;
   }
 
   .admin-report-page.report-from-notifications .hero.hero-two-rows .hero-logo.admin-report-hero-side {
