@@ -1810,6 +1810,23 @@ width: 100% !important;
 border-color: var(--theme-color);
 }
 
+/* Masaüstü — Rapolar: Başlangıç/Bitiş tarih alanı çerçevesi (koyu zeminde daha görünür) */
+@media (min-width: 641px) {
+#reports-modal #stok-date-start,
+#reports-modal #stok-date-end {
+border-width: 1.5px !important;
+border-style: solid !important;
+border-color: rgba(255, 255, 255, 0.58) !important;
+box-shadow: 0 0 0 1px rgba(var(--theme-color-rgb), 0.22);
+background: rgba(13, 19, 31, 0.98);
+}
+#reports-modal #stok-date-start:focus,
+#reports-modal #stok-date-end:focus {
+border-color: var(--theme-color) !important;
+box-shadow: 0 0 0 2px rgba(var(--theme-color-rgb), 0.28);
+}
+}
+
 .stok-export-controls {
 display: flex;
 gap: 8px;
