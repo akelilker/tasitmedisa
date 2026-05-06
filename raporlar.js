@@ -2202,7 +2202,7 @@
         const printOpts = {
             compact: true,
             printSeparateMuayeneColumns: true,
-            fullPrintDates: !isMobileStokViewport()
+            fullPrintDates: true
         };
         const colgroup = buildStokPrintColgroup(activeColumns);
         const thead = activeColumns.map(col => `<th data-col="${col.key}">${escapeHtml(stokPrintHeaders[col.key] || col.key)}</th>`).join('');

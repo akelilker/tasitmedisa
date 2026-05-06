@@ -2929,12 +2929,12 @@ margin: 0 0 12px 0;
 width: 100%;
 max-width: 100%;
 border-collapse: collapse;
-font-size: 8.5pt;
+font-size: 9pt;
 table-layout: fixed;
 }
 /* Çok sütun: yazdırma punto (yalnız #stok-print-area; ekran listesi etkilenmez) */
 #stok-print-area .stok-print-table.stok-print-dense {
-font-size: 7.4pt;
+font-size: 8pt;
 }
 #stok-print-area .stok-print-table th,
 #stok-print-area .stok-print-table td {
@@ -2949,6 +2949,15 @@ overflow: visible;
 text-overflow: clip;
 vertical-align: middle;
 line-height: 1.12;
+}
+#stok-print-area .stok-print-table th:nth-child(5),
+#stok-print-area .stok-print-table td:nth-child(5),
+#stok-print-area .stok-print-table th:nth-child(6),
+#stok-print-area .stok-print-table td:nth-child(6),
+#stok-print-area .stok-print-table th:nth-child(7),
+#stok-print-area .stok-print-table td:nth-child(7) {
+padding-left: 1px;
+padding-right: 1px;
 }
 /* Başlık: kelime ortasından bölünmesin (Takip → Taki|p gibi); önce boşlukta kır */
 #stok-print-area .stok-print-table thead th {
