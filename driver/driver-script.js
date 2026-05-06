@@ -2759,6 +2759,14 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
     }).join(' ');
   }
 
+  function getDriverFeedbackHistoryTypeLabel(type) {
+      var t = String(type || '').toLocaleLowerCase('tr-TR');
+      if (t === 'sikayet' || t === 'şikayet') return 'Şikayet';
+      if (t === 'oneri' || t === 'öneri') return 'Öneri';
+      if (t === 'diger' || t === 'diğer') return 'Diğer';
+      return 'Talep';
+  }
+
   /** Dashboard aksiyon alanı: odaktan çıkınca metni kelime başı büyük yap (tr-TR). KM/tutar/sayı ve iletişim satırı hariç. */
   function bindDriverDashboardTitleCase(areaEl) {
       if (!areaEl || areaEl.nodeType !== 1) return;
@@ -2866,6 +2874,10 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
                   detailsHtml = '<p>\u015eube bilgisi g\u00fcncellendi olarak bildirildi.</p>';
               } else if (item.eventType === 'kullanici-atama') {
                   detailsHtml = '<p>Kullan\u0131c\u0131 atamas\u0131 yap\u0131ld\u0131 olarak bildirildi.</p>';
+              } else if (item.eventType === 'driver-feedback') {
+                  const konu = getDriverFeedbackHistoryTypeLabel(d.konuTuru || d.konu_turu || d.type);
+                  detailsHtml = `<p>${escapeHtmlDriver(konu)} yöneticiye gönderildi.</p>`;
+                  if (d.mesaj) detailsHtml += `<p>Mesaj: ${escapeHtmlDriver(d.mesaj)}.</p>`;
               } else {
                   let fallbackLabel = item.eventType || 'G\u00fcncelleme';
                   fallbackLabel = fallbackLabel.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
@@ -3281,6 +3293,23 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           });
           const data = await response.json();
           if (data && data.success) {
+              var feedbackTimestamp = data.talep_tarihi || new Date().toISOString();
+              var localVehicle = (allHistoryVehicles || []).find(function(v) {
+                  return String(v.id) === String(vehicle.id);
+              });
+              if (localVehicle) {
+                  if (!Array.isArray(localVehicle.events)) localVehicle.events = [];
+                  localVehicle.events.unshift({
+                      id: data.event_id || ('feedback-' + (data.talep_id || Date.now())),
+                      type: 'driver-feedback',
+                      date: feedbackTimestamp.slice(0, 10),
+                      timestamp: feedbackTimestamp,
+                      data: {
+                          konuTuru: type,
+                          mesaj: messageFormatted
+                      }
+                  });
+              }
               setDriverFeedbackMessage('Talebiniz yöneticiye gönderildi.', false);
               setTimeout(function() {
                   closeDriverFeedbackModal();

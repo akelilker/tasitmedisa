@@ -51,9 +51,11 @@ if (mb_strlen($mesaj, 'UTF-8') > 500) {
 
 $result = medisaMutateData(function (&$data) use ($tokenData, $aracId, $konuTuru, $mesaj) {
     $vehicle = null;
-    foreach (($data['tasitlar'] ?? []) as $tasit) {
+    $vehicleIndex = null;
+    foreach (($data['tasitlar'] ?? []) as $idx => $tasit) {
         if ((string)($tasit['id'] ?? '') === $aracId) {
             $vehicle = $tasit;
+            $vehicleIndex = $idx;
             break;
         }
     }
@@ -88,6 +90,7 @@ $result = medisaMutateData(function (&$data) use ($tokenData, $aracId, $konuTuru
     }
 
     $newTalepId = medisaGetNextNumericId($data['duzeltme_talepleri']);
+    $talepTarihi = date('c');
     $data['duzeltme_talepleri'][] = [
         'id' => $newTalepId,
         'talep_tipi' => 'genel',
@@ -97,17 +100,36 @@ $result = medisaMutateData(function (&$data) use ($tokenData, $aracId, $konuTuru
         'konu_turu' => $konuTuru,
         'mesaj' => $mesaj,
         'sebep' => $mesaj,
-        'talep_tarihi' => date('c'),
+        'talep_tarihi' => $talepTarihi,
         'durum' => 'beklemede',
         'admin_yanit_tarihi' => null,
         'admin_notu' => null,
         'admin_id' => null,
     ];
+    $eventId = 'feedback-' . $newTalepId;
+    if ($vehicleIndex !== null) {
+        if (!isset($data['tasitlar'][$vehicleIndex]['events']) || !is_array($data['tasitlar'][$vehicleIndex]['events'])) {
+            $data['tasitlar'][$vehicleIndex]['events'] = [];
+        }
+        array_unshift($data['tasitlar'][$vehicleIndex]['events'], [
+            'id' => $eventId,
+            'type' => 'driver-feedback',
+            'date' => date('Y-m-d'),
+            'timestamp' => $talepTarihi,
+            'data' => [
+                'konuTuru' => $konuTuru,
+                'mesaj' => $mesaj,
+                'talepId' => $newTalepId,
+            ],
+        ]);
+    }
 
     return [
         'success' => true,
         'message' => 'Talebiniz yöneticiye gönderildi.',
         'talep_id' => $newTalepId,
+        'event_id' => $eventId,
+        'talep_tarihi' => $talepTarihi,
     ];
 });
 
