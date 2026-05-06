@@ -2901,7 +2901,7 @@
         soldBadge.textContent = 'SATILDI';
         toolbarCenter.appendChild(soldBadge);
       }
-      if (!vehicle.branchId) {
+      if (!vehicle.branchId && !isArchivedVehicleAssignmentLocked(vehicle)) {
         const assignBtn = document.createElement('button');
         assignBtn.className = 'detail-assign-button-frameless';
         assignBtn.innerHTML = '<span>\u015Eubeye Tahsis Etmek \u0130\u00E7in +</span>';
@@ -3044,6 +3044,11 @@
     const vehicles = readVehicles();
     const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
     if (!vehicle) return;
+    if (isArchivedVehicleAssignmentLocked(vehicle)) {
+      if (typeof showToast === 'function') showToast('Arşivdeki taşıtlarda kullanıcı/şube ataması yapılamaz.', 'error');
+      else alert('Arşivdeki taşıtlarda kullanıcı/şube ataması yapılamaz.');
+      return;
+    }
     
     const branches = readBranches();
     const eskiSubeId = vehicle.branchId || '';
@@ -3431,6 +3436,10 @@
   // --- VEHICLE DETAIL - NEW FUNCTIONS ---
 
   function checkDateWarnings(dateString) { return (typeof window.checkDateWarnings === 'function' ? window.checkDateWarnings(dateString) : { class: '', days: null }); }
+
+  function isArchivedVehicleAssignmentLocked(vehicle) {
+    return !!(vehicle && (vehicle.satildiMi === true || vehicle.arsiv === true));
+  }
 
   function getEgzozMuayeneState(vehicle) {
     const rawDate = vehicle && vehicle.egzozMuayeneDate != null ? String(vehicle.egzozMuayeneDate).trim() : '';
@@ -4140,14 +4149,17 @@
 
   let html = '';
 
-  // Kullanıcı (arşiv/satılmış detayda da aktif filo ile aynı CTA)
+  // Kullanıcı
   const users = readUsers();
+  const assignmentLocked = isArchivedVehicleAssignmentLocked(vehicle);
   const assignedUserId = vehicle.assignedUserId || '';
   const assignedUser = assignedUserId ? users.find(u => u.id === assignedUserId) : null;
   const assignedUserName = (assignedUser && assignedUser.name) ? assignedUser.name : (vehicle.tahsisKisi || '');
   if (assignedUserId || (assignedUserName && assignedUserName.trim())) {
       const displayName = escapeHtml(formatAdSoyad(assignedUserName)).replace(/ /g, '&nbsp;');
       html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Kullanıcı</span><span class="detail-row-colon">:</span></div><span class="detail-row-value detail-user-value"> ${displayName}</span></div>`;
+  } else if (assignmentLocked) {
+      html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Kullanıcı</span><span class="detail-row-colon">:</span></div><span class="detail-row-value detail-user-value"> -</span></div>`;
   } else {
       html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Kullanıcı</span><span class="detail-row-colon">:</span></div><span class="detail-row-value detail-user-empty" onclick="event.stopPropagation(); window.medisaOpenEventModalFromVehicleDetailUi('kullanici');"> Kullanıcı Eklemek İçin +</span></div>`;
   }
@@ -5084,7 +5096,9 @@
       // Menü listesini oluştur
       const isMobile = window.innerWidth <= 640;
       const takipLabel = isMobile ? 'Taşıt Takip Cih.Bilg. Günc.' : 'Taşıt Takip Cihaz Bilgisi Güncelle';
-      const events = [
+      const currentMenuVehicle = readVehicles().find(v => String(v.id) === String(effectiveVid));
+      const assignmentLocked = isArchivedVehicleAssignmentLocked(currentMenuVehicle);
+      let events = [
         { id: 'ceza', label: 'Trafik Cezası Ekle' },
         { id: 'km', label: 'Km Güncelle' },
         { id: 'bakim', label: 'Bakım Bilgisi Ekle' },
@@ -5102,6 +5116,11 @@
         { id: 'kullanici', label: 'Kullan\u0131c\u0131 Atama/De\u011Fi\u015Fikli\u011Fi Bilgisi G\u00FCncelle' },
         { id: 'satis', label: 'Sat\u0131\u015F/Pert Bildirimi Yap' }
       ];
+      if (assignmentLocked) {
+        events = events.filter(function(event) {
+          return event.id !== 'sube' && event.id !== 'kullanici';
+        });
+      }
       
       const vid = (window.currentDetailVehicleId || vehicleId || '').toString().replace(/"/g, '&quot;');
       menuList.innerHTML = events.map(event => {
@@ -5125,6 +5144,14 @@
         window.currentDetailVehicleId = (vehicleId || window.currentDetailVehicleId || '').toString();
         if (typeof window.openRuhsatModal === 'function') window.openRuhsatModal(vehicleId || window.currentDetailVehicleId);
         return;
+      }
+      if (type === 'sube' || type === 'kullanici') {
+        const lockedVehicle = readVehicles().find(v => String(v.id) === String(effectiveVid));
+        if (isArchivedVehicleAssignmentLocked(lockedVehicle)) {
+          if (typeof showToast === 'function') showToast('Arşivdeki taşıtlarda kullanıcı/şube ataması yapılamaz.', 'error');
+          else alert('Arşivdeki taşıtlarda kullanıcı/şube ataması yapılamaz.');
+          return;
+        }
       }
       const modal = DOM.dinamikOlayModal;
       const formIcerik = DOM.dinamikOlayFormIcerik;
@@ -7485,7 +7512,7 @@
     const vehicleId = svc.vehicleId;
     const vehicle = svc.vehicle;
     const vehicles = svc.vehicles;
-    
+
     if (!vehicle.events) vehicle.events = [];
     
     // Bitiş tarihi 1 yıl sonrasına ayarla
