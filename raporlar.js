@@ -432,7 +432,7 @@
                                     🔍
                                 </button>
                                 <div id="stok-search-container" class="stok-search-container">
-                                    <input type="text" id="stok-search-input" class="stok-search-input" placeholder="Üretim yılı, marka/model, kullanıcı, şube ara..." oninput="handleStokSearch(this.value)">
+                                    <input type="text" id="stok-search-input" class="stok-search-input" placeholder="Üretim Yılı, Marka/Model, Kullanıcı, Şube Ara..." oninput="handleStokSearch(this.value)">
                                 </div>
                             </div>
                             <button class="stok-export-btn" onclick="exportStokToExcel()" title="Excel'e Aktar">
@@ -2379,7 +2379,7 @@
                 <div class="kullanici-export-controls">
                     <div class="kullanici-export-right">
                         <div id="kullanici-search-container" class="stok-search-container">
-                            <input type="text" id="kullanici-search-input" class="stok-search-input" placeholder="İsim, telefon, e-posta, plaka, marka ara..." oninput="handleKullaniciSearch(this.value)">
+                            <input type="text" id="kullanici-search-input" class="stok-search-input" placeholder="İsim, Telefon, E-posta, Plaka, Marka Ara..." oninput="handleKullaniciSearch(this.value)">
                         </div>
                         <button class="stok-search-btn" onclick="toggleKullaniciSearch()" title="Ara">
                             🔍
