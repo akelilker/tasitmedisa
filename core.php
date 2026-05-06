@@ -385,7 +385,7 @@ function medisaGetVehicleVersion($vehicle) {
 
 function medisaEnsureVehicleVersion($vehicle, $expectedVersion, $message = '') {
     if ($expectedVersion === null || $expectedVersion === '') {
-        return medisaBuildErrorResult('Araç sürümü eksik.', 400, [
+        return medisaBuildErrorResult('Taşıt sürümü eksik.', 400, [
             'entity' => 'vehicle',
             'id' => (string)($vehicle['id'] ?? ''),
         ]);
@@ -396,7 +396,7 @@ function medisaEnsureVehicleVersion($vehicle, $expectedVersion, $message = '') {
         return medisaBuildConflictResult(
             'vehicle',
             $vehicle['id'] ?? '',
-            $message ?: 'Bu araç başka biri tarafından güncellendi. Güncel veriler yüklendi.'
+            $message ?: 'Bu taşıt başka biri tarafından güncellendi. Güncel veriler yüklendi.'
         );
     }
 
@@ -1089,7 +1089,7 @@ function medisaSaveValidateIncomingVehicleVersions($incomingVehicles, $currentVe
             return medisaBuildConflictResult(
                 'vehicle',
                 $id,
-                'Bu araç başka biri tarafından güncellendi. Güncel veriler yüklendi.'
+                'Bu taşıt başka biri tarafından güncellendi. Güncel veriler yüklendi.'
             );
         }
     }

@@ -1430,13 +1430,13 @@
     var fallbackVehicle = !activeVehicle && relatedVehicles.length ? relatedVehicles[0] : null;
     var vehiclePlate = activeVehicle
       ? formatPlaka(activeVehicle.plaka || activeVehicle.plate || '-')
-      : (fallbackVehicle ? fallbackVehicle.plate : 'Araç Geçmişi Yok');
+      : (fallbackVehicle ? fallbackVehicle.plate : 'Taşıt Geçmişi Yok');
     var vehicleBrandSource = activeVehicle
       ? (activeVehicle.brandModel || [activeVehicle.arac_marka, activeVehicle.arac_model].filter(Boolean).join(' ') || '-')
       : (fallbackVehicle ? fallbackVehicle.brand : '');
     var vehicleBrand = activeVehicle
       ? formatBrandModel(vehicleBrandSource)
-      : (fallbackVehicle ? formatBrandModel(vehicleBrandSource) : 'Araç ataması yok');
+      : (fallbackVehicle ? formatBrandModel(vehicleBrandSource) : 'Taşıt ataması yok');
     var branchNames = getUserBranchNames(user);
     var phone = getUserPhone(user);
     var email = getUserEmail(user);
@@ -1616,7 +1616,7 @@
       var kullaniciAdi = toTitleCase(eventData.kullaniciAdi || eventData.surucu || event.surucu || 'Kullanıcı');
       var plaka = formatPlaka((vehicle && (vehicle.plaka || vehicle.plate)) || '-');
       var marka = formatBrandModel((vehicle && (vehicle.brandModel || [vehicle.arac_marka, vehicle.arac_model].filter(Boolean).join(' '))) || '-');
-      return kullaniciAdi + ' kullanıcısına atandı | Araç: ' + plaka + ' - ' + marka;
+      return kullaniciAdi + ' kullanıcısına atandı | Taşıt: ' + plaka + ' - ' + marka;
     }
 
     if (type === 'sube-degisiklik') {
@@ -1796,7 +1796,7 @@
       ? '<div class="user-analytics-related-list">' + relatedVehicles.map(function(item) {
           return '<span class="user-analytics-related-pill">' + escapeHtmlLocal((item.plate || '-') + ' · ' + (item.brand || '-')) + '</span>';
         }).join('') + '</div>'
-      : '<span class="user-analytics-detail-value">Araç geçmişi bulunamadı.</span>';
+      : '<span class="user-analytics-detail-value">Taşıt geçmişi bulunamadı.</span>';
 
     var html = '<div class="user-analytics-detail-shell">';
     html += '<div class="universal-back-bar"><button type="button" class="universal-back-btn" id="user-analytics-back-to-list" title="Geri Dön"><svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg><span class="universal-back-label">Listeye Dön</span></button></div>';
@@ -1808,8 +1808,8 @@
     html += '<div class="user-analytics-detail-row"><span class="user-analytics-detail-label">Telefon</span><span class="user-analytics-detail-value">' + escapeHtmlLocal(record.telefon) + '</span></div>';
     html += '<div class="user-analytics-detail-row"><span class="user-analytics-detail-label">E-posta</span><span class="user-analytics-detail-value">' + escapeHtmlLocal(record.email) + '</span></div>';
     html += '<div class="user-analytics-detail-row"><span class="user-analytics-detail-label">Kullanıcı Tipi</span><span class="user-analytics-detail-value">' + escapeHtmlLocal(record.roleLabel) + '</span></div>';
-    html += '<div class="user-analytics-detail-row"><span class="user-analytics-detail-label">Aktif/Zimmetli Araç</span><span class="user-analytics-detail-value">' + escapeHtmlLocal(record.plaka) + ' · ' + escapeHtmlLocal(record.marka) + '</span></div>';
-    html += '<div class="user-analytics-detail-row"><span class="user-analytics-detail-label">Araç Geçmişi</span>' + relatedVehicleHtml + '</div>';
+    html += '<div class="user-analytics-detail-row"><span class="user-analytics-detail-label">Aktif/Zimmetli Taşıt</span><span class="user-analytics-detail-value">' + escapeHtmlLocal(record.plaka) + ' · ' + escapeHtmlLocal(record.marka) + '</span></div>';
+    html += '<div class="user-analytics-detail-row"><span class="user-analytics-detail-label">Taşıt Geçmişi</span>' + relatedVehicleHtml + '</div>';
     html += buildMetricRows(record);
     html += '</section>';
     html += '<section class="user-analytics-detail-section">';

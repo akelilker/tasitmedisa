@@ -151,7 +151,7 @@ $result = medisaMutateData(function (&$data) use ($vehicleId, $vehicleVersion, $
         return medisaBuildErrorResult('Bu tasiti guncelleme yetkiniz yok.', 403);
     }
 
-    $versionCheck = medisaEnsureVehicleVersion($vehicle, $vehicleVersion, 'Bu arac baska biri tarafindan guncellendi. Guncel veriler yuklendi.');
+    $versionCheck = medisaEnsureVehicleVersion($vehicle, $vehicleVersion, 'Bu taşıt başka biri tarafından güncellendi. Güncel veriler yüklendi.');
     if ($versionCheck !== true) {
         return $versionCheck;
     }
