@@ -2911,7 +2911,7 @@ left: 0;
 top: 0;
 width: 100%;
 max-width: 100%;
-padding: 12px;
+padding: 6px;
 background: #fff;
 color: #000;
 box-sizing: border-box;
@@ -2927,18 +2927,19 @@ margin: 0 0 12px 0;
 }
 #stok-print-area .stok-print-table {
 width: 100%;
+max-width: 100%;
 border-collapse: collapse;
-font-size: 10pt;
+font-size: 8.5pt;
 table-layout: fixed;
 }
 /* Çok sütun: yazdırma punto (yalnız #stok-print-area; ekran listesi etkilenmez) */
 #stok-print-area .stok-print-table.stok-print-dense {
-font-size: 8.5pt;
+font-size: 7.4pt;
 }
 #stok-print-area .stok-print-table th,
 #stok-print-area .stok-print-table td {
 border: 1px solid #333;
-padding: 3px 5px;
+padding: 2px 2px;
 text-align: center;
 box-sizing: border-box;
 white-space: normal;
@@ -2947,14 +2948,15 @@ overflow-wrap: break-word;
 overflow: visible;
 text-overflow: clip;
 vertical-align: middle;
+line-height: 1.12;
 }
 /* Başlık: kelime ortasından bölünmesin (Takip → Taki|p gibi); önce boşlukta kır */
 #stok-print-area .stok-print-table thead th {
 word-break: normal;
 overflow-wrap: break-word;
-line-height: 1.25;
-padding-top: 5px;
-padding-bottom: 5px;
+line-height: 1.12;
+padding-top: 3px;
+padding-bottom: 3px;
 vertical-align: middle;
 }
 /* UTTS / Tramer: tek satır başlık (UTT|S kırılmasın); sütun genişliği raporlar.js ağırlıkla desteklenir */
