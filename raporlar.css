@@ -509,33 +509,21 @@ background: rgba(var(--theme-color-rgb), 0.1);
 
 /* Taşıtlar .branch-name ile birebir aynı */
 .stok-branch-name {
-font-size: 13px;
-font-weight: 500;
-color: #ffffff;
-text-transform: uppercase;
-line-height: 1.1;
-width: 100%;
-white-space: normal;
+font-size: clamp(11.5px, 4.1vw, 15px);
+font-weight: 700;
+color: #f8fafc;
+line-height: 1.12;
+text-align: center;
+overflow-wrap: anywhere;
 word-break: break-word;
-transition: transform 0.2s ease;
-display: block !important;
-height: 2.5em !important;
-min-height: 2.5em !important;
-max-height: 2.5em !important;
-margin-bottom: 2px !important;
-overflow: hidden !important;
 }
 
 /* Taşıtlar .branch-count ile birebir aynı */
 .stok-branch-count {
-font-size: 12px;
-color: var(--data-value-color, #a0aec0);
-background: transparent;
-padding: 0;
-border-radius: 0;
-transition: transform 0.2s ease;
+font-size: 15px;
 font-weight: 500;
-margin-top: 0 !important;
+color: rgba(248, 250, 252, 0.62);
+text-align: center;
 }
 
 /* === STOK LİSTE GÖRÜNÜMÜ === */
