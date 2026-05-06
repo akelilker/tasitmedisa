@@ -786,7 +786,7 @@ var MEDISA_MODULE_VERSIONS = {
   raporlar: '20260506.22',
   kayitJs: '20260506.1',
   kayitCss: '20260506.1',
-  ayarlarJs: '20260506.2',
+  ayarlarJs: '20260506.3',
   ayarlarCss: '20260506.1'
 };
 window.MEDISA_MODULE_VERSIONS = MEDISA_MODULE_VERSIONS;
