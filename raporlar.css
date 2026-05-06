@@ -2997,21 +2997,28 @@ overflow-wrap: break-word !important;
 overflow: visible !important;
 text-overflow: clip !important;
 }
-/* Plaka, yıl, şanzıman, km, sıra verisi: tek satır (tarih hariç) */
-#stok-print-area .stok-print-table th[data-col="plaka"],
-#stok-print-area .stok-print-table td[data-col="plaka"],
-#stok-print-area .stok-print-table th[data-col="yil"],
-#stok-print-area .stok-print-table td[data-col="yil"],
-#stok-print-area .stok-print-table th[data-col="sanziman"],
-#stok-print-area .stok-print-table td[data-col="sanziman"],
-#stok-print-area .stok-print-table th[data-col="km"],
-#stok-print-area .stok-print-table td[data-col="km"],
+/* No., yıl: kısa veri; tek satır */
 #stok-print-area .stok-print-table th[data-col="sira"],
-#stok-print-area .stok-print-table td[data-col="sira"] {
+#stok-print-area .stok-print-table td[data-col="sira"],
+#stok-print-area .stok-print-table th[data-col="yil"],
+#stok-print-area .stok-print-table td[data-col="yil"] {
 white-space: nowrap !important;
 word-break: normal !important;
 overflow-wrap: normal !important;
 overflow: hidden !important;
+}
+/* Plaka, şanzıman, km: iOS/PWA yazdırmada dar sütunda kırpma yok; gerekirse satır kırılsın */
+#stok-print-area .stok-print-table th[data-col="plaka"],
+#stok-print-area .stok-print-table td[data-col="plaka"],
+#stok-print-area .stok-print-table th[data-col="sanziman"],
+#stok-print-area .stok-print-table td[data-col="sanziman"],
+#stok-print-area .stok-print-table th[data-col="km"],
+#stok-print-area .stok-print-table td[data-col="km"] {
+white-space: normal !important;
+word-break: normal !important;
+overflow-wrap: break-word !important;
+overflow: visible !important;
+text-overflow: clip !important;
 }
 #stok-print-area .stok-print-table thead tr {
 background: #404040;
@@ -3019,6 +3026,8 @@ color: #fff;
 }
 #stok-print-area .stok-print-table th[data-col="marka"],
 #stok-print-area .stok-print-table td[data-col="marka"],
+#stok-print-area .stok-print-table th[data-col="tasitTipi"],
+#stok-print-area .stok-print-table td[data-col="tasitTipi"],
 #stok-print-area .stok-print-table th[data-col="sube"],
 #stok-print-area .stok-print-table td[data-col="sube"],
 #stok-print-area .stok-print-table th[data-col="kullanici"],
