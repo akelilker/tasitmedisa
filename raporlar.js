@@ -701,7 +701,7 @@
                     'km': 69
                 };
             const detailPx = {
-                'sigorta': 72, 'kasko': 72, 'kaskoDegeri': 72, 'muayene': 72, 'egzozMuayene': 64, 'kredi': 56,
+                'sigorta': 72, 'kasko': 72, 'kaskoDegeri': 72, 'muayene': 78, 'egzozMuayene': 86, 'kredi': 56,
                 'lastik': 56, 'utts': 52, 'takip': 56, 'tramer': 52,
                 'boya': 56, 'kullanici': 72, 'tescil': 72
             };
