@@ -2141,10 +2141,10 @@
     const stokPrintColumnWeights = {
         sira: 3,
         yil: 5,
-        plaka: 11,
-        marka: 21,
+        plaka: 7,
+        marka: 25,
         tasitTipi: 7,
-        sanziman: 4,
+        sanziman: 6,
         km: 5,
         sube: 6,
         sigorta: 9,
