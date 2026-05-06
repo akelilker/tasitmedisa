@@ -164,12 +164,13 @@
 
     // --- 1. SEKME: STOK GÖRÜNÜMÜ ---
     
-    // Sütun başlık metinleri (responsive)
-    function getColumnHeaderText(colKey) {
-        const isMobile = window.innerWidth <= 640;
-        const isVerySmall = window.innerWidth <= 480;
-        const isTiny = window.innerWidth <= 360;
-        const isDesktop = window.innerWidth >= 641;
+    // Sütun başlık metinleri (responsive; opts.preferFull: Excel/yazdır — viewport’tan bağımsız tam etiket)
+    function getColumnHeaderText(colKey, opts) {
+        var full = opts && opts.preferFull === true;
+        const isMobile = full ? false : window.innerWidth <= 640;
+        const isVerySmall = full ? false : window.innerWidth <= 480;
+        const isTiny = full ? false : window.innerWidth <= 360;
+        const isDesktop = full ? true : window.innerWidth >= 641;
         
         const headers = {
             'sira': 'No.',
@@ -1955,7 +1956,7 @@
         worksheet.addRow([]);
         
         // Sütun başlıkları
-        const headerRow = worksheet.addRow(excelColumns.map(col => getColumnHeaderText(col.key)));
+        const headerRow = worksheet.addRow(excelColumns.map(col => getColumnHeaderText(col.key, { preferFull: true })));
         headerRow.eachCell((cell, colNumber) => {
             cell.fill = {
                 type: 'pattern',
@@ -1963,7 +1964,7 @@
                 fgColor: { argb: 'FF404040' }
             };
             cell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
-            cell.alignment = { horizontal: 'center', vertical: 'middle' };
+            cell.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
             cell.border = {
                 top: { style: 'thin', color: { argb: 'FF333333' } },
                 left: { style: 'thin', color: { argb: 'FF333333' } },
@@ -1971,7 +1972,7 @@
                 right: { style: 'thin', color: { argb: 'FF333333' } }
             };
         });
-        headerRow.height = 20;
+        headerRow.height = 38;
         
         // Veri satırları
         vehicles.forEach((vehicle, index) => {
@@ -1997,7 +1998,8 @@
         
         // Sütun genişliklerini içeriğe göre otomatik ayarla
         excelColumns.forEach((col, colIndex) => {
-            let maxLength = getColumnHeaderText(col.key).length;
+            const headerText = getColumnHeaderText(col.key, { preferFull: true });
+            let maxLength = headerText.length;
             vehicles.forEach(function(vehicle, vIdx) {
                 const sv = String(getStokCellValue(vehicle, col, vIdx, excelSplitMuayeneOpts));
                 if (sv.length > maxLength) maxLength = sv.length;
@@ -2005,6 +2007,8 @@
             let widthChars = Math.max(maxLength + 2, 8);
             const cap = stokExcelColumnWidthCeilChars[col.key];
             if (typeof cap === 'number') widthChars = Math.min(widthChars, cap);
+            /* Başlık en az bir satırda tam görünsün (tavan veri için dar kalsa bile) */
+            widthChars = Math.max(widthChars, headerText.length + 2);
             worksheet.getColumn(colIndex + 1).width = widthChars;
         });
         
@@ -2168,11 +2172,11 @@
         plaka: 12,
         sanziman: 12,
         km: 14,
-        muayene: 12,
-        egzozMuayene: 11,
-        sigorta: 12,
-        kasko: 12,
-        tescil: 12
+        muayene: 22,
+        egzozMuayene: 22,
+        sigorta: 16,
+        kasko: 14,
+        tescil: 16
     };
 
     function buildStokPrintColgroup(activeColumns) {
