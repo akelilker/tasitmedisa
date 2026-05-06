@@ -3549,7 +3549,8 @@ body.modal-open .app-container {
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-user-name {
     display: block !important;
-    max-width: 100% !important;
+    width: max-content !important;
+    max-width: 96px !important;
     overflow: hidden !important;
     font-size: clamp(calc(10px - 0.5pt), 2.55vw, calc(11.5px - 0.5pt)) !important;
     line-height: 1.05 !important;
@@ -3559,7 +3560,7 @@ body.modal-open .app-container {
     overflow-wrap: normal !important;
     -webkit-line-clamp: unset !important;
     text-overflow: ellipsis !important;
-    transform: translate(4px, 2px) !important;
+    transform: translate(0, 2px) !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero h1 {
     font-size: clamp(calc(18.5px - 0.5pt), 5.15vw, calc(23px - 0.5pt)) !important;
