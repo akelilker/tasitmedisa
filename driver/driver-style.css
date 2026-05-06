@@ -3068,8 +3068,8 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
 #driver-muayene-modal .modal-header,
 #driver-sigorta-modal .modal-header,
 #driver-kasko-modal .modal-header {
-  background: linear-gradient(180deg, rgba(255, 0, 0, 0.36) 0%, rgba(255, 0, 0, 0.27) 25%, rgba(255, 0, 0, 0.20) 50%, rgba(255, 0, 0, 0.14) 75%, transparent 100%) !important;
-  background-size: 100% calc(100% + 3px) !important;
+  background: var(--modal-header-red-gradient) !important;
+  background-size: 100% 100% !important;
   padding: 2px 20px !important;
   height: 60px !important;
   border-bottom: none !important;
@@ -3080,7 +3080,7 @@ body.login-page.driver-history-or-edit-modal-open #app-footer.login-footer {
   position: relative;
 }
 #driver-password-modal .modal-header {
-  background: linear-gradient(180deg, rgba(255, 0, 0, 0.26) 0%, rgba(255, 0, 0, 0.18) 28%, rgba(255, 0, 0, 0.11) 56%, rgba(255, 0, 0, 0.06) 78%, transparent 100%) !important;
+  background: var(--modal-header-red-gradient) !important;
   background-size: 100% 100% !important;
   padding: 2px 20px !important;
   height: 60px !important;
@@ -6341,11 +6341,11 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   #driver-sigorta-modal .modal-header,
   #driver-kasko-modal .modal-header,
   #driver-feedback-modal .modal-header {
-    background: linear-gradient(180deg, rgba(255, 0, 0, 0.42) 0%, rgba(255, 0, 0, 0.32) 25%, rgba(255, 0, 0, 0.25) 50%, rgba(255, 0, 0, 0.18) 75%, transparent 100%) !important;
-    background-size: 100% calc(100% + 3px) !important;
+    background: var(--modal-header-red-gradient) !important;
+    background-size: 100% 100% !important;
   }
   #driver-password-modal .modal-header {
-    background: linear-gradient(180deg, rgba(255, 0, 0, 0.24) 0%, rgba(255, 0, 0, 0.16) 28%, rgba(255, 0, 0, 0.10) 56%, rgba(255, 0, 0, 0.05) 78%, transparent 100%) !important;
+    background: var(--modal-header-red-gradient) !important;
     background-size: 100% 100% !important;
     border-top-left-radius: 10px !important;
     border-top-right-radius: 10px !important;
