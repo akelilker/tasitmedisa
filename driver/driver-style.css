@@ -4,14 +4,15 @@
    ========================================= */
 
 /* --- Scrollbar Gizleme (html/body/modal style-core'da; sadece driver-spesifik) --- */
-.driver-scroll-area, .history-list, .history-container, #history-list {
+.driver-scroll-area, .history-list, .history-container, #history-list, .driver-warning-marquee-outer {
   scrollbar-width: none !important;
   -ms-overflow-style: none !important;
 }
 .driver-scroll-area::-webkit-scrollbar,
 .history-list::-webkit-scrollbar,
 .history-container::-webkit-scrollbar,
-#history-list::-webkit-scrollbar {
+#history-list::-webkit-scrollbar,
+.driver-warning-marquee-outer::-webkit-scrollbar {
   display: none !important;
 }
 
