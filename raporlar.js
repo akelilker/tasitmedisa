@@ -2137,16 +2137,16 @@
 
     // Yazdır – Excel ile aynı veriyi tablo olarak yazdırır (ekran görüntüsü değil)
     const stokPrintHeaders = { sira:'No.', sube:'Şube', yil:'Yıl', marka:'Marka/Mod.', tasitTipi:'Taş. tip.', plaka:'Plaka', sanziman:'Şanz', km:'KM', sigorta:'Sig. bit.', kasko:'Kas. bit.', kaskoDegeri:'Kas. değ.', muayene:'Muay.', egzozMuayene:'Egzoz', kredi:'Hak M.', lastik:'Lastik', utts:'UTTS', takip:'Takip', tramer:'Tramer', boya:'Boya', kullanici:'Kull.', tescil:'Tescil' };
-    /* Yazdır: marka daha geniş (tek satıra yakın); plaka/egz. kısa içerik */
+    /* Yazdır: marka/şube dengesi; marka geniş kalır, şube okunabilir pay alır */
     const stokPrintColumnWeights = {
         sira: 3,
         yil: 5,
         plaka: 8,
-        marka: 24,
+        marka: 20,
         tasitTipi: 7,
         sanziman: 5,
         km: 5,
-        sube: 6,
+        sube: 10,
         sigorta: 9,
         kasko: 9,
         kaskoDegeri: 10,
