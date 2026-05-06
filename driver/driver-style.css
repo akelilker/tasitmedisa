@@ -1892,8 +1892,8 @@ body.dashboard-page {
     width: 58px !important;
     flex: 0 0 58px !important;
     gap: 4px !important;
-    align-self: flex-end !important;
-    transform: translate(2px, 3px) !important;
+    align-self: center !important;
+    transform: translate(2px, 0) !important;
   }
   .login-page .hero-logo img {
     transform: translateY(0) !important;
