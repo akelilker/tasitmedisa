@@ -6271,18 +6271,12 @@
         return;
       }
 
-      fetchRuhsatPreviewObjectUrl(vehicleId, url, dt)
-        .then(function(previewObjectUrl) {
-          openUrlInNewTab(previewObjectUrl);
+      fetchRuhsatDocumentObjectUrl(vehicleId, documentUrl, dt)
+        .then(function(documentObjectUrl) {
+          openUrlInNewTab(buildPdfViewerUrl(documentObjectUrl, 'toolbar=0&navpanes=0&zoom=page-width&view=FitH'));
         })
         .catch(function() {
-          fetchRuhsatDocumentObjectUrl(vehicleId, documentUrl, dt)
-            .then(function(documentObjectUrl) {
-              openUrlInNewTab(buildPdfViewerUrl(documentObjectUrl, 'toolbar=0&navpanes=0&zoom=page-width&view=FitH'));
-            })
-            .catch(function() {
-              if (typeof window.viewRuhsatPdf === 'function') window.viewRuhsatPdf(vehicleId, dt);
-            });
+          if (typeof window.viewRuhsatPdf === 'function') window.viewRuhsatPdf(vehicleId, dt);
         });
       return;
     }
@@ -6395,30 +6389,18 @@
       return;
     }
 
-    fetchRuhsatPreviewObjectUrl(vehicleId, url, dt)
-      .then(function(previewObjectUrl) {
+    fetchRuhsatDocumentObjectUrl(vehicleId, documentUrl, dt)
+      .then(function(documentObjectUrl) {
         if (window.__ruhsatPrintToken !== printToken) {
           return;
         }
-        loadImageForPrint(previewObjectUrl);
+        loadPdfForPrint(buildPdfViewerUrl(documentObjectUrl, 'toolbar=0&navpanes=0&zoom=page-width&view=FitH'));
       })
       .catch(function() {
         if (window.__ruhsatPrintToken !== printToken) {
           return;
         }
-        fetchRuhsatDocumentObjectUrl(vehicleId, documentUrl, dt)
-          .then(function(documentObjectUrl) {
-            if (window.__ruhsatPrintToken !== printToken) {
-              return;
-            }
-            loadPdfForPrint(buildPdfViewerUrl(documentObjectUrl, 'toolbar=0&navpanes=0&zoom=page-width&view=FitH'));
-          })
-          .catch(function() {
-            if (window.__ruhsatPrintToken !== printToken) {
-              return;
-            }
-            if (typeof window.viewRuhsatPdf === 'function') window.viewRuhsatPdf(vehicleId, dt);
-          });
+        if (typeof window.viewRuhsatPdf === 'function') window.viewRuhsatPdf(vehicleId, dt);
       });
   }
 
