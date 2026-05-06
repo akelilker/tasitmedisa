@@ -1641,7 +1641,7 @@
     if (searchInput) {
       searchInput.disabled = !listModeActive;
       searchInput.value = userAnalyticsQuery;
-      searchInput.placeholder = 'İsim, telefon, e-posta, plaka, marka ara';
+      searchInput.placeholder = 'İsim, Telefon, E-posta, Plaka, Marka Ara';
     }
   }
 

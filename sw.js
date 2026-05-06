@@ -169,7 +169,7 @@ self.addEventListener('push', (event) => {
   const base = getBase();
   const defaultUrl = base ? base + '/' : '/';
   const options = {
-    body: data.body || 'Yeni bildirim',
+    body: data.body || 'Yeni Bildirim',
     icon: base + '/icon/logo-header2.svg',
     badge: base + '/icon/logo-header2.svg',
     data: data.url || defaultUrl
