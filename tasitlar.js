@@ -1806,7 +1806,12 @@
       window.showVehicleDetail(v.id);
       if (openHistory && typeof window.showVehicleHistory === 'function') {
         var tab = (/^(bakim|kaza|km|diger)$/.test(historyTab)) ? historyTab : null;
-        setTimeout(function() { window.showVehicleHistory(v.id, tab); }, 180);
+        setTimeout(function() {
+          window.__vehicleHistoryOpenedFromNotifications = true;
+          window.showVehicleHistory(v.id, tab);
+        }, 180);
+      } else {
+        window.__vehicleHistoryOpenedFromNotifications = false;
       }
     });
   }
@@ -4064,6 +4069,13 @@
     return raw;
   }
 
+  /** Taşıt detay modalı: tarihler gg.aa.yyyy (nokta ayırıcı) */
+  function formatDateForDetailModal(dateStr) {
+    const s = formatDateForDisplay(dateStr);
+    if (!s) return '';
+    return s.replace(/\//g, '.');
+  }
+
   function medisaNotificationTalepSortMs(str) {
     const t = Date.parse(String(str || '').trim());
     if (!isNaN(t)) return t;
@@ -4159,7 +4171,8 @@
 
   // Tescil Tarihi
   const tescilTarihi = vehicle.tescilTarihi || '';
-  html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Tescil Tarihi</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(tescilTarihi || '-')}</span></div>`;
+  const tescilDisplay = tescilTarihi ? formatDateForDetailModal(tescilTarihi) : '';
+  html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Tescil Tarihi</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> ${escapeHtml(tescilDisplay || '-')}</span></div>`;
 
   // Km
   if (vehicle.guncelKm) {
@@ -4184,7 +4197,7 @@
       html += `<div class="detail-row detail-row-block"><div class="detail-row-header"><span class="detail-row-label">Tramer Kaydı</span><span class="detail-row-colon">:</span></div><span class="detail-row-value"> `;
       vehicle.tramerRecords.forEach((record, index) => {
           if (index > 0) html += '<br>';
-          html += `${escapeHtml(formatDateForDisplay(record.date) || '-')} - ${escapeHtml(record.amount)}`;
+          html += `${escapeHtml(formatDateForDetailModal(record.date) || '-')} - ${escapeHtml(record.amount)}`;
       });
 
       let total = 0;
@@ -4387,13 +4400,13 @@
     // Sigorta bitiş tarihi
     const sigortaDate = vehicle.sigortaDate || '';
     const sigortaWarning = checkDateWarnings(sigortaDate);
-    const sigortaDisplay = formatDateForDisplay(sigortaDate);
+    const sigortaDisplay = formatDateForDetailModal(sigortaDate);
     html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Sigorta Bitiş Tarihi</span><span class="detail-row-colon">:</span></div><span class="detail-row-value ${sigortaWarning.class}"> ${escapeHtml(sigortaDisplay || '-')}</span></div>`;
     
     // Kasko bitiş tarihi
     const kaskoDate = vehicle.kaskoDate || '';
     const kaskoWarning = checkDateWarnings(kaskoDate);
-    const kaskoDisplay = formatDateForDisplay(kaskoDate);
+    const kaskoDisplay = formatDateForDetailModal(kaskoDate);
     html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Kasko Bitiş Tarihi</span><span class="detail-row-colon">:</span></div><span class="detail-row-value ${kaskoWarning.class}"> ${escapeHtml(kaskoDisplay || '-')}</span></div>`;
     
     // Muayene bitiş tarihi (taşıt tipi yoksa uyarı + tooltip + Tıklayınız)
@@ -4402,7 +4415,7 @@
     if (isEgzozMuayeneCritical(vehicle)) {
       muayeneWarning.class = 'date-warning-red';
     }
-    const muayeneDisplay = formatDateForDisplay(muayeneDate);
+    const muayeneDisplay = formatDateForDetailModal(muayeneDate);
     const vt = vehicle.vehicleType ?? vehicle.tip ?? '';
     const noVehicleType = vt == null || (typeof vt === 'string' && !String(vt).trim());
     if (noVehicleType) {
@@ -4414,7 +4427,7 @@
     const egzozRaw = vehicle && vehicle.egzozMuayeneDate != null ? String(vehicle.egzozMuayeneDate).trim() : '';
     if (egzozRaw) {
       const egzozState = getEgzozMuayeneState(vehicle);
-      const egzozDisplay = formatDateForDisplay(egzozState.date);
+      const egzozDisplay = formatDateForDetailModal(egzozState.date);
       html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Egzos Muayene Bitiş</span><span class="detail-row-colon">:</span></div><span class="detail-row-value ${egzozState.warningClass}"> ${escapeHtml(egzozDisplay || '-')}</span></div>`;
     }
     
@@ -8435,6 +8448,23 @@
    * Tarihçe modal'ını kapat
    */
   window.closeVehicleHistoryModal = function() {
+    if (window.__vehicleHistoryOpenedFromNotifications === true) {
+      window.__vehicleHistoryOpenedFromNotifications = false;
+      if (typeof window.closeHistoryToHomeAndOpenNotifications === 'function') {
+        window.closeHistoryToHomeAndOpenNotifications();
+      } else {
+        if (typeof window.closeAllModals === 'function') window.closeAllModals();
+        if (typeof window.setNotificationsOpenState === 'function') window.setNotificationsOpenState(true);
+        if (typeof window.syncMobileNotificationsDropdownHeight === 'function') {
+          requestAnimationFrame(function() {
+            window.syncMobileNotificationsDropdownHeight();
+            requestAnimationFrame(window.syncMobileNotificationsDropdownHeight);
+          });
+        }
+      }
+      if (DOM.historyContent) DOM.historyContent.innerHTML = '';
+      return;
+    }
     const modal = DOM.vehicleHistoryModal;
     if (modal) {
       resetModalState(modal);
@@ -8448,6 +8478,7 @@
    * Tarihçe ekranından Taşıt detay ekranına geri dön (sol ok + "Taşıt detay" tıklanınca)
    */
   window.backFromHistoryToVehicleDetail = function() {
+    window.__vehicleHistoryOpenedFromNotifications = false;
     const historyModal = DOM.vehicleHistoryModal;
     const detailModal = DOM.vehicleDetailModal;
     if (historyModal) {
