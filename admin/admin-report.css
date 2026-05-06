@@ -263,6 +263,44 @@ body.admin-report-page .main-header-user-name.is-empty {
   body.admin-report-page .hero.hero-two-rows .hero-logo picture {
     max-width: 52px !important;
   }
+
+  body.admin-report-page .hero.hero-two-rows .hero-title-block .hero-title-line {
+    font-size: clamp(calc(16px - 1pt - 0.5pt), 4.2vw, calc(20px - 1pt - 0.5pt)) !important;
+    letter-spacing: clamp(1px, 0.4vw, 3px) !important;
+  }
+
+  body.admin-report-page .hero.hero-two-rows .hero-title-block .hero-panel-subtitle {
+    font-size: calc(17px - 1pt - 0.7pt - 0.5pt) !important;
+  }
+}
+
+@media (min-width: 769px) {
+  body.admin-report-page .hero.hero-two-rows .hero-panel-subtitle {
+    font-size: calc(17px - 0.7pt - 0.5pt) !important;
+    letter-spacing: 3px !important;
+  }
+
+  body.admin-report-page .hero.admin-report-hero.hero-two-rows {
+    grid-template-columns: minmax(68px, max-content) minmax(0, 1fr) 72px !important;
+  }
+
+  body.admin-report-page .hero.hero-two-rows .hero-logo.admin-report-hero-side {
+    flex: 0 1 auto !important;
+    width: max-content !important;
+    min-width: 68px !important;
+    max-width: min(220px, 30vw) !important;
+    transform: translate(0, 0) !important;
+  }
+
+  body.admin-report-page .hero.hero-two-rows .hero-logo picture {
+    max-width: 66px !important;
+  }
+
+  body.admin-report-page .hero.hero-two-rows .hero-title-block .hero-title-line {
+    font-size: clamp(calc(16px - 0.5pt), 4.5vw, calc(20px - 0.5pt)) !important;
+    letter-spacing: clamp(1px, 0.45vw, 3px) !important;
+    line-height: 1.35 !important;
+  }
 }
 
 /* --- Ana içerik --- */
