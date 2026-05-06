@@ -31,7 +31,7 @@ if (!in_array($action, ['report', 'branches', 'user_analytics', 'pending_request
 $rawData = loadData();
 if (!is_array($rawData)) {
     http_response_code(500);
-    echo json_encode(['success' => false, 'message' => 'Veri okunamadi!'], JSON_UNESCAPED_UNICODE);
+    echo json_encode(['success' => false, 'message' => 'Veri okunamadı!'], JSON_UNESCAPED_UNICODE);
     exit;
 }
 
@@ -42,7 +42,7 @@ if (($auth['success'] ?? false) !== true) {
         'success' => false,
         'auth_required' => (int)($auth['status'] ?? 403) === 401,
         'permission_denied' => !empty($auth['permission_denied']),
-        'message' => $auth['message'] ?? 'Bu islem icin yetkiniz yok.',
+        'message' => $auth['message'] ?? 'Bu işlem için yetkiniz yok.',
     ], JSON_UNESCAPED_UNICODE);
     exit;
 }
