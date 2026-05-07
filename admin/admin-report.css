@@ -2173,7 +2173,7 @@ body.admin-report-page .main-header-user-name.is-empty {
     overflow-wrap: normal !important;
     text-overflow: clip !important;
     text-align: center !important;
-    transform: translateY(8px) !important;
+    transform: translate(4px, 8px) !important;
     max-height: 2.22em !important;
   }
 

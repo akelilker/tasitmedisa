@@ -2798,23 +2798,26 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     }
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-user-name {
         display: block !important;
-        position: absolute !important;
-        left: 58px !important;
-        right: 14px !important;
-        bottom: 6px !important;
-        width: auto !important;
-        max-width: none !important;
+        position: relative !important;
+        left: auto !important;
+        right: auto !important;
+        bottom: auto !important;
+        width: 58px !important;
+        max-width: 58px !important;
+        margin-left: 0 !important;
+        padding: 0 !important;
         overflow: hidden !important;
-        font-size: 10px !important;
-        line-height: 1.08 !important;
+        font-size: 9.5px !important;
+        line-height: 1.06 !important;
         letter-spacing: 0 !important;
-        white-space: nowrap !important;
-        word-break: keep-all !important;
+        white-space: normal !important;
+        word-break: normal !important;
         overflow-wrap: normal !important;
         -webkit-line-clamp: unset !important;
         text-overflow: clip !important;
-        text-align: left !important;
-        transform: none !important;
+        text-align: center !important;
+        transform: translate(2px, 5px) !important;
+        max-height: 2.16em !important;
     }
     /* Ana uygulama ana ekran header mobil: tek satır (wrap kaldırıldı); dar alanda sığması için harf aralığı esnek */
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero h1 {
@@ -3545,23 +3548,26 @@ body.modal-open .app-container {
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-user-name {
     display: block !important;
-    position: absolute !important;
-    left: 58px !important;
-    right: 14px !important;
-    bottom: 6px !important;
-    width: auto !important;
-    max-width: none !important;
+    position: relative !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    width: 58px !important;
+    max-width: 58px !important;
+    margin-left: 0 !important;
+    padding: 0 !important;
     overflow: hidden !important;
-    font-size: 10px !important;
-    line-height: 1.08 !important;
+    font-size: 9.5px !important;
+    line-height: 1.06 !important;
     letter-spacing: 0 !important;
-    white-space: nowrap !important;
-    word-break: keep-all !important;
+    white-space: normal !important;
+    word-break: normal !important;
     overflow-wrap: normal !important;
     -webkit-line-clamp: unset !important;
     text-overflow: clip !important;
-    text-align: left !important;
-    transform: none !important;
+    text-align: center !important;
+    transform: translate(2px, 5px) !important;
+    max-height: 2.16em !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero h1 {
     font-size: clamp(calc(18.5px - 0.5pt), 5.15vw, calc(23px - 0.5pt)) !important;
