@@ -2129,6 +2129,25 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   border-bottom: 1px solid var(--border-ultra);
   position: relative;
 }
+@media (min-width: 769px) {
+    .modal-overlay .modal-header::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: -10px;
+        height: 10px;
+        pointer-events: none;
+        z-index: -1;
+        background: linear-gradient(
+            180deg,
+            rgba(160, 0, 20, 0.32) 0%,
+            rgba(160, 0, 20, 0.14) 45%,
+            rgba(160, 0, 20, 0) 100%
+        );
+    }
+}
+
 .modal-overlay .modal-header h2 {
   margin: 0;
   font-size: 17px;
