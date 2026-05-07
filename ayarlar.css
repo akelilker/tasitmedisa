@@ -409,7 +409,7 @@ body.modal-open #info-modal.open {
 #user-form-modal .universal-back-bar,
 #data-management-modal .universal-back-bar,
 #dis-veri-panel .universal-back-bar {
-    margin-top: -32px;
+    margin-top: 0;
     flex-shrink: 0;
 }
 #user-modal .user-management-back-bar {
@@ -1991,11 +1991,11 @@ input.settings-form-input:-moz-autofill,
   #user-modal .universal-back-bar,
   #data-management-modal .universal-back-bar,
   #dis-veri-panel .universal-back-bar {
-    margin-top: -22px !important;
+    margin-top: 0 !important;
   }
   #branch-form-modal .universal-back-bar,
   #user-form-modal .universal-back-bar {
-    margin-top: -22px !important;
+    margin-top: 0 !important;
   }
   #branch-modal .modal-body > div,
   #user-modal .modal-body > .user-management-list-inner {
@@ -2122,11 +2122,11 @@ input.settings-form-input:-moz-autofill,
     #user-modal .universal-back-bar,
     #data-management-modal .universal-back-bar,
     #dis-veri-panel .universal-back-bar {
-        margin-top: -24px !important;
+        margin-top: 0 !important;
     }
     #branch-form-modal .universal-back-bar,
     #user-form-modal .universal-back-bar {
-        margin-top: -28px !important;
+        margin-top: 0 !important;
     }
     #branch-modal .modal-header {
         border-bottom: none !important;
