@@ -2178,9 +2178,9 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
         border-top-right-radius: inherit;
         background: linear-gradient(
             180deg,
-            rgba(255, 255, 255, 0.16) 0%,
-            rgba(255, 255, 255, 0.055) 42%,
-            rgba(255, 255, 255, 0) 100%
+            rgba(180, 28, 48, 0.22) 0%,
+            rgba(120, 8, 28, 0.10) 42%,
+            rgba(120, 8, 28, 0) 100%
         );
     }
 }
