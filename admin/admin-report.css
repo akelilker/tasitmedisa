@@ -2165,8 +2165,8 @@ body.admin-report-page .main-header-user-name.is-empty {
     margin-left: 0 !important;
     padding: 0 !important;
     overflow: hidden !important;
-    font-size: clamp(7px, 1.95vw, 8.4px) !important;
-    line-height: 1.02 !important;
+    font-size: clamp(8.6px, 2.35vw, 10.4px) !important;
+    line-height: 1.08 !important;
     letter-spacing: 0 !important;
     white-space: normal !important;
     word-break: normal !important;
@@ -2174,7 +2174,7 @@ body.admin-report-page .main-header-user-name.is-empty {
     text-overflow: clip !important;
     text-align: center !important;
     transform: translateY(8px) !important;
-    max-height: 2.08em !important;
+    max-height: 2.22em !important;
   }
 
   /* style-core mobil .hero-logo / img evrensel kurallarından izole et */
