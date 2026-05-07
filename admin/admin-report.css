@@ -2117,7 +2117,8 @@ body.admin-report-page .main-header-user-name.is-empty {
     box-sizing: border-box !important;
     margin-left: 0 !important;
     overflow: visible !important;
-    transform: translate(0, 0) !important;
+    align-self: center !important;
+    transform: translateY(4px) !important;
   }
 
   body.admin-report-page .hero.hero-two-rows .hero-logo picture {
@@ -2146,9 +2147,9 @@ body.admin-report-page .main-header-user-name.is-empty {
   }
 
   body.admin-report-page .hero.hero-two-rows .hero-title-block .hero-panel-subtitle {
-    font-size: clamp(17px, 4.4vw, 18.5px) !important;
-    letter-spacing: clamp(1.6px, 0.58vw, 2.6px) !important;
-    line-height: 1.08 !important;
+    font-size: 19px !important;
+    letter-spacing: 2.4px !important;
+    line-height: 1.05 !important;
     text-align: center !important;
     -webkit-font-smoothing: antialiased !important;
     -moz-osx-font-smoothing: grayscale !important;
