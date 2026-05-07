@@ -2125,6 +2125,7 @@ body.admin-report-page .main-header-user-name.is-empty {
     width: 58px !important;
     max-width: 58px !important;
     margin: 0 auto !important;
+    transform: translateY(3px) !important;
   }
 
   body.admin-report-page .hero.hero-two-rows .hero-title-block .hero-title-line {
