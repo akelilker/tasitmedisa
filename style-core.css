@@ -2162,15 +2162,6 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   box-shadow: inset 0 1px 0 rgba(236, 242, 250, 0.28), inset 0 -1px 0 rgba(0, 0, 0, 0.16) !important;
 }
 
-/* Masaüstü (769px+): standart kırmızı modal header bandında başlık altında ek dikey nefes */
-@media (min-width: 769px) {
-  .modal-overlay .modal-header {
-    height: 68px !important;
-    min-height: 68px !important;
-    max-height: 68px !important;
-  }
-}
-
 /* TÜM MODAL BAŞLIKLARI (H2) MUTLAK MERKEZE SABİTLEME – X butonu ile itişmesin */
 .modal-overlay .modal-header h2 {
   position: absolute !important;
