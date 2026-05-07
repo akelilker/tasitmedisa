@@ -2788,6 +2788,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         flex: 0 0 58px !important;
         gap: 4px !important;
         align-self: flex-end !important;
+        transform: none !important;
+    }
+    body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-logo picture {
         transform: translate(2px, 3px) !important;
     }
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-logo img {
@@ -2796,9 +2799,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-user-name {
         display: block !important;
         position: absolute !important;
-        left: 14px !important;
+        left: 76px !important;
         right: 14px !important;
-        bottom: 13px !important;
+        bottom: 12px !important;
         width: auto !important;
         max-width: none !important;
         overflow: hidden !important;
@@ -3527,9 +3530,12 @@ body.modal-open .app-container {
     width: 58px !important;
     margin-right: 4px !important;
     margin-left: 0 !important;
-    transform: translate(2px, 3px) !important;
+    transform: none !important;
     gap: 4px !important;
     align-self: flex-end !important;
+  }
+  body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-logo picture {
+    transform: translate(2px, 3px) !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-logo img {
     height: 35px !important;
@@ -3539,9 +3545,9 @@ body.modal-open .app-container {
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-user-name {
     display: block !important;
     position: absolute !important;
-    left: 14px !important;
+    left: 76px !important;
     right: 14px !important;
-    bottom: 13px !important;
+    bottom: 12px !important;
     width: auto !important;
     max-width: none !important;
     overflow: hidden !important;
