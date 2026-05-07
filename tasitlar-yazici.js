@@ -596,6 +596,28 @@
       applyPrintIframeLayout(iframe);
 
       var done = false;
+      /** Mobil WebKit: gizli iframe (opacity≈0, ekran dışı) bazen boş baskı verir; print öncesi geçici görünür yap. */
+      var mobilePrintPaintFix = isIOSLikeDevice() || isAndroidDevice() ||
+        (typeof window.matchMedia === 'function' && window.matchMedia('(max-width: 768px)').matches);
+      function boostIframeForPrintPaint() {
+        if (!mobilePrintPaintFix) return;
+        try {
+          iframe.style.setProperty('opacity', '1', 'important');
+          iframe.style.setProperty('transform', 'none', 'important');
+          iframe.style.setProperty('left', '0', 'important');
+          iframe.style.setProperty('top', '0', 'important');
+          iframe.style.setProperty('width', '100vw', 'important');
+          iframe.style.setProperty('height', '100vh', 'important');
+          iframe.style.setProperty('visibility', 'visible', 'important');
+          iframe.style.setProperty('z-index', '2147483646', 'important');
+          iframe.style.setProperty('pointer-events', 'none', 'important');
+        } catch (eBoost) {}
+      }
+      function relaxIframeAfterPrintPaint() {
+        if (!mobilePrintPaintFix) return;
+        try { applyPrintIframeLayout(iframe); } catch (eRelax) {}
+      }
+
       function cleanup() {
         try { iframe.onload = null; } catch (e) {}
         if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
@@ -603,6 +625,7 @@
       function fail() {
         if (done) return;
         done = true;
+        relaxIframeAfterPrintPaint();
         cleanup();
         alert('Yazdırma başlatılamadı. Lütfen tekrar deneyin.');
       }
@@ -624,21 +647,34 @@
             var cleanupTimer = setTimeout(function() {
               if (done) return;
               done = true;
+              relaxIframeAfterPrintPaint();
               cleanup();
             }, cleanupMs);
             var onAfterPrint = function() {
               clearTimeout(cleanupTimer);
               if (done) return;
               done = true;
+              relaxIframeAfterPrintPaint();
               cleanup();
               try { frameWindow.removeEventListener('afterprint', onAfterPrint); } catch (e) {}
             };
             frameWindow.addEventListener('afterprint', onAfterPrint);
             try {
+              if (frameDoc.body) {
+                void frameDoc.body.offsetHeight;
+              }
+            } catch (eReflow) {}
+            try {
               if (typeof frameWindow.__medisaPreparePrintLayout === 'function') {
                 frameWindow.__medisaPreparePrintLayout();
               }
             } catch (e) {}
+            boostIframeForPrintPaint();
+            try {
+              if (frameDoc.body) {
+                void frameDoc.body.offsetHeight;
+              }
+            } catch (eReflow2) {}
             frameWindow.focus();
             frameWindow.print();
           } catch (printErr) {
@@ -646,7 +682,7 @@
           }
         }
 
-        // iOS: print() aynı kullanıcı hareketi zincirinde çağrılmalı; setTimeout/onload izin istemesine yol açar.
+        // iOS: print() kullanıcı jest zincirinde kalmalı (setTimeout kaçınılır). Boş baskı için boostIframeForPrintPaint kullanılıyor.
         runPrint();
       } catch (iframeErr) {
         fail();
