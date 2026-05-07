@@ -2157,20 +2157,22 @@ body.admin-report-page .main-header-user-name.is-empty {
   body.admin-report-page .main-header-user-name {
     display: block !important;
     position: relative !important;
-    align-self: flex-start !important;
-    width: min(116px, 34vw) !important;
-    max-width: min(116px, 34vw) !important;
-    margin-left: 8px !important;
+    align-self: center !important;
+    width: 68px !important;
+    max-width: 68px !important;
+    margin-left: 0 !important;
     padding: 0 !important;
     overflow: hidden !important;
-    font-size: clamp(8px, 2.2vw, 9.4px) !important;
-    line-height: 1.12 !important;
+    font-size: clamp(7px, 1.95vw, 8.4px) !important;
+    line-height: 1.02 !important;
     letter-spacing: 0 !important;
-    white-space: nowrap !important;
+    white-space: normal !important;
     word-break: normal !important;
-    text-overflow: ellipsis !important;
-    text-align: left !important;
+    overflow-wrap: normal !important;
+    text-overflow: clip !important;
+    text-align: center !important;
     transform: none !important;
+    max-height: 2.08em !important;
   }
 
   /* style-core mobil .hero-logo / img evrensel kurallarından izole et */
