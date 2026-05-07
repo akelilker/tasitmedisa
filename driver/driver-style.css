@@ -1822,8 +1822,10 @@ body.dashboard-page {
   .dashboard-page .main-header-user-name {
     display: block !important;
     position: relative !important;
-    width: 92px !important;
-    max-width: 92px !important;
+    align-self: flex-start !important;
+    width: min(116px, 34vw) !important;
+    max-width: min(116px, 34vw) !important;
+    margin-left: 8px !important;
     padding: 0 !important;
     overflow: hidden !important;
     font-size: clamp(8px, 2.2vw, 9.4px) !important;
@@ -1832,7 +1834,7 @@ body.dashboard-page {
     white-space: nowrap !important;
     word-break: normal !important;
     text-overflow: ellipsis !important;
-    text-align: center !important;
+    text-align: left !important;
     transform: none !important;
   }
   .login-page .hero.hero-two-rows .hero-logo {
