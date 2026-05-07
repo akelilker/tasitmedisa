@@ -2782,13 +2782,13 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     }
     /* Anasayfa mobil header: logo+isim satırın altına (h1 ortada kalır); sol köşe için hafif içe */
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-logo {
-        margin-right: 4px !important;
+        margin-right: 8px !important;
         margin-left: 0 !important;
-        width: 58px !important;
-        flex: 0 0 58px !important;
+        width: 43px !important;
+        flex: 0 0 43px !important;
         gap: 4px !important;
-        align-self: flex-end !important;
-        transform: none !important;
+        align-self: center !important;
+        transform: translate(-1px, 1px) !important;
     }
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-logo picture {
         transform: translate(2px, 3px) !important;
@@ -2819,9 +2819,10 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     /* Ana uygulama ana ekran header mobil: tek satır (wrap kaldırıldı); dar alanda sığması için harf aralığı esnek */
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero h1 {
         font-size: clamp(calc(18.5px - 0.5pt), 5.15vw, calc(23px - 0.5pt)) !important;
-        letter-spacing: clamp(0.35px, 1.05vw, 2.2px) !important;
+        letter-spacing: 1.8px !important;
         line-height: 1.2 !important;
-        transform: none !important;
+        align-self: center !important;
+        transform: translateY(-2px) !important;
         white-space: nowrap !important;
         overflow: hidden !important;
         text-overflow: ellipsis !important;
@@ -3526,13 +3527,13 @@ body.modal-open .app-container {
     padding-bottom: 4px !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-logo {
-    flex: 0 0 58px !important;
-    width: 58px !important;
-    margin-right: 4px !important;
+    flex: 0 0 43px !important;
+    width: 43px !important;
+    margin-right: 8px !important;
     margin-left: 0 !important;
-    transform: none !important;
+    transform: translate(-1px, 1px) !important;
     gap: 4px !important;
-    align-self: flex-end !important;
+    align-self: center !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-logo picture {
     transform: translate(2px, 3px) !important;
@@ -3564,9 +3565,10 @@ body.modal-open .app-container {
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero h1 {
     font-size: clamp(calc(18.5px - 0.5pt), 5.15vw, calc(23px - 0.5pt)) !important;
-    letter-spacing: clamp(0.35px, 1.05vw, 2.2px) !important;
+    letter-spacing: 1.8px !important;
     line-height: 1.2 !important;
-    transform: none !important;
+    align-self: center !important;
+    transform: translateY(-2px) !important;
     white-space: nowrap !important;
     overflow: hidden !important;
     text-overflow: ellipsis !important;
