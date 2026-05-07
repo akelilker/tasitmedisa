@@ -2832,7 +2832,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         text-shadow: none !important;
     }
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero .animated-line {
-        bottom: 19px; /* 22px − 3px: çizgi başlıktan biraz aşağı, h1 oynatılmadan */
+        bottom: 16px; /* Mobil ana sayfa: sadece kırmızı çizgi 3px aşağı */
         width: 88% !important;
         height: 2.7px !important;
         opacity: 0.76 !important;
