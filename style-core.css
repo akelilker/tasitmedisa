@@ -2802,8 +2802,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         left: auto !important;
         right: auto !important;
         bottom: auto !important;
-        width: 74px !important;
-        max-width: 74px !important;
+        width: 82px !important;
+        max-width: 82px !important;
         margin-left: 0 !important;
         padding: 0 !important;
         overflow: hidden !important;
@@ -2816,7 +2816,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         -webkit-line-clamp: unset !important;
         text-overflow: clip !important;
         text-align: center !important;
-        transform: translate(-6px, 5px) !important;
+        transform: translate(-2px, 5px) !important;
         max-height: 2.16em !important;
     }
     /* Ana uygulama ana ekran header mobil: tek satır (wrap kaldırıldı); dar alanda sığması için harf aralığı esnek */
@@ -3552,8 +3552,8 @@ body.modal-open .app-container {
     left: auto !important;
     right: auto !important;
     bottom: auto !important;
-    width: 74px !important;
-    max-width: 74px !important;
+    width: 82px !important;
+    max-width: 82px !important;
     margin-left: 0 !important;
     padding: 0 !important;
     overflow: hidden !important;
@@ -3566,7 +3566,7 @@ body.modal-open .app-container {
     -webkit-line-clamp: unset !important;
     text-overflow: clip !important;
     text-align: center !important;
-    transform: translate(-6px, 5px) !important;
+    transform: translate(-2px, 5px) !important;
     max-height: 2.16em !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero h1 {
