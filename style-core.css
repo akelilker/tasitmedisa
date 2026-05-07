@@ -2787,11 +2787,11 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
         width: 58px !important;
         flex: 0 0 58px !important;
         gap: 4px !important;
-        align-self: flex-end !important;
+        align-self: center !important;
         transform: none !important;
     }
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-logo picture {
-        transform: translate(2px, 3px) !important;
+        transform: translate(2px, 0) !important;
     }
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-logo img {
         transform: translateY(0) !important;
@@ -3532,10 +3532,10 @@ body.modal-open .app-container {
     margin-left: 0 !important;
     transform: none !important;
     gap: 4px !important;
-    align-self: flex-end !important;
+    align-self: center !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-logo picture {
-    transform: translate(2px, 3px) !important;
+    transform: translate(2px, 0) !important;
   }
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .hero-logo img {
     height: 35px !important;
