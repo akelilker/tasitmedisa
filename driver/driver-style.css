@@ -1803,7 +1803,7 @@ body.dashboard-page {
     flex-direction: column !important;
     align-items: center !important;
     justify-content: center !important;
-    gap: 0 !important;
+    gap: 2px !important;
     flex: 0 1 auto !important;
     width: 72px !important;
     min-width: 72px !important;
@@ -1836,7 +1836,7 @@ body.dashboard-page {
     overflow-wrap: normal !important;
     text-overflow: clip !important;
     text-align: center !important;
-    transform: none !important;
+    transform: translateY(8px) !important;
     max-height: 2.08em !important;
   }
   .login-page .hero.hero-two-rows .hero-logo {
