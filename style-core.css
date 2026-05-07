@@ -3651,7 +3651,7 @@ body.modal-open .app-container {
   40% { transform: scale(1); opacity: 1; }
 }
 
-/* Ayarlar listesi modalları (şube / kullanıcı / veri yedekleme / dış veri): geri çubuğu yukarı.
+/* Ayarlar listesi modalları (şube / kullanıcı / veri yedekleme / dış veri): geri çubuğu header altında tam görünsün (negatif margin header arkasına kaçırmayı önler).
    .universal-back-bar { margin: 0 !important } tüm kenarı sıfırladığı için düşük özgüllü margin-top eziliyordu.
    Sadece masaüstü; mobil max-width kuralları ayrı. */
 @media (min-width: 769px) {
@@ -3659,7 +3659,7 @@ body.modal-open .app-container {
   #user-modal.modal-overlay.ayarlar-modal-overlay .universal-back-bar,
   #data-management-modal.modal-overlay.ayarlar-modal-overlay .universal-back-bar,
   #dis-veri-panel.modal-overlay.ayarlar-modal-overlay .universal-back-bar {
-    margin-top: -22px !important;
+    margin-top: 0 !important;
   }
 }
 
