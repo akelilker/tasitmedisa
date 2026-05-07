@@ -1811,7 +1811,7 @@ body.dashboard-page {
     margin-top: 0 !important;
     margin-left: 0 !important;
     overflow: visible !important;
-    transform: translate(0, 0) !important;
+    transform: translateY(8px) !important;
   }
   .dashboard-page .hero.hero-two-rows .hero-logo picture {
     display: block !important;
@@ -1828,8 +1828,8 @@ body.dashboard-page {
     margin-left: 0 !important;
     padding: 0 !important;
     overflow: hidden !important;
-    font-size: clamp(7px, 1.95vw, 8.4px) !important;
-    line-height: 1.02 !important;
+    font-size: clamp(8.6px, 2.35vw, 10.4px) !important;
+    line-height: 1.08 !important;
     letter-spacing: 0 !important;
     white-space: normal !important;
     word-break: normal !important;
@@ -1837,7 +1837,7 @@ body.dashboard-page {
     text-overflow: clip !important;
     text-align: center !important;
     transform: translateY(8px) !important;
-    max-height: 2.08em !important;
+    max-height: 2.22em !important;
   }
   .login-page .hero.hero-two-rows .hero-logo {
     flex: 0 0 56px !important;
@@ -1887,6 +1887,7 @@ body.dashboard-page {
   .dashboard-page .hero-logo img {
     width: 100% !important;
     height: auto !important;
+    transform: translateY(0) !important;
   }
   /* Login mobil header: ana uygulama (index) ile aynı kutu, logo kolonu ve başlık (style-core ana ekran 640px bloğu ile eşleşir) */
   .login-page .hero {
@@ -6026,7 +6027,7 @@ body.driver-action-block-open .driver-footer-back-wrap .universal-back-btn {
   /* PWA: login başlık hizası eski kaydırma; kullanıcı paneli tarayıcı ile aynı (yatay zıplama yok) */
   .dashboard-page .hero.hero-two-rows .hero-logo,
   .login-page .hero.hero-two-rows .hero-logo {
-    transform: translate(-19px, 5px) scale(0.97) !important;
+    transform: translate(-19px, 9px) scale(0.97) !important;
   }
 }
 @media (min-width: 641px) and (max-width: 768px) and (display-mode: standalone) {

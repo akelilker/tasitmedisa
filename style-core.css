@@ -2799,14 +2799,14 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #v
     body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-user-name {
         display: block !important;
         position: absolute !important;
-        left: 76px !important;
+        left: 58px !important;
         right: 14px !important;
-        bottom: 12px !important;
+        bottom: 6px !important;
         width: auto !important;
         max-width: none !important;
         overflow: hidden !important;
-        font-size: 9px !important;
-        line-height: 1.05 !important;
+        font-size: 10px !important;
+        line-height: 1.08 !important;
         letter-spacing: 0 !important;
         white-space: nowrap !important;
         word-break: keep-all !important;
@@ -3546,14 +3546,14 @@ body.modal-open .app-container {
   body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-user-name {
     display: block !important;
     position: absolute !important;
-    left: 76px !important;
+    left: 58px !important;
     right: 14px !important;
-    bottom: 12px !important;
+    bottom: 6px !important;
     width: auto !important;
     max-width: none !important;
     overflow: hidden !important;
-    font-size: 9px !important;
-    line-height: 1.05 !important;
+    font-size: 10px !important;
+    line-height: 1.08 !important;
     letter-spacing: 0 !important;
     white-space: nowrap !important;
     word-break: keep-all !important;
