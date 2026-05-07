@@ -1836,7 +1836,7 @@ body.dashboard-page {
     overflow-wrap: normal !important;
     text-overflow: clip !important;
     text-align: center !important;
-    transform: translate(4px, 6px) !important;
+    transform: translate(4px, 4px) !important;
     max-height: 2.22em !important;
   }
   .login-page .hero.hero-two-rows .hero-logo {
