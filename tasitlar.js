@@ -4368,39 +4368,44 @@
     if (!rightEl) return;
     
     let html = '';
+    const isSoldOrArchivedVehicle = !!(vehicle && vehicle.satildiMi === true);
     
     // Sigorta bitiş tarihi
     const sigortaDate = vehicle.sigortaDate || '';
     const sigortaWarning = checkDateWarnings(sigortaDate);
+    const sigortaWarningClass = isSoldOrArchivedVehicle ? '' : sigortaWarning.class;
     const sigortaDisplay = formatDateForDetailModal(sigortaDate);
-    html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Sigorta Bitiş Tarihi</span><span class="detail-row-colon">:</span></div><span class="detail-row-value ${sigortaWarning.class}"> ${escapeHtml(sigortaDisplay || '-')}</span></div>`;
+    html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Sigorta Bitiş Tarihi</span><span class="detail-row-colon">:</span></div><span class="detail-row-value ${sigortaWarningClass}"> ${escapeHtml(sigortaDisplay || '-')}</span></div>`;
     
     // Kasko bitiş tarihi
     const kaskoDate = vehicle.kaskoDate || '';
     const kaskoWarning = checkDateWarnings(kaskoDate);
+    const kaskoWarningClass = isSoldOrArchivedVehicle ? '' : kaskoWarning.class;
     const kaskoDisplay = formatDateForDetailModal(kaskoDate);
-    html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Kasko Bitiş Tarihi</span><span class="detail-row-colon">:</span></div><span class="detail-row-value ${kaskoWarning.class}"> ${escapeHtml(kaskoDisplay || '-')}</span></div>`;
+    html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Kasko Bitiş Tarihi</span><span class="detail-row-colon">:</span></div><span class="detail-row-value ${kaskoWarningClass}"> ${escapeHtml(kaskoDisplay || '-')}</span></div>`;
     
     // Muayene bitiş tarihi (taşıt tipi yoksa uyarı + tooltip + Tıklayınız)
     const muayeneDate = vehicle.muayeneDate || '';
     const muayeneWarning = checkDateWarnings(muayeneDate);
-    if (isEgzozMuayeneCritical(vehicle)) {
+    if (!isSoldOrArchivedVehicle && isEgzozMuayeneCritical(vehicle)) {
       muayeneWarning.class = 'date-warning-red';
     }
+    const muayeneWarningClass = isSoldOrArchivedVehicle ? '' : muayeneWarning.class;
     const muayeneDisplay = formatDateForDetailModal(muayeneDate);
     const vt = vehicle.vehicleType ?? vehicle.tip ?? '';
     const noVehicleType = vt == null || (typeof vt === 'string' && !String(vt).trim());
     if (noVehicleType) {
-      html += `<div class="detail-row detail-row-inline detail-row-muayene-no-type"><div class="detail-row-header"><span class="detail-row-label">Muayene Bitiş Tarihi</span><span class="detail-row-colon">:</span></div><span class="detail-row-value detail-muayene-value-wrap ${muayeneWarning.class}"> ${escapeHtml(muayeneDisplay || '-')} <span class="muayene-detail-exclamation" aria-hidden="true" title="Taşıt tipi seçilmedi">!</span><span class="muayene-detail-tooltip-wrap"><span class="muayene-detail-tooltip" role="tooltip" hidden>Taşıt Tipi Seçilmediğinden, Muayene Bitiş Tarihi Hatalı Gözükebilir. Seçim Yapmak İçin <button type="button" class="muayene-detail-tooltip-link">Tıklayınız</button>.</span></span></span></div>`;
+      html += `<div class="detail-row detail-row-inline detail-row-muayene-no-type"><div class="detail-row-header"><span class="detail-row-label">Muayene Bitiş Tarihi</span><span class="detail-row-colon">:</span></div><span class="detail-row-value detail-muayene-value-wrap ${muayeneWarningClass}"> ${escapeHtml(muayeneDisplay || '-')} <span class="muayene-detail-exclamation" aria-hidden="true" title="Taşıt tipi seçilmedi">!</span><span class="muayene-detail-tooltip-wrap"><span class="muayene-detail-tooltip" role="tooltip" hidden>Taşıt Tipi Seçilmediğinden, Muayene Bitiş Tarihi Hatalı Gözükebilir. Seçim Yapmak İçin <button type="button" class="muayene-detail-tooltip-link">Tıklayınız</button>.</span></span></span></div>`;
     } else {
-      html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Muayene Bitiş Tarihi</span><span class="detail-row-colon">:</span></div><span class="detail-row-value ${muayeneWarning.class}"> ${escapeHtml(muayeneDisplay || '-')}</span></div>`;
+      html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Muayene Bitiş Tarihi</span><span class="detail-row-colon">:</span></div><span class="detail-row-value ${muayeneWarningClass}"> ${escapeHtml(muayeneDisplay || '-')}</span></div>`;
     }
 
     const egzozRaw = vehicle && vehicle.egzozMuayeneDate != null ? String(vehicle.egzozMuayeneDate).trim() : '';
     if (egzozRaw) {
       const egzozState = getEgzozMuayeneState(vehicle);
+      const egzozWarningClass = isSoldOrArchivedVehicle ? '' : egzozState.warningClass;
       const egzozDisplay = formatDateForDetailModal(egzozState.date);
-      html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Egzoz Muayene Bitiş</span><span class="detail-row-colon">:</span></div><span class="detail-row-value ${egzozState.warningClass}"> ${escapeHtml(egzozDisplay || '-')}</span></div>`;
+      html += `<div class="detail-row detail-row-inline"><div class="detail-row-header"><span class="detail-row-label">Egzoz Muayene Bitiş</span><span class="detail-row-colon">:</span></div><span class="detail-row-value ${egzozWarningClass}"> ${escapeHtml(egzozDisplay || '-')}</span></div>`;
     }
     
     // var/yok alanları: boş = Belirtilmedi (kesin Yoktur./Hayır gösterilmez)
