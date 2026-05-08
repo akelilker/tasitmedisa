@@ -6311,6 +6311,9 @@
     const documentPath = vehicle ? getVehicleDocumentPath(vehicle, dt) : '';
     const isImage = isRuhsatImageForVehicle(vehicleId, documentPath);
     const documentUrl = buildRuhsatDocumentUrl(vehicleId, dt) || url;
+    const ua = navigator.userAgent || '';
+    const isIOSDevice = /iPhone|iPad|iPod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    const isWebKitEngine = /WebKit/i.test(ua);
     if (isAndroidDevice()) {
       if (isImage) {
         openVehicleDocumentInNewTab(vehicleId, documentUrl, dt, '')
@@ -6320,6 +6323,14 @@
         return;
       }
 
+      openVehicleDocumentInNewTab(vehicleId, documentUrl, dt, 'toolbar=0&navpanes=0&zoom=page-width&view=FitH')
+        .catch(function() {
+          if (typeof window.viewRuhsatPdf === 'function') window.viewRuhsatPdf(vehicleId, dt);
+        });
+      return;
+    }
+
+    if (!isImage && isIOSDevice && isWebKitEngine) {
       openVehicleDocumentInNewTab(vehicleId, documentUrl, dt, 'toolbar=0&navpanes=0&zoom=page-width&view=FitH')
         .catch(function() {
           if (typeof window.viewRuhsatPdf === 'function') window.viewRuhsatPdf(vehicleId, dt);
