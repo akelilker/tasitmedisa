@@ -1825,6 +1825,19 @@ background: rgba(13, 19, 31, 0.98);
 border-color: var(--theme-color) !important;
 box-shadow: 0 0 0 2px rgba(var(--theme-color-rgb), 0.28);
 }
+/* Masaüstü rapor özet kartları: Taşıtlar kart tipografisine yakın, daha kompakt */
+#reports-modal .report-summary-grid .report-card .count {
+font-size: 21px;
+font-weight: 700;
+line-height: 1.12;
+letter-spacing: 0.2px;
+}
+#reports-modal .report-summary-grid .report-card .label {
+font-size: 12px;
+font-weight: 500;
+line-height: 1.12;
+letter-spacing: 0.25px;
+}
 }
 
 .stok-export-controls {
