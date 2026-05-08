@@ -2238,15 +2238,20 @@ color: #ffffff !important;
 text-shadow: none !important;
 }
 #reports-modal .modal-close { font-size: 21px; }
+/* Yatay stok scroll: kapsayıcı pan-y + overflow-x hidden içeriği kesiyordu */
+#reports-modal.modal-overlay.active,
+#reports-modal.modal-overlay.open {
+touch-action: pan-x pan-y;
+}
 #reports-modal .modal-container {
 isolation: isolate !important;
 margin-top: 0 !important;
 background: var(--modal-bg) !important;
 background-color: var(--modal-bg) !important;
-overflow-x: hidden !important;
-touch-action: pan-y !important;
-overscroll-behavior: none !important;
-overscroll-behavior-x: none !important;
+overflow-x: visible !important;
+touch-action: pan-x pan-y !important;
+overscroll-behavior: auto !important;
+overscroll-behavior-x: auto !important;
 }
 #reports-modal.modal-overlay::before {
 max-width: 100% !important;
@@ -2313,9 +2318,9 @@ transform: none !important;
 .stok-branch-name { font-size: 15px; }
 .stok-branch-count { font-size: 15px; }
 
-/* MOBİL LİSTE - TÜM SÜTUNLAR EKRANA SIGMALI (SCROLL YOK!) */
-.stok-list-table {
-width: 100% !important; /* Tam genişlik, scroll yok */
+/* MOBİL LİSTE: detay yoksa tablo ekrana sığsın; detay varken global min-width (yatay scroll) korunur */
+#stok-list-container:has(.stok-list-top-controls) > .stok-list-container:not([data-has-detail-columns="true"]) .stok-list-table {
+width: 100% !important;
 min-width: unset !important;
 }
 
@@ -2359,6 +2364,24 @@ font-size: clamp(calc(9.5px + var(--stok-mob-half-pt)), 2.5vw, 13.5px) !importan
 .stok-list-header-cell,
 .stok-list-cell {
 min-width: 0 !important;
+}
+
+/* Detay sütunları açıkken: plaka / sigorta / kasko (ve muayene–egzoz) kesilmesin; yatay scroll alanında tam metin */
+#stok-list-container:has(.stok-list-top-controls) > .stok-list-container[data-has-detail-columns="true"] .stok-list-cell[data-col="plaka"],
+#stok-list-container:has(.stok-list-top-controls) > .stok-list-container[data-has-detail-columns="true"] .stok-list-header-cell[data-col="plaka"],
+#stok-list-container:has(.stok-list-top-controls) > .stok-list-container[data-has-detail-columns="true"] .stok-list-cell[data-col="sigorta"],
+#stok-list-container:has(.stok-list-top-controls) > .stok-list-container[data-has-detail-columns="true"] .stok-list-header-cell[data-col="sigorta"],
+#stok-list-container:has(.stok-list-top-controls) > .stok-list-container[data-has-detail-columns="true"] .stok-list-cell[data-col="kasko"],
+#stok-list-container:has(.stok-list-top-controls) > .stok-list-container[data-has-detail-columns="true"] .stok-list-header-cell[data-col="kasko"],
+#stok-list-container:has(.stok-list-top-controls) > .stok-list-container[data-has-detail-columns="true"] .stok-list-cell[data-col="muayene"],
+#stok-list-container:has(.stok-list-top-controls) > .stok-list-container[data-has-detail-columns="true"] .stok-list-header-cell[data-col="muayene"],
+#stok-list-container:has(.stok-list-top-controls) > .stok-list-container[data-has-detail-columns="true"] .stok-list-cell[data-col="egzozMuayene"],
+#stok-list-container:has(.stok-list-top-controls) > .stok-list-container[data-has-detail-columns="true"] .stok-list-header-cell[data-col="egzozMuayene"] {
+white-space: normal !important;
+overflow: visible !important;
+text-overflow: clip !important;
+overflow-wrap: anywhere !important;
+word-break: break-word !important;
 }
 
 .stok-list-top-controls {
@@ -2699,9 +2722,9 @@ flex: 1;
 min-height: 0;
 overflow-y: auto;
 -webkit-overflow-scrolling: touch;
-touch-action: pan-y;
+touch-action: pan-x pan-y;
 overscroll-behavior-y: auto;
-overscroll-behavior-x: none;
+overscroll-behavior-x: auto;
 margin-top: 2px; /* 6px azaltıldı (8px→2px) */
 padding-bottom: 16px;
 box-sizing: border-box;
