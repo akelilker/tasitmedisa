@@ -2204,8 +2204,10 @@ body.admin-report-page .main-header-user-name.is-empty {
     box-shadow: 0 -15px 22px rgba(var(--theme-color-rgb), 0.35) !important;
   }
   .user-analytics-toolbar {
-    flex-direction: column;
-    align-items: stretch;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
   }
   .user-analytics-branch-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -3056,11 +3058,22 @@ body.admin-report-page .main-header-user-name.is-empty {
   }
 
   .report-selection-left,
-  .report-selection-bar,
-  .user-analytics-toolbar,
-  .user-analytics-toolbar-right {
+  .report-selection-bar {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  .user-analytics-toolbar,
+  .user-analytics-toolbar-right {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .user-analytics-toolbar-right {
+    justify-content: flex-start;
+    margin-left: 0;
   }
 
   .report-toolbar-row,
