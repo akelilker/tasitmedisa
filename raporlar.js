@@ -2259,7 +2259,26 @@
             window.removeEventListener('afterprint', cleanup);
         };
         window.addEventListener('afterprint', cleanup);
-        window.print();
+        var triggerPrint = function () {
+            try {
+                window.print();
+            } catch (e) {}
+        };
+        /* iOS Safari: print() hemen çağrılınca boş önizleme; layout + izin sonrası bir frame beklet */
+        var isIOSWebKit = /iPhone|iPad|iPod/i.test(navigator.userAgent || '') && /WebKit/i.test(navigator.userAgent || '');
+        if (typeof requestAnimationFrame === 'function') {
+            requestAnimationFrame(function () {
+                requestAnimationFrame(function () {
+                    if (isIOSWebKit) {
+                        window.setTimeout(triggerPrint, 200);
+                    } else {
+                        triggerPrint();
+                    }
+                });
+            });
+        } else {
+            window.setTimeout(triggerPrint, isIOSWebKit ? 200 : 0);
+        }
     };
 
     // --- 2. SEKME: KULLANICI GÖRÜNÜMÜ ---
