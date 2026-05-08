@@ -3452,6 +3452,7 @@
    */
   function getVehicleDateSeverityClass(vehicle) {
     if (!vehicle || typeof vehicle !== 'object') return '';
+    if (vehicle.satildiMi === true) return '';
     const dates = [
       vehicle.sigortaDate,
       vehicle.kaskoDate,
