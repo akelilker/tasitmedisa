@@ -689,7 +689,8 @@
             // 8+ sütun: sabit px. Masaüstünde Şube 4px genişler; denge için Marka 4px daralır.
             const basePx = isMobile
                 ? {
-                    'sira': 26, 'sube': 82, 'yil': 37, 'marka': 160, 'plaka': 64, 'sanziman': 55, 'km': 58
+                    /* Mobil + detay: yatay scroll varken plaka/kullanıcı dar kalıp kırılıyordu (örn. 34GT8770, uzun ad soyad) */
+                    'sira': 26, 'sube': 82, 'yil': 37, 'marka': 160, 'plaka': 92, 'sanziman': 55, 'km': 58
                 }
                 : {
                     'sira': 22,
@@ -706,8 +707,11 @@
                 'lastik': 56, 'utts': 52, 'takip': 56, 'tramer': 52,
                 'boya': 56, 'kullanici': 72, 'tescil': 72
             };
+            const detailPxEffective = isMobile
+                ? Object.assign({}, detailPx, { kullanici: 122 })
+                : detailPx;
             return allColumns.map(col => {
-                const w = basePx[col.key] ?? detailPx[col.key] ?? 64;
+                const w = basePx[col.key] ?? detailPxEffective[col.key] ?? 64;
                 return w + 'px';
             }).join(' ');
         }
