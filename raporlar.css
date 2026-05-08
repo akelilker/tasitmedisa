@@ -2376,6 +2376,20 @@ font-size: clamp(calc(9.5px + var(--stok-mob-half-pt)), 2.5vw, 13.5px) !importan
 .stok-list-cell {
 min-width: 0 !important;
 }
+/* Mobil plaka: sağ/sol güvenli iç boşluk; min-width:0 baskısını kaldır (detay açık/kapalı) */
+#stok-list-container .stok-list-cell[data-col="plaka"],
+#stok-list-container .stok-list-header-cell[data-col="plaka"] {
+padding-left: 4px !important;
+padding-right: 6px !important;
+box-sizing: border-box;
+text-align: center;
+white-space: nowrap;
+word-break: normal;
+overflow-wrap: normal;
+overflow: visible;
+text-overflow: clip;
+min-width: auto !important;
+}
 
 /* Detay sütunları açıkken: sigorta / kasko / muayene–egzoz kesilmesin; yatay scroll alanında tam metin (plaka hariç — ayrı blok) */
 #stok-list-container:has(.stok-list-top-controls) > .stok-list-container[data-has-detail-columns="true"] .stok-list-cell[data-col="sigorta"],
@@ -2392,14 +2406,9 @@ text-overflow: clip !important;
 overflow-wrap: anywhere !important;
 word-break: break-word !important;
 }
-/* Plaka: detay + mobilde anywhere/break-word + min-width:0 kırpmasın; tek satır, grid px ile uyumlu */
+/* Plaka: detay açıkken ek sütun genişliği tabanı (padding/tek satır üstteki mobil plaka bloğunda) */
 #stok-list-container:has(.stok-list-top-controls) > .stok-list-container[data-has-detail-columns="true"] .stok-list-cell[data-col="plaka"],
 #stok-list-container:has(.stok-list-top-controls) > .stok-list-container[data-has-detail-columns="true"] .stok-list-header-cell[data-col="plaka"] {
-white-space: nowrap !important;
-overflow: visible !important;
-text-overflow: clip !important;
-word-break: normal !important;
-overflow-wrap: normal !important;
 min-width: 92px !important;
 }
 
