@@ -3009,9 +3009,17 @@ overflow-wrap: break-word !important;
 overflow: visible !important;
 text-overflow: clip !important;
 }
-/* Plaka, yıl, şanzıman, km, sıra verisi: tek satır (tarih hariç) */
+/* Plaka: tek satır, kırpma yok — table-layout:fixed + overflow:hidden son harfi alta/at kesmeye itiyordu */
 #stok-print-area .stok-print-table th[data-col="plaka"],
-#stok-print-area .stok-print-table td[data-col="plaka"],
+#stok-print-area .stok-print-table td[data-col="plaka"] {
+white-space: nowrap;
+word-break: normal;
+overflow-wrap: normal;
+overflow: visible;
+text-overflow: clip;
+min-width: 10ch;
+}
+/* Yıl, şanzıman, km, sıra: tek satır */
 #stok-print-area .stok-print-table th[data-col="yil"],
 #stok-print-area .stok-print-table td[data-col="yil"],
 #stok-print-area .stok-print-table th[data-col="sanziman"],
