@@ -2416,7 +2416,14 @@
       const isMobileList = window.innerWidth <= 768;
       const isCompactHeader = window.innerWidth <= 640; /* dar ekranda kısa başlık etiketleri */
       // Mobil/tablet (≤768px): Taşıt Tipi + Şanzıman sütunlarını göstermiyoruz (yer kaplamasın)
-      const listDisplayOrder = isMobileList ? displayColumnOrder.filter(function(k) { return k !== 'type' && k !== 'transmission'; }) : displayColumnOrder;
+      // Arşiv + mobil: Kullanıcı sütunu gösterilmez (masaüstü arşiv listesi aynı kalır)
+      const listDisplayOrder = isMobileList
+        ? displayColumnOrder.filter(function(k) {
+            if (k === 'type' || k === 'transmission') return false;
+            if (activeBranchId === '__archive__' && k === 'user') return false;
+            return true;
+          })
+        : displayColumnOrder;
 
       const renderSignature = buildVehicleRenderSignature(vehicles, query, listDisplayOrder);
       if (
