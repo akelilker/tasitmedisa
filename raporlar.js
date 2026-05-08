@@ -709,7 +709,7 @@
             };
             const detailPxEffective = isMobile
                 ? Object.assign({}, detailPx, { kullanici: 122 })
-                : detailPx;
+                : Object.assign({}, detailPx, { kullanici: 112 });
             return allColumns.map(col => {
                 const w = basePx[col.key] ?? detailPxEffective[col.key] ?? 64;
                 return w + 'px';
