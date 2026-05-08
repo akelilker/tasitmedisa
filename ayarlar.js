@@ -824,6 +824,8 @@
       requestAnimationFrame(() => {
         modal.classList.add('active');
         syncUserManagementSearchUi();
+        bindUserManagementKeyboardHandlers();
+        clearUserManagementKeyboardOffset();
       });
     };
   
@@ -833,12 +835,93 @@
       userManagementSearchQuery = '';
       userManagementSearchOpen = false;
       syncUserManagementSearchUi();
+      clearUserManagementKeyboardOffset();
       modal.classList.remove('active');
       setTimeout(() => modal.style.display = 'none', 300);
     };
 
     let userManagementSearchQuery = '';
     let userManagementSearchOpen = false;
+    let userManagementKeyboardBound = false;
+
+    function isUserManagementKeyboardAwareContext() {
+      const hasMatchMedia = typeof window.matchMedia === 'function';
+      const isMobile = hasMatchMedia ? window.matchMedia('(max-width: 640px)').matches : (window.innerWidth <= 640);
+      if (!isMobile) return false;
+      const ua = navigator.userAgent || '';
+      const isiOS = /iPhone|iPad|iPod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+      const isWebKit = /WebKit/i.test(ua);
+      const isTouch = (navigator.maxTouchPoints || 0) > 0;
+      return !!(isiOS || (isWebKit && isTouch));
+    }
+
+    function clearUserManagementKeyboardOffset() {
+      const body = document.querySelector('#user-modal .modal-body');
+      if (!body) return;
+      body.classList.remove('user-management-keyboard-open');
+      body.style.removeProperty('--user-modal-keyboard-offset');
+    }
+
+    function applyUserManagementKeyboardOffset() {
+      const modal = document.getElementById('user-modal');
+      const input = document.getElementById('user-management-search-input');
+      const body = modal ? modal.querySelector('.modal-body') : null;
+      if (!modal || !body || !input) return;
+      if (!modal.classList.contains('active')) {
+        clearUserManagementKeyboardOffset();
+        return;
+      }
+      if (document.activeElement !== input) {
+        clearUserManagementKeyboardOffset();
+        return;
+      }
+      if (!isUserManagementKeyboardAwareContext()) {
+        clearUserManagementKeyboardOffset();
+        return;
+      }
+
+      const vv = window.visualViewport;
+      const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 0;
+      const vvHeight = vv && typeof vv.height === 'number' ? vv.height : viewportHeight;
+      const keyboardRaw = Math.max(0, Math.round(viewportHeight - vvHeight));
+      const keyboardOffset = keyboardRaw > 60 ? Math.max(220, Math.min(420, keyboardRaw + 24)) : 0;
+
+      if (keyboardOffset > 0) {
+        body.classList.add('user-management-keyboard-open');
+        body.style.setProperty('--user-modal-keyboard-offset', keyboardOffset + 'px');
+      } else {
+        clearUserManagementKeyboardOffset();
+      }
+    }
+
+    function bindUserManagementKeyboardHandlers() {
+      if (userManagementKeyboardBound) return;
+      const input = document.getElementById('user-management-search-input');
+      if (!input) return;
+      userManagementKeyboardBound = true;
+
+      const onFocus = function() {
+        requestAnimationFrame(function() {
+          applyUserManagementKeyboardOffset();
+        });
+      };
+      const onBlur = function() {
+        clearUserManagementKeyboardOffset();
+      };
+      const onViewportResize = function() {
+        const modal = document.getElementById('user-modal');
+        if (!modal || !modal.classList.contains('active')) return;
+        if (document.activeElement !== input) return;
+        applyUserManagementKeyboardOffset();
+      };
+
+      input.addEventListener('focus', onFocus);
+      input.addEventListener('blur', onBlur);
+      if (window.visualViewport && typeof window.visualViewport.addEventListener === 'function') {
+        window.visualViewport.addEventListener('resize', onViewportResize);
+      }
+      window.addEventListener('resize', onViewportResize);
+    }
 
     function normalizeUserManagementSearchText(value) {
       return String(value || '')
