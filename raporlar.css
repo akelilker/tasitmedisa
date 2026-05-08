@@ -527,6 +527,22 @@ color: rgba(248, 250, 252, 0.62);
 text-align: center;
 }
 
+/* Masaüstü: Raporlar şube kutusu tipografisi daha sakin (mobili etkilemez) */
+@media (min-width: 641px) {
+#reports-modal .stok-branch-name {
+font-size: 13px;
+font-weight: 600;
+line-height: 1.08;
+letter-spacing: 0.15px;
+}
+#reports-modal .stok-branch-count {
+font-size: 13px;
+font-weight: 400;
+line-height: 1.08;
+letter-spacing: 0;
+}
+}
+
 /* === STOK LİSTE GÖRÜNÜMÜ === */
 /* Stok listesi: kontroller ve sütun başlıkları sabit, sadece satırlar kaydırılır */
 #stok-list-container:has(.stok-list-top-controls) {
