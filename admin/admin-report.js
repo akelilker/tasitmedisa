@@ -678,7 +678,9 @@
     return '<span class="monthly-status-badge is-success">KM Tamam</span>';
   }
 
-  function buildMonthlyActions(record, kmMeta) {
+  function buildMonthlyActions(record, kmMeta, options) {
+    options = options || {};
+    var omitWhatsapp = options.omitWhatsapp === true;
     var escapeAttrFn = typeof window.escapeAttr === 'function'
       ? window.escapeAttr
       : function(value) {
@@ -693,7 +695,7 @@
     if (!record || record.atama_var === false || !kmMeta.isWarning) return '';
 
     var html = '<div class="monthly-report-actions">';
-    if (record.telefon) {
+    if (record.telefon && !omitWhatsapp) {
       var waDriverName = getDriverDisplayName(record.surucu_adi || '', 'Sürücü');
       html += '<button type="button" class="report-action-btn report-action-whatsapp"'
         + ' data-phone="' + escapeAttrFn(record.telefon) + '"'
@@ -714,6 +716,9 @@
         + '</button>';
     }
     html += '</div>';
+    if (omitWhatsapp && !record.email) {
+      return '';
+    }
     return html;
   }
 
@@ -919,7 +924,8 @@
         var kmMeta = getKmStateMeta(record);
         var vehicleTitle = formatBrandModel((record.brand_model || ((record.arac_marka || '') + ' ' + (record.arac_model || ''))).trim() || '-');
         var driverName = record.atama_var === false ? getMonthlyUnassignedDriverDisplayText() : getDriverDisplayName(record.surucu_adi, 'Sürücü tanımsız');
-        var actionHtml = buildMonthlyActions(record, kmMeta) || '<span class="monthly-action-placeholder">-</span>';
+        var showWaInStatus = shouldShowMobileStatusWhatsapp(record, kmMeta);
+        var actionHtml = (showWaInStatus ? buildMonthlyActions(record, kmMeta, { omitWhatsapp: true }) : buildMonthlyActions(record, kmMeta)) || '<span class="monthly-action-placeholder">-</span>';
         html += '<article class="monthly-report-list-row ' + kmMeta.rowClass + '">';
         html += '<div class="monthly-report-list-cell cell-plate">' + escapeHtmlLocal(formatPlaka(record.plaka || '-')) + '</div>';
         html += '<div class="monthly-report-list-cell cell-brand"><strong>' + escapeHtmlLocal(vehicleTitle) + '</strong></div>';
@@ -927,7 +933,7 @@
         html += '<div class="monthly-report-list-cell cell-km">' + escapeHtmlLocal(formatKmValue(record.km)) + '</div>';
         html += '<div class="monthly-report-list-cell cell-branch">' + escapeHtmlLocal(toTitleCase(record.branch_name || 'Şubesiz')) + '</div>';
         html += '<div class="monthly-report-list-cell cell-status">' + buildMonthlyStatusBadge(record, kmMeta, true);
-        if (shouldShowMobileStatusWhatsapp(record, kmMeta)) {
+        if (showWaInStatus) {
           html += '<div class="monthly-mobile-status-actions">' + buildMonthlyActions(record, kmMeta) + '</div>';
         }
         html += '</div>';
@@ -1729,7 +1735,8 @@
       records.forEach(function(record) {
         html += '<button type="button" class="kullanici-list-item user-analytics-list-item user-analytics-clickable" data-user-id="' + escapeHtmlLocal(record.id) + '">';
         html += '<div class="kullanici-list-item-left">';
-        html += '<div class="kullanici-list-item-name">' + escapeHtmlLocal(capitalizeWords(record.adSoyad)) + '</div>';
+        var listAdSoyadDisplay = isMonthlyMobileViewport() ? formatAdSoyad(record.adSoyad) : capitalizeWords(record.adSoyad);
+        html += '<div class="kullanici-list-item-name">' + escapeHtmlLocal(listAdSoyadDisplay) + '</div>';
         html += '<div class="user-analytics-list-item-subtitle">' + escapeHtmlLocal(record.marka) + '</div>';
         html += '<div class="user-analytics-list-item-meta"><span>' + escapeHtmlLocal(record.branchLabel) + '</span><span>' + escapeHtmlLocal(formatLastReportPeriod(record.lastReportPeriod)) + '</span></div>';
         html += buildMetricBadges(record);
