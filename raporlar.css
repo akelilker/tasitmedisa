@@ -3082,12 +3082,18 @@ white-space: normal;
 word-break: normal;
 overflow-wrap: break-word;
 }
-/* Mobil / dar print (ör. iPhone önizleme): yıl–plaka–kullanıcı kolon güvenliği; .cursorrules mobil eşiği 640px */
+/* Mobil / dar print (ör. iPhone önizleme): plaka son harf kırpılmasını önle; pay marka/taş.tip. */
 @media (max-width: 640px) {
 #stok-print-area .stok-print-table th[data-col="plaka"],
 #stok-print-area .stok-print-table td[data-col="plaka"] {
-overflow: hidden;
-min-width: 11ch;
+white-space: nowrap;
+word-break: normal;
+overflow-wrap: normal;
+overflow: visible;
+text-overflow: clip;
+min-width: 13ch;
+padding-left: 3px;
+padding-right: 5px;
 box-sizing: border-box;
 }
 #stok-print-area .stok-print-table th[data-col="yil"],
@@ -3099,10 +3105,15 @@ box-sizing: border-box;
 #stok-print-area .stok-print-table th[data-col="tasitTipi"],
 #stok-print-area .stok-print-table td[data-col="tasitTipi"] {
 min-width: 0;
+max-width: 9ch;
+white-space: nowrap;
+overflow: hidden;
+text-overflow: clip;
 }
 #stok-print-area .stok-print-table th[data-col="marka"],
 #stok-print-area .stok-print-table td[data-col="marka"] {
 min-width: 0;
+max-width: 28%;
 }
 #stok-print-area .stok-print-table th[data-col="sube"],
 #stok-print-area .stok-print-table td[data-col="sube"],
