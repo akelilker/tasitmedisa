@@ -975,18 +975,15 @@ padding: 1px 2px;
     min-height: 38px;
   }
 
-  /* Masaüstü + detay sütunları: kullanıcı — kelime ortası kırılmasın (ör. Sinem / HAMALOĞLU) */
-  #stok-list-container:has(.stok-list-top-controls) > .stok-list-container[data-has-detail-columns="true"] .stok-list-cell[data-col="kullanici"] {
-    white-space: normal;
-    word-break: normal;
-    overflow-wrap: normal;
-    line-break: auto;
-  }
+  /* Masaüstü + detay sütunları: kullanıcı — tek satır, kelime parçalanmasın; taşma yatay scroll ile */
+  #stok-list-container:has(.stok-list-top-controls) > .stok-list-container[data-has-detail-columns="true"] .stok-list-cell[data-col="kullanici"],
   #stok-list-container:has(.stok-list-top-controls) > .stok-list-container[data-has-detail-columns="true"] .stok-list-cell[data-col="kullanici"] span {
-    white-space: normal;
+    white-space: nowrap;
     word-break: normal;
     overflow-wrap: normal;
     line-break: auto;
+    overflow: visible;
+    text-overflow: clip;
   }
 }
 
