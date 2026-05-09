@@ -2374,18 +2374,25 @@ input.settings-form-input:-moz-autofill,
     #user-modal #user-list .settings-card .settings-card-title,
     #user-modal #user-list .settings-card .settings-card-title.settings-card-title-name {
         font-size: 14px !important;
-        display: block !important;
-        white-space: nowrap !important;
+        display: flex !important;
+        flex-wrap: wrap;
+        align-items: center !important;
+        align-content: center !important;
+        justify-content: center !important;
+        column-gap: 4px;
+        row-gap: 0;
+        white-space: normal !important;
         overflow: hidden !important;
         text-overflow: clip !important;
         text-align: center !important;
         width: 100% !important;
         min-height: 0 !important;
-        max-height: 1.2em !important;
+        max-height: calc(2 * 1.2em) !important;
         line-height: 1.2 !important;
     }
     #user-modal #user-list .settings-card .settings-card-name-part {
-        display: inline !important;
+        display: inline-block !important;
+        white-space: nowrap !important;
     }
     #branch-modal #branch-list .settings-card .settings-card-subtitle,
     #user-modal #user-list .settings-card .settings-card-subtitle,
