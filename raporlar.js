@@ -971,16 +971,16 @@
             { key: 'tescil', value: vehicle.tescilTarihi ? formatDate(vehicle.tescilTarihi) : '-' }
         ];
 
-        const baseCells = stokBaseColumnOrder.map(function(key) {
-            if (Object.prototype.hasOwnProperty.call(baseCellData, key)) {
-                return { key: key, value: baseCellData[key] };
-            }
-            const dc = detailCells.find(function(c) { return c.key === key; });
-            if (dc && stokActiveColumns[key]) {
-                return { key: key, value: dc.value, warningClass: dc.warningClass };
-            }
-            return { key: key, value: '-' };
-        });
+const baseCells = stokBaseColumnOrder.map(function(key) {
+    if (Object.prototype.hasOwnProperty.call(baseCellData, key)) {
+        return { key: key, value: baseCellData[key] };
+    }
+    const dc = detailCells.find(function(c) { return c.key === key; });
+    if (dc && stokActiveColumns[key]) {
+        return { key: key, value: dc.value, warningClass: dc.warningClass };
+    }
+    return null;
+}).filter(Boolean);
 
         let cells = [...baseCells];
 
