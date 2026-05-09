@@ -360,6 +360,7 @@
         if (!listContainer) return;
         const previousScrollState = captureStokListScrollState(listContainer);
         cleanupStokTouchColumnDrag();
+        ensureStokDetailKeysInColumnOrder();
         
         // Detay menü açık/kapalı tek kaynak: stokDetailMenuOpen (liste yeniden render'da korunur)
         
@@ -1277,18 +1278,17 @@
     // Sütun başlığına giriş yaptığında
     window.handleColumnHeaderDragEnter = function(event) {
         if (draggedColumnKey) {
-            const targetKey = event.currentTarget.dataset.col;
+            const rawTarget = event.currentTarget.dataset.col;
+            const targetKey = normalizeStokReorderKey(rawTarget);
+            const dragKey = normalizeStokReorderKey(draggedColumnKey);
             const detailColumns = ['sigorta', 'kasko', 'kaskoDegeri', 'muayene', 'kredi', 'lastik', 'utts', 'takip', 'tramer', 'boya', 'kullanici', 'tescil'];
             const baseColumns = STOK_BASE_COLUMNS.slice();
-            
-            if (targetKey && targetKey !== draggedColumnKey) {
-                // Temel sütunlar her zaman kabul edilir
+
+            if (rawTarget && dragKey !== targetKey) {
                 if (baseColumns.includes(targetKey)) {
                     event.preventDefault();
                     event.currentTarget.classList.add('drag-over');
-                }
-                // Detay sütunlar sadece aktifse kabul edilir
-                else if (detailColumns.includes(targetKey) && stokActiveColumns[targetKey]) {
+                } else if (detailColumns.includes(targetKey) && stokActiveColumns[targetKey]) {
                     event.preventDefault();
                     event.currentTarget.classList.add('drag-over');
                 }
@@ -1306,87 +1306,80 @@
         event.preventDefault();
         event.stopPropagation();
         event.currentTarget.classList.remove('drag-over');
-        
-        if (!draggedColumnKey || draggedColumnKey === targetColumnKey) {
+
+        const dragKey = draggedColumnKey ? normalizeStokReorderKey(draggedColumnKey) : null;
+        const dropKey = normalizeStokReorderKey(targetColumnKey);
+
+        if (!dragKey || dragKey === dropKey) {
             draggedColumnKey = null;
             return;
         }
 
         const detailColumns = ['sigorta', 'kasko', 'kaskoDegeri', 'muayene', 'kredi', 'lastik', 'utts', 'takip', 'tramer', 'boya', 'kullanici', 'tescil'];
         const baseColumns = STOK_BASE_COLUMNS.slice();
-        
-        const isDraggedBase = baseColumns.includes(draggedColumnKey);
-        const isTargetBase = baseColumns.includes(targetColumnKey);
-        const isDraggedDetail = detailColumns.includes(draggedColumnKey);
-        const isTargetDetail = detailColumns.includes(targetColumnKey);
+
+        const isDraggedBase = baseColumns.includes(dragKey);
+        const isTargetBase = baseColumns.includes(dropKey);
+        const isDraggedDetail = detailColumns.includes(dragKey);
+        const isTargetDetail = detailColumns.includes(dropKey);
 
         // Temel sütunlar arasında yer değiştirme
         if (isDraggedBase && isTargetBase) {
-            const draggedIndex = stokBaseColumnOrder.indexOf(draggedColumnKey);
-            const targetIndex = stokBaseColumnOrder.indexOf(targetColumnKey);
-            
+            const draggedIndex = stokBaseColumnOrder.indexOf(dragKey);
+            const targetIndex = stokBaseColumnOrder.indexOf(dropKey);
+
             if (draggedIndex !== -1 && targetIndex !== -1) {
                 stokBaseColumnOrder.splice(draggedIndex, 1);
-                stokBaseColumnOrder.splice(targetIndex, 0, draggedColumnKey);
+                stokBaseColumnOrder.splice(targetIndex, 0, dragKey);
                 saveStokColumnState();
                 renderStokList();
             }
         }
         // Detay sütunlar arasında yer değiştirme
         else if (isDraggedDetail && isTargetDetail) {
-            if (!stokActiveColumns[draggedColumnKey] || !stokActiveColumns[targetColumnKey]) {
+            if (!stokActiveColumns[dragKey] || !stokActiveColumns[dropKey]) {
                 draggedColumnKey = null;
                 return;
             }
-            
-            const draggedIndex = stokColumnOrder.indexOf(draggedColumnKey);
-            const targetIndex = stokColumnOrder.indexOf(targetColumnKey);
-            
+
+            const draggedIndex = stokColumnOrder.indexOf(dragKey);
+            const targetIndex = stokColumnOrder.indexOf(dropKey);
+
             if (draggedIndex !== -1 && targetIndex !== -1) {
                 stokColumnOrder.splice(draggedIndex, 1);
-                stokColumnOrder.splice(targetIndex, 0, draggedColumnKey);
+                stokColumnOrder.splice(targetIndex, 0, dragKey);
                 saveStokColumnState();
                 renderStokList();
             }
         }
         // Temel ve detay sütunlar arasında yer değiştirme (temel sütunların sonuna veya detay sütunların başına)
-        else if (isDraggedBase && isTargetDetail && stokActiveColumns[targetColumnKey]) {
-            // Temel sütunu, detay sütununun yerine koy (detay sütununu temel sütunların sonuna al)
-            const draggedIndex = stokBaseColumnOrder.indexOf(draggedColumnKey);
-            const targetDetailIndex = stokColumnOrder.indexOf(targetColumnKey);
-            
+        else if (isDraggedBase && isTargetDetail && stokActiveColumns[dropKey]) {
+            const draggedIndex = stokBaseColumnOrder.indexOf(dragKey);
+            const targetDetailIndex = stokColumnOrder.indexOf(dropKey);
+
             if (draggedIndex !== -1 && targetDetailIndex !== -1) {
-                // Temel sütunu listeden çıkar
                 stokBaseColumnOrder.splice(draggedIndex, 1);
-                // Detay sütununu temel sütunların sonuna ekle
-                stokBaseColumnOrder.push(targetColumnKey);
-                // Detay sütununu detay listesinden çıkar
+                stokBaseColumnOrder.push(dropKey);
                 stokColumnOrder.splice(targetDetailIndex, 1);
-                // Temel sütunu detay listesine ekle
-                stokColumnOrder.splice(targetDetailIndex, 0, draggedColumnKey);
+                stokColumnOrder.splice(targetDetailIndex, 0, dragKey);
                 saveStokColumnState();
                 renderStokList();
             }
         }
-        else if (isDraggedDetail && isTargetBase && stokActiveColumns[draggedColumnKey]) {
-            // Detay sütununu, temel sütununun yerine koy (temel sütununu detay sütunların başına al)
-            const draggedDetailIndex = stokColumnOrder.indexOf(draggedColumnKey);
-            const targetIndex = stokBaseColumnOrder.indexOf(targetColumnKey);
-            
+        else if (isDraggedDetail && isTargetBase && stokActiveColumns[dragKey]) {
+            const draggedDetailIndex = stokColumnOrder.indexOf(dragKey);
+            const targetIndex = stokBaseColumnOrder.indexOf(dropKey);
+
             if (draggedDetailIndex !== -1 && targetIndex !== -1) {
-                // Detay sütununu listeden çıkar
                 stokColumnOrder.splice(draggedDetailIndex, 1);
-                // Temel sütununu detay listesinin başına ekle
-                stokColumnOrder.unshift(targetColumnKey);
-                // Temel sütununu temel listesinden çıkar
+                stokColumnOrder.unshift(dropKey);
                 stokBaseColumnOrder.splice(targetIndex, 1);
-                // Detay sütununu temel listesine ekle
-                stokBaseColumnOrder.splice(targetIndex, 0, draggedColumnKey);
+                stokBaseColumnOrder.splice(targetIndex, 0, dragKey);
                 saveStokColumnState();
                 renderStokList();
             }
         }
-        
+
         draggedColumnKey = null;
     };
 
@@ -1445,22 +1438,44 @@
         stokTouchColumnDrag.sourceCell = null;
     }
 
+    /** Muayene + egzoz iki başlık; sıra dizisinde tek anahtar `muayene`. Egzoz başlığına bırakmayı muayene ile eşle. */
+    function normalizeStokReorderKey(key) {
+        return key === 'egzozMuayene' ? 'muayene' : key;
+    }
+
+    /** Aktif detay sütunu stokColumnOrder’da yoksa (eski kayıt / tutarsızlık) sona eklenir — yer değiştirme indexOf için gerekli. */
+    function ensureStokDetailKeysInColumnOrder() {
+        var changed = false;
+        STOK_DETAIL_COLUMNS.forEach(function(key) {
+            if (stokActiveColumns[key] && stokColumnOrder.indexOf(key) === -1) {
+                stokColumnOrder.push(key);
+                changed = true;
+            }
+        });
+        if (changed) saveStokColumnState();
+    }
+
     function canReorderStokColumn(sourceKey, targetKey) {
-        if (!sourceKey || !targetKey || sourceKey === targetKey) return false;
-        if (sourceKey === 'egzozMuayene' || targetKey === 'egzozMuayene') return false;
-        const isDraggedBase = STOK_BASE_COLUMNS.includes(sourceKey);
-        const isTargetBase = STOK_BASE_COLUMNS.includes(targetKey);
-        const isDraggedDetail = STOK_DETAIL_COLUMNS.includes(sourceKey);
-        const isTargetDetail = STOK_DETAIL_COLUMNS.includes(targetKey);
+        if (!sourceKey || !targetKey) return false;
+        const src = normalizeStokReorderKey(sourceKey);
+        const tgt = normalizeStokReorderKey(targetKey);
+        if (src === tgt) return false;
+        const isDraggedBase = STOK_BASE_COLUMNS.includes(src);
+        const isTargetBase = STOK_BASE_COLUMNS.includes(tgt);
+        const isDraggedDetail = STOK_DETAIL_COLUMNS.includes(src);
+        const isTargetDetail = STOK_DETAIL_COLUMNS.includes(tgt);
         if (isDraggedBase && isTargetBase) return true;
-        if (isDraggedDetail && isTargetDetail) return !!(stokActiveColumns[sourceKey] && stokActiveColumns[targetKey]);
-        if (isDraggedBase && isTargetDetail) return !!stokActiveColumns[targetKey];
-        if (isDraggedDetail && isTargetBase) return !!stokActiveColumns[sourceKey];
+        if (isDraggedDetail && isTargetDetail) return !!(stokActiveColumns[src] && stokActiveColumns[tgt]);
+        if (isDraggedBase && isTargetDetail) return !!stokActiveColumns[tgt];
+        if (isDraggedDetail && isTargetBase) return !!stokActiveColumns[src];
         return false;
     }
 
     function reorderStokColumns(sourceKey, targetKey) {
         if (!canReorderStokColumn(sourceKey, targetKey)) return false;
+
+        sourceKey = normalizeStokReorderKey(sourceKey);
+        targetKey = normalizeStokReorderKey(targetKey);
 
         const isDraggedBase = STOK_BASE_COLUMNS.includes(sourceKey);
         const isTargetBase = STOK_BASE_COLUMNS.includes(targetKey);
