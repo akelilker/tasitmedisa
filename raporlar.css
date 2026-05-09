@@ -755,16 +755,16 @@ color: #999;
 color: var(--theme-color);
 }
 
-/* Stok liste: çerçeveye yatay/dikey ~1px; sütun aralığı sıkı */
-#stok-list-container .stok-list-header-row,
-#stok-list-container .stok-list-row {
-  gap: 2px;
-}
+/* Stok liste: header/body grid taşıyıcı geometrisi aynı — izler pikselde hizalanır */
 #stok-list-container .stok-list-header-row {
-  padding: 5px 1px 4px 1px;
+  padding: 1px !important;
+  gap: 2px !important;
+  box-sizing: border-box !important;
 }
 #stok-list-container .stok-list-row {
   padding: 1px !important;
+  gap: 2px !important;
+  box-sizing: border-box !important;
 }
 #stok-list-container .stok-list-header-cell,
 #stok-list-container .stok-list-cell {
