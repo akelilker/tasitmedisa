@@ -747,7 +747,8 @@
                 <div class="modal-body" id="reports-body">
                     <div id="view-stok" class="report-view active">
                         <div id="stok-branch-grid" class="stok-branch-grid"></div>
-                        <div id="stok-list-container" class="stok-list-container u-hidden"></div>
+                        <!-- class stok-list-container sadece iç scroll sarmalayıcıda (raporlar.js); dışta olursa overflow-x:auto sticky th’yi bozar -->
+                        <div id="stok-list-container" class="stok-list-root u-hidden"></div>
                     </div>
                 </div>
                 </div>
