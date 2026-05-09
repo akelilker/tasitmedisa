@@ -1025,6 +1025,8 @@
                 inner = getStokTasitTipiMobileCellHtml(vehicle, String(cell.value));
             } else if (cell.key === 'tasitTipi') {
                 inner = getStokTasitTipiDesktopCellHtml(String(cell.value));
+            } else if (cell.key === 'marka') {
+                inner = `<span class="stok-marka-cell-inner">${escapeHtml(String(cell.value))}</span>`;
             } else {
                 inner = escapeHtml(String(cell.value));
             }
