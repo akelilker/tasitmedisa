@@ -5007,7 +5007,7 @@
           radioRow('Taşıt Takip Cihazı Var mı?', 'evet', 'hayir', 'Evet', 'Hayır') + '</div>';
       case 'kaskokodu':
         return '<div style="display:flex;flex-direction:column;gap:12px;">' +
-          section('Kasko Kodu', 'kasko-kodu-guncelle-input', 'input', [['type', 'text'], ['placeholder', 'Kod']]) + '</div>';
+          section('Kasko Kodu', 'kasko-kodu-guncelle-input', 'input', [['type', 'text'], ['placeholder', 'Kod'], ['inputmode', 'numeric'], ['pattern', '[0-9]*'], ['autocomplete', 'off']]) + '</div>';
       case 'sube':
         return '<div style="display:flex;flex-direction:column;gap:12px;">' +
           section('Yeni Şube', 'sube-select', 'select', [], '<option value="">Şube Seçiniz</option>') + '</div>';
