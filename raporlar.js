@@ -1064,6 +1064,11 @@
                 const aVal = (a.plate || '').toLowerCase();
                 const bVal = (b.plate || '').toLowerCase();
                 return direction === 'asc' ? aVal.localeCompare(bVal, 'tr') : bVal.localeCompare(aVal, 'tr');
+            } else if (columnKey === 'kullanici') {
+                // A-Z (asc), Z-A (desc) — detay sütunu gerçek kullanıcı adı üzerinden sıralanır
+                const aVal = formatAdSoyad(getVehicleUser(a)).toLowerCase();
+                const bVal = formatAdSoyad(getVehicleUser(b)).toLowerCase();
+                return direction === 'asc' ? aVal.localeCompare(bVal, 'tr') : bVal.localeCompare(aVal, 'tr');
             } else if (columnKey === 'muayene' || columnKey === 'egzozMuayene') {
                 const field = columnKey === 'muayene' ? 'muayeneDate' : 'egzozMuayeneDate';
                 const aVal = stokNormalizeIsoDateKey(a[field] || '');
