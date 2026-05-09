@@ -830,8 +830,11 @@
         return out;
     }
 
-    // Sütun başlık satırı oluştur
-    function createStokHeaderRow() {
+    /**
+     * Başlık ve gövde için expand öncesi aynı sütun meta dizisi.
+     * İki ayrı birleştirme yolu (header vs data) saparsa grid-template-columns ile th/td sayısı uyuşmaz (ör. KM başlığı kaybolur).
+     */
+    function buildStokFlatColumnMetas() {
         const baseColumns = [
             { key: 'sira', sortable: false },
             { key: 'sube', sortable: true },
@@ -858,10 +861,8 @@
             { key: 'tescil', sortable: true }
         ];
 
-        // Tüm sütunları birleştir (temel + aktif detay)
         const allColumns = [];
 
-        // Temel sütunları sıraya göre ekle (detay anahtarı taşıt ile temel arasında yer değiştirdiyse başlıkta da yer almalı)
         stokBaseColumnOrder.forEach(colKey => {
             const baseCol = baseColumns.find(c => c.key === colKey);
             if (baseCol) {
@@ -874,7 +875,6 @@
             }
         });
 
-        // Aktif detay sütunlarını sıraya göre ekle
         if (stokColumnOrder.length > 0) {
             stokColumnOrder.forEach(colKey => {
                 if (stokActiveColumns[colKey]) {
@@ -884,7 +884,6 @@
                     }
                 }
             });
-            // Sırada olmayan ama aktif olan sütunları sona ekle
             detailColumns.forEach(col => {
                 if (stokActiveColumns[col.key] && !stokColumnOrder.includes(col.key)) {
                     if (!allColumns.some(function(x) { return x.key === col.key; })) {
@@ -893,13 +892,19 @@
                 }
             });
         } else {
-            // İlk kez - varsayılan sıraya göre ekle
             detailColumns.forEach(col => {
                 if (stokActiveColumns[col.key] && !allColumns.some(function(x) { return x.key === col.key; })) {
                     allColumns.push(col);
                 }
             });
         }
+
+        return allColumns;
+    }
+
+    // Sütun başlık satırı oluştur
+    function createStokHeaderRow() {
+        const allColumns = buildStokFlatColumnMetas();
 
         let columns = expandStokGridColumns(allColumns);
         var gridColumns = getStokVisibleGridColumns(columns);
@@ -1028,44 +1033,19 @@
             { key: 'tescil', value: vehicle.tescilTarihi ? formatDate(vehicle.tescilTarihi) : '-' }
         ];
 
-        const baseCells = stokBaseColumnOrder.map(function(key) {
+        /* Başlık ile aynı sütun sırası (buildStokFlatColumnMetas); ayrı map/forEach yolları sapmasın. */
+        let cells = [];
+        buildStokFlatColumnMetas().forEach(function(meta) {
+            var key = meta.key;
             if (Object.prototype.hasOwnProperty.call(baseCellData, key)) {
-                return { key: key, value: baseCellData[key] };
+                cells.push({ key: key, value: baseCellData[key] });
+                return;
             }
-            const dc = detailCells.find(function(c) { return c.key === key; });
+            var dc = detailCells.find(function(c) { return c.key === key; });
             if (dc && stokActiveColumns[key]) {
-                return { key: key, value: dc.value, warningClass: dc.warningClass };
+                cells.push({ key: key, value: dc.value, warningClass: dc.warningClass });
             }
-            // PASİF KALAN KOLONLAR İÇİN '-' DÖNMEK YERİNE NULL DÖNÜYORUZ
-            return null;
-        }).filter(Boolean); // VE SONUNDA NULL OLANLARI (HAYALET HÜCRELERİ) DİZİDEN ATIYORUZ
-
-        let cells = [...baseCells];
-
-        // Aktif detay sütunlarını sıraya göre ekle (zaten stokBaseColumnOrder’da olan detayları tekrar ekleme)
-        if (stokColumnOrder.length > 0) {
-            stokColumnOrder.forEach(function(cellKey) {
-                if (stokActiveColumns[cellKey]) {
-                    const cell = detailCells.find(function(c) { return c.key === cellKey; });
-                    if (cell && !cells.some(function(ex) { return ex.key === cellKey; })) {
-                        cells.push(cell);
-                    }
-                }
-            });
-            detailCells.forEach(function(cell) {
-                if (stokActiveColumns[cell.key] && !stokColumnOrder.includes(cell.key)) {
-                    if (!cells.some(function(ex) { return ex.key === cell.key; })) {
-                        cells.push(cell);
-                    }
-                }
-            });
-        } else {
-            detailCells.forEach(function(cell) {
-                if (stokActiveColumns[cell.key] && !cells.some(function(ex) { return ex.key === cell.key; })) {
-                    cells.push(cell);
-                }
-            });
-        }
+        });
 
         cells = expandStokGridRowCells(cells, vehicle);
 
