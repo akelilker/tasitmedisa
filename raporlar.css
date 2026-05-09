@@ -544,12 +544,18 @@ letter-spacing: 0;
 }
 
 /* === STOK LİSTE GÖRÜNÜMÜ === */
+/* Dış kök: .stok-list-container class’ı burada olmamalı — genel kural overflow-x:auto yapışkan thead’i bozar */
+#stok-list-container.stok-list-root {
+width: 100%;
+box-sizing: border-box;
+}
 /* Stok listesi: kontroller ve sütun başlıkları sabit, sadece satırlar kaydırılır */
 #stok-list-container:has(.stok-list-top-controls) {
 display: flex !important;
 flex-direction: column !important;
 flex: 1 !important;
 min-height: 0 !important;
+overflow: visible !important;
 }
 #stok-list-container:has(.stok-list-top-controls) > .stok-list-container {
 flex: 1 !important;
