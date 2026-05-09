@@ -1752,10 +1752,17 @@
     }
 
     function getVehicleUser(vehicle) {
-        if (!vehicle.assignedUserId) return '-';
+        if (!vehicle) return '-';
         const users = getUsers();
-        const user = users.find(u => u.id === vehicle.assignedUserId);
-        return user ? user.name : '-';
+        const aid = vehicle.assignedUserId;
+        if (aid != null && String(aid).trim() !== '') {
+            const uid = String(aid);
+            const user = users.find(function(u) { return String(u.id) === uid; });
+            const name = user && (user.name || user.isim || user.fullName);
+            if (name) return name;
+        }
+        const tahsis = String(vehicle.tahsisKisi || '').trim();
+        return tahsis || '-';
     }
 
     // Grid görünümüne geri dön
