@@ -860,21 +860,34 @@ word-break: break-word;
 overflow-wrap: break-word;
 -webkit-line-clamp: 2;
 line-clamp: 2;
+min-width: 0;
 }
 
+/* Marka: -webkit-box doğrudan grid hücresinde komşu sütuna taşma yapabiliyor; kısaltma iç span’da */
 .stok-list-cell[data-col="marka"] {
 justify-content: center;
 text-align: center;
-white-space: normal;
-word-break: break-word;
-overflow-wrap: break-word;
+display: flex;
+align-items: center;
+padding: 1px 2px;
+min-width: 0;
+overflow: hidden;
+}
+
+.stok-list-cell[data-col="marka"] .stok-marka-cell-inner {
 display: -webkit-box;
+-webkit-box-orient: vertical;
 -webkit-line-clamp: 3;
 line-clamp: 3;
--webkit-box-orient: vertical;
 overflow: hidden;
+word-break: break-word;
+overflow-wrap: break-word;
+text-align: center;
 text-overflow: clip;
-padding: 1px 2px;
+width: 100%;
+min-width: 0;
+max-width: 100%;
+box-sizing: border-box;
 }
 
 /* Taşıt tipi: mobilde SVG simge (+ title tam metin), masaüstünde metin */
