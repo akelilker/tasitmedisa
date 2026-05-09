@@ -808,10 +808,17 @@
         // Tüm sütunları birleştir (temel + aktif detay)
         const allColumns = [];
 
-        // Temel sütunları sıraya göre ekle
+        // Temel sütunları sıraya göre ekle (detay anahtarı taşıt ile temel arasında yer değiştirdiyse başlıkta da yer almalı)
         stokBaseColumnOrder.forEach(colKey => {
-            const col = baseColumns.find(c => c.key === colKey);
-            if (col) allColumns.push(col);
+            const baseCol = baseColumns.find(c => c.key === colKey);
+            if (baseCol) {
+                allColumns.push(baseCol);
+                return;
+            }
+            const detCol = detailColumns.find(c => c.key === colKey);
+            if (detCol && stokActiveColumns[colKey]) {
+                allColumns.push(detCol);
+            }
         });
 
         // Aktif detay sütunlarını sıraya göre ekle
@@ -924,11 +931,6 @@
             })()
         };
 
-        const baseCells = stokBaseColumnOrder.map(key => ({
-            key: key,
-            value: baseCellData[key] || '-'
-        }));
-
         const detailCells = [
             {
                 key: 'sigorta',
@@ -969,27 +971,39 @@
             { key: 'tescil', value: vehicle.tescilTarihi ? formatDate(vehicle.tescilTarihi) : '-' }
         ];
 
+        const baseCells = stokBaseColumnOrder.map(function(key) {
+            if (Object.prototype.hasOwnProperty.call(baseCellData, key)) {
+                return { key: key, value: baseCellData[key] };
+            }
+            const dc = detailCells.find(function(c) { return c.key === key; });
+            if (dc && stokActiveColumns[key]) {
+                return { key: key, value: dc.value, warningClass: dc.warningClass };
+            }
+            return { key: key, value: '-' };
+        });
+
         let cells = [...baseCells];
 
-        // Aktif detay sütunlarını sıraya göre ekle
+        // Aktif detay sütunlarını sıraya göre ekle (zaten stokBaseColumnOrder’da olan detayları tekrar ekleme)
         if (stokColumnOrder.length > 0) {
-            // Kaydedilmiş sıraya göre ekle
-            stokColumnOrder.forEach(cellKey => {
+            stokColumnOrder.forEach(function(cellKey) {
                 if (stokActiveColumns[cellKey]) {
-                    const cell = detailCells.find(c => c.key === cellKey);
-                    if (cell) cells.push(cell);
+                    const cell = detailCells.find(function(c) { return c.key === cellKey; });
+                    if (cell && !cells.some(function(ex) { return ex.key === cellKey; })) {
+                        cells.push(cell);
+                    }
                 }
             });
-            // Sırada olmayan ama aktif olan sütunları sona ekle
-            detailCells.forEach(cell => {
+            detailCells.forEach(function(cell) {
                 if (stokActiveColumns[cell.key] && !stokColumnOrder.includes(cell.key)) {
-                    cells.push(cell);
+                    if (!cells.some(function(ex) { return ex.key === cell.key; })) {
+                        cells.push(cell);
+                    }
                 }
             });
         } else {
-            // İlk kez - varsayılan sıraya göre ekle
-            detailCells.forEach(cell => {
-                if (stokActiveColumns[cell.key]) {
+            detailCells.forEach(function(cell) {
+                if (stokActiveColumns[cell.key] && !cells.some(function(ex) { return ex.key === cell.key; })) {
                     cells.push(cell);
                 }
             });
