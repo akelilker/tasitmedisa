@@ -2072,6 +2072,23 @@
   .view-list .list-item:hover {
     background: var(--border-ultra) !important;
   }
+  /* Genel arama sonuç satırı (.list-info): kolonlu grid'e girmesin, dar alana sıkışmasın */
+  #vehicles-modal #vehicles-modal-content[data-render-scope="search-global"] .view-list .list-item {
+    display: block !important;
+    grid-template-columns: none !important;
+    min-height: 0 !important;
+    padding: 6px 8px !important;
+  }
+  #vehicles-modal #vehicles-modal-content[data-render-scope="search-global"] .view-list .list-item .list-info {
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+  #vehicles-modal #vehicles-modal-content[data-render-scope="search-global"] .view-list .list-item .list-info h4,
+  #vehicles-modal #vehicles-modal-content[data-render-scope="search-global"] .view-list .list-item .list-info span {
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    word-break: normal !important;
+  }
 
   /* Başlık Satırı - Mobil: +1pt (JS --list-header-font-size); dikey ortalanmış */
   .list-header-row {
