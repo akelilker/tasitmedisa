@@ -1,7 +1,13 @@
 // Service Worker - Medisa Taşıt Yönetim Sistemi
 // Version 2.15 - Güvenli offline okuma kabuğu
 
-const CACHE_VERSION = 'medisa-v2.82';
+const CACHE_VERSION = 'medisa-v2.83';
+// Raporlar modülü (raporlar.js / raporlar.css): ana shell cache'inden ayrı; MEDISA_MODULE_VERSIONS.raporlar ile senkron tut
+const CACHE_RAPORLAR_VERSION = 'medisa-raporlar-20260508.3';
+
+function isRaporlarModuleAssetUrl(u) {
+  return /\/raporlar\.(js|css)$/i.test(u.pathname);
+}
 
 // Subpath desteği: /medisa/sw.js ise base = '/medisa', kök deploy'da base = ''
 function getBase() {
@@ -58,9 +64,20 @@ self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys()
       .then((cacheNames) => {
-        const toDelete = cacheNames.filter((name) => name !== CACHE_VERSION);
+        const keep = new Set([CACHE_VERSION, CACHE_RAPORLAR_VERSION]);
+        const toDelete = cacheNames.filter((name) => !keep.has(name));
         return Promise.all(toDelete.map((name) => caches.delete(name)));
       })
+      .then(() => caches.open(CACHE_VERSION))
+      .then((cache) =>
+        cache.keys().then((keys) =>
+          Promise.all(
+            keys
+              .filter((req) => isRaporlarModuleAssetUrl(new URL(req.url)))
+              .map((req) => cache.delete(req))
+          )
+        )
+      )
       .then(() => self.clients.claim())
       .catch((err) => {
         console.warn('SW activate:', err);
@@ -136,9 +153,10 @@ self.addEventListener('fetch', (event) => {
         if (!response || response.status !== 200 || response.type === 'error') {
           return response;
         }
-        // Başarılıysa cache'i yenile
+        // Başarılıysa cache'i yenile (raporlar modülü ayrı önbellek adı)
         const responseClone = response.clone();
-        caches.open(CACHE_VERSION).then((cache) => {
+        const targetCache = isRaporlarModuleAssetUrl(url) ? CACHE_RAPORLAR_VERSION : CACHE_VERSION;
+        caches.open(targetCache).then((cache) => {
           cache.put(request, responseClone);
         });
         return response;
