@@ -1,3 +1,4 @@
+```javascript
 /* =========================================
    RAPORLAR MODÜLÜ - SEKME YAPILI
    ========================================= */
@@ -979,8 +980,8 @@
             if (dc && stokActiveColumns[key]) {
                 return { key: key, value: dc.value, warningClass: dc.warningClass };
             }
-            return { key: key, value: '-' };
-        });
+            return null; // Pasif detay kolonları için null dön (hayalet hücre oluşmasını engelle)
+        }).filter(Boolean); // null olanları temizle
 
         let cells = [...baseCells];
 
@@ -2757,3 +2758,5 @@
 
 
 })();
+
+```
