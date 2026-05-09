@@ -212,32 +212,58 @@ window.toTitleCase = function(str) {
 };
 
 /**
- * Marka/model: önce toTitleCase; bilinen marka kısaltmaları tam büyük (BMW, VW…); motor kodları TFSI/TSI/TDI/TDCi;
+ * Marka/model: önce toTitleCase; bilinen marka kısaltmaları tam büyük (BMW, VW…); motor etiketleri TFSi/TSI/TDi/TDI/TDCi/TCe/dCi/BlueHDi/EcoBoost;
  * hacım sonu küçük l → L (ör. 350l → 350L). Tire ile ayrılan parçalar kelime bazında işlenir.
  */
 (function() {
   var ALLCAPS_BRAND_KEYS = { bmw: 1, vw: 1, mg: 1, gmc: 1, ram: 1, byd: 1, jmc: 1, ds: 1 };
 
-  /** tdci/tdı/tfsı… → ford TDCi, tam büyük TFSI/TDI/TSI (tr-TR büyük harf eşlemesi güvenilir olsun) */
-  function normalizeEngineAbbrevToken(suffixRaw) {
-    var s = String(suffixRaw || '').toLocaleUpperCase('tr-TR').replace(/\u0130/g, 'I');
-    if (s === 'TFSI') return 'TFSI';
-    if (s === 'TDCI') return 'TDCi';
-    if (s === 'TDI') return 'TDI';
-    if (s === 'TSI') return 'TSI';
-    return suffixRaw || '';
-  }
-
-  /** 1.0TSI vb. rakam sonrası + ayrı kelime kısaltmaları; sıra: daha uzun/özgül token önce */
+  /**
+   * Rakam + motor/şanzıman etiketleri: bitişik veya boşluklu; doğru yazım + gerekirse boşluk.
+   * Örn: 1.0TFSi → 1.0 TFSi, 1.5BlueHDi → 1.5 BlueHDi, 2.0TDi → 2.0 TDi, 40TDI → 40 TDI, 35TFSi → 35 TFSi
+   * Not: x.x + TDi (küçük i); iki veya daha çok basamaklı güç ibaresi + TDI (tam büyük).
+   */
   function applyMotorKisaltmalari(out) {
     if (!out) return out;
-    out = out.replace(/(\d+(?:[\.,]\d+)?)(tfsi|tdci|tdi|tsi)\b/gi, function(_, num, suf) {
-      return num + normalizeEngineAbbrevToken(suf);
-    });
-    out = out.replace(/\b(tfsi|tdci|tdi|tsi)\b/gi, function(m) {
-      return normalizeEngineAbbrevToken(m);
-    });
-    return out;
+    var s = out;
+
+    s = s.replace(/\bblue\s*hdi\b/gi, 'BlueHDi');
+    s = s.replace(/\beco\s*boost\b/gi, 'EcoBoost');
+
+    s = s.replace(/(\d+(?:[\.,]\d+)?)\s*(bluehdi|blue\s*hdi)/gi, '$1 BlueHDi');
+    s = s.replace(/(\d+(?:[\.,]\d+)?)(bluehdi)/gi, '$1 BlueHDi');
+
+    s = s.replace(/(\d+(?:[\.,]\d+)?)\s*(ecoboost|eco\s*boost)/gi, '$1 EcoBoost');
+    s = s.replace(/(\d+(?:[\.,]\d+)?)(ecoboost)/gi, '$1 EcoBoost');
+
+    s = s.replace(/(\d+(?:[\.,]\d+)?)\s*(tfsi|tfs\u0131)/gi, '$1 TFSi');
+    s = s.replace(/(\d+(?:[\.,]\d+)?)(tfsi|tfs\u0131)/gi, '$1 TFSi');
+    s = s.replace(/(\d+)\s*(tfsi|tfs\u0131)/gi, '$1 TFSi');
+    s = s.replace(/(\d+)(tfsi|tfs\u0131)/gi, '$1 TFSi');
+    s = s.replace(/\b(tfsi|tfs\u0131)\b/gi, 'TFSi');
+
+    s = s.replace(/(\d+(?:[\.,]\d+)?)\s*tdci/gi, '$1 TDCi');
+    s = s.replace(/(\d+(?:[\.,]\d+)?)tdci/gi, '$1 TDCi');
+    s = s.replace(/\btdci\b/gi, 'TDCi');
+
+    s = s.replace(/(\d+(?:[\.,]\d+)?)\s*tsi/gi, '$1 TSI');
+    s = s.replace(/(\d+(?:[\.,]\d+)?)tsi/gi, '$1 TSI');
+    s = s.replace(/\btsi\b/gi, 'TSI');
+
+    s = s.replace(/(\d+(?:[\.,]\d+)?)\s*tce/gi, '$1 TCe');
+    s = s.replace(/(\d+(?:[\.,]\d+)?)tce/gi, '$1 TCe');
+    s = s.replace(/\btce\b/gi, 'TCe');
+
+    s = s.replace(/(\d+(?:[\.,]\d+)?)\s*(dci|dc\u0131)/gi, '$1 dCi');
+    s = s.replace(/(\d+(?:[\.,]\d+)?)(dci|dc\u0131)/gi, '$1 dCi');
+    s = s.replace(/\b(dci|dc\u0131)\b/gi, 'dCi');
+
+    s = s.replace(/(\d+[\.,]\d+)\s*(tdi|td\u0131)/gi, '$1 TDi');
+    s = s.replace(/(\d+[\.,]\d+)(tdi|td\u0131)/gi, '$1 TDi');
+    s = s.replace(/(\d{2,})\s*(tdi|td\u0131)/gi, '$1 TDI');
+    s = s.replace(/(\d{2,})(tdi|td\u0131)/gi, '$1 TDI');
+
+    return s;
   }
 
   /** Silindir/litre gösterimi: 350l → 350L (yalnız küçük l, kelime sınırı) */
