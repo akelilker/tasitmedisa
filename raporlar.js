@@ -24,19 +24,11 @@
 
     function toTitleCase(str) { return (typeof window.toTitleCase === 'function' ? window.toTitleCase(str) : str); }
     function formatBrandModel(str) { return (typeof window.formatBrandModel === 'function' ? window.formatBrandModel(str) : toTitleCase(str)); }
-    /** Stok marka sütunu: formatlanmış metni ilk boşlukta marka / model olarak iki satırda gösterir (div + flex column ile). */
+    /** Stok marka sütunu: marka + model tek metin (örn. Opel Astra 1.6) aynı satırda; dar alanda kelime kırılımıyla sarılabilir. */
     function getStokMarkaCellInnerHtml(formattedBrandModel) {
-        var s = String(formattedBrandModel == null ? '' : formattedBrandModel);
-        if (s === '' || s === '-') {
-            return '<div class="stok-marka-cell-inner"><div class="stok-marka-line">' + escapeHtml(s === '' ? '-' : s) + '</div></div>';
-        }
-        var i = s.indexOf(' ');
-        if (i === -1) {
-            return '<div class="stok-marka-cell-inner"><div class="stok-marka-line">' + escapeHtml(s) + '</div></div>';
-        }
-        var brand = s.slice(0, i);
-        var model = s.slice(i + 1).trim();
-        return '<div class="stok-marka-cell-inner"><div class="stok-marka-line">' + escapeHtml(brand) + '</div><div class="stok-marka-line stok-marka-line--model">' + escapeHtml(model) + '</div></div>';
+        var s = String(formattedBrandModel == null ? '' : formattedBrandModel).trim();
+        if (s === '') s = '-';
+        return '<div class="stok-marka-cell-inner"><span class="stok-marka-line">' + escapeHtml(s) + '</span></div>';
     }
     function formatPlaka(str) { return (typeof window.formatPlaka === 'function' ? window.formatPlaka(str) : (str == null ? '-' : String(str))); }
     function formatAdSoyad(str) { return (typeof window.formatAdSoyad === 'function' ? window.formatAdSoyad(str) : str); }

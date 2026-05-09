@@ -593,10 +593,16 @@ width: 100%;
 border-collapse: separate;
 border-spacing: 0;
 }
+/* Kaydırma alanı iç .stok-list-container; başlık hücreleri yapışkan (thead’de sticky güvenilir değil, th kullan) */
 #stok-list-container .stok-list-table thead th {
-    position: relative;
+    position: sticky;
+    top: 0;
+    z-index: 12;
+    background: var(--bg);
+    background-clip: padding-box;
     border-bottom: 1px solid rgba(255, 0, 0, 0.25);
     padding-bottom: 6px;
+    box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.35);
 }
 /* Detay sütunları varken min-width ile yatay scroll; yokken ekrana sığar */
 .stok-list-container[data-has-detail-columns="true"] .stok-list-table {
@@ -608,12 +614,10 @@ min-width: 1008px;
 }
 
 .stok-list-header {
-position: sticky;
-top: 0;
-background: var(--bg);
-z-index: 10;
-border-bottom: 1px solid rgba(255, 255, 255, 0.22);
-box-shadow: 0 2px 0 0 var(--bg);
+position: static;
+background: transparent;
+border-bottom: none;
+box-shadow: none;
 backdrop-filter: none;
 -webkit-backdrop-filter: none;
 }
@@ -760,6 +764,7 @@ color: var(--theme-color);
   padding: 1px !important;
   gap: 2px !important;
   box-sizing: border-box !important;
+  margin-bottom: 0 !important;
 }
 #stok-list-container .stok-list-row {
   padding: 1px !important;
@@ -858,8 +863,6 @@ justify-content: center;
 white-space: normal;
 word-break: break-word;
 overflow-wrap: break-word;
--webkit-line-clamp: 2;
-line-clamp: 2;
 min-width: 0;
 }
 
@@ -875,11 +878,7 @@ overflow: hidden;
 }
 
 .stok-list-cell[data-col="marka"] .stok-marka-cell-inner {
-display: flex;
-flex-direction: column;
-align-items: center;
-justify-content: center;
-gap: 1px;
+display: block;
 overflow: hidden;
 word-break: break-word;
 overflow-wrap: break-word;
@@ -893,15 +892,8 @@ box-sizing: border-box;
 display: block;
 width: 100%;
 min-width: 0;
-line-height: 1.12;
-}
-.stok-list-cell[data-col="marka"] .stok-marka-line--model {
-display: -webkit-box;
--webkit-box-orient: vertical;
--webkit-line-clamp: 2;
-line-clamp: 2;
-overflow: hidden;
-text-overflow: ellipsis;
+line-height: 1.2;
+white-space: normal;
 }
 
 /* Taşıt tipi: mobilde SVG simge (+ title tam metin), masaüstünde metin */
@@ -2828,13 +2820,6 @@ scrollbar-width: thin;
 scrollbar-color: rgba(128, 128, 128, 0.35) transparent;
 touch-action: pan-x pan-y;
 }
-#stok-list-container:has(.stok-list-top-controls) > .stok-list-container .stok-list-header {
-position: sticky;
-top: 0;
-z-index: 10;
-background: var(--bg);
-}
-
 /*
  * Mobil stok listesi — büyüteç araması: kapanırken “üstten sola” kayma hissi.
  * .open kalkınca input margin-top 4px’e dönüyordu (yalnızca .open’da 0’dı) → dikey sıçrama.
