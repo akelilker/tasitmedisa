@@ -1535,14 +1535,7 @@ input.settings-form-input:-moz-autofill,
     max-width: 100%;
 }
 #user-modal #user-list .settings-card-phone {
-    font-size: 10px;
-    line-height: 1.1;
-    color: rgba(255, 255, 255, 0.72);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 100%;
-    margin-top: 1px;
+    display: none !important;
 }
 #branch-modal #branch-list .settings-card-content,
 #user-modal #user-list .settings-card-content {
