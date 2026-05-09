@@ -95,6 +95,43 @@
     /** Sütun sırası/taşıt tipi localStorage ile bir kez yüklenir; detay seçimleri kalıcı değil (F5 / yeni oturumda hep kapalı). */
     let stokGridPersistenceInited = false;
 
+    /** Bozuk/duplicate localStorage ve çapraz sürükleme sonrası dizileri temizler; base/detay ayrımını korur. */
+    function normalizeStokColumnState() {
+        var seenB = Object.create(null);
+        var outBase = [];
+        stokBaseColumnOrder.forEach(function(key) {
+            if (!key || seenB[key]) return;
+            var isBase = STOK_BASE_COLUMNS.indexOf(key) !== -1;
+            var isDetail = STOK_DETAIL_COLUMNS.indexOf(key) !== -1;
+            if (!isBase && !isDetail) return;
+            if (isDetail && !stokActiveColumns[key]) return;
+            seenB[key] = true;
+            outBase.push(key);
+        });
+        var basePresent = Object.create(null);
+        outBase.forEach(function(k) {
+            if (STOK_BASE_COLUMNS.indexOf(k) !== -1) basePresent[k] = true;
+        });
+        STOK_BASE_COLUMN_DEFAULTS.forEach(function(key) {
+            if (!basePresent[key]) {
+                outBase.push(key);
+                basePresent[key] = true;
+            }
+        });
+        stokBaseColumnOrder = outBase;
+
+        var seenC = Object.create(null);
+        var outCo = [];
+        stokColumnOrder.forEach(function(key) {
+            if (!key || seenC[key]) return;
+            if (STOK_BASE_COLUMNS.indexOf(key) !== -1) return;
+            if (STOK_DETAIL_COLUMNS.indexOf(key) === -1) return;
+            seenC[key] = true;
+            outCo.push(key);
+        });
+        stokColumnOrder = outCo;
+    }
+
     function loadStokColumnState() {
         if (stokGridPersistenceInited) return;
         stokGridPersistenceInited = true;
@@ -107,19 +144,20 @@
         if (Array.isArray(savedBaseOrder)) {
             if (savedBaseOrder.indexOf('plaka') === -1) {
                 stokBaseColumnOrder = STOK_BASE_COLUMN_DEFAULTS.slice();
-                saveStokColumnState();
             } else {
                 stokBaseColumnOrder = savedBaseOrder;
                 if (stokBaseColumnOrder.indexOf('tasitTipi') === -1) {
                     var markaIdx = stokBaseColumnOrder.indexOf('marka');
                     if (markaIdx !== -1) stokBaseColumnOrder.splice(markaIdx + 1, 0, 'tasitTipi');
                     else stokBaseColumnOrder.splice(4, 0, 'tasitTipi');
-                    saveStokColumnState();
                 }
             }
         }
+        normalizeStokColumnState();
+        saveStokColumnState();
     }
     function saveStokColumnState() {
+        normalizeStokColumnState();
         var save = typeof window.saveColumnState === 'function' ? window.saveColumnState : function(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
         save('stok_column_order', stokColumnOrder);
         save('stok_base_column_order', stokBaseColumnOrder);
@@ -374,6 +412,7 @@
         if (!listContainer) return;
         const previousScrollState = captureStokListScrollState(listContainer);
         cleanupStokTouchColumnDrag();
+        normalizeStokColumnState();
         ensureStokDetailKeysInColumnOrder();
         
         // Detay menü açık/kapalı tek kaynak: stokDetailMenuOpen (liste yeniden render'da korunur)
@@ -840,19 +879,23 @@
             stokColumnOrder.forEach(colKey => {
                 if (stokActiveColumns[colKey]) {
                     const col = detailColumns.find(c => c.key === colKey);
-                    if (col) allColumns.push(col);
+                    if (col && !allColumns.some(function(c) { return c.key === colKey; })) {
+                        allColumns.push(col);
+                    }
                 }
             });
             // Sırada olmayan ama aktif olan sütunları sona ekle
             detailColumns.forEach(col => {
                 if (stokActiveColumns[col.key] && !stokColumnOrder.includes(col.key)) {
-                    allColumns.push(col);
+                    if (!allColumns.some(function(x) { return x.key === col.key; })) {
+                        allColumns.push(col);
+                    }
                 }
             });
         } else {
             // İlk kez - varsayılan sıraya göre ekle
             detailColumns.forEach(col => {
-                if (stokActiveColumns[col.key]) {
+                if (stokActiveColumns[col.key] && !allColumns.some(function(x) { return x.key === col.key; })) {
                     allColumns.push(col);
                 }
             });
