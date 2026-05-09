@@ -2371,27 +2371,21 @@ input.settings-form-input:-moz-autofill,
         max-height: 2.24em !important;
         text-align: center !important;
     }
-    #user-modal #user-list .settings-card .settings-card-title {
-        font-size: 14px !important;
-        min-height: 0 !important;
-        max-height: calc(2 * 1.12em) !important;
-        display: flex !important;
-        flex-wrap: wrap;
-        align-items: center !important;
-        justify-content: center !important;
-        column-gap: 4px;
-        row-gap: 0;
-        -webkit-box-orient: vertical !important;
-        -webkit-line-clamp: unset !important;
-        line-clamp: unset !important;
-        text-align: center !important;
-        word-break: keep-all !important;
-        overflow-wrap: normal !important;
-        hyphens: none !important;
-    }
+    #user-modal #user-list .settings-card .settings-card-title,
     #user-modal #user-list .settings-card .settings-card-title.settings-card-title-name {
-        max-height: calc(2 * 1.12em + 0.35em) !important;
-        overflow: visible !important;
+        font-size: 14px !important;
+        display: block !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: clip !important;
+        text-align: center !important;
+        width: 100% !important;
+        min-height: 0 !important;
+        max-height: 1.2em !important;
+        line-height: 1.2 !important;
+    }
+    #user-modal #user-list .settings-card .settings-card-name-part {
+        display: inline !important;
     }
     #branch-modal #branch-list .settings-card .settings-card-subtitle,
     #user-modal #user-list .settings-card .settings-card-subtitle,
