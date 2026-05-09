@@ -1069,6 +1069,11 @@
                 const aVal = formatAdSoyad(getVehicleUser(a)).toLowerCase();
                 const bVal = formatAdSoyad(getVehicleUser(b)).toLowerCase();
                 return direction === 'asc' ? aVal.localeCompare(bVal, 'tr') : bVal.localeCompare(aVal, 'tr');
+            } else if (columnKey === 'sigorta' || columnKey === 'kasko' || columnKey === 'tescil') {
+                const field = columnKey === 'sigorta' ? 'sigortaDate' : columnKey === 'kasko' ? 'kaskoDate' : 'tescilTarihi';
+                const aVal = stokNormalizeIsoDateKey(a[field] || '');
+                const bVal = stokNormalizeIsoDateKey(b[field] || '');
+                return direction === 'asc' ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
             } else if (columnKey === 'muayene' || columnKey === 'egzozMuayene') {
                 const field = columnKey === 'muayene' ? 'muayeneDate' : 'egzozMuayeneDate';
                 const aVal = stokNormalizeIsoDateKey(a[field] || '');
