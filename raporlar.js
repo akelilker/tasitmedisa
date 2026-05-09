@@ -1369,69 +1369,9 @@
             return;
         }
 
-        const detailColumns = ['sigorta', 'kasko', 'kaskoDegeri', 'muayene', 'kredi', 'lastik', 'utts', 'takip', 'tramer', 'boya', 'kullanici', 'tescil'];
-        const baseColumns = STOK_BASE_COLUMNS.slice();
-
-        const isDraggedBase = baseColumns.includes(dragKey);
-        const isTargetBase = baseColumns.includes(dropKey);
-        const isDraggedDetail = detailColumns.includes(dragKey);
-        const isTargetDetail = detailColumns.includes(dropKey);
-
-        // Temel sütunlar arasında yer değiştirme
-        if (isDraggedBase && isTargetBase) {
-            const draggedIndex = stokBaseColumnOrder.indexOf(dragKey);
-            const targetIndex = stokBaseColumnOrder.indexOf(dropKey);
-
-            if (draggedIndex !== -1 && targetIndex !== -1) {
-                stokBaseColumnOrder.splice(draggedIndex, 1);
-                stokBaseColumnOrder.splice(targetIndex, 0, dragKey);
-                saveStokColumnState();
-                renderStokList();
-            }
-        }
-        // Detay sütunlar arasında yer değiştirme
-        else if (isDraggedDetail && isTargetDetail) {
-            if (!stokActiveColumns[dragKey] || !stokActiveColumns[dropKey]) {
-                draggedColumnKey = null;
-                return;
-            }
-
-            const draggedIndex = stokColumnOrder.indexOf(dragKey);
-            const targetIndex = stokColumnOrder.indexOf(dropKey);
-
-            if (draggedIndex !== -1 && targetIndex !== -1) {
-                stokColumnOrder.splice(draggedIndex, 1);
-                stokColumnOrder.splice(targetIndex, 0, dragKey);
-                saveStokColumnState();
-                renderStokList();
-            }
-        }
-        // Temel ve detay sütunlar arasında yer değiştirme (temel sütunların sonuna veya detay sütunların başına)
-        else if (isDraggedBase && isTargetDetail && stokActiveColumns[dropKey]) {
-            const draggedIndex = stokBaseColumnOrder.indexOf(dragKey);
-            const targetDetailIndex = stokColumnOrder.indexOf(dropKey);
-
-            if (draggedIndex !== -1 && targetDetailIndex !== -1) {
-                stokBaseColumnOrder.splice(draggedIndex, 1);
-                stokBaseColumnOrder.push(dropKey);
-                stokColumnOrder.splice(targetDetailIndex, 1);
-                stokColumnOrder.splice(targetDetailIndex, 0, dragKey);
-                saveStokColumnState();
-                renderStokList();
-            }
-        }
-        else if (isDraggedDetail && isTargetBase && stokActiveColumns[dragKey]) {
-            const draggedDetailIndex = stokColumnOrder.indexOf(dragKey);
-            const targetIndex = stokBaseColumnOrder.indexOf(dropKey);
-
-            if (draggedDetailIndex !== -1 && targetIndex !== -1) {
-                stokColumnOrder.splice(draggedDetailIndex, 1);
-                stokColumnOrder.unshift(dropKey);
-                stokBaseColumnOrder.splice(targetIndex, 1);
-                stokBaseColumnOrder.splice(targetIndex, 0, dragKey);
-                saveStokColumnState();
-                renderStokList();
-            }
+        /* Taşıma + kayıt: reorderStokColumns (touch ile aynı tek kaynak); save içeride bir kez. */
+        if (reorderStokColumns(dragKey, dropKey)) {
+            renderStokList();
         }
 
         draggedColumnKey = null;
