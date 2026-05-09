@@ -24,6 +24,20 @@
 
     function toTitleCase(str) { return (typeof window.toTitleCase === 'function' ? window.toTitleCase(str) : str); }
     function formatBrandModel(str) { return (typeof window.formatBrandModel === 'function' ? window.formatBrandModel(str) : toTitleCase(str)); }
+    /** Stok marka sütunu: formatlanmış metni ilk boşlukta marka / model olarak iki satırda gösterir (div + flex column ile). */
+    function getStokMarkaCellInnerHtml(formattedBrandModel) {
+        var s = String(formattedBrandModel == null ? '' : formattedBrandModel);
+        if (s === '' || s === '-') {
+            return '<div class="stok-marka-cell-inner"><div class="stok-marka-line">' + escapeHtml(s === '' ? '-' : s) + '</div></div>';
+        }
+        var i = s.indexOf(' ');
+        if (i === -1) {
+            return '<div class="stok-marka-cell-inner"><div class="stok-marka-line">' + escapeHtml(s) + '</div></div>';
+        }
+        var brand = s.slice(0, i);
+        var model = s.slice(i + 1).trim();
+        return '<div class="stok-marka-cell-inner"><div class="stok-marka-line">' + escapeHtml(brand) + '</div><div class="stok-marka-line stok-marka-line--model">' + escapeHtml(model) + '</div></div>';
+    }
     function formatPlaka(str) { return (typeof window.formatPlaka === 'function' ? window.formatPlaka(str) : (str == null ? '-' : String(str))); }
     function formatAdSoyad(str) { return (typeof window.formatAdSoyad === 'function' ? window.formatAdSoyad(str) : str); }
 
@@ -1026,7 +1040,7 @@ const baseCells = stokBaseColumnOrder.map(function(key) {
             } else if (cell.key === 'tasitTipi') {
                 inner = getStokTasitTipiDesktopCellHtml(String(cell.value));
             } else if (cell.key === 'marka') {
-                inner = `<span class="stok-marka-cell-inner">${escapeHtml(String(cell.value))}</span>`;
+                inner = getStokMarkaCellInnerHtml(String(cell.value));
             } else {
                 inner = escapeHtml(String(cell.value));
             }

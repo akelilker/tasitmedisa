@@ -875,19 +875,33 @@ overflow: hidden;
 }
 
 .stok-list-cell[data-col="marka"] .stok-marka-cell-inner {
-display: -webkit-box;
--webkit-box-orient: vertical;
--webkit-line-clamp: 3;
-line-clamp: 3;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+gap: 1px;
 overflow: hidden;
 word-break: break-word;
 overflow-wrap: break-word;
 text-align: center;
-text-overflow: clip;
 width: 100%;
 min-width: 0;
 max-width: 100%;
 box-sizing: border-box;
+}
+.stok-list-cell[data-col="marka"] .stok-marka-line {
+display: block;
+width: 100%;
+min-width: 0;
+line-height: 1.12;
+}
+.stok-list-cell[data-col="marka"] .stok-marka-line--model {
+display: -webkit-box;
+-webkit-box-orient: vertical;
+-webkit-line-clamp: 2;
+line-clamp: 2;
+overflow: hidden;
+text-overflow: ellipsis;
 }
 
 /* Taşıt tipi: mobilde SVG simge (+ title tam metin), masaüstünde metin */
