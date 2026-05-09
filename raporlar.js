@@ -622,6 +622,7 @@
         
         // Mobil: liste tek hamlede ya yatay ya dikey kaysın (eksen kilidi)
         attachStokColumnTouchListeners(listContainer);
+        attachStokSortSuppressReset(listContainer);
         setupStokListTouchAxisLock();
         // Marka ve şube hücreleri: sütun daraldıkça font kontrollü küçülsün
         adjustStokResponsiveCellFontSizes();
@@ -1547,7 +1548,6 @@
 
     function beginStokTouchColumnDrag(sourceCell, columnKey, touchPoint) {
         stokTouchColumnDrag.dragging = true;
-        stokTouchColumnDrag.suppressClickUntil = Date.now() + 500;
         stokTouchColumnDrag.sourceCell = sourceCell;
         const listContainer = document.getElementById('stok-list-container');
         if (listContainer) listContainer.classList.add('touch-reorder-mode');
@@ -1559,6 +1559,18 @@
         }
         createStokTouchGhost(sourceCell);
         updateStokTouchGhostPosition(touchPoint.clientX, touchPoint.clientY);
+    }
+
+    /** Sürükleme/touch sonrası kalan suppressClickUntil bazen ardışık sıralama tıklamasını yutuyor; yeni jest başında sıfırlanır. */
+    function attachStokSortSuppressReset(listContainer) {
+        const headers = listContainer.querySelectorAll('.stok-list-header-row .stok-sortable-header[data-col]');
+        headers.forEach(function(th) {
+            th.addEventListener('pointerdown', function() {
+                if (!stokTouchColumnDrag.dragging) {
+                    stokTouchColumnDrag.suppressClickUntil = 0;
+                }
+            }, { passive: true, capture: true });
+        });
     }
 
     function attachStokColumnTouchListeners(listContainer) {
