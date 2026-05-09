@@ -1471,42 +1471,24 @@
         sourceKey = normalizeStokReorderKey(sourceKey);
         targetKey = normalizeStokReorderKey(targetKey);
 
-        const isDraggedBase = STOK_BASE_COLUMNS.includes(sourceKey);
-        const isTargetBase = STOK_BASE_COLUMNS.includes(targetKey);
-        const isDraggedDetail = STOK_DETAIL_COLUMNS.includes(sourceKey);
-        const isTargetDetail = STOK_DETAIL_COLUMNS.includes(targetKey);
+        /* Tek kaynak: buildStokFlatColumnMetas ile ekrandaki sütun sırası. Eski base/detay ayrı splice
+         * yolu, detayın yalnızca stokBaseColumnOrder’da olup stokColumnOrder’da olmaması durumunda
+         * indexOf === -1 ile sağa (temel sütun üzerine) taşımayı tamamen kesiyordu. */
+        normalizeStokColumnState();
 
-        if (isDraggedBase && isTargetBase) {
-            const draggedIndex = stokBaseColumnOrder.indexOf(sourceKey);
-            const targetIndex = stokBaseColumnOrder.indexOf(targetKey);
-            if (draggedIndex === -1 || targetIndex === -1) return false;
-            stokBaseColumnOrder.splice(draggedIndex, 1);
-            stokBaseColumnOrder.splice(targetIndex, 0, sourceKey);
-        } else if (isDraggedDetail && isTargetDetail) {
-            const draggedIndex = stokColumnOrder.indexOf(sourceKey);
-            const targetIndex = stokColumnOrder.indexOf(targetKey);
-            if (draggedIndex === -1 || targetIndex === -1) return false;
-            stokColumnOrder.splice(draggedIndex, 1);
-            stokColumnOrder.splice(targetIndex, 0, sourceKey);
-        } else if (isDraggedBase && isTargetDetail) {
-            const draggedIndex = stokBaseColumnOrder.indexOf(sourceKey);
-            const targetDetailIndex = stokColumnOrder.indexOf(targetKey);
-            if (draggedIndex === -1 || targetDetailIndex === -1) return false;
-            stokBaseColumnOrder.splice(draggedIndex, 1);
-            stokBaseColumnOrder.push(targetKey);
-            stokColumnOrder.splice(targetDetailIndex, 1);
-            stokColumnOrder.splice(targetDetailIndex, 0, sourceKey);
-        } else if (isDraggedDetail && isTargetBase) {
-            const draggedDetailIndex = stokColumnOrder.indexOf(sourceKey);
-            const targetIndex = stokBaseColumnOrder.indexOf(targetKey);
-            if (draggedDetailIndex === -1 || targetIndex === -1) return false;
-            stokColumnOrder.splice(draggedDetailIndex, 1);
-            stokColumnOrder.unshift(targetKey);
-            stokBaseColumnOrder.splice(targetIndex, 1);
-            stokBaseColumnOrder.splice(targetIndex, 0, sourceKey);
-        } else {
-            return false;
-        }
+        const flatKeys = buildStokFlatColumnMetas().map(function(c) { return c.key; });
+        const fromIdx = flatKeys.indexOf(sourceKey);
+        const toIdx = flatKeys.indexOf(targetKey);
+        if (fromIdx === -1 || toIdx === -1 || fromIdx === toIdx) return false;
+
+        const next = flatKeys.slice();
+        next.splice(fromIdx, 1);
+        next.splice(toIdx, 0, sourceKey);
+
+        stokBaseColumnOrder = next.slice();
+        stokColumnOrder = next.filter(function(k) {
+            return STOK_DETAIL_COLUMNS.indexOf(k) !== -1 && stokActiveColumns[k];
+        });
 
         saveStokColumnState();
         return true;
