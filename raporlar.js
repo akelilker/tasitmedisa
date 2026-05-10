@@ -1277,7 +1277,6 @@
         const scrollY = root.querySelector ? root.querySelector('.stok-list-scroll-y') : document.querySelector('#stok-list-container .stok-list-scroll-y');
         const scrollX = root.querySelector ? root.querySelector('.stok-list-scroll-x') : document.querySelector('#stok-list-container .stok-list-scroll-x');
         if (!scrollY || !scrollX) return;
-        if (scrollX.scrollWidth <= scrollX.clientWidth) return;
         if (scrollY.dataset.middlePanBound === 'true') return;
         scrollY.dataset.middlePanBound = 'true';
 
@@ -1286,9 +1285,9 @@
             stokMiddlePanDocumentListenersBound = true;
             document.addEventListener('mousemove', function(event) {
                 if (!stokMiddlePanState) return;
+                event.preventDefault();
                 const deltaX = event.clientX - stokMiddlePanState.startX;
                 stokMiddlePanState.scrollX.scrollLeft = stokMiddlePanState.startScrollLeft - deltaX;
-                event.preventDefault();
             }, { passive: false });
             document.addEventListener('mouseup', function() {
                 if (stokMiddlePanState) stokMiddlePanState = null;
@@ -1300,12 +1299,14 @@
 
         scrollY.addEventListener('mousedown', function(event) {
             if (event.button !== 1) return;
-            if (scrollX.scrollWidth <= scrollX.clientWidth) return;
+            const currentScrollX = scrollX;
+            if (!currentScrollX || currentScrollX.scrollWidth <= currentScrollX.clientWidth) return;
             event.preventDefault();
             stokMiddlePanState = {
-                scrollX: scrollX,
+                scrollX: currentScrollX,
                 startX: event.clientX,
-                startScrollLeft: scrollX.scrollLeft
+                startY: event.clientY,
+                startScrollLeft: currentScrollX.scrollLeft
             };
             bindStokMiddlePanDocumentListenersOnce();
         });
