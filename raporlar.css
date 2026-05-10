@@ -836,6 +836,35 @@ max-width: none !important;
 }
 }
 @media (min-width: 641px) {
+/*
+ * Orta tuş autoscroll: tarayıcı en yakın overflow kaydırmalı kutuya bağlanır. Gövde .stok-list-scroll-y
+ * içinde olduğu için yalnız dikey mod açılıyordu; yatay üst .stok-list-scroll-x’e geçmiyordu.
+ * Masaüstünde dikey kaydırmayı .stok-list-scroll-x’e alıp başlığı sticky yapıyoruz (mobil dokunuş yolu aynı).
+ */
+#reports-modal #stok-list-container.stok-list-root > .stok-list-container .stok-list-scroll-x,
+#reports-modal.reports-modal--stok-list #stok-list-container.stok-list-root > .stok-list-container .stok-list-scroll-x {
+overflow-y: auto;
+overscroll-behavior: contain;
+}
+#reports-modal #stok-list-container.stok-list-root > .stok-list-container .stok-list-hscroll-inner,
+#reports-modal.reports-modal--stok-list #stok-list-container.stok-list-root > .stok-list-container .stok-list-hscroll-inner {
+flex: 0 0 auto;
+min-height: auto;
+}
+#reports-modal #stok-list-container.stok-list-root > .stok-list-container .stok-list-head-wrap,
+#reports-modal.reports-modal--stok-list #stok-list-container.stok-list-root > .stok-list-container .stok-list-head-wrap {
+position: sticky;
+top: 0;
+z-index: 3;
+background: var(--bg);
+}
+#reports-modal #stok-list-container.stok-list-root > .stok-list-container .stok-list-scroll-y,
+#reports-modal.reports-modal--stok-list #stok-list-container.stok-list-root > .stok-list-container .stok-list-scroll-y {
+overflow: visible;
+flex: 0 0 auto;
+min-height: 0;
+-webkit-overflow-scrolling: auto;
+}
 #reports-modal.reports-modal--stok-list #stok-list-container.stok-list-root > .stok-list-container .stok-list-scroll-y {
 scrollbar-width: none !important;
 -ms-overflow-style: none !important;
