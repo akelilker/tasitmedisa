@@ -660,19 +660,32 @@ width: max-content;
 border-collapse: separate;
 border-spacing: 0;
 }
-/* tr{display:grid} ile display:table çakışmasın — sütunlar kaymasın (Chrome tablo iç grid bug’ı) */
-#reports-modal #stok-list-container .stok-list-table {
+/* tr{display:grid} ile display:table çakışmasın — Raporlar stok: iki tablo + head-wrap/scroll-y aynı genişlik kontratı */
+#reports-modal #stok-list-container > .stok-list-container:not([data-has-detail-columns="true"]) .stok-list-head-wrap,
+#reports-modal #stok-list-container > .stok-list-container:not([data-has-detail-columns="true"]) .stok-list-scroll-y,
+#reports-modal #stok-list-container > .stok-list-container:not([data-has-detail-columns="true"]) .stok-list-table,
+#reports-modal #stok-list-container > .stok-list-container:not([data-has-detail-columns="true"]) .stok-list-table--head,
+#reports-modal #stok-list-container > .stok-list-container:not([data-has-detail-columns="true"]) .stok-list-table--body,
+#reports-modal #stok-list-container > .stok-list-container:not([data-has-detail-columns="true"]) .stok-list-table thead,
+#reports-modal #stok-list-container > .stok-list-container:not([data-has-detail-columns="true"]) .stok-list-table tbody {
 display: block;
-width: max-content !important;
-min-width: max-content !important;
-max-width: none !important;
+width: 100% !important;
+min-width: 100% !important;
+max-width: 100% !important;
+box-sizing: border-box !important;
 }
-#reports-modal #stok-list-container .stok-list-table thead,
-#reports-modal #stok-list-container .stok-list-table tbody {
+#reports-modal #stok-list-container > .stok-list-container[data-has-detail-columns="true"] .stok-list-head-wrap,
+#reports-modal #stok-list-container > .stok-list-container[data-has-detail-columns="true"] .stok-list-scroll-y,
+#reports-modal #stok-list-container > .stok-list-container[data-has-detail-columns="true"] .stok-list-table,
+#reports-modal #stok-list-container > .stok-list-container[data-has-detail-columns="true"] .stok-list-table--head,
+#reports-modal #stok-list-container > .stok-list-container[data-has-detail-columns="true"] .stok-list-table--body,
+#reports-modal #stok-list-container > .stok-list-container[data-has-detail-columns="true"] .stok-list-table thead,
+#reports-modal #stok-list-container > .stok-list-container[data-has-detail-columns="true"] .stok-list-table tbody {
 display: block;
 width: max-content !important;
 min-width: max-content !important;
 max-width: none !important;
+box-sizing: border-box !important;
 }
 /* Başlık tablosu ayrı; sticky gerekmez */
 #reports-modal #stok-list-container .stok-list-table thead th {
@@ -685,8 +698,15 @@ max-width: none !important;
 .stok-list-container[data-stok-muayene-egzoz-split="true"] .stok-list-table {
 min-width: 1008px;
 }
-/* Raporlar stok liste: yatay scroll tek politika (detay açık/kapalı aynı; #reports-modal ile kapsam) */
-#reports-modal #stok-list-container:has(.stok-list-top-controls) > .stok-list-container .stok-list-scroll-x {
+/* Raporlar stok: yatay scroll — detay kapalı hidden; detay açık auto */
+#reports-modal #stok-list-container:has(.stok-list-top-controls) > .stok-list-container:not([data-has-detail-columns="true"]) .stok-list-scroll-x {
+overflow-x: hidden;
+touch-action: pan-y;
+scrollbar-width: thin;
+scrollbar-color: rgba(128, 128, 128, 0.35) transparent;
+-webkit-overflow-scrolling: touch;
+}
+#reports-modal #stok-list-container:has(.stok-list-top-controls) > .stok-list-container[data-has-detail-columns="true"] .stok-list-scroll-x {
 overflow-x: auto;
 touch-action: pan-x pan-y;
 scrollbar-width: thin;
@@ -732,7 +752,14 @@ display: flex !important;
 flex-direction: column !important;
 overflow: hidden !important;
 }
-#reports-modal.reports-modal--stok-list #stok-list-container.stok-list-root > .stok-list-container .stok-list-scroll-x {
+#reports-modal.reports-modal--stok-list #stok-list-container.stok-list-root > .stok-list-container:not([data-has-detail-columns="true"]) .stok-list-scroll-x {
+overflow-x: hidden;
+touch-action: pan-y;
+scrollbar-width: thin;
+scrollbar-color: rgba(128, 128, 128, 0.35) transparent;
+-webkit-overflow-scrolling: touch;
+}
+#reports-modal.reports-modal--stok-list #stok-list-container.stok-list-root > .stok-list-container[data-has-detail-columns="true"] .stok-list-scroll-x {
 overflow-x: auto;
 touch-action: pan-x pan-y;
 scrollbar-width: thin;
