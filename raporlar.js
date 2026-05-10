@@ -425,7 +425,9 @@
     }
 
     // Liste Görünümü Render
-    function renderStokList() {
+    /* options.resetHorizontalScroll: detay sütunu veya kolon sırası değişince eski scrollLeft korunmasın */
+    function renderStokList(options) {
+        options = options || {};
         const gridContainer = document.getElementById('stok-branch-grid');
         const listContainer = document.getElementById('stok-list-container');
         
@@ -435,6 +437,10 @@
             listContainer._stokMqAbort = null;
         }
         const previousScrollState = captureStokListScrollState(listContainer);
+        var scrollStateForRestore = previousScrollState;
+        if (options.resetHorizontalScroll === true && scrollStateForRestore) {
+            scrollStateForRestore = { left: 0, top: scrollStateForRestore.top };
+        }
         cleanupStokTouchColumnDrag();
         normalizeStokColumnState();
         ensureStokDetailKeysInColumnOrder();
@@ -720,7 +726,7 @@
         setupStokListTouchAxisLock();
         // Marka ve şube hücreleri: sütun daraldıkça font kontrollü küçülsün
         adjustStokResponsiveCellFontSizes();
-        restoreStokListScrollState(listContainer, previousScrollState);
+        restoreStokListScrollState(listContainer, scrollStateForRestore);
         setReportsModalStokDetailMenuLayoutOpen(stokDetailMenuOpen);
         setReportsModalStokListLayoutActive(true);
     }
@@ -1345,7 +1351,7 @@
         
         saveStokColumnState();
         // Buton seçimi yapıldığında menü açık kalsın - renderStokList'te durum korunacak
-        renderStokList();
+        renderStokList({ resetHorizontalScroll: true });
     };
 
     // Sürükle-bırak için değişkenler
@@ -1431,7 +1437,7 @@
 
         /* Taşıma + kayıt: reorderStokColumns (touch ile aynı tek kaynak); save içeride bir kez. */
         if (reorderStokColumns(dragKey, dropKey)) {
-            renderStokList();
+            renderStokList({ resetHorizontalScroll: true });
         }
 
         draggedColumnKey = null;
@@ -1690,7 +1696,7 @@
                 }
                 cleanupStokTouchColumnDrag();
                 if (wasDragging && sourceKey && targetKey && reorderStokColumns(sourceKey, targetKey)) {
-                    renderStokList();
+                    renderStokList({ resetHorizontalScroll: true });
                 }
             }
 
