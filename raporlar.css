@@ -90,6 +90,8 @@ min-height: 0 !important;
 display: flex !important;
 flex-direction: column !important;
 padding-bottom: 16px !important;
+/* style-core .modal-body touch-action: pan-y — içteki .stok-list-scroll-x yatay kaydıramıyordu */
+touch-action: pan-x pan-y !important;
 /* scrollbar gizleme: style-core.css’teki .modal-body kuralı kullanılır */
 }
 
@@ -97,6 +99,7 @@ padding-bottom: 16px !important;
 #reports-modal .modal-body:has(#stok-list-container .stok-list-top-controls) #view-stok {
 flex: 1 !important;
 min-height: 0 !important;
+min-width: 0 !important;
 display: flex !important;
 flex-direction: column !important;
 overflow: hidden !important;
@@ -104,6 +107,7 @@ overflow: hidden !important;
 #reports-modal .modal-body:has(#stok-list-container .stok-list-top-controls) #view-stok #stok-list-container {
 flex: 1 !important;
 min-height: 0 !important;
+min-width: 0 !important;
 overflow: hidden !important;
 }
 
@@ -561,14 +565,20 @@ overflow: visible !important;
 #stok-list-container:has(.stok-list-top-controls) > .stok-list-container {
 flex: 1 !important;
 min-height: 0 !important;
+min-width: 0 !important;
 display: flex !important;
 flex-direction: column !important;
 overflow: hidden !important;
+}
+#stok-list-container.stok-list-root:has(.stok-list-top-controls) {
+min-width: 0;
+box-sizing: border-box;
 }
 /* Yatay: başlık + gövde birlikte; dikey: sadece gövde */
 .stok-list-scroll-x {
 flex: 1 1 auto;
 min-height: 0;
+min-width: 0;
 width: 100%;
 display: flex;
 flex-direction: column;
@@ -692,10 +702,12 @@ min-height: 0 !important;
 display: flex !important;
 flex-direction: column !important;
 padding-bottom: 16px !important;
+touch-action: pan-x pan-y !important;
 }
 #reports-modal.reports-modal--stok-list .modal-body #view-stok {
 flex: 1 !important;
 min-height: 0 !important;
+min-width: 0 !important;
 display: flex !important;
 flex-direction: column !important;
 overflow: hidden !important;
@@ -703,6 +715,7 @@ overflow: hidden !important;
 #reports-modal.reports-modal--stok-list .modal-body #view-stok #stok-list-container {
 flex: 1 !important;
 min-height: 0 !important;
+min-width: 0 !important;
 overflow: hidden !important;
 }
 #reports-modal.reports-modal--stok-list #stok-list-container.stok-list-root {
@@ -715,6 +728,7 @@ overflow: visible !important;
 #reports-modal.reports-modal--stok-list #stok-list-container.stok-list-root > .stok-list-container {
 flex: 1 !important;
 min-height: 0 !important;
+min-width: 0 !important;
 display: flex !important;
 flex-direction: column !important;
 overflow: hidden !important;
@@ -747,6 +761,7 @@ overflow: hidden;
 #reports-modal.reports-modal--stok-list #view-stok {
 flex: 1;
 min-height: 0;
+min-width: 0;
 display: flex;
 flex-direction: column;
 overflow: hidden;
@@ -767,6 +782,7 @@ flex-shrink: 0;
 #reports-modal.reports-modal--stok-list #stok-list-container.stok-list-root > .stok-list-container {
 flex: 1;
 min-height: 0;
+min-width: 0;
 overflow: hidden;
 display: flex;
 flex-direction: column;
@@ -2541,6 +2557,7 @@ padding-bottom: 16px !important;
 #reports-modal .modal-body:has(#stok-list-container .stok-list-top-controls) #view-stok {
 flex: 1 !important;
 min-height: 0 !important;
+min-width: 0 !important;
 display: flex !important;
 flex-direction: column !important;
 overflow: hidden !important;
@@ -2548,6 +2565,7 @@ overflow: hidden !important;
 #reports-modal .modal-body:has(#stok-list-container .stok-list-top-controls) #view-stok #stok-list-container {
 flex: 1 !important;
 min-height: 0 !important;
+min-width: 0 !important;
 overflow: hidden !important;
 }
 #reports-modal .modal-body #view-stok {
