@@ -639,6 +639,15 @@ width: 100%;
 border-collapse: separate;
 border-spacing: 0;
 }
+/* tr{display:grid} ile display:table çakışmasın — sütunlar kaymasın (Chrome tablo iç grid bug’ı) */
+#stok-list-container .stok-list-table {
+display: block;
+}
+#stok-list-container .stok-list-table thead,
+#stok-list-container .stok-list-table tbody {
+display: block;
+width: 100%;
+}
 /* Başlık tablosu ayrı; sticky gerekmez */
 #stok-list-container .stok-list-table thead th {
     position: relative;
@@ -680,7 +689,7 @@ backdrop-filter: none;
 display: grid;
 background: var(--bg);
 gap: 4px;
-align-items: center;
+align-items: stretch;
 padding: 6px 2px 4px 2px;
 margin-bottom: 4px;
 border-bottom: 1px solid rgba(255, 255, 255, 0.22);
@@ -751,19 +760,37 @@ box-shadow: 0 14px 28px rgba(0, 0, 0, 0.32), 0 0 0 1px rgba(74, 222, 128, 0.16) 
 backdrop-filter: blur(10px);
 }
 
-/* Tüm sütun başlıkları aynı clamp – başlık sığmazsa 1.5pt kadar küçülebilir (min 7.5px) */
+/* Başlık metni: display:block line-clamp’i öldürüyordu; komşu sütuna taşmayı -webkit-box keser */
 .stok-list-header-cell .stok-header-text {
 font-size: clamp(7.5px, 1.5vw, 11.5px) !important;
 font-weight: 500 !important;
 color: #ffffff !important;
-display: block;
+display: -webkit-box;
+-webkit-box-orient: vertical;
+-webkit-line-clamp: 3;
+line-clamp: 3;
+flex: 1 1 0;
 width: 100%;
 max-width: 100%;
 min-width: 0;
 white-space: normal !important;
-word-break: normal;
-overflow-wrap: normal;
+word-break: break-word;
+overflow-wrap: break-word;
 line-height: 1.1;
+overflow: hidden;
+text-overflow: clip;
+text-align: center;
+}
+/* Mobil başlıkta taşıt tipi SVG — webkit-box yerine simge kutusu */
+.stok-list-header-cell .stok-header-text.stok-header-text--tasit-tip-icon {
+display: inline-flex !important;
+-webkit-line-clamp: unset !important;
+line-clamp: unset !important;
+flex: 0 1 auto !important;
+overflow: visible !important;
+word-break: normal !important;
+align-items: center;
+justify-content: center;
 }
 .stok-header-text {
 flex: 1 1 auto;
@@ -802,6 +829,7 @@ transition: color 0.2s;
 display: inline-block;
 width: 10px;
 text-align: center;
+flex-shrink: 0;
 }
 
 .stok-sortable-header:hover .stok-sort-icon {
@@ -995,20 +1023,21 @@ white-space: normal;
     font-size: 10px !important;
   }
 
-  #stok-list-container .stok-list-header-cell[data-col="marka"] {
+  /* line-clamp th yerine .stok-header-text üzerinde (flex hücrede geçerli olsun) */
+  #stok-list-container .stok-list-header-cell[data-col="marka"] .stok-header-text {
     -webkit-line-clamp: 3;
     line-clamp: 3;
   }
 
-  #stok-list-container .stok-list-header-cell[data-col="tasitTipi"] {
+  #stok-list-container .stok-list-header-cell[data-col="tasitTipi"] .stok-header-text:not(.stok-header-text--tasit-tip-icon) {
     -webkit-line-clamp: 2;
     line-clamp: 2;
   }
 
   #stok-list-container .stok-list-header-cell[data-col="marka"] .stok-header-text,
-  #stok-list-container .stok-list-header-cell[data-col="tasitTipi"] .stok-header-text {
+  #stok-list-container .stok-list-header-cell[data-col="tasitTipi"] .stok-header-text:not(.stok-header-text--tasit-tip-icon) {
     overflow-wrap: break-word;
-    word-break: normal;
+    word-break: break-word;
     hyphens: manual;
   }
 
