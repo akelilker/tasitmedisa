@@ -655,7 +655,7 @@ overflow: hidden;
 }
 
 .stok-list-table {
-width: 100%;
+width: max-content;
 border-collapse: separate;
 border-spacing: 0;
 }
@@ -1496,7 +1496,7 @@ transition: margin-top 0.2s ease;
 #reports-modal:has(.stok-detail-menu-open) .stok-detail-add-wrap.desktop-single-row .stok-controls-row-2 {
 margin-top: 1px !important;
 }
-/* Masaüstü: menü kapalıyken row-2 – Detay Ekle butonu 8px altında */
+/* Masaüstü: menü kapalıyken row-2 – Detay Ekleme butonu 8px altında */
 #reports-modal:not(:has(.stok-detail-menu-open)) .stok-detail-add-wrap.desktop-single-row .stok-controls-row-2 {
 margin-top: 8px !important;
 }
@@ -3116,8 +3116,9 @@ width: 100% !important;
 max-width: 100% !important;
 }
 .stok-list-table {
-width: 100% !important;
-max-width: 100% !important;
+width: max-content;
+border-collapse: separate;
+border-spacing: 0;
 }
 /* Detay açıkken tablo viewport’a sıkışmasın — yatay kaydırma (masaüstü ile aynı mantık) */
 #stok-list-container:has(.stok-list-top-controls) > .stok-list-container[data-has-detail-columns="true"] .stok-list-table {
@@ -3412,9 +3413,9 @@ box-sizing: border-box;
 }
 
 /* =========================================
-   MASAUSTU: RAPORLAR UST BASLIK HIZALAMA
+   MASAÜSTÜ: RAPORLAR UST BASLIK HIZALAMA
    ========================================= */
-@media (min-width: 641px) {
+@media (min-width: 640px) {
     /* Masaüstü: header row-1 içindeki genel -20px geri çubuğu ofseti bu düzende hizayı bozar — sıfırla */
     #reports-modal .reports-list-header-actions .stok-detail-add-wrap.desktop-single-row .stok-controls-row-1 .universal-back-bar {
         margin-top: 0 !important;
