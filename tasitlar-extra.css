@@ -2069,6 +2069,20 @@
     background: rgba(255, 255, 255, 0.06) !important; /* Mobil: açık satır daha belirgin */
   }
 
+  /* Tarih uyarı satırları: zebra tonu normal liste ile aynı (masaüstü 0.05 / mobil 0.06) */
+  #vehicles-modal .view-list .list-item.vehicle-date-warning-red:nth-child(odd),
+  #vehicles-modal .view-list .list-item.vehicle-date-warning-orange:nth-child(odd) {
+    background: var(--bg) !important;
+  }
+  #vehicles-modal .view-list .list-item.vehicle-date-warning-red:nth-child(even),
+  #vehicles-modal .view-list .list-item.vehicle-date-warning-orange:nth-child(even) {
+    background: rgba(255, 255, 255, 0.06) !important;
+  }
+  #vehicles-modal .view-list .list-item.vehicle-date-warning-red:hover,
+  #vehicles-modal .view-list .list-item.vehicle-date-warning-orange:hover {
+    background: var(--border-ultra) !important;
+  }
+
   .view-list .list-item:hover {
     background: var(--border-ultra) !important;
   }
