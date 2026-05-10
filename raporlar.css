@@ -971,23 +971,29 @@ color: #999;
 color: var(--theme-color);
 }
 
-/* Stok liste: header/body grid taşıyıcı geometrisi aynı — izler pikselde hizalanır */
-#reports-modal #stok-list-container .stok-list-header-row {
-  padding: 1px !important;
-  gap: 2px !important;
-  box-sizing: border-box !important;
-  margin-bottom: 0 !important;
-  width: max-content !important;
-  min-width: max-content !important;
-  max-width: none !important;
+/* Stok liste: başlık/gövde grid satırları aynı ölçüm kontratı (detay kapalı: %100; detay açık: max-content) */
+#reports-modal #stok-list-container > .stok-list-container:not([data-has-detail-columns="true"]) .stok-list-header-row,
+#reports-modal #stok-list-container > .stok-list-container:not([data-has-detail-columns="true"]) .stok-list-row {
+display: grid !important;
+box-sizing: border-box !important;
+gap: 2px !important;
+padding: 1px !important;
+width: 100% !important;
+min-width: 100% !important;
+max-width: 100% !important;
 }
-#reports-modal #stok-list-container .stok-list-row {
-  padding: 1px !important;
-  gap: 2px !important;
-  box-sizing: border-box !important;
-  width: max-content !important;
-  min-width: max-content !important;
-  max-width: none !important;
+#reports-modal #stok-list-container > .stok-list-container[data-has-detail-columns="true"] .stok-list-header-row,
+#reports-modal #stok-list-container > .stok-list-container[data-has-detail-columns="true"] .stok-list-row {
+display: grid !important;
+box-sizing: border-box !important;
+gap: 2px !important;
+padding: 1px !important;
+width: max-content !important;
+min-width: max-content !important;
+max-width: none !important;
+}
+#reports-modal #stok-list-container > .stok-list-container .stok-list-header-row {
+margin-bottom: 0 !important;
 }
 #reports-modal #stok-list-container .stok-list-header-cell,
 #reports-modal #stok-list-container .stok-list-cell {
@@ -2602,16 +2608,7 @@ transform: none !important;
 .stok-branch-name { font-size: 15px; }
 .stok-branch-count { font-size: 15px; }
 
-/* MOBİL LİSTE - Taşıtlar formatı: grid inline style ile (getColumnWidths); satır genişliği max-content (detay açık/kapalı aynı) */
-#reports-modal #stok-list-container:has(.stok-list-top-controls) .stok-list-header-row,
-#reports-modal #stok-list-container:has(.stok-list-top-controls) .stok-list-row {
-display: grid !important;
-gap: 4px !important;
-width: max-content !important;
-min-width: max-content !important;
-max-width: none !important;
-/* grid-template-columns inline style ile gelir */
-}
+/* Mobil: üstteki #reports-modal … stok-list-header-row / stok-list-row kontratı geçerli; gap 4px↔2px çakışması kaldırıldı */
 /* Mobil: açık satır rengi daha belirgin (0.02 → 0.06) */
 .stok-list-row:nth-child(even) {
 background: rgba(255, 255, 255, 0.06) !important;
