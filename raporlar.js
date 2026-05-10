@@ -197,6 +197,7 @@
         const modal = document.getElementById('reports-modal');
         if (modal) {
             if (stokDetailMenuOpen) stokDetailMenuOpen = false;
+            setReportsModalStokDetailMenuLayoutOpen(false);
             setReportsModalStokListLayoutActive(false);
             modal.classList.remove('active');
             setTimeout(() => {
@@ -316,11 +317,13 @@
         const listContainer = document.getElementById('stok-list-container');
         const headerActions = document.getElementById('reports-list-header-actions');
         stokAutoSingleBranchView = false;
+        stokDetailMenuOpen = false;
         if (headerActions) {
             headerActions.innerHTML = '';
             headerActions.setAttribute('aria-hidden', 'true');
             headerActions.classList.remove('has-stok-actions');
         }
+        setReportsModalStokDetailMenuLayoutOpen(false);
         setReportsModalStokListLayoutActive(false);
         if (!gridContainer) return;
         
@@ -377,6 +380,14 @@
         else modal.classList.remove('reports-modal--stok-list');
     }
 
+    /** :has() desteklemeyen ortamlarda detay menü açıkken wrap overflow vb. için (raporlar.css ile eşleşir) */
+    function setReportsModalStokDetailMenuLayoutOpen(open) {
+        const modal = document.getElementById('reports-modal');
+        if (!modal) return;
+        if (open) modal.classList.add('reports-modal--stok-detail-menu-open');
+        else modal.classList.remove('reports-modal--stok-detail-menu-open');
+    }
+
     /** İç liste kutusu + yatay/dikey scroll hedefleri (başlık dışarıda, gövde .stok-list-scroll-y içinde) */
     function getStokListScrollElements(listRoot) {
         if (!listRoot) return { inner: null, x: null, y: null };
@@ -419,6 +430,10 @@
         const listContainer = document.getElementById('stok-list-container');
         
         if (!listContainer) return;
+        if (listContainer._stokMqAbort) {
+            try { listContainer._stokMqAbort.abort(); } catch (e) {}
+            listContainer._stokMqAbort = null;
+        }
         const previousScrollState = captureStokListScrollState(listContainer);
         cleanupStokTouchColumnDrag();
         normalizeStokColumnState();
@@ -440,6 +455,7 @@
             vehicles = vehicles.filter(v => v.branchId === stokCurrentBranchId);
             } else {
             // Grid görünümünde, liste render edilmemeli
+            setReportsModalStokDetailMenuLayoutOpen(false);
             setReportsModalStokListLayoutActive(false);
             return;
         }
@@ -584,6 +600,9 @@
             }
             /* Resize: mobilde row-2 body'ye geri taşı; menü row-1 ↔ wrap arasında senkronize et */
             const mq = window.matchMedia('(min-width: 641px)');
+            const mqAc = new AbortController();
+            listContainer._stokMqAbort = mqAc;
+            const mqSignal = mqAc.signal;
             if (secondRow && topControls) {
                 const syncRow2 = function() {
                     const r2 = wrap.querySelector('.stok-controls-row-2') || topControls.querySelector('.stok-controls-row-2');
@@ -600,7 +619,7 @@
                         }
                     }
                 };
-                mq.addEventListener('change', syncRow2);
+                mq.addEventListener('change', syncRow2, { signal: mqSignal });
             }
             if (menu && row1) {
                 const syncMenu = function() {
@@ -620,7 +639,7 @@
                         }
                     }
                 };
-                mq.addEventListener('change', syncMenu);
+                mq.addEventListener('change', syncMenu, { signal: mqSignal });
             }
             headerActions.appendChild(wrap);
             headerActions.setAttribute('aria-hidden', 'false');
@@ -702,6 +721,7 @@
         // Marka ve şube hücreleri: sütun daraldıkça font kontrollü küçülsün
         adjustStokResponsiveCellFontSizes();
         restoreStokListScrollState(listContainer, previousScrollState);
+        setReportsModalStokDetailMenuLayoutOpen(stokDetailMenuOpen);
         setReportsModalStokListLayoutActive(true);
     }
 
@@ -1288,6 +1308,7 @@
             menu.classList.toggle('stok-detail-menu-open', stokDetailMenuOpen);
             /* Masaüstü: menü normal akışta (wrap içinde row1 ile row2 arası), portal gerekmez */
         }
+        setReportsModalStokDetailMenuLayoutOpen(stokDetailMenuOpen);
         buttons.forEach(function(btn) {
             if (stokDetailMenuOpen) {
                 btn.classList.add('active');
@@ -1804,6 +1825,7 @@
     window.goBackToStokGrid = function() {
         stokCurrentBranchId = null;
         stokDetailMenuOpen = false;
+        setReportsModalStokDetailMenuLayoutOpen(false);
         stokAutoSingleBranchView = false;
         const headerActions = document.getElementById('reports-list-header-actions');
         if (headerActions) {
