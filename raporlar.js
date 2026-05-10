@@ -777,7 +777,7 @@
     }
 
     // Sütun genişliklerini hesapla (key bazlı: sürükle-bırak sonrası genişlik doğru sütunla kalır)
-    // Temel kolonlar: fr ile sığar; bir veya daha fazla DETAY kolon seçiliyse: sabit px
+    // Temel kolonlar: sabit px; bir veya daha fazla DETAY kolon seçiliyse: üst blokta aynı basePx + detay px
     function getColumnWidths(allColumns) {
         const hasDetail = allColumns.some(col => STOK_DETAIL_COLUMNS.indexOf(col.key) !== -1);
         /* Başlık/gövde aynı render’da aynı kırılım: innerWidth ile matchMedia sapmasın */
@@ -814,28 +814,25 @@
             }).join(' ');
         }
 
-        // Sadece temel: mobil/masaüstü için ayrı orantı seti (8 temel + detay ise üst blokta sabit px)
-        const columnWidths = isMobile
+        // Sadece temel: sabit px (tablo iç genişliği + yatay scroll). Mobil’de tasitTipi görünür gridde yok; map’te yok.
+        const basePxOnly = isMobile
             ? {
-                'sira': 'minmax(26px, 0.32fr)',
-                'sube': 'minmax(48px, 1.25fr)',
-                'yil': 'minmax(37px, 0.55fr)',
-                'marka': 'minmax(70px, 2.45fr)',
-                'plaka': 'minmax(62px, 1.1fr)',
-                'sanziman': 'minmax(55px, 0.85fr)',
-                'km': 'minmax(52px, 1.1fr)'
+                'sira': 32, 'sube': 95, 'yil': 45, 'marka': 180, 'plaka': 100, 'sanziman': 65, 'km': 75
             }
             : {
-                'sira': 'minmax(20px, 0.16fr)',
-                'sube': 'minmax(56px, 0.78fr)',
-                'yil': 'minmax(37px, 0.46fr)',
-                'marka': 'minmax(62px, 1.82fr)',
-                'tasitTipi': 'minmax(62px, 0.72fr)',
-                'plaka': 'minmax(68px, 1fr)',
-                'sanziman': 'minmax(56px, 0.78fr)',
-                'km': 'minmax(61px, 1.02fr)'
+                'sira': 30,
+                'sube': 100,
+                'yil': 48,
+                'marka': 210,
+                'tasitTipi': 84,
+                'plaka': 96,
+                'sanziman': 74,
+                'km': 82
             };
-        return allColumns.map(col => columnWidths[col.key] || '80px').join(' ');
+        return allColumns.map(col => {
+            const w = basePxOnly[col.key];
+            return typeof w === 'number' ? w + 'px' : '80px';
+        }).join(' ');
     }
 
     /** Modal stok tablosu: muayene sütunundan hemen sonra egzoz (Excel / yazdır ile aynı düzen) */
