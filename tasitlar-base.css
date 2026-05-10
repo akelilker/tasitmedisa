@@ -2390,12 +2390,26 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     background: rgba(255, 255, 255, 0.05);
 }
 
-/* Taşıtlar modalı: tarih yaklaştı / kritik — liste satırı zebra/hover ile aynı; yalnızca hücre metni renkli (eski önbellek gradient’ini de söndür) */
+/* Taşıtlar modalı: tarih uyarısı — metin renkli; zebra tonları normal satırlarla birebir (üstteki .list-item / :nth-child(even) ile aynı değerler, yüksek özgüllük) */
 #vehicles-modal .view-list .list-item.vehicle-date-warning-red,
 #vehicles-modal .view-list .list-item.vehicle-date-warning-orange {
     border-left: none !important;
     box-shadow: none !important;
-    background-image: none !important;
+}
+
+#vehicles-modal .view-list .list-item.vehicle-date-warning-red:nth-child(odd),
+#vehicles-modal .view-list .list-item.vehicle-date-warning-orange:nth-child(odd) {
+    background: var(--bg) !important;
+}
+
+#vehicles-modal .view-list .list-item.vehicle-date-warning-red:nth-child(even),
+#vehicles-modal .view-list .list-item.vehicle-date-warning-orange:nth-child(even) {
+    background: rgba(255, 255, 255, 0.05) !important;
+}
+
+#vehicles-modal .view-list .list-item.vehicle-date-warning-red:hover,
+#vehicles-modal .view-list .list-item.vehicle-date-warning-orange:hover {
+    background: var(--border-ultra) !important;
 }
 
 #vehicles-modal .view-list .list-item.vehicle-date-warning-red .list-cell {
