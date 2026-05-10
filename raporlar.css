@@ -583,6 +583,8 @@ display: block;
 width: max-content;
 min-width: 100%;
 box-sizing: border-box;
+/* .stok-list-scroll-y ile aynı: dikey scrollbar/gutter yalnız gövdede olsa bile başlık satırı aynı iç genişlikte kalsın */
+scrollbar-gutter: stable;
 }
 .stok-list-scroll-y {
 flex: 1 1 auto;

@@ -463,9 +463,10 @@
         // Sıralama uygula
         vehicles = applyStokSorting(vehicles);
         
-        // Sütun başlıklarını oluştur
-        const headerRow = createStokHeaderRow();
-        const rows = vehicles.map((v, index) => createStokDataRow(v, index + 1, branches));
+        // Sütun başlığı + tüm satırlar aynı grid-template-columns (tek hesap)
+        const stokDomColumnLayout = buildStokListDomColumnLayout();
+        const headerRow = createStokHeaderRow(stokDomColumnLayout);
+        const rows = vehicles.map((v, index) => createStokDataRow(v, index + 1, branches, stokDomColumnLayout));
         
         // Bugünün tarihini formatla (gg/aa/yyyy)
         const today = new Date();
@@ -922,15 +923,19 @@
         return allColumns;
     }
 
+    /** Başlık ve gövde tr’leri aynı grid-template-columns string’ini paylaşır (stokDomColumnLayout). */
+    function buildStokListDomColumnLayout() {
+        var gridColumns = getStokVisibleGridColumns(expandStokGridColumns(buildStokFlatColumnMetas()));
+        return {
+            gridColumns: gridColumns,
+            gridTemplateColumns: getColumnWidths(gridColumns)
+        };
+    }
+
     // Sütun başlık satırı oluştur
-    function createStokHeaderRow() {
-        const allColumns = buildStokFlatColumnMetas();
-
-        let columns = expandStokGridColumns(allColumns);
-        var gridColumns = getStokVisibleGridColumns(columns);
-
-        // Grid sütun genişliklerini hesapla (header ile row aynı liste)
-        const gridTemplateColumns = getColumnWidths(gridColumns);
+    function createStokHeaderRow(layout) {
+        var gridColumns = layout.gridColumns;
+        const gridTemplateColumns = layout.gridTemplateColumns;
 
         return `<tr class="stok-list-header-row" style="grid-template-columns: ${gridTemplateColumns}">${gridColumns.map(col => {
             const sortState = stokSortState[col.key] || null;
@@ -994,7 +999,7 @@
     }
 
     // Veri satırı oluştur
-    function createStokDataRow(vehicle, rowNum, branches) {
+    function createStokDataRow(vehicle, rowNum, branches, layout) {
         const branch = vehicle.branchId ? branches.find(b => b.id === vehicle.branchId) : null;
         const branchName = branch ? branch.name : '-';
 
@@ -1072,9 +1077,7 @@
         var gridCells = cells;
         if (isMobileStokViewport()) gridCells = cells.filter(function (c) { return c.key !== 'tasitTipi'; });
 
-        // Grid sütun genişliklerini hesapla (header ile aynı sütun yapısı)
-        const columnKeys = gridCells.map(c => ({ key: c.key }));
-        const gridTemplateColumns = getColumnWidths(columnKeys);
+        const gridTemplateColumns = layout.gridTemplateColumns;
 
         return `<tr class="stok-list-row" style="grid-template-columns: ${gridTemplateColumns}">${gridCells.map(cell => {
             const cellClass = ['stok-list-cell', cell.warningClass || ''].filter(Boolean).join(' ');
