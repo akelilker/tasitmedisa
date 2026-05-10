@@ -557,41 +557,76 @@ flex: 1 !important;
 min-height: 0 !important;
 overflow: visible !important;
 }
+/* İç kutu: tek tablo yok; başlık + gövde ayrı tablo — dikey kaydırma yalnız .stok-list-scroll-y */
 #stok-list-container:has(.stok-list-top-controls) > .stok-list-container {
 flex: 1 !important;
 min-height: 0 !important;
-overflow-y: auto !important;
+display: flex !important;
+flex-direction: column !important;
+overflow: hidden !important;
+}
+/* Yatay: başlık + gövde birlikte; dikey: sadece gövde */
+.stok-list-scroll-x {
+flex: 1 1 auto;
+min-height: 0;
+width: 100%;
+display: flex;
+flex-direction: column;
+overflow-x: auto;
+overflow-y: hidden;
+-webkit-overflow-scrolling: touch;
+box-sizing: border-box;
+}
+.stok-list-head-wrap {
+flex: 0 0 auto;
+width: 100%;
+min-width: 0;
+}
+.stok-list-scroll-y {
+flex: 1 1 auto;
+min-height: 0;
+width: 100%;
+overflow-x: hidden;
+overflow-y: auto;
 -webkit-overflow-scrolling: touch;
 touch-action: pan-y;
 overscroll-behavior-y: auto;
 overscroll-behavior-x: none;
-}
-/* Yatay kaydırma: sadece içerik taşınca (overflow-x: auto); çubuk belirginliği minimum */
-.stok-list-container {
-width: 100%;
-overflow-x: auto;
-overflow-y: visible;
--webkit-overflow-scrolling: touch;
+box-sizing: border-box;
+padding-bottom: 8px;
 scrollbar-width: thin;
 scrollbar-color: rgba(128, 128, 128, 0.35) transparent;
 }
-
-.stok-list-container::-webkit-scrollbar {
-height: 4px;
+.stok-list-scroll-y::-webkit-scrollbar {
+width: 6px;
 }
-
-.stok-list-container::-webkit-scrollbar-track {
+.stok-list-scroll-y::-webkit-scrollbar-track {
 background: transparent;
 border-radius: 2px;
 }
-
-.stok-list-container::-webkit-scrollbar-thumb {
+.stok-list-scroll-y::-webkit-scrollbar-thumb {
 background: rgba(128, 128, 128, 0.35);
 border-radius: 2px;
 }
-
-.stok-list-container::-webkit-scrollbar-thumb:hover {
+.stok-list-scroll-y::-webkit-scrollbar-thumb:hover {
 background: rgba(128, 128, 128, 0.5);
+}
+.stok-list-scroll-x::-webkit-scrollbar {
+height: 4px;
+}
+.stok-list-scroll-x::-webkit-scrollbar-track {
+background: transparent;
+border-radius: 2px;
+}
+.stok-list-scroll-x::-webkit-scrollbar-thumb {
+background: rgba(128, 128, 128, 0.35);
+border-radius: 2px;
+}
+/* Eski tek-tablo .stok-list-container (sadece iç sarmalayıcı) — taşma burada değil */
+.stok-list-container {
+width: 100%;
+overflow: hidden;
+-webkit-overflow-scrolling: touch;
 }
 
 .stok-list-table {
@@ -599,16 +634,12 @@ width: 100%;
 border-collapse: separate;
 border-spacing: 0;
 }
-/* Kaydırma alanı iç .stok-list-container; başlık hücreleri yapışkan (thead’de sticky güvenilir değil, th kullan) */
+/* Başlık tablosu ayrı; sticky gerekmez */
 #stok-list-container .stok-list-table thead th {
-    position: sticky;
-    top: 0;
-    z-index: 12;
-    background: var(--bg);
-    background-clip: padding-box;
+    position: relative;
     border-bottom: 1px solid rgba(255, 0, 0, 0.25);
     padding-bottom: 6px;
-    box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.35);
+    background: var(--bg);
 }
 /* Detay sütunları varken min-width ile yatay scroll; yokken ekrana sığar */
 .stok-list-container[data-has-detail-columns="true"] .stok-list-table {
@@ -617,6 +648,17 @@ min-width: 800px;
 /* Muayene + Egzoz iki sütun: ekstra genişlik (tarih tam görünsün; egzoz sütunu 86px izi) */
 .stok-list-container[data-stok-muayene-egzoz-split="true"] .stok-list-table {
 min-width: 1008px;
+}
+/* Yatay kaydırma yalnız detay açıkken */
+#stok-list-container:has(.stok-list-top-controls) > .stok-list-container:not([data-has-detail-columns="true"]) .stok-list-scroll-x {
+overflow-x: hidden;
+touch-action: pan-y;
+}
+#stok-list-container:has(.stok-list-top-controls) > .stok-list-container[data-has-detail-columns="true"] .stok-list-scroll-x {
+overflow-x: auto;
+touch-action: pan-x pan-y;
+scrollbar-width: thin;
+scrollbar-color: rgba(128, 128, 128, 0.35) transparent;
 }
 
 .stok-list-header {
@@ -1204,13 +1246,13 @@ padding-top: 0 !important;
 #reports-modal:has(.stok-detail-menu-open) .reports-list-header-actions:not(:empty) {
 padding-bottom: 2px !important;
 }
-/* Masaüstü: rapor listesi scrollbar gizli (kaydırma çalışır, çubuk görünmez) */
+/* Masaüstü: dikey liste scrollbar gizli (kaydırma çalışır, çubuk görünmez) */
 @media (min-width: 641px) {
-#stok-list-container:has(.stok-list-top-controls) > .stok-list-container {
+#stok-list-container:has(.stok-list-top-controls) > .stok-list-container .stok-list-scroll-y {
 scrollbar-width: none !important;
 -ms-overflow-style: none !important;
 }
-#stok-list-container:has(.stok-list-top-controls) > .stok-list-container::-webkit-scrollbar {
+#stok-list-container:has(.stok-list-top-controls) > .stok-list-container .stok-list-scroll-y::-webkit-scrollbar {
 display: none !important;
 width: 0 !important;
 height: 0 !important;
@@ -2806,25 +2848,15 @@ flex-shrink: 0;
 #stok-list-container:has(.stok-list-top-controls) > .stok-list-container {
 flex: 1;
 min-height: 0;
-overflow-y: auto;
--webkit-overflow-scrolling: touch;
-touch-action: pan-x pan-y;
-overscroll-behavior-y: auto;
-overscroll-behavior-x: auto;
+overflow: hidden;
+display: flex;
+flex-direction: column;
 margin-top: 2px; /* 6px azaltıldı (8px→2px) */
-padding-bottom: 16px;
+padding-bottom: 0;
 box-sizing: border-box;
 }
-/* Temel görünüm: yatay scroll yok */
-#stok-list-container:has(.stok-list-top-controls) > .stok-list-container:not([data-has-detail-columns="true"]) {
-overflow-x: hidden;
-}
-/* Detay sütunları varken: yatay kaydırma */
-#stok-list-container:has(.stok-list-top-controls) > .stok-list-container[data-has-detail-columns="true"] {
-overflow-x: auto;
-scrollbar-width: thin;
-scrollbar-color: rgba(128, 128, 128, 0.35) transparent;
-touch-action: pan-x pan-y;
+#stok-list-container:has(.stok-list-top-controls) > .stok-list-container .stok-list-scroll-y {
+padding-bottom: 16px;
 }
 /*
  * Mobil stok listesi — büyüteç araması: kapanırken “üstten sola” kayma hissi.
