@@ -2655,6 +2655,65 @@ transform: none !important;
 background: rgba(255, 255, 255, 0.06) !important;
 }
 
+/* Mobil Stok Liste: satır nefesi + sıra ikonunun metinden ayrılması + dar başlık tek satır */
+#reports-modal.reports-modal--stok-list #stok-list-container > .stok-list-container .stok-list-header-row,
+#reports-modal.reports-modal--stok-list #stok-list-container > .stok-list-container .stok-list-row {
+gap: 1px !important;
+padding: 1px 0 !important;
+}
+#reports-modal.reports-modal--stok-list #stok-list-container .stok-list-header-cell.stok-sortable-header {
+position: relative !important;
+justify-content: center !important;
+align-items: center !important;
+gap: 0 !important;
+padding: 2px 13px 2px 2px !important;
+box-sizing: border-box !important;
+overflow: visible !important;
+}
+#reports-modal.reports-modal--stok-list #stok-list-container .stok-sortable-header .stok-sort-icon {
+position: absolute !important;
+right: 1px !important;
+top: 50% !important;
+transform: translateY(-50%) !important;
+margin: 0 !important;
+width: 10px !important;
+text-align: center !important;
+flex-shrink: 0 !important;
+}
+#reports-modal.reports-modal--stok-list #stok-list-container .stok-sortable-header .stok-header-text {
+flex: 1 1 auto !important;
+min-width: 0 !important;
+max-width: 100% !important;
+padding-right: 0 !important;
+box-sizing: border-box !important;
+}
+#reports-modal.reports-modal--stok-list #stok-list-container .stok-list-header-cell[data-col="yil"] .stok-header-text,
+#reports-modal.reports-modal--stok-list #stok-list-container .stok-list-header-cell[data-col="sanziman"] .stok-header-text,
+#reports-modal.reports-modal--stok-list #stok-list-container .stok-list-header-cell[data-col="km"] .stok-header-text {
+display: block !important;
+-webkit-box-orient: unset !important;
+-webkit-line-clamp: unset !important;
+line-clamp: unset !important;
+white-space: nowrap !important;
+overflow: hidden !important;
+text-overflow: ellipsis !important;
+word-break: normal !important;
+overflow-wrap: normal !important;
+line-height: 1.15 !important;
+}
+#reports-modal.reports-modal--stok-list #stok-list-container .stok-list-header-cell[data-col="marka"] .stok-header-text {
+-webkit-line-clamp: 2 !important;
+line-clamp: 2 !important;
+}
+#reports-modal.reports-modal--stok-list #stok-list-container .stok-list-cell[data-col="marka"] .stok-marka-cell-inner {
+-webkit-line-clamp: 2 !important;
+line-clamp: 2 !important;
+max-height: 2.75em !important;
+}
+#reports-modal.reports-modal--stok-list #stok-list-container .stok-list-header-cell:not(.stok-sortable-header) {
+padding: 2px 2px !important;
+}
+
 .stok-list-header-cell {
 font-size: clamp(calc(11.9px + var(--stok-mob-half-pt)), 2.6vw, 14.9px) !important;
 padding: 2px 3px !important;
