@@ -1101,7 +1101,9 @@
 
         const gridTemplateColumns = layout.gridTemplateColumns;
 
-        return `<tr class="stok-list-row" style="grid-template-columns: ${gridTemplateColumns}">${gridCells.map(cell => {
+        const vehicleId = escapeHtml(String(vehicle.id || ''));
+
+        return `<tr class="stok-list-row" data-vehicle-id="${vehicleId}" onclick="openStokVehicleDetail(event, '${vehicleId}')" style="grid-template-columns: ${gridTemplateColumns}">${gridCells.map(cell => {
             const cellClass = ['stok-list-cell', cell.warningClass || ''].filter(Boolean).join(' ');
             var inner;
             if (cell.key === 'tasitTipi' && isMobileStokViewport()) {
@@ -1116,6 +1118,19 @@
             return `<td class="${cellClass}" data-col="${cell.key}">${inner}</td>`;
         }).join('')}</tr>`;
     }
+
+    window.openStokVehicleDetail = function(event, vehicleId) {
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+
+        if (!vehicleId) return;
+
+        if (typeof window.showVehicleDetail === 'function') {
+            window.showVehicleDetail(vehicleId);
+        }
+    };
 
     // Sıralama uygula
     function applyStokSorting(vehicles) {
