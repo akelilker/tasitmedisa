@@ -2954,6 +2954,10 @@ padding-bottom: 5px !important;
 #reports-modal .stok-detail-add-wrap:has(.stok-detail-menu-open) {
 overflow: visible !important;
 }
+/* :has() yok: raporlar.js #reports-modal’a .reports-modal--stok-detail-menu-open basar; menü kırpılmasın */
+#reports-modal.reports-modal--stok-detail-menu-open .reports-list-header-actions .stok-detail-add-wrap {
+overflow: visible !important;
+}
 /* Mobil: varsayılan butonlar yeşil çerçeve + gri metin */
 #reports-modal .stok-detail-menu.stok-detail-menu-open .stok-detail-menu-btn {
 border: 1px solid rgba(74, 222, 128, 0.5) !important;
