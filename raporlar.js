@@ -745,7 +745,8 @@
     // Temel kolonlar: fr ile sığar; bir veya daha fazla DETAY kolon seçiliyse: sabit px
     function getColumnWidths(allColumns) {
         const hasDetail = allColumns.some(col => STOK_DETAIL_COLUMNS.indexOf(col.key) !== -1);
-        const isMobile = window.innerWidth <= 640;
+        /* Başlık/gövde aynı render’da aynı kırılım: innerWidth ile matchMedia sapmasın */
+        const isMobile = isMobileStokViewport();
 
         if (hasDetail) {
             // 8+ sütun: sabit px. Masaüstünde Şube 4px genişler; denge için Marka 4px daralır.
