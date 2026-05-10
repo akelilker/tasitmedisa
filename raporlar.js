@@ -1946,7 +1946,7 @@
                         ? window.getVehicleTypeLabel(String(tasitTipiText).toLowerCase())
                         : tasitTipiText;
 
-                    value = String(value).trim().replace(/\s+/g, '<br>');
+                    value = String(value).trim();
                     break;
                 }
                 case 'plaka':
@@ -2361,7 +2361,14 @@
         const colgroup = buildStokPrintColgroup(activeColumns);
         const thead = activeColumns.map(col => `<th data-col="${col.key}">${escapeHtml(stokPrintHeaders[col.key] || col.key)}</th>`).join('');
         const rows = vehicles.map((vehicle, index) => {
-            const cells = activeColumns.map(col => `<td data-col="${col.key}">${escapeHtml(String(getStokCellValue(vehicle, col, index, printOpts)))}</td>`).join('');
+            const cells = activeColumns.map(col => {
+                const cellValue = getStokCellValue(vehicle, col, index, printOpts);
+                const safeCellValue = escapeHtml(String(cellValue));
+                const renderedCellValue = col.key === 'tasitTipi'
+                    ? safeCellValue.replace(/\s+/g, '<br>')
+                    : safeCellValue;
+                return `<td data-col="${col.key}">${renderedCellValue}</td>`;
+            }).join('');
             return `<tr class="${index % 2 === 0 ? 'even' : 'odd'}">${cells}</tr>`;
         }).join('');
         const el = document.createElement('div');
