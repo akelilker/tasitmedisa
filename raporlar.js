@@ -791,8 +791,8 @@
 
         const basePx = isMobile
             ? {
-                /* Mobil: görünür gridde tasitTipi yok — okunabilirlik dengeyi (422px track; gap/padding raporlar.css mobil stok’ta 1px) */
-                'sira': 24, 'sube': 58, 'yil': 36, 'marka': 116, 'plaka': 76, 'sanziman': 50, 'km': 62
+                /* Mobil: görünür gridde tasitTipi yok — dar ekran için 396px track + 6px gap ≈ 402px */
+                'sira': 22, 'sube': 54, 'yil': 34, 'marka': 108, 'plaka': 72, 'sanziman': 48, 'km': 58
             }
             : {
                 'sira': 22,
