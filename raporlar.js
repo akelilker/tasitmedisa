@@ -87,6 +87,9 @@
     /** Sütun sırası/taşıt tipi localStorage ile bir kez yüklenir; detay seçimleri kalıcı değil (F5 / yeni oturumda hep kapalı). */
     let stokGridPersistenceInited = false;
 
+    let stokMiddlePanDocumentListenersBound = false;
+    let stokMiddlePanState = null;
+
     /** Bozuk/duplicate localStorage ve çapraz sürükleme sonrası dizileri temizler; base/detay ayrımını korur. */
     function normalizeStokColumnState() {
         var seenB = Object.create(null);
@@ -724,6 +727,7 @@
         attachStokColumnTouchListeners(listContainer);
         attachStokSortSuppressReset(listContainer);
         setupStokListTouchAxisLock();
+        setupStokListMiddleButtonHorizontalPan(listContainer);
         // Marka ve şube hücreleri: sütun daraldıkça font kontrollü küçülsün
         adjustStokResponsiveCellFontSizes();
         restoreStokListScrollState(listContainer, scrollStateForRestore);
@@ -1264,6 +1268,50 @@
         xEl.addEventListener('touchmove', onMove, { passive: false });
         xEl.addEventListener('touchend', onEnd, { passive: true });
         xEl.addEventListener('touchcancel', onEnd, { passive: true });
+    }
+
+    /** Masaüstü: gövde (.stok-list-scroll-y) üzerinde orta tuşla yatay pan → ebeveyn .stok-list-scroll-x scrollLeft. */
+    function setupStokListMiddleButtonHorizontalPan(listContainer) {
+        if (typeof window.matchMedia === 'function' && window.matchMedia('(max-width: 640px)').matches) return;
+        const root = listContainer || document;
+        const scrollY = root.querySelector ? root.querySelector('.stok-list-scroll-y') : document.querySelector('#stok-list-container .stok-list-scroll-y');
+        const scrollX = root.querySelector ? root.querySelector('.stok-list-scroll-x') : document.querySelector('#stok-list-container .stok-list-scroll-x');
+        if (!scrollY || !scrollX) return;
+        if (scrollX.scrollWidth <= scrollX.clientWidth) return;
+        if (scrollY.dataset.middlePanBound === 'true') return;
+        scrollY.dataset.middlePanBound = 'true';
+
+        function bindStokMiddlePanDocumentListenersOnce() {
+            if (stokMiddlePanDocumentListenersBound) return;
+            stokMiddlePanDocumentListenersBound = true;
+            document.addEventListener('mousemove', function(event) {
+                if (!stokMiddlePanState) return;
+                const deltaX = event.clientX - stokMiddlePanState.startX;
+                stokMiddlePanState.scrollX.scrollLeft = stokMiddlePanState.startScrollLeft - deltaX;
+                event.preventDefault();
+            }, { passive: false });
+            document.addEventListener('mouseup', function() {
+                if (stokMiddlePanState) stokMiddlePanState = null;
+            });
+            window.addEventListener('blur', function() {
+                stokMiddlePanState = null;
+            });
+        }
+
+        scrollY.addEventListener('mousedown', function(event) {
+            if (event.button !== 1) return;
+            if (scrollX.scrollWidth <= scrollX.clientWidth) return;
+            event.preventDefault();
+            stokMiddlePanState = {
+                scrollX: scrollX,
+                startX: event.clientX,
+                startScrollLeft: scrollX.scrollLeft
+            };
+            bindStokMiddlePanDocumentListenersOnce();
+        });
+        scrollY.addEventListener('auxclick', function(event) {
+            if (event.button === 1) event.preventDefault();
+        });
     }
 
     // Detay menüsünü render et
