@@ -1918,9 +1918,15 @@
                 case 'sira':
                     value = index + 1;
                     break;
-                case 'sube':
-                    value = toTitleCase(vehicle.branchId ? (getBranches().find(b => b.id === vehicle.branchId) ? b.name : '-') : '-');
+                case 'sube': {
+                    const branch = vehicle.branchId
+                        ? getBranches().find(function(branch) {
+                            return String(branch.id) === String(vehicle.branchId);
+                        })
+                        : null;
+                    value = branch ? toTitleCase(branch.name) : '-';
                     break;
+                }
                 case 'yil':
                     value = vehicle.year || '-';
                     break;
