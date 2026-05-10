@@ -1934,14 +1934,19 @@
                     value = formatBrandModel(vehicle.brandModel || '-');
                     break;
                 case 'tasitTipi': {
-                    const rawTasitTipi = vehicle.tasitTipi || vehicle.tasit_tipi || '-';
+                    const rawTasitTipi = vehicle.tasitTipi || vehicle.tasit_tipi || vehicle.vehicleType || vehicle.tip || '-';
                     const tasitTipiText = String(rawTasitTipi).trim();
 
                     if (!tasitTipiText || tasitTipiText === '-') {
                         value = '-';
-                    } else {
-                        value = tasitTipiText.replace(/\s+/g, '<br>');
+                        break;
                     }
+
+                    value = typeof window.getVehicleTypeLabel === 'function'
+                        ? window.getVehicleTypeLabel(String(tasitTipiText).toLowerCase())
+                        : tasitTipiText;
+
+                    value = String(value).trim().replace(/\s+/g, '<br>');
                     break;
                 }
                 case 'plaka':
