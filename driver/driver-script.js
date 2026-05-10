@@ -322,7 +322,9 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
   let lastCompletedActionInSession = null;
   /** KM bildirimi sonrası uyarının hemen kaybolması için: vehicleId -> period eşlemesi. loadDashboard cache veya geç yanıt verse bile uyarı kalksın. */
   let lastSuccessfulKmSubmissions = {};
-  
+  /** Query ile Talep prefill bir kez işlensin (loadDashboard tekrarlarında tekrar açılmasın). */
+  let driverFeedbackPrefillHandled = false;
+
   function clearSessionGreenFeedback() { lastCompletedActionInSession = null; }
   window.addEventListener('pagehide', clearSessionGreenFeedback);
   document.addEventListener('visibilitychange', function() { if (document.hidden) clearSessionGreenFeedback(); });
@@ -717,6 +719,77 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       }
     })();
   }
+
+  function getDriverFeedbackPrefillFromQuery() {
+    try {
+      var search = window.location && window.location.search ? window.location.search : '';
+      if (!search) return null;
+      var params = new URLSearchParams(search);
+      if (params.get('feedback') !== 'talep') return null;
+      var rawMsg = params.get('msg');
+      if (rawMsg == null || rawMsg === '') rawMsg = params.get('message');
+      if (rawMsg == null) return null;
+      var msg = String(rawMsg).trim();
+      if (!msg) return null;
+      if (msg.length > 500) msg = msg.slice(0, 500);
+      return { type: 'talep', message: msg };
+    } catch (e) {
+      console.warn('[Medisa] getDriverFeedbackPrefillFromQuery:', e);
+      return null;
+    }
+  }
+
+  function clearDriverFeedbackPrefillQuery() {
+    try {
+      var u = new URL(window.location.href);
+      u.searchParams.delete('feedback');
+      u.searchParams.delete('msg');
+      u.searchParams.delete('message');
+      u.searchParams.delete('source');
+      var qs = u.searchParams.toString();
+      var newUrl = u.pathname + (qs ? '?' + qs : '') + (u.hash || '');
+      history.replaceState(null, '', newUrl);
+    } catch (e) {
+      console.warn('[Medisa] clearDriverFeedbackPrefillQuery:', e);
+    }
+  }
+
+  function applyDriverFeedbackPrefill(prefill) {
+    if (!prefill) return false;
+    if (typeof window.openDriverFeedbackModal !== 'function') return false;
+    try {
+      window.openDriverFeedbackModal();
+      var modal = document.getElementById('driver-feedback-modal');
+      if (!modal || !modal.classList.contains('show')) return false;
+      var typeSelect = document.getElementById('driver-feedback-type');
+      if (typeSelect) typeSelect.value = 'talep';
+      if (typeof syncDriverFeedbackTypeTriggerFromSelect === 'function') syncDriverFeedbackTypeTriggerFromSelect();
+      var messageEl = document.getElementById('driver-feedback-message');
+      if (messageEl) {
+        messageEl.value = prefill.message || '';
+        messageEl.dispatchEvent(new Event('input', { bubbles: true }));
+        messageEl.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+      return true;
+    } catch (e) {
+      console.warn('[Medisa] applyDriverFeedbackPrefill:', e);
+      return false;
+    }
+  }
+
+  function tryOpenDriverFeedbackPrefillFromQuery() {
+    if (driverFeedbackPrefillHandled) return;
+    var prefill = getDriverFeedbackPrefillFromQuery();
+    if (!prefill) return;
+    driverFeedbackPrefillHandled = true;
+    var ok = false;
+    try {
+      ok = applyDriverFeedbackPrefill(prefill);
+    } catch (e) {
+      console.warn('[Medisa] tryOpenDriverFeedbackPrefillFromQuery:', e);
+    }
+    if (ok) clearDriverFeedbackPrefillQuery();
+  }
   
   async function loadDashboard() {
       const token = getStoredPortalToken();
@@ -801,6 +874,8 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
               if (trigger) trigger.style.display = '';
               setupPlateDropdown(vehicles);
           }
+
+          tryOpenDriverFeedbackPrefillFromQuery();
           
           setupEkstraNotAutoResize();
           setupKmInputs();
