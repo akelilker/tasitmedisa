@@ -385,7 +385,7 @@
         }) || listRoot.querySelector('.stok-list-container');
         if (!inner) return { inner: null, x: null, y: null };
         const xEl = inner.querySelector(':scope > .stok-list-scroll-x');
-        const yEl = xEl ? xEl.querySelector(':scope > .stok-list-scroll-y') : null;
+        const yEl = xEl ? xEl.querySelector('.stok-list-scroll-y') : null;
         return { inner: inner, x: xEl, y: yEl };
     }
 
@@ -523,19 +523,21 @@
             </div>
             <div class="stok-list-container"${hasDetailColumns ? ' data-has-detail-columns="true"' : ''}${hasMuayeneEgzozSplit ? ' data-stok-muayene-egzoz-split="true"' : ''}>
                 <div class="stok-list-scroll-x">
-                    <div class="stok-list-head-wrap">
-                        <table class="stok-list-table stok-list-table--head">
-                            <thead class="stok-list-header">
-                                ${headerRow}
-                            </thead>
-                        </table>
-                    </div>
-                    <div class="stok-list-scroll-y">
-                        <table class="stok-list-table stok-list-table--body">
-                            <tbody>
-                                ${rows.join('')}
-                            </tbody>
-                        </table>
+                    <div class="stok-list-hscroll-inner">
+                        <div class="stok-list-head-wrap">
+                            <table class="stok-list-table stok-list-table--head">
+                                <thead class="stok-list-header">
+                                    ${headerRow}
+                                </thead>
+                            </table>
+                        </div>
+                        <div class="stok-list-scroll-y">
+                            <table class="stok-list-table stok-list-table--body">
+                                <tbody>
+                                    ${rows.join('')}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
