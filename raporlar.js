@@ -1138,7 +1138,7 @@
         const branches = getBranches();
         
         // Aktif sıralama var mı kontrol et
-        const activeSort = Object.entries(stokSortState).find(([key, dir]) => dir !== null);
+        const activeSort = Object.entries(stokSortState).find(([key, dir]) => dir);
         if (!activeSort) return sortedVehicles;
         
         const [columnKey, direction] = activeSort;
@@ -1288,14 +1288,14 @@
             { key: 'kasko', label: 'Kasko T.' },
             { key: 'kaskoDegeri', label: 'Kasko Değeri' },
             { key: 'muayene', label: 'Muayene' },
-            { key: 'kredi', label: 'Hak Mahr.' },
+            { key: 'kredi', label: 'Hak M.' },
             { key: 'lastik', label: 'Lastik D.' },
             { key: 'utts', label: 'UTTS' },
             { key: 'takip', label: 'Taşıt Tkp.' },
             { key: 'tramer', label: 'Tramer' },
             { key: 'boya', label: 'Kaporta' },
             { key: 'kullanici', label: 'Kullanıcı' },
-            { key: 'tescil', label: 'Tescil Tarihi' }
+            { key: 'tescil', label: 'Tescil T.' }
         ];
 
         menu.innerHTML = detailOptions.map((opt) => {
@@ -1770,13 +1770,14 @@
         var t = formatDate(egRaw);
         return t || '-';
     }
-    /** Yazdır + Excel: muayene sütununun sağına egzoz muayenesi sütunu ekler */
-    function expandStokMuayeneEgzozColumns(activeColumns) {
+    /** Yazdır + Excel: muayene sütunundan hemen sonra egzoz (Excel / yazdır ile aynı düzen) */
+    function expandStokGridColumns(columns) {
         var out = [];
-        activeColumns.forEach(function(col) {
+        columns.forEach(function(col) {
+            if (!col || !col.key) return;
             out.push(col);
-            if (!col.isBase && col.key === 'muayene') {
-                out.push({ key: 'egzozMuayene', isBase: false });
+            if (col.key === 'muayene') {
+                out.push({ key: 'egzozMuayene', sortable: true });
             }
         });
         return out;
@@ -1919,23 +1920,37 @@
         let value = '-';
         if (col.isBase) {
             switch (col.key) {
-                case 'sira': value = index + 1; break;
-                case 'sube': value = toTitleCase(vehicle.branchId ? (getBranches().find(b => b.id === vehicle.branchId)?.name || '-') : '-'); break;
-                case 'yil': value = vehicle.year || '-'; break;
-                case 'marka': value = formatBrandModel(vehicle.brandModel || '-'); break;
+                case 'sira':
+                    value = index + 1;
+                    break;
+                case 'sube':
+                    value = toTitleCase(vehicle.branchId ? (getBranches().find(b => b.id === vehicle.branchId) ? b.name : '-') : '-');
+                    break;
+                case 'yil':
+                    value = vehicle.year || '-';
+                    break;
+                case 'marka':
+                    value = formatBrandModel(vehicle.brandModel || '-');
+                    break;
                 case 'tasitTipi': {
                     var rawT = (vehicle.vehicleType || vehicle.tip || '').trim();
                     var keyT = rawT.toLowerCase();
-                    if (!keyT) value = '-';
-                    else if (typeof window.getVehicleTypeLabel === 'function') value = window.getVehicleTypeLabel(keyT);
-                    else {
+                    if (!keyT) {
+                        value = '-';
+                    } else if (typeof window.getVehicleTypeLabel === 'function') {
+                        value = window.getVehicleTypeLabel(keyT);
+                    } else {
                         var labs = { otomobil: 'Otomobil', minivan: 'Küçük Ticari', kamyon: 'Büyük Ticari' };
                         value = labs[keyT] || rawT;
                     }
                     break;
                 }
-                case 'plaka': value = formatPlaka(vehicle.plate || '-'); break;
-                case 'sanziman': value = formatStokTransmissionLabel(vehicle.transmission); break;
+                case 'plaka':
+                    value = formatPlaka(vehicle.plate || '-');
+                    break;
+                case 'sanziman':
+                    value = formatStokTransmissionLabel(vehicle.transmission);
+                    break;
                 case 'km': {
                     var kmRaw = getVehicleReportKmRaw(vehicle);
                     value = kmRaw !== '' ? formatNumber(kmRaw) : '-';
@@ -1944,36 +1959,60 @@
             }
         } else {
             switch (col.key) {
-                case 'sigorta': value = vehicle.sigortaDate ? formatDate(vehicle.sigortaDate) : '-'; break;
-                case 'kasko': value = vehicle.kaskoDate ? formatDate(vehicle.kaskoDate) : '-'; break;
-                case 'kaskoDegeri': value = (function() {
-                    var yearForKasko = vehicle.year || vehicle.modelYili || '';
-                    var kaskoDegeri = vehicle.kaskoDegeri;
-                    if (kaskoDegeri == null || kaskoDegeri === '') {
-                        kaskoDegeri = (typeof window.getKaskoDegeri === 'function') ? window.getKaskoDegeri(vehicle.kaskoKodu, yearForKasko) : '-';
-                    }
-                    if (kaskoDegeri == null || String(kaskoDegeri).trim() === '') kaskoDegeri = '-';
-                    if (kaskoDegeri === '-' && (!vehicle.kaskoKodu || String(vehicle.kaskoKodu).trim() === '')) {
-                        kaskoDegeri = 'Kasko kodu girilmedi';
-                    } else if (kaskoDegeri === '-' && !(typeof window.hasAnyKaskoListData === 'function' ? window.hasAnyKaskoListData() : false)) {
-                        kaskoDegeri = 'Excel yüklenmedi';
-                    }
-                    return String(kaskoDegeri).trim() || '-';
-                })(); break;
+                case 'sigorta':
+                    value = vehicle.sigortaDate ? formatDate(vehicle.sigortaDate) : '-';
+                    break;
+                case 'kasko':
+                    value = vehicle.kaskoDate ? formatDate(vehicle.kaskoDate) : '-';
+                    break;
+                case 'kaskoDegeri':
+                    value = (function() {
+                        var yearForKasko = vehicle.year || vehicle.modelYili || '';
+                        var kaskoDegeri = vehicle.kaskoDegeri;
+                        if (kaskoDegeri == null || kaskoDegeri === '') {
+                            kaskoDegeri = (typeof window.getKaskoDegeri === 'function') ? window.getKaskoDegeri(vehicle.kaskoKodu, yearForKasko) : '-';
+                        }
+                        if (kaskoDegeri == null || String(kaskoDegeri).trim() === '') kaskoDegeri = '-';
+                        if (kaskoDegeri === '-' && (!vehicle.kaskoKodu || String(vehicle.kaskoKodu).trim() === '')) {
+                            kaskoDegeri = 'Kasko kodu girilmedi';
+                        } else if (kaskoDegeri === '-' && !(typeof window.hasAnyKaskoListData === 'function' ? window.hasAnyKaskoListData() : false)) {
+                            kaskoDegeri = 'Excel yüklenmedi';
+                        }
+                        return String(kaskoDegeri).trim() || '-';
+                    })() ;
+                    break;
                 case 'muayene':
                     value = opts.printSeparateMuayeneColumns
                         ? formatStokMuayeneDateOnlyForPrint(vehicle)
                         : formatStokMuayeneCell(vehicle);
                     break;
-                case 'egzozMuayene': value = formatStokEgzozDateOnlyForPrint(vehicle); break;
-                case 'kredi': value = vehicle.kredi === 'var' ? 'Var' : vehicle.kredi === 'yok' ? 'Yok' : '-'; break;
-                case 'lastik': value = vehicle.lastikDurumu === 'var' ? 'Var' : vehicle.lastikDurumu === 'yok' ? 'Yok' : '-'; break;
-                case 'utts': value = vehicle.uttsTanimlandi ? 'Evet' : 'Hayır'; break;
-                case 'takip': value = vehicle.takipCihaziMontaj ? 'Evet' : 'Hayır'; break;
-                case 'tramer': value = vehicle.tramer === 'var' ? 'Var' : vehicle.tramer === 'yok' ? 'Yok' : '-'; break;
-                case 'boya': value = vehicle.boya === 'var' ? 'Var' : vehicle.boya === 'yok' ? 'Yok' : '-'; break;
-                case 'kullanici': value = formatAdSoyad(getVehicleUser(vehicle)); break;
-                case 'tescil': value = vehicle.tescilTarihi ? formatDate(vehicle.tescilTarihi) : '-'; break;
+                case 'egzozMuayene':
+                    value = formatStokEgzozDateOnlyForPrint(vehicle);
+                    break;
+                case 'kredi':
+                    value = vehicle.kredi === 'var' ? 'Var' : vehicle.kredi === 'yok' ? 'Yok' : '-';
+                    break;
+                case 'lastik':
+                    value = vehicle.lastikDurumu === 'var' ? 'Var' : vehicle.lastikDurumu === 'yok' ? 'Yok' : '-';
+                    break;
+                case 'utts':
+                    value = vehicle.uttsTanimlandi ? 'Evet' : 'Hayır';
+                    break;
+                case 'takip':
+                    value = vehicle.takipCihaziMontaj ? 'Evet' : 'Hayır';
+                    break;
+                case 'tramer':
+                    value = vehicle.tramer === 'var' ? 'Var' : vehicle.tramer === 'yok' ? 'Yok' : '-';
+                    break;
+                case 'boya':
+                    value = vehicle.boya === 'var' ? 'Var' : vehicle.boya === 'yok' ? 'Yok' : '-';
+                    break;
+                case 'kullanici':
+                    value = formatAdSoyad(getVehicleUser(vehicle));
+                    break;
+                case 'tescil':
+                    value = vehicle.tescilTarihi ? formatDate(vehicle.tescilTarihi) : '-';
+                    break;
             }
         }
         if (opts.compact) return applyStokPrintCompact(vehicle, col, value, opts);
@@ -2169,7 +2208,6 @@
         if (wrap && e.target && typeof e.target.closest === 'function' && wrap.contains(e.target)) {
             return;
         }
-        const input = wrap ? wrap.querySelector('.stok-search-input') : null;
         closeStokSearch(container, input, true);
         removeStokSearchOutsideListener();
     }
@@ -2224,7 +2262,7 @@
     window.handleStokSearch = (typeof window.debounce === 'function') ? window.debounce(handleStokSearchImpl, 200) : handleStokSearchImpl;
 
     // Yazdır – Excel ile aynı veriyi tablo olarak yazdırır (ekran görüntüsü değil)
-    const stokPrintHeaders = { sira:'No.', sube:'Şube', yil:'Yıl', marka:'Marka/Mod.', tasitTipi:'Taş. tip.', plaka:'Plaka', sanziman:'Şanz', km:'KM', sigorta:'Sig. bit.', kasko:'Kas. bit.', kaskoDegeri:'Kas. değ.', muayene:'Muay.', egzozMuayene:'Egzoz', kredi:'Hak M.', lastik:'Lastik', utts:'UTTS', takip:'Takip', tramer:'Tramer', boya:'Boya', kullanici:'Kull.', tescil:'Tescil' };
+    const stokPrintHeaders = { sira:'No.', sube:'Şube', yil:'Yıl', marka:'Marka/Mod.', tasitTipi:'Taş. tip.', plaka:'Plaka', sanziman:'Şanz', km:'KM', sigorta:'Sig. bit.', kasko:'Kas. bit.', kaskoDegeri:'Kas. değ.', muayene:'Muayene', egzozMuayene:'Egzoz', kredi:'Hak M.', lastik:'Lastik', utts:'UTTS', takip:'Takip', tramer:'Tramer', boya:'Boya', kullanici:'Kullanıcı', tescil:'Tescil' };
     /* Yazdır: marka/şube dengesi; marka geniş kalır, şube okunabilir pay alır */
     const stokPrintColumnWeights = {
         sira: 3,
@@ -2781,3 +2819,7 @@
 
 
 })();
+
+// Removed syncColumnWidths() as it is unnecessary and breaks the single source of truth for column widths.
+// Removed header.scrollLeft = scrollX.scrollLeft as the header and body are already in the same scroll container.
+enableHorizontalScrollSync();
