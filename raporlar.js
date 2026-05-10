@@ -1934,15 +1934,13 @@
                     value = formatBrandModel(vehicle.brandModel || '-');
                     break;
                 case 'tasitTipi': {
-                    var rawT = (vehicle.vehicleType || vehicle.tip || '').trim();
-                    var keyT = rawT.toLowerCase();
-                    if (!keyT) {
+                    const rawTasitTipi = vehicle.tasitTipi || vehicle.tasit_tipi || '-';
+                    const tasitTipiText = String(rawTasitTipi).trim();
+
+                    if (!tasitTipiText || tasitTipiText === '-') {
                         value = '-';
-                    } else if (typeof window.getVehicleTypeLabel === 'function') {
-                        value = window.getVehicleTypeLabel(keyT);
                     } else {
-                        var labs = { otomobil: 'Otomobil', minivan: 'Küçük Ticari', kamyon: 'Büyük Ticari' };
-                        value = labs[keyT] || rawT;
+                        value = tasitTipiText.replace(/\s+/g, '<br>');
                     }
                     break;
                 }
