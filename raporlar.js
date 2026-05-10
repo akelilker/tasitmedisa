@@ -1344,6 +1344,9 @@
 
     // Sütun başlığından sürükle başlatıldığında
     window.handleColumnHeaderDragStart = function(event, columnKey) {
+        if (event && typeof event.button === 'number' && event.button !== 0) {
+            return;
+        }
         const detailColumns = ['sigorta', 'kasko', 'kaskoDegeri', 'muayene', 'kredi', 'lastik', 'utts', 'takip', 'tramer', 'boya', 'kullanici', 'tescil'];
         const baseColumns = STOK_BASE_COLUMNS.slice();
         
@@ -1374,6 +1377,9 @@
 
     // Sütun başlığı üzerine geldiğinde
     window.handleColumnHeaderDragOver = function(event) {
+        if (event && typeof event.button === 'number' && event.button !== 0) {
+            return;
+        }
         if (draggedColumnKey) {
             event.preventDefault();
             event.dataTransfer.dropEffect = 'move';
@@ -1382,6 +1388,9 @@
 
     // Sütun başlığına giriş yaptığında
     window.handleColumnHeaderDragEnter = function(event) {
+        if (event && typeof event.button === 'number' && event.button !== 0) {
+            return;
+        }
         if (draggedColumnKey) {
             const rawTarget = event.currentTarget.dataset.col;
             const targetKey = normalizeStokReorderKey(rawTarget);
@@ -1408,6 +1417,9 @@
 
     // Sütun başlığına bırakıldığında
     window.handleColumnHeaderDrop = function(event, targetColumnKey) {
+        if (event && typeof event.button === 'number' && event.button !== 0) {
+            return;
+        }
         event.preventDefault();
         event.stopPropagation();
         event.currentTarget.classList.remove('drag-over');
