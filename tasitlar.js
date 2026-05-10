@@ -3759,6 +3759,7 @@
       else if (f === 'muayeneDate') type = 'Muayene';
       else if (f === 'egzozMuayeneDate') type = 'Egzoz Muayene';
       else if (f === 'muayeneDate+egzozMuayeneDate') type = 'Muayene + Egzoz';
+      else if (f === 'sigortaDate+kaskoDate') type = 'Sigorta + Kasko';
     }
     switch (type) {
       case 'Sigorta':
@@ -3771,6 +3772,8 @@
         return 'Genel Egzoz Muayenesi Randevusu Konusunda Destek İhtiyacı';
       case 'Muayene + Egzoz':
         return 'Genel Muayene / Egzoz Muayenesi Randevusu Konusunda Destek İhtiyacı';
+      case 'Sigorta + Kasko':
+        return 'Güncellenen Zorunlu Trafik Sigortası / Kasko Poliçesinin Gönderilmesi.';
       default:
         return 'Genel Destek Talebi';
     }
@@ -3805,6 +3808,7 @@
       else if (f === 'muayeneDate') type = 'Muayene';
       else if (f === 'egzozMuayeneDate') type = 'Egzoz Muayene';
       else if (f === 'muayeneDate+egzozMuayeneDate') type = 'Muayene + Egzoz';
+      else if (f === 'sigortaDate+kaskoDate') type = 'Sigorta + Kasko';
     }
     var dateRaw = task && task.date != null ? String(task.date).trim() : '';
     var tarih = '';
@@ -3833,6 +3837,9 @@
           break;
         case 'Muayene + Egzoz':
           body = 'Sn. ' + kul + ';\n- Kullanmakta Olduğunuz ' + plaka + ' Plakalı Taşıtın Muayenesi / Egzoz Muayenesi, ' + tarih + ' Tarihinde Sona Erecektir.\n- Mağduriyet yaşamamak için, Muayene / Egzoz Muayenesi Randevunuzu En Az 1 Hafta Önceden Almanız tavsiye edilir.\n- Randevu konusunda desteğe ihtiyaç duyarsanız destek talep edebilirsiniz.';
+          break;
+        case 'Sigorta + Kasko':
+          body = 'Sn. ' + kul + ';\n- Kullanmakta Olduğunuz ' + plaka + ' Plakalı Taşıtın Zorunlu Trafik Sigortası / Kasko Poliçesi, ' + tarih + ' Tarihinde Sona Erecektir.\n- Süresi Geçmeden, Güncel Poliçelerinizi Talep Ediniz.';
           break;
         default:
           body = fallbackGeneral();
@@ -3868,6 +3875,19 @@
     return (ta === 'Muayene' && tb === 'Egzoz Muayene') || (ta === 'Egzoz Muayene' && tb === 'Muayene');
   }
 
+  function monthlyTodoSigortaKaskoSameDatePair(a, b) {
+    if (!a || !b) return false;
+    var idA = a.vehicle && a.vehicle.id != null ? String(a.vehicle.id) : '';
+    var idB = b.vehicle && b.vehicle.id != null ? String(b.vehicle.id) : '';
+    if (!idA || idA !== idB) return false;
+    var isoA = monthlyTodoTaskIsoNormalized(a);
+    var isoB = monthlyTodoTaskIsoNormalized(b);
+    if (!isoA || !isoB || isoA !== isoB) return false;
+    var ta = String(a.type || '').trim();
+    var tb = String(b.type || '').trim();
+    return (ta === 'Sigorta' && tb === 'Kasko') || (ta === 'Kasko' && tb === 'Sigorta');
+  }
+
   function monthlyTodoMergeMuayeneEgzoz(a, b) {
     var da = typeof a.days === 'number' ? a.days : null;
     var db = typeof b.days === 'number' ? b.days : null;
@@ -3889,22 +3909,57 @@
     };
   }
 
+  function monthlyTodoMergeSigortaKasko(a, b) {
+    var da = typeof a.days === 'number' ? a.days : null;
+    var db = typeof b.days === 'number' ? b.days : null;
+    var days;
+    if (da != null && db != null) days = Math.min(da, db);
+    else if (da != null) days = da;
+    else if (db != null) days = db;
+    else days = a.days;
+    var past = String(a.status) === 'past' || String(b.status) === 'past' || (typeof days === 'number' && days < 0);
+    var warningClass = '';
+    if (a.warningClass === 'date-warning-red' || b.warningClass === 'date-warning-red') warningClass = 'date-warning-red';
+    else if (a.warningClass === 'date-warning-orange' || b.warningClass === 'date-warning-orange') warningClass = 'date-warning-orange';
+    else warningClass = a.warningClass || b.warningClass || '';
+    var dateRaw = a.date != null && String(a.date).trim() ? a.date : b.date;
+    return {
+      vehicle: a.vehicle || b.vehicle,
+      type: 'Sigorta + Kasko',
+      field: 'sigortaDate+kaskoDate',
+      date: dateRaw,
+      days: days,
+      status: past ? 'past' : 'upcoming',
+      warningClass: warningClass
+    };
+  }
+
   function buildMonthlyTodoMergedDisplayTasks(tasks) {
     var used = tasks.map(function() { return false; });
     var out = [];
     for (var i = 0; i < tasks.length; i++) {
       if (used[i]) continue;
       var pairIdx = -1;
+      var mergeSigortaKasko = false;
       for (var j = i + 1; j < tasks.length; j++) {
         if (used[j]) continue;
         if (monthlyTodoMuayeneEgzozSameDatePair(tasks[i], tasks[j])) {
           pairIdx = j;
+          mergeSigortaKasko = false;
+          break;
+        } else if (monthlyTodoSigortaKaskoSameDatePair(tasks[i], tasks[j])) {
+          pairIdx = j;
+          mergeSigortaKasko = true;
           break;
         }
       }
       if (pairIdx >= 0) {
         used[pairIdx] = true;
-        out.push(monthlyTodoMergeMuayeneEgzoz(tasks[i], tasks[pairIdx]));
+        if (mergeSigortaKasko) {
+          out.push(monthlyTodoMergeSigortaKasko(tasks[i], tasks[pairIdx]));
+        } else {
+          out.push(monthlyTodoMergeMuayeneEgzoz(tasks[i], tasks[pairIdx]));
+        }
       } else {
         out.push(tasks[i]);
       }
@@ -3916,6 +3971,7 @@
     var typeDescriptionMap = {
       'Sigorta': 'Trafik Sigortasının',
       'Kasko': 'Kasko Poliçesinin',
+      'Sigorta + Kasko': 'Trafik Sigortası ve Kasko Poliçesinin',
       'Muayene': 'Taşıt Muayenesinin',
       'Egzoz Muayene': 'Egzoz Muayenesinin',
       'Muayene + Egzoz': 'Taşıt Muayenesi ve Egzoz Muayenesinin'
