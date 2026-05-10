@@ -3943,7 +3943,7 @@
   function getMonthlyTodoTitleText() {
     var monthName = new Date().toLocaleDateString('tr-TR', { month: 'long' });
     monthName = monthName ? monthName.charAt(0).toUpperCase() + monthName.slice(1) : '';
-    return (monthName || 'Bu Ay') + ' Ayı Hatırlatmaları';
+    return (monthName || 'Bu Ay') + ' Ayı Özet';
   }
 
   function ensureMonthlyTodoModalMounted() {
