@@ -675,6 +675,119 @@ scrollbar-width: thin;
 scrollbar-color: rgba(128, 128, 128, 0.35) transparent;
 }
 
+/* :has() desteklemeyen ortamlar: raporlar.js #reports-modal’a .reports-modal--stok-list ekler (layout = :has ile aynı) */
+#reports-modal.reports-modal--stok-list .modal-body {
+overflow: hidden !important;
+min-height: 0 !important;
+display: flex !important;
+flex-direction: column !important;
+padding-bottom: 16px !important;
+}
+#reports-modal.reports-modal--stok-list .modal-body #view-stok {
+flex: 1 !important;
+min-height: 0 !important;
+display: flex !important;
+flex-direction: column !important;
+overflow: hidden !important;
+}
+#reports-modal.reports-modal--stok-list .modal-body #view-stok #stok-list-container {
+flex: 1 !important;
+min-height: 0 !important;
+overflow: hidden !important;
+}
+#reports-modal.reports-modal--stok-list #stok-list-container.stok-list-root {
+display: flex !important;
+flex-direction: column !important;
+flex: 1 !important;
+min-height: 0 !important;
+overflow: visible !important;
+}
+#reports-modal.reports-modal--stok-list #stok-list-container.stok-list-root > .stok-list-container {
+flex: 1 !important;
+min-height: 0 !important;
+display: flex !important;
+flex-direction: column !important;
+overflow: hidden !important;
+}
+#reports-modal.reports-modal--stok-list #stok-list-container.stok-list-root > .stok-list-container:not([data-has-detail-columns="true"]) .stok-list-scroll-x {
+overflow-x: hidden;
+touch-action: pan-y;
+}
+#reports-modal.reports-modal--stok-list #stok-list-container.stok-list-root > .stok-list-container[data-has-detail-columns="true"] .stok-list-scroll-x {
+overflow-x: auto;
+touch-action: pan-x pan-y;
+scrollbar-width: thin;
+scrollbar-color: rgba(128, 128, 128, 0.35) transparent;
+}
+@media (max-width: 640px) {
+#reports-modal.reports-modal--stok-list #view-stok .stok-branch-grid {
+display: none !important;
+visibility: hidden !important;
+position: absolute !important;
+width: 0 !important;
+height: 0 !important;
+overflow: hidden !important;
+pointer-events: none !important;
+}
+#reports-modal.reports-modal--stok-list #reports-body {
+display: flex;
+flex-direction: column;
+overflow: hidden;
+}
+#reports-modal.reports-modal--stok-list #view-stok {
+flex: 1;
+min-height: 0;
+display: flex;
+flex-direction: column;
+overflow: hidden;
+box-sizing: border-box !important;
+max-width: 100% !important;
+}
+#reports-modal.reports-modal--stok-list #stok-list-container.stok-list-root {
+display: flex !important;
+flex-direction: column;
+flex: 1;
+min-height: 0;
+overflow: hidden;
+isolation: isolate;
+}
+#reports-modal.reports-modal--stok-list #stok-list-container.stok-list-root > .stok-list-top-controls {
+flex-shrink: 0;
+}
+#reports-modal.reports-modal--stok-list #stok-list-container.stok-list-root > .stok-list-container {
+flex: 1;
+min-height: 0;
+overflow: hidden;
+display: flex;
+flex-direction: column;
+margin-top: 2px;
+padding-bottom: 0;
+box-sizing: border-box;
+}
+#reports-modal.reports-modal--stok-list #stok-list-container.stok-list-root > .stok-list-container .stok-list-scroll-y {
+padding-bottom: 16px;
+}
+#reports-modal.reports-modal--stok-list #stok-list-container.stok-list-root > .stok-list-container:not([data-has-detail-columns="true"]) .stok-list-table {
+width: 100% !important;
+min-width: unset !important;
+}
+#reports-modal.reports-modal--stok-list #stok-list-container.stok-list-root > .stok-list-container[data-has-detail-columns="true"] .stok-list-table {
+width: max-content !important;
+max-width: none !important;
+}
+}
+@media (min-width: 641px) {
+#reports-modal.reports-modal--stok-list #stok-list-container.stok-list-root > .stok-list-container .stok-list-scroll-y {
+scrollbar-width: none !important;
+-ms-overflow-style: none !important;
+}
+#reports-modal.reports-modal--stok-list #stok-list-container.stok-list-root > .stok-list-container .stok-list-scroll-y::-webkit-scrollbar {
+display: none !important;
+width: 0 !important;
+height: 0 !important;
+}
+}
+
 .stok-list-header {
 position: static;
 background: transparent;

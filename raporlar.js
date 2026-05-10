@@ -197,6 +197,7 @@
         const modal = document.getElementById('reports-modal');
         if (modal) {
             if (stokDetailMenuOpen) stokDetailMenuOpen = false;
+            setReportsModalStokListLayoutActive(false);
             modal.classList.remove('active');
             setTimeout(() => {
                 modal.style.display = 'none';
@@ -320,6 +321,7 @@
             headerActions.setAttribute('aria-hidden', 'true');
             headerActions.classList.remove('has-stok-actions');
         }
+        setReportsModalStokListLayoutActive(false);
         if (!gridContainer) return;
         
         const branches = getBranches();
@@ -366,6 +368,14 @@
         stokAutoSingleBranchView = false;
         renderStokView();
     };
+
+    /** Eski WebView’lerde :has() yok; stok listesi açıkken layout kurallarını sınıf ile uygula */
+    function setReportsModalStokListLayoutActive(active) {
+        const modal = document.getElementById('reports-modal');
+        if (!modal) return;
+        if (active) modal.classList.add('reports-modal--stok-list');
+        else modal.classList.remove('reports-modal--stok-list');
+    }
 
     /** İç liste kutusu + yatay/dikey scroll hedefleri (başlık dışarıda, gövde .stok-list-scroll-y içinde) */
     function getStokListScrollElements(listRoot) {
@@ -430,6 +440,7 @@
             vehicles = vehicles.filter(v => v.branchId === stokCurrentBranchId);
             } else {
             // Grid görünümünde, liste render edilmemeli
+            setReportsModalStokListLayoutActive(false);
             return;
         }
         
@@ -688,6 +699,7 @@
         // Marka ve şube hücreleri: sütun daraldıkça font kontrollü küçülsün
         adjustStokResponsiveCellFontSizes();
         restoreStokListScrollState(listContainer, previousScrollState);
+        setReportsModalStokListLayoutActive(true);
     }
 
     // Marka, şube, taşıt tipi: satır kır; yine taşarsa en fazla ~1 punto küçült (masaüstü)
