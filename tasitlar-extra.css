@@ -2829,6 +2829,15 @@
   box-sizing: border-box;
 }
 
+#monthly-todo-modal .monthly-todo-task-row:focus {
+  outline: none;
+}
+
+#monthly-todo-modal .monthly-todo-task-row:focus-visible {
+  outline: 2px solid rgba(var(--theme-color-rgb), 0.95);
+  outline-offset: -2px;
+}
+
 #monthly-todo-modal .monthly-todo-list-scroll .monthly-todo-task-row:nth-child(odd) {
   background: rgba(255, 255, 255, 0.03);
 }
@@ -2907,8 +2916,7 @@
   white-space: nowrap;
 }
 
-#monthly-todo-modal .monthly-todo-middle .monthly-todo-brand,
-#monthly-todo-modal .monthly-todo-middle .monthly-todo-user {
+#monthly-todo-modal .monthly-todo-middle .monthly-todo-brand {
   display: block;
   overflow: hidden;
   word-break: normal;
@@ -2925,12 +2933,57 @@
 }
 
 #monthly-todo-modal .monthly-todo-middle .monthly-todo-user {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  max-width: 100%;
+  color: #a0aec0;
+}
+
+#monthly-todo-modal .monthly-todo-middle .monthly-todo-user-name {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   line-clamp: 2;
   white-space: normal;
-  color: #a0aec0;
+  overflow: hidden;
+  word-break: normal;
+  overflow-wrap: break-word;
+  min-width: 0;
+  flex: 1 1 auto;
+  color: inherit;
+}
+
+#monthly-todo-modal .monthly-todo-middle .monthly-todo-wa-link {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  color: #25d366;
+  line-height: 0;
+  text-decoration: none;
+  align-self: center;
+}
+
+#monthly-todo-modal .monthly-todo-middle .monthly-todo-wa-link svg {
+  display: block;
+  width: 16px;
+  height: 16px;
+}
+
+#monthly-todo-modal .monthly-todo-middle .monthly-todo-wa-link:focus {
+  outline: none;
+}
+
+#monthly-todo-modal .monthly-todo-middle .monthly-todo-wa-link:focus-visible {
+  outline: 2px solid rgba(37, 211, 102, 0.85);
+  outline-offset: 2px;
+  border-radius: 2px;
 }
 
 #monthly-todo-modal .monthly-todo-type {
