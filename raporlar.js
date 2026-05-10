@@ -367,32 +367,39 @@
         renderStokView();
     };
 
-    function getStokListScrollContainer(listRoot) {
-        if (!listRoot) return null;
-        const directChild = Array.from(listRoot.children || []).find(function(child) {
+    /** İç liste kutusu + yatay/dikey scroll hedefleri (başlık dışarıda, gövde .stok-list-scroll-y içinde) */
+    function getStokListScrollElements(listRoot) {
+        if (!listRoot) return { inner: null, x: null, y: null };
+        const inner = Array.from(listRoot.children || []).find(function(child) {
             return child && child.classList && child.classList.contains('stok-list-container');
-        });
-        return directChild || listRoot.querySelector('.stok-list-container');
+        }) || listRoot.querySelector('.stok-list-container');
+        if (!inner) return { inner: null, x: null, y: null };
+        const xEl = inner.querySelector(':scope > .stok-list-scroll-x');
+        const yEl = xEl ? xEl.querySelector(':scope > .stok-list-scroll-y') : null;
+        return { inner: inner, x: xEl, y: yEl };
     }
 
     function captureStokListScrollState(listRoot) {
-        const scrollEl = getStokListScrollContainer(listRoot);
-        if (!scrollEl) return null;
+        const o = getStokListScrollElements(listRoot);
+        if (!o.x && !o.y) return null;
         return {
-            left: scrollEl.scrollLeft || 0,
-            top: scrollEl.scrollTop || 0
+            left: (o.x && o.x.scrollLeft) || 0,
+            top: (o.y && o.y.scrollTop) || 0
         };
     }
 
     function restoreStokListScrollState(listRoot, scrollState) {
         if (!scrollState) return;
         requestAnimationFrame(function() {
-            const scrollEl = getStokListScrollContainer(listRoot);
-            if (!scrollEl) return;
-            const maxLeft = Math.max(0, scrollEl.scrollWidth - scrollEl.clientWidth);
-            const maxTop = Math.max(0, scrollEl.scrollHeight - scrollEl.clientHeight);
-            scrollEl.scrollLeft = Math.min(scrollState.left || 0, maxLeft);
-            scrollEl.scrollTop = Math.min(scrollState.top || 0, maxTop);
+            const o = getStokListScrollElements(listRoot);
+            if (o.x) {
+                var maxL = Math.max(0, o.x.scrollWidth - o.x.clientWidth);
+                o.x.scrollLeft = Math.min(scrollState.left || 0, maxL);
+            }
+            if (o.y) {
+                var maxT = Math.max(0, o.y.scrollHeight - o.y.clientHeight);
+                o.y.scrollTop = Math.min(scrollState.top || 0, maxT);
+            }
         });
     }
 
@@ -503,14 +510,22 @@
                 </div>
             </div>
             <div class="stok-list-container"${hasDetailColumns ? ' data-has-detail-columns="true"' : ''}${hasMuayeneEgzozSplit ? ' data-stok-muayene-egzoz-split="true"' : ''}>
-                <table class="stok-list-table">
-                    <thead class="stok-list-header">
-                        ${headerRow}
-                    </thead>
-                    <tbody>
-                        ${rows.join('')}
-                    </tbody>
-                </table>
+                <div class="stok-list-scroll-x">
+                    <div class="stok-list-head-wrap">
+                        <table class="stok-list-table stok-list-table--head">
+                            <thead class="stok-list-header">
+                                ${headerRow}
+                            </thead>
+                        </table>
+                    </div>
+                    <div class="stok-list-scroll-y">
+                        <table class="stok-list-table stok-list-table--body">
+                            <tbody>
+                                ${rows.join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         `;
 
@@ -1162,8 +1177,10 @@
     function setupStokListTouchAxisLock() {
         if (!window.matchMedia || !window.matchMedia('(max-width: 640px)').matches) return;
         const listContainer = document.getElementById('stok-list-container');
-        const scrollEl = listContainer && listContainer.querySelector(':scope > .stok-list-container');
-        if (!scrollEl) return;
+        const o = getStokListScrollElements(listContainer);
+        const xEl = o.x;
+        const yEl = o.y;
+        if (!xEl || !yEl) return;
 
         let startX = 0, startY = 0, startScrollLeft = 0, startScrollTop = 0, lockedAxis = null;
 
@@ -1173,26 +1190,26 @@
             if (e.touches.length !== 1) return;
             startX = e.touches[0].clientX;
             startY = e.touches[0].clientY;
-            startScrollLeft = scrollEl.scrollLeft;
-            startScrollTop = scrollEl.scrollTop;
+            startScrollLeft = xEl.scrollLeft;
+            startScrollTop = yEl.scrollTop;
             lockedAxis = null;
         };
         const onMove = (e) => {
             if (stokTouchColumnDrag.active || stokTouchColumnDrag.dragging) return;
             if (e.touches.length !== 1) return;
-            const x = e.touches[0].clientX;
-            const y = e.touches[0].clientY;
-            const dx = x - startX;
-            const dy = y - startY;
-            const canScrollX = scrollEl.scrollWidth > scrollEl.clientWidth + 2;
+            const px = e.touches[0].clientX;
+            const py = e.touches[0].clientY;
+            const dx = px - startX;
+            const dy = py - startY;
+            const canScrollX = xEl.scrollWidth > xEl.clientWidth + 2;
             if (!canScrollX) return;
             if (lockedAxis === null && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) {
                 lockedAxis = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
             }
             if (lockedAxis === 'x') {
-                const next = Math.max(0, Math.min(scrollEl.scrollWidth - scrollEl.clientWidth, startScrollLeft - dx));
-                scrollEl.scrollLeft = next;
-                scrollEl.scrollTop = startScrollTop;
+                const next = Math.max(0, Math.min(xEl.scrollWidth - xEl.clientWidth, startScrollLeft - dx));
+                xEl.scrollLeft = next;
+                yEl.scrollTop = startScrollTop;
                 e.preventDefault();
             }
             /* lockedAxis === 'y': native dikey scroll + momentum (müdahale yok) */
@@ -1202,10 +1219,10 @@
             lockedAxis = null;
         };
 
-        scrollEl.addEventListener('touchstart', onStart, { passive: true });
-        scrollEl.addEventListener('touchmove', onMove, { passive: false });
-        scrollEl.addEventListener('touchend', onEnd, { passive: true });
-        scrollEl.addEventListener('touchcancel', onEnd, { passive: true });
+        xEl.addEventListener('touchstart', onStart, { passive: true });
+        xEl.addEventListener('touchmove', onMove, { passive: false });
+        xEl.addEventListener('touchend', onEnd, { passive: true });
+        xEl.addEventListener('touchcancel', onEnd, { passive: true });
     }
 
     // Detay menüsünü render et
