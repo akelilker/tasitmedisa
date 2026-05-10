@@ -1881,10 +1881,6 @@
         vehicles = applyStokSorting(vehicles);
         if (vehicles.length === 0) return null;
 
-        const activeColumns = [];
-        stokBaseColumnOrder.forEach(key => { activeColumns.push({ key, isBase: true }); });
-        stokColumnOrder.forEach(key => { if (stokActiveColumns[key]) activeColumns.push({ key, isBase: false }); });
-
         const startDate = document.getElementById('stok-date-start')?.value || '';
         const endDate = document.getElementById('stok-date-end')?.value || '';
         let dateRangeText = '';
@@ -1900,7 +1896,18 @@
             const b = branches.find(b => b.id === stokCurrentBranchId);
             if (b) titleText = `${b.name} - TAŞIT STOK DURUM RAPORU`;
         }
-        return { vehicles, activeColumns, titleText, dateRangeText, branches };
+        return { vehicles, titleText, dateRangeText, branches };
+    }
+
+    /** Excel/yazdır: buildStokFlatColumnMetas → expandStokGridColumns (muayene→egzoz). Mobil DOM’da taşıt tipi gizlenir; export tam sütun (getStokVisibleGridColumns kullanılmaz — satır 164). */
+    function getStokExportExpandedColumns() {
+        var expanded = expandStokGridColumns(buildStokFlatColumnMetas());
+        return expanded.map(function(meta) {
+            return {
+                key: meta.key,
+                isBase: STOK_BASE_COLUMNS.indexOf(meta.key) !== -1
+            };
+        });
     }
 
     function getStokCellValue(vehicle, col, index, opts) {
@@ -2018,7 +2025,7 @@
             return;
         }
         const { vehicles, titleText, dateRangeText, branches } = data;
-        const excelColumns = expandStokMuayeneEgzozColumns(data.activeColumns);
+        const excelColumns = getStokExportExpandedColumns();
         const excelSplitMuayeneOpts = { printSeparateMuayeneColumns: true };
         if (vehicles.length === 0) {
             alert('Export Edilecek Taşıt Bulunamadı.');
@@ -2336,7 +2343,7 @@
             return;
         }
         const { vehicles, titleText, dateRangeText } = data;
-        const activeColumns = expandStokMuayeneEgzozColumns(data.activeColumns);
+        const activeColumns = getStokExportExpandedColumns();
         const printOpts = {
             compact: true,
             printSeparateMuayeneColumns: true,
