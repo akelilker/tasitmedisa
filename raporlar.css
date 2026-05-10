@@ -660,7 +660,7 @@ width: max-content;
 border-collapse: separate;
 border-spacing: 0;
 }
-/* tr{display:grid} ile display:table çakışmasın — Raporlar stok: iki tablo + head-wrap/scroll-y aynı genişlik kontratı */
+/* tr{display:grid} ile display:table çakışmasın — Raporlar stok: head-wrap / scroll-y / tablo / thead|tbody + tr satırları aynı genişlik kontratı (detay kapalı %100, detay açık max-content) */
 #reports-modal #stok-list-container > .stok-list-container:not([data-has-detail-columns="true"]) .stok-list-head-wrap,
 #reports-modal #stok-list-container > .stok-list-container:not([data-has-detail-columns="true"]) .stok-list-scroll-y,
 #reports-modal #stok-list-container > .stok-list-container:not([data-has-detail-columns="true"]) .stok-list-table,
@@ -682,6 +682,19 @@ box-sizing: border-box !important;
 #reports-modal #stok-list-container > .stok-list-container[data-has-detail-columns="true"] .stok-list-table thead,
 #reports-modal #stok-list-container > .stok-list-container[data-has-detail-columns="true"] .stok-list-table tbody {
 display: block;
+width: max-content !important;
+min-width: max-content !important;
+max-width: none !important;
+box-sizing: border-box !important;
+}
+/* İki tablonun ortak üst sarmalayıcısı (flex column kalır; tablo/display:block ile karıştırılmaz) */
+#reports-modal #stok-list-container > .stok-list-container:not([data-has-detail-columns="true"]) .stok-list-hscroll-inner {
+width: 100% !important;
+min-width: 100% !important;
+max-width: 100% !important;
+box-sizing: border-box !important;
+}
+#reports-modal #stok-list-container > .stok-list-container[data-has-detail-columns="true"] .stok-list-hscroll-inner {
 width: max-content !important;
 min-width: max-content !important;
 max-width: none !important;
