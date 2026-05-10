@@ -3740,8 +3740,39 @@
     var kul = String(userLabel || '').trim();
     if (!kul || kul === '-') kul = 'Kullanıcı';
     var plaka = (vehicle && vehicle.plate != null ? String(vehicle.plate).trim() : '') || '-';
-    var islem = (task && task.type != null ? String(task.type).trim() : '') || 'ilgili';
-    return 'Sn. ' + kul + ';\n\nKullanmakta Olduğunuz ' + plaka + ' Plakalı Taşıtınızla ilgili ' + islem + ' işlemi için hatırlatma yapılmaktadır.\n\nLütfen güncel durumunuzu kontrol ediniz.';
+    var type = task && task.type != null ? String(task.type).trim() : '';
+    if (!type && task && task.field != null) {
+      var f = String(task.field).trim();
+      if (f === 'sigortaDate') type = 'Sigorta';
+      else if (f === 'kaskoDate') type = 'Kasko';
+      else if (f === 'muayeneDate') type = 'Muayene';
+      else if (f === 'egzozMuayeneDate') type = 'Egzoz Muayene';
+      else if (f === 'muayeneDate+egzozMuayeneDate') type = 'Muayene + Egzoz';
+    }
+    var dateRaw = task && task.date != null ? String(task.date).trim() : '';
+    var tarih = '';
+    if (dateRaw && typeof window.formatDateShort === 'function') {
+      tarih = String(window.formatDateShort(dateRaw) || '').trim();
+    }
+    function fallbackGeneral() {
+      var islem = type || 'ilgili';
+      return 'Sn. ' + kul + ';\n\nKullanmakta Olduğunuz ' + plaka + ' Plakalı Taşıtınızla ilgili ' + islem + ' işlemi için hatırlatma yapılmaktadır.\n\nLütfen güncel durumunuzu kontrol ediniz.';
+    }
+    if (!tarih) return fallbackGeneral();
+    switch (type) {
+      case 'Sigorta':
+        return 'Sn. ' + kul + ';\n\nKullanmakta Olduğunuz ' + plaka + ' Plakalı Taşıtın Zorunlu Trafik Sigorta Poliçesi, ' + tarih + ' Tarihinde Sona Erecektir.\n\nSüresi Geçmeden, Güncel Poliçenizi Talep Ediniz.';
+      case 'Kasko':
+        return 'Sn. ' + kul + ';\n\nKullanmakta Olduğunuz ' + plaka + ' Plakalı Taşıtın Kasko Poliçesi, ' + tarih + ' Tarihinde Sona Erecektir.\n\nSüresi Geçmeden, Güncel Poliçenizi Talep Ediniz.';
+      case 'Muayene':
+        return 'Sn. ' + kul + ';\n\nKullanmakta Olduğunuz ' + plaka + ' Plakalı Taşıtın Muayenesi, ' + tarih + ' Tarihinde Sona Erecektir.\n\nMağduriyet yaşamamak için, Muayene Randevunuzu En Az 1 Hafta Önceden Almanız tavsiye edilir.\n\nRandevu konusunda desteğe ihtiyaç duyarsanız destek talep edebilirsiniz.';
+      case 'Egzoz Muayene':
+        return 'Sn. ' + kul + ';\n\nKullanmakta Olduğunuz ' + plaka + ' Plakalı Taşıtın Egzoz Muayenesi, ' + tarih + ' Tarihinde Sona Erecektir.\n\nMağduriyet yaşamamak için, Egzoz Muayenesi Randevunuzu En Az 1 Hafta Önceden Almanız tavsiye edilir.\n\nRandevu konusunda desteğe ihtiyaç duyarsanız destek talep edebilirsiniz.';
+      case 'Muayene + Egzoz':
+        return 'Sn. ' + kul + ';\n\nKullanmakta Olduğunuz ' + plaka + ' Plakalı Taşıtın Muayenesi / Egzoz Muayenesi, ' + tarih + ' Tarihinde Sona Erecektir.\n\nMağduriyet yaşamamak için, Muayene / Egzoz Muayenesi Randevunuzu En Az 1 Hafta Önceden Almanız tavsiye edilir.\n\nRandevu konusunda desteğe ihtiyaç duyarsanız destek talep edebilirsiniz.';
+      default:
+        return fallbackGeneral();
+    }
   }
 
   function buildMonthlyTodoWhatsAppUrl(phone, message) {
