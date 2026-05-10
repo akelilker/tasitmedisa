@@ -783,29 +783,29 @@
     }
 
     // Sütun genişliklerini hesapla (key bazlı: sürükle-bırak sonrası genişlik doğru sütunla kalır)
-    // Temel kolonlar: sabit px; bir veya daha fazla DETAY kolon seçiliyse: üst blokta aynı basePx + detay px
+    // Temel kolon px tek kaynak (basePx); detay kapalı/açık aynı base — yalnız detay sütunları eklenince genişlik artar.
     function getColumnWidths(allColumns) {
         const hasDetail = allColumns.some(col => STOK_DETAIL_COLUMNS.indexOf(col.key) !== -1);
         /* Başlık/gövde aynı render’da aynı kırılım: innerWidth ile matchMedia sapmasın */
         const isMobile = isMobileStokViewport();
 
+        const basePx = isMobile
+            ? {
+                /* Mobil: görünür gridde tasitTipi yok (getStokVisibleGridColumns); map’te yok */
+                'sira': 26, 'sube': 82, 'yil': 37, 'marka': 160, 'plaka': 92, 'sanziman': 55, 'km': 58
+            }
+            : {
+                'sira': 22,
+                'sube': 76,
+                'yil': 38,
+                'marka': 132,
+                'tasitTipi': 64,
+                'plaka': 74,
+                'sanziman': 60,
+                'km': 69
+            };
+
         if (hasDetail) {
-            // 8+ sütun: sabit px. Masaüstünde Şube 4px genişler; denge için Marka 4px daralır.
-            const basePx = isMobile
-                ? {
-                    /* Mobil + detay: yatay scroll varken plaka/kullanıcı dar kalıp kırılıyordu (örn. 34GT8770, uzun ad soyad) */
-                    'sira': 26, 'sube': 82, 'yil': 37, 'marka': 160, 'plaka': 92, 'sanziman': 55, 'km': 58
-                }
-                : {
-                    'sira': 22,
-                    'sube': 76,
-                    'yil': 38,
-                    'marka': 132,
-                    'tasitTipi': 64,
-                    'plaka': 74,
-                    'sanziman': 60,
-                    'km': 69
-                };
             const detailPx = {
                 'sigorta': 72, 'kasko': 72, 'kaskoDegeri': 72, 'muayene': 78, 'egzozMuayene': 86, 'kredi': 56,
                 'lastik': 56, 'utts': 52, 'takip': 56, 'tramer': 52,
@@ -820,23 +820,8 @@
             }).join(' ');
         }
 
-        // Sadece temel: sabit px (tablo iç genişliği + yatay scroll). Mobil’de tasitTipi görünür gridde yok; map’te yok.
-        const basePxOnly = isMobile
-            ? {
-                'sira': 32, 'sube': 95, 'yil': 45, 'marka': 180, 'plaka': 100, 'sanziman': 65, 'km': 75
-            }
-            : {
-                'sira': 30,
-                'sube': 100,
-                'yil': 48,
-                'marka': 210,
-                'tasitTipi': 84,
-                'plaka': 96,
-                'sanziman': 74,
-                'km': 82
-            };
         return allColumns.map(col => {
-            const w = basePxOnly[col.key];
+            const w = basePx[col.key];
             return typeof w === 'number' ? w + 'px' : '80px';
         }).join(' ');
     }
