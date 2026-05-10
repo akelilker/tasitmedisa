@@ -400,12 +400,20 @@
         return { inner: inner, x: xEl, y: yEl };
     }
 
+    /** Masaüstü: dikey kaydırma .stok-list-scroll-x üzerinde (tek scroll konteyner); mobilde .stok-list-scroll-y. */
+    function stokListVerticalScrollUsesOuterX() {
+        return window.matchMedia && window.matchMedia('(min-width: 641px)').matches;
+    }
+
     function captureStokListScrollState(listRoot) {
         const o = getStokListScrollElements(listRoot);
         if (!o.x && !o.y) return null;
+        const outerY = stokListVerticalScrollUsesOuterX();
         return {
             left: (o.x && o.x.scrollLeft) || 0,
-            top: (o.y && o.y.scrollTop) || 0
+            top: outerY
+                ? ((o.x && o.x.scrollTop) || 0)
+                : ((o.y && o.y.scrollTop) || 0)
         };
     }
 
@@ -413,11 +421,17 @@
         if (!scrollState) return;
         requestAnimationFrame(function() {
             const o = getStokListScrollElements(listRoot);
+            const outerY = stokListVerticalScrollUsesOuterX();
             if (o.x) {
                 var maxL = Math.max(0, o.x.scrollWidth - o.x.clientWidth);
                 o.x.scrollLeft = Math.min(scrollState.left || 0, maxL);
             }
-            if (o.y) {
+            if (outerY) {
+                if (o.x) {
+                    var maxTx = Math.max(0, o.x.scrollHeight - o.x.clientHeight);
+                    o.x.scrollTop = Math.min(scrollState.top || 0, maxTx);
+                }
+            } else if (o.y) {
                 var maxT = Math.max(0, o.y.scrollHeight - o.y.clientHeight);
                 o.y.scrollTop = Math.min(scrollState.top || 0, maxT);
             }
