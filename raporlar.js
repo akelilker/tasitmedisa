@@ -2820,6 +2820,4 @@
 
 })();
 
-// Removed syncColumnWidths() as it is unnecessary and breaks the single source of truth for column widths.
-// Removed header.scrollLeft = scrollX.scrollLeft as the header and body are already in the same scroll container.
-enableHorizontalScrollSync();
+// syncColumnWidths / header.scrollLeft senkronu yok: tek kaynak buildStokListDomColumnLayout; başlık+gövde aynı .stok-list-scroll-x içinde.
