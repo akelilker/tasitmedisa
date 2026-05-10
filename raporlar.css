@@ -577,11 +577,20 @@ overflow-y: hidden;
 -webkit-overflow-scrolling: touch;
 box-sizing: border-box;
 }
+/* Tek containing block: başlık ve gövde kardeşlerde ayrı width:max-content olunca satır genişlikleri farklı hesaplanıyordu */
+.stok-list-hscroll-inner {
+flex: 1 1 auto;
+min-height: 0;
+min-width: 100%;
+width: max-content;
+box-sizing: border-box;
+display: flex;
+flex-direction: column;
+}
 .stok-list-head-wrap {
 flex: 0 0 auto;
 display: block;
-width: max-content;
-min-width: 100%;
+width: 100%;
 box-sizing: border-box;
 /* .stok-list-scroll-y ile aynı: dikey scrollbar/gutter yalnız gövdede olsa bile başlık satırı aynı iç genişlikte kalsın */
 scrollbar-gutter: stable;
@@ -589,8 +598,7 @@ scrollbar-gutter: stable;
 .stok-list-scroll-y {
 flex: 1 1 auto;
 min-height: 0;
-width: max-content;
-min-width: 100%;
+width: 100%;
 overflow-x: hidden;
 overflow-y: auto;
 -webkit-overflow-scrolling: touch;
