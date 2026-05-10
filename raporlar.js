@@ -791,8 +791,8 @@
 
         const basePx = isMobile
             ? {
-                /* Mobil: görünür gridde tasitTipi yok (getStokVisibleGridColumns); map’te yok — ~320–360px görünür alan + gap (detay kapalı yatay kaydırma istemez) */
-                'sira': 24, 'sube': 54, 'yil': 30, 'marka': 72, 'plaka': 56, 'sanziman': 40, 'km': 44
+                /* Mobil: görünür gridde tasitTipi yok — okunabilirlik dengeyi (422px track; gap/padding raporlar.css mobil stok’ta 1px) */
+                'sira': 24, 'sube': 58, 'yil': 36, 'marka': 116, 'plaka': 76, 'sanziman': 50, 'km': 62
             }
             : {
                 'sira': 22,
