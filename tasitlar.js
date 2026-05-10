@@ -3756,20 +3756,20 @@
     }
     function fallbackGeneral() {
       var islem = type || 'ilgili';
-      return 'Sn. ' + kul + ';\n\nKullanmakta Olduğunuz ' + plaka + ' Plakalı Taşıtınızla ilgili ' + islem + ' işlemi için hatırlatma yapılmaktadır.\n\nLütfen güncel durumunuzu kontrol ediniz.';
+      return 'Sn. ' + kul + ';\n- Kullanmakta Olduğunuz ' + plaka + ' Plakalı Taşıtınızla ilgili ' + islem + ' işlemi için hatırlatma yapılmaktadır.\n- Lütfen güncel durumunuzu kontrol ediniz.';
     }
     if (!tarih) return fallbackGeneral();
     switch (type) {
       case 'Sigorta':
-        return 'Sn. ' + kul + ';\n\nKullanmakta Olduğunuz ' + plaka + ' Plakalı Taşıtın Zorunlu Trafik Sigorta Poliçesi, ' + tarih + ' Tarihinde Sona Erecektir.\n\nSüresi Geçmeden, Güncel Poliçenizi Talep Ediniz.';
+        return 'Sn. ' + kul + ';\n- Kullanmakta Olduğunuz ' + plaka + ' Plakalı Taşıtın Zorunlu Trafik Sigorta Poliçesi, ' + tarih + ' Tarihinde Sona Erecektir.\n- Süresi Geçmeden, Güncel Poliçenizi Talep Ediniz.';
       case 'Kasko':
-        return 'Sn. ' + kul + ';\n\nKullanmakta Olduğunuz ' + plaka + ' Plakalı Taşıtın Kasko Poliçesi, ' + tarih + ' Tarihinde Sona Erecektir.\n\nSüresi Geçmeden, Güncel Poliçenizi Talep Ediniz.';
+        return 'Sn. ' + kul + ';\n- Kullanmakta Olduğunuz ' + plaka + ' Plakalı Taşıtın Kasko Poliçesi, ' + tarih + ' Tarihinde Sona Erecektir.\n- Süresi Geçmeden, Güncel Poliçenizi Talep Ediniz.';
       case 'Muayene':
-        return 'Sn. ' + kul + ';\n\nKullanmakta Olduğunuz ' + plaka + ' Plakalı Taşıtın Muayenesi, ' + tarih + ' Tarihinde Sona Erecektir.\n\nMağduriyet yaşamamak için, Muayene Randevunuzu En Az 1 Hafta Önceden Almanız tavsiye edilir.\n\nRandevu konusunda desteğe ihtiyaç duyarsanız destek talep edebilirsiniz.';
+        return 'Sn. ' + kul + ';\n- Kullanmakta Olduğunuz ' + plaka + ' Plakalı Taşıtın Muayenesi, ' + tarih + ' Tarihinde Sona Erecektir.\n- Mağduriyet yaşamamak için, Muayene Randevunuzu En Az 1 Hafta Önceden Almanız tavsiye edilir.\n- Randevu konusunda desteğe ihtiyaç duyarsanız destek talep edebilirsiniz.';
       case 'Egzoz Muayene':
-        return 'Sn. ' + kul + ';\n\nKullanmakta Olduğunuz ' + plaka + ' Plakalı Taşıtın Egzoz Muayenesi, ' + tarih + ' Tarihinde Sona Erecektir.\n\nMağduriyet yaşamamak için, Egzoz Muayenesi Randevunuzu En Az 1 Hafta Önceden Almanız tavsiye edilir.\n\nRandevu konusunda desteğe ihtiyaç duyarsanız destek talep edebilirsiniz.';
+        return 'Sn. ' + kul + ';\n- Kullanmakta Olduğunuz ' + plaka + ' Plakalı Taşıtın Egzoz Muayenesi, ' + tarih + ' Tarihinde Sona Erecektir.\n- Mağduriyet yaşamamak için, Egzoz Muayenesi Randevunuzu En Az 1 Hafta Önceden Almanız tavsiye edilir.\n- Randevu konusunda desteğe ihtiyaç duyarsanız destek talep edebilirsiniz.';
       case 'Muayene + Egzoz':
-        return 'Sn. ' + kul + ';\n\nKullanmakta Olduğunuz ' + plaka + ' Plakalı Taşıtın Muayenesi / Egzoz Muayenesi, ' + tarih + ' Tarihinde Sona Erecektir.\n\nMağduriyet yaşamamak için, Muayene / Egzoz Muayenesi Randevunuzu En Az 1 Hafta Önceden Almanız tavsiye edilir.\n\nRandevu konusunda desteğe ihtiyaç duyarsanız destek talep edebilirsiniz.';
+        return 'Sn. ' + kul + ';\n- Kullanmakta Olduğunuz ' + plaka + ' Plakalı Taşıtın Muayenesi / Egzoz Muayenesi, ' + tarih + ' Tarihinde Sona Erecektir.\n- Mağduriyet yaşamamak için, Muayene / Egzoz Muayenesi Randevunuzu En Az 1 Hafta Önceden Almanız tavsiye edilir.\n- Randevu konusunda desteğe ihtiyaç duyarsanız destek talep edebilirsiniz.';
       default:
         return fallbackGeneral();
     }
