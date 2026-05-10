@@ -829,7 +829,8 @@ box-sizing: border-box;
 #reports-modal.reports-modal--stok-list #stok-list-container.stok-list-root > .stok-list-container .stok-list-scroll-y {
 padding-bottom: 16px;
 }
-#reports-modal.reports-modal--stok-list #stok-list-container.stok-list-root > .stok-list-container .stok-list-table {
+/* Yalnız detay sütunları açıkken tablo max-content; kapalıyken üstteki %100 kontrat mobilde ezilmesin */
+#reports-modal.reports-modal--stok-list #stok-list-container.stok-list-root > .stok-list-container[data-has-detail-columns="true"] .stok-list-table {
 width: max-content !important;
 max-width: none !important;
 }
@@ -1371,8 +1372,8 @@ text-align: center;
 justify-content: center;
 }
 
-/* Tek satır hücreler: metin taşmasın (marka, sube, kullanıcı çok satır) */
-.stok-list-cell:not([data-col="marka"]):not([data-col="sube"]):not([data-col="kullanici"]) {
+/* Tek satır hücreler: metin taşmasın (marka, sube, kullanıcı çok satır; şanz./km — grid dar track + flex’te İçerik kesiliyordu) */
+.stok-list-cell:not([data-col="marka"]):not([data-col="sube"]):not([data-col="kullanici"]):not([data-col="sanziman"]):not([data-col="km"]) {
 white-space: nowrap;
 text-overflow: ellipsis;
 }
@@ -2690,6 +2691,16 @@ overflow-wrap: normal;
 overflow: visible;
 text-overflow: clip;
 min-width: auto !important;
+}
+
+/* Mobil Şanz./KM: nowrap+ellipsis+overflow:hidden bazı motorlarda dar grid track’te metni göstermiyordu */
+#reports-modal.reports-modal--stok-list #stok-list-container .stok-list-cell[data-col="sanziman"],
+#reports-modal.reports-modal--stok-list #stok-list-container .stok-list-cell[data-col="km"],
+#reports-modal.reports-modal--stok-list #stok-list-container .stok-list-header-cell[data-col="sanziman"],
+#reports-modal.reports-modal--stok-list #stok-list-container .stok-list-header-cell[data-col="km"] {
+white-space: nowrap !important;
+overflow: visible !important;
+text-overflow: clip !important;
 }
 
 /* Detay sütunları açıkken: sigorta / kasko / muayene–egzoz kesilmesin; yatay scroll alanında tam metin (plaka hariç — ayrı blok) */
