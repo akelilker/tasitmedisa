@@ -599,6 +599,8 @@ box-sizing: border-box;
 padding-bottom: 8px;
 scrollbar-width: thin;
 scrollbar-color: rgba(128, 128, 128, 0.35) transparent;
+/* Üst başlık tablosu ile aynı iç genişlik: dikey scrollbar gövdeyi daraltıp sütunları kaydırmasın */
+scrollbar-gutter: stable;
 }
 .stok-list-scroll-y::-webkit-scrollbar {
 width: 6px;
@@ -640,7 +642,7 @@ border-spacing: 0;
 /* Başlık tablosu ayrı; sticky gerekmez */
 #stok-list-container .stok-list-table thead th {
     position: relative;
-    border-bottom: 1px solid rgba(255, 0, 0, 0.25);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.22);
     padding-bottom: 6px;
     background: var(--bg);
 }
@@ -816,11 +818,13 @@ color: var(--theme-color);
   gap: 2px !important;
   box-sizing: border-box !important;
   margin-bottom: 0 !important;
+  width: 100%;
 }
 #stok-list-container .stok-list-row {
   padding: 1px !important;
   gap: 2px !important;
   box-sizing: border-box !important;
+  width: 100%;
 }
 #stok-list-container .stok-list-header-cell,
 #stok-list-container .stok-list-cell {
