@@ -662,11 +662,16 @@ border-spacing: 0;
 /* tr{display:grid} ile display:table çakışmasın — sütunlar kaymasın (Chrome tablo iç grid bug’ı) */
 #stok-list-container .stok-list-table {
 display: block;
+width: max-content !important;
+min-width: max-content !important;
+max-width: none !important;
 }
 #stok-list-container .stok-list-table thead,
 #stok-list-container .stok-list-table tbody {
 display: block;
-width: 100%;
+width: max-content !important;
+min-width: max-content !important;
+max-width: none !important;
 }
 /* Başlık tablosu ayrı; sticky gerekmez */
 #stok-list-container .stok-list-table thead th {
@@ -683,10 +688,12 @@ min-width: 800px;
 .stok-list-container[data-stok-muayene-egzoz-split="true"] .stok-list-table {
 min-width: 1008px;
 }
-/* Yatay kaydırma yalnız detay açıkken */
+/* Temel kolonlarda da iç genişlik px + max-content; dar ekranda yatay kaydırma (detay kapalıyken hidden kesiyordu) */
 #stok-list-container:has(.stok-list-top-controls) > .stok-list-container:not([data-has-detail-columns="true"]) .stok-list-scroll-x {
-overflow-x: hidden;
-touch-action: pan-y;
+overflow-x: auto;
+touch-action: pan-x pan-y;
+scrollbar-width: thin;
+scrollbar-color: rgba(128, 128, 128, 0.35) transparent;
 }
 #stok-list-container:has(.stok-list-top-controls) > .stok-list-container[data-has-detail-columns="true"] .stok-list-scroll-x {
 overflow-x: auto;
@@ -977,13 +984,17 @@ color: var(--theme-color);
   gap: 2px !important;
   box-sizing: border-box !important;
   margin-bottom: 0 !important;
-  width: 100%;
+  width: max-content !important;
+  min-width: max-content !important;
+  max-width: none !important;
 }
 #stok-list-container .stok-list-row {
   padding: 1px !important;
   gap: 2px !important;
   box-sizing: border-box !important;
-  width: 100%;
+  width: max-content !important;
+  min-width: max-content !important;
+  max-width: none !important;
 }
 #stok-list-container .stok-list-header-cell,
 #stok-list-container .stok-list-cell {
@@ -2598,24 +2609,22 @@ transform: none !important;
 .stok-branch-name { font-size: 15px; }
 .stok-branch-count { font-size: 15px; }
 
-/* MOBİL LİSTE: detay yoksa tablo ekrana sığsın; detay varken global min-width (yatay scroll) korunur */
+/* MOBİL LİSTE: temel kolonlarda tablo viewport’a sıkışmasın; px grid + max-content ile yatay taşma scroll’a düşer */
 #stok-list-container:has(.stok-list-top-controls) > .stok-list-container:not([data-has-detail-columns="true"]) .stok-list-table {
-width: 100% !important;
-min-width: unset !important;
+width: max-content !important;
+min-width: max-content !important;
+max-width: none !important;
 }
 
-.stok-list-header-row,
-.stok-list-row {
-width: 100% !important;
-}
-
-/* MOBİL LİSTE - Taşıtlar formatı: grid inline style ile, font daraldıkça küçülsün */
-.stok-list-header-row,
-.stok-list-row {
+/* MOBİL LİSTE - Taşıtlar formatı: grid inline style ile (getColumnWidths); satır genişliği grid ölçüsüyle uyumlu */
+#stok-list-container:has(.stok-list-top-controls) .stok-list-header-row,
+#stok-list-container:has(.stok-list-top-controls) .stok-list-row {
 display: grid !important;
 gap: 4px !important;
-width: 100% !important;
-/* grid-template-columns inline style ile gelir (getStokGridTemplate) */
+width: max-content !important;
+min-width: max-content !important;
+max-width: none !important;
+/* grid-template-columns inline style ile gelir */
 }
 /* Mobil: açık satır rengi daha belirgin (0.02 → 0.06) */
 .stok-list-row:nth-child(even) {
@@ -3123,6 +3132,7 @@ border-spacing: 0;
 /* Detay açıkken tablo viewport’a sıkışmasın — yatay kaydırma (masaüstü ile aynı mantık) */
 #stok-list-container:has(.stok-list-top-controls) > .stok-list-container[data-has-detail-columns="true"] .stok-list-table {
 width: max-content !important;
+min-width: max-content !important;
 max-width: none !important;
 }
 .stok-list-container {
