@@ -3779,15 +3779,43 @@
     }
   }
 
+  /** Aylık özet WhatsApp kısa link (/t/...) için görev tipi → kod. */
+  function getMonthlyTodoDriverFeedbackShortCode(task) {
+    var type = task && task.type != null ? String(task.type).trim() : '';
+    if (!type && task && task.field != null) {
+      var f2 = String(task.field).trim();
+      if (f2 === 'sigortaDate') type = 'Sigorta';
+      else if (f2 === 'kaskoDate') type = 'Kasko';
+      else if (f2 === 'muayeneDate') type = 'Muayene';
+      else if (f2 === 'egzozMuayeneDate') type = 'Egzoz Muayene';
+      else if (f2 === 'muayeneDate+egzozMuayeneDate') type = 'Muayene + Egzoz';
+      else if (f2 === 'sigortaDate+kaskoDate') type = 'Sigorta + Kasko';
+    }
+    switch (type) {
+      case 'Sigorta':
+        return 's';
+      case 'Kasko':
+        return 'k';
+      case 'Sigorta + Kasko':
+        return 'sk';
+      case 'Muayene':
+        return 'm';
+      case 'Egzoz Muayene':
+        return 'e';
+      case 'Muayene + Egzoz':
+        return 'me';
+      default:
+        return '';
+    }
+  }
+
   function buildMonthlyTodoDriverFeedbackUrl(task) {
-    var feedbackMessage = getMonthlyTodoDriverFeedbackMessage(task);
-    if (!String(feedbackMessage || '').trim()) return '';
+    var code = getMonthlyTodoDriverFeedbackShortCode(task);
+    if (!String(code || '').trim()) return '';
     var root = getMedisaMainAppRootPathname();
-    var dashboardRelative = root + 'driver/dashboard.html?feedback=talep&msg=' + encodeURIComponent(feedbackMessage) + '&source=monthly-summary';
-    var loginPath = root + 'driver/index.html?next=' + encodeURIComponent(dashboardRelative);
     var origin = window.location && window.location.origin ? String(window.location.origin) : '';
     if (!origin) return '';
-    return origin + loginPath;
+    return origin + root + 't/' + code;
   }
 
   function appendMonthlyTodoDriverFeedbackLinkToWhatsAppBody(body, task) {

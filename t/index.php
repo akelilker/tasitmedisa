@@ -30,10 +30,18 @@ $code = strtolower($code);
 
 header('Cache-Control: no-store, no-cache, must-revalidate');
 
+$dashboardPath = null;
 if ($code === 'km') {
     $dashboardPath = $basePrefix === ''
         ? '/driver/dashboard.html?action=km'
         : $basePrefix . '/driver/dashboard.html?action=km';
+} elseif (in_array($code, ['s', 'k', 'sk', 'm', 'e', 'me'], true)) {
+    $dashboardPath = $basePrefix === ''
+        ? '/driver/dashboard.html?feedback=talep&preset=' . $code
+        : $basePrefix . '/driver/dashboard.html?feedback=talep&preset=' . $code;
+}
+
+if ($dashboardPath !== null) {
     $target = $driverIndexPath . '?next=' . rawurlencode($dashboardPath);
     header('Location: ' . $target, true, 302);
     exit;
