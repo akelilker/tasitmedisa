@@ -722,6 +722,26 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
     })();
   }
 
+  function getDriverFeedbackPresetMessage(preset) {
+    var p = String(preset || '').trim().toLowerCase();
+    switch (p) {
+      case 's':
+        return 'Güncellenen Zorunlu Trafik Sigortası Poliçesinin Gönderilmesi.';
+      case 'k':
+        return 'Güncellenen Kasko Poliçesinin Gönderilmesi.';
+      case 'sk':
+        return 'Güncellenen Zorunlu Trafik Sigortası / Kasko Poliçesinin Gönderilmesi.';
+      case 'm':
+        return 'Genel Muayene Randevusu Konusunda Destek İhtiyacı';
+      case 'e':
+        return 'Genel Egzoz Muayenesi Randevusu Konusunda Destek İhtiyacı';
+      case 'me':
+        return 'Genel Muayene / Egzoz Muayenesi Randevusu Konusunda Destek İhtiyacı';
+      default:
+        return '';
+    }
+  }
+
   function getDriverFeedbackPrefillFromQuery() {
     try {
       var search = window.location && window.location.search ? window.location.search : '';
@@ -730,11 +750,20 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       if (params.get('feedback') !== 'talep') return null;
       var rawMsg = params.get('msg');
       if (rawMsg == null || rawMsg === '') rawMsg = params.get('message');
-      if (rawMsg == null) return null;
-      var msg = String(rawMsg).trim();
-      if (!msg) return null;
-      if (msg.length > 500) msg = msg.slice(0, 500);
-      return { type: 'talep', message: msg };
+      if (rawMsg != null && String(rawMsg).trim() !== '') {
+        var msgFromParam = String(rawMsg).trim();
+        if (msgFromParam.length > 500) msgFromParam = msgFromParam.slice(0, 500);
+        return { type: 'talep', message: msgFromParam };
+      }
+      var rawPreset = params.get('preset');
+      if (rawPreset == null || String(rawPreset).trim() === '') return null;
+      var preset = String(rawPreset).trim().toLowerCase();
+      var allowed = { s: 1, k: 1, sk: 1, m: 1, e: 1, me: 1 };
+      if (!allowed[preset]) return null;
+      var presetMsg = getDriverFeedbackPresetMessage(preset);
+      if (!String(presetMsg || '').trim()) return null;
+      if (presetMsg.length > 500) presetMsg = presetMsg.slice(0, 500);
+      return { type: 'talep', message: presetMsg };
     } catch (e) {
       console.warn('[Medisa] getDriverFeedbackPrefillFromQuery:', e);
       return null;
@@ -748,6 +777,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       u.searchParams.delete('msg');
       u.searchParams.delete('message');
       u.searchParams.delete('source');
+      u.searchParams.delete('preset');
       var qs = u.searchParams.toString();
       var newUrl = u.pathname + (qs ? '?' + qs : '') + (u.hash || '');
       history.replaceState(null, '', newUrl);
