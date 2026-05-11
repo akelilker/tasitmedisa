@@ -1615,7 +1615,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         align-items: flex-end;
         flex-wrap: nowrap;
         max-width: 100%;
-        margin-top: -17px !important;
+        margin-top: -10px !important;
         padding: 0 2px;
         box-sizing: border-box;
         gap: 10px !important;
