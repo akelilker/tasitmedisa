@@ -695,6 +695,7 @@ function shouldUseManualTransmission(vehicle) {
   const key = asciiKey([vehicle.vehicleType, vehicle.brandModel, vehicle.notes].filter(Boolean).join(" "));
   return (
     vehicle.vehicleType === "kamyon" ||
+    vehicle.vehicleType === "romork" ||
     vehicle.vehicleType === "minivan" ||
     key.includes("kamyon") ||
     key.includes("minibus") ||
@@ -906,7 +907,7 @@ function buildWorkbook(rows, sourceInventory) {
   const dictionaryRows = [
     ["Plaka", "plate", "Zorunlu", "Kaynaklarda plaka bazında tekilleştirildi."],
     ["Tahsis Edilen Şube", "branchId", "Zorunlu", "Şube adları uygulamadaki ID değerlerine eşlendi."],
-    ["Taşıt Tipi", "vehicleType", "Zorunlu", "otomobil / minivan / kamyon"],
+    ["Taşıt Tipi", "vehicleType", "Zorunlu", "otomobil / minivan / kamyon / romork"],
     ["Üretim Yılı", "year", "Zorunlu", "Model yılı kaynaklarından alındı."],
     ["Marka / Model", "brandModel", "Zorunlu", "Resmi liste varsa marka + tip birleştirildi."],
     ["Km", "km", "Zorunlu", "Savaş bey-km veya import şablonu kaynak alındı."],

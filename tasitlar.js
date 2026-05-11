@@ -2550,7 +2550,10 @@
             // Liste görünümü: Sıralamaya göre dinamik
             const kmValue = v.guncelKm || v.km;
             const kmLabel = kmValue ? formatNumber(kmValue) : '-';
-            const vehicleTypeLabel = toTitleCase(v.vehicleType || '-');
+            const vehicleTypeRaw = String(v.vehicleType || '-').trim();
+            const vehicleTypeLabel = vehicleTypeRaw === '-'
+              ? '-'
+              : getVehicleTypeLabel(vehicleTypeRaw.toLowerCase());
             const transmissionLabel = getTransmissionShortLabel(v.transmission);
             const branchLabel = toTitleCase(branchMap[String(v.branchId)]?.name || 'Tahsis Edilmemiş');
             
@@ -3395,6 +3398,22 @@
   // --- VEHICLE DETAIL - NEW FUNCTIONS ---
 
   function checkDateWarnings(dateString) { return (typeof window.checkDateWarnings === 'function' ? window.checkDateWarnings(dateString) : { class: '', days: null }); }
+
+  function getVehicleTypeRuleProfile(tasitTipi) {
+    var rawType = tasitTipi != null ? String(tasitTipi).trim().toLowerCase() : '';
+    if (!rawType) return 'otomobil';
+    if (rawType === 'kamyon') return 'buyukTicari';
+    if (rawType === 'romork') return 'buyukTicari';
+    if (rawType === 'minivan') return 'minivan';
+    if (rawType === 'otomobil') return 'otomobil';
+    return rawType;
+  }
+
+  function getMuayeneRenewalYearsByProfile(profileKey) {
+    return profileKey === 'otomobil' ? 2 : 1;
+  }
+
+  window.getVehicleTypeRuleProfile = getVehicleTypeRuleProfile;
 
   function isArchivedVehicleAssignmentLocked(vehicle) {
     return !!(vehicle && (vehicle.satildiMi === true || vehicle.arsiv === true));
@@ -4474,7 +4493,8 @@
     const labels = {
       'otomobil': 'Otomobil',
       'minivan': 'Küçük Ticari',
-      'kamyon': 'Büyük Ticari'
+      'kamyon': 'Büyük Ticari',
+      'romork': 'Römork'
     };
     return labels[type] || type;
   }
@@ -5671,8 +5691,9 @@
           }
         }
         if (!muayeneDefaultGgAa && vehicleMuayenePref && vehicleMuayenePref.muayeneDate) {
-          var _vtMu = ((vehicleMuayenePref.vehicleType || vehicleMuayenePref.tip) || 'otomobil').toLowerCase();
-          var _subYears = (_vtMu !== 'otomobil') ? -1 : -2;
+          var _vtMu = (vehicleMuayenePref.vehicleType || vehicleMuayenePref.tip || 'otomobil');
+          var _profileMu = getVehicleTypeRuleProfile(_vtMu);
+          var _subYears = -getMuayeneRenewalYearsByProfile(_profileMu);
           var _isoBack = addYears(String(vehicleMuayenePref.muayeneDate).trim(), _subYears);
           if (_isoBack) muayeneDefaultGgAa = formatDateForDisplay(_isoBack);
         }
@@ -7838,9 +7859,9 @@
   function calculateNextMuayene(vehicle, muayeneDate) {
     if (!muayeneDate) return '';
 
-    const vehicleType = (vehicle && (vehicle.vehicleType || vehicle.tip) ? (vehicle.vehicleType || vehicle.tip) : 'otomobil').toLowerCase();
-    const isCommercial = vehicleType !== 'otomobil';
-    const yearsToAdd = isCommercial ? 1 : 2;
+    const vehicleType = vehicle && (vehicle.vehicleType || vehicle.tip) ? (vehicle.vehicleType || vehicle.tip) : 'otomobil';
+    const profile = getVehicleTypeRuleProfile(vehicleType);
+    const yearsToAdd = getMuayeneRenewalYearsByProfile(profile);
     return addYears(muayeneDate, yearsToAdd);
   }
 

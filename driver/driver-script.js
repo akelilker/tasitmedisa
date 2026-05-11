@@ -422,13 +422,22 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
     return raw;
   }
 
+  function getVehicleTypeRuleProfileDriver(tasitTipi) {
+    var rawType = tasitTipi != null ? String(tasitTipi).trim().toLowerCase() : '';
+    if (!rawType) return 'otomobil';
+    if (rawType === 'kamyon') return 'buyukTicari';
+    if (rawType === 'romork') return 'buyukTicari';
+    if (rawType === 'minivan') return 'minivan';
+    if (rawType === 'otomobil') return 'otomobil';
+    return rawType;
+  }
+
   /** Muayene bitiş tarihi hesapla (ana panel + driver_event.php ile senkron). */
   function calculateNextMuayeneDate(tarihStr, vehicle) {
     if (!tarihStr) return '';
     var vehicleType = (vehicle && (vehicle.vehicleType || vehicle.tip)) ? (vehicle.vehicleType || vehicle.tip) : 'otomobil';
-    vehicleType = String(vehicleType).toLowerCase();
-    var isCommercial = vehicleType !== 'otomobil';
-    var years = isCommercial ? 1 : 2;
+    var profile = getVehicleTypeRuleProfileDriver(vehicleType);
+    var years = profile === 'otomobil' ? 2 : 1;
     try {
       var dt = new Date(tarihStr + 'T00:00:00');
       if (isNaN(dt.getTime())) return '';
