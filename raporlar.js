@@ -848,19 +848,6 @@
         }).join(' ');
     }
 
-    /** Modal stok tablosu: muayene sütunundan hemen sonra egzoz (Excel / yazdır ile aynı düzen) */
-    function expandStokGridColumns(columns) {
-        var out = [];
-        columns.forEach(function(col) {
-            if (!col || !col.key) return;
-            out.push(col);
-            if (col.key === 'muayene') {
-                out.push({ key: 'egzozMuayene', sortable: true });
-            }
-        });
-        return out;
-    }
-
     function expandStokGridRowCells(cells, vehicle) {
         var out = [];
         for (var i = 0; i < cells.length; i++) {
