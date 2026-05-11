@@ -143,7 +143,8 @@
     var labels = {
       'otomobil': 'Otomobil',
       'minivan': 'Küçük Ticari',
-      'kamyon': 'Büyük Ticari'
+      'kamyon': 'Büyük Ticari',
+      'romork': 'Römork'
     };
     return labels[type] || type;
   }

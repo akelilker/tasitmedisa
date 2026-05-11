@@ -1099,6 +1099,8 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
 .vehicle-type-btn[data-type="minivan"] { width: 26px; height: 17px; }
 .vehicle-type-btn[data-type="kamyon"] { width: 36px; height: 26px; padding-top: 2px; }
 .vehicle-type-btn[data-type="kamyon"] img { object-position: bottom center; transform: scale(0.95); transform-origin: bottom center; }
+.vehicle-type-btn[data-type="romork"] { width: 34px; height: 24px; padding-top: 2px; }
+.vehicle-type-btn[data-type="romork"] img { object-position: bottom center; transform: scale(0.96); transform-origin: bottom center; }
 
 .vehicle-type-btn:hover { background: transparent; border: none; }
 .vehicle-type-btn.active { background: transparent; border: none; }
@@ -1587,6 +1589,8 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     
     .vehicle-type-btn[data-type="kamyon"] { width: 46px; height: 34px; }
     .vehicle-type-btn[data-type="kamyon"] img { width: 100%; height: 100%; object-fit: contain; object-position: bottom center; }
+    .vehicle-type-btn[data-type="romork"] { width: 44px; height: 31px; }
+    .vehicle-type-btn[data-type="romork"] img { width: 100%; height: 100%; object-fit: contain; object-position: bottom center; }
     .vehicle-type-btn[data-type="otomobil"] { width: 48px; height: 46px; }
     .vehicle-type-btn[data-type="minivan"] { width: 40px; height: 30px; }
 
@@ -2221,6 +2225,8 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     .vehicle-type-btn[data-type="minivan"] { width: 30px; height: 22px; }
     .vehicle-type-btn[data-type="kamyon"] { width: 44px; height: 32px; padding-top: 2px; }
     .vehicle-type-btn[data-type="kamyon"] img { object-position: bottom center; transform: scale(0.95); transform-origin: bottom center; }
+    .vehicle-type-btn[data-type="romork"] { width: 42px; height: 30px; padding-top: 2px; }
+    .vehicle-type-btn[data-type="romork"] img { object-position: bottom center; transform: scale(0.96); transform-origin: bottom center; }
 }
 
 /* iOS PWA modal margin: style-core.css (.modal-overlay .modal-container) */
