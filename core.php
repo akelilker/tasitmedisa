@@ -62,6 +62,7 @@ function medisaDefaultData() {
         'arac_aylik_hareketler' => [],
         'duzeltme_talepleri' => [],
         'notificationReadState' => [],
+        'monthlyTodoWhatsAppLogs' => [],
     ];
 }
 
@@ -1008,6 +1009,7 @@ function medisaFilterDataForContextWithUserPredicate($data, $context, $userPredi
             'rows' => [],
         ],
         'notificationReadState' => is_array($data['notificationReadState'] ?? null) ? $data['notificationReadState'] : [],
+        'monthlyTodoWhatsAppLogs' => is_array($data['monthlyTodoWhatsAppLogs'] ?? null) ? $data['monthlyTodoWhatsAppLogs'] : [],
         'session' => medisaBuildSessionPayload($context),
     ];
 }

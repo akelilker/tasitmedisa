@@ -202,6 +202,69 @@ $result = medisaMutateData(function (&$data) use ($incomingData) {
         }
     }
 
+    if (!is_array($data['monthlyTodoWhatsAppLogs'] ?? null)) {
+        $data['monthlyTodoWhatsAppLogs'] = [];
+    }
+    $incomingMonthlyWaLogs = $incomingData['monthlyTodoWhatsAppLogs'] ?? null;
+    if (is_array($incomingMonthlyWaLogs)) {
+        $validShortCodes = ['s', 'k', 'sk', 'm', 'e', 'me', 'km'];
+        $mergeMonthlyWaEntry = function ($serverEntry, $clientEntry) {
+            $serverEntry = is_array($serverEntry) ? $serverEntry : [];
+            $clientEntry = is_array($clientEntry) ? $clientEntry : [];
+            $sCount = (int)($serverEntry['openedCount'] ?? 0);
+            $cCount = (int)($clientEntry['openedCount'] ?? 0);
+            $openedCount = max($sCount, $cCount, 1);
+            $sFirst = trim((string)($serverEntry['firstOpenedAt'] ?? ''));
+            $cFirst = trim((string)($clientEntry['firstOpenedAt'] ?? ''));
+            $firstOpenedAt = ($sFirst !== '' && $cFirst !== '')
+                ? (strcmp($sFirst, $cFirst) <= 0 ? $sFirst : $cFirst)
+                : ($sFirst !== '' ? $sFirst : $cFirst);
+            $sLast = trim((string)($serverEntry['lastOpenedAt'] ?? ''));
+            $cLast = trim((string)($clientEntry['lastOpenedAt'] ?? ''));
+            $lastOpenedAt = ($sLast !== '' && $cLast !== '')
+                ? (strcmp($sLast, $cLast) >= 0 ? $sLast : $cLast)
+                : ($sLast !== '' ? $sLast : $cLast);
+            if ($lastOpenedAt === '') {
+                $lastOpenedAt = date('c');
+            }
+            return [
+                'vehicleId' => trim((string)($clientEntry['vehicleId'] ?? $serverEntry['vehicleId'] ?? '')),
+                'plate' => trim((string)($clientEntry['plate'] ?? $serverEntry['plate'] ?? '')),
+                'type' => trim((string)($clientEntry['type'] ?? $serverEntry['type'] ?? '')),
+                'field' => trim((string)($clientEntry['field'] ?? $serverEntry['field'] ?? '')),
+                'date' => trim((string)($clientEntry['date'] ?? $serverEntry['date'] ?? '')),
+                'firstOpenedAt' => $firstOpenedAt !== '' ? $firstOpenedAt : date('c'),
+                'lastOpenedAt' => $lastOpenedAt,
+                'openedCount' => $openedCount,
+                'openedBy' => mb_substr(trim((string)($clientEntry['openedBy'] ?? $serverEntry['openedBy'] ?? '')), 0, 200, 'UTF-8'),
+            ];
+        };
+        foreach ($incomingMonthlyWaLogs as $rawKey => $entry) {
+            $key = trim((string)$rawKey);
+            if ($key === '' || !is_array($entry) || strlen($key) > 320) {
+                continue;
+            }
+            if (!preg_match('/^monthlyTodo:/', $key)) {
+                continue;
+            }
+            $typeCode = strtolower(trim((string)($entry['type'] ?? '')));
+            if ($typeCode !== '' && !in_array($typeCode, $validShortCodes, true) && !preg_match('/^[a-z0-9_+]{1,40}$/', $typeCode)) {
+                continue;
+            }
+            $entry['type'] = $typeCode;
+            $serverEntry = is_array($data['monthlyTodoWhatsAppLogs'][$key] ?? null) ? $data['monthlyTodoWhatsAppLogs'][$key] : [];
+            $data['monthlyTodoWhatsAppLogs'][$key] = $mergeMonthlyWaEntry($serverEntry, $entry);
+        }
+        if (count($data['monthlyTodoWhatsAppLogs']) > 4000) {
+            uasort($data['monthlyTodoWhatsAppLogs'], function ($a, $b) {
+                $la = is_array($a) ? trim((string)($a['lastOpenedAt'] ?? '')) : '';
+                $lb = is_array($b) ? trim((string)($b['lastOpenedAt'] ?? '')) : '';
+                return strcmp($lb, $la);
+            });
+            $data['monthlyTodoWhatsAppLogs'] = array_slice($data['monthlyTodoWhatsAppLogs'], 0, 3000, true);
+        }
+    }
+
     return [
         'success' => true,
         'vehicleVersions' => medisaSaveBuildVehicleVersions($incomingVehicles),

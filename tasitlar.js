@@ -4009,6 +4009,127 @@
     return out;
   }
 
+  function ensureMonthlyTodoWhatsAppLogs() {
+    if (!window.appData || typeof window.appData !== 'object') window.appData = {};
+    var raw = window.appData.monthlyTodoWhatsAppLogs;
+    if (!raw || typeof raw !== 'object' || Array.isArray(raw)) {
+      window.appData.monthlyTodoWhatsAppLogs = {};
+    }
+    return window.appData.monthlyTodoWhatsAppLogs;
+  }
+
+  function getMonthlyTodoVehicleReminderId(vehicle) {
+    if (!vehicle) return 'unknown';
+    var vid = vehicle.id != null ? String(vehicle.id).trim() : '';
+    if (vid) return vid;
+    var plate = vehicle.plate != null ? String(vehicle.plate).trim().replace(/\s+/g, '') : '';
+    if (plate) return 'plate:' + plate;
+    return 'unknown';
+  }
+
+  function getMonthlyTodoReminderShortCodeForLog(task) {
+    var code = String(getMonthlyTodoDriverFeedbackShortCode(task) || '').trim();
+    if (code) return code;
+    var f = task && task.field != null ? String(task.field).trim() : '';
+    if (!f) return 'genel';
+    var slug = f.replace(/[^a-zA-Z0-9+]/g, '_').replace(/_+/g, '_').toLowerCase();
+    if (!slug) return 'genel';
+    return slug.length > 48 ? slug.slice(0, 48) : slug;
+  }
+
+  function getMonthlyTodoLogIsoDateString(task) {
+    var iso = monthlyTodoTaskIsoNormalized(task);
+    return iso || '';
+  }
+
+  function buildMonthlyTodoWhatsAppReminderKey(task, vehicle) {
+    var idPart = getMonthlyTodoVehicleReminderId(vehicle);
+    var code = getMonthlyTodoReminderShortCodeForLog(task);
+    var isoSeg = getMonthlyTodoLogIsoDateString(task);
+    if (!isoSeg) isoSeg = 'no-date';
+    return 'monthlyTodo:' + idPart + ':' + code + ':' + isoSeg;
+  }
+
+  var MONTHLY_TODO_WA_REOPEN_CONFIRM = 'Kullanıcıya Daha Önce Bildirim Gönderilmiş Olabilir. Yine de Bildirmek İster misiniz?';
+
+  function recordMonthlyTodoWhatsAppOpened(reminderKey, anchorEl) {
+    if (!reminderKey || !anchorEl) return;
+    var logs = ensureMonthlyTodoWhatsAppLogs();
+    var nowIso = new Date().toISOString();
+    var prev = logs[reminderKey];
+    var vehicleId = anchorEl.getAttribute('data-mtw-vid') || '';
+    var plate = anchorEl.getAttribute('data-mtw-plate') || '';
+    var typeCode = anchorEl.getAttribute('data-mtw-type') || '';
+    var field = anchorEl.getAttribute('data-mtw-field') || '';
+    var date = anchorEl.getAttribute('data-mtw-date') || '';
+    var openedBy = getRecorderDisplayName();
+    if (prev && typeof prev === 'object') {
+      logs[reminderKey] = {
+        vehicleId: String(prev.vehicleId || vehicleId || ''),
+        plate: plate || String(prev.plate || ''),
+        type: typeCode || String(prev.type || ''),
+        field: field || String(prev.field || ''),
+        date: date || String(prev.date || ''),
+        firstOpenedAt: String(prev.firstOpenedAt || nowIso),
+        lastOpenedAt: nowIso,
+        openedCount: (Number(prev.openedCount) || 0) + 1,
+        openedBy: String(openedBy || prev.openedBy || '')
+      };
+    } else {
+      logs[reminderKey] = {
+        vehicleId: vehicleId,
+        plate: plate,
+        type: typeCode,
+        field: field,
+        date: date,
+        firstOpenedAt: nowIso,
+        lastOpenedAt: nowIso,
+        openedCount: 1,
+        openedBy: openedBy
+      };
+    }
+    anchorEl.classList.add('monthly-todo-whatsapp-btn', 'is-reminder-opened');
+    anchorEl.setAttribute('aria-label', 'WhatsApp bildirimi daha önce başlatılmış olabilir');
+    anchorEl.setAttribute('title', 'WhatsApp bildirimi daha önce başlatılmış olabilir');
+    if (typeof window.saveDataToServer === 'function') {
+      window.saveDataToServer().catch(function(err) {
+        console.warn('[Medisa] monthlyTodoWhatsAppLogs kaydı başarısız:', err && err.message);
+      });
+    }
+  }
+
+  function wireMonthlyTodoWhatsAppLinkHandler(modalEl) {
+    if (!modalEl || modalEl._medisaMonthlyTodoWaBound) return;
+    modalEl._medisaMonthlyTodoWaBound = true;
+    modalEl.addEventListener('click', function(ev) {
+      var el = ev.target;
+      if (!el || typeof el.closest !== 'function') return;
+      var link = el.closest('a.monthly-todo-wa-link');
+      if (!link || !modalEl.contains(link)) return;
+      var waUrl = link.getAttribute('data-wa-url');
+      var reminderKey = link.getAttribute('data-reminder-key');
+      if (!waUrl || !reminderKey) return;
+      ev.preventDefault();
+      ev.stopPropagation();
+      var logs = ensureMonthlyTodoWhatsAppLogs();
+      if (logs[reminderKey]) {
+        if (!window.confirm(MONTHLY_TODO_WA_REOPEN_CONFIRM)) return;
+      }
+      window.open(waUrl, '_blank', 'noopener,noreferrer');
+      var rk = reminderKey;
+      var anchor = link;
+      if (typeof window.requestAnimationFrame === 'function') {
+        window.requestAnimationFrame(function() {
+          recordMonthlyTodoWhatsAppOpened(rk, anchor);
+        });
+      } else {
+        window.setTimeout(function() {
+          recordMonthlyTodoWhatsAppOpened(rk, anchor);
+        }, 0);
+      }
+    }, true);
+  }
+
   function fillMonthlyTodoModalBody(bodyEl, tasksArray) {
     var typeDescriptionMap = {
       'Sigorta': 'Trafik Sigortasının',
@@ -4046,6 +4167,14 @@
       var kul = escapeHtml(userLabelRaw);
       var phone = getMonthlyTodoAssignedUserPhone(v, userMap);
       var waUrl = buildMonthlyTodoWhatsAppUrl(phone, buildMonthlyTodoWhatsAppMessage(t, v, userLabelRaw));
+      var waLogs = ensureMonthlyTodoWhatsAppLogs();
+      var reminderKey = buildMonthlyTodoWhatsAppReminderKey(t, v);
+      var reminderOpened = !!(waLogs && waLogs[reminderKey]);
+      var logShortCode = getMonthlyTodoReminderShortCodeForLog(t);
+      var logIsoDate = getMonthlyTodoLogIsoDateString(t);
+      var plateCompact = String(v.plate != null ? v.plate : '').trim().replace(/\s+/g, '');
+      var waBtnClass = 'monthly-todo-wa-link monthly-todo-whatsapp-btn' + (reminderOpened ? ' is-reminder-opened' : '');
+      var waAria = reminderOpened ? 'WhatsApp bildirimi daha önce başlatılmış olabilir' : 'WhatsApp bildirimi başlat';
       var ariaRow = 'Taşıt detayı: ' + (v.plate || '-') + ', ' + formatBrandModel(v.brandModel || '-');
       var typeText = String(t.type || '').trim();
       var dateRaw = t.date != null ? String(t.date).trim() : '';
@@ -4086,7 +4215,7 @@
       html += '<span class="monthly-todo-user">';
       html += '<span class="monthly-todo-user-name">' + kul + '</span>';
       if (waUrl) {
-        html += '<a class="monthly-todo-wa-link" href="' + escapeAttr(waUrl) + '" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp mesajı gönder">' + MONTHLY_TODO_WA_INLINE_SVG + '</a>';
+        html += '<a class="' + waBtnClass + '" href="#" role="button" rel="noopener noreferrer" data-wa-url="' + escapeAttr(waUrl) + '" data-reminder-key="' + escapeAttr(reminderKey) + '" data-mtw-vid="' + escapeAttr(vid) + '" data-mtw-plate="' + escapeAttr(plateCompact) + '" data-mtw-type="' + escapeAttr(logShortCode) + '" data-mtw-field="' + escapeAttr(String(t.field != null ? t.field : '').trim()) + '" data-mtw-date="' + escapeAttr(logIsoDate) + '" aria-label="' + escapeAttr(waAria) + '" title="' + escapeAttr(waAria) + '">' + MONTHLY_TODO_WA_INLINE_SVG + '</a>';
       }
       html += '</span>';
       html += '</span>';
@@ -4168,6 +4297,7 @@
     }
     modalEl.addEventListener('click', onMonthlyTodoModalClick);
     modalEl.addEventListener('keydown', onMonthlyTodoModalKeydown);
+    wireMonthlyTodoWhatsAppLinkHandler(modalEl);
   }
 
   function wireMonthlyTodoModalCloseUiOnce(modalEl) {
