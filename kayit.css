@@ -1122,7 +1122,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
 /* Römork PNG: translate(x,y) ile ince hiza; scale ile ölçü */
 .vehicle-type-btn[data-type="romork"] img {
     object-position: bottom center;
-    transform: translate(-3px, 16px) scale(1.74);
+    transform: translate(-3px, 18px) scale(1.74);
     transform-origin: bottom center;
     filter: brightness(1.14) grayscale(0.22) contrast(1.05);
 }
@@ -1139,7 +1139,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
 /* Hover'da genel kural transform'u ezmesin; römork ölçüsü korunsun */
 #vehicle-modal .vehicle-type-btn[data-type="romork"]:hover:not(.active) img {
     filter: brightness(1.2) grayscale(0.3);
-    transform: translate(-3px, 16px) scale(1.84);
+    transform: translate(-3px, 18px) scale(1.84);
     transform-origin: bottom center;
 }
 
@@ -1216,7 +1216,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
 .vehicle-type-picker-option[data-type="romork"] img {
     width: 58px;
     max-height: 48px;
-    transform: translate(-3px, 14px) scale(1.26);
+    transform: translate(-3px, 16px) scale(1.26);
     transform-origin: bottom center;
     filter: brightness(1.1) grayscale(0.22) contrast(1.05);
 }
@@ -1642,7 +1642,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         height: 100%;
         object-fit: contain;
         object-position: bottom center;
-        transform: translate(-1px, 9px) scale(1.28);
+        transform: translate(-1px, 11px) scale(1.28);
         transform-origin: bottom center;
         filter: brightness(1.12) grayscale(0.22) contrast(1.05);
     }
@@ -2283,7 +2283,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     .vehicle-type-btn[data-type="romork"] { width: 52px; height: 40px; padding-top: 2px; align-self: flex-end; margin-left: -8px; }
     .vehicle-type-btn[data-type="romork"] img {
         object-position: bottom center;
-        transform: translate(-3px, 16px) scale(1.56);
+        transform: translate(-3px, 18px) scale(1.56);
         transform-origin: bottom center;
         filter: brightness(1.14) grayscale(0.22) contrast(1.05);
     }
