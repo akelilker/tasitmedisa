@@ -1095,6 +1095,98 @@
       (source.year && String(source.year).includes(q)) ||
       (source.tahsisKisi && normalizeVehicleSearchText(source.tahsisKisi).includes(q));
   }
+
+  /** vehicleMatchesSearchQuery ile aynı kriterler — hangi sütunun eşleştiğini boyamak için */
+  function getVehicleSearchFieldHits(vehicle, query) {
+    const q = normalizeVehicleSearchText(query);
+    const empty = { plate: false, brand: false, year: false, user: false };
+    if (!q) return empty;
+
+    const source = vehicle || {};
+    const plate = String(source.plate != null ? source.plate : '');
+    const compactQuery = normalizePlateSearchText(q);
+    const rawPlate = normalizeVehicleSearchText(plate);
+    const compactPlate = normalizePlateSearchText(plate);
+    const formattedPlate = normalizePlateSearchText(formatPlaka(plate));
+
+    const plateHit =
+      !!(rawPlate && rawPlate.includes(q)) ||
+      !!(compactQuery && (compactPlate.includes(compactQuery) || formattedPlate.includes(compactQuery)));
+
+    const brandHit = !!(source.brandModel && normalizeVehicleSearchText(source.brandModel).includes(q));
+    const yearHit = !!(source.year && String(source.year).includes(q));
+    const userHit = !!(source.tahsisKisi && normalizeVehicleSearchText(source.tahsisKisi).includes(q));
+
+    return { plate: plateHit, brand: brandHit, year: yearHit, user: userHit };
+  }
+
+  /** Türkçe büyük/küçük harf duyarlı alt dizgi vurgusu — güvenli HTML */
+  function highlightVehicleSearchText(text, query, hitKind) {
+    const t = String(text == null ? '' : text);
+    const q = normalizeVehicleSearchText(query);
+    if (!q) return escapeHtml(t);
+    const tl = t.toLocaleLowerCase('tr-TR');
+    const ql = q.toLocaleLowerCase('tr-TR');
+    let out = '';
+    let last = 0;
+    let i = tl.indexOf(ql);
+    while (i !== -1) {
+      out += escapeHtml(t.slice(last, i));
+      out +=
+        '<mark class="vehicle-search-hit vehicle-search-hit--' +
+        hitKind +
+        '">' +
+        escapeHtml(t.slice(i, i + ql.length)) +
+        '</mark>';
+      last = i + ql.length;
+      i = tl.indexOf(ql, last);
+    }
+    out += escapeHtml(t.slice(last));
+    return out;
+  }
+
+  function maybeHighlightCell(displayText, query, hit, hitKind) {
+    const q = normalizeVehicleSearchText(query);
+    if (!hit || !q) return escapeHtml(String(displayText == null ? '' : displayText));
+    const hi = highlightVehicleSearchText(String(displayText), query, hitKind);
+    if (hi.indexOf('<mark') === -1) return escapeHtml(String(displayText));
+    return hi;
+  }
+
+  function buildVehicleUserNameHtmlWithSearch(rawName, query, userHit) {
+    const q = normalizeVehicleSearchText(query);
+    if (!userHit || !q) return buildVehicleUserNameHtml(rawName);
+
+    const userName = formatAdSoyad(rawName || '-');
+    const cleanName = String(userName || '-').trim();
+    if (!cleanName || cleanName === '-') return escapeHtml(cleanName || '-');
+
+    const parts = cleanName.split(/\s+/);
+    if (parts.length <= 1) {
+      return (
+        '<span class="user-name-line1 user-name-single" title="' +
+        escapeHtml(cleanName) +
+        '">' +
+        highlightVehicleSearchText(cleanName, query, 'user') +
+        '</span>'
+      );
+    }
+
+    const surname = parts.pop();
+    const givenNames = parts.join(' ');
+    return (
+      '<span class="user-name-line1" title="' +
+      escapeHtml(givenNames) +
+      '">' +
+      highlightVehicleSearchText(givenNames, query, 'user') +
+      '</span>' +
+      '<span class="user-name-line2" title="' +
+      escapeHtml(surname) +
+      '">' +
+      highlightVehicleSearchText(surname, query, 'user') +
+      '</span>'
+    );
+  }
   function getTransmissionLabel(transmission) {
     var value = String(transmission || '').trim().toLowerCase();
     if (value === 'otomatik') return 'Otomatik';
@@ -2510,6 +2602,8 @@
         html += '<div class="vehicles-list-scroll">';
       }
       html += `<div class="view-${viewMode}${extraClass}">` + vehicles.map(v => {
+        const searchHits = getVehicleSearchFieldHits(v, query);
+
         // Plaka (1. satır - tek satır maksimum)
         const plate = v.plate || '-';
         
@@ -2537,12 +2631,26 @@
 
         if (viewMode === 'card') {
             // Üçüncü satır boşsa div'i render etme
-            const thirdLineHtml = thirdLineDisplay ? `<div class="card-third-line" title="${escapeHtml(thirdLineDisplay)}">${escapeHtml(thirdLineDisplay)}</div>` : '';
+            const plateCardHtml = maybeHighlightCell(formatPlaka(plate), query, searchHits.plate, 'plate');
+            const brandCardHtml = maybeHighlightCell(formatBrandModel(brandModel), query, searchHits.brand, 'brand');
+            let thirdInner = escapeHtml(thirdLineDisplay);
+            if (
+              thirdLineDisplay &&
+              searchHits.user &&
+              normalizeVehicleSearchText(query) &&
+              !isArchive &&
+              activeBranchId !== 'all'
+            ) {
+              thirdInner = highlightVehicleSearchText(thirdLineDisplay, query, 'user');
+            }
+            const thirdLineHtml = thirdLineDisplay
+              ? `<div class="card-third-line" title="${escapeHtml(thirdLineDisplay)}">${thirdInner}</div>`
+              : '';
             const vid = v.id != null ? String(v.id).replace(/"/g, '&quot;') : '';
             return `
               <div class="card${unassignedClass}${vehicleDateSeverityClass}" data-vehicle-id="${vid}" style="cursor:pointer">
-                <div class="card-plate">${escapeHtml(formatPlaka(plate))}${satildiCardSpan}</div>
-                <div class="card-brand-model" title="${escapeHtml(brandModel)}">${escapeHtml(formatBrandModel(brandModel))}</div>
+                <div class="card-plate">${plateCardHtml}${satildiCardSpan}</div>
+                <div class="card-brand-model" title="${escapeHtml(brandModel)}">${brandCardHtml}</div>
                 ${thirdLineHtml}
               </div>
             `;
@@ -2563,18 +2671,24 @@
               let cellClass = '';
               switch(columnKey) {
                 case 'year':
-                  cellContent = escapeHtml(v.year || '-');
+                  cellContent = maybeHighlightCell(v.year || '-', query, searchHits.year, 'year');
                   cellClass = 'list-year';
                   break;
                 case 'plate':
-                  cellContent = escapeHtml(formatPlaka(plate));
+                  cellContent = maybeHighlightCell(formatPlaka(plate), query, searchHits.plate, 'plate');
                   cellClass = 'list-plate';
                   break;
                 case 'brand':
                   if (isArchive) {
-                    cellContent = '<span class="archive-brand-main" title="' + escapeHtml(formatBrandModel(brandModel)) + '">' + escapeHtml(formatBrandModel(brandModel)) + '</span>' + satildiBrandLine;
+                    cellContent =
+                      '<span class="archive-brand-main" title="' +
+                      escapeHtml(formatBrandModel(brandModel)) +
+                      '">' +
+                      maybeHighlightCell(formatBrandModel(brandModel), query, searchHits.brand, 'brand') +
+                      '</span>' +
+                      satildiBrandLine;
                   } else {
-                    cellContent = escapeHtml(formatBrandModel(brandModel));
+                    cellContent = maybeHighlightCell(formatBrandModel(brandModel), query, searchHits.brand, 'brand');
                   }
                   cellClass = 'list-brand';
                   break;
@@ -2593,7 +2707,7 @@
                 case 'user':
                   const assignedUser = v.assignedUserId ? userMap[String(v.assignedUserId)] : null;
                   const userNameRaw = assignedUser?.name || assignedUser?.isim || assignedUser?.fullName || v.tahsisKisi || '-';
-                  cellContent = buildVehicleUserNameHtml(userNameRaw);
+                  cellContent = buildVehicleUserNameHtmlWithSearch(userNameRaw, query, searchHits.user);
                   cellClass = 'list-user';
                   break;
                 case 'branch':
@@ -3246,11 +3360,16 @@
           let html = `<div style="padding:10px; color:#aaa; font-size:12px;">GENEL ARAMA SONUÇLARI (${filtered.length})</div>`;
           html += `<div class="view-list">` + filtered.map(v => {
               const vid = v.id != null ? String(v.id).replace(/"/g, '&quot;') : '';
+              const gh = getVehicleSearchFieldHits(v, val);
+              const brandLine = maybeHighlightCell(formatBrandModel(v.brandModel || '-'), val, gh.brand, 'brand');
+              const yearLine = maybeHighlightCell(String(v.year != null ? v.year : '-'), val, gh.year, 'year');
+              const tahsisLine = String(v.tahsisKisi || 'Boşta');
+              const userLine = maybeHighlightCell(tahsisLine, val, gh.user, 'user');
               return `
               <div class="list-item" data-vehicle-id="${vid}" style="cursor:pointer">
                 <div class="list-info">
-                  <h4>${escapeHtml(formatBrandModel(v.brandModel || '-'))}</h4>
-                  <span>${v.year} • ${v.tahsisKisi || 'Boşta'}</span>
+                  <h4>${brandLine}</h4>
+                  <span>${yearLine} • ${userLine}</span>
                 </div>
               </div>
           `}).join('') + `</div>`;

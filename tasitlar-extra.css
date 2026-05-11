@@ -21,6 +21,34 @@
     opacity: 0.7;
 }
 
+/* Taşıt listesi arama: eşleşen harfler — kriter rengi (Premium Dark ile uyumlu) */
+#vehicles-modal .vehicle-search-hit,
+#vehicles-modal-content[data-render-scope="search-global"] .vehicle-search-hit {
+    background: transparent !important;
+    padding: 0 1px;
+    margin: 0 -1px;
+    border-radius: 3px;
+    font-weight: 600;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+}
+#vehicles-modal .vehicle-search-hit--plate,
+#vehicles-modal-content[data-render-scope="search-global"] .vehicle-search-hit--plate {
+    color: #5eead4;
+}
+#vehicles-modal .vehicle-search-hit--brand,
+#vehicles-modal-content[data-render-scope="search-global"] .vehicle-search-hit--brand {
+    color: #fcd34d;
+}
+#vehicles-modal .vehicle-search-hit--year,
+#vehicles-modal-content[data-render-scope="search-global"] .vehicle-search-hit--year {
+    color: #93c5fd;
+}
+#vehicles-modal .vehicle-search-hit--user,
+#vehicles-modal-content[data-render-scope="search-global"] .vehicle-search-hit--user {
+    color: #f0abfc;
+}
+
 .view-list .list-cell.list-branch {
     text-align: center !important;
     font-size: inherit !important;
