@@ -9519,7 +9519,7 @@
             : (!isRead ? 'date-warning-orange' : 'notif-read-text');
           var stateClass = isRead ? ' notification-read' : ' notification-unread';
           var notifStyle = isRead ? '--notif-border: rgba(130, 130, 130, 0.55); --notif-fg: #9a9a9a;' : '';
-          var h = '<button type="button" data-action="open-driver-report" data-notif-key="' + escapeHtml(notifKey) + '" style="' + notifStyle + '" class="notification-item notification-item-feedback' + stateClass + (borderClass ? ' ' + borderClass : '') + '">' +
+          var h = '<button type="button" data-action="open-driver-report" data-notif-key="' + escapeHtml(notifKey) + '" style="' + notifStyle + '" class="notification-item notification-item-feedback is-driver-request' + stateClass + (borderClass ? ' ' + borderClass : '') + '">' +
           '<div class="notif-line1 notif-title"><span class="' + titleClass + '">' + escapeHtml(messageText) + '</span></div>' +
           '<div class="notif-line2 notif-meta-date">' + escapeHtml(dateDisplay) + '</div>' +
         '</button>';

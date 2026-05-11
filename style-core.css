@@ -966,6 +966,53 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-
   box-shadow: 0 0 8px rgba(var(--orange-warn-rgb), 0.2);
 }
 
+/*
+ * Kullanıcı paneli — genel talep bildirimi (tasitlar.js: talep_tipi === 'genel', notifKey request|general|*).
+ * KM/Bilgi düzeltme talepleri bu sınıfı almaz; renkleri kırmızı/turuncu kalır.
+ */
+#notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request.notification-unread {
+  border-color: rgba(34, 197, 94, 0.85) !important;
+  box-shadow: 0 0 10px rgba(34, 197, 94, 0.2) !important;
+  background: linear-gradient(180deg, rgba(14, 26, 20, 0.94) 0%, rgba(8, 20, 14, 0.92) 100%) !important;
+}
+#notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request.notification-read {
+  border-color: rgba(34, 197, 94, 0.45) !important;
+  box-shadow: 0 0 8px rgba(34, 197, 94, 0.12) !important;
+  background: linear-gradient(180deg, rgba(14, 26, 20, 0.68) 0%, rgba(8, 20, 14, 0.6) 100%) !important;
+}
+#notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request.notification-unread .notif-line1,
+#notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request.notification-unread .notif-title,
+#notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request.notification-unread .notif-line2 {
+  color: #22c55e !important;
+}
+#notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request.notification-unread .notif-line1 .date-warning-red,
+#notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request.notification-unread .notif-line1 .date-warning-orange {
+  color: #22c55e !important;
+}
+#notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request.notification-read .notif-line1,
+#notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request.notification-read .notif-title,
+#notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request.notification-read .notif-line2 {
+  color: rgba(34, 197, 94, 0.78) !important;
+}
+#notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request.notification-read .notif-line1 .notif-read-text {
+  color: rgba(34, 197, 94, 0.78) !important;
+}
+#notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request:is(:hover, :focus, :active, :focus-visible) {
+  border-color: rgba(34, 197, 94, 1) !important;
+  background: rgba(34, 197, 94, 0.14) !important;
+  box-shadow: 0 0 12px rgba(34, 197, 94, 0.28) !important;
+}
+#notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request:is(:hover, :focus, :active, :focus-visible) .notif-line1,
+#notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request:is(:hover, :focus, :active, :focus-visible) .notif-title,
+#notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request:is(:hover, :focus, :active, :focus-visible) .notif-line2 {
+  color: #22c55e !important;
+}
+#notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request.notification-read:is(:hover, :focus, :active, :focus-visible) .notif-line1,
+#notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request.notification-read:is(:hover, :focus, :active, :focus-visible) .notif-title,
+#notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request.notification-read:is(:hover, :focus, :active, :focus-visible) .notif-line2 {
+  color: rgba(34, 197, 94, 0.92) !important;
+}
+
 /* Bildirim etkileşimi: tüm kartlarda hafif büyüme, renkli kartlarda özel palet */
 #notifications-dropdown.settings-dropdown > .notification-item:is(:hover, :focus, :active, :focus-visible),
 #notifications-dropdown.settings-dropdown > button.notification-item:is(:hover, :focus, :active, :focus-visible) {
@@ -1111,6 +1158,14 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page) .main-header-
 }
 #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border .notif-line2.notif-meta-date {
   color: rgba(var(--theme-color-rgb), 0.82);
+  opacity: 0.95;
+}
+#notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request.notification-unread .notif-line2.notif-meta-date {
+  color: #22c55e !important;
+  opacity: 0.95;
+}
+#notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request.notification-read .notif-line2.notif-meta-date {
+  color: rgba(34, 197, 94, 0.78) !important;
   opacity: 0.95;
 }
 #notifications-dropdown .notification-item .notif-line2:empty {
@@ -1311,6 +1366,14 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
 }
 #notifications-dropdown.settings-dropdown > button.notification-item .notif-line1 .date-warning-orange {
   color: var(--orange-warn) !important;
+}
+
+#notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request .notif-line1 .date-warning-red,
+#notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request .notif-line1 .date-warning-orange {
+  color: #22c55e !important;
+}
+#notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request.notification-read .notif-line1 .notif-read-text {
+  color: rgba(34, 197, 94, 0.78) !important;
 }
 
 #notifications-dropdown.settings-dropdown > button.notification-item .notif-line1 .notif-read-text {
@@ -1662,6 +1725,10 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   #notifications-dropdown .notification-item .date-warning-orange {
     color: var(--orange-warn) !important;
   }
+  #notifications-dropdown .notification-item.is-driver-request .date-warning-red,
+  #notifications-dropdown .notification-item.is-driver-request .date-warning-orange {
+    color: #22c55e !important;
+  }
 
   #notifications-dropdown .notification-item:not(.date-warning-red-border):not(.date-warning-orange-border):not(.notification-item-activity.notification-unread) .notif-line2 {
     color: #a0aec0 !important;
@@ -1718,6 +1785,18 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
     z-index: 4 !important;
   }
 
+  #notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request.date-warning-red-border:is(:hover, :focus, :active, :focus-visible),
+  #notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request.date-warning-orange-border:is(:hover, :focus, :active, :focus-visible),
+  #notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request:is(:hover, :focus, :active, :focus-visible) {
+    border-color: rgba(34, 197, 94, 1) !important;
+    background: rgba(34, 197, 94, 0.14) !important;
+    box-shadow: 0 0 12px rgba(34, 197, 94, 0.28) !important;
+    color: #22c55e !important;
+    transform: scale(1.012) !important;
+    transform-origin: center center !important;
+    z-index: 4 !important;
+  }
+
   #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border:is(:hover, :focus, :active, :focus-visible) .notif-line1,
   #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border:is(:hover, :focus, :active, :focus-visible) .notif-title,
   #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-red-border:is(:hover, :focus, :active, :focus-visible) .notif-line2 {
@@ -1729,6 +1808,19 @@ body:not(.modal-open):has(#notifications-dropdown.open) .user-panel-link {
   #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border:is(:hover, :focus, :active, :focus-visible) .notif-title,
   #notifications-dropdown.settings-dropdown > button.notification-item.date-warning-orange-border:is(:hover, :focus, :active, :focus-visible) .notif-line2 {
     color: var(--orange-warn) !important;
+    font-size: calc(100% + 0.5px) !important;
+  }
+
+  #notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request:is(:hover, :focus, :active, :focus-visible) .notif-line1,
+  #notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request:is(:hover, :focus, :active, :focus-visible) .notif-title,
+  #notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request:is(:hover, :focus, :active, :focus-visible) .notif-line2 {
+    color: #22c55e !important;
+    font-size: calc(100% + 0.5px) !important;
+  }
+  #notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request.notification-read:is(:hover, :focus, :active, :focus-visible) .notif-line1,
+  #notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request.notification-read:is(:hover, :focus, :active, :focus-visible) .notif-title,
+  #notifications-dropdown.settings-dropdown > button.notification-item.is-driver-request.notification-read:is(:hover, :focus, :active, :focus-visible) .notif-line2 {
+    color: rgba(34, 197, 94, 0.92) !important;
     font-size: calc(100% + 0.5px) !important;
   }
 
