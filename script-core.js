@@ -116,6 +116,17 @@ window.escapeAttr = function(s) {
   return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 };
 
+/** iOS ana ekran PWA (Safari dışı tam ekran); belge linkleri aynı webview'da kilitlenmesin diye tespit */
+window.isIOSPWA = function isIOSPWA() {
+  var ua = navigator.userAgent || '';
+  var isIOS = /iPad|iPhone|iPod/.test(ua) ||
+    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  var mm = typeof window.matchMedia === 'function' ? window.matchMedia : null;
+  var isStandalone = !!(mm && (mm('(display-mode: standalone)').matches || mm('(display-mode: fullscreen)').matches)) ||
+    window.navigator.standalone === true;
+  return !!(isIOS && isStandalone);
+};
+
 /** KM gösterimi: rakam + binlik nokta; boşta '–' (rapor/admin ile uyumlu) */
 window.formatKm = function(value) {
   if (value == null || value === '') return '–';
@@ -808,7 +819,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Lazy modül asset sürümleri — tek nesne; index.html içindeki style-core ?v= ile tasitlar sürümü uyumlu kalmalı
 var MEDISA_MODULE_VERSIONS = {
-  tasitlar: '20260512.4',
+  tasitlar: '20260512.5',
   raporlar: '20260511.2',
   kayitJs: '20260506.1',
   kayitCss: '20260511.20',

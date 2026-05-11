@@ -6362,6 +6362,9 @@
   }
 
   function shouldUseInlineRuhsatViewer() {
+    if (typeof window.isIOSPWA === 'function' && window.isIOSPWA()) {
+      return false;
+    }
     const hasMatchMedia = typeof window.matchMedia === 'function';
     const isMobileViewport = hasMatchMedia ? window.matchMedia('(max-width: 768px)').matches : window.innerWidth <= 768;
     const isStandalone = hasMatchMedia && (window.matchMedia('(display-mode: standalone)').matches || window.matchMedia('(display-mode: fullscreen)').matches);
@@ -6378,20 +6381,31 @@
     const targetUrl = String(url || '').trim();
     if (!targetUrl) return false;
 
-    const existingWindow = targetWindow && !targetWindow.closed ? targetWindow : null;
-    if (existingWindow) {
+    var iosPwa = typeof window.isIOSPWA === 'function' && window.isIOSPWA();
+
+    if (!iosPwa) {
+      const existingWindow = targetWindow && !targetWindow.closed ? targetWindow : null;
+      if (existingWindow) {
+        try {
+          existingWindow.location.href = targetUrl;
+          existingWindow.focus();
+          return true;
+        } catch (e) {}
+      }
+    }
+
+    if (iosPwa) {
       try {
-        existingWindow.location.href = targetUrl;
-        existingWindow.focus();
-        return true;
-      } catch (e) {}
+        var extWin = window.open(targetUrl, '_blank', 'noopener,noreferrer');
+        if (extWin) return true;
+      } catch (ePwa) {}
     }
 
     try {
       const a = document.createElement('a');
       a.href = targetUrl;
       a.target = '_blank';
-      a.rel = 'noopener';
+      a.rel = 'noopener noreferrer';
       a.style.display = 'none';
       document.body.appendChild(a);
       a.click();
@@ -6399,7 +6413,7 @@
       return true;
     } catch (e) {
       try {
-        window.open(targetUrl, '_blank', 'noopener');
+        window.open(targetUrl, '_blank', iosPwa ? 'noopener,noreferrer' : 'noopener');
         return true;
       } catch (ignored) {}
     }
@@ -7032,6 +7046,12 @@
 
   function renderInlineRuhsatViewer(vehicleId, url, options, documentType) {
     const dt = documentType || 'ruhsat';
+    if (typeof window.isIOSPWA === 'function' && window.isIOSPWA()) {
+      if (typeof window.viewRuhsatPdf === 'function') {
+        window.viewRuhsatPdf(vehicleId, dt);
+      }
+      return true;
+    }
     const cfg = getVehicleDocumentConfig(dt);
     const content = document.getElementById('ruhsat-modal-content') || DOM.dinamikOlayFormIcerik;
     const saveBtn = document.getElementById('ruhsat-save-btn') || DOM.dinamikOlayKaydetBtn;
