@@ -1105,7 +1105,7 @@
 
         const vehicleId = escapeHtml(String(vehicle.id || ''));
 
-        return `<tr class="stok-list-row" data-vehicle-id="${vehicleId}" onclick="openStokVehicleDetail(event, '${vehicleId}')" style="grid-template-columns: ${gridTemplateColumns}">${gridCells.map(cell => {
+        return `<tr class="stok-list-row" data-vehicle-id="${vehicleId}" style="grid-template-columns: ${gridTemplateColumns}">${gridCells.map(cell => {
             const cellClass = ['stok-list-cell', cell.warningClass || ''].filter(Boolean).join(' ');
             var inner;
             if (cell.key === 'tasitTipi' && isMobileStokViewport()) {
