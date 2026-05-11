@@ -1990,9 +1990,9 @@
   }
 
   /* --- TARİHÇE MODAL --- */
-  /* Mobil: sol ok + "Taşıt detay" 12px aşağı, sol asılı */
+  /* Mobil: negatif margin header ile çakıştırıyordu; boşluk tasitlar-base #vehicle-history-modal .universal-back-bar padding ile */
   #vehicle-history-modal .universal-back-bar {
-    margin-top: -12px !important;
+    margin-top: 0 !important;
   }
   #vehicle-history-modal .modal-header {
     justify-content: flex-start !important;
