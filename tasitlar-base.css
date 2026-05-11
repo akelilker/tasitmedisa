@@ -1445,10 +1445,14 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     color: #ffffff !important;
     padding-bottom: 1px !important; /* Sekme metni ile altındaki yatay çizgi arası 1px */
 }
-/* Tarihçe modalı: sol ok + etiket header altında kesilmesin (negatif margin kaldırıldı); style-core ile uyum */
+/* Tarihçe modalı: sol ok + etiket — style-core'da header z-index:20 > back-bar:10 olduğu için üst üste binince kırmızı başlık satırı kesiyordu; katman + opak şerit */
 #vehicle-history-modal .universal-back-bar {
   margin-top: 0 !important;
-  padding: 8px 0 0 0 !important;
+  padding: 12px 16px 8px 16px !important;
+  position: relative !important;
+  z-index: 22 !important;
+  background-color: var(--modal-bg) !important;
+  box-sizing: border-box !important;
 }
 #vehicle-history-modal .universal-back-btn .universal-back-label {
   color: #adb5bd !important;
