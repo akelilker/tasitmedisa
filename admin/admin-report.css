@@ -1977,6 +1977,17 @@ body.admin-report-page .main-header-user-name.is-empty {
   margin-bottom: 0.25rem;
 }
 
+.pending-card .info .pending-general-line {
+  display: block;
+  line-height: 1.45;
+}
+.pending-card .info strong + .pending-general-line {
+  margin-top: 0.15rem;
+}
+.pending-card .info .pending-general-line + .pending-general-line {
+  margin-top: 0.35rem;
+}
+
 .pending-card .info .pending-name,
 .pending-card .info .pending-km-label,
 .pending-card .info .pending-sebep-label,
