@@ -1618,7 +1618,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         margin-top: -21px !important;
         padding: 0 2px;
         box-sizing: border-box;
-        gap: 7px !important;
+        gap: 10px !important;
         transform: none !important;
     }
     .vehicle-type-group {
@@ -1630,7 +1630,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
         margin-top: 0;
         padding: 0 2px;
         box-sizing: border-box;
-        gap: 7px !important;
+        gap: 10px !important;
     }
     .modal-column-left .form-section-inline:first-child .form-label { margin-bottom: 0 !important; padding-bottom: 0; line-height: 1; }
     
