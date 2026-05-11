@@ -1127,11 +1127,8 @@
             event.stopPropagation();
         }
 
-        if (!vehicleId) return;
-
-        if (typeof window.showVehicleDetail === 'function') {
-            window.showVehicleDetail(vehicleId);
-        }
+        // Raporlar > Stok Liste salt görüntüleme ekranıdır; satır tıklaması araç detayı açmaz.
+        return;
     };
 
     // Sıralama uygula
