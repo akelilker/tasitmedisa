@@ -110,7 +110,8 @@ function getDefaultAppData() {
             sourceFileName: '',
             rows: []
         },
-        notificationReadState: {}
+        notificationReadState: {},
+        monthlyTodoWhatsAppLogs: {}
     };
 }
 
@@ -565,6 +566,9 @@ function loadDataFromLocalStorage() {
                 },
                 notificationReadState: (data.notificationReadState && typeof data.notificationReadState === 'object' && !Array.isArray(data.notificationReadState))
                     ? data.notificationReadState
+                    : {},
+                monthlyTodoWhatsAppLogs: (data.monthlyTodoWhatsAppLogs && typeof data.monthlyTodoWhatsAppLogs === 'object' && !Array.isArray(data.monthlyTodoWhatsAppLogs))
+                    ? data.monthlyTodoWhatsAppLogs
                     : {}
             };
             setMedisaSession(getSessionFromToken());
@@ -725,6 +729,9 @@ async function loadDataFromServer(forceRefresh) {
                 },
                 notificationReadState: (data.notificationReadState && typeof data.notificationReadState === 'object' && !Array.isArray(data.notificationReadState))
                     ? data.notificationReadState
+                    : {},
+                monthlyTodoWhatsAppLogs: (data.monthlyTodoWhatsAppLogs && typeof data.monthlyTodoWhatsAppLogs === 'object' && !Array.isArray(data.monthlyTodoWhatsAppLogs))
+                    ? data.monthlyTodoWhatsAppLogs
                     : {}
             };
 
