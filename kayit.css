@@ -1100,7 +1100,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
 .vehicle-type-btn[data-type="kamyon"] { width: 36px; height: 26px; padding-top: 2px; }
 .vehicle-type-btn[data-type="kamyon"] img { object-position: bottom center; transform: scale(0.95); transform-origin: bottom center; }
 /* Römork: ölçü (img filtresi aşağıda, genel .vehicle-type-btn img'den sonra) */
-.vehicle-type-btn[data-type="romork"] { width: 42px; height: 32px; padding-top: 2px; }
+.vehicle-type-btn[data-type="romork"] { width: 44px; height: 34px; padding-top: 2px; align-self: flex-end; }
 
 .vehicle-type-btn:hover { background: transparent; border: none; }
 .vehicle-type-btn.active { background: transparent; border: none; }
@@ -1119,10 +1119,10 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     padding: 0;
 }
 
-/* Römork PNG: koyu raster + geniş tuval — SVG ile aynı ton için parlaklık; ölçü scale */
+/* Römork PNG: grafik tuvalde yukarıda — translateY ile alt hizaya; hafif dikey büyütme */
 .vehicle-type-btn[data-type="romork"] img {
     object-position: bottom center;
-    transform: scale(1.62);
+    transform: translateY(6px) scale(1.74);
     transform-origin: bottom center;
     filter: brightness(1.14) grayscale(0.22) contrast(1.05);
 }
@@ -1139,7 +1139,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
 /* Hover'da genel kural transform'u ezmesin; römork ölçüsü korunsun */
 #vehicle-modal .vehicle-type-btn[data-type="romork"]:hover:not(.active) img {
     filter: brightness(1.2) grayscale(0.3);
-    transform: scale(1.7);
+    transform: translateY(6px) scale(1.84);
     transform-origin: bottom center;
 }
 
@@ -1213,7 +1213,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
 .vehicle-type-picker-option[data-type="romork"] img {
     width: 58px;
     max-height: 48px;
-    transform: scale(1.22);
+    transform: translateY(4px) scale(1.26);
     transform-origin: bottom center;
     filter: brightness(1.1) grayscale(0.22) contrast(1.05);
 }
@@ -1610,13 +1610,13 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     
     .vehicle-type-btn[data-type="kamyon"] { width: 46px; height: 34px; }
     .vehicle-type-btn[data-type="kamyon"] img { width: 100%; height: 100%; object-fit: contain; object-position: bottom center; }
-    .vehicle-type-btn[data-type="romork"] { width: 54px; height: 40px; }
+    .vehicle-type-btn[data-type="romork"] { width: 54px; height: 42px; align-self: flex-end; }
     .vehicle-type-btn[data-type="romork"] img {
         width: 100%;
         height: 100%;
         object-fit: contain;
         object-position: bottom center;
-        transform: scale(1.32);
+        transform: translateY(5px) scale(1.38);
         transform-origin: bottom center;
         filter: brightness(1.12) grayscale(0.22) contrast(1.05);
     }
@@ -2254,10 +2254,10 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     .vehicle-type-btn[data-type="minivan"] { width: 30px; height: 22px; }
     .vehicle-type-btn[data-type="kamyon"] { width: 44px; height: 32px; padding-top: 2px; }
     .vehicle-type-btn[data-type="kamyon"] img { object-position: bottom center; transform: scale(0.95); transform-origin: bottom center; }
-    .vehicle-type-btn[data-type="romork"] { width: 52px; height: 38px; padding-top: 2px; }
+    .vehicle-type-btn[data-type="romork"] { width: 52px; height: 40px; padding-top: 2px; align-self: flex-end; }
     .vehicle-type-btn[data-type="romork"] img {
         object-position: bottom center;
-        transform: scale(1.48);
+        transform: translateY(6px) scale(1.56);
         transform-origin: bottom center;
         filter: brightness(1.14) grayscale(0.22) contrast(1.05);
     }
