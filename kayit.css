@@ -1565,7 +1565,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     .modal-close { font-size: 21px; }
     textarea.form-input { font-size: 13px; }
     
-    .modal-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 0; min-width: 0; }
+    .modal-columns { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0; min-width: 0; }
     .modal-column-left { padding-right: 8px; padding-left: 0; border-right: 1px solid rgba(var(--theme-color-rgb), 0.28); min-width: 0; }
     .modal-column-right { padding-left: 8px; padding-right: 0; overflow: visible; min-width: 0; }
     #vehicle-modal .modal-column-right { display: flex; flex-direction: column; min-height: 0; }
@@ -1605,26 +1605,49 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     }
 
     /* Mobil: Plaka etiketi ile Taşıt simgeleri arası 1px (inline style kaldırıldı, çakışan kurallar temizlendi) */
-    #vehicle-modal .modal-column-left .form-section-inline:first-child { flex-direction: column; align-items: flex-start; gap: 0 !important; margin-bottom: 1px !important; }
+    #vehicle-modal .modal-column-left .form-section-inline:first-child { flex-direction: column; align-items: flex-start; gap: 0 !important; margin-bottom: 1px !important; min-width: 0; max-width: 100%; }
     #vehicle-modal .modal-column-left .form-section:has(#vehicle-plate) { margin-top: 0 !important; }
-    .modal-column-left .form-section-inline:first-child .vehicle-type-group { width: 100%; justify-content: center; align-items: flex-end; flex-wrap: nowrap; max-width: 100%; margin-top: -21px !important; padding-top: 0; gap: 26px; }
-    .vehicle-type-group { width: 100%; justify-content: center; align-items: flex-end; flex-wrap: nowrap; max-width: 100%; margin-top: 0; padding-top: 0; gap: 28px; }
+    /* Dar kolon: 4 ikon yatayda taşmasın — gap küçük, scale(0.88) kapat, römork negatif margin yok */
+    #vehicle-modal .modal-body .modal-column-left .form-section-inline:first-child .vehicle-type-group,
+    .modal-column-left .form-section-inline:first-child .vehicle-type-group {
+        width: 100%;
+        justify-content: center;
+        align-items: flex-end;
+        flex-wrap: nowrap;
+        max-width: 100%;
+        margin-top: -21px !important;
+        padding: 0 2px;
+        box-sizing: border-box;
+        gap: 7px !important;
+        transform: none !important;
+    }
+    .vehicle-type-group {
+        width: 100%;
+        justify-content: center;
+        align-items: flex-end;
+        flex-wrap: nowrap;
+        max-width: 100%;
+        margin-top: 0;
+        padding: 0 2px;
+        box-sizing: border-box;
+        gap: 7px !important;
+    }
     .modal-column-left .form-section-inline:first-child .form-label { margin-bottom: 0 !important; padding-bottom: 0; line-height: 1; }
     
-    .vehicle-type-btn[data-type="kamyon"] { width: 46px; height: 34px; }
+    .vehicle-type-btn[data-type="kamyon"] { width: 38px; height: 28px; }
     .vehicle-type-btn[data-type="kamyon"] img { width: 100%; height: 100%; object-fit: contain; object-position: bottom center; }
-    .vehicle-type-btn[data-type="romork"] { width: 54px; height: 42px; align-self: flex-end; margin-left: -8px; }
+    .vehicle-type-btn[data-type="romork"] { width: 40px; height: 32px; align-self: flex-end; margin-left: 0; }
     .vehicle-type-btn[data-type="romork"] img {
         width: 100%;
         height: 100%;
         object-fit: contain;
         object-position: bottom center;
-        transform: translate(-3px, 15px) scale(1.38);
+        transform: translate(-1px, 8px) scale(1.12);
         transform-origin: bottom center;
         filter: brightness(1.12) grayscale(0.22) contrast(1.05);
     }
-    .vehicle-type-btn[data-type="otomobil"] { width: 48px; height: 46px; }
-    .vehicle-type-btn[data-type="minivan"] { width: 40px; height: 30px; }
+    .vehicle-type-btn[data-type="otomobil"] { width: 40px; height: 38px; }
+    .vehicle-type-btn[data-type="minivan"] { width: 30px; height: 22px; }
 
     .form-section { margin-bottom: 8px; }
     .modal-body .form-label { font-size: 15px; margin-bottom: 0; }
