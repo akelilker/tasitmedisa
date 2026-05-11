@@ -1445,9 +1445,9 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     color: #ffffff !important;
     padding-bottom: 1px !important; /* Sekme metni ile altındaki yatay çizgi arası 1px */
 }
-/* Tarihçe modalı: sol ok + etiket global kurala uysun (style-core); ayarlar-modal-overlay -16px ezmesin */
+/* Tarihçe modalı: sol ok + etiket header altında kesilmesin (negatif margin kaldırıldı); style-core ile uyum */
 #vehicle-history-modal .universal-back-bar {
-  margin-top: -24px !important;
+  margin-top: 0 !important;
   padding: 8px 0 0 0 !important;
 }
 #vehicle-history-modal .universal-back-btn .universal-back-label {
@@ -1783,9 +1783,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     max-width: 100% !important;
     box-sizing: border-box !important;
   }
-  /* Tarihçe modal: sol ok ve Taşıt Detayları sabit (scroll ile gitmesin) */
+  /* Tarihçe modal: sol ok satırı sabit (scroll ile gitmesin) */
   #vehicle-history-modal .modal-container > div:nth-child(2) {
-    margin-top: -8px;
     flex-shrink: 0;
   }
   /* Taşıt listesi: sekme başlıkları 3px yukarı (masaüstü) */
