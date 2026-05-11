@@ -2083,6 +2083,20 @@
     background: var(--border-ultra) !important;
   }
 
+  /* Mobil liste: uyarı satırı — hücre opak zemin (masaüstü tasitlar-base ile aynı mantık; even 0.06) */
+  #vehicles-modal .view-list .list-item.vehicle-date-warning-red:nth-child(odd) .list-cell,
+  #vehicles-modal .view-list .list-item.vehicle-date-warning-orange:nth-child(odd) .list-cell {
+    background-color: var(--bg) !important;
+  }
+  #vehicles-modal .view-list .list-item.vehicle-date-warning-red:nth-child(even) .list-cell,
+  #vehicles-modal .view-list .list-item.vehicle-date-warning-orange:nth-child(even) .list-cell {
+    background-color: rgba(255, 255, 255, 0.06) !important;
+  }
+  #vehicles-modal .view-list .list-item.vehicle-date-warning-red:hover .list-cell,
+  #vehicles-modal .view-list .list-item.vehicle-date-warning-orange:hover .list-cell {
+    background-color: var(--border-ultra) !important;
+  }
+
   .view-list .list-item:hover {
     background: var(--border-ultra) !important;
   }
