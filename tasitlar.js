@@ -6861,24 +6861,27 @@
       if (isImage) {
         openVehicleDocumentInNewTab(vehicleId, documentUrl, dt, '')
           .catch(function() {
-            if (typeof window.viewRuhsatPdf === 'function') window.viewRuhsatPdf(vehicleId, dt);
+            if (typeof window.viewRuhsatPdf === 'function') window.viewRuhsatPdf(vehicleId, dt, { skipIosPwaPrintRoute: true });
           });
         return;
       }
 
       openVehicleDocumentInNewTab(vehicleId, documentUrl, dt, 'toolbar=0&navpanes=0&zoom=page-width&view=FitH')
         .catch(function() {
-          if (typeof window.viewRuhsatPdf === 'function') window.viewRuhsatPdf(vehicleId, dt);
+          if (typeof window.viewRuhsatPdf === 'function') window.viewRuhsatPdf(vehicleId, dt, { skipIosPwaPrintRoute: true });
         });
       return;
     }
 
     if (!isImage && isIOSDevice && isWebKitEngine) {
-      openVehicleDocumentInNewTab(vehicleId, documentUrl, dt, 'toolbar=0&navpanes=0&zoom=page-width&view=FitH')
-        .catch(function() {
-          if (typeof window.viewRuhsatPdf === 'function') window.viewRuhsatPdf(vehicleId, dt);
-        });
-      return;
+      if (!(typeof window.isIOSPWA === 'function' && window.isIOSPWA())) {
+        openVehicleDocumentInNewTab(vehicleId, documentUrl, dt, 'toolbar=0&navpanes=0&zoom=page-width&view=FitH')
+          .catch(function() {
+            if (typeof window.viewRuhsatPdf === 'function') window.viewRuhsatPdf(vehicleId, dt, { skipIosPwaPrintRoute: true });
+          });
+        return;
+      }
+      /* iOS PWA: sekmede PDF’e gitme; aşağıdaki iframe + print() ile aynı mobil yazdır akışı */
     }
 
     // iOS: print() geç tetiklenirse kullanıcı gesture dışına çıkıp prompt üretebilir.
@@ -6975,7 +6978,7 @@
             openUrlInNewTab(fallbackOpenUrl);
           }
         } else if (typeof window.viewRuhsatPdf === 'function') {
-          window.viewRuhsatPdf(vehicleId, dt);
+          window.viewRuhsatPdf(vehicleId, dt, { skipIosPwaPrintRoute: true });
         }
       }
     }
@@ -6996,7 +6999,7 @@
           if (window.__ruhsatPrintToken !== printToken) {
             return;
           }
-          if (typeof window.viewRuhsatPdf === 'function') window.viewRuhsatPdf(vehicleId, dt);
+          if (typeof window.viewRuhsatPdf === 'function') window.viewRuhsatPdf(vehicleId, dt, { skipIosPwaPrintRoute: true });
         });
       return;
     }
@@ -7021,7 +7024,7 @@
         if (window.__ruhsatPrintToken !== printToken) {
           return;
         }
-        if (typeof window.viewRuhsatPdf === 'function') window.viewRuhsatPdf(vehicleId, dt);
+        if (typeof window.viewRuhsatPdf === 'function') window.viewRuhsatPdf(vehicleId, dt, { skipIosPwaPrintRoute: true });
       });
   }
 
@@ -7589,7 +7592,7 @@
   /**
    * Ruhsat PDF'ini görüntüler / yazdırır
    */
-  window.viewRuhsatPdf = function(vehicleId, documentType) {
+  window.viewRuhsatPdf = function(vehicleId, documentType, opts) {
     const dt = documentType || 'ruhsat';
     const cfg = getVehicleDocumentConfig(dt);
     const vid = (vehicleId || window.currentDetailVehicleId || '').toString();
@@ -7605,6 +7608,11 @@
 
     const url = buildRuhsatDocumentUrl(vid, dt) || resolveRuhsatUrl(docPath, vid, dt);
     const isImage = isRuhsatImagePath(docPath);
+    var skipIosPwaPrint = opts && opts.skipIosPwaPrintRoute === true;
+    if (!skipIosPwaPrint && typeof window.isIOSPWA === 'function' && window.isIOSPWA()) {
+      openRuhsatPrintDialog(url, vid, dt);
+      return;
+    }
     openVehicleDocumentInNewTab(vid, url, dt,
       isImage ? '' : 'toolbar=1&navpanes=0&zoom=page-width&view=FitH'
     ).catch(function(err) {
