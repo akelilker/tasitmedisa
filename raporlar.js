@@ -296,7 +296,7 @@
             return '<svg ' + a + '><path d="M2 14h12V8H2v6z"/><path d="M14 11h5l3 3v3h-8v-6z"/><circle cx="6" cy="14" r="1.3" fill="currentColor" stroke="none"/><circle cx="18" cy="14" r="1.3" fill="currentColor" stroke="none"/><path d="M4 8V6h8v2"/></svg>';
         }
         if (kind === 'romork') {
-            return '<svg ' + a + '><path d="M3 14h12v-4H3v4z"/><path d="M15 12h4l2 2v2h-6v-4z"/><circle cx="7" cy="14" r="1.3" fill="currentColor" stroke="none"/><circle cx="18" cy="14" r="1.3" fill="currentColor" stroke="none"/><path d="M3 10V8h6v2"/></svg>';
+            return '<img src="icon/romork.png" alt="" width="22" height="22" class="stok-tasit-tipi-img" decoding="async" />';
         }
         return '<svg ' + a + '><circle cx="12" cy="12" r="7"/><path d="M12 8v4l2.5 2.5"/></svg>';
     }
