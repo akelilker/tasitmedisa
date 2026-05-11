@@ -128,54 +128,105 @@ body.modal-open #info-modal.open {
     border-color: var(--green-success) !important;
 }
 
-/* === TESCİL TARİHİ MODALLARI === */
-#tescil-tarih-confirm-modal .modal-container {
-    background: var(--bg); 
-    width: 100%;
-    max-width: 400px;
-    height: 190px !important;
-    max-height: 190px !important;
-    margin: 80px auto 52px auto;
-    border-radius: 10px;
-    border: 0.5px solid var(--border-light);
-    box-shadow: none; 
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    position: relative;
-    z-index: 10002;
-    pointer-events: auto;
-}
-
-/* Tescil Tarihi Onay Modal - Başlık ile içerik arası boşluk */
-#tescil-tarih-confirm-modal .modal-body {
-    padding: 8px 20px 12px 20px !important;
-}
-
-/* Tescil Tarihi Onay Modal - Mesaj metni boşlukları */
-#tescil-tarih-confirm-modal #tescil-confirm-message {
-    margin-bottom: 10px !important;
-    line-height: 1.4 !important;
-    margin-top: 0 !important;
-}
-
-/* Tescil Tarihi Giriş Modalı */
+/* === TESCİL TARİHİ MODALLARI — masaüstü: #info-modal ile aynı (height:auto, gövde padding); mobil: sabit kutu === */
+#tescil-tarih-confirm-modal .modal-container,
 #tescil-tarih-input-modal .modal-container {
-    background: var(--bg); 
+    background: var(--bg);
     width: 100%;
     max-width: 400px;
-    height: 220px !important;
-    max-height: 220px !important;
     margin: 80px auto 52px auto;
     border-radius: 10px;
     border: 0.5px solid var(--border-light);
-    box-shadow: none; 
+    box-shadow: none;
     display: flex;
     flex-direction: column;
     overflow: hidden;
     position: relative;
     z-index: 10002;
     pointer-events: auto;
+}
+
+@media (max-width: 640px) {
+    #tescil-tarih-confirm-modal .modal-container {
+        height: 190px !important;
+        max-height: 190px !important;
+    }
+    #tescil-tarih-input-modal .modal-container {
+        height: 220px !important;
+        max-height: 220px !important;
+    }
+
+    #tescil-tarih-confirm-modal .modal-body,
+    #tescil-tarih-input-modal .modal-body {
+        padding: 8px 20px 12px 20px !important;
+    }
+
+    #tescil-tarih-confirm-modal #tescil-confirm-message {
+        margin-bottom: 10px !important;
+        line-height: 1.4 !important;
+    }
+}
+
+@media (min-width: 641px) {
+    #tescil-tarih-confirm-modal .modal-container,
+    #tescil-tarih-input-modal .modal-container {
+        height: auto !important;
+        max-height: calc(100vh - 80px - 52px);
+        max-height: calc(100dvh - 80px - 52px);
+        border: 1px solid var(--border-light);
+        box-shadow: 0 16px 36px rgba(0, 0, 0, 0.28);
+    }
+
+    #tescil-tarih-confirm-modal .modal-body,
+    #tescil-tarih-input-modal .modal-body {
+        padding: 6px 20px 14px 20px !important;
+        overflow-y: visible;
+        flex: 0 0 auto !important;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        min-height: 0;
+    }
+}
+
+/* Onay metni — #info-modal #info-message ile aynı tipografi */
+#tescil-tarih-confirm-modal #tescil-confirm-message {
+    color: var(--form-label-color);
+    font-size: 14px;
+    line-height: 1.6;
+    margin-top: 0 !important;
+    text-align: center;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+@media (min-width: 641px) {
+    #tescil-tarih-confirm-modal #tescil-confirm-message {
+        margin-bottom: 0 !important;
+    }
+}
+
+/* Giriş alanı blokları */
+#tescil-tarih-input-modal .tescil-tarih-input-stack {
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+@media (min-width: 641px) {
+    #tescil-tarih-input-modal .tescil-tarih-input-stack {
+        margin-bottom: 10px;
+    }
+}
+
+#tescil-tarih-input-modal .tescil-tarih-field-label {
+    display: block;
+    margin-bottom: 8px;
+}
+
+#tescil-tarih-input-modal .tescil-input-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 /* Tescil Tarihi Input */
@@ -247,6 +298,10 @@ body.modal-open #info-modal.open {
 #tescil-tarih-input-modal #tescil-tarih-overlay {
     z-index: 2; /* Input'un üzerinde */
     pointer-events: none; /* Tıklamalar input'a geçsin */
+    font-size: 14px;
+    font-family: inherit;
+    line-height: 1;
+    color: var(--txt-muted);
 }
 
 /* Tescil Tarihi Giriş Modal Butonları - Hover Efekti */
