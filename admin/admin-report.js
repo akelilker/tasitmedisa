@@ -1025,8 +1025,8 @@
           if (isGeneralRequest) {
             var topicMap = { talep: 'Talep', sikayet: 'Şikayet', oneri: 'Öneri', diger: 'Diğer' };
             var topic = topicMap[req.konu_turu] || 'Talep';
-            parts.push('<span class="pending-sebep-label">Konu: </span><span class="pending-muted">' + escapeHtml(topic) + '</span>');
-            if (req.mesaj) parts.push('<span class="pending-sebep-label">Mesaj: </span><span class="pending-muted">' + escapeHtml(req.mesaj) + '</span>');
+            parts.push('<div class="pending-general-line"><span class="pending-sebep-label">Konu: </span><span class="pending-muted">' + escapeHtml(topic) + '</span></div>');
+            if (req.mesaj) parts.push('<div class="pending-general-line"><span class="pending-sebep-label">Mesaj: </span><span class="pending-muted">' + escapeHtml(req.mesaj) + '</span></div>');
           } else {
             if (req.yeni_km != null) parts.push('<span class="pending-km-label">KM: </span><span class="pending-muted">' + escapeHtml(formatKm(req.eski_km)) + ' → ' + escapeHtml(formatKm(req.yeni_km)) + '</span>');
             if (req.yeni_bakim != null) parts.push('<span class="pending-muted">Bakım: ' + escapeHtml(String(req.eski_bakim || 'Yok')) + ' → ' + escapeHtml(req.yeni_bakim || 'Yok') + '</span>');
