@@ -3760,6 +3760,7 @@
       else if (f === 'egzozMuayeneDate') type = 'Egzoz Muayene';
       else if (f === 'muayeneDate+egzozMuayeneDate') type = 'Muayene + Egzoz';
       else if (f === 'sigortaDate+kaskoDate') type = 'Sigorta + Kasko';
+      else if (f === 'guncelKm' || f === 'km') type = 'KM';
     }
     switch (type) {
       case 'Sigorta':
@@ -3774,6 +3775,8 @@
         return 'Genel Muayene / Egzoz Muayenesi Randevusu Konusunda Destek İhtiyacı';
       case 'Sigorta + Kasko':
         return 'Güncellenen Zorunlu Trafik Sigortası / Kasko Poliçesinin Gönderilmesi.';
+      case 'KM':
+        return 'Güncel Kilometre Bilgisinin Kullanıcı Paneli Üzerinden Bildirilmesi.';
       default:
         return 'Genel Destek Talebi';
     }
@@ -3790,6 +3793,7 @@
       else if (f2 === 'egzozMuayeneDate') type = 'Egzoz Muayene';
       else if (f2 === 'muayeneDate+egzozMuayeneDate') type = 'Muayene + Egzoz';
       else if (f2 === 'sigortaDate+kaskoDate') type = 'Sigorta + Kasko';
+      else if (f2 === 'guncelKm' || f2 === 'km') type = 'KM';
     }
     switch (type) {
       case 'Sigorta':
@@ -3804,6 +3808,8 @@
         return 'e';
       case 'Muayene + Egzoz':
         return 'me';
+      case 'KM':
+        return 'km';
       default:
         return '';
     }
@@ -3827,7 +3833,9 @@
   function buildMonthlyTodoWhatsAppMessage(task, vehicle, userLabel) {
     var kul = String(userLabel || '').trim();
     if (!kul || kul === '-') kul = 'Kullanıcı';
-    var plaka = (vehicle && vehicle.plate != null ? String(vehicle.plate).trim() : '') || '-';
+    var plakaRaw = (vehicle && vehicle.plate != null ? String(vehicle.plate).trim() : '') || '-';
+    var plaka = plakaRaw === '-' ? '-' : plakaRaw.replace(/\s+/g, '');
+    var shortLink = buildMonthlyTodoDriverFeedbackUrl(task) || '';
     var type = task && task.type != null ? String(task.type).trim() : '';
     if (!type && task && task.field != null) {
       var f = String(task.field).trim();
@@ -3837,6 +3845,7 @@
       else if (f === 'egzozMuayeneDate') type = 'Egzoz Muayene';
       else if (f === 'muayeneDate+egzozMuayeneDate') type = 'Muayene + Egzoz';
       else if (f === 'sigortaDate+kaskoDate') type = 'Sigorta + Kasko';
+      else if (f === 'guncelKm' || f === 'km') type = 'KM';
     }
     var dateRaw = task && task.date != null ? String(task.date).trim() : '';
     var tarih = '';
@@ -3847,33 +3856,38 @@
       var islem = type || 'ilgili';
       return 'Sn. ' + kul + ';\n- Kullanmakta Olduğunuz ' + plaka + ' Plakalı Taşıtınızla ilgili ' + islem + ' işlemi için hatırlatma yapılmaktadır.\n- Lütfen güncel durumunuzu kontrol ediniz.';
     }
-    var body;
-    if (!tarih) body = fallbackGeneral();
-    else {
-      switch (type) {
-        case 'Sigorta':
-          body = 'Sn. ' + kul + ';\n- Kullanmakta Olduğunuz ' + plaka + ' Plakalı Taşıtın Zorunlu Trafik Sigorta Poliçesi, ' + tarih + ' Tarihinde Sona Erecektir.\n- Süresi Geçmeden, Güncel Poliçenizi Talep Ediniz.';
-          break;
-        case 'Kasko':
-          body = 'Sn. ' + kul + ';\n- Kullanmakta Olduğunuz ' + plaka + ' Plakalı Taşıtın Kasko Poliçesi, ' + tarih + ' Tarihinde Sona Erecektir.\n- Süresi Geçmeden, Güncel Poliçenizi Talep Ediniz.';
-          break;
-        case 'Muayene':
-          body = 'Sn. ' + kul + ';\n- Kullanmakta Olduğunuz ' + plaka + ' Plakalı Taşıtın Muayenesi, ' + tarih + ' Tarihinde Sona Erecektir.\n- Mağduriyet yaşamamak için, Muayene Randevunuzu En Az 1 Hafta Önceden Almanız tavsiye edilir.\n- Randevu konusunda desteğe ihtiyaç duyarsanız destek talep edebilirsiniz.';
-          break;
-        case 'Egzoz Muayene':
-          body = 'Sn. ' + kul + ';\n- Kullanmakta Olduğunuz ' + plaka + ' Plakalı Taşıtın Egzoz Muayenesi, ' + tarih + ' Tarihinde Sona Erecektir.\n- Mağduriyet yaşamamak için, Egzoz Muayenesi Randevunuzu En Az 1 Hafta Önceden Almanız tavsiye edilir.\n- Randevu konusunda desteğe ihtiyaç duyarsanız destek talep edebilirsiniz.';
-          break;
-        case 'Muayene + Egzoz':
-          body = 'Sn. ' + kul + ';\n- Kullanmakta Olduğunuz ' + plaka + ' Plakalı Taşıtın Muayenesi / Egzoz Muayenesi, ' + tarih + ' Tarihinde Sona Erecektir.\n- Mağduriyet yaşamamak için, Muayene / Egzoz Muayenesi Randevunuzu En Az 1 Hafta Önceden Almanız tavsiye edilir.\n- Randevu konusunda desteğe ihtiyaç duyarsanız destek talep edebilirsiniz.';
-          break;
-        case 'Sigorta + Kasko':
-          body = 'Sn. ' + kul + ';\n- Kullanmakta Olduğunuz ' + plaka + ' Plakalı Taşıtın Zorunlu Trafik Sigortası / Kasko Poliçesi, ' + tarih + ' Tarihinde Sona Erecektir.\n- Süresi Geçmeden, Güncel Poliçelerinizi Talep Ediniz.';
-          break;
-        default:
-          body = fallbackGeneral();
-      }
+    if (type === 'KM') {
+      return 'Sn. ' + kul + ';\n• Kullanmakta Olduğunuz ' + plaka + ' Plakalı Taşıt İçin, Güncel Kilometre Bilgisinin Kullanıcı Paneli Üzerinden Bildirilmesi Gerekmektedir.\nKM Bildirimi İçin ' + shortLink;
     }
-    return appendMonthlyTodoDriverFeedbackLinkToWhatsAppBody(body, task);
+    var body;
+    if (!tarih) {
+      body = fallbackGeneral();
+      return appendMonthlyTodoDriverFeedbackLinkToWhatsAppBody(body, task);
+    }
+    switch (type) {
+      case 'Sigorta':
+        body = 'Sn. ' + kul + ';\n• Kullanmakta Olduğunuz ' + plaka + ' Plakalı Taşıtın Zorunlu Trafik Sigortası, ' + tarih + ' Tarihinde Sona Erecektir.\n• Poliçe Süresi Geçmeden; Yenilenen Zorunlu Trafik Sigortası Poliçenizi, Kullanıcı Paneli Üzerinden Talep Ediniz; ' + shortLink;
+        break;
+      case 'Kasko':
+        body = 'Sn. ' + kul + ';\n• Kullanmakta Olduğunuz ' + plaka + ' Plakalı Taşıtın Kaskosu, ' + tarih + ' Tarihinde Sona Erecektir.\n• Poliçe Süresi Geçmeden; Kasko Poliçenizi, Kullanıcı Paneli Üzerinden Talep Ediniz; ' + shortLink;
+        break;
+      case 'Muayene':
+        body = 'Sn. ' + kul + ';\n• Kullanmakta Olduğunuz ' + plaka + ' Plakalı Taşıtın Genel Muayenesi, ' + tarih + ' Tarihinde Sona Erecektir.\n• Mağduriyet Yaşamamak İçin, Muayene Randevunuzu En Az 1 Hafta Önceden Almanız Tavsiye Edilir.\n• Randevu Konusunda Desteğe İhtiyaç Duyarsanız Destek Talep Edebilirsiniz.\nDestek İçin ' + shortLink;
+        break;
+      case 'Egzoz Muayene':
+        body = 'Sn. ' + kul + ';\n• Kullanmakta Olduğunuz ' + plaka + ' Plakalı Taşıtın Egzoz Muayenesi, ' + tarih + ' Tarihinde Sona Erecektir.\n• Mağduriyet Yaşamamak İçin, Egzoz Muayenesi Randevunuzu En Az 1 Hafta Önceden Almanız Tavsiye Edilir.\n• Randevu Konusunda Desteğe İhtiyaç Duyarsanız Destek Talep Edebilirsiniz.\nDestek İçin ' + shortLink;
+        break;
+      case 'Muayene + Egzoz':
+        body = 'Sn. ' + kul + ';\n• Kullanmakta Olduğunuz ' + plaka + ' Plakalı Taşıtın Genel Muayenesi / Egzoz Muayenesi, ' + tarih + ' Tarihinde Sona Erecektir.\n• Mağduriyet Yaşamamak İçin, Genel Muayene / Egzoz Muayenesi Randevunuzu En Az 1 Hafta Önceden Almanız Tavsiye Edilir.\n• Randevu Konusunda Desteğe İhtiyaç Duyarsanız Destek Talep Edebilirsiniz.\nDestek İçin ' + shortLink;
+        break;
+      case 'Sigorta + Kasko':
+        body = 'Sn. ' + kul + ';\n• Kullanmakta Olduğunuz ' + plaka + ' Plakalı Taşıtın Zorunlu Trafik Sigortası ve Kaskosu, ' + tarih + ' Tarihinde Sona Erecektir.\n• Poliçe Süresi Geçmeden; Poliçelerinizi, Kullanıcı Paneli Üzerinden Talep Ediniz; ' + shortLink;
+        break;
+      default:
+        body = fallbackGeneral();
+        return appendMonthlyTodoDriverFeedbackLinkToWhatsAppBody(body, task);
+    }
+    return body;
   }
 
   function buildMonthlyTodoWhatsAppUrl(phone, message) {
