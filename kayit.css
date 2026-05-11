@@ -1100,7 +1100,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
 .vehicle-type-btn[data-type="kamyon"] { width: 36px; height: 26px; padding-top: 2px; }
 .vehicle-type-btn[data-type="kamyon"] img { object-position: bottom center; transform: scale(0.95); transform-origin: bottom center; }
 /* Römork: ölçü (img filtresi aşağıda, genel .vehicle-type-btn img'den sonra) */
-.vehicle-type-btn[data-type="romork"] { width: 44px; height: 34px; padding-top: 2px; align-self: flex-end; margin-left: -3px; }
+.vehicle-type-btn[data-type="romork"] { width: 44px; height: 34px; padding-top: 2px; align-self: flex-end; margin-left: -6px; }
 
 .vehicle-type-btn:hover { background: transparent; border: none; }
 .vehicle-type-btn.active { background: transparent; border: none; }
@@ -1211,7 +1211,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     object-position: bottom center;
 }
 .vehicle-type-picker-option[data-type="romork"] {
-    margin-left: -3px;
+    margin-left: -6px;
 }
 .vehicle-type-picker-option[data-type="romork"] img {
     width: 58px;
@@ -1613,7 +1613,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     
     .vehicle-type-btn[data-type="kamyon"] { width: 46px; height: 34px; }
     .vehicle-type-btn[data-type="kamyon"] img { width: 100%; height: 100%; object-fit: contain; object-position: bottom center; }
-    .vehicle-type-btn[data-type="romork"] { width: 54px; height: 42px; align-self: flex-end; margin-left: -3px; }
+    .vehicle-type-btn[data-type="romork"] { width: 54px; height: 42px; align-self: flex-end; margin-left: -6px; }
     .vehicle-type-btn[data-type="romork"] img {
         width: 100%;
         height: 100%;
@@ -2257,7 +2257,7 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     .vehicle-type-btn[data-type="minivan"] { width: 30px; height: 22px; }
     .vehicle-type-btn[data-type="kamyon"] { width: 44px; height: 32px; padding-top: 2px; }
     .vehicle-type-btn[data-type="kamyon"] img { object-position: bottom center; transform: scale(0.95); transform-origin: bottom center; }
-    .vehicle-type-btn[data-type="romork"] { width: 52px; height: 40px; padding-top: 2px; align-self: flex-end; margin-left: -3px; }
+    .vehicle-type-btn[data-type="romork"] { width: 52px; height: 40px; padding-top: 2px; align-self: flex-end; margin-left: -6px; }
     .vehicle-type-btn[data-type="romork"] img {
         object-position: bottom center;
         transform: translate(-3px, 16px) scale(1.56);
