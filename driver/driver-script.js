@@ -318,6 +318,8 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
   let muayeneConfirmSource = null;
   let currentPeriod = '';
   let selectedVehicleId = null;
+  /** dashboard.html?action=km deep-link bir kez işlensin (yenilemede tekrar açılmasın). */
+  let driverKmActionHandled = false;
   /** Bu oturumda (ekran kapanana kadar) son bildirilen aksiyon: { action, vehicleId }. Ekran kapanınca temizlenir, yeşil geri bildirim beyaz/griye döner. */
   let lastCompletedActionInSession = null;
   /** KM bildirimi sonrası uyarının hemen kaybolması için: vehicleId -> period eşlemesi. loadDashboard cache veya geç yanıt verse bile uyarı kalksın. */
@@ -790,6 +792,65 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
     }
     if (ok) clearDriverFeedbackPrefillQuery();
   }
+
+  function getDriverActionFromQuery() {
+    try {
+      var search = window.location && window.location.search ? window.location.search : '';
+      if (!search) return '';
+      var params = new URLSearchParams(search);
+      var raw = params.get('action');
+      if (raw == null) return '';
+      var v = String(raw).trim().toLowerCase();
+      return v === 'km' ? 'km' : '';
+    } catch (e) {
+      console.warn('[Medisa] getDriverActionFromQuery:', e);
+      return '';
+    }
+  }
+
+  function clearDriverActionQuery() {
+    try {
+      var u = new URL(window.location.href);
+      u.searchParams.delete('action');
+      var qs = u.searchParams.toString();
+      var newUrl = u.pathname + (qs ? '?' + qs : '') + (u.hash || '');
+      history.replaceState(null, '', newUrl);
+    } catch (e) {
+      console.warn('[Medisa] clearDriverActionQuery:', e);
+    }
+  }
+
+  function tryOpenDriverKmActionFromQuery() {
+    if (driverKmActionHandled) return;
+    if (getDriverActionFromQuery() !== 'km') return;
+    if (!selectedVehicleId) return;
+    var hasOpener = typeof window.focusKmInput === 'function' || typeof window.toggleDriverActionBlock === 'function';
+    if (!hasOpener) return;
+    driverKmActionHandled = true;
+    try {
+      if (typeof window.focusKmInput === 'function') {
+        window.focusKmInput(selectedVehicleId);
+      } else {
+        window.toggleDriverActionBlock('km', selectedVehicleId);
+      }
+      var vid = String(selectedVehicleId);
+      setTimeout(function() {
+        try {
+          var kmInp = document.getElementById('km-' + vid);
+          if (kmInp && typeof kmInp.focus === 'function') {
+            kmInp.focus();
+            if (typeof kmInp.select === 'function') kmInp.select();
+          }
+        } catch (e2) {
+          console.warn('[Medisa] tryOpenDriverKmActionFromQuery focus:', e2);
+        }
+      }, 80);
+      clearDriverActionQuery();
+    } catch (e) {
+      console.warn('[Medisa] tryOpenDriverKmActionFromQuery:', e);
+      driverKmActionHandled = false;
+    }
+  }
   
   async function loadDashboard() {
       const token = getStoredPortalToken();
@@ -879,6 +940,7 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
           
           setupEkstraNotAutoResize();
           setupKmInputs();
+          tryOpenDriverKmActionFromQuery();
           bindDriverDashboardTitleCase(document.getElementById('driver-action-area'));
 
           placePwaWrapper();
