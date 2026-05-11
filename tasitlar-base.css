@@ -2412,19 +2412,12 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     background: var(--border-ultra) !important;
 }
 
-/* Tarih uyarısı (liste): tüm satırı renklendirmemek — vurgu sadece plaka + km; diğer sütunlar tablo varsayılan gri (satır zemini nötr kalır). */
-#vehicles-modal .view-list .list-item.vehicle-date-warning-red .list-cell,
-#vehicles-modal .view-list .list-item.vehicle-date-warning-orange .list-cell {
-    color: var(--txt-gray-dark) !important;
-}
-
-#vehicles-modal .view-list .list-item.vehicle-date-warning-red .list-cell.list-plate,
-#vehicles-modal .view-list .list-item.vehicle-date-warning-red .list-cell.list-km {
+/* Tarih uyarısı (liste): tüm sütunlarda uyarı rengi; satır zemininin boyanmış görünmemesi için aşağıda hücrelere zebra ile aynı opak zemin veriliyor. */
+#vehicles-modal .view-list .list-item.vehicle-date-warning-red .list-cell {
     color: var(--theme-color) !important;
 }
 
-#vehicles-modal .view-list .list-item.vehicle-date-warning-orange .list-cell.list-plate,
-#vehicles-modal .view-list .list-item.vehicle-date-warning-orange .list-cell.list-km {
+#vehicles-modal .view-list .list-item.vehicle-date-warning-orange .list-cell {
     color: var(--orange-warn) !important;
 }
 
