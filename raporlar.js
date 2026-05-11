@@ -181,6 +181,8 @@
             stokCurrentBranchId = null; // Grid görünümüne dön
             stokAutoSingleBranchView = false;
             switchReportTab({ allowSingleBranchBypass: true }); // Sekme UI + içerik render
+            /* Overlay #reports-modal raporlar.css’te pointer-events:none; kenar/padding’de tıklama alta (taşıt kartı/liste) sızıyordu. */
+            modal.style.pointerEvents = 'auto';
             modal.style.display = 'flex';
             requestAnimationFrame(() => modal.classList.add('active'));
             document.body.classList.add('modal-open');
@@ -200,6 +202,7 @@
             setReportsModalStokDetailMenuLayoutOpen(false);
             setReportsModalStokListLayoutActive(false);
             modal.classList.remove('active');
+            modal.style.pointerEvents = '';
             setTimeout(() => {
                 modal.style.display = 'none';
                 document.body.classList.remove('modal-open');
