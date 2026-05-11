@@ -89,6 +89,7 @@ scripts/process_edevlet_docx_updates.mjs
 data/data.json
 data/data.json
 data/data.json
+data/data-recovered*.json
 outputs/docx-edevlet/data.before_gpt_xlsx_import.json
 outputs/docx-edevlet/gpt_import_cleaned.xlsx
 outputs/docx-edevlet/pdf_ocr_preview.json

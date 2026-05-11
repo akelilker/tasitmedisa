@@ -128,7 +128,7 @@ body.modal-open #info-modal.open {
     border-color: var(--green-success) !important;
 }
 
-/* === TESCİL TARİHİ MODALLARI — masaüstü: #info-modal ile aynı (height:auto, gövde padding); mobil: sabit kutu === */
+/* === TESCİL TARİHİ MODALLARI — küçük sabit kutu; style-core .modal-container height:100% + .modal-body flex:1 ezmesin (#id.modal-overlay ile) === */
 #tescil-tarih-confirm-modal .modal-container,
 #tescil-tarih-input-modal .modal-container {
     background: var(--bg);
@@ -146,11 +146,20 @@ body.modal-open #info-modal.open {
     pointer-events: auto;
 }
 
+/* Gövde asla kalan yüksekliği doldurmasın (iç boşluk + footer’a yapışma) */
+#tescil-tarih-confirm-modal .modal-body,
+#tescil-tarih-input-modal .modal-body {
+    flex: 0 0 auto !important;
+    min-height: 0 !important;
+}
+
 @media (max-width: 640px) {
+    #tescil-tarih-confirm-modal.modal-overlay .modal-container,
     #tescil-tarih-confirm-modal .modal-container {
         height: 190px !important;
         max-height: 190px !important;
     }
+    #tescil-tarih-input-modal.modal-overlay .modal-container,
     #tescil-tarih-input-modal .modal-container {
         height: 220px !important;
         max-height: 220px !important;
@@ -168,24 +177,25 @@ body.modal-open #info-modal.open {
 }
 
 @media (min-width: 641px) {
-    #tescil-tarih-confirm-modal .modal-container,
-    #tescil-tarih-input-modal .modal-container {
-        height: auto !important;
-        max-height: calc(100vh - 80px - 52px);
-        max-height: calc(100dvh - 80px - 52px);
-        border: 1px solid var(--border-light);
-        box-shadow: 0 16px 36px rgba(0, 0, 0, 0.28);
+    /* Masaüstü: önceki gibi kompakt kutu + footer üstünde ekstra nefes */
+    #tescil-tarih-confirm-modal.modal-overlay .modal-container {
+        height: 190px !important;
+        max-height: 190px !important;
+        margin: 72px auto 88px auto !important;
+    }
+    #tescil-tarih-input-modal.modal-overlay .modal-container {
+        height: 220px !important;
+        max-height: 220px !important;
+        margin: 72px auto 88px auto !important;
     }
 
     #tescil-tarih-confirm-modal .modal-body,
     #tescil-tarih-input-modal .modal-body {
-        padding: 6px 20px 14px 20px !important;
-        overflow-y: visible;
-        flex: 0 0 auto !important;
+        padding: 8px 20px 12px 20px !important;
+        overflow-y: auto !important;
         display: flex;
         flex-direction: column;
-        gap: 10px;
-        min-height: 0;
+        gap: 8px;
     }
 }
 
