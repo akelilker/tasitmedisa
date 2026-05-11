@@ -1099,9 +1099,8 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
 .vehicle-type-btn[data-type="minivan"] { width: 26px; height: 17px; }
 .vehicle-type-btn[data-type="kamyon"] { width: 36px; height: 26px; padding-top: 2px; }
 .vehicle-type-btn[data-type="kamyon"] img { object-position: bottom center; transform: scale(0.95); transform-origin: bottom center; }
-/* Römork PNG: tuvalde boşluk fazla; kutu kamyonla aynı hizada, grafik scale ile büyütülür */
-.vehicle-type-btn[data-type="romork"] { width: 38px; height: 28px; padding-top: 2px; }
-.vehicle-type-btn[data-type="romork"] img { object-position: bottom center; transform: scale(1.28); transform-origin: bottom center; }
+/* Römork: ölçü (img filtresi aşağıda, genel .vehicle-type-btn img'den sonra) */
+.vehicle-type-btn[data-type="romork"] { width: 42px; height: 32px; padding-top: 2px; }
 
 .vehicle-type-btn:hover { background: transparent; border: none; }
 .vehicle-type-btn.active { background: transparent; border: none; }
@@ -1120,6 +1119,14 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     padding: 0;
 }
 
+/* Römork PNG: koyu raster + geniş tuval — SVG ile aynı ton için parlaklık; ölçü scale */
+.vehicle-type-btn[data-type="romork"] img {
+    object-position: bottom center;
+    transform: scale(1.62);
+    transform-origin: bottom center;
+    filter: brightness(1.14) grayscale(0.22) contrast(1.05);
+}
+
 /* Seçili taşıt tipi: Kaydet butonu ile aynı yeşil (--save-green) */
 #vehicle-modal .vehicle-type-btn.active img,
 #vehicle-modal .vehicle-type-btn.active:hover img {
@@ -1128,6 +1135,12 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
 #vehicle-modal .vehicle-type-btn:hover:not(.active) img {
     filter: brightness(1.0) grayscale(0.35);
     transform: scale(1.05);
+}
+/* Hover'da genel kural transform'u ezmesin; römork ölçüsü korunsun */
+#vehicle-modal .vehicle-type-btn[data-type="romork"]:hover:not(.active) img {
+    filter: brightness(1.2) grayscale(0.3);
+    transform: scale(1.7);
+    transform-origin: bottom center;
 }
 
 /* Taşıt tipi seçim ekranı (overlay) */
@@ -1198,10 +1211,11 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     object-position: bottom center;
 }
 .vehicle-type-picker-option[data-type="romork"] img {
-    width: 52px;
-    max-height: 44px;
-    transform: scale(1.12);
+    width: 58px;
+    max-height: 48px;
+    transform: scale(1.22);
     transform-origin: bottom center;
+    filter: brightness(1.1) grayscale(0.22) contrast(1.05);
 }
 .vehicle-type-picker-label {
     font-size: 11px;
@@ -1596,8 +1610,16 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     
     .vehicle-type-btn[data-type="kamyon"] { width: 46px; height: 34px; }
     .vehicle-type-btn[data-type="kamyon"] img { width: 100%; height: 100%; object-fit: contain; object-position: bottom center; }
-    .vehicle-type-btn[data-type="romork"] { width: 50px; height: 36px; }
-    .vehicle-type-btn[data-type="romork"] img { width: 100%; height: 100%; object-fit: contain; object-position: bottom center; transform: scale(1.14); transform-origin: bottom center; }
+    .vehicle-type-btn[data-type="romork"] { width: 54px; height: 40px; }
+    .vehicle-type-btn[data-type="romork"] img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        object-position: bottom center;
+        transform: scale(1.32);
+        transform-origin: bottom center;
+        filter: brightness(1.12) grayscale(0.22) contrast(1.05);
+    }
     .vehicle-type-btn[data-type="otomobil"] { width: 48px; height: 46px; }
     .vehicle-type-btn[data-type="minivan"] { width: 40px; height: 30px; }
 
@@ -2232,8 +2254,13 @@ textarea.form-input::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0
     .vehicle-type-btn[data-type="minivan"] { width: 30px; height: 22px; }
     .vehicle-type-btn[data-type="kamyon"] { width: 44px; height: 32px; padding-top: 2px; }
     .vehicle-type-btn[data-type="kamyon"] img { object-position: bottom center; transform: scale(0.95); transform-origin: bottom center; }
-    .vehicle-type-btn[data-type="romork"] { width: 48px; height: 34px; padding-top: 2px; }
-    .vehicle-type-btn[data-type="romork"] img { object-position: bottom center; transform: scale(1.22); transform-origin: bottom center; }
+    .vehicle-type-btn[data-type="romork"] { width: 52px; height: 38px; padding-top: 2px; }
+    .vehicle-type-btn[data-type="romork"] img {
+        object-position: bottom center;
+        transform: scale(1.48);
+        transform-origin: bottom center;
+        filter: brightness(1.14) grayscale(0.22) contrast(1.05);
+    }
 }
 
 /* iOS PWA modal margin: style-core.css (.modal-overlay .modal-container) */
