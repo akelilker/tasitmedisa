@@ -848,7 +848,7 @@
 
         <!-- Tescil Tarihi Onay Modalı -->
         <div id="tescil-tarih-confirm-modal" class="modal-overlay ayarlar-modal-overlay">
-            <div class="modal-container" style="max-width: 400px; height: 190px;" onclick="event.stopPropagation();">
+            <div class="modal-container" onclick="event.stopPropagation();">
                 <div class="modal-header">
                     <h2>TESCİL TARİHİ ONAY</h2>
                     <button class="modal-close" onclick="cancelOnay()">
@@ -859,7 +859,7 @@
                     </button>
                 </div>
                 <div class="modal-body" onclick="event.stopPropagation();">
-                    <p id="tescil-confirm-message" style="color: var(--form-label-color); font-size: 14px; line-height: 1.6; margin-bottom: 20px; text-align: center;"></p>
+                    <p id="tescil-confirm-message"></p>
                     <div class="universal-btn-group">
                         <button type="button" class="universal-btn-save" onclick="event.stopPropagation(); confirmOnay();">Evet</button>
                         <button type="button" class="universal-btn-cancel" onclick="event.stopPropagation(); cancelOnay();">Hayır</button>
@@ -870,7 +870,7 @@
 
         <!-- Tescil Tarihi Giriş Modalı -->
         <div id="tescil-tarih-input-modal" class="modal-overlay ayarlar-modal-overlay">
-            <div class="modal-container" style="max-width: 400px; height: 220px;" onclick="event.stopPropagation();">
+            <div class="modal-container" onclick="event.stopPropagation();">
                 <div class="modal-header">
                     <h2>TESCİL TARİHİ</h2>
                     <button class="modal-close" onclick="cancelTescilTarihi()">
@@ -881,11 +881,11 @@
                     </button>
                 </div>
                 <div class="modal-body" onclick="event.stopPropagation();">
-                    <div style="text-align: center; margin-bottom: 16px;">
-                        <label for="tescil-tarih-input" style="color: var(--form-label-color); font-size: 14px; display: block; margin-bottom: 8px;">Tescil Tarihi:</label>
-                        <div class="tescil-input-wrapper" style="position: relative; display: flex; align-items: center; justify-content: center;">
-                            <input type="text" id="tescil-tarih-input" class="form-input" placeholder="gg/aa/yyyy" maxlength="10" inputmode="numeric" style="width: 140px; text-align: center;">
-                            <span id="tescil-tarih-overlay" class="tescil-tarih-overlay" style="position: absolute; pointer-events: none; white-space: nowrap; font-size: 14px; font-family: inherit; line-height: 1; color: #e0e0e0;"></span>
+                    <div class="tescil-tarih-input-stack">
+                        <label for="tescil-tarih-input" class="form-label tescil-tarih-field-label">Tescil Tarihi:</label>
+                        <div class="tescil-input-wrapper">
+                            <input type="text" id="tescil-tarih-input" class="form-input" placeholder="gg/aa/yyyy" maxlength="10" inputmode="numeric">
+                            <span id="tescil-tarih-overlay" class="tescil-tarih-overlay"></span>
                         </div>
                     </div>
                     <div class="universal-btn-group">
@@ -1074,7 +1074,7 @@
 
     <script defer src="data-manager.js?v=20260506.2"></script>
     <script defer src="data-service.js?v=20260506.1"></script>
-    <script defer src="script-core.js?v=20260511.24"></script>
+    <script defer src="script-core.js?v=20260512.2"></script>
 </body>
 </html>
 
