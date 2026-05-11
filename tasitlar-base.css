@@ -131,8 +131,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     pointer-events: none;
     box-sizing: border-box;
     position: absolute;
-    top: -2px;
-    right: -4px;
+    top: 0;
+    right: 0;
     min-width: auto;
     height: auto;
     padding: 0;
