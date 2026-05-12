@@ -2728,6 +2728,13 @@
   pointer-events: auto;
 }
 
+@media (max-width: 640px) and (display-mode: standalone) {
+  #monthly-todo-modal .modal-header h2 {
+    font-size: 17px !important;
+    letter-spacing: 0.16em !important;
+  }
+}
+
 #monthly-todo-modal .monthly-todo-sheet {
   display: flex;
   flex-direction: column;
