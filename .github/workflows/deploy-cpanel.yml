@@ -113,5 +113,9 @@ jobs:
             **/.git*
             **/.git*/**
             **/node_modules/**
+            **/.github/**
+            **/.cursor/**
+            **/.agents/**
+            **/.vscode/**
             data/data.json
             tys.zip
