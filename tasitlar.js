@@ -6920,6 +6920,16 @@
               img.onload = null;
               img.onerror = null;
               if (window.isIOSPWA && window.isIOSPWA()) {
+                try {
+                  iframe.style.position = 'fixed';
+                  iframe.style.inset = '0';
+                  iframe.style.width = '100vw';
+                  iframe.style.height = '100vh';
+                  iframe.style.zIndex = '999999';
+                  iframe.style.background = '#000';
+                  iframe.style.display = 'block';
+                } catch (iosFrameErr) {}
+
                 return;
               }
 
@@ -6929,6 +6939,16 @@
               img.onload = null;
               img.onerror = null;
               if (window.isIOSPWA && window.isIOSPWA()) {
+                try {
+                  iframe.style.position = 'fixed';
+                  iframe.style.inset = '0';
+                  iframe.style.width = '100vw';
+                  iframe.style.height = '100vh';
+                  iframe.style.zIndex = '999999';
+                  iframe.style.background = '#000';
+                  iframe.style.display = 'block';
+                } catch (iosFrameErr) {}
+
                 return;
               }
 
@@ -6938,6 +6958,16 @@
           }
         } catch (imageLoadErr) {}
         if (window.isIOSPWA && window.isIOSPWA()) {
+          try {
+            iframe.style.position = 'fixed';
+            iframe.style.inset = '0';
+            iframe.style.width = '100vw';
+            iframe.style.height = '100vh';
+            iframe.style.zIndex = '999999';
+            iframe.style.background = '#000';
+            iframe.style.display = 'block';
+          } catch (iosFrameErr) {}
+
           return;
         }
 
@@ -6951,6 +6981,16 @@
         lastOnloadAt = Date.now();
         iframe.onload = null;
         if (window.isIOSPWA && window.isIOSPWA()) {
+          try {
+            iframe.style.position = 'fixed';
+            iframe.style.inset = '0';
+            iframe.style.width = '100vw';
+            iframe.style.height = '100vh';
+            iframe.style.zIndex = '999999';
+            iframe.style.background = '#000';
+            iframe.style.display = 'block';
+          } catch (iosFrameErr) {}
+
           return;
         }
 
