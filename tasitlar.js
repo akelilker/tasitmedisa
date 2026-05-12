@@ -7162,19 +7162,21 @@
     return raw;
   }
 
+  function buildInlineRuhsatImageViewerHtml(imageUrl, title) {
+    var safeTitleText = escapeHtml(title || 'Belge');
+    var safeTitleAttr = escapeAttr(title || 'Belge');
+    var safeImageUrl = escapeAttr(imageUrl || '');
+    return '<!DOCTYPE html><html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=yes"><title>' + safeTitleText + '</title><style>html,body{margin:0;padding:0;background:#0b1220;color:#fff;height:100%;}body{overflow:auto;-webkit-overflow-scrolling:touch;}.viewer{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px;box-sizing:border-box;overflow:auto;-webkit-overflow-scrolling:touch;touch-action:pan-x pan-y pinch-zoom;}img{display:block;width:auto;height:auto;max-width:100%;max-height:calc(100vh - 32px);margin:auto;object-fit:contain;box-shadow:0 10px 30px rgba(0,0,0,.35);background:#fff;}@media print{@page{size:A4;margin:0;}html,body{background:#fff !important;height:auto;}.viewer{min-height:auto;padding:0;display:block;overflow:visible;}img{width:100% !important;max-width:100% !important;height:auto !important;max-height:100vh !important;box-shadow:none;page-break-inside:avoid;break-inside:avoid;}}</style></head><body><div class="viewer"><img src="' + safeImageUrl + '" alt="' + safeTitleAttr + '"></div></body></html>';
+  }
+
   function renderInlineRuhsatViewer(vehicleId, url, options, documentType) {
     const dt = documentType || 'ruhsat';
-    if (typeof window.isIOSPWA === 'function' && window.isIOSPWA()) {
-      if (typeof window.viewRuhsatPdf === 'function') {
-        window.viewRuhsatPdf(vehicleId, dt);
-      }
-      return true;
-    }
     const cfg = getVehicleDocumentConfig(dt);
     const content = document.getElementById('ruhsat-modal-content') || DOM.dinamikOlayFormIcerik;
     const saveBtn = document.getElementById('ruhsat-save-btn') || DOM.dinamikOlayKaydetBtn;
     if (!content || !saveBtn) return false;
     const viewerOptions = options || {};
+    const isIosPwaViewer = typeof window.isIOSPWA === 'function' && window.isIOSPWA();
     var appTasitlar = window.appData && Array.isArray(window.appData.tasitlar) ? window.appData.tasitlar : [];
     var vehicle = appTasitlar.find(function(v) { return String(v.id) === String(vehicleId || window.currentDetailVehicleId); });
     if (!vehicle) {
@@ -7183,6 +7185,7 @@
     const documentPath = vehicle ? getVehicleDocumentPath(vehicle, dt) : '';
     const isImage = isRuhsatImageForVehicle(vehicleId, documentPath);
     const documentUrl = buildRuhsatDocumentUrl(vehicleId, dt) || toAbsoluteRuhsatUrl(url);
+    const viewerTitle = isImage ? (cfg.label + ' Görsel') : (cfg.label + ' PDF');
     let loadedPrintUrl = '';
 
     setRuhsatInlineViewerMode(true);
@@ -7194,7 +7197,7 @@
     const frame = document.createElement('iframe');
     frame.className = 'ruhsat-inline-frame';
     frame.src = 'about:blank';
-    frame.setAttribute('title', isImage ? (cfg.label + ' Görsel') : (cfg.label + ' PDF'));
+    frame.setAttribute('title', viewerTitle);
     frameWrap.appendChild(frame);
 
     const actionsWrap = document.createElement('div');
@@ -7216,7 +7219,7 @@
       const printBtn = document.createElement('button');
       printBtn.type = 'button';
       printBtn.className = 'ruhsat-inline-print-btn';
-      printBtn.textContent = '\u2399 Yazd\u0131r / Payla\u015F';
+      printBtn.textContent = isIosPwaViewer ? '\u2399 Paylaş / Yazdır' : '\u2399 Yazdır / Paylaş';
       printBtn.onclick = function() {
         const fallbackUrl = loadedPrintUrl || '';
         if (viewerOptions.forceExternalPrint) {
@@ -7257,20 +7260,32 @@
 
     content.appendChild(actionsWrap);
     content.appendChild(frameWrap);
+
+    function loadInlineViewerTarget(targetUrl) {
+      loadedPrintUrl = targetUrl || '';
+      if (isImage && isIosPwaViewer) {
+        try { frame.removeAttribute('src'); } catch (removeSrcErr) {}
+        frame.srcdoc = buildInlineRuhsatImageViewerHtml(targetUrl, viewerTitle);
+        return;
+      }
+      try { frame.removeAttribute('srcdoc'); } catch (removeSrcdocErr) {}
+      frame.src = targetUrl;
+    }
+
     if (getMedisaPortalToken()) {
       const authedInline = appendMedisaDocumentAuthToUrl(documentUrl);
-      loadedPrintUrl = isImage
+      const targetUrl = isImage
         ? authedInline
         : buildPdfViewerUrl(authedInline, 'toolbar=1&navpanes=0&zoom=page-fit&view=FitH');
-      frame.src = loadedPrintUrl;
+      loadInlineViewerTarget(targetUrl);
     } else {
       fetchRuhsatDocumentObjectUrl(vehicleId, documentUrl, dt)
       .then(function(objectUrl) {
         if (!frame.isConnected) return;
-        loadedPrintUrl = isImage
+        const targetUrl = isImage
           ? objectUrl
           : buildPdfViewerUrl(objectUrl, 'toolbar=1&navpanes=0&zoom=page-fit&view=FitH');
-        frame.src = loadedPrintUrl;
+        loadInlineViewerTarget(targetUrl);
       })
       .catch(function(err) {
         console.error(cfg.label + ' görüntüleme hazırlanamadı', err);
@@ -7358,6 +7373,7 @@
     const dt = String(documentType || 'ruhsat').trim() || 'ruhsat';
     const cfg = getVehicleDocumentConfig(dt);
     const vid = (vehicleId || window.currentDetailVehicleId || '').toString();
+    const isIosPwaDocumentFlow = typeof window.isIOSPWA === 'function' && window.isIOSPWA();
     if (!vid) return;
     window.currentDetailVehicleId = vid;
     var appTasitlar = window.appData && Array.isArray(window.appData.tasitlar) ? window.appData.tasitlar : [];
@@ -7418,11 +7434,17 @@
             <line x1="16" y1="17" x2="8" y2="17"></line>
             <polyline points="10 9 9 9 8 9"></polyline>
           </svg>
-          <span style="font-size:15px; font-weight:600; color:#fff; letter-spacing:0.5px;">Yazdır</span>
+          <span style="font-size:15px; font-weight:600; color:#fff; letter-spacing:0.5px;">${isIosPwaDocumentFlow ? 'Görüntüle' : 'Yazdır'}</span>
         `;
         previewBtn.onclick = function(e) {
           e.preventDefault();
           e.stopPropagation();
+          if (isIosPwaDocumentFlow) {
+            if (!renderInlineRuhsatViewer(vid, ruhsatUrl, { showPrintButton: true, forceExternalPrint: false }, dt)) {
+              openRuhsatPrintDialog(ruhsatUrl, vid, dt);
+            }
+            return;
+          }
           openRuhsatPrintDialog(ruhsatUrl, vid, dt);
         };
       } else {
@@ -7725,7 +7747,9 @@
     const isImage = isRuhsatImagePath(docPath);
     var skipIosPwaPrint = opts && opts.skipIosPwaPrintRoute === true;
     if (!skipIosPwaPrint && typeof window.isIOSPWA === 'function' && window.isIOSPWA()) {
-      openRuhsatPrintDialog(url, vid, dt);
+      if (!renderInlineRuhsatViewer(vid, url, { showPrintButton: true, forceExternalPrint: false }, dt)) {
+        openRuhsatPrintDialog(url, vid, dt);
+      }
       return;
     }
     openVehicleDocumentInNewTab(vid, url, dt,
