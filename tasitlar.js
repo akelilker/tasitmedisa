@@ -6919,16 +6919,28 @@
             img.onload = function() {
               img.onload = null;
               img.onerror = null;
+              if (window.isIOSPWA && window.isIOSPWA()) {
+                return;
+              }
+
               schedulePrint(120);
             };
             img.onerror = function() {
               img.onload = null;
               img.onerror = null;
+              if (window.isIOSPWA && window.isIOSPWA()) {
+                return;
+              }
+
               schedulePrint(240);
             };
             return;
           }
         } catch (imageLoadErr) {}
+        if (window.isIOSPWA && window.isIOSPWA()) {
+          return;
+        }
+
         schedulePrint(120);
       };
     }
@@ -6938,6 +6950,10 @@
       iframe.onload = function() {
         lastOnloadAt = Date.now();
         iframe.onload = null;
+        if (window.isIOSPWA && window.isIOSPWA()) {
+          return;
+        }
+
         schedulePrint(900);
       };
       iframe.src = pdfUrl;
