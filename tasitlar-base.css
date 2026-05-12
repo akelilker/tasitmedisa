@@ -2415,7 +2415,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     background: var(--border-ultra) !important;
 }
 
-/* Tarih uyarısı (liste): tüm sütunlarda uyarı rengi; satır zemininin boyanmış görünmemesi için aşağıda hücrelere zebra ile aynı opak zemin veriliyor. */
+/* Tarih uyarısı (liste): uyarı rengi metinde; zebra satır (.list-item) arka planında kalır. */
 #vehicles-modal .view-list .list-item.vehicle-date-warning-red .list-cell {
     color: var(--theme-color) !important;
 }
@@ -2424,14 +2424,12 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     color: var(--orange-warn) !important;
 }
 
-/* Liste: uyarı satırında tüm hücreler renkli olunca metin halosu satırı boyalı gösterebiliyor; hücre zeminini zebra ile aynı opak yap (satır zaten zebra — görsel bütünlük). */
+/* Idle: hücre zemini şeffaf — zebra yalnızca satırda; hover ile aynı mantık. */
 #vehicles-modal .view-list .list-item.vehicle-date-warning-red:nth-child(odd) .list-cell,
-#vehicles-modal .view-list .list-item.vehicle-date-warning-orange:nth-child(odd) .list-cell {
-    background-color: var(--bg) !important;
-}
+#vehicles-modal .view-list .list-item.vehicle-date-warning-orange:nth-child(odd) .list-cell,
 #vehicles-modal .view-list .list-item.vehicle-date-warning-red:nth-child(even) .list-cell,
 #vehicles-modal .view-list .list-item.vehicle-date-warning-orange:nth-child(even) .list-cell {
-    background-color: rgba(255, 255, 255, 0.05) !important;
+    background-color: transparent !important;
 }
 #vehicles-modal .view-list .list-item.vehicle-date-warning-red:hover .list-cell,
 #vehicles-modal .view-list .list-item.vehicle-date-warning-orange:hover .list-cell {
