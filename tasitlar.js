@@ -6692,12 +6692,28 @@
     return rawId + '::' + dt + '::' + verSeg + '::' + absoluteUrl;
   }
 
+  function detachIosPwaPdfStagingFrame(entry) {
+    if (!entry) return;
+    var frame = entry.pdfStagingFrame;
+    if (frame) {
+      try { frame.onload = null; } catch (e) {}
+      if (frame.parentNode) {
+        try { frame.parentNode.removeChild(frame); } catch (e2) {}
+      }
+    }
+    entry.pdfStagingFrame = null;
+  }
+
   function revokeRuhsatDocumentEntry(entry) {
-    if (!entry || !entry.objectUrl) return;
-    try {
-      URL.revokeObjectURL(entry.objectUrl);
-    } catch (e) {}
+    if (!entry) return;
+    detachIosPwaPdfStagingFrame(entry);
+    if (entry.objectUrl) {
+      try {
+        URL.revokeObjectURL(entry.objectUrl);
+      } catch (e) {}
+    }
     entry.objectUrl = '';
+    entry.pdfStagingReady = false;
   }
 
   function invalidateRuhsatDocumentCache(vehicleId, documentType) {
@@ -6748,7 +6764,9 @@
     const entry = existingEntry || {
       objectUrl: '',
       promise: null,
-      cooldownUntil: 0
+      cooldownUntil: 0,
+      pdfStagingFrame: null,
+      pdfStagingReady: false
     };
 
     entry.promise = fetch(documentUrl, {
@@ -6797,6 +6815,43 @@
     const dt = documentType || 'ruhsat';
     const preloadUrl = buildRuhsatDocumentUrl(vehicleId, dt) || toAbsoluteRuhsatUrl(documentPath);
     fetchRuhsatDocumentObjectUrl(vehicleId, preloadUrl, dt).catch(function() {});
+  }
+
+  function wireIosPwaPdfStagingIframe(cacheKey, blobUrl) {
+    if (!cacheKey || !blobUrl) return;
+    var entry = ruhsatDocumentCache.get(cacheKey);
+    if (!entry || entry.objectUrl !== blobUrl) return;
+    detachIosPwaPdfStagingFrame(entry);
+    var frame = document.createElement('iframe');
+    frame.setAttribute('aria-hidden', 'true');
+    frame.style.cssText = window.MEDISA_PRINT_IFRAME_CSS_TEXT || 'position:fixed;left:0;top:0;width:100vw;height:100vh;border:0;opacity:0.01;pointer-events:none;visibility:visible;transform:translateX(-200vw);background:#fff;z-index:-1;';
+    document.body.appendChild(frame);
+    entry.pdfStagingFrame = frame;
+    entry.pdfStagingReady = false;
+    frame.onload = function() {
+      frame.onload = null;
+      if (entry.pdfStagingFrame !== frame) return;
+      if (entry.objectUrl !== blobUrl) return;
+      entry.pdfStagingReady = true;
+    };
+    frame.src = blobUrl;
+  }
+
+  function preloadIosPwaPrintDocument(vehicleId, documentPath, documentType) {
+    if (!(typeof window.isIOSPWA === 'function' && window.isIOSPWA())) return;
+    if (!documentPath) return;
+    const dt = documentType || 'ruhsat';
+    if (isRuhsatImagePath(documentPath)) {
+      preloadIosPwaImageDocument(vehicleId, documentPath, dt);
+      return;
+    }
+    var pdfUrl = buildRuhsatDocumentUrl(vehicleId, dt) || toAbsoluteRuhsatUrl(documentPath);
+    fetchRuhsatDocumentObjectUrl(vehicleId, pdfUrl, dt)
+      .then(function(blobUrl) {
+        var ck = getRuhsatDocumentCacheKey(vehicleId, pdfUrl, dt);
+        wireIosPwaPdfStagingIframe(ck, blobUrl);
+      })
+      .catch(function() {});
   }
 
   function warmRuhsatPreview(vehicleId, ruhsatUrl, documentType) {
@@ -6936,6 +6991,23 @@
     if (isIosPwa && isImage) {
       const cachedIosImageUrl = getCachedRuhsatDocumentObjectUrl(vehicleId, documentUrl, dt);
       printCachedIosPwaImage(cachedIosImageUrl);
+      return;
+    }
+
+    if (isIosPwa && !isImage) {
+      var iosPwaPdfCacheKey = getRuhsatDocumentCacheKey(vehicleId, documentUrl, dt);
+      var iosPwaPdfEntry = iosPwaPdfCacheKey ? ruhsatDocumentCache.get(iosPwaPdfCacheKey) : null;
+      if (!iosPwaPdfEntry || !iosPwaPdfEntry.pdfStagingReady || !iosPwaPdfEntry.pdfStagingFrame) {
+        alert('Belge henüz hazır değil. Lütfen tekrar deneyin.');
+        return;
+      }
+      var iosPwaPdfWin = iosPwaPdfEntry.pdfStagingFrame.contentWindow;
+      if (!iosPwaPdfWin || typeof iosPwaPdfWin.print !== 'function') {
+        alert('Yazdırma başlatılamadı. Lütfen tekrar deneyin.');
+        return;
+      }
+      try { iosPwaPdfWin.focus(); } catch (iosPwaPdfFocusErr) {}
+      iosPwaPdfWin.print();
       return;
     }
 
@@ -7393,7 +7465,7 @@
       const cfg = VEHICLE_DOCUMENT_TYPES[docKey];
       const docPath = getVehicleDocumentPath(vehicle, docKey);
       const hasDoc = !!docPath;
-      if (hasDoc) preloadIosPwaImageDocument(vid, docPath, docKey);
+      if (hasDoc) preloadIosPwaPrintDocument(vid, docPath, docKey);
       const card = document.createElement('button');
       card.type = 'button';
       card.className = 'vehicle-document-card';
@@ -7468,10 +7540,12 @@
       const isMobileViewport = (typeof window.matchMedia === 'function')
         ? window.matchMedia('(max-width: 640px)').matches
         : (window.innerWidth <= 640);
+      preloadIosPwaPrintDocument(vid, pathVal, dt);
       if (isMobileViewport && !ruhsatIsImage) {
-        warmRuhsatPreview(vid, ruhsatUrl, dt);
+        if (!(typeof window.isIOSPWA === 'function' && window.isIOSPWA() && !ruhsatIsImage)) {
+          warmRuhsatPreview(vid, ruhsatUrl, dt);
+        }
       }
-      if (isMobileViewport && ruhsatIsImage) preloadIosPwaImageDocument(vid, pathVal, dt);
       const btnGroup = document.createElement('div');
       btnGroup.className = 'universal-btn-group ruhsat-preview-row';
 
