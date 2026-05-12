@@ -6694,14 +6694,24 @@
 
   function detachIosPwaPdfStagingFrame(entry) {
     if (!entry) return;
+    entry.pdfStagingReady = false;
     var frame = entry.pdfStagingFrame;
-    if (frame) {
-      try { frame.onload = null; } catch (e) {}
-      if (frame.parentNode) {
-        try { frame.parentNode.removeChild(frame); } catch (e2) {}
-      }
-    }
     entry.pdfStagingFrame = null;
+    if (!frame) return;
+    try {
+      frame.onload = null;
+    } catch (e) {}
+    try {
+      frame.removeAttribute('srcdoc');
+    } catch (e1) {}
+    try {
+      frame.src = 'about:blank';
+    } catch (e2) {}
+    if (frame.parentNode) {
+      try {
+        frame.parentNode.removeChild(frame);
+      } catch (e3) {}
+    }
   }
 
   function revokeRuhsatDocumentEntry(entry) {
@@ -6713,7 +6723,6 @@
       } catch (e) {}
     }
     entry.objectUrl = '';
-    entry.pdfStagingReady = false;
   }
 
   function invalidateRuhsatDocumentCache(vehicleId, documentType) {
@@ -6834,7 +6843,11 @@
       if (entry.objectUrl !== blobUrl) return;
       entry.pdfStagingReady = true;
     };
-    frame.src = blobUrl;
+    try {
+      frame.src = blobUrl;
+    } catch (wirePdfSrcErr) {
+      detachIosPwaPdfStagingFrame(entry);
+    }
   }
 
   function preloadIosPwaPrintDocument(vehicleId, documentPath, documentType) {
@@ -7007,7 +7020,11 @@
         return;
       }
       try { iosPwaPdfWin.focus(); } catch (iosPwaPdfFocusErr) {}
-      iosPwaPdfWin.print();
+      try {
+        iosPwaPdfWin.print();
+      } catch (iosPwaPdfPrintErr) {
+        alert('Yazdırma başlatılamadı. Lütfen tekrar deneyin.');
+      }
       return;
     }
 
@@ -7015,37 +7032,16 @@
     window.__ruhsatPrintToken = printToken;
 
     var iframe = document.getElementById('ruhsat-print-frame');
-    var isIosPwaPrintPreview = isIosPwa;
     var fallbackOpenUrl = '';
 
-    var iframeJustCreated = false;
     if (!iframe) {
       iframe = document.createElement('iframe');
       iframe.id = 'ruhsat-print-frame';
       iframe.setAttribute('aria-hidden', 'true');
       document.body.appendChild(iframe);
-      iframeJustCreated = true;
     }
     // iOS basıma uygun: tam viewport, ekranda görünmez (opacity:0), tam sayfa baskı için 100vw/100vh
     iframe.style.cssText = window.MEDISA_PRINT_IFRAME_CSS_TEXT || 'position:fixed;left:0;top:0;width:100vw;height:100vh;border:0;opacity:0.01;pointer-events:none;visibility:visible;transform:translateX(-200vw);background:#fff;z-index:-1;';
-    if (isIosPwaPrintPreview && !isImage) {
-      try {
-        iframe.style.position = 'fixed';
-        iframe.style.inset = '0';
-        iframe.style.width = '100vw';
-        iframe.style.height = '100vh';
-        iframe.style.zIndex = '999999';
-        iframe.style.background = '#000';
-        iframe.style.display = 'block';
-        iframe.style.visibility = 'visible';
-        iframe.style.opacity = '1';
-        iframe.style.pointerEvents = 'auto';
-        iframe.style.border = '0';
-        iframe.style.transform = 'none';
-        iframe.style.left = '0';
-        iframe.style.top = '0';
-      } catch (iosPreviewErr) {}
-    }
     var lastOnloadAt = 0;
     var printTimer = null;
     function clearPrintTimer() {
@@ -7075,58 +7071,16 @@
             img.onload = function() {
               img.onload = null;
               img.onerror = null;
-              if (window.isIOSPWA && window.isIOSPWA()) {
-                try {
-                  iframe.style.position = 'fixed';
-                  iframe.style.inset = '0';
-                  iframe.style.width = '100vw';
-                  iframe.style.height = '100vh';
-                  iframe.style.zIndex = '999999';
-                  iframe.style.background = '#000';
-                  iframe.style.display = 'block';
-                } catch (iosFrameErr) {}
-
-                return;
-              }
-
               schedulePrint(120);
             };
             img.onerror = function() {
               img.onload = null;
               img.onerror = null;
-              if (window.isIOSPWA && window.isIOSPWA()) {
-                try {
-                  iframe.style.position = 'fixed';
-                  iframe.style.inset = '0';
-                  iframe.style.width = '100vw';
-                  iframe.style.height = '100vh';
-                  iframe.style.zIndex = '999999';
-                  iframe.style.background = '#000';
-                  iframe.style.display = 'block';
-                } catch (iosFrameErr) {}
-
-                return;
-              }
-
               schedulePrint(240);
             };
             return;
           }
         } catch (imageLoadErr) {}
-        if (window.isIOSPWA && window.isIOSPWA()) {
-          try {
-            iframe.style.position = 'fixed';
-            iframe.style.inset = '0';
-            iframe.style.width = '100vw';
-            iframe.style.height = '100vh';
-            iframe.style.zIndex = '999999';
-            iframe.style.background = '#000';
-            iframe.style.display = 'block';
-          } catch (iosFrameErr) {}
-
-          return;
-        }
-
         schedulePrint(120);
       };
     }
@@ -7136,20 +7090,6 @@
       iframe.onload = function() {
         lastOnloadAt = Date.now();
         iframe.onload = null;
-        if (window.isIOSPWA && window.isIOSPWA()) {
-          try {
-            iframe.style.position = 'fixed';
-            iframe.style.inset = '0';
-            iframe.style.width = '100vw';
-            iframe.style.height = '100vh';
-            iframe.style.zIndex = '999999';
-            iframe.style.background = '#000';
-            iframe.style.display = 'block';
-          } catch (iosFrameErr) {}
-
-          return;
-        }
-
         schedulePrint(900);
       };
       iframe.src = pdfUrl;
@@ -7182,34 +7122,7 @@
       }
     }
 
-    var fileUrl = '';
     var isPdf = !isImage;
-    if (isImage) {
-      if (getMedisaPortalToken()) {
-        fileUrl = appendMedisaDocumentAuthToUrl(documentUrl);
-      }
-    } else {
-      if (getMedisaPortalToken()) {
-        fileUrl = buildPdfViewerUrl(
-          appendMedisaDocumentAuthToUrl(documentUrl),
-          'toolbar=0&navpanes=0&zoom=page-width&view=FitH'
-        );
-      }
-    }
-
-    if (isIosPwaPrintPreview && isPdf) {
-      if (fileUrl) {
-        try {
-          iframe.removeAttribute('srcdoc');
-        } catch (iosDirectSrcErr) {}
-
-        try {
-          iframe.src = fileUrl;
-        } catch (iosDirectSrcErr) {}
-
-        return;
-      }
-    }
 
     if (isPdf) {
       if (getMedisaPortalToken()) {
@@ -7226,18 +7139,6 @@
           if (window.__ruhsatPrintToken !== printToken) {
             return;
           }
-          if (isIosPwaPrintPreview) {
-            try {
-              iframe.removeAttribute('srcdoc');
-            } catch (iosDirectSrcErr) {}
-
-            try {
-              iframe.src = buildPdfViewerUrl(documentObjectUrl, 'toolbar=0&navpanes=0&zoom=page-width&view=FitH');
-            } catch (iosDirectSrcErr2) {}
-
-            return;
-          }
-
           loadPdfForPrint(buildPdfViewerUrl(documentObjectUrl, 'toolbar=0&navpanes=0&zoom=page-width&view=FitH'));
         })
         .catch(function() {
