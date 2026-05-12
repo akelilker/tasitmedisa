@@ -2666,7 +2666,7 @@ input.settings-form-input:-moz-autofill,
     #settings-menu.settings-dropdown .has-submenu-wrapper .has-submenu,
     #settings-menu.settings-dropdown .settings-submenu button {
         text-align: right !important;
-        font-size: clamp(16px, 3.8vw, 18px) !important;
+        font-size: clamp(17px, 4vw, 19px) !important;
         letter-spacing: 0.6px !important;
         line-height: 1.18 !important;
         min-height: 54px !important;
@@ -2706,7 +2706,7 @@ input.settings-form-input:-moz-autofill,
     }
     #settings-menu.settings-dropdown .cache-clear-btn:hover,
     #settings-menu.settings-dropdown .settings-logout-btn:hover {
-        font-size: clamp(16px, 3.8vw, 18px) !important;
+        font-size: clamp(17px, 4vw, 19px) !important;
     }
     #settings-menu > #dis-veri-btn,
     #dis-veri-panel {
