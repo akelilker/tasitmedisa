@@ -3888,7 +3888,8 @@
     }
   }
 
-  function getMonthlyTodoDriverFeedbackMessage(task) {
+  /** Aylık özet: task.type + gerekirse task.field → kanonik tür (WhatsApp / kısa link / etiket ortak). task.tip kullanılmaz. */
+  function resolveMonthlyTodoTaskKind(task) {
     var type = task && task.type != null ? String(task.type).trim() : '';
     if (!type && task && task.field != null) {
       var f = String(task.field).trim();
@@ -3900,6 +3901,11 @@
       else if (f === 'sigortaDate+kaskoDate') type = 'Sigorta + Kasko';
       else if (f === 'guncelKm' || f === 'km') type = 'KM';
     }
+    return type;
+  }
+
+  function getMonthlyTodoDriverFeedbackMessage(task) {
+    var type = resolveMonthlyTodoTaskKind(task);
     switch (type) {
       case 'Sigorta':
         return 'Güncellenen Zorunlu Trafik Sigortası Poliçesinin Gönderilmesi.';
@@ -3922,17 +3928,7 @@
 
   /** Aylık özet WhatsApp kısa link (/t/...) için görev tipi → kod. */
   function getMonthlyTodoDriverFeedbackShortCode(task) {
-    var type = task && task.type != null ? String(task.type).trim() : '';
-    if (!type && task && task.field != null) {
-      var f2 = String(task.field).trim();
-      if (f2 === 'sigortaDate') type = 'Sigorta';
-      else if (f2 === 'kaskoDate') type = 'Kasko';
-      else if (f2 === 'muayeneDate') type = 'Muayene';
-      else if (f2 === 'egzozMuayeneDate') type = 'Egzoz Muayene';
-      else if (f2 === 'muayeneDate+egzozMuayeneDate') type = 'Muayene + Egzoz';
-      else if (f2 === 'sigortaDate+kaskoDate') type = 'Sigorta + Kasko';
-      else if (f2 === 'guncelKm' || f2 === 'km') type = 'KM';
-    }
+    var type = resolveMonthlyTodoTaskKind(task);
     switch (type) {
       case 'Sigorta':
         return 's';
@@ -3974,17 +3970,7 @@
     var plakaRaw = (vehicle && vehicle.plate != null ? String(vehicle.plate).trim() : '') || '-';
     var plaka = plakaRaw === '-' ? '-' : plakaRaw.replace(/\s+/g, '');
     var shortLink = buildMonthlyTodoDriverFeedbackUrl(task) || '';
-    var type = task && task.type != null ? String(task.type).trim() : '';
-    if (!type && task && task.field != null) {
-      var f = String(task.field).trim();
-      if (f === 'sigortaDate') type = 'Sigorta';
-      else if (f === 'kaskoDate') type = 'Kasko';
-      else if (f === 'muayeneDate') type = 'Muayene';
-      else if (f === 'egzozMuayeneDate') type = 'Egzoz Muayene';
-      else if (f === 'muayeneDate+egzozMuayeneDate') type = 'Muayene + Egzoz';
-      else if (f === 'sigortaDate+kaskoDate') type = 'Sigorta + Kasko';
-      else if (f === 'guncelKm' || f === 'km') type = 'KM';
-    }
+    var type = resolveMonthlyTodoTaskKind(task);
     var dateRaw = task && task.date != null ? String(task.date).trim() : '';
     var tarih = '';
     if (dateRaw && typeof window.formatDateShort === 'function') {
