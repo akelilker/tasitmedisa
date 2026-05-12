@@ -799,6 +799,20 @@ async function saveDataToServer(options) {
             if (response.status === 409) {
                 var conflictError = new Error('Conflict');
                 conflictError.conflict = true;
+                try {
+                    var conflictBody = await response.json();
+                    if (conflictBody && typeof conflictBody === 'object') {
+                        if (typeof conflictBody.message === 'string' && conflictBody.message.trim() !== '') {
+                            conflictError.medisaServerMessage = conflictBody.message.trim();
+                        }
+                        if (conflictBody.entity != null && String(conflictBody.entity).trim() !== '') {
+                            conflictError.medisaConflictEntity = String(conflictBody.entity).trim();
+                        }
+                        if (conflictBody.id != null && String(conflictBody.id).trim() !== '') {
+                            conflictError.medisaConflictId = String(conflictBody.id).trim();
+                        }
+                    }
+                } catch (parse409Err) {}
                 throw conflictError;
             }
             throw new Error('HTTP error! status: ' + response.status);
@@ -808,6 +822,15 @@ async function saveDataToServer(options) {
         if (data && data.conflict === true) {
             var conflictErr = new Error('Conflict');
             conflictErr.conflict = true;
+            if (typeof data.message === 'string' && data.message.trim() !== '') {
+                conflictErr.medisaServerMessage = data.message.trim();
+            }
+            if (data.entity != null && String(data.entity).trim() !== '') {
+                conflictErr.medisaConflictEntity = String(data.entity).trim();
+            }
+            if (data.id != null && String(data.id).trim() !== '') {
+                conflictErr.medisaConflictId = String(data.id).trim();
+            }
             throw conflictErr;
         }
 

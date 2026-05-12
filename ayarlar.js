@@ -808,6 +808,43 @@
       }
       return true;
     }
+
+    function isUserManagementSaveConflict(err) {
+      return !!(err && (err.conflict === true || String(err.message || '') === 'Conflict'));
+    }
+
+    async function refreshUserManagementAfterSaveConflict(previousUsers, previousVehicles) {
+      let reloadOk = false;
+      if (typeof window.loadDataFromServer === 'function') {
+        try {
+          await window.loadDataFromServer(true);
+          reloadOk = true;
+        } catch (reloadErr) {
+          console.warn('[Medisa] Çakışma sonrası sunucu yenileme başarısız', reloadErr && reloadErr.message);
+        }
+      }
+      if (reloadOk && window.appData) {
+        setUserManagementLocalState(readAllUsers(), readAllVehicles());
+      } else {
+        setUserManagementLocalState(previousUsers, previousVehicles);
+      }
+      if (typeof window.renderUserList === 'function') {
+        window.renderUserList();
+      }
+      if (typeof window.onMedisaConflict === 'function') {
+        try {
+          window.onMedisaConflict();
+        } catch (hookErr) {}
+      }
+      return reloadOk;
+    }
+
+    function buildUserSaveConflictAlertMessage(err) {
+      const serverMsg = err && err.medisaServerMessage ? String(err.medisaServerMessage).trim() : '';
+      const tail = 'Güncel liste yüklendi; aynı işlemi bir kez daha kaydedebilirsiniz.';
+      if (serverMsg) return serverMsg + '\n\n' + tail;
+      return 'Taşıt veya liste sunucuda güncellenmişti.\n\n' + tail;
+    }
   
     // Modal Kontrolü (Ana Liste)
     window.openUserManagement = function openUserManagement() {
@@ -1608,7 +1645,16 @@
         alert(id ? 'Kullanıcı güncellendi.' : 'Kullanıcı Eklendi.');
       } catch (error) {
         console.error('Kullanıcı kayıt hatası:', error);
-        alert('Kullanıcı kaydı sırasında bir hata Oluştu! Lütfen tekrar deneyin.');
+        if (isUserManagementSaveConflict(error)) {
+          const reloadOk = await refreshUserManagementAfterSaveConflict(previousUsers, previousVehicles);
+          alert(
+            reloadOk
+              ? buildUserSaveConflictAlertMessage(error)
+              : 'Sunucu ile senkron güncellenemedi. Sayfayı yenileyip tekrar deneyin.'
+          );
+        } else {
+          alert('Kullanıcı kaydı sırasında bir hata oluştu! Lütfen tekrar deneyin.');
+        }
       } finally {
         if (saveBtn) saveBtn.disabled = false;
       }
@@ -1642,7 +1688,23 @@
   
       const previousVehicles = cloneStorageState(vehicles);
       const filtered = previousUsers.filter(u => String(u.id) !== String(id));
-      const persisted = await persistUserManagementState(filtered, previousVehicles);
+      let persisted = false;
+      try {
+        persisted = await persistUserManagementState(filtered, previousVehicles);
+      } catch (error) {
+        if (isUserManagementSaveConflict(error)) {
+          const reloadOk = await refreshUserManagementAfterSaveConflict(previousUsers, previousVehicles);
+          alert(
+            reloadOk
+              ? buildUserSaveConflictAlertMessage(error)
+              : 'Sunucu ile senkron güncellenemedi. Sayfayı yenileyip tekrar deneyin.'
+          );
+          return;
+        }
+        console.error('Kullanıcı silme hatası:', error);
+        alert('Kullanıcı silinirken bir hata oluştu! Lütfen tekrar deneyin.');
+        return;
+      }
       if (persisted !== true) {
         setUserManagementLocalState(previousUsers, previousVehicles);
         renderUserList();

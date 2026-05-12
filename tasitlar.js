@@ -753,7 +753,7 @@
   // Global State
   let currentView = 'dashboard'; // 'dashboard' | 'list'
   let activeBranchId = null; // null = dashboard, 'all' = tümü, 'id' = şube
-  let viewMode = 'card'; 
+  let viewMode = 'list'; 
   let sortColumn = null; // 'year', 'brand', 'plate', 'km', 'type', 'transmission', 'user', 'branch', ...
   let sortDirection = 'asc'; // 'asc' | 'desc'
   let currentFilter = 'az'; // 'az' | 'newest' | 'oldest' | 'type' (liste filtre dropdown)
@@ -2400,8 +2400,8 @@
   // --- 2. LİSTE RENDER (Şube Detayı) ---
   window.openBranchList = function(branchId, branchName, options = {}) {
     currentView = 'list';
-    /* TÜMÜ: varsayılan kart görünümü; şube / tahsis edilmemiş: liste (dar tablo) */
-    viewMode = String(branchId) === 'all' ? 'card' : 'list';
+    /* Varsayılan görünüm: tüm taşıtlar, şube ve tahsis edilmemiş listeleri liste (dar tablo) olarak açılır. */
+    viewMode = 'list';
     activeBranchId = branchId; // 'all', '', veya 'id'
     lastListContext = { mode: 'branch', branchId: branchId, branchName: branchName };
     isAutoSingleBranchVehiclesView = options.autoSingleBranch === true;
