@@ -12,7 +12,7 @@
     --modal-mobile-top-border-color: rgba(var(--theme-color-rgb), 0.54);
     --modal-mobile-header-top-border: rgba(255, 255, 255, 0.18);
     --modal-mobile-inner-top-highlight: rgba(var(--theme-color-rgb), 0.20);
-    display: none !important; 
+    display: none !important; image.png
     background: var(--bg) !important;
     flex-direction: column !important;
     justify-content: flex-start !important;
