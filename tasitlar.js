@@ -6785,6 +6785,12 @@
     return entry.promise;
   }
 
+  function getCachedRuhsatDocumentObjectUrl(vehicleId, ruhsatUrl, documentType) {
+    const cacheKey = getRuhsatDocumentCacheKey(vehicleId, ruhsatUrl, documentType || 'ruhsat');
+    const entry = cacheKey ? ruhsatDocumentCache.get(cacheKey) : null;
+    return entry && entry.objectUrl ? entry.objectUrl : '';
+  }
+
   function warmRuhsatPreview(vehicleId, ruhsatUrl, documentType) {
     const dt = documentType || 'ruhsat';
     const url = toAbsoluteRuhsatUrl(ruhsatUrl);
@@ -6968,7 +6974,7 @@
           if (cleanupDone) return;
           cleanupDone = true;
           restorePrintFrameLayout();
-        }, 12000);
+        }, 1800);
         var onAfterPrint = function() {
           if (cleanupDone) return;
           cleanupDone = true;
@@ -7171,6 +7177,13 @@
           }
           if (typeof window.viewRuhsatPdf === 'function') window.viewRuhsatPdf(vehicleId, dt, { skipIosPwaPrintRoute: true });
         });
+      return;
+    }
+
+    const cachedIosImageUrl = isIosPwaPrintPreview
+      ? getCachedRuhsatDocumentObjectUrl(vehicleId, documentUrl, dt)
+      : '';
+    if (isIosPwaPrintPreview && cachedIosImageUrl && printImageImmediatelyOnIosPwa(cachedIosImageUrl)) {
       return;
     }
 
@@ -7391,7 +7404,12 @@
     picker.className = 'vehicle-document-picker';
     ['ruhsat', 'sigorta', 'kasko'].forEach(function(docKey) {
       const cfg = VEHICLE_DOCUMENT_TYPES[docKey];
-      const hasDoc = !!getVehicleDocumentPath(vehicle, docKey);
+      const docPath = getVehicleDocumentPath(vehicle, docKey);
+      const hasDoc = !!docPath;
+      if (hasDoc && typeof window.isIOSPWA === 'function' && window.isIOSPWA() && isRuhsatImagePath(docPath)) {
+        const preloadUrl = resolveRuhsatUrl(docPath, vid, docKey);
+        fetchRuhsatDocumentObjectUrl(vid, preloadUrl, docKey).catch(function() {});
+      }
       const card = document.createElement('button');
       card.type = 'button';
       card.className = 'vehicle-document-card';
@@ -7468,6 +7486,9 @@
         : (window.innerWidth <= 640);
       if (isMobileViewport && !ruhsatIsImage) {
         warmRuhsatPreview(vid, ruhsatUrl, dt);
+      }
+      if (isMobileViewport && ruhsatIsImage && typeof window.isIOSPWA === 'function' && window.isIOSPWA()) {
+        fetchRuhsatDocumentObjectUrl(vid, ruhsatUrl, dt).catch(function() {});
       }
       const btnGroup = document.createElement('div');
       btnGroup.className = 'universal-btn-group ruhsat-preview-row';
