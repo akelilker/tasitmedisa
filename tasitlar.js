@@ -6408,30 +6408,6 @@
     return false;
   }
 
-  function tryOpenRuhsatSystemShareSheet(vehicleId, documentUrl, documentType) {
-    const dt = documentType || 'ruhsat';
-    if (!(typeof window.isIOSPWA === 'function' && window.isIOSPWA())) return false;
-    if (!documentUrl || !window.navigator || typeof window.navigator.share !== 'function') return false;
-    if (!getMedisaPortalToken()) return false;
-    const cfg = getVehicleDocumentConfig(dt);
-    const shareUrl = appendMedisaDocumentAuthToUrl(documentUrl);
-    if (!shareUrl) return false;
-    try {
-      window.navigator.share({
-        title: cfg.label || 'Belge',
-        url: shareUrl
-      }).catch(function(err) {
-        if (!err || err.name === 'AbortError') return;
-        try {
-          openRuhsatPrintDialog(documentUrl, vehicleId, dt);
-        } catch (fallbackErr) {}
-      });
-      return true;
-    } catch (err) {
-      return false;
-    }
-  }
-
   function buildPdfViewerUrl(baseUrl, fragment) {
     const cleanBase = String(baseUrl || '').split('#')[0];
     const cleanFragment = String(fragment || '').replace(/^#/, '');
@@ -6914,7 +6890,7 @@
     }
     // iOS basıma uygun: tam viewport, ekranda görünmez (opacity:0), tam sayfa baskı için 100vw/100vh
     iframe.style.cssText = window.MEDISA_PRINT_IFRAME_CSS_TEXT || 'position:fixed;left:0;top:0;width:100vw;height:100vh;border:0;opacity:0.01;pointer-events:none;visibility:visible;transform:translateX(-200vw);background:#fff;z-index:-1;';
-    if (isIosPwaPrintPreview) {
+    if (isIosPwaPrintPreview && !isImage) {
       try {
         iframe.style.position = 'fixed';
         iframe.style.inset = '0';
@@ -6947,10 +6923,72 @@
         doPrint();
       }, delayMs);
     }
+    function buildImagePrintHtml(imageUrl) {
+      var printCss = '<style>html,body{margin:0;padding:0;width:100%;height:100%;background:#fff;overflow:hidden;}body{display:flex;align-items:center;justify-content:center;}.ruhsat-print-page{width:100vw;height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#fff;}.ruhsat-print-page img{display:block;width:auto;height:auto;max-width:100%;max-height:100%;object-fit:contain;}@media print{@page{size:A4 portrait;margin:0;}html,body{width:210mm !important;height:297mm !important;overflow:hidden !important;background:#fff !important;}.ruhsat-print-page{width:210mm !important;height:297mm !important;overflow:hidden !important;page-break-inside:avoid !important;break-inside:avoid !important;page-break-after:avoid !important;break-after:avoid-page !important;}.ruhsat-print-page img{width:auto !important;height:auto !important;max-width:210mm !important;max-height:297mm !important;object-fit:contain !important;}}</style>';
+      return '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">' + printCss + '<title>Ruhsat</title></head><body><div class="ruhsat-print-page"><img src="' + escapeHtml(imageUrl) + '" alt="Ruhsat"></div></body></html>';
+    }
+    function applyIosPrintPaintLayout() {
+      try {
+        iframe.style.position = 'fixed';
+        iframe.style.inset = '0';
+        iframe.style.width = '100vw';
+        iframe.style.height = '100vh';
+        iframe.style.zIndex = '2147483646';
+        iframe.style.background = '#fff';
+        iframe.style.display = 'block';
+        iframe.style.visibility = 'visible';
+        iframe.style.opacity = '1';
+        iframe.style.pointerEvents = 'none';
+        iframe.style.border = '0';
+        iframe.style.transform = 'none';
+        iframe.style.left = '0';
+        iframe.style.top = '0';
+      } catch (iosPaintErr) {}
+    }
+    function restorePrintFrameLayout() {
+      try {
+        iframe.style.cssText = window.MEDISA_PRINT_IFRAME_CSS_TEXT || 'position:fixed;left:0;top:0;width:100vw;height:100vh;border:0;opacity:0.01;pointer-events:none;visibility:visible;transform:translateX(-200vw);background:#fff;z-index:-1;';
+      } catch (restoreErr) {}
+    }
+    function printImageImmediatelyOnIosPwa(imageUrl) {
+      fallbackOpenUrl = imageUrl;
+      try {
+        var frameWindow = iframe.contentWindow;
+        var frameDoc = frameWindow ? frameWindow.document : iframe.contentDocument;
+        if (!frameWindow || !frameDoc || typeof frameWindow.print !== 'function') return false;
+        frameDoc.open();
+        frameDoc.write(buildImagePrintHtml(imageUrl));
+        frameDoc.close();
+        try {
+          if (frameDoc.body) void frameDoc.body.offsetHeight;
+        } catch (reflowErr) {}
+        applyIosPrintPaintLayout();
+        var cleanupDone = false;
+        var cleanupTimer = setTimeout(function() {
+          if (cleanupDone) return;
+          cleanupDone = true;
+          restorePrintFrameLayout();
+        }, 12000);
+        var onAfterPrint = function() {
+          if (cleanupDone) return;
+          cleanupDone = true;
+          clearTimeout(cleanupTimer);
+          restorePrintFrameLayout();
+          try { frameWindow.removeEventListener('afterprint', onAfterPrint); } catch (removeAfterPrintErr) {}
+        };
+        try { frameWindow.addEventListener('afterprint', onAfterPrint); } catch (afterPrintErr) {}
+        frameWindow.focus();
+        frameWindow.print();
+        return true;
+      } catch (iosDirectPrintErr) {
+        if (typeof console !== 'undefined' && console.warn) console.warn('Ruhsat iOS direct print failed', iosDirectPrintErr);
+        restorePrintFrameLayout();
+        return false;
+      }
+    }
     function loadImageForPrint(imageUrl) {
       fallbackOpenUrl = imageUrl;
-      var printCss = '<style>html,body{margin:0;padding:0;width:100%;height:100%;background:#fff;overflow:hidden;}body{display:flex;align-items:center;justify-content:center;}.ruhsat-print-page{width:100vw;height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#fff;}.ruhsat-print-page img{display:block;width:auto;height:auto;max-width:100%;max-height:100%;object-fit:contain;}@media print{@page{size:A4 portrait;margin:0;}html,body{width:210mm !important;height:297mm !important;overflow:hidden !important;background:#fff !important;}.ruhsat-print-page{width:210mm !important;height:297mm !important;overflow:hidden !important;page-break-inside:avoid !important;break-inside:avoid !important;page-break-after:avoid !important;break-after:avoid-page !important;}.ruhsat-print-page img{width:auto !important;height:auto !important;max-width:210mm !important;max-height:297mm !important;object-fit:contain !important;}}</style>';
-      var html = '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">' + printCss + '<title>Ruhsat</title></head><body><div class="ruhsat-print-page"><img src="' + escapeHtml(imageUrl) + '" alt="Ruhsat"></div></body></html>';
+      var html = buildImagePrintHtml(imageUrl);
       try { iframe.removeAttribute('src'); } catch (removeSrcErr) {}
       iframe.srcdoc = html;
       iframe.onload = function() {
@@ -7137,7 +7175,11 @@
     }
 
     if (getMedisaPortalToken()) {
-      loadImageForPrint(appendMedisaDocumentAuthToUrl(documentUrl));
+      const authedImageUrl = appendMedisaDocumentAuthToUrl(documentUrl);
+      if (isIosPwaPrintPreview && printImageImmediatelyOnIosPwa(authedImageUrl)) {
+        return;
+      }
+      loadImageForPrint(authedImageUrl);
       return;
     }
     fetchRuhsatDocumentObjectUrl(vehicleId, documentUrl, dt)
@@ -7450,7 +7492,6 @@
         previewBtn.onclick = function(e) {
           e.preventDefault();
           e.stopPropagation();
-          if (tryOpenRuhsatSystemShareSheet(vid, ruhsatUrl, dt)) return;
           openRuhsatPrintDialog(ruhsatUrl, vid, dt);
         };
       } else {
@@ -7753,7 +7794,6 @@
     const isImage = isRuhsatImagePath(docPath);
     var skipIosPwaPrint = opts && opts.skipIosPwaPrintRoute === true;
     if (!skipIosPwaPrint && typeof window.isIOSPWA === 'function' && window.isIOSPWA()) {
-      if (tryOpenRuhsatSystemShareSheet(vid, url, dt)) return;
       openRuhsatPrintDialog(url, vid, dt);
       return;
     }
