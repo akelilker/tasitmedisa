@@ -2098,17 +2098,14 @@
     background: rgba(255, 255, 255, 0.06) !important; /* Mobil: açık satır daha belirgin */
   }
 
-  /* Tarih uyarı satırları: masaüstü ile aynı — satır zemini şeffaf; vurgu metinde */
+  /* Tarih uyarı satırları: masaüstü ile aynı — normal zebra/hover korunur, vurgu metinde */
   #vehicles-modal .view-list .list-item.vehicle-date-warning-red,
   #vehicles-modal .view-list .list-item.vehicle-date-warning-orange {
-    background: transparent !important;
-  }
-  #vehicles-modal .view-list .list-item.vehicle-date-warning-red:hover,
-  #vehicles-modal .view-list .list-item.vehicle-date-warning-orange:hover {
-    background: transparent !important;
+    border-left: none !important;
+    box-shadow: none !important;
   }
 
-  /* Mobil liste: uyarı satırı — hücre zemini şeffaf (masaüstü tasitlar-base ile aynı) */
+  /* Mobil liste: uyarı satırı — hücre zemini şeffaf; zebra/hover satır zemininden gelir */
   #vehicles-modal .view-list .list-item.vehicle-date-warning-red:nth-child(odd) .list-cell,
   #vehicles-modal .view-list .list-item.vehicle-date-warning-orange:nth-child(odd) .list-cell,
   #vehicles-modal .view-list .list-item.vehicle-date-warning-red:nth-child(even) .list-cell,

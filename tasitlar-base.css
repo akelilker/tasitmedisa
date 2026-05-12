@@ -2393,26 +2393,22 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     background: rgba(255, 255, 255, 0.05);
 }
 
-/* Taşıtlar modalı liste: zebra ve hover gri bandı yok — vurgu metin renklerinde */
-#vehicles-modal .view-list .list-item,
+/* Taşıtlar modalı liste: normal zebra ve hover zemini korunur; uyarı vurgusu metin rengindedir. */
+#vehicles-modal .view-list .list-item {
+    background: var(--bg) !important;
+}
 #vehicles-modal .view-list .list-item:nth-child(even) {
-    background: transparent !important;
+    background: rgba(255, 255, 255, 0.05) !important;
 }
 #vehicles-modal .view-list .list-item:hover {
-    background: transparent !important;
+    background: var(--border-ultra) !important;
 }
 
-/* Taşıtlar modalı: tarih uyarısı — vurgu yalnızca metin renginde; satır zemini şeffaf (zebra yok) */
+/* Taşıtlar modalı: tarih uyarısı — satır zemini normal zebra/hover ile kalır, sadece metin rengi değişir. */
 #vehicles-modal .view-list .list-item.vehicle-date-warning-red,
 #vehicles-modal .view-list .list-item.vehicle-date-warning-orange {
     border-left: none !important;
     box-shadow: none !important;
-    background: transparent !important;
-}
-
-#vehicles-modal .view-list .list-item.vehicle-date-warning-red:hover,
-#vehicles-modal .view-list .list-item.vehicle-date-warning-orange:hover {
-    background: transparent !important;
 }
 
 /* Tahsis edilmemiş (liste): satır arka plan kaldır; şube metni kırmızı (tasitlar-extra) */
@@ -2443,7 +2439,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     background-color: transparent !important;
 }
 
-/* Tarih uyarısı (liste): uyarı rengi metinde; satır zemini şeffaf. */
+/* Tarih uyarısı (liste): uyarı rengi metinde; satır zemini normal zebra/hover ile kalır. */
 #vehicles-modal .view-list .list-item.vehicle-date-warning-red .list-cell {
     color: var(--theme-color) !important;
 }
@@ -2452,7 +2448,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     color: var(--orange-warn) !important;
 }
 
-/* Idle: hücre zemini şeffaf — satır zemini de şeffaf; hover ile aynı mantık. */
+/* Idle: hücre zemini şeffaf; zebra/hover yalnızca satır zemininden gelir. */
 #vehicles-modal .view-list .list-item.vehicle-date-warning-red:nth-child(odd) .list-cell,
 #vehicles-modal .view-list .list-item.vehicle-date-warning-orange:nth-child(odd) .list-cell,
 #vehicles-modal .view-list .list-item.vehicle-date-warning-red:nth-child(even) .list-cell,
