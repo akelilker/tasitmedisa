@@ -6925,8 +6925,8 @@
     }
     function loadImageForPrint(imageUrl) {
       fallbackOpenUrl = imageUrl;
-      var printCss = '<style>@media print{ body{margin:0;} img{width:100% !important;height:auto !important;max-width:100%;display:block;} }</style>';
-      var html = '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">' + printCss + '<title>Ruhsat</title></head><body style="margin:0;"><img src="' + escapeHtml(imageUrl) + '" style="width:100%;height:auto;max-width:100%;display:block;"></body></html>';
+      var printCss = '<style>html,body{margin:0;padding:0;width:100%;height:100%;background:#fff;overflow:hidden;}body{display:flex;align-items:center;justify-content:center;}.ruhsat-print-page{width:100vw;height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#fff;}.ruhsat-print-page img{display:block;width:auto;height:auto;max-width:100%;max-height:100%;object-fit:contain;}@media print{@page{size:A4 portrait;margin:0;}html,body{width:210mm !important;height:297mm !important;overflow:hidden !important;background:#fff !important;}.ruhsat-print-page{width:210mm !important;height:297mm !important;overflow:hidden !important;page-break-inside:avoid !important;break-inside:avoid !important;page-break-after:avoid !important;break-after:avoid-page !important;}.ruhsat-print-page img{width:auto !important;height:auto !important;max-width:210mm !important;max-height:297mm !important;object-fit:contain !important;}}</style>';
+      var html = '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">' + printCss + '<title>Ruhsat</title></head><body><div class="ruhsat-print-page"><img src="' + escapeHtml(imageUrl) + '" alt="Ruhsat"></div></body></html>';
       try { iframe.removeAttribute('src'); } catch (removeSrcErr) {}
       iframe.srcdoc = html;
       iframe.onload = function() {
@@ -7060,7 +7060,7 @@
       }
     }
 
-    if (isIosPwaPrintPreview) {
+    if (isIosPwaPrintPreview && isPdf) {
       if (fileUrl) {
         try {
           iframe.removeAttribute('srcdoc');
@@ -7121,18 +7121,6 @@
         if (window.__ruhsatPrintToken !== printToken) {
           return;
         }
-        if (isIosPwaPrintPreview) {
-          try {
-            iframe.removeAttribute('srcdoc');
-          } catch (iosDirectSrcErr) {}
-
-          try {
-            iframe.src = documentObjectUrl;
-          } catch (iosDirectSrcErr2) {}
-
-          return;
-        }
-
         loadImageForPrint(documentObjectUrl);
       })
       .catch(function() {
