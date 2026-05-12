@@ -6408,6 +6408,30 @@
     return false;
   }
 
+  function tryOpenRuhsatSystemShareSheet(vehicleId, documentUrl, documentType) {
+    const dt = documentType || 'ruhsat';
+    if (!(typeof window.isIOSPWA === 'function' && window.isIOSPWA())) return false;
+    if (!documentUrl || !window.navigator || typeof window.navigator.share !== 'function') return false;
+    if (!getMedisaPortalToken()) return false;
+    const cfg = getVehicleDocumentConfig(dt);
+    const shareUrl = appendMedisaDocumentAuthToUrl(documentUrl);
+    if (!shareUrl) return false;
+    try {
+      window.navigator.share({
+        title: cfg.label || 'Belge',
+        url: shareUrl
+      }).catch(function(err) {
+        if (!err || err.name === 'AbortError') return;
+        try {
+          openRuhsatPrintDialog(documentUrl, vehicleId, dt);
+        } catch (fallbackErr) {}
+      });
+      return true;
+    } catch (err) {
+      return false;
+    }
+  }
+
   function buildPdfViewerUrl(baseUrl, fragment) {
     const cleanBase = String(baseUrl || '').split('#')[0];
     const cleanFragment = String(fragment || '').replace(/^#/, '');
@@ -7426,6 +7450,7 @@
         previewBtn.onclick = function(e) {
           e.preventDefault();
           e.stopPropagation();
+          if (tryOpenRuhsatSystemShareSheet(vid, ruhsatUrl, dt)) return;
           openRuhsatPrintDialog(ruhsatUrl, vid, dt);
         };
       } else {
@@ -7728,6 +7753,7 @@
     const isImage = isRuhsatImagePath(docPath);
     var skipIosPwaPrint = opts && opts.skipIosPwaPrintRoute === true;
     if (!skipIosPwaPrint && typeof window.isIOSPWA === 'function' && window.isIOSPWA()) {
+      if (tryOpenRuhsatSystemShareSheet(vid, url, dt)) return;
       openRuhsatPrintDialog(url, vid, dt);
       return;
     }
