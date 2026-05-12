@@ -2435,7 +2435,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 }
 #vehicles-modal .view-list .list-item.vehicle-date-warning-red:hover .list-cell,
 #vehicles-modal .view-list .list-item.vehicle-date-warning-orange:hover .list-cell {
-    background-color: var(--border-ultra) !important;
+    background-color: transparent !important;
 }
 
 /* Kart görünümü: aynı severity token’ları */
