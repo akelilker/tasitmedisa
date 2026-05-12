@@ -7422,7 +7422,7 @@
       const previewBtn = document.createElement('button');
       previewBtn.type = 'button';
       previewBtn.className = 'ruhsat-preview-link';
-      previewBtn.setAttribute('aria-label', cfg.label + ' Yazdır / Görüntüle');
+      previewBtn.setAttribute('aria-label', cfg.label + ' Yazdır');
       if (isMobileViewport) {
         previewBtn.classList.add('ruhsat-preview-mobile-btn');
         previewBtn.style.cssText = 'background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.2); cursor: pointer; display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 8px; width: auto; min-width: 140px; height: 48px; border-radius: 8px; padding: 0 16px;';
@@ -7434,7 +7434,7 @@
             <line x1="16" y1="17" x2="8" y2="17"></line>
             <polyline points="10 9 9 9 8 9"></polyline>
           </svg>
-          <span style="font-size:15px; font-weight:600; color:#fff; letter-spacing:0.5px;">${isIosPwaDocumentFlow ? 'Görüntüle' : 'Yazdır'}</span>
+          <span style="font-size:15px; font-weight:600; color:#fff; letter-spacing:0.5px;">Yazdır</span>
         `;
         previewBtn.onclick = function(e) {
           e.preventDefault();
