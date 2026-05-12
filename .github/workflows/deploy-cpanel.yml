@@ -24,6 +24,11 @@
 
 name: Deploy cPanel
 
+# Paylaşımlı hosting: aynı anda iki FTP oturumu limit / FIN üretebilir; tek sıra kuyruk.
+concurrency:
+  group: deploy-cpanel
+  cancel-in-progress: false
+
 on:
   push:
     branches:
