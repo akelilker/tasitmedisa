@@ -7373,7 +7373,6 @@
     const dt = String(documentType || 'ruhsat').trim() || 'ruhsat';
     const cfg = getVehicleDocumentConfig(dt);
     const vid = (vehicleId || window.currentDetailVehicleId || '').toString();
-    const isIosPwaDocumentFlow = typeof window.isIOSPWA === 'function' && window.isIOSPWA();
     if (!vid) return;
     window.currentDetailVehicleId = vid;
     var appTasitlar = window.appData && Array.isArray(window.appData.tasitlar) ? window.appData.tasitlar : [];
@@ -7439,12 +7438,6 @@
         previewBtn.onclick = function(e) {
           e.preventDefault();
           e.stopPropagation();
-          if (isIosPwaDocumentFlow) {
-            if (!renderInlineRuhsatViewer(vid, ruhsatUrl, { showPrintButton: true, forceExternalPrint: false }, dt)) {
-              openRuhsatPrintDialog(ruhsatUrl, vid, dt);
-            }
-            return;
-          }
           openRuhsatPrintDialog(ruhsatUrl, vid, dt);
         };
       } else {
@@ -7747,9 +7740,7 @@
     const isImage = isRuhsatImagePath(docPath);
     var skipIosPwaPrint = opts && opts.skipIosPwaPrintRoute === true;
     if (!skipIosPwaPrint && typeof window.isIOSPWA === 'function' && window.isIOSPWA()) {
-      if (!renderInlineRuhsatViewer(vid, url, { showPrintButton: true, forceExternalPrint: false }, dt)) {
-        openRuhsatPrintDialog(url, vid, dt);
-      }
+      openRuhsatPrintDialog(url, vid, dt);
       return;
     }
     openVehicleDocumentInNewTab(vid, url, dt,
