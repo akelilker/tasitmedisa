@@ -6791,6 +6791,14 @@
     return entry && entry.objectUrl ? entry.objectUrl : '';
   }
 
+  function preloadIosPwaImageDocument(vehicleId, documentPath, documentType) {
+    if (!(typeof window.isIOSPWA === 'function' && window.isIOSPWA())) return;
+    if (!documentPath || !isRuhsatImagePath(documentPath)) return;
+    const dt = documentType || 'ruhsat';
+    const preloadUrl = buildRuhsatDocumentUrl(vehicleId, dt) || toAbsoluteRuhsatUrl(documentPath);
+    fetchRuhsatDocumentObjectUrl(vehicleId, preloadUrl, dt).catch(function() {});
+  }
+
   function warmRuhsatPreview(vehicleId, ruhsatUrl, documentType) {
     const dt = documentType || 'ruhsat';
     const url = toAbsoluteRuhsatUrl(ruhsatUrl);
@@ -6850,6 +6858,7 @@
     const ua = navigator.userAgent || '';
     const isIOSDevice = /iPhone|iPad|iPod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
     const isWebKitEngine = /WebKit/i.test(ua);
+    const isIosPwa = !!(window.isIOSPWA && window.isIOSPWA());
     if (isAndroidDevice()) {
       if (isImage) {
         openVehicleDocumentInNewTab(vehicleId, documentUrl, dt, '')
@@ -6879,11 +6888,62 @@
 
     // iOS: print() geç tetiklenirse kullanıcı gesture dışına çıkıp prompt üretebilir.
     // Token geçersizleşince iframe.onload/setTimeout içinden gelen print çağrısını iptal ediyoruz.
+    function buildImagePrintHtml(imageUrl) {
+      var printCss = '<style>html,body{margin:0;padding:0;width:100%;height:100%;background:#fff;overflow:hidden;}body{display:flex;align-items:center;justify-content:center;}.ruhsat-print-page{width:100vw;height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#fff;}.ruhsat-print-page img{display:block;width:auto;height:auto;max-width:100%;max-height:100%;object-fit:contain;}@media print{@page{size:A4 portrait;margin:0;}html,body{width:210mm !important;height:297mm !important;overflow:hidden !important;background:#fff !important;}.ruhsat-print-page{width:210mm !important;height:297mm !important;overflow:hidden !important;page-break-inside:avoid !important;break-inside:avoid !important;page-break-after:avoid !important;break-after:avoid-page !important;}.ruhsat-print-page img{width:auto !important;height:auto !important;max-width:210mm !important;max-height:297mm !important;object-fit:contain !important;}}</style>';
+      return '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">' + printCss + '<title>Ruhsat</title></head><body><div class="ruhsat-print-page"><img src="' + escapeHtml(imageUrl) + '" alt="Ruhsat"></div></body></html>';
+    }
+    function cleanupIosPwaImagePrintFrame(frame) {
+      if (!frame) return;
+      try { frame.onload = null; } catch (cleanupOnloadErr) {}
+      if (frame.parentNode) {
+        try { frame.parentNode.removeChild(frame); } catch (cleanupRemoveErr) {}
+      }
+    }
+    function printCachedIosPwaImage(imageUrl) {
+      if (!imageUrl) {
+        alert('Belge henüz hazır değil. Lütfen tekrar deneyin.');
+        return;
+      }
+      var frame = document.createElement('iframe');
+      frame.setAttribute('aria-hidden', 'true');
+      frame.style.cssText = window.MEDISA_PRINT_IFRAME_CSS_TEXT || 'position:fixed;left:0;top:0;width:100vw;height:100vh;border:0;opacity:0.01;pointer-events:none;visibility:visible;transform:translateX(-200vw);background:#fff;z-index:-1;';
+      document.body.appendChild(frame);
+      try {
+        frame.srcdoc = buildImagePrintHtml(imageUrl);
+        var frameWindow = frame.contentWindow;
+        if (!frameWindow || typeof frameWindow.print !== 'function') {
+          cleanupIosPwaImagePrintFrame(frame);
+          alert('Yazdırma başlatılamadı. Lütfen tekrar deneyin.');
+          return;
+        }
+        try { frameWindow.focus(); } catch (focusErr) {}
+        frameWindow.print();
+        var cleaned = false;
+        var cleanup = function() {
+          if (cleaned) return;
+          cleaned = true;
+          cleanupIosPwaImagePrintFrame(frame);
+        };
+        try {
+          frameWindow.addEventListener('afterprint', cleanup, { once: true });
+        } catch (afterPrintErr) {}
+        setTimeout(cleanup, 1800);
+      } catch (printErr) {
+        cleanupIosPwaImagePrintFrame(frame);
+        alert('Yazdırma başlatılamadı. Lütfen tekrar deneyin.');
+      }
+    }
+    if (isIosPwa && isImage) {
+      const cachedIosImageUrl = getCachedRuhsatDocumentObjectUrl(vehicleId, documentUrl, dt);
+      printCachedIosPwaImage(cachedIosImageUrl);
+      return;
+    }
+
     var printToken = 'ruhsatPrint_' + Date.now();
     window.__ruhsatPrintToken = printToken;
 
     var iframe = document.getElementById('ruhsat-print-frame');
-    var isIosPwaPrintPreview = !!(window.isIOSPWA && window.isIOSPWA());
+    var isIosPwaPrintPreview = isIosPwa;
     var fallbackOpenUrl = '';
 
     var iframeJustCreated = false;
@@ -6928,69 +6988,6 @@
         printTimer = null;
         doPrint();
       }, delayMs);
-    }
-    function buildImagePrintHtml(imageUrl) {
-      var printCss = '<style>html,body{margin:0;padding:0;width:100%;height:100%;background:#fff;overflow:hidden;}body{display:flex;align-items:center;justify-content:center;}.ruhsat-print-page{width:100vw;height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#fff;}.ruhsat-print-page img{display:block;width:auto;height:auto;max-width:100%;max-height:100%;object-fit:contain;}@media print{@page{size:A4 portrait;margin:0;}html,body{width:210mm !important;height:297mm !important;overflow:hidden !important;background:#fff !important;}.ruhsat-print-page{width:210mm !important;height:297mm !important;overflow:hidden !important;page-break-inside:avoid !important;break-inside:avoid !important;page-break-after:avoid !important;break-after:avoid-page !important;}.ruhsat-print-page img{width:auto !important;height:auto !important;max-width:210mm !important;max-height:297mm !important;object-fit:contain !important;}}</style>';
-      return '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">' + printCss + '<title>Ruhsat</title></head><body><div class="ruhsat-print-page"><img src="' + escapeHtml(imageUrl) + '" alt="Ruhsat"></div></body></html>';
-    }
-    function applyIosPrintPaintLayout() {
-      try {
-        iframe.style.position = 'fixed';
-        iframe.style.inset = '0';
-        iframe.style.width = '100vw';
-        iframe.style.height = '100vh';
-        iframe.style.zIndex = '2147483646';
-        iframe.style.background = '#fff';
-        iframe.style.display = 'block';
-        iframe.style.visibility = 'visible';
-        iframe.style.opacity = '1';
-        iframe.style.pointerEvents = 'none';
-        iframe.style.border = '0';
-        iframe.style.transform = 'none';
-        iframe.style.left = '0';
-        iframe.style.top = '0';
-      } catch (iosPaintErr) {}
-    }
-    function restorePrintFrameLayout() {
-      try {
-        iframe.style.cssText = window.MEDISA_PRINT_IFRAME_CSS_TEXT || 'position:fixed;left:0;top:0;width:100vw;height:100vh;border:0;opacity:0.01;pointer-events:none;visibility:visible;transform:translateX(-200vw);background:#fff;z-index:-1;';
-      } catch (restoreErr) {}
-    }
-    function printImageImmediatelyOnIosPwa(imageUrl) {
-      fallbackOpenUrl = imageUrl;
-      try {
-        var frameWindow = iframe.contentWindow;
-        var frameDoc = frameWindow ? frameWindow.document : iframe.contentDocument;
-        if (!frameWindow || !frameDoc || typeof frameWindow.print !== 'function') return false;
-        frameDoc.open();
-        frameDoc.write(buildImagePrintHtml(imageUrl));
-        frameDoc.close();
-        try {
-          if (frameDoc.body) void frameDoc.body.offsetHeight;
-        } catch (reflowErr) {}
-        applyIosPrintPaintLayout();
-        var cleanupDone = false;
-        var cleanupTimer = setTimeout(function() {
-          if (cleanupDone) return;
-          cleanupDone = true;
-          restorePrintFrameLayout();
-        }, 1800);
-        var onAfterPrint = function() {
-          if (cleanupDone) return;
-          cleanupDone = true;
-          clearTimeout(cleanupTimer);
-          restorePrintFrameLayout();
-          try { frameWindow.removeEventListener('afterprint', onAfterPrint); } catch (removeAfterPrintErr) {}
-        };
-        try { frameWindow.addEventListener('afterprint', onAfterPrint); } catch (afterPrintErr) {}
-        frameWindow.focus();
-        frameWindow.print();
-        return true;
-      } catch (iosDirectPrintErr) {
-        if (typeof console !== 'undefined' && console.warn) console.warn('Ruhsat iOS direct print failed', iosDirectPrintErr);
-        restorePrintFrameLayout();
-        return false;
-      }
     }
     function loadImageForPrint(imageUrl) {
       fallbackOpenUrl = imageUrl;
@@ -7180,18 +7177,8 @@
       return;
     }
 
-    const cachedIosImageUrl = isIosPwaPrintPreview
-      ? getCachedRuhsatDocumentObjectUrl(vehicleId, documentUrl, dt)
-      : '';
-    if (isIosPwaPrintPreview && cachedIosImageUrl && printImageImmediatelyOnIosPwa(cachedIosImageUrl)) {
-      return;
-    }
-
     if (getMedisaPortalToken()) {
       const authedImageUrl = appendMedisaDocumentAuthToUrl(documentUrl);
-      if (isIosPwaPrintPreview && printImageImmediatelyOnIosPwa(authedImageUrl)) {
-        return;
-      }
       loadImageForPrint(authedImageUrl);
       return;
     }
@@ -7406,10 +7393,7 @@
       const cfg = VEHICLE_DOCUMENT_TYPES[docKey];
       const docPath = getVehicleDocumentPath(vehicle, docKey);
       const hasDoc = !!docPath;
-      if (hasDoc && typeof window.isIOSPWA === 'function' && window.isIOSPWA() && isRuhsatImagePath(docPath)) {
-        const preloadUrl = resolveRuhsatUrl(docPath, vid, docKey);
-        fetchRuhsatDocumentObjectUrl(vid, preloadUrl, docKey).catch(function() {});
-      }
+      if (hasDoc) preloadIosPwaImageDocument(vid, docPath, docKey);
       const card = document.createElement('button');
       card.type = 'button';
       card.className = 'vehicle-document-card';
@@ -7487,9 +7471,7 @@
       if (isMobileViewport && !ruhsatIsImage) {
         warmRuhsatPreview(vid, ruhsatUrl, dt);
       }
-      if (isMobileViewport && ruhsatIsImage && typeof window.isIOSPWA === 'function' && window.isIOSPWA()) {
-        fetchRuhsatDocumentObjectUrl(vid, ruhsatUrl, dt).catch(function() {});
-      }
+      if (isMobileViewport && ruhsatIsImage) preloadIosPwaImageDocument(vid, pathVal, dt);
       const btnGroup = document.createElement('div');
       btnGroup.className = 'universal-btn-group ruhsat-preview-row';
 
