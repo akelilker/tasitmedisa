@@ -2249,8 +2249,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     margin-top: 0 !important;
 }
 
-/* === KART & LİSTE (ARAÇLAR) === */
-.view-card {
+/* === KART & LİSTE (ARAÇLAR) — yalnızca Taşıtlar modalı === */
+#vehicles-modal .view-card {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
@@ -2258,7 +2258,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     justify-content: center !important;
 }
 
-.view-card .card {
+#vehicles-modal .view-card .card {
     aspect-ratio: 1 / 1;
     min-height: 0;
     width: calc((100% - (4 * 8px)) / 5);
@@ -2285,31 +2285,31 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
 
 /* Araç kartları - Sadece masaüstünde hover */
 @media (hover: hover) and (pointer: fine) {
-    .view-card .card:hover {
+    #vehicles-modal .view-card .card:hover {
         border-color: var(--border-bright);
         /* Clip-safe hover: yukarı taşıma yok */
         transform: scale(1.04);
         transform-origin: center;
         z-index: 5;
     }
-    .view-card .card:hover .card-plate,
-    .view-card .card:hover .card-brand-model,
-    .view-card .card:hover .card-third-line {
+    #vehicles-modal .view-card .card:hover .card-plate,
+    #vehicles-modal .view-card .card:hover .card-brand-model,
+    #vehicles-modal .view-card .card:hover .card-third-line {
         transform: none;
     }
 }
 
 /* Araç kartları - Mobil active */
 @media (hover: none) {
-    .view-card .card:active {
+    #vehicles-modal .view-card .card:active {
         border-color: var(--border-bright);
         transform: scale(1.04);
         transform-origin: center;
         z-index: 5;
     }
-    .view-card .card:active .card-plate,
-    .view-card .card:active .card-brand-model,
-    .view-card .card:active .card-third-line {
+    #vehicles-modal .view-card .card:active .card-plate,
+    #vehicles-modal .view-card .card:active .card-brand-model,
+    #vehicles-modal .view-card .card:active .card-third-line {
         transform: none;
     }
 }
@@ -2328,7 +2328,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     transition: transform 0.2s ease;
 }
 
-.view-card .card-brand-model {
+#vehicles-modal .view-card .card-brand-model {
     font-size: 11px;
     font-weight: 400;
     color: var(--txt-placeholder);
@@ -2393,29 +2393,57 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     background: rgba(255, 255, 255, 0.05);
 }
 
-/* Taşıtlar modalı: tarih uyarısı — metin renkli; zebra tonları normal satırlarla birebir (üstteki .list-item / :nth-child(even) ile aynı değerler, yüksek özgüllük) */
+/* Taşıtlar modalı liste: zebra ve hover gri bandı yok — vurgu metin renklerinde */
+#vehicles-modal .view-list .list-item,
+#vehicles-modal .view-list .list-item:nth-child(even) {
+    background: transparent !important;
+}
+#vehicles-modal .view-list .list-item:hover {
+    background: transparent !important;
+}
+
+/* Taşıtlar modalı: tarih uyarısı — vurgu yalnızca metin renginde; satır zemini şeffaf (zebra yok) */
 #vehicles-modal .view-list .list-item.vehicle-date-warning-red,
 #vehicles-modal .view-list .list-item.vehicle-date-warning-orange {
     border-left: none !important;
     box-shadow: none !important;
-}
-
-#vehicles-modal .view-list .list-item.vehicle-date-warning-red:nth-child(odd),
-#vehicles-modal .view-list .list-item.vehicle-date-warning-orange:nth-child(odd) {
-    background: var(--bg) !important;
-}
-
-#vehicles-modal .view-list .list-item.vehicle-date-warning-red:nth-child(even),
-#vehicles-modal .view-list .list-item.vehicle-date-warning-orange:nth-child(even) {
-    background: rgba(255, 255, 255, 0.05) !important;
+    background: transparent !important;
 }
 
 #vehicles-modal .view-list .list-item.vehicle-date-warning-red:hover,
 #vehicles-modal .view-list .list-item.vehicle-date-warning-orange:hover {
-    background: var(--border-ultra) !important;
+    background: transparent !important;
 }
 
-/* Tarih uyarısı (liste): uyarı rengi metinde; zebra satır (.list-item) arka planında kalır. */
+/* Tahsis edilmemiş (liste): satır arka plan kaldır; şube metni kırmızı (tasitlar-extra) */
+#vehicles-modal .view-list .list-item.unassigned-vehicle-card {
+    background: transparent !important;
+}
+#vehicles-modal .view-list .list-item.unassigned-vehicle-card:hover {
+    background: transparent !important;
+}
+#vehicles-modal .view-list .list-item.unassigned-vehicle-card .list-cell {
+    background-color: transparent !important;
+}
+#vehicles-modal .view-list .list-item.unassigned-vehicle-card:hover .list-cell {
+    background-color: transparent !important;
+}
+
+/* Arşiv liste satırı: şeffaf zemin; vurgu marka/SATILDI metinlerinde (tasitlar-extra) */
+#vehicles-modal .view-list .list-item.archive-vehicle-row {
+    background: transparent !important;
+}
+#vehicles-modal .view-list .list-item.archive-vehicle-row:hover {
+    background: transparent !important;
+}
+#vehicles-modal .view-list .list-item.archive-vehicle-row .list-cell {
+    background-color: transparent !important;
+}
+#vehicles-modal .view-list .list-item.archive-vehicle-row:hover .list-cell {
+    background-color: transparent !important;
+}
+
+/* Tarih uyarısı (liste): uyarı rengi metinde; satır zemini şeffaf. */
 #vehicles-modal .view-list .list-item.vehicle-date-warning-red .list-cell {
     color: var(--theme-color) !important;
 }
@@ -2424,7 +2452,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     color: var(--orange-warn) !important;
 }
 
-/* Idle: hücre zemini şeffaf — zebra yalnızca satırda; hover ile aynı mantık. */
+/* Idle: hücre zemini şeffaf — satır zemini de şeffaf; hover ile aynı mantık. */
 #vehicles-modal .view-list .list-item.vehicle-date-warning-red:nth-child(odd) .list-cell,
 #vehicles-modal .view-list .list-item.vehicle-date-warning-orange:nth-child(odd) .list-cell,
 #vehicles-modal .view-list .list-item.vehicle-date-warning-red:nth-child(even) .list-cell,
@@ -2436,27 +2464,27 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     background-color: transparent !important;
 }
 
-/* Kart görünümü: aynı severity token’ları */
+/* Kart görünümü: zemin şeffaf; inset gölge yok — vurgu renkli çerçeve + metin (tasitlar-extra) */
 #vehicles-modal .view-card .card.vehicle-date-warning-orange {
     border-color: var(--orange-warn);
-    background: linear-gradient(145deg, rgba(var(--orange-warn-rgb), 0.12), rgba(var(--orange-warn-rgb), 0.04));
-    box-shadow: inset 0 0 0 1px rgba(var(--orange-warn-rgb), 0.28);
+    background: transparent; /* Arka plan kaldırıldı */
+    box-shadow: none;
 }
 
 #vehicles-modal .view-card .card.vehicle-date-warning-red {
     border-color: var(--theme-color);
-    background: linear-gradient(145deg, rgba(var(--theme-color-rgb), 0.14), rgba(var(--theme-color-rgb), 0.05));
-    box-shadow: inset 0 0 0 1px rgba(var(--theme-color-rgb), 0.35);
+    background: transparent; /* Arka plan kaldırıldı */
+    box-shadow: none;
 }
 
 @media (hover: hover) and (pointer: fine) {
     #vehicles-modal .view-card .card.vehicle-date-warning-orange:hover {
         border-color: var(--orange-warn);
-        box-shadow: inset 0 0 0 1px rgba(var(--orange-warn-rgb), 0.4);
+        box-shadow: none;
     }
     #vehicles-modal .view-card .card.vehicle-date-warning-red:hover {
         border-color: var(--theme-color);
-        box-shadow: inset 0 0 0 1px rgba(var(--theme-color-rgb), 0.45);
+        box-shadow: none;
     }
 }
 
@@ -2466,6 +2494,13 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     }
     #vehicles-modal .view-card .card.vehicle-date-warning-red:active {
         border-color: var(--theme-color);
+    }
+}
+
+/* Taşıtlar modalı: varsayılan kart hover’daki parlak gri çerçeveyi nötrle */
+@media (hover: hover) and (pointer: fine) {
+    #vehicles-modal .view-card .card:hover {
+        border-color: var(--border-subtle);
     }
 }
 
@@ -2481,6 +2516,11 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     min-width: 0;
     border-right: 1px solid var(--border-ultra) !important;
     padding: 2px 4px; /* metin–çerçeve arası dikey 2px */
+}
+
+/* Taşıtlar modalı liste: dikey ayraç daha silik — gri ızgara azalır */
+#vehicles-modal .view-list .list-cell {
+    border-right: 1px solid rgba(255, 255, 255, 0.05) !important;
 }
 
 /* Son sütun (sağ) border yok */

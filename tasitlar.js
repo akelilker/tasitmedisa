@@ -2400,7 +2400,8 @@
   // --- 2. LİSTE RENDER (Şube Detayı) ---
   window.openBranchList = function(branchId, branchName, options = {}) {
     currentView = 'list';
-    viewMode = 'list';
+    /* TÜMÜ: varsayılan kart görünümü; şube / tahsis edilmemiş: liste (dar tablo) */
+    viewMode = String(branchId) === 'all' ? 'card' : 'list';
     activeBranchId = branchId; // 'all', '', veya 'id'
     lastListContext = { mode: 'branch', branchId: branchId, branchName: branchName };
     isAutoSingleBranchVehiclesView = options.autoSingleBranch === true;
