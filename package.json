@@ -1,0 +1,19 @@
+{
+  "name": "tasitmedisa-tooling",
+  "private": true,
+  "description": "Operational tooling for the MEDISA vehicle management workspace.",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "tool:verify-roles": "node scripts/verify-medisa-role-invariants.js",
+    "tool:import-gpt-xlsx": "node scripts/import_gpt_xlsx.mjs",
+    "tool:process-edevlet-docx": "node scripts/process_edevlet_docx_updates.mjs",
+    "tool:export-docx-list": "node scripts/export_verilen_docx_arac_listesi.mjs",
+    "tool:build-deploy-zip": "powershell -ExecutionPolicy Bypass -File scripts/build-deploy-zip.ps1"
+  },
+  "dependencies": {
+    "@oai/artifact-tool": "2.6.9",
+    "jszip": "3.10.1"
+  }
+}

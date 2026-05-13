@@ -63,12 +63,12 @@
   flex-direction: column;
   align-items: center;
   gap: 16px;
-  min-width: 120px; /* Logo yüklenmeden önce layout kaymasını önler */
+  min-width: var(--driver-splash-inner-min-width, 120px); /* Logo yüklenmeden önce layout kaymasını önler */
 }
 /* Splash: açılış logosu 120px, aspect-ratio ile alan rezerve */
 .driver-splash-logo {
-  width: 120px;
-  height: 69px; /* SVG oranı 624.89:357.04 – layout shift önleme */
+  width: var(--driver-splash-logo-width, 120px);
+  height: var(--driver-splash-logo-height, 69px); /* SVG oranı 624.89:357.04 – layout shift önleme */
   flex-shrink: 0;
   object-fit: contain;
   filter: brightness(0.88);
@@ -98,6 +98,12 @@
   background-clip: text;
   -webkit-text-fill-color: transparent;
   font-family: 'Inter', sans-serif;
+}
+
+.driver-splash--dashboard {
+  --driver-splash-inner-min-width: 150px;
+  --driver-splash-logo-width: 150px;
+  --driver-splash-logo-height: 86px;
 }
 
 /* --- Overflow: yatay taşma yok; safe-area sadece html'de (style-core) – çift padding önlenir --- */

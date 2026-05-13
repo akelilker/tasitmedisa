@@ -202,24 +202,13 @@ function getCurrentPathname() {
 }
 
 function getStoredPortalToken() {
-    try {
-        return localStorage.getItem('medisa_portal_token')
-            || sessionStorage.getItem('medisa_portal_token')
-            || localStorage.getItem('driver_token')
-            || sessionStorage.getItem('driver_token')
-            || '';
-    } catch (e) {
-        return '';
-    }
+    return typeof window.getStoredPortalToken === 'function' ? (window.getStoredPortalToken() || '') : '';
 }
 
 function clearStoredPortalTokens() {
-    try {
-        localStorage.removeItem('medisa_portal_token');
-        sessionStorage.removeItem('medisa_portal_token');
-        localStorage.removeItem('driver_token');
-        sessionStorage.removeItem('driver_token');
-    } catch (e) {}
+    if (typeof window.clearStoredPortalTokens === 'function') {
+        window.clearStoredPortalTokens();
+    }
 }
 
 /** Ana uygulama ayarlar menüsü: oturumu kapat, portal girişine yönlendir */
