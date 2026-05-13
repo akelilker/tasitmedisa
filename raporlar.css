@@ -3049,18 +3049,38 @@ display: flex;
 flex-direction: row;
 justify-content: space-between;
 align-items: center;
-gap: 8px;
+gap: 10px;
 }
 .stok-export-left {
 display: flex;
-gap: 8px;
+gap: 10px;
 align-items: center;
 }
-.stok-export-btn { font-size: 15px !important; }
-.stok-search-btn { font-size: 19px !important; } /* Büyüteç Excel/yazıcıya yakın boyut */
-.stok-print-btn { font-size: 18px !important; }
-.stok-export-btn,
-.stok-print-btn { width: auto; }
+/* Mobil stok toolbar: büyüteç + Excel + yazıcı aynı ölçü sisteminden beslensin */
+#reports-modal #stok-list-container .stok-controls-row-2 .stok-export-btn,
+#reports-modal #stok-list-container .stok-controls-row-2 .stok-print-btn,
+#reports-modal #stok-list-container .stok-controls-row-2 .stok-search-wrap,
+#reports-modal #stok-list-container .stok-controls-row-2 .stok-search-btn {
+min-width: 40px !important;
+min-height: 40px !important;
+}
+#reports-modal #stok-list-container .stok-controls-row-2 .stok-export-btn,
+#reports-modal #stok-list-container .stok-controls-row-2 .stok-print-btn,
+#reports-modal #stok-list-container .stok-controls-row-2 .stok-search-btn {
+width: auto !important;
+padding: 7px !important;
+line-height: 1 !important;
+}
+#reports-modal #stok-list-container .stok-controls-row-2 .stok-search-btn,
+#reports-modal #stok-list-container .stok-controls-row-2 .stok-print-btn {
+font-size: 26px !important;
+}
+#reports-modal #stok-list-container .stok-controls-row-2 .stok-export-btn .excel-icon {
+width: 26px !important;
+height: 26px !important;
+font-size: 16px !important;
+border-radius: 4px !important;
+}
 /* Input açıldığında HİÇBİR YER OYNAMASIN: absolute overlay, wrap/row boyutu değişmez */
 #stok-list-container .stok-controls-row-2 .stok-search-container.open {
 position: absolute !important;
@@ -3192,7 +3212,6 @@ margin-top: 0 !important;
 .stok-detail-menu-btn,
 .stok-detail-menu-btn span { font-size: 12px !important; }
 .stok-sort-icon { font-size: 11px !important; }
-.excel-icon { font-size: 14px !important; }
 
 /* Mobilde tam genişlik kullanım, yatayda alt çerçeve hizalı */
 #reports-modal .modal-body {
