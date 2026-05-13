@@ -1929,12 +1929,6 @@
       if (userModal && userModal.classList.contains('active') && e.target === userModal) {
         closeUserManagement();
       }
-      if (branchFormModal && branchFormModal.classList.contains('active') && e.target === branchFormModal) {
-        closeBranchFormModal();
-      }
-      if (userFormModal && userFormModal.classList.contains('active') && e.target === userFormModal) {
-        closeUserFormModal();
-      }
       if (dataModal && dataModal.classList.contains('active') && e.target === dataModal) {
         closeDataManagement();
       }
