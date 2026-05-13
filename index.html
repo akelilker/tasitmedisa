@@ -489,7 +489,7 @@
         </div>
 
         <div id="branch-modal" class="modal-overlay ayarlar-modal-overlay">
-            <div class="modal-container" onclick="if(event.target.closest('.universal-back-btn')) { event.stopPropagation(); closeBranchManagement(); var m=document.getElementById('settings-menu'); if(m)m.classList.add('open'); }">
+            <div class="modal-container">
                 <div class="modal-header">
                     <h2>ŞUBE YÖNETİMİ</h2>
                     <button class="modal-close" onclick="closeBranchManagement()">
@@ -500,7 +500,7 @@
                     </button>
                 </div>
                 <div class="universal-back-bar">
-                    <button type="button" class="universal-back-btn" aria-label="Ayarlar">
+                    <button type="button" class="universal-back-btn" aria-label="Ayarlar" onclick="closeBranchManagement(); var m=document.getElementById('settings-menu'); if(m)m.classList.add('open');">
                         <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
                         <span class="universal-back-label">Ayarlar</span>
                     </button>
@@ -553,7 +553,7 @@
         </div>
 
         <div id="user-modal" class="modal-overlay ayarlar-modal-overlay">
-            <div class="modal-container" onclick="if(event.target.closest('.universal-back-btn')) { event.stopPropagation(); closeUserManagement(); var m=document.getElementById('settings-menu'); if(m)m.classList.add('open'); }">
+            <div class="modal-container">
                 <div class="modal-header">
                     <h2>KULLANICI YÖNETİMİ</h2>
                     <button class="modal-close" onclick="closeUserManagement()">
@@ -564,7 +564,7 @@
                     </button>
                 </div>
                 <div class="universal-back-bar user-management-back-bar">
-                    <button type="button" class="universal-back-btn" aria-label="Ayarlar">
+                    <button type="button" class="universal-back-btn" aria-label="Ayarlar" onclick="closeUserManagement(); var m=document.getElementById('settings-menu'); if(m)m.classList.add('open');">
                         <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
                         <span class="universal-back-label">Ayarlar</span>
                     </button>
@@ -685,7 +685,7 @@
         </div>
 
         <div id="data-management-modal" class="modal-overlay ayarlar-modal-overlay">
-            <div class="modal-container" onclick="if(event.target.closest('.universal-back-btn')) { event.stopPropagation(); closeDataManagement(); var m=document.getElementById('settings-menu'); if(m)m.classList.add('open'); }">
+            <div class="modal-container">
                 <div class="modal-header">
                     <h2>VERİ YEDEKLEME</h2>
                     <button class="modal-close" onclick="closeDataManagement()">
@@ -696,7 +696,7 @@
                     </button>
                 </div>
                 <div class="universal-back-bar">
-                    <button type="button" class="universal-back-btn" aria-label="Ayarlar">
+                    <button type="button" class="universal-back-btn" aria-label="Ayarlar" onclick="closeDataManagement(); var m=document.getElementById('settings-menu'); if(m)m.classList.add('open');">
                         <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
                         <span class="universal-back-label">Ayarlar</span>
                     </button>
@@ -712,7 +712,7 @@
         </div>
 
         <div id="dis-veri-panel" class="modal-overlay ayarlar-modal-overlay">
-            <div class="modal-container" onclick="if(event.target.closest('.universal-back-btn')) { event.stopPropagation(); closeDisVeriPanel(); var m=document.getElementById('settings-menu'); if(m)m.classList.add('open'); }">
+            <div class="modal-container">
                 <div class="modal-header">
                     <h2>Dış Veri Yönetimi</h2>
                     <button class="modal-close" onclick="closeDisVeriPanel()">
@@ -723,7 +723,7 @@
                     </button>
                 </div>
                 <div class="universal-back-bar">
-                    <button type="button" class="universal-back-btn" aria-label="Ayarlar">
+                    <button type="button" class="universal-back-btn" aria-label="Ayarlar" onclick="closeDisVeriPanel(); var m=document.getElementById('settings-menu'); if(m)m.classList.add('open');">
                         <svg class="back-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
                         <span class="universal-back-label">Ayarlar</span>
                     </button>
