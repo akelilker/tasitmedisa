@@ -50,7 +50,17 @@ if (!$sourcePath || !is_file($sourcePath)) {
 }
 
 $sourceExtension = strtolower((string)pathinfo($sourcePath, PATHINFO_EXTENSION));
+$previewMetaRequested = isset($_GET['meta']) && (string)$_GET['meta'] === '1';
+$previewPageIndex = isset($_GET['page']) ? max(0, (int)$_GET['page']) : 0;
 if (in_array($sourceExtension, ['jpg', 'jpeg', 'png', 'gif', 'webp'], true)) {
+    if ($previewMetaRequested) {
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode(['pageCount' => 1], JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+    if ($previewPageIndex > 0) {
+        respondJsonError(404, 'Belge sayfası bulunamadı');
+    }
     $mimeMap = [
         'jpg' => 'image/jpeg',
         'jpeg' => 'image/jpeg',
@@ -64,6 +74,26 @@ if (in_array($sourceExtension, ['jpg', 'jpeg', 'png', 'gif', 'webp'], true)) {
     exit;
 }
 
+if ($previewMetaRequested) {
+    if (!class_exists('Imagick')) {
+        respondJsonError(501, 'Sunucuda Imagick desteği yok');
+    }
+
+    try {
+        $probe = new Imagick();
+        $probe->pingImage($sourcePath);
+        $pageCount = max(1, (int)$probe->getNumberImages());
+        $probe->clear();
+        $probe->destroy();
+
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode(['pageCount' => $pageCount], JSON_UNESCAPED_UNICODE);
+        exit;
+    } catch (Throwable $e) {
+        respondJsonError(500, 'PDF sayfa bilgisi alınamadı');
+    }
+}
+
 $safeId = preg_replace('/[^a-zA-Z0-9_-]/', '', (string)($vehicle['id'] ?? $vehicleId));
 if ($safeId === '') {
     $digitsOnly = preg_replace('/\D/', '', $vehicleId);
@@ -75,7 +105,8 @@ if (!is_dir($previewDir) && !mkdir($previewDir, 0755, true) && !is_dir($previewD
     respondJsonError(500, 'Preview klasörü oluşturulamadı');
 }
 
-$previewPath = $previewDir . '/' . $safeId . '.jpg';
+$previewSuffix = $previewPageIndex > 0 ? ('_p' . $previewPageIndex) : '';
+$previewPath = $previewDir . '/' . $safeId . $previewSuffix . '.jpg';
 $mustGenerate = !is_file($previewPath) || filesize($previewPath) <= 0 || filemtime($previewPath) < filemtime($sourcePath);
 
 if ($mustGenerate) {
@@ -86,7 +117,7 @@ if ($mustGenerate) {
     try {
         $imagick = new Imagick();
         $imagick->setResolution(240, 240);
-        $imagick->readImage($sourcePath . '[0]');
+        $imagick->readImage($sourcePath . '[' . $previewPageIndex . ']');
         $imagick->setImageBackgroundColor('white');
 
         if (defined('Imagick::LAYERMETHOD_FLATTEN')) {
