@@ -6842,10 +6842,59 @@
     fetchRuhsatDocumentObjectUrl(vehicleId, preloadUrl, dt).catch(function() {});
   }
 
-  function wireIosPwaPdfStagingIframe(cacheKey, blobUrl) {
-    if (!cacheKey || !blobUrl) return;
+  function buildRuhsatPreviewPageUrl(vehicleId, documentType, pageIndex, metaOnly) {
+    var baseUrl = buildRuhsatPreviewUrl(vehicleId, documentType || 'ruhsat');
+    if (!baseUrl) return '';
+    try {
+      var previewUrl = new URL(baseUrl, window.location.href);
+      if (metaOnly) {
+        previewUrl.searchParams.set('meta', '1');
+        previewUrl.searchParams.delete('page');
+      } else {
+        previewUrl.searchParams.delete('meta');
+        previewUrl.searchParams.set('page', String(Math.max(0, Number(pageIndex) || 0)));
+      }
+      return previewUrl.toString();
+    } catch (previewUrlErr) {
+      if (metaOnly) {
+        return baseUrl + (baseUrl.indexOf('?') === -1 ? '?' : '&') + 'meta=1';
+      }
+      return baseUrl + (baseUrl.indexOf('?') === -1 ? '?' : '&') + 'page=' + encodeURIComponent(String(Math.max(0, Number(pageIndex) || 0)));
+    }
+  }
+
+  function buildIosPwaPdfPrintHtml(pageUrls) {
+    var pagesHtml = pageUrls.map(function(pageUrl) {
+      return '<section class="ruhsat-pdf-print-page"><img src="' + escapeHtml(pageUrl) + '" alt="Belge sayfası"></section>';
+    }).join('');
+    var printCss = '<style>html,body{margin:0;padding:0;background:#fff;}.ruhsat-pdf-print-page{width:100vw;height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;background:#fff;page-break-after:always;break-after:page;}.ruhsat-pdf-print-page:last-child{page-break-after:auto;break-after:auto;}.ruhsat-pdf-print-page img{display:block;width:auto;height:auto;max-width:100vw;max-height:100vh;object-fit:contain;}@media print{@page{size:A4;margin:0;}html,body{width:100% !important;height:auto !important;background:#fff !important;overflow:visible !important;}.ruhsat-pdf-print-page{width:100vw !important;height:100vh !important;overflow:hidden !important;page-break-inside:avoid !important;break-inside:avoid !important;}.ruhsat-pdf-print-page img{width:auto !important;height:auto !important;max-width:100vw !important;max-height:100vh !important;object-fit:contain !important;}}</style>';
+    return '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">' + printCss + '<title>Belge Yazdır</title></head><body>' + pagesHtml + '</body></html>';
+  }
+
+  function fetchIosPwaPdfPrintPageObjectUrl(pageUrl) {
+    return fetch(pageUrl, {
+      method: 'GET',
+      cache: 'no-store',
+      headers: buildMedisaAuthHeaders()
+    })
+      .then(function(response) {
+        var contentType = (response.headers.get('Content-Type') || '').toLowerCase();
+        if (!response.ok || contentType.indexOf('image/') !== 0) {
+          var pageErr = new Error('pdf-print-page-unavailable');
+          pageErr.httpStatus = response.status;
+          throw pageErr;
+        }
+        return response.blob();
+      })
+      .then(function(blob) {
+        return URL.createObjectURL(blob);
+      });
+  }
+
+  function wireIosPwaPdfStagingIframe(cacheKey, pageUrls) {
+    if (!cacheKey || !Array.isArray(pageUrls) || !pageUrls.length) return;
     var entry = ruhsatDocumentCache.get(cacheKey);
-    if (!entry || entry.objectUrl !== blobUrl) return;
+    if (!entry || entry.pdfPrintPageObjectUrls !== pageUrls) return;
     detachIosPwaPdfStagingFrame(entry);
     var frame = document.createElement('iframe');
     frame.setAttribute('aria-hidden', 'true');
@@ -6856,11 +6905,11 @@
     frame.onload = function() {
       frame.onload = null;
       if (entry.pdfStagingFrame !== frame) return;
-      if (entry.objectUrl !== blobUrl) return;
+      if (entry.pdfPrintPageObjectUrls !== pageUrls) return;
       entry.pdfStagingReady = true;
     };
     try {
-      frame.src = blobUrl;
+      frame.srcdoc = buildIosPwaPdfPrintHtml(pageUrls);
     } catch (wirePdfSrcErr) {
       detachIosPwaPdfStagingFrame(entry);
     }
@@ -6875,12 +6924,59 @@
       return;
     }
     var pdfUrl = buildRuhsatDocumentUrl(vehicleId, dt) || toAbsoluteRuhsatUrl(documentPath);
-    fetchRuhsatDocumentObjectUrl(vehicleId, pdfUrl, dt)
-      .then(function(blobUrl) {
-        var ck = getRuhsatDocumentCacheKey(vehicleId, pdfUrl, dt);
-        wireIosPwaPdfStagingIframe(ck, blobUrl);
+    var cacheKey = getRuhsatDocumentCacheKey(vehicleId, pdfUrl, dt);
+    if (!cacheKey) return;
+    var entry = ruhsatDocumentCache.get(cacheKey) || createRuhsatDocumentCacheEntry();
+    if (entry.pdfStagingReady || entry.pdfStagingPromise) {
+      ruhsatDocumentCache.set(cacheKey, entry);
+      return;
+    }
+    entry.pdfStagingPromise = fetch(buildRuhsatPreviewPageUrl(vehicleId, dt, 0, true), {
+      method: 'GET',
+      cache: 'no-store',
+      headers: buildMedisaAuthHeaders()
+    })
+      .then(function(response) {
+        if (!response.ok) {
+          var metaErr = new Error('pdf-print-meta-unavailable');
+          metaErr.httpStatus = response.status;
+          throw metaErr;
+        }
+        return response.json();
       })
-      .catch(function() {});
+      .then(function(meta) {
+        var pageCount = Math.max(1, Math.min(24, Number(meta && meta.pageCount) || 1));
+        var pageFetches = [];
+        for (var pageIndex = 0; pageIndex < pageCount; pageIndex++) {
+          pageFetches.push(fetchIosPwaPdfPrintPageObjectUrl(buildRuhsatPreviewPageUrl(vehicleId, dt, pageIndex, false)));
+        }
+        return Promise.all(pageFetches);
+      })
+      .then(function(pageUrls) {
+        if (!ruhsatDocumentCache.has(cacheKey)) return;
+        revokeRuhsatDocumentEntry(entry);
+        entry.pdfPrintPageObjectUrls = pageUrls;
+        entry.pdfStagingPromise = null;
+        entry.cooldownUntil = 0;
+        ruhsatDocumentCache.set(cacheKey, entry);
+        wireIosPwaPdfStagingIframe(cacheKey, pageUrls);
+      })
+      .catch(function() {
+        if (Array.isArray(entry.pdfPrintPageObjectUrls)) {
+          entry.pdfPrintPageObjectUrls.forEach(function(pageUrl) {
+            if (!pageUrl) return;
+            try {
+              URL.revokeObjectURL(pageUrl);
+            } catch (preloadPdfPageRevokeErr) {}
+          });
+        }
+        entry.pdfPrintPageObjectUrls = [];
+        entry.pdfStagingPromise = null;
+        entry.pdfStagingReady = false;
+        entry.cooldownUntil = Date.now() + 30000;
+        ruhsatDocumentCache.set(cacheKey, entry);
+      });
+    ruhsatDocumentCache.set(cacheKey, entry);
   }
 
   function warmRuhsatPreview(vehicleId, ruhsatUrl, documentType) {
