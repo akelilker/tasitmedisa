@@ -68,12 +68,14 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
   }
 
   function getStoredPortalToken() {
-    return typeof window.getStoredPortalToken === 'function' ? (window.getStoredPortalToken() || null) : null;
+    return window.medisaPortalSession && typeof window.medisaPortalSession.getStoredToken === 'function'
+      ? (window.medisaPortalSession.getStoredToken() || null)
+      : null;
   }
 
   function clearStoredPortalTokens() {
-    if (typeof window.clearStoredPortalTokens === 'function') {
-      window.clearStoredPortalTokens();
+    if (window.medisaPortalSession && typeof window.medisaPortalSession.clearStoredTokens === 'function') {
+      window.medisaPortalSession.clearStoredTokens();
     }
   }
 
@@ -116,8 +118,8 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
   function persistSessionToken(token, remember) {
     if (!token) return;
     clearStoredPortalTokens();
-    if (typeof window.storePortalToken === 'function') {
-      var storedInPreferredScope = window.storePortalToken(token, remember);
+    if (window.medisaPortalSession && typeof window.medisaPortalSession.storeToken === 'function') {
+      var storedInPreferredScope = window.medisaPortalSession.storeToken(token, remember);
       if (!storedInPreferredScope) {
         console.warn('Token depolamasi sirasinda sorun olustu, oturum sekme bazli tutulacak.');
       }

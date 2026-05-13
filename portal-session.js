@@ -26,39 +26,46 @@
     } catch (e) {}
   }
 
-  window.getStoredPortalToken = function getStoredPortalToken() {
-    for (var i = 0; i < LOCAL_KEYS.length; i++) {
-      var key = LOCAL_KEYS[i];
-      var localValue = readFrom(window.localStorage, key);
-      if (localValue) return localValue;
-      var sessionValue = readFrom(window.sessionStorage, key);
-      if (sessionValue) return sessionValue;
-    }
-    return "";
-  };
-
-  window.clearStoredPortalTokens = function clearStoredPortalTokens() {
-    for (var i = 0; i < LOCAL_KEYS.length; i++) {
-      var key = LOCAL_KEYS[i];
-      removeFrom(window.localStorage, key);
-      removeFrom(window.sessionStorage, key);
-    }
-  };
-
-  window.storePortalToken = function storePortalToken(token, remember) {
-    if (!token) return false;
-
-    window.clearStoredPortalTokens();
-
-    var primaryStorage = remember ? window.localStorage : window.sessionStorage;
-    for (var i = 0; i < LOCAL_KEYS.length; i++) {
-      if (!writeTo(primaryStorage, LOCAL_KEYS[i], token)) {
-        for (var j = 0; j < LOCAL_KEYS.length; j++) {
-          writeTo(window.sessionStorage, LOCAL_KEYS[j], token);
-        }
-        return false;
+  var api = {
+    getStoredToken: function getStoredToken() {
+      for (var i = 0; i < LOCAL_KEYS.length; i++) {
+        var key = LOCAL_KEYS[i];
+        var localValue = readFrom(window.localStorage, key);
+        if (localValue) return localValue;
+        var sessionValue = readFrom(window.sessionStorage, key);
+        if (sessionValue) return sessionValue;
       }
+      return "";
+    },
+
+    clearStoredTokens: function clearStoredTokens() {
+      for (var i = 0; i < LOCAL_KEYS.length; i++) {
+        var key = LOCAL_KEYS[i];
+        removeFrom(window.localStorage, key);
+        removeFrom(window.sessionStorage, key);
+      }
+    },
+
+    storeToken: function storeToken(token, remember) {
+      if (!token) return false;
+
+      api.clearStoredTokens();
+
+      var primaryStorage = remember ? window.localStorage : window.sessionStorage;
+      for (var i = 0; i < LOCAL_KEYS.length; i++) {
+        if (!writeTo(primaryStorage, LOCAL_KEYS[i], token)) {
+          for (var j = 0; j < LOCAL_KEYS.length; j++) {
+            writeTo(window.sessionStorage, LOCAL_KEYS[j], token);
+          }
+          return false;
+        }
+      }
+      return true;
     }
-    return true;
   };
+
+  window.medisaPortalSession = api;
+  window.getStoredPortalToken = api.getStoredToken;
+  window.clearStoredPortalTokens = api.clearStoredTokens;
+  window.storePortalToken = api.storeToken;
 })();
