@@ -68,24 +68,13 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
   }
 
   function getStoredPortalToken() {
-    try {
-      return localStorage.getItem('medisa_portal_token')
-        || sessionStorage.getItem('medisa_portal_token')
-        || localStorage.getItem('driver_token')
-        || sessionStorage.getItem('driver_token')
-        || null;
-    } catch (e) {
-      return null;
-    }
+    return typeof window.getStoredPortalToken === 'function' ? (window.getStoredPortalToken() || null) : null;
   }
 
   function clearStoredPortalTokens() {
-    try {
-      localStorage.removeItem('medisa_portal_token');
-      sessionStorage.removeItem('medisa_portal_token');
-      localStorage.removeItem('driver_token');
-      sessionStorage.removeItem('driver_token');
-    } catch (e) {}
+    if (typeof window.clearStoredPortalTokens === 'function') {
+      window.clearStoredPortalTokens();
+    }
   }
 
   function shouldForceDriverLoginView() {
@@ -127,23 +116,14 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
   function persistSessionToken(token, remember) {
     if (!token) return;
     clearStoredPortalTokens();
-    try {
-      if (remember) {
-        localStorage.setItem('medisa_portal_token', token);
-        localStorage.setItem('driver_token', token);
-      } else {
-        sessionStorage.setItem('medisa_portal_token', token);
-        sessionStorage.setItem('driver_token', token);
+    if (typeof window.storePortalToken === 'function') {
+      var storedInPreferredScope = window.storePortalToken(token, remember);
+      if (!storedInPreferredScope) {
+        console.warn('Token depolamasi sirasinda sorun olustu, oturum sekme bazli tutulacak.');
       }
-    } catch (storageErr) {
-      console.warn('Token depolamasi sirasinda sorun olustu, oturum sekme bazli tutulacak.', storageErr);
-      try {
-        sessionStorage.setItem('medisa_portal_token', token);
-        sessionStorage.setItem('driver_token', token);
-      } catch (fallbackErr) {
-        console.error('Token kaydedilemedi.', fallbackErr);
-      }
+      return;
     }
+    console.error('Token kaydedilemedi.');
   }
 
   async function fetchCurrentPortalSession(token) {
