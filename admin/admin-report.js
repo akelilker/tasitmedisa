@@ -25,7 +25,9 @@
   var userAnalyticsSelectedUserId = null;
 
   function getStoredPortalToken() {
-    return typeof window.getStoredPortalToken === 'function' ? (window.getStoredPortalToken() || '') : '';
+    return window.medisaPortalSession && typeof window.medisaPortalSession.getStoredToken === 'function'
+      ? (window.medisaPortalSession.getStoredToken() || '')
+      : '';
   }
 
   function buildAuthHeaders(extraHeaders) {
