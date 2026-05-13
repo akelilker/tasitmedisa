@@ -202,12 +202,14 @@ function getCurrentPathname() {
 }
 
 function getStoredPortalToken() {
-    return typeof window.getStoredPortalToken === 'function' ? (window.getStoredPortalToken() || '') : '';
+    return window.medisaPortalSession && typeof window.medisaPortalSession.getStoredToken === 'function'
+        ? (window.medisaPortalSession.getStoredToken() || '')
+        : '';
 }
 
 function clearStoredPortalTokens() {
-    if (typeof window.clearStoredPortalTokens === 'function') {
-        window.clearStoredPortalTokens();
+    if (window.medisaPortalSession && typeof window.medisaPortalSession.clearStoredTokens === 'function') {
+        window.medisaPortalSession.clearStoredTokens();
     }
 }
 
