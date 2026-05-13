@@ -58,6 +58,13 @@
   opacity: 0;
   pointer-events: none;
 }
+body.dashboard-page.driver-splash-active .app-container.driver-dashboard-container,
+body.dashboard-page.driver-splash-active #pwa-install-wrapper,
+body.login-page.login-gate-active .app-container.driver-dashboard-container,
+body.login-page.login-gate-active #pwa-install-wrapper {
+  visibility: hidden !important;
+  opacity: 0 !important;
+}
 .driver-splash-inner {
   display: flex;
   flex-direction: column;

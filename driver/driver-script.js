@@ -526,7 +526,11 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
     }, 4000);
   })();
   
-  function initDriverLoginPage() {
+  function revealDriverLoginView() {
+      if (document.body) document.body.classList.remove('login-gate-active');
+  }
+
+  async function initDriverLoginPage() {
       var loginForm = document.getElementById('login-form');
       if (!loginForm || loginForm.getAttribute('data-medisa-login-init') === '1') return;
       loginForm.setAttribute('data-medisa-login-init', '1');
@@ -534,10 +538,12 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
       /* Geçerli bir oturum varsa login ekranını atla ve token'ın işaret ettiği yüzeye git. */
       var savedToken = getStoredPortalToken();
       if (!shouldForceDriverLoginView() && savedToken) {
-          routeByCurrentSession(savedToken, false, {
+          var routedByExistingSession = await routeByCurrentSession(savedToken, false, {
               nextUrl: getRequestedNextUrl()
           });
+          if (routedByExistingSession) return;
       }
+      revealDriverLoginView();
   
       var usernameInput = document.getElementById('username');
       var passwordInput = document.getElementById('password');
@@ -680,14 +686,17 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
   function initDriverSplash(onComplete) {
     const splash = document.getElementById('driver-splash');
     if (!splash) {
+      if (document.body) document.body.classList.remove('driver-splash-active');
       if (typeof onComplete === 'function') onComplete();
       return;
     }
+    if (document.body) document.body.classList.add('driver-splash-active');
     setTimeout(function() {
       splash.classList.add('hidden');
       splash.setAttribute('aria-hidden', 'true');
       setTimeout(function() {
         splash.style.display = 'none';
+        if (document.body) document.body.classList.remove('driver-splash-active');
         if (typeof onComplete === 'function') onComplete();
       }, 400);
     }, 2000);
@@ -703,14 +712,6 @@ const MAIN_SESSION_URL = (APP_ROOT === '/' ? '/load.php' : APP_ROOT + 'load.php'
     window.addEventListener('pageshow', function(ev) {
       if (ev.persisted) run();
     });
-  } else if (document.getElementById('driver-splash')) {
-    (function runLoginSplash() {
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', function() { initDriverSplash(); });
-      } else {
-        initDriverSplash();
-      }
-    })();
   }
 
   function getDriverFeedbackPresetMessage(preset) {
