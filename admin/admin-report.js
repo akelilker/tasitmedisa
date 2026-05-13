@@ -25,15 +25,7 @@
   var userAnalyticsSelectedUserId = null;
 
   function getStoredPortalToken() {
-    try {
-      return localStorage.getItem('medisa_portal_token')
-        || sessionStorage.getItem('medisa_portal_token')
-        || localStorage.getItem('driver_token')
-        || sessionStorage.getItem('driver_token')
-        || '';
-    } catch (e) {
-      return '';
-    }
+    return typeof window.getStoredPortalToken === 'function' ? (window.getStoredPortalToken() || '') : '';
   }
 
   function buildAuthHeaders(extraHeaders) {

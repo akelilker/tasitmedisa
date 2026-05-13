@@ -117,5 +117,7 @@ jobs:
             **/.cursor/**
             **/.agents/**
             **/.vscode/**
-            data/data.json
-            tys.zip
+            **/outputs/**
+            **/tmp/**
+            **/*.zip
+            data/**
