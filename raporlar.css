@@ -3061,24 +3061,24 @@ align-items: center;
 #reports-modal #stok-list-container .stok-controls-row-2 .stok-print-btn,
 #reports-modal #stok-list-container .stok-controls-row-2 .stok-search-wrap,
 #reports-modal #stok-list-container .stok-controls-row-2 .stok-search-btn {
-min-width: 40px !important;
-min-height: 40px !important;
+min-width: 38px !important;
+min-height: 38px !important;
 }
 #reports-modal #stok-list-container .stok-controls-row-2 .stok-export-btn,
 #reports-modal #stok-list-container .stok-controls-row-2 .stok-print-btn,
 #reports-modal #stok-list-container .stok-controls-row-2 .stok-search-btn {
 width: auto !important;
-padding: 7px !important;
+padding: 6px !important;
 line-height: 1 !important;
 }
 #reports-modal #stok-list-container .stok-controls-row-2 .stok-search-btn,
 #reports-modal #stok-list-container .stok-controls-row-2 .stok-print-btn {
-font-size: 26px !important;
+font-size: 24px !important;
 }
 #reports-modal #stok-list-container .stok-controls-row-2 .stok-export-btn .excel-icon {
-width: 26px !important;
-height: 26px !important;
-font-size: 16px !important;
+width: 24px !important;
+height: 24px !important;
+font-size: 15px !important;
 border-radius: 4px !important;
 }
 /* Input açıldığında HİÇBİR YER OYNAMASIN: absolute overlay, wrap/row boyutu değişmez */
