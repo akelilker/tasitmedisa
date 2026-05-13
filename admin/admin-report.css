@@ -196,30 +196,6 @@ body.admin-report-page .main-header-user-name.is-empty {
   display: none;
 }
 
-.admin-header-backbar {
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(calc(-50% + 1px));
-  width: auto !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  z-index: 2;
-}
-
-.admin-header-backbar .universal-back-btn {
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
-}
-
-body.admin-report-page .hero.hero-two-rows .hero-logo.admin-report-hero-side {
-  padding-left: 118px !important;
-}
-
-.admin-header-backbar .universal-back-label {
-  white-space: nowrap;
-}
-
 @media (min-width: 641px) {
   body.admin-report-page .hero.admin-report-hero.hero-two-rows {
     align-items: stretch;
@@ -2019,6 +1995,59 @@ body.admin-report-page .hero.hero-two-rows .hero-logo.admin-report-hero-side {
   z-index: 1000;
 }
 
+.admin-footer-back-wrap {
+  box-sizing: border-box;
+  display: flex;
+  justify-content: flex-start;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 0 5px 0 !important;
+  padding-left: 12px !important;
+  padding-right: 12px !important;
+  overflow: visible;
+}
+
+.admin-footer-back-wrap .universal-back-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 3px !important;
+  color: var(--theme-color) !important;
+  opacity: 0.55;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  transition: opacity 0.2s, color 0.2s;
+  white-space: nowrap;
+}
+
+.admin-footer-back-wrap .universal-back-label {
+  color: var(--theme-color) !important;
+  opacity: 0.55;
+}
+
+.admin-footer-back-wrap .universal-back-btn .back-icon-svg {
+  width: 18px !important;
+  height: 18px !important;
+  min-width: 18px;
+  min-height: 18px;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.admin-footer-back-wrap .universal-back-btn:hover {
+  color: var(--theme-color) !important;
+  opacity: 1;
+}
+
+.admin-footer-back-wrap .universal-back-btn:hover .universal-back-label {
+  color: var(--theme-color) !important;
+  opacity: 1;
+}
+
+.admin-footer-back-wrap .universal-back-btn:hover .back-icon-svg {
+  opacity: 1;
+}
+
 .admin-footer .footer-content {
   max-width: 1200px;
   margin: 0 auto;
@@ -2176,10 +2205,6 @@ body.admin-report-page .hero.hero-two-rows .hero-logo.admin-report-hero-side {
   /* style-core mobil .hero-logo / img evrensel kurallarından izole et */
   body.admin-report-page .hero.hero-two-rows .hero-logo.admin-report-hero-side {
     margin-right: 0 !important;
-  }
-
-  body.admin-report-page .hero.hero-two-rows .hero-logo.admin-report-hero-side {
-    padding-left: 98px !important;
   }
 
   body.admin-report-page .hero.hero-two-rows .hero-logo img.logo-small {
