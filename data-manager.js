@@ -470,6 +470,13 @@ function syncMainAppHeaderUserName(sessionData) {
     nameEl.classList.toggle('is-empty', displayName === '');
 }
 
+function clearMainAppAuthGate() {
+    if (typeof document === 'undefined') return;
+    if (getCurrentPathname().indexOf('/driver/') !== -1) return;
+    if (!document.body) return;
+    document.body.classList.remove('main-auth-gate-active');
+}
+
 function applyMainAppSessionUiState() {
     if (typeof document === 'undefined') return;
     if (getCurrentPathname().indexOf('/driver/') !== -1) return;
@@ -522,6 +529,8 @@ function applyMainAppSessionUiState() {
     if (clearCacheBtn) {
         clearCacheBtn.style.display = (session.permissions.manage_data || session.permissions.manage_settings) ? '' : 'none';
     }
+
+    clearMainAppAuthGate();
 }
 
 function ensureMainAppSession() {
