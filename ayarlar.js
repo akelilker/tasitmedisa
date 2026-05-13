@@ -1056,8 +1056,7 @@
           const rawMm = (v.brandModel || (v.brand || v.marka || '') + ' ' + (v.model || '')).trim();
           const markaModel = (typeof window.formatBrandModel === 'function' ? window.formatBrandModel(rawMm) : (typeof window.toTitleCase === 'function' ? window.toTitleCase(rawMm) : rawMm));
           const brandHay = String(markaModel || '').toLocaleLowerCase('tr-TR');
-          if (pCompact.startsWith(qCompact)) return true;
-          if (qCompact.length >= 3 && pCompact.indexOf(qCompact) !== -1) return true;
+          if (pCompact.indexOf(qCompact) !== -1) return true;
           if (brandHay.indexOf(qLower) !== -1) return true;
           return false;
         });
