@@ -196,43 +196,28 @@ body.admin-report-page .main-header-user-name.is-empty {
   display: none;
 }
 
-.admin-notifications-back-btn {
-  display: none;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  padding: 0;
-  border: none;
-  background: transparent;
-  color: var(--muted, #a0aec0);
-  cursor: pointer;
-}
-
-.admin-report-page.report-from-notifications .admin-notifications-back-btn {
-  display: inline-flex;
-}
-
-.admin-report-page.report-from-notifications .hero.hero-two-rows .hero-logo.admin-report-hero-side {
-  padding-left: 34px !important;
-}
-
-.admin-report-page.report-from-notifications .admin-notifications-back-btn {
+.admin-header-backbar {
   position: absolute;
   left: 0;
   top: 50%;
-  transform: translateY(-50%);
+  transform: translateY(calc(-50% + 1px));
+  width: auto !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  z-index: 2;
 }
 
-.admin-notifications-back-btn:hover,
-.admin-notifications-back-btn:focus {
-  color: var(--txt-white, #fff);
-  outline: none;
+.admin-header-backbar .universal-back-btn {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
 }
 
-.admin-notifications-back-btn .back-icon-svg {
-  width: 24px;
-  height: 24px;
+body.admin-report-page .hero.hero-two-rows .hero-logo.admin-report-hero-side {
+  padding-left: 118px !important;
+}
+
+.admin-header-backbar .universal-back-label {
+  white-space: nowrap;
 }
 
 @media (min-width: 641px) {
@@ -2193,13 +2178,8 @@ body.admin-report-page .main-header-user-name.is-empty {
     margin-right: 0 !important;
   }
 
-  .admin-report-page.report-from-notifications .hero.hero-two-rows .hero-logo.admin-report-hero-side {
-    padding-left: 20px !important;
-  }
-
-  .admin-report-page.report-from-notifications .admin-notifications-back-btn {
-    width: 28px;
-    height: 28px;
+  body.admin-report-page .hero.hero-two-rows .hero-logo.admin-report-hero-side {
+    padding-left: 98px !important;
   }
 
   body.admin-report-page .hero.hero-two-rows .hero-logo img.logo-small {
