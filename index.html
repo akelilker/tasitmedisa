@@ -118,6 +118,10 @@
             visibility: hidden;
             opacity: 0;
         }
+        body.main-auth-gate-active .app-container {
+            visibility: hidden;
+            opacity: 0;
+        }
         #app-footer {
             position: fixed !important;
             left: 50% !important;
@@ -161,8 +165,69 @@
     <link rel="preload" href="style-core.css?v=20260512.7" as="style">
     <link rel="stylesheet" href="style-core.css?v=20260512.7">
     <noscript><link rel="stylesheet" href="style-core.css?v=20260512.7"></noscript>
+    <script>
+        (function() {
+            function getMainAppBasePath() {
+                try {
+                    var path = (document.location && document.location.pathname) ? document.location.pathname : '/';
+                    var parts = String(path || '/').split('/').filter(Boolean);
+                    if (!parts.length) return '';
+                    var lastPart = parts[parts.length - 1] || '';
+                    if (lastPart.indexOf('.') !== -1) parts.pop();
+                    var lastDir = (parts[parts.length - 1] || '').toLowerCase();
+                    if (lastDir === 'admin' || lastDir === 'driver') parts.pop();
+                    return parts.length ? ('/' + parts.join('/') + '/') : '';
+                } catch (e) {
+                    return '';
+                }
+            }
+
+            function readStoredToken() {
+                var keys = ['medisa_portal_token', 'driver_token'];
+                for (var i = 0; i < keys.length; i++) {
+                    var key = keys[i];
+                    try {
+                        var localValue = window.localStorage.getItem(key) || '';
+                        if (localValue) return localValue;
+                    } catch (e1) {}
+                    try {
+                        var sessionValue = window.sessionStorage.getItem(key) || '';
+                        if (sessionValue) return sessionValue;
+                    } catch (e2) {}
+                }
+                return '';
+            }
+
+            function hasUsableToken(token) {
+                if (!token || typeof token !== 'string') return false;
+                try {
+                    var payload = null;
+                    if (token.indexOf('.') !== -1) {
+                        var parts = token.split('.');
+                        if (parts.length !== 3) return false;
+                        var body = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+                        while (body.length % 4) body += '=';
+                        payload = JSON.parse(atob(body));
+                    } else {
+                        payload = JSON.parse(atob(token));
+                    }
+                    if (!payload || !payload.exp) return false;
+                    return Number(payload.exp) >= Math.floor(Date.now() / 1000);
+                } catch (e) {
+                    return false;
+                }
+            }
+
+            var token = readStoredToken();
+            if (hasUsableToken(token)) return;
+
+            var basePath = getMainAppBasePath();
+            var loginUrl = (basePath || '/') + 'driver/index.html?portal=main-app';
+            window.location.replace(loginUrl);
+        })();
+    </script>
 </head>
-<body class="app-loading">
+<body class="app-loading main-auth-gate-active">
 
     <!-- Splash: logo + başlık 2 sn -->
     <div id="loading-screen">
