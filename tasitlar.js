@@ -6681,6 +6681,18 @@
 
   var ruhsatDocumentCache = new Map();
 
+  function createRuhsatDocumentCacheEntry() {
+    return {
+      objectUrl: '',
+      promise: null,
+      cooldownUntil: 0,
+      pdfStagingFrame: null,
+      pdfStagingReady: false,
+      pdfStagingPromise: null,
+      pdfPrintPageObjectUrls: []
+    };
+  }
+
   function getRuhsatDocumentCacheKey(vehicleId, ruhsatUrl, documentType) {
     const rawId = String(vehicleId || window.currentDetailVehicleId || '').trim();
     const absoluteUrl = toAbsoluteRuhsatUrl(ruhsatUrl);
@@ -6717,12 +6729,22 @@
   function revokeRuhsatDocumentEntry(entry) {
     if (!entry) return;
     detachIosPwaPdfStagingFrame(entry);
+    if (Array.isArray(entry.pdfPrintPageObjectUrls)) {
+      entry.pdfPrintPageObjectUrls.forEach(function(pageUrl) {
+        if (!pageUrl) return;
+        try {
+          URL.revokeObjectURL(pageUrl);
+        } catch (pdfPageRevokeErr) {}
+      });
+    }
     if (entry.objectUrl) {
       try {
         URL.revokeObjectURL(entry.objectUrl);
       } catch (e) {}
     }
     entry.objectUrl = '';
+    entry.pdfStagingPromise = null;
+    entry.pdfPrintPageObjectUrls = [];
   }
 
   function invalidateRuhsatDocumentCache(vehicleId, documentType) {
@@ -6770,13 +6792,7 @@
       }
     }
 
-    const entry = existingEntry || {
-      objectUrl: '',
-      promise: null,
-      cooldownUntil: 0,
-      pdfStagingFrame: null,
-      pdfStagingReady: false
-    };
+    const entry = existingEntry || createRuhsatDocumentCacheEntry();
 
     entry.promise = fetch(documentUrl, {
       method: 'GET',
