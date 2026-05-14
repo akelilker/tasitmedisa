@@ -4319,7 +4319,7 @@
     html += '<div class="monthly-todo-col-header" aria-hidden="true">';
     html += '<span class="monthly-todo-col-h">PLAKA</span>';
     html += '<span class="monthly-todo-col-h">TAŞIT / KULLANICI</span>';
-    html += '<span class="monthly-todo-col-h">İŞLEM</span>';
+    html += '<span class="monthly-todo-col-h">Açıklamalar</span>';
     html += '</div>';
     html += '<div class="monthly-todo-list-scroll" role="list">';
     displayTasks.forEach(function(t) {
@@ -4385,7 +4385,7 @@
       html += '</span>';
       html += '<span class="monthly-todo-right">';
       if (hasDateLine) {
-        html += '<span class="monthly-todo-type">' + escapeHtml(lineMain) + '<br>Bitiş Tarihi: <span class="monthly-todo-description-date">' + dateShown + '</span></span>';
+        html += '<span class="monthly-todo-type">' + escapeHtml(lineMain) + '<br><span class="monthly-todo-description-meta">Bitiş Tarihi: <span class="monthly-todo-description-date">' + dateShown + '</span></span></span>';
       } else {
         html += '<span class="monthly-todo-type">' + escapeHtml(descriptionText) + '</span>';
       }
