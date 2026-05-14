@@ -2953,11 +2953,11 @@
 }
 
 #monthly-todo-modal .monthly-todo-list-scroll .monthly-todo-task-row:nth-child(odd) {
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(255, 255, 255, 0.01);
 }
 
 #monthly-todo-modal .monthly-todo-list-scroll .monthly-todo-task-row:nth-child(even) {
-  background: rgba(255, 255, 255, 0.062);
+  background: rgba(255, 255, 255, 0.078);
 }
 
 #monthly-todo-modal .monthly-todo-task-row:last-child {
