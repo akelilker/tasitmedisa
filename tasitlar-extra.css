@@ -2363,6 +2363,12 @@
   .view-list .list-item.unassigned-vehicle-card .list-cell.list-branch {
     color: var(--theme-color) !important; /* Sadece metin kırmızı */
   }
+
+  /* Taşıtlar modalı mobil: liste hücresi txt-muted / plaka beyaz / yıl txt — çok parlak; masaüstü ile aynı veri gri */
+  #vehicles-modal .view-list .list-cell {
+    color: #a0aec0 !important;
+  }
+
   .list-header-row .list-cell.list-branch {
     display: flex !important;
     padding-left: 3px !important; /* şube yatay boşluk az (3px); 3px kullanıcıya verildi */
