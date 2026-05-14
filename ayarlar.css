@@ -69,6 +69,15 @@
     display: none;
 }
 
+/* Şube/kullanıcı LİSTE modalı ile FORM modalı aynı z-index (10020) iken tıklama alt katmana kaçabiliyordu.
+   Form açıkken her zaman üstte boyansın (hit-test + görsel tutarlılık). */
+#branch-form-modal.modal-overlay.active,
+#branch-form-modal.modal-overlay.open,
+#user-form-modal.modal-overlay.active,
+#user-form-modal.modal-overlay.open {
+    z-index: 10026 !important;
+}
+
 /* Ayarlar modalları: branch/user/data-management container style-core'da; küçük modallar aşağıda override */
 
 #cache-confirm-modal .modal-container {

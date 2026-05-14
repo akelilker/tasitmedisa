@@ -2009,6 +2009,13 @@
       }
     });
   
+    function isAyarlarOverlayVisiblyOpen(el) {
+      if (!el) return false;
+      if (el.classList.contains('active') || el.classList.contains('open')) return true;
+      const d = el.style && String(el.style.display || '');
+      return d === 'flex' || d === 'block';
+    }
+
     document.addEventListener('click', (e) => {
       const branchModal = document.getElementById('branch-modal');
       const userModal = document.getElementById('user-modal');
@@ -2029,10 +2036,11 @@
         closeDisVeriPanel();
       }
       if (branchModal && branchModal.classList.contains('active') && e.target === branchModal) {
-        closeBranchManagement();
+        if (!isAyarlarOverlayVisiblyOpen(branchFormModal)) closeBranchManagement();
       }
       if (userModal && userModal.classList.contains('active') && e.target === userModal) {
-        closeUserManagement();
+        /* Üstte kullanıcı ekle/düzenle açıkken tıklama yanlışlıkla alttaki listeye düşerse listeyi kapatma */
+        if (!isAyarlarOverlayVisiblyOpen(userFormModal)) closeUserManagement();
       }
       if (dataModal && dataModal.classList.contains('active') && e.target === dataModal) {
         closeDataManagement();
