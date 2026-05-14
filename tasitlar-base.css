@@ -2404,10 +2404,13 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     background: var(--border-ultra) !important;
 }
 
-/* Taşıtlar modalı: tarih uyarısı — satır zemini normal zebra/hover ile kalır, sadece metin rengi değişir. */
-#vehicles-modal .view-list .list-item.vehicle-date-warning-red,
+/* Taşıtlar modalı: tarih uyarısı — metin Premium Dark gri; uyarı sol şerit + kalınlık (tüm satır boyaması yok). */
+#vehicles-modal .view-list .list-item.vehicle-date-warning-red {
+    border-left: 3px solid var(--theme-color) !important;
+    box-shadow: none !important;
+}
 #vehicles-modal .view-list .list-item.vehicle-date-warning-orange {
-    border-left: none !important;
+    border-left: 3px solid var(--orange-warn) !important;
     box-shadow: none !important;
 }
 
@@ -2447,14 +2450,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     opacity: 1 !important;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
-}
-
-#vehicles-modal .view-list .list-item.vehicle-date-warning-red .list-cell {
-    color: var(--theme-color) !important;
-}
-
-#vehicles-modal .view-list .list-item.vehicle-date-warning-orange .list-cell {
-    color: var(--orange-warn) !important;
+    color: var(--txt-gray-dark) !important;
 }
 
 /* Idle: hücre zemini şeffaf; zebra/hover yalnızca satır zemininden gelir. */
@@ -2469,7 +2465,7 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     background-color: transparent !important;
 }
 
-/* Kart görünümü: zemin şeffaf; inset gölge yok — vurgu renkli çerçeve + metin (tasitlar-extra) */
+/* Kart görünümü: zemin şeffaf; uyarı renkli çerçeve — metin gri (tasitlar-extra kart metinleri) */
 #vehicles-modal .view-card .card.vehicle-date-warning-orange {
     border-color: var(--orange-warn);
     background: transparent; /* Arka plan kaldırıldı */
