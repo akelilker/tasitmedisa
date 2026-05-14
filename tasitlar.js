@@ -1154,6 +1154,21 @@
     return hi;
   }
 
+  /** Plaka araması: harf boyaması yok — arka plan/çerçeve yok, yalnızca sol şerit. */
+  function wrapPlateSearchHighlight(displayText, query, plateHit) {
+    const text = String(displayText == null ? '' : displayText);
+    const escaped = escapeHtml(text);
+    if (!plateHit || !normalizeVehicleSearchText(query)) return escaped;
+    return (
+      '<span class="vehicle-search-plate-cell">' +
+      '<span class="vehicle-search-plate-accent" aria-hidden="true"></span>' +
+      '<span class="vehicle-search-plate-text">' +
+      escaped +
+      '</span>' +
+      '</span>'
+    );
+  }
+
   function buildVehicleUserNameHtmlWithSearch(rawName, query, userHit) {
     const q = normalizeVehicleSearchText(query);
     if (!userHit || !q) return buildVehicleUserNameHtml(rawName);
@@ -2633,7 +2648,7 @@
 
         if (viewMode === 'card') {
             // Üçüncü satır boşsa div'i render etme
-            const plateCardHtml = maybeHighlightCell(formatPlaka(plate), query, searchHits.plate, 'plate');
+            const plateCardHtml = wrapPlateSearchHighlight(formatPlaka(plate), query, searchHits.plate);
             const brandCardHtml = maybeHighlightCell(formatBrandModel(brandModel), query, searchHits.brand, 'brand');
             let thirdInner = escapeHtml(thirdLineDisplay);
             if (
@@ -2677,7 +2692,7 @@
                   cellClass = 'list-year';
                   break;
                 case 'plate':
-                  cellContent = maybeHighlightCell(formatPlaka(plate), query, searchHits.plate, 'plate');
+                  cellContent = wrapPlateSearchHighlight(formatPlaka(plate), query, searchHits.plate);
                   cellClass = 'list-plate';
                   break;
                 case 'brand':

@@ -32,9 +32,36 @@
     box-decoration-break: clone;
     -webkit-box-decoration-break: clone;
 }
-#vehicles-modal .vehicle-search-hit--plate,
-#vehicles-modal-content[data-render-scope="search-global"] .vehicle-search-hit--plate {
-    color: #5eead4;
+/* Plaka arama vurgusu: yalnız sol şerit (arka plan / çerçeve / harf boyası yok) */
+#vehicles-modal .vehicle-search-plate-cell,
+#vehicles-modal-content[data-render-scope="search-global"] .vehicle-search-plate-cell {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    max-width: 100%;
+    min-width: 0;
+    vertical-align: middle;
+    box-sizing: border-box;
+}
+#vehicles-modal .vehicle-search-plate-accent,
+#vehicles-modal-content[data-render-scope="search-global"] .vehicle-search-plate-accent {
+    flex: 0 0 3px;
+    width: 3px;
+    align-self: stretch;
+    min-height: 1em;
+    border-radius: 2px;
+    background: rgba(251, 191, 36, 0.82);
+}
+#vehicles-modal .vehicle-search-plate-text,
+#vehicles-modal-content[data-render-scope="search-global"] .vehicle-search-plate-text {
+    min-width: 0;
+    flex: 1 1 auto;
+    color: inherit;
+    font-weight: inherit;
+    letter-spacing: inherit;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 #vehicles-modal .vehicle-search-hit--brand,
 #vehicles-modal-content[data-render-scope="search-global"] .vehicle-search-hit--brand {
