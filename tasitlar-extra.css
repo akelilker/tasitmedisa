@@ -64,16 +64,13 @@
     white-space: nowrap;
 }
 #vehicles-modal .vehicle-search-hit--brand,
-#vehicles-modal-content[data-render-scope="search-global"] .vehicle-search-hit--brand {
-    color: #fcd34d;
-}
+#vehicles-modal-content[data-render-scope="search-global"] .vehicle-search-hit--brand,
 #vehicles-modal .vehicle-search-hit--year,
-#vehicles-modal-content[data-render-scope="search-global"] .vehicle-search-hit--year {
-    color: #93c5fd;
-}
+#vehicles-modal-content[data-render-scope="search-global"] .vehicle-search-hit--year,
 #vehicles-modal .vehicle-search-hit--user,
 #vehicles-modal-content[data-render-scope="search-global"] .vehicle-search-hit--user {
-    color: #f0abfc;
+    /* Premium Dark: veri rengi korunur; arama yalnız hafif kalınlık (plaka ayrı şerit) */
+    color: inherit !important;
 }
 
 .view-list .list-cell.list-branch {
