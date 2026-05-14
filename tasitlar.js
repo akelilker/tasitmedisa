@@ -1014,6 +1014,7 @@
   function fitVehicleTextBoxes(root) {
     if (typeof window.medisaFitTextWithinBox !== 'function') return;
     const scope = root || document;
+    const listFitStep = window.innerWidth <= 640 ? 0.5 : 1;
     window.medisaFitTextWithinBox(scope, [
       '.branch-name',
       '.view-card .card-brand-model',
@@ -1023,13 +1024,13 @@
     ].join(', '), {
       minFontSize: window.innerWidth <= 640 ? 8.5 : 9,
       maxReduction: 7,
-      step: 0.5
+      step: listFitStep
     });
 
     window.medisaFitTextWithinBox(scope, '.view-list .list-cell.list-brand', {
       minFontSize: window.innerWidth <= 640 ? 11.5 : 12,
       maxReduction: 2.5,
-      step: 0.5
+      step: listFitStep
     });
 
     // Kullanıcı adında genel shrink agresif görünüyordu; burada sadece isim satırlarına
@@ -1040,7 +1041,7 @@
     ].join(', '), {
       minFontSize: window.innerWidth <= 640 ? 8.5 : 9,
       maxReduction: window.innerWidth <= 640 ? 4 : 4,
-      step: 0.5
+      step: listFitStep
     });
   }
 
@@ -9068,22 +9069,28 @@
       const adres = (eventData.adres || '').trim();
       if (adres) pushDetail('Konum', toTitleCase(adres));
     } else if (eventType === 'kasko-guncelle') {
-      summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Kasko Biti\u015F Tarihini G\u00FCncelledi.</span>';
       const bitis = formatDateForDisplay(eventData.bitisTarihi || '');
       const firma = (eventData.firma || '').trim();
       const acente = (eventData.acente || '').trim();
       const iletisim = (eventData.iletisim || '').trim();
-      if (bitis) pushDetail('Biti\u015F Tarihi', bitis);
+      if (bitis) {
+        summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Kasko Poli\u00e7esi Biti\u015F Tarihini </span><span class="history-detail-inline">' + escapeHtml(bitis) + '</span><span class="history-action-text"> Olarak G\u00FCncelledi.</span>';
+      } else {
+        summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Kasko Poli\u00e7esi Biti\u015F Tarihini G\u00FCncelledi.</span>';
+      }
       if (firma) pushDetail('Firma', toTitleCase(firma));
       if (acente) pushDetail('Acente', toTitleCase(acente));
       if (iletisim) pushDetail('\u0130leti\u015Fim', iletisim);
     } else if (eventType === 'sigorta-guncelle') {
-      summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Trafik Sigortas\u0131 Biti\u015F Tarihini G\u00FCncelledi.</span>';
       const bitis = formatDateForDisplay(eventData.bitisTarihi || '');
       const firma = (eventData.firma || '').trim();
       const acente = (eventData.acente || '').trim();
       const iletisim = (eventData.iletisim || '').trim();
-      if (bitis) pushDetail('Biti\u015F Tarihi', bitis);
+      if (bitis) {
+        summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Sigorta Poli\u00e7esi Biti\u015F Tarihini </span><span class="history-detail-inline">' + escapeHtml(bitis) + '</span><span class="history-action-text"> Olarak G\u00FCncelledi.</span>';
+      } else {
+        summaryInner = '<span class="history-user-name">' + escapeHtml(performerUpper) + '</span><span class="history-action-text">, Sigorta Poli\u00e7esi Biti\u015F Tarihini G\u00FCncelledi.</span>';
+      }
       if (firma) pushDetail('Firma', toTitleCase(firma));
       if (acente) pushDetail('Acente', toTitleCase(acente));
       if (iletisim) pushDetail('\u0130leti\u015Fim', iletisim);
