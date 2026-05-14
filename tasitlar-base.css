@@ -2445,8 +2445,8 @@ body:not(.dashboard-page):not(.login-page):not(.admin-report-page).modal-open #d
     text-shadow: none !important;
     filter: none !important;
     opacity: 1 !important;
-    -webkit-text-fill-color: currentColor !important;
-    text-rendering: geometricPrecision;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
 }
 
 #vehicles-modal .view-list .list-item.vehicle-date-warning-red .list-cell {
