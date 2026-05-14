@@ -69,8 +69,8 @@
 #vehicles-modal-content[data-render-scope="search-global"] .vehicle-search-hit--year,
 #vehicles-modal .vehicle-search-hit--user,
 #vehicles-modal-content[data-render-scope="search-global"] .vehicle-search-hit--user {
-    /* Premium Dark: veri rengi korunur; arama yalnız hafif kalınlık (plaka ayrı şerit) */
-    color: inherit !important;
+    /* Uyarı satırında bile ebeveyn !important turuncuyu miras almasın */
+    color: var(--txt-gray-dark) !important;
 }
 
 .view-list .list-cell.list-branch {
@@ -242,16 +242,14 @@
     color: var(--theme-color) !important;
 }
 
+/* Kart: tarih uyarısı — çerçeve rengi yeterli; metin standart (liste ile aynı mantık) */
 #vehicles-modal .view-card .card.vehicle-date-warning-orange .card-plate,
 #vehicles-modal .view-card .card.vehicle-date-warning-orange .card-brand-model,
-#vehicles-modal .view-card .card.vehicle-date-warning-orange .card-third-line {
-    color: var(--orange-warn);
-}
-
+#vehicles-modal .view-card .card.vehicle-date-warning-orange .card-third-line,
 #vehicles-modal .view-card .card.vehicle-date-warning-red .card-plate,
 #vehicles-modal .view-card .card.vehicle-date-warning-red .card-brand-model,
 #vehicles-modal .view-card .card.vehicle-date-warning-red .card-third-line {
-    color: var(--theme-color);
+    color: var(--txt-gray-dark) !important;
 }
 
 .view-list .list-item.unassigned-vehicle-card {
@@ -2122,10 +2120,9 @@
     background: rgba(255, 255, 255, 0.06) !important; /* Mobil: açık satır daha belirgin */
   }
 
-  /* Tarih uyarı satırları: masaüstü ile aynı — normal zebra/hover korunur, vurgu metinde */
+  /* Tarih uyarı: masaüstü ile aynı sol şerit (border tasitlar-base'de) */
   #vehicles-modal .view-list .list-item.vehicle-date-warning-red,
   #vehicles-modal .view-list .list-item.vehicle-date-warning-orange {
-    border-left: none !important;
     box-shadow: none !important;
   }
 
